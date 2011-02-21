@@ -1,13 +1,20 @@
 #include <e.h>
 #include "e_mod_main.h"
 
-//  TODO
+//TODO
 //~ handle add, delete border
+//~ how to handle/disable possible desk show events
+//  while scale is active?
+//
 
+/* #define DBG(...) */
+#define DBG(...) printf(__VA_ARGS__)
 
-#define DBG(...)
-/* #define DBG(...) printf(__VA_ARGS__) */
-
+#define SPACING 64
+#define PLACE_RUNS  10000
+#define GROW_RUNS   1000
+#define SHRINK_RUNS 1000
+#define GROW 6.0
 
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
@@ -23,30 +30,28 @@ static void _scale_gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, vo
 static void _scale_gc_cb_menu_post(void *data, E_Menu *menu);
 static void _scale_gc_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 
-/* static void _scale_win_movorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
- * static void _scale_win_reszorig(void *data, Evas *e, Evas_Object *obj, void *event_info); */
-static void _scale_win_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
-
 static void _scale_finish(void);
 static void _scale_in(void);
 static void _scale_out(void);
-static Eina_Bool _scale_cb_mouse_down(void *data, int type, void *event);
 
+static Eina_Bool _scale_cb_mouse_down(void *data, int type, void *event);
+static Eina_Bool _scale_cb_mouse_move(void *data, int type, void *event);
+
+static void _scale_win_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _scale_win_cb_intercept_move(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 static void _scale_win_cb_intercept_resize(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y);
-
-static E_Action *act = NULL;
+static void _scale_win_cb_intercept_color(void *data, Evas_Object *obj, int r, int g, int b, int a);
+static void _scale_win_cb_intercept_layer(void *data, Evas_Object *obj, int l);
 
 typedef struct _Item Item;
 
-typedef struct _E_Comp_Win E_Comp_Win;
-
 struct _Item
 {
-  Evas_Object *o;
+  Evas_Object *o, *o_win;
   E_Border *bd;
   E_Comp_Win *cw;
   double scale;
+  int alpha;
 
   double x;
   double y;
@@ -56,13 +61,22 @@ struct _Item
   double mx;
   double my;
 
+  /* border origin (is moved when scale on another desk) */
   double bd_x;
   double bd_y;
 
+  /* current position to draw by compositor */
   int cur_x, cur_y, cur_w, cur_h;
-  
+
+  /* borders' desk distance to the current desk */
+  int dx, dy;
+
   int overlaps;
 };
+
+static Ecore_X_Window input_win = 0;
+static E_Msg_Handler *msg_handler = NULL;
+static E_Action *act = NULL;
 
 static Eina_List *items = NULL;
 static Eina_List *popups = NULL;
@@ -70,107 +84,39 @@ static Eina_List *handlers = NULL;
 static Ecore_Animator *scale_animator = NULL;
 static Eina_Bool scale_state = EINA_FALSE;
 static double start_time;
-static double current_scaling = 0;
-
+static E_Zone *zone = NULL;
 static int max_x;
 static int max_y;
 static int min_x;
 static int min_y;
-static int width, height;
+static int max_width, max_height;
 static int step_count;
-
-static Ecore_X_Window input_win = 0;
-static E_Msg_Handler *msg_handler = NULL;
-
-struct _E_Comp_Win
-{
-  EINA_INLIST;
-
-  void			*c; // parent compositor
-  Ecore_X_Window	 win; // raw window - for menus etc.
-  E_Border		*bd; // if its a border - later
-  E_Popup		*pop; // if its a popup - later
-  E_Menu		*menu; // if it is a menu - later
-  int			 x, y, w, h; // geometry
-  struct {
-    int			 x, y, w, h; // hidden geometry (used when its unmapped and re-instated on map)
-  } hidden;
-  int			 pw, ph; // pixmap w/h
-  int			 border; // border width
-  Ecore_X_Pixmap	 pixmap; // the compositing pixmap
-  Ecore_X_Damage	 damage; // damage region
-  Ecore_X_Visual	 vis; // window visual
-  int			 depth; // window depth
-  Evas_Object		*obj; // composite object
-  Evas_Object		*shobj; // shadow object
-  Eina_List		*obj_mirror; // extra mirror objects
-  Ecore_X_Image		*xim; // x image - software fallback
-  void			*up; // update handler
-  E_Object_Delfn	*dfn; // delete function handle for objects being tracked
-  Ecore_X_Sync_Counter	 counter; // sync counter for syncronised drawing
-  Ecore_Timer		*update_timeout; // max time between damage and "done" event
-  Ecore_Timer		*ready_timeout; // max time on show (new window draw) to wait for window contents to be ready if sync protocol not handled. this is fallback.
-  int			 dmg_updates; // num of damage event updates since a redirect
-  Ecore_X_Rectangle	*rects; // shape rects... if shaped :(
-  int			 rects_num; // num rects above
-
-  Ecore_X_Pixmap        cache_pixmap; // the cached pixmap (1/nth the dimensions)
-  int                   cache_w, cache_h; // cached pixmap size
-  int                   update_count; // how many updates have happened to this win
-  double                last_visible_time; // last time window was visible
-  double                last_draw_time; // last time window was damaged
-
-  int                   pending_count; // pending event count
-
-  char                 *title, *name, *clas, *role; // fetched for override-redirect windowa
-  Ecore_X_Window_Type   primary_type; // fetched for override-redirect windowa
-
-  Eina_Bool             delete_pending : 1; // delete pendig
-  Eina_Bool             hidden_override : 1; // hidden override
-
-  Eina_Bool             animating : 1; // it's busy animating - defer hides/dels
-  Eina_Bool             force : 1; // force del/hide even if animating
-  Eina_Bool             defer_hide : 1; // flag to get hide to work on deferred hide
-  Eina_Bool             delete_me : 1; // delete me!
-
-  Eina_Bool             visible : 1; // is visible
-  Eina_Bool             input_only : 1; // is input_only
-  Eina_Bool             override : 1; // is override-redirect
-  Eina_Bool             argb : 1; // is argb
-  Eina_Bool             shaped : 1; // is shaped
-  Eina_Bool             update : 1; // has updates to fetch
-  Eina_Bool             redirected : 1; // has updates to fetch
-  Eina_Bool             shape_changed : 1; // shape changed
-  Eina_Bool             native : 1; // native
-  Eina_Bool             drawme : 1; // drawme flag fo syncing rendering
-  Eina_Bool             invalid : 1; // invalid depth used - just use as marker
-  Eina_Bool             nocomp : 1; // nocomp applied
-  Eina_Bool             needpix : 1; // need new pixmap
-  Eina_Bool             needxim : 1; // need new xim
-  Eina_Bool             real_hid : 1; // last hide was a real window unmap
-  Eina_Bool             inhash : 1; // is in the windows hash
-  Eina_Bool             show_ready : 1; // is this window ready for its first show
-};
-
-
-#define GROW 6.0
+static Item *background = NULL;
+static Item *selected_item = NULL;
+static E_Desk *current_desk = NULL;
+static int show_all_desks = EINA_FALSE;
+static int send_to_desk = EINA_FALSE;
 
 static int
-_grow()
+_scale_grow()
 {
    Item *it, *ot;
    Eina_List *l, *ll;
 
    int cont = 0;
-   int overlap;
+   int overlap, off;
    double grow_l, grow_r, grow_d, grow_u;
-   double mean = 0;
-   int off = scale_conf->spacing;
-   
-   EINA_LIST_FOREACH(items, l, it)
-     mean += it->scale;
-   
-   mean /= ((double) eina_list_count(items) /* + 0.5 */);
+
+   if (show_all_desks)
+     off = scale_conf->desks_spacing;
+   else
+     off = scale_conf->spacing;
+
+   /* double mean = 0; */
+   /* EINA_LIST_FOREACH(items, l, it)
+    *   mean += it->scale;
+    *
+    * mean /= (double) eina_list_count(items); */
 
    EINA_LIST_FOREACH(items, l, it)
      {
@@ -213,23 +159,27 @@ _grow()
 	  {
 	     if (it == ot)
 	       continue;
-	     if (grow_l && E_INTERSECTS(it->x - grow_l, it->y, it->w, it->h,
-					ot->x - off, ot->y - off, ot->w + grow_l + off*2, ot->h + off*2))
+	     if (grow_l && E_INTERSECTS(it->x - grow_l - off ,it->y,
+					it->w + off*2, it->h + off*2,
+					ot->x, ot->y, ot->w, ot->h))
 	       grow_l = 0;
 
-	     if (grow_r && E_INTERSECTS(it->x, it->y, it->w + grow_r, it->h,
-					ot->x - grow_r - off, ot->y - off, ot->w + off*2, ot->h + off*2))
+	     if (grow_r && E_INTERSECTS(it->x - off, it->y - off,
+					it->w + grow_r + off*2, it->h + off*2,
+					ot->x, ot->y, ot->w, ot->h))
 	       grow_r = 0;
 
 	     if ((grow_l == 0) && (grow_r == 0) && (overlap = 1))
 	       break;
 
-	     if (grow_u && E_INTERSECTS(it->x, it->y - grow_u, it->w, it->h,
-					ot->x - off, ot->y - off, ot->w + off*2, ot->h + grow_u + off*2))
+	     if (grow_u && E_INTERSECTS(it->x - off, it->y - off - grow_u,
+					it->w + off*2, it->h + off*2,
+					ot->x, ot->y, ot->w, ot->h))
 	       grow_u = 0;
 
-	     if (grow_d && E_INTERSECTS(it->x, it->y, it->w, it->h + grow_d,
-					ot->x - off, ot->y - grow_d - off, ot->w + off*2, ot->h + off*2))
+	     if (grow_d && E_INTERSECTS(it->x - off, it->y - off,
+					it->w + off*2, it->h + grow_d + off*2,
+					ot->x, ot->y, ot->w, ot->h))
 	       grow_d = 0;
 
 	     if ((grow_u == 0) && (grow_d == 0) && (overlap = 1))
@@ -241,12 +191,20 @@ _grow()
 
 	if (it->bd->w > it->bd->h)
 	  {
-	     it->w += ((grow_u > 0) && (grow_d > 0)) ? grow_l + grow_r : MAX(grow_l, grow_r);
+	     if ((grow_u > 0) && (grow_d > 0))
+	       it->w += grow_l + grow_r;
+	     else
+	       it->w += MAX(grow_l, grow_r);
+
 	     it->h = it->w * (double)it->bd->h / (double)it->bd->w;
 	  }
 	else
 	  {
-	     it->h += ((grow_r > 0) && (grow_l > 0)) ? grow_u + grow_d : MAX(grow_u, grow_d);
+	     if ((grow_r > 0) && (grow_l > 0))
+	       it->h += grow_u + grow_d;
+	     else
+	       it->h += MAX(grow_u, grow_d);
+
 	     it->w = it->h * (double)it->bd->w / (double)it->bd->h;
 	  }
 
@@ -259,8 +217,67 @@ _grow()
    return cont;
 }
 
+static void
+_scale_displace(Item *it, Item *ot, int disp)
+{
+   /* cycle items with same center around to get even	distribution.
+      dont try to understand this but these initial conditions
+      are important.. you can have up to 9 maximized windows.
+      if you can figure out more please tell me :) */
+
+   if (disp % 8 == 0)
+     {
+	// 1.
+	it->y -= 1;
+	it->x -= 1;
+	// 2.
+	ot->x += 1;
+	ot->y -= 1;
+     }
+   else if (disp % 8 == 1)
+     {
+	// 3.
+	ot->y += 1;
+     }
+   else if (disp % 8 == 2)
+     {
+	// 4.
+	ot->x -= 2;
+	ot->y += 2;
+     }
+   else if (disp % 8 == 3)
+     {
+	// 5.
+	ot->x += 2;
+	ot->y += 2;
+     }
+   else if (disp % 8 == 4)
+     {
+	// 6.
+	ot->x += 1;
+	ot->y += 1;
+     }
+   else if (disp % 8 == 5)
+     {
+	// 7.
+	ot->x -= 1;
+	ot->y += 1;
+     }
+   else if (disp % 8 == 6)
+     {
+	// 8.
+	ot->x -= 1;
+	ot->y -= 1;
+     }
+   else if (disp % 8 == 7)
+     {
+	ot->x += 1;
+	ot->y -= 1;
+     }
+}
+
 static int
-_place(int offset)
+_scale_place(int offset)
 {
    Item *it, *ot;
    Eina_List *l, *ll;
@@ -274,7 +291,7 @@ _place(int offset)
      }
 
    int disp = 0;
-   
+
    EINA_LIST_FOREACH(items, l, it)
      {
 	EINA_LIST_FOREACH(items, ll, ot)
@@ -285,14 +302,15 @@ _place(int offset)
 	     if (it == ot)
 	       continue;
 
-	     if (!E_INTERSECTS(it->x - offset, it->y - offset, it->w + offset*2, it->h + offset*2,
+	     if (!E_INTERSECTS(it->x - offset, it->y - offset,
+			       it->w + offset*2, it->h + offset*2,
 			       ot->x, ot->y, ot->w, ot->h))
 	       continue;
 
 	     overlap += 1;
 
 	     it->overlaps++;
-	     
+
 	     if (it->x < ot->x)
 	       w += it->x - ot->x;
 	     if (w < 0) w = 0;
@@ -310,62 +328,9 @@ _place(int offset)
 	     double dist_y = (it->y + it->h/2) - (ot->y + ot->h/2);
 	     double dist_x = (it->x + it->w/2) - (ot->x + ot->w/2);
 
-	     /* cycle items with same center around to get even	distribution.
-		dont try to understand this but these initial conditions
-		are important.. you can have up to 9 maximized windows.
-		if you can figure out more please tell me :) */
 	     if (dist_x == 0 && dist_y == 0)
 	       {
-		  if (disp % 8 == 0)
-		    {
-		       // 1.
-		       it->y -= 1;
-		       it->x -= 1;
-		       // 2.
-		       ot->x += 1;
-		       ot->y -= 1;
-		    }
-		  else if (disp % 8 == 1) 
-		    {
-		       // 3.
-		       ot->y += 1;
-		    }		  
-		  else if (disp % 8 == 2)
-		    {
-		       // 4.
-		       ot->x -= 2;
-		       ot->y += 2;
-		    }
-		  else if (disp % 8 == 3)
-		    {
-		       // 5.
-		       ot->x += 2;
-		       ot->y += 2;
-		    }
-		  else if (disp % 8 == 4)
-		    {
-		       // 6.
-		       ot->x += 1;
-		       ot->y += 1;
-		    }
-		  else if (disp % 8 == 5)
-		    {
-		       // 7.
-		       ot->x -= 1;
-		       ot->y += 1;
-		    }
-		  else if (disp % 8 == 6)
-		    {
-		       // 8.
-		       ot->x -= 1;
-		       ot->y -= 1;
-		    }
-		  else if (disp % 8 == 7)
-		    {
-		       ot->x += 1;
-		       ot->y -= 1;
-		    }
-
+		  _scale_displace(it, ot, disp);
 		  disp++;
 	       }
 	     else if (w > h)
@@ -397,9 +362,6 @@ _place(int offset)
 	  }
      }
 
-   if (!overlap)
-     return 0;
-
    EINA_LIST_FOREACH(items, l, it)
      {
    	it->x = it->mx;
@@ -430,21 +392,25 @@ _place(int offset)
 	  }
      }
 
+   if (!(overlap || outside))
+     return 0;
+
    if (outside && (step_count++ > 50))
      {
-	double zone_diag = sqrt(width * height);
+	double zone_diag = sqrt(zone->w * zone->h);
 	double sw, sh;
 	step_count = 0;
 	EINA_LIST_FOREACH(items, l, it)
 	  {
 	     if (!it->overlaps)
 	       continue;
-	     
+
 	     if (it->scale <= 0.005)
 	       continue;
 
-	     it->scale -= it->scale * (0.001 + (sqrt(it->bd->w * it->bd->h) / zone_diag) / 50.0);
-		  
+	     it->scale -= it->scale *
+	       (0.001 + (sqrt(it->bd->w * it->bd->h) / zone_diag) / 50.0);
+
 	     sw = (double)it->bd->w * it->scale;
 	     sh = (double)it->bd->h * it->scale;
 	     it->x += (it->w - sw)/2.0;
@@ -460,112 +426,19 @@ _place(int offset)
    return overlap || outside;
 }
 
-#if 0
-static void
-_bounding_box_get()
-{
-   Eina_List *l;
-   double x, y, w, h;
-   Item *it;
-   EINA_LIST_FOREACH(items, l, it)
-     {
-	
-     }
-}
-
 static int
-_cb_sort_down(const void *d1, const void *d2)
-{
-   const Item *it1 = d1;
-   const Item *it2 = d2;
-   return (it1->y < it2->y) ? -1 : 1;
-}
-
-static int
-_cb_sort_right(const void *d1, const void *d2)
-{
-   const Item *it1 = d1;
-   const Item *it2 = d2;
-   return (it1->x < it2->x) ? -1 : 1;
-}
-
-static int
-_shrink()
-{
-   Eina_List *l, *ll;
-   Item *it, *ot;
-   int last_offset, offset;
-   
-   items = eina_list_sort(items, eina_list_count(items), _cb_sort_down); 
-   
-   EINA_LIST_REVERSE_FOREACH(items, l, it)
-     {
-	last_offset = offset = 100;
-	
-	while (last_offset > 10)
-	  {
-	     if (it->y + it->h + last_offset > height)
-	       {
-		  last_offset = height - (it->y + it->h);
-		  continue;
-	       }
-	     
-	     offset = last_offset;
-	     
-	     EINA_LIST_FOREACH(l->next, ll, ot)
-	       {
-		  if (!E_INTERSECTS(it->x, it->y + offset, it->w, it->h,
-				    ot->x, ot->y, ot->w, ot->h))
-		    continue;
-
-		  last_offset = offset / 2;
-		  offset = 0;
-		  break;
-	       }
-	     it->y += offset;
-	  }
-     }
-   items = eina_list_sort(items, eina_list_count(items), _cb_sort_right); 
-   
-   EINA_LIST_REVERSE_FOREACH(items, l, it)
-     {
-	last_offset = offset = 100;
-	
-	while (last_offset > 10)
-	  {
-	     if (it->x + it->w + last_offset > width)
-	       {
-		  last_offset = width - (it->x + it->w);
-		  continue;
-	       }
-	     
-	     offset = last_offset;
-	     
-	     EINA_LIST_FOREACH(l->next, ll, ot)
-	       {
-		  if (!E_INTERSECTS(it->x + offset, it->y, it->w, it->h,
-				    ot->x, ot->y, ot->w, ot->h))
-		    continue;
-
-		  last_offset = offset / 2;
-
-		  offset = 0;
-		  break;
-	       }
-	     it->x += offset;
-	  }
-     }
-}
-#endif
-
-static int
-_shrink()
+_scale_shrink()
 {
    Eina_List *l, *ll;
    Item *it, *ot;
    int shrunk = 0;
-   int off = scale_conf->spacing;
-   
+   int off;
+
+   if (show_all_desks)
+     off = scale_conf->desks_spacing;
+   else
+     off = scale_conf->spacing;
+
    EINA_LIST_REVERSE_FOREACH(items, l, it)
      {
 	double move_x = ((it->x + it->w/2.0) - (double)(it->bd->x + it->bd->w/2.0)) / 10.0;
@@ -573,7 +446,7 @@ _shrink()
 
 	if (!(move_y || move_x))
 	  continue;
-	
+
 	EINA_LIST_FOREACH(items, ll, ot)
 	  {
 	     if (it == ot) continue;
@@ -584,7 +457,7 @@ _shrink()
 				   ot->x - off, ot->y - off, ot->w + off*2, ot->h + off*2))
 		    move_x = move_x / 2.0;
 		  else break;
-	       } 
+	       }
 
 	     while(move_y)
 	       {
@@ -593,10 +466,10 @@ _shrink()
 		    move_y = move_y / 2.0;
 		  else break;
 	       }
-		  
+
 	     if (!(move_y || move_x)) break;
 	  }
-	  
+
 	it->x -= move_x;
 	it->y -= move_y;
 
@@ -608,80 +481,121 @@ _shrink()
 }
 
 static Eina_Bool
-_redraw(void *blah)
+_scale_redraw(void *blah)
 {
    Eina_List *l;
    Item *it;
-   double scale;
-   
-   if (scale_state)
-     scale = (ecore_time_get() - start_time) / scale_conf->scale_duration;
+   double scale, a, in, duration;
+
+   if (show_all_desks)
+     duration = scale_conf->desks_duration;
    else
-     scale = 1.0 - (ecore_time_get() - start_time) / scale_conf->scale_duration;
+     duration = scale_conf->scale_duration;
+
+   if (scale_state)
+     scale = (ecore_time_get() - start_time) / duration;
+   else
+     scale = 1.0 - (ecore_time_get() - start_time) / duration;
 
    if (scale > 1.0) scale = 1.0;
    if (scale < 0.0) scale = 0.0;
-   
-   current_scaling = scale;
+
+   /* in = cos(scale * M_PI_2); */
+
+   in = log(10) * scale;
+   in = 1.0 / exp(in*in);
 
    EINA_LIST_FOREACH(items, l, it)
      {
-	/* it->cw->x = it->bd_x * (1.0 - scale) + it->x * scale;
-	 * it->cw->y = it->bd_y * (1.0 - scale) + it->y * scale; */
-
-	it->cur_w = it->bd->w * (1.0 - scale) + it->w * scale;
-	it->cur_h = it->bd->h * (1.0 - scale) + it->h * scale;
-	it->cur_x = it->bd_x * (1.0 - scale) + it->x * scale;
-	it->cur_y = it->bd_y * (1.0 - scale) + it->y * scale;
-
-	/* printf("resize %d %d\n", it->cur_w, it->cur_h); */
+	it->cur_w = it->bd->w * in + it->w * (1.0 - in);
+	it->cur_h = it->bd->h * in + it->h * (1.0 - in);
+	it->cur_x = it->bd_x  * in + it->x * (1.0 - in);
+	it->cur_y = it->bd_y  * in + it->y * (1.0 - in);
 
 	evas_object_move(it->o, it->cur_x, it->cur_y);
 	evas_object_resize(it->o, it->cur_w, it->cur_h);
+
+	evas_object_move(it->o_win, it->cur_x, it->cur_y);
+	evas_object_resize(it->o_win, it->cur_w, it->cur_h);
+
+	a = 255.0 * (1.0 - in);
+	evas_object_color_set(it->o, a, a, a, a);
+
+	if (!scale_conf->fade_windows)
+	  continue;
+
+	if ((it->bd->desk != current_desk) && (selected_item != it))
+	  {
+	     double ax = it->cur_x - it->x;
+	     double ay = it->cur_y - it->y;
+	     double bx = it->bd_x  - it->x;
+	     double by = it->bd_y  - it->y;
+
+	     a = (1.0 - sqrt(ax*ax + ay*ay) / sqrt(bx*bx + by*by)) * 255;
+	  }
+	else
+	  {
+	     a = 255.0;
+	  }
+
+	it->alpha = a;
+	evas_object_color_set(it->o_win, a, a, a, a);
      }
 
-   double a = 255.0 * (1.0 - scale);
-   
-   EINA_LIST_FOREACH(popups, l, it)
-     evas_object_color_set(it->o, a, a, a, a);
+   if (scale_conf->fade_popups)
+     {
+	a = 255.0 * in;
 
-   /* e = e_manager_comp_evas_get(e_manager_current_get()); */
-   
+	EINA_LIST_FOREACH(popups, l, it)
+	  evas_object_color_set(it->o_win, a, a, a, a);
+     }
+
+   if (scale_conf->fade_desktop && background)
+     {
+	a = 255.0 * (0.5 + in/2.0);
+
+	evas_object_color_set(background->o_win, a, a, a, 255);
+     }
+
+   e_manager_comp_evas_update(e_manager_current_get());
+
    if (scale < 1.0 && scale > 0.0)
      return 1;
 
-   
    if (scale == 0.0)
      _scale_finish();
 
    scale_animator = NULL;
-   
    return 0;
 }
-
 
 static void
 _scale_in()
 {
    start_time = ecore_time_get();
    scale_state = EINA_TRUE;
-   
+
    if (!scale_animator)
-     scale_animator = ecore_animator_add(_redraw, NULL);
+     scale_animator = ecore_animator_add(_scale_redraw, NULL);
 }
 
 static void
 _scale_out()
 {
-   double now = ecore_time_get();
-   
-   if (now - start_time < scale_conf->scale_duration)
-     start_time = now - (scale_conf->scale_duration - (now - start_time));
+   double duration, now = ecore_time_get();
+
+   if (show_all_desks)
+     duration = scale_conf->desks_duration;
+   else
+     duration = scale_conf->scale_duration;
+
+   if (now - start_time < duration)
+     start_time = now - (duration - (now - start_time));
    else
      start_time = now;
 
    if (!scale_animator)
-     scale_animator = ecore_animator_add(_redraw, NULL);
+     scale_animator = ecore_animator_add(_scale_redraw, NULL);
 
    scale_state = EINA_FALSE;
 }
@@ -691,29 +605,69 @@ _scale_finish()
 {
    Ecore_Event_Handler *handler;
    Item *it;
+   E_Desk *desk;
+
    e_grabinput_release(input_win, input_win);
    ecore_x_window_free(input_win);
    input_win = 0;
 
-   E_Zone *zone = e_util_zone_current_get(e_manager_current_get());
-   E_Desk *desk = e_desk_current_get(zone);
+   desk = e_desk_current_get(zone);
+
+   if (selected_item &&  selected_item->bd->desk != desk)
+     {
+	if (send_to_desk)
+	  {
+	     e_border_desk_set(selected_item->bd, desk); 
+	  }
+	else
+	  {
+	     int tmp = e_config->desk_flip_animate_mode;
+
+	     desk = selected_item->bd->desk;
+
+	     e_config->desk_flip_animate_mode = 0;
+	     e_desk_show(desk);
+	     e_config->desk_flip_animate_mode = tmp;
+	  }
+     }
 
    EINA_LIST_FREE(items, it)
      {
+	evas_object_event_callback_del(it->o_win, EVAS_CALLBACK_DEL, _scale_win_delorig);
+	evas_object_intercept_move_callback_del(it->o_win, _scale_win_cb_intercept_move);
+	evas_object_intercept_resize_callback_del(it->o_win, _scale_win_cb_intercept_resize);
+	evas_object_intercept_color_set_callback_del(it->o_win, _scale_win_cb_intercept_color);
+	evas_object_intercept_layer_set_callback_del(it->o_win, _scale_win_cb_intercept_layer);
+
+	/* evas_object_clip_unset(it->o_win); */
+	/* edje_object_part_unswallow(it->o, it->o_win);  */
+	evas_object_del(it->o);
+
 	if (it->bd->desk != desk)
-	  e_border_hide(it->bd, 2);
+	  {
+	     e_border_hide(it->bd, 2);
+	     evas_object_hide(it->o_win);
+	     evas_object_color_set(it->o_win, 255, 255, 255, 255);
+	     evas_object_move(it->o_win, it->bd->x, it->bd->y);
+	     evas_object_resize(it->o_win, it->cw->w, it->cw->h);
+	  }
 
-	evas_object_event_callback_del(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig);
-
-	evas_object_intercept_move_callback_del(it->o, _scale_win_cb_intercept_move);
-	evas_object_intercept_resize_callback_del(it->o, _scale_win_cb_intercept_resize); 
-
+	e_object_unref(E_OBJECT(it->bd));
 	E_FREE(it);
      }
 
    EINA_LIST_FREE(popups, it)
      {
-	evas_object_event_callback_del(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig);
+	evas_object_event_callback_del(it->o_win, EVAS_CALLBACK_DEL, _scale_win_delorig);
+	evas_object_color_set(it->o_win, 255, 255, 255, 255);
+	E_FREE(it);
+     }
+
+   if (scale_conf->fade_desktop && background)
+     {
+	it = background;
+	evas_object_event_callback_del(it->o_win, EVAS_CALLBACK_DEL, _scale_win_delorig);
+	evas_object_color_set(it->o_win, 255, 255, 255, 255);
 	E_FREE(it);
      }
 
@@ -722,6 +676,11 @@ _scale_finish()
 
    e_msg_handler_del(msg_handler);
    msg_handler = NULL;
+   zone = NULL;
+   selected_item = NULL;
+   current_desk = NULL;
+   send_to_desk = EINA_FALSE;
+   show_all_desks = EINA_FALSE;
 
    e_manager_comp_evas_update(e_manager_current_get());
 }
@@ -731,17 +690,29 @@ _scale_win_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Item *it = data;
 
-   items = eina_list_remove(items, it);
-   popups = eina_list_remove(popups, it);
-
-   evas_object_intercept_move_callback_del(it->o, _scale_win_cb_intercept_move);
-   evas_object_intercept_resize_callback_del(it->o, _scale_win_cb_intercept_resize); 
-
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig);
+   evas_object_event_callback_del(it->o_win, EVAS_CALLBACK_DEL, _scale_win_delorig);
 
    if (it->bd)
-     _scale_out();
-   
+     {
+	e_object_unref(E_OBJECT(it->bd));
+	_scale_out();
+
+	evas_object_intercept_move_callback_del(it->o_win, _scale_win_cb_intercept_move);
+	evas_object_intercept_resize_callback_del(it->o_win, _scale_win_cb_intercept_resize);
+	evas_object_intercept_color_set_callback_del(it->o_win, _scale_win_cb_intercept_color);
+	evas_object_intercept_layer_set_callback_del(it->o_win, _scale_win_cb_intercept_layer);
+
+	/* evas_object_clip_unset(it->o_win); */
+	/* edje_object_part_unswallow(it->o, it->o_win); */
+	evas_object_del(it->o);
+
+	items = eina_list_remove(items, it);
+     }
+   else
+     {
+	popups = eina_list_remove(popups, it);
+     }
+
    E_FREE(it);
 }
 
@@ -759,8 +730,23 @@ _scale_win_cb_intercept_resize(void *data, Evas_Object *obj, Evas_Coord w, Evas_
    Item *it = data;
 
    evas_object_resize(obj, it->cur_w, it->cur_h);
+}
 
-   e_manager_comp_evas_update(e_manager_current_get());
+static void
+_scale_win_cb_intercept_color(void *data, Evas_Object *obj, int r, int g, int b, int a)
+{
+   Item *it = data;
+
+   evas_object_color_set(obj, it->alpha, it->alpha, it->alpha, it->alpha);
+}
+
+static void
+_scale_win_cb_intercept_layer(void *data, Evas_Object *obj, int l)
+{
+   Item *it = data;
+
+   evas_object_layer_set(it->o_win, l);
+   evas_object_stack_above(it->o, it->o_win);
 }
 
 static void
@@ -772,19 +758,36 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 
    E_Comp_Win *cw = (void*)src;
 
-   if (cw->pop)
+   if (!cw->bd)
      {
-   	it = E_NEW(Item, 1);
-   	it->o = e_manager_comp_src_shadow_get(man, src);
-	evas_object_event_callback_add(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig, it);
+	if (cw->win == zone->container->bg_win)
+	  {
+	     if (scale_conf->fade_desktop)
+	       {
+		  it = E_NEW(Item, 1);
+		  it->o_win = e_manager_comp_src_shadow_get(man, src);
+		  evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL, _scale_win_delorig, it);
+		  background = it;
+	       }
+	  }
+	else if (scale_conf->fade_popups)
+	  {
+	     it = E_NEW(Item, 1);
+	     it->o_win = e_manager_comp_src_shadow_get(man, src);
+	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL, _scale_win_delorig, it);
 
-   	popups = eina_list_append(popups, it);
+	     popups = eina_list_append(popups, it);
+	  }
+
    	return;
      }
-   
+
    if (!cw->bd) return;
-   
-   if (cw->bd->desk != desk)
+
+   if (cw->bd->zone != desk->zone)
+     return;
+
+   if ((!show_all_desks) && (cw->bd->desk != desk))
      return;
 
    if (cw->bd->iconic)
@@ -792,33 +795,51 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 
    it = E_NEW(Item, 1);
    it->scale = 1.0;
-   it->x = cw->bd->x + (cw->bd->desk->x - desk->x) * width;
-   it->y = cw->bd->y + (cw->bd->desk->y - desk->y) * height;
+
+   it->dx = cw->bd->desk->x - desk->x;
+   it->dy = cw->bd->desk->y - desk->y;
+
+   it->x = cw->bd->x + it->dx * desk->zone->w;
+   it->y = cw->bd->y + it->dy * desk->zone->h;
+   it->w = cw->bd->w;
+   it->h = cw->bd->h;
 
    it->bd_x = it->x;
    it->bd_y = it->y;
-
-   it->w = cw->bd->w;
-   it->h = cw->bd->h;
 
    it->cur_x = it->x;
    it->cur_y = it->y;
    it->cur_w = it->w;
    it->cur_h = it->h;
 
+   e_object_ref(E_OBJECT(cw->bd));
    it->bd = cw->bd;
    it->cw = cw;
-   it->o = e_manager_comp_src_shadow_get(man, src);
-   
-   evas_object_event_callback_add(it->o, EVAS_CALLBACK_DEL, _scale_win_delorig, it);
 
-   evas_object_intercept_move_callback_add(it->o, _scale_win_cb_intercept_move, it);
-   evas_object_intercept_resize_callback_add(it->o, _scale_win_cb_intercept_resize, it); 
+   it->o_win = e_manager_comp_src_shadow_get(man, src);
+   it->o = edje_object_add(e);
+   if (!e_theme_edje_object_set(it->o, "base/theme/modules/scale",
+                                "modules/scale/win"))
+     edje_object_file_set(it->o, scale_conf->theme_path, "modules/scale/win");
+
+   evas_object_stack_above(it->o, it->o_win);
+   /* edje_object_part_swallow(it->o, "e.swallow.win", it->o_win); */
+   /* evas_object_clip_set(it->o_win, it->o);
+    * evas_object_move(it->o, it->x, it->y); */
+
+   evas_object_show(it->o);
+
+   evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL, _scale_win_delorig, it);
+
+   evas_object_intercept_move_callback_add(it->o_win, _scale_win_cb_intercept_move, it);
+   evas_object_intercept_resize_callback_add(it->o_win, _scale_win_cb_intercept_resize, it);
+   evas_object_intercept_color_set_callback_add(it->o_win, _scale_win_cb_intercept_color, it);
+   evas_object_intercept_layer_set_callback_add(it->o_win, _scale_win_cb_intercept_layer, it);
 
    if (it->bd->desk != desk)
      {
 	e_border_show(it->bd);
-  	evas_object_move(it->o, it->x, it->y);
+  	evas_object_move(it->o_win, it->x, it->y);
      }
 
    items = eina_list_append(items, it);
@@ -830,25 +851,28 @@ _cb_sort_center(const void *d1, const void *d2)
    const Item *it1 = d1;
    const Item *it2 = d2;
 
-   double dx1 = ((it1->x + it1->w/2.0) - (double)(width/2));
-   double dy1 = ((it1->y + it1->h/2.0) - (double)(height/2));
+   double dx1 = ((it1->bd_x + it1->w/2.0) - (double)(max_width/2));
+   double dy1 = ((it1->bd_y + it1->h/2.0) - (double)(max_height/2));
 
-   double dx2 = ((it2->x + it2->w/2.0) - (double)(width/2));
-   double dy2 = ((it2->y + it2->h/2.0) - (double)(height/2));
-   
+   double dx2 = ((it2->bd_x + it2->w/2.0) - (double)(max_width/2));
+   double dy2 = ((it2->bd_y + it2->h/2.0) - (double)(max_height/2));
+
    return (sqrt(dx1*dx1 + dy1*dy1) < sqrt(dx2*dx2 + dy2*dy2)) ? -1 : 1;
 }
 
 void
 scale_run(E_Manager *man)
 {
-   Eina_List *list, *l;
+   Eina_List *l;
    E_Manager_Comp_Source *src;
    Evas *e;
-   int i, spacing;
+   int i, spacing, use_x, use_y, use_w, use_h;
 
-   E_Zone *zone = e_util_zone_current_get(e_manager_current_get());
-   E_Desk *desk = e_desk_current_get(zone);
+   zone = e_util_zone_current_get(e_manager_current_get());
+   current_desk = e_desk_current_get(zone);
+   Item *it;
+
+   start_time = ecore_time_get();
 
    input_win = ecore_x_window_input_new(zone->container->win, 0, 0, 1, 1);
    ecore_x_window_show(input_win);
@@ -858,99 +882,272 @@ scale_run(E_Manager *man)
 	input_win = 0;
 	return;
      }
-   e_zone_useful_geometry_get(zone, &min_x, &min_y, &width, &height);
 
    handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (ECORE_EVENT_MOUSE_BUTTON_DOWN, _scale_cb_mouse_down, NULL));
 
+   handlers = eina_list_append
+     (handlers, ecore_event_handler_add
+      (ECORE_EVENT_MOUSE_MOVE, _scale_cb_mouse_move, NULL));
+
    e = e_manager_comp_evas_get(man);
 
-   list = (Eina_List *)e_manager_comp_src_list(man);
-   EINA_LIST_FOREACH(list, l, src)
-     _scale_win_new(e, man, src, desk);
+   if (show_all_desks)
+     spacing = scale_conf->desks_spacing;
+   else
+     spacing = scale_conf->spacing;
 
-   items = eina_list_sort(items, eina_list_count(items), _cb_sort_center); 
+   EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
+     {
+	_scale_win_new(e, man, src, current_desk);
+     }
 
-   max_x = width;
-   max_y = height;
-
-   start_time = ecore_time_get();
-   
-   step_count = 0;
-   i = 0;
-   spacing = scale_conf->spacing;
-   
-   if (scale_conf->grow && (spacing < 48)) spacing = 48;
-   if (scale_conf->tight && (spacing < 48)) spacing = 48;
-
-   while (i++ < 10000 && _place(spacing));
-
-   DBG("place %d\n", i);
-
-   if (i == 1)
+   if ((eina_list_count(items) < 2) && (!show_all_desks))
      {
 	_scale_finish();
 	return;
      }
+   if (!scale_conf->fade_popups)
+     {
+	e_zone_useful_geometry_get(zone, &use_x, &use_y, &use_w, &use_h);
+	use_x += spacing;
+	use_y += spacing;
+	use_w += use_x - spacing*2;
+	use_h += use_y - spacing*2;
+     }
+   else
+     {
+	use_x = use_y = spacing;
+	use_w = zone->w - spacing*2;
+	use_h = zone->h - spacing*2;
+     }
+
+   max_width  = zone->w;
+   max_height = zone->h;
+
+   if (show_all_desks)
+     {
+	max_width  = zone->h * zone->desk_x_count;
+	max_height = zone->w * zone->desk_y_count;
+     }
+
+   min_x = -zone->w * zone->desk_x_current;
+   min_y = -zone->h * zone->desk_y_current;
+   max_x =  zone->w + zone->w * ((zone->desk_x_count - 1) - zone->desk_x_current);
+   max_y =  zone->h + zone->h * ((zone->desk_y_count - 1) - zone->desk_y_current);
+
+   items = eina_list_sort(items, eina_list_count(items), _cb_sort_center);
+
+   step_count = 0;
+   i = 0;
+
+   if (scale_conf->grow && (spacing < SPACING))
+     spacing = SPACING;
+   if (scale_conf->tight && (spacing < SPACING))
+     spacing = SPACING;
+
+   while ((i++ < PLACE_RUNS) &&
+	  (_scale_place(spacing) ||
+	   (min_x < use_x) ||
+	   (min_y < use_y) ||
+	   (max_x > use_w) ||
+	   (max_y > use_h)))
+     {
+	/* shrink region to visible region */
+	if (min_x < use_x) min_x += 2;
+	if (min_y < use_y) min_y += 2;
+	if (min_x > use_x) min_x = use_x;
+	if (min_y > use_y) min_y = use_y;
+
+	if (max_x > use_w) max_x -= 2;
+	if (max_y > use_h) max_y -= 2;
+	if (max_x < use_w) max_x = use_w;
+	if (max_y < use_h) max_y = use_h;
+
+	if (!show_all_desks)
+	  continue;
+
+	/* move other desks windows into visible region */
+	EINA_LIST_FOREACH(items, l, it)
+	  {
+	     if ((min_x < use_x) && (it->dx < 0) && it->x < 0) it->x += 4.0;
+	     if ((min_y < use_y) && (it->dy < 0) && it->y < 0) it->y += 4.0;
+
+	     if ((max_x > use_w) && (it->dx > 0) && it->x > zone->w) it->x -= 4.0;
+	     if ((max_y > use_h) && (it->dy > 0) && it->y > zone->h) it->y -= 4.0;
+	  }
+     }
+
+   DBG("place %d\n", i);
 
    if (scale_conf->grow)
-     {	
+     {
 	i = 0;
-   	while (i++ < 1000 && _grow());
+   	while (i++ < GROW_RUNS && _scale_grow());
 	DBG("grow %d", i);
      }
 
    if (scale_conf->tight)
      {
 	i = 0;
-	while (i++ < 1000 && _shrink());
+	while (i++ < SHRINK_RUNS && _scale_shrink());
 	DBG("shrunk %d", i);
+
+	if (scale_conf->grow)
+	  {
+	     i = 0;
+	     while (i++ < GROW_RUNS && _scale_grow());
+	     DBG("grow %d", i);
+	  }
+
      }
-   
+
+   if (show_all_desks)
+     {
+	/* center and move windows near visible desk
+	 * to make the sliding smoother */
+
+	min_x = zone->w;
+	min_y = zone->h;
+	max_x = 0;
+	max_y = 0;
+
+	EINA_LIST_FOREACH(items, l, it)
+	  {
+	     if (it->x < min_x) min_x = it->x;
+	     if (it->y < min_y) min_y = it->y;
+	     if (it->x + it->w > max_x) max_x = it->x + it->w;
+	     if (it->y + it->h > max_y) max_y = it->y + it->h;
+	  }
+
+	EINA_LIST_FOREACH(items, l, it)
+	  {
+	     it->x = it->x - min_x + (use_w - (max_x - min_x))/2;
+	     it->y = it->y - min_y + (use_h - (max_y - min_y))/2;
+
+	     if (it->dx > 0) it->bd_x =   zone->w + it->bd->x/4;
+	     if (it->dy > 0) it->bd_y =   zone->h + it->bd->y/4;
+	     if (it->dx < 0) it->bd_x = -(zone->w - it->bd->x)/4;
+	     if (it->dy < 0) it->bd_y = -(zone->h + it->bd->y)/4;
+	  }
+     }
+
    DBG("time: %f\n", ecore_time_get() - start_time);
 
-   _scale_in();   
+   _scale_in();
 }
 
 
 static Eina_Bool
-_scale_cb_mouse_down(void *data, int type, void *event)
+_scale_cb_mouse_move(void *data, int type, void *event)
 {
-   Ecore_Event_Mouse_Button *ev;
+   Ecore_Event_Mouse_Move *ev = event;
    Item *it;
    Eina_List *l;
 
-   ev = event;
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
 
    if (!scale_state)
      return ECORE_CALLBACK_PASS_ON;
-   
+
    EINA_LIST_FOREACH(items, l, it)
+     if (E_INTERSECTS(ev->x, ev->y, 1, 1, it->x, it->y, it->w, it->h))
+       break;
+
+   if (selected_item && (it != selected_item))
      {
-	if (E_INTERSECTS(ev->x, ev->y, 1, 1, it->x, it->y, it->w, it->h))
+	edje_object_signal_emit(selected_item->o, "mouse,out", "e");
+	selected_item = NULL;
+     }
+
+   if (it)
+     {
+	edje_object_signal_emit(it->o, "mouse,in", "e");
+	selected_item = it;
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_scale_cb_mouse_down(void *data, int type, void *event)
+{
+   Ecore_Event_Mouse_Button *ev = event;
+   Item *it, *ot;
+   Eina_List *l;
+
+   if (ev->window != input_win)
+     return ECORE_CALLBACK_PASS_ON;
+
+   if (!scale_state)
+     return ECORE_CALLBACK_PASS_ON;
+
+   EINA_LIST_FOREACH(items, l, it)
+     if (E_INTERSECTS(ev->x, ev->y, 1, 1, it->x, it->y, it->w, it->h))
+       break;
+
+   if (!it)
+     {
+	_scale_out();
+	return ECORE_CALLBACK_PASS_ON;
+     }
+
+   e_border_raise(it->bd);
+
+   
+   if (it->bd->desk != e_desk_current_get(it->bd->zone))
+     {
+	if (ev->buttons == 1)
 	  {
-	     e_border_raise(it->bd);
-	     break;
+	     selected_item = it;
+	     current_desk = it->bd->desk;
+
+	     EINA_LIST_FOREACH(items, l, ot)
+	       {
+		  if (ot->bd->desk == it->bd->desk)
+		    {
+		       ot->bd_x = ot->bd->x;
+		       ot->bd_y = ot->bd->y;
+		    }
+		  else
+		    {
+		       if (ot->dx > it->dx)
+			 ot->bd_x = ot->bd->x + zone->w;
+		       else if (ot->dx < it->dx)
+			 ot->bd_x = ot->bd->x - zone->w;
+
+		       if (ot->dy > it->dy)
+			 ot->bd_y = ot->bd->y + zone->h;
+		       else if (ot->dy < it->dy)
+			 ot->bd_y = ot->bd->y - zone->h;
+		    }
+	       }
+	  }
+	else if (ev->buttons == 3)
+	  {
+	     send_to_desk = EINA_TRUE;
+	     selected_item = it;
+	     it->bd_x = it->bd->x;
+	     it->bd_y = it->bd->y;	     
 	  }
      }
 
    _scale_out();
-   
+
    return ECORE_CALLBACK_PASS_ON;
 }
 
 static void
 _scale_handler(void *data, const char *name, const char *info, int val,
-        E_Object *obj, void *msgdata)
+	       E_Object *obj, void *msgdata)
 {
    E_Manager *man = (E_Manager *)obj;
    E_Manager_Comp_Source *src = (E_Manager_Comp_Source *)msgdata;
    Evas *e;
 
-   DBG("handler... '%s' '%s'\n", name, info);
+   /* DBG("handler... '%s' '%s'\n", name, info); */
    if (strcmp(name, "comp.manager")) return;
 
    e = e_manager_comp_evas_get(man);
@@ -967,7 +1164,7 @@ _scale_handler(void *data, const char *name, const char *info, int val,
      {
         /* DBG("%s: %p | %p\n", info, man, src); */
         _scale_win_new(e, man, src, e_desk_current_get(e_util_zone_current_get(man)));
-	
+
      }
    else if (!strcmp(info, "del.src"))
      {
@@ -978,10 +1175,10 @@ _scale_handler(void *data, const char *name, const char *info, int val,
 
         DBG("%s: %p | %p\n", info, man, src);
      }
-   else if (!strcmp(info, "visible.src"))
-     {
-        DBG("%s: %p | %p\n", info, man, src);
-     }
+   /* else if (!strcmp(info, "visible.src"))
+    *   {
+    *      DBG("%s: %p | %p\n", info, man, src);
+    *   } */
 }
 
 static void
@@ -992,6 +1189,12 @@ _e_mod_action_cb_edge(E_Object *obj, const char *params, E_Event_Zone_Edge *ev)
 
    msg_handler = e_msg_handler_add(_scale_handler, NULL);
    list = e_manager_list();
+
+   if (params && !strcmp(params, "show_all_desks"))
+     show_all_desks = EINA_TRUE;
+   else
+     show_all_desks = EINA_FALSE;
+
    EINA_LIST_FOREACH(list, l, man)
      {
         Evas *e = e_manager_comp_evas_get(man);
@@ -1007,6 +1210,12 @@ _e_mod_action_cb(E_Object *obj, const char *params)
 
    msg_handler = e_msg_handler_add(_scale_handler, NULL);
    list = e_manager_list();
+
+   if (params && !strcmp(params, "show_all_desks"))
+     show_all_desks = EINA_TRUE;
+   else
+     show_all_desks = EINA_FALSE;
+
    EINA_LIST_FOREACH(list, l, man)
      {
         Evas *e = e_manager_comp_evas_get(man);
@@ -1075,8 +1284,14 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, version, INT);
    E_CONFIG_VAL(D, T, grow, UCHAR);
    E_CONFIG_VAL(D, T, tight, UCHAR);
+   E_CONFIG_VAL(D, T, fade_popups, UCHAR);
+   E_CONFIG_VAL(D, T, fade_desktop, UCHAR);
+   E_CONFIG_VAL(D, T, fade_windows, UCHAR);
+   E_CONFIG_VAL(D, T, fade_desktop, UCHAR);
    E_CONFIG_VAL(D, T, scale_duration, DOUBLE);
    E_CONFIG_VAL(D, T, spacing, DOUBLE);
+   E_CONFIG_VAL(D, T, desks_duration, DOUBLE);
+   E_CONFIG_VAL(D, T, desks_spacing, DOUBLE);
    E_CONFIG_LIST(D, T, conf_items, conf_item_edd);
 
    scale_conf = e_config_domain_load("module.scale", conf_edd);
@@ -1088,10 +1303,14 @@ e_modapi_init(E_Module *m)
 					MOD_CONFIG_FILE_VERSION))
 	  _scale_conf_free();
      }
-   
+
    if (!scale_conf) _scale_conf_new();
 
    scale_conf->module = m;
+
+   snprintf(buf, sizeof(buf), "%s/e-module-scale.edj",
+            scale_conf->module->dir);
+   scale_conf->theme_path = eina_stringshare_add(buf);
 
    e_gadcon_provider_register(&_gc_class);
 
@@ -1101,6 +1320,7 @@ e_modapi_init(E_Module *m)
 	act->func.go = _e_mod_action_cb;
 	act->func.go_edge = _e_mod_action_cb_edge;
 	e_action_predef_name_set(D_("Desktop"), D_("Scale Windows"), "scale-windows", "", NULL, 0);
+	e_action_predef_name_set(D_("Desktop"), D_("Scale Windows / All Desktops"), "scale-windows", "show_all_desks", NULL, 0);
      }
 
    return m;
@@ -1132,6 +1352,7 @@ e_modapi_shutdown(E_Module *m)
         E_FREE(ci);
      }
 
+   eina_stringshare_del(scale_conf->theme_path);
    E_FREE(scale_conf);
 
    E_CONFIG_DD_FREE(conf_item_edd);
@@ -1158,10 +1379,6 @@ static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Instance *inst = NULL;
-   char buf[4096];
-
-   snprintf(buf, sizeof(buf), "%s/e-module-scale.edj",
-            scale_conf->module->dir);
 
    inst = E_NEW(Instance, 1);
    inst->conf_item = _scale_conf_item_get(id);
@@ -1170,7 +1387,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    if (!e_theme_edje_object_set(inst->o_scale, "base/theme/modules/scale",
                                 "modules/scale/main"))
-     edje_object_file_set(inst->o_scale, buf, "modules/scale/main");
+     edje_object_file_set(inst->o_scale, scale_conf->theme_path, "modules/scale/main");
 
    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_scale);
    inst->gcc->data = inst;
@@ -1232,13 +1449,10 @@ static Evas_Object *
 _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o = NULL;
-   char buf[4096];
-
-   snprintf(buf, sizeof(buf), "%s/e-module-scale.edj", scale_conf->module->dir);
 
    o = edje_object_add(evas);
 
-   edje_object_file_set(o, buf, "icon");
+   edje_object_file_set(o, scale_conf->theme_path, "icon");
 
    return o;
 }
@@ -1246,18 +1460,22 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 static void
 _scale_conf_new(void)
 {
-
    scale_conf = E_NEW(Config, 1);
    scale_conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
 #define IFMODCFG(v) if ((scale_conf->version & 0xffff) < v) {
 #define IFMODCFGEND }
 
-   IFMODCFG(0x008d);
+   IFMODCFG(0x0001);
    scale_conf->grow = 0;
    scale_conf->tight = 1;
-   scale_conf->scale_duration = 0.3;
-   scale_conf->spacing = 32;
+   scale_conf->scale_duration = 0.4;
+   scale_conf->spacing = 6;
+   scale_conf->fade_windows = 1;
+   scale_conf->fade_popups = 0;
+   scale_conf->fade_desktop = 1;
+   scale_conf->desks_duration = 0.6;
+   scale_conf->desks_spacing = 25;
    _scale_conf_item_get(NULL);
    IFMODCFGEND;
 
@@ -1323,11 +1541,16 @@ _scale_gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
    if (!(inst = data)) return;
    ev = event;
+
    if (ev->button == 1)
      {
-	_e_mod_action_cb_edge(NULL, NULL, NULL);
+	_e_mod_action_cb(NULL, NULL);
      }
-   else if ((ev->button == 3) && (!inst->menu)) 
+   else if (ev->button == 2)
+     {
+	_e_mod_action_cb(NULL, "show_all_desks");
+     }
+   else if ((ev->button == 3) && (!inst->menu))
      {
         E_Menu *ma, *mg;
 
@@ -1345,13 +1568,13 @@ _scale_gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         e_menu_item_callback_set(mi, _scale_gc_cb_menu_configure, NULL);
 
         e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
-        e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, 
+        e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y,
                                           NULL, NULL);
 
-        e_menu_activate_mouse(ma, zone, (x + ev->output.x), 
-                              (y + ev->output.y), 1, 1, 
+        e_menu_activate_mouse(ma, zone, (x + ev->output.x),
+                              (y + ev->output.y), 1, 1,
                               E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
-        evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button, 
+        evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
                                  EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }
 }
@@ -1375,3 +1598,4 @@ _scale_gc_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi)
    if (scale_conf->cfd) return;
    e_int_config_scale_module(mn->zone->container, NULL);
 }
+

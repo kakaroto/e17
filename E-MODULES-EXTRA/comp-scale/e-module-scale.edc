@@ -1,89 +1,163 @@
 images 
 {
-   image: "module_icon.png" COMP;
+	image: "module_icon.png" COMP;
 }
 
 collections 
 {
-   group 
-     {
-	name: "icon";
-	max: 24 24;
-	parts 
-	  {
-	     part 
-	       {
-		  name: "image";
-		  mouse_events: 0;
-		  type: IMAGE;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       image.normal: "module_icon.png";
-		    }
-	       }
-	  }
-     }
-   group 
-     {
-	name: "modules/scale/main";
-	max: 128 128;
-	parts 
-	  {
-	     part 
-	       {
-		  name: "icon";
-		  mouse_events: 0;
-		  type: IMAGE;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       aspect: 1.0 1.0;
-		       aspect_preference: BOTH;
-		       rel1.offset: 2 2;
-		       rel2.offset: -3 -3;
-		       image.normal: "module_icon.png";
-		    }
-		  description 
-		    {
-		       state: "bigger" 0.0;
-		       inherit: "default" 0.0;
-		       rel1.offset: -2 -2;
-		       rel2.offset: 3 3;
-		    }
-	       }
-	     part 
-	       {
-		  name: "event";
-		  mouse_events: 1;
-		  type: RECT;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       color: 255 255 255 0;
-		    }
-	       }
-	  }
-	programs 
-	  {
-	     program 
-	       {
-		  name: "mouse_in";
-		  signal: "mouse,in";
-		  source: "event";
-		  action: STATE_SET "bigger" 0.0;
-		  transition: LINEAR 0.1;
-		  target: "icon";
-	       }
-	     program 
-	       {
-		  name: "mouse_out";
-		  signal: "mouse,out";
-		  source: "event";
-		  action: STATE_SET "default" 0.0;
-		  transition: LINEAR 0.2;
-		  target: "icon";
-	       }
-	  }
-     }
+	group {
+		name: "icon";
+		max: 128 128;
+		parts {
+			part {
+				name: "image";
+				mouse_events: 0;
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					image.normal: "module_icon.png";
+				}
+			}
+		}
+	}
+	group {
+		name: "modules/scale/main";
+		max: 128 128;
+		parts {
+			part {
+				name: "icon";
+				mouse_events: 0;
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					aspect: 1.0 1.0;
+					aspect_preference: BOTH;
+					rel1.offset: 2 2;
+					rel2.offset: -3 -3;
+					image.normal: "module_icon.png";
+				}
+				description {
+					state: "bigger" 0.0;
+					inherit: "default" 0.0;
+					rel1.offset: -2 -2;
+					rel2.offset: 3 3;
+				}
+			}
+			part {
+				name: "event";
+				mouse_events: 1;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 0;
+				}
+			}
+		}
+		programs {
+			program {
+				name: "mouse_in";
+				signal: "mouse,in";
+				source: "event";
+				action: STATE_SET "bigger" 0.0;
+				transition: LINEAR 0.1;
+				target: "icon";
+			}
+			program {
+				name: "mouse_out";
+				signal: "mouse,out";
+				source: "event";
+				action: STATE_SET "default" 0.0;
+				transition: LINEAR 0.2;
+				target: "icon";
+			}
+		}
+	}
+	
+	group {
+		name: "modules/scale/win";
+
+		parts {
+			
+			part {
+				name: "e.swallow.win";
+				type: RECT;
+				mouse_events: 1;
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 0;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: -1 -1;
+					}
+					
+				}
+				description {
+					state: "focused" 0.0;
+					color: 255 255 255 80;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: -1 -1;
+					}
+				}
+			}
+
+			/* part {
+			 * 	name: "icon";
+			 * 	mouse_events: 0;
+			 * 	type: IMAGE;
+			 * 	description {
+			 * 		state: "default" 0.0;
+			 * 		aspect: 1.0 1.0;
+			 * 		aspect_preference: BOTH;
+			 * 		rel1.relative;
+			 * 		
+			 * 		rel1.offset: 2 2;
+			 * 		rel2.offset: -3 -3;
+			 * 		image.normal: "module_icon.png";
+			 * 	}
+			 * 	description {
+			 * 		state: "bigger" 0.0;
+			 * 		inherit: "default" 0.0;
+			 * 		rel1.offset: -2 -2;
+			 * 		rel2.offset: 3 3;
+			 * 	}
+			 * } */
+			/* part {
+			 * 	name: "event";
+			 * 	mouse_events: 1;
+			 * 	type: RECT;
+			 * 	description {
+			 * 		state: "default" 0.0;
+			 * 		color: 255 255 255 100;
+			 * 	}
+			 * } */
+		}
+		programs {
+			program {
+				name: "mouse_in";
+				signal: "mouse,in";
+				source: "e";
+				action: STATE_SET "focused" 0.0;
+				transition: SINUSOIDAL 0.3;
+				target: "e.swallow.win";
+			}
+			program {
+				name: "mouse_out";
+				signal: "mouse,out";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				transition: SINUSOIDAL 0.4;
+				target: "e.swallow.win";
+			}
+		}
+
+	}
 }

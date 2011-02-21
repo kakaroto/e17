@@ -7,6 +7,11 @@ struct _E_Config_Dialog_Data
   int		tight;
   double	duration;
   double	spacing;
+  double	desks_duration;
+  double	desks_spacing;
+  int		fade_popups;
+  int		fade_desktop;
+  int		fade_windows;
 };
 
 
@@ -38,7 +43,7 @@ e_int_config_scale_module(E_Container *con, const char *params)
    cfd = e_config_dialog_new(con, D_("Scale Windows Module"), "Scale",
                              "appearance/comp-scale", buf, 0, v, NULL);
 
-   e_dialog_resizable_set(cfd->dia, 1);
+   e_dialog_resizable_set(cfd->dia, 0);
    scale_conf->cfd = cfd;
    return cfd;
 }
@@ -63,21 +68,33 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void
 _fill_data(E_Config_Dialog_Data *cfdata)
 {
-   cfdata->tight    = scale_conf->tight;
-   cfdata->grow	    = scale_conf->grow;
-   cfdata->duration = scale_conf->scale_duration;
-   cfdata->spacing  = scale_conf->spacing;
+   cfdata->tight	  = scale_conf->tight;
+   cfdata->grow		  = scale_conf->grow;
+   cfdata->duration	  = scale_conf->scale_duration;
+   cfdata->spacing	  = scale_conf->spacing;
+   cfdata->desks_duration = scale_conf->desks_duration;
+   cfdata->desks_spacing  = scale_conf->desks_spacing;
+   cfdata->fade_popups	  = scale_conf->fade_popups;
+   cfdata->fade_desktop	  = scale_conf->fade_desktop;
+   cfdata->fade_windows	  = scale_conf->fade_windows;
+   cfdata->fade_desktop	  = scale_conf->fade_desktop;
 }
 
 static void
 _cb_test(void *data, void *data2)
 {
    E_Config_Dialog_Data *cfdata = data;
-   
+
    scale_conf->grow	      = cfdata->grow;
    scale_conf->tight	      = cfdata->tight;
    scale_conf->scale_duration = cfdata->duration;
    scale_conf->spacing	      = cfdata->spacing;
+   scale_conf->desks_duration = cfdata->desks_duration;
+   scale_conf->desks_spacing  = cfdata->desks_spacing;
+   scale_conf->fade_popups    = cfdata->fade_popups;
+   scale_conf->fade_desktop   = cfdata->fade_desktop;
+   scale_conf->fade_windows   = cfdata->fade_windows;
+   scale_conf->fade_desktop   = cfdata->fade_desktop;
 
    scale_run(e_manager_current_get());
 }
@@ -85,17 +102,13 @@ _cb_test(void *data, void *data2)
 static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o = NULL, *of = NULL, *ow = NULL;
+   Evas_Object *o, *of, *ow, *ot;
+
+   ot = e_widget_table_add(evas, 0);
 
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_framelist_add(evas, D_("Layout Options"), 0);
-   e_widget_framelist_content_align_set(of, 0.0, 0.0);
-   ow = e_widget_check_add(evas, D_("Grow more!"), &(cfdata->grow));
-   e_widget_framelist_object_append(of, ow);
-   ow = e_widget_check_add(evas, D_("Keep it tight!"), &(cfdata->tight));
-   e_widget_framelist_object_append(of, ow);
-
+   of = e_widget_framelist_add(evas, D_("Current Desktop"), 0);
    ow = e_widget_label_add (evas, D_("Minimum space between windows"));
    e_widget_framelist_object_append (of, ow);
    ow = e_widget_slider_add (evas, 1, 0, D_("%1.0f"), 2.0, 64.0,
@@ -107,13 +120,48 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.1, 3.0,
                              0.01, 0, &(cfdata->duration), NULL,100);
    e_widget_framelist_object_append (of, ow);
-
-   ow = e_widget_button_add(evas, D_("Test"), NULL, _cb_test, cfdata, NULL);
-   e_widget_framelist_object_append (of, ow);
-
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   return o;
+   of = e_widget_framelist_add(evas, D_("Layout Options"), 0);
+   e_widget_framelist_content_align_set(of, 0.0, 0.0);
+   ow = e_widget_check_add(evas, D_("Grow more!"), &(cfdata->grow));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("Keep it tight!"), &(cfdata->tight));
+   e_widget_framelist_object_append(of, ow);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   e_widget_table_object_append(ot, o, 0, 0, 1, 1, 1, 1, 0, 0);
+
+
+   o = e_widget_list_add(evas, 0, 0);
+   of = e_widget_framelist_add(evas, D_("Show All Desktops"), 0);
+   ow = e_widget_label_add (evas, D_("Minimum space between windows"));
+   e_widget_framelist_object_append (of, ow);
+   ow = e_widget_slider_add (evas, 1, 0, D_("%1.0f"), 2.0, 64.0,
+                             1.0, 0, &(cfdata->desks_spacing), NULL,100);
+   e_widget_framelist_object_append (of, ow);
+
+   ow = e_widget_label_add (evas, D_("Scale duration"));
+   e_widget_framelist_object_append (of, ow);
+   ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.1, 3.0,
+                             0.01, 0, &(cfdata->desks_duration), NULL,100);
+   e_widget_framelist_object_append (of, ow);
+   ow = e_widget_check_add(evas, D_("Fade in windows"), &(cfdata->fade_windows));
+   e_widget_framelist_object_append(of, ow);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+
+   of = e_widget_framelist_add(evas, D_(""), 0);
+   ow = e_widget_check_add(evas, D_("Fade out shelves and popups"), &(cfdata->fade_popups));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("Darken desktop"), &(cfdata->fade_desktop));
+   e_widget_framelist_object_append(of, ow);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+
+   e_widget_table_object_append(ot, o, 1, 0, 1, 1, 1, 1, 0, 0);
+
+   ow = e_widget_button_add(evas, D_("Test"), NULL, _cb_test, cfdata, NULL);
+   e_widget_table_object_append(ot, ow, 0, 1, 2, 1, 0, 0, 0, 0);
+
+   return ot;
 }
 
 static int
@@ -123,6 +171,12 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    scale_conf->tight	      = cfdata->tight;
    scale_conf->scale_duration = cfdata->duration;
    scale_conf->spacing	      = cfdata->spacing;
+   scale_conf->desks_duration = cfdata->desks_duration;
+   scale_conf->desks_spacing  = cfdata->desks_spacing;
+   scale_conf->fade_popups    = cfdata->fade_popups;
+   scale_conf->fade_desktop   = cfdata->fade_desktop;
+   scale_conf->fade_windows   = cfdata->fade_windows;
+   scale_conf->fade_desktop   = cfdata->fade_desktop;
    e_config_save_queue();
    return 1;
 }
