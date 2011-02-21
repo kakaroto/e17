@@ -265,6 +265,7 @@ _file_item_get(Plugin *p, const char *urn, char *url, char *label, char *mime, i
      }
 
    file = EVRY_ITEM_NEW(Evry_Item_File, p, label, _icon_get, _file_item_free);
+   EVRY_ITEM(file)->type = EVRY_TYPE_FILE;
    EVRY_ITEM(file)->data = (void *)id;
    int match = evry->fuzzy_match(label, p->input);
    if (match)
@@ -594,18 +595,16 @@ _finish(Evry_Plugin *plugin)
    GET_PLUGIN(p, plugin);
    Evry_Item_File *file;
 
+   EVRY_PLUGIN_ITEMS_CLEAR(p);
+   
    EINA_LIST_FREE(p->files, file)
-     evry->item_free(EVRY_ITEM(file));
+     EVRY_ITEM_FREE(file);
 
    if (p->input)
      eina_stringshare_del(p->input);
-   p->input = NULL;
 
    if (p->pnd)
      dbus_pending_call_cancel(p->pnd);
-   p->pnd = NULL;
-
-   EVRY_PLUGIN_ITEMS_CLEAR(p);
 
    p->fetching = EINA_FALSE;
 
@@ -636,8 +635,6 @@ _fetch(Evry_Plugin *plugin, const char *input)
 
    if (!dbus_active)
      {
-	DBG("not active");
-
 	EVRY_PLUGIN_ITEMS_CLEAR(p);
 
 	EINA_LIST_FREE(p->files, it)
@@ -868,7 +865,7 @@ _dbus_cb_track_count(void *data, DBusMessage *reply, DBusError *error)
 }
 
 /* TODO remove folders recursively */
-static int
+static Eina_Bool
 _cb_action_performed(void *data, int type, void *event)
 {
    Evry_Event_Action_Performed *ev = event;
@@ -977,6 +974,15 @@ _plugins_init(const Evry_API *_api)
 
    QUERY_PLUGIN_NEW(N_("Most Listened"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
 		    _begin, _finish, _fetch, query_most_played, 0);
+
+   QUERY_PLUGIN_NEW(N_("Albums"), EVRY_PLUGIN_SUBJECT, "emblem-sound", TRACKER_MUSIC,
+		    _begin, _finish, _fetch, query_albums, 4);
+
+   QUERY_PLUGIN_NEW(N_("Artist"), EVRY_PLUGIN_SUBJECT, "emblem-sound", TRACKER_MUSIC,
+		    _begin, _finish, _fetch, query_artists, 4);
+
+   /* QUERY_PLUGIN_NEW(N_("Most Listened"), EVRY_PLUGIN_SUBJECT, "emblem-sound", TRACKER_MUSIC,
+    * 		    _begin, _finish, _fetch, query_most_played, 0); */
 
    return EINA_TRUE;
 }
