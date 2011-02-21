@@ -99,7 +99,6 @@ elsa_pam_open_session()
       case PAM_CRED_ERR:
       case PAM_USER_UNKNOWN:
          fprintf(stderr, PACKAGE": PAM user unknow\n");
-         //elsa_gui_auth_error();
          return 1;
       case PAM_AUTH_ERR:
       case PAM_PERM_DENIED:

@@ -134,12 +134,14 @@ int
 elsa_main()
 {
    fprintf(stderr, PACKAGE": Run client\n");
-   if (elsa_config->autologin)
-     ecore_main_loop_quit();
-   else
+   if (!elsa_config->autologin)
+     {
      ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                              _elsa_client_del, NULL);
      _elsa_client = ecore_exe_run("elsa_client -d ':0.0'", NULL);
+     }
+   else
+     ecore_main_loop_quit();
    return 0;
 }
 
