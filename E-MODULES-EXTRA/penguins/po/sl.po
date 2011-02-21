@@ -1,0 +1,57 @@
+# Slovenian translation of Penguins_sl.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Penguins_sl 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-02-17 15:00-0800\n"
+"PO-Revision-Date: 2011-02-20 20:02+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/e_mod_config.c:42
+msgid "Population Settings"
+msgstr "Nastavitve prebivalstva"
+
+#: ../src/e_mod_config.c:92
+msgid "Number of penguins:"
+msgstr "Število pingvinov"
+
+#: ../src/e_mod_config.c:94 ../src/e_mod_config.c:104
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: ../src/e_mod_config.c:97
+msgid "Zoom factor:"
+msgstr "Razmerje povečave"
+
+#: ../src/e_mod_config.c:99
+#, c-format
+msgid "%1.1f X"
+msgstr "%1.1f·X"
+
+#: ../src/e_mod_config.c:102
+msgid "Transparency:"
+msgstr "Prozornost:"
+
+#. Lista
+#: ../src/e_mod_config.c:108
+msgid "Select population:"
+msgstr "Izbor prebivalstva:"
+
+#: ../src/e_mod_main.c:61
+msgid "Look"
+msgstr "Izgled"
+
+#: ../src/e_mod_main.c:62
+msgid "Penguins"
+msgstr "Pingvini"
+

@@ -1,0 +1,59 @@
+# Slovenian translation of Wlan.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Wlan_sl 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-02-17 15:01-0800\n"
+"PO-Revision-Date: 2011-02-20 18:55+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/e_mod_config.c:44
+msgid "Wlan Settings"
+msgstr "Wlan nastavitve"
+
+#: ../src/e_mod_config.c:122
+msgid "General Settings"
+msgstr "Splošne nastavitve"
+
+#: ../src/e_mod_config.c:124
+msgid "Always Show Text"
+msgstr "Prikazuj besedilo - vedno"
+
+#: ../src/e_mod_config.c:126
+msgid "Show Text On Mouse Over"
+msgstr "Prikazuj·besedilo·-·ob prehodu z miško"
+
+#: ../src/e_mod_config.c:129
+msgid "Show Text As Percent"
+msgstr "Prikazuj besedilo v odstotkih"
+
+#: ../src/e_mod_config.c:133
+msgid "Check Interval:"
+msgstr "Premor preverjanja:"
+
+#: ../src/e_mod_config.c:136
+#, c-format
+msgid "%1.0f seconds"
+msgstr "%1.0f·sek."
+
+#: ../src/e_mod_config.c:143
+msgid "Device Settings"
+msgstr "Nastavitev naprav"
+
+#: ../src/e_mod_main.c:110
+msgid "Wlan"
+msgstr "Wlan"
+
+#: ../src/e_mod_main.c:169
+msgid "Settings"
+msgstr "Nastavitve"
+

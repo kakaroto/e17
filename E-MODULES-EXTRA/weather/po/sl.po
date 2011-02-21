@@ -1,0 +1,75 @@
+# Slovenian translation of Weather_sl.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Weather_sl 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-02-17 15:01-0800\n"
+"PO-Revision-Date: 2011-02-20 18:38+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/e_mod_config.c:36
+msgid "Weather Settings"
+msgstr "Nastavitev Wremena"
+
+#: ../src/e_mod_config.c:78
+msgid "Display Settings"
+msgstr "Nastavitev zaslona"
+
+#: ../src/e_mod_config.c:80
+msgid "Simple"
+msgstr "Preprosto"
+
+#: ../src/e_mod_config.c:82
+msgid "Detailed"
+msgstr "Podrobno"
+
+#: ../src/e_mod_config.c:84
+msgid "Poll Time"
+msgstr "Čas posodabljanja"
+
+#: ../src/e_mod_config.c:86
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f·min."
+
+#: ../src/e_mod_config.c:91
+msgid "Degree Settings"
+msgstr "Nastavitev stopinj"
+
+#: ../src/e_mod_config.c:93
+msgid "Celsius"
+msgstr "Celzija"
+
+#: ../src/e_mod_config.c:95
+msgid "Farenheit"
+msgstr "Farenheitov"
+
+#: ../src/e_mod_config.c:99 ../src/e_mod_config.c:100
+msgid "ICAO Code"
+msgstr "ICAO·Šifra"
+
+#: ../src/e_mod_config.c:105
+msgid "Get your ICAO code at:"
+msgstr "Dobi svojo·ICAO·šifro na:"
+
+#: ../src/e_mod_config.c:107
+msgid "http://www.weather.gov/tg/siteloc.shtml"
+msgstr "http://www.weather.gov/tg/siteloc.shtml"
+
+#: ../src/e_mod_main.c:171
+msgid "Weather"
+msgstr "Vreme"
+
+#: ../src/e_mod_main.c:217
+msgid "Settings"
+msgstr ""
+

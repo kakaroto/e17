@@ -1,0 +1,86 @@
+# Slovenian translation of Language_sl.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Language_sl 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2010-02-25 17:01-0800\n"
+"PO-Revision-Date: 2011-02-20 21:22+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Nastavitve modula Jezik"
+
+#: ../src/e_mod_config.c:174 ../src/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Dostopni jeziki"
+
+#: ../src/e_mod_config.c:182 ../src/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Izbrani jeziki"
+
+#: ../src/e_mod_config.c:198 ../src/e_mod_config.c:273
+msgid "Up"
+msgstr "Gor"
+
+#: ../src/e_mod_config.c:203 ../src/e_mod_config.c:278
+msgid "Down"
+msgstr "Dol"
+
+#: ../src/e_mod_config.c:211 ../src/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Politika menjave jezikov"
+
+#: ../src/e_mod_config.c:214 ../src/e_mod_config.c:307
+msgid "Global"
+msgstr "Splošno"
+
+#: ../src/e_mod_config.c:217 ../src/e_mod_config.c:310
+msgid "Window"
+msgstr "Okno"
+
+#: ../src/e_mod_config.c:220 ../src/e_mod_config.c:313
+msgid "Application"
+msgstr "Program"
+
+#: ../src/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Model tipkovnice"
+
+#: ../src/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Različica razporeda"
+
+#: ../src/e_mod_keybindings.c:6 ../src/e_mod_main.c:116
+msgid "Language"
+msgstr "Jezik"
+
+#: ../src/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr "Skoči na naslednji jezik"
+
+#: ../src/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr "Skoči na prejšnji jezik"
+
+#: ../src/e_mod_main.c:429
+msgid "Configuration"
+msgstr "Nastavitve"
+
+#: ../src/e_mod_main.c:434
+msgid "Configure Key Bindings"
+msgstr "Nastavi naveze tipk"
+
+#: ../src/e_mod_main.c:451
+msgid "Module Configuration"
+msgstr "Nastavitve modula"
+

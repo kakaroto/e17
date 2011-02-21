@@ -1,0 +1,137 @@
+# Slovenian translation of Forecasts_sl.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Forecasts_sl 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-02-17 15:00-0800\n"
+"PO-Revision-Date: 2011-02-20 21:44+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/e_mod_config.c:42
+msgid "Forecasts Settings"
+msgstr "Nastavitve Napovedi"
+
+#: ../src/e_mod_config.c:90
+msgid "Display Settings"
+msgstr "Prikaži nastavitve"
+
+#: ../src/e_mod_config.c:91
+msgid "Poll Time"
+msgstr "Posodabljanje na:"
+
+#: ../src/e_mod_config.c:94
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f·min."
+
+#: ../src/e_mod_config.c:97
+msgid "Show Description"
+msgstr "Prikaži opis"
+
+#: ../src/e_mod_config.c:99
+msgid "Popup on mouse over"
+msgstr "Pojavno okno ob prehodu z miško (nepriporočeno)"
+
+#: ../src/e_mod_config.c:103
+msgid "Unit Settings"
+msgstr "Merske nastavitve"
+
+#: ../src/e_mod_config.c:105
+msgid "Metric"
+msgstr "Metrično"
+
+#: ../src/e_mod_config.c:107
+msgid "English"
+msgstr "Angleško"
+
+#: ../src/e_mod_config.c:111
+msgid "Weather.com Forecasts Code"
+msgstr "Weather.com·Šifre Napovedi"
+
+#: ../src/e_mod_config.c:112
+msgid "Forecasts Code/US Zip Code"
+msgstr "Napovedi - šifra/US·Zip·št"
+
+#: ../src/e_mod_config.c:117
+msgid "To find the code for your area, go to:"
+msgstr "Za šifro tvojega območja pojdi na:"
+
+#: ../src/e_mod_config.c:119
+#, c-format
+msgid "%s, find your area, and look at the URL"
+msgstr "%s,·najdi tvoje območje,·in poglej na URL"
+
+#: ../src/e_mod_main.c:249
+msgid "Forecasts"
+msgstr "Napoved"
+
+#: ../src/e_mod_main.c:296
+msgid "Settings"
+msgstr "Nastavitve"
+
+#: ../src/e_mod_main.c:991
+#, c-format
+msgid "%s: Current Conditions"
+msgstr "%s:·Trenutne razmere"
+
+#: ../src/e_mod_main.c:1007
+msgid "Wind Chill"
+msgstr "Hladen veter"
+
+#: ../src/e_mod_main.c:1013
+msgid "Wind Speed"
+msgstr "Hitrost vetra"
+
+#: ../src/e_mod_main.c:1019
+msgid "Humidity"
+msgstr "Vlažnost"
+
+#: ../src/e_mod_main.c:1025
+msgid "Visibility"
+msgstr "Vidljivost"
+
+#: ../src/e_mod_main.c:1031
+msgid "Pressure"
+msgstr "Pritisk"
+
+#: ../src/e_mod_main.c:1038
+msgid "Rising"
+msgstr "Narašča"
+
+#: ../src/e_mod_main.c:1040
+msgid "Falling"
+msgstr "Pada"
+
+#: ../src/e_mod_main.c:1042
+msgid "Steady"
+msgstr "Stabilen"
+
+#: ../src/e_mod_main.c:1046
+msgid "Sunrise / Sunset"
+msgstr "Sončni Vzhod / Zahod"
+
+#: ../src/e_mod_main.c:1064
+msgid "Today"
+msgstr "Danes"
+
+#: ../src/e_mod_main.c:1066
+msgid "Tomorrow"
+msgstr "Jutri"
+
+#: ../src/e_mod_main.c:1074
+msgid "High"
+msgstr "Visok"
+
+#: ../src/e_mod_main.c:1085
+msgid "Low"
+msgstr "Nizek"
+
