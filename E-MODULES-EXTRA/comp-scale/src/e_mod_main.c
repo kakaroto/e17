@@ -1023,8 +1023,8 @@ scale_run(E_Manager *man)
 
 	EINA_LIST_FOREACH(items, l, it)
 	  {
-	     it->x = it->x - min_x + (use_w - (max_x - min_x))/2;
-	     it->y = it->y - min_y + (use_h - (max_y - min_y))/2;
+	     it->x = it->x - min_x + ((use_x + use_w) - (max_x - min_x))/2;
+	     it->y = it->y - min_y + ((use_y + use_h) - (max_y - min_y))/2;
 
 	     if (it->dx > 0) it->bd_x =   zone->w + it->bd->x/4;
 	     if (it->dy > 0) it->bd_y =   zone->h + it->bd->y/4;
@@ -1467,15 +1467,15 @@ _scale_conf_new(void)
 #define IFMODCFGEND }
 
    IFMODCFG(0x0001);
-   scale_conf->grow = 0;
+   scale_conf->grow = 1;
    scale_conf->tight = 1;
    scale_conf->scale_duration = 0.4;
-   scale_conf->spacing = 6;
+   scale_conf->spacing = 10;
    scale_conf->fade_windows = 1;
    scale_conf->fade_popups = 0;
    scale_conf->fade_desktop = 1;
    scale_conf->desks_duration = 0.6;
-   scale_conf->desks_spacing = 25;
+   scale_conf->desks_spacing = 44;
    _scale_conf_item_get(NULL);
    IFMODCFGEND;
 
