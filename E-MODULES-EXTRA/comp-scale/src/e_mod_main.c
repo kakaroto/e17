@@ -10,7 +10,7 @@
 /* #define DBG(...) */
 #define DBG(...) printf(__VA_ARGS__)
 
-#define SPACING 64
+#define SPACING 32
 #define PLACE_RUNS  10000
 #define GROW_RUNS   1000
 #define SHRINK_RUNS 1000
@@ -433,17 +433,44 @@ _scale_shrink()
    Item *it, *ot;
    int shrunk = 0;
    int off;
+   double move_x;
+   double move_y;
+
+   int min_x = zone->w;
+   int min_y = zone->h;
+   int max_x = 0;
+   int max_y = 0;
 
    if (show_all_desks)
-     off = scale_conf->desks_spacing;
+     {
+	
+	off = scale_conf->desks_spacing;
+
+	EINA_LIST_FOREACH(items, l, it)
+	  {
+	     if (it->x < min_x) min_x = it->x;
+	     if (it->y < min_y) min_y = it->y;
+	     if (it->x + it->w > max_x) max_x = it->x + it->w;
+	     if (it->y + it->h > max_y) max_y = it->y + it->h;
+	  }
+     }
    else
      off = scale_conf->spacing;
 
+   
    EINA_LIST_REVERSE_FOREACH(items, l, it)
      {
-	double move_x = ((it->x + it->w/2.0) - (double)(it->bd->x + it->bd->w/2.0)) / 10.0;
-	double move_y = ((it->y + it->h/2.0) - (double)(it->bd->y + it->bd->h/2.0)) / 10.0;
-
+	if (show_all_desks)
+	  {
+	     move_x = ((it->x + it->w/2.0) - (min_x + (max_x - min_x)/2)) / 50.0;
+	     move_y = ((it->y + it->h/2.0) - (min_y + (max_y - min_x)/2)) / 50.0;
+	  }
+	else
+	  {
+	     move_x = ((it->x + it->w/2.0) - (double)(it->bd->x + it->bd->w/2.0)) / 10.0;
+	     move_y = ((it->y + it->h/2.0) - (double)(it->bd->y + it->bd->h/2.0)) / 10.0;
+	  }
+	
 	if (!(move_y || move_x))
 	  continue;
 
