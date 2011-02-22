@@ -5,7 +5,16 @@
 #define ZOOM_MIN 128
 #define ZOOM_START 192
 #define ZOOM_STEP 32
+#define TODO_ITEM_MIN_BATCH 16
 
+static void _todo_items_free(void);
+static void _grid_items_free(void);
+static void _entry_item_add(Ephoto_Entry *e);
+static Eina_Bool _todo_items_process(void *data __UNUSED__);
+static Eina_Bool _ephoto_thumb_entry_create(void *data __UNUSED__, int type __UNUSED__, void *event);
+static Eina_Bool _ephoto_thumb_populate_error(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__);
+static Eina_Bool _ephoto_thumb_populate_end(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__);
+static Eina_Bool _ephoto_thumb_populate_start(void *data, int type __UNUSED__, void *event __UNUSED__);
 static Evas_Object *_ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static char *_ephoto_thumbnail_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static void _ephoto_thumbnail_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
@@ -32,6 +41,10 @@ struct _Ephoto_Thumb_Browser
    Evas_Object *dir_entry;
    Evas_Object *grid;
    Evas_Object *toolbar;
+   Eina_List *handlers;
+   Eina_List *todo_items;
+   Eina_List *grid_items;
+   Eio_File *ls;
    int thumb_size;
    struct {
       Elm_Toolbar_Item *zoom_in;
@@ -39,6 +52,9 @@ struct _Ephoto_Thumb_Browser
       Elm_Toolbar_Item *view_flow;
       Elm_Toolbar_Item *slideshow;
    } action;
+   struct {
+     Ecore_Animator *todo_items;
+   } animator;
 };
 
 Ephoto_Thumb_Browser *etb;
@@ -105,43 +121,147 @@ ephoto_thumb_browser_add(void)
    evas_object_smart_callback_add(etb->grid, "clicked", _ephoto_show_flow, NULL);
    evas_object_show(etb->grid);
 
+   etb->handlers = eina_list_append
+      (etb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_POPULATE_START, _ephoto_thumb_populate_start, NULL));
+
+
+   etb->handlers = eina_list_append
+      (etb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_POPULATE_END, _ephoto_thumb_populate_end, NULL));
+
+   etb->handlers = eina_list_append
+      (etb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_POPULATE_ERROR, _ephoto_thumb_populate_error, NULL));
+
+   etb->handlers = eina_list_append
+      (etb->handlers, ecore_event_handler_add
+       (EPHOTO_EVENT_ENTRY_CREATE, _ephoto_thumb_entry_create, NULL));
+
    return etb->box;
+}
+
+void
+ephoto_thumb_browser_entry_set(Ephoto_Entry *entry)
+{
+   if ((entry) && (entry->item))
+     elm_gengrid_item_bring_in(entry->item);
 }
 
 void
 ephoto_thumb_browser_del(void)
 {
+   Ecore_Event_Handler *handler;
+
    evas_object_del(etb->box);
+   _todo_items_free();
+   _grid_items_free();
+   EINA_LIST_FREE(etb->handlers, handler)
+     ecore_event_handler_del(handler);
+   if (etb->animator.todo_items)
+     {
+        ecore_animator_del(etb->animator.todo_items);
+        etb->animator.todo_items = NULL;
+     }
+   if (etb->ls)
+     {
+        eio_file_cancel(etb->ls);
+        return;
+     }
    free(etb);
 }
 
-void
-ephoto_thumb_browser_show(void)
+static void
+_todo_items_free()
 {
-   ephoto->prev_state = ephoto->state;
-   ephoto->state = EPHOTO_STATE_THUMB;
-
-   elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
-   elm_object_focus(etb->grid);
+   eina_list_free(etb->todo_items);
+   etb->todo_items = NULL;
 }
 
-void 
-ephoto_thumb_browser_thumb_append(Eina_List *node)
+static void
+_grid_items_free()
 {
-   Elm_Gengrid_Item *egi;
-   const Elm_Gengrid_Item_Class *egic;
+   eina_list_free(etb->grid_items);
+   etb->grid_items = NULL;
+}
 
-   egic = &_ephoto_thumbnail_class;
-   egi = elm_gengrid_item_append(etb->grid, egic, node, NULL, NULL);
-   elm_gengrid_item_data_set(egi, node);
+static void
+_entry_item_add(Ephoto_Entry *e)
+{
+   const Elm_Gengrid_Item_Class *ic = &_ephoto_thumbnail_class;
+
+   e->item = elm_gengrid_item_append(etb->grid, ic, e, NULL, NULL);
+   etb->grid_items = eina_list_append(etb->grid_items, e->item);
+
+   if (e->item)
+     elm_gengrid_item_data_set(e->item, e);
+   else
+     ephoto_entry_free(e);
+}
+
+static Eina_Bool
+_todo_items_process(void *data __UNUSED__)
+{
+   Ephoto_Entry *entry;
+
+   if ((etb->ls) && (eina_list_count(etb->todo_items) < TODO_ITEM_MIN_BATCH))
+     return EINA_TRUE;
+   etb->animator.todo_items = NULL;
+
+   EINA_LIST_FREE(etb->todo_items, entry)
+     _entry_item_add(entry);
+   return EINA_FALSE;
+}
+
+static Eina_Bool
+_ephoto_thumb_populate_start(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+{
+   _todo_items_free();
+   _grid_items_free();
+   elm_gengrid_clear(etb->grid);
+   elm_fileselector_entry_path_set(etb->dir_entry, ephoto->directory);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ephoto_thumb_populate_end(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+{
+   etb->ls = NULL;
+   
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ephoto_thumb_populate_error(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+{
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ephoto_thumb_entry_create(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   Ephoto_Event_Entry_Create *ev = event;
+   Ephoto_Entry *e;
+
+   e = ev->entry;
+   etb->todo_items = eina_list_append(etb->todo_items, e);
+
+   if (!etb->animator.todo_items)
+     etb->animator.todo_items = ecore_animator_add(_todo_items_process, NULL);
+
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Evas_Object *
 _ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   Eina_List *node = data;
+   Ephoto_Entry *entry = data;
    Evas_Object *o;
-   const char *ext = strrchr(eina_list_data_get(node), '.');
+   const char *ext = strrchr(entry->path, '.');
+
+   if (!strncmp(part, "elm.swallow.icon.", sizeof("elm.swallow.icon.") - 1) != 0)
+     return NULL;
 
    if (ext)
      {
@@ -155,7 +275,7 @@ _ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *
 
    o = elm_thumb_add(ephoto->win);
    elm_object_style_set(o, "noframe");
-   elm_thumb_file_set(o, eina_list_data_get(node), NULL);
+   elm_thumb_file_set(o, entry->path, NULL);
    evas_object_show(o);
 
    return o;
@@ -164,12 +284,9 @@ _ephoto_thumbnail_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *
 static char *
 _ephoto_thumbnail_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   Eina_List *node = data;
-   const char *f;
+   Ephoto_Entry *e = data;
 
-   f = ecore_file_file_get(eina_list_data_get(node));
-
-   return strdup(f);
+   return strdup(e->label);
 }
 
 static void
@@ -185,12 +302,7 @@ _ephoto_change_dir(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event
 
    if (!path) return;
 
-   elm_gengrid_clear(etb->grid);
-   ephoto->images = eina_list_free(ephoto->images);
-   ephoto->current_index = NULL;
-   eina_stringshare_del(ephoto->directory);
-   ephoto->directory = eina_stringshare_add(path);
-   ephoto_populate();
+   ephoto_populate(path);
 }
 
 static void 
@@ -221,6 +333,7 @@ static void
 _ephoto_show_flow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Elm_Gengrid_Item *egi;
+   Ephoto_Entry *entry;
 
    elm_toolbar_item_selected_set(etb->action.view_flow, EINA_FALSE);
 
@@ -228,15 +341,35 @@ _ephoto_show_flow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
 
    egi = elm_gengrid_selected_item_get(etb->grid);
    if (egi)
-     ephoto->current_index = elm_gengrid_item_data_get(egi);
+     entry = elm_gengrid_item_data_get(egi);
+   else
+     entry = eina_list_data_get
+       (eina_list_nth_list(ephoto->entries, 0));
+   if (!entry)
+     return;
 
-   ephoto_flow_browser_show(); 
+   printf("%s\n", entry->path);
+   ephoto_flow_browser_show(entry); 
 }
 
 static void
 _ephoto_show_slideshow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
+   Elm_Gengrid_Item *egi;
+   Ephoto_Entry *entry;
+
    elm_toolbar_item_selected_set(etb->action.slideshow, EINA_FALSE);
 
-   ephoto_slideshow_show();
+   elm_object_unfocus(etb->grid);
+
+   egi = elm_gengrid_selected_item_get(etb->grid);
+   if (egi)
+     entry = elm_gengrid_item_data_get(egi);
+   else
+     entry = eina_list_data_get
+       (eina_list_nth_list(ephoto->entries, 0));
+   if (!entry)
+     return;
+
+   ephoto_slideshow_show(entry);
 }

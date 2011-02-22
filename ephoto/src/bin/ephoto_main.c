@@ -1,15 +1,43 @@
 #include "ephoto.h"
 
+/*Ephoto Window Callbacks*/
 static void _ephoto_window_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
-static void _ephoto_thumb_populate(void);
+
+/*Ephoto Thumb Population Callbacks*/
+static void _ephoto_thumb_populate(void *data __UNUSED__);
 static Eina_Bool _ephoto_thumb_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info);
 static void _ephoto_thumb_populate_main(void *data __UNUSED__, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info);
 static void _ephoto_thumb_populate_end(void *data __UNUSED__, Eio_File *handler __UNUSED__);
 static void _ephoto_thumb_populate_error(void *data __UNUSED__, Eio_File *handler __UNUSED__, int error);
 
-Evas_Object *
-ephoto_window_add(void)
+/*Main Ephoto Structure*/
+Ephoto *ephoto;
+
+/*Ephoto Events*/
+int EPHOTO_EVENT_ENTRY_CREATE = 0;
+int EPHOTO_EVENT_POPULATE_START = 0;
+int EPHOTO_EVENT_POPULATE_END = 0;
+int EPHOTO_EVENT_POPULATE_ERROR = 0;
+
+/*Ephoto Entry Listener*/
+typedef struct _Ephoto_Entry_Free_Listener Ephoto_Entry_Free_Listener;
+struct _Ephoto_Entry_Free_Listener
 {
+   void (*cb)(void *data, const Ephoto_Entry *dead);
+   const void *data;
+};
+
+Evas_Object *
+ephoto_window_add(const char *path)
+{
+   EPHOTO_EVENT_ENTRY_CREATE = ecore_event_type_new();
+   EPHOTO_EVENT_POPULATE_START = ecore_event_type_new();
+   EPHOTO_EVENT_POPULATE_END = ecore_event_type_new();
+   EPHOTO_EVENT_POPULATE_ERROR = ecore_event_type_new();
+
+   ephoto = calloc(1, sizeof(Ephoto));
+   ephoto->client = elm_thumb_ethumb_client_get();
+
    ephoto->win = elm_win_add(NULL, "ephoto", ELM_WIN_BASIC);
    if (!ephoto->win)
      return NULL;
@@ -35,15 +63,6 @@ ephoto_window_add(void)
    elm_win_resize_object_add(ephoto->win, ephoto->pager);
    evas_object_show(ephoto->pager);
 
-   if (!ephoto->directory && !ephoto->file)
-     {
-        char buf[PATH_MAX], *cwd;
-        cwd = getcwd(buf, PATH_MAX);
-        ephoto->directory = eina_stringshare_add(cwd);
-     }
-   else if (ephoto->file)
-     ephoto->directory = eina_stringshare_add(ecore_file_dir_get(ephoto->file));
-
    ephoto->slideshow = ephoto_slideshow_add();
    elm_pager_content_push(ephoto->pager, ephoto->slideshow);
 
@@ -56,16 +75,32 @@ ephoto_window_add(void)
    elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
    ephoto->state = EPHOTO_STATE_THUMB;
 
-   ephoto->current_index = ephoto->images;
-   _ephoto_thumb_populate();
+   if ((!path) || (!ecore_file_exists(path)))
+     {
+        char buf[PATH_MAX];
 
+        if (getcwd(buf, sizeof(buf)))
+          path = buf;
+        else
+          path = getenv("HOME");
+     }
+   if (ecore_file_is_dir(path))
+        ephoto_populate(path);
+   else
+     {
+        char *dir = ecore_file_dir_get(path);
+        ephoto_populate(dir);
+        free(dir);
+     }
    return ephoto->win;
 }
 
 void
-ephoto_populate()
+ephoto_populate(const char *path)
 {
-   _ephoto_thumb_populate();
+   eina_stringshare_replace(&ephoto->directory, path);
+   if (ephoto->change_dir) ecore_job_del(ephoto->change_dir);
+   ephoto->change_dir = ecore_job_add(_ephoto_thumb_populate, NULL); 
 }
 
 void
@@ -74,23 +109,129 @@ ephoto_title_set(const char *title)
    elm_win_title_set(ephoto->win, title);
 }
 
+void
+ephoto_state_set(Ephoto_State state)
+{
+   ephoto->prev_state = ephoto->state;
+   ephoto->state = state;
+}
+
+void
+ephoto_thumb_browser_show(Ephoto_Entry *entry)
+{
+   ephoto_state_set(EPHOTO_STATE_THUMB);
+   ephoto_flow_browser_entry_set(NULL);
+   ephoto_slideshow_entry_set(NULL);
+   elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
+   ephoto_thumb_browser_entry_set(entry);
+}
+
+void
+ephoto_flow_browser_show(Ephoto_Entry *entry)
+{
+   ephoto_state_set(EPHOTO_STATE_FLOW);
+   elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
+   ephoto_flow_browser_entry_set(entry);
+}
+
+void
+ephoto_slideshow_show(Ephoto_Entry *entry)
+{
+   ephoto_state_set(EPHOTO_STATE_SLIDESHOW);
+   elm_pager_content_promote(ephoto->pager, ephoto->slideshow);
+   ephoto_slideshow_entry_set(entry);
+}
+
+Ephoto_Entry *
+ephoto_entry_new(const char *path, const char *label)
+{
+   Ephoto_Entry *entry;
+
+   entry = calloc(1, sizeof(Ephoto_Entry));
+   entry->path = eina_stringshare_add(path);
+   entry->basename = ecore_file_file_get(entry->path);
+   entry->label = eina_stringshare_add(label);
+
+   return entry;
+}
+
+void
+ephoto_entry_free(Ephoto_Entry *entry)
+{
+   Ephoto_Entry_Free_Listener *fl;
+
+   EINA_LIST_FREE(entry->free_listeners, fl)
+     {
+        fl->cb((void *)fl->data, entry);
+        free(fl);
+     }
+   eina_stringshare_del(entry->path);
+   eina_stringshare_del(entry->label);
+   free(entry);
+}
+
+void
+ephoto_entry_free_listener_add(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data)
+{
+   Ephoto_Entry_Free_Listener *fl;
+
+   fl = malloc(sizeof(Ephoto_Entry_Free_Listener));
+   fl->cb = cb;
+   fl->data = data;
+   entry->free_listeners = eina_list_append(entry->free_listeners, fl);
+}
+
+void
+ephoto_entry_free_listener_del(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data)
+{
+   Eina_List *l;
+   Ephoto_Entry_Free_Listener *fl;
+
+   EINA_LIST_FOREACH(entry->free_listeners, l, fl)
+     {
+        if ((fl->cb == cb) && (fl->data == data))
+          {
+             entry->free_listeners = eina_list_remove_list
+               (entry->free_listeners, l);
+             break;
+          }
+     }
+}
+
+void
+ephoto_entries_free(void)
+{
+   Ephoto_Entry *entry;
+
+   EINA_LIST_FREE(ephoto->entries, entry) ephoto_entry_free(entry);
+}
+
 static void
 _ephoto_window_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 {
    ephoto_thumb_browser_del();
    ephoto_flow_browser_del();
+   ephoto_slideshow_del();
    evas_object_del(ephoto->win);
+   if (ephoto->regen) 
+     ecore_timer_del(ephoto->regen);
+   if (ephoto->directory)
+     eina_stringshare_del(ephoto->directory);
+   free(ephoto);
 }
 
 static void
-_ephoto_thumb_populate(void)
+_ephoto_thumb_populate(void *data __UNUSED__)
 {
+   ephoto->change_dir = NULL;
+   ephoto_entries_free();
    ephoto->ls = eio_file_stat_ls(ephoto->directory,
                                  _ephoto_thumb_populate_filter,
                                  _ephoto_thumb_populate_main,
                                  _ephoto_thumb_populate_end,
                                  _ephoto_thumb_populate_error,
                                  NULL);
+   ecore_event_add(EPHOTO_EVENT_POPULATE_START, NULL, NULL, NULL);
 }
 
 static Eina_Bool
@@ -114,22 +255,24 @@ _ephoto_thumb_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED_
 static void
 _ephoto_thumb_populate_main(void *data __UNUSED__, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
-   Eina_List *node;
-   ephoto->images = eina_list_append(ephoto->images, info->path);
-   node = eina_list_nth_list
-     (ephoto->images, (eina_list_count(ephoto->images)-1));
+   Ephoto_Entry *e;
+   Ephoto_Event_Entry_Create *ev;
 
-   ephoto_thumb_browser_thumb_append(node);
-   if (ephoto->file && !strcmp(ephoto->file, info->path))
-     ephoto->current_index = node;
+   e = ephoto_entry_new(info->path, info->path + info->name_start);
+   ephoto->entries = eina_list_append(ephoto->entries, e);
+
+   ev = calloc(1, sizeof(Ephoto_Event_Entry_Create));
+   ev->entry = e;
+
+   ecore_event_add(EPHOTO_EVENT_ENTRY_CREATE, ev, NULL, NULL);
 }
 
 static void
 _ephoto_thumb_populate_end(void *data __UNUSED__, Eio_File *handler __UNUSED__)
 {
    ephoto->ls = NULL;
-   if (!ephoto->current_index)
-     ephoto->current_index = eina_list_nth_list(ephoto->images, 0);   
+   
+   ecore_event_add(EPHOTO_EVENT_POPULATE_END, NULL, NULL, NULL);
 }
 
 static void
@@ -137,5 +280,7 @@ _ephoto_thumb_populate_error(void *data __UNUSED__, Eio_File *handler __UNUSED__
 {
    if (error)
       printf("Error while populating images: %s\n", strerror(error));
+   ecore_event_add(EPHOTO_EVENT_POPULATE_ERROR, NULL, NULL, NULL);
+   _ephoto_thumb_populate_end(NULL, NULL);
 }
 

@@ -3,7 +3,6 @@
 #ifndef ELM_LIB_QUICKLAUNCH
 
 static void _ephoto_display_usage(void);
-Ephoto *ephoto;
 
 EAPI int
 elm_main(int argc, char **argv)
@@ -25,9 +24,6 @@ elm_main(int argc, char **argv)
 
    elm_theme_extension_add(NULL, PACKAGE_DATA_DIR "/themes/default/ephoto.edj");
 
-   if (!efreet_mime_init())
-     printf("Ephoto could not init efreet_mime!\n");
-
    client = elm_thumb_ethumb_client_get();
    if (!client)
      {
@@ -41,9 +37,6 @@ elm_main(int argc, char **argv)
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
 
-   ephoto = calloc(1, sizeof(Ephoto));
-   ephoto->client = client;
-
    if (argc > 2)
      {
         printf("Too many arguments; Terminating...\n");
@@ -51,7 +44,7 @@ elm_main(int argc, char **argv)
         r = 1;
         goto end;
      }
-   if (argc == 2)
+   else if (argc == 2)
      {
         if (!strncmp(argv[1], "--help", 6) || !strncmp(argv[1], "-h", 2))
           {
@@ -59,7 +52,7 @@ elm_main(int argc, char **argv)
              r = 0;
              goto end;
           }
-        else if (argc == 2)
+        else
           {
              char *real = ecore_file_realpath(argv[1]);
              if (!real)
@@ -68,27 +61,27 @@ elm_main(int argc, char **argv)
                   r = 1;
                   goto end;
                }
-             if (ecore_file_is_dir(real))
-               ephoto->directory = eina_stringshare_add(real);
-             else if (ecore_file_exists(real))
-               ephoto->file = eina_stringshare_add(real);
-             free(real);
+             if (!ephoto_window_add(real))
+               {
+                  printf("Could not create the main window; Terminating...\n");
+                  goto end;
+                  r = 1;
+               }
           }
      }
-
-   if (!ephoto_window_add())
+   else
      {
-        printf("Could not create the main window; Terminating...\n");
-        r = 1;
-        goto end;
+        if (!ephoto_window_add(NULL))
+          {
+             printf("Could not create the main window; Terminating...\n");
+             r = 1;
+             goto end;
+          }
      }
 
    elm_run();
 
  end:
-   if (ephoto)
-     free(ephoto);
-   efreet_mime_shutdown();
    elm_shutdown();
    eio_shutdown();
  
