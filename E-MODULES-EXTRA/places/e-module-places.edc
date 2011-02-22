@@ -7,6 +7,7 @@ images
    image: "tag_ext3.png" COMP;
    image: "tag_fat.png" COMP;
    image: "tag_hfs.png" COMP;
+   image: "tag_ufs.png" COMP;
    image: "tag_dvd.png" COMP;
 }
 
@@ -157,6 +158,11 @@ collections
             }
             description { state: "hfs" 0.0;
                image.normal: "tag_hfs.png";
+               inherit: "default" 0.0;
+               color: 255 255 255 240;
+            }
+            description { state: "ufs" 0.0;
+               image.normal: "tag_ufs.png";
                inherit: "default" 0.0;
                color: 255 255 255 240;
             }
@@ -451,6 +457,12 @@ collections
             signal: "icon,tag,hfs";
             source: "places";
             action: STATE_SET "hfs" 0.0;
+            target: "icon_tag";
+         }
+         program { name: "set_tag_ufs";
+            signal: "icon,tag,ufs";
+            source: "places";
+            action: STATE_SET "ufs" 0.0;
             target: "icon_tag";
          }
          program { name: "set_tag_dvd";

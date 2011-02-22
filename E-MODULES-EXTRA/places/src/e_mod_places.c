@@ -268,11 +268,12 @@ places_fill_box(Evas_Object *box)
           }
         else evas_object_del(icon);
 
-
         //set partition type tag
         if (!strcmp(vol->fstype, "ext2") || !strcmp(vol->fstype, "ext3") ||
             !strcmp(vol->fstype, "ext4") || !strcmp(vol->fstype, "reiserfs"))
           edje_object_signal_emit(o, "icon,tag,ext3", "places");
+        else if (!strcmp(vol->fstype, "ufs") || !strcmp(vol->fstype, "zfs"))
+          edje_object_signal_emit(o, "icon,tag,ufs", "places");
         else if (!strcmp(vol->fstype, "vfat") || !strcmp(vol->fstype, "ntfs") ||
                  !strcmp(vol->fstype, "ntfs-3g"))
           edje_object_signal_emit(o, "icon,tag,fat", "places");
@@ -282,7 +283,7 @@ places_fill_box(Evas_Object *box)
           edje_object_signal_emit(o, "icon,tag,dvd", "places");
 
         //set mount/eject icon
-        if (vol->requires_eject || (vol->mounted && strcmp(vol->mount_point, "/")) ||
+        if (vol->requires_eject || (vol->mounted && vol->mount_point ? vol->mount_point[0] != '/' : 1) ||
             !strcmp(vol->bus, "usb")) //Some usb key don't have requires_eject set (probably an hal error)
           edje_object_signal_emit(o, "icon,eject,show", "places");
         else
@@ -548,12 +549,16 @@ _places_volume_add(const char *udi)
    v = E_NEW(Volume, 1);
    if (!v) return;
 
+   // safe defaults
    v->udi = eina_stringshare_add(udi);
    v->valid = 0;
    v->obj = NULL;
    v->icon = NULL;
    v->to_mount = 0;
    v->force_open = 0;
+   v->drive_type = "";
+   v->model = "";
+   v->bus = "";
 
    if (places_conf->auto_mount)
      v->to_mount = 1;
@@ -975,6 +980,8 @@ _places_volume_properties_cb(void *data, void *reply_data, DBusError *error)
         e_hal_device_get_all_properties(conn, str,
                                         _places_storage_properties_cb, v);
      }
+
+   //_places_print_volume(v);
 
    return;
 }
