@@ -109,13 +109,6 @@ _add_items(Evas_Object *parent, Efreet_Menu *entry)
      }
 }
 
-static Eina_Bool
-_desktop_cache_update(void *data, int type, void *event)
-{
-
-   return ECORE_CALLBACK_PASS_ON;
-}
-
 Evas_Object *
 elfe_allapps_add(Evas_Object *parent)
 {
@@ -145,10 +138,6 @@ elfe_allapps_add(Evas_Object *parent)
 
    _add_items(list, NULL);
    evas_object_show(list);
-
-   ecore_event_handler_add(EFREET_EVENT_DESKTOP_CACHE_UPDATE,
-                           _desktop_cache_update,
-                           NULL);
 
    return list;
 }
