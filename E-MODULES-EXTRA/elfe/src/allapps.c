@@ -116,7 +116,9 @@ _list_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
     Evas_Coord size = 0;
 
     evas_object_geometry_get(obj, NULL, NULL, &w, &h);
-    size = w / 4;
+
+    (h > w) ? (size = w / 4) : (size = h / 4);
+
     elm_gengrid_item_size_set(obj, size, size);
 }
 
