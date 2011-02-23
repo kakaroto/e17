@@ -120,12 +120,20 @@ struct _App_Item
     Elfe_Gadget *gadget;
 };
 
+static void*
+_app_exec_cb(void *data, Efreet_Desktop *desktop, char *command, int remaining)
+{
+    ecore_exe_run(command, NULL);
+}
+
+
 static void
 _app_mouse_click_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
     App_Item *app_item = data;
 
-    ecore_exe_run(app_item->desktop->exec, NULL);
+    efreet_desktop_command_get(app_item->desktop, NULL,
+                               _app_exec_cb, NULL);
 }
 
 void

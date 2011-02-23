@@ -204,6 +204,12 @@ _allapps_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
    evas_object_event_callback_add(hwin->desktop, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb, hwin);
 }
 
+static void*
+_app_exec_cb(void *data, Efreet_Desktop *desktop, char *command, int remaining)
+{
+    ecore_exe_run(command, NULL);
+}
+
 static void
 _allapps_item_selected_cb(void *data , Evas_Object *obj, void *event_info)
 {
@@ -211,9 +217,13 @@ _allapps_item_selected_cb(void *data , Evas_Object *obj, void *event_info)
     Evas_Object *o_edje;
     Elfe_Home_Win *hwin = data;
 
-    ecore_exe_run(menu->desktop->exec, NULL);
+
+
     o_edje = elm_layout_edje_get(hwin->layout);
     edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
+
+    efreet_desktop_command_get(menu->desktop, NULL,
+                               _app_exec_cb, NULL);
 }
 
 static void  _edje_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
