@@ -632,8 +632,8 @@ _places_free_space_get(const char *mount)
    if (!mount) return 0;
    if (statvfs(mount, &s) != 0)
      return 0;
-//printf("   SPACE %d\n", (s.f_bfree * s.f_bsize));
-   return (unsigned long long)s.f_bavail * (unsigned long long)s.f_bsize;
+//printf("   SPACE %d\n", (s.f_bfree * s.f_frsize));
+   return (unsigned long long)s.f_bavail * (unsigned long long)s.f_frsize;
 }
 
 static void
