@@ -1,20 +1,21 @@
+# translation of moon.po to Slovenian
 # Slovenian translation of Moon_sl.
 # This file is put in the public domain.
+#
 # r1to <renato.rener@gmail.com>, 2011.
-# , fuzzy
-# 
-# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Moon_sl 1.0\n"
+"Project-Id-Version: moon\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-17 15:00-0800\n"
-"PO-Revision-Date: 2011-02-20 23:10+0100\n"
+"PO-Revision-Date: 2011-02-22 09:25+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
-"Language-Team: Slovenian\n"
+"Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 #: ../src/e_mod_config.c:97
 msgid "Moon Settings"
@@ -22,7 +23,7 @@ msgstr "Nastavitve Lune"
 
 #: ../src/e_mod_config.c:153
 msgid "Display Settings"
-msgstr "Nastavitve prikaži"
+msgstr "Nastavitve zaslona"
 
 #: ../src/e_mod_config.c:154
 msgid "Animated Clouds"
@@ -74,7 +75,7 @@ msgstr "Prvi krajec"
 
 #: ../src/e_mod_main.c:497
 msgid "Waxing Gibbous"
-msgstr "Prvi izbok (U3 ščip)"
+msgstr "Prvi izbok (Jutri ščip)"
 
 #: ../src/e_mod_main.c:499
 msgid "Full Moon"
@@ -82,7 +83,7 @@ msgstr "Polna luna"
 
 #: ../src/e_mod_main.c:501
 msgid "Waning Gibbous"
-msgstr "Zadnji izbok (Včeral Polna luna)"
+msgstr "Zadnji izbok (Včeraj polna luna)"
 
 #: ../src/e_mod_main.c:503
 msgid "Last Quarter"
@@ -90,5 +91,5 @@ msgstr "Zadnji krajec"
 
 #: ../src/e_mod_main.c:505
 msgid "Waning Crescent"
-msgstr "Zadnji srp (U3 mlaj)"
+msgstr "Zadnji srp (Jutri mlaj)"
 

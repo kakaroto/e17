@@ -1,40 +1,41 @@
+# translation of news.po to Slovenian
 # Slovenian translation of News_sl.
 # This file is put in the public domain.
+#
 # r1to <renato.rener@gmail.com>, 2011.
-# , fuzzy
-# 
-# 
 msgid ""
 msgstr ""
-"Project-Id-Version: News_sl 1.0\n"
+"Project-Id-Version: news\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-17 15:00-0800\n"
-"PO-Revision-Date: 2011-02-20 21:03+0100\n"
+"PO-Revision-Date: 2011-02-22 17:28+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
-"Language-Team: Slovenian\n"
+"Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 #: ../src/e_mod_main.c:52
 msgid "Config init failed"
-msgstr "Spodletel zagon nastavitev"
+msgstr "Spodletel zagon Nastavitev"
 
 #: ../src/e_mod_main.c:53
 msgid "Parser init failed"
-msgstr "Spodletel·zagon·razčlenjevalnika"
+msgstr "Spodletel·zagon·Razčlenjevalnika"
 
 #: ../src/e_mod_main.c:54
 msgid "Feeds init failed"
-msgstr "Spodletel zagon Podajalnika"
+msgstr "Spodletel zagon Virov"
 
 #: ../src/e_mod_main.c:55
 msgid "Viewer init failed"
-msgstr "Spodletel·zagon·pregledovalnika"
+msgstr "Spodletel·zagon·Pregledovalnika"
 
 #: ../src/e_mod_main.c:56
 msgid "Popup subsystem init failed"
-msgstr "Spodletel·zagon·podsistema pojavnega okna"
+msgstr "Spodletel·zagon·podsistema Pojavnih oken"
 
 #: ../src/e_mod_main.c:219
 msgid "News"
@@ -46,7 +47,7 @@ msgid ""
 "<hilight>News module : Configuration Upgraded</hilight><br><br>Your "
 "configuration of news module<br>has been upgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>Modul·Novice : Nastavitve·posodobljene</hilight><br><br>Vaše·nastavitve·modula·Novice<br>so·bile·posodobljene<br>Vaše·nastavitve·so·bile·odstranjene<br>Opravičujemo se za neprijetnosti.<br><br>(%d -> %d)"
+msgstr "<hilight>Modul·Novice : Nastavitve·posodobljene</hilight><br><br>Vaše·nastavitve·modula·Novice<br>so·bile·posodobljene<br>Vaše·prejšnje nastavitve·so·bile·odstranjene<br>Opravičujemo se za neprijetnosti.<br><br>(%d -> %d)"
 
 #: ../src/news_config.c:112
 #, c-format
@@ -58,12 +59,12 @@ msgstr "<hilight>Modul·Novice : Nastavitve·postarane</hilight><br><br>Vaše·n
 
 #: ../src/news_config_dialog.c:90
 msgid "News Main Configuration"
-msgstr "Glavne nastavitve za modul Novice"
+msgstr "Glavne nastavitve modula Novice"
 
 #: ../src/news_config_dialog.c:190 ../src/news_config_dialog.c:228
 #: ../src/news_config_dialog_feeds.c:358 ../src/news_menu.c:156
 msgid "Feeds"
-msgstr "Podajalniki"
+msgstr "Viri"
 
 #: ../src/news_config_dialog.c:192 ../src/news_config_dialog.c:236
 msgid "Sort lists by name (disable Move action)"
@@ -71,7 +72,7 @@ msgstr "Razvrsti sezname po imenu·(onemogoči premikanje)"
 
 #: ../src/news_config_dialog.c:197 ../src/news_config_dialog.c:305
 msgid "News Viewer"
-msgstr "Pregledovalnik za novice"
+msgstr "Pregledovalnik za Novice"
 
 #: ../src/news_config_dialog.c:199
 msgid "Font size"
@@ -106,7 +107,7 @@ msgstr "Uporablja·xdg-open·skripto,·iz·freedesktop.org"
 
 #: ../src/news_config_dialog.c:248
 msgid "Popup On News"
-msgstr "Pojavno okno ob novicah"
+msgstr "Odpri pojavno okno ob novicah"
 
 #: ../src/news_config_dialog.c:251
 msgid "Never"
@@ -114,11 +115,11 @@ msgstr "Nikoli"
 
 #: ../src/news_config_dialog.c:257
 msgid "Only on urgent feeds"
-msgstr "Le na nujnih podajalnikih"
+msgstr "Le ob nujnih virih"
 
 #: ../src/news_config_dialog.c:263
 msgid "On all feeds"
-msgstr "Pri vseh podajalnikih"
+msgstr "Pri vseh virih"
 
 #: ../src/news_config_dialog.c:272 ../src/news_config_dialog.c:292
 #, c-format
@@ -127,7 +128,7 @@ msgstr "%1.0f·s"
 
 #: ../src/news_config_dialog.c:280
 msgid "Popup On Warning / Error"
-msgstr "Pojavno okno ob Opozorilu / Napaki"
+msgstr "Odpri pojavno okno ob Opozorilu / Napaki"
 
 #: ../src/news_config_dialog.c:285
 msgid "Show on timeout ?"
@@ -135,7 +136,7 @@ msgstr "Prikažem ob izteku časovne omejitve ?"
 
 #: ../src/news_config_dialog.c:307
 msgid "Unread feeds first"
-msgstr "Neprebrani podajalniki najprej"
+msgstr "Neprebrani Viri najprej"
 
 #: ../src/news_config_dialog.c:309
 msgid "Unread articles first"
@@ -171,7 +172,7 @@ msgstr "Vrata"
 
 #: ../src/news_config_dialog_category.c:50
 msgid "News Category Configuration"
-msgstr "Nastavitev vrste novic"
+msgstr "Nastavitev vrst novic"
 
 #: ../src/news_config_dialog_category.c:135
 msgid "Icon"
@@ -200,11 +201,11 @@ msgstr "Prekliči"
 
 #: ../src/news_config_dialog_feed.c:63
 msgid "You need to <hilight>create a category</hilight> first"
-msgstr "Moraš·<hilight>izbrati vrsto</hilight>·prej"
+msgstr "Morate prej·<hilight>ustvariti vrsto</hilight>"
 
 #: ../src/news_config_dialog_feed.c:77
 msgid "News Feed Configuration"
-msgstr "Nastavitev podajanja novic"
+msgstr "Nastavitev Virov novic"
 
 #: ../src/news_config_dialog_feed.c:329
 msgid "Basic informations"
@@ -221,11 +222,11 @@ msgstr "Ime :"
 
 #: ../src/news_config_dialog_feed.c:349
 msgid "Feed url :"
-msgstr "url·Podajalnika :"
+msgstr "url·Vira :"
 
 #: ../src/news_config_dialog_feed.c:353
 msgid "Mark as important feed"
-msgstr "Označi kot pomemben podajalec"
+msgstr "Označi kot pomemben vir"
 
 #: ../src/news_config_dialog_feed.c:358
 msgid "Category"
@@ -253,11 +254,11 @@ msgstr "Informacije strežnika"
 
 #: ../src/news_config_dialog_feed.c:407
 msgid "Do allow the server to overwrite the informations you entered ?"
-msgstr "Dovolimo strežniku prepis informacij, ki ste jih vnesli?"
+msgstr "Naj dovolim strežniku prepis informacij, ki ste jih vnesli?"
 
 #: ../src/news_config_dialog_feeds.c:82
 msgid "News Feeds Configuration"
-msgstr "Nastavitev podajalnikov novic"
+msgstr "Nastavitev Virov novic"
 
 #: ../src/news_config_dialog_feeds.c:290
 msgid "Categories"
@@ -300,12 +301,12 @@ msgid ""
 "There are <hilight>feeds</hilight> in this category.<br>You have to "
 "<hilight>remove them first</hilight>"
 msgstr ""
-"Obstajajo·<hilight>podajalniki</hilight>·v tej vrsti.<br>Morate"
-"<hilight>odstraniti najprej njih</hilight>"
+"Obstajajo·<hilight>viri</hilight>·v tej vrsti.<br>Morate"
+"<hilight>najprej odstraniti vire</hilight>"
 
 #: ../src/news_config_dialog_feeds.c:754 ../src/news_config_dialog_feeds.c:779
 msgid "News Module - Are you sure ?"
-msgstr "Modul·Novice - Ali ste prepričani"
+msgstr "Modul·Novice - Ali ste prepričani?"
 
 #: ../src/news_config_dialog_item.c:40
 msgid "News Gadget Configuration"
@@ -317,31 +318,31 @@ msgstr "Pregledovalni način"
 
 #: ../src/news_config_dialog_item.c:107
 msgid "Show one icon for all feeds"
-msgstr "Prikazuj le eno ikono za vse podajalnike"
+msgstr "Prikazuj le eno ikono za vse vire"
 
 #: ../src/news_config_dialog_item.c:109
 msgid "Show all feeds"
-msgstr "Prikaži vse podajalnike"
+msgstr "Prikaži vse vire"
 
 #: ../src/news_config_dialog_item.c:111
 msgid "Show unread feeds"
-msgstr "Prikaži neprebrane podajalnike"
+msgstr "Prikaži neprebrane vire"
 
 #: ../src/news_config_dialog_item.c:113
 msgid "Show all feeds marked as important"
-msgstr "Prikaži vse podajalnike označene kot pomembne"
+msgstr "Prikaži vse vire označene kot pomembne"
 
 #: ../src/news_config_dialog_item.c:115
 msgid "Show unread feeds marked as important"
-msgstr "Prikaži neprebrane podajalnike označene kot pomembne"
+msgstr "Prikaži neprebrane vire označene kot pomembne"
 
 #: ../src/news_config_dialog_item.c:120
 msgid "Feed open in"
-msgstr "Odpiranje podajalnika v"
+msgstr "Odpiranje vira v"
 
 #: ../src/news_config_dialog_item.c:123
 msgid "the feed viewer"
-msgstr "pregledovalniku podajalnika"
+msgstr "pregledovalniku vira"
 
 #: ../src/news_config_dialog_item.c:125
 msgid "my favorite browser"
@@ -353,7 +354,7 @@ msgstr "Brskalnik odpre domači url"
 
 #: ../src/news_config_dialog_item.c:129
 msgid "instead of feed url"
-msgstr "namesto podajalnikovega url"
+msgstr "namesto virovega url"
 
 #: ../src/news_config_dialog_item.c:136
 msgid "Apply this to all News gadgets"
@@ -365,23 +366,23 @@ msgstr "Gadget Novice - Nastavitev vsebine"
 
 #: ../src/news_config_dialog_item_content.c:258
 msgid "Avalaible Feeds"
-msgstr "Dostopni podajalniki"
+msgstr "Dostopni Viri"
 
 #: ../src/news_config_dialog_item_content.c:267
 msgid "Add this Feed"
-msgstr "Dodaj ta podajalnik"
+msgstr "Dodaj ta Vir"
 
 #: ../src/news_config_dialog_item_content.c:274
 msgid "Selected Feeds"
-msgstr "Izbrani podajalniki"
+msgstr "Izbrani Viri"
 
 #: ../src/news_config_dialog_item_content.c:292
 msgid "Remove this Feed"
-msgstr "Odstrani ta podajalnik"
+msgstr "Odstrani ta Vir"
 
 #: ../src/news_config_dialog_langs.c:45
 msgid "News Feeds Language Configuration"
-msgstr "Jezikovne nastavitve novičarskih podajalnikov"
+msgstr "Jezikovne nastavitve novičarskih virov"
 
 #: ../src/news_config_dialog_langs.c:123
 msgid "Welcome to News Module !"
@@ -406,8 +407,8 @@ msgid ""
 "hilight><br>in the %s category<br><br>Its not possible to have feeds with "
 "the same name<br>in one category."
 msgstr ""
-"Podajalnik s tem·<hilight>imenom</hilight>·%s·<hilight>že obstaja</"
-"hilight><br>v·%s·vrsti<br><br>Ni mogoče imeti dveh podajalnikov z istim imenom<br>v eni vrsti."
+"Vir s tem·<hilight>imenom</hilight>·%s·<hilight>že obstaja</"
+"hilight><br>v·%s·vrsti<br><br>Ni mogoče imeti dveh virov z enakim imenom<br>v eni vrsti virov."
 
 #: ../src/news_feed.c:311
 msgid "You need to select a <hilight>language</hilight>."
@@ -426,8 +427,8 @@ msgid ""
 "The <hilight>name</hilight> you entered is <hilight>already used</"
 "hilight><br>by another category"
 msgstr ""
-"Vneseno·<hilight>ime</hilight>·je·<hilight>že uporabljeno</"
-"hilight><br>za drugo vrsto"
+"Vneseno·<hilight>ime</hilight>·je·<hilight>že v uporabi</"
+"hilight><br>za drugo vrsto virov"
 
 #: ../src/news_menu.c:129
 msgid "Set all as read"
@@ -455,7 +456,7 @@ msgstr "Nastavitve"
 
 #: ../src/news_utils.h:13
 msgid "News Module DEBUG DEBUG DEBUG DEBUG"
-msgstr "Modul·Novice Razhrošči Razhrošči Razhrošči Razhrošči"
+msgstr "Modul·Novice RAZHROŠČI RAZHROŠČI RAZHROŠČI RAZHROŠČI"
 
 #: ../src/news_utils.h:20
 msgid "News Module"
@@ -463,13 +464,13 @@ msgstr "Modul Novice"
 
 #: ../src/news_utils.h:27
 msgid "News Module Error"
-msgstr "Napaka Modula·Novice"
+msgstr "Napaka modula·Novice"
 
 #: ../src/news_viewer.c:372
 msgid "Feeds in this gadget"
-msgstr "Podajalniki v tem gadgetu"
+msgstr "Viri v tem gadgetu"
 
 #: ../src/news_viewer.c:438
 msgid "Articles in selected feed"
-msgstr "Članki v izbranem podajalniku"
+msgstr "Članki v izbranem viru"
 

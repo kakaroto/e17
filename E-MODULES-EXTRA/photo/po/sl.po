@@ -1,20 +1,21 @@
+# translation of photo.po to Slovenian
 # Slovenian translation of Photo_sl.
 # This file is put in the public domain.
+#
 # r1to <renato.rener@gmail.com>, 2011.
-# , fuzzy
-# 
-# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Photo_sl 1.0\n"
+"Project-Id-Version: photo\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-17 15:00-0800\n"
-"PO-Revision-Date: 2011-02-20 20:00+0100\n"
+"PO-Revision-Date: 2011-02-22 09:21+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
-"Language-Team: Slovenian\n"
+"Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 #: ../src/e_mod_main.c:53 ../src/e_mod_main.c:60 ../src/e_mod_main.c:67
 #: ../src/e_mod_main.c:74 ../src/e_mod_main.c:81 ../src/e_mod_main.c:88
@@ -55,8 +56,7 @@ msgid ""
 "<hilight>Photo module : Configuration Upgraded</hilight><br><br>Your "
 "configuration of photo module<br>has been upgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr ""
-"<hilight>Modul Slika·:·Nastavitve posodobljene</hilight><br><br>Vaše nastavitve modula Slika<br>so bile posodobljene<br>Vaše nastavitve so bile odstranjene<br>Opravičujemo·se·za·neprijetnosti.<br><br>(%d·->·%d)"
+msgstr "<hilight>Modul Slika·:·Nastavitve posodobljene</hilight><br><br>Vaše nastavitve modula Slika<br>so bile posodobljene<br>Vaše nastavitve so bile odstranjene<br>Opravičujemo·se·za·neprijetnosti.<br><br>(%d·->·%d)"
 
 #: ../src/photo_config.c:71 ../src/photo_config.c:85
 msgid "Photo Module version "
@@ -68,12 +68,11 @@ msgid ""
 "<hilight>Photo module : Configuration Downgraded</hilight><br><br>Your "
 "configuration of Photo module<br>has been downgraded<br>Your settings were "
 "removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr ""
-"<hilight>Modul Slika·:·Nastavitve postarane</hilight><br><br>YVaše nastavitve modula Slika<br>so bile postarane<br>Vaše nastavitve so bile odstranjene<br>Opravičujemo se za neprijetnosti<br><br>(%d·->%d)"
+msgstr "<hilight>Modul Slika·:·Nastavitve postarane</hilight><br><br>Vaše nastavitve modula Slika<br>so bile postarane<br>Vaše nastavitve so bile odstranjene<br>Opravičujemo se za neprijetnosti<br><br>(%d·->%d)"
 
 #: ../src/photo_config_dialog.c:64
 msgid "Photo Configuration"
-msgstr "Nastavitev slike"
+msgstr "Nastavitev Slike"
 
 #: ../src/photo_config_dialog.c:220
 msgid "Picture directories"
@@ -105,7 +104,7 @@ msgstr "Izgled"
 
 #: ../src/photo_config_dialog.c:254 ../src/photo_config_dialog_item.c:136
 msgid "Always show label"
-msgstr "Vedno prikaži nalepko"
+msgstr "Vedno prikaži oznako"
 
 #: ../src/photo_config_dialog.c:256
 msgid "Nice transitions"
@@ -191,7 +190,7 @@ msgstr "Prikaži nalepko"
 
 #: ../src/photo_config_dialog.h:38
 msgid "Show informations"
-msgstr "Prikaz podatkov"
+msgstr "Prikaži podatke"
 
 #: ../src/photo_config_dialog.h:40 ../src/photo_menu.c:45
 msgid "Previous picture"
@@ -219,7 +218,7 @@ msgstr "Prikaži meni"
 
 #: ../src/photo_config_dialog_dir.c:38
 msgid "Photo Directory Configuration"
-msgstr "Nastavitev mape slik"
+msgstr "Nastavitev map modula Slike"
 
 #: ../src/photo_config_dialog_dir.c:118
 msgid "Directory"
@@ -243,7 +242,7 @@ msgstr "Opozorilo modula Slika"
 
 #: ../src/photo_config_dialog_item.c:48
 msgid "Photo Item Configuration"
-msgstr "Nastavitev Slikovnega predmeta"
+msgstr "Nastavitev predmetov modula Slike"
 
 #: ../src/photo_config_dialog_item.c:112
 msgid "Timer between pictures change"
@@ -302,7 +301,7 @@ msgid ""
 "picture as backgroundPlease install it and try again"
 msgstr ""
 "<hilight>Potrebujem e17setroot·</hilight><br><br>%s·ni·edje·datoteka·!"
-"<br>Module·Slika potrebuje·e17setroot·pripomoček·iz paketa·e_utils, da bi uspešno nastavil vašo sliko za ozadje·. Prosimo namestite ga in poskusite znova."
+"<br>Modul·Slika potrebuje·e17setroot·pripomoček·iz paketa·e_utils, da bi uspešno nastavil vašo sliko za ozadje·. Prosimo namestite ga in poskusite znova."
 
 #: ../src/photo_item.c:452
 #, c-format
@@ -319,8 +318,7 @@ msgstr ""
 msgid ""
 "<hilight>Viewer %s not found !</hilight><br><br>You can change the viewer "
 "for images in Photo module configuration panel (Advanced view)"
-msgstr ""
-"<hilight>Pregledovalnik·%s·ni bil najden·!</hilight><br><br>Pregledovalnik lahko izberete v nastavitveni plošči·modula Slika·(Napredni pogled)"
+msgstr "<hilight>Pregledovalnik·%s·ni bil najden·!</hilight><br><br>Pregledovalnik lahko izberete v nastavitveni plošči·modula Slika·(Napredni pogled)"
 
 #: ../src/photo_menu.c:31
 msgid "Pause slideshow"
@@ -358,8 +356,7 @@ msgid ""
 "png<br><br>After import, if you can remove these files and the pictures "
 "still can<br>be viewed, but you wont be able to set them as wallpaper "
 "anymore<br><br>"
-msgstr ""
-"<hilight>Mapa·%s·ne obstaja.</hilight><br><br>Mape s slikami lahko nastavite v glavni nastavitveni plošči<br>Lahko so v formatu·jpeg·ali png<br><br>Po uvozu,·bodo tukaj vidne, četudi jih izbrišete<br>ne boste pa jih mogli več nastaviti kot ozadje<br><br>"
+msgstr "<hilight>Mapa·%s·ne obstaja.</hilight><br><br>Mape s slikami lahko nastavite v glavni nastavitveni plošči<br>Lahko so v formatu·jpeg·ali png<br><br>Po uvozu,·bodo tukaj vidne, četudi jih izbrišete<br>ne boste pa jih mogli več nastaviti kot ozadje<br><br>"
 
 #: ../src/photo_picture_local.c:591
 msgid "Photo Module Information"
@@ -373,6 +370,5 @@ msgid ""
 "pictures that haven't been loaded in Photo module before,<br>they will be "
 "thumbed.<br><br>While creating popups, you will not be able to see any "
 "picture in Photo.<br>I hope i'll be able to change that :)"
-msgstr ""
-"<hilight>Ustvarjanje sličic</hilight><br><br>Ustvarjam slilčice za nekatere slike·<hilight>s procesom ki teče v ozadju</hilight>.<br>Lahko traja nekaj časa, a bo po tem nalaganje hitrejše in lažje·:)<br><br>Vsakič, ko boste odprli slike, ki še niso bile naložene v modul Slika,<br>bodo iz njih narejene sličice.<br><br>Med tem ne boste mogli videti nobene slike v modulu Slika.<br>Upamo, da nam bo uspelo kdaj to zamenjati:)"
+msgstr "<hilight>Ustvarjanje sličic</hilight><br><br>Ustvarjam slilčice za nekatere slike·<hilight>s procesom ki teče v ozadju</hilight>.<br>Lahko traja nekaj časa, a bo po tem nalaganje hitrejše in lažje·:)<br><br>Vsakič, ko boste odprli slike, ki še niso bile naložene v modul Slika,<br>bodo iz njih narejene sličice.<br><br>Med tem ne boste mogli videti nobene slike v modulu Slika.<br>Upamo, da nam bo uspelo kdaj to spremeniti:)"
 

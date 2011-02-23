@@ -1,20 +1,21 @@
+# translation of notification.po to Slovenian
 # Slovenian translation of Notification_sl.
 # This file is put in the public domain.
+#
 # r1to <renato.rener@gmail.com>, 2011.
-# , fuzzy
-# 
-# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Notification_sl 1.0\n"
+"Project-Id-Version: notification\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-17 15:00-0800\n"
-"PO-Revision-Date: 2011-02-20 20:19+0100\n"
+"PO-Revision-Date: 2011-02-22 17:54+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
-"Language-Team: Slovenian\n"
+"Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 #: ../src/e_mod_box.c:677 ../src/e_mod_box.c:824
 msgid "Settings"
@@ -45,8 +46,7 @@ msgstr "Predstavitveni način zaključen"
 msgid ""
 "Presentation mode is over.<br>Now screen saver, lock and power saving "
 "settings will be restored."
-msgstr ""
-"Predstavitveni način je zaključen.<br>Zdaj bodo nastavitve za ohranjevalnik zaslona, zaklepanje in upravljanje porabe obnovljene."
+msgstr "Predstavitveni način je zaključen.<br>Zdaj bodo nastavitve za ohranjevalnik zaslona, zaklepanje in upravljanje porabe obnovljene."
 
 #: ../src/e_mod_main.c:236
 msgid "Enter Offline Mode"
@@ -56,8 +56,7 @@ msgstr "Zagon nepovezanega načina"
 msgid ""
 "Enlightenment is in <b>offline</b> mode.<br>During offline mode, modules "
 "that use network will stop polling remote services."
-msgstr ""
-"Enlightenment·je v·<b>nepovezanem</b>·načinu.<br>Med nepovezanim načinom,·bodo moduli, ki uporabljajo·omrežje prenehali preverjati storitve oddaljenega dostopa."
+msgstr "Enlightenment·je v·<b>nepovezanem</b>·načinu.<br>Med nepovezanim načinom,·bodo moduli, ki uporabljajo·omrežje prenehali preverjati storitve oddaljenega dostopa."
 
 #: ../src/e_mod_main.c:243
 msgid "Exited Offline Mode"
@@ -67,8 +66,7 @@ msgstr "Povezan način zaključen"
 msgid ""
 "Now in <b>online</b> mode.<br>Now modules that use network will resume "
 "regular tasks."
-msgstr ""
-"Zdaj ste v·<b>povezanem</b>·načinu.<br>Zdaj bodo·moduli, ki uporabljajo omrežje, ponovno začeli svoja redna opravila."
+msgstr "Zdaj ste v·<b>povezanem</b>·načinu.<br>Moduli, ki uporabljajo omrežje, bodo zdaj ponovno začeli svoja redna opravila."
 
 #. register config panel entry
 #: ../src/e_mod_main.c:301
@@ -91,32 +89,31 @@ msgstr "Napaka·med·zagonom DBus !"
 msgid ""
 "Error during DBus init! Please check if dbus is correctly installed and "
 "running."
-msgstr ""
-"Napaka med zagonom·DBus·!·Prosimo, preverite, če je·dbus·pravilno nameščen in ali je zagnan."
+msgstr "Napaka med zagonom·DBus·!·Prosim, preverite, če je·dbus·pravilno nameščen in ali je zagnan."
 
 #: ../src/e_mod_config.c:37
 msgid "Notification Settings"
-msgstr "Nastavitve Obvestila"
+msgstr "Nastavitve modula Obvestila"
 
 #: ../src/e_mod_config.c:79 ../src/e_mod_config_item.c:91
 msgid "Urgency"
-msgstr "Nujno"
+msgstr "Nujnost"
 
 #: ../src/e_mod_config.c:80
 msgid "Levels of urgency to popup : "
-msgstr "Nivoji nujnosti za pojavna okna"
+msgstr "Nivoji nujnosti za odpiranje pojavnih oken"
 
 #: ../src/e_mod_config.c:82 ../src/e_mod_config_item.c:94
 msgid "low"
-msgstr "nizko"
+msgstr "nizek"
 
 #: ../src/e_mod_config.c:84 ../src/e_mod_config_item.c:96
 msgid "normal"
-msgstr "normalno"
+msgstr "normalen"
 
 #: ../src/e_mod_config.c:86 ../src/e_mod_config_item.c:98
 msgid "critical"
-msgstr "kritično"
+msgstr "kritičen"
 
 #: ../src/e_mod_config.c:90
 msgid "Default Timeout"
@@ -142,7 +139,7 @@ msgstr "Vogal pojavnega okna"
 
 #: ../src/e_mod_config_item.c:37
 msgid "Notification Box Configuration"
-msgstr "Nastavitev obvestilne škatle"
+msgstr "Nastavitev Obvestilne škatle"
 
 #: ../src/e_mod_config_item.c:82
 msgid "General Settings"
@@ -158,9 +155,9 @@ msgstr "Prikaz pojavnega okna ob prehodu z miško"
 
 #: ../src/e_mod_config_item.c:87
 msgid "Focus the source window when clicking"
-msgstr "Fokusiraj izvorno okno ob kliku"
+msgstr "Ob kliku na izvorno okno ga postavi v fokus "
 
 #: ../src/e_mod_config_item.c:92
 msgid "Levels of urgency to store : "
-msgstr "Nivoji nujnosti za shranitev"
+msgstr "Nivoji nujnosti za shranjevanje"
 

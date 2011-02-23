@@ -1,18 +1,22 @@
+# translation of alarm.po to Slovenian
 # Slovenian translation of sl.
 # This file is put in the public domain.
-# Renato Rener <renato.rener@gmail.com>, 2011.
 #
+# Renato Rener <renato.rener@gmail.com>, 2011.
+# r1to <renato.rener@gmail.com>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: sl\n"
+"Project-Id-Version: alarm\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-17 15:00-0800\n"
-"PO-Revision-Date: 2011-02-21 02:50+0100\n"
-"Last-Translator: Renato Rener <renato.rener@gmail.com>\n"
-"Language-Team: Slovenian <renato.rener@gmail.com>\n"
+"PO-Revision-Date: 2011-02-22 08:40+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 #: ../src/e_mod_config.c:52
 msgid "Alarm Configuration"
@@ -26,7 +30,7 @@ msgstr "Alarm"
 #: ../src/e_mod_config.c:154
 #: ../src/e_mod_config_alarm.c:187
 msgid "Active"
-msgstr "Nastavljen"
+msgstr "Aktiviran"
 
 #: ../src/e_mod_config.c:163
 msgid "Add"
@@ -80,7 +84,7 @@ msgstr "Samodejno odstrani alarme"
 
 #: ../src/e_mod_config_alarm.c:68
 msgid "Alarm Configuration : Setup an alarm"
-msgstr "Nastavitve alarma : Nastavi alarm"
+msgstr "Nastavitve Alarma : Nastavi alarm"
 
 #: ../src/e_mod_config_alarm.c:185
 msgid "Informations"
@@ -192,7 +196,7 @@ msgstr "Možnosti Zvonjenja"
 
 #: ../src/e_mod_config_alarm.c:381
 msgid "Remove alarm"
-msgstr "Odstrani Alarm"
+msgstr "Odstrani alarm"
 
 #: ../src/e_mod_config_alarm.c:388
 #: ../src/e_mod_config_alarm.c:408
@@ -217,19 +221,19 @@ msgstr "Da [privzeto]"
 
 #: ../src/e_mod_config_alarm.c:421
 msgid "Run a program"
-msgstr "Zagon Programa"
+msgstr "Zaženi program"
 
 #: ../src/e_mod_config_alarm.c:428
 msgid "Run default one"
-msgstr "Zagon Privzetega"
+msgstr "Zagon privzetega"
 
 #: ../src/e_mod_config_alarm.c:430
 msgid "Run this program"
-msgstr "Zagon Tega Programa"
+msgstr "Zagon tega programa"
 
 #: ../src/e_mod_config_alarm.c:475
 msgid "<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE the alarms<br>via the 'Active' check button on the<br>main Alarm configuration panel."
-msgstr "<hilight>Alarm·USPEŠNO testiran·!</hilight><br><br>Vendar, ne pozabite tudi VKLOPITI alarmov<br>z gumbom·'Nastavljen' v<br>glavni nastavitveni plošči Alarmov"
+msgstr "<hilight>Alarm·USPEŠNO testiran·!</hilight><br><br>Vendar, ne pozabite tudi VKLOPITI alarmov<br>z gumbom·'Aktiviran' v<br>glavni nastavitveni plošči Alarma"
 
 #: ../src/e_mod_config_alarm.c:481
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
@@ -237,7 +241,7 @@ msgstr "<hilight>Alarm·USPEŠNO testiran·!</hilight>"
 
 #: ../src/e_mod_config_alarm.c:486
 msgid "<hilight>Alarm test FAILED !</hilight>"
-msgstr "<hilight>NEUSPEŠNO testiranje Alarma·!</hilight>"
+msgstr "<hilight>Testiranje alarma·NEUSPEŠNO !</hilight>"
 
 #: ../src/e_mod_config_alarm.c:488
 msgid "Alarm Module Test Report"
@@ -250,7 +254,7 @@ msgstr "<hilight>Alarm·:·%s</hilight><br><br>%s"
 
 #: ../src/e_mod_main.c:399
 msgid "Alarm Module Popup"
-msgstr "Pojavno Okno Modula Alarma"
+msgstr "Pojavno Okno Modula Alarm"
 
 #: ../src/e_mod_main.c:422
 msgid "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you specified"
@@ -287,11 +291,11 @@ msgstr "Dremež·%.14s·of·%.2d:%.2d"
 
 #: ../src/e_mod_main.c:857
 msgid "Snooze (No alarm to delay)"
-msgstr "Prenesi (Ni zakasnitvenega alarma)"
+msgstr "Dremež (Ni alarma za zakasnitev)"
 
 #: ../src/e_mod_main.c:865
 msgid "Add an alarm"
-msgstr "Dodaj Alarm"
+msgstr "Dodaj alarm"
 
 #: ../src/e_mod_main.c:872
 msgid "Settings"
@@ -305,10 +309,10 @@ msgstr "<hilight>Alarm·modul·:·Nastavitve posodobljene</hilight><br><br>Vaše
 #: ../src/e_mod_main.c:1059
 #: ../src/e_mod_main.c:1073
 msgid "Alarm Module version "
-msgstr "Alarm Module - Verzija"
+msgstr "Modul Alarm različica "
 
 #: ../src/e_mod_main.c:1067
 #, c-format
 msgid "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your configuration of Alarm module<br>has been downgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>Alarm modul : Nastavitve·postarane</hilight><br><br>Vaše·nastavitve·modula·za alarm <br>so·bile·postaranene<br>Vaše·nastavitve·in·alarmi·so·bili·odstranjeni<br>Opravičujemo·se·za·neprijetnosti<br><br>(%d -> %d)"
+msgstr "<hilight>Alarm modul : Nastavitve·postarane</hilight><br><br>Vaše·nastavitve·modula· Alarm <br>so·bile·postarane<br>Vaše·nastavitve·in·alarmi·so·bili·odstranjeni<br>Opravičujemo·se·za·neprijetnosti<br><br>(%d -> %d)"
 

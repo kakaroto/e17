@@ -1,24 +1,25 @@
+# translation of language.po to Slovenian
 # Slovenian translation of Language_sl.
 # This file is put in the public domain.
+#
 # r1to <renato.rener@gmail.com>, 2011.
-# , fuzzy
-# 
-# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Language_sl 1.0\n"
+"Project-Id-Version: language\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-02-25 17:01-0800\n"
-"PO-Revision-Date: 2011-02-20 21:22+0100\n"
+"PO-Revision-Date: 2011-02-23 03:52+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
-"Language-Team: Slovenian\n"
+"Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 #: ../src/e_mod_config.c:104
 msgid "Language Module Settings"
-msgstr "Nastavitve modula Jezik"
+msgstr "Nastavitev modula Jezik"
 
 #: ../src/e_mod_config.c:174 ../src/e_mod_config.c:249
 msgid "Available Languages"
@@ -58,7 +59,7 @@ msgstr "Model tipkovnice"
 
 #: ../src/e_mod_config.c:295
 msgid "Layout Variant"
-msgstr "Različica razporeda"
+msgstr "Vrsta razporeda tipkovnice"
 
 #: ../src/e_mod_keybindings.c:6 ../src/e_mod_main.c:116
 msgid "Language"
@@ -66,11 +67,11 @@ msgstr "Jezik"
 
 #: ../src/e_mod_keybindings.c:7
 msgid "Switch To Next Language"
-msgstr "Skoči na naslednji jezik"
+msgstr "Preklopi na naslednji jezik"
 
 #: ../src/e_mod_keybindings.c:8
 msgid "Switch To Previous Language"
-msgstr "Skoči na prejšnji jezik"
+msgstr "Preklopi na prejšnji jezik"
 
 #: ../src/e_mod_main.c:429
 msgid "Configuration"
@@ -78,7 +79,7 @@ msgstr "Nastavitve"
 
 #: ../src/e_mod_main.c:434
 msgid "Configure Key Bindings"
-msgstr "Nastavi naveze tipk"
+msgstr "Nastavi Naveze tipk"
 
 #: ../src/e_mod_main.c:451
 msgid "Module Configuration"

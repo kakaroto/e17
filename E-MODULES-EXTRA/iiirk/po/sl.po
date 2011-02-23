@@ -1,20 +1,21 @@
+# translation of iiirk.po to Slovenian
 # Slovenian translation of Iiirk_sl.
 # This file is put in the public domain.
+#
 # r1to <renato.rener@gmail.com>, 2011.
-# , fuzzy
-# 
-# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Iiirk_sl 1.0\n"
+"Project-Id-Version: iiirk\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-17 15:00-0800\n"
-"PO-Revision-Date: 2011-02-20 21:32+0100\n"
+"PO-Revision-Date: 2011-02-22 17:47+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
-"Language-Team: Slovenian\n"
+"Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 #: ../src/e_mod_main.c:234
 msgid "IIirk"
@@ -39,7 +40,7 @@ msgstr "Notranji"
 
 #: ../src/e_mod_main.c:1555
 msgid "IIirk Other"
-msgstr "Iiirk ostalo"
+msgstr "Iiirk Drugo"
 
 #: ../src/e_mod_config.c:55
 msgid "Iiirk Settings"
