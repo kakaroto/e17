@@ -99,6 +99,48 @@
    }
 
 
+#define ICON_SET(icon_file, icon_name)                              \
+   images {                                                         \
+      set {                                                         \
+         name: icon_file;                                           \
+         image {                                                    \
+            image: icon_file"-128.png" COMP;                        \
+            size: 97 97 512 512;                                    \
+         }                                                          \
+         image {                                                    \
+            image: icon_file"-96.png" COMP;                         \
+            size: 65 65 96 96;                                      \
+         }                                                          \
+         image {                                                    \
+            image: icon_file"-64.png" COMP;                         \
+            size: 49 49 64 64;                                      \
+         }                                                          \
+         image {                                                    \
+            image: icon_file"-48.png" COMP;                         \
+            size: 25 25 48 48;                                      \
+         }                                                          \
+         image {                                                    \
+            image: icon_file"-24.png" COMP;                         \
+            size: 17 17 24 24;                                      \
+         }                                                          \
+         image {                                                    \
+            image: icon_file"-16.png" COMP;                         \
+            size: 0 0 16 16;                                        \
+         }                                                          \
+      }                                                             \
+   }                                                                \
+   group {                                                          \
+      name: icon_name;                                              \
+      parts {                                                       \
+         part { name: "icon";                                       \
+            description { state: "default" 0.0;                     \
+               image.normal: icon_file;                             \
+            }                                                       \
+         }                                                          \
+      }                                                             \
+   }                                                                \
+
+
 images
 {
    image: "module_icon.png" COMP;
@@ -980,4 +1022,8 @@ collections
       }
    }
 
+ICON_SET("application-default-icon", "icon/application-default");
+
 }
+
+
