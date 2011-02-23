@@ -109,6 +109,17 @@ _add_items(Evas_Object *parent, Efreet_Menu *entry)
      }
 }
 
+static void
+_list_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
+{
+    Evas_Coord w, h;
+    Evas_Coord size = 0;
+
+    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+    size = w / 4;
+    elm_gengrid_item_size_set(obj, size, size);
+}
+
 Evas_Object *
 elfe_allapps_add(Evas_Object *parent)
 {
@@ -120,7 +131,11 @@ elfe_allapps_add(Evas_Object *parent)
 
    /* FIXME use dynamic item size */
    list = elm_gengrid_add(parent);
-   elm_gengrid_item_size_set(list, 128, 128);
+   elm_gengrid_item_size_set(list, 0, 0);
+
+   evas_object_event_callback_add(list, EVAS_CALLBACK_RESIZE,
+				  _list_resize_cb, NULL);
+
    elm_gengrid_multi_select_set(list, EINA_FALSE);
    elm_gengrid_bounce_set(list, EINA_FALSE, EINA_TRUE);
 
