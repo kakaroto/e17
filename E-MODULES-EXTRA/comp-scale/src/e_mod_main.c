@@ -483,18 +483,21 @@ _scale_grow()
    int overlap;
    double grow_l, grow_r, grow_d, grow_u;
 
-   /* double mean = 0; */
-   /* EINA_LIST_FOREACH(items, l, it)
-    *   mean += it->scale;
-    *
-    * mean /= (double) eina_list_count(items); */
+   double mean = 0;
+   EINA_LIST_FOREACH(items, l, it)
+     {
+	it->scale = it->w / (double)it->bd->w;
+	mean += it->scale;
+     }
+   
+   mean /= (double) eina_list_count(items);
 
    EINA_LIST_FOREACH(items, l, it)
      {
 	overlap = 0;
 
-	/* if (it->scale > mean)
-	 *   continue; */
+	if (it->scale > mean)
+	  continue;
 
 	if (it->w >= it->bd->w)
 	  continue;
@@ -886,25 +889,40 @@ _scale_place_slotted()
    Eina_List *l, *ll, *slots = NULL;
    Slot *slot, *slot2;
    Item *it;
-   int rows, cols, cnt, x, y, w, h;
-   int fast = 0;
-   int cont = 0;
+   int rows, cols, cnt, x, y, w, h, start;
+   int fast = 1;
+   int cont = 0, i = 0;
    double min_x, max_x, min_y, max_y;
 
    cnt = eina_list_count(items);
 
-   rows = sqrt(cnt);
+   rows = sqrt(cnt);  
    cols = cnt/rows;
 
    if (cols*rows < cnt)
      cols += 1;
-
-   if (cnt == 3)
+   
+   if (cnt <= 2)
      {
-	cols = 2;
-	rows = 2;
+   	cols = 2;
+   	rows = 1;
      }
-
+   else if (cnt <= 4)
+     {
+   	cols = 2;
+   	rows = 2;
+     }
+   else if (cnt <= 6)
+     {
+   	cols = 3;
+   	rows = 2;
+     }
+   else if (cnt <= 8)
+     {
+   	cols = 3;
+   	rows = 3;
+     }
+   
    DBG("%d rows, %d cols -- cnt %d\n", rows, cols, cnt);
 
    max_x = max_y = 0;
@@ -963,7 +981,7 @@ _scale_place_slotted()
 	  it->in_slots = cols * rows;
      }
 
-   while (cont)
+   for (i = 0; (i < PLACE_RUNS) && cont; i++)
      {
 	cont = 0;
 	EINA_LIST_FOREACH(slots, l, slot)
@@ -1005,7 +1023,7 @@ _scale_place_slotted()
 
    cont = 1;
 
-   while (fast && cont)
+   for (i = 0; (i < PLACE_RUNS) && ( fast && cont); i++)
      {
         cont = 0;
 	EINA_LIST_FOREACH(slots, l, slot)
@@ -1047,23 +1065,33 @@ _scale_place_slotted()
 	  }
      }
 
-   w = zone->w / cols;
-   h = zone->h / rows;
-
-   l = slots;
-
-   for (y = 0; l && y < rows; y++)
+   h = (zone->h - spacing) / rows;
+   w = (zone->w - spacing) / cols;
+   
+   for (y = 0, l = slots; l && (y < rows); y++)
      {
-	for (x = 0; l &&  x < cols; x++)
+	ll = l;
+	for (x = 0, cnt = 0; l &&  x < cols; x++, l = eina_list_next(l))
 	  {
 	     slot = eina_list_data_get(l);
+	     if (slot->it) cnt++;
+	  }
 
-	     slot->x = x * w;
+	if (cnt < cols)
+	  start = (w * (cols - cnt))/2.0;
+	else
+	  start = spacing/2.0;
+	
+	for (x = 0; ll &&  x < cnt; ll = eina_list_next(ll))
+	  {
+	     slot = eina_list_data_get(ll);
+	     if (!slot->it) continue;
+
+	     slot->x = start + x * w;
 	     slot->y = y * h;
 	     slot->w = w;
 	     slot->h = h;
-
-	     l = eina_list_next(l);
+	     x++;
 	  }
      }
 
@@ -1083,8 +1111,8 @@ _scale_place_slotted()
 		  it->h = slot->h - spacing;
 		  it->w = it->h * (double)it->bd->w / (double)it->bd->h;
 	       }
-	     it->x = slot->x + ((slot->w - spacing) - it->w)/2.0;
-	     it->y = slot->y + ((slot->h - spacing) - it->h)/2.0;
+	     it->x = slot->x + (slot->w - it->w)/2.0;
+	     it->y = slot->y + (slot->h - it->h)/2.0;
 
 	     DBG("place: %d:%d %dx%d -> %d:%d %dx%d\n",
 		 (int)it->bd_x, (int)it->bd_y, (int)it->bd->w, (int)it->bd->h,
@@ -1233,8 +1261,8 @@ scale_run(E_Manager *man)
      }
    else
      {
-	use_w = zone->w - spacing*2;
-	use_h = zone->h - spacing*2;
+	use_w = zone->w - spacing;
+	use_h = zone->h - spacing;
 	use_x = use_y = spacing;
      }
 
@@ -1280,12 +1308,12 @@ scale_run(E_Manager *man)
 	while (i++ < SHRINK_RUNS && _scale_shrink());
 	DBG("shrunk %d", i);
 
-	if (scale_conf->grow)
-	  {
-	     i = 0;
-	     while (i++ < GROW_RUNS && _scale_grow());
-	     DBG("grow %d", i);
-	  }
+	/* if (scale_conf->grow)
+	 *   {
+	 *      i = 0;
+	 *      while (i++ < GROW_RUNS && _scale_grow());
+	 *      DBG("grow %d", i);
+	 *   } */
      }
 
    if (show_all_desks)//&& !scale_conf->desks_layout_mode)
@@ -1305,11 +1333,11 @@ scale_run(E_Manager *man)
 	     if (it->x + it->w > max_x) max_x = it->x + it->w;
 	     if (it->y + it->h > max_y) max_y = it->y + it->h;
 	  }
-
+	
 	EINA_LIST_FOREACH(items, l, it)
 	  {
-	     it->x = (it->x - min_x) + use_x + (use_w - max_x)/2;
-	     it->y = (it->y - min_y) + use_y + (use_h - max_y)/2;
+	     it->x = (it->x - min_x) + use_x + ((use_w - use_x) - (max_x - min_x))/2.0;
+	     it->y = (it->y - min_y) + use_y + ((use_h - use_y) - (max_y - min_y))/2.0;
 
 	     if (it->dx > 0) it->bd_x =   zone->w + it->bd->x/4;
 	     if (it->dy > 0) it->bd_y =   zone->h + it->bd->y/4;
