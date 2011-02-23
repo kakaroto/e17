@@ -1,5 +1,8 @@
+#include <e.h>
 #include <Elementary.h>
 #include <Efreet.h>
+
+#include "elfe_config.h"
 
 Evas_Object *
 elfe_utils_fdo_icon_add(Evas_Object *parent, const char *icon, int size)
@@ -35,7 +38,9 @@ elfe_utils_fdo_icon_add(Evas_Object *parent, const char *icon, int size)
      }
 
    if (path)
-	elm_icon_file_set(ic, path, NULL);
+       elm_icon_file_set(ic, path, NULL);
+   else
+       elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/application-default");
 
    return ic;
 }

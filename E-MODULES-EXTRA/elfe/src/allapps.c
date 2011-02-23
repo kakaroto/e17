@@ -1,6 +1,8 @@
+#include <e.h>
 #include <Elementary.h>
 
 #include "utils.h"
+#include "elfe_config.h"
 
 typedef struct _Elfe_Grid_Item Elfe_Grid_Item;
 
@@ -43,7 +45,10 @@ _icon_get(void *data, Evas_Object *obj, const char *part)
    if (!strcmp(part, "elm.swallow.icon"))
      {
 	ic = elm_icon_add(obj);
-	elm_icon_file_set(ic, gitem->icon_path, NULL);
+        if (gitem->icon_path && gitem->icon_path[0] == '/')
+            elm_icon_file_set(ic, gitem->icon_path, NULL);
+        else
+            elm_icon_file_set(ic, elfe_home_cfg->theme, gitem->icon_path);
      }
 
    return ic;
@@ -100,6 +105,8 @@ _add_items(Evas_Object *parent, Efreet_Menu *entry)
 	   case EFREET_MENU_ENTRY_DESKTOP :
 	      gitem = calloc(1, sizeof(Elfe_Grid_Item));
 	      gitem->icon_path = elfe_utils_fdo_icon_path_get(it, 72);
+              if (!gitem->icon_path)
+                  gitem->icon_path = eina_stringshare_add("icon/application-default");
 	      gitem->menu = it;
 	      grid_items = eina_list_append(grid_items, gitem);
 	      elm_gengrid_item_append(parent, &app_itc, gitem, _item_selected, gitem);
