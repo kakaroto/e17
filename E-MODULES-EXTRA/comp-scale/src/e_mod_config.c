@@ -3,17 +3,21 @@
 
 struct _E_Config_Dialog_Data
 {
-  int		grow;
-  int		tight;
+  int           layout_mode;
   double	duration;
   double	spacing;
+  int		grow;
+  int		tight;
+
+  int           desks_layout_mode;
   double	desks_duration;
   double	desks_spacing;
+  int		desks_grow;
+  int		desks_tight;
+
   int		fade_popups;
   int		fade_desktop;
   int		fade_windows;
-  int           layout_mode;
-  int           desks_layout_mode;
 };
 
 
@@ -82,6 +86,9 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->fade_desktop	     = scale_conf->fade_desktop;
    cfdata->layout_mode	     = scale_conf->layout_mode;
    cfdata->desks_layout_mode = scale_conf->desks_layout_mode;
+   cfdata->desks_tight	     = scale_conf->desks_tight;
+   cfdata->desks_grow	     = scale_conf->desks_grow;
+
 }
 
 static void
@@ -101,6 +108,8 @@ _cb_test(void *data, void *data2)
    scale_conf->fade_desktop	 = cfdata->fade_desktop;
    scale_conf->layout_mode	 = cfdata->layout_mode;
    scale_conf->desks_layout_mode = cfdata->desks_layout_mode;
+   scale_conf->desks_grow	 = cfdata->desks_grow;
+   scale_conf->desks_tight	 = cfdata->desks_tight;
 
    scale_run(e_manager_current_get());
 }
@@ -128,10 +137,6 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_framelist_object_append (of, ow);
    ow = e_widget_check_add(evas, D_("Slotted Layout"), &(cfdata->layout_mode));
    e_widget_framelist_object_append(of, ow);
-
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-
-   of = e_widget_framelist_add(evas, D_("Layout Options"), 0);
    e_widget_framelist_content_align_set(of, 0.0, 0.0);
    ow = e_widget_check_add(evas, D_("Grow more!"), &(cfdata->grow));
    e_widget_framelist_object_append(of, ow);
@@ -139,7 +144,6 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    e_widget_table_object_append(ot, o, 0, 0, 1, 1, 1, 1, 0, 0);
-
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Show All Desktops"), 0);
@@ -154,24 +158,26 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.1, 3.0,
                              0.01, 0, &(cfdata->desks_duration), NULL,100);
    e_widget_framelist_object_append (of, ow);
-   ow = e_widget_check_add(evas, D_("Fade in windows"), &(cfdata->fade_windows));
-   e_widget_framelist_object_append(of, ow);
    ow = e_widget_check_add(evas, D_("Slotted Layout"), &(cfdata->desks_layout_mode));
    e_widget_framelist_object_append(of, ow);
-
+   ow = e_widget_check_add(evas, D_("Grow more!"), &(cfdata->desks_grow));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("Keep it tight!"), &(cfdata->desks_tight));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("Fade in windows"), &(cfdata->fade_windows));
+   e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
+   e_widget_table_object_append(ot, o, 1, 0, 1, 1, 1, 1, 0, 0);
 
-   of = e_widget_framelist_add(evas, D_(""), 0);
+   of = e_widget_framelist_add(evas, D_(""), 1);
    ow = e_widget_check_add(evas, D_("Fade out shelves and popups"), &(cfdata->fade_popups));
    e_widget_framelist_object_append(of, ow);
    ow = e_widget_check_add(evas, D_("Darken desktop"), &(cfdata->fade_desktop));
    e_widget_framelist_object_append(of, ow);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-
-   e_widget_table_object_append(ot, o, 1, 0, 1, 1, 1, 1, 0, 0);
-
    ow = e_widget_button_add(evas, D_("Test"), NULL, _cb_test, cfdata, NULL);
-   e_widget_table_object_append(ot, ow, 0, 1, 2, 1, 0, 0, 0, 0);
+   e_widget_framelist_object_append(of, ow);
+   e_widget_table_object_append(ot, of, 0, 1, 2, 1, 1, 1, 0, 0);
+
 
    return ot;
 }
@@ -191,6 +197,8 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    scale_conf->fade_desktop	 = cfdata->fade_desktop;
    scale_conf->layout_mode	 = cfdata->layout_mode;
    scale_conf->desks_layout_mode = cfdata->desks_layout_mode;
+   scale_conf->desks_grow	 = cfdata->desks_grow;
+   scale_conf->desks_tight	 = cfdata->desks_tight;
 
    e_config_save_queue();
    return 1;

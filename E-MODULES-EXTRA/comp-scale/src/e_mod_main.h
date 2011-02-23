@@ -22,26 +22,28 @@ struct _Config
   E_Config_Dialog *cfd;
   const char    *theme_path;
 
+  int           layout_mode;
   unsigned char tight;
   unsigned char grow;
-  unsigned char fade_popups;
-  unsigned char fade_windows;
-  unsigned char fade_desktop;
   double	scale_duration;
   double	spacing;
+
+  int           desks_layout_mode;
+  unsigned char desks_tight;
+  unsigned char desks_grow;
   double	desks_duration;
   double	desks_spacing;
-  int           layout_mode;
-  int           desks_layout_mode;
-};
+  unsigned char fade_windows;
 
+  unsigned char fade_popups;
+  unsigned char fade_desktop;
+};
 
 struct _Config_Item
 {
   const char *id;
   int switch2;
 };
-
 
 struct _E_Comp_Win
 {

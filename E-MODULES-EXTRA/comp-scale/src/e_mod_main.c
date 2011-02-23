@@ -7,10 +7,10 @@
 //  while scale is active?
 //
 
-/* #define DBG(...) */
-#define DBG(...) printf(__VA_ARGS__)
+#define DBG(...)
+/* #define DBG(...) printf(__VA_ARGS__) */
 
-#define SPACING 32
+#define OFFSET 32
 #define PLACE_RUNS  10000
 #define GROW_RUNS   1000
 #define SHRINK_RUNS 2000
@@ -99,6 +99,7 @@ static E_Zone *zone = NULL;
 static int max_x, max_y, min_x, min_y;
 static int use_x, use_y, use_w, use_h;
 static int max_width, max_height;
+static int spacing;
 static int step_count;
 static Item *background = NULL;
 static Item *selected_item = NULL;
@@ -479,13 +480,8 @@ _scale_grow()
    Eina_List *l, *ll;
 
    int cont = 0;
-   int overlap, off;
+   int overlap;
    double grow_l, grow_r, grow_d, grow_u;
-
-   if (show_all_desks)
-     off = scale_conf->desks_spacing;
-   else
-     off = scale_conf->spacing;
 
    /* double mean = 0; */
    /* EINA_LIST_FOREACH(items, l, it)
@@ -534,26 +530,26 @@ _scale_grow()
 	  {
 	     if (it == ot)
 	       continue;
-	     if (grow_l && E_INTERSECTS(it->x - grow_l - off ,it->y,
-					it->w + off*2, it->h + off*2,
+	     if (grow_l && E_INTERSECTS(it->x - grow_l - spacing ,it->y,
+					it->w + spacing*2, it->h + spacing*2,
 					ot->x, ot->y, ot->w, ot->h))
 	       grow_l = 0;
 
-	     if (grow_r && E_INTERSECTS(it->x - off, it->y - off,
-					it->w + grow_r + off*2, it->h + off*2,
+	     if (grow_r && E_INTERSECTS(it->x - spacing, it->y - spacing,
+					it->w + grow_r + spacing*2, it->h + spacing*2,
 					ot->x, ot->y, ot->w, ot->h))
 	       grow_r = 0;
 
 	     if ((grow_l == 0) && (grow_r == 0) && (overlap = 1))
 	       break;
 
-	     if (grow_u && E_INTERSECTS(it->x - off, it->y - off - grow_u,
-					it->w + off*2, it->h + off*2,
+	     if (grow_u && E_INTERSECTS(it->x - spacing, it->y - spacing - grow_u,
+					it->w + spacing*2, it->h + spacing*2,
 					ot->x, ot->y, ot->w, ot->h))
 	       grow_u = 0;
 
-	     if (grow_d && E_INTERSECTS(it->x - off, it->y - off,
-					it->w + off*2, it->h + grow_d + off*2,
+	     if (grow_d && E_INTERSECTS(it->x - spacing, it->y - spacing,
+					it->w + spacing*2, it->h + grow_d + spacing*2,
 					ot->x, ot->y, ot->w, ot->h))
 	       grow_d = 0;
 
@@ -582,7 +578,6 @@ _scale_grow()
 
 	     it->w = it->h * (double)it->bd->w / (double)it->bd->h;
 	  }
-
 	it->x -= grow_l;
 	it->y -= grow_u;
 
@@ -807,27 +802,15 @@ _scale_shrink()
    Eina_List *l, *ll;
    Item *it, *ot;
    int shrunk = 0;
-   int off;
    double move_x;
    double move_y;
-
-   int min_x = zone->w;
-   int min_y = zone->h;
-   int max_x = 0;
-   int max_y = 0;
-
-   if (show_all_desks)
-     off = scale_conf->desks_spacing;
-   else
-     off = scale_conf->spacing;
-
 
    EINA_LIST_REVERSE_FOREACH(items, l, it)
      {
 	if (show_all_desks)
 	  {
-	     move_x = ((it->x + it->w/2.0) - (max_x - min_x)/2) / 5.0;
-	     move_y = ((it->y + it->h/2.0) - (max_y - min_y)/2) / 5.0;
+	     move_x = ((it->x + it->w/2.0) - zone->w/2.0) / 5.0;
+	     move_y = ((it->y + it->h/2.0) - zone->h/2.0) / 5.0;
 	  }
 	else
 	  {
@@ -845,7 +828,8 @@ _scale_shrink()
 	     while(move_x)
 	       {
 		  if (E_INTERSECTS(it->x - move_x, it->y, it->w, it->h,
-				   ot->x - off, ot->y - off, ot->w + off*2, ot->h + off*2))
+				   ot->x - spacing, ot->y - spacing,
+				   ot->w + spacing*2, ot->h + spacing*2))
 		    move_x = move_x / 2.0;
 		  else break;
 	       }
@@ -853,7 +837,8 @@ _scale_shrink()
 	     while(move_y)
 	       {
 		  if (E_INTERSECTS(it->x, it->y - move_y, it->w, it->h,
-				   ot->x - off, ot->y - off, ot->w + off*2, ot->h + off*2))
+				   ot->x - spacing, ot->y - spacing,
+				   ot->w + spacing*2, ot->h + spacing*2))
 		    move_y = move_y / 2.0;
 		  else break;
 	       }
@@ -867,7 +852,6 @@ _scale_shrink()
 	if (move_y > 1 || move_x > 1)
 	  shrunk++;
      }
-   printf("shrunk___ %d\n",shrunk);
 
    return shrunk;
 }
@@ -905,6 +889,7 @@ _scale_place_slotted()
    int rows, cols, cnt, x, y, w, h;
    int fast = 0;
    int cont = 0;
+   double min_x, max_x, min_y, max_y;
 
    cnt = eina_list_count(items);
 
@@ -922,7 +907,6 @@ _scale_place_slotted()
 
    DBG("%d rows, %d cols -- cnt %d\n", rows, cols, cnt);
 
-   double min_x, max_x, min_y, max_y;
    max_x = max_y = 0;
    min_x = min_y = 100000;
 
@@ -942,13 +926,13 @@ _scale_place_slotted()
      {
 	for (x = 0; x < cols; x++)
 	  {
+	     if (fast && !l) break;
+
 	     slot = E_NEW(Slot, 1);
 	     slot->x = min_x + x * w;
 	     slot->y = min_y + y * h;
 	     slot->w = w;
 	     slot->h = h;
-	     slot->items = eina_list_clone(items);
-	     cur_slot = slot;
 
 	     if (fast)
 	       {
@@ -957,12 +941,14 @@ _scale_place_slotted()
 	       }
 	     else
 	       {
+		  cur_slot = slot;
+		  slot->items = eina_list_clone(items);
 		  slot->items = eina_list_sort(slot->items, cnt, _cb_sort_nearest);
 		  slot->it = eina_list_data_get(slot->items);
 		  slot->items = eina_list_remove_list(slot->items, slot->items);
+		  slot->min = _slot_dist(slot->it, slot);
 	       }
 
-	     slot->min = _slot_dist(slot->it, slot);
 	     slots = eina_list_append(slots, slot);
 
 	     DBG("add slot: %dx%d,   \t%f -> %d:%d\n", slot->x, slot->y, slot->min,
@@ -992,33 +978,35 @@ _scale_place_slotted()
 
 		  Item *it1 = eina_list_data_get(slot->items);
 		  Item *it2 = eina_list_data_get(slot2->items);
-		  if (it1 && it2)
+		  if (!it1 || !it2)
+		    continue;
+
+		  double d1 = _slot_dist(it1, slot);
+		  double d2 = _slot_dist(it2, slot2);
+
+		  cont = 1;
+
+		  DBG("%dx%d - compare:\n\ts1: %dx%d (%dx%d:%f),\n\ts2 %dx%d (%dx%d:%f)\n",
+		      (int)slot->it->x, (int)slot->it->y,
+		      slot->x, slot->y, (int)it1->x, (int)it1->y, d1,
+		      slot2->x, slot2->y, (int)it2->x, (int)it2->y, d2);
+
+		  if (slot->it->in_slots > 1 && slot->min + d1 >= slot2->min + d2)
 		    {
-		       double d1 = _slot_dist(it1, slot);
-		       double d2 = _slot_dist(it2, slot2);
-
-		       cont = 1;
-
-		       DBG("%dx%d - compare:\n\ts1: %dx%d (%dx%d:%f),\n\ts2 %dx%d (%dx%d:%f)\n",
-			   (int)slot->it->x, (int)slot->it->y,
-			   slot->x, slot->y, (int)it1->x, (int)it1->y, d1,
-			   slot2->x, slot2->y, (int)it2->x, (int)it2->y, d2);
-
-		       if (slot->it->in_slots > 1 && slot->min + d1 >= slot2->min + d2)
-			 {
-
-			    slot->it->in_slots--;
-			    slot->it = it1;
-			    slot->min = d1;
-			    slot->items = eina_list_remove_list(slot->items, slot->items);
-			    break;
-			 }
+		       slot->it->in_slots--;
+		       slot->it = it1;
+		       slot->min = d1;
+		       slot->items = eina_list_remove_list(slot->items, slot->items);
+		       break;
 		    }
 	       }
 	  }
      }
 
-   do {
+   cont = 1;
+
+   while (fast && cont)
+     {
         cont = 0;
 	EINA_LIST_FOREACH(slots, l, slot)
 	  {
@@ -1031,7 +1019,6 @@ _scale_place_slotted()
 		  if (d1 > d2)
 		    {
 		       it = slot->it;
-
 		       slot->it = slot2->it;
 		       slot2->it = it;
 		       cont = 1;
@@ -1039,7 +1026,6 @@ _scale_place_slotted()
 	       }
 	  }
      }
-   while (fast && cont);
 
    EINA_LIST_FOREACH(slots, l, slot)
      {
@@ -1080,7 +1066,6 @@ _scale_place_slotted()
 	     l = eina_list_next(l);
 	  }
      }
-   int spacing = scale_conf->spacing;
 
    EINA_LIST_FOREACH(slots, l, slot)
      {
@@ -1098,11 +1083,12 @@ _scale_place_slotted()
 		  it->h = slot->h - spacing;
 		  it->w = it->h * (double)it->bd->w / (double)it->bd->h;
 	       }
-	     it->x = slot->x + (slot->w - it->w)/2.0;
-	     it->y = slot->y + (slot->h - it->h)/2.0;
-	     /* printf("place: %d:%d %dx%d -> %d:%d %dx%d\n",
-	      * 	    (int)it->bd_x, (int)it->bd_y, (int)it->bd->w, (int)it->bd->h,
-	      * 	    (int)it->x, (int)it->y, (int)it->w, (int)it->h); */
+	     it->x = slot->x + ((slot->w - spacing) - it->w)/2.0;
+	     it->y = slot->y + ((slot->h - spacing) - it->h)/2.0;
+
+	     DBG("place: %d:%d %dx%d -> %d:%d %dx%d\n",
+		 (int)it->bd_x, (int)it->bd_y, (int)it->bd->w, (int)it->bd->h,
+		 (int)it->x, (int)it->y, (int)it->w, (int)it->h);
 	  }
 
 	EINA_LIST_FREE(slot->items, it);
@@ -1132,7 +1118,7 @@ static void
 _scale_place_natural()
 {
    Eina_List *l;
-   int spacing, i = 0;
+   int offset, i = 0;
    Item *it;
 
    max_width  = zone->w;
@@ -1146,20 +1132,17 @@ _scale_place_natural()
 
    items = eina_list_sort(items, eina_list_count(items), _cb_sort_center);
 
-   if (show_all_desks)
-     spacing = scale_conf->desks_spacing;
-   else
-     spacing = scale_conf->spacing;
+   offset = spacing;
 
-   if (scale_conf->grow && (spacing < SPACING))
-     spacing = SPACING;
-   if (scale_conf->tight && (spacing < SPACING))
-     spacing = SPACING;
+   if (scale_conf->grow && (spacing < OFFSET))
+     offset = OFFSET;
+   if (scale_conf->tight && (spacing < OFFSET))
+     offset = OFFSET;
 
    step_count = 0;
 
    while ((i++ < PLACE_RUNS) &&
-	  (_scale_place(spacing) ||
+	  (_scale_place(offset) ||
 	   (min_x < use_x) ||
 	   (min_y < use_y) ||
 	   (max_x > use_w) ||
@@ -1189,8 +1172,6 @@ _scale_place_natural()
 	     if ((max_y > use_h) && (it->dy > 0) && it->y > zone->h) it->y -= 4.0;
 	  }
      }
-
-   DBG("place %d\n", i);
 }
 
 void
@@ -1199,7 +1180,7 @@ scale_run(E_Manager *man)
    Eina_List *l;
    E_Manager_Comp_Source *src;
    Evas *e;
-   int i, spacing;
+   int i;
    Item *it;
 
    zone = e_util_zone_current_get(e_manager_current_get());
@@ -1245,16 +1226,16 @@ scale_run(E_Manager *man)
    if (!scale_conf->fade_popups)
      {
 	e_zone_useful_geometry_get(zone, &use_x, &use_y, &use_w, &use_h);
-	use_x += spacing;
-	use_y += spacing;
 	use_w += use_x - spacing*2;
 	use_h += use_y - spacing*2;
+	use_x += spacing;
+	use_y += spacing;
      }
    else
      {
-	use_x = use_y = spacing;
 	use_w = zone->w - spacing*2;
 	use_h = zone->h - spacing*2;
+	use_x = use_y = spacing;
      }
 
    min_x = -zone->w * zone->desk_x_current;
@@ -1262,6 +1243,7 @@ scale_run(E_Manager *man)
    max_x =  zone->w + zone->w * ((zone->desk_x_count - 1) - zone->desk_x_current);
    max_y =  zone->h + zone->h * ((zone->desk_y_count - 1) - zone->desk_y_current);
 
+   /* scale all windows down to be next to each other on one zone */
    if (show_all_desks)
      {
 	if (scale_conf->desks_layout_mode)
@@ -1279,25 +1261,34 @@ scale_run(E_Manager *man)
 
    min_x = use_x;
    min_y = use_y;
-   max_x = use_h;
-   max_y = use_w;
+   max_x = use_w;
+   max_y = use_h;
 
-   if (scale_conf->grow)
+   if ((scale_conf->grow && !show_all_desks) ||
+       (scale_conf->desks_grow && show_all_desks))
      {
 	i = 0;
    	while (i++ < GROW_RUNS && _scale_grow());
 	DBG("grow %d", i);
      }
 
-   if (scale_conf->tight)
+   if ((scale_conf->tight && !show_all_desks) ||
+       (scale_conf->desks_tight && show_all_desks))
      {
 	items = eina_list_sort(items, eina_list_count(items), _cb_sort_center);
 	i = 0;
 	while (i++ < SHRINK_RUNS && _scale_shrink());
 	DBG("shrunk %d", i);
+
+	if (scale_conf->grow)
+	  {
+	     i = 0;
+	     while (i++ < GROW_RUNS && _scale_grow());
+	     DBG("grow %d", i);
+	  }
      }
 
-   if (show_all_desks)
+   if (show_all_desks)//&& !scale_conf->desks_layout_mode)
      {
 	/* center and move windows near visible desk
 	 * to make the sliding smoother */
@@ -1317,8 +1308,8 @@ scale_run(E_Manager *man)
 
 	EINA_LIST_FOREACH(items, l, it)
 	  {
-	     it->x = it->x - min_x + ((use_x + use_w) - (max_x - min_x))/2;
-	     it->y = it->y - min_y + ((use_y + use_h) - (max_y - min_y))/2;
+	     it->x = (it->x - min_x) + use_x + (use_w - max_x)/2;
+	     it->y = (it->y - min_y) + use_y + (use_h - max_y)/2;
 
 	     if (it->dx > 0) it->bd_x =   zone->w + it->bd->x/4;
 	     if (it->dy > 0) it->bd_y =   zone->h + it->bd->y/4;
@@ -1576,18 +1567,22 @@ e_modapi_init(E_Module *m)
 #define T Config
 #define D conf_edd
    E_CONFIG_VAL(D, T, version, INT);
-   E_CONFIG_VAL(D, T, grow, UCHAR);
-   E_CONFIG_VAL(D, T, tight, UCHAR);
    E_CONFIG_VAL(D, T, fade_popups, UCHAR);
    E_CONFIG_VAL(D, T, fade_desktop, UCHAR);
-   E_CONFIG_VAL(D, T, fade_windows, UCHAR);
-   E_CONFIG_VAL(D, T, fade_desktop, UCHAR);
+
+   E_CONFIG_VAL(D, T, layout_mode, INT);
+   E_CONFIG_VAL(D, T, grow, UCHAR);
+   E_CONFIG_VAL(D, T, tight, UCHAR);
    E_CONFIG_VAL(D, T, scale_duration, DOUBLE);
    E_CONFIG_VAL(D, T, spacing, DOUBLE);
+
+   E_CONFIG_VAL(D, T, desks_layout_mode, INT);
+   E_CONFIG_VAL(D, T, desks_grow, UCHAR);
+   E_CONFIG_VAL(D, T, desks_tight, UCHAR);
    E_CONFIG_VAL(D, T, desks_duration, DOUBLE);
    E_CONFIG_VAL(D, T, desks_spacing, DOUBLE);
-   E_CONFIG_VAL(D, T, layout_mode, INT);
-   E_CONFIG_VAL(D, T, desks_layout_mode, INT);
+   E_CONFIG_VAL(D, T, fade_windows, UCHAR);
+
    E_CONFIG_LIST(D, T, conf_items, conf_item_edd);
 
    scale_conf = e_config_domain_load("module.scale", conf_edd);
