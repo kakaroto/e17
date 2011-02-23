@@ -12,6 +12,8 @@ struct _E_Config_Dialog_Data
   int		fade_popups;
   int		fade_desktop;
   int		fade_windows;
+  int           layout_mode;
+  int           desks_layout_mode;
 };
 
 
@@ -68,16 +70,18 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void
 _fill_data(E_Config_Dialog_Data *cfdata)
 {
-   cfdata->tight	  = scale_conf->tight;
-   cfdata->grow		  = scale_conf->grow;
-   cfdata->duration	  = scale_conf->scale_duration;
-   cfdata->spacing	  = scale_conf->spacing;
-   cfdata->desks_duration = scale_conf->desks_duration;
-   cfdata->desks_spacing  = scale_conf->desks_spacing;
-   cfdata->fade_popups	  = scale_conf->fade_popups;
-   cfdata->fade_desktop	  = scale_conf->fade_desktop;
-   cfdata->fade_windows	  = scale_conf->fade_windows;
-   cfdata->fade_desktop	  = scale_conf->fade_desktop;
+   cfdata->tight	     = scale_conf->tight;
+   cfdata->grow		     = scale_conf->grow;
+   cfdata->duration	     = scale_conf->scale_duration;
+   cfdata->spacing	     = scale_conf->spacing;
+   cfdata->desks_duration    = scale_conf->desks_duration;
+   cfdata->desks_spacing     = scale_conf->desks_spacing;
+   cfdata->fade_popups	     = scale_conf->fade_popups;
+   cfdata->fade_desktop	     = scale_conf->fade_desktop;
+   cfdata->fade_windows	     = scale_conf->fade_windows;
+   cfdata->fade_desktop	     = scale_conf->fade_desktop;
+   cfdata->layout_mode	     = scale_conf->layout_mode;
+   cfdata->desks_layout_mode = scale_conf->desks_layout_mode;
 }
 
 static void
@@ -85,16 +89,18 @@ _cb_test(void *data, void *data2)
 {
    E_Config_Dialog_Data *cfdata = data;
 
-   scale_conf->grow	      = cfdata->grow;
-   scale_conf->tight	      = cfdata->tight;
-   scale_conf->scale_duration = cfdata->duration;
-   scale_conf->spacing	      = cfdata->spacing;
-   scale_conf->desks_duration = cfdata->desks_duration;
-   scale_conf->desks_spacing  = cfdata->desks_spacing;
-   scale_conf->fade_popups    = cfdata->fade_popups;
-   scale_conf->fade_desktop   = cfdata->fade_desktop;
-   scale_conf->fade_windows   = cfdata->fade_windows;
-   scale_conf->fade_desktop   = cfdata->fade_desktop;
+   scale_conf->grow		 = cfdata->grow;
+   scale_conf->tight		 = cfdata->tight;
+   scale_conf->scale_duration	 = cfdata->duration;
+   scale_conf->spacing		 = cfdata->spacing;
+   scale_conf->desks_duration	 = cfdata->desks_duration;
+   scale_conf->desks_spacing	 = cfdata->desks_spacing;
+   scale_conf->fade_popups	 = cfdata->fade_popups;
+   scale_conf->fade_desktop	 = cfdata->fade_desktop;
+   scale_conf->fade_windows	 = cfdata->fade_windows;
+   scale_conf->fade_desktop	 = cfdata->fade_desktop;
+   scale_conf->layout_mode	 = cfdata->layout_mode;
+   scale_conf->desks_layout_mode = cfdata->desks_layout_mode;
 
    scale_run(e_manager_current_get());
 }
@@ -120,6 +126,9 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.1, 3.0,
                              0.01, 0, &(cfdata->duration), NULL,100);
    e_widget_framelist_object_append (of, ow);
+   ow = e_widget_check_add(evas, D_("Slotted Layout"), &(cfdata->layout_mode));
+   e_widget_framelist_object_append(of, ow);
+
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, D_("Layout Options"), 0);
@@ -147,6 +156,9 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_framelist_object_append (of, ow);
    ow = e_widget_check_add(evas, D_("Fade in windows"), &(cfdata->fade_windows));
    e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("Slotted Layout"), &(cfdata->desks_layout_mode));
+   e_widget_framelist_object_append(of, ow);
+
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, D_(""), 0);
@@ -167,16 +179,19 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 static int
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   scale_conf->grow	      = cfdata->grow;
-   scale_conf->tight	      = cfdata->tight;
-   scale_conf->scale_duration = cfdata->duration;
-   scale_conf->spacing	      = cfdata->spacing;
-   scale_conf->desks_duration = cfdata->desks_duration;
-   scale_conf->desks_spacing  = cfdata->desks_spacing;
-   scale_conf->fade_popups    = cfdata->fade_popups;
-   scale_conf->fade_desktop   = cfdata->fade_desktop;
-   scale_conf->fade_windows   = cfdata->fade_windows;
-   scale_conf->fade_desktop   = cfdata->fade_desktop;
+   scale_conf->grow		 = cfdata->grow;
+   scale_conf->tight		 = cfdata->tight;
+   scale_conf->scale_duration	 = cfdata->duration;
+   scale_conf->spacing		 = cfdata->spacing;
+   scale_conf->desks_duration	 = cfdata->desks_duration;
+   scale_conf->desks_spacing	 = cfdata->desks_spacing;
+   scale_conf->fade_popups	 = cfdata->fade_popups;
+   scale_conf->fade_desktop	 = cfdata->fade_desktop;
+   scale_conf->fade_windows	 = cfdata->fade_windows;
+   scale_conf->fade_desktop	 = cfdata->fade_desktop;
+   scale_conf->layout_mode	 = cfdata->layout_mode;
+   scale_conf->desks_layout_mode = cfdata->desks_layout_mode;
+
    e_config_save_queue();
    return 1;
 }

@@ -21,7 +21,7 @@ struct _Config
   int		 version;
   E_Config_Dialog *cfd;
   const char    *theme_path;
-  
+
   unsigned char tight;
   unsigned char grow;
   unsigned char fade_popups;
@@ -31,6 +31,8 @@ struct _Config
   double	spacing;
   double	desks_duration;
   double	desks_spacing;
+  int           layout_mode;
+  int           desks_layout_mode;
 };
 
 
