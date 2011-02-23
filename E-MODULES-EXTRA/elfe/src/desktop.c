@@ -69,7 +69,7 @@ _scroller_scroll_anim_stop_cb(void *data , Evas_Object *obj, void *event_info )
    for (i = 0; i < ELFE_DESKTOP_NUM; i++)
      {
 	Evas_Object *o_edje = elm_layout_edje_get(eina_list_nth(desk->selector_objs, i));
-	if (x < (i+1) * 480 && x >= i*480)
+	if ( (x < ((i+1) * w)) && (x >= ( i * w)))
 	  {
               desk->current_desktop = i;
 	     edje_object_signal_emit(o_edje, "select", "elfe");
