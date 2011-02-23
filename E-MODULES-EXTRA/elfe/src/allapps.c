@@ -129,6 +129,21 @@ _list_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
     elm_gengrid_item_size_set(obj, size, size);
 }
 
+static void
+_list_del_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
+{
+    Elfe_Grid_Item *it;
+
+    EINA_LIST_FREE(grid_items, it)
+      {
+	 if (!it) continue;
+	 if (it->icon_path)
+	   eina_stringshare_del(it->icon_path);
+	 free(it);
+      }
+    grid_items = NULL;
+}
+
 Evas_Object *
 elfe_allapps_add(Evas_Object *parent)
 {
@@ -144,6 +159,8 @@ elfe_allapps_add(Evas_Object *parent)
 
    evas_object_event_callback_add(list, EVAS_CALLBACK_RESIZE,
 				  _list_resize_cb, NULL);
+   evas_object_event_callback_add(list, EVAS_CALLBACK_DEL,
+				  _list_del_cb, NULL);
 
    elm_gengrid_multi_select_set(list, EINA_FALSE);
    elm_gengrid_bounce_set(list, EINA_FALSE, EINA_TRUE);
