@@ -180,20 +180,25 @@ _allapps_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
    Evas_Object *ic;
    Evas_Coord x, y;
    Evas_Object *o_edje;
+   Evas_Coord ow, oh;
+   Evas_Coord size = 0;
 
+   evas_object_geometry_get(hwin->desktop, NULL, NULL, &ow, &oh);
+
+   size = MIN(ow, oh) / 5;
 
    elfe_desktop_edit_mode_set(hwin->desktop, EINA_TRUE);
 
    o_edje = elm_layout_edje_get(hwin->layout);
    edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
  
-   ic = elfe_utils_fdo_icon_add(o_edje, entry->icon, 92);
+   ic = elfe_utils_fdo_icon_add(o_edje, entry->icon, size);
    evas_object_show(ic);
    evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
-   evas_object_resize(ic, 92, 92);
-   evas_object_move(ic, x - 92 / 2, y - 92 /2);
+   evas_object_resize(ic, size, size);
+   evas_object_move(ic, x - size / 2, y - size /2);
    hwin->floating_icon = ic;
- 
+
    evas_object_del(hwin->allapps);
    hwin->allapps = NULL;
    evas_object_pass_events_set(ic, EINA_TRUE);
