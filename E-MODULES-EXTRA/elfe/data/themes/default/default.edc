@@ -1,0 +1,983 @@
+#define TOOLBAR_ITEM_SIZE 96
+#define TOOLBAR_ICON_SIZE 64
+#define TOOLBAR_MIDDLE_ITEM 2
+
+#define TOOLBAR_POSITION(_item_number) (((_item_number)*(TOOLBAR_ITEM_SIZE))-((TOOLBAR_ITEM_SIZE)*(TOOLBAR_MIDDLE_ITEM)))
+#define TOOLBAR_BUTTON(_button_name,_button_title,_xpos, clip)          \
+   part { name: "button-"_button_name"-selected";                       \
+      type: IMAGE;                                                      \
+      mouse_events: 0;                                                  \
+      clip_to: clip;                                                    \
+      description { state: "default" 0.0;                               \
+         visible: 0;                                                    \
+         min: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE;                      \
+         max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE;                      \
+         fixed: 1 1;                                                    \
+         rel1 {                                                         \
+            relative: 0.5 1;                                            \
+            offset: (_xpos+2)  (-TOOLBAR_ITEM_SIZE+2);                  \
+         }                                                              \
+         rel2 {                                                         \
+            relative: 0.5 1;                                            \
+            offset: (_xpos-2) -2;                                       \
+         }                                                              \
+         image.normal: "sel_bg.png";                                    \
+         image.border: 12 12 12 12;                                     \
+         color: 255 255 255 0;                                          \
+      }                                                                 \
+      description { state: "visible" 0.0;                               \
+         inherit: "default" 0.0;                                        \
+         visible: 1;                                                    \
+         color: 255 255 255 255;                                        \
+      }                                                                 \
+   }                                                                    \
+   part { name: "button-"_button_name"-normal";                         \
+      type: IMAGE;                                                      \
+      clip_to: clip;                                                    \
+      description { state: "default" 0.0;                               \
+         min: TOOLBAR_ICON_SIZE TOOLBAR_ICON_SIZE;                      \
+         max: TOOLBAR_ICON_SIZE TOOLBAR_ICON_SIZE;                      \
+         fixed: 1 1;                                                    \
+         rel1 {                                                         \
+            to_y: "menu.background";                                    \
+            relative: 0.5 1;                                            \
+            offset: (_xpos)  (-TOOLBAR_ITEM_SIZE);                      \
+         }                                                              \
+         rel2 {                                                         \
+            to_y: "menu.background";                                    \
+            relative: 0.5 1;                                            \
+            offset: (_xpos) 0);                                         \
+         }                                                              \
+         image.normal: _button_name".png";                              \
+      }                                                                 \
+   }                                                                    \
+   part { name: "button-"_button_name"-disable-mask";                   \
+      type: RECT;                                                       \
+      mouse_events: 1;                                                  \
+      clip_to: clip;                                                    \
+      description { state: "default" 0.0;                               \
+         fixed: 1 1;                                                    \
+         visible: 0;                                                    \
+      }                                                                 \
+      description { state: "masking" 0.0;                               \
+         rel1.to: "button-"_button_name"-normal";                       \
+         rel1.offset: 0 7;                                              \
+         rel2.to: "button-"_button_name"-normal";                       \
+         color: 0 0 0 128;                                              \
+      }                                                                 \
+   }                                                                    \
+   programs {                                                           \
+      program { name: _button_name"-pressed";                           \
+         signal: "mouse,down,*";                                        \
+         source: "button-"_button_name"-normal";                        \
+         action: STATE_SET "visible" 0.0;                               \
+         target: "button-"_button_name"-selected";                      \
+         transition: ACCELERATE 0.3;                                    \
+      }                                                                 \
+      program { name: _button_name"-released";                          \
+         signal: "mouse,up,*";                                          \
+         source: "button-"_button_name"-normal";                        \
+         action: STATE_SET "default" 0.0;                               \
+         target: "button-"_button_name"-selected";                      \
+         transition: DECELERATE 0.6;                                    \
+      }                                                                 \
+      program { name: _button_name"-clicked";                           \
+         signal: "mouse,clicked,*";                                     \
+         source: "button-"_button_name"-normal";                        \
+         action: SIGNAL_EMIT "action,"_button_name _button_name;        \
+      }                                                                 \
+      program { name: _button_name"-disable";                           \
+         signal: "button,"_button_name",disable";                       \
+         action: STATE_SET "masking" 0.0;                               \
+         target: "button-"_button_name"-disable-mask";                  \
+      }                                                                 \
+      program { name: _button_name"-enable";                            \
+         signal: "button,"_button_name",enable";                        \
+         action: STATE_SET "default" 0.0;                               \
+         target: "button-"_button_name"-disable-mask";                  \
+      }                                                                 \
+   }
+
+
+images
+{
+   image: "module_icon.png" COMP;
+}
+
+collections
+{
+   group
+   {
+      name: "icon";
+      max: 24 24;
+      parts
+      {
+         part
+         {
+            name: "image";
+            mouse_events: 0;
+            type: IMAGE;
+            description
+            {
+               state: "default" 0.0;
+               image.normal: "module_icon.png";
+            }
+         }
+      }
+   }
+
+#include "elm.edc"
+
+
+   group {
+      name: "module/elfe/main";
+      images {
+         image: "sel_bg.png" COMP;
+         image: "music.png" COMP;
+         image: "video.png" COMP;
+         image: "photo.png" COMP;
+         image: "apps.png" COMP;
+         image: "web.png" COMP;
+         image: "weather.png" COMP;
+         image: "settings.png" COMP;
+         image: "menu_bg.png" COMP;
+         image: "bg.png" COMP;
+         image: "bg_tile.png" COMP;
+         image: "windows.png" COMP;
+         image: "inwin_bg.png" COMP;
+         image: "separator.png" COMP;
+         image: "mainmenu_bg.png" COMP;
+      }
+      script {
+         public apps_list_visible;
+         public progress_bar_visible;
+
+         public apps_list_hide() {
+            run_program(PROGRAM:"hide-apps-list");
+            set_state(PART:"button-apps-selected", "default", 0.0);
+            set_int(apps_list_visible, 0);
+            run_program(PROGRAM:"hide-view-mask");
+            emit("more,hide", "");
+         }
+         public apps_list_show() {
+            set_int(apps_list_visible, 1);
+            run_program(PROGRAM:"show-apps-list");
+            set_state(PART:"button-apps-selected", "visible", 0.0);
+            run_program(PROGRAM:"show-black-view-mask");
+            emit("more,show", "");
+         }
+         public apps_list_toggle() {
+            if (get_int(apps_list_visible) == 1) apps_list_hide();
+            else apps_list_show();
+         }
+
+
+      }
+      parts {
+         /* background  */
+         part {
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               image {
+                  normal: "bg.png";
+               }
+            }
+         }
+         part {
+            type: RECT;
+            name: "top_bar";
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel2.relative: 1 0;
+               rel2.offset: 0 32;
+            }
+         }
+
+
+
+         part { name: "view-mask";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+               }
+               color: 0 0 0 0;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+               visible: 0;
+            }
+            description { state: "masking-black" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 230;
+            }
+         }
+
+         part {
+            name: "menu.background";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "mainmenu_bg.png";
+               rel1 { relative: 0.0 1.0;
+                  offset: 0 -142;
+               }
+            }
+         }
+
+         part {
+            name: "fake.clip";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               color: 255 255 255 255;
+            }
+         }
+
+         part {
+            name: "icons.clip";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "hidden" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+            description {
+               state: "masking-black" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+            }
+         }
+
+         TOOLBAR_BUTTON("windows", "Wins", TOOLBAR_POSITION(1), "icons.clip");
+         TOOLBAR_BUTTON("apps", "Apps", TOOLBAR_POSITION(2), "fake.clip");
+         TOOLBAR_BUTTON("settings", "Settings", TOOLBAR_POSITION(3), "icons.clip");
+
+         part {
+            name: "launcher.swallow";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1 { relative: 0.0 0.0;
+               }
+               rel2 { relative: 1.0 0.0;
+                  to: "menu.background";
+                  offset: -1 50;
+               }
+            }
+         }
+
+
+         part { name: "apps-list-bg";
+            type: RECT;
+            clip_to: "apps-list";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "apps-list";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "apps-list";
+                  relative: 1.0 1.0;
+                  offset: 0 -128;
+               }
+               color: 0 0 0 220;
+            }
+         }
+         part { name: "apps-list-swallow";
+            clip_to: "apps-list";
+            type: SWALLOW;
+            repeat_events: 1;
+
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1 {
+                  to: "apps-list";
+                  relative: 0.0 0.0;
+                  offset: 0 -1;
+               }
+               rel2 {
+                  to: "apps-list";
+                  relative: 1.0 1.0;
+                  offset: -1 -128;
+               }
+            }
+
+         }
+
+         part { name: "apps-list";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 0;
+               color: 255 255 255 0;
+
+               rel1 {
+                  relative: 0.0 0.0;
+
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+               }
+            }
+            description { state: "visible" 0.0;
+               rel1 {
+                  relative: 0.0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+
+
+         part {
+            name: "windowlist.clip";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+            }
+            description {
+               state: "show" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
+
+         part {
+            name: "windowlist.bg";
+            type: RECT;
+            mouse_events: 0;
+            clip_to: "windowlist.clip";
+
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 200;
+            }
+         }
+
+         part {
+            name: "windowlist.swallow";
+            type: SWALLOW;
+            mouse_events: 1;
+            clip_to: "windowlist.clip";
+            description {
+               state: "default" 0.0;
+            }
+         }
+
+         part {
+            name: "inwin.clip";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+            }
+            description {
+               state: "show" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
+
+         part {
+            name: "inwin.mask";
+            type: RECT;
+            mouse_events: 0;
+            clip_to: "inwin.clip";
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 200;
+            }
+         }
+
+         part {
+            name: "inwin.bg";
+            type: IMAGE;
+            clip_to: "inwin.clip";
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               image.normal: "inwin_bg.png";
+               image.border: 40 40 42 40;
+               /* rel1.offset: 16 64; */
+               /* rel2.offset: -15 -63; */
+            }
+         }
+
+         part {
+            name: "inwin.text.title";
+            type: TEXT;
+            clip_to: "inwin.clip";
+            scale: 1;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1.to: "inwin.bg";
+               rel1.offset: 50 40;
+               rel1.relative: 0 0;
+               rel2.to: "inwin.bg";
+               rel2.offset: -49 40;
+               rel2.relative: 1 0;
+               fixed: 1 1;
+               align: 0 0;
+               color: 255 255 255 200;
+               text {
+                  align: 0 0;
+                  size: 14;
+                  min: 0 1;
+                  font: "Sans,Bold";
+               }
+            }
+         }
+
+         part {
+            name: "separator";
+            type: IMAGE;
+            clip_to: "inwin.clip";
+            mouse_events: 0;
+            description {
+               min: 2 2;
+               max: 9999 2;
+               state: "default" 0.0;
+               fixed: 1 1;
+               image.normal: "separator.png";
+               rel1.relative: 0 1;
+               rel1.offset: 40 8;
+               rel1.to_y: "inwin.text.title";
+               rel1.to_x: "inwin.bg";
+               rel2.relative: 1 1;
+               rel2.offset: -39 8;
+               rel2.to_x: "inwin.bg";
+               rel2.to_y: "inwin.text.title";
+            }
+         }
+
+         part {
+            name: "inwin.swallow.content";
+            type: SWALLOW;
+            clip_to: "inwin.clip";
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1.to_y: "separator";
+               rel1.offset: 34 8;
+               rel2.to: "inwin.bg";
+               rel2.offset: -34 -34;
+
+            }
+         }
+
+      }
+      programs {
+         program { name: "theme-load";
+            signal: "load";
+            script {
+               set_int(apps_list_visible, 0);
+               set_state(PART:"view-mask", "hidden", 0.0);
+            }
+         }
+         program { name: "press-view-mask";
+            signal: "mouse,down,*";
+            source: "view-mask";
+            script {
+               if (get_int(apps_list_visible) == 1) {
+                  apps_list_hide();
+               } else {
+                  run_program(PROGRAM:"hide-view-mask");
+               }
+            }
+         }
+
+         program { name: "hide-view-mask";
+            action: STATE_SET "hidden" 0.0;
+            target: "view-mask";
+            target: "icons.clip";
+            transition: ACCELERATE 0.2;
+         }
+         program { name: "show-white-view-mask";
+            action: STATE_SET "hidden" 0.0;
+            target: "view-mask";
+            target: "icons.clip";
+            transition: DECELERATE 0.2;
+         }
+         program { name: "show-black-view-mask";
+            action: SIGNAL_EMIT "view,mask,show" "";
+            action: STATE_SET "masking-black" 0.0;
+            target: "view-mask";
+            target: "icons.clip";
+            transition: DECELERATE 0.2;
+         }
+         program { name: "show-apps-list";
+            action: STATE_SET "visible" 0.0;
+            target: "apps-list";
+            transition: ACCELERATE 0.2;
+         }
+
+         program { name: "hide-apps-list";
+            action: STATE_SET "default" 0.0;
+            target: "apps-list";
+            transition: DECELERATE 0.2;
+         }
+
+         program { name: "appslist,toggle";
+            action: STATE_SET "visible" 0.0;
+            signal: "appslist,toggle";
+            source: "elfe";
+            script { apps_list_toggle(); }
+            after: "apps-released";
+         }
+         program { name: "toggle-apps-list";
+            signal: "mouse,clicked,*";
+            source: "button-apps-normal";
+            script { apps_list_toggle(); }
+            after: "apps-released";
+         }
+         program { name: "windowlist,show";
+            signal: "windowlist,show";
+            source: "elfe";
+            action: STATE_SET "show" 0.0;
+            target: "windowlist.clip";
+            transition: ACCELERATE 0.2;
+         }
+
+         program { name: "inwin,show";
+            signal: "inwin,show";
+            source: "elfe";
+            action: STATE_SET "show" 0.0;
+            target: "inwin.clip";
+            transition: ACCELERATE 0.2;
+         }
+
+         program { name: "inwin,hide";
+            signal: "inwin,hide";
+            source: "elfe";
+            action: STATE_SET "default" 0.0;
+            target: "inwin.clip";
+            transition: DECELERATE 0.5;
+         }
+
+      }
+   }
+   group {
+      name: "elfe/desktop/gadget/frame";
+      parts {
+         part {
+            name: "elfe.swallow.content";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+            }
+         }
+      }
+   }
+
+   group {
+      name: "elfe/desktop/frame";
+      parts {
+         part {
+            name: "frame";
+            type: RECT;
+            description {
+               state: "vibration" 0.0;
+               min: 100 100;
+               max: 100 100;
+               align: 0.5 0.5;
+               color: 200 128 0 255;
+               //               image.normal: "frame.png";
+               /* map { */
+               /*    on: 0; */
+               /*    rotation.z: 0; */
+               /* } */
+            }
+            description {
+               state: "vibration" 0.1;
+               inherit: "default" 0.0;
+               rel1.offset: -30 -30;
+               rel2.offset: 30 30;
+
+               /* map { */
+               /*    on: 0; */
+               /*    rotation.z: -2.5; */
+               /* } */
+            }
+            description {
+               state: "vibration" 0.2;
+               inherit: "default" 0.0;
+               rel1.offset: 30 30;
+               rel2.offset: -30 -30;
+               /* map { */
+               /*    on: 0; */
+               /*    rotation.z: 2.5; */
+               /* } */
+            }
+         }
+      }
+      programs {
+         program {
+            name: "load";
+            signal: "load";
+            after: "vib1";
+         }
+
+         program {
+            name: "vib1";
+            action: STATE_SET "vibration" 0.1;
+            target: "frame";
+            transition: "SINUSOIDAL" 0.2;
+            after: "vib2";
+         }
+         program {
+            name: "vib2";
+            action: STATE_SET "vibration" 0.2;
+            target: "frame";
+            transition: "SINUSOIDAL" 0.2;
+            after: "vib1";
+         }
+      }
+   }
+
+   group {
+      name: "elfe/desktop/app/frame";
+      parts {
+         images {
+            image: "app_text_bg.png" COMP;
+         }
+
+         part {
+            name: "clip";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description {
+               state: "active" 0.0;
+               color: 255 255 255 128;
+            }
+         }
+
+         part {
+            name: "text.bg";
+            clip_to: "clip";
+            description {
+               rel1.to: "elfe.text.label";
+               rel1.offset: 0 -3;
+               rel2.to: "elfe.text.label";
+               image.normal: "app_text_bg.png";
+               image.border: 4 4 4 4;
+
+            }
+         }
+         part {
+            name: "elfe.text.label";
+            type: TEXT;
+            effect: SHADOW;
+            clip_to: "clip";
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               align: 0.5 1;
+               rel1.relative: 0 1;
+               rel1.offset: 4 -2;
+               rel2.relative: 1 1;
+               rel2.offset: -4 -2;
+               color3: 0 0 0 0;
+               color: 220 220 220 0;
+               visible: 0;
+               text {
+                  font: "Sans";
+                  size: 10;
+                  min: 0 1;
+               }
+            }
+            description {
+               state: "normal" 0.0;
+               align: 0.5 1;
+               rel1.relative: 0 1;
+               rel1.offset: 4 -2;
+               rel2.relative: 1 1;
+               rel2.offset: -4 -2;
+               color3: 0 0 0 200;
+               color: 220 220 220 255;
+               text {
+                  font: "Sans";
+                  size: 10;
+                  min: 0 1;
+               }
+            }
+         }
+
+         part {
+            name: "elfe.swallow.content";
+            type: SWALLOW;
+            clip_to: "clip";
+            description {
+               state: "default" 0.0;
+               max: 72 72;
+               align: 0.5 0.8;
+               aspect: 1 1;
+               aspect_preference: BOTH;
+               rel1.offset: 32 32;
+               rel2.relative: 1 0;
+               rel2.offset: -32 -32-4;
+               rel2.to_y: "elfe.text.label";
+            }
+            description {
+               state: "normal" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: 0 0;
+               rel2.offset: 0 -4;
+            }
+            description {
+               state: "big" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: -16 -16;
+               rel2.offset: 16 16-4;
+            }
+            program {
+               name:   "bt_click";
+               signal: "mouse,clicked,1";
+               source: "elfe.swallow.content";
+               action: SIGNAL_EMIT "elfe,action,click" "";
+            }
+            program {
+               name: "bt_down";
+               signal: "mouse,down,1";
+               source: "elfe.swallow.content";
+               action: STATE_SET "active" 0.0;
+               transition: ACCELERATE 0.5;
+               target: "clip";
+            }
+            program {
+               name: "bt_up";
+               signal: "mouse,up,1";
+               source: "elfe.swallow.content";
+               action: STATE_SET "default" 0.0;
+               transition: ACCELERATE 0.5;
+               target: "clip";
+            }
+         }
+
+
+      }
+      programs {
+         program {
+            name: "load,text";
+            signal: "load";
+            action: STATE_SET "normal" 0.0;
+            target: "elfe.text.label";
+            transition: ACCELERATE 0.2;
+         }
+         program {
+            name: "load";
+            signal: "load";
+            action: STATE_SET "big" 0.0;
+            target: "elfe.swallow.content";
+            transition: ACCELERATE 0.1;
+            after: "normal";
+         }
+         program {
+            name: "normal";
+            signal: "normal";
+            action: STATE_SET "normal" 0.0;
+            target: "elfe.swallow.content";
+            transition: ACCELERATE 0.1;
+         }
+      }
+   }
+
+   group {
+      name: "elfe/gadget/places/over";
+      parts {
+         part {
+            name: "clip";
+            clip_to: "over";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0 ;
+               visible: 0;
+            }
+            description {
+               state: "free" 0.0;
+               color: 0 255 0 128;
+               visible: 1;
+            }
+            description {
+               state: "busy" 0.0;
+               color: 255 0 0 128;
+               visible: 1;
+            }
+         }
+
+         part {
+            name: "bg";
+            type: RECT;
+            clip_to: "clip";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+         part {
+            name: "over";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+            description {
+               state: "in" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+         part {
+            name: "event";
+            type: RECT;
+            mouse_events: 1;
+            repeat_events: 1;
+            pointer_mode: NOGRAB;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+            }
+         }
+      }
+      programs {
+         program {
+            name: "free";
+            signal: "place,free";
+            source: "elfe";
+            action: STATE_SET "free" 0.0;
+            target: "clip";
+            transition: DECELERATE 0.5;
+         }
+         program {
+            name: "busy";
+            signal: "place,busy";
+            source: "elfe";
+            action: STATE_SET "busy" 0.0;
+            target: "clip";
+            transition: DECELERATE 0.5;
+         }
+         program {
+            name: "mouse,in";
+            signal: "mouse,in";
+            source: "*";
+            action: STATE_SET "in" 0.0;
+            target: "over";
+            transition: ACCELERATE 0.5;
+         }
+         program {
+            name: "mouse,out";
+            signal: "mouse,out";
+            source: "*";
+            action: STATE_SET "default" 0.0;
+            target: "over";
+            transition: DECELERATE 0.5;
+         }
+
+      }
+   }
+   group {
+      name: "elfe/desktop/layout";
+      parts {
+         part {
+            name: "elfe.swallow.content";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel2.offset: 0 -32;
+
+            }
+
+         }
+         part {
+            name: "elfe.swallow.selector";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1.offset: 0 -32;
+               rel1.relative: 0 1;
+
+            }
+
+         }
+      }
+   }
+
+   group {
+      name: "elfe/desktop/selector";
+      min: 32 32;
+      max: 32 32;
+      images {
+         image: "desk_unselected.png" COMP;
+         image: "desk_selected.png" COMP;
+      }
+      parts {
+         part {
+            name: "bg";
+            description {
+               min: 18 18;
+               max: 18 18;
+               align: 0.5 0.5;
+               state: "default" 0.0;
+               image.normal: "desk_unselected.png";
+
+
+            }
+            description {
+               min: 18 18;
+               max: 18 18;
+               align: 0.5 0.5;
+               state: "selected" 0.0;
+               image.normal: "desk_selected.png";
+
+            }
+         }
+      }
+      programs {
+         program {
+            name: "select";
+            signal: "select";
+            source: "elfe";
+            action: STATE_SET "selected" 0.0;
+            target: "bg";
+            transition: ACCELERATE 0.2;
+         }
+         program {
+            name: "unselect";
+            signal: "unselect";
+            source: "elfe";
+            action: STATE_SET "default" 0.0;
+            target: "bg";
+            transition: DECELERATE 0.2;
+         }
+
+      }
+   }
+
+}
