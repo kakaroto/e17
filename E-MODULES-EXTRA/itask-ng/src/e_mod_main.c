@@ -678,6 +678,9 @@ _ngi_win_cb_mouse_in(void *data, int type, void *event)
 
    ngi_mouse_in(ng);
 
+   if (!ngi_config->use_composite)
+     evas_event_feed_mouse_in(ng->evas, ev->time, NULL);
+
    return EINA_TRUE;
 }
 
@@ -706,6 +709,9 @@ _ngi_win_cb_mouse_out(void *data, int type, void *event)
       return EINA_TRUE;
 
    ngi_mouse_out(ng);
+
+   if (!ngi_config->use_composite)
+     evas_event_feed_mouse_out(ng->evas, ev->time, NULL);
 
    return EINA_TRUE;
 }
@@ -765,6 +771,14 @@ _ngi_win_cb_mouse_down(void *data, int type, void *event)
 
    ngi_item_mouse_down(it, ev);
 
+   if (!ngi_config->use_composite)
+     {
+	Evas_Button_Flags flags = EVAS_BUTTON_NONE;
+	if (ev->double_click) flags |= EVAS_BUTTON_DOUBLE_CLICK;
+	if (ev->triple_click) flags |= EVAS_BUTTON_TRIPLE_CLICK;
+	evas_event_feed_mouse_down(ng->evas, ev->buttons, flags, ev->timestamp, NULL);
+     }
+
    /* if a grab window appears shortly after clicking the
       bar it probably is a menu that belongs to a item */
    if (ng->menu_wait_timer)
@@ -788,6 +802,7 @@ _ngi_win_cb_mouse_up(void *data, int type, void *event)
    if (ng->item_active)
      {
         ngi_item_mouse_up(ng->item_active, ev);
+	evas_event_feed_mouse_up(ng->evas, ev->buttons, EVAS_BUTTON_NONE, ev->timestamp, NULL);
 
         if (ng->item_drag)
           {
@@ -807,6 +822,9 @@ _ngi_win_cb_mouse_wheel(void *data, int type, void *event)
 
    if (ev->event_window != ng->win->input)
       return EINA_TRUE;
+
+   if (!ngi_config->use_composite)
+     evas_event_feed_mouse_wheel(ng->evas, ev->direction, ev->z, ev->timestamp, NULL);
 
    return EINA_TRUE;
 }
@@ -828,6 +846,12 @@ _ngi_win_cb_mouse_move(void *data, int type, void *event)
      return EINA_TRUE;
 
    ngi_item_activate(ng);
+
+   if (!ngi_config->use_composite)
+     evas_event_feed_mouse_move(ng->evas,
+				ev->x + ng->win->rect.x,
+				ev->y + ng->win->rect.y,
+				ev->timestamp, NULL);
 
    if (ng->item_drag)
      {
