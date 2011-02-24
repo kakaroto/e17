@@ -1,0 +1,90 @@
+# Slovenian translation of everything-mpris.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: everything-mpris 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-22 20:00-0800\n"
+"PO-Revision-Date: 2011-02-24 03:20+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/e_mod_main.c:276
+msgid "No Title"
+msgstr "Brez naslova"
+
+#: ../src/e_mod_main.c:491 ../src/e_mod_main.c:644
+msgid "Loading Playlist"
+msgstr "Nalaganje predvajalnega seznama"
+
+#: ../src/e_mod_main.c:504
+msgid "Empty Playlist"
+msgstr "Prazen predvajalni seznam"
+
+#: ../src/e_mod_main.c:1404
+msgid "Playlist"
+msgstr "Predvajalni seznam"
+
+#: ../src/e_mod_main.c:1437
+msgid "Play Track"
+msgstr "Predvajaj pesem"
+
+#: ../src/e_mod_main.c:1442
+msgid "Play"
+msgstr "Predvajaj"
+
+#: ../src/e_mod_main.c:1446
+msgid "Pause"
+msgstr "Premor"
+
+#: ../src/e_mod_main.c:1450
+msgid "Stop"
+msgstr "Ustavi"
+
+#: ../src/e_mod_main.c:1454
+msgid "Forward"
+msgstr "Naprej"
+
+#: ../src/e_mod_main.c:1458
+msgid "Rewind"
+msgstr "Nazaj"
+
+#: ../src/e_mod_main.c:1462
+msgid "Remove Track"
+msgstr "Odstrani pesem"
+
+#: ../src/e_mod_main.c:1467
+msgid "Clear Playlist"
+msgstr "Počisti predvajalni seznam"
+
+#: ../src/e_mod_main.c:1471
+msgid "Play File"
+msgstr "Predvajaj datoteko"
+
+#: ../src/e_mod_main.c:1476
+msgid "Add Files..."
+msgstr "Dodaj datoteke..."
+
+#: ../src/e_mod_main.c:1480
+msgid "Enqueue in Playlist"
+msgstr "Uvrsti na predvajalni seznam"
+
+#: ../src/e_mod_main.c:1485
+msgid "Add Music..."
+msgstr "Dodaj glasbo..."
+
+#: ../src/e_mod_main.c:1489
+msgid "Remove Duplicates"
+msgstr "Odstrani dvojnike"
+
+#: ../src/e_mod_main.c:1493
+msgid "Remove Missing Files"
+msgstr "Odstrani manjkajoče datoteke"
+

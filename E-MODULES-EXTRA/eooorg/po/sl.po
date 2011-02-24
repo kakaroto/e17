@@ -1,0 +1,59 @@
+# Slovenian translation of eooorg.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: eooorg 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-02-22 20:00-0800\n"
+"PO-Revision-Date: 2011-02-24 03:00+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#. create our config dialog
+#: ../src/e_mod_config.c:44 ../src/e_mod_main.c:306
+msgid "OpenOffice.org Quickstart"
+msgstr "OpenOffice.org·Hitri zagon"
+
+#: ../src/e_mod_config.c:84
+msgid "General"
+msgstr "Splošno"
+
+#: ../src/e_mod_config.c:86
+msgid "Use Switch 1"
+msgstr "Uporabi stikalo 1"
+
+#: ../src/e_mod_main.c:114
+msgid ""
+"eOOorg Module Configuration data needed upgrading. Your old "
+"configuration<br> has been wiped and a new set of defaults initialized. "
+"This<br>will happen regularly during development, so don't report a<br>bug. "
+"This simply means the module needs new configuration<br>data by default for "
+"usable functionality that your old<br>configuration simply lacks. This new "
+"set of defaults will fix<br>that by adding it in. You can re-configure "
+"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr "Nastavitve modula e00org so potrebovale·nadgradnjo.·Vaše·stare·nastavitve<br>so·bile·zamenjane·z·novimi·privzetimi<br>To·se·bo·med·razvojem·vedno·dogajalo·in·ne·poročajte·hrošča.·<br>To le pomeni,·da·je·modul·potreboval·nove·nastavitve·podatkov<br>za·boljšo·uporabniško·izkušnjo,·ki·jih·prejšnje·niso·imele.<br>Te·nove·nastavitve·bodo·to·popravile<br>Sedaj·lahko·ponovno·nastavite·stvari·po·svoje<br>Opravičujemo se za neprijetnosti.<br>"
+
+#: ../src/e_mod_main.c:134
+msgid ""
+"Your eOOorg Module configuration is NEWER than the module version. This is "
+"very<br>strange. This should not happen unless you downgraded<br>the module "
+"or copied the configuration from a place where<br>a newer version of the "
+"module was running. This is bad and<br>as a precaution your configuration "
+"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr "Vaše·nastavitve·modula·e00org·so·novejše·od·različice·modula. To·je·zelo·<br>čudno.·To·se·ne·bi·smelo·zgoditi,·razen·če·ste·namestili·starejšo·različico<br> modula·ali·kopirali·nastavitve·od·nekje,·kjer·je·tekla·novejša·različica. <br>To·je·slabo·in<br>preventivno·so·bile·naložene·privzete·nastavitve<br>Opravičujemo·se·za·neprijetnosti.<br>"
+
+#: ../src/e_mod_main.c:391
+msgid "OpenOffice.org Quickstart Configuration Updated"
+msgstr "OpenOffice.org·Hitri zagon nastavitve posodobljene"
+
+#: ../src/e_mod_main.c:453
+msgid "Settings"
+msgstr "Nastavitve"
+

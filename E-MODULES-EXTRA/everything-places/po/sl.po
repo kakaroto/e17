@@ -1,0 +1,38 @@
+# Slovenian translation of everything-places.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: everything-places 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-02-22 20:00-0800\n"
+"PO-Revision-Date: 2011-02-24 03:14+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/e_mod_main.c:135
+msgid "Home"
+msgstr "Dom"
+
+#: ../src/e_mod_main.c:138
+msgid "Wallpaper"
+msgstr "Ozadje"
+
+#: ../src/e_mod_main.c:269 ../src/e_mod_main.c:280
+msgid "Places"
+msgstr "Mesta"
+
+#: ../src/e_mod_main.c:291
+msgid "Mount Drive"
+msgstr "Priklopi disk"
+
+#: ../src/e_mod_main.c:296
+msgid "Unmount Drive"
+msgstr "Odklopi disk"
+

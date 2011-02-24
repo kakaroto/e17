@@ -1,0 +1,577 @@
+# Slovenian translation of elmdentica.
+# Copyright (C) 2011 THE elmdentica'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the elmdentica package.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: elmdentica 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e/\n"
+"POT-Creation-Date: 2011-02-22 20:00-0800\n"
+"PO-Revision-Date: 2011-02-24 02:23+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/curl.c:92 ../src/elmdentica.c:1397 ../src/elmdentica.c:1606
+msgid "Close"
+msgstr "Zapri"
+
+#: ../src/curl.c:319
+#, c-format
+msgid ""
+"Can't dump %s into %s:\n"
+"(%d) %s\n"
+msgstr "Ne morem razložiti·%s·v·%s:\n"
+"(%d)·%s\n"
+
+#: ../src/curl.c:326
+#, c-format
+msgid "Can't open %s for writing: %s\n"
+msgstr "Ne morem odpreti·%s·za pisanje:·%s\n"
+
+#: ../src/elmdentica.c:281
+msgid "Last messages..."
+msgstr "Zadnja sporočila..."
+
+#: ../src/elmdentica.c:282
+msgid "Everyone..."
+msgstr "Vsakdo..."
+
+#: ../src/elmdentica.c:283
+msgid "My favorites..."
+msgstr "Moje priljubljene..."
+
+#: ../src/elmdentica.c:284
+msgid "Replies / mentions..."
+msgstr "Odgovori·/·omembe..."
+
+#: ../src/elmdentica.c:286
+msgid "My friends..."
+msgstr "Moji prijatelji..."
+
+#: ../src/elmdentica.c:469
+#, c-format
+msgid "Error %d: %s\n"
+msgstr "Napaka·%d:·%s\n"
+
+#: ../src/elmdentica.c:472
+#, c-format
+msgid "System failed, child exited with status %d\n"
+msgstr "Sistem·spodletel,·izhod podrejenega procesa s statusom·%d\n"
+
+#: ../src/elmdentica.c:492 ../src/elmdentica.c:639
+msgid "Follow"
+msgstr "Zasleduj"
+
+#: ../src/elmdentica.c:494 ../src/elmdentica.c:641
+msgid "Stop following"
+msgstr "Ustavi zasledovanje"
+
+#: ../src/elmdentica.c:628
+msgid "Couldn't parse user info message..."
+msgstr "Ni bilo mogoče razčleniti uporabnikovega informacijskega sporočila..."
+
+#: ../src/elmdentica.c:690 ../src/elmdentica.c:769
+#, c-format
+msgid "You are a member of group %s along with %d other people.<br>«%s»"
+msgstr "Ste član skupine·%s·skupaj z·%d·drugimi ljudmi.<br>«%s»"
+
+#: ../src/elmdentica.c:691 ../src/elmdentica.c:802
+msgid "Leave"
+msgstr "Zapusti"
+
+#: ../src/elmdentica.c:693 ../src/elmdentica.c:771
+#, c-format
+msgid "You are not a member of group %s but %d people are.<br>«%s»"
+msgstr "Niste član skupine·%s·vendar·%d·ljudje so.<br>«%s»"
+
+#: ../src/elmdentica.c:694 ../src/elmdentica.c:804
+msgid "Join"
+msgstr "Pridruži se"
+
+#: ../src/elmdentica.c:858
+msgid "Check it out!"
+msgstr "Preveri!"
+
+#: ../src/elmdentica.c:1021
+#, c-format
+msgid "a few seconds ago"
+msgstr "pred nekaj sekundami"
+
+#: ../src/elmdentica.c:1023
+#, c-format
+msgid "a few minutes ago"
+msgstr "pred nekaj minutami"
+
+#: ../src/elmdentica.c:1025
+#, c-format
+msgid "~ %d minutes ago"
+msgstr "~·%d·min.·nazaj"
+
+#: ../src/elmdentica.c:1028
+#, c-format
+msgid "~ %d hours ago"
+msgstr "~·%d·ur.·nazaj"
+
+#: ../src/elmdentica.c:1030
+#, c-format
+msgid "~ 1 hour ago"
+msgstr "~·1·uro nazaj"
+
+#: ../src/elmdentica.c:1032
+#, c-format
+msgid "on %x"
+msgstr "na·%x"
+
+#: ../src/elmdentica.c:1035
+#, c-format
+msgid "%x %X"
+msgstr "%x·%X"
+
+#: ../src/elmdentica.c:1036 ../src/elmdentica.c:1037
+#, c-format
+msgid "some-when"
+msgstr "nekaj ko"
+
+#: ../src/elmdentica.c:1115
+#, c-format
+msgid "Finished %s"
+msgstr "Končano·%s"
+
+#: ../src/elmdentica.c:1123
+msgid "Ok"
+msgstr "V redu"
+
+#: ../src/elmdentica.c:1130
+msgid "Open"
+msgstr "Odprto"
+
+#: ../src/elmdentica.c:1176
+#, c-format
+msgid "downloading %s"
+msgstr "prejemanje·%s"
+
+#: ../src/elmdentica.c:1192 ../src/elmdentica.c:1893 ../src/settings.c:542
+#: ../src/settings.c:1271
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: ../src/elmdentica.c:1278
+msgid "Users"
+msgstr "Uporabniki"
+
+#: ../src/elmdentica.c:1307
+msgid "Links"
+msgstr "Bližnjice"
+
+#: ../src/elmdentica.c:1326
+msgid "Tags"
+msgstr "Oznake"
+
+#: ../src/elmdentica.c:1344
+msgid "Groups"
+msgstr "Skupine"
+
+#: ../src/elmdentica.c:1362
+msgid "Attachments"
+msgstr "Priponke"
+
+#: ../src/elmdentica.c:1429
+msgid "Reply"
+msgstr "Odgovori"
+
+#: ../src/elmdentica.c:1437
+msgid "Repeat"
+msgstr "Ponovi"
+
+#: ../src/elmdentica.c:1445 ../src/elmdentica.c:2152
+msgid "DM"
+msgstr "Direktno sporočilo"
+
+#: ../src/elmdentica.c:1454
+msgid "Unmark favorite"
+msgstr "Odstrani priljubljeno"
+
+#: ../src/elmdentica.c:1456
+msgid "Mark favorite"
+msgstr "Označi priljubljeno"
+
+#: ../src/elmdentica.c:1465
+msgid "View related"
+msgstr "Povezano z ogledom"
+
+#: ../src/elmdentica.c:1474
+msgid "Status details"
+msgstr "Podrobnosti stanja"
+
+#. Error Window
+#: ../src/elmdentica.c:1576
+msgid "Error"
+msgstr "Napaka"
+
+#: ../src/elmdentica.c:1577
+msgid "µ-blog Error"
+msgstr "µ-blog·napaka"
+
+#: ../src/elmdentica.c:1875
+msgid "Send a DM to..."
+msgstr "Pošlji·direktno sporočilo za..."
+
+#: ../src/elmdentica.c:1887 ../src/settings.c:534 ../src/settings.c:1262
+msgid "OK"
+msgstr "V redu"
+
+#: ../src/elmdentica.c:1972 ../src/elmdentica.c:2090
+msgid "Type your status here..."
+msgstr "Vtipkaj svoje stanje sem..."
+
+#: ../src/elmdentica.c:2107
+msgid "Timelines"
+msgstr "Časovnice"
+
+#: ../src/elmdentica.c:2113
+msgid "Direct Messages"
+msgstr "Direktna sporočila"
+
+#: ../src/elmdentica.c:2114
+msgid "Everyone"
+msgstr "Vsakdo"
+
+#: ../src/elmdentica.c:2115
+msgid "Just me"
+msgstr "Le jaz"
+
+#: ../src/elmdentica.c:2116
+msgid "Favorites"
+msgstr "Priljubljeno"
+
+#: ../src/elmdentica.c:2117
+msgid "Replies/Mentions"
+msgstr "Odgovori/Omembe"
+
+#: ../src/elmdentica.c:2118
+msgid "Friends & I"
+msgstr "Prijatelji &·Jaz"
+
+#: ../src/elmdentica.c:2125
+msgid "Post"
+msgstr "Napiši"
+
+#: ../src/elmdentica.c:2139
+msgid "Send"
+msgstr "Pošlji"
+
+#: ../src/elmdentica.c:2165
+msgid "Clear"
+msgstr "Počisti"
+
+#: ../src/elmdentica.c:2174
+msgid "Fullscreen"
+msgstr "Celozaslonsko"
+
+#: ../src/elmdentica.c:2175 ../src/settings.c:1429
+msgid "Settings"
+msgstr "Nastavitve"
+
+#: ../src/statusnet.c:365
+#, c-format
+msgid "Not enough memory to create a status\n"
+msgstr "Ni dovolj spomina da ustvarite stanje\n"
+
+#: ../src/statusnet.c:417
+#, c-format
+msgid "Not enough memory to create an user\n"
+msgstr "Ni dovolj spomina da ustvarite uporabnika\n"
+
+#: ../src/statusnet.c:554
+#, c-format
+msgid "Error encountered: %s\n"
+msgstr "Napaka:·%s\n"
+
+#: ../src/statusnet.c:966
+#, c-format
+msgid "Unknown timeline %d\n"
+msgstr "Neznana časovnica·%d\n"
+
+#: ../src/statusnet.c:973
+#, c-format
+msgid "Not enough memory to construct timeline URI\n"
+msgstr "Ni dovolj spomina da ustvarite časovnico·URI\n"
+
+#: ../src/statusnet.c:980
+#, c-format
+msgid "Not enough memory to prepare host url\n"
+msgstr "Ni dovolj spomina da ustvarite gostiteljski·url\n"
+
+#: ../src/settings.c:146
+msgid "never"
+msgstr "nikoli"
+
+#: ../src/settings.c:146
+msgid "0 s"
+msgstr "0·s"
+
+#: ../src/settings.c:147
+msgid "1 minute"
+msgstr "1·min."
+
+#: ../src/settings.c:147
+msgid "1 min"
+msgstr "1·min"
+
+#: ../src/settings.c:148
+msgid "2 minutes"
+msgstr "2·min."
+
+#: ../src/settings.c:148
+msgid "2 min"
+msgstr "2·min"
+
+#: ../src/settings.c:149
+msgid "5 minutes"
+msgstr "5·min."
+
+#: ../src/settings.c:149
+msgid "5 min"
+msgstr "5·min"
+
+#: ../src/settings.c:150
+msgid "10 minutes"
+msgstr "10·min."
+
+#: ../src/settings.c:150
+msgid "10 min"
+msgstr "10·min"
+
+#: ../src/settings.c:151
+msgid "15 minutes"
+msgstr "15·min."
+
+#: ../src/settings.c:151
+msgid "15 min"
+msgstr "15·min"
+
+#: ../src/settings.c:152
+msgid "30 minutes"
+msgstr "30·min."
+
+#: ../src/settings.c:152
+msgid "30 min"
+msgstr "30·min"
+
+#: ../src/settings.c:153
+msgid "1 hour"
+msgstr "1 uro"
+
+#: ../src/settings.c:153
+msgid "1 h"
+msgstr "1 u"
+
+#: ../src/settings.c:174 ../src/settings.c:1081
+msgid "Every: "
+msgstr "Vsake:"
+
+#: ../src/settings.c:396
+msgid "Screen name"
+msgstr "Zaslonsko ime"
+
+#: ../src/settings.c:411
+msgid "Password"
+msgstr "Geslo"
+
+#: ../src/settings.c:435
+msgid "Type"
+msgstr "Vrsta"
+
+#: ../src/settings.c:454
+msgid "Secure"
+msgstr "Varno"
+
+#: ../src/settings.c:454
+msgid "Faster"
+msgstr "Hitrejše"
+
+#: ../src/settings.c:466
+msgid "Domain"
+msgstr "Domena"
+
+#: ../src/settings.c:481
+msgid "Base URL"
+msgstr "Osnovni URL"
+
+#: ../src/settings.c:496
+msgid "Receive?"
+msgstr "Sprejmem?"
+
+#: ../src/settings.c:508
+msgid "Send?"
+msgstr "Pošljem?"
+
+#: ../src/settings.c:711
+msgid "Accounts..."
+msgstr "Računi..."
+
+#: ../src/settings.c:746 ../src/settings.c:1378
+msgid "Add"
+msgstr "Dodaj"
+
+#: ../src/settings.c:759 ../src/settings.c:1391
+msgid "Edit"
+msgstr "Uredi"
+
+#: ../src/settings.c:773 ../src/settings.c:1404
+msgid "Delete"
+msgstr "Izbriši"
+
+#: ../src/settings.c:800 ../src/settings.c:823
+msgid "No posts<br>in cache."
+msgstr "Ni vpisov<br>v pomnilniku."
+
+#: ../src/settings.c:802
+#, c-format
+msgid "Currently remembering<br>%d posts."
+msgstr "Trenutno zapomnjen-ih<br>%d·vpis-ov."
+
+#: ../src/settings.c:838 ../src/settings.c:861
+msgid "No messages<br>in cache."
+msgstr "Ni sporočil<br>v pomnilniku."
+
+#: ../src/settings.c:840
+#, c-format
+msgid "Currently remembering<br>%d messages."
+msgstr "Trenutno zapomnjenih<br>%d·sporočil."
+
+#: ../src/settings.c:939
+msgid "Displayed messages"
+msgstr "Prikazana sporočila"
+
+#: ../src/settings.c:1006
+msgid "Please choose a browser"
+msgstr "Prosim, izberite brskalnik"
+
+#: ../src/settings.c:1008
+msgid "No supported browser available"
+msgstr "Noben podprt brskalnik ni dostopen"
+
+#: ../src/settings.c:1045
+msgid "Preferred browser..."
+msgstr "Priljubljen brskalnik..."
+
+#: ../src/settings.c:1053
+msgid "Online mode..."
+msgstr "Povezan način..."
+
+#: ../src/settings.c:1055
+msgid "Online"
+msgstr "Povezan"
+
+#: ../src/settings.c:1055
+msgid "Offline"
+msgstr "Razvezan"
+
+#: ../src/settings.c:1063
+msgid "Timestamps..."
+msgstr "Časovni žigi..."
+
+#: ../src/settings.c:1065
+msgid "Relative"
+msgstr "Relativno"
+
+#: ../src/settings.c:1065
+msgid "Absolute"
+msgstr "Absolutno"
+
+#: ../src/settings.c:1073
+msgid "Auto updates"
+msgstr "Samodejne posodobitve"
+
+#: ../src/settings.c:1242
+msgid "Pattern..."
+msgstr "Vzorec..."
+
+#: ../src/settings.c:1344
+msgid "Gag patterns..."
+msgstr "Vzorci pridušitve..."
+
+#: ../src/settings.c:1430
+msgid "ElmDentica settings..."
+msgstr "Nastavitve ElmDentice..."
+
+#: ../src/settings.c:1455
+msgid "Accounts"
+msgstr "Računi"
+
+#: ../src/settings.c:1457
+msgid "Cache"
+msgstr "Pomnilnik"
+
+#: ../src/settings.c:1459
+msgid "Options"
+msgstr "Možnosti"
+
+#: ../src/settings.c:1461
+msgid "Gag"
+msgstr "Priduši"
+
+#: ../src/settings.c:1472
+#, c-format
+msgid ""
+"\n"
+"Usage:\n"
+"   -d   Debug mode (for extra yummy output, use multiple times)\n"
+"   -h   Help (what you're reading right now)\n"
+"   -m N Show N messages at a time\n"
+"\n"
+msgstr "\n"
+"Uporaba:\n"
+"···-d···Razhroščevalni način·(za bolj okusen iznos,·uporabite večkrat)\n"
+"···-h···Pomoč·(kar ravno zdaj prebirate)\n"
+"···-m·N·Prikaži·N·sporočil naenkrat\n"
+"\n"
+
+#: ../src/settings.c:1495
+#, c-format
+msgid "Can't run ecore_file_init()\n"
+msgstr "Ne morem zagnati·ecore_file_init()\n"
+
+#: ../src/settings.c:1501
+#, c-format
+msgid "Can't create preferences directories since asprintf failed\n"
+msgstr "Ne morem ustvariti mape priljubljenih, ker je·asprintf·spodletel\n"
+
+#: ../src/settings.c:1501
+#, c-format
+msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
+msgstr "Ne morem ustvariti mape priljubljenih ker je·ecore_file_mkpath·spodletel\n"
+
+#: ../src/settings.c:1509
+#, c-format
+msgid "Not enough memory to define conf.eet path"
+msgstr "Ni dovolj spomina za določiti pot·conf.eet"
+
+#: ../src/settings.c:1515
+#, c-format
+msgid "Couldn't run eet_init()"
+msgstr "Ni bilo mogoče zagnati·eet_init()"
+
+#: ../src/settings.c:1522
+#, c-format
+msgid "Can't create %s"
+msgstr "Ne morem ustvariti·%s"
+
+#: ../src/settings.c:1530
+#, c-format
+msgid "Can't setup settings_edd."
+msgstr "Ne morem nastaviti·settings_edd."
+
+#: ../src/settings.c:1549
+#, c-format
+msgid ""
+"Not enough memory for settings, no doubt for anything else either, surely..."
+msgstr "Ni dovolj spomina za nastavitve, nedvomno tudi za karkoli drugega, gotovo..."
+

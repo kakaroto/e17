@@ -1,0 +1,108 @@
+# Slovenian translation of comp-scale.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: comp-scale 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-02-22 20:00-0800\n"
+"PO-Revision-Date: 2011-02-24 01:24+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/e_mod_config.c:45
+msgid "Scale Windows Module"
+msgstr "Modul Spremeni merilo okna"
+
+#: ../src/e_mod_config.c:117
+msgid "Current Desktop"
+msgstr "Trenutno namizje"
+
+#: ../src/e_mod_config.c:118 ../src/e_mod_config.c:146
+msgid "Minimum space between windows"
+msgstr "Najmanjši prostor med okni"
+
+#: ../src/e_mod_config.c:120 ../src/e_mod_config.c:148
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: ../src/e_mod_config.c:124 ../src/e_mod_config.c:152
+msgid "Scale duration"
+msgstr "Trajanje spremembe merila"
+
+#: ../src/e_mod_config.c:126 ../src/e_mod_config.c:154
+#, c-format
+msgid "%1.2f"
+msgstr "%1.2f"
+
+#: ../src/e_mod_config.c:129 ../src/e_mod_config.c:159
+msgid "Slotted Layout"
+msgstr "Režni razpored"
+
+#: ../src/e_mod_config.c:134
+msgid "Layout Options"
+msgstr "Možnosti razporeda"
+
+#: ../src/e_mod_config.c:136
+msgid "Grow more!"
+msgstr "Zrasti bolj!"
+
+#: ../src/e_mod_config.c:138
+msgid "Keep it tight!"
+msgstr "Ohrani tesno!"
+
+#: ../src/e_mod_config.c:145
+msgid "Show All Desktops"
+msgstr "Prikaži vsa namizja"
+
+#: ../src/e_mod_config.c:157
+msgid "Fade in windows"
+msgstr "Pojavljajoča okna"
+
+#: ../src/e_mod_config.c:165
+msgid "Fade out shelves and popups"
+msgstr "Pojemanje polic in pojavnih oken"
+
+#: ../src/e_mod_config.c:167
+msgid "Darken desktop"
+msgstr "Zatemni namizje"
+
+#: ../src/e_mod_config.c:173
+msgid "Test"
+msgstr "Testiraj"
+
+#: ../src/e_mod_main.c:1560
+msgid "Look"
+msgstr "Videz"
+
+#: ../src/e_mod_main.c:1562
+msgid "Composite Scale Windows"
+msgstr "Kompozitiraj okna ki spreminjajo merilo"
+
+#: ../src/e_mod_main.c:1596 ../src/e_mod_main.c:1618 ../src/e_mod_main.c:1660
+msgid "Scale Windows"
+msgstr "Spremeni merilo okna"
+
+#: ../src/e_mod_main.c:1618 ../src/e_mod_main.c:1619 ../src/e_mod_main.c:1659
+msgid "Desktop"
+msgstr "Namizje"
+
+#: ../src/e_mod_main.c:1619
+msgid "Scale Windows / All Desktops"
+msgstr "Spremeni merilo okna·/·Vsa namizja"
+
+#: ../src/e_mod_main.c:1732
+msgid "Scale"
+msgstr "Spremeni merilo"
+
+#: ../src/e_mod_main.c:1864
+msgid "Settings"
+msgstr "Nastavitve"
+

@@ -1,0 +1,154 @@
+# Slovenian translation of everything-websearch.
+# This file is put in the public domain.
+# r1to <renato.rener@gmail.com>, 2011.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: everything-websearch 1.0\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-02-22 20:00-0800\n"
+"PO-Revision-Date: 2011-02-24 03:08+0100\n"
+"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../src/e_mod_main.c:587 ../src/e_mod_main.c:1254 ../src/e_mod_main.c:1398
+msgid "Translate"
+msgstr "Prevedi"
+
+#: ../src/e_mod_main.c:736
+msgid "Abort download"
+msgstr "Opusti prenos"
+
+#: ../src/e_mod_main.c:781
+#, c-format
+msgid "Got %d kbytes of"
+msgstr "Dobljenih·%d·kbytov·of"
+
+#: ../src/e_mod_main.c:795
+msgid "Enqueue in Playlist"
+msgstr "Postavi v predvajalni seznam"
+
+#: ../src/e_mod_main.c:799
+msgid "Enqueue"
+msgstr "V vrsto"
+
+#: ../src/e_mod_main.c:802
+msgid "Play File"
+msgstr "Predvajaj datoteko"
+
+#: ../src/e_mod_main.c:806
+msgid "Play"
+msgstr "Predvajaj"
+
+#: ../src/e_mod_main.c:836
+msgid "Finished download"
+msgstr "Prenašanje dokončano"
+
+#: ../src/e_mod_main.c:922
+msgid "Start download"
+msgstr "Začni prenos"
+
+#: ../src/e_mod_main.c:1004
+msgid "Enqueue files for download"
+msgstr "Datoteke določi za kasnejši prenos"
+
+#: ../src/e_mod_main.c:1021 ../src/e_mod_main.c:1249 ../src/e_mod_main.c:1404
+msgid "Youtube"
+msgstr "Youtube"
+
+#. ecore_con_url_http_post_send(ud->dd->con_url, post);
+#: ../src/e_mod_main.c:1062 ../src/e_mod_main.c:1067 ../src/e_mod_main.c:1094
+#: ../src/e_mod_main.c:1155 ../src/e_mod_main.c:1293
+msgid "Upload Image"
+msgstr "Naloži sliko"
+
+#: ../src/e_mod_main.c:1062
+msgid "Link copied to clipboard"
+msgstr "Bližnjica kopirana na odložišče"
+
+#: ../src/e_mod_main.c:1067
+msgid "Something went wrong :("
+msgstr "Nekaj je šlo po zlu :("
+
+#: ../src/e_mod_main.c:1092
+#, c-format
+msgid "Completed %1.1f%% of %s"
+msgstr "Dokončano·%1.1f%%·od·%s"
+
+#: ../src/e_mod_main.c:1239
+msgid "Google"
+msgstr "Google"
+
+#: ../src/e_mod_main.c:1244
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+#: ../src/e_mod_main.c:1267
+msgid "Google for it"
+msgstr "Poišči v Google-u"
+
+#: ../src/e_mod_main.c:1270
+msgid "Wikipedia Page"
+msgstr "Wikipedia·Stran"
+
+#: ../src/e_mod_main.c:1273
+msgid "Feeling Lucky"
+msgstr "Imam srečo"
+
+#: ../src/e_mod_main.c:1276
+msgid "Watch on Youtube"
+msgstr "Glej na·Youtube"
+
+#: ../src/e_mod_main.c:1280
+msgid "Download as Audio"
+msgstr "Prenesi v obliki zvoka"
+
+#: ../src/e_mod_main.c:1283
+msgid "Play Video"
+msgstr "Predvajaj·Video"
+
+#: ../src/e_mod_main.c:1286
+msgid "Download and enqueue"
+msgstr "Prenesi in postavi v vrsto"
+
+#: ../src/e_mod_main.c:1289
+msgid "Download and play"
+msgstr "Prenesi in predvajaj"
+
+#: ../src/e_mod_main.c:1371 ../src/e_mod_main.c:1543 ../src/e_mod_main.c:1563
+msgid "Everything Websearch"
+msgstr "Everything·Websearch"
+
+#: ../src/e_mod_main.c:1385
+msgid "General"
+msgstr "Splošno"
+
+#: ../src/e_mod_main.c:1388
+msgid "Browser"
+msgstr "Brskalnik"
+
+#: ../src/e_mod_main.c:1393
+msgid "Language"
+msgstr "Jezik"
+
+#: ../src/e_mod_main.c:1407
+msgid "Video player"
+msgstr "Video predvajalnik"
+
+#: ../src/e_mod_main.c:1412
+msgid "Download directory"
+msgstr "Mapa prenosov"
+
+#: ../src/e_mod_main.c:1417
+msgid "Download requires mplayer and mp3lame"
+msgstr "Prenos zahteva mplayer in mp3lame"
+
+#: ../src/e_mod_main.c:1540
+msgid "Extensions"
+msgstr "Razširitve"
+
