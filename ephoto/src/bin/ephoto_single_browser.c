@@ -46,6 +46,8 @@ struct _Ephoto_Single_Browser
    Ephoto_Entry *entry;
    Ephoto_Orient orient;
    Eina_List *handlers;
+   Eina_List *entries;
+   Eina_List *current_index;
 };
 
 struct _Ephoto_Viewer
@@ -428,7 +430,7 @@ _first_entry_find(Ephoto_Single_Browser *sb)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(sb->ephoto, NULL);
 
-   return eina_list_nth(sb->ephoto->entries, 0);
+   return eina_list_nth(sb->entries, 0);
 }
 
 static Ephoto_Entry *
@@ -436,7 +438,7 @@ _last_entry_find(Ephoto_Single_Browser *sb)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(sb->ephoto, NULL);
 
-   return eina_list_data_get(eina_list_last(sb->ephoto->entries));
+   return eina_list_data_get(eina_list_last(sb->entries));
 }
 
 static void
@@ -586,33 +588,18 @@ _zoom_fit_cb(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    _zoom_fit(sb);
 }
 
-static int
-_entry_cmp(const void *pa, const void *pb)
-{
-   const Ephoto_Entry *a = pa;
-   const char *path = pb;
-   
-   if (path == a->path)
-     return 0;
-   else
-     return strcoll(a->path, path);
-}
-
 static void
 _next_entry(Ephoto_Single_Browser *sb)
 {
+   Eina_List *next;
    Ephoto_Entry *entry = NULL;
-   Eina_List *node;
    EINA_SAFETY_ON_NULL_RETURN(sb->entry);
 
-   node = eina_list_search_sorted_list(sb->ephoto->entries, _entry_cmp, sb->entry->path);
-   if (!node) return;
-   while ((node = node->next))
-     {
-        entry = node->data;
-     }
-   if (!entry)
-     entry = _first_entry_find(sb);
+   next = eina_list_next(sb->current_index);
+   if (!eina_list_data_get(next))
+     next = eina_list_nth_list(sb->entries, 0);   
+   entry = eina_list_data_get(next);
+
    if (entry)
      {
         DBG("next is '%s'", entry->path);
@@ -623,18 +610,15 @@ _next_entry(Ephoto_Single_Browser *sb)
 static void
 _prev_entry(Ephoto_Single_Browser *sb)
 {
-   Eina_List *node;
+   Eina_List *prev;
    Ephoto_Entry *entry = NULL;
    EINA_SAFETY_ON_NULL_RETURN(sb->entry);
 
-   node = eina_list_search_sorted_list(sb->ephoto->entries, _entry_cmp, sb->entry->path);
-   if (!node) return;
-   while ((node = node->prev))
-     {
-        entry = node->data;
-     }
-   if (!entry)
-     entry = _last_entry_find(sb);
+   prev = eina_list_prev(sb->current_index);
+   if (!eina_list_data_get(prev))
+     prev = eina_list_last(sb->entries);
+   entry = eina_list_data_get(prev);
+
    if (entry)
      {
         DBG("prev is '%s'", entry->path);
@@ -988,6 +972,8 @@ void
 ephoto_single_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
 {
    Ephoto_Single_Browser *sb = evas_object_data_get(obj, "single_browser");
+   Eina_List *l;
+   Ephoto_Entry *itr; 
    Eina_Bool same_file = EINA_FALSE;
    EINA_SAFETY_ON_NULL_RETURN(sb);
 
@@ -1012,6 +998,13 @@ ephoto_single_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
         _ephoto_single_browser_recalc(sb);
         _zoom_fit(sb);
      }
+   eina_list_free(sb->entries);
+   sb->entries = NULL;
+   EINA_LIST_FOREACH(sb->ephoto->entries, l, itr)
+     {
+        sb->entries = eina_list_append(sb->entries, itr);
+        if (itr == entry) sb->current_index = eina_list_last(sb->entries);
+    }
 }
 
 void
