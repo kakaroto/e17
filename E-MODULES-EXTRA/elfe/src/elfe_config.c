@@ -78,10 +78,6 @@ elfe_home_config_init(E_Module *m)
    elfe_home_cfg->mod_dir = eina_stringshare_add(m->dir);
    elfe_home_cfg->theme = eina_stringshare_printf("%s/default.edj", elfe_home_cfg->mod_dir);
 
-   e_configure_registry_category_add("illume", 0, "Illume", NULL, 
-                                     "enlightenment/display");
-   e_configure_registry_generic_item_add("illume/elfe", 0, "Elfe", 
-                                         elfe_home_cfg->theme, "icon", elfe_home_config_show);
    return 1;
 }
 
@@ -106,12 +102,6 @@ elfe_home_config_save(void)
    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<< CONFIG SAVE\n");
    e_config_domain_save("module.elfe", conf_edd, elfe_home_cfg);
    return 1;
-}
-
-void 
-elfe_home_config_show(E_Container *con, const char *params __UNUSED__) 
-{
-
 }
 
 /* local functions */
