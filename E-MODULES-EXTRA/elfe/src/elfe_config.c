@@ -25,9 +25,7 @@ Evas_Object *delay_label, *delay_slider;
 int 
 elfe_home_config_init(E_Module *m) 
 {
-   char buff[PATH_MAX];
    Eina_List *l;
-
 
    conf_desktop_item_edd = E_CONFIG_DD_NEW("Elfe_Desktop_Item_Cfg", Elfe_Desktop_Item_Config);
 
@@ -83,7 +81,7 @@ elfe_home_config_init(E_Module *m)
    e_configure_registry_category_add("illume", 0, "Illume", NULL, 
                                      "enlightenment/display");
    e_configure_registry_generic_item_add("illume/elfe", 0, "Elfe", 
-                                         buff, "icon", elfe_home_config_show);
+                                         elfe_home_cfg->theme, "icon", elfe_home_config_show);
    return 1;
 }
 
