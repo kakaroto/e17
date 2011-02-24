@@ -453,14 +453,11 @@ _mpdule_connect (Instance * inst)
 }
 
 static void
-_mpdule_disconnect (Instance * inst)
+_mpdule_disconnect(Instance *inst)
 {
-  mpd_Connection *mpd;
-
   if (inst->mpd)
     {
-      mpd = inst->mpd;
-      mpd_closeConnection (mpd);
+      mpd_closeConnection(inst->mpd);
       inst->mpd = NULL;
     }
 }
