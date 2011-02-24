@@ -87,6 +87,8 @@ _gadget_client_add(void *data, const E_Gadcon_Client_Class *cc)
 	       x = i*w;
 	       y = j*h;
 	       gcc = cc->func.init(egad->gc, cc->name, "test", cc->default_style);
+               gcc->cf = NULL;
+               gcc->client_class = cc;
 	       ly = _item_add(egad,  ELFE_DESKTOP_ITEM_GADGET, cc->name, gcc->o_base, i, j, x, y, w, h);
 	       if (ly)
 		 {
@@ -203,7 +205,7 @@ _object_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
 
 
 Evas_Object *
-elfe_gadgets_zone_add(Evas_Object *parent, int desktop, const char *desktop_name)
+elfe_gadgets_zone_add(Evas_Object *parent, E_Zone *zone, int desktop, const char *desktop_name)
 {
    const char *location_name;
    Elfe_Gadget *egad;
@@ -262,6 +264,7 @@ elfe_gadgets_zone_add(Evas_Object *parent, int desktop, const char *desktop_name
    egad->gc->frame_request.func = NULL;
    egad->gc->resize_request.func = NULL;
    egad->gc->min_size_request.func = NULL;
+   e_gadcon_zone_set(egad->gc, zone);
    e_gadcon_custom_new(egad->gc);
 
    /* Fill zone with config items*/
