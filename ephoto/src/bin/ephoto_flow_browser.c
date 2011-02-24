@@ -42,10 +42,11 @@ struct _Ephoto_Flow_Browser
    } action;
 };
 
+Ephoto *ephoto;
 Ephoto_Flow_Browser *efb;
 
 Evas_Object *
-ephoto_flow_browser_add(void)
+ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
 {
    int i;
 
@@ -60,7 +61,9 @@ ephoto_flow_browser_add(void)
    efb->key_down = EINA_FALSE;
    efb->mouse_wheel = EINA_FALSE;
 
-   efb->box = elm_box_add(ephoto->win);
+   ephoto = e;
+
+   efb->box = elm_box_add(parent);
    elm_box_horizontal_set(efb->box, EINA_FALSE);
    elm_box_homogenous_set(efb->box, EINA_FALSE);
    evas_object_size_hint_weight_set
@@ -181,6 +184,8 @@ ephoto_flow_browser_del(void)
    for (i = 0; i < 5; i++)
      evas_object_del(efb->images[i]);
    eina_list_free(efb->items);
+   if (efb->entry)
+     ephoto_entry_free_listener_del(efb->entry, _entry_free, NULL);
    evas_object_del(efb->layout);
    evas_object_del(efb->toolbar);
    evas_object_del(efb->box);
@@ -188,7 +193,7 @@ ephoto_flow_browser_del(void)
 }
 
 void
-ephoto_flow_browser_entry_set(Ephoto_Entry *entry)
+ephoto_flow_browser_entry_set(Evas_Object *obj __UNUSED__, Ephoto_Entry *entry)
 {
    Eina_Bool same_file = EINA_FALSE;
    Eina_List *l;
@@ -317,7 +322,7 @@ _ephoto_flow_back(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_
    evas_object_key_ungrab(efb->box, "space", 0, 0);
 
    elm_object_unfocus(efb->layout);
-   ephoto_thumb_browser_show(efb->entry);
+   evas_object_smart_callback_call(efb->box, "back", efb->entry);
 }
 
 static void 
@@ -390,7 +395,7 @@ _ephoto_show_slideshow(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *e
 {
    elm_toolbar_item_selected_set(efb->action.slideshow, EINA_FALSE);
 
-   ephoto_slideshow_show(efb->entry);
+   evas_object_smart_callback_call(efb->box, "slideshow", efb->entry);
 }
 
 static void

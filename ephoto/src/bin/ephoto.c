@@ -1,8 +1,15 @@
-#include "ephoto.h"
-
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#include <Elementary.h>
 #ifndef ELM_LIB_QUICKLAUNCH
 
+#include "ephoto.h"
+
 static void _ephoto_display_usage(void);
+
+/* Global log domain pointer */
+int __log_domain = -1;
 
 EAPI int
 elm_main(int argc, char **argv)
@@ -22,58 +29,67 @@ elm_main(int argc, char **argv)
    elm_need_ethumb();
    elm_init(argc, argv);
 
-   elm_theme_extension_add(NULL, PACKAGE_DATA_DIR "/themes/default/ephoto.edj");
+   elm_theme_extension_add(NULL, PACKAGE_DATA_DIR"/themes/default/ephoto.edj");
+
+   if (!efreet_mime_init())
+     fprintf(stderr, "Could not init efreet_mime!\n");
 
    client = elm_thumb_ethumb_client_get();
    if (!client)
      {
-        printf("Ephoto could not get ethumb_client; Terminating...\n");
+        ERR("could not get ethumb_client");
         r = 1;
-        goto end;
+        goto end_log_domain;
      }
    ethumb_client_crop_align_set(client, 0.5, 0.5);
    ethumb_client_aspect_set(client, ETHUMB_THUMB_CROP);
    ethumb_client_orientation_set(client, ETHUMB_THUMB_ORIENT_ORIGINAL);
+   __log_domain = eina_log_domain_register("ephoto", EINA_COLOR_ORANGE);
+   if (!__log_domain)
+     {
+        EINA_LOG_ERR("Could not register log domain: Ephoto");
+        r = 1;
+        goto end_log_domain;
+     }
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
 
+   DBG("Logging initialized");
    if (argc > 2)
      {
-        printf("Too many arguments; Terminating...\n");
+        printf("Too Many Arguments!\n");
         _ephoto_display_usage();
         r = 1;
         goto end;
      }
-   else if (argc == 2)
+   else if (argc < 2)
      {
-        if (!strncmp(argv[1], "--help", 6) || !strncmp(argv[1], "-h", 2))
+        Evas_Object *win = ephoto_window_add(NULL);
+        if (!win)
           {
-             _ephoto_display_usage();
-             r = 0;
+             r = 1;
              goto end;
           }
-        else
-          {
-             char *real = ecore_file_realpath(argv[1]);
-             if (!real)
-               {
-                  printf("Invalid file or directory: '%s'; Terminating...\n", argv[1]);
-                  r = 1;
-                  goto end;
-               }
-             if (!ephoto_window_add(real))
-               {
-                  printf("Could not create the main window; Terminating...\n");
-                  goto end;
-                  r = 1;
-               }
-          }
+     }
+   else if (!strncmp(argv[1], "--help", 6))
+     {
+        _ephoto_display_usage();
+        r = 0;
+        goto end;
      }
    else
      {
-        if (!ephoto_window_add(NULL))
+        char *real = ecore_file_realpath(argv[1]);
+        if (!real)
           {
-             printf("Could not create the main window; Terminating...\n");
+             printf("invalid file or directory: '%s'\n", argv[1]);
+             r = 1;
+             goto end;
+          }
+        Evas_Object *win = ephoto_window_add(real);
+        free(real);
+        if (!win)
+          {
              r = 1;
              goto end;
           }
@@ -82,20 +98,25 @@ elm_main(int argc, char **argv)
    elm_run();
 
  end:
+   eina_log_domain_unregister(__log_domain);
+ end_log_domain:
+   efreet_mime_shutdown();
    elm_shutdown();
    eio_shutdown();
- 
+
    return r;
 }
 
+/*Display useage commands for ephoto*/
 static void
 _ephoto_display_usage(void)
 {
    printf("Ephoto Usage: \n"
-          "ephoto --help | -h	: This page\n"
-          "ephoto filename		: Specifies a file to open\n"
-          "ephoto directory	: Specifies a directory to open\n");
+          "ephoto --help   : This page\n"
+          "ephoto filename : Specifies a file to open\n"
+          "ephoto dirname  : Specifies a directory to open\n");
 }
+
 
 #endif
 ELM_MAIN()

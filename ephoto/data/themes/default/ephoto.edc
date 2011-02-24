@@ -1,373 +1,530 @@
-collections {
-        group
-        {
-		name: "flow_image";
-		image: "thumb_shadow.png" COMP;
-		parts
-		{
-			part
-			{
-				name: "event";
-				type: RECT;
-				repeat_events: 1;
-				description
-				{
-					state: "default" 0.0;
-					color: 0 0 0 0;
-				}
-			}
-			part
-			{
-				name: "border-shadow";
-				type: IMAGE;
-				mouse_events: 0;
-				description
-				{
-					state: "default" 0.0;
-					rel1 
-					{
-						to: "image";
-						offset: -18 -18;
-					}
-					rel2 
-					{
-						to: "image";
-						offset: 17 17;
-					}
-					image 
-					{
-						normal: "thumb_shadow.png";
-						border: 17 17 17 17;
-						 middle: NONE;
-					}
-				}
-			}
-			part
-			{
-				name: "border";
-				type: RECT;
-				mouse_events: 0;
-				description
-				{
-					state: "default" 0.0;
-					rel1
-					{
-						to: "border-shadow";
-						offset: 16 16;
-					}
-					rel2
-					{
-						to: "border-shadow";
-						offset: -15 -15;
-					}
-				}
-			}
-			part
-			{
-				name: "image";
-				type: SWALLOW;
-				mouse_events: 0;
-				description
-				{
-					state: "default" 0.0;
-					aspect_preference: BOTH;
-					aspect: 1.0 1.0;
-					rel1.offset: 0 8;
-					rel2.offset: -1 -2;
-				}
-			}
-//			part
-//			{
-//				name: "text";
-//				type: TEXT;
-//				effect: SOFT_SHADOW;
-//				mouse_events: 0;
-//				scale: 1;
-//				description
-//				{
-//					state: "default" 0.0;
-//					color: 0 0 0 255;
-//					color3: 0 0 0 0;
-//					align: 0.5 1.0;
-//					rel1
-//					{
-//						relative: 0.0 1.0;
-//						offset: 20 -30;
-//					}
-//					rel2
-//					{
-//						relative: 1.0 1.0;
-//						offset: -21 -15;
-//					}
-//					text
-//					{
-//						font: "Sans";
-//						size: 10;
-//						min: 0 1;
-//						align: 0.5 0.0;
-//						text_class: "image";
-//					}
-//				}
-//			}
-		}
-	}
-	group
-	{
-		name: "flow";
-		parts
-		{
-			part
-			{
-				name: "offscreen_left";
-				type: SWALLOW;
-				mouse_events: 1;
-				description
-				{
-					state: default 0.0;
-					fixed: 1 1;
-					visible: 0;
-					rel1.relative: 0.0 0.3;
-					rel1.offset: 0 0;
-					rel2.relative: 0.0 0.7;
-					rel2.offset: 0 0;
-				}
-				description
-				{
-					state: right 0.0;
-					visible: 1;
-					rel1.relative: 0.0 0.3;
-					rel1.offset: 0 0;
-					rel2.relative: 0.2 0.7;
-					rel2.offset: 0 0;
-				}
-                                description
-				{
-					state: left 0.0;
-					visible: 0;
-                                        rel1.relative: 1.0 0.3;
-                                        rel1.offset: 0 0;
-                                        rel2.relative: 1.0 0.7;
-                                        rel2.offset: 0 0;
-                                }						
-			}
-			part
-			{
-				name: "left";
-				type: SWALLOW;
-				mouse_events: 1;
-				description
-				{
-					state: default 0.0;
-					visible: 1;
-					rel1.relative: 0.0 0.3;
-					rel1.offset: 0 0;
-					rel2.relative: 0.2 0.7;
-					rel2.offset: 0 0;
-				}
-				description
-				{
-					state: right 0.0;
-					rel1.relative: 0.2 0.2;
-					rel1.offset: 0 0;
-					rel2.relative: 0.8 0.8;
-					rel2.offset: 0 0;
-				}
-				description
-				{
-					state: left 0.0;
-					rel1.relative: 0.0 0.3;
-                                        rel1.offset: 0 0;
-                                        rel2.relative: 0.0 0.7;
-                                        rel2.offset: 0 0;
-                                }
-				description
-				{
-					state: full 0.0;
-					map.on: 1;
-					inherit: default 0.0;
-					visible: 0;
-				}
-			}
-			part
-			{
-				name: "right";
-				type: SWALLOW;
-				mouse_events: 1;
-				description
-				{
-					state: default 0.0;
-					visible: 1;
-					rel1.relative: 0.8 0.3;
-					rel1.offset: 0 0;
-					rel2.relative: 1.0 0.7;
-					rel2.offset: 0 0;
-				}
-				description
-				{
-					state: right 0.0;
-					rel1.relative: 1.0 0.3;
-					rel1.offset: 0 0;
-					rel2.relative: 1.0 0.7;
-					rel2.offset: 0 0;
-				}
-				description
-				{
-					state: left 0.0;
-                                        rel1.relative: 0.2 0.2;
-                                        rel1.offset: 0 0;
-                                        rel2.relative: 0.8 0.8;
-                                        rel2.offset: 0 0;	
-				}
-				description
-				{
-					state: full 0.0;
-					map.on: 1;
-					inherit: default 0.0;
-					visible: 0;
-				}
-			}
-			part
-			{
-				name: "center";
-				type: SWALLOW;
-				mouse_events: 1;
-				description
-				{
-					state: default 0.0;
-					rel1.relative: 0.2 0.2;
-					rel1.offset: 0 0;
-					rel2.relative: 0.8 0.8;
-					rel2.offset: 0 0;
-				}
-				description
-				{
-					state: right 0.0;
-					rel1.relative: 0.8 0.3;
-					rel1.offset: 0 0;
-					rel2.relative: 1.0 0.7;
-					rel2.offset: 0 0;
-				}
-				description
-				{
-					state: left 0.0;
-					rel1.relative: 0.0 0.3;
-                                        rel1.offset: 0 0;
-                                        rel2.relative: 0.2 0.7;
-                                        rel2.offset: 0 0;
-				}
-				description
-				{
-					state: full 0.0;
-					rel1.relative: 0.0 0.0;
-					rel1.offset: 0 0;
-					rel2.relative: 1.0 1.0;
-					rel2.offset: -1 -1;
-				}
-			}
-			part
-                        {
-                                name: "offscreen_right";
-                                type: SWALLOW;
-                                mouse_events: 1;
-				description
-                                {
-                                        state: default 0.0;
-					fixed: 1 1;
-					visible: 0;
-                                        rel1.relative: 1.0 0.3;
-                                        rel1.offset: 0 0;
-                                        rel2.relative: 1.0 0.7;
-                                        rel2.offset: 0 0;
-                                }
-                                description
-                                {
-                                        state: right 0.0;
-					visible: 0;
-				        rel1.relative: 0.0 0.3;
-                                        rel1.offset: 0 0;
-                                        rel2.relative: 0.0 0.7;
-                                        rel2.offset: 0 0;
-                                }
-				description
-				{
-					state: left 0.0;
-					visible: 1;
-					rel1.relative: 0.8 0.3;
-                                        rel1.offset: 0 0;
-                                        rel2.relative: 1.0 0.7;
-                                        rel2.offset: 0 0;
-                                }
-                        }
-		}
-		programs
-		{
-			program
-			{
-				name: "right";
-				signal: "right";
-				source: "ephoto";
-				action: STATE_SET right 0.0;
-				transition: LINEAR 0.4;
-                                target: "offscreen_right";
-                                target: "right";
-                                target: "center";
-                                target: "left";
-				target: "offscreen_left";
-				after: "done";
-			}
-			program
-                        {
-                                name: "left";
-                                signal: "left";
-                                source: "ephoto";
-                                action: STATE_SET left 0.0;
-				transition: LINEAR 0.4;
-                                target: "offscreen_left";
-				target: "left";
-				target: "center";
-				target: "right";
-                                target: "offscreen_right";
-				after: "done";
-                        }
-			program
-                        {
-                                name: "full";
-                                signal: "full";
-                                source: "ephoto";
-                                action: STATE_SET full 0.0;
-                                transition: LINEAR 0.2;
-				target: "left";
-				target: "right";
-				target: "center";
-                        }
-                        program
-			{
-				name: "full_reset";
-				signal: "full_reset";
-				source: "ephoto";
-				action: STATE_SET default 0.0;
-				transition: LINEAR 0.2;
-				target: "left";
-				target: "right";
-				target: "center";
-                        }
-			program
-			{
-				name: "done";
-				action: SIGNAL_EMIT "done" "ephoto";
-			}
-			program
-			{
-				name: "reset";
-				signal: "reset";
-				source: "ephoto";
-				action: STATE_SET default 0.0;
-				target: "offscreen_right";
-				target: "right";
-				target: "center";
-				target: "left";
-				target: "offscreen_left";
-			}
-		}
-	}
+externals {
+external: "elm";
 }
+
+collections {
+   images
+   {
+      image: "thumb_shadow.png" COMP;
+   }
+   group
+   {
+      name: "elm/layout/ephoto/orient";
+      parts
+      {
+         part
+         {
+            name: "elm.swallow.content";
+            type: SWALLOW;
+            description
+            {
+               state: "default" 0.0;
+            }
+            description
+            {
+               state: "rotate_0" 0.0;
+               inherit: "default" 0.0;
+               map
+               {
+                  on: 1;
+                  rotation.z : 0;
+               }
+            }
+            description
+            {
+               state: "rotate_90" 0.0;
+               inherit: "default" 0.0;
+               map
+               {
+                  on: 1;
+                  rotation.z : 90;
+               }
+            }
+            description
+            {
+               state: "rotate_180" 0.0;
+               inherit: "default" 0.0;
+               map
+               {
+                  on: 1;
+                  rotation.z : 180;
+               }
+            }
+            description
+            {
+               state: "rotate_270" 0.0;
+               inherit: "default" 0.0;
+               map
+               {
+                  on: 1;
+                  rotation.z : 270;
+               }
+            }
+            description
+            {
+               state: "flip_horiz" 0.0;
+               inherit: "default" 0.0;
+               map
+               {
+                  on: 1;
+                  rotation.y : 180;
+               }
+            }
+            description 
+            {
+               state: "flip_vert" 0.0;
+               inherit: "default" 0.0;
+               map
+               {
+                  on: 1;
+                  rotation.x : 180;
+               }
+            }
+            description
+            {
+               state: "flip_horiz_90" 0.0;
+               inherit: "default" 0.0;
+               map
+               {
+                  on: 1;
+                  rotation
+                  {
+                     z: 90;
+                     y: 180;
+                  }
+               }
+            }
+            description
+            {
+               state: "flip_vert_90" 0.0;
+               inherit: "default" 0.0;
+               map
+               {
+                  on: 1;
+                  rotation
+                  {
+                     z: 90;
+                     x: 180;
+                  }
+               }
+            }
+         }
+         programs
+         {
+            program
+            {
+               signal: "state,rotate,0";
+               source: "ephoto";
+               action: STATE_SET "rotate_0" 0.0;
+               target: "elm.swallow.content";
+            }
+            program
+            {
+               signal: "state,rotate,90";
+               source: "ephoto";
+               action: STATE_SET "rotate_90" 0.0;
+               target: "elm.swallow.content";
+            }
+            program
+            {
+               signal: "state,rotate,180";
+               source: "ephoto";
+               action: STATE_SET "rotate_180" 0.0;
+               target: "elm.swallow.content";
+            }
+            program
+            {
+               signal: "state,rotate,270";
+               source: "ephoto";
+               action: STATE_SET "rotate_270" 0.0;
+               target: "elm.swallow.content";
+            }
+            program
+            {
+               signal: "state,flip,horiz";
+               source: "ephoto";
+               action: STATE_SET "flip_horiz" 0.0;
+               target: "elm.swallow.content";
+            }
+            program
+            {
+               signal: "state,flip,vert";
+               source: "ephoto";
+               action: STATE_SET "flip_vert" 0.0;
+               target: "elm.swallow.content";
+            }
+            program
+            {
+               signal: "state,flip,horiz,90";
+               source: "ephoto";
+               action: STATE_SET "flip_horiz_90" 0.0;
+               target: "elm.swallow.content";
+            }
+            program
+            {
+               signal: "state,flip,vert,90";
+               source: "ephoto";
+               action: STATE_SET "flip_vert_90" 0.0;
+               target: "elm.swallow.content";
+            }
+         }
+      }
+   }
+   group
+   {
+      name: "ephoto,thumb,grid";
+      parts
+      {
+         part
+         {
+            name: "ephoto.swallow.content.thumb";
+            type: SWALLOW;
+            mouse_events: 1;
+            description
+            {
+               state: "default" 0.0;
+               rel1.relative : 0.0 0.0;
+               rel1.offset : 0 0;
+               rel2.relative : 1.0 1.0;
+               rel2.offset : -1 -1;
+            }
+         }
+      }
+   }
+   group
+   {
+      name: "flow_image";
+      parts
+      {
+         part
+         {
+            name: "event";
+            type: RECT;
+            repeat_events: 1;
+            description
+            {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part
+         {
+            name: "border-shadow";
+            type: IMAGE;
+            mouse_events: 0;
+            description
+            {
+               state: "default" 0.0;
+               rel1
+               {
+                  to: "image";
+                  offset: -18 -18;
+               }
+               rel2
+               {
+                  to: "image";
+                  offset: 17 17;
+               }
+               image
+               {
+                  normal: "thumb_shadow.png";
+                  border: 17 17 17 17;
+                  middle: NONE;
+               }
+            }
+         }
+         part
+         {
+            name: "border";
+            type: RECT;
+             mouse_events: 0;
+            description
+            {
+               state: "default" 0.0;
+               rel1
+               {
+                  to: "border-shadow";
+                  offset: 16 16;
+               }
+               rel2
+               {
+                  to: "border-shadow";
+                  offset: -15 -15;
+               }
+            }
+         }
+         part
+         {
+            name: "image";
+            type: SWALLOW;
+            mouse_events: 0;
+            description
+            {
+               state: "default" 0.0;
+               aspect_preference: BOTH;
+               aspect: 1.0 1.0;
+               rel1.offset : 0 8;
+               rel2.offset : -1 -2;
+            }
+         }
+      }
+   }
+   group
+   {
+      name: "flow";
+      parts
+      {
+         part
+         {
+            name: "offscreen_left";
+            type: SWALLOW;
+            mouse_events: 1;
+            description
+            {
+               state: default 0.0;
+               fixed: 1 1;
+               visible: 0;
+               rel1.relative : 0.0 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 0.0 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: right 0.0;
+               visible: 1;
+               rel1.relative : 0.0 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 0.2 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: left 0.0;
+               visible: 0;
+               rel1.relative : 1.0 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 1.0 0.7;
+               rel2.offset : 0 0;
+            }
+         }
+         part
+         {
+            name: "left";
+            type: SWALLOW;
+            mouse_events: 1;
+            description
+            {
+               state: default 0.0;
+               visible: 1;
+               rel1.relative : 0.0 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 0.2 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: right 0.0;
+               rel1.relative : 0.2 0.2;
+               rel1.offset : 0 0;
+               rel2.relative : 0.8 0.8;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: left 0.0;
+               rel1.relative : 0.0 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 0.0 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: full 0.0;
+               inherit: default 0.0;
+               visible: 0;
+            }
+         }
+         part
+         {
+            name: "offscreen_right";
+            type: SWALLOW;
+            mouse_events: 1;
+            description
+            {
+               state: default 0.0;
+               fixed: 1 1;
+               visible: 0;
+               rel1.relative : 1.0 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 1.0 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: right 0.0;
+               visible: 0;
+               rel1.relative : 0.0 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 0.0 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: left 0.0;
+               visible: 1;
+               rel1.relative : 0.8 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 1.0 0.7;
+               rel2.offset : 0 0;
+            }
+         }
+         part
+         {
+            name: "right";
+            type: SWALLOW;
+            mouse_events: 1;
+            description
+            {
+               state: default 0.0;
+               visible: 1;
+               rel1.relative : 0.8 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 1.0 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: right 0.0;
+               rel1.relative : 1.0 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 1.0 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: left 0.0;
+               rel1.relative : 0.2 0.2;
+               rel1.offset : 0 0;
+               rel2.relative : 0.8 0.8;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: full 0.0;
+               inherit: default 0.0;
+               visible: 0;
+            }
+         }
+         part
+         {
+            name: "center";
+            type: SWALLOW;
+            mouse_events: 1;
+            description
+            {
+               state: default 0.0;
+               rel1.relative : 0.2 0.2;
+               rel1.offset : 0 0;
+               rel2.relative : 0.8 0.8;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: right 0.0;
+               rel1.relative : 0.8 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 1.0 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: left 0.0;
+               rel1.relative : 0.0 0.3;
+               rel1.offset : 0 0;
+               rel2.relative : 0.2 0.7;
+               rel2.offset : 0 0;
+            }
+            description
+            {
+               state: full 0.0;
+               rel1.relative : 0.0 0.0;
+               rel1.offset : 0 0;
+               rel2.relative : 1.0 1.0;
+               rel2.offset : -1 -1;
+            }
+         }
+      }
+      programs
+      {
+         program
+         {
+            name: "right";
+            signal: "right";
+            source: "ephoto";
+            action: STATE_SET right 0.0;
+            transition: LINEAR 0.4;
+            target: "offscreen_right";
+            target: "right";
+            target: "center";
+            target: "left";
+            target: "offscreen_left";
+            after: "done";
+         }
+         program
+         {
+            name: "left";
+            signal: "left";
+            source: "ephoto";
+            action: STATE_SET left 0.0;
+            transition: LINEAR 0.4;
+            target: "offscreen_left";
+            target: "left";
+            target: "center";
+            target: "right";
+            target: "offscreen_right";
+            after: "done";
+         }
+         program
+         {
+            name: "full";
+            signal: "full";
+            source: "ephoto";
+            action: STATE_SET full 0.0;
+            transition: LINEAR 0.2;
+            target: "left";
+            target: "right";
+            target: "center";
+         }
+         program
+         {
+            name: "full_reset";
+            signal: "full_reset";
+            source: "ephoto";
+            action: STATE_SET default 0.0;
+            transition: LINEAR 0.2;
+            target: "left";
+            target: "right";
+            target: "center";
+         }
+         program
+         {
+            name: "done";
+            action: SIGNAL_EMIT "done" "ephoto";
+         }
+         program
+         {
+            name: "reset";
+            signal: "reset";
+            source: "ephoto";
+            action: STATE_SET default 0.0;
+            target: "offscreen_right";
+            target: "right";
+            target: "center";
+            target: "left";
+            target: "offscreen_left";
+         }
+      }
+   }
+}
+
