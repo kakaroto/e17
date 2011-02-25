@@ -1,0 +1,181 @@
+#define SCROLLBAR_BUTTON_SIZE 15
+
+#define SCROLLBAR_DRAG(part_name, minw, minh, xdir, ydir, image_up, image_thumb, clip) \
+part { \
+   name: part_name; \
+   clip_to: clip; \
+   dragable { \
+      confine: "confine"; \
+      x: xdir xdir xdir; \
+      y: ydir ydir ydir; \
+   } \
+   description { \
+      state: "default" 0.0; \
+      min: minw minh; \
+      color: 120 120 120 255; \
+      fixed: 1 1; \
+      rel1 { \
+         relative: 0.5 0.5; \
+         offset: 0 0; \
+         to: "confine"; \
+      } \
+      rel2 { \
+         relative: 0.5 0.5; \
+         offset: 0 0; \
+         to: "confine"; \
+      } \
+      image { \
+         normal: image_up; \
+         border: 5 5 5 5; \
+      } \
+      fill { \
+         smooth: 0; \
+      } \
+   } \
+   description { \
+      state: "down" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 255; \
+   } \
+   description { \
+      state: "over" 0.0; \
+      inherit: "default" 0.0; \
+      color: 200 200 200 255; \
+   } \
+} \
+part { \
+   name: part_name"_thumb"; \
+   mouse_events: 0; \
+   clip_to: clip; \
+   description { \
+      state: "default" 0.0; \
+      rel1 { \
+         relative: 0.5 0.5; \
+         offset: -4 -4; \
+         to: part_name; \
+      } \
+      rel2 { \
+         relative: 0.5 0.5; \
+         offset: 3 3; \
+         to: part_name; \
+      } \
+      image { \
+         normal: image_thumb; \
+      } \
+      fill { \
+         smooth: 0; \
+      } \
+   } \
+}
+
+#define SCROLLBAR_DRAG_PROG(part_name) \
+program { \
+   name: part_name"_up"; \
+   signal: "mouse,up,1"; \
+   source: part_name; \
+   action: STATE_SET "default" 0.0; \
+   target: part_name; \
+} \
+program { \
+   name: part_name"_down"; \
+   signal: "mouse,down,1*"; \
+   source: part_name; \
+   action: STATE_SET "down" 0.0; \
+   target: part_name; \
+} \
+program { \
+   name: part_name"_in"; \
+   signal: "mouse,in"; \
+   source: part_name; \
+   action: STATE_SET "over" 0.0; \
+   transition: LINEAR 0.1; \
+   target: part_name; \
+} \
+program { \
+   name: part_name"_out"; \
+   signal: "mouse,out"; \
+   source: part_name; \
+   action: STATE_SET "default" 0.0; \
+   transition: LINEAR 0.5; \
+   target: part_name; \
+}
+
+
+#define SCROLLBAR_BUTTON(button_name, rx1, ry1, ox1, oy1, image_up, clip) \
+part { \
+   name: button_name; \
+   clip_to: clip; \
+   description { \
+      state: "default" 0.0; \
+      color: 120 120 120 255; \
+      rel1 { \
+         relative: rx1 ry1; \
+         offset: ox1 oy1; \
+      } \
+      rel2 { \
+         relative: rx1 ry1; \
+         offset: (ox1 + SCROLLBAR_BUTTON_SIZE) (oy1 + SCROLLBAR_BUTTON_SIZE); \
+      } \
+      image { \
+         normal: image_up; \
+      } \
+      fill { \
+         smooth: 0; \
+      } \
+   } \
+   description { \
+      state: "down" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 255; \
+   } \
+   description { \
+      state: "over" 0.0; \
+      inherit: "default" 0.0; \
+      color: 200 200 200 255; \
+   } \
+}
+
+
+#define SCROLLBAR_BUTTON_PROG(button_name, dir) \
+program { \
+   name: button_name"_up"; \
+   signal: "mouse,up,1"; \
+   source: button_name; \
+   action: STATE_SET "default" 0.0; \
+   target: button_name; \
+} \
+program { \
+   name: button_name"_down"; \
+   signal: "mouse,down,1*"; \
+   source: button_name; \
+   action: STATE_SET "down" 0.0; \
+   target: button_name; \
+} \
+program { \
+   name: button_name"_pressed"; \
+   signal: "mouse,down,1*"; \
+   source: button_name; \
+   action: SIGNAL_EMIT "scroll_"dir"_start" ""; \
+} \
+program { \
+   name: button_name"_released"; \
+   signal: "mouse,up,1"; \
+   source: button_name; \
+   action: SIGNAL_EMIT "scroll_stop" ""; \
+} \
+program { \
+   name: button_name"_in"; \
+   signal: "mouse,in"; \
+   source: button_name; \
+   action: STATE_SET "over" 0.0; \
+   transition: LINEAR 0.1; \
+   target: button_name; \
+} \
+program { \
+   name: button_name"_out"; \
+   signal: "mouse,out"; \
+   source: button_name; \
+   action: STATE_SET "default" 0.0; \
+   transition: LINEAR 0.5; \
+   target: button_name; \
+}

@@ -1,0 +1,685 @@
+#define CH(_pos) \
+         part { name: "ch_"#_pos".base"; \
+            type: RECT; \
+            description { state: "default" 0.0; \
+               rel1 { \
+                  relative: (_pos % 7 * 7 / 8 / 6) 0; \
+                  to: "header"; \
+               } \
+               rel2 { \
+                  relative: (_pos % 7 * 7 / 8 / 6 + 1 / 8) 1; \
+                  to: "header"; \
+               } \
+               color: 0 0 0 0; \
+               visible: 0; \
+            } \
+         } \
+         part { name: "ch_"#_pos".text"; \
+            type: TEXT; \
+            effect: SOFT_SHADOW; \
+            mouse_events: 0; \
+            scale: 1; \
+            clip_to: "ch_"#_pos".clipper"; \
+            description { \
+               state: "default" 0.0; \
+               rel1.to: "ch_"#_pos".base"; \
+               rel2.to: "ch_"#_pos".base"; \
+               color: 255 255 255 255; \
+               color3: 0 0 0 0; \
+               text { \
+                  font: "DejaVu"; \
+                  size: 10; \
+                  min: 1 1; \
+                  align: 0.5 0.5; \
+               } \
+            } \
+         } \
+         part { name: "ch_"#_pos".clipper"; \
+            type: RECT; \
+            description { state: "default" 0.0; \
+               rel1.to: "ch_"#_pos".base"; \
+               rel2.to: "ch_"#_pos".base"; \
+            } \
+         }
+
+#define CIT(_pos) \
+         part { name: "cit_"#_pos".rect"; \
+            type: RECT; \
+            description { state: "default" 0.0; \
+               rel1 { \
+                  relative: (_pos % 7 * 7 / 8 / 6) \
+                            (_pos / 8 / 5 - _pos % 7 / 8 / 5); \
+                  to: "base"; \
+               } \
+               rel2 { \
+                  relative: (_pos % 7 * 7 / 8 / 6 + 1 / 8) \
+                            (_pos / 8 / 5 - _pos % 7 / 8 / 5 + 1 / 8); \
+                  to: "base"; \
+               } \
+               color: 0 0 0 0; \
+               visible: 0; \
+            } \
+         } \
+         part { \
+            name: "cit_"#_pos".event"; \
+            type: RECT; \
+            repeat_events: 1; \
+            description { \
+               rel1.to: "cit_"#_pos".rect"; \
+               rel2.to: "cit_"#_pos".rect"; \
+               state: "default" 0.0; \
+               color: 0 0 0 0; \
+            } \
+         } \
+         part { name: "cit_"#_pos".shelf"; \
+            type: RECT; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               rel1 { \
+                  to: "cit_"#_pos".bg"; \
+                  offset: -1 -1; \
+               } \
+               rel2 { \
+                  to: "cit_"#_pos".bg"; \
+               } \
+               color: 200 200 200 255; \
+            } \
+         } \
+         part { name: "cit_"#_pos".hd"; \
+            type: RECT; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               rel1 { \
+                  to: "cit_"#_pos".bg"; \
+                  offset: -1 -1; \
+               } \
+               rel2 { \
+                  to: "cit_"#_pos".bg"; \
+               } \
+               visible: 0; \
+               color: DARKNESS_BRIGHT_BLUE 255; \
+            } \
+            description { state: "visible" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+            } \
+         } \
+         part { \
+            name: "cit_"#_pos".base_sh"; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               align: 0.0 0.0; \
+               min: 0 1; \
+               rel1 { \
+                  to: "cit_"#_pos".base"; \
+                  relative: 0.0 1.0; \
+                  offset: 0 0; \
+               } \
+               rel2 { \
+                  to: "cit_"#_pos".base"; \
+                  relative: 1.0 1.05; \
+                  offset: -1 0; \
+               } \
+               image { \
+                  normal: "entry_under.png"; \
+               } \
+               fill.smooth: 0; \
+            } \
+         } \
+         part { \
+            name: "cit_"#_pos".base"; \
+            type: RECT; \
+            mouse_events: 0; \
+            description { \
+               state: "default" 0.0; \
+               rel1.to: "cit_"#_pos".rect"; \
+               rel2.to: "cit_"#_pos".rect"; \
+               rel2.offset: -1 -1; \
+               color: 0 0 0 255; \
+            } \
+            description { \
+               state: "today" 0.0; \
+               inherit: "default" 0.0; \
+               color: DARKNESS_DARK_BLUE 255; \
+            } \
+         } \
+         part { name: "cit_"#_pos".bg"; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               visible: 0; \
+               color: 255 255 255 0; \
+               rel1 { \
+                  to: "cit_"#_pos".rect"; \
+                  relative: 0.0 0.0; \
+               } \
+               rel2 { \
+                  to: "cit_"#_pos".rect"; \
+                  relative: 1.0 1.0; \
+                  offset: -1 -1; \
+               } \
+               image { \
+                  normal: "slider_button.png"; \
+                  border: 6 6 6 6; \
+               } \
+               image.middle: SOLID; \
+            } \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+               color: 255 255 255 255; \
+            } \
+         } \
+         part { name: "cit_"#_pos".fg1"; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               visible: 0; \
+               color: 255 255 255 0; \
+               rel1.to: "cit_"#_pos".bg"; \
+               rel2.to: "cit_"#_pos".bg"; \
+               image { \
+                  normal: "menu_item_highlight.png"; \
+                  border: 6 6 6 0; \
+               } \
+            } \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+               color: 255 255 255 255; \
+            } \
+         } \
+         part { name: "cit_"#_pos".text"; \
+            type: TEXT; \
+            effect: SOFT_OUTLINE; \
+            mouse_events: 0; \
+            scale: 1; \
+            description { \
+               state: "default" 0.0; \
+               rel1.to: "cit_"#_pos".bg"; \
+               rel2.to: "cit_"#_pos".bg"; \
+               color: DARKNESS_TEXT 200; \
+               color2: 0 0 0 0; \
+               text { \
+                  font: "DejaVu"; \
+                  size: 10; \
+                  min: 1 1; \
+                  align: 0.5 0.5; \
+               } \
+            } \
+            description { state: "selected" 0.0; \
+               inherit: "default" 0.0; \
+               text.font: "DejaVu-Bold"; \
+               color: DARKNESS_TEXT 200; \
+               color2: DARKNESS_DARK_BLUE 255; \
+            } \
+         } \
+         part { name: "cit_"#_pos".check"; \
+            mouse_events: 0; \
+            description { state: "default" 0.0; \
+               rel1 { \
+                  to: "cit_"#_pos".bg"; \
+                  relative: 0.7 0.6; \
+                  offset: 1 1; \
+               } \
+               rel2 { \
+                  to: "cit_"#_pos".bg"; \
+                  relative: 1.1 1.2; \
+                  offset: -2 -2; \
+               } \
+               aspect: 1 1; \
+               visible: 0; \
+               color: DARKNESS_BRIGHT_BLUE 255; \
+               image.normal: "checkbox_on.png"; \
+            } \
+            description { state: "visible" 0.0; \
+               inherit: "default" 0.0; \
+               visible: 1; \
+            } \
+         } \
+      programs { \
+         program { \
+            name:    "cit_"#_pos".go_active"; \
+            signal:  "cit_"#_pos",selected"; \
+            source:  "elm"; \
+            action:  STATE_SET "selected" 0.0; \
+            target:  "cit_"#_pos".bg"; \
+            target:  "cit_"#_pos".fg1"; \
+            target:  "cit_"#_pos".text"; \
+         } \
+         program { \
+            name:    "cit_"#_pos".go_passive"; \
+            signal:  "cit_"#_pos",unselected"; \
+            source:  "elm"; \
+            action:  STATE_SET "default" 0.0; \
+            target:  "cit_"#_pos".bg"; \
+            target:  "cit_"#_pos".fg1"; \
+            target:  "cit_"#_pos".text"; \
+         } \
+         program { \
+            name:    "cit_"#_pos".is_today"; \
+            signal:  "cit_"#_pos",today"; \
+            source:  "elm"; \
+            action:  STATE_SET "today" 0.0; \
+            target: "cit_"#_pos".base"; \
+         } \
+         program { \
+            name:    "cit_"#_pos".not_today"; \
+            signal:  "cit_"#_pos",not_today"; \
+            source:  "elm"; \
+            action:  STATE_SET "default" 0.0; \
+            target: "cit_"#_pos".base"; \
+         } \
+         program { \
+            source: "cit_"#_pos".clicked"; \
+            signal: "mouse,clicked,1"; \
+            source: "cit_"#_pos".event"; \
+            action: SIGNAL_EMIT "elm,action,selected" #_pos; \
+         } \
+         program { \
+            name:    "cit_"#_pos".clear"; \
+            signal:  "cit_"#_pos",clear"; \
+            source:  "elm"; \
+            action:  STATE_SET "default" 0.0; \
+            target: "cit_"#_pos".check"; \
+            target: "cit_"#_pos".hd"; \
+         } \
+         program { \
+            name:    "cit_"#_pos".checked"; \
+            signal:  "cit_"#_pos",checked"; \
+            source:  "elm"; \
+            action:  STATE_SET "visible" 0.0; \
+            target: "cit_"#_pos".check"; \
+         } \
+         program { \
+            name:    "cit_"#_pos".holiday"; \
+            signal:  "cit_"#_pos",holiday"; \
+            source:  "elm"; \
+            action:  STATE_SET "visible" 0.0; \
+            target: "cit_"#_pos".hd"; \
+         } \
+      }
+
+   group { name: "elm/calendar/base/default";
+       images {
+           image: "entry_over.png" COMP;
+           image: "entry_under.png" COMP;
+           image: "button_up.png" COMP;
+           image: "button_down.png" COMP;
+           image: "button_disabled.png" COMP;
+           image: "button_glow.png" COMP;
+           image: "drag_glow.png" COMP;
+           image: "scrollbar_button_left1.png" COMP;
+           image: "scrollbar_button_right1.png" COMP;
+           image: "slider_button.png" COMP;
+           image: "menu_item_highlight.png" COMP;
+           image: "entry_over.png" COMP;
+           image: "checkbox_disabled.png" COMP;
+       }
+       parts {
+           part { name: "bg";
+               type: RECT;
+               description { state: "default" 0.0;
+                   min: 0 30;
+                   rel1.offset: 1 1;
+                   rel2.offset: -2 -2;
+                   color: 255 255 255 0;
+                   align: 0.0 0.5;
+               }
+           }
+           part { name: "spinner-base";
+               type: RECT;
+               mouse_events: 0;
+               description { state: "default" 0.0;
+                   min: 24 24;
+                   max: 999999 24;
+                   rel1.to: "bg";
+                   rel1.offset: 6 6;
+                   rel2.to: "bg";
+                   rel2.offset: -7 -7;
+                   color: 255 255 255 0;
+                   align: 0.0 0.0;
+               }
+           }
+           part { name: "conf_over_spinner";
+               mouse_events:  0;
+               description { state: "default" 0.0;
+                   rel1.to: "spinner-base";
+                   rel1.offset: -3 -3;
+                   rel2.to: "spinner-base";
+                   rel2.offset: 2 2;
+                   image {
+                       normal: "entry_over.png";
+                       border: 7 7 7 7;
+                       middle: 0;
+                   }
+                   fill.smooth : 0;
+               }
+           }
+           part { name: "table-base";
+               type: RECT;
+               mouse_events: 0;
+               description { state: "default" 0.0;
+                   min: 256 220;
+                   rel1.to_x: "bg";
+                   rel1.to_y: "spinner-base";
+                   rel1.offset: 6 6;
+                   rel1.relative: 0 1;
+                   rel2.to: "bg";
+                   rel2.offset: -7 -7;
+                   color: 255 255 255 0;
+               }
+           }
+           part { name: "conf_over_table";
+               mouse_events:  0;
+               description { state: "default" 0.0;
+                   rel1.to: "table-base";
+                   rel1.offset: -3 -3;
+                   rel2.to: "table-base";
+                   rel2.offset: 2 2;
+                   image {
+                       normal: "entry_over.png";
+                       border: 7 7 7 7;
+                       middle: 0;
+                   }
+                   fill.smooth : 0;
+               }
+           }
+           part { name: "header";
+               type: RECT;
+               mouse_events: 0;
+               description { state: "default" 0.0;
+                   rel1.to: "table-base";
+                   rel1.relative: 0 0;
+                   rel2.to: "table-base";
+                   rel2.relative: 1 0.1;
+                   color: 255 255 255 0;
+               }
+           }
+           part { name: "base";
+               type: RECT;
+               mouse_events: 0;
+               description { state: "default" 0.0;
+                   rel1.to_x: "table-base";
+                   rel1.to_y: "header";
+                   rel1.relative: 0 1;
+                   rel1.offset: 3 0;
+                   rel2.to: "table-base";
+                   rel2.offset: -3 0;
+                   color: 255 255 255 0;
+               }
+           }
+           /* lots of copy paste from spinner */
+           BUTTON_PART("left_button",
+             align: 0.0 0.5;
+             min: 24 24;
+             aspect: 1.0 1.0;
+             fixed: 1 1;
+             aspect_preference: VERTICAL;
+             rel1.to: "spinner-base";
+             rel1.offset: 3 3;
+             rel2.to: "spinner-base";
+             rel2.relative: 0.2 1.0;
+             rel2.offset: -4 -4;,
+           5 5 4 12)
+           BUTTON_GLOW_PART("left_button", 220)
+           FOCUS_GLOW(0.0, 0.0, 0, 0, "left_button", 1.0, 1.0, -1, -1, "left_button")
+           DRAG_GLOW(0.0, 0.0, 0, 0, "left_button", 1.0, 1.0, -1, -1, "left_button")
+           BUTTON_PART("right_button",
+             align: 1.0 0.5;
+             min: 24 24;
+             aspect: 1.0 1.0;
+             fixed: 1 1;
+             aspect_preference: VERTICAL;
+             rel1.to: "spinner-base";
+             rel1.relative: 0.8 0.0;
+             rel1.offset: 4 4;
+             rel2.to: "spinner-base";
+             rel2.offset: -3 -3;,
+           6 6 6 6)
+           BUTTON_GLOW_PART("right_button", 220)
+           FOCUS_GLOW(0.0, 0.0, 0, 0, "right_button", 1.0, 1.0, -1, -1, "right_button")
+           DRAG_GLOW(0.0, 0.0, 0, 0, "right_button", 1.0, 1.0, -1, -1, "right_button")
+           part {
+               name: "left_button_icon";
+               repeat_events: 1;
+               description { state: "default" 0.0;
+                   rel1.to: "left_button";
+                   rel2.to: "left_button";
+                   align: 0.5 0.5;
+                   min: 16 16;
+                   aspect: 1.0 1.0;
+                   aspect_preference: BOTH;
+                   image.normal: "scrollbar_button_left1.png";
+               }
+               description { state: "rtl" 0.0;
+                   inherit: "default" 0.0;
+                   image.normal: "scrollbar_button_right1.png";
+               }
+           }
+           part {
+               name: "right_button_icon";
+               repeat_events: 1;
+               description { state: "default" 0.0;
+                   rel1.to: "right_button";
+                   rel2.to: "right_button";
+                   align: 0.5 0.5;
+                   min: 16 16;
+                   aspect: 1.0 1.0;
+                   aspect_preference: BOTH;
+                   image.normal: "scrollbar_button_right1.png";
+               }
+               description { state: "rtl" 0.0;
+                   inherit: "default" 0.0;
+                   image.normal: "scrollbar_button_left1.png";
+               }
+           }
+           part {
+               name: "month_text";
+               type: TEXT;
+               mouse_events: 0;
+               scale: 1;
+               description { state: "default" 0.0;
+                   visible: 1;
+                   align: 0.0 0.5;
+                   rel1 {
+                       relative: 1.0 0.0;
+                       offset: 3 2;
+                       to_x: "left_button";
+                       to_y: "spinner-base";
+                   }
+                   rel2 {
+                       relative: 0.0 1.0;
+                       offset: -3 -2;
+                       to: "right_button";
+                       to_y: "spinner-base";
+                   }
+                   color: DARKNESS_TEXT 255;
+                   text {
+                       font: "DejaVu-Bold";
+                       size: 12;
+                       min: 1 1;
+                       align: 0.5 0.5;
+                   }
+               }
+               description { state: "active" 0.0;
+                   inherit: "default" 0.0;
+                   visible: 0;
+               }
+               description { state: "disabled_active" 0.0;
+                   inherit: "default" 0.0;
+                   color: DARKNESS_TEXT_DISABLED 128;
+                   color3: 0 0 0 0;
+               }
+               description { state: "disabled" 0.0;
+                   inherit: "default" 0.0;
+                   color: DARKNESS_TEXT_DISABLED 128;
+                   color3: 0 0 0 0;
+               }
+           }
+           PART_EVENTS("left_button", ignore_flags: ON_HOLD;)
+           PART_EVENTS("right_button", ignore_flags: ON_HOLD;)
+           CH(0)   CH(1)   CH(2)   CH(3)   CH(4)   CH(5)   CH(6)
+           CIT(0)  CIT(1)  CIT(2)  CIT(3)  CIT(4)  CIT(5)  CIT(6)
+           CIT(7)  CIT(8)  CIT(9)  CIT(10) CIT(11) CIT(12) CIT(13)
+           CIT(14) CIT(15) CIT(16) CIT(17) CIT(18) CIT(19) CIT(20)
+           CIT(21) CIT(22) CIT(23) CIT(24) CIT(25) CIT(26) CIT(27)
+           CIT(28) CIT(29) CIT(30) CIT(31) CIT(32) CIT(33) CIT(34)
+           CIT(35) CIT(36) CIT(37) CIT(38) CIT(39) CIT(40) CIT(41)
+       }
+       programs {
+           program { name: "dec_start";
+               signal: "mouse,down,1";
+               source: "left_button_events";
+               action: SIGNAL_EMIT "elm,action,decrement,start" "";
+           }
+           program { name: "dec_stop";
+               signal: "mouse,up,1";
+               source: "left_button_events";
+               action: SIGNAL_EMIT "elm,action,stop" "";
+           }
+           program { name: "inc_start";
+               signal: "mouse,down,1";
+               source: "right_button_events";
+               action: SIGNAL_EMIT "elm,action,increment,start" "";
+           }
+           program { name: "inc_stop";
+               signal: "mouse,up,1";
+               source: "right_button_events";
+               action: SIGNAL_EMIT "elm,action,stop" "";
+           }
+           program {
+              name:   "left_button_click";
+              signal: "mouse,down,1";
+              source: "left_button_events";
+              action: SIGNAL_EMIT "elm,action,press" "";
+              BUTTON_GLOW_SUDDEN_STOP("left_button")
+           }
+           program {
+              name:   "left_button_unclick";
+              signal: "mouse,up,1";
+              source: "left_button_events";
+              action: SIGNAL_EMIT "elm,action,unpress" "";
+           }
+           program {
+              name:   "left_button_click_anim";
+              signal: "mouse,down,1";
+              source: "left_button_events";
+              action: STATE_SET "down" 0.0;
+              target: "left_button";
+              BUTTON_GLOW_SUDDEN_STOP("left_button")
+           }
+           program {
+              name:   "left_button_unclick_anim";
+              signal: "mouse,up,1";
+              source: "left_button_events";
+              action: STATE_SET "default" 0.0;
+              target: "left_button";
+           }
+           program {
+              name: "left_button_mouseover";
+              signal: "mouse,in";
+              source: "left_button_events";
+              BUTTON_GLOW_ACTION("left_button")
+           }
+           program {
+              name: "left_button_mouseout";
+              signal: "mouse,out";
+              source: "left_button_events";
+              BUTTON_GLOW_STOP("left_button")
+           }
+           program {
+              name: "left_button_focus";
+              FOCUS_SIGNAL
+              FOCUS_GLOW_ACTION("left_button")
+           }
+           program {
+              name: "left_button_unfocus";
+              UNFOCUS_SIGNAL
+              UNFOCUS_GLOW_ACTION("left_button")
+           }
+           program {
+              name: "left_button_drag";
+              signal: "repeated";
+              source: "elm";
+              DRAG_ENTER_ACTION("left_button")
+           }
+           BUTTON_GLOW_PROGRAM("left_button")
+           BUTTON_DISABLE_PROGRAM("left_button")
+  ////////////////////////////////////////
+           program {
+              name:   "right_button_click";
+              signal: "mouse,down,1";
+              source: "right_button_events";
+              action: SIGNAL_EMIT "elm,action,press" "";
+              BUTTON_GLOW_SUDDEN_STOP("right_button")
+           }
+           program {
+              name:   "right_button_unclick";
+              signal: "mouse,up,1";
+              source: "right_button_events";
+              action: SIGNAL_EMIT "elm,action,unpress" "";
+           }
+           program {
+              name:   "right_button_click_anim";
+              signal: "mouse,down,1";
+              source: "right_button_events";
+              action: STATE_SET "down" 0.0;
+              target: "right_button";
+              BUTTON_GLOW_SUDDEN_STOP("right_button")
+           }
+           program {
+              name:   "right_button_unclick_anim";
+              signal: "mouse,up,1";
+              source: "right_button_events";
+              action: STATE_SET "default" 0.0;
+              target: "right_button";
+           }
+           program {
+              name: "right_button_mouseover";
+              signal: "mouse,in";
+              source: "right_button_events";
+              BUTTON_GLOW_ACTION("right_button")
+           }
+           program {
+              name: "right_button_mouseout";
+              signal: "mouse,out";
+              source: "right_button_events";
+              BUTTON_GLOW_STOP("right_button")
+           }
+           program {
+              name: "right_button_focus";
+              FOCUS_SIGNAL
+              FOCUS_GLOW_ACTION("right_button")
+           }
+           program {
+              name: "right_button_unfocus";
+              UNFOCUS_SIGNAL
+              UNFOCUS_GLOW_ACTION("right_button")
+           }
+           program {
+              name: "right_button_drag";
+              signal: "repeated";
+              source: "elm";
+              DRAG_ENTER_ACTION("right_button")
+           }
+           BUTTON_GLOW_PROGRAM("right_button")
+           BUTTON_DISABLE_PROGRAM("right_button")
+           program { name: "to_rtl";
+               signal: "edje,state,rtl";
+               source: "edje";
+               action: STATE_SET "rtl" 0.0;
+               target: "right_button_icon";
+               target: "left_button_icon";
+           }
+           program { name: "to_ltr";
+               signal: "edje,state,ltr";
+               source: "edje";
+               action: STATE_SET "default" 0.0;
+               target: "right_button_icon";
+               target: "left_button_icon";
+           }
+       }
+   }
+
+#undef CIT
+#undef CH

@@ -1,0 +1,180 @@
+   group { name: "elm/menu/item/default";
+       images {
+           image: "button_down.png" COMP;
+           image: "button_up.png" COMP;
+           image: "menu_item_highlight.png" COMP;
+           image: "bt_glow.png" COMP;
+           image: "bt_dis_base.png" COMP;
+       }
+       script {
+            public menu_text_visible; //0:hide (default), 1:visible
+            public menu_disable; //0:enable, 1:disable
+       }
+       parts {
+           MENU_PART_BASE
+           MENU_PART_OVER
+           MENU_PART_SWALLOW_CONTENT
+           MENU_PART_TEXT
+           MENU_PART_OVER3
+           MENU_PART_DISABLER
+       }
+       MENU_PROGRAMS
+       programs {
+           program { name: "text_show";
+               signal: "elm,state,text,visible";
+               source: "elm";
+               script {
+                   set_int(menu_text_visible, 1);
+                   set_state(PART:"elm.text", "visible", 0.0);
+               }
+           }
+           program { name: "text_hide";
+               signal: "elm,state,text,hidden";
+               source: "elm";
+               script {
+                   set_int(menu_text_visible, 0);
+                   set_state(PART:"elm.text", "default", 0.0);
+               }
+           }
+           program { name: "disable_text";
+               script {
+                   new v;
+                   v = get_int(menu_text_visible);
+                   if (v==1)
+                    set_state(PART:"elm.text", "disabled_visible", 0.0);
+                   else if (v==0)
+                    set_state(PART:"elm.text", "disabled", 0.0);
+                   set_int(menu_disable, 1);
+               }
+           }
+           program { name: "enable_text";
+               script {
+                   new v;
+                   v = get_int(menu_text_visible);
+                   if (v==1)
+                    set_state(PART:"elm.text", "visible", 0.0);
+                   else  if (v==0)
+                    set_state(PART:"elm.text", "default", 0.0);
+                   set_int(menu_disable, 0);
+               }
+           }
+       }
+   }
+
+   group { name: "elm/menu/item_with_submenu/default";
+       images {
+           image: "button_down.png" COMP;
+           image: "button_up.png" COMP;
+           image: "menu_item_highlight.png" COMP;
+           image: "bt_glow.png" COMP;
+           image: "bt_dis_base.png" COMP;
+           image: "arrow_right.png" COMP;
+           image: "arrow_left.png" COMP;
+       }
+       script {
+            public menu_text_visible; //0:hide (default), 1:visible
+            public menu_disable; //0:enable, 1:disable
+       }
+       parts {
+           MENU_PART_BASE
+           MENU_PART_OVER
+           part { name: "arrow";
+               mouse_events: 1;
+               description { state: "default" 0.0;
+                   color: 21 26 232 255;
+                   align: 1.0 0.5;
+                   aspect: 1 1;
+                   aspect_preference: BOTH;
+                   image.normal: "icon_arrow_right.png";
+               }
+               description { state: "rtl" 0.0;
+                  inherit: "default" 0.0;
+                  image.normal: "icon_arrow_left.png";
+               }
+           }
+           MENU_PART_SWALLOW_CONTENT
+           MENU_PART_TEXT
+           MENU_PART_OVER3
+           MENU_PART_DISABLER
+       }
+       MENU_PROGRAMS
+       programs {
+           program {
+               name:   "menu_open";
+               signal: "mouse,in";
+               source: "over3";
+               action: SIGNAL_EMIT "elm,action,open" "";
+           }
+            program { name: "text_show";
+               signal: "elm,state,text,visible";
+               source: "elm";
+               script {
+                   set_int(menu_text_visible, 1);
+                   set_state(PART:"elm.text", "visible", 0.0);
+               }
+           }
+           program { name: "text_hide";
+               signal: "elm,state,text,hidden";
+               source: "elm";
+               script {
+                   set_int(menu_text_visible, 0);
+                   set_state(PART:"elm.text", "default", 0.0);
+               }
+           }
+           program { name: "disable_text";
+               script {
+                   new st[31];
+                   new Float:vl;
+                   get_state(PART:"elm.text", st, 30, vl);
+                   if (!strcmp(st, "visible"))
+                   set_state(PART:"elm.text", "disabled_visible", 0.0);
+                   else if (!strcmp(st, "default"))
+                   set_state(PART:"elm.text", "disabled", 0.0);
+               }
+           }
+           program { name: "enable_text";
+               script {
+                   new v;
+                   v = get_int(menu_text_visible);
+                   if (v==1)
+                    set_state(PART:"elm.text", "visible", 0.0);
+                   else  if (v==0)
+                    set_state(PART:"elm.text", "default", 0.0);
+                   set_int(menu_disable, 0);
+               }
+           }
+           program { name: "to_rtl";
+               signal: "edje,state,rtl";
+               source: "edje";
+               action: STATE_SET "rtl" 0.0;
+               target: "arrow";
+           }
+           program { name: "to_ltr";
+               signal: "edje,state,ltr";
+               source: "edje";
+               action: STATE_SET "default" 0.0;
+               target: "arrow";
+           }
+       }
+   }
+
+   group { name: "elm/menu/separator/default";
+       images {
+           image: "menu_separator.png" COMP;
+       }
+       parts {
+           part { name: "separator"; // separator group
+               description { state: "default" 0.0;
+                   min: 2 2;
+                   rel1.offset: 4 4;
+                   rel2.offset: -5 -5;
+                   image {
+                       normal: "menu_separator.png";
+                   }
+                   fill {
+                       smooth: 0;
+                   }
+               }
+           }
+       }
+   }

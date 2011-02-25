@@ -1,0 +1,272 @@
+   group { name: "elm/list/item/default";
+      data.item: "stacking" "above";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         LIST_PART_BASE
+         LIST_PART_FG("base")
+         LIST_PART_SWALLOW_ICON
+         LIST_PART_SWALLOW_END
+
+         LIST_PART_TEXT(
+               rel1 {
+                  to_x:     "elm.swallow.icon";
+                  relative: 1.0  0.0;
+                  offset:   4 4;
+               }
+               rel2 {
+                  to_x:     "elm.swallow.end";
+                  relative: 0.0  1.0;
+                  offset:   -1 -5;
+               }, -1.0 0.5
+         )
+      }
+      LIST_PROGRAMS(
+            target:  "fg1";
+            target:  "elm.text";
+      )
+   }
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "elm/list/item_odd/default";
+      data.item: "stacking" "below";
+      data.item: "selectraise" "on";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         LIST_PART_BASE_ODD
+         LIST_PART_FG("base")
+         LIST_PART_SWALLOW_ICON
+         LIST_PART_SWALLOW_END
+         LIST_PART_TEXT(
+               rel1 {
+                  to_x:     "elm.swallow.icon";
+                  relative: 1.0  0.0;
+                  offset:   4 4;
+               }
+               rel2 {
+                  to_x:     "elm.swallow.end";
+                  relative: 0.0  1.0;
+                  offset:   -1 -5;
+               }, -1.0 0.5
+         )
+      }
+      LIST_PROGRAMS(
+            target:  "fg1";
+            target:  "elm.text";
+      )
+   }
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "elm/list/item_compress/default";
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         LIST_PART_BASE
+         LIST_PART_BG( )
+         LIST_PART_FG("bg")
+         LIST_PART_SWALLOW_ICON
+         LIST_PART_SWALLOW_END
+         LIST_PART_TEXT(
+               rel1 {
+                  to_x:     "elm.swallow.icon";
+                  relative: 1.0  0.0;
+                  offset:   4 4;
+               }
+               rel2 {
+                  to_x:     "elm.swallow.end";
+                  relative: 0.0  1.0;
+                  offset:   -1 -5;
+               }, 0.0 0.5
+         )
+      }
+
+      LIST_PROGRAMS(
+            target:  "bg";
+            target:  "fg1";
+            target:  "elm.text";
+      )
+   }
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "elm/list/item_compress_odd/default";
+      data.item: "stacking" "below";
+      data.item: "selectraise" "on";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         LIST_PART_BASE_ODD
+         LIST_PART_BG( )
+         LIST_PART_FG("bg")
+         LIST_PART_SWALLOW_ICON
+         LIST_PART_SWALLOW_END
+         LIST_PART_TEXT(
+               rel1 {
+                  to_x:     "elm.swallow.icon";
+                  relative: 1.0  0.0;
+                  offset:   4 4;
+               }
+               rel2 {
+                  to_x:     "elm.swallow.end";
+                  relative: 0.0  1.0;
+                  offset:   -1 -5;
+               }, 0.0 0.5
+         )
+      }
+      LIST_PROGRAMS(
+            target:  "bg";
+            target:  "fg1";
+            target:  "elm.text";
+      )
+   }
+
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "elm/list/h_item/default";
+      data.item: "stacking" "above";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         LIST_PART_BASE
+         LIST_PART_BG( )
+         LIST_PART_FG("bg")
+         LIST_PART_SWALLOW_ICON_HORIZ
+         LIST_PART_SWALLOW_END_HORIZ
+         LIST_PART_TEXT(
+               fixed: 0 1;
+               rel1 {
+                  to_x: "elm.swallow.icon";
+                  relative: 0.0 1.0;
+                  offset: 4 4;
+               }
+               rel2 {
+                  to_x: "elm.swallow.end";
+                  relative: 1.0 0.0;
+                  offset: -5 -1;
+               }, 0.5 0.5
+         )
+      }
+      LIST_PROGRAMS(
+            target: "bg";
+            target: "fg1";
+            target: "elm.text";
+      )
+   }
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "elm/list/h_item_odd/default";
+      data.item: "stacking" "below";
+      data.item: "selectraise" "on";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         LIST_PART_BASE_ODD
+         LIST_PART_BG( )
+         LIST_PART_FG("bg")
+         LIST_PART_SWALLOW_ICON_HORIZ
+         LIST_PART_SWALLOW_END_HORIZ
+         LIST_PART_TEXT(
+               fixed: 1 1;
+               rel1 {
+                  to_x: "elm.swallow.icon";
+                  relative: 0.0 1.0;
+                  offset: 4 4;
+               }
+               rel2 {
+                  to_x: "elm.swallow.end";
+                  relative: 1.0 0.0;
+                  offset: -5 -1;
+               }, 0.5 0.5
+         )
+      }
+      LIST_PROGRAMS(
+            target: "bg";
+            target: "fg1";
+            target: "elm.text";
+      )
+   }
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "elm/list/h_item_compress/default";
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         LIST_PART_BASE
+         LIST_PART_BG( )
+         LIST_PART_FG("bg")
+         LIST_PART_SWALLOW_ICON_HORIZ
+         LIST_PART_SWALLOW_END_HORIZ
+         LIST_PART_TEXT(
+               fixed: 1 1;
+               rel1 {
+                  to_x: "elm.swallow.icon";
+                  relative: 0.0 1.0;
+                  offset: 4 4;
+               }
+               rel2 {
+                  to_x: "elm.swallow.end";
+                  relative: 1.0 0.0;
+                  offset: -5 -1;
+               }, 0.5 0.5
+         )
+      }
+      LIST_PROGRAMS(
+            target: "bg";
+            target: "fg1";
+            target: "elm.text";
+      )
+   }
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "elm/list/h_item_compress_odd/default";
+      data.item: "stacking" "below";
+      data.item: "selectraise" "on";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         LIST_PART_BASE_ODD
+         LIST_PART_BG( )
+         LIST_PART_FG("bg")
+         LIST_PART_SWALLOW_ICON_HORIZ
+         LIST_PART_SWALLOW_END_HORIZ
+         LIST_PART_TEXT(
+               fixed: 1 1;
+               rel1 {
+                  to_x: "elm.swallow.icon";
+                  relative: 0.0 1.0;
+                  offset: 4 4;
+               }
+               rel2 {
+                  to_x: "elm.swallow.end";
+                  relative: 1.0 0.0;
+                  offset: -5 -1;
+               }, 0.5 0.5
+         )
+      }
+      LIST_PROGRAMS(
+            target: "bg";
+            target: "fg1";
+            target: "elm.text";
+      )
+   }

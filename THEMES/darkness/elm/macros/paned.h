@@ -1,0 +1,114 @@
+#define PANED_ARROW(arrow_name, ox1, oy1, w, h, to_part, dir) \
+part { \
+   name: arrow_name; \
+   mouse_events: 0; \
+   description { \
+      state: "default" 0.0; \
+      visible: 0; \
+      color: 255 255 255 0; \
+      rel1 { \
+         relative: 0 0; \
+         offset: ox1 oy1; \
+         to: to_part; \
+      } \
+      rel2 { \
+         relative: 0 0; \
+         offset: (ox1 + w) (oy1 + h); \
+         to: to_part; \
+      } \
+      image { \
+         normal: "glow_arrow_"dir".png"; \
+      } \
+      fill { \
+         smooth: 0; \
+      } \
+   } \
+   description { \
+      state: "visible" 0.0; \
+      inherit: "default" 0.0; \
+      visible: 1; \
+      color: 255 255 255 255; \
+   } \
+}
+
+#define PANED_ARROWS_SHOW_ACTION(dir1, dir2) \
+action: STATE_SET "default" 0.0; \
+target: dir1"_arrow1"; \
+target: dir1"_arrow2"; \
+target: dir1"_arrow3"; \
+target: dir1"_arrow4"; \
+target: dir2"_arrow1"; \
+target: dir2"_arrow2"; \
+target: dir2"_arrow3"; \
+target: dir2"_arrow4"; \
+after: dir1"_in1a"; \
+after: dir2"_in1a";
+
+#define PANED_ARROWS_HIDE_ACTION(dir1, dir2) \
+action: STATE_SET "default" 0.0; \
+target: dir1"_arrow1"; \
+target: dir1"_arrow2"; \
+target: dir1"_arrow3"; \
+target: dir1"_arrow4"; \
+target: dir2"_arrow1"; \
+target: dir2"_arrow2"; \
+target: dir2"_arrow3"; \
+target: dir2"_arrow4";
+
+#define PANED_ARROWS_PROG(dir) \
+program { \
+   name: dir"_in1a"; \
+        action: STATE_SET "visible" 0.0; \
+        transition: SINUSOIDAL 0.25; \
+        target: dir"_arrow1"; \
+        after: dir"_in2a"; \
+        after: dir"_in2b"; \
+} \
+program { \
+        name: dir"_in1b"; \
+        action: STATE_SET "default" 0.0; \
+        transition: DECELERATE 0.75; \
+        target: dir"_arrow4"; \
+} \
+program { \
+   name: dir"_in2a"; \
+        action: STATE_SET "visible" 0.0; \
+        transition: SINUSOIDAL 0.25; \
+        target: dir"_arrow2"; \
+        after: dir"_in3a"; \
+        after: dir"_in3b"; \
+} \
+program { \
+        name: dir"_in2b"; \
+        action: STATE_SET "default" 0.0; \
+        transition: DECELERATE 0.75; \
+        target: dir"_arrow1"; \
+} \
+program { \
+        name: dir"_in3a"; \
+        action: STATE_SET "visible" 0.0; \
+        transition: SINUSOIDAL 0.25; \
+        target: dir"_arrow3"; \
+        after: dir"_in4a"; \
+        after: dir"_in4b"; \
+} \
+program { \
+        name: dir"_in3b"; \
+        action: STATE_SET "default" 0.0; \
+        transition: DECELERATE 0.75; \
+        target: dir"_arrow2"; \
+} \
+program { \
+        name: dir"_in4a"; \
+        action: STATE_SET "visible" 0.0; \
+        transition: SINUSOIDAL 0.25; \
+        target: dir"_arrow4"; \
+        after: dir"_in1a"; \
+        after: dir"_in1b"; \
+} \
+program { \
+   name: dir"_in4b"; \
+        action: STATE_SET "default" 0.0; \
+        transition: DECELERATE 0.75; \
+        target: dir"_arrow3"; \
+}

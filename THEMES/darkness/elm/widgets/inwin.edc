@@ -1,0 +1,63 @@
+   group {
+      name: "elm/win/inwin/default";
+
+      images {
+         image: "shad_circ.png" COMP;
+         image: "entry_under.png" COMP;
+      }
+      parts {
+         INWIN_PART_BASE
+         INWIN_PART_SHADOW
+         INWIN_PART_POP
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1.relative: 0.1 0.1;
+               rel2.relative: 0.9 0.9;
+            }
+         }
+      }
+      INWIN_PROGRAMS
+   }
+
+   group { name: "elm/win/inwin/minimal";
+      images {
+         image: "shad_circ.png" COMP;
+         image: "entry_under.png" COMP;
+      }
+      parts {
+         INWIN_PART_BASE
+         INWIN_PART_SHADOW
+         INWIN_PART_POP
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 0.5 0.5;
+            }
+         }
+      }
+      INWIN_PROGRAMS
+   }
+
+   group { name: "elm/win/inwin/minimal_vertical";
+      images {
+         image: "shad_circ.png" COMP;
+         image: "entry_under.png" COMP;
+      }
+      parts {
+         INWIN_PART_BASE
+         INWIN_PART_SHADOW
+         INWIN_PART_POP
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1.relative: 0.1 0.5;
+               rel2.relative: 0.9 0.5;
+            }
+         }
+      }
+      INWIN_PROGRAMS
+   }

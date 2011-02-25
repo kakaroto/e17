@@ -1,0 +1,522 @@
+   group { name: "elm/gengrid/item/default/default";
+      data.item: "labels" "elm.text";
+      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         GENLIST_PART_BASE_SHADOW
+         LIST_PART_BASE
+         LIST_PART_BG(clip_to: "disclip";)
+         GENGRID_PART_FG_REL_BG
+         GENGRID_PART_SWALLOW_PAD
+         GENGRID_PART_SWALLOW_ICON
+         part { name: "elm.swallow.end";
+            clip_to: "disclip";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 0;
+               align: 1.0 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: HORIZONTAL;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -5 -5;
+               }
+               rel2 {
+                  offset: 5 5;
+               }
+            }
+         }
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0  1.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+                  offset: -5 -5;
+               }
+               color: 255 255 255 255;
+               color3: 0 0 0 0;
+               text {
+                  text_class: "Label";
+                  font: "DejaVu";
+                  size: 10;
+                  min: 0 1;
+                  align: 0.5 0.0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 224 224 224 255;
+               color3: 0 0 0 64;
+            }
+         }
+         FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
+         GENLIST_PART_DISCLIP("bg")
+      }
+      GENLIST_PROGRAMS("bg",
+               target:  "bg";
+               target:  "fg1";
+               target:  "elm.text";
+       )
+   }
+   group { name: "elm/gengrid/item/default_style/default";
+       styles
+       {
+           style { name: "gengrid_style";
+               base: "font=DejaVu font_size=10 align=left valign=0.5 color=#000 text_class=grid_item";
+               tag:  "br" "\n";
+               tag:  "ps" "ps";
+               tag:  "hilight" "+ font=DejaVu:style=Bold";
+               tag:  "b" "+ font=DejaVu:style=Bold";
+               tag:  "tab" "\t";
+           }
+           style { name: "gengrid_selected_style";
+               base: "font=DejaVu font_size=10 align=left valign=0.5 color=#fff text_class=grid_item";
+               tag:  "br" "\n";
+               tag:  "ps" "ps";
+               tag:  "hilight" "+ font=DejaVu:style=Bold";
+               tag:  "b" "+ font=DejaVu:style=Bold";
+               tag:  "tab" "\t";
+           }
+       }
+       data.item: "labels" "elm.text";
+       data.item: "icons" "elm.swallow.icon elm.swallow.end";
+       images {
+           image: "slider_button.png" COMP;
+           image: "menu_item_highlight.png" COMP;
+       }
+       parts {
+           LIST_PART_EVENT
+           GENLIST_PART_BASE_SHADOW
+           LIST_PART_BASE
+           LIST_PART_BG(clip_to: "disclip";)
+           GENGRID_PART_FG_REL_BG
+           GENGRID_PART_SWALLOW_PAD
+           GENGRID_PART_SWALLOW_ICON
+           part { name: "elm.swallow.end";
+               clip_to: "disclip";
+               type: SWALLOW;
+               description { state: "default" 0.0;
+                   fixed: 1 0;
+                   align: 1.0 0.5;
+                   aspect: 1.0 1.0;
+                   aspect_preference: VERTICAL;
+                   rel1 {
+                       relative: 1.0  0.0;
+                       offset:   -5    4;
+                   }
+                   rel2 {
+                       relative: 1.0  1.0;
+                       offset:   -5   -5;
+                   }
+               }
+           }
+           part { name: "elm.text";
+               clip_to: "disclip";
+               type: TEXTBLOCK;
+               mouse_events: 0;
+               scale: 1;
+               description {
+                   state: "default" 0.0;
+                   align: 0.0 0.5;
+                   fixed: 0 1;
+                   rel1 {
+                       to_x: "elm.swallow.icon";
+                       to_y: "base";
+                       relative: 1.0  0.5;
+                       offset:   0 4;
+                   }
+                   rel2 {
+                       to_x: "elm.swallow.end";
+                       to_y: "base";
+                       relative: 0.0  0.5;
+                       offset:   -1 -5;
+                   }
+                   text {
+                       style: "Label";
+                       min: 1 1;
+                   }
+               }
+               description { state: "selected" 0.0;
+                   inherit: "default" 0.0;
+                   text {
+                       style: "Label";
+                   }
+               }
+           }
+           FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
+           GENLIST_PART_DISCLIP("bg")
+       }
+       GENLIST_PROGRAMS("bg",
+               target:  "bg";
+               target:  "fg1";
+               target:  "elm.text";
+       )
+       programs {
+          program {
+             name: "select";
+             source: "elm";
+             signal: "elm,state,selected";
+             action: SIGNAL_EMIT "elm,action,focus" "elm";
+          }
+       }
+   }
+
+   group { name: "elm/gengrid/item/up/default";
+      data.item: "labels" "elm.text";
+      images {
+          image: "slider_button.png" COMP;
+          image: "menu_item_highlight.png" COMP;
+          image: "arrow_up.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         GENGRID_PART_BG(clip_to: "disclip";)
+         GENGRID_PART_FG
+         part { name: "image";
+             type: IMAGE;
+             mouse_events: 0;
+             description { state: "default" 0.0;
+                 aspect_preference: BOTH;
+                 aspect: 1.0 1.0;
+                 image.normal: "arrow_up.png";
+                 rel2 {
+                     to_y: "elm.text";
+                     relative: 1.0 0.0;
+                     offset: -1 -2;
+                 }
+             }
+         }
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0  1.0;
+                  offset: 20 -25;
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+                  offset: -21 -3;
+               }
+               color: 255 255 255 255;
+               color3: 0 0 0 0;
+               text {
+                  text_class: "Label";
+                  min: 0 1;
+                  align: 0.5 0.0;
+               }
+            }
+            description { state: "selected" 0.0;
+               inherit: "default" 0.0;
+               color: 224 224 224 255;
+               color3: 0 0 0 64;
+            }
+         }
+         FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
+         GENLIST_PART_DISCLIP("bg")
+      }
+      GENLIST_PROGRAMS("bg",
+               target:  "bg";
+               target:  "fg1";
+               target:  "elm.text";
+       )
+   }
+
+   group { name: "elm/gengrid/item/album-preview/default";
+      data.item: "labels" "elm.text";
+      data.item: "icons" "elm.swallow.icon.1 elm.swallow.icon.2 elm.swallow.icon.3 elm.swallow.icon.4";
+      data.item: "states" "have_files";
+      images {
+         image: "slider_button.png" COMP;
+         image: "menu_item_highlight.png" COMP;
+         image: "icon_folder.png" COMP;
+      }
+      parts {
+         LIST_PART_EVENT
+         GENGRID_PART_BG(clip_to: "disclip";)
+         GENGRID_PART_FG
+         part { name: "image";
+             type: IMAGE;
+             mouse_events: 0;
+             description { state: "default" 0.0;
+                 aspect_preference: BOTH;
+                 aspect: 1.0 1.0;
+                 image.normal: "icon_folder.png";
+                 rel2 {
+                     to_y: "elm.text";
+                     relative: 1.0 0.0;
+                     offset: -1 -2;
+                 }
+             }
+         }
+         part { name: "have-files-clipper";
+             type: RECT;
+             description { state: "default" 0.0;
+                 color: 255 255 255 0;
+                 visible: 0;
+             }
+             description { state: "visible" 0.0;
+                 inherit: "default" 0.0;
+                 color: 255 255 255 255;
+                 visible: 1;
+             }
+         }
+         part { name: "icon_box_margin";
+             type: RECT;
+             mouse_events: 0;
+             clip_to: "have-files-clipper";
+             description { state: "default" 0.0;
+                 color: 255 255 255 255;
+                 rel1 {
+                     to: "icon_box";
+                     offset: -1 -1;
+                 }
+                 rel2 {
+                     to: "icon_box";
+                     offset: 0 0;
+                 }
+             }
+         }
+         part { name: "icon_box";
+             type: RECT;
+             mouse_events: 0;
+             clip_to: "have-files-clipper";
+             description { state: "default" 0.0;
+                 color: 255 255 255 255;
+                 align: 1.0 1.0;
+                 min: 32 32;
+                 rel1 {
+                     relative: 0.25 0.25;
+                     offset: 0 0;
+                 }
+                 rel2 {
+                     relative: 1.0 0.0;
+                     offset: -11 -4;
+                     to_y: "elm.text";
+                 }
+             }
+         }
+         part { name: "elm.swallow.icon.1";
+             type: SWALLOW;
+             mouse_events: 0;
+             clip_to: "have-files-clipper";
+             description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0  0.0;
+                  to: "icon_box";
+               }
+               rel2 {
+                  relative: 0.5  0.5;
+                  offset: -1 -1;
+                  to: "icon_box";
+               }
+            }
+         }
+         part { name: "elm.swallow.icon.2";
+             type: SWALLOW;
+             mouse_events: 0;
+             clip_to: "have-files-clipper";
+             description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.5  0.0;
+                  to: "icon_box";
+               }
+               rel2 {
+                  relative: 1.0  0.5;
+                  offset: -1 -1;
+                  to: "icon_box";
+               }
+            }
+         }
+         part { name: "elm.swallow.icon.3";
+             type: SWALLOW;
+             mouse_events: 0;
+             clip_to: "have-files-clipper";
+             description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0  0.5;
+                  to: "icon_box";
+               }
+               rel2 {
+                  relative: 0.5  1.0;
+                  offset: -1 -1;
+                  to: "icon_box";
+               }
+            }
+         }
+         part { name: "elm.swallow.icon.4";
+             type: SWALLOW;
+             mouse_events: 0;
+             clip_to: "have-files-clipper";
+             description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.5  0.5;
+                  to: "icon_box";
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+                  offset: -1 -1;
+                  to: "icon_box";
+               }
+            }
+         }
+         part { name: "elm.text";
+            clip_to: "disclip";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0  1.0;
+                  offset: 20 -30;
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+                  offset: -21 -15;
+               }
+               color: 255 255 255 255;
+               color3: 0 0 0 0;
+               text {
+                  text_class: "Label";
+                  min: 0 1;
+                  align: 0.5 0.0;
+               }
+            }
+            description { state: "selected" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+            }
+         }
+         FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
+         GENLIST_PART_DISCLIP("bg")
+      }
+      GENLIST_PROGRAMS("bg",
+               target:  "bg";
+               target:  "fg1";
+               target:  "elm.text";
+       )
+   }
+
+   group { name: "elm/gengrid/item/thumb/default";
+       data {
+           item: "icons" "elm.swallow.icon";
+           item: "labels" "elm.text";
+       }
+       images {
+           image: "slider_button.png" COMP;
+           image: "menu_item_highlight.png" COMP;
+           image: "thumb_shadow.png" COMP;
+       }
+       parts {
+           LIST_PART_EVENT
+           GENGRID_PART_BG( )
+           part { name: "border-shadow";
+               type: IMAGE;
+               mouse_events: 0;
+               description { state: "default" 0.0;
+                   rel1 {
+                       to: "elm.swallow.icon";
+                       offset: -18 -18;
+                   }
+                   rel2 {
+                       to_x: "elm.swallow.icon";
+                       to_y: "elm.text";
+                       offset: 17 17;
+                   }
+                   image {
+                       normal: "thumb_shadow.png";
+                       border: 17 17 17 17;
+                       middle: NONE;
+                   }
+               }
+           }
+           part { name: "border";
+               type: RECT;
+               mouse_events: 0;
+               description { state: "default" 0.0;
+                   rel1 {
+                       to: "border-shadow";
+                       offset: 16 16;
+                   }
+                   rel2 {
+                       to: "border-shadow";
+                       offset: -15 -15;
+                   }
+               }
+           }
+           GENGRID_PART_FG_BASE(,
+               rel1.to: "bg";
+               rel2.to: "bg";
+               rel2.offset: -1 -2;
+           )
+           part { name: "elm.swallow.icon";
+               type: SWALLOW;
+               mouse_events: 0;
+               description { state: "default" 0.0;
+                   aspect_preference: BOTH;
+                   aspect: 1.0 1.0;
+                   rel1.offset: 0 8;
+                   rel2 {
+                       to_y: "elm.text";
+                       relative: 1.0 0.0;
+                       offset: -1 -2;
+                   }
+               }
+           }
+           part { name: "elm.text";
+               type: TEXT;
+               effect: SOFT_SHADOW;
+               mouse_events: 0;
+               scale: 1;
+               description { state: "default" 0.0;
+                   color: 255 255 255 255;
+                   color3: 0 0 0 0;
+                   align: 0.5 1.0;
+                   rel1 {
+                       relative: 0.0 1.0;
+                       offset: 20 -30;
+                   }
+                   rel2.offset: -21 -15;
+                   text {
+                       font: "DejaVu";
+                       size: 10;
+                       min: 0 1;
+                       align: 0.5 0.0;
+                   }
+               }
+           }
+           FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
+       }
+       LIST_PROGRAMS(
+               target: "bg";
+               target: "fg1";
+       )
+       programs {
+          program {
+             name: "focus";
+             FOCUS_SIGNAL
+             FOCUS_GLOW_ACTION("bg")
+          }
+          program {
+             name: "unfocus";
+             UNFOCUS_SIGNAL
+             UNFOCUS_GLOW_ACTION("bg")
+          }
+       }
+   }
