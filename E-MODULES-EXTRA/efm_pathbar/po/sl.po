@@ -2,14 +2,14 @@
 # This file is put in the public domain.
 # r1to <renato.rener@gmail.com>, 2011.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: efm_pathbar 1.0\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-22 20:00-0800\n"
-"PO-Revision-Date: 2011-02-24 01:45+0100\n"
+"PO-Revision-Date: 2011-02-24 16:58+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,4 +23,3 @@ msgstr "EFM Vrstica poti"
 #: ../src/e_mod_main.c:330
 msgid "Root"
 msgstr "Korenski imenik"
-

@@ -2,14 +2,14 @@
 # This file is put in the public domain.
 # r1to <renato.rener@gmail.com>, 2011.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: empower 1.0\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e/\n"
 "POT-Creation-Date: 2011-02-22 20:00-0800\n"
-"PO-Revision-Date: 2011-02-24 02:57+0100\n"
+"PO-Revision-Date: 2011-02-24 16:53+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -36,16 +36,18 @@ msgstr "-=Uporaba=-\n"
 msgid ""
 "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [ELEMENTARY "
 "OPTIONS]\n"
-msgstr "····Sudo:··empower·[SUDO·MOŽNOSTI]·[PROGRAM]·[PROGRAM·MOŽNOSTI]·[ELEMENTARY·"
-"MOŽNOSTI]\n"
+msgstr ""
+"····Sudo:··empower·[MOŽNOST SUDO]·[PROGRAM]·[MOŽNOST PROGRAMA]·[MOŽNOST "
+"ELEMENTARY]\n"
 
 #: ../src/bin/elm/empower.c:74
 #, c-format
 msgid ""
 "    AskPass:  empower-askpass [ELEMENTARY OPTIONS] or empower -p [ELEMENTARY "
 "OPTIONS]\n"
-msgstr "····AskPass:··empower-askpass·[ELEMENTARY·MOŽNOSTI]·ali·empower·-p·[ELEMENTARY·"
-"MOŽNOSTI]\n"
+msgstr ""
+"····AskPass:··empower-askpass·[MOŽNOST ELEMENTARY]·ali·empower·-p·[MOŽNOST "
+"ELEMENTARY]\n"
 
 #: ../src/bin/elm/empower_gui_elm.c:94 ../src/bin/ewl/empower_gui_ewl.c:53
 #: ../src/bin/ewl/empower_gui_ewl.c:55 ../src/bin/ewl/empower_gui_ewl.c:57
@@ -73,11 +75,13 @@ msgstr "Ni bilo mogoče zagnati·ewl\n"
 #, c-format
 msgid ""
 "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [EWL OPTIONS]\n"
-msgstr "····Sudo:··empower·[SUDO·MOŽNOSTI]·[PROGRAM]·[PROGRAM·MOŽNOSTI]·[EWL·MOŽNOSTI]\n"
+msgstr ""
+"····Sudo:··empower·[MOŽNOST SUDO]·[PROGRAM]·[MOŽNOST PROGRAMA]·[MOŽNOST "
+"EWL]\n"
 
 #: ../src/bin/ewl/empower.c:79
 #, c-format
 msgid ""
 "    AskPass:  empower-askpass [EWL OPTIONS] or empower -p [EWL OPTIONS]\n"
-msgstr "····AskPass:··empower-askpass·[EWL·MOŽNOSTI]·ali·empower·-p·[EWL·MOŽNOSTI]\n"
-
+msgstr ""
+"····AskPass:··empower-askpass·[MOŽNOST EWL]·ali·empower·-p·[MOŽNOST EWL]\n"

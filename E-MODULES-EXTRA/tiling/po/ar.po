@@ -6,18 +6,22 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-10-27 04:28+0000\n"
-"Last-Translator: mohamed 3atef <therock_624@hotmail.com>\n"
-"Language-Team: Arabic <ar@li.org>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2009-12-03 02:04-0800\n"
+"PO-Revision-Date: 2011-02-23 09:30+0300\n"
+"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2009-11-12 04:51+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: SAUDI ARABIA\n"
 
-#: ../src/e_mod_main.c:83 ../src/e_mod_main.c:88 ../src/e_mod_main.c:1007
+#: ../src/e_mod_main.c:83
+#: ../src/e_mod_main.c:88
+#: ../src/e_mod_main.c:1007
 msgid "Tiling"
 msgstr "التبليط"
 
@@ -38,7 +42,8 @@ msgstr "عامّ"
 msgid "Horizontal:"
 msgstr "أفقي:"
 
-#: ../src/e_mod_config.c:228 ../src/e_mod_config.c:232
+#: ../src/e_mod_config.c:228
+#: ../src/e_mod_config.c:232
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f بكسل"
@@ -83,3 +88,4 @@ msgstr "حدود التبليط"
 #: ../src/e_mod_config.c:310
 msgid "Floating border"
 msgstr "الحدود العائمة"
+

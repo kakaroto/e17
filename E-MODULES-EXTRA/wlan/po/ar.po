@@ -6,54 +6,64 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-28 16:32+0800\n"
-"PO-Revision-Date: 2009-08-24 13:45+0000\n"
-"Last-Translator: Nizar Kerkeni <nizar.kerkeni@gmail.com>\n"
-"Language-Team: Arabic <ar@li.org>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2010-09-09 08:02-0700\n"
+"PO-Revision-Date: 2011-02-23 09:24+0300\n"
+"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2009-08-27 10:01+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: SAUDI ARABIA\n"
 
 #: ../src/e_mod_config.c:44
-msgid "Wlan Configuration"
-msgstr "إعدادات الشبكة المحلية الاسلكية (Wlan)"
+#| msgid "General Settings"
+msgid "Wlan Settings"
+msgstr "إعدادات الشبكة المحلية اللاسلكية"
 
-#: ../src/e_mod_config.c:117
+#: ../src/e_mod_config.c:122
 msgid "General Settings"
-msgstr "الإعدادات العامة"
+msgstr "اﻹعدادات العامة"
 
-#: ../src/e_mod_config.c:119
+#: ../src/e_mod_config.c:124
 msgid "Always Show Text"
 msgstr "اعرض النص دائماً"
 
-#: ../src/e_mod_config.c:121
+#: ../src/e_mod_config.c:126
 msgid "Show Text On Mouse Over"
 msgstr "اعرض النص عند مرور الفأرة"
 
-#: ../src/e_mod_config.c:124
+#: ../src/e_mod_config.c:129
 msgid "Show Text As Percent"
 msgstr "أعرض النص كنسبة"
 
-#: ../src/e_mod_config.c:128
+#: ../src/e_mod_config.c:133
 msgid "Check Interval:"
 msgstr "فاصل الفحص :"
 
-#: ../src/e_mod_config.c:131
+#: ../src/e_mod_config.c:136
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f ثواني"
 
-#: ../src/e_mod_config.c:138
+#: ../src/e_mod_config.c:143
 msgid "Device Settings"
 msgstr "إعدادات الجهاز"
 
-#: ../src/e_mod_main.c:107
+#: ../src/e_mod_main.c:110
 msgid "Wlan"
 msgstr "الشبكة المحلية اللاسلكية (Wlan)"
 
-#: ../src/e_mod_main.c:165
-msgid "Configuration"
-msgstr "الإعدادات"
+#: ../src/e_mod_main.c:169
+#| msgid "Device Settings"
+msgid "Settings"
+msgstr "اﻹعدادات"
+
+#~ msgid "Wlan Configuration"
+#~ msgstr "إعدادات الشبكة المحلية الاسلكية (Wlan)"
+
+#~ msgid "Configuration"
+#~ msgstr "الإعدادات"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: skel\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2011-02-19 01:00-0800\n"
-"PO-Revision-Date: 2011-02-19 19:13-0000\n"
+"POT-Creation-Date: 2011-02-23 08:00-0800\n"
+"PO-Revision-Date: 2011-02-24 20:18-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
@@ -19,66 +19,109 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 "X-Generator: Lokalize 1.1\n"
 
-#: ../src/e_mod_config.c:38
-#| msgid "Scale Windows"
+#: ../src/e_mod_config.c:49
 msgid "Scale Windows Module"
 msgstr "Módulo de escala das janelas"
 
-#: ../src/e_mod_config.c:80
-msgid "Layout Options"
-msgstr "Opções de disposição"
+#: ../src/e_mod_config.c:126
+#| msgid "Desktop"
+msgid "Current Desktop"
+msgstr "Área de trabalho atual"
 
-#: ../src/e_mod_config.c:82
-msgid "Grow more!"
-msgstr "Ampliar!"
+#: ../src/e_mod_config.c:127
+#: ../src/e_mod_config.c:150
+msgid "Minimum space between windows"
+msgstr "O espaço mínimo entre as janelas"
 
-#: ../src/e_mod_config.c:84
-msgid "Keep it tight!"
-msgstr "Ajustar!"
-
-#: ../src/e_mod_config.c:87
-msgid "Scale duration"
-msgstr "Duração"
-
-#: ../src/e_mod_config.c:89
-#, c-format
-msgid "%1.2f"
-msgstr "%1.2f"
-
-#: ../src/e_mod_config.c:93
-msgid "Spacing"
-msgstr "Espaçamento"
-
-#: ../src/e_mod_config.c:95
+#: ../src/e_mod_config.c:129
+#: ../src/e_mod_config.c:152
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../src/e_mod_main.c:1002
+#: ../src/e_mod_config.c:133
+#: ../src/e_mod_config.c:156
+msgid "Scale duration"
+msgstr "Duração"
+
+#: ../src/e_mod_config.c:135
+#: ../src/e_mod_config.c:158
+#, c-format
+msgid "%1.2f"
+msgstr "%1.2f"
+
+#: ../src/e_mod_config.c:138
+#: ../src/e_mod_config.c:161
+msgid "Slotted Layout"
+msgstr "Disposição em ranhuras"
+
+#: ../src/e_mod_config.c:141
+#: ../src/e_mod_config.c:163
+msgid "Grow more!"
+msgstr "Ampliar!"
+
+#: ../src/e_mod_config.c:143
+#: ../src/e_mod_config.c:165
+msgid "Keep it tight!"
+msgstr "Ajustar!"
+
+#: ../src/e_mod_config.c:149
+msgid "Show All Desktops"
+msgstr "Mostrar todas as áreas de trabalho"
+
+#: ../src/e_mod_config.c:167
+#| msgid "Scale Windows"
+msgid "Fade in windows"
+msgstr "Desvanecer janelas"
+
+#: ../src/e_mod_config.c:173
+msgid "Fade out shelves and popups"
+msgstr "Realçar painéis e alertas"
+
+#: ../src/e_mod_config.c:175
+#| msgid "Desktop"
+msgid "Darken desktop"
+msgstr "Área de trabalho mais escura"
+
+#: ../src/e_mod_config.c:177
+msgid "Test"
+msgstr "Testar"
+
+#: ../src/e_mod_main.c:1551
 msgid "Look"
 msgstr "Aspeto"
 
-#: ../src/e_mod_main.c:1004
-#| msgid "Scale Windows"
+#: ../src/e_mod_main.c:1553
 msgid "Composite Scale Windows"
 msgstr "Escala de janelas compostas"
 
-#: ../src/e_mod_main.c:1030
-#: ../src/e_mod_main.c:1048
-#: ../src/e_mod_main.c:1088
+#: ../src/e_mod_main.c:1591
+#: ../src/e_mod_main.c:1613
+#: ../src/e_mod_main.c:1655
 msgid "Scale Windows"
 msgstr "Ajustar janelas"
 
-#: ../src/e_mod_main.c:1048
-#: ../src/e_mod_main.c:1087
+#: ../src/e_mod_main.c:1613
+#: ../src/e_mod_main.c:1614
+#: ../src/e_mod_main.c:1654
 msgid "Desktop"
 msgstr "Área de trabalho"
 
-#: ../src/e_mod_main.c:1164
+#: ../src/e_mod_main.c:1614
+#| msgid "Scale Windows Module"
+msgid "Scale Windows / All Desktops"
+msgstr "Ajustar janelas / Todas as áreas de trabalho"
+
+#: ../src/e_mod_main.c:1727
 msgid "Scale"
 msgstr "Escala"
 
-#: ../src/e_mod_main.c:1288
+#: ../src/e_mod_main.c:1859
 msgid "Settings"
 msgstr "Definições"
 
+#~ msgid "Layout Options"
+#~ msgstr "Opções de disposição"
+
+#~ msgid "Spacing"
+#~ msgstr "Espaçamento"

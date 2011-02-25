@@ -6,16 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-10-27 04:18+0000\n"
-"Last-Translator: mohamed 3atef <therock_624@hotmail.com>\n"
-"Language-Team: Arabic <ar@li.org>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2009-12-03 02:03-0800\n"
+"PO-Revision-Date: 2011-02-23 09:31+0300\n"
+"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2009-11-12 04:52+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: SAUDI ARABIA\n"
 
 #: ../src/e_mod_config.c:39
 msgid "Tclock Settings"
@@ -29,7 +31,8 @@ msgstr "أعلى"
 msgid "Show Top Line"
 msgstr "أعرض السطر العلوي"
 
-#: ../src/e_mod_config.c:98 ../src/e_mod_config.c:113
+#: ../src/e_mod_config.c:98
+#: ../src/e_mod_config.c:113
 #: ../src/e_mod_config.c:129
 msgid "Consult strftime(3) for format syntax"
 msgstr "أدخل strftime(3) لتشكيل الهجاء"
@@ -56,4 +59,5 @@ msgstr "ساعة الوقت TClock"
 
 #: ../src/e_mod_main.c:184
 msgid "Settings"
-msgstr "الإعدادات"
+msgstr "اﻹعدادات"
+

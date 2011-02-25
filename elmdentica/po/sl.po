@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the elmdentica package.
 # r1to <renato.rener@gmail.com>, 2011.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 1.0\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e/\n"
 "POT-Creation-Date: 2011-02-22 20:00-0800\n"
-"PO-Revision-Date: 2011-02-24 02:23+0100\n"
+"PO-Revision-Date: 2011-02-24 16:59+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,8 @@ msgstr "Zapri"
 msgid ""
 "Can't dump %s into %s:\n"
 "(%d) %s\n"
-msgstr "Ne morem razložiti·%s·v·%s:\n"
+msgstr ""
+"Ne morem spustiti·%s·v·%s:\n"
 "(%d)·%s\n"
 
 #: ../src/curl.c:326
@@ -44,7 +45,7 @@ msgstr "Vsakdo..."
 
 #: ../src/elmdentica.c:283
 msgid "My favorites..."
-msgstr "Moje priljubljene..."
+msgstr "Moji priljubljeni..."
 
 #: ../src/elmdentica.c:284
 msgid "Replies / mentions..."
@@ -260,7 +261,7 @@ msgstr "Prijatelji &·Jaz"
 
 #: ../src/elmdentica.c:2125
 msgid "Post"
-msgstr "Napiši"
+msgstr "Objavi"
 
 #: ../src/elmdentica.c:2139
 msgid "Send"
@@ -281,7 +282,7 @@ msgstr "Nastavitve"
 #: ../src/statusnet.c:365
 #, c-format
 msgid "Not enough memory to create a status\n"
-msgstr "Ni dovolj spomina da ustvarite stanje\n"
+msgstr "Ni dovolj spomina da ustvarite status\n"
 
 #: ../src/statusnet.c:417
 #, c-format
@@ -430,12 +431,12 @@ msgstr "Izbriši"
 
 #: ../src/settings.c:800 ../src/settings.c:823
 msgid "No posts<br>in cache."
-msgstr "Ni vpisov<br>v pomnilniku."
+msgstr "Ni objav<br>v pomnilniku."
 
 #: ../src/settings.c:802
 #, c-format
 msgid "Currently remembering<br>%d posts."
-msgstr "Trenutno zapomnjen-ih<br>%d·vpis-ov."
+msgstr "Trenutno zapomnjenih<br>%d·objav."
 
 #: ../src/settings.c:838 ../src/settings.c:861
 msgid "No messages<br>in cache."
@@ -527,7 +528,8 @@ msgid ""
 "   -h   Help (what you're reading right now)\n"
 "   -m N Show N messages at a time\n"
 "\n"
-msgstr "\n"
+msgstr ""
+"\n"
 "Uporaba:\n"
 "···-d···Razhroščevalni način·(za bolj okusen iznos,·uporabite večkrat)\n"
 "···-h···Pomoč·(kar ravno zdaj prebirate)\n"
@@ -547,7 +549,8 @@ msgstr "Ne morem ustvariti mape priljubljenih, ker je·asprintf·spodletel\n"
 #: ../src/settings.c:1501
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
-msgstr "Ne morem ustvariti mape priljubljenih ker je·ecore_file_mkpath·spodletel\n"
+msgstr ""
+"Ne morem ustvariti mape priljubljenih ker je·ecore_file_mkpath·spodletel\n"
 
 #: ../src/settings.c:1509
 #, c-format
@@ -573,5 +576,5 @@ msgstr "Ne morem nastaviti·settings_edd."
 #, c-format
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."
-msgstr "Ni dovolj spomina za nastavitve, nedvomno tudi za karkoli drugega, gotovo..."
-
+msgstr ""
+"Ni dovolj spomina za nastavitve, nedvomno tudi za karkoli drugega, gotovo..."

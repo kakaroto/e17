@@ -2,14 +2,14 @@
 # This file is put in the public domain.
 # r1to <renato.rener@gmail.com>, 2011.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: comp-scale 1.0\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-22 20:00-0800\n"
-"PO-Revision-Date: 2011-02-24 01:24+0100\n"
+"PO-Revision-Date: 2011-02-24 16:56+0100\n"
 "Last-Translator: r1to <renato.rener@gmail.com>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,15 +44,15 @@ msgstr "%1.2f"
 
 #: ../src/e_mod_config.c:129 ../src/e_mod_config.c:159
 msgid "Slotted Layout"
-msgstr "Režni razpored"
+msgstr "Režasti iygled"
 
 #: ../src/e_mod_config.c:134
 msgid "Layout Options"
-msgstr "Možnosti razporeda"
+msgstr "Možnosti izgleda"
 
 #: ../src/e_mod_config.c:136
 msgid "Grow more!"
-msgstr "Zrasti bolj!"
+msgstr "Zrasti!"
 
 #: ../src/e_mod_config.c:138
 msgid "Keep it tight!"
@@ -105,4 +105,3 @@ msgstr "Spremeni merilo"
 #: ../src/e_mod_main.c:1864
 msgid "Settings"
 msgstr "Nastavitve"
-

@@ -6,18 +6,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-28 16:31+0800\n"
-"PO-Revision-Date: 2009-08-24 16:35+0000\n"
-"Last-Translator: Nizar Kerkeni <nizar.kerkeni@gmail.com>\n"
-"Language-Team: Arabic <ar@li.org>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2010-09-21 11:00-0700\n"
+"PO-Revision-Date: 2011-02-23 14:42+0300\n"
+"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: SAUDI ARABIA\n"
 
 #: ../src/e_mod_config.c:42
-msgid "Forecasts Configuration"
-msgstr "إعدادات التنبؤات"
+#| msgid "Forecasts"
+msgid "Forecasts Settings"
+msgstr "إعدادات التوقعات"
 
 #: ../src/e_mod_config.c:90
 msgid "Display Settings"
@@ -50,15 +53,17 @@ msgstr "متري"
 
 #: ../src/e_mod_config.c:107
 msgid "English"
-msgstr "الإنجليزية"
+msgstr "اﻹنجليزية"
 
 #: ../src/e_mod_config.c:111
-msgid "Yahoo Forecasts Code"
-msgstr "رمز تنبؤات ياهو"
+#| msgid "Yahoo Forecasts Code"
+msgid "Weather.com Forecasts Code"
+msgstr "رمز توقعات Weather.com"
 
 #: ../src/e_mod_config.c:112
-msgid "Yahoo Forecasts Code/US Zip Code"
-msgstr "رمز تنبؤات ياهو /الرمز البريدي في الولايات المتحدة"
+#| msgid "Yahoo Forecasts Code/US Zip Code"
+msgid "Forecasts Code/US Zip Code"
+msgstr "رمز التوقعات /الرمز البريدي في الولايات المتحدة"
 
 #: ../src/e_mod_config.c:117
 msgid "To find the code for your area, go to:"
@@ -69,54 +74,74 @@ msgstr "للعثور على رمز المنطقة الخاصة بك، اذهب �
 msgid "%s, find your area, and look at the URL"
 msgstr "%s، اعثر على منطقتك، والق نظرة على العنوان"
 
-#: ../src/e_mod_main.c:255
+#: ../src/e_mod_main.c:254
 msgid "Forecasts"
 msgstr "الخطة"
 
-#: ../src/e_mod_main.c:300
-msgid "Configuration"
-msgstr "الإعدادات"
+#: ../src/e_mod_main.c:301
+#| msgid "Unit Settings"
+msgid "Settings"
+msgstr "اﻹعدادات"
 
-#: ../src/e_mod_main.c:1030
+#: ../src/e_mod_main.c:993
+#, c-format
+msgid "%s: Current Conditions"
+msgstr "%s: الوضع الحالي"
+
+#: ../src/e_mod_main.c:1009
 msgid "Wind Chill"
 msgstr "برودة الرياح"
 
-#: ../src/e_mod_main.c:1036
+#: ../src/e_mod_main.c:1015
 msgid "Wind Speed"
 msgstr "سرعة الرياح"
 
-#: ../src/e_mod_main.c:1042
+#: ../src/e_mod_main.c:1021
 msgid "Humidity"
 msgstr "الرطوبة"
 
-#: ../src/e_mod_main.c:1048
+#: ../src/e_mod_main.c:1027
 msgid "Visibility"
 msgstr "الرؤية"
 
-#: ../src/e_mod_main.c:1054
+#: ../src/e_mod_main.c:1033
 msgid "Pressure"
 msgstr "الضغط"
 
-#: ../src/e_mod_main.c:1061
+#: ../src/e_mod_main.c:1040
 msgid "Rising"
 msgstr "الشروق"
 
-#: ../src/e_mod_main.c:1063
+#: ../src/e_mod_main.c:1042
 msgid "Falling"
 msgstr "الغروب"
 
-#: ../src/e_mod_main.c:1065
+#: ../src/e_mod_main.c:1044
 msgid "Steady"
 msgstr "هادئ"
 
-#: ../src/e_mod_main.c:1069
+#: ../src/e_mod_main.c:1048
 msgid "Sunrise / Sunset"
 msgstr "الشروق / الغروب"
 
-#: ../src/e_mod_main.c:1093
+#: ../src/e_mod_main.c:1066
+msgid "Today"
+msgstr "اليوم"
+
+#: ../src/e_mod_main.c:1068
+msgid "Tomorrow"
+msgstr "غدا"
+
+#: ../src/e_mod_main.c:1076
 msgid "High"
 msgstr "عالي"
 
-#: ../src/e_mod_main.c:1104
+#: ../src/e_mod_main.c:1087
 msgid "Low"
 msgstr "منخفض"
+
+#~ msgid "Forecasts Configuration"
+#~ msgstr "إعدادات التنبؤات"
+
+#~ msgid "Configuration"
+#~ msgstr "الإعدادات"
