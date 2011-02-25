@@ -1,0 +1,13 @@
+To install the module, do:
+
+./autogen.sh --prefix=YOURPREFIX
+
+YOURPREFIX is Enlightenment's installation prefix; alternatively,
+you can install to homedir:
+
+./autogen.sh --enable-homedir-install
+
+Then, after module is configured, run "make" (or "gmake" on BSD)
+to compile the module, and "make install" (or "gmake install")
+to install it. If you don't use homedir install, you have to perform
+this under root user.
