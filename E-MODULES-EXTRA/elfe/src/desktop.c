@@ -227,7 +227,7 @@ elfe_desktop_gadget_list(Evas_Object *obj)
 }
 
 Evas_Object *
-elfe_desktop_add(Evas_Object *parent)
+elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
 {
    Evas_Object *tb, *pad, *bx, *ly;
 
@@ -303,7 +303,7 @@ elfe_desktop_add(Evas_Object *parent)
         elm_box_pack_end(bx, tb);
 
         desktop_name = eina_stringshare_printf("Elfe Desktop %d", i);
-        gad = elfe_gadgets_zone_add(tb, i, desktop_name);
+        gad = elfe_gadgets_zone_add(tb, zone, i, desktop_name);
         evas_object_show(gad);
 
         desk->gadgets = eina_list_append(desk->gadgets, gad);

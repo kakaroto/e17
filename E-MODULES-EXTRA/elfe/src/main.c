@@ -372,7 +372,7 @@ _elfe_home_win_new(E_Zone *zone)
    evas_object_show(hwin->allapps);
    elm_layout_content_set(hwin->layout, "apps-list-swallow", hwin->allapps);
 
-   hwin->desktop = elfe_desktop_add(hwin->layout);
+   hwin->desktop = elfe_desktop_add(hwin->layout, hwin->zone);
    elm_layout_content_set(hwin->layout, "launcher.swallow", hwin->desktop);
    evas_object_smart_callback_add(hwin->desktop, "longpressed", _desktop_longpressed_cb, hwin);
    evas_object_smart_callback_add(hwin->desktop, "gadget,added", _gadget_added_cb, hwin);
