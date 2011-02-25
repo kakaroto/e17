@@ -18,52 +18,52 @@ extern int _language_log_dom;
 #undef E_FREE
 #define E_FREE(arg) \
 { \
-	arg = NULL; \
-	free(arg); \
+    arg = NULL; \
+    free(arg); \
 }
 
 #undef E_FREE_IF
 #define E_FREE_IF(arg) \
 { \
-	if (arg) free(arg); \
+    if (arg) free(arg); \
 }
 
 /******************* Shelf Code ****************************/
 typedef enum { LS_GLOBAL_POLICY,
-	       LS_WINDOW_POLICY,
-	       LS_APPLICATION_POLICY,
-	       LS_UNKNOWN_POLICY }lang_switch_policy_t;
+           LS_WINDOW_POLICY,
+           LS_APPLICATION_POLICY,
+           LS_UNKNOWN_POLICY }lang_switch_policy_t;
 
-typedef struct _Config	Config;
+typedef struct _Config    Config;
 
 struct _Config
 {
    /* saved * loaded config values */
-   lang_switch_policy_t	lang_policy;
-   int			lang_show_indicator;
+   lang_switch_policy_t    lang_policy;
+   int            lang_show_indicator;
 
-   E_Config_Binding_Key	switch_next_lang_key;
-   E_Config_Binding_Key	switch_prev_lang_key;
+   E_Config_Binding_Key    switch_next_lang_key;
+   E_Config_Binding_Key    switch_prev_lang_key;
 
-   Eina_List		*languages; // Language
+   Eina_List        *languages; // Language
 
    /* config state */
-   E_Module	     *module;
+   E_Module         *module;
    E_Config_Dialog   *config_dialog;
-   Eina_List	     *instances; // Instance
-   E_Menu	     *menu;
+   Eina_List         *instances; // Instance
+   E_Menu         *menu;
 
-   Eina_List	     *handlers;
+   Eina_List         *handlers;
 
    /* lang related stuff */
-   unsigned int	  language_selector;
-   Eina_List	  *language_predef_list; // Language_Predef
-   Eina_List	  *language_kbd_model_list; // Language_Kbd_Model
+   unsigned int      language_selector;
+   Eina_List      *language_predef_list; // Language_Predef
+   Eina_List      *language_kbd_model_list; // Language_Kbd_Model
 
    struct
      { 
-	Eina_List *border_lang_setup; // Border_Language_Settings 
-	E_Border  *current;
+    Eina_List *border_lang_setup; // Border_Language_Settings 
+    E_Border  *current;
      } l;
 };
 

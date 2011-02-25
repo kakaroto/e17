@@ -153,39 +153,39 @@ Language_XML *languages_load()
 
   result = _lng_read(xml, reader);
   if (!result) return NULL;
-	
+    
   return xml;
 }
 
 Eina_Bool language_next(Language_XML *xml)
 {
-	Eina_List *p_list;
-	Language_XML_Node *parent, *cur;
+    Eina_List *p_list;
+    Language_XML_Node *parent, *cur;
 
-	if (!xml)
+    if (!xml)
       {
         DBG("One of values is NULL, returning with error.");
         return EINA_FALSE;
       }
 
-	if (xml->current) {
-		cur = xml->current;
-		parent = cur->parent;
+    if (xml->current) {
+        cur = xml->current;
+        parent = cur->parent;
 
-		if (parent) {
-			p_list = parent->children;
+        if (parent) {
+            p_list = parent->children;
 
-			p_list = eina_list_data_find_list(p_list, xml->current);
-			p_list = eina_list_next( p_list );
-			if (!(xml->current = eina_list_data_get(p_list))) {
-				xml->current = cur;
-				return EINA_FALSE;
-			}
-		} else
-			xml->current = EINA_FALSE;
-	}
+            p_list = eina_list_data_find_list(p_list, xml->current);
+            p_list = eina_list_next( p_list );
+            if (!(xml->current = eina_list_data_get(p_list))) {
+                xml->current = cur;
+                return EINA_FALSE;
+            }
+        } else
+            xml->current = EINA_FALSE;
+    }
 
-	return xml->current ? EINA_TRUE : EINA_FALSE;
+    return xml->current ? EINA_TRUE : EINA_FALSE;
 }
 
 Eina_Bool language_first(Language_XML *xml)
@@ -257,5 +257,5 @@ void language_xml_clear(Language_XML *xml)
         }
     }
 
-	xml->current = n_cur;
+    xml->current = n_cur;
 }

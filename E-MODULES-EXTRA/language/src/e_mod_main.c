@@ -11,8 +11,8 @@
 /*********************** Shelf Code ************************************/
 
 /*********** variables ***********************/
-static	 E_Config_DD *conf_edd = NULL;
-static	 E_Config_DD *conf_langlist_edd = NULL;
+static     E_Config_DD *conf_edd = NULL;
+static     E_Config_DD *conf_langlist_edd = NULL;
 int _language_log_dom = -1;
 
 /*********************************************/
@@ -27,11 +27,11 @@ static void _lang_menu_cb_post_deactivate(void *data, E_Menu *m);
 
 /* gadcon setup */
 
-static E_Gadcon_Client	*_gc_init    (E_Gadcon *gc, const char *name, const char *id, const char *style);
-static void		_gc_shutdown (E_Gadcon_Client *gcc);
-static void		_gc_orient   (E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static char		*_gc_label   (E_Gadcon_Client_Class *client_class);
-static Evas_Object	*_gc_icon    (E_Gadcon_Client_Class *client_class, Evas *evas);
+static E_Gadcon_Client    *_gc_init    (E_Gadcon *gc, const char *name, const char *id, const char *style);
+static void        _gc_shutdown (E_Gadcon_Client *gcc);
+static void        _gc_orient   (E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
+static char        *_gc_label   (E_Gadcon_Client_Class *client_class);
+static Evas_Object    *_gc_icon    (E_Gadcon_Client_Class *client_class, Evas *evas);
 static const char       *_gc_id_new  (E_Gadcon_Client_Class *client_class);
 
 const char *default_xkb_rules_file;
@@ -52,25 +52,25 @@ typedef struct _Instance   Instance;
 struct _Instance
 {
    E_Gadcon_Client   *gcc;
-   Evas_Object	     *o_language;
-   Evas_Object	     *o_flag;
+   Evas_Object         *o_language;
+   Evas_Object         *o_flag;
 };
 
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
-   char		     buf[4096];
-   Evas_Object	     *o;
+   char             buf[4096];
+   Evas_Object         *o;
    E_Gadcon_Client   *gcc;
-   Instance	     *inst;
+   Instance         *inst;
 
    inst = E_NEW(Instance, 1);
 
    o = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(o, "base/theme/modules/language", "modules/language/main"))
      {
-	snprintf(buf, sizeof(buf), "%s/language.edj", e_module_dir_get(language_config->module));
-	edje_object_file_set(o, buf, "modules/language/main");
+    snprintf(buf, sizeof(buf), "%s/language.edj", e_module_dir_get(language_config->module));
+    edje_object_file_set(o, buf, "modules/language/main");
      }
 
    gcc = e_gadcon_client_new(gc, name, id, style, o);
@@ -81,12 +81,12 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    inst->o_flag = e_icon_add(gc->evas);
    snprintf(buf, sizeof(buf), "%s/images/unknown_flag.png",
-	    e_module_dir_get(language_config->module));
+        e_module_dir_get(language_config->module));
    e_icon_file_set(inst->o_flag, buf);
    edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
 
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
-				  _lang_button_cb_mouse_down, inst);
+                  _lang_button_cb_mouse_down, inst);
 
    language_config->instances = eina_list_append(language_config->instances, inst);
    lang_language_switch_to(language_config, language_config->language_selector);
@@ -121,11 +121,11 @@ static Evas_Object *
 _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 {
    Evas_Object *o;
-   char	       buf[4096];
+   char           buf[4096];
 
    o = edje_object_add(evas);
    snprintf(buf, sizeof(buf), "%s/e-module-language.edj",
-	    e_module_dir_get(language_config->module));
+        e_module_dir_get(language_config->module));
    edje_object_file_set(o, buf, "icon");
    return o;
 }
@@ -146,24 +146,27 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-   int	      load_default_config = 0;
+   int          load_default_config = 0;
    Eina_List *l;
    char       buf[4096];
    int i;
    // last three items are for freebsd systems.
    const char *xkb_paths[] = {
-	"/etc/X11/xkb/rules/xfree86",
-	"/usr/share/X11/xkb/rules/xfree86",
-	"/usr/lib/X11/xkb/rules/xfree86",
-	"/etc/X11/xkb/rules/xorg",
-	"/usr/share/X11/xkb/rules/xorg",
-	"/usr/lib/X11/xkb/rules/xorg",
-	"/etc/X11/xkb/rules/base",
-	"/usr/share/X11/xkb/rules/base",
-	"/usr/lib/X11/xkb/rules/base",
-	"/usr/X11R6/lib/X11/xkb/rules/xfree86",
-	"/usr/X11R6/lib/X11/xkb/rules/xorg",
-	"/usr/X11R6/lib/X11/xkb/rules/base"
+    "/etc/X11/xkb/rules/xfree86",
+    "/usr/share/X11/xkb/rules/xfree86",
+    "/usr/local/share/X11/xkb/rules/xfree86",
+    "/usr/lib/X11/xkb/rules/xfree86",
+    "/etc/X11/xkb/rules/xorg",
+    "/usr/share/X11/xkb/rules/xorg",
+    "/usr/local/share/X11/xkb/rules/xorg",
+    "/usr/lib/X11/xkb/rules/xorg",
+    "/etc/X11/xkb/rules/base",
+    "/usr/share/X11/xkb/rules/base",
+    "/usr/local/share/X11/xkb/rules/base",
+    "/usr/lib/X11/xkb/rules/base",
+    "/usr/X11R6/lib/X11/xkb/rules/xfree86",
+    "/usr/X11R6/lib/X11/xkb/rules/xorg",
+    "/usr/X11R6/lib/X11/xkb/rules/base"
    };
 
    if (_language_log_dom < 0) {
@@ -219,18 +222,18 @@ e_modapi_init(E_Module *m)
    language_config = e_config_domain_load(LANG_MODULE_CONFIG_FILE, conf_edd);
    if (!language_config)
      {
-	language_config = E_NEW(Config, 1);
-	load_default_config = 1;
+    language_config = E_NEW(Config, 1);
+    load_default_config = 1;
      }
 
    // select which files to use.
    for (i = 0; i < (sizeof(xkb_paths) / sizeof(const char *)); i++)
      {
-	if (ecore_file_exists(xkb_paths[i]))
-	  {
-	    default_xkb_rules_file = xkb_paths[i];
-	    break;
-	  }
+    if (ecore_file_exists(xkb_paths[i]))
+      {
+        default_xkb_rules_file = xkb_paths[i];
+        break;
+      }
      }
    if (!default_xkb_rules_file) return EINA_FALSE;
 
@@ -239,30 +242,30 @@ e_modapi_init(E_Module *m)
 
    if (load_default_config)
      {
-	Language  *lang;
-	language_config->lang_policy = LS_GLOBAL_POLICY;
-	language_config->lang_show_indicator = 1;
+    Language  *lang;
+    language_config->lang_policy = LS_GLOBAL_POLICY;
+    language_config->lang_show_indicator = 1;
 
-	/* switch to next language */
-	language_config->switch_next_lang_key.context	 = E_BINDING_CONTEXT_ANY;
-	language_config->switch_next_lang_key.key	 = eina_stringshare_add("period");
-	language_config->switch_next_lang_key.modifiers	 = E_BINDING_MODIFIER_CTRL |
-							   E_BINDING_MODIFIER_ALT;
-	language_config->switch_next_lang_key.any_mod	 = 0;
-	language_config->switch_next_lang_key.action	 = eina_stringshare_add(LANG_NEXT_ACTION);
-	language_config->switch_next_lang_key.params	 = NULL;
+    /* switch to next language */
+    language_config->switch_next_lang_key.context     = E_BINDING_CONTEXT_ANY;
+    language_config->switch_next_lang_key.key     = eina_stringshare_add("period");
+    language_config->switch_next_lang_key.modifiers     = E_BINDING_MODIFIER_CTRL |
+                               E_BINDING_MODIFIER_ALT;
+    language_config->switch_next_lang_key.any_mod     = 0;
+    language_config->switch_next_lang_key.action     = eina_stringshare_add(LANG_NEXT_ACTION);
+    language_config->switch_next_lang_key.params     = NULL;
 
-	/* switch to prev language */
-	language_config->switch_prev_lang_key.context	 = E_BINDING_CONTEXT_ANY;
-	language_config->switch_prev_lang_key.key	 = eina_stringshare_add("comma");
-	language_config->switch_prev_lang_key.modifiers	 = E_BINDING_MODIFIER_CTRL |
-							   E_BINDING_MODIFIER_ALT;
-	language_config->switch_prev_lang_key.any_mod	 = 0;
-	language_config->switch_prev_lang_key.action	 = eina_stringshare_add(LANG_PREV_ACTION);
-	language_config->switch_prev_lang_key.params	 = NULL;
+    /* switch to prev language */
+    language_config->switch_prev_lang_key.context     = E_BINDING_CONTEXT_ANY;
+    language_config->switch_prev_lang_key.key     = eina_stringshare_add("comma");
+    language_config->switch_prev_lang_key.modifiers     = E_BINDING_MODIFIER_CTRL |
+                               E_BINDING_MODIFIER_ALT;
+    language_config->switch_prev_lang_key.any_mod     = 0;
+    language_config->switch_prev_lang_key.action     = eina_stringshare_add(LANG_PREV_ACTION);
+    language_config->switch_prev_lang_key.params     = NULL;
 
-	lang = lang_get_default_language(language_config);
-	if (lang) language_config->languages = eina_list_append(language_config->languages, lang);
+    lang = lang_get_default_language(language_config);
+    if (lang) language_config->languages = eina_list_append(language_config->languages, lang);
      }
    E_CONFIG_LIMIT(language_config->lang_policy, LS_GLOBAL_POLICY, LS_UNKNOWN_POLICY - 1);
    E_CONFIG_LIMIT(language_config->lang_show_indicator, 0, 1);
@@ -272,7 +275,7 @@ e_modapi_init(E_Module *m)
    /* initializing languages */
    for (l = language_config->languages; l; l = l->next)
      {
-	lang_language_xorg_values_get(l->data);
+    lang_language_xorg_values_get(l->data);
      }
 
    language_config->l.current = e_border_focused_get();
@@ -308,9 +311,9 @@ e_modapi_shutdown(E_Module *m)
      e_object_del(E_OBJECT(language_config->config_dialog));
    if (language_config->menu)
      {
-	e_menu_post_deactivate_callback_set(language_config->menu, NULL, NULL);
-	e_object_del(E_OBJECT(language_config->menu));
-	language_config->menu = NULL;
+    e_menu_post_deactivate_callback_set(language_config->menu, NULL, NULL);
+    e_object_del(E_OBJECT(language_config->menu));
+    language_config->menu = NULL;
      }
 
    lang_free_xfree_language_kbd_layouts(language_config);
@@ -321,7 +324,7 @@ e_modapi_shutdown(E_Module *m)
 
    for (l = language_config->languages; l; l = l->next)
      {
-	lang_language_free(l->data);
+    lang_language_free(l->data);
      }
 
    free(language_config);
@@ -351,29 +354,29 @@ void language_face_language_indicator_update()
 
    for (l = language_config->instances; l; l = l->next)
      {
-	inst = l->data;
+    inst = l->data;
 
-	evas_object_hide(inst->o_flag);
-	edje_object_part_unswallow(inst->o_language, inst->o_flag);
-	if (language_config->languages)
-	  {
-	     Language	*lang = eina_list_nth(language_config->languages,
-					      language_config->language_selector);
+    evas_object_hide(inst->o_flag);
+    edje_object_part_unswallow(inst->o_language, inst->o_flag);
+    if (language_config->languages)
+      {
+         Language    *lang = eina_list_nth(language_config->languages,
+                          language_config->language_selector);
 
-	     snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png",
-		      e_module_dir_get(language_config->module), lang->lang_flag);
-	     e_icon_file_set(inst->o_flag, lbuf);
-	     edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
-	     edje_object_part_text_set(inst->o_language, "langout", lang->lang_shortcut); 
-	  }
-	else 
-	  { 
-	     snprintf(lbuf, sizeof(lbuf), "%s/images/unknown_flag.png",
-		      e_module_dir_get(language_config->module));
-	     e_icon_file_set(inst->o_flag, lbuf);
-	     edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
-	     edje_object_part_text_set(inst->o_language, "langout", "");
-	  }
+         snprintf(lbuf, sizeof(lbuf), "%s/images/%s.png",
+              e_module_dir_get(language_config->module), lang->lang_flag);
+         e_icon_file_set(inst->o_flag, lbuf);
+         edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
+         edje_object_part_text_set(inst->o_language, "langout", lang->lang_shortcut); 
+      }
+    else 
+      { 
+         snprintf(lbuf, sizeof(lbuf), "%s/images/unknown_flag.png",
+              e_module_dir_get(language_config->module));
+         e_icon_file_set(inst->o_flag, lbuf);
+         edje_object_part_swallow(inst->o_language, "language_flag", inst->o_flag);
+         edje_object_part_text_set(inst->o_language, "langout", "");
+      }
 
      }
 }
@@ -402,9 +405,9 @@ void language_unregister_callback_handlers()
 { 
    while (language_config->handlers) 
      { 
-	ecore_event_handler_del(language_config->handlers->data);
-	language_config->handlers = eina_list_remove_list(language_config->handlers,
-							  language_config->handlers);
+    ecore_event_handler_del(language_config->handlers->data);
+    language_config->handlers = eina_list_remove_list(language_config->handlers,
+                              language_config->handlers);
      }
 }
 void language_clear_border_language_setup_list()
@@ -414,14 +417,14 @@ void language_clear_border_language_setup_list()
    language_config->l.current = NULL;
    while (language_config->l.border_lang_setup)
      {
-	Border_Language_Settings *bls = language_config->l.border_lang_setup->data;
+    Border_Language_Settings *bls = language_config->l.border_lang_setup->data;
 
-	if (bls->language_name) eina_stringshare_del(bls->language_name);
-	E_FREE(bls);
+    if (bls->language_name) eina_stringshare_del(bls->language_name);
+    E_FREE(bls);
 
-	language_config->l.border_lang_setup = 
-	   eina_list_remove_list(language_config->l.border_lang_setup,
-				 language_config->l.border_lang_setup);
+    language_config->l.border_lang_setup = 
+       eina_list_remove_list(language_config->l.border_lang_setup,
+                 language_config->l.border_lang_setup);
      }
 }
 /************************* Private funcs *************************************************/
@@ -436,57 +439,57 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
    ev = event_info;
    if ((ev->button == 3) && (!language_config->menu))
      {
-	E_Menu	     *ma, *mg, *mo;
-	E_Menu_Item  *mi;
-	int cx, cy, cw, ch;
+    E_Menu         *ma, *mg, *mo;
+    E_Menu_Item  *mi;
+    int cx, cy, cw, ch;
 
-	ma = e_menu_new();
+    ma = e_menu_new();
         e_menu_post_deactivate_callback_set(ma, _lang_menu_cb_post_deactivate, inst); 
         language_config->menu = ma; 
-	     
-	mg = e_menu_new();
+         
+    mg = e_menu_new();
 
-	mi = e_menu_item_new(mg);
-	e_menu_item_label_set(mi, D_("Configure Key Bindings"));
-	e_util_menu_item_theme_icon_set(mi, "preferences-system");
-	e_menu_item_callback_set(mi, _language_face_cb_menu_keybindings_configure, NULL);
-	
-	mi = e_menu_item_new(mg);
-	e_menu_item_label_set(mi, D_("Settings"));
-	e_util_menu_item_theme_icon_set(mi, "preferences-system");
-	e_menu_item_callback_set(mi, _language_face_cb_menu_configure, NULL);
+    mi = e_menu_item_new(mg);
+    e_menu_item_label_set(mi, D_("Configure Key Bindings"));
+    e_util_menu_item_theme_icon_set(mi, "preferences-system");
+    e_menu_item_callback_set(mi, _language_face_cb_menu_keybindings_configure, NULL);
+    
+    mi = e_menu_item_new(mg);
+    e_menu_item_label_set(mi, D_("Settings"));
+    e_util_menu_item_theme_icon_set(mi, "preferences-system");
+    e_menu_item_callback_set(mi, _language_face_cb_menu_configure, NULL);
 
-	if (eina_list_count(language_config->languages) > 1)
-	  { 
-	     Eina_List	*l;
-	     Language	*lang;
-	     int	indx;
+    if (eina_list_count(language_config->languages) > 1)
+      { 
+         Eina_List    *l;
+         Language    *lang;
+         int    indx;
 
-	     mo = e_menu_new(); 
+         mo = e_menu_new(); 
 
-	     mi = e_menu_item_new(mo); 
-	     e_menu_item_label_set(mi, D_("Module Configuration")); 
-	     e_menu_item_submenu_set(mi, mo); 
-	     e_util_menu_item_theme_icon_set(mi, "preferences-system");
+         mi = e_menu_item_new(mo); 
+         e_menu_item_label_set(mi, D_("Module Configuration")); 
+         e_menu_item_submenu_set(mi, mo); 
+         e_util_menu_item_theme_icon_set(mi, "preferences-system");
 
-	     mi = e_menu_item_new(mo);
-	     e_menu_item_separator_set(mi, 1);
+         mi = e_menu_item_new(mo);
+         e_menu_item_separator_set(mi, 1);
 
-	     for (l = language_config->languages, indx = 0; l; l = l->next, indx ++)
-	       {
-		  lang = l->data;
+         for (l = language_config->languages, indx = 0; l; l = l->next, indx ++)
+           {
+          lang = l->data;
 
-		  mi = e_menu_item_new(mo);
-		  e_menu_item_label_set(mi, lang->lang_name);
-		  snprintf(buf, sizeof(buf), "%s/images/%s.png", 
-			   e_module_dir_get(language_config->module), lang->lang_flag);
-		  e_menu_item_icon_file_set(mi, buf);
-		  e_menu_item_radio_set(mi, 1);
-		  e_menu_item_radio_group_set(mi, SELECTED_LANG_SET_RADIO_GROUP);
-		  e_menu_item_toggle_set(mi, indx == language_config->language_selector ? 1 : 0);
-		  e_menu_item_callback_set(mi, _language_face_cb_menu_switch_language_to, NULL);
-	       }
-	  }
+          mi = e_menu_item_new(mo);
+          e_menu_item_label_set(mi, lang->lang_name);
+          snprintf(buf, sizeof(buf), "%s/images/%s.png", 
+               e_module_dir_get(language_config->module), lang->lang_flag);
+          e_menu_item_icon_file_set(mi, buf);
+          e_menu_item_radio_set(mi, 1);
+          e_menu_item_radio_group_set(mi, SELECTED_LANG_SET_RADIO_GROUP);
+          e_menu_item_toggle_set(mi, indx == language_config->language_selector ? 1 : 0);
+          e_menu_item_callback_set(mi, _language_face_cb_menu_switch_language_to, NULL);
+           }
+      }
 
         e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
@@ -494,12 +497,12 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
           e_util_zone_current_get(e_manager_current_get()), 
           cx + ev->output.x, cy + ev->output.y, 1, 1, 
           E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-	evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
-				 EVAS_BUTTON_NONE, ev->timestamp, NULL);
+    evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
+                 EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }
    else if (ev->button == 1)
      {
-	lang_language_switch_to_next(language_config);
+    lang_language_switch_to_next(language_config);
      }
 }
 static void 
@@ -519,22 +522,22 @@ _language_face_cb_menu_switch_language_to(void *data, E_Menu *m, E_Menu_Item *mi
 {
    Eina_List   *l;
    Language    *lang;
-   int	       indx;
+   int           indx;
 
    if (!language_config || !mi) return;
 
    for (l = language_config->languages, indx = 0; l; l = l->next, indx ++)
      {
-	lang = l->data;
+    lang = l->data;
 
-	if (!strcmp(lang->lang_name, mi->label))
-	  {
-	     if (language_config->language_selector == indx)
-	       break;
+    if (!strcmp(lang->lang_name, mi->label))
+      {
+         if (language_config->language_selector == indx)
+           break;
 
-	     lang_language_switch_to(language_config, indx);
-	     break;
-	  }
+         lang_language_switch_to(language_config, indx);
+         break;
+      }
      }
 }
 static void

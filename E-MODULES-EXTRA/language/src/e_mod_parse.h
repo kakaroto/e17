@@ -7,16 +7,16 @@ typedef struct _language_xml_node Language_XML_Node;
 typedef struct _language_xml Language_XML;
 
 struct _language_xml_node {
-	char *tag;
-	char *value;
-	Eina_Hash *attributes;
-	Eina_List *children;
-	Language_XML_Node *parent;
+    char *tag;
+    char *value;
+    Eina_Hash *attributes;
+    Eina_List *children;
+    Language_XML_Node *parent;
 };
 
 struct _language_xml {
-	Language_XML_Node *top;
-	Language_XML_Node *current;
+    Language_XML_Node *top;
+    Language_XML_Node *current;
 };
 
 Language_XML *languages_load();
