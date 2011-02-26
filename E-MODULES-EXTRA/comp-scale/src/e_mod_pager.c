@@ -396,6 +396,9 @@ _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
    int x = it->bd->x;
    int y = it->bd->y;
 
+   if (!it->mouse_down)
+     return;
+   
    it->mouse_down = EINA_FALSE;
 
    if (!scale_state)
