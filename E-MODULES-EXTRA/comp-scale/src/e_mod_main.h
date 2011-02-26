@@ -1,7 +1,7 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-#define MOD_CONFIG_FILE_EPOCH 0x0004
+#define MOD_CONFIG_FILE_EPOCH 0x0005
 #define MOD_CONFIG_FILE_GENERATION 0x0001
 #define MOD_CONFIG_FILE_VERSION					\
   ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
@@ -9,6 +9,9 @@
 
 #include <libintl.h>
 #define D_(str) dgettext(PACKAGE, str)
+
+#define DBG(...)
+/* #define DBG(...) printf(__VA_ARGS__) */
 
 typedef struct _Config_Item Config_Item;
 typedef struct _Config Config;
@@ -22,12 +25,14 @@ struct _Config
   E_Config_Dialog *cfd;
   const char    *theme_path;
 
+  /* scale current desk */
   int           layout_mode;
   unsigned char tight;
   unsigned char grow;
   double	scale_duration;
   double	spacing;
 
+  /* scale all desk */
   int           desks_layout_mode;
   unsigned char desks_tight;
   unsigned char desks_grow;
@@ -37,6 +42,12 @@ struct _Config
 
   unsigned char fade_popups;
   unsigned char fade_desktop;
+
+  /* pager */
+  double	pager_duration;
+  unsigned char pager_fade_windows;
+  unsigned char pager_fade_popups;
+  unsigned char pager_fade_desktop;
 };
 
 struct _Config_Item
@@ -123,7 +134,8 @@ EAPI int e_modapi_save(E_Module *m);
 
 
 E_Config_Dialog *e_int_config_scale_module(E_Container *con, const char *params);
-void scale_run(E_Manager *man);
+void scale_run(const char *params);
+void pager_run(const char *params);
 
 extern Config *scale_conf;
 

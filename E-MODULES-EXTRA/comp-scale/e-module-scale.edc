@@ -1,9 +1,9 @@
-images 
+images
 {
 	image: "module_icon.png" COMP;
 }
 
-collections 
+collections
 {
 	group {
 		name: "icon";
@@ -72,40 +72,22 @@ collections
 			}
 		}
 	}
-	
+
 	group {
 		name: "modules/scale/win";
 
 		parts {
-			
+
 			part {
 				name: "e.swallow.win";
-				type: RECT;
-				mouse_events: 1;
+				type: SWALLOW;
 				description {
 					state: "default" 0.0;
-					color: 255 255 255 0;
-					rel1 {
-						relative: 0.0 0.0;
-						offset: 0 0;
-					}
-					rel2 {
-						relative: 1.0 1.0;
-						offset: -1 -1;
-					}
-					
+					color: 255 255 255 200;
 				}
 				description {
 					state: "focused" 0.0;
-					color: 255 255 255 80;
-					rel1 {
-						relative: 0.0 0.0;
-						offset: 0 0;
-					}
-					rel2 {
-						relative: 1.0 1.0;
-						offset: -1 -1;
-					}
+					color: 255 255 255 255;
 				}
 			}
 
@@ -118,7 +100,7 @@ collections
 			 * 		aspect: 1.0 1.0;
 			 * 		aspect_preference: BOTH;
 			 * 		rel1.relative;
-			 * 		
+			 *
 			 * 		rel1.offset: 2 2;
 			 * 		rel2.offset: -3 -3;
 			 * 		image.normal: "module_icon.png";
@@ -130,15 +112,20 @@ collections
 			 * 		rel2.offset: 3 3;
 			 * 	}
 			 * } */
-			/* part {
-			 * 	name: "event";
-			 * 	mouse_events: 1;
-			 * 	type: RECT;
-			 * 	description {
-			 * 		state: "default" 0.0;
-			 * 		color: 255 255 255 100;
-			 * 	}
-			 * } */
+			part {
+				name: "event";
+				mouse_events: 1;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					color: 200 200 200 10;
+				}
+				description {
+					state: "focused" 0.0;
+					color: 255 255 255 150;
+				}
+
+			}
 		}
 		programs {
 			program {
@@ -147,7 +134,7 @@ collections
 				source: "e";
 				action: STATE_SET "focused" 0.0;
 				transition: SINUSOIDAL 0.3;
-				target: "e.swallow.win";
+				target: "event";
 			}
 			program {
 				name: "mouse_out";
@@ -155,9 +142,99 @@ collections
 				source: "e";
 				action: STATE_SET "default" 0.0;
 				transition: SINUSOIDAL 0.4;
-				target: "e.swallow.win";
+				target: "event";
 			}
 		}
 
+	}
+	group {
+		name: "modules/scale/desk";
+
+		parts {
+			part {
+				name: "left";
+				mouse_events: 0;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					color: 0 0 0 120;
+					rel2 {
+						relative: 0.0 1.0;
+						offset: 0 -1;
+					}
+				}
+			}
+			part {
+				name: "right";
+				mouse_events: 0;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					color: 0 0 0 120;
+					rel1 {
+						relative: 1.0 0.0;
+						offset: -1 0;
+					}
+				}
+			}
+			part {
+				name: "top";
+				mouse_events: 0;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					color: 0 0 0 120;
+					rel2 {
+						relative: 1.0 0.0;
+						offset: -1 0;
+					}
+				}
+			}
+			part {
+				name: "bottom";
+				mouse_events: 0;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					color: 0 0 0 100;
+					rel1 {
+						relative: 0.0 1.0;
+						offset: 0 -1;
+					}
+
+				}
+			}
+			part {
+				name: "event";
+				mouse_events: 1;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					color: 0 0 0 100;
+				}
+				description {
+					state: "focused" 0.0;
+					color: 0 0 0 80;
+				}
+			}
+		}
+		programs {
+			program {
+				name: "mouse_in";
+				signal: "mouse,in";
+				source: "e";
+				action: STATE_SET "focused" 0.0;
+				transition: SINUSOIDAL 0.3;
+				target: "event";
+			}
+			program {
+				name: "mouse_out";
+				signal: "mouse,out";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				transition: SINUSOIDAL 0.4;
+				target: "event";
+			}
+		}
 	}
 }

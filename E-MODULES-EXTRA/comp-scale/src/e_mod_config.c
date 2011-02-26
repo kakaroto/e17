@@ -18,6 +18,11 @@ struct _E_Config_Dialog_Data
   int		fade_popups;
   int		fade_desktop;
   int		fade_windows;
+
+  double	pager_duration;
+  int		pager_fade_popups;
+  int		pager_fade_desktop;
+  int		pager_fade_windows;
 };
 
 
@@ -74,50 +79,31 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void
 _fill_data(E_Config_Dialog_Data *cfdata)
 {
-   cfdata->tight	     = scale_conf->tight;
-   cfdata->grow		     = scale_conf->grow;
-   cfdata->duration	     = scale_conf->scale_duration;
-   cfdata->spacing	     = scale_conf->spacing;
-   cfdata->desks_duration    = scale_conf->desks_duration;
-   cfdata->desks_spacing     = scale_conf->desks_spacing;
-   cfdata->fade_popups	     = scale_conf->fade_popups;
-   cfdata->fade_desktop	     = scale_conf->fade_desktop;
-   cfdata->fade_windows	     = scale_conf->fade_windows;
-   cfdata->fade_desktop	     = scale_conf->fade_desktop;
-   cfdata->layout_mode	     = scale_conf->layout_mode;
-   cfdata->desks_layout_mode = scale_conf->desks_layout_mode;
-   cfdata->desks_tight	     = scale_conf->desks_tight;
-   cfdata->desks_grow	     = scale_conf->desks_grow;
-
-}
-
-static void
-_cb_test(void *data, void *data2)
-{
-   E_Config_Dialog_Data *cfdata = data;
-
-   scale_conf->grow		 = cfdata->grow;
-   scale_conf->tight		 = cfdata->tight;
-   scale_conf->scale_duration	 = cfdata->duration;
-   scale_conf->spacing		 = cfdata->spacing;
-   scale_conf->desks_duration	 = cfdata->desks_duration;
-   scale_conf->desks_spacing	 = cfdata->desks_spacing;
-   scale_conf->fade_popups	 = cfdata->fade_popups;
-   scale_conf->fade_desktop	 = cfdata->fade_desktop;
-   scale_conf->fade_windows	 = cfdata->fade_windows;
-   scale_conf->fade_desktop	 = cfdata->fade_desktop;
-   scale_conf->layout_mode	 = cfdata->layout_mode;
-   scale_conf->desks_layout_mode = cfdata->desks_layout_mode;
-   scale_conf->desks_grow	 = cfdata->desks_grow;
-   scale_conf->desks_tight	 = cfdata->desks_tight;
-
-   scale_run(e_manager_current_get());
+   cfdata->tight	      = scale_conf->tight;
+   cfdata->grow		      = scale_conf->grow;
+   cfdata->duration	      = scale_conf->scale_duration;
+   cfdata->spacing	      = scale_conf->spacing;
+   cfdata->desks_duration     = scale_conf->desks_duration;
+   cfdata->desks_spacing      = scale_conf->desks_spacing;
+   cfdata->fade_popups	      = scale_conf->fade_popups;
+   cfdata->fade_desktop	      = scale_conf->fade_desktop;
+   cfdata->fade_windows	      = scale_conf->fade_windows;
+   cfdata->layout_mode	      = scale_conf->layout_mode;
+   cfdata->desks_layout_mode  = scale_conf->desks_layout_mode;
+   cfdata->desks_tight	      = scale_conf->desks_tight;
+   cfdata->desks_grow	      = scale_conf->desks_grow;
+   cfdata->pager_duration     = scale_conf->pager_duration;
+   cfdata->pager_fade_popups  = scale_conf->pager_fade_popups;
+   cfdata->pager_fade_desktop = scale_conf->pager_fade_desktop;
+   cfdata->pager_fade_windows = scale_conf->pager_fade_windows;
 }
 
 static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *of, *ow, *ot;
+   Evas_Object *o, *of, *ow, *ot, *otb;
+
+   otb = e_widget_toolbook_add(evas, 0, 0);
 
    ot = e_widget_table_add(evas, 0);
 
@@ -126,21 +112,24 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    of = e_widget_framelist_add(evas, D_("Current Desktop"), 0);
    ow = e_widget_label_add (evas, D_("Minimum space between windows"));
    e_widget_framelist_object_append (of, ow);
-   ow = e_widget_slider_add (evas, 1, 0, D_("%1.0f"), 2.0, 64.0,
-                             1.0, 0, &(cfdata->spacing), NULL,100);
+   ow = e_widget_slider_add (evas, 1, 0, D_("%1.0f"), 2.0, 64.0, 1.0, 0,
+			     &(cfdata->spacing), NULL,100);
    e_widget_framelist_object_append (of, ow);
 
    ow = e_widget_label_add (evas, D_("Scale duration"));
    e_widget_framelist_object_append (of, ow);
-   ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.1, 3.0,
-                             0.01, 0, &(cfdata->duration), NULL,100);
+   ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.01, 3.0, 0.01, 0,
+			     &(cfdata->duration), NULL,100);
    e_widget_framelist_object_append (of, ow);
-   ow = e_widget_check_add(evas, D_("Slotted Layout"), &(cfdata->layout_mode));
+   ow = e_widget_check_add(evas, D_("Slotted Layout"),
+			   &(cfdata->layout_mode));
    e_widget_framelist_object_append(of, ow);
    e_widget_framelist_content_align_set(of, 0.0, 0.0);
-   ow = e_widget_check_add(evas, D_("Grow more!"), &(cfdata->grow));
+   ow = e_widget_check_add(evas, D_("Grow more!"),
+			   &(cfdata->grow));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_check_add(evas, D_("Keep it tight!"), &(cfdata->tight));
+   ow = e_widget_check_add(evas, D_("Keep it tight!"),
+			   &(cfdata->tight));
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    e_widget_table_object_append(ot, o, 0, 0, 1, 1, 1, 1, 0, 0);
@@ -155,50 +144,82 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    ow = e_widget_label_add (evas, D_("Scale duration"));
    e_widget_framelist_object_append (of, ow);
-   ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.1, 3.0,
-                             0.01, 0, &(cfdata->desks_duration), NULL,100);
+   ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.01, 3.0, 0.01, 0,
+			     &(cfdata->desks_duration), NULL,100);
    e_widget_framelist_object_append (of, ow);
-   ow = e_widget_check_add(evas, D_("Slotted Layout"), &(cfdata->desks_layout_mode));
+   ow = e_widget_check_add(evas, D_("Slotted Layout"),
+			   &(cfdata->desks_layout_mode));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_check_add(evas, D_("Grow more!"), &(cfdata->desks_grow));
+   ow = e_widget_check_add(evas, D_("Grow more!"),
+			   &(cfdata->desks_grow));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_check_add(evas, D_("Keep it tight!"), &(cfdata->desks_tight));
+   ow = e_widget_check_add(evas, D_("Keep it tight!"),
+			   &(cfdata->desks_tight));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_check_add(evas, D_("Fade in windows"), &(cfdata->fade_windows));
+   ow = e_widget_check_add(evas, D_("Fade in windows"),
+			   &(cfdata->fade_windows));
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    e_widget_table_object_append(ot, o, 1, 0, 1, 1, 1, 1, 0, 0);
 
    of = e_widget_framelist_add(evas, D_(""), 1);
-   ow = e_widget_check_add(evas, D_("Fade out shelves and popups"), &(cfdata->fade_popups));
+   ow = e_widget_check_add(evas, D_("Fade out shelves and popups"),
+			   &(cfdata->fade_popups));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_check_add(evas, D_("Darken desktop"), &(cfdata->fade_desktop));
-   e_widget_framelist_object_append(of, ow);
-   ow = e_widget_button_add(evas, D_("Test"), NULL, _cb_test, cfdata, NULL);
+   ow = e_widget_check_add(evas, D_("Darken desktop"),
+			   &(cfdata->fade_desktop));
    e_widget_framelist_object_append(of, ow);
    e_widget_table_object_append(ot, of, 0, 1, 2, 1, 1, 1, 0, 0);
 
+   e_widget_toolbook_page_append(otb, NULL, "Scale Windows", ot, 1, 1, 1, 1, 0, 0);
 
-   return ot;
+   ot = e_widget_table_add(evas, 0);
+   of = e_widget_framelist_add(evas, D_("Pager Settings"), 0);
+
+   ow = e_widget_label_add (evas, D_("Zoom duration"));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.01, 3.0, 0.01, 0,
+			     &(cfdata->pager_duration), NULL,100);
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("Fade in windows"),
+			   &(cfdata->pager_fade_windows));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("Fade out shelves and popups"),
+			   &(cfdata->pager_fade_popups));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("Darken desktop"),
+			   &(cfdata->fade_desktop));
+   e_widget_framelist_object_append (of, ow);
+   e_widget_table_object_append(ot, of, 0, 0, 1, 1, 1, 1, 1, 0);
+
+   e_widget_toolbook_page_append(otb, NULL, "Pager", ot, 1, 1, 1, 1, 1, 1);
+
+   e_widget_toolbook_page_show(otb, 0);
+
+   return otb;
 }
 
 static int
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   scale_conf->grow		 = cfdata->grow;
-   scale_conf->tight		 = cfdata->tight;
-   scale_conf->scale_duration	 = cfdata->duration;
-   scale_conf->spacing		 = cfdata->spacing;
-   scale_conf->desks_duration	 = cfdata->desks_duration;
-   scale_conf->desks_spacing	 = cfdata->desks_spacing;
-   scale_conf->fade_popups	 = cfdata->fade_popups;
-   scale_conf->fade_desktop	 = cfdata->fade_desktop;
-   scale_conf->fade_windows	 = cfdata->fade_windows;
-   scale_conf->fade_desktop	 = cfdata->fade_desktop;
-   scale_conf->layout_mode	 = cfdata->layout_mode;
-   scale_conf->desks_layout_mode = cfdata->desks_layout_mode;
-   scale_conf->desks_grow	 = cfdata->desks_grow;
-   scale_conf->desks_tight	 = cfdata->desks_tight;
+   scale_conf->grow		  = cfdata->grow;
+   scale_conf->tight		  = cfdata->tight;
+   scale_conf->scale_duration	  = cfdata->duration;
+   scale_conf->spacing		  = cfdata->spacing;
+   scale_conf->desks_duration	  = cfdata->desks_duration;
+   scale_conf->desks_spacing	  = cfdata->desks_spacing;
+   scale_conf->fade_popups	  = cfdata->fade_popups;
+   scale_conf->fade_desktop	  = cfdata->fade_desktop;
+   scale_conf->fade_windows	  = cfdata->fade_windows;
+   scale_conf->fade_desktop	  = cfdata->fade_desktop;
+   scale_conf->layout_mode	  = cfdata->layout_mode;
+   scale_conf->desks_layout_mode  = cfdata->desks_layout_mode;
+   scale_conf->desks_grow	  = cfdata->desks_grow;
+   scale_conf->desks_tight	  = cfdata->desks_tight;
+   scale_conf->pager_duration	  = cfdata->pager_duration;
+   scale_conf->pager_fade_popups  = cfdata->pager_fade_popups;
+   scale_conf->pager_fade_windows = cfdata->pager_fade_windows;
+   scale_conf->pager_fade_desktop = cfdata->pager_fade_desktop;
 
    e_config_save_queue();
    return 1;
