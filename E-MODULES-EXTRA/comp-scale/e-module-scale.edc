@@ -83,10 +83,6 @@ collections
 				type: SWALLOW;
 				description {
 					state: "default" 0.0;
-					color: 255 255 255 200;
-				}
-				description {
-					state: "focused" 0.0;
 					color: 255 255 255 255;
 				}
 			}
@@ -113,18 +109,31 @@ collections
 			 * 	}
 			 * } */
 			part {
-				name: "event";
-				mouse_events: 1;
-				type: RECT;
+				name: "over_clip";
+				mouse_events: 0;
+			how	type: RECT;
 				description {
 					state: "default" 0.0;
-					color: 200 200 200 10;
+					color: 0 0 0 0;
+				}
+				description {
+					state: "visible" 0.0;
+					color: 255 255 255 255;
+				}
+			}
+			part {
+				name: "over";
+				mouse_events: 1;
+				type: RECT;
+			        clip_to: "over_clip";
+				description {
+					state: "default" 0.0;
+					color: 0 0 0 30;
 				}
 				description {
 					state: "focused" 0.0;
-					color: 255 255 255 150;
+					color: 255 255 255 10;
 				}
-
 			}
 		}
 		programs {
@@ -134,7 +143,7 @@ collections
 				source: "e";
 				action: STATE_SET "focused" 0.0;
 				transition: SINUSOIDAL 0.3;
-				target: "event";
+				target: "over";
 			}
 			program {
 				name: "mouse_out";
@@ -142,7 +151,23 @@ collections
 				source: "e";
 				action: STATE_SET "default" 0.0;
 				transition: SINUSOIDAL 0.4;
-				target: "event";
+				target: "over";
+			}
+			program {
+				name: "fade_in";
+				signal: "show";
+				source: "e";
+				action: STATE_SET "visible" 0.0;
+				transition: DECELERATE 0.3;
+				target: "over_clip";
+			}
+			program {
+				name: "fade_out";
+				signal: "hide";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				transition: ACCELERATE 0.1;
+				target: "over_clip";
 			}
 		}
 
