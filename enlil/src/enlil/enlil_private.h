@@ -1,13 +1,17 @@
 #ifndef  ENLIL_PRIVATE_INC
 #define  ENLIL_PRIVATE_INC
 
-#include "Enlil.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #ifdef EFL_HAVE_POSIX_THREADS
 # include <pthread.h>
 #endif
 
 #include <errno.h>
+
+#include "Enlil.h"
 
 #include "../define.h"
 
