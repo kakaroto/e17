@@ -208,7 +208,7 @@ Inwin *inwin_library_delete_new(Enlil_Data *enlil_data)
 	inwin->type = INWIN_LIBRARY_DELETE;
 
 	ly = elm_layout_add(enlil_data->win->win);
-	elm_layout_file_set(ly, THEME, "win/library/delete");
+	elm_layout_file_set(ly, Theme, "win/library/delete");
 	Evas_Object *edje = elm_layout_edje_get(ly);
 	evas_object_show(ly);
 
@@ -248,7 +248,7 @@ Inwin *inwin_tag_new_new(Inwin_Del del_cb, void *data, Eina_List *photos)
 	inwin->photos = photos;
 
 	ly = elm_layout_add(enlil_data->win->win);
-	elm_layout_file_set(ly, THEME, "win/tag/new");
+	elm_layout_file_set(ly, Theme, "win/tag/new");
 	Evas_Object *edje = elm_layout_edje_get(ly);
 	evas_object_show(ly);
 
@@ -284,7 +284,7 @@ Inwin *inwin_album_tag_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
 	inwin->album = album;
 
 	ly = elm_layout_add(enlil_data->win->win);
-	elm_layout_file_set(ly, THEME, "win/album/tag/new");
+	elm_layout_file_set(ly, Theme, "win/album/tag/new");
 	Evas_Object *edje = elm_layout_edje_get(ly);
 	evas_object_show(ly);
 
@@ -320,7 +320,7 @@ Inwin *inwin_collection_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album
 	inwin->album = album;
 
 	ly = elm_layout_add(enlil_data->win->win);
-	elm_layout_file_set(ly, THEME, "win/album/collection/new");
+	elm_layout_file_set(ly, Theme, "win/album/collection/new");
 	Evas_Object *edje = elm_layout_edje_get(ly);
 	evas_object_show(ly);
 
@@ -350,7 +350,7 @@ Inwin *inwin_album_new_new(Inwin_Del del_cb, void *data)
 	inwin->data = data;
 
 	ly = elm_layout_add(enlil_data->win->win);
-	elm_layout_file_set(ly, THEME, "win/album/new");
+	elm_layout_file_set(ly, Theme, "win/album/new");
 	Evas_Object *edje = elm_layout_edje_get(ly);
 	evas_object_show(ly);
 
@@ -389,7 +389,7 @@ Inwin *inwin_photo_delete_new(Evas_Object *win, Inwin_Del del_cb, void *data, Ei
 	inwin->photos = photos;
 
 	ly = elm_layout_add(enlil_data->win->win);
-	elm_layout_file_set(ly, THEME, "win/photo/delete");
+	elm_layout_file_set(ly, Theme, "win/photo/delete");
 	Evas_Object *edje = elm_layout_edje_get(ly);
 	evas_object_show(ly);
 
@@ -434,7 +434,7 @@ Inwin *inwin_album_delete_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
 	inwin->album = album;
 
 	ly = elm_layout_add(enlil_data->win->win);
-	elm_layout_file_set(ly, THEME, "win/album/delete");
+	elm_layout_file_set(ly, Theme, "win/album/delete");
 	Evas_Object *edje = elm_layout_edje_get(ly);
 	evas_object_show(ly);
 
@@ -471,7 +471,7 @@ Inwin *inwin_album_rename_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
 	inwin->album = album;
 
 	ly = elm_layout_add(enlil_data->win->win);
-	elm_layout_file_set(ly, THEME, "win/album/rename");
+	elm_layout_file_set(ly, Theme, "win/album/rename");
 	Evas_Object *edje = elm_layout_edje_get(ly);
 	evas_object_show(ly);
 
@@ -618,7 +618,7 @@ Inwin *inwin_preferences_new()
 	evas_object_show(inwin->inwin);
 
 	ly = elm_layout_add(enlil_data->win->win);
-	elm_layout_file_set(ly, THEME, "win/preferences");
+	elm_layout_file_set(ly, Theme, "win/preferences");
 	Evas_Object *edje = elm_layout_edje_get(ly);
 	evas_object_show(ly);
 

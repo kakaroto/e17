@@ -6,7 +6,7 @@
 #include "enlil_data.h"
 
 
-#define THEME PACKAGE_DATA_DIR"/themes/default.edj"
+extern const char *Theme;
 
 //slideshow
 void slideshow_show();

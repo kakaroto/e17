@@ -12,7 +12,7 @@ static Evas_Object *_map_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void
 Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
 {
    char buf[PATH_MAX];
-   Evas_Object *vbox, *bx, *bt, *main_bx, *lbl, *ly, *fr, *ic, *o, *entry, *sc, *map, *rect, *edje;
+   Evas_Object *bx, *bt, *lbl, *ly, *ic, *o, *entry, *sc, *map, *rect, *edje;
    Enlil_Geocaching_Log *log;
    Eina_List *l;
    char *s = NULL, *s2;
@@ -23,7 +23,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    panel_geocaching->geocaching = geocaching;
 
    ly = elm_layout_add(obj);
-   elm_layout_file_set(ly, THEME, "panel/geocaching");
+   elm_layout_file_set(ly, Theme, "panel/geocaching");
    edje = elm_layout_edje_get(ly);
    evas_object_show(ly);
 
@@ -34,7 +34,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
 
    ic =  edje_object_part_external_object_get(edje, "object.geocaching.panel.icon");
    snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_gp_type_get(geocaching));
-   elm_icon_file_set(ic, THEME, buf);
+   elm_icon_file_set(ic, Theme, buf);
 
    snprintf(buf, PATH_MAX, "<b><font_size=14>%s</font_size></b>", enlil_geocaching_url_name_get(geocaching));
    lbl = edje_object_part_external_object_get(edje, "object.geocaching.panel.title");
@@ -45,7 +45,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
    elm_label_label_set(lbl, buf);
 
    ic = edje_object_part_external_object_get(edje, "object.geocaching.panel.icon2");
-   elm_icon_file_set(ic, THEME, "icons/geocaching/geocaching");
+   elm_icon_file_set(ic, Theme, "icons/geocaching/geocaching");
 
    //header
    snprintf(buf, PATH_MAX, "terrain,%s", enlil_geocaching_gp_terrain_get(geocaching));
@@ -176,7 +176,7 @@ Panel_Geocaching *panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geoca
 
 	o = elm_icon_add(obj);
 	snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_log_type_get(log));
-	elm_icon_file_set(o, THEME, buf);
+	elm_icon_file_set(o, Theme, buf);
 	elm_bubble_icon_set(bb, o);
 	evas_object_show(o);
 	evas_object_size_hint_weight_set(bb, EVAS_HINT_EXPAND, 0.0);
@@ -285,7 +285,7 @@ static Evas_Object *_map_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void
    else
      snprintf(buf, PATH_MAX, "icons/geocaching/%s", enlil_geocaching_gp_type_get(gp));
 
-   elm_icon_file_set(icon, THEME, buf);
+   elm_icon_file_set(icon, Theme, buf);
 
    evas_object_show(icon);
    return icon;	

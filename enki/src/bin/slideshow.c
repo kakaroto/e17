@@ -144,7 +144,7 @@ _init_slideshow()
 
 	//
 	layout = elm_layout_add(win);
-	elm_layout_file_set(layout, THEME, "slideshow/fullscreen");
+	elm_layout_file_set(layout, Theme, "slideshow/fullscreen");
 	evas_object_size_hint_weight_set(layout, -1.0, -1.0);
 	evas_object_size_hint_align_set(layout, -1.0, -1.0);
 	elm_win_resize_object_add(win, layout);

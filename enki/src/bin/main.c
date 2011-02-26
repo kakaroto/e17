@@ -3,6 +3,7 @@
 #include "slideshow.h"
 
 int APP_LOG_DOMAIN;
+const char *Theme;
 
 const char *media_player = NULL;
 Enlil_Data *enlil_data = NULL;
@@ -24,6 +25,8 @@ static const Ecore_Getopt options = {
 				ECORE_GETOPT_COPYRIGHT('R', "copyright"),
 				ECORE_GETOPT_LICENSE('L', "license"),
 				ECORE_GETOPT_STORE_STR('l', "library", "Specify the location of a library"),
+				ECORE_GETOPT_STORE_STR('t', "theme", "Specify the edje theme"),
+				ECORE_GETOPT_STORE_STR('s', "size", "Specify the window size"),
 				ECORE_GETOPT_HELP('h', "help"),
 				ECORE_GETOPT_SENTINEL
 		}
@@ -210,13 +213,15 @@ int elm_main(int argc, char **argv)
 	Evas_Object *panels, *ly, *edje;
 	unsigned char exit_option = 0;
 	char *library_path = NULL;
+	int w = 1024, h=768;
+	char *size = NULL;
+	char *theme = NULL;
 
 	enlil_init();
 	ecore_file_init();
 
-	elm_theme_extension_add(NULL, THEME);
-
 	LOG_DOMAIN = eina_log_domain_register("Enki", "\033[34;1m");
+	Theme = THEME_BIG;
 
 	//ecore_getopt
 	Ecore_Getopt_Value values[] = {
@@ -224,6 +229,8 @@ int elm_main(int argc, char **argv)
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
 			ECORE_GETOPT_VALUE_STR(library_path),
+			ECORE_GETOPT_VALUE_STR(theme),
+			ECORE_GETOPT_VALUE_STR(size),
 			ECORE_GETOPT_VALUE_BOOL(exit_option),
 	};
 	ecore_app_args_set(argc, (const char **) argv);
@@ -241,6 +248,34 @@ int elm_main(int argc, char **argv)
 		return 0;
 	//
 
+	//window size
+	if(size && !theme)
+	{
+		//TODO: check if the string is valid (not '123321' or 'x12' or 'oueox23'...)
+		char *x = strchr(size, 'x');
+		if(x)
+		{
+			*x = '\0';
+			w = atoi(size);
+			h = atoi(x+1);
+
+			if(w<1000 || h<700)
+			{
+				Theme = THEME_SMALL;
+				LOG_INFO("Use small theme "THEME_SMALL);
+			}
+		}
+	}
+	//
+
+	if(theme)
+	{
+		Theme = theme;
+		LOG_INFO("Use custom theme %s", theme);
+	}
+
+	elm_theme_extension_add(NULL, Theme);
+
 	//
 	enlil_data = calloc(1, sizeof(Enlil_Data));
 	//
@@ -252,7 +287,7 @@ int elm_main(int argc, char **argv)
 
 	//
 	ly = elm_layout_add(win->win);
-	elm_layout_file_set(ly, THEME, "main");
+	elm_layout_file_set(ly, Theme, "main");
 	evas_object_size_hint_weight_set(ly, -1.0, -1.0);
 	evas_object_size_hint_align_set(ly, -1.0, -1.0);
 	elm_win_resize_object_add(win->win, ly);
@@ -277,7 +312,7 @@ int elm_main(int argc, char **argv)
 
 	//
 	ly = elm_layout_add(win->win);
-	elm_layout_file_set(ly, THEME, "main_page");
+	elm_layout_file_set(ly, Theme, "main_page");
 	evas_object_size_hint_weight_set(ly, -1.0, -1.0);
 	evas_object_size_hint_align_set(ly, -1.0, -1.0);
 	evas_object_show(ly);
@@ -348,7 +383,7 @@ int elm_main(int argc, char **argv)
 	if(library_path)
 		library_set(library_path);
 
-	evas_object_resize(win->win, 1024, 768);
+	evas_object_resize(win->win, w, h);
 	evas_object_show(win->win);
 
 	elm_run();

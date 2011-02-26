@@ -193,15 +193,15 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 	if(lib->is_new_library)
 	{
 		Evas_Object *o = elm_layout_add(obj);
-		elm_layout_file_set(o, THEME, "photo_library");
+		elm_layout_file_set(o, Theme, "photo_library");
 
 		Evas_Object *icon = elm_icon_add(obj);
-		elm_icon_file_set(icon, THEME, "icons/plus");
+		elm_icon_file_set(icon, Theme, "icons/plus");
 		elm_icon_fill_outside_set(icon, EINA_TRUE);
 		elm_layout_content_set(o, "object.photo.front.swallow" , icon);
 
 		icon = elm_icon_add(obj);
-		elm_icon_file_set(icon, THEME, "icons/folder");
+		elm_icon_file_set(icon, Theme, "icons/folder");
 		elm_icon_fill_outside_set(icon, EINA_TRUE);
 		elm_layout_content_set(o, "object.photo.back.swallow" , icon);
 
@@ -210,7 +210,7 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 
 
 	Evas_Object *o = elm_layout_add(obj);
-	elm_layout_file_set(o, THEME, "photo_library");
+	elm_layout_file_set(o, Theme, "photo_library");
 
 	//
 	Enlil_Photo *photo1 = enlil_library_photo_get(lib->path,1);
@@ -248,19 +248,19 @@ static Evas_Object* _library_icon_get(void *data, Evas_Object *obj, const char *
 
 		if(!s1)
 		{
-			s1 = THEME;
+			s1 = Theme;
 			g1 = "libraries/icon/nophoto";
 		}
 		if(!s2)
 		{
-			s2 = THEME;
+			s2 = Theme;
 			g2 = "libraries/icon/nophoto";
 		}
 	}
 	else
 	{
-		s1 = THEME;
-		s2 = THEME;
+		s1 = Theme;
+		s2 = Theme;
 		g1 = "libraries/icon/nophoto";
 		g2 = "libraries/icon/nophoto";
 	}

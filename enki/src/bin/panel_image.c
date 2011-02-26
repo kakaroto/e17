@@ -82,7 +82,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 	panel_image->photo = photo;
 
 	main_obj = edje_object_add(evas_object_evas_get(obj));
-	edje_object_file_set(main_obj, THEME, "panel/image");
+	edje_object_file_set(main_obj, Theme, "panel/image");
 	evas_object_show(main_obj);
 
 	//
@@ -177,7 +177,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 	Evas_Object *ic;
 #define ITEM(LABEL, ICON, CB) \
 		ic = elm_icon_add(panel_image->tb); \
-		elm_icon_file_set(ic, THEME, ICON); \
+		elm_icon_file_set(ic, Theme, ICON); \
 		evas_object_show(ic); \
 		elm_list_item_append(panel_image->tb, D_(LABEL), NULL, ic, CB, panel_image);
 
@@ -223,7 +223,7 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 	Evas_Object *slideshow = slideshow_object_add(obj);
 	panel_image->slideshow.slideshow = slideshow;
 	evas_object_size_hint_min_set(slideshow, 100, 80);
-	slideshow_object_file_set(slideshow, THEME, "slideshow");
+	slideshow_object_file_set(slideshow, Theme, "slideshow");
 	evas_object_smart_callback_add(slideshow, "selected", _slideshow_selected_cb, panel_image);
 	evas_object_show(slideshow);
 	edje_object_part_swallow(main_obj, "object.panel.image.slideshow", slideshow);
@@ -1337,7 +1337,7 @@ static Evas_Object *_slideshow_icon_get(const void *data, Evas_Object *obj)
 	Enlil_Photo_Data *enlil_photo_data = enlil_photo_user_data_get(photo);
 
 	Evas_Object *o = photo_object_add(obj);
-	photo_object_theme_file_set(o, THEME, "photo_simple");
+	photo_object_theme_file_set(o, Theme, "photo_simple");
 	photo_object_fill_set(o, EINA_TRUE);
 
 	if(enlil_photo_data->cant_create_thumb == 1)

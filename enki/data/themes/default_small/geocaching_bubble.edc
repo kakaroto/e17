@@ -1,0 +1,156 @@
+
+
+
+group {
+    name: "bubble/geocaching";
+    max: 1000 200;
+    parts {
+    	
+		alias: "object.geocaching.bubble.date_hidden" 		"header[2]:object.geocaching.panel.date_hidden";
+		alias: "object.geocaching.bubble.cache_size" 		"header[3]:object.geocaching.panel.cache_size";
+        part {
+            name : "object.geocaching.bubble.title";
+            type : EXTERNAL;
+            source: "elm/label";
+            description {
+                state : "default" 0.0;
+                fixed : 1 1;
+                align: 0.0 0.0;
+                rel1.offset: 20 5;
+                rel2.relative : 0.0 0.0;
+                rel2.offset: 20 5;
+            }
+        }
+        part {
+            name : "object.geocaching.bubble.owner";
+            type : EXTERNAL;
+            source: "elm/label";
+            description {
+                state : "default" 0.0;
+                fixed : 1 1;
+                align: 0.0 0.0;
+                rel1.to_y : "object.geocaching.bubble.title";
+                rel1.relative : 0.0 1.0;
+                rel1.offset: 20 5;
+                rel2.to_y : "object.geocaching.bubble.title";
+                rel2.relative : 0.0 1.0;
+            }
+        }
+        part {
+            name : "object.geocaching.bubble.open";
+            type : EXTERNAL;
+            source: "elm/button";
+            description {
+                state : "default" 0.0;
+                fixed : 1 1;
+                align: 1.0 0.0;
+                rel1.relative: 1.0 0.05;
+                rel1.offset: -5 0;
+                rel2.relative : 1.0 0.05;
+                rel2.offset: -5 0;
+            }
+        }
+        part {
+            name : "header";
+            type : TABLE;
+            description {
+                state : "default" 0.0;
+                fixed : 1 1;
+                align: 0.0 0.0;
+                rel1.to_y : "object.geocaching.bubble.owner";
+                rel1.relative : 0.0 1.0;
+                rel1.offset: 10 5;
+                rel2.relative : 1.0 1.0;
+                rel2.offset: 0 -5;
+                
+                table {
+                    homogeneous: TABLE;
+                    padding: 0 0;
+                    align: 0.5 0.5;
+                }
+            }
+            table {
+            	items {
+            		item {
+                		type: GROUP;
+                    	source: "header/difficulty";
+                    	position: 0 0; 
+                    	weight: 1 1;
+                    	align: 0.0 0.5;
+                	}
+                	item {
+                		type: GROUP;
+                    	source: "header/terrain";
+                    	position: 1 0; 
+                    	weight: 1 1;
+                    	align: 0.0 0.5;
+                	}
+                	item {
+                		type: GROUP;
+                    	source: "header/date_hidden";
+                    	position: 0 1;
+                    	weight: 1 1;
+                    	align: 0.0 0.5; 
+                	}
+                	item {
+                		type: GROUP;
+                    	source: "header/cache_size";
+                    	position: 0 2; 
+                    	weight: 1 1;
+                    	align: 0.0 0.5;
+                	}
+            	}
+            }
+        }
+        part {
+            name : "vertical_line";
+            type : RECT;
+            description {
+                state : "default" 0.0;
+                color: 0 0 0 255;
+                align: 1.0 0.0;
+                rel1.relative: 1.0 0.1;
+                rel1.offset: 0 0;
+                rel2.relative : 1.0 0.9;
+                rel2.offset: 0 0;
+            }
+        }
+    }
+    programs {
+    	//wrap stars signals
+		#define wrap_stars_signal(type, table, num) 		\
+		program { 							 				\
+    		name: type" "num;								\
+    		signal: type","num;								\
+    		action: SIGNAL_EMIT "header["table"]:"num ""; 	\
+    	}	
+    
+    	wrap_stars_signal("terrain", "1", "0")
+    	wrap_stars_signal("terrain", "1", "0.5")
+    	wrap_stars_signal("terrain", "1", "1")
+    	wrap_stars_signal("terrain", "1", "1.5")
+    	wrap_stars_signal("terrain", "1", "2")
+    	wrap_stars_signal("terrain", "1", "2.5")
+    	wrap_stars_signal("terrain", "1", "3")
+    	wrap_stars_signal("terrain", "1", "3.5")
+    	wrap_stars_signal("terrain", "1", "4")
+    	wrap_stars_signal("terrain", "1", "4.5")
+    	wrap_stars_signal("terrain", "1", "5")
+    	
+    	wrap_stars_signal("difficulty", "0", "0")
+    	wrap_stars_signal("difficulty", "0", "0.5")
+    	wrap_stars_signal("difficulty", "0", "1")
+    	wrap_stars_signal("difficulty", "0", "1.5")
+    	wrap_stars_signal("difficulty", "0", "2")
+    	wrap_stars_signal("difficulty", "0", "2.5")
+    	wrap_stars_signal("difficulty", "0", "3")
+    	wrap_stars_signal("difficulty", "0", "3.5")
+    	wrap_stars_signal("difficulty", "0", "4")
+    	wrap_stars_signal("difficulty", "0", "4.5")
+    	wrap_stars_signal("difficulty", "0", "5")
+
+    	//
+    }
+    
+}
+

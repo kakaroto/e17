@@ -1,0 +1,109 @@
+
+#define transfers_signal(_pre, _signal, _source, _container, _content) 		\
+	program {															\
+		name: _pre""_signal;													\
+		signal: _signal;												\
+		source: _source;												\
+		action: SIGNAL_EMIT _container"["_content"]:"_signal _source;	\
+	}
+
+#define transfers_signal2(_pre, _signal, _source, _container) 		\
+	program {															\
+		name: _pre""_signal;													\
+		signal: _signal;												\
+		source: _source;												\
+		action: SIGNAL_EMIT _container":"_signal _source;	\
+	}
+	
+#define list(_name) 								\
+group { 											\
+		name: _name; 								\
+		parts {										\
+		part {										\
+            name: _name; 							\
+            type: EXTERNAL;							\
+            source: "elm/list";						\
+            description {							\
+                state : "default" 0.0;				\
+            }										\
+        } 											\
+        } 											\
+   }
+   
+#define gengrid(_name) 								\
+group { 											\
+		name: _name; 								\
+		parts {										\
+		part {										\
+            name: _name; 							\
+            type: EXTERNAL;							\
+            source: "elm/gengrid";						\
+            description {							\
+                state : "default" 0.0;				\
+            }										\
+        } 											\
+        } 											\
+   }
+   
+   
+#define spinner(_name, _label_format, _min, _max, _step, _value)\
+group { 											\
+		name: _name; 								\
+		parts {										\
+		part {										\
+            name: _name; 							\
+            type: EXTERNAL;							\
+            source: "elm/spinner";					\
+            description {							\
+                state : "default" 0.0;				\
+                params {							\
+                	string: "label format" _label_format; \
+                	double: "min" _min;				\
+                	double: "max" _max;				\
+                	double: "step" _step;			\
+                	double: "value" _value; 		\
+                }									\
+            }										\
+        } 											\
+        } 											\
+   }
+ 
+  
+#define hoversel(_name, _label)\
+group { 											\
+		name: _name; 								\
+		parts {										\
+		part {										\
+            name: _name; 							\
+            type: EXTERNAL;							\
+            source: "elm/hoversel";					\
+            description {							\
+                state : "default" 0.0;				\
+                params {							\
+                	string: "label" _label; 		\
+                }									\
+            }										\
+        } 											\
+        } 											\
+   }     
+   
+#define button(_name, text, icon) 			\
+	group { 								\
+		name: _name; 						\
+		parts {								\
+		part {  							\
+        	name: _name;					\
+	    	type: EXTERNAL;					\
+	    	source: "elm/button"; 			\
+	    	description {					\
+	       		params {					\
+	          		string: "label" text; 	\
+	          		string: "icon" icon; 	\
+	       		}							\
+	    	}								\
+	    }									\
+	    }									\
+    }
+    
+ 
+ 

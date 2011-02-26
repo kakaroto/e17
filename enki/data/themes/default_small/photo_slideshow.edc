@@ -1,0 +1,67 @@
+group {
+    name: "photo/slideshow";
+    data {
+        item: left_marge 0;
+        item: right_marge 0;
+        item: top_marge 0;
+        item: bottom_marge 0;
+    }
+    /*lua_script {
+    function message(ed, typ, id, ...)
+    local custom
+    print 'custom'
+    custom = ed.shadow:custom_state ("default", 0.0)
+    custom.rel1 = {0.3, 0.3}
+    custom.rel2 = {0.6, 0.6}
+    ed.shadow.state = {'custom', 0.0}
+    end
+    }*/
+script {
+    public message(Msg_Type:type, id, ...) {
+        if( (type==MSG_INT_SET) && (id==0) )
+        {
+            new off1_x;
+            new off1_y;
+            new off2_x;
+            new off2_y;
+
+            custom_state(PART:"object.photo", "default", 0.0);
+
+            off1_x = getarg(2);
+            off1_y = getarg(3);
+            off2_x = getarg(4);
+            off2_y = getarg(5);
+            set_state_val(PART:"object.photo", STATE_REL1_OFFSET, off1_x + 5, off1_y + 5);
+            set_state_val(PART:"object.photo", STATE_REL2_OFFSET, off2_x - 5, off2_y - 5);
+            set_state(PART:"object.photo", "custom", 0.0);
+        }
+    }
+}
+parts {
+    part {
+        name: "object.whole";
+        mouse_events: 1;
+        type: RECT;
+        description {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 0;
+        }
+        description {
+            state: "select" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 100;
+        }
+    }
+    part {
+        name: "object.photo";
+        type: IMAGE;
+        description {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+            image.scale_hint: STATIC;
+        }
+    }
+}
+}

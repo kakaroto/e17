@@ -69,6 +69,7 @@ src/bin/Makefile
 data/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
+data/themes/default_small/Makefile
 ])
 
 

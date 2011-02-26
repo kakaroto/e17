@@ -494,6 +494,6 @@ static void _library_delete_cb(void *data, Evas_Object *obj, void *event_info)
 	if(!enlil_data->library)
 		return ;
 
-	Inwin *inwin = inwin_library_delete_new(enlil_data);
+	/*Inwin *inwin = */inwin_library_delete_new(enlil_data);
 }
 

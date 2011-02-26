@@ -1,0 +1,292 @@
+
+button("bt_home", "home", "");
+button("bt_albums", "Albums", "");
+button("bt_photos", "Photos", "");
+button("bt_map", "Map", "");
+
+group {
+	name: "main_page";
+	
+	parts {
+		//libraries
+    	alias: "object.main_menu.list_libraries" 	"main_panel:menu[libraries]:object.main_menu.libraries";
+    	//
+    	
+    	//map
+    	alias: "object.map.map"						"main_panel:map[map]:object.map.map";
+    	alias: "object.map.display_photos"			"main_panel:map[map]:object.map.display_photos";
+    	alias: "object.map.display_geocaching"		"main_panel:map[map]:object.map.display_geocaching";
+    	alias: "object.map.zoom"					"main_panel:map[map]:object.map.zoom";
+    	alias: "object.map.rect_zoom"				"main_panel:map[map]:object.map.rect_zoom";
+    	//
+    	
+    	//
+    	alias: "object.photos.swallow"					"main_panel:object.photos.swallow";
+    	alias: "object.photo_menu.tools.reload_thumb"	"main_panel:object.photo_menu.tools.reload_thumb";
+    	alias: "object.photo_menu.tools.reload_exifs"	"main_panel:object.photo_menu.tools.reload_exifs";
+    	alias: "object.photo_menu.tools.reload_iptcs"	"main_panel:object.photo_menu.tools.reload_iptcs";
+    	alias: "object.photo_menu.delete"				"main_panel:object.photo_menu.delete";
+    	alias: "object.photo_menu.album.move"			"main_panel:object.photo_menu.album.move";
+    	alias: "object.photo_menu.library.photo.front"	"main_panel:object.photo_menu.library.photo.front";
+    	alias: "object.photo_menu.library.photo.back"	"main_panel:object.photo_menu.library.photo.back";
+    	alias: "object.photo_menu.wallpaper.application" "main_panel:object.photo_menu.wallpaper.application";
+    	alias: "object.photo_menu.tags_remove.list" 	"main_panel:object.photo_menu.tags_remove.list";
+    	alias: "object.photo_menu.tags_add.list" 		"main_panel:object.photo_menu.tags_add.list";
+    	//
+    	
+    	//list left
+    	alias: "object.list.albums" 				"albums:object.list.albums";
+    	alias: "object.list.collections" 			"albums:object.list.collections";
+    	alias: "object.list.tags" 					"albums:object.list.tags";
+    	alias: "object.library.delete" 				"home:object.library.delete";
+    	//
+    	
+    	//list left menu
+    	alias: "object.main_menu.bt_slideshow" 		"home:menu:object.main_menu.bt_slideshow";
+    	alias: "object.main_menu.bt_new_album" 		"home:menu:object.main_menu.bt_new_album";
+    	alias: "object.main_menu.bt_import_photos" 	"home:menu:object.main_menu.bt_import_photos";
+    	alias: "object.main_menu.bt_remove_wall" 	"home:menu:object.main_menu.bt_remove_wall";
+    	alias: "object.main_menu.bt_import_gpx" 	"home:menu:object.main_menu.bt_import_gpx";
+    	alias: "object.main_menu.bt_preference" 	"home:menu:object.main_menu.bt_preference";
+    	alias: "object.main_menu.bt_close" 			"home:menu:object.main_menu.bt_close";
+    	//
+    	
+		part {
+			name: "main_panel";
+			type: GROUP;
+			source: "main_panel";
+			description {
+				state: "default" 0.0;
+				rel2.to_y: "menu";
+				rel2.relative: 1.0 0.0;
+			}
+			description {
+				state: "home_show" 0.0;
+				inherit: "default" 0.0;
+				rel1.relative: 1.0 0.0;
+				rel1.offset: 50 0;
+				rel2.to_y: "menu";
+				rel2.offset: 50 0;
+				rel2.relative: 2.0 0.0;
+			}
+			description {
+				state: "albums_show" 0.0;
+				inherit: "home_show" 0.0;
+			}
+		}
+		part {
+			name: "home";
+			type: GROUP;
+			source: "home";
+			description {
+				state: "default" 0.0;
+				rel1.relative: -1.0 0.0;
+				rel1.offset: -50 0;
+				rel2.to_y: "menu";
+				rel2.relative: 0.0 0.0;
+				rel2.offset: -50 0;
+			}
+			description {
+				state: "home_show" 0.0;
+				inherit: "default" 0.0;
+				rel1.relative: 0.0 0.0;
+				rel1.offset: 0 0;
+				rel2.to_y: "menu";
+				rel2.relative: 1.0 0.0;
+				rel2.offset: 0 0;
+			}
+			description {
+				state: "albums_show" 0.0;
+				inherit: "default" 0.0;
+			}
+		}
+		part {
+			name: "albums";
+			type: GROUP;
+			source: "albums";
+			description {
+				state: "default" 0.0;
+				rel1.relative: -1.0 0.0;
+				rel1.offset: -50 0;
+				rel2.to_y: "menu";
+				rel2.relative: 0.0 1.0;
+				rel2.offset: -50 0;
+			}
+			description {
+				state: "albums_show" 0.0;
+				inherit: "default" 0.0;
+				rel1.relative: 0.0 0.0;
+				rel1.offset: 0 0;
+				rel2.to_y: "menu";
+				rel2.relative: 1.0 1.0;
+				rel2.offset: 0 0;
+			}
+			description {
+				state: "home_show" 0.0;
+				inherit: "default" 0.0;
+			}
+		}
+		
+		part {
+			name: "menu";
+			type: BOX;
+			description {
+				state: "default" 0.0;
+				rel1.relative: 0.0 1.0;
+				rel2.relative: 1.0 1.0;
+				align: 0.5 0.0;
+				fixed: 1 1;
+				box {
+					layout: "horizontal";
+				}
+			}
+			box {
+				items {
+					item {
+						source: "bt_home";
+						name: "home";
+						align: -1.0 1.0;
+						weight: 1 1;
+					}
+					item {
+						source: "bt_albums";
+						name: "albums";
+						align: -1.0 1.0;
+						weight: 1 1;
+					}
+					item {
+						source: "bt_photos";
+						name: "photos";
+						align: -1.0 1.0;
+						weight: 1 1;
+					}
+					item {
+						source: "bt_map";
+						name: "map";
+						align: -1.0 1.0;
+						weight: 1 1;
+					}
+				}
+			}
+		}
+	}
+	
+	programs {
+		//main_panel signals
+		transfers_signal2("", "main_panel,menu,show", "", "main_panel")
+		transfers_signal2("", "main_panel,photos,show", "", "main_panel")
+		transfers_signal2("", "main_panel,map,show", "", "main_panel")
+		//
+		
+		//list_left signals
+		//transfers_signal("1", "main_panel,menu,show", "", "panes", "left")
+		//transfers_signal("1", "main_panel,photos,show", "", "panes", "left")
+		//transfers_signal("1", "main_panel,map,show", "", "panes", "left")
+		//transfers_signal2("", "list_left,albums,show", "", "albums")
+		//transfers_signal2("", "list_left,collections,show", "", "albums")
+		//transfers_signal2("", "list_left,tags,show", "", "albums")
+		//
+		
+		//photo menu
+		transfers_signal2("", "photo,menu,show", "", "main_panel")
+		transfers_signal2("", "photo,menu,hide", "", "main_panel")
+		//
+		
+		//
+		program {
+			name: "map_show";
+			signal: "clicked";
+			source: "menu\\[map\\]:bt_map";
+			after: "map_show_2";
+			after: "map_show_3";
+		}
+		program {
+			name: "map_show_2";
+			action: STATE_SET "default" 0.0;
+			target: "home";
+			target: "main_panel";
+			target: "albums";
+			transition: SINUSOIDAL 0.5;
+		}
+		program {
+			name: "map_show_3";
+			action: SIGNAL_EMIT "main_panel,map,show" "";
+		}
+		//
+		
+		//
+		program {
+			name: "photos_show";
+			signal: "clicked";
+			source: "menu\\[photos\\]:bt_photos";
+			after: "photos_show_2";
+			after: "photos_show_3";
+		}
+		program {
+			name: "photos_show_select_lib";
+			signal: "selected";
+			source: "main_panel:menu\\[libraries\\]:object.main_menu.libraries";
+			after: "photos_show_2";
+			after: "photos_show_3";
+		}
+		program {
+			name: "photos_show_2";
+			action: STATE_SET "default" 0.0;
+			target: "home";
+			target: "main_panel";
+			target: "albums";
+			transition: SINUSOIDAL 0.5;
+		}
+		program {
+			name: "photos_show_3";
+			action: SIGNAL_EMIT "main_panel,photos,show" "";
+		}
+		//
+		
+		
+		program {
+			name: "home_show";
+			signal: "clicked";
+			source: "menu\\[home\\]:bt_home";
+			action: STATE_SET "home_show" 0.0;
+			target: "home";
+			target: "main_panel";
+			target: "albums";
+			transition: SINUSOIDAL 0.5;
+		}
+		
+		
+		program {
+			name: "albums_show";
+			signal: "clicked";
+			source: "menu\\[albums\\]:bt_albums";
+			action: STATE_SET "albums_show" 0.0;
+			target: "home";
+			target: "main_panel";
+			target: "albums";
+			transition: SINUSOIDAL 0.5;
+		}
+		
+		//
+    	program {
+    		name: "select_library";
+    		signal: "clicked";
+    		source: "home:menu:bt_select_library";
+    		after: "select_library_2";
+    		after: "select_library_3";
+    	}
+    	program {
+			name: "select_library_2";
+			action: STATE_SET "default" 0.0;
+			target: "home";
+			target: "main_panel";
+			target: "albums";
+			transition: SINUSOIDAL 0.5;
+		}
+		program {
+			name: "select_library_3";
+			action: SIGNAL_EMIT "main_panel,menu,show" "";
+		}
+    	//
+	}
+}

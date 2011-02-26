@@ -188,7 +188,7 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
    Evas_Object *ly = elm_layout_add(obj);
-   elm_layout_file_set(ly, THEME, "album_header");
+   elm_layout_file_set(ly, Theme, "album_header");
    Evas_Object *o = elm_layout_edje_get(ly);
    edje_object_part_text_set(o, "object.text.album_name", enlil_album_name_get(album));
    evas_object_show(ly);
@@ -264,7 +264,7 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
    Evas_Object *ic = edje_object_add(evas_object_evas_get(obj));
    album_data->netsync.icon = ic;
    evas_object_show(ic);
-   edje_object_file_set(ic, THEME, "flickr/sync");
+   edje_object_file_set(ic, Theme, "flickr/sync");
    evas_object_size_hint_weight_set(ic, 1.0, 1.0);
    evas_object_size_hint_align_set(ic, 1.0, 0.0);
    evas_object_event_callback_add(ic, EVAS_CALLBACK_MOUSE_UP, _album_sync_flickr_cb, album);
@@ -285,7 +285,7 @@ static Evas_Object *_photo_icon_get(const void *data, Evas_Object *obj)
    List_Photo *enlil_photo = enlil_data->list_photo;
 
    Evas_Object *o = photo_object_add(obj);
-   photo_object_theme_file_set(o, THEME, "photo");
+   photo_object_theme_file_set(o, Theme, "photo");
 
    if(enlil_photo_data->cant_create_thumb == 1)
      return o;

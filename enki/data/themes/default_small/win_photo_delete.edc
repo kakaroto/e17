@@ -1,0 +1,91 @@
+
+group {
+	name: "win/photo/delete";
+	parts {
+	    part {
+			name: "title";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				min: 400 0;
+				align: 0.0 0.0;
+				rel1.offset: 5 5;
+				rel2.offset: -20 0;
+				params {
+					string: "label" "<title>Deleting a photo.</title>";
+				}
+			}
+		}
+		part {
+			name: "desc";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "title";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 20 10;
+				rel2.offset: -20 0;
+				rel2.relative: 0.0 0.0;
+				align: 0.0 0.0;
+				params {
+					string: "label" "Are you sure you wish to delete these photos ? ";
+				}
+			}
+		}
+		part {
+			name: "object.win.photo.delete.name";
+			type: EXTERNAL;
+			source: "elm/scrolled_entry";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "desc";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 20 10;
+				rel2.offset: -20 0;
+				min: 0 75;
+				align: 0.5 0.0;
+				fixed: 1 0;
+				params {
+					string: "label" "CURRENT NAME";
+					bool: "editable" 0;
+				}
+			}
+		}
+		part {
+			name: "object.win.photo.delete.cancel";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.to: "object.win.photo.delete.apply";
+				rel1.relative: 0.0 0.0;
+				rel2.to: "object.win.photo.delete.apply";
+				rel2.relative: 0.0 1.0;
+				align: 1.0 0.5;
+				params {
+					string: "label" "Cancel";
+				}
+			}
+		}
+		part {
+			name: "object.win.photo.delete.apply";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.to: "object.win.photo.delete.name";
+				rel1.offset: 0 10;
+				rel1.relative: 1.0 1.0;
+				rel2.to_y: "object.win.photo.delete.name";
+				rel2.relative: 1.0 1.0;
+				align: 1.0 1.0;
+				fixed: 1 1;
+				params {
+					string: "label" "Apply";
+				}
+			}
+		}
+	}
+}

@@ -298,7 +298,7 @@ static Evas_Object *_icon_get(const void *data, Evas_Object *obj)
             _import_thumb_done_cb, _import_thumb_error_cb, NULL);
 
     Evas_Object *o = photo_object_add(obj);
-    photo_object_theme_file_set(o, THEME, "photo/import");
+    photo_object_theme_file_set(o, Theme, "photo/import");
 
     if(s)
         photo_object_file_set(o, s , NULL);

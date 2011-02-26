@@ -1,0 +1,22 @@
+
+group {
+	name: "home";
+	
+	
+	parts {
+		part {
+            name: "menu";
+            type: GROUP;
+            source: "list_left_menu";
+            description {
+                state : "default" 0.0;
+            }
+        }
+		
+	}
+	
+	programs {
+		
+	}
+
+}

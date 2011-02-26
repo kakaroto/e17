@@ -1,0 +1,514 @@
+group {
+    name: "icons/logo";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                max: 64 64;
+                image.normal: "enki_logo.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/plus";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                max: 64 64;
+                image.normal: "plus.png";
+            }
+        }
+    }
+}
+group {
+    name: "icons/folder";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                max: 64 64;
+                image.normal: "folder.png";
+            }
+        }
+    }
+}
+group {
+    name: "icons/rotate/90/reverse";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "r_rotate.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/rotate/90";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "rotate.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/rotate/180";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "rotate.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/flip/horizontal";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "flip_horizontal.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/flip/vertical";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "flip_vertical.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/blur";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "blur.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/sharpen";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "sharpen.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/grayscale";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "grayscale.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/sepia";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "sepia.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/undo";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "undo.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/redo";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "r_rotate.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/1_1";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "1_1.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/fit";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "fit.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+group {
+    name: "icons/fill";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "fill.png";
+				aspect: 1 1;
+				aspect_preference: VERTICAL;
+				align: 1.0 0.5;
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/traditional";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/2.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Traditional Cache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                aspect: 1 1;
+                aspect_preference: BOTH;
+                image.normal: "geocaching/2.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Multi-cache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/3.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Unknown Cache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/8.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Virtual Cache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/4.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Letterbox Hybrid";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/5.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Earthcache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/earthcache.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Event Cache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/6.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Webcam Cache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/11.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Wherigo Cache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/1858.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Cache In Trash Out Event";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/13.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Mega-Event Cache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/mega.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Project APE Cache";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/ape_32.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/found";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/found.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/geocaching";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/geocaching.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Found it";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/icon_smile.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Didn't find it";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/icon_sad.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Write note";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/icon_note.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Needs Maintenance";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/icon_needsmaint.png";
+            }
+        }
+    }
+}
+
+group {
+    name: "icons/geocaching/Temporarily Disable Listing";
+    parts {
+        part {
+            name: "icon";
+            description {
+                state: "default" 0.0;
+                image.normal: "geocaching/icon_disabled.png";
+            }
+        }
+    }
+}

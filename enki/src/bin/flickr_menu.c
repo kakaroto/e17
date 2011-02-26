@@ -100,7 +100,7 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     elm_table_pack(tb, entry, 0, 1, 2, 1);
 
     img = elm_image_add(obj);
-    elm_image_file_set(img, THEME, "flickr/set_account_0");
+    elm_image_file_set(img, Theme, "flickr/set_account_0");
     evas_object_size_hint_weight_set(img, 1.0, 1.0);
     evas_object_size_hint_align_set(img, -1.0, -1.0);
     evas_object_show(img);
@@ -115,7 +115,7 @@ static void _account_set_cb(void *data, Evas_Object *obj, void *event_info)
     elm_table_pack(tb, lbl, 0, 3, 2, 1);
 
     img = elm_image_add(obj);
-    elm_image_file_set(img, THEME, "flickr/set_account_1");
+    elm_image_file_set(img, Theme, "flickr/set_account_1");
     evas_object_size_hint_weight_set(img, 0.0, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set(img, -1.0, -1.0);
     evas_object_show(img);

@@ -5,6 +5,7 @@
 
 static int APP_LOG_DOMAIN;
 static Enlil_Library *library;
+const char *Theme = PACKAGE_DATA_DIR"/themes/default.edj";
 
 static const Ecore_Getopt options = {
 		"Enki-Slideshow",

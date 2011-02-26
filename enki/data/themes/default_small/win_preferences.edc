@@ -1,0 +1,191 @@
+
+group {
+	name: "win/preferences";
+	parts {
+	    part {
+			name: "title";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.0;
+				rel1.offset: 5 5;
+				rel2.relative: 0.0 0.0;
+				rel2.offset: 0 0;
+				params {
+					string: "label" "<title>Preferences.</title>";
+				}
+			}
+		}
+		part {
+			name: "lbl";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "title";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 20 10;
+				rel2.offset: -20 0;
+				align: 0.5 0.0;
+				params {
+					string: "label" "Which video software do you wish to use to display videos: ";
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.video_software";
+			type: EXTERNAL;
+			source: "elm/scrolled_entry";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "lbl";
+				rel1.offset: 0 5;
+				rel1.relative: 0.05 1.0;
+				align: 0.5 0.0;
+				params {
+					bool: "single line" 1; 
+				}
+			}
+		}
+		
+		//libary
+		part {
+			name: "library_title";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.0;
+				rel1.to_y: "object.win.preferences.video_software";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 5 25;
+				rel2.relative: 0.0 0.0;
+				rel2.offset: -20 0;
+				params {
+					string: "label" "<title>Preferences of the library : </title>";
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.library.name";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				rel1.to: "library_title";
+				rel1.relative: 1.0 0.0;
+				rel1.offset: 5 0;
+				rel2.to_y: "library_title";
+				params {
+					string: "label" "No library selected";
+				}
+			}
+		}
+		part {
+			name: "lbl_netsync";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "library_title";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 20 10;
+				rel2.offset: -20 0;
+				align: 0.5 0.0;
+				params {
+					string: "label" "Network synchronisation account : ";
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.library.netsync.account";
+			type: EXTERNAL;
+			source: "elm/scrolled_entry";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "lbl_netsync";
+				rel1.offset: 0 5;
+				rel1.relative: 0.05 1.0;
+				align: 0.5 0.0;
+				params {
+					bool: "single line" 1; 
+				}
+			}
+		}
+		
+		part {
+			name: "library_no_selected";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "library_title";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 0 5;
+				rel2.to_y: "object.win.preferences.library.netsync.account";
+				rel2.relative: 1.0 1.0;
+				rel2.offset: 0 5;
+				color: 0 0 0 0;
+				visible: 0;
+			}
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				color: 0 0 0 150;
+				visible: 1;
+			}
+		}
+		//
+		
+		
+		part {
+			name: "object.win.preferences.cancel";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.to_x: "object.win.preferences.apply";
+				rel1.offset: 0 10;
+				rel1.relative: 9.0 1.0;
+				rel2.to_x: "object.win.preferences.apply";
+				rel2.relative: 0.0 1.0;
+				align: 1.0 1.0;
+				fixed: 1 0;
+				params {
+					string: "label" "Cancel";
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.apply";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.offset: 0 10;
+				rel1.relative: 1.0 1.0;
+				rel2.relative: 1.0 1.0;
+				align: 1.0 1.0;
+				fixed: 1 0;
+				params {
+					string: "label" "Apply";
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "library_selected";
+			signal: "win,preference,library,selected";
+			action: STATE_SET "default" 0.0;
+			target: "library_no_selected";
+		}
+		program {
+			name: "library_no_selected";
+			signal: "win,preference,library,no,selected";
+			action: STATE_SET "visible" 0.0;
+			target: "library_no_selected";
+		}
+	}
+}

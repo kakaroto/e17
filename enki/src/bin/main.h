@@ -16,13 +16,15 @@
 
 #define D_(s) gettext(s)
 
-#define THEME PACKAGE_DATA_DIR"/themes/default.edj"
+#define THEME_BIG PACKAGE_DATA_DIR"/themes/default.edj"
+#define THEME_SMALL PACKAGE_DATA_DIR"/themes/default_small.edj"
 
 extern int APP_LOG_DOMAIN;
 #define LOG_DOMAIN APP_LOG_DOMAIN
 
 extern const char *media_player;
 
+extern const char* Theme;
 
 
 #include "enlil_data.h"

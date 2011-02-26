@@ -1,0 +1,290 @@
+
+button("albums_bt_albums", "Albums", "");
+button("albums_bt_tags", "Tags", "");
+button("albums_bt_collections", "Collections", "");
+
+group {
+	name: "albums";
+	parts {
+			
+			
+		part {
+			name: "collections_clipper";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+			description {
+				state: "albums" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "collections" 0.0;
+				inherit: "default" 0.0;
+			}
+			description {
+				state: "tags" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "albums_done" 0.0;
+				inherit: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "collections_done" 0.0;
+				inherit: "default" 0.0;
+			}
+			description {
+				state: "tags_done" 0.0;
+				inherit: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+			}
+		}
+		part {
+			name: "object.list.collections";
+			type: EXTERNAL;
+			source: "elm/genlist";
+			clip_to: "collections_clipper";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "menu";
+				rel1.relative: 0.0 1.0;
+				rel2.relative: 1.0 1.0;
+				params {
+					string: "horizontal mode" "scroll";
+				}
+			}
+		}
+		
+		part {
+			name: "tags_clipper";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+			description {
+				state: "albums" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "collections" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "tags" 0.0;
+				inherit: "default" 0.0;
+			}
+			description {
+				state: "albums_done" 0.0;
+				inherit: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "collections_done" 0.0;
+				inherit: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "tags_done" 0.0;
+				inherit: "default" 0.0;
+			}
+		}
+		part {
+			name: "object.list.tags";
+			type: EXTERNAL;
+			source: "elm/genlist";
+			clip_to: "tags_clipper";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "menu";
+				rel1.relative: 0.0 1.0;
+				rel2.relative: 1.0 1.0;
+				params {
+					string: "horizontal mode" "scroll";
+				}
+			}
+		}
+		
+		part {
+			name: "albums_clipper";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+			description {
+				state: "albums" 0.0;
+				inherit: "default" 0.0;
+			}
+			description {
+				state: "collections" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "tags" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "albums_done" 0.0;
+				inherit: "default" 0.0;
+			}
+			description {
+				state: "collections_done" 0.0;
+				inherit: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+			}
+			description {
+				state: "tags_done" 0.0;
+				inherit: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+			}
+		}
+		part {
+			name: "object.list.albums";
+			type: EXTERNAL;
+			source: "elm/genlist";
+			clip_to: "albums_clipper";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "menu";
+				rel1.relative: 0.0 1.0;
+				rel2.relative: 1.0 1.0;
+				params {
+					string: "horizontal mode" "scroll";
+				}
+			}
+		}
+		
+		
+		part {
+			name: "menu";
+			type: BOX;
+			description {
+				state: "default" 0.0;
+				rel1.relative: 0.0 0.0;
+				rel2.relative: 1.0 0.0;
+				align: 0.5 0.0;
+				box {
+					layout: "horizontal";
+				}
+			}
+			box {
+				items {
+					item {
+						source: "albums_bt_albums";
+						align: -1.0 0.0;
+						weight: 1 1;
+					}
+					item {
+						source: "albums_bt_collections";
+						align: -1.0 0.0;
+						weight: 1 1;
+					}
+					item {
+						source: "albums_bt_tags";
+						align: -1.0 0.0;
+						weight: 1 1;
+					}
+				}
+			}
+		}
+	}
+	
+	programs {
+		program {
+			name: "show";
+			signal: "show";
+			after: "show_albums";
+		}
+		
+		program {
+			name: "show_albums";
+			signal: "list_left,albums,show";
+			action: STATE_SET "albums" 0.0;
+			target: "albums_clipper";
+			target: "collections_clipper";
+			target: "tags_clipper";
+			transition: ACCELERATE  0.5; 
+			after: "show_albums_done";
+		}
+		program {
+			name: "show_albums_done";
+			action: STATE_SET "albums_done" 0.0;
+			target: "albums_clipper";
+			target: "collections_clipper";
+			target: "tags_clipper";
+		}
+		program {
+			name: "show_collections";
+			signal: "list_left,collections,show";
+			action: STATE_SET "collections" 0.0;
+			target: "albums_clipper";
+			target: "collections_clipper";
+			target: "tags_clipper";
+			transition: ACCELERATE  0.5;
+			after: "show_collections_done";
+		}
+		program {
+			name: "show_collections_done";
+			action: STATE_SET "collections_done" 0.0;
+			target: "albums_clipper";
+			target: "collections_clipper";
+			target: "tags_clipper";
+		}
+		program {
+			name: "show_tags";
+			signal: "list_left,tags,show";
+			action: STATE_SET "tags" 0.0;
+			target: "albums_clipper";
+			target: "collections_clipper";
+			target: "tags_clipper";
+			transition: ACCELERATE 0.5;
+			after: "show_tags_done";
+		}
+		program {
+			name: "show_tags_done";
+			action: STATE_SET "tags_done" 0.0;
+			target: "albums_clipper";
+			target: "collections_clipper";
+			target: "tags_clipper";
+		}
+		
+		//
+		program {
+			name: "albums_show";
+			signal: "clicked";
+			source: "menu\\[0\\]:albums_bt_albums";
+			after: "show_albums";
+		}
+		
+		program {
+			name: "collections_show";
+			signal: "clicked";
+			source: "menu\\[1\\]:albums_bt_collections";
+			after: "show_collections";
+		}
+		
+		program {
+			name: "tags_show";
+			signal: "clicked";
+			source: "menu\\[2\\]:albums_bt_tags";
+			after: "show_tags";
+		}
+		//
+	}
+}

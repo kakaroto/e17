@@ -1,0 +1,147 @@
+
+
+   
+
+
+group {
+    name : "list_left_menu";
+    parts {
+        part {  							
+        	name: "bt_select_library";					
+	    	type: EXTERNAL;					
+	    	repeat_events: 0;				
+	    	source: "elm/button"; 			
+	    	description {		
+	    		align: 0.5 0;
+	    		fixed: 1 1;	
+	    		rel2.relative: 1.0 0.0;		
+	       		params {					
+	          		string: "label" "Select library";
+	       		}							
+	    	}								
+	    }	
+    	part {  							
+        	name: "object.main_menu.bt_slideshow";					
+	    	type: EXTERNAL;					
+	    	repeat_events: 0;				
+	    	source: "elm/button"; 			
+	    	description {		
+	    		align: 0.5 0;
+	    		fixed: 1 1;		
+	    		rel1.to: "bt_select_library";
+	    		rel1.relative: 0.0 1.0;
+	    		rel2.relative: 1.0 0.0;		
+	       		params {					
+	          		string: "label" "Slideshow"; 	
+	          		string: "icon" "edit"; 	
+	       		}							
+	    	}								
+	    }	
+	    part {  							
+        	name: "object.main_menu.bt_new_album";					
+	    	type: EXTERNAL;					
+	    	repeat_events: 0;				
+	    	source: "elm/button"; 			
+	    	description {		
+	    		align: 0.5 0;
+	    		fixed: 1 1;	
+	    		rel1.to: "object.main_menu.bt_slideshow";
+	    		rel1.relative: 0.0 1.0;
+	    		rel2.relative: 1.0 0.0;		
+	       		params {					
+	          		string: "label" "New Album"; 	
+	          		string: "icon" "folder"; 	
+	       		}							
+	    	}								
+	    }	
+	    part {  							
+        	name: "object.main_menu.bt_import_photos";					
+	    	type: EXTERNAL;					
+	    	repeat_events: 0;				
+	    	source: "elm/button"; 			
+	    	description {		
+	    		align: 0.5 0;
+	    		fixed: 1 1;	
+	    		rel1.to: "object.main_menu.bt_new_album";
+	    		rel1.relative: 0.0 1.0;
+	    		rel2.relative: 1.0 0.0;		
+	       		params {					
+	          		string: "label" "Import Photos"; 	
+	          		string: "icon"  "file"; 	
+	       		}							
+	    	}								
+	    }	
+	    part {  							
+        	name: "object.main_menu.bt_remove_wall";					
+	    	type: EXTERNAL;					
+	    	repeat_events: 0;				
+	    	source: "elm/button"; 			
+	    	description {		
+	    		align: 0.5 0;
+	    		fixed: 1 1;	
+	    		rel1.to: "object.main_menu.bt_import_photos";
+	    		rel1.relative: 0.0 1.0;
+	    		rel2.relative: 1.0 0.0;		
+	       		params {					
+	          		string: "label" "Remove The Wallpaper"; 	
+	          		string: "icon" "delete"; 	
+	       		}							
+	    	}								
+	    }	
+	    part {  							
+        	name: "object.main_menu.bt_import_gpx";					
+	    	type: EXTERNAL;					
+	    	repeat_events: 0;				
+	    	source: "elm/button"; 			
+	    	description {		
+	    		align: 0.5 0;
+	    		fixed: 1 1;	
+	    		rel1.to: "object.main_menu.bt_remove_wall";
+	    		rel1.relative: 0.0 1.0;
+	    		rel2.relative: 1.0 0.0;		
+	       		params {					
+	          		string: "label"  "Import a GPX File"; 	
+	          		string: "icon" "file"; 	
+	       		}							
+	    	}								
+	    }		
+	    part {  							
+        	name: "object.main_menu.bt_preference";					
+	    	type: EXTERNAL;					
+	    	repeat_events: 0;				
+	    	source: "elm/button"; 			
+	    	description {		
+	    		align: 0.5 0;
+	    		fixed: 1 1;	
+	    		rel1.to: "object.main_menu.bt_import_gpx";
+	    		rel1.relative: 0.0 1.0;
+	    		rel2.relative: 1.0 0.0;		
+	       		params {					
+	          		string: "label"  "Preference"; 	
+	          		string: "icon" "edit"; 	
+	       		}							
+	    	}								
+	    }	
+	    
+		
+		part {
+			name: "object.library.delete";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "object.main_menu.bt_preference";
+				rel1.relative: 0.0 1.0;
+				rel2.relative: 1.0 0.0;
+				align: 0.5 0.0;
+				params {
+					string: "label" "Delete the library";
+				}
+			}
+		}					
+	 
+    }
+    
+    programs {
+    }
+}

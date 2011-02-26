@@ -520,9 +520,6 @@ static void _netsync_photos_notinlocal_photo_new_cb(void *data, Enlil_Album *alb
 
 static void _netsync_photo_get_new_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
 {
-	int id_photo;
-	Eina_List *l, *l2;
-
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
 	printf("BUG :)\n");
