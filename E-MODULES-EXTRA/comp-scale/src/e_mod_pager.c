@@ -353,6 +353,9 @@ _pager_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
    Item *it = data;
    Evas_Event_Mouse_Down *ev = event_info;
 
+   if (!scale_state)
+     return;
+
    if ((ev->button == 2) || (ev->flags & EVAS_BUTTON_DOUBLE_CLICK))
      {
 	selected_item = it;
@@ -395,6 +398,9 @@ _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    it->mouse_down = EINA_FALSE;
 
+   if (!scale_state)
+     return;
+   
    if (x + it->bd->w > zone->w) x = zone->w - it->bd->w;
    if (y + it->bd->h > zone->h) y = zone->h - it->bd->h;
    if (x < 0) x = 0;
