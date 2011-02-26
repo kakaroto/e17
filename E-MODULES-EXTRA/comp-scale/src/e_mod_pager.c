@@ -231,8 +231,8 @@ _pager_out()
    if (!scale_animator)
      scale_animator = ecore_animator_add(_pager_redraw, NULL);
 
-   /* if (selected_item)
-    *   edje_object_signal_emit(selected_item->o, "mouse,out", "e"); */
+   if (selected_item)
+     edje_object_signal_emit(selected_item->o, "hide", "e");
 
    scale_state = EINA_FALSE;
 }
@@ -276,6 +276,9 @@ _pager_finish()
 	e_config->desk_flip_animate_mode = tmp;
      }
 
+   EINA_LIST_FOREACH(items, l, it)
+     _pager_place_windows(1.0);
+
    EINA_LIST_FREE(items, it)
      {
 	if (it->bd->desk != current_desk)
@@ -283,14 +286,6 @@ _pager_finish()
 	     e_border_hide(it->bd, 2);
 	     evas_object_hide(it->o_win);
 	  }
-
-	it->cur_x = it->bd->x;
-	it->cur_y = it->bd->y;
-	it->cur_w = it->bd->w;
-	it->cur_h = it->bd->h;
-	evas_object_move(it->o, it->bd->x, it->bd->y);
-	evas_object_resize(it->o, it->cw->w, it->cw->h);
-
 	_pager_win_del(it);
      }
 
@@ -303,6 +298,10 @@ _pager_finish()
    if (background)
      _pager_win_del(background);
 
+
+   EINA_LIST_FREE(handlers, handler)
+     ecore_event_handler_del(handler);
+
    /* XXX fix stacking */
    E_Comp_Win *cw, *prev = NULL;
    Eina_List *list = (Eina_List *)e_manager_comp_src_list(e_manager_current_get());
@@ -313,17 +312,12 @@ _pager_finish()
    	prev = cw;
      }
 
-   EINA_LIST_FREE(handlers, handler)
-     ecore_event_handler_del(handler);
-
    e_msg_handler_del(msg_handler);
    msg_handler = NULL;
    zone = NULL;
    selected_item = NULL;
    current_desk = NULL;
    background = NULL;
-
-   /* e_manager_comp_evas_update(e_manager_current_get()); */
 }
 
 static E_Desk *
@@ -670,6 +664,10 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
      edje_object_file_set(it->o, scale_conf->theme_path,
 			  "modules/scale/win");
 
+   evas_object_stack_above(it->o, it->o_win);
+   evas_object_show(it->o);
+   edje_object_part_swallow(it->o, "e.swallow.win", it->o_win);
+
    evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 				  _pager_win_cb_delorig, it);
 
@@ -699,11 +697,6 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 
    evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_MOVE,
 				  _pager_win_cb_mouse_move, it);
-
-   evas_object_stack_above(it->o, it->o_win);
-   edje_object_part_swallow(it->o, "e.swallow.win", it->o_win);
-
-   evas_object_show(it->o);
 
    it->dx = it->desk->x - current_desk->x;
    it->dy = it->desk->y - current_desk->y;
@@ -737,6 +730,8 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    it->h = it->bd->h / zoom - OFFSET*2.0;
 
    items = eina_list_append(items, it);
+
+   edje_object_signal_emit(it->o, "show", "e");
 
    if (scale_state)
      _pager_redraw(NULL);

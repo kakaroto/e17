@@ -62,7 +62,7 @@ static void _scale_win_cb_delorig(void *data, Evas *e, Evas_Object *obj, void *e
 static void _scale_win_cb_intercept_move(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 static void _scale_win_cb_intercept_resize(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 static void _scale_win_cb_intercept_color(void *data, Evas_Object *obj, int r, int g, int b, int a);
-static void _scale_win_cb_intercept_layer(void *data, Evas_Object *obj, int l);
+static void _scale_win_cb_intercept_stack_above(void *data, Evas_Object *obj, Evas_Object *above);
 
 static void _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk);
 static void _scale_win_del(Item *it);
@@ -92,6 +92,24 @@ static E_Desk *current_desk = NULL;
 static int show_all_desks = EINA_FALSE;
 static int send_to_desk = EINA_FALSE;
 
+static void
+_scale_place_windows(double scale)
+{
+   Eina_List *l;
+   Item *it;
+
+   EINA_LIST_FOREACH(items, l, it)
+     {
+	it->cur_w = it->bd->w * scale + it->w * (1.0 - scale);
+	it->cur_h = it->bd->h * scale + it->h * (1.0 - scale);
+	it->cur_x = it->bd_x  * scale + it->x * (1.0 - scale);
+	it->cur_y = it->bd_y  * scale + it->y * (1.0 - scale);
+
+	evas_object_move(it->o, it->cur_x, it->cur_y);
+	evas_object_resize(it->o, it->cur_w, it->cur_h);
+     }
+}
+
 static Eina_Bool
 _scale_redraw(void *blah)
 {
@@ -115,22 +133,10 @@ _scale_redraw(void *blah)
    in = log(10) * scale;
    in = 1.0 / exp(in*in);
 
+   _scale_place_windows(in);
+
    EINA_LIST_FOREACH(items, l, it)
      {
-	it->cur_w = it->bd->w * in + it->w * (1.0 - in);
-	it->cur_h = it->bd->h * in + it->h * (1.0 - in);
-	it->cur_x = it->bd_x  * in + it->x * (1.0 - in);
-	it->cur_y = it->bd_y  * in + it->y * (1.0 - in);
-
-	evas_object_move(it->o, it->cur_x, it->cur_y);
-	evas_object_resize(it->o, it->cur_w, it->cur_h);
-
-	evas_object_move(it->o_win, it->cur_x, it->cur_y);
-	evas_object_resize(it->o_win, it->cur_w, it->cur_h);
-
-	a = 255.0 * (1.0 - in);
-	evas_object_color_set(it->o, a, a, a, a);
-
 	if (!scale_conf->fade_windows)
 	  continue;
 
@@ -174,6 +180,8 @@ _scale_redraw(void *blah)
 
    if (scale == 0.0)
      _scale_finish();
+   else
+     _scale_place_windows(0.0);
 
    scale_animator = NULL;
    return 0;
@@ -207,6 +215,9 @@ _scale_out()
    if (!scale_animator)
      scale_animator = ecore_animator_add(_scale_redraw, NULL);
 
+   if (selected_item)
+     edje_object_signal_emit(selected_item->o, "hide", "e");
+
    scale_state = EINA_FALSE;
 }
 
@@ -216,6 +227,7 @@ _scale_finish()
    Ecore_Event_Handler *handler;
    Item *it;
    E_Desk *desk;
+   Eina_List *l;
 
    e_grabinput_release(input_win, input_win);
    ecore_x_window_free(input_win);
@@ -240,18 +252,15 @@ _scale_finish()
 	  }
      }
 
+   EINA_LIST_FOREACH(items, l, it)
+     _scale_place_windows(1.0);
+
    EINA_LIST_FREE(items, it)
      {
 	if (it->bd->desk != desk)
 	  {
 	     e_border_hide(it->bd, 2);
 	     evas_object_hide(it->o_win);
-	     it->cur_x = it->bd->x;
-	     it->cur_y = it->bd->y;
-	     it->cur_w = it->bd->w;
-	     it->cur_h = it->bd->h;
-	     evas_object_move(it->o_win, it->bd->x, it->bd->y);
-	     evas_object_resize(it->o_win, it->cw->w, it->cw->h);
 	  }
 	_scale_win_del(it);
      }
@@ -259,17 +268,28 @@ _scale_finish()
    EINA_LIST_FREE(popups, it)
      _scale_win_del(it);
 
-   if (scale_conf->fade_desktop && background)
+   if (background)
      _scale_win_del(background);
 
    EINA_LIST_FREE(handlers, handler)
      ecore_event_handler_del(handler);
+
+   /* XXX fix stacking */
+   E_Comp_Win *cw, *prev = NULL;
+   Eina_List *list = (Eina_List *)e_manager_comp_src_list(e_manager_current_get());
+   EINA_LIST_FOREACH(list, l, cw)
+     {
+   	if (!cw->shobj) continue;
+   	if (prev) evas_object_stack_above(cw->shobj, prev->shobj);
+   	prev = cw;
+     }
 
    e_msg_handler_del(msg_handler);
    msg_handler = NULL;
    zone = NULL;
    selected_item = NULL;
    current_desk = NULL;
+   background = NULL;
    send_to_desk = EINA_FALSE;
    show_all_desks = EINA_FALSE;
 
@@ -281,14 +301,10 @@ _scale_win_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Item *it = data;
 
-   if (selected_item && (it != selected_item))
-     {
-	edje_object_signal_emit(selected_item->o, "mouse,out", "e");
-	selected_item = NULL;
-     }
+   if (!scale_state)
+     return;
 
    edje_object_signal_emit(it->o, "mouse,in", "e");
-   selected_item = it;
 }
 
 static void
@@ -296,11 +312,10 @@ _scale_win_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Item *it = data;
 
-   if (selected_item && (it != selected_item))
-     {
-	edje_object_signal_emit(selected_item->o, "mouse,out", "e");
-	selected_item = NULL;
-     }
+   if (!scale_state)
+     return;
+
+   edje_object_signal_emit(it->o, "mouse,out", "e");
 }
 
 static void
@@ -309,6 +324,9 @@ _scale_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
    Item *ot, *it = data;
    Evas_Event_Mouse_Down *ev = event_info;
    Eina_List *l;
+
+   if (!scale_state)
+     return;
 
    e_border_raise(it->bd);
 
@@ -380,6 +398,19 @@ _scale_win_cb_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void
+_scale_win_cb_intercept_stack_above(void *data, Evas_Object *obj, Evas_Object *above)
+{
+   Item *ot, *it = data;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(items, l, ot)
+     if (ot->o_win == above) break;
+
+   if (ot)
+     evas_object_stack_above(it->o, ot->o);
+}
+
+static void
 _scale_win_cb_intercept_move(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
    Item *it = data;
@@ -401,29 +432,50 @@ _scale_win_cb_intercept_color(void *data, Evas_Object *obj, int r, int g, int b,
 }
 
 static void
-_scale_win_cb_intercept_layer(void *data, Evas_Object *obj, int l)
-{
-   Item *it = data;
-   evas_object_layer_set(it->o_win, l);
-   evas_object_stack_above(it->o, it->o_win);
-}
-
-static void
 _scale_win_del(Item *it)
 {
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_IN, _scale_win_cb_mouse_in);
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_OUT, _scale_win_cb_mouse_out);
-   evas_object_event_callback_del(it->o_win, EVAS_CALLBACK_DEL, _scale_win_cb_delorig);
-   evas_object_intercept_move_callback_del(it->o_win, _scale_win_cb_intercept_move);
-   evas_object_intercept_resize_callback_del(it->o_win, _scale_win_cb_intercept_resize);
-   evas_object_intercept_color_set_callback_del(it->o_win, _scale_win_cb_intercept_color);
-   evas_object_intercept_layer_set_callback_del(it->o_win, _scale_win_cb_intercept_layer);
+   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_IN,
+				  _scale_win_cb_mouse_in);
+
+   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_OUT,
+				  _scale_win_cb_mouse_out);
+
+   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_DOWN,
+				  _scale_win_cb_mouse_down);
+
+   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_UP,
+				  _scale_win_cb_mouse_up);
+
+   /* evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_MOVE,
+    * 				  _scale_win_cb_mouse_move); */
+
+   evas_object_event_callback_del(it->o_win, EVAS_CALLBACK_DEL,
+				  _scale_win_cb_delorig);
+
+   evas_object_intercept_move_callback_del
+     (it->o_win, _scale_win_cb_intercept_move);
+
+   evas_object_intercept_resize_callback_del
+     (it->o_win, _scale_win_cb_intercept_resize);
+
+   evas_object_intercept_color_set_callback_del
+     (it->o_win, _scale_win_cb_intercept_color);
+
+   evas_object_intercept_stack_above_callback_del
+     (it->o_win, _scale_win_cb_intercept_stack_above);
+
    evas_object_del(it->o);
 
    evas_object_color_set(it->o_win, 255, 255, 255, 255);
 
    if (it->bd)
-     e_object_unref(E_OBJECT(it->bd));
+     {
+	it->alpha = 255;
+	evas_object_color_set(it->o_win, 255, 255, 255, 255);
+	edje_object_part_unswallow(it->o, it->o_win);
+	evas_object_stack_above(it->o_win, it->o);
+	e_object_unref(E_OBJECT(it->bd));
+     }
 
    E_FREE(it);
 }
@@ -476,6 +528,50 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it = E_NEW(Item, 1);
    it->scale = 1.0;
 
+   e_object_ref(E_OBJECT(cw->bd));
+   it->bd = cw->bd;
+   it->cw = cw;
+
+   it->o_win = e_manager_comp_src_shadow_get(man, src);
+   it->o = edje_object_add(e);
+   if (!e_theme_edje_object_set(it->o, "base/theme/modules/scale",
+                                "modules/scale/win"))
+     edje_object_file_set(it->o, scale_conf->theme_path, "modules/scale/win");
+
+   evas_object_stack_above(it->o, it->o_win);
+   evas_object_show(it->o);
+   edje_object_part_swallow(it->o, "e.swallow.win", it->o_win);
+
+   evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
+				  _scale_win_cb_delorig, it);
+
+   evas_object_intercept_move_callback_add
+     (it->o_win, _scale_win_cb_intercept_move, it);
+
+   evas_object_intercept_resize_callback_add
+     (it->o_win, _scale_win_cb_intercept_resize, it);
+
+   evas_object_intercept_color_set_callback_add
+     (it->o_win, _scale_win_cb_intercept_color, it);
+
+   evas_object_intercept_stack_above_callback_add
+     (it->o_win, _scale_win_cb_intercept_stack_above, it);
+
+   evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN,
+				  _scale_win_cb_mouse_in, it);
+
+   evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_OUT,
+				  _scale_win_cb_mouse_out, it);
+
+   evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_DOWN,
+				  _scale_win_cb_mouse_down, it);
+
+   evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_UP,
+				  _scale_win_cb_mouse_up, it);
+
+   /* evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_MOVE,
+    * 				  _scale_win_cb_mouse_move, it); */
+
    it->dx = cw->bd->desk->x - desk->x;
    it->dy = cw->bd->desk->y - desk->y;
 
@@ -492,41 +588,13 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->cur_w = it->w;
    it->cur_h = it->h;
 
-   e_object_ref(E_OBJECT(cw->bd));
-   it->bd = cw->bd;
-   it->cw = cw;
-
-   it->o_win = e_manager_comp_src_shadow_get(man, src);
-   it->o = edje_object_add(e);
-   if (!e_theme_edje_object_set(it->o, "base/theme/modules/scale",
-                                "modules/scale/win"))
-     edje_object_file_set(it->o, scale_conf->theme_path, "modules/scale/win");
-
-   evas_object_stack_above(it->o, it->o_win);
-   evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL, _scale_win_cb_delorig, it);
-
-   evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN,   _scale_win_cb_mouse_in, it);
-   evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_OUT,  _scale_win_cb_mouse_out, it);
-   evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_DOWN, _scale_win_cb_mouse_down, it);
-   evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_UP,   _scale_win_cb_mouse_up, it);
-
-   /* evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN, _scale_win_cb_mouse_in, it);  */
-   /* edje_object_part_swallow(it->o, "e.swallow.win", it->o_win); */
-   /* evas_object_clip_set(it->o_win, it->o);
-    * evas_object_move(it->o, it->x, it->y); */
-
-   evas_object_show(it->o);
-
-   evas_object_intercept_move_callback_add(it->o_win,      _scale_win_cb_intercept_move, it);
-   evas_object_intercept_resize_callback_add(it->o_win,    _scale_win_cb_intercept_resize, it);
-   evas_object_intercept_color_set_callback_add(it->o_win, _scale_win_cb_intercept_color, it);
-   evas_object_intercept_layer_set_callback_add(it->o_win, _scale_win_cb_intercept_layer, it);
-
    if (it->bd->desk != desk)
      {
 	e_border_show(it->bd);
   	evas_object_move(it->o_win, it->x, it->y);
      }
+
+   edje_object_signal_emit(it->o, "show", "e");
 
    items = eina_list_append(items, it);
 }
@@ -1021,15 +1089,18 @@ _scale_place_slotted()
 	       {
 		  cur_slot = slot;
 		  slot->items = eina_list_clone(items);
-		  slot->items = eina_list_sort(slot->items, cnt, _cb_sort_nearest);
+		  slot->items = eina_list_sort(slot->items, cnt,
+					       _cb_sort_nearest);
 		  slot->it = eina_list_data_get(slot->items);
-		  slot->items = eina_list_remove_list(slot->items, slot->items);
+		  slot->items = eina_list_remove_list(slot->items,
+						      slot->items);
 		  slot->min = _slot_dist(slot->it, slot);
 	       }
 
 	     slots = eina_list_append(slots, slot);
 
-	     DBG("add slot: %dx%d,   \t%f -> %d:%d\n", slot->x, slot->y, slot->min,
+	     DBG("add slot: %dx%d,   \t%f -> %d:%d\n",
+		 slot->x, slot->y, slot->min,
 		 (int)(slot->it->x), (int)(slot->it->y));
 	  }
      }
@@ -1064,17 +1135,20 @@ _scale_place_slotted()
 
 		  cont = 1;
 
-		  DBG("%dx%d - compare:\n\ts1: %dx%d (%dx%d:%f),\n\ts2 %dx%d (%dx%d:%f)\n",
+		  DBG("%dx%d - compare:\n\ts1: %dx%d (%dx%d:%f),"
+		      "\n\ts2 %dx%d (%dx%d:%f)\n",
 		      (int)slot->it->x, (int)slot->it->y,
 		      slot->x, slot->y, (int)it1->x, (int)it1->y, d1,
 		      slot2->x, slot2->y, (int)it2->x, (int)it2->y, d2);
 
-		  if (slot->it->in_slots > 1 && slot->min + d1 >= slot2->min + d2)
+		  if ((slot->it->in_slots > 1) &&
+		      (slot->min + d1 >= slot2->min + d2))
 		    {
 		       slot->it->in_slots--;
 		       slot->it = it1;
 		       slot->min = d1;
-		       slot->items = eina_list_remove_list(slot->items, slot->items);
+		       slot->items = eina_list_remove_list(slot->items,
+							   slot->items);
 		       break;
 		    }
 	       }
@@ -1374,13 +1448,6 @@ _scale_run(E_Manager *man)
 	i = 0;
 	while (i++ < SHRINK_RUNS && _scale_shrink());
 	DBG("shrunk %d", i);
-
-	/* if (scale_conf->grow)
-	 *   {
-	 *      i = 0;
-	 *      while (i++ < GROW_RUNS && _scale_grow());
-	 *      DBG("grow %d", i);
-	 *   } */
      }
 
    if (show_all_desks)
@@ -1406,10 +1473,10 @@ _scale_run(E_Manager *man)
 	     it->x = (it->x - min_x) + use_x + ((use_w - use_x) - (max_x - min_x))/2.0;
 	     it->y = (it->y - min_y) + use_y + ((use_h - use_y) - (max_y - min_y))/2.0;
 
-	     if (it->dx > 0) it->bd_x =   zone->w + it->bd->x/4;
-	     if (it->dy > 0) it->bd_y =   zone->h + it->bd->y/4;
-	     if (it->dx < 0) it->bd_x = -(zone->w - it->bd->x)/4;
-	     if (it->dy < 0) it->bd_y = -(zone->h + it->bd->y)/4;
+	     if (it->dx > 0) it->bd_x =  zone->w + it->bd->x/4;
+	     if (it->dy > 0) it->bd_y =  zone->h + it->bd->y/4;
+	     if (it->dx < 0) it->bd_x = -zone->w + (zone->w - it->bd->w) + it->bd->x/4;
+	     if (it->dy < 0) it->bd_y = -zone->h + (zone->h - it->bd->h) + it->bd->y/4;
 	  }
      }
 
@@ -1468,74 +1535,6 @@ _scale_cb_mouse_up(void *data, int type, void *event)
 
    return ECORE_CALLBACK_PASS_ON;
 }
-
-/* static Eina_Bool
- * _scale_cb_mouse_down(void *data, int type, void *event)
- * {
- *    Ecore_Event_Mouse_Button *ev = event;
- *    Item *it, *ot;
- *    Eina_List *l;
- *
- *    if (ev->window != input_win)
- *      return ECORE_CALLBACK_PASS_ON;
- *
- *    if (!scale_state)
- *      return ECORE_CALLBACK_PASS_ON;
- *
- *    EINA_LIST_FOREACH(items, l, it)
- *      if (E_INTERSECTS(ev->x, ev->y, 1, 1, it->x, it->y, it->w, it->h))
- *        break;
- *
- *    if (!it)
- *      {
- * 	_scale_out();
- * 	return ECORE_CALLBACK_PASS_ON;
- *      }
- *
- *    e_border_raise(it->bd);
- *
- *
- *    if (it->bd->desk != e_desk_current_get(it->bd->zone))
- *      {
- *    	if (ev->buttons == 1)
- *    	  {
- *    	     selected_item = it;
- *    	     current_desk = it->bd->desk;
- *
- *    	     EINA_LIST_FOREACH(items, l, ot)
- *    	       {
- *    		  if (ot->bd->desk == it->bd->desk)
- *    		    {
- *    		       ot->bd_x = ot->bd->x;
- *    		       ot->bd_y = ot->bd->y;
- *    		    }
- *    		  else
- *    		    {
- *    		       if (ot->dx > it->dx)
- *    			 ot->bd_x = ot->bd->x + zone->w;
- *    		       else if (ot->dx < it->dx)
- *    			 ot->bd_x = ot->bd->x - zone->w;
- *
- *    		       if (ot->dy > it->dy)
- *    			 ot->bd_y = ot->bd->y + zone->h;
- *    		       else if (ot->dy < it->dy)
- *    			 ot->bd_y = ot->bd->y - zone->h;
- *    		    }
- *    	       }
- *    	  }
- *    	else if (ev->buttons == 3)
- *    	  {
- *    	     send_to_desk = EINA_TRUE;
- *    	     selected_item = it;
- *    	     it->bd_x = it->bd->x;
- *    	     it->bd_y = it->bd->y;
- *    	  }
- *      }
- *
- *    _scale_out();
- *
- *    return ECORE_CALLBACK_PASS_ON;
- * } */
 
 static void
 _scale_handler(void *data, const char *name, const char *info, int val,
