@@ -16,7 +16,7 @@
 	as well as transport stored data to other locations without loss.</p>
 	
 	<p>Eet has very few requirements. On UNIX, beyond the normal libc and system
-	compiling tools and headers, you will need libjpeg (also know as jpeglib) and its
+	compiling tools and headers, you will need libjpeg (also known as jpeglib) and its
 	headers and build packages, as well as zlib (libz) and its headers and build
 	packages.</p>
 	

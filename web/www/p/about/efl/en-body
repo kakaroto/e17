@@ -19,13 +19,13 @@
      <p>The Enlightenment Foundation Libraries (EFL) are a collection of libraries that make up the foundation 
      of the DR17 window manager.  While their original intent was solely to support the window manager, the libraries
      quickly took on a life of their own, which is a contributing factor to the delays of the window manager itself.
-     These libraries are so powerful, flexable, and easy to use that they present a strong platform on which to
+     These libraries are so powerful, flexible, and easy to use that they present a strong platform on which to
      develop nearly any graphical application you could think of.</p>
 
      <p>The EFL begins with Evas, our canvas library. Because Evas is built
-     on several diffrent selectable engines (Linux FrameBuffer, DirectFB,
+     on several different selectable engines (Linux FrameBuffer, DirectFB,
      X11, OpenGL/OpenGL-ES, QTopia, etc) the platform is
-     extremely portable, which  translates thru to all of the libraries
+     extremely portable, which translates thru to all of the libraries
      built on top of it. Ecore is a modular convience library that in its
      base provides timers, callback functionality, and loop management for
      event handling. Ecore's various modules can simplify the setup of an
@@ -33,26 +33,26 @@
      use with Evas (Ecore_Evas), manage IPC (Ecore_IPC), manage BSD Sockets
      (Ecore_Con), management of the FrameBuffer (Ecore_FB), and more.
      Because Ecore can simplify so many tasks that are used in conjuction
-     with Evas it has lived up to its name as the core componant of nearly
+     with Evas it has lived up to its name as the core component of nearly
      any EFL application.</p>
      
      <p>Eina centralises data structures and memory handling functions beyond
      what system "mallocs" provide.</p>
 
-     <p>Edje provides a revolutionary method of absstacting every aspect of
+     <p>Edje provides a revolutionary method of abstracting every aspect of
      your interface from the application itself. By passing signals
      between the interface and the application all communication is done in
      an interface neutral way. No longer are &quot;themes&quot; simple changes
      of pixmaps over a fixed area. Using Embryo we can provide scripting
      ability to the interface componant itself to harness even more power
-     and flexability.</p>
+     and flexibility.</p>
 
      <p>Elementary ties things together in a touchscreen finger-friendly
      widget set. And there is much more.</a>
 
-     <p>Below is a diagram of how the various componants of the EFL fit together.  Because
+     <p>Below is a diagram of how the various components of the EFL fit together. Because
      of complexity of the libraries and the fact that so many libraries can be used
-     independant of other EFL libraries we have a diagram alittle more complex than
+     independant of other EFL libraries we have a diagram a little more complex than
      your standard block diagram.</p>
 
      <center>
@@ -78,4 +78,3 @@
   </td>
  </tr>
 </table>
-

@@ -7,8 +7,8 @@
     <p>The Enlightenment Window Manager was first released in 1997 by Carsten "Rasterman" Haitzler</p>
 
     <span class="contentmain">
-     <p> It's release revolutionized the face of desktops on UNIX platforms and beyond, 
-     featuring a more graphically stimulating enviroment than ever previously seen on a conventional 
+     <p> Its release revolutionized the face of desktops on UNIX platforms and beyond, 
+     featuring a more graphically stimulating environment than ever previously seen on a conventional 
      desktop. Since that time the window manager has been emulated and has driven the graphical appeal 
      we see on desktops everywhere. In 2000, the latest major release occured with the release of DR16.0, 
      a release that remains in heavy usage today. In 2003 Kim &quot;kwo&quot; Woelders took over 
@@ -22,12 +22,12 @@
       </a>
      </center>
      
-     <p>The Enlightenment DR16 Window Manager is a robust, flexable, highly configurable, graphically 
-     rich yet unobtrusive desktop enviroment for the X11 windowing system. It is fully themable and 
+     <p>The Enlightenment DR16 Window Manager is a robust, flexible, highly configurable, graphically 
+     rich yet unobtrusive desktop environment for the X11 windowing system. It is fully themable and 
      easily configured. There are a wide range of configuration options to suite any taste. DR16 
      provides an innovate way of managing applications found no where else, allowing for not only virtual 
-     desktops, but also multiple desktops (a seperate set of virtual desktops). A unique snapshoting pager 
-     allows for easy management of application placement and even will zoom on on mouse-over of a 
+     desktops, but also multiple desktops (a separate set of virtual desktops). A unique snapshoting pager 
+     allows for easy management of application placement and even will zoom on mouse-over of a 
      window in the pager for easily locating applications. Support exists for up to 32 multiple desktops, 
      and virtual desktops up to 8x8 in size! (Thats 2048 possible desktops!) Standard options such as 
      focus settings and autoraise are extremely configurable to fit your individual tastes. Several 
@@ -45,7 +45,7 @@
       </a>
      </center>
      
-     <p>The menu system is flexable, providing easy access to applications, theme selection, 
+     <p>The menu system is flexible, providing easy access to applications, theme selection, 
      documentation, settings, and background selection. DR16 uniquely allows background selection 
      to be done from the main menu system using thumbnailed views of the background providing a 
      quick and easy way to change wallpaper. In addition, desktop &quot;FX&quot; exist that can 
@@ -57,7 +57,7 @@
       </a>
      </center>
      
-     <p>A simple group of flat text files allow for easy editing of user appliation menus, 
+     <p>A simple group of flat text files allow for easy editing of user application menus, 
      including the ability to create hierarchical user menus to suite your various needs. At first 
      startup DR16 will even scan for your KDE and GNOME menus to add an application menu for them. </p>
      
@@ -70,7 +70,7 @@
      <p>Standard mouseless features such as tab switching exist, but we've built on even more than that. 
      Virtual desktops can be navigated using the keyboard arrow keys and nearly anything including application 
      launching can be keybound via e16bindings making DR16 an excellent choice for users who want a graphically 
-     rich enviroment that doesn't require constant intervention of the mouse. </p>
+     rich environment that doesn't require constant intervention of the mouse. </p>
      
      <center>
       <a href="http://enlightenment.org/i/dr16-kde31.png" target="_self">
@@ -78,7 +78,7 @@
       </a>
      </center>
      
-     <p>A built in help system called &quot;eDox&quot; provides an excellent resource for learning the 
+     <p>A built-in help system called &quot;eDox&quot; provides an excellent resource for learning the 
      wide variety of diffrent methods of interaction and configuration. Graphical Tool Tips can also be 
      enabled to assist normal usage.</p>
      
@@ -89,7 +89,7 @@
      </center>
      
      <p>Enlightenment DR16 integrates well with both GNOME and KDE. Replace the default window 
-     mangers for each with Enlightenment and you'll have the power to leverage the best of GNOME and 
+     managers for each with Enlightenment and you'll have the power to leverage the best of GNOME and 
      KDE at the same time, while enjoying the superior windowing interface that Enlightenment provides.</p>
      
      <p>EESH, the Enlightenment Shell, allows for complete remote control of the window manager and easy scripting.</p>
@@ -100,7 +100,7 @@
       </a>
      </center>
      
-     <p>Enlightenment DR16 is highly portable, with binaries avalible for or testing done on all 
+     <p>Enlightenment DR16 is highly portable, with binaries available for or testing done on all 
      Linux platforms, Solaris X86 and Sparc, HP-UX, AIX, IRIX, OpenBSD, FreeBSD, NetBSD, OS/2 and 
      more.</p>
      

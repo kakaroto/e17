@@ -5,8 +5,8 @@
     <h1>Enlightenment DR17</h1>
 
     <p>Enlightenment 0.17 is the next generation of UNIX graphical environments. It is not 
-    just a window manager, but it is also a desktop shell.  A desktop shell means, a window 
-    manager plus a file manager, plus configuration utilitys all in one. They are not 
+    just a window manager, but it is also a desktop shell. A desktop shell means, a window 
+    manager plus a file manager, plus configuration utilities all in one. They are not 
     separated as usual. Now, let's take a closer look at all E17 features.</p>
 
     <p>Enlightenment is fast. No, really. It's fast. It is known to run on very slow 
@@ -15,7 +15,7 @@
     you can control how fast you want it by using it's Performance configuration panel to 
     change the cache settings and more.</p>
 
-    <p>The high performance does not mean that there is no eye candy. There is eye candy that you 
+    <p>The high performance does not mean that there is no eye-candy. There is eye-candy that you 
     have never seen before. Starting from the animated boot screen, to continue with the all 
     animations and effects that themes could provide, to end up with fancy animated backgrounds. 
     But not some huge .GIF files, but really nice animations. Every virtual desktop (at the moment 
@@ -27,10 +27,10 @@
     look different, with different effects, look and feel and animations.</p>
 
     <p>As we already mentioned, E17 provides a file manager as well. Of the time of writing, it is 
-    not completed and is in active development (as E17 as a whole itself), but after it is finished 
-    it will be a very nice, configurable and eye candy. Even right now, you can do the basic things 
+    not completed and is in an active development (as E17 as a whole itself), but after it is finished 
+    it will be a very nice, configurable and eye-candy. Even right now, you can do the basic things 
     with it – browse, copy, move, delete files. It will provide thumbnails for your pictures and 
-    will be able to open your files with the coresponding application of your choice.</p>
+    will be able to open your files with the corresponding application of your choice.</p>
 
     <p>E17 is highly configurable. Currently it has a nice configuration panel with dialogs for all 
     kinds of things. You can change your wallpaper or your theme, your fonts, your screen resolution, 
