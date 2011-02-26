@@ -7,6 +7,6 @@ Comment=A dock that holds a taskbar and application launcher<br>Add instances wi
 Comment[ru]=Док содержащий панель задач и запуск приложений<br>Добавлять экземпляры через: Панель параметров → Расширения → Itask NG
 Comment[de]=Ein Dock mit einer Taskbar und Anwendungsstartern<br>Instanzen können hinzugefügt werden über: Enlightenment-Einstellungen → Erweiterungen → Itask-NG
 Comment[it]=Contiene una taskbar ed un lanciatore di applicazioni<br>Per aggiungerne istanze: Pannello di configurazione → Estensioni → Itask NG
-Comment[fr]=Un dock contenant une barre des tâches et un lanceur.<br>Pour ajouter des instances : Panneau de configuration → Extensions → Itask NG 
+Comment[fr]=Un dock contenant une barre des tâches et un lanceur.<br>Pour ajouter des instances : Panneau de contrôle → Extensions → Itask NG 
 Comment[pt]=Uma barra de tarefas e lançador de aplicações<br>Adicione instâncias em: Painel de configuração > Extensões > Itask NG
 X-Enlightenment-ModuleType=utils

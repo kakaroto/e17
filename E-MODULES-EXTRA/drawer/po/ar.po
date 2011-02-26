@@ -1,0 +1,275 @@
+# Drawer module (e17), French translation.
+# This file is put in the public domain.
+# batden <batden@orange.fr>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: Drawer module\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2010-07-10 03:00-0700\n"
+"PO-Revision-Date: 2011-02-26 07:42+0300\n"
+"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: SAUDI ARABIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#. create new config dialog
+#: ../src/e_mod_config.c:54
+msgid "Drawer Module"
+msgstr "وحدة الدرج"
+
+#: ../src/e_mod_config.c:107
+msgid "Plugins selection"
+msgstr "اختيار الملحقات"
+
+#: ../src/e_mod_config.c:110
+msgid "Plugins settings"
+msgstr "إعدادات الملحقات"
+
+#: ../src/e_mod_config.c:170
+msgid "Source plugins"
+msgstr "ملحقات المصدر"
+
+#: ../src/e_mod_config.c:195
+msgid "View plugins"
+msgstr "اعرض الملحقات"
+
+#: ../src/e_mod_config.c:242
+#: ../src/e_mod_config.c:263
+msgid "Description: Unavailable"
+msgstr "الوصف : غير متوفر"
+
+#: ../src/e_mod_config.c:289
+msgid "Source settings"
+msgstr "إعدادات المصدر"
+
+#: ../src/e_mod_config.c:294
+msgid "View settings"
+msgstr "إعدادات العرض"
+
+#: ../src/e_mod_main.c:215
+msgid "Drawer Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr "بيانات تكوينات وحدة الدرج تحتاج الترقية. تكويناتك القديمة<br> أُزيلت و واحدة أخرى جديدة و افتراضية قد هيئت . سيحدث<br>هذا بشكل منتظم أثناء التطوير ، لذا لا تبلغ بوجود<br>علة. هذا يعني بكل بساطة أن الوحدة و بشكل افتراضي تحتاج لبيانات تكوينات جديدة <br>ﻷجل وظيفة قابلة ﻹستخدامها التي كانت تكويناتك<br>القديمة تفتقر إليها. هذه الجديدة ستصلح<br>القديمة عبر إضافتها فيها. يمكنك اﻵن إعادة تكوين اﻷشياء حسب<br>رغبتك. نأسف ﻹزعاجك.<br>"
+
+#: ../src/e_mod_main.c:235
+msgid "Your Drawer Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr "تكويناتك لوحدة الدرج أحدث من إصدارة الوحدة. هذا غريب<br>جدا. لا يجب لهذا أن يحدث إلا إذا خفضت<br>الوحدة أو نسختَ التكوينات من مكان آخر<br>يحتوي نسخة جديدة من الوحدة تعمل عليه. هذا سيء<br>و كإجراء إحترازي فإن تكويناتك ستعاد إلى<br>اﻹفتراضيات. نأسف ﻹزعاجك.<br>"
+
+#: ../src/e_mod_main.c:481
+msgid "The plugin is not configurable"
+msgstr "الملحق غير قابل للتكوين"
+
+#: ../src/e_mod_main.c:960
+#: ../src/e_mod_main.c:968
+#: ../src/e_mod_main.c:982
+#: ../src/e_mod_main.c:994
+#: ../src/e_mod_main.c:1062
+#: ../src/e_mod_main.c:1113
+#: ../src/e_mod_main.c:1158
+msgid "Drawer Plugins"
+msgstr "ملحق الدرج"
+
+#: ../src/e_mod_main.c:961
+#, c-format
+msgid "The plugin '%s' was not found."
+msgstr "لم يعثر على الملحق '%s' ."
+
+#: ../src/e_mod_main.c:969
+#, c-format
+msgid "The plugin '%s' could not be opened."
+msgstr "لا يمكن فتح الملحق '%s' ."
+
+#: ../src/e_mod_main.c:983
+#: ../src/e_mod_main.c:1063
+#: ../src/e_mod_main.c:1114
+#: ../src/e_mod_main.c:1159
+#, c-format
+msgid "The plugin '%s' does not contain all required functions."
+msgstr "لا يحتوي الملحق '%s' على كل الوظائف المطلوبة."
+
+#: ../src/e_mod_main.c:995
+#, c-format
+msgid "The plugin '%s' does not have the required API version."
+msgstr "لا يحتوي الملحق '%s' على إصدارة API المطلوبة."
+
+#: ../src/e_mod_main.c:1329
+msgid "Drawer"
+msgstr "درج"
+
+#: ../src/e_mod_main.c:1422
+msgid "Drawer Configuration Updated"
+msgstr "تم تحديث تكوينات الدرج"
+
+#: ../src/e_mod_main.c:1789
+msgid "Settings"
+msgstr "اﻹعدادات"
+
+#: ../src/plugins/sources/directory_watcher.c:287
+msgid "Open Containing Directory"
+msgstr "افتح المجلد الحاوي"
+
+#: ../src/plugins/sources/directory_watcher.c:299
+msgid "Directory Watcher settings"
+msgstr "إعدادات مراقب المجلد"
+
+#: ../src/plugins/sources/directory_watcher.c:358
+msgid "Home"
+msgstr "المنزل"
+
+#: ../src/plugins/sources/directory_watcher.c:425
+#, c-format
+msgid "Directory (%s)"
+msgstr "المجلد (%s)"
+
+#: ../src/plugins/sources/directory_watcher.c:527
+msgid "Drawer Plugin : Directory Watcher"
+msgstr "ملحق الدرج : مراقب المجلد"
+
+#: ../src/plugins/sources/directory_watcher.c:570
+msgid "Watch path"
+msgstr "راقب المسار"
+
+#: ../src/plugins/sources/directory_watcher.c:576
+msgid "Custom file manager"
+msgstr "مدير ملف مخصص"
+
+#: ../src/plugins/sources/directory_watcher.c:582
+msgid "Sort Options"
+msgstr "رتب الخيارات"
+
+#: ../src/plugins/sources/directory_watcher.c:583
+msgid "Sort directories first"
+msgstr "رتب المجلدات أولا"
+
+#: ../src/plugins/sources/directory_watcher.c:587
+msgid "Sort by name"
+msgstr "رتب حسب اﻹسم"
+
+#: ../src/plugins/sources/directory_watcher.c:589
+msgid "Sort by access time"
+msgstr "رتب حسب و قت الدخول"
+
+#: ../src/plugins/sources/directory_watcher.c:591
+msgid "Sort by modification time"
+msgstr "رتب حسب وقت التعديل"
+
+#: ../src/plugins/sources/directory_watcher.c:593
+msgid "Sort by change time"
+msgstr "رتب حسب تغير الوقت"
+
+#: ../src/plugins/sources/directory_watcher.c:595
+msgid "Sort by size"
+msgstr "رتب حسب الحجم"
+
+#: ../src/plugins/sources/launcher.c:208
+msgid "Launcher settings"
+msgstr "إعدادات المطلق"
+
+#: ../src/plugins/sources/launcher.c:327
+msgid "Change Item Properties"
+msgstr "تغيير خصائص العنصر "
+
+#: ../src/plugins/sources/launcher.c:332
+msgid "Remove Item"
+msgstr "أزل العنصر"
+
+#: ../src/plugins/sources/launcher.c:355
+#, c-format
+msgid "%s source"
+msgstr "المصدر %s"
+
+#: ../src/plugins/sources/launcher.c:538
+msgid "Drawer Plugin : Launcher"
+msgstr "ملحق الدرج : المطلق"
+
+#: ../src/plugins/sources/launcher.c:609
+msgid "Selected Bar Source"
+msgstr "مصدر الشريط المختار"
+
+#: ../src/plugins/sources/launcher.c:617
+msgid "Add"
+msgstr "أضف"
+
+#: ../src/plugins/sources/launcher.c:619
+msgid "Delete"
+msgstr "امح"
+
+#: ../src/plugins/sources/launcher.c:621
+msgid "Configure"
+msgstr "كوّن"
+
+#: ../src/plugins/sources/launcher.c:631
+msgid "Sorting options"
+msgstr "خيارات الترتيب"
+
+#: ../src/plugins/sources/launcher.c:632
+msgid "Unsorted"
+msgstr "غير مرتب"
+
+#: ../src/plugins/sources/launcher.c:634
+msgid "Sort applications by local rating"
+msgstr "رتب التطبيقات حسب التصنيف المحلي"
+
+#: ../src/plugins/sources/launcher.c:636
+#, fuzzy
+msgid "Sort applications by overall popularity"
+msgstr "رتب التطبيقات حسب الشعبية العامة"
+
+#: ../src/plugins/sources/launcher.c:673
+msgid "Create new Launcher source"
+msgstr "أنشئ مصدر مطلق جديد"
+
+#: ../src/plugins/sources/launcher.c:674
+msgid "Enter a name for this new source:"
+msgstr "أدخل اسما لهاذا المصدر:"
+
+#: ../src/plugins/sources/launcher.c:689
+#, c-format
+msgid "You requested to delete \"%s\".<br><br>Are you sure you want to delete this bar source?"
+msgstr "لقد طلبت محو \"%s\".<br><br>أمتأكد من رغبتك في محو مصدر هذا الشريط ؟"
+
+#: ../src/plugins/sources/launcher.c:693
+msgid "Are you sure you want to delete this bar source?"
+msgstr "أمتأكد من رغبتك في محو مصدر هذا الشريط ؟"
+
+#: ../src/plugins/views/list.c:180
+msgid "List settings"
+msgstr "إعدادات اللائحة"
+
+#: ../src/plugins/views/list.c:824
+msgid "Drawer Plugin : List"
+msgstr "ملحق الدرج : اللائحة"
+
+#: ../src/plugins/views/list.c:861
+msgid "Item size options"
+msgstr "خيارات حجم العنصر"
+
+#: ../src/plugins/views/list.c:862
+msgid "Large"
+msgstr "كبير"
+
+#: ../src/plugins/views/list.c:864
+msgid "Medium"
+msgstr "وسط"
+
+#: ../src/plugins/views/list.c:866
+msgid "Small"
+msgstr "صغير"
+
+#~ msgid "Show rating/popularity"
+#~ msgstr "Afficher l'évaluation / la popularité"
+
+#~ msgid "Sort applications by executable"
+#~ msgstr "Ordina applicazioni per eseguibile"
+
+#~ msgid "Sort applications by date"
+#~ msgstr "Ordina applicazioni per data"
+
+#~ msgid "Sort applications by popularity"
+#~ msgstr "Ordina applicazioni per popolarità"
+
+#~ msgid "Show popularity"
+#~ msgstr "Mostra popolarità"

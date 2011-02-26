@@ -8,12 +8,14 @@ msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-17 06:01-0800\n"
-"PO-Revision-Date: 2011-02-24 23:23+0300\n"
+"PO-Revision-Date: 2011-02-26 06:47+0300\n"
 "Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
-"Language-Team: Arabic <ar@li.org>\n"
+"Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: SAUDI ARABIA\n"
 
 #: ../src/e_mod_main.c:53
 #: ../src/e_mod_main.c:60
