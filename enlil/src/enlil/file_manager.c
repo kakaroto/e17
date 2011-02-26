@@ -1,5 +1,20 @@
 #include "enlil_private.h"
 
+/* FIXME: destroy the mutex */
+
+#ifdef EFL_HAVE_POSIX_THREADS
+# define ENLIL_MUTEX pthread_mutex_t
+# define ENLIL_MUTEX_INIT(Mutex) pthread_mutex_init(&(Mutex), NULL)
+# define ENLIL_MUTEX_LOCK(Mutex) pthread_mutex_lock(&(Mutex))
+# define ENLIL_MUTEX_UNLOCK(Mutex) pthread_mutex_unlock(&(Mutex))
+#else
+# include <windows.h>
+# define ENLIL_MUTEX HANDLE
+# define ENLIL_MUTEX_INIT(Mutex) Mutex = CreateMutex(NULL, FALSE, NULL)
+# define ENLIL_MUTEX_LOCK(Mutex) WaitForSingleObject(Mutex, INFINITE)
+# define ENLIL_MUTEX_UNLOCK(Mutex) ReleaseMutex(Mutex)
+#endif
+
 //LRU list of Eet_File *
 #define MAX_SIZE_LIST 3
 
@@ -11,7 +26,7 @@ File_Table_Data *_enlil_file_manager_find(const char *file);
 static Eet_Data_Descriptor * _edd_version_new();
 
 static Eina_List *file_list = NULL;
-static pthread_mutex_t mutex;
+static ENLIL_MUTEX mutex;
 
 static EET_File_Version current_version;
 static Eet_Data_Descriptor *edd_version = NULL;
@@ -37,7 +52,7 @@ int enlil_file_manager_init()
    current_version.version = EET_FILE_VERSION;
    edd_version = _edd_version_new();
 
-   pthread_mutex_init(&mutex, NULL);
+   ENLIL_MUTEX_INIT(mutex);
 
    return ++count;
 }
@@ -49,12 +64,12 @@ int enlil_file_manager_shutdown()
 
    enlil_file_manager_flush();
 
-   pthread_mutex_lock(&mutex);
+   ENLIL_MUTEX_LOCK(mutex);
    EINA_LIST_FREE(file_list, data)
      {
 	 _data_free(data);
      }
-   pthread_mutex_unlock(&mutex);
+   ENLIL_MUTEX_UNLOCK(mutex);
    eet_data_descriptor_free(edd_version);
    edd_version = NULL;
 
@@ -91,7 +106,7 @@ void _enlil_file_manager_clean()
 Eet_File *enlil_file_manager_open(const char *file)
 {
    //LOG_DBG("Open file %s", file);
-   pthread_mutex_lock(&mutex);
+   ENLIL_MUTEX_LOCK(mutex);
    file = eina_stringshare_add(file);
    File_Table_Data *f_data = _enlil_file_manager_find(file);
    EET_File_Version *f_version;
@@ -144,14 +159,14 @@ Eet_File *enlil_file_manager_open(const char *file)
 void enlil_file_manager_close(const char *file)
 {
    //LOG_DBG("Close file %s", file);
-   pthread_mutex_unlock(&mutex);
+   ENLIL_MUTEX_UNLOCK(mutex);
 }
 
 void enlil_file_manager_flush()
 {
    Eina_List *l;
    File_Table_Data *data;
-   pthread_mutex_lock(&mutex);
+   ENLIL_MUTEX_LOCK(mutex);
 
    EINA_LIST_FOREACH(file_list, l, data)
      {
@@ -160,7 +175,7 @@ void enlil_file_manager_flush()
 	data->f = NULL;
      }
 
-   pthread_mutex_unlock(&mutex);
+   ENLIL_MUTEX_UNLOCK(mutex);
 }
 
 static void _data_free(File_Table_Data *data)

@@ -2,7 +2,11 @@
 #define  ENLIL_PRIVATE_INC
 
 #include "Enlil.h"
-#include <pthread.h>
+
+#ifdef EFL_HAVE_POSIX_THREADS
+# include <pthread.h>
+#endif
+
 #include <errno.h>
 
 #include "../define.h"

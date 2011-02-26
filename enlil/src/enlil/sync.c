@@ -3,6 +3,21 @@
 #include <unistd.h>
 #include <time.h>
 
+/* FIXME: destroy the mutex */
+
+#ifdef EFL_HAVE_POSIX_THREADS
+# define ENLIL_MUTEX pthread_mutex_t
+# define ENLIL_MUTEX_INIT(Sync) pthread_mutex_init(&(Sync->mutex), NULL)
+# define ENLIL_MUTEX_LOCK(Sync) pthread_mutex_lock(&(Sync->mutex))
+# define ENLIL_MUTEX_UNLOCK(Sync) pthread_mutex_unlock(&(Sync->mutex))
+#else
+# include <windows.h>
+# define ENLIL_MUTEX HANDLE
+# define ENLIL_MUTEX_INIT(Sync) Sync->mutex = CreateMutex(NULL, FALSE, NULL)
+# define ENLIL_MUTEX_LOCK(Sync) WaitForSingleObject(Sync->mutex, INFINITE)
+# define ENLIL_MUTEX_UNLOCK(Sync) ReleaseMutex(Sync->mutex)
+#endif
+
 int LOG_DOMAIN;
 
 typedef struct Enlil_Sync_Configuration Enlil_Sync_Configuration;
@@ -58,7 +73,7 @@ struct enlil_sync
    int is_running;
 
    // mutex used to pause the thread and wake up
-   pthread_mutex_t mutex;
+   ENLIL_MUTEX mutex;
 
    struct {
 	//thread send to the main loop
@@ -173,8 +188,8 @@ Enlil_Sync *enlil_sync_new(const char *path,
    sync->sync.error_cb = error_cb;
    sync->sync.data = user_data;
 
-   pthread_mutex_init(&(sync->mutex), NULL);
-   pthread_mutex_lock(&(sync->mutex));
+   ENLIL_MUTEX_INIT(sync);
+   ENLIL_MUTEX_LOCK(sync);
 
    sync->pipe.thread_main = ecore_pipe_add(_enlil_sync_message_cb, sync);
    ASSERT_CUSTOM_RET(sync->pipe.thread_main != NULL, enlil_sync_free(&sync); return NULL;);
@@ -448,7 +463,7 @@ static void _enlil_sync_photo_file_start(Enlil_Sync *sync, const char *folder, c
 	     sync->msg.error = Sync_Error_Eet_Save_Failed; \
 	     sync->msg.msg = buf; \
 	     ecore_pipe_write(sync->pipe.thread_main, "a", 1); \
-	     pthread_mutex_lock(&(sync->mutex)); \
+	     ENLIL_MUTEX_LOCK(sync); \
 	  } \
    }while(0)
 
@@ -502,7 +517,7 @@ static void _enlil_sync_photo_file_start(Enlil_Sync *sync, const char *folder, c
 	sync->msg.album = album;
 	sync->msg.photo = photo;
 	ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-	pthread_mutex_lock(&(sync->mutex));
+	ENLIL_MUTEX_LOCK(sync);
 
 	//update the list of album
 	if(photo_list)
@@ -527,7 +542,7 @@ static void _enlil_sync_photo_file_start(Enlil_Sync *sync, const char *folder, c
 	sync->msg.album = album;
 	sync->msg.photo = photo;
 	ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-	pthread_mutex_lock(&(sync->mutex));
+	ENLIL_MUTEX_LOCK(sync);
      }
    else if(!file_exist && photo)
      {
@@ -536,7 +551,7 @@ static void _enlil_sync_photo_file_start(Enlil_Sync *sync, const char *folder, c
 	sync->msg.album = album;
 	sync->msg.photo = photo;
 	ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-	pthread_mutex_lock(&(sync->mutex));
+	ENLIL_MUTEX_LOCK(sync);
 
 	Enlil_Photo *photo_list = enlil_album_photo_search_file_name(album, file);
 	if(photo_list)
@@ -583,7 +598,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 	     sync->msg.error = Sync_Error_Eet_Save_Failed; \
 	     sync->msg.msg = buf; \
 	     ecore_pipe_write(sync->pipe.thread_main, "a", 1); \
-	     pthread_mutex_lock(&(sync->mutex)); \
+	     ENLIL_MUTEX_LOCK(sync); \
 	  } \
    }while(0);
 
@@ -629,7 +644,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 	sync->msg.library = library;
 	sync->msg.album = album;
 	ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-	pthread_mutex_lock(&(sync->mutex));
+	ENLIL_MUTEX_LOCK(sync);
 
 
 	//update the list of album
@@ -658,7 +673,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 	sync->msg.library = library;
 	sync->msg.album = album;
 	ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-	pthread_mutex_lock(&(sync->mutex));
+	ENLIL_MUTEX_LOCK(sync);
      }
    */
    else if(album_list && !folder_exist)
@@ -673,7 +688,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *sync, const char *folder)
 	sync->msg.library = library;
 	sync->msg.album = album_list;
 	ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-	pthread_mutex_lock(&(sync->mutex));
+	ENLIL_MUTEX_LOCK(sync);
 
 	//update the list of album
 	enlil_library_album_remove(library_list, album_list);
@@ -716,7 +731,7 @@ static void _enlil_sync_all_photo_new(Enlil_Sync *sync, Enlil_Album *album, cons
 	     sync->msg.error = Sync_Error_Eet_Save_Failed; \
 	     sync->msg.msg = buf; \
 	     ecore_pipe_write(sync->pipe.thread_main, "a", 1); \
-	     pthread_mutex_lock(&(sync->mutex)); \
+	     ENLIL_MUTEX_LOCK(sync); \
 	  } \
    }while (0);
 
@@ -752,7 +767,7 @@ static void _enlil_sync_all_photo_new(Enlil_Sync *sync, Enlil_Album *album, cons
    sync->msg.album = album;
    sync->msg.photo = photo;
    ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-   pthread_mutex_lock(&(sync->mutex));
+   ENLIL_MUTEX_LOCK(sync);
 
 #undef SAVE
 }
@@ -775,7 +790,7 @@ static int _enlil_sync_all_photo_update(Enlil_Sync *sync, Enlil_Album *album, En
 	     sync->msg.error = Sync_Error_Eet_Save_Failed; \
 	     sync->msg.msg = buf; \
 	     ecore_pipe_write(sync->pipe.thread_main, "a", 1); \
-	     pthread_mutex_lock(&(sync->mutex)); \
+	     ENLIL_MUTEX_LOCK(sync); \
 	  } \
    }while (0);
 
@@ -810,7 +825,7 @@ static int _enlil_sync_all_photo_update(Enlil_Sync *sync, Enlil_Album *album, En
 	     sync->msg.album = album;
 	     sync->msg.photo = photo;
 	     ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-	     pthread_mutex_lock(&(sync->mutex));
+	     ENLIL_MUTEX_LOCK(sync);
 	  }
      }
 
@@ -879,7 +894,7 @@ static void _enlil_sync_all_album_sync(Enlil_Sync *sync, Enlil_Album *album)
 	     sync->msg.album = album;
 	     sync->msg.photo = photo;
 	     ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-	     pthread_mutex_lock(&(sync->mutex));
+	     ENLIL_MUTEX_LOCK(sync);
 
 	     enlil_photo_free(&photo);
 	  }
@@ -912,7 +927,7 @@ static void _enlil_sync_all_album_new(Enlil_Sync *sync, Enlil_Library *library_l
 	     sync->msg.error = Sync_Error_Eet_Save_Failed; \
 	     sync->msg.msg = buf; \
 	     ecore_pipe_write(sync->pipe.thread_main, "a", 1); \
-	     pthread_mutex_lock(&(sync->mutex)); \
+	     ENLIL_MUTEX_LOCK(sync); \
 	  } \
    } while(0);
 
@@ -943,7 +958,7 @@ static void _enlil_sync_all_album_new(Enlil_Sync *sync, Enlil_Library *library_l
    sync->msg.library = library;
    sync->msg.album = album;
    ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-   pthread_mutex_lock(&(sync->mutex));
+   ENLIL_MUTEX_LOCK(sync);
 
    Enlil_Album *album_list = enlil_album_new();
    enlil_album_path_set(album_list, enlil_album_path_get(album));
@@ -993,7 +1008,7 @@ static int _enlil_sync_all_album_update(Enlil_Sync *sync, Enlil_Library *library
    sync->msg.library = library;
    sync->msg.album = album;
    ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-   pthread_mutex_lock(&(sync->mutex));
+   ENLIL_MUTEX_LOCK(sync);
    } */
 
    _enlil_sync_all_album_sync(sync, album);
@@ -1062,7 +1077,7 @@ static void _enlil_sync_all_start(void *data, Ecore_Thread *thread)
 	     sync->msg.library = library;
 	     sync->msg.album = album;
 	     ecore_pipe_write(sync->pipe.thread_main, "a", 1);
-	     pthread_mutex_lock(&(sync->mutex));
+	     ENLIL_MUTEX_LOCK(sync);
 
 	     enlil_library_album_remove(library_list, album);
 	     enlil_library_eet_album_remove(library_list, enlil_album_file_name_get(album));
@@ -1143,7 +1158,7 @@ static void _enlil_sync_message_cb(void *data, void *buffer, unsigned int nbyte)
 	 break;
       case Enlil_SYNC_DONE: ;
      }
-   pthread_mutex_unlock(&(sync->mutex));
+   ENLIL_MUTEX_UNLOCK(sync);
 }
 
 /**

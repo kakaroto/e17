@@ -3,6 +3,20 @@
 #include <unistd.h>
 #include <time.h>
 
+/* FIXME: destroy the mutex */
+
+#ifdef EFL_HAVE_POSIX_THREADS
+# define ENLIL_MUTEX pthread_mutex_t
+# define ENLIL_MUTEX_INIT(Load) pthread_mutex_init(&(Load->mutex), NULL)
+# define ENLIL_MUTEX_LOCK(Load) pthread_mutex_lock(&(Load->mutex))
+# define ENLIL_MUTEX_UNLOCK(Load) pthread_mutex_unlock(&(Load->mutex))
+#else
+# include <windows.h>
+# define ENLIL_MUTEX HANDLE
+# define ENLIL_MUTEX_INIT(Load) Load->mutex = CreateMutex(NULL, FALSE, NULL)
+# define ENLIL_MUTEX_LOCK(Load) WaitForSingleObject(Load->mutex, INFINITE)
+# define ENLIL_MUTEX_UNLOCK(Load) ReleaseMutex(Load->mutex)
+#endif
 
 static void _enlil_load(void *data, Ecore_Thread *thread);
 static void _album_load(Enlil_Load *load, Enlil_Album *album);
@@ -34,7 +48,7 @@ struct enlil_load
     int is_running;
 
     // mutex use to pause the thread and wake up
-    pthread_mutex_t mutex;
+    ENLIL_MUTEX mutex;
 
     struct {
         //thread send to the main loop
@@ -81,8 +95,8 @@ Enlil_Load *enlil_load_new(Enlil_Library *library,
     load->conf.error_cb = error_cb;
     load->conf.data = user_data;
 
-    pthread_mutex_init(&(load->mutex), NULL);
-    pthread_mutex_lock(&(load->mutex));
+    ENLIL_MUTEX_INIT(load);
+    ENLIL_MUTEX_LOCK(load);
 
     load->pipe.thread_main = ecore_pipe_add(_enlil_load_message_cb, load);
     ASSERT_CUSTOM_RET(load->pipe.thread_main != NULL, enlil_load_free(&load); return NULL;);
@@ -151,7 +165,7 @@ static void _album_load(Enlil_Load *load, Enlil_Album *album)
     load->msg.type = Enlil_LOAD_ALBUM_DONE;
     load->msg.album = album;
     ecore_pipe_write(load->pipe.thread_main, "a", 1);
-    pthread_mutex_lock(&(load->mutex));
+    ENLIL_MUTEX_LOCK(load);
 }
 
 static void _enlil_load(void *data, Ecore_Thread *thread)
@@ -204,7 +218,7 @@ static void _enlil_load_message_cb(void *data, void *buffer, unsigned int nbyte)
      msg = eina_stringshare_add(load->msg.msg);
    Enlil_Album *album = load->msg.album;
 
-   pthread_mutex_unlock(&(load->mutex));
+   ENLIL_MUTEX_UNLOCK(load);
 
    switch(load->msg.type)
      {

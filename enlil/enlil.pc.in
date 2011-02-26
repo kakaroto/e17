@@ -7,7 +7,7 @@ datadir=@datadir@
 
 Name: Enlil
 Description: no description atm.
-Requires: @requirements@
+@pkgconfig_requires_private@: @requirements@
 Version: @VERSION@
 Libs: -L${libdir} -lenlil
 Cflags: -I${includedir} -I${includedir}/enlil

@@ -1,93 +1,117 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(configure.ac)
+m4_define([v_maj], [0])
+m4_define([v_min], [6])
+m4_define([v_mic], [0])
+m4_define([v_ver], [v_maj.v_min.v_mic])
+
+m4_define([lt_rev], m4_eval(v_maj + v_min))
+m4_define([lt_cur], v_mic)
+m4_define([lt_age], v_min)
+
+AC_INIT([enlil], [v_ver])
+AC_PREREQ([2.52])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_HEADERS([config.h])
+
 AC_CANONICAL_TARGET
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(Enlil, 0.6)
-AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
+AC_LIBTOOL_WIN32_DLL
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
+AM_PROG_LIBTOOL
+version_info="lt_rev:lt_cur:lt_age"
+AC_SUBST(version_info)
+
+
+### Needed information
+
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+
+### Default options with respect to host
+
+
+### Additional options to configure
+
+
+### Checks for programs
 AC_PROG_CC
+
+# pkg-config
+PKG_PROG_PKG_CONFIG
+
+# Check whether pkg-config supports Requires.private
+if $PKG_CONFIG --atleast-pkgconfig-version 0.22; then
+   pkgconfig_requires_private="Requires.private"
+else
+   pkgconfig_requires_private="Requires"
+fi
+AC_SUBST(pkgconfig_requires_private)
+
+# doxygen program for documentation building
+
+EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
+
+
+### Checks for libraries
+
+requirements="ethumb_client >= 0.1.0 ecore-file >= 1.0.0 ecore >= 1.0.0 evas >= 1.0.0 eet >= 1.2.2 eina >= 1.0.0 libexif >= 0.6.16 libiptcdata >= 1.0.2"
+
+PKG_CHECK_EXISTS([eabzu_client >= 0.0.1],
+   [
+    requirements="eabzu_client >= 0.0.1 ${requirements}"
+    have_eabzu="yes"
+    AC_DEFINE_UNQUOTED(HAVE_EABZU, [1]", [have network synchronization (eabzu) support])
+   ],
+   [have_eabzu="no"])
+
+PKG_CHECK_MODULES([ENLIL], [${requirements}])
+
+EFL_CHECK_THREADS(
+   [
+    if test "x${_efl_have_posix_threads}" = "xyes" ; then
+       have_threads="POSIX"
+    else
+       if test "x${_efl_have_win32_threads}" = "xyes" ; then
+          have_threads="Win32"
+       else
+          have_threads="no"
+       fi
+    fi],
+   [have_threads="no"])
+
+if test "x${have_threads}" = "xno" ; then
+   AC_MSG_ERROR([Thread support must be enabled])
+fi
+
+
+### Checks for compiler characteristics
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
 AM_PROG_CC_C_O
 
-AM_PROG_LIBTOOL
+EFL_COMPILER_FLAG([-Wall])
+EFL_COMPILER_FLAG([-W])
+EFL_COMPILER_FLAG([-Wshadow])
 
-AC_SUBST(version_info)
+EFL_ENLIL_BUILD=""
+case "$host_os" in
+   mingw*)
+      EFL_ENLIL_BUILD="-DEFL_ENLIL_BUILD"
+   ;;
+esac
+AC_SUBST(EFL_ENLIL_BUILD)
+
 AC_SUBST(requirements)
-AC_SUBST(packagesrcdir)
-AC_SUBST(packagedatadir)
-
-PKG_PROG_PKG_CONFIG
-
-define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
-define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
-# Find edje_cc
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-AC_ARG_WITH(edje-cc,
-  AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
-  [
-    v=$withval;
-    EDJE_CC=$v
-  ],[
-    EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
-  ]
-)
-
-# doxygen program for documentation building
-EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
-
-EFL_CHECK_PTHREAD(["yes"],
-                  [have_pthread="yes"],
-                  [have_pthread="no"],
-                  [have_pthread_spinlock="yes"],
-                  [have_pthread_spinlock="no"])
-
-
-requirement_flickr=""
-have_flickr="no"
-
-PKG_CHECK_MODULES(EABZU, [eabzu_client > 0.0.1 ],
-                  requirement_eabzu="eabzu_client"
-                  have_eabzu="yes"
-                  AC_DEFINE_UNQUOTED(HAVE_EABZU, "${have_eabzu}", [have network synchronization (eabzu) support]),
-                  have_eabzu="no"
-                  )
-# required libs / cflags
-flickr_libs=$FLICKR_LIBS
-flickr_cflags=$FLICKR_CFLAGS
-AC_SUBST(flickr_libs)
-AC_SUBST(flickr_cflags)
-
-requirements="ecore eet ecore-file evas ethumb_client"
-requirements="${requirements} ${requirement_flickr}"
-AC_SUBST(requirements)
-
-
-
-PKG_CHECK_MODULES(ENLIL, [
-                             ecore >= 0.9.9.062
-                             ecore-file >= 0.9.9.062
-                             eet >= 1.2.2
-                             ethumb_client >= 0.1
-                             libexif >= 0.6.16
-                             libiptcdata >= 1.0.2
-                             libxml-2.0 >= 0.1.1
-                        ])
-# required libs / cflags
-enlil_libs=$ENLIL_LIBS
-enlil_cflags=$ENLIL_CFLAGS
-AC_SUBST(enlil_libs)
-AC_SUBST(enlil_cflags)
-
-AC_SUBST(EDJE_CC)
-AC_MSG_CHECKING([Which edje_cc to use])
-AC_MSG_RESULT(${EDJE_CC})
 
 AC_OUTPUT([
 Makefile
@@ -110,10 +134,11 @@ echo "$PACKAGE $VERSION"
 echo "--------------------------------------------------------"
 echo
 echo
-echo "  Installation Path...................: $prefix"
-echo ""
-echo "  Thread Support...........................: ${have_pthread} (spinlock: ${have_pthread_spinlock})"
-echo "  Network synchronisation support (requires eabzu_client) .....: ${have_eabzu}"
+echo "  Network synchronisation..: ${have_eabzu}"
+echo "  Thread Support...........: ${have_threads}"
+echo
+echo "Installation...............: make install (as root if needed, with 'su' or 'sudo')"
+echo "  prefix...................: $prefix"
 echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
 echo "and then afterwards as root (or the user who will install this), type"
