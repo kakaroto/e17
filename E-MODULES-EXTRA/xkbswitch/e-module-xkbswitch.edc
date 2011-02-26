@@ -26,7 +26,7 @@ collections
      }
    group 
      {
-	name: "modules/skel/main";
+	name: "modules/xkbswitch/main";
 	max: 128 128;
 	parts 
 	  {

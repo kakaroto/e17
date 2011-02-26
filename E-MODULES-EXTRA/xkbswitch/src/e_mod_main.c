@@ -9,13 +9,13 @@ static char *_gc_label(E_Gadcon_Client_Class *client_class);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
-static void _skel_conf_new(void);
-static void _skel_conf_free(void);
-static Eina_Bool _skel_conf_timer(void *data);
-static Config_Item *_skel_conf_item_get(const char *id);
-static void _skel_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
-static void _skel_cb_menu_post(void *data, E_Menu *menu);
-static void _skel_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
+static void _xkbswitch_conf_new(void);
+static void _xkbswitch_conf_free(void);
+static Eina_Bool _xkbswitch_conf_timer(void *data);
+static Config_Item *_xkbswitch_conf_item_get(const char *id);
+static void _xkbswitch_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
+static void _xkbswitch_cb_menu_post(void *data, E_Menu *menu);
+static void _xkbswitch_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 
 /* Local Structures */
 typedef struct _Instance Instance;
@@ -27,7 +27,7 @@ struct _Instance
    E_Gadcon_Client *gcc;
 
    /* evas_object used to display */
-   Evas_Object *o_skel;
+   Evas_Object *o_xkbswitch;
 
    /* popup anyone ? */
    E_Menu *menu;
@@ -41,18 +41,18 @@ static int uuid = 0;
 static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
-Config *skel_conf = NULL;
+Config *xkbswitch_conf = NULL;
 
 static const E_Gadcon_Client_Class _gc_class = 
 {
-   GADCON_CLIENT_CLASS_VERSION, "skel", 
+   GADCON_CLIENT_CLASS_VERSION, "xkbswitch", 
      {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, 
           _gc_id_new, NULL, NULL},
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 /* We set the version and the name, check e_mod_main.h for more details */
-EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Skel"};
+EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "XKB Switcher"};
 
 /*
  * Module Functions
@@ -70,17 +70,17 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    /* Location of theme to load for this module */
-   snprintf(buf, sizeof(buf), "%s/e-module-skel.edj", m->dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-xkbswitch.edj", m->dir);
 
 
    /* Display this Modules config info in the main Config Panel */
 
    /* starts with a category, create it if not already exists */
-   e_configure_registry_category_add("advanced", 80, "Advanced", 
-                                     NULL, "preferences-advanced");
+   e_configure_registry_category_add("input", 80, "Input", 
+                                     NULL, "preferences-input");
    /* add right-side item */
-   e_configure_registry_item_add("advanced/skel", 110, D_("Skel"), 
-                                 NULL, buf, e_int_config_skel_module);
+   e_configure_registry_item_add("input/xkbswitch", 110, D_("XKB Switcher"), 
+                                 NULL, buf, e_int_config_xkbswitch_module);
 
    /* Define EET Data Storage for the config file */
    conf_item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
@@ -101,16 +101,16 @@ e_modapi_init(E_Module *m)
    E_CONFIG_LIST(D, T, conf_items, conf_item_edd); /* the list */
 
    /* Tell E to find any existing module data. First run ? */
-   skel_conf = e_config_domain_load("module.skel", conf_edd);
-   if (skel_conf) 
+   xkbswitch_conf = e_config_domain_load("module.xkbswitch", conf_edd);
+   if (xkbswitch_conf) 
      {
         /* Check config version */
-        if ((skel_conf->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
+        if ((xkbswitch_conf->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
           {
              /* config too old */
-             _skel_conf_free();
-	     ecore_timer_add(1.0, _skel_conf_timer,
-			     D_("Skeleton Module Configuration data needed "
+             _xkbswitch_conf_free();
+	     ecore_timer_add(1.0, _xkbswitch_conf_timer,
+			     D_("XKB Switcher Module Configuration data needed "
 			     "upgrading. Your old configuration<br> has been"
 			     " wiped and a new set of defaults initialized. "
 			     "This<br>will happen regularly during "
@@ -125,12 +125,12 @@ e_modapi_init(E_Module *m)
           }
 
         /* Ardvarks */
-        else if (skel_conf->version > MOD_CONFIG_FILE_VERSION) 
+        else if (xkbswitch_conf->version > MOD_CONFIG_FILE_VERSION) 
           {
              /* config too new...wtf ? */
-             _skel_conf_free();
-	     ecore_timer_add(1.0, _skel_conf_timer, 
-			     D_("Your Skeleton Module configuration is NEWER "
+             _xkbswitch_conf_free();
+	     ecore_timer_add(1.0, _xkbswitch_conf_timer, 
+			     D_("Your XKB Switcher Module configuration is NEWER "
 			     "than the module version. This is "
 			     "very<br>strange. This should not happen unless"
 			     " you downgraded<br>the module or "
@@ -145,11 +145,11 @@ e_modapi_init(E_Module *m)
 
    /* if we don't have a config yet, or it got erased above, 
     * then create a default one */
-   if (!skel_conf) _skel_conf_new();
+   if (!xkbswitch_conf) _xkbswitch_conf_new();
 
    /* create a link from the modules config to the module
     * this is not written */
-   skel_conf->module = m;
+   xkbswitch_conf->module = m;
 
    /* Tell any gadget containers (shelves, etc) that we provide a module
     * for the user to enjoy */
@@ -166,32 +166,32 @@ EAPI int
 e_modapi_shutdown(E_Module *m) 
 {
    /* Unregister the config dialog from the main panel */
-   e_configure_registry_item_del("advanced/skel");
+   e_configure_registry_item_del("input/xkbswitch");
 
    /* Remove the config panel category if we can. E will tell us.
     category stays if other items using it */
-   e_configure_registry_category_del("advanced");
+   e_configure_registry_category_del("input");
 
    /* Kill the config dialog */
-   if (skel_conf->cfd) e_object_del(E_OBJECT(skel_conf->cfd));
-   skel_conf->cfd = NULL;
+   if (xkbswitch_conf->cfd) e_object_del(E_OBJECT(xkbswitch_conf->cfd));
+   xkbswitch_conf->cfd = NULL;
 
    /* Tell E the module is now unloaded. Gets removed from shelves, etc. */
-   skel_conf->module = NULL;
+   xkbswitch_conf->module = NULL;
    e_gadcon_provider_unregister(&_gc_class);
 
    /* Cleanup our item list */
-   while (skel_conf->conf_items) 
+   while (xkbswitch_conf->conf_items) 
      {
         Config_Item *ci = NULL;
 
         /* Grab an item from the list */
-        ci = skel_conf->conf_items->data;
+        ci = xkbswitch_conf->conf_items->data;
 
         /* remove it */
-        skel_conf->conf_items = 
-          eina_list_remove_list(skel_conf->conf_items, 
-                                skel_conf->conf_items);
+        xkbswitch_conf->conf_items = 
+          eina_list_remove_list(xkbswitch_conf->conf_items, 
+                                xkbswitch_conf->conf_items);
 
         /* cleanup stringshares */
         if (ci->id) eina_stringshare_del(ci->id);
@@ -201,7 +201,7 @@ e_modapi_shutdown(E_Module *m)
      }
 
    /* Cleanup the main config structure */
-   E_FREE(skel_conf);
+   E_FREE(xkbswitch_conf);
 
    /* Clean EET */
    E_CONFIG_DD_FREE(conf_item_edd);
@@ -215,7 +215,7 @@ e_modapi_shutdown(E_Module *m)
 EAPI int 
 e_modapi_save(E_Module *m) 
 {
-   e_config_domain_save("module.skel", conf_edd, skel_conf);
+   e_config_domain_save("module.xkbswitch", conf_edd, xkbswitch_conf);
    return 1;
 }
 
@@ -229,27 +229,27 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    char buf[4096];
 
    /* theme file */
-   snprintf(buf, sizeof(buf), "%s/e-module-skel.edj", 
-            skel_conf->module->dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-xkbswitch.edj", 
+            xkbswitch_conf->module->dir);
 
    /* New visual instance, any config ? */
    inst = E_NEW(Instance, 1);
-   inst->conf_item = _skel_conf_item_get(id);
+   inst->conf_item = _xkbswitch_conf_item_get(id);
 
    /* create on-screen object */
-   inst->o_skel = edje_object_add(gc->evas);
+   inst->o_xkbswitch = edje_object_add(gc->evas);
    /* we have a theme ? */
-   if (!e_theme_edje_object_set(inst->o_skel, "base/theme/modules/skel", 
-                                "modules/skel/main"))
-     edje_object_file_set(inst->o_skel, buf, "modules/skel/main");
+   if (!e_theme_edje_object_set(inst->o_xkbswitch, "base/theme/modules/xkbswitch", 
+                                "modules/xkbswitch/main"))
+     edje_object_file_set(inst->o_xkbswitch, buf, "modules/xkbswitch/main");
 
    /* Start loading our module on screen via container */
-   inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_skel);
+   inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_xkbswitch);
    inst->gcc->data = inst;
 
    /* hook a mouse down. we want/have a popup menu, right ? */
-   evas_object_event_callback_add(inst->o_skel, EVAS_CALLBACK_MOUSE_DOWN, 
-                                  _skel_cb_mouse_down, inst);
+   evas_object_event_callback_add(inst->o_xkbswitch, EVAS_CALLBACK_MOUSE_DOWN, 
+                                  _xkbswitch_cb_mouse_down, inst);
 
    /* add to list of running instances so we can cleanup later */
    instances = eina_list_append(instances, inst);
@@ -275,12 +275,12 @@ _gc_shutdown(E_Gadcon_Client *gcc)
         inst->menu = NULL;
      }
    /* delete the visual */
-   if (inst->o_skel) 
+   if (inst->o_xkbswitch) 
      {
         /* remove mouse down callback hook */
-        evas_object_event_callback_del(inst->o_skel, EVAS_CALLBACK_MOUSE_DOWN, 
-                                       _skel_cb_mouse_down);
-        evas_object_del(inst->o_skel);
+        evas_object_event_callback_del(inst->o_xkbswitch, EVAS_CALLBACK_MOUSE_DOWN, 
+                                       _xkbswitch_cb_mouse_down);
+        evas_object_del(inst->o_xkbswitch);
      }
    E_FREE(inst);
 }
@@ -297,7 +297,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 static char *
 _gc_label(E_Gadcon_Client_Class *client_class) 
 {
-   return D_("Skeleton");
+   return D_("XKB Switcher");
 }
 
 /* so E can keep a unique instance per-container */
@@ -306,7 +306,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 {
    Config_Item *ci = NULL;
 
-   ci = _skel_conf_item_get(NULL);
+   ci = _xkbswitch_conf_item_get(NULL);
    return ci->id;
 }
 
@@ -317,7 +317,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
    char buf[4096];
 
    /* theme */
-   snprintf(buf, sizeof(buf), "%s/e-module-skel.edj", skel_conf->module->dir);
+   snprintf(buf, sizeof(buf), "%s/e-module-xkbswitch.edj", xkbswitch_conf->module->dir);
 
    /* create icon object */
    o = edje_object_add(evas);
@@ -330,25 +330,25 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 
 /* new module needs a new config :), or config too old and we need one anyway */
 static void 
-_skel_conf_new(void) 
+_xkbswitch_conf_new(void) 
 {
    Config_Item *ci = NULL;
    char buf[128];
 
-   skel_conf = E_NEW(Config, 1);
-   skel_conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
+   xkbswitch_conf = E_NEW(Config, 1);
+   xkbswitch_conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
-#define IFMODCFG(v) if ((skel_conf->version & 0xffff) < v) {
+#define IFMODCFG(v) if ((xkbswitch_conf->version & 0xffff) < v) {
 #define IFMODCFGEND }
 
    /* setup defaults */
    IFMODCFG(0x008d);
-   skel_conf->switch1 = 1;
-   _skel_conf_item_get(NULL);
+   xkbswitch_conf->switch1 = 1;
+   _xkbswitch_conf_item_get(NULL);
    IFMODCFGEND;
 
    /* update the version */
-   skel_conf->version = MOD_CONFIG_FILE_VERSION;
+   xkbswitch_conf->version = MOD_CONFIG_FILE_VERSION;
 
    /* setup limits on the config properties here (if needed) */
 
@@ -359,37 +359,37 @@ _skel_conf_new(void)
 /* This is called when we need to cleanup the actual configuration,
  * for example when our configuration is too old */
 static void 
-_skel_conf_free(void) 
+_xkbswitch_conf_free(void) 
 {
    /* cleanup any stringshares here */
-   while (skel_conf->conf_items) 
+   while (xkbswitch_conf->conf_items) 
      {
         Config_Item *ci = NULL;
 
-        ci = skel_conf->conf_items->data;
-        skel_conf->conf_items = 
-          eina_list_remove_list(skel_conf->conf_items, 
-                                skel_conf->conf_items);
+        ci = xkbswitch_conf->conf_items->data;
+        xkbswitch_conf->conf_items = 
+          eina_list_remove_list(xkbswitch_conf->conf_items, 
+                                xkbswitch_conf->conf_items);
         /* EPA */
         if (ci->id) eina_stringshare_del(ci->id);
         E_FREE(ci);
      }
 
-   E_FREE(skel_conf);
+   E_FREE(xkbswitch_conf);
 }
 
 /* timer for the config oops dialog (old configuration needs update) */
 static Eina_Bool 
-_skel_conf_timer(void *data) 
+_xkbswitch_conf_timer(void *data) 
 {
-   e_util_dialog_internal( D_("Skeleton Configuration Updated"), data);
+   e_util_dialog_internal( D_("XKB Switcher Configuration Updated"), data);
    return EINA_FALSE;
 }
 
 /* function to search for any Config_Item struct for this Item
  * create if needed */
 static Config_Item *
-_skel_conf_item_get(const char *id) 
+_xkbswitch_conf_item_get(const char *id) 
 {
    Eina_List *l = NULL;
    Config_Item *ci = NULL;
@@ -404,7 +404,7 @@ _skel_conf_item_get(const char *id)
    else 
      {
         uuid++;
-        for (l = skel_conf->conf_items; l; l = l->next) 
+        for (l = xkbswitch_conf->conf_items; l; l = l->next) 
           {
              if (!(ci = l->data)) continue;
              if ((ci->id) && (!strcmp(ci->id, id))) return ci;
@@ -413,13 +413,13 @@ _skel_conf_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
    ci->switch2 = 0;
-   skel_conf->conf_items = eina_list_append(skel_conf->conf_items, ci);
+   xkbswitch_conf->conf_items = eina_list_append(xkbswitch_conf->conf_items, ci);
    return ci;
 }
 
 /* Pants On */
 static void 
-_skel_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
+_xkbswitch_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
    Instance *inst = NULL;
    Evas_Event_Mouse_Down *ev;
@@ -438,7 +438,7 @@ _skel_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
         /* create popup menu */
         ma = e_menu_new();
-        e_menu_post_deactivate_callback_set(ma, _skel_cb_menu_post, inst);
+        e_menu_post_deactivate_callback_set(ma, _xkbswitch_cb_menu_post, inst);
         inst->menu = ma;
 
         mg = e_menu_new();
@@ -446,7 +446,7 @@ _skel_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         mi = e_menu_item_new(mg);
         e_menu_item_label_set(mi, D_("Settings"));
         e_util_menu_item_theme_icon_set(mi, "preferences-system");
-        e_menu_item_callback_set(mi, _skel_cb_menu_configure, NULL);
+        e_menu_item_callback_set(mi, _xkbswitch_cb_menu_configure, NULL);
 
         /* Each Gadget Client has a utility menu from the Container */
         e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
@@ -464,7 +464,7 @@ _skel_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
 /* popup menu closing, cleanup */
 static void 
-_skel_cb_menu_post(void *data, E_Menu *menu) 
+_xkbswitch_cb_menu_post(void *data, E_Menu *menu) 
 {
    Instance *inst = NULL;
 
@@ -476,9 +476,9 @@ _skel_cb_menu_post(void *data, E_Menu *menu)
 
 /* call configure from popup */
 static void 
-_skel_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi) 
+_xkbswitch_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi) 
 {
-   if (!skel_conf) return;
-   if (skel_conf->cfd) return;
-   e_int_config_skel_module(mn->zone->container, NULL);
+   if (!xkbswitch_conf) return;
+   if (xkbswitch_conf->cfd) return;
+   e_int_config_xkbswitch_module(mn->zone->container, NULL);
 }

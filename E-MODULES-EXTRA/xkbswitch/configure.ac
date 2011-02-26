@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(skel, 0.0.1, devilhorns@comcast.net)
+AC_INIT(xkbswitch, 0.0.1, quaker66@gmail.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
@@ -54,11 +54,23 @@ AC_ARG_ENABLE(homedir-install,
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
 )
 
+AC_CHECK_HEADERS(X11/XKBlib.h, ,
+  AC_MSG_ERROR([Cannot find XKBlib.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]))
+
+AC_CHECK_HEADERS(X11/extensions/XKBrules.h, ,
+  AC_MSG_ERROR([Cannot find XKBrules.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]),
+  [
+    #include <stdio.h>
+    #include <X11/XKBlib.h>
+  ])
+
+PKG_CHECK_MODULES(XKBSWITCH, [libxml-2.0])
+
 AC_OUTPUT([
 Makefile
 src/Makefile
 po/Makefile.in
 module.desktop
-e_modules-skel.spec
+e_modules-xkbswitch.spec
 ], [
 ])

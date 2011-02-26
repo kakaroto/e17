@@ -1,19 +1,6 @@
 [Desktop Entry]
 Type=Link
-Name=Skel
-Name[ru]=Скелет
-Name[de]=Skelett
-Name[eo]=Skeleto
-Name[el]=Skel
-Icon=e-module-skel
-Comment=Not meant for users. Basis for building new ones.
-Comment[ru]=Не предназначен для пользователей. База для создания новых модулей.
-Comment[cs]=Není pro uživatele. Jen jako základ pro vytváøení nových modulù.
-Comment[de]=Nicht für Nutzer gedacht. Basis für neue Helfermodule.
-Comment[eo]=Ne celas uzantojn. Bazo pour krei novajn modulojn.
-Comment[fr]=Pas orienté utilisateur. C'est une base pour construire de nouveaux modules.
-Comment[it]=Non inteso per gli utenti. Fornisce la base per costruire nuovi moduli.
-Comment[el]=Δεν προορίζετε για χρήστες.Είναι μια βάση δημιουργίας νέων ενοτήτων.
-Comment[pt]=Não é destinado a utilizadores. Bases para desenvolvimento de módulos.
-#Several different types available here. NEED TO DOC THESE.
+Name=XKB Switcher
+Icon=e-module-xkbswitch
+Comment=Keyboard switcher module for Enlightenment.
 X-Enlightenment-ModuleType=utils
