@@ -35,8 +35,7 @@ download.c
 
 installed_headersdir = $(prefix)/include/enlil
 installed_headers_DATA = Enlil.h
-
+libenlil_la_CFLAGS =  @EFL_PTHREAD_CFLAGS@
 libenlil_la_LIBADD  = @ENLIL_LIBS@
-
-libenlil_la_LDFLAGS = -no-undefined -version-info @version_info@
+libenlil_la_LDFLAGS = -no-undefined -version-info @version_info@ @EFL_PTHREAD_LIBS@
 
