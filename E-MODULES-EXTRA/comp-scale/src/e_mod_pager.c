@@ -252,30 +252,32 @@ _pager_finish()
 
    desk = e_desk_current_get(zone);
 
-   if (current_desk && (desk != current_desk))
+   EINA_LIST_FOREACH(items, l, it)
      {
-	{
-	   int tmp = e_config->desk_flip_animate_mode;
-	   e_config->desk_flip_animate_mode = 0;
-	   e_desk_show(current_desk);
-	   e_config->desk_flip_animate_mode = tmp;
+	if (it->desk == it->bd->desk)
+	  continue;
 
-	   EINA_LIST_FOREACH(items, l, it)
-	     if (it->desk && (it->desk != it->bd->desk))
-	       e_border_desk_set(it->bd, it->desk);
-	}
+	/* dont hide border */
+	if (it->desk == current_desk)
+	  it->bd->visible = 0;
+
+	e_border_desk_set(it->bd, it->desk);
+
+	if (it->desk == current_desk)
+	  it->bd->visible = 1;
      }
 
-   EINA_LIST_FREE(desks, o)
+   if (current_desk && (desk != current_desk))
      {
-	evas_object_del(o);
+	/* dont do flip animation */
+	int tmp = e_config->desk_flip_animate_mode;
+	e_config->desk_flip_animate_mode = 0;
+	e_desk_show(current_desk);
+	e_config->desk_flip_animate_mode = tmp;
      }
 
    EINA_LIST_FREE(items, it)
      {
-	if (it->desk && (it->desk != it->bd->desk))
-	  e_border_desk_set(it->bd, it->desk);
-
 	if (it->bd->desk != current_desk)
 	  {
 	     e_border_hide(it->bd, 2);
@@ -291,6 +293,9 @@ _pager_finish()
 
 	_pager_win_del(it);
      }
+
+   EINA_LIST_FREE(desks, o)
+     evas_object_del(o);
 
    EINA_LIST_FREE(popups, it)
      _pager_win_del(it);
@@ -398,12 +403,12 @@ _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (!it->mouse_down)
      return;
-   
+
    it->mouse_down = EINA_FALSE;
 
    if (!scale_state)
      return;
-   
+
    if (x + it->bd->w > zone->w) x = zone->w - it->bd->w;
    if (y + it->bd->h > zone->h) y = zone->h - it->bd->h;
    if (x < 0) x = 0;
