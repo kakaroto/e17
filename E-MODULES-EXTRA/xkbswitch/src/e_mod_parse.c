@@ -102,6 +102,9 @@ void parse_rules(const char *fname)
         NEXT_TO("model", "layout")
     }
 
+    /* Sort models */
+    models = eina_list_sort(models, eina_list_count(models), _model_sort_cb);
+
     /* We're at first 'layout' here now */
     m = 0;
     while (rv == 1 && !m)
@@ -175,7 +178,17 @@ void parse_rules(const char *fname)
 
                     layout->variants = eina_list_append(layout->variants, variant);
                 }
-                else break;
+                else
+                {
+                        /* Sort variants */
+                        layout->variants =
+                            eina_list_sort(
+                                layout->variants,
+                                eina_list_count(layout->variants),
+                                _variant_sort_cb
+                            );
+                        break;
+                }
             }
         }
 
@@ -185,6 +198,10 @@ void parse_rules(const char *fname)
         /* Move to next 'layout' */
         NEXT_TO("layout", "optionList")
     }
+
+    /* Sort layouts */
+    layouts = eina_list_sort(layouts, eina_list_count(layouts), _layout_sort_cb);
+
     xmlFreeTextReader(rdr);
 }
 
@@ -223,4 +240,37 @@ node_retval _parse_node(xmlTextReaderPtr rdr)
         eina_stringshare_add(n),
         eina_stringshare_add(v)
     };
+}
+
+int _layout_sort_cb(const void *data1, const void *data2)
+{
+    const e_xkb_layout *l1 = NULL, *l2 = NULL;
+
+    if (!(l1 = data1)) return 1;
+    if (!l1->name) return 1;
+    if (!(l2 = data2)) return -1;
+    if (!l2->name) return -1;
+    return strcmp(l1->name, l2->name);
+}
+
+int _model_sort_cb(const void *data1, const void *data2)
+{
+    const e_xkb_model *l1 = NULL, *l2 = NULL;
+
+    if (!(l1 = data1)) return 1;
+    if (!l1->name) return 1;
+    if (!(l2 = data2)) return -1;
+    if (!l2->name) return -1;
+    return strcmp(l1->name, l2->name);
+}
+
+int _variant_sort_cb(const void *data1, const void *data2)
+{
+    const e_xkb_variant *l1 = NULL, *l2 = NULL;
+
+    if (!(l1 = data1)) return 1;
+    if (!l1->name) return 1;
+    if (!(l2 = data2)) return -1;
+    if (!l2->name) return -1;
+    return strcmp(l1->name, l2->name);
 }

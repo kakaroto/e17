@@ -30,13 +30,13 @@ static void _cb_del (void *data, void *data2 __UNUSED__);
 static void _cb_up  (void *data, void *data2 __UNUSED__);
 static void _cb_down(void *data, void *data2 __UNUSED__);
 
-static Eina_Bool _cb_fill_delay   (void *data);
-static void      _cb_layout_select(void *data);
+static Eina_Bool _cb_fill_delay        (void *data);
+static void      _cb_layout_select     (void *data);
+static void      _cb_layout_used_select(void *data);
 
 static void _fill_used_list(E_Config_Dialog_Data *cfdata);
 
 static int _cb_layouts_bylabel(const void *data1, const void *data2);
-static int _cb_layouts_sort   (const void *data1, const void *data2);
 
 /* External Functions */
 
@@ -260,7 +260,7 @@ static void _cb_add(void *data, void *data2 __UNUSED__)
     {
         if (!it->selected || it->header) continue;
         if (!(layout = eina_list_search_unsorted(layouts, _cb_layouts_bylabel, it->label))) continue;
-        if (!eina_list_search_unsorted(cfdata->layouts_used, _cb_layouts_sort, layout))
+        if (!eina_list_search_unsorted(cfdata->layouts_used, _layout_sort_cb, layout))
         {
             end = e_widget_ilist_item_end_get(it);
             if (end) edje_object_signal_emit(end, "e,state,checked", "e");
@@ -305,15 +305,127 @@ static void _cb_del(void *data, void *data2 __UNUSED__)
 static void _cb_up(void *data, void *data2 __UNUSED__)
 {
     E_Config_Dialog_Data *cfdata = NULL;
+    Eina_List *l = NULL, *ll = NULL;
+    e_xkb_layout *layout = NULL;
+    Evas_Object *icon = NULL;
+    const char *lbl = NULL;
+    char buf[4096];
+    int sel = 0;
+
     if (!(cfdata = data)) return;
-    return;
+
+    evas_event_freeze(cfdata->evas);
+    edje_freeze();
+    e_widget_ilist_freeze(cfdata->used_list);
+
+    sel = e_widget_ilist_selected_get(cfdata->used_list);
+    lbl = e_widget_ilist_selected_label_get(cfdata->used_list);
+    if ((l = eina_list_search_unsorted_list(cfdata->layouts_used, _cb_layouts_bylabel, lbl)))
+    {
+        layout = eina_list_data_get(l);
+        if (l->prev)
+        {
+            ll = l->prev;
+
+            cfdata->layouts_used = eina_list_remove_list(cfdata->layouts_used, l);
+            cfdata->layouts_used = eina_list_prepend_relative_list(cfdata->layouts_used, layout, ll);
+
+            e_widget_ilist_remove_num(cfdata->used_list, sel);
+            e_widget_ilist_go(cfdata->used_list);
+
+            icon = e_icon_add(cfdata->evas);
+            snprintf(
+                buf, sizeof(buf),
+                "%s/flags/%s_flag.png",
+                e_module_dir_get(xkbswitch_conf->module),
+                layout->short_descr
+            );
+            if (!ecore_file_exists(buf))
+                snprintf(
+                    buf, sizeof(buf),
+                    "%s/flags/unknown_flag.png", 
+                    e_module_dir_get(xkbswitch_conf->module)
+                );
+            e_icon_file_set(icon, buf);
+            snprintf(buf, sizeof(buf), "%s (%s)", layout->description, layout->short_descr);
+            e_widget_ilist_prepend_relative(
+                cfdata->used_list,
+                icon, buf,
+                _cb_layout_used_select,
+                cfdata, layout->name,
+                (sel - 1)
+            );
+            e_widget_ilist_selected_set(cfdata->used_list, (sel - 1));
+        }
+    }
+
+    e_widget_ilist_go(cfdata->used_list);
+    e_widget_ilist_thaw(cfdata->used_list);
+    edje_thaw();
+    evas_event_thaw(cfdata->evas);
 }
 
 static void _cb_down(void *data, void *data2 __UNUSED__)
 {
     E_Config_Dialog_Data *cfdata = NULL;
+    Eina_List *l = NULL, *ll = NULL;
+    e_xkb_layout *layout = NULL;
+    Evas_Object *icon = NULL;
+    const char *lbl = NULL;
+    char buf[4096];
+    int sel = 0;
+
     if (!(cfdata = data)) return;
-    return;
+
+    evas_event_freeze(cfdata->evas);
+    edje_freeze();
+    e_widget_ilist_freeze(cfdata->used_list);
+
+    sel = e_widget_ilist_selected_get(cfdata->used_list);
+    lbl = e_widget_ilist_selected_label_get(cfdata->used_list);
+    if ((l = eina_list_search_unsorted_list(cfdata->layouts_used, _cb_layouts_bylabel, lbl)))
+    {
+        layout = eina_list_data_get(l);
+        if (l->next)
+        {
+            ll = l->next;
+
+            cfdata->layouts_used = eina_list_remove_list(cfdata->layouts_used, l);
+            cfdata->layouts_used = eina_list_append_relative_list(cfdata->layouts_used, layout, ll);
+
+            e_widget_ilist_remove_num(cfdata->used_list, sel);
+            e_widget_ilist_go(cfdata->used_list);
+
+            icon = e_icon_add(cfdata->evas);
+            snprintf(
+                buf, sizeof(buf),
+                "%s/flags/%s_flag.png",
+                e_module_dir_get(xkbswitch_conf->module),
+                layout->short_descr
+            );
+            if (!ecore_file_exists(buf))
+                snprintf(
+                    buf, sizeof(buf),
+                    "%s/flags/unknown_flag.png", 
+                    e_module_dir_get(xkbswitch_conf->module)
+                );
+            e_icon_file_set(icon, buf);
+            snprintf(buf, sizeof(buf), "%s (%s)", layout->description, layout->short_descr);
+            e_widget_ilist_append_relative(
+                cfdata->used_list,
+                icon, buf,
+                _cb_layout_used_select,
+                cfdata, layout->name,
+                sel 
+            );
+            e_widget_ilist_selected_set(cfdata->used_list, (sel + 1));
+        }
+    }
+
+    e_widget_ilist_go(cfdata->used_list);
+    e_widget_ilist_thaw(cfdata->used_list);
+    edje_thaw();
+    evas_event_thaw(cfdata->evas);
 }
 
 static Eina_Bool _cb_fill_delay(void *data)
@@ -326,6 +438,11 @@ static Eina_Bool _cb_fill_delay(void *data)
     char buf[4096];
 
     if (!(cfdata = data)) return ECORE_CALLBACK_RENEW;
+
+    evas_event_freeze(cfdata->evas);
+    edje_freeze();
+    e_widget_ilist_freeze(cfdata->layout_list);
+    e_widget_ilist_clear(cfdata->layout_list);
 
     EINA_LIST_FOREACH(layouts, l, layout)
     {
@@ -356,7 +473,7 @@ static Eina_Bool _cb_fill_delay(void *data)
 
         if (eina_list_search_unsorted(
             cfdata->layouts_used,
-            _cb_layouts_sort,
+            _layout_sort_cb,
             layout
         )) if (end)
             edje_object_signal_emit(end, "e,state,checked", "e");
@@ -375,13 +492,9 @@ static Eina_Bool _cb_fill_delay(void *data)
     }
 
     e_widget_ilist_go(cfdata->layout_list);
-
-    const E_Ilist_Item *it;
-    EINA_LIST_FOREACH(e_widget_ilist_items_get(cfdata->layout_list), l, it)
-    {
-        Evas_Object *end = e_widget_ilist_item_end_get(it);
-        if (end) edje_object_signal_emit(end, "e,state,checked", "e");
-    }
+    e_widget_ilist_thaw(cfdata->layout_list);
+    edje_thaw();
+    evas_event_thaw(cfdata->evas);
 
     cfdata->fill_delay = NULL;
     return ECORE_CALLBACK_CANCEL;
@@ -389,6 +502,47 @@ static Eina_Bool _cb_fill_delay(void *data)
 
 static void _fill_used_list(E_Config_Dialog_Data *cfdata)
 {
+    Eina_List *l = NULL;
+    Evas_Object *ic = NULL;
+    e_xkb_layout *layout = NULL;
+    char buf[4096];
+
+    evas_event_freeze(cfdata->evas);
+    edje_freeze();
+    e_widget_ilist_freeze(cfdata->used_list);
+    e_widget_ilist_clear(cfdata->used_list);
+
+    EINA_LIST_FOREACH(cfdata->layouts_used, l, layout)
+    {
+        ic = e_icon_add(cfdata->evas);
+        snprintf(
+            buf, sizeof(buf),
+            "%s/flags/%s_flag.png",
+            e_module_dir_get(xkbswitch_conf->module),
+            layout->short_descr
+        );
+        if (!ecore_file_exists(buf))
+            snprintf(
+                buf, sizeof(buf),
+                "%s/flags/unknown_flag.png", 
+                e_module_dir_get(xkbswitch_conf->module)
+            );
+        e_icon_file_set(ic, buf);
+
+        snprintf(buf, sizeof(buf), "%s (%s)", layout->description, layout->short_descr);
+        e_widget_ilist_append(
+            cfdata->used_list,
+            ic, buf,
+            _cb_layout_used_select,
+            cfdata,
+            layout->name
+        );
+    }
+
+    e_widget_ilist_go(cfdata->used_list);
+    e_widget_ilist_thaw(cfdata->used_list);
+    edje_thaw();
+    evas_event_thaw(cfdata->evas);
 }
 
 static void _cb_layout_select(void *data)
@@ -412,6 +566,20 @@ static void _cb_layout_select(void *data)
     e_widget_disabled_set(cfdata->btn_del, !enabled);
 }
 
+static void _cb_layout_used_select(void *data)
+{
+    E_Config_Dialog_Data *cfdata = NULL;
+    int sel = 0, count = 0;
+
+    if (!(cfdata = data)) return;
+
+    sel = e_widget_ilist_selected_get(cfdata->used_list);
+    count = eina_list_count(cfdata->layouts_used);
+
+    e_widget_disabled_set(cfdata->btn_up, (sel == 0));
+    e_widget_disabled_set(cfdata->btn_down, !(sel < (count - 1)));
+}
+
 static int _cb_layouts_bylabel(const void *data1, const void *data2)
 {
     const e_xkb_layout *l1 = NULL;
@@ -428,15 +596,4 @@ static int _cb_layouts_bylabel(const void *data1, const void *data2)
      */
     snprintf(buf, sizeof(buf), "%s (%s)", l1->description, l1->short_descr);
     return strcmp(buf, l2);
-}
-
-static int _cb_layouts_sort(const void *data1, const void *data2)
-{
-    const e_xkb_layout *l1 = NULL, *l2 = NULL;
-
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-    if (!l2->name) return -1;
-    return strcmp(l1->name, l2->name);
 }
