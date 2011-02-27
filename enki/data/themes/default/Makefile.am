@@ -1,8 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in default.edj
 
+EDJE_CC = @edje_cc@
 EDJ = default.edj
-
-
 EDJE_FLAGS = -v
 
 default.edj:  default.edc \
