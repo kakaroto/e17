@@ -11,6 +11,9 @@ EDJE_FLAGS = -v \
 filesdir = $(datadir)
 files_DATA = module.desktop e-module-xkbswitch.edj
 
+flagdir = $(datadir)/flags
+flag_DATA = flags/*_flag.png
+
 EXTRA_DIST = module.desktop.in \
 	e_modules-xkbswitch.spec.in \
 	e-module-xkbswitch.edc \

@@ -1,4 +1,5 @@
-/* This file parses the XML file with rules into a tree with which we can work.
+/*
+ * This file parses the XML file with rules into a tree with which we can work.
  * It's supposed to serve as simple interface to layouts and variants.
  * 
  * Reader example on libxml2 page used for reference.
@@ -114,7 +115,7 @@ void parse_rules(const char *fname)
         tmp = strdup(_parse_node(rdr).v);
         eina_str_toupper(&tmp);
         layout->short_descr = eina_stringshare_add(tmp);
-        tmp = NULL; free(tmp);
+        E_FREE(tmp);
 
         LOOP_TO("description", 1)
         layout->description = _parse_node(rdr).v;
@@ -139,7 +140,6 @@ void parse_rules(const char *fname)
 
         /* Parse and find out. */
         node_retval nv = _parse_node(rdr);
-        printf("TRYING TO FIND MORE VARIANTS: %s\n", nv.n);
         if (!strcmp(nv.n, "variant"))
         {
             variant = E_NEW(e_xkb_variant, 1);
@@ -186,6 +186,28 @@ void parse_rules(const char *fname)
         NEXT_TO("layout", "optionList")
     }
     xmlFreeTextReader(rdr);
+}
+
+void clear_rules()
+{
+    e_xkb_variant *v = NULL;
+    e_xkb_layout *la = NULL;
+    e_xkb_model *m = NULL;
+    Eina_List *ll = NULL;
+    Eina_List *l = NULL;
+
+    EINA_LIST_FOREACH(layouts, l, la)
+    {
+        EINA_LIST_FOREACH(la->variants, ll, v)
+            free(v);
+        eina_list_free(la->variants);
+        free(la);
+    }
+    eina_list_free(layouts);
+
+    EINA_LIST_FOREACH(models, l, m)
+        free(m);
+    eina_list_free(models);
 }
 
 node_retval _parse_node(xmlTextReaderPtr rdr)

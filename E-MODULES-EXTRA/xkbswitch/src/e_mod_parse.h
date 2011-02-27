@@ -1,3 +1,8 @@
+/*
+ * XML parsing abstraction interface header.
+ * Contains public structs and lists externs which are further used.
+ */
+
 #ifndef E_MOD_PARSE_H
 #define E_MOD_PARSE_H
 
@@ -26,6 +31,7 @@ typedef struct _e_xkb_variant
 } e_xkb_variant;
 
 void parse_rules(const char *fname);
+void clear_rules();
 
 extern Eina_List *models;
 extern Eina_List *layouts;
