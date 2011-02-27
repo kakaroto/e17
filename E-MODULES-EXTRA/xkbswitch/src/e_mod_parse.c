@@ -274,3 +274,21 @@ int _variant_sort_cb(const void *data1, const void *data2)
     if (!l2->name) return -1;
     return strcmp(l1->name, l2->name);
 }
+
+int _layout_sort_bylabel_cb(const void *data1, const void *data2)
+{
+    const e_xkb_layout *l1 = NULL;
+    const char *l2 = NULL;
+    char buf[128];
+
+    if (!(l1 = data1)) return 1;
+    if (!l1->name) return 1;
+    if (!(l2 = data2)) return -1;
+
+    /* XXX This is nasty, but it's definitely better than iterating
+     * over the whole list. User-defined property for ilist item would
+     * solve, but E widget system lacks this currently.
+     */
+    snprintf(buf, sizeof(buf), "%s (%s)", l1->description, l1->short_descr);
+    return strcmp(buf, l2);
+}

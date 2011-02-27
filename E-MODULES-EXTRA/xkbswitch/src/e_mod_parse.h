@@ -33,9 +33,10 @@ typedef struct _e_xkb_variant
 void parse_rules(const char *fname);
 void clear_rules();
 
-int _layout_sort_cb (const void *data1, const void *data2);
-int _model_sort_cb  (const void *data1, const void *data2);
-int _variant_sort_cb(const void *data1, const void *data2);
+int _layout_sort_cb        (const void *data1, const void *data2);
+int _model_sort_cb         (const void *data1, const void *data2);
+int _variant_sort_cb       (const void *data1, const void *data2);
+int _layout_sort_bylabel_cb(const void *data1, const void *data2);
 
 extern Eina_List *models;
 extern Eina_List *layouts;

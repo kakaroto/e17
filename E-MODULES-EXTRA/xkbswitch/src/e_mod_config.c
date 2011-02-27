@@ -33,10 +33,10 @@ static void _cb_down(void *data, void *data2 __UNUSED__);
 static Eina_Bool _cb_fill_delay        (void *data);
 static void      _cb_layout_select     (void *data);
 static void      _cb_layout_used_select(void *data);
+static void      _cb_model_select      (void *data);
+static void      _cb_variant_select    (void *data);
 
 static void _fill_used_list(E_Config_Dialog_Data *cfdata);
-
-static int _cb_layouts_bylabel(const void *data1, const void *data2);
 
 /* External Functions */
 
@@ -259,7 +259,7 @@ static void _cb_add(void *data, void *data2 __UNUSED__)
     EINA_LIST_FOREACH(e_widget_ilist_items_get(cfdata->layout_list), l, it)
     {
         if (!it->selected || it->header) continue;
-        if (!(layout = eina_list_search_unsorted(layouts, _cb_layouts_bylabel, it->label))) continue;
+        if (!(layout = eina_list_search_unsorted(layouts, _layout_sort_bylabel_cb, it->label))) continue;
         if (!eina_list_search_unsorted(cfdata->layouts_used, _layout_sort_cb, layout))
         {
             end = e_widget_ilist_item_end_get(it);
@@ -287,7 +287,7 @@ static void _cb_del(void *data, void *data2 __UNUSED__)
     EINA_LIST_FOREACH(e_widget_ilist_items_get(cfdata->layout_list), l, it)
     {
         if (!it->selected || it->header) continue;
-        if ((layout = eina_list_search_unsorted(cfdata->layouts_used, _cb_layouts_bylabel, it->label)))
+        if ((layout = eina_list_search_unsorted(cfdata->layouts_used, _layout_sort_bylabel_cb, it->label)))
         {
             end = e_widget_ilist_item_end_get(it);
             if (end) edje_object_signal_emit(end, "e,state,unchecked", "e");
@@ -320,7 +320,7 @@ static void _cb_up(void *data, void *data2 __UNUSED__)
 
     sel = e_widget_ilist_selected_get(cfdata->used_list);
     lbl = e_widget_ilist_selected_label_get(cfdata->used_list);
-    if ((l = eina_list_search_unsorted_list(cfdata->layouts_used, _cb_layouts_bylabel, lbl)))
+    if ((l = eina_list_search_unsorted_list(cfdata->layouts_used, _layout_sort_bylabel_cb, lbl)))
     {
         layout = eina_list_data_get(l);
         if (l->prev)
@@ -383,7 +383,7 @@ static void _cb_down(void *data, void *data2 __UNUSED__)
 
     sel = e_widget_ilist_selected_get(cfdata->used_list);
     lbl = e_widget_ilist_selected_label_get(cfdata->used_list);
-    if ((l = eina_list_search_unsorted_list(cfdata->layouts_used, _cb_layouts_bylabel, lbl)))
+    if ((l = eina_list_search_unsorted_list(cfdata->layouts_used, _layout_sort_bylabel_cb, lbl)))
     {
         layout = eina_list_data_get(l);
         if (l->next)
@@ -556,7 +556,7 @@ static void _cb_layout_select(void *data)
     EINA_LIST_FOREACH(e_widget_ilist_items_get(cfdata->layout_list), l, it)
     {
         if (!it->selected || it->header) continue;
-        if (eina_list_search_unsorted(cfdata->layouts_used, _cb_layouts_bylabel, it->label))
+        if (eina_list_search_unsorted(cfdata->layouts_used, _layout_sort_bylabel_cb, it->label))
             enabled++;
         else
             disabled++;
@@ -568,10 +568,57 @@ static void _cb_layout_select(void *data)
 
 static void _cb_layout_used_select(void *data)
 {
+    Eina_List *variants = NULL, *ll = NULL, *l = NULL;
     E_Config_Dialog_Data *cfdata = NULL;
+    const E_Ilist_Item *it = NULL;
+    e_xkb_variant *variant = NULL;
+    e_xkb_layout *layout = NULL;
+    e_xkb_model *model = NULL;
     int sel = 0, count = 0;
+    char buf[4096];
 
     if (!(cfdata = data)) return;
+
+    evas_event_freeze(cfdata->evas);
+    edje_freeze();
+    e_widget_ilist_freeze(cfdata->model_list);
+    e_widget_ilist_clear(cfdata->model_list);
+
+    EINA_LIST_FOREACH(models, l, model)
+    {
+        snprintf(buf, sizeof(buf), "%s (%s)", model->description, model->vendor);
+        e_widget_ilist_append(
+            cfdata->model_list, NULL,
+            buf, _cb_model_select,
+            cfdata, model->name
+        );
+    }
+
+    e_widget_ilist_go(cfdata->model_list);
+    e_widget_ilist_thaw(cfdata->model_list);
+    e_widget_ilist_freeze(cfdata->variant_list);
+    e_widget_ilist_clear(cfdata->variant_list);
+
+    EINA_LIST_FOREACH(e_widget_ilist_items_get(cfdata->used_list), l, it)
+    {
+        if (!it->selected || it->header) continue;
+        if (!(layout = eina_list_search_unsorted(layouts, _layout_sort_bylabel_cb, it->label))) continue;
+
+        EINA_LIST_FOREACH(layout->variants, ll, variant)
+        {
+            snprintf(buf, sizeof(buf), "%s (%s)", variant->name, variant->description);
+            e_widget_ilist_append(
+                cfdata->variant_list, NULL,
+                buf, _cb_variant_select,
+                cfdata, variant->name
+            );
+        }
+    }
+
+    e_widget_ilist_go(cfdata->variant_list);
+    e_widget_ilist_thaw(cfdata->variant_list);
+    edje_thaw();
+    evas_event_thaw(cfdata->evas);
 
     sel = e_widget_ilist_selected_get(cfdata->used_list);
     count = eina_list_count(cfdata->layouts_used);
@@ -580,20 +627,14 @@ static void _cb_layout_used_select(void *data)
     e_widget_disabled_set(cfdata->btn_down, !(sel < (count - 1)));
 }
 
-static int _cb_layouts_bylabel(const void *data1, const void *data2)
+static void _cb_model_select(void *data)
 {
-    const e_xkb_layout *l1 = NULL;
-    const char *l2 = NULL;
-    char buf[128];
+    E_Config_Dialog_Data *cfdata = NULL;
+    if (!(cfdata = data)) return;
+}
 
-    if (!(l1 = data1)) return 1;
-    if (!l1->name) return 1;
-    if (!(l2 = data2)) return -1;
-
-    /* XXX This is nasty, but it's definitely better than iterating
-     * over the whole list. User-defined property for ilist item would
-     * solve, but E widget system lacks this currently.
-     */
-    snprintf(buf, sizeof(buf), "%s (%s)", l1->description, l1->short_descr);
-    return strcmp(buf, l2);
+static void _cb_variant_select(void *data)
+{
+    E_Config_Dialog_Data *cfdata = NULL;
+    if (!(cfdata = data)) return;
 }
