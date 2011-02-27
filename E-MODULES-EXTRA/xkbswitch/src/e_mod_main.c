@@ -7,13 +7,12 @@ static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id,
 static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
 static char *_gc_label(E_Gadcon_Client_Class *client_class);
-static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
+static const char *_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__);
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
-static void _xkbswitch_conf_new(void);
-static void _xkbswitch_conf_free(void);
-static Eina_Bool _xkbswitch_conf_timer(void *data);
-static Config_Item *_xkbswitch_conf_item_get(const char *id);
+static void _e_xkb_cfg_new(void);
+static void _e_xkb_cfg_free(void);
+static Eina_Bool _e_xkb_cfg_timer(void *data);
 static void _xkbswitch_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event);
 static void _xkbswitch_cb_menu_post(void *data, E_Menu *menu);
 static void _xkbswitch_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
@@ -31,17 +30,14 @@ typedef struct _Instance
 
     /* popup anyone ? */
     E_Menu *menu;
-
-    /* Config_Item structure. Every gadget should have one :) */
-    Config_Item *conf_item;
 } Instance;
 
 /* Local Variables */
 static int uuid = 0;
 static Eina_List *instances = NULL;
-static E_Config_DD *conf_edd = NULL;
-static E_Config_DD *conf_item_edd = NULL;
-Config *xkbswitch_conf = NULL;
+static E_Config_DD *e_xkb_cfg_edd = NULL;
+static E_Config_DD *e_xkb_cfg_layout_edd = NULL;
+e_xkb_cfg *e_xkb_cfg_inst = NULL;
 
 static const E_Gadcon_Client_Class _gc_class = 
 {
@@ -82,37 +78,37 @@ EAPI void *e_modapi_init(E_Module *m)
     e_configure_registry_item_add(
         "keyboard_and_mouse/xkbswitch",
         110, D_("XKB Switcher"), 
-        NULL, buf, e_int_config_xkbswitch_module
+        NULL, buf, e_xkb_cfg_dialog
     );
 
     /* Define EET Data Storage for the config file */
-    conf_item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
+    e_xkb_cfg_layout_edd = E_CONFIG_DD_NEW("e_xkb_cfg_layout", e_xkb_cfg_layout);
     #undef T
     #undef D
-    #define T Config_Item
-    #define D conf_item_edd
-    E_CONFIG_VAL(D, T, id, STR);
-    E_CONFIG_VAL(D, T, switch2, INT);
+    #define T e_xkb_cfg_layout
+    #define D e_xkb_cfg_layout_edd
+    E_CONFIG_VAL(D, T, name,    STR);
+    E_CONFIG_VAL(D, T, model,   STR);
+    E_CONFIG_VAL(D, T, variant, STR);
 
-    conf_edd = E_CONFIG_DD_NEW("Config", Config);
+    e_xkb_cfg_edd = E_CONFIG_DD_NEW("e_xkb_cfg", e_xkb_cfg);
     #undef T
     #undef D
-    #define T Config
-    #define D conf_edd
+    #define T e_xkb_cfg
+    #define D e_xkb_cfg_edd
     E_CONFIG_VAL(D, T, version, INT);
-    E_CONFIG_VAL(D, T, switch1, UCHAR); /* our var from header */
-    E_CONFIG_LIST(D, T, conf_items, conf_item_edd); /* the list */
+    E_CONFIG_LIST(D, T, used_layouts, e_xkb_cfg_layout_edd);
 
     /* Tell E to find any existing module data. First run ? */
-    xkbswitch_conf = e_config_domain_load("module.xkbswitch", conf_edd);
-    if (xkbswitch_conf) 
+    e_xkb_cfg_inst = e_config_domain_load("module.xkbswitch", e_xkb_cfg_edd);
+    if (e_xkb_cfg_inst) 
     {
         /* Check config version */
-        if ((xkbswitch_conf->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
+        if ((e_xkb_cfg_inst->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
         {
             /* config too old */
-            _xkbswitch_conf_free();
-            ecore_timer_add(1.0, _xkbswitch_conf_timer,
+            _e_xkb_cfg_free();
+            ecore_timer_add(1.0, _e_xkb_cfg_timer,
                  D_("XKB Switcher Module Configuration data needed "
                  "upgrading. Your old configuration<br> has been"
                  " wiped and a new set of defaults initialized. "
@@ -129,11 +125,11 @@ EAPI void *e_modapi_init(E_Module *m)
         }
 
         /* Ardvarks */
-        else if (xkbswitch_conf->version > MOD_CONFIG_FILE_VERSION) 
+        else if (e_xkb_cfg_inst->version > MOD_CONFIG_FILE_VERSION) 
         {
             /* config too new...wtf ? */
-            _xkbswitch_conf_free();
-            ecore_timer_add(1.0, _xkbswitch_conf_timer, 
+            _e_xkb_cfg_free();
+            ecore_timer_add(1.0, _e_xkb_cfg_timer, 
                 D_("Your XKB Switcher Module configuration is NEWER "
                 "than the module version. This is "
                 "very<br>strange. This should not happen unless"
@@ -150,11 +146,11 @@ EAPI void *e_modapi_init(E_Module *m)
 
     /* if we don't have a config yet, or it got erased above, 
      * then create a default one */
-    if (!xkbswitch_conf) _xkbswitch_conf_new();
+    if (!e_xkb_cfg_inst) _e_xkb_cfg_new();
 
     /* create a link from the modules config to the module
      * this is not written */
-    xkbswitch_conf->module = m;
+    e_xkb_cfg_inst->module = m;
 
     /* Tell any gadget containers (shelves, etc) that we provide a module
      * for the user to enjoy */
@@ -177,39 +173,36 @@ EAPI int e_modapi_shutdown(E_Module *m)
     e_configure_registry_category_del("keyboard_and_mouse");
 
     /* Kill the config dialog */
-    if (xkbswitch_conf->cfd) e_object_del(E_OBJECT(xkbswitch_conf->cfd));
-    xkbswitch_conf->cfd = NULL;
+    if (e_xkb_cfg_inst->cfd) e_object_del(E_OBJECT(e_xkb_cfg_inst->cfd));
+    e_xkb_cfg_inst->cfd = NULL;
 
     /* Tell E the module is now unloaded. Gets removed from shelves, etc. */
-    xkbswitch_conf->module = NULL;
+    e_xkb_cfg_inst->module = NULL;
     e_gadcon_provider_unregister(&_gc_class);
 
-    /* Cleanup our item list */
-    while (xkbswitch_conf->conf_items) 
+    while (e_xkb_cfg_inst->used_layouts)
     {
-        Config_Item *ci = NULL;
+        e_xkb_cfg_layout *cl = NULL;
 
-        /* Grab an item from the list */
-        ci = xkbswitch_conf->conf_items->data;
+        cl = e_xkb_cfg_inst->used_layouts->data;
 
-        /* remove it */
-        xkbswitch_conf->conf_items = 
-          eina_list_remove_list(xkbswitch_conf->conf_items, 
-                                xkbswitch_conf->conf_items);
+        e_xkb_cfg_inst->used_layouts =
+            eina_list_remove_list(e_xkb_cfg_inst->used_layouts,
+                                  e_xkb_cfg_inst->used_layouts);
 
-        /* cleanup stringshares */
-        if (ci->id) eina_stringshare_del(ci->id);
+        if (cl->name)    eina_stringshare_del(cl->name);
+        if (cl->model)   eina_stringshare_del(cl->model);
+        if (cl->variant) eina_stringshare_del(cl->variant);
 
-        /* keep the planet green */
-        E_FREE(ci);
+        E_FREE(cl);
     }
 
     /* Cleanup the main config structure */
-    E_FREE(xkbswitch_conf);
+    E_FREE(e_xkb_cfg_inst);
 
     /* Clean EET */
-    E_CONFIG_DD_FREE(conf_item_edd);
-    E_CONFIG_DD_FREE(conf_edd);
+    E_CONFIG_DD_FREE(e_xkb_cfg_layout_edd);
+    E_CONFIG_DD_FREE(e_xkb_cfg_edd);
 
     /* Clean lists */
     clear_rules();
@@ -219,7 +212,7 @@ EAPI int e_modapi_shutdown(E_Module *m)
 
 EAPI int e_modapi_save(E_Module *m) 
 {
-   e_config_domain_save("module.xkbswitch", conf_edd, xkbswitch_conf);
+   e_config_domain_save("module.xkbswitch", e_xkb_cfg_edd, e_xkb_cfg_inst);
     return 1;
 }
 
@@ -234,12 +227,11 @@ static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id,
     /* theme file */
     snprintf(
         buf, sizeof(buf), "%s/e-module-xkbswitch.edj", 
-        xkbswitch_conf->module->dir
+        e_xkb_cfg_inst->module->dir
     );
 
     /* New visual instance, any config ? */
     inst = E_NEW(Instance, 1);
-    inst->conf_item = _xkbswitch_conf_item_get(id);
 
     /* create on-screen object */
     inst->o_xkbswitch = edje_object_add(gc->evas);
@@ -309,12 +301,9 @@ static char *_gc_label(E_Gadcon_Client_Class *client_class)
 }
 
 /* so E can keep a unique instance per-container */
-static const char *_gc_id_new(E_Gadcon_Client_Class *client_class) 
+static const char *_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__) 
 {
-    Config_Item *ci = NULL;
-
-    ci = _xkbswitch_conf_item_get(NULL);
-    return ci->id;
+    return _gc_class.name;
 }
 
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas) 
@@ -323,7 +312,7 @@ static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
     char buf[4096];
 
     /* theme */
-    snprintf(buf, sizeof(buf), "%s/e-module-xkbswitch.edj", xkbswitch_conf->module->dir);
+    snprintf(buf, sizeof(buf), "%s/e-module-xkbswitch.edj", e_xkb_cfg_inst->module->dir);
 
     /* create icon object */
     o = edje_object_add(evas);
@@ -335,25 +324,22 @@ static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 }
 
 /* new module needs a new config :), or config too old and we need one anyway */
-static void _xkbswitch_conf_new(void) 
+static void _e_xkb_cfg_new(void) 
 {
-    Config_Item *ci = NULL;
     char buf[128];
 
-    xkbswitch_conf = E_NEW(Config, 1);
-    xkbswitch_conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
+    e_xkb_cfg_inst = E_NEW(e_xkb_cfg, 1);
+    e_xkb_cfg_inst->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
-#define IFMODCFG(v) if ((xkbswitch_conf->version & 0xffff) < v) {
+#define IFMODCFG(v) if ((e_xkb_cfg_inst->version & 0xffff) < v) {
 #define IFMODCFGEND }
 
     /* setup defaults */
     IFMODCFG(0x008d);
-    xkbswitch_conf->switch1 = 1;
-    _xkbswitch_conf_item_get(NULL);
     IFMODCFGEND;
 
     /* update the version */
-    xkbswitch_conf->version = MOD_CONFIG_FILE_VERSION;
+    e_xkb_cfg_inst->version = MOD_CONFIG_FILE_VERSION;
 
     /* setup limits on the config properties here (if needed) */
 
@@ -363,60 +349,33 @@ static void _xkbswitch_conf_new(void)
 
 /* This is called when we need to cleanup the actual configuration,
  * for example when our configuration is too old */
-static void _xkbswitch_conf_free(void) 
+static void _e_xkb_cfg_free(void) 
 {
-    /* cleanup any stringshares here */
-    while (xkbswitch_conf->conf_items) 
+    while (e_xkb_cfg_inst->used_layouts)
     {
-        Config_Item *ci = NULL;
+        e_xkb_cfg_layout *cl = NULL;
 
-        ci = xkbswitch_conf->conf_items->data;
-        xkbswitch_conf->conf_items = 
-          eina_list_remove_list(xkbswitch_conf->conf_items, 
-                                xkbswitch_conf->conf_items);
-        /* EPA */
-        if (ci->id) eina_stringshare_del(ci->id);
-        E_FREE(ci);
+        cl = e_xkb_cfg_inst->used_layouts->data;
+
+        e_xkb_cfg_inst->used_layouts =
+            eina_list_remove_list(e_xkb_cfg_inst->used_layouts,
+                                  e_xkb_cfg_inst->used_layouts);
+
+        if (cl->name)    eina_stringshare_del(cl->name);
+        if (cl->model)   eina_stringshare_del(cl->model);
+        if (cl->variant) eina_stringshare_del(cl->variant);
+
+        E_FREE(cl);
     }
 
-    E_FREE(xkbswitch_conf);
+    E_FREE(e_xkb_cfg_inst);
 }
 
 /* timer for the config oops dialog (old configuration needs update) */
-static Eina_Bool _xkbswitch_conf_timer(void *data) 
+static Eina_Bool _e_xkb_cfg_timer(void *data) 
 {
     e_util_dialog_internal( D_("XKB Switcher Configuration Updated"), data);
     return EINA_FALSE;
-}
-
-/* function to search for any Config_Item struct for this Item
- * create if needed */
-static Config_Item *_xkbswitch_conf_item_get(const char *id) 
-{
-    Eina_List *l = NULL;
-    Config_Item *ci = NULL;
-    char buf[128];
-
-    if (!id) 
-    {
-        /* nothing passed, return a new id */
-        snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, ++uuid);
-        id = buf;
-    }
-    else 
-    {
-        uuid++;
-        for (l = xkbswitch_conf->conf_items; l; l = l->next) 
-        {
-            if (!(ci = l->data)) continue;
-            if ((ci->id) && (!strcmp(ci->id, id))) return ci;
-        }
-    }
-    ci = E_NEW(Config_Item, 1);
-    ci->id = eina_stringshare_add(id);
-    ci->switch2 = 0;
-    xkbswitch_conf->conf_items = eina_list_append(xkbswitch_conf->conf_items, ci);
-    return ci;
 }
 
 /* Pants On */
@@ -484,7 +443,7 @@ static void _xkbswitch_cb_menu_post(void *data, E_Menu *menu)
 /* call configure from popup */
 static void _xkbswitch_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi) 
 {
-    if (!xkbswitch_conf) return;
-    if (xkbswitch_conf->cfd) return;
-    e_int_config_xkbswitch_module(mn->zone->container, NULL);
+    if (!e_xkb_cfg_inst) return;
+    if (e_xkb_cfg_inst->cfd) return;
+    e_xkb_cfg_dialog(mn->zone->container, NULL);
 }

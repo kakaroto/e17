@@ -40,7 +40,7 @@ static void _fill_used_list(E_Config_Dialog_Data *cfdata);
 
 /* External Functions */
 
-E_Config_Dialog *e_int_config_xkbswitch_module(E_Container *con, const char *params) 
+E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params) 
 {
     E_Config_Dialog    *cfd = NULL;
     E_Config_Dialog_View *v = NULL;
@@ -57,19 +57,19 @@ E_Config_Dialog *e_int_config_xkbswitch_module(E_Container *con, const char *par
     v->basic.apply_cfdata   = _basic_apply;
 
     /* Icon in the theme */
-    snprintf(buf, sizeof(buf), "%s/e-module-xkbswitch.edj", xkbswitch_conf->module->dir);
+    snprintf(buf, sizeof(buf), "%s/e-module-xkbswitch.edj", e_xkb_cfg_inst->module->dir);
 
     /* create our config dialog */
     cfd = e_config_dialog_new(
         con,
         D_("XKB Switcher Module"),
         "XKB Switcher", 
-        "advanced/xkbswitch",
+        "keyboard_and_mouse/xkbswitch",
         buf, 0, v, NULL
     );
 
     e_dialog_resizable_set(cfd->dia, 1);
-    xkbswitch_conf->cfd = cfd;
+    e_xkb_cfg_inst->cfd = cfd;
     return cfd;
 }
 
@@ -86,7 +86,7 @@ static void *_create_data(E_Config_Dialog *cfd)
 
 static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-    xkbswitch_conf->cfd = NULL;
+    e_xkb_cfg_inst->cfd = NULL;
     E_FREE(cfdata);
 }
 
@@ -337,14 +337,14 @@ static void _cb_up(void *data, void *data2 __UNUSED__)
             snprintf(
                 buf, sizeof(buf),
                 "%s/flags/%s_flag.png",
-                e_module_dir_get(xkbswitch_conf->module),
+                e_module_dir_get(e_xkb_cfg_inst->module),
                 layout->short_descr
             );
             if (!ecore_file_exists(buf))
                 snprintf(
                     buf, sizeof(buf),
                     "%s/flags/unknown_flag.png", 
-                    e_module_dir_get(xkbswitch_conf->module)
+                    e_module_dir_get(e_xkb_cfg_inst->module)
                 );
             e_icon_file_set(icon, buf);
             snprintf(buf, sizeof(buf), "%s (%s)", layout->description, layout->short_descr);
@@ -400,14 +400,14 @@ static void _cb_down(void *data, void *data2 __UNUSED__)
             snprintf(
                 buf, sizeof(buf),
                 "%s/flags/%s_flag.png",
-                e_module_dir_get(xkbswitch_conf->module),
+                e_module_dir_get(e_xkb_cfg_inst->module),
                 layout->short_descr
             );
             if (!ecore_file_exists(buf))
                 snprintf(
                     buf, sizeof(buf),
                     "%s/flags/unknown_flag.png", 
-                    e_module_dir_get(xkbswitch_conf->module)
+                    e_module_dir_get(e_xkb_cfg_inst->module)
                 );
             e_icon_file_set(icon, buf);
             snprintf(buf, sizeof(buf), "%s (%s)", layout->description, layout->short_descr);
@@ -450,14 +450,14 @@ static Eina_Bool _cb_fill_delay(void *data)
         snprintf(
             buf, sizeof(buf),
             "%s/flags/%s_flag.png",
-            e_module_dir_get(xkbswitch_conf->module),
+            e_module_dir_get(e_xkb_cfg_inst->module),
             layout->short_descr
         );
         if (!ecore_file_exists(buf))
             snprintf(
                 buf, sizeof(buf),
                 "%s/flags/unknown_flag.png", 
-                e_module_dir_get(xkbswitch_conf->module)
+                e_module_dir_get(e_xkb_cfg_inst->module)
             );
         e_icon_file_set(ic, buf);
 
@@ -518,14 +518,14 @@ static void _fill_used_list(E_Config_Dialog_Data *cfdata)
         snprintf(
             buf, sizeof(buf),
             "%s/flags/%s_flag.png",
-            e_module_dir_get(xkbswitch_conf->module),
+            e_module_dir_get(e_xkb_cfg_inst->module),
             layout->short_descr
         );
         if (!ecore_file_exists(buf))
             snprintf(
                 buf, sizeof(buf),
                 "%s/flags/unknown_flag.png", 
-                e_module_dir_get(xkbswitch_conf->module)
+                e_module_dir_get(e_xkb_cfg_inst->module)
             );
         e_icon_file_set(ic, buf);
 

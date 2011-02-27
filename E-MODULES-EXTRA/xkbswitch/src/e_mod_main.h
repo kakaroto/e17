@@ -20,46 +20,24 @@
 #include <libintl.h>
 #define D_(str) dgettext(PACKAGE, str)
 
-/* Base config struct. Store Item Count, etc
- * 
- * *module (not written to disk) (E Interaction)
- * *cfd (not written to disk) (config dialog)
- * 
- * Store list of your items that you want to keep. (sorting)
- * Can define per-module config properties here.
- * 
- * Version used to know when user config too old */
-typedef struct _Config 
+typedef struct _e_xkb_cfg
 {
-    /* Store a reference to the module instance provided by enlightenment in
-     * e_modapi_init, in case you need to access it. (not written to disk) */
+    /* Not written to disk */
     E_Module *module;
-
-    /* if you open a config dialog, store a reference to it in a pointer like
-     * this one, so if the user opens a second time the dialog, you know it's
-     * already open. Also needed for destroy the dialog when we are exiting */
     E_Config_Dialog *cfd;
 
-    /* List of configuration items, when we save to disk, if we have a list of
-     * items (Config_Item) they will be saved too */
-    Eina_List *conf_items;
-
-    /* config file version */
+    /* Written to disk */
+    Eina_List *used_layouts;
     int version;
+} e_xkb_cfg;
 
-    /* actual config properties; Define your own. (globally per-module) */
-    unsigned char switch1;
-} Config;
-
-/* This struct used to hold config for individual items from above list */
-typedef struct _Config_Item 
+/* used layout - these are saved in a list */
+typedef struct _e_xkb_cfg_layout
 {
-    /* unique id for every running gadget, this is managed by gadcon */
-    const char *id;
-
-    /* actual config properties independently for every running gadget. */
-    int switch2;
-} Config_Item;
+    const char *name;
+    const char *model;
+    const char *variant;
+} e_xkb_cfg_layout;
 
 /* Prototypes */
 
@@ -70,8 +48,8 @@ EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
 
 /* Function for calling the module's Configuration Dialog */
-E_Config_Dialog *e_int_config_xkbswitch_module(E_Container *con, const char *params);
+E_Config_Dialog *e_xkb_cfg_dialog(E_Container *con, const char *params);
 
-extern Config *xkbswitch_conf;
+extern e_xkb_cfg *e_xkb_cfg_inst;
 
 #endif
