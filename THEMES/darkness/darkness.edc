@@ -32,6 +32,112 @@
 #define DARKNESS_DIALOG_BG 18 18 18
 #define DARKNESS_FRAME_BORDER 25 67 98
 
+#define DARKNESS_TEXT 255 255 255
+
+
+#define BUTTON_GLOW_PART(rect_part, alpha) \
+   part { \
+      name: rect_part"_glow"; \
+      mouse_events: 0; \
+      description { \
+         state: "default" 0.0; \
+         color: 255 255 255 0; \
+         fixed: 1 1; \
+         rel1.to: rect_part; \
+         rel2.to: rect_part; \
+         image { \
+            normal: "button_glow.png"; \
+            border: 15 15 10 10; \
+         } \
+         fill { \
+            smooth: 0; \
+         } \
+      } \
+      description { \
+         state: "active" 0.0; \
+         inherit: "default" 0.0; \
+         color: 255 255 255 alpha; \
+      } \
+   }
+
+#define BUTTON_GLOW_DOWN_PART(rect_part, alpha) \
+   part { \
+      name: rect_part"_glow_down"; \
+      mouse_events: 0; \
+      description { \
+         state: "default" 0.0; \
+         color: 255 255 255 0; \
+         fixed: 1 1; \
+         rel1 { \
+            to: rect_part; \
+         } \
+         rel2 { \
+            to: rect_part; \
+         } \
+         image { \
+            normal: "button_glow_down.png"; \
+            border: 15 15 10 10; \
+         } \
+         fill { \
+            smooth: 0; \
+         } \
+      } \
+      description { \
+         state: "active" 0.0; \
+         inherit: "default" 0.0; \
+         color: 255 255 255 alpha; \
+      } \
+   }
+
+#define BUTTON_GLOW_PROGRAM(NAME) \
+   program { \
+      name: NAME"_glow_go_active"; \
+      action: STATE_SET "active" 0.0; \
+      target: NAME"_glow"; \
+      transition: SINUSOIDAL 0.5; \
+   } \
+   program { \
+      name: NAME"_glow_go_inactive"; \
+      action: STATE_SET "default" 0.0; \
+      target: NAME"_glow"; \
+      transition: SINUSOIDAL 1.0; \
+   } \
+   program { \
+      name: NAME"_glow_go_sudden_inactive"; \
+      action: STATE_SET "default" 0.0; \
+      target: NAME"_glow"; \
+      transition: SINUSOIDAL 0.2; \
+   }
+
+#define BUTTON_GLOW_ACTION(NAME) \
+   after: NAME"_glow_go_active";
+
+#define BUTTON_GLOW_STOP(NAME) \
+   after: NAME"_glow_go_inactive";
+
+#define BUTTON_GLOW_SUDDEN_STOP(NAME) \
+   after: NAME"_glow_go_sudden_inactive";
+
+#define BUTTON_GLOW_DOWN_PROGRAM(NAME) \
+   program { \
+      name: NAME"_glow_go_down_active"; \
+      action: STATE_SET "active" 0.0; \
+      target: NAME"_glow_down"; \
+      transition: SINUSOIDAL 0.5; \
+   } \
+   program { \
+      name: NAME"_glow_go_down_inactive"; \
+      action: STATE_SET "default" 0.0; \
+      target: NAME"_glow_down"; \
+      transition: SINUSOIDAL 1.0; \
+   } \
+   program { \
+      name: NAME"_glow_go_down_sudden_inactive"; \
+      action: STATE_SET "default" 0.0; \
+      target: NAME"_glow_down"; \
+      transition: SINUSOIDAL 0.2; \
+   }
+
 data {
    item: "theme/name"     "Darkness";
    item: "theme/version"  VERSION;

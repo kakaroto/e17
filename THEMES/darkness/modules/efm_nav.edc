@@ -27,7 +27,7 @@ group { \
                     offset: -5 -5; \
                     to: "bg"; \
                 } \
-                image.normal: "icon_"ICON"_arrow.png"; \
+                image.normal: "icon_arrow_"ICON".png"; \
                 color: 255 255 255 255; \
             } \
             description { \

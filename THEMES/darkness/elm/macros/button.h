@@ -152,7 +152,7 @@
 #define BUTTON_GLOW_DOWN_STOP(NAME) \
    after: NAME"_glow_go_down_inactive";
 
-#define BUTTON_GLOW_DOWN_SUDDEN_STOP_NAME \
+#define BUTTON_GLOW_DOWN_SUDDEN_STOP(NAME) \
    after: NAME"_glow_go_down_sudden_inactive";
 
 #define BUTTON_DISABLE_PROGRAM(NAME) \

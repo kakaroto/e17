@@ -515,7 +515,7 @@ group {
 	    aspect:   0.83333333333 0.83333333333;
 	    max:      16 16;
 	    image {
-	       normal: "icon_right_arrow.png";
+	       normal: "icon_arrow_right.png";
 	    }
 	 }
       }
@@ -532,7 +532,7 @@ group {
 	    aspect:   0.83333333333 0.83333333333;
 	    max:      16 16;
 	    image {
-	       normal: "icon_up_arrow.png";
+	       normal: "icon_arrow_up.png";
 	    }
 	 }
       }
@@ -549,7 +549,7 @@ group {
 	    aspect:   0.83333333333 0.83333333333;
 	    max:      16 16;
 	    image {
-	       normal: "icon_down_arrow.png";
+	       normal: "icon_arrow_down.png";
 	    }
 	 }
       }

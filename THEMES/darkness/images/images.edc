@@ -525,7 +525,7 @@ images {
    image: "icon_configuration.png" COMP;
    image: "icon_desklock.png" COMP;
    image: "icon_desktop.png" COMP;
-   image: "icon_down_arrow.png" COMP;
+   image: "icon_arrow_down.png" COMP;
    image: "icon_e_0.png" COMP;
    image: "icon_e_glow_0.png" COMP;
    image: "icon_extensions.png" COMP;
@@ -535,7 +535,7 @@ images {
    image: "icon_home.png" COMP;
    image: "icon_intl.png" COMP;
    image: "icon_info.png" COMP;
-   image: "icon_left_arrow.png" COMP;
+   image: "icon_arrow_left.png" COMP;
    image: "icon_lost_windows.png" COMP;	
    image: "icon_module.png" COMP;
    image: "icon_power_button_0.png" COMP;
@@ -548,11 +548,11 @@ images {
    image: "icon_suspend_button_glow_0.png" COMP;
    image: "icon_hibernate_button_0.png" COMP;
    image: "icon_hibernate_button_glow_0.png" COMP;
-   image: "icon_right_arrow.png" COMP;
+   image: "icon_arrow_right.png" COMP;
    image: "icon_run.png" COMP;
    image: "icon_shelf.png" COMP;
    image: "icon_theme.png" COMP;
-   image: "icon_up_arrow.png" COMP;
+   image: "icon_arrow_up.png" COMP;
    image: "icon_windows.png" COMP;
 
    /* Fileman buttons */
