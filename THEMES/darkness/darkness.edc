@@ -33,6 +33,7 @@
 #define DARKNESS_FRAME_BORDER 25 67 98
 
 #define DARKNESS_TEXT 255 255 255
+#define DARKNESS_TEXT_DISABLED 222 222 222
 
 
 #define BUTTON_GLOW_PART(rect_part, alpha) \
@@ -156,6 +157,7 @@ fonts {
 collections {
 #include "e/background.edc"
 #include "e/desklock.edc"
+#include "e/evry.edc"
 #include "e/gadman.edc"
 #include "e/icons.edc"
 #include "e/pointer.edc"

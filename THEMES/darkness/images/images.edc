@@ -312,6 +312,10 @@ images {
    image: "clock_minutes_58.png" COMP;
    image: "clock_minutes_59.png" COMP;
 
+   /* Evry */
+   image: "everything_item_bg.png" COMP;
+   image: "outline.png" COMP;
+
    /* Ibar */
    image: "ibar_bg_h.png" COMP;
    image: "ibar_bg_v.png" COMP;
