@@ -142,8 +142,8 @@ EAPI    Enlil_Library *        enlil_library_new(
 EAPI    void                    enlil_library_free(Enlil_Library **library);
 EAPI    void                    enlil_library_path_set(Enlil_Library *library, const char *path);
 EAPI    const char *            enlil_library_path_get(const Enlil_Library *library);
-EAPI    void                    enlil_library_flickr_account_set(Enlil_Library *library, const char *account);
-EAPI    const char *            enlil_library_flickr_account_get(Enlil_Library *library);
+EAPI    void                    enlil_library_netsync_account_set(Enlil_Library *library, const char *account);
+EAPI    const char *            enlil_library_netsync_account_get(Enlil_Library *library);
 EAPI    void                    enlil_library_flickr_auth_token_set(Enlil_Library *library, const char *auth_token);
 EAPI    const char *            enlil_library_flickr_auth_token_get(Enlil_Library *library);
 EAPI    void                    enlil_library_album_add(Enlil_Library *library, Enlil_Album *album);
@@ -743,7 +743,7 @@ typedef void (*Enlil_NetSync_Photo_Header_Get_Cb) (void *data, Enlil_Album *albu
 EAPI    Eina_Bool               enlil_netsync_have();
 EAPI    void                    enlil_netsync_job_del(Enlil_NetSync_Job *job);
 
-
+EAPI 	void 					enlil_netsync_account_set(const char *_account);
 EAPI    void                    enlil_netsync_job_start_cb_set(Enlil_NetSync_Job_Start_Cb start_cb, void *data);
 EAPI    void                    enlil_netsync_job_done_cb_set(Enlil_NetSync_Job_Done_Cb done_cb, void *data);
 

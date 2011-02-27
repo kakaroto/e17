@@ -688,13 +688,13 @@ static void _job_next()
 	     LOG_CRIT("The job is not associated to a library !");
 	     return ;
 	  }
-	else if(!enlil_library_flickr_account_get(library))
+	else if(!enlil_library_netsync_account_get(library))
 	  {
 	     LOG_CRIT("The library is not associated to a flickr account !");
 	     return ;
 	  }
 
-	if(!_connect(library, enlil_library_flickr_account_get(library)))
+	if(!_connect(library, enlil_library_netsync_account_get(library)))
 	  return ;
      }
 

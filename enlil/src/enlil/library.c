@@ -226,7 +226,7 @@ void enlil_library_photo_set(Enlil_Library *library, const Enlil_Photo *photo, i
 	_library_eet_header_save(library);
 }
 
-void enlil_library_flickr_account_set(Enlil_Library *library, const char *account)
+void enlil_library_netsync_account_set(Enlil_Library *library, const char *account)
 {
    ASSERT_RETURN_VOID(library!=NULL);
    ASSERT_RETURN_VOID(account!=NULL);
@@ -242,7 +242,7 @@ void enlil_library_flickr_account_set(Enlil_Library *library, const char *accoun
 }
 
 
-const char *enlil_library_flickr_account_get(Enlil_Library *library)
+const char *enlil_library_netsync_account_get(Enlil_Library *library)
 {
    ASSERT_RETURN(library != NULL);
 

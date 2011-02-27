@@ -1,12 +1,13 @@
 
 #include "Enlil.h"
 #include "enlil_private.h"
+#include "../../config.h"
 
 #ifdef HAVE_EABZU
 #include <Eabzu.h>
 #endif
 
-//mmap
+//mmap()
 #include <sys/mman.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -70,7 +71,7 @@ struct Enlil_NetSync_Job
 
 static Azy_Client *cli = NULL;
 
-static char *account = NULL;
+static const char *account = NULL;
 
 static Eina_List *l_jobs;
 static Enlil_NetSync_Job *job_current = NULL;
@@ -220,6 +221,13 @@ void enlil_netsync_job_del(Enlil_NetSync_Job *job)
 #endif
 }
 
+void enlil_netsync_account_set(const char *_account)
+{
+#ifdef HAVE_EABZU
+	EINA_STRINGSHARE_DEL(account);
+	account = eina_stringshare_add(_account);
+#endif
+}
 
 Enlil_NetSync_Job *enlil_netsync_job_sync_albums_append(Enlil_Library *library,
 		Enlil_NetSync_Album_New_Cb new_cb,
@@ -561,7 +569,10 @@ static void _job_next()
 	{
 	case ENLIL_NETSYNC_JOB_CNX:
 		cli = azy_client_new();
-		azy_client_host_set(cli, "localhost", 3412);
+		azy_client_host_set(cli, "127.0.0.1", 4445);
+
+		net = azy_client_net_get(cli);
+		azy_net_auth_set(net, account, "");
 
 		ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)_connected, cli);
 		ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)_disconnected, cli);
@@ -574,7 +585,9 @@ static void _job_next()
 		net = azy_client_net_get(cli);
 		content = azy_content_new(NULL);
 		err = azy_content_new(NULL);
+		azy_net_auth_set(net, account, "");
 
+		printf("COMPARE ALBUMS\n");
 		azy_content_data_set(content, job);
 		ret = Eabzu_Album_ListGet(cli, content, NULL);
 		CALL_CHECK(_Eabzu_Album_ListGet_Ret);
@@ -585,6 +598,7 @@ static void _job_next()
 		net = azy_client_net_get(cli);
 		content = azy_content_new(NULL);
 		err = azy_content_new(NULL);
+		azy_net_auth_set(net, account, "");
 
 		azy_content_data_set(content, job);
 		ret = Eabzu_Album_HeaderGet(cli, job->album_id, content, NULL);
@@ -597,6 +611,7 @@ static void _job_next()
 		net = azy_client_net_get(cli);
 		content = azy_content_new(NULL);
 		err = azy_content_new(NULL);
+		azy_net_auth_set(net, account, "");
 
 		azy_content_data_set(content, job);
 		ret = Eabzu_Album_HeaderGet(cli, enlil_album_netsync_id_get(job->album), content, NULL);
@@ -608,6 +623,7 @@ static void _job_next()
 		net = azy_client_net_get(cli);
 		content = azy_content_new(NULL);
 		err = azy_content_new(NULL);
+		azy_net_auth_set(net, account, "");
 
 		azy_content_data_set(content, job);
 		ret = Eabzu_Album_HeaderUpdate(cli, enlil_album_netsync_id_get(job->album),
@@ -622,6 +638,7 @@ static void _job_next()
 			net = azy_client_net_get(cli);
 			content = azy_content_new(NULL);
 			err = azy_content_new(NULL);
+			azy_net_auth_set(net, account, "");
 
 			azy_content_data_set(content, job);
 			ret = Eabzu_Album_Add(cli,
@@ -636,6 +653,7 @@ static void _job_next()
 			net = azy_client_net_get(cli);
 			content = azy_content_new(NULL);
 			err = azy_content_new(NULL);
+			azy_net_auth_set(net, account, "");
 
 			azy_content_data_set(content, job);
 			ret = Eabzu_Photo_ListGet(cli, enlil_album_netsync_id_get(job->album), content, NULL);
@@ -647,6 +665,7 @@ static void _job_next()
 			net = azy_client_net_get(cli);
 			content = azy_content_new(NULL);
 			err = azy_content_new(NULL);
+			azy_net_auth_set(net, account, "");
 
 			azy_content_data_set(content, job);
 			ret = Eabzu_Photo_HeaderGet(cli, job->photo_id, content, NULL);
@@ -687,6 +706,7 @@ static Eina_Bool _disconnected(void *data, int type, void *data2)
 static Eina_Bool _connected(void *data, int type, Azy_Client *cli)
 {
 	connected = EINA_TRUE;
+	printf("CONNECTED\n");
 	_job_done();
 	return ECORE_CALLBACK_RENEW;
 }
