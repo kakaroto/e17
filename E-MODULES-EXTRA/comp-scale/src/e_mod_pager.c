@@ -11,7 +11,6 @@ struct _Item
   E_Border *bd;
   E_Desk *desk;
   E_Comp_Win *cw;
-  double scale;
   int alpha;
 
   double x;
@@ -31,8 +30,6 @@ struct _Item
 
   /* borders' desk distance to the current desk */
   int dx, dy;
-
-  int layer;
 
   int mouse_down;
 };
