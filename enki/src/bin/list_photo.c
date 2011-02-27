@@ -14,7 +14,7 @@ static void _slider_zoom_cb(void *data, Evas_Object *obj, void *event_info);
 static void _slideshow_cb(void *data, Evas_Object *obj, void *event_info);
 static void _collection_cb(void *data, Evas_Object *obj, void *event_info);
 static void _tag_cb(void *data, Evas_Object *obj, void *event_info);
-static void _open(void *data, Evas_Object *obj, void *event_info);
+static void _enki_open(void *data, Evas_Object *obj, void *event_info);
 static void _right_click(void *data, Evas_Object *obj, void *event_info);
 static void _sorts_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_unselect_all_cb(void *data, Evas_Object *obj, void *event_info);
@@ -45,7 +45,7 @@ List_Photo *list_photo_new(Evas_Object *edje)
 
    enlil_photo->o_list = photos_list_object_add(edje);
    photos_list_object_sub_items_size_set(enlil_photo->o_list, DEFAULT_W, DEFAULT_H);
-   evas_object_smart_callback_add(enlil_photo->o_list, "open", _open, enlil_photo);
+   evas_object_smart_callback_add(enlil_photo->o_list, "open", _enki_open, enlil_photo);
    evas_object_smart_callback_add(enlil_photo->o_list, "clicked,right", _right_click, enlil_photo);
    evas_object_smart_callback_add(enlil_photo->o_list, "clicked,menu", _right_click, enlil_photo);
    evas_object_size_hint_weight_set(enlil_photo->o_list, 1.0, 1.0);
@@ -148,7 +148,7 @@ void list_photo_photo_add(List_Photo *list_photo, Enlil_Album *album, Enlil_Phot
 	  {
 	     enlil_photo_data->enlil_data->auto_open = eina_list_remove(
 		   enlil_photo_data->enlil_data->auto_open, _s);
-	     _open(enlil_photo_data, list_photo->o_list, photo);
+	     _enki_open(enlil_photo_data, list_photo->o_list, photo);
 	     eina_stringshare_del(_s);
 	  }
      }
@@ -175,7 +175,7 @@ void list_photo_photo_append_relative(List_Photo *list_photo, Enlil_Album *album
 	  {
 	     enlil_photo_data->enlil_data->auto_open = eina_list_remove(
 		   enlil_photo_data->enlil_data->auto_open, _s);
-	     _open(enlil_photo_data, list_photo->o_list, photo);
+	     _enki_open(enlil_photo_data, list_photo->o_list, photo);
 	     eina_stringshare_del(_s);
 	  }
      }
@@ -347,7 +347,7 @@ static void _slideshow_cb(void *data, Evas_Object *obj, void *event_info)
    slideshow_show();
 }
 
-static void _open(void *data, Evas_Object *obj, void *event_info)
+static void _enki_open(void *data, Evas_Object *obj, void *event_info)
 {
    char buf[PATH_MAX];
    //List_Photo *enlil_photo = data;

@@ -92,7 +92,7 @@ _spin(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_close(void *data, Evas_Object *obj, void *event_info)
+_enki_close(void *data, Evas_Object *obj, void *event_info)
 {
 	slideshow_hide();
 }
@@ -165,7 +165,7 @@ _init_slideshow()
 	evas_object_smart_callback_add(bt_layout, "clicked", _bt_layout_cb, slideshow);
 
 	bt = edje_object_part_external_object_get(edje, "object.close");
-	evas_object_smart_callback_add(bt, "clicked", _close, slideshow);
+	evas_object_smart_callback_add(bt, "clicked", _enki_close, slideshow);
 
 
 	spin = edje_object_part_external_object_get(edje, "object.timing");

@@ -16,7 +16,7 @@ static Evas_Object *_gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, voi
 static Evas_Object *_gp_marker_icon_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data);
 static Evas_Object *_gp_group_icon_get(Evas_Object *obj, void *data);
 
-static void _open(void *data, Evas_Object *obj, void *event_info);
+static void _enki_open(void *data, Evas_Object *obj, void *event_info);
 static void _photo_select_cb(void *data, Evas_Object *obj, void *event_info);
 static void _menu(void *data, Evas_Object *obj, void *event_info);
 static void _tg_geocaching_changed_cb(void *data, Evas_Object *obj, void *event_info);
@@ -209,7 +209,7 @@ static Evas_Object *_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *
    photo_object_theme_file_set(o, Theme, "photo");
    evas_object_size_hint_min_set(o, 192, 128);
 
-   evas_object_smart_callback_add(o, "open", _open, photo);
+   evas_object_smart_callback_add(o, "open", _enki_open, photo);
    evas_object_smart_callback_add(o, "select", _photo_select_cb, photo);
    evas_object_smart_callback_add(o, "clicked,menu", _menu, photo);
    evas_object_smart_callback_add(o, "clicked,right", _menu, photo);
@@ -332,7 +332,7 @@ static void _photo_select_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 
-static void _open(void *data, Evas_Object *obj, void *event_info)
+static void _enki_open(void *data, Evas_Object *obj, void *event_info)
 {
    char buf[PATH_MAX];
    Enlil_Photo *photo = (Enlil_Photo *) data;

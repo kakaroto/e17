@@ -31,10 +31,10 @@ README
 ICON = enki.png
 DESKTOP = enki.desktop
 
-icondir = $(prefix)/share/pixmaps
+icondir = $(datadir)/pixmaps
 icon_DATA = $(ICON)
 
-desktopdir = $(prefix)/share/applications
+desktopdir = $(datadir)/applications
 desktop_DATA = $(DESKTOP)
 
 

@@ -1,18 +1,26 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
-#include <Elementary.h>
 #include <string.h>
-
-#include <Enlil.h>
-
-#include "../../config.h"
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
 
 #include "../define.h"
+
+#include <Elementary.h>
+#include <Enlil.h>
+
+#ifdef ENABLE_NLS
+# include <libintl.h>
+#else
+# define gettext(x) (x)
+# define dgettext(domain, x) (x)
+#endif
 
 #define D_(s) gettext(s)
 
