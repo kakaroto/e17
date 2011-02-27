@@ -2001,7 +2001,21 @@ Eina_Bool ed_statuses_update_interval(void *data) {
         if(settings->online)
             get_messages(current_timeline);
             
-        return (EINA_TRUE);
+        return(EINA_TRUE);
+}
+
+Eina_Bool ed_toolbar_hide(void *data) {
+	ecore_timer_del(gui.hide_tb_timer);
+	gui.hide_tb_timer = NULL;
+
+	edje_object_signal_emit(gui.edje, "mouse,out", "tb_event");
+
+	return(EINA_TRUE);
+}
+
+void auto_hide_toolbar(void *data, Evas_Object *obj, const char *emission, const char *source) {
+	if(gui.hide_tb_timer) ecore_timer_del(gui.hide_tb_timer);
+	gui.hide_tb_timer = ecore_timer_add(5, ed_toolbar_hide, NULL);
 }
 
 EAPI int elm_main(int argc, char **argv)
@@ -2049,6 +2063,9 @@ EAPI int elm_main(int argc, char **argv)
 		evas_object_size_hint_weight_set(gui.main, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 		elm_win_resize_object_add(gui.win, gui.main);
 	evas_object_show(gui.main);
+
+	gui.edje = elm_layout_edje_get(gui.main);
+	edje_object_signal_callback_add(gui.edje, "mouse,clicked,1", "tb_event", auto_hide_toolbar, NULL);
 
 	//gui.pager = elm_pager_add(gui.win);
 		//elm_object_style_set(gui.pager, "fade");
@@ -2103,6 +2120,7 @@ EAPI int elm_main(int argc, char **argv)
 		evas_object_size_hint_weight_set(toolbar, 1.0, 0.0);
 		evas_object_size_hint_align_set(toolbar, -1, 0);
 		elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
+		elm_object_style_set(toolbar, "elmdentica");
 
 		gui.timelines = elm_toolbar_item_append(toolbar, "chat", _("Timelines"), on_timelines_hv, NULL);
 		elm_toolbar_item_menu_set(gui.timelines, EINA_TRUE);

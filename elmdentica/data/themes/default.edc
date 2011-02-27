@@ -23,8 +23,7 @@ collections {
 							relative: 0.0 0.0;
 						}
 						rel2 {
-							relative: 1.0 0.0;
-							to_y: "toolbar";
+							relative: 1.0 1.0;
 						}
 				}
 			}
@@ -40,7 +39,39 @@ collections {
 							relative: 1.0 1.0;
 						}
 						fixed: 1 1;
+						visible: 0;
 				}
+				description {	state: "visible" 0.0;
+						inherit: "default" 0.0;
+						visible: 1;
+				}
+			}
+			part {	name: "tb_event";
+				type: RECT;
+				mouse_events: 1;
+				repeat_events: 1;
+				description {	state: "default" 0.0;
+						color: 0 0 0 0;
+						align: 0.5 1.0;
+						rel1.to: "toolbar";
+						rel2.to: "toolbar";
+				}
+			}
+		}
+		programs {
+			program {	name:	"hide_toolbar";
+					signal:	"mouse,out";
+					source:	"tb_event";
+					action:	STATE_SET "default" 0.0;
+					target: "toolbar";
+					transition: LINEAR 0.1;
+			}
+			program {	name:	"show_toolbar";
+					signal:	"mouse,clicked,1";
+					source:	"tb_event";
+					action:	STATE_SET "visible" 0.0;
+					target: "toolbar";
+					transition: LINEAR 0.1;
 			}
 		}
 	}
