@@ -113,7 +113,7 @@ AC_SUBST(EFL_ENLIL_BUILD)
 
 AC_SUBST(requirements)
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/enlil/Makefile
@@ -126,6 +126,7 @@ enlil.pc
 doc/Makefile
 ])
 
+AC_OUTPUT
 
 echo
 echo
