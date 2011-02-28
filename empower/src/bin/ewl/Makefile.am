@@ -9,10 +9,10 @@ bin_PROGRAMS = empower
 empower_SOURCES = empower.c empower_cb_ewl.c empower_gui_ewl.c \
 					empower_helper_ewl.c
 
-empower_CFLAGS = @EWL_CFLAGS@
+empower_CFLAGS = @EWL_CFLAGS@ @ECORE_CFLAGS@
 
 empower_LDADD =  $(INTLLIBS) \
-		@EWL_LIBS@
+		@EWL_LIBS@ @ECORE_LIBS@
 		
 install-exec-hook:
 			rm -f $(DESTDIR)$(bindir)/empower-askpass && \
