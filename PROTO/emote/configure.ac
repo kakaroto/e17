@@ -90,6 +90,7 @@ PKG_CHECK_MODULES(EMOTE,
   [elementary]
   [eet]
   [efreet]
+  [eina]
 )
 
 AC_OUTPUT([
