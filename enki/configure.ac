@@ -50,6 +50,7 @@ EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 PKG_CHECK_MODULES([ENKI],
    [
     eina >= 1.0.0
+    evas >= 1.0.0
     ecore >= 1.0.0
     eet >= 1.2.2
     ecore-file >= 1.0.0
