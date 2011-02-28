@@ -17,22 +17,24 @@
             type: SWALLOW;
             description { state: "default" 0.0;
                visible: 0;
+               fixed: 1 0;
                align: 0.0 0.5;
                rel1.to_x: "button";
                rel2.to_x: "button";
                rel1.offset: 4 4;
                rel2.offset: 3 -5;
-               rel2.relative: 0.0 1.0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
+               fixed: 1 0;
                aspect: 1.0 1.0;
                rel2.offset: 4 -5;
             }
             description { state: "icononly" 0.0;
                inherit: "default" 0.0;
                visible: 1;
+               fixed: 0 0;
                align: 0.5 0.5;
                rel2.offset: -5 -5;
             }
@@ -48,6 +50,7 @@
                rel1.to_x: "elm.swallow.content";
                rel1.relative: 1.0 0.0;
                rel1.offset: 0 4;
+               rel2.to_x: "button";
                rel2.offset: -5 -5;
                color: DARKNESS_TEXT 200;
                color2: DARKNESS_DARK_BLUE 255;

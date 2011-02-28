@@ -23,7 +23,7 @@ group "Elm_Config" struct {
   value "edje_collection_cache" int: 64;
   value "finger_size" int: 5;
   value "fps" double: 60.0;
-  value "theme" string: "default-desktop";
+  value "theme" string: "darkness-elm-desktop:darkness-elm";
   value "modules" string: "";
   value "tooltip_delay" double: 1.0;
   value "cursor_engine_only" uchar: 1;
