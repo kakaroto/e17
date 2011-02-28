@@ -88,6 +88,7 @@ PKG_CHECK_MODULES(AIM,
 
 PKG_CHECK_MODULES(EMOTE,
   [elementary]
+  [eet]
 )
 
 AC_OUTPUT([
