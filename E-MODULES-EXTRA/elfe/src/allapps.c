@@ -95,6 +95,8 @@ _add_items(Evas_Object *parent, Efreet_Menu *entry)
    else
      menu = entry;
 
+   if (!menu) return ;
+
    EINA_LIST_FOREACH(menu->entries, l, it)
      {
 	switch (it->type)
