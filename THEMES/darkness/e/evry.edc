@@ -469,16 +469,13 @@
          }
          part {
             name: "frame";
+            type: RECT;
             mouse_events: 0;;
             description {
                state: "default" 0.0;
                rel1.to: "win";
                rel2.to: "win";
-               image.normal: "dialog_background.png";
-               fill.size {
-                  relative: 0.0 0.0;
-                  offset: 64 64;
-               }
+               color: 0 0 0 255;
             }
          }
          part {
@@ -1276,7 +1273,7 @@
                   normal: "everything_item_bg.png";
                   border: 5 5 5 5;
                }
-               color: 255 255 255 10;
+               color: 0 0 0 255;
             }
             description {
                state: "selected" 0.0;
@@ -1558,7 +1555,7 @@
                   normal: "everything_item_bg.png";
                   border: 5 5 5 5;
                }
-               color: 255 255 255 10;
+               color: 0 0 0 255;
             }
             description {
                state: "selected" 0.0;
