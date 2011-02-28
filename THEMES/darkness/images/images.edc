@@ -315,6 +315,7 @@ images {
    /* Evry */
    image: "everything_item_bg.png" COMP;
    image: "outline.png" COMP;
+   image: "highlight_dark.png" COMP;
 
    /* Ibar */
    image: "ibar_bg_h.png" COMP;
