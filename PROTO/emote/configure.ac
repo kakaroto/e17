@@ -91,6 +91,7 @@ PKG_CHECK_MODULES(EMOTE,
   [eet]
   [efreet]
   [eina]
+  [evas]
 )
 
 AC_OUTPUT([
