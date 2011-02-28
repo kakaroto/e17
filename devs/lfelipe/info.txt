@@ -1,5 +1,6 @@
 Login:        lfelipe
 IRC Nick:     lfelipe
+Cloak:        developer/lfelipe
 Name:         Luis Felipe Strano Moraes
 Location:     Campinas, Brazil
 E-Mail:       -lfelipe@profusion.mobi
