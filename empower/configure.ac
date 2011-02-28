@@ -67,7 +67,7 @@ PKG_CHECK_MODULES([EVAS], evas,
    ]
 )
 
-PKG_CHECK_MODULES([ECORE], ecore,
+PKG_CHECK_MODULES([ECORE], [ ecore ecore-x ],
    [],
    [
       echo "Could not find Ecore.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
