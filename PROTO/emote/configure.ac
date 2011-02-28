@@ -92,6 +92,7 @@ PKG_CHECK_MODULES(EMOTE,
   [efreet]
   [eina]
   [evas]
+  [ecore-file]
 )
 
 AC_OUTPUT([
