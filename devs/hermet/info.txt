@@ -1,5 +1,5 @@
 Login:        hermet
-IRC Nick:     Hermet/Wustasha
+IRC Nick:     Hermet
 Name:         ChunEon Park
 Location:     HwaSeong, Korea
 E-Mail:       chuneon.park@samsung.com/hermet@naver.com
