@@ -1,14 +1,13 @@
-# Portuguese translation for skel
+# Portuguese translation for comp-scale module.
 # This file is distributed under the same license as the enlightenment package.
 # Adaptado ao acordo ortográfico de 1990
 # Sérgio Marques <smarquespt@gmail.com>, 2010.
-# Sérgio Marques <sarquespt@gmail.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: skel\n"
+"Project-Id-Version: comp-scale\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2011-02-25 23:00-0800\n"
-"PO-Revision-Date: 2011-02-26 14:15-0000\n"
+"POT-Creation-Date: 2011-02-26 13:00-0800\n"
+"PO-Revision-Date: 2011-02-28 12:03-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
@@ -72,12 +71,12 @@ msgstr "Mostrar todas as áreas de trabalho"
 #: ../src/e_mod_config.c:159
 #: ../src/e_mod_config.c:184
 msgid "Fade in windows"
-msgstr "Desvanecer janelas"
+msgstr "Janelas aparecem gradualmente"
 
 #: ../src/e_mod_config.c:166
 #: ../src/e_mod_config.c:187
 msgid "Fade out shelves and popups"
-msgstr "Realçar painéis e alertas"
+msgstr "Painéis e alertas desaparecem gradualmente"
 
 #: ../src/e_mod_config.c:169
 #: ../src/e_mod_config.c:190
@@ -85,12 +84,10 @@ msgid "Darken desktop"
 msgstr "Área de trabalho mais escura"
 
 #: ../src/e_mod_config.c:177
-#| msgid "Settings"
 msgid "Pager Settings"
 msgstr "Definições do paginador"
 
 #: ../src/e_mod_config.c:179
-#| msgid "Scale duration"
 msgid "Zoom duration"
 msgstr "Duração da ampliação"
 
@@ -119,13 +116,11 @@ msgstr "Área de trabalho"
 
 #: ../src/e_mod_main.c:161
 #: ../src/e_mod_main.c:205
-#| msgid "Scale Windows / All Desktops"
 msgid "Scale Windows (All Desktops)"
 msgstr "Ajustar janelas (todas as áreas de trabalho)"
 
 #: ../src/e_mod_main.c:163
 #: ../src/e_mod_main.c:206
-#| msgid "Scale"
 msgid "Scale Pager"
 msgstr "Escala do paginador"
 
