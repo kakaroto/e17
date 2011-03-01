@@ -1421,8 +1421,6 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *bg=NULL, *box=NULL, *toolbar=NULL;
 	Elm_Toolbar_Item *item=NULL;
 
-	elm_toolbar_item_selected_set(elm_toolbar_selected_item_get(obj), EINA_FALSE);
-
 	current_account = 0;
 	current_account_type = ACCOUNT_TYPE_NONE;
 

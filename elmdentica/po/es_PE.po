@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2011-02-20 13:06+0000\n"
+"POT-Creation-Date: 2011-03-01 21:40+0000\n"
 "PO-Revision-Date: 2010-06-01 10:34+0005\n"
 "Last-Translator: Jorge Puente Sarrín <puentesarrin@gmail.com>\n"
 "Language-Team: Jorge Puente Sarrín <puentesarrin@gmail.com>\n"
@@ -158,7 +158,7 @@ msgstr ""
 msgid "downloading %s"
 msgstr ""
 
-#: src/elmdentica.c:1192 src/elmdentica.c:1893 src/settings.c:542
+#: src/elmdentica.c:1192 src/elmdentica.c:1891 src/settings.c:542
 #: src/settings.c:1271
 msgid "Cancel"
 msgstr "Cancelar"
@@ -191,7 +191,7 @@ msgstr "Responder"
 msgid "Repeat"
 msgstr "Repetir"
 
-#: src/elmdentica.c:1445 src/elmdentica.c:2152
+#: src/elmdentica.c:1445 src/elmdentica.c:2149
 msgid "DM"
 msgstr ""
 
@@ -219,67 +219,67 @@ msgstr "Error"
 msgid "µ-blog Error"
 msgstr "Error de µ-blog"
 
-#: src/elmdentica.c:1875
+#: src/elmdentica.c:1873
 msgid "Send a DM to..."
 msgstr ""
 
-#: src/elmdentica.c:1887 src/settings.c:534 src/settings.c:1262
+#: src/elmdentica.c:1885 src/settings.c:534 src/settings.c:1262
 msgid "OK"
 msgstr "Aceptar"
 
-#: src/elmdentica.c:1972 src/elmdentica.c:2090
+#: src/elmdentica.c:1969 src/elmdentica.c:2111
 msgid "Type your status here..."
 msgstr ""
 
-#: src/elmdentica.c:2107
-#, fuzzy
-msgid "Timelines"
-msgstr "Línea de tiempo"
-
-#: src/elmdentica.c:2113
-#, fuzzy
-msgid "Direct Messages"
-msgstr "Mensajes visibles:"
-
-#: src/elmdentica.c:2114
-msgid "Everyone"
-msgstr ""
-
-#: src/elmdentica.c:2115
-msgid "Just me"
-msgstr ""
-
-#: src/elmdentica.c:2116
-msgid "Favorites"
-msgstr ""
-
-#: src/elmdentica.c:2117
-msgid "Replies/Mentions"
-msgstr ""
-
-#: src/elmdentica.c:2118
-msgid "Friends & I"
-msgstr ""
-
-#: src/elmdentica.c:2125
-msgid "Post"
-msgstr "Enviar"
-
-#: src/elmdentica.c:2139
+#: src/elmdentica.c:2136
 #, fuzzy
 msgid "Send"
 msgstr "¿Enviar?"
 
-#: src/elmdentica.c:2165
+#: src/elmdentica.c:2162
 #, fuzzy
 msgid "Clear"
 msgstr "Cerrar"
 
-#: src/elmdentica.c:2174
+#: src/elmdentica.c:2175
+msgid "Hide"
+msgstr ""
+
+#: src/elmdentica.c:2196
+#, fuzzy
+msgid "Timelines"
+msgstr "Línea de tiempo"
+
+#: src/elmdentica.c:2202
+#, fuzzy
+msgid "Direct Messages"
+msgstr "Mensajes visibles:"
+
+#: src/elmdentica.c:2203
+msgid "Everyone"
+msgstr ""
+
+#: src/elmdentica.c:2204
+msgid "Just me"
+msgstr ""
+
+#: src/elmdentica.c:2205
+msgid "Favorites"
+msgstr ""
+
+#: src/elmdentica.c:2206
+msgid "Replies/Mentions"
+msgstr ""
+
+#: src/elmdentica.c:2207
+msgid "Friends & I"
+msgstr ""
+
+#: src/elmdentica.c:2209
 msgid "Fullscreen"
 msgstr "Pantalla completa"
 
-#: src/elmdentica.c:2175 src/settings.c:1429
+#: src/elmdentica.c:2210 src/settings.c:1427
 msgid "Settings"
 msgstr "Configuración"
 
@@ -504,27 +504,27 @@ msgstr ""
 msgid "Gag patterns..."
 msgstr ""
 
-#: src/settings.c:1430
+#: src/settings.c:1428
 msgid "ElmDentica settings..."
 msgstr "Configuración de ElmDentica..."
 
-#: src/settings.c:1455
+#: src/settings.c:1453
 msgid "Accounts"
 msgstr "Cuentas"
 
-#: src/settings.c:1457
+#: src/settings.c:1455
 msgid "Cache"
 msgstr "Memoria"
 
-#: src/settings.c:1459
+#: src/settings.c:1457
 msgid "Options"
 msgstr ""
 
-#: src/settings.c:1461
+#: src/settings.c:1459
 msgid "Gag"
 msgstr ""
 
-#: src/settings.c:1472
+#: src/settings.c:1470
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -540,46 +540,49 @@ msgstr ""
 "\t-h\tAyuda (Lo que estás leyendo ahora)\n"
 "\n"
 
-#: src/settings.c:1495
+#: src/settings.c:1493
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr ""
 
-#: src/settings.c:1501
+#: src/settings.c:1499
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr ""
 
-#: src/settings.c:1501
+#: src/settings.c:1499
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
 msgstr ""
 
-#: src/settings.c:1509
+#: src/settings.c:1507
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr ""
 
-#: src/settings.c:1515
+#: src/settings.c:1513
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr ""
 
-#: src/settings.c:1522
+#: src/settings.c:1520
 #, c-format
 msgid "Can't create %s"
 msgstr ""
 
-#: src/settings.c:1530
+#: src/settings.c:1528
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr ""
 
-#: src/settings.c:1549
+#: src/settings.c:1547
 #, c-format
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."
 msgstr ""
+
+#~ msgid "Post"
+#~ msgstr "Enviar"
 
 #, fuzzy
 #~ msgid "Got an error: %s\n"

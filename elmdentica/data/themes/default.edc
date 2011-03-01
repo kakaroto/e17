@@ -28,6 +28,48 @@ collections {
 				}
 			}
 
+			part {	name: "edit_bg";
+				type: RECT;
+				mouse_events: 1;
+				repeat_events: 1;
+				description {	state: "default" 0.0;
+						color: 255 255 255 255;
+						align: 0.5 0.0;
+						visible: 0;
+						rel1.to: "edit";
+						rel2.to: "edit";
+				}
+				description {	state: "visible" 0.0;
+						inherit: "default" 0.0;
+						visible: 1;
+				}
+			}
+			part {	name: "edit";
+				type: SWALLOW;
+				description {	state: "default" 0.0;
+						align: 0.5 0.0;
+						rel2.relative: 1.0 0.0;
+						fixed: 1 1;
+						color: 255 255 255 0;
+						visible: 0;
+				}
+				description {	state: "visible" 0.0;
+						inherit: "default" 0.0;
+						visible: 1;
+				}
+			}
+			part {	name: "edit_event";
+				type: RECT;
+				mouse_events: 1;
+				repeat_events: 1;
+				description {	state: "default" 0.0;
+						color: 0 0 0 0;
+						align: 0.5 0.0;
+						rel1.to: "edit";
+						rel2.to: "edit";
+				}
+			}
+
 			part {	name: "toolbar";
 				type: SWALLOW;
 				description {	state: "default" 0.0;
@@ -71,6 +113,22 @@ collections {
 					source:	"tb_event";
 					action:	STATE_SET "visible" 0.0;
 					target: "toolbar";
+					transition: LINEAR 0.1;
+			}
+			program {	name:	"hide_edit";
+					signal:	"mouse,clicked,2";
+					source:	"edit_event";
+					action:	STATE_SET "default" 0.0;
+					target: "edit_bg";
+					target: "edit";
+					transition: LINEAR 0.1;
+			}
+			program {	name:	"show_edit";
+					signal:	"mouse,clicked,1";
+					source:	"edit_event";
+					action:	STATE_SET "visible" 0.0;
+					target: "edit_bg";
+					target: "edit";
 					transition: LINEAR 0.1;
 			}
 		}

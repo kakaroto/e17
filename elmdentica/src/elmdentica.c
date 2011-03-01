@@ -113,7 +113,7 @@ int my_strcmp(const void*a, const void*b) {
 void network_busy_set(Eina_Bool state) {
 	network_busy = state;
 	elm_toolbar_item_disabled_set(gui.timelines, state);
-	elm_toolbar_item_disabled_set(gui.post, state);
+	elm_object_disabled_set(gui.post, state);
 }
 
 void hash_account_del(void *data) {
@@ -1772,8 +1772,6 @@ static void on_fs(void *data, Evas_Object *obj, void *event_info) {
 		settings->fullscreen=TRUE;
 
 	toggle_fullscreen(settings->fullscreen);
-
-	elm_toolbar_item_selected_set(elm_toolbar_selected_item_get(obj), EINA_FALSE);
 }
 
 static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
@@ -1907,6 +1905,10 @@ static void on_post_clear(void *data, Evas_Object *obj, void *event_info) {
 	elm_entry_entry_set(entry, "");
 }
 
+static void on_post_hide(void *data, Evas_Object *obj, void *event_info) {
+	edje_object_signal_emit(gui.edje, "mouse,clicked,2", "edit_event");
+}
+
 static void on_post(void *data, Evas_Object *obj, void *event_info) {
 	char *query = NULL, *db_err=NULL;
 	int sqlite_res = 0;
@@ -1926,11 +1928,6 @@ static void on_post(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_timelines_hv(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_show((Evas_Object*)data);
-}
-
-static void on_post_hv(void *data, Evas_Object *obj, void *event_info) {
-	elm_toolbar_item_selected_set(elm_toolbar_selected_item_get(obj), EINA_FALSE);
-	evas_object_show(hv);
 }
 
 static void win_del(void *data, Evas_Object *obj, void *event_info) {
@@ -2018,9 +2015,12 @@ void auto_hide_toolbar(void *data, Evas_Object *obj, const char *emission, const
 	gui.hide_tb_timer = ecore_timer_add(5, ed_toolbar_hide, NULL);
 }
 
+void show_edit(void *data, Evas_Object *obj, const char *emission, const char *source) {
+}
+
 EAPI int elm_main(int argc, char **argv)
 {
-	Evas_Object *bg=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *edit_panel=NULL, *menu=NULL;
+	Evas_Object *bg=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *menu=NULL;
 	Elm_Toolbar_Item *it=NULL;
 	char *tmp=NULL;
 	int res = 0;
@@ -2066,6 +2066,7 @@ EAPI int elm_main(int argc, char **argv)
 
 	gui.edje = elm_layout_edje_get(gui.main);
 	edje_object_signal_callback_add(gui.edje, "mouse,clicked,1", "tb_event", auto_hide_toolbar, NULL);
+	edje_object_signal_callback_add(gui.edje, "mouse,clicked,1", "edit_event", show_edit, NULL);
 
 	//gui.pager = elm_pager_add(gui.win);
 		//elm_object_style_set(gui.pager, "fade");
@@ -2091,74 +2092,52 @@ EAPI int elm_main(int argc, char **argv)
 	if(settings->rel_timestamps)
 		settings->rel_ts_timer = ecore_timer_add(60, ed_statuses_update_time, NULL);
 
-	edit_panel = elm_box_add(gui.win);
-		elm_box_homogenous_set(edit_panel, 0);
-		elm_box_horizontal_set(edit_panel, 1);
-		evas_object_size_hint_align_set(edit_panel, -1, 1);
-
-		count = elm_label_add(gui.win);
-			elm_label_label_set(count, " 140c | ");
-			evas_object_size_hint_weight_set(count, 0, 1);
-			evas_object_size_hint_align_set(count, 0, 0);
-		evas_object_show(count);
-		elm_box_pack_end(edit_panel, count);
-
-		entry = elm_entry_add(gui.win);
-			elm_entry_entry_set(entry, _("Type your status here..."));
-			elm_entry_single_line_set(entry, 0);
-			elm_entry_line_char_wrap_set(entry, 1);
-			evas_object_size_hint_weight_set(entry, 1, 0);
-			evas_object_size_hint_align_set(entry, -1, 1);
-			evas_object_smart_callback_add(entry, "cursor,changed", on_entry_clicked, NULL);
-			evas_object_smart_callback_add(entry, "changed", on_entry_changed, NULL);
-		elm_box_pack_end(edit_panel, entry);
-		evas_object_show(entry);
-	evas_object_show(edit_panel);
-
-	/* toolbar (horizontal box object) */
-	toolbar = elm_toolbar_add(gui.win);
-		evas_object_size_hint_weight_set(toolbar, 1.0, 0.0);
-		evas_object_size_hint_align_set(toolbar, -1, 0);
-		elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
-		elm_object_style_set(toolbar, "elmdentica");
-
-		gui.timelines = elm_toolbar_item_append(toolbar, "chat", _("Timelines"), on_timelines_hv, NULL);
-		elm_toolbar_item_menu_set(gui.timelines, EINA_TRUE);
-		elm_toolbar_item_priority_set(gui.timelines, 0);
-		elm_toolbar_menu_parent_set(toolbar, gui.timeline);
-		menu = elm_toolbar_item_menu_get(gui.timelines);
-
-		elm_menu_item_add(menu, NULL, NULL, _("Direct Messages"), on_timeline_dmsgs_reload, NULL);
-		elm_menu_item_add(menu, NULL, NULL, _("Everyone"), on_timeline_public_reload, NULL);
-		elm_menu_item_add(menu, NULL, NULL, _("Just me"), on_timeline_user_reload, NULL);
-		elm_menu_item_add(menu, NULL, NULL, _("Favorites"), on_timeline_favorites_reload, NULL);
-		elm_menu_item_add(menu, NULL, NULL, _("Replies/Mentions"), on_timeline_mentions_reload, NULL);
-		elm_menu_item_add(menu, NULL, NULL, _("Friends & I"), on_timeline_friends_reload, NULL);
-
-		hv = elm_hover_add(gui.win);
-			elm_object_style_set(hv, "popout");
-			elm_hover_parent_set(hv, gui.win);
-			elm_hover_content_set(hv, "top", edit_panel);
-
-			gui.post = elm_toolbar_item_append(toolbar, "edit", _("Post"), on_post_hv, NULL);
-
-		elm_hover_target_set(hv, toolbar);
+	gui.edit = elm_box_add(gui.win);
+		elm_box_homogenous_set(gui.edit, 0);
 
 		box2 = elm_box_add(gui.win);
-		elm_box_horizontal_set(box2, EINA_TRUE);
+			elm_box_homogenous_set(box2, 0);
+			elm_box_horizontal_set(box2, 1);
+			evas_object_size_hint_align_set(box2, -1, 1);
+
+			count = elm_label_add(gui.win);
+				elm_label_label_set(count, " 140c | ");
+				evas_object_size_hint_weight_set(count, 0, 1);
+				evas_object_size_hint_align_set(count, 0, 0);
+			evas_object_show(count);
+			elm_box_pack_end(box2, count);
+
+			entry = elm_entry_add(gui.win);
+				elm_entry_entry_set(entry, _("Type your status here..."));
+				elm_entry_single_line_set(entry, 0);
+				elm_entry_line_char_wrap_set(entry, 1);
+				evas_object_size_hint_weight_set(entry, 1, 0);
+				evas_object_size_hint_align_set(entry, -1, 1);
+				evas_object_smart_callback_add(entry, "cursor,changed", on_entry_clicked, NULL);
+				evas_object_smart_callback_add(entry, "changed", on_entry_changed, NULL);
+			elm_box_pack_end(box2, entry);
+			evas_object_show(entry);
+
+			evas_object_show(box2);
+		elm_box_pack_end(gui.edit, box2);
+
+		box2 = elm_box_add(gui.win);
+			elm_box_homogenous_set(box2, 1);
+			elm_box_horizontal_set(box2, EINA_TRUE);
+			evas_object_size_hint_align_set(box2, -1, -1);
 
 			icon = elm_icon_add(gui.win);
 			elm_icon_standard_set(icon, "edit");
 			evas_object_show(icon);
 
-			bt = elm_button_add(gui.win);
-				evas_object_size_hint_weight_set(bt, 1, 1);
-				evas_object_size_hint_align_set(bt, -1, 0);
-				elm_button_label_set(bt, _("Send"));
-				elm_button_icon_set(bt, icon);
-				evas_object_smart_callback_add(bt, "clicked", on_post, hv);
-				elm_box_pack_end(box2, bt);
-			evas_object_show(bt);
+			gui.post = elm_button_add(gui.win);
+				evas_object_size_hint_weight_set(gui.post, 1, 1);
+				evas_object_size_hint_align_set(gui.post, -1, 0);
+				elm_button_label_set(gui.post, _("Send"));
+				elm_button_icon_set(gui.post, icon);
+				evas_object_smart_callback_add(gui.post, "clicked", on_post, NULL);
+				elm_box_pack_end(box2, gui.post);
+			evas_object_show(gui.post);
 
 			icon = elm_photo_add(gui.win);
 			elm_photo_file_set(icon, "head.png");
@@ -2169,7 +2148,7 @@ EAPI int elm_main(int argc, char **argv)
 				evas_object_size_hint_align_set(bt, -1, 0);
 				elm_button_label_set(bt, _("DM"));
 				elm_button_icon_set(bt, icon);
-				evas_object_smart_callback_add(bt, "clicked", on_post_dm, hv);
+				evas_object_smart_callback_add(bt, "clicked", on_post_dm, NULL);
 				elm_box_pack_end(box2, bt);
 			evas_object_show(bt);
 
@@ -2186,8 +2165,46 @@ EAPI int elm_main(int argc, char **argv)
 				elm_box_pack_end(box2, bt);
 			evas_object_show(bt);
 
-			elm_hover_content_set(hv, "middle", box2);
+			icon = elm_icon_add(gui.win);
+			elm_icon_standard_set(icon, "delete");
+			evas_object_show(icon);
+
+			bt = elm_button_add(gui.win);
+				evas_object_size_hint_weight_set(bt, 1, 1);
+				evas_object_size_hint_align_set(bt, -1, 0);
+				elm_button_label_set(bt, _("Hide"));
+				elm_button_icon_set(bt, icon);
+				evas_object_smart_callback_add(bt, "clicked", on_post_hide, NULL);
+				elm_box_pack_end(box2, bt);
+			evas_object_show(bt);
+
+		elm_box_pack_end(gui.edit, box2);
 		evas_object_show(box2);
+
+		elm_layout_content_set(gui.main, "edit", gui.edit);
+	evas_object_show(gui.edit);
+
+
+	/* toolbar (horizontal box object) */
+	toolbar = elm_toolbar_add(gui.win);
+		evas_object_size_hint_weight_set(toolbar, 1.0, 0.0);
+		evas_object_size_hint_align_set(toolbar, -1, 0);
+		elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
+		elm_toolbar_no_select_mode_set(toolbar, EINA_TRUE);
+		elm_object_style_set(toolbar, "elmdentica");
+
+		gui.timelines = elm_toolbar_item_append(toolbar, "chat", _("Timelines"), on_timelines_hv, NULL);
+		elm_toolbar_item_menu_set(gui.timelines, EINA_TRUE);
+		elm_toolbar_item_priority_set(gui.timelines, 0);
+		elm_toolbar_menu_parent_set(toolbar, gui.timeline);
+		menu = elm_toolbar_item_menu_get(gui.timelines);
+
+		elm_menu_item_add(menu, NULL, NULL, _("Direct Messages"), on_timeline_dmsgs_reload, NULL);
+		elm_menu_item_add(menu, NULL, NULL, _("Everyone"), on_timeline_public_reload, NULL);
+		elm_menu_item_add(menu, NULL, NULL, _("Just me"), on_timeline_user_reload, NULL);
+		elm_menu_item_add(menu, NULL, NULL, _("Favorites"), on_timeline_favorites_reload, NULL);
+		elm_menu_item_add(menu, NULL, NULL, _("Replies/Mentions"), on_timeline_mentions_reload, NULL);
+		elm_menu_item_add(menu, NULL, NULL, _("Friends & I"), on_timeline_friends_reload, NULL);
 
 		it = elm_toolbar_item_append(toolbar, NULL, _("Fullscreen"), on_fs, NULL);
 		it = elm_toolbar_item_append(toolbar, NULL, _("Settings"), on_settings, NULL);
