@@ -48,6 +48,7 @@
                to_x: "base";
                offset: -1 1;
               }
+              color: 0 0 0 255;
             }
             description {
                state: "visible" 0.0;
@@ -112,6 +113,7 @@
          }
          part {
             name: "bar_bg";
+            type: RECT;
             clip_to: "base";
             mouse_events: 0;
             description {
@@ -127,11 +129,7 @@
                   offset: -1 -3;
                   to: "bar_base";
                }
-               image {
-                  normal: "button_sm_disabled.png";
-                  border: 4 4 4 4;
-               }
-               color: 255 255 255 255;
+               color: 0 0 0 255;
             }
          }
          part {
@@ -148,6 +146,26 @@
          }
          part {
             name: "input_bg";
+            type: RECT;
+            clip_to: "input_base";
+            description {
+               state: "default" 0.0;
+               fixed: 1 1;
+               min: 32 32;
+               max: 9999 32;
+               rel1 {
+                  offset: -1 0;
+                  to: "input_base";
+               }
+               rel2 {
+                  /* offset: 1 0; */
+                  to: "input_base";
+               }
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "input_bg2";
             clip_to: "input_base";
             description {
                state: "default" 0.0;
@@ -163,7 +181,7 @@
                   to: "input_base";
                }
                image {
-                  normal: "button_sm_disabled.png";
+                  normal: "entry_over.png";
                   border: 4 4 4 4;
                }
                color: 235 235 235 255;
@@ -515,6 +533,7 @@
          }
          part {
             name: "bar_bg";
+            type: RECT;
             clip_to: "bar_base";
             mouse_events: 0;
             description {
@@ -530,10 +549,7 @@
                   offset: 1 0;
                   to: "bar_base";
                }
-               image {
-                  normal: "button_sm_disabled.png";
-                  border: 4 4 4 4;
-               }
+               color: 0 0 0 255;
             }
          }
          part {
