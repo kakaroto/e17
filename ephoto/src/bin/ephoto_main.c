@@ -38,6 +38,7 @@ _ephoto_flow_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
    DBG("entry '%s'", entry->path);
    ephoto_flow_browser_entry_set(ephoto->flow_browser, entry);
    elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
+   elm_object_focus(ephoto->flow_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_FLOW);
 }
 

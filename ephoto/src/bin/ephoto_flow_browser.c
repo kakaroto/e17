@@ -160,6 +160,12 @@ _flow_back(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 
    elm_toolbar_item_selected_set(efb->action.go_back, EINA_FALSE);
 
+   evas_object_key_ungrab(efb->main_layout, "Escape", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "Left", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "Right", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "BackSpace", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "space", 0, 0);
+
    elm_object_unfocus(efb->main_layout);
    evas_object_smart_callback_call(efb->main_layout, "back", efb->entry);
 }
@@ -238,6 +244,12 @@ _show_slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED
    Ephoto_Flow_Browser *efb = data;
 
    elm_toolbar_item_selected_set(efb->action.slideshow, EINA_FALSE);
+
+   evas_object_key_ungrab(efb->main_layout, "Escape", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "Left", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "Right", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "BackSpace", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "space", 0, 0);
 
    evas_object_smart_callback_call(efb->main_layout, "slideshow", efb->entry);
 }
@@ -370,7 +382,7 @@ ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
             (efb->img_edje[2], EVAS_CALLBACK_MOUSE_DOWN, _center_image_clicked, efb);
      }
 
-   
+   elm_object_focus_custom_chain_append(efb->main_layout, efb->layout, NULL);   
 
    return efb->main_layout;
 
@@ -387,7 +399,16 @@ ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
    Eina_List *l;
    Ephoto_Entry *itr;
 
-   elm_object_focus(efb->main_layout);
+   if (!evas_object_key_grab(efb->main_layout, "Escape", 0, 0, 1))
+     printf("Couldn't grab Escape key\n");
+   if (!evas_object_key_grab(efb->main_layout, "Left", 0, 0, 1))
+     printf("Couldn't grab Left key\n");
+   if (!evas_object_key_grab(efb->main_layout, "Right", 0, 0, 1))
+     printf("Couldn't grab Right key\n");
+   if (!evas_object_key_grab(efb->main_layout, "BackSpace", 0, 0, 1))
+     printf("Couldn't grab BackSpace key\n");
+   if (!evas_object_key_grab(efb->main_layout, "space", 0, 0, 1))
+     printf("Couldn't grab space key\n");
 
    if (efb->entry)
      {
@@ -400,7 +421,7 @@ ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
 
    if (entry)
      ephoto_entry_free_listener_add(entry, _entry_free, efb);
-   if (!efb->entry || same_file)
+   if (!efb->entry)
      {
         elm_toolbar_item_disabled_set(efb->action.go_prev, EINA_TRUE);
         elm_toolbar_item_disabled_set(efb->action.go_next, EINA_TRUE);
