@@ -48,7 +48,6 @@
                to_x: "base";
                offset: -1 1;
               }
-              color: 0 0 0 255;
             }
             description {
                state: "visible" 0.0;
@@ -500,6 +499,27 @@
             }
          }
          part {
+            name: "bar_bg";
+            type: RECT;
+            clip_to: "bar_base";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               /* min: 32 50;
+                * max: 9999 50; */
+               fixed: 1 1;
+               rel1 {
+                  offset: -2 -1;
+                  to: "bar_base";
+               }
+               rel2 {
+                  offset: 1 0;
+                  to: "bar_base";
+               }
+               color: 0 0 0 255;
+            }
+         }
+         part {
             name: "list";
             source: "e/modules/everything/list";
             type: GROUP;
@@ -529,27 +549,6 @@
                rel2 {
                   to: "frame";
                }
-            }
-         }
-         part {
-            name: "bar_bg";
-            type: RECT;
-            clip_to: "bar_base";
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               /* min: 32 50;
-                * max: 9999 50; */
-               fixed: 1 1;
-               rel1 {
-                  offset: -2 -1;
-                  to: "bar_base";
-               }
-               rel2 {
-                  offset: 1 0;
-                  to: "bar_base";
-               }
-               color: 0 0 0 255;
             }
          }
          part {
