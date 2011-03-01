@@ -2112,11 +2112,24 @@ EAPI int elm_main(int argc, char **argv)
 				elm_entry_single_line_set(entry, 0);
 				elm_entry_line_char_wrap_set(entry, 1);
 				evas_object_size_hint_weight_set(entry, 1, 0);
-				evas_object_size_hint_align_set(entry, -1, 1);
+				evas_object_size_hint_align_set(entry, -1, 0);
 				evas_object_smart_callback_add(entry, "cursor,changed", on_entry_clicked, NULL);
 				evas_object_smart_callback_add(entry, "changed", on_entry_changed, NULL);
 			elm_box_pack_end(box2, entry);
 			evas_object_show(entry);
+
+			icon = elm_icon_add(gui.win);
+			elm_icon_standard_set(icon, "delete");
+			evas_object_show(icon);
+
+			bt = elm_button_add(gui.win);
+				evas_object_size_hint_weight_set(bt, 0, 1);
+				evas_object_size_hint_align_set(bt, 1, 0);
+				elm_button_label_set(bt, _("Clear"));
+				elm_button_icon_set(bt, icon);
+				evas_object_smart_callback_add(bt, "clicked", on_post_clear, entry);
+				elm_box_pack_end(box2, bt);
+			evas_object_show(bt);
 
 			evas_object_show(box2);
 		elm_box_pack_end(gui.edit, box2);
@@ -2149,19 +2162,6 @@ EAPI int elm_main(int argc, char **argv)
 				elm_button_label_set(bt, _("DM"));
 				elm_button_icon_set(bt, icon);
 				evas_object_smart_callback_add(bt, "clicked", on_post_dm, NULL);
-				elm_box_pack_end(box2, bt);
-			evas_object_show(bt);
-
-			icon = elm_icon_add(gui.win);
-			elm_icon_standard_set(icon, "delete");
-			evas_object_show(icon);
-
-			bt = elm_button_add(gui.win);
-				evas_object_size_hint_weight_set(bt, 1, 1);
-				evas_object_size_hint_align_set(bt, -1, 0);
-				elm_button_label_set(bt, _("Clear"));
-				elm_button_icon_set(bt, icon);
-				evas_object_smart_callback_add(bt, "clicked", on_post_clear, entry);
 				elm_box_pack_end(box2, bt);
 			evas_object_show(bt);
 
