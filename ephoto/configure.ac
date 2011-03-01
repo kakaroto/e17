@@ -75,6 +75,7 @@ AM_GNU_GETTEXT([external])
 PKG_CHECK_MODULES([ELEMENTARY], [elementary ecore-file ethumb_client])
 PKG_CHECK_MODULES([EFREET_MIME], [efreet-mime])
 PKG_CHECK_MODULES([EIO], [eio])
+PKG_CHECK_MODULES([EET], [eet])
 
 AC_ARG_ENABLE([libexif],
    [AC_HELP_STRING([--enable-libexif], [enable libexif support @<:@default=yes@:>@])],

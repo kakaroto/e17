@@ -6,7 +6,7 @@ INCLUDES = \
 	-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 	-DGETTEXT_PACKAGE=\"$(PACKAGE)\" \
 	-DLOCALEDIR=\"$(localedir)\" \
-	@ELEMENTARY_CFLAGS@ @EFREET_MIME_CFLAGS@ @EIO_CFLAGS@ @EXIF_CFLAGS@
+	@ELEMENTARY_CFLAGS@ @EFREET_MIME_CFLAGS@ @EIO_CFLAGS@ @EXIF_CFLAGS@ @EET_CFLAGS@
 
 bin_PROGRAMS = ephoto
 if BUILD_QUICKLAUNCH
@@ -23,7 +23,7 @@ _sources = \
 	ephoto_flow_browser.c \
 	ephoto_slideshow.c
 
-_libs =	@ELEMENTARY_LIBS@ @EFREET_MIME_LIBS@ @EIO_LIBS@ @EXIF_LIBS@
+_libs =	@ELEMENTARY_LIBS@ @EFREET_MIME_LIBS@ @EIO_LIBS@ @EXIF_LIBS@ @EET_LIBS@
 
 ephoto_SOURCES = $(_sources)
 ephoto_LDADD = $(_libs)
