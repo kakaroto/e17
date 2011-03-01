@@ -274,7 +274,12 @@ _pager_finish()
      }
 
    EINA_LIST_FOREACH(items, l, it)
-     _pager_place_windows(1.0);
+     {
+	it->bd_x = it->bd->x;
+	it->bd_y = it->bd->y;
+     }
+
+   _pager_place_windows(1.0);
 
    EINA_LIST_FREE(items, it)
      {
