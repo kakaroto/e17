@@ -2,22 +2,19 @@
       images {
          image: "frame_1.png" COMP;
          image: "frame_2.png" COMP;
-         image: "background.png" COMP;
+         image: "dialog_background.png" COMP;
          image: "head.png" COMP;
       }
       parts {
          part { name: "base0";
             mouse_events:  0;
             description { state: "default" 0.0;
-               image.normal: "background.png";
                rel1.to: "over";
                rel2.to: "over";
-               fill {
-                  smooth: 0;
-                  size {
-                     relative: 0.0 1.0;
-                     offset: 64 0;
-                  }
+               image.normal: "dialog_background.png";
+               fill.size {
+                  relative: 0.0 0.0;
+                  offset: 64 64;
                }
             }
          }

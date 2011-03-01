@@ -73,7 +73,6 @@
       images {
          image: "entry_over.png" COMP;
          image: "entry_under.png" COMP;
-         image: "background.png" COMP;
       }
       parts {
          part { name: "clip";
@@ -233,7 +232,6 @@
        images {
            image: "entry_over.png" COMP;
            image: "entry_under.png" COMP;
-           image: "background.png" COMP;
        }
        parts {
            part { name: "clip_base";
@@ -317,7 +315,6 @@
        images {
            image: "entry_over.png" COMP;
            image: "entry_under.png" COMP;
-           image: "background.png" COMP;
        }
        parts {
            part { name: "clip_base";
