@@ -8,7 +8,7 @@
  * elm_photocam and elm_image rotates their images internally.
  * Rotating the scroller is not correct and was rejected by Raster and others.
  */
-//#define ROTATION
+//#define ROTATION 1
 
 #define ZOOM_STEP 0.2
 

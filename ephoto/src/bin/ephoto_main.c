@@ -88,6 +88,9 @@ _ephoto_slideshow_back(void *data, Evas_Object *obj __UNUSED__, void *event_info
       case EPHOTO_STATE_THUMB:
          _ephoto_thumb_browser_show(ephoto, entry);
          break;
+      case EPHOTO_STATE_FLOW:
+         _ephoto_flow_browser_show(ephoto, entry);
+         break;
       default:
          ERR("unhandled previous state %d", ephoto->prev_state);
      }
