@@ -1,0 +1,448 @@
+#define TIME 15
+#define TARGETS \
+            target: "left.top.panel";\
+            target: "left.bottom.panel";\
+            target: "right.bottom.left";\
+            target: "right.bottom.right";\
+            target: "right.bottom.efl";
+#define TEXT_TITLE \
+   " Enlightenment"
+#define TEXT_WEBSITE \
+   " http://www.enlightenment.org"
+#define TEXT_ABOUT \
+   "This presentation was written using EFL's Edje library!!!"
+#define TEXT_ENLIGHTENMENT_TITLE \
+   "What is Enlightenment ?"
+#define TEXT_ENLIGHTENMENT_CONTENT \
+   " Enlightenment is not just a window manager for Linux/X11 and others, but also a whole suite of libraries to help you create beautiful user interfaces with much less work than doing it the old fashioned way and fighting with traditional toolkits, not to mention a traditional window manager. <br><br> It covers users from small mobile devices like phones all the way to powerful multi-core desktops (which are the primary development environment)."
+#define TEXT_EFL_TITLE \
+   "Enlightenment Foundation Libraries (EFL)";
+#define TEXT_EFL_CONTENT \
+   " These provide both a semi-traditional toolkit set in Elementary as well as the object canvas(Evas) and powerful abstracted objects (Edje) that you can combine, mix and match, even layer on top of each other with alpha channels and events in-tact. It has 3D transformations for all objects and more."
+#define TEXT_LIMO_TITLE \
+   "LiMo 4 Platform"
+#define TEXT_LIMO_CONTENT \
+            " The LiMo 4 Release is a Next Generation Linux-based platform for mobile handsets. It is built around the core of the GNOME Mobile architecture.<br><br> There is a choice of two UI frameworks - <b>EFL (Enlightenment Foundation Libraries)</b> and GTK+ (GIMP Toolkit)."
+
+collections {
+   group { name: "demo";
+      styles {
+         style { name: "left.top.panel.textblock.style";
+            base: "font=Sans font_size=50 color=#ff0000 wrap=word text_class=label";
+            tag:  "br" "\n";
+            tag:  "ps" "ps";
+            tag:  "hilight" "+ font=Sans:style=Bold";
+            tag:  "b" "+ font=Sans:style=Bold";
+            tag:  "tab" "\t";
+         }
+         style { name: "left.bottom.panel.textblock.style";
+            base: "font=Sans font_size=35 color=#000000 wrap=word text_class=label";
+            tag:  "br" "\n";
+            tag:  "ps" "ps";
+            tag:  "hilight" "+ font=Sans:style=Bold";
+            tag:  "b" "+ font=Sans:style=Bold";
+            tag:  "tab" "\t";
+         }
+         style { name: "cebit_textblock_style";
+            base: "font=Sans font_size=25 color=#000000 wrap=word text_class=label";
+            tag:  "br" "\n";
+            tag:  "ps" "ps";
+            tag:  "hilight" "+ font=Sans:style=Bold";
+            tag:  "b" "+ font=Sans:style=Bold";
+            tag:  "tab" "\t";
+         }
+      }
+      images {
+         image: "background.png" COMP;
+         image: "logo.png" COMP;
+         image: "phone.png" COMP;
+         image: "laptop.png" COMP;
+         image: "cebit.png" COMP;
+         image: "diagram-efl-simple-small.png" COMP;
+         image: "limo.png" COMP;
+      }
+      script {
+         public mytimer(val) {
+            if (val == 0) {
+               run_program(PROGRAM:"show.efl");
+               timer(TIME, "mytimer", 1);
+            } else if (val == 1) {
+               run_program(PROGRAM:"show.limo");
+               timer(TIME, "mytimer", 2);
+            } else if (val == 2) {
+               run_program(PROGRAM:"show.default");
+               timer(TIME, "mytimer", 0);
+            }
+         }
+      }
+      parts {
+         part { name: "base";
+            type: RECT;
+            description {
+               min: 1675 980;
+               color: 255 255 255 255;
+            }
+         }
+         part { name: "background";
+            description {
+               rel2.relative: 1.0 0.5;
+               image.normal: "background.png";
+            }
+         }
+         part { name: "title";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            description { state: "default" 0.0;
+               rel1.relative: 0.5 0.0;
+               rel2.relative: 0.5 0.1;
+               align: 0.5 0.0;
+               color: 0 0 0 255;
+               color3: 100 100 100 64;
+               fixed: 1 1;
+               text {
+                  font: "Sans,Edje-Vera";
+                  size: 50;
+                  min: 1 0;
+                  align: 0.5 0.5;
+                  text: TEXT_TITLE; 
+               }
+            }
+         }
+         part { name: "title_icon";
+            description { state: "default" 0.0;
+               fixed: 1 0;
+               align: 1 0.5;
+               rel1 {
+                  to: "title";
+               }
+               rel2 {
+                  relative: 0.0 1.0;
+                  to: "title";
+               }
+               image.normal: "logo.png";
+               aspect: 0.75 0.75;
+               aspect_preference: VERTICAL;
+            }
+         }
+         part { name: "title.website";
+            type: TEXT;
+            description { state: "default" 0.0;
+               fixed: 0 1;
+               align: 0.5 0.0;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0 1;
+                  to_y: "title";
+               }
+               rel2.to_y: "title";
+               text {
+                  font: "Sans,Edje-Vera";
+                  size: 30;
+                  min: 0 1;
+                  align: 0.5 0.5;
+                  text: TEXT_WEBSITE; 
+               }
+            }
+         }
+         part { name: "title.sub";
+            type: TEXT;
+            description { state: "default" 0.0;
+               fixed: 0 1;
+               align: 0.5 0.0;
+               color: 0 0 255 200;
+               rel1 {
+                  relative: 0 1;
+                  to_y: "title.website";
+               }
+               rel2.to_y: "title.website";
+               text {
+                  font: "Sans,Edje-Vera";
+                  size: 20;
+                  min: 0 1;
+                  align: 0.5 0.5;
+                  text: TEXT_ABOUT; 
+               }
+            }
+         }
+         part { name: "separator";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 0 1;
+               fixed: 0 1;
+               color: 0 0 0 255;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_y: "title.sub";
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  to_y: "title.sub";
+               }
+            }
+         }
+         part { name: "left.top.panel";
+            type: TEXTBLOCK;
+            description { state: "default" 0.0;
+               fixed: 0 1;
+               align: 0.5 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to_y: "separator";
+                  offset: 20 10;
+               }
+               rel2 {
+                  relative: 0.5 1.0;
+                  to_y: "separator";
+                  offset: -20 -10;
+               }
+               text {
+                  align: 0.5 0.0;
+                  min: 0 1;
+                  text: TEXT_ENLIGHTENMENT_TITLE; 
+                  style: "left.top.panel.textblock.style";
+               }
+            }
+            description { state: "default" 1.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+            description { state: "efl" 0.0;
+               inherit: "default" 0.0;
+               text {
+                  text: TEXT_EFL_TITLE; 
+               }
+            }
+            description { state: "limo" 0.0;
+               inherit: "default" 0.0;
+               text {
+                  text: TEXT_LIMO_TITLE;
+               }
+            }
+         }
+         part { name: "left.bottom.panel";
+            type: TEXTBLOCK;
+            description { state: "default" 0.0;
+               color: 0 0 0 255;
+               align: 0.5 0.0;
+               rel1 {
+                  relative: 0.0 1.0;
+                  to: "left.top.panel";
+                  offset: 0 10;
+               }
+               rel2 {
+                  relative: 0.5 1.0;
+                  offset: -20 -20;
+               }
+               text {
+                  align: 0.0 0.0;
+                  text: TEXT_ENLIGHTENMENT_CONTENT; 
+                  style: "left.bottom.panel.textblock.style";
+               }
+            }
+            description { state: "default" 1.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+            description { state: "efl" 0.0;
+               inherit: "default" 0.0;
+               text {
+                  text: TEXT_EFL_CONTENT; 
+               }
+            }
+            description { state: "limo" 0.0;
+               inherit: "default" 0.0;
+               text {
+                  text: TEXT_LIMO_CONTENT;
+               }
+            }
+         }
+         part { name: "right.top.panel";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 0.5 1.0;
+                  to_y: "separator";
+                  offset: 20 10;
+               }
+               rel2 {
+                  relative: 1 0.5;
+                  offset: -20 -10;
+               }
+            }
+         }
+         part { name: "cebit.image";
+            description { state: "default" 0.0;
+               rel1.to: "right.top.panel";
+               rel2 {
+                  relative: 1.0 0.5;
+                  to: "right.top.panel";
+               }
+               image.normal: "cebit.png";
+               aspect: 1.6 1.6;
+               aspect_preference: VERTICAL;
+            }
+            description { state: "default" 1.0;
+               inherit: "default" 0.0;
+               aspect: 0.1 0.1;
+            }
+            description { state: "efl" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "limo" 0.0;
+               inherit: "default" 0.0;
+            }
+         }
+         part { name: "cebit.content";
+            type: TEXTBLOCK;
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.5;
+                  to: "right.top.panel";
+                  offset: 0 10;
+               }
+               rel2 {
+                  to: "right.top.panel";
+               }
+               text {
+                  text: " Thanks to Linux Magazin we have a stand at CeBIT from the 1st to the 5th of March 2011. We will be at the Linux Magazin stand showing our stuff off. Some of the E dev team will be there, so come by and say hello!";
+                  style: "cebit_textblock_style";
+               }
+            }
+         }
+         part { name: "right.bottom.panel";
+            type: RECT;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 0.5 0.5;
+                  offset: 20 20;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -20 -20;
+               }
+            }
+         }
+         part { name: "right.bottom.left";
+            description { state: "default" 0.0;
+               max: 59 134;
+               min: 88.5 201.0;
+               rel1 {
+                  to: "right.bottom.panel";
+               }
+               rel2 {
+                  relative: 0.5 1.0;
+                  to: "right.bottom.panel";
+                  offset: -10 0;
+               }
+               image.normal: "phone.png";
+            }
+            description { state: "default" 1.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+            description { state: "efl" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "right.bottom.right";
+            description { state: "default" 0.0;
+               rel1 {
+                  relative: 0.5 0.0;
+                  to: "right.bottom.panel";
+               }
+               rel2 {
+                  to: "right.bottom.panel";
+                  offset: -20 0;
+               }
+               image.normal: "laptop.png";
+               aspect: 1.343 1.343;
+               aspect_preference: HORIZONTAL;
+            }
+            description { state: "default" 1.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+            description { state: "efl" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "right.bottom.efl";
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1.to: "right.bottom.panel";
+               rel2.to: "right.bottom.panel";
+               image.normal: "diagram-efl-simple-small.png";
+               aspect: 0.666 0.666;
+               aspect_preference: VERTICAL;
+            }
+            description { state: "default" 1.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "efl" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description { state: "limo" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+               image.normal: "limo.png";
+               aspect: 1.61 1.61;
+            }
+         }
+      }
+      programs {
+         program { name: "load";
+            signal: "load";
+            source: "";
+            script {
+               timer(TIME,  "mytimer", 0);
+            }
+         }
+         program { name: "show.default";
+            action: STATE_SET "default" 1.0;
+            transition: DECELERATE 0.5;
+            TARGETS
+            target: "cebit.image";
+            after: "show.default.2";
+         }
+         program { name: "show.default.2";
+            action: STATE_SET "default" 0.0;
+            TARGETS
+            after: "show.default.cebit.image";
+         }
+         program { name: "show.default.cebit.image";
+            action: STATE_SET "default" 0.0;
+            target: "cebit.image";
+            transition: DECELERATE 0.5;
+         }
+         program { name: "show.efl";
+            action: STATE_SET "default" 1.0;
+            TARGETS
+            target: "cebit.image";
+            transition: DECELERATE 0.5;
+            after: "show.efl.2";
+         }
+         program { name: "show.efl.2";
+            action: STATE_SET "efl" 0.0;
+            TARGETS
+            after: "show.default.cebit.image";
+         }
+         program { name: "show.limo";
+            action: STATE_SET "default" 1.0;
+            TARGETS
+            target: "cebit.image";
+            transition: DECELERATE 0.5;
+            after: "show.limo.2";
+         }
+         program { name: "show.limo.2";
+            action: STATE_SET "limo" 0.0;
+            TARGETS
+            after: "show.default.cebit.image";
+         }
+      }
+   }
+}
