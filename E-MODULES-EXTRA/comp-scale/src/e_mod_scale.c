@@ -135,29 +135,27 @@ _scale_redraw(void *blah)
 
    _scale_place_windows(in);
 
-   EINA_LIST_FOREACH(items, l, it)
+   if (scale_conf->fade_windows)
      {
-	if (!scale_conf->fade_windows)
-	  continue;
-
-	if ((it->bd->desk != current_desk) && (selected_item != it))
-	  {
-	     double ax = it->cur_x - it->x;
-	     double ay = it->cur_y - it->y;
-	     double bx = it->bd_x  - it->x;
-	     double by = it->bd_y  - it->y;
-
-	     a = (1.0 - sqrt(ax*ax + ay*ay) / sqrt(bx*bx + by*by)) * 255;
-	  }
-	else
+	EINA_LIST_FOREACH(items, l, it)
 	  {
 	     a = 255.0;
+	     
+	     if ((it->bd->desk != current_desk) && (selected_item != it))
+	       {
+		  double ax = it->cur_x - it->x;
+		  double ay = it->cur_y - it->y;
+		  double bx = it->bd_x  - it->x;
+		  double by = it->bd_y  - it->y;
+
+		  a = (1.0 - sqrt(ax*ax + ay*ay) / sqrt(bx*bx + by*by)) * 255;
+	       }
+
+	     it->alpha = a;
+	     evas_object_color_set(it->o_win, a, a, a, a);
 	  }
-
-	it->alpha = a;
-	evas_object_color_set(it->o_win, a, a, a, a);
      }
-
+   
    if (scale_conf->fade_popups)
      {
 	a = 255.0 * in;
@@ -1382,10 +1380,14 @@ _scale_run(E_Manager *man)
       (ECORE_EVENT_MOUSE_MOVE, _scale_cb_mouse_move, e));
 
    EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
-     {
-	_scale_win_new(e, man, src, current_desk);
-     }
+     _scale_win_new(e, man, src, current_desk);
 
+   if (eina_list_count(items) < 1)
+     {
+	_scale_finish();
+	return;
+     }
+   
    if ((eina_list_count(items) < 2) && (!show_all_desks))
      {
 	_scale_finish();
