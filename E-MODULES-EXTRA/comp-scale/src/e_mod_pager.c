@@ -236,11 +236,9 @@ _pager_out()
    if (!scale_animator)
      scale_animator = ecore_animator_add(_pager_redraw, NULL);
 
-   if (selected_item)
-     edje_object_signal_emit(selected_item->o, "hide", "e");
-
    EINA_LIST_FOREACH(items, l, it)
      {
+	edje_object_signal_emit(it->o, "hide", "e");
 	it->bd_x = it->bd->x + (it->desk->x - current_desk->x) * zone->w;
 	it->bd_y = it->bd->y + (it->desk->y - current_desk->y) * zone->h;
      }
@@ -500,9 +498,9 @@ _pager_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
      }
    else if (desk && (desk != it->desk))
      {
-
 	it->desk = desk;
 
+	_pager_desk_select(desk);
 	_pager_win_final_position_set(it);
 
 	it->cur_x = it->x;

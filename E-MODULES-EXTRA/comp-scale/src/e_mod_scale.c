@@ -121,7 +121,7 @@ _scale_place_windows(double scale)
 }
 
 static Eina_Bool
-_scale_redraw(void *blah)
+_scale_redraw(void *data)
 {
    Eina_List *l;
    Item *it;

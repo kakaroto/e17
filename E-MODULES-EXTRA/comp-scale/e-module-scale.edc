@@ -132,7 +132,7 @@ collections
 				}
 				description {
 					state: "focused" 0.0;
-					color: 255 255 255 10;
+					color: 255 255 255 30;
 				}
 			}
 		}
