@@ -582,11 +582,14 @@ _ui_setup(void)
    sync();
 #endif
    /* warm up the cpu with some spinning */
-   t0 = time(NULL);
-   for (;;)
+   if (run_all)
      {
-        t = time(NULL);
-        if (t - t0 > 2) break;
+        t0 = time(NULL);
+        for (;;)
+          {
+             t = time(NULL);
+             if (t - t0 > 2) break;
+          }
      }
 
    if (run_all)
