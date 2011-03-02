@@ -69,7 +69,7 @@ e_mod_hold_modifier_check(Ecore_Event_Key *ev)
 
 
 static void
-_e_mod_action(const char *params, int modifiers)
+_e_mod_action(const char *params, int modifiers, int method)
 {
    int active;
    E_Manager *man;
@@ -86,11 +86,11 @@ _e_mod_action(const char *params, int modifiers)
 
    if (!strncmp(params, "go_pager", 8))
      {
-	active = pager_run(man, params);
+	active = pager_run(man, params, method);
      }
    else if (!strncmp(params, "go_scale", 8))
      {
-	active = scale_run(man, params);
+	active = scale_run(man, params, method);
      }
 
    if (active)
@@ -107,25 +107,25 @@ _e_mod_action(const char *params, int modifiers)
 static void
 _e_mod_action_cb_edge(E_Object *obj, const char *params, E_Event_Zone_Edge *ev)
 {
-   _e_mod_action(params, 0);
+   _e_mod_action(params, 0, 3);
 }
 
 static void
 _e_mod_action_cb(E_Object *obj, const char *params)
 {
-   _e_mod_action(params, 0);
+   _e_mod_action(params, 0, 2);
 }
 
 static void
 _e_mod_action_cb_key(E_Object *obj, const char *params, Ecore_Event_Key *ev)
 {
-   _e_mod_action(params, ev->modifiers);
+   _e_mod_action(params, ev->modifiers, 0);
 }
 
 static void
 _e_mod_action_cb_mouse(E_Object *obj, const char *params, Ecore_Event_Mouse_Button *ev)
 {
-   _e_mod_action(params, 0);
+   _e_mod_action(params, 0, 1);
 }
 /* Module and Gadcon stuff */
 
@@ -236,26 +236,30 @@ e_modapi_init(E_Module *m)
 	act->func.go_mouse = _e_mod_action_cb_mouse;
 	act->func.go_edge = _e_mod_action_cb_edge;
 
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Windows"),
+	e_action_predef_name_set(D_("Scale Windows"), D_("Scale Windows"),
 				 "scale-windows", "go_scale", NULL, 0);
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Windows (All Desktops)"),
+	e_action_predef_name_set(D_("Scale Windows"), D_("Scale Windows (All Desktops)"),
 				 "scale-windows", "go_scale_all", NULL, 0);
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager"),
+	e_action_predef_name_set(D_("Scale Windows"), D_("Scale Pager"),
 				 "scale-windows", "go_pager", NULL, 0);
+	e_action_predef_name_set(D_("Scale Windows"), D_("Select Next"),
+				 "scale-windows", "go_scale_next", NULL, 0);
+	e_action_predef_name_set(D_("Scale Windows"), D_("Select Previous"),
+				 "scale-windows", "go_scale_prev", NULL, 0);
 
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager"),
+	e_action_predef_name_set(D_("Scale Pager"), D_("Scale Pager"),
 				 "scale-windows", "go_pager", NULL, 0);
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Next"),
+	e_action_predef_name_set(D_("Scale Pager"), D_("Select Next"),
 				 "scale-windows", "go_pager_next", NULL, 0);
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Previous"),
+	e_action_predef_name_set(D_("Scale Pager"), D_("Select Previous"),
 				 "scale-windows", "go_pager_prev", NULL, 0);
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Left"),
+	e_action_predef_name_set(D_("Scale Pager"), D_("Select Left"),
 				 "scale-windows", "go_pager_left", NULL, 0);
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Right"),
+	e_action_predef_name_set(D_("Scale Pager"), D_("Select Right"),
 				 "scale-windows", "go_pager_right", NULL, 0);
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Up"),
+	e_action_predef_name_set(D_("Scale Pager"), D_("Select Up"),
 				 "scale-windows", "go_pager_up", NULL, 0);
-	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Down"),
+	e_action_predef_name_set(D_("Scale Pager"), D_("Select Down"),
 				 "scale-windows", "go_pager_down", NULL, 0);
      }
 
@@ -296,9 +300,18 @@ e_modapi_shutdown(E_Module *m)
 
    if (act)
      {
-	e_action_predef_name_del(D_("Desktop"), D_("Scale Windows"));
-	e_action_predef_name_del(D_("Desktop"), D_("Scale Windows (All Desktops)"));
-	e_action_predef_name_del(D_("Desktop"), D_("Scale Pager"));
+	e_action_predef_name_del(D_("Scale Windows"), D_("Scale Windows"));
+	e_action_predef_name_del(D_("Scale Windows"), D_("Scale Windows (All Desktops)"));
+	e_action_predef_name_del(D_("Scale Windows"), D_("Select Next"));
+	e_action_predef_name_del(D_("Scale Windows"), D_("Select Previous"));
+
+	e_action_predef_name_del(D_("Scale Pager"), D_("Scale Pager"));
+	e_action_predef_name_del(D_("Scale Pager"), D_("Select Next"));
+	e_action_predef_name_del(D_("Scale Pager"), D_("Select Previous"));
+	e_action_predef_name_del(D_("Scale Pager"), D_("Select Left"));
+	e_action_predef_name_del(D_("Scale Pager"), D_("Select Right"));
+	e_action_predef_name_del(D_("Scale Pager"), D_("Select Up"));
+	e_action_predef_name_del(D_("Scale Pager"), D_("Select Down"));
 	e_action_del("scale-windows");
      }
 

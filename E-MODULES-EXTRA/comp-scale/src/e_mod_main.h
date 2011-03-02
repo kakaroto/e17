@@ -137,8 +137,8 @@ E_Config_Dialog *e_int_config_scale_module(E_Container *con, const char *params)
 
 Eina_Bool e_mod_hold_modifier_check(Ecore_Event_Key *ev);
 
-Eina_Bool scale_run(E_Manager *man, const char *params);
-Eina_Bool pager_run(E_Manager *man, const char *params);
+Eina_Bool scale_run(E_Manager *man, const char *params, int init_method);
+Eina_Bool pager_run(E_Manager *man, const char *params, int init_method);
 
 extern Config *scale_conf;
 

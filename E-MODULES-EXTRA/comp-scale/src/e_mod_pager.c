@@ -72,11 +72,11 @@ static double start_time;
 static E_Zone *zone = NULL;
 static Item *background = NULL;
 static Item *selected_item = NULL;
+static E_Desk *previous_desk = NULL;
 static E_Desk *current_desk = NULL;
 static int min_x, min_y, max_x, max_y;
 static double desk_w, desk_h;
 static double zoom = 0.0;
-static int fade_windows;
 
 static void
 _pager_place_desks(double scale)
@@ -154,11 +154,12 @@ _pager_redraw(void *data)
    _pager_place_desks(in);
    _pager_place_windows(in);
 
-   if (fade_windows)
+   if (scale_conf->pager_fade_windows)
      {
 	EINA_LIST_FOREACH(items, l, it)
 	  {
-	     if (it->desk != current_desk)
+	    if ((it->desk != current_desk) &&
+		(it->desk != previous_desk))
 	       {
 		  double ax = it->cur_x - it->x;
 		  double ay = it->cur_y - it->y;
@@ -170,7 +171,8 @@ _pager_redraw(void *data)
 	       }
 	     else
 	       {
-		  a = 220.0 + (35.0 * in);
+		 //a = 220.0 + (35.0 * in);
+		 a = 255.0;
 	       }
 
 	     it->alpha = a;
@@ -331,6 +333,7 @@ _pager_finish()
    zone = NULL;
    selected_item = NULL;
    current_desk = NULL;
+   previous_desk = NULL;
    background = NULL;
 }
 
@@ -356,6 +359,7 @@ _pager_desk_select(E_Desk *desk)
 	edje_object_signal_emit(o_desk, "unfocused", "e");
      }
 
+   previous_desk = current_desk;
    current_desk = desk;
 
    o_desk = eina_list_nth(desks, desk->y * zone->desk_x_count + desk->x);
@@ -879,7 +883,6 @@ _pager_switch(const char *params)
        Eina_List *l;
        Item *it;
 
-       fade_windows = 0;
        EINA_LIST_FOREACH(items, l, it)
 	 {
 	   it->alpha = 255.0;
@@ -1047,7 +1050,6 @@ _pager_run(E_Manager *man)
 
 	for (y = 0; y < zone->desk_y_count; y++)
 	  {
-
 	     for (x = 0; x < zone->desk_x_count; x++)
 	       {
 		  o = edje_object_add(e);
@@ -1071,13 +1073,11 @@ _pager_run(E_Manager *man)
    evas_event_feed_mouse_move(e, -1000000, -1000000,
                               ecore_x_current_time_get(), NULL);
 
-   fade_windows = scale_conf->pager_fade_windows;
-
    return EINA_TRUE;
 }
 
 Eina_Bool
-pager_run(E_Manager *man, const char *params)
+pager_run(E_Manager *man, const char *params, int init_method)
 {
    Eina_Bool ret = EINA_FALSE;
 

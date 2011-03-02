@@ -39,6 +39,12 @@ struct _Item
   int overlaps;
 
   int in_slots;
+
+  int slot_x;
+  int slot_y;
+
+  Item *next;
+  Item *prev;
 };
 
 struct _Slot
@@ -69,7 +75,7 @@ static void _scale_win_del(Item *it);
 
 static void _scale_finish(void);
 static void _scale_in(void);
-static void _scale_out(void);
+static void _scale_out(int mode);
 
 static void _scale_handler(void *data, const char *name, const char *info, int val, E_Object *obj, void *msgdata);
 
@@ -94,6 +100,7 @@ static Item *selected_item = NULL;
 static E_Desk *current_desk = NULL;
 static int show_all_desks = EINA_FALSE;
 static int send_to_desk = EINA_FALSE;
+static int scale_layout;
 
 static void
 _scale_place_windows(double scale)
@@ -199,9 +206,47 @@ _scale_in()
 }
 
 static void
-_scale_out()
+_scale_out(int mode)
 {
    double duration, now = ecore_time_get();
+   Item *ot, *it = selected_item;
+   Eina_List *l;
+   if (mode == 0)
+     {
+	selected_item = NULL;
+     }
+   else if (mode == 1)
+     {
+	/* goto selected windows desk */
+	current_desk = it->bd->desk;
+
+	EINA_LIST_FOREACH(items, l, ot)
+	  {
+	     if (ot->bd->desk == it->bd->desk)
+	       {
+		  ot->bd_x = ot->bd->x;
+		  ot->bd_y = ot->bd->y;
+	       }
+	     else
+	       {
+		  if (ot->dx > it->dx)
+		    ot->bd_x = ot->bd->x + zone->w;
+		  else if (ot->dx < it->dx)
+		    ot->bd_x = ot->bd->x - zone->w;
+
+		  if (ot->dy > it->dy)
+		    ot->bd_y = ot->bd->y + zone->h;
+		  else if (ot->dy < it->dy)
+		    ot->bd_y = ot->bd->y - zone->h;
+	       }
+	  }
+     }
+   else if (mode == 2)
+     {
+	send_to_desk = EINA_TRUE;
+	it->bd_x = it->bd->x;
+	it->bd_y = it->bd->y;
+     }
 
    if (show_all_desks)
      duration = scale_conf->desks_duration;
@@ -217,7 +262,10 @@ _scale_out()
      scale_animator = ecore_animator_add(_scale_redraw, NULL);
 
    if (selected_item)
-     edje_object_signal_emit(selected_item->o, "hide", "e");
+     {
+	e_border_raise(selected_item->bd);
+	edje_object_signal_emit(selected_item->o, "hide", "e");
+     }
 
    scale_state = EINA_FALSE;
 }
@@ -327,56 +375,27 @@ _scale_win_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static void
 _scale_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Item *ot, *it = data;
+   Item *it = data;
    Evas_Event_Mouse_Down *ev = event_info;
-   Eina_List *l;
 
    if (!scale_state)
      return;
 
-   e_border_raise(it->bd);
-
    if (it->bd->desk == e_desk_current_get(it->bd->zone))
      {
-	_scale_out();
-	return;
+	selected_item = it;
+	_scale_out(1);
      }
-
-   if (ev->button == 1)
+   else if (ev->button == 1)
      {
 	selected_item = it;
-	current_desk = it->bd->desk;
-
-	EINA_LIST_FOREACH(items, l, ot)
-	  {
-	     if (ot->bd->desk == it->bd->desk)
-	       {
-		  ot->bd_x = ot->bd->x;
-		  ot->bd_y = ot->bd->y;
-	       }
-	     else
-	       {
-		  if (ot->dx > it->dx)
-		    ot->bd_x = ot->bd->x + zone->w;
-		  else if (ot->dx < it->dx)
-		    ot->bd_x = ot->bd->x - zone->w;
-
-		  if (ot->dy > it->dy)
-		    ot->bd_y = ot->bd->y + zone->h;
-		  else if (ot->dy < it->dy)
-		    ot->bd_y = ot->bd->y - zone->h;
-	       }
-	  }
+	_scale_out(1);
      }
    else if (ev->button == 3)
      {
-	send_to_desk = EINA_TRUE;
 	selected_item = it;
-	it->bd_x = it->bd->x;
-	it->bd_y = it->bd->y;
+	_scale_out(2);
      }
-
-   _scale_out();
 }
 
 static void
@@ -392,7 +411,7 @@ _scale_win_cb_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (it->bd)
      {
-	_scale_out();
+	_scale_out(0);
 	items = eina_list_remove(items, it);
      }
    else
@@ -1234,12 +1253,26 @@ _scale_place_slotted()
 	     x++;
 	  }
      }
+   Item *prev = NULL;
+   Item *first = NULL;
 
    EINA_LIST_FOREACH(slots, l, slot)
      {
 	if (slot->it)
 	  {
 	     it = slot->it;
+
+	     it->prev = prev;
+	     prev = it;
+
+	     if (it->prev)
+	       it->prev->next = it;
+
+	     if (!first)
+	       first = it;
+
+	     it->slot_x = slot->x;
+	     it->slot_y = slot->y;
 
 	     if (it->w > slot->w - spacing)
 	       {
@@ -1263,9 +1296,11 @@ _scale_place_slotted()
 	E_FREE(slot);
      }
 
+   first->prev = prev;
+   prev->next = first;
+
    return 1;
 }
-
 
 static int
 _cb_sort_center(const void *d1, const void *d2)
@@ -1342,6 +1377,69 @@ _scale_place_natural()
      }
 }
 
+
+#if 0
+static Item *
+_scale_item_select(int direction)
+{
+   double min;
+   Item *last, *min;
+   Eina_List *l;
+
+   if (direction == DIR_RIGHT)
+     {
+	EINA_LIST_FOREACH(items, l, it2)
+	  {
+
+	  }
+     }
+   else if (direction == DIR_LEFT)
+     {
+	EINA_LIST_FOREACH(items, l, it2)
+	  {
+
+	  }
+     }
+   else if (direction == DIR_UP)
+     {
+	EINA_LIST_FOREACH(items, l, it2)
+	  {
+
+	  }
+     }
+   else if (direction == DIR_DOWN)
+     {
+	EINA_LIST_FOREACH(items, l, it2)
+	  {
+
+	  }
+     }
+}
+#endif
+
+static void
+_scale_switch(const char *params)
+{
+   Item *it;
+
+   if (!strcmp(params, "_next"))
+     {
+	it = selected_item;
+	edje_object_signal_emit(it->o, "mouse,out", "e");
+	it = it->next;
+	edje_object_signal_emit(it->o, "mouse,in", "e");
+	selected_item = it;
+     }
+   else if (!strcmp(params, "_prev"))
+     {
+	it = selected_item;
+	edje_object_signal_emit(it->o, "mouse,out", "e");
+	it = it->prev;
+	edje_object_signal_emit(it->o, "mouse,in", "e");
+	selected_item = it;
+     }
+}
+
 static Eina_Bool
 _scale_cb_key_down(void *data, int type, void *event)
 {
@@ -1359,19 +1457,20 @@ _scale_cb_key_down(void *data, int type, void *event)
     *   _scale_switch("_left");
     * else if (!strcmp(ev->key, "Right"))
     *   _scale_switch("_right");
-    * else if (!strcmp(ev->key, "p"))
-    *   _scale_switch("_prev");
-    * else if (!strcmp(ev->key, "n"))
-    *   _scale_switch("_next");
-    * else if (!strcmp(ev->key, "Return"))
-    *   _scale_out();
     * else */
+   if (!strcmp(ev->key, "p"))
+     _scale_switch("_prev");
+   else if (!strcmp(ev->key, "n"))
+     _scale_switch("_next");
+   else if (!strcmp(ev->key, "Return"))
+     _scale_out(1);
+   else
    if (!strcmp(ev->key, "space"))
-     _scale_out();
+     _scale_out(1);
    else if (!strcmp(ev->key, "Escape"))
      {
 	/* TODO go to previously focused window */
-	_scale_out();
+	_scale_out(0);
      }
    else
      {
@@ -1425,13 +1524,13 @@ _scale_cb_key_up(void *data, int type, void *event)
      return ECORE_CALLBACK_PASS_ON;
 
    if (!e_mod_hold_modifier_check(event))
-     _scale_out();
+     _scale_out(1);
 
    return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
-_scale_run(E_Manager *man)
+_scale_run(E_Manager *man, int init_method)
 {
    Eina_List *l;
    E_Manager_Comp_Source *src;
@@ -1518,20 +1617,10 @@ _scale_run(E_Manager *man)
    max_y =  zone->h + zone->h * ((zone->desk_y_count - 1) - zone->desk_y_current);
 
    /* scale all windows down to be next to each other on one zone */
-   if (show_all_desks)
-     {
-	if (scale_conf->desks_layout_mode)
-	  _scale_place_slotted();
-	else
-	  _scale_place_natural();
-     }
+   if (scale_layout)
+     _scale_place_slotted();
    else
-     {
-	if (scale_conf->layout_mode)
-	  _scale_place_slotted();
-	else
-	  _scale_place_natural();
-     }
+     _scale_place_natural();
 
    min_x = use_x;
    min_y = use_y;
@@ -1591,6 +1680,21 @@ _scale_run(E_Manager *man)
    evas_event_feed_mouse_move(e, -1000000, -1000000,
                               ecore_x_current_time_get(), NULL);
 
+   if (init_method == 0)
+     {
+	E_Border *bd = e_border_focused_get();
+
+	EINA_LIST_FOREACH(items, l , it)
+	  if (it->bd == bd) break;
+
+	if (it)
+	  selected_item = it;
+	else
+	  selected_item = eina_list_data_get(items);
+
+	edje_object_signal_emit(selected_item->o, "mouse,in", "e");
+     }
+
    _scale_in();
 
    return EINA_TRUE;
@@ -1621,7 +1725,7 @@ _scale_cb_mouse_down(void *data, int type, void *event)
 
    if (!it)
      {
-	_scale_out();
+	_scale_out(1);
 	return ECORE_CALLBACK_PASS_ON;
      }
 
@@ -1644,26 +1748,37 @@ _scale_cb_mouse_up(void *data, int type, void *event)
 }
 
 Eina_Bool
-scale_run(E_Manager *man, const char *params)
+scale_run(E_Manager *man, const char *params, int init_method)
 {
    Eina_List *l;
    Eina_Bool ret = EINA_FALSE;
 
    if (!strcmp(params, "go_scale_all"))
-     show_all_desks = EINA_TRUE;
+     {
+	scale_layout = scale_conf->desks_layout_mode;
+	show_all_desks = EINA_TRUE;
+     }
+
    else
-     show_all_desks = EINA_FALSE;
+     {
+	scale_layout = scale_conf->layout_mode;
+	show_all_desks = EINA_FALSE;
+     }
+
+   /* FIXME means: if keyboard use slotted layout */
+   if (init_method == 0)
+     scale_layout = 1;
 
    if (scale_state)
      {
-	/* _scale_action(params+8); */
+	_scale_switch(params+8);
      }
    else
      {
 	if (input_win)
 	  return ret;
 
-	ret = _scale_run(man);
+	ret = _scale_run(man, init_method);
      }
 
    return ret;

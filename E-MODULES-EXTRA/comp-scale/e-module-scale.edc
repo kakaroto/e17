@@ -142,7 +142,7 @@ collections
 				signal: "mouse,in";
 				source: "e";
 				action: STATE_SET "focused" 0.0;
-				transition: SINUSOIDAL 0.3;
+				transition: ACCELERATE 0.1;
 				target: "over";
 			}
 			program {
@@ -150,7 +150,7 @@ collections
 				signal: "mouse,out";
 				source: "e";
 				action: STATE_SET "default" 0.0;
-				transition: SINUSOIDAL 0.4;
+				transition: DECELERATE 0.1;
 				target: "over";
 			}
 			program {
@@ -226,7 +226,96 @@ collections
 						relative: 0.0 1.0;
 						offset: 0 -1;
 					}
-
+				}
+			}
+			part {
+				name: "left2";
+				mouse_events: 0;
+				type: RECT;
+				clip_to: "focus_clip";
+				description {
+					state: "default" 0.0;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: -1 0;
+					}
+					rel2 {
+						relative: 0.0 1.0;
+						offset: -1 -1;
+					}
+				}
+			}
+			part {
+				name: "right2";
+				mouse_events: 0;
+				type: RECT;
+				clip_to: "focus_clip";
+				description {
+					state: "default" 0.0;
+					rel1 {
+						relative: 1.0 0.0;
+						offset: 0 0;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 0 -1;
+					}
+				}
+			}
+			part {
+				name: "top2";
+				mouse_events: 0;
+				type: RECT;
+				clip_to: "focus_clip";
+				description {
+					state: "default" 0.0;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: -1 -1;
+					}
+					rel2 {
+						relative: 1.0 0.0;
+						offset: -0 -1;
+					}
+				}
+			}
+			part {
+				name: "bottom2";
+				mouse_events: 0;
+				type: RECT;
+				clip_to: "focus_clip";
+				description {
+					state: "default" 0.0;
+					rel1 {
+						relative: 0.0 1.0;
+						offset: -1 0;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+					}
+				}
+			}
+			part {
+				name: "focus_clip";
+				mouse_events: 0;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 180;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: -1 -1;
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+					}
+				}
+				description {
+					state: "unfocused" 0.0;
+					inherit: "default" 0.0;
+					color: 0 0 0 0;
 				}
 			}
 			part {
@@ -251,6 +340,7 @@ collections
 				action: STATE_SET "default" 0.0;
 				transition: SINUSOIDAL 0.2;
 				target: "bg";
+				target: "focus_clip";
 			}
 			program {
 				name: "unfocused";
@@ -259,6 +349,7 @@ collections
 				action: STATE_SET "unfocused" 0.0;
 				transition: SINUSOIDAL 0.3;
 				target: "bg";
+				target: "focus_clip";
 			}
 		}
 	}
