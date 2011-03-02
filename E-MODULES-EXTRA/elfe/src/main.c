@@ -366,13 +366,6 @@ _elfe_home_win_new(E_Zone *zone)
    elm_theme_overlay_add(theme, buf);
    elm_object_theme_set(hwin->layout, theme);
 
-
-   hwin->allapps = elfe_allapps_add(hwin->layout);
-   evas_object_smart_callback_add(hwin->allapps, "entry,longpressed", _allapps_longpressed_cb, hwin);
-   evas_object_smart_callback_add(hwin->allapps, "item,selected", _allapps_item_selected_cb, hwin);
-   evas_object_show(hwin->allapps);
-   elm_layout_content_set(hwin->layout, "apps-list-swallow", hwin->allapps);
-
    hwin->desktop = elfe_desktop_add(hwin->layout, hwin->zone);
    elm_layout_content_set(hwin->layout, "launcher.swallow", hwin->desktop);
    evas_object_smart_callback_add(hwin->desktop, "longpressed", _desktop_longpressed_cb, hwin);
