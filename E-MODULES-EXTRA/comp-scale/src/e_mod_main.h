@@ -134,8 +134,11 @@ EAPI int e_modapi_save(E_Module *m);
 
 
 E_Config_Dialog *e_int_config_scale_module(E_Container *con, const char *params);
-void scale_run(const char *params);
-void pager_run(const char *params);
+
+Eina_Bool e_mod_hold_modifier_check(Ecore_Event_Key *ev);
+
+Eina_Bool scale_run(E_Manager *man, const char *params);
+Eina_Bool pager_run(E_Manager *man, const char *params);
 
 extern Config *scale_conf;
 

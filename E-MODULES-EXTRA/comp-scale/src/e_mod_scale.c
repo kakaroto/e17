@@ -71,6 +71,9 @@ static void _scale_finish(void);
 static void _scale_in(void);
 static void _scale_out(void);
 
+static void _scale_handler(void *data, const char *name, const char *info, int val, E_Object *obj, void *msgdata);
+
+
 static Ecore_X_Window input_win = 0;
 static E_Msg_Handler *msg_handler = NULL;
 
@@ -140,7 +143,7 @@ _scale_redraw(void *blah)
 	EINA_LIST_FOREACH(items, l, it)
 	  {
 	     a = 255.0;
-	     
+
 	     if ((it->bd->desk != current_desk) && (selected_item != it))
 	       {
 		  double ax = it->cur_x - it->x;
@@ -155,7 +158,7 @@ _scale_redraw(void *blah)
 	     evas_object_color_set(it->o_win, a, a, a, a);
 	  }
      }
-   
+
    if (scale_conf->fade_popups)
      {
 	a = 255.0 * in;
@@ -255,7 +258,7 @@ _scale_finish()
 	it->bd_x = it->bd->x;
 	it->bd_y = it->bd->y;
      }
-   
+
    _scale_place_windows(1.0);
 
    EINA_LIST_FREE(items, it)
@@ -1339,19 +1342,106 @@ _scale_place_natural()
      }
 }
 
+static Eina_Bool
+_scale_cb_key_down(void *data, int type, void *event)
+{
+   Ecore_Event_Key *ev = event;
 
+   if (ev->window != input_win)
+     return ECORE_CALLBACK_PASS_ON;
+   printf("%s\n", ev->key);
 
-static void
+   /* if (!strcmp(ev->key, "Up"))
+    *   _scale_switch("_up");
+    * else if (!strcmp(ev->key, "Down"))
+    *   _scale_switch("_down");
+    * else if (!strcmp(ev->key, "Left"))
+    *   _scale_switch("_left");
+    * else if (!strcmp(ev->key, "Right"))
+    *   _scale_switch("_right");
+    * else if (!strcmp(ev->key, "p"))
+    *   _scale_switch("_prev");
+    * else if (!strcmp(ev->key, "n"))
+    *   _scale_switch("_next");
+    * else if (!strcmp(ev->key, "Return"))
+    *   _scale_out();
+    * else */
+   if (!strcmp(ev->key, "space"))
+     _scale_out();
+   else if (!strcmp(ev->key, "Escape"))
+     {
+	/* TODO go to previously focused window */
+	_scale_out();
+     }
+   else
+     {
+	E_Action *act;
+	Eina_List *l;
+	E_Config_Binding_Key *bind;
+	E_Binding_Modifier mod;
+
+	for (l = e_config->key_bindings; l; l = l->next)
+	  {
+	     bind = l->data;
+
+	     if (bind->action && strcmp(bind->action, "scale-windows")) continue;
+	     if (!bind->params || strncmp(bind->params, "go_scale", 8)) continue;
+	     printf("found action\n");
+
+	     mod = 0;
+
+	     if (ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT)
+               mod |= E_BINDING_MODIFIER_SHIFT;
+	     if (ev->modifiers & ECORE_EVENT_MODIFIER_CTRL)
+               mod |= E_BINDING_MODIFIER_CTRL;
+	     if (ev->modifiers & ECORE_EVENT_MODIFIER_ALT)
+               mod |= E_BINDING_MODIFIER_ALT;
+	     if (ev->modifiers & ECORE_EVENT_MODIFIER_WIN)
+               mod |= E_BINDING_MODIFIER_WIN;
+
+	     if (bind->key && (!strcmp(bind->key, ev->keyname)) &&
+		 ((bind->modifiers == mod) || (bind->any_mod)))
+	       {
+		  if (!(act = e_action_find(bind->action))) continue;
+		  if (act->func.go_key)
+		    act->func.go_key(E_OBJECT(zone), bind->params, ev);
+		  else if (act->func.go)
+		    act->func.go(E_OBJECT(zone), bind->params);
+	       }
+	  }
+     }
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_scale_cb_key_up(void *data, int type, void *event)
+{
+   Ecore_Event_Key *ev = event;
+
+   if (ev->window != input_win)
+     return ECORE_CALLBACK_PASS_ON;
+
+   if (!scale_state)
+     return ECORE_CALLBACK_PASS_ON;
+
+   if (!e_mod_hold_modifier_check(event))
+     _scale_out();
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
 _scale_run(E_Manager *man)
 {
    Eina_List *l;
    E_Manager_Comp_Source *src;
+   Ecore_Event_Handler *h;
    Evas *e;
    int i;
    Item *it;
 
    e = e_manager_comp_evas_get(man);
-   if (!e) return;
+   if (!e) return EINA_FALSE;
 
    zone = e_util_zone_current_get(e_manager_current_get());
    current_desk = e_desk_current_get(zone);
@@ -1364,20 +1454,28 @@ _scale_run(E_Manager *man)
      {
 	ecore_x_window_free(input_win);
 	input_win = 0;
-	return;
+	return EINA_FALSE;
      }
 
-   handlers = eina_list_append
-     (handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_BUTTON_DOWN, _scale_cb_mouse_down, e));
+   h = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
+			       _scale_cb_mouse_down, e);
+   handlers = eina_list_append(handlers, h);
 
-   handlers = eina_list_append
-     (handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_BUTTON_UP, _scale_cb_mouse_up, e));
+   h = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP,
+			       _scale_cb_mouse_up, e);
+   handlers = eina_list_append(handlers, h);
 
-   handlers = eina_list_append
-     (handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_MOVE, _scale_cb_mouse_move, e));
+   h = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE,
+			       _scale_cb_mouse_move, e);
+   handlers = eina_list_append(handlers, h);
+
+   h = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
+   			       _scale_cb_key_down, e);
+   handlers = eina_list_append(handlers, h);
+
+   h = ecore_event_handler_add(ECORE_EVENT_KEY_UP,
+   			       _scale_cb_key_up, e);
+   handlers = eina_list_append(handlers, h);
 
    EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
      _scale_win_new(e, man, src, current_desk);
@@ -1385,13 +1483,13 @@ _scale_run(E_Manager *man)
    if (eina_list_count(items) < 1)
      {
 	_scale_finish();
-	return;
+	return EINA_FALSE;
      }
-   
+
    if ((eina_list_count(items) < 2) && (!show_all_desks))
      {
 	_scale_finish();
-	return;
+	return EINA_FALSE;
      }
 
    if (show_all_desks)
@@ -1494,6 +1592,8 @@ _scale_run(E_Manager *man)
                               ecore_x_current_time_get(), NULL);
 
    _scale_in();
+
+   return EINA_TRUE;
 }
 
 
@@ -1543,6 +1643,33 @@ _scale_cb_mouse_up(void *data, int type, void *event)
    return ECORE_CALLBACK_PASS_ON;
 }
 
+Eina_Bool
+scale_run(E_Manager *man, const char *params)
+{
+   Eina_List *l;
+   Eina_Bool ret = EINA_FALSE;
+
+   if (!strcmp(params, "go_scale_all"))
+     show_all_desks = EINA_TRUE;
+   else
+     show_all_desks = EINA_FALSE;
+
+   if (scale_state)
+     {
+	/* _scale_action(params+8); */
+     }
+   else
+     {
+	if (input_win)
+	  return ret;
+
+	ret = _scale_run(man);
+     }
+
+   return ret;
+}
+
+
 static void
 _scale_handler(void *data, const char *name, const char *info, int val,
 	       E_Object *obj, void *msgdata)
@@ -1579,29 +1706,8 @@ _scale_handler(void *data, const char *name, const char *info, int val,
 
         DBG("%s: %p | %p\n", info, man, src);
      }
-   /* else if (!strcmp(info, "visible.src"))
-    *   {
-    *      DBG("%s: %p | %p\n", info, man, src);
-    *   } */
-}
-
-void
-scale_run(const char *params)
-{
-   Eina_List *l;
-   E_Manager *man;
-
-   msg_handler = e_msg_handler_add(_scale_handler, NULL);
-
-   if (!strcmp(params, "go_scale_all"))
-     show_all_desks = EINA_TRUE;
-   else
-     show_all_desks = EINA_FALSE;
-
-   EINA_LIST_FOREACH(e_manager_list(), l, man)
+   else if (!strcmp(info, "visible.src"))
      {
-	Evas *e = e_manager_comp_evas_get(man);
-	if (e) _scale_run(man);
+        DBG("%s: %p | %p\n", info, man, src);
      }
 }
-

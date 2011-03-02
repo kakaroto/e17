@@ -22,34 +22,111 @@ static void _scale_gc_cb_menu_post(void *data, E_Menu *menu);
 static void _scale_gc_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 
 static E_Action *act = NULL;
+static int _hold_count = 0;
+static int _hold_mod = 0;
+
+Eina_Bool
+e_mod_hold_modifier_check(Ecore_Event_Key *ev)
+{
+   if (!_hold_mod)
+     return EINA_TRUE;
+   if ((_hold_mod & ECORE_EVENT_MODIFIER_SHIFT) && (!strcmp(ev->key, "Shift_L")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_SHIFT) && (!strcmp(ev->key, "Shift_R")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_CTRL) && (!strcmp(ev->key, "Control_L")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_CTRL) && (!strcmp(ev->key, "Control_R")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_ALT) && (!strcmp(ev->key, "Alt_L")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_ALT) && (!strcmp(ev->key, "Alt_R")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_ALT) && (!strcmp(ev->key, "Meta_L")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_ALT) && (!strcmp(ev->key, "Meta_R")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_ALT) && (!strcmp(ev->key, "Super_L")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_ALT) && (!strcmp(ev->key, "Super_R")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_WIN) && (!strcmp(ev->key, "Super_L")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_WIN) && (!strcmp(ev->key, "Super_R")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_WIN) && (!strcmp(ev->key, "Mode_switch")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_WIN) && (!strcmp(ev->key, "Meta_L")))
+     _hold_count--;
+   else if ((_hold_mod & ECORE_EVENT_MODIFIER_WIN) && (!strcmp(ev->key, "Meta_R")))
+     _hold_count--;
+   if (_hold_count <= 0)
+     {
+	return EINA_FALSE;
+     }
+   return EINA_TRUE;
+}
+
 
 static void
-_e_mod_action(const char *params)
+_e_mod_action(const char *params, int modifiers)
 {
+   int active;
+   E_Manager *man;
+   Evas *e;
+
    if (!params) return;
+
+   /* we expect that there is only one manager!!!*/
+   man = eina_list_data_get(e_manager_list());
+   if (!man) return;
+
+   e = e_manager_comp_evas_get(man);
+   if (!e) return;
 
    if (!strncmp(params, "go_pager", 8))
      {
-	pager_run(params);
+	active = pager_run(man, params);
      }
    else if (!strncmp(params, "go_scale", 8))
      {
-	scale_run(params);
+	active = scale_run(man, params);
+     }
+
+   if (active)
+     {
+     	_hold_mod = modifiers;
+	_hold_count = 0;
+	if (_hold_mod & ECORE_EVENT_MODIFIER_SHIFT) _hold_count++;
+	if (_hold_mod & ECORE_EVENT_MODIFIER_CTRL)  _hold_count++;
+	if (_hold_mod & ECORE_EVENT_MODIFIER_ALT)   _hold_count++;
+	if (_hold_mod & ECORE_EVENT_MODIFIER_WIN)   _hold_count++;
      }
 }
 
 static void
 _e_mod_action_cb_edge(E_Object *obj, const char *params, E_Event_Zone_Edge *ev)
 {
-   _e_mod_action(params);
+   _e_mod_action(params, 0);
 }
 
 static void
 _e_mod_action_cb(E_Object *obj, const char *params)
 {
-   _e_mod_action(params);
+   _e_mod_action(params, 0);
 }
 
+static void
+_e_mod_action_cb_key(E_Object *obj, const char *params, Ecore_Event_Key *ev)
+{
+   _e_mod_action(params, ev->modifiers);
+}
+
+static void
+_e_mod_action_cb_mouse(E_Object *obj, const char *params, Ecore_Event_Mouse_Button *ev)
+{
+   _e_mod_action(params, 0);
+}
 /* Module and Gadcon stuff */
 
 typedef struct _Instance Instance;
@@ -155,13 +232,31 @@ e_modapi_init(E_Module *m)
    if (act)
      {
 	act->func.go = _e_mod_action_cb;
+	act->func.go_key = _e_mod_action_cb_key;
+	act->func.go_mouse = _e_mod_action_cb_mouse;
 	act->func.go_edge = _e_mod_action_cb_edge;
+
 	e_action_predef_name_set(D_("Desktop"), D_("Scale Windows"),
 				 "scale-windows", "go_scale", NULL, 0);
 	e_action_predef_name_set(D_("Desktop"), D_("Scale Windows (All Desktops)"),
 				 "scale-windows", "go_scale_all", NULL, 0);
 	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager"),
 				 "scale-windows", "go_pager", NULL, 0);
+
+	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager"),
+				 "scale-windows", "go_pager", NULL, 0);
+	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Next"),
+				 "scale-windows", "go_pager_next", NULL, 0);
+	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Previous"),
+				 "scale-windows", "go_pager_prev", NULL, 0);
+	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Left"),
+				 "scale-windows", "go_pager_left", NULL, 0);
+	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Right"),
+				 "scale-windows", "go_pager_right", NULL, 0);
+	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Up"),
+				 "scale-windows", "go_pager_up", NULL, 0);
+	e_action_predef_name_set(D_("Desktop"), D_("Scale Pager Down"),
+				 "scale-windows", "go_pager_down", NULL, 0);
      }
 
    return m;

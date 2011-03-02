@@ -54,6 +54,8 @@ static void _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src);
 static void _pager_win_del(Item *it);
 
 static void _pager_finish();
+static void _pager_handler(void *data, const char *name, const char *info, int val, E_Object *obj, void *msgdata);
+
 
 
 static Ecore_X_Window input_win = 0;
@@ -74,6 +76,7 @@ static E_Desk *current_desk = NULL;
 static int min_x, min_y, max_x, max_y;
 static double desk_w, desk_h;
 static double zoom = 0.0;
+static int fade_windows;
 
 static void
 _pager_place_desks(double scale)
@@ -151,7 +154,7 @@ _pager_redraw(void *data)
    _pager_place_desks(in);
    _pager_place_windows(in);
 
-   if (scale_conf->pager_fade_windows)
+   if (fade_windows)
      {
 	EINA_LIST_FOREACH(items, l, it)
 	  {
@@ -216,8 +219,11 @@ _pager_in()
 static void
 _pager_out()
 {
-   double duration, now = ecore_time_get();
+   Item *it;
+   Eina_List *l;
+   double duration, now;
 
+   now = ecore_time_get();
    duration = scale_conf->pager_duration;
 
    if (now - start_time < duration)
@@ -230,6 +236,12 @@ _pager_out()
 
    if (selected_item)
      edje_object_signal_emit(selected_item->o, "hide", "e");
+
+   EINA_LIST_FOREACH(items, l, it)
+     {
+	it->bd_x = it->bd->x + (it->desk->x - current_desk->x) * zone->w;
+	it->bd_y = it->bd->y + (it->desk->y - current_desk->y) * zone->h;
+     }
 
    scale_state = EINA_FALSE;
 }
@@ -336,16 +348,18 @@ _pager_desk_at_xy_get(double x, double y)
 static void
 _pager_desk_select(E_Desk *desk)
 {
-   Item *it;
-   Eina_List *l;
+   Evas_Object *o_desk;
+
+   if (current_desk && (desk != current_desk))
+     {
+	o_desk = eina_list_nth(desks, current_desk->y * zone->desk_x_count + current_desk->x);
+	edje_object_signal_emit(o_desk, "unfocused", "e");
+     }
 
    current_desk = desk;
 
-   EINA_LIST_FOREACH(items, l, it)
-     {
-	it->bd_x = it->bd->x + (it->desk->x - desk->x) * zone->w;
-	it->bd_y = it->bd->y + (it->desk->y - desk->y) * zone->h;
-     }
+   o_desk = eina_list_nth(desks, desk->y * zone->desk_x_count + desk->x);
+   edje_object_signal_emit(o_desk, "focused", "e");
 }
 
 static void
@@ -369,6 +383,9 @@ _pager_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
    else if (ev->button == 1)
      {
 	e_border_raise(it->bd);
+
+	if (current_desk != it->desk)
+	  _pager_desk_select(it->desk);
      }
 
    it->mx = ev->canvas.x;
@@ -469,6 +486,9 @@ _pager_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
 	     x += (desk2->x - desk->x) * zone->w;
 	     y += (desk2->y - desk->y) * zone->h;
 	  }
+
+	if (current_desk != desk)
+	  _pager_desk_select(desk);
 
 	e_border_move(it->bd, x, y);
 
@@ -784,9 +804,8 @@ _pager_cb_mouse_down(void *data, int type, void *event)
    if (!it)
      {
 	E_Desk *desk = _pager_desk_at_xy_get(ev->x, ev->y);
-	if (desk) current_desk = desk;
-
-	_pager_desk_select(current_desk);
+	if (desk)
+	  _pager_desk_select(desk);
 
 	_pager_out();
 	return ECORE_CALLBACK_PASS_ON;
@@ -801,6 +820,162 @@ _pager_cb_mouse_down(void *data, int type, void *event)
 }
 
 static void
+_pager_switch(const char *params)
+{
+   int max_x,max_y, desk_x, desk_y;
+   int x = 0, y = 0;
+   E_Desk *desk;
+   printf("switch %s\n", params);
+
+   if (!params[0])
+     {
+	_pager_out();
+	return;
+     }
+
+   e_zone_desk_count_get(zone, &max_x, &max_y);
+
+   if (!strcmp(params, "_left"))
+     x = -1;
+   else if (!strcmp(params, "_right"))
+     x = 1;
+   else if (!strcmp(params, "_up"))
+     y = -1;
+   else if (!strcmp(params, "_down"))
+     y = 1;
+   else if (!strcmp(params, "_next"))
+     {
+	x = 1;
+	if (current_desk->x == max_x - 1)
+	  y = 1;
+     }
+   else if (!strcmp(params, "_prev"))
+     {
+	x = -1;
+	if (current_desk->x == 0)
+	  y = -1;
+     }
+
+   desk_x = current_desk->x + x;
+   desk_y = current_desk->y + y;
+
+   if (desk_x < 0)
+     desk_x = max_x - 1;
+   else if (desk_x >= max_x)
+     desk_x = 0;
+
+   if (desk_y < 0)
+     desk_y = max_y - 1;
+   else if (desk_y >= max_y)
+     desk_y = 0;
+
+   printf("selec %d %d\n", desk_x, desk_y);
+
+   desk = e_desk_at_xy_get(zone, desk_x, desk_y);
+   if (desk) _pager_desk_select(desk);
+
+   if (!scale_state)
+     {
+       Eina_List *l;
+       Item *it;
+
+       fade_windows = 0;
+       EINA_LIST_FOREACH(items, l, it)
+	 {
+	   it->alpha = 255.0;
+	   evas_object_color_set(it->o_win, 255.0, 255.0, 255.0, 255.0);
+	 }
+     }
+}
+
+static Eina_Bool
+_pager_cb_key_down(void *data, int type, void *event)
+{
+  Ecore_Event_Key *ev = event;
+
+   if (ev->window != input_win)
+     return ECORE_CALLBACK_PASS_ON;
+   printf("%s\n", ev->key);
+
+   if (!strcmp(ev->key, "Up"))
+     _pager_switch("_up");
+   else if (!strcmp(ev->key, "Down"))
+     _pager_switch("_down");
+   else if (!strcmp(ev->key, "Left"))
+     _pager_switch("_left");
+   else if (!strcmp(ev->key, "Right"))
+     _pager_switch("_right");
+   else if (!strcmp(ev->key, "p"))
+     _pager_switch("_prev");
+   else if (!strcmp(ev->key, "n"))
+     _pager_switch("_next");
+   else if (!strcmp(ev->key, "Return"))
+     _pager_out();
+   else if (!strcmp(ev->key, "space"))
+     _pager_out();
+   else if (!strcmp(ev->key, "Escape"))
+     {
+	_pager_desk_select(e_desk_current_get(zone));
+	_pager_out();
+     }
+   else
+     {
+	E_Action *act;
+	Eina_List *l;
+	E_Config_Binding_Key *bind;
+	E_Binding_Modifier mod;
+
+	for (l = e_config->key_bindings; l; l = l->next)
+	  {
+	     bind = l->data;
+
+	     if (bind->action && strcmp(bind->action, "scale-windows")) continue;
+	     if (!bind->params || strncmp(bind->params, "go_pager", 8)) continue;
+	     printf("found action\n");
+
+	     mod = 0;
+
+	     if (ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT)
+               mod |= E_BINDING_MODIFIER_SHIFT;
+	     if (ev->modifiers & ECORE_EVENT_MODIFIER_CTRL)
+               mod |= E_BINDING_MODIFIER_CTRL;
+	     if (ev->modifiers & ECORE_EVENT_MODIFIER_ALT)
+               mod |= E_BINDING_MODIFIER_ALT;
+	     if (ev->modifiers & ECORE_EVENT_MODIFIER_WIN)
+               mod |= E_BINDING_MODIFIER_WIN;
+
+	     if (bind->key && (!strcmp(bind->key, ev->keyname)) &&
+		 ((bind->modifiers == mod) || (bind->any_mod)))
+	       {
+		  if (!(act = e_action_find(bind->action))) continue;
+		  if (act->func.go_key)
+		    act->func.go_key(E_OBJECT(zone), bind->params, ev);
+		  else if (act->func.go)
+		    act->func.go(E_OBJECT(zone), bind->params);
+	       }
+	  }
+     }
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_pager_cb_key_up(void *data, int type, void *event)
+{
+  Ecore_Event_Key *ev = event;
+
+  if (ev->window != input_win)
+    return ECORE_CALLBACK_PASS_ON;
+
+  if (!scale_state)
+    return ECORE_CALLBACK_PASS_ON;
+
+  if (!e_mod_hold_modifier_check(event))
+    _pager_out();
+
+  return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
 _pager_run(E_Manager *man)
 {
    Eina_List *l;
@@ -808,8 +983,10 @@ _pager_run(E_Manager *man)
    Ecore_Event_Handler *h;
    Evas *e;
 
+   if (input_win) return EINA_FALSE;
+
    e = e_manager_comp_evas_get(man);
-   if (!e) return;
+   if (!e) return EINA_FALSE;
 
    zone = e_util_zone_current_get(man);
    current_desk = e_desk_current_get(zone);
@@ -822,8 +999,10 @@ _pager_run(E_Manager *man)
      {
 	ecore_x_window_free(input_win);
 	input_win = 0;
-	return;
+	return EINA_FALSE;
      }
+
+   msg_handler = e_msg_handler_add(_pager_handler, NULL);
 
    h = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
 			       _pager_cb_mouse_down, e);
@@ -835,6 +1014,14 @@ _pager_run(E_Manager *man)
 
    h = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE,
 			       _pager_cb_mouse_move, e);
+   handlers = eina_list_append(handlers, h);
+
+   h = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
+			       _pager_cb_key_down, e);
+   handlers = eina_list_append(handlers, h);
+
+   h = ecore_event_handler_add(ECORE_EVENT_KEY_UP,
+			       _pager_cb_key_up, e);
    handlers = eina_list_append(handlers, h);
 
    zoom = zone->desk_x_count;
@@ -856,19 +1043,26 @@ _pager_run(E_Manager *man)
    if (background)
      {
 	Evas_Object *o;
-	int i;
+	int x, y;
 
-	for (i = 0; i < zone->desk_x_count * zone->desk_y_count; i++)
+	for (y = 0; y < zone->desk_y_count; y++)
 	  {
-	     o = edje_object_add(e);
-	     if (!e_theme_edje_object_set(o, "base/theme/modules/scale",
-					  "modules/scale/desk"))
-	       edje_object_file_set(o, scale_conf->theme_path,
-				    "modules/scale/desk");
-	     evas_object_stack_above(o, background->o_win);
-	     evas_object_show(o);
 
-	     desks = eina_list_append(desks, o);
+	     for (x = 0; x < zone->desk_x_count; x++)
+	       {
+		  o = edje_object_add(e);
+		  if (!e_theme_edje_object_set(o, "base/theme/modules/scale",
+					       "modules/scale/desk"))
+		    edje_object_file_set(o, scale_conf->theme_path,
+					 "modules/scale/desk");
+		  evas_object_stack_above(o, background->o_win);
+		  evas_object_show(o);
+
+		  desks = eina_list_append(desks, o);
+
+		  if ((x != zone->desk_x_current) || (y != zone->desk_y_current))
+		    edje_object_signal_emit(o, "unfocused", "e");
+	       }
 	  }
 	_pager_place_desks(1.0);
      }
@@ -876,62 +1070,79 @@ _pager_run(E_Manager *man)
    evas_event_feed_mouse_in(e, ecore_x_current_time_get(), NULL);
    evas_event_feed_mouse_move(e, -1000000, -1000000,
                               ecore_x_current_time_get(), NULL);
-   _pager_in();
+
+   fade_windows = scale_conf->pager_fade_windows;
+
+   return EINA_TRUE;
+}
+
+Eina_Bool
+pager_run(E_Manager *man, const char *params)
+{
+   Eina_Bool ret = EINA_FALSE;
+
+   printf("run: %s\n", params);
+
+   if (scale_state)
+     {
+	_pager_switch(params+8);
+     }
+   else if (!scale_state)
+     {
+	if (input_win)
+	  return ret;
+
+	ret = _pager_run(man);
+
+	if (ret)
+	  {
+	    if (strlen(params) > 8)
+	      _pager_switch(params+8);
+
+	    _pager_in();
+	  }
+     }
+
+   return ret;
 }
 
 static void
 _pager_handler(void *data, const char *name, const char *info, int val,
 	       E_Object *obj, void *msgdata)
 {
-   E_Manager *man = (E_Manager *)obj;
-   E_Manager_Comp_Source *src = (E_Manager_Comp_Source *)msgdata;
-   Evas *e;
+  E_Manager *man = (E_Manager *)obj;
+  E_Manager_Comp_Source *src = (E_Manager_Comp_Source *)msgdata;
+  Evas *e;
 
-   /* DBG("handler... '%s' '%s'\n", name, info); */
-   if (strcmp(name, "comp.manager")) return;
+  /* DBG("handler... '%s' '%s'\n", name, info); */
+  if (strcmp(name, "comp.manager")) return;
 
-   e = e_manager_comp_evas_get(man);
-   if (!strcmp(info, "change.comp"))
-     {
-        if (!e) DBG("TTT: No comp manager\n");
-        else DBG("TTT: comp canvas = %p\n", e);
-     }
-   else if (!strcmp(info, "resize.comp"))
-     {
-        DBG("%s: %p | %p\n", info, man, src);
-     }
-   else if (!strcmp(info, "add.src"))
-     {
-        /* DBG("%s: %p | %p\n", info, man, src); */
-        _pager_win_new(e, man, src);
-     }
-   else if (!strcmp(info, "del.src"))
-     {
-        DBG("%s: %p | %p\n", info, man, src);
-     }
-   else if (!strcmp(info, "config.src"))
-     {
+  e = e_manager_comp_evas_get(man);
+  if (!strcmp(info, "change.comp"))
+    {
+      if (!e) DBG("TTT: No comp manager\n");
+      else DBG("TTT: comp canvas = %p\n", e);
+    }
+  else if (!strcmp(info, "resize.comp"))
+    {
+      DBG("%s: %p | %p\n", info, man, src);
+    }
+  else if (!strcmp(info, "add.src"))
+    {
+      /* DBG("%s: %p | %p\n", info, man, src); */
+      _pager_win_new(e, man, src);
+    }
+  else if (!strcmp(info, "del.src"))
+    {
+      DBG("%s: %p | %p\n", info, man, src);
+    }
+  else if (!strcmp(info, "config.src"))
+    {
 
-        DBG("%s: %p | %p\n", info, man, src);
-     }
-   /* else if (!strcmp(info, "visible.src"))
-    *   {
-    *      DBG("%s: %p | %p\n", info, man, src);
-    *   } */
+      DBG("%s: %p | %p\n", info, man, src);
+    }
+  else if (!strcmp(info, "visible.src"))
+    {
+      DBG("%s: %p | %p\n", info, man, src);
+    }
 }
-
-void
-pager_run(const char *params)
-{
-   Eina_List *l;
-   E_Manager *man;
-
-   msg_handler = e_msg_handler_add(_pager_handler, NULL);
-
-   EINA_LIST_FOREACH(e_manager_list(), l, man)
-     {
-	Evas *e = e_manager_comp_evas_get(man);
-	if (e) _pager_run(man);
-     }
-}
-

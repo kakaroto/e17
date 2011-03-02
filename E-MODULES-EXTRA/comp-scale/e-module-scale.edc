@@ -230,35 +230,35 @@ collections
 				}
 			}
 			part {
-				name: "event";
+				name: "bg";
 				mouse_events: 1;
 				type: RECT;
 				description {
 					state: "default" 0.0;
-					color: 0 0 0 60;
+					color: 0 0 0 20;
 				}
 				description {
-					state: "focused" 0.0;
-					color: 0 0 0 80;
+					state: "unfocused" 0.0;
+					color: 0 0 0 70;
 				}
 			}
 		}
 		programs {
 			program {
-				name: "mouse_in";
-				signal: "mouse,in";
-				source: "e";
-				action: STATE_SET "focused" 0.0;
-				transition: SINUSOIDAL 0.3;
-				target: "event";
-			}
-			program {
-				name: "mouse_out";
-				signal: "mouse,out";
+				name: "focused";
+				signal: "focused";
 				source: "e";
 				action: STATE_SET "default" 0.0;
-				transition: SINUSOIDAL 0.4;
-				target: "event";
+				transition: SINUSOIDAL 0.2;
+				target: "bg";
+			}
+			program {
+				name: "unfocused";
+				signal: "unfocused";
+				source: "e";
+				action: STATE_SET "unfocused" 0.0;
+				transition: SINUSOIDAL 0.3;
+				target: "bg";
 			}
 		}
 	}
