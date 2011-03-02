@@ -3,18 +3,32 @@
 
 #include "utils.h"
 #include "elfe_config.h"
+#include "desktop.h"
 
+typedef struct _Elfe_Allapps Elfe_Allapps;
 typedef struct _Elfe_Grid_Item Elfe_Grid_Item;
+
+struct _Elfe_Allapps
+{
+   Evas_Object *box;
+   Evas_Object *grid;
+   Evas_Object *widgets_list;
+   Evas_Object *config_list;
+   Evas_Object *selector;
+   Evas_Object *pager;
+   Eina_List *buttons;
+   Eina_List *grid_items;
+};
 
 struct _Elfe_Grid_Item
 {
-    const char *icon_path;
-    Efreet_Menu *menu;
+   const char *icon_path;
+   Efreet_Menu *menu;
+   Elfe_Allapps *allapps;
 };
 
 static Elm_Gengrid_Item_Class app_itc;
 static Efreet_Menu *menus;
-static Eina_List *grid_items = NULL;
 
 static void _populate_items_cb(void *data, Evas_Object *obj, void *event_info);
 
@@ -63,13 +77,14 @@ _gl_longpress(void *data, Evas_Object *obj, void *event_info)
    Evas_Object *ic;
    Elfe_Grid_Item *gitem;
    Elm_Ctxpopup_Item *it;
+   Elfe_Allapps *allapps = data;
 
    gitem = elm_gengrid_item_data_get(event_info);
 
    if (gitem->menu->type != EFREET_MENU_ENTRY_DESKTOP)
      return;
 
-   evas_object_smart_callback_call(data,
+   evas_object_smart_callback_call(allapps->box,
 				   "entry,longpressed", gitem->menu);
 }
 
@@ -77,13 +92,13 @@ static void
 _item_selected(void *data, Evas_Object *obj, void *event_info)
 {
    Elfe_Grid_Item *gitem = data;
-   printf("Selected\n");
-   evas_object_smart_callback_call(obj, "item,selected", gitem->menu);
+
+   evas_object_smart_callback_call(gitem->allapps->box, "item,selected", gitem->menu);
 }
 
 
 static void
-_add_items(Evas_Object *parent, Efreet_Menu *entry)
+_add_items(Elfe_Allapps *allapps, Efreet_Menu *entry)
 {
    Efreet_Menu *menu;
    Efreet_Menu *it;
@@ -104,16 +119,17 @@ _add_items(Evas_Object *parent, Efreet_Menu *entry)
 	switch (it->type)
 	  {
 	   case EFREET_MENU_ENTRY_MENU :
-	      _add_items(parent, it);
+	      _add_items(allapps, it);
 	      break;
 	   case EFREET_MENU_ENTRY_DESKTOP :
 	      gitem = calloc(1, sizeof(Elfe_Grid_Item));
+	      gitem->allapps = allapps;
 	      gitem->icon_path = elfe_utils_fdo_icon_path_get(it, 72);
               if (!gitem->icon_path)
                   gitem->icon_path = eina_stringshare_add("icon/application-default");
 	      gitem->menu = it;
-	      grid_items = eina_list_append(grid_items, gitem);
-	      elm_gengrid_item_append(parent, &app_itc, gitem, _item_selected, gitem);
+	      allapps->grid_items = eina_list_append(allapps->grid_items, gitem);
+	      elm_gengrid_item_append(allapps->grid, &app_itc, gitem, _item_selected, gitem);
 	   default:
 	      break;
 	  }
@@ -121,59 +137,184 @@ _add_items(Evas_Object *parent, Efreet_Menu *entry)
 }
 
 static void
-_list_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
+_obj_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
 {
-    Evas_Coord w, h;
-    Evas_Coord size = 0;
+   Evas_Coord w, h;
+   Evas_Coord size = 0;
+   Elfe_Allapps *allapps = data;
 
-    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+   evas_object_geometry_get(allapps->box, NULL, NULL, &w, &h);
 
-    (h > w) ? (size = w / 4) : (size = h / 4);
+   (h > w) ? (size = w / 4) : (size = h / 4);
 
-    elm_gengrid_item_size_set(obj, size, size);
+   elm_gengrid_item_size_set(allapps->grid, size, size*1.1);
+   double x, y;
+   elm_gengrid_align_get(allapps->grid, &x, &y);
+   printf("Align : %3.3f, %3.3f\n", x, y);
 }
 
 static void
-_list_del_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
+_obj_del_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
 {
-    Elfe_Grid_Item *it;
+   Elfe_Allapps *allapps = data;
+   Elfe_Grid_Item *it;
 
-    EINA_LIST_FREE(grid_items, it)
-      {
-	 if (!it) continue;
-	 if (it->icon_path)
-	   eina_stringshare_del(it->icon_path);
-	 free(it);
-      }
-    grid_items = NULL;
+   EINA_LIST_FREE(allapps->grid_items, it)
+     {
+	if (!it) continue;
+	if (it->icon_path)
+	  eina_stringshare_del(it->icon_path);
+	free(it);
+     }
+   allapps->grid_items = NULL;
+}
+
+static void
+_apps_clicked_cb(void *data , Evas_Object *obj, void *event_info)
+{
+   Elfe_Allapps *allapps = data;
+   Evas_Object *bt;
+
+   bt = eina_list_nth(allapps->buttons, 0);
+   elm_object_disabled_set(bt, EINA_TRUE);
+
+   bt = eina_list_nth(allapps->buttons, 1);
+   elm_object_disabled_set(bt, EINA_FALSE);
+
+   bt = eina_list_nth(allapps->buttons, 2);
+   elm_object_disabled_set(bt, EINA_FALSE);
+
+   elm_pager_content_promote(allapps->pager, allapps->grid);
+
+}
+
+
+static void
+_widgets_clicked_cb(void *data , Evas_Object *obj, void *event_info)
+{
+   Elfe_Allapps *allapps = data;
+   Evas_Object *bt;
+
+   bt = eina_list_nth(allapps->buttons, 0);
+   elm_object_disabled_set(bt, EINA_FALSE);
+
+   bt = eina_list_nth(allapps->buttons, 1);
+   elm_object_disabled_set(bt, EINA_TRUE);
+
+   bt = eina_list_nth(allapps->buttons, 2);
+   elm_object_disabled_set(bt, EINA_FALSE);
+
+   elm_pager_content_promote(allapps->pager, allapps->widgets_list);
+}
+
+
+static void
+_config_clicked_cb(void *data , Evas_Object *obj, void *event_info)
+{
+   Elfe_Allapps *allapps = data;
+   Evas_Object *bt;
+
+   bt = eina_list_nth(allapps->buttons, 0);
+   elm_object_disabled_set(bt, EINA_FALSE);
+
+   bt = eina_list_nth(allapps->buttons, 1);
+   elm_object_disabled_set(bt, EINA_FALSE);
+
+   bt = eina_list_nth(allapps->buttons, 2);
+   elm_object_disabled_set(bt, EINA_TRUE);
+
+   elm_pager_content_promote(allapps->pager, allapps->config_list);
+
 }
 
 Evas_Object *
 elfe_allapps_add(Evas_Object *parent)
 {
+   Elfe_Allapps *allapps;
    Evas_Object *list;
    char *path;
    Evas_Object *ic;
+   Evas_Object *bt;
+   Evas_Object *sep;
    Eina_List *l;
 
+   /* Fixme create an edje layout instead of a box */
 
-   /* FIXME use dynamic item size */
-   list = elm_gengrid_add(parent);
-   elm_gengrid_item_size_set(list, 0, 0);
+   allapps = calloc(1, sizeof(Elfe_Allapps));
 
-   evas_object_event_callback_add(list, EVAS_CALLBACK_RESIZE,
-				  _list_resize_cb, NULL);
-   evas_object_event_callback_add(list, EVAS_CALLBACK_DEL,
-				  _list_del_cb, NULL);
+   /* Create BOX */
+   allapps->box = elm_box_add(parent);
 
-   elm_gengrid_multi_select_set(list, EINA_FALSE);
-   elm_gengrid_bounce_set(list, EINA_FALSE, EINA_TRUE);
+   /* Create buttons selector */
+   allapps->selector = elm_box_add(allapps->box);
+   elm_box_horizontal_set(allapps->selector, EINA_TRUE);
 
-   evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(list, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   bt = elm_button_add(allapps->selector);
+   elm_button_label_set(bt, "Apps");
+   ic = elm_icon_add(bt);
+   elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/applications");
+   evas_object_show(ic);
+   elm_button_icon_set(bt, ic);
+   evas_object_show(bt);
+   elm_box_pack_end(allapps->selector, bt);
+   evas_object_smart_callback_add(bt, "clicked", _apps_clicked_cb, allapps);
+   allapps->buttons = eina_list_append(allapps->buttons, bt);
 
-   evas_object_smart_callback_add(list, "longpressed", _gl_longpress, list);
-   evas_object_show(list);
+   sep = elm_separator_add(allapps->selector);
+   evas_object_show(sep);
+   elm_box_pack_end(allapps->selector, sep);
+
+   bt = elm_button_add(allapps->selector);
+   elm_button_label_set(bt, "Widgets");
+   ic = elm_icon_add(bt);
+   elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/widgets");
+   evas_object_show(ic);
+   elm_button_icon_set(bt, ic);
+   evas_object_show(bt);
+   elm_box_pack_end(allapps->selector, bt);
+   evas_object_smart_callback_add(bt, "clicked", _widgets_clicked_cb, allapps);
+   allapps->buttons = eina_list_append(allapps->buttons, bt);
+
+   sep = elm_separator_add(allapps->selector);
+   evas_object_show(sep);
+   elm_box_pack_end(allapps->selector, sep);
+
+   bt = elm_button_add(allapps->selector);
+   elm_button_label_set(bt, "Config");
+   ic = elm_icon_add(bt);
+   elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/configuration");
+   evas_object_show(ic);
+   elm_button_icon_set(bt, ic);
+   evas_object_show(bt);
+   elm_box_pack_end(allapps->selector, bt);
+   evas_object_smart_callback_add(bt, "clicked", _config_clicked_cb, allapps);
+   allapps->buttons = eina_list_append(allapps->buttons, bt);
+
+   evas_object_show(allapps->selector);
+   elm_box_pack_end(allapps->box, allapps->selector);
+
+   allapps->pager = elm_pager_add(allapps->box);
+   evas_object_show(allapps->pager);
+   elm_box_pack_end(allapps->box, allapps->pager);
+   elm_object_style_set(allapps->pager, "flip");
+
+   allapps->grid = elm_gengrid_add(parent);
+   elm_gengrid_item_size_set(allapps->grid, 0, 0);
+
+   evas_object_event_callback_add(allapps->box, EVAS_CALLBACK_RESIZE,
+				  _obj_resize_cb, allapps);
+   evas_object_event_callback_add(allapps->box, EVAS_CALLBACK_DEL,
+				  _obj_del_cb, allapps);
+
+   elm_gengrid_multi_select_set(allapps->grid, EINA_FALSE);
+   elm_gengrid_bounce_set(allapps->grid, EINA_FALSE, EINA_TRUE);
+
+   evas_object_size_hint_weight_set(allapps->grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(allapps->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(allapps->grid, "longpressed", _gl_longpress, allapps);
+   evas_object_show(allapps->grid);
+
+   evas_object_data_set(allapps->box, "elfe_allapps", allapps);
 
    app_itc.item_style     = "default";
    app_itc.func.label_get = _label_get;
@@ -181,9 +322,21 @@ elfe_allapps_add(Evas_Object *parent)
    app_itc.func.state_get = NULL;
    app_itc.func.del       = NULL;
 
-   _add_items(list, NULL);
-   evas_object_show(list);
+   _add_items(allapps, NULL);
+   evas_object_show(allapps->grid);
 
-   return list;
+
+   allapps->widgets_list = elfe_desktop_gadget_list(allapps->pager);
+   evas_object_show(allapps->widgets_list);
+
+   evas_object_show(allapps->box);
+
+   evas_object_size_hint_weight_set(allapps->pager, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(allapps->pager, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   elm_pager_content_push(allapps->pager, allapps->widgets_list);
+   elm_pager_content_push(allapps->pager, allapps->grid);
+
+   return allapps->box;
 }
 

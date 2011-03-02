@@ -100,6 +100,21 @@
    }
 
 
+#define ICON(icon_file, icon_name)                                      \
+   images {                                                             \
+      image: icon_file COMP;                                            \
+   }                                                                    \
+   group {                                                              \
+      name: icon_name;                                                  \
+      parts {                                                           \
+         part { name: "icon";                                           \
+            description { state: "default" 0.0;                         \
+               image.normal: icon_file;                                 \
+            }                                                           \
+         }                                                              \
+      }                                                                 \
+   }                                                                    \
+
 #define ICON_SET(icon_file, icon_name)                              \
    images {                                                         \
       set {                                                         \
@@ -361,7 +376,7 @@ collections
                   to: "apps-list";
                   relative: 1.0 1.0;
                }
-               color: 0 0 0 220;
+               color: 0 0 0 255;
             }
          }
          part { name: "apps-list-swallow";
@@ -1068,8 +1083,10 @@ collections
       }
    }
 
-ICON_SET("application-default-icon", "icon/application-default");
-
+   ICON_SET("application-default-icon", "icon/application-default");
+   ICON("icon_application.png", "icon/applications");
+   ICON("icon_widgets.png", "icon/widgets");
+   ICON("icon_configuration.png", "icon/configuration");
 }
 
 
