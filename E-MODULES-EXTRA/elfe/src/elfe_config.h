@@ -20,6 +20,8 @@ struct _Elfe_Home_Config
     Eina_List *desktops;
     const char *mod_dir;
     const char *theme;
+    int cols;
+    int rows;
 };
 
 struct _Elfe_Desktop_Config

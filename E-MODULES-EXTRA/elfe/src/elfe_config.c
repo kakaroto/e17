@@ -56,7 +56,9 @@ elfe_home_config_init(E_Module *m)
 #define T Elfe_Home_Config
 #define D conf_edd
    E_CONFIG_LIST(D, T, desktops, conf_desktop_edd);
- 
+   E_CONFIG_VAL(D, T, cols, INT);
+   E_CONFIG_VAL(D, T, rows, INT);
+
    elfe_home_cfg = e_config_domain_load("module.elfe", conf_edd);
 
 
@@ -64,7 +66,8 @@ elfe_home_config_init(E_Module *m)
      {
          int i;
          elfe_home_cfg = E_NEW(Elfe_Home_Config, 1);
-
+         elfe_home_cfg->cols = 4;
+         elfe_home_cfg->rows = 4;
          for (i = 0; i < 5; i++)
 	   {
 	      Elfe_Desktop_Config *dc;
@@ -74,6 +77,10 @@ elfe_home_config_init(E_Module *m)
 
      }
 
+   if (!elfe_home_cfg->cols)
+       elfe_home_cfg->cols = 4;
+   if (!elfe_home_cfg->rows)
+       elfe_home_cfg->rows = 4;
 
    elfe_home_cfg->mod_dir = eina_stringshare_add(m->dir);
    elfe_home_cfg->theme = eina_stringshare_printf("%s/default.edj", elfe_home_cfg->mod_dir);

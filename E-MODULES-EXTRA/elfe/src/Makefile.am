@@ -15,8 +15,10 @@ module_la_SOURCES = main.h \
 		    allapps.h \
 		    desktop.c \
 		    desktop.h \
-		    gadgets.c \
-		    gadgets.h \
+		    desktop_page.c \
+		    desktop_page.h \
+		    desktop_item.c \
+		    desktop_item.h \
 		    utils.c \
 		    utils.h \
 		    winlist.c \

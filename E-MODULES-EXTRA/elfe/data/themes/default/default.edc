@@ -1,5 +1,5 @@
 #define TOOLBAR_ITEM_SIZE 96
-#define TOOLBAR_ICON_SIZE 64
+#define TOOLBAR_ICON_SIZE 48
 #define TOOLBAR_MIDDLE_ITEM 2
 
 #define TOOLBAR_POSITION(_item_number) (((_item_number)*(TOOLBAR_ITEM_SIZE))-((TOOLBAR_ITEM_SIZE)*(TOOLBAR_MIDDLE_ITEM)))
@@ -14,12 +14,13 @@
          max: TOOLBAR_ITEM_SIZE TOOLBAR_ITEM_SIZE;                      \
          fixed: 1 1;                                                    \
          rel1 {                                                         \
-            relative: 0.5 1;                                            \
-            offset: (_xpos+2)  (-TOOLBAR_ITEM_SIZE+2);                  \
+            to_y: "menu.background.top";                                \
+            relative: 0 1;                                              \
+            offset: (_xpos+2) 2;                                        \
          }                                                              \
          rel2 {                                                         \
-            relative: 0.5 1;                                            \
             offset: (_xpos-2) -2;                                       \
+            to_y: "menu.background.bottom";                             \
          }                                                              \
          image.normal: "sel_bg.png";                                    \
          image.border: 12 12 12 12;                                     \
@@ -38,14 +39,14 @@
          min: TOOLBAR_ICON_SIZE TOOLBAR_ICON_SIZE;                      \
          max: TOOLBAR_ICON_SIZE TOOLBAR_ICON_SIZE;                      \
          fixed: 1 1;                                                    \
+         align: 0.5 0.5;                                                \
          rel1 {                                                         \
-            to_y: "menu.background";                                    \
-            relative: 0.5 1;                                            \
-            offset: (_xpos)  (-TOOLBAR_ITEM_SIZE);                      \
+            to_y: "menu.background.top";                                \
+            relative: 0 1;                                              \
+            offset: (_xpos)  0;                                         \
          }                                                              \
          rel2 {                                                         \
-            to_y: "menu.background";                                    \
-            relative: 0.5 1;                                            \
+            to_y: "menu.background.bottom";                             \
             offset: (_xpos) 0);                                         \
          }                                                              \
          image.normal: _button_name".png";                              \
@@ -188,7 +189,9 @@ collections
          image: "windows.png" COMP;
          image: "inwin_bg.png" COMP;
          image: "separator.png" COMP;
-         image: "mainmenu_bg.png" COMP;
+         image: "mainmenu_bg_top.png" COMP;
+         image: "mainmenu_bg_bottom.png" COMP;
+         image: "mainmenu_bg_reflect.png" COMP;
       }
       script {
          public apps_list_visible;
@@ -265,14 +268,38 @@ collections
          }
 
          part {
-            name: "menu.background";
+            name: "menu.background.bottom";
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               image.normal: "mainmenu_bg.png";
-               rel1 { relative: 0.0 1.0;
-                  offset: 0 -142;
-               }
+               image.normal: "mainmenu_bg_bottom.png";
+               image.border: 0 0 2 0;
+               rel1.relative: 0.0 0.9;
+            }
+         }
+         part {
+            name: "menu.background.top";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "mainmenu_bg_top.png";
+               rel1.relative: 0.0 0.0;
+               rel1.to: "menu.background.bottom";
+               rel1.offset: 0 -32;
+               rel2.relative: 1.0 0.0;
+               rel2.to: "menu.background.bottom";
+               image.border: 0 0 15 0;
+            }
+         }
+         part {
+            name: "menu.background.reflect";
+             mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "mainmenu_bg_reflect.png";
+               rel1.relative: 0.0 0.0;
+               rel1.to: "menu.background.top";
+               rel1.offset: 0 15;
             }
          }
 
@@ -314,8 +341,8 @@ collections
                rel1 { relative: 0.0 0.0;
                }
                rel2 { relative: 1.0 0.0;
-                  to: "menu.background";
-                  offset: -1 50;
+                  to: "menu.background.bottom";
+                  offset: -1 0;
                }
             }
          }
@@ -333,7 +360,6 @@ collections
                rel2 {
                   to: "apps-list";
                   relative: 1.0 1.0;
-                  offset: 0 -128;
                }
                color: 0 0 0 220;
             }
@@ -353,7 +379,6 @@ collections
                rel2 {
                   to: "apps-list";
                   relative: 1.0 1.0;
-                  offset: -1 -128;
                }
             }
 
@@ -372,7 +397,8 @@ collections
 
                }
                rel2 {
-                  relative: 1.0 1.0;
+                  relative: 1.0 0.0;
+                  to: "menu.background.bottom";
                }
             }
             description { state: "visible" 0.0;
@@ -380,7 +406,8 @@ collections
                   relative: 0.0 0;
                }
                rel2 {
-                  relative: 1.0 1.0;
+                  relative: 1.0 0.0;
+                  to: "menu.background.bottom";
                }
             }
          }
@@ -636,61 +663,78 @@ collections
       name: "elfe/desktop/frame";
       parts {
          part {
-            name: "frame";
+            name: "clip";
             type: RECT;
             description {
-               state: "vibration" 0.0;
-               min: 100 100;
-               max: 100 100;
-               align: 0.5 0.5;
-               color: 200 128 0 255;
-               //               image.normal: "frame.png";
-               /* map { */
-               /*    on: 0; */
-               /*    rotation.z: 0; */
-               /* } */
+               state: "default" 0.0;
+               color: 255 255 255 255;
             }
             description {
                state: "vibration" 0.1;
-               inherit: "default" 0.0;
-               rel1.offset: -30 -30;
-               rel2.offset: 30 30;
-
-               /* map { */
-               /*    on: 0; */
-               /*    rotation.z: -2.5; */
-               /* } */
+               color: 255 255 255 200;
             }
             description {
                state: "vibration" 0.2;
-               inherit: "default" 0.0;
-               rel1.offset: 30 30;
-               rel2.offset: -30 -30;
-               /* map { */
-               /*    on: 0; */
-               /*    rotation.z: 2.5; */
-               /* } */
+               color: 255 255 255 150;
+            }
+         }
+         part {
+            name: "elfe.swallow.content";
+            type: SWALLOW;
+            clip_to: "clip";
+            description {
+               state: "default" 0.0;
+
+               //               image.normal: "frame.png";
+               map {
+                  on: 0;
+                  rotation.z: 0;
+               }
+            }
+            description {
+               state: "vibration" 0.1;
+               //inherit: "default" 0.0;
+               rel1.offset: -3 -3;
+               rel2.offset: 3 3;
+               color: 255 255 255 100;
+               map {
+                  on: 0;
+                  rotation.z: -10;
+               }
+            }
+            description {
+               state: "vibration" 0.2;
+               //inherit: "default" 0.0;
+               rel1.offset: 1 1;
+               rel2.offset: -1 -1;
+               color: 255 255 255 200;
+               map {
+                  on: 0;
+                  rotation.z: 10;
+               }
             }
          }
       }
       programs {
-         program {
-            name: "load";
-            signal: "load";
-            after: "vib1";
-         }
+         /* program { */
+         /*    name: "load"; */
+         /*    signal: "load"; */
+         /*    after: "vib1"; */
+         /* } */
 
          program {
             name: "vib1";
             action: STATE_SET "vibration" 0.1;
-            target: "frame";
+            target: "elfe.swallow.content";
+            target: "clip";
             transition: "SINUSOIDAL" 0.2;
             after: "vib2";
          }
          program {
             name: "vib2";
             action: STATE_SET "vibration" 0.2;
-            target: "frame";
+            target: "elfe.swallow.content";
+            target: "clip";
             transition: "SINUSOIDAL" 0.2;
             after: "vib1";
          }
@@ -954,7 +998,7 @@ collections
             type: SWALLOW;
             description {
                state: "default" 0.0;
-               rel2.offset: 0 -32;
+               rel2.offset: 0 -16;
 
             }
 
@@ -964,9 +1008,9 @@ collections
             type: SWALLOW;
             description {
                state: "default" 0.0;
-               rel1.offset: 0 -32;
+               rel1.offset: 0 -16;
                rel1.relative: 0 1;
-
+               fixed: 1 1;
             }
 
          }

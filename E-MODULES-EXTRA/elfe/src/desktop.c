@@ -1,7 +1,7 @@
 #include <e.h>
 #include <Elementary.h>
 
-#include "gadgets.h"
+#include "desktop_page.h"
 #include "elfe_config.h"
 
 #define ELFE_DESKTOP_NUM 5
@@ -182,7 +182,6 @@ _cb_object_resize(void *data , Evas *e , Evas_Object *obj, void *event_info )
 
 }
 
-
 static void
 _gadget_selected_cb(void *data , Evas_Object *obj, void *event_info )
 {
@@ -190,7 +189,7 @@ _gadget_selected_cb(void *data , Evas_Object *obj, void *event_info )
    Evas_Object *gad;
 
    gad = eina_list_nth(desk->gadgets, desk->current_desktop);
-   elfe_gadgets_gadget_add(gad, gcc);
+   elfe_desktop_page_item_gadget_add(gad, gcc, 0, 0);
    evas_object_smart_callback_call(desk->layout,
 				   "gadget,added", NULL);
 }
@@ -201,7 +200,7 @@ elfe_desktop_app_add(Evas_Object *obj, Efreet_Menu *menu, Evas_Coord x, Evas_Coo
     Elfe_Desktop *desk = evas_object_data_get(obj, "elfe_desktop");
     Evas_Object *gad;
     gad = eina_list_nth(desk->gadgets, desk->current_desktop);
-    elfe_gadgets_app_add(gad, menu, x, y);
+    elfe_desktop_page_item_app_add(gad, menu, x, y);
 }
 
 Evas_Object *
@@ -303,7 +302,7 @@ elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
         elm_box_pack_end(bx, tb);
 
         desktop_name = eina_stringshare_printf("Elfe Desktop %d", i);
-        gad = elfe_gadgets_zone_add(tb, zone, i, desktop_name);
+        gad = elfe_desktop_page_add(tb, zone, i, desktop_name);
         evas_object_show(gad);
 
         desk->gadgets = eina_list_append(desk->gadgets, gad);
@@ -378,11 +377,12 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 	Evas_Coord x, y, w, h;
 	gad = eina_list_nth(desk->gadgets, desk->current_desktop);
 	evas_object_geometry_get(gad, &x, &y, &w, &h);
-	m = w / 4;
-	n = h / 4;
 
-	for (i = 0; i < 4; i++)
-	  for (j = 0; j < 4; j++)
+	m = w / elfe_home_cfg->cols;
+	n = h / elfe_home_cfg->rows;
+
+	for (i = 0; i < elfe_home_cfg->cols; i++)
+	  for (j = 0; j < elfe_home_cfg->rows; j++)
 	    {
 	       Evas_Object *o_edje;
 
@@ -390,7 +390,11 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 	       over = elm_layout_add(desk->sc);
 	       elm_layout_file_set(over, buf, "elfe/gadget/places/over");
 	       o_edje = elm_layout_edje_get(over);
-	       edje_object_signal_emit(o_edje, "place,free", "elfe");
+               if (elfe_desktop_page_pos_is_free(gad, i, j))
+                   edje_object_signal_emit(o_edje, "place,busy", "elfe");
+               else
+                   edje_object_signal_emit(o_edje, "place,free", "elfe");
+
 	       evas_object_resize(o_edje, m, n);
 	       evas_object_move(o_edje, x + i*m,  y + j*n);
 	       evas_object_show(over);

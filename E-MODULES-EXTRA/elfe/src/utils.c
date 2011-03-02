@@ -13,9 +13,9 @@ elfe_utils_fdo_icon_add(Evas_Object *parent, const char *icon, int size)
    ic = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
 
-   if (path && path[0] == '/')
+   if (icon && icon[0] == '/')
        {
-           elm_icon_file_set(ic, path, NULL);
+           elm_icon_file_set(ic, icon, NULL);
            return ic;
        }
 

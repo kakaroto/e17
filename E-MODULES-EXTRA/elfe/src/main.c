@@ -313,8 +313,8 @@ _elfe_home_win_new(E_Zone *zone)
         return;
      }
    hwin->win->data = hwin;
-   e_win_title_set(hwin->win, "Elfe Home");
-   e_win_name_class_set(hwin->win, "Elfe", "Elfe");
+   e_win_title_set(hwin->win, "Elfe");
+   e_win_name_class_set(hwin->win, "Illume-Home", "Illume-Home");
    e_win_resize_callback_set(hwin->win, _elfe_home_win_cb_resize);
    e_win_no_remember_set(hwin->win, EINA_TRUE);
    //ecore_x_e_illume_conformant_set(hwin->win->evas_win, EINA_TRUE);
