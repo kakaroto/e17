@@ -259,6 +259,7 @@ static void  _edje_signal_cb(void *data, Evas_Object *obj, const char *emission,
 	  {
 	     hwin->allapps = elfe_allapps_add(hwin->layout);
 	     evas_object_smart_callback_add(hwin->allapps, "entry,longpressed", _allapps_longpressed_cb, hwin);
+             evas_object_smart_callback_add(hwin->allapps, "item,selected", _allapps_item_selected_cb, hwin);
 	     evas_object_show(hwin->allapps);
 	     elm_layout_content_set(hwin->layout, "apps-list-swallow", hwin->allapps);
 	  }
