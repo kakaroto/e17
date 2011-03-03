@@ -1,0 +1,7 @@
+This presentation was for FOSDEM 2011 embedded track. You will need the latest version
+of eyelight and you need to download this bunny:
+
+  http://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4
+
+Once this is done, just play it with: eyelight -y=fosdem-2011-efl.eye
+

@@ -1,0 +1,532 @@
+layout: 2_columns_left;
+foot_text :"Cedric BAIL, cedric.bail@free.fr";
+foot_image: ""; // FIXME
+header_image: "logo.png"; // FIXME
+title: " Enlightenment Foundation Library";
+subtitle: " When geek meets beauty";
+
+transition: fade_content;
+
+slide
+{
+	// do not display the area 'top'. This area is defined in the layout 'title'
+	ignore_area: "header_image";
+	layout: title;
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	header_image: "";
+
+	area
+    	{
+		name: "top";
+        	image
+        	{
+			image: "logo.png";
+        	}
+    	}
+	area
+    	{
+		name: bottom;
+  		text: " Author: Cedric BAIL";
+		text: " Author: Leandro A.F. Pereira";
+    	}
+}
+
+slide
+{
+	layout: summary;
+	title: " Summary";
+	subtitle: "";
+	header_image: "logo-s.png";
+	transition_next: "fade";
+	area
+	{
+		name: "center";
+
+		text: " Looking at the EFL";
+		text: " Canvas &amp; Layout";
+		text: " Optimization";
+//		text: " Designing an EFL app";
+		text: " EFL release";
+		text: " E17 and elementary plan";
+		text: " TODO";
+    	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " Who am I to speak about this stuff !";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Cedric BAIL, cedric.bail@free.fr";
+			text: " Working for Freebox since 4 years";
+			text: " Optimising the EFL to fit inside a set top box";
+			text: " Cleaning up API";
+			text: " Writing a JavaScript binding around them";
+			text: " Aound 150 differents applications available in our own set top box Store";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " E what ?";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " <b>E</b>nlightenment <b>F</b>oundation <b>L</b>ibrary";
+			text: " Created to provide a clean base for a beautifull, fast and ligth windows manager";
+			text: " Targetting the embedded world since the beginning";
+			text: " Because the desktop war, was lost, not just for us, but for all linux based desktop";
+			text: " 10 years later, it's still true";
+			text: " And the war is just beginning in the embedded world";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " Bit of history";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Created for Enlightenment 17";
+			text: " Provide a portable, fast and lean core";
+			text: " Grow enough to be used for all kind of applications";
+			text: " Scale from 50Mhz SoC to 8 x86 at more than 2Ghz processor with OpenGL GPU";
+			text: " And since one week, we can guaranty you API and ABI stability on the long term for application using EFL";
+		}
+	}
+}
+
+slide
+{
+        layout: "title";
+	title: " RELEASE";
+	ignore_area: "header_image";
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	header_image: "";
+	subtitle: "Yes, we did it !";
+
+	area
+    	{
+		name: "top";
+        	image
+        	{
+			image: "logo.png";
+        	}
+    	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " LEGO !";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		image {
+		     image: "diagram-efl-simple-small.png";
+		     border: 0;
+		     shadow: 0;
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " Released piece of code";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Eina: data types and file manipulation";
+			text: " Eet: serialisation and storage library";
+			text: " Evas: statefull canvas library";
+			text: " Ecore: main loop, events, timer, network, ...";
+			text: " Edje: layout and theming";
+			text: " Efreet: FreeDesktop helper";
+			text: " E_DBus: DBus helper";
+			text: " Eeze: udev helper";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " Eina";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Simple type: list, hash, red black tree, array, stringshare, string buffer";
+			text: " Graphic oriented type: fixed point helper, convertion, rectangle, matrixsparse, tiler";
+			text: " Helper: iterator, accessor, mempool, counter, log, magic, file, scheduler";
+			text: " and a hamster that bring some fun in this boring library";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " Eet";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " serialize/unserialize and dump/undump any C memory structure (including union and object)";
+			text: " send/receive over any link";
+			text: " reduced memory presure (mmapd file with string dictionnary)";
+			text: " store and load raw image without the need for an external decoder";
+			text: " signature and cipher";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " Ecore";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Events, timers, animator";
+			text: " Window creation and input forwarding for all backend (X11, SDL, Windows, FrameBuffer, ...)";
+			text: " Network helper (tcp, udp unicast and multicast, asynchronous dns, curl helper)";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " Edje";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Fast light and portable theming and layout library";
+			text: " Could be used to layout an entire app and give you the possibility to provide one app that target desktop, set top box, tablette and mbile phone";
+			text: " Could also be used to theme each widget";
+			text: " Describe each state and transition in the theme, let just the application ask for a specific state";
+			text: " Certainly the most important piece of the EFL you should learn";
+		}
+	}
+}
+
+slide
+{
+	layout: "2_columns_left";
+	title: " Canvas &amp; Layout";
+	subtitle: " Evas - stateful canvas";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: "left";
+		items
+		{
+			text: " Primitive for some graphical objects";
+			items
+			{
+				text: " Rectangle";
+				text: " Image";
+				text: " Text";
+				text: " Polygon";
+				text: " Line";
+			}
+			text: " Modify their properties";
+			text: " Render when done => no flickering";
+			text: " Let one place do all optimisation and don't worry about it";
+		}
+	}
+        area {
+                name : "right" ;
+                edje {
+                        file : "edje.edj" ;
+                        group : "animation" ;
+                }
+        }
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Canvas &amp; Layout";
+	subtitle: " Application";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " use Edje to design each window";
+		      	text: " send signal, set text and value to Edje object";
+		 	text: " use Edje External and swallow to instantiate and position Elementary objects";
+			text: " let Evas optimise the rendering as much as possible, focus on your application logic";
+			text: " let designer do their job, providing application layout and graphics";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Canvas &amp; Layout";
+	subtitle: " Classic theming";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		layout: "horizontal";
+		image {
+		      image: "gtk_1.png";
+ 		      border: 0;
+		      shadow: 0;
+		}
+		image {
+		      image: "gtk_2.png";
+		      border: 0;
+		      shadow: 0;
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Canvas &amp; Layout";
+	subtitle: " Edje theming";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		layout: "horizontal";
+		image {
+			image: "elm_1.png";
+ 		      	border: 0;
+		      	shadow: 0;
+		}
+		image {
+			image: "elm_2.png";
+ 		      	border: 0;
+		      	shadow: 0;
+		}
+		image {
+			image: "elm_0.png";
+ 		      	border: 0;
+		      	shadow: 0;
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Optimization";
+	subtitle: " We are the best ! Nah, just kidding !";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Factorize your code first";
+			text: " Need real numbers from real use";
+			text: " Identify the bottleneck (CPU, memory, bandwith) first";
+			text: " Use the right tool to guess where the biggest user come from (oprofile, valgrind, mallinfo, memprof, ...)";
+			text: " <b>NEVER NEVER OPTIMIZE WITHOUT NUMBER ! DON'T BELIEVE, ONLY TRUST FACTS !</b>";
+			text: " Mesure again again and again";
+			text: " There is always something to improve !";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " E17";
+	subtitle: " EFL Flagship";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " Running and usable";
+			text: " Light (around 23Mb with graphics on this laptop)";
+			text: " Fast";
+			text: " Follow state of the art Linux standards (dbus, udev, Freedesktop, ...)";
+			text: " Only window manager to provide compositing via software and opengl backend thanks to evas";
+			text: " Let you theme everything (including compositing effect !)";
+			text: " Let you change any module and provide a specific E17 for your device";
+		}
+	}
+}
+
+slide
+{
+	layout: "2_lines_bottom";
+	title: " E17";
+	subtitle: " Release !";
+	header_image: "logo-s.png";
+
+	area {
+		name : "top";
+		items {
+			text: " Rolling release since 10 years :-)";
+			text: " As brazilian say, we are a bunch of trator !";
+			text: " But we have plan and we stick to it.";
+		}
+	}
+	area {
+		name: "bottom";
+        	image {
+			image: "Trator.jpg";
+			border: 0;
+			shadow: 0;
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " E17";
+	subtitle: " Seriously";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " Releasing the Enlightenment Foundation Library !";
+			text: " EFL libraries will receive a lot improvements in the near futur and still be API and ABI compatible with 1.0";
+			text: " Focus will move on releasing E17, Elementary, Ethumb, Eio and Emotion";
+			text: " We have a list of items that should be finished before any of this component switch to alpha";
+			text: " All major change are postponed for E18";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " EFL";
+	subtitle: " What next ?";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " Speed improvements (eina, eet, evas, edje, efreet) !";
+			text: " Better internationalisation support (ltr/rtl, theming, ...)";
+			text: " Improve portability";
+			text: " More evas map feature (mesh, effect, ...)";
+			text: " Improve error and message reporting (edje, ecore)";
+			text: " Add more capability to edje theming";
+			text: " TextGrid";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " E17";
+	subtitle: " TODO";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " cleanup, fix and improve Efm";
+			text: " cleanup and improve config UI";
+			text: " xrandr config dialog";
+			text: " general warning removal (from gcc and llvm build)";
+			text: " and start and alpha, beta cycle !";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " EFL &amp; E17";
+	subtitle: " Communication";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " We are lacking in communication";
+			text: " We need tutorials...";
+			text: " ...and samples of code...";
+			text: " ...and documentations";
+			text: " Presentation";
+			text: " But we welcome the help of everyone !";
+		}
+	}
+}
+
+slide
+{
+        layout: "title";
+	title: " Conclusion";
+	ignore_area: "header_image";
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	header_image: "";
+	subtitle: "Questions ?";
+
+	area
+    	{
+		name: "top";
+        	image
+        	{
+			image: "logo.png";
+        	}
+    	}
+}

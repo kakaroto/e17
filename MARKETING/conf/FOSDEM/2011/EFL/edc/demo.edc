@@ -1,0 +1,159 @@
+collections {
+   group {
+      name: "text";
+
+      parts {
+	    part {
+	    	 name: "text";
+		 type: TEXT;
+
+		 description {
+		       state: "default" 0.0;
+		       color: 255 255 255 255;
+		       align: 0.5 0.5;
+		       text {
+		       	    text: "Hello World !!";
+			    font: Sans;
+			    size: 20;
+		       }
+		 }
+
+#define COLOR_STATE(Name, Color)		\
+		 description {	 		\
+		       state: Name 0.0; 	\
+		       inherit: "default" 0.0; 	\
+		       color: Color 255;  	\
+		 }
+
+		 COLOR_STATE("red", 255 0 0);
+		 COLOR_STATE("green", 0 255 0);
+		 COLOR_STATE("blue", 0 0 255);
+		 COLOR_STATE("yellow", 255 255 0);
+	}
+      }
+      programs {
+#define COLOR_PROGRAM(Source)			\
+      	 program {				\
+	     source: Source;			\
+	     signal: "show";			\
+	     action: STATE_SET Source 0.0;	\
+	     transition: SINUSOIDAL 1.0;	\
+	     target: "text";    		\
+	 }
+
+	 COLOR_PROGRAM("red");
+	 COLOR_PROGRAM("green");
+	 COLOR_PROGRAM("blue");
+	 COLOR_PROGRAM("yellow");
+      }
+   }
+
+   group {
+      name: "demo";
+
+      parts {
+      	    part {
+	    	 name: "background";
+		 type: RECT;
+		 repeat_events: 0;
+		 mouse_events: 0;
+
+		 description {
+		      color: 0 0 0 255;
+		 }
+	    }
+
+      	    part {
+	    	 name: "red";
+		 type: RECT;
+		 
+		 description {
+		       state: "default" 0.0;
+		       rel1.relative: 0.0 1.0;
+		       rel1.offset: 2 -18;
+		       rel2.relative: 0.0 1.0;
+		       rel2.offset: 18 -3;
+		       color: 255 0 0 255;
+		 }
+	    }
+
+#define PART_RECT(Name, Off1, Off2, Color)	\
+	    part {				\
+	    	 name: Name;			\
+		 type: RECT;			\
+						\
+		 description {			\
+		       state: "default" 0.0;	\
+		       rel1.to: "red";		\
+		       rel1.offset: Off1;	\
+		       rel2.to: "red";		\
+		       rel2.offset: Off2;	\
+		       color: Color 255;	\
+		 }     	      	    		\
+	    }
+
+	    PART_RECT("green", 19 0, 19 -1, 0 255 0);
+	    PART_RECT("blue", -1 -19, -2 -20, 0 0 255);
+	    PART_RECT("yellow", 19 -19, 19 -20, 255 255 0);
+
+	    part {
+	    	 name: "text";
+		 type: GROUP;
+		 source: "text";
+		 repeat_events: 0;
+
+		 description {
+		       state: "default" 0.0;
+		 }
+		 description {
+		       state: "start" 0.0;
+		       map {
+		          on: 1;
+			  alpha: 1;
+		       }
+		 }
+		 description {
+		       state: "end" 0.0;
+		       rel1.relative: 0.0 0.4;
+		       rel2.relative: 1.0 1.4;
+		       map {
+		       	  on: 1;
+			  alpha: 1;
+			  rotation {
+			      z: 180.0;
+			  }
+		       }
+		 }
+
+	}
+      }
+      programs {
+#define COLOR_FOWARD(Color)				\
+      	 program {					\
+	     source: Color;				\
+	     signal: "mouse,clicked,*";			\
+	     action: SIGNAL_EMIT "text:show" Color;	\
+	 }
+
+	 COLOR_FOWARD("red");
+	 COLOR_FOWARD("green");
+	 COLOR_FOWARD("blue");
+	 COLOR_FOWARD("yellow");
+
+	 program {
+	     source: "text";
+	     signal: "mouse,clicked,*";
+	     action: STATE_SET start 0.0;
+	     target: text;
+	     after: anim;
+	 }
+	 program {
+	     name: anim;
+	     action: STATE_SET end 0.0;
+	     transition: LINEAR 5.0;
+	     target: text;
+	 }
+      }
+   }
+
+}
