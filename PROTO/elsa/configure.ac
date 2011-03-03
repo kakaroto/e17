@@ -71,7 +71,7 @@ AC_C___ATTRIBUTE__
 ### Checks for libraries
 
 PKG_CHECK_MODULES([ELSA], [efreet] [eina >= 1.0.0] [eet >= 1.2.3] [ecore >= 1.0.0] [ecore-file >= 1.0.0] [xcb >= 1.0.0])
-PKG_CHECK_MODULES([ELSA_CLIENT], [elementary >= 0.5.0.0])
+PKG_CHECK_MODULES([ELSA_CLIENT], [elementary >= 0.5.0.0] [evas >= 1.0.0] [ecore >= 1.0.0] [eina >= 1.0.0])
 
 if test "x${enable_pam}" = "xyes" ; then
    AC_CHECK_LIB([pam], [pam_start],
