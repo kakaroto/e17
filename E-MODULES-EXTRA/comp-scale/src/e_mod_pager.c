@@ -11,6 +11,7 @@ struct _Item
   E_Border *bd;
   E_Desk *desk;
   E_Comp_Win *cw;
+  E_Manager *man;
   int alpha;
 
   double x;
@@ -43,19 +44,13 @@ static void _pager_win_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void 
 static void _pager_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _pager_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
-
 static void _pager_win_cb_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _pager_win_cb_intercept_move(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y);
-static void _pager_win_cb_intercept_resize(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y);
-static void _pager_win_cb_intercept_color(void *data, Evas_Object *obj, int r, int g, int b, int a);
-static void _pager_win_cb_intercept_stack_above(void *data, Evas_Object *obj, Evas_Object *above);
 
 static void _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src);
 static void _pager_win_del(Item *it);
 
 static void _pager_finish();
 static void _pager_handler(void *data, const char *name, const char *info, int val, E_Object *obj, void *msgdata);
-
 
 
 static Ecore_X_Window input_win = 0;
@@ -285,23 +280,10 @@ _pager_finish()
 	e_config->desk_flip_animate_mode = tmp;
      }
 
-   EINA_LIST_FOREACH(items, l, it)
-     {
-	it->bd_x = it->bd->x;
-	it->bd_y = it->bd->y;
-     }
-
-   _pager_place_windows(1.0);
+   /* _pager_place_windows(1.0); */
 
    EINA_LIST_FREE(items, it)
-     {
-	if (it->bd->desk != current_desk)
-	  {
-	     e_border_hide(it->bd, 2);
-	     evas_object_hide(it->o_win);
-	  }
-	_pager_win_del(it);
-     }
+     _pager_win_del(it);
 
    EINA_LIST_FREE(desks, o)
      evas_object_del(o);
@@ -312,19 +294,8 @@ _pager_finish()
    if (background)
      _pager_win_del(background);
 
-
    EINA_LIST_FREE(handlers, handler)
      ecore_event_handler_del(handler);
-
-   /* XXX fix stacking */
-   E_Comp_Win *cw, *prev = NULL;
-   Eina_List *list = (Eina_List *)e_manager_comp_src_list(e_manager_current_get());
-   EINA_LIST_FOREACH(list, l, cw)
-     {
-   	if (!cw->shobj) continue;
-   	if (prev) evas_object_stack_above(cw->shobj, prev->shobj);
-   	prev = cw;
-     }
 
    e_msg_handler_del(msg_handler);
    msg_handler = NULL;
@@ -378,13 +349,15 @@ _pager_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
 	selected_item = it;
 
 	_pager_desk_select(it->desk);
-
 	_pager_out();
 	return;
      }
    else if (ev->button == 1)
      {
 	e_border_raise(it->bd);
+	e_border_focus_set(it->bd, 1, 1);
+
+	evas_object_raise(it->o);
 
 	if (current_desk != it->desk)
 	  _pager_desk_select(it->desk);
@@ -587,46 +560,45 @@ _pager_win_cb_intercept_color(void *data, Evas_Object *obj, int r, int g, int b,
 static void
 _pager_win_del(Item *it)
 {
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_IN,
-				  _pager_win_cb_mouse_in);
-
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_OUT,
-				  _pager_win_cb_mouse_out);
-
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_DOWN,
-				  _pager_win_cb_mouse_down);
-
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_UP,
-				  _pager_win_cb_mouse_up);
-
-   evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_MOVE,
-				  _pager_win_cb_mouse_move);
-
    evas_object_event_callback_del(it->o_win, EVAS_CALLBACK_DEL,
 				  _pager_win_cb_delorig);
 
-   evas_object_intercept_move_callback_del
-     (it->o_win, _pager_win_cb_intercept_move);
-
-   evas_object_intercept_resize_callback_del
-     (it->o_win, _pager_win_cb_intercept_resize);
-
-   evas_object_intercept_color_set_callback_del
-     (it->o_win, _pager_win_cb_intercept_color);
-
-   evas_object_intercept_stack_above_callback_del
-     (it->o_win, _pager_win_cb_intercept_stack_above);
-
    if (it->bd)
      {
-	it->alpha = 255;
-	evas_object_color_set(it->o_win, 255, 255, 255, 255);
-	edje_object_part_unswallow(it->o, it->o_win);
-	evas_object_stack_above(it->o_win, it->o);
+	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_IN,
+				       _pager_win_cb_mouse_in);
+
+	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_OUT,
+				       _pager_win_cb_mouse_out);
+
+	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_DOWN,
+				       _pager_win_cb_mouse_down);
+
+	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_UP,
+				       _pager_win_cb_mouse_up);
+
+	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_MOVE,
+				       _pager_win_cb_mouse_move);
+
+	e_manager_comp_src_hidden_set(it->man,
+				      (E_Manager_Comp_Source *)it->cw,
+				      EINA_FALSE);
+
+	if (it->bd->desk != current_desk)
+	  {
+	     e_border_hide(it->bd, 2);
+	     evas_object_hide(it->cw->shobj);
+	  }
+
+	evas_object_del(it->o_win);
+	evas_object_del(it->o);
+
 	e_object_unref(E_OBJECT(it->bd));
      }
-
-   evas_object_del(it->o);
+   else
+     {
+	evas_object_color_set(it->o_win, 255, 255, 255, 255);
+     }
 
    E_FREE(it);
 }
@@ -649,19 +621,19 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 	if (cw->win == zone->container->bg_win)
 	  {
 	     it = E_NEW(Item, 1);
+	     it->man = man;
 	     it->o_win = o;
-	     evas_object_event_callback_add
-	       (it->o_win, EVAS_CALLBACK_DEL,
-		_pager_win_cb_delorig, it);
+	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
+					    _pager_win_cb_delorig, it);
 	     background = it;
 	  }
 	else if (scale_conf->pager_fade_popups)
 	  {
 	     it = E_NEW(Item, 1);
+	     it->man = man;
 	     it->o_win = o;
-	     evas_object_event_callback_add
-	       (it->o_win, EVAS_CALLBACK_DEL,
-		_pager_win_cb_delorig, it);
+	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
+					    _pager_win_cb_delorig, it);
 
 	     popups = eina_list_append(popups, it);
 	  }
@@ -677,11 +649,14 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    it = E_NEW(Item, 1);
    it->bd = cw->bd;
    it->desk = it->bd->desk;
+   it->man = man;
    it->cw = cw;
    it->alpha = 255.0;
    e_object_ref(E_OBJECT(it->bd));
 
-   it->o_win = e_manager_comp_src_shadow_get(man, src);
+   e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
+   it->o_win = e_manager_comp_src_image_mirror_add(man, src);
+
    it->o = edje_object_add(e);
    if (!e_theme_edje_object_set(it->o, "base/theme/modules/scale",
 				"modules/scale/win"))
@@ -694,18 +669,6 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 
    evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 				  _pager_win_cb_delorig, it);
-
-   evas_object_intercept_move_callback_add
-     (it->o_win, _pager_win_cb_intercept_move, it);
-
-   evas_object_intercept_resize_callback_add
-     (it->o_win, _pager_win_cb_intercept_resize, it);
-
-   evas_object_intercept_color_set_callback_add
-     (it->o_win, _pager_win_cb_intercept_color, it);
-
-   evas_object_intercept_stack_above_callback_add
-     (it->o_win, _pager_win_cb_intercept_stack_above, it);
 
    evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN,
 				  _pager_win_cb_mouse_in, it);
@@ -739,17 +702,10 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    if (it->desk != current_desk)
      {
 	e_border_show(it->bd);
-	evas_object_move(it->o, it->cur_x, it->cur_y);
-
-	if (scale_conf->pager_fade_windows)
-	  {
-	     it->alpha = 0.0;
-	     evas_object_color_set(it->o_win, 0, 0, 0, 0);
-	  }
      }
 
    _pager_win_final_position_set(it);
-   evas_object_color_set(it->o, 255, 255, 255, 255);
+
    it->w = it->bd->w / zoom - OFFSET*2.0;
    it->h = it->bd->h / zoom - OFFSET*2.0;
 
@@ -1065,6 +1021,17 @@ _pager_run(E_Manager *man)
 	       }
 	  }
 	_pager_place_desks(1.0);
+     }
+
+   _pager_place_windows(1.0);
+
+   if (scale_conf->pager_fade_windows)
+     {
+	Item *it;
+
+	EINA_LIST_FOREACH(items, l, it)
+	  if (it->bd->desk != current_desk)
+	    evas_object_color_set(it->o_win, 0, 0, 0, 0);
      }
 
    evas_event_feed_mouse_in(e, ecore_x_current_time_get(), NULL);

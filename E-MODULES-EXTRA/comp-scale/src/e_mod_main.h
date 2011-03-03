@@ -12,6 +12,11 @@
 
 #define DBG(...)
 /* #define DBG(...) printf(__VA_ARGS__) */
+#define GO_KEY		0
+#define GO_MOUSE	1
+#define GO_EDGE		2
+#define GO_ACTION	3
+
 
 typedef struct _Config_Item Config_Item;
 typedef struct _Config Config;
@@ -56,37 +61,38 @@ struct _Config_Item
   int switch2;
 };
 
+
 struct _E_Comp_Win
 {
   EINA_INLIST;
 
-  void			*c;
-  Ecore_X_Window	 win;
-  E_Border		*bd;
-  E_Popup		*pop;
-  E_Menu		*menu;
-  int			 x, y, w, h;
+  void                  *c;
+  Ecore_X_Window         win;
+  E_Border              *bd;
+  E_Popup               *pop;
+  E_Menu                *menu;
+  int                    x, y, w, h;
   struct {
-    int			 x, y, w, h;
+    int                  x, y, w, h;
   } hidden;
-  int			 pw, ph;
-  int			 border;
-  Ecore_X_Pixmap	 pixmap;
-  Ecore_X_Damage	 damage;
-  Ecore_X_Visual	 vis;
-  int			 depth;
-  Evas_Object		*obj;
-  Evas_Object		*shobj;
-  Eina_List		*obj_mirror;
-  Ecore_X_Image		*xim;
-  void			*up;
-  E_Object_Delfn	*dfn;
-  Ecore_X_Sync_Counter	 counter;
-  Ecore_Timer		*update_timeout;
-  Ecore_Timer		*ready_timeout;
-  int			 dmg_updates;
-  Ecore_X_Rectangle	*rects;
-  int			 rects_num;
+  int                    pw, ph;
+  int                    border;
+  Ecore_X_Pixmap         pixmap;
+  Ecore_X_Damage         damage;
+  Ecore_X_Visual         vis;
+  int                    depth;
+  Evas_Object           *obj;
+  Evas_Object           *shobj;
+  Eina_List             *obj_mirror;
+  Ecore_X_Image         *xim;
+  void                  *up;
+  E_Object_Delfn        *dfn;
+  Ecore_X_Sync_Counter   counter;
+  Ecore_Timer           *update_timeout;
+  Ecore_Timer           *ready_timeout;
+  int                    dmg_updates;
+  Ecore_X_Rectangle     *rects;
+  int                    rects_num;
 
   Ecore_X_Pixmap        cache_pixmap;
   int                   cache_w, cache_h;

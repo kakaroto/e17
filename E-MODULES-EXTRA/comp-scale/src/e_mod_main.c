@@ -107,25 +107,25 @@ _e_mod_action(const char *params, int modifiers, int method)
 static void
 _e_mod_action_cb_edge(E_Object *obj, const char *params, E_Event_Zone_Edge *ev)
 {
-   _e_mod_action(params, 0, 3);
+   _e_mod_action(params, 0, GO_EDGE);
 }
 
 static void
 _e_mod_action_cb(E_Object *obj, const char *params)
 {
-   _e_mod_action(params, 0, 2);
+   _e_mod_action(params, 0, GO_ACTION);
 }
 
 static void
 _e_mod_action_cb_key(E_Object *obj, const char *params, Ecore_Event_Key *ev)
 {
-   _e_mod_action(params, ev->modifiers, 0);
+   _e_mod_action(params, ev->modifiers, GO_KEY);
 }
 
 static void
 _e_mod_action_cb_mouse(E_Object *obj, const char *params, Ecore_Event_Mouse_Button *ev)
 {
-   _e_mod_action(params, 0, 1);
+   _e_mod_action(params, 0, GO_MOUSE);
 }
 /* Module and Gadcon stuff */
 
@@ -240,12 +240,14 @@ e_modapi_init(E_Module *m)
 				 "scale-windows", "go_scale", NULL, 0);
 	e_action_predef_name_set(D_("Scale Windows"), D_("Scale Windows (All Desktops)"),
 				 "scale-windows", "go_scale_all", NULL, 0);
-	e_action_predef_name_set(D_("Scale Windows"), D_("Scale Pager"),
-				 "scale-windows", "go_pager", NULL, 0);
 	e_action_predef_name_set(D_("Scale Windows"), D_("Select Next"),
 				 "scale-windows", "go_scale_next", NULL, 0);
 	e_action_predef_name_set(D_("Scale Windows"), D_("Select Previous"),
 				 "scale-windows", "go_scale_prev", NULL, 0);
+	e_action_predef_name_set(D_("Scale Windows"), D_("Select Next (All)"),
+				 "scale-windows", "go_scale_all_next", NULL, 0);
+	e_action_predef_name_set(D_("Scale Windows"), D_("Select Previous (All)"),
+				 "scale-windows", "go_scale_all_prev", NULL, 0);
 
 	e_action_predef_name_set(D_("Scale Pager"), D_("Scale Pager"),
 				 "scale-windows", "go_pager", NULL, 0);
