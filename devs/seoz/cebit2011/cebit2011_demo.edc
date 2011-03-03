@@ -22,7 +22,7 @@
 #define TEXT_LIMO_TITLE \
    "LiMo 4 Platform"
 #define TEXT_LIMO_CONTENT \
-            " The LiMo 4 Release is a Next Generation Linux-based platform for mobile handsets. It is built around the core of the GNOME Mobile architecture.<br><br> There is a choice of two UI frameworks - <b><color=#ff0000>EFL (Enlightenment Foundation Libraries)</></> and GTK+ (GIMP Toolkit)."
+   " The LiMo 4 Release is a Next Generation Linux-based platform for mobile handsets. It is built around the core of the GNOME Mobile architecture.<br><br> There is a choice of two UI frameworks - <b><color=#ff0000>EFL (Enlightenment Foundation Libraries)</></> and GTK+ (GIMP Toolkit)."
 
 collections {
    group { name: "demo";
