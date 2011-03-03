@@ -98,6 +98,7 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Install Location for Libraries])
 fi
 
+PKG_CHECK_MODULES([EINA], eina >= 1.0.0)
 PKG_CHECK_MODULES([EET], eet >= 1.4.0)
 PKG_CHECK_MODULES([EVAS], evas >= 1.0.0)
 PKG_CHECK_MODULES([EDJE], edje >= 1.0.0)
