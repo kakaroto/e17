@@ -49,6 +49,7 @@ ecore
 ecore-file
 ecore-x
 ecore-evas
+ecore-input
 )
 PKG_CHECK_MODULES(EVAS, evas)
 
