@@ -48,6 +48,7 @@ AC_ARG_WITH(edje-cc,
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 PKG_CHECK_MODULES(EYELIGHT, [
+			eina >= 1.0.0
                         ecore >= 0.9.9
                         ecore-evas >= 0.9.9
                         ecore-file >= 0.9.9
