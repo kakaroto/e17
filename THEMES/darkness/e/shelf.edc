@@ -361,10 +361,6 @@
 
 group {
    name: "e/shelf/default/base";
-   data {
-      // this tells e the border is shaped
-      item: "shaped" "1";
-   }
    parts {
       part {
 	 name:          "base";
@@ -484,10 +480,6 @@ group {
 
 group {
    name: "e/shelf/alternate/base";
-   data {
-      // this tells e the border is shaped
-//      item: "shaped" "1";
-   }
    parts {
       part {
 	 name:          "base";
@@ -607,11 +599,6 @@ group {
 
 group {
    name: "e/shelf/ghost/base";
-   data {
-      // this tells e the border is shaped
-//      item: "shaped" "1";
-//      item: "instant_delay" "2.3";
-   }
    parts {
       part {
 	 name:          "base";
@@ -732,8 +719,6 @@ group {
 group {
    name: "e/shelf/invisible/base";
    data {
-      // this tells e the border is shaped
-      item: "shaped" "1";
       item: "hidden_state_size" "6";
    }
    parts {
