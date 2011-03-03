@@ -320,7 +320,7 @@ Eina_Bool user_insert(anUser *au) {
 
 	if(au->in_db == EINA_TRUE) return(EINA_TRUE);
 
-	sqlite_res = asprintf(&query, "insert into users (uid, account_id, name, screen_name, location, description, profile_image_url, url, protected, followers_count, friends_count, created_at, favorites_count, statuses_count, following, statusnet_blocking) values (%lld, %d, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", (long long int)au->user->id, ADH.account_id);
+	sqlite_res = asprintf(&query, "insert or replace into users (uid, account_id, name, screen_name, location, description, profile_image_url, url, protected, followers_count, friends_count, created_at, favorites_count, statuses_count, following, statusnet_blocking) values (%lld, %d, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", (long long int)au->user->id, ADH.account_id);
 	if(sqlite_res != -1) {
 		sqlite_res = sqlite3_prepare_v2(ed_DB, query, 4096, &insert_stmt, &missed);
 		if(sqlite_res == 0) {
