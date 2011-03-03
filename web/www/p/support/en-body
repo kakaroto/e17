@@ -133,7 +133,7 @@
             <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-devel">Developers</a>
         </td>
         <td class="archive">
-            (<a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-users">archive</a>)
+            (<a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-devel">archive</a>)
         </td>
     </tr>
     <tr>
@@ -141,7 +141,7 @@
             <a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-svn">SVN Commits</a>
         </td>
         <td class="archive">
-            (<a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-users">archive</a>)
+            (<a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-svn">archive</a>)
         </td>
     </tr>
    </tbody>
