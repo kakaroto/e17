@@ -42,7 +42,8 @@ AC_DEFINE_UNQUOTED(PLUGINSDIR, ["$PLUGINSDIR"], [Where plugins are installed.])
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 AC_SUBST(dlopen_libs)
 
-PKG_CHECK_MODULES(E, [ecore
+PKG_CHECK_MODULES(E, [eina
+		      ecore
                       ecore-file
                       ecore-evas
                       evas
