@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/bin @EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@ @EMOTION_CFLAGS@
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/bin @EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@ @EMOTION_CFLAGS@ @EET_CFLAGS@
 
 bin_PROGRAMS = rage rage_thumb raged
 
@@ -41,12 +41,12 @@ conf_options.h \
 dvb.c \
 dvb.h
 
-rage_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
+rage_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@ @EET_LIBS@
 
 rage_thumb_SOURCES = \
 rage_thumb.c
 
-rage_thumb_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
+rage_thumb_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@ @EET_LIBS@
 
 raged_SOURCES = \
 raged_main.c \
