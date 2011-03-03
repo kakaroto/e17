@@ -454,7 +454,7 @@ static void on_dm(void *data, Evas_Object *obj, void *event_info) {
 
 static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *url_win=(Evas_Object*)data;
-	char * cmd = NULL;
+	char cmd[PATH_MAX];
 	int sys_result = 0;
 
 	evas_object_del(url_win);
@@ -462,17 +462,9 @@ static void on_open_url(void *data, Evas_Object *obj, void *event_info) {
 	if (settings->browser < 0)
 		return;
 
-	sys_result = asprintf(&cmd, settings->browser_cmd, url);
-	if(sys_result != -1) {
-		sys_result = system(cmd);
-		if(sys_result == -1) {
-			fprintf(stderr, _("Error %d: %s\n"), errno, strerror(errno));
-		} else if(sys_result != 0) {
-			if(! WIFEXITED(sys_result)) {
-				fprintf(stderr, _("System failed, child exited with status %d\n"), WEXITSTATUS(sys_result));
-			}
-		}
-		free(cmd);
+	sys_result = snprintf(cmd, PATH_MAX, settings->browser_cmd, url);
+	if(sys_result >= 0) {
+		ecore_exe_run(cmd, NULL);
 	}
 }
 
