@@ -74,7 +74,16 @@ _flow_browser_image_set(Ephoto_Flow_Browser *efb)
 {
    Eina_List *prevv, *prev, *next, *nextt; 
    Ephoto_Entry *pp, *p, *n, *nn, *c;
+   Ethumb_Client *client;
    int i;
+
+   client = elm_thumb_ethumb_client_get();
+   if (!client)
+     {
+        DBG("no client yet, try again later");
+        return;
+     }
+   ethumb_client_size_set(client, 512, 512);
 
    prev = eina_list_prev(efb->current_index);
    if (!eina_list_data_get(prev))
