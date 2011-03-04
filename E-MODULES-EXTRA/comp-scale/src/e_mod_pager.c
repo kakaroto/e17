@@ -1045,9 +1045,11 @@ _pager_handler(void *data, const char *name, const char *info, int val,
   E_Manager_Comp_Source *src = (E_Manager_Comp_Source *)msgdata;
   Evas *e;
 
-  /* DBG("handler... '%s' '%s'\n", name, info); */
+  if (!scale_state) return;
+  
   if (strcmp(name, "comp.manager")) return;
 
+  DBG("handler... '%s' '%s'\n", name, info);
   e = e_manager_comp_evas_get(man);
   if (!strcmp(info, "change.comp"))
     {
