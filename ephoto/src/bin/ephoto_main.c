@@ -312,6 +312,22 @@ ephoto_title_set(Ephoto *ephoto, const char *title)
    elm_win_title_set(ephoto->win, buf);
 }
 
+static int
+_entry_cmp(const void *pa, const void *pb)
+{
+   const Ephoto_Entry *a = pa, *b = pb;
+   int ret, s;
+  
+   s = strcmp(a->basename, b->basename);
+   if (s > 0)
+     ret = 1;
+   else if (s < 0)
+     ret = -1;
+   else
+     ret = 0; 
+   return ret;
+}
+
 static void
 _ephoto_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
@@ -321,7 +337,7 @@ _ephoto_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_
 
    e = ephoto_entry_new(ephoto, info->path, info->path + info->name_start);
    
-   ephoto->entries = eina_list_append(ephoto->entries, e);
+   ephoto->entries = eina_list_sorted_insert(ephoto->entries, _entry_cmp, e);
 
    ev = calloc(1, sizeof(Ephoto_Event_Entry_Create));
    ev->entry = e;

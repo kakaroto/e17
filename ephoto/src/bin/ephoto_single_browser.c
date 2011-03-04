@@ -122,13 +122,15 @@ _viewer_add(Evas_Object *parent, const char *path)
         if (err != EVAS_LOAD_ERROR_NONE) goto load_error;
         evas_object_image_size_get(v->image, &w, &h);
         evas_object_size_hint_align_set(v->image, 0.5, 0.5);
+        evas_object_size_hint_weight_set(v->image, 1.0, 1.0);
         evas_object_size_hint_min_set(v->image, w, h);
         evas_object_size_hint_max_set(v->image, w, h);
         evas_object_resize(v->image, w, h);
         evas_object_show(v->image);
         elm_scroller_content_set(obj, v->image);
+        elm_scroller_custom_widget_base_theme_set(obj, "photocam", "default");
+        
      }
-
    evas_object_size_hint_weight_set(obj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(obj, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_data_set(obj, "viewer", v);

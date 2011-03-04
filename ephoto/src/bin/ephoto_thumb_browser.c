@@ -92,6 +92,22 @@ static const Elm_Gengrid_Item_Class _ephoto_thumb_file_class = {
   }
 };
 
+static int
+_entry_cmp(const void *pa, const void *pb)
+{
+   const Ephoto_Entry *a = pa, *b = pb;
+   int ret, s;
+  
+   s = strcmp(a->basename, b->basename);
+   if (s > 0)
+     ret = 1;
+   else if (s < 0)
+     ret = -1;
+   else
+     ret = 0; 
+   return ret;
+}
+
 static void
 _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
 {
@@ -99,9 +115,36 @@ _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
   
    ic = &_ephoto_thumb_file_class;
 
-   e->item = elm_gengrid_item_append(tb->grid, ic, e, NULL, NULL);
-   tb->grid_items = eina_list_append(tb->grid_items, e->item);
-
+   if (!tb->grid_items)
+     {
+        e->item = elm_gengrid_item_append(tb->grid, ic, e, NULL, NULL);
+        tb->grid_items = eina_list_append(tb->grid_items, e);
+     }
+   else
+     {
+        int near_cmp;
+        Ephoto_Entry *near_entry;
+        Elm_Gengrid_Item *near_item;
+        Eina_List *near_node = eina_list_search_sorted_near_list
+          (tb->grid_items, _entry_cmp, e, &near_cmp);
+       
+        near_entry = near_node->data;
+        near_item = near_entry->item;
+        if (near_cmp < 0)
+          {
+             e->item = elm_gengrid_item_insert_after
+               (tb->grid, ic, e, near_item, NULL, NULL);
+             tb->grid_items = eina_list_append_relative_list
+               (tb->grid_items, e, near_node);
+          }
+        else
+          {
+             e->item = elm_gengrid_item_insert_before
+               (tb->grid, ic, e, near_item, NULL, NULL);
+             tb->grid_items = eina_list_prepend_relative_list
+               (tb->grid_items, e, near_node);
+          }
+     }
    if (e->item)
      elm_gengrid_item_data_set(e->item, e);
    else
