@@ -11,6 +11,7 @@ IUSE="nls poppler postscript"
 DEPEND="dev-libs/ecore[evas]
 	media-libs/edje
 	poppler? ( app-text/poppler )
+	!poppler? ( media-libs/openjpeg )
 	postscript? ( app-text/libspectre )"
 RDEPEND="${DEPEND}"
 
