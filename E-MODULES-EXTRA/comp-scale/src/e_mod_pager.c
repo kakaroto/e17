@@ -524,40 +524,6 @@ _pager_win_cb_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void
-_pager_win_cb_intercept_stack_above(void *data, Evas_Object *obj, Evas_Object *above)
-{
-   Item *ot, *it = data;
-   Eina_List *l;
-
-   EINA_LIST_FOREACH(items, l, ot)
-     if (ot->o_win == above) break;
-
-   if (ot)
-     evas_object_stack_above(it->o, ot->o);
-}
-
-static void
-_pager_win_cb_intercept_move(void *data, Evas_Object *obj, Evas_Coord x, Evas_Coord y)
-{
-   Item *it = data;
-   evas_object_move(obj, it->cur_x, it->cur_y);
-}
-
-static void
-_pager_win_cb_intercept_resize(void *data, Evas_Object *obj, Evas_Coord w, Evas_Coord h)
-{
-   Item *it = data;
-   evas_object_resize(obj, it->cur_w, it->cur_h);
-}
-
-static void
-_pager_win_cb_intercept_color(void *data, Evas_Object *obj, int r, int g, int b, int a)
-{
-   Item *it = data;
-   evas_object_color_set(obj, it->alpha, it->alpha, it->alpha, it->alpha);
-}
-
-static void
 _pager_win_del(Item *it)
 {
    evas_object_event_callback_del(it->o_win, EVAS_CALLBACK_DEL,

@@ -294,7 +294,6 @@ _scale_finish()
    Ecore_Event_Handler *handler;
    Item *it;
    E_Desk *desk;
-   Eina_List *l;
 
    e_grabinput_release(input_win, input_win);
    ecore_x_window_free(input_win);
@@ -1503,6 +1502,8 @@ _scale_run(E_Manager *man)
 	return EINA_FALSE;
      }
 
+   msg_handler = e_msg_handler_add(_scale_handler, NULL);
+
    h = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
 			       _scale_cb_mouse_down, e);
    handlers = eina_list_append(handlers, h);
@@ -1704,7 +1705,6 @@ _scale_cb_mouse_up(void *data, int type, void *event)
 Eina_Bool
 scale_run(E_Manager *man, const char *params, int _init_method)
 {
-   Eina_List *l;
    Eina_Bool ret = EINA_FALSE;
 
    if (!strncmp(params, "go_scale_all", 12))
