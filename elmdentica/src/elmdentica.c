@@ -405,24 +405,17 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 	anUser *au = NULL;
-	char * entry_str=NULL, *uid_str=NULL;
-	int res = 0;
+	char entry_str[PATH_MAX], uid_str[100];
 
 	if(as) {
-		res = asprintf(&uid_str, "%lld", (long long int)as->au->user->id);
-		if(res != -1) {
-			au = eina_hash_find(userHash, uid_str);
-			if(au) {
-				res = asprintf(&entry_str, "@%s: ", au->user->screen_name);
-				if(res != -1) {
-					elm_entry_entry_set(entry, entry_str);
-					free(entry_str);
-					elm_object_focus(entry);
-					reply_as=as;
-					elm_entry_cursor_end_set(entry);
-				}
-			}
-			free(uid_str);
+		snprintf(uid_str, 100, "%lld", (long long int)as->au->user->id);
+		au = eina_hash_find(userHash, uid_str);
+		if(au) {
+			snprintf(entry_str, PATH_MAX, "@%s: ", au->user->screen_name);
+			elm_entry_entry_set(entry, entry_str);
+			elm_object_focus(entry);
+			reply_as=as;
+			elm_entry_cursor_end_set(entry);
 		}
 	}
 
@@ -431,7 +424,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 		gui.hover = NULL;
 	}
 
-	evas_object_show(hv);
+	edje_object_signal_emit(gui.edje, "mouse,clicked,1", "edit_event");
 }
 
 static void on_dm(void *data, Evas_Object *obj, void *event_info) {
@@ -448,7 +441,7 @@ static void on_dm(void *data, Evas_Object *obj, void *event_info) {
 		gui.hover = NULL;
 	}
 
-	evas_object_show(hv);
+	edje_object_signal_emit(gui.edje, "mouse,clicked,1", "edit_event");
 }
 
 

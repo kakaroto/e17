@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elmdentica 0.8.0\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2011-03-01 21:40+0000\n"
+"POT-Creation-Date: 2011-03-05 10:38+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: George Koutsikos <ragecryx@yahoo.gr>\n"
 "Language-Team: Greek\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/curl.c:92 src/elmdentica.c:1397 src/elmdentica.c:1606
+#: src/curl.c:92 src/elmdentica.c:1382 src/elmdentica.c:1591
 msgid "Close"
 msgstr "Κλείσιμο"
 
@@ -52,226 +52,216 @@ msgstr "Απαντήσεις / Αναφορές"
 msgid "My friends..."
 msgstr "Οι φίλοι μου..."
 
-#: src/elmdentica.c:469
-#, c-format
-msgid "Error %d: %s\n"
-msgstr "Σφάλμα %d: %s\n"
-
-#: src/elmdentica.c:472
-#, c-format
-msgid "System failed, child exited with status %d\n"
-msgstr ""
-
-#: src/elmdentica.c:492 src/elmdentica.c:639
+#: src/elmdentica.c:477 src/elmdentica.c:624
 msgid "Follow"
 msgstr ""
 
-#: src/elmdentica.c:494 src/elmdentica.c:641
+#: src/elmdentica.c:479 src/elmdentica.c:626
 msgid "Stop following"
 msgstr ""
 
-#: src/elmdentica.c:628
+#: src/elmdentica.c:613
 msgid "Couldn't parse user info message..."
 msgstr "Αδυναμία λήψης πληροφοριών χρήστη..."
 
-#: src/elmdentica.c:690 src/elmdentica.c:769
+#: src/elmdentica.c:675 src/elmdentica.c:754
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
 msgstr ""
 
-#: src/elmdentica.c:691 src/elmdentica.c:802
+#: src/elmdentica.c:676 src/elmdentica.c:787
 msgid "Leave"
 msgstr "Αποχώρηση"
 
-#: src/elmdentica.c:693 src/elmdentica.c:771
+#: src/elmdentica.c:678 src/elmdentica.c:756
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
 msgstr ""
 
-#: src/elmdentica.c:694 src/elmdentica.c:804
+#: src/elmdentica.c:679 src/elmdentica.c:789
 msgid "Join"
 msgstr "Συμμετοχή"
 
-#: src/elmdentica.c:858
+#: src/elmdentica.c:843
 msgid "Check it out!"
 msgstr "Δες το!"
 
-#: src/elmdentica.c:1021
+#: src/elmdentica.c:1006
 #, c-format
 msgid "a few seconds ago"
 msgstr "λίγα δευτερόλεπτα πριν"
 
-#: src/elmdentica.c:1023
+#: src/elmdentica.c:1008
 #, c-format
 msgid "a few minutes ago"
 msgstr "λίγα λεπτά πριν"
 
-#: src/elmdentica.c:1025
+#: src/elmdentica.c:1010
 #, c-format
 msgid "~ %d minutes ago"
 msgstr "~ %d λεπτά πριν"
 
-#: src/elmdentica.c:1028
+#: src/elmdentica.c:1013
 #, c-format
 msgid "~ %d hours ago"
 msgstr "~ %d ώρες πριν"
 
-#: src/elmdentica.c:1030
+#: src/elmdentica.c:1015
 #, c-format
 msgid "~ 1 hour ago"
 msgstr "~ 1 ώρα πριν"
 
-#: src/elmdentica.c:1032
+#: src/elmdentica.c:1017
 #, c-format
 msgid "on %x"
 msgstr ""
 
-#: src/elmdentica.c:1035
+#: src/elmdentica.c:1020
 #, c-format
 msgid "%x %X"
 msgstr ""
 
-#: src/elmdentica.c:1036 src/elmdentica.c:1037
+#: src/elmdentica.c:1021 src/elmdentica.c:1022
 #, c-format
 msgid "some-when"
 msgstr ""
 
-#: src/elmdentica.c:1115
+#: src/elmdentica.c:1100
 #, c-format
 msgid "Finished %s"
 msgstr ""
 
-#: src/elmdentica.c:1123
+#: src/elmdentica.c:1108
 msgid "Ok"
 msgstr ""
 
-#: src/elmdentica.c:1130
+#: src/elmdentica.c:1115
 msgid "Open"
 msgstr ""
 
-#: src/elmdentica.c:1176
+#: src/elmdentica.c:1161
 #, c-format
 msgid "downloading %s"
 msgstr ""
 
-#: src/elmdentica.c:1192 src/elmdentica.c:1891 src/settings.c:542
+#: src/elmdentica.c:1177 src/elmdentica.c:1876 src/settings.c:542
 #: src/settings.c:1271
 msgid "Cancel"
 msgstr "Άκυρο"
 
-#: src/elmdentica.c:1278
+#: src/elmdentica.c:1263
 msgid "Users"
 msgstr "Χρήστες"
 
-#: src/elmdentica.c:1307
+#: src/elmdentica.c:1292
 msgid "Links"
 msgstr "Σύνδεσμοι"
 
-#: src/elmdentica.c:1326
+#: src/elmdentica.c:1311
 msgid "Tags"
 msgstr "Ετικέτες"
 
-#: src/elmdentica.c:1344
+#: src/elmdentica.c:1329
 msgid "Groups"
 msgstr "Ομάδες"
 
-#: src/elmdentica.c:1362
+#: src/elmdentica.c:1347
 msgid "Attachments"
 msgstr ""
 
-#: src/elmdentica.c:1429
+#: src/elmdentica.c:1414
 msgid "Reply"
 msgstr "Απάντηση"
 
-#: src/elmdentica.c:1437
+#: src/elmdentica.c:1422
 msgid "Repeat"
 msgstr "Επανάληψη"
 
-#: src/elmdentica.c:1445 src/elmdentica.c:2149
+#: src/elmdentica.c:1430 src/elmdentica.c:2147
 msgid "DM"
 msgstr ""
 
-#: src/elmdentica.c:1454
+#: src/elmdentica.c:1439
 msgid "Unmark favorite"
 msgstr "Αφαίρεση από τα αγαπημένα"
 
-#: src/elmdentica.c:1456
+#: src/elmdentica.c:1441
 msgid "Mark favorite"
 msgstr "Προσθήκη στα αγαπημένα"
 
-#: src/elmdentica.c:1465
+#: src/elmdentica.c:1450
 msgid "View related"
 msgstr ""
 
-#: src/elmdentica.c:1474
+#: src/elmdentica.c:1459
 msgid "Status details"
 msgstr "Λεπτομέρειες κατάστασης"
 
-#: src/elmdentica.c:1576
+#: src/elmdentica.c:1561
 msgid "Error"
 msgstr "Σφάλμα"
 
-#: src/elmdentica.c:1577
+#: src/elmdentica.c:1562
 msgid "µ-blog Error"
 msgstr "Σφάλμα µ-blog"
 
-#: src/elmdentica.c:1873
+#: src/elmdentica.c:1858
 msgid "Send a DM to..."
 msgstr ""
 
-#: src/elmdentica.c:1885 src/settings.c:534 src/settings.c:1262
+#: src/elmdentica.c:1870 src/settings.c:534 src/settings.c:1262
 msgid "OK"
 msgstr "Οκ"
 
-#: src/elmdentica.c:1969 src/elmdentica.c:2111
+#: src/elmdentica.c:1954 src/elmdentica.c:2096
 msgid "Type your status here..."
 msgstr "Γράψτε την κατάσταση σας εδώ..."
 
-#: src/elmdentica.c:2136
-msgid "Send"
-msgstr "Αποστολή"
-
-#: src/elmdentica.c:2162
+#: src/elmdentica.c:2113
 msgid "Clear"
 msgstr "Εκκαθάριση"
 
-#: src/elmdentica.c:2175
+#: src/elmdentica.c:2134
+msgid "Send"
+msgstr "Αποστολή"
+
+#: src/elmdentica.c:2160
 msgid "Hide"
 msgstr ""
 
-#: src/elmdentica.c:2196
+#: src/elmdentica.c:2181
 msgid "Timelines"
 msgstr ""
 
-#: src/elmdentica.c:2202
+#: src/elmdentica.c:2187
 msgid "Direct Messages"
 msgstr "Άμεσα μηνύματα"
 
-#: src/elmdentica.c:2203
+#: src/elmdentica.c:2188
 msgid "Everyone"
 msgstr "Όλοι"
 
-#: src/elmdentica.c:2204
+#: src/elmdentica.c:2189
 msgid "Just me"
 msgstr "Απλά εγώ"
 
-#: src/elmdentica.c:2205
+#: src/elmdentica.c:2190
 msgid "Favorites"
 msgstr "Αγαπημένα"
 
-#: src/elmdentica.c:2206
+#: src/elmdentica.c:2191
 msgid "Replies/Mentions"
 msgstr "Απαντήσεις/Αναφορές"
 
-#: src/elmdentica.c:2207
+#: src/elmdentica.c:2192
 msgid "Friends & I"
 msgstr "Φίλοι και εγώ"
 
-#: src/elmdentica.c:2209
+#: src/elmdentica.c:2194
 msgid "Fullscreen"
 msgstr "Πλήρης οθόνη"
 
-#: src/elmdentica.c:2210 src/settings.c:1427
+#: src/elmdentica.c:2195 src/settings.c:1427
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
@@ -580,6 +570,9 @@ msgstr ""
 msgid ""
 "Not enough memory for settings, no doubt for anything else either, surely..."
 msgstr ""
+
+#~ msgid "Error %d: %s\n"
+#~ msgstr "Σφάλμα %d: %s\n"
 
 #~ msgid "Post"
 #~ msgstr "Δημοσίευση"
