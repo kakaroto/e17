@@ -8,7 +8,7 @@
  * elm_photocam and elm_image rotates their images internally.
  * Rotating the scroller is not correct and was rejected by Raster and others.
  */
-//#define ROTATION 1
+#define ROTATION 1
 
 #define ZOOM_STEP 0.2
 
@@ -20,8 +20,6 @@ struct _Ephoto_Single_Browser
    Ephoto *ephoto;
    Evas_Object *layout;
    Evas_Object *edje;
-   Evas_Object *orient_layout;
-   Evas_Object *orient_edje;
    Evas_Object *viewer;
    Evas_Object *toolbar;
    struct {
@@ -52,7 +50,6 @@ struct _Ephoto_Single_Browser
 
 struct _Ephoto_Viewer
 {
-   Evas_Object *photocam;
    Evas_Object *scroller;
    Evas_Object *image;
    double zoom;
@@ -81,12 +78,6 @@ _path_is_jpeg(const char *path_stringshared)
 }
 
 static void
-_viewer_photocam_loaded(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
-{
-   elm_photocam_paused_set(obj, EINA_FALSE);
-}
-
-static void
 _viewer_del(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Viewer *v = data;
@@ -98,39 +89,24 @@ _viewer_add(Evas_Object *parent, const char *path)
 {
    Ephoto_Viewer *v = calloc(1, sizeof(Ephoto_Viewer));
    Evas_Object *obj;
+   Evas_Coord w, h;
    int err;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
-   if (_path_is_jpeg(path))
-     {
-        obj = v->photocam = elm_photocam_add(parent);
-        EINA_SAFETY_ON_NULL_GOTO(obj, error);
-        err = elm_photocam_file_set(obj, path);
-        if (err != EVAS_LOAD_ERROR_NONE) goto load_error;
-        elm_photocam_paused_set(obj, EINA_TRUE);
-        evas_object_smart_callback_add
-          (obj, "loaded", _viewer_photocam_loaded, v);
-     }
-   else
-     {
-        Evas_Coord w, h;
-        obj = v->scroller = elm_scroller_add(parent);
-        EINA_SAFETY_ON_NULL_GOTO(obj, error);
-        v->image = evas_object_image_filled_add(evas_object_evas_get(parent));
-        evas_object_image_file_set(v->image, path, NULL);
-        err = evas_object_image_load_error_get(v->image);
-        if (err != EVAS_LOAD_ERROR_NONE) goto load_error;
-        evas_object_image_size_get(v->image, &w, &h);
-        evas_object_size_hint_align_set(v->image, 0.5, 0.5);
-        evas_object_size_hint_weight_set(v->image, 1.0, 1.0);
-        evas_object_size_hint_min_set(v->image, w, h);
-        evas_object_size_hint_max_set(v->image, w, h);
-        evas_object_resize(v->image, w, h);
-        evas_object_show(v->image);
-        elm_scroller_content_set(obj, v->image);
-        elm_scroller_custom_widget_base_theme_set(obj, "photocam", "default");
-        
-     }
+   obj = v->scroller = elm_scroller_add(parent);
+   EINA_SAFETY_ON_NULL_GOTO(obj, error);
+   v->image = evas_object_image_filled_add(evas_object_evas_get(parent));
+   evas_object_image_file_set(v->image, path, NULL);
+   err = evas_object_image_load_error_get(v->image);
+   if (err != EVAS_LOAD_ERROR_NONE) goto load_error;
+   evas_object_image_size_get(v->image, &w, &h);
+   evas_object_size_hint_align_set(v->image, 0.5, 0.5);
+   evas_object_size_hint_weight_set(v->image, 1.0, 1.0);
+   evas_object_size_hint_min_set(v->image, w, h);
+   evas_object_size_hint_max_set(v->image, w, h);
+   evas_object_resize(v->image, w, h);
+   evas_object_show(v->image);
+   elm_scroller_content_set(obj, v->image);
    evas_object_size_hint_weight_set(obj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(obj, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_data_set(obj, "viewer", v);
@@ -148,17 +124,14 @@ _viewer_add(Evas_Object *parent, const char *path)
 static void
 _viewer_zoom_apply(Ephoto_Viewer *v, double zoom)
 {
+   Evas_Coord w, h;
+
    v->zoom = zoom;
-   if (v->photocam) elm_photocam_zoom_set(v->photocam, 1.0 / zoom);
-   else
-     {
-        Evas_Coord w, h;
-        evas_object_image_size_get(v->image, &w, &h);
-        w *= zoom;
-        h *= zoom;
-        evas_object_size_hint_min_set(v->image, w, h);
-        evas_object_size_hint_max_set(v->image, w, h);
-     }
+   evas_object_image_size_get(v->image, &w, &h);
+   w *= zoom;
+   h *= zoom;
+   evas_object_size_hint_min_set(v->image, w, h);
+   evas_object_size_hint_max_set(v->image, w, h);
 }
 
 static void
@@ -167,16 +140,8 @@ _viewer_zoom_fit_apply(Ephoto_Viewer *v)
    Evas_Coord cw, ch, iw, ih;
    double zx, zy, zoom;
 
-   if (v->photocam)
-     {
-        evas_object_geometry_get(v->photocam, NULL, NULL, &cw, &ch);
-        elm_photocam_image_size_get(v->photocam, &iw, &ih);
-     }
-   else
-     {
-        evas_object_geometry_get(v->scroller, NULL, NULL, &cw, &ch);
-        evas_object_image_size_get(v->image, &iw, &ih);
-     }
+   evas_object_geometry_get(v->scroller, NULL, NULL, &cw, &ch);
+   evas_object_image_size_get(v->image, &iw, &ih);
 
    if ((cw <= 0) || (ch <= 0)) return; /* object still not resized */
    EINA_SAFETY_ON_TRUE_RETURN(iw <= 0);
@@ -204,12 +169,8 @@ _viewer_zoom_set(Evas_Object *obj, double zoom)
 
    if (v->fit)
      {
-        if (v->photocam)
-          evas_object_event_callback_del_full
-            (v->photocam, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
-        else
-          evas_object_event_callback_del_full
-            (v->scroller, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
+        evas_object_event_callback_del_full
+          (v->scroller, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
         v->fit = EINA_FALSE;
      }
 }
@@ -231,12 +192,8 @@ _viewer_zoom_fit(Evas_Object *obj)
    if (v->fit) return;
    v->fit = EINA_TRUE;
 
-   if (v->photocam)
-     evas_object_event_callback_add
-       (v->photocam, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
-   else
-     evas_object_event_callback_add
-       (v->scroller, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
+   evas_object_event_callback_add
+     (v->scroller, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
 
    _viewer_zoom_fit_apply(v);
 }
@@ -245,38 +202,106 @@ static void
 _orient_apply(Ephoto_Single_Browser *sb)
 {
 #ifdef ROTATION
-   const char *sig;
+   unsigned int *im_data, *im_data_new;
+   int inde, ind, i, j, ni, nj, ew, eh, nw, nh;
+   Ephoto_Viewer *v = evas_object_data_get(sb->viewer, "viewer");
+
+   im_data = evas_object_image_data_get(v->image, FALSE);
+   evas_object_image_size_get(v->image, &ew, &eh);
+   inde = 0;
+
    switch (sb->orient)
      {
-      case EPHOTO_ORIENT_0:
-         sig = "state,rotate,0";
-         break;
       case EPHOTO_ORIENT_90:
-         sig = "state,rotate,90";
-         break;
-      case EPHOTO_ORIENT_180:
-         sig = "state,rotate,180";
+         im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+         nw = eh;
+         nh = ew;
+         for (i = 0; i < nh; i++)
+           {
+              for (j = 0; j < nw; j++)
+                {
+                   ni = nw - j - 1;
+                   nj = i;
+
+                   ind = ni * nh + nj;
+
+                   im_data_new[inde] = im_data[ind];
+
+                   inde++;
+                }
+           }
+         evas_object_image_size_set(v->image, nw, nh);
+         evas_object_image_data_set(v->image, im_data_new);
+         evas_object_image_data_update_add(v->image, 0, 0, nw, nh);
+         _viewer_zoom_fit_apply(v);
          break;
       case EPHOTO_ORIENT_270:
-         sig = "state,rotate,270";
+         im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+         nw = eh;
+         nh = ew;
+         for (i = 0; i < nh; i++)
+           {
+              for (j = 0; j < nw; j++)
+                {
+                   ni = j;
+                   nj = nh - i - 1;
+                 
+                   ind = ni * nh + nj;
+
+                   im_data_new[inde] = im_data[ind];
+
+                   inde++;
+                }
+           }
+         evas_object_image_size_set(v->image, nw, nh);
+         evas_object_image_data_set(v->image, im_data_new);
+         evas_object_image_data_update_add(v->image, 0, 0, nw, nh);
+         _viewer_zoom_fit_apply(v);
          break;
       case EPHOTO_ORIENT_FLIP_HORIZ:
-         sig = "state,flip,horiz";
+         im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+         for (i = 0; i < eh; i++)
+           {
+              for (j = 0; j < ew; j++)
+                {
+                   ni = i;
+                   nj = ew - j - 1;
+         
+                   ind = ni * ew + nj;
+         
+                   im_data_new[inde] = im_data[ind];
+
+                   inde++;
+                }
+           }
+         evas_object_image_size_set(v->image, ew, eh);
+         evas_object_image_data_set(v->image, im_data_new);
+         evas_object_image_data_update_add(v->image, 0, 0, ew, eh);
          break;
       case EPHOTO_ORIENT_FLIP_VERT:
-         sig = "state,flip,vert";
-         break;
-      case EPHOTO_ORIENT_FLIP_HORIZ_90:
-         sig = "state,flip,horiz,90";
-         break;
-      case EPHOTO_ORIENT_FLIP_VERT_90:
-         sig = "state,flip,vert,90";
+         im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+         for (i = 0; i < eh; i++)
+           {
+              for (j = 0; j < ew; j++)
+                {
+                   ni = eh - i - 1;
+                   nj = j;
+
+                   ind = ni * ew + nj;
+
+                   im_data_new[inde] = im_data[ind];
+
+                   inde++;
+                }
+           }
+         evas_object_image_size_set(v->image, ew, eh);
+         evas_object_image_data_set(v->image, im_data_new);
+         evas_object_image_data_update_add(v->image, 0, 0, ew, eh);
+         
          break;
       default:
          return;
      }
-   DBG("orient: %d, signal '%s'", sb->orient, sig);
-   edje_object_signal_emit(sb->orient_edje, sig, "ephoto");
 #else
    (void)sb;
 #endif
@@ -286,132 +311,28 @@ _orient_apply(Ephoto_Single_Browser *sb)
 static void
 _rotate_counterclock(Ephoto_Single_Browser *sb)
 {
-   switch (sb->orient)
-     {
-      case EPHOTO_ORIENT_0:
-         sb->orient = EPHOTO_ORIENT_270;
-         break;
-      case EPHOTO_ORIENT_90:
-         sb->orient = EPHOTO_ORIENT_0;
-         break;
-      case EPHOTO_ORIENT_180:
-         sb->orient = EPHOTO_ORIENT_90;
-         break;
-      case EPHOTO_ORIENT_270:
-         sb->orient = EPHOTO_ORIENT_180;
-         break;
-      case EPHOTO_ORIENT_FLIP_HORIZ:
-         sb->orient = EPHOTO_ORIENT_FLIP_HORIZ_90;
-         break;
-      case EPHOTO_ORIENT_FLIP_VERT:
-         sb->orient = EPHOTO_ORIENT_FLIP_VERT_90;
-         break;
-      case EPHOTO_ORIENT_FLIP_HORIZ_90:
-         sb->orient = EPHOTO_ORIENT_FLIP_VERT;
-         break;
-      case EPHOTO_ORIENT_FLIP_VERT_90:
-         sb->orient = EPHOTO_ORIENT_FLIP_HORIZ;
-         break;
-     }
+   sb->orient = EPHOTO_ORIENT_270;
    _orient_apply(sb);
 }
 
 static void
 _rotate_clock(Ephoto_Single_Browser *sb)
 {
-   switch (sb->orient)
-     {
-      case EPHOTO_ORIENT_0:
-         sb->orient = EPHOTO_ORIENT_90;
-         break;
-      case EPHOTO_ORIENT_90:
-         sb->orient = EPHOTO_ORIENT_180;
-         break;
-      case EPHOTO_ORIENT_180:
-         sb->orient = EPHOTO_ORIENT_270;
-         break;
-      case EPHOTO_ORIENT_270:
-         sb->orient = EPHOTO_ORIENT_0;
-         break;
-      case EPHOTO_ORIENT_FLIP_HORIZ:
-         sb->orient = EPHOTO_ORIENT_FLIP_VERT_90;
-         break;
-      case EPHOTO_ORIENT_FLIP_VERT:
-         sb->orient = EPHOTO_ORIENT_FLIP_HORIZ_90;
-         break;
-      case EPHOTO_ORIENT_FLIP_HORIZ_90:
-         sb->orient = EPHOTO_ORIENT_FLIP_HORIZ;
-         break;
-      case EPHOTO_ORIENT_FLIP_VERT_90:
-         sb->orient = EPHOTO_ORIENT_FLIP_VERT;
-         break;
-     }
+   sb->orient = EPHOTO_ORIENT_90;
    _orient_apply(sb);
 }
 
 static void
 _flip_horiz(Ephoto_Single_Browser *sb)
 {
-   switch (sb->orient)
-     {
-      case EPHOTO_ORIENT_0:
-         sb->orient = EPHOTO_ORIENT_FLIP_HORIZ;
-         break;
-      case EPHOTO_ORIENT_90:
-         sb->orient = EPHOTO_ORIENT_FLIP_HORIZ_90;
-         break;
-      case EPHOTO_ORIENT_180:
-         sb->orient = EPHOTO_ORIENT_FLIP_VERT;
-         break;
-      case EPHOTO_ORIENT_270:
-         sb->orient = EPHOTO_ORIENT_FLIP_VERT_90;
-         break;
-      case EPHOTO_ORIENT_FLIP_HORIZ:
-         sb->orient = EPHOTO_ORIENT_0;
-         break;
-      case EPHOTO_ORIENT_FLIP_VERT:
-         sb->orient = EPHOTO_ORIENT_180;
-         break;
-      case EPHOTO_ORIENT_FLIP_HORIZ_90:
-         sb->orient = EPHOTO_ORIENT_90;
-         break;
-      case EPHOTO_ORIENT_FLIP_VERT_90:
-         sb->orient = EPHOTO_ORIENT_270;
-         break;
-     }
+   sb->orient = EPHOTO_ORIENT_FLIP_HORIZ;
    _orient_apply(sb);
 }
 
 static void
 _flip_vert(Ephoto_Single_Browser *sb)
 {
-   switch (sb->orient)
-     {
-      case EPHOTO_ORIENT_0:
-         sb->orient = EPHOTO_ORIENT_FLIP_VERT;
-         break;
-      case EPHOTO_ORIENT_90:
-         sb->orient = EPHOTO_ORIENT_FLIP_VERT_90;
-         break;
-      case EPHOTO_ORIENT_180:
-         sb->orient = EPHOTO_ORIENT_FLIP_HORIZ;
-         break;
-      case EPHOTO_ORIENT_270:
-         sb->orient = EPHOTO_ORIENT_FLIP_HORIZ_90;
-         break;
-      case EPHOTO_ORIENT_FLIP_HORIZ:
-         sb->orient = EPHOTO_ORIENT_180;
-         break;
-      case EPHOTO_ORIENT_FLIP_VERT:
-         sb->orient = EPHOTO_ORIENT_0;
-         break;
-      case EPHOTO_ORIENT_FLIP_HORIZ_90:
-         sb->orient = EPHOTO_ORIENT_270;
-         break;
-      case EPHOTO_ORIENT_FLIP_VERT_90:
-         sb->orient = EPHOTO_ORIENT_90;
-         break;
-     }
+   sb->orient = EPHOTO_ORIENT_FLIP_VERT;
    _orient_apply(sb);
 }
 #endif
@@ -513,16 +434,14 @@ _ephoto_single_browser_recalc(Ephoto_Single_Browser *sb)
    if (sb->entry)
      {
         const char *bname = ecore_file_file_get(sb->entry->path);
-        sb->viewer = _viewer_add(sb->orient_layout, sb->entry->path);
+        sb->viewer = _viewer_add(sb->layout, sb->entry->path);
         elm_layout_content_set
-          (sb->orient_layout, "elm.swallow.content", sb->viewer);
+          (sb->layout, "elm.swallow.content", sb->viewer);
         evas_object_show(sb->viewer);
         evas_object_event_callback_add
           (sb->viewer, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, sb);
         edje_object_part_text_set(sb->edje, "elm.text.title", bname);
-        ephoto_title_set(sb->ephoto, bname);
-        sb->orient = ephoto_file_orient_get(sb->entry->path);
-        _orient_apply(sb);
+        ephoto_title_set(sb->ephoto, bname);;
      }
 
    elm_object_focus(sb->layout);
@@ -941,17 +860,6 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    elm_toolbar_item_tooltip_text_set
      (sb->action.flip_vert, "Flip object vertically");
 #endif
-
-   sb->orient_layout = elm_layout_add(layout);
-   if (!elm_layout_theme_set
-       (sb->orient_layout, "layout", "ephoto", "orient"))
-     {
-        ERR("could not load style 'ephoto/orient' from theme");
-        goto error;
-     }
-   sb->orient_edje = elm_layout_edje_get(sb->orient_layout);
-   elm_layout_content_set(sb->layout, "elm.swallow.content", sb->orient_layout);
-   elm_object_focus_custom_chain_append(sb->layout, sb->orient_layout, NULL);
 
    _ephoto_single_browser_toolbar_eval(sb);
 
