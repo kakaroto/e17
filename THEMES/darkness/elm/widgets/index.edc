@@ -153,6 +153,7 @@
                    fixed: 1 1;
                    min: 8 8;
                    max: 8 8;
+                   visible: 0;
                    rel1 {
                        relative: 0.0 0.0;
                        offset:   0 0;
@@ -161,7 +162,6 @@
                        relative: 0.0 0.0;
                        offset:   0 0;
                    }
-                   color: 0 0 255 128;
                }
            }
            part { name: "elm.swallow.event.0";
