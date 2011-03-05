@@ -76,8 +76,6 @@ int first_message=1;
 int current_timeline=-1;
 time_t now;
 
-Eina_Hash * bubble2status=NULL;
-
 aStatus *reply_as=NULL;
 long long int user_id=0;
 const char *url=NULL;
@@ -298,8 +296,8 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
 }
 
 static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName) {
-	Evas_Object *bubble = (Evas_Object*)data;
-	aStatus *as = eina_hash_find(bubble2status, &bubble);
+	Elm_Genlist_Item *bubble = (Elm_Genlist_Item*)data;
+	aStatus *as = elm_genlist_item_data_get(bubble);
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
 
@@ -1492,8 +1490,6 @@ void add_status(aStatus *as, void *data) {
 		li = elm_genlist_item_prepend(gui.timeline, &itc1, as, NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
 	as->li = li;
-
-	eina_hash_add(bubble2status, &li, as);
 }
 
 static int add_status_from_db(void *data, int argc, char **argv, char **azColName) {
@@ -1651,12 +1647,6 @@ void fill_message_list(int timeline, Eina_Bool fromdb) {
 
 	if(fromdb) {
 
-		if(bubble2status) {
-			eina_hash_free(bubble2status);
-			bubble2status = NULL;
-		}
-
-		bubble2status = eina_hash_pointer_new(NULL);
 		if(!statusHash) statusHash = eina_hash_string_superfast_new(status_hash_data_free);
     	if(!userHash) userHash = eina_hash_string_superfast_new(user_hash_data_free);
 
