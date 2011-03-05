@@ -1757,6 +1757,9 @@ _scale_handler(void *data, const char *name, const char *info, int val,
    if (strcmp(name, "comp.manager")) return;
 
    DBG("handler... '%s' '%s'\n", name, info);
+
+   /* XXX disabled for now. */
+   return;
    
    e = e_manager_comp_evas_get(man);
    if (!strcmp(info, "change.comp"))
