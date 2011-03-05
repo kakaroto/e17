@@ -1486,7 +1486,7 @@
             }
             description {
                state: "selected" 0.0;
-       	       inherit: "default" 0.0;
+                      inherit: "default" 0.0;
                color3: 0 0 0 32;
             }
          }
@@ -1599,7 +1599,7 @@
          }
          part {
             name: "outline";
-	    mouse_events: 0;
+            mouse_events: 0;
             description {
                state: "default" 0.0;
                rel1.to: "bg";
@@ -1756,13 +1756,13 @@
                   to_x: "clip";
                   to_y: "base";
                   offset: 5 2;
-		                relative: 1.0 0.0;
+                                relative: 1.0 0.0;
                }
                rel2 {
                   relative: 0.0 1.0;
                   offset: 4 -1;
                   to_x: "arrow";
-	                 to_y: "spacer";
+                         to_y: "spacer";
                }
                text {
                   font: "DejaVu";
@@ -1807,7 +1807,7 @@
                }
             }
             description {
-	        state: "selected" 0.0;
+                state: "selected" 0.0;
                 inherit: "default" 0.0;
                 color: DARKNESS_TEXT_DISABLED 255;
             }
@@ -1818,18 +1818,18 @@
             mouse_events: 0;
             description {
                state: "default" 0.0;
-	       visible: 0;
-	       rel1.to: "base";
-	       rel1.relative: 0.0 1.0;
-	       rel2.to: "base";
+               visible: 0;
+               rel1.to: "base";
+               rel1.relative: 0.0 1.0;
+               rel2.to: "base";
             }
             description {
                state: "detail" 0.0;
-	       inherit: "default" 0.0;
-	       rel1.to: "e.text.detail";
-	       rel2.to: "e.text.detail";
+               inherit: "default" 0.0;
+               rel1.to: "e.text.detail";
+               rel2.to: "e.text.detail";
             }
-	 }
+         }
          part {
             name: "event";
             type: RECT;
@@ -1847,8 +1847,8 @@
             action: STATE_SET "selected" 0.0;
             target: "bg";
             target: "outline";
-	    target: "e.text.label";
-	    target: "e.text.detail";
+            target: "e.text.label";
+            target: "e.text.detail";
             transition: ACCELERATE 0.0;
          }
          program {
@@ -1859,8 +1859,8 @@
             transition: LINEAR 0.0;
             target: "bg";
             target: "outline";
-	    target: "e.text.label";
-	    target: "e.text.detail";
+            target: "e.text.label";
+            target: "e.text.detail";
          }
          program {
             name: "mark";

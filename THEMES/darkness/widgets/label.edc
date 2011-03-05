@@ -2,31 +2,31 @@ group {
    name: "e/widgets/label";
    parts {
       part {
-	 name:           "e.text.label";
-	 type:           TEXT;
-	 effect:         SOFT_SHADOW;
-	 mouse_events:   0;
-	 description {
-	    state: "default" 0.0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   2 2;
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -3 -3;
-	    }
-	    color: 255 255 255 255;
-	    color3: DARKNESS_BLUE 32;
-	    text {
-	       text:     "Label";
-	       font:     "DejaVu";
-	       size:     10;
-	       min:      1 1;
-	       align:    0.0 0.5;
+         name:           "e.text.label";
+         type:           TEXT;
+         effect:         SOFT_SHADOW;
+         mouse_events:   0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   2 2;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -3 -3;
+            }
+            color: 255 255 255 255;
+            color3: DARKNESS_BLUE 32;
+            text {
+               text:     "Label";
+               font:     "DejaVu";
+               size:     10;
+               min:      1 1;
+               align:    0.0 0.5;
                text_class: "label";
-	    }
-	 }
+            }
+         }
       }
    }
 }

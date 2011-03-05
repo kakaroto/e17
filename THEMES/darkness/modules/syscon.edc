@@ -1,0 +1,108 @@
+   group {
+      name: "e/widgets/syscon/main";
+      min: 72 72;
+      images {
+         image: "dialog_background.png" COMP;
+      }
+      parts {
+         part {
+            name: "base";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image {
+                  normal: "dialog_background.png";
+                  border: 2 2 2 2;
+               }
+               fill {
+                  smooth: 0;
+                  size {
+                     relative: 0.0 0.0;
+                     offset: 64 64;
+                  }
+               }
+            }
+         }
+         part {
+            name: "e.swallow.main";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               // fixed: 1 1;
+               align: 0.5 0.0;
+               rel1.offset: 12 12;
+               rel2.relative: 1.0 0.0;
+               rel2.offset: -13 12;
+            }
+         }
+         part {
+            name: "e.swallow.secondary";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               min: 32 32;
+               rel1.to: "e.swallow.main";
+               rel1.relative: 0.0 1.0;
+               rel1.offset: 0 12;
+               rel2.to: "e.swallow.extra";
+               rel2.relative: 1.0 0.0;
+               rel2.offset: -1 -13;
+            }
+         }
+         part {
+            name: "e.swallow.extra";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               // fixed: 1 1;
+               align: 0.5 1.0;
+               rel1.relative: 0.0 1.0;
+               rel1.offset: 12 -13;
+               rel2.to_y: "button";
+               rel2.relative: 1.0 0.0;
+               rel2.offset: -13 -13;
+            }
+         }
+         part {
+            name: "button";
+            type: GROUP;
+            source: "e/widgets/button";
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               align: 0.5 1.0;
+               rel1.relative: 0.5 1.0;
+               rel1.offset: 0 -13;
+               rel2.relative: 0.5 1.0;
+               rel2.offset: 0 -13;
+            }
+         }
+         part {
+            name: "e.text.label";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            mouse_events: 0;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "button";
+                  relative: 0.0  0.0;
+                  offset: 3    3;
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+                  offset: -4   -4;
+                  to: "button";
+               }
+               text {
+                  text: "Cancel";
+                  font: "DejaVu";
+                  size: 10;
+                  min: 1 1;
+                  align: 0.5 0.5;
+               }
+            }
+         }
+      }
+   }

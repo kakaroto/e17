@@ -15,22 +15,22 @@ group {
    name: "e/widgets/textblock";
    parts {
       part {
-	 name:          "e.textblock.text";
-	 type:          TEXTBLOCK;
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       offset: 4 4;
-	    }
-	    rel2 {
-	       offset: -5 -5;
-	    }
-	    text {
-	       style:    "textblock_style";
-	       min:      1 1;
-	    }
-	 }
+         name:          "e.textblock.text";
+         type:          TEXTBLOCK;
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               offset: 4 4;
+            }
+            rel2 {
+               offset: -5 -5;
+            }
+            text {
+               style:    "textblock_style";
+               min:      1 1;
+            }
+         }
       }
    }
 }

@@ -3,24 +3,24 @@ group {
    name: "e/desktop/background";
    parts {
       part {
-	 name: "background";
-	 type: RECT;
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    color: 6 6 6 255;
-	 }
+         name: "background";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 6 6 6 255;
+         }
       }
       part {
-	 name: "background_image";
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    aspect_preference: HORIZONTAL;
-	    image {
-	       normal: "chrono_leak_1280.jpg";
-	    }
-	 }
+         name: "background_image";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            aspect_preference: HORIZONTAL;
+            image {
+               normal: "chrono_leak_1280.jpg";
+            }
+         }
       }
    }
 }

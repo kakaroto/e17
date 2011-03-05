@@ -13,139 +13,139 @@ group {
    name: "e/widgets/dialog/main";
    parts {
       part {
-	 name:          "base";
-	 type:		RECT;
-	 mouse_events:  0;
-	 description {
-	    color: 0 0 0 255;
-	    state:    "default" 0.0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   1    1;
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -2   -2;
-	    }
-	 }
+         name:          "base";
+         type:                RECT;
+         mouse_events:  0;
+         description {
+            color: 0 0 0 255;
+            state:    "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   1    1;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -2   -2;
+            }
+         }
       }
       part {
-	 name:          "base3";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    rel2 {
-	       offset:   -1   -1;
-	    }
-	    image {
-	       normal: "dialog_background.png";
-	    }
-	    fill {
-	       smooth: 0;
-								size {
-									  relative: 0.0 0.0;
-											offset: 64 64;
-								}
-	    }
-	 }
+         name:          "base3";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            rel2 {
+               offset:   -1   -1;
+            }
+            image {
+               normal: "dialog_background.png";
+            }
+            fill {
+               smooth: 0;
+                                                                size {
+                                                                          relative: 0.0 0.0;
+                                                                                        offset: 64 64;
+                                                                }
+            }
+         }
       }
       part {
-	 name: "e.swallow.icon";
-	 type: SWALLOW;
-	 description {
-	    state: "default" 0.0;
-	    align: 0.0 0.5;
-	    fixed: 1 0;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   16  16;
-	    }
-	    rel2 {
-	       relative: 0.0 0.0;
-	       offset:   16  -9;
-	       to_y: "e.swallow.buttons";
-	    }
-	 }
+         name: "e.swallow.icon";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            fixed: 1 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   16  16;
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               offset:   16  -9;
+               to_y: "e.swallow.buttons";
+            }
+         }
       }
       part {
-	 name: "e.swallow.content";
-	 type: SWALLOW;
-	 description {
-	    state: "default" 0.0;
-	    rel1 {
-	       relative: 1.0 0.0;
-	       offset:   8   16;
-	       to_x:     "e.swallow.icon";
-	    }
-	    rel2 {
-	       relative: 1.0 0.0;
-	       offset:   -17  -9;
-	       to_y: "e.swallow.buttons";
-	    }
-	 }
+         name: "e.swallow.content";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset:   8   16;
+               to_x:     "e.swallow.icon";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset:   -17  -9;
+               to_y: "e.swallow.buttons";
+            }
+         }
       }
       part {
-	 name:          "bottom";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       relative: 0.0  1.0;
-	       offset:   1    -3;
-	       to_y:     "e.swallow.content";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -2   -2;
-	    }
-	    image {
-	       normal: "dialog_bottom.png";
-	       border: 0 0 4 0;
-	    }
-	    fill {
-	       smooth: 0;
-	    }
-	 }
+         name:          "bottom";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               relative: 0.0  1.0;
+               offset:   1    -3;
+               to_y:     "e.swallow.content";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -2   -2;
+            }
+            image {
+               normal: "dialog_bottom.png";
+               border: 0 0 4 0;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
       }
       part {
-	 name:          "watermark";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    min:      200 138;
-	    max:      200 138;
-	    align:    1.0 1.0;
-	    fixed:    1 1;
-	    color: 255 255 255 155;
-	    rel1 {
-	       relative: 1.0  1.0;
-	       offset:   -1   -1;
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -1   -1;
-	    }
-	    image {
-	       normal: "dialog_watermark.png";
-	    }
-	 }
+         name:          "watermark";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            min:      200 138;
+            max:      200 138;
+            align:    1.0 1.0;
+            fixed:    1 1;
+            color: 255 255 255 155;
+            rel1 {
+               relative: 1.0  1.0;
+               offset:   -1   -1;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   -1;
+            }
+            image {
+               normal: "dialog_watermark.png";
+            }
+         }
       }
       part {
-	 name: "e.swallow.buttons";
-	 type: SWALLOW;
-	 description {
-	    state: "default" 0.0;
-	    align: 0.5 1.0;
-	    fixed: 0 1;
-	    rel1 {
-	       relative: 0.0 1.0;
-	       offset:   16   -9;
-	    }
-	    rel2 {
-	       relative: 1.0 1.0;
-	       offset:   -17  -9;
-	    }
-	 }
+         name: "e.swallow.buttons";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 1.0;
+               offset:   16   -9;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset:   -17  -9;
+            }
+         }
       }
    }
 }
@@ -154,22 +154,22 @@ group {
    name: "e/widgets/dialog/text";
    parts {
       part {
-	 name:          "e.textblock.message";
-	 type:          TEXTBLOCK;
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       offset: 8 8;
-	    }
-	    rel2 {
-	       offset: -9 -9;
-	    }
-	    text {
-	       style:    "dialog_style";
-	       min:      1 1;
-	    }
-	 }
+         name:          "e.textblock.message";
+         type:          TEXTBLOCK;
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               offset: 8 8;
+            }
+            rel2 {
+               offset: -9 -9;
+            }
+            text {
+               style:    "dialog_style";
+               min:      1 1;
+            }
+         }
       }
    }
 }

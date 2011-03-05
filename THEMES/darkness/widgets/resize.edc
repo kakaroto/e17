@@ -2,75 +2,75 @@ group {
    name: "e/widgets/border/default/resize";
    parts {
       part {
-	 name:          "base";
-	 mouse_events:  0;
-	 type:          RECT;
-	 description {
-	    max:      99999 48;
-	    state:    "default" 0.0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	    }
-	    color: 76 76 76 255;
-	 }
+         name:          "base";
+         mouse_events:  0;
+         type:          RECT;
+         description {
+            max:      99999 48;
+            state:    "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+            }
+            color: 76 76 76 255;
+         }
       }
       part {
-	 name:          "base2";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    align:    0.5   0.0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   1    1;
-	       to: "base";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -2   -2;
-	       to: "base";
-	    }
-	    image {
-	       normal: "dialog_background.png";
-	    }
-	    fill {
-	       smooth: 0;
-	       size {
-	          relative: 0.0 0.0;
-	          offset: 64 64;
-	       }
-	    }
-	 }
+         name:          "base2";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            align:    0.5   0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   1    1;
+               to: "base";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -2   -2;
+               to: "base";
+            }
+            image {
+               normal: "dialog_background.png";
+            }
+            fill {
+               smooth: 0;
+               size {
+                  relative: 0.0 0.0;
+                  offset: 64 64;
+               }
+            }
+         }
       }
       part {
-	 name: "e.text.label";
-	 type: TEXT;
+         name: "e.text.label";
+         type: TEXT;
          effect: SHADOW;
-	 description {
-	    state: "default" 0.0;
-	    color: 0 0 0 255;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   4   4;
-	    }
-	    rel2 {
-	       relative: 1.0 1.0;
-	       offset:   -5  -5;
-	    }
-	    color:  255 255 255 255;
-	    color3: DARKNESS_BLUE 128;
-	    text {
-	       text: "X Y";
-	       font: "DejaVu";
-	       size: 10;
-	       align: 0.5 0.5;
-	       min: 1 1;
-	       text_class: "move_text";
-	    }
-	 }
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   4   4;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset:   -5  -5;
+            }
+            color:  255 255 255 255;
+            color3: DARKNESS_BLUE 128;
+            text {
+               text: "X Y";
+               font: "DejaVu";
+               size: 10;
+               align: 0.5 0.5;
+               min: 1 1;
+               text_class: "move_text";
+            }
+         }
       }
    }
 }

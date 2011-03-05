@@ -186,6 +186,7 @@ collections {
 #include "modules/slideshow.edc"
 #include "modules/start.edc"
 #include "modules/systray.edc"
+#include "modules/syscon.edc"
 #include "modules/taskbar.edc"
 #include "modules/temperature.edc"
 #include "modules/winselector.edc"

@@ -2,386 +2,386 @@ group {
    name: "e/widgets/exebuf/main";
    parts {
       part {
-	 name:          "base";
-	 mouse_events:  0;
-	 type:          RECT;
-	 description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	    }
-	    color: 76 76 76 255;
-	 }
+         name:          "base";
+         mouse_events:  0;
+         type:          RECT;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+            }
+            color: 76 76 76 255;
+         }
       }
       part {
-	 name:          "base2";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    align:    0.5   0.0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   1    1;
-	       to: "base";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -2   -2;
-	       to: "base";
-	    }
-	    image {
-	       normal: "dialog_background.png";
-	    }
-	    fill {
-	       smooth: 0;
-	       size {
-	          relative: 0.0 0.0;
-	          offset: 64 64;
-	       }
-	    }
-	 }
-      }
-      
-      part {
-	 name: "e.swallow.eap_list";
-	 type: SWALLOW;
-	 clip_to: "eap_list_clip";
-	 description {
-	    state: "default" 0.0;
-	    min: 32 64;
-	    align: 0.5 0.0;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   16  16;
-	    }
-	    rel2 {
-	       relative: 1.0  0.0;
-	       offset:   -17  -17;
-	       to_y: "e.text.label";
-	    }
-	 }
-      }
-      part {
-	 name: "eap_list_clip";
-	 type: RECT;
-	 description {
-	    state: "default" 0.0;
-	    color: 255 255 255 255;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   0   0;
-	       to_y: "e.swallow.eap_list";
-	    }
-	    rel2 {
-	       relative: 1.0 1.0;
-	       offset:   -1  -1;
-	       to_y: "e.swallow.eap_list";
-	    }
-	 }
-      }
-      part {
-	 name:          "top";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    color: 100 100 100 200;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   1    1;
-	    }
-	    rel2 {
-	       relative: 1.0  0.0;
-	       offset:   -2   16;
-	       to_y:     "e.swallow.eap_list";
-	    }
-	    image {
-	       normal: "winlist_top.png";
-	       border: 0 0 0 19;
-	    }
-	    fill {
-	       smooth: 0;
-	    }
-	 }
-      }
-      part {
-	 name:          "bottom";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    color: 150 150 150 200;
-	    rel1 {
-	       relative: 0.0  1.0;
-	       offset:   1    -3;
-	       to_y:     "e.swallow.eap_list";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -2   16;
-	       to_y:     "e.text.label";
-	    }
-	    image {
-	       normal: "winlist_bottom.png";
-	       border: 0 0 4 0;
-	    }
-	    fill {
-	       smooth: 0;
-	    }
-	 }
+         name:          "base2";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            align:    0.5   0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   1    1;
+               to: "base";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -2   -2;
+               to: "base";
+            }
+            image {
+               normal: "dialog_background.png";
+            }
+            fill {
+               smooth: 0;
+               size {
+                  relative: 0.0 0.0;
+                  offset: 64 64;
+               }
+            }
+         }
       }
       
       part {
-	 name: "e.swallow.exe_list";
-	 type: SWALLOW;
-	 clip_to: "exe_list_clip";
-	 description {
-	    state: "default" 0.0;
-	    min: 32 64;
-	    align: 0.5 1.0;
-	    rel1 {
-	       relative: 0.0 1.0;
-	       offset:   16  16;
-	       to_y: "e.text.label";
-	    }
-	    rel2 {
-	       relative: 1.0 1.0;
-	       offset:   -17  -17;
-	    }
-	 }
+         name: "e.swallow.eap_list";
+         type: SWALLOW;
+         clip_to: "eap_list_clip";
+         description {
+            state: "default" 0.0;
+            min: 32 64;
+            align: 0.5 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   16  16;
+            }
+            rel2 {
+               relative: 1.0  0.0;
+               offset:   -17  -17;
+               to_y: "e.text.label";
+            }
+         }
       }
       part {
-	 name: "exe_list_clip";
-	 type: RECT;
-	 description {
-	    state: "default" 0.0;
-	    color: 255 255 255 255;
-	    visible: 1;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   0   0;
-	       to_y: "e.swallow.exe_list";
-	    }
-	    rel2 {
-	       relative: 1.0 1.0;
-	       offset:   -1  -1;
-	       to_y: "e.swallow.exe_list";
-	    }
-	 }
+         name: "eap_list_clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   0   0;
+               to_y: "e.swallow.eap_list";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset:   -1  -1;
+               to_y: "e.swallow.eap_list";
+            }
+         }
       }
       part {
-	 name:          "top2";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    color: 100 100 100 200;
-	    rel1 {
-	       relative: 0.0  1.0;
-	       offset:   1    0;
-	       to_y:     "e.swallow.icons";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -2   23;
-	       to_y:     "e.swallow.icons";
-	    }
-	    image {
-	       normal: "winlist_top.png";
-	       border: 0 0 0 19;
-	    }
-	    fill {
-	       smooth: 0;
-	    }
-	 }
+         name:          "top";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            color: 100 100 100 200;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   1    1;
+            }
+            rel2 {
+               relative: 1.0  0.0;
+               offset:   -2   16;
+               to_y:     "e.swallow.eap_list";
+            }
+            image {
+               normal: "winlist_top.png";
+               border: 0 0 0 19;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
       }
       part {
-	 name:          "bottom2";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    color: 150 150 150 200;
-	    rel1 {
-	       relative: 0.0  1.0;
-	       offset:   1    -3;
-	       to_y:     "e.swallow.exe_list";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -2   -2;
-	    }
-	    image {
-	       normal: "winlist_bottom.png";
-	       border: 0 0 4 0;
-	    }
-	    fill {
-	       smooth: 0;
-	    }
-	 }
+         name:          "bottom";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            color: 150 150 150 200;
+            rel1 {
+               relative: 0.0  1.0;
+               offset:   1    -3;
+               to_y:     "e.swallow.eap_list";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -2   16;
+               to_y:     "e.text.label";
+            }
+            image {
+               normal: "winlist_bottom.png";
+               border: 0 0 4 0;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      
+      part {
+         name: "e.swallow.exe_list";
+         type: SWALLOW;
+         clip_to: "exe_list_clip";
+         description {
+            state: "default" 0.0;
+            min: 32 64;
+            align: 0.5 1.0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset:   16  16;
+               to_y: "e.text.label";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset:   -17  -17;
+            }
+         }
+      }
+      part {
+         name: "exe_list_clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            visible: 1;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   0   0;
+               to_y: "e.swallow.exe_list";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset:   -1  -1;
+               to_y: "e.swallow.exe_list";
+            }
+         }
+      }
+      part {
+         name:          "top2";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            color: 100 100 100 200;
+            rel1 {
+               relative: 0.0  1.0;
+               offset:   1    0;
+               to_y:     "e.swallow.icons";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -2   23;
+               to_y:     "e.swallow.icons";
+            }
+            image {
+               normal: "winlist_top.png";
+               border: 0 0 0 19;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name:          "bottom2";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            color: 150 150 150 200;
+            rel1 {
+               relative: 0.0  1.0;
+               offset:   1    -3;
+               to_y:     "e.swallow.exe_list";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -2   -2;
+            }
+            image {
+               normal: "winlist_bottom.png";
+               border: 0 0 4 0;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
       }
       
       
       part {
-	 name: "e.text.label";
-	 type: TEXT;
+         name: "e.text.label";
+         type: TEXT;
          effect: SHADOW;
-	 description {
-	    state: "default" 0.0;
-	    color: 0 0 0 255;
-	    fixed: 0 1;
-	    align: 0.0 0.5;
-	    rel1 {
-	       relative: 1.0 0.5;
-	       offset:   16   0;
-	       to_x:     "e.swallow.icons";
-	    }
-	    rel2 {
-	       relative: 1.0 0.5;
-	       offset:   16  0;
-	       to_x:     "e.swallow.icons";
-	    }
-	    color: 255 255 255 255;
-	    color3: DARKNESS_BLUE 32;
-	    text {
-	       text: "COMMAND";
-	       font: "DejaVu-Bold";
-	       size: 16;
-	       align: 0.0 0.5;
-	       min: 1 1;
-	       text_class: "exebuf_command";
-	    }
-	 }
-	 description {
-	    state: "show_hist" 0.0;
-	    inherit: "default" 0.0;
-	    rel1 {
-	       relative: 1.0 0.9;
-	       offset:   16  -30;
-	       to_x:     "e.swallow.icons";
-	    }
-	    rel2 {
-	       relative: 1.0 0.9;
-	       offset:   16  -30;
-	       to_x:     "e.swallow.icons";
-	    }
-	 }
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            fixed: 0 1;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 1.0 0.5;
+               offset:   16   0;
+               to_x:     "e.swallow.icons";
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset:   16  0;
+               to_x:     "e.swallow.icons";
+            }
+            color: 255 255 255 255;
+            color3: DARKNESS_BLUE 32;
+            text {
+               text: "COMMAND";
+               font: "DejaVu-Bold";
+               size: 16;
+               align: 0.0 0.5;
+               min: 1 1;
+               text_class: "exebuf_command";
+            }
+         }
+         description {
+            state: "show_hist" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.9;
+               offset:   16  -30;
+               to_x:     "e.swallow.icons";
+            }
+            rel2 {
+               relative: 1.0 0.9;
+               offset:   16  -30;
+               to_x:     "e.swallow.icons";
+            }
+         }
       }
       part {
-	 name:          "cursor";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    min: 12 30;
-	    max: 12 30;
-	    align: 0.0 0.5;
-	    fixed: 1 1;
-	    rel1 {
-	       relative: 1.0  0.0;
-	       offset:   0    0;
-	       to: "e.text.label";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   0    -1;
-	       to: "e.text.label";
-	    }
-	    image {
-	       normal: "entry_cursor.png";
-	    }
-	 }
-	 description {
-	    state:    "faded" 0.0;
-	    inherit:  "default" 0.0;
-	    color:    DARKNESS_BLUE 150;
-	 }
+         name:          "cursor";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            min: 12 30;
+            max: 12 30;
+            align: 0.0 0.5;
+            fixed: 1 1;
+            rel1 {
+               relative: 1.0  0.0;
+               offset:   0    0;
+               to: "e.text.label";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   0    -1;
+               to: "e.text.label";
+            }
+            image {
+               normal: "entry_cursor.png";
+            }
+         }
+         description {
+            state:    "faded" 0.0;
+            inherit:  "default" 0.0;
+            color:    DARKNESS_BLUE 150;
+         }
       }
       part {
-	 name: "e.swallow.icons";
-	 type: SWALLOW;
-	 description {
-	    state: "default" 0.0;
-	    aspect: 1.0 1.0;
-	    align: 0.0 0.5;
-	    aspect_preference: VERTICAL;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   16  -7;
-	       to_y: "e.text.label";
-	    }
-	    rel2 {
-	       relative: 1.0 1.0;
-	       offset:   16  8;
-	       to_y: "e.text.label";
-	    }
-	 }
+         name: "e.swallow.icons";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            aspect: 1.0 1.0;
+            align: 0.0 0.5;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   16  -7;
+               to_y: "e.text.label";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset:   16  8;
+               to_y: "e.text.label";
+            }
+         }
       }
       part {      
-	 name:          "icon_overlay";
-	 mouse_events:  1;
-	 description {
-	    state: "default" 0.0;
-	    color: 255 255 255 150;
-	    rel1 {
-	       to: "e.swallow.icons";
-	       relative: 0.0  0.0;
-	       offset:   -8    -8;
-	    }
-	    rel2 {
-	       to: "e.swallow.icons";
-	       relative: 1.0  1.0;
-	       offset:   7    5;
-	    }
-	    image {
-	       normal: "titlebar.png";
-	       border: 3 3 3 3;
-	    }
-	 }
+         name:          "icon_overlay";
+         mouse_events:  1;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 150;
+            rel1 {
+               to: "e.swallow.icons";
+               relative: 0.0  0.0;
+               offset:   -8    -8;
+            }
+            rel2 {
+               to: "e.swallow.icons";
+               relative: 1.0  1.0;
+               offset:   7    5;
+            }
+            image {
+               normal: "titlebar.png";
+               border: 3 3 3 3;
+            }
+         }
       }
    }
    programs {
       program {
-	 name:    "blink1";
-	 signal:  "show";
-	 source:  "";
-	 action:  STATE_SET "faded" 0.0;
-	 transition: SINUSOIDAL 0.7;
-	 target:  "cursor";
-	 after:   "blink2";
+         name:    "blink1";
+         signal:  "show";
+         source:  "";
+         action:  STATE_SET "faded" 0.0;
+         transition: SINUSOIDAL 0.7;
+         target:  "cursor";
+         after:   "blink2";
       }
       program {
-	 name:    "blink2";
-	 action:  STATE_SET "default" 0.0;
-	 transition: SINUSOIDAL 0.7;
-	 target:  "cursor";
-	 after:   "blink1";
+         name:    "blink2";
+         action:  STATE_SET "default" 0.0;
+         transition: SINUSOIDAL 0.7;
+         target:  "cursor";
+         after:   "blink1";
       }
       program {
-	 name:    "show_hist_pre";
-	 signal:  "e,action,show,history";
-	 source:  "e";
-	 action:  STATE_SET "default" 0.0;
-	 target:  "e.text.label";
-	 after:   "show_hist";
+         name:    "show_hist_pre";
+         signal:  "e,action,show,history";
+         source:  "e";
+         action:  STATE_SET "default" 0.0;
+         target:  "e.text.label";
+         after:   "show_hist";
       }
       program {
-	 name:    "show_hist";
-	 action:  STATE_SET "show_hist" 0.0;
-	 target:  "e.text.label";
-	 transition: SINUSOIDAL 0.4;
+         name:    "show_hist";
+         action:  STATE_SET "show_hist" 0.0;
+         target:  "e.text.label";
+         transition: SINUSOIDAL 0.4;
       }
       program {
-	 name:    "hide_hist_pre";
-	 signal:  "e,action,hide,history";
-	 source:  "e";
-	 action:  STATE_SET "show_hist" 0.0;
-	 target:  "e.text.label";
-	 after:   "hide_hist";
+         name:    "hide_hist_pre";
+         signal:  "e,action,hide,history";
+         source:  "e";
+         action:  STATE_SET "show_hist" 0.0;
+         target:  "e.text.label";
+         after:   "hide_hist";
       }
       program {
-	 name:    "hide_hist";
-	 action:  STATE_SET "default" 0.0;
-	 target:  "e.text.label";
-	 transition: SINUSOIDAL 0.4;
+         name:    "hide_hist";
+         action:  STATE_SET "default" 0.0;
+         target:  "e.text.label";
+         transition: SINUSOIDAL 0.4;
       }
    }
 }
@@ -390,169 +390,169 @@ group {
    name: "e/widgets/exebuf/item";
    parts {
       part {
-	 name:          "title_outline";
-	 type:          RECT;
-	 mouse_events:  1;
-	 description {
-	    state:    "default" 0.0;
-	    min:      14 14;
-	    visible:  1;
-	    color: 0 0 0 0;
-	    rel1 {
-	       relative: 1.0  0.0;
-	       offset:   1    -1;
-	       to_x: "e.swallow.icons";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -1   -1;
-	    }
-	 }
+         name:          "title_outline";
+         type:          RECT;
+         mouse_events:  1;
+         description {
+            state:    "default" 0.0;
+            min:      14 14;
+            visible:  1;
+            color: 0 0 0 0;
+            rel1 {
+               relative: 1.0  0.0;
+               offset:   1    -1;
+               to_x: "e.swallow.icons";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   -1;
+            }
+         }
       }
       part {
-	 name:          "title_bar";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    visible:  0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   0    0;
-	       to:       "title_outline";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -1   -1;
-	       to:       "title_outline";
-	    }
-	    image {
-	       normal: "titlebar.png";
-	       border: 8 8 8 8;
-	    }
-	    color: 255 255 255 0;
-	 }
-	 description {
-	    state:    "active" 0.0;
-	    visible:  1;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   0    0;
-	       to:       "title_outline";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -1   -1;
-	       to:       "title_outline";
-	    }
-	    image {
-	       normal: "titlebar.png";
-	       border: 8 8 8 8;
-	    }
-	    color: 255 255 255 255;
-	 }
+         name:          "title_bar";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            visible:  0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   0    0;
+               to:       "title_outline";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   -1;
+               to:       "title_outline";
+            }
+            image {
+               normal: "titlebar.png";
+               border: 8 8 8 8;
+            }
+            color: 255 255 255 0;
+         }
+         description {
+            state:    "active" 0.0;
+            visible:  1;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   0    0;
+               to:       "title_outline";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   -1;
+               to:       "title_outline";
+            }
+            image {
+               normal: "titlebar.png";
+               border: 8 8 8 8;
+            }
+            color: 255 255 255 255;
+         }
       }
      part {
-	name:           "title2";
-	type:           TEXT;
-	mouse_events:   0;
-	description {
-	   state: "default" 0.0;
-	   align: 1.0 0.0;
-	   visible: 0;
-	   fixed: 1 1;
-	   rel1 {
-	      relative: 0.0  0.0;
-	      offset:   0    6;
-	   }
-	   rel2 {
-	      relative: 0.0  0.0;
-	      offset:   0    6;
-	   }
-	   text {
-	      text_source:   "e.text.title";
-	      source:        "e.text.title";
-	      min:           0 1;
-	      text_class:    "title_bar";
-	   }
-	}
+        name:           "title2";
+        type:           TEXT;
+        mouse_events:   0;
+        description {
+           state: "default" 0.0;
+           align: 1.0 0.0;
+           visible: 0;
+           fixed: 1 1;
+           rel1 {
+              relative: 0.0  0.0;
+              offset:   0    6;
+           }
+           rel2 {
+              relative: 0.0  0.0;
+              offset:   0    6;
+           }
+           text {
+              text_source:   "e.text.title";
+              source:        "e.text.title";
+              min:           0 1;
+              text_class:    "title_bar";
+           }
+        }
      }
       part {
-	 name:           "e.text.title";
-	 type:           TEXT;
-	 effect:         SHADOW;
-	 mouse_events:   0;
-	 description {
-	    state: "default" 0.0;
-	    rel1 {
-	       relative: 1.0  0.0;
-	       offset:   9 6;
-	       to_x: "e.swallow.icons";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -8 -6;
-	    }
-	    color: 255 255 255 255;
-	    color3: DARKNESS_BLUE 32;
-	    text {
-	       text:     "Item Label";
-	       font:     "DejaVu";
-	       size:     10;
-	       min:      0 1;
-	       align:    0.0 0.5;
-	       text_class: "menu_item";
-	    }
-	 }
+         name:           "e.text.title";
+         type:           TEXT;
+         effect:         SHADOW;
+         mouse_events:   0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 1.0  0.0;
+               offset:   9 6;
+               to_x: "e.swallow.icons";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -8 -6;
+            }
+            color: 255 255 255 255;
+            color3: DARKNESS_BLUE 32;
+            text {
+               text:     "Item Label";
+               font:     "DejaVu";
+               size:     10;
+               min:      0 1;
+               align:    0.0 0.5;
+               text_class: "menu_item";
+            }
+         }
       }
       part {
-	 name: "e.swallow.icons";
-	 type: SWALLOW;
-	 description {
-	    state: "default" 0.0;
-	    aspect: 1.0 1.0;
-	    align: 0.0 0.5;
-	    aspect_preference: VERTICAL;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   1   1;
-	    }
-	    rel2 {
-	       relative: 0.0 1.0;
-	       offset:   1   4;
-	       to_y: "title2";
-	    }
-	 }
+         name: "e.swallow.icons";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            aspect: 1.0 1.0;
+            align: 0.0 0.5;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   1   1;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset:   1   4;
+               to_y: "title2";
+            }
+         }
       }
    }
    programs {
       program {
-	 name:    "go_active_pre";
-	 signal:  "e,state,selected";
-	 source:  "e";
-	 action:  STATE_SET "default" 0.0;
-	 target:  "title_bar";
-	 after:   "go_active";
+         name:    "go_active_pre";
+         signal:  "e,state,selected";
+         source:  "e";
+         action:  STATE_SET "default" 0.0;
+         target:  "title_bar";
+         after:   "go_active";
       }
       program {
-	 name:    "go_active";
-	 action:  STATE_SET "active" 0.0;
-	 target:  "title_bar";
-	 transition: LINEAR 0.1;
+         name:    "go_active";
+         action:  STATE_SET "active" 0.0;
+         target:  "title_bar";
+         transition: LINEAR 0.1;
       }
 
       program {
-	 name:    "go_passive_pre";
-	 signal:  "e,state,unselected";
-	 source:  "e";
-	 action:  STATE_SET "active" 0.0;
-	 target:  "title_bar";
-	 after:   "go_passive3";
+         name:    "go_passive_pre";
+         signal:  "e,state,unselected";
+         source:  "e";
+         action:  STATE_SET "active" 0.0;
+         target:  "title_bar";
+         after:   "go_passive3";
       }
       program {
-	 name:    "go_passive3";
-	 action:  STATE_SET "default" 0.0;
-	 target:  "title_bar";
-	 transition: LINEAR 0.5;
+         name:    "go_passive3";
+         action:  STATE_SET "default" 0.0;
+         target:  "title_bar";
+         transition: LINEAR 0.5;
       }
    }
 }

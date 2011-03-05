@@ -1,289 +1,289 @@
-/* vim: set sw=3: */
 group {
    name: "e/widgets/button";
+   alias: "e/widgets/syscon/item/button";
    parts {
       part {
-	 name:          "button_image";
-	 type:          IMAGE;
-	 mouse_events:  1;
-	 description {
-	    state:    "default" 0.0;
-	    min:      64 20;
-	    color:    255 255 255 255;
-	    image {
-	       normal: "button_sm.png";
-	       border: 15 15 10 10;
-	    }
-	 }
-	 description {
-	    state:    "clicked" 0.0;
-	    inherit:  "default" 0.0;
-	    image {
-	       normal: "button_sm2.png";
-	    }
-	 }
-	 description {
-	    state:    "glow" 0.0;
-	    inherit:  "default" 0.0;
-	    color:    255 255 255 63;
-	 }
-	 description {
-	    state:    "disabled" 0.0;
-	    inherit:  "default" 0.0;
-	    visible:  0;
-	 }
+         name:          "button_image";
+         type:          IMAGE;
+         mouse_events:  1;
+         description {
+            state:    "default" 0.0;
+            min:      64 20;
+            color:    255 255 255 255;
+            image {
+               normal: "button_sm.png";
+               border: 15 15 10 10;
+            }
+         }
+         description {
+            state:    "clicked" 0.0;
+            inherit:  "default" 0.0;
+            image {
+               normal: "button_sm2.png";
+            }
+         }
+         description {
+            state:    "glow" 0.0;
+            inherit:  "default" 0.0;
+            color:    255 255 255 63;
+         }
+         description {
+            state:    "disabled" 0.0;
+            inherit:  "default" 0.0;
+            visible:  0;
+         }
       }
       part {
-	 name: "button_glow";
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    min:      64 20;
-	    image {
-	       normal: "button_sm_glow.png";
-	       border: 15 15 10 10;
-	    }
-	    color: 255 255 255 0;
-	 }
-	 description {
-	    state: "glow" 0.0;
-	    inherit: "default" 0.0;
-	    color: 255 255 255 160;
-	 }
+         name: "button_glow";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min:      64 20;
+            image {
+               normal: "button_sm_glow.png";
+               border: 15 15 10 10;
+            }
+            color: 255 255 255 0;
+         }
+         description {
+            state: "glow" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 160;
+         }
       }
       part {
-	 name:          "button_image2";
-	 type:          IMAGE;
-	 mouse_events:  1;
-	 description {
-	    state:    "default" 0.0;
-	    visible:  0;
-	    rel1 {
-	       to: "button_image";
-	    }
-	    rel2 {
-	       to: "button_image";
-	    }
-	    image {
-	       normal: "button_sm_disabled.png";
-	       border: 15 15 10 10;
-	    }
-	 }
-	 description {
-	    state:    "disabled" 0.0;
-	    inherit:  "default" 0.0;
-	    visible:  1;
-	 }
+         name:          "button_image2";
+         type:          IMAGE;
+         mouse_events:  1;
+         description {
+            state:    "default" 0.0;
+            visible:  0;
+            rel1 {
+               to: "button_image";
+            }
+            rel2 {
+               to: "button_image";
+            }
+            image {
+               normal: "button_sm_disabled.png";
+               border: 15 15 10 10;
+            }
+         }
+         description {
+            state:    "disabled" 0.0;
+            inherit:  "default" 0.0;
+            visible:  1;
+         }
       }
       part {
-	 name: "e.swallow.icon";
-	 type: SWALLOW;
-	 description {
-	    state: "default" 0.0;
-	    align: 0.0 0.5;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   4   8;
-	       to: "button_image";
-	    }
-	    rel2 {
-	       relative: 0.0 1.0;
-	       offset:   3  -9;
-	       to: "button_image";
-	    }
-	 }
-	 description {
-	    state: "combo" 0.0;
-	    inherit: "default" 0.0;
-	    aspect: 1.0 1.0;
-	    aspect_preference: VERTICAL;
-	    align: 0.0 0.5;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   8  8;
-	       to: "button_image";
-	    }
-	    rel2 {
-	       relative: 0.0 1.0;
-	       offset:   7   -9;
-	       to: "button_image";
-	    }
-	 }
-	 description {
-	    state: "icon" 0.0;
-	    inherit: "default" 0.0;
-	    aspect: 1.0 1.0;
-	    aspect_preference: BOTH;
-	    align: 0.5 0.5;
-	    rel1 {
-	       relative: 0.0 0.0;
-	       offset:   8  8;
-	       to: "button_image";
-	    }
-	    rel2 {
-	       relative: 1.0 1.0;
-	       offset:   -9   -9;
-	       to: "button_image";
-	    }
-	 }
+         name: "e.swallow.icon";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   4   8;
+               to: "button_image";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset:   3  -9;
+               to: "button_image";
+            }
+         }
+         description {
+            state: "combo" 0.0;
+            inherit: "default" 0.0;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   8  8;
+               to: "button_image";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset:   7   -9;
+               to: "button_image";
+            }
+         }
+         description {
+            state: "icon" 0.0;
+            inherit: "default" 0.0;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+            align: 0.5 0.5;
+            rel1 {
+               relative: 0.0 0.0;
+               offset:   8  8;
+               to: "button_image";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset:   -9   -9;
+               to: "button_image";
+            }
+         }
       }
       part {
-	 name:          "e.text.label";
-	 type:          TEXT;
-	 effect:        SOFT_OUTLINE;
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       relative: 1.0  0.0;
-	       offset:   4    8;
-	       to_x:   "e.swallow.icon";
-	       to_y:   "button_image";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -8   -8;
-	       to:     "button_image";
-	    }
-	    color:  255 255 255 200;
-	    color2: DARKNESS_DARK_BLUE 255;
-	    color_class: "button_text";
-	    text {
-	       text:     "OK";
-	       font:     "DejaVu-Bold";
-	       size:     10;
-	       min:      1 1;
-	       align:    0.5 0.5;
+         name:          "e.text.label";
+         type:          TEXT;
+         effect:        SOFT_OUTLINE;
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               relative: 1.0  0.0;
+               offset:   4    8;
+               to_x:   "e.swallow.icon";
+               to_y:   "button_image";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -8   -8;
+               to:     "button_image";
+            }
+            color:  255 255 255 200;
+            color2: DARKNESS_DARK_BLUE 255;
+            color_class: "button_text";
+            text {
+               text:     "OK";
+               font:     "DejaVu-Bold";
+               size:     10;
+               min:      1 1;
+               align:    0.5 0.5;
                text_class: "button";
-	    }
-	 }
-	 description {
-	    state:    "disabled" 0.0;
-	    inherit:  "default" 0.0;
-	    color:  255 255 255 155;
-	    color2: DARKNESS_DARK_BLUE 36;
-	    color_class: "button_text_disabled";
-	 }
+            }
+         }
+         description {
+            state:    "disabled" 0.0;
+            inherit:  "default" 0.0;
+            color:  255 255 255 155;
+            color2: DARKNESS_DARK_BLUE 36;
+            color_class: "button_text_disabled";
+         }
       }
       part {
-	 name: "focus";
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    visible: 0;
-	    color: 255 255 255 0;
-	    image {
-	       normal: "focus.png";
-	       border: 7 7 7 7;
-	       middle: 0;
-	    }
-	    fill {
-	       smooth: 1;
-	    }
-	 }
-	 description {
-	    state: "focused" 0.0;
-	    inherit: "default" 0.0;
-	    visible: 1;
-	    color: 255 255 255 255;
-	 }
+         name: "focus";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            image {
+               normal: "focus.png";
+               border: 7 7 7 7;
+               middle: 0;
+            }
+            fill {
+               smooth: 1;
+            }
+         }
+         description {
+            state: "focused" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
       }
    }
    programs {
       program {
-	 name:   "button_click";
-	 signal: "mouse,down,1";
-	 source: "button_image";
-	 action: STATE_SET "clicked" 0.0;
-	 target: "button_image";
-	 after:  "button_click2";
+         name:   "button_click";
+         signal: "mouse,down,1";
+         source: "button_image";
+         action: STATE_SET "clicked" 0.0;
+         target: "button_image";
+         after:  "button_click2";
       }
       program {
-	 name:   "button_click2";
-	 action: STATE_SET "default" 0.0;
-	 target: "button_glow";
-	 transition: LINEAR 0.1;
+         name:   "button_click2";
+         action: STATE_SET "default" 0.0;
+         target: "button_glow";
+         transition: LINEAR 0.1;
       }
       program {
-	 name:   "button_unclick";
-	 signal: "mouse,up,1";
-	 source: "button_image";
-	 action: STATE_SET "default" 0.0;
-	 target: "button_image";
+         name:   "button_unclick";
+         signal: "mouse,up,1";
+         source: "button_image";
+         action: STATE_SET "default" 0.0;
+         target: "button_image";
       }
       program {
-	 name:   "button_unclick2";
-	 signal: "mouse,clicked,1";
-	 source: "button_image";
-	 action: SIGNAL_EMIT "e,action,click" "";
+         name:   "button_unclick2";
+         signal: "mouse,clicked,1";
+         source: "button_image";
+         action: SIGNAL_EMIT "e,action,click" "";
       }
       program {
-	 name: "icon_state";
-	 signal: "e,state,icon";
-	 source: "e";
-	 action: STATE_SET "icon" 0.0;
-	 target: "e.swallow.icon";
-	 target: "e.text.label";
+         name: "icon_state";
+         signal: "e,state,icon";
+         source: "e";
+         action: STATE_SET "icon" 0.0;
+         target: "e.swallow.icon";
+         target: "e.text.label";
       }
       program {
-	 name: "combo_state";
-	 signal: "e,state,combo";
-	 source: "e";
-	 action: STATE_SET "combo" 0.0;
-	 target: "e.swallow.icon";
-	 target: "e.text.label";
+         name: "combo_state";
+         signal: "e,state,combo";
+         source: "e";
+         action: STATE_SET "combo" 0.0;
+         target: "e.swallow.icon";
+         target: "e.text.label";
       }
       program {
-	 name: "button_in";
-	 signal: "mouse,in";
-	 source: "button_image";
+         name: "button_in";
+         signal: "mouse,in";
+         source: "button_image";
          action:  STATE_SET "glow" 0.0;
-	 transition: SINUSOIDAL 0.5;
-	 target: "button_glow";
-	 target: "button_image";
+         transition: SINUSOIDAL 0.5;
+         target: "button_glow";
+         target: "button_image";
       }
       program {
-	 name: "button_out";
-	 signal: "mouse,out";
-	 source: "button_image";
+         name: "button_out";
+         signal: "mouse,out";
+         source: "button_image";
          action:  STATE_SET "default" 0.0;
-	 transition: SINUSOIDAL 1.0;
-	 target: "button_glow";
-	 target: "button_image";
+         transition: SINUSOIDAL 1.0;
+         target: "button_glow";
+         target: "button_image";
       }
       program {
-	 name: "focus_in";
-	 signal: "e,state,focused";
-	 source: "e";
+         name: "focus_in";
+         signal: "e,state,focused";
+         source: "e";
          action: STATE_SET "focused" 0.0;
-	 transition: DECELERATE 0.2;
-	 target: "focus";
+         transition: DECELERATE 0.2;
+         target: "focus";
       }
       program {
-	 name: "focus_out";
-	 signal: "e,state,unfocused";
-	 source: "e";
+         name: "focus_out";
+         signal: "e,state,unfocused";
+         source: "e";
          action: STATE_SET "default" 0.0;
-	 transition: ACCELERATE 0.5;
-	 target: "focus";
+         transition: ACCELERATE 0.5;
+         target: "focus";
       }
       program {
-	 name: "disable";
-	 signal: "e,state,disabled";
-	 source: "e";
+         name: "disable";
+         signal: "e,state,disabled";
+         source: "e";
          action: STATE_SET "disabled" 0.0;
-	 target: "button_image";
-	 target: "button_image2";
-	 target: "e.text.label"; 
+         target: "button_image";
+         target: "button_image2";
+         target: "e.text.label"; 
       }
       program {
-	 name: "enable";
-	 signal: "e,state,enabled";
-	 source: "e";
+         name: "enable";
+         signal: "e,state,enabled";
+         source: "e";
          action: STATE_SET "default" 0.0;
-	 target: "button_image";
-	 target: "button_image2"; 
-	 target: "e.text.label"; 
+         target: "button_image";
+         target: "button_image2"; 
+         target: "e.text.label"; 
      }
    }
 }

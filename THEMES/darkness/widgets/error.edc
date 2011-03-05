@@ -15,203 +15,203 @@ group {
    max: 400 200;
    parts {
       part {
-	 name:          "base";
-	 mouse_events:  0;
-	 type:          RECT;
-	 description {
-	    state:    "default" 0.0;
-	    color: 76 76 76 255;
-	 }
+         name:          "base";
+         mouse_events:  0;
+         type:          RECT;
+         description {
+            state:    "default" 0.0;
+            color: 76 76 76 255;
+         }
       }
       part {
-	 name:          "base2";
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    align:    0.5   0.0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   1    1;
-	       to: "base";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -2   -2;
-	       to: "base";
-	    }
-	    image {
-	       normal: "dialog_background.png";
-	    }
-	    fill {
-	       smooth: 0;
-	       size {
-	          relative: 0.0 0.0;
-	          offset: 64 64;
-	       }
-	    }
-	 }
+         name:          "base2";
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            align:    0.5   0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   1    1;
+               to: "base";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -2   -2;
+               to: "base";
+            }
+            image {
+               normal: "dialog_background.png";
+            }
+            fill {
+               smooth: 0;
+               size {
+                  relative: 0.0 0.0;
+                  offset: 64 64;
+               }
+            }
+         }
       }
       part {
-	 name:          "e";
-	 type:          IMAGE;
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   16   16;
-	    }
-	    rel2 {
-	       relative: 0.0  0.0;
-	       offset:   80   80;
-	    }
-	    image {
-	       normal: "logo.png";
-	    }
-	 }
+         name:          "e";
+         type:          IMAGE;
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   16   16;
+            }
+            rel2 {
+               relative: 0.0  0.0;
+               offset:   80   80;
+            }
+            image {
+               normal: "logo.png";
+            }
+         }
       }
       part {
-	 name:          "e.text.title";
-	 type:          TEXT;
-	 effect:        SHADOW;
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       relative: 1.0  0.0;
-	       offset:   16   0;
-	       to:       "e";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -17   -1;
-	       to_y:     "e";
-	    }
-	    color:  255 255 255 255;
-	    color3: DARKNESS_BLUE 128;
-	    color_class: "error_title";
-	    text {
-	       text:     "Title";
-	       font:     "DejaVu-Bold";
-	       size:     12;
-	       min:      1 1;
-	       align:    0.0 0.5;
-               text_class: "dialog_error";	       
-	    }
-	 }
+         name:          "e.text.title";
+         type:          TEXT;
+         effect:        SHADOW;
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               relative: 1.0  0.0;
+               offset:   16   0;
+               to:       "e";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -17   -1;
+               to_y:     "e";
+            }
+            color:  255 255 255 255;
+            color3: DARKNESS_BLUE 128;
+            color_class: "error_title";
+            text {
+               text:     "Title";
+               font:     "DejaVu-Bold";
+               size:     12;
+               min:      1 1;
+               align:    0.0 0.5;
+               text_class: "dialog_error";               
+            }
+         }
       }
       part {
-	 name:          "text";
-	 type:          TEXTBLOCK;
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       relative: 0.0  1.0;
-	       offset:   16   16;
-	       to_y:     "e";
-	    }
-	    rel2 {
-	       relative: 1.0  0.0;
-	       offset:   -17   -17;
-	       to_y:     "button_image";
-	    }
-	    text {
-	       style:    "error_style";
-	       min:      1 1;
-	       text:     "An Error<br>Goes Here.";
-	    }
-	 }
+         name:          "text";
+         type:          TEXTBLOCK;
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               relative: 0.0  1.0;
+               offset:   16   16;
+               to_y:     "e";
+            }
+            rel2 {
+               relative: 1.0  0.0;
+               offset:   -17   -17;
+               to_y:     "button_image";
+            }
+            text {
+               style:    "error_style";
+               min:      1 1;
+               text:     "An Error<br>Goes Here.";
+            }
+         }
       }
       part {
-	 name:          "button_image";
-	 type:          IMAGE;
-	 mouse_events:  1;
-	 description {
-	    state:    "default" 0.0;
+         name:          "button_image";
+         type:          IMAGE;
+         mouse_events:  1;
+         description {
+            state:    "default" 0.0;
             min:      64 32;
             max:      64 32;
-	    rel1 {
-	       relative: 0.0  1.0;
-	       offset:   0    -49;
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -1   -17;
-	    }
-	    image {
-	       normal: "button_sm.png";
-	       border: 8 8 8 8;
-	    }
-	 }
-	 description {
-	    state:    "clicked" 0.0;
+            rel1 {
+               relative: 0.0  1.0;
+               offset:   0    -49;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   -17;
+            }
+            image {
+               normal: "button_sm.png";
+               border: 8 8 8 8;
+            }
+         }
+         description {
+            state:    "clicked" 0.0;
             min:      64 32;
             max:      64 32;
-	    rel1 {
-	       relative: 0.0  1.0;
-	       offset:   0    -49;
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -1   -17;
-	    }
-	    image {
-	       normal: "button_sm2.png";
-	       border: 8 8 8 8;
-	    }
-	 }
+            rel1 {
+               relative: 0.0  1.0;
+               offset:   0    -49;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   -17;
+            }
+            image {
+               normal: "button_sm2.png";
+               border: 8 8 8 8;
+            }
+         }
       }
       part {
-	 name:          "button_text";
-	 type:          TEXT;
-	 effect:        SHADOW;
-	 mouse_events:  0;
-	 description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       relative: 0.0  0.0;
-	       offset:   0    0;
-	       to:     "button_image";
-	    }
-	    rel2 {
-	       relative: 1.0  1.0;
-	       offset:   -1   -1;
-	       to:     "button_image";
-	    }
-	    color:  255 255 255 255;
-	    color3: DARKNESS_BLUE 128;
-	    color_class: "button_text";
-	    text {
-	       text:     "OK";
-	       font:     "DejaVu";
-	       size:     10;
-	       min:      0 0;
-	       align:    0.5 0.5;
+         name:          "button_text";
+         type:          TEXT;
+         effect:        SHADOW;
+         mouse_events:  0;
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   0    0;
+               to:     "button_image";
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   -1;
+               to:     "button_image";
+            }
+            color:  255 255 255 255;
+            color3: DARKNESS_BLUE 128;
+            color_class: "button_text";
+            text {
+               text:     "OK";
+               font:     "DejaVu";
+               size:     10;
+               min:      0 0;
+               align:    0.5 0.5;
                text_class: "button";
-	    }
-	 }
+            }
+         }
       }
    }
    programs {
       program {
-	 name:   "button_click";
-	 signal: "mouse,down,1";
-	 source: "button_image";
-	 action: STATE_SET "clicked" 0.0;
-	 target: "button_image";
+         name:   "button_click";
+         signal: "mouse,down,1";
+         source: "button_image";
+         action: STATE_SET "clicked" 0.0;
+         target: "button_image";
       }
       program {
-	 name:   "button_unclick";
-	 signal: "mouse,up,1";
-	 source: "button_image";
-	 action: STATE_SET "default" 0.0;
-	 target: "button_image";
-	 after: "button_unclick2";
+         name:   "button_unclick";
+         signal: "mouse,up,1";
+         source: "button_image";
+         action: STATE_SET "default" 0.0;
+         target: "button_image";
+         after: "button_unclick2";
       }
       program {
-	 name:   "button_unclick2";
-	 action: SIGNAL_EMIT "e,action,close" "";
+         name:   "button_unclick2";
+         action: SIGNAL_EMIT "e,action,close" "";
       }
    }
 }
