@@ -2089,7 +2089,7 @@ EAPI int elm_main(int argc, char **argv)
 			evas_object_show(entry);
 
 			icon = elm_icon_add(gui.win);
-			elm_icon_standard_set(icon, "delete");
+			elm_icon_file_set(icon, theme, "icon/edit/clear");
 			evas_object_show(icon);
 
 			bt = elm_button_add(gui.win);
@@ -2110,7 +2110,7 @@ EAPI int elm_main(int argc, char **argv)
 			evas_object_size_hint_align_set(box2, -1, -1);
 
 			icon = elm_icon_add(gui.win);
-			elm_icon_standard_set(icon, "edit");
+			elm_icon_file_set(icon, theme, "icon/status/post/enabled");
 			evas_object_show(icon);
 
 			gui.post = elm_button_add(gui.win);
@@ -2122,8 +2122,8 @@ EAPI int elm_main(int argc, char **argv)
 				elm_box_pack_end(box2, gui.post);
 			evas_object_show(gui.post);
 
-			icon = elm_photo_add(gui.win);
-			elm_photo_file_set(icon, "head.png");
+			icon = elm_icon_add(gui.win);
+			elm_icon_file_set(icon, theme, "icon/edit/dm");
 			evas_object_show(icon);
 
 			bt = elm_button_add(gui.win);
@@ -2136,7 +2136,7 @@ EAPI int elm_main(int argc, char **argv)
 			evas_object_show(bt);
 
 			icon = elm_icon_add(gui.win);
-			elm_icon_standard_set(icon, "delete");
+			elm_icon_file_set(icon, theme, "icon/edit/hide");
 			evas_object_show(icon);
 
 			bt = elm_button_add(gui.win);

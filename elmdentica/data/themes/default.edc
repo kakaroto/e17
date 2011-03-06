@@ -14,6 +14,26 @@ styles {
 }
 
 collections {
+
+#define STOCK_ICON(icon_file, icon_name)				\
+	images { image: icon_file COMP; }				\
+	group {	name: icon_name;					\
+    		parts { part {	name: "icon";				\
+				description {	state: "default" 0.0;	\
+						image.normal: icon_file;\
+            			}					\
+        		}						\
+		}							\
+	}
+
+STOCK_ICON("pitr_green_menu_icon_set_1.png", "icon/status/post/enabled")
+STOCK_ICON("pitr_red_menu_icon_set_3.png", "icon/status/post/disabled")
+STOCK_ICON("pitr_green_menu_icon_set_3.png", "icon/status/timeline/enabled")
+STOCK_ICON("pitr_red_menu_icon_set_2.png", "icon/status/timeline/disabled")
+STOCK_ICON("edit-clear.png", "icon/edit/clear")
+STOCK_ICON("edit-undo.png", "icon/edit/hide")
+STOCK_ICON("Envelope_closed.png", "icon/edit/dm")
+
 	group {	name: "elmdentica/vertical_layout";
 		parts {
 			part {	name: "timeline";
@@ -106,14 +126,12 @@ collections {
 					source:	"tb_event";
 					action:	STATE_SET "default" 0.0;
 					target: "toolbar";
-					transition: LINEAR 0.1;
 			}
 			program {	name:	"show_toolbar";
 					signal:	"mouse,clicked,1";
 					source:	"tb_event";
 					action:	STATE_SET "visible" 0.0;
 					target: "toolbar";
-					transition: LINEAR 0.1;
 			}
 			program {	name:	"hide_edit";
 					signal:	"mouse,clicked,2";
@@ -121,7 +139,6 @@ collections {
 					action:	STATE_SET "default" 0.0;
 					target: "edit_bg";
 					target: "edit";
-					transition: LINEAR 0.1;
 			}
 			program {	name:	"show_edit";
 					signal:	"mouse,clicked,1";
@@ -129,7 +146,6 @@ collections {
 					action:	STATE_SET "visible" 0.0;
 					target: "edit_bg";
 					target: "edit";
-					transition: LINEAR 0.1;
 			}
 		}
 	}
@@ -328,7 +344,6 @@ collections {
 				target: "name";
 				target: "date";
 				target:	"text";
-				transition: LINEAR 0.1;
 			}
 		}
 	}
