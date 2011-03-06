@@ -630,7 +630,7 @@ EwinKeepOnScreen(const EWin * ewin, int wn, int hn, int *px, int *py)
    w = EoGetW(ewin);
    h = EoGetH(ewin);
 
-   ScreenGetAvailableArea(x, y, &sx, &sy, &sw, &sh);
+   ScreenGetAvailableArea(x, y, &sx, &sy, &sw, &sh, Conf.place.ignore_struts);
 
    /* Quit if not on-screen to begin with */
    if (x < sx || x + w > sx + sw || y < sy || y + h > sy + sh)
@@ -913,7 +913,8 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 	     DeskGoto(dsk);
 
 	     EventsUpdateXY(&cx, &cy);
-	     ScreenGetAvailableArea(cx, cy, &sx, &sy, &sw, &sh);
+	     ScreenGetAvailableArea(cx, cy, &sx, &sy, &sw, &sh,
+				    Conf.place.ignore_struts);
 
 	     /* try to center the window on the mouse pointer */
 	     x = cx - EoGetW(ewin) / 2;

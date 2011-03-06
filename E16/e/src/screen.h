@@ -35,10 +35,11 @@ int                 ScreenGetGeometry(int x, int y, int *px, int *py,
 void                ScreenGetGeometryByHead(int head, int *px, int *py,
 					    int *pw, int *ph);
 int                 ScreenGetAvailableArea(int x, int y, int *px, int *py,
-					   int *pw, int *ph);
+					   int *pw, int *ph, int ignore_struts);
 int                 ScreenGetGeometryByPointer(int *px, int *py,
 					       int *pw, int *ph);
 int                 ScreenGetAvailableAreaByPointer(int *px, int *py,
-						    int *pw, int *ph);
+						    int *pw, int *ph,
+						    int ignore_struts);
 
 #endif /* _SCREEN_H_ */

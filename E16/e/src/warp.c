@@ -194,7 +194,7 @@ WarpFocusWinShow(WarpFocusWin * fw)
    /* Reset shape */
    EShapeSetMask(EoGetWin(fw), 0, 0, None);
 
-   ScreenGetAvailableAreaByPointer(&x, &y, &ww, &hh);
+   ScreenGetAvailableAreaByPointer(&x, &y, &ww, &hh, Conf.place.ignore_struts);
    x += (ww - w) / 2;
    y += (hh - h * warplist_num) / 2;
    EoMoveResize(fw, x, y, w, h * warplist_num);

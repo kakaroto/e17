@@ -1315,7 +1315,8 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	  {
 	     EventsUpdateXY(&x, &y);
 	  }
-	ScreenGetAvailableArea(x, y, &x, &y, &w, &h);
+	ScreenGetAvailableArea(x, y, &x, &y, &w, &h,
+			       Conf.place.ignore_struts_fullscreen);
 
 	ewin->state.fullscreen = 1;
 

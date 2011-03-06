@@ -170,6 +170,8 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, place.manual_mouse_pointer, 0),
    CFG_ITEM_BOOL(Conf, place.center_if_desk_full, 0),
    CFG_ITEM_BOOL(Conf, place.ignore_struts, 0),
+   CFG_ITEM_BOOL(Conf, place.ignore_struts_fullscreen, 0),
+   CFG_ITEM_BOOL(Conf, place.ignore_struts_maximize, 0),
    CFG_ITEM_BOOL(Conf, place.raise_fullscreen, 0),
    CFG_ITEM_BOOL(Conf, place.slidein, 0),
    CFG_ITEM_BOOL(Conf, place.cleanupslide, 1),

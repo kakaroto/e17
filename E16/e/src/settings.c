@@ -255,6 +255,8 @@ typedef struct {
    char                animate_shading;
    int                 shade_speed;
    char                place_ignore_struts;
+   char                place_ignore_struts_fullscreen;
+   char                place_ignore_struts_maximize;
    char                raise_fullscreen;
 #ifdef USE_XINERAMA_no		/* Not implemented */
    char                extra_head;
@@ -286,6 +288,8 @@ CB_ConfigurePlacement(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    Conf.shading.speed = dd->shade_speed;
 
    Conf.place.ignore_struts = dd->place_ignore_struts;
+   Conf.place.ignore_struts_fullscreen = dd->place_ignore_struts_fullscreen;
+   Conf.place.ignore_struts_maximize = dd->place_ignore_struts_maximize;
    Conf.place.raise_fullscreen = dd->raise_fullscreen;
 #ifdef USE_XINERAMA_no		/* Not implemented */
    if (Mode.display.xinerama_active)
@@ -322,6 +326,8 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    dd->shade_speed = Conf.shading.speed;
 
    dd->place_ignore_struts = Conf.place.ignore_struts;
+   dd->place_ignore_struts_fullscreen = Conf.place.ignore_struts_fullscreen;
+   dd->place_ignore_struts_maximize = Conf.place.ignore_struts_maximize;
    dd->raise_fullscreen = Conf.place.raise_fullscreen;
 
 #ifdef USE_XINERAMA_no		/* Not implemented */
@@ -446,8 +452,18 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di, _("Ignore struts"));
+   DialogItemSetText(di, _("Ignore struts/panels for placing normal windows"));
    DialogItemCheckButtonSetPtr(di, &dd->place_ignore_struts);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Ignore struts/panels when windows are fullscreen"));
+   DialogItemCheckButtonSetPtr(di, &dd->place_ignore_struts_fullscreen);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Ignore struts/panels when maximizing windows"));
+   DialogItemCheckButtonSetPtr(di, &dd->place_ignore_struts_maximize);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);

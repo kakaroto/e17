@@ -232,6 +232,8 @@ typedef struct {
       char                manual_mouse_pointer;
       char                center_if_desk_full;
       char                ignore_struts;
+      char                ignore_struts_fullscreen;
+      char                ignore_struts_maximize;
       char                raise_fullscreen;
       char                slidein;
       char                cleanupslide;

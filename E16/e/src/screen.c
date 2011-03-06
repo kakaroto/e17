@@ -281,13 +281,14 @@ VRootGetAvailableArea(int *px, int *py, int *pw, int *ph)
 }
 
 int
-ScreenGetAvailableArea(int xi, int yi, int *px, int *py, int *pw, int *ph)
+ScreenGetAvailableArea(int xi, int yi, int *px, int *py, int *pw, int *ph,
+		       int ignore_struts)
 {
    int                 x1, y1, w1, h1, x2, y2, w2, h2, head;
 
    head = ScreenGetGeometry(xi, yi, &x1, &y1, &w1, &h1);
 
-   if (!Conf.place.ignore_struts)
+   if (!ignore_struts)
      {
 	VRootGetAvailableArea(&x2, &y2, &w2, &h2);
 	if (x1 < x2)
@@ -319,11 +320,13 @@ ScreenGetGeometryByPointer(int *px, int *py, int *pw, int *ph)
 }
 
 int
-ScreenGetAvailableAreaByPointer(int *px, int *py, int *pw, int *ph)
+ScreenGetAvailableAreaByPointer(int *px, int *py, int *pw, int *ph,
+				int ignore_struts)
 {
    int                 pointer_x, pointer_y;
 
    EQueryPointer(NULL, &pointer_x, &pointer_y, NULL, NULL);
 
-   return ScreenGetAvailableArea(pointer_x, pointer_y, px, py, pw, ph);
+   return ScreenGetAvailableArea(pointer_x, pointer_y, px, py, pw, ph,
+				 ignore_struts);
 }
