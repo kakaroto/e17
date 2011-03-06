@@ -1438,11 +1438,8 @@ _scale_switch(const char *params)
      }
 
    if (it == sel)
-     {
-	printf("same item\n");
+     return;
 
-	return;
-     }   
    edje_object_signal_emit(sel->o, "mouse,out", "e");
    edje_object_signal_emit(it->o, "mouse,in", "e");
    e_border_focus_set(it->bd, 1, 1);
@@ -1456,7 +1453,6 @@ _scale_cb_key_down(void *data, int type, void *event)
 
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
-   printf("%s\n", ev->key);
 
    if (!strcmp(ev->key, "Up"))
      _scale_switch("_up");
@@ -1498,12 +1494,10 @@ _scale_cb_key_down(void *data, int type, void *event)
 	for (l = e_config->key_bindings; l; l = l->next)
 	  {
 	     bind = l->data;
+	     mod = 0;
 
 	     if (bind->action && strcmp(bind->action, "scale-windows")) continue;
 	     if (!bind->params || strncmp(bind->params, "go_scale", 8)) continue;
-	     printf("found action\n");
-
-	     mod = 0;
 
 	     if (ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT)
                mod |= E_BINDING_MODIFIER_SHIFT;

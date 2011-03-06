@@ -749,7 +749,6 @@ _pager_switch(const char *params)
    int max_x,max_y, desk_x, desk_y;
    int x = 0, y = 0;
    E_Desk *desk;
-   printf("switch %s\n", params);
 
    if (!params[0])
      {
@@ -793,8 +792,6 @@ _pager_switch(const char *params)
    else if (desk_y >= max_y)
      desk_y = 0;
 
-   printf("selec %d %d\n", desk_x, desk_y);
-
    desk = e_desk_at_xy_get(zone, desk_x, desk_y);
    if (desk) _pager_desk_select(desk);
 
@@ -818,7 +815,6 @@ _pager_cb_key_down(void *data, int type, void *event)
 
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
-   printf("%s\n", ev->key);
 
    if (!strcmp(ev->key, "Up"))
      _pager_switch("_up");
@@ -851,12 +847,10 @@ _pager_cb_key_down(void *data, int type, void *event)
 	for (l = e_config->key_bindings; l; l = l->next)
 	  {
 	     bind = l->data;
+	     mod = 0;
 
 	     if (bind->action && strcmp(bind->action, "scale-windows")) continue;
 	     if (!bind->params || strncmp(bind->params, "go_pager", 8)) continue;
-	     printf("found action\n");
-
-	     mod = 0;
 
 	     if (ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT)
                mod |= E_BINDING_MODIFIER_SHIFT;
@@ -1011,8 +1005,6 @@ Eina_Bool
 pager_run(E_Manager *man, const char *params, int init_method)
 {
    Eina_Bool ret = EINA_FALSE;
-
-   printf("run: %s\n", params);
 
    if (scale_state)
      {
