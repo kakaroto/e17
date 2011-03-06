@@ -1532,7 +1532,6 @@ void ed_settings_init(int argc, char ** argv) {
 	}
 
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "online",			online,			EET_T_INT);
-	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "fullscreen",		fullscreen,		EET_T_INT);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "browser",		browser,		EET_T_INT);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "browser_name",	browser_name,	EET_T_STRING);
 	EET_DATA_DESCRIPTOR_ADD_BASIC(settings_edd, Settings, "browser_cmd",	browser_cmd,	EET_T_STRING);
@@ -1551,7 +1550,6 @@ void ed_settings_init(int argc, char ** argv) {
 		}
 
 		settings->online=1;
-		settings->fullscreen=0;
 		settings->max_messages=20;
 		settings->rel_timestamps=EINA_TRUE;
 		settings->rel_ts_timer=NULL;

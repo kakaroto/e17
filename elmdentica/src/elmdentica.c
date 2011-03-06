@@ -1394,6 +1394,10 @@ void on_status_action_close(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_del((Evas_Object*)data);
 }
 
+void on_status_swipe(void *data, Evas_Object *obj, void *event_info) {
+	printf("SWIPE\n");
+}
+
 void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)event_info;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
@@ -1414,6 +1418,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 					elm_table_pack(table, button, 0, 0, 1, 1);
 				evas_object_show(button);
 
+			if(!network_busy) {
 				button = elm_button_add(gui.win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
@@ -1421,6 +1426,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 					evas_object_smart_callback_add(button, "clicked", on_repeat, event_info);
 					elm_table_pack(table, button, 1, 0, 1, 1);
 				evas_object_show(button);
+			}
 
 				button = elm_button_add(gui.win);
 					evas_object_size_hint_weight_set(button, 1, 1);
@@ -1430,6 +1436,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 					elm_table_pack(table, button, 2, 0, 1, 1);
 				evas_object_show(button);
 
+			if(!network_busy) {
 				button = elm_button_add(gui.win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
@@ -1440,6 +1447,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 					evas_object_smart_callback_add(button, "clicked", on_mark_favorite, event_info);
 					elm_table_pack(table, button, 0, 1, 3, 1);
 				evas_object_show(button);
+			}
 
 				if(as->status->in_reply_to_status_id != 0) {
 					button = elm_button_add(gui.win);
@@ -1738,15 +1746,6 @@ static void on_timeline_favorites_reload(void *data, Evas_Object *obj, void *eve
 	if(settings->online) get_messages(TIMELINE_FAVORITES);
 	else
 		update_status_list(TIMELINE_FAVORITES, EINA_TRUE);
-}
-
-static void on_fs(void *data, Evas_Object *obj, void *event_info) {
-	if(settings->fullscreen)
-		settings->fullscreen=FALSE;
-	else
-		settings->fullscreen=TRUE;
-
-	toggle_fullscreen(settings->fullscreen);
 }
 
 static int do_post(void *notUsed, int argc, char **argv, char **azColName) {
@@ -2060,6 +2059,7 @@ EAPI int elm_main(int argc, char **argv)
 		elm_genlist_longpress_timeout_set(gui.timeline, 0.5);
 
 		evas_object_smart_callback_add(gui.timeline, "longpressed", on_status_action, NULL);
+		evas_object_smart_callback_add(gui.timeline, "swipe", on_status_swipe, NULL);
 
 		elm_layout_content_set(gui.main, "timeline", gui.timeline);
 	evas_object_show(gui.timeline);
@@ -2181,7 +2181,6 @@ EAPI int elm_main(int argc, char **argv)
 		elm_menu_item_add(menu, NULL, NULL, _("Replies/Mentions"), on_timeline_mentions_reload, NULL);
 		elm_menu_item_add(menu, NULL, NULL, _("Friends & I"), on_timeline_friends_reload, NULL);
 
-		it = elm_toolbar_item_append(toolbar, NULL, _("Fullscreen"), on_fs, NULL);
 		it = elm_toolbar_item_append(toolbar, NULL, _("Settings"), on_settings, NULL);
 
 	elm_layout_content_set(gui.main, "toolbar", toolbar);
