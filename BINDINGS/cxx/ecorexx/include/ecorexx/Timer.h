@@ -9,11 +9,13 @@
 
 namespace Ecorexx {
 
+// TODO: maybe change signal architecture back to callback architecture. Think about it!
+  
 class Timer
 {
-  typedef sigc::signal <void,Timer*> Signal;
-  typedef sigc::signal <void,Timer*> Loop;
-  typedef sigc::slot1  <void,Timer*> Slot;
+  typedef sigc::signal <void> Signal;
+  typedef sigc::signal <void> Loop;
+  //typedef sigc::slot1  <void, void> Slot;
 
 public:
   Timer( double seconds, bool singleshot = false );
@@ -21,7 +23,7 @@ public:
 
   //virtual void tick();
 
-  static Timer* singleShot( double seconds, const Timer::Slot& ); // TODO: CountedPtr
+//  static Timer* singleShot( double seconds, const Timer::Slot& ); // TODO: CountedPtr
   
   void del ();
   

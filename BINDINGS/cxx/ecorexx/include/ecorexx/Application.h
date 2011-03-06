@@ -63,10 +63,6 @@ public:
   static void processOneEvent();
   static void quit();
 
-  /* Timer */
-  void startTimer( double seconds );
-  virtual void timerEvent( Timer* ) {};
-
   /* Font */
   /*EvasFont font();
   EvasFont fixedFont();

@@ -24,12 +24,11 @@ Timer::~Timer()
   ecore_timer_del( _et );
 }
 
-Timer* Timer::singleShot( double seconds, const Timer::Slot& slot )
+/*Timer* Timer::singleShot( double seconds, const Timer::Slot& slot )
 {
   Timer* ecoretimer = new Timer( seconds, true );
   ecoretimer->timeout.connect( slot );
-  return ecoretimer;
-}
+}*/
 
 void Timer::del ()
 {
@@ -85,11 +84,12 @@ Eina_Bool Timer::__dispatcher( void* data )
 {
   Timer* object = reinterpret_cast<Timer*>( data );
   assert( object );
-  object->timeout.emit( object );
+  object->timeout.emit( );
   //object->tick();
-  bool singleshot = object->_ss;
+  /*bool singleshot = object->_ss;
   if ( singleshot ) delete object;
-  return singleshot? 0:1;
+  return singleshot? 0:1;*/
+  return ECORE_CALLBACK_RENEW;
 }
 
 } // end namespace Ecorexx

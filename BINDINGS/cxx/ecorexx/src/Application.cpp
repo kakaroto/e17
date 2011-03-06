@@ -104,13 +104,6 @@ void Application::quit()
   ecore_main_loop_quit();
 }
 
-void Application::startTimer( double seconds )
-{
-  // FIXME: why is this needed? Who deletes this Timer object?
-  Timer* ecoretimer = new Timer( seconds );
-  ecoretimer->timeout.connect( sigc::mem_fun( this, &Application::timerEvent ) );
-}
-
 /*EvasFont Application::font()
 {
     assert( _font );
