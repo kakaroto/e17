@@ -1364,26 +1364,85 @@ _scale_item_select(int direction)
 static void
 _scale_switch(const char *params)
 {
-   Item *it;
+   Item *it, *sel;
 
-   if (!strcmp(params, "_next"))
+   sel = selected_item;
+
+   if (params[0] == 0)
      {
-	it = selected_item;
-	edje_object_signal_emit(it->o, "mouse,out", "e");
-	it = it->next;
-	edje_object_signal_emit(it->o, "mouse,in", "e");
-	e_border_focus_set(it->bd, 1, 1);
-	selected_item = it;
+	_scale_out(1);
+	return;
+     }
+   else if (!strcmp(params, "_next"))
+     {
+	it = sel->next;
      }
    else if (!strcmp(params, "_prev"))
      {
-	it = selected_item;
-	edje_object_signal_emit(it->o, "mouse,out", "e");
-	it = it->prev;
-	edje_object_signal_emit(it->o, "mouse,in", "e");
-	e_border_focus_set(it->bd, 1, 1);
-	selected_item = it;
+	it = sel->prev;
      }
+   else if (!strcmp(params, "_left"))
+     {
+	it = sel->prev;
+	
+	if (it->slot_y != sel->slot_y)
+	  {
+	     it = sel;
+	     
+	     while(sel->slot_y == it->next->slot_y)
+	       {
+		  it = it->next;
+		  if (it == sel) break;
+	       }
+	  }
+     }
+   else if (!strcmp(params, "_right"))
+     {
+	it = sel->next;
+	
+	if (it->slot_y != sel->slot_y)
+	  {
+	     it = sel;
+	     while(sel->slot_y == it->prev->slot_y)
+	       {
+		  it = it->prev;
+		  if (it == sel) break;
+	       }
+	  }
+     }
+   else if (!strcmp(params, "_up"))
+     {
+	it = sel;
+	
+	while((sel->slot_y == it->slot_y) ||
+	      (sel->slot_x < it->slot_x))
+	  {
+	     it = it->prev;
+	     if (it == sel) break;
+	  }
+     }
+   else if (!strcmp(params, "_down"))
+     {
+	it = sel;
+	
+	while((sel->slot_y == it->slot_y) ||
+	      (sel->slot_x > it->slot_x))
+	  {
+	     it = it->next;
+	     if (it == sel) break;
+	  }
+     }
+
+   if (it == sel)
+     {
+	printf("same item\n");
+
+	return;
+     }   
+   edje_object_signal_emit(sel->o, "mouse,out", "e");
+   edje_object_signal_emit(it->o, "mouse,in", "e");
+   e_border_focus_set(it->bd, 1, 1);
+   selected_item = it;
 }
 
 static Eina_Bool
@@ -1395,16 +1454,23 @@ _scale_cb_key_down(void *data, int type, void *event)
      return ECORE_CALLBACK_PASS_ON;
    printf("%s\n", ev->key);
 
-   /* if (!strcmp(ev->key, "Up"))
-    *   _scale_switch("_up");
-    * else if (!strcmp(ev->key, "Down"))
-    *   _scale_switch("_down");
-    * else if (!strcmp(ev->key, "Left"))
-    *   _scale_switch("_left");
-    * else if (!strcmp(ev->key, "Right"))
-    *   _scale_switch("_right");
-    * else */
-   if (!strcmp(ev->key, "p"))
+   if (!strcmp(ev->key, "Up"))
+     _scale_switch("_up");
+   else if (!strcmp(ev->key, "Down"))
+     _scale_switch("_down");
+   else if (!strcmp(ev->key, "Left"))
+     _scale_switch("_left");
+   else if (!strcmp(ev->key, "Right"))
+     _scale_switch("_right");
+   else if (!strcmp(ev->key, "h"))
+     _scale_switch("_left");
+   else if (!strcmp(ev->key, "j"))
+     _scale_switch("_down");
+   else if (!strcmp(ev->key, "k"))
+     _scale_switch("_up");
+   else if (!strcmp(ev->key, "l"))
+     _scale_switch("_right");
+   else if (!strcmp(ev->key, "p"))
      _scale_switch("_prev");
    else if (!strcmp(ev->key, "n"))
      _scale_switch("_next");
@@ -1484,7 +1550,8 @@ _scale_run(E_Manager *man)
    Evas *e;
    int i;
    Item *it;
-
+   E_Border *bd;
+   
    e = e_manager_comp_evas_get(man);
    if (!e) return EINA_FALSE;
 
@@ -1628,20 +1695,17 @@ _scale_run(E_Manager *man)
    evas_event_feed_mouse_move(e, -1000000, -1000000,
                               ecore_x_current_time_get(), NULL);
 
-   if (init_method == GO_KEY)
-     {
-	E_Border *bd = e_border_focused_get();
+   bd = e_border_focused_get();
 
-	EINA_LIST_FOREACH(items, l , it)
-	  if (it->bd == bd) break;
+   EINA_LIST_FOREACH(items, l , it)
+     if (it->bd == bd) break;
 
-	if (it)
-	  selected_item = it;
-	else
-	  selected_item = eina_list_data_get(items);
+   if (it)
+     selected_item = it;
+   else
+     selected_item = eina_list_data_get(items);
 
-	edje_object_signal_emit(selected_item->o, "mouse,in", "e");
-     }
+   edje_object_signal_emit(selected_item->o, "mouse,in", "e");
 
    if (scale_conf->pager_fade_windows)
      {
@@ -1752,15 +1816,13 @@ _scale_handler(void *data, const char *name, const char *info, int val,
    E_Manager_Comp_Source *src = (E_Manager_Comp_Source *)msgdata;
    Evas *e;
 
-   if (!scale_state) return;
-   
    if (strcmp(name, "comp.manager")) return;
 
    DBG("handler... '%s' '%s'\n", name, info);
-
+   
    /* XXX disabled for now. */
    return;
-   
+
    e = e_manager_comp_evas_get(man);
    if (!strcmp(info, "change.comp"))
      {
