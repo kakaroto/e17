@@ -21,7 +21,6 @@
 
 typedef struct _settings {
 	Eina_Bool online;
-	Eina_Bool fullscreen;
 	int browser;
 	char *browser_name;
 	char *browser_cmd;

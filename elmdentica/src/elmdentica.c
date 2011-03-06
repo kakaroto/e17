@@ -266,11 +266,6 @@ void elmdentica_init(void) {
 	gui.status_detail=NULL;
 }
 
-void toggle_fullscreen(Eina_Bool new_fullscreen) {
-	elm_win_fullscreen_set(gui.win, new_fullscreen);
-	settings->fullscreen=new_fullscreen;
-}
-
 void make_status_list(int timeline) {
 	char *label;
 
@@ -2189,8 +2184,6 @@ EAPI int elm_main(int argc, char **argv)
 	evas_object_resize(gui.win, 480, 640);
 	evas_object_show(gui.win);
 
-
-	if(settings->fullscreen) toggle_fullscreen(settings->fullscreen);
 
 	curl_global_init(CURL_GLOBAL_ALL);
 
