@@ -1373,7 +1373,11 @@ _scale_switch(const char *params)
 	_scale_out(1);
 	return;
      }
-   else if (!strcmp(params, "_next"))
+
+   if ((!sel->next) || (!sel->prev))
+     return;
+   
+   if (!strcmp(params, "_next"))
      {
 	it = sel->next;
      }
@@ -1785,7 +1789,6 @@ scale_run(E_Manager *man, const char *params, int _init_method)
 
    init_method = _init_method;
 
-   /* FIXME means: if keyboard use slotted layout */
    if (init_method == GO_KEY)
      scale_layout = 1;
 
