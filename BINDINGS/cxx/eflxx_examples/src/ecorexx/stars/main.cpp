@@ -19,7 +19,7 @@ Starfield starfield;
 
 int width = 0;
 
-void advance( Ecorexx::Timer* e )
+void advance( )
 {
   for (StarfieldIterator it = starfield.begin(); it != starfield.end(); ++it )
   {

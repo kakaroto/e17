@@ -25,7 +25,8 @@ public:
       xstep( 2*PI/360 ), ystep( 2*PI/360 ),
       size( BALLSIZE ), direction( -1 ),
       alpha( 0 ), alphadirection( 1 ),
-      xaddfactor( 1 ), yaddfactor( 1 )
+      xaddfactor( 1 ), yaddfactor( 1 ),
+      ecoreTimer (NULL)
   {
     Ecorexx::EvasWindowSoftwareX11* mw = new Ecorexx::EvasWindowSoftwareX11( size );
     Evasxx::Canvas &evas = mw->getCanvas();
@@ -55,7 +56,8 @@ public:
       balls[i]->show();
     }
 
-    startTimer( 1.0 / 25 );
+    ecoreTimer = new Ecorexx::Timer( 1.0 / 25 );
+    ecoreTimer->timeout.connect( sigc::mem_fun( this, &TimerApp::timerEvent ) );
 
     mw->show();
   }
@@ -72,8 +74,9 @@ public:
   int alphadirection;
   double xaddfactor;
   double yaddfactor;
+  Ecorexx::Timer* ecoreTimer;
 
-  virtual bool timerEvent()
+  void timerEvent()
   {
 
     logo->setColor( Color (255, 255, 255, alpha) );
@@ -97,8 +100,6 @@ public:
       xaddfactor = -2 + (4.0*rand()/(RAND_MAX));
       yaddfactor = -2 + (4.0*rand()/(RAND_MAX));
     }
-
-    return true; // call me again, please
   }
 
 };

@@ -17,7 +17,7 @@ typedef struct _MyProgressbar
 
 static MyProgressbar _test_progressbar;
 
-static void _my_progressbar_value_set (Ecorexx::Timer *timer)
+static void _my_progressbar_value_set ()
 {
   double progress;
 
@@ -40,7 +40,8 @@ static void _my_progressbar_value_set (Ecorexx::Timer *timer)
   if (progress > 1.0)
   {
     _test_progressbar.run = false;
-    timer->del ();
+    //timer->del ();
+    // FIXME: new design offern no timers pointer!
   }
 }
 

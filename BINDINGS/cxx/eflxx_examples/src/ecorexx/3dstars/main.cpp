@@ -78,7 +78,7 @@ typedef list<Star*> Starfield;
 typedef list<Star*>::iterator StarfieldIterator;
 Starfield starfield;
 
-void advance( Ecorexx::Timer* e )
+void advance()
 {
   for (StarfieldIterator it = starfield.begin(); it != starfield.end(); ++it )
   {
