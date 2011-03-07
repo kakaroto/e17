@@ -52,6 +52,7 @@ PKG_CHECK_MODULES(EYELIGHT, [
                         ecore >= 0.9.9
                         ecore-evas >= 0.9.9
                         ecore-file >= 0.9.9
+			ecore-x >= 1.0.0
                         evas >= 0.9.9
                         edje >= 0.5
                         emotion >= 0.1
