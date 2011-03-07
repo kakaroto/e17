@@ -157,7 +157,7 @@ _scale_redraw(void *data)
 	       }
 
 	     it->alpha = a;
-	     evas_object_color_set(it->o_win, a, a, a, a);
+	     evas_object_color_set(it->o, a, a, a, a);
 	  }
      }
 
@@ -1709,7 +1709,7 @@ _scale_run(E_Manager *man)
      {
 	EINA_LIST_FOREACH(items, l, it)
 	  if (it->bd->desk != current_desk)
-	    evas_object_color_set(it->o_win, 0, 0, 0, 0);
+	    evas_object_color_set(it->o, 0, 0, 0, 0);
      }
 
    _scale_in();
