@@ -9,7 +9,6 @@
  * Rotating the scroller is not correct and was rejected by Raster and others.
  */
 #define ROTATION 1
-#define HORIZONTAL 0
 #define ZOOM_STEP 0.2
 
 typedef struct _Ephoto_Single_Browser Ephoto_Single_Browser;
@@ -789,17 +788,31 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_event_callback_add
      (layout, EVAS_CALLBACK_KEY_DOWN, _key_down, sb);
    evas_object_data_set(layout, "single_browser", sb);
-   edje_object_signal_callback_add
-     (sb->edje, "mouse,clicked,1", "toolbar_event", auto_hide_toolbar, sb->ephoto);
 
-   if (!elm_layout_file_set
-       (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-                              "ephoto/layout/simple/autohide"))
+   if (sb->ephoto->config->autohide_toolbar)
      {
-        ERR("could not load style 'ephoto/layout/simple/autohide' from theme");
-        goto error;
+        edje_object_signal_callback_add
+          (sb->edje, "mouse,clicked,1", "toolbar_event",
+                   ephoto_auto_hide_toolbar, sb->ephoto);
+        if (!elm_layout_file_set
+             (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                                    "ephoto/layout/simple/autohide"))
+          {
+              ERR("could not load style 'ephoto/layout/simple/autohide' from theme");
+              goto error;
+          }
      }
-   
+   else
+     {
+        if (!elm_layout_file_set
+             (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                                             "ephoto/layout/simple"))
+          {
+              ERR("could not load style 'ephoto/layout/simple' from theme");
+              goto error;
+          }
+     }
+
    sb->toolbar = elm_toolbar_add(sb->layout);
    elm_toolbar_homogenous_set(sb->toolbar, EINA_FALSE);
    elm_toolbar_mode_shrink_set(sb->toolbar, ELM_TOOLBAR_SHRINK_MENU);

@@ -38,7 +38,7 @@ void         ephoto_thumb_size_set(Ephoto *ephoto, int size);
 Evas_Object *ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path);
 void         ephoto_thumb_path_set(Evas_Object *o, const char *path);
 void         ephoto_directory_set(Ephoto *ephoto, const char *path);
-void         auto_hide_toolbar(void *data __UNUSED__, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
+void         ephoto_auto_hide_toolbar(void *data __UNUSED__, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
 
 Ephoto_Orient ephoto_file_orient_get(const char *path);
 
@@ -110,6 +110,8 @@ struct _Ephoto_Config
    /* these should be per-window */
    int thumb_size;
    int thumb_gen_size;
+   int autohide_toolbar;
+   int best_fit_images;
    const char *directory;
 
 };

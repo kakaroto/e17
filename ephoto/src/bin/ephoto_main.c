@@ -590,7 +590,7 @@ _toolbar_hide(void *data)
 }
 
 void
-auto_hide_toolbar(void *data __UNUSED__, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__)
+ephoto_auto_hide_toolbar(void *data __UNUSED__, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ecore_Timer *timer;
 

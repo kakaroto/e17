@@ -28,11 +28,12 @@ ephoto_config_init(Ephoto *ephoto)
    C_VAL(D, T, config_version, EET_T_INT);
    C_VAL(D, T, thumb_size, EET_T_INT);
    C_VAL(D, T, thumb_gen_size, EET_T_INT);
+   C_VAL(D, T, autohide_toolbar, EET_T_INT);
+   C_VAL(D, T, best_fit_images, EET_T_INT); 
    C_VAL(D, T, directory, EET_T_STRING);
    C_VAL(D, T, slideshow_timeout, EET_T_DOUBLE);
    C_VAL(D, T, slideshow_transition, EET_T_STRING);
    C_VAL(D, T, editor, EET_T_STRING);
-
    switch (_ephoto_config_load(ephoto))
      {
       case 0:

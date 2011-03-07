@@ -336,15 +336,29 @@ ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
    evas_object_event_callback_add
      (efb->main_layout, EVAS_CALLBACK_KEY_DOWN, _key_down, efb);
    evas_object_data_set(efb->main_layout, "flow_browser", efb);
-   edje_object_signal_callback_add
-     (efb->edje, "mouse,clicked,1", "toolbar_event", auto_hide_toolbar, efb->ephoto);
 
-   if (!elm_layout_file_set
-        (efb->main_layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-                                                  "ephoto/layout/simple/autohide"))
+   if (efb->ephoto->config->autohide_toolbar)
      {
-        ERR("could not load style 'ephoto/layout/simple' from theme");
-        goto error;
+        edje_object_signal_callback_add
+          (efb->edje, "mouse,clicked,1", "toolbar_event",
+                   ephoto_auto_hide_toolbar, efb->ephoto);
+        if (!elm_layout_file_set
+             (efb->main_layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                                              "ephoto/layout/simple/autohide"))
+          {
+              ERR("could not load style 'ephoto/layout/simple/autohide' from theme");
+              goto error;
+          }
+     }
+   else
+     {
+        if (!elm_layout_file_set
+             (efb->main_layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                                                       "ephoto/layout/simple"))
+          {
+              ERR("could not load style 'ephoto/layout/simple' from theme");
+              goto error;
+          }
      }
 
    efb->toolbar = elm_toolbar_add(efb->main_layout);

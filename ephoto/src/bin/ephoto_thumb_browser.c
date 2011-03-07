@@ -445,15 +445,29 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_event_callback_add
      (layout, EVAS_CALLBACK_KEY_DOWN, _key_down, tb);
    evas_object_data_set(layout, "thumb_browser", tb);
-   edje_object_signal_callback_add
-     (tb->edje, "mouse,clicked,1", "toolbar_event", auto_hide_toolbar, tb->ephoto);
 
-   if (!elm_layout_file_set
-       (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-                                       "ephoto/layout/simple/autohide"))
+   if (tb->ephoto->config->autohide_toolbar)
      {
-        ERR("could not load style 'ephoto/layout/simple' from theme");
-        goto error;
+        edje_object_signal_callback_add
+          (tb->edje, "mouse,clicked,1", "toolbar_event",
+                   ephoto_auto_hide_toolbar, tb->ephoto);
+        if (!elm_layout_file_set
+             (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                                    "ephoto/layout/simple/autohide"))
+          {
+              ERR("could not load style 'ephoto/layout/simple/autohide' from theme");
+              goto error;
+          }
+     }
+   else
+     {
+        if (!elm_layout_file_set
+             (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                                             "ephoto/layout/simple"))
+          {
+              ERR("could not load style 'ephoto/layout/simple' from theme");
+              goto error;
+          }
      }
 
    tb->toolbar = elm_toolbar_add(tb->layout);
