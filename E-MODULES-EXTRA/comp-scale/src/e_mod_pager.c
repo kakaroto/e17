@@ -672,8 +672,8 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 
    _pager_win_final_position_set(it);
 
-   it->w = it->bd->w / zoom - OFFSET*2.0;
-   it->h = it->bd->h / zoom - OFFSET*2.0;
+   it->w = (double)it->bd->w / zoom - OFFSET*2.0;
+   it->h = (double)it->bd->h / zoom - OFFSET*2.0;
 
    items = eina_list_append(items, it);
 
@@ -727,10 +727,15 @@ _pager_cb_mouse_down(void *data, int type, void *event)
 
    if (!it)
      {
-	E_Desk *desk = _pager_desk_at_xy_get(ev->x, ev->y);
-	if (desk)
-	  _pager_desk_select(desk);
-
+	if (E_INSIDE(ev->x, ev->y, min_x, min_y,
+		     (max_x - min_x) - OFFSET*2,
+		     (max_y - min_y) - OFFSET*2))
+	  {
+	     E_Desk *desk = _pager_desk_at_xy_get(ev->x, ev->y);
+	     if (desk)
+	       _pager_desk_select(desk);
+	  }
+	
 	_pager_out();
 	return ECORE_CALLBACK_PASS_ON;
      }
