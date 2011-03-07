@@ -103,6 +103,7 @@ PKG_CHECK_MODULES([EET], eet >= 1.4.0)
 PKG_CHECK_MODULES([EVAS], evas >= 1.0.0)
 PKG_CHECK_MODULES([EDJE], edje >= 1.0.0)
 PKG_CHECK_MODULES([ECORE], [
+   ecore >= 1.0.0
    ecore-evas >= 1.0.0
    ecore-con >= 1.0.0])
 
