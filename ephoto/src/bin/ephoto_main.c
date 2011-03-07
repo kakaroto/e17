@@ -578,3 +578,22 @@ ephoto_entries_free(Ephoto *ephoto)
    Ephoto_Entry *entry;
    EINA_LIST_FREE(ephoto->entries, entry) ephoto_entry_free(entry);
 }
+
+Eina_Bool
+_toolbar_hide(void *data)
+{
+   Evas_Object *edje = data;
+
+   edje_object_signal_emit(edje, "hide", "toolbar_event");
+
+   return EINA_TRUE;
+}
+
+void
+auto_hide_toolbar(void *data __UNUSED__, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__)
+{
+   Ecore_Timer *timer;
+
+   timer = ecore_timer_add(5, _toolbar_hide, obj);
+}
+

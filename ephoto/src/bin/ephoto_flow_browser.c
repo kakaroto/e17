@@ -336,19 +336,23 @@ ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
    evas_object_event_callback_add
      (efb->main_layout, EVAS_CALLBACK_KEY_DOWN, _key_down, efb);
    evas_object_data_set(efb->main_layout, "flow_browser", efb);
+   edje_object_signal_callback_add
+     (efb->edje, "mouse,clicked,1", "toolbar_event", auto_hide_toolbar, efb->ephoto);
 
-   if (!elm_layout_theme_set
-        (efb->main_layout, "layout", "application", "toolbar-vbox"))
+   if (!elm_layout_file_set
+        (efb->main_layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                                                  "ephoto/layout/simple/autohide"))
      {
-        ERR("could not load style 'toolbar-vbox' from theme");
+        ERR("could not load style 'ephoto/layout/simple' from theme");
         goto error;
      }
 
-   efb->toolbar = edje_object_part_external_object_get
-     (efb->edje, "elm.external.toolbar");
+   efb->toolbar = elm_toolbar_add(efb->main_layout);
    elm_toolbar_homogenous_set(efb->toolbar, EINA_TRUE);
    elm_toolbar_mode_shrink_set(efb->toolbar, ELM_TOOLBAR_SHRINK_MENU);
    elm_toolbar_menu_parent_set(efb->toolbar, parent);
+   evas_object_size_hint_weight_set(efb->toolbar, 0.0, 0.0);
+   evas_object_size_hint_align_set(efb->toolbar, EVAS_HINT_FILL, 0.0);
 
     efb->action.go_back = _toolbar_item_add
      (efb, "edit-undo", "Back", 120, _flow_back);
@@ -359,6 +363,10 @@ ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
    efb->action.slideshow = _toolbar_item_add
      (efb, "media-playback-start", "Slideshow", 70, _show_slideshow);
 
+   elm_layout_content_set
+     (efb->main_layout, "ephoto.toolbar.swallow", efb->toolbar);
+   evas_object_show(efb->toolbar);
+
    efb->layout = elm_layout_add(efb->main_layout);
    elm_layout_file_set
      (efb->layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", "flow");
@@ -367,8 +375,8 @@ ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
    evas_object_size_hint_fill_set
      (efb->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(efb->layout);
-   elm_layout_box_append
-     (efb->main_layout, "elm.box.content", efb->layout);
+   elm_layout_content_set
+     (efb->main_layout, "ephoto.content.swallow", efb->layout);
 
    edje_object_signal_callback_add
      (elm_layout_edje_get(efb->layout), "done", "ephoto", _flow_done, efb);

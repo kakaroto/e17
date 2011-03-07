@@ -9,6 +9,142 @@ collections {
    }
    group
    {
+      name: "ephoto/layout/simple";
+      parts
+      {
+         part
+         {
+            name: "layout";
+            type: RECT;
+            description
+            {
+               state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 0 0;
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -1 -1;
+               color: 255 255 255 0;
+            }
+         }
+         part
+         {
+            name: "ephoto.content.swallow";
+            type: SWALLOW;
+            description
+            {
+               rel1.to_y: "ephoto.toolbar.swallow";
+               rel1.relative: 0.0 1.0;
+               rel1.offset: -1 1;
+            }
+         }
+         part
+         {
+            name: "ephoto.toolbar.swallow";
+            type: SWALLOW;
+            description
+            {
+               state: "default" 0.0;
+               align: 0.5 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.0;
+               rel2.offset: -1 47;
+               fixed: 1 1;
+            }
+         }
+      }
+   }
+   group
+   {
+      name: "ephoto/layout/simple/autohide";
+      parts
+      {
+         part
+         {
+            name: "layout";
+            type: RECT;
+            description
+            {
+               state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 0 0;
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -1 -1;
+               color: 255 255 255 0;
+            }
+         }
+         part
+         {
+            name: "ephoto.content.swallow";
+            type: SWALLOW;
+            description
+            {
+               rel1.to: "layout";
+               rel2.to: "layout";
+            }
+         }
+         part
+         {
+            name: "ephoto.toolbar.swallow";
+            type: SWALLOW;
+            description
+            {
+               state: "default" 0.0;
+               align: 0.5 1.0;
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 1.0;
+               fixed: 1 1;
+               visible: 0;
+            }
+            description
+            {
+               state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 0 0 0 255;
+               visible: 1;
+            }
+         }
+         part
+         {
+            name: "toolbar_event";
+            type: RECT;
+            mouse_events: 1;
+            repeat_events: 1;
+            description
+            {
+               state: "default" 0.0;
+               align: 0.5 1.0;
+               rel1.to: "ephoto.toolbar.swallow";
+               rel2.to: "ephoto.toolbar.swallow";
+               color: 255 255 255 0;
+            }
+         }
+      }
+      programs
+      {
+         program
+         {
+            name: "go_visible";
+            signal: "mouse,clicked,1";
+            source: "toolbar_event";
+            filter: "ephoto.toolbar.swallow" "default" 0.0;
+            action: STATE_SET "visible" 0.0;
+            transition: LINEAR 0.4;
+            target: "ephoto.toolbar.swallow";
+         }
+         program
+         {
+            name: "go_hidden";
+            signal: "hide";
+            source: "toolbar_event";
+            filter: "ephoto.toolbar.swallow" "visible" 0.0;
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.4;
+            target: "ephoto.toolbar.swallow";
+         }
+      }
+   }
+   group
+   {
       name: "elm/layout/ephoto/orient";
       parts
       {
@@ -527,4 +663,3 @@ collections {
       }
    }
 }
-

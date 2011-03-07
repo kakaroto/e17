@@ -14,6 +14,7 @@ struct _Ephoto_Thumb_Browser
 {
    Ephoto *ephoto;
    Evas_Object *layout;
+   Evas_Object *box;
    Evas_Object *edje;
    Evas_Object *fsel;
    Evas_Object *grid;
@@ -444,24 +445,23 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_event_callback_add
      (layout, EVAS_CALLBACK_KEY_DOWN, _key_down, tb);
    evas_object_data_set(layout, "thumb_browser", tb);
+   edje_object_signal_callback_add
+     (tb->edje, "mouse,clicked,1", "toolbar_event", auto_hide_toolbar, tb->ephoto);
 
-   if (!elm_layout_theme_set
-       (layout, "layout", "application", "toolbar-vbox"))
+   if (!elm_layout_file_set
+       (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                                       "ephoto/layout/simple/autohide"))
      {
-        ERR("could not load style 'toolbar-vbox' from theme");
+        ERR("could not load style 'ephoto/layout/simple' from theme");
         goto error;
      }
 
-   tb->toolbar = edje_object_part_external_object_get
-     (tb->edje, "elm.external.toolbar");
-   if (!tb->toolbar)
-     {
-        ERR("no toolbar in layout!");
-        goto error;
-     }
+   tb->toolbar = elm_toolbar_add(tb->layout);
    elm_toolbar_homogenous_set(tb->toolbar, EINA_FALSE);
    elm_toolbar_mode_shrink_set(tb->toolbar, ELM_TOOLBAR_SHRINK_MENU);
    elm_toolbar_menu_parent_set(tb->toolbar, parent);
+   evas_object_size_hint_weight_set(tb->toolbar, 0.0, 0.0);
+   evas_object_size_hint_align_set(tb->toolbar, EVAS_HINT_FILL, 0.0);
 
    tb->action.flow = _toolbar_item_add
      (tb, "image", "Flow", 120, _flow);
@@ -474,6 +474,17 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    tb->action.view_single = _toolbar_item_add
      (tb, "image", "Single", 50, _view_single);
 
+   elm_layout_content_set
+     (tb->layout, "ephoto.toolbar.swallow", tb->toolbar);
+   evas_object_show(tb->toolbar);
+
+   tb->box = elm_box_add(tb->layout);
+   elm_box_horizontal_set(tb->box, EINA_FALSE);
+   elm_box_homogenous_set(tb->box, EINA_FALSE);
+   evas_object_size_hint_weight_set
+     (tb->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(tb->box);
+
    tb->fsel = elm_fileselector_entry_add(layout);
    EINA_SAFETY_ON_NULL_GOTO(tb->fsel, error);
    evas_object_size_hint_weight_set(tb->fsel, EVAS_HINT_EXPAND, 0.0);
@@ -484,9 +495,8 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
      (tb->fsel, "file,chosen", _changed_dir, tb);
    evas_object_smart_callback_add
      (tb->fsel, "activated", _changed_dir_text, tb);
-
    evas_object_show(tb->fsel);
-   elm_layout_box_append(layout, "elm.box.content", tb->fsel);
+   elm_box_pack_end(tb->box, tb->fsel);
 
    tb->overlay = elm_layout_add(layout);
    elm_layout_file_set
@@ -500,8 +510,8 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
      (elm_layout_edje_get(tb->overlay), "ephoto.signal.up", "ephoto", 
                       _ephoto_up_clicked, tb);
    evas_object_show(tb->overlay);
-   elm_layout_box_append(tb->layout, "elm.box.content", tb->overlay);
-
+   elm_box_pack_end(tb->box, tb->overlay);
+   
    tb->grid = elm_gengrid_add(tb->overlay);
    EINA_SAFETY_ON_NULL_GOTO(tb->grid, error);
    elm_gengrid_align_set(tb->grid, 0.5, 0.5);
@@ -516,6 +526,8 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_show(tb->grid);
    elm_layout_content_set
      (tb->overlay, "ephoto.swallow.content.thumb", tb->grid);
+
+   elm_layout_content_set(tb->layout, "ephoto.content.swallow", tb->box);
 
    tb->handlers = eina_list_append
       (tb->handlers, ecore_event_handler_add

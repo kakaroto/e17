@@ -9,7 +9,7 @@
  * Rotating the scroller is not correct and was rejected by Raster and others.
  */
 #define ROTATION 1
-
+#define HORIZONTAL 0
 #define ZOOM_STEP 0.2
 
 typedef struct _Ephoto_Single_Browser Ephoto_Single_Browser;
@@ -436,11 +436,11 @@ _ephoto_single_browser_recalc(Ephoto_Single_Browser *sb)
         const char *bname = ecore_file_file_get(sb->entry->path);
         sb->viewer = _viewer_add(sb->layout, sb->entry->path);
         elm_layout_content_set
-          (sb->layout, "elm.swallow.content", sb->viewer);
+          (sb->layout, "ephoto.content.swallow", sb->viewer);
         evas_object_show(sb->viewer);
         evas_object_event_callback_add
           (sb->viewer, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, sb);
-        edje_object_part_text_set(sb->edje, "elm.text.title", bname);
+//        edje_object_part_text_set(sb->edje, "elm.text.title", bname);
         ephoto_title_set(sb->ephoto, bname);;
      }
 
@@ -775,7 +775,7 @@ _ephoto_single_entry_create(void *data, int type __UNUSED__, void *event __UNUSE
 Evas_Object *
 ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
 {
-   Evas_Object *layout = elm_layout_add(parent), *button;
+   Evas_Object *layout = elm_layout_add(parent);
    Ephoto_Single_Browser *sb;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(layout, NULL);
@@ -789,28 +789,23 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_event_callback_add
      (layout, EVAS_CALLBACK_KEY_DOWN, _key_down, sb);
    evas_object_data_set(layout, "single_browser", sb);
+   edje_object_signal_callback_add
+     (sb->edje, "mouse,clicked,1", "toolbar_event", auto_hide_toolbar, sb->ephoto);
 
-   if (!elm_layout_theme_set
-       (layout, "layout", "application", "toolbar-content-back"))
+   if (!elm_layout_file_set
+       (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
+                              "ephoto/layout/simple/autohide"))
      {
-        ERR("could not load style 'toolbar-content-back' from theme");
+        ERR("could not load style 'ephoto/layout/simple/autohide' from theme");
         goto error;
      }
-
-   /*TODO This is hack. Better Idea?*/
-   button = edje_object_part_external_object_get(sb->edje, "back");
-   evas_object_del(button);
    
-   sb->toolbar = edje_object_part_external_object_get
-     (sb->edje, "elm.external.toolbar");
-   if (!sb->toolbar)
-     {
-        ERR("no toolbar in layout!");
-        goto error;
-     }
+   sb->toolbar = elm_toolbar_add(sb->layout);
    elm_toolbar_homogenous_set(sb->toolbar, EINA_FALSE);
    elm_toolbar_mode_shrink_set(sb->toolbar, ELM_TOOLBAR_SHRINK_MENU);
    elm_toolbar_menu_parent_set(sb->toolbar, parent);
+   evas_object_size_hint_weight_set(sb->toolbar, 0.0, 0.0);
+   evas_object_size_hint_align_set(sb->toolbar, EVAS_HINT_FILL, 0.0);
 
    sb->action.back = _toolbar_item_add
      (sb, "edit-undo", "Back", 200, _back);
@@ -862,6 +857,10 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
 #endif
 
    _ephoto_single_browser_toolbar_eval(sb);
+
+   elm_layout_content_set
+     (sb->layout, "ephoto.toolbar.swallow", sb->toolbar);
+   evas_object_show(sb->toolbar);
 
    sb->handlers = eina_list_append
       (sb->handlers, ecore_event_handler_add
