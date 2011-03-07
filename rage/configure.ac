@@ -83,6 +83,7 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Directory])
 
+PKG_CHECK_MODULES([EINA], eina >= 1.0.0)
 PKG_CHECK_MODULES([EET], eet >= 1.4.0)
 PKG_CHECK_MODULES([EVAS], evas >= 1.0.0)
 PKG_CHECK_MODULES([EDJE], edje >= 1.0.0)
