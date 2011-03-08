@@ -5,6 +5,7 @@
 #include "desktop.h"
 #include "winlist.h"
 #include "utils.h"
+#include "gadget_list.h"
 
 #define ELFE_HOME_WIN_TYPE 0xE0b0102f
 
@@ -25,6 +26,7 @@ struct _Elfe_Home_Win
    Evas_Object *floating_icon;
    E_Zone *zone;
    Efreet_Menu *selected_app;
+   const char *selected_gadget;
 };
 
 typedef enum
@@ -157,23 +159,26 @@ _icon_mouse_move_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
 
 static void
 _icon_mouse_up_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
-{ 
+{
 
    Elfe_Home_Win *hwin = data;
    Evas_Event_Mouse_Up *ev = event_info;
-   
+
    evas_object_del(hwin->floating_icon);
    evas_object_event_callback_del(hwin->desktop, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb);
    evas_object_event_callback_del(hwin->desktop, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb);
    elfe_desktop_edit_mode_set(hwin->desktop, EINA_FALSE);
 
-   elfe_desktop_app_add(hwin->desktop, hwin->selected_app, ev->output.x, ev->output.y);
+   if (hwin->selected_app)
+       elfe_desktop_app_add(hwin->desktop, hwin->selected_app, ev->output.x, ev->output.y);
+   else if (hwin->selected_gadget)
+       elfe_desktop_gadget_add(hwin->desktop, hwin->selected_gadget, ev->output.x, ev->output.y);
 
 }
 
 
 static void
-_allapps_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
+_app_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
 {
    Elfe_Home_Win *hwin = data;
    Efreet_Menu *entry = event_info;
@@ -191,7 +196,7 @@ _allapps_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
 
    o_edje = elm_layout_edje_get(hwin->layout);
    edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
- 
+
    ic = elfe_utils_fdo_icon_add(o_edje, entry->icon, size);
    evas_object_show(ic);
    evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
@@ -204,6 +209,55 @@ _allapps_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
    evas_object_pass_events_set(ic, EINA_TRUE);
 
    hwin->selected_app = entry;
+
+   evas_object_event_callback_add(hwin->desktop, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb, hwin);
+   evas_object_event_callback_add(hwin->desktop, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb, hwin);
+}
+
+static void
+_gadget_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
+{
+   Elfe_Home_Win *hwin = data;
+   const char *name = event_info;
+   Evas_Coord x, y;
+   Evas_Object *o_edje;
+   Evas_Coord ow, oh;
+   Evas_Coord size = 0;
+   Evas_Object *ic;
+   E_Gadcon_Client_Class *gcc = NULL;
+
+   gcc = elfe_utils_gadcon_client_class_from_name(name);
+   if (!gcc)
+     {
+         printf("error : unable to find gadcon client class from name : %s\n", name);
+         return;
+     }
+
+   evas_object_geometry_get(hwin->desktop, NULL, NULL, &ow, &oh);
+
+   size = MIN(ow, oh) / 5;
+
+   elfe_desktop_edit_mode_set(hwin->desktop, EINA_TRUE);
+
+   o_edje = elm_layout_edje_get(hwin->layout);
+   edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
+
+   ic = gcc->func.icon(gcc, evas_object_evas_get(obj));
+   if (!ic)
+     ic = elfe_utils_fdo_icon_add(obj, NULL, 64);
+
+   evas_object_show(ic);
+   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
+   evas_object_resize(ic, size, size);
+   evas_object_move(ic, x - size / 2, y - size /2);
+   hwin->floating_icon = ic;
+
+   evas_object_del(hwin->allapps);
+   hwin->allapps = NULL;
+   evas_object_pass_events_set(ic, EINA_TRUE);
+
+   hwin->selected_app = NULL;
+   hwin->selected_gadget = name;
 
    evas_object_event_callback_add(hwin->desktop, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb, hwin);
    evas_object_event_callback_add(hwin->desktop, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb, hwin);
@@ -258,36 +312,13 @@ static void  _edje_signal_cb(void *data, Evas_Object *obj, const char *emission,
 	if (!hwin->allapps)
 	  {
 	     hwin->allapps = elfe_allapps_add(hwin->layout);
-	     evas_object_smart_callback_add(hwin->allapps, "entry,longpressed", _allapps_longpressed_cb, hwin);
+	     evas_object_smart_callback_add(hwin->allapps, "entry,longpressed", _app_longpressed_cb, hwin);
+             evas_object_smart_callback_add(hwin->allapps, "gadget,longpressed", _gadget_longpressed_cb, hwin);
              evas_object_smart_callback_add(hwin->allapps, "item,selected", _allapps_item_selected_cb, hwin);
 	     evas_object_show(hwin->allapps);
 	     elm_layout_content_set(hwin->layout, "apps-list-swallow", hwin->allapps);
 	  }
      }
-}
-
-static void
-_desktop_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
-{
-   Evas_Object *inwin;
-   Elfe_Home_Win *hwin = data;
-   Evas_Object *rect;
-   Evas_Object *o_edje;
-   Evas_Object *list;
-   Eina_List *l;
-   E_Gadcon_Client_Class *gcc;
-
-
-   printf("longpressed ....\n");
-
-   o_edje = elm_layout_edje_get(hwin->layout);
-   edje_object_signal_emit(o_edje, "inwin,show", "elfe");
-   elm_layout_text_set(hwin->layout, "inwin.text.title", "Add to Desktop");
-
-   list = elfe_desktop_gadget_list(hwin->desktop);
-   elm_layout_content_set(hwin->layout, "inwin.swallow.content", list);
-   evas_object_show(list);
-
 }
 
 static void
@@ -368,7 +399,6 @@ _elfe_home_win_new(E_Zone *zone)
 
    hwin->desktop = elfe_desktop_add(hwin->layout, hwin->zone);
    elm_layout_content_set(hwin->layout, "launcher.swallow", hwin->desktop);
-   evas_object_smart_callback_add(hwin->desktop, "longpressed", _desktop_longpressed_cb, hwin);
    evas_object_smart_callback_add(hwin->desktop, "gadget,added", _gadget_added_cb, hwin);
 
 

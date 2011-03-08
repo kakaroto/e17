@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "elfe_config.h"
 #include "desktop.h"
+#include "gadget_list.h"
 
 typedef struct _Elfe_Allapps Elfe_Allapps;
 typedef struct _Elfe_Grid_Item Elfe_Grid_Item;
@@ -86,6 +87,17 @@ _gl_longpress(void *data, Evas_Object *obj, void *event_info)
 
    evas_object_smart_callback_call(allapps->box,
 				   "entry,longpressed", gitem->menu);
+}
+
+static void
+_widget_longpress(void *data, Evas_Object *obj, void *event_info)
+{
+   const char *name = event_info;
+   Elfe_Allapps *allapps = data;
+
+   printf("Send widget longpressed\n");
+   evas_object_smart_callback_call(allapps->box,
+				   "gadget,longpressed", (void*)name);
 }
 
 static void
@@ -326,7 +338,8 @@ elfe_allapps_add(Evas_Object *parent)
    evas_object_show(allapps->grid);
 
 
-   allapps->widgets_list = elfe_desktop_gadget_list(allapps->pager);
+   allapps->widgets_list = elfe_gadget_list_add(allapps->pager);
+   evas_object_smart_callback_add(allapps->widgets_list, "list,longpressed", _widget_longpress, allapps);
    evas_object_show(allapps->widgets_list);
 
    evas_object_show(allapps->box);

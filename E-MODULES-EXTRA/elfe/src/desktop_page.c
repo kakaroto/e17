@@ -193,7 +193,7 @@ elfe_desktop_page_pos_is_free(Evas_Object *obj, int col, int row)
 }
 
 void
-elfe_desktop_page_item_gadget_add(Evas_Object *obj, E_Gadcon_Client_Class *gcc,
+elfe_desktop_page_item_gadget_add(Evas_Object *obj, const char *name,
 				Evas_Coord x, Evas_Coord y)
 {
     Elfe_Desktop_Page *page = evas_object_data_get(obj, "desktop_page");
@@ -207,7 +207,7 @@ elfe_desktop_page_item_gadget_add(Evas_Object *obj, E_Gadcon_Client_Class *gcc,
     if (eina_matrixsparse_data_idx_get(page->items, col, row)) return;
 
     item = elfe_desktop_item_add(page->layout, col, row,
-				 gcc->name,
+				 name,
                                  ELFE_DESKTOP_ITEM_GADGET, page->gc);
     e_layout_pack(page->layout, item);
     _pos_to_geom(page, col, row, &ox, &oy, &ow, &oh);
@@ -220,7 +220,7 @@ elfe_desktop_page_item_gadget_add(Evas_Object *obj, E_Gadcon_Client_Class *gcc,
 				      ELFE_DESKTOP_ITEM_GADGET,
 				      col, row,
 				      0, 0, 0, 0,
-				      gcc->name);
+				      name);
 }
 
 void

@@ -13,6 +13,12 @@ elfe_utils_fdo_icon_add(Evas_Object *parent, const char *icon, int size)
    ic = elm_icon_add(parent);
    evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
 
+   if (!icon)
+     {
+	elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/application-default");
+	return ic;
+     }
+
    if (icon && icon[0] == '/')
        {
            elm_icon_file_set(ic, icon, NULL);
@@ -76,4 +82,17 @@ elfe_utils_fdo_icon_path_get(Efreet_Menu *menu, int size)
     else
       return NULL;
 
+}
+
+E_Gadcon_Client_Class *
+elfe_utils_gadcon_client_class_from_name(const char *name)
+{
+   E_Gadcon_Client_Class *gcc = NULL;
+   Eina_List *l;
+   EINA_LIST_FOREACH(e_gadcon_provider_list(), l, gcc)
+     {
+	if (!strcmp(gcc->name, name))
+	  return gcc;
+     }
+   return NULL;
 }

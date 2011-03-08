@@ -3,6 +3,7 @@
 
 #include "desktop_page.h"
 #include "elfe_config.h"
+#include "utils.h"
 
 #define ELFE_DESKTOP_NUM 5
 #define ELFE_DESKTOP_PADDING_W 10
@@ -196,34 +197,22 @@ _gadget_selected_cb(void *data , Evas_Object *obj, void *event_info )
 
 void
 elfe_desktop_app_add(Evas_Object *obj, Efreet_Menu *menu, Evas_Coord x, Evas_Coord y)
-{ 
+{
     Elfe_Desktop *desk = evas_object_data_get(obj, "elfe_desktop");
     Evas_Object *gad;
     gad = eina_list_nth(desk->gadgets, desk->current_desktop);
     elfe_desktop_page_item_app_add(gad, menu, x, y);
 }
 
-Evas_Object *
-elfe_desktop_gadget_list(Evas_Object *obj)
+void
+elfe_desktop_gadget_add(Evas_Object *obj, const char *name, Evas_Coord x, Evas_Coord y)
 {
-   Elfe_Desktop *desk = evas_object_data_get(obj, "elfe_desktop");
-   Evas_Object *list;
-   E_Gadcon_Client_Class *gcc = NULL;
-   Eina_List *l;
-   Evas_Object *icon = NULL, *end;
-   const char *lbl = NULL;
-
-   list = elm_list_add(obj);
-   EINA_LIST_FOREACH(e_gadcon_provider_list(), l, gcc)
-     {
-	if (gcc->func.label) lbl = gcc->func.label(gcc);
-	if (!lbl) lbl = gcc->name;
-	if (gcc->func.icon) icon = gcc->func.icon(gcc, evas_object_evas_get(obj));
-	evas_object_size_hint_min_set(icon, 48, 48);
-	elm_list_item_append(list, lbl, icon, NULL, _gadget_selected_cb, gcc);
-     }
-   return list;
+    Elfe_Desktop *desk = evas_object_data_get(obj, "elfe_desktop");
+    Evas_Object *gad;
+    gad = eina_list_nth(desk->gadgets, desk->current_desktop);
+    elfe_desktop_page_item_gadget_add(gad, name, x, y);
 }
+
 
 Evas_Object *
 elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
