@@ -42,6 +42,24 @@ _gadget_add(Elfe_Desktop_Item *dit, const char *name, E_Gadcon *gc)
    return item;
 }
 
+static void*
+_app_exec_cb(void *data, Efreet_Desktop *desktop, char *command, int remaining)
+{
+   ecore_exe_run(command, NULL);
+}
+
+static void
+_clicked_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   const char *name = data;
+   Efreet_Desktop *desktop;
+
+   desktop = efreet_desktop_get(name);
+   efreet_desktop_command_get(desktop, NULL,
+			      _app_exec_cb, NULL);
+}
+
+
 static Evas_Object *
 _app_add(Elfe_Desktop_Item *dit, const char *name)
 {
@@ -61,6 +79,7 @@ _app_add(Elfe_Desktop_Item *dit, const char *name)
    edje_object_part_swallow(item, "elfe.swallow.content", icon);
 
    edje_object_part_text_set(item, "elfe.text.label", desktop->name);
+   edje_object_signal_callback_add(item, "mouse,clicked,1", "*", _clicked_signal_cb, (void*)name);
 
    return item;
 }
