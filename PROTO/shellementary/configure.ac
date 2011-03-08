@@ -52,7 +52,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code director
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.12.1])
 
-PKG_CHECK_MODULES([ELEMENTARY], [elementary eina >= 1.0.0 evas >= 1.0.0 ecore >= 1.0.0])
+PKG_CHECK_MODULES([ELEMENTARY], [elementary eina >= 1.0.0 evas >= 1.0.0 ecore >= 1.0.0 ecore-file >= 1.0.0])
 
 AC_OUTPUT([
 Makefile
