@@ -72,6 +72,10 @@ e_modapi_init(E_Module *m)
    E_Manager *man;
    Eina_List *ml;
 
+   /* Set this module to be loaded after all other modules, or we don't see
+    modules loaded after this */
+   e_module_priority_set(m, 100);
+
    if (!elfe_home_config_init(m)) return NULL;
 
    e_winilist_init();
