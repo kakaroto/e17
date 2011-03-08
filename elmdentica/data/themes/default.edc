@@ -30,7 +30,6 @@ STOCK_ICON("pitr_green_menu_icon_set_1.png", "icon/status/post/enabled")
 STOCK_ICON("pitr_red_menu_icon_set_3.png", "icon/status/post/disabled")
 STOCK_ICON("pitr_green_menu_icon_set_3.png", "icon/status/timeline/enabled")
 STOCK_ICON("pitr_red_menu_icon_set_2.png", "icon/status/timeline/disabled")
-STOCK_ICON("edit-clear.png", "icon/edit/clear")
 STOCK_ICON("edit-undo.png", "icon/edit/hide")
 STOCK_ICON("Envelope_closed.png", "icon/edit/dm")
 

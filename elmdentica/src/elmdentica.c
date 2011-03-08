@@ -1869,11 +1869,6 @@ static void on_post_dm(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_show(inwin);
 }
 
-static void on_post_clear(void *data, Evas_Object *obj, void *event_info) {
-	Evas_Object *entry = data;
-	elm_entry_entry_set(entry, "");
-}
-
 static void on_post_hide(void *data, Evas_Object *obj, void *event_info) {
 	edje_object_signal_emit(gui.edje, "mouse,clicked,2", "edit_event");
 }
@@ -1893,10 +1888,6 @@ static void on_post(void *data, Evas_Object *obj, void *event_info) {
 	evas_object_focus_set(entry, 0);
 
 	evas_object_hide(hv);
-}
-
-static void on_timelines_hv(void *data, Evas_Object *obj, void *event_info) {
-	evas_object_show((Evas_Object*)data);
 }
 
 static void win_del(void *data, Evas_Object *obj, void *event_info) {
@@ -1982,6 +1973,22 @@ Eina_Bool ed_toolbar_hide(void *data) {
 void auto_hide_toolbar(void *data, Evas_Object *obj, const char *emission, const char *source) {
 	if(gui.hide_tb_timer) ecore_timer_del(gui.hide_tb_timer);
 	gui.hide_tb_timer = ecore_timer_add(5, ed_toolbar_hide, NULL);
+}
+
+void on_edit_mouse_up(void *data, Evas_Object *obj, const char *emission, const char *source) {
+	int m_x = 0;
+	Evas_Object *entry;
+
+	ecore_x_pointer_last_xy_get(&m_x, NULL);
+
+	if( (mouse_x - m_x) > (2 * elm_finger_size_get()) ) {
+		entry = (Evas_Object*)data;
+		if(entry) elm_entry_entry_set(entry, "");
+	}
+}
+
+void on_edit_mouse_down(void *data, Evas_Object *obj, const char *emission, const char *source) {
+	ecore_x_pointer_last_xy_get(&mouse_x, NULL);
 }
 
 void show_edit(void *data, Evas_Object *obj, const char *emission, const char *source) {
@@ -2085,21 +2092,11 @@ EAPI int elm_main(int argc, char **argv)
 				evas_object_size_hint_align_set(entry, -1, 0);
 				evas_object_smart_callback_add(entry, "cursor,changed", on_entry_clicked, NULL);
 				evas_object_smart_callback_add(entry, "changed", on_entry_changed, NULL);
+
+				edje_object_signal_callback_add(gui.edje, "mouse,down,1", "edit_event", on_edit_mouse_down, NULL);
+				edje_object_signal_callback_add(gui.edje, "mouse,up,1", "edit_event", on_edit_mouse_up, entry);
 			elm_box_pack_end(box2, entry);
 			evas_object_show(entry);
-
-			icon = elm_icon_add(gui.win);
-			elm_icon_file_set(icon, theme, "icon/edit/clear");
-			evas_object_show(icon);
-
-			bt = elm_button_add(gui.win);
-				evas_object_size_hint_weight_set(bt, 0, 1);
-				evas_object_size_hint_align_set(bt, 1, 0);
-				elm_button_label_set(bt, _("Clear"));
-				elm_button_icon_set(bt, icon);
-				evas_object_smart_callback_add(bt, "clicked", on_post_clear, entry);
-				elm_box_pack_end(box2, bt);
-			evas_object_show(bt);
 
 			evas_object_show(box2);
 		elm_box_pack_end(gui.edit, box2);
@@ -2163,7 +2160,7 @@ EAPI int elm_main(int argc, char **argv)
 		elm_toolbar_no_select_mode_set(toolbar, EINA_TRUE);
 		elm_object_style_set(toolbar, "elmdentica");
 
-		gui.timelines = elm_toolbar_item_append(toolbar, "chat", _("Timelines"), on_timelines_hv, NULL);
+		gui.timelines = elm_toolbar_item_append(toolbar, "chat", _("Timelines"), NULL, NULL);
 		elm_toolbar_item_menu_set(gui.timelines, EINA_TRUE);
 		elm_toolbar_item_priority_set(gui.timelines, 0);
 		elm_toolbar_menu_parent_set(toolbar, gui.timeline);
