@@ -20,8 +20,6 @@ EXTRA_DIST = \
 	pitr_green_menu_icon_set_3.svg	\
 	pitr_red_menu_icon_set_2.png	\
 	pitr_red_menu_icon_set_2.svg	\
-	edit-clear.png			\
-	edit-clear.svg			\
 	edit-undo.png			\
 	edit-undo.svg			\
 	Envelope_closed.png		\
