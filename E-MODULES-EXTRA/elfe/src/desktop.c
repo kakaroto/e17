@@ -183,18 +183,6 @@ _cb_object_resize(void *data , Evas *e , Evas_Object *obj, void *event_info )
 
 }
 
-static void
-_gadget_selected_cb(void *data , Evas_Object *obj, void *event_info )
-{
-   E_Gadcon_Client_Class *gcc = data;
-   Evas_Object *gad;
-
-   gad = eina_list_nth(desk->gadgets, desk->current_desktop);
-   elfe_desktop_page_item_gadget_add(gad, gcc, 0, 0);
-   evas_object_smart_callback_call(desk->layout,
-				   "gadget,added", NULL);
-}
-
 void
 elfe_desktop_app_add(Evas_Object *obj, Efreet_Menu *menu, Evas_Coord x, Evas_Coord y)
 {
