@@ -53,7 +53,7 @@ AC_C_CONST
 AC_FUNC_ALLOCA
 AC_C___ATTRIBUTE__
 
-PKG_CHECK_MODULES([ELEMENTARY], [elementary])
+PKG_CHECK_MODULES([ELEMENTARY], [elementary evas ecore])
 
 want_quicklaunch="auto"
 AC_ARG_ENABLE([quicklaunch],
