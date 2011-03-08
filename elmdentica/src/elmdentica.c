@@ -264,6 +264,11 @@ void elmdentica_init(void) {
 	gui.pager=NULL;
 	gui.main=NULL;
 	gui.status_detail=NULL;
+
+	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(?=\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
+	if(!re_user)	re_user  = g_regex_new("@([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
+	if(!re_tags)	re_tags  = g_regex_new("#([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
+	if(!re_group)	re_group = g_regex_new("(!([a-zA-Z0-9_]+))",      G_REGEX_OPTIMIZE, 0, &re_err);
 }
 
 void make_status_list(int timeline) {
@@ -368,10 +373,10 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 		}
 	}
 
-		if(gui.hover) {
-			evas_object_del(gui.hover);
-			gui.hover = NULL;
-		}
+	if(gui.hover) {
+		evas_object_del(gui.hover);
+		gui.hover = NULL;
+	}
 }
 
 static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
@@ -1216,6 +1221,25 @@ static void on_status_show_page_attachments(void* data, Evas_Object *obj, void *
 	elm_pager_content_promote(pager, gui.status_detail_attachments);
 }
 
+static void ed_status_recycle_text(void *data, Evas_Object *obj, void *event_info) {
+	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
+	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
+	char copy_text[1024], *tmp;
+
+	snprintf(copy_text, 1024, "♻ @%s: %s", as->au->user->screen_name, as->status->text);
+	tmp = g_regex_replace(re_group, copy_text, strlen(copy_text), 0, "#\\2", 0, &re_err);
+	elm_entry_entry_set(entry, tmp);
+	free(tmp);
+	reply_as=as;
+
+	if(gui.hover) {
+		evas_object_del(gui.hover);
+		gui.hover = NULL;
+	}
+
+	edje_object_signal_emit(gui.edje, "mouse,clicked,1", "edit_event");
+}
+
 static void ed_status_status_action(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	Elm_List_Item *li=NULL;
@@ -1226,11 +1250,6 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 	GMatchInfo *user_matches=NULL, *link_matches=NULL, *tags_matches=NULL, *group_matches=NULL;
 	char *match=NULL, *key=NULL;
 	int res=0;
-
-	if(!re_link)	re_link  = g_regex_new("([a-z]+://.*?)(?=\\s|$)", G_REGEX_OPTIMIZE, 0, &re_err);
-	if(!re_user)	re_user  = g_regex_new("@([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
-	if(!re_tags)	re_tags  = g_regex_new("#([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
-	if(!re_group)	re_group = g_regex_new("!([a-zA-Z0-9_]+)",      G_REGEX_OPTIMIZE, 0, &re_err);
 
 	if(gui.hover) {
 		evas_object_del(gui.hover);
@@ -1326,7 +1345,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 					evas_object_size_hint_align_set(list, -1, -1);
 					evas_object_smart_callback_add(list, "selected", on_handle_group, as);
 
-					while((match = g_match_info_fetch(group_matches, 1))) {
+					while((match = g_match_info_fetch(group_matches, 2))) {
 						li = elm_list_item_sorted_insert(list, match, NULL, NULL, NULL, NULL, my_strcmp);
 						g_match_info_next(group_matches, &re_err);
 					}
@@ -1460,6 +1479,14 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 					elm_button_label_set(button, _("Status details"));
 					evas_object_smart_callback_add(button, "clicked", ed_status_status_action, event_info);
 					elm_table_pack(table, button, 0, 3, 3, 1);
+				evas_object_show(button);
+
+				button = elm_button_add(gui.win);
+					evas_object_size_hint_weight_set(button, 1, 1);
+					evas_object_size_hint_align_set(button, -1, 0);
+					elm_button_label_set(button, _("Recycle status"));
+					evas_object_smart_callback_add(button, "clicked", ed_status_recycle_text, event_info);
+					elm_table_pack(table, button, 0, 4, 3, 1);
 				evas_object_show(button);
 
 				evas_object_show(table);
