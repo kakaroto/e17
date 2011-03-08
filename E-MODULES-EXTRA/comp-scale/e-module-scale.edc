@@ -178,7 +178,7 @@ collections
 			        clip_to: "over_clip";
 				description {
 					state: "default" 0.0;
-					color: 0 0 0 150;
+					color: 0 0 0 30;
 				}
 				description {
 					state: "focused" 0.0;
@@ -378,7 +378,7 @@ collections
 				}
 				description {
 					state: "unfocused" 0.0;
-					color: 0 0 0 150;
+					color: 0 0 0 70;
 				}
 			}
 		}
