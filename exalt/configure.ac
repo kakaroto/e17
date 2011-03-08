@@ -113,6 +113,7 @@ fi
 requirements="ecore >= 1.0.0 eet >= 1.4.0 ecore-file >= 1.0.0 ehal >= 1.0.0 edbus >= 1.0.0 dbus-1"
 
 PKG_CHECK_MODULES(EXALT, [
+  eina >= 1.0.0,
   ecore >= 1.0.0,
   eet >= 1.4.0,
   ecore-file >= 1.0.0,
