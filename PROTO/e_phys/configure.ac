@@ -13,6 +13,7 @@ PKG_CHECK_MODULES(EPHYS, [
   evas
   ecore
   ecore-evas
+  eina
 ])
 
 AC_OUTPUT([
