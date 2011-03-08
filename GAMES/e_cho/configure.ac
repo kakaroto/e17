@@ -68,6 +68,7 @@ PKG_CHECK_MODULES([ELEMENTARY], [elementary])
 PKG_CHECK_MODULES(LIBCANBERRA, [libcanberra])
 PKG_CHECK_MODULES(EVAS, [evas])
 PKG_CHECK_MODULES(ECORE, [ecore])
+PKG_CHECK_MODULES(EDJE, [edje])
 
 AC_ARG_WITH([edje-cc],
    [AC_HELP_STRING([--with-edje-cc=PATH],
