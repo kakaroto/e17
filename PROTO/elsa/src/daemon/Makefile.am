@@ -27,7 +27,7 @@ elsa.h             \
 elsa.c
 
 elsa_LDFLAGS =
-elsa_LDADD = @ELSA_LIBS@ -lpam
+elsa_LDADD = @ELSA_LIBS@ -lpam -lrt
 
 elsa_wait_SOURCES = \
 elsa_wait.c         \
