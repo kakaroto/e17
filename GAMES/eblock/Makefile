@@ -1,5 +1,5 @@
-CFLAGS += $(shell pkg-config --cflags elementary)
-LIBS += $(shell pkg-config --libs elementary)
+CFLAGS += $(shell pkg-config --cflags elementary evas ecore)
+LIBS += $(shell pkg-config --libs elementary evas ecore)
 
 CFLAGS += -Wall -O2
 
