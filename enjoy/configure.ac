@@ -60,7 +60,7 @@ AM_GNU_GETTEXT_VERSION([0.12.1])
 AM_GNU_GETTEXT([external])
 
 PKG_CHECK_MODULES([EDBUS], [edbus])
-PKG_CHECK_MODULES([ELEMENTARY], [elementary ecore-file eina evas ecore ecore-evas])
+PKG_CHECK_MODULES([ELEMENTARY], [elementary ecore-file eina evas ecore ecore-evas edje])
 PKG_CHECK_MODULES([EMOTION], [emotion])
 PKG_CHECK_MODULES([LMS], [lightmediascanner])
 PKG_CHECK_MODULES([SQLITE3], [sqlite3])
