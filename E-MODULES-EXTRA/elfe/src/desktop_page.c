@@ -137,6 +137,8 @@ _populate_page(Elfe_Desktop_Page *page)
      {
 	Evas_Coord x = 0, y = 0, w = 0, h = 0;
 
+        printf("Page %d populage item [%d %d]: %s\n", page->desktop, dic->col, dic->row, dic->name);
+
 	/* This position is already in use, this is a  conf issue! */
 	/* FIXME: delete item from config ? */
 	if (eina_matrixsparse_data_idx_get(page->items, dic->col, dic->row))

@@ -23,22 +23,22 @@ _gadget_add(Elfe_Desktop_Item *dit, const char *name, E_Gadcon *gc)
    Eina_List *l;
    E_Gadcon_Client *gcc = NULL;
 
-   if (!gc)
-     return NULL;
+   if (!gc) return NULL;
 
    item = edje_object_add(evas_object_evas_get(dit->frame));
    edje_object_file_set(item, elfe_home_cfg->theme, "elfe/desktop/gadget/frame");
 
-   EINA_LIST_FOREACH(e_gadcon_provider_list(), l, cc)
+   cc = elfe_utils_gadcon_client_class_from_name(name);
+   if (!cc)
      {
-	if (!strcmp(cc->name, name))
-	  {
-	     gcc = cc->func.init(gc, cc->name, "test", cc->default_style);
-	     gcc->cf = NULL;
-	     gcc->client_class = cc;
-	     edje_object_part_swallow(item, "elfe.swallow.content", gcc->o_base);
-	  }
+	printf("Error unable to retrieve gadcon client class for %s\n", name);
+	return NULL;
      }
+   gcc = cc->func.init(gc, cc->name, "test", cc->default_style);
+   gcc->cf = NULL;
+   gcc->client_class = cc;
+   edje_object_part_swallow(item, "elfe.swallow.content", gcc->o_base);
+
    return item;
 }
 
