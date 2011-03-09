@@ -82,7 +82,6 @@ collections
 				type: RECT;
 				mouse_events: 0;
 				description { state: "default" 0.0;
-					visible: 1;
 					color: 255 255 255 255;
 					rel1 {
 						relative:  -1.0  -1.0;
@@ -93,10 +92,9 @@ collections
 						offset:    9999  9999;
 					}
 				}
-				description { state: "visible" 0.0;
+				description { state: "faded" 0.0;
 					inherit: "default" 0.0;
-					visible: 1;
-					color: 255 255 255 255;
+					color: 200 200 200 235;
 				}
 			}
 			part { name: "shadow";
@@ -131,58 +129,10 @@ collections
 			part {
 				name: "e.swallow.win";
 				type: SWALLOW;
-				description {
+				clip_to: "clipper";
+ 				description {
 					state: "default" 0.0;
 					color: 255 255 255 255;
-				}
-			}
-
-			/* part {
-			 * 	name: "icon";
-			 * 	mouse_events: 0;
-			 * 	type: IMAGE;
-			 * 	description {
-			 * 		state: "default" 0.0;
-			 * 		aspect: 1.0 1.0;
-			 * 		aspect_preference: BOTH;
-			 * 		rel1.relative;
-			 *
-			 * 		rel1.offset: 2 2;
-			 * 		rel2.offset: -3 -3;
-			 * 		image.normal: "module_icon.png";
-			 * 	}
-			 * 	description {
-			 * 		state: "bigger" 0.0;
-			 * 		inherit: "default" 0.0;
-			 * 		rel1.offset: -2 -2;
-			 * 		rel2.offset: 3 3;
-			 * 	}
-			 * } */
-			part {
-				name: "over_clip";
-				mouse_events: 0;
-				type: RECT;
-				description {
-					state: "default" 0.0;
-					color: 0 0 0 0;
-				}
-				description {
-					state: "visible" 0.0;
-					color: 255 255 255 255;
-				}
-			}
-			part {
-				name: "over";
-				mouse_events: 1;
-				type: RECT;
-			        clip_to: "over_clip";
-				description {
-					state: "default" 0.0;
-					color: 0 0 0 30;
-				}
-				description {
-					state: "focused" 0.0;
-					color: 255 255 255 30;
 				}
 			}
 		}
@@ -191,36 +141,19 @@ collections
 				name: "mouse_in";
 				signal: "mouse,in";
 				source: "e";
-				action: STATE_SET "focused" 0.0;
-				transition: ACCELERATE 0.1;
-				target: "over";
+				action: STATE_SET "default" 0.0;
+				transition: LINEAR 0.2;
+				target: "clipper";
 			}
 			program {
 				name: "mouse_out";
 				signal: "mouse,out";
 				source: "e";
-				action: STATE_SET "default" 0.0;
-				transition: DECELERATE 0.1;
-				target: "over";
-			}
-			program {
-				name: "fade_in";
-				signal: "show";
-				source: "e";
-				action: STATE_SET "visible" 0.0;
-				transition: DECELERATE 0.3;
-				target: "over_clip";
-			}
-			program {
-				name: "fade_out";
-				signal: "hide";
-				source: "e";
-				action: STATE_SET "default" 0.0;
-				transition: ACCELERATE 0.1;
-				target: "over_clip";
+				action: STATE_SET "faded" 0.0;
+				transition: LINEAR 0.4;
+				target: "clipper";
 			}
 		}
-
 	}
 	group {
 		name: "modules/scale/desk";
