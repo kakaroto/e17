@@ -378,8 +378,6 @@ _pager_win_final_position_set(Item *it)
    /* move window to relative position on desk */
    it->x += (double)(it->bd->x - zone->x) * (1.0 / zoom);
    it->y += (double)(it->bd->y - zone->y) * (1.0 / zoom);
-   printf("final position: %f %f\n", it->x, it->y);
-
 }
 
 static void

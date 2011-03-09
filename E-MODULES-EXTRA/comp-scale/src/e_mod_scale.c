@@ -164,11 +164,9 @@ _scale_redraw(void *data)
    if (scale < 0.0) scale = 0.0;
 
    in = log(10) * scale;
-   /* in = 1.0 / exp(in*in); */
-   in = 1.0 - (1.0 / exp(in*in));
-   in = 0.5 * (1.0 + cos(in * M_PI));
-
-   printf("%f -- %f\n", scale, in);
+   in = 1.0 / exp(in*in);
+   /* in = 1.0 - (1.0 / exp(in*in));
+    * in = 0.5 * (1.0 + cos(in * M_PI)); */
 
    _scale_place_windows(in);
 
@@ -559,8 +557,6 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	  }
 	return NULL;
      }
-
-   if (!cw->bd) return NULL;
 
    if (cw->bd->zone != desk->zone)
      return NULL;
@@ -1489,7 +1485,6 @@ static Eina_Bool
 _scale_cb_key_down(void *data, int type, void *event)
 {
    Ecore_Event_Key *ev = event;
-   printf("key down\n");
 
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
@@ -1666,7 +1661,6 @@ _scale_run(E_Manager *man)
    if (!scale_conf->fade_popups)
      {
 	e_zone_useful_geometry_get(zone, &use_x, &use_y, &use_w, &use_h);
-	printf("use %d %d %d %d\n", use_x, use_y, use_w, use_h);
 	use_w += use_x - spacing*2;
 	use_h += use_y - spacing*2;
 	use_x += spacing;
@@ -1815,7 +1809,6 @@ _scale_cb_mouse_move(void *data, int type, void *event)
 {
    Ecore_Event_Mouse_Move *ev = event;
 
-   /* wtf?! dont need move events when nothing is moving */
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
 
@@ -1835,7 +1828,6 @@ _scale_cb_mouse_move(void *data, int type, void *event)
      return ECORE_CALLBACK_PASS_ON;
 
    mouse_activated = 1;
-   printf("mouse move %d %d\n", ev->x, ev->y);
 
    evas_event_feed_mouse_move((Evas *) data, ev->x, ev->y, ev->timestamp, NULL);
 
