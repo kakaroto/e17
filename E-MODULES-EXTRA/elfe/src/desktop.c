@@ -98,11 +98,12 @@ static Eina_Bool
 _longpress_timer_cb(void *data)
 {
    Elfe_Desktop *desk = data;
+   Evas_Object *gad;
 
-   /* Logpress action */
 
-   evas_object_smart_callback_call(desk->layout,
-				   "longpressed", NULL);
+   printf("Longpress edit mode\n");
+   gad = eina_list_nth(desk->gadgets, desk->current_desktop);
+   elfe_desktop_page_edit_mode_set(gad, EINA_TRUE);
 
    desk->longpress_timer = NULL;
 

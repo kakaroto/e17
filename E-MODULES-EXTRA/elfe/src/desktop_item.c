@@ -12,7 +12,8 @@ struct _Elfe_Desktop_Item
    Evas_Object *item;
    int row;
    int col;
-
+   Efreet_Desktop *desktop;
+   Eina_Bool edit_mode;
 };
 
 static Evas_Object *
@@ -51,12 +52,11 @@ _app_exec_cb(void *data, Efreet_Desktop *desktop, char *command, int remaining)
 static void
 _clicked_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   const char *name = data;
-   Efreet_Desktop *desktop;
+   Elfe_Desktop_Item *dit = data;
 
-   desktop = efreet_desktop_get(name);
-   efreet_desktop_command_get(desktop, NULL,
-			      _app_exec_cb, NULL);
+   if (dit->desktop && !dit->edit_mode)
+     efreet_desktop_command_get(dit->desktop, NULL,
+				_app_exec_cb, NULL);
 }
 
 
@@ -65,21 +65,15 @@ _app_add(Elfe_Desktop_Item *dit, const char *name)
 {
    Evas_Object *item;
    Evas_Object *icon;
-   Efreet_Desktop *desktop;
-
-   desktop = efreet_desktop_get(name);
-
-   if (!desktop)
-     return NULL;
 
    item = edje_object_add(evas_object_evas_get(dit->frame));
    edje_object_file_set(item, elfe_home_cfg->theme, "elfe/desktop/app/frame");
 
-   icon = elfe_utils_fdo_icon_add(dit->frame, desktop->icon, 96);
+   icon = elfe_utils_fdo_icon_add(dit->frame, dit->desktop->icon, 96);
    edje_object_part_swallow(item, "elfe.swallow.content", icon);
 
-   edje_object_part_text_set(item, "elfe.text.label", desktop->name);
-   edje_object_signal_callback_add(item, "mouse,clicked,1", "*", _clicked_signal_cb, (void*)name);
+   edje_object_part_text_set(item, "elfe.text.label", dit->desktop->name);
+   edje_object_signal_callback_add(item, "mouse,clicked,1", "*", _clicked_signal_cb, dit);
 
    return item;
 }
@@ -96,6 +90,18 @@ elfe_desktop_item_pos_get(Evas_Object *obj, int *col, int *row)
      *col = dit->col;
    if (row)
      *row = dit->row;
+}
+
+void
+elfe_desktop_item_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
+{
+   Elfe_Desktop_Item *dit = evas_object_data_get(obj, "desktop_item");
+
+   if (dit->edit_mode == mode)
+     return;
+
+   dit->edit_mode = mode;
+   edje_object_signal_emit(dit->frame, "action,edit,on", "elfe");
 }
 
 Evas_Object *
@@ -125,7 +131,16 @@ elfe_desktop_item_add(Evas_Object *parent,
    switch (type)
      {
       case ELFE_DESKTOP_ITEM_APP:
+	 dit->desktop = efreet_desktop_get(name);
+	 if (!dit->desktop)
+	   {
+	      printf("ERROR unable to get efreet desktop from %s\n", name);
+	      evas_object_del(layout);
+	      free(dit);
+	      return NULL;
+	   }
 	 item = _app_add(dit, name);
+
 	 break;
       case ELFE_DESKTOP_ITEM_GADGET:
 	 item = _gadget_add(dit, name, gc);

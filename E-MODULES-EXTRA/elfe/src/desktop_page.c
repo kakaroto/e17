@@ -257,6 +257,24 @@ elfe_desktop_page_item_app_add(Evas_Object *obj, Efreet_Menu *menu,
 				      menu->desktop->orig_path);
 }
 
+void
+elfe_desktop_page_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
+{
+   Elfe_Desktop_Page *page = evas_object_data_get(obj, "desktop_page");;
+   Evas_Object *item;
+   Eina_List *l;
+   Eina_Iterator *iter;
+   Eina_Matrixsparse_Cell *cell;
+
+   iter = eina_matrixsparse_iterator_new(page->items);
+   EINA_ITERATOR_FOREACH(iter, cell)
+     {
+	item  = eina_matrixsparse_cell_data_get(cell);
+	elfe_desktop_item_edit_mode_set(item, mode);
+     }
+   eina_iterator_free(iter);
+}
+
 Evas_Object *
 elfe_desktop_page_add(Evas_Object *parent, E_Zone *zone,
                       int desktop, const char *desktop_name)

@@ -676,57 +676,69 @@ collections
 
    group {
       name: "elfe/desktop/frame";
+      images {
+         image: "badge_delete.png" COMP;
+      }
       parts {
          part {
             name: "clip";
             type: RECT;
             description {
                state: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+            description {
+               state: "edit" 0.1;
                color: 255 255 255 255;
-            }
-            description {
-               state: "vibration" 0.1;
-               color: 255 255 255 200;
-            }
-            description {
-               state: "vibration" 0.2;
-               color: 255 255 255 150;
+               visible: 1;
             }
          }
+
+
          part {
             name: "elfe.swallow.content";
             type: SWALLOW;
-            clip_to: "clip";
+
             description {
                state: "default" 0.0;
-
-               //               image.normal: "frame.png";
                map {
-                  on: 0;
+                  on: 1;
                   rotation.z: 0;
                }
             }
             description {
                state: "vibration" 0.1;
-               //inherit: "default" 0.0;
-               rel1.offset: -3 -3;
-               rel2.offset: 3 3;
                color: 255 255 255 100;
                map {
-                  on: 0;
-                  rotation.z: -10;
+                  on: 1;
+                  rotation.z: -5;
                }
             }
             description {
                state: "vibration" 0.2;
-               //inherit: "default" 0.0;
-               rel1.offset: 1 1;
-               rel2.offset: -1 -1;
                color: 255 255 255 200;
                map {
-                  on: 0;
-                  rotation.z: 10;
+                  on: 1;
+                  rotation.z: 5;
                }
+            }
+         }
+
+
+         part {
+            name: "badge_delete";
+            type: IMAGE;
+            clip_to: "clip";
+            description {
+               state: "default" 0.0;
+               image.normal: "badge_delete.png";
+               min: 29 29;
+               max: 29 29;
+               align: 0.9 0.9;
+               color: 100 100 100 255;
+               rel1.to: "elfe.swallow.content";
+               rel2.to: "elfe.swallow.content";
             }
          }
       }
@@ -738,19 +750,37 @@ collections
          /* } */
 
          program {
-            name: "vib1";
-            action: STATE_SET "vibration" 0.1;
-            target: "elfe.swallow.content";
+            name: "edit,on";
+            signal: "action,edit,on";
+            source: "elfe";
+            action: STATE_SET "edit" 0.1;
             target: "clip";
             transition: "SINUSOIDAL" 0.2;
+         }
+
+         program {
+            name: "edit,off";
+            signal: "action,edit,off";
+            source: "elfe";
+            action: STATE_SET "normal" 0.1;
+            target: "clip";
+            transition: "SINUSOIDAL" 0.2;
+         }
+
+         program {
+            name: "vib1";
+            signal: "action,edit,on";
+            source: "elfe";
+            action: STATE_SET "vibration" 0.1;
+            target: "elfe.swallow.content";
+            transition: "ACCELERATE" 0.3;
             after: "vib2";
          }
          program {
             name: "vib2";
             action: STATE_SET "vibration" 0.2;
             target: "elfe.swallow.content";
-            target: "clip";
-            transition: "SINUSOIDAL" 0.2;
+            transition: "ACCELERATE" 0.3;
             after: "vib1";
          }
       }
