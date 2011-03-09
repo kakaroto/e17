@@ -1,3 +1,5 @@
+MAINTAINERCLEANFILES = Makefile.in
+
 FONT = DejaVuSans-Bold.ttf
 
 icondir = $(pkgdatadir)/viewer/

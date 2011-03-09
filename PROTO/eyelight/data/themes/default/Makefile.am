@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = transition fonts
 
-
+EDJE_CC = @edje_cc@
 EDJE_FLAGS = \
 -v \
 -id $(top_srcdir)/data/themes/default \

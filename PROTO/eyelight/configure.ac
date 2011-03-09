@@ -1,71 +1,80 @@
-# get rid of that stupid cache mechanism
-rm -f config.cache
 
-AC_INIT(configure.ac)
-AC_CANONICAL_TARGET
-AC_CANONICAL_BUILD
-AC_CANONICAL_HOST
+m4_define([v_maj], [0])
+m4_define([v_min], [5])
+m4_define([v_mic], [0])
+m4_define([v_ver], [v_maj.v_min.v_mic.v_rev])
+
+m4_define([lt_rev], m4_eval(v_maj + v_min))
+m4_define([lt_cur], v_mic)
+m4_define([lt_age], v_min)
+
+AC_INIT([eyelight], [v_ver], [enlightenment-devel@lists.sourceforge.net])
+AC_PREREQ([2.52])
+AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE(eyelight, 0.5)
-AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
-
-AC_PROG_CC
-AM_PROG_CC_STDC
-AC_HEADER_STDC
-AC_C_CONST
-AM_PROG_CC_C_O
 
 AC_LIBTOOL_WIN32_DLL
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
-requirements="ecore ecore-evas ecore-file evas edje"
-
-
+version_info="lt_rev:lt_cur:lt_age"
 AC_SUBST(version_info)
-AC_SUBST(requirements)
-AC_SUBST(packagesrcdir)
 
+### Needed information
+
+AC_CANONICAL_HOST
+
+
+### Checks for programs
+AC_PROG_CC
+
+# pkg-config
 PKG_PROG_PKG_CONFIG
 
-# Find edje_cc
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-AC_ARG_WITH(edje-cc,
-  AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
-  [
-    v=$withval;
-    EDJE_CC=$v
-  ],[
-    EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
-  ]
-)
+# Check whether pkg-config supports Requires.private
+if $PKG_CONFIG --atleast-pkgconfig-version 0.22; then
+   pkgconfig_requires_private="Requires.private"
+else
+   pkgconfig_requires_private="Requires"
+fi
+AC_SUBST(pkgconfig_requires_private)
 
 # doxygen program for documentation building
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
-PKG_CHECK_MODULES(EYELIGHT, [
-			eina >= 1.0.0
-                        ecore >= 0.9.9
-                        ecore-evas >= 0.9.9
-                        ecore-file >= 0.9.9
-			ecore-x >= 1.0.0
-                        evas >= 0.9.9
-                        edje >= 0.5
-                        emotion >= 0.1
-                        libpng >= 0.1
-                        ])
 
-AC_FUNC_ALLOCA
+### Checks for libraries
 
-# required libs / cflags
-eyelight_libs=$EYELIGHT_LIBS
-eyelight_cflags=$EYELIGHT_CFLAGS
-AC_SUBST(eyelight_libs)
-AC_SUBST(eyelight_cflags)
+requirements="emotion edje ecore-file ecore-evas ecore evas eina"
+
+requirements_bin="edje ecore-file ecore-evas ecore-x ecore evas eina"
+
+PKG_CHECK_MODULES([EYELIGHT], [${requirements}])
+
+PKG_CHECK_MODULES([EYELIGHT_BIN], [${requirements_bin}])
+
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
+
+AC_SUBST(requirements)
+
+
+### Checks for compiler characteristics
+AM_PROG_CC_C_O
+AC_C_CONST
+AC_PROG_CC_STDC
+
+EFL_COMPILER_FLAG([-Wall])
+EFL_COMPILER_FLAG([-W])
+
+
+### Checks for linker characteristics
+
+# use --enable-auto-import on Windows
 
 lt_enable_auto_import=""
 case "$host_os" in
@@ -77,12 +86,12 @@ esac
 AC_SUBST(lt_enable_auto_import)
 AC_SUBST(EFL_EYELIGHT_BUILD)
 
-AC_SUBST(EDJE_CC)
-AC_MSG_CHECKING([Which edje_cc to use])
-AC_MSG_RESULT(${EDJE_CC})
+
+### Checks for library functions
+AC_FUNC_ALLOCA
 
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 eyelight.pc
 doc/Makefile
@@ -97,6 +106,7 @@ data/themes/default/fonts/Makefile
 data/themes/default/transition/Makefile
 ])
 
+AC_OUTPUT
 
 echo
 echo
@@ -107,10 +117,9 @@ echo
 echo
 echo "Configuration Options Summary:"
 echo
-echo "  Installation Path...................: $prefix"
-echo "  Documentation.......................: ${build_doc}"
+echo "  edje_cc..................: ${edje_cc}"
+echo "  Documentation............: ${build_doc}"
 echo
-echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
-echo "and then afterwards as root (or the user who will install this), type"
-echo "'make install'. Change users with 'su' or 'sudo' appropriately."
+echo "Installation...............: make install (as root if needed, with 'su' or 'sudo')"
+echo "  prefix...................: $prefix"
 echo

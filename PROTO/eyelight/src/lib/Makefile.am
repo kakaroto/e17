@@ -2,20 +2,11 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
--I. \
--I$(top_srcdir)/src/lib \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@EYELIGHT_CFLAGS@ \
 @EFL_EYELIGHT_BUILD@
-
-INCLUDES = \
--I. \
--I$(top_srcdir)/src/lib \
--DPACKAGE_BIN_DIR=\"$(bindir)\" \
--DPACKAGE_LIB_DIR=\"$(libdir)\" \
--DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
-@eyelight_cflags@
 
 
 include_HEADERS = Eyelight.h \
@@ -42,16 +33,12 @@ edit/edit_slide.c \
 edit/edit_image.c
 
 libeyelight_la_LDFLAGS = -no-undefined @lt_enable_auto_import@
-libeyelight_la_LIBADD = @eyelight_libs@
+libeyelight_la_LIBADD = @EYELIGHT_LIBS@
 
 EXTRA_DIST = \
-eyelight_common.h \
 eyelight_compiler_parser.h \
-Eyelight_Edit.h \
-Eyelight.h \
 edit/edit.h \
 eyelight_object.h \
-Eyelight_Smart.h \
 eyelight_viewer.h \
 eyelight_viewer_thumbnails.h
 

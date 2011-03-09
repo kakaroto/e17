@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: eyelight
 Description: :)
 Version: @VERSION@
+@pkgconfig_requires_private@: @requirements@
 Libs: -L${libdir} -leyelight
 Cflags: -I${includedir}
-Requires: @requirements@

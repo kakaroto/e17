@@ -1,2 +1,3 @@
-filesdir = $(pkgdatadir)
+MAINTAINERCLEANFILES = Makefile.in
+
 SUBDIRS = themes viewer
