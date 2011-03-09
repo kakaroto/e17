@@ -65,7 +65,7 @@ static void _scale_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void
 static void _scale_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _scale_win_cb_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
-static void _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk);
+static Item *_scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk);
 static void _scale_win_del(Item *it);
 
 static void _scale_finish(void);
@@ -101,6 +101,7 @@ static int mouse_x, mouse_y;
 static int warp_x, warp_y, warp_pointer;
 static double warp_start;
 static Ecore_Animator *warp_animator = NULL;
+static Evas_Object *zone_clip = NULL;
 
 static void
 _scale_place_windows(double scale)
@@ -163,7 +164,11 @@ _scale_redraw(void *data)
    if (scale < 0.0) scale = 0.0;
 
    in = log(10) * scale;
-   in = 1.0 / exp(in*in);
+   /* in = 1.0 / exp(in*in); */
+   in = 1.0 - (1.0 / exp(in*in));
+   in = 0.5 * (1.0 + cos(in * M_PI));
+
+   printf("%f -- %f\n", scale, in);
 
    _scale_place_windows(in);
 
@@ -309,23 +314,6 @@ _scale_out(int mode)
 
 	if ((init_method == GO_KEY) && (e_config->focus_policy != E_FOCUS_CLICK))
 	  {
-	     /* int slide = e_config->pointer_slide;
-	      * int focus = e_config->focus_policy;
-	      * double warp_speed = e_config->winlist_warp_speed;
-	      *
-	      * e_config->pointer_slide = 1;
-	      * e_config->focus_policy = E_FOCUS_MOUSE;
-	      * e_config->winlist_warp_speed = duration/2.0;
-	      *
-	      * e_border_focus_set_with_pointer(it->bd);
-	      *
-	      * e_config->pointer_slide = slide;
-	      * e_config->focus_policy = focus;
-	      * e_config->winlist_warp_speed = warp_speed; */
-	     /* ecore_x_pointer_warp(it->bd->zone->container->win,
-	      * 			  it->bd->zone->x + it->bd->x + bd->w/2,
-	      * 			  it->bd->zone->y + it->bd->y + bd->h/2); */
-
 	     warp_pointer = 1;
 	     ecore_x_pointer_xy_get(it->bd->zone->container->win, &warp_x, &warp_y);
 	     e_border_focus_set(it->bd, 1, 1);
@@ -389,6 +377,8 @@ _scale_finish()
    EINA_LIST_FREE(handlers, handler)
      ecore_event_handler_del(handler);
 
+   evas_object_del(zone_clip);
+   zone_clip = NULL;
    e_msg_handler_del(msg_handler);
    msg_handler = NULL;
    zone = NULL;
@@ -532,12 +522,13 @@ _scale_win_del(Item *it)
    E_FREE(it);
 }
 
-static void
+static Item *
 _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk)
 {
    Item *it;
 
-   if (!e_manager_comp_src_image_get(man, src)) return;
+   if (!e_manager_comp_src_image_get(man, src))
+     return NULL;
 
    E_Comp_Win *cw = (void*)src;
 
@@ -553,6 +544,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 		  evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 		  				 _scale_win_cb_delorig, it);
 		  background = it;
+		  return it;
 	       }
 	  }
 	else if (scale_conf->fade_popups)
@@ -563,20 +555,20 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 	     				    _scale_win_cb_delorig, it);
 	     popups = eina_list_append(popups, it);
+	     return it;
 	  }
-   	return;
      }
 
-   if (!cw->bd) return;
+   if (!cw->bd) return NULL;
 
    if (cw->bd->zone != desk->zone)
-     return;
+     return NULL;
 
    if ((!show_all_desks) && (cw->bd->desk != desk))
-     return;
+     return NULL;
 
    if (cw->bd->iconic)
-     return;
+     return NULL;
 
    it = E_NEW(Item, 1);
    it->scale = 1.0;
@@ -638,6 +630,8 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    edje_object_signal_emit(it->o, "show", "e");
 
    items = eina_list_append(items, it);
+
+   return it;
 }
 
 static int
@@ -1639,8 +1633,17 @@ _scale_run(E_Manager *man)
    			       _scale_cb_key_up, e);
    handlers = eina_list_append(handlers, h);
 
+   zone_clip = evas_object_rectangle_add(e);
+   evas_object_move(zone_clip, zone->x, zone->y);
+   evas_object_resize(zone_clip, zone->w, zone->h);
+   evas_object_show(zone_clip); 
+
    EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
-     _scale_win_new(e, man, src, current_desk);
+     {
+	Item *it = _scale_win_new(e, man, src, current_desk);
+	if (it)
+	  evas_object_clip_set(it->o, zone_clip); 
+     }
 
    if (eina_list_count(items) < 1)
      {
@@ -1662,6 +1665,7 @@ _scale_run(E_Manager *man)
    if (!scale_conf->fade_popups)
      {
 	e_zone_useful_geometry_get(zone, &use_x, &use_y, &use_w, &use_h);
+	printf("use %d %d %d %d\n", use_x, use_y, use_w, use_h);
 	use_w += use_x - spacing*2;
 	use_h += use_y - spacing*2;
 	use_x += spacing;
@@ -1669,15 +1673,16 @@ _scale_run(E_Manager *man)
      }
    else
      {
-	use_w = zone->w - spacing;
-	use_h = zone->h - spacing;
-	use_x = use_y = spacing;
+	use_x = zone->x + spacing;
+	use_y = zone->y + spacing;
+	use_w = zone->x + zone->w - spacing;
+	use_h = zone->y + zone->h - spacing;
      }
 
-   min_x = -zone->w * zone->desk_x_current;
-   min_y = -zone->h * zone->desk_y_current;
-   max_x =  zone->w + zone->w * ((zone->desk_x_count - 1) - zone->desk_x_current);
-   max_y =  zone->h + zone->h * ((zone->desk_y_count - 1) - zone->desk_y_current);
+   min_x = zone->x - zone->w * zone->desk_x_current;
+   min_y = zone->y - zone->h * zone->desk_y_current;
+   max_x = zone->x + zone->w + zone->w * ((zone->desk_x_count - 1) - zone->desk_x_current);
+   max_y = zone->y + zone->h + zone->h * ((zone->desk_y_count - 1) - zone->desk_y_current);
 
    /* scale all windows down to be next to each other on one zone */
    if (scale_layout)
@@ -1736,7 +1741,15 @@ _scale_run(E_Manager *man)
 	     if (it->dy < 0) it->bd_y = -zone->h + (zone->h - it->bd->h) + it->bd->y/4;
 	  }
      }
-
+   else if (scale_layout)
+     {
+   	EINA_LIST_FOREACH(items, l, it)
+   	  {
+   	     it->x += zone->x;
+   	     it->y += zone->y;
+   	  }
+     }
+   
    DBG("time: %f\n", ecore_time_get() - start_time);
 
    it = NULL;

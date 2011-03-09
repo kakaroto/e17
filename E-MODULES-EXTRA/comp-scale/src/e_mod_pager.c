@@ -45,7 +45,7 @@ static void _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *
 static void _pager_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _pager_win_cb_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
-static void _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src);
+static Item *_pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src);
 static void _pager_win_del(Item *it);
 
 static void _pager_finish();
@@ -73,6 +73,7 @@ static double desk_w, desk_h;
 static double zoom = 0.0;
 static int mouse_activated = 0;
 static int mouse_x, mouse_y;
+static Evas_Object *zone_clip = NULL;
 
 static void
 _pager_place_desks(double scale)
@@ -90,9 +91,9 @@ _pager_place_desks(double scale)
 	     o = eina_list_data_get(l);
 
 	     evas_object_move(o,
-			      (scale * (x - current_desk->x) * zone->w) +
+			      (scale * (min_x + (x - current_desk->x) * zone->w)) +
 			      (1.0 - scale) * (min_x + x * desk_w),
-			      (scale * (y - current_desk->y) * zone->h) +
+			      (scale * (min_y + (y - current_desk->y) * zone->h)) +
 			      (1.0 - scale) * (min_y + y * desk_h));
 	     evas_object_resize(o,
 				(scale * zone->w) +
@@ -293,6 +294,8 @@ _pager_finish()
    EINA_LIST_FREE(handlers, handler)
      ecore_event_handler_del(handler);
 
+   evas_object_del(zone_clip);
+   zone_clip = NULL;
    e_msg_handler_del(msg_handler);
    msg_handler = NULL;
    zone = NULL;
@@ -373,8 +376,10 @@ _pager_win_final_position_set(Item *it)
    it->x += min_x + 1.0; /* XXX get offset from desk theme */
    it->y += min_y + 1.0;
    /* move window to relative position on desk */
-   it->x += (double)it->bd->x * (1.0 / zoom);
-   it->y += (double)it->bd->y * (1.0 / zoom);
+   it->x += (double)(it->bd->x - zone->x) * (1.0 / zoom);
+   it->y += (double)(it->bd->y - zone->y) * (1.0 / zoom);
+   printf("final position: %f %f\n", it->x, it->y);
+
 }
 
 static void
@@ -392,10 +397,10 @@ _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!scale_state)
      return;
 
-   if (x + it->bd->w > zone->w) x = zone->w - it->bd->w;
-   if (y + it->bd->h > zone->h) y = zone->h - it->bd->h;
-   if (x < 0) x = 0;
-   if (y < 0) y = 0;
+   if (x + it->bd->w > zone->x + zone->w) x = zone->x + zone->w - it->bd->w;
+   if (y + it->bd->h > zone->y + zone->h) y = zone->y + zone->h - it->bd->h;
+   if (x < zone->x) x = zone->x;
+   if (y < zone->y) y = zone->y;
 
    e_border_move(it->bd, x, y);
 
@@ -453,8 +458,8 @@ _pager_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
 
 	if ((desk2 = _pager_desk_at_xy_get(it->x, it->y)))
 	  {
-	     x += (desk2->x - desk->x) * zone->w;
-	     y += (desk2->y - desk->y) * zone->h;
+	     x += (desk2->x - desk->x) * zone->w + zone->x;
+	     y += (desk2->y - desk->y) * zone->h + zone->y;
 	  }
 
 	if (current_desk != desk)
@@ -571,7 +576,7 @@ _pager_win_del(Item *it)
    E_FREE(it);
 }
 
-static void
+static Item *
 _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 {
    Item *it;
@@ -579,12 +584,12 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    Evas_Object *o;
 
    if (!e_manager_comp_src_image_get(man, src))
-     return;
+     return NULL;
 
    if (!cw->bd)
      {
 	o = e_manager_comp_src_shadow_get(man, src);
-	if (!o) return;
+	if (!o) return NULL;
 
 	if (cw->win == zone->container->bg_win)
 	  {
@@ -594,6 +599,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 					    _pager_win_cb_delorig, it);
 	     background = it;
+	     return it;
 	  }
 	else if (scale_conf->pager_fade_popups)
 	  {
@@ -604,15 +610,16 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 					    _pager_win_cb_delorig, it);
 
 	     popups = eina_list_append(popups, it);
+	     return it;
 	  }
-   	return;
+
      }
 
    if (cw->bd->zone != zone)
-     return;
+     return NULL;
 
    if (cw->bd->iconic)
-     return;
+     return NULL;
 
    it = E_NEW(Item, 1);
    it->bd = cw->bd;
@@ -685,6 +692,8 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 
    if (scale_state)
      _pager_redraw(NULL);
+
+   return it;
 }
 
 static Eina_Bool
@@ -980,15 +989,24 @@ _pager_run(E_Manager *man)
    desk_w = (zone->w / zoom);
    desk_h = (zone->h / zoom);
 
-   min_x = OFFSET + (zoom - zone->desk_x_count) * desk_w / 2.0;
-   min_y = OFFSET + (zoom - zone->desk_y_count) * desk_h / 2.0;
+   min_x = OFFSET + zone->x + (zoom - zone->desk_x_count) * desk_w / 2.0;
+   min_y = OFFSET + zone->y + (zoom - zone->desk_y_count) * desk_h / 2.0;
 
    max_x = min_x + (zone->desk_x_count * desk_w);
    max_y = min_y + (zone->desk_y_count * desk_h);
 
-   EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
-     _pager_win_new(e, man, src);
+   zone_clip = evas_object_rectangle_add(e);
+   evas_object_move(zone_clip, zone->x, zone->y);
+   evas_object_resize(zone_clip, zone->w, zone->h);
+   evas_object_show(zone_clip); 
 
+   EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
+     {
+	Item *it = _pager_win_new(e, man, src);
+	if (it)
+	  evas_object_clip_set(it->o, zone_clip); 
+     }
+   
    if (background)
      {
 	Evas_Object *o;
@@ -1010,6 +1028,7 @@ _pager_run(E_Manager *man)
 
 		  if ((x != zone->desk_x_current) || (y != zone->desk_y_current))
 		    edje_object_signal_emit(o, "unfocused", "e");
+		  evas_object_clip_set(o, zone_clip); 
 	       }
 	  }
 	_pager_place_desks(1.0);
