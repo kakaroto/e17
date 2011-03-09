@@ -20,7 +20,6 @@ IMGS=images/module_icon.png  \
 	images/windows.png \
 	images/inwin_bg.png \
 	images/separator.png \
-	images/mainmenu_bg.png \
 	images/scrollbar-knob.png \
 	images/scrollbar-bg.png \
 	images/app_text_bg.png \
