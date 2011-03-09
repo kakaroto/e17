@@ -612,7 +612,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 	     popups = eina_list_append(popups, it);
 	     return it;
 	  }
-
+	return NULL;
      }
 
    if (cw->bd->zone != zone)

@@ -557,6 +557,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	     popups = eina_list_append(popups, it);
 	     return it;
 	  }
+	return NULL;
      }
 
    if (!cw->bd) return NULL;
