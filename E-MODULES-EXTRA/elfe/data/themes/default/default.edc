@@ -783,6 +783,12 @@ collections
             transition: "ACCELERATE" 0.3;
             after: "vib1";
          }
+         program {
+            name:   "delete_click";
+            signal: "mouse,clicked,1";
+            source: "badge_delete";
+            action: SIGNAL_EMIT "elfe,delete,clicked" "";
+         }
       }
    }
 

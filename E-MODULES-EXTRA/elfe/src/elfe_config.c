@@ -165,7 +165,7 @@ _elfe_home_config_change_timeout(void *data __UNUSED__)
 
 void elfe_home_config_desktop_item_add(int desktop,
                                        Elfe_Desktop_Item_Type type,
-                                       int col, int row,
+                                       int row, int col,
                                        Evas_Coord x, Evas_Coord y,
                                        Evas_Coord w, Evas_Coord h,
                                        const char *name)
@@ -189,4 +189,25 @@ void elfe_home_config_desktop_item_add(int desktop,
      dc->items = eina_list_append(dc->items, dic);
 
    elfe_home_config_save();
+}
+
+void elfe_home_config_desktop_item_del(int desktop,
+				       int row, int col)
+{
+    Elfe_Desktop_Config *dc;
+    Elfe_Desktop_Item_Config *dic;
+    Eina_List *l;
+
+    printf("DELETE CONFIG ITEM %d %d\n", col, row);
+    dc = eina_list_nth(elfe_home_cfg->desktops, desktop);
+    EINA_LIST_FOREACH(dc->items, l, dic)
+      {
+	 if ((dic->row == row) && (dic->col == col))
+	   {
+	      printf("Delete %d %d\n", row, col);
+	      dc->items = eina_list_remove(dc->items, dic);
+	      elfe_home_config_save();
+	      return;
+	   }
+      }
 }

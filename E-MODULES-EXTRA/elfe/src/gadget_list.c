@@ -17,7 +17,7 @@ _list_longpress(void *data, Evas_Object *obj, void *event_info)
    name = elm_list_item_data_get(it);
   
    evas_object_smart_callback_call(data,
-				   "list,longpressed", name);
+				   "list,longpressed", (void*)name);
 }
 
 Evas_Object *

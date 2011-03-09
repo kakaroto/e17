@@ -47,7 +47,7 @@ int elfe_home_config_save(void);
 void elfe_home_config_show(E_Container *con, const char *params);
 void elfe_home_config_desktop_item_add(int desktop,
                                        Elfe_Desktop_Item_Type type,
-                                       int col, int row,
+                                       int row, int col,
                                        Evas_Coord x, Evas_Coord y,
                                        Evas_Coord w, Evas_Coord h,
                                        const char *name);

@@ -19,7 +19,7 @@ struct _Elfe_Desktop_Page
 
 static void
 _pos_to_geom(Elfe_Desktop_Page *page,
-	     int col, int row,
+	     int row, int col,
 	     Evas_Coord *x, Evas_Coord *y,
 	     Evas_Coord *w, Evas_Coord *h)
 {
@@ -43,7 +43,7 @@ _pos_to_geom(Elfe_Desktop_Page *page,
 
 static void
 _xy_to_pos(Elfe_Desktop_Page *page, Evas_Coord x, Evas_Coord y,
-	   int *col, int *row)
+	   int *row, int *col)
 {
    Evas_Coord ow, oh;
    Evas_Coord w = 0, h = 0;
@@ -125,6 +125,21 @@ static void _gadcon_del(E_Gadcon *gc)
 }
 
 static void
+_item_delete_cb(void *data , Evas_Object *obj, void *event_info)
+{
+   Evas_Object *item = event_info;
+   Elfe_Desktop_Page *page = data;
+   int row, col;
+
+   elfe_desktop_item_pos_get(item, &row, &col);
+   eina_matrixsparse_cell_idx_clear(page->items, row, col);
+   evas_object_del(item);
+   elfe_home_config_desktop_item_del(page->desktop,
+				     row, col);
+
+}
+
+static void
 _populate_page(Elfe_Desktop_Page *page)
 {
    Elfe_Desktop_Config *dc;
@@ -137,22 +152,26 @@ _populate_page(Elfe_Desktop_Page *page)
      {
 	Evas_Coord x = 0, y = 0, w = 0, h = 0;
 
-        printf("Page %d populage item [%d %d]: %s\n", page->desktop, dic->col, dic->row, dic->name);
+        printf("Page %d populage item [%d %d]: %s\n", page->desktop, dic->row, dic->col, dic->name);
 
 	/* This position is already in use, this is a  conf issue! */
 	/* FIXME: delete item from config ? */
-	if (eina_matrixsparse_data_idx_get(page->items, dic->col, dic->row))
+	if (eina_matrixsparse_data_idx_get(page->items, dic->row, dic->col))
 	     continue;
 
 	item = elfe_desktop_item_add(page->layout, dic->row, dic->col,
 				     dic->name, dic->type, page->gc);
+	if (!item)
+	  continue;
+
+	evas_object_smart_callback_add(item, "item,delete", _item_delete_cb, page);
 
 	e_layout_pack(page->layout, item);
-	_pos_to_geom(page, dic->col, dic->row, &x, &y, &w, &h);
+	_pos_to_geom(page, dic->row, dic->col, &x, &y, &w, &h);
         e_layout_child_resize(item, w, h);
         e_layout_child_move(item, x, y);
         evas_object_show(item);
-	eina_matrixsparse_data_idx_set(page->items, dic->col, dic->row, item);
+	eina_matrixsparse_data_idx_set(page->items, dic->row, dic->col, item);
      }
 }
 
@@ -175,8 +194,8 @@ _page_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
    EINA_ITERATOR_FOREACH(iter, cell)
      {
 	item  = eina_matrixsparse_cell_data_get(cell);
-	elfe_desktop_item_pos_get(item, &col, &row);
-	_pos_to_geom(page, col, row, &x, &y, &w, &h);
+	elfe_desktop_item_pos_get(item, &row, &col);
+	_pos_to_geom(page, row, col, &x, &y, &w, &h);
 	e_layout_child_resize(item, w, h);
         e_layout_child_move(item, x, y);
 	evas_object_show(item);
@@ -185,10 +204,10 @@ _page_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
 }
 
 Eina_Bool
-elfe_desktop_page_pos_is_free(Evas_Object *obj, int col, int row)
+elfe_desktop_page_pos_is_free(Evas_Object *obj, int row, int col)
 {
    Elfe_Desktop_Page *page = evas_object_data_get(obj, "desktop_page");
-   if (eina_matrixsparse_data_idx_get(page->items, col, row))
+   if (eina_matrixsparse_data_idx_get(page->items, row, col))
      return EINA_TRUE;
    else
      return EINA_FALSE;
@@ -203,26 +222,28 @@ elfe_desktop_page_item_gadget_add(Evas_Object *obj, const char *name,
     Evas_Coord ox = 0, oy = 0, ow = 0, oh = 0;
     int row = 0, col = 0;
 
-    _xy_to_pos(page, x, y, &col, &row);
+    _xy_to_pos(page, x, y, &row, &col);
 
     /* This position is already used by another item! */
-    if (eina_matrixsparse_data_idx_get(page->items, col, row)) return;
+    if (eina_matrixsparse_data_idx_get(page->items, row, col)) return;
 
-    item = elfe_desktop_item_add(page->layout, col, row,
+    item = elfe_desktop_item_add(page->layout, row, col,
 				 name,
                                  ELFE_DESKTOP_ITEM_GADGET, page->gc);
     e_layout_pack(page->layout, item);
-    _pos_to_geom(page, col, row, &ox, &oy, &ow, &oh);
+    _pos_to_geom(page, row, col, &ox, &oy, &ow, &oh);
     e_layout_child_resize(item, ow, oh);
     e_layout_child_move(item, ox, oy);
     evas_object_show(item);
-    eina_matrixsparse_data_idx_set(page->items, col, row, item);
+    evas_object_raise(item);
+    eina_matrixsparse_data_idx_set(page->items, row, col, item);
 
     elfe_home_config_desktop_item_add(page->desktop,
 				      ELFE_DESKTOP_ITEM_GADGET,
-				      col, row,
+				      row, col,
 				      0, 0, 0, 0,
 				      name);
+    evas_object_smart_callback_add(item, "item,delete", _item_delete_cb, page);
 }
 
 void
@@ -234,27 +255,29 @@ elfe_desktop_page_item_app_add(Evas_Object *obj, Efreet_Menu *menu,
     Evas_Coord ox = 0, oy = 0, ow = 0, oh = 0;
     int row = 0, col = 0;
 
-    _xy_to_pos(page, x, y, &col, &row);
+    _xy_to_pos(page, x, y, &row, &col);
 
     /* This position is already used by another item! */
-    if (eina_matrixsparse_data_idx_get(page->items, col, row)) return;
+    if (eina_matrixsparse_data_idx_get(page->items, row, col)) return;
 
-    item = elfe_desktop_item_add(page->layout, col, row,
+    item = elfe_desktop_item_add(page->layout, row, col,
 				 menu->desktop->orig_path,
                                  ELFE_DESKTOP_ITEM_APP, NULL);
     e_layout_pack(page->layout, item);
-    _pos_to_geom(page, col, row, &ox, &oy, &ow, &oh);
+    _pos_to_geom(page, row, col, &ox, &oy, &ow, &oh);
     e_layout_child_resize(item, ow, oh);
     e_layout_child_move(item, ox, oy);
     evas_object_show(item);
+    evas_object_raise(item);
 
-    eina_matrixsparse_data_idx_set(page->items, col, row, item);
+    eina_matrixsparse_data_idx_set(page->items, row, col, item);
 
     elfe_home_config_desktop_item_add(page->desktop,
 				      ELFE_DESKTOP_ITEM_APP,
-				      col, row,
+				      row, col,
 				      0, 0, 0, 0,
 				      menu->desktop->orig_path);
+    evas_object_smart_callback_add(item, "item,delete", _item_delete_cb, page);
 }
 
 void
@@ -286,7 +309,7 @@ elfe_desktop_page_add(Evas_Object *parent, E_Zone *zone,
    if (!page)
      return NULL;
 
-   page->items = eina_matrixsparse_new(elfe_home_cfg->cols, elfe_home_cfg->rows,
+   page->items = eina_matrixsparse_new(elfe_home_cfg->rows, elfe_home_cfg->cols,
 				       NULL, NULL);
 
    page->layout = e_layout_add(evas_object_evas_get(parent));
