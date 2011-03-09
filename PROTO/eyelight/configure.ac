@@ -4,8 +4,8 @@ m4_define([v_min], [5])
 m4_define([v_mic], [0])
 m4_define([v_ver], [v_maj.v_min.v_mic.v_rev])
 
-m4_define([lt_rev], m4_eval(v_maj + v_min))
-m4_define([lt_cur], v_mic)
+m4_define([lt_cur], m4_eval(v_maj + v_min))
+m4_define([lt_rev], v_mic)
 m4_define([lt_age], v_min)
 
 AC_INIT([eyelight], [v_ver], [enlightenment-devel@lists.sourceforge.net])
@@ -21,7 +21,7 @@ define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
-version_info="lt_rev:lt_cur:lt_age"
+version_info="lt_cur:lt_rev:lt_age"
 AC_SUBST(version_info)
 
 ### Needed information
