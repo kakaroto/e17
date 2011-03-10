@@ -577,7 +577,7 @@ static const Eyelight_Key keys[] = {
 };
 
 
-static void key_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void key_event_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
     Evas_Event_Key_Down* event = (Evas_Event_Key_Down*) event_info;
     Eyelight_Event_Action action = EYELIGHT_NONE;
@@ -719,7 +719,7 @@ static void key_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info
 
 
 
-static void mouse_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void mouse_event_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
     Evas_Object *eyelight_smart = (Evas_Object*) data;
     eyelight_object_focus_set(eyelight_smart, 1);
@@ -800,7 +800,7 @@ _smart_del(Evas_Object * obj)
 }
 
 static void
-_smart_member_add(Evas_Object *obj, Evas_Object *member)
+_smart_member_add(Evas_Object *obj, Evas_Object *member __UNUSED__)
 {
     Smart_Data *sd;
 

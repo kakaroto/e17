@@ -251,7 +251,7 @@ void eyelight_viewer_tableofcontents_select(Eyelight_Viewer* pres)
 
 
 
-void _eyelight_viewer_tableofcontents_next_end_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_tableofcontents_next_end_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
 
@@ -263,7 +263,7 @@ void _eyelight_viewer_tableofcontents_next_end_cb(void *data, Evas_Object *o, co
 }
 
 
-void _eyelight_viewer_tableofcontents_previous_end_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_tableofcontents_previous_end_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
 
@@ -274,14 +274,14 @@ void _eyelight_viewer_tableofcontents_previous_end_cb(void *data, Evas_Object *o
     pres->tableofcontents_is_previous_program = 0;
 }
 
-void _eyelight_viewer_tableofcontents_next_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_tableofcontents_next_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_tableofcontents_next(pres);
 }
 
 
-void _eyelight_viewer_tableofcontents_previous_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_tableofcontents_previous_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_tableofcontents_previous(pres);

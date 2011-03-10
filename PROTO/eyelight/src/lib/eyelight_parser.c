@@ -18,7 +18,7 @@ static void _eyelight_save(Eyelight_Node *node, FILE *file, char *tabs);
  */
 Eyelight_Node_Name eyelight_name_get(char* p)
 {
-    int i;
+    unsigned int i;
     for (i = 0; i < sizeof (eyelight_name_keys) / sizeof (Eyelight_Name_Key); ++i)
         if (strcmp(p, eyelight_name_keys[i].keyname) == 0)
         {
@@ -33,7 +33,7 @@ Eyelight_Node_Name eyelight_name_get(char* p)
  */
 const char *eyelight_string_name_get(Eyelight_Node_Name name)
 {
-    int i;
+    unsigned int i;
     for (i = 0; i < sizeof (eyelight_name_keys) / sizeof (Eyelight_Name_Key); ++i)
         if (eyelight_name_keys[i].name == name)
         {
@@ -66,7 +66,7 @@ char* eyelight_remove_quote(char* p)
 char* eyelight_remove_slashn(char* p)
 {
     int count = 0;
-    int i,j;
+    unsigned int i,j;
 
     for(i=0; i<strlen(p);i++)
     {
@@ -283,7 +283,7 @@ char* eyelight_next_token(Eyelight_Compiler* compiler,char *p, char *end, char *
  */
 int eyelight_is_valid_block_in_block(Eyelight_Node_Name p, Eyelight_Node_Name block)
 {
-    int i;
+    unsigned int i;
     for (i = 0; i < sizeof (eyelight_valid_block_block) / sizeof (Eyelight_Valid_Prop_Block); ++i)
         if (block ==  eyelight_valid_block_block[i].block
                 && p == eyelight_valid_block_block[i].block_prop)
@@ -299,7 +299,7 @@ int eyelight_is_valid_block_in_block(Eyelight_Node_Name p, Eyelight_Node_Name bl
  */
 int eyelight_is_valid_prop_in_block(Eyelight_Node_Name prop, Eyelight_Node_Name block)
 {
-    int i;
+    unsigned int i;
     for (i = 0; i < sizeof (eyelight_valid_prop_block) / sizeof (Eyelight_Valid_Prop_Block); ++i)
         if (block ==  eyelight_valid_prop_block[i].block
                 && prop == eyelight_valid_prop_block[i].block_prop)
@@ -315,7 +315,7 @@ int eyelight_is_valid_prop_in_block(Eyelight_Node_Name prop, Eyelight_Node_Name 
  */
 int eyelight_get_nb_value_of_prop(Eyelight_Node_Name prop)
 {
-    int i;
+    unsigned int i;
     for (i = 0; i < sizeof (eyelight_prop_nb_value) / sizeof (Eyelight_Prop_Nb_Value); ++i)
         if (prop ==  eyelight_prop_nb_value[i].prop)
         {
@@ -333,7 +333,7 @@ Eyelight_Value_Type eyelight_get_type_value_of_prop(Eyelight_Node_Name prop, int
 {
     Eyelight_Value_Type type = EYELIGHT_VALUE_TYPE_STRING;
 
-    int i;
+    unsigned int i;
     for (i = 0; i < sizeof (eyelight_prop_value_type) / sizeof (Eyelight_Prop_Value_Type); ++i)
         if (prop ==  eyelight_prop_value_type[i].name
                 && pos == eyelight_prop_value_type[i].arg_pos)

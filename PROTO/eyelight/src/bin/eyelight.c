@@ -16,6 +16,13 @@
 #include <Eyelight_Smart.h>
 #include <eyelight_viewer.h>
 
+static int _eyelight_bin_log_dom_global;
+
+#ifdef ERR
+# undef ERR
+#endif
+#define ERR(s, ...) EINA_LOG_DOM_ERR(_eyelight_bin_log_dom_global,s, ##__VA_ARGS__)
+
 static void app_resize(Ecore_Evas *ee);
 static Eina_Bool app_signal_exit(void *data, int ev_type, void *ev);
 static void app_delete_request(Ecore_Evas *ee);
@@ -166,14 +173,14 @@ display_help(Evas *e)
 
 static unsigned int timestamp = 0;
 
-void time_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+void time_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
     Evas_Event_Key_Up *event = (Evas_Event_Key_Up*) event_info;
 
     timestamp = event->timestamp;
 }
 
-void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+void slide_cb(void *data, Evas *e, Evas_Object *obj __UNUSED__, void *event_info)
 {
     Ecore_Evas *ee;
     Evas_Object  *eyelight_smart;
@@ -343,12 +350,12 @@ void slide_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 
-void mouse_event_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+void mouse_event_cb(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 {
     evas_object_focus_set(obj, 1);
 }
 
-void mouse_event_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+void mouse_event_up_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
     Evas_Object *eyelight_smart = data;
     Evas_Event_Mouse_Up *ev = event_info;
@@ -558,13 +565,13 @@ static void app_resize(Ecore_Evas *ee)
     evas_object_resize(container, w, h);
 }
 
-static Eina_Bool app_signal_exit(void *data, int ev_type, void *ev)
+static Eina_Bool app_signal_exit(void *data __UNUSED__, int ev_type __UNUSED__, void *ev __UNUSED__)
 {
     ecore_main_loop_quit();
     return EINA_TRUE;
 }
 
-static void app_delete_request(Ecore_Evas *ee)
+static void app_delete_request(Ecore_Evas *ee __UNUSED__)
 {
     ecore_main_loop_quit();
 }

@@ -525,21 +525,21 @@ Evas_Object *eyelight_object_item_image_add(Eyelight_Viewer *pres, Eyelight_Slid
 /**   Callbacks used by a video item */
 
 
-void _video_play_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _video_play_cb(void *data, Evas_Object *o, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Evas_Object *ov = data;
     emotion_object_play_set(ov,1);
     edje_object_signal_emit(o, "play", "video_state");
 }
 
-void _video_pause_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _video_pause_cb(void *data, Evas_Object *o, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Evas_Object *ov = data;
     emotion_object_play_set(ov,0);
     edje_object_signal_emit(o, "pause", "video_state");
 }
 
-void _video_stop_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _video_stop_cb(void *data, Evas_Object *o, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Evas_Object *ov = data;
     emotion_object_play_set(ov,0);
@@ -548,7 +548,7 @@ void _video_stop_cb(void *data, Evas_Object *o, const char *emission, const char
     edje_object_part_drag_value_set(ov, "object.slider", 0.0, 0.0);
 }
 
-void _video_slider_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _video_slider_cb(void *data, Evas_Object *o, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     double len;
     double x, y;
@@ -561,7 +561,7 @@ void _video_slider_cb(void *data, Evas_Object *o, const char *emission, const ch
     _video_play_cb(o, ov, NULL,NULL);
 }
 
-void _video_obj_progress_cb(void *data, Evas_Object *o, void  *event_info)
+void _video_obj_progress_cb(void *data, Evas_Object *o, void  *event_info __UNUSED__)
 {
     double len, pos, scale;
 
@@ -573,7 +573,7 @@ void _video_obj_progress_cb(void *data, Evas_Object *o, void  *event_info)
     edje_object_part_drag_value_set(ov, "object.slider", scale, 0.0);
 }
 
-void _video_obj_replay_cb(void *data, Evas_Object *o, void *event_info)
+void _video_obj_replay_cb(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
     Eyelight_Video *e_video = data;
     emotion_object_position_set(e_video->o_inter,0);

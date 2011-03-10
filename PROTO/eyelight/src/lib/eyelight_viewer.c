@@ -543,7 +543,7 @@ void eyelight_viewer_move(Eyelight_Viewer*pres, Evas_Coord x, Evas_Coord y)
 /*
  * @brief call when a transition is end
  */
-void _eyelight_viewer_end_transition_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_end_transition_cb(void *data, Evas_Object *o, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     int i;

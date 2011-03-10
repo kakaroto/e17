@@ -85,7 +85,7 @@ void eyelight_viewer_expose_start(Eyelight_Viewer* pres,int select)
 }
 
 static void
-_image_resize_func(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_image_resize_func(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 {
     int tw;
     int th;
@@ -116,7 +116,7 @@ _eyelight_viewer_show(void *data)
 }
 
 static void
-_image_load_func(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_image_load_func(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    ecore_idler_add(_eyelight_viewer_show, data);
 }
@@ -454,40 +454,40 @@ void eyelight_viewer_expose_clip_set(Eyelight_Viewer* pres,Evas_Object *clip)
 }
 
 
-void _eyelight_viewer_expose_window_next_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_expose_window_next_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_expose_window_next(pres);
 }
 
 
-void _eyelight_viewer_expose_window_previous_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_expose_window_previous_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_expose_window_previous(pres);
 }
 
-void _eyelight_viewer_expose_next_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_expose_next_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_expose_next(pres);
 }
 
 
-void _eyelight_viewer_expose_previous_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_expose_previous_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_expose_previous(pres);
 }
 
-void _eyelight_viewer_expose_up_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_expose_up_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_expose_up(pres);
 }
 
 
-void _eyelight_viewer_expose_down_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_expose_down_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_expose_down(pres);

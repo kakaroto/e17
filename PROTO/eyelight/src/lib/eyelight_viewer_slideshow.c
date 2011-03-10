@@ -241,7 +241,7 @@ void eyelight_viewer_slideshow_select(Eyelight_Viewer* pres)
 
 
 
-void _eyelight_viewer_slideshow_next_end_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_slideshow_next_end_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     int i;
     char buf[EYELIGHT_BUFLEN];
@@ -275,7 +275,7 @@ void _eyelight_viewer_slideshow_next_end_cb(void *data, Evas_Object *o, const ch
 }
 
 
-void _eyelight_viewer_slideshow_previous_end_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_slideshow_previous_end_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     int i;
     char buf[EYELIGHT_BUFLEN];
@@ -306,14 +306,14 @@ void _eyelight_viewer_slideshow_previous_end_cb(void *data, Evas_Object *o, cons
     pres->slideshow_is_previous_program = 0;
 }
 
-void _eyelight_viewer_slideshow_next_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_slideshow_next_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_slideshow_next(pres);
 }
 
 
-void _eyelight_viewer_slideshow_previous_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+void _eyelight_viewer_slideshow_previous_cb(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
     Eyelight_Viewer*pres = (Eyelight_Viewer*)data;
     eyelight_viewer_slideshow_previous(pres);
