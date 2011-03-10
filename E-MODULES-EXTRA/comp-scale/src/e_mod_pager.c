@@ -270,7 +270,7 @@ _pager_finish()
 	  it->bd->visible = 1;
      }
 
-   if (current_desk && (desk != current_desk))
+   if ((current_desk) && (desk != current_desk))
      {
 	/* dont do flip animation */
 	int tmp = e_config->desk_flip_animate_mode;
@@ -564,7 +564,7 @@ _pager_win_del(Item *it)
 				      (E_Manager_Comp_Source *)it->cw,
 				      EINA_FALSE);
 
-	if (it->bd->desk != current_desk)
+	if ((it->bd->desk != current_desk) && (!bd->sticky))
 	  {
 	     e_border_hide(it->bd, 2);
 	     evas_object_hide(it->cw->shobj);

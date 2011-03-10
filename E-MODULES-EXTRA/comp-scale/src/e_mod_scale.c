@@ -510,7 +510,7 @@ _scale_win_del(Item *it)
 				      (E_Manager_Comp_Source *)it->cw,
 				      EINA_FALSE);
 
-	if (it->bd->desk != current_desk)
+	if ((it->bd->desk != current_desk) && (!bd->sticky))
 	  {
 	     e_border_hide(it->bd, 2);
 	     evas_object_hide(it->cw->shobj);
