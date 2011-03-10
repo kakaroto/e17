@@ -74,7 +74,12 @@ function dev_data_contact($data)
     $mail = @$data['E-Mail'];
 
     if ( !empty($mail) )
-        return "<a href='mailto:$mail'>$name</a>";
+    {
+       // Devs whose e-mail begins with a '-' prefer it not be on the
+       //  contact page, in an effort to minimize spam.
+       if ( substr($mail, 0, 1) != "-" )
+          return "<a href='mailto:$mail'>$name</a>";
+    }
 
     return $name;
 }
