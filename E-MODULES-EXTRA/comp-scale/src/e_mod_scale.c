@@ -372,6 +372,15 @@ _scale_finish()
    if (background)
      _scale_win_del(background);
 
+   {
+      Eina_List *l;
+      E_Manager_Comp_Source *src;
+      E_Manager *man = zone->container->manager;
+      
+      EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
+	e_manager_comp_src_hidden_set(man, src, EINA_FALSE);
+   }
+   
    EINA_LIST_FREE(handlers, handler)
      ecore_event_handler_del(handler);
 
@@ -1930,7 +1939,7 @@ _scale_handler(void *data, const char *name, const char *info, int val,
    DBG("handler... '%s' '%s'\n", name, info);
 
    /* XXX disabled for now. */
-   return;
+   /* return; */
 
    e = e_manager_comp_evas_get(man);
    if (!strcmp(info, "change.comp"))
@@ -1944,9 +1953,8 @@ _scale_handler(void *data, const char *name, const char *info, int val,
      }
    else if (!strcmp(info, "add.src"))
      {
-        /* DBG("%s: %p | %p\n", info, man, src); */
-        _scale_win_new(e, man, src, e_desk_current_get(e_util_zone_current_get(man)));
-
+        DBG("%s: %p | %p\n", info, man, src);
+	e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
      }
    else if (!strcmp(info, "del.src"))
      {
@@ -1957,7 +1965,7 @@ _scale_handler(void *data, const char *name, const char *info, int val,
 
         DBG("%s: %p | %p\n", info, man, src);
      }
-   else if (!strcmp(info, "visible.src"))
+   else if (!strcmp(info, "visibility.src"))
      {
         DBG("%s: %p | %p\n", info, man, src);
      }

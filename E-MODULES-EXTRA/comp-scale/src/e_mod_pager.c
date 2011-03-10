@@ -246,8 +246,8 @@ _pager_finish()
    Ecore_Event_Handler *handler;
    Item *it;
    E_Desk *desk;
-   Eina_List *l;
    Evas_Object *o;
+   Eina_List *l;
 
    e_grabinput_release(input_win, input_win);
    ecore_x_window_free(input_win);
@@ -290,6 +290,15 @@ _pager_finish()
 
    if (background)
      _pager_win_del(background);
+
+   {
+      Eina_List *l;
+      E_Manager_Comp_Source *src;
+      E_Manager *man = zone->container->manager;
+      
+      EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
+	e_manager_comp_src_hidden_set(man, src, EINA_FALSE);
+   }
 
    EINA_LIST_FREE(handlers, handler)
      ecore_event_handler_del(handler);
@@ -1086,14 +1095,14 @@ _pager_handler(void *data, const char *name, const char *info, int val,
   E_Manager_Comp_Source *src = (E_Manager_Comp_Source *)msgdata;
   Evas *e;
 
-  if (!scale_state) return;
+  /* if (!scale_state) return; */
 
   if (strcmp(name, "comp.manager")) return;
 
   DBG("handler... '%s' '%s'\n", name, info);
 
   /* XXX disabled for now. */
-  return;
+  /* return; */
   
   e = e_manager_comp_evas_get(man);
   if (!strcmp(info, "change.comp"))
@@ -1107,8 +1116,8 @@ _pager_handler(void *data, const char *name, const char *info, int val,
     }
   else if (!strcmp(info, "add.src"))
     {
-      /* DBG("%s: %p | %p\n", info, man, src); */
-      _pager_win_new(e, man, src);
+      DBG("%s: %p | %p\n", info, man, src);
+      e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
     }
   else if (!strcmp(info, "del.src"))
     {
@@ -1119,8 +1128,9 @@ _pager_handler(void *data, const char *name, const char *info, int val,
 
       DBG("%s: %p | %p\n", info, man, src);
     }
-  else if (!strcmp(info, "visible.src"))
+  else if (!strcmp(info, "visibility.src"))
     {
-      DBG("%s: %p | %p\n", info, man, src);
+      DBG("%s: %p | %p\n", info, man, src);      
+      /* _pager_win_new(e, man, src);       */
     }
 }
