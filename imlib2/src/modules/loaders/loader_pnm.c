@@ -215,15 +215,22 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                     x = 0;
                     while (x < w)
                       {
-                         if (!buf[i])   /* fill buffer */
+                         int k;
+                         /* check 4 chars ahead to see if we need to
+                            fill the buffer */
+                         for (k = 0; k < 4; k++)
                            {
-                              if (!fgets(buf, 255, f))
+                              if (!buf[i+k])   /* fill buffer */
                                 {
-                                   free(idata);
-                                   fclose(f);
-                                   return 0;
+                                   if (fseek(f, -k, SEEK_CUR) == -1 || !fgets(buf, 255, f))
+                                     {
+                                        free(idata);
+                                        fclose(f);
+                                        return 0;
+                                     }
+                                   i = 0;
+                                   break;
                                 }
-                              i = 0;
                            }
                          while (buf[i] && isspace(buf[i]))
                             i++;
@@ -308,15 +315,22 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                     x = 0;
                     while (x < w3)
                       {
-                         if (!buf[i])   /* fill buffer */
+                         int k;
+                         /* check 4 chars ahead to see if we need to
+                            fill the buffer */
+                         for (k = 0; k < 4; k++)
                            {
-                              if (!fgets(buf, 255, f))
+                              if (!buf[i+k])   /* fill buffer */
                                 {
-                                   free(idata);
-                                   fclose(f);
-                                   return 0;
+                                   if (fseek(f, -k, SEEK_CUR) == -1 || !fgets(buf, 255, f))
+                                     {
+                                        free(idata);
+                                        fclose(f);
+                                        return 0;
+                                     }
+                                   i = 0;
+                                   break;
                                 }
-                              i = 0;
                            }
                          while (buf[i] && isspace(buf[i]))
                             i++;
