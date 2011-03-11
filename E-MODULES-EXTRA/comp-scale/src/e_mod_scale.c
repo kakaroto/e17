@@ -556,6 +556,9 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	  }
 	else if (scale_conf->fade_popups)
 	  {
+	     if ((cw->pop) && (cw->pop->zone != zone))
+	       return NULL;
+	     
 	     it = E_NEW(Item, 1);
 	     it->man = man;
 	     it->o_win = e_manager_comp_src_shadow_get(man, src);
@@ -617,13 +620,13 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->dx = cw->bd->desk->x - desk->x;
    it->dy = cw->bd->desk->y - desk->y;
 
-   it->x = cw->bd->x + it->dx * desk->zone->w;
-   it->y = cw->bd->y + it->dy * desk->zone->h;
-   it->w = cw->bd->w;
-   it->h = cw->bd->h;
+   it->bd_x = (it->bd->x - zone->x);
+   it->bd_y = (it->bd->y - zone->y);
 
-   it->bd_x = it->x;
-   it->bd_y = it->y;
+   it->x = it->bd_x + it->dx * desk->zone->w;
+   it->y = it->bd_y + it->dy * desk->zone->h;
+   it->w = it->bd->w;
+   it->h = it->bd->h;
 
    it->cur_x = it->x;
    it->cur_y = it->y;
@@ -985,9 +988,9 @@ _scale_shrink()
 	else
 	  {
 	     move_x = ((it->x + it->w/2.0) -
-		       (double)(it->bd->x + it->bd->w/2.0)) / 10.0;
+		       (double)(it->bd_x + it->bd->w/2.0)) / 10.0;
 	     move_y = ((it->y + it->h/2.0) -
-		       (double)(it->bd->y + it->bd->h/2.0)) / 10.0;
+		       (double)(it->bd_y + it->bd->h/2.0)) / 10.0;
 	  }
 
 	if (!(move_y || move_x))
@@ -1670,6 +1673,8 @@ _scale_run(E_Manager *man)
    if (!scale_conf->fade_popups)
      {
 	e_zone_useful_geometry_get(zone, &use_x, &use_y, &use_w, &use_h);
+	use_x -= zone->x;
+	use_y -= zone->y;
 	use_w += use_x - spacing*2;
 	use_h += use_y - spacing*2;
 	use_x += spacing;
@@ -1677,16 +1682,16 @@ _scale_run(E_Manager *man)
      }
    else
      {
-	use_x = zone->x + spacing;
-	use_y = zone->y + spacing;
-	use_w = zone->x + zone->w - spacing;
-	use_h = zone->y + zone->h - spacing;
+	use_x = spacing;
+	use_y = spacing;
+	use_w = zone->w - spacing;
+	use_h = zone->h - spacing;
      }
 
-   min_x = zone->x - zone->w * zone->desk_x_current;
-   min_y = zone->y - zone->h * zone->desk_y_current;
-   max_x = zone->x + zone->w + zone->w * ((zone->desk_x_count - 1) - zone->desk_x_current);
-   max_y = zone->y + zone->h + zone->h * ((zone->desk_y_count - 1) - zone->desk_y_current);
+   min_x = zone->w * zone->desk_x_current;
+   min_y = zone->h * zone->desk_y_current;
+   max_x = zone->w + zone->w * ((zone->desk_x_count - 1) - zone->desk_x_current);
+   max_y = zone->h + zone->h * ((zone->desk_y_count - 1) - zone->desk_y_current);
 
    /* scale all windows down to be next to each other on one zone */
    if (scale_layout)
@@ -1745,13 +1750,13 @@ _scale_run(E_Manager *man)
 	     if (it->dy < 0) it->bd_y = -zone->h + (zone->h - it->bd->h) + it->bd->y/4;
 	  }
      }
-   else if (scale_layout)
+
+   EINA_LIST_FOREACH(items, l, it)
      {
-   	EINA_LIST_FOREACH(items, l, it)
-   	  {
-   	     it->x += zone->x;
-   	     it->y += zone->y;
-   	  }
+	it->x += zone->x;
+	it->y += zone->y;
+	it->bd_x += zone->x;
+	it->bd_y += zone->y;
      }
    
    DBG("time: %f\n", ecore_time_get() - start_time);
