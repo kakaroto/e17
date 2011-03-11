@@ -610,6 +610,9 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 	  }
 	else if (scale_conf->pager_fade_popups)
 	  {
+	     if ((cw->pop) && (cw->pop->zone != zone))
+	       return NULL;
+
 	     it = E_NEW(Item, 1);
 	     it->man = man;
 	     it->o_win = o;

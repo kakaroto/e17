@@ -183,7 +183,7 @@ _scale_redraw(void *data)
 		  double bx = it->bd_x  - it->x;
 		  double by = it->bd_y  - it->y;
 
-		  a = (1.0 - sqrt(ax*ax + ay*ay) / sqrt(bx*bx + by*by)) * 255;
+		  a = (1.0 - sqrt(ax*ax + ay*ay) / sqrt(bx*bx + by*by)) * 255.0;
 	       }
 
 	     it->alpha = a;
