@@ -1,12 +1,10 @@
 * Eina 1.1
 	- implement multiple level of hash for eina_hash depending on number of child.
-	- replace inlist by rbtree in chained mempool.
 	- improve benchmark (add more real use case, provide option for tracking result more easily)
 	- add open/fstat/mmap/munmap/close helper.
 
 * Eet
 	- add inheritance
-	- improve speed of array decoding
 
 * Evas
 	- add _stringshared version for evas_event_feed_*
@@ -27,6 +25,7 @@ h	- Add specialized task for each match automate case
 	- Add an optimizer to change edje layout for better performance
 	- Add benchmark tools.
 	- Try to improve speed of object destruction by moving them to another thread.
+	- Add group { text, drag } setter.
 
 * Elixir
 h	- add eet -> js object
@@ -62,10 +61,9 @@ h	- fix expose and thumbnail display to be fully async
 * Eio 1.0
 h	- provide a completly asynchronous IO API using ecore thread infra
 	- add notify support
-	- use dirfd helper (partial support with eina 1.0 and full with 1.1)
-	- add tutorial
+h	- use dirfd helper (partial support with eina 1.0 and full with 1.1)
+h	- add tutorial
 	- add tests suite
-	- add recursive ls API
 
 * Efreet 1.0
 d	- implement cache with icons directory content to avoid uneeded stat
