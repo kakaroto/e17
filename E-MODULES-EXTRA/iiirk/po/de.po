@@ -1,0 +1,155 @@
+# German translations for iiirk package
+# German messages for iiirk.
+# Copyright (C) 2011 Enlightenment development team
+# This file is distributed under the same license as the iiirk package.
+# Fabian Nowak <timystery@arcor.de>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: iiirk 0.1.0\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-11-23 23:42+0100\n"
+"PO-Revision-Date: 2011-03-11 22:17+0100\n"
+"Last-Translator: Fabian Nowak <timystery@arcor.de>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/e_mod_main.c:234
+msgid "IIirk"
+msgstr "Iiirk-Leiste"
+
+#: src/e_mod_main.c:368 src/e_mod_main.c:784
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: src/e_mod_main.c:1550
+msgid "Applications"
+msgstr "Anwendungen"
+
+#: src/e_mod_main.c:1552 src/e_int_config_iiirk.c:49
+#: src/e_int_config_iiirk.c:64
+msgid "IIirk Applications"
+msgstr "Anwendunden in Iiirk"
+
+#: src/e_mod_main.c:1554
+msgid "Internal"
+msgstr "Intern"
+
+#: src/e_mod_main.c:1555
+msgid "IIirk Other"
+msgstr "Anderes"
+
+#: src/e_mod_config.c:55
+msgid "Iiirk Settings"
+msgstr "Einstellungen für Iiirk"
+
+#: src/e_mod_config.c:107
+msgid "Selected Iiirk Source"
+msgstr "Gewählte Quelle für Iiirk"
+
+#: src/e_mod_config.c:115 src/e_int_config_iiirk.c:159
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: src/e_mod_config.c:117 src/e_int_config_iiirk.c:185
+msgid "Delete"
+msgstr "Löschen"
+
+#: src/e_mod_config.c:119
+msgid "Configure"
+msgstr "Einstellen"
+
+#: src/e_mod_config.c:128
+msgid "General Settings"
+msgstr "Allgemeine Einstellungen"
+
+#: src/e_mod_config.c:129
+msgid "Hide window from any list when iconified"
+msgstr "Fenster auf keiner Liste zeigen, wenn es minimiert ist"
+
+#: src/e_mod_config.c:131
+msgid "Show Icon Label"
+msgstr "Icon-Beschriftung zeigen"
+
+#: src/e_mod_config.c:134
+msgid "Display Name"
+msgstr "Namen anzeigen"
+
+#: src/e_mod_config.c:136
+msgid "Display Title"
+msgstr "Titel anzeigen"
+
+#: src/e_mod_config.c:138
+msgid "Display Class"
+msgstr "Klasse anzeigen"
+
+#: src/e_mod_config.c:140
+msgid "Display Icon Name"
+msgstr "Symbolnamen anzeigen"
+
+#: src/e_mod_config.c:142
+msgid "Display Border Caption"
+msgstr "Titel im Rahmen anzeigen"
+
+#: src/e_mod_config.c:147
+msgid "Screen"
+msgstr "Bildschirm"
+
+#: src/e_mod_config.c:167
+msgid "Show windows from all screens"
+msgstr "Fenster von allen Bildschirmen zeigen"
+
+#: src/e_mod_config.c:172
+msgid "Show windows from current screen"
+msgstr "Fenster des aktuellen Bildschirms zeigen"
+
+#: src/e_mod_config.c:178
+msgid "Desktop"
+msgstr "Desktop"
+
+#: src/e_mod_config.c:181
+msgid "Show windows from all desktops"
+msgstr "Fenster von allen Desktops zeigen"
+
+#: src/e_mod_config.c:186
+msgid "Show windows from active desktop"
+msgstr "Fenster des aktiven Desktops zeigen"
+
+#: src/e_mod_config.c:225
+msgid "Create new IIirk source"
+msgstr "Neue Quelle für Iiirk erstellen"
+
+#: src/e_mod_config.c:226
+msgid "Enter a name for this new source:"
+msgstr "Geben Sie einen neuen Namen für diese Quelle ein:"
+
+#: src/e_mod_config.c:241
+#, c-format
+msgid ""
+"You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
+"iiirk source?"
+msgstr ""
+
+#: src/e_mod_config.c:245
+msgid "Are you sure you want to delete this iiirk source?"
+msgstr "Möchten Sie diese Quelle für Iiirk wirklich löschen?"
+
+#: src/e_int_config_iiirk.c:152
+msgid "All Applications"
+msgstr "Alle Anwendungen"
+
+#: src/e_int_config_iiirk.c:166
+msgid "Selected Applications"
+msgstr "Ausgewählte Anwendungen"
+
+#: src/e_int_config_iiirk.c:174
+msgid "Up"
+msgstr "Hinauf"
+
+#: src/e_int_config_iiirk.c:179
+msgid "Down"
+msgstr "Hinunter"

@@ -1,12 +1,14 @@
 [Desktop Entry]
 Type=Link
 Name=Iiirk
+Name[de]=Iiirk-Leiste
 Name[eo]=Iiirk
 Icon=e-module-iiirk
 X-Enlightenment-ModuleType=utils
 Comment=Act like a taskbar but only for selected applications.
 Comment[ru]=Предоставляет функции аналогичные панели задач, только для выбранных приложений.
 Comment[cs]=Jako taskbar, ale jen pro vybrané aplikace.
+Comment[de]=Ähnlich zu einer Taskleiste, allerdings nur für ausgewählte Anwendungen
 Comment[hu]=Olyan mint egy feladatablak, de csak a kijelölt alkalmazásoknak.
 Comment[it]=Si comporta come una taskbar, ma solo per applicazioni selezionate.
 Comment[fr]=Similaire à une barre des tâches mais uniquement pour des applications sélectionnées.
