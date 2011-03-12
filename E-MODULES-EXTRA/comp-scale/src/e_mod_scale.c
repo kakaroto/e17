@@ -533,11 +533,10 @@ static Item *
 _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk)
 {
    Item *it;
-
+   E_Comp_Win *cw = (void*)src;
+   
    if (!e_manager_comp_src_image_get(man, src))
      return NULL;
-
-   E_Comp_Win *cw = (void*)src;
 
    if (!cw->bd)
      {

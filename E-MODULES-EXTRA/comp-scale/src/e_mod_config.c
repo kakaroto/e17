@@ -102,7 +102,8 @@ static Evas_Object *
 _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o, *of, *ow, *ot, *otb;
-
+   E_Radio_Group *rg;
+   
    otb = e_widget_toolbook_add(evas, 0, 0);
 
    ot = e_widget_table_add(evas, 0);
@@ -121,9 +122,13 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.01, 3.0, 0.01, 0,
 			     &(cfdata->duration), NULL,100);
    e_widget_framelist_object_append (of, ow);
-   ow = e_widget_check_add(evas, D_("Slotted Layout"),
-			   &(cfdata->layout_mode));
+
+   rg = e_widget_radio_group_new(&cfdata->layout_mode);
+   ow = e_widget_radio_add(evas, D_("Slotted Layout"), 1, rg);
    e_widget_framelist_object_append(of, ow);
+   ow = e_widget_radio_add(evas, D_("Natural Layout"), 0, rg);
+   e_widget_framelist_object_append(of, ow);
+
    e_widget_framelist_content_align_set(of, 0.0, 0.0);
    ow = e_widget_check_add(evas, D_("Grow more!"),
 			   &(cfdata->grow));
@@ -147,8 +152,10 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.01, 3.0, 0.01, 0,
 			     &(cfdata->desks_duration), NULL,100);
    e_widget_framelist_object_append (of, ow);
-   ow = e_widget_check_add(evas, D_("Slotted Layout"),
-			   &(cfdata->desks_layout_mode));
+   rg = e_widget_radio_group_new(&cfdata->desks_layout_mode);
+   ow = e_widget_radio_add(evas, D_("Slotted Layout"), 1, rg);
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_radio_add(evas, D_("Natural Layout"), 0, rg);
    e_widget_framelist_object_append(of, ow);
    ow = e_widget_check_add(evas, D_("Grow more!"),
 			   &(cfdata->desks_grow));
