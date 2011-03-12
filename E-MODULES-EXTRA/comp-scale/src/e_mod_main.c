@@ -95,7 +95,11 @@ _e_mod_action(const char *params, int modifiers, int method)
 
    if (active)
      {
-     	_hold_mod = modifiers;
+     	_hold_mod = modifiers & 
+           (ECORE_EVENT_MODIFIER_SHIFT | 
+            ECORE_EVENT_MODIFIER_CTRL | 
+            ECORE_EVENT_MODIFIER_ALT | 
+            ECORE_EVENT_MODIFIER_WIN);
 	_hold_count = 0;
 	if (_hold_mod & ECORE_EVENT_MODIFIER_SHIFT) _hold_count++;
 	if (_hold_mod & ECORE_EVENT_MODIFIER_CTRL)  _hold_count++;
