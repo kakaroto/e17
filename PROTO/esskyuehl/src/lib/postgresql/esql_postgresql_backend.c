@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -212,14 +212,14 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
    for (i = 0; i < cols; i++)
      {
         const char *str;
-        
+
         cell = calloc(1, sizeof(Esql_Cell));
         EINA_SAFETY_ON_NULL_RETURN(cell);
         cell->row = r;
         cell->colname = PQfname(pres, i);
         if (PQgetisnull(pres, row_num, i))
           goto out;
-          
+
         str = PQgetvalue(pres, row_num, i);
         switch (PQftype(pres, i))
           {
@@ -237,7 +237,7 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
            case ABSTIMEOID:
              {
                 time_t t;
-                
+
                 cell->type = ESQL_CELL_TYPE_TIMESTAMP;
                 t = strtoumax(str, NULL, 10);
                 localtime_r(&t, &cell->value.tm);

@@ -282,10 +282,10 @@ static int my_response(MYSAC *m) {
 
 		/* error */
 		if ((unsigned char)m->read[0] == 255) {
-		
+
 			/* defined mysql error */
 			if (m->packet_length > 3) {
-	
+
 				/* read error code */
 				// TODO: voir quoi foutre de ca plus tard
 				// m->errorcode = uint2korr(&m->read[1]);
@@ -298,14 +298,14 @@ static int my_response(MYSAC *m) {
 				m->read[m->packet_length] = '\0';
 				m->errorcode = MYERR_MYSQL_ERROR;
 			}
-	
+
 			/* unknown error */
 			else
 				m->errorcode = MYERR_UNKNOWN_ERROR;
-	
+
 			return MYSAC_RET_ERROR;
 		}
-	
+
 		/* EOF marker: marque la fin d'une serie
 			(la fin des headers dans une requete) */
 		else if ((unsigned char)m->read[0] == 254) {
@@ -314,10 +314,10 @@ static int my_response(MYSAC *m) {
 			m->eof = 1;
 			return MYSAC_RET_EOF;
 		}
-	
+
 		/* success */
 		else if ((unsigned char)m->read[0] == 0) {
-	
+
 			read = &m->read[1];
 			rlen = m->packet_length - 1;
 
@@ -335,14 +335,14 @@ static int my_response(MYSAC *m) {
 			/* server status */
 			m->status = uint2korr(read);
 			read += 2;
-	
+
 			/* server warnings */
 			m->warnings = uint2korr(read);
-	
+
 			return MYSAC_RET_OK;
 		}
-	
-		/* read response ... 
+
+		/* read response ...
 		 *
 		 * Result Set Packet			  1-250 (first byte of Length-Coded Binary)
 		 * Field Packet					 1-250 ("")
@@ -350,7 +350,7 @@ static int my_response(MYSAC *m) {
 		 */
 		else
 			return MYSAC_RET_DATA;
-	
+
 	default:
 		m->errorcode = MYERR_UNEXPECT_R_STATE;
 		return MYSAC_RET_ERROR;
@@ -377,7 +377,7 @@ MYSAC *mysac_new(int buffsize) {
 	m = calloc(1, sizeof(MYSAC));
 	if (m == NULL)
 		return NULL;
-	
+
 	/* buff memory */
 	buf = calloc(1, buffsize);
 	if (buf == NULL) {
@@ -504,13 +504,13 @@ int mysac_connect(MYSAC *mysac) {
 			return CR_VERSION_ERROR;
 
 		/********************************
-		  prepare auth packet 
+		  prepare auth packet
 		********************************/
 
 		/* set m->buf number */
 		mysac->packet_number++;
 		mysac->buf[3] = mysac->packet_number;
-		
+
 		/* set options */
 		if (mysac->options & CLIENT_LONG_PASSWORD)
 			mysac->flags |= CLIENT_LONG_PASSWORD;
@@ -518,7 +518,7 @@ int mysac_connect(MYSAC *mysac) {
 		                CLIENT_PROTOCOL_41 |
 		                CLIENT_SECURE_CONNECTION;
 		to_my_2(mysac->flags, &mysac->buf[4]);
-		
+
 		/* set extended options */
 		to_my_2(0, &mysac->buf[6]);
 
@@ -528,10 +528,10 @@ int mysac_connect(MYSAC *mysac) {
 		/* charset */
 		/* 8: swedish */
 		mysac->buf[12] = 8;
-		
+
 		/* 24 unused */
 		memset(&mysac->buf[13], 0, 24);
-		
+
 		/* username */
 		strcpy(&mysac->buf[36], mysac->login);
 		i = 36 + strlen(mysac->login) + 1;
@@ -545,15 +545,15 @@ int mysac_connect(MYSAC *mysac) {
 			scramble(&mysac->buf[i], mysac->salt, mysac->password);
 			i += SCRAMBLE_LENGTH;
 		}
-		
+
 		/* password ! CLIENT_SECURE_CONNECTION */
 		else {
 			scramble_323(&mysac->buf[i], mysac->salt, mysac->password);
 			i += SCRAMBLE_LENGTH_323 + 1;
 		}
-		
+
 		/* Add database if needed */
-		if ((mysac->options & CLIENT_CONNECT_WITH_DB) && 
+		if ((mysac->options & CLIENT_CONNECT_WITH_DB) &&
 		    (mysac->database != NULL)) {
 			/* TODO : debordement de buffer */
 			len = strlen(mysac->database);
@@ -615,7 +615,7 @@ int mysac_connect(MYSAC *mysac) {
 		   By sending this very specific reply server asks us to send scrambled
 		   password in old format.
 		*/
-		else if (mysac->packet_length == 1 && err == MYSAC_RET_EOF && 
+		else if (mysac->packet_length == 1 && err == MYSAC_RET_EOF &&
 		         mysac->options & CLIENT_SECURE_CONNECTION) {
 			/* continue special paquet after conditions */
 		}
@@ -631,7 +631,7 @@ int mysac_connect(MYSAC *mysac) {
 		/* set packet number */
 		mysac->packet_number++;
 		mysac->buf[3] = mysac->packet_number;
-		
+
 		/* send scrambled password in old format. */
 		scramble_323(&mysac->buf[4], mysac->salt, mysac->password);
 		mysac->buf[4+SCRAMBLE_LENGTH_323] = '\0';
@@ -659,7 +659,7 @@ int mysac_connect(MYSAC *mysac) {
 		mysac->read = mysac->buf;
 		mysac->read_len = mysac->bufsize;
 		goto case_MYSAC_RECV_AUTH_1;
-	
+
 	case MYSAC_SEND_QUERY:
 	case MYSAC_RECV_QUERY_COLNUM:
 	case MYSAC_RECV_QUERY_COLDESC1:
@@ -733,7 +733,7 @@ int mysac_send_database(MYSAC *mysac) {
 		mysac->qst = MYSAC_RECV_INIT_DB;
 		mysac->readst = 0;
 		mysac->read = mysac->buf;
-	
+
 	/**********************************************************
 	*
 	* receive
@@ -881,7 +881,7 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 		mysac->qst = MYSAC_RECV_STMT_QUERY;
 		mysac->readst = 0;
 		mysac->read = mysac->buf;
-	
+
 	/**********************************************************
 	*
 	* receive
@@ -955,11 +955,11 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 		mysac->nb_plhold--;
 		if (mysac->nb_plhold != 0)
 			goto case_MYSAC_RECV_QUERY_COLDESC1;
-		
+
 		mysac->readst = 0;
 		mysac->qst = MYSAC_RECV_QUERY_EOF1;
 		mysac->read = mysac->buf;
-	
+
 	/**********************************************************
 	*
 	* receive EOF
@@ -1042,7 +1042,7 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 		}
 
 		return 0;
-	
+
 	case MYSAC_START:
 	case MYSAC_CONN_CHECK:
 	case MYSAC_READ_GREATINGS:
@@ -1264,14 +1264,14 @@ int mysac_send_query(MYSAC *mysac) {
 			return MYERR_WANT_WRITE;
 		mysac->qst = MYSAC_RECV_QUERY_COLNUM;
 		mysac->readst = 0;
-	
+
 	/**********************************************************
 	*
 	* receive
 	*
 	**********************************************************/
 
-	/* prepare struct 
+	/* prepare struct
 
 	 +---------------+-----------------+
 	 | MYSQL_FIELD[] | char[]          |
@@ -1310,7 +1310,7 @@ int mysac_send_query(MYSAC *mysac) {
 		mysac->res->nb_cols = mysac->read[0];
 		mysac->read_id = 0;
 		mysac->qst = MYSAC_RECV_QUERY_COLDESC1;
-	
+
 		/* prepare cols space */
 
 		/* check for avalaible size in buffer */
@@ -1369,10 +1369,10 @@ int mysac_send_query(MYSAC *mysac) {
 		mysac->read_id++;
 		if (mysac->read_id < mysac->res->nb_cols)
 			goto case_MYSAC_RECV_QUERY_COLDESC1;
-		
+
 		mysac->readst = 0;
 		mysac->qst = MYSAC_RECV_QUERY_EOF1;
-	
+
 	/**********************************************************
 	*
 	* receive EOF
@@ -1436,7 +1436,7 @@ int mysac_send_query(MYSAC *mysac) {
 	for (i=0; i<mysac->res->nb_cols; i++) {
 		switch(mysac->res->cols[i].type) {
 
-		/* date type */	
+		/* date type */
 		case MYSQL_TYPE_TIME:
 		case MYSQL_TYPE_YEAR:
 		case MYSQL_TYPE_TIMESTAMP:

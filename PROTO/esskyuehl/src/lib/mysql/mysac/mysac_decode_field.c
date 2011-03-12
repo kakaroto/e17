@@ -45,7 +45,7 @@ int mysac_decode_field(char *buf, int len, MYSQL_FIELD *col) {
 	 2 (Length Coded Binary)    flags
 	 1                          decimals
 	 n (Length Coded Binary)    default
-	 
+
 	 -> VERSION 4.1
 	 Bytes                      Name
 	 -----                      ----
@@ -202,7 +202,7 @@ int mysac_decode_field(char *buf, int len, MYSQL_FIELD *col) {
 		col->def = NULL;
 		col->def_length = 0;
 	}
-		
+
 
 	/* set write pointer */
 	return wh - buf;

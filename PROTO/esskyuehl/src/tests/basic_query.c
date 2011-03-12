@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -53,7 +53,7 @@ static Eina_Bool
 connect_(void *data __UNUSED__, int type __UNUSED__, Esql *e)
 {
    Esql_Query_Id id;
-   
+
    printf("Connected!\n");
    id = esql_query_args(e, strdup("test data"), "SELECT * FROM %s", "jobs");
    if (!id) /**< queue up a simple query */
@@ -70,7 +70,7 @@ static void
 connect_cb(Esql *e, void *data __UNUSED__)
 {
    Esql_Query_Id id;
-   
+
    printf("Connected using callback!\n");
    id = esql_query_args(e, strdup("test data"), "SELECT * FROM %s", "jobs");
    if (!id) /**< queue up a simple query */
@@ -104,14 +104,14 @@ main(void)
    ecore_main_loop_begin();
    esql_disconnect(e); /**< disconnect */
    eina_counter_stop(c, 0);
-   
+
    eina_counter_start(c);
    esql_connect_callback_set(e, connect_cb, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_POSTGRESQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
    ecore_main_loop_begin();
    esql_disconnect(e); /**< disconnect */
    eina_counter_stop(c, 1);
-   
+
    eina_counter_start(c);
    esql_connect_callback_set(e, NULL, NULL);
    esql_type_set(e, ESQL_TYPE_MYSQL); /**< now switch to mysql! */

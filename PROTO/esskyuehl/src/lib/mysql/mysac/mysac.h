@@ -16,7 +16,7 @@
  * along with MySAC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/** @file */ 
+/** @file */
 
 #ifndef __MYSAC_H__
 #define __MYSAC_H__
@@ -36,7 +36,7 @@
 /**
  * container_of - cast a member of a structure out to the containing structure
  *
- * def imported from: linux-2.6.24/include/linux/kernel.h 
+ * def imported from: linux-2.6.24/include/linux/kernel.h
  *
  * @param ptr    the pointer to the member.
  * @param type   the type of the container struct this is embedded in.
@@ -239,7 +239,7 @@ typedef struct mysac {
 	unsigned int protocol;
 	char *version;
 	unsigned int threadid;
-	char salt[SCRAMBLE_LENGTH + 1]; 
+	char salt[SCRAMBLE_LENGTH + 1];
 	unsigned int options;
 	unsigned int charset;
 	unsigned int status;
@@ -422,7 +422,7 @@ int mysac_send_database(MYSAC *mysac);
  * @param buffer this buffer must contain all the sql response.
  *        this size is:
  *        sizeof(MYSAC_RES) +
- *        ( sizeof(MYSQL_FIELD) * nb_field ) + 
+ *        ( sizeof(MYSQL_FIELD) * nb_field ) +
  *        ( different fields names )
  *
  *        and for each row:
@@ -506,7 +506,7 @@ int mysac_s_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query);
 int mysac_b_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query, int len);
 
 /**
- * This function return the mysql response pointer 
+ * This function return the mysql response pointer
  *
  * @param mysac Should be the address of an existing MYSAC structure.
  *
@@ -516,7 +516,7 @@ MYSAC_RES *mysac_get_res(MYSAC *mysac);
 
 /**
  * Send sql query command
- * 
+ *
  * @param mysac Should be the address of an existing MYSAC structur.
  *
  * @return
@@ -606,7 +606,7 @@ int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned long stmt_id,
  *
  * @param mysac Should be the address of an existing MYSQL structure.
  *
- * @return 
+ * @return
  */
 int mysac_send_stmt_execute(MYSAC *mysac);
 
@@ -640,21 +640,21 @@ unsigned int mysac_field_count(MYSAC_RES *res);
 
 /**
  * Returns the number of rows in the result set.
- * 
+ *
  * mysql_num_rows() is intended for use with statements that return a result
  * set, such as SELECT. For statements such as INSERT, UPDATE, or DELETE, the
  * number of affected rows can be obtained with mysql_affected_rows().
  *
  * @param res Should be the address of an existing MYSAC_RES structure.
  *
- * @return The number of rows in the result set. 
+ * @return The number of rows in the result set.
  */
 unsigned long mysac_num_rows(MYSAC_RES *res);
 
 /**
  * Retrieves the next row of a result set. mysql_fetch_row() returns NULL when
  * there are no more rows to retrieve or if an error occurred.
- * 
+ *
  * The number of values in the row is given by mysql_num_fields(result).
  *
  * The lengths of the field values in the row may be obtained by calling
@@ -664,9 +664,9 @@ unsigned long mysac_num_rows(MYSAC_RES *res);
  * empty.
  *
  * @param res Should be the address of an existing MYSAC_RES structure.
- * 
+ *
  * @return A MYSAC_ROW structure for the next row. NULL if there are no more
- * rows to retrieve or if an error occurred. 
+ * rows to retrieve or if an error occurred.
  */
 MYSAC_ROW *mysac_fetch_row(MYSAC_RES *res);
 
@@ -731,7 +731,7 @@ mysql_fetch_lengths() /*Returns the lengths of all columns in the current row*/
  * @param db The db parameter may be set to NULL if you don't want to have a
  *        default database.
  *
- * @return 
+ * @return
  *    CR_COMMANDS_OUT_OF_SYNC  : Commands were executed in an improper order.
  *    CR_SERVER_GONE_ERROR     : The MySQL server has gone away.
  *    CR_SERVER_LOST           : The connection to the server was lost during
@@ -752,8 +752,8 @@ int mysac_change_user(MYSAC *mysac, const char *user, const char *passwd,
  * Returns the default character set name for the current connection.
  *
  * @param mysac Should be the address of an existing MYSQL structure.
- * 
- * @return The default character set name 
+ *
+ * @return The default character set name
  */
 //const char *mysac_character_set_name(MYSAC *mysac);
 
@@ -763,7 +763,7 @@ int mysac_change_user(MYSAC *mysac, const char *user, const char *passwd,
  * value of zero means that no error occurred. Client error message numbers are
  * listed in the MySQL errmsg.h header file. Server error message numbers are
  * listed in mysqld_error.h. Errors also are listed at Appendix B, Errors, Error
- * Codes, and Common Problems. 
+ * Codes, and Common Problems.
  *
  * @param mysac Should be the address of an existing MYSQL structure.
  */

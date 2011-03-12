@@ -44,11 +44,11 @@ int mysac_socket_connect(const char *socket_name, int *fd) {
 	char *conf_addr;
 	int conf_port;
 	char path[1024];
-	
+
 	memset(&conf_adress, 0, sizeof(struct sockaddr_storage));
 
 	// -----------------------------------
-	//  detect address type 
+	//  detect address type
 	// -----------------------------------
 
 	// copy data
@@ -162,7 +162,7 @@ int mysac_socket_connect(const char *socket_name, int *fd) {
 				                   (struct sockaddr *)&conf_adress,
 				                   sizeof(struct sockaddr_in6));
 				break;
-		
+
 			case AF_UNIX:
 				ret_code = connect(listen_socket,
 				                   (struct sockaddr *)&conf_adress,
@@ -204,7 +204,7 @@ ssize_t mysac_read(int fd, void *buf, size_t count, int *err) {
 		*err = MYERR_SERVER_LOST;
 		return -1;
 	}
-	
+
 	if (len == -1) {
 		if (errno == EAGAIN)
 			*err = MYERR_WANT_READ;
@@ -223,7 +223,7 @@ ssize_t mysac_write(int fd, const void *buf, size_t len, int *err) {
 	ret = write(fd, buf, len);
 
 	if (ret == -1) {
-		if (errno == EAGAIN) 
+		if (errno == EAGAIN)
 			*err = MYERR_WANT_WRITE;
 		else
 			*err = MYERR_SERVER_LOST;
