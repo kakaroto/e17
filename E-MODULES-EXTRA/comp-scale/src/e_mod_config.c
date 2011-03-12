@@ -162,7 +162,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    e_widget_table_object_append(ot, o, 1, 0, 1, 1, 1, 1, 0, 0);
 
-   of = e_widget_framelist_add(evas, D_(""), 1);
+   of = e_widget_framelist_add(evas, NULL, 1);
    ow = e_widget_check_add(evas, D_("Fade out shelves and popups"),
 			   &(cfdata->fade_popups));
    e_widget_framelist_object_append(of, ow);
