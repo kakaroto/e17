@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -121,7 +121,7 @@ azy_rss_item_print(const char *pre, int indent, Azy_Rss_Item *item)
         AZY_MAGIC_FAIL(item, AZY_MAGIC_RSS_ITEM);
         return;
      }
-   
+
    if (!pre) pre = "\t";
 
    for (i = 0; i < indent; i++)

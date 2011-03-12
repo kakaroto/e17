@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -55,7 +55,7 @@ void
 azy_rss_free(Azy_Rss *rss)
 {
    Azy_Rss_Item *item;
-   
+
    if (!AZY_MAGIC_CHECK(rss, AZY_MAGIC_RSS))
      {
         AZY_MAGIC_FAIL(rss, AZY_MAGIC_RSS);
@@ -140,7 +140,7 @@ azy_rss_print(const char *pre, int indent, Azy_Rss *rss)
         AZY_MAGIC_FAIL(rss, AZY_MAGIC_RSS);
         return;
      }
-   
+
    if (!pre) pre = "\t";
 
    for (i = 0; i < indent; i++)
@@ -155,7 +155,7 @@ azy_rss_print(const char *pre, int indent, Azy_Rss *rss)
    for (i = 0; i < indent; i++)
      printf("%s", pre);
    printf("description: %s\n", rss->desc);
-   
+
    EINA_LIST_FOREACH(rss->items, l, item)
      {
         azy_rss_item_print(pre, indent + 1, item);

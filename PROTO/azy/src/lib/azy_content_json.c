@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -55,7 +55,7 @@ azy_value_serialize_json(Azy_Value *val)
       case AZY_VALUE_MEMBER:
          /* FIXME: I think this is right? */
          return azy_value_serialize_json(azy_value_struct_member_value_get(val));
-      
+
 
       case AZY_VALUE_INT:
       {

@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -135,7 +135,7 @@ _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname)
 
 /**
  * @brief Initialize Azy
- * 
+ *
  * This function initializes error handlers, events, and
  * logging functions for Azy and must be called prior to making any
  * calls.
@@ -189,10 +189,10 @@ eina_fail:
 
 /**
  * @brief Shut down Azy
- * 
+ *
  * This function uninitializes memory allocated by azy_init.
  * Call when no further Azy functions will be used.
- * @return The number of times azy_init has been called, or -1 if 
+ * @return The number of times azy_init has been called, or -1 if
  * all occurrences of azy have been shut down
  */
 EAPI int

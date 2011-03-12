@@ -22,7 +22,7 @@
              exit(1); \
           } \
      } while (0)
-     
+
 static Eina_Bool
 _disconnected(void *data __UNUSED__, int type __UNUSED__, void *data2 __UNUSED__)
 {
@@ -56,7 +56,7 @@ _T_Test1_putBigArray_ret(Azy_Client *client __UNUSED__, Azy_Content *content, vo
 {
    Eina_Bool ret;
    const char *data;
- 
+
    if (azy_content_error_is_set(content))
      {
         printf("Error encountered: %s\n", azy_content_error_message_get(content));
@@ -113,7 +113,7 @@ static Eina_Error
 _T_Test2_suspend_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval)
 {
    const char *ret;
- 
+
    if (azy_content_error_is_set(content))
      {
         printf("Error encountered: %s\n", azy_content_error_message_get(content));
@@ -130,7 +130,7 @@ static Eina_Error
 _T_Test2_auth_ret(Azy_Client *client __UNUSED__, Azy_Content *content, void *retval)
 {
    Eina_Bool ret;
- 
+
    if (azy_content_error_is_set(content))
      {
         printf("Error encountered: %s\n", azy_content_error_message_get(content));
@@ -164,10 +164,10 @@ connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
 
    Eina_List *list = NULL;
    int i;
-   
+
    net = azy_client_net_get(cli);
    err = azy_content_new(NULL);
-   
+
    /* use json transport for big arrays */
    azy_net_transport_set(net, AZY_NET_TRANSPORT_JSON);
    azy_net_uri_set(net, "/RPC2");
@@ -180,7 +180,7 @@ connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
 
    ret = T_Test1_putBigArray(cli, list, err, eina_stringshare_add("stored data"));
    CALL_CHECK(_T_Test1_putBigArray_ret);
-   
+
    EINA_LIST_FREE(list, s)
      eina_stringshare_del(s);
 
@@ -231,7 +231,7 @@ main(void)
    Ecore_Event_Handler *handler;
    Azy_Client *cli;
 
-   
+
    eina_init();
    ecore_init();
    azy_init();

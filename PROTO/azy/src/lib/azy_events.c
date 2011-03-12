@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -240,7 +240,7 @@ azy_events_header_parse(Azy_Net      *net,
           }
         else
           memcpy(buf_start, net->buffer + offset, net->size - offset);
-          
+
         free(net->buffer);
         net->buffer = NULL;
         len += net->size - offset;
@@ -427,7 +427,7 @@ out:
         else
           /* this shouldn't be possible unless someone is violating spec */
           rlen = len;
-        
+
         INFO("Set recv size to %zu (previous %lli)", rlen, prev_size);
         net->size = rlen;
         net->buffer = malloc(rlen);

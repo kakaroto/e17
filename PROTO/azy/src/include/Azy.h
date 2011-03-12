@@ -267,7 +267,7 @@ extern "C" {
                               size_t               big_len,
                               size_t               small_len);
    EAPI const char *   azy_uuid_new(void);
-   
+
    /* server */
    EAPI void                    azy_server_stop(Azy_Server *server);
    EAPI Azy_Server             *azy_server_new(Eina_Bool   secure);

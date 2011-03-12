@@ -34,7 +34,7 @@ static void
 Array_identica_Ident_free(Eina_List *array)
 {
    identica_Ident *id;
-   
+
    EINA_SAFETY_ON_NULL_RETURN(array);
 
    EINA_LIST_FREE(array, id)
@@ -81,11 +81,11 @@ static Eina_Bool
 connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *ev)
 {
    Azy_Client_Call_Id id;
-   
+
    id = azy_client_blank(ev, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)azy_value_to_Array_identica_Ident, NULL);
    if (!id) ecore_main_loop_quit();
    azy_client_callback_free_set(ev, id, (Ecore_Cb)Array_identica_Ident_free);
-   
+
    return ECORE_CALLBACK_RENEW;
 }
 

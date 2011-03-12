@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -80,7 +80,7 @@ _azy_client_handler_data_free(Azy_Client_Handler_Data *hd)
                ecore_con_server_data_set(hd->client->net->conn, NULL);
           }
      }
-   
+
    if (hd->recv)
      azy_net_free(hd->recv);
    if (hd->send) eina_strbuf_free(hd->send);
@@ -151,7 +151,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
         Eina_Error r;
 
         r = cb(client, content, content->ret);
-        
+
         ecore_event_add(AZY_CLIENT_RESULT, &r, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
         eina_hash_del_by_key(client->callbacks, &content->id);
         _azy_client_handler_call_free(client, content);
@@ -223,7 +223,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *hd)
      {
         Eina_Error ret;
         ret = cb(client, content, content->ret);
-        
+
         ecore_event_add(AZY_CLIENT_RESULT, &ret, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
         eina_hash_del_by_key(client->callbacks, &content->id);
         _azy_client_handler_call_free(client, content);
@@ -258,7 +258,7 @@ _azy_client_recv_timer(Azy_Client_Handler_Data *hd)
              return ECORE_CALLBACK_RENEW;
           }
         INFO("Server at '%s' timed out!", azy_net_ip_get(hd->recv));
-        ecore_con_server_del(hd->recv->conn); 
+        ecore_con_server_del(hd->recv->conn);
         _azy_client_handler_data_free(hd);
         return ECORE_CALLBACK_CANCEL;
      }
@@ -317,7 +317,7 @@ _azy_client_handler_redirect(Azy_Client_Handler_Data *hd)
         azy_client_connect(hd->client, hd->client->secure);
         return;
      }
-   
+
    EINA_SAFETY_ON_NULL_RETURN(msg);
    /* need to handle redirects, so we get a bit crazy here by sending data without helpers */
    if (hd->method)
@@ -378,7 +378,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
 #endif
 
    client = hd->client;
-   
+
    if (!hd->recv)
      hd->recv = azy_net_new(hd->client->net->conn);
 
@@ -390,7 +390,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
         hd->recv->buffer = overflow;
         hd->recv->size = overflow_length;
         INFO("%s: Set recv size to %lli from overflow", hd->method, hd->recv->size);
-        
+
         /* returns offset where http header line ends */
          if (!(offset = azy_events_type_parse(hd->recv, type, data, len)) && ev && (!hd->recv->http.res.http_msg))
            return azy_events_connection_kill(hd->client->net->conn, EINA_FALSE, NULL);
@@ -416,7 +416,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
    else if (data)
      {   /* otherwise keep appending to buffer */
         unsigned char *tmp;
-        
+
         if (hd->recv->size + len > hd->recv->http.content_length && (hd->recv->http.content_length > 0))
           tmp = realloc(hd->recv->buffer,
                         hd->recv->http.content_length > 0 ?
@@ -426,7 +426,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
           tmp = realloc(hd->recv->buffer, hd->recv->size + len);
 
         EINA_SAFETY_ON_NULL_RETURN_VAL(tmp, ECORE_CALLBACK_RENEW);
-        
+
         hd->recv->buffer = tmp;
 
         if ((hd->recv->size + len > hd->recv->http.content_length) &&
@@ -584,7 +584,7 @@ _azy_client_handler_del(Azy_Client                    *client,
           }
         hd->recv = NULL;
      }
-   
+
    ecore_event_add(AZY_CLIENT_DISCONNECTED, client, (Ecore_End_Cb)_azy_event_handler_fake_free, NULL);
    return ECORE_CALLBACK_CANCEL;
 }
@@ -596,7 +596,7 @@ _azy_client_handler_add(Azy_Client                    *client,
 {
    Eina_List *l;
    Azy_Client_Handler_Data *hd;
-   
+
    if (client != ecore_con_server_data_get(ev->server))
      return ECORE_CALLBACK_PASS_ON;
    DBG("(client=%p, net=%p)", client, client->net);
@@ -615,7 +615,7 @@ _azy_client_handler_add(Azy_Client                    *client,
              eina_strbuf_free(hd->send);
              hd->send = NULL;
           }
-          
+
      }
    return ECORE_CALLBACK_CANCEL;
 }

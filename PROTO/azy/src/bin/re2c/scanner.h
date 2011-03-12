@@ -48,7 +48,7 @@ public:
 	ParseMode echo();
 	int scan();
 	void reuse();
-	
+
 	size_t get_pos() const;
 	void save_state(ScannerState&) const;
 	void restore_state(const ScannerState&);
@@ -68,7 +68,7 @@ public:
 	SubStr token() const;
 	SubStr token(uint start, uint len) const;
 	Str raw_token(std::string enclosure) const;
-	virtual uint get_line() const;	
+	virtual uint get_line() const;
 	uint xlat(uint c) const;
 
 	uint unescape(SubStr &s) const;

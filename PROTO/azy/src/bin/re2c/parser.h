@@ -19,7 +19,7 @@ public:
 	static void ClearTable();
 
 	typedef std::map<std::string, Symbol*> SymbolTable;
-	
+
 	const Str& GetName() const
 	{
 		return name;

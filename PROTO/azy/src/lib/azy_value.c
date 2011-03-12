@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -101,7 +101,7 @@ azy_value_multi_line_get_(Azy_Value *val,
 
 /**
  * @brief Increase the refcount of an existing #Azy_Value
- * 
+ *
  * This function can be used to increase the reference count of @p val,
  * effectively copying the struct.  Note that only the struct itself has
  * its refcount increased, not the members.
@@ -122,7 +122,7 @@ azy_value_ref(Azy_Value *val)
 
 /**
  * @brief Decrease the refcount of an existing #Azy_Value
- * 
+ *
  * This function can be used to decrease the reference count of @p val,
  * effectively deleting an instance of the struct.  Note that only the
  * struct itself has its refcount decreased, not the members.  If the refcount
@@ -158,7 +158,7 @@ azy_value_unref(Azy_Value *val)
 /* base types */
 /**
  * @brief Create an #Azy_Value of type #AZY_VALUE_STRING
- * 
+ *
  * This function allocates memory around and stringshares a string into
  * an #Azy_Value struct.
  * @param val The string
@@ -178,7 +178,7 @@ azy_value_string_new(const char *val)
 
 /**
  * @brief Create an #Azy_Value of type #AZY_VALUE_INT
- * 
+ *
  * This function allocates memory around an int into
  * an #Azy_Value struct.
  * @param val The int
@@ -198,7 +198,7 @@ azy_value_int_new(int val)
 
 /**
  * @brief Create an #Azy_Value of type #AZY_VALUE_BOOL
- * 
+ *
  * This function allocates memory around a boolean value into
  * an #Azy_Value struct.
  * @param val The boolean value
@@ -218,7 +218,7 @@ azy_value_bool_new(Eina_Bool val)
 
 /**
  * @brief Create an #Azy_Value of type #AZY_VALUE_DOUBLE
- * 
+ *
  * This function allocates memory around a double into
  * an #Azy_Value struct.
  * @param val The double
@@ -238,7 +238,7 @@ azy_value_double_new(double val)
 
 /**
  * @brief Create an #Azy_Value of type #AZY_VALUE_TIME
- * 
+ *
  * This function allocates memory around and stringshares a time string into
  * an #Azy_Value struct.
  * @param val The time string
@@ -258,7 +258,7 @@ azy_value_time_new(const char *val)
 
 /**
  * @brief Create an #Azy_Value of type #AZY_VALUE_BASE64
- * 
+ *
  * This function allocates memory around a base64 encoded
  * string into an #Azy_Value struct.
  * @param base64 The base64 string
@@ -270,7 +270,7 @@ azy_value_base64_new(const char *base64)
    Azy_Value *val;
 
    if (!base64) return NULL;
-   
+
    val = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(val, NULL);
    val->type = AZY_VALUE_BASE64;
@@ -281,7 +281,7 @@ azy_value_base64_new(const char *base64)
 /* conversion functions */
 /**
  * @brief Retrieve the int value from an #Azy_Value struct of type #AZY_VALUE_INT
- * 
+ *
  * This function gets the int value previously stored in the struct,
  * returning success or failure.
  * @param val The #Azy_Value (NOT NULL)
@@ -306,7 +306,7 @@ azy_value_int_get(Azy_Value *val,
 
 /**
  * @brief Retrieve the string value from an #Azy_Value struct of type
- * 
+ *
  * #AZY_VALUE_STRING, #AZY_VALUE_TIME, or #AZY_VALUE_BASE64
  * This function stringshare_refs the string value previously stored in the struct,
  * returning success or failure.  It accepts all string type values, and
@@ -344,13 +344,13 @@ azy_value_string_get(Azy_Value  *val,
       default:
         return EINA_FALSE;
      }
-        
+
    return EINA_TRUE;
 }
 
 /**
  * @brief Retrieve the string value from an #Azy_Value struct of type #AZY_VALUE_BASE64
- * 
+ *
  * This function stringshare_refs the base64 encoded string previously stored in
  * the struct into a new pointer.
  * To retrieve the value and decode it in one call, @see azy_value_string_get
@@ -375,7 +375,7 @@ azy_value_base64_get(Azy_Value  *val,
 
 /**
  * @brief Retrieve the int value from an #Azy_Value struct of type #AZY_VALUE_BOOL
- * 
+ *
  * This function gets the bool value previously stored in the struct,
  * returning success or failure.
  * @param val The #Azy_Value (NOT NULL)
@@ -400,7 +400,7 @@ azy_value_bool_get(Azy_Value *val,
 
 /**
  * @brief Retrieve the double value from an #Azy_Value struct of type
- * 
+ *
  * #AZY_VALUE_DOUBLE, or #AZY_TYPE_INT
  * This function gets the double value previously stored in the struct,
  * returning success or failure.
@@ -429,7 +429,7 @@ azy_value_double_get(Azy_Value *val,
 
 /**
  * @brief Increases the refcount of an #Azy_Value
- * 
+ *
  * This function increases the refcount of an #Azy_Value, returning
  * success or failure.
  * @param val The #Azy_Value (NOT NULL)
@@ -445,7 +445,7 @@ azy_value_value_get(Azy_Value  *val,
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return EINA_FALSE;
      }
-   
+
    if (!nval)
      return EINA_FALSE;
 
@@ -455,7 +455,7 @@ azy_value_value_get(Azy_Value  *val,
 
 /**
  * @brief Return the type of an #Azy_Value
- * 
+ *
  * This function is used to return the type of value in
  * an #Azy_Value.
  * @param val The #Azy_Value struct (NOT NULL)
@@ -475,7 +475,7 @@ azy_value_type_get(Azy_Value *val)
 
 /**
  * @brief Returns the name of the #Azy_Value struct member
- * 
+ *
  * This function returns the name of the struct member that the #Azy_Value
  * contains.  Note that the name is still owned by the #Azy_Value, but is
  * guaranteed to be stringshared.
@@ -498,7 +498,7 @@ azy_value_struct_member_name_get(Azy_Value *val)
 
 /**
  * @brief Returns the value of the #Azy_Value struct member
- * 
+ *
  * This function returns the value of the struct member that the specified
  * #Azy_Value contains.  Note that the returned value is still owned by the
  * specified #Azy_Value.
@@ -521,7 +521,7 @@ azy_value_struct_member_value_get(Azy_Value *val)
 
 /**
  * @brief Returns the #Azy_Value struct member that matches a name
- * 
+ *
  * This function returns the struct member that the specified
  * #Azy_Value contains which matches @p name.
  * Note that the returned value is still owned by the
@@ -558,7 +558,7 @@ azy_value_struct_member_get(Azy_Value *val,
 
 /**
  * @brief Returns a list of the child members of an #Azy_Value
- * 
+ *
  * This function returns the list of struct member that the specified
  * #Azy_Value contains.
  * Note that the returned values (including the list) are still owned by the
@@ -613,7 +613,7 @@ azy_value_array_new(void)
 
 /**
  * @brief Set a struct member in an #Azy_Value to use a name and a value
- * 
+ *
  * This function sets member with name @p name to @p val.  If a previous member
  * with @p name exists, unref it and use @p val instead.
  * @param struc The #Azy_Value struct to set the member in (NOT NULL)
@@ -657,7 +657,7 @@ azy_value_struct_member_set(Azy_Value *struc,
 
 /**
  * @brief Add a value to an array
- * 
+ *
  * This function adds @p val to array @p arr.
  * @param arr The array (NOT NULL)
  * @param val The value to add (NOT NULL)
@@ -682,7 +682,7 @@ azy_value_array_push(Azy_Value *arr,
 
 /**
  * @brief Check if an #Azy_Value is an RPC error
- * 
+ *
  * This function checks to see if @p val is an RPC error
  * with a faultcode and faultstring, returning both if
  * it is.
@@ -698,7 +698,7 @@ azy_value_retval_is_error(Azy_Value  *val,
                           const char **errmsg)
 {
    Azy_Value *c, *s;
-   
+
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
      {
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
@@ -723,7 +723,7 @@ azy_value_retval_is_error(Azy_Value  *val,
 
 /**
  * @brief Dump a value's contents into a string
- * 
+ *
  * This function appends the values in @p v into #Eina_Strbuf @p string,
  * indenting @p indent spaces.  It calls itself recursively, dumping all sub-values
  * into @p string as well.

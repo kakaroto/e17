@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -25,7 +25,7 @@ Azy_Stream *
 azy_parser_stream_new(const char *str)
 {
    Azy_Stream *s;
-   
+
    if (!str) return NULL;
 
    s = calloc(1, sizeof(Azy_Stream));
@@ -221,7 +221,7 @@ azy_parser_file_parse(const char  *path,
 
    if (stat(path, &s) < 0) return NULL;
    if ((fd = open(path, O_RDONLY)) < 0) return NULL;
-   
+
 
    buf = mmap(NULL, s.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
    close(fd);

@@ -23,7 +23,7 @@ public:
 	basic_null_streambuf()
 		: std::basic_streambuf<_E, _Tr>()
 	{
-	}	
+	}
 };
 
 typedef basic_null_streambuf<char> null_streambuf;
@@ -37,7 +37,7 @@ public:
 		: std::basic_ostream<_E, _Tr>(null_buf = new basic_null_streambuf<_E, _Tr>())
 	{
 	}
-	
+
 	virtual ~basic_null_stream()
 	{
 		delete null_buf;
@@ -48,7 +48,7 @@ public:
 		// nothing to do
 		return *this;
 	}
-	
+
 	basic_null_stream& write(const _E *, std::streamsize)
 	{
 		// nothing to do
@@ -278,7 +278,7 @@ protected:
 		}
 		buffer.clear();
 		/*fline += std::count(buf, buf + cnt, '\n');*/
-		for (std::streamsize pos = 0; pos < cnt; ++pos) 
+		for (std::streamsize pos = 0; pos < cnt; ++pos)
 		{
 			if (buf[pos] == '\n')
 			{
@@ -303,7 +303,7 @@ private:
 typedef basic_filebuf_lc<char> filebuf_lc;
 
 template<
-	class _E, 
+	class _E,
 	class _BaseStream,
 	std::ios_base::openmode  _DefOpenMode,
 	class _Tr = std::char_traits<_E> >
@@ -340,7 +340,7 @@ public:
 		}
 		return *this;
 	}
-	
+
 	_Myt& open(FILE *fp)
 	{
 		if (mybuf->open(fp) == 0)
@@ -349,7 +349,7 @@ public:
 		}
 		return *this;
 	}
-	
+
 	void close()
 	{
 		if (mybuf->close() == 0)
@@ -357,7 +357,7 @@ public:
 			_Myios::setstate(std::ios_base::failbit);
 		}
 	}
-	
+
 	uint get_line() const
 	{
 		return mybuf->get_line();

@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
@@ -204,7 +204,7 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(0, "}");
         NL;
 
-        
+
         EL(0, "%sEina_Bool %s(Azy_Value *azy_value_struct, %s *azy_user_type)", (static_) ? "static " : "",
            t->demarch_name, t->ctype);
         EL(0, "{");
@@ -224,7 +224,7 @@ gen_type_marshalizers(Azy_Typedef *t,
              EL(1, "if (v && (!%s(v, &azy_user_type_tmp->%s)))", m->type->demarch_name, m->name);
              EL(2, "goto error;");
           }
-          
+
         NL;
         EL(1, "*azy_user_type = azy_user_type_tmp;");
         EL(1, "return EINA_TRUE;");
@@ -435,7 +435,7 @@ gen_type_hash(Azy_Typedef *t,
    Eina_List *l;
    Eina_Bool need_err = EINA_FALSE;
    Azy_Struct_Member *m;
-   
+
    if (t->type != TD_STRUCT) return;
 
    if (def)
@@ -840,7 +840,7 @@ gen_common_headers(void)
 {
    Eina_List *j;
    Azy_Typedef *t;
-   
+
    OPEN("%s/%s%sCommon.h", out_dir, name, sep);
 
    EL(0, "#ifndef %s_Common_H", (azy->name) ? azy->name : "AZY");
@@ -944,7 +944,7 @@ gen_common_impl(Azy_Server_Module *s)
              gen_type_isnull(t, EINA_FALSE);
              gen_type_hash(t, EINA_FALSE);
           }
-        
+
         gen_errors_impl(NULL);
         gen_marshalizers(NULL, EINA_FALSE);
      }
@@ -965,7 +965,7 @@ gen_server_headers(Azy_Server_Module *s)
    Eina_List *j, *k;
    Azy_Method_Param *p;
    Azy_Method *method;
-   
+
    OPEN("%s/%s%s%s.azy_server_stubs.h", out_dir, name, sep, s->name);
 
    EL(0, "#ifndef %s_%s_STUBS_H", (azy->name) ? azy->name : "AZY", s->name);
@@ -1162,7 +1162,7 @@ gen_server_impl(Azy_Server_Module *s)
 
    EL(0, "static Azy_Server_Module_Def *module = NULL;");
    NL;
-   
+
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         int n = 0;
@@ -1261,7 +1261,7 @@ gen_server_impl(Azy_Server_Module *s)
    EL(1, "module = azy_server_module_def_new(\"%s%s%s\");", name, sep, s->name);
    EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(module, NULL);");
    NL;
-   
+
    E(1, "azy_server_module_def_init_shutdown_set(module, ");
    GET_NAME(init);
    E(0, ", ");
@@ -1283,7 +1283,7 @@ gen_server_impl(Azy_Server_Module *s)
    E(1, "azy_server_module_def_fallback_set(module, ");
    GET_NAME(fallback);
    EL(0, ");");
-   
+
    EL(1, "azy_server_module_size_set(module, sizeof(%s%s%s_Module));", name, sep, s->name);
    EINA_LIST_FOREACH(s->methods, j, method)
      {
@@ -1512,7 +1512,7 @@ gen_client_impl(Azy_Server_Module *s)
    Azy_Method *method;
    Azy_Typedef *t;
    Azy_Method_Param *p;
-   
+
    OPEN("%s/%s%s%s.azy_client.c", out_dir, name, sep, s->name);
 
    EL(0, "#include \"%s%s%s.azy_client.h\"", name, sep, s->name);

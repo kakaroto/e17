@@ -54,7 +54,7 @@ int
 main(void)
 {
    Azy_Client *cli;
-   
+
    eina_init();
    ecore_init();
    azy_init();

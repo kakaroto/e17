@@ -22,11 +22,11 @@ public:
 	typedef typename std::set<_Ty>::iterator   iterator;
 	typedef typename std::set<_Ty>::size_type  size_type;
 	typedef typename std::set<_Ty>::key_type   key_type;
-	
+
 	free_list(): in_clear(false)
 	{
 	}
-	
+
 	using std::set<_Ty>::insert;
 
 	size_type erase(const key_type& key)
@@ -37,7 +37,7 @@ public:
 		}
 		return 0;
 	}
-	
+
 	void clear()
 	{
 		in_clear = true;
@@ -47,7 +47,7 @@ public:
 			delete *it;
 		}
 		std::set<_Ty>::clear();
-		
+
 		in_clear = false;
 	}
 
@@ -128,7 +128,7 @@ class RegExp
 
 public:
 	uint	size;
-	
+
 	static free_list<RegExp*> vFreeList;
 
 public:
@@ -220,7 +220,7 @@ private:
 		, match(oth.match)
 	{
 	}
-	
+
 	MatchOp& operator = (const MatchOp& oth)
 	{
 		new(this) MatchOp(oth);

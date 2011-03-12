@@ -17,7 +17,7 @@ public:
 inline std::string& CodeNames::operator [] (const char * what)
 {
 	CodeNames::iterator it = find(std::string(what));
-	
+
 	if (it != end())
 	{
 		return it->second;

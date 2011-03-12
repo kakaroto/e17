@@ -203,7 +203,7 @@ typedef struct Azy_Server_Client
 
    Eina_Bool handled : 1;
    Eina_Bool dead : 1;
-   
+
    Eina_Bool suspend : 1;
    Eina_List *suspended_nets; /* Azy_Net* */
    Azy_Net *resume;
@@ -353,7 +353,7 @@ azy_content_unserialize_json(Azy_Content *content,
                              ssize_t len);
 
 #ifdef HAVE_XML
-#ifdef __cplusplus 
+#ifdef __cplusplus
 extern "C" {
 #endif
    Eina_Bool azy_content_serialize_request_xml(Azy_Content *content);
@@ -367,7 +367,7 @@ extern "C" {
    Eina_Bool azy_content_unserialize_rss_xml(Azy_Content *content,
                                              const char  *buf,
                                              ssize_t      len);
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
 #endif
