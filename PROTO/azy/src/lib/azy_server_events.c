@@ -356,6 +356,7 @@ _azy_server_client_new(Azy_Server      *server,
 
    client->del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_azy_server_client_handler_del, client);
    client->data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, (Ecore_Event_Handler_Cb)_azy_server_client_handler_data, client);
+   server->clients++;
    /* FIXME: is there other data I want to shove into these handlers? */
    AZY_MAGIC_SET(client, AZY_MAGIC_SERVER_CLIENT);
 }
@@ -393,6 +394,7 @@ _azy_server_client_free(Azy_Server_Client *client)
         ecore_event_handler_del(client->del);
      }
 
+   client->server->clients--;
    free(client);
 }
 

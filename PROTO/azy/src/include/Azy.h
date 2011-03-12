@@ -270,8 +270,9 @@ extern "C" {
    
    /* server */
    EAPI void                    azy_server_stop(Azy_Server *server);
-   EAPI Azy_Server            *azy_server_new(Eina_Bool   secure);
+   EAPI Azy_Server             *azy_server_new(Eina_Bool   secure);
    EAPI void                    azy_server_free(Azy_Server *server);
+   EAPI unsigned long int       azy_server_clients_count(Azy_Server *server);
    EAPI Eina_List              *azy_server_module_defs_get(Azy_Server *server);
    EAPI Eina_Bool azy_server_run(Azy_Server *server,
                              int          type,

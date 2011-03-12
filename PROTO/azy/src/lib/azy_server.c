@@ -100,6 +100,24 @@ azy_server_free(Azy_Server *server)
 }
 
 /**
+ * @brief Return the current client count of a server
+ * 
+ * This function returns the number of clients currently connected to @p server.
+ * @param server The server object (NOT NULL)
+ */
+unsigned long int
+azy_server_clients_count(Azy_Server *server)
+{
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return 0;
+     }
+
+   return server->clients;
+}
+
+/**
  * @brief Retrieve the list of #Azy_Server_Module_Def objects from a server
  * 
  * This function will return an #Eina_List of #Azy_Server_Module_Def objects
