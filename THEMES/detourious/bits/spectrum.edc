@@ -1,0 +1,292 @@
+
+group {
+	name: "e/widgets/spectrum";
+
+	parts {
+		part { 
+			name: "e.swallow.content";
+			type: SWALLOW;
+			clip_to: "content_clip";
+
+			description { 
+				state: "default" 0.0;
+				rel1.offset: 4 4;
+				rel2.offset: -5 -5;
+			}
+		}
+
+		part { 
+			name: "content_clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description { 
+				state: "default" 0.0;
+				color: 255 255 255 255;
+
+				rel1 {
+					to: "e.swallow.content";
+				}
+
+				rel2 {
+					to: "e.swallow.content";
+				}
+			}
+		}
+
+		part { 
+			name: "dragable.cursor.shadow";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description { 
+				state: "default" 0.0;
+				color: 255 255 255 221;
+
+				rel1 {
+					to: "e.dragable.cursor";
+					offset: -2 -2;
+				}
+
+				rel2 {
+					to: "e.dragable.cursor";
+					offset: 1 2;
+				}
+
+				image {
+					normal: "images/spectrum_im4.png";
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part { 
+			name: "top_y";
+			type: IMAGE;
+
+			description { 
+				state: "default" 0.0;
+				min: 5 0;
+				max: 5 9999;
+				color: 255 255 255 221;
+
+				rel1 {
+					to: "e.dragable.cursor";
+					offset: 0 9;
+				}
+
+				rel2 {
+					to_y: "e.swallow.content";
+					to_x: "e.dragable.cursor";
+				}
+
+				image {
+					normal: "images/spectrum_im11.png";
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part { 
+			name: "bottom_y";
+			type: IMAGE;
+
+			description { 
+				state: "default" 0.0;
+				min: 5 0;
+				max: 5 9999;
+				color: 255 255 255 221;
+
+				rel1 {
+					to_y: "e.swallow.content";
+					to_x: "e.dragable.cursor";
+				}
+
+				rel2 {
+					to: "e.dragable.cursor";
+					offset: -1 -10;
+				}
+
+				image {
+					normal: "images/spectrum_im11.png";
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part { 
+			name: "left_x";
+			type: IMAGE;
+
+			description { 
+				state: "default" 0.0;
+				min: 0 5;
+				max: 9999 5;
+				color: 255 255 255 221;
+
+				rel1 {
+					to: "e.swallow.content";
+					to_y: "e.dragable.cursor";
+					offset: 0 2;
+				}
+
+				rel2 {
+					to: "e.dragable.cursor";
+					offset: -10 -1;
+				}
+
+				image {
+					normal: "images/spectrum_im10.png";
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part { 
+			name: "right_x";
+			type: IMAGE;
+
+			description { 
+				state: "default" 0.0;
+				min: 0 5;
+				max: 9999 5;
+				color: 255 255 255 221;
+
+				rel1 {
+					to_x: "e.swallow.content";
+					to: "e.dragable.cursor";
+					offset: 9 2;
+				}
+
+				rel2 {
+					to_x: "e.swallow.content";
+					to_y: "e.dragable.cursor";
+				}
+
+				image {
+					normal: "images/spectrum_im10.png";
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part {
+			name: "e.dragable.cursor";
+			type: IMAGE;
+			clip_to: "content_clip";
+
+			dragable {
+				x: 1 1 0;
+				y: 1 1 0;
+				confine: "content_clip";
+			}
+
+			description {
+				state: "default" 0.0;
+				min: 9 9;
+				max: 9 9;
+				fixed: 1 1;
+
+				rel1 { 
+					to: "e.swallow.content"; 
+					relative: 0.5 0.5; 
+					offset: 0 0; 
+				}
+
+				rel2 { 
+					to: "e.swallow.content"; 
+					relative: 0.5 0.5; 
+					offset: -1 -1; 
+				}
+
+				image {
+					normal: "images/spectrum_im1.png";
+					border: 3 3 4 2;
+				}
+			}
+		}
+
+		part { 
+			name: "border";
+			type: IMAGE;
+			mouse_events: 1;
+
+			description { 
+				state: "default" 0.0;
+				fill.smooth : 0;
+
+				rel1 {
+					to: "e.swallow.content";
+					offset: -1 -2;
+				}
+
+				rel2 {
+					to: "e.swallow.content";
+					offset: 0 1;
+				}
+
+				image {
+					normal: "images/spectrum_im0.png";
+					border: 7 7 7 7;
+					middle: 0;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+	}
+}
+

@@ -1,0 +1,757 @@
+
+
+group {
+	name: "e/modules/pager/popup";
+
+	parts {
+		part {
+			name: "bg_border";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 104 108 111 255;
+			}
+		}
+
+		MENU_GRADIENT;
+
+		part {
+			name: "overlay";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				rel1.offset: 1 1;
+				rel2.offset: -2 -2;
+
+				image {
+					normal: "images/menu_im0.png";
+					border: 2 2 2 2;
+					middle: 1;
+				}
+			}
+		}
+
+		part { 
+			name: "e.text.label";
+			type: TEXT;
+			effect: SHADOW;
+			mouse_events: 0;
+			scale: 1;
+
+			description { 
+				state: "default" 0.0;
+				fixed: 1 1;
+				align: 0.5 0.0;
+				color: 60 60 60 255;
+				color3: 170 168 169 128;
+
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 0 8;
+				}
+
+				rel2 {
+					relative: 1.0 0.0;
+					offset: -1 -1;
+				}
+
+				TEXT_LARGE("module_large", 0.5 0.0, 1 1);
+			}
+		}
+
+		part { 
+			name: "e.swallow.content";
+			type: SWALLOW;
+
+			description { 
+				state: "default" 0.0;
+
+				rel1 {
+					to_y: "e.text.label";
+					relative: 0.0 1.0;
+					offset: 4 0;
+				}
+
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -5 -13;
+				}
+			}
+		}
+
+		part {
+			name: "decoration";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				min: 15 11;
+				max: 15 11;
+				fixed: 1 1;
+				align: 0.5 1.0;
+	
+				rel1 {
+					relative: 0.0 1.0;
+					offset: 0 5;
+				}
+
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -2;
+				}
+	
+				image {
+					normal: "images/decoration_im1.png";
+				}
+			}
+		}
+	}
+}
+
+group {
+	name: "e/modules/pager/desk";
+
+	data {
+		item: "e/modules/pager/desk/apparence" "plain";
+	}
+
+	script {
+		public active;
+		public drag;
+	}
+
+	parts {
+		part {
+			name: "gradient";
+			mouse_events: 1;
+                
+			description { 
+				state: "default" 0.0; 
+                           image {                                                        
+                              normal: "images/backdrop_grad.png";                         
+                           }                                                              
+
+                
+				rel1 { 
+					offset: 3 4; 
+				}
+                
+				rel2 { 
+					offset: -2 -5; 
+				}
+			}
+		}
+
+		part {
+			name: "pattern";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 205 204 188 5;
+
+				image {
+					normal: "images/wallpaper_pat3.png";
+				}
+
+				rel1 { 
+					offset: 3 4; 
+				}
+
+				rel2 { 
+					offset: -2 -5; 
+				}
+
+				fill {
+					smooth: 0;
+
+					size {
+						relative: 0 0;
+						offset: 4 4;
+					}
+				}
+			}
+		}
+
+		part {
+			name: "e.swallow.content";
+			type: SWALLOW;
+			clip_to: "transitions_clip";
+
+			description {
+				state: "default" 0.0;
+
+				rel1 { 
+					offset: 5 7; 
+				}
+
+				rel2 { 
+					offset: -5 -7; 
+				}
+			}
+		}
+
+		part {
+			name: "transitions_clip";
+			type: RECT;
+			mouse_events: 1;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 128;
+
+				rel1 { 
+					offset: 3 4; 
+				}
+
+				rel2 { 
+					offset: -2 -5; 
+				}
+			}
+
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+			}
+
+			description {
+				state: "drag" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 64;
+			}
+		}
+
+		part {
+			name: "overlay_clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 75 115 199 128;
+				rel1.to: "background";
+				rel1.offset: 3 1;
+				rel2.to: "background";
+				rel2.offset: -4 -3;
+			}
+		}
+
+		part {
+			name: "overlay_left";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "overlay_clip";
+
+			description {
+				state: "default" 0.0;
+				image.normal: "images/pager_im2.png";
+				image.border: 2 2 2 2;
+
+				rel1 { 
+					to: "transitions_clip"; 
+					relative: 0.0 0.0; 
+					offset: 0 0; 
+				}
+
+				rel2 { 
+					to: "transitions_clip"; 
+					relative: 1.0 0.5; 
+					offset: 0 0; 
+				}
+			}
+
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+
+				rel1 { 
+					to: "transitions_clip"; 
+					relative: 0.0 0.0; 
+					offset: 0 0; 
+				}
+
+				rel2 { 
+					to: "transitions_clip"; 
+					relative: 1.0 0.0; 
+					offset: -1 -1; 
+				}
+			}
+		}
+
+		part {
+			name: "overlay_right";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "overlay_clip";
+
+			description {
+				state: "default" 0.0;
+				image.normal: "images/pager_im3.png";
+				image.border: 2 2 2 2;
+	
+				rel1 { 
+					to: "transitions_clip"; 
+					relative: 0.0 0.5; 
+					offset: 0 0; 
+				}
+
+				rel2 { 
+					to: "transitions_clip"; 
+					relative: 1.0 1.0; 
+					offset: 0 -1; 
+				}
+			}
+
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+
+				rel1 { 
+					to: "transitions_clip"; 
+					relative: 0.0 1.0; 
+					offset: 0 0; 
+				}
+
+				rel2 { 
+					to: "transitions_clip"; 
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+			}
+		}
+
+		part {
+			name: "background";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+
+				rel1 { 
+					offset: 0 3; 
+				}
+
+				rel2 { 
+					offset: 1 -3; 
+				}
+
+				image {
+					normal: "images/pager_im6.png";
+					border: 7 7 7 8;
+				}
+			}
+		}
+
+		part {
+			name: "focus";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 192 192 192 255;
+
+				rel1 { 
+					to: "background"; 
+					relative: 0.0 0.0; 
+					offset: 1 -1; 
+				}
+
+				rel2 { 
+					to: "background"; 
+					relative: 1.0 1.0; 
+					offset: -2 0; 
+				}
+
+				image { /* unfocused */
+					normal: "images/pager_im8.png";
+					border: 7 7 7 7;
+				}
+			}
+
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 192;
+
+				image {
+					normal: "images/pager_im0.png";
+					border: 7 7 7 7;
+				}
+			}
+		}
+
+/*
+		part { 
+			name: "e.text.label";
+			type: TEXT;
+			effect: SHADOW;
+			mouse_events: 0;
+			scale: 1;
+
+			description { 
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				color3: 7 7 7 0;
+				#if ENABLE_COLOR_CLASSES == 0
+				#else
+				#if ENABLE_COLOR_CLASSES == 1
+					color_class: "module_label";
+				#endif
+				#endif
+
+				rel1 { 
+					offset: 0 3; 
+				}
+
+				rel2 { 
+					offset: 1 -3; 
+				}
+
+				text {
+					#if USE_FONTCONFIG == 0
+						font: "DejaVuSans-Bold";
+					#else
+					#if USE_FONTCONFIG == 1
+						font: "Sans:style=Bold";
+					#endif
+					#endif
+					size: 8;
+					align: 0.5 0.5;
+					#if ENABLE_TEXT_CLASSES == 0
+						text_class: "";
+					#else
+					#if ENABLE_TEXT_CLASSES == 1
+						text_class: "module_small";
+					#endif
+					#endif
+				}
+			}
+
+			description { 
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 221;
+				color3: 7 7 7 36;
+			}
+		}
+*/
+	}
+
+	programs {
+		program {
+			name: "init";
+			signal: "load";
+			source: "";
+			script {
+				set_int(active, 0);
+				set_int(drag, 0);
+			}
+		}
+
+		program {
+			name: "pager_active";
+			signal: "e,state,selected";
+			source: "e";
+			action: STATE_SET "active" 0.0;
+			target: "transitions_clip";
+			target: "gradient";
+		}
+
+		program {
+			name: "pager_unselected";
+			signal: "e,state,unselected";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			target: "transitions_clip";
+			target: "gradient";
+		}
+
+		program {
+			name: "set_active";
+			signal: "e,state,selected";
+			source: "e";
+			script {
+				set_int(active, 1);
+			}
+		}
+
+		program {
+			name: "drag_in";
+			signal: "e,action,drag,in";
+			source: "e";
+			script {
+				if (get_int(drag) == 0) {
+					set_state(PART:"transitions_clip", "drag", 0.0);
+					set_int(drag, 1);
+				}
+			}
+		}
+
+		program {
+			name: "drag_out";
+			signal: "e,action,drag,out";
+			source: "e";
+ 			script {
+				if (get_int(drag) == 1) {
+					if (get_int(active) == 1)
+					set_state(PART:"transitions_clip", "active", 0.0);
+				else
+					set_state(PART:"transitions_clip", "default", 0.0);
+					set_int(drag, 0);
+				}
+			}
+		}
+
+		program {
+			name: "selected";
+			signal: "e,state,selected";
+			source: "e";
+			action: STATE_SET "active" 0.0;
+			transition: ACCELERATE 0.2;
+			target: "overlay_left";
+			target: "overlay_right";
+		}
+
+		program {
+			name: "unselected";
+			signal: "e,state,unselected";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: DECELERATE 0.2;
+			target: "overlay_left";
+			target: "overlay_right";
+		}
+
+		program {
+			name: "focused";
+			signal: "e,state,selected";
+			source: "e";
+			action: STATE_SET "active" 0.0;
+			target: "focus";
+		}
+
+		program {
+			name: "unfocused";
+			signal: "e,state,unselected";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			target: "focus";
+		}
+
+/*
+		program { 
+			name: "name_show";
+			signal: "mouse,in";
+			source: "transitions_clip";
+			action: STATE_SET "active" 0.0;
+			transition: SINUSOIDAL 0.1;
+			target: "e.text.label";
+		}
+
+		program { 
+			name: "name_hide";
+			signal: "mouse,out";
+			source: "transitions_clip";
+			action: STATE_SET "default" 0.0;
+			transition: SINUSOIDAL 0.2;
+			target: "e.text.label";
+		}
+*/
+	}
+}
+
+
+group {
+	name: "e/modules/pager/window";
+	
+	parts {
+		part {
+			name: "pager_window";
+			type: IMAGE;
+
+			description {
+				state: "default" 0.0;
+
+				rel1 { 
+					relative: 0.0 0.0; 
+					offset: -2 -2; 
+				}
+
+				rel2 { 
+					relative: 1.0 1.0; 
+					offset: 3 3; 
+				}
+
+				image {
+					normal: "images/pager_im7.png";
+					border: 5 5 5 6;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+
+			description {
+				state: "focused" 0.0;
+				inherit: "default" 0.0;
+
+				image {
+					normal: "images/pager_im1.png";
+					border: 5 5 7 6;
+				}
+			}
+		}
+
+		part {
+			name: "overlay";
+			type: IMAGE;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+
+				rel1 { 
+					relative: 0.0 0.0; 
+					offset: -2 -2; 
+				}
+
+				rel2 { 
+					relative: 1.0 1.0; 
+					offset: 3 3; 
+				}
+
+				image {
+					normal: "images/pager_im7.png";
+					border: 5 5 7 6;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+
+			description {
+				state: "focused" 0.0;
+				inherit: "default" 0.0;
+
+				image {
+					normal: "images/pager_im1.png";
+					border: 5 5 7 6;
+				}
+			}
+
+			description {
+				state: "urgent" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+
+				rel1 { 
+					relative: -0.5 -0.5; 
+				}
+		
+				rel2 { 
+					relative: 1.5 1.5; 
+				}
+			}
+		}
+
+		part {
+			name: "e.swallow.icon";
+			type: SWALLOW;
+
+			description {
+				state: "default" 0.0;
+				align: 1.0 1.0;
+				max: 24 24;
+				aspect: 1.0 1.0;
+				aspect_preference: BOTH;
+		
+				rel1 { 
+					to: "overlay"; 
+					offset: 6 6; 
+				}
+
+				rel2 { 
+					to: "overlay"; 
+					offset: -5 -5; 
+				}
+			}
+		}
+	}
+
+	programs {
+		program { 
+			name: "focused";
+			signal: "e,state,focused";
+			source: "e";
+			action: STATE_SET "focused" 0.0;
+			target: "pager_window";
+			target: "overlay";
+		}
+
+		program { 
+			name: "unfocused";
+			signal: "e,state,unfocused";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			target: "pager_window";
+			target: "overlay";
+		}
+
+		program {
+			name: "go";
+			signal: "e,state,urgent";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			target: "overlay";
+			after: "go2";
+		}
+
+		program {
+			name: "go2";
+			action: STATE_SET "urgent" 0.0;
+			transition: LINEAR 1.0;
+			target: "overlay";
+			after: "go";
+		}
+
+		program {
+			name: "stop";
+			signal: "e,state,not_urgent";
+			source: "e";
+			action: ACTION_STOP;
+			target: "go";
+			target: "go2";
+			after: "stop2";
+		}
+
+		program {
+			name: "stop2";
+			action: STATE_SET "default" 0.0;
+			target: "overlay";
+		}
+	}
+}
+

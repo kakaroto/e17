@@ -1,0 +1,165 @@
+
+#define BORDER_BUTTON(NAME, TYPE, ICON, REL1X, REL1Y, OFF1X, OFF1Y, TO1, REL2X, REL2Y, OFF2X, OFF2Y, TO2) \
+	BORDER_BUTTON_ADV(NAME,TYPE,ICON,REL1X,REL1Y,OFF1X,OFF1Y,TO1,TO1,REL2X,REL2Y,OFF2X,OFF2Y,TO2,TO2)
+
+#define BORDER_BUTTON_ADV(NAME, TYPE, ICON, REL1X, REL1Y, OFF1X, OFF1Y, TO1X, TO1Y, REL2X, REL2Y, OFF2X, OFF2Y, TO2X, TO2Y) \
+	part {																\
+		name: NAME"_base";												\
+		type: IMAGE;													\
+		mouse_events: 0; 												\
+																		\
+		description {													\
+			state: "default" 0.0;										\
+			min: 20 18; 												\
+			max: 20 18; 												\
+			fixed: 1 1; 												\
+			visible:0;													\
+			rel1 {														\
+				to: NAME"_bg"; 											\
+				relative: 0.0 0.0; 										\
+				offset: 0 0; 											\
+			}															\
+																		\
+			rel2 {														\
+				to: NAME"_bg"; 											\
+				relative: 1.0 1.0; 										\
+				offset: -1 0; 											\
+			}															\
+																		\
+			image {														\
+				normal: "images/window-border_bt5.png";					\
+				border: 6 6 6 6; 										\
+			}															\
+		}																\
+																		\
+		description { 													\
+			state: "active" 0.0;										\
+			inherit: "default" 0.0;										\
+		}																\
+	}																	\
+	part {																\
+		name: NAME"_bg"; 												\
+		type: IMAGE;													\
+		mouse_events:  0; 												\
+																		\
+		description { 													\
+			state: "default" 0.0;										\
+			min: 17 17; 												\
+			max: 17 17; 												\
+			fixed: 1 1; 												\
+			visible:0;													\
+			rel1 {														\
+				to: NAME;												\
+				relative: 0.0 0.0; 										\
+				offset: -3 0; 											\
+			}															\
+																		\
+			rel2 {														\
+				to: NAME;												\
+				relative: 1.0 1.0; 										\
+				offset: -1 -2; 											\
+			}															\
+																		\
+			image {														\
+				normal: "images/window-border_bt1.png";					\
+				border: 7 6 7 6; 										\
+			}															\
+		}																\
+	}																	\
+    part {																\
+		name: NAME"_detail";											\
+		type: IMAGE;													\
+		mouse_events: 0; 												\
+																		\
+		description { 													\
+			state: "default" 0.0;										\
+			min: 17 17; 												\
+			max: 17 17; 												\
+			fixed: 1 1; 												\
+																		\
+			rel1 {														\
+				to: NAME"_bg"; 											\
+				relative: 0.0 0.0; 										\
+				offset: 0 0; 											\
+			}															\
+																		\
+			rel2 {														\
+				to: NAME"_bg"; 											\
+				relative: 1.0 1.0; 										\
+				offset: 0 -1;											\
+			}															\
+																		\
+			image {														\
+				normal: "actions/"ICON".png";							\
+			}															\
+		}																\
+	}																	\
+part {																	\
+		name: NAME; 													\
+		type: RECT;														\
+																		\
+		description { 													\
+			state: "default" 0.0;										\
+			align: 1.0 0.0; 											\
+			aspect: 1.0 1.0; 											\
+			aspect_preference: VERTICAL;								\
+			color: 0 0 0 0; 											\
+																		\
+			rel1 {														\
+				relative: REL1X REL1Y;									\
+				offset: OFF1X OFF1Y;									\
+				to_x: TO1X; 											\
+				to_y: TO1Y; 											\
+			}															\
+																		\
+			rel2 {														\
+				relative: REL2X REL2Y;									\
+				offset: OFF2X OFF2Y;									\
+				to_x: TO2X; 											\
+				to_y: TO2Y; 											\
+			}															\
+		}																\
+	}																	\
+	part {																\
+		name: "e.event."NAME;											\
+		type: RECT; 													\
+		repeat_events: 1; 												\
+																		\
+		description { 													\
+			state: "default" 0.0;										\
+			color: 0 0 0 0; 											\
+																		\
+			rel1.to: NAME; 												\
+			rel2.to: NAME; 												\
+		}																\
+	}																	\
+
+#define BORDER_MENU_BUTTON(TYPE, ICON)									\
+	group {																\
+		name: "e/widgets/border/default/"TYPE;							\
+																		\
+		parts {															\
+			part {														\
+				name: "whole";											\
+				type: RECT;												\
+																		\
+				description {											\
+					state: "default" 0.0;								\
+					color: 255 0 0 0;									\
+																		\
+					rel1 {												\
+						relative: 0.0 0.0;								\
+						offset: 0 0;									\
+					}													\
+																		\
+					rel2 {												\
+						relative: 1.0 1.0;								\
+						offset: -1 -1;									\
+					}													\
+				}														\
+			}															\
+			BORDER_BUTTON("button",TYPE, ICON,0.0,0.0,-3,-3,"whole",1.0,1.0,2,2,"whole"); \
+																		\
+		}																\
+	}
+

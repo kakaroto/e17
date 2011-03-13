@@ -1,0 +1,376 @@
+
+#define BORDER(NAME, MIN, MAX, REL1, OFF1, REL2, OFF2, IMG1) 	\
+part { 								\
+	name: NAME; 						\
+	type: IMAGE;						\
+	mouse_events: 0; 					\
+								\
+	description { 						\
+		state: "default" 0.0; 				\
+		min: MIN; 					\
+		max: MAX; 					\
+	color: 255 255 255 255;					\
+	  							\
+		rel1 { 						\
+			relative: REL1; 			\
+			offset: OFF1; 				\
+		}						\
+								\
+		rel2 { 						\
+			relative: REL2; 			\
+			offset: OFF2; 				\
+		} 						\
+								\
+		image { 					\
+			normal: IMG1; 				\
+		} 						\
+	} 							\
+}
+
+#define BORDER2(NAME,TO1,REL1,OFF1,TO2,REL2,OFF2) 	\
+part { 							\
+	name: NAME; 					\
+	type: RECT; 					\
+	mouse_events: 0;				\
+							\
+	description { 					\
+		state: "default" 0.0; 			\
+		min: 1 1; 				\
+		max: 1 9999; 				\
+		color: 0 0 0 102; 		\
+							\
+		rel1 { 					\
+			to: TO1; 			\
+			relative: REL1; 		\
+			offset: OFF1; 			\
+		} 					\
+							\
+		rel2 { 					\
+			to: TO2; 			\
+			relative: REL2; 		\
+			offset: OFF2; 			\
+		} 					\
+	} 						\
+}
+
+#define BORDER3(NAME, MIN, MAX, TO1, REL1, OFF1, TO2, REL2, OFF2, IMG1) \
+part { 									\
+	name: NAME; 							\
+	type: IMAGE;							\
+	mouse_events: 0; 						\
+									\
+	description { 							\
+		state: "default" 0.0; 					\
+		min: MIN; 						\
+		max: MAX; 						\
+		color: 255 255 255 255;					\
+						\
+		rel1 { 							\
+			to: TO1; 					\
+			relative: REL1; 				\
+			offset: OFF1; 					\
+		} 							\
+									\
+		rel2 { 							\
+			to: TO2; 					\
+			relative: REL2; 				\
+			offset: OFF2; 					\
+		} 							\
+									\
+		image { 						\
+			normal: IMG1; 					\
+		}							\
+	} 								\
+}
+
+#define E_SWALLOW_CLIENT(NAME, TO1, REL1, OFF1, TO2, REL2, OFF2) 	\
+part { 									\
+	name: NAME; 							\
+	type: SWALLOW; 							\
+	mouse_events: 0; 						\
+									\
+	description { 							\
+		state: "default" 0.0; 					\
+									\
+		rel1 { 							\
+			to_y: TO1; 					\
+			relative: REL1;					\
+			offset: OFF1; 					\
+		} 							\
+									\
+		rel2 { 							\
+			to_x: TO2; 					\
+			relative: REL2; 				\
+			offset: OFF2; 					\
+		} 							\
+	} 								\
+}
+
+#define TITLE_CLIP(NAME, MIN, TO1, REL1, OFF1, TO2, REL2, OFF2, COLOR) 	\
+part { 									\
+	name: NAME; 							\
+	type: RECT; 							\
+	mouse_events: 0; 						\
+									\
+	description { 							\
+		state: "default" 0.0; 					\
+		min: MIN; 						\
+		color: COLOR; 						\
+									\
+		rel1 { 							\
+			to: TO1; 					\
+			relative: REL1; 				\
+			offset: OFF1; 					\
+		} 							\
+									\
+		rel2 { 							\
+			to: TO2; 					\
+			relative: REL2; 				\
+			offset: OFF2; 					\
+		} 							\
+	} 								\
+}
+
+#define E_SWALLOW_ICON(NAME, RELT)		\
+part { 						\
+	name: NAME; 				\
+	type: SWALLOW; 				\
+						\
+	description { 				\
+		state: "default" 0.0; 		\
+		aspect: 1.0 1.0;		\
+		aspect_preference: BOTH;	\
+						\
+		rel1 {				\
+			to: RELT; 		\
+		} 				\
+						\
+		rel2 { 				\
+			to: RELT; 		\
+		} 				\
+	} 					\
+						\
+	description {				\
+		state: "urgent" 0.0;		\
+		inherit: "default" 0.0;		\
+		color: 255 255 255 0;		\
+	}					\
+}
+
+#define MOVE_WINDOW(NAME, MIN, MAX, TO1, REL1, OFF1, TO2, REL2, OFF2, COLOR) 	\
+part { 										\
+	name: NAME; 								\
+	type: RECT; 								\
+	mouse_events: 0; 							\
+										\
+	description { 								\
+		state: "default" 0.0; 						\
+		min: MIN; 							\
+		max: MAX; 							\
+		color: COLOR; 							\
+										\
+		rel1 { 								\
+			to: TO1; 						\
+			relative: REL1; 					\
+			offset: OFF1; 						\
+		} 								\
+										\
+		rel2 { 								\
+			to: TO2; 						\
+			relative: REL2; 					\
+			offset: OFF2; 						\
+		} 								\
+	} 									\
+}
+
+#define E_EVENT_ICON(NAME, TO1, TO2)	 		\
+part { 							\
+	name: NAME; 					\
+	type: RECT; 					\
+	mouse_events: 1; 				\
+							\
+	description { 					\
+		state: "default" 0.0; 			\
+		align: 0.0 0.5;				\
+		aspect: 1.0 1.0;			\
+		aspect_preference: VERTICAL;		\
+		color: 255 255 255 0; 			\
+		visible: 1;				\
+							\
+		rel1 { 					\
+			to: TO1; 			\
+			offset: 5 3;			\
+		} 					\
+							\
+		rel2 { 					\
+			to: TO2; 			\
+		} 					\
+	}						\
+}
+
+#define CLIPS(NAME, MIN, MAX, TO, REL1, OFF1, REL2, OFF2) 	\
+part { 								\
+	name: NAME; 						\
+	type: RECT; 						\
+	mouse_events: 0; 					\
+								\
+	description { 						\
+		state: "default" 0.0; 				\
+		min: MIN; 					\
+		max: MAX; 					\
+		color: 255 255 255 255; 			\
+								\
+		rel1 { 						\
+			to: TO; 				\
+			relative: REL1; 			\
+			offset: OFF1; 				\
+		} 						\
+								\
+		rel2 { 						\
+			to: TO; 				\
+			relative: REL2; 			\
+			offset: OFF2; 				\
+		} 						\
+	} 							\
+								\
+	description { 						\
+		state: "clicked" 0.0; 				\
+		inherit: "default" 0.0; 			\
+		color: 215 215 215 255;				\
+	} 							\
+}
+
+#define HOLDER(NAME,SIZE,TO,IMG) 	\
+part { 					\
+	name: NAME; 			\
+	type: IMAGE;			\
+					\
+	description { 			\
+		state: "default" 0.0; 	\
+		min: SIZE; 		\
+		max: SIZE; 		\
+					\
+		rel1 { 			\
+			to: TO; 	\
+		} 			\
+					\
+		rel2 { 			\
+			to: TO; 	\
+		} 			\
+					\
+		image { 		\
+			normal: IMG; 	\
+		} 			\
+	} 				\
+}
+
+#define BUTTONS(NAME, CLIP, SIZE, TO, IMG) 		\
+part { 							\
+	name: NAME; 					\
+	type: IMAGE;					\
+	mouse_events: 1; 				\
+	clip_to: CLIP; 					\
+							\
+	description { 					\
+		state: "default" 0.0; 			\
+		min: SIZE; 				\
+		max: SIZE; 				\
+							\
+		rel1 { 					\
+                   to: TO;                              \
+		} 					\
+							\
+		rel2 { 					\
+			to: TO; 			\
+		} 					\
+							\
+		image { 				\
+			normal: IMG; 			\
+		} 					\
+	} 						\
+							\
+	description { 					\
+		state: "clicked" 0.0; 			\
+		inherit: "default" 0.0; 		\
+		color: 215 215 215 255;			\
+	} 						\
+}
+
+#define RESIZE_TOP(NAME, MIN, MAX, TO1, REL1, OFF1, TO2, REL2, OFF2, COLOR) 	\
+part { 										\
+	name: NAME; 								\
+	type: RECT;								\
+	mouse_events: 0; 							\
+										\
+	description { 								\
+		state: "default" 0.0; 						\
+		min: MIN; 							\
+		max: MAX; 							\
+		color: COLOR; 							\
+										\
+		rel1 { 								\
+			to: TO1; 						\
+			relative: REL1; 					\
+			offset: OFF1; 						\
+		} 								\
+										\
+		rel2 { 								\
+			to: TO2; 						\
+			relative: REL2; 					\
+			offset: OFF2; 						\
+		} 								\
+	} 									\
+}
+
+#define PART_EVENT_MAP(NAME, REPEAT, PART_NAME) \
+part { 						\
+	name: NAME; 				\
+	type: RECT; 				\
+	repeat_events: REPEAT; 			\
+						\
+	description { 				\
+		state: "default" 0.0; 		\
+		color: 0 0 0 0; 		\
+						\
+		rel1 { 				\
+			to: PART_NAME; 		\
+		} 				\
+						\
+		rel2 { 				\
+			to: PART_NAME; 		\
+		} 				\
+	} 					\
+}
+
+#define TOP_BORDER_SHADOW() 					\
+part { 								\
+	name: "inactive.shadow"; 				\
+	type: IMAGE; 						\
+	mouse_events: 0; 					\
+								\
+	description { 						\
+		state: "default" 0.0; 				\
+		min: 0 23; 					\
+		max: 9999 23; 					\
+		image.normal: "images/window-border_im12.png";	\
+		image.border: 1 1 11 0; 			\
+		color: 90 90 90 0;				\
+								\
+		rel1 { 						\
+			to: "top-left"; 			\
+			offset: 1 2; 				\
+		} 						\
+								\
+		rel2 { 						\
+			to: "top-right"; 			\
+			offset: -2 -1; 				\
+		} 						\
+	} 							\
+								\
+	description { 						\
+		state: "default" 0.1; 				\
+		inherit: "default" 0.0; 			\
+		color: 215 215 215 64;				\
+	} 							\
+}
+

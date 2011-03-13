@@ -1,0 +1,51 @@
+
+/* 
+ * efm_nav disabled states / logic can be enabled without signal
+ * example: if back - forward are in disabled stage, pressing 
+ * without release will enable the buttons, bad dh!
+ */
+
+#define efm_navigation(); 				\
+program { 						\
+	name: "click"; 					\
+	signal: "mouse,down,1"; 			\
+	source: "button"; 				\
+	action: STATE_SET "pressed" 0.0; 		\
+	target: "button"; 				\
+	target: "symbol";				\
+} 							\
+							\
+program { 						\
+	name: "unclick"; 				\
+	signal: "mouse,up,1"; 				\
+	source: "button"; 				\
+	action: STATE_SET "default" 0.0; 		\
+	target: "button"; 				\
+	target: "symbol";				\
+} 							\
+							\
+program { 						\
+	name: "send";					\
+	signal: "mouse,clicked,1"; 			\
+	source: "button"; 				\
+	action: SIGNAL_EMIT "e,action,click" ""; 	\
+} 							\
+							\
+program { 						\
+	name: "disable"; 				\
+	signal: "e,state,disabled"; 			\
+	source: "e"; 					\
+	action: STATE_SET "disabled" 0.0; 		\
+	target: "button"; 				\
+	target: "symbol";				\
+} 							\
+							\
+program { 						\
+	name: "enable"; 				\
+	signal: "e,state,enabled"; 			\
+	source: "e"; 					\
+	action: STATE_SET "default" 0.0; 		\
+	target: "button"; 				\
+	target: "symbol";				\
+} 
+

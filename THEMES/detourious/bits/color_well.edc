@@ -1,0 +1,100 @@
+
+group {
+	name: "e/widgets/color_well";
+	alias: "e/widgets/gradpreview";
+	
+	parts {
+		part { 
+			name: "content_clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description { 
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				rel1.to: "e.swallow.content";
+				rel2.to: "e.swallow.content";
+			}
+
+			description { 
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+		}
+
+		part { 
+			name: "e.swallow.content";
+			type: SWALLOW;
+			clip_to: "content_clip";
+
+			description { 
+				state: "default" 0.0;
+				rel1.offset: 4 4;
+				rel2.offset: -5 -5;
+			}
+		}
+
+		part { 
+			name: "border";
+			type: IMAGE;
+			mouse_events: 1;
+
+			description { 
+				state: "default" 0.0;
+
+				rel1 {
+					to:  "e.swallow.content";
+					offset: -1 -1;
+				}
+
+				rel2 {
+					to:  "e.swallow.content";
+					offset: 0 0;
+				}
+
+				image {
+					normal: "images/spectrum_im0.png";
+					border: 7 7 7 7;
+					middle: 0;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		programs {
+			program { 
+				name: "send_click";
+				signal: "mouse,clicked,1";
+				source: "border";
+				action: SIGNAL_EMIT "e,action,click" "";
+			}
+
+			program { 
+				name: "disable";
+				signal: "e,state,disabled";
+				source: "e";
+				action: STATE_SET "disabled" 0.0;
+				target: "content_clip";
+			}
+
+			program { 
+				name: "enable";
+				signal: "e,state,enabled";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				target: "content_clip";
+			}
+		}
+	}
+}
+

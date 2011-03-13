@@ -1,0 +1,858 @@
+
+group {
+	name: "e/init/splash";
+
+	script {
+		public check_widget;
+		public completed;
+	}
+
+	parts {
+		init_background()
+
+		part {
+			name: "splash.clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				min: 295 89;
+				max: 295 89;
+				fixed: 1 1;
+				visible: 0;
+
+				rel1 { 
+					to: "background_image"; 
+					relative: 0.5 0.5; 
+					offset: 1 0; 
+				}
+
+				rel2 { 
+					to: "background_image"; 
+					relative: 0.5 0.5; 
+					offset: 0 -2; 
+				}
+			}
+
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+
+		part {
+			name: "splash";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+
+			description {
+				state: "default" 0.0;
+				min: 295 89;
+				max: 295 89;
+				fixed: 1 1;
+
+				rel1 { 
+					to: "splash.clip"; 
+				}
+
+				rel2 { 
+					to: "splash.clip"; 
+				}
+
+				image {
+					normal: "images/init_im0.png";
+				}
+    			}
+		}
+
+		part {
+			name: "entry_widget";
+			type: RECT;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+
+			description {
+				state: "default" 0.0;
+				min: 274 32;
+				max: 274 32;
+				fixed: 1 1;
+				color: 255 255 255 0;
+
+				rel1 { 
+					to: "splash.clip"; 
+					relative: 0.0 1.0; 
+					offset: 2 -90; 
+				}
+
+				rel2 { 
+					to: "splash.clip";  
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+			}
+		}
+
+		part {	 
+			name: "text.area";
+			type: RECT;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+
+				rel1 { 
+					to: "splash.clip"; 
+					relative: 0.0 0.0; 
+					offset: 10 10; 
+				}
+
+				rel2 { 
+					to: "splash.clip"; 
+					relative: 1.0 1.0; 
+					offset: -12 -30; 
+				}
+			}
+		}
+
+		part {	 
+			name: "e.text.title";
+			type: TEXT;
+			effect: SHADOW;
+			mouse_events: 0;
+			clip_to: "text.area";
+			scale: 1;
+
+			description {
+				state: "default" 0.0;
+				color: 60 60 60 255;
+				color3: 0 0 0 32;
+
+				rel1 { 
+					to: "text.area"; 
+					relative: 0.0 0.0; 
+					offset: 4 25; 
+				}
+
+				rel2 { 
+					to: "text.area"; 
+					relative: 1.0 0.0; 
+					offset: -1 -1; 
+				}
+
+				text {
+					text: "Welcome to Enlightenment";
+					#if USE_FONTCONFIG == 0
+						font: "DejaVuSans-Bold";
+					#else
+					#if USE_FONTCONFIG == 1
+						font: "Sans:style=Bold";
+					#endif
+					#endif
+					size: 13;
+					min: 1 1;
+					align: 0.0 0.5;
+					#if ENABLE_TEXT_CLASSESES == 0
+						text_class: "";
+					#else
+					#if ENABLE_TEXT_CLASSESES == 1
+						text_class: "init_title";
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part {	 
+			name: "e.text.version";
+			type: TEXT;
+			effect: SHADOW;
+			mouse_events: 0;
+			clip_to: "text.area";
+			scale: 1;
+
+			description {
+				state: "default" 0.0;
+				color: 60 60 60 255;
+				color3: 0 0 0 32;
+
+				rel1 { 
+					to: "e.text.title";
+					relative: 0.0 1.0; 
+					offset: 0 6; 
+				}
+
+				rel2 { 
+					to: "e.text.title";
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+
+				text {
+					text: "0.17.0";
+					#if USE_FONTCONFIG == 0
+						font: "DejaVuSans-Bold";
+					#else
+					#if USE_FONTCONFIG == 1
+						font: "Sans:style=Bold";
+					#endif
+					#endif
+					size: 12;
+					min:  1 1;
+					align: 0.0 0.5;
+					#if ENABLE_TEXT_CLASSESES == 0
+						text_class: "";
+					#else
+					#if ENABLE_TEXT_CLASSESES == 1
+						text_class: "init_version";
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part {	 
+			name: "e.text.status";
+			type: TEXT;
+			effect: SHADOW;
+			mouse_events: 0;
+			clip_to: "text.area";
+			scale: 1;
+	
+			description {
+				state: "default" 0.0;
+				color: 60 60 60 255;
+				color3: 0 0 0 32;
+
+				rel1 { 
+					to: "e.text.version";
+					relative: 0.0 1.0; 
+					offset: 0 10; 
+				}
+
+				rel2 { 
+					to: "e.text.version";
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+
+				text {
+					text: "Starting Enlightenment. Please wait.";
+					#if USE_FONTCONFIG == 0
+						font: "DejaVuSans-Bold";
+					#else
+					#if USE_FONTCONFIG == 1
+						font: "Sans:style=Bold";
+					#endif
+					#endif
+					size: 11;
+					min: 1 1;
+					align: 0.0 0.5;
+					#if ENABLE_TEXT_CLASSESES == 0
+						text_class: "";
+					#else
+					#if ENABLE_TEXT_CLASSESES == 1
+						text_class: "init_text"; 
+					#endif
+					#endif
+				}
+			}
+		}
+
+/*
+		part {	 
+			name: "e.swallow.icons";
+			type: SWALLOW;
+			clip_to: "splash.clip";
+
+			description {
+				state: "default" 0.0;
+				//min: 279 34;
+				//max: 279 34;
+				//align: 0.0 0.0;
+
+				rel1 { 
+					to: "entry_widget"; 
+					relative: 0.0 0.0; 
+					offset: 4 4; 
+				}
+
+				rel2 { 
+					to: "entry_widget"; 
+					relative: 1.0 1.0; 
+					offset: -5 -5; 
+				}
+			}
+		}
+*/
+
+		part {
+			name: "check_base";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+
+			description {
+				state: "default" 0.0;
+				min: 20 18;
+				max: 20 18;
+				fixed: 1 1;
+
+				rel1 { 
+					to: "splash.clip"; 
+					relative: 0.0 1.0; 
+					offset: 40 -40; 
+				}
+
+				rel2 { 
+					to: "splash.clip"; 
+					relative: 0.0 1.0; 
+					offset: 0 -1; 
+				}
+
+				image {
+					normal: "images/check_bt0.png";
+				}
+			}
+		}
+
+		part {
+			name: "focus_clip";
+			type: RECT;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+			}
+
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+			}
+		}
+
+		part {
+			name: "check_shadow";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 128;
+				image.normal: "images/check_bt4.png";
+
+				rel1 { 
+					to: "check";
+					relative: 0.0 0.0; 
+					offset: 0 1; 
+				}
+
+				rel2 { 
+					to: "check";
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+		}
+
+		part {
+			name: "focus";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+			clip_to: "focus_clip";
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				image.normal: "images/check_bt3.png";
+
+				rel1 { 
+					to: "check";
+					relative: 0.0 0.0; 
+					offset: 0 0; 
+				}
+
+				rel2 { 
+					to: "check";
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+			}
+		}
+
+		part {
+			name: "check_outline";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+
+			description {
+				state: "default" 0.0;
+				min: 20 18;
+				max: 20 18;
+				fixed: 1 1;
+
+				rel1 { 
+					to: "splash.clip"; 
+					relative: 0.0 1.0; 
+					offset: 40 -40; 
+				}
+
+				rel2 { 
+					to: "splash.clip"; 
+					relative: 0.0 1.0; 
+					offset: 0 -1; 
+				}
+
+				image {
+					normal: "images/check_bt1.png";
+				}
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+
+		part {
+			name: "check";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+
+			description {
+				state: "default" 0.0;
+				min: 20 18;
+				max: 20 18;
+				fixed: 1 1;
+				visible: 0;
+
+				rel1 { 
+					to: "splash.clip"; 
+					relative: 0.0 1.0; 
+					offset: 40 -40; 
+				}
+
+				rel2 { 
+					to: "splash.clip"; 
+					relative: 0.0 1.0; 
+					offset: 0 -1; 
+				}
+
+				image {
+					normal: "images/check_bt2.png";
+				}
+			}
+
+			description {
+				state: "active" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+			}
+		}
+
+		part {	 
+			name: "e.text.disable_text";
+			type: TEXT;
+			effect: SHADOW;
+			mouse_events: 0;
+			clip_to: "splash.clip";
+			scale: 1;
+
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.5;
+				color: 60 60 60 255;
+				color3: 0 0 0 32;
+
+				rel1 { 
+					to: "check"; 
+					relative: 1.0 0.0; 
+					offset: 4 5; 
+				}
+
+				rel2 { 
+					to: "check"; 
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+
+				text {
+					text: "Disable this splash screen in future.";
+					#if USE_FONTCONFIG == 0
+						font: "DejaVuSans-Bold";
+					#else
+					#if USE_FONTCONFIG == 1
+						font: "Sans:style=Bold";
+					#endif
+					#endif
+					size: 10;
+					min: 1 1;
+					align: 0.0 0.5;
+					#if ENABLE_TEXT_CLASSESES == 0
+						text_class: "";
+					#else
+					#if ENABLE_TEXT_CLASSESES == 1
+						text_class: "init_text";
+					#endif
+					#endif
+				}
+    			}
+		}
+
+		part {
+			name: "busy";
+			type: IMAGE;
+			clip_to: "busy_clip";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				min: 42 42;
+				max: 42 42;
+				fixed: 1 1;
+
+				rel1 { 
+					to: "background"; 
+					relative: 0.5 0.5; 
+					offset: 0 11; 
+				}
+
+				rel2 { 
+					to: "background"; 
+					relative: 0.5 0.5; 
+					offset: -1 -1; 
+				}
+
+				image {
+					normal: "images/cursor_im0.png";
+					tween:  "images/cursor_im1.png";
+					tween:  "images/cursor_im2.png";
+					tween:  "images/cursor_im3.png";
+					normal: "images/cursor_im0.png";
+					tween:  "images/cursor_im1.png";
+					tween:  "images/cursor_im2.png";
+					tween:  "images/cursor_im3.png";
+				}
+			}
+		}
+
+		part {
+			name: "busy_clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+			}
+
+			description {
+				state: "visible" 0.0;
+				color: 255 255 255 255;
+				visible: 1;
+			}
+		}
+
+# ifdef ICON_CLIP
+#  undef ICON_CLIP
+# endif
+#define ICON_CLIP(NAME) \
+part { \
+	name: NAME; \
+	type: RECT; \
+	mouse_events: 0; \
+\
+	description { \
+		state: "default" 0.0; \
+		color: 255 255 255 0; \
+		visible: 0; \
+	} \
+\
+	description { \
+		state: "visible" 0.0; \
+		color: 255 255 255 255; \
+		visible: 1; \
+	} \
+}
+
+ICON_CLIP("icon_clip1")
+ICON_CLIP("icon_clip2")
+
+		part {
+			name: "e/icons/enlightenment/system";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "icon_clip1";
+
+			description {
+				state: "default" 0.0;
+				min: 22 22;
+				max: 22 22;
+				fixed: 1 1;
+				align: 0.0 1.0;
+
+				rel1 { 
+					to: "background"; 
+					relative: 0.0 1.0; 
+					offset: 8 0; 
+				}
+
+				rel2 { 
+					to: "background"; 
+					relative: 1.0 1.0; 
+					offset: -1 -8; 
+				}
+
+				image {
+					normal: "icons/preferences-desktop-16.png";
+				}
+			}
+		}
+
+		part {
+			name: "e/icons/enlightenment/run";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "icon_clip2";
+
+			description {
+				state: "default" 0.0;
+				min: 22 22;
+				max: 22 22;
+				fixed: 1 1;
+
+				rel1 { 
+					to: "e/icons/enlightenment/system"; 
+					relative: 1.0 0.0; 
+					offset: 30 0; 
+				}
+
+				rel2 { 
+					to: "e/icons/enlightenment/system"; 
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+
+				image {
+					normal: "icons/user-desktop-16.png";
+				}
+			}
+		}
+
+		part {
+			name: "black";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 0;
+			}
+
+			description {
+				state: "visible" 0.0;
+				color: 0 0 0 255;
+			}
+		}
+	}
+
+	programs {
+		program {
+			name: "init";
+			signal: "load";
+			source: "";
+			script {
+				set_int(check_widget, 0);
+				set_int(completed, 0);
+			}
+		}
+
+		program {
+			name: "go1";
+			signal: "show";
+			source: "";
+			action: STATE_SET "visible" 0.0;
+			target: "busy_clip";
+		}
+
+		program {
+			name: "go2";
+			signal: "show";
+			source: "";
+			action: STATE_SET "default" 0.0;
+			transition: ACCELERATE 1.0;
+			target: "busy";
+			after: "go2"; /* loop */
+		}
+
+		program {
+			name: "stop_busy_clip";
+			signal: "show";
+			source: "";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.0; in: 2.5 0.0;
+			target: "busy_clip"; /* hide busy anim */
+		}
+
+		program { 
+			name: "load.splash.screen";
+			signal: "show";
+			source: "";
+			action: STATE_SET "visible" 0.0; /* set it to visible */
+			transition: DECELERATE 2.0; in: 3.5 0.0; /* delay */
+			target: "splash.clip";
+			after: "load.text"; 
+		}
+
+		program { 
+			name: "load.text";
+			signal: ""; 
+			source: "";
+			action: STATE_SET "active" 0.0; 
+			transition: DECELERATE 1.0;
+			target: "text.area";
+			after: "load.icon.clip1"; 
+		}
+
+		program { 
+			name: "load.icon.clip1";
+			signal: ""; 
+			source: "";
+			action: STATE_SET "visible" 0.0; 
+			transition: DECELERATE 0.25;
+			target: "icon_clip1";
+			after: "load.icon.clip2"; 
+		}
+
+		program { 
+			name: "load.icon.clip2";
+			signal: ""; 
+			source: "";
+			action: STATE_SET "visible" 0.0; 
+			transition: DECELERATE 0.25;
+			target: "icon_clip2";
+			after: "done0"; 
+		}
+
+		program {
+			name: "done0";
+			signal: "";
+			source: "";
+			action: STATE_SET "default" 0.0; /* hide splash */
+			transition: DECELERATE 2.5;
+			target: "splash.clip";
+			after: "done1";
+		}
+
+		program {
+			name: "done1";
+			signal: "";
+			source: "";
+			action: STATE_SET "visible" 0.0;
+			target: "black";
+			transition: LINEAR 0.5;
+			after: "exit";
+		}
+
+		program {
+			name: "exit";
+			signal: "e,state,done";
+			source: "e";
+			script {
+				new val;
+				val = get_int(completed);
+				if (val == 0)
+				run_program(PROGRAM:"done2");
+			}
+		}
+
+		program {
+			name: "done2";
+			action: SIGNAL_EMIT "e,state,done_ok" "e"; in: 10.0 0.0;
+		}
+
+		program {
+			name: "check.toggle"; 
+			signal: "mouse,down,1"; 
+			source: "check";
+			script {	
+				if(get_int(check_widget) == 0)
+					{
+						set_int(check_widget, 1);
+						emit("initscreen,disabled", ""); 
+					}
+
+					else {
+						set_int(check_widget, 0);
+						emit("initscreen,enabled", ""); 
+					}
+				}
+			}
+
+		program {
+			name: "enable.initscreen"; 
+			signal: "initscreen,enabled"; 
+			source: "";
+			action: STATE_SET "active" 0.0;
+			target: "check";
+			target: "check_outline";
+		} 
+
+		program {
+			name: "disabled.initscreen"; 
+			signal: "initscreen,disabled"; 
+			source: "";
+			action: STATE_SET "disabled" 0.0;
+			target: "check";
+			target: "check_outline";
+			target: "check_shadow";
+		}
+
+		program {
+			name: "enabled";
+			signal: "initscreen,enabled"; 
+			source: "";
+			action: SIGNAL_EMIT "e,action,init,enable" "e";
+		}
+
+		program {
+			name: "disabled";
+			signal: "initscreen,disabled"; 
+			source: "";
+			action: SIGNAL_EMIT "e,action,init,disable" "e";
+		}
+	}
+}
+
+group {
+	name: "e/init/extra_screen";
+
+	parts {
+		init_background()
+	}
+}
+

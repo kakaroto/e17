@@ -1,0 +1,220 @@
+
+group {
+	name: "e/pointer/enlightenment/default/color";
+
+/*
+ * the default pointer size is 32x32 pixels so make
+ * sure the image size is 32x32 pixels 
+ */
+
+	parts {
+		part {
+			name: "e/pointer";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+
+				image {
+				#if ALTERNATE_CURSOR == 0
+					normal: "images/pointer_im1.png";
+				#else
+				#if ALTERNATE_CURSOR == 1
+					normal: "images/pointer_im4.png";
+				#endif
+				#endif
+				}
+			}
+
+			description {
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 164;
+			}
+		}
+
+		#if ANIMATED_CURSOR == 0
+		#else
+		#if ANIMATED_CURSOR == 1
+			part {
+				name: "pointer";
+				type: IMAGE;
+				mouse_events: 0;
+
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 0;
+
+					image {
+					#if ALTERNATE_CURSOR == 0
+						normal: "images/pointer_im1.png";
+					#else
+					#if ALTERNATE_CURSOR == 1
+						normal: "images/pointer_im4.png";
+					#endif
+					#endif
+					}
+				}
+
+				description {
+					state: "visible" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}
+
+				description {
+					state: "pulsate" 0.0;
+					color: 255 255 255 0;
+
+/* 
+ * to avoid seeing object-size cut-offs as the image expands
+ * from its original point 
+ */
+					rel1 { 
+						relative: -0.4 -0.4; 
+					}
+
+					rel2 { 
+						relative: 1.4 1.4; 
+					}
+
+					image {
+						normal: "images/pointer_im2.png";
+					}
+				}
+			}
+		#endif
+		#endif
+
+		part {
+			name: "e.swallow.hotspot";
+			type: SWALLOW;
+
+			description {
+				state: "default" 0.0;
+				visible: 0;
+
+				rel1 { 
+					relative: 0.36 0.16; 
+					offset: 0 0;
+				}
+
+				rel2 { 
+					relative: 0.36 0.16; 
+					offset: 0 0; 
+				}
+			}
+		}
+	}
+
+	programs {
+		#if ANIMATED_CURSOR == 0
+		#else
+		#if ANIMATED_CURSOR == 1
+			program {
+				name: "idle";
+				signal: "e,state,mouse,idle";
+				source: "e";
+				action: STATE_SET "visible" 0.0;
+				target: "pointer";
+				after: "pulsate";
+			}
+
+			program {
+				name: "pulsate";
+				signal: "";
+				source: "";
+				action: STATE_SET "pulsate" 0.0;
+				transition: LINEAR 0.5;
+				target: "pointer";
+				after: "default";
+			}
+
+			program {
+				name: "default";
+				signal: "";
+				source: "";
+				action: STATE_SET "default" 0.0;
+				target: "pointer"; 
+				after: "idle";
+			}
+
+			program { // when mouse becomes active STOP all programs
+				name: "stop"; 
+	    			signal: "e,state,mouse,active";
+	    			source: "e";
+				action: ACTION_STOP;
+				target: "idle";
+				target: "pulsate";
+				target: "default";
+			}
+		#endif
+		#endif
+
+/*
+		program {
+			name: "down";
+			signal: "e,action,mouse,down";
+			source: "e";
+			action: STATE_SET "down" 0.0;
+			transition: DECELERATE 0.25;
+			target: "e/pointer";
+		}
+
+		program {
+			name: "up";
+			signal: "e,action,mouse,up";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: DECELERATE 0.25;
+			target: "e/pointer";
+		}
+*/
+	}
+}
+
+group {
+	name: "e/pointer/enlightenment/default/mono";
+
+/*
+ * monochrome pointer: 2 color Indexed
+ */
+
+	parts {
+		part {
+			name: "e/pointer";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+
+				image {
+					normal: "images/pointer_im3.png";
+				}
+			}
+		}
+
+		part {
+			name: "e.swallow.hotspot";
+			type: SWALLOW;
+
+			description {
+				state: "default" 0.0;
+				visible: 0;
+
+				rel1 { 
+					relative: 0.36 0.16; 
+					offset: 0 0;
+				}
+
+				rel2 { 
+					relative: 0.36 0.16; 
+					offset: 0 0; 
+				}
+			}
+		}
+	}
+}
+

@@ -1,0 +1,30 @@
+#define MENU_GRADIENT                                                   \
+   part {                                                               \
+      name: "gradient";                                                 \
+      type: IMAGE;                                                      \
+      mouse_events: 0;                                                  \
+      description {                                                     \
+         state: "default" 0.0;                                          \
+         rel1.offset: 1 1;                                              \
+         rel2.offset: -2 -2;                                            \
+         image {                                                        \
+            normal: "images/menu_grad.png";                             \
+         }                                                              \
+      }                                                                 \
+   }                                                                    \
+
+#define BACKDROP_GRADIENT                                               \
+   part {                                                               \
+      name: "gradient";                                                 \
+      type: IMAGE;                                                      \
+      mouse_events: 0;                                                  \
+      description {                                                     \
+         state: "default" 0.0;                                          \
+         rel1.offset: 1 1;                                              \
+         rel2.offset: -2 -2;                                            \
+         image {                                                        \
+            normal: "images/backdrop_grad.png";                         \
+         }                                                              \
+      }                                                                 \
+   }                                                                    \
+

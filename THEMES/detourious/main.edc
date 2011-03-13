@@ -1,0 +1,144 @@
+/* 
+ * detorious theme based on detour version 0.7.5 (e17) for Enlightenment 0.16.999.050 or later.
+ * by cored.org et al (see AUTHORS).
+ */
+
+#include "macros/gradient.edc"
+#include "macros/about_buttons.edc"
+#include "macros/border.edc"
+#include "macros/border_programs.edc"
+#include "macros/border_menu_buttons.edc"
+#include "macros/efm_nav.edc"
+#include "macros/fileman_list.edc"
+#include "macros/init-bg.edc"
+#include "macros/sys.edc"
+#include "macros/win_geometry.edc"
+
+#define VERSION_STRING 0.0.1
+#define LABEL_THEME_NAME "dtrs"
+
+#define BUILD_FOR_COMPOSITE 1
+
+#define USE_BOLD_FONT 1
+
+#if USE_BOLD_FONT 
+#define FONT "SwitzeraDemi"
+#define FONT_BOLD "SwitzeraBold"
+#else
+#define FONT "Switzera"
+#define FONT_BOLD "SwitzeraDemi"
+#endif
+
+#define FONT_ITALIC "SwitzeraItalic"
+	
+//Mouse pointer options
+#define ANIMATED_CURSOR 1			/* Mouse pointer will pulsate when inactive */
+#define ALTERNATE_CURSOR 0			/* Alternate (black) mouse pointer */
+
+//Fontconfig: system-wide font configuration
+#define USE_FONTCONFIG 1 			/* fc-match --help for more information */
+
+//Smooth images on scaling
+#define USE_SMOOTH_IMAGES 0 			/* The default (internal) value is 1 */
+
+//Truncate desktop icons filename
+#define TRUNCATE_DESKTOP_ICON_FILENAME 0	/* Shorten desktop filenames */
+
+//Truncate efm icons filename
+#define TRUNCATE_EFM_ICON_FILENAME 1		/* Shorten efm filenames */
+
+//Truncate efm icon list filename
+#define TRUNCATE_EFM_ICON_LIST_FILENAME 1	/* Shorten list filenames */
+
+//Color and Text classes
+#define ENABLE_TEXT_CLASSES 1			/* Allow text/fonts to be interchangeable */
+#define ENABLE_COLOR_CLASSES 0 			/* Work in progress */
+
+//Enable custom icons
+#define ENABLE_CUSTOM_ICONS 0 			/* Work in progress */
+
+#define COLOR_LIST_BG        253 253 253 255
+#define COLOR_LIST_BG_ODD    240 245 250 255
+#define COLOR_LIST_BG_ACTIVE 138 171 225 255
+#define COLOR_LIST_HEADER    103 135 183 255
+
+#include "text.edc"
+
+data {
+	item: "theme/name" 		    "detourious";
+	item: "theme/version"		"0.8.0";
+	item: "theme/author"		"Alberto Castro, Hannes Janetzek, et al.";
+	item: "theme/license"		"BSD Artistic License";
+}
+
+fonts 
+{
+	font: "fonts/SwitzeraADF-Regular.otf"  "Switzera";
+	font: "fonts/SwitzeraADF-DemiBold.otf" "SwitzeraDemi";
+	font: "fonts/SwitzeraADFBold.otf"      "SwitzeraBold";
+	font: "fonts/SwitzeraADF-Italic.otf"   "SwitzeraItalic";
+}
+
+images {
+	#include "images.edc" 			/* Includes both icons and regular images */
+}
+
+collections {
+	#include "bits/about_detour.edc"	/* about this edje */
+	#include "bits/about_e.edc"		/* about enlightenment */
+	#include "bits/background.edc" 		/* background group */
+	//~ #include "bits/battery.edc"		/* battery module */
+	#include "bits/border.edc"		/* border group */
+	#include "bits/button.edc"		/* button widget group */
+	#include "bits/check.edc"		/* check widget group */
+	#include "bits/clock.edc"		/* clock module */
+	#include "bits/color_well.edc"		/* color well */
+	#include "bits/configure.edc"		/* configure group */
+	//~ #include "bits/configure_toolbar.edc"	/* configuration toolbar */
+	//~ #include "bits/connman.edc"		/* connection manager module*/
+	//~ #include "bits/cpufreq.edc"		/* cpu frequency module */
+	#include "bits/cslider.edc"		/* cslider group */
+	#include "bits/desklock.edc"		/* desklock group */
+	#include "bits/deskpreview.edc"		/* deskpreview */
+	#include "bits/dialog.edc"		/* dialog group */
+	#include "bits/efm_nav.edc"		/* extra: efm navigation module */
+	#include "bits/efm_toolbar.edc"		/* efm toolbar */
+   	#include "bits/efm_pathbar.edc"		/* efm pathbar */
+	#include "bits/entry.edc"		/* entry group */
+	#include "bits/exebuf.edc"		/* executable buffer popup */
+	#include "bits/font_preview.edc"	/* hidden */
+	#include "bits/gadman.edc"		/* gadget manager */
+	#include "bits/frame.edc"		/* frame widget group */
+	#include "bits/ibar.edc" 		/* ibar & ibox group */
+	#include "bits/icons.edc" 		/* icons definitions */
+	#include "bits/ilist.edc"		/* icon list */
+	//#include "bits/init.edc"		/* init screen */
+	#include "bits/itask.edc"		/* itask-ng module */
+	#include "bits/label.edc"		/* label definiton group */
+	#include "bits/fileman.edc" 		/* file manager groups */
+	#include "bits/menu.edc" 		/* menu and context menu groups */
+	//~ include "bits/mixer.png"		/* mixer module group */
+	#include "bits/move_resize_info.edc" 		/* move window information group */
+	#include "bits/pager.edc"		/* pager */
+	#include "bits/pointer.edc"		/* mouse pointer group */
+	#include "bits/preview.edc"		/* preview */
+	#include "bits/radio.edc"		/* radio widget group */
+	#include "bits/scrollframe.edc"		/* scrollframe groups */
+	#include "bits/shelf.edc"		/* shelf groups */
+	#include "bits/slider.edc"		/* slider group */
+	//~ #include "bits/slidesel.edc"	/* slidesel */
+	#include "bits/spectrum.edc"		/* spectrum */
+	#include "bits/start.edc"		/* start menu module */
+	#include "bits/sys.edc"			/* system actions */
+	#include "bits/syscon.edc"		/* system connection group */
+	#include "bits/tclock.edc"		/* extra: tclock module */
+	//~ #include "bits/temperature.edc"	/* temperature module */
+	#include "bits/textblock.edc"		/* textblock definitions group */
+	//~ #include "bits/tlist.edc"		/* tlist groups (deprecated) */
+	#include "bits/transitions.edc"		/* desktop wallpaper transitions */
+	#include "bits/winlist.edc"		/* window list (alt+tab) */
+	#include "bits/toolbar.edc"
+    #include "bits/everything.edc"
+    #include "bits/comp.edc"
+}
+

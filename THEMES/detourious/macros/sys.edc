@@ -1,0 +1,87 @@
+
+#define WIN_BG() 						\
+part { 								\
+	name: "base";						\
+	type: IMAGE;						\
+	mouse_events: 0; 					\
+								\
+	description { 						\
+		state: "default" 0.0; 				\
+		min: 273 196;					\
+		max: 273 196;					\
+		fixed: 1 1;					\
+								\
+		rel1 { 						\
+			relative: 0.0 0.0; 			\
+			offset: 0 0; 				\
+		} 						\
+								\
+		rel2 { 						\
+			relative: 1.0 1.0; 			\
+			offset: -1 -1; 				\
+		} 						\
+								\
+		image { 					\
+			normal: "images/dialog_im2.png"; 	\
+			border: 3 3 3 3; 			\
+		} 						\
+	} 							\
+}
+
+#define MESSAGE() 				\
+part { 						\
+	name: "e.textblock.message"; 		\
+	type: TEXTBLOCK; 			\
+	mouse_events:  0; 			\
+						\
+	description { 				\
+		state: "default" 0.0; 		\
+						\
+		rel1 { 				\
+			to_y: "logo"; 		\
+			relative: 0.0 1.0; 	\
+			offset: 10 8; 		\
+		} 				\
+						\
+		rel2 { 				\
+			offset: -9 -9; 		\
+		} 				\
+						\
+		text { 				\
+			style: "sys_style"; 	\
+			min: 1 1; 		\
+		} 				\
+	} 					\
+}
+
+#define LOGO()							\
+part { 								\
+	name: "logo"; 						\
+	type: IMAGE;						\
+	mouse_events: 0; 					\
+								\
+	description { 						\
+		state: "default" 0.0; 				\
+		min: 128 128; 					\
+		max: 128 128; 					\
+		fixed: 1 1;					\
+		aspect: 1.0 1.0; 				\
+		aspect_preference: BOTH; 			\
+		align: 0.5 0.0; 				\
+								\
+		rel1 { 						\
+			relative: 0.0 0.0; 			\
+			offset: 8 8; 				\
+		} 						\
+								\
+		rel2 { 						\
+			relative: 1.0 0.0; 			\
+			offset: -9 8; 				\
+		} 						\
+								\
+		image { 					\
+			normal: "images/e17_logo.png"; 		\
+		} 						\
+	} 							\
+}
+

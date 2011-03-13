@@ -1,0 +1,808 @@
+#define HOVER_EFFECT 0
+#define BG_OFFSET 20
+
+group {
+	/* bg frame that keeps is not affected by 'Background
+	 * Transparency' setting */
+
+	name: "e/modules/itask-ng/frame_top";
+	alias: "e/modules/itask-ng/frame_left";
+	alias: "e/modules/itask-ng/frame_right";
+
+	data {
+		/* space between icons */
+		item: "icon_spacing"    "1";
+
+		/* space between boxes */
+		item: "separator_width" "6";
+
+		/* space between screen edge and icons */
+		item: "edge_offset"    "6";
+
+		/* extra space between icons and bg (required for auto hide) */
+		item: "bg_offset" "20";
+
+		/* clip reflection at bottom edge */
+		item: "reflection_offset" "0";
+
+		/* clip separator to background group
+		 * change opacity with background transparency */
+		item: "clip_separator"  "1";
+
+		/* seconds to keep icon overlay position when item is clicked
+		   used for launch animation */
+		item: "keep_overlay_pos" "0.5";
+
+	}
+
+	parts {
+		part {
+			name: "frame";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				visible: 0;
+			}
+		}
+	}
+}
+
+group {
+	name: "e/modules/itask-ng/frame_bottom";
+
+	data {
+		item: "icon_spacing"    "2";
+		item: "separator_width" "15";
+		item: "edge_offset"     "20";
+		item: "bg_offset"       "0";
+		item: "clip_separator"  "1";
+		item: "keep_overlay_pos" "0.5";
+		item: "reflection_offset" "4";
+		
+	}
+	parts {
+		part {
+			name: "frame";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				visible: 0;
+			}
+		}
+	}
+
+}
+
+group {
+	name: "e/modules/itask-ng/bg_bottom";
+	parts {
+
+		part {
+			name: "bg";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+
+				rel1.offset: -35 15;
+				rel2.offset: 34 -1;
+
+				image {
+					normal: "images/itask_im0.png";
+					border: 26 26 10 4;
+				}
+			}
+		}
+	}
+}
+
+group {
+	name: "e/modules/itask-ng/bg_top";
+	parts {
+		part {
+			name: "bg";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+
+				rel1.offset: (-BG_OFFSET) 0;
+				rel2.offset: (-1 + BG_OFFSET) (-1 + BG_OFFSET);
+
+				image {
+					normal: "images/itask_im1.png";
+					border: 18 18 0 28;
+				}
+
+			}
+		}
+	}
+}
+group {
+	name: "e/modules/itask-ng/bg_left";
+	parts {
+		part {
+			name: "bg";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+
+				rel1.offset: 0 (-BG_OFFSET);
+				rel2.offset: (-1 + BG_OFFSET) (-1 + BG_OFFSET);
+
+				image {
+					normal: "images/itask_im2.png";
+					border: 0 20 32 18;
+				}
+			}
+		}
+	}
+}
+
+group {
+	name: "e/modules/itask-ng/bg_right";
+	parts {
+		part {
+			name: "bg";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+
+				rel1.offset: (-BG_OFFSET) (-BG_OFFSET);
+				rel2.offset: -1  (-1 + BG_OFFSET);
+
+				image {
+					normal: "images/itask_im3.png";
+					border: 20 0 32 18;
+				}
+			}
+		}
+	}
+}
+
+
+/* the vertical and horizontal separator image. it can be a rectangle
+ * as it is in this example.
+ */
+
+group {
+	name: "e/modules/itask-ng/separator_bottom";
+}
+
+group {
+	name: "e/modules/itask-ng/separator_top";
+
+	parts {
+		part {
+			name: "separator";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 182 182 182 255;
+				max: 1 999;
+				align: 0.5 0.0;
+
+				rel1.offset: 0 0;
+				rel2.offset: 0 2;
+			}
+		}
+	}
+}
+
+group {
+	name: "e/modules/itask-ng/separator_left";
+	alias: "e/modules/itask-ng/separator_right";
+
+	parts {
+		part {
+			name: "separator";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 182 182 182 255;
+				max: 999 1;
+				align: 0.0 0.5;
+
+				rel1.offset: -4 0;
+				rel2.offset: 3 0;
+			}
+		}
+	}
+}
+
+group {
+	name: "e/modules/itask-ng/label_bottom";
+
+	parts {
+		part {
+			name: "label";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "label.clip";
+
+			description {
+				state: "default" 0.0;
+				align: 0.5 0.5;
+				color: 0 0 0 148;
+				max: 999 26;
+
+				rel1 {
+					to: "e.text.label";
+					offset: -8 -2;
+				}
+
+				rel2 {
+					to: "e.text.label";
+					offset: 4 -1;
+				}
+
+				image {
+					normal: "images/itask_im4.png";
+					border: 5 5 5 5;
+				}
+			}
+		}
+
+		part {
+			name: "label_decoration";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "label.clip";
+
+			description {
+				state: "default" 0.0;
+				align: 0.5 1.0;
+				color: 255 0 0 148;
+				min: 11 6;
+				max: 11 6;
+				fixed: 1 1;
+
+				rel1 {
+					to: "label";
+					offset: 0 0;
+				}
+
+				rel2 {
+					to: "label";
+					offset: -1 4;
+				}
+
+				image {
+					normal: "images/itask_im5.png";
+				}
+			}
+		}
+
+		part {
+			name: "e.text.label";
+			type: TEXT;
+			effect: SHADOW;
+			mouse_events: 0;
+			clip_to: "label.clip";
+			scale: 1;
+
+			description {
+				state: "default" 0.0;
+				align: 0.5 0.5;
+				color: 255 255 255 255;
+				color3: 0 0 0 0;
+
+				rel1.offset: 0 2;
+				rel2.offset: -1 -1;
+				TEXT_LARGE("module_large", 0.5 0.5, 1 1);
+			}
+		}
+
+		part {
+			name: "label.clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				align: 0.5 0.5;
+				color: 255 255 255 0;
+				min: 0 33;
+
+				rel1 {
+					to: "e.text.label";
+					offset: -12 -4;
+				}
+
+				rel2 {
+					to: "e.text.label";
+					offset: 11 -1;
+				}
+
+			}
+
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+			}
+		}
+	}
+
+	programs {
+		program {
+			name: "go_label_show";
+			signal: "e,state,label,show";
+			source: "e";
+			action: STATE_SET "visible" 0.0;
+			transition: DECELERATE 0.5;
+			target: "label.clip";
+		}
+
+		program {
+			name: "go_label_hide";
+			signal: "e,state,label,hide";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: ACCELERATE 0.25;
+			target: "label.clip";
+		}
+	}
+}
+
+group {
+	name: "e/modules/itask-ng/label_top";
+	parts {
+		part {
+			name: "label";
+			type: IMAGE;
+			mouse_events: 0;
+			clip_to: "label.clip";
+
+			description {
+				state: "default" 0.0;
+				align: 0.5 0.5;
+				color: 0 0 0 148;
+				max: 999 26;
+
+				rel1 {
+					to: "e.text.label";
+					offset: -8 -2;
+				}
+
+				rel2 {
+					to: "e.text.label";
+					offset: 4 -1;
+				}
+
+				image {
+					normal: "images/itask_im4.png";
+					border: 5 5 5 5;
+				}
+			}
+		}
+
+		part {
+			name: "e.text.label";
+			type: TEXT;
+			effect: SHADOW;
+			mouse_events: 0;
+			clip_to: "label.clip";
+			scale: 1;
+
+			description {
+				state: "default" 0.0;
+				align: 0.5 0.5;
+				color: 255 255 255 255;
+				color3: 0 0 0 0;
+
+				rel1.offset: 0 2;
+				rel2.offset: -1 -1;
+				TEXT_LARGE("module_large", 0.5 0.5, 1 1);
+			}
+		}
+
+		part {
+			name: "label.clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				align: 0.5 0.5;
+				color: 255 255 255 0;
+				min: 0 33;
+
+				rel1 {
+					to: "e.text.label";
+					offset: -12 -4;
+				}
+
+				rel2 {
+					to: "e.text.label";
+					offset: 11 -1;
+				}
+			}
+
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+			}
+		}
+	}
+
+	programs {
+		program {
+			name: "go_label_show";
+			signal: "e,state,label,show";
+			source: "e";
+			action: STATE_SET "visible" 0.0;
+			transition: DECELERATE 0.5;
+			target: "label.clip";
+		}
+
+		program {
+			name: "go_label_hide";
+			signal: "e,state,label,hide";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: ACCELERATE 0.25;
+			target: "label.clip";
+		}
+	}
+}
+
+/* TODO needs to be supported in code */
+/* group {
+ * 	name: "e/modules/itask-ng/label_left";
+ * 	alias: "e/modules/itask-ng/label_right";
+ * } */
+
+group {
+	name: "e/modules/itask-ng/icon";
+	alias: "e/modules/itask-ng/icon_top";
+	alias: "e/modules/itask-ng/icon_left";
+	alias: "e/modules/itask-ng/icon_right";
+	alias: "e/modules/itask-ng/icon_bottom";
+
+	min: 32 32;
+	max: 128 128;
+
+	parts {
+		part {
+			name: "clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 128;
+			}
+			description {
+				state: "visible" 0.0;
+				color: 255 255 255 255;
+			}
+		}
+		part {
+			name: "focus_clip";
+			type: RECT;
+			clip_to: "clip";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+
+			description {
+				state: "focused" 0.0;
+				color: 200 200 255 255;
+			}
+		}
+		part {
+			name: "iconic_clip";
+			type: RECT;
+			clip_to: "focus_clip";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+
+			description {
+				state: "iconic" 0.0;
+				color: 200 200 200 255;
+			}
+		}
+
+		part {
+			name: "urgent_clip";
+			type: RECT;
+			clip_to: "iconic_clip";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+			description {
+				state: "urgent" 0.0;
+				color: 255 180 180 255;
+			}
+		}
+
+		part {
+			name: "input_clip";
+			type: RECT;
+			clip_to: "urgent_clip";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+			description {
+				state: "mouse_down" 0.0;
+				color: 200 200 200 255;
+			}
+		}
+
+		part {
+			name: "e.swallow.content";
+			type: SWALLOW;
+			clip_to: "input_clip";
+			description {
+				state: "default" 0.0;
+				aspect: 1.0 1.0;
+				aspect_preference: BOTH;
+			}
+		}
+	}
+
+	programs {
+		program {
+			name: "go_show";
+			signal: "e,state,item,show";
+			source: "e";
+			action: STATE_SET "visible" 0.0;
+			transition: SINUSOIDAL 0.2;
+			target: "clip";
+		}
+
+		program {
+			name: "go_hide";
+			signal: "e,state,item,hide";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: SINUSOIDAL 0.3;
+			target: "clip";
+		}
+
+		/* when minimizing an application */
+		program {
+			name: "go_iconic1";
+			signal: "e,state,taskbar,iconic,1";
+			source: "e";
+			action: STATE_SET "iconic" 0.0;
+			transition: LINEAR 0.3;
+			target: "iconic_clip";
+		}
+		program {
+			name: "go_iconic0";
+			signal: "e,state,taskbar,iconic,0";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.3;
+			target: "iconic_clip";
+		}
+
+		/* when an application got focus */
+		program {
+			name: "go_focused1";
+			signal: "e,state,taskbar,focus,1";
+			source: "e";
+			action: STATE_SET "focused" 0.0;
+			transition: SINUSOIDAL 0.3;
+			target: "focus_clip";
+		}
+
+		program {
+			name: "go_focused0";
+			signal: "e,state,taskbar,focus,0";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: SINUSOIDAL 0.3;
+			target: "focus_clip";
+		}
+
+		/* application is sending urgent signal  */
+		program {
+			name: "go_urgent1";
+			signal: "e,state,taskbar,urgent,1";
+			source: "e";
+			action: STATE_SET "urgent" 0.0;
+			transition: LINEAR 1.0;
+			target: "urgent_clip";
+			after: "go_urgent2";
+		}
+
+		program {
+			name: "go_urgent2";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 1.0;
+			target: "urgent_clip";
+			after: "go_urgent1";
+		}
+
+		program {
+			name: "go_urgent0";
+			signal: "e,state,taskbar,urgent,0";
+			source: "e";
+			action: ACTION_STOP;
+			target: "go_urgent1";
+			target: "go_urgent0";
+			after: "go_urgent_end";
+		}
+
+		program {
+			name: "go_urgent_end";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.2;
+			target: "urgent_clip";
+		}
+
+
+		program {
+			name: "go_mouse_down";
+			signal: "e,state,mouse_down";
+			source: "e";
+			action: STATE_SET "mouse_down" 0.0;
+			transition: LINEAR 0.2;
+			target: "input_clip";
+			after: "go_mouse_down2";
+		}
+		program {
+			name: "go_mouse_down2";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.3;
+			target: "input_clip";
+		}
+	}
+}
+
+group {
+	name: "e/modules/itask-ng/icon_over_top";
+	alias: "e/modules/itask-ng/icon_over_left";
+	alias: "e/modules/itask-ng/icon_over_right";
+	alias: "e/modules/itask-ng/icon_over_bottom";
+
+	parts {
+		part {
+			name: "icon_clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+				visible: 0;
+				rel1.offset: -256 -256;
+				rel2.offset: 256 256;
+			}
+		}
+		part {
+			name: "background";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+			}
+			description {
+				state: "visible" 0.0;
+				color: 255 255 255 255;
+			}
+			description {
+				state: "hidden" 0.0;
+				visible: 1;
+				rel1.relative: -0.5  -0.5;
+				rel2.relative: 1.5  1.5;
+
+				color: 255 255 255 0;
+            }
+			description {
+				state: "huge" 0.0;
+				color: 255 255 255 0;
+				rel1.relative: -1.5 -1.5;
+				rel2.relative: 2.5  2.5;
+			}
+		}
+
+		part {
+			name: "e.swallow.content";
+			type: SWALLOW;
+			clip_to: "background";
+
+			description {
+				state: "default" 0.0;
+				rel1.to: "background";
+				rel2.to: "background";
+			}
+		}
+	}
+
+	programs {
+#if HOVER_EFFECT == 1
+		program {
+            name: "go_active";
+            signal: "e,state,mouse,in";
+            source: "e";
+            action: STATE_SET "visible" 0.0;
+            target: "background";
+            after: "go_active2";
+		}
+		program {
+            name: "go_active2";
+            action: STATE_SET "hidden" 0.0;
+            transition: LINEAR 0.5;
+            target: "background";
+            after: "go_active";
+		}
+		program {
+            name: "go_passive";
+            signal: "e,state,mouse,out";
+            source: "e";
+            action: ACTION_STOP;
+            target: "go_active";
+            target: "go_active2";
+            after: "go_passive2";
+		}
+		program {
+            name: "go_passive2";
+            action: STATE_SET "default" 0.0;
+            target: "background";
+		}
+#endif
+		program {
+			name: "go_big";
+			action: STATE_SET "visible" 0.0;
+			target: "background";
+			after: "go_big2";
+		}
+
+		program {
+			name: "go_big2";
+			action: STATE_SET "huge" 0.0;
+			transition: ACCELERATE 0.5;
+			target: "background";
+			after: "go_big3";
+		}
+
+		program {
+			name: "go_big3";
+			action: STATE_SET "default" 0.0;
+			target: "background";
+		}
+
+		program {
+			name: "exec_start";
+			signal: "e,action,start";
+			source: "e";
+			action: ACTION_STOP;
+			target: "go_big";
+			target: "go_big2";
+			target: "go_big3";
+			after: "go_big";
+		}
+	}
+}
+

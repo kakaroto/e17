@@ -1,0 +1,716 @@
+
+group {
+	name: "modules/efm_nav/main";
+
+	parts {
+		part {
+			name: "base";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 0;
+			}
+		}
+
+		part {
+			name: "e.swallow.buttons";
+			type: SWALLOW;
+
+			description {
+				state: "default" 0.0;
+				align: 1.0 0.5;
+
+				rel1 { 
+					to: "base";
+					relative: 0.0 0.0; 
+					offset: 8 0; 
+				} 
+			}
+		}
+	}
+}
+
+group {
+	name: "modules/efm_nav/back";
+
+	parts {
+		part {
+			name: "base";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 29 24;
+				min: 29 24;
+				fixed: 1 1;
+				color: 255 255 255 255;
+
+				image {
+					normal: "images/efmnav_bt0.png";
+					border: 7 1 7 7;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part {
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			repeat_events: 1;
+
+			description {
+				state: "default" 0.0;
+
+				rel1 { 
+					to: "base";
+					relative: 0.0 0.0; 
+					offset: 2 1; 
+				} 
+
+				rel2 { 
+					to: "base";
+					relative: 1.0 1.0; 
+					offset: -1 -2; 
+				}
+
+				image {
+					normal: "images/efmnav_bt1.png";
+					border: 7 1 6 6;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+
+		part {
+			name: "symbol";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 11 8;
+				min: 11 8;
+				fixed: 1 1;
+				align: 0.5 0.5;
+				color: 158 158 158 255;
+
+				rel1 { 
+					to: "button";
+					relative: 0.0 0.0; 
+					offset: 0 0; 
+				} 
+
+				rel2 { 
+					to: "button";
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+
+				image {
+					normal: "images/efmnav_bt6.png";
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 128;
+			}
+		}
+	}
+
+	programs {
+		efm_navigation();
+	}
+}
+
+group {
+	name: "modules/efm_nav/forward";
+
+	parts {
+		part {
+			name: "base";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 29 24;
+				min: 29 24;
+				fixed: 1 1;
+				color: 255 255 255 255;
+
+				rel1 { 
+					relative: 0.0 0.0; 
+					offset: 24 0; 
+				}
+
+				image {
+					normal: "images/efmnav_bt2.png";
+					border: 1 7 7 7;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part {
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			repeat_events: 1;
+
+			description {
+				state: "default" 0.0;
+
+				rel1 { 
+					to: "base";
+					relative: 0.0 0.0; 
+					offset: -2 1; 
+				} 
+
+				rel2 { 
+					to: "base";
+					relative: 1.0 1.0; 
+					offset: -3 -2; 
+				}
+
+				image {
+					normal: "images/efmnav_bt3.png";
+					border: 1 7 6 6;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+
+		part {
+			name: "symbol";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 11 8;
+				min: 11 8;
+				fixed: 1 1;
+				align: 0.5 0.5;
+				color: 158 158 158 255;
+
+				rel1 { 
+					to: "button";
+					relative: 0.0 0.0; 
+					offset: 0 0; 
+				} 
+
+				rel2 { 
+					to: "button";
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+
+				image {
+					normal: "images/efmnav_bt7.png";
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 128;
+			}
+		}
+
+	}
+
+	programs {
+		efm_navigation();
+	}
+}
+
+group {
+	name: "modules/efm_nav/up";
+
+	parts {
+		part {
+			name: "base";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 29 24;
+				min: 29 24;
+				fixed: 1 1;
+				color: 255 255 255 255;
+
+				rel1 { 
+					relative: 0.0 0.0; 
+					offset: 50 0; 
+				}
+
+				image {
+					normal: "images/efmnav_bt4.png";
+					border: 8 8 7 8;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part {
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			repeat_events: 1;
+
+			description {
+				state: "default" 0.0;
+
+				rel1 { 
+					to: "base";
+					relative: 0.0 0.0; 
+					offset: 2 1; 
+				} 
+
+				rel2 { 
+					to: "base";
+					relative: 1.0 1.0; 
+					offset: -3 -2; 
+				}
+
+				image {
+					normal: "images/efmnav_bt5.png";
+					border: 7 7 6 6;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+
+
+		part {
+			name: "symbol";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 8 11;
+				min: 8 11;
+				fixed: 1 1;
+				align: 0.5 0.5;
+				color: 158 158 158 255;
+
+				rel1 { 
+					to: "button";
+					relative: 0.0 0.0; 
+					offset: 1 0; 
+				} 
+
+				rel2 { 
+					to: "button";
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+
+				image {
+					normal: "images/efmnav_bt8.png";
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 128;
+			}
+		}
+	}
+
+	programs {
+		efm_navigation();
+	}
+}
+
+group {
+	name: "modules/efm_nav/refresh";
+
+	parts {
+		part {
+			name: "base";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 29 24;
+				min: 29 24;
+				fixed: 1 1;
+				color: 255 255 255 255;
+
+				rel1 { 
+					relative: 0.0 0.0; 
+					offset: 76 0; 
+				}
+
+				image {
+					normal: "images/efmnav_bt4.png";
+					border: 8 8 7 8;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part {
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			repeat_events: 1;
+
+			description {
+				state: "default" 0.0;
+
+				rel1 { 
+					to: "base";
+					relative: 0.0 0.0; 
+					offset: 2 1; 
+				} 
+
+				rel2 { 
+					to: "base";
+					relative: 1.0 1.0; 
+					offset: -3 -2; 
+				}
+
+				image {
+					normal: "images/efmnav_bt5.png";
+					border: 7 7 6 6;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+
+		part {
+			name: "symbol";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 10 11;
+				min: 10 11;
+				fixed: 1 1;
+				align: 0.5 0.5;
+				color: 158 158 158 255;
+
+				rel1 { 
+					to: "button";
+					relative: 0.0 0.0; 
+					offset: 1 0; 
+				} 
+
+				rel2 { 
+					to: "button";
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+
+				image {
+					normal: "images/efmnav_bt9.png";
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 128;
+			}
+		}
+	}
+
+	programs {
+		efm_navigation();
+	}
+}
+
+group {
+	name: "modules/efm_nav/favorites";
+
+	parts {
+		part {
+			name: "base";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 29 24;
+				min: 29 24;
+				fixed: 1 1;
+				color: 255 255 255 255;
+
+				rel1 { 
+					relative: 0.0 0.0; 
+					offset: 102 0; 
+				}
+
+				image {
+					normal: "images/efmnav_bt4.png";
+					border: 8 8 7 8;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+		}
+
+		part {
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			repeat_events: 1;
+
+			description {
+				state: "default" 0.0;
+
+				rel1 { 
+					to: "base";
+					relative: 0.0 0.0; 
+					offset: 2 1; 
+				} 
+
+				rel2 { 
+					to: "base";
+					relative: 1.0 1.0; 
+					offset: -3 -2; 
+				}
+
+				image {
+					normal: "images/efmnav_bt5.png";
+					border: 7 7 6 6;
+				}
+
+				fill {
+					#if USE_SMOOTH_IMAGES == 0
+						smooth: 0;
+					#else
+					#if USE_SMOOTH_IMAGES == 1
+						smooth: 1;
+					#endif
+					#endif
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+
+		part {
+			name: "symbol";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				max: 14 15;
+				min: 14 15;
+				fixed: 1 1;
+				align: 0.5 0.5;
+				color: 158 158 158 255;
+
+				rel1 { 
+					to: "button";
+					relative: 0.0 0.0; 
+					offset: 1 0; 
+				} 
+
+				rel2 { 
+					to: "button";
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+
+				image {
+					normal: "images/efmnav_bt10.png";
+				}
+			}
+
+			description {
+				state: "pressed" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 192;
+			}
+
+			description {
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 158 158 158 128;
+			}
+		}
+	}
+
+	programs {
+		efm_navigation();
+	}
+}
+

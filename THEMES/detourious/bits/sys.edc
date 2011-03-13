@@ -1,0 +1,21 @@
+
+group {
+	name: "e/sys/logout";
+	alias: "e/sys/halt";
+	alias: "e/sys/reboot";
+	alias: "e/sys/suspend";
+	alias: "e/sys/hibernate";
+	min: 273 196;
+	max: 273 196;
+
+	data {
+		item: "borderless" "1";
+	}
+
+	parts {
+		WIN_BG()
+		MESSAGE()
+		LOGO()
+	}
+}
+

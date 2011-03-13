@@ -1,0 +1,190 @@
+
+group {
+	name: "e/modules/clock/main";
+	/* min: 64 64;
+	 * max: 170 170; */
+
+	script {
+		public clock_cb(val) {
+		new buf[11];
+		new year, month, day, yearday, weekday, hour, minute;
+		new Float:second;
+		new v;
+
+		date(year, month, day, yearday, weekday, hour, minute, second);
+		v = round(second);
+		timer(1.0 - (second - v), "clock_cb", 1);
+		buf[0] = 0; 
+		if (v < 10) {snprintf(buf, 10, "0%i", v);}
+		else {snprintf(buf, 10, "%i", v);}
+		set_state(PART:"seconds", buf, 0.0);
+		v = minute;
+		buf[0] = 0; 
+		if (v < 10) {snprintf(buf, 10, "0%i", v);}
+		else {snprintf(buf, 10, "%i", v);}
+		set_state(PART:"minutes", buf, 0.0);
+		v = ((hour % 12) * 5) + ((minute * 5) / 60);
+		buf[0] = 0; 
+		if (v < 10) {snprintf(buf, 10, "0%i", v);}
+		else {snprintf(buf, 10, "%i", v);}
+		set_state(PART:"hour", buf, 0.0);
+		}
+	}
+
+	parts {
+		part {
+			name: "center";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 0 0 0;
+
+				rel1 { 
+					offset: 0 0; 
+				}
+
+				rel2 { 
+					offset: -1 -1; 
+				}
+			}
+		}
+
+		part {
+			name: "clock";
+			type: IMAGE;
+
+			description {
+				state: "default" 0.0;
+				image.normal: "clock/clock_bg.png";
+				aspect: 1.0 1.0;
+				aspect_preference: BOTH;
+
+				rel1 { 
+					to: "center"; 
+					relative: 0.1 0.1; 
+				}
+
+				rel2 { 
+					to: "center"; 
+					relative: 0.9 0.9; 
+				}
+			}
+		}
+
+		# ifdef HAND_DESC
+		#  undef HAND_DESC
+		# endif
+		# define HAND_DESC(IND,num) \
+			description { \
+				state: num 0.0; \
+				inherit: "default" 0.0; \
+				image { \
+					normal: "clock/"IND"."cursor"."num".png"; \
+				} \
+			}
+
+		#define HAND_PART(IND, COLOR) \
+		part { \
+			name: IND; \
+			type: IMAGE; \
+			mouse_events: 0; \
+			description { \
+				state: "default" 0.0; \
+				align: 0.5 0.5; \
+				aspect: 1.0 1.0; \
+				aspect_preference: BOTH; \
+				visible: 1; \
+				color: COLOR; \
+				rel1 { \
+					to: "center"; \
+					relative: 0.0 0.0; \
+				} \
+				rel2 { \
+					to: "center"; \
+					relative: 1.0 1.0; \
+				} \
+				image { \
+					normal: "clock/"IND"."cursor".00.png"; \
+				} \
+			} \
+			HAND_DESC(IND,"00") \
+			HAND_DESC(IND,"01") \
+			HAND_DESC(IND,"02") \
+			HAND_DESC(IND,"03") \
+			HAND_DESC(IND,"04") \
+			HAND_DESC(IND,"05") \
+			HAND_DESC(IND,"06") \
+			HAND_DESC(IND,"07") \
+			HAND_DESC(IND,"08") \
+			HAND_DESC(IND,"09") \
+			HAND_DESC(IND,"10") \
+			HAND_DESC(IND,"11") \
+			HAND_DESC(IND,"12") \
+			HAND_DESC(IND,"13") \
+			HAND_DESC(IND,"14") \
+			HAND_DESC(IND,"15") \
+			HAND_DESC(IND,"16") \
+			HAND_DESC(IND,"17") \
+			HAND_DESC(IND,"18") \
+			HAND_DESC(IND,"19") \
+			HAND_DESC(IND,"20") \
+			HAND_DESC(IND,"21") \
+			HAND_DESC(IND,"22") \
+			HAND_DESC(IND,"23") \
+			HAND_DESC(IND,"24") \
+			HAND_DESC(IND,"25") \
+			HAND_DESC(IND,"26") \
+			HAND_DESC(IND,"27") \
+			HAND_DESC(IND,"28") \
+			HAND_DESC(IND,"29") \
+			HAND_DESC(IND,"30") \
+			HAND_DESC(IND,"31") \
+			HAND_DESC(IND,"32") \
+			HAND_DESC(IND,"33") \
+			HAND_DESC(IND,"34") \
+			HAND_DESC(IND,"35") \
+			HAND_DESC(IND,"36") \
+			HAND_DESC(IND,"37") \
+			HAND_DESC(IND,"38") \
+			HAND_DESC(IND,"39") \
+			HAND_DESC(IND,"40") \
+			HAND_DESC(IND,"41") \
+			HAND_DESC(IND,"42") \
+			HAND_DESC(IND,"43") \
+			HAND_DESC(IND,"44") \
+			HAND_DESC(IND,"45") \
+			HAND_DESC(IND,"46") \
+			HAND_DESC(IND,"47") \
+			HAND_DESC(IND,"48") \
+			HAND_DESC(IND,"49") \
+			HAND_DESC(IND,"50") \
+			HAND_DESC(IND,"51") \
+			HAND_DESC(IND,"52") \
+			HAND_DESC(IND,"53") \
+			HAND_DESC(IND,"54") \
+			HAND_DESC(IND,"55") \
+			HAND_DESC(IND,"56") \
+			HAND_DESC(IND,"57") \
+			HAND_DESC(IND,"58") \
+			HAND_DESC(IND,"59") \
+		}
+
+		HAND_PART("seconds", 255 255 255 255)
+		HAND_PART("minutes", 255 255 255 255)
+		HAND_PART("hour", 255 255 255 255)
+	}
+
+	programs {
+		program {
+			name: "init";
+			signal: "load";
+			source: "";
+			script {
+				clock_cb(0);
+			}
+		}
+	}
+}
+
