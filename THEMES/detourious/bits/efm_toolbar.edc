@@ -3,7 +3,7 @@ group {
 	name: "e/fileman/toolbar/default/base";
 
 	parts {
-	  part {
+		part {
 			name: "box";
 			type: RECT;
 			mouse_events: 0;
@@ -14,26 +14,17 @@ group {
 				max: 9999 30;
 				rel1.offset: 0 0;
 				rel2.offset: -1 1;
-			  color: 180 180 180 255;
+				color: 180 180 180 255;
 				/* image {
 				 * 	normal: "images/fileman_im7.png";
 				 * 	border: 2 2 1 6;
 				 * }
-				 * 
-				 * fill {
-				 * 	#if USE_SMOOTH_IMAGES == 0
-				 * 		smooth: 0;
-				 * 	#else
-				 * 	#if USE_SMOOTH_IMAGES == 1
-				 * 		smooth: 1;
-				 * 	#endif
-				 * 	#endif
 				 * } */
 			}
 
-	  }
+		}
 	  
-	  part {
+		part {
 			name: "base";
 			type: IMAGE;
 			mouse_events: 0;
@@ -48,16 +39,6 @@ group {
 				image {
 					normal: "images/fileman_im7.png";
 					border: 2 2 1 6;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
 				}
 			}
 

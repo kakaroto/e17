@@ -43,14 +43,6 @@ group {
 				}
 
 				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-
 					size {
 						relative: 0 0;
 						#if ALTERNATE == 0

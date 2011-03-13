@@ -24,31 +24,17 @@
 #if USE_BOLD_FONT 
 #define FONT "SwitzeraDemi"
 #define FONT_BOLD "SwitzeraBold"
+#define FONT_ITALIC "SwitzeraDemiItalic"
 #else
 #define FONT "Switzera"
 #define FONT_BOLD "SwitzeraDemi"
+#define FONT_ITALIC "SwitzeraItalic"
 #endif
 
-#define FONT_ITALIC "SwitzeraItalic"
 	
 //Mouse pointer options
 #define ANIMATED_CURSOR 1			/* Mouse pointer will pulsate when inactive */
 #define ALTERNATE_CURSOR 0			/* Alternate (black) mouse pointer */
-
-//Fontconfig: system-wide font configuration
-#define USE_FONTCONFIG 1 			/* fc-match --help for more information */
-
-//Smooth images on scaling
-#define USE_SMOOTH_IMAGES 0 			/* The default (internal) value is 1 */
-
-//Truncate desktop icons filename
-#define TRUNCATE_DESKTOP_ICON_FILENAME 0	/* Shorten desktop filenames */
-
-//Truncate efm icons filename
-#define TRUNCATE_EFM_ICON_FILENAME 1		/* Shorten efm filenames */
-
-//Truncate efm icon list filename
-#define TRUNCATE_EFM_ICON_LIST_FILENAME 1	/* Shorten list filenames */
 
 //Color and Text classes
 #define ENABLE_TEXT_CLASSES 1			/* Allow text/fonts to be interchangeable */
@@ -65,7 +51,7 @@
 #include "text.edc"
 
 data {
-	item: "theme/name" 		    "detourious";
+	item: "theme/name" 		"detourious";
 	item: "theme/version"		"0.8.0";
 	item: "theme/author"		"Alberto Castro, Hannes Janetzek, et al.";
 	item: "theme/license"		"BSD Artistic License";
@@ -77,6 +63,7 @@ fonts
 	font: "fonts/SwitzeraADF-DemiBold.otf" "SwitzeraDemi";
 	font: "fonts/SwitzeraADFBold.otf"      "SwitzeraBold";
 	font: "fonts/SwitzeraADF-Italic.otf"   "SwitzeraItalic";
+	font: "fonts/SwitzeraADF-DemiBoldItalic.otf"   "SwitzeraDemiItalic";
 }
 
 images {

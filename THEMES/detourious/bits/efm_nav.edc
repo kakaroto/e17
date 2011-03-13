@@ -52,16 +52,6 @@ group {
 					normal: "images/efmnav_bt0.png";
 					border: 7 1 7 7;
 				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
 			}
 		}
 
@@ -89,16 +79,6 @@ group {
 				image {
 					normal: "images/efmnav_bt1.png";
 					border: 7 1 6 6;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
 				}
 			}
 
@@ -189,16 +169,6 @@ group {
 					normal: "images/efmnav_bt2.png";
 					border: 1 7 7 7;
 				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
 			}
 		}
 
@@ -226,16 +196,6 @@ group {
 				image {
 					normal: "images/efmnav_bt3.png";
 					border: 1 7 6 6;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
 				}
 			}
 
@@ -327,16 +287,6 @@ group {
 					normal: "images/efmnav_bt4.png";
 					border: 8 8 7 8;
 				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
 			}
 		}
 
@@ -364,16 +314,6 @@ group {
 				image {
 					normal: "images/efmnav_bt5.png";
 					border: 7 7 6 6;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
 				}
 			}
 
@@ -465,16 +405,6 @@ group {
 					normal: "images/efmnav_bt4.png";
 					border: 8 8 7 8;
 				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
 			}
 		}
 
@@ -502,16 +432,6 @@ group {
 				image {
 					normal: "images/efmnav_bt5.png";
 					border: 7 7 6 6;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
 				}
 			}
 
@@ -602,16 +522,6 @@ group {
 					normal: "images/efmnav_bt4.png";
 					border: 8 8 7 8;
 				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
 			}
 		}
 
@@ -639,16 +549,6 @@ group {
 				image {
 					normal: "images/efmnav_bt5.png";
 					border: 7 7 6 6;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
 				}
 			}
 

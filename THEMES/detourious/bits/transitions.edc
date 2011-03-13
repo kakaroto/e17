@@ -16,14 +16,6 @@ group {
 				}
 
 				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-
 					size {
 						relative: 0 0;
 						offset: 24 24;
@@ -52,14 +44,6 @@ group {
 				}
 
 				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-
 					size {
 						relative: 0 0;
 						offset: 24 24;
@@ -250,16 +234,6 @@ group {
 
 				image {
 					normal: "images/transition_im0.png";
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
 				}
 			}
 		}

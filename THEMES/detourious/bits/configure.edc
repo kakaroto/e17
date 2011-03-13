@@ -33,16 +33,6 @@ group {
          * 			border: 2 2 2 2;
          * 			middle: 1;
          * 		}
-         * 
-         * 		fill {
-         * 			#if USE_SMOOTH_IMAGES == 0
-         * 				smooth: 0;
-         * 			#else
-         * 			#if USE_SMOOTH_IMAGES == 1
-         * 				smooth: 1;
-         * 			#endif
-         * 			#endif
-         * 		}
          * 	}
          * } */
         part {

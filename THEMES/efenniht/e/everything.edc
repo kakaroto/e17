@@ -187,7 +187,9 @@ collections {
                }
             }
          }
-         SELECTED_BORDERS("bg")
+         /* BG_BORDER("bg") */
+
+         /* SELECTED_BORDERS("bg") */
       }
       programs {
          program {

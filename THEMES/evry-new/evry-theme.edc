@@ -2,6 +2,7 @@
 #define SLIDE
 #define ROTATE
 #define ANGLE 45.0
+#define FLIP_DURATION 0.35
 
 collections {
 
@@ -29,12 +30,11 @@ collections {
          image: "bt_sm_hilight.png" COMP;
          image: "sb_runnerv.png" COMP;
          image: "sb_drag.png" COMP;
+        image: "everything_bg.png" COMP;
+        image: "everything_bg_grad.png" COMP;
       }
 
       group {
-      images {
-        image: "everything_bg.png" COMP;
-        }
       
       name: "e/modules/everything/list";
       parts {
@@ -339,7 +339,7 @@ collections {
                   offset: 0  0;
                }
                fill.smooth: 0;
-              /* color: 255 255 255 100; */
+              color: 225 225 225 255;
             }
          }
          part {
@@ -348,7 +348,7 @@ collections {
             /* type: RECT; */
             description {
                state: "default" 0.0;
-               image.normal: "vgrad_dark.png";
+               image.normal: "everything_bg_grad.png";
                rel1 {
                   to: "list_clip";
                   offset: 0 0;
@@ -357,8 +357,8 @@ collections {
                   to: "list_clip";
                   offset: 0  0;
                }
-               fill.smooth: 0;
-              color: 255 255 255 180;
+               fill.smooth: 1;
+              color: 255 255 255 200;
             }
          }
          part {
@@ -369,9 +369,24 @@ collections {
             min: 1 1;
             max: 1 1;
             visible: 0;
-            rel1.to: "list_clip";
+            rel1.to: "e.swallow.list";
               rel1.relative: 0.5 0.5; 
-            rel2.to: "list_clip";
+            rel1.to: "e.swallow.list";
+            rel2.relative: 0.5 0.5; 
+            /* align: 0.5 0.5; */
+            }
+         }
+         part {
+            name: "center2";
+            type: RECT;
+            description {
+            state: "default" 0.0;
+            min: 1 1;
+            max: 1 1;
+            visible: 0;
+            rel1.to: "e.swallow.list2";
+              rel1.relative: 0.5 0.5; 
+            rel1.to: "e.swallow.list2";
             rel2.relative: 0.5 0.5; 
             /* align: 0.5 0.5; */
             }
@@ -425,8 +440,8 @@ collections {
                   to: "list_clip";
                }
 #ifdef SLIDE
-               rel1.relative: -1.0 0.0;
-               rel2.relative: 0.0 1.0;
+               rel1.relative: -0.5 0.0;
+               rel2.relative: 0.5 1.0;
 #endif
                map {
                   on: 0;
@@ -467,8 +482,8 @@ collections {
                   to: "list_clip";
                }
 #ifdef SLIDE
-            rel1.relative: 1.0 0.0;
-            rel2.relative: 2.0 1.0;
+            rel1.relative: 0.5 0.0;
+            rel2.relative: 1.5 1.0;
 #endif
             }
             description {
@@ -480,7 +495,7 @@ collections {
                map {
                   on: 1;
                   perspective_on: 1;
-                  rotation.center: "center";
+                  rotation.center: "center2";
                   rotation.y: ANGLE;
                }
 #endif
@@ -489,7 +504,7 @@ collections {
                state: "default" 1.0;
                inherit: "default" 0.0;
                visible: 1;
-
+               color: 255 255 255 255;
                rel1 {
                   offset: 0 3;
                   to: "list_clip";
@@ -654,7 +669,7 @@ collections {
          program {
             name: "slide_left3";
             action: STATE_SET "map" 1.0;
-            transition: DECELERATE 0.3;
+	    transition: DECELERATE FLIP_DURATION;
             target: "e.swallow.list";
             target: "e.swallow.list2";
             after: "slide_left4";
@@ -662,7 +677,8 @@ collections {
          program {
             name: "slide_left4";
             action: STATE_SET "default" 1.0;
-            target: "e.swallow.list";
+            /* transition: LINEAR 0.05; */
+ 	    target: "e.swallow.list";
             target: "e.swallow.list2";
             after: "left_end";
          }
@@ -688,7 +704,7 @@ collections {
          program {
             name: "slide_right3";
             action: STATE_SET "map" 0.0;
-            transition: ACCELERATE 0.3;
+            transition: ACCELERATE FLIP_DURATION;
             target: "e.swallow.list";
             target: "e.swallow.list2";
             after: "slide_right4";
@@ -696,7 +712,8 @@ collections {
          program {
             name: "slide_right4";
             action: STATE_SET "default" 0.0;
-            target: "e.swallow.list";
+            /* transition: LINEAR 0.05; */
+	    target: "e.swallow.list";
             target: "e.swallow.list2";
             after: "right_end";
          }

@@ -118,16 +118,6 @@ group {
 		 * 			normal: "images/fileman_im6.png";
 		 * 			border: 1 1 1 1;
 		 * 		}
-		 *
-		 * 		fill {
-		 * 			#if USE_SMOOTH_IMAGES == 0
-		 * 				smooth: 0;
-		 * 			#else
-		 * 			#if USE_SMOOTH_IMAGES == 1
-		 * 				smooth: 1;
-		 * 			#endif
-		 * 			#endif
-		 * 		}
 		 * 	}
 		 * } */
 
@@ -3028,16 +3018,6 @@ group {
  * 					normal: "images/fileman_im1.png";
  * 					border: 8 8 8 8;
  * 				}
- *
- * 				fill {
- * 					#if USE_SMOOTH_IMAGES == 0
- * 						smooth: 0;
- * 					#else
- * 					#if USE_SMOOTH_IMAGES == 1
- * 						smooth: 1;
- * 					#endif
- * 					#endif
- * 				}
  * 			}
  *
  * 			description {
@@ -3105,14 +3085,6 @@ group {
  * 				}
  *
  * 				fill {
- * 					#if USE_SMOOTH_IMAGES == 0
- * 						smooth: 0;
- * 					#else
- * 					#if USE_SMOOTH_IMAGES == 1
- * 						smooth: 1;
- * 					#endif
- * 					#endif
- *
  * 					size {
  * 						relative: 0 0;
  * 						offset: 16 16;
@@ -3242,17 +3214,7 @@ group {
  * 					normal: "images/gadman_im0.png";
  * 					border: 16 16 16 16;
  * 				}
- *
- * 				fill {
- * 					#if USE_SMOOTH_IMAGES == 0
- * 						smooth: 0;
- * 					#else
- * 					#if USE_SMOOTH_IMAGES == 1
- * 						smooth: 1;
- * 					#endif
- * 					#endif
- * 				}
- * 			}
+ * * 			}
  * 		}
  *
  * 		part {
@@ -3365,17 +3327,7 @@ group {
  * 					normal: "images/fileman_im4.png";
  * 					border: 8 8 9 8;
  * 				}
- *
- * 				fill {
- * 					#if USE_SMOOTH_IMAGES == 0
- * 						smooth: 0;
- * 					#else
- * 					#if USE_SMOOTH_IMAGES == 1
- * 						smooth: 1;
- * 					#endif
- * 					#endif
- * 				}
- * 			}
+ * * 			}
  * 		}
  *
  * 		part {

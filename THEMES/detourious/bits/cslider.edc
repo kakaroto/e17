@@ -28,16 +28,6 @@ group {
 					normal: "images/cslider_im1.png";
 					border: 6 0 7 7;
 				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
 			}
 
 			description {
@@ -144,16 +134,6 @@ group {
 					normal: "images/cslider_im0.png";
 					border: 1 1 2 2;
 				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
 			}
 
 			description {
@@ -176,16 +156,6 @@ group {
 					normal: "images/spectrum_im0.png";
 					border: 7 7 7 7;
 					middle: 0;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
 				}
 			}
 

@@ -595,16 +595,6 @@ group {
 					normal: "images/pager_im7.png";
 					border: 5 5 5 6;
 				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
-				}
 			}
 
 			description {
@@ -639,16 +629,6 @@ group {
 				image {
 					normal: "images/pager_im7.png";
 					border: 5 5 7 6;
-				}
-
-				fill {
-					#if USE_SMOOTH_IMAGES == 0
-						smooth: 0;
-					#else
-					#if USE_SMOOTH_IMAGES == 1
-						smooth: 1;
-					#endif
-					#endif
 				}
 			}
 
