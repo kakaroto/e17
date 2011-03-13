@@ -7,9 +7,6 @@ image: "images/comp/comp-sh1.png" COMP;
 image: "images/comp/bt_glow.png" COMP;
 
 image: "images/scrollframe/trough_v.png" COMP; 
-image: "images/scrollframe/trough_h.png" COMP;
-image: "images/scrollframe/slider_v.png" COMP;
-image: "images/scrollframe/slider_h.png" COMP;
 image: "images/scrollframe/over.png" COMP;
 
 image: "images/bevel_over.png" COMP; /* gradient */
