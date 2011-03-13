@@ -11077,6 +11077,7 @@ if (!strcmp(yymsp[-1].minor.yy0->text, #TYPE)) \
         else EDJE_PART_CHECK(BOX);
         else EDJE_PART_CHECK(TABLE);
         else EDJE_PART_CHECK(EXTERNAL);
+        else EDJE_PART_CHECK(PROXY);
         else ERROR_SYNTAX(yymsp[-1].minor.yy0);
 #undef EDJE_PART_CHECK
      }
@@ -11161,7 +11162,7 @@ if (!edje_parser_property_check(yymsp[-2].minor.yy0->text, #TYPE)) \
    edje_parser_token_free(yymsp[-1].minor.yy0);
   yy_destructor(10,&yymsp[0].minor);
 }
-#line 11167 "edje_parser.c"
+#line 11168 "edje_parser.c"
         break;
   };
   yygoto = yyRuleInfo[yyruleno].lhs;
@@ -11220,7 +11221,7 @@ static void yy_syntax_error(
 #define TOKEN (yyminor.yy0)
 #line 24 "edje_parser.y"
 ERROR_SYNTAX(TOKEN);
-#line 11227 "edje_parser.c"
+#line 11228 "edje_parser.c"
   edje_parser_ARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }
 

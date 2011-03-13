@@ -83,7 +83,8 @@ typedef enum Edje_Part_Type
    EDJE_PART_TYPE_GROUP,
    EDJE_PART_TYPE_BOX,
    EDJE_PART_TYPE_TABLE,
-   EDJE_PART_TYPE_EXTERNAL
+   EDJE_PART_TYPE_EXTERNAL,
+   EDJE_PART_TYPE_PROXY
 } Edje_Part_Type;
 
 typedef enum Edje_Part_Ignore_Flag

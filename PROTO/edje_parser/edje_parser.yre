@@ -2396,6 +2396,7 @@ if (!strcmp(I->text, #TYPE)) \
         else EDJE_PART_CHECK(BOX);
         else EDJE_PART_CHECK(TABLE);
         else EDJE_PART_CHECK(EXTERNAL);
+        else EDJE_PART_CHECK(PROXY);
         else ERROR_SYNTAX(I);
 #undef EDJE_PART_CHECK
      }
