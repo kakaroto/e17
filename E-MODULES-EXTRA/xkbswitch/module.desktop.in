@@ -3,4 +3,5 @@ Type=Link
 Name=XKB Switcher
 Icon=e-module-xkbswitch
 Comment=Keyboard switcher module for Enlightenment.
+Comment[it]=Modulo per il cambio del layout di tastiera in Enlightenment.
 X-Enlightenment-ModuleType=utils
