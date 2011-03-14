@@ -64,8 +64,8 @@
 #define TEXT_TITLE(_text_class, _label, _align, _min)	\
 	text {												\
 		text: _label;									\
-		font: FONT;										\
-		size: 10;										\
+		font: FONT_BOLD;								\
+		size: 9;										\
 		min: _min;										\
 		align: _align;									\
 		text_class: _text_class;						\
@@ -137,24 +137,12 @@ styles {
 	}
 	style {
 		name: "notification_style";
-		base: "font="FONT" font_size=9 align=left color=#3c3c3c wrap=word text_class=module_normal";
-		tag:  "subject"  "+ text_class=module_large font_size=12";
-		tag:  "body"  "+ text_class=module_normal font_size=10";
+		base: "font="FONT" font_size=9 align=left color=#dcdcdc wrap=word";
+		tag:  "subject"  "+ font_size=9";
+		tag:  "body"  "+ font_size=9 color=#dcdcdc";
 		tag:  "br" "\n";
-		tag:  "b" "+ font="FONT_BOLD" text_class=module_bold";
-		tag:  "i" "+ font="FONT_ITALIC" text_class=module_bold";
-		tag:  "u" "+ underline=on";
-		tag:  "img" ""; /* images not supported */
-		tag:  "a" ""; /* links not supported */
-	}
-	style {
-		name: "notification_style_alpha";
-		base: "font="FONT" font_size=9 align=left color=#fcfcfc outline_color=#000 wrap=word text_class=module_normal";
-		tag:  "subject"  "+ text_class=module_large font_size=12";
-		tag:  "body"  "+ text_class=module_normal font_size=10";
-		tag:  "br" "\n";
-		tag:  "b" "+ font="FONT_BOLD" text_class=module_bold";
-		tag:  "i" "+ font="FONT_ITALIC" text_class=module_bold";
+		tag:  "b" "+ font="FONT_BOLD" color=#dcdcdc";
+		tag:  "i" "+ font="FONT_ITALIC" color=#dcdcdc";
 		tag:  "u" "+ underline=on";
 		tag:  "img" ""; /* images not supported */
 		tag:  "a" ""; /* links not supported */

@@ -127,5 +127,6 @@ collections {
 	#include "bits/toolbar.edc"
     #include "bits/everything.edc"
     #include "bits/comp.edc"
+    #include "bits/notification.edc"
 }
 
