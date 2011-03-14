@@ -397,6 +397,7 @@ FAST_CALL_PARAMS(ecore_evas_fullscreen_set, elixir_void_params_boolean);
 FAST_CALL_PARAMS(ecore_evas_withdrawn_set, elixir_void_params_boolean);
 FAST_CALL_PARAMS(ecore_evas_sticky_set, elixir_void_params_boolean);
 FAST_CALL_PARAMS(ecore_evas_ignore_events_set, elixir_void_params_boolean);
+FAST_CALL_PARAMS(ecore_evas_manual_render_set, elixir_void_params_boolean);
 
 FAST_CALL_PARAMS_CAST(ecore_evas_avoid_damage_set, elixir_void_params_int);
 
@@ -429,10 +430,27 @@ elixir_2int_params_ecore_evas(void (*func)(const Ecore_Evas *ee, int *w, int *h)
    return JS_TRUE;
 }
 
+static JSBool
+elixir_bool_ecore_evas_params(Eina_Bool (*func)(const Ecore_Evas *ee),
+                              JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Evas*          ee;
+   elixir_value_t       val[1];
+
+   if (!elixir_params_check(cx, _ecore_evas_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, ee);
+
+   JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(func(ee)));
+   return JS_TRUE;
+}
+
 FAST_CALL_PARAMS(ecore_evas_size_min_get, elixir_2int_params_ecore_evas);
 FAST_CALL_PARAMS(ecore_evas_size_max_get, elixir_2int_params_ecore_evas);
 FAST_CALL_PARAMS(ecore_evas_size_base_get, elixir_2int_params_ecore_evas);
 FAST_CALL_PARAMS(ecore_evas_size_step_get, elixir_2int_params_ecore_evas);
+FAST_CALL_PARAMS(ecore_evas_manual_render_get, elixir_bool_ecore_evas_params);
 
 static JSBool
 elixir_ecore_evas_engine_type_supported_get(JSContext *cx, uintN argc, jsval *vp)
@@ -476,6 +494,20 @@ elixir_ecore_evas_engines_get(JSContext *cx, uintN argc, jsval *vp)
      }
 
    ecore_evas_engines_free(list);
+   return JS_TRUE;
+}
+
+static JSBool
+elixir_ecore_evas_manual_render(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Evas *ee;
+   elixir_value_t val[1];
+
+   if (!elixir_params_check(cx, _ecore_evas_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, ee);
+   ecore_evas_manual_render(ee);
    return JS_TRUE;
 }
 
@@ -1037,10 +1069,13 @@ static JSFunctionSpec   ecore_evas_functions[] = {
   ELIXIR_FN(ecore_evas_withdrawn_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_sticky_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_ignore_events_set, 2, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_evas_manual_render_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_size_min_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_size_max_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_size_base_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_size_step_get, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_evas_manual_render_get, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_evas_manual_render, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_engines_get, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_evas_new, 6, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
