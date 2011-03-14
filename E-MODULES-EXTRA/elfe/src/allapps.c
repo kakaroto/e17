@@ -308,7 +308,7 @@ elfe_allapps_add(Evas_Object *parent)
    allapps->pager = elm_pager_add(allapps->box);
    evas_object_show(allapps->pager);
    elm_box_pack_end(allapps->box, allapps->pager);
-   elm_object_style_set(allapps->pager, "flip");
+   elm_object_style_set(allapps->pager, "slide_invisible");
 
    allapps->grid = elm_gengrid_add(parent);
    elm_gengrid_item_size_set(allapps->grid, 0, 0);
