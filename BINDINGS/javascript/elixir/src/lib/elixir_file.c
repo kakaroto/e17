@@ -274,7 +274,7 @@ elixir_magic_unregister(const char *mime, const char *name)
    lookup->count--;
 
    if (lookup->count == 0)
-     eina_hash_del(magics, mime);
+     eina_hash_del(magics, mime, lookup);
 
    return EINA_TRUE;
 #else
