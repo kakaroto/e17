@@ -382,18 +382,31 @@ group { name: "elm/genlist/item/default/default";
             visible: 1;
             color: 255 255 255 255;
          }
+      }      
+      part {
+         name: "separator2";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color:  50 50 50 255;
+            rel2.offset: 0 0;
+            min: 0 1;
+            max: 9999 1;
+            align: 0 1;
+         }
       }
       part {
          name: "separator";
          type: RECT;
          description {
             state: "default" 0.0;
-            color: 255 255 255 255;
+            color: 110 110 109 255;
             min: 0 1;
             max: 9999 1;
             align: 0 1;
          }
       }
+
       part { name: "elm.swallow.pad";
          type: SWALLOW;
          description { state: "default" 0.0;
