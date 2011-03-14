@@ -7,7 +7,7 @@ have_[]SAFE="no"
 
 AC_ARG_ENABLE([$2],
 	[AS_HELP_STRING([--disable-$2], [$3])],
-	[have_[]SAFE=no],
+	[have_[]SAFE=$enableval],
 	[have_[]SAFE=yes])
 AC_MSG_CHECKING(whether to build $3)
 AC_MSG_RESULT(${have_[]SAFE})
@@ -38,7 +38,7 @@ AC_DEFUN([ELIXIR_CHECK_MODULE],
 [
 AC_ARG_ENABLE([$2],
         [AS_HELP_STRING([--disable-$2], [$3])],
-        [have_$2=no],
+        [have_$2=$enableval],
         [have_$2=yes])
 AC_MSG_CHECKING(whether to build $3)
 if test "x${have_$2}" = "xyes"; then
