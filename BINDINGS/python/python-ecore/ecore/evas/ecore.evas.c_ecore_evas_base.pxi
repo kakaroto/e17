@@ -723,6 +723,17 @@ cdef class EcoreEvas:
         def __set__(self, int value):
             self.ignore_events_set(value)
 
+    def manual_render_set(self, int on):
+        ecore_evas_manual_render_set(self.obj, on)
+
+    def manual_render_get(self):
+        "@rtype: bool"
+        return bool(ecore_evas_manual_render_get(self.obj))
+
+    def manual_render(self):
+        "Request immediate rendering manually."
+        ecore_evas_manual_render(self.obj)
+
 
     ####################################################################
     # Callbacks

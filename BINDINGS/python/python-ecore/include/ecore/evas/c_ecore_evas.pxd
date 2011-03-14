@@ -208,7 +208,9 @@ cdef extern from "Ecore_Evas.h":
     int  ecore_evas_sticky_get(Ecore_Evas *ee)
     void ecore_evas_ignore_events_set(Ecore_Evas *ee, int ignore)
     int  ecore_evas_ignore_events_get(Ecore_Evas *ee)
-
+    void ecore_evas_manual_render_set(Ecore_Evas *ee, int ignore)
+    int  ecore_evas_manual_render_get(Ecore_Evas *ee)
+    void ecore_evas_manual_render(Ecore_Evas *ee)
 
 cdef extern from "Ecore_X.h":
     ctypedef unsigned int Ecore_X_Cursor
