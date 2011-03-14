@@ -53,6 +53,7 @@ function anim(ctxt)
     }
 
     ecore_evas_manual_render(ctxt.ee);
+    elx.gc();
 
     return 1;
 }
