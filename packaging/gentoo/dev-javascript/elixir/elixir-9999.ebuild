@@ -18,6 +18,7 @@ KEYWORDS=""
 IUSE="debug +zlib sdl +sqlite +network +filesystem eio emotion cmp static +static-modules"
 
 RDEPEND="
+	=dev-lang/spidermonkey-1.8.0_rc1
 	static? (
 		=dev-libs/eet-9999[static-libs]
 		=media-libs/evas-9999[eet,static-libs]
