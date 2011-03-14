@@ -140,7 +140,7 @@
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> </b><em>
      1.0.0</em></p><p>
-     Udev wrapping and abstraction library. </p><p align=right><?php blinkdl("i/dl.png", 
+     Device abstraction library. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EEZE", 
      "http://download.enlightenment.org/releases/eeze-1.0.0.tar.gz"
    );?></p></div>
