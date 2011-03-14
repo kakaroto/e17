@@ -286,6 +286,7 @@ collections
             name: "menu.background.bottom";
             mouse_events: 0;
             description {
+               visible: 1;
                state: "default" 0.0;
                image.normal: "mainmenu_bg_bottom.png";
                image.border: 0 0 2 0;
@@ -296,6 +297,7 @@ collections
             name: "menu.background.top";
             mouse_events: 0;
             description {
+               visible: 0;
                state: "default" 0.0;
                image.normal: "mainmenu_bg_top.png";
                rel1.relative: 0.0 0.0;
@@ -311,6 +313,7 @@ collections
              mouse_events: 0;
             description {
                state: "default" 0.0;
+               visible: 0;
                image.normal: "mainmenu_bg_reflect.png";
                rel1.relative: 0.0 0.0;
                rel1.to: "menu.background.top";
@@ -319,7 +322,40 @@ collections
          }
 
          part {
+            name: "edit.mode.clip";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+            description {
+               state: "show" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+            }
+         }
+
+         part {
+            name: "edit.mode.dock.clip";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+            }
+            description {
+               state: "show" 0.0;
+               color: 255 255 255 0;
+               visible: 0;
+            }
+         }
+
+         part {
             name: "fake.clip";
+            clip_to: "edit.mode.dock.clip";
             type: RECT;
             mouse_events: 0;
             description {
@@ -331,6 +367,7 @@ collections
             name: "icons.clip";
             type: RECT;
             mouse_events: 1;
+            clip_to: "edit.mode.dock.clip";
             description {
                state: "hidden" 0.0;
                visible: 1;
@@ -345,6 +382,7 @@ collections
 
          TOOLBAR_BUTTON("windows", "Wins", TOOLBAR_POSITION(1), "icons.clip");
          TOOLBAR_BUTTON("apps", "Apps", TOOLBAR_POSITION(2), "fake.clip");
+         TOOLBAR_BUTTON("badge_delete", "EditMode", TOOLBAR_POSITION(2), "edit.mode.clip");
          TOOLBAR_BUTTON("settings", "Settings", TOOLBAR_POSITION(3), "icons.clip");
 
          part {
@@ -590,6 +628,30 @@ collections
                }
             }
          }
+         program {
+            name: "load,editmode";
+            signal: "load";
+            action: STATE_SET "default" 0.0;
+            target: "edit.mode.clip";
+            target: "edit.mode.dock.clip";
+         }
+         program {
+            name: "show,editmode";
+            signal: "editmode,show";
+            source: "elfe";
+            action: STATE_SET "show" 0.0;
+            target: "edit.mode.clip";
+            target: "edit.mode.dock.clip";
+         }
+
+         program {
+            name: "hide,editmode";
+            signal: "editmode,hide";
+            source: "elfe";
+            action: STATE_SET "default" 0.0;
+            target: "edit.mode.clip";
+            target: "edit.mode.dock.clip";
+         }
 
          program { name: "hide-view-mask";
             action: STATE_SET "hidden" 0.0;
@@ -764,6 +826,7 @@ collections
             source: "elfe";
             action: STATE_SET "normal" 0.1;
             target: "clip";
+            target: "elfe.swallow.content";
             transition: "SINUSOIDAL" 0.2;
          }
 

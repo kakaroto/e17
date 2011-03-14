@@ -103,9 +103,15 @@ _longpress_timer_cb(void *data)
 
    printf("Longpress edit mode\n");
    gad = eina_list_nth(desk->gadgets, desk->current_desktop);
-   elfe_desktop_page_edit_mode_set(gad, EINA_TRUE);
 
-   desk->longpress_timer = NULL;
+   if (!desk->edit_mode)
+     {
+	desk->edit_mode = EINA_TRUE;
+	elfe_desktop_page_edit_mode_set(gad, EINA_TRUE);
+	desk->longpress_timer = NULL;
+	evas_object_smart_callback_call(desk->layout, "editmode,on", NULL);
+     }
+
 
    return ECORE_CALLBACK_CANCEL;
 }
@@ -339,6 +345,7 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
    Evas_Object *gad;
    int m,n;
    int i,j;
+   Eina_List *l;
    char buf[PATH_MAX];
    Evas_Object *over;
 
@@ -386,7 +393,13 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 	  {
 	     evas_object_del(over);
 	  }
-	desk->overs = NULL;
-     }
 
+	desk->overs = NULL;
+
+	EINA_LIST_FOREACH(desk->gadgets, l, gad)
+	  {
+	     elfe_desktop_page_edit_mode_set(gad, EINA_FALSE);
+	     evas_object_smart_callback_call(desk->layout, "editmode,off", desk);
+	  }
+     }
 }

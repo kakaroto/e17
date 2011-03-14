@@ -129,7 +129,10 @@ elfe_desktop_item_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
      return;
 
    dit->edit_mode = mode;
-   edje_object_signal_emit(dit->frame, "action,edit,on", "elfe");
+   if (mode)
+       edje_object_signal_emit(dit->frame, "action,edit,on", "elfe");
+   else
+       edje_object_signal_emit(dit->frame, "action,edit,off", "elfe");
 }
 
 static void

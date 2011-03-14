@@ -141,6 +141,17 @@ elfe_home_win_cfg_update(void)
 }
 
 static void
+_desktop_editmode_cb(void *data , Evas_Object *obj, void *event_info)
+{
+    Elfe_Home_Win *hwin = data;
+    Evas_Object *o_edje;
+
+    printf("Enter Edit mode\n");
+    o_edje = elm_layout_edje_get(hwin->layout);
+    edje_object_signal_emit(o_edje, "editmode,show", "elfe");
+}
+
+static void
 _gadget_added_cb(void *data , Evas_Object *obj, void *event_info)
 {
    Elfe_Home_Win *hwin = data;
@@ -291,12 +302,9 @@ _allapps_item_selected_cb(void *data , Evas_Object *obj, void *event_info)
 
 static void  _edje_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   Elfe_Home_Win *hwin;
+   Elfe_Home_Win *hwin = data;
    Evas_Object *o_edje;
    Evas_Object *winlist;
-   hwin = data;
-
-
 
    if (!strcmp(emission, "action,settings"))
      {
@@ -322,6 +330,14 @@ static void  _edje_signal_cb(void *data, Evas_Object *obj, const char *emission,
 	     evas_object_show(hwin->allapps);
 	     elm_layout_content_set(hwin->layout, "apps-list-swallow", hwin->allapps);
 	  }
+     }
+   else if (!strcmp(emission, "action,badge_delete"))
+     {
+	    Evas_Object *o_edje;
+
+	    elfe_desktop_edit_mode_set(hwin->desktop, EINA_FALSE);
+	    o_edje = elm_layout_edje_get(hwin->layout);
+	    edje_object_signal_emit(o_edje, "editmode,hide", "elfe");
      }
 }
 
@@ -404,6 +420,7 @@ _elfe_home_win_new(E_Zone *zone)
    hwin->desktop = elfe_desktop_add(hwin->layout, hwin->zone);
    elm_layout_content_set(hwin->layout, "launcher.swallow", hwin->desktop);
    evas_object_smart_callback_add(hwin->desktop, "gadget,added", _gadget_added_cb, hwin);
+   evas_object_smart_callback_add(hwin->desktop, "editmode,on", _desktop_editmode_cb, hwin);
 
 
    evas_object_move(hwin->layout, 0, 0);
