@@ -26,8 +26,9 @@ style "menu-item"
     roundness           = 0
     contrast            = 0.6
     
-    border_shades       = { 1.32, 1.12 }
-    gradient_shades     = {0.96, 0.75, 0.96, 0.75}
+    border_shades       = { 1.32, 1.12 }	
+#    gradient_shades     = {0.96, 0.75, 0.96, 0.75}
+    gradient_shades	    = {1.05, 0.85, 1.05, 0.85}
     
     glazestyle          = 3     # 0 = flat, 1 = curved, 2 = concave, 3 = top-curved, 4 = beryl
     glow_shade          = 1.4   # sets glow amount for buttons or widgets

@@ -10,7 +10,7 @@ gtk_color_scheme = "fg_color:#3C3C3C"
 gtk_color_scheme = "bg_color:#DEDEDE"
 gtk_color_scheme = "base_color:#ffffff"
 gtk_color_scheme = "text_color:#3C3C3C"
-gtk_color_scheme = "selected_bg_color:#5E8EC2"
+gtk_color_scheme = "selected_bg_color:#8aabe1"
 gtk_color_scheme = "selected_fg_color:#fff"
 gtk_color_scheme = "tooltip_bg_color:#E6E6E6"
 gtk_color_scheme = "tooltip_fg_color:#3C3C3C"
@@ -250,15 +250,16 @@ style "treeview"
     {
 	roundness = 0
 	contrast = .6
-	border_shades	    = { 1.25, 1.05 }
-	gradient_shades	    = {1.15, 0.95, 1.15, 0.95}
+	#border_shades	    = { 1.25, 1.05 }
+	border_shades       = { 1.32, 1.12 }
+	gradient_shades	    = {1.05, 0.85, 1.05, 0.85}
     }
 }
 
 style "treeview-header" = "selected"
 {
-    xthickness = 0
-    ythickness = 0    
+    xthickness = 1
+    ythickness = 1    
 
     engine "murrine"
     {
