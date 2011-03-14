@@ -1,0 +1,86 @@
+style "button"
+{
+    xthickness = 4
+    ythickness = 3
+
+    engine "pixmap"
+    {
+	image
+	{
+	    function		= FOCUS
+	    file		= "others/empty.png"
+	    stretch		= TRUE
+	}	
+	image
+	{
+	    function		= BOX
+	    detail		= "buttondefault"
+	    file		= "Buttons/button-default.png"
+	    border		= { 6,6,6,6 }
+	    stretch		= TRUE
+	}
+	image
+	{
+	    function		= BOX
+	    state		= PRELIGHT
+	    recolorable		= TRUE
+	    file		= "Buttons/button-hover.png"
+	    border		= { 6,6,6,6 }
+	    stretch		= TRUE
+	}
+	image
+	{
+	    function		= BOX
+	    state		= ACTIVE
+	    file		= "Buttons/button-active.png"
+	    border		= { 6,6,6,6 }
+	    stretch		= TRUE
+	}
+	image 
+	{
+	    function		= BOX
+	    state		= INSENSITIVE
+	    file		= "Buttons/button-off.png"
+	    border		= { 6,6,6,6 }
+	    stretch		= TRUE
+	}
+	image 
+	{
+	    function		= BOX
+	    file		= "Buttons/button-normal.png"
+	    border		= { 6,6,6,6 }
+	    stretch		= TRUE
+	}	
+	image
+	{
+	    function		= VLINE
+	    file		= "Shadows/null.png"
+	    border		= { 0, 0, 0, 0 }
+	    stretch		= TRUE
+	}
+    }
+}
+style "toggle-button" = "button"
+{
+    engine "pixmap"
+    {
+	image
+	{
+	    function		= BOX
+	    state		= PRELIGHT
+	    file		= "Buttons/button-active.png"
+	    border		= { 6,6,6,6 }
+	    stretch		= TRUE
+	}
+
+    }
+}
+class "GtkButton" style "button"
+class "GtkToggleButton" style "toggle-button"
+class "GtkToolButton" style "button"
+widget_class "*Panel*GtkToggleButton" style "toggle-button"
+widget "*.tasklist-button" style "button"
+
+widget_class "*GtkComboBox*"      style "button"
+widget_class "*.<GtkComboBox>."   style "button"
+widget_class "*<GtkOptionMenu>*"  style "button"

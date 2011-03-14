@@ -1,0 +1,15 @@
+
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=FineryBlues
+Comment=Improved FineryDark theme
+Encoding=UTF-8
+
+Name[en_US]=FineryBlues
+
+[X-GNOME-Metatheme]
+GtkTheme=FineryBlues
+MetacityTheme=FineryBlues
+IconTheme=Humanities-Blue
+CursorTheme=DMZ-White
+ButtonLayout=close,minimize,maximize:

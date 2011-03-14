@@ -1,0 +1,45 @@
+style "toolbar"
+{
+	engine "pixmap"
+	{
+	image
+	{
+		function		= BOX
+		state			= NORMAL
+		file 			= "others/toolbar.png"
+		border			= { 0, 0, 1,1}
+		stretch			= TRUE
+    	}
+	image
+	{
+		function 		= BOX
+		state 			= INSENSITIVE
+		file 			= "others/toolbar.png"
+		border			= { 0, 0, 1,1}
+		stretch			= TRUE
+	}
+	image
+	{
+		function		= HANDLE
+		recolorable		= TRUE
+		overlay_file		= "others/v2.png"
+		overlay_stretch		= TRUE
+		orientation		= HORIZONTAL
+	}
+	image
+	{
+		function		= HANDLE
+		recolorable		= TRUE
+		overlay_file		= "others/h2.png"
+		overlay_stretch		= TRUE
+		orientation		= VERTICAL
+	}
+ 	}
+}
+class "GtkToolbar"   style "toolbar" 
+class "*BonoboDockItem" style "toolbar"
+widget_class "*BonoboDockItem" style "toolbar"
+class "*HandleBox" style "toolbar"
+widget_class "*HandleBox" style "toolbar"
+class "*Toolbar" style "toolbar"
+widget_class "*Toolbar" style "toolbar"

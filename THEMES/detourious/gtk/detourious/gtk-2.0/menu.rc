@@ -1,0 +1,136 @@
+# style "menu" = "dark"
+# {
+#   xthickness = 0
+#   ythickness = 0
+
+  
+#   bg[INSENSITIVE] = mix (0.4, @selected_bg_color, @bg_color)
+
+#   engine "murrine" 
+#   {
+#     roundness = 10
+#   }
+# }
+
+style "menu-item"
+{
+  xthickness = 0
+  ythickness = 4
+
+  bg[INSENSITIVE] = mix (0.4, @selected_bg_color, @bg_color)
+  fg[ACTIVE]      	= "#fff"
+  fg[PRELIGHT]      	= "#fff"  
+
+  engine "murrine" 
+  {
+    roundness           = 0
+    contrast            = 0.6
+    
+    border_shades       = { 1.32, 1.12 }
+    gradient_shades     = {0.96, 0.75, 0.96, 0.75}
+    
+    glazestyle          = 3     # 0 = flat, 1 = curved, 2 = concave, 3 = top-curved, 4 = beryl
+    glow_shade          = 1.4   # sets glow amount for buttons or widgets
+    glowstyle           = 4
+    
+    highlight_shade     = 1.05  # set highlight amount for buttons or widgets
+    
+    lightborder_shade   = 1.6   # sets lightborder amount for buttons or widgets
+    lightborderstyle    = 1     # 0 = lightborder on top side, 1 = lightborder on all sides
+    
+    shadow_shades 	    = { 0.3, 0.1 } # draw gradient on shadow of some widgets
+    textstyle           = 1     # 0 = normal text, 1 = inset
+  }
+}
+
+# style "separator-menu-item"
+# {
+#   GtkWidget::wide-separators  = 1
+#   GtkWidget::separator-width  = 1
+#   GtkWidget::separator-height = 1
+  
+#   xthickness = 4
+#   ythickness = 0
+
+#   bg[NORMAL] = shade(0.4, @selected_bg_color)
+# }
+
+# style "menubar" = "dark"
+# {
+#   ythickness = 3
+
+#   #    bg[NORMAL] = "#2C2C2C"
+#   engine "pixmap" 
+#   {
+#     image 
+#     {
+#       function        	= BOX
+#       file                = "menubar.png"
+#       border          	= { 2,2,2,2 }
+#       stretch         	= TRUE
+#     }  
+#   }
+# }
+
+style "menubar"
+{
+    xthickness = 0
+    ythickness = 2
+
+    engine "pixmap"
+    {
+	image
+	{
+	    function 		= BOX
+	    state 		= NORMAL
+	    file 		= "Menu-Menubar/menubar.png"
+	    border		= { 0, 0, 1, 1}
+	    stretch		= TRUE
+    	}
+	image
+	{
+	    function 		= BOX
+	    state 		= INSENSITIVE
+	    file 		= "Menu-Menubar/menubar.png"
+	    border		= { 0, 0, 1, 1}
+	    stretch		= TRUE
+	}
+    }
+}
+
+style "menu"
+{
+    xthickness = 0
+    ythickness = 0
+
+    engine "pixmap"
+    {
+	image
+	{
+	    function 		= BOX
+	    recolorable 	= TRUE
+	    detail 		= "menu"
+	    file 		= "Menu-Menubar/menu.png"
+	    border 		= { 0, 0, 0, 0 }
+	    stretch 		= TRUE
+	}
+    }
+}
+
+style "separator-menu-item"
+{
+    xthickness = 0
+    ythickness = 2
+    GtkMenuItem::horizontal-padding = 0
+
+    engine "pixmap"
+    {
+	image
+	{
+	    function 		= HLINE
+	    file 		= "Menu-Menubar/menu-separator.png"
+	    border 		= { 0, 0, 1, 1 }
+	    stretch 		= TRUE
+	}
+    }
+}

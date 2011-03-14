@@ -1,0 +1,112 @@
+# FineryBlues
+#
+# Theme by Hund @ http://ebupof.deviantart.com
+#
+# Creative Commons Attribution-Noncommercial-Share Alike 3.0 Unported License.
+#
+# Feel free to modify and share!
+
+################################################
+# PANELS
+################################################
+
+# Note: Uncommenting means to delete the "#" at the beginning of a line. Commenting out means to add a "#" at the beginning of a line. The "#" tells the theme wether to ignore the line or not.
+
+style "theme-panel" = "murrine-selected-item"
+{
+    xthickness = 3
+	bg_pixmap[NORMAL]	= "/Panels/bg_panel.png" # Disable for normal panel backgrounds.
+
+	bg[NORMAL]      = "#3C3C3C"
+	bg[PRELIGHT]    = shade (.65, @selected_bg_color)
+	bg[ACTIVE]      = shade(.55, @selected_bg_color)
+	bg[SELECTED]    	= @selected_bg_color
+	bg[INSENSITIVE] = @fg_color
+	
+	fg[NORMAL]      	= "#DFDFDF" # Makes panel text light.
+	fg[PRELIGHT]   	= "#fff" #"#484848"
+	fg[SELECTED]    	= @selected_fg_color #"#333333"
+	fg[ACTIVE]      	= "#fff"
+	fg[INSENSITIVE] 	= "#999999"
+	
+	text[NORMAL]	    = "#e6e6e6"
+	text[PRELIGHT]	    = "#333333" # Makes prelighted text colored.
+	text[SELECTED]	    = "#333333" # Makes prelighted text colored.
+	text[ACTIVE]	    = @selected_fg_color # Makes active text colored.
+	text[INSENSITIVE]	= "#484848"
+	
+    engine "murrine" 
+    {
+        roundness           = 0
+        contrast            = 0.6
+        
+        border_shades       = { 1.32, 1.12 }
+        gradient_shades     = {0.96, 0.75, 0.96, 0.75}
+		
+		glazestyle          = 3     # 0 = flat, 1 = curved, 2 = concave, 3 = top-curved, 4 = beryl
+		glow_shade          = 1.4   # sets glow amount for buttons or widgets
+		glowstyle           = 4
+		
+		highlight_shade     = 1.05  # set highlight amount for buttons or widgets
+		
+		lightborder_shade   = 1.6   # sets lightborder amount for buttons or widgets
+		lightborderstyle    = 1     # 0 = lightborder on top side, 1 = lightborder on all sides
+		
+		shadow_shades 	    = { 0.3, 0.1 } # draw gradient on shadow of some widgets
+		textstyle           = 0     # 0 = normal text, 1 = inset
+    }
+}
+
+# For the window list, clock applet etc.
+style "theme-panel-buttons" = "theme-panel"
+{
+	bg[PRELIGHT]	= shade (1.4, @fg_color) # Makes panel button prelight dark.
+	bg[ACTIVE]	    =  shade (0.38, @theme_color) # Makes active buttons dark.
+	bg[INSENSITIVE]	= "#464646"
+	
+	
+	engine "murrine" {
+		roundness           = 2 # This sets the roundness of panel items.
+		contrast            = 1.2
+		
+		border_shades       = {1.3, 0.9}
+		
+		lightborder_shade   = 2.0   # sets lightborder amount for buttons or widgets
+		lightborderstyle    = 1     # 0 = lightborder on top side, 1 = lightborder on all sides
+		
+		#gradient_shades     = {1.0, 1.0, 0.9, 0.9}
+	}
+}
+
+style "theme-panel-light"
+{
+    fg[NORMAL]  = @fg_color
+}
+
+# Panel settings
+widget "*PanelWidget*"		style "theme-panel"
+widget "*PanelApplet*"		style "theme-panel-buttons"
+widget "*fast-user-switch*"	style "theme-panel"
+widget "*gdm-user-switch*"	style "theme-panel"
+widget "*CPUFreq*Applet*"	style "theme-panel"
+widget "*indicator-applet*"	style "theme-panel"
+class "PanelApp*"		style "theme-panel"
+class "PanelToplevel*"		style "theme-panel"
+widget_class "*PanelToplevel*"	style "theme-panel"
+#widget_class "*Mail*"		style "theme-panel" # Disabled to fix Evolution bug.
+#class "*Panel*"		style "theme-panel" # Disabled to fix bug.
+widget_class "*notif*"		style "theme-panel"
+widget_class "*Notif*"		style "theme-panel"
+widget_class "*Tray*"		style "theme-panel" 
+widget_class "*tray*"		style "theme-panel"
+widget_class "*computertemp*"	style "theme-panel"
+widget_class "*Applet*Tomboy*"	style "theme-panel"
+widget_class "*Applet*Netstatus*"	style "theme-panel"
+
+# Fixes for tooltip text in some apps.
+widget_class "*Notif*Beagle*"	style "theme-panel-light"
+widget_class "*Notif*Brasero*"	style "theme-panel-light"
+
+# XFCE panel theming.
+widget "*Xfce*Panel*"		style "theme-panel"
+class "*Xfce*Panel*"		style "theme-panel"
