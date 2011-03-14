@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+ <email>barbieri@profusion.mobi</email>
+ <name>Gustavo Sverzut Barbieri</name>
+</maintainer>
+<use>
+ <flag name="network">Enable network access modules (ecore-con and ecore-download).</flag>
+ <flag name="filesystem">Enable filesystem access modules (file, dir, ecore-file).</flag>
+ <flag name="eio">Enable <pkg>dev-libs/eio</pkg> bindings.</flag>
+ <flag name="emotion">Enable <pkg>media-libs/emotion</pkg> bindings.</flag>
+ <flag name="cmp">Enable raw certificate comparison security module.</flag>
+ <flag name="static">Create a static elixir binary.</flag>
+ <flag name="static-modules">All elixir modules will be built-in statically.</flag>
+</use>
+<longdescription>
+Elixir provides JavaScript bindings (wrappers, access) for
+Enlightenment Foundation Libraries (EFL) such as Ecore, Evas and Edje.
+
+It can be compiled with or without database, file and network access
+and with security check modules.
+</longdescription>
+</pkgmetadata>
