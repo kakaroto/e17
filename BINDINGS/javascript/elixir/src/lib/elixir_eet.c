@@ -322,6 +322,7 @@ elixir_to_eet_data(JSContext *cx, jsval data, const char *name, jsval descriptor
 #endif
 }
 
+#ifdef BUILD_MODULE_EET
 typedef struct _Elixir_Eet_Node_Converter Elixir_Eet_Node_Converter;
 
 struct _Elixir_Eet_Node_Converter
@@ -591,6 +592,7 @@ static Eet_Node_Walk Elixir_Eet_Node_Walk = {
   _elixir_eet_hash,
   _elixir_eet_simple
 };
+#endif
 
 EAPI JSObject *
 elixir_from_eet_data(JSContext *cx, Elixir_Eet_Data *data, const char *cipher)
@@ -635,6 +637,7 @@ elixir_from_eet_data(JSContext *cx, Elixir_Eet_Data *data, const char *cipher)
 EAPI void
 elixir_eet_init(JSContext *cx, JSObject *parent)
 {
+#ifdef BUILD_MODULE_EET
    unsigned int i;
    jsval property;
 
@@ -649,22 +652,26 @@ elixir_eet_init(JSContext *cx, JSObject *parent)
 			  NULL, NULL,
 			  JSPROP_ENUMERATE | JSPROP_READONLY);
      }
+#endif
 }
 
 EAPI void
 elixir_eet_shutdown(JSContext *cx, JSObject *parent)
 {
+#ifdef BUILD_MODULE_EET
    unsigned int i = 0;
 
    while (eet_const_properties[i].name)
      JS_DeleteProperty(cx, parent, eet_const_properties[i++].name);
 
    eet_shutdown();
+#endif
 }
 
 EAPI JSObject *
 elixir_eet_data_new(JSContext *cx, void *data, int length)
 {
+#ifdef BUILD_MODULE_EET
    Elixir_Eet_Data *eed;
    JSObject *jeed;
 
@@ -688,5 +695,8 @@ elixir_eet_data_new(JSContext *cx, void *data, int length)
      }
 
    return jeed;
+#else
+   return NULL;
+#endif
 }
 
