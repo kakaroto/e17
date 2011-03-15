@@ -100,7 +100,6 @@ group {
         part {
             name: "left_arrow";
             mouse_events: 1;
-            scale: 1;
             description {
 				state: "default" 0.0;
 				image.normal: "images/scrollbar_im6.png";
@@ -119,7 +118,6 @@ group {
         part {
             name: "right_arrow";
             mouse_events: 1;
-            scale: 1;
             description {
 				state: "default" 0.0;
 				image.normal: "images/scrollbar_im7.png";

@@ -144,6 +144,7 @@ image: "images/cslider_im1.png" COMP; /* left */
 image: "images/cslider_im2.png" COMP; /* right */
 
 //~ border: default border style
+image: "images/window-border.png" COMP; 	/* top left corner */
 image: "images/window-border_im0.png" COMP; 	/* top left corner */
 image: "images/window-border_im1.png" COMP; 	/* top center */
 image: "images/window-border_im2.png" COMP; 	/* top right corner */

@@ -5,8 +5,6 @@
 
 #include "macros/gradient.edc"
 #include "macros/about_buttons.edc"
-#include "macros/border.edc"
-#include "macros/border_programs.edc"
 #include "macros/border_menu_buttons.edc"
 #include "macros/efm_nav.edc"
 #include "macros/fileman_list.edc"
