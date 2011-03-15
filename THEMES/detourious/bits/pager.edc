@@ -401,12 +401,7 @@ group {
 				state: "default" 0.0;
 				color: 255 255 255 0;
 				color3: 7 7 7 0;
-				#if ENABLE_COLOR_CLASSES == 0
-				#else
-				#if ENABLE_COLOR_CLASSES == 1
-					color_class: "module_label";
-				#endif
-				#endif
+				color_class: "module_label";
 
 				rel1 { 
 					offset: 0 3; 
@@ -417,22 +412,10 @@ group {
 				}
 
 				text {
-					#if USE_FONTCONFIG == 0
-						font: "DejaVuSans-Bold";
-					#else
-					#if USE_FONTCONFIG == 1
-						font: "Sans:style=Bold";
-					#endif
-					#endif
+				    font: "Sans:style=Bold";
 					size: 8;
 					align: 0.5 0.5;
-					#if ENABLE_TEXT_CLASSES == 0
-						text_class: "";
-					#else
-					#if ENABLE_TEXT_CLASSES == 1
-						text_class: "module_small";
-					#endif
-					#endif
+					text_class: "module_small";
 				}
 			}
 

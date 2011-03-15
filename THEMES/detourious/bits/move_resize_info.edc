@@ -2,14 +2,27 @@
 group {
 	name: "e/widgets/border/default/move";
 	alias: "e/widgets/border/default/resize";
-	
+
 	data {
 		item: "shaped" "1";
 	}
 
 	parts {
-		WIN_GEOMETRY()
-
+		part {
+			name: "background";
+			type: IMAGE;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				min: 60 32;
+				max: 9999 32;
+				color: 255 255 255 129;
+				image {
+					normal: "images/ibar_im0.png";
+					border: 5 5 5 5;
+				}
+			}
+		}
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -19,20 +32,9 @@ group {
 
 			description {
 				state: "default" 0.0;
-				TEXT_COLOR_WHITE;
 				align: 0.5 0.5;
-
-				rel1 { 
-					relative: 0.0 0.0; 
-					offset: 20 2; 
-				}
-
-				rel2 { 
-					relative: 1.0 1.0; 
-					offset: -1 -1; 
-				}
-
-				TEXT_NORMAL("label_normal", 0.0 0.0, 1 1);
+				TEXT_COLOR_WHITE;
+				TEXT_NORMAL("label_normal", 0.5 0.5, 1 0);
 			}
 		}
 	}

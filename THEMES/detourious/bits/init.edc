@@ -146,23 +146,11 @@ group {
 
 				text {
 					text: "Welcome to Enlightenment";
-					#if USE_FONTCONFIG == 0
-						font: "DejaVuSans-Bold";
-					#else
-					#if USE_FONTCONFIG == 1
-						font: "Sans:style=Bold";
-					#endif
-					#endif
+					font: "Sans:style=Bold";
 					size: 13;
 					min: 1 1;
 					align: 0.0 0.5;
-					#if ENABLE_TEXT_CLASSESES == 0
-						text_class: "";
-					#else
-					#if ENABLE_TEXT_CLASSESES == 1
-						text_class: "init_title";
-					#endif
-					#endif
+					text_class: "init_title";
 				}
 			}
 		}
@@ -194,23 +182,11 @@ group {
 
 				text {
 					text: "0.17.0";
-					#if USE_FONTCONFIG == 0
-						font: "DejaVuSans-Bold";
-					#else
-					#if USE_FONTCONFIG == 1
-						font: "Sans:style=Bold";
-					#endif
-					#endif
+					font: "Sans:style=Bold";
 					size: 12;
 					min:  1 1;
 					align: 0.0 0.5;
-					#if ENABLE_TEXT_CLASSESES == 0
-						text_class: "";
-					#else
-					#if ENABLE_TEXT_CLASSESES == 1
-						text_class: "init_version";
-					#endif
-					#endif
+					text_class: "init_version";
 				}
 			}
 		}
@@ -242,23 +218,11 @@ group {
 
 				text {
 					text: "Starting Enlightenment. Please wait.";
-					#if USE_FONTCONFIG == 0
-						font: "DejaVuSans-Bold";
-					#else
-					#if USE_FONTCONFIG == 1
-						font: "Sans:style=Bold";
-					#endif
-					#endif
+					font: "Sans:style=Bold";
 					size: 11;
 					min: 1 1;
 					align: 0.0 0.5;
-					#if ENABLE_TEXT_CLASSESES == 0
-						text_class: "";
-					#else
-					#if ENABLE_TEXT_CLASSESES == 1
-						text_class: "init_text"; 
-					#endif
-					#endif
+					text_class: "init_text"; 
 				}
 			}
 		}
@@ -501,25 +465,13 @@ group {
 
 				text {
 					text: "Disable this splash screen in future.";
-					#if USE_FONTCONFIG == 0
-						font: "DejaVuSans-Bold";
-					#else
-					#if USE_FONTCONFIG == 1
-						font: "Sans:style=Bold";
-					#endif
-					#endif
+					font: "Sans:style=Bold";
 					size: 10;
 					min: 1 1;
 					align: 0.0 0.5;
-					#if ENABLE_TEXT_CLASSESES == 0
-						text_class: "";
-					#else
-					#if ENABLE_TEXT_CLASSESES == 1
-						text_class: "init_text";
-					#endif
-					#endif
+					text_class: "init_text";
 				}
-    			}
+			}
 		}
 
 		part {

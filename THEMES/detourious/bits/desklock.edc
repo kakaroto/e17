@@ -193,15 +193,9 @@ group {
 					size: 10;
 					align: 0.0 0.5;
 					min: 1 1;
-					#if ENABLE_TEXT_CLASSES == 0
-						text_class: "";
-					#else
-					#if ENABLE_TEXT_CLASSES == 1
-						text_class: "desklock_title";
-					#endif
-					#endif
+					text_class: "desklock_title";
 				}
-    			}
+			}
 		}
 
 		part {
@@ -312,7 +306,7 @@ group {
 				image {
 					normal: "images/decoration_im0.png";
 				}
-    			}
+			}
 		}
 	}
 

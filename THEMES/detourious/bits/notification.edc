@@ -190,14 +190,14 @@ group {
             description {
 				state: "default" 0.0;
 				align: 0.0 0.0;
-				min: 200 0;
-				max: 200 200;
+				min: 180 0;
+				max: 180 150;
 				rel1 {
 
 					to_x: "notification.swallow.app_icon";
 					to_y: "notification.text.title";
 					relative: 1.0 1.0;
-					offset: 10 1;
+					offset: 10 0;
 				}
 				rel2 {
 					to: "clipper";

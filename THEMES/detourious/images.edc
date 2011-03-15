@@ -45,7 +45,7 @@ image: "images/button_im2.png" COMP; /* disabled */
 image: "images/button_im3.png" COMP; /* focus */
 image: "images/button_im4.png" COMP; /* top shadow */
 image: "images/button_im5.png" COMP; /* shadow overlay */
-
+image: "images/button_im6.png" COMP; /* shadow overlay */
 //~ frame
 image: "images/frame_im0.png" COMP; /* frame border */
 
