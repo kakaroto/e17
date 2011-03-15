@@ -145,39 +145,6 @@ image: "images/cslider_im2.png" COMP; /* right */
 
 //~ border: default border style
 image: "images/window-border.png" COMP; 	/* top left corner */
-image: "images/window-border_im0.png" COMP; 	/* top left corner */
-image: "images/window-border_im1.png" COMP; 	/* top center */
-image: "images/window-border_im2.png" COMP; 	/* top right corner */
-image: "images/window-border_im9.png" COMP; 	/* bottom center */
-image: "images/window-border_im10.png" COMP; 	/* bottom left */
-image: "images/window-border_im11.png" COMP; 	/* bottom right */
-image: "images/window-border_im12.png" COMP;	/* shadow overlay */
-
-image: "images/window-border_im10_2.png" COMP; 	/* bottom left */
-image: "images/window-border_im11_2.png" COMP; 	/* bottom right */
-//~ border: classic border style
-image: "images/window-border_im3.png" COMP; /* top left */
-image: "images/window-border_im4.png" COMP; /* top right */
-image: "images/window-border_im5.png" COMP; /* bottom left */
-image: "images/window-border_im6.png" COMP; /* bottom right */
-image: "images/window-border_im7.png" COMP; /* left */
-image: "images/window-border_im8.png" COMP; /* right */
-
-//~ border: shaped border style
-image: "images/window-border_im13.png" COMP; 	/* shaped left */
-image: "images/window-border_im14.png" COMP;	/* shaped right */
-image: "images/window-border_im13_2.png" COMP; 	/* shaped left */
-image: "images/window-border_im14_2.png" COMP;	/* shaped right */
-
-//~ border: dialog border style
-image: "images/window-border_im18.png" COMP; 	/*  */
-image: "images/window-border_im19.png" COMP; 	/*  */
-image: "images/window-border_im20.png" COMP;	/*  */
-
-//~ border: application blend style
-image: "images/window-border_im15.png" COMP; 	/* bottom left */
-image: "images/window-border_im16.png" COMP;	/* bottom center */
-image: "images/window-border_im17.png" COMP;	/* bottom right */
 
 //~ border buttons
 image: "images/window-border_bt0.png" COMP; /* base */
@@ -186,11 +153,6 @@ image: "images/window-border_bt2.png" COMP; /* minimize */
 image: "images/window-border_bt3.png" COMP; /* maximize */
 image: "images/window-border_bt4.png" COMP; /* close */
 image: "images/window-border_bt5.png" COMP; /* base for border menu */
-
-/* image: "images/window-border_bt2_2.png" COMP; /\* minimize *\/
- * image: "images/window-border_bt3_2.png" COMP; /\* maximize *\/
- * image: "images/window-border_bt4_2.png" COMP; /\* close *\/ */
-
 
 //~ window border menu (details)
 image: "images/button_detail_basic.png" COMP; 			/* empty */
