@@ -597,9 +597,10 @@ static const struct {
    const char *type_name;
 } emotion_types[] = {
    { ".avi", "Video AVI" },
-   { ".mkv",  "Video MKV" },
-   { ".mpg",  "Video MPEG" },
-   { ".wmv",  "Video WMV" }
+   { ".mkv", "Video MKV" },
+   { ".mpg", "Video MPEG" },
+   { ".wmv", "Video WMV" },
+   { ".ts",  "Video MPEG" }
 };
 
 static Eina_Bool
