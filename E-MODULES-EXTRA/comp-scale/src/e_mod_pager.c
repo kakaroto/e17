@@ -32,6 +32,7 @@ struct _Item
   int dx, dy;
 
   int mouse_down;
+  int moved;
 };
 
 static Eina_Bool _pager_cb_mouse_down(void *data, int type, void *event);
@@ -404,6 +405,9 @@ _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!scale_state)
      return;
 
+   if (!it->moved)
+     return;
+   
    if (x + it->bd->w > zone->x + zone->w) x = zone->x + zone->w - it->bd->w;
    if (y + it->bd->h > zone->y + zone->h) y = zone->y + zone->h - it->bd->h;
    if (x < zone->x) x = zone->x;
@@ -434,6 +438,8 @@ _pager_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
        abs(ev->cur.canvas.y - it->my) < 15)
      return;
 
+   it->moved = EINA_TRUE;
+   
    x = it->x + (ev->cur.canvas.x - ev->prev.canvas.x);
    y = it->y + (ev->cur.canvas.y - ev->prev.canvas.y);
 
