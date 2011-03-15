@@ -5,8 +5,8 @@ Name:		Stephen Houston
 Location:	Mississippi, USA
 E-Mail:		-smhouston88@gmail.com
 WWW:		http://www.three68.com
-Managing:	Ephoto
-Contributing:	E, Ephoto, Ewl, Emote, EIO
+Managing:	Ephoto 
+Contributing:	E, EIO
 Group: 		Core, Applications, Libraries
 Platform:	Fedora (Linux)
 GeoData:	32.470378 -90.085144
