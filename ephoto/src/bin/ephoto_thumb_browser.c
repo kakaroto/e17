@@ -452,8 +452,7 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
           (tb->edje, "mouse,clicked,1", "toolbar_event",
                    ephoto_auto_hide_toolbar, tb->ephoto);
         if (!elm_layout_file_set
-             (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-                                    "ephoto/layout/simple/autohide"))
+               (layout, THEME_FILE, "ephoto/layout/simple/autohide"))
           {
               ERR("could not load style 'ephoto/layout/simple/autohide' from theme");
               goto error;
@@ -462,8 +461,7 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    else
      {
         if (!elm_layout_file_set
-             (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-                                             "ephoto/layout/simple"))
+               (layout, THEME_FILE, "ephoto/layout/simple"))
           {
               ERR("could not load style 'ephoto/layout/simple' from theme");
               goto error;
@@ -514,8 +512,7 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
 
    tb->overlay = elm_layout_add(layout);
    elm_layout_file_set
-      (tb->overlay, PACKAGE_DATA_DIR "/themes/default/ephoto.edj", 
-                                            "ephoto,thumb,grid");
+      (tb->overlay, THEME_FILE, "ephoto,thumb,grid");
    evas_object_size_hint_weight_set
      (tb->overlay, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set

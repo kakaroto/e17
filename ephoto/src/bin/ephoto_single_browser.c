@@ -795,8 +795,7 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
           (sb->edje, "mouse,clicked,1", "toolbar_event",
                    ephoto_auto_hide_toolbar, sb->ephoto);
         if (!elm_layout_file_set
-             (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-                                    "ephoto/layout/simple/autohide"))
+             (layout, THEME_FILE, "ephoto/layout/simple/autohide"))
           {
               ERR("could not load style 'ephoto/layout/simple/autohide' from theme");
               goto error;
@@ -805,8 +804,7 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    else
      {
         if (!elm_layout_file_set
-             (layout, PACKAGE_DATA_DIR "/themes/default/ephoto.edj",
-                                             "ephoto/layout/simple"))
+             (layout, THEME_FILE, "ephoto/layout/simple"))
           {
               ERR("could not load style 'ephoto/layout/simple' from theme");
               goto error;
