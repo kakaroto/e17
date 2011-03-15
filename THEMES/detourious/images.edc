@@ -275,22 +275,7 @@ image: "images/slider_im3.png" COMP; /* vertical slider shadow */
 //~ runner
 image: "images/runner_im0.png" COMP; 	/* horizontal left: runner image */
 image: "images/runner_im1.png" COMP; 	/* horizontal left: runner image disabled */
-image: "images/runner_im2.png" COMP; 	/* horizontal midle: runner image */
-image: "images/runner_im3.png" COMP; 	/* horizontal middle: runner image disabled */
-image: "images/runner_im4.png" COMP; 	/* horizontal right: runner image */
-image: "images/runner_im5.png" COMP; 	/* horizontal right: runner image disabled */
-image: "images/runner_im6.png" COMP; 	/* vertical top: runner image */
-image: "images/runner_im7.png" COMP; 	/* vertical top: runner image disabled */
-image: "images/runner_im8.png" COMP; 	/* vertical middle: runner image */
-image: "images/runner_im9.png" COMP; 	/* vertical middle: runner image disabled */
-image: "images/runner_im10.png" COMP; 	/* vertical bottom: runner image */
-image: "images/runner_im11.png" COMP; 	/* vertical bottom: runner image disabled */
 
-//~ scrollbar: box
-image: "images/scrollbar_im0.png" COMP; /* scrollbar left box */
-image: "images/scrollbar_im1.png" COMP; /* scrollbar right box */
-image: "images/scrollbar_im2.png" COMP; /* scrollbar top box */
-image: "images/scrollbar_im3.png" COMP; /* scrollbar bottom box */
 
 //~ scrollbar, scrollframe: runner & slider
 /* image: "images/scrollbar_im4.png" COMP; /\* horizontal scrollframe runner *\/
@@ -307,12 +292,6 @@ image: "images/scrollframe-bar_im0.png" COMP; /* horizontal bar */
 image: "images/scrollframe-bar_im1.png" COMP; /* horizontal stipple */
 image: "images/scrollframe-bar_im2.png" COMP; /* vertical bar */
 image: "images/scrollframe-bar_im3.png" COMP; /* vertical stipple */
-
-//~ scrollframe: box
-image: "images/scrollframe_im3.png" COMP; /* scrollframe: top box */
-image: "images/scrollframe_im4.png" COMP; /* scrollframe: down box */
-image: "images/scrollframe_im5.png" COMP; /* scrollframe: left box */
-image: "images/scrollframe_im6.png" COMP; /* scrollframe: right box */
 
 //~ clock
 image: "clock/clock_bg.png" COMP;		/* base image */

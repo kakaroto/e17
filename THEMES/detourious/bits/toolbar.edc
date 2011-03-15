@@ -26,13 +26,13 @@ group {
                 image.normal: "images/button_im1.png";
                 image.border: 7 7 7 7;
 
-                rel1 { 
+                rel1 {
                     to: "base";
 					offset: 0 0;
                 }
 
-                rel2 { 
-                    to: "base"; 
+                rel2 {
+                    to: "base";
 					offset: -1 -1;
                 }
             }
@@ -44,9 +44,13 @@ group {
             description {
                 state: "default" 0.0;
                 rel1 {
+					to_x: "left_arrow";
+					relative: 1.0 0.0;
                     offset: 6 3;
                 }
                 rel2 {
+					to_x: "right_arrow";
+					relative: 0.0 1.0;
                     offset: -7 -4;
                 }
             }
@@ -58,8 +62,17 @@ group {
             description {
                 state: "default" 0.0;
 				min: 100 22;
-				rel1.offset: 10 2;
-				rel2.offset: -11 -4;
+				rel1 {
+					to_x: "left_arrow";
+					relative: 1.0 0.0;
+					offset: 0 2;
+				}
+
+				rel2 {
+					to_x: "right_arrow";
+					relative: 0.0 1.0;
+					offset: -1 -4;
+				}
             }
         }
         part {
@@ -69,62 +82,105 @@ group {
             description {
                 state: "default" 0.0;
                 min: 44 24;
-                color: 255 255 255 80;
+                color: 255 255 255 50;
                 image.normal: "images/button_im6.png";
                 image.border: 7 7 7 7;
 
-                rel1 { 
+                rel1 {
                     to: "base";
 					offset: 0 -2;
                 }
 
-                rel2 { 
-                    to: "base"; 
+                rel2 {
+                    to: "base";
 					offset: -1 -1;
                 }
             }
         }
-
-        /* part {
-         *     name: "left_arrow";
-         *     mouse_events: 1;
-         *     scale: 1;
-         *     description {
-         * 	state: "default" 0.0;
-         * 	image.normal: "icon_left_arrow.png";
-         * 	aspect: 1.0 1.0;
-         * 	aspect_preference: VERTICAL;
-         * 	align: 0.0 0.5;
-         * 	min: 32 32;
-         * 	max: 32 32;
-         *     }
-         *     description {
-         * 	state: "hidden" 0.0;
-         * 	inherit: "default" 0.0;
-         * 	visible: 0;
-         * 	color: 255 255 255 0;
-         *     }
-         * }
-         * part {
-         *     name: "right_arrow";
-         *     mouse_events: 1;
-         *     scale: 1;
-         *     description {
-         * 	state: "default" 0.0;
-         * 	image.normal: "icon_right_arrow.png";
-         * 	aspect: 1.0 1.0;
-         * 	aspect_preference: VERTICAL;
-         * 	align: 1.0 0.5;
-         * 	min: 32 32;
-         * 	max: 32 32;
-         *     }
-         *     description {
-         * 	state: "hidden" 0.0;
-         * 	inherit: "default" 0.0;
-         * 	visible: 0;
-         * 	color: 255 255 255 0;
-         *     }
-         * } */
+        part {
+            name: "left_arrow";
+            mouse_events: 1;
+            scale: 1;
+            description {
+				state: "default" 0.0;
+				image.normal: "images/scrollbar_im6.png";
+				align: 0.0 0.5;
+				rel1.offset: 6 0;
+				min: 13 17;
+				max: 13 17;
+				visible: 0;
+            }
+            description {
+				state: "show" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+            }
+        }
+        part {
+            name: "right_arrow";
+            mouse_events: 1;
+            scale: 1;
+            description {
+				state: "default" 0.0;
+				image.normal: "images/scrollbar_im7.png";
+				align: 1.0 0.5;
+				rel2.offset: -7 1;
+				min: 13 17;
+				max: 13 17;
+				visible: 0;
+            }
+            description {
+				state: "show" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+            }
+        }
+		part {
+			name: "left_separator";
+			type: RECT;
+			description {
+				color: 160 160 160 255;
+				visible: 0;
+                rel1 {
+					to: "clipper";
+                    relative: 0.0 0.0;
+                    offset: -1 0;
+                }
+                rel2 {
+					to: "clipper";
+                    relative: 0.0 1.0;
+                    offset:  -1 -1;
+                }
+			}
+            description {
+				state: "show" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+            }
+		}
+		part {
+			name: "right_separator";
+			type: RECT;
+			description {
+				color: 160 160 160 255;
+				visible: 0;
+                rel1 {
+					to: "clipper";
+                    relative: 1.0 0.0;
+                    offset: 0 0;
+                }
+                rel2 {
+					to: "clipper";
+                    relative: 1.0 1.0;
+                    offset:  0 -1;
+                }
+			}
+            description {
+				state: "show" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+            }
+		}
         part {
             name: "e.dragable.hbar";
             mouse_events: 0;
@@ -152,36 +208,38 @@ group {
         }
     }
     programs {
-        /* program {
-         *     name: "sb_hbar_show";
-         *     signal: "e,action,show,hbar";
-         *     source: "e";
-         *     action: STATE_SET "default" 0.0;
-         *     transition: LINEAR 0.5;
-         *     /\* target: "left_arrow";
-         *      * target: "right_arrow"; *\/
-         * }
-         * program {
-         *     name: "sb_hbar_hide";
-         *     signal: "e,action,hide,hbar";
-         *     source: "e";
-         *     action: STATE_SET "hidden" 0.0;
-         *     /\* target: "left_arrow";
-         *      * target: "right_arrow"; *\/
-         *     transition: LINEAR 0.5;
-         * } */
-        /* program {
-         *     name: "sb_left";
-         *     signal: "mouse,down,1";
-         *     source: "left_arrow";
-         *     action: SIGNAL_EMIT "e,action,prev" "e";
-         * }
-         * program {
-         *     name: "sb_right";
-         *     signal: "mouse,down,1";
-         *     source: "right_arrow";
-         *     action: SIGNAL_EMIT "e,action,next" "e";
-         * } */
+        program {
+            name: "sb_hbar_show";
+            signal: "e,action,show,hbar";
+            source: "e";
+            action: STATE_SET "show" 0.0;
+            target: "left_arrow";
+            target: "right_arrow";
+			target: "left_separator";
+			target: "right_separator";
+        }
+        program {
+            name: "sb_hbar_hide";
+            signal: "e,action,hide,hbar";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            target: "left_arrow";
+            target: "right_arrow";
+			target: "left_separator";
+			target: "right_separator";
+        }
+        program {
+            name: "sb_left";
+            signal: "mouse,down,1";
+            source: "left_arrow";
+            action: SIGNAL_EMIT "e,action,prev" "e";
+        }
+        program {
+            name: "sb_right";
+            signal: "mouse,down,1";
+            source: "right_arrow";
+            action: SIGNAL_EMIT "e,action,next" "e";
+        }
     }
 }
 group {
@@ -238,7 +296,7 @@ group {
                 rel2 {
                     relative: 0.0 1.0;
                     offset:  0 1;
-                }				
+                }
 			}
 		}
 		part {
@@ -253,7 +311,7 @@ group {
                 rel2 {
                     relative: 1.0 1.0;
                     offset:  0 1;
-                }				
+                }
 			}
 		}
         part {
