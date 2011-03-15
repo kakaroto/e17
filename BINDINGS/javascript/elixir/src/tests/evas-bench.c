@@ -87,7 +87,7 @@ int main(void)
 
     for (i = 0; i < 128; i++) {
         ctxt.objs[i] = evas_object_image_add(ctxt.e);
-        evas_object_image_file_set(ctxt.objs[i], "img/logo.png", NULL);
+        evas_object_image_file_set(ctxt.objs[i], "logo.png", NULL);
         evas_object_image_fill_set(ctxt.objs[i], 0, 0, 120, 160);
         evas_object_resize(ctxt.objs[i], 120, 160);
         evas_object_show(ctxt.objs[i]);
