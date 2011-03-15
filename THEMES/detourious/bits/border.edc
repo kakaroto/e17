@@ -346,7 +346,7 @@
 #ifdef BUILD_FOR_COMPOSITE
 #define BORDER_DATA								\
 	data {										\
-			item: "argb" "1";					\
+		item: "argb" "1";						\
 	}
 #else
 #define BORDER_DATA								\
@@ -370,7 +370,8 @@ group {
 	BORDER_DATA;
 
     parts {
-		BORDER_IMAGE("images/window-border.png", 6 6 23 3, 25 25);
+		BORDER_IMAGE("images/window-border.png", 6 6 23 2, 25 25);
+
 		BORDER_CLIENT(LEFT, RIGHT, TOP, BOTTOM);
 		
 		BORDER_TITLE(TOP, "e.swallow.icon", "button-min");
@@ -404,7 +405,7 @@ group {
 	BORDER_DATA;
 
 	parts {
-		BORDER_IMAGE("images/window-border.png", 6 6 23 3, 25 25);
+		BORDER_IMAGE("images/window-border.png", 6 6 23 2, 25 25);
 		BORDER_CLIENT(LEFT, RIGHT, TOP, BOTTOM);
 
 		BORDER_TITLE(TOP, "e.swallow.icon", "button-close");
