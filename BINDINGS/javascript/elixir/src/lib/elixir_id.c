@@ -122,7 +122,7 @@ elixir_id_compute(char sign[ELIXIR_SIGNATURE_SIZE], int length, const char *buff
    strm.next_out = (unsigned char*) comp;
 #endif
 
-   fprintf(stderr, "sign init\n");
+   elixir_debug_print("sign init");
 
    SIGN_INIT;
 

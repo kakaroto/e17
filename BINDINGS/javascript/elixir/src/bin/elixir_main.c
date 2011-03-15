@@ -114,6 +114,7 @@ main(int argc, char **argv)
    struct group         *grp = NULL;
    char                 *chroot = NULL;
    char                 *directory;
+   const char           *s;
    Elixir_Runtime       *er;
    Elixir_Script        *es;
    JSObject             *env;
@@ -127,7 +128,25 @@ main(int argc, char **argv)
 
    srandom(time(0));
 
+#ifdef DEBUG
    elixir_debug_print_switch(ELIXIR_DEBUG_STDERR, NULL);
+#else
+   elixir_debug_print_switch(ELIXIR_DEBUG_NONE, NULL);
+#endif
+   s = getenv("ELIXIR_DEBUG");
+   if (s)
+     {
+        if (!strcasecmp(s, "stderr"))
+          elixir_debug_print_switch(ELIXIR_DEBUG_STDERR, NULL);
+        else if (!strcasecmp(s, "stdout"))
+          elixir_debug_print_switch(ELIXIR_DEBUG_STDOUT, NULL);
+        else if (!strcasecmp(s, "console"))
+          elixir_debug_print_switch(ELIXIR_DEBUG_CONSOLE, NULL);
+        else if (!strcasecmp(s, "syslog"))
+          elixir_debug_print_switch(ELIXIR_DEBUG_SYSLOG, NULL);
+        else if ((!strcasecmp(s, "none")) || (!strcasecmp(s, "null")))
+          elixir_debug_print_switch(ELIXIR_DEBUG_NONE, NULL);
+     }
 
    elixir_id_init();
    elixir_class_init();

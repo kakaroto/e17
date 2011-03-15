@@ -86,7 +86,7 @@ _elixir_text_release(const Elixir_Loader_File *file)
 static const void *
 _elixir_text_get(const Elixir_Loader_File *file, unsigned int *length)
 {
-   fprintf(stderr, "get content\n");
+   elixir_debug_print("get content");
    if (length) *length = file->length;
    return file->content;
 }
