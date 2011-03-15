@@ -8,5 +8,5 @@ WWW:		http://www.three68.com
 Managing:	Ephoto
 Contributing:	E, Ephoto, Ewl, Emote, EIO
 Group: 		Core, Applications, Libraries
-Platform:	Ubuntu (Linux)
+Platform:	Fedora (Linux)
 GeoData:	32.470378 -90.085144
