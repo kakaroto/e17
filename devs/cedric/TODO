@@ -18,7 +18,6 @@ h	- try quadtree support
 	- Add REVERSE to edje possible program action
 	- Add continue: (ABORT|CONTINUE|CHAIN) to edje STATE_SET argument
 	- Make it possible to catch requested file and to rewrite it
-h	- Optimize memory layout thanks to new file format
 	- Reuse match automate between edje object of the same type
 h	- Add specialized task for each match automate case
 	- Add internationalization support
@@ -26,6 +25,9 @@ h	- Add specialized task for each match automate case
 	- Add benchmark tools.
 	- Try to improve speed of object destruction by moving them to another thread.
 	- Add group { text, drag } setter.
+	- Add group inheritance.
+	- Add virtual part and program support.
+	- Move the parser into edje and expose an Edje AST API.
 
 * Elixir
 h	- add eet -> js object
@@ -72,8 +74,6 @@ d	- implement cache with icons directory content to avoid uneeded stat
 	- make mime check thread safe
 
 * Ecore 1.1
-	- add ecore_thread_reschedule (to reschedule it again after all other
-	pending jobs)
 	- add ecore_thread_batch_run/ecore_thread_batch_feedback_run (to create
 	batch, a list of data instead of creating one ecore_thread per data)
 
