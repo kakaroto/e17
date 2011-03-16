@@ -1,5 +1,6 @@
 Login:        antognolli
 IRC Nick:     antognolli
+Cloak:        developer/antognolli
 Name:         Rafael Antognolli
 Location:     Campinas, Brazil
 E-Mail:       -antognolli@profusion.mobi
