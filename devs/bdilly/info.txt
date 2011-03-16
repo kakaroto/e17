@@ -1,5 +1,6 @@
 Login:          bdilly
 IRC Nick:       bdilly
+Cloak:          developer/bdilly
 Name:           Bruno Dilly
 Location:       Campinas, Brazil
 E-Mail:         bdilly@profusion.mobi
