@@ -1,4 +1,4 @@
-#define TIME 15 
+#define TIME 15
 #define TARGETS \
             target: "left.top.panel";\
             target: "left.bottom.panel";\
@@ -44,7 +44,7 @@
                }\
             }\
          }
- 
+
 collections {
    group { name: "demo";
       styles {
@@ -131,7 +131,7 @@ collections {
                   size: 50;
                   min: 1 0;
                   align: 0.5 0.5;
-                  text: TEXT_TITLE; 
+                  text: TEXT_TITLE;
                }
             }
          }
@@ -167,7 +167,7 @@ collections {
                   size: 30;
                   min: 0 1;
                   align: 0.5 0.5;
-                  text: TEXT_WEBSITE; 
+                  text: TEXT_WEBSITE;
                }
             }
          }
@@ -187,7 +187,7 @@ collections {
                   size: 20;
                   min: 0 1;
                   align: 0.5 0.5;
-                  text: TEXT_ABOUT; 
+                  text: TEXT_ABOUT;
                }
             }
          }
@@ -225,7 +225,7 @@ collections {
                text {
                   align: 0.5 0.0;
                   min: 0 1;
-                  text: TEXT_ENLIGHTENMENT_TITLE; 
+                  text: TEXT_ENLIGHTENMENT_TITLE;
                   style: "left.top.panel.textblock.style";
                }
             }
@@ -236,7 +236,7 @@ collections {
             description { state: "efl" 0.0;
                inherit: "default" 0.0;
                text {
-                  text: TEXT_EFL_TITLE; 
+                  text: TEXT_EFL_TITLE;
                }
             }
             description { state: "limo" 0.0;
@@ -261,7 +261,7 @@ collections {
                }
                text {
                   align: 0.0 0.0;
-                  text: TEXT_ENLIGHTENMENT_CONTENT; 
+                  text: TEXT_ENLIGHTENMENT_CONTENT;
                   style: "left.bottom.panel.textblock.style";
                }
             }
@@ -272,7 +272,7 @@ collections {
             description { state: "efl" 0.0;
                inherit: "default" 0.0;
                text {
-                  text: TEXT_EFL_CONTENT; 
+                  text: TEXT_EFL_CONTENT;
                }
             }
             description { state: "limo" 0.0;
@@ -447,7 +447,7 @@ collections {
                color: 255 0 0 255;
                text {
                   font: "Sans,Edje-Vera";
-                  size: 50; 
+                  size: 50;
                   min: 1 1;
                   text: "1";
                }
@@ -484,7 +484,7 @@ collections {
                color: 0 0 0 255;
                text {
                   font: "Sans,Edje-Vera";
-                  size: 30; 
+                  size: 30;
                   min: 1 1;
                   text: "2";
                }
@@ -517,7 +517,7 @@ collections {
                color: 0 0 0 255;
                text {
                   font: "Sans,Edje-Vera";
-                  size: 30; 
+                  size: 30;
                   min: 1 1;
                   text: "3";
                }
