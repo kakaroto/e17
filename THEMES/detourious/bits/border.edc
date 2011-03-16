@@ -423,6 +423,47 @@ group {
     }
 
 }
+#undef TOP
+#undef LEFT
+#undef RIGHT
+#undef BOTTOM
+#define TOP 22
+#define LEFT 5
+#define RIGHT -6
+#define BOTTOM -6
+
+group {
+    name: "e/widgets/border/glass/border";
+
+	BORDER_DATA;
+
+    parts {
+		BORDER_IMAGE("images/window-border-glass.png", 6 6 22 6, 27 27);
+
+		BORDER_CLIENT(LEFT, RIGHT, TOP, BOTTOM);
+		
+		BORDER_TITLE(TOP, "e.swallow.icon", "button-min");
+
+        BORDER_EVENT_MAP("e.event.titlebar",  0.0 0.0, 0 0, 1.0 0.0, -1 TOP);
+		BORDER_EVENT_MAP_RESIZE(LEFT, RIGHT, TOP, BOTTOM, 5);
+
+        BORDER_BUTTONS("button-close", "e.event.close",
+					   20 18, 1.0 0.0, -10 1, 1.0 0.0, -30 TOP,
+					   "images/window-border_bt2.png");
+		BORDER_BUTTONS("button-max",   "e.event.maximize",
+					   20 18, 1.0 0.0, -30 1, 1.0 0.0, -50 TOP,
+					   "images/window-border_bt2.png");
+		BORDER_BUTTONS("button-min",   "e.event.minimize",
+					   20 18, 1.0 0.0, -50 1, 1.0 0.0, -70 TOP,
+					   "images/window-border_bt2.png");
+
+        BORDER_ICON("e.swallow.icon", "e.event.icon", "e.event.titlebar");
+    }
+
+    programs {
+        BORDER_DEFAULT_PROGRAMS();
+    }
+}
 
 group {
     name: "e/widgets/border/pixel/border";
