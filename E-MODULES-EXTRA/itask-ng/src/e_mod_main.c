@@ -1788,7 +1788,7 @@ e_modapi_init(E_Module *m)
    ngi_taskbar_init();
    ngi_gadcon_init();
 
-   if (ecore_x_screen_is_composited(0) || e_config->use_composite)
+   if (ecore_x_screen_is_composited(0))
      ngi_config->use_composite = 1;
    else
      ngi_config->use_composite = 0;
