@@ -213,7 +213,7 @@ _weather_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         e_util_menu_item_theme_icon_set(mi, "preferences-system");
         e_menu_item_callback_set(mi, _weather_menu_cb_configure, inst);
 
-        m = e_gadcon_client_util_menu_items_append(inst->gcc, m, mg, 0);
+        m = e_gadcon_client_util_menu_items_append(inst->gcc, m, 0);
         e_menu_post_deactivate_callback_set(m, _weather_menu_cb_post, inst);
         weather_config->menu = m;
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, &w, &h);
