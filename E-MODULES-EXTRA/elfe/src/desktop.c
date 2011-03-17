@@ -375,7 +375,7 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 	       over = elm_layout_add(desk->sc);
 	       elm_layout_file_set(over, buf, "elfe/gadget/places/over");
 	       o_edje = elm_layout_edje_get(over);
-               if (elfe_desktop_page_pos_is_free(gad, i, j))
+               if (elfe_desktop_page_pos_is_free(gad, j, i))
                    edje_object_signal_emit(o_edje, "place,busy", "elfe");
                else
                    edje_object_signal_emit(o_edje, "place,free", "elfe");
