@@ -371,7 +371,6 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 	    {
 	       Evas_Object *o_edje;
 
-	       const char* part;
 	       over = elm_layout_add(desk->sc);
 	       elm_layout_file_set(over, buf, "elfe/gadget/places/over");
 	       o_edje = elm_layout_edje_get(over);
@@ -383,7 +382,6 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 	       evas_object_resize(o_edje, m, n);
 	       evas_object_move(o_edje, x + i*m,  y + j*n);
 	       evas_object_show(over);
-	       part = eina_stringshare_printf("edje %d-%d", i, j);
                desk->overs = eina_list_append(desk->overs, over);
 	    }
      }
