@@ -21,13 +21,14 @@ static void      _cb_drop_enter      (void *data, const char *type, void *event_
 static void      _cb_drop_leave      (void *data, const char *type, void *event_info);
 static void      _cb_drop_move       (void *data, const char *type, void *event_info);
 static void      _cb_drop_end        (void *data, const char *type, void *event_info);
+static Eina_Bool  _cb_icons_update(void *data, int type, void *event);
 
 
 void
 ngi_launcher_new(Ng *ng, Config_Box *cfg)
 {
    char buf[4096];
-
+   Ecore_Event_Handler *h;
    Ngi_Box *box = ngi_box_new(ng);
 
    box->cfg = cfg;
@@ -43,6 +44,9 @@ ngi_launcher_new(Ng *ng, Config_Box *cfg)
       _cb_drop_enter, _cb_drop_move,
       _cb_drop_leave, _cb_drop_end,
       drop, 3, 0, 0, 0, 0);
+
+   h = ecore_event_handler_add(E_EVENT_CONFIG_ICON_THEME, _cb_icons_update, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
 
    if (!cfg->launcher_app_dir || strlen(cfg->launcher_app_dir) == 0)
      return;
@@ -64,6 +68,8 @@ ngi_launcher_new(Ng *ng, Config_Box *cfg)
 void
 ngi_launcher_remove(Ngi_Box *box)
 {
+   Ecore_Event_Handler *h;
+   
    e_drop_handler_del(box->drop_handler);
 
    if (box->apps)
@@ -71,6 +77,9 @@ ngi_launcher_remove(Ngi_Box *box)
         e_order_update_callback_set(box->apps, NULL, NULL);
         e_object_del(E_OBJECT(box->apps));
      }
+
+   EINA_LIST_FREE(box->handlers, h)
+     ecore_event_handler_del(h);
 
    ngi_box_free(box);
 }
@@ -90,6 +99,20 @@ _box_fill(Ngi_Box *box)
      _item_new(box, desktop, 1, NULL);
 
    ngi_thaw(box->ng);
+}
+
+static Eina_Bool
+_cb_icons_update(void *data, int type, void *event)
+{
+   Ngi_Box *box = (Ngi_Box *)data;
+   Eina_List *l;
+   Ngi_Item_Launcher *it;
+   printf(">>>>>>>> icons update %s\n", e_config->icon_theme);
+
+   EINA_LIST_FOREACH(box->items, l, it)
+     _item_fill(it); 
+   
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static void
@@ -114,9 +137,6 @@ _drop_item_new(Ngi_Box *box)
    Ngi_Item *it;
 
    it = (Ngi_Item*)E_NEW(Ngi_Item_Launcher, 1);
-   /* it->obj = evas_object_rectangle_add(box->ng->evas);
-    * evas_object_color_set(it->obj, 200, 100, 100, 200);
-    * evas_object_show(it->obj); */
    it->box = box;
    ngi_item_show(it, 0);
 
@@ -323,22 +343,31 @@ _item_fill(Ngi_Item_Launcher *it)
 	evas_object_del(it->o_proxy);
      }
 
-   o = e_util_desktop_icon_add(it->app, 128, e);
-   edje_object_part_swallow(it->base.obj, "e.swallow.content", o);
-   evas_object_show(o);
-   it->o_icon = o;
 
-   oo = evas_object_image_add(e);
-   evas_object_image_source_set(oo, it->base.obj);
-   evas_object_resize(oo, 128, 128);
-   evas_object_image_fill_set(oo, 0,0,128,128);
+   const char *path = efreet_icon_path_find(e_config->icon_theme, it->app->icon, 128); 
+   if (path)
+     {
+	o = evas_object_image_filled_add(e);
+	evas_object_image_load_size_set(o, 128, 128); 
+	evas_object_image_file_set(o, path, NULL);
+	evas_object_image_preload(o, 0); 
+	/* o = e_util_desktop_icon_add(it->app, 128, e); */
+	edje_object_part_swallow(it->base.obj, "e.swallow.content", o);
+	evas_object_show(o);
+	it->o_icon = o;
 
-   o = e_icon_add(e);
-   e_icon_object_set(o, oo);
-   edje_object_part_swallow(it->base.over, "e.swallow.content", o);
-   evas_object_show(o);
-   it->o_proxy = o;
+	oo = evas_object_image_add(e);
+	evas_object_image_source_set(oo, it->base.obj);
+	evas_object_resize(oo, 128, 128);
+	evas_object_image_fill_set(oo, 0,0,128,128);
 
+	o = e_icon_add(e);
+	e_icon_object_set(o, oo);
+	edje_object_part_swallow(it->base.over, "e.swallow.content", o);
+	evas_object_show(o);
+	it->o_proxy = o;
+     }
+   
    if (it->app->name && it->app->name[0])
      ngi_item_label_set((Ngi_Item*)it, it->app->name);
    else if (it->app->generic_name && it->app->generic_name[0])

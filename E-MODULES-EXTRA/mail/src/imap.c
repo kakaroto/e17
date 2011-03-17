@@ -25,15 +25,18 @@ _mail_imap_check_mail (void *data)
 {
    Ecore_Con_Type type;
    Eina_List *l;
+   printf("check mail!!!!\n");
 
   for (l = iservers; l; l = l->next)
     {
       ImapServer *is;
+      printf("1\n");
 
       is = l->data;
       is->data = data;
       if (!is->server)
 	{
+	   printf("2\n");
 	  if (!is->add_handler)
 	    is->add_handler =
 	      ecore_event_handler_add (ECORE_CON_EVENT_SERVER_ADD,

@@ -916,7 +916,13 @@ _cb_slider_change(void *data, Evas_Object *obj)
 
    a = ng->cfg->alpha;
    evas_object_color_set(ng->bg_clip, a, a, a, a);
+
    a = ng->cfg->rflxn_alpha;
+   if (a > 0)
+     evas_object_show(ng->o_proxy);
+   else
+     evas_object_hide(ng->o_proxy);
+   
    evas_object_color_set(ng->o_proxy, a, a, a, a);
 
    ngi_win_position_calc(ng->win);

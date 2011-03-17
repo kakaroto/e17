@@ -31,41 +31,6 @@ static Ecore_X_Atom ECOMORPH_ATOM_THUMBNAIL = 0;
 void
 ngi_taskbar_init(void)
 {
-   Ecore_Event_Handler *h;
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_ADD, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_REMOVE, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_ICONIFY, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_UNICONIFY, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_ICON_CHANGE, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_ZONE_SET, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_URGENT_CHANGE, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_IN, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_OUT, _cb_border_event, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_DESK_SHOW, _cb_desk_show, NULL);
-   if (h) ngi_config->handlers = eina_list_append(ngi_config->handlers, h);
-
    ECOMORPH_ATOM_THUMBNAIL = ecore_x_atom_get("__ECOMORPH_THUMBNAIL");
 }
 
@@ -75,9 +40,9 @@ ngi_taskbar_new(Ng *ng, Config_Box *cfg)
    Ngi_Box *box = ngi_box_new(ng);
    E_Border *bd;
    E_Border_List *bl;
-
-   if (!box)
-      return;
+   Ecore_Event_Handler *h;
+   
+   if (!box) return;
 
    box->cfg = cfg;
    cfg->box = box;
@@ -88,6 +53,39 @@ ngi_taskbar_new(Ng *ng, Config_Box *cfg)
                                           _cb_drop_enter, _cb_drop_move,
                                           _cb_drop_leave, _cb_drop_end,
                                           drop, 3, 0, 0, 0, 0);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_ADD, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_REMOVE, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_ICONIFY, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_UNICONIFY, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_ICON_CHANGE, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_ZONE_SET, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_URGENT_CHANGE, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_IN, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_OUT, _cb_border_event, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+
+   h = ecore_event_handler_add(E_EVENT_DESK_SHOW, _cb_desk_show, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
 
    bl = e_container_border_list_first(box->ng->zone->container);
 
@@ -103,7 +101,12 @@ ngi_taskbar_new(Ng *ng, Config_Box *cfg)
 void
 ngi_taskbar_remove(Ngi_Box *box)
 {
+   Ecore_Event_Handler *h;
+   
    e_drop_handler_del(box->drop_handler);
+
+   EINA_LIST_FREE(box->handlers, h)
+     ecore_event_handler_del(h);
 
    ngi_box_free(box);
 }
@@ -285,113 +288,98 @@ static Eina_Bool
 _cb_border_event(void *data, int type, void *event)
 {
    E_Event_Border_Add *ev = event;
-   Ng *ng;
-   Ngi_Box *box;
+   Ngi_Box *box = data;
    Ngi_Item_Taskbar *it;
-   Eina_List *l, *ll;
    E_Border *bd = ev->border;
 
-   EINA_LIST_FOREACH (ngi_config->instances, l, ng)
-   {
-      EINA_LIST_FOREACH (ng->boxes, ll, box)
-      {
-         if (box->cfg->type != taskbar)
-            continue;
+   it = _border_find(box, bd);
 
-         it = _border_find(box, bd);
+   if (type == E_EVENT_BORDER_FOCUS_IN)
+     {
+	if (it) ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,focus,1");
+     }
+   else if (type == E_EVENT_BORDER_FOCUS_OUT)
+     {
+	if (it) ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,focus,0");
+     }
+   else if (type == E_EVENT_BORDER_ICONIFY)
+     {
+	if (it) ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,1");
+     }
+   else if (type == E_EVENT_BORDER_UNICONIFY)
+     {
+	if (it) ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,0");
+     }
+   else if (type == E_EVENT_BORDER_ICON_CHANGE)
+     {
+	if (it) _item_set_icon(it);
+     }
+   else if (type == E_EVENT_BORDER_ADD)
+     {
+	_item_new(box, bd);
+     }
+   else if (type == E_EVENT_BORDER_REMOVE)
+     {
+	if (it) ngi_item_remove((Ngi_Item*)it);
+     }
+   else if (type == E_EVENT_BORDER_ZONE_SET)
+     {
+	if (box->ng->zone == bd->zone)
+	  {
+	     /** FIXME ??? */
+	     e_border_zone_set(bd, box->ng->zone);
+	     _item_new(box, bd);
+	  }
+	else if (it)
+	  {
+	     ngi_item_remove((Ngi_Item*)it);
+	  }
+     }
+   else if (type == E_EVENT_BORDER_URGENT_CHANGE)
+     {
+	if ((it) && (box->ng->cfg->autohide_show_urgent))
+	  {
+	     if (bd->client.icccm.urgent)
+	       {
+		  it->urgent = 1;
+		  ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,1");
 
-         if (type == E_EVENT_BORDER_FOCUS_IN)
-           {
-              if (!it) continue;
-              ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,focus,1");
-           }
-         else if (type == E_EVENT_BORDER_FOCUS_OUT)
-           {
-              if (!it) continue;
-	      ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,focus,0");
-           }
-         else if (type == E_EVENT_BORDER_ICONIFY)
-           {
-              if (!it) continue;
-              ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,1");
-           }
-         else if (type == E_EVENT_BORDER_UNICONIFY)
-           {
-              if (!it) continue;
-              ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,0");
-           }
-         else if (type == E_EVENT_BORDER_ICON_CHANGE)
-           {
-              if (!it) continue;
-              _item_set_icon(it);
-           }
-         else if (type == E_EVENT_BORDER_ADD)
-           {
-              _item_new(box, bd);
-           }
-         else if (type == E_EVENT_BORDER_REMOVE)
-           {
-              if (!it) continue;
-              ngi_item_remove((Ngi_Item*)it);
-           }
-         else if (type == E_EVENT_BORDER_ZONE_SET)
-           {
-              if (ng->zone == bd->zone)
-                {
-		   /** FIXME ??? */
-                   e_border_zone_set(bd, ng->zone);
-                   _item_new(box, bd);
-                }
-              else if (it)
-                {
-                   ngi_item_remove((Ngi_Item*)it);
-                }
-           }
-         else if (type == E_EVENT_BORDER_URGENT_CHANGE)
-           {
-              if (!it) continue;
-              if (!ng->cfg->autohide_show_urgent) continue;
+		  ngi_bar_lock(box->ng, 1);
+		  ngi_animate(box->ng);
+	       }
+	     else
+	       {
+		  it->urgent = 0;
+		  ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,0");
 
-              if (bd->client.icccm.urgent)
-                {
-                   it->urgent = 1;
-                   ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,1");
+		  ngi_bar_lock(box->ng, 0);
+		  ngi_animate(box->ng);
+	       }
+	  }
+	  
+     }
+   else if (type == E_EVENT_BORDER_PROPERTY)
+     {
+	/* XXX workaround for e sending event after the
+	 * border_remove event
+	 */
+	if (bd->already_unparented)
+	  return EINA_TRUE;
 
-		   ngi_bar_lock(box->ng, 1);
-                   ngi_animate(ng);
-                }
-              else
-                {
-                   it->urgent = 0;
-                   ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,0");
+	if (it)
+	  {
+	     if (!_border_check(box, bd))
+	       ngi_item_remove((Ngi_Item*)it);
+	     else
+	       _item_set_label(it);
+	  }
+	else
+	  {
+	     _item_new(box, ev->border);
+	  }
+     }
 
-		   ngi_bar_lock(box->ng, 0);
-                   ngi_animate(ng);
-                }
-           }
-         else if (type == E_EVENT_BORDER_PROPERTY)
-           {
-              /* XXX workaround for e sending event after the
-               * border_remove event
-               */
-              if (bd->already_unparented)
-                 return EINA_TRUE;
-
-              if (it)
-                {
-                   if (!_border_check(box, bd))
-		     ngi_item_remove((Ngi_Item*)it);
-                   else
-		     _item_set_label(it);
-                }
-              else
-                {
-                   _item_new(box, ev->border);
-                }
-           }
-      }
-   }
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 /* FIXME set it->visible to skip icons */
@@ -615,8 +603,19 @@ _border_icon_add(E_Border *bd, Evas *evas)
 
    if (bd->desktop)
      {
-        o = e_util_desktop_icon_add(bd->desktop, 128, evas);
-        if (o) return o;
+        //o = e_util_desktop_icon_add(bd->desktop, 128, evas);
+	const char *path = efreet_icon_path_find(e_config->icon_theme, bd->desktop->icon, 128); 
+	if (path)
+	  {
+	     o = evas_object_image_filled_add(evas);
+	     evas_object_image_load_size_set(o, 128, 128);
+	     evas_object_image_file_set(o, path, NULL);
+	     evas_object_image_preload(o, 0); 
+	     /* o = e_util_desktop_icon_add(it->app, 128, e); */
+	     /* edje_object_part_swallow(it->base.obj, "e.swallow.content", o);
+	      * evas_object_show(o); */
+	     if (o) return o;
+	  }
      }
 
    if (bd->client.netwm.icons)

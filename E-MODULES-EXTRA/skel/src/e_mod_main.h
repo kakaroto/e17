@@ -21,6 +21,7 @@
 
 /* We create a structure config for our module, and also a config structure
  * for every item element (you can have multiple gadgets for the same module) */
+
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
 

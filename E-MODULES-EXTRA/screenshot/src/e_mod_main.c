@@ -161,7 +161,7 @@ e_modapi_init(E_Module *m)
 	e_action_predef_name_set("Screenshot", D_("Take Screenshot"), 
 				 "screenshot", NULL, NULL, 0);	
      }
-
+   
    e_gadcon_provider_register(&_gc_class);
    return m;
 }
@@ -346,7 +346,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
    Instance *inst = NULL;
    Evas_Event_Mouse_Down *ev;
-   E_Menu *ma, *mg, *mo;
+   E_Menu *m, *mo;
    E_Menu_Item *mi = NULL;
    E_Zone *zone = NULL;
    int x, y;
@@ -357,11 +357,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
      {
 	zone = e_util_zone_current_get(e_manager_current_get());
 
-	ma = e_menu_new();
-	e_menu_post_deactivate_callback_set(ma, _cb_menu_post, inst);
-        inst->menu = ma;
-
-	mg = e_menu_new();
+	m = e_menu_new();
 	mo = e_menu_new();
 	inst->menu_mode = mo;
 
@@ -386,18 +382,21 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 	if (ss_cfg->mode == 2) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cb_region, inst);
 
-	mi = e_menu_item_new(mg);
+	mi = e_menu_item_new(m);
 	e_menu_item_label_set(mi, D_("Capture Mode"));
 	e_menu_item_submenu_set(mi, inst->menu_mode);
 
-	mi = e_menu_item_new(mg);
+	mi = e_menu_item_new(m);
 	e_menu_item_label_set(mi, D_("Settings"));
 	e_util_menu_item_theme_icon_set(mi, "configure");
 	e_menu_item_callback_set(mi, _cb_menu_cfg, inst);
 
-	e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
+	m = e_gadcon_client_util_menu_items_append(inst->gcc, m, 0);
+	e_menu_post_deactivate_callback_set(m, _cb_menu_post, inst);
+        inst->menu = m;
+
 	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, NULL, NULL);
-	e_menu_activate_mouse(ma, zone, x + ev->output.x, y + ev->output.y, 
+	e_menu_activate_mouse(m, zone, x + ev->output.x, y + ev->output.y, 
 			      1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
      }
 }

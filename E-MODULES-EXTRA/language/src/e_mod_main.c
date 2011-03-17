@@ -439,22 +439,18 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
    ev = event_info;
    if ((ev->button == 3) && (!language_config->menu))
      {
-    E_Menu         *ma, *mg, *mo;
+    E_Menu       *m, *mo;
     E_Menu_Item  *mi;
     int cx, cy, cw, ch;
 
-    ma = e_menu_new();
-        e_menu_post_deactivate_callback_set(ma, _lang_menu_cb_post_deactivate, inst); 
-        language_config->menu = ma; 
+    m = e_menu_new();
          
-    mg = e_menu_new();
-
-    mi = e_menu_item_new(mg);
+    mi = e_menu_item_new(m);
     e_menu_item_label_set(mi, D_("Configure Key Bindings"));
     e_util_menu_item_theme_icon_set(mi, "preferences-system");
     e_menu_item_callback_set(mi, _language_face_cb_menu_keybindings_configure, NULL);
     
-    mi = e_menu_item_new(mg);
+    mi = e_menu_item_new(m);
     e_menu_item_label_set(mi, D_("Settings"));
     e_util_menu_item_theme_icon_set(mi, "preferences-system");
     e_menu_item_callback_set(mi, _language_face_cb_menu_configure, NULL);
@@ -491,9 +487,12 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
            }
       }
 
-        e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
+        m = e_gadcon_client_util_menu_items_append(inst->gcc, m, 0);
+	e_menu_post_deactivate_callback_set(m, _lang_menu_cb_post_deactivate, inst); 
+	language_config->menu = m; 
+	
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
-        e_menu_activate_mouse(ma,
+        e_menu_activate_mouse(m,
           e_util_zone_current_get(e_manager_current_get()), 
           cx + ev->output.x, cy + ev->output.y, 1, 1, 
           E_MENU_POP_DIRECTION_DOWN, ev->timestamp);

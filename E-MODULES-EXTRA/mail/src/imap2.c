@@ -2,7 +2,7 @@
 #include "e_mod_main.h"
 #include "imap2.h"
 
-#if 0
+#if 1
 #define D(args...) printf(args)
 #else
 #define D(args...)
@@ -521,16 +521,15 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line)
 	else
 	  {
 	     char *p;
-
 	     /* The result can be <n> <result> */
 	     p = strchr (value, ' ');
 	     if (p) *p = '\0';
 	     if (!strcmp (value, "RECENT"))
 	       {
 		  D ("Recent mails: %d\n", atoi (result));
-		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
-		  //ic->state = IMAP_STATE_SEARCH_RECENT;
-		  ic->state = IMAP_STATE_SEARCH_NEW;
+		  ic->state = IMAP_STATE_SEARCH_UNSEEN;
+		  /* ic->state = IMAP_STATE_SEARCH_RECENT; */
+		  /* ic->state = IMAP_STATE_SEARCH_NEW; */
 	       }
 	     else if (!strcmp (value, "EXISTS"))
 	       {
@@ -540,16 +539,16 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line)
 	     else if (!strcmp (value, "FETCH"))
 	       {
 		  D ("Reading mail: %d\n", atoi (result));
-		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
-		  //ic->state = IMAP_STATE_SEARCH_RECENT;
-		  ic->state = IMAP_STATE_SEARCH_NEW;
+		  ic->state = IMAP_STATE_SEARCH_UNSEEN;
+		  /* ic->state = IMAP_STATE_SEARCH_RECENT; */
+		  /* ic->state = IMAP_STATE_SEARCH_NEW; */
 	       }
 	     else if (!strcmp (value, "EXPUNGE"))
 	       {
 		  D ("Deleting mail: %d\n", atoi (result));
-		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
-		  //ic->state = IMAP_STATE_SEARCH_RECENT;
-		  ic->state = IMAP_STATE_SEARCH_NEW;
+		  ic->state = IMAP_STATE_SEARCH_UNSEEN;
+		  /* ic->state = IMAP_STATE_SEARCH_RECENT; */
+		  /* ic->state = IMAP_STATE_SEARCH_NEW; */
 	       }
 	     else
 	       {
@@ -602,9 +601,9 @@ _mail_imap_server_idle (ImapClient *ic)
    ecore_con_server_send (ic->server, out, len);
    ic->idling = 0;
  
-   //ic->state = IMAP_STATE_SEARCH_UNSEEN;
+   ic->state = IMAP_STATE_SEARCH_UNSEEN;
    //ic->state = IMAP_STATE_SEARCH_RECENT;
-   ic->state = IMAP_STATE_SEARCH_NEW;
+   /* ic->state = IMAP_STATE_SEARCH_NEW; */
 }
 
 static void
@@ -616,9 +615,9 @@ _mail_imap_server_noop (ImapClient *ic)
    len = snprintf (out, sizeof (out), "A%04i NOOP\r\n", ic->cmd++);
    ecore_con_server_send (ic->server, out, len);
  
-   //ic->state = IMAP_STATE_SEARCH_UNSEEN;
+   ic->state = IMAP_STATE_SEARCH_UNSEEN;
    //ic->state = IMAP_STATE_SEARCH_RECENT;
-   ic->state = IMAP_STATE_SEARCH_NEW;
+   /* ic->state = IMAP_STATE_SEARCH_NEW; */
 }
 
 static int

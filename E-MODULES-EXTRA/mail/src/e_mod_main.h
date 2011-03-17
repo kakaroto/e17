@@ -4,6 +4,8 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#define PRINT_LOTS_OF_DEBUG 1
+
 typedef enum 
 {
    MAIL_TYPE_POP,

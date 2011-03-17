@@ -62,7 +62,7 @@ EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Skel"};
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
-   char buf[4096];
+  char buf[4096];
 
    /* Location of message catalogs for localization */
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
@@ -108,7 +108,7 @@ e_modapi_init(E_Module *m)
         if ((skel_conf->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
           {
              /* config too old */
-             _skel_conf_free();
+	    _skel_conf_free();
 	     ecore_timer_add(1.0, _skel_conf_timer,
 			     D_("Skeleton Module Configuration data needed "
 			     "upgrading. Your old configuration<br> has been"
@@ -431,30 +431,27 @@ _skel_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    ev = event;
    if ((ev->button == 3) && (!inst->menu)) 
      {
-        E_Menu *ma, *mg;
+        E_Menu *m;
 
         /* grab current zone */
         zone = e_util_zone_current_get(e_manager_current_get());
 
         /* create popup menu */
-        ma = e_menu_new();
-        e_menu_post_deactivate_callback_set(ma, _skel_cb_menu_post, inst);
-        inst->menu = ma;
-
-        mg = e_menu_new();
-
-        mi = e_menu_item_new(mg);
+        m = e_menu_new();
+        mi = e_menu_item_new(m);
         e_menu_item_label_set(mi, D_("Settings"));
         e_util_menu_item_theme_icon_set(mi, "preferences-system");
         e_menu_item_callback_set(mi, _skel_cb_menu_configure, NULL);
 
         /* Each Gadget Client has a utility menu from the Container */
-        e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
+        m = e_gadcon_client_util_menu_items_append(inst->gcc, m, 0);
+        e_menu_post_deactivate_callback_set(m, _skel_cb_menu_post, inst);
+        inst->menu = m;
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, 
                                           NULL, NULL);
 
         /* show the menu relative to gadgets position */
-        e_menu_activate_mouse(ma, zone, (x + ev->output.x), 
+        e_menu_activate_mouse(m, zone, (x + ev->output.x), 
                               (y + ev->output.y), 1, 1, 
                               E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
         evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button, 

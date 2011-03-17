@@ -25,6 +25,9 @@ static Eina_List *_e_quick_access_event_handlers = NULL;
  *       it here)
  */
 
+#undef DBG
+#define DBG(...) ERR(__VA_ARGS__)
+
 static void
 _e_quick_access_entry_free(E_Quick_Access_Entry *entry)
 {

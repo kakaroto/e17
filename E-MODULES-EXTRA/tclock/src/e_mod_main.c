@@ -172,24 +172,22 @@ _tclock_cb_mouse_down(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED_
    ev = event_info;
    if ((ev->button == 3) && (!tclock_config->menu))
      {
-        E_Menu *ma, *mg;
+        E_Menu *m;
         E_Menu_Item *mi;
         int x = 0, y = 0;
 
-        ma = e_menu_new();
-        e_menu_post_deactivate_callback_set(ma, _tclock_menu_cb_post, inst);
-        tclock_config->menu = ma;
-
-        mg = e_menu_new();
-
-        mi = e_menu_item_new(mg);
+        m = e_menu_new();
+        mi = e_menu_item_new(m);
         e_menu_item_label_set(mi, D_("Settings"));
         e_util_menu_item_theme_icon_set(mi, "configure");
         e_menu_item_callback_set(mi, _tclock_menu_cb_configure, inst);
 
-        e_gadcon_client_util_menu_items_append(inst->gcc, ma, mg, 0);
+        m = e_gadcon_client_util_menu_items_append(inst->gcc, m, 0);
+        e_menu_post_deactivate_callback_set(m, _tclock_menu_cb_post, inst);
+        tclock_config->menu = m;
+	
         e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, NULL, NULL);
-        e_menu_activate_mouse (ma,
+        e_menu_activate_mouse (m,
                                e_util_zone_current_get(e_manager_current_get()), 
                                x + ev->output.x, y + ev->output.y, 1, 1,
                                E_MENU_POP_DIRECTION_DOWN, ev->timestamp);

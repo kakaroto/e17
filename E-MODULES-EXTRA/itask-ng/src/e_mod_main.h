@@ -291,6 +291,7 @@ struct _Ngi_Box
 {
   Ng              *ng;
   Config_Box      *cfg;
+  Eina_List       *handlers;
   Eina_List       *items;
   Ecore_Timer     *dnd_timer;
   E_Drop_Handler  *drop_handler;
