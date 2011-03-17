@@ -492,11 +492,10 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 	m = e_gadcon_client_util_menu_items_append(inst->gcc, m, 0);
 
-	mi = e_menu_item_new(m);
+	mi = e_menu_item_new_relative(m, NULL);
 	e_menu_item_label_set(mi, D_("Run Command"));
 	e_menu_item_callback_set(mi, _menu_cb_exec, inst);
-	e_menu_item_prepend(m, mi);
-	
+
 	e_menu_post_deactivate_callback_set(m, _menu_cb_post, inst);
 	execwatch_config->menu = m;
 	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
