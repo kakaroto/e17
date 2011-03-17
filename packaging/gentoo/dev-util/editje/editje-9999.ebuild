@@ -22,6 +22,9 @@ DEPEND="
 
 src_install() {
 	emake DESTDIR="${D}" install || die "Install failed"
+	if [ -z "$ED" ]; then
+		ED="$D"
+	fi
 	mv "${ED}/usr/bin/editje-bin" "${ED}/usr/bin/editje" || die
 	sed -i -e 's/editje-bin/editje/' \
 		"${ED}/usr/share/applications/editje.desktop" || die
