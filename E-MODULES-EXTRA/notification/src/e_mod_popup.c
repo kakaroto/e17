@@ -379,7 +379,9 @@ _notification_popup_refresh(Popup_Data *popup)
 	if (!popup->app_icon)
 	  {
 	     popup->app_icon = evas_object_image_add(popup->e);
+	     evas_object_image_alpha_set(popup->app_icon, 1);
 	     evas_object_image_file_set(popup->app_icon, icon_path, NULL);
+	     
 	     if (evas_object_image_load_error_get(popup->app_icon))
 	       {
 		  evas_object_del(popup->app_icon);
@@ -395,6 +397,7 @@ _notification_popup_refresh(Popup_Data *popup)
    else if ((img = e_notification_hint_icon_data_get(popup->notif)))
      {
 	popup->app_icon = e_notification_image_evas_object_add(popup->e, img);
+	evas_object_image_alpha_set(popup->app_icon, 1);
 	evas_object_image_size_get(popup->app_icon, &w, &h);
      }
 

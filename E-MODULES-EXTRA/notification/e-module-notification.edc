@@ -176,7 +176,7 @@ collections {
                color3: 0 0 0 64;
                color_class: "menu_title_active";
                text {
-                  text_source: "notification.text.title";
+                  /* text_source: "notification.text.title"; */
                   font: "Sans:style=Bold";
                   size: 10;
                   align: 0.0 0.0;
