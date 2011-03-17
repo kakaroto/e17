@@ -2,7 +2,7 @@ Login:		tiago
 IRC Nick:	tiagofalcao
 Name:		Tiago Rezende Campos Falcao
 Location:	Campinas, Brazil
-E-Mail:		tiago@profusion.mobi
+E-Mail:		developer@tiagofalcao.com
 WWW:		http://www.tiagofalcao.com
 Managing:	editje, effeniht
 Contributing:	elementary, edje, python-efl
