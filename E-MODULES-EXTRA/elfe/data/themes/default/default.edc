@@ -934,7 +934,6 @@ collections
             clip_to: "clip";
             description {
                state: "default" 0.0;
-               max: 72 72;
                align: 0.5 0.8;
                aspect: 1 1;
                aspect_preference: BOTH;

@@ -58,9 +58,9 @@ elfe_home_config_init(E_Module *m)
    E_CONFIG_LIST(D, T, desktops, conf_desktop_edd);
    E_CONFIG_VAL(D, T, cols, INT);
    E_CONFIG_VAL(D, T, rows, INT);
+   E_CONFIG_VAL(D, T, icon_size, INT);
 
    elfe_home_cfg = e_config_domain_load("module.elfe", conf_edd);
-
 
    if (!elfe_home_cfg)
      {
@@ -68,6 +68,7 @@ elfe_home_config_init(E_Module *m)
          elfe_home_cfg = E_NEW(Elfe_Home_Config, 1);
          elfe_home_cfg->cols = 4;
          elfe_home_cfg->rows = 4;
+         elfe_home_cfg->icon_size = 72;
          for (i = 0; i < 5; i++)
 	   {
 	      Elfe_Desktop_Config *dc;
@@ -81,6 +82,8 @@ elfe_home_config_init(E_Module *m)
        elfe_home_cfg->cols = 4;
    if (!elfe_home_cfg->rows)
        elfe_home_cfg->rows = 4;
+   if (!elfe_home_cfg->icon_size)
+       elfe_home_cfg->icon_size = 72;
 
    elfe_home_cfg->mod_dir = eina_stringshare_add(m->dir);
    elfe_home_cfg->theme = eina_stringshare_printf("%s/default.edj", elfe_home_cfg->mod_dir);

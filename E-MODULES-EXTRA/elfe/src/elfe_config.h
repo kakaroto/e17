@@ -22,6 +22,7 @@ struct _Elfe_Home_Config
     const char *theme;
     int cols;
     int rows;
+    int icon_size;
 };
 
 struct _Elfe_Desktop_Config

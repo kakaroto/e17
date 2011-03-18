@@ -64,6 +64,8 @@ _icon_get(void *data, Evas_Object *obj, const char *part)
             elm_icon_file_set(ic, gitem->icon_path, NULL);
         else
             elm_icon_file_set(ic, elfe_home_cfg->theme, gitem->icon_path);
+        evas_object_size_hint_min_set(ic, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
+        evas_object_size_hint_max_set(ic, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
      }
 
    return ic;
@@ -136,7 +138,7 @@ _add_items(Elfe_Allapps *allapps, Efreet_Menu *entry)
 	   case EFREET_MENU_ENTRY_DESKTOP :
 	      gitem = calloc(1, sizeof(Elfe_Grid_Item));
 	      gitem->allapps = allapps;
-	      gitem->icon_path = elfe_utils_fdo_icon_path_get(it, 72);
+	      gitem->icon_path = elfe_utils_fdo_icon_path_get(it, elfe_home_cfg->icon_size);
               if (!gitem->icon_path)
                   gitem->icon_path = eina_stringshare_add("icon/application-default");
 	      gitem->menu = it;
@@ -154,15 +156,18 @@ _obj_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
    Evas_Coord w, h;
    Evas_Coord size = 0;
    Elfe_Allapps *allapps = data;
+   Evas_Coord ow, oh;
 
    evas_object_geometry_get(allapps->box, NULL, NULL, &w, &h);
 
-   (h > w) ? (size = w / 4) : (size = h / 4);
+   ow = w / (elfe_home_cfg->icon_size + w / 10);
 
-   elm_gengrid_item_size_set(allapps->grid, size, size*1.1);
-   double x, y;
-   elm_gengrid_align_get(allapps->grid, &x, &y);
-   printf("Align : %3.3f, %3.3f\n", x, y);
+   printf("Nb elements : ow %d\n", ow);
+
+   elm_gengrid_item_size_set(allapps->grid, w / ow, (w /ow) + 20);
+
+   elm_gengrid_align_set(allapps->grid, 0.5, 0);
+
 }
 
 static void
