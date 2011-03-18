@@ -7,7 +7,7 @@
 # Feel free to modify and share!
 
 gtk_color_scheme = "fg_color:#3C3C3C"
-gtk_color_scheme = "bg_color:#DEDEDE"
+gtk_color_scheme = "bg_color:#EAEAEA"
 gtk_color_scheme = "base_color:#ffffff"
 gtk_color_scheme = "text_color:#3C3C3C"
 gtk_color_scheme = "selected_bg_color:#8aabe1"
@@ -94,6 +94,31 @@ style "default"
     ####################
     # Color Definitions
     ####################
+
+    text[NORMAL]      = "#ff0000"
+    text[PRELIGHT]    = "#ffff00"
+    text[ACTIVE]      = "#ff00ff"
+    text[SELECTED]    = "#00ff00"
+    text[INSENSITIVE] = "#0000ff"
+
+    base[NORMAL]      = "#ff0000"
+    base[PRELIGHT]    = "#ffff00"
+    base[ACTIVE]      = "#ff00ff"
+    base[SELECTED]    = "#00ff00"
+    base[INSENSITIVE] = "#0000ff"
+
+    fg[NORMAL]      = "#ff0000"
+    fg[PRELIGHT]    = "#ffff00"
+    fg[ACTIVE]      = "#ff00ff"
+    fg[SELECTED]    = "#00ff00"
+    fg[INSENSITIVE] = "#0000ff"
+
+    bg[NORMAL]      = "#ff0000"
+    bg[PRELIGHT]    = "#ffff00"
+    bg[ACTIVE]      = "#ff00ff"
+    bg[SELECTED]    = "#00ff00"
+    bg[INSENSITIVE] = "#0000ff"
+
     fg[NORMAL]	      = @fg_color
     fg[PRELIGHT]      = @text_color
     fg[ACTIVE]	      = @fg_color
@@ -102,7 +127,7 @@ style "default"
   
     bg[NORMAL]	      = @bg_color
     bg[PRELIGHT]      = shade (.65, @selected_bg_color)
-    bg[ACTIVE]	      = shade (0.84, @bg_color)
+    bg[ACTIVE]	      = shade (0.94, @bg_color)
     bg[SELECTED]      = @selected_bg_color
     bg[INSENSITIVE]   = @bg_color
   
@@ -215,24 +240,21 @@ style "entry"
 
 style "notebook"
 {
-  xthickness = 1
-  ythickness = 1
+    #bg[NORMAL]      = "#ff0000" # active tab
+    #bg[ACTIVE]      = "#0000ff" # inactive tab
+    GtkNotebook::tab-overlap = 1 
+    GtkNotebook::tab-curvature = 0
+ 
+    xthickness = 1
+    ythickness = 1
   
-  engine "murrine"
-  {
-    contrast		= .7
-    gradient_shades	= {1.1, 1.06, 0.92, 0.85}
-    lightborder_shade	= 1.0
-    
-  }
-}
-
-style "terminal" 
-{
-  text[NORMAL] = "#ffffff"
-  base[NORMAL] = "#303030"
-  
-  TerminalScreen::background-darkness = 0.94
+    engine "murrine"
+    {
+	contrast		= .8
+	gradient_shades	= {1.1, 1.06, 0.92, 0.85}
+	# lightborder_shade	= 1.0    
+	roundness	    = 4	    # 0 = squared, 1 = old default, more will increase roundness
+    }
 }
 
 style "treeview"
@@ -241,7 +263,6 @@ style "treeview"
     base[ACTIVE]   = @selected_bg_color #shade(0.9, @bg_color)
     base[SELECTED] = @selected_bg_color
     base[PRELIGHT] = "#ff0000"
-
     # bg[NORMAL]   = "#00ff00"
     # bg[PRELIGHT] = "#ff0000"
     # bg[SELECTED] = "#0000ff"
@@ -507,11 +528,17 @@ widget_class "*.<GtkComboBox>.<GtkCellView>"	style "combobox-text-color-workarou
 
 style "menuitem-text-is-fg-color-workaround" = "menu-item"
 {
-    text[NORMAL]	= "#DFDFDF"
+    text[NORMAL]	= @text_color
     text[PRELIGHT]	= @base_color
     text[SELECTED]	= @base_color
     text[ACTIVE]	= @base_color
     text[INSENSITIVE]	= "#999999"
+
+    # text[NORMAL]      = "#ff0000"
+    # text[PRELIGHT]    = "#ffff00"
+    # text[ACTIVE]      = "#ff00ff"
+    # text[SELECTED]    = "#00ff00"
+    # text[INSENSITIVE] = "#0000ff"
 }
 
 widget "*.gtk-combobox-popup-menu.*"		style "menuitem-text-is-fg-color-workaround"
@@ -546,7 +573,6 @@ style "evo-new-button-workaround"
 
 widget_class "EShellWindow.GtkVBox.BonoboDock.BonoboDockBand.BonoboDockItem*" style "evo-new-button-workaround"
 
-class "TerminalScreen" style "terminal"
 
 # Removing the ugly thin dark border from nautilus' sidepane
 style "nautilus-sidepane"

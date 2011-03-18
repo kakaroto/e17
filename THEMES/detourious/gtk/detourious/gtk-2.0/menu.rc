@@ -17,9 +17,11 @@ style "menu-item"
   xthickness = 0
   ythickness = 4
 
+    #fg[NORMAL]      = "#ff0000" #menu item test
+    #fg[INSENSITIVE] = "#0000ff" # inactive item text
+
   bg[INSENSITIVE] = mix (0.4, @selected_bg_color, @bg_color)
-  fg[ACTIVE]      	= "#fff"
-  fg[PRELIGHT]      	= "#fff"  
+  fg[PRELIGHT]      	= "#fff" #selected item text  
 
   engine "murrine" 
   {
@@ -113,6 +115,14 @@ style "menu"
 	    detail 		= "menu"
 	    file 		= "Menu-Menubar/menu.png"
 	    border 		= { 0, 0, 0, 0 }
+	    stretch 		= TRUE
+	}
+	# used by qt gtk-eingine
+	image
+	{
+	    function 		= HLINE
+	    file 		= "Menu-Menubar/menu-separator.png"
+	    border 		= { 0, 0, 1, 1 }
 	    stretch 		= TRUE
 	}
     }

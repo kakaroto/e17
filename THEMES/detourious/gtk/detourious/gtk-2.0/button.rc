@@ -3,6 +3,11 @@ style "button"
     xthickness = 4
     ythickness = 3
 
+    # fg[NORMAL]      = "#ff0000"
+    # fg[INSENSITIVE] = "#0000ff"
+    # fg[PRELIGHT] = "#0000ff"
+    # fg[ACTIVE] = "#0000ff"
+
     engine "pixmap"
     {
 	image
