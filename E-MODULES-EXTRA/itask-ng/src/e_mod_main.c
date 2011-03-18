@@ -29,7 +29,7 @@ static void           _ngi_zoom_function(Ng *ng, double d, double *disp);
 static Eina_Bool      _ngi_animator(void *data);
 static void           _ngi_redraw(Ng *ng);
 static int            _ngi_autohide(Ng *ng, int hide);
-static int            _ngi_check_fullscreen(E_Desk *desk);
+/* static int            _ngi_check_fullscreen(E_Desk *desk); */
 
 static int initialized = 0;
 
@@ -245,28 +245,22 @@ ngi_new(Config_Item *cfg)
      (ng->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_PROPERTY, _ngi_win_cb_border_event, ng));
 
-
    if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
      {
-	E_Desk *desk = e_desk_current_get(e_util_zone_current_get(e_manager_current_get()));
-	int fullscreen = _ngi_check_fullscreen(desk);
-
-	if (ng->hide_fullscreen != fullscreen)
-	  ngi_animate(ng);
+	int fullscreen = e_desk_current_get(ng->zone)->fullscreen_borders;
 
 	ng->hide_fullscreen = fullscreen;
      }
    else if (ng->cfg->stacking == below_fullscreen)
      {
-	E_Desk *desk = e_desk_current_get(e_util_zone_current_get(e_manager_current_get()));
-	int fullscreen = _ngi_check_fullscreen(desk);
-
+	int fullscreen = e_desk_current_get(ng->zone)->fullscreen_borders;
+	
 	if (fullscreen)
 	  e_popup_hide(ng->win->popup);
 	else
 	  e_popup_show(ng->win->popup);
      }
-
+   
    if ((ng->cfg->autohide == AUTOHIDE_NORMAL) || ng->hide_fullscreen)
      {
         ng->hide_step = ng->size + ng->opt.edge_offset + ng->opt.bg_offset;
@@ -456,11 +450,11 @@ ngi_input_extents_calc(Ng *ng)
    Eina_List *l;
 
    if (ng->mouse_in)
-     item_zoomed = ng->size * ng->cfg->zoomfactor + ng->opt.bg_offset;
+     item_zoomed = ng->size * ng->cfg->zoomfactor + ng->opt.bg_offset + ng->opt.edge_offset;
    else if (ng->hide_state == hidden)
      item_zoomed = 2;
    else
-     item_zoomed = ng->size + ng->opt.bg_offset;;
+     item_zoomed = ng->size + ng->opt.bg_offset + ng->opt.edge_offset;
 
    switch (ng->cfg->orient)
      {
@@ -472,7 +466,7 @@ ngi_input_extents_calc(Ng *ng)
          break;
 
       case E_GADCON_ORIENT_TOP:
-         win->rect.x = ng->start + SIDE_OFFSET;
+         win->rect.x = ng->start;
          win->rect.y = 0;
          win->rect.width = ng->w;
 	 win->rect.height = item_zoomed;
@@ -480,7 +474,7 @@ ngi_input_extents_calc(Ng *ng)
 
       case E_GADCON_ORIENT_LEFT:
          win->rect.x = 0;
-         win->rect.y = ng->start + SIDE_OFFSET;
+         win->rect.y = ng->start;
          win->rect.width = item_zoomed;
          win->rect.height = ng->w;
          break;
@@ -871,7 +865,6 @@ _ngi_win_cb_mouse_move(void *data, int type, void *event)
           }
      }
 
-   /* _ngi_redraw(ng); */
    ngi_animate(ng);
 
    return EINA_TRUE;
@@ -895,6 +888,9 @@ ngi_item_at_position_get(Ng *ng)
 
 	EINA_LIST_FOREACH (box->items, l, it)
 	  {
+	     if (it->delete_me)
+	       continue;
+	     
 	     if (it->scale == 0.0)
 	       continue;
 
@@ -1004,26 +1000,60 @@ _ngi_item_disappear(Ng *ng, Ngi_Item *it)
    ngi_item_activate(ng);
 }
 
+static double
+_ngi_anim_advance_in(double start, double duration)
+{
+   double z = (ecore_time_get() - start) / duration;
+
+   if (z > 1.0)
+     return 1.0;
+
+   if (z < 0.0)
+     return 0.0;
+
+   z = log(10) * z;
+
+   return 1.0 - (1.0 / exp(z*z));
+}
+
+static double
+_ngi_anim_advance_out(double start, double duration)
+{
+   double z = (ecore_time_get() - start) / duration;
+
+   if (z > 1.0)
+     return 0.0;
+
+   if (z < 0.0)
+     return 1.0;
+
+   z = 1.0 - z;
+   z = log(10) * z;
+
+   return 1.0 - (1.0 / exp(z*z));
+}
+
 static void
 _ngi_zoom_in(Ng *ng)
 {
-   double duration = ng->cfg->zoom_duration;
-
+   double z;
+   
    if (ng->state != zooming)
      {
 	double now = ecore_time_get();
 
 	if (ng->state == unzooming)
-	  ng->start_zoom = now - (duration - (now - ng->start_zoom));
+	  ng->start_zoom = now - (ng->cfg->zoom_duration - (now - ng->start_zoom));
 	else
 	  ng->start_zoom = now;
+	
 	ng->state = zooming;
      }
 
-   ng->zoom = 1.0 + (ng->cfg->zoomfactor - 1.0) *
-     (ecore_time_get() - ng->start_zoom) / duration;
+   z = _ngi_anim_advance_in(ng->start_zoom, ng->cfg->zoom_duration); 
+   ng->zoom = 1.0 + (ng->cfg->zoomfactor - 1.0) * z;
 
-   if (ng->zoom >= ng->cfg->zoomfactor)
+   if (z == 1.0)
      {
         ng->zoom = ng->cfg->zoomfactor;
         ng->state = zoomed;
@@ -1033,23 +1063,24 @@ _ngi_zoom_in(Ng *ng)
 static void
 _ngi_zoom_out(Ng *ng)
 {
-   double duration = ng->cfg->zoom_duration;
-
+   double z;
+   
    if (ng->state != unzooming)
      {
 	double now = ecore_time_get();
 
 	if (ng->state == zooming)
-	  ng->start_zoom = now - (duration - (now - ng->start_zoom));
+	  ng->start_zoom = now - (ng->cfg->zoom_duration - (now - ng->start_zoom));
 	else
 	  ng->start_zoom = now;
+	
 	ng->state = unzooming;
      }
 
-   ng->zoom = 1.0 + (ng->cfg->zoomfactor - 1.0) *
-     (1.0 - (ecore_time_get() - ng->start_zoom) / duration);
+   z = _ngi_anim_advance_out(ng->start_zoom, ng->cfg->zoom_duration); 
+   ng->zoom = 1.0 + (ng->cfg->zoomfactor - 1.0) * z;
 
-   if (ng->zoom <= 1.0)
+   if (z == 0.0)
      {
         ng->zoom = 1.0;
         ng->state = unzoomed;
@@ -1090,7 +1121,7 @@ _ngi_autohide(Ng *ng, int hide)
 	     ng->hide_state = hiding;
 	  }
 
-	step = hide_max * (ecore_time_get() - ng->start_hide) / duration;
+	step = hide_max * (1.0 - _ngi_anim_advance_out(ng->start_hide, duration));
 
 	if (step >= hide_max)
 	  {
@@ -1114,7 +1145,7 @@ _ngi_autohide(Ng *ng, int hide)
 	     ng->hide_state = showing;
 	  }
 
-	step = hide_max * (1.0 - (ecore_time_get() - ng->start_hide) / duration);
+	step = hide_max * (1.0 - _ngi_anim_advance_in(ng->start_hide, duration));
 
 	if (step <= 0)
 	  {
@@ -1125,7 +1156,6 @@ _ngi_autohide(Ng *ng, int hide)
 	     return 0;
 	  }
      }
-
 
    if (step > hide_max)
      step = hide_max;
@@ -1181,7 +1211,7 @@ _ngi_animator(void *data)
    if (ng->cfg->autohide)
      {
         if ((ng->mouse_in || ng->show_bar || ng->menu_wait_timer) ||
-            (ng->cfg->autohide == AUTOHIDE_FULLSCREEN && !ng->hide_fullscreen))
+            (ng->cfg->autohide == AUTOHIDE_FULLSCREEN && (!ng->hide_fullscreen)))
           {
              if (ng->hide_state != show)
                {
@@ -1191,10 +1221,11 @@ _ngi_animator(void *data)
           }
         else if ((ng->cfg->autohide == AUTOHIDE_NORMAL) || (ng->hide_fullscreen))
           {
-             if ((ng->hide_state != hidden) && (ng->state == unzoomed))
+             if ((ng->hide_state != hidden) &&
+		 ((ng->zoom - 1.0) <= (ng->cfg->zoomfactor - 1.0) / 2.0))
                {
 		  _ngi_autohide(ng, 1);
-                  cont = 1;
+		  cont = 1;
                }
           }
      }
@@ -1204,7 +1235,6 @@ _ngi_animator(void *data)
 	_ngi_redraw(ng);
 	return EINA_TRUE;
      }
-
 
    ng->animator = NULL;
    return EINA_FALSE;
@@ -1339,7 +1369,7 @@ _ngi_redraw(Ng *ng)
    Ngi_Item *it;
    Ngi_Box *box;
    Eina_List *l, *ll;
-
+   
    double pos, pos2;
    int end1, end2, size_spacing, hide_step;
    int bw, bh, bx, by;
@@ -1354,7 +1384,7 @@ _ngi_redraw(Ng *ng)
 
    int w = ng->win->popup->w;
    int h = ng->win->popup->h;
-
+   
    if (cfg->autohide)
      hide_step = ng->hide_step;
    else
@@ -1507,7 +1537,7 @@ _ngi_redraw(Ng *ng)
 	   evas_object_resize(it->over, size, size);
 	}
    }
-
+     
    ng->changed = 0;
 }
 
@@ -1543,23 +1573,23 @@ ngi_thaw(Ng *ng)
    ngi_animate(ng);
 }
 
-static int
-_ngi_check_fullscreen(E_Desk *desk)
-{
-   Eina_List *l;
-   E_Border *bd;
-
-   EINA_LIST_FOREACH(e_border_client_list(), l, bd)
-     {
-	if (bd->desk != desk)
-	  continue;
-
-	if (bd->fullscreen)
-	  return 1;
-     }
-
-   return 0;
-}
+/* static int
+ * _ngi_check_fullscreen(E_Desk *desk)
+ * {
+ *    Eina_List *l;
+ *    E_Border *bd;
+ * 
+ *    EINA_LIST_FOREACH(e_border_client_list(), l, bd)
+ *      {
+ * 	if (bd->desk != desk)
+ * 	  continue;
+ * 
+ * 	if (bd->fullscreen)
+ * 	  return 1;
+ *      }
+ * 
+ *    return 0;
+ * } */
 
 static Eina_Bool
 _ngi_win_cb_desk_show(void *data, int type, void *event)
@@ -1570,7 +1600,7 @@ _ngi_win_cb_desk_show(void *data, int type, void *event)
 
    if (ng->cfg->stacking == below_fullscreen)
      {
-	fullscreen = _ngi_check_fullscreen(ev->desk);
+	fullscreen = ev->desk->fullscreen_borders;
 
 	if (fullscreen)
 	  e_popup_hide(ng->win->popup);
@@ -1579,7 +1609,7 @@ _ngi_win_cb_desk_show(void *data, int type, void *event)
      }
    else if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
      {
-	fullscreen = _ngi_check_fullscreen(ev->desk);
+	fullscreen = ev->desk->fullscreen_borders;
 
 	if (ng->hide_fullscreen != fullscreen)
 	  ngi_animate(ng);
@@ -1599,12 +1629,12 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
 
    if (ng->cfg->stacking == below_fullscreen)
      {
-	desk = e_desk_current_get(e_util_zone_current_get(e_manager_current_get()));
+	desk = e_desk_current_get(ng->zone);
 
 	if (ev->border->desk != desk)
 	  return EINA_TRUE;
 
-	fullscreen = _ngi_check_fullscreen(desk);
+	fullscreen = desk->fullscreen_borders;
 
 	if (fullscreen)
 	  e_popup_hide(ng->win->popup);
@@ -1613,12 +1643,12 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
      }
    else if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
      {
-	desk = e_desk_current_get(e_util_zone_current_get(e_manager_current_get()));
+	desk = e_desk_current_get(ng->zone);
 
 	if (ev->border->desk != desk)
 	  return EINA_TRUE;
 
-	fullscreen = _ngi_check_fullscreen(desk);
+	fullscreen = desk->fullscreen_borders;
 
 	if (ng->hide_fullscreen != fullscreen)
 	  ngi_animate(ng);

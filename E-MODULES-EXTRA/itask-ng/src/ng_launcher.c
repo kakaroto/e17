@@ -139,7 +139,8 @@ _drop_item_new(Ngi_Box *box)
    it = (Ngi_Item*)E_NEW(Ngi_Item_Launcher, 1);
    it->box = box;
    ngi_item_show(it, 0);
-
+   it->delete_me = EINA_TRUE;
+   
    return it;
 }
 
@@ -424,7 +425,7 @@ _item_cb_drag_start(Ngi_Item *item)
    e_order_remove(item->box->apps, it->app);
 
    evas_object_hide(it->base.obj);
-   ngi_item_remove(&it->base);
+   ngi_item_remove(&(it->base));
 
    ecore_x_pointer_xy_get(box->ng->win->input, &px, &py);
    e_drag_start(d, px, py);

@@ -34,8 +34,9 @@ group {
 		 * change opacity with background transparency */
 		item: "clip_separator"  "1";
 
-		/* extra space between icons and bg (required for auto hide) */
-		item: "bg_offset" "20";
+		/* extra space between icons and bg
+		   (required for autohide to hide the whole background) */
+		item: "bg_offset" "10";
 	}
 
 	parts {
