@@ -1,5 +1,6 @@
 things I am/will be working on:
 ___URGENT___ (pre 1.0 hopefully?)
+*fix function pointer typedefs in ecrustify
 *eeze integration into efm
 *fix battery fuzzy mode for when plugged in
 *update battery fuzzy mode to do rolling averages
