@@ -423,10 +423,13 @@ group {
     }
 
 }
+
+#ifdef BUILD_FOR_COMPOSITE
 #undef TOP
 #undef LEFT
 #undef RIGHT
 #undef BOTTOM
+
 #define TOP 22
 #define LEFT 5
 #define RIGHT -6
@@ -438,7 +441,7 @@ group {
 	BORDER_DATA;
 
     parts {
-		BORDER_IMAGE("images/window-border-glass.png", 6 6 22 6, 27 27);
+		BORDER_IMAGE("images/window-border-glass.png", 6 6 22 6, 28 28);
 
 		BORDER_CLIENT(LEFT, RIGHT, TOP, BOTTOM);
 		
@@ -464,6 +467,12 @@ group {
         BORDER_DEFAULT_PROGRAMS();
     }
 }
+#endif
+
+#undef TOP
+#undef LEFT
+#undef RIGHT
+#undef BOTTOM
 
 group {
     name: "e/widgets/border/pixel/border";

@@ -10,7 +10,7 @@ group {
             mouse_events: 1;
             description {
                 state: "default" 0.0;
-                color: 255 255 255 0;
+                color: 255 255 255 200;
                 image.normal: "images/button_im0.png";
                 image.border: 7 7 7 7;
             }
@@ -28,12 +28,12 @@ group {
 
                 rel1 {
                     to: "base";
-					offset: 0 0;
+					offset: 0 -1;
                 }
 
                 rel2 {
                     to: "base";
-					offset: -1 -1;
+					offset: -1 -2;
                 }
             }
         }
@@ -46,7 +46,7 @@ group {
                 rel1 {
 					to_x: "left_arrow";
 					relative: 1.0 0.0;
-                    offset: 6 3;
+                    offset: 6 2;
                 }
                 rel2 {
 					to_x: "right_arrow";
@@ -65,7 +65,7 @@ group {
 				rel1 {
 					to_x: "left_arrow";
 					relative: 1.0 0.0;
-					offset: 0 2;
+					offset: 0 1;
 				}
 
 				rel2 {
@@ -73,28 +73,6 @@ group {
 					relative: 0.0 1.0;
 					offset: -1 -4;
 				}
-            }
-        }
-        part {
-            name: "over";
-            type: IMAGE;
-            mouse_events: 0;
-            description {
-                state: "default" 0.0;
-                min: 44 24;
-                color: 255 255 255 50;
-                image.normal: "images/button_im6.png";
-                image.border: 7 7 7 7;
-
-                rel1 {
-                    to: "base";
-					offset: 0 -2;
-                }
-
-                rel2 {
-                    to: "base";
-					offset: -1 -1;
-                }
             }
         }
         part {
@@ -179,6 +157,28 @@ group {
 				visible: 1;
             }
 		}
+        part {
+            name: "over";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+                state: "default" 0.0;
+                min: 44 24;
+                color: 255 255 255 50;
+                image.normal: "images/button_im6.png";
+                image.border: 7 7 7 7;
+
+                rel1 {
+                    to: "base";
+					offset: 0 -1;
+                }
+
+                rel2 {
+                    to: "base";
+					offset: -1 -1;
+                }
+            }
+        }
         part {
             name: "e.dragable.hbar";
             mouse_events: 0;
