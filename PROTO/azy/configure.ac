@@ -85,13 +85,21 @@ AC_SUBST([CXX_PIC])
 
 AZY_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0 eina >= 1.0.0"
 
-AC_PATH_PROG([mysql_config], [mysql_config])
-if test "x$mysql_config" != "x";then
+want_mysql=
+AC_ARG_ENABLE([mysql-tests],
+   [AC_HELP_STRING([--disable-mysql-tests], [disable code for mysql in tests @<:@default=detect@:>@])],
+   [want_mysql=$enableval]
+)
+
+if test "x$want_mysql" != "xno" ; then
+   AC_PATH_PROG([mysql_config], [mysql_config])
+   if test "x$mysql_config" != "x";then
       AC_CHECK_HEADERS([mysql/mysql.h])
       MYSQL_CFLAGS="$($mysql_config --cflags)"                                                                 
       MYSQL_LIBS="$($mysql_config --libs_r)"
       AC_DEFINE_UNQUOTED(HAVE_MYSQL, 1, "enable some mysql code in tests")
-fi              
+   fi
+fi
 AM_CONDITIONAL(HAVE_MYSQL, [test -n "$MYSQL_LIBS"])
 AC_SUBST(MYSQL_CFLAGS)
 AC_SUBST(MYSQL_LIBS)
