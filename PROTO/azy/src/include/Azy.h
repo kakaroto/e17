@@ -61,6 +61,11 @@ extern int AZY_CLIENT_RESULT; /**< Event emitted upon client method returning if
                                    a callback for the method has been set, sends #Eina_Error */
 extern int AZY_CLIENT_ERROR; /**< Event emitted upon client method encountering
                                   an error, sends #Azy_Content containing error */
+
+extern int AZY_SERVER_CLIENT_ADD; /**< Event emitted upon client connecting to server,
+                                       sends #Azy_Server object */
+extern int AZY_SERVER_CLIENT_DEL; /**< Event emitted upon client disconnecting from server,
+                                       sends #Azy_Server object */
 /**@}*/
 /**
  * @defgroup Azy_Typedefs Azy types

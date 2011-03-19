@@ -24,8 +24,11 @@
 #include "Azy.h"
 #include "azy_private.h"
 
+EAPI int AZY_SERVER_CLIENT_ADD;
+EAPI int AZY_SERVER_CLIENT_DEL;
 
-const char *error400 = "HTTP/1.1 400 Bad Request\r\n"
+#if 0
+static const char *error400 = "HTTP/1.1 400 Bad Request\r\n"
                        "Connection: close\r\n"
                        "Content-Type: text/html\r\n\r\n"
                        "<html>"
@@ -37,7 +40,8 @@ const char *error400 = "HTTP/1.1 400 Bad Request\r\n"
                        "<p>The server received a request it could not understand.</p>"
                        "</body>"
                        "</html>";
-const char *error500 = "HTTP/1.1 500 Internal Server Error\r\n"
+#endif
+static const char *error500 = "HTTP/1.1 500 Internal Server Error\r\n"
                        "Connection: close\r\n\r\n"
                        "Content-Type: text/html\r\n\r\n"
                        "<html>"
@@ -49,7 +53,7 @@ const char *error500 = "HTTP/1.1 500 Internal Server Error\r\n"
                        "<p>The server encountered an internal error or misconfigurationand was unable to complete your request.</p>"
                        "</body>"
                        "</html>";
-const char *error501 = "HTTP/1.1 501 Method Not Implemented\r\n"
+static const char *error501 = "HTTP/1.1 501 Method Not Implemented\r\n"
                        "Allow: TRACE\r\n"
                        "Connection: close\r\n\r\n"
                        "Content-Type: text/html\r\n\r\n"
@@ -356,7 +360,10 @@ _azy_server_client_new(Azy_Server      *server,
 
    client->del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_azy_server_client_handler_del, client);
    client->data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, (Ecore_Event_Handler_Cb)_azy_server_client_handler_data, client);
+
    server->clients++;
+   ecore_event_add(AZY_SERVER_CLIENT_ADD, server, _azy_event_handler_fake_free, NULL);
+
    /* FIXME: is there other data I want to shove into these handlers? */
    AZY_MAGIC_SET(client, AZY_MAGIC_SERVER_CLIENT);
 }
@@ -395,6 +402,7 @@ _azy_server_client_free(Azy_Server_Client *client)
      }
 
    client->server->clients--;
+   ecore_event_add(AZY_SERVER_CLIENT_DEL, client->server, _azy_event_handler_fake_free, NULL);
    free(client);
 }
 

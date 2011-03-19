@@ -164,6 +164,9 @@ azy_init(void)
    AZY_CLIENT_RESULT = ecore_event_type_new();
    AZY_CLIENT_ERROR = ecore_event_type_new();
 
+   AZY_SERVER_CLIENT_ADD = ecore_event_type_new();
+   AZY_SERVER_CLIENT_DEL = ecore_event_type_new();
+
 
    eina_magic_string_set(AZY_MAGIC_SERVER, "Azy_Server");
    eina_magic_string_set(AZY_MAGIC_SERVER_CLIENT, "Azy_Server_Client");
