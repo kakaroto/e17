@@ -233,7 +233,7 @@ _pager_out()
    EINA_LIST_FOREACH(items, l, it)
      {
 	edje_object_signal_emit(it->o, "hide", "e");
-	edje_object_signal_emit(it->o, "mouse,in", "e");
+	/* edje_object_signal_emit(it->o, "mouse,in", "e"); */
 	it->bd_x = it->bd->x + (it->desk->x - current_desk->x) * zone->w;
 	it->bd_y = it->bd->y + (it->desk->y - current_desk->y) * zone->h;
      }
@@ -504,6 +504,9 @@ _pager_win_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!mouse_activated)
      return;
 
+   if (!scale_state)
+     return;
+   
    mouse_activated = 0;
 
    if (selected_item && (it != selected_item))
@@ -699,6 +702,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 
    items = eina_list_append(items, it);
 
+   edje_object_part_text_set(it->o, "e.text.label", e_border_name_get(it->bd));
    edje_object_signal_emit(it->o, "show", "e");
 
    if (it->bd != e_border_focused_get())

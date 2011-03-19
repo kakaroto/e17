@@ -244,6 +244,8 @@ e_modapi_init(E_Module *m)
 				 "scale-windows", "go_scale", NULL, 0);
 	e_action_predef_name_set(D_("Scale Windows"), D_("Scale Windows (All Desktops)"),
 				 "scale-windows", "go_scale_all", NULL, 0);
+	e_action_predef_name_set(D_("Scale Windows"), D_("Scale Windows (By Class)"),
+				 "scale-windows", NULL, "go_scale_class:E", 1);
 	e_action_predef_name_set(D_("Scale Windows"), D_("Select Next"),
 				 "scale-windows", "go_scale_next", NULL, 0);
 	e_action_predef_name_set(D_("Scale Windows"), D_("Select Previous"),
@@ -308,6 +310,7 @@ e_modapi_shutdown(E_Module *m)
      {
 	e_action_predef_name_del(D_("Scale Windows"), D_("Scale Windows"));
 	e_action_predef_name_del(D_("Scale Windows"), D_("Scale Windows (All Desktops)"));
+	e_action_predef_name_del(D_("Scale Windows"), D_("Scale Windows (By Class)"));
 	e_action_predef_name_del(D_("Scale Windows"), D_("Select Next"));
 	e_action_predef_name_del(D_("Scale Windows"), D_("Select Previous"));
 
