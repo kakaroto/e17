@@ -352,17 +352,16 @@ azy_events_header_parse(Azy_Net       *net,
         while ((isspace(*ptr)) && (ptr - p < line_len))
           ptr++;
 
-        if (!_azy_events_valid_header_value((const char *)ptr, line_len - (ptr - p)))
-          goto skip_header;
-        {
-           char *key, *value;
+        if (_azy_events_valid_header_value((const char *)ptr, line_len - (ptr - p)))
+          {
+             char *key, *value;
 
-           key = strndupa((const char *)p, semi - p);
-           value = strndupa((const char *)ptr, line_len - (ptr - p));
-           INFO("Found header: key='%s'", key);
-           INFO("Found header: value='%s'", value);
-           azy_net_header_set(net, key, value);
-        }
+             key = strndupa((const char *)p, semi - p);
+             value = strndupa((const char *)ptr, line_len - (ptr - p));
+             INFO("Found header: key='%s'", key);
+             INFO("Found header: value='%s'", value);
+             azy_net_header_set(net, key, value);
+          }
 
 skip_header:
         len -= line_len + slen;
@@ -371,7 +370,7 @@ skip_header:
         p = r + slen;
         if (net->headers_read)
           /* double separator: STOP */
-          if (azy_memstr(p, (const unsigned char *)s, slen, slen))
+          if (!strncmp((char*)p, s, slen))
             break;
         r = azy_memstr(p, (const unsigned char *)s, len, slen);
         line_len = r - p;
