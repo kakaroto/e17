@@ -162,62 +162,13 @@ static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    E_Radio_Group *rg;
-   Evas_Object *o, *ol, *of, *ob, *ot, *o_table, *o_all;
+   Evas_Object *ol, *of, *ob, *ot, *otb;
 
-   o_all = e_widget_list_add(evas, 0, 0);
-
-   o_table = e_widget_table_add(evas, 0);
-
+   otb = e_widget_toolbook_add(evas, 0, 0); 
+   
    /* _______ first column __________________________________________________*/
-   o = e_widget_list_add(evas, 0, 0);
-
-   of = e_widget_frametable_add(evas, D_("Bar Items"), 0);
-
-   ol = e_widget_ilist_add(evas, 0, 0, NULL);
-   cfdata->ilist = ol;
-   _load_box_tlist(cfdata);
-   e_widget_size_min_set(ol, 130, 100);
-   e_widget_frametable_object_append(of, ol, 0, 0, 1, 1, 1, 1, 1, 1);
-
-   ot = e_widget_table_add(evas, 0);
-   ob = e_widget_button_add(evas, D_("Delete"), "widget/del", _cb_box_del, cfdata, NULL);
-   e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Configure"), "widget/config", _cb_box_config, cfdata, NULL);
-   e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Up"), "widget/up_arrow", _cb_box_up, cfdata, NULL);
-   e_widget_table_object_append(ot, ob, 1, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Down"), "widget/down_arrow", _cb_box_down, cfdata, NULL);
-   e_widget_table_object_append(ot, ob, 1, 1, 1, 1, 1, 1, 1, 0);
-   e_widget_frametable_object_append(of, ot, 0, 1, 1, 1, 1, 1, 1, 0);
-
-   ot = e_widget_table_add(evas, 0);
-   ob = e_widget_label_add(evas, D_("Add"));
-   e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Taskbar"), "widget/add", _cb_box_add_taskbar, cfdata, NULL);
-   e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Launcher"), "widget/add", _cb_box_add_launcher, cfdata, NULL);
-   e_widget_table_object_append(ot, ob, 1, 1, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_button_add(evas, D_("Gadcon"), "widget/add", _cb_box_add_gadcon, cfdata, NULL);
-   e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 1, 1, 1, 0);
-   e_widget_frametable_object_append(of, ot, 0, 2, 1, 1, 1, 1, 1, 0);
-
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-
-   e_widget_table_object_append(o_table, o, 0, 0, 1, 1, 1, 1, 1, 1);
-
-   /* _______ second column _________________________________________________*/
-   o = e_widget_list_add(evas, 0, 0);
-
+   ol = e_widget_list_add(evas, 0, 0); 
    of = e_widget_framelist_add(evas, D_("Appearance"), 0);
-   ob = e_widget_check_add(evas, D_("Show Icon Label"), &(cfdata->show_label));
-   e_widget_framelist_object_append(of, ob);
-
-   ob = e_widget_check_add(evas, D_("Show Background Box"), &(cfdata->show_background));
-   e_widget_framelist_object_append(of, ob);
-   /*
-      ob = e_widget_check_add(evas, D_("Mouse-Over Animation"), &(cfdata->mouse_over_anim));
-      e_widget_framelist_object_append(of, ob);
-    */
    ob = e_widget_label_add (evas, D_("Icon Size:"));
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_slider_add (evas, 1, 0, D_("%1.0f px"), 16.0, 128,
@@ -242,42 +193,43 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
         e_widget_framelist_object_append (of, ob);
      }
    else
-      cfdata->alpha = 255;
+     cfdata->alpha = 255;
 
-   ob = e_widget_label_add(evas, D_("Stacking"));
-   e_widget_framelist_object_append(of, ob);
-   rg = e_widget_radio_group_new(&cfdata->stacking);
-   ob = e_widget_radio_add(evas, D_("Above All"), 0, rg);
-   e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, D_("Below Fullscreen"), 1, rg);
+   ob = e_widget_check_add(evas, D_("Show Background Box"), &(cfdata->show_background));
    e_widget_framelist_object_append(of, ob);
 
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-
-   of = e_widget_framelist_add(evas, D_("Auto Hide"), 0);
-   cfdata->hide_mode = cfdata->autohide;
-
-   rg = e_widget_radio_group_new(&cfdata->hide_mode);
-   ob = e_widget_radio_add(evas, "None",
-                           AUTOHIDE_NONE, rg);
-   e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, "Autohide",
-                           AUTOHIDE_NORMAL, rg);
-   e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, "Autohide on Fullscreen",
-                           AUTOHIDE_FULLSCREEN, rg);
+   e_widget_list_object_append(ol, of, 1, 0, 0.0);
+   
+   of = e_widget_framelist_add(evas, D_("Orientation"), 0); 
+   rg = e_widget_radio_group_new(&(cfdata->orient));
+   ob = e_widget_radio_add(evas, D_("Bottom Edge"), E_GADCON_ORIENT_BOTTOM, rg);
+   e_widget_framelist_object_append(of, ob); 
+   ob = e_widget_radio_add(evas, D_("Top Edge"), E_GADCON_ORIENT_TOP, rg);
+   e_widget_framelist_object_append(of, ob); 
+   ob = e_widget_radio_add(evas, D_("Left Edge"), E_GADCON_ORIENT_LEFT, rg);
+   e_widget_framelist_object_append(of, ob); 
+   ob = e_widget_radio_add(evas, D_("Right Edge"), E_GADCON_ORIENT_RIGHT, rg); 
    e_widget_framelist_object_append(of, ob);
 
-   ob = e_widget_check_add(evas, D_("Show Bar when Urgent"), &(cfdata->autohide_show_urgent));
-   e_widget_framelist_object_append(of, ob);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   /* of = e_widget_frametable_add(evas, D_("Orientation"), 1);
+    * ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_left",
+    * 				24, 24, E_GADCON_ORIENT_LEFT, rg);
+    * e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 0);
+    * ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_right",
+    * 				24, 24, E_GADCON_ORIENT_RIGHT, rg);
+    * e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 1, 0);
+    * ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_top",
+    * 				24, 24, E_GADCON_ORIENT_TOP, rg);
+    * e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 0);
+    * ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_bottom",
+    * 				24, 24, E_GADCON_ORIENT_BOTTOM, rg);
+    * e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 0); */
 
-   e_widget_table_object_append(o_table, o, 1, 0, 1, 1, 1, 1, 1, 1);
+   e_widget_list_object_append(ol, of, 1, 0, 0.0); 
+   e_widget_toolbook_page_append(otb, NULL, D_("Appearance"), ol, 1, 1, 1, 1, 0.5, 0.5); 
 
-   /* _______ third column __________________________________________________*/
-   o = e_widget_list_add(evas, 0, 0);
+   
    of = e_widget_framelist_add(evas, D_("Zoom"), 0);
-
    ob = e_widget_label_add (evas, D_("Factor:"));
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_slider_add (evas, 1, 0, "%1.2f", 1.0, 5.0,
@@ -296,34 +248,83 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
                              0.01, 0, &(cfdata->zoom_duration), NULL, 100);
    e_widget_on_change_hook_set(ob, _cb_slider_change, cfdata);
    e_widget_framelist_object_append (of, ob);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   e_widget_toolbook_page_append(otb, NULL, D_("Zoom"), of, 1, 0, 1, 0, 0.5, 0.0); 
 
-   of = e_widget_frametable_add(evas, D_("Orientation"), 1);
-   rg = e_widget_radio_group_new(&(cfdata->orient));
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_left",
-				24, 24, E_GADCON_ORIENT_LEFT, rg);
-   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 0, 0);
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_right",
-				24, 24, E_GADCON_ORIENT_RIGHT, rg);
-   e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 0, 0);
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_top",
-				24, 24, E_GADCON_ORIENT_TOP, rg);
-   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 0, 0);
-   ob = e_widget_radio_icon_add(evas, NULL, "enlightenment/shelf_position_bottom",
-				24, 24, E_GADCON_ORIENT_BOTTOM, rg);
-   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 0, 0);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
+   of = e_widget_frametable_add(evas, D_("Bar Items"), 0);
+   ol = e_widget_ilist_add(evas, 0, 0, NULL);
+   cfdata->ilist = ol;
+   _load_box_tlist(cfdata);
+   e_widget_size_min_set(ol, 300, 80);
+   e_widget_frametable_object_append(of, ol, 0, 0, 1, 1, 1, 1, 1, 1);
+
+   ot = e_widget_table_add(evas, 0);
+   ob = e_widget_button_add(evas, D_("Delete"), "widget/del", _cb_box_del, cfdata, NULL);
+   e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
+   ob = e_widget_button_add(evas, D_("Configure"), "widget/config", _cb_box_config, cfdata, NULL);
+   e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
+   ob = e_widget_button_add(evas, D_("Up"), "widget/up_arrow", _cb_box_up, cfdata, NULL);
+   e_widget_table_object_append(ot, ob, 1, 0, 1, 1, 1, 1, 1, 0);
+   ob = e_widget_button_add(evas, D_("Down"), "widget/down_arrow", _cb_box_down, cfdata, NULL);
+   e_widget_table_object_append(ot, ob, 1, 1, 1, 1, 1, 1, 1, 0);
+   e_widget_frametable_object_append(of, ot, 0, 1, 1, 1, 1, 1, 1, 0);
+
+   ot = e_widget_table_add(evas, 0);
+   ob = e_widget_label_add(evas, D_("Add"));
+   e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
+   ob = e_widget_button_add(evas, D_("Taskbar"), "widget/add", _cb_box_add_taskbar, cfdata, NULL);
+   e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
+   ob = e_widget_button_add(evas, D_("Launcher"), "widget/add", _cb_box_add_launcher, cfdata, NULL);
+   e_widget_table_object_append(ot, ob, 1, 1, 1, 1, 1, 1, 1, 0);
+   ob = e_widget_button_add(evas, D_("Gadcon"), "widget/add", _cb_box_add_gadcon, cfdata, NULL);
+   e_widget_table_object_append(ot, ob, 0, 2, 1, 1, 1, 1, 1, 0);
+   e_widget_frametable_object_append(of, ot, 0, 2, 1, 1, 1, 1, 1, 0);
+   e_widget_toolbook_page_append(otb, NULL, D_("Bar Items"), of, 1, 1, 1, 1, 0.5, 0.5); 
+
+
+   of = e_widget_framelist_add(evas, D_("Auto Hide"), 0);
+   cfdata->hide_mode = cfdata->autohide;
+
+   rg = e_widget_radio_group_new(&cfdata->hide_mode);
+   ob = e_widget_radio_add(evas, "None",
+                           AUTOHIDE_NONE, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, "Autohide",
+                           AUTOHIDE_NORMAL, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, "Autohide on Fullscreen",
+                           AUTOHIDE_FULLSCREEN, rg);
+   e_widget_framelist_object_append(of, ob);
+
+   ob = e_widget_check_add(evas, D_("Show Bar when Urgent"), &(cfdata->autohide_show_urgent));
+   e_widget_framelist_object_append(of, ob);
+   e_widget_toolbook_page_append(otb, NULL, D_("Auto Hide"), of, 1, 0, 1, 0, 0.5, 0.0); 
+
+   
+   /* e_widget_toolbook_page_append(otb, NULL, D_("Orientation"), of, 1, 1, 1, 0, 0.5, 0.0); */
+
+   ol = e_widget_list_add(evas, 0, 0); 
+   of = e_widget_framelist_add(evas, D_("Stacking"), 0);
+   rg = e_widget_radio_group_new(&cfdata->stacking);
+   ob = e_widget_radio_add(evas, D_("Above All"), 0, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, D_("Below Fullscreen"), 1, rg);
+   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(ol, of, 1, 0, 0.0); 
+   
    of = e_widget_framelist_add(evas, D_("Other"), 0);
    ob = e_widget_check_add(evas, D_("Ecomorph Features"), &(cfdata->ecomorph_features));
    e_widget_framelist_object_append(of, ob);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   ob = e_widget_check_add(evas, D_("Show Icon Label"), &(cfdata->show_label));
+   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(ol, of, 1, 0, 0.0);
+   
+   e_widget_toolbook_page_append(otb, NULL, D_("Other"), ol, 1, 0, 1, 0, 0.5, 0.0);
 
-   e_widget_table_object_append(o_table, o, 2, 0, 1, 1, 1, 1, 1, 1);
+   e_widget_toolbook_page_show(otb, 0); 
 
-   e_widget_list_object_append (o_all, o_table, 1, 1, 0.5);
 
-   return o_all;
+   return otb;
 }
 
 static int
