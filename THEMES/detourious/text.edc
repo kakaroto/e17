@@ -65,7 +65,7 @@
 	text {												\
 		text: _label;									\
 		font: FONT_BOLD;								\
-		size: 10;										\
+		size: 9;										\
 		min: _min;										\
 		align: _align;									\
 		text_class: _text_class;						\

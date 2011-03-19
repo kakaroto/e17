@@ -20,7 +20,7 @@ group {
 		item: "edge_offset"    "6";
 
 		/* extra space between icons and bg (required for auto hide) */
-		item: "bg_offset" "20";
+		item: "bg_offset" "10";
 
 		/* clip reflection at bottom edge */
 		item: "reflection_offset" "0";

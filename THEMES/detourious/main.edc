@@ -55,6 +55,28 @@ fonts
 	font: "fonts/SwitzeraADF-DemiBoldItalic.otf"   "SwitzeraDemiItalic";
 }
 
+color_classes
+{
+	color_class {
+		name: "border_frame";
+		color: 205 205 205 255;
+	}
+	color_class {
+		name: "border_frame_active";
+		color: 215 215 215 255;
+	}
+	color_class {
+		name: "border_title";
+		color: 80 80 80 128;
+		color3: 255 255 255 128;
+		/* TEXT_COLOR_DISABLED; */
+	}
+	color_class {
+		name: "border_title_active";
+		TEXT_COLOR;
+	}
+}
+
 images {
 	#include "images.edc" 			/* Includes both icons and regular images */
 }
