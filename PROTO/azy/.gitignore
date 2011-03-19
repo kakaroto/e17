@@ -36,3 +36,10 @@ src/tests/type*.h
 stamp-h1
 ylwrap
 changes
+src/tests/client
+src/tests/identi.ca/get
+src/tests/rss/rss
+src/tests/server
+src/tests/stress_client
+src/tests/unit/t001_content
+
