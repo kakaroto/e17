@@ -69,11 +69,11 @@ color_classes
 		name: "border_title";
 		color: 80 80 80 128;
 		color3: 255 255 255 128;
-		/* TEXT_COLOR_DISABLED; */
 	}
 	color_class {
 		name: "border_title_active";
-		TEXT_COLOR;
+		color: 80 80 80 255;						
+		color3: 255 255 255 128;					
 	}
 }
 
