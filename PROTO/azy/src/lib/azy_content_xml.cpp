@@ -475,7 +475,16 @@ azy_content_unserialize_response_xml(Azy_Content *content,
         c = strtol(fc.first().node().child_value(), NULL, 10);
         if (!fs.empty()) s = fs.first().node().child_value();
 
-        azy_content_error_faultmsg_set(content, c, "%s", s ? s : "");
+        if (s)
+          {
+             Eina_Error e;
+
+             e = eina_error_find(s);
+             if (e) azy_content_error_faultcode_set(content, e, c);
+             else azy_content_error_faultmsg_set(content, c, "%s", s);
+          }
+        else
+          azy_content_error_faultmsg_set(content, c, "%s", "");
         return EINA_TRUE;
      }
    else if (params.size() > 1)

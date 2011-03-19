@@ -344,8 +344,18 @@ azy_content_unserialize_response_json(Azy_Content *content,
         if (obj)
           msg = obj->valuestring;
 
-        if (code && msg)
-          azy_content_error_faultmsg_set(content, -1, "%s", msg);
+        if (msg)
+          {
+             Eina_Error e;
+
+             e = eina_error_find(msg);
+             if (e)
+               azy_content_error_faultcode_set(content, e, code);
+             else
+               azy_content_error_faultmsg_set(content, code, "%s", msg);
+          }
+        else if (code && msg)
+          azy_content_error_faultmsg_set(content, code, "%s", msg);
         else
           azy_content_error_code_set(content, AZY_ERROR_RESPONSE_JSON_ERROR);
 
