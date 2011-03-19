@@ -391,15 +391,15 @@ skip_header:
      net->http.content_length = strtol((const char *)c, NULL, 10);
    if (len)
      {
-        size_t rlen;
+        int64_t rlen;
         /* if we get here, we need to append to the buffers */
 
         if (net->http.content_length > 0)
           {
-             if ((int64_t)len > net->http.content_length)
+             if (len > net->http.content_length)
                {
                   rlen = net->http.content_length;
-                  net->overflow_length = (int64_t)(len - rlen);
+                  net->overflow_length = len - rlen;
                   WARN("Extra content length of %lli!", net->overflow_length);
                   net->overflow = malloc(net->overflow_length);
      /* FIXME: uhhhh fuck? */
@@ -422,7 +422,7 @@ skip_header:
           /* this shouldn't be possible unless someone is violating spec */
           rlen = len;
 
-        INFO("Set recv size to %zu (previous %lli)", rlen, prev_size);
+        INFO("Set recv size to %lli (previous %lli)", rlen, prev_size);
         net->size = rlen;
         net->buffer = malloc(rlen);
         /* FIXME: cleanup */
