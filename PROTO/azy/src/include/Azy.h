@@ -400,6 +400,8 @@ extern "C" {
    EAPI Eina_Bool      azy_value_value_get(Azy_Value  *val,
                                            Azy_Value **nval);
    EAPI Azy_Value_Type azy_value_type_get(Azy_Value *val);
+   EAPI void           azy_value_type_set(Azy_Value *val,
+                                          Azy_Value_Type type);
    EAPI Azy_Value     *azy_value_array_new(void);
    EAPI void           azy_value_array_push(Azy_Value *arr,
                                             Azy_Value *val);

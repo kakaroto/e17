@@ -478,6 +478,26 @@ azy_value_type_get(Azy_Value *val)
 }
 
 /**
+ * @brief Set the type of an #Azy_Value
+ *
+ * This function is used to set the type of value in
+ * an #Azy_Value.
+ * @param val The #Azy_Value struct (NOT NULL)
+ * @param type The #Azy_Value_Type
+ */
+void
+azy_value_type_set(Azy_Value *val, Azy_Value_Type type)
+{
+   if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
+     {
+        AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
+        return;
+     }
+
+   val->type = type;
+}
+
+/**
  * @brief Returns the name of the #Azy_Value struct member
  *
  * This function returns the name of the struct member that the #Azy_Value
