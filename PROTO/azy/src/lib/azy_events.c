@@ -197,9 +197,9 @@ azy_events_header_parse(Azy_Net       *net,
                         size_t         event_len,
                         int            offset)
 {
-   unsigned char *c = NULL, *r = NULL, *p = NULL, *start = NULL, *buf_start = NULL;
+   unsigned char *c, *r = NULL, *p = NULL, *start = NULL, *buf_start = NULL;
    unsigned char *data = (event_data) ? event_data + offset : NULL;
-   size_t len = (event_len) ? event_len - offset : 0;
+   int64_t len = (event_len) ? event_len - offset : 0;
    const char *s = NULL;
    unsigned char slen = 0;
    unsigned char sep[5];
@@ -269,7 +269,7 @@ azy_events_header_parse(Azy_Net       *net,
    /* apparently this can happen? */
    EINA_SAFETY_ON_NULL_RETURN_VAL(start, EINA_FALSE);
    /* find a header or append to buffer */
-   if ((!(r = memchr(start, '\r', len)) && !(r = memchr(start, '\n', len))) || !(c = memchr(start, ':', len))) /* append to a buffer and use net->overflow */
+   if ((!(r = memchr(start, '\r', len)) && !(r = memchr(start, '\n', len)))) /* append to a buffer and use net->overflow */
      {
         unsigned char *tmp;
 
@@ -336,7 +336,7 @@ azy_events_header_parse(Azy_Net       *net,
 
    p = start;
    line_len = r - p;
-   while (len && c && r)
+   while (len && r)
      {
         const unsigned char *ptr, *semi = p;
 
@@ -374,17 +374,14 @@ skip_header:
             break;
         r = azy_memstr(p, (const unsigned char *)s, len, slen);
         line_len = r - p;
-        /* FIXME: to be fully 1.1 compliant, lines like this should
+        /* FIXME: to be fully 1.1 compliant, lines without a colon
          * be filtered and checked to see if is a continuing header
          * from the previous line
          */
-        if (!(c = memchr(p, ':', line_len)))
-          goto out;
      }
 
    AZY_SKIP_BLANK(p);
 
-out:
    if (!net->headers_read)
      return EINA_TRUE;
 
