@@ -598,6 +598,16 @@ azy_server_module_active_get(Azy_Server_Module *module)
    return !module->client->dead;
 }
 
+/**
+ * @brief Load a library and run a function from it which returns an #Azy_Server_Module_Def
+ * This function loads @p file as an Eina_Module. If @p modname is specified, it attempts to call
+ * modname() from the loaded module to create an #Azy_Server_Module_Def. If @p is #NULL, the following
+ * shell script formula will be used to generate a function name:
+ * shell$ echo "$(basename $file | cut -d'.' -f1)_module_def"
+ * @param file The file to load as a module (NOT #NULL)
+ * @param modname The name of the function to call of type #Azy_Server_Module_Def_Cb
+ * @return On success, the loaded #Azy_Server_Module_Def, else #NULL.
+ */
 Azy_Server_Module_Def *
 azy_server_module_def_load(const char *file,
                            const char *modname)
