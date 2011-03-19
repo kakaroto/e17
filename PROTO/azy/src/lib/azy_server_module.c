@@ -202,9 +202,41 @@ azy_server_module_del(Azy_Server            *server,
    EINA_SAFETY_ON_NULL_RETURN_VAL(module, EINA_FALSE);
 
    if (!azy_server_module_def_find(server, module->name))
-     return EINA_TRUE;
+     return EINA_FALSE;
 
    server->module_defs = eina_list_remove(server->module_defs, module);
+   return EINA_TRUE;
+}
+
+/**
+ * @brief Remove a module from the server object by name
+ *
+ * This function removes the module of name @p from @p server.  Once a module
+ * has been removed, its methods can no longer be called.
+ * Note that this function only removes the module from the server's list
+ * and does not actually free the module.
+ * @param server The server object (NOT #NULL)
+ * @param module The module's name (NOT #NULL)
+ * @return EINA_TRUE on success or module not found, else EINA_FALSE
+ */
+Eina_Bool
+azy_server_module_name_del(Azy_Server *server,
+                           const char *name)
+{
+   Azy_Server_Module_Def *d;
+
+   DBG("server=%p, name=%s", server, name);
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return EINA_FALSE;
+     }
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
+
+   d = azy_server_module_def_find(server, name);
+   if (!d) return EINA_FALSE;
+
+   server->module_defs = eina_list_remove(server->module_defs, d);
    return EINA_TRUE;
 }
 

@@ -308,6 +308,8 @@ extern "C" {
                                                   Azy_Server_Module_Def *module);
    EAPI Eina_Bool               azy_server_module_del(Azy_Server            *server,
                                                   Azy_Server_Module_Def *module);
+   EAPI Eina_Bool               azy_server_module_name_del(Azy_Server *server,
+                                                           const char *name);
    EAPI Azy_Server_Module_Method *azy_server_module_method_new(const char *name,
                                                           Azy_Server_Module_Content_Cb cb);
    EAPI void                      azy_server_module_method_free(Azy_Server_Module_Method *method);
