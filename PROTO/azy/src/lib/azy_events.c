@@ -46,19 +46,20 @@ _azy_events_init(void)
    _init = 1;
 }
 
-static Eina_Bool
-_azy_events_valid_header_name(const char  *name,
+static unsigned int
+_azy_events_valid_header_name(const char  *start,
                               unsigned int len)
 {
-   while (len--)
+   while ((*start != ':') && (len--))
      {
-        if ((!isalnum(*name)) && (*name != '-'))
-          return EINA_FALSE;
+        if ((!isalnum(*start)) && (*start != '-'))
+          return 0;
 
-        name++;
+        start++;
      }
 
-   return EINA_TRUE;
+   if (*start == ':') return len;
+   return 0;
 }
 
 static Eina_Bool
@@ -337,18 +338,15 @@ azy_events_header_parse(Azy_Net       *net,
    line_len = r - p;
    while (len && c && r)
      {
-        const unsigned char *ptr, *semi;
+        const unsigned char *ptr, *semi = p;
 
         if (line_len > MAX_HEADER_SIZE)
           {
              WARN("Ignoring unreasonably large header starting with:\n %.32s\n", p);
              goto skip_header;
           }
-        semi = memchr(p, ':', line_len);
-        if ((!semi) || (semi - p + 1 >= line_len))
-          goto skip_header;
-        if (!_azy_events_valid_header_name((const char *)p, semi - p))
-          goto skip_header;
+        semi += (line_len - _azy_events_valid_header_name((const char *)p, line_len));
+        if (semi == p) goto skip_header;
 
         ptr = semi + 1;
         while ((isspace(*ptr)) && (ptr - p < line_len))
