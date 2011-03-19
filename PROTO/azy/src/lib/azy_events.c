@@ -330,9 +330,6 @@ azy_events_header_parse(Azy_Net       *net,
 
    slen = strlen(s);
    snprintf((char *)sep, sizeof(sep), "%s%s", s, s);
-   /* by spec, this is only found between header and content */
-   if (azy_memstr(r - 1, sep, len - (r - 1 - start), 2 * slen))
-     net->headers_read = EINA_TRUE;
 
    p = start;
    line_len = r - p;
@@ -368,10 +365,12 @@ skip_header:
         if (len < slen)
           break;
         p = r + slen;
-        if (net->headers_read)
-          /* double separator: STOP */
-          if (!strncmp((char*)p, s, slen))
-            break;
+        /* double separator: STOP */
+        if (!strncmp((char*)p, s, slen))
+          {
+             net->headers_read = EINA_TRUE;
+             break;
+          }
         r = azy_memstr(p, (const unsigned char *)s, len, slen);
         line_len = r - p;
         /* FIXME: to be fully 1.1 compliant, lines without a colon
