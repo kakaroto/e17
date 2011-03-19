@@ -23,14 +23,17 @@
 #include "Azy.h"
 #include "azy_private.h"
 
-static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content);
+static void      _azy_client_handler_call_free(Azy_Client  *client,
+                                               Azy_Content *content);
 static Eina_Bool _azy_client_handler_get(Azy_Client_Handler_Data *hd);
 static Eina_Bool _azy_client_handler_call(Azy_Client_Handler_Data *hd);
-static void _azy_client_handler_data_free(Azy_Client_Handler_Data *data);
+static void      _azy_client_handler_data_free(Azy_Client_Handler_Data *data);
 static Eina_Bool _azy_client_recv_timer(Azy_Client_Handler_Data *hd);
-static void _azy_client_handler_redirect(Azy_Client_Handler_Data *hd);
+static void      _azy_client_handler_redirect(Azy_Client_Handler_Data *hd);
 
-static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *content)
+static void
+_azy_client_handler_call_free(Azy_Client  *client,
+                              Azy_Content *content)
 {
    Ecore_Cb callback;
 
@@ -45,7 +48,7 @@ static void _azy_client_handler_call_free(Azy_Client *client, Azy_Content *conte
              eina_hash_del_by_key(client->free_callbacks, &content->id);
           }
      }
-      /* http 1.0 requires that we disconnect after every response */
+   /* http 1.0 requires that we disconnect after every response */
    if ((!content->recv_net->http.version) || (client && client->net && (!client->net->http.version)))
      ecore_con_server_del(content->recv_net->conn);
    azy_content_free(content);
@@ -122,7 +125,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
      }
    else if ((hd->recv->transport == AZY_NET_TRANSPORT_XML) && (!hd->callback)) /* assume rss */
      {
-        if (!azy_content_unserialize_rss_xml(content, (const char*)hd->recv->buffer, hd->recv->size))
+        if (!azy_content_unserialize_rss_xml(content, (const char *)hd->recv->buffer, hd->recv->size))
           {
              if (!azy_content_error_is_set(content))
                azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
@@ -158,10 +161,10 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
      }
    else
      {
-       if (!azy_content_error_is_set(content))
-         ecore_event_add(AZY_CLIENT_RETURN, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
-       else
-         ecore_event_add(AZY_CLIENT_ERROR, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
+        if (!azy_content_error_is_set(content))
+          ecore_event_add(AZY_CLIENT_RETURN, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
+        else
+          ecore_event_add(AZY_CLIENT_ERROR, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
      }
 
    return ECORE_CALLBACK_RENEW;
@@ -193,7 +196,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *hd)
 
    content->data = hd->content_data;
 
-   if (!azy_content_unserialize_response(content, hd->recv->transport, (const char*)hd->recv->buffer, hd->recv->size))
+   if (!azy_content_unserialize_response(content, hd->recv->transport, (const char *)hd->recv->buffer, hd->recv->size))
      azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");
    else if ((hd->recv->transport == AZY_NET_TRANSPORT_JSON) && (content->id != hd->id))
      {
@@ -202,7 +205,6 @@ _azy_client_handler_call(Azy_Client_Handler_Data *hd)
      }
    else if (hd->callback && content->retval && (!hd->callback(content->retval, &ret)))
      azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return value demarshalization failed.");
-
 
    if (azy_content_error_is_set(content))
      {
@@ -230,10 +232,10 @@ _azy_client_handler_call(Azy_Client_Handler_Data *hd)
      }
    else
      {
-       if (!azy_content_error_is_set(content))
-         ecore_event_add(AZY_CLIENT_RETURN, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
-       else
-         ecore_event_add(AZY_CLIENT_ERROR, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
+        if (!azy_content_error_is_set(content))
+          ecore_event_add(AZY_CLIENT_RETURN, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
+        else
+          ecore_event_add(AZY_CLIENT_ERROR, content, (Ecore_End_Cb)_azy_client_handler_call_free, client);
      }
 
    return ECORE_CALLBACK_RENEW;
@@ -277,8 +279,8 @@ _azy_client_handler_redirect(Azy_Client_Handler_Data *hd)
    if (!location)
      {
         /* FIXME */
-        azy_events_connection_kill(hd->client->net->conn, EINA_FALSE, NULL);
-        return;
+         azy_events_connection_kill(hd->client->net->conn, EINA_FALSE, NULL);
+         return;
      }
    INFO("Handling HTTP %i: redirect to %s", hd->recv->http.res.http_code, location);
    next = strchr(location, '/');
@@ -291,10 +293,10 @@ _azy_client_handler_redirect(Azy_Client_Handler_Data *hd)
           p += 1;
         next = strchr(p, '/'); /* try normal uri */
         if (!next)
-          next = strchr(p, '?'); /* try php uri */
+          next = strchr(p, '?');  /* try php uri */
      }
    if (!next)
-     next = "/"; /* flail around wildly hoping someone notices */
+     next = "/";  /* flail around wildly hoping someone notices */
 
    azy_net_uri_set(hd->client->net, next);
    azy_net_type_set(hd->client->net, hd->type);
@@ -302,17 +304,17 @@ _azy_client_handler_redirect(Azy_Client_Handler_Data *hd)
    EINA_SAFETY_ON_NULL_RETURN(msg);
    if (hd->send)
      {
-       azy_net_message_length_set(hd->client->net, eina_strbuf_length_get(hd->send));
-       eina_strbuf_prepend_length(hd->send, eina_strbuf_string_get(msg), eina_strbuf_length_get(msg));
-       eina_strbuf_free(msg);
+        azy_net_message_length_set(hd->client->net, eina_strbuf_length_get(hd->send));
+        eina_strbuf_prepend_length(hd->send, eina_strbuf_string_get(msg), eina_strbuf_length_get(msg));
+        eina_strbuf_free(msg);
      }
    else
      hd->send = msg;
 
    hd->nodelete = EINA_TRUE;
 
-   if ((!hd->client->net->http.version) || (!hd->recv->http.version))
-     { /* handle http 1.0 */
+   if ((!hd->client->net->http.version) || (!hd->recv->http.version)) /* handle http 1.0 */
+     {
         azy_events_connection_kill(hd->client->net->conn, EINA_FALSE, NULL);
         azy_client_connect(hd->client, hd->client->secure);
         return;
@@ -322,8 +324,8 @@ _azy_client_handler_redirect(Azy_Client_Handler_Data *hd)
    /* need to handle redirects, so we get a bit crazy here by sending data without helpers */
    if (hd->method)
      {
-        if (!ecore_con_server_send(hd->client->net->conn, eina_strbuf_string_get(hd->send), eina_strbuf_length_get(hd->send)))
-          { /* FIXME: wtf do we do here? header sent, no body... */
+        if (!ecore_con_server_send(hd->client->net->conn, eina_strbuf_string_get(hd->send), eina_strbuf_length_get(hd->send))) /* FIXME: wtf do we do here? header sent, no body... */
+          {
              ERR("Could not queue data for sending to redirect URI!");
              goto error;
           }
@@ -336,9 +338,9 @@ error:
 }
 
 Eina_Bool
-_azy_client_handler_data(Azy_Client_Handler_Data    *hd,
-                          int                          type,
-                          Ecore_Con_Event_Server_Data *ev)
+_azy_client_handler_data(Azy_Client_Handler_Data     *hd,
+                         int                          type,
+                         Ecore_Con_Event_Server_Data *ev)
 {
    int offset = 0;
    void *data = (ev) ? ev->data : NULL;
@@ -359,14 +361,13 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
         _azy_client_handler_data_free(hd);
         return ECORE_CALLBACK_RENEW;
      }
-   if (hd->client != (Azy_Client*)((ev) ? ecore_con_server_data_get(ev->server) : client))
+   if (hd->client != (Azy_Client *)((ev) ? ecore_con_server_data_get(ev->server) : client))
      {
         DBG("Ignoring callback due to pointer mismatch");
         return ECORE_CALLBACK_PASS_ON;
      }
    DBG("(hd=%p, method='%s', ev=%p, data=%p)", hd, (hd) ? hd->method : NULL, ev, (ev) ? ev->data : NULL);
    DBG("(client=%p, server->client=%p)", hd->client, (ev) ? ecore_con_server_data_get(ev->server) : NULL);
-
 
 #ifdef ISCOMFITOR
    if (data)
@@ -392,36 +393,36 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
         INFO("%s: Set recv size to %lli from overflow", hd->method, hd->recv->size);
 
         /* returns offset where http header line ends */
-         if (!(offset = azy_events_type_parse(hd->recv, type, data, len)) && ev && (!hd->recv->http.res.http_msg))
-           return azy_events_connection_kill(hd->client->net->conn, EINA_FALSE, NULL);
-         else if (!offset && overflow)
-           {
-              hd->recv->buffer = NULL;
-              hd->recv->size = 0;
-              INFO("%s: Overflow could not be parsed, set recv size to %lli, storing overflow of %lli", hd->method, hd->recv->size, overflow_length);
-              return ECORE_CALLBACK_RENEW;
-           }
-         else
-           {
-              overflow = NULL;
-              overflow_length = 0;
-              INFO("%s: Overflow was parsed! Removing...", hd->method);
-           }
+        if (!(offset = azy_events_type_parse(hd->recv, type, data, len)) && ev && (!hd->recv->http.res.http_msg))
+          return azy_events_connection_kill(hd->client->net->conn, EINA_FALSE, NULL);
+        else if (!offset && overflow)
+          {
+             hd->recv->buffer = NULL;
+             hd->recv->size = 0;
+             INFO("%s: Overflow could not be parsed, set recv size to %lli, storing overflow of %lli", hd->method, hd->recv->size, overflow_length);
+             return ECORE_CALLBACK_RENEW;
+          }
+        else
+          {
+             overflow = NULL;
+             overflow_length = 0;
+             INFO("%s: Overflow was parsed! Removing...", hd->method);
+          }
      }
    if (!hd->recv->headers_read) /* if headers aren't done being read, keep reading them */
      {
         if (!azy_events_header_parse(hd->recv, data, len, offset) && ev)
           return azy_events_connection_kill(hd->client->net->conn, EINA_FALSE, NULL);
      }
-   else if (data)
-     {   /* otherwise keep appending to buffer */
+   else if (data) /* otherwise keep appending to buffer */
+     {
         unsigned char *tmp;
 
         if (hd->recv->size + len > hd->recv->http.content_length && (hd->recv->http.content_length > 0))
           tmp = realloc(hd->recv->buffer,
                         hd->recv->http.content_length > 0 ?
-                          hd->recv->http.content_length :
-                          ev->size - offset);
+                        hd->recv->http.content_length :
+                        ev->size - offset);
         else
           tmp = realloc(hd->recv->buffer, hd->recv->size + len);
 
@@ -445,7 +446,6 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
              WARN("%s: Extra content length of %lli! Set recv size to %lli (previous %lli)",
                   hd->method, overflow_length, hd->recv->size + len - overflow_length, hd->recv->size);
              hd->recv->size += len - overflow_length;
-
           }
         else
           {
@@ -469,10 +469,9 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
         WARN("%s: Extra content length of %lli! Set recv size to %lli (previous %lli)",
              hd->method, overflow_length, hd->recv->http.content_length, hd->recv->size);
         hd->recv->size = hd->recv->http.content_length;
-
      }
 
-   if ((hd->recv->http.res.http_code >= 301) && (hd->recv->http.res.http_code <= 303))/* ughhhh redirect */
+   if ((hd->recv->http.res.http_code >= 301) && (hd->recv->http.res.http_code <= 303)) /* ughhhh redirect */
      {
         _azy_client_handler_redirect(hd);
         return ECORE_CALLBACK_RENEW;
@@ -500,7 +499,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
      }
    else if (hd->recv->size && (hd->recv->http.content_length > 0))
      {
-         /* else create a "done" event */
+        /* else create a "done" event */
          if (hd->recv->timer)
            {
               ecore_timer_del(hd->recv->timer);
@@ -539,9 +538,9 @@ _azy_client_handler_data(Azy_Client_Handler_Data    *hd,
 }
 
 Eina_Bool
-_azy_client_handler_del(Azy_Client                    *client,
-                         int type                        __UNUSED__,
-                         Ecore_Con_Event_Server_Del *ev)
+_azy_client_handler_del(Azy_Client                 *client,
+                        int type                    __UNUSED__,
+                        Ecore_Con_Event_Server_Del *ev)
 {
    Azy_Client_Handler_Data *hd;
 
@@ -591,8 +590,8 @@ _azy_client_handler_del(Azy_Client                    *client,
 
 Eina_Bool
 _azy_client_handler_add(Azy_Client                    *client,
-                         int type                        __UNUSED__,
-                         Ecore_Con_Event_Server_Add *ev __UNUSED__)
+                        int type                       __UNUSED__,
+                        Ecore_Con_Event_Server_Add *ev __UNUSED__)
 {
    Eina_List *l;
    Azy_Client_Handler_Data *hd;
@@ -615,7 +614,7 @@ _azy_client_handler_add(Azy_Client                    *client,
              eina_strbuf_free(hd->send);
              hd->send = NULL;
           }
-
      }
    return ECORE_CALLBACK_CANCEL;
 }
+

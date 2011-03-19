@@ -123,7 +123,7 @@ azy_server_module_content_get(Azy_Server_Module *module)
  */
 Azy_Server_Module_Def *
 azy_server_module_def_find(Azy_Server *server,
-                            const char  *name)
+                           const char *name)
 {
    Azy_Server_Module_Def *def;
    Eina_List *l;
@@ -191,7 +191,7 @@ azy_server_module_add(Azy_Server            *server,
  */
 Eina_Bool
 azy_server_module_del(Azy_Server            *server,
-                       Azy_Server_Module_Def *module)
+                      Azy_Server_Module_Def *module)
 {
    DBG("server=%p, module=%p", server, module);
    if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
@@ -298,7 +298,9 @@ azy_server_module_def_free(Azy_Server_Module_Def *def)
  * @param shutdown The callback function to call upon module shutdown
  */
 void
-azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def *def, Azy_Server_Module_Cb init, Azy_Server_Module_Shutdown_Cb shutdown)
+azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def        *def,
+                                        Azy_Server_Module_Cb          init,
+                                        Azy_Server_Module_Shutdown_Cb shutdown)
 {
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
@@ -318,7 +320,9 @@ azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def *def, Azy_Server_M
  * @param post The callback function to call immediately after method calls
  */
 void
-azy_server_module_def_pre_post_set(Azy_Server_Module_Def *def, Azy_Server_Module_Pre_Cb pre, Azy_Server_Module_Content_Cb post)
+azy_server_module_def_pre_post_set(Azy_Server_Module_Def       *def,
+                                   Azy_Server_Module_Pre_Cb     pre,
+                                   Azy_Server_Module_Content_Cb post)
 {
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
@@ -338,7 +342,9 @@ azy_server_module_def_pre_post_set(Azy_Server_Module_Def *def, Azy_Server_Module
  * @param upload The callback function to call for HTTP PUT requests
  */
 void
-azy_server_module_def_download_upload_set(Azy_Server_Module_Def *def, Azy_Server_Module_Cb download, Azy_Server_Module_Cb upload)
+azy_server_module_def_download_upload_set(Azy_Server_Module_Def *def,
+                                          Azy_Server_Module_Cb   download,
+                                          Azy_Server_Module_Cb   upload)
 {
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
@@ -358,7 +364,8 @@ azy_server_module_def_download_upload_set(Azy_Server_Module_Def *def, Azy_Server
  * @param fallback The callback function to call when an undefined method is requested
  */
 void
-azy_server_module_def_fallback_set(Azy_Server_Module_Def *def, Azy_Server_Module_Content_Cb fallback)
+azy_server_module_def_fallback_set(Azy_Server_Module_Def       *def,
+                                   Azy_Server_Module_Content_Cb fallback)
 {
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
@@ -377,7 +384,8 @@ azy_server_module_def_fallback_set(Azy_Server_Module_Def *def, Azy_Server_Module
  * @param method The method to add (NOT #NULL)
  */
 void
-azy_server_module_def_method_add(Azy_Server_Module_Def *def, Azy_Server_Module_Method *method)
+azy_server_module_def_method_add(Azy_Server_Module_Def    *def,
+                                 Azy_Server_Module_Method *method)
 {
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
@@ -404,7 +412,8 @@ azy_server_module_def_method_add(Azy_Server_Module_Def *def, Azy_Server_Module_M
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
-azy_server_module_def_method_del(Azy_Server_Module_Def *def, Azy_Server_Module_Method *method)
+azy_server_module_def_method_del(Azy_Server_Module_Def    *def,
+                                 Azy_Server_Module_Method *method)
 {
    Eina_List *l;
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
@@ -437,7 +446,8 @@ azy_server_module_def_method_del(Azy_Server_Module_Def *def, Azy_Server_Module_M
  * @return The new #Azy_Server_Module_Method object, or #NULL on failure
  */
 Azy_Server_Module_Method *
-azy_server_module_method_new(const char *name, Azy_Server_Module_Content_Cb cb)
+azy_server_module_method_new(const char                  *name,
+                             Azy_Server_Module_Content_Cb cb)
 {
    Azy_Server_Module_Method *method;
 
@@ -506,7 +516,8 @@ azy_server_module_def_size_get(Azy_Server_Module_Def *def)
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
-azy_server_module_size_set(Azy_Server_Module_Def *def, int size)
+azy_server_module_size_set(Azy_Server_Module_Def *def,
+                           int                    size)
 {
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
@@ -517,7 +528,6 @@ azy_server_module_size_set(Azy_Server_Module_Def *def, int size)
    def->data_size = size;
    return EINA_TRUE;
 }
-
 
 /**
  * @brief Send data to a client
@@ -552,7 +562,7 @@ azy_server_module_send(Azy_Server_Module  *module,
 
    azy_net_message_length_set(net, data->size);
    if (!net->http.res.http_code)
-     azy_net_code_set(net, 200); /* OK */
+     azy_net_code_set(net, 200);  /* OK */
    if (!net->type)
      azy_net_type_set(net, AZY_NET_TYPE_RESPONSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!(header = azy_net_header_create(net)), 0);
@@ -589,7 +599,8 @@ azy_server_module_active_get(Azy_Server_Module *module)
 }
 
 Azy_Server_Module_Def *
-azy_server_module_def_load(const char *file, const char *modname)
+azy_server_module_def_load(const char *file,
+                           const char *modname)
 {
    Eina_Module *m;
    Azy_Server_Module_Def *ret;
@@ -629,4 +640,5 @@ err:
    eina_module_free(m);
    return NULL;
 }
+
 /** @} */

@@ -75,22 +75,22 @@ azy_rss_item_free(Azy_Rss_Item *item)
 
 #define DEF(NAME) \
 /**
-@brief Retrieve the NAME of an rss item object
-This function will return the NAME of @p item.  The NAME will be stringshared,
-but still belongs to @p item.
-@param item The #Azy_Rss object (NOT #NULL)
-@return The NAME, or #NULL on failure
- */ \
-const char * \
-azy_rss_item_##NAME##_get(Azy_Rss_Item *item) \
-{ \
-   if (!AZY_MAGIC_CHECK(item, AZY_MAGIC_RSS_ITEM)) \
-     { \
-        AZY_MAGIC_FAIL(item, AZY_MAGIC_RSS_ITEM); \
-        return NULL; \
-     } \
-   return item->NAME; \
-}
+   @brief Retrieve the NAME of an rss item object
+   This function will return the NAME of @p item.  The NAME will be stringshared,
+   but still belongs to @p item.
+   @param item The #Azy_Rss object (NOT #NULL)
+   @return The NAME, or #NULL on failure
+ */                                                  \
+  const char *                                       \
+  azy_rss_item_##NAME##_get(Azy_Rss_Item * item)     \
+  {                                                  \
+     if (!AZY_MAGIC_CHECK(item, AZY_MAGIC_RSS_ITEM)) \
+       {                                             \
+          AZY_MAGIC_FAIL(item, AZY_MAGIC_RSS_ITEM);  \
+          return NULL;                               \
+       }                                             \
+     return item->NAME;                              \
+  }
 
 DEF(title)
 DEF(link)
@@ -112,7 +112,9 @@ DEF(author)
  * @param rss The rss item object (NOT #NULL)
  */
 void
-azy_rss_item_print(const char *pre, int indent, Azy_Rss_Item *item)
+azy_rss_item_print(const char   *pre,
+                   int           indent,
+                   Azy_Rss_Item *item)
 {
    int i;
 
@@ -146,4 +148,5 @@ azy_rss_item_print(const char *pre, int indent, Azy_Rss_Item *item)
      printf("%s", pre);
    printf("author: %s\n", item->author);
 }
+
 /** @} */

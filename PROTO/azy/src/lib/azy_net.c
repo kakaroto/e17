@@ -28,14 +28,13 @@
  */
 /* append a header hash to a strbuf */
 static void
-azy_net_header_hash_(Eina_Hash            *hash __UNUSED__ ,
-                     const char           *key,
-                     const char           *data,
-                     Eina_Strbuf          *header)
+azy_net_header_hash_(Eina_Hash *hash __UNUSED__,
+                     const char     *key,
+                     const char     *data,
+                     Eina_Strbuf    *header)
 {
    eina_strbuf_append_printf(header, "%s: %s\r\n", key, data);
 }
-
 
 /**
  * @brief Create a new #Azy_Net object
@@ -79,7 +78,6 @@ azy_net_free(Azy_Net *net)
         return;
      }
 
-
    AZY_MAGIC_SET(net, AZY_MAGIC_NONE);
    if (net->http.headers)
      eina_hash_free(net->http.headers);
@@ -104,8 +102,8 @@ azy_net_free(Azy_Net *net)
  * @return The value of the header, or #NULL if header is not present
  */
 const char *
-azy_net_header_get(Azy_Net   *net,
-                    const char *name)
+azy_net_header_get(Azy_Net    *net,
+                   const char *name)
 {
    const char *value;
    char *tmp;
@@ -164,9 +162,9 @@ azy_net_header_reset(Azy_Net *net)
  * @return #EINA_TRUE on success, else #EINA_FALSE
  */
 Eina_Bool
-azy_net_auth_set(Azy_Net   *net,
-                  const char *username,
-                  const char *password)
+azy_net_auth_set(Azy_Net    *net,
+                 const char *username,
+                 const char *password)
 {
    DBG("(net=%p)", net);
    char *enc_auth_str;
@@ -208,9 +206,9 @@ azy_net_auth_set(Azy_Net   *net,
  * @return #EINA_TRUE on success, else #EINA_FALSE
  */
 Eina_Bool
-azy_net_auth_get(Azy_Net    *net,
-                  const char **username,
-                  const char **password)
+azy_net_auth_get(Azy_Net     *net,
+                 const char **username,
+                 const char **password)
 {
    DBG("(net=%p)", net);
    size_t auth_str_len, i;
@@ -288,7 +286,8 @@ azy_net_uri_get(Azy_Net *net)
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
-azy_net_uri_set(Azy_Net *net, const char *path)
+azy_net_uri_set(Azy_Net    *net,
+                const char *path)
 {
    DBG("(net=%p)", net);
    if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
@@ -332,7 +331,8 @@ azy_net_version_get(Azy_Net *net)
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
-azy_net_version_set(Azy_Net *net, int version)
+azy_net_version_set(Azy_Net *net,
+                    int      version)
 {
    DBG("(net=%p)", net);
    if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
@@ -381,7 +381,7 @@ azy_net_code_get(Azy_Net *net)
  */
 void
 azy_net_code_set(Azy_Net *net,
-                  int       code)
+                 int      code)
 {
    DBG("(net=%p)", net);
    if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
@@ -425,7 +425,7 @@ azy_net_type_get(Azy_Net *net)
  */
 void
 azy_net_type_set(Azy_Net     *net,
-                  Azy_Net_Type type)
+                 Azy_Net_Type type)
 {
    DBG("(net=%p)", net);
    if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
@@ -471,7 +471,7 @@ azy_net_message_length_get(Azy_Net *net)
  */
 void
 azy_net_message_length_set(Azy_Net *net,
-                            int       length)
+                           int      length)
 {
    DBG("(net=%p)", net);
    char buf[64];
@@ -498,9 +498,9 @@ azy_net_message_length_set(Azy_Net *net,
  * @param value The header's value (NOT #NULL)
  */
 void
-azy_net_header_set(Azy_Net   *net,
-                    const char *name,
-                    const char *value)
+azy_net_header_set(Azy_Net    *net,
+                   const char *name,
+                   const char *value)
 {
    DBG("(net=%p)", net);
    const char *old;
@@ -563,7 +563,7 @@ azy_net_ip_get(Azy_Net *net)
  */
 void
 azy_net_transport_set(Azy_Net          *net,
-                       Azy_Net_Transport transport)
+                      Azy_Net_Transport transport)
 {
    DBG("(net=%p)", net);
    if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
@@ -794,4 +794,5 @@ azy_net_http_msg_get(int code)
         return eina_stringshare_add("Unknown Status");
      }
 }
+
 /** @} */

@@ -89,10 +89,12 @@ azy_value_multi_line_get_(Azy_Value *val,
         if (azy_value_children_items_get(val))
           return EINA_TRUE;
         break;
+
       case AZY_VALUE_STRING:
         if (val->str_val && (eina_stringshare_strlen(val->str_val) > max_strlen))
           return EINA_TRUE;
         break;
+
       default:
         break;
      }
@@ -290,7 +292,7 @@ azy_value_base64_new(const char *base64)
  */
 Eina_Bool
 azy_value_int_get(Azy_Value *val,
-                  int        *nval)
+                  int       *nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
      {
@@ -316,7 +318,7 @@ azy_value_int_get(Azy_Value *val,
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
-azy_value_string_get(Azy_Value  *val,
+azy_value_string_get(Azy_Value   *val,
                      const char **nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
@@ -332,15 +334,17 @@ azy_value_string_get(Azy_Value  *val,
       case AZY_VALUE_TIME:
         *nval = eina_stringshare_ref(val->str_val);
         break;
+
       case AZY_VALUE_BASE64:
-        {
-           char *buf;
-           buf = azy_base64_decode(val->str_val, eina_stringshare_strlen(val->str_val));
-           EINA_SAFETY_ON_NULL_RETURN_VAL(buf, EINA_FALSE);
-           *nval = eina_stringshare_add(buf);
-           free(buf);
-           break;
-        }
+      {
+         char *buf;
+         buf = azy_base64_decode(val->str_val, eina_stringshare_strlen(val->str_val));
+         EINA_SAFETY_ON_NULL_RETURN_VAL(buf, EINA_FALSE);
+         *nval = eina_stringshare_add(buf);
+         free(buf);
+         break;
+      }
+
       default:
         return EINA_FALSE;
      }
@@ -359,8 +363,8 @@ azy_value_string_get(Azy_Value  *val,
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
-azy_value_base64_get(Azy_Value  *val,
-                    const char **nval)
+azy_value_base64_get(Azy_Value   *val,
+                     const char **nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
      {
@@ -384,7 +388,7 @@ azy_value_base64_get(Azy_Value  *val,
  */
 Eina_Bool
 azy_value_bool_get(Azy_Value *val,
-                  Eina_Bool *nval)
+                   Eina_Bool *nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
      {
@@ -410,7 +414,7 @@ azy_value_bool_get(Azy_Value *val,
  */
 Eina_Bool
 azy_value_double_get(Azy_Value *val,
-                     double     *nval)
+                     double    *nval)
 {
    if (!AZY_MAGIC_CHECK(val, AZY_MAGIC_VALUE))
      {
@@ -531,8 +535,8 @@ azy_value_struct_member_value_get(Azy_Value *val)
  * @return The #Azy_Value of the named struct member, or #NULL on failure
  */
 Azy_Value *
-azy_value_struct_member_get(Azy_Value *val,
-                             const char *name)
+azy_value_struct_member_get(Azy_Value  *val,
+                            const char *name)
 {
    Eina_List *l;
    Azy_Value *m;
@@ -543,7 +547,6 @@ azy_value_struct_member_get(Azy_Value *val,
         return NULL;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
-
 
    if (val->type != AZY_VALUE_STRUCT)
      return NULL;
@@ -621,9 +624,9 @@ azy_value_array_new(void)
  * @param val The struct member value
  */
 void
-azy_value_struct_member_set(Azy_Value *struc,
-                             const char *name,
-                             Azy_Value *val)
+azy_value_struct_member_set(Azy_Value  *struc,
+                            const char *name,
+                            Azy_Value  *val)
 {
    Eina_List *l;
    Azy_Value *m, *v;
@@ -693,7 +696,7 @@ azy_value_array_push(Azy_Value *arr,
  * @return EINA_FALSE if @p val is not an error value, else EINA_TRUE
  */
 Eina_Bool
-azy_value_retval_is_error(Azy_Value  *val,
+azy_value_retval_is_error(Azy_Value   *val,
                           int         *errcode,
                           const char **errmsg)
 {
@@ -733,7 +736,7 @@ azy_value_retval_is_error(Azy_Value  *val,
  * @param indent The number of spaces to indent
  */
 void
-azy_value_dump(Azy_Value  *v,
+azy_value_dump(Azy_Value   *v,
                Eina_Strbuf *string,
                unsigned int indent)
 {
@@ -844,4 +847,5 @@ azy_value_dump(Azy_Value  *v,
       }
      }
 }
+
 /** @} */

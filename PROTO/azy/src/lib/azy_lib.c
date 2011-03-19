@@ -22,10 +22,10 @@
 
 #include <Azy.h>
 #include <azy_private.h>
-   /**
-    * @defgroup Azy_Library Library
-    * @brief Functions to control initialization of the library
-    * @{*/
+/**
+ * @defgroup Azy_Library Library
+ * @brief Functions to control initialization of the library
+ * @{*/
 static const char AZY_ERROR_REQUEST_JSON_OBJECT_err[] = "Can't parse JSON-RPC request. Invalid JSON object.";
 static const char AZY_ERROR_REQUEST_JSON_METHOD_err[] = "Can't parse JSON-RPC request. Missing method.";
 static const char AZY_ERROR_REQUEST_JSON_PARAM_err[] = "Can't parse JSON-RPC request. Failed to unserialize a parameter.";
@@ -111,7 +111,10 @@ azy_lib_register_errors_(void)
 }
 
 void
-_azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname)
+_azy_magic_fail(const void *d,
+                Azy_Magic   m,
+                Azy_Magic   req_m,
+                const char *fname)
 {
    ERR("\n"
        "*** AZY ERROR: Azy Magic Check Failed!!!\n"
@@ -126,10 +129,10 @@ _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname)
          "    Supplied: %08x - %s",
          (unsigned int)req_m, eina_magic_string_get(req_m),
          (unsigned int)m, eina_magic_string_get(m));
-     ERR("*** NAUGHTY PROGRAMMER!!!\n"
-         "*** SPANK SPANK SPANK!!!\n"
-         "*** Now go fix your code. Tut tut tut!\n"
-         "*** This message brought to you by Ecore.");
+   ERR("*** NAUGHTY PROGRAMMER!!!\n"
+       "*** SPANK SPANK SPANK!!!\n"
+       "*** Now go fix your code. Tut tut tut!\n"
+       "*** This message brought to you by Ecore.");
    if (getenv("AZY_ERROR_ABORT")) abort();
 }
 
@@ -166,7 +169,6 @@ azy_init(void)
 
    AZY_SERVER_CLIENT_ADD = ecore_event_type_new();
    AZY_SERVER_CLIENT_DEL = ecore_event_type_new();
-
 
    eina_magic_string_set(AZY_MAGIC_SERVER, "Azy_Server");
    eina_magic_string_set(AZY_MAGIC_SERVER_CLIENT, "Azy_Server_Client");
@@ -211,4 +213,5 @@ azy_shutdown(void)
    azy_log_dom = -1;
    return azy_init_count_;
 }
+
 /** @} */

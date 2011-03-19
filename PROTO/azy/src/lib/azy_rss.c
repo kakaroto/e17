@@ -95,22 +95,22 @@ azy_rss_items_get(Azy_Rss *rss)
 
 #define DEF(NAME) \
 /**
-@brief Retrieve the NAME of an rss object
-This function will return the NAME of @p rss.  The NAME will be stringshared,
-but still belongs to @p rss.
-@param rss The #Azy_Rss object (NOT #NULL)
-@return The NAME, or #NULL on failure
- */ \
-const char * \
-azy_rss_##NAME##_get(Azy_Rss *rss) \
-{ \
-   if (!AZY_MAGIC_CHECK(rss, AZY_MAGIC_RSS)) \
-     { \
-        AZY_MAGIC_FAIL(rss, AZY_MAGIC_RSS); \
-        return NULL; \
-     } \
-   return rss->NAME; \
-}
+   @brief Retrieve the NAME of an rss object
+   This function will return the NAME of @p rss.  The NAME will be stringshared,
+   but still belongs to @p rss.
+   @param rss The #Azy_Rss object (NOT #NULL)
+   @return The NAME, or #NULL on failure
+ */                                            \
+  const char *                                 \
+  azy_rss_##NAME##_get(Azy_Rss * rss)          \
+  {                                            \
+     if (!AZY_MAGIC_CHECK(rss, AZY_MAGIC_RSS)) \
+       {                                       \
+          AZY_MAGIC_FAIL(rss, AZY_MAGIC_RSS);  \
+          return NULL;                         \
+       }                                       \
+     return rss->NAME;                         \
+  }
 
 DEF(title)
 DEF(link)
@@ -129,7 +129,9 @@ DEF(desc)
  * @param rss The rss object (NOT #NULL)
  */
 void
-azy_rss_print(const char *pre, int indent, Azy_Rss *rss)
+azy_rss_print(const char *pre,
+              int         indent,
+              Azy_Rss    *rss)
 {
    int i;
    Eina_List *l;
@@ -162,4 +164,5 @@ azy_rss_print(const char *pre, int indent, Azy_Rss *rss)
         if (l->next) printf("\n");
      }
 }
+
 /** @} */

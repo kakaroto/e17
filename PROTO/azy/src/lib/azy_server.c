@@ -182,7 +182,6 @@ azy_server_addr_get(Azy_Server *server)
    return server->addr;
 }
 
-
 /**
  * @brief Run the specified server
  *
@@ -197,9 +196,9 @@ azy_server_addr_get(Azy_Server *server)
  * immediately with EINA_FALSE
  */
 Eina_Bool
-azy_server_run(Azy_Server     *server,
-               int             type,
-               int             port)
+azy_server_run(Azy_Server *server,
+               int         type,
+               int         port)
 {
    int az, ecore = ECORE_CON_REMOTE_NODELAY;
 
@@ -216,9 +215,11 @@ azy_server_run(Azy_Server     *server,
      {
       case AZY_SERVER_NONE:
         break;
+
       case AZY_SERVER_BROADCAST:
         eina_stringshare_replace(&server->addr, "0.0.0.0");
         break;
+
       default:
         eina_stringshare_replace(&server->addr, "127.0.0.1");
         break;
@@ -264,9 +265,9 @@ azy_server_run(Azy_Server     *server,
  * immediately with EINA_FALSE
  */
 Eina_Bool
-azy_server_basic_run(int                      port,
-                     int                      type,
-                     const char              *cert,
+azy_server_basic_run(int                     port,
+                     int                     type,
+                     const char             *cert,
                      Azy_Server_Module_Def **modules)
 {
    Azy_Server *server;
@@ -325,4 +326,5 @@ error:
    azy_server_free(server);
    return EINA_FALSE;
 }
+
 /** @} */

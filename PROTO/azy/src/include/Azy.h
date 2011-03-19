@@ -96,46 +96,46 @@ typedef struct Azy_Server_Module_Method Azy_Server_Module_Method;
  * #Azy_Server_Module objects are created and manipulated by users
  * of the api; contains all methods present in the module
  */
-typedef struct Azy_Server_Module_Def Azy_Server_Module_Def;
+typedef struct Azy_Server_Module_Def    Azy_Server_Module_Def;
 /**
  * @typedef Azy_Client
  * A client object for connecting to a server, used by the
  * azy_client namespace
  */
-typedef struct Azy_Client Azy_Client;
+typedef struct Azy_Client               Azy_Client;
 /**
  * @typedef Azy_Net
  * A network object containing all connection and http
  * information
  */
-typedef struct Azy_Net Azy_Net;
+typedef struct Azy_Net                  Azy_Net;
 /**
  * @typedef Azy_Rss
  * An object representing an RSS feed's content
  */
-typedef struct Azy_Rss Azy_Rss;
+typedef struct Azy_Rss                  Azy_Rss;
 /**
  * @typedef Azy_Rss_Item
  * An object representing a content item from an RSS feed
  */
-typedef struct Azy_Rss_Item Azy_Rss_Item;
+typedef struct Azy_Rss_Item             Azy_Rss_Item;
 /**
  * @typedef Azy_Value
  * A general struct which can hold any type of value
  */
-typedef struct Azy_Value Azy_Value;
+typedef struct Azy_Value                Azy_Value;
 /**
  * @typedef Azy_Content
  * A struct which holds the content being sent/received in an rpc method call
  * in a list of #Azy_Value objects
  */
-typedef struct Azy_Content Azy_Content;
+typedef struct Azy_Content              Azy_Content;
 /**
  * @typedef Azy_Client_Call_Id
  * A unique identifier for every azy_client_call and azy_client_put
  * which can be used to set callbacks for the transmission
  */
-typedef unsigned int Azy_Client_Call_Id;
+typedef unsigned int                    Azy_Client_Call_Id;
 
 /**
  * @typedef Azy_Server_Type
@@ -220,12 +220,12 @@ typedef enum
  * Must return #EINA_FALSE on error to prevent a response in __download__ or __upload__,
  * otherwise response will be sent.
  */
-typedef Eina_Bool (*Azy_Server_Module_Cb)(Azy_Server_Module *);
+typedef Eina_Bool  (*Azy_Server_Module_Cb)(Azy_Server_Module *);
 /**
  * @typedef Azy_Server_Module_Shutdown_Cb
  * Function called when module is unloaded for given connection.
  */
-typedef void (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *);
+typedef void       (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *);
 /**
  * @typedef Azy_Server_Module_Pre_Cb
  * Function called prior to a regular method.  The #Azy_Server_Module object
@@ -234,17 +234,17 @@ typedef void (*Azy_Server_Module_Shutdown_Cb)(Azy_Server_Module *);
  * Note that after this call, the network data received from the client will no longer be
  * available.
  */
-typedef Eina_Bool (*Azy_Server_Module_Pre_Cb)(Azy_Server_Module *, Azy_Net *);
+typedef Eina_Bool  (*Azy_Server_Module_Pre_Cb)(Azy_Server_Module *, Azy_Net *);
 /**
  * @typedef Azy_Server_Module_Content_Cb
  * Function called after rpc method is handled as well as for fallback method.
  */
-typedef Eina_Bool (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *, Azy_Content *);
+typedef Eina_Bool  (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *, Azy_Content *);
 /**
  * @typedef Azy_Content_Cb
  * Function to convert Azy_Value* to user type.
  */
-typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
+typedef void *     (*Azy_Content_Cb)(Azy_Value *, void **);
 /**
  * @typedef Azy_Client_Return_Cb
  * Function must return AZY_ERROR_NONE (0) on success, else
@@ -268,253 +268,252 @@ extern "C" {
    EAPI int azy_shutdown(void);
 
    /* utils */
-   EAPI char *azy_base64_encode(const char *string,
-                            double      len);
-   EAPI char *azy_base64_decode(const char *string,
-                            int         len);
+   EAPI char          *azy_base64_encode(const char *string,
+                                         double      len);
+   EAPI char          *azy_base64_decode(const char *string,
+                                         int         len);
    EAPI unsigned char *azy_memstr(const unsigned char *big,
-                              const unsigned char *small,
-                              size_t               big_len,
-                              size_t               small_len);
-   EAPI const char *   azy_uuid_new(void);
+                                  const unsigned char *small,
+                                  size_t               big_len,
+                                  size_t               small_len);
+   EAPI const char *azy_uuid_new(void);
 
    /* server */
-   EAPI void                    azy_server_stop(Azy_Server *server);
-   EAPI Azy_Server             *azy_server_new(Eina_Bool   secure);
-   EAPI void                    azy_server_free(Azy_Server *server);
-   EAPI unsigned long int       azy_server_clients_count(Azy_Server *server);
-   EAPI Eina_List              *azy_server_module_defs_get(Azy_Server *server);
-   EAPI Eina_Bool azy_server_run(Azy_Server *server,
-                             int          type,
-                             int          port);
-   EAPI Eina_Bool azy_server_basic_run(int                      port,
-                                   int                      type,
-                                   const char              *cert,
-                                   Azy_Server_Module_Def **modules);
-   EAPI Eina_Bool azy_server_addr_set(Azy_Server *server,
-                                 const char *addr);
+   EAPI void              azy_server_stop(Azy_Server *server);
+   EAPI Azy_Server       *azy_server_new(Eina_Bool secure);
+   EAPI void              azy_server_free(Azy_Server *server);
+   EAPI unsigned long int azy_server_clients_count(Azy_Server *server);
+   EAPI Eina_List        *azy_server_module_defs_get(Azy_Server *server);
+   EAPI Eina_Bool         azy_server_run(Azy_Server *server,
+                                         int         type,
+                                         int         port);
+   EAPI Eina_Bool azy_server_basic_run(int                     port,
+                                       int                     type,
+                                       const char             *cert,
+                                       Azy_Server_Module_Def **modules);
+   EAPI Eina_Bool   azy_server_addr_set(Azy_Server *server,
+                                        const char *addr);
    EAPI const char *azy_server_addr_get(Azy_Server *server);
 
    /* server module */
-   EAPI Eina_Bool               azy_server_module_send(Azy_Server_Module  *module,
-                                                       Azy_Net            *net,
-                                                       const Azy_Net_Data *data);
-   EAPI void                   *azy_server_module_data_get(Azy_Server_Module *module);
-   EAPI Azy_Net_Data          *azy_server_module_recv_get(Azy_Server_Module *module);
-   EAPI Azy_Net               *azy_server_module_net_get(Azy_Server_Module *module);
-   EAPI Azy_Server_Module_Def *azy_server_module_def_find(Azy_Server *server,
-                                                       const char  *name);
-   EAPI void                    azy_server_module_events_resume(Azy_Server_Module *module);
-   EAPI void                    azy_server_module_events_suspend(Azy_Server_Module *module);
-   EAPI Eina_Bool               azy_server_module_events_suspended_get(Azy_Server_Module *module);
-   EAPI Eina_Bool               azy_server_module_active_get(Azy_Server_Module *module);
-   EAPI Azy_Content            *azy_server_module_content_get(Azy_Server_Module *module);
-   EAPI Eina_Bool               azy_server_module_add(Azy_Server            *server,
-                                                  Azy_Server_Module_Def *module);
-   EAPI Eina_Bool               azy_server_module_del(Azy_Server            *server,
-                                                  Azy_Server_Module_Def *module);
-   EAPI Eina_Bool               azy_server_module_name_del(Azy_Server *server,
-                                                           const char *name);
-   EAPI Azy_Server_Module_Method *azy_server_module_method_new(const char *name,
-                                                          Azy_Server_Module_Content_Cb cb);
+   EAPI Eina_Bool azy_server_module_send(Azy_Server_Module  *module,
+                                         Azy_Net            *net,
+                                         const Azy_Net_Data *data);
+   EAPI void                     *azy_server_module_data_get(Azy_Server_Module *module);
+   EAPI Azy_Net_Data             *azy_server_module_recv_get(Azy_Server_Module *module);
+   EAPI Azy_Net                  *azy_server_module_net_get(Azy_Server_Module *module);
+   EAPI Azy_Server_Module_Def    *azy_server_module_def_find(Azy_Server *server,
+                                                             const char *name);
+   EAPI void                      azy_server_module_events_resume(Azy_Server_Module *module);
+   EAPI void                      azy_server_module_events_suspend(Azy_Server_Module *module);
+   EAPI Eina_Bool                 azy_server_module_events_suspended_get(Azy_Server_Module *module);
+   EAPI Eina_Bool                 azy_server_module_active_get(Azy_Server_Module *module);
+   EAPI Azy_Content              *azy_server_module_content_get(Azy_Server_Module *module);
+   EAPI Eina_Bool                 azy_server_module_add(Azy_Server            *server,
+                                                        Azy_Server_Module_Def *module);
+   EAPI Eina_Bool                 azy_server_module_del(Azy_Server            *server,
+                                                        Azy_Server_Module_Def *module);
+   EAPI Eina_Bool                 azy_server_module_name_del(Azy_Server *server,
+                                                             const char *name);
+   EAPI Azy_Server_Module_Method *azy_server_module_method_new(const char                  *name,
+                                                               Azy_Server_Module_Content_Cb cb);
    EAPI void                      azy_server_module_method_free(Azy_Server_Module_Method *method);
    EAPI Azy_Server_Module_Def    *azy_server_module_def_new(const char *name);
-   EAPI Azy_Server_Module_Def     *azy_server_module_def_load(const char *file,
-                                                              const char *modname);
+   EAPI Azy_Server_Module_Def    *azy_server_module_def_load(const char *file,
+                                                             const char *modname);
    EAPI void                      azy_server_module_def_free(Azy_Server_Module_Def *def);
-   EAPI void                      azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def *def,
-                                                                     Azy_Server_Module_Cb init,
-                                                                     Azy_Server_Module_Shutdown_Cb shutdown);
-   EAPI void                      azy_server_module_def_pre_post_set(Azy_Server_Module_Def *def,
-                                                                Azy_Server_Module_Pre_Cb pre,
-                                                                Azy_Server_Module_Content_Cb post);
-   EAPI void                      azy_server_module_def_download_upload_set(Azy_Server_Module_Def *def,
-                                                                       Azy_Server_Module_Cb download,
-                                                                       Azy_Server_Module_Cb upload);
-   EAPI void                      azy_server_module_def_fallback_set(Azy_Server_Module_Def *def,
-                                                                Azy_Server_Module_Content_Cb fallback);
-   EAPI void                      azy_server_module_def_method_add(Azy_Server_Module_Def *def,
-                                                              Azy_Server_Module_Method *method);
-   EAPI Eina_Bool                 azy_server_module_def_method_del(Azy_Server_Module_Def    *def,
-                                                              Azy_Server_Module_Method *method);
-   EAPI int                       azy_server_module_def_size_get(Azy_Server_Module_Def *def);
-   EAPI Eina_Bool                 azy_server_module_size_set(Azy_Server_Module_Def *def,
-                                                             int                    size);
+   EAPI void                      azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def        *def,
+                                                                          Azy_Server_Module_Cb          init,
+                                                                          Azy_Server_Module_Shutdown_Cb shutdown);
+   EAPI void azy_server_module_def_pre_post_set(Azy_Server_Module_Def       *def,
+                                                Azy_Server_Module_Pre_Cb     pre,
+                                                Azy_Server_Module_Content_Cb post);
+   EAPI void azy_server_module_def_download_upload_set(Azy_Server_Module_Def *def,
+                                                       Azy_Server_Module_Cb   download,
+                                                       Azy_Server_Module_Cb   upload);
+   EAPI void      azy_server_module_def_fallback_set(Azy_Server_Module_Def       *def,
+                                                     Azy_Server_Module_Content_Cb fallback);
+   EAPI void      azy_server_module_def_method_add(Azy_Server_Module_Def    *def,
+                                                   Azy_Server_Module_Method *method);
+   EAPI Eina_Bool azy_server_module_def_method_del(Azy_Server_Module_Def    *def,
+                                                   Azy_Server_Module_Method *method);
+   EAPI int       azy_server_module_def_size_get(Azy_Server_Module_Def *def);
+   EAPI Eina_Bool azy_server_module_size_set(Azy_Server_Module_Def *def,
+                                             int                    size);
 
    /* net */
-   EAPI Azy_Net   *azy_net_new(void *conn);
+   EAPI Azy_Net    *azy_net_new(void *conn);
    EAPI void        azy_net_free(Azy_Net *net);
-   EAPI const char *azy_net_header_get(Azy_Net   *net,
-                                   const char *name);
-   EAPI Eina_Bool     azy_net_auth_set(Azy_Net   *net,
-                                 const char *username,
-                                 const char *password);
-   EAPI Eina_Bool azy_net_auth_get(Azy_Net    *net,
-                               const char **username,
-                               const char **password);
-   EAPI const char   *azy_net_uri_get(Azy_Net *net);
-   EAPI Eina_Bool     azy_net_uri_set(Azy_Net *net,
-                                  const char *path);
-   EAPI int           azy_net_version_get(Azy_Net *net);
-   EAPI Eina_Bool     azy_net_version_set(Azy_Net *net,
-                                      int version);
-   EAPI int           azy_net_code_get(Azy_Net *net);
-   EAPI void          azy_net_code_set(Azy_Net *net,
-                                   int       code);
-   EAPI const char   *azy_net_ip_get(Azy_Net *net);
+   EAPI const char *azy_net_header_get(Azy_Net    *net,
+                                       const char *name);
+   EAPI Eina_Bool   azy_net_auth_set(Azy_Net    *net,
+                                     const char *username,
+                                     const char *password);
+   EAPI Eina_Bool azy_net_auth_get(Azy_Net     *net,
+                                   const char **username,
+                                   const char **password);
+   EAPI const char  *azy_net_uri_get(Azy_Net *net);
+   EAPI Eina_Bool    azy_net_uri_set(Azy_Net    *net,
+                                     const char *path);
+   EAPI int          azy_net_version_get(Azy_Net *net);
+   EAPI Eina_Bool    azy_net_version_set(Azy_Net *net,
+                                         int      version);
+   EAPI int          azy_net_code_get(Azy_Net *net);
+   EAPI void         azy_net_code_set(Azy_Net *net,
+                                      int      code);
+   EAPI const char  *azy_net_ip_get(Azy_Net *net);
    EAPI Azy_Net_Type azy_net_type_get(Azy_Net *net);
-   EAPI int           azy_net_message_length_get(Azy_Net *net);
-   EAPI void          azy_net_header_set(Azy_Net   *net,
-                                     const char *name,
-                                     const char *value);
-   EAPI void         azy_net_header_reset(Azy_Net *net);
-   EAPI void         azy_net_type_set(Azy_Net     *net,
-                                  Azy_Net_Type type);
-   EAPI void         azy_net_transport_set(Azy_Net          *net,
-                                       Azy_Net_Transport transport);
+   EAPI int          azy_net_message_length_get(Azy_Net *net);
+   EAPI void         azy_net_header_set(Azy_Net    *net,
+                                        const char *name,
+                                        const char *value);
+   EAPI void              azy_net_header_reset(Azy_Net *net);
+   EAPI void              azy_net_type_set(Azy_Net     *net,
+                                           Azy_Net_Type type);
+   EAPI void              azy_net_transport_set(Azy_Net          *net,
+                                                Azy_Net_Transport transport);
    EAPI Azy_Net_Transport azy_net_transport_get(Azy_Net *net);
-   EAPI void         azy_net_message_length_set(Azy_Net *net,
-                                            int       length);
-   EAPI Eina_Strbuf *azy_net_header_create(Azy_Net *net);
-   EAPI const char  *azy_net_http_msg_get(int code);
-
+   EAPI void              azy_net_message_length_set(Azy_Net *net,
+                                                     int      length);
+   EAPI Eina_Strbuf      *azy_net_header_create(Azy_Net *net);
+   EAPI const char       *azy_net_http_msg_get(int code);
 
    /* values */
-   EAPI Azy_Value *azy_value_ref(Azy_Value *val);
-   EAPI void        azy_value_unref(Azy_Value *val);
-   EAPI Azy_Value *azy_value_base64_new(const char *val);
-   EAPI Azy_Value *azy_value_string_new(const char *val);
-   EAPI Azy_Value *azy_value_int_new(int val);
-   EAPI Azy_Value *azy_value_bool_new(Eina_Bool val);
-   EAPI Azy_Value *azy_value_double_new(double val);
-   EAPI Azy_Value *azy_value_time_new(const char *val);
-   EAPI Eina_Bool   azy_value_int_get(Azy_Value *val,
-                                 int       *nval);
-   EAPI Eina_Bool   azy_value_string_get(Azy_Value  *val,
-                                    const char **nval);
-   EAPI Eina_Bool   azy_value_base64_get(Azy_Value  *val,
-                                    const char **nval);
-   EAPI Eina_Bool   azy_value_bool_get(Azy_Value *val,
-                                  Eina_Bool *nval);
-   EAPI Eina_Bool   azy_value_double_get(Azy_Value *val,
-                                    double     *nval);
-   EAPI Eina_Bool   azy_value_value_get(Azy_Value  *val,
-                                   Azy_Value **nval);
+   EAPI Azy_Value     *azy_value_ref(Azy_Value *val);
+   EAPI void           azy_value_unref(Azy_Value *val);
+   EAPI Azy_Value     *azy_value_base64_new(const char *val);
+   EAPI Azy_Value     *azy_value_string_new(const char *val);
+   EAPI Azy_Value     *azy_value_int_new(int val);
+   EAPI Azy_Value     *azy_value_bool_new(Eina_Bool val);
+   EAPI Azy_Value     *azy_value_double_new(double val);
+   EAPI Azy_Value     *azy_value_time_new(const char *val);
+   EAPI Eina_Bool      azy_value_int_get(Azy_Value *val,
+                                         int       *nval);
+   EAPI Eina_Bool      azy_value_string_get(Azy_Value   *val,
+                                            const char **nval);
+   EAPI Eina_Bool      azy_value_base64_get(Azy_Value   *val,
+                                            const char **nval);
+   EAPI Eina_Bool      azy_value_bool_get(Azy_Value *val,
+                                          Eina_Bool *nval);
+   EAPI Eina_Bool      azy_value_double_get(Azy_Value *val,
+                                            double    *nval);
+   EAPI Eina_Bool      azy_value_value_get(Azy_Value  *val,
+                                           Azy_Value **nval);
    EAPI Azy_Value_Type azy_value_type_get(Azy_Value *val);
-   EAPI Azy_Value  *azy_value_array_new(void);
-   EAPI void        azy_value_array_push(Azy_Value *arr,
-                                    Azy_Value *val);
-   EAPI Eina_List  *azy_value_children_items_get(Azy_Value *arr);
-   EAPI Azy_Value  *azy_value_struct_new(void);
-   EAPI void        azy_value_struct_member_set(Azy_Value *str,
-                                            const char *name,
+   EAPI Azy_Value     *azy_value_array_new(void);
+   EAPI void           azy_value_array_push(Azy_Value *arr,
                                             Azy_Value *val);
-   EAPI Azy_Value *azy_value_struct_member_get(Azy_Value *str,
-                                            const char *name);
+   EAPI Eina_List     *azy_value_children_items_get(Azy_Value *arr);
+   EAPI Azy_Value     *azy_value_struct_new(void);
+   EAPI void           azy_value_struct_member_set(Azy_Value  *str,
+                                                   const char *name,
+                                                   Azy_Value  *val);
+   EAPI Azy_Value  *azy_value_struct_member_get(Azy_Value  *str,
+                                                const char *name);
    EAPI const char *azy_value_struct_member_name_get(Azy_Value *mem);
-   EAPI Azy_Value *azy_value_struct_member_value_get(Azy_Value *mem);
-   EAPI Eina_Bool   azy_value_retval_is_error(Azy_Value  *val,
-                                          int         *errcode,
-                                          const char **errmsg);
-   EAPI void azy_value_dump(Azy_Value  *v,
-                        Eina_Strbuf *string,
-                        unsigned int indent);
+   EAPI Azy_Value  *azy_value_struct_member_value_get(Azy_Value *mem);
+   EAPI Eina_Bool   azy_value_retval_is_error(Azy_Value   *val,
+                                              int         *errcode,
+                                              const char **errmsg);
+   EAPI void azy_value_dump(Azy_Value   *v,
+                            Eina_Strbuf *string,
+                            unsigned int indent);
 
    /* content */
-   EAPI Azy_Content  *azy_content_new(const char *method);
-   EAPI void           azy_content_free(Azy_Content *content);
-   EAPI Azy_Content_Cb azy_content_callback_get(Azy_Content *content);
-   EAPI const char *azy_content_method_get(Azy_Content *content);
-   EAPI const char *azy_content_method_full_get(Azy_Content *content);
-   EAPI const char *azy_content_module_name_get(Azy_Content *content,
-                                            const char   *fallback);
-   EAPI Azy_Net    *azy_content_net_get(Azy_Content *content);
-   EAPI void        azy_content_param_add(Azy_Content *content,
-                                      Azy_Value   *val);
-   EAPI Azy_Value *azy_content_param_get(Azy_Content *content,
-                                      unsigned int  pos);
-   EAPI Eina_List  *azy_content_params_get(Azy_Content *content);
-   EAPI void        azy_content_retval_set(Azy_Content *content,
-                                       Azy_Value   *val);
-   EAPI void       *azy_content_return_get(Azy_Content *content);
-   EAPI uint64_t    azy_content_return_size_get(Azy_Content *content);
+   EAPI Azy_Content       *azy_content_new(const char *method);
+   EAPI void               azy_content_free(Azy_Content *content);
+   EAPI Azy_Content_Cb     azy_content_callback_get(Azy_Content *content);
+   EAPI const char        *azy_content_method_get(Azy_Content *content);
+   EAPI const char        *azy_content_method_full_get(Azy_Content *content);
+   EAPI const char        *azy_content_module_name_get(Azy_Content *content,
+                                                       const char  *fallback);
+   EAPI Azy_Net           *azy_content_net_get(Azy_Content *content);
+   EAPI void               azy_content_param_add(Azy_Content *content,
+                                                 Azy_Value   *val);
+   EAPI Azy_Value         *azy_content_param_get(Azy_Content *content,
+                                                 unsigned int pos);
+   EAPI Eina_List         *azy_content_params_get(Azy_Content *content);
+   EAPI void               azy_content_retval_set(Azy_Content *content,
+                                                  Azy_Value   *val);
+   EAPI void              *azy_content_return_get(Azy_Content *content);
+   EAPI uint64_t           azy_content_return_size_get(Azy_Content *content);
    EAPI Azy_Client_Call_Id azy_content_id_get(Azy_Content *content);
-   EAPI Azy_Value *azy_content_retval_get(Azy_Content *content);
-   EAPI void        azy_content_error_code_set(Azy_Content *content,
-                                           Eina_Error    code);
-   EAPI void        azy_content_error_faultcode_set(Azy_Content *content,
-                                                Eina_Error    code,
-                                                int           faultcode);
+   EAPI Azy_Value         *azy_content_retval_get(Azy_Content *content);
+   EAPI void               azy_content_error_code_set(Azy_Content *content,
+                                                      Eina_Error   code);
+   EAPI void               azy_content_error_faultcode_set(Azy_Content *content,
+                                                           Eina_Error   code,
+                                                           int          faultcode);
    EAPI void azy_content_error_faultmsg_set(Azy_Content *content,
-                                        int           faultcode,
-                                        const char   *fmt,
-                                        ...);
+                                            int          faultcode,
+                                            const char  *fmt,
+                                            ...);
    EAPI Eina_Bool   azy_content_error_is_set(Azy_Content *content);
    EAPI void        azy_content_error_reset(Azy_Content *content);
    EAPI Eina_Error  azy_content_error_code_get(Azy_Content *content);
    EAPI const char *azy_content_error_message_get(Azy_Content *content);
    EAPI void        azy_content_error_copy(Azy_Content *from,
-                                      Azy_Content *to);
+                                           Azy_Content *to);
    EAPI char       *azy_content_dump_string(const Azy_Content *content,
-                                        unsigned int  indent);
+                                            unsigned int       indent);
    EAPI void        azy_content_data_set(Azy_Content *content,
-                                    const void  *data);
+                                         const void  *data);
    EAPI void       *azy_content_data_get(Azy_Content *content);
-   EAPI Eina_Bool   azy_content_serialize_request(Azy_Content *content,
-                                              Azy_Net_Transport type);
-   EAPI Eina_Bool   azy_content_unserialize_request(Azy_Content *content,
-                                                Azy_Net_Transport type,
-                                                const char   *buf,
-                                                ssize_t       len);
-   EAPI Eina_Bool azy_content_serialize_response(Azy_Content *content,
-                                             Azy_Net_Transport type);
-   EAPI Eina_Bool azy_content_unserialize_response(Azy_Content *content,
-                                               Azy_Net_Transport type,
-                                               const char   *buf,
-                                               ssize_t       len);
+   EAPI Eina_Bool   azy_content_serialize_request(Azy_Content      *content,
+                                                  Azy_Net_Transport type);
+   EAPI Eina_Bool   azy_content_unserialize_request(Azy_Content      *content,
+                                                    Azy_Net_Transport type,
+                                                    const char       *buf,
+                                                    ssize_t           len);
+   EAPI Eina_Bool azy_content_serialize_response(Azy_Content      *content,
+                                                 Azy_Net_Transport type);
+   EAPI Eina_Bool azy_content_unserialize_response(Azy_Content      *content,
+                                                   Azy_Net_Transport type,
+                                                   const char       *buf,
+                                                   ssize_t           len);
 
    /* client */
-   EAPI void            *azy_client_data_get(Azy_Client *client);
-   EAPI void             azy_client_data_set(Azy_Client *client,
+   EAPI void       *azy_client_data_get(Azy_Client *client);
+   EAPI void        azy_client_data_set(Azy_Client *client,
                                         const void *data);
-   EAPI Azy_Client     *azy_client_new(void);
-   EAPI Eina_Bool        azy_client_callback_set(Azy_Client *client,
-                                             Azy_Client_Call_Id id,
-                                             Azy_Client_Return_Cb callback);
-   EAPI Eina_Bool        azy_client_callback_free_set(Azy_Client *client,
-                                                  Azy_Client_Call_Id id,
-                                                  Ecore_Cb callback);
-   EAPI void             azy_client_free(Azy_Client *client);
-   EAPI Eina_Bool        azy_client_port_set(Azy_Client *client,
-                                         int          port);
-   EAPI Eina_Bool        azy_client_connected_get(Azy_Client *client);
-   EAPI Eina_Bool        azy_client_host_set(Azy_Client *client,
-                                         const char  *addr,
-                                         int          port);
-   EAPI Azy_Net          *azy_client_net_get(Azy_Client *client);
-   EAPI void               azy_client_net_set(Azy_Client *client,
-                                          Azy_Net    *net);
-   EAPI const char        *azy_client_addr_get(Azy_Client *client);
-   EAPI Eina_Bool          azy_client_addr_set(Azy_Client *client,
-                                        const char  *addr);
-   EAPI int                azy_client_port_get(Azy_Client *client);
-   EAPI Eina_Bool          azy_client_connect(Azy_Client *client,
-                                          Eina_Bool    secure);
-   EAPI void               azy_client_close(Azy_Client *client);
-   EAPI Eina_Bool          azy_client_call_checker(Azy_Client *cli,
-                                                   Azy_Content *err_content,
-                                                   Azy_Client_Call_Id ret,
-                                                   Azy_Client_Return_Cb cb,
-                                                   const char *func);
+   EAPI Azy_Client *azy_client_new(void);
+   EAPI Eina_Bool   azy_client_callback_set(Azy_Client          *client,
+                                            Azy_Client_Call_Id   id,
+                                            Azy_Client_Return_Cb callback);
+   EAPI Eina_Bool azy_client_callback_free_set(Azy_Client        *client,
+                                               Azy_Client_Call_Id id,
+                                               Ecore_Cb           callback);
+   EAPI void      azy_client_free(Azy_Client *client);
+   EAPI Eina_Bool azy_client_port_set(Azy_Client *client,
+                                      int         port);
+   EAPI Eina_Bool azy_client_connected_get(Azy_Client *client);
+   EAPI Eina_Bool azy_client_host_set(Azy_Client *client,
+                                      const char *addr,
+                                      int         port);
+   EAPI Azy_Net    *azy_client_net_get(Azy_Client *client);
+   EAPI void        azy_client_net_set(Azy_Client *client,
+                                       Azy_Net    *net);
+   EAPI const char *azy_client_addr_get(Azy_Client *client);
+   EAPI Eina_Bool   azy_client_addr_set(Azy_Client *client,
+                                        const char *addr);
+   EAPI int         azy_client_port_get(Azy_Client *client);
+   EAPI Eina_Bool   azy_client_connect(Azy_Client *client,
+                                       Eina_Bool   secure);
+   EAPI void        azy_client_close(Azy_Client *client);
+   EAPI Eina_Bool   azy_client_call_checker(Azy_Client          *cli,
+                                            Azy_Content         *err_content,
+                                            Azy_Client_Call_Id   ret,
+                                            Azy_Client_Return_Cb cb,
+                                            const char          *func);
    EAPI Azy_Client_Call_Id azy_client_call(Azy_Client       *client,
-                                       Azy_Content      *content,
-                                       Azy_Net_Transport transport,
-                                       Azy_Content_Cb    cb);
-   EAPI Azy_Client_Call_Id azy_client_blank(Azy_Client       *client,
-                                            Azy_Net_Type      type,
-                                            Azy_Net_Data     *netdata,
-                                            Azy_Content_Cb    cb,
-                                            void             *data);
+                                           Azy_Content      *content,
+                                           Azy_Net_Transport transport,
+                                           Azy_Content_Cb    cb);
+   EAPI Azy_Client_Call_Id azy_client_blank(Azy_Client    *client,
+                                            Azy_Net_Type   type,
+                                            Azy_Net_Data  *netdata,
+                                            Azy_Content_Cb cb,
+                                            void          *data);
    EAPI Azy_Client_Call_Id azy_client_put(Azy_Client         *client,
                                           const Azy_Net_Data *send,
                                           void               *data);
@@ -522,28 +521,28 @@ extern "C" {
    EAPI Azy_Client_Call_Id azy_client_current(Azy_Client *cli);
 
    /* RSS */
-   EAPI Azy_Rss            *azy_rss_new(void);
-   EAPI Azy_Rss_Item       *azy_rss_item_new(void);
-   EAPI void                azy_rss_free(Azy_Rss *rss);
-   EAPI void                azy_rss_item_free(Azy_Rss_Item *item);
-   EAPI Eina_List          *azy_rss_items_get(Azy_Rss *rss);
-   EAPI const char         *azy_rss_title_get(Azy_Rss *rss);
-   EAPI const char         *azy_rss_link_get(Azy_Rss *rss);
-   EAPI const char         *azy_rss_img_url_get(Azy_Rss *rss);
-   EAPI const char         *azy_rss_desc_get(Azy_Rss *rss);
-   EAPI const char         *azy_rss_item_title_get(Azy_Rss_Item *item);
-   EAPI const char         *azy_rss_item_link_get(Azy_Rss_Item *item);
-   EAPI const char         *azy_rss_item_desc_get(Azy_Rss_Item *item);
-   EAPI const char         *azy_rss_item_date_get(Azy_Rss_Item *item);
-   EAPI const char         *azy_rss_item_guid_get(Azy_Rss_Item *item);
-   EAPI const char         *azy_rss_item_comment_url_get(Azy_Rss_Item *item);
-   EAPI const char         *azy_rss_item_author_get(Azy_Rss_Item *item);
-   EAPI void                azy_rss_print(const char *pre,
-                                          int         indent,
-                                          Azy_Rss    *rss);
-   EAPI void                azy_rss_item_print(const char   *pre,
-                                               int           indent,
-                                               Azy_Rss_Item *item);
+   EAPI Azy_Rss      *azy_rss_new(void);
+   EAPI Azy_Rss_Item *azy_rss_item_new(void);
+   EAPI void          azy_rss_free(Azy_Rss *rss);
+   EAPI void          azy_rss_item_free(Azy_Rss_Item *item);
+   EAPI Eina_List    *azy_rss_items_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_title_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_link_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_img_url_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_desc_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_item_title_get(Azy_Rss_Item *item);
+   EAPI const char   *azy_rss_item_link_get(Azy_Rss_Item *item);
+   EAPI const char   *azy_rss_item_desc_get(Azy_Rss_Item *item);
+   EAPI const char   *azy_rss_item_date_get(Azy_Rss_Item *item);
+   EAPI const char   *azy_rss_item_guid_get(Azy_Rss_Item *item);
+   EAPI const char   *azy_rss_item_comment_url_get(Azy_Rss_Item *item);
+   EAPI const char   *azy_rss_item_author_get(Azy_Rss_Item *item);
+   EAPI void          azy_rss_print(const char *pre,
+                                    int         indent,
+                                    Azy_Rss    *rss);
+   EAPI void azy_rss_item_print(const char   *pre,
+                                int           indent,
+                                Azy_Rss_Item *item);
 #ifdef __cplusplus
 }
 #endif

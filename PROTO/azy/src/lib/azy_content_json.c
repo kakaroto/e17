@@ -53,9 +53,8 @@ azy_value_serialize_json(Azy_Value *val)
       }
 
       case AZY_VALUE_MEMBER:
-         /* FIXME: I think this is right? */
-         return azy_value_serialize_json(azy_value_struct_member_value_get(val));
-
+        /* FIXME: I think this is right? */
+        return azy_value_serialize_json(azy_value_struct_member_value_get(val));
 
       case AZY_VALUE_INT:
       {
@@ -244,8 +243,8 @@ azy_content_serialize_response_json(Azy_Content *content)
 
 Eina_Bool
 azy_content_unserialize_json(Azy_Content *content,
-                             const char *buf,
-                             ssize_t len __UNUSED__)
+                             const char  *buf,
+                             ssize_t len  __UNUSED__)
 {
    cJSON *object;
 
@@ -263,11 +262,10 @@ azy_content_unserialize_json(Azy_Content *content,
    return EINA_TRUE;
 }
 
-
 Eina_Bool
 azy_content_unserialize_request_json(Azy_Content *content,
-                                      const char *buf,
-                                      ssize_t len __UNUSED__)
+                                     const char  *buf,
+                                     ssize_t len  __UNUSED__)
 {
    cJSON *object, *grab;
    int i;
@@ -315,8 +313,8 @@ azy_content_unserialize_request_json(Azy_Content *content,
 
 Eina_Bool
 azy_content_unserialize_response_json(Azy_Content *content,
-                                       const char *buf,
-                                       ssize_t len __UNUSED__)
+                                      const char  *buf,
+                                      ssize_t len  __UNUSED__)
 {
    cJSON *object, *grab, *error;
    Azy_Value *ret;

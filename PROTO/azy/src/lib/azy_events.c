@@ -24,12 +24,12 @@
 #include "Azy.h"
 #include "azy_private.h"
 
-#define AZY_SKIP_BLANK(PTR) \
-  if (PTR && (len > 0) && isspace(*(PTR)))  \
-    do                       \
-      {                      \
-         (PTR)++;              \
-         len--;              \
+#define AZY_SKIP_BLANK(PTR)                \
+  if (PTR && (len > 0) && isspace(*(PTR))) \
+    do                                     \
+      {                                    \
+         (PTR)++;                          \
+         len--;                            \
       } while ((PTR) && isspace(*(PTR)) && (len > 0))
 
 #define MAX_HEADER_SIZE 4096
@@ -47,7 +47,8 @@ _azy_events_init(void)
 }
 
 static Eina_Bool
-_azy_events_valid_header_name(const char *name, unsigned int len)
+_azy_events_valid_header_name(const char  *name,
+                              unsigned int len)
 {
    while (len--)
      {
@@ -61,7 +62,8 @@ _azy_events_valid_header_name(const char *name, unsigned int len)
 }
 
 static Eina_Bool
-_azy_events_valid_header_value(const char *name, unsigned int len)
+_azy_events_valid_header_value(const char  *name,
+                               unsigned int len)
 {
    while (len--)
      {
@@ -75,10 +77,10 @@ _azy_events_valid_header_value(const char *name, unsigned int len)
 }
 
 int
-azy_events_type_parse(Azy_Net            *net,
-                       int                  type,
-                       const unsigned char *header,
-                       int                  len)
+azy_events_type_parse(Azy_Net             *net,
+                      int                  type,
+                      const unsigned char *header,
+                      int                  len)
 {
    regmatch_t match[4];
    char *first = NULL;
@@ -155,13 +157,13 @@ azy_events_type_parse(Azy_Net            *net,
              memcpy(buf, start + match[3].rm_so, sizeof(buf));
              sscanf(buf, "%i", &version);
              net->http.version = version;
-             net->http.req.http_path = eina_stringshare_add_length((const char*)start + match[2].rm_so, match[2].rm_eo - match[2].rm_so);
+             net->http.req.http_path = eina_stringshare_add_length((const char *)start + match[2].rm_so, match[2].rm_eo - match[2].rm_so);
 
-             if (!strncmp((const char*)start + match[1].rm_so, "GET", match[1].rm_eo - match[1].rm_so))
+             if (!strncmp((const char *)start + match[1].rm_so, "GET", match[1].rm_eo - match[1].rm_so))
                net->type = AZY_NET_TYPE_GET;
-             else if (!strncmp((const char*)start + match[1].rm_so, "POST", match[1].rm_eo - match[1].rm_so))
+             else if (!strncmp((const char *)start + match[1].rm_so, "POST", match[1].rm_eo - match[1].rm_so))
                net->type = AZY_NET_TYPE_POST;
-             else if (!strncmp((const char*)start + match[1].rm_so, "PUT", match[1].rm_eo - match[1].rm_so))
+             else if (!strncmp((const char *)start + match[1].rm_so, "PUT", match[1].rm_eo - match[1].rm_so))
                net->type = AZY_NET_TYPE_PUT;
 
              return match[3].rm_eo;
@@ -189,10 +191,10 @@ azy_events_type_parse(Azy_Net            *net,
 }
 
 Eina_Bool
-azy_events_header_parse(Azy_Net      *net,
-                         unsigned char *event_data,
-                         size_t         event_len,
-                         int            offset)
+azy_events_header_parse(Azy_Net       *net,
+                        unsigned char *event_data,
+                        size_t         event_len,
+                        int            offset)
 {
    unsigned char *c = NULL, *r = NULL, *p = NULL, *start = NULL, *buf_start = NULL;
    unsigned char *data = (event_data) ? event_data + offset : NULL;
@@ -223,14 +225,13 @@ azy_events_header_parse(Azy_Net      *net,
              INFO(buf, net->buffer);
              snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%zus\n<<<<<<<<<<<<<", len - offset);
              INFO(buf, data);
-
           }
 #endif
         /* previous buffer */
-         /* alloca should be safe here because ecore_con reads at most 64k
-          * and even if no headers were found previously, the entire
-          * buffer would not be copied
-          */
+        /* alloca should be safe here because ecore_con reads at most 64k
+         * and even if no headers were found previously, the entire
+         * buffer would not be copied
+         */
         buf_start = alloca(len + net->size - offset);
         /* grab and combine buffers */
         if (event_data)
@@ -259,16 +260,16 @@ azy_events_header_parse(Azy_Net      *net,
          AZY_SKIP_BLANK(start);
      }
 
-   if ((!len) && (event_len - offset > 0))
-     { /* only blanks were passed, assume http separator */
+   if ((!len) && (event_len - offset > 0)) /* only blanks were passed, assume http separator */
+     {
         net->headers_read = EINA_TRUE;
         return EINA_TRUE;
      }
    /* apparently this can happen? */
    EINA_SAFETY_ON_NULL_RETURN_VAL(start, EINA_FALSE);
    /* find a header or append to buffer */
-   if ((!(r = memchr(start, '\r', len)) && !(r = memchr(start, '\n', len))) || !(c = memchr(start, ':', len)))
-     {  /* append to a buffer and use net->overflow */
+   if ((!(r = memchr(start, '\r', len)) && !(r = memchr(start, '\n', len))) || !(c = memchr(start, ':', len))) /* append to a buffer and use net->overflow */
+     {
         unsigned char *tmp;
 
         if (net->size)
@@ -303,21 +304,21 @@ azy_events_header_parse(Azy_Net      *net,
                { /* we currently have \n\r: b64 encoding can leave a trailing \n
                   * so we have to check for an extra \n
                   */
-                  if ((x - r < 0) && ((unsigned int)(r + 1 - start) < len) && (r[1] == '\n'))
-                    { /* \n\r\n */
-                       if (((unsigned int)(r + 2 - start) < len) && (r[2] == '\r'))
-                         { /* \n\r\n\r */
-                            if (((unsigned int)(r + 3 - start) < len) && (r[3] == '\n'))
-                              /* \n\r\n\r\n oh hey I'm gonna stop here before it gets too insane */
-                              s = "\r\n";
-                            else
-                              s = "\n\r";
-                         }
-                       else
-                         s = "\r\n";
-                    }
-                  else
-                    s = "\n\r";
+                   if ((x - r < 0) && ((unsigned int)(r + 1 - start) < len) && (r[1] == '\n')) /* \n\r\n */
+                     {
+                        if (((unsigned int)(r + 2 - start) < len) && (r[2] == '\r')) /* \n\r\n\r */
+                          {
+                             if (((unsigned int)(r + 3 - start) < len) && (r[3] == '\n'))
+     /* \n\r\n\r\n oh hey I'm gonna stop here before it gets too insane */
+                               s = "\r\n";
+                             else
+                               s = "\n\r";
+                          }
+                        else
+                          s = "\r\n";
+                     }
+                   else
+                     s = "\n\r";
                }
           }
         else
@@ -346,25 +347,24 @@ azy_events_header_parse(Azy_Net      *net,
         semi = memchr(p, ':', line_len);
         if ((!semi) || (semi - p + 1 >= line_len))
           goto skip_header;
-        if (!_azy_events_valid_header_name((const char*)p, semi - p))
+        if (!_azy_events_valid_header_name((const char *)p, semi - p))
           goto skip_header;
 
         ptr = semi + 1;
         while ((isspace(*ptr)) && (ptr - p < line_len))
           ptr++;
 
-        if (!_azy_events_valid_header_value((const char*)ptr, line_len - (ptr - p)))
+        if (!_azy_events_valid_header_value((const char *)ptr, line_len - (ptr - p)))
           goto skip_header;
         {
            char *key, *value;
 
-           key = strndupa((const char*)p, semi - p);
-           value = strndupa((const char*)ptr, line_len - (ptr - p));
+           key = strndupa((const char *)p, semi - p);
+           value = strndupa((const char *)ptr, line_len - (ptr - p));
            INFO("Found header: key='%s'", key);
            INFO("Found header: value='%s'", value);
            azy_net_header_set(net, key, value);
         }
-
 
 skip_header:
         len -= line_len + slen;
@@ -408,17 +408,17 @@ out:
                   net->overflow_length = (int64_t)(len - rlen);
                   WARN("Extra content length of %lli!", net->overflow_length);
                   net->overflow = malloc(net->overflow_length);
-                  /* FIXME: uhhhh fuck? */
+     /* FIXME: uhhhh fuck? */
                   EINA_SAFETY_ON_NULL_RETURN_VAL(net->overflow, EINA_FALSE);
                   memcpy(net->overflow, p + rlen, net->overflow_length);
 #ifdef ISCOMFITOR
-     {
-        int64_t x;
-        INFO("OVERFLOW:\n<<<<<<<<<<<<<");
-        for (x = 0; x < net->overflow_length; x++)
-          putc(net->overflow[x], stdout);
-        fflush(stdout);
-     }
+                  {
+                     int64_t x;
+                     INFO("OVERFLOW:\n<<<<<<<<<<<<<");
+                     for (x = 0; x < net->overflow_length; x++)
+                       putc(net->overflow[x], stdout);
+                     fflush(stdout);
+                  }
 #endif
                }
              else
@@ -469,9 +469,9 @@ azy_events_net_transport_get(const char *content_type)
 }
 
 Eina_Bool
-azy_events_connection_kill(void             *conn,
-                            Eina_Bool         server_client,
-                            const char       *msg)
+azy_events_connection_kill(void       *conn,
+                           Eina_Bool   server_client,
+                           const char *msg)
 {
    DBG("(conn=%p, server_client=%i, msg='%s')", conn, server_client, msg);
    if (msg)
@@ -490,9 +490,11 @@ azy_events_connection_kill(void             *conn,
 }
 
 void
-_azy_event_handler_fake_free(void *data __UNUSED__, void *data2 __UNUSED__)
+_azy_event_handler_fake_free(void *data  __UNUSED__,
+                             void *data2 __UNUSED__)
 {}
 
 void
 azy_fake_free(void *data __UNUSED__)
 {}
+

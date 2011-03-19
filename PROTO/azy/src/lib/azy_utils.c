@@ -40,7 +40,7 @@
  */
 char *
 azy_base64_encode(const char *string,
-                   double      len)
+                  double      len)
 {
    base64_encodestate s;
    char *ret = NULL;
@@ -68,7 +68,7 @@ azy_base64_encode(const char *string,
  */
 char *
 azy_base64_decode(const char *string,
-                   int         len)
+                  int         len)
 {
    base64_decodestate s;
    char *ret = NULL;
@@ -98,9 +98,9 @@ azy_base64_decode(const char *string,
  */
 unsigned char *
 azy_memstr(const unsigned char *big,
-            const unsigned char *small,
-            size_t               big_len,
-            size_t               small_len)
+           const unsigned char *small,
+           size_t               big_len,
+           size_t               small_len)
 {
    unsigned char *x = (unsigned char *)big;
 
@@ -138,4 +138,5 @@ azy_uuid_new(void)
 #endif
    return ret;
 }
+
 /** @} */
