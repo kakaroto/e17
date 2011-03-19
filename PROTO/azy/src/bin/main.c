@@ -80,7 +80,7 @@ static Eina_Bool eq_funcs;
 static char *out_dir = ".";
 static char *azy_file;
 static FILE *f;
-static const char *i, *b, *d, *c, *e;
+static const char *i, *b, *d, *c, *e, *ti, *b64;
 static const char *sep;
 static const char *name;
 
@@ -184,8 +184,13 @@ gen_type_marshalizers(Azy_Typedef *t,
 
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
-             EL(2, "%sif (!(%s = %s(azy_user_type->%s)))", l->prev ? "else " : "", m->name, m->type->march_name, m->name);
+             EL(2, "if (!(%s = %s(azy_user_type->%s)))", m->name, m->type->march_name, m->name);
              EL(3, "goto error;");
+             if (m->type->name == ti)
+               EL(2, "azy_value_type_set(%s, AZY_VALUE_TIME);", m->name);
+             else if (m->type->name == b64)
+               EL(2, "azy_value_type_set(%s, AZY_VALUE_BASE64);", m->name);
+
           }
 
         NL;
@@ -221,6 +226,11 @@ gen_type_marshalizers(Azy_Typedef *t,
         EINA_LIST_FOREACH(t->struct_members, l, m)
           {
              EL(1, "v = azy_value_struct_member_get(azy_value_struct, \"%s\");", m->strname ? m->strname : m->name);
+             /* ensure correct types */
+             if (m->type->name == ti)
+               EL(2, "azy_value_type_set(v, AZY_VALUE_TIME);");
+             else if (m->type->name == b64)
+               EL(2, "azy_value_type_set(v, AZY_VALUE_BASE64);");
              EL(1, "if (v && (!%s(v, &azy_user_type_tmp->%s)))", m->type->demarch_name, m->name);
              EL(2, "goto error;");
           }
@@ -264,6 +274,10 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(3, "return NULL;");
         EL(2, "}");
         NL;
+        if (t->item_type->name == ti)
+               EL(2, "azy_value_type_set(azy_item_value, AZY_VALUE_TIME);");
+        else if (t->item_type->name == b64)
+          EL(2, "azy_value_type_set(azy_item_value, AZY_VALUE_BASE64);");
         EL(2, "azy_value_array_push(azy_value_array, azy_item_value);");
         EL(1, "}");
         NL;
@@ -1784,6 +1798,8 @@ main(int argc, char *argv[])
    d = eina_stringshare_add("double");
    c = eina_stringshare_add("const char *");
    e = eina_stringshare_add("Eina_List *");
+   ti = eina_stringshare_add("time");
+   b64 = eina_stringshare_add("base64");
    azy_write();
 
    if (debug)
