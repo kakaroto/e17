@@ -11,6 +11,16 @@
 #include <Ecore.h>
 #include <E_Notify.h>
 
+#define S(X) #X
+
+#define CHECK(X) do { \
+  if (!X) \
+    { \
+       fprintf(stderr, "%s:%i: Error calling %s!\n", __FILE__, __LINE__, S(X)); \
+       exit(1); \
+    } \
+} while (0)
+
 void
 version(void)
 {
@@ -80,9 +90,9 @@ main(int argc, char **argv)
   int print_id = 0;
   E_Notification *n;
 
-  eina_init();
-  ecore_init();
-  e_notification_init();
+  CHECK(eina_init());
+  CHECK(ecore_init());
+  CHECK(e_notification_init());
   n = e_notification_new();
   e_notification_app_name_set(n, "e-notify-send");
   e_notification_timeout_set(n, -1);
