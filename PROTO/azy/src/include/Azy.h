@@ -252,6 +252,11 @@ typedef void *(*Azy_Content_Cb)(Azy_Value *, void **);
  */
 typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *cli, Azy_Content *ret_content, void *ret);
 
+/**
+ * @typedef Azy_Server_Module_Def_Cb
+ * Function which creates an #Azy_Server_Module_Def, used in azy_server_module_def_load().
+ */
+typedef Azy_Server_Module_Def *(*Azy_Server_Module_Def_Cb)(void);
 #define AZY_ERROR_NONE 0 /**< More explicit define for #Azy_Client_Return_Cb functions. */
 /** }@ */
 #ifdef __cplusplus
@@ -314,6 +319,8 @@ extern "C" {
                                                           Azy_Server_Module_Content_Cb cb);
    EAPI void                      azy_server_module_method_free(Azy_Server_Module_Method *method);
    EAPI Azy_Server_Module_Def    *azy_server_module_def_new(const char *name);
+   EAPI Azy_Server_Module_Def     *azy_server_module_def_load(const char *file,
+                                                              const char *modname);
    EAPI void                      azy_server_module_def_free(Azy_Server_Module_Def *def);
    EAPI void                      azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def *def,
                                                                      Azy_Server_Module_Cb init,

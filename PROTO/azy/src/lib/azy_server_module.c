@@ -283,6 +283,7 @@ azy_server_module_def_free(Azy_Server_Module_Def *def)
    eina_stringshare_del(def->name);
    EINA_LIST_FREE(def->methods, method)
      azy_server_module_method_free(method);
+   if (def->module) eina_module_free(def->module);
 
    AZY_MAGIC_SET(def, AZY_MAGIC_NONE);
    free(def);
@@ -587,4 +588,45 @@ azy_server_module_active_get(Azy_Server_Module *module)
    return !module->client->dead;
 }
 
+Azy_Server_Module_Def *
+azy_server_module_def_load(const char *file, const char *modname)
+{
+   Eina_Module *m;
+   Azy_Server_Module_Def *ret;
+   const char *name;
+   char buf[4096];
+   Azy_Server_Module_Def_Cb cb;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(file, NULL);
+
+   if (modname) name = modname;
+   else
+     { /* attempt to autodetect module name */
+        const char *s, *d;
+
+        s = strrchr(file, '/');
+        EINA_SAFETY_ON_NULL_RETURN_VAL(s, NULL);
+
+        d = strchr(++s, '.');
+        EINA_SAFETY_ON_NULL_RETURN_VAL(d, NULL);
+        EINA_SAFETY_ON_TRUE_RETURN_VAL(d - s + sizeof("_module_def") > sizeof(buf), NULL);
+        snprintf(buf, d - s + sizeof("_module_def"), "%s_module_def", s);
+        name = buf;
+     }
+
+   m = eina_module_new(file);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
+
+   EINA_SAFETY_ON_TRUE_GOTO(!eina_module_load(m), err);
+   cb = (Azy_Server_Module_Def_Cb)eina_module_symbol_get(m, name);
+   EINA_SAFETY_ON_TRUE_GOTO(!cb, err);
+   ret = cb();
+   EINA_SAFETY_ON_TRUE_GOTO(!ret, err);
+   ret->module = m;
+   return ret;
+
+err:
+   eina_module_free(m);
+   return NULL;
+}
 /** @} */

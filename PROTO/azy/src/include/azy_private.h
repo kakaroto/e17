@@ -302,6 +302,7 @@ struct Azy_Server_Module_Def
    Azy_Server_Module_Cb download;
    Azy_Server_Module_Cb upload;
    Eina_List *methods;
+   Eina_Module *module;
 };
 
 struct Azy_Server_Module_Method
