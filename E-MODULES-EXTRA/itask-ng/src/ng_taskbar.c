@@ -603,19 +603,8 @@ _border_icon_add(E_Border *bd, Evas *evas)
 
    if (bd->desktop)
      {
-        //o = e_util_desktop_icon_add(bd->desktop, 128, evas);
-	const char *path = efreet_icon_path_find(e_config->icon_theme, bd->desktop->icon, 128); 
-	if (path)
-	  {
-	     o = evas_object_image_filled_add(evas);
-	     evas_object_image_load_size_set(o, 128, 128);
-	     evas_object_image_file_set(o, path, NULL);
-	     evas_object_image_preload(o, 0); 
-	     /* o = e_util_desktop_icon_add(it->app, 128, e); */
-	     /* edje_object_part_swallow(it->base.obj, "e.swallow.content", o);
-	      * evas_object_show(o); */
-	     if (o) return o;
-	  }
+        o = e_util_desktop_icon_add(bd->desktop, 128, evas);
+	if (o) return o;
      }
 
    if (bd->client.netwm.icons)
@@ -815,8 +804,19 @@ _item_cb_mouse_up(Ngi_Item *item, Ecore_Event_Mouse_Button *ev)
      {
 	e_border_raise(bd);
      }
+   if (bd->focused)
+     {
+	char buf[1024];
+	E_Action *act = e_action_find("scale-windows");
 
-   e_border_focus_set(bd, 1, 1);
+	if (!act) return;
+	if (!bd->client.icccm.class) return;
+	  
+	snprintf(buf, 1024, "go_scale_class:%s", bd->client.icccm.class);
+	act->func.go(NULL, buf);
+     }
+   else
+     e_border_focus_set(bd, 1, 1);
 }
 
 
