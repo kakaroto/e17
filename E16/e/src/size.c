@@ -48,6 +48,66 @@ _ignore(const EWin * ewin, int type)
    return 0;
 }
 
+static void
+_get_span_x(const EWin * ewin, int type, EWin * const *lst, int num,
+	    int *px1, int *px2)
+{
+   int                 i, sx1 = *px1, sx2 = *px2;
+   int                 wx1, wx2, tx1, tx2;
+   EWin               *e;
+
+   wx1 = EoGetX(ewin);
+   wx2 = wx1 + EoGetW(ewin);
+
+   for (i = 0; i < num; i++)
+     {
+	e = lst[i];
+	if (e == ewin || _ignore(e, type) ||
+	    !SPANS_COMMON(EoGetY(ewin), EoGetH(ewin), EoGetY(e), EoGetH(e)))
+	   continue;
+
+	tx1 = EoGetX(e);
+	tx2 = tx1 + EoGetW(e);
+	if (tx2 <= wx1 && tx2 > sx1)
+	   sx1 = tx2;
+	else if (tx1 >= wx2 && tx1 < sx2)
+	   sx2 = tx1;
+     }
+
+   *px1 = sx1;
+   *px2 = sx2;
+}
+
+static void
+_get_span_y(const EWin * ewin, int type, EWin * const *lst, int num,
+	    int *py1, int *py2)
+{
+   int                 i, sy1 = *py1, sy2 = *py2;
+   int                 wy1, wy2, ty1, ty2;
+   const EWin         *e;
+
+   wy1 = EoGetY(ewin);
+   wy2 = wy1 + EoGetH(ewin);
+
+   for (i = 0; i < num; i++)
+     {
+	e = lst[i];
+	if (e == ewin || _ignore(e, type) ||
+	    !SPANS_COMMON(EoGetX(ewin), EoGetW(ewin), EoGetX(e), EoGetW(e)))
+	   continue;
+
+	ty1 = EoGetY(e);
+	ty2 = ty1 + EoGetH(e);
+	if (ty2 <= wy1 && ty2 > sy1)
+	   sy1 = ty2;
+	else if (ty1 >= wy2 && ty1 < sy2)
+	   sy2 = ty1;
+     }
+
+   *py1 = sy1;
+   *py2 = sy2;
+}
+
 void
 MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 {
@@ -298,38 +358,14 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 
 	if (ver)
 	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  pe = lst[i];
-		  if (pe == ewin || _ignore(pe, type) ||
-		      !SPANS_COMMON(x, w, EoGetX(pe), EoGetW(pe)))
-		     continue;
-
-		  if (((EoGetY(pe) + EoGetH(pe)) <= y)
-		      && ((EoGetY(pe) + EoGetH(pe)) >= y1))
-		     y1 = EoGetY(pe) + EoGetH(pe);
-		  else if (((y + h) <= EoGetY(pe)) && (y2 >= EoGetY(pe)))
-		     y2 = EoGetY(pe);
-	       }
+	     _get_span_y(ewin, type, lst, num, &y1, &y2);
 	     y = y1;
 	     h = y2 - y1;
 	  }
 
 	if (hor)
 	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  pe = lst[i];
-		  if (pe == ewin || _ignore(pe, type) ||
-		      !SPANS_COMMON(y, h, EoGetY(pe), EoGetH(pe)))
-		     continue;
-
-		  if (((EoGetX(pe) + EoGetW(pe)) <= x)
-		      && ((EoGetX(pe) + EoGetW(pe)) >= x1))
-		     x1 = EoGetX(pe) + EoGetW(pe);
-		  else if (((x + w) <= EoGetX(pe)) && (x2 >= EoGetX(pe)))
-		     x2 = EoGetX(pe);
-	       }
+	     _get_span_x(ewin, type, lst, num, &x1, &x2);
 	     x = x1;
 	     w = x2 - x1;
 	  }
