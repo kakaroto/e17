@@ -266,7 +266,16 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Coord elm_finger_size_get()
     void         elm_finger_size_set(evas.c_evas.Evas_Coord size)
 
+    # Focus handling
     void         elm_object_focus(evas.c_evas.Evas_Object *obj)
+    void         elm_object_unfocus(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool elm_object_focus_get(evas.c_evas.Evas_Object *obj)
+    void         elm_object_focus_allow_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enable)
+    evas.c_evas.Eina_Bool elm_object_focus_allow_get(evas.c_evas.Evas_Object *obj)
+    evas.c_evas.Eina_Bool elm_focus_highlight_enabled_get()
+    void         elm_focus_highlight_enabled_set(evas.c_evas.Eina_Bool enable)
+    evas.c_evas.Eina_Bool elm_focus_highlight_animate_get()
+    void         elm_focus_highlight_animate_set(evas.c_evas.Eina_Bool animate)
 
     void         elm_object_event_callback_add(evas.c_evas.Evas_Object *obj, Elm_Event_Cb func, const_void *data)
     void        *elm_object_event_callback_del(evas.c_evas.Evas_Object *obj, Elm_Event_Cb func, const_void *data)

@@ -119,6 +119,18 @@ cdef class Object(evas.c_evas.Object):
     def focus(self):
         elm_object_focus(self.obj)
 
+    def unfocus(self):
+        elm_object_unfocus(self.obj)
+        
+    def focus_get(self):
+        elm_object_focus_get(self.obj)
+
+    def focus_allow_set(self, allow):
+        elm_object_focus_allow_set(self.obj, allow)
+    
+    def focus_allow_get(self):
+        return elm_object_focus_allow_get(self.obj)
+    
     def scroll_hold_pop(self):
         """Pop the scroll hold by 1
 

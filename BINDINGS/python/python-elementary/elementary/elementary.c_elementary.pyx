@@ -116,6 +116,18 @@ def theme_overlay_add(item):
 def theme_extension_add(item):
     elm_theme_extension_add(NULL, item)
 
+def focus_highlight_enabled_get():
+    return elm_focus_highlight_enabled_get()
+
+def focus_highlight_enabled_set(enabled):
+    elm_focus_highlight_enabled_set(enabled)
+
+def focus_highlight_animate_get():
+    return elm_focus_highlight_animate_get()
+
+def focus_highlight_animate_set(animate):
+    elm_focus_highlight_animate_set(animate)
+
 cdef object _elm_widget_type_mapping
 
 _elm_widget_type_mapping = {}

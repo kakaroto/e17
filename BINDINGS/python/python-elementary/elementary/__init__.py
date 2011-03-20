@@ -28,7 +28,9 @@ from c_elementary import Object, Window, Background, Icon, \
     finger_size_get, finger_size_set, coords_finger_size_adjust, \
     theme_overlay_add, theme_extension_add, policy_set, policy_get, \
     tooltip_delay_set, tooltip_delay_get, cursor_engine_only_set, \
-    cursor_engine_only_get
+    cursor_engine_only_get, focus_highlight_enabled_get, \
+    focus_highlight_enabled_set, focus_highlight_animate_get, \
+    focus_highlight_animate_set
 
 ELM_WIN_BASIC = 0
 ELM_WIN_DIALOG_BASIC = 1
