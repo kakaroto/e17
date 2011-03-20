@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2003-2008 Kim Woelders
+ * Copyright (C) 2003-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -37,6 +37,16 @@
 #define MAX_AVAILABLE    1	/* Expand until don't cover */
 #define MAX_CONSERVATIVE 2	/* Expand until something */
 #define MAX_XINERAMA     3	/* Fill Xinerama screen */
+
+static int
+_ignore(const EWin * ewin, int type)
+{
+   if (ewin->state.iconified || EoIsFloating(ewin) ||
+       ewin->props.ignorearrange ||
+       (type == MAX_AVAILABLE && !ewin->props.never_use_area))
+      return 1;
+   return 0;
+}
 
 void
 MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
@@ -181,7 +191,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	  }
 	else
 	  {
-	     lst = EwinListGetAll(&num);
+	     lst = EwinListGetForDesk(&num, EoGetDesk(ewin));
 	  }
 
 	if (ver && hor && !old_ver && !old_hor)
@@ -210,11 +220,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 		      i, EoGetName(pe), left, right, top, bottom,
 		      x1, x2, y1, y2);
 
-		  if (pe == ewin || pe->state.iconified || EoIsFloating(pe) ||
-		      pe->props.ignorearrange ||
-		      (EoGetDesk(ewin) != EoGetDesk(pe) && !EoIsSticky(pe)) ||
-		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
-		      (type == MAX_AVAILABLE && !pe->props.never_use_area) ||
+		  if (pe == ewin || _ignore(pe, type) ||
 		      /* ignore windws that do not overlap with current search area */
 		      !(SPANS_COMMON(x1, x2 - x1, EoGetX(pe), EoGetW(pe)) &&
 			SPANS_COMMON(y1, y2 - y1, EoGetY(pe), EoGetH(pe))) ||
@@ -295,12 +301,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	     for (i = 0; i < num; i++)
 	       {
 		  pe = lst[i];
-		  if (pe == ewin ||
-		      pe->state.iconified || EoIsFloating(pe) ||
-		      pe->props.ignorearrange ||
-		      (EoGetDesk(ewin) != EoGetDesk(pe) && !EoIsSticky(pe)) ||
-		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
-		      (type == MAX_AVAILABLE && !pe->props.never_use_area) ||
+		  if (pe == ewin || _ignore(pe, type) ||
 		      !SPANS_COMMON(x, w, EoGetX(pe), EoGetW(pe)))
 		     continue;
 
@@ -319,12 +320,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	     for (i = 0; i < num; i++)
 	       {
 		  pe = lst[i];
-		  if (pe == ewin ||
-		      pe->state.iconified || EoIsFloating(pe) ||
-		      pe->props.ignorearrange ||
-		      (EoGetDesk(ewin) != EoGetDesk(pe) && !EoIsSticky(pe)) ||
-		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
-		      (type == MAX_AVAILABLE && !pe->props.never_use_area) ||
+		  if (pe == ewin || _ignore(pe, type) ||
 		      !SPANS_COMMON(y, h, EoGetY(pe), EoGetH(pe)))
 		     continue;
 
