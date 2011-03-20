@@ -26,6 +26,13 @@
 #include "hints.h"
 #include "screen.h"
 
+#define DEBUG_SIZE 0
+#if DEBUG_SIZE
+#define Dprintf Eprintf
+#else
+#define Dprintf(fmt...)
+#endif
+
 #define MAX_ABSOLUTE     0	/* Fill screen */
 #define MAX_AVAILABLE    1	/* Expand until don't cover */
 #define MAX_CONSERVATIVE 2	/* Expand until something */
@@ -37,6 +44,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
    int                 x, y, w, h, x1, x2, y1, y2, type, bl, br, bt, bb;
    EWin               *const *lst, *pe;
    int                 i, num;
+   int                 old_hor = ewin->state.maximized_horz != 0;
+   int                 old_ver = ewin->state.maximized_vert != 0;
 
    if (!ewin)
       return;
@@ -46,16 +55,49 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
    if (ewin->state.inhibit_max_ver && ver)
       return;
 
-   if (ewin->state.maximized_horz || ewin->state.maximized_vert)
+   if (!old_hor && !old_ver)
      {
-	EwinMoveResize(ewin, ewin->save_max.x, ewin->save_max.y,
-		       ewin->save_max.w, ewin->save_max.h);
 	ewin->save_max.x = EoGetX(ewin);
 	ewin->save_max.y = EoGetY(ewin);
 	ewin->save_max.w = ewin->client.w;
 	ewin->save_max.h = ewin->client.h;
-	ewin->state.maximized_horz = 0;
-	ewin->state.maximized_vert = 0;
+     }
+
+   /* Figure out target state */
+   if (hor && ver)
+     {
+	hor = ver = (old_hor && old_ver) ? 0 : 1;
+     }
+   else
+     {
+	hor = (hor) ? !old_hor : old_hor;
+	ver = (ver) ? !old_ver : old_ver;
+     }
+
+   ewin->state.maximizing = 1;
+   ewin->state.maximized_horz = hor;
+   ewin->state.maximized_vert = ver;
+
+   Dprintf("h/v old = %d/%d new=%d/%d\n", old_hor, old_ver, hor, ver);
+   if (!hor && !ver)
+     {
+	/* Restore regular state */
+	EwinMoveResize(ewin, ewin->save_max.x, ewin->save_max.y,
+		       ewin->save_max.w, ewin->save_max.h);
+	goto done;
+     }
+   if (old_ver == ver && old_hor && !hor)
+     {
+	/* Turn off horizontal maxsize */
+	EwinMoveResize(ewin, ewin->save_max.x, EoGetY(ewin),
+		       ewin->save_max.w, ewin->client.h);
+	goto done;
+     }
+   if (old_hor == hor && old_ver && !ver)
+     {
+	/* Turn off vertical maxsize */
+	EwinMoveResize(ewin, EoGetX(ewin), ewin->save_max.y,
+		       ewin->client.w, ewin->save_max.h);
 	goto done;
      }
 
@@ -84,13 +126,11 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	  {
 	     x = 0;
 	     w = WinGetW(VROOT);
-	     ewin->state.maximized_horz = 1;
 	  }
 	if (ver)
 	  {
 	     y = 0;
 	     h = WinGetH(VROOT);
-	     ewin->state.maximized_vert = 1;
 	  }
 	break;
 
@@ -144,6 +184,112 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	     lst = EwinListGetAll(&num);
 	  }
 
+	if (ver && hor && !old_ver && !old_hor)
+	  {
+	     for (i = 0; i < num;)
+	       {
+		  int                 x1n, x2n, y1n, y2n;
+		  int                 need_chop_y, need_chop_x;
+		  int                 top, bottom, left, right;
+
+		  pe = lst[i];
+		  x1n = x1;
+		  x2n = x2;
+		  y1n = y1;
+		  y2n = y2;
+
+		  left = EoGetX(pe);
+		  right = left + EoGetW(pe);
+		  top = EoGetY(pe);
+		  bottom = top + EoGetH(pe);
+
+		  need_chop_x = need_chop_y = 0;
+
+		  Dprintf
+		     ("trying window #%d %s x:%d-%d y:%d-%d vs x:%d-%d y:%d-%d\n",
+		      i, EoGetName(pe), left, right, top, bottom,
+		      x1, x2, y1, y2);
+
+		  if (pe == ewin || pe->state.iconified || EoIsFloating(pe) ||
+		      pe->props.ignorearrange ||
+		      (EoGetDesk(ewin) != EoGetDesk(pe) && !EoIsSticky(pe)) ||
+		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
+		      (type == MAX_AVAILABLE && !pe->props.never_use_area) ||
+		      /* ignore windws that do not overlap with current search area */
+		      !(SPANS_COMMON(x1, x2 - x1, EoGetX(pe), EoGetW(pe)) &&
+			SPANS_COMMON(y1, y2 - y1, EoGetY(pe), EoGetH(pe))) ||
+		      /* ignore windows that already overlap with the orig window */
+		      (SPANS_COMMON(x + 1, w - 2, EoGetX(pe), EoGetW(pe)) &&
+		       SPANS_COMMON(y + 1, h - 2, EoGetY(pe), EoGetH(pe))))
+		    {
+		       i++;
+		       continue;
+		    }
+
+		  if (right <= x + w / 2)
+		    {
+		       need_chop_x = 1;
+		       x1n = right;
+		    }
+		  if (left >= x + w / 2)
+		    {
+		       need_chop_x = 1;
+		       x2n = left;
+		    }
+		  if (bottom <= y + h / 2)
+		    {
+		       need_chop_y = 1;
+		       y1n = bottom;
+		    }
+		  if (top >= y + h / 2)
+		    {
+		       need_chop_y = 1;
+		       y2n = top;
+		    }
+		  Dprintf("chop v: %d chop_x:%d\n",
+			  (y2n - y1n) * (x2 - x1), (y2 - y1) * (x2n - x1n));
+
+		  if (!(need_chop_y || need_chop_x))
+		    {
+		       Dprintf("no chop\n");
+		       i++;
+		       continue;
+		    }
+		  if (!need_chop_x)
+		    {
+		       Dprintf("chop_v\n");
+		       y2 = y2n;
+		       y1 = y1n;
+		    }
+		  else if (!need_chop_y)
+		    {
+		       Dprintf("chop_h\n");
+		       x2 = x2n;
+		       x1 = x1n;
+		    }
+		  /* greedily chop the minimum area either from the sides or top/bottom
+		   * We may need to do a final cleanup pass below to escape from a
+		   * local local minima of the area decision function */
+		  else if ((y2 - y1) * (x2n - x1n) > (y2n - y1n) * (x2 - x1))
+		    {
+		       Dprintf("___chop_h\n");
+		       x2 = x2n;
+		       x1 = x1n;
+		    }
+		  else
+		    {
+		       Dprintf("___chop_v\n");
+		       y2 = y2n;
+		       y1 = y1n;
+		    }
+	       }
+	     x = x1;
+	     w = x2 - x1;
+	     y = y1;
+	     h = y2 - y1;
+	     break;
+	  }
+
 	if (ver)
 	  {
 	     for (i = 0; i < num; i++)
@@ -166,8 +312,6 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	       }
 	     y = y1;
 	     h = y2 - y1;
-
-	     ewin->state.maximized_vert = 1;
 	  }
 
 	if (hor)
@@ -192,8 +336,6 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	       }
 	     x = x1;
 	     w = x2 - x1;
-
-	     ewin->state.maximized_horz = 1;
 	  }
 
 	break;
@@ -207,14 +349,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
    if (h < 10)
       h = 10;
 
-   ewin->save_max.x = EoGetX(ewin);
-   ewin->save_max.y = EoGetY(ewin);
-   ewin->save_max.w = ewin->client.w;
-   ewin->save_max.h = ewin->client.h;
-
-   ewin->state.maximizing = 1;
    EwinMoveResize(ewin, x, y, w, h);
-   ewin->state.maximizing = 0;
  done:
+   ewin->state.maximizing = 0;
    HintsSetWindowState(ewin);
 }
