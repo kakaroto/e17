@@ -983,7 +983,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
 
              current_modified_time = __imlib_FileModDate(file);
              /* if the file on disk is newer than the cached one */
-             if (current_modified_time > im->moddate)
+             if (current_modified_time != im->moddate)
                {
                   /* invalidate image */
                   SET_FLAG(im->flags, F_INVALID);
