@@ -1873,6 +1873,9 @@ _scale_place_slotted()
 
 	EINA_LIST_FOREACH(slots, ll, slot2)
 	  {
+	     if (!slot2->it)
+	       continue;
+
 	     if (slot == slot2)
 	       continue;
 
@@ -1880,7 +1883,10 @@ _scale_place_slotted()
 	       continue;
 
 	     if (_slot_dist(slot->it, slot) > _slot_dist(slot2->it, slot2))
-	       slot->it = NULL;
+	       {
+		  slot->it = NULL;
+		  break;
+	       }	     
 	     else
 	       slot2->it = NULL;
 	  }
