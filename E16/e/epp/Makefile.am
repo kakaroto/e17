@@ -34,7 +34,7 @@ epp_CPPFLAGS = -I$(top_builddir) $(CWARNFLAGS)
 DEFS= \
 -DHAVE_STRERROR \
 -DFATAL_EXIT_CODE=1 \
--DSUCCESS_EXIT_CODE=1 \
+-DSUCCESS_EXIT_CODE=0 \
 -DGCC_INCLUDE_DIR=\"/usr/include\" \
 -DGPLUSPLUS_INCLUDE_DIR=\"/usr/include\" \
 -DTOOL_INCLUDE_DIR=\"/usr/bin\" \
