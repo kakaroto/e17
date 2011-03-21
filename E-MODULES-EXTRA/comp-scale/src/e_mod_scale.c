@@ -174,7 +174,7 @@ _scale_redraw(void *data)
    if (scale > 1.0) scale = 1.0;
    if (scale < 0.0) scale = 0.0;
 
-   in = log(10) * scale;
+   in = log(14) * scale;
    in = 1.0 / exp(in*in);
 
    _scale_place_windows(in);
@@ -233,7 +233,7 @@ _scale_redraw(void *data)
    if (scale < 1.0 && scale > 0.0)
      return 1;
 
-   if (scale == 0.0)
+   if ((!scale_state) && (scale == 0.0))
      _scale_finish();
    else
      _scale_place_windows(0.0);
@@ -716,7 +716,7 @@ _scale_switch(const char *params)
 	return;
      }
 
-   if ((!sel->next) || (!sel->prev))
+   if ((!sel) || (!sel->next) || (!sel->prev))
      return;
 
    if (!strcmp(params, "_next"))
@@ -903,7 +903,12 @@ _scale_run(E_Manager *man)
    if (!e) return EINA_FALSE;
 
    zone = e_util_zone_current_get(e_manager_current_get());
+   if (!zone)
+     return EINA_FALSE;
+
    current_desk = e_desk_current_get(zone);
+   if (!current_desk)
+     return EINA_FALSE;
 
    start_time = ecore_time_get();
 
@@ -969,12 +974,10 @@ _scale_run(E_Manager *man)
    if (!scale_conf->fade_popups)
      {
 	e_zone_useful_geometry_get(zone, &use_x, &use_y, &use_w, &use_h);
-	use_x -= zone->x;
-	use_y -= zone->y;
-	use_w += use_x - spacing*2;
-	use_h += use_y - spacing*2;
-	use_x += spacing;
-	use_y += spacing;
+	use_x = use_x - zone->x + spacing;
+	use_y = use_y - zone->y + spacing;
+	use_w += use_x - spacing;
+	use_h += use_y - spacing;
      }
    else
      {
@@ -1004,9 +1007,17 @@ _scale_run(E_Manager *man)
    if ((scale_conf->grow && !show_all_desks) ||
        (scale_conf->desks_grow && show_all_desks))
      {
+	if ((scale_conf->tight && !show_all_desks) ||
+	    (scale_conf->desks_tight && show_all_desks))
+	  spacing += 5;
+	
 	i = 0;
    	while (i++ < GROW_RUNS && _scale_grow());
 	DBG("grow %d", i);
+
+	if ((scale_conf->tight && !show_all_desks) ||
+	    (scale_conf->desks_tight && show_all_desks))
+	  spacing -= 5;
      }
 
    if ((scale_conf->tight && !show_all_desks) ||

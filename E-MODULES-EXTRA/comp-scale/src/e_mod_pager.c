@@ -143,9 +143,17 @@ _pager_redraw(void *data)
    if (scale > 1.0) scale = 1.0;
    if (scale < 0.0) scale = 0.0;
 
-   in = log(10) * scale;
-   in = 1.0 / exp(in*in);
-
+   if (scale_state)
+     {
+	in = log(14) * scale;
+	in = 1.0 / exp(in*in);
+     }
+   else
+     {
+	in = log(14) * (1.0 - scale);
+	in = 1.0 - (1.0 / exp(in*in));
+     }
+   
    if (in > 1.0) in = 1.0;
    if (in < 0.0) in = 0.0;
 
@@ -193,7 +201,9 @@ _pager_redraw(void *data)
      return 1;
 
    if (scale == 0.0)
-     _pager_finish();
+     {
+	_pager_finish();
+     }
    else
      {
 	_pager_place_windows(0.0);
@@ -304,6 +314,9 @@ _pager_finish()
    EINA_LIST_FREE(handlers, handler)
      ecore_event_handler_del(handler);
 
+   if (scale_animator)
+     ecore_animator_del(scale_animator);
+   scale_animator = NULL;
    evas_object_del(zone_clip);
    zone_clip = NULL;
    e_msg_handler_del(msg_handler);
@@ -357,7 +370,9 @@ _pager_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
      {
 	selected_item = it;
 
-	_pager_desk_select(it->desk);
+	if (current_desk != it->desk)
+	  _pager_desk_select(it->desk);
+
 	_pager_out();
 	return;
      }
@@ -967,8 +982,13 @@ _pager_run(E_Manager *man)
    if (!e) return EINA_FALSE;
 
    zone = e_util_zone_current_get(man);
+   if (!zone)
+     return EINA_FALSE;
+   
    current_desk = e_desk_current_get(zone);
-
+   if (!current_desk)
+     return EINA_FALSE;
+   
    input_win = ecore_x_window_input_new(zone->container->win,
 					0, 0, 1, 1);
    ecore_x_window_show(input_win);
@@ -1086,6 +1106,12 @@ pager_run(E_Manager *man, const char *params, int init_method)
 	if (input_win)
 	  return ret;
 
+	if (scale_animator)
+	  {
+	     ecore_animator_del(scale_animator);
+	     scale_animator = NULL;
+	  }
+	
 	ret = _pager_run(man);
 
 	if (ret)
