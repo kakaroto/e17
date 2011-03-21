@@ -12,7 +12,7 @@
   <td align=center><input type="submit" value="Search" style="width:120px"></td>
  </tr>
 </table>
-<input type=hidden name="sitesearch" value="enlightenment.org">
+<input type=hidden name="sitesearch" value="docs.enlightenment.org/auto">
 </form>
 </p></center>
 
