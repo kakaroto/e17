@@ -1,6 +1,6 @@
 #!/bin/bash
 DIR="$1"
-SCRIPTDIR="$0"
+SCRIPTDIR=$(dirname "$0")
 PREFIX="$HOME/.ecrustify"
 
 if which ecrustify &> /dev/null ;then
@@ -20,7 +20,7 @@ if [[ -z "$DIR" ]]; then
     echo " Not there or wrong version. Need to install it in ~/.ecrustify"
     echo " Doing that now."
     echo "==================================================================="
-    pushd $(dirname $SCRIPTDIR)
+    pushd "$SCRIPTDIR"
     pushd ecrustify
       ./autogen.sh --prefix=$PREFIX
       make
