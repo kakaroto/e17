@@ -22,7 +22,7 @@ if [[ -z "$DIR" ]]; then
     echo "==================================================================="
     pushd $(dirname $SCRIPTDIR)
     pushd ecrustify
-      ./configure --prefix=$PREFIX
+      ./autogen.sh --prefix=$PREFIX
       make
       make install
     popd
