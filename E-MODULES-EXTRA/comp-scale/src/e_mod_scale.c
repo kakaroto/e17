@@ -530,6 +530,9 @@ _scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
      }
    else
      {
+	if (!scale_state)
+	  return;
+	
 	if (it->bd->maximized || it->bd->fullscreen || it->bd->lock_user_location)
 	  return;
 
