@@ -530,20 +530,24 @@ _pager_win_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	selected_item = NULL;
      }
 
-   edje_object_signal_emit(it->o, "mouse,in", "e");
-   selected_item = it;
+   if (it != selected_item)
+     {
+	edje_object_signal_emit(it->o, "mouse,in", "e");
+	selected_item = it;
+     }
 }
 
 static void
 _pager_win_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   /* Item *it = data; */
+   Item *it = data;
+
    if (!mouse_activated)
      return;
-
-   if (selected_item)
+   
+   if (selected_item == it)
      {
-	edje_object_signal_emit(selected_item->o, "mouse,out", "e");
+	edje_object_signal_emit(it->o, "mouse,out", "e");	
 	selected_item = NULL;
      }
 }

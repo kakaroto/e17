@@ -20,7 +20,7 @@ struct _Item
 
   Eina_Bool was_hidden;
   Eina_Bool fade;
-  
+
   double x;
   double y;
   double w;
@@ -48,6 +48,8 @@ struct _Item
   Item *next;
   Item *prev;
 
+  int mouse_down;
+  int moved;
 };
 
 struct _Slot
@@ -66,6 +68,7 @@ static void _scale_win_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *
 static void _scale_win_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _scale_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _scale_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _scale_win_cb_delorig(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static Item *_scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk);
@@ -113,6 +116,7 @@ static int warp_x, warp_y, warp_pointer;
 static double warp_start;
 static Ecore_Animator *warp_animator = NULL;
 static Evas_Object *zone_clip = NULL;
+E_Border *bd_move = NULL;
 
 static void
 _scale_place_windows(double scale)
@@ -132,6 +136,14 @@ _scale_place_windows(double scale)
      }
 }
 
+static void
+_scale_warp_to_win(Item *it, double advance)
+{
+   ecore_x_pointer_warp(it->bd->zone->container->win,
+			(double)warp_x * (1.0 - advance) + (double)(it->x + it->w/2) * advance,
+			(double)warp_y * (1.0 - advance) + (double)(it->y + it->h/2) * advance);
+}
+
 static Eina_Bool
 _scale_warp_pointer(void *data)
 {
@@ -141,11 +153,7 @@ _scale_warp_pointer(void *data)
      {
 	double in = (ecore_time_get() - warp_start) / 0.25;
 	if (in > 1.0) in = 1.0;
-
-	ecore_x_pointer_warp(it->bd->zone->container->win,
-			     (double)warp_x * (1.0 - in) + (double)(it->x + it->w/2) * in,
-			     (double)warp_y * (1.0 - in) + (double)(it->y + it->h/2) * in);
-
+	_scale_warp_to_win(it, in);
 	if (in < 1.0)
 	  return ECORE_CALLBACK_RENEW;
      }
@@ -192,7 +200,7 @@ _scale_redraw(void *data)
 		  double bx = it->bd_x  - it->x;
 		  double by = it->bd_y  - it->y;
 
-		  a = (1.0 - sqrt(ax*ax + ay*ay) / sqrt(bx*bx + by*by)) * 255.0;
+		  a = (1.0 - (ax*ax + ay*ay) / (bx*bx + by*by)) * 255.0;
 	       }
 
 	     evas_object_color_set(it->o, a, a, a, a);
@@ -200,27 +208,22 @@ _scale_redraw(void *data)
      }
 
    if (warp_pointer && selected_item)
-     {
-	it = selected_item;
-	ecore_x_pointer_warp(it->bd->zone->container->win,
-			     (double)warp_x * (1.0 - in) + (double)(it->bd->x + it->bd->w/2) * in,
-			     (double)warp_y * (1.0 - in) + (double)(it->bd->y + it->bd->h/2) * in);
-     }
+     _scale_warp_to_win(selected_item, in);
 
    a = 255.0 * in;
-   
+
    EINA_LIST_FOREACH(items_fade, l, it)
      {
 	if ((it->bd->desk == current_desk) || (it->bd->sticky))
-	  evas_object_color_set(it->o, a, a, a, a);	
+	  evas_object_color_set(it->o, a, a, a, a);
      }
-   
+
    if (scale_conf->fade_popups)
      {
 	EINA_LIST_FOREACH(popups, l, it)
 	  evas_object_color_set(it->o_win, a, a, a, a);
      }
-   
+
    if (scale_conf->fade_desktop && background)
      {
 	a = 255.0 * (0.5 + in/2.0);
@@ -324,7 +327,8 @@ _scale_out(int mode)
 	evas_object_raise(it->o);
 	e_border_raise(it->bd);
 
-	if ((init_method == GO_KEY) && (e_config->focus_policy != E_FOCUS_CLICK))
+	if ((!it->moved) &&(init_method == GO_KEY) &&
+	    (e_config->focus_policy != E_FOCUS_CLICK))
 	  {
 	     warp_pointer = 1;
 	     ecore_x_pointer_xy_get(it->bd->zone->container->win, &warp_x, &warp_y);
@@ -349,10 +353,6 @@ _scale_finish()
    Item *it;
    E_Desk *desk;
 
-   e_grabinput_release(input_win, input_win);
-   ecore_x_window_free(input_win);
-   input_win = 0;
-
    desk = e_desk_current_get(zone);
 
    if (selected_item &&  selected_item->bd->desk != desk)
@@ -374,7 +374,11 @@ _scale_finish()
      }
 
    EINA_LIST_FREE(items, it)
-     _scale_win_del(it);
+     {
+	if (it->moved) bd_move = it->bd;
+
+	_scale_win_del(it);
+     }
 
    EINA_LIST_FREE(items_fade, it)
      _scale_win_del(it);
@@ -389,13 +393,22 @@ _scale_finish()
       Eina_List *l;
       E_Manager_Comp_Source *src;
       E_Manager *man = zone->container->manager;
-      
+
       EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
 	e_manager_comp_src_hidden_set(man, src, EINA_FALSE);
    }
-   
-   EINA_LIST_FREE(handlers, handler)
-     ecore_event_handler_del(handler);
+
+   e_manager_comp_evas_update(e_manager_current_get());
+
+   if (!bd_move)
+     {
+	EINA_LIST_FREE(handlers, handler)
+	  ecore_event_handler_del(handler);
+
+	e_grabinput_release(input_win, input_win);
+	ecore_x_window_free(input_win);
+	input_win = 0;
+     }
 
    evas_object_del(zone_clip);
    zone_clip = NULL;
@@ -407,9 +420,7 @@ _scale_finish()
    background = NULL;
    send_to_desk = EINA_FALSE;
    show_all_desks = EINA_FALSE;
-   eina_stringshare_replace(&match_class, NULL); 
-   
-   e_manager_comp_evas_update(e_manager_current_get());
+   eina_stringshare_replace(&match_class, NULL);
 }
 
 static void
@@ -447,7 +458,11 @@ _scale_win_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
      return;
 
    if (it == selected_item)
-     edje_object_signal_emit(it->o, "mouse,out", "e");
+     {
+	edje_object_signal_emit(it->o, "mouse,out", "e");
+	it->mouse_down = EINA_FALSE;
+	selected_item = NULL;
+     }
 }
 
 static void
@@ -458,6 +473,25 @@ _scale_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
 
    if (!scale_state)
      return;
+
+   it->mx = ev->canvas.x;
+   it->my = ev->canvas.y;
+   it->mouse_down = EINA_TRUE;
+}
+
+static void
+_scale_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Event_Mouse_Up *ev = event_info;
+   Item *it = data;
+
+   if (!scale_state)
+     return;
+
+   if (!it->mouse_down)
+     return;
+
+   it->mouse_down = EINA_FALSE;
 
    if (it->bd->desk == e_desk_current_get(it->bd->zone))
      {
@@ -477,9 +511,41 @@ _scale_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
 }
 
 static void
-_scale_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   /* Item *it = data; */
+   Evas_Event_Mouse_Move *ev = event_info;
+   Item *it = data;
+   int x, y;
+   E_Desk *desk, *desk2;
+
+   if (!it || !it->mouse_down)
+     return;
+
+   if (it->bd->maximized || it->bd->fullscreen || it->bd->lock_user_location)
+     return;
+   
+   if (it->moved)
+     {
+	it->bd_x += (ev->cur.canvas.x - ev->prev.canvas.x);
+	it->bd_y += (ev->cur.canvas.y - ev->prev.canvas.y);
+	e_border_move(it->bd, it->bd_x, it->bd_y);
+
+	mouse_x = ev->cur.canvas.x;
+	mouse_y = ev->cur.canvas.y;
+     }
+   else
+     {
+	if (abs(ev->cur.canvas.x - it->mx) +
+	    abs(ev->cur.canvas.y - it->my) < 15)
+	  return;
+
+	it->moved = EINA_TRUE;
+
+	_scale_out(2);
+
+	it->bd_x = ev->cur.canvas.x - (ev->cur.canvas.x - it->bd_x);
+	it->bd_y = ev->cur.canvas.y - (ev->cur.canvas.y - it->bd_y);
+     }
 }
 
 static void
@@ -534,7 +600,7 @@ _scale_win_del(Item *it)
 	     e_border_hide(it->bd, 1);
 	     evas_object_hide(it->cw->shobj);
 	  }
-	
+
 	evas_object_del(it->o_win);
 	evas_object_del(it->o);
 
@@ -553,7 +619,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 {
    Item *it;
    E_Comp_Win *cw = (void*)src;
-   
+
    if (!e_manager_comp_src_image_get(man, src))
      return NULL;
 
@@ -576,7 +642,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	  {
 	     if ((cw->pop) && (cw->pop->zone != zone))
 	       return NULL;
-	     
+
 	     it = E_NEW(Item, 1);
 	     it->man = man;
 	     it->o_win = e_manager_comp_src_shadow_get(man, src);
@@ -601,7 +667,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	if (cw->bd->iconic)
 	  return NULL;
      }
-   
+
    it = E_NEW(Item, 1);
    it->scale = 1.0;
 
@@ -642,17 +708,17 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->cur_h = it->h;
 
    if (!it->bd->visible)
-     {	
+     {
 	if (it->bd->iconic)
 	  it->was_hidden = EINA_TRUE;
 
 	e_border_show(it->bd);
      }
-   
+
    /* if (it->bd->shaded)
     *   e_border_unshade(it->bd, );  */
-   
-   edje_object_part_text_set(it->o, "e.text.label", e_border_name_get(it->bd)); 
+
+   edje_object_part_text_set(it->o, "e.text.label", e_border_name_get(it->bd));
    edje_object_signal_emit(it->o, "show", "e");
 
    if (match_class)
@@ -663,13 +729,13 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	     items_fade = eina_list_append(items_fade, it);
 	     evas_object_move(it->o, it->bd->x, it->bd->y);
 	     evas_object_resize(it->o, it->cw->pw, it->cw->ph);
-	     evas_object_pass_events_set(it->o, 1); 
+	     evas_object_pass_events_set(it->o, 1);
 	     if (it->bd->desk != desk)
 	       evas_object_color_set(it->o, 0, 0, 0, 0);
 	     return it;
 	  }
      }
-   
+
    evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN,
 				  _scale_win_cb_mouse_in, it);
 
@@ -682,13 +748,11 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_UP,
 				  _scale_win_cb_mouse_up, it);
 
-   /* evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_MOVE,
-    * 				  _scale_win_cb_mouse_move, it); */
+   evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_MOVE,
+   				  _scale_win_cb_mouse_move, it);
 
-   printf("scale %s\n", e_border_name_get(it->bd));
-   
    items = eina_list_append(items, it);
-   
+
    return it;
 }
 
@@ -946,12 +1010,12 @@ _scale_run(E_Manager *man)
    zone_clip = evas_object_rectangle_add(e);
    evas_object_move(zone_clip, zone->x, zone->y);
    evas_object_resize(zone_clip, zone->w, zone->h);
-   evas_object_show(zone_clip); 
+   evas_object_show(zone_clip);
 
    EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
      {
 	Item *it = _scale_win_new(e, man, src, current_desk);
-	if (it) evas_object_clip_set(it->o, zone_clip); 
+	if (it) evas_object_clip_set(it->o, zone_clip);
      }
 
    if (eina_list_count(items) < 1)
@@ -1010,7 +1074,7 @@ _scale_run(E_Manager *man)
 	if ((scale_conf->tight && !show_all_desks) ||
 	    (scale_conf->desks_tight && show_all_desks))
 	  spacing += 5;
-	
+
 	i = 0;
    	while (i++ < GROW_RUNS && _scale_grow());
 	DBG("grow %d", i);
@@ -1066,7 +1130,7 @@ _scale_run(E_Manager *man)
 	it->bd_x += zone->x;
 	it->bd_y += zone->y;
      }
-   
+
    DBG("time: %f\n", ecore_time_get() - start_time);
 
    it = NULL;
@@ -1134,8 +1198,19 @@ _scale_cb_mouse_move(void *data, int type, void *event)
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
 
-   if (!scale_state)
-     return ECORE_CALLBACK_PASS_ON;
+   /* if (!scale_state)
+    *   return ECORE_CALLBACK_PASS_ON; */
+
+   if (bd_move)
+     {
+	e_border_move(bd_move,
+		      bd_move->x + (ev->x - mouse_x),
+		      bd_move->y + (ev->y - mouse_y));
+	mouse_x = ev->x;
+	mouse_y = ev->y;
+
+	return ECORE_CALLBACK_PASS_ON;
+     }
 
    if (warp_animator)
      return ECORE_CALLBACK_PASS_ON;
@@ -1193,6 +1268,20 @@ _scale_cb_mouse_up(void *data, int type, void *event)
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
 
+   if (bd_move)
+     {
+	Ecore_Event_Handler *handler;
+	EINA_LIST_FREE(handlers, handler)
+	  ecore_event_handler_del(handler);
+
+	e_grabinput_release(input_win, input_win);
+	ecore_x_window_free(input_win);
+	input_win = 0;
+	bd_move = NULL;
+
+	return ECORE_CALLBACK_PASS_ON;
+     }
+
    evas_event_feed_mouse_up((Evas *)data, ev->buttons, flags, ev->timestamp, NULL);
 
    return ECORE_CALLBACK_PASS_ON;
@@ -1203,7 +1292,7 @@ scale_run(E_Manager *man, const char *params, int _init_method)
 {
    Eina_Bool ret = EINA_FALSE;
    const char *opt = params;
-   
+
    if (!strncmp(params, "go_scale_all", 12))
      {
 	scale_layout = scale_conf->desks_layout_mode;
@@ -1214,7 +1303,7 @@ scale_run(E_Manager *man, const char *params, int _init_method)
      {
 	if (scale_state)
 	  return ret;
-	
+
 	scale_layout = 1; /* slotted */
 	show_all_desks = EINA_TRUE;
 	opt = params+15;
@@ -1230,7 +1319,7 @@ scale_run(E_Manager *man, const char *params, int _init_method)
      {
 	return ret;
      }
-   
+
    init_method = _init_method;
 
    if (init_method == GO_KEY)
@@ -1897,7 +1986,7 @@ _scale_place_slotted()
 	       {
 		  slot->it = NULL;
 		  break;
-	       }	     
+	       }
 	     else
 	       slot2->it = NULL;
 	  }

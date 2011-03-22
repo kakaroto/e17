@@ -127,6 +127,7 @@ collections
 				name: "e.swallow.win";
 				type: SWALLOW;
 				clip_to: "clipper";
+				/* mouse_events: 0; */
  				description {
 					state: "default" 0.0;
 					color: 255 255 255 255;
@@ -225,22 +226,22 @@ collections
 				transition: SINUSOIDAL 0.4;
 				target: "clipper";
 			}
-			/* program {
-			 * 	name: "mouse_in2";
-			 * 	signal: "mouse,in";
-			 * 	source: "e";
-			 * 	action: STATE_SET "show" 0.0;
-			 * 	transition: SINUSOIDAL 0.5;
-			 * 	target: "text.clipper";
-			 * } */
-			/* program {
-			 * 	name: "mouse_out2";
-			 * 	signal: "mouse,out";
-			 * 	source: "e";
-			 * 	action: STATE_SET "default" 0.0;
-			 * 	transition: SINUSOIDAL 0.5;
-			 * 	target: "text.clipper";
-			 * } */
+			program {
+				name: "mouse_in2";
+				signal: "mouse,in";
+				source: "e";
+				action: STATE_SET "show" 0.0;
+				transition: SINUSOIDAL 0.5;
+				target: "text.clipper";
+			}
+			program {
+				name: "mouse_out2";
+				signal: "mouse,out";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				transition: SINUSOIDAL 0.5;
+				target: "text.clipper";
+			}
 			program {
 				name: "hide";
 				signal: "hide";
@@ -249,14 +250,14 @@ collections
 				transition: SINUSOIDAL 0.2;
 				target: "clipper";
 			}
-			/* program {
-			 * 	name: "show";
-			 * 	signal: "show";
-			 * 	source: "e";
-			 * 	action: STATE_SET "default" 0.0;
-			 * 	transition: SINUSOIDAL 0.2;
-			 * 	target: "text.clipper";
-			 * } */
+			program {
+				name: "show";
+				signal: "show";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				transition: SINUSOIDAL 0.2;
+				target: "text.clipper";
+			}
 		}
 	}
 	group {
