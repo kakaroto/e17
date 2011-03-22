@@ -12,11 +12,13 @@
 #include <Eina.h>
 #include <Elementary.h>
 
+#include "ensure.h"
 #include "enobj.h"
 #include "enasn.h"
-#include "ensure.h"
 #include "parser.h"
 #include "display.h"
+#include "enconfig.h"
+#include "hidden.h"
 
 struct error {
 	const char *msg;
@@ -28,38 +30,14 @@ struct asninfo {
 	struct assurance *asn;
 };
 
-struct severityinfo {
-	const char *name;
-	const char *icon;
-	Elm_Genlist_Item *item;
-	Eina_List *asninfo;
-} severity[] = {
-	[ENSURE_CRITICAL] = {
-		.name = "Critical",
-	},
-	[ENSURE_BUG] = {
-		.name = "Bug",
-	},
-	[ENSURE_BADFORM] = {
-		.name = "Bad Form",
-	},
-	[ENSURE_POLICY] = {
-		.name = "Local Policy",
-	},
-	[ENSURE_PEDANTIC] = {
-		.name = "Pedantry",
-	}
-};
 
 
 
 
-
-Evas_Object *window_add(char **argv);
+Evas_Object *window_add(struct ensure *ensure, char **argv);
 
 static void on_run(void *data, Evas_Object *button, void *event_info);
 static void on_check(void *data, Evas_Object *button, void *event_info);
-static void on_switch_config(void *data, Evas_Object *button, void *event_info);
 
 
 static void dochild(char **args, int fd);
@@ -67,31 +45,15 @@ static void dochild(char **args, int fd);
 static int signal_init(void);
 static Eina_Bool signalfd_child(void *data, Ecore_Fd_Handler *fd_handler);
 
-static void config_add_classes(Evas_Object *gl);
-static void cfg_sel(void *data, Evas_Object *obj, void *event);
-static void cfg_exp(void *data, Evas_Object *obj, void *event);
-static void generic_contract(void *data, Evas_Object *obj, void *event);
-static void generic_exp_req(void *data, Evas_Object *obj, void *event);
-static void generic_con_req(void *data, Evas_Object *obj, void *event);
 
 static void enobj_select(void *data, Evas_Object *obj, void *event);
 //static void enobj_expand(void *data, Evas_Object *obj, void *event);
 static char *enobj_label_get(void *data, Evas_Object *, const char *);
 static Evas_Object *enobj_icon_get(void *data, Evas_Object *, const char *);
 static Eina_Bool enobj_state_get(void *data, Evas_Object *, const char *);
+void asn_del(void *data ensure_unused, Evas_Object *obj ensure_unused);
 
-
-static char *cfg_label_get(void *, Evas_Object *, const char *part);
-static Evas_Object *cfg_icon_get(void *, Evas_Object *, const char *part);
-static Eina_Bool cfg_state_get(void *, Evas_Object *, const char *part);
-static void cfg_del(void *, Evas_Object *obj);
-
-static char *asn_label_get(void *data, Evas_Object *, const char *);
-static Evas_Object *asn_icon_get(void *data, Evas_Object *, const char *);
-static Eina_Bool asn_state_get(void *data, Evas_Object *, const char *);
-static void asn_del(void *data, Evas_Object *obj);
-static void asn_select(void *data, Evas_Object *obj, void *event);
-static void asn_select_toggle(void *data, Evas_Object *obj, void *event);
+void asn_select_toggle(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused);
 
 static char *enwin_label_get(void *data, Evas_Object *, const char *);
 //static Evas_Object *enwin_icon_get(const void *data, Evas_Object *, const char *);
@@ -99,7 +61,19 @@ static Eina_Bool enwin_state_get(void *data, Evas_Object *, const char *);
 static void enwin_select(void *data, Evas_Object *obj, void *event);
 static void enwin_del(void *data, Evas_Object *obj);
 
+static void view_set_error(void *, Evas_Object *, void *);
+static void view_set_object(void *, Evas_Object *, void *);
 
+static struct views {
+	const char *label;
+	void (*cb)(void *, Evas_Object *, void *);
+} views[] = {
+	{ "Errors", view_set_error },
+	{ "Config", view_set_config },
+	{ "Object Tree", view_set_object },
+	{ "Hidden", view_set_hidden },
+};
+#define N_VIEWS	((int)(sizeof(views)/sizeof(views[0])))
 
 static Evas_Object *runbutton;
 static Evas_Object *checkbutton;
@@ -113,6 +87,7 @@ bool changedir = false;
 #include "enedj.h"
 int
 elm_main(int argc, char **argv){
+	struct ensure *ensure;
 
         if (argc < 2){
 		printf("Usage: %s  [-c] <program>\n", argv[0]);
@@ -120,6 +95,10 @@ elm_main(int argc, char **argv){
 
                 exit(0);
         }
+
+	ensure = calloc(1,sizeof(struct ensure));
+	ensure->magic = ENSURE_MAGIC;
+	ensure->current_view = ENVIEW_NONE;
 
 	/* FIXME: this isn't implemented  */
 	if (streq(argv[1],"-c")){
@@ -129,11 +108,15 @@ elm_main(int argc, char **argv){
 		argc --;
 	}
 
-        mainwindow = window_add(argv);
+        mainwindow = window_add(ensure, argv);
 
 	signal_init();
 
 	enasn_load(NULL);
+
+hidden_object_add(ensure, (void *)0x44556677);
+hidden_object_add(ensure, (void *)0x99887766);
+hidden_object_add(ensure, (void *)0x11223344);
 
         elm_list_go(mainwindow);
         elm_run();
@@ -145,8 +128,10 @@ ELM_MAIN()
 
 
 Evas_Object *
-window_add(char **args){
-        Evas_Object *win,*bg,*bx,*ctrls,*run,*check,*gl,*gl2,*config;
+window_add(struct ensure *ensure, char **args){
+        Evas_Object *win,*bg,*bx,*ctrls,*run,*check,*gl;
+	Evas_Object *viewbx, *view, *lbl;
+	int i;
 
         win = elm_win_add(NULL, "Ensure", ELM_WIN_BASIC);
         elm_win_title_set(win, "Ensure");
@@ -163,29 +148,50 @@ window_add(char **args){
 	elm_win_resize_object_add(win, bx);
         evas_object_show(bx);
 
-	gl = elm_genlist_add(win);
-	configlist = gl;
-	elm_genlist_always_select_mode_set(gl, false);
-	evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	config_add_classes(gl);
-//	evas_object_show(gl);
+	/* Window to select view */
+	viewbx = elm_box_add(win);
+	elm_box_horizontal_set(viewbx, true);
+        evas_object_size_hint_weight_set(viewbx, EVAS_HINT_EXPAND, 0);
+        evas_object_size_hint_align_set(viewbx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_show(viewbx);
+	elm_box_pack_end(bx, viewbx);
+
+	lbl = elm_label_add(win);
+	elm_label_label_set(lbl, "View:");
+	evas_object_size_hint_align_set(lbl, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(lbl, EVAS_HINT_EXPAND,EVAS_HINT_EXPAND);
+	evas_object_show(lbl);
+	elm_box_pack_end(viewbx, lbl);
+
+	/* Select which view */
+	view = elm_hoversel_add(win);
+	ensure->viewselect = view;
+	elm_hoversel_label_set(view, "View");
+	for (i = 0 ; i < N_VIEWS ; i ++){
+		elm_hoversel_item_add(view, views[i].label, NULL, 0,
+				views[i].cb, ensure);
+	}
+        evas_object_size_hint_weight_set(view, EVAS_HINT_EXPAND, 0);
+	evas_object_show(view);
+	elm_box_pack_end(viewbx, view);
 
 	/* Add object list */
-	gl2 = elm_genlist_add(win);
-	objlist = gl2;
-	elm_genlist_always_select_mode_set(gl2, true);
-	evas_object_size_hint_align_set(gl2, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	evas_object_size_hint_weight_set(gl2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-	evas_object_show(gl2);
-
+	gl = elm_genlist_add(win);
+	objlist = gl;
+	ensure->view = gl;
+	elm_genlist_always_select_mode_set(gl, true);
+	evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
+	evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+	evas_object_show(gl);
+/*
 	evas_object_smart_callback_add(gl2, "expand,request", generic_exp_req,
 			gl2);
 	evas_object_smart_callback_add(gl2, "contract,request",generic_con_req,
 			gl2);
 	evas_object_smart_callback_add(gl2, "expanded", enasn_display_bugs, gl2);
 	evas_object_smart_callback_add(gl2, "contracted", generic_contract,gl2);
-	elm_box_pack_end(bx, gl2);
+	*/
+	elm_box_pack_end(bx, gl);
 
 	ctrls = elm_box_add(win);
 	elm_box_horizontal_set(ctrls, true);
@@ -194,6 +200,7 @@ window_add(char **args){
 
 
 	/* Buttons: Main event is the 'clicked' event */
+	/*
 	config = elm_button_add(ctrls);
 	elm_button_label_set(config, "Config");
 	elm_button_autorepeat_set(config, false);
@@ -201,6 +208,7 @@ window_add(char **args){
 	evas_object_show(config);
 	evas_object_smart_callback_add(config, "clicked", on_switch_config,
 			NULL);
+	*/
 
 	run = elm_button_add(ctrls);
 	elm_button_label_set(run, "Run");
@@ -222,7 +230,6 @@ window_add(char **args){
 	elm_box_pack_end(bx, ctrls);
 	evas_object_show(ctrls);
 
-
 	evas_object_resize(win, 320, 480);
 	evas_object_show(win);
 
@@ -231,24 +238,6 @@ window_add(char **args){
 
 }
 
-static const Elm_Genlist_Item_Class clc = {
-	.item_style = "default",
-	.func = {
-		.label_get = cfg_label_get,
-		.icon_get = cfg_icon_get,
-		.state_get = cfg_state_get,
-		.del = cfg_del,
-	},
-};
-static const Elm_Genlist_Item_Class asnclass = {
-	.item_style = "default",
-	.func = {
-		.label_get = asn_label_get,
-		.icon_get = asn_icon_get,
-		.state_get = asn_state_get,
-		.del = asn_del
-	},
-};
 
 static const Elm_Genlist_Item_Class objc = {
 	.item_style = "default",
@@ -269,93 +258,27 @@ static const Elm_Genlist_Item_Class windowclass = {
 	},
 };
 
-static void
-config_add_classes(Evas_Object *gl){
-	int i;
-	for (i = 0 ; i < ENSURE_N_SEVERITIES ; i ++){
-		severity[i].item = elm_genlist_item_append(gl,&clc,
-				severity + i,
-				NULL, /* No parent */
-				ELM_GENLIST_ITEM_SUBITEMS,
-				cfg_sel,
-				severity + i /* data */);
-
-	}
-
-	evas_object_smart_callback_add(gl, "expand,request", generic_exp_req, gl);
-	evas_object_smart_callback_add(gl, "contract,request", generic_con_req, gl);
-	evas_object_smart_callback_add(gl, "expanded", cfg_exp, gl);
-	evas_object_smart_callback_add(gl, "contracted", generic_contract, gl);
-
-}
-
-static void
-cfg_sel(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
-	const struct severityinfo *info = data;
-
-	printf("Item selected! %s\n",info->name);
-}
-static void
-cfg_exp(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event){
-	Elm_Genlist_Item *parent = event;
-	Evas_Object *gl = elm_genlist_item_genlist_get(parent);
-	struct severityinfo *sev;
-	struct asninfo *ai;
-	Eina_List *l;
-
-
-	sev = (struct severityinfo *)elm_genlist_item_data_get(parent);
-
-	EINA_LIST_FOREACH(sev->asninfo, l, ai){
-		elm_genlist_item_append(gl, &asnclass,
-				ai, parent,
-				ELM_GENLIST_ITEM_NONE,
-				asn_select, ai);
-	}
-
-}
-static void
+void
 generic_contract(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event){
 	Elm_Genlist_Item *it = event;
 	elm_genlist_item_subitems_clear(it);
 }
-static void
+void
 generic_exp_req(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event){
 	Elm_Genlist_Item *it = event;
 	elm_genlist_item_expanded_set(it, 1);
 }
-static void
+void
 generic_con_req(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event){
 	Elm_Genlist_Item *it = event;
 	elm_genlist_item_expanded_set(it, 0);
 }
-static void
-cfg_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
-
-}
 
 
-static char *
-cfg_label_get(void *data, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
-	const struct severityinfo *info;
-
-	info = data;
-	return strdup(info->name);
-}
-static Evas_Object *
-cfg_icon_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
-	return NULL;
-}
-static Eina_Bool
-cfg_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
-	return false;
-}
 
 /** Handlers for the subitems in the assurance list */
-static char *
+
+char *
 asn_label_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	struct asninfo *info;
@@ -364,7 +287,7 @@ asn_label_get(void *data, Evas_Object *obj ensure_unused,
 	return strdup(info->asn->summary);
 }
 
-static Evas_Object *
+Evas_Object *
 asn_icon_get(void *data, Evas_Object *obj, const char *part){
 	struct asninfo *ai = data;
 	Evas_Object *ck;
@@ -380,7 +303,7 @@ asn_icon_get(void *data, Evas_Object *obj, const char *part){
 
 	return NULL;
 }
-static Eina_Bool
+Eina_Bool
 asn_state_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	struct asninfo *ai;
@@ -388,27 +311,26 @@ asn_state_get(void *data, Evas_Object *obj ensure_unused,
 	ai = data;
 	return ai->enabled;
 }
-static void
+void
 asn_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
 	struct enwin *enwin = data;
 
 	enwin->genitem = NULL;
 }
 
-static void
+void
 asn_select(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
 	struct asninfo *info = data;
 
 	info->enabled = !info->enabled;
 }
 
-static void
+void
 asn_select_toggle(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
 	struct asninfo *ai = data;
 
 	ai->enabled = elm_check_state_get(obj);
 }
-
 
 static char *
 enwin_label_get(void *data, Evas_Object *obj ensure_unused,
@@ -452,7 +374,6 @@ enwin_select(void *data, Evas_Object *obj, void *event){
 static void enwin_del(void *data, Evas_Object *obj){
 	/* FIXME: Do something or delete this */
 }
-
 
 
 
@@ -516,7 +437,6 @@ enobj_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
 }
 
 
-
 /**
  * Initialise our signal handler
  */
@@ -555,25 +475,27 @@ signalfd_child(void *data ensure_unused, Ecore_Fd_Handler *fdh){
 
 
 
-static void
-on_switch_config(void *data ensure_unused, Evas_Object *button, void *event_info ensure_unused){
-	bool state;
 
-	state = evas_object_visible_get(objlist);
-	if (state){
-		/* Front currently: Change to back */
-		elm_button_label_set(button, "Report");
-		evas_object_hide(objlist);
-		evas_object_show(configlist);
-		elm_box_unpack(box, objlist);
-		elm_box_pack_start(box, configlist);
-	} else {
-		elm_button_label_set(button, "Config");
-		evas_object_show(objlist);
-		evas_object_hide(configlist);
-		elm_box_unpack(box, configlist);
-		elm_box_pack_start(box, objlist);
-	}
+static void
+view_set_error(void *ensurev, Evas_Object *button,
+		void *event_info ensure_unused){
+	struct ensure *ensure = ensurev;
+
+	if (ensure->current_view == ENVIEW_ERROR) return;
+	ensure->current_view = ENVIEW_ERROR;
+
+printf("Fill error\n");
+	elm_hoversel_label_set(ensure->viewselect, "Error");
+	elm_genlist_clear(ensure->view);
+
+}
+
+static void
+view_set_object(void *ensurev, Evas_Object *button, void *event_info ensure_unused){
+	struct ensure *ensure = ensurev;
+	if (ensure->current_view == ENVIEW_OBJECT_TREE) return;
+	ensure->current_view = ENVIEW_OBJECT_TREE;
+printf("Fill object tree\n");
 
 }
 
@@ -594,7 +516,6 @@ on_check(void *data ensure_unused, Evas_Object *button ensure_unused,
 	printf("Done\n");
 
 }
-
 
 
 
@@ -662,7 +583,6 @@ dochild(char **args, int fd){
 }
 
 
-
 int
 ensure_assurance_add(struct assurance *enasn){
 	struct asninfo *info;
@@ -701,7 +621,6 @@ check_obj(const Eina_Hash *hash ensure_unused, const void *key ensure_unused,
 
 	return 1;
 }
-
 
 int
 enasn_check(struct ensure *ensure){

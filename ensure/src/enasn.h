@@ -1,15 +1,6 @@
 struct ensure;
 struct enobj;
 
-enum ensure_severity {
-	ENSURE_CRITICAL,
-	ENSURE_BUG,
-	ENSURE_BADFORM,
-	ENSURE_PEDANTIC,
-	ENSURE_POLICY,
-	ENSURE_N_SEVERITIES,
-};
-
 
 struct assurance {
 	const char *summary;

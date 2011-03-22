@@ -12,17 +12,21 @@ bin_PROGRAMS = ensure
 
 ensure_SOURCES = \
 	display.c  	\
+	enconfig.c	\
 	enedj.c  	\
 	ensure.c     	\
 	parser.c	\
 	enasn.c    	\
 	enobj.c 	\
+	hidden.c	\
 	display.h  	\
+	enconfig.h	\
 	enedj.h  	\
 	ensure.h	\
 	enasn.h    	\
 	enobj.h  	\
-	parser.h
+	parser.h	\
+	hidden.h
 
 
 lib_LTLIBRARIES	= libensure.la

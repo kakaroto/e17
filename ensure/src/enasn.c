@@ -9,8 +9,8 @@
 #include <Eina.h>
 #include <Elementary.h>
 
-#include "enasn.h"
 #include "ensure.h"
+#include "enasn.h"
 #include "enobj.h"
 
 static void bug_del(void *, Evas_Object *obj);
