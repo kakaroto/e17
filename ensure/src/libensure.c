@@ -13,8 +13,21 @@
 
 #define ensure_unused	__attribute__((unused))
 
+/* The color of the highlight */
+enum {
+	HIGHLIGHT_R = 255,
+	HIGHLIGHT_G = 128,
+	HIGHLIGHT_B = 128,
+	HIGHLIGHT_A = 255,
+
+	/* How much padding around the highlight box */
+	PADDING = 2,
+};
+
 static Eina_Bool libensure_dump(void);
 static Eina_Bool libensure_command_recv(void *data ensure_unused, Ecore_Fd_Handler *fdh);
+static void libensure_highlight(uintptr_t addr);
+static Eina_Bool libensure_highlight_hide(void *rv);
 
 static void libensure_objdump(Evas_Object *o, Evas_Object *parent);
 
@@ -71,8 +84,9 @@ libensure_command_recv(void *data ensure_unused, Ecore_Fd_Handler *fdh){
 
 	if (strncmp(buf, "Check", 5) == 0){
 		libensure_dump();
-	} else if (strncmp(buf, "Highlight:", 10) == 0){
-		printf("Got highlight: Unimplemented\n");
+	} else if (strncmp(buf, "Display:", 10) == 0){
+		uintptr_t id = strtoul(buf + 10, NULL, 16);
+		libensure_highlight(id);
 	} else {
 		printf("Unknown command: %s\n",buf);
 	}
@@ -193,4 +207,54 @@ libensure_objdump(Evas_Object *o, Evas_Object *parent){
 __attribute__((destructor)) void
 libensure_fini(void){
 	ecore_shutdown();
+}
+
+/**
+ * Handler to highlight an object on the canvas.
+ *
+ * The current implementation shows a reddish rectangle which slowly fades
+ * away.
+ */
+static void
+libensure_highlight(uintptr_t addr){
+	Evas *e;
+	Evas_Object *obj;
+	Evas_Object *r;
+	int x,y,w,h;
+
+	/* FIXME: Should check the object is valid */
+	obj = (void *)addr;
+
+	e = evas_object_evas_get(obj);
+	if (!e) return;
+
+	evas_object_geometry_get(obj,&x,&y,&w,&h);
+
+	r = evas_object_rectangle_add(e);
+	evas_object_move(r,x-PADDING,y - PADDING);
+	evas_object_resize(r,x + 2*PADDING, y + 2*PADDING);
+	evas_object_color_set(r,HIGHLIGHT_R,HIGHLIGHT_G,HIGHLIGHT_B,
+			HIGHLIGHT_A);
+	evas_object_show(r);
+	ecore_timer_add(0.1, libensure_highlight_hide, r);
+}
+
+static Eina_Bool
+libensure_highlight_hide(void *rv){
+	int r,g,b,a;
+	double na;
+
+	evas_object_color_get(rv,&r,&g,&b,&a);
+	if (a < 20){
+		evas_object_del(rv);
+		return false;
+	}
+
+	na = a - 20;
+	r = na / a * r;
+	g = na / a * g;
+	b = na / a * b;
+	evas_object_color_set(rv,r,g,b,na);
+
+	return true;
 }
