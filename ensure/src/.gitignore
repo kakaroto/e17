@@ -5,3 +5,5 @@ cscope.out
 tags
 libensure.so.0
 core
+*.la
+*.lo
