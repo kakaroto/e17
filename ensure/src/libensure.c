@@ -15,10 +15,15 @@
 
 #define ensure_unused	__attribute__((unused))
 
-static Eina_Bool libensure_dump(void *data ensure_unused, Ecore_Fd_Handler *fdh);
+static Eina_Bool libensure_dump(void);
+static Eina_Bool ecore_signal(void *data, int tyoe, void *event);
+static Eina_Bool ecore_fd_signal(void *data ensure_unused, Ecore_Fd_Handler *fdh);
+
 static void libensure_objdump(Evas_Object *o, Evas_Object *parent);
 
 static FILE *outfile;
+
+static int verbose = -1;
 
 __attribute__((constructor)) void
 libensure_init(void){
@@ -27,47 +32,77 @@ libensure_init(void){
 	const char *p;
 	sigset_t sigusr2;
 
+	if (verbose == -1)
+		verbose = !!getenv("LIBENSURE_DEBUG");
+
 	ecore_init();
 
 	sigemptyset(&sigusr2);
 	sigaddset(&sigusr2, SIGUSR2);
 
 	fd = signalfd(-1, &sigusr2, SFD_CLOEXEC | SFD_NONBLOCK);
+	if (fd == -1){
+		perror("signalfd");
+		exit(1);
+	}
+	if (verbose) fprintf(stderr,"Signal fd is %d\n",fd);
 	ecore_main_fd_handler_add(fd,ECORE_FD_READ|ECORE_FD_ERROR,
-			libensure_dump, NULL,
+			ecore_fd_signal, NULL,
 			NULL, NULL);
+
+	ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER, ecore_signal, NULL);
 
 	p = getenv("ENSURE_FD");
 	if (p){
 		sendfd = strtol(p, NULL, 0);
-		fprintf(stderr,"Ensure: Using fd %d!\n",sendfd);
+		if (verbose) fprintf(stderr,"LibEnsure: Using fd %d!\n",sendfd);
 		outfile = fdopen(sendfd, "w");
 	}
 
 	if (!outfile) {
-		fprintf(stderr,"Ensure: Warning using stdout!\n");
+		if(verbose) fprintf(stderr,"LibEnsure: Warning using stdout\n");
 		outfile = stdout;
 	}
 	fprintf(outfile,"ensure init\n");
+	if (verbose) fprintf(stderr, "LibEnsure: Init done\n");
 
 	return;
 }
 
+static Eina_Bool
+ecore_signal(void *data, int tyoe, void *event){
+	Ecore_Event_Signal_User *user = event;
+	if (!event || user->number != 2) return 1;
+
+	libensure_dump();
+
+	return 0;
+}
 
 static Eina_Bool
-libensure_dump(void *data ensure_unused, Ecore_Fd_Handler *fdh){
-	int fd;
+ecore_fd_signal(void *data ensure_unused, Ecore_Fd_Handler *fdh){
 	struct signalfd_siginfo siginfo;
-	Eina_List *os,*ot;
-	Evas_Object *o;
-	Eina_List *ees,*l;
-	Ecore_Evas *ee;
+	int fd;
 
 	fd = ecore_main_fd_handler_fd_get(fdh);
 
 	read(fd, &siginfo, sizeof(struct signalfd_siginfo));
 
+	libensure_dump();
+	return 0;
+}
+
+
+static Eina_Bool
+libensure_dump(void){
+	Eina_List *os,*ot;
+	Evas_Object *o;
+	Eina_List *ees,*l;
+	Ecore_Evas *ee;
+printf("libensure dump called\n");
+
 	fprintf(outfile,"Ensure dump!\n");
+	if (verbose) fprintf(stderr,"Starting ensure dump\n");
 
 	ees = ecore_evas_ecore_evas_list_get();
 
@@ -79,6 +114,7 @@ libensure_dump(void *data ensure_unused, Ecore_Fd_Handler *fdh){
 		evas_output_size_get(e,&w,&h);
 		name = ecore_evas_title_get(ee);
 		if (!name) name = "";
+		if (verbose) fprintf(stderr,"E: %p '%s' %d %d\n",e,name,w,h);
 		fprintf(outfile,"E: %p '%s' %d %d\n",e,name,w,h);
 		os = evas_objects_in_rectangle_get(e,SHRT_MIN, SHRT_MIN,
 				USHRT_MAX, USHRT_MAX, true, true);
@@ -103,6 +139,7 @@ libensure_objdump(Evas_Object *o, Evas_Object *parent){
 
 	type = evas_object_type_get(o);
 	fprintf(outfile,"Object: %p '%s' ",o,type);
+	if (verbose) fprintf(stderr,"Object: %p '%s'\n",o,type);
 
 //	type = evas_object_name_get(o);
 //	if (type) fprintf(outfile, "Name: '%s' ",type);
@@ -118,6 +155,7 @@ libensure_objdump(Evas_Object *o, Evas_Object *parent){
 	/* Type specific things here */
 	if (strcmp(type, "image") == 0){
 		const char *file,*key;
+		Evas_Object *src;
 		int err;
 		evas_object_image_file_get(o,&file,&key);
 		if (key)
@@ -129,6 +167,9 @@ libensure_objdump(Evas_Object *o, Evas_Object *parent){
 			fprintf(outfile, "ImageErr: '%s' ",
 					evas_load_error_str(err));
 		}
+		src = evas_object_image_source_get(o);
+		if (src)
+			fprintf(outfile, "ImageSrc: '%p' ",src);
 	} else if (strcmp(type, "text") == 0){
 		int size;
 		const char *font;
