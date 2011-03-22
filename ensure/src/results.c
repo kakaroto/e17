@@ -49,7 +49,7 @@ select_results(void *resv, Evas_Object *obj, void *event){
 	if (ensure->cur == result) return;
 
 	ensure->cur = result;
-
+printf("Result: %d\n",ensure->cur->tm);
 	/* Now need to refill tree */
 	view_dirty_set(ensure);
 }
