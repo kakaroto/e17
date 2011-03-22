@@ -328,7 +328,7 @@ static void  _edje_signal_cb(void *data, Evas_Object *obj, const char *emission,
              evas_object_smart_callback_add(hwin->allapps, "gadget,longpressed", _gadget_longpressed_cb, hwin);
              evas_object_smart_callback_add(hwin->allapps, "item,selected", _allapps_item_selected_cb, hwin);
 	     evas_object_show(hwin->allapps);
-	     elm_layout_content_set(hwin->layout, "apps-list-swallow", hwin->allapps);
+	     elm_layout_content_set(hwin->layout, "elfe.swallow.allapps", hwin->allapps);
 	  }
      }
    else if (!strcmp(emission, "action,badge_delete"))
@@ -418,7 +418,7 @@ _elfe_home_win_new(E_Zone *zone)
    elm_object_theme_set(hwin->layout, theme);
 
    hwin->desktop = elfe_desktop_add(hwin->layout, hwin->zone);
-   elm_layout_content_set(hwin->layout, "launcher.swallow", hwin->desktop);
+   elm_layout_content_set(hwin->layout, "elfe.swallow.desktop", hwin->desktop);
    evas_object_smart_callback_add(hwin->desktop, "gadget,added", _gadget_added_cb, hwin);
    evas_object_smart_callback_add(hwin->desktop, "editmode,on", _desktop_editmode_cb, hwin);
 

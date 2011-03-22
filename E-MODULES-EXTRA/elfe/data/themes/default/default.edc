@@ -1,4 +1,4 @@
-#define TOOLBAR_ITEM_SIZE 96
+#define TOOLBAR_ITEM_SIZE 72
 #define TOOLBAR_ICON_SIZE 48
 #define TOOLBAR_MIDDLE_ITEM 2
 
@@ -385,8 +385,10 @@ collections
          TOOLBAR_BUTTON("badge_delete", "EditMode", TOOLBAR_POSITION(2), "edit.mode.clip");
          TOOLBAR_BUTTON("settings", "Settings", TOOLBAR_POSITION(3), "icons.clip");
 
+         
+
          part {
-            name: "launcher.swallow";
+            name: "elfe.swallow.desktop";
             type: SWALLOW;
             mouse_events: 1;
             description {
@@ -417,7 +419,7 @@ collections
                color: 0 0 0 255;
             }
          }
-         part { name: "apps-list-swallow";
+         part { name: "elfe.swallow.allapps";
             clip_to: "apps-list";
             type: SWALLOW;
             repeat_events: 1;
