@@ -4,6 +4,8 @@ int on_hide(void);
 int hidden_object_add(struct ensure *ensure, Evas_Object *o);
 int hidden_object_remove(struct ensure *ensure, Evas_Object *o);
 
+bool hidden_get(struct ensure *ensure, uintptr_t objid);
+
 
 
 

@@ -14,7 +14,6 @@ struct assurance;
 enum { ENSURE_MAGIC = 0xE45073EE };
 
 enum enview {
-	ENVIEW_NONE,
 	ENVIEW_ERROR,
 	ENVIEW_CONFIG,
 	ENVIEW_OBJECT_TREE,
@@ -30,8 +29,19 @@ enum ensure_severity {
 	ENSURE_N_SEVERITIES,
 };
 
+struct result {
+	time_t tm;
+
+	/* A list of enwins */
+	Eina_List *windows;
+	Eina_Hash *objdb;
+};
+
+
 struct ensure {
 	int magic;
+
+	char **args;
 
 	enum enview current_view;
 	Evas_Object *view;
@@ -39,6 +49,9 @@ struct ensure {
 
 	/* The list of hidden objects */
 	Eina_List *hidden;
+
+	struct result *cur;
+	Eina_List *results;
 };
 
 

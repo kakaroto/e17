@@ -18,11 +18,13 @@ ensure_SOURCES = \
 	parser.c	\
 	enasn.c    	\
 	enobj.c 	\
+	entree.c	\
 	hidden.c	\
 	display.h  	\
 	enconfig.h	\
 	enedj.h  	\
 	ensure.h	\
+	entree.h	\
 	enasn.h    	\
 	enobj.h  	\
 	parser.h	\

@@ -74,13 +74,33 @@ hidden_object_remove(struct ensure *ensure, Evas_Object *o){
 	return 0;
 }
 
+/**
+ * Returns true if an object is hidden.
+ *
+ * @param ensure Ensure pointer
+ * @param obj Object id to check
+ * @return true if the object is hidden, false otherwise.
+ */
+bool
+hidden_get(struct ensure *ensure, uintptr_t obj){
+	uintptr_t hiddenobj;
+	Eina_List *l;
+
+	if (!ensure || !ensure->hidden || !obj) return false;
+
+	EINA_LIST_FOREACH(ensure->hidden, l, hiddenobj){
+		if (hiddenobj == obj)
+			return true;
+	}
+	return false;
+}
 
 
 
 static void
 hidden_sel(void *objv, Evas_Object *gl ensure_unused,
 		void *event ensure_unused){
-	Evas_Object *o;
+	Evas_Object *o = objv;
 
 	printf("Selected hidden object %p\n",o);
 

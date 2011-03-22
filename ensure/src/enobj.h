@@ -2,6 +2,8 @@
 #define ENOBJMAGIC 0x8d882abc
 #endif
 
+struct ensure;
+
 enum edjemember {
 	EDJEMEMBER_NOTCHECKED,
 	EDJEMEMBER_TRUE,
@@ -37,6 +39,8 @@ struct enwin {
 struct enobj {
 	int	magic;
 
+	struct ensure *ensure; /* Ensure pointer */
+
 	/** ID of object (its address normally) */
 	uintptr_t	id;
 
@@ -52,8 +56,12 @@ struct enobj {
 	/** ID of parent */
 	uintptr_t	parent;
 
+	Eina_List *children;
+
 	/** ID of clip */
 	uintptr_t	clip;
+
+	Eina_List *clippees;
 
 	/** Geo */
 	int x,y,w,h;
@@ -94,13 +102,15 @@ struct enobj {
 	Evas_Object *win;
 };
 
-extern Eina_Hash *objdb;
 
 
 void enobj_clear(void);
-int enobj_add(struct enobj *eno);
-struct enobj *enobj_parent_get(struct enobj *eno);
-struct enobj * enobj_clip_get(struct enobj *eno);
-struct enobj *enobj_get(uintptr_t id);
+int enobj_add(struct ensure *ensure, struct enobj *eno);
+struct enobj *enobj_parent_get(struct ensure *ensure, struct enobj *eno);
+struct enobj * enobj_clip_get(struct ensure *ensure, struct enobj *eno);
+struct enobj *enobj_get(struct ensure *, uintptr_t id);
+
+/* Prepare current list of objects */
+int enobj_prepare(struct ensure *);
 
 void enobj_free(void *enobj);

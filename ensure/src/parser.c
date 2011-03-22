@@ -20,7 +20,8 @@
 
 static char *parse_string(char **p, bool shared);
 
-static struct enobj *parse_object(char *line, struct enobj *eno);
+static struct enobj *parse_object(struct ensure *ensure, char *line,
+		struct enobj *eno);
 static void parse_line(struct ensure *ensure, char *line);
 
 static int parse_objid(struct enobj *eno, const char *prefix, char **linep);
@@ -72,6 +73,8 @@ child_data(void *data, Ecore_Fd_Handler *hdlr){
 
 	assert(hdlr);
 
+	assert(ensure->magic == ENSURE_MAGIC);
+
 	fd = ecore_main_fd_handler_fd_get(hdlr);
 	assert(fd >= 0);
 
@@ -109,31 +112,38 @@ parse_line(struct ensure *ensure, char *line){
 	static struct enwin *enwin = NULL;
 	struct enobj *obj;
 
+	assert(ensure->magic == ENSURE_MAGIC);
+
 	if (strncmp(line,"Object", 6) == 0){
-		obj = parse_object(line,NULL);
+		obj = parse_object(ensure, line,NULL);
 		obj->enwin = enwin;
 	} else if (strncmp(line, "Ensure done",11) == 0){
 		printf("Got to the end...\n");
 		enasn_check(ensure);
+		enobj_prepare(ensure);
 	} else if (strncmp(line, "E: ",3) == 0){
+		printf("Got window\n");
 		enwin = calloc(1,sizeof(struct enwin));
 		line += 3;
 		enwin->id = strtoll(line,&line,0);
 		enwin->name = parse_string(&line, true);
 		enwin->w = strtol(line,&line,0);
 		enwin->h = strtol(line,&line,0);
+		ensure->cur->windows = eina_list_append(
+				ensure->cur->windows, enwin);
 	} else {
 		printf("Line was nothing...'%s'\n",line);
 	}
 }
 
 static struct enobj *
-parse_object(char *line, struct enobj *eno){
+parse_object(struct ensure *ensure, char *line, struct enobj *eno){
 	char *p;
 	int i;
 
 	if (!eno){
 		eno = calloc(1,sizeof(struct enobj));
+		eno->ensure = ensure;
 
 		assert(eno);
 	}
@@ -160,7 +170,7 @@ parse_object(char *line, struct enobj *eno){
 	}
 
 	assert(eno->id);
-	enobj_add(eno);
+	enobj_add(ensure, eno);
 
 	return eno;
 }

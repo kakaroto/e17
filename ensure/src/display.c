@@ -15,7 +15,7 @@ static void add_heading(Evas_Object *win, Evas_Object *tbl, int *pos,
 		const char *label);
 static void add_text(Evas_Object *win, Evas_Object *tbl, int *pos,
 		const char *label, const char *value);
-static void add_id(Evas_Object *win, Evas_Object *tbl, int *pos,
+static void add_id(struct ensure *ensure, Evas_Object *win, Evas_Object *tbl, int *pos,
 		const char *label, uintptr_t id, bool viewable);
 static void add_fmt(Evas_Object *win, Evas_Object *tbl, int *pos,
 		const char *label, const char *fmt, ...);
@@ -29,12 +29,15 @@ void
 display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 		void *event ensure_unused){
 	struct enobj *enobj = enobjv;
+	struct ensure *ensure;
 	Evas_Object *win,*bg,*tbl;
 	int pos;
 	char buf[100];
 
 	assert(enobjv);
 	assert(enobj->magic == ENOBJMAGIC);
+
+	ensure = enobj->ensure;
 
 	if (enobj->win){
 		evas_object_show(enobj->win);
@@ -73,10 +76,10 @@ display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 	pos = 0;
 	add_heading(win,tbl,&pos,"Object");
 	if (enobj->name) add_text(win, tbl, &pos, "Name:", enobj->name);
-	add_id(win, tbl, &pos, "ID:", enobj->id, false);
+	add_id(ensure, win, tbl, &pos, "ID:", enobj->id, false);
 	add_text(win, tbl, &pos, "Type:", enobj->type);
-	if (enobj->parent) add_id(win, tbl, &pos, "Parent:",enobj->parent,true);
-	if (enobj->clip) add_id(win, tbl, &pos, "Clip:", enobj->clip,true);
+	if (enobj->parent) add_id(ensure, win, tbl, &pos, "Parent:",enobj->parent,true);
+	if (enobj->clip) add_id(ensure, win, tbl, &pos, "Clip:", enobj->clip,true);
 	add_fmt(win,tbl, &pos, "Position:", "%+d%+d", enobj->x, enobj->y);
 	add_fmt(win,tbl, &pos, "Size:", "(%dx%d)", enobj->w, enobj->h);
 	add_fmt(win,tbl, &pos, "Colour (rgba):", "argb(%d,%d,%d,%d)",
@@ -199,14 +202,14 @@ add_text(Evas_Object *win, Evas_Object *tbl, int *pos, const char *label,
 }
 
 static void
-add_id(Evas_Object *win, Evas_Object *tbl, int *pos, const char *label,
+add_id(struct ensure *ensure, Evas_Object *win, Evas_Object *tbl, int *pos, const char *label,
 		uintptr_t id, bool viewable){
 	char buf[30];
 	Evas_Object *but;
 	struct enobj *enobj;
 
 	if (viewable){
-		enobj = enobj_get(id);
+		enobj = enobj_get(ensure, id);
 
 		but = elm_button_add(win);
 		elm_button_label_set(but, "View");
