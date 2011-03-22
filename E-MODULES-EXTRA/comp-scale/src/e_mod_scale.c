@@ -519,9 +519,6 @@ _scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
    if (!it || !it->mouse_down)
      return;
 
-   if (it->bd->maximized || it->bd->fullscreen || it->bd->lock_user_location)
-     return;
-   
    if (it->moved)
      {
 	it->bd_x += (ev->cur.canvas.x - ev->prev.canvas.x);
@@ -533,6 +530,9 @@ _scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
      }
    else
      {
+	if (it->bd->maximized || it->bd->fullscreen || it->bd->lock_user_location)
+	  return;
+
 	if (abs(ev->cur.canvas.x - it->mx) +
 	    abs(ev->cur.canvas.y - it->my) < 15)
 	  return;
@@ -1265,6 +1265,11 @@ _scale_cb_mouse_up(void *data, int type, void *event)
 
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
+
+   if (selected_item)
+     {
+	selected_item->moved = EINA_FALSE;
+     }
 
    if (bd_move)
      {
