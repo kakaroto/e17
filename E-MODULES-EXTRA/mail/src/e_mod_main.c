@@ -226,30 +226,6 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       char buf[1024];
 
       m = e_menu_new ();
-
-      if ((inst->ci->boxes) && (eina_list_count (inst->ci->boxes) > 0))
-	{
-	  E_Menu_Item *mm;
-
-	  snprintf (buf, sizeof (buf), "%s/module.edj",
-		    e_module_dir_get (mail_config->module));
-
-	  for (l = inst->ci->boxes; l; l = l->next)
-	    {
-	      Config_Box *cb;
-
-	      cb = l->data;
-	      if (!cb)
-		continue;
-	      mi = e_menu_item_new (m);
-	      snprintf (buf, sizeof (buf), "%s: %d/%d", cb->name, cb->num_new,
-			cb->num_total);
-	      e_menu_item_label_set (mi, buf);
-	      if ((cb->exec) && (cb->use_exec))
-		e_menu_item_callback_set (mi, _mail_menu_cb_exec, cb);
-	    }
-	}
-
       mi = e_menu_item_new (m);
       e_menu_item_label_set (mi, D_("Settings"));
       e_util_menu_item_theme_icon_set(mi, "preferences-system");
@@ -258,6 +234,33 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       m = e_gadcon_client_util_menu_items_append (inst->gcc, m, 0);
       e_menu_post_deactivate_callback_set (m, _mail_menu_cb_post, inst);
       mail_config->menu = m;
+
+      if ((inst->ci->boxes) && (eina_list_count (inst->ci->boxes) > 0))
+	{
+	   mi = NULL;
+	   snprintf (buf, sizeof (buf), "%s/module.edj",
+		     e_module_dir_get (mail_config->module));
+
+	   for (l = inst->ci->boxes; l; l = l->next)
+	     {
+		Config_Box *cb;
+
+		cb = l->data;
+		if (!cb)
+		  continue;
+		mi = e_menu_item_new_relative (m, mi);
+		snprintf (buf, sizeof (buf), "%s: %d/%d", cb->name, cb->num_new,
+			  cb->num_total);
+		e_menu_item_label_set (mi, buf);
+		if ((cb->exec) && (cb->use_exec))
+		  e_menu_item_callback_set (mi, _mail_menu_cb_exec, cb);
+	     }
+	   if (mi)
+	     {
+		mi = e_menu_item_new_relative(m, mi);
+		e_menu_item_separator_set(mi, 1); 
+	     }
+	}
 
       e_gadcon_canvas_zone_geometry_get (inst->gcc->gadcon, &x, &y, &w, &h);
       e_menu_activate_mouse (m,
