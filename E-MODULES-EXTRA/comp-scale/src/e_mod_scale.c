@@ -515,8 +515,6 @@ _scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
 {
    Evas_Event_Mouse_Move *ev = event_info;
    Item *it = data;
-   int x, y;
-   E_Desk *desk, *desk2;
 
    if (!it || !it->mouse_down)
      return;
