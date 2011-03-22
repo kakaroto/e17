@@ -7,3 +7,7 @@ libensure.so.0
 core
 *.la
 *.lo
+Makefile
+Makefile.in
+.deps
+.libs
