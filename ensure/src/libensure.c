@@ -77,7 +77,7 @@ libensure_command_recv(void *data ensure_unused, Ecore_Fd_Handler *fdh){
 		printf("Unknown command: %s\n",buf);
 	}
 
-	return 0;
+	return true;
 }
 
 
