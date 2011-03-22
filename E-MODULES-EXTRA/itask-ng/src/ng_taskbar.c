@@ -661,16 +661,11 @@ _item_set_icon(Ngi_Item_Taskbar *it)
    evas_object_show(o);
    it->o_icon = o;
 
-   oo = evas_object_image_add(e);
+   oo = evas_object_image_filled_add(e);
    evas_object_image_source_set(oo, it->base.obj);
-   evas_object_resize(oo, 128, 128);
-   evas_object_image_fill_set(oo, 0,0,128,128);
-
-   o = e_icon_add(e);
-   e_icon_object_set(o, oo);
-   edje_object_part_swallow(it->base.over, "e.swallow.content", o);
-   evas_object_show(o);
-   it->o_proxy = o;
+   edje_object_part_swallow(it->base.over, "e.swallow.content", oo);
+   evas_object_show(oo);
+   it->o_proxy = oo;
 
    if (it->border->iconic)
       ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,1");

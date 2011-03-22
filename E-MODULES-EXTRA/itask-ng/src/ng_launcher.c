@@ -344,29 +344,19 @@ _item_fill(Ngi_Item_Launcher *it)
 	evas_object_del(it->o_proxy);
      }
 
-
-   const char *path = efreet_icon_path_find(e_config->icon_theme, it->app->icon, 128); 
-   if (path)
+   o = e_util_desktop_icon_add(it->app, 128, e);
+   if (o)
      {
-	o = evas_object_image_filled_add(e);
-	evas_object_image_load_size_set(o, 128, 128); 
-	evas_object_image_file_set(o, path, NULL);
-	evas_object_image_preload(o, 0); 
-	/* o = e_util_desktop_icon_add(it->app, 128, e); */
 	edje_object_part_swallow(it->base.obj, "e.swallow.content", o);
 	evas_object_show(o);
 	it->o_icon = o;
 
-	oo = evas_object_image_add(e);
+	oo = evas_object_image_filled_add(e);
 	evas_object_image_source_set(oo, it->base.obj);
-	evas_object_resize(oo, 128, 128);
-	evas_object_image_fill_set(oo, 0,0,128,128);
 
-	o = e_icon_add(e);
-	e_icon_object_set(o, oo);
-	edje_object_part_swallow(it->base.over, "e.swallow.content", o);
-	evas_object_show(o);
-	it->o_proxy = o;
+	edje_object_part_swallow(it->base.over, "e.swallow.content", oo);
+	evas_object_show(oo);
+	it->o_proxy = oo;
      }
    
    if (it->app->name && it->app->name[0])
