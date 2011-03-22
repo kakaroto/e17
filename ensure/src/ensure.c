@@ -35,7 +35,7 @@ struct asninfo {
 
 
 
-int window_add(struct ensure *ensure, char **argv);
+Evas_Object *window_add(struct ensure *ensure, char **argv);
 
 static void on_run(void *data, Evas_Object *button, void *event_info);
 static void on_check(void *data, Evas_Object *button, void *event_info);
@@ -92,6 +92,7 @@ bool changedir = false;
 int
 elm_main(int argc, char **argv){
 	struct ensure *ensure;
+	Evas_Object *mw;
 
         if (argc < 2){
 		printf("Usage: %s  [-c] <program>\n", argv[0]);
@@ -113,13 +114,13 @@ elm_main(int argc, char **argv){
 	}
 	ensure->args = argv + 1;
 
-        window_add(ensure, argv);
+        mw = window_add(ensure, argv);
 
 	signal_init();
 
 	enasn_load(NULL);
 
-        elm_list_go(mainwindow);
+        elm_list_go(mw);
         elm_run();
         elm_shutdown();
         return 0;
@@ -128,7 +129,7 @@ ELM_MAIN()
 
 
 
-int
+Evas_Object *
 window_add(struct ensure *ensure, char **args){
         Evas_Object *win,*bg,*bx,*ctrls,*run,*check,*gl;
 	Evas_Object *viewbx, *view, *lbl;
@@ -222,8 +223,7 @@ window_add(struct ensure *ensure, char **args){
 	evas_object_resize(win, 320, 480);
 	evas_object_show(win);
 
-        return 0;
-
+        return win;
 }
 
 
