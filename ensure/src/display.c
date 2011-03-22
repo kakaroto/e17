@@ -27,6 +27,32 @@ static void display_hidden_object_toggle(void *enobjv, Evas_Object *obj,
 		void *event ensure_unused);
 static void display_show_object(void *enobjv, Evas_Object *obj, void *);
 
+Evas_Object *
+display_buttons_add(Evas_Object *obj, struct enobj *enobj){
+	Evas_Object *box, *bt;
+
+	box = elm_box_add(obj);
+	elm_box_horizontal_set(box, true);
+
+	bt = elm_button_add(obj);
+	elm_button_label_set(bt, "View");
+	elm_button_autorepeat_set(bt, false);
+	evas_object_show(bt);
+	evas_object_smart_callback_add(bt, "clicked", display_enobj_cb, enobj);
+	elm_box_pack_end(box, bt);
+
+	bt = elm_button_add(obj);
+	elm_button_label_set(bt, "Highlight");
+	elm_button_autorepeat_set(bt, false);
+	evas_object_show(bt);
+	evas_object_smart_callback_add(bt, "clicked",display_show_object,enobj);
+	elm_box_pack_end(box, bt);
+
+	return box;
+}
+
+
+
 void
 display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 		void *event ensure_unused){
@@ -279,6 +305,8 @@ sev_string(enum ensure_severity sev){
 		return "Unknown?";
 	}
 }
+
+
 
 
 /**

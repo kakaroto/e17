@@ -209,18 +209,10 @@ tree_item_label_get(void *enobjv, Evas_Object *obj, const char *part){
 static Evas_Object *
 tree_item_icon_get(void *enobjv, Evas_Object *obj,
 		const char *part){
-	Evas_Object *bt;
+
 	if (strcmp(part, "elm.swallow.end") == 0){
-		bt = elm_button_add(obj);
-		elm_button_label_set(bt, "View");
-		elm_button_autorepeat_set(bt, false);
-		evas_object_show(bt);
-		evas_object_smart_callback_add(bt, "clicked",
-				display_enobj_cb, enobjv);
-		return bt;
+		return display_buttons_add(obj, enobjv);
 	}
-
-
 	return NULL;
 }
 
