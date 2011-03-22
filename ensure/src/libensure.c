@@ -84,8 +84,8 @@ libensure_command_recv(void *data ensure_unused, Ecore_Fd_Handler *fdh){
 
 	if (strncmp(buf, "Check", 5) == 0){
 		libensure_dump();
-	} else if (strncmp(buf, "Display:", 10) == 0){
-		uintptr_t id = strtoul(buf + 10, NULL, 16);
+	} else if (strncmp(buf, "Display:", 8) == 0){
+		uintptr_t id = strtoul(buf + 8, NULL, 16);
 		libensure_highlight(id);
 	} else {
 		printf("Unknown command: %s\n",buf);
@@ -232,7 +232,7 @@ libensure_highlight(uintptr_t addr){
 
 	r = evas_object_rectangle_add(e);
 	evas_object_move(r,x-PADDING,y - PADDING);
-	evas_object_resize(r,x + 2*PADDING, y + 2*PADDING);
+	evas_object_resize(r,w + 2*PADDING, h + 2*PADDING);
 	evas_object_color_set(r,HIGHLIGHT_R,HIGHLIGHT_G,HIGHLIGHT_B,
 			HIGHLIGHT_A);
 	evas_object_show(r);
