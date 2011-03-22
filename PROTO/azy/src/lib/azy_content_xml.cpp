@@ -477,11 +477,14 @@ azy_content_unserialize_response_xml(Azy_Content *content,
 
         if (s)
           {
+#if defined(eina_error_find)
              Eina_Error e;
 
              e = eina_error_find(s);
              if (e) azy_content_error_faultcode_set(content, e, c);
-             else azy_content_error_faultmsg_set(content, c, "%s", s);
+             else
+#endif
+               azy_content_error_faultmsg_set(content, c, "%s", s);
           }
         else
           azy_content_error_faultmsg_set(content, c, "%s", "");
