@@ -21,6 +21,7 @@
 
 #include "ensure.h"
 #include "enobj.h"
+#include "display.h"
 #include "entree.h"
 
 static Eina_Bool tree_add_toplevel(const Eina_Hash *hash, const void *key, void *data,
@@ -36,6 +37,8 @@ static void tree_window_del(void *enwinv, Evas_Object *obj);
 static char *tree_item_label_get(void *enwinv, Evas_Object *obj, const char *part);
 static void tree_item_select(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused);
 static void tree_item_del(void *enwinv, Evas_Object *obj);
+static Evas_Object *tree_item_icon_get(void *enobjv, Evas_Object *obj,
+		const char *part);
 
 static const Elm_Genlist_Item_Class windowclass = {
 	.item_style = "default",
@@ -49,6 +52,7 @@ static const Elm_Genlist_Item_Class treeitemclass = {
 	.item_style = "default",
 	.func = {
 		.label_get = tree_item_label_get,
+		.icon_get = tree_item_icon_get,
 		.del = tree_item_del,
 	}
 
@@ -201,6 +205,25 @@ tree_item_label_get(void *enobjv, Evas_Object *obj, const char *part){
 
 	return strdup(buf);
 }
+
+static Evas_Object *
+tree_item_icon_get(void *enobjv, Evas_Object *obj,
+		const char *part){
+	Evas_Object *bt;
+	if (strcmp(part, "elm.swallow.end") == 0){
+		bt = elm_button_add(obj);
+		elm_button_label_set(bt, "View");
+		elm_button_autorepeat_set(bt, false);
+		evas_object_show(bt);
+		evas_object_smart_callback_add(bt, "clicked",
+				display_enobj_cb, enobjv);
+		return bt;
+	}
+
+
+	return NULL;
+}
+
 static void tree_item_select(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
 
 }
