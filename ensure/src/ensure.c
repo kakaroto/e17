@@ -76,28 +76,28 @@ static void generic_con_req(void *data, Evas_Object *obj, void *event);
 
 static void enobj_select(void *data, Evas_Object *obj, void *event);
 //static void enobj_expand(void *data, Evas_Object *obj, void *event);
-static char *enobj_label_get(const void *data, Evas_Object *, const char *);
-static Evas_Object *enobj_icon_get(const void *data, Evas_Object *, const char *);
-static Eina_Bool enobj_state_get(const void *data, Evas_Object *, const char *);
+static char *enobj_label_get(void *data, Evas_Object *, const char *);
+static Evas_Object *enobj_icon_get(void *data, Evas_Object *, const char *);
+static Eina_Bool enobj_state_get(void *data, Evas_Object *, const char *);
 
 
-static char *cfg_label_get(const void *, Evas_Object *, const char *part);
-static Evas_Object *cfg_icon_get(const void *, Evas_Object *, const char *part);
-static Eina_Bool cfg_state_get(const void *, Evas_Object *, const char *part);
-static void cfg_del(const void *, Evas_Object *obj);
+static char *cfg_label_get(void *, Evas_Object *, const char *part);
+static Evas_Object *cfg_icon_get(void *, Evas_Object *, const char *part);
+static Eina_Bool cfg_state_get(void *, Evas_Object *, const char *part);
+static void cfg_del(void *, Evas_Object *obj);
 
-static char *asn_label_get(const void *data, Evas_Object *, const char *);
-static Evas_Object *asn_icon_get(const void *data, Evas_Object *, const char *);
-static Eina_Bool asn_state_get(const void *data, Evas_Object *, const char *);
-static void asn_del(const void *data, Evas_Object *obj);
+static char *asn_label_get(void *data, Evas_Object *, const char *);
+static Evas_Object *asn_icon_get(void *data, Evas_Object *, const char *);
+static Eina_Bool asn_state_get(void *data, Evas_Object *, const char *);
+static void asn_del(void *data, Evas_Object *obj);
 static void asn_select(void *data, Evas_Object *obj, void *event);
 static void asn_select_toggle(void *data, Evas_Object *obj, void *event);
 
-static char *enwin_label_get(const void *data, Evas_Object *, const char *);
+static char *enwin_label_get(void *data, Evas_Object *, const char *);
 //static Evas_Object *enwin_icon_get(const void *data, Evas_Object *, const char *);
-static Eina_Bool enwin_state_get(const void *data, Evas_Object *, const char *);
+static Eina_Bool enwin_state_get(void *data, Evas_Object *, const char *);
 static void enwin_select(void *data, Evas_Object *obj, void *event);
-static void enwin_del(const void *data, Evas_Object *obj);
+static void enwin_del(void *data, Evas_Object *obj);
 
 
 
@@ -108,15 +108,27 @@ Evas_Object *objlist;
 Evas_Object *configlist;
 Evas_Object *box;
 Evas_Object *mainwindow;
+bool changedir = false;
 
 #include "enedj.h"
 int
 elm_main(int argc, char **argv){
 
         if (argc < 2){
-               printf("Usage: %s <program>\n", argv[0]);
+		printf("Usage: %s  [-c] <program>\n", argv[0]);
+		printf("\t-c\tStart subprogram in it's path directory\n");
+
                 exit(0);
         }
+
+	/* FIXME: this isn't implemented  */
+	if (streq(argv[1],"-c")){
+		changedir = true;
+		memmove(argv + 1, argv + 2, argc - 1);
+		argv[argc] = 0;
+		argc --;
+	}
+
         mainwindow = window_add(argv);
 
 	signal_init();
@@ -318,13 +330,13 @@ generic_con_req(void *data ensure_unused, Evas_Object *obj ensure_unused, void *
 	elm_genlist_item_expanded_set(it, 0);
 }
 static void
-cfg_del(const void *data ensure_unused, Evas_Object *obj ensure_unused){
+cfg_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
 
 }
 
 
 static char *
-cfg_label_get(const void *data, Evas_Object *obj ensure_unused,
+cfg_label_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	const struct severityinfo *info;
 
@@ -332,29 +344,29 @@ cfg_label_get(const void *data, Evas_Object *obj ensure_unused,
 	return strdup(info->name);
 }
 static Evas_Object *
-cfg_icon_get(const void *data ensure_unused, Evas_Object *obj ensure_unused,
+cfg_icon_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	return NULL;
 }
 static Eina_Bool
-cfg_state_get(const void *data ensure_unused, Evas_Object *obj ensure_unused,
+cfg_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	return false;
 }
 
 /** Handlers for the subitems in the assurance list */
 static char *
-asn_label_get(const void *data, Evas_Object *obj ensure_unused,
+asn_label_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
-	const struct asninfo *info;
+	struct asninfo *info;
 
 	info = data;
 	return strdup(info->asn->summary);
 }
 
 static Evas_Object *
-asn_icon_get(const void *data, Evas_Object *obj, const char *part){
-	const struct asninfo *ai = data;
+asn_icon_get(void *data, Evas_Object *obj, const char *part){
+	struct asninfo *ai = data;
 	Evas_Object *ck;
 
 	if (strcmp(part, "elm.swallow.end") == 0){
@@ -369,15 +381,15 @@ asn_icon_get(const void *data, Evas_Object *obj, const char *part){
 	return NULL;
 }
 static Eina_Bool
-asn_state_get(const void *data, Evas_Object *obj ensure_unused,
+asn_state_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
-	const struct asninfo *ai;
+	struct asninfo *ai;
 
 	ai = data;
 	return ai->enabled;
 }
 static void
-asn_del(const void *data ensure_unused, Evas_Object *obj ensure_unused){
+asn_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
 	struct enwin *enwin = data;
 
 	enwin->genitem = NULL;
@@ -399,7 +411,7 @@ asn_select_toggle(void *data, Evas_Object *obj ensure_unused, void *event ensure
 
 
 static char *
-enwin_label_get(const void *data, Evas_Object *obj ensure_unused,
+enwin_label_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	const struct enwin *enwin;
 	const char *fmt = "Untitled Window '%p'";
@@ -428,7 +440,7 @@ enwin_icon_get(const void *data, Evas_Object *obj ensure_unused,
 	return NULL;
 }*/
 static Eina_Bool
-enwin_state_get(const void *data ensure_unused, Evas_Object *obj ensure_unused,
+enwin_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
 		const char *state ensure_unused){
 	return false;
 }
@@ -437,7 +449,7 @@ enwin_select(void *data, Evas_Object *obj, void *event){
 	/* FIXME: Do something or delete this */
 	printf("Select... ignoring\n");
 }
-static void enwin_del(const void *data, Evas_Object *obj){
+static void enwin_del(void *data, Evas_Object *obj){
 	/* FIXME: Do something or delete this */
 }
 
@@ -466,7 +478,7 @@ enobj_select(void *data ensure_unused, Evas_Object *obj ensure_unused,
 	elm_genlist_item_expanded_set(itemv, true);
 }
 static char *
-enobj_label_get(const void *data, Evas_Object *obj ensure_unused,
+enobj_label_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	const struct enobj *enobj = data;
 	char buf[200];
@@ -481,7 +493,7 @@ enobj_label_get(const void *data, Evas_Object *obj ensure_unused,
 	return strdup(buf);
 }
 static Evas_Object *
-enobj_icon_get(const void *enobjv, Evas_Object *obj,
+enobj_icon_get(void *enobjv, Evas_Object *obj,
 		const char *part){
 	Evas_Object *bt;
 	if (strcmp(part, "elm.swallow.end") == 0){
@@ -498,7 +510,7 @@ enobj_icon_get(const void *enobjv, Evas_Object *obj,
 	return NULL;
 }
 static Eina_Bool
-enobj_state_get(const void *data ensure_unused, Evas_Object *obj ensure_unused,
+enobj_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	return false;
 }
@@ -576,7 +588,10 @@ on_check(void *data ensure_unused, Evas_Object *button ensure_unused,
 	/* clear the list of items */
 	enobj_clear();
 
-	kill(childid, SIGUSR2);
+	printf("Sending kill to %d\n",childid);
+	if (kill(childid, SIGUSR2))
+		perror("kill(child, SIGUSR2))");
+	printf("Done\n");
 
 }
 
@@ -604,6 +619,11 @@ on_run(void *data, Evas_Object *button ensure_unused, void *event_info ensure_un
 		return;
 	}
 
+	/* Watch the fd */
+	ensure = calloc(1,sizeof(struct ensure));
+	ecore_main_fd_handler_add(pipefd[0], ECORE_FD_READ, child_data,
+					ensure, NULL, NULL);
+
 	/* I'm sure someone will complain I'm doing this myself... but anyway
 	 */
 	switch ((pid = fork())){
@@ -622,11 +642,6 @@ on_run(void *data, Evas_Object *button ensure_unused, void *event_info ensure_un
 		break;
 	}
 
-	/* Watch the fd */
-	ensure = calloc(1,sizeof(struct ensure));
-	ecore_main_fd_handler_add(pipefd[0], ECORE_FD_READ, child_data,
-					ensure, NULL, NULL);
-
 	return;
 }
 
@@ -637,6 +652,7 @@ static void
 dochild(char **args, int fd){
 	char buf[4];
 
+//	setlinebuf(fd);
 	setenv("LD_PRELOAD", LIBENSURE_DIR "/libensure.so",1);
 	snprintf(buf, sizeof(buf), "%d",fd);
 	setenv("ENSURE_FD", buf, 1);

@@ -13,10 +13,10 @@
 #include "ensure.h"
 #include "enobj.h"
 
-static void bug_del(const void *, Evas_Object *obj);
-static char *bug_label_get(const void *data, Evas_Object *, const char *);
-static Evas_Object *bug_icon_get(const void *data, Evas_Object *, const char *);
-static Eina_Bool bug_state_get(const void *data, Evas_Object *, const char *);
+static void bug_del(void *, Evas_Object *obj);
+static char *bug_label_get(void *data, Evas_Object *, const char *);
+static Evas_Object *bug_icon_get(void *data, Evas_Object *, const char *);
+static Eina_Bool bug_state_get(void *data, Evas_Object *, const char *);
 
 
 static const Elm_Genlist_Item_Class bugc = {
@@ -146,23 +146,23 @@ enasn_display_bugs(void *data ensure_unused, Evas_Object *obj ensure_unused,
 
 
 static void
-bug_del(const void *data ensure_unused, Evas_Object *obj ensure_unused){
+bug_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
 
 }
 static char *
-bug_label_get(const void *data, Evas_Object *obj ensure_unused,
+bug_label_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	const struct bug *bug = data;
 	return strdup(bug->desc);
 }
 static Evas_Object *
-bug_icon_get(const void *data ensure_unused, Evas_Object *obj ensure_unused,
+bug_icon_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	/* FIXME: Severity icon would be good */
 	return NULL;
 }
 static Eina_Bool
-bug_state_get(const void *data ensure_unused, Evas_Object *obj ensure_unused,
+bug_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){
 	return false;
 }
