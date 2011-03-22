@@ -21,6 +21,7 @@
 
 #include <regex.h>
 #include <ctype.h>
+#include <errno.h>
 #include "Azy.h"
 #include "azy_private.h"
 
@@ -175,6 +176,13 @@ azy_events_type_parse(Azy_Net             *net,
         int code = -1;
         char buf[8];
 
+        errno = 0;
+        net->http.version = strtol(start + match[1].rm_so, NULL, 10);
+        if (errno || (net->http.version < 0) || (net->http.version > 1))
+          {
+             ERR("Invalid HTTP version!");
+             return 0;
+          }
         memcpy(buf, start + match[2].rm_so, sizeof(buf));
         if (sscanf(buf, "%3i", &code) == 1)
           {
