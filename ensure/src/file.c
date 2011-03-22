@@ -7,6 +7,7 @@
 #include "file.h"
 #include "parser.h"
 #include "enobj.h"
+#include "results.h"
 
 struct fileselector {
 	Evas_Object *win;
@@ -185,7 +186,6 @@ file_load_do(struct ensure *ensure, const char *file){
 	res->objdb = eina_hash_pointer_new(enobj_free);
 
 	results_add(ensure, res);
-
 
 	parser_readfile(ensure, file);
 	return 0;

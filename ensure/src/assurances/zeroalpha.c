@@ -16,7 +16,7 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 	assert(obj);
 
 	if (!obj->a){
-		ensure_bug(obj, ENSURE_PEDANTIC,
+		ensure_bug(obj, ENSURE_PEDANTIC, assurance.summary,
 				"Object's alpha is 0",
 				obj->a);
 		return 1;

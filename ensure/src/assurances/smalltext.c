@@ -28,7 +28,7 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 	if (obj->type != texttype) return 0;
 
 	if (obj->data.text.size < 6){
-		ensure_bug(obj, ENSURE_PEDANTIC,
+		ensure_bug(obj, ENSURE_PEDANTIC, assurance.summary,
 				"Text size is too small: %d points,",
 				obj->data.text.size);
 		return 1;

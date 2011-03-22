@@ -45,7 +45,6 @@ static void
 select_results(void *resv, Evas_Object *obj, void *event){
 	struct result *result = resv;
 	struct ensure *ensure;
-	printf("Select result\n");
 
 	if (!result || !result->ensure) return;
 	ensure = result->ensure;

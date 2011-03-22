@@ -16,7 +16,8 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 	assert(obj);
 
 	if (obj->w < 0 || obj->h < 0){
-		ensure_bug(obj, ENSURE_BUG, "Object has negative size (%dx%d)",
+		ensure_bug(obj, ENSURE_BUG, assurance.summary,
+				"Object has negative size (%dx%d)",
 				obj->w,obj->h);
 		return 1;
 	}

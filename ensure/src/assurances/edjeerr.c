@@ -56,7 +56,7 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 	if (obj->type != edjetype) return 0;
 
 	if (obj->data.edje.err){
-		ensure_bug(obj, assurance.severity,
+		ensure_bug(obj, assurance.severity, assurance.summary,
 				"Edje load error: %s",obj->data.edje.err);
 		return 1;
 	}

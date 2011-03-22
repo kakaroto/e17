@@ -23,22 +23,22 @@ object_check(struct ensure *en, struct enobj *obj,
 	if (!clip) return 0;
 
 	if (obj->x > clip->x + clip->w){
-		ensure_bug(obj, assurance.severity,
+		ensure_bug(obj, assurance.severity, assurance.summary,
 				"Object out of clip (obj.x (%d) > "
 					"clip.x + clip.w (%d + %d)",
 				obj->x,clip->x,clip->w);
 	} else if (obj->x < clip->x){
-		ensure_bug(obj, assurance.severity,
+		ensure_bug(obj, assurance.severity, assurance.summary,
 				"Object out of clip "
 				"(obj.x (%d) < clip.x (%d))",
 				obj->x,clip->x);
 	} else if (obj->y < clip->y){
-		ensure_bug(obj, ENSURE_BADFORM,
+		ensure_bug(obj, assurance.severity, assurance.summary,
 				"Object out of clip "
 				"(obj.y (%d) < clip.y (%d))",
 				obj->y,clip->y);
 	} else if (obj->y > clip->y + clip->h){
-		ensure_bug(obj, assurance.severity,
+		ensure_bug(obj, assurance.severity, assurance.summary,
 				"Object out of clip (obj.y (%d) > "
 					"clip.y + clip.h (%d + %d)",
 				obj->y,clip->y,clip->h);

@@ -18,7 +18,7 @@ premul_object_check(struct ensure *en ensure_unused, struct enobj *obj,
 	assert(obj);
 
 	if (obj->a < obj->r || obj->a < obj->g || obj->a < obj->b){
-		ensure_bug(obj,ENSURE_BUG,
+		ensure_bug(obj,ENSURE_BUG, assurance.summary,
 				"Alpha (%d) must be <= rgb values (%d,%d,%d)",
 				obj->a, obj->r, obj->g, obj->b);
 		return 1;

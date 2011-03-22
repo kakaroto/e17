@@ -17,6 +17,7 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 
 	if (obj->w && obj->h) return 0;
 
-	ensure_bug(obj, ENSURE_BADFORM, "Object has zero size");
+	ensure_bug(obj, assurance.severity, assurance.summary,
+			"Object has zero size");
 	return 1;
 }

@@ -92,7 +92,7 @@ enasn_load(const char *path){
 
 
 int
-ensure_bug(struct enobj *enobj, enum ensure_severity sev,
+ensure_bug(struct enobj *enobj, enum ensure_severity sev, const char *type,
 		const char *fmt, ...){
 	char *buf;
 	struct bug *bug;
@@ -119,6 +119,7 @@ ensure_bug(struct enobj *enobj, enum ensure_severity sev,
 	bug = calloc(1,sizeof(struct bug));
 	bug->severity = sev;
 	bug->desc = buf;
+	bug->type = eina_stringshare_add(type);
 
 	enobj->bugs = eina_list_prepend(enobj->bugs, bug);
 printf("bug add\n");

@@ -26,11 +26,11 @@ object_check(struct ensure *en, struct enobj *obj, void *data ensure_unused){
 	clipp = enobj_parent_get(en, clip);
 
 	if (!clipp){
-		ensure_bug(obj, assurance.severity,
+		ensure_bug(obj, assurance.severity, "Not smart member",
 				"Object's clip not smart member");
 		return 1;
 	} else if (clipp != parent){
-		ensure_bug(obj, assurance.severity,
+		ensure_bug(obj, assurance.severity, "Clip and member differ",
 				"Object's clip member of difference smart "
 				"Obj: %llx  Clip: %llx",parent->id,clip->id);
 		return 1;

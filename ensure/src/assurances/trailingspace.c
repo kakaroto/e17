@@ -31,7 +31,7 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 	p = obj->data.text.text + strlen(obj->data.text.text);
 	p --;
 	if (isspace(*p)){
-		ensure_bug(obj, ENSURE_PEDANTIC,
+		ensure_bug(obj, ENSURE_PEDANTIC, assurance.summary,
 				"Trailing whitespace (%02x) on text",
 				(unsigned int)*p);
 		return 1;

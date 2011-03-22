@@ -56,7 +56,7 @@ object_check(struct ensure *en ensure_unused, struct enobj *obj,
 	if (obj->type != imagetype) return 0;
 
 	if (obj->data.image.err){
-		ensure_bug(obj, assurance.severity,
+		ensure_bug(obj, assurance.severity, assurance.summary,
 				"Image load error: %s",obj->data.image.err);
 		return 1;
 	}

@@ -22,22 +22,22 @@ object_check(struct ensure *en, struct enobj *obj, void *data ensure_unused){
 	if (!parent) return 0;
 
 	if (obj->x > parent->x + parent->w){
-		ensure_bug(obj, assurance.severity,
+		ensure_bug(obj, assurance.severity, assurance.summary,
 				"Object out of parent (obj.x (%d) > "
 					"parent.x + parent.w (%d + %d)",
 				obj->x,parent->x,parent->w);
 	} else if (obj->x < parent->x){
-		ensure_bug(obj, ENSURE_BADFORM,
+		ensure_bug(obj, ENSURE_BADFORM, assurance.summary,
 				"Object out of parent "
 				"(obj.x (%d) < parent.x (%d))",
 				obj->x,parent->x);
 	} else if (obj->y < parent->y){
-		ensure_bug(obj, ENSURE_BADFORM,
+		ensure_bug(obj, ENSURE_BADFORM, assurance.summary,
 				"Object out of parent "
 				"(obj.y (%d) < parent.y (%d))",
 				obj->y,parent->y);
 	} else if (obj->y > parent->y + parent->h){
-		ensure_bug(obj, assurance.severity,
+		ensure_bug(obj, assurance.severity, assurance.summary,
 				"Object out of parent (obj.y (%d) > "
 					"parent.y + parent.h (%d + %d)",
 				obj->y,parent->y,parent->h);
