@@ -541,8 +541,12 @@ _scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
 
 	_scale_out(2);
 
-	it->bd_x = ev->cur.canvas.x - (ev->cur.canvas.x - it->bd_x);
-	it->bd_y = ev->cur.canvas.y - (ev->cur.canvas.y - it->bd_y);
+	it->bd_x = ev->cur.canvas.x - (ev->cur.canvas.x - it->cur_x);
+	it->bd_y = ev->cur.canvas.y - (ev->cur.canvas.y - it->cur_y);
+	if (it->bd_x + it->bd->w > it->bd->zone->w)
+	  it->bd_x = it->bd->zone->w - it->bd->w;
+	if (it->bd_y + it->bd->h > it->bd->zone->h)
+	  it->bd_y = it->bd->zone->h - it->bd->h;	
      }
 }
 
