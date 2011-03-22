@@ -11,14 +11,13 @@ struct assurance assurance = {
 
 
 static int
-object_check(struct ensure *en ensure_unused, struct enobj *obj,
-		void *data ensure_unused){
+object_check(struct ensure *en, struct enobj *obj, void *data ensure_unused){
 	struct enobj *parent;
 	assert(obj);
 
 	if (!obj->parent) return 0;
 
-	parent = enobj_parent_get(obj);
+	parent = enobj_parent_get(en, obj);
 	assert(parent);
 	if (!parent) return 0;
 

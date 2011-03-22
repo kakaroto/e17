@@ -63,14 +63,14 @@ view_set_hidden(void *ensurev, Evas_Object *button, void *event_info){
  * Save to the hidden list
  */
 int
-hidden_object_add(struct ensure *ensure, Evas_Object *o){
-	ensure->hidden = eina_list_append(ensure->hidden,o);
+hidden_object_add(struct ensure *ensure, uintptr_t o){
+	ensure->hidden = eina_list_append(ensure->hidden,(void *)o);
 	return 0;
 }
 
 int
-hidden_object_remove(struct ensure *ensure, Evas_Object *o){
-	ensure->hidden = eina_list_remove(ensure->hidden,o);
+hidden_object_remove(struct ensure *ensure, uintptr_t o){
+	ensure->hidden = eina_list_remove(ensure->hidden,(void *)o);
 	return 0;
 }
 

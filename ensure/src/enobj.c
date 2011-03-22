@@ -91,16 +91,16 @@ enobj_prepare_object(const Eina_Hash *hash, const void *key, void *obj,
 		void *ensurev){
 	struct enobj *enobj = obj;
 	struct enobj *parent, *clip;
-printf("Obj: %p %llx %llx\n",enobj, enobj->parent, enobj->clip);
+//printf("Obj: %p %llx %llx\n",enobj, enobj->parent, enobj->clip);
 	if (enobj->parent){
 		parent = enobj_parent_get(ensurev, enobj);
 		parent->children = eina_list_append(parent->children, enobj);
-		printf("\tChildren: %p\n",parent->children);
+//		printf("\tChildren: %p\n",parent->children);
 	}
 	if (enobj->clip){
 		clip = enobj_parent_get(ensurev, enobj);
 		clip->clippees = eina_list_append(clip->clippees, enobj);
-		printf("\tClips: %p\n",parent->clip);
+//		printf("\tClips: %p\n",parent->clip);
 	}
 	return true;
 }

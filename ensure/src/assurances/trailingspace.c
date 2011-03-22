@@ -23,7 +23,7 @@ init_test(struct ensure *en ensure_unused){
 static int
 object_check(struct ensure *en ensure_unused, struct enobj *obj,
 		void *data ensure_unused){
-	char *p;
+	const char *p;
 	assert(obj);
 
 	if (obj->type != texttype) return 0;

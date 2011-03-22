@@ -30,6 +30,8 @@ enum ensure_severity {
 };
 
 struct result {
+	struct ensure *ensure;
+
 	time_t tm;
 
 	/* A list of enwins */
@@ -46,6 +48,9 @@ struct ensure {
 	enum enview current_view;
 	Evas_Object *view;
 	Evas_Object *viewselect;
+	Evas_Object *reportselect;
+
+	Evas_Object *mainwindow;
 
 	/* The list of hidden objects */
 	Eina_List *hidden;
@@ -75,6 +80,7 @@ int ensure_bug(struct enobj *enobj, enum ensure_severity sev,
 
 
 int ensure_enobj_err_list_add(struct enobj *);
+void view_dirty_set(struct ensure *);
 
 
 #ifndef streq

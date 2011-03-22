@@ -126,9 +126,17 @@ enedj_load(const char *filename){
 	edjeinit ++;
 
 	ef = eet_open(filename, EET_FILE_MODE_READ);
+	if (!ef) {
+		printf("Could not open eet file\n");
+		return -1;
+	}
 
 	file = eet_data_read(ef, _edje_edd_edje_file, "edje_file");
-	assert(file);
+	if (!file){
+		printf("Did not parse edje file\n");
+		/* FIXME: Leaks */
+		return -1;
+	};
 
 	if (!file->image_dir){
 		printf("No images found!\n");

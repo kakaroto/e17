@@ -1,0 +1,188 @@
+/**
+ * The error view window
+ *
+ * This displays the list of errors in the current view
+ */
+#include <stdbool.h>
+
+#include <Eina.h>
+#include <Elementary.h>
+
+#include "ensure.h"
+#include "enobj.h"
+#include "errors.h"
+#include "display.h"
+
+static void enobj_select(void *data ensure_unused, Evas_Object *obj ensure_unused, void *itemv);
+static char * enobj_label_get(void *data, Evas_Object *obj ensure_unused,
+		const char *part ensure_unused);
+static Evas_Object * enobj_icon_get(void *enobjv, Evas_Object *obj,
+		const char *part);
+static Eina_Bool enobj_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused, const char *part ensure_unused);
+static void enobj_del(void *data ensure_unused, Evas_Object *obj ensure_unused);
+
+static char *enwin_label_get(void *data, Evas_Object *obj, const char *part);
+static Eina_Bool enwin_state_get(void *data, Evas_Object *obj, const char *);
+static void enwin_select(void *data, Evas_Object *obj, void *event);
+static void enwin_del(void *data, Evas_Object *obj);
+
+
+
+static const Elm_Genlist_Item_Class objc = {
+	.item_style = "default",
+	.func = {
+		.label_get = enobj_label_get,
+		.icon_get = enobj_icon_get,
+		.state_get = enobj_state_get,
+		.del = enobj_del
+	}
+};
+
+static const Elm_Genlist_Item_Class windowclass = {
+	.item_style = "default",
+	.func = {
+		.label_get = enwin_label_get,
+		.state_get = enwin_state_get,
+		.del = enwin_del,
+	},
+};
+
+
+void
+errors_view_set(void *ensurev, Evas_Object *button,
+		void *event_info ensure_unused){
+	struct ensure *ensure = ensurev;
+
+	if (ensure->current_view == ENVIEW_ERROR) return;
+	ensure->current_view = ENVIEW_ERROR;
+
+	elm_hoversel_label_set(ensure->viewselect, "Errors");
+
+	errors_update(ensure);
+
+
+}
+
+
+void
+errors_update(struct ensure *ensure){
+	struct enobj *enobj;
+	Eina_Iterator *iter;
+
+
+	if (!ensure) return;
+
+	elm_genlist_clear(ensure->view);
+
+	/* For each object */
+	iter = eina_hash_iterator_data_new(ensure->cur->objdb);
+	EINA_ITERATOR_FOREACH(iter, enobj){
+		if (!enobj->bugs) continue;
+
+		if (!enobj->enwin->genitem){
+			enobj->enwin->genitem = elm_genlist_item_append(ensure->view,
+					&windowclass, enobj->enwin, NULL,
+					ELM_GENLIST_ITEM_SUBITEMS, enwin_select,
+					enobj->enwin);
+		}
+
+		enobj->genitem = elm_genlist_item_append(ensure->view, &objc,
+				enobj, enobj->enwin->genitem, ELM_GENLIST_ITEM_SUBITEMS,
+				enobj_select, enobj);
+
+	}
+
+}
+
+/*
+ * Tree view callbacks
+ */
+static void
+enobj_select(void *data ensure_unused, Evas_Object *obj ensure_unused,
+		void *itemv){
+	elm_genlist_item_expanded_set(itemv, true);
+}
+static char *
+enobj_label_get(void *data, Evas_Object *obj ensure_unused,
+		const char *part ensure_unused){
+	const struct enobj *enobj = data;
+	char buf[200];
+
+	if (enobj->name){
+		snprintf(buf,sizeof(buf), "%s (%lx) - %s",
+				enobj->name, enobj->id, enobj->type);
+	} else {
+		snprintf(buf,sizeof(buf), "%lx - %s",
+				enobj->id,enobj->type);
+	}
+	return strdup(buf);
+}
+static Evas_Object *
+enobj_icon_get(void *enobjv, Evas_Object *obj,
+		const char *part){
+	Evas_Object *bt;
+	if (strcmp(part, "elm.swallow.end") == 0){
+		bt = elm_button_add(obj);
+		elm_button_label_set(bt, "View");
+		elm_button_autorepeat_set(bt, false);
+		evas_object_show(bt);
+		evas_object_smart_callback_add(bt, "clicked",
+				display_enobj_cb, enobjv);
+		return bt;
+	}
+
+
+	return NULL;
+}
+static Eina_Bool
+enobj_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
+		const char *part ensure_unused){
+	return false;
+}
+
+
+static void
+enobj_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
+	struct enwin *enwin = data;
+
+	enwin->genitem = NULL;
+}
+
+
+static char *
+enwin_label_get(void *data, Evas_Object *obj ensure_unused,
+		const char *part ensure_unused){
+	const struct enwin *enwin;
+	const char *fmt = "Untitled Window '%p'";
+	char *buf;
+	int len;
+
+	enwin = data;
+
+	if (enwin->name && strlen(enwin->name) > 1){
+		return strdup(enwin->name);
+	}
+
+	len = snprintf(NULL,0,fmt,enwin->id);
+	if (len < 1) return NULL;
+	len ++;
+	buf = malloc(len);
+	if (!buf) return NULL;
+	/* remmeber to update both snprintfs if you change it */
+	snprintf(buf,len,fmt,enwin->id);
+	return buf;
+}
+static Eina_Bool
+enwin_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
+		const char *state ensure_unused){
+	return false;
+}
+static void
+enwin_select(void *data, Evas_Object *obj, void *event){
+	/* FIXME: Do something or delete this */
+	printf("Select... ignoring\n");
+}
+static void enwin_del(void *data, Evas_Object *obj){
+	/* FIXME: Do something or delete this */
+}
+

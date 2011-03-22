@@ -107,7 +107,7 @@ struct enobj {
 void enobj_clear(void);
 int enobj_add(struct ensure *ensure, struct enobj *eno);
 struct enobj *enobj_parent_get(struct ensure *ensure, struct enobj *eno);
-struct enobj * enobj_clip_get(struct ensure *ensure, struct enobj *eno);
+struct enobj *enobj_clip_get(struct ensure *ensure, struct enobj *eno);
 struct enobj *enobj_get(struct ensure *, uintptr_t id);
 
 /* Prepare current list of objects */

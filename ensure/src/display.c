@@ -8,8 +8,8 @@
 #include "ensure.h"
 #include "enasn.h"
 #include "enedj.h"
-
-extern Evas_Object *mainwindow;
+#include "hidden.h"
+#include "inttypes.h"
 
 static void add_heading(Evas_Object *win, Evas_Object *tbl, int *pos,
 		const char *label);
@@ -23,7 +23,9 @@ static const char *sev_string(enum ensure_severity sev);
 
 
 static void enobj_del(void *enobjv, Evas_Object *obj, void *event_info);
-
+static void display_hidden_object_toggle(void *enobjv, Evas_Object *obj,
+		void *event ensure_unused);
+static void display_show_object(void *enobjv, Evas_Object *obj, void *);
 
 void
 display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
@@ -31,6 +33,7 @@ display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 	struct enobj *enobj = enobjv;
 	struct ensure *ensure;
 	Evas_Object *win,*bg,*tbl;
+	Evas_Object *tgl, *but;
 	int pos;
 	char buf[100];
 
@@ -54,7 +57,7 @@ display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 				(long long int)enobj->id, enobj->type);
 	}
 
-	win = elm_win_add(mainwindow, buf, ELM_WIN_BASIC);
+	win = elm_win_add(ensure->mainwindow, buf, ELM_WIN_BASIC);
 	enobj->win = win;
 	elm_win_title_set(win, buf);
 	elm_win_autodel_set(win, true);
@@ -145,6 +148,24 @@ display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 					bug->desc);
 		}
 	}
+
+	tgl = elm_toggle_add(win);
+	elm_toggle_label_set(tgl, "Bug Checking:");
+	elm_toggle_states_labels_set(tgl, "Checked", "Ignored");
+	elm_toggle_state_set(tgl, !hidden_get(ensure, enobj->id));
+	evas_object_show(tgl);
+	elm_table_pack(tbl, tgl, 1, pos, 1, 1);
+	evas_object_smart_callback_add(tgl, "changed",
+			display_hidden_object_toggle, enobj);
+	pos ++;
+
+	but = elm_button_add(win);
+	elm_button_label_set(but, "Display On Canvas");
+	elm_table_pack(tbl, but, 2, pos, 1,1);
+	evas_object_show(but);
+	evas_object_smart_callback_add(but, "clicked",
+			display_show_object, enobj);
+	pos ++;
 
 	evas_object_show(win);
 
@@ -270,4 +291,35 @@ enobj_del(void *enobjv, Evas_Object *obj, void *event_info){
 	printf("Nulling a window\n");
 	enobj->win = NULL;
 
+}
+
+static void
+display_hidden_object_toggle(void *enobjv, Evas_Object *obj,
+		void *event ensure_unused){
+	struct enobj *enobj = enobjv;
+	bool visible;
+
+	visible = !elm_toggle_state_get(obj);
+	if (visible)
+		hidden_object_remove(enobj->ensure, enobj->id);
+	else
+		hidden_object_add(enobj->ensure, enobj->id);
+}
+
+static void
+display_show_object(void *enobjv, Evas_Object *obj, void *event ensure_unused){
+	struct enobj *enobj = enobjv;
+	struct ensure *ensure;
+	char buf[100];
+	int n;
+
+	if (!enobj) return;
+	ensure = enobj->ensure;
+	if (!ensure) return;
+
+	n = snprintf(buf, sizeof(buf), "Display: %"PRIxPTR"\n",enobj->id);
+
+	printf("Sending %s\n",buf);
+	write(ensure->commandfd,buf,n);
+	printf("Done\n");
 }

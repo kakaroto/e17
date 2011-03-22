@@ -10,8 +10,7 @@
 #include "enasn.h"
 
 static void config_add_classes(Evas_Object *gl);
-static void cfg_sel(void *data, Evas_Object *obj, void *event);
-static void cfg_exp(void *data, Evas_Object *obj, void *event);
+void cfg_sel(void *data, Evas_Object *obj, void *event);
 void generic_contract(void *data, Evas_Object *obj, void *event);
 void generic_exp_req(void *data, Evas_Object *obj, void *event);
 void generic_con_req(void *data, Evas_Object *obj, void *event);
@@ -102,38 +101,34 @@ config_add_classes(Evas_Object *gl){
 				severity + i /* data */);
 
 	}
-
-	evas_object_smart_callback_add(gl, "expand,request", generic_exp_req, gl);
-	evas_object_smart_callback_add(gl, "contract,request", generic_con_req, gl);
-	evas_object_smart_callback_add(gl, "expanded", cfg_exp, gl);
-	evas_object_smart_callback_add(gl, "contracted", generic_contract, gl);
-
 }
 
-static void
-cfg_sel(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
-	const struct severityinfo *info = data;
-
-	printf("Item selected! %s\n",info->name);
-}
-static void
-cfg_exp(void *ensurev, Evas_Object *obj ensure_unused, void *event){
-	Elm_Genlist_Item *parent = event;
-	Evas_Object *gl = elm_genlist_item_genlist_get(parent);
+void
+config_expand(struct ensure *ensure, Elm_Genlist_Item *item){
 	struct severityinfo *sev;
 	struct asninfo *ai;
 	Eina_List *l;
 
-	sev = (struct severityinfo *)elm_genlist_item_data_get(parent);
+	sev = (struct severityinfo *)elm_genlist_item_data_get(item);
 
 	EINA_LIST_FOREACH(sev->asninfo, l, ai){
-		elm_genlist_item_append(gl, &asnclass,
-				ai, parent,
+		printf("Add %p\n",ai);
+		elm_genlist_item_append(ensure->view, &asnclass,
+				ai, item,
 				ELM_GENLIST_ITEM_NONE,
 				asn_select, ai);
 	}
 
 }
+
+void
+cfg_sel(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
+       const struct severityinfo *info = data;
+
+       printf("Item selected! %s\n",info->name);
+}
+
+
 char *
 cfg_label_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused){

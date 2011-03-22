@@ -58,21 +58,37 @@ static const Elm_Genlist_Item_Class treeitemclass = {
 /**
  * Display the object tree.
  *
+ * This is the callback when the view changes to update the object tree as
+ * necessary.
+ *
+ * @param ensurev Ensure pointer (as void)
+ * @param button The button pressed (ignored)
+ * @param event_info The data from teh event change (ignored).
  */
 void
-view_set_tree(void *ensurev, Evas_Object *button, void *event_info){
-
+view_set_tree(void *ensurev, Evas_Object *button ensure_unused,
+		void *event_info ensure_unused){
         struct ensure *ensure = ensurev;
-	struct result *cur;
-	struct enwin *enwin;
-	Eina_List *l;
 
 	if (ensure->current_view == ENVIEW_OBJECT_TREE) return;
 	ensure->current_view = ENVIEW_OBJECT_TREE;
 
 	elm_hoversel_label_set(ensure->viewselect, "Object Tree");
-	elm_genlist_clear(ensure->view);
 
+	tree_update(ensure);
+
+}
+
+/**
+ * Called when the item list changes: Update the entire tree structure
+ */
+void
+tree_update(struct ensure *ensure){
+	struct result *cur;
+	struct enwin *enwin;
+	Eina_List *l;
+
+	elm_genlist_clear(ensure->view);
 	cur = ensure->cur;
 
 	EINA_LIST_FOREACH(cur->windows, l, enwin){
@@ -89,9 +105,9 @@ view_set_tree(void *ensurev, Evas_Object *button, void *event_info){
 	eina_hash_foreach(cur->objdb, tree_add_toplevel, ensure);
 
 	return;
+
+
 }
-
-
 
 /* Expand an item */
 void
@@ -128,8 +144,8 @@ tree_add_toplevel(const Eina_Hash *hash, const void *key, void *enobjv,
 	assert(enobj->magic == ENOBJMAGIC);
 
 	flags = ELM_GENLIST_ITEM_SUBITEMS;
-	printf("Obj: %p Children: %p Clips: %p\n",enobj, enobj->children,
-			enobj->clippees);
+//	printf("Obj: %p Children: %p Clips: %p\n",enobj, enobj->children,
+//			enobj->clippees);
 
 	enobj->genitem = elm_genlist_item_append(ensure->view, &treeitemclass,
 			enobj, enobj->enwin->genitem, flags,
@@ -159,12 +175,13 @@ tree_window_select(void *data, Evas_Object *obj ensure_unused, void *event ensur
 
 }
 
-void
+static void
 tree_window_del(void *enwinv, Evas_Object *obj){
 	struct enwin *enwin = enwinv;
 
 	enwin->genitem = NULL;
 }
+
 
 
 

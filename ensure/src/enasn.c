@@ -43,7 +43,10 @@ enasn_load(const char *path){
 	if (!path) path = PACKAGE_MODULE_DIR;
 
 	dir = opendir(path);
-	if (!dir) return -1;
+	if (!dir){
+		perror(path);
+		return -1;
+	}
 
 	while ((de = readdir(dir))){
 		if (de->d_name[0] == '.') continue;
@@ -118,6 +121,7 @@ ensure_bug(struct enobj *enobj, enum ensure_severity sev,
 	bug->desc = buf;
 
 	enobj->bugs = eina_list_prepend(enobj->bugs, bug);
+printf("bug add\n");
 
 	if (!enobj->genitem){
 		ensure_enobj_err_list_add(enobj);
