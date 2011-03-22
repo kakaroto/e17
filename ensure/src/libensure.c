@@ -1,8 +1,6 @@
 #include <limits.h>
 #include <stdio.h>
-#include <signal.h>
 #include <stdbool.h>
-#include <sys/signalfd.h>
 #include <unistd.h>
 
 
@@ -16,8 +14,7 @@
 #define ensure_unused	__attribute__((unused))
 
 static Eina_Bool libensure_dump(void);
-static Eina_Bool ecore_signal(void *data, int tyoe, void *event);
-static Eina_Bool ecore_fd_signal(void *data ensure_unused, Ecore_Fd_Handler *fdh);
+static Eina_Bool libensure_command_recv(void *data ensure_unused, Ecore_Fd_Handler *fdh);
 
 static void libensure_objdump(Evas_Object *o, Evas_Object *parent);
 
@@ -27,37 +24,29 @@ static int verbose = -1;
 
 __attribute__((constructor)) void
 libensure_init(void){
-	int fd;
-	int sendfd;
+	int sendfd, commandfd;
 	const char *p;
-	sigset_t sigusr2;
 
 	if (verbose == -1)
 		verbose = !!getenv("LIBENSURE_DEBUG");
 
 	ecore_init();
 
-	sigemptyset(&sigusr2);
-	sigaddset(&sigusr2, SIGUSR2);
-
-	fd = signalfd(-1, &sigusr2, SFD_CLOEXEC | SFD_NONBLOCK);
-	if (fd == -1){
-		perror("signalfd");
-		exit(1);
-	}
-	if (verbose) fprintf(stderr,"Signal fd is %d\n",fd);
-	ecore_main_fd_handler_add(fd,ECORE_FD_READ|ECORE_FD_ERROR,
-			ecore_fd_signal, NULL,
-			NULL, NULL);
-
-	ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER, ecore_signal, NULL);
-
 	p = getenv("ENSURE_FD");
 	if (p){
-		sendfd = strtol(p, NULL, 0);
-		if (verbose) fprintf(stderr,"LibEnsure: Using fd %d!\n",sendfd);
+		if (verbose) fprintf(stderr,"ENSURE_FD=%s",p);
+		sscanf(p, "%d:%d", &sendfd, &commandfd);
+		if (verbose) fprintf(stderr,"LibEnsure: Send: %d Command %d!\n",
+				sendfd, commandfd);
 		outfile = fdopen(sendfd, "w");
+	} else {
+		fprintf(stderr,"Warning: No send/command fd\n");
+		exit(0);
 	}
+
+	ecore_main_fd_handler_add(commandfd,ECORE_FD_READ|ECORE_FD_ERROR,
+			libensure_command_recv, NULL,
+			NULL, NULL);
 
 	if (!outfile) {
 		if(verbose) fprintf(stderr,"LibEnsure: Warning using stdout\n");
@@ -70,25 +59,24 @@ libensure_init(void){
 }
 
 static Eina_Bool
-ecore_signal(void *data, int tyoe, void *event){
-	Ecore_Event_Signal_User *user = event;
-	if (!event || user->number != 2) return 1;
-
-	libensure_dump();
-
-	return 0;
-}
-
-static Eina_Bool
-ecore_fd_signal(void *data ensure_unused, Ecore_Fd_Handler *fdh){
-	struct signalfd_siginfo siginfo;
+libensure_command_recv(void *data ensure_unused, Ecore_Fd_Handler *fdh){
+	char buf[100];
+	char *save;
 	int fd;
 
 	fd = ecore_main_fd_handler_fd_get(fdh);
 
-	read(fd, &siginfo, sizeof(struct signalfd_siginfo));
+	read(fd, buf, sizeof(buf));
+	strtok_r(buf, "\n\r", &save);
 
-	libensure_dump();
+	if (strncmp(buf, "Check", 5) == 0){
+		libensure_dump();
+	} else if (strncmp(buf, "Highlight:", 10) == 0){
+		printf("Got highlight: Unimplemented\n");
+	} else {
+		printf("Unknown command: %s\n",buf);
+	}
+
 	return 0;
 }
 

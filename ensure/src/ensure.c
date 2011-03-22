@@ -35,13 +35,13 @@ struct asninfo {
 
 
 
-Evas_Object *window_add(struct ensure *ensure, char **argv);
+int window_add(struct ensure *ensure, char **argv);
 
 static void on_run(void *data, Evas_Object *button, void *event_info);
 static void on_check(void *data, Evas_Object *button, void *event_info);
 
 
-static void dochild(char **args, int fd);
+static void dochild(char **args, int fd, int commandfd);
 
 static int signal_init(void);
 static Eina_Bool signalfd_child(void *data, Ecore_Fd_Handler *fd_handler);
@@ -113,7 +113,7 @@ elm_main(int argc, char **argv){
 	}
 	ensure->args = argv + 1;
 
-        mainwindow = window_add(ensure, argv);
+        window_add(ensure, argv);
 
 	signal_init();
 
@@ -128,7 +128,7 @@ ELM_MAIN()
 
 
 
-Evas_Object *
+int
 window_add(struct ensure *ensure, char **args){
         Evas_Object *win,*bg,*bx,*ctrls,*run,*check,*gl;
 	Evas_Object *viewbx, *view, *lbl;
@@ -199,18 +199,6 @@ window_add(struct ensure *ensure, char **args){
         evas_object_size_hint_weight_set(ctrls, EVAS_HINT_EXPAND, 0);
         evas_object_size_hint_align_set(ctrls, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-
-	/* Buttons: Main event is the 'clicked' event */
-	/*
-	config = elm_button_add(ctrls);
-	elm_button_label_set(config, "Config");
-	elm_button_autorepeat_set(config, false);
-	elm_box_pack_start(ctrls, config);
-	evas_object_show(config);
-	evas_object_smart_callback_add(config, "clicked", on_switch_config,
-			NULL);
-	*/
-
 	run = elm_button_add(ctrls);
 	elm_button_label_set(run, "Run");
 	elm_button_autorepeat_set(run, false);
@@ -234,8 +222,7 @@ window_add(struct ensure *ensure, char **args){
 	evas_object_resize(win, 320, 480);
 	evas_object_show(win);
 
-        /* Urh.. the list widget for now */
-        return gl;
+        return 0;
 
 }
 
@@ -522,11 +509,9 @@ on_check(void *ensurev, Evas_Object *button ensure_unused,
 	ensure->results = eina_list_prepend(ensure->results, res);
 	ensure->cur = res;
 
-	printf("Sending kill to %d\n",childid);
-	if (kill(childid, SIGUSR2))
-		perror("kill(child, SIGUSR2))");
+	printf("Sending check to %d\n",childid);
+	write(ensure->commandfd,"Check\n",6);
 	printf("Done\n");
-
 }
 
 
@@ -539,6 +524,7 @@ static void
 on_run(void *ensurev, Evas_Object *button ensure_unused, void *event_info ensure_unused){
 	pid_t pid;
 	int pipefd[2];
+	int sendpipefd[2];
 	struct ensure *ensure = ensurev;
 
 	elm_object_disabled_set(runbutton, true);
@@ -550,6 +536,11 @@ on_run(void *ensurev, Evas_Object *button ensure_unused, void *event_info ensure
 		fprintf(stderr,"Unable to create pipe\n");
 		return;
 	}
+	if (pipe(sendpipefd)){
+		fprintf(stderr,"Unable to create send pipe\n");
+		return;
+	}
+	ensure->commandfd = sendpipefd[1];
 
 	/* Watch the fd */
 	ecore_main_fd_handler_add(pipefd[0], ECORE_FD_READ, child_data,
@@ -564,11 +555,13 @@ on_run(void *ensurev, Evas_Object *button ensure_unused, void *event_info ensure
 		break;
 	case 0:
 		close(pipefd[0]);
-		dochild(ensure->args,pipefd[1]);
+		close(sendpipefd[1]);
+		dochild(ensure->args,pipefd[1],sendpipefd[0]);
 		exit(7);
 	default:
 		/* Parent */
 		close(pipefd[1]);
+		close(sendpipefd[0]);
 		childid = pid;
 		break;
 	}
@@ -580,12 +573,12 @@ on_run(void *ensurev, Evas_Object *button ensure_unused, void *event_info ensure
  * Run the child process
  */
 static void
-dochild(char **args, int fd){
-	char buf[4];
+dochild(char **args, int fd, int commandfd){
+	char buf[30];
 
 //	setlinebuf(fd);
 	setenv("LD_PRELOAD", LIBENSURE_DIR "/libensure.so",1);
-	snprintf(buf, sizeof(buf), "%d",fd);
+	snprintf(buf, sizeof(buf), "%d:%d",fd, commandfd);
 	setenv("ENSURE_FD", buf, 1);
 	execvp(args[0],args);
 	perror("execvp");

@@ -52,6 +52,8 @@ struct ensure {
 
 	struct result *cur;
 	Eina_List *results;
+
+	int commandfd;
 };
 
 
