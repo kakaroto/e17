@@ -622,7 +622,7 @@ check_obj(const Eina_Hash *hash ensure_unused, const void *key ensure_unused,
 	int i;
 	assert(enobj->magic == ENOBJMAGIC);
 
-	if (hidden_get(ensure, enobj)) return 1;
+	if (hidden_get(ensure, enobj->id)) return 1;
 
 	for (i = 0 ; i < ENSURE_N_SEVERITIES ; i ++){
 		EINA_LIST_FOREACH(severity[i].asninfo, l, ai){
