@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -7,10 +8,13 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/signalfd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 
 #include <Eina.h>
 #include <Elementary.h>
+
 
 #include "ensure.h"
 #include "enobj.h"
@@ -19,6 +23,7 @@
 
 
 static char *parse_string(char **p, bool shared);
+static int parser_read_fd(struct ensure *, int fd);
 
 static struct enobj *parse_object(struct ensure *ensure, char *line,
 		struct enobj *eno);
@@ -66,10 +71,6 @@ Eina_Bool
 child_data(void *data, Ecore_Fd_Handler *hdlr){
 	int fd;
 	struct ensure *ensure = data;
-	static char buf[BUFSIZ];
-	static int buffered;
-	char *p, *start;
-	int len;
 
 	assert(hdlr);
 
@@ -77,6 +78,31 @@ child_data(void *data, Ecore_Fd_Handler *hdlr){
 
 	fd = ecore_main_fd_handler_fd_get(hdlr);
 	assert(fd >= 0);
+
+	parser_read_fd(ensure, fd);
+
+	return 1;
+}
+
+int
+parser_readfile(struct ensure *ensure, const char *file){
+	int fd;
+
+	fd = open(file, O_RDONLY);
+	if (fd < 0) return -1;
+
+	while (parser_read_fd(ensure, fd))
+		;
+	close(fd);
+	return 0;
+}
+
+static int
+parser_read_fd(struct ensure *ensure, int fd){
+	static char buf[BUFSIZ];
+	static int buffered;
+	char *p, *start;
+	int len;
 
 	len = read(fd, buf + buffered, sizeof(buf) - 1 - buffered);
 	if (len == 0){
@@ -345,4 +371,51 @@ parse_string(char **linep,bool shared){
 		return strndup(start, p - start);
 }
 
+
+int
+parser_save_window(struct enwin *w, FILE *outfile){
+	fprintf(outfile, "E: %p '%s' %d %d\n",(void *)w->id,
+			w->name?:"",w->w,w->h);
+	return 0;
+}
+
+int
+parser_save_object(struct enobj *o, FILE *outfile){
+	fprintf(outfile,"Object: %p '%s' ",(void *)o->id,o->type);
+	if (o->name) fprintf(outfile, "Name: '%s' ",o->name);
+	if (o->parent) fprintf(outfile,"Parent: %p ",(void *)o->parent);
+	fprintf(outfile,"Geometry: %+d%+d(%dx%d) ",o->x,o->y,o->w,o->h);
+	if (o->clip) fprintf(outfile, "Clip: %p ",(void *)o->clip);
+
+	fprintf(outfile, "Color (%d,%d,%d,%d) ",o->r,o->g,o->b,o->a);
+
+	/* Type specific things here */
+	if (strcmp(o->type, "image") == 0){
+		if (o->data.image.key)
+			fprintf(outfile, "Image: '%s' '%s' ",o->data.image.file,
+					o->data.image.key);
+		else
+			fprintf(outfile, "Image: '%s' ",o->data.image.file);
+		if (o->data.image.err)
+			fprintf(outfile, "ImageErr: '%s' ",o->data.image.err);
+	} else if (strcmp(o->type, "text") == 0){
+		fprintf(outfile,"Text: [[%s]] ",o->data.text.text);
+		fprintf(outfile,"Font: '%s' %d ",
+				o->data.text.font, o->data.text.size);
+		if (o->data.text.source)
+			fprintf(outfile,"FontSource: '%s' %d ",
+				o->data.text.source,o->data.text.size);
+	} else if (strcmp(o->type, "rectangle") == 0){
+
+	} else if (strcmp(o->type, "edje") == 0){
+		fprintf(outfile, "Edje: '%s' '%s' ",o->data.edje.file,
+				o->data.edje.group);
+		if (o->data.edje.err)
+			fprintf(outfile,"EdjeErr: '%s' ",o->data.edje.err);
+	}
+
+	fprintf(outfile,"\n");
+
+	return 0;
+}
 

@@ -239,6 +239,7 @@ libensure_highlight(uintptr_t addr){
 	ecore_timer_add(0.1, libensure_highlight_hide, r);
 }
 
+/* Slowly fade the object out */
 static Eina_Bool
 libensure_highlight_hide(void *rv){
 	int r,g,b,a;

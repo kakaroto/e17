@@ -21,6 +21,7 @@ ensure_SOURCES = \
 	errors.c	\
 	enobj.c 	\
 	entree.c	\
+	file.c		\
 	hidden.c	\
 	display.h  	\
 	enconfig.h	\
@@ -32,7 +33,8 @@ ensure_SOURCES = \
 	parser.h	\
 	results.h	\
 	hidden.h	\
-	errors.h
+	errors.h	\
+	file.h
 
 
 lib_LTLIBRARIES	= libensure.la

@@ -23,6 +23,7 @@
 #include "enconfig.h"
 #include "results.h"
 #include "errors.h"
+#include "file.h"
 
 struct error {
 	const char *msg;
@@ -74,6 +75,7 @@ static struct views {
 
 static Evas_Object *runbutton;
 static Evas_Object *checkbutton;
+Evas_Object *savebutton;
 static pid_t childid;
 bool changedir = false;
 
@@ -126,10 +128,12 @@ Evas_Object *
 window_add(struct ensure *ensure, char **args){
         Evas_Object *win,*bg,*bx,*ctrls,*run,*check,*gl;
 	Evas_Object *viewbx, *view, *lbl, *report;
+	Evas_Object *save, *load;
 	int i;
 
         win = elm_win_add(NULL, "Ensure", ELM_WIN_BASIC);
         elm_win_title_set(win, "Ensure");
+	evas_object_resize(win, 340, 500);
         //evas_object_smart_callback_add(win,"delete,request", win_del,NULL);
 
         bg = elm_bg_add(win);
@@ -231,6 +235,22 @@ window_add(struct ensure *ensure, char **args){
 	evas_object_show(check);
 	evas_object_smart_callback_add(check, "clicked", on_check, ensure);
 	checkbutton = check;
+
+	save = elm_button_add(ctrls);
+	elm_button_label_set(save, "Save");
+	elm_button_autorepeat_set(save, false);
+	elm_object_disabled_set(save, true);
+	elm_box_pack_end(ctrls,save);
+	evas_object_show(save);
+	evas_object_smart_callback_add(save, "clicked", file_save, ensure);
+	savebutton = save;
+
+	load = elm_button_add(ctrls);
+	elm_button_label_set(load, "Load");
+	elm_button_autorepeat_set(load, false);
+	elm_box_pack_end(ctrls,load);
+	evas_object_show(load);
+	evas_object_smart_callback_add(load, "clicked", file_load, ensure);
 
 	elm_box_pack_end(bx, ctrls);
 	evas_object_show(ctrls);
@@ -415,7 +435,6 @@ on_check(void *ensurev, Evas_Object *button ensure_unused,
 
 	printf("Sending check to %d\n",childid);
 	write(ensure->commandfd,"Check\n",6);
-	printf("Done\n");
 }
 
 

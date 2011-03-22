@@ -27,6 +27,16 @@ static void display_hidden_object_toggle(void *enobjv, Evas_Object *obj,
 		void *event ensure_unused);
 static void display_show_object(void *enobjv, Evas_Object *obj, void *);
 
+/**
+ * Creaetes an elm box with a view and highlight button on it.
+ *
+ * This is perfect as the thing at the end of a genlist, or a gift for the
+ * hard to buy-for relative.
+ *
+ * @param obj The parent elm object
+ * @param enobj The enobj to connect to it
+ * @return Elm box
+ */
 Evas_Object *
 display_buttons_add(Evas_Object *obj, struct enobj *enobj){
 	Evas_Object *box, *bt;

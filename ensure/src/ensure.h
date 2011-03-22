@@ -10,6 +10,7 @@ enum ensure_severity;
 struct enobj;
 struct enasn;
 struct assurance;
+struct fileselector; /* in file.h */
 
 enum { ENSURE_MAGIC = 0xE45073EE };
 
@@ -32,6 +33,7 @@ enum ensure_severity {
 struct result {
 	struct ensure *ensure;
 
+	const char *title;
 	time_t tm;
 
 	/* A list of enwins */
@@ -59,6 +61,8 @@ struct ensure {
 	Eina_List *results;
 
 	int commandfd;
+
+	struct fileselector *fileselector;
 };
 
 
@@ -71,6 +75,7 @@ struct severityinfo {
 };
 
 extern struct severityinfo severity[ENSURE_N_SEVERITIES];
+extern Evas_Object *savebutton;
 
 int ensure_assurance_add(struct assurance *);
 
