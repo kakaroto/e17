@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: comp-scale\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2011-03-18 12:00-0700\n"
-"PO-Revision-Date: 2011-03-18 19:09-0000\n"
+"POT-Creation-Date: 2011-03-22 12:00-0700\n"
+"PO-Revision-Date: 2011-03-22 19:05-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
@@ -111,82 +111,89 @@ msgstr "Escala de janelas compostas"
 #: ../src/e_mod_main.c:249
 #: ../src/e_mod_main.c:251
 #: ../src/e_mod_main.c:253
-#: ../src/e_mod_main.c:309
-#: ../src/e_mod_main.c:310
+#: ../src/e_mod_main.c:255
 #: ../src/e_mod_main.c:311
 #: ../src/e_mod_main.c:312
+#: ../src/e_mod_main.c:313
+#: ../src/e_mod_main.c:314
+#: ../src/e_mod_main.c:315
 msgid "Scale Windows"
 msgstr "Ajustar janelas"
 
 #: ../src/e_mod_main.c:245
-#: ../src/e_mod_main.c:310
+#: ../src/e_mod_main.c:312
 msgid "Scale Windows (All Desktops)"
 msgstr "Ajustar janelas (todas as áreas de trabalho)"
 
 #: ../src/e_mod_main.c:247
-#: ../src/e_mod_main.c:258
-#: ../src/e_mod_main.c:311
-#: ../src/e_mod_main.c:315
-msgid "Select Next"
-msgstr "Selecionar seguinte"
+#: ../src/e_mod_main.c:313
+msgid "Scale Windows (By Class)"
+msgstr "Ajustar janelas (por classe)"
 
 #: ../src/e_mod_main.c:249
 #: ../src/e_mod_main.c:260
-#: ../src/e_mod_main.c:312
-#: ../src/e_mod_main.c:316
+#: ../src/e_mod_main.c:314
+#: ../src/e_mod_main.c:318
+msgid "Select Next"
+msgstr "Selecionar seguinte"
+
+#: ../src/e_mod_main.c:251
+#: ../src/e_mod_main.c:262
+#: ../src/e_mod_main.c:315
+#: ../src/e_mod_main.c:319
 msgid "Select Previous"
 msgstr "Selecionar anterior"
 
-#: ../src/e_mod_main.c:251
+#: ../src/e_mod_main.c:253
 msgid "Select Next (All)"
 msgstr "Selecionar seguinte (tudo)"
 
-#: ../src/e_mod_main.c:253
+#: ../src/e_mod_main.c:255
 msgid "Select Previous (All)"
 msgstr "Selecionar anterior (tudo)"
 
-#: ../src/e_mod_main.c:256
 #: ../src/e_mod_main.c:258
 #: ../src/e_mod_main.c:260
 #: ../src/e_mod_main.c:262
 #: ../src/e_mod_main.c:264
 #: ../src/e_mod_main.c:266
 #: ../src/e_mod_main.c:268
-#: ../src/e_mod_main.c:314
-#: ../src/e_mod_main.c:315
-#: ../src/e_mod_main.c:316
+#: ../src/e_mod_main.c:270
 #: ../src/e_mod_main.c:317
 #: ../src/e_mod_main.c:318
 #: ../src/e_mod_main.c:319
 #: ../src/e_mod_main.c:320
+#: ../src/e_mod_main.c:321
+#: ../src/e_mod_main.c:322
+#: ../src/e_mod_main.c:323
 msgid "Scale Pager"
 msgstr "Escala do paginador"
 
-#: ../src/e_mod_main.c:262
-#: ../src/e_mod_main.c:317
+#: ../src/e_mod_main.c:264
+#: ../src/e_mod_main.c:320
 msgid "Select Left"
 msgstr "Selecionar à esquerda"
 
-#: ../src/e_mod_main.c:264
-#: ../src/e_mod_main.c:318
+#: ../src/e_mod_main.c:266
+#: ../src/e_mod_main.c:321
 msgid "Select Right"
 msgstr "Selecionar à direita"
 
-#: ../src/e_mod_main.c:266
-#: ../src/e_mod_main.c:319
+#: ../src/e_mod_main.c:268
+#: ../src/e_mod_main.c:322
 msgid "Select Up"
 msgstr "Selecionar acima"
 
-#: ../src/e_mod_main.c:268
-#: ../src/e_mod_main.c:320
+#: ../src/e_mod_main.c:270
+#: ../src/e_mod_main.c:323
 msgid "Select Down"
 msgstr "Selecionar abaixo"
 
-#: ../src/e_mod_main.c:392
+#: ../src/e_mod_main.c:395
 msgid "Scale"
 msgstr "Escala"
 
-#: ../src/e_mod_main.c:521
+#: ../src/e_mod_main.c:524
 msgid "Settings"
 msgstr "Definições"
 
