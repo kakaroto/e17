@@ -136,9 +136,9 @@ enobj_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
 
 static void
 enobj_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
-	struct enwin *enwin = data;
+	struct enobj *enobj = data;
 
-	enwin->genitem = NULL;
+	enobj->genitem = NULL;
 }
 
 
@@ -175,7 +175,10 @@ enwin_select(void *data, Evas_Object *obj, void *event){
 	/* FIXME: Do something or delete this */
 	printf("Select... ignoring\n");
 }
-static void enwin_del(void *data, Evas_Object *obj){
-	/* FIXME: Do something or delete this */
+static void
+enwin_del(void *enwinv, Evas_Object *obj){
+	struct enwin *enwin = enwinv;
+
+	enwin->genitem = NULL;
 }
 
