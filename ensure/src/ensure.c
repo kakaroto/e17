@@ -94,7 +94,7 @@ elm_main(int argc, char **argv){
 
 	ensure = calloc(1,sizeof(struct ensure));
 	ensure->magic = ENSURE_MAGIC;
-	ensure->current_view = -1;
+	ensure->current_view = ENVIEW_ERROR;
 
 	/* FIXME: this isn't implemented  */
 	if (streq(argv[1],"-c")){
@@ -353,25 +353,6 @@ asn_select_toggle(void *data, Evas_Object *obj ensure_unused, void *event ensure
 
 
 
-
-int
-ensure_enobj_err_list_add(struct enobj *enobj){
-printf("Err list commned out\n");
-#if 0
-	/* Does the window have an item */
-	if (!enobj->enwin->genitem){
-		enobj->enwin->genitem = elm_genlist_item_append(ensure->view,
-				&windowclass, enobj->enwin, NULL,
-				ELM_GENLIST_ITEM_SUBITEMS, enwin_select,
-				enobj->enwin);
-	}
-
-	enobj->genitem = elm_genlist_item_append(objlist, &objc,
-			enobj, enobj->enwin->genitem, ELM_GENLIST_ITEM_SUBITEMS,
-			enobj_select, enobj);
-#endif
-	return 0;
-}
 
 /**
  * Initialise our signal handler

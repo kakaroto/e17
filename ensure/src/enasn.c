@@ -122,11 +122,6 @@ ensure_bug(struct enobj *enobj, enum ensure_severity sev, const char *type,
 	bug->type = eina_stringshare_add(type);
 
 	enobj->bugs = eina_list_prepend(enobj->bugs, bug);
-printf("bug add\n");
-
-	if (!enobj->genitem){
-		ensure_enobj_err_list_add(enobj);
-	}
 
 	return 0;
 }

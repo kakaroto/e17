@@ -147,6 +147,7 @@ parse_line(struct ensure *ensure, char *line){
 		printf("Got to the end...\n");
 		enasn_check(ensure);
 		enobj_prepare(ensure);
+		view_dirty_set(ensure);
 	} else if (strncmp(line, "E: ",3) == 0){
 		printf("Got window\n");
 		enwin = calloc(1,sizeof(struct enwin));

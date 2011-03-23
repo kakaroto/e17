@@ -73,6 +73,9 @@ errors_update(struct ensure *ensure){
 	if (!ensure) return;
 
 	elm_genlist_clear(ensure->view);
+	elm_hoversel_label_set(ensure->viewselect, "Errors");
+
+	if (!ensure->cur) return;
 
 	/* For each object */
 	iter = eina_hash_iterator_data_new(ensure->cur->objdb);
