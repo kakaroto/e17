@@ -1,2 +1,5 @@
 all:
-	./build.sh && cp detourious.edj ~/.e/e/themes
+	./build.sh
+
+install:
+	cp detourious.edj ~/.e/e/themes
