@@ -94,7 +94,7 @@ elm_main(int argc, char **argv){
 
 	ensure = calloc(1,sizeof(struct ensure));
 	ensure->magic = ENSURE_MAGIC;
-	ensure->current_view = ENVIEW_ERROR;
+	ensure->current_view = -1;
 
 	/* FIXME: this isn't implemented  */
 	if (streq(argv[1],"-c")){
