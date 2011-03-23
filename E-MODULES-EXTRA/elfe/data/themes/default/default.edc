@@ -397,6 +397,7 @@ collections
                color3: 0 0 0 0;
                color: 220 220 220 0;
                visible: 0;
+               align: 0.5 0;
                text {
                   font: "Sans";
                   size: 10;
@@ -411,6 +412,7 @@ collections
                rel1.to_y: "elfe.swallow.content";
                rel2.relative: 1 1;
                rel2.offset: -4 -2;
+               align: 0.5 0;
                color3: 0 0 0 200;
                color: 220 220 220 255;
                text {
@@ -433,7 +435,7 @@ collections
             }
             description {
                state: "normal" 0.0;
-               align: 0.5 0.5;
+               align: 0.5 0.2;
                aspect: 1 1;
                aspect_preference: BOTH;
             }
