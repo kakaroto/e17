@@ -378,7 +378,7 @@
 	}
 
 
-#ifdef BUILD_FOR_COMPOSITE
+#if BUILD_FOR_COMPOSITE
 #define BORDER_DATA								\
 	data {										\
 		item: "argb" "1";						\
@@ -463,7 +463,7 @@ group {
 
 }
 
-#ifdef BUILD_FOR_COMPOSITE
+#if BUILD_FOR_COMPOSITE
 #undef TOP
 #undef LEFT
 #undef RIGHT
