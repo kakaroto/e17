@@ -118,8 +118,7 @@ enobj_label_get(void *data, Evas_Object *obj ensure_unused,
 	return strdup(buf);
 }
 static Evas_Object *
-enobj_icon_get(void *enobjv, Evas_Object *obj,
-		const char *part){
+enobj_icon_get(void *enobjv, Evas_Object *obj, const char *part){
 	if (strcmp(part, "elm.swallow.end") == 0){
 		return display_buttons_add(obj, enobjv);
 	}
