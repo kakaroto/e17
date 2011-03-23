@@ -13,11 +13,14 @@
 
 #include "ensure.h"
 #include "hidden.h"
+#include "enobj.h"
+#include "display.h"
 
 
 static void hidden_sel(void *objv, Evas_Object *gl, void *event);
 static char *hiddenclass_label_get(void *data, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused);
+static Evas_Object *hiddenclass_icon_get(void *idv, Evas_Object *obj, const char *part);
 /*
 static Eina_Bool hiddenclass_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
 		const char *part ensure_unused);*/
@@ -29,6 +32,7 @@ static const Elm_Genlist_Item_Class hiddenclass = {
 	.func = {
 		.label_get = hiddenclass_label_get,
 	//	.state_get = hiddenclass_state_get,
+		.icon_get = hiddenclass_icon_get
 	},
 };
 
@@ -49,6 +53,8 @@ view_set_hidden(void *ensurev, Evas_Object *button, void *event_info){
 	elm_hoversel_label_set(ensure->viewselect, "Hidden");
 	elm_genlist_clear(ensure->view);
 
+	evas_object_data_set(ensure->view, "ensure", ensure);
+
 	EINA_LIST_FOREACH(ensure->hidden, l, o){
 		elm_genlist_item_append(ensure->view, &hiddenclass,
 				o,  NULL,
@@ -65,12 +71,20 @@ view_set_hidden(void *ensurev, Evas_Object *button, void *event_info){
 int
 hidden_object_add(struct ensure *ensure, uintptr_t o){
 	ensure->hidden = eina_list_append(ensure->hidden,(void *)o);
+	if (ensure->current_view == ENVIEW_HIDDEN){
+		ensure->current_view = -1;
+		view_set_hidden(ensure, NULL, NULL);
+	}
 	return 0;
 }
 
 int
 hidden_object_remove(struct ensure *ensure, uintptr_t o){
 	ensure->hidden = eina_list_remove(ensure->hidden,(void *)o);
+	if (ensure->current_view == ENVIEW_HIDDEN){
+		ensure->current_view = -1;
+		view_set_hidden(ensure, NULL, NULL);
+	}
 	return 0;
 }
 
@@ -117,3 +131,26 @@ hiddenclass_label_get(void *hiddenobjv, Evas_Object *obj ensure_unused,
 	return strdup(buf);
 }
 
+/**
+ * Get the icon.
+ *
+ * if hte object exists, add a view / highlight combo.
+ * else nothing.
+ */
+static Evas_Object *
+hiddenclass_icon_get(void *idv, Evas_Object *obj, const char *part){
+	struct enobj *enobj;
+	struct ensure *ensure;
+	uintptr_t id = (uintptr_t)idv;
+
+	if (strcmp(part, "elm.swallow.end") != 0) return NULL;
+
+	ensure = evas_object_data_get(obj, "ensure");
+	if (!ensure) return NULL;
+
+	enobj = enobj_get(ensure, id);
+
+	if (!enobj) return NULL;
+
+	return display_buttons_add(obj, enobj);
+}
