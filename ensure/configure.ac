@@ -11,12 +11,15 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
 
+
 AC_LIBTOOL_WIN32_DLL
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
 PKG_CHECK_MODULES([ELEMENTARY], elementary)
+AC_LIBTOOL_DLOPEN
+AC_CHECK_LIB([dl], [dlopen], [],AC_ERROR([Usable libdl not found! Apollo port not yet complete.]))
 
 AC_OUTPUT(Makefile	
 		src/Makefile
