@@ -19,6 +19,8 @@ module_la_SOURCES = main.h \
 		    desktop_page.h \
 		    desktop_item.c \
 		    desktop_item.h \
+		    dock.c \
+		    dock.h \
 		    gadget_list.c \
 		    gadget_list.h \
 		    utils.c \

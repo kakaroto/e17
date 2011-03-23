@@ -42,6 +42,7 @@ typedef enum
 #define DEFAULT_SIZE_H 0.07
 
 static E_Gadcon *gc = NULL;
+static Elfe_Home_Win *hwin;
 
 /* local function prototypes */
 static void _elfe_home_win_new(E_Zone *zone);
@@ -201,11 +202,11 @@ _app_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
    Evas_Coord x, y;
    Evas_Object *o_edje;
    Evas_Coord ow, oh;
-   Evas_Coord size = 0;
+   Evas_Coord size = elfe_home_cfg->icon_size;
 
    evas_object_geometry_get(hwin->desktop, NULL, NULL, &ow, &oh);
 
-   size = MIN(ow, oh) / 5;
+
 
    elfe_desktop_edit_mode_set(hwin->desktop, EINA_TRUE);
 
@@ -321,15 +322,7 @@ static void  _edje_signal_cb(void *data, Evas_Object *obj, const char *emission,
      }
    else if (!strcmp(emission, "action,apps"))
      {
-	if (!hwin->allapps)
-	  {
-	     hwin->allapps = elfe_allapps_add(hwin->layout);
-	     evas_object_smart_callback_add(hwin->allapps, "entry,longpressed", _app_longpressed_cb, hwin);
-             evas_object_smart_callback_add(hwin->allapps, "gadget,longpressed", _gadget_longpressed_cb, hwin);
-             evas_object_smart_callback_add(hwin->allapps, "item,selected", _allapps_item_selected_cb, hwin);
-	     evas_object_show(hwin->allapps);
-	     elm_layout_content_set(hwin->layout, "elfe.swallow.allapps", hwin->allapps);
-	  }
+
      }
    else if (!strcmp(emission, "action,badge_delete"))
      {
@@ -337,14 +330,41 @@ static void  _edje_signal_cb(void *data, Evas_Object *obj, const char *emission,
 
 	    elfe_desktop_edit_mode_set(hwin->desktop, EINA_FALSE);
 	    o_edje = elm_layout_edje_get(hwin->layout);
-	    edje_object_signal_emit(o_edje, "editmode,hide", "elfe");
+	    edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
      }
+}
+
+void elfe_home_win_allapps_togle(void)
+{
+    Evas_Object *o_edje;
+
+    if (!hwin->allapps)
+        {
+            printf("Create allapps\n");
+            hwin->allapps = elfe_allapps_add(hwin->layout);
+            evas_object_smart_callback_add(hwin->allapps, "entry,longpressed", _app_longpressed_cb, hwin);
+            evas_object_smart_callback_add(hwin->allapps, "gadget,longpressed", _gadget_longpressed_cb, hwin);
+            evas_object_smart_callback_add(hwin->allapps, "item,selected", _allapps_item_selected_cb, hwin);
+            evas_object_show(hwin->allapps);
+            elm_layout_content_set(hwin->layout, "elfe.swallow.allapps", hwin->allapps);
+	    o_edje = elm_layout_edje_get(hwin->layout);
+	    edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
+        }
+}
+
+void elfe_home_win_editmode_off()
+{
+    Evas_Object *o_edje;
+
+    elfe_desktop_edit_mode_set(hwin->desktop, EINA_FALSE);
+    o_edje = elm_layout_edje_get(hwin->layout);
+    edje_object_signal_emit(o_edje, "editmode,hide", "elfe");
 }
 
 static void
 _elfe_home_win_new(E_Zone *zone)
 {
-   Elfe_Home_Win *hwin;
+
    Evas *evas;
    E_Desk *desk;
    char buf[PATH_MAX];

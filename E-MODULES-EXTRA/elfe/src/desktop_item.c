@@ -74,6 +74,8 @@ _clicked_signal_cb(void *data, Evas_Object *obj, const char *emission, const cha
    if (dit->desktop && !dit->edit_mode)
      efreet_desktop_command_get(dit->desktop, NULL,
 				_app_exec_cb, NULL);
+   else if (!dit->desktop)
+       evas_object_smart_callback_call(dit->frame, "clicked", NULL);
 }
 
 static void
@@ -105,6 +107,31 @@ _app_add(Elfe_Desktop_Item *dit, const char *name)
 
 
    edje_object_part_text_set(item, "elfe.text.label", dit->desktop->name);
+   edje_object_signal_callback_add(item, "mouse,clicked,1", "*", _clicked_signal_cb, dit);
+
+   return item;
+}
+
+static Evas_Object *
+_icon_add(Elfe_Desktop_Item *dit, const char *name)
+{
+   Evas_Object *item;
+   Evas_Object *icon;
+
+   item = edje_object_add(evas_object_evas_get(dit->frame));
+   edje_object_file_set(item, elfe_home_cfg->theme, "elfe/dock/icon/frame");
+
+   if (dit->desktop)
+     icon = elfe_utils_fdo_icon_add(dit->frame, dit->desktop->icon, elfe_home_cfg->icon_size);
+   else
+     icon = elfe_utils_fdo_icon_add(dit->frame, name, elfe_home_cfg->icon_size);
+   evas_object_size_hint_min_set(icon, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
+   evas_object_size_hint_max_set(icon, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
+
+   edje_object_part_swallow(item, "elfe.swallow.content", icon);
+   dit->icon = icon;
+
+   //edje_object_part_text_set(item, "elfe.text.label", name);
    edje_object_signal_callback_add(item, "mouse,clicked,1", "*", _clicked_signal_cb, dit);
 
    return item;
@@ -181,12 +208,13 @@ elfe_desktop_item_add(Evas_Object *parent,
    edje_object_file_set(layout, elfe_home_cfg->theme, "elfe/desktop/frame");
 
    dit->frame = layout;
-
+   printf("ITEM ADD %s\n", name);
 
    switch (type)
      {
       case ELFE_DESKTOP_ITEM_APP:
 	 dit->desktop = efreet_desktop_get(name);
+         
 	 if (!dit->desktop)
 	   {
 	      printf("ERROR unable to get efreet desktop from %s\n", name);
@@ -202,6 +230,17 @@ elfe_desktop_item_add(Evas_Object *parent,
 	 if (!item)
 	   {
 	      printf("ERROR unable to create gadget %s\n", name);
+	      evas_object_del(layout);
+	      free(dit);
+	      return NULL;
+	   }
+	 break;
+     case ELFE_DESKTOP_ITEM_ICON:
+         dit->desktop = efreet_desktop_get(name);
+	 item = _icon_add(dit, name);
+	 if (!item)
+	   {
+	      printf("ERROR unable to create icon %s\n", name);
 	      evas_object_del(layout);
 	      free(dit);
 	      return NULL;

@@ -4,6 +4,7 @@
 #include "desktop_page.h"
 #include "elfe_config.h"
 #include "utils.h"
+#include "dock.h"
 
 #define ELFE_DESKTOP_NUM 5
 #define ELFE_DESKTOP_PADDING_W 10
@@ -15,6 +16,7 @@ struct _Elfe_Desktop
 {
    Evas_Object *layout;
    Evas_Object *sc;
+   Evas_Object *dock;
    Eina_List *pads;
    Eina_List *gadgets;
    Evas_Object *selector;
@@ -108,6 +110,7 @@ _longpress_timer_cb(void *data)
      {
 	desk->edit_mode = EINA_TRUE;
 	elfe_desktop_page_edit_mode_set(gad, EINA_TRUE);
+	elfe_dock_edit_mode_set(desk->dock, EINA_TRUE);
 	desk->longpress_timer = NULL;
 	evas_object_smart_callback_call(desk->layout, "editmode,on", NULL);
      }
@@ -195,8 +198,15 @@ elfe_desktop_app_add(Evas_Object *obj, Efreet_Menu *menu, Evas_Coord x, Evas_Coo
 {
     Elfe_Desktop *desk = evas_object_data_get(obj, "elfe_desktop");
     Evas_Object *gad;
+    Evas_Coord ox, oy, ow, oh;
+
     gad = eina_list_nth(desk->gadgets, desk->current_desktop);
-    elfe_desktop_page_item_app_add(gad, menu, x, y);
+
+    evas_object_geometry_get(desk->dock, &ox, &oy, &ow, &oh);
+    if (ELM_RECTS_INTERSECT(ox, oy, ow, oh, x, y, 1, 1))
+      elfe_dock_item_app_add(desk->dock, menu, x, y);
+    else
+      elfe_desktop_page_item_app_add(gad, menu, x, y);
 }
 
 void
@@ -313,6 +323,10 @@ elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
    elm_scroller_content_set(desk->sc, bx);
    evas_object_show(bx);
 
+   desk->dock = elfe_dock_add(bx);
+   /* evas_object_size_hint_min_set(desk->dock, 0, 80); */
+   /* evas_object_size_hint_max_set(desk->dock, 9999, 80); */
+
    evas_object_smart_callback_add(desk->sc, "edge,left", _scroller_edge_left_cb, desk);
    evas_object_smart_callback_add(desk->sc, "edge,right", _scroller_edge_right_cb, desk);
    evas_object_smart_callback_add(desk->sc, "scroll", _scroller_scroll_cb, desk);
@@ -333,6 +347,7 @@ elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
 
    elm_layout_content_set(desk->layout, "elfe.swallow.content", desk->sc);
    elm_layout_content_set(desk->layout, "elfe.swallow.selector", desk->selector);
+   elm_layout_content_set(desk->layout, "elfe.swallow.dock", desk->dock);
 
    return desk->layout;
 
@@ -352,6 +367,8 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
    if (desk->edit_mode == mode)
        return;
    
+   printf("Elfe desktop edit mode\n");
+
    desk->edit_mode = mode;
 
    snprintf(buf, sizeof(buf), "%s/default.edj",
@@ -399,5 +416,6 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 	     elfe_desktop_page_edit_mode_set(gad, EINA_FALSE);
 	     evas_object_smart_callback_call(desk->layout, "editmode,off", desk);
 	  }
+	elfe_dock_edit_mode_set(desk->dock, EINA_FALSE);
      }
 }

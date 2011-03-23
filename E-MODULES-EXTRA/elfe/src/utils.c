@@ -45,7 +45,7 @@ elfe_utils_fdo_icon_add(Evas_Object *parent, const char *icon, int size)
 
    if (path)
        elm_icon_file_set(ic, path, NULL);
-   else
+   else if (!elm_icon_file_set(ic, elfe_home_cfg->theme, icon))
        elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/application-default");
 
    return ic;

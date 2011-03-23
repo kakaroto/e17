@@ -59,6 +59,7 @@ elfe_home_config_init(E_Module *m)
    E_CONFIG_VAL(D, T, cols, INT);
    E_CONFIG_VAL(D, T, rows, INT);
    E_CONFIG_VAL(D, T, icon_size, INT);
+   E_CONFIG_LIST(D, T, dock_items, conf_desktop_item_edd);
 
    elfe_home_cfg = e_config_domain_load("module.elfe", conf_edd);
 

@@ -12,7 +12,8 @@ typedef enum _Elfe_Desktop_Item_Type Elfe_Desktop_Item_Type;
 enum _Elfe_Desktop_Item_Type
 {
     ELFE_DESKTOP_ITEM_APP,
-    ELFE_DESKTOP_ITEM_GADGET
+    ELFE_DESKTOP_ITEM_GADGET,
+    ELFE_DESKTOP_ITEM_ICON,
 };
 
 struct _Elfe_Home_Config
@@ -23,6 +24,7 @@ struct _Elfe_Home_Config
     int cols;
     int rows;
     int icon_size;
+    Eina_List *dock_items;
 };
 
 struct _Elfe_Desktop_Config
