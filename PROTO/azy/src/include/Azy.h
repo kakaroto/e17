@@ -345,6 +345,9 @@ extern "C" {
    EAPI int       azy_server_module_def_size_get(Azy_Server_Module_Def *def);
    EAPI Eina_Bool azy_server_module_size_set(Azy_Server_Module_Def *def,
                                              int                    size);
+   EAPI Eina_Bool azy_server_module_session_set(Azy_Server_Module *module,
+                                                const char *sessid);
+   EAPI const char *azy_server_module_session_get(Azy_Server_Module *module);
 
    /* net */
    EAPI Azy_Net    *azy_net_new(void *conn);

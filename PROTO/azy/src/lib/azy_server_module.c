@@ -651,4 +651,59 @@ err:
    return NULL;
 }
 
+/**
+ * @brief Set a session id cookie for a client
+ *
+ * This function stores @p sessid to the client associated with @p module
+ * and sets it as a header upon sending a response to the client in this format:
+ * "Set-Cookie: sessid=%s;"
+ * To use an alternate format, set the header manually.
+ * @param module The client's module (NOT #NULL)
+ * @param sessid The session id to set
+ * @return #EINA_TRUE on success, else #EINA_FALSE
+ */
+Eina_Bool
+azy_server_module_session_set(Azy_Server_Module *module,
+                              const char *sessid)
+{
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return EINA_FALSE;
+     }
+
+   module->client->session_id = eina_stringshare_add(sessid);
+   return EINA_TRUE;
+}
+
+/**
+ * @brief Get the session id cookie for a client
+ *
+ * This function retrieves the session id for the client associated with @p module.
+ * If no session has been explicitly set previously, the function will attempt to parse the
+ * Cookie header, first checking for a native azy-type session id.
+ * @param module The client's module (NOT #NULL)
+ * @return The session cookie, or #NULL only in the case that no session could be found from headers
+ */
+const char *
+azy_server_module_session_get(Azy_Server_Module *module)
+{
+   const char *h;
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return NULL;
+     }
+   if (module->client->session_id)
+     return module->client->session_id;
+
+   h = azy_net_header_get(module->client->current, "cookie");
+   if (!h) return NULL;
+
+   if (!strncmp(h, "sessid=", sizeof("sessid=") - 1))
+     module->client->session_id = eina_stringshare_add(h + sizeof("sessid=") - 1);
+   else
+     module->client->session_id = eina_stringshare_add(h);
+   return module->client->session_id;
+}
 /** @} */
