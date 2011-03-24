@@ -355,7 +355,6 @@ _azy_server_client_new(Azy_Server       *server,
    client->net->server_client = EINA_TRUE;
    client->ip = ecore_con_client_ip_get(conn);
    client->server = server;
-   client->session_id = azy_uuid_new();
 
    ecore_con_client_data_set(conn, client);
 
