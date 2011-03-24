@@ -183,6 +183,29 @@ azy_server_addr_get(Azy_Server *server)
 }
 
 /**
+ * @brief Add an RSA certificate to an Azy server
+ *
+ * This function stores a list of certificate files to be loaded
+ * upon calling azy_server_run.
+ * @param server The server object
+ * @param cert_file The full path to the certificate
+ * @return #EINA_TRUE on success, else #EINA_FALSE
+ */
+Eina_Bool
+azy_server_cert_add(Azy_Server *server,
+                    const char *cert_file)
+{
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return EINA_FALSE;
+     }
+
+   server->security.cert_files = eina_list_append(server->security.cert_files, eina_stringshare_add(cert_file));
+   return EINA_TRUE;
+}
+
+/**
  * @brief Run the specified server
  *
  * This function starts the specified server, calling ecore_main_loop_begin.
@@ -201,6 +224,8 @@ azy_server_run(Azy_Server *server,
                int         port)
 {
    int az, ecore = ECORE_CON_REMOTE_NODELAY;
+   Eina_List *l;
+   const char *f;
 
    if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
      {
@@ -242,9 +267,20 @@ azy_server_run(Azy_Server *server,
 
    ecore_con_server_data_set(server->server, server);
 
+   EINA_LIST_FOREACH(server->security.cert_files, l, f)
+     {
+        if (!ecore_con_ssl_server_cert_add(server->server, f))
+          goto error;
+        if (!ecore_con_ssl_server_privkey_add(server->server, f))
+          goto error;
+     }
+     
    ecore_main_loop_begin();
 
    return EINA_TRUE;
+error:
+   azy_server_free(server);
+   return EINA_FALSE;
 }
 
 /**
