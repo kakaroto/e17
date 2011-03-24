@@ -307,17 +307,14 @@ azy_server_run(Azy_Server *server)
    EINA_LIST_FOREACH(server->security.cert_files, l, f)
      {
         if (!ecore_con_ssl_server_cert_add(server->server, f))
-          goto error;
+	  return EINA_FALSE;
         if (!ecore_con_ssl_server_privkey_add(server->server, f))
-          goto error;
+	  return EINA_FALSE;
      }
 
    ecore_main_loop_begin();
 
    return EINA_TRUE;
-error:
-   azy_server_free(server);
-   return EINA_FALSE;
 }
 
 /**
