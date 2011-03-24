@@ -5,6 +5,6 @@ Location:     Courbevoie, France
 Jabber:       billiob@gmail.com
 MSN:          billiob@gmail.com
 E-Mail:       billiob@gmail.com
-Contributing: tiling, e, python bindings…
+Contributing: tiling, e, mpdule, python bindings… various bits here and there
 Platform:     Gentoo, ArchLinux, OpenBSD
 GeoData:      48.9026 2.2694
