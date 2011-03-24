@@ -191,7 +191,6 @@ struct Azy_Server
    struct
    {
       Eina_Bool secure : 1;
-      Eina_Bool cert : 1;
       Eina_List *cert_files;
    } security;
 

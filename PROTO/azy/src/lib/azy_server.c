@@ -262,7 +262,7 @@ azy_server_cert_add(Azy_Server *server,
      }
 
    server->security.cert_files = eina_list_append(server->security.cert_files, eina_stringshare_add(cert_file));
-   server->security.cert = EINA_TRUE;
+   server->security.secure = EINA_TRUE;
    return EINA_TRUE;
 }
 
@@ -296,7 +296,7 @@ azy_server_run(Azy_Server *server)
    if (server->security.secure)
      ecore |= ECORE_CON_USE_MIXED;
 
-   if (server->security.cert)
+   if (server->security.cert_files)
      ecore |= ECORE_CON_LOAD_CERT;
 
    server->server = ecore_con_server_add(ecore, server->addr, server->port, server);
@@ -381,9 +381,9 @@ azy_server_basic_run(int                     port,
 
    if (secure && cert)
      {
-        if (!(server->security.cert = ecore_con_ssl_server_cert_add(server->server, cert)))
+        if (!ecore_con_ssl_server_cert_add(server->server, cert))
           goto error;
-        if (!(server->security.cert = ecore_con_ssl_server_privkey_add(server->server, cert)))
+        if (!ecore_con_ssl_server_privkey_add(server->server, cert))
           goto error;
      }
 
