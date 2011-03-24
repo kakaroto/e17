@@ -274,7 +274,7 @@ azy_server_run(Azy_Server *server,
         if (!ecore_con_ssl_server_privkey_add(server->server, f))
           goto error;
      }
-     
+
    ecore_main_loop_begin();
 
    return EINA_TRUE;
