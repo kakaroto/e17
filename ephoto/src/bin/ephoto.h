@@ -76,6 +76,7 @@ void         ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
 
 /*Main Thumb Browser Function*/
 Evas_Object *ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent);
+void         ephoto_thumb_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
 
 /* smart callbacks called:
  * "selected" - an item in the thumb browser is selected. The selected Ephoto_Entry is passed as event_info argument.

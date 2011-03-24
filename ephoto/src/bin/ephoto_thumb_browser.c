@@ -13,6 +13,7 @@ typedef struct _Ephoto_Thumb_Browser Ephoto_Thumb_Browser;
 struct _Ephoto_Thumb_Browser
 {
    Ephoto *ephoto;
+   Ephoto_Entry *entry;
    Evas_Object *layout;
    Evas_Object *box;
    Evas_Object *edje;
@@ -246,8 +247,9 @@ _view_single(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    elm_toolbar_item_selected_set(tb->action.view_single, EINA_FALSE);
 
    if (it) entry = elm_gengrid_item_data_get(it);
-   else entry = _first_file_entry_find(tb);
-
+   else entry = tb->entry;
+   if (!entry)
+     entry = _first_file_entry_find(tb);
    if (!entry) return;
    evas_object_smart_callback_call(tb->layout, "view", entry);
 }
@@ -262,8 +264,9 @@ _slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    elm_toolbar_item_selected_set(tb->action.slideshow, EINA_FALSE);
 
    if (it) entry = elm_gengrid_item_data_get(it);
-   else entry = _first_file_entry_find(tb);
-
+   else entry = tb->entry;
+   if (!entry)
+     entry = _first_file_entry_find(tb);
    if (!entry) return;
    evas_object_smart_callback_call(tb->layout, "slideshow", entry);
 }
@@ -278,8 +281,9 @@ _flow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    elm_toolbar_item_selected_set(tb->action.flow, EINA_FALSE);
 
    if (it) entry = elm_gengrid_item_data_get(it);
-   else entry = _first_file_entry_find(tb);
-
+   else entry = tb->entry;
+   if (!entry)
+     entry = _first_file_entry_find(tb);
    if (!entry) return;
    evas_object_smart_callback_call(tb->layout, "flow", entry);
 }
@@ -561,4 +565,11 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
  error:
    evas_object_del(layout);
    return NULL;
+}
+
+void
+ephoto_thumb_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
+{
+   Ephoto_Thumb_Browser *tb = evas_object_data_get(obj, "thumb_browser");
+   tb->entry = entry;
 }

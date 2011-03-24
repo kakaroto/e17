@@ -1,11 +1,6 @@
 #include "ephoto.h"
 
-typedef enum _Ephoto_Flow_State Ephoto_Flow_State;
-enum _Ephoto_Flow_State
-{
-   EPHOTO_FLOW_STATE_FLOW,
-   EPHOTO_FLOW_STATE_SINGLE
-};
+static Elm_Genlist_Item_Class egli;
 
 typedef struct _Ephoto_Flow_Browser Ephoto_Flow_Browser;
 struct _Ephoto_Flow_Browser
@@ -14,17 +9,20 @@ struct _Ephoto_Flow_Browser
    Eina_Bool mouse_wheel;
    Eina_List *current_index;
    Eina_List *items;
+   Elm_Genlist_Item *egi;
+   Evas_Object *box;
    Evas_Object *edje;
    Evas_Object *layout;
+   Evas_Object *list;
    Evas_Object *main_layout;
    Evas_Object *images[5];
    Evas_Object *img_edje[5];
    Evas_Object *toolbar;
-   Ephoto_Flow_State efs;
    Ephoto_Entry *entry;
    Ephoto *ephoto;
    char *swallows[5];
    int flow_direct;
+   int selected_handled;
    struct {
       Elm_Toolbar_Item *go_back;
       Elm_Toolbar_Item *go_prev;
@@ -149,8 +147,10 @@ _flow_done(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED_
 
    elm_toolbar_item_disabled_set(efb->action.go_prev, EINA_FALSE);
    elm_toolbar_item_disabled_set(efb->action.go_next, EINA_FALSE);
+   elm_genlist_no_select_mode_set(efb->list, EINA_FALSE);
    efb->mouse_wheel = EINA_FALSE;
    efb->key_down = EINA_FALSE;
+   efb->selected_handled = 0;
 }
 
 static void
@@ -166,6 +166,8 @@ _flow_back(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
    evas_object_key_ungrab(efb->main_layout, "BackSpace", 0, 0);
    evas_object_key_ungrab(efb->main_layout, "space", 0, 0);
 
+   efb->entry = eina_list_data_get(efb->current_index);
+
    elm_object_unfocus(efb->main_layout);
    evas_object_smart_callback_call(efb->main_layout, "back", efb->entry);
 }
@@ -173,6 +175,7 @@ _flow_back(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 static void 
 _flow_prev(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
+   Elm_Genlist_Item *egi;
    Ephoto_Flow_Browser *efb = data;
    Evas_Object *edje;
 
@@ -185,11 +188,15 @@ _flow_prev(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 
    edje = elm_layout_edje_get(efb->layout);
 
-   if (efb->efs == EPHOTO_FLOW_STATE_SINGLE)
-     {
-        edje_object_signal_emit(edje, "full_reset", "ephoto");
-        efb->efs = EPHOTO_FLOW_STATE_FLOW;
-     }
+   egi = elm_genlist_item_prev_get(efb->egi);
+   if (!egi)
+     egi = elm_genlist_last_item_get(efb->list);
+   elm_genlist_item_bring_in(egi);
+   efb->egi = egi;
+   efb->selected_handled = 1;
+   elm_genlist_item_selected_set(egi, EINA_TRUE);
+   elm_genlist_no_select_mode_set(efb->list, EINA_TRUE);
+
    efb->flow_direct = 0;
    edje_object_signal_emit(edje, "right", "ephoto");
 }
@@ -197,6 +204,7 @@ _flow_prev(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 static void 
 _flow_next(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
+   Elm_Genlist_Item *egi;
    Ephoto_Flow_Browser *efb = data;
    Evas_Object *edje;
 
@@ -209,11 +217,15 @@ _flow_next(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 
    edje = elm_layout_edje_get(efb->layout);
 
-   if (efb->efs == EPHOTO_FLOW_STATE_SINGLE)
-     {
-        edje_object_signal_emit(edje, "full_reset", "ephoto");
-        efb->efs = EPHOTO_FLOW_STATE_FLOW;
-     }
+   egi = elm_genlist_item_next_get(efb->egi);
+   if (!egi)
+     egi = elm_genlist_first_item_get(efb->list);
+   elm_genlist_item_bring_in(egi);
+   efb->egi = egi;
+   efb->selected_handled = 1;
+   elm_genlist_item_selected_set(egi, EINA_TRUE);
+   elm_genlist_no_select_mode_set(efb->list, EINA_TRUE);
+
    efb->flow_direct = 1;
    edje_object_signal_emit(edje, "left", "ephoto");
 }
@@ -222,20 +234,34 @@ static void
 _center_image_clicked(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Flow_Browser *efb = data;
-   Evas_Object *edje;
+   
+   evas_object_key_ungrab(efb->main_layout, "Escape", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "Left", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "Right", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "BackSpace", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "space", 0, 0);
 
-   edje = elm_layout_edje_get(efb->layout);
+   efb->entry = eina_list_data_get(efb->current_index);
 
-   if (efb->efs == EPHOTO_FLOW_STATE_FLOW)
-     {
-        edje_object_signal_emit(edje, "full", "ephoto");
-        efb->efs = EPHOTO_FLOW_STATE_SINGLE;
-     }
-   else
-     {
-        edje_object_signal_emit(edje, "full_reset", "ephoto");
-        efb->efs = EPHOTO_FLOW_STATE_FLOW;
-     }
+   elm_object_unfocus(efb->main_layout);
+   evas_object_smart_callback_call(efb->main_layout, "single", efb->entry);
+}
+
+static void
+_flow_single(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Flow_Browser *efb = data;
+
+   evas_object_key_ungrab(efb->main_layout, "Escape", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "Left", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "Right", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "BackSpace", 0, 0);
+   evas_object_key_ungrab(efb->main_layout, "space", 0, 0);
+
+   efb->entry = eina_list_data_get(efb->current_index);
+
+   elm_object_unfocus(efb->main_layout);
+   evas_object_smart_callback_call(efb->main_layout, "single", efb->entry);
 }
 
 static void
@@ -251,6 +277,7 @@ _show_slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED
    evas_object_key_ungrab(efb->main_layout, "BackSpace", 0, 0);
    evas_object_key_ungrab(efb->main_layout, "space", 0, 0);
 
+   elm_object_unfocus(efb->main_layout);
    evas_object_smart_callback_call(efb->main_layout, "slideshow", efb->entry);
 }
 
@@ -309,6 +336,91 @@ _toolbar_item_add(Ephoto_Flow_Browser *efb, const char *icon, const char *label,
    return item;
 }
 
+static char *
+_gl_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+{
+   Ephoto_Entry *en = data;
+   char *label = (char *)en->basename;
+   return strdup(label);
+}
+
+static Evas_Object *
+_gl_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part)
+{
+   Evas_Object *o = NULL;
+
+   if (!strcmp(part, "elm.swallow.end"))
+     return o;
+
+   o = elm_icon_add(obj);
+   elm_icon_standard_set(o, "image");
+   evas_object_size_hint_aspect_set(o, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   
+   return o;
+}
+
+static Eina_Bool
+_gl_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+{
+   return EINA_FALSE;
+}
+
+static void
+_gl_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
+{
+}
+
+static int
+_entry_cmp(const void *pa, const void *pb)
+{
+   const Ephoto_Entry *a = pa, *b = pb;
+   int ret, s;
+
+   s = strcmp(a->basename, b->basename);
+   if (s > 0)
+     ret = 1;
+   else if (s < 0)
+     ret = -1;
+   else
+     ret = 0;
+   return ret;
+}
+
+static void
+_gl_sel(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Elm_Genlist_Item *egi, *egip, *egin;
+   Ephoto_Entry *en;
+   Ephoto_Flow_Browser *efb = data;
+
+   egi = event_info;
+   if (!efb->egi || efb->selected_handled)
+     {
+        efb->selected_handled = 0;
+        return;
+     }
+
+   egin = elm_genlist_item_next_get(efb->egi);
+   if (!egin)
+     egin = elm_genlist_first_item_get(efb->list);
+   egip = elm_genlist_item_prev_get(efb->egi);
+   if (!egip)
+     egip = elm_genlist_last_item_get(efb->list);
+
+   if (egi == egin)
+     _flow_next(efb, NULL, NULL);
+   else if (egi == egip)
+     _flow_prev(efb, NULL, NULL);
+   else
+     {
+        en = elm_genlist_item_data_get(egi);
+        efb->current_index = eina_list_search_sorted_list
+          (efb->items, _entry_cmp, en);
+        efb->egi = egi;
+        _flow_browser_image_set(efb);
+     }
+}
+
 Evas_Object *
 ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
 {
@@ -317,7 +429,6 @@ ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
 
    efb = calloc(1, sizeof(Ephoto_Flow_Browser));
 
-   efb->efs = EPHOTO_FLOW_STATE_FLOW;
    efb->swallows[0] = "offscreen_left";
    efb->swallows[1] = "left";
    efb->swallows[2] = "center";
@@ -326,13 +437,18 @@ ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
    efb->key_down = EINA_FALSE;
    efb->mouse_wheel = EINA_FALSE;
    efb->ephoto = e;
+   efb->selected_handled = 0;
+
+   egli.item_style = "default";
+   egli.func.label_get = _gl_label_get;
+   egli.func.icon_get = _gl_icon_get;
+   egli.func.state_get = _gl_state_get;
+   egli.func.del = _gl_del;
 
    efb->main_layout = elm_layout_add(parent);
    efb->edje = elm_layout_edje_get(efb->main_layout);
    evas_object_event_callback_add
      (efb->main_layout, EVAS_CALLBACK_DEL, _layout_del, efb);
-   evas_object_event_callback_add
-     (efb->main_layout, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, efb);
    evas_object_event_callback_add
      (efb->main_layout, EVAS_CALLBACK_KEY_DOWN, _key_down, efb);
    evas_object_data_set(efb->main_layout, "flow_browser", efb);
@@ -379,19 +495,41 @@ ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent)
      (efb->main_layout, "ephoto.toolbar.swallow", efb->toolbar);
    evas_object_show(efb->toolbar);
 
+   efb->box = elm_panes_add(efb->main_layout);
+   elm_panes_horizontal_set(efb->box, EINA_TRUE);
+   evas_object_size_hint_weight_set
+     (efb->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(efb->box);
+
    efb->layout = elm_layout_add(efb->main_layout);
    elm_layout_file_set
      (efb->layout, THEME_FILE, "flow");
    evas_object_size_hint_weight_set
      (efb->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set
-     (efb->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+     (efb->layout, EVAS_HINT_FILL, EVAS_HINT_EXPAND);
+   elm_panes_content_left_set(efb->box, efb->layout);
    evas_object_show(efb->layout);
-   elm_layout_content_set
-     (efb->main_layout, "ephoto.content.swallow", efb->layout);
-
+   evas_object_event_callback_add
+     (efb->layout, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, efb);
    edje_object_signal_callback_add
      (elm_layout_edje_get(efb->layout), "done", "ephoto", _flow_done, efb);
+
+   efb->list = elm_genlist_add(efb->main_layout);
+   elm_genlist_bounce_set(efb->list, EINA_FALSE, EINA_TRUE);
+   elm_genlist_height_for_width_mode_set(efb->list, EINA_TRUE);
+   elm_genlist_compress_mode_set(efb->list, EINA_TRUE);
+   elm_genlist_longpress_timeout_set(efb->list, 0.5);
+   evas_object_size_hint_weight_set(efb->list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(efb->list, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_panes_content_right_set(efb->box, efb->list);
+   evas_object_show(efb->list);
+
+   elm_panes_content_left_size_set(efb->box, 0.4);
+
+   elm_layout_content_set
+     (efb->main_layout, "ephoto.content.swallow", efb->box);
+   
 
    for (i = 0; i < 5; i++)
      {
@@ -454,12 +592,27 @@ ephoto_flow_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
         elm_toolbar_item_disabled_set(efb->action.go_next, EINA_FALSE);
         elm_toolbar_item_disabled_set(efb->action.slideshow, EINA_FALSE);
      }
+   elm_genlist_clear(efb->list);
    eina_list_free(efb->items);
    efb->items = NULL;
    EINA_LIST_FOREACH(efb->ephoto->entries, l, itr)
     {
+       Elm_Genlist_Item *egi;
+
+       egi = elm_genlist_item_append(efb->list, &egli,
+                               (void *)itr,
+                               NULL, ELM_GENLIST_ITEM_NONE,
+                               _gl_sel, efb);
+       evas_object_smart_callback_add
+         (efb->list, "clicked", _flow_single, efb);
        efb->items = eina_list_append(efb->items, itr);
-       if (itr == entry) efb->current_index = eina_list_last(efb->items);
+       if (itr == entry) 
+         {
+            efb->current_index = eina_list_last(efb->items);
+            elm_genlist_item_bring_in(egi);
+            elm_genlist_item_selected_set(egi, EINA_TRUE);
+            efb->egi = egi;
+         }
     }
    _flow_browser_image_set(efb);
 }
