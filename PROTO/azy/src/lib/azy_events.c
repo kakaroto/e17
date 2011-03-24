@@ -177,7 +177,7 @@ azy_events_type_parse(Azy_Net             *net,
         char buf[8];
 
         errno = 0;
-        net->http.version = strtol(start + match[1].rm_so, NULL, 10);
+        net->http.version = strtol((char*)(start + match[1].rm_so), NULL, 10);
         if (errno || (net->http.version < 0) || (net->http.version > 1))
           {
              ERR("Invalid HTTP version!");
