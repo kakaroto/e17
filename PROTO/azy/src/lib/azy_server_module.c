@@ -701,7 +701,7 @@ azy_server_module_session_get(Azy_Server_Module *module)
    if (!h) return NULL;
 
    if (!strncmp(h, "sessid=", sizeof("sessid=") - 1))
-     module->client->session_id = eina_stringshare_add(h + sizeof("sessid=") - 1);
+     module->client->session_id = eina_stringshare_add_length(h + sizeof("sessid=") - 1, 36);
    else
      module->client->session_id = eina_stringshare_add(h);
    return module->client->session_id;
