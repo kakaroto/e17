@@ -576,21 +576,6 @@ _azy_server_client_send(Azy_Server_Client *client,
         return;
      }
 
-#ifdef ISCOMFITOR
-   {
-      char *d;
-      if (content)
-        d = azy_content_dump_string(content, 0);
-      else
-        d = (char *)data->data;
-      if (d)
-        {
-           DBG("%s\n", d);
-           free(d);
-        }
-   }
-#endif
-
    if (!net->http.res.http_code)
      {
         net->http.res.http_code = 200;
@@ -620,13 +605,12 @@ _azy_server_client_send(Azy_Server_Client *client,
    else
      INFO("Sending HTTP: %s", client->net->http.res.http_msg);
 
-#ifdef ISCOMFITOR
-   {
-      char buf[64];
-      snprintf(buf, sizeof(buf), "SENDING:\n<<<<<<<<<<<<<\n%%.%is%%.%llis\n<<<<<<<<<<<<<", eina_strbuf_length_get(header), content->length);
-      INFO(buf, eina_strbuf_string_get(header), content->buffer);
-   }
-#endif
+   if (azy_rpc_log_dom >= 0)
+     {
+        char buf[64];
+        snprintf(buf, sizeof(buf), "SENDING:\n<<<<<<<<<<<<<\n%%.%is%%.%llis\n<<<<<<<<<<<<<", (int)eina_strbuf_length_get(header), content->length);
+        RPC_INFO(buf, eina_strbuf_string_get(header), content->buffer);
+     }
 
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)), error);
    INFO("Send [1/2] complete! %zu bytes queued for sending.", eina_strbuf_length_get(header));
@@ -791,11 +775,12 @@ _azy_server_client_handler_data(Azy_Server_Client           *client,
 
    cli = client;
 
-#ifdef ISCOMFITOR
-   char buf[64];
-   snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%is\n<<<<<<<<<<<<<", len);
-   INFO(buf, data);
-#endif
+   if (azy_rpc_log_dom >= 0)
+     {
+        char buf[64];
+        snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%is\n<<<<<<<<<<<<<", len);
+        RPC_INFO(buf, data);
+     }
 
    if (!client->net->size)
      {

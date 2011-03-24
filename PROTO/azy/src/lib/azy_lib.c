@@ -79,6 +79,7 @@ Eina_Error AZY_ERROR_XML_UNSUPPORTED;
 #endif
 
 int azy_log_dom = -1;
+int azy_rpc_log_dom = -1;
 static int azy_init_count_ = 0;
 
 static void
@@ -144,7 +145,7 @@ _azy_magic_fail(const void *d,
  * calls.
  * @return The number of times the function has been called, or -1 on failure
  */
-EAPI int
+int
 azy_init(void)
 {
    if (++azy_init_count_ != 1)
@@ -200,18 +201,29 @@ eina_fail:
  * @return The number of times azy_init has been called, or -1 if
  * all occurrences of azy have been shut down
  */
-EAPI int
+int
 azy_shutdown(void)
 {
    if (--azy_init_count_ != 0)
      return azy_init_count_;
 
    eina_log_domain_unregister(azy_log_dom);
+   if (azy_rpc_log_dom != -1)
+     eina_log_domain_unregister(azy_rpc_log_dom);
    ecore_con_shutdown();
    ecore_shutdown();
    eina_shutdown();
    azy_log_dom = -1;
+   azy_rpc_log_dom = -1;
    return azy_init_count_;
 }
 
+void
+azy_rpc_log_enable(void)
+{
+   EINA_SAFETY_ON_TRUE_RETURN(!azy_init_count_);
+   azy_rpc_log_dom = eina_log_domain_register("azy_rpc", EINA_COLOR_LIGHTCYAN);
+   if (azy_rpc_log_dom < 0)
+     ERR("Could not register 'azy_rpc' log domain!");
+}
 /** @} */

@@ -264,8 +264,9 @@ extern "C" {
 #endif
 
    /* library */
-   EAPI int azy_init(void);
-   EAPI int azy_shutdown(void);
+   EAPI int  azy_init(void);
+   EAPI int  azy_shutdown(void);
+   EAPI void azy_rpc_log_enable(void);
 
    /* utils */
    EAPI char          *azy_base64_encode(const char *string,

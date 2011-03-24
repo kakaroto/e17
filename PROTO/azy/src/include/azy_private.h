@@ -49,12 +49,19 @@ void *alloca (size_t);
 #endif
 
 extern int azy_log_dom;
+extern int azy_rpc_log_dom;
 
 #define DBG(...)            EINA_LOG_DOM_DBG(azy_log_dom, __VA_ARGS__)
 #define INFO(...)           EINA_LOG_DOM_INFO(azy_log_dom, __VA_ARGS__)
 #define WARN(...)           EINA_LOG_DOM_WARN(azy_log_dom, __VA_ARGS__)
 #define ERR(...)            EINA_LOG_DOM_ERR(azy_log_dom, __VA_ARGS__)
 #define CRI(...)            EINA_LOG_DOM_CRIT(azy_log_dom, __VA_ARGS__)
+
+#define RPC_DBG(...)            EINA_LOG_DOM_DBG(azy_rpc_log_dom, __VA_ARGS__)
+#define RPC_INFO(...)           EINA_LOG_DOM_INFO(azy_rpc_log_dom, __VA_ARGS__)
+#define RPC_WARN(...)           EINA_LOG_DOM_WARN(azy_rpc_log_dom, __VA_ARGS__)
+#define RPC_ERR(...)            EINA_LOG_DOM_ERR(azy_rpc_log_dom, __VA_ARGS__)
+#define RPC_CRI(...)            EINA_LOG_DOM_CRIT(azy_rpc_log_dom, __VA_ARGS__)
 
 #if !defined(strdupa)
 # define strdupa(str)       strcpy(alloca(strlen(str) + 1), str)

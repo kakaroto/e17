@@ -181,11 +181,12 @@ _azy_client_handler_call(Azy_Client_Handler_Data *hd)
    DBG("(hd=%p, client=%p, net=%p)", hd, hd->client, hd->recv);
 
    client = hd->client;
-#ifdef ISCOMFITOR
-   char buf[64];
-   snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", hd->recv->size);
-   INFO(buf, hd->recv->buffer);
-#endif
+   if (azy_rpc_log_dom >= 0)
+     {
+        char buf[64];
+        snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", hd->recv->size);
+        RPC_INFO(buf, hd->recv->buffer);
+     }
    /* handle HTTP GET request */
    if (!hd->method) return _azy_client_handler_get(hd);
    INFO("Running RPC for %s", hd->method);
@@ -368,15 +369,6 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
      }
    DBG("(hd=%p, method='%s', ev=%p, data=%p)", hd, (hd) ? hd->method : NULL, ev, (ev) ? ev->data : NULL);
    DBG("(client=%p, server->client=%p)", hd->client, (ev) ? ecore_con_server_data_get(ev->server) : NULL);
-
-#ifdef ISCOMFITOR
-   if (data)
-     {
-        char buf[64];
-        snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%is\n<<<<<<<<<<<<<", len);
-        INFO(buf, data);
-     }
-#endif
 
    client = hd->client;
 
