@@ -178,6 +178,7 @@ struct Azy_Server
    Ecore_Con_Server    *server;
    Ecore_Event_Handler *add;
    const char          *addr;
+   int                  port;
    unsigned long int    clients;
 
    struct

@@ -286,9 +286,7 @@ extern "C" {
                                               const char *cert_file);
    EAPI unsigned long int azy_server_clients_count(Azy_Server *server);
    EAPI Eina_List        *azy_server_module_defs_get(Azy_Server *server);
-   EAPI Eina_Bool         azy_server_run(Azy_Server *server,
-                                         int         type,
-                                         int         port);
+   EAPI Eina_Bool         azy_server_run(Azy_Server *server);
    EAPI Eina_Bool azy_server_basic_run(int                     port,
                                        int                     type,
                                        const char             *cert,
@@ -296,6 +294,10 @@ extern "C" {
    EAPI Eina_Bool   azy_server_addr_set(Azy_Server *server,
                                         const char *addr);
    EAPI const char *azy_server_addr_get(Azy_Server *server);
+   EAPI Eina_Bool   azy_server_port_set(Azy_Server *server,
+                                        int         port);
+   EAPI int         azy_server_port_get(Azy_Server *server);
+   EAPI void        azy_server_ssl_enable(Azy_Server *server);
 
    /* server module */
    EAPI Eina_Bool azy_server_module_send(Azy_Server_Module  *module,

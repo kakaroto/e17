@@ -183,6 +183,66 @@ azy_server_addr_get(Azy_Server *server)
 }
 
 /**
+ * @brief Enable security on a server
+ * This is used to enable SSL/TLS functionality on @p server.
+ * It cannot be disabled once enabled.
+ * @param server The server
+ */
+void
+azy_server_ssl_enable(Azy_Server *server)
+{
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return;
+     }
+   server->security.secure = EINA_TRUE;
+}
+
+/**
+ * @brief Set the port for a server to listen on
+ *
+ * This function sets the listen port for @p server to @p port.
+ * @param server The server object (NOT NULL)
+ * @param port The listen port
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
+Eina_Bool
+azy_server_port_set(Azy_Server *server,
+                    int port)
+{
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return EINA_FALSE;
+     }
+   EINA_SAFETY_ON_TRUE_RETURN_VAL((port < 0) || (port > 65535), EINA_FALSE);
+
+   server->port = port;
+   return EINA_TRUE;
+}
+
+/**
+ * @brief Get the port for a server to listen on
+ *
+ * This function gets the listen port for @p server.
+ * @param server The server object (NOT NULL)
+ * @return The listen port
+ */
+int
+azy_server_port_get(Azy_Server *server)
+{
+   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
+     {
+        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
+        return -1;
+     }
+
+   return server->port;
+}
+
+
+/**
  * @brief Add an RSA certificate to an Azy server
  *
  * This function stores a list of certificate files to be loaded
@@ -202,6 +262,7 @@ azy_server_cert_add(Azy_Server *server,
      }
 
    server->security.cert_files = eina_list_append(server->security.cert_files, eina_stringshare_add(cert_file));
+   server->security.cert = EINA_TRUE;
    return EINA_TRUE;
 }
 
@@ -219,11 +280,9 @@ azy_server_cert_add(Azy_Server *server,
  * immediately with EINA_FALSE
  */
 Eina_Bool
-azy_server_run(Azy_Server *server,
-               int         type,
-               int         port)
+azy_server_run(Azy_Server *server)
 {
-   int az, ecore = ECORE_CON_REMOTE_NODELAY;
+   int ecore = ECORE_CON_REMOTE_NODELAY;
    Eina_List *l;
    const char *f;
 
@@ -232,38 +291,16 @@ azy_server_run(Azy_Server *server,
         AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
         return EINA_FALSE;
      }
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(port < 0 || port > 65535, EINA_FALSE);
-
-   az = type & AZY_SERVER_TYPE;
-
-   switch (az)
-     {
-      case AZY_SERVER_NONE:
-        break;
-
-      case AZY_SERVER_BROADCAST:
-        eina_stringshare_replace(&server->addr, "0.0.0.0");
-        break;
-
-      default:
-        eina_stringshare_replace(&server->addr, "127.0.0.1");
-        break;
-     }
-
    EINA_SAFETY_ON_NULL_RETURN_VAL(server->addr, EINA_FALSE);
 
-   if (az != type)
-     {
-        server->security.secure = EINA_TRUE;
-        ecore |= ECORE_CON_USE_MIXED;
-     }
+   if (server->security.secure)
+     ecore |= ECORE_CON_USE_MIXED;
 
    if (server->security.cert)
      ecore |= ECORE_CON_LOAD_CERT;
 
-   server->server = ecore_con_server_add(ecore, server->addr, port, server);
-   if (!server->server)
-     return EINA_FALSE;
+   server->server = ecore_con_server_add(ecore, server->addr, server->port, server);
+   if (!server->server) return EINA_FALSE;
 
    ecore_con_server_data_set(server->server, server);
 
