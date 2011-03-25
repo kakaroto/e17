@@ -1166,6 +1166,7 @@ gen_server_impl(Azy_Server_Module *s)
    Eina_List *j, *k;
    Azy_Method *method;
    Azy_Method_Param *p;
+   Azy_Typedef *t;
 
    OPEN("%s/%s%s%s.azy_server.c", out_dir, name, sep, s->name);
 
@@ -1176,7 +1177,14 @@ gen_server_impl(Azy_Server_Module *s)
 
    EL(0, "static Azy_Server_Module_Def *module = NULL;");
    NL;
-
+   EINA_LIST_FOREACH(s->types, k, t)
+     gen_type_copyfree(t, EINA_TRUE, EINA_TRUE);
+   NL;
+   gen_marshalizers(s, EINA_FALSE);
+   NL;
+   EINA_LIST_FOREACH(s->types, k, t)
+     gen_type_copyfree(t, EINA_FALSE, EINA_TRUE);
+   NL;
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         int n = 0;
