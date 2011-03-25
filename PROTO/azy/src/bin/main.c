@@ -1333,7 +1333,7 @@ gen_server_impl(Azy_Server_Module *s)
 * worth iiiiiiiiiiiiiiiiiiiiit
 */
         if (strstr(s->stub_init, "data_"))
-          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
 
         if (strstr(s->stub_init, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
@@ -1349,7 +1349,7 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "{");
 
         if (strstr(s->stub_shutdown, "data_"))
-          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
 
         if (strstr(s->stub_shutdown, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
@@ -1364,7 +1364,7 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "{");
 
         if (strstr(s->stub_pre, "data_"))
-          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
 
         if (strstr(s->stub_pre, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
@@ -1380,7 +1380,7 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "{");
 
         if (strstr(s->stub_post, "data_"))
-          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
 
         if (strstr(s->stub_post, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
@@ -1396,7 +1396,7 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "{");
 
         if (strstr(s->stub_fallback, "data_"))
-          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
 
         if (strstr(s->stub_fallback, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
@@ -1412,7 +1412,7 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "{");
 
         if (strstr(s->stub_download, "data_"))
-          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(module);",  name, sep, s->name);
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);",  name, sep, s->name);
 
         if (strstr(s->stub_download, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
@@ -1428,7 +1428,7 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "{");
 
         if (strstr(s->stub_upload, "data_"))
-          EL(1, "%s%s%s_module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
 
         if (strstr(s->stub_upload, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
@@ -1447,11 +1447,11 @@ gen_server_impl(Azy_Server_Module *s)
              E(0, ", %s %s", p->type->ctype, p->name);
           }
 
-        EL(0, ", Azy_Content* error_)");
+        EL(0, ", Azy_Content *error_)");
         EL(0, "{");
 
         if ((method->stub_impl) && (strstr(method->stub_impl, "data_")))
-          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+          EL(1, "%s%s%s_Module *data_ = azy_server_module_data_get(module);", name, sep, s->name);
 
 
         EL(1, "%s retval = %s;", method->return_type->ctype, method->return_type->cnull);
