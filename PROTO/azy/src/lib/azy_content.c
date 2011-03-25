@@ -613,6 +613,8 @@ azy_content_error_code_set(Azy_Content *content,
    content->error_set = EINA_TRUE;
    content->errcode = code;
    content->faultcode = code;
+   eina_stringshare_del(content->faultmsg);
+   content->faultmsg = NULL;
 }
 
 /**
@@ -643,6 +645,8 @@ azy_content_error_faultcode_set(Azy_Content *content,
    content->error_set = EINA_TRUE;
    content->errcode = code;
    content->faultcode = faultcode;
+   eina_stringshare_del(content->faultmsg);
+   content->faultmsg = NULL;
 }
 
 /**
