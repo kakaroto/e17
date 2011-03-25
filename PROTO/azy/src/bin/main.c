@@ -1384,6 +1384,8 @@ gen_server_impl(Azy_Server_Module *s)
 
         if (strstr(s->stub_post, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        if (!strstr(s->stub_post, "content"))
+          EL(1, "(void)content;");
         STUB(s->stub_post);
         EL(1, "return EINA_TRUE;");
         EL(0, "}");
@@ -1400,6 +1402,8 @@ gen_server_impl(Azy_Server_Module *s)
 
         if (strstr(s->stub_fallback, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        if (!strstr(s->stub_fallback, "content"))
+          EL(1, "(void)content;");
         STUB(s->stub_fallback);
         EL(1, "return EINA_TRUE;");
         EL(0, "}");
