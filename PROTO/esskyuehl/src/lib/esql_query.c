@@ -241,6 +241,7 @@ esql_query(Esql       *e,
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
         e->cur_id = esql_id;
+        e->cur_query = strdup(query);
      }
    else
      {
@@ -328,7 +329,7 @@ esql_query_vargs(Esql       *e,
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
         e->cur_id = esql_id;
-        free(query);
+        e->cur_query = query;
      }
    else
      {

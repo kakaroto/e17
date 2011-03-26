@@ -66,6 +66,7 @@ esql_res_free(void *data __UNUSED__,
    EINA_INLIST_FOREACH_SAFE(res->rows, l, r)
      esql_row_free(r);
    res->e->backend.res_free(res);
+   free(res->query);
    free(res);
 }
 
@@ -142,6 +143,18 @@ esql_res_query_id_get(Esql_Res *res)
    return res->qid;
 }
 
+/**
+ * @brief Return the query string for the result
+ * @param res The result object (NOT #NULL)
+ * @return The query string (NOT stringshared)
+ */
+const char *
+esql_res_query_get(Esql_Res *res)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+
+   return res->query;
+}
 /**
  * @brief Retrieve the number of rows selected by a SELECT statement
  * This function has no effect for INSERT/UPDATE/etc statements.

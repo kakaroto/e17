@@ -89,6 +89,8 @@ esql_call_complete(Esql *e)
            res = calloc(1, sizeof(Esql_Res));
            EINA_SAFETY_ON_NULL_GOTO(res, out);
            res->e = e;
+           res->query = e->cur_query;
+           e->cur_query = NULL;
            e->backend.res(res);
            res->data = e->cur_data;
            qcb = eina_hash_find(esql_query_callbacks, &e->cur_id);
@@ -150,6 +152,7 @@ out:
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
         e->cur_id = *((Esql_Query_Id *)e->backend_ids->data);
+        e->cur_query = strdup(e->backend_set_params->data);
         if (data) eina_hash_del_by_key(esql_query_data, e->backend_ids->data);
         UPDATE_LISTS(query);
         if (e->pool_struct)
@@ -209,6 +212,8 @@ esql_connect_handler(Esql             *e,
                   res->data = e->cur_data;
                   res->qid = e->cur_id;
                   e->res = res;
+                  res->query = e->cur_query;
+                  e->cur_query = NULL;
 
                   res->error = e->error;
                   ERR("Connection error: %s", res->error);

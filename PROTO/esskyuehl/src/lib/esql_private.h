@@ -129,6 +129,7 @@ struct Esql
    Eina_List        *backend_ids; /* Esql_Query_Id * */
    void             *cur_data;
    Esql_Query_Id     cur_id;
+   char             *cur_query;
 };
 
 struct Esql_Res
@@ -143,6 +144,7 @@ struct Esql_Res
    long long int affected;
    long long int id;
    Esql_Query_Id qid;
+   char         *query;
 
    struct
    {
