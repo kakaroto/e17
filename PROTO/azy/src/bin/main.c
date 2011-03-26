@@ -1752,7 +1752,7 @@ main(int argc, char *argv[])
    Eina_Bool debug = EINA_FALSE;
    Eina_Bool exit_option = EINA_FALSE;
    Eina_Bool err;
-   int args;
+   int args, mode;
    char *modes = "all";
 
    Ecore_Getopt_Value values[] =
@@ -1777,12 +1777,10 @@ main(int argc, char *argv[])
    if (args < 0)
      return 1;
 
-   azy_file = argv[args];
-
    if (exit_option)
      return 0;
 
-   if (!azy_file)
+   if (!argv[args])
      {
         printf("You must specify the .azy file.\n");
         return 1;
@@ -1790,14 +1788,13 @@ main(int argc, char *argv[])
 
    if (debug) azy_parser_Trace(stdout, "Azy_Parser: ");
    err = EINA_FALSE;
-   azy = azy_parse_file(azy_file, &err);
-   if ((!azy) || (err))
-     {
-        printf("Error parsing file!\n");
-        exit(1);
-     }
-   sep = (azy->name) ? "_" : "";
-   name = (azy->name) ? azy->name : "";
+   i = eina_stringshare_add("int");
+   b = eina_stringshare_add("Eina_Bool");
+   d = eina_stringshare_add("double");
+   c = eina_stringshare_add("const char *");
+   e = eina_stringshare_add("Eina_List *");
+   ti = eina_stringshare_add("time");
+   b64 = eina_stringshare_add("base64");
 
    client_headers = strstr(modes, "all") || strstr(modes, "client-headers");
    client_impl = strstr(modes, "all") || strstr(modes, "client-impl");
@@ -1807,23 +1804,28 @@ main(int argc, char *argv[])
    server_headers = strstr(modes, "all") || strstr(modes, "server-headers");
    azy_gen = strstr(modes, "azy") || 0;
 
-   args = client_headers | client_impl | common_headers | common_impl | server_headers | server_impl;
+   mode = client_headers | client_impl | common_headers | common_impl | server_headers | server_impl;
 
-   if (!args)
+   if (!mode)
      {
         printf("You have not specified a valid parsing mode!\n");
         exit(1);
      }
 
-   i = eina_stringshare_add("int");
-   b = eina_stringshare_add("Eina_Bool");
-   d = eina_stringshare_add("double");
-   c = eina_stringshare_add("const char *");
-   e = eina_stringshare_add("Eina_List *");
-   ti = eina_stringshare_add("time");
-   b64 = eina_stringshare_add("base64");
-   azy_write();
+   for (; args < argc; args++)
+     {
+        azy_file = argv[args];
+        azy = azy_parse_file(azy_file, &err);
+        if ((!azy) || (err))
+          {
+             printf("Error parsing file!\n");
+             exit(1);
+          }
+        sep = (azy->name) ? "_" : "";
+        name = (azy->name) ? azy->name : "";
 
+        azy_write();
+     }
    if (debug)
      printf("azy-parser: Done!!\n");
    return 0;
