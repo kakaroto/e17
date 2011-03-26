@@ -27,6 +27,7 @@ callback_(Esql_Res *res, char *data)
 {
    printf("%i rows returned to callback!\n", esql_res_rows_count(res)); /**< could do more here, but it's a simple example so we just print the number of rows */
    printf("data stored: '%s'\n", data);
+   printf("Query string: '%s'\n", esql_res_query_get(res));
    free(data);
    ecore_main_loop_quit();
 }
@@ -36,15 +37,17 @@ result_(void *data __UNUSED__, int type __UNUSED__, Esql_Res *res)
 {
    printf("%i rows returned!\n", esql_res_rows_count(res)); /**< could do more here, but it's a simple example so we just print the number of rows */
    printf("data stored: '%s'\n", (char*)esql_res_data_get(res));
+   printf("Query string: '%s'\n", esql_res_query_get(res));
    free(esql_res_data_get(res));
    ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
 
 static Eina_Bool
-error_(void *data __UNUSED__, int type __UNUSED__, Esql_Res *res)
+error_(void *data __UNUSED__, int type __UNUSED__, Esql *e)
 {
-   fprintf(stderr, "%s\n", esql_res_error_get(res)); /**< print error condition */
+   fprintf(stderr, "%s\n", esql_error_get(e)); /**< print error condition */
+   printf("Query string: '%s'\n", esql_current_query_get(e));
    ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
