@@ -1197,7 +1197,14 @@ gen_server_impl(Azy_Server_Module *s)
 
         if (strstr(s->stub_init, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        if (suspend_funcs)
+          {
+             EL(1, "azy_server_module_events_suspend(module);");
+          }
         STUB(s->stub_init);
+        EL(1, "if (azy_server_module_events_suspended_get(module))");
+        EL(2, "return EINA_TRUE;");
+        NL;
         EL(1, "return EINA_TRUE;");
         EL(0, "}");
         NL;
@@ -1213,7 +1220,14 @@ gen_server_impl(Azy_Server_Module *s)
 
         if (strstr(s->stub_shutdown, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        if (suspend_funcs)
+          {
+             EL(1, "azy_server_module_events_suspend(module);");
+          }
         STUB(s->stub_shutdown);
+        EL(1, "if (azy_server_module_events_suspended_get(module))");
+        EL(2, "return EINA_TRUE;");
+        NL;
         EL(0, "}");
         NL;
      }
@@ -1228,7 +1242,14 @@ gen_server_impl(Azy_Server_Module *s)
 
         if (strstr(s->stub_pre, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        if (suspend_funcs)
+          {
+             EL(1, "azy_server_module_events_suspend(module);");
+          }
         STUB(s->stub_pre);
+        EL(1, "if (azy_server_module_events_suspended_get(module))");
+        EL(2, "return EINA_TRUE;");
+        NL;
         EL(1, "return EINA_TRUE;");
         EL(0, "}");
         NL;
@@ -1246,7 +1267,14 @@ gen_server_impl(Azy_Server_Module *s)
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
         if (!strstr(s->stub_post, "content"))
           EL(1, "(void)content;");
+        if (suspend_funcs)
+          {
+             EL(1, "azy_server_module_events_suspend(module);");
+          }
         STUB(s->stub_post);
+        EL(1, "if (azy_server_module_events_suspended_get(module))");
+        EL(2, "return EINA_TRUE;");
+        NL;
         EL(1, "return EINA_TRUE;");
         EL(0, "}");
         NL;
@@ -1264,7 +1292,14 @@ gen_server_impl(Azy_Server_Module *s)
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
         if (!strstr(s->stub_fallback, "content"))
           EL(1, "(void)content;");
+        if (suspend_funcs)
+          {
+             EL(1, "azy_server_module_events_suspend(module);");
+          }
         STUB(s->stub_fallback);
+        EL(1, "if (azy_server_module_events_suspended_get(module))");
+        EL(2, "return EINA_TRUE;");
+        NL;
         EL(1, "return EINA_TRUE;");
         EL(0, "}");
         NL;
@@ -1280,7 +1315,14 @@ gen_server_impl(Azy_Server_Module *s)
 
         if (strstr(s->stub_download, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        if (suspend_funcs)
+          {
+             EL(1, "azy_server_module_events_suspend(module);");
+          }
         STUB(s->stub_download);
+        EL(1, "if (azy_server_module_events_suspended_get(module))");
+        EL(2, "return EINA_TRUE;");
+        NL;
         EL(1, "return EINA_FALSE;");
         EL(0, "}");
         NL;
@@ -1296,7 +1338,14 @@ gen_server_impl(Azy_Server_Module *s)
 
         if (strstr(s->stub_upload, "net_"))
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        if (suspend_funcs)
+          {
+             EL(1, "azy_server_module_events_suspend(module);");
+          }
         STUB(s->stub_upload);
+        EL(1, "if (azy_server_module_events_suspended_get(module))");
+        EL(2, "return EINA_TRUE;");
+        NL;
         EL(1, "return EINA_FALSE;");
         EL(0, "}");
         NL;
