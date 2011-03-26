@@ -22,11 +22,13 @@
 %extra_argument {Azy_Parser *parser}
 %syntax_error {SYNTAX_ERROR(TOKEN);}
 %stack_overflow {
-   if (parser->error)
-     eina_stringshare_del(parser->error);  \
-   parser->error = eina_stringshare_add("Parser stack overflow!\n");
+   eina_stringshare_replace(&parser->error, "Parser stack overflow!\n");
 }
 %include {
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+#include <stdio.h>
 #include "azy_parser_lib.h"
 #include "azy_parser.h"
 #include "azy.h"
@@ -272,42 +274,42 @@ module_body_decl ::= method_decl(M) SEMICOL. {
   MODEL->cur_module->methods = eina_list_append(MODEL->cur_module->methods, M);
 }
 module_body_decl ::= INIT CODE(C). {
-  MODEL->cur_module->stub_init = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+  MODEL->cur_module->stub_init = strndup(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_init_line = C->sline;
   azy_parser_token_free(C);
 }
 module_body_decl ::= SHUTDOWN CODE(C). {
-  MODEL->cur_module->stub_shutdown = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+  MODEL->cur_module->stub_shutdown = strndup(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_shutdown_line = C->sline;
   azy_parser_token_free(C);
 }
 module_body_decl ::= ATTRS CODE(C). {
-  MODEL->cur_module->stub_attrs = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+  MODEL->cur_module->stub_attrs = strndup(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_attrs_line = C->sline;
   azy_parser_token_free(C);
 }
 module_body_decl ::= PRECALL CODE(C). {
-  MODEL->cur_module->stub_pre = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+  MODEL->cur_module->stub_pre = strndup(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_pre_line = C->sline;
   azy_parser_token_free(C);
 }
 module_body_decl ::= POSTCALL CODE(C). {
-  MODEL->cur_module->stub_post = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+  MODEL->cur_module->stub_post = strndup(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_post_line = C->sline;
   azy_parser_token_free(C);
 }
 module_body_decl ::= FALLBACK CODE(C). {
-  MODEL->cur_module->stub_fallback = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+  MODEL->cur_module->stub_fallback = strndup(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_fallback_line = C->sline;
   azy_parser_token_free(C);
 }
 module_body_decl ::= DOWNLOAD CODE(C). {
-  MODEL->cur_module->stub_download = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+  MODEL->cur_module->stub_download = strndup(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_download_line = C->sline;
   azy_parser_token_free(C);
 }
 module_body_decl ::= UPLOAD CODE(C). {
-  MODEL->cur_module->stub_upload = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
+  MODEL->cur_module->stub_upload = strndup(C->text + 2, strlen(C->text) - 4);
   MODEL->cur_module->stub_upload_line = C->sline;
   azy_parser_token_free(C);
 }

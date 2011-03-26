@@ -15,6 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
@@ -30,8 +33,8 @@ azy_parser_stream_new(const char *str)
 
    s = calloc(1, sizeof(Azy_Stream));
    EINA_SAFETY_ON_NULL_RETURN_VAL(s, NULL);
-   s->buffer = eina_stringshare_add(str);
-   s->length = eina_stringshare_strlen(s->buffer);
+   s->buffer = strdup(str);
+   s->length = strlen(s->buffer);
    return s;
 }
 

@@ -23,8 +23,8 @@
 
 typedef struct
 {
-   const char *path;
-   const char *buffer;
+   char *path;
+   char *buffer;
    int         index;
    int         line;
    int         col;
@@ -55,7 +55,6 @@ typedef void       (*Azy_Parser_Cb)(void *, int, Azy_Token *, Azy_Parser *parser
 typedef Azy_Token *(*Azy_Token_Cb)(Azy_Stream *);
 
 #define SYNTAX_ERROR(TOKEN)                                                                                 \
-  if (parser->error)                                                                                        \
     eina_stringshare_del(parser->error);                                                                    \
   if ((!TOKEN) || (!TOKEN->type))                                                                           \
     parser->error = eina_stringshare_add("Unexpected EOF!\n");                                              \
