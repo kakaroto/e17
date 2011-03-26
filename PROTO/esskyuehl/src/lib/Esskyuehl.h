@@ -169,7 +169,7 @@ EAPI void         *esql_data_get(Esql *e);
 EAPI void          esql_data_set(Esql *e,
                                  void *data);
 EAPI Esql_Query_Id esql_current_query_id_get(Esql *e);
-const char        *esql_current_query_get(Esql *e);
+EAPI const char        *esql_current_query_get(Esql *e);
 EAPI const char   *esql_error_get(Esql *e);
 EAPI Eina_Bool     esql_type_set(Esql     *e,
                                  Esql_Type type);
