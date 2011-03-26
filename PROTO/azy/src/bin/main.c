@@ -15,6 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include <Eina.h>
 #include <Ecore.h>
 #include <Ecore_Getopt.h>
@@ -77,6 +80,7 @@ static Eina_Bool hash_funcs;
 static Eina_Bool isnull_funcs;
 static Eina_Bool print_funcs;
 static Eina_Bool eq_funcs;
+static Eina_Bool suspend_funcs;
 static char *out_dir = ".";
 static char *azy_file;
 static FILE *f;
@@ -102,6 +106,7 @@ static const Ecore_Getopt opts = {
       ECORE_GETOPT_STORE_TRUE('n', "null", "Do not generate isnull functions"),
       ECORE_GETOPT_STORE_TRUE('p', "print", "Do not generate print functions"),
       ECORE_GETOPT_STORE_TRUE('e', "eq", "Do not generate eq functions"),
+      ECORE_GETOPT_STORE_TRUE('s', "suspend", "Suspend methods by default (server-impl only)"),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('R', "copyright"),
       ECORE_GETOPT_LICENSE('L', "license"),
@@ -1233,6 +1238,10 @@ gen_server_impl(Azy_Server_Module *s)
           }
 
         NL;
+        if (suspend_funcs)
+          {
+             EL(1, "azy_server_module_events_suspend(module);");
+          }
         E(1, "azy_return_module = %s%s%s_module_%s(module", name, sep, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
@@ -1755,6 +1764,7 @@ main(int argc, char *argv[])
       ECORE_GETOPT_VALUE_BOOL(isnull_funcs),
       ECORE_GETOPT_VALUE_BOOL(print_funcs),
       ECORE_GETOPT_VALUE_BOOL(eq_funcs),
+      ECORE_GETOPT_VALUE_BOOL(suspend_funcs),
       ECORE_GETOPT_VALUE_BOOL(exit_option),
       ECORE_GETOPT_VALUE_BOOL(exit_option),
       ECORE_GETOPT_VALUE_BOOL(exit_option),
