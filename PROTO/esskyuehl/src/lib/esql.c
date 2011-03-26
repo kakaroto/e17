@@ -210,13 +210,13 @@ esql_type_get(Esql *e)
  * @brief Return the #Esql_Query_Id of the current active query
  * @param e The #Esql object (NOT #NULL)
  * @return The query id, or 0 if no query is active
- * @note For obvious reasons, this cannot be used with connection pools
+ * @note For obvious reasons, this cannot be used reliably with
+ * connection pools unless a callback is set
  */
 Esql_Query_Id
 esql_current_query_id_get(Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(e->pool, 0);
 
    return e->cur_id;
 }
@@ -225,6 +225,8 @@ esql_current_query_id_get(Esql *e)
  * @brief Return the query string for the current query
  * @param e The #Esql object (NOT #NULL)
  * @return The query string (NOT stringshared)
+ * @note For obvious reasons, this cannot be used reliably with
+ * connection pools unless a callback is set
  */
 const char *
 esql_current_query_get(Esql *e)

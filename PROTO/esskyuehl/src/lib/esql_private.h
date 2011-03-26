@@ -76,6 +76,8 @@ typedef struct Esql_Pool
    Esql_Connect_Cb connect_cb;
    void           *connect_cb_data;
    void           *data;
+   char           *cur_query;
+   Esql_Query_Id   cur_id;
    /* non-esql */
    int             size;
    int             e_connected;
@@ -93,7 +95,9 @@ struct Esql
    Esql_Connect_Cb connect_cb;
    void           *connect_cb_data;
    void           *data;
-
+   char           *cur_query;
+   Esql_Query_Id   cur_id;
+   
    struct
    {
       void              *db; /* db object pointer */
@@ -128,8 +132,6 @@ struct Esql
    Eina_List        *backend_set_params; /* char * */
    Eina_List        *backend_ids; /* Esql_Query_Id * */
    void             *cur_data;
-   Esql_Query_Id     cur_id;
-   char             *cur_query;
 };
 
 struct Esql_Res

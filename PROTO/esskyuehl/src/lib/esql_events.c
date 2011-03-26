@@ -196,7 +196,12 @@ esql_connect_handler(Esql             *e,
       default:
         e->error = e->backend.error_get(e);
         e->query_end = ecore_time_get();
-        if (e->pool_struct) e->pool_struct->error = e->error;
+        if (e->pool_struct)
+          {
+             e->pool_struct->error = e->error;
+             e->pool_struct->cur_query = e->cur_query;
+             e->pool_struct->cur_id = e->cur_id;
+	  }
         if (e->type == ESQL_CONNECT_TYPE_QUERY)
           {
              Esql_Query_Cb qcb;
