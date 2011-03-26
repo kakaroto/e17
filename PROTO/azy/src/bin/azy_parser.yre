@@ -90,7 +90,19 @@ main:
    SLCOM = "//" (.\ENDINPUT)* ("\n"|ENDINPUT);
 
    SLCOM              { NEXT; goto main; }
-   "/*"               { goto comment; }
+   "/*"("*"*|[^ \t\n\r]*)
+{
+   while (c++)
+     {
+        if ((*c == '*') && (c + 1) && (c[1] == '/'))
+          {
+             c += 2;
+             NEXT;
+             goto main;
+          }
+     }
+   RET(AZY_UNKNOWN);
+}
    CODESTART          { goto code; }
    [ \t\n\r]+         { NEXT; goto main; }
    "__init__"         { RET(AZY_INIT); }
@@ -131,23 +143,16 @@ code:
    NONPRINT            { goto code; }
  */
 
-comment:
-/*!re2c
-   "*/"                { NEXT; goto main; }
-  ENDINPUT             { RET(AZY_UNKNOWN); }
-  NONPRINT             { goto comment; }
-*/
-
      return NULL;
    }
 
-   Azy_Model *azy_parse_string(const char *str, Eina_Bool *err)
+   Azy_Model *azy_parse_string_azy(const char *str, Eina_Bool *err)
    {
-      return azy_parser_string_parse(str, err, azy_parser_, azy_parser_Alloc, azy_parser_Free, azy_parser_stream_to_token);
+      return azy_parser_string_parse_azy(str, err, azy_parser_, azy_parser_Alloc, azy_parser_Free, azy_parser_stream_to_token);
    }
-   Azy_Model *azy_parse_file(const char *path, Eina_Bool *err)
+   Azy_Model *azy_parse_file_azy(const char *path, Eina_Bool *err)
    {
-      return azy_parser_file_parse(path, err, azy_parser_, azy_parser_Alloc, azy_parser_Free, azy_parser_stream_to_token);
+      return azy_parser_file_parse_azy(path, err, azy_parser_, azy_parser_Alloc, azy_parser_Free, azy_parser_stream_to_token);
    }
 
 }

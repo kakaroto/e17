@@ -26,9 +26,7 @@ COMMON_S = \
 if HAVE_MYSQL
 MYSQL_SERVER_S = \
   $(top_builddir)/src/tests/T_SQL.azy_server.c \
-  $(top_builddir)/src/tests/T_SQL.azy_server_stubs.c \
-  $(top_builddir)/src/tests/T_SQL.azy_server.h \
-  $(top_builddir)/src/tests/T_SQL.azy_server_stubs.h
+  $(top_builddir)/src/tests/T_SQL.azy_server.h
 else
 MYSQL_SERVER_S =
 endif
@@ -36,13 +34,9 @@ endif
 SERVER_S = \
   $(MYSQL_SERVER_S) \
   $(top_builddir)/src/tests/T_Test1.azy_server.c \
-  $(top_builddir)/src/tests/T_Test1.azy_server_stubs.c \
   $(top_builddir)/src/tests/T_Test1.azy_server.h \
-  $(top_builddir)/src/tests/T_Test1.azy_server_stubs.h \
   $(top_builddir)/src/tests/T_Test2.azy_server.c \
-  $(top_builddir)/src/tests/T_Test2.azy_server_stubs.c \
-  $(top_builddir)/src/tests/T_Test2.azy_server.h \
-  $(top_builddir)/src/tests/T_Test2.azy_server_stubs.h
+  $(top_builddir)/src/tests/T_Test2.azy_server.h
 
 if HAVE_MYSQL
 MYSQL_CLIENT_S = \

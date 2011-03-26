@@ -147,7 +147,7 @@ err:
 }
 
 void *
-azy_parser_string_parse(const char  *str,
+azy_parser_string_parse_azy(const char  *str,
                Eina_Bool   *err,
                Azy_Parser_Cb       cb,
                Azy_Parser_New_Cb new_cb,
@@ -173,6 +173,12 @@ azy_parser_string_parse(const char  *str,
      }
 
    azy_parser_parse(parser, cb, new_cb, free_cb, token_cb);
+   if (parser->error)
+     {
+        fprintf(stderr, "%s\n", parser->error);
+        *err = EINA_TRUE;
+        return NULL;
+     }
    /* validate types */
    {
       Eina_List *l, *ll;
@@ -211,7 +217,7 @@ azy_parser_string_parse(const char  *str,
 }
 
 void *
-azy_parser_file_parse(const char  *path,
+azy_parser_file_parse_azy(const char  *path,
              Eina_Bool   *err,
              Azy_Parser_Cb       cb,
              Azy_Parser_New_Cb new_cb,
@@ -230,8 +236,7 @@ azy_parser_file_parse(const char  *path,
    close(fd);
    if (buf == MAP_FAILED) return NULL;
 
-   data = azy_parser_string_parse(buf, err, cb, new_cb, free_cb, token_cb);
+   data = azy_parser_string_parse_azy(buf, err, cb, new_cb, free_cb, token_cb);
    munmap(buf, s.st_size);
    return data;
 }
-

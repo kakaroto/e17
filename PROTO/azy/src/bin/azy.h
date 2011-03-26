@@ -127,10 +127,9 @@ struct _Azy_Model
 };
 
 Azy_Model *azy_new(void);
-
-Azy_Model *azy_parse_string(const char *str,
+Azy_Model *azy_parse_string_azy(const char *str,
                               Eina_Bool  *err);
-Azy_Model *azy_parse_file(const char *str,
+Azy_Model *azy_parse_file_azy(const char *str,
                             Eina_Bool  *err);
 
 Azy_Error_Code *azy_error_new(Azy_Model         *azy,

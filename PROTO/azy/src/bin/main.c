@@ -41,7 +41,7 @@
 #define OPEN(fmt, args ...) {                                     \
      f = fopen(current_file = S(fmt, ## args), "w");              \
      if (!f) {                                                    \
-          fprintf(stderr, "Can't open output file for writing."); \
+          fprintf(stderr, "Can't open output file for writing.\n"); \
           exit(1); }                                              \
 }                                                                 \
   current_line = 1
@@ -932,7 +932,7 @@ gen_common_impl(Azy_Server_Module *s)
         EL(1, "if (errno)");
         EL(2, "{");
         EL(0, "#ifdef ERR");
-        EL(3, "ERR(\"Error converting %%s to int: '%%s'\", d, strerror(errno));");
+        EL(3, "fprintf(stderr, \"Error converting %%s to int: '%%s'\", d, strerror(errno));");
         EL(0, "#endif");
         EL(3, "return EINA_FALSE;");
         EL(2, "}");
@@ -948,7 +948,7 @@ gen_common_impl(Azy_Server_Module *s)
         EL(1, "if (errno)");
         EL(2, "{");
         EL(0, "#ifdef ERR");
-        EL(3, "ERR(\"Error converting %%s to double: '%%s'\", d, strerror(errno));");
+        EL(3, "fprintf(stderr, \"Error converting %%s to double: '%%s'\", d, strerror(errno));");
         EL(0, "#endif");
         EL(3, "return EINA_FALSE;");
         EL(2, "}");
@@ -985,10 +985,9 @@ gen_server_headers(Azy_Server_Module *s)
    Azy_Method_Param *p;
    Azy_Method *method;
 
-   OPEN("%s/%s%s%s.azy_server_stubs.h", out_dir, name, sep, s->name);
-
-   EL(0, "#ifndef %s_%s_STUBS_H", (azy->name) ? azy->name : "AZY", s->name);
-   EL(0, "#define %s_%s_STUBS_H", (azy->name) ? azy->name : "AZY", s->name);
+   OPEN("%s/%s%s%s.azy_server.h", out_dir, name, sep, s->name);
+   EL(0, "#ifndef %s_%s_AZY_SERVER_H", (azy->name) ? azy->name : "AZY", s->name);
+   EL(0, "#define %s_%s_AZY_SERVER_H", (azy->name) ? azy->name : "AZY", s->name);
    NL;
 
    EL(0, "#include <Azy.h>");
@@ -1143,24 +1142,8 @@ gen_server_headers(Azy_Server_Module *s)
         EL(0, ", Azy_Content* error_);");
         NL;
      }
-
-   EL(0, "#endif");
-   fclose(f);
-
-
-   OPEN("%s/%s%s%s.azy_server.h", out_dir, name, sep, s->name);
-   EL(0, "#ifndef %s_%s_AZY_SERVER_H", (azy->name) ? azy->name : "AZY", s->name);
-   EL(0, "#define %s_%s_AZY_SERVER_H", (azy->name) ? azy->name : "AZY", s->name);
-   NL;
-
-   EL(0, "#include <Azy.h>");
-   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", name, sep, s->name);
-   NL;
-
    EL(0, "Azy_Server_Module_Def* %s%s%s_module_def();",
       name, sep, s->name);
-   NL;
-
    EL(0, "#endif");
    fclose(f);
 }
@@ -1174,9 +1157,12 @@ gen_server_impl(Azy_Server_Module *s)
    Azy_Typedef *t;
 
    OPEN("%s/%s%s%s.azy_server.c", out_dir, name, sep, s->name);
-
-   EL(0, "#include \"%s%s%s.azy_server.h\"", name, sep, s->name);
-   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", name, sep, s->name);
+   if (s->stub_header)
+     {
+        STUB(s->stub_header);
+        NL;
+     }
+   EL(0, "#include \"%s%sCommon.h\"", name, sep);
    NL;
 
 
@@ -1190,6 +1176,164 @@ gen_server_impl(Azy_Server_Module *s)
    EINA_LIST_FOREACH(s->types, k, t)
      gen_type_copyfree(t, EINA_FALSE, EINA_TRUE);
    NL;
+   NL;
+   EL(0, "typedef struct %s%s%s_Module", name, sep, s->name);
+   EL(0, "{");
+   /* FIXME: does this need to be output at all if there is no attrs stub? */
+   EL(0, "%s", s->stub_attrs ? s->stub_attrs : "");
+   EL(0, "} %s%s%s_Module;", name, sep, s->name);
+   NL;
+   NL;
+/* ************************STUBS************************* */
+   if (s->stub_init && s->stub_init[0])
+     {
+        EL(0, "Eina_Bool %s%s%s_module_init(Azy_Server_Module *module)", name, sep, s->name);
+        EL(0, "{");
+/* attempt to evade even more compile warnings at the expense of slightly slower runtime.
+* worth iiiiiiiiiiiiiiiiiiiiit
+*/
+        if (strstr(s->stub_init, "data_"))
+          EL(1, "%s%s%s_Module *data_ = azy_server_module_data_get(module);", name, sep, s->name);
+
+        if (strstr(s->stub_init, "net_"))
+          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        STUB(s->stub_init);
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
+        NL;
+     }
+
+   if (s->stub_shutdown && s->stub_shutdown[0])
+     {
+        EL(0, "void %s%s%s_module_shutdown(Azy_Server_Module *module)", name, sep, s->name);
+        EL(0, "{");
+
+        if (strstr(s->stub_shutdown, "data_"))
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+
+        if (strstr(s->stub_shutdown, "net_"))
+          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        STUB(s->stub_shutdown);
+        EL(0, "}");
+        NL;
+     }
+
+   if (s->stub_pre && s->stub_pre[0])
+     {
+        EL(0, "Eina_Bool %s%s%s_module_pre(Azy_Server_Module *module, Azy_Net *net)", name, sep, s->name);
+        EL(0, "{");
+
+        if (strstr(s->stub_pre, "data_"))
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+
+        if (strstr(s->stub_pre, "net_"))
+          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        STUB(s->stub_pre);
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
+        NL;
+     }
+
+   if (s->stub_post && s->stub_post[0])
+     {
+        EL(0, "Eina_Bool %s%s%s_module_post(Azy_Server_Module *module, Azy_Content *content)", name, sep, s->name);
+        EL(0, "{");
+
+        if (strstr(s->stub_post, "data_"))
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+
+        if (strstr(s->stub_post, "net_"))
+          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        if (!strstr(s->stub_post, "content"))
+          EL(1, "(void)content;");
+        STUB(s->stub_post);
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
+        NL;
+     }
+
+   if (s->stub_fallback && s->stub_fallback[0])
+     {
+        EL(0, "Eina_Bool %s%s%s_module_fallback(Azy_Server_Module *module, Azy_Content *content)", name, sep, s->name);
+        EL(0, "{");
+
+        if (strstr(s->stub_fallback, "data_"))
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+
+        if (strstr(s->stub_fallback, "net_"))
+          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        if (!strstr(s->stub_fallback, "content"))
+          EL(1, "(void)content;");
+        STUB(s->stub_fallback);
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
+        NL;
+     }
+
+   if (s->stub_download && s->stub_download[0])
+     {
+        EL(0, "Eina_Bool %s%s%s_module_download(Azy_Server_Module *module)", name, sep, s->name);
+        EL(0, "{");
+
+        if (strstr(s->stub_download, "data_"))
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);",  name, sep, s->name);
+
+        if (strstr(s->stub_download, "net_"))
+          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        STUB(s->stub_download);
+        EL(1, "return EINA_FALSE;");
+        EL(0, "}");
+        NL;
+     }
+
+   if (s->stub_upload && s->stub_upload[0])
+     {
+        EL(0, "Eina_Bool %s%s%s_module_upload(Azy_Server_Module *module)", name, sep, s->name);
+        EL(0, "{");
+
+        if (strstr(s->stub_upload, "data_"))
+          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
+
+        if (strstr(s->stub_upload, "net_"))
+          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
+        STUB(s->stub_upload);
+        EL(1, "return EINA_FALSE;");
+        EL(0, "}");
+        NL;
+     }
+
+   EINA_LIST_FOREACH(s->methods, j, method)
+     {
+        E(0, "%s %s%s%s_module_%s(Azy_Server_Module *module", method->return_type->ctype, name, sep, s->name, method->name);
+
+        EINA_LIST_FOREACH(method->params, k, p)
+          {
+             E(0, ", %s %s", p->type->ctype, p->name);
+          }
+
+        EL(0, ", Azy_Content *error_)");
+        EL(0, "{");
+
+        if ((method->stub_impl) && (strstr(method->stub_impl, "data_")))
+          EL(1, "%s%s%s_Module *data_ = azy_server_module_data_get(module);", name, sep, s->name);
+
+
+        EL(1, "%s retval = %s;", method->return_type->ctype, method->return_type->cnull);
+
+        if (method->stub_impl)
+          {
+             if (!strstr(method->stub_impl, "error_"))
+               EL(1, "(void)error_;");
+             STUB(method->stub_impl);
+          }
+        else
+          EL(1, "azy_content_error_faultmsg_set(error_, -1, \"Method is not implemented. (%s)\");", method->name);
+        EL(1, "return retval;");
+        EL(0, "}");
+        NL;
+     }
+   NL;
+   /********************* NOT STUBS *********************/
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         int n = 0;
@@ -1329,167 +1473,6 @@ gen_server_impl(Azy_Server_Module *s)
    EL(1, "return NULL;");
    EL(0, "}");
    fclose(f);
-
-
-   /* ************************STUBS************************* */
-   OPEN("%s/%s%s%s.azy_server_stubs.c", out_dir, name, sep, s->name);
-   EL(0, "#include \"%s%s%s.azy_server_stubs.h\"", name, sep, s->name);
-   NL;
-
-   if (s->stub_header)
-     {
-        STUB(s->stub_header);
-        NL;
-     }
-
-   if (s->stub_init && s->stub_init[0])
-     {
-        EL(0, "Eina_Bool %s%s%s_module_init(Azy_Server_Module *module)", name, sep, s->name);
-        EL(0, "{");
-/* attempt to evade even more compile warnings at the expense of slightly slower runtime.
-* worth iiiiiiiiiiiiiiiiiiiiit
-*/
-        if (strstr(s->stub_init, "data_"))
-          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
-
-        if (strstr(s->stub_init, "net_"))
-          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
-        STUB(s->stub_init);
-        EL(1, "return EINA_TRUE;");
-        EL(0, "}");
-        NL;
-     }
-
-   if (s->stub_shutdown && s->stub_shutdown[0])
-     {
-        EL(0, "void %s%s%s_module_shutdown(Azy_Server_Module *module)", name, sep, s->name);
-        EL(0, "{");
-
-        if (strstr(s->stub_shutdown, "data_"))
-          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
-
-        if (strstr(s->stub_shutdown, "net_"))
-          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
-        STUB(s->stub_shutdown);
-        EL(0, "}");
-        NL;
-     }
-
-   if (s->stub_pre && s->stub_pre[0])
-     {
-        EL(0, "Eina_Bool %s%s%s_module_pre(Azy_Server_Module *module, Azy_Net *net)", name, sep, s->name);
-        EL(0, "{");
-
-        if (strstr(s->stub_pre, "data_"))
-          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
-
-        if (strstr(s->stub_pre, "net_"))
-          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
-        STUB(s->stub_pre);
-        EL(1, "return EINA_TRUE;");
-        EL(0, "}");
-        NL;
-     }
-
-   if (s->stub_post && s->stub_post[0])
-     {
-        EL(0, "Eina_Bool %s%s%s_module_post(Azy_Server_Module *module, Azy_Content *content)", name, sep, s->name);
-        EL(0, "{");
-
-        if (strstr(s->stub_post, "data_"))
-          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
-
-        if (strstr(s->stub_post, "net_"))
-          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
-        if (!strstr(s->stub_post, "content"))
-          EL(1, "(void)content;");
-        STUB(s->stub_post);
-        EL(1, "return EINA_TRUE;");
-        EL(0, "}");
-        NL;
-     }
-
-   if (s->stub_fallback && s->stub_fallback[0])
-     {
-        EL(0, "Eina_Bool %s%s%s_module_fallback(Azy_Server_Module *module, Azy_Content *content)", name, sep, s->name);
-        EL(0, "{");
-
-        if (strstr(s->stub_fallback, "data_"))
-          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
-
-        if (strstr(s->stub_fallback, "net_"))
-          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
-        if (!strstr(s->stub_fallback, "content"))
-          EL(1, "(void)content;");
-        STUB(s->stub_fallback);
-        EL(1, "return EINA_TRUE;");
-        EL(0, "}");
-        NL;
-     }
-
-   if (s->stub_download && s->stub_download[0])
-     {
-        EL(0, "Eina_Bool %s%s%s_module_download(Azy_Server_Module *module)", name, sep, s->name);
-        EL(0, "{");
-
-        if (strstr(s->stub_download, "data_"))
-          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);",  name, sep, s->name);
-
-        if (strstr(s->stub_download, "net_"))
-          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
-        STUB(s->stub_download);
-        EL(1, "return EINA_FALSE;");
-        EL(0, "}");
-        NL;
-     }
-
-   if (s->stub_upload && s->stub_upload[0])
-     {
-        EL(0, "Eina_Bool %s%s%s_module_upload(Azy_Server_Module *module)", name, sep, s->name);
-        EL(0, "{");
-
-        if (strstr(s->stub_upload, "data_"))
-          EL(1, "%s%s%s_Module* data_ = azy_server_module_data_get(module);", name, sep, s->name);
-
-        if (strstr(s->stub_upload, "net_"))
-          EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
-        STUB(s->stub_upload);
-        EL(1, "return EINA_FALSE;");
-        EL(0, "}");
-        NL;
-     }
-
-   EINA_LIST_FOREACH(s->methods, j, method)
-     {
-        E(0, "%s %s%s%s_module_%s(Azy_Server_Module *module", method->return_type->ctype, name, sep, s->name, method->name);
-
-        EINA_LIST_FOREACH(method->params, k, p)
-          {
-             E(0, ", %s %s", p->type->ctype, p->name);
-          }
-
-        EL(0, ", Azy_Content *error_)");
-        EL(0, "{");
-
-        if ((method->stub_impl) && (strstr(method->stub_impl, "data_")))
-          EL(1, "%s%s%s_Module *data_ = azy_server_module_data_get(module);", name, sep, s->name);
-
-
-        EL(1, "%s retval = %s;", method->return_type->ctype, method->return_type->cnull);
-
-        if (method->stub_impl)
-          {
-             if (!strstr(method->stub_impl, "error_"))
-               EL(1, "(void)error_;");
-             STUB(method->stub_impl);
-          }
-        else
-          EL(1, "azy_content_error_faultmsg_set(error_, -1, \"Method is not implemented. (%s)\");", method->name);
-        EL(1, "return retval;");
-        EL(0, "}");
-        NL;
-     }
-   fclose(f);
 }
 
 static void
@@ -1504,7 +1487,6 @@ gen_client_headers(Azy_Server_Module *s)
    EL(0, "#define %s_%s_AZY_CLIENT_H", (azy->name) ? azy->name : "AZY", s->name);
    NL;
 
-   EL(0, "#include <Azy.h>");
    EL(0, "#include \"%s%sCommon.h\"", name, sep);
    NL;
 
@@ -1814,8 +1796,11 @@ main(int argc, char *argv[])
 
    for (; args < argc; args++)
      {
+        Eina_Bool type = EINA_FALSE; /* EINA_FALSE for azy */
         azy_file = argv[args];
-        azy = azy_parse_file(azy_file, &err);
+        if (eina_str_has_extension(azy_file, ".azy")) type = EINA_FALSE;
+        if (!type)
+          azy = azy_parse_file_azy(azy_file, &err);
         if ((!azy) || (err))
           {
              printf("Error parsing file!\n");
@@ -1824,7 +1809,8 @@ main(int argc, char *argv[])
         sep = (azy->name) ? "_" : "";
         name = (azy->name) ? azy->name : "";
 
-        azy_write();
+        if (!type)
+          azy_write();
      }
    if (debug)
      printf("azy-parser: Done!!\n");

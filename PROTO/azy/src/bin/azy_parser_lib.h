@@ -71,13 +71,13 @@ Azy_Token *azy_parser_token_new(Azy_Stream *s,
                      int     length);
 void  azy_parser_token_free(Azy_Token *t);
 
-void *azy_parser_string_parse(const char  *str,
+void *azy_parser_string_parse_azy(const char  *str,
                      Eina_Bool   *err,
                      Azy_Parser_Cb       cb,
                      Azy_Parser_New_Cb new_cb,
                      Azy_Parser_Free_Cb  free_cb,
                      Azy_Token_Cb        token_cb);
-void *azy_parser_file_parse(const char  *path,
+void *azy_parser_file_parse_azy(const char  *path,
                    Eina_Bool   *err,
                    Azy_Parser_Cb       cb,
                    Azy_Parser_New_Cb new_cb,
