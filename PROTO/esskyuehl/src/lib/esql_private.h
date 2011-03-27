@@ -97,7 +97,7 @@ struct Esql
    void           *data;
    char           *cur_query;
    Esql_Query_Id   cur_id;
-   
+
    struct
    {
       void              *db; /* db object pointer */

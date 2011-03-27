@@ -64,11 +64,6 @@ esql_res_to_lli(Esql_Res *res, long long int *i)
    EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, EINA_FALSE);
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(
-	(cell->type != ESQL_CELL_TYPE_TINYINT) &&
-	(cell->type != ESQL_CELL_TYPE_SHORT) &&
-	(cell->type != ESQL_CELL_TYPE_LONG) &&
-	(cell->type != ESQL_CELL_TYPE_LONGLONG), EINA_FALSE);
    switch (cell->type)
      {
       case ESQL_CELL_TYPE_TINYINT:
@@ -85,7 +80,7 @@ esql_res_to_lli(Esql_Res *res, long long int *i)
         break;
       default:
         ERR("cell from res %p has invalid type!", res);
-	return EINA_FALSE;
+	       return EINA_FALSE;
      }
    return EINA_TRUE;
 }
@@ -116,7 +111,7 @@ esql_res_to_double(Esql_Res *res, double *d)
         break;
       default:
         ERR("cell from res %p has invalid type!", res);
-	return EINA_FALSE;
+	       return EINA_FALSE;
      }
    return EINA_TRUE;
 }
@@ -160,6 +155,40 @@ esql_res_to_timeval(Esql_Res *res, struct timeval *tv)
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(cell->type != ESQL_CELL_TYPE_TIMESTAMP, EINA_FALSE);
    memcpy(tv, &cell->value.tv, sizeof(struct timeval));
+   return EINA_TRUE;
+}
+
+/*********************************************************************/
+
+/**
+ * @brief Convert cell to a long long int
+ * @param cell Cell
+ * @param i Pointer to store int at
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
+Eina_Bool
+esql_cell_to_lli(Esql_Cell *cell, long long int *i)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(i, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, EINA_FALSE);
+   switch (cell->type)
+     {
+      case ESQL_CELL_TYPE_TINYINT:
+        *i = cell->value.c;
+        break;
+      case ESQL_CELL_TYPE_SHORT:
+        *i = cell->value.s;
+        break;
+      case ESQL_CELL_TYPE_LONG:
+        *i = cell->value.i;
+        break;
+      case ESQL_CELL_TYPE_LONGLONG:
+        *i = cell->value.l;
+        break;
+      default:
+        ERR("cell %p has invalid type!", cell);
+	       return EINA_FALSE;
+     }
    return EINA_TRUE;
 }
 /** @} */
