@@ -246,7 +246,7 @@ esql_query(Esql       *e,
    else
      {
         e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_query);
-        e->backend_set_params = eina_list_append(e->backend_set_params, query);
+        e->backend_set_params = eina_list_append(e->backend_set_params, strdup(query));
         e->backend_ids = eina_list_append(e->backend_ids, &esql_id);
         if (data)
           {
