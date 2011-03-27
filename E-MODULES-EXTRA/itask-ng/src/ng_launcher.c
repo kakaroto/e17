@@ -350,8 +350,9 @@ _item_fill(Ngi_Item_Launcher *it)
 	edje_object_part_swallow(it->base.obj, "e.swallow.content", o);
 	evas_object_show(o);
 	it->o_icon = o;
-
+	
 	oo = evas_object_image_filled_add(e);
+	evas_object_image_fill_set(oo, 0, 0, 1, 1);
 	evas_object_image_source_set(oo, it->base.obj);
 
 	edje_object_part_swallow(it->base.over, "e.swallow.content", oo);
