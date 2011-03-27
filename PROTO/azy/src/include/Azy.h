@@ -310,7 +310,7 @@ extern "C" {
    EAPI Azy_Server_Module_Def    *azy_server_module_def_find(Azy_Server *server,
                                                              const char *name);
    EAPI void                      azy_server_module_events_resume(Azy_Server_Module *module,
-								  Eina_Bool ret);
+                                                                  Eina_Bool ret);
    EAPI void                      azy_server_module_events_suspend(Azy_Server_Module *module);
    EAPI Eina_Bool                 azy_server_module_events_suspended_get(Azy_Server_Module *module);
    EAPI Eina_Bool                 azy_server_module_active_get(Azy_Server_Module *module);
