@@ -338,7 +338,16 @@ Azy_Module Test1
     */
    __pre__
    <% /* Eina_Bool (*Azy_Server_Module_Pre_Cb)(Azy_Server_Module *module, Azy_Net *net) */
-      (void)module;
+      static int x;
+      x++;
+      if ((x < 3) && (x > 0))
+        printf("Running __pre__ time #%d!\n", x);
+      if (x == 1)
+        {
+           azy_server_module_events_suspend(module);
+           azy_server_module_events_rewind(module);
+           azy_server_module_events_resume(module, EINA_TRUE);
+        }
       (void)net;
    %>
 

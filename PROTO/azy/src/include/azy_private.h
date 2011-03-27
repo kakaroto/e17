@@ -205,6 +205,7 @@ typedef struct Azy_Server_Client
 
    Azy_Net             *net;
    Azy_Net             *current;
+   Azy_Net             *new_net;
    Azy_Server          *server;
    Eina_List           *modules;
 
@@ -240,6 +241,9 @@ struct Azy_Server_Module
    Azy_Net_Data            recv;
    Eina_Bool               suspend : 1;
    Eina_Bool               run_method : 1;
+   Eina_Bool               rewind : 1;
+   Eina_Bool               rewind_now : 1;
+   Eina_Bool               executing : 1;
    Azy_Server_Module_State state;
 };
 
