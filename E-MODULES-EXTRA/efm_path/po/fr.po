@@ -1,12 +1,12 @@
 # Efm_path module (e17), French translation.
 # This file is put in the public domain.
-# batden <batden@orange.fr>, 2009.
+# batden <batden@orange.fr>, 2009, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Efm_path module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2010-07-11 10:56+0400\n"
-"PO-Revision-Date: 2010-07-11 11:18+0400\n"
+"PO-Revision-Date: 2011-03-27 14:18+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: Enlightenment French Team <pourunmondesansgourou@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: src/e_mod_main.c:62
 msgid "Location:"
-msgstr "Emplacement:"
+msgstr "Emplacement :"
 
 #: src/e_mod_main.c:132
 msgid "EFM Path"
