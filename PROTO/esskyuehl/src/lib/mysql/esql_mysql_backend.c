@@ -273,6 +273,7 @@ esql_mysac_row_init(Esql_Row *r)
              break;
 
            default:
+             ERR("FIXME: Got unknown column type %u!", res->cols[i].type);
              break;
           }
         r->cells = eina_inlist_append(r->cells, EINA_INLIST_GET(cell));
