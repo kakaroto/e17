@@ -19,7 +19,7 @@ server_suspend(Azy_Server_Module *m)
    content = azy_server_module_content_get(m);
    azy_content_retval_set(content, v);
 
-   azy_server_module_events_resume(m);
+   azy_server_module_events_resume(m, EINA_TRUE);
    return EINA_FALSE;
 }
 

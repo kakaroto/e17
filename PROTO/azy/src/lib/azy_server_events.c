@@ -949,10 +949,12 @@ azy_server_client_handler_add(Azy_Server                 *server,
  * @brief Resume a suspended client's activities
  * This function is used on a suspended client to resume it,
  * allowing the current and subsequent transmissions to begin processing again.
+ * The success value of the current directive is determined by @p ret.
  * @param module The suspended module (NOT #NULL)
+ * @param ret The return value to set for the current directive
  */
 void
-azy_server_module_events_resume(Azy_Server_Module *module)
+azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
 {
    Azy_Server_Client *client;
    Azy_Net *net;
@@ -984,6 +986,17 @@ azy_server_module_events_resume(Azy_Server_Module *module)
 
    module->suspend = EINA_FALSE;
    client->suspend = EINA_FALSE;
+   switch (module->state)
+     {
+      case AZY_SERVER_MODULE_STATE_PRE:
+        module->run_method = ret;
+        break;
+      case AZY_SERVER_MODULE_STATE_METHOD:
+      case AZY_SERVER_MODULE_STATE_POST:
+        client->resume_ret = ret;
+      default:
+        break;
+     }
    _azy_server_client_handler_request(client);
    if (client->suspend) return;
    EINA_LIST_FREE(client->suspended_nets, net)
