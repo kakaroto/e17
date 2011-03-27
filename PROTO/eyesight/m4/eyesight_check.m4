@@ -65,11 +65,45 @@ dnl PDF backend is enabled and it's not poppler, then it is mupdf
    MUPDF_CFLAGS=""
    MUPDF_LIBS=""
 
+   mupdf_pkgs="freetype2"
+   jp2k_libs=""
+
+   PKG_CHECK_EXISTS([libopenjpeg1],
+      [
+       have_pkg_jp2k="yes"
+       mupdf_pkgs="${mupdf_pkgs} libopenjpeg1"
+      ],
+      [have_pkg_jp2k="no"])
+
+   if test "x${have_pkg_jp2k}" = "xno" ; then
+      PKG_CHECK_EXISTS([libopenjpeg],
+         [
+          have_pkg_jp2k="yes"
+          mupdf_pkgs="${mupdf_pkgs} libopenjpeg"
+         ],
+         [have_pkg_jp2k="no"])
+   fi
+
 dnl Freetype
    PKG_CHECK_MODULES([MUPDF_DEP],
-      [freetype2 libopenjpeg1],
+      [${mupdf_pkgs}],
       [have_dep="yes"],
       [have_dep="no"])
+
+dnl libopenjpeg (if the .pc does not exist)
+   if test "x${have_pkg_jp2k}" = "xno" && test "x${have_dep}" = "xyes" ; then
+      AC_MSG_NOTICE([no pkg-config file for openjpeg, checking files individually])
+      AC_CHECK_HEADER([openjpeg.h], [have_dep="yes"], [have_dep="no"])
+   fi
+
+   if test "x${have_pkg_jp2k}" = "xno" && test "x${have_dep}" = "xyes" ; then
+      AC_CHECK_LIB([openjpeg], [opj_image_create],
+         [
+          have_dep="yes"
+          jp2k_libs="-lopenjpeg"
+         ],
+         [have_dep="no"])
+   fi
 
 dnl jbig2
    if test "x${have_dep}" = "xyes" ; then
@@ -81,9 +115,9 @@ dnl jbig2
    fi
 
    if test "x${have_dep}" = "xyes" ; then
-      requirement="freetype2 libopenjpeg1"
+      requirement="${mupdf_pkgs}"
       MUPDF_CFLAGS="${MUPDF_DEP_CFLAGS}"
-      MUPDF_LIBS="${MUPDF_DEP_LIBS} -ljbig2dec"
+      MUPDF_LIBS="${MUPDF_DEP_LIBS} -ljbig2dec ${jp2k_libs}"
    fi
 
 dnl CJK fonts

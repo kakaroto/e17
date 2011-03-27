@@ -363,8 +363,8 @@ libmupdf_la_CPPFLAGS = \
 -I$(top_srcdir)/src/modules/pdf/mupdf-0.7/mupdf \
 -I$(top_builddir)/src/modules/pdf/mupdf-0.7/mupdf \
 @BUILD_MUPDF_CJK_FONTS@ \
-@FREETYPE_CFLAGS@
-libmupdf_la_LIBADD = @FREETYPE_LIBS@
+@MUPDF_CFLAGS@
+libmupdf_la_LIBADD = @MUPDF_LIBS@
 
 pdf_la_SOURCES = \
 eyesight_pdf_mupdf.c \
