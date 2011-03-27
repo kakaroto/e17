@@ -191,4 +191,30 @@ esql_cell_to_lli(Esql_Cell *cell, long long int *i)
      }
    return EINA_TRUE;
 }
+
+/**
+ * @brief Convert cell to a double
+ * @param cell Cell
+ * @param d Pointer to store double at
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
+Eina_Bool
+esql_cell_to_double(Esql_Cell *cell, double *d)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(d, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, EINA_FALSE);
+   switch (cell->type)
+     {
+      case ESQL_CELL_TYPE_FLOAT:
+        *d = cell->value.f;
+        break;
+      case ESQL_CELL_TYPE_DOUBLE:
+        *d = cell->value.d;
+        break;
+      default:
+        ERR("cell %p has invalid type!", cell);
+	       return EINA_FALSE;
+     }
+   return EINA_TRUE;
+}
 /** @} */

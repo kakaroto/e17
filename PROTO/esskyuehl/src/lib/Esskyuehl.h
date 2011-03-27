@@ -223,6 +223,7 @@ EAPI Eina_Bool      esql_res_to_double(Esql_Res *res, double *d);
 EAPI Eina_Bool      esql_res_to_tm(Esql_Res *res, struct tm *t);
 EAPI Eina_Bool      esql_res_to_timeval(Esql_Res *res, struct timeval *tv);
 EAPI Eina_Bool      esql_cell_to_lli(Esql_Cell *cell, long long int *i);
+EAPI Eina_Bool      esql_cell_to_double(Esql_Cell *cell, double *d);
 
 /* row */
 EAPI Eina_Inlist *esql_row_cells_get(Esql_Row *r);
