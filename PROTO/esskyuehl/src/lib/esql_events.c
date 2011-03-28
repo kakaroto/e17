@@ -201,7 +201,7 @@ esql_connect_handler(Esql             *e,
              e->pool_struct->error = e->error;
              e->pool_struct->cur_query = e->cur_query;
              e->pool_struct->cur_id = e->cur_id;
-	  }
+          }
         if (e->type == ESQL_CONNECT_TYPE_QUERY)
           {
              Esql_Query_Cb qcb;
