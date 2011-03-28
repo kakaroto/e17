@@ -294,8 +294,7 @@ top:
              module->client->new_net = new;
           }
 
-        if (module->rewind) module->rewind = EINA_FALSE;
-        else if (module->rewind_now) goto top;
+        if (module->rewind_now) goto top;
         else module->state = AZY_SERVER_MODULE_STATE_PRE;
         if (module->suspend)
           {
@@ -330,8 +329,7 @@ top:
              client->resume_ret = EINA_FALSE;
           }
 
-        if (module->rewind) module->rewind = EINA_FALSE;
-        else if (module->rewind_now) goto top;
+        if (module->rewind_now) goto top;
         else module->state = AZY_SERVER_MODULE_STATE_METHOD;
         if (module->suspend)
           {
@@ -344,8 +342,7 @@ top:
         if (module->def->post)
           client->resume_ret = module->def->post(module, content);
 
-        if (module->rewind) module->rewind = EINA_FALSE;
-        else if (module->rewind_now) goto top;
+        if (module->rewind_now) goto top;
         else module->state = AZY_SERVER_MODULE_STATE_POST;
         if (module->suspend)
           {
@@ -563,8 +560,7 @@ top:
              module->client->new_net = net;
           }
 
-        if (module->rewind) module->rewind = EINA_FALSE;
-        else if (module->rewind_now) goto top;
+        if (module->rewind_now) goto top;
         else module->state = AZY_SERVER_MODULE_STATE_PRE;
         if (module->suspend)
           {
@@ -582,8 +578,7 @@ top:
         else
           client->resume_ret = fallback(module, NULL);
 
-        if (module->rewind) module->rewind = EINA_FALSE;
-        else if (module->rewind_now) goto top;
+        if (module->rewind_now) goto top;
         else module->state = client->resume_ret ? AZY_SERVER_MODULE_STATE_METHOD : AZY_SERVER_MODULE_STATE_ERR;
         if (module->suspend)
           {
@@ -597,8 +592,7 @@ top:
         if (module->def->post)
           client->resume_ret = module->def->post(module, NULL);
 
-        if (module->rewind) module->rewind = EINA_FALSE;
-        else if (module->rewind_now) goto top;
+        if (module->rewind_now) goto top;
         else module->state = AZY_SERVER_MODULE_STATE_POST;
         if (module->suspend)
           {
@@ -1051,7 +1045,7 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
         module->client->resume = NULL;
         return;
      }
-   module->rewind = EINA_FALSE;
+   if (module->rewind) module->state--;
    switch (module->state)
      {
       case AZY_SERVER_MODULE_STATE_PRE:
@@ -1068,6 +1062,7 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
       default:
         break;
      }
+   module->rewind = EINA_FALSE;
    _azy_server_client_handler_request(client);
    if (client->suspend) return;
    EINA_LIST_FREE(client->suspended_nets, net)
