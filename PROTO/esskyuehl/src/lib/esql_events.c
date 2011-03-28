@@ -179,7 +179,7 @@ esql_connect_handler(Esql             *e,
      {
       case 0:
         esql_call_complete(e);
-        ecore_main_fd_handler_active_set(fdh, ECORE_FD_WRITE);
+        ecore_main_fd_handler_active_set(fdh, ECORE_FD_READ);
         break;
 
       case ECORE_FD_READ | ECORE_FD_WRITE:
