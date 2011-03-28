@@ -218,6 +218,7 @@ EAPI Eina_Iterator *esql_res_row_iterator_new(Esql_Res *res);
 
 /* convert */
 EAPI const char *    esql_res_to_string(Esql_Res *res);
+EAPI unsigned char  *esql_res_to_blob(Esql_Res *res);
 EAPI long long int   esql_res_to_lli(Esql_Res *res);
 EAPI double          esql_res_to_double(Esql_Res *res);
 EAPI struct tm      *esql_res_to_tm(Esql_Res *res);

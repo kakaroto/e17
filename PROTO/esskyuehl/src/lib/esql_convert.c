@@ -48,6 +48,29 @@ esql_res_to_string(Esql_Res *res)
 }
 
 /**
+ * @brief Convert result to a binary blob
+ * @param res Result
+ * @return Allocated binary blob (must be freed)
+ */
+unsigned char *
+esql_res_to_blob(Esql_Res *res)
+{
+   Esql_Row *row;
+   Esql_Cell *cell;
+   unsigned char *ret;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
+   row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
+   cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(
+     (cell->type != ESQL_CELL_TYPE_BLOB) &&
+     (cell->type != ESQL_CELL_TYPE_UNKNOWN), NULL);
+   ret = malloc(cell->len);
+   memcpy(ret, cell->value.blob, cell->len);
+   return ret;
+}
+
+/**
  * @brief Convert result to a long long int
  * @param res Result
  * @return The result
@@ -107,39 +130,45 @@ esql_res_to_double(Esql_Res *res)
 /**
  * @brief Convert result to a tm struct
  * @param res Result
- * @return Pointer to struct tm
+ * @return Pointer to allocated struct tm (must be freed)
  */
 struct tm *
 esql_res_to_tm(Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
+   struct tm *ret;
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    EINA_SAFETY_ON_TRUE_RETURN_VAL((cell->type != ESQL_CELL_TYPE_TIMESTAMP) &&
      (cell->type != ESQL_CELL_TYPE_UNKNOWN), NULL);
-   return &cell->value.tm;
+   ret = calloc(1, sizeof(struct tm));
+   memcpy(ret, &cell->value.tm, sizeof(struct tm));
+   return ret;
 }
 
 /**
  * @brief Convert result to a timeval struct
  * @param res Result
- * @return Pointer to struct timeval
+ * @return Pointer to allocated struct timeval (must be freed)
  */
 struct timeval *
 esql_res_to_timeval(Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
+   struct timeval *ret;
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    EINA_SAFETY_ON_TRUE_RETURN_VAL((cell->type != ESQL_CELL_TYPE_TIME) &&
      (cell->type != ESQL_CELL_TYPE_UNKNOWN), NULL);
-   return &cell->value.tv;
+   ret = calloc(1, sizeof(struct timeval));
+   memcpy(ret, &cell->value.tv, sizeof(struct timeval));
+   return ret;
 }
 
 /*********************************************************************/
@@ -152,7 +181,7 @@ esql_res_to_timeval(Esql_Res *res)
 long long int
 esql_cell_to_lli(Esql_Cell *cell)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, 0);
    switch (cell->type)
      {
       case ESQL_CELL_TYPE_TINYINT:
@@ -176,7 +205,7 @@ esql_cell_to_lli(Esql_Cell *cell)
 double
 esql_cell_to_double(Esql_Cell *cell)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, 0.0);
    switch (cell->type)
      {
       case ESQL_CELL_TYPE_FLOAT:
