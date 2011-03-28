@@ -1063,8 +1063,8 @@ gen_common_headers(void)
    if (esql_funcs)
      {
         OPEN("%s/%s%sCommon_Esskyuehl.h", out_dir, name, sep);
-        EL(0, "#ifndef %s_Common_H", (azy->name) ? azy->name : "AZY");
-        EL(0, "#define %s_Common_H", (azy->name) ? azy->name : "AZY");
+        EL(0, "#ifndef %s_Common_ESQL_H", (azy->name) ? azy->name : "AZY");
+        EL(0, "#define %s_Common_ESQL_H", (azy->name) ? azy->name : "AZY");
         EL(0, "#include <Esskyuehl.h>");
         EL(0, "#include \"%s%sCommon_Types.h\"", name, sep);
         NL;
