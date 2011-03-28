@@ -30,7 +30,7 @@ src/bin/re2c/re2c
 src/bin/re2c/re_parser.cc
 src/bin/re2c/re_parser.h
 src/tests/T_*
-src/tests/identi.ca/identica_Common.*
+src/tests/identi.ca/identica_Common*
 src/tests/type*.c
 src/tests/type*.h
 stamp-h1
