@@ -68,6 +68,7 @@ azy_typedef_new(int         type,
           }
         t->fmt_str = fmt_str ? eina_stringshare_add(fmt_str) : NULL;
         t->print_func = eina_stringshare_printf("%s_print", t->cname);
+        t->esql_func = eina_stringshare_printf("%s_esql", t->cname);
      }
 
    if ((!t->fmt_str) && (fmt_str))

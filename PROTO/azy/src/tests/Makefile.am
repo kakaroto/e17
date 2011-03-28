@@ -3,8 +3,10 @@ SUBDIRS = unit identi.ca rss
 TYPES_S = \
   $(top_builddir)/src/tests/type1_Common.c \
   $(top_builddir)/src/tests/type1_Common.h \
+  $(top_builddir)/src/tests/type1_Common_Types.h \
   $(top_builddir)/src/tests/type2_Common.c \
-  $(top_builddir)/src/tests/type2_Common.h
+  $(top_builddir)/src/tests/type2_Common.h \
+  $(top_builddir)/src/tests/type2_Common_Types.h
 
 if HAVE_MYSQL
 MYSQL_COMMON_S = \
@@ -17,10 +19,10 @@ endif
 COMMON_S = \
   $(MYSQL_COMMON_S) \
   $(top_builddir)/src/tests/T_Common.h \
+  $(top_builddir)/src/tests/T_Common_Types.h \
   $(top_builddir)/src/tests/T_Common.c \
   $(top_builddir)/src/tests/T_Test1.h \
   $(top_builddir)/src/tests/T_Test1.c \
-  $(top_builddir)/src/tests/T_Test2.c \
   $(top_builddir)/src/tests/T_Test2.h
 
 if HAVE_MYSQL

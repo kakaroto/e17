@@ -46,6 +46,7 @@ struct _Azy_Typedef
    const char         *fmt_str;
    const char         *isnull_func;
    const char         *hash_func;
+   const char         *esql_func;
 
    Eina_List          *struct_members; /* struct members list */
    Azy_Typedef       *item_type; /* array item type */

@@ -69,18 +69,19 @@ static int current_line;
 static const char *current_file = NULL;
 
 static Azy_Model *azy;
-static Eina_Bool client_headers;
-static Eina_Bool client_impl;
-static Eina_Bool common_headers;
-static Eina_Bool common_impl;
-static Eina_Bool server_impl;
-static Eina_Bool server_headers;
-static Eina_Bool azy_gen;
-static Eina_Bool hash_funcs;
-static Eina_Bool isnull_funcs;
-static Eina_Bool print_funcs;
-static Eina_Bool eq_funcs;
-static Eina_Bool suspend_funcs;
+static Eina_Bool client_headers = EINA_FALSE;
+static Eina_Bool client_impl = EINA_FALSE;
+static Eina_Bool common_headers = EINA_FALSE;
+static Eina_Bool common_impl = EINA_FALSE;
+static Eina_Bool server_impl = EINA_FALSE;
+static Eina_Bool server_headers = EINA_FALSE;
+static Eina_Bool azy_gen = EINA_FALSE;
+static Eina_Bool hash_funcs = EINA_FALSE;
+static Eina_Bool isnull_funcs = EINA_FALSE;
+static Eina_Bool print_funcs = EINA_FALSE;
+static Eina_Bool eq_funcs = EINA_FALSE;
+static Eina_Bool suspend_funcs = EINA_FALSE;
+static Eina_Bool esql_funcs = EINA_FALSE;
 static char *out_dir = ".";
 static char *azy_file;
 static FILE *f;
@@ -106,7 +107,8 @@ static const Ecore_Getopt opts = {
       ECORE_GETOPT_STORE_TRUE('n', "null", "Do not generate isnull functions"),
       ECORE_GETOPT_STORE_TRUE('p', "print", "Do not generate print functions"),
       ECORE_GETOPT_STORE_TRUE('e', "eq", "Do not generate eq functions"),
-      ECORE_GETOPT_STORE_TRUE('s', "suspend", "Suspend methods by default (server-impl only)"),
+      ECORE_GETOPT_STORE_TRUE('E', "esql", "Generate esql functions"),
+      ECORE_GETOPT_STORE_TRUE('s', "suspend", "Suspend methods by default"),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('R', "copyright"),
       ECORE_GETOPT_LICENSE('L', "license"),
@@ -605,6 +607,167 @@ gen_type_print(Azy_Typedef *t,
      }
 }
 
+
+static void
+gen_type_esql(Azy_Typedef *t,
+         Eina_Bool def)
+{
+   Eina_List *l;
+   Azy_Struct_Member *m;
+
+   if (def)
+     {
+        if (t->type == TD_STRUCT)
+          {
+             EL(0, "/** @brief Convert an Esql_Res to a %s */", t->cname);
+             EL(0, "Eina_Bool %s_esql(Esql_Res *res, %s*a);", t->cname, t->ctype);
+          }
+        else if (t->type == TD_ARRAY)
+          {
+             EL(0, "/** @brief Convert an Esql_Res to an array of %s */", t->cname);
+             EL(0, "Eina_Bool %s(Esql_Res *res, Eina_List **a);", t->esql_func);
+          }
+        return;
+     }
+
+   if (t->type == TD_STRUCT)
+     {
+        EL(0, "Eina_Bool %s_esql(Esql_Res *res, %s*a)", t->cname, t->ctype);
+        EL(0, "{");
+        EL(1, "Eina_Iterator *it;");
+        EL(1, "Esql_Row *r;");
+        EL(1, "%sret;", t->ctype);
+        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(a, EINA_FALSE);");
+        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);");
+        EL(1, "EINA_SAFETY_ON_TRUE_RETURN_VAL(esql_res_rows_count(res) > 1, EINA_FALSE);");
+        NL;
+        EL(1, "if (!esql_res_rows_count(res))");
+        EL(2, "{");
+        EL(3, "*a = NULL;");
+        EL(3, "return EINA_TRUE;");
+        EL(2, "}");
+        EL(2, "ret = %s_new();", t->cname);
+        EL(2, "EINA_SAFETY_ON_NULL_RETURN_VAL(ret, EINA_FALSE);");
+        EL(1, "it = esql_res_row_iterator_new(res);");
+        EL(1, "EINA_ITERATOR_FOREACH(it, r)");
+        EL(2, "{");
+        EL(3, "Eina_Inlist *l;");
+        EL(3, "Esql_Cell *c;");
+        NL;
+        EL(3, "l = esql_row_cells_get(r);");
+        EL(3, "EINA_INLIST_FOREACH(l, c)");
+        EL(4, "{");
+        EINA_LIST_FOREACH(t->struct_members, l, m)
+          {
+             if (l->prev) E(5, "else ");
+             else E(5, "");
+             EL(0, "if (!strcmp(c->colname, \"%s\"))", m->name);
+             if ((m->type->type == TD_ARRAY) || (m->type->type == TD_STRUCT))
+               EL(6, "ret->%s = NULL;", m->name);
+             if (m->type->ctype == b)
+               EL(6, "esql_cell_to_lli(c, (long long int*)&ret->%s);", m->name);
+             else if (m->type->ctype == i)
+               EL(6, "esql_cell_to_lli(c, (long long int*)ret->%s);", m->name);
+             else if (m->type->ctype == d)
+               EL(6, "esql_cell_to_double(c, &ret->%s);", m->name);
+             else if (m->type->ctype == c)
+               EL(6, "ret->%s = eina_stringshare_add(c->value.string);", m->name);
+             else if (m->type->ctype == b64)
+               {
+                  EL(6, "{");
+                  EL(7, "ret->%s = malloc(c->len);;", m->name);
+                  EL(7, "memcpy(ret->%s, c->value.blob, c->len);");
+                  EL(6, "}");
+               }
+          }
+        EL(4, "}");
+        EL(3, "*a = ret;");
+        EL(2, "}");
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
+        NL;
+     }
+   else if ((t->type == TD_ARRAY) && (t->item_type->type != TD_ARRAY))
+     {
+        EL(0, "Eina_Bool %s(Esql_Res *res, Eina_List **a)", t->esql_func);
+        EL(0, "{");
+
+        EL(1, "Eina_Iterator *it;");
+        EL(1, "Esql_Row *r;");
+        if ((t->item_type->ctype == b) || (t->item_type->ctype == i))
+          EL(1, "intptr_t tmp;");
+        else if (t->item_type->ctype == b64)
+          EL(1, "unsigned char *tmp;");
+        else
+          EL(1, "%s tmp;", t->item_type->ctype);
+        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(a, EINA_FALSE);");
+        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);");
+        NL;
+        EL(1, "*a = NULL;");
+        EL(1, "if (!esql_res_rows_count(res))");
+        EL(2, "return EINA_TRUE;");
+        EL(1, "it = esql_res_row_iterator_new(res);");
+        EL(1, "EINA_ITERATOR_FOREACH(it, r)");
+        EL(2, "{");
+        EL(3, "Eina_Inlist *l;");
+        EL(3, "Esql_Cell *c;");
+        NL;
+        if (t->item_type->type == TD_STRUCT)
+          EL(3, "tmp = %s_new();", t->item_type->cname);
+        EL(3, "l = esql_row_cells_get(r);");
+        EL(3, "EINA_INLIST_FOREACH(l, c)");
+        EL(4, "{");
+        if (t->item_type->type == TD_BASE)
+          {
+             if ((t->item_type->ctype == b) || (t->item_type->ctype == i))
+               EL(5, "esql_cell_to_lli(c, (long long int*)&tmp);");
+             else if (t->item_type->ctype == d)
+               EL(5, "esql_cell_to_double(c, &tmp);");
+             else if (t->item_type->ctype == c)
+               EL(5, "tmp = eina_stringshare_add(c->value.string);");
+             else if (t->item_type->ctype == b64)
+               {
+                  EL(5, "tmp = malloc(c->len);");
+                  EL(5, "memcpy(tmp, c->value.blob, c->len);");
+               }
+          }
+        if (t->item_type->type == TD_STRUCT)
+          {
+             EINA_LIST_FOREACH(t->struct_members, l, m)
+               {
+                  if (l->prev) E(5, "else ");
+                  else E(5, "");
+                  EL(0, "if (!strcmp(c->colname, \"%s\"))", m->name);
+                  if (m->type->ctype == b)
+                    EL(6, "esql_cell_to_lli(c, &((long long int)tmp->%s));", m->name);
+                  else if (m->type->ctype == i)
+                    EL(6, "esql_cell_to_lli(c, &((long long int)tmp->%s));", m->name);
+                  else if (m->type->ctype == d)
+                    EL(6, "esql_cell_to_double(c, &((double)tmp->%s));", m->name);
+                  else if (m->type->ctype == c)
+                    EL(6, "tmp->%s = eina_stringshare_add(c->value.string);", m->name);
+                  else if (m->type->ctype == b64)
+                    {
+                       EL(6, "{");
+                       EL(7, "tmp->%s = malloc(c->len);", m->name);
+                       EL(7, "memcpy(tmp->%s, c->value.blob, c->len);");
+                       EL(6, "}");
+                    }
+               }
+          }
+        EL(4, "}");
+        if ((t->item_type->type == TD_BASE) && (t->item_type->ctype != c) && (t->item_type->type != b64))
+          EL(3, "*a = eina_list_append(*a, &tmp);");
+        else
+          EL(3, "*a = eina_list_append(*a, tmp);");
+        EL(2, "}");
+        EL(1, "return EINA_TRUE;");
+        EL(0, "}");
+        NL;
+     }
+}
+
+
 static void
 gen_type_copyfree(Azy_Typedef *t,
                    Eina_Bool   def,
@@ -616,9 +779,6 @@ gen_type_copyfree(Azy_Typedef *t,
    if (def)
      {
         if (t->fcheader) return;
-        if (t->type == TD_STRUCT)
-          EL(0, "%s %s_new(void);", t->ctype, t->cname);
-
         if (t->type == TD_STRUCT || t->type == TD_ARRAY)
           {
              EL(0, "/** @brief Free a #%s */", t->ctype);
@@ -633,13 +793,6 @@ gen_type_copyfree(Azy_Typedef *t,
    if (t->fcfunc) return;
    if (t->type == TD_STRUCT)
      {
-        /* new */
-         EL(0, "%s%s%s_new(void)", (static_) ? "static " : "", t->ctype, t->cname);
-         EL(0, "{");
-         EL(1, "return calloc(1, sizeof(%s));", t->cname);
-         EL(0, "}");
-         NL;
-
          /* free */
          EL(0, "%svoid %s(%s val)", (static_) ? "static " : "", t->free_func, t->ctype);
          EL(0, "{");
@@ -759,6 +912,11 @@ gen_type_defs(Eina_List *types)
 
         EL(0, "};");
         NL;
+        EL(0, "static inline %s%s_new(void)", t->ctype, t->cname);
+        EL(0, "{");
+        EL(1, "return calloc(1, sizeof(%s));", t->cname);
+        EL(0, "}");
+        NL;
      }
 }
 
@@ -860,20 +1018,33 @@ gen_common_headers(void)
    Eina_List *j;
    Azy_Typedef *t;
 
+   OPEN("%s/%s%sCommon_Types.h", out_dir, name, sep);
+   EL(0, "#ifndef %s_Common_TYPES_H", (azy->name) ? azy->name : "AZY");
+   EL(0, "#define %s_Common_TYPES_H", (azy->name) ? azy->name : "AZY");
+   NL;
+   EL(0, "#include <Eina.h>");
+   gen_errors_header(NULL);
+   gen_type_defs(azy->types);
+   EL(0, "#endif");
+   fclose(f);
+
    OPEN("%s/%s%sCommon.h", out_dir, name, sep);
 
    EL(0, "#ifndef %s_Common_H", (azy->name) ? azy->name : "AZY");
    EL(0, "#define %s_Common_H", (azy->name) ? azy->name : "AZY");
    NL;
 
+   EL(0, "#ifdef HAVE_CONFIG_H");
+   EL(0, "# include \"config.h\"");
+   EL(0, "#endif");
+   EL(0, "#include <Eina.h>");
    EL(0, "#include <Azy.h>");
+   EL(0, "#include \"%s%sCommon_Types.h\"", name, sep);
    NL;
    EL(0, "Eina_Bool azy_str_to_bool_(const char *d, Eina_Bool *ret);");
    EL(0, "Eina_Bool azy_str_to_str_(const char *d, const char **ret);");
    EL(0, "Eina_Bool azy_str_to_int_(const char *d, int *ret);");
    EL(0, "Eina_Bool azy_str_to_double_(const char *d, double *ret);");
-   gen_errors_header(NULL);
-   gen_type_defs(azy->types);
 
    EINA_LIST_FOREACH(azy->types, j, t)
      {
@@ -889,6 +1060,19 @@ gen_common_headers(void)
 
    EL(0, "#endif");
    fclose(f);
+   if (esql_funcs)
+     {
+        OPEN("%s/%s%sCommon_Esskyuehl.h", out_dir, name, sep);
+        EL(0, "#ifndef %s_Common_H", (azy->name) ? azy->name : "AZY");
+        EL(0, "#define %s_Common_H", (azy->name) ? azy->name : "AZY");
+        EL(0, "#include <Esskyuehl.h>");
+        EL(0, "#include \"%s%sCommon_Types.h\"", name, sep);
+        NL;
+        EINA_LIST_FOREACH(azy->types, j, t)
+          gen_type_esql(t, EINA_TRUE);
+        EL(0, "#endif");
+        fclose(f);
+     }
 }
 
 static void
@@ -900,7 +1084,9 @@ gen_common_impl(Azy_Server_Module *s)
         Azy_Typedef *t;
 
         OPEN("%s/%s%sCommon.c", out_dir, name, sep);
-
+        EL(0, "#ifdef HAVE_CONFIG_H");
+        EL(0, "# include \"config.h\"");
+        EL(0, "#endif");
         EL(0, "#include \"%s%sCommon.h\"", name, sep);
         EL(0, "#include <string.h>");
         EL(0, "#include <inttypes.h>");
@@ -910,14 +1096,15 @@ gen_common_impl(Azy_Server_Module *s)
         EL(0, "Eina_Bool");
         EL(0, "azy_str_to_bool_(const char *d, Eina_Bool *ret)");
         EL(0, "{");
-        EL(1, "if (d && (*d == '1'))");
-        EL(2, "*ret = EINA_TRUE;");
+        EL(1, "*ret = EINA_FALSE;");
+        EL(1, "if (d && (*d == '1')) *ret = EINA_TRUE;");
         EL(1, "return EINA_TRUE;");
         EL(0, "}");
         NL;
         EL(0, "Eina_Bool");
         EL(0, "azy_str_to_str_(const char *d, const char **ret)");
         EL(0, "{");
+        EL(1, "*ret = NULL;");
         EL(1, "if (!d) return EINA_TRUE;");
         EL(1, "*ret = eina_stringshare_add(d);");
         EL(1, "return EINA_TRUE;");
@@ -927,6 +1114,7 @@ gen_common_impl(Azy_Server_Module *s)
         EL(0, "azy_str_to_int_(const char *d, int *ret)");
         EL(0, "{");
         EL(1, "errno = 0;");
+        EL(1, "*ret = 0;");
         EL(1, "if (!d) return EINA_TRUE;");
         EL(1, "*ret = strtol(d, NULL, 10);");
         EL(1, "if (errno)");
@@ -943,6 +1131,7 @@ gen_common_impl(Azy_Server_Module *s)
         EL(0, "azy_str_to_double_(const char *d, double *ret)");
         EL(0, "{");
         EL(1, "errno = 0;");
+        EL(1, "*ret = 0.0;");
         EL(1, "if (!d) return EINA_TRUE;");
         EL(1, "*ret = strtod(d, NULL);");
         EL(1, "if (errno)");
@@ -966,8 +1155,16 @@ gen_common_impl(Azy_Server_Module *s)
 
         gen_errors_impl(NULL);
         gen_marshalizers(NULL, EINA_FALSE);
+        if (esql_funcs)
+          {
+             fclose(f);
+             OPEN("%s/%s%sCommon_Esskyuehl.c", out_dir, name, sep);
+             EL(0, "#include \"%s%sCommon_Esskyuehl.h\"", name, sep);
+             EINA_LIST_FOREACH(azy->types, j, t)
+               gen_type_esql(t, EINA_FALSE);
+          }
      }
-   else
+   else if (s->errors)
      {
         OPEN("%s/%s%s%s.c", out_dir, name, sep, s->name);
         EL(0, "#include \"%s%sCommon.h\"", name, sep);
@@ -975,6 +1172,7 @@ gen_common_impl(Azy_Server_Module *s)
         NL;
         gen_errors_impl(s);
      }
+   else return;
    fclose(f);
 }
 
@@ -1783,6 +1981,7 @@ main(int argc, char *argv[])
       ECORE_GETOPT_VALUE_BOOL(isnull_funcs),
       ECORE_GETOPT_VALUE_BOOL(print_funcs),
       ECORE_GETOPT_VALUE_BOOL(eq_funcs),
+      ECORE_GETOPT_VALUE_BOOL(esql_funcs),
       ECORE_GETOPT_VALUE_BOOL(suspend_funcs),
       ECORE_GETOPT_VALUE_BOOL(exit_option),
       ECORE_GETOPT_VALUE_BOOL(exit_option),
