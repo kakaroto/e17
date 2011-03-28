@@ -78,6 +78,7 @@ typedef struct Esql_Pool
    void           *data;
    char           *cur_query;
    Esql_Query_Id   cur_id;
+   Eina_Bool       pool_member : 1;
    /* non-esql */
    int             size;
    int             e_connected;
@@ -97,6 +98,7 @@ struct Esql
    void           *data;
    char           *cur_query;
    Esql_Query_Id   cur_id;
+   Eina_Bool         pool_member : 1;
 
    struct
    {
@@ -119,7 +121,6 @@ struct Esql
    } backend;
 
    Esql_Pool        *pool_struct;
-   Eina_Bool         pool_member : 1;
    unsigned int      pool_id;
 
    Ecore_Fd_Handler *fdh;

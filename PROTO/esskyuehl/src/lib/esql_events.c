@@ -46,12 +46,12 @@ esql_call_complete(Esql *e)
    Esql *ev;
 
    DBG("(e=%p)", e);
-   ev = e->pool_struct ? (Esql *)e->pool_struct : e;
+   ev = e->pool_member ? (Esql *)e->pool_struct : e;
    switch (e->current)
      {
       case ESQL_CONNECT_TYPE_INIT:
         e->connected = EINA_TRUE;
-        if (e->pool_struct)
+        if (e->pool_member)
           {
              e->pool_struct->e_connected++;
              INFO("Pool connection %u created (%i/%i)", e->pool_id, e->pool_struct->e_connected, e->pool_struct->size);
@@ -59,9 +59,9 @@ esql_call_complete(Esql *e)
         else
           INFO("Connected");
 
-        if ((!e->pool_struct) || (e->pool_struct->e_connected == e->pool_struct->size))
+        if ((!e->pool_member) || (e->pool_member && (e->pool_struct->e_connected == e->pool_struct->size)))
           {
-             if (e->pool_struct)
+             if (e->pool_member)
                {
                   e->pool_struct->connected = EINA_TRUE;
                   INFO("[%i/%i] connections made for pool", e->pool_struct->size, e->pool_struct->size);
@@ -74,7 +74,7 @@ esql_call_complete(Esql *e)
         break;
 
       case ESQL_CONNECT_TYPE_DATABASE_SET:
-        if (e->pool_struct)
+        if (e->pool_member)
           INFO("Pool member %u: working database is now '%s'", e->pool_id, e->database);
         else
           INFO("Working database is now '%s'", e->database);
@@ -119,7 +119,7 @@ out:
    e->error = NULL;
    if (!e->backend_set_funcs)
      {
-        if (e->pool_struct)
+        if (e->pool_member)
           {
              if (!esql_pool_rebalance(e->pool_struct, e))
                {
@@ -139,7 +139,7 @@ out:
      {
         cb(e, e->backend_set_params->data);
         UPDATE_LISTS(database_set);
-        if (e->pool_struct)
+        if (e->pool_member)
           INFO("Pool member %u: next call: DB change", e->pool_id);
         else
           INFO("Next call: DB change");
@@ -156,7 +156,7 @@ out:
         e->cur_query = strdup(e->backend_set_params->data);
         if (data) eina_hash_del_by_key(esql_query_data, e->backend_ids->data);
         UPDATE_LISTS(query);
-        if (e->pool_struct)
+        if (e->pool_member)
           INFO("Pool member %u: next call: query", e->pool_id);
         else
           INFO("Next call: query");
@@ -171,7 +171,7 @@ esql_connect_handler(Esql             *e,
    Esql *ev;
 
    DBG("(e=%p, fdh=%p)", e, fdh);
-   ev = e->pool_struct ? (Esql *)e->pool_struct : e; /* use pool struct for events */
+   ev = e->pool_member ? (Esql *)e->pool_struct : e; /* use pool struct for events */
 
    if (!ecore_main_fd_handler_active_get(fdh, ECORE_FD_READ | ECORE_FD_WRITE))
      return ECORE_CALLBACK_RENEW;
@@ -197,7 +197,7 @@ esql_connect_handler(Esql             *e,
       default:
         e->error = e->backend.error_get(e);
         e->query_end = ecore_time_get();
-        if (e->pool_struct)
+        if (e->pool_member)
           {
              e->pool_struct->error = e->error;
              e->pool_struct->cur_query = e->cur_query;
