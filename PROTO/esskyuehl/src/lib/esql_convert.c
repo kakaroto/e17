@@ -30,7 +30,7 @@
 /**
  * @brief Convert result to a string
  * @param res Result
- * @param str Pointer to store string at
+ * @param str Pointer to stringshare string to
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
@@ -44,7 +44,7 @@ esql_res_to_string(Esql_Res *res, const char **str)
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(cell->type != ESQL_CELL_TYPE_STRING, EINA_FALSE);
-   *str = cell->value.string;
+   *str = eina_stringshare_add(cell->value.string);
    return EINA_TRUE;
 }
 
