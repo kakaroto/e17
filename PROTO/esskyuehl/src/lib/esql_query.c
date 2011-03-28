@@ -221,7 +221,7 @@ esql_query(Esql       *e,
            void       *data,
            const char *query)
 {
-   DBG("(e=%p, fmt='%s')", e, query);
+   DBG("(e=%p, query='%s')", e, query);
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(query, 0);
@@ -327,6 +327,7 @@ esql_query_vargs(Esql       *e,
    if (!e->current)
      {
         e->backend.query(e, query);
+        DBG("e=%p, query=%s", e, query);
         ecore_main_fd_handler_active_set(e->fdh, ECORE_FD_WRITE);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;

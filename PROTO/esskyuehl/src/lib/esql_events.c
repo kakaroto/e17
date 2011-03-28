@@ -149,6 +149,7 @@ out:
         void *data;
 
         data = eina_hash_find(esql_query_data, e->backend_ids->data);
+        DBG("(e=%p, query=%s)", e, (char*)e->backend_set_params->data);
         e->backend.query(e, e->backend_set_params->data);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
