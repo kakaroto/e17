@@ -665,11 +665,11 @@ gen_type_esql(Azy_Typedef *t,
              if ((m->type->type == TD_ARRAY) || (m->type->type == TD_STRUCT))
                EL(6, "ret->%s = NULL;", m->name);
              if (m->type->ctype == b)
-               EL(6, "esql_cell_to_lli(c, (long long int*)&ret->%s);", m->name);
+               EL(6, "ret->%s = esql_cell_to_lli(c);", m->name);
              else if (m->type->ctype == i)
-               EL(6, "esql_cell_to_lli(c, (long long int*)ret->%s);", m->name);
+               EL(6, "ret->%s = esql_cell_to_lli(c);", m->name);
              else if (m->type->ctype == d)
-               EL(6, "esql_cell_to_double(c, &ret->%s);", m->name);
+               EL(6, "ret->%s = esql_cell_to_double(c);", m->name);
              else if (m->type->ctype == c)
                EL(6, "ret->%s = eina_stringshare_add(c->value.string);", m->name);
              else if (m->type->ctype == b64)
@@ -695,7 +695,7 @@ gen_type_esql(Azy_Typedef *t,
         EL(1, "Eina_Iterator *it;");
         EL(1, "Esql_Row *r;");
         if ((t->item_type->ctype == b) || (t->item_type->ctype == i))
-          EL(1, "intptr_t tmp;");
+          EL(1, "long long int tmp;");
         else if (t->item_type->ctype == b64)
           EL(1, "unsigned char *tmp;");
         else
@@ -720,9 +720,9 @@ gen_type_esql(Azy_Typedef *t,
         if (t->item_type->type == TD_BASE)
           {
              if ((t->item_type->ctype == b) || (t->item_type->ctype == i))
-               EL(5, "esql_cell_to_lli(c, (long long int*)&tmp);");
+               EL(5, "tmp = esql_cell_to_lli(c);");
              else if (t->item_type->ctype == d)
-               EL(5, "esql_cell_to_double(c, &tmp);");
+               EL(5, "tmp = esql_cell_to_double(c);");
              else if (t->item_type->ctype == c)
                EL(5, "tmp = eina_stringshare_add(c->value.string);");
              else if (t->item_type->ctype == b64)
@@ -739,11 +739,11 @@ gen_type_esql(Azy_Typedef *t,
                   else E(5, "");
                   EL(0, "if (!strcmp(c->colname, \"%s\"))", m->name);
                   if (m->type->ctype == b)
-                    EL(6, "esql_cell_to_lli(c, &((long long int)tmp->%s));", m->name);
+                    EL(6, "tmp->%s = esql_cell_to_lli(c);", m->name);
                   else if (m->type->ctype == i)
-                    EL(6, "esql_cell_to_lli(c, &((long long int)tmp->%s));", m->name);
+                    EL(6, "tmp->%s = esql_cell_to_lli(c);", m->name);
                   else if (m->type->ctype == d)
-                    EL(6, "esql_cell_to_double(c, &((double)tmp->%s));", m->name);
+                    EL(6, "tmp->%s = esql_cell_to_double(c);", m->name);
                   else if (m->type->ctype == c)
                     EL(6, "tmp->%s = eina_stringshare_add(c->value.string);", m->name);
                   else if (m->type->ctype == b64)
