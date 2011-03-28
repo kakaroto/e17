@@ -100,6 +100,8 @@ esql_res_esql_get(Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
 
+   if (res->e->pool_member)
+     return (Esql*)res->e->pool_struct;
    return res->e;
 }
 
