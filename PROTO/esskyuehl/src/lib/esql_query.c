@@ -238,6 +238,7 @@ esql_query(Esql       *e,
      {
         e->query_start = ecore_time_get();
         e->backend.query(e, query);
+        ecore_main_fd_handler_active_set(e->fdh, ECORE_FD_WRITE);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
         e->cur_id = esql_id;
@@ -326,6 +327,7 @@ esql_query_vargs(Esql       *e,
    if (!e->current)
      {
         e->backend.query(e, query);
+        ecore_main_fd_handler_active_set(e->fdh, ECORE_FD_WRITE);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
         e->cur_id = esql_id;

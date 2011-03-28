@@ -175,11 +175,11 @@ esql_connect_handler(Esql             *e,
 
    if (!ecore_main_fd_handler_active_get(fdh, ECORE_FD_READ | ECORE_FD_WRITE))
      return ECORE_CALLBACK_RENEW;
+   ecore_main_fd_handler_active_set(fdh, 0);
    switch (e->backend.io(e))
      {
       case 0:
         esql_call_complete(e);
-        ecore_main_fd_handler_active_set(fdh, ECORE_FD_READ);
         break;
 
       case ECORE_FD_READ | ECORE_FD_WRITE:
