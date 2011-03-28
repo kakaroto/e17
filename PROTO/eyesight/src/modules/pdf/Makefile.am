@@ -381,11 +381,11 @@ pdf_la_CPPFLAGS = \
 pdf_la_LIBADD  = \
 @EYESIGHT_LIBS@ \
 $(top_builddir)/src/lib/libeyesight.la \
-$(top_builddir)/src/modules/pdf/libfitz.la \
-$(top_builddir)/src/modules/pdf/libdraw.la \
-$(top_builddir)/src/modules/pdf/libcmaps.la \
-$(top_builddir)/src/modules/pdf/libfonts.la \
-$(top_builddir)/src/modules/pdf/libmupdf.la \
+libfitz.la \
+libdraw.la \
+libcmaps.la \
+libfonts.la \
+libmupdf.la \
 -lm
 pdf_la_LINK = $(LINK) $(pdf_la_LDFLAGS)
 
