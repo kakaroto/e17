@@ -217,13 +217,13 @@ EAPI long long int  esql_res_id(Esql_Res *res);
 EAPI Eina_Iterator *esql_res_row_iterator_new(Esql_Res *res);
 
 /* convert */
-EAPI Eina_Bool      esql_res_to_string(Esql_Res *res, const char **str);
-EAPI Eina_Bool      esql_res_to_lli(Esql_Res *res, long long int *i);
-EAPI Eina_Bool      esql_res_to_double(Esql_Res *res, double *d);
-EAPI Eina_Bool      esql_res_to_tm(Esql_Res *res, struct tm *t);
-EAPI Eina_Bool      esql_res_to_timeval(Esql_Res *res, struct timeval *tv);
-EAPI Eina_Bool      esql_cell_to_lli(Esql_Cell *cell, long long int *i);
-EAPI Eina_Bool      esql_cell_to_double(Esql_Cell *cell, double *d);
+EAPI const char *    esql_res_to_string(Esql_Res *res);
+EAPI long long int   esql_res_to_lli(Esql_Res *res);
+EAPI double          esql_res_to_double(Esql_Res *res);
+EAPI struct tm      *esql_res_to_tm(Esql_Res *res);
+EAPI struct timeval *esql_res_to_timeval(Esql_Res *res);
+EAPI long long int   esql_cell_to_lli(Esql_Cell *cell);
+EAPI double          esql_cell_to_double(Esql_Cell *cell);
 
 /* row */
 EAPI Eina_Inlist *esql_row_cells_get(Esql_Row *r);

@@ -30,88 +30,76 @@
 /**
  * @brief Convert result to a string
  * @param res Result
- * @param str Pointer to stringshare string to
- * @return EINA_TRUE on success, else EINA_FALSE
+ * @return Stringshared result
  */
-Eina_Bool
-esql_res_to_string(Esql_Res *res, const char **str)
+const char *
+esql_res_to_string(Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(str, EINA_FALSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(cell->type != ESQL_CELL_TYPE_STRING, EINA_FALSE);
-   *str = eina_stringshare_add(cell->value.string);
-   return EINA_TRUE;
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(
+     (cell->type != ESQL_CELL_TYPE_STRING) &&
+     (cell->type != ESQL_CELL_TYPE_UNKNOWN), NULL);
+   return eina_stringshare_add(cell->value.string);
 }
 
 /**
  * @brief Convert result to a long long int
  * @param res Result
- * @param i Pointer to store int at
- * @return EINA_TRUE on success, else EINA_FALSE
+ * @return The result
  */
-Eina_Bool
-esql_res_to_lli(Esql_Res *res, long long int *i)
+long long int
+esql_res_to_lli(Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(i, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, EINA_FALSE);
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    switch (cell->type)
      {
       case ESQL_CELL_TYPE_TINYINT:
-        *i = cell->value.c;
-        break;
+        return cell->value.c;
       case ESQL_CELL_TYPE_SHORT:
-        *i = cell->value.s;
-        break;
+        return cell->value.s;
       case ESQL_CELL_TYPE_LONG:
-        *i = cell->value.i;
-        break;
+        return cell->value.i;
       case ESQL_CELL_TYPE_LONGLONG:
-        *i = cell->value.l;
-        break;
+        return cell->value.l;
       default:
-        ERR("cell from res %p has invalid type!", res);
-	       return EINA_FALSE;
+        return 0;
      }
-   return EINA_TRUE;
 }
 
 /**
  * @brief Convert result to a double
  * @param res Result
- * @param d Pointer to store double at
- * @return EINA_TRUE on success, else EINA_FALSE
+ * @return The result
  */
-Eina_Bool
-esql_res_to_double(Esql_Res *res, double *d)
+double
+esql_res_to_double(Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(d, EINA_FALSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, 0.0);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, 0.0);
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    switch (cell->type)
      {
       case ESQL_CELL_TYPE_FLOAT:
-        *d = cell->value.f;
+        return cell->value.f;
         break;
       case ESQL_CELL_TYPE_DOUBLE:
-        *d = cell->value.d;
+        return cell->value.d;
         break;
       default:
-        ERR("cell from res %p has invalid type!", res);
-	       return EINA_FALSE;
+        return 0.0;
      }
    return EINA_TRUE;
 }
@@ -119,43 +107,39 @@ esql_res_to_double(Esql_Res *res, double *d)
 /**
  * @brief Convert result to a tm struct
  * @param res Result
- * @param t Pointer to copy values to
- * @return EINA_TRUE on success, else EINA_FALSE
+ * @return Pointer to struct tm
  */
-Eina_Bool
-esql_res_to_tm(Esql_Res *res, struct tm *t)
+struct tm *
+esql_res_to_tm(Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(t, EINA_FALSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(cell->type != ESQL_CELL_TYPE_TIMESTAMP, EINA_FALSE);
-   memcpy(t, &cell->value.tm, sizeof(struct tm));
-   return EINA_TRUE;
+   EINA_SAFETY_ON_TRUE_RETURN_VAL((cell->type != ESQL_CELL_TYPE_TIMESTAMP) &&
+     (cell->type != ESQL_CELL_TYPE_UNKNOWN), NULL);
+   return &cell->value.tm;
 }
 
 /**
  * @brief Convert result to a timeval struct
  * @param res Result
- * @param tv Pointer to copy values to
- * @return EINA_TRUE on success, else EINA_FALSE
+ * @return Pointer to struct timeval
  */
-Eina_Bool
-esql_res_to_timeval(Esql_Res *res, struct timeval *tv)
+struct timeval *
+esql_res_to_timeval(Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(tv, EINA_FALSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(cell->type != ESQL_CELL_TYPE_TIMESTAMP, EINA_FALSE);
-   memcpy(tv, &cell->value.tv, sizeof(struct timeval));
-   return EINA_TRUE;
+   EINA_SAFETY_ON_TRUE_RETURN_VAL((cell->type != ESQL_CELL_TYPE_TIME) &&
+     (cell->type != ESQL_CELL_TYPE_UNKNOWN), NULL);
+   return &cell->value.tv;
 }
 
 /*********************************************************************/
@@ -163,58 +147,46 @@ esql_res_to_timeval(Esql_Res *res, struct timeval *tv)
 /**
  * @brief Convert cell to a long long int
  * @param cell Cell
- * @param i Pointer to store int at
- * @return EINA_TRUE on success, else EINA_FALSE
+ * @return The result
  */
-Eina_Bool
-esql_cell_to_lli(Esql_Cell *cell, long long int *i)
+long long int
+esql_cell_to_lli(Esql_Cell *cell)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(i, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(cell, EINA_FALSE);
    switch (cell->type)
      {
       case ESQL_CELL_TYPE_TINYINT:
-        *i = cell->value.c;
-        break;
+        return cell->value.c;
       case ESQL_CELL_TYPE_SHORT:
-        *i = cell->value.s;
-        break;
+        return cell->value.s;
       case ESQL_CELL_TYPE_LONG:
-        *i = cell->value.i;
-        break;
+        return cell->value.i;
       case ESQL_CELL_TYPE_LONGLONG:
-        *i = cell->value.l;
-        break;
+        return cell->value.l;
       default:
-        ERR("cell %p has invalid type!", cell);
-	       return EINA_FALSE;
+        return 0;
      }
-   return EINA_TRUE;
 }
 
 /**
  * @brief Convert cell to a double
  * @param cell Cell
- * @param d Pointer to store double at
- * @return EINA_TRUE on success, else EINA_FALSE
+ * @return The result
  */
-Eina_Bool
-esql_cell_to_double(Esql_Cell *cell, double *d)
+double
+esql_cell_to_double(Esql_Cell *cell)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(d, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(cell, EINA_FALSE);
    switch (cell->type)
      {
       case ESQL_CELL_TYPE_FLOAT:
-        *d = cell->value.f;
+        return cell->value.f;
         break;
       case ESQL_CELL_TYPE_DOUBLE:
-        *d = cell->value.d;
+        return cell->value.d;
         break;
       default:
-        ERR("cell %p has invalid type!", cell);
-	       return EINA_FALSE;
+        return 0.0;
      }
-   return EINA_TRUE;
 }
 /** @} */
