@@ -93,6 +93,7 @@ esql_call_complete(Esql *e)
            e->cur_query = NULL;
            e->backend.res(res);
            res->data = e->cur_data;
+           res->qid = e->cur_id;
            qcb = eina_hash_find(esql_query_callbacks, &e->cur_id);
            if (qcb)
              {
