@@ -620,34 +620,31 @@ gen_type_esql(Azy_Typedef *t,
         if (t->type == TD_STRUCT)
           {
              EL(0, "/** @brief Convert an Esql_Res to a %s */", t->cname);
-             EL(0, "Eina_Bool %s_esql(Esql_Res *res, %s*a);", t->cname, t->ctype);
+             EL(0, "%s%s_esql(Esql_Res *res);", t->ctype, t->cname);
           }
         else if (t->type == TD_ARRAY)
           {
              EL(0, "/** @brief Convert an Esql_Res to an array of %s */", t->cname);
-             EL(0, "Eina_Bool %s(Esql_Res *res, Eina_List **a);", t->esql_func);
+             EL(0, "Eina_List *%s(Esql_Res *res);", t->esql_func);
           }
         return;
      }
 
    if (t->type == TD_STRUCT)
      {
-        EL(0, "Eina_Bool %s_esql(Esql_Res *res, %s*a)", t->cname, t->ctype);
+        EL(0, "%s%s_esql(Esql_Res *res)", t->ctype, t->cname);
         EL(0, "{");
         EL(1, "Eina_Iterator *it;");
         EL(1, "Esql_Row *r;");
         EL(1, "%sret;", t->ctype);
-        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(a, EINA_FALSE);");
-        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);");
-        EL(1, "EINA_SAFETY_ON_TRUE_RETURN_VAL(esql_res_rows_count(res) > 1, EINA_FALSE);");
+        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(res, %s);", t->cnull);
+        EL(1, "EINA_SAFETY_ON_TRUE_RETURN_VAL(esql_res_rows_count(res) > 1, %s);", t->cnull);
         NL;
         EL(1, "if (!esql_res_rows_count(res))");
         EL(2, "{");
-        EL(3, "*a = NULL;");
-        EL(3, "return EINA_TRUE;");
+        EL(3, "return %s;", t->cnull);
         EL(2, "}");
         EL(2, "ret = %s_new();", t->cname);
-        EL(2, "EINA_SAFETY_ON_NULL_RETURN_VAL(ret, EINA_FALSE);");
         EL(1, "it = esql_res_row_iterator_new(res);");
         EL(1, "EINA_ITERATOR_FOREACH(it, r)");
         EL(2, "{");
@@ -681,31 +678,28 @@ gen_type_esql(Azy_Typedef *t,
                }
           }
         EL(4, "}");
-        EL(3, "*a = ret;");
         EL(2, "}");
-        EL(1, "return EINA_TRUE;");
+        EL(1, "return ret;");
         EL(0, "}");
         NL;
      }
    else if ((t->type == TD_ARRAY) && (t->item_type->type != TD_ARRAY))
      {
-        EL(0, "Eina_Bool %s(Esql_Res *res, Eina_List **a)", t->esql_func);
+        EL(0, "Eina_List *%s(Esql_Res *res)", t->esql_func);
         EL(0, "{");
 
         EL(1, "Eina_Iterator *it;");
         EL(1, "Esql_Row *r;");
+	EL(1, "Eina_List *ret = NULL;");
         if ((t->item_type->ctype == b) || (t->item_type->ctype == i))
           EL(1, "long long int tmp;");
         else if (t->item_type->ctype == b64)
           EL(1, "unsigned char *tmp;");
         else
           EL(1, "%s tmp;", t->item_type->ctype);
-        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(a, EINA_FALSE);");
-        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);");
+        EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);");
         NL;
-        EL(1, "*a = NULL;");
-        EL(1, "if (!esql_res_rows_count(res))");
-        EL(2, "return EINA_TRUE;");
+        EL(1, "if (!esql_res_rows_count(res)) return NULL;");
         EL(1, "it = esql_res_row_iterator_new(res);");
         EL(1, "EINA_ITERATOR_FOREACH(it, r)");
         EL(2, "{");
@@ -757,11 +751,11 @@ gen_type_esql(Azy_Typedef *t,
           }
         EL(4, "}");
         if ((t->item_type->type == TD_BASE) && (t->item_type->ctype != c) && (t->item_type->type != b64))
-          EL(3, "*a = eina_list_append(*a, &tmp);");
+          EL(3, "ret = eina_list_append(ret, &tmp);");
         else
-          EL(3, "*a = eina_list_append(*a, tmp);");
+          EL(3, "ret = eina_list_append(ret, tmp);");
         EL(2, "}");
-        EL(1, "return EINA_TRUE;");
+        EL(1, "return ret;");
         EL(0, "}");
         NL;
      }
