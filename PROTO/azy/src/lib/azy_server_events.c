@@ -295,7 +295,12 @@ top:
           }
 
         if (module->rewind_now) goto top;
-        else module->state = AZY_SERVER_MODULE_STATE_PRE;
+        else if (module->run_method) module->state = AZY_SERVER_MODULE_STATE_PRE;
+        else
+          {
+             module->state = AZY_SERVER_MODULE_STATE_ERR; 
+             goto post;
+          }
         if (module->suspend)
           {
              module->executing = EINA_FALSE;
@@ -308,7 +313,10 @@ top:
         module->client->current = module->client->new_net;
         module->client->new_net = NULL;
         if (!module->run_method)
-          goto out;
+          {
+             module->state = AZY_SERVER_MODULE_STATE_ERR; 
+             goto post;
+          }
 
         if (method)
           client->resume_ret = method->method(module, content);
@@ -339,6 +347,7 @@ top:
 
       case AZY_SERVER_MODULE_STATE_METHOD:
       case AZY_SERVER_MODULE_STATE_ERR:
+post:
         if (module->def->post)
           client->resume_ret = module->def->post(module, content);
 
@@ -354,7 +363,6 @@ top:
       default:
         break;
      }
-out:
    module->state = AZY_SERVER_MODULE_STATE_INIT;
    module->content = NULL;
    module->run_method = EINA_TRUE;
@@ -561,7 +569,12 @@ top:
           }
 
         if (module->rewind_now) goto top;
-        else module->state = AZY_SERVER_MODULE_STATE_PRE;
+        else if (module->run_method) module->state = AZY_SERVER_MODULE_STATE_PRE;
+        else
+          {
+             module->state = AZY_SERVER_MODULE_STATE_ERR; 
+             goto post;
+          }
         if (module->suspend)
           {
              module->executing = EINA_FALSE;
@@ -573,7 +586,12 @@ top:
         client->current->http.req.http_path = NULL;
         azy_net_free(client->current);
         client->current = module->client->new_net;
-        if (cb && module->run_method)
+        if (!module->run_method)
+          {
+             module->state = AZY_SERVER_MODULE_STATE_ERR; 
+             goto post;
+          }
+        if (cb)
           client->resume_ret = cb(module);
         else
           client->resume_ret = fallback(module, NULL);
@@ -588,6 +606,7 @@ top:
 
       case AZY_SERVER_MODULE_STATE_METHOD:
       case AZY_SERVER_MODULE_STATE_ERR:
+post:
         if (!client->resume_ret) goto not_impl;  /* line 504ish (above) */
         if (module->def->post)
           client->resume_ret = module->def->post(module, NULL);
