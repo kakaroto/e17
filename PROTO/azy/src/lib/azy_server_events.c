@@ -298,7 +298,7 @@ top:
         else if (module->run_method) module->state = AZY_SERVER_MODULE_STATE_PRE;
         else
           {
-             module->state = AZY_SERVER_MODULE_STATE_ERR; 
+             module->state = AZY_SERVER_MODULE_STATE_ERR;
              goto post;
           }
         if (module->suspend)
@@ -314,7 +314,7 @@ top:
         module->client->new_net = NULL;
         if (!module->run_method)
           {
-             module->state = AZY_SERVER_MODULE_STATE_ERR; 
+             module->state = AZY_SERVER_MODULE_STATE_ERR;
              goto post;
           }
 
@@ -572,7 +572,7 @@ top:
         else if (module->run_method) module->state = AZY_SERVER_MODULE_STATE_PRE;
         else
           {
-             module->state = AZY_SERVER_MODULE_STATE_ERR; 
+             module->state = AZY_SERVER_MODULE_STATE_ERR;
              goto post;
           }
         if (module->suspend)
@@ -588,7 +588,7 @@ top:
         client->current = module->client->new_net;
         if (!module->run_method)
           {
-             module->state = AZY_SERVER_MODULE_STATE_ERR; 
+             module->state = AZY_SERVER_MODULE_STATE_ERR;
              goto post;
           }
         if (cb)
