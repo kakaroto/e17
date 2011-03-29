@@ -130,41 +130,49 @@ _pager_place_windows(double scale)
 static Eina_Bool
 _pager_redraw(void *data)
 {
-   Eina_List *l;
-   Item *it;
-   double scale, a, in, duration;
+   double in;
 
-   duration = scale_conf->pager_duration;
-   scale = (ecore_time_get() - start_time) / duration;
-
-   if (!scale_state)
-     scale = 1.0 - scale;
-
-   if (scale > 1.0) scale = 1.0;
-   if (scale < 0.0) scale = 0.0;
+   in = (ecore_loop_time_get() - start_time) / scale_conf->pager_duration;
 
    if (scale_state)
      {
-	in = log(14) * scale;
+	if (in >= 1.0)
+	  {
+	     _pager_place_windows(0.0);
+	     _pager_place_desks(0.0);
+	     scale_animator = NULL;
+	     return ECORE_CALLBACK_CANCEL;
+	  }
+
+	in = log(14) * in;
 	in = 1.0 / exp(in*in);
+	if (in > 1.0) in = 1.0;
      }
    else
      {
-	in = log(14) * (1.0 - scale);
-	in = 1.0 - (1.0 / exp(in*in));
+	if (in >= 1.0)
+	  {
+	     _pager_finish();
+	     scale_animator = NULL;
+	     return ECORE_CALLBACK_CANCEL;
+	  }
+
+	in = log(14) * (1.0 - in);
+	in = 1.0 / exp(in*in);
+	if (in < 0.0) in = 0.0;
      }
-   
-   if (in > 1.0) in = 1.0;
-   if (in < 0.0) in = 0.0;
 
    _pager_place_desks(in);
    _pager_place_windows(in);
 
    if (scale_conf->pager_fade_windows)
      {
+	Eina_List *l;
+	Item *it;
+
 	EINA_LIST_FOREACH(items, l, it)
 	  {
-	     a = 255.0;
+	     double a = 255.0;
 
 	     if ((it->desk != current_desk) &&
 		(it->desk != previous_desk))
@@ -184,7 +192,10 @@ _pager_redraw(void *data)
 
    if (scale_conf->pager_fade_popups)
      {
-	a = 255.0 * in;
+	Eina_List *l;
+	Item *it;
+
+	double a = 255.0 * in;
 
 	EINA_LIST_FOREACH(popups, l, it)
 	  evas_object_color_set(it->o_win, a, a, a, a);
@@ -192,31 +203,20 @@ _pager_redraw(void *data)
 
    if (scale_conf->pager_fade_desktop && background)
      {
-	a = 255.0 * (0.5 + in/2.0);
+	double a = 255.0 * (0.5 + in/2.0);
 
 	evas_object_color_set(background->o_win, a, a, a, 255);
      }
 
-   if (scale < 1.0 && scale > 0.0)
-     return 1;
+   e_manager_comp_evas_update(e_manager_current_get());
 
-   if (scale == 0.0)
-     {
-	_pager_finish();
-     }
-   else
-     {
-	_pager_place_windows(0.0);
-	_pager_place_desks(0.0);
-     }
-   scale_animator = NULL;
-   return 0;
+   return ECORE_CALLBACK_RENEW;
 }
 
 static void
 _pager_in()
 {
-   start_time = ecore_time_get();
+   start_time = ecore_loop_time_get();
    scale_state = EINA_TRUE;
 
    if (!scale_animator)
@@ -229,7 +229,7 @@ _pager_out()
    Eina_List *l;
    double duration, now;
 
-   now = ecore_time_get();
+   now = ecore_loop_time_get();
    duration = scale_conf->pager_duration;
 
    if (now - start_time < duration)
@@ -306,7 +306,7 @@ _pager_finish()
       Eina_List *l;
       E_Manager_Comp_Source *src;
       E_Manager *man = zone->container->manager;
-      
+
       EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
 	e_manager_comp_src_hidden_set(man, src, EINA_FALSE);
    }
@@ -422,7 +422,7 @@ _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (!it->moved)
      return;
-   
+
    if (x + it->bd->w > zone->x + zone->w) x = zone->x + zone->w - it->bd->w;
    if (y + it->bd->h > zone->y + zone->h) y = zone->y + zone->h - it->bd->h;
    if (x < zone->x) x = zone->x;
@@ -454,7 +454,7 @@ _pager_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
      return;
 
    it->moved = EINA_TRUE;
-   
+
    x = it->x + (ev->cur.canvas.x - ev->prev.canvas.x);
    y = it->y + (ev->cur.canvas.y - ev->prev.canvas.y);
 
@@ -521,7 +521,7 @@ _pager_win_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (!scale_state)
      return;
-   
+
    mouse_activated = 0;
 
    if (selected_item && (it != selected_item))
@@ -544,10 +544,10 @@ _pager_win_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    if (!mouse_activated)
      return;
-   
+
    if (selected_item == it)
      {
-	edje_object_signal_emit(it->o, "mouse,out", "e");	
+	edje_object_signal_emit(it->o, "mouse,out", "e");
 	selected_item = NULL;
      }
 }
@@ -727,7 +727,10 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    if (it->bd != e_border_focused_get())
      edje_object_signal_emit(it->o, "mouse,out", "e");
    else
-     selected_item = it;
+     {
+	edje_object_signal_emit(it->o, "mouse,in", "e");
+	selected_item = it;
+     }
 
    if (scale_state)
      _pager_redraw(NULL);
@@ -988,11 +991,11 @@ _pager_run(E_Manager *man)
    zone = e_util_zone_current_get(man);
    if (!zone)
      return EINA_FALSE;
-   
+
    current_desk = e_desk_current_get(zone);
    if (!current_desk)
      return EINA_FALSE;
-   
+
    input_win = ecore_x_window_input_new(zone->container->win,
 					0, 0, 1, 1);
    ecore_x_window_show(input_win);
@@ -1042,15 +1045,15 @@ _pager_run(E_Manager *man)
    zone_clip = evas_object_rectangle_add(e);
    evas_object_move(zone_clip, zone->x, zone->y);
    evas_object_resize(zone_clip, zone->w, zone->h);
-   evas_object_show(zone_clip); 
+   evas_object_show(zone_clip);
 
    EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
      {
 	Item *it = _pager_win_new(e, man, src);
 	if (it)
-	  evas_object_clip_set(it->o, zone_clip); 
+	  evas_object_clip_set(it->o, zone_clip);
      }
-   
+
    if (background)
      {
 	Evas_Object *o;
@@ -1072,7 +1075,7 @@ _pager_run(E_Manager *man)
 
 		  if ((x != zone->desk_x_current) || (y != zone->desk_y_current))
 		    edje_object_signal_emit(o, "unfocused", "e");
-		  evas_object_clip_set(o, zone_clip); 
+		  evas_object_clip_set(o, zone_clip);
 	       }
 	  }
 	_pager_place_desks(1.0);
@@ -1115,7 +1118,7 @@ pager_run(E_Manager *man, const char *params, int init_method)
 	     ecore_animator_del(scale_animator);
 	     scale_animator = NULL;
 	  }
-	
+
 	ret = _pager_run(man);
 
 	if (ret)
@@ -1146,7 +1149,7 @@ _pager_handler(void *data, const char *name, const char *info, int val,
 
   /* XXX disabled for now. */
   /* return; */
-  
+
   e = e_manager_comp_evas_get(man);
   if (!strcmp(info, "change.comp"))
     {
@@ -1173,7 +1176,7 @@ _pager_handler(void *data, const char *name, const char *info, int val,
     }
   else if (!strcmp(info, "visibility.src"))
     {
-      DBG("%s: %p | %p\n", info, man, src);      
+      DBG("%s: %p | %p\n", info, man, src);
       /* _pager_win_new(e, man, src);       */
     }
 }

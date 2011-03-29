@@ -141,7 +141,7 @@ _scale_warp_to_win(Item *it, double advance)
 {
    ecore_x_pointer_warp(it->bd->zone->container->win,
 			(double)warp_x * (1.0 - advance) + (double)(it->x + it->w/2) * advance,
-			(double)warp_y * (1.0 - advance) + (double)(it->y + it->h/2) * advance);
+			(double)warp_y * (1.0 - advance) + (double)(it->y + it->h/2) * advance + 10);
 }
 
 static Eina_Bool
@@ -151,7 +151,7 @@ _scale_warp_pointer(void *data)
 
    if (it)
      {
-	double in = (ecore_time_get() - warp_start) / 0.25;
+	double in = (ecore_loop_time_get() - warp_start) / 0.25;
 	if (in > 1.0) in = 1.0;
 	_scale_warp_to_win(it, in);
 	if (in < 1.0)
@@ -167,23 +167,42 @@ _scale_redraw(void *data)
 {
    Eina_List *l;
    Item *it;
-   double scale, a, in, duration;
+   double in, duration;
 
    if (show_all_desks)
      duration = scale_conf->desks_duration;
    else
      duration = scale_conf->scale_duration;
 
+   in = (ecore_loop_time_get() - start_time) / duration;
+
    if (scale_state)
-     scale = (ecore_time_get() - start_time) / duration;
+     {
+	if (in >= 1.0)
+	  {
+	     _scale_place_windows(0.0);
+	     scale_animator = NULL;
+	     return ECORE_CALLBACK_CANCEL;
+	  }
+	in = log(14) * in;
+	in = 1.0 / exp(in*in);
+	if (in > 1.0) in = 1.0;
+     }
    else
-     scale = 1.0 - (ecore_time_get() - start_time) / duration;
+     {
+	printf("%f %f\n", (ecore_loop_time_get() - start_time), start_time);
 
-   if (scale > 1.0) scale = 1.0;
-   if (scale < 0.0) scale = 0.0;
+	if (in >= 1.0)
+	  {
+	     _scale_finish();
+	     scale_animator = NULL;
+	     return ECORE_CALLBACK_CANCEL;
+	  }
 
-   in = log(14) * scale;
-   in = 1.0 / exp(in*in);
+	in = log(14) * (1.0 - in);
+	in = 1.0 / exp(in*in);
+	if (in < 0.0) in = 0.0;
+     }
 
    _scale_place_windows(in);
 
@@ -191,7 +210,7 @@ _scale_redraw(void *data)
      {
 	EINA_LIST_FOREACH(items, l, it)
 	  {
-	     a = 255.0;
+	     double a = 255.0;
 
 	     if ((it->bd->desk != current_desk) && (selected_item != it))
 	       {
@@ -208,47 +227,40 @@ _scale_redraw(void *data)
      }
 
    if (warp_pointer && selected_item)
-     _scale_warp_to_win(selected_item, in);
-
-   a = 255.0 * in;
+     _scale_warp_to_win(selected_item, (1.0 - in));
 
    EINA_LIST_FOREACH(items_fade, l, it)
      {
+	double a = 255.0 * in;
+
 	if ((it->bd->desk == current_desk) || (it->bd->sticky))
 	  evas_object_color_set(it->o, a, a, a, a);
      }
 
    if (scale_conf->fade_popups)
      {
+	double a = 255.0 * in;
+
 	EINA_LIST_FOREACH(popups, l, it)
 	  evas_object_color_set(it->o_win, a, a, a, a);
      }
 
    if (scale_conf->fade_desktop && background)
      {
-	a = 255.0 * (0.5 + in/2.0);
+	double a = 255.0 * (0.5 + in/2.0);
 
 	evas_object_color_set(background->o_win, a, a, a, 255);
      }
 
    e_manager_comp_evas_update(e_manager_current_get());
 
-   if (scale < 1.0 && scale > 0.0)
-     return 1;
-
-   if ((!scale_state) && (scale == 0.0))
-     _scale_finish();
-   else
-     _scale_place_windows(0.0);
-
-   scale_animator = NULL;
-   return 0;
+   return ECORE_CALLBACK_RENEW;
 }
 
 static void
 _scale_in()
 {
-   start_time = ecore_time_get();
+   start_time = ecore_loop_time_get();
    scale_state = EINA_TRUE;
 
    _scale_place_windows(1.0);
@@ -260,7 +272,7 @@ _scale_in()
 static void
 _scale_out(int mode)
 {
-   double duration, now = ecore_time_get();
+   double duration, now = ecore_loop_time_get();
    Item *ot, *it = selected_item;
    Eina_List *l;
    if (mode == 0)
@@ -327,11 +339,12 @@ _scale_out(int mode)
 	evas_object_raise(it->o);
 	e_border_raise(it->bd);
 
-	if ((!it->moved) &&(init_method == GO_KEY) &&
+	if ((!it->moved) && (init_method == GO_KEY) &&
 	    (e_config->focus_policy != E_FOCUS_CLICK))
 	  {
 	     warp_pointer = 1;
-	     ecore_x_pointer_xy_get(it->bd->zone->container->win, &warp_x, &warp_y);
+	     warp_x = it->bd->x + it->bd->w/2;
+	     warp_y = it->bd->y + it->bd->h/2;
 	     e_border_focus_set(it->bd, 1, 1);
 	  }
 	else
@@ -516,7 +529,7 @@ _scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
    Evas_Event_Mouse_Move *ev = event_info;
    Item *it = data;
 
-   if (!it || !it->mouse_down)
+   if ((!it) || (!it->mouse_down))
      return;
 
    if (it->moved)
@@ -532,7 +545,7 @@ _scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
      {
 	if (!scale_state)
 	  return;
-	
+
 	if (it->bd->maximized || it->bd->fullscreen || it->bd->lock_user_location)
 	  return;
 
@@ -549,7 +562,7 @@ _scale_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
 	if (it->bd_x + it->bd->w > it->bd->zone->w)
 	  it->bd_x = it->bd->zone->w - it->bd->w;
 	if (it->bd_y + it->bd->h > it->bd->zone->h)
-	  it->bd_y = it->bd->zone->h - it->bd->h;	
+	  it->bd_y = it->bd->zone->h - it->bd->h;
      }
 }
 
@@ -766,7 +779,7 @@ static void
 _scale_warp_animator_run(Item *it)
 {
    ecore_x_pointer_xy_get(it->bd->zone->container->win, &warp_x, &warp_y);
-   warp_start = ecore_time_get();
+   warp_start = ecore_loop_time_get();
 
    if (!warp_animator)
      warp_animator = ecore_animator_add(_scale_warp_pointer, it);
@@ -979,7 +992,7 @@ _scale_run(E_Manager *man)
    if (!current_desk)
      return EINA_FALSE;
 
-   start_time = ecore_time_get();
+   start_time = ecore_loop_time_get();
 
    input_win = ecore_x_window_input_new(zone->container->win, 0, 0, 1, 1);
    ecore_x_window_show(input_win);
@@ -1136,7 +1149,7 @@ _scale_run(E_Manager *man)
 	it->bd_y += zone->y;
      }
 
-   DBG("time: %f\n", ecore_time_get() - start_time);
+   DBG("time: %f\n", ecore_loop_time_get() - start_time);
 
    it = NULL;
    bd = NULL;
@@ -1174,6 +1187,8 @@ _scale_run(E_Manager *man)
      {
 	if (it != selected_item)
 	  edje_object_signal_emit(it->o, "mouse,out", "e");
+	else
+	  edje_object_signal_emit(it->o, "mouse,in", "e");
 
 	if (scale_conf->fade_windows)
 	  {
