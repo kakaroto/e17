@@ -694,7 +694,8 @@ _azy_server_client_send(Azy_Server_Client *client,
    if (net->http.version == 0)
      {
         INFO("Disconnecting for HTTP/1.0 compliance");
-        ecore_con_client_del(net->conn);
+        client->dead = EINA_TRUE;
+        ecore_timer_add(0.00001, (Ecore_Task_Cb)ecore_con_client_del, net->conn);
      }
 
 error:
