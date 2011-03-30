@@ -584,401 +584,309 @@ collections
     }
     group
     {
-        name:"modules/mpdule/popup";
+        name: "modules/mpdule/popup";
         parts
         {
             part
             {
-                name:"base";
-                type:RECT;
-                mouse_events:0;
+                name: "base";
+                type: RECT;
+                mouse_events: 0;
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
-                    min:200 65;
+                    state: "default" 0.00;
+                    visible: 1;
+                    min: 300 65;
+                    color: 255 255 255 255;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:5 5;
+                        relative: 0.00 0.00;
+                        offset: 5 5;
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:-5 -5;
+                        relative: 1.00 1.00;
+                        offset: -5 -5;
                     }
                 }
             }
             part
             {
-                name:"labels";
-                type:RECT;
-                mouse_events:0;
+                name: "mpdule.artist_label";
+                type: TEXT;
+                effect: SHADOW;
+                clip_to: "base";
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
+                    state: "default" 0.00;
+                    visible: 1;
+                    align: 0.00 0.50;
+                    fixed: 1 1;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 0;
-                        to:"base";
+                        relative: 0.00 0.00;
+                        offset: 5 0;
+                        to: "base";
                     }
                     rel2
                     {
-                        relative:0.25 1.00;
-                        offset:0 0;
-                        to:"base";
+                        relative: 0.00 0.25;
+                        to: "base";
                     }
-                    color:255 255 255 0;
-                }
-            }
-            part
-            {
-                name:"values";
-                type:RECT;
-                mouse_events:0;
-                description
-                {
-                    state:"default" 0.00;
-                    visible:1;
-                    rel1
-                    {
-                        relative:0.25 0.00;
-                        offset:0 0;
-                        to:"base";
-                    }
-                    rel2
-                    {
-                        relative:1.00 1.00;
-                        offset:0 0;
-                        to:"base";
-                    }
-                    color:255 255 255 0;
-                }
-            }
-            part
-            {
-                name:"item_clip";
-                type:RECT;
-                description
-                {
-                    state:"default" 0.00;
-                    visible:1;
-                    min:5 5;
-                    rel1
-                    {
-                        relative:0.00 0.00;
-                        offset:0 0;
-                    }
-                    rel2
-                    {
-                        relative:1.00 1.00;
-                        offset:-1 -1;
-                    }
-                    color:255 255 255 0;
-                }
-            }
-            part
-            {
-                name:"mpdule.artist_label";
-                type:TEXT;
-                effect:SHADOW;
-                clip_to:"base";
-                description
-                {
-                    state:"default" 0.00;
-                    visible:1;
-                    align:0.00 0.50;
-                    fixed:1 1;
-                    rel1
-                    {
-                        relative:-0.00 0.00;
-                        offset:0 0;
-                        to:"labels";
-                    }
-                    rel2
-                    {
-                        relative:1.00 0.00;
-                        offset:0 16;
-                        to:"labels";
-                    }
-                    color:0 0 0 255;
-                    color3:255 255 255 128;
                     text
                     {
-                        text:"Artist:";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:10;
-                        min:1 1;
-                        align:1.0 0.50;
+                        text: "Artist:";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 10;
+                        min: 1 1;
+                        align: 1.0 0.50;
                     }
                 }
             }
             part
             {
-                name:"mpdule.title_label";
-                type:TEXT;
-                effect:SHADOW;
-                clip_to:"base";
+                name: "mpdule.artist";
+                type: TEXT;
+                effect: OUTLINE_SOFT_SHADOW;
+                clip_to: "base";
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
-                    align:0.00 0.50;
+                    state: "default" 0.00;
+                    visible: 1;
+                    align: 0.00 0.50;
+                    fixed: 0 1;
                     rel1
                     {
-                        relative:0.00 1.00;
-                        offset:0 0;
-                        to_x:"labels";
-                        to_y:"mpdule.artist_label";
+                        relative: 1.00 0.00;
+                        offset: 5 0;
+                        to_x: "mpdule.artist_label";
+                        to_y: "base";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:0 12;
-                        to_x:"labels";
-                        to_y:"mpdule.artist_label";
+                        relative: 1.00 0.25;
+                        to: "base";
                     }
-                    color:0 0 0 255;
-                    color3:255 255 255 128;
                     text
                     {
-                        text:"Title:";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:10;
-                        min:1 1;
-                        align:1.0 0.50;
+                        text: "";
+                        text_class: "mpdule";
+                        font: "Sans:style=Bold";
+                        size: 10;
+                        align: 0.0 0.50;
+                        ellipsis: 0.0;
                     }
                 }
             }
             part
             {
-                name:"mpdule.album_label";
-                type:TEXT;
-                mouse_events:0;
-                effect:SHADOW;
-                clip_to:"base";
+                name: "mpdule.title_label";
+                type: TEXT;
+                effect: SHADOW;
+                clip_to: "base";
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
-                    align:0.00 0.50;
+                    state: "default" 0.00;
+                    visible: 1;
+                    align: 0.00 0.50;
+                    fixed: 1 1;
                     rel1
                     {
-                        relative:0.00 1.00;
-                        offset:0 0;
-                        to_x:"labels";
-                        to_y:"mpdule.title_label";
+                        relative: 0.00 0.25;
+                        offset: 5 0;
+                        to: "base";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:0 12;
-                        to_x:"labels";
-                        to_y:"mpdule.title_label";
+                        relative: 0.00 0.50;
+                        to: "base";
                     }
-                    color:0 0 0 255;
-                    color3:255 255 255 128;
                     text
                     {
-                        text:"Album:";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:10;
-                        min:1 1;
-                        align:1.0 0.50;
+                        text: "Title:";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 10;
+                        min: 1 1;
+                        align: 1.0 0.50;
                     }
                 }
             }
             part
             {
-                name:"mpdule.genre_label";
-                type:TEXT;
-                mouse_events:0;
-                effect:SHADOW;
-                clip_to:"base";
+                name: "mpdule.title";
+                type: TEXT;
+                effect: OUTLINE_SOFT_SHADOW;
+                clip_to: "base";
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
-                    align:0.00 0.50;
+                    state: "default" 0.00;
+                    visible: 1;
+                    align: 0.00 0.50;
+                    fixed: 0 1;
                     rel1
                     {
-                        relative:0.00 1.00;
-                        offset:0 0;
-                        to_x:"labels";
-                        to_y:"mpdule.album_label";
+                        relative: 1.00 0.25;
+                        offset: 5 0;
+                        to_x: "mpdule.title_label";
+                        to_y: "base";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:0 12;
-                        to_x:"labels";
-                        to_y:"mpdule.album_label";
+                        relative: 1.00 0.50;
+                        to: "base";
                     }
-                    color:0 0 0 255;
-                    color3:255 255 255 128;
                     text
                     {
-                        text:"Genre:";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:10;
-                        min:1 1;
-                        align:1.0 0.50;
+                        text: "";
+                        text_class: "mpdule";
+                        font: "Sans:style=Bold";
+                        size: 10;
+                        align: 0.0 0.50;
+                        ellipsis: 0.0;
                     }
                 }
             }
             part
             {
-                name:"mpdule.artist";
-                type:TEXT;
-                effect:NONE;
-                clip_to:"base";
+                name: "mpdule.album_label";
+                type: TEXT;
+                effect: SHADOW;
+                clip_to: "base";
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
-                    align:0.00 0.50;
+                    state: "default" 0.00;
+                    visible: 1;
+                    align: 0.00 0.50;
+                    fixed: 1 1;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 0;
-                        to_x:"values";
-                        to_y:"mpdule.artist_label";
+                        relative: 0.00 0.50;
+                        offset: 5 0;
+                        to: "base";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        to_x:"values";
-                        to_y:"mpdule.artist_label";
+                        relative: 0.00 0.75;
+                        to: "base";
                     }
-                    color:0 0 0 255;
                     text
                     {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Bold";
-                        size:10;
-                        min:1 1;
-                        align:0.0 0.50;
+                        text: "Album:";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 10;
+                        min: 1 1;
+                        align: 1.0 0.50;
                     }
                 }
             }
             part
             {
-                name:"mpdule.title";
-                type:TEXT;
-                effect:NONE;
-                clip_to:"base";
+                name: "mpdule.album";
+                type: TEXT;
+                effect: OUTLINE_SOFT_SHADOW;
+                clip_to: "base";
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
-                    align:0.00 0.50;
+                    state: "default" 0.00;
+                    visible: 1;
+                    align: 0.00 0.50;
+                    fixed: 0 1;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 0;
-                        to_x:"values";
-                        to_y:"mpdule.title_label";
+                        relative: 1.00 0.50;
+                        offset: 5 0;
+                        to_x: "mpdule.album_label";
+                        to_y: "base";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        to_x:"values";
-                        to_y:"mpdule.title_label";
+                        relative: 1.00 0.75;
+                        to: "base";
                     }
-                    color:0 0 0 255;
                     text
                     {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Bold";
-                        size:10;
-                        min:1 1;
-                        align:0.0 0.50;
+                        text: "";
+                        text_class: "mpdule";
+                        font: "Sans:style=Bold";
+                        size: 10;
+                        align: 0.0 0.50;
+                        ellipsis: 0.0;
                     }
                 }
             }
             part
             {
-                name:"mpdule.album";
-                type:TEXT;
-                effect:NONE;
-                clip_to:"base";
+                name: "mpdule.genre_label";
+                type: TEXT;
+                mouse_events: 0;
+                effect: OUTLINE_SOFT_SHADOW;
+                clip_to: "base";
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
-                    align:0.00 0.50;
+                    state: "default" 0.00;
+                    visible: 1;
+                    align: 0.00 0.50;
+                    fixed: 1 1;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 0;
-                        to_x:"values";
-                        to_y:"mpdule.album_label";
+                        relative: 0.00 0.75;
+                        offset: 5 0;
+                        to: "base";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        to_x:"values";
-                        to_y:"mpdule.album_label";
+                        relative: 0.00 1.00;
+                        to: "base";
                     }
-                    color:0 0 0 255;
                     text
                     {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Bold";
-                        size:10;
-                        min:1 1;
-                        align:0.0 0.50;
+                        text: "Genre:";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 10;
+                        min: 1 1;
+                        align: 1.0 0.50;
                     }
                 }
             }
             part
             {
-                name:"mpdule.genre";
-                type:TEXT;
-                effect:NONE;
-                clip_to:"base";
+                name: "mpdule.genre";
+                type: TEXT;
+                effect: SHADOW;
+                clip_to: "base";
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
-                    align:0.00 0.50;
+                    state: "default" 0.00;
+                    visible: 1;
+                    align: 0.00 0.50;
+                    fixed: 0 1;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 0;
-                        to_x:"values";
-                        to_y:"mpdule.genre_label";
+                        relative: 1.00 0.75;
+                        offset: 5 0;
+                        to_x: "mpdule.genre_label";
+                        to_y: "base";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        to_x:"values";
-                        to_y:"mpdule.genre_label";
+                        relative: 1.00 1.00;
+                        to: "base";
                     }
-                    color:0 0 0 255;
                     text
                     {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Bold";
-                        size:10;
-                        min:1 1;
-                        align:0.0 0.50;
+                        text: "looooonnnnnngggg sssshhhhhhiiiiiiiitttttt";
+                        text_class: "mpdule";
+                        font: "Sans:style=Bold";
+                        size: 10;
+                        align: 0.0 0.50;
+                        ellipsis: 0.0;
                     }
                 }
             }
-        }
-        programs
-        {
         }
     }
 }
