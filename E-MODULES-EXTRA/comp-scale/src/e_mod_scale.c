@@ -190,8 +190,6 @@ _scale_redraw(void *data)
      }
    else
      {
-	printf("%f %f\n", (ecore_loop_time_get() - start_time), start_time);
-
 	if (in >= 1.0)
 	  {
 	     _scale_finish();
