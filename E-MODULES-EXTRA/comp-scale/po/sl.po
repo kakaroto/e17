@@ -8,100 +8,207 @@ msgid ""
 msgstr ""
 "Project-Id-Version: comp-scale 1.0\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2011-02-22 20:00-0800\n"
-"PO-Revision-Date: 2011-02-24 16:56+0100\n"
-"Last-Translator: r1to <renato.rener@gmail.com>\n"
+"POT-Creation-Date: 2011-03-19 04:00-0700\n"
+"PO-Revision-Date: 2011-03-28 12:34+0100\n"
+"Last-Translator: Renato Rener <renato.rener@gmail.com>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Slovenian\n"
+"X-Poedit-Country: Slovenia\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
-#: ../src/e_mod_config.c:45
+#: ../src/e_mod_config.c:54
 msgid "Scale Windows Module"
-msgstr "Modul Spremeni merilo okna"
+msgstr "Modul Scale windows"
 
-#: ../src/e_mod_config.c:117
+#: ../src/e_mod_config.c:113
 msgid "Current Desktop"
 msgstr "Trenutno namizje"
 
-#: ../src/e_mod_config.c:118 ../src/e_mod_config.c:146
+#: ../src/e_mod_config.c:114
+#: ../src/e_mod_config.c:144
 msgid "Minimum space between windows"
 msgstr "Najmanjši prostor med okni"
 
-#: ../src/e_mod_config.c:120 ../src/e_mod_config.c:148
+#: ../src/e_mod_config.c:116
+#: ../src/e_mod_config.c:146
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../src/e_mod_config.c:124 ../src/e_mod_config.c:152
+#: ../src/e_mod_config.c:120
+#: ../src/e_mod_config.c:150
 msgid "Scale duration"
 msgstr "Trajanje spremembe merila"
 
-#: ../src/e_mod_config.c:126 ../src/e_mod_config.c:154
+#: ../src/e_mod_config.c:122
+#: ../src/e_mod_config.c:152
+#: ../src/e_mod_config.c:188
 #, c-format
 msgid "%1.2f"
 msgstr "%1.2f"
 
-#: ../src/e_mod_config.c:129 ../src/e_mod_config.c:159
+#: ../src/e_mod_config.c:127
+#: ../src/e_mod_config.c:156
 msgid "Slotted Layout"
 msgstr "Režasti iygled"
 
-#: ../src/e_mod_config.c:134
-msgid "Layout Options"
-msgstr "Možnosti izgleda"
+#: ../src/e_mod_config.c:129
+#: ../src/e_mod_config.c:158
+msgid "Natural Layout"
+msgstr "Naravni izgled"
+
+#: ../src/e_mod_config.c:133
+#: ../src/e_mod_config.c:160
+msgid "Grow more!"
+msgstr "Povečaj!"
 
 #: ../src/e_mod_config.c:136
-msgid "Grow more!"
-msgstr "Zrasti!"
-
-#: ../src/e_mod_config.c:138
+#: ../src/e_mod_config.c:163
 msgid "Keep it tight!"
 msgstr "Ohrani tesno!"
 
-#: ../src/e_mod_config.c:145
+#: ../src/e_mod_config.c:143
 msgid "Show All Desktops"
 msgstr "Prikaži vsa namizja"
 
-#: ../src/e_mod_config.c:157
+#: ../src/e_mod_config.c:166
+#: ../src/e_mod_config.c:191
 msgid "Fade in windows"
 msgstr "Pojavljajoča okna"
 
-#: ../src/e_mod_config.c:165
+#: ../src/e_mod_config.c:173
+#: ../src/e_mod_config.c:194
 msgid "Fade out shelves and popups"
 msgstr "Pojemanje polic in pojavnih oken"
 
-#: ../src/e_mod_config.c:167
+#: ../src/e_mod_config.c:176
+#: ../src/e_mod_config.c:197
 msgid "Darken desktop"
 msgstr "Zatemni namizje"
 
-#: ../src/e_mod_config.c:173
-msgid "Test"
-msgstr "Testiraj"
+#: ../src/e_mod_config.c:184
+#| msgid "Settings"
+msgid "Pager Settings"
+msgstr "Nastavitve preklopnika"
 
-#: ../src/e_mod_main.c:1560
+#: ../src/e_mod_config.c:186
+#| msgid "Scale duration"
+msgid "Zoom duration"
+msgstr "Trajanje spremembe merila"
+
+#: ../src/e_mod_main.c:173
 msgid "Look"
 msgstr "Videz"
 
-#: ../src/e_mod_main.c:1562
+#: ../src/e_mod_main.c:175
 msgid "Composite Scale Windows"
 msgstr "Kompozitiraj okna ki spreminjajo merilo"
 
-#: ../src/e_mod_main.c:1596 ../src/e_mod_main.c:1618 ../src/e_mod_main.c:1660
+#: ../src/e_mod_main.c:218
+#: ../src/e_mod_main.c:243
+#: ../src/e_mod_main.c:245
+#: ../src/e_mod_main.c:247
+#: ../src/e_mod_main.c:249
+#: ../src/e_mod_main.c:251
+#: ../src/e_mod_main.c:253
+#: ../src/e_mod_main.c:255
+#: ../src/e_mod_main.c:311
+#: ../src/e_mod_main.c:312
+#: ../src/e_mod_main.c:313
+#: ../src/e_mod_main.c:314
+#: ../src/e_mod_main.c:315
 msgid "Scale Windows"
 msgstr "Spremeni merilo okna"
 
-#: ../src/e_mod_main.c:1618 ../src/e_mod_main.c:1619 ../src/e_mod_main.c:1659
-msgid "Desktop"
-msgstr "Namizje"
+#: ../src/e_mod_main.c:245
+#: ../src/e_mod_main.c:312
+#| msgid "Scale Windows / All Desktops"
+msgid "Scale Windows (All Desktops)"
+msgstr "Spremeni merilo okna (vsa namizja)"
 
-#: ../src/e_mod_main.c:1619
-msgid "Scale Windows / All Desktops"
-msgstr "Spremeni merilo okna·/·Vsa namizja"
+#: ../src/e_mod_main.c:247
+#: ../src/e_mod_main.c:313
+#| msgid "Scale Windows"
+msgid "Scale Windows (By Class)"
+msgstr "Spremeni merilo okna (po razredu)"
 
-#: ../src/e_mod_main.c:1732
+#: ../src/e_mod_main.c:249
+#: ../src/e_mod_main.c:260
+#: ../src/e_mod_main.c:314
+#: ../src/e_mod_main.c:318
+msgid "Select Next"
+msgstr "Izberi naslednje"
+
+#: ../src/e_mod_main.c:251
+#: ../src/e_mod_main.c:262
+#: ../src/e_mod_main.c:315
+#: ../src/e_mod_main.c:319
+msgid "Select Previous"
+msgstr "Izberi prejšnje"
+
+#: ../src/e_mod_main.c:253
+msgid "Select Next (All)"
+msgstr "Izberi naslednje (vse)"
+
+#: ../src/e_mod_main.c:255
+msgid "Select Previous (All)"
+msgstr "Izberi prejšnje (vse)"
+
+#: ../src/e_mod_main.c:258
+#: ../src/e_mod_main.c:260
+#: ../src/e_mod_main.c:262
+#: ../src/e_mod_main.c:264
+#: ../src/e_mod_main.c:266
+#: ../src/e_mod_main.c:268
+#: ../src/e_mod_main.c:270
+#: ../src/e_mod_main.c:317
+#: ../src/e_mod_main.c:318
+#: ../src/e_mod_main.c:319
+#: ../src/e_mod_main.c:320
+#: ../src/e_mod_main.c:321
+#: ../src/e_mod_main.c:322
+#: ../src/e_mod_main.c:323
+#| msgid "Scale"
+msgid "Scale Pager"
+msgstr "Spremeni merilo preklopnika"
+
+#: ../src/e_mod_main.c:264
+#: ../src/e_mod_main.c:320
+msgid "Select Left"
+msgstr "Izberi levo"
+
+#: ../src/e_mod_main.c:266
+#: ../src/e_mod_main.c:321
+#| msgid "Keep it tight!"
+msgid "Select Right"
+msgstr "Izberi desno"
+
+#: ../src/e_mod_main.c:268
+#: ../src/e_mod_main.c:322
+msgid "Select Up"
+msgstr "Izberi zgoraj"
+
+#: ../src/e_mod_main.c:270
+#: ../src/e_mod_main.c:323
+msgid "Select Down"
+msgstr "Izberi spodaj"
+
+#: ../src/e_mod_main.c:395
 msgid "Scale"
 msgstr "Spremeni merilo"
 
-#: ../src/e_mod_main.c:1864
+#: ../src/e_mod_main.c:524
 msgid "Settings"
 msgstr "Nastavitve"
+
+#~ msgid "Layout Options"
+#~ msgstr "Možnosti izgleda"
+
+#~ msgid "Test"
+#~ msgstr "Testiraj"
+
+#~ msgid "Desktop"
+#~ msgstr "Namizje"
