@@ -40,460 +40,452 @@ collections
 {
     group
     {
-        name:"modules/mpdule/main";
+        name: "modules/mpdule/main";
         parts
         {
             part
             {
-                name:"base";
-                type:RECT;
-                mouse_events:0;
+                name: "base";
+                type: RECT;
+                mouse_events: 0;
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
+                    state: "default" 0.00;
+                    visible: 1;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 0;
+                        relative: 0.00 0.00;
+                        offset: 0 0;
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:-1 -1;
+                        relative: 1.00 1.00;
+                        offset: -1 -1;
                     }
                 }
             }
             part
             {
-                name:"item_clip";
-                type:RECT;
+                name: "item_clip";
+                type: RECT;
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
+                    state: "default" 0.00;
+                    visible: 1;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 0;
+                        relative: 0.00 0.00;
+                        offset: 0 0;
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:-1 -1;
+                        relative: 1.00 1.00;
+                        offset: -1 -1;
                     }
-                    color:255 255 255 0;
+                    color: 255 255 255 0;
                 }
                 description
                 {
-                    state:"hide" 0.00;
-                    visible:1;
+                    state: "hide" 0.00;
+                    visible: 1;
                     rel1
                     {
-                        relative:0.00 -1.00;
-                        offset:0 0;
+                        relative: 0.00 -1.00;
+                        offset: 0 0;
                     }
                     rel2
                     {
-                        relative:1.00 0.00;
-                        offset:-1 -1;
+                        relative: 1.00 0.00;
+                        offset: -1 -1;
                     }
-                    color:255 255 255 0;
-                }
-            }
-            part
-            {
-                name:"controls_clip";
-                type:RECT;
-                description
-                {
-                    state:"default" 0.00;
-                    visible:1;
-                    rel1
-                    {
-                        relative:0.00 1.00;
-                        offset:0 0;
-                    }
-                    rel2
-                    {
-                        relative:1.00 2.00;
-                        offset:-1 -1;
-                    }
-                    color:255 255 255 0;
-                }
-                description
-                {
-                    state:"show" 0.00;
-                    visible:1;
-                    rel1
-                    {
-                        relative:0.00 0.00;
-                        offset:0 0;
-                    }
-                    rel2
-                    {
-                        relative:1.00 1.00;
-                        offset:-1 -1;
-                    }
-                    color:255 255 255 0;
+                    color: 255 255 255 0;
                 }
             }
             part
             {
-                name:"mpdule.artist";
-                type:TEXT;
-                effect:OUTLINE_SOFT_SHADOW;
-                clip_to:"base";
-                mouse_events:0;
+                name: "controls_clip";
+                type: RECT;
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
+                    state: "default" 0.00;
+                    visible: 1;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 4;
-                        to:"item_clip";
+                        relative: 0.00 1.00;
+                        offset: 0 0;
                     }
                     rel2
                     {
-                        relative:1.00 0.50;
-                        offset:-1 -3;
-                        to:"item_clip";
+                        relative: 1.00 2.00;
+                        offset: -1 -1;
                     }
-                    color2:0 0 0 96;
-                    color3:0 0 0 32;
-                    text
-                    {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:10;
-                        min:1 1;
-                        align:0.50 0.50;
-                    }
+                    color: 255 255 255 0;
                 }
                 description
                 {
-                    state:"hidden" 0.00;
-                    visible:0;
+                    state: "show" 0.00;
+                    visible: 1;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 4;
-                        to:"item_clip";
+                        relative: 0.00 0.00;
+                        offset: 0 0;
                     }
                     rel2
                     {
-                        relative:1.00 0.50;
-                        offset:-1 -3;
-                        to:"item_clip";
+                        relative: 1.00 1.00;
+                        offset: -1 -1;
                     }
-                    color2:0 0 0 96;
-                    color3:0 0 0 32;
-                    text
-                    {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:10;
-                        min:1 1;
-                        align:0.50 0.50;
-                    }
-                }
-                description
-                {
-                    state:"visible" 0.00;
-                    visible:1;
-                    rel1
-                    {
-                        relative:0.00 0.00;
-                        offset:0 4;
-                        to:"item_clip";
-                    }
-                    rel2
-                    {
-                        relative:1.00 0.50;
-                        offset:-1 -3;
-                        to:"item_clip";
-                    }
-                    color2:0 0 0 96;
-                    color3:0 0 0 32;
-                    text
-                    {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:10;
-                        min:1 1;
-                        align:0.50 0.50;
-                    }
+                    color: 255 255 255 0;
                 }
             }
             part
             {
-                name:"mpdule.title";
-                type:TEXT;
-                effect:OUTLINE_SOFT_SHADOW;
-                clip_to:"base";
-                mouse_events:0;
+                name: "mpdule.artist";
+                type: TEXT;
+                effect: OUTLINE_SOFT_SHADOW;
+                clip_to: "base";
+                mouse_events: 0;
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
+                    state: "default" 0.00;
+                    visible: 1;
                     rel1
                     {
-                        relative:0.00 0.50;
-                        offset:0 4;
-                        to:"item_clip";
+                        relative: 0.00 0.00;
+                        offset: 0 4;
+                        to: "item_clip";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:-1 -3;
-                        to:"item_clip";
+                        relative: 1.00 0.50;
+                        offset: -1 -3;
+                        to: "item_clip";
                     }
-                    color2:0 0 0 96;
-                    color3:0 0 0 32;
+                    color2: 0 0 0 96;
+                    color3: 0 0 0 32;
                     text
                     {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:9;
-                        min:1 1;
-                        align:0.50 0.50;
+                        text: "";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 10;
+                        min: 1 1;
+                        align: 0.50 0.50;
                     }
                 }
                 description
                 {
-                    state:"hidden" 0.00;
-                    visible:0;
+                    state: "hidden" 0.00;
+                    visible: 0;
                     rel1
                     {
-                        relative:0.00 0.50;
-                        offset:0 4;
-                        to:"item_clip";
+                        relative: 0.00 0.00;
+                        offset: 0 4;
+                        to: "item_clip";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:-1 -3;
-                        to:"item_clip";
+                        relative: 1.00 0.50;
+                        offset: -1 -3;
+                        to: "item_clip";
                     }
-                    color2:0 0 0 96;
-                    color3:0 0 0 32;
+                    color2: 0 0 0 96;
+                    color3: 0 0 0 32;
                     text
                     {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:9;
-                        min:1 1;
-                        align:0.50 0.50;
+                        text: "";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 10;
+                        min: 1 1;
+                        align: 0.50 0.50;
                     }
                 }
                 description
                 {
-                    state:"visible" 0.00;
-                    visible:1;
+                    state: "visible" 0.00;
+                    visible: 1;
                     rel1
                     {
-                        relative:0.00 0.50;
-                        offset:0 4;
-                        to:"item_clip";
+                        relative: 0.00 0.00;
+                        offset: 0 4;
+                        to: "item_clip";
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:-1 -3;
-                        to:"item_clip";
+                        relative: 1.00 0.50;
+                        offset: -1 -3;
+                        to: "item_clip";
                     }
-                    color2:0 0 0 96;
-                    color3:0 0 0 32;
+                    color2: 0 0 0 96;
+                    color3: 0 0 0 32;
                     text
                     {
-                        text:"";
-                        text_class:"mpdule";
-                        font:"Sans:style=Mono";
-                        size:9;
-                        min:1 1;
-                        align:0.50 0.50;
+                        text: "";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 10;
+                        min: 1 1;
+                        align: 0.50 0.50;
                     }
                 }
             }
             part
             {
-                name:"mpdule.previous";
-                type:IMAGE;
-                mouse_events:1;
-                repeat_events:1;
+                name: "mpdule.title";
+                type: TEXT;
+                effect: OUTLINE_SOFT_SHADOW;
+                clip_to: "base";
+                mouse_events: 0;
                 description
                 {
-                    state:"default" 0.0;
-                    visible:1;
-                    aspect:1 1;
-                    align:0.0 0.5;
+                    state: "default" 0.00;
+                    visible: 1;
                     rel1
                     {
-                        relative:0.0 0.0;
-                        offset:0 0;
-                        to:"controls_clip";
+                        relative: 0.00 0.50;
+                        offset: 0 4;
+                        to: "item_clip";
                     }
                     rel2
                     {
-                        relative:0.0 1.0;
-                        to:"controls_clip";
+                        relative: 1.00 1.00;
+                        offset: -1 -3;
+                        to: "item_clip";
+                    }
+                    color2: 0 0 0 96;
+                    color3: 0 0 0 32;
+                    text
+                    {
+                        text: "";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 9;
+                        min: 1 1;
+                        align: 0.50 0.50;
+                    }
+                }
+                description
+                {
+                    state: "hidden" 0.00;
+                    visible: 0;
+                    rel1
+                    {
+                        relative: 0.00 0.50;
+                        offset: 0 4;
+                        to: "item_clip";
+                    }
+                    rel2
+                    {
+                        relative: 1.00 1.00;
+                        offset: -1 -3;
+                        to: "item_clip";
+                    }
+                    color2: 0 0 0 96;
+                    color3: 0 0 0 32;
+                    text
+                    {
+                        text: "";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 9;
+                        min: 1 1;
+                        align: 0.50 0.50;
+                    }
+                }
+                description
+                {
+                    state: "visible" 0.00;
+                    visible: 1;
+                    rel1
+                    {
+                        relative: 0.00 0.50;
+                        offset: 0 4;
+                        to: "item_clip";
+                    }
+                    rel2
+                    {
+                        relative: 1.00 1.00;
+                        offset: -1 -3;
+                        to: "item_clip";
+                    }
+                    color2: 0 0 0 96;
+                    color3: 0 0 0 32;
+                    text
+                    {
+                        text: "";
+                        text_class: "mpdule";
+                        font: "Sans:style=Mono";
+                        size: 9;
+                        min: 1 1;
+                        align: 0.50 0.50;
+                    }
+                }
+            }
+            part
+            {
+                name: "mpdule.previous";
+                type: IMAGE;
+                mouse_events: 1;
+                repeat_events: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    visible: 1;
+                    aspect: 1 1;
+                    aspect_preference: BOTH;
+                    align: 0.5 0.5;
+                    rel1
+                    {
+                        relative: 0.0 0.0;
+                        to: "controls_clip";
+                    }
+                    rel2
+                    {
+                        relative: 0.2 1.0;
+                        to: "controls_clip";
                     }
                     image
                     {
-                        normal:"prev.png";
+                        normal: "prev.png";
                     }
                 }
             }
             part
             {
-                name:"mpdule.play";
-                type:IMAGE;
-                mouse_events:1;
-                repeat_events:1;
+                name: "mpdule.play";
+                type: IMAGE;
+                mouse_events: 1;
+                repeat_events: 1;
                 description
                 {
-                    state:"default" 0.0;
-                    visible:1;
-                    aspect:1 1;
-                    align:0.0 0.5;
+                    state: "default" 0.0;
+                    visible: 1;
+                    aspect: 1 1;
+                    aspect_preference: BOTH;
+                    align: 0.5 0.5;
                     rel1
                     {
-                        relative:1.0 0.0;
-                        offset:0 0;
-                        to_x:"mpdule.previous";
-                        to_y:"controls_clip";
+                        relative: 0.2 0.0;
+                        to: "controls_clip";
                     }
                     rel2
                     {
-                        relative:1.0 1.0;
-                        to_x:"mpdule.previous";
-                        to_y:"controls_clip";
+                        relative: 0.4 1.0;
+                        to: "controls_clip";
                     }
                     image
                     {
-                        normal:"play.png";
+                        normal: "play.png";
                     }
                 }
             }
             part
             {
-                name:"mpdule.pause";
-                type:IMAGE;
-                mouse_events:1;
-                repeat_events:1;
+                name: "mpdule.pause";
+                type: IMAGE;
+                mouse_events: 1;
+                repeat_events: 1;
                 description
                 {
-                    state:"default" 0.0;
-                    visible:1;
-                    aspect:1 1;
-                    align:0.0 0.5;
+                    state: "default" 0.0;
+                    visible: 1;
+                    aspect: 1 1;
+                    aspect_preference: BOTH;
+                    align: 0.5 0.5;
                     rel1
                     {
-                        relative:1.0 0.0;
-                        offset:0 0;
-                        to_x:"mpdule.play";
-                        to_y:"controls_clip";
+                        relative: 0.4 0.0;
+                        to: "controls_clip";
                     }
                     rel2
                     {
-                        relative:1.0 1.0;
-                        to_x:"mpdule.play";
-                        to_y:"controls_clip";
+                        relative: 0.6 1.0;
+                        to: "controls_clip";
                     }
                     image
                     {
-                        normal:"pause.png";
+                        normal: "pause.png";
                     }
                 }
             }
             part
             {
-                name:"mpdule.stop";
-                type:IMAGE;
-                mouse_events:1;
-                repeat_events:1;
+                name: "mpdule.stop";
+                type: IMAGE;
+                mouse_events: 1;
+                repeat_events: 1;
                 description
                 {
-                    state:"default" 0.0;
-                    visible:1;
-                    aspect:1 1;
-                    align:0.0 0.5;
+                    state: "default" 0.0;
+                    visible: 1;
+                    aspect: 1 1;
+                    aspect_preference: BOTH;
+                    align: 0.5 0.5;
                     rel1
                     {
-                        relative:1.0 0.0;
-                        offset:0 0;
-                        to_x:"mpdule.pause";
-                        to_y:"controls_clip";
+                        relative: 0.6 0.0;
+                        to: "controls_clip";
                     }
                     rel2
                     {
-                        relative:1.0 1.0;
-                        to_x:"mpdule.pause";
-                        to_y:"controls_clip";
+                        relative: 0.8 1.0;
+                        to: "controls_clip";
                     }
                     image
                     {
-                        normal:"stop.png";
+                        normal: "stop.png";
                     }
                 }
             }
             part
             {
-                name:"mpdule.next";
-                type:IMAGE;
-                mouse_events:1;
-                repeat_events:1;
+                name: "mpdule.next";
+                type: IMAGE;
+                mouse_events: 1;
+                repeat_events: 1;
                 description
                 {
-                    state:"default" 0.0;
-                    visible:1;
-                    aspect:1 1;
-                    align:0.0 0.5;
+                    state: "default" 0.0;
+                    visible: 1;
+                    aspect: 1 1;
+                    aspect_preference: BOTH;
+                    align: 0.5 0.5;
                     rel1
                     {
-                        relative:1.0 0.0;
-                        offset:0 0;
-                        to_x:"mpdule.stop";
-                        to_y:"controls_clip";
+                        relative: 0.8 0.0;
+                        to: "controls_clip";
                     }
                     rel2
                     {
-                        relative:1.0 1.0;
-                        to_x:"mpdule.stop";
-                        to_y:"controls_clip";
+                        relative: 1.0 1.0;
+                        to: "controls_clip";
                     }
                     image
                     {
-                        normal:"next.png";
+                        normal: "next.png";
                     }
                 }
             }
             part
             {
-                name:"event_grab";
-                type:RECT;
-                repeat_events:1;
+                name: "event_grab";
+                type: RECT;
+                repeat_events: 1;
                 description
                 {
-                    state:"default" 0.00;
-                    visible:1;
-                    color:0 0 0 0;
+                    state: "default" 0.00;
+                    visible: 1;
+                    color: 0 0 0 0;
                     rel1
                     {
-                        relative:0.00 0.00;
-                        offset:0 0;
+                        relative: 0.00 0.00;
+                        offset: 0 0;
                     }
                     rel2
                     {
-                        relative:1.00 1.00;
-                        offset:-1 -1;
+                        relative: 1.00 1.00;
+                        offset: -1 -1;
                     }
                 }
             }
@@ -502,83 +494,83 @@ collections
         {
             program
             {
-                name:"show_controls";
-                signal:"mouse,in";
-                source:"event_grab";
-                action:STATE_SET "show" 0.0;
-                transition:LINEAR 0.1;
-                target:"controls_clip";
+                name: "show_controls";
+                signal: "mouse,in";
+                source: "event_grab";
+                action: STATE_SET "show" 0.0;
+                transition: LINEAR 0.1;
+                target: "controls_clip";
             }
             program
             {
-                name:"show_controls2";
-                signal:"mouse,in";
-                source:"event_grab";
-                action:STATE_SET "hide" 0.0;
-                transition:LINEAR 0.1;
-                target:"item_clip";
+                name: "show_controls2";
+                signal: "mouse,in";
+                source: "event_grab";
+                action: STATE_SET "hide" 0.0;
+                transition: LINEAR 0.1;
+                target: "item_clip";
             }
             program
             {
-                name:"wait";
-                action:STATE_SET "hide" 0.0;
-                transition:LINEAR 2;
-                target:"item_clip";
-                after:"hide_controls";
-                after:"hide_controls2";
+                name: "wait";
+                action: STATE_SET "hide" 0.0;
+                transition: LINEAR 2;
+                target: "item_clip";
+                after: "hide_controls";
+                after: "hide_controls2";
             }
             program
             {
-                name:"hide_controls";
-                signal:"mouse,out";
-                source:"event_grab";
-                action:STATE_SET "default" 0.0;
-                transition:LINEAR 0.1;
-                target:"controls_clip";
+                name: "hide_controls";
+                signal: "mouse,out";
+                source: "event_grab";
+                action: STATE_SET "default" 0.0;
+                transition: LINEAR 0.1;
+                target: "controls_clip";
             }
             program
             {
-                name:"hide_controls2";
-                signal:"mouse,out";
-                source:"event_grab";
-                action:STATE_SET "default" 0.0;
-                transition:LINEAR 0.1;
-                target:"item_clip";
+                name: "hide_controls2";
+                signal: "mouse,out";
+                source: "event_grab";
+                action: STATE_SET "default" 0.0;
+                transition: LINEAR 0.1;
+                target: "item_clip";
             }
             program
             {
-                name:"mouse_play";
-                signal:"mouse,clicked,1";
-                source:"mpdule.play";
-                action:SIGNAL_EMIT "mpdule,play" "";
+                name: "mouse_play";
+                signal: "mouse,clicked,1";
+                source: "mpdule.play";
+                action: SIGNAL_EMIT "mpdule,play" "";
             }
             program
             {
-                name:"mouse_pause";
-                signal:"mouse,clicked,1";
-                source:"mpdule.pause";
-                action:SIGNAL_EMIT "mpdule,pause" "";
+                name: "mouse_pause";
+                signal: "mouse,clicked,1";
+                source: "mpdule.pause";
+                action: SIGNAL_EMIT "mpdule,pause" "";
             }
             program
             {
-                name:"mouse_stop";
-                signal:"mouse,clicked,1";
-                source:"mpdule.stop";
-                action:SIGNAL_EMIT "mpdule,stop" "";
+                name: "mouse_stop";
+                signal: "mouse,clicked,1";
+                source: "mpdule.stop";
+                action: SIGNAL_EMIT "mpdule,stop" "";
             }
             program
             {
-                name:"mouse_previous";
-                signal:"mouse,clicked,1";
-                source:"mpdule.previous";
-                action:SIGNAL_EMIT "mpdule,previous" "";
+                name: "mouse_previous";
+                signal: "mouse,clicked,1";
+                source: "mpdule.previous";
+                action: SIGNAL_EMIT "mpdule,previous" "";
             }
             program
             {
-                name:"mouse_next";
-                signal:"mouse,clicked,1";
-                source:"mpdule.next";
-                action:SIGNAL_EMIT "mpdule,next" "";
+                name: "mouse_next";
+                signal: "mouse,clicked,1";
+                source: "mpdule.next";
+                action: SIGNAL_EMIT "mpdule,next" "";
             }
         }
     }
