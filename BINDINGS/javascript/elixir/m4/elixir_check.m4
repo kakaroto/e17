@@ -1,4 +1,4 @@
-dnl use: ELIXIR_CHECK_PKG_MODULE(FOO-BAR, foo-bar, description)
+dnl use: ELIXIR_CHECK_PKG_MODULE(FOO-BAR, foo-bar, description[, version])
 AC_DEFUN([ELIXIR_CHECK_PKG_MODULE],
 [
 pushdef([SAFE], translit([$2], [-], [_]))dnl
@@ -13,7 +13,7 @@ AC_MSG_CHECKING(whether to build $3)
 AC_MSG_RESULT(${have_[]SAFE})
 
 if test "x${have_[]SAFE}" = "xyes"; then
-  PKG_CHECK_MODULES([$1], [$2],
+  PKG_CHECK_MODULES([$1], [$2 $4],
     [
       AC_DEFINE(BUILD_MODULE_$1, 1, [$3])
       have_[]SAFE="yes"

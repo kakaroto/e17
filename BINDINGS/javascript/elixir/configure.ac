@@ -383,7 +383,7 @@ EINA_CHECK_STATIC(evas, evas)
 ELIXIR_CHECK_PKG_MODULE(ECORE, ecore, [Ecore module binding support])
 EINA_CHECK_STATIC(ecore, ecore)
 
-ELIXIR_CHECK_PKG_MODULE(ECORE_CON, [ecore-con], [Ecore connection module binding support])
+ELIXIR_CHECK_PKG_MODULE(ECORE_CON, [ecore-con], [Ecore connection module binding support], [>= 1.0.999])
 EINA_CHECK_STATIC(ecore_con, [ecore-con])
 
 ELIXIR_CHECK_PKG_MODULE(ECORE_CONFIG, [ecore-config], [Ecore config module binding support])

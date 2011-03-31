@@ -1606,6 +1606,7 @@ elixir_void_params_ecore_con_url_bool(void (*func)(Ecore_Con_Url*, Eina_Bool),
 
 FAST_CALL_PARAMS(ecore_con_url_verbose_set, elixir_void_params_ecore_con_url_bool);
 FAST_CALL_PARAMS(ecore_con_url_ftp_use_epsv_set, elixir_void_params_ecore_con_url_bool);
+FAST_CALL_PARAMS(ecore_con_url_ssl_verify_peer_set, elixir_void_params_ecore_con_url_bool);
 
 static JSBool
 elixir_ecore_con_url_time(JSContext *cx, uintN argc, jsval *vp)
@@ -1650,6 +1651,25 @@ elixir_ecore_con_url_ftp_upload(JSContext *cx, uintN argc, jsval *vp)
 
    return JS_TRUE;
 }
+
+static JSBool
+elixir_ecore_con_url_ssl_ca_set(JSContext *cx, uintN argc, jsval *vp)
+{
+   Ecore_Con_Url *curl;
+   const char *filename;
+   elixir_value_t val[2];
+
+   if (!elixir_params_check(cx, _ecore_con_url_string_params, val, argc, JS_ARGV(cx, vp)))
+     return JS_FALSE;
+
+   GET_PRIVATE(cx, val[0].v.obj, curl);
+   filename = elixir_file_canonicalize(elixir_get_string_bytes(val[1].v.str, NULL));
+
+   JS_SET_RVAL(cx, vp, INT_TO_JSVAL(ecore_con_url_ssl_ca_set(curl, filename)));
+
+   return JS_TRUE;
+}
+
 
 static void
 _elixir_ecore_con_lookup_cb(const char *canonname,
@@ -1760,6 +1780,8 @@ static JSFunctionSpec           ecore_con_functions[] = {
   ELIXIR_FN(ecore_con_url_time, 3, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_ftp_upload, 4, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_lookup, 3, JSPROP_ENUMERATE, 0),
+  ELIXIR_FN(ecore_con_url_ssl_ca_set, 2, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_url_ssl_verify_peer_set, 2, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
 };
 
