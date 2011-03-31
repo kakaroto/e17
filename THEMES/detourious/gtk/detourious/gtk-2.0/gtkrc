@@ -416,6 +416,8 @@ include "menu.rc"
 
 style "gradient"
 {
+    GtkWindow::resize-grip-height = 0
+    GtkWindow::resize-grip-width = 0
     bg_pixmap[NORMAL] = "others/windowbg.png"
 }
 
