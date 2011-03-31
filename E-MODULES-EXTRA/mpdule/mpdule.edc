@@ -870,7 +870,7 @@ collections
                     }
                     text
                     {
-                        text: "looooonnnnnngggg sssshhhhhhiiiiiiiitttttt";
+                        text: "";
                         text_class: "mpdule";
                         font: "Sans:style=Bold";
                         size: 10;
