@@ -25,7 +25,7 @@
 #define UPDATE_LISTS(TYPE) do {                                                                          \
        if (e->backend_set_funcs && (e->backend_set_funcs->data == esql_##TYPE))                          \
          {                                                                                               \
-            free(e->backend_set_params->data);                                                           \
+            if (e->backend_set_params->data) free(e->backend_set_params->data);                          \
             e->backend_set_funcs = eina_list_remove_list(e->backend_set_funcs, e->backend_set_funcs);    \
             e->backend_set_params = eina_list_remove_list(e->backend_set_params, e->backend_set_params); \
             e->backend_ids = eina_list_remove_list(e->backend_ids, e->backend_ids);                      \
@@ -154,7 +154,8 @@ out:
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
         e->cur_id = *((Esql_Query_Id *)e->backend_ids->data);
-        e->cur_query = strdup(e->backend_set_params->data);
+        e->cur_query = e->backend_set_params->data;
+        e->backend_set_params->data = NULL;
         if (data) eina_hash_del_by_key(esql_query_data, e->backend_ids->data);
         UPDATE_LISTS(query);
         if (e->pool_member)
