@@ -24,7 +24,8 @@ module_la_SOURCES = evas-bindings.c evas-const-binding.c evas-events-binding.c \
 		evas-object-textblock.c evas-object-text.c evas-params.c \
 		evas-string-params.c void-params.c evas-smart.c \
 		evas-object-int-3-params.c evas-object-double-2-params.c \
-		evas-object-int-4-params.c evas-object-double-params.c
+		evas-object-int-4-params.c evas-object-double-params.c \
+		evas-map.c
 
 module_la_LIBADD = $(top_builddir)/src/lib/libelixir.la @EVAS_LIBS@
 
@@ -47,4 +48,6 @@ EXTRA_DIST =  evas-bindings.c evas-const-binding.c evas-events-binding.c \
 		evas-object-textblock.c evas-object-text.c evas-params.c \
 		evas-string-params.c void-params.c evas-bindings.h evas-smart.c \
 		evas-object-int-3-params.c evas-object-double-2-params.c \
-		evas-object-int-4-params.c evas-object-double-params.c
+		evas-object-int-4-params.c evas-object-double-params.c \
+		evas-map.c
+

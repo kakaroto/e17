@@ -103,6 +103,7 @@ FAST_CALL_PARAMS_SPEC(evas_object_image_pixels_dirty_set, elixir_evas_object_boo
 FAST_CALL_PARAMS_SPEC(evas_object_pass_events_set, elixir_evas_object_boolean_params, _evas_object_boolean_params);
 FAST_CALL_PARAMS_SPEC(evas_object_repeat_events_set, elixir_evas_object_boolean_params, _evas_object_boolean_params);
 FAST_CALL_PARAMS_SPEC(evas_object_propagate_events_set, elixir_evas_object_boolean_params, _evas_object_boolean_params);
+FAST_CALL_PARAMS_SPEC(evas_object_map_enable_set, elixir_evas_object_boolean_params, _evas_object_boolean_params);
 FAST_CALL_PARAMS_SPEC(evas_object_smart_need_recalculate_set, elixir_evas_object_boolean_params, _evas_object_smart_boolean_params);
 
 static JSFunctionSpec     evas_object_params_function[] = {
@@ -115,6 +116,7 @@ static JSFunctionSpec     evas_object_params_function[] = {
   ELIXIR_FN(evas_object_pass_events_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_repeat_events_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_propagate_events_set, 2, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(evas_object_map_enable_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_smart_need_recalculate_set, 2, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
 };

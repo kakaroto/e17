@@ -377,7 +377,7 @@ PKG_CHECK_MODULES([EINA], [eina])
 ELIXIR_CHECK_PKG_MODULE(EET, eet, [Eet file loading support])
 EINA_CHECK_STATIC(eet, eet)
 
-ELIXIR_CHECK_PKG_MODULE(EVAS, evas, [Evas module binding support])
+ELIXIR_CHECK_PKG_MODULE(EVAS, evas, [Evas module binding support], [>= 1.0.999])
 EINA_CHECK_STATIC(evas, evas)
 
 ELIXIR_CHECK_PKG_MODULE(ECORE, ecore, [Ecore module binding support])

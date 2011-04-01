@@ -37,12 +37,14 @@ FAST_CALL_PARAMS_SPEC(evas_object_smart_member_add, elixir_2_evas_object_params,
 FAST_CALL_PARAMS_SPEC(evas_object_stack_above, elixir_2_evas_object_params, _double_evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_stack_below, elixir_2_evas_object_params, _double_evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_clip_set, elixir_2_evas_object_params, _double_evas_object_params);
+FAST_CALL_PARAMS_SPEC(evas_object_map_source_set, elixir_2_evas_object_params, _double_evas_object_params);
 
 static JSFunctionSpec     evas_object_params_function[] = {
    ELIXIR_FN(evas_object_stack_above, 2, JSPROP_ENUMERATE, 0 ),
    ELIXIR_FN(evas_object_stack_below, 2, JSPROP_ENUMERATE, 0 ),
    ELIXIR_FN(evas_object_clip_set, 2, JSPROP_ENUMERATE, 0 ),
    ELIXIR_FN(evas_object_smart_member_add, 2, JSPROP_ENUMERATE, 0 ),
+   ELIXIR_FN(evas_object_map_source_set, 2, JSPROP_ENUMERATE, 0 ),
    JS_FS_END
 };
 

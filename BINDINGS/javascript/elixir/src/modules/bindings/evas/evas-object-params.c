@@ -579,6 +579,7 @@ FAST_CALL_PARAMS_SPEC(evas_object_smart_parent_get, elixir_object_evas_object_pa
 FAST_CALL_PARAMS_SPEC(evas_object_above_get, elixir_object_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_below_get, elixir_object_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_clip_get, elixir_object_evas_object_params, _evas_object_params);
+FAST_CALL_PARAMS_SPEC(evas_object_map_source_get, elixir_object_evas_object_params, _evas_object_params);
 
 /* No enum in JS. */
 FAST_CALL_PARAMS_SPEC_CAST(evas_object_text_style_get, elixir_int_evas_object_params, _evas_object_text_params);
@@ -599,6 +600,7 @@ FAST_CALL_PARAMS_SPEC(evas_object_text_inset_get, elixir_int_evas_object_params,
 FAST_CALL_PARAMS_SPEC(evas_object_focus_get, elixir_bool_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_visible_get, elixir_bool_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_anti_alias_get, elixir_bool_evas_object_params, _evas_object_params);
+FAST_CALL_PARAMS_SPEC(evas_object_map_enable_get, elixir_bool_evas_object_params, _evas_object_params);
 FAST_CALL_PARAMS_SPEC(evas_object_image_alpha_get, elixir_bool_evas_object_params, _evas_object_image_params);
 FAST_CALL_PARAMS_SPEC(evas_object_image_smooth_scale_get, elixir_bool_evas_object_params, _evas_object_image_params);
 FAST_CALL_PARAMS_SPEC(evas_object_image_pixels_dirty_get, elixir_bool_evas_object_params, _evas_object_image_params);
@@ -654,10 +656,12 @@ static JSFunctionSpec     evas_object_params_function[] = {
   ELIXIR_FN(evas_object_above_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_below_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_clip_get, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(evas_object_map_source_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_layer_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_render_op_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_visible_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_anti_alias_get, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(evas_object_map_enable_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_geometry_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_color_get, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(evas_object_clipees_get, 1, JSPROP_ENUMERATE, 0 ),

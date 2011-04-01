@@ -82,7 +82,8 @@ libelixir_la_SOURCES += $(top_srcdir)/src/modules/bindings/evas/evas-bindings.c 
 	$(top_srcdir)/src/modules/bindings/evas/evas-object-textblock.c $(top_srcdir)/src/modules/bindings/evas/evas-object-text.c $(top_srcdir)/src/modules/bindings/evas/evas-params.c \
 	$(top_srcdir)/src/modules/bindings/evas/evas-string-params.c $(top_srcdir)/src/modules/bindings/evas/void-params.c $(top_srcdir)/src/modules/bindings/evas/evas-smart.c \
 	$(top_srcdir)/src/modules/bindings/evas/evas-object-int-3-params.c $(top_srcdir)/src/modules/bindings/evas/evas-object-double-2-params.c \
-	$(top_srcdir)/src/modules/bindings/evas/evas-object-int-4-params.c $(top_srcdir)/src/modules/bindings/evas/evas-object-double-params.c
+	$(top_srcdir)/src/modules/bindings/evas/evas-object-int-4-params.c $(top_srcdir)/src/modules/bindings/evas/evas-object-double-params.c \
+	$(top_srcdir)/src/modules/bindings/evas/evas-map.c
 
 libelixir_la_LIBADD += @EVAS_LIBS@
 INCLUDES += @EVAS_CFLAGS@
