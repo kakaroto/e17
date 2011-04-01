@@ -1737,6 +1737,28 @@ elixir_ecore_con_lookup(JSContext *cx, uintN argc, jsval *vp)
    return JS_TRUE;
 }
 
+static JSBool
+elixir_ecore_con_url_pipeline_set(JSContext *cx, uintN argc, jsval *vp)
+{
+  elixir_value_t val[1];
+
+  if (!elixir_params_check(cx, boolean_params, val, argc, JS_ARGV(cx, vp)))
+    return JS_FALSE;
+
+  ecore_con_url_pipeline_set(val[0].v.bol);
+
+  return JS_TRUE;
+}
+
+static JSBool
+elixir_ecore_con_url_pipeline_get(JSContext *cx, uintN argc, jsval *vp)
+{
+  if (!elixir_params_check(cx, void_params, NULL, argc, JS_ARGV(cx, vp)))
+    return JS_FALSE;
+
+  JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(ecore_con_url_pipeline_get()));
+  return JS_FALSE;
+}
 
 static JSFunctionSpec           ecore_con_functions[] = {
   ELIXIR_FN(ecore_con_init, 0, JSPROP_ENUMERATE, 0 ),
@@ -1782,6 +1804,8 @@ static JSFunctionSpec           ecore_con_functions[] = {
   ELIXIR_FN(ecore_con_lookup, 3, JSPROP_ENUMERATE, 0),
   ELIXIR_FN(ecore_con_url_ssl_ca_set, 2, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(ecore_con_url_ssl_verify_peer_set, 2, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_url_pipeline_set, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(ecore_con_url_pipeline_get, 0, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
 };
 
