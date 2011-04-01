@@ -56,7 +56,7 @@ esql_pool_rebalance(Esql_Pool *ep, Esql *e /* idle connection */)
    DBG("(ep=%p, e=%p)", ep, e);
    EINA_INLIST_FOREACH(ep->esqls, it)
      {
-        if (it->backend_set_funcs) /* queued call */
+        if (it->backend_set_funcs && (it->backend_set_funcs->data == (Esql_Set_Cb)esql_query)) /* queued call */
           {
              INFO("Load balancing: moving query from %u to %u", it->pool_id, e->pool_id);
 #if defined(eina_list_move_list)
