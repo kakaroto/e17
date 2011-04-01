@@ -231,7 +231,10 @@ esql_connect_handler(Esql             *e,
                   e->cur_query = NULL;
 
                   res->error = e->error;
-                  ERR("Connection error: %s", res->error);
+                  if (e->pool_member)
+                    ERR("Pool member %u: Connection error: %s", e->pool_id, res->error);
+                  else
+                    ERR("Connection error: %s", res->error);
 
                   INFO("Executing callback for current query (%lu)", res->qid);
                   qcb(res, e->cur_data);
