@@ -40,9 +40,64 @@ esql_fake_free(void *data __UNUSED__,
 }
 
 static void
-esql_call_complete(Esql *e)
+esql_next(Esql *e)
 {
    Esql_Set_Cb cb;
+
+   e->current = ESQL_CONNECT_TYPE_NONE;
+   e->error = NULL;
+   if (!e->backend_set_funcs)
+     {
+        if (e->pool_member)
+          {
+             if (!esql_pool_rebalance(e->pool_struct, e))
+               {
+                  INFO("Pool member %u is now idle", e->pool_id);
+                  return;
+               }
+          }
+        else
+          {
+             INFO("No calls queued");
+             return;
+          }
+     }
+   /* next call */
+   cb = e->backend_set_funcs->data;
+   if (cb == (Esql_Set_Cb)esql_database_set)
+     {
+        cb(e, e->backend_set_params->data);
+        UPDATE_LISTS(database_set);
+        if (e->pool_member)
+          INFO("Pool member %u: next call: DB change", e->pool_id);
+        else
+          INFO("Next call: DB change");
+     }
+   else if (cb == (Esql_Set_Cb)esql_query)
+     { /* don't use cb, leads to unnecessary calls and breakage */
+        void *data;
+
+        data = eina_hash_find(esql_query_data, e->backend_ids->data);
+        DBG("(e=%p, query=%s)", e, (char*)e->backend_set_params->data);
+        e->backend.query(e, e->backend_set_params->data);
+        e->current = ESQL_CONNECT_TYPE_QUERY;
+        e->cur_data = data;
+        e->cur_id = *((Esql_Query_Id *)e->backend_ids->data);
+        e->cur_query = e->backend_set_params->data;
+        e->backend_set_params->data = NULL;
+        if (data) eina_hash_del_by_key(esql_query_data, e->backend_ids->data);
+        UPDATE_LISTS(query);
+        if (e->pool_member)
+          INFO("Pool member %u: next call: query", e->pool_id);
+        else
+          INFO("Next call: query");
+     }
+   esql_connect_handler(e, e->fdh); /* have to call again to start next call */
+}
+
+static void
+esql_call_complete(Esql *e)
+{
    Esql *ev;
 
    DBG("(e=%p)", e);
@@ -115,55 +170,7 @@ esql_call_complete(Esql *e)
         break;
      }
 out:
-   e->current = ESQL_CONNECT_TYPE_NONE;
-   e->error = NULL;
-   if (!e->backend_set_funcs)
-     {
-        if (e->pool_member)
-          {
-             if (!esql_pool_rebalance(e->pool_struct, e))
-               {
-                  INFO("Pool member %u is now idle", e->pool_id);
-                  return;
-               }
-          }
-        else
-          {
-             INFO("No calls queued");
-             return;
-          }
-     }
-   /* next call */
-   cb = e->backend_set_funcs->data;
-   if (cb == (Esql_Set_Cb)esql_database_set)
-     {
-        cb(e, e->backend_set_params->data);
-        UPDATE_LISTS(database_set);
-        if (e->pool_member)
-          INFO("Pool member %u: next call: DB change", e->pool_id);
-        else
-          INFO("Next call: DB change");
-     }
-   else if (cb == (Esql_Set_Cb)esql_query)
-     { /* don't use cb, leads to unnecessary calls and breakage */
-        void *data;
-
-        data = eina_hash_find(esql_query_data, e->backend_ids->data);
-        DBG("(e=%p, query=%s)", e, (char*)e->backend_set_params->data);
-        e->backend.query(e, e->backend_set_params->data);
-        e->current = ESQL_CONNECT_TYPE_QUERY;
-        e->cur_data = data;
-        e->cur_id = *((Esql_Query_Id *)e->backend_ids->data);
-        e->cur_query = e->backend_set_params->data;
-        e->backend_set_params->data = NULL;
-        if (data) eina_hash_del_by_key(esql_query_data, e->backend_ids->data);
-        UPDATE_LISTS(query);
-        if (e->pool_member)
-          INFO("Pool member %u: next call: query", e->pool_id);
-        else
-          INFO("Next call: query");
-     }
-   esql_connect_handler(e, e->fdh); /* have to call again to start next call */
+   esql_next(e);
 }
 
 Eina_Bool
@@ -235,6 +242,8 @@ esql_connect_handler(Esql             *e,
                }
              else
                ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+             esql_next(e);
+	     return ECORE_CALLBACK_RENEW;
           }
         else
           {
