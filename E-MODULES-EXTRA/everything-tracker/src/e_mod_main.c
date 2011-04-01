@@ -1030,14 +1030,8 @@ e_modapi_init(E_Module *m)
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-   evry_module = E_NEW(Evry_Module, 1);
-   evry_module->init     = &_plugins_init;
-   evry_module->shutdown = &_plugins_shutdown;
-   EVRY_MODULE_REGISTER(evry_module);
-
-   if ((evry = e_datastore_get("everything_loaded")))
-     evry_module->active = _plugins_init(evry);
-
+   EVRY_MODULE_NEW(evry_module, evry, _plugins_init, _plugins_shutdown);
+   
    e_module_delayed_set(m, 1);
 
    return m;
@@ -1046,11 +1040,8 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-   _plugins_shutdown();
-
-   EVRY_MODULE_UNREGISTER(evry_module);
-   E_FREE(evry_module);
-
+   EVRY_MODULE_FREE(evry_module);
+   
    return 1;
 }
 

@@ -1534,12 +1534,7 @@ _plugins_shutdown(void)
 
 /***************************************************************************/
 
-/* module setup */
-EAPI E_Module_Api e_modapi =
-  {
-    E_MODULE_API_VERSION,
-    PACKAGE
-  };
+EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, PACKAGE };
 
 EAPI void *
 e_modapi_init(E_Module *m)
@@ -1554,13 +1549,7 @@ e_modapi_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/e-module.edj", e_module_dir_get(m));
    theme_file = strdup(buf);
 
-   evry_module = E_NEW(Evry_Module, 1);
-   evry_module->init     = &_plugins_init;
-   evry_module->shutdown = &_plugins_shutdown;
-   EVRY_MODULE_REGISTER(evry_module);
-
-   if ((evry = e_datastore_get("everything_loaded")))
-     evry_module->active = _plugins_init(evry);
+   EVRY_MODULE_NEW(evry_module, evry, _plugins_init, _plugins_shutdown);
 
    e_module_delayed_set(m, 1);
 
@@ -1570,10 +1559,7 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-   _plugins_shutdown();
-
-   EVRY_MODULE_UNREGISTER(evry_module);
-   E_FREE(evry_module);
+   EVRY_MODULE_FREE(evry_module);
 
    E_FREE(theme_file);
 
