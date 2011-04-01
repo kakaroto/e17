@@ -369,6 +369,7 @@ static const struct {
   { NULL, NULL }
 };
 
+#ifdef BUILD_MODULE_EVAS
 const char*
 evas_object_to_elixir_object(Evas_Object *obj)
 {
@@ -387,7 +388,6 @@ evas_object_to_elixir_object(Evas_Object *obj)
    return "evas_object_smart";
 }
 
-#ifdef BUILD_MODULE_EVAS
 static void
 _elixir_evas_object(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
