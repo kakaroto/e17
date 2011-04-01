@@ -38,7 +38,8 @@ esql_res_to_string(Esql_Res *res)
    Esql_Row *row;
    Esql_Cell *cell;
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, NULL);
+   if (!res->row_count) return NULL;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(
@@ -59,7 +60,8 @@ esql_res_to_blob(Esql_Res *res)
    Esql_Cell *cell;
    unsigned char *ret;
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, NULL);
+   if (!res->row_count) return NULL;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(
@@ -80,8 +82,9 @@ esql_res_to_lli(Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(res, EINA_FALSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, 0);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, 0);
+   if (!res->row_count) return 0;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    switch (cell->type)
@@ -110,7 +113,8 @@ esql_res_to_double(Esql_Res *res)
    Esql_Row *row;
    Esql_Cell *cell;
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, 0.0);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, 0.0);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, 0.0);
+   if (!res->row_count) return 0.0;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    switch (cell->type)
@@ -139,7 +143,8 @@ esql_res_to_tm(Esql_Res *res)
    Esql_Cell *cell;
    struct tm *ret;
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, NULL);
+   if (!res->row_count) return NULL;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    EINA_SAFETY_ON_TRUE_RETURN_VAL((cell->type != ESQL_CELL_TYPE_TIMESTAMP) &&
@@ -161,7 +166,8 @@ esql_res_to_timeval(Esql_Res *res)
    Esql_Cell *cell;
    struct timeval *ret;
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count != 1, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, NULL);
+   if (!res->row_count) return NULL;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
    EINA_SAFETY_ON_TRUE_RETURN_VAL((cell->type != ESQL_CELL_TYPE_TIME) &&
