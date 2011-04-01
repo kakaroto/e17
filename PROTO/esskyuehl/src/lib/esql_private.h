@@ -98,7 +98,7 @@ struct Esql
    void           *data;
    char           *cur_query;
    Esql_Query_Id   cur_id;
-   Eina_Bool         pool_member : 1;
+   Eina_Bool       pool_member : 1;
 
    struct
    {
@@ -207,9 +207,9 @@ esql_pool_query_args(Esql_Pool  *ep,
                      const char *fmt,
                      va_list     args);
 void
- esql_pool_disconnect(Esql_Pool *ep);
+esql_pool_disconnect(Esql_Pool *ep);
 Eina_Bool
- esql_pool_connect(Esql_Pool *ep,
+esql_pool_connect(Esql_Pool *ep,
                   const char *addr,
                   const char *user,
                   const char *passwd);

@@ -45,7 +45,6 @@ esql_next(Esql *e)
    Esql_Set_Cb cb;
 
    e->current = ESQL_CONNECT_TYPE_NONE;
-   e->error = NULL;
    if (!e->backend_set_funcs)
      {
         if (e->pool_member)
@@ -185,6 +184,10 @@ esql_connect_handler(Esql             *e,
    if (!ecore_main_fd_handler_active_get(fdh, ECORE_FD_READ | ECORE_FD_WRITE))
      return ECORE_CALLBACK_RENEW;
    ecore_main_fd_handler_active_set(fdh, 0);
+   if (e->pool_member)
+     INFO("Pool member %u: Running io", e->pool_id);
+   else
+     INFO("Running io");
    switch (e->backend.io(e))
      {
       case 0:
@@ -231,6 +234,7 @@ esql_connect_handler(Esql             *e,
                   e->cur_query = NULL;
 
                   res->error = e->error;
+                  e->error = NULL;
                   if (e->pool_member)
                     ERR("Pool member %u: Connection error: %s", e->pool_id, res->error);
                   else
@@ -246,7 +250,7 @@ esql_connect_handler(Esql             *e,
              else
                ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
              esql_next(e);
-	     return ECORE_CALLBACK_RENEW;
+             return ECORE_CALLBACK_RENEW;
           }
         else
           {
