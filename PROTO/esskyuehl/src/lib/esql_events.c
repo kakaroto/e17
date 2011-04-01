@@ -97,7 +97,7 @@ esql_call_complete(Esql *e)
            qcb = eina_hash_find(esql_query_callbacks, &e->cur_id);
            if (qcb)
              {
-                INFO("Executing callback for current query");
+                INFO("Executing callback for current query (%lu)", res->qid);
                 qcb(res, e->cur_data);
                 e->query_start = e->query_end = 0.0;
                 eina_hash_del_by_key(esql_query_callbacks, &e->cur_id);
@@ -105,7 +105,7 @@ esql_call_complete(Esql *e)
              }
            else
              {
-                INFO("Emitting event for current query");
+                INFO("Emitting event for current query (%lu)", res->qid);
                 ecore_event_add(ESQL_EVENT_RESULT, res, (Ecore_End_Cb)esql_res_free, NULL);
              }
         }
@@ -225,7 +225,7 @@ esql_connect_handler(Esql             *e,
                   res->error = e->error;
                   ERR("Connection error: %s", res->error);
 
-                  INFO("Executing callback for current event");
+                  INFO("Executing callback for current query (%lu)", res->qid);
                   qcb(res, e->cur_data);
 
                   e->query_start = e->query_end = 0.0;
