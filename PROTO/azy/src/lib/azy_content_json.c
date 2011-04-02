@@ -344,7 +344,7 @@ azy_content_unserialize_response_json(Azy_Content *content,
 
         if (msg)
           {
-#if defined(eina_error_find)
+#if defined(HAVE_EINA_ERROR_FIND)
              Eina_Error e;
 
              e = eina_error_find(msg);

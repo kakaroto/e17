@@ -105,6 +105,10 @@ AC_SUBST(MYSQL_CFLAGS)
 AC_SUBST(MYSQL_LIBS)
 
 PKG_CHECK_MODULES(AZY, [$AZY_REQUIRES])
+cflags="$CFLAGS"
+CFLAGS="$AZY_CFLAGS"
+AC_CHECK_LIB([eina], [eina_error_find], [AC_DEFINE_UNQUOTED([HAVE_EINA_ERROR_FIND], [1], [eina_error_find is present])], [])
+CFLAGS="$cflags"
 want_xml=
 AC_ARG_ENABLE([xml],
    [AC_HELP_STRING([--enable-xml], [enable xml parser support @<:@default=yes@:>@])],
