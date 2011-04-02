@@ -68,7 +68,7 @@ static const char *error501 = "HTTP/1.1 501 Method Not Implemented\r\n"
 
 static void                      _azy_server_client_new(Azy_Server       *server,
                                                         Ecore_Con_Client *conn);
-static void                      _azy_server_module_free(Azy_Server_Module *module,
+static Eina_Bool                 _azy_server_module_free(Azy_Server_Module *module,
                                                          Eina_Bool          shutdown);
 static Azy_Server_Module        *_azy_server_module_new(Azy_Server_Module_Def *def,
                                                         Azy_Server_Client     *client);
@@ -98,21 +98,44 @@ static Eina_Bool _azy_server_client_handler_data(Azy_Server_Client           *cl
 
 static void _azy_server_client_free(Azy_Server_Client *client);
 
-static void
+static Eina_Bool
 _azy_server_module_free(Azy_Server_Module *module,
                         Eina_Bool          shutdown)
 {
    if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
      {
         AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
-        return;
+        return EINA_TRUE;
      }
 
-   if (shutdown && module->def && module->def->shutdown)
+   if (shutdown)
+     {
+        if ((module->state < AZY_SERVER_MODULE_STATE_POST) && module->def && module->def->post)
+          {
+             module->executing = EINA_TRUE;
+             module->rewind_now = EINA_FALSE;
+top:
+             module->def->post(module, NULL);
+             if (module->rewind_now) goto top;
+             else module->state = AZY_SERVER_MODULE_STATE_POST;
+             if (module->suspend)
+               {
+                  module->executing = EINA_FALSE;
+                  return EINA_FALSE;
+               }
+          }
+        if (module->def && module->def->shutdown)
+          module->def->shutdown(module);
+     }
+
+   if (module->def && module->def->shutdown)
      module->def->shutdown(module);
 
+   if (module->new_net && (module->client->current != module->new_net))
+     azy_net_free(module->new_net);
    free(module->data);
    free(module);
+   return EINA_TRUE;
 }
 
 static Azy_Server_Module *
@@ -277,21 +300,21 @@ top:
    switch (module->state)
      {
       case AZY_SERVER_MODULE_STATE_INIT:
-        if (!module->client->new_net)
+        if (!module->new_net)
           {
              new = azy_net_new(module->client->current->conn);
              new->server_client = EINA_TRUE;
           }
         if (module->def->pre)
-          module->run_method = module->def->pre(module, module->client->new_net ? module->client->new_net : new);
+          module->run_method = module->def->pre(module, module->new_net ? module->new_net : new);
 
-        if (!module->client->new_net)
+        if (!module->new_net)
           {
              /* grab the req path before it gets freed */
              new->http.req.http_path = module->client->current->http.req.http_path;
              new->type = module->client->current->type;
              new->transport = module->client->current->transport;
-             module->client->new_net = new;
+             module->new_net = new;
           }
 
         if (module->rewind_now) goto top;
@@ -299,6 +322,9 @@ top:
         else
           {
              module->state = AZY_SERVER_MODULE_STATE_ERR;
+             module->client->current->http.req.http_path = NULL;
+             azy_net_free(module->client->current);
+             module->client->current = module->new_net;
              goto post;
           }
         if (module->suspend)
@@ -309,9 +335,14 @@ top:
 
       case AZY_SERVER_MODULE_STATE_PRE:
         module->client->current->http.req.http_path = NULL;
-        azy_net_free(module->client->current);
-        module->client->current = module->client->new_net;
-        module->client->new_net = NULL;
+        if (module->new_net && (module->client->current != module->new_net))
+          {
+             module->new_net->type = client->current->type;
+             module->new_net->transport = client->current->transport;
+             azy_net_free(module->client->current);
+             module->client->current = module->new_net;
+             module->new_net = NULL;
+          }
         if (!module->run_method)
           {
              module->state = AZY_SERVER_MODULE_STATE_ERR;
@@ -348,6 +379,7 @@ top:
       case AZY_SERVER_MODULE_STATE_METHOD:
       case AZY_SERVER_MODULE_STATE_ERR:
 post:
+        module->new_net = NULL;
         if (module->def->post)
           client->resume_ret = module->def->post(module, content);
 
@@ -406,6 +438,7 @@ static void
 _azy_server_client_free(Azy_Server_Client *client)
 {
    Azy_Server_Module *s;
+   Eina_List *l;
    DBG("(client=%p)", client);
 
    if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_SERVER_CLIENT))
@@ -414,18 +447,20 @@ _azy_server_client_free(Azy_Server_Client *client)
         return;
      }
    client->dead = EINA_TRUE;
-   if (client->suspend || client->resume) return;
-   AZY_MAGIC_SET(client, AZY_MAGIC_NONE);
-   ecore_con_client_data_set(client->net->conn, NULL);
+   if (client->suspend || client->resume || (client->executing && client->resuming)) return;
+   EINA_LIST_FOREACH(client->modules, l, s)
+     if (s->executing) return;
 
    EINA_LIST_FREE(client->modules, s)
-     _azy_server_module_free(s, EINA_TRUE);
+     if (!_azy_server_module_free(s, EINA_TRUE)) return;
+
+   AZY_MAGIC_SET(client, AZY_MAGIC_NONE);
+   ecore_con_client_data_set(client->net->conn, NULL);
    azy_net_free(client->net);
    client->net = NULL;
-   if (client->current) azy_net_free(client->current);
+   if (client->current)
+     azy_net_free(client->current);
    client->current = NULL;
-   if (client->new_net) azy_net_free(client->new_net);
-   client->new_net = NULL;
    if (client->session_id)
      eina_stringshare_del(client->session_id);
 
@@ -549,23 +584,23 @@ top:
    switch (module->state)
      {
       case AZY_SERVER_MODULE_STATE_INIT:
-        if (!module->client->new_net)
+        if (!module->new_net)
           {
              net = azy_net_new(client->current->conn);
              net->server_client = EINA_TRUE;
           }
         if (def->pre)
-          module->run_method = def->pre(module, module->client->new_net ? module->client->new_net : net);
+          module->run_method = def->pre(module, module->new_net ? module->new_net : net);
 
         module->recv.data = client->current->buffer;
         module->recv.size = client->current->size;
-        if (!module->client->new_net)
+        if (!module->new_net)
           {
              /* grab the req path before it gets freed */
              net->http.req.http_path = client->current->http.req.http_path;
              net->type = module->client->current->type;
              net->transport = module->client->current->transport;
-             module->client->new_net = net;
+             module->new_net = net;
           }
 
         if (module->rewind_now) goto top;
@@ -573,6 +608,10 @@ top:
         else
           {
              module->state = AZY_SERVER_MODULE_STATE_ERR;
+             client->current->buffer = NULL; /* prevent buffer from being freed */
+             client->current->http.req.http_path = NULL;
+             azy_net_free(client->current);
+             client->current = module->new_net;
              goto post;
           }
         if (module->suspend)
@@ -584,8 +623,14 @@ top:
       case AZY_SERVER_MODULE_STATE_PRE:
         client->current->buffer = NULL; /* prevent buffer from being freed */
         client->current->http.req.http_path = NULL;
-        azy_net_free(client->current);
-        client->current = module->client->new_net;
+        if (module->new_net && (module->client->current != module->new_net))
+          {
+             module->new_net->type = client->current->type;
+             module->new_net->transport = client->current->transport;
+             azy_net_free(module->client->current);
+             module->client->current = module->new_net;
+             module->new_net = NULL;
+          }
         if (!module->run_method)
           {
              module->state = AZY_SERVER_MODULE_STATE_ERR;
@@ -607,6 +652,7 @@ top:
       case AZY_SERVER_MODULE_STATE_METHOD:
       case AZY_SERVER_MODULE_STATE_ERR:
 post:
+        module->new_net = NULL;
         if (!client->resume_ret) goto not_impl;  /* line 504ish (above) */
         if (module->def->post)
           client->resume_ret = module->def->post(module, NULL);
@@ -696,6 +742,7 @@ _azy_server_client_send(Azy_Server_Client *client,
         INFO("Disconnecting for HTTP/1.0 compliance");
         client->dead = EINA_TRUE;
         ecore_timer_add(0.00001, (Ecore_Task_Cb)ecore_con_client_del, net->conn);
+        net->conn = NULL;
      }
 
 error:
@@ -757,15 +804,18 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
      {
         new = azy_net_new(client->net->conn);
         new->server_client = EINA_TRUE;
+        new->transport = client->net->transport;
+        new->type = client->net->type;
         client->current = client->net;
         client->net = new;
      }
-
+   client->executing = EINA_TRUE;
    switch (client->current->type)
      {
       case AZY_NET_TYPE_GET:
       case AZY_NET_TYPE_PUT:
         _azy_server_client_get_put(client);
+        client->executing = EINA_FALSE;
         if (!client->suspend)
           {
              azy_net_free(client->current);
@@ -783,6 +833,7 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
            case AZY_NET_TRANSPORT_XML:
              /*case AZY_NET_TRANSPORT_EET:*/
              _azy_server_client_rpc(client, client->current->transport);
+             client->executing = EINA_FALSE;
              if (!client->suspend)
                {
                   azy_net_free(client->current);
@@ -802,7 +853,7 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
         break;
      }
 
-   azy_events_connection_kill(client->current->conn, EINA_TRUE, error501);
+   azy_events_connection_kill(client->net->conn, EINA_TRUE, error501);
    _azy_server_client_free(client);
    return ECORE_CALLBACK_RENEW;
 }
@@ -1039,7 +1090,8 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
         return;
      }
    client = module->client;
-   if (client->dead)
+   client->resuming = EINA_TRUE;
+   if (client->dead && (!client->executing))
      {
         azy_net_free(client->resume);
         client->resume = NULL;
@@ -1053,6 +1105,7 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
    if (!module->suspend)
      {
         WARN("Module is currently active, this function has no effect!");
+        client->resuming = EINA_FALSE;
         return;
      }
 
@@ -1063,6 +1116,7 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
         if (module->rewind) module->rewind_now = EINA_TRUE;
         module->rewind = EINA_FALSE;
         module->client->resume = NULL;
+        client->resuming = EINA_FALSE;
         return;
      }
    if (module->rewind) module->state--;
@@ -1084,12 +1138,20 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
      }
    module->rewind = EINA_FALSE;
    _azy_server_client_handler_request(client);
-   if (client->suspend) return;
+   if (client->suspend)
+     {
+        client->resuming = EINA_FALSE;
+        return;
+     }
    EINA_LIST_FREE(client->suspended_nets, net)
      {
         client->resume = net;
         _azy_server_client_handler_request(client);
-        if (client->suspend) return;
+        if (client->suspend)
+          {
+             client->resuming = EINA_FALSE;
+             return;
+          }
         client->resume_ret = EINA_FALSE;
      }
 
@@ -1123,6 +1185,7 @@ azy_server_module_events_suspend(Azy_Server_Module *module)
         WARN("Module is currently suspended, this function has no effect!");
         return;
      }
+   EINA_SAFETY_ON_NULL_RETURN(module->client->current);
 
    module->suspend = EINA_TRUE;
    module->client->suspend = EINA_TRUE;
