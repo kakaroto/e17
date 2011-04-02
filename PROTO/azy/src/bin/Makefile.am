@@ -1,6 +1,6 @@
 if NEED_RE2C
 SUBDIRS = re2c
-REC = $(top_srcdir)/src/bin/re2c/re2c
+REC = $(top_builddir)/src/bin/re2c/re2c
 else
 REC = $(RE2C)
 endif
