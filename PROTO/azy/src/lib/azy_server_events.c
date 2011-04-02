@@ -323,6 +323,9 @@ top:
           {
              module->state = AZY_SERVER_MODULE_STATE_ERR;
              module->client->current->http.req.http_path = NULL;
+             module->new_net->type = client->current->type;
+             module->new_net->transport = client->current->transport;
+             module->new_net->http.version = client->current->http.version;
              azy_net_free(module->client->current);
              module->client->current = module->new_net;
              goto post;
@@ -339,6 +342,7 @@ top:
           {
              module->new_net->type = client->current->type;
              module->new_net->transport = client->current->transport;
+             module->new_net->http.version = client->current->http.version;
              azy_net_free(module->client->current);
              module->client->current = module->new_net;
              module->new_net = NULL;
@@ -610,6 +614,9 @@ top:
              module->state = AZY_SERVER_MODULE_STATE_ERR;
              client->current->buffer = NULL; /* prevent buffer from being freed */
              client->current->http.req.http_path = NULL;
+             module->new_net->type = client->current->type;
+             module->new_net->transport = client->current->transport;
+             module->new_net->http.version = client->current->http.version;
              azy_net_free(client->current);
              client->current = module->new_net;
              goto post;
@@ -627,6 +634,7 @@ top:
           {
              module->new_net->type = client->current->type;
              module->new_net->transport = client->current->transport;
+             module->new_net->http.version = client->current->http.version;
              azy_net_free(module->client->current);
              module->client->current = module->new_net;
              module->new_net = NULL;
@@ -805,6 +813,7 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
         new = azy_net_new(client->net->conn);
         new->server_client = EINA_TRUE;
         new->transport = client->net->transport;
+        new->http.version = client->net->http.version;
         new->type = client->net->type;
         client->current = client->net;
         client->net = new;
