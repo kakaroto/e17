@@ -690,7 +690,7 @@ gen_type_esql(Azy_Typedef *t,
 
         EL(1, "Eina_Iterator *it;");
         EL(1, "Esql_Row *r;");
-	EL(1, "Eina_List *ret = NULL;");
+        EL(1, "Eina_List *ret = NULL;");
         if ((t->item_type->ctype == b) || (t->item_type->ctype == i))
           EL(1, "long long int tmp;");
         else if (t->item_type->ctype == b64)
@@ -1056,6 +1056,8 @@ gen_common_headers(void)
    fclose(f);
    if (esql_funcs)
      {
+        Azy_Server_Module *s;
+        Eina_List *l;
         OPEN("%s/%s%sCommon_Esskyuehl.h", out_dir, name, sep);
         EL(0, "#ifndef %s_Common_ESQL_H", (azy->name) ? azy->name : "AZY");
         EL(0, "#define %s_Common_ESQL_H", (azy->name) ? azy->name : "AZY");
@@ -1064,6 +1066,9 @@ gen_common_headers(void)
         NL;
         EINA_LIST_FOREACH(azy->types, j, t)
           gen_type_esql(t, EINA_TRUE);
+        EINA_LIST_FOREACH(azy->modules, l, s)
+          EINA_LIST_FOREACH(s->types, j, t)
+            gen_type_esql(t, EINA_TRUE);
         EL(0, "#endif");
         fclose(f);
      }
@@ -1151,11 +1156,16 @@ gen_common_impl(Azy_Server_Module *s)
         gen_marshalizers(NULL, EINA_FALSE);
         if (esql_funcs)
           {
+             Azy_Server_Module *s;
+             Eina_List *l;
              fclose(f);
              OPEN("%s/%s%sCommon_Esskyuehl.c", out_dir, name, sep);
              EL(0, "#include \"%s%sCommon_Esskyuehl.h\"", name, sep);
              EINA_LIST_FOREACH(azy->types, j, t)
                gen_type_esql(t, EINA_FALSE);
+             EINA_LIST_FOREACH(azy->modules, l, s)
+               EINA_LIST_FOREACH(s->types, j, t)
+                 gen_type_esql(t, EINA_FALSE);
           }
      }
    else if (s->errors)
