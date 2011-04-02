@@ -66,6 +66,11 @@ requirement_esskyuehl="eina >= 1.0.0 ecore >= 1.0.0"
 AC_SUBST(requirement_esskyuehl)
 
 PKG_CHECK_MODULES([EFL], [$requirement_esskyuehl])
+cflags="$CFLAGS"
+CFLAGS="$AZY_CFLAGS"
+AC_CHECK_LIB([eina], [eina_list_move_list], [AC_DEFINE_UNQUOTED([HAVE_EINA_LIST_MOVE_LIST], [1], [eina_list_move_list is present])], [])
+CFLAGS="$cflags"
+
 AC_MSG_CHECKING([for mysql])
 AC_PATH_PROG([mysql_config], [mysql_config])
 if test "x$mysql_config" != "x";then
