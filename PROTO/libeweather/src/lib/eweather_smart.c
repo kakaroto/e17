@@ -130,8 +130,7 @@ void eweather_theme_set(Evas_Object *obj, const char *theme)
     Smart_Data *sd = evas_object_smart_data_get(obj);
     if(!sd) return ;
 
-    eina_stringshare_del(sd->theme);
-    sd->theme = eina_stringshare_add(theme);
+    eina_stringshare_replace(&sd->theme, theme);
 
     edje_object_file_set(sd->obj, sd->theme, "main");
     edje_object_file_set(sd->main, sd->theme, "weather");
@@ -605,6 +604,8 @@ _smart_del(Evas_Object * obj)
    evas_object_del(sd->obj);
    evas_object_del(sd->main);
    eina_stringshare_del(sd->theme);
+   eina_stringshare_del(sd->farenheit_format);
+   eina_stringshare_del(sd->celcius_format);
 
    free(sd);
 }
