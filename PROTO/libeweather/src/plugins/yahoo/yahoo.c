@@ -312,7 +312,7 @@ _parse(Instance *inst)
    needle = strstr(needle, "temp=\"");
    if (!needle) goto error;
    needle+=6;
-   sscanf(needle, "%d\"", &(e_data->temp));
+   sscanf(needle, "%lf\"", &(e_data->temp));
 
 
    needle = strstr(needle, "<b>Forecast:</b><BR />");
@@ -321,12 +321,12 @@ _parse(Instance *inst)
    needle = strstr(needle, "High: ");
    if (!needle) goto error;
    needle+=6;
-   sscanf(needle, "%d ", &(e_data->temp_max));
+   sscanf(needle, "%lf ", &(e_data->temp_max));
 
    needle = strstr(needle, "Low: ");
    if (!needle) goto error;
    needle+=5;
-   sscanf(needle, "%d ", &(e_data->temp_min));
+   sscanf(needle, "%lf ", &(e_data->temp_min));
 
    e_data_current = e_data;
 
@@ -361,12 +361,12 @@ _parse(Instance *inst)
    needle = strstr(needle, "low=\"");
    if (!needle) goto error;
    needle+=5;
-   sscanf(needle, "%d\"", &(e_data->temp_min));
+   sscanf(needle, "%lf\"", &(e_data->temp_min));
 
    needle = strstr(needle, "high=\"");
    if (!needle) goto error;
    needle+=6;
-   sscanf(needle, "%d\"", &(e_data->temp_max));
+   sscanf(needle, "%lf\"", &(e_data->temp_max));
 
    e_data->temp = ( e_data->temp_min + e_data->temp_max ) / 2;
 

@@ -16,9 +16,9 @@ typedef void (*Plugin_Code_Updated) (EWeather *eweather);
 struct EWeather_Data
 {
    EWeather_Type type;
-   int temp;
-   int temp_min;
-   int temp_max;
+   double temp;
+   double temp_min;
+   double temp_max;
    char city[256];
    char region[256];
    char country[256];

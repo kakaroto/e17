@@ -86,18 +86,18 @@ EWeather_Type eweather_data_type_get(EWeather_Data *eweather_data)
    return eweather_data->type;
 }
 
-int eweather_data_temp_get(EWeather_Data *eweather_data)
+double eweather_data_temp_get(EWeather_Data *eweather_data)
 {
    return eweather_data->temp;
 }
 
-int eweather_data_temp_min_get(EWeather_Data *eweather_data)
+double eweather_data_temp_min_get(EWeather_Data *eweather_data)
 {
    return eweather_data->temp_min;
 }
 
 
-int eweather_data_temp_max_get(EWeather_Data *eweather_data)
+double eweather_data_temp_max_get(EWeather_Data *eweather_data)
 {
    return eweather_data->temp_max;
 }
@@ -151,7 +151,7 @@ void eweather_callbacks_set(EWeather *eweather, Update_Cb update_cb, void *data)
    eweather->func.update_cb = update_cb;
 }
 
-int eweather_utils_celcius_get(int farenheit)
+double eweather_utils_celcius_get(double farenheit)
 {
    return (farenheit - 32.) * 5./9.;
 }

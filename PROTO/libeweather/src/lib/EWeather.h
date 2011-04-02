@@ -3,11 +3,12 @@
 
 #include <Eina.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct EWeather EWeather;
 typedef struct EWeather_Data EWeather_Data;
-
-typedef enum EWeather_Type EWeather_Type;
-typedef enum EWeather_Temp EWeather_Temp;
 
 typedef void (*Update_Cb) (void *data, EWeather *eweather);
 
@@ -38,6 +39,9 @@ enum EWeather_Temp
    EWEATHER_TEMP_CELCIUS
 };
 
+typedef enum EWeather_Type EWeather_Type;
+typedef enum EWeather_Temp EWeather_Temp;
+
 EAPI	Eina_Array *	eweather_plugins_list_get(EWeather *eweather);
 EAPI	Eina_Module *	eweather_plugin_search(EWeather *eweather, const char *name);
 EAPI	const char *	eweather_plugin_name_get(EWeather *eweather, int i);
@@ -59,21 +63,27 @@ EAPI    void            eweather_code_set(EWeather *eweather, const char *code);
 EAPI	EWeather_Temp	eweather_temp_type_get(EWeather *eweather);
 EAPI	void		eweather_temp_type_set(EWeather *eweather, EWeather_Temp type);
 EAPI	void		eweather_code_set(EWeather *eweather, const char *code);
+EAPI	void		eweather_data_temp_format_set(EWeather *eweather, EWeather_Temp type, const char *format);
 
 EAPI	EWeather_Data *	eweather_data_current_get(EWeather *eweather);
 EAPI	EWeather_Data *	eweather_data_get(EWeather *eweather, int num);
 EAPI	unsigned int	eweather_data_count(EWeather *eweather);
 
 EAPI	EWeather_Type	eweather_data_type_get(EWeather_Data *eweather_data);
-EAPI	int		eweather_data_temp_get(EWeather_Data *eweather_data);
-EAPI	int		eweather_data_temp_min_get(EWeather_Data *eweather_data);
-EAPI	int		eweather_data_temp_max_get(EWeather_Data *eweather_data);
+EAPI	double		eweather_data_temp_get(EWeather_Data *eweather_data);
+EAPI	double		eweather_data_temp_min_get(EWeather_Data *eweather_data);
+EAPI	double		eweather_data_temp_max_get(EWeather_Data *eweather_data);
 EAPI	const char *	eweather_data_city_get(EWeather_Data *eweather_data);
 EAPI	const char *	eweather_data_region_get(EWeather_Data *eweather_data);
 EAPI	const char *	eweather_data_country_get(EWeather_Data *eweather_data);
 EAPI	const char *	eweather_data_date_get(EWeather_Data *eweather_data);
 EAPI	void		eweather_callbacks_set(EWeather *eweather, Update_Cb update_cb, void *data);
 
-EAPI	int		eweather_utils_celcius_get(int farenheit);
+EAPI	double		eweather_utils_celcius_get(double farenheit);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
+

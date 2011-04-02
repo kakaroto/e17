@@ -14,6 +14,8 @@ struct _Smart_Data
    int current_day;
    EWeather_Object_Mode mode;
    const char *theme; //eina stringshare
+   const char *farenheit_format; //eina stringshare
+   const char *celcius_format; // eina stringshare
 
    struct
      {
@@ -141,6 +143,16 @@ void eweather_theme_set(Evas_Object *obj, const char *theme)
     eweather_object_mode_set(obj, mode);
 
     _eweather_update_cb(obj, sd->eweather);
+}
+
+void eweather_object_temp_format_set(Evas_Object *obj, EWeather_Temp type, const char *format)
+{
+   Smart_Data *sd = evas_object_smart_data_get(obj);
+   if(!sd) return;
+   if (type == EWEATHER_TEMP_FARENHEIT)
+     eina_stringshare_replace(&sd->farenheit_format, format);
+   else
+     eina_stringshare_replace(&sd->celcius_format, format);
 }
 
 void eweather_object_mode_set(Evas_Object *obj, EWeather_Object_Mode mode)
@@ -289,13 +301,18 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
    char buf[1024];
    Evas_Object *o_day;
    int i = 0;
+   const char *ff;
+   const char *cf;
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
 
+   ff = sd->farenheit_format;
+   cf = sd->celcius_format;
    if(sd->current_day >= eweather_data_count(sd->eweather))
      sd->current_day = -1;
 
+   if (sd->eweather)
    for(i=0; i<eweather_data_count(sd->eweather); i++)
      {
 	EWeather_Data *e_data = eweather_data_get(sd->eweather, i);
@@ -328,23 +345,23 @@ static void _eweather_update_cb(void *data, EWeather *eweather)
 	edje_object_signal_emit(o_day, signal, "");
 
 	if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
-	  snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_get(e_data));
+	  snprintf(buf, sizeof(buf), ff, eweather_data_temp_get(e_data));
 	else
-	  snprintf(buf, sizeof(buf), "%d°C", eweather_utils_celcius_get(eweather_data_temp_get(e_data)));
+	  snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_get(e_data)));
 
 	edje_object_part_text_set(o_day, "text.temp", buf);
 
 	if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
-	  snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_min_get(e_data));
+	  snprintf(buf, sizeof(buf), ff, eweather_data_temp_min_get(e_data));
 	else
-	  snprintf(buf, sizeof(buf), "%d°C", eweather_utils_celcius_get(eweather_data_temp_min_get(e_data)));
+	  snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_min_get(e_data)));
 
 	edje_object_part_text_set(o_day, "text.temp_min", buf);
 
 	if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
-	  snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_max_get(e_data));
+	  snprintf(buf, sizeof(buf), ff, eweather_data_temp_max_get(e_data));
 	else
-	  snprintf(buf, sizeof(buf), "%d°C", eweather_utils_celcius_get(eweather_data_temp_max_get(e_data)));
+	  snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_max_get(e_data)));
 
 	edje_object_part_text_set(o_day, "text.temp_max", buf);
 
@@ -369,10 +386,14 @@ static void update_main(Evas_Object *obj)
    const char *signal;
    char buf[1024];
    EWeather *eweather;
+   const char *ff;
+   const char *cf;
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
 
+   ff = sd->farenheit_format;
+   cf = sd->celcius_format;
    if(sd->current_day < 0) return ;
 
    eweather = sd->eweather;
@@ -387,23 +408,23 @@ static void update_main(Evas_Object *obj)
    edje_object_signal_emit(sd->main, signal, "");
 
    if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
-     snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_get(e_data));
+     snprintf(buf, sizeof(buf), ff, eweather_data_temp_get(e_data));
    else
-     snprintf(buf, sizeof(buf), "%d°C", eweather_utils_celcius_get(eweather_data_temp_get(e_data)));
+     snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_get(e_data)));
 
    edje_object_part_text_set(sd->main, "text.temp", buf);
 
    if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
-     snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_min_get(e_data));
+     snprintf(buf, sizeof(buf), ff, eweather_data_temp_min_get(e_data));
    else
-     snprintf(buf, sizeof(buf), "%d°C", eweather_utils_celcius_get(eweather_data_temp_min_get(e_data)));
+     snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_min_get(e_data)));
 
    edje_object_part_text_set(sd->main, "text.temp_min", buf);
 
    if(eweather_temp_type_get(eweather) == EWEATHER_TEMP_FARENHEIT)
-     snprintf(buf, sizeof(buf), "%d°F", eweather_data_temp_max_get(e_data));
+     snprintf(buf, sizeof(buf), ff, eweather_data_temp_max_get(e_data));
    else
-     snprintf(buf, sizeof(buf), "%d°C", eweather_utils_celcius_get(eweather_data_temp_max_get(e_data)));
+     snprintf(buf, sizeof(buf), cf, eweather_utils_celcius_get(eweather_data_temp_max_get(e_data)));
 
    edje_object_part_text_set(sd->main, "text.temp_max", buf);
 
@@ -534,6 +555,8 @@ _smart_add(Evas_Object * obj)
    evas_object_smart_data_set(obj, sd);
 
    sd->theme = eina_stringshare_add(PACKAGE_DATA_DIR"/default/theme.edj");
+   sd->farenheit_format = eina_stringshare_add("%.1f°F");
+   sd->celcius_format = eina_stringshare_add("%.1f°C");
    sd->mode = EWEATHER_OBJECT_MODE_EXPOSE;
    sd->thumbscroll.moved = EINA_TRUE;
 

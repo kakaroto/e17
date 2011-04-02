@@ -282,7 +282,7 @@ _parse(Instance *inst)
    needle = strstr(needle, "<temp_f data=\"");
    if (!needle) goto error;
    needle+=14;
-   sscanf(needle, "%d\"", &(e_data->temp));
+   sscanf(needle, "%lf\"", &(e_data->temp));
 
    needle = strstr(needle, "<icon data=\"");
    if (!needle) goto error;
@@ -302,12 +302,12 @@ _parse(Instance *inst)
    needle = strstr(needle, "<low data=\"");
    if (!needle) goto error;
    needle+=11;
-   sscanf(needle, "%d\"", &(e_data->temp_min));
+   sscanf(needle, "%lf\"", &(e_data->temp_min));
 
    needle = strstr(needle, "<high data=\"");
    if (!needle) goto error;
    needle+=12;
-   sscanf(needle, "%d\"", &(e_data->temp_max));
+   sscanf(needle, "%lf\"", &(e_data->temp_max));
 
    e_data_current = e_data;
    
@@ -323,12 +323,12 @@ _parse(Instance *inst)
 	needle = strstr(needle, "<low data=\"");
 	if (!needle) goto error;
 	needle+=11;
-	sscanf(needle, "%d\"", &(e_data->temp_min));
+	sscanf(needle, "%lf\"", &(e_data->temp_min));
 
 	needle = strstr(needle, "<high data=\"");
 	if (!needle) goto error;
 	needle+=12;
-	sscanf(needle, "%d\"", &(e_data->temp_max));
+	sscanf(needle, "%lf\"", &(e_data->temp_max));
 
 	e_data->temp = ( e_data->temp_min + e_data->temp_max ) / 2;
 
