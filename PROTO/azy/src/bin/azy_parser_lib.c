@@ -40,7 +40,7 @@ azy_parser_stream_new(const char *str)
 
 void
 azy_parser_stream_next(Azy_Stream *s,
-                int         length)
+                       int length)
 {
    int i = 0;
 
@@ -60,8 +60,8 @@ azy_parser_stream_next(Azy_Stream *s,
 
 Azy_Token *
 azy_parser_token_new(Azy_Stream *s,
-              int     type,
-              int     length)
+                     int type,
+                     int length)
 {
    int i;
    Azy_Token *t;
@@ -103,10 +103,10 @@ azy_parser_token_free(Azy_Token *t)
 
 static int
 azy_parser_parse(Azy_Parser *parser,
-        Azy_Parser_Cb          cb,
-        Azy_Parser_New_Cb    new_cb,
-        Azy_Parser_Free_Cb     free_cb,
-        Azy_Token_Cb           token_cb)
+                 Azy_Parser_Cb cb,
+                 Azy_Parser_New_Cb new_cb,
+                 Azy_Parser_Free_Cb free_cb,
+                 Azy_Token_Cb token_cb)
 {
    void *p;
    Azy_Token *t;
@@ -147,12 +147,12 @@ err:
 }
 
 void *
-azy_parser_string_parse_azy(const char  *str,
-               Eina_Bool   *err,
-               Azy_Parser_Cb       cb,
-               Azy_Parser_New_Cb new_cb,
-               Azy_Parser_Free_Cb  free_cb,
-               Azy_Token_Cb        token_cb)
+azy_parser_string_parse_azy(const char *str,
+                            Eina_Bool *err,
+                            Azy_Parser_Cb cb,
+                            Azy_Parser_New_Cb new_cb,
+                            Azy_Parser_Free_Cb free_cb,
+                            Azy_Token_Cb token_cb)
 {
    Azy_Parser *parser;
    void *ret;
@@ -183,23 +183,12 @@ azy_parser_string_parse_azy(const char  *str,
    {
       Eina_List *l, *ll;
       Azy_Typedef *t;
-      Azy_Server_Module *m;
       EINA_LIST_FOREACH(parser->data->types, l, t)
         {
            if (t->struct_members || (t->type != TD_STRUCT)) continue;
 
            fprintf(stderr, "Undefined type %s!\n", t->name);
            exit(1);
-        }
-      EINA_LIST_FOREACH(parser->data->modules, l, m)
-        {
-           EINA_LIST_FOREACH(m->types, ll, t)
-             {
-                if (t->struct_members || (t->type != TD_STRUCT)) continue;
-
-                fprintf(stderr, "Undefined type %s!\n", t->name);
-                exit(1);
-             }
         }
    }
 
@@ -217,12 +206,12 @@ azy_parser_string_parse_azy(const char  *str,
 }
 
 void *
-azy_parser_file_parse_azy(const char  *path,
-             Eina_Bool   *err,
-             Azy_Parser_Cb       cb,
-             Azy_Parser_New_Cb new_cb,
-             Azy_Parser_Free_Cb  free_cb,
-             Azy_Token_Cb        token_cb)
+azy_parser_file_parse_azy(const char *path,
+                          Eina_Bool *err,
+                          Azy_Parser_Cb cb,
+                          Azy_Parser_New_Cb new_cb,
+                          Azy_Parser_Free_Cb free_cb,
+                          Azy_Token_Cb token_cb)
 {
    void *data, *buf;
    struct stat s;
@@ -230,7 +219,6 @@ azy_parser_file_parse_azy(const char  *path,
 
    if (stat(path, &s) < 0) return NULL;
    if ((fd = open(path, O_RDONLY)) < 0) return NULL;
-
 
    buf = mmap(NULL, s.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
    close(fd);
@@ -240,3 +228,4 @@ azy_parser_file_parse_azy(const char  *path,
    munmap(buf, s.st_size);
    return data;
 }
+

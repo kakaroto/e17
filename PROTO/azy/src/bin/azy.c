@@ -18,9 +18,8 @@
 #define alloca __alloca
 #else
 #include <stddef.h>
-void *alloca (size_t);
+void *alloca(size_t);
 #endif
-
 
 const char *
 azy_stringshare_toupper(const char *str)
@@ -33,7 +32,7 @@ azy_stringshare_toupper(const char *str)
 }
 
 static Azy_Typedef *
-azy_typedef_new(int         type,
+azy_typedef_new(int type,
                 const char *name,
                 const char *cname,
                 const char *ctype,
@@ -105,19 +104,11 @@ azy_new(void)
 }
 
 Azy_Typedef *
-azy_typedef_find(Azy_Model         *azy,
-                  Azy_Server_Module *module,
-                  const char         *name)
+azy_typedef_find(Azy_Model *azy,
+                 const char *name)
 {
    Eina_List *l;
    Azy_Typedef *t;
-
-   if (module != NULL)
-     EINA_LIST_FOREACH(module->types, l, t)
-       {
-          if (t->name == name)
-            return t;
-       }
 
    EINA_LIST_FOREACH(azy->types, l, t)
      {
@@ -128,44 +119,28 @@ azy_typedef_find(Azy_Model         *azy,
 }
 
 Azy_Typedef *
-azy_typedef_new_array(Azy_Model         *azy,
-                       Azy_Server_Module *module,
-                       Azy_Typedef       *item)
+azy_typedef_new_array(Azy_Model *azy,
+                      Azy_Typedef *item)
 {
    Eina_List *l;
    Azy_Typedef *t;
 
-   if (module != NULL)
-     EINA_LIST_FOREACH(module->types, l, t)
-       {
-          if (t->type == TD_ARRAY && t->item_type == item)
-            return t;
-       }
-
    EINA_LIST_FOREACH(azy->types, l, t)
-     {
-        if (t->type == TD_ARRAY && t->item_type == item)
-          return t;
-     }
-   Azy_Typedef *a = azy_typedef_new(TD_ARRAY,
-                                      NULL, eina_stringshare_printf("Array_%s", item->cname),
-                                      "Eina_List *", "NULL", NULL, NULL,
-                                      eina_stringshare_printf("Array_%s_free", item->cname),
-                                      "%s"
-                                      );
-   a->item_type = item;
+     if ((t->type == TD_ARRAY) && (t->item_type == item)) return t;
 
-   if (module && item->type == TD_STRUCT)
-     module->types = eina_list_append(module->types, a);
-   else
-     azy->types = eina_list_append(azy->types, a);
+   t = azy_typedef_new(TD_ARRAY, NULL, eina_stringshare_printf("Array_%s", item->cname),
+                       "Eina_List *", "NULL", NULL, NULL,
+                       eina_stringshare_printf("Array_%s_free", item->cname),
+                       "%s");
+   t->item_type = item;
+   azy->types = eina_list_append(azy->types, t);
 
-   return a;
+   return t;
 }
 
 Azy_Typedef *
-azy_typedef_new_struct(Azy_Model                *azy,
-                        const char                *name)
+azy_typedef_new_struct(Azy_Model *azy,
+                       const char *name)
 {
    Azy_Typedef *s;
    const char *n, *sep;
@@ -186,17 +161,17 @@ azy_typedef_new_struct(Azy_Model                *azy,
 
 int
 azy_method_compare(Azy_Method *m1,
-                    Azy_Method *m2)
+                   Azy_Method *m2)
 {
    return strcmp(m1->name, m2->name);
 }
 
 Azy_Error_Code *
-azy_error_new(Azy_Model         *azy,
-               Azy_Server_Module *module,
-               const char         *name,
-               int                 code,
-               const char         *msg)
+azy_error_new(Azy_Model *azy,
+              Azy_Server_Module *module,
+              const char *name,
+              int code,
+              const char *msg)
 {
    Azy_Error_Code *e = calloc(1, sizeof(Azy_Error_Code));
    e->name = eina_stringshare_add(name);

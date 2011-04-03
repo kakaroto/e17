@@ -206,7 +206,7 @@ error_decl ::= ERROR ID(N) EQ INTEGER(C) SEMICOL. {
 struct_decl(Y) ::= opt_doc_comment(C) STRUCT ID(N) LB struct_members(M) RB SEMICOL. {
   Azy_Typedef *t;
   if (!MODEL) MODEL = azy_new();
-  t = azy_typedef_find(MODEL, MODEL->cur_module, N->text);
+  t = azy_typedef_find(MODEL, N->text);
   if (t && t->struct_members)
     {
       printf("Redefining already defined type %s\n", N->text);
@@ -268,7 +268,7 @@ module_decl_body ::= LB opt_inline_code(C) module_body_decls RB. {
 module_body_decls ::= module_body_decl.
 module_body_decls ::= module_body_decls module_body_decl.
 
-module_body_decl ::= struct_decl(S). {MODEL->cur_module->types = eina_list_append(MODEL->cur_module->types, S);}
+module_body_decl ::= struct_decl(S). {MODEL->types = eina_list_append(MODEL->types, S);}
 module_body_decl ::= method_decl(M) CODE(C). {
    MODEL->cur_module->methods = eina_list_append(MODEL->cur_module->methods, M);
    M->stub_impl = eina_stringshare_add_length(C->text + 2, strlen(C->text) - 4);
@@ -324,12 +324,12 @@ module_body_decl ::= error_decl.
 type(Y) ::= ARRAY LT type(T) GT. {
   if (!MODEL)
     MODEL = azy_new();
-  Y = azy_typedef_new_array(MODEL, MODEL->cur_module, T);
+  Y = azy_typedef_new_array(MODEL, T);
 }
 type(Y) ::= ID(N). {
   if (!MODEL)
     MODEL = azy_new();
-  Y = azy_typedef_find(MODEL, MODEL->cur_module, N->text);
+  Y = azy_typedef_find(MODEL, N->text);
   if (!Y)
     Y = azy_typedef_new_struct(MODEL, N->text);
   azy_parser_token_free(N);

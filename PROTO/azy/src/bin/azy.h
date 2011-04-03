@@ -81,7 +81,6 @@ struct _Azy_Server_Module
 {
    const char *name;
 
-   Eina_List  *types;        /* module types */
    Eina_List  *methods;      /* methods */
    Eina_List  *errors;
 
@@ -140,7 +139,6 @@ Azy_Error_Code *azy_error_new(Azy_Model         *azy,
                                 const char         *msg);
 
 Azy_Typedef *azy_typedef_new_array(Azy_Model         *azy,
-                                     Azy_Server_Module *module,
                                      Azy_Typedef       *item);
 Azy_Typedef *azy_typedef_new_struct(Azy_Model         *azy,
                                       const char         *name);
@@ -149,9 +147,7 @@ int azy_method_compare(Azy_Method *m1,
                         Azy_Method *m2);
 
 Azy_Typedef *azy_typedef_find(Azy_Model         *azy,
-                                Azy_Server_Module *module,
                                 const char         *name);
-const char *azy_typedef_vala_name(Azy_Typedef *t);
 const char *azy_typedef_azy_name(Azy_Typedef *t);
 
 const char *azy_stringshare_toupper(const char *str);
