@@ -1,6 +1,7 @@
 COMMON_S = \
+  $(top_builddir)/src/tests/identi.ca/identica_Common_Azy.c \
+  $(top_builddir)/src/tests/identi.ca/identica_Common_Azy.h \
   $(top_builddir)/src/tests/identi.ca/identica_Common.h \
-  $(top_builddir)/src/tests/identi.ca/identica_Common_Types.h \
   $(top_builddir)/src/tests/identi.ca/identica_Common.c
 
 BUILT_SOURCES = .sources

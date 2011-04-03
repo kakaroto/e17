@@ -8,7 +8,7 @@
 
 #include <Ecore.h>
 
-#include "identica_Common.h"
+#include "identica_Common_Azy.h"
 
 static Eina_Error
 ret_(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Content *content)
