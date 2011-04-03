@@ -349,7 +349,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->show_background = cfdata->show_background;
    ci->show_label = cfdata->show_label;
    ci->stacking = cfdata->stacking;
-
+   ci->autohide_show_urgent = cfdata->autohide_show_urgent;
+   
    if (ci->show_label)
      evas_object_show(ng->o_label);
    else

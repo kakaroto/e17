@@ -289,89 +289,84 @@ _cb_border_event(void *data, int type, void *event)
 {
    E_Event_Border_Add *ev = event;
    Ngi_Box *box = data;
-   Ngi_Item_Taskbar *it;
+   Ngi_Item *it;
    E_Border *bd = ev->border;
 
-   it = _border_find(box, bd);
+   /* XXX workaround for e sending event after the
+    * border_remove event */
+   /* if (bd->already_unparented)
+    *   return ECORE_CALLBACK_PASS_ON; */
 
+   it = (Ngi_Item*)_border_find(box, bd);
+   
    if (type == E_EVENT_BORDER_FOCUS_IN)
      {
-	if (it) ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,focus,1");
+	if (it) ngi_item_signal_emit(it, "e,state,taskbar,focus,on");
      }
    else if (type == E_EVENT_BORDER_FOCUS_OUT)
      {
-	if (it) ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,focus,0");
+	if (it) ngi_item_signal_emit(it, "e,state,taskbar,focus,off");
      }
    else if (type == E_EVENT_BORDER_ICONIFY)
      {
-	if (it) ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,1");
+	if (it) ngi_item_signal_emit(it, "e,state,taskbar,iconic,on");
      }
    else if (type == E_EVENT_BORDER_UNICONIFY)
      {
-	if (it) ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,0");
+	if (it) ngi_item_signal_emit(it, "e,state,taskbar,iconic,off");
      }
    else if (type == E_EVENT_BORDER_ICON_CHANGE)
      {
-	if (it) _item_set_icon(it);
+	if (it) _item_set_icon((Ngi_Item_Taskbar *)it);
      }
-   else if (type == E_EVENT_BORDER_ADD)
+   else if (type ==E_EVENT_BORDER_ADD)
      {
 	_item_new(box, bd);
      }
-   else if (type == E_EVENT_BORDER_REMOVE)
+   else if (type ==E_EVENT_BORDER_REMOVE)
      {
-	if (it) ngi_item_remove((Ngi_Item*)it);
+	if (it) ngi_item_remove(it);
      }
-   else if (type == E_EVENT_BORDER_ZONE_SET)
+   else if (type ==E_EVENT_BORDER_ZONE_SET)
      {
 	if (box->ng->zone == bd->zone)
-	  {
-	     /** FIXME ??? */
-	     e_border_zone_set(bd, box->ng->zone);
-	     _item_new(box, bd);
-	  }
+	  _item_new(box, bd);
 	else if (it)
-	  {
-	     ngi_item_remove((Ngi_Item*)it);
-	  }
+	  ngi_item_remove(it);
      }
-   else if (type == E_EVENT_BORDER_URGENT_CHANGE)
+   else if ((type == E_EVENT_BORDER_URGENT_CHANGE) && (it))
      {
-	if ((it) && (box->ng->cfg->autohide_show_urgent))
-	  {
-	     if (bd->client.icccm.urgent)
-	       {
-		  it->urgent = 1;
-		  ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,1");
+	 if (bd->client.icccm.urgent)
+	   {
+	      ((Ngi_Item_Taskbar *)it)->urgent = 1;
+	      ngi_item_signal_emit(it, "e,state,taskbar,urgent,on");
 
-		  ngi_bar_lock(box->ng, 1);
-		  ngi_animate(box->ng);
-	       }
-	     else
-	       {
-		  it->urgent = 0;
-		  ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,0");
+	      if (box->ng->cfg->autohide_show_urgent)
+		{
+		   ngi_bar_lock(box->ng, 1);
+		   ngi_animate(box->ng);
+		}
+	   }
+	 else
+	   {
+	      ((Ngi_Item_Taskbar *)it)->urgent = 0;
+	      ngi_item_signal_emit(it, "e,state,taskbar,urgent,off");
 
-		  ngi_bar_lock(box->ng, 0);
-		  ngi_animate(box->ng);
-	       }
-	  }
-	  
+	      if (box->ng->cfg->autohide_show_urgent)
+		{
+		   ngi_bar_lock(box->ng, 0);
+		   ngi_animate(box->ng);
+		}
+	   }
      }
-   else if (type == E_EVENT_BORDER_PROPERTY)
+   else if (type ==E_EVENT_BORDER_PROPERTY)
      {
-	/* XXX workaround for e sending event after the
-	 * border_remove event
-	 */
-	if (bd->already_unparented)
-	  return EINA_TRUE;
-
 	if (it)
 	  {
 	     if (!_border_check(box, bd))
-	       ngi_item_remove((Ngi_Item*)it);
+	       ngi_item_remove(it);
 	     else
-	       _item_set_label(it);
+	       _item_set_label((Ngi_Item_Taskbar *)it);
 	  }
 	else
 	  {
@@ -499,17 +494,20 @@ _item_new(Ngi_Box *box, E_Border *bd)
    ngi_item_show((Ngi_Item*)it, 0);
 
    if (bd->iconic)
-     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,1");
+     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,on");
 
    it->urgent = bd->client.icccm.urgent;
    if (it->urgent)
-     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,1");
+     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,on");
 }
 
 static void
 _item_cb_free(Ngi_Item *item)
 {
    Ngi_Item_Taskbar *it = (Ngi_Item_Taskbar *) item;
+
+   if (it->urgent)
+     ngi_bar_lock(((Ngi_Item*)it)->box->ng, 0);
 
    if (it->border)
      e_object_unref(E_OBJECT(it->border));
@@ -669,9 +667,9 @@ _item_set_icon(Ngi_Item_Taskbar *it)
    it->o_proxy = oo;
 
    if (it->border->iconic)
-      ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,1");
+      ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,on");
    if (it->urgent)
-     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,1");
+     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,on");
 }
 
 static void
@@ -771,7 +769,7 @@ _item_cb_mouse_up(Ngi_Item *item, Ecore_Event_Mouse_Button *ev)
      {
         it->urgent = 0;
 
-	ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,0");
+	ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,off");
 	ngi_bar_lock(item->box->ng, 0);
      }
 

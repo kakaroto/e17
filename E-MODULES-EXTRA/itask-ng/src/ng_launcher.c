@@ -330,7 +330,7 @@ _item_cb_free(Ngi_Item *item)
 static void
 _item_fill(Ngi_Item_Launcher *it)
 {
-   Evas_Object *o, *oo;
+   Evas_Object *o;
    Evas *e = it->base.box->ng->evas;
 
    if (it->o_icon)
@@ -351,13 +351,13 @@ _item_fill(Ngi_Item_Launcher *it)
 	evas_object_show(o);
 	it->o_icon = o;
 	
-	oo = evas_object_image_filled_add(e);
-	evas_object_image_fill_set(oo, 0, 0, 1, 1);
-	evas_object_image_source_set(oo, it->base.obj);
+	o = evas_object_image_filled_add(e);
+	evas_object_image_fill_set(o, 0, 0, 1, 1);
+	evas_object_image_source_set(o, it->base.obj);
 
-	edje_object_part_swallow(it->base.over, "e.swallow.content", oo);
-	evas_object_show(oo);
-	it->o_proxy = oo;
+	edje_object_part_swallow(it->base.over, "e.swallow.content", o);
+	evas_object_show(o);
+	it->o_proxy = o;
      }
    
    if (it->app->name && it->app->name[0])

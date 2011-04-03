@@ -59,12 +59,12 @@ group {
 	data {
 		item: "icon_spacing"    "2";
 		item: "separator_width" "15";
-		item: "edge_offset"     "20";
+		item: "edge_offset"     "15";
 		item: "clip_separator"  "1";
 		item: "bg_offset"       "0";
 
 		/* clip reflection at bottom edge */
-		item: "reflection_offset" "4";
+		item: "reflection_offset" "1";
 	}
 	parts {
 		part {
@@ -91,13 +91,13 @@ group {
 
 			description {
 				state: "default" 0.0;
-
-				rel1.offset: -35 15;
-				rel2.offset: 34 -1;
-
+				rel1.relative: 0.0 1.0;
+				rel1.offset: -40 -40;
+				rel2.offset: 40 -1;
+				color: 24 24 24 255;
 				image {
 					normal: "itask_im0.png";
-					border: 26 26 10 4;
+					border: 36 36 1 1;
 				}
 			}
 		}
@@ -608,7 +608,7 @@ group {
 		/* when minimizing an application */
 		program {
 			name: "go_iconic1";
-			signal: "e,state,taskbar,iconic,1";
+			signal: "e,state,taskbar,iconic,on";
 			source: "e";
 			action: STATE_SET "iconic" 0.0;
 			transition: LINEAR 0.3;
@@ -616,7 +616,7 @@ group {
 		}
 		program {
 			name: "go_iconic0";
-			signal: "e,state,taskbar,iconic,0";
+			signal: "e,state,taskbar,iconic,off";
 			source: "e";
 			action: STATE_SET "default" 0.0;
 			transition: LINEAR 0.3;
@@ -626,7 +626,7 @@ group {
 		/* when an application got focus */
 		program {
 			name: "go_focused1";
-			signal: "e,state,taskbar,focus,1";
+			signal: "e,state,taskbar,focus,on";
 			source: "e";
 			action: STATE_SET "focused" 0.0;
 			transition: SINUSOIDAL 0.3;
@@ -635,7 +635,7 @@ group {
 
 		program {
 			name: "go_focused0";
-			signal: "e,state,taskbar,focus,0";
+			signal: "e,state,taskbar,focus,off";
 			source: "e";
 			action: STATE_SET "default" 0.0;
 			transition: SINUSOIDAL 0.3;
@@ -644,9 +644,17 @@ group {
 
 		/* application is sending urgent signal  */
 		program {
-			name: "go_urgent1";
-			signal: "e,state,taskbar,urgent,1";
+			name: "go_urgent";
+			signal: "e,state,taskbar,urgent,on";
 			source: "e";
+			action: ACTION_STOP;
+			target: "go_urgent1";
+			target: "go_urgent0";
+			after: "go_urgent1";
+		}
+
+		program {
+			name: "go_urgent1";
 			action: STATE_SET "urgent" 0.0;
 			transition: LINEAR 1.0;
 			target: "urgent_clip";
@@ -663,7 +671,7 @@ group {
 
 		program {
 			name: "go_urgent0";
-			signal: "e,state,taskbar,urgent,0";
+			signal: "e,state,taskbar,urgent,off";
 			source: "e";
 			action: ACTION_STOP;
 			target: "go_urgent1";
@@ -677,7 +685,6 @@ group {
 			transition: LINEAR 0.2;
 			target: "urgent_clip";
 		}
-
 
 		program {
 			name: "go_mouse_down";
