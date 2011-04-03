@@ -12,62 +12,62 @@ namespace re2c
 class SubStr
 {
 public:
-	const char * str;
-	const char * const org;
-	uint         len;
+        const char * str;
+        const char * const org;
+        uint         len;
 
 public:
-	friend bool operator==(const SubStr &, const SubStr &);
-	SubStr(const uchar*, uint);
-	SubStr(const char*, uint);
-	SubStr(const char*);
-	SubStr(const SubStr&);
-	virtual ~SubStr();
-	void out(std::ostream&) const;
-	std::string to_string() const;
-	uint ofs() const;
+        friend bool operator==(const SubStr &, const SubStr &);
+        SubStr(const uchar*, uint);
+        SubStr(const char*, uint);
+        SubStr(const char*);
+        SubStr(const SubStr&);
+        virtual ~SubStr();
+        void out(std::ostream&) const;
+        std::string to_string() const;
+        uint ofs() const;
 
 #ifdef PEDANTIC
 protected:
-	SubStr& operator = (const SubStr& oth);
+        SubStr& operator = (const SubStr& oth);
 #endif
 };
 
 class Str: public SubStr
 {
 public:
-	Str(const SubStr&);
-	Str(Str&);
-	Str(const char*);
-	Str();
-	~Str();
+        Str(const SubStr&);
+        Str(Str&);
+        Str(const char*);
+        Str();
+        ~Str();
 };
 
 inline std::ostream& operator<<(std::ostream& o, const SubStr &s)
 {
-	s.out(o);
-	return o;
+        s.out(o);
+        return o;
 }
 
 inline std::ostream& operator<<(std::ostream& o, const SubStr* s)
 {
-	return o << *s;
+        return o << *s;
 }
 
 inline SubStr::SubStr(const uchar *s, uint l)
-		: str((char*)s), org((char*)s), len(l)
+                : str((char*)s), org((char*)s), len(l)
 { }
 
 inline SubStr::SubStr(const char *s, uint l)
-		: str(s), org(s), len(l)
+                : str(s), org(s), len(l)
 { }
 
 inline SubStr::SubStr(const char *s)
-		: str(s), org(s), len(strlen(s))
+                : str(s), org(s), len(strlen(s))
 { }
 
 inline SubStr::SubStr(const SubStr &s)
-		: str(s.str), org(s.str), len(s.len)
+                : str(s.str), org(s.str), len(s.len)
 { }
 
 inline SubStr::~SubStr()
@@ -75,19 +75,19 @@ inline SubStr::~SubStr()
 
 inline std::string SubStr::to_string() const
 {
-	return str && len ? std::string(str, len) : std::string();
+        return str && len ? std::string(str, len) : std::string();
 }
 
 inline uint SubStr::ofs() const
 {
-	return str - org;
+        return str - org;
 }
 
 #ifdef PEDANTIC
 inline SubStr& SubStr::operator = (const SubStr& oth)
 {
-	new(this) SubStr(oth);
-	return *this;
+        new(this) SubStr(oth);
+        return *this;
 }
 #endif
 

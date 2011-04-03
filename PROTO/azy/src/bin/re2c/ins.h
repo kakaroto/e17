@@ -17,38 +17,38 @@ const uint CTXT = 4;
 
 union Ins {
 
-	struct
-	{
-		byte	tag;
-		byte	marked;
-		void	*link;
-	}
+        struct
+        {
+                byte        tag;
+                byte        marked;
+                void        *link;
+        }
 
-	i;
+        i;
 
-	struct
-	{
-		ushort	value;
-		ushort	bump;
-		void	*link;
-	}
+        struct
+        {
+                ushort        value;
+                ushort        bump;
+                void        *link;
+        }
 
-	c;
+        c;
 };
 
 inline bool isMarked(Ins *i)
 {
-	return i->i.marked != 0;
+        return i->i.marked != 0;
 }
 
 inline void mark(Ins *i)
 {
-	i->i.marked = true;
+        i->i.marked = true;
 }
 
 inline void unmark(Ins *i)
 {
-	i->i.marked = false;
+        i->i.marked = false;
 }
 
 } // end namespace re2c

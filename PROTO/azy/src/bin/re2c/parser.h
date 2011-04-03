@@ -13,43 +13,43 @@ class Symbol
 {
 public:
 
-	RegExp*   re;
+        RegExp*   re;
 
-	static Symbol *find(const SubStr&);
-	static void ClearTable();
+        static Symbol *find(const SubStr&);
+        static void ClearTable();
 
-	typedef std::map<std::string, Symbol*> SymbolTable;
+        typedef std::map<std::string, Symbol*> SymbolTable;
 
-	const Str& GetName() const
-	{
-		return name;
-	}
+        const Str& GetName() const
+        {
+                return name;
+        }
 
 protected:
 
-	Symbol(const SubStr& str)
-		: re(NULL)
-		, name(str)
-	{
-	}
+        Symbol(const SubStr& str)
+                : re(NULL)
+                , name(str)
+        {
+        }
 
 private:
 
-	static SymbolTable symbol_table;
+        static SymbolTable symbol_table;
 
-	Str	name;
+        Str        name;
 
 #if PEDANTIC
-	Symbol(const Symbol& oth)
-		: re(oth.re)
-		, name(oth.name)
-	{
-	}
-	Symbol& operator = (const Symbol& oth)
-	{
-		new(this) Symbol(oth);
-		return *this;
-	}
+        Symbol(const Symbol& oth)
+                : re(oth.re)
+                , name(oth.name)
+        {
+        }
+        Symbol& operator = (const Symbol& oth)
+        {
+                new(this) Symbol(oth);
+                return *this;
+        }
 #endif
 };
 

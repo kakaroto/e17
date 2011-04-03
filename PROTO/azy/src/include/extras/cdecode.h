@@ -10,13 +10,13 @@ For details, see http://sourceforge.net/projects/libb64
 
 typedef enum
 {
-	step_a, step_b, step_c, step_d
+        step_a, step_b, step_c, step_d
 } base64_decodestep;
 
 typedef struct
 {
-	base64_decodestep step;
-	char plainchar;
+        base64_decodestep step;
+        char plainchar;
 } base64_decodestate;
 
 void base64_init_decodestate(base64_decodestate* state_in);

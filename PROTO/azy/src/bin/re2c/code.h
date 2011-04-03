@@ -11,36 +11,36 @@ namespace re2c
 class BitMap
 {
 public:
-	static BitMap	*first;
+        static BitMap        *first;
 
-	const Go        *go;
-	const State     *on;
-	const BitMap    *next;
-	uint            i;
-	uint            m;
+        const Go        *go;
+        const State     *on;
+        const BitMap    *next;
+        uint            i;
+        uint            m;
 
 public:
-	static const BitMap *find(const Go*, const State*);
-	static const BitMap *find(const State*);
-	static void gen(std::ostream&, uint ind, uint, uint);
-	static void stats();
-	BitMap(const Go*, const State*);
-	~BitMap();
+        static const BitMap *find(const Go*, const State*);
+        static const BitMap *find(const State*);
+        static void gen(std::ostream&, uint ind, uint, uint);
+        static void stats();
+        BitMap(const Go*, const State*);
+        ~BitMap();
 
 #if PEDANTIC
-	BitMap(const BitMap& oth)
-		: go(oth.go)
-		, on(oth.on)
-		, next(oth.next)
-		, i(oth.i)
-		, m(oth.m)
-	{
-	}
-	BitMap& operator = (const BitMap& oth)
-	{
-		new(this) BitMap(oth);
-		return *this;
-	}
+        BitMap(const BitMap& oth)
+                : go(oth.go)
+                , on(oth.on)
+                , next(oth.next)
+                , i(oth.i)
+                , m(oth.m)
+        {
+        }
+        BitMap& operator = (const BitMap& oth)
+        {
+                new(this) BitMap(oth);
+                return *this;
+        }
 #endif
 };
 

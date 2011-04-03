@@ -1089,7 +1089,7 @@ gen_common_impl(Azy_Server_Module *s)
      {
         Eina_List *j, *l;
         Azy_Typedef *t;
-	Azy_Server_Module *s;
+        Azy_Server_Module *s;
 
         OPEN("%s/%s%sCommon.c", out_dir, name, sep);
         EL(0, "#ifdef HAVE_CONFIG_H");
@@ -1164,7 +1164,7 @@ gen_common_impl(Azy_Server_Module *s)
         gen_errors_impl(NULL);
         EINA_LIST_FOREACH(azy->modules, l, s)
           EINA_LIST_FOREACH(s->types, j, t)
-	    gen_type_copyfree(t, EINA_FALSE, EINA_TRUE);
+            gen_type_copyfree(t, EINA_FALSE, EINA_TRUE);
         fclose(f);
         OPEN("%s/%s%sCommon_Azy.c", out_dir, name, sep);
         EL(0, "#include \"%s%sCommon_Azy.h\"", name, sep);
