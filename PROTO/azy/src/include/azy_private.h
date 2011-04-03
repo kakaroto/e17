@@ -111,6 +111,7 @@ struct Azy_Content
    int64_t            retsize;
    Azy_Client_Call_Id id;
    Azy_Net           *recv_net;
+   Azy_Content_Retval_Cb retval_cb;
 
    unsigned char     *buffer;
    int64_t            length;

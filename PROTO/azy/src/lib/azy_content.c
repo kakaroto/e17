@@ -981,4 +981,42 @@ azy_content_id_get(Azy_Content *content)
    return content->id;
 }
 
+/**
+ * @brief Set the callback used to serialize a content's retval.
+ *
+ * This function is called automatically by the azy_parser utility.
+ * @param content The content
+ * @param cb The serialization callback
+ */
+void
+azy_content_retval_cb_set(Azy_Content *content, Azy_Content_Retval_Cb cb)
+{
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return;
+     }
+   content->retval_cb = cb;
+}
+
+/**
+ * @brief Get the callback used to serialize a content's retval.
+ *
+ * This function is used to retrieve the callback used to serialize an RPC
+ * message using native data types.
+ * @param content The content
+ * @return The serialization callback
+ */
+Azy_Content_Retval_Cb
+azy_content_retval_cb_get(Azy_Content *content)
+{
+   if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
+     {
+        AZY_MAGIC_FAIL(content, AZY_MAGIC_CONTENT);
+        return NULL;
+     }
+   return content->retval_cb;
+
+}
+
 /** @} */

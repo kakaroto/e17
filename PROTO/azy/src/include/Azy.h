@@ -246,6 +246,11 @@ typedef Eina_Bool  (*Azy_Server_Module_Content_Cb)(Azy_Server_Module *, Azy_Cont
  */
 typedef void *     (*Azy_Content_Cb)(Azy_Value *, void **);
 /**
+ * @typedef Azy_Content_Retval_Cb
+ * Function to convert user type to Azy_Value*.
+ */
+typedef Azy_Value *(*Azy_Content_Retval_Cb)(void *);
+/**
  * @typedef Azy_Client_Return_Cb
  * Function must return AZY_ERROR_NONE (0) on success, else
  * an error number.
@@ -471,6 +476,9 @@ extern "C" {
    EAPI void        azy_content_data_set(Azy_Content *content,
                                          const void  *data);
    EAPI void       *azy_content_data_get(Azy_Content *content);
+   EAPI void        azy_content_retval_cb_set(Azy_Content *content,
+                                              Azy_Content_Retval_Cb cb);
+   EAPI Azy_Content_Retval_Cb azy_content_retval_cb_get(Azy_Content *content);
    EAPI Eina_Bool   azy_content_serialize_request(Azy_Content      *content,
                                                   Azy_Net_Transport type);
    EAPI Eina_Bool   azy_content_unserialize_request(Azy_Content      *content,

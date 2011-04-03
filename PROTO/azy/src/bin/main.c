@@ -1647,7 +1647,8 @@ gen_server_impl(Azy_Server_Module *s)
              EL(2, "goto out;");
              EL(1, "}");
           }
-
+        NL;
+        EL(1, "azy_content_retval_cb_set(content, (Azy_Content_Retval_Cb)%s);", method->return_type->march_name);
         NL;
         if (suspend_funcs)
           {
