@@ -749,7 +749,7 @@ gen_type_esql(Azy_Typedef *t,
                }
           }
         EL(4, "}");
-        if ((t->item_type->type == TD_BASE) && (t->item_type->ctype != c) && (t->item_type->type != b64))
+        if ((t->item_type->type == TD_BASE) && (t->item_type->ctype != c) && (t->item_type->ctype != b64))
           EL(3, "ret = eina_list_append(ret, &tmp);");
         else
           EL(3, "ret = eina_list_append(ret, tmp);");
@@ -1067,6 +1067,8 @@ gen_common_headers(void)
    EL(0, "#include \"%s%sCommon.h\"", name, sep);
 
    NL;
+   EINA_LIST_FOREACH(azy->modules, l, s)
+     gen_marshalizers(s, EINA_TRUE);
    gen_marshalizers(NULL, EINA_TRUE);
 
    EL(0, "#endif");
@@ -1189,6 +1191,22 @@ gen_common_impl(Azy_Server_Module *s)
         EL(0, "#include \"%s%sCommon_Azy.h\"", name, sep);
         NL;
         gen_marshalizers(NULL, EINA_FALSE);
+        EINA_LIST_FOREACH(azy->modules, l, s)
+          {
+             gen_marshalizers(s, EINA_FALSE);
+             EINA_LIST_FOREACH(s->types, j, t)
+               {
+                  gen_type_copyfree(t, EINA_FALSE);
+                  EINA_LIST_REVERSE_FOREACH(azy->modules, i, r)
+                    {
+                       if (r == s) break;
+                       EINA_LIST_FOREACH(r->types, k, u)
+                         if (u->cname == t->cname)
+                           u->mfunc = u->fcfunc = EINA_TRUE;
+                    }
+               }
+          }
+
         if (esql_funcs)
           {
              fclose(f);
@@ -1389,7 +1407,6 @@ gen_server_impl(Azy_Server_Module *s)
    Eina_List *j, *k;
    Azy_Method *method;
    Azy_Method_Param *p;
-   Azy_Typedef *t;
 
    OPEN("%s/%s%s%s.azy_server.c", out_dir, name, sep, s->name);
    if (s->stub_header)
@@ -1403,9 +1420,6 @@ gen_server_impl(Azy_Server_Module *s)
    NL;
 
    EL(0, "static Azy_Server_Module_Def *module = NULL;");
-   NL;
-   gen_marshalizers(s, EINA_FALSE);
-   NL;
    NL;
    EL(0, "typedef struct %s%s%s_Module", name, sep, s->name);
    EL(0, "{");
@@ -1795,7 +1809,6 @@ gen_client_impl(Azy_Server_Module *s)
 
    Eina_List *j, *k;
    Azy_Method *method;
-   Azy_Typedef *t;
    Azy_Method_Param *p;
 
    OPEN("%s/%s%s%s.azy_client.c", out_dir, name, sep, s->name);
@@ -1804,10 +1817,6 @@ gen_client_impl(Azy_Server_Module *s)
    EL(0, "#include \"%s%s%s.azy_client.h\"", name, sep, s->name);
    NL;
 
-   gen_marshalizers(s, EINA_TRUE);
-   NL;
-   gen_marshalizers(s, EINA_FALSE);
-   NL;
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         E(0, "Azy_Client_Call_Id %s%s%s_%s(Azy_Client* cli", name, sep, s->name, method->name);
