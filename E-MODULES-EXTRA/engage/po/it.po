@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Itask-ng\n"
 "Report-Msgid-Bugs-To: hannes.janetzek@gmail.com\n"
 "POT-Creation-Date: 2011-04-04 14:24+0200\n"
-"PO-Revision-Date: 2011-03-24 13:27+0100\n"
+"PO-Revision-Date: 2011-04-04 20:22+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "Language: \n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: src/e_mod_main.c:1695 src/e_mod_main.c:1786 src/e_mod_main.c:1810
 msgid "Engage"
-msgstr ""
+msgstr "Engage"
 
 #: src/ng_taskbar.c:684
 msgid "No name!"
@@ -80,9 +80,8 @@ msgid "Description: Unavailable"
 msgstr "Descrizione: non disponibile"
 
 #: src/ng_config.c:101
-#, fuzzy
 msgid "Engage Configuration"
-msgstr "Configurazione di Itask NG"
+msgstr "Configurazione di Engage"
 
 #: src/ng_config.c:171 src/ng_config.c:229
 msgid "Appearance"
@@ -255,21 +254,19 @@ msgid "Iconified Applications"
 msgstr "Applicazioni iconificate"
 
 #: src/ng_config.c:644 src/ng_config.c:684
-#, fuzzy
 msgid "Engage Bar Configuration"
-msgstr "Configurazione barra Itask NG"
+msgstr "Configurazione barra Engage"
 
 #: src/ng_config.c:789
-#, fuzzy
 msgid "Create new source"
-msgstr "Crea nuova fonte per Itask NG"
+msgstr "Crea nuova fonte"
 
 #: src/ng_config.c:790
 msgid "Enter a name for this new Application Launcher:"
 msgstr "Inserire un nome per il nuovo lanciatore:"
 
 #: src/ng_config.c:799
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
 "source?"
@@ -278,14 +275,12 @@ msgstr ""
 "questa fonte?"
 
 #: src/ng_config.c:803
-#, fuzzy
 msgid "Are you sure you want to delete this source?"
-msgstr "Siete sicuri di voler eliminare questa istanza?"
+msgstr "Siete sicuri di voler eliminare questa fonte?"
 
 #: src/ng_config_instances.c:64 src/ng_config_instances.c:94
-#, fuzzy
 msgid "Engage Instances"
-msgstr "Istanze di Itask NG"
+msgstr "Istanze di Engage"
 
 #: src/ng_config_instances.c:164
 msgid "Bar"
@@ -303,15 +298,3 @@ msgstr ""
 #: src/ng_config_instances.c:342
 msgid "Are you sure you want to delete this Instance?"
 msgstr "Siete sicuri di voler eliminare questa istanza?"
-
-#~ msgid "Itask-NG"
-#~ msgstr "Itask-NG"
-
-#~ msgid "Itask NG"
-#~ msgstr "Itask NG"
-
-#~ msgid "Are you sure you want to delete this Itask NG source?"
-#~ msgstr "Siete sicuri di voler eliminare questa fonte per Itask NG?"
-
-#~ msgid "Itask NG - Instances"
-#~ msgstr "Itask NG - Istanze"
