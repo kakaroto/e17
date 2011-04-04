@@ -35,6 +35,7 @@
 
 #include <Azy.h>
 #include "statusnet_Common.h"
+#include "statusnet_Common_Azy.h"
 
 #include <sqlite3.h>
 

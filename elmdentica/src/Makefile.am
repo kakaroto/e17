@@ -19,7 +19,7 @@ AM_LDFLAGS =	@PTHREAD_LIBS@		\
 		`curl-config --libs`	\
 		@ELEMENTARY_LIBS@
 
-BUILT_SOURCES = statusnet_Common.h statusnet_Common.c
+BUILT_SOURCES = statusnet_Common.h statusnet_Common.c statusnet_Common_Azy.h statusnet_Common_Azy.c
 CLEANFILES = $(BUILT_SOURCES) .sources-ts
 $(BUILT_SOURCES): .sources-ts
 .sources-ts: statusnet.azy
