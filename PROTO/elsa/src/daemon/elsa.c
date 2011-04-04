@@ -125,7 +125,7 @@ _elsa_wait(int pid, const char *display, const char *session_end)
 {
    char buf[16]; /* I think is sufisant ... */
    snprintf(buf, sizeof(buf), "%d", pid);
-   execl("/usr/sbin/elsa_wait", "/usr/sbin/elsa",
+   execl(PACKAGE_BIN_DIR"/elsa_wait", "elsa",
          buf, elsa_session_login_get(), display, session_end, NULL);
    fprintf(stderr, PACKAGE": HUM HUM HUM ...\n\n\n");
 }
@@ -138,7 +138,7 @@ elsa_main()
      {
      ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                              _elsa_client_del, NULL);
-     _elsa_client = ecore_exe_run("elsa_client -d ':0.0'", NULL);
+     _elsa_client = ecore_exe_run(PACKAGE_BIN_DIR"/elsa_client -d ':0.0'", NULL);
      }
    else
      ecore_main_loop_quit();

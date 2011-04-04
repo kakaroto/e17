@@ -6,9 +6,13 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/src/daemon \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DSYSTEM_CONFIG_DIR=\"$(sysconfdir)\" \
+-DPACKAGE_BIN_DIR=\"$(libdir)/$(PACKAGE)\" \
 @ELSA_CFLAGS@
 
-sbin_PROGRAMS = elsa elsa_wait
+sbin_PROGRAMS = elsa
+
+internal_bindir=$(libdir)/elsa
+internal_bin_PROGRAMS = elsa_wait
 
 elsa_SOURCES =     \
 elsa_config.h      \
@@ -33,5 +37,5 @@ elsa_wait_SOURCES = \
 elsa_wait.c         \
 elsa_pam.c
 
-elsa_wait_LDFLAGS = 
+elsa_wait_LDFLAGS =
 elsa_wait_LDADD = -lpam

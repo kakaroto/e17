@@ -8,7 +8,8 @@ AM_CPPFLAGS = \
 -DSYSTEM_CONFIG_DIR=\"$(sysconfdir)\" \
 @ELSA_CLIENT_CFLAGS@
 
-bin_PROGRAMS = elsa_client
+internal_bindir=$(libdir)/elsa
+internal_bin_PROGRAMS = elsa_client
 
 elsa_client_SOURCES = \
 ../event/elsa_event.h \
