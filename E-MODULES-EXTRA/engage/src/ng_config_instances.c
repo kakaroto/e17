@@ -49,7 +49,7 @@ ngi_instances_config(E_Container *con, const char *params)
    if(ngi_config->cfd)
       return NULL;
 
-   if (e_config_dialog_find("E", "extensions/itask_ng"))
+   if (e_config_dialog_find("E", "extensions/engage"))
       return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
@@ -61,8 +61,8 @@ ngi_instances_config(E_Container *con, const char *params)
    v->basic.create_widgets = _basic_create_widgets;
 
    cfd = e_config_dialog_new(con,
-                             D_("Itask NG Instances"),
-                             "E", "extensions/itask_ng",
+                             D_("Engage Instances"),
+                             "E", "extensions/engage",
                              "enlightenment/module/ng-instances", 0, v, NULL);
    ngi_config->cfd = cfd;
    return cfd;
@@ -91,7 +91,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o = e_widget_list_add(evas, 0, 1);
 
-   of = e_widget_framelist_add(evas, D_("Itask NG - Instances"), 0);
+   of = e_widget_framelist_add(evas, D_("Engage Instances"), 0);
    cfdata->o_list = e_widget_ilist_add(evas, 24, 24, &(cfdata->cur_ng));
    e_widget_ilist_selector_set(cfdata->o_list, 1);
    e_widget_size_min_set(cfdata->o_list, 200, 250);

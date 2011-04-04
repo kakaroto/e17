@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Itask-ng\n"
 "Report-Msgid-Bugs-To: hannes.janetzek@gmail.com\n"
-"POT-Creation-Date: 2008-09-02 16:42+0200\n"
+"POT-Creation-Date: 2011-04-04 14:24+0200\n"
 "PO-Revision-Date: 2010-07-12 10:20+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@orange.fr>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,323 +19,374 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_main.c:338
-msgid "Itask NG"
-msgstr "Itask NG"
+#: src/e_mod_main.c:1695 src/e_mod_main.c:1786 src/e_mod_main.c:1810
+msgid "Engage"
+msgstr ""
 
-#: src/ng_taskbar.c:851
+#: src/ng_taskbar.c:684
 msgid "No name!"
 msgstr "Pas de nom !"
 
-#: src/ng_launcher.c:726
+#: src/ng_launcher.c:529
 msgid "Configure Bar"
 msgstr "Configurer la barre"
 
-#: src/ng_launcher.c:733
-msgid "Configure Launcher"
-msgstr "Configurer le lanceur"
-
-#: src/ng_launcher.c:737
+#: src/ng_launcher.c:533
 msgid "Lock Dragging"
 msgstr "Verrouiller le glisser"
 
-#: src/ng_launcher.c:746
-msgid "Set Single Instance"
-msgstr "N'autoriser qu'une seule instance"
+#: src/ng_launcher.c:542
+msgid "Applications"
+msgstr ""
 
-#: src/ng_launcher.c:752
-#: src/ng_border_menu.c:307
+#: src/ng_launcher.c:546
 msgid "Edit Icon"
 msgstr "Éditer l'icone"
 
-#: src/ng_border_menu.c:154
-msgid "Window Locks"
-msgstr "Verrous de la fenêtre"
-
-#: src/ng_border_menu.c:161
-msgid "Remember"
-msgstr "Mémoriser"
-
-#: src/ng_border_menu.c:170
-msgid "Borders"
-msgstr "Bordures"
-
-#: src/ng_border_menu.c:184
-msgid "Send to Desktop"
-msgstr "Envoyer sur le bureau"
-
-#: src/ng_border_menu.c:196
-msgid "Pin to Desktop"
-msgstr "Épingler au bureau"
-
-#: src/ng_border_menu.c:208
-msgid "Unpin from Desktop"
-msgstr "Désépingler du bureau"
-
-#: src/ng_border_menu.c:241
-msgid "State"
-msgstr "État"
-
-#: src/ng_border_menu.c:255
-#: src/ng_border_menu.c:750
-msgid "Sticky"
-msgstr "Ancré"
-
-#: src/ng_border_menu.c:268
-#: src/ng_border_menu.c:763
+#: src/ng_border_menu.c:30
 msgid "Fullscreen"
 msgstr "Plein écran"
 
-#: src/ng_border_menu.c:288
-msgid "Skip Window List"
-msgstr "Ne pas afficher dans la liste des fenêtres"
-
-#: src/ng_border_menu.c:312
-msgid "Add To Favorites Menu"
-msgstr "Ajouter au menu des favoris"
-
-#: src/ng_border_menu.c:317
-msgid "Add To Launcher"
-msgstr "Ajouter au lanceur"
-
-#: src/ng_border_menu.c:324
-msgid "Create Icon"
-msgstr "Créer un icone"
-
-#: src/ng_border_menu.c:334
-msgid "Window Properties"
-msgstr "Propriétés de la fenêtre"
-
-#: src/ng_border_menu.c:347
-msgid "Kill"
-msgstr "Tuer"
-
-#: src/ng_border_menu.c:357
-#: src/ng_border_menu.c:372
+#: src/ng_border_menu.c:45
 msgid "Close"
 msgstr "Fermer"
 
-#: src/ng_border_menu.c:395
+#: src/ng_border_menu.c:66
 msgid "Maximized"
 msgstr "Maximisée"
 
-#: src/ng_border_menu.c:419
+#: src/ng_border_menu.c:86
 msgid "Uniconify"
 msgstr "Restaurer"
 
-#: src/ng_border_menu.c:421
+#: src/ng_border_menu.c:88
 msgid "Iconify"
 msgstr "Minimiser"
 
-#: src/ng_border_menu.c:737
-msgid "Shaded"
-msgstr "Enroulée"
-
-#: src/ng_gadcon.c:429
+#: src/ng_gadcon.c:299
 msgid "Available Gadgets"
 msgstr "Gadgets disponibles"
 
-#: src/ng_gadcon.c:436
+#: src/ng_gadcon.c:306
 msgid "Add Gadget"
 msgstr "Ajouter un gadget"
 
-#: src/ng_gadcon.c:442
+#: src/ng_gadcon.c:312
 msgid "Selected Gadgets"
 msgstr "Gadgets sélectionnés"
 
-#: src/ng_gadcon.c:449
+#: src/ng_gadcon.c:319
 msgid "Remove Gadget"
 msgstr "Supprimer ce gadget"
 
-#: src/ng_gadcon.c:457
-#: src/ng_gadcon.c:492
-#: src/ng_gadcon.c:514
+#: src/ng_gadcon.c:327 src/ng_gadcon.c:370 src/ng_gadcon.c:394
 msgid "Description: Unavailable"
 msgstr "Description : non disponible"
 
-#: src/ng_config.c:83
-msgid "Itask NG Configuration"
+#: src/ng_config.c:101
+#, fuzzy
+msgid "Engage Configuration"
 msgstr "Configuration de Itask NG"
 
-#: src/ng_config.c:153
-msgid "Bar Items"
-msgstr "Éléments de la barre"
-
-#: src/ng_config.c:161
-#: src/ng_config.c:613
-#: src/ng_config_instances.c:92
-msgid "Delete"
-msgstr "Supprimer"
-
-#: src/ng_config.c:163
-#: src/ng_config.c:615
-#: src/ng_config_instances.c:94
-msgid "Configure"
-msgstr "Configurer"
-
-#: src/ng_config.c:165
-msgid "Up"
-msgstr "Monter"
-
-#: src/ng_config.c:167
-msgid "Down"
-msgstr "Descendre"
-
-#: src/ng_config.c:174
-#: src/ng_config.c:611
-#: src/ng_config_instances.c:90
-msgid "Add"
-msgstr "Ajouter"
-
-#: src/ng_config.c:176
-msgid "Taskbar"
-msgstr "Barre des tâches"
-
-#: src/ng_config.c:178
-msgid "Launcher"
-msgstr "Lanceur"
-
-#: src/ng_config.c:180
-msgid "Gadcon"
-msgstr "Gadcon"
-
-#: src/ng_config.c:187
-msgid "Zooming"
-msgstr "Zoom"
-
-#: src/ng_config.c:188
-msgid "Zoom only one icon"
-msgstr "Ne zoomer qu'un seul icone"
-
-#: src/ng_config.c:190
-msgid "Zoomfactor:"
-msgstr "Facteur de zoom :"
-
-#: src/ng_config.c:192
-#, c-format
-msgid "%0.01f"
-msgstr "%0.01f"
-
-#: src/ng_config.c:196
-msgid "Zoom Range:"
-msgstr "Étendue du zoom :"
-
-#: src/ng_config.c:198
-#: src/ng_config.c:204
-#: src/ng_config.c:284
-#, c-format
-msgid "%0.1f"
-msgstr "%0.1f"
-
-#: src/ng_config.c:202
-msgid "Zoom Duration:"
-msgstr "Durée du zoom :"
-
-#: src/ng_config.c:215
+#: src/ng_config.c:171 src/ng_config.c:229
 msgid "Appearance"
 msgstr "Aspect"
 
-#: src/ng_config.c:216
-msgid "Show Icon Label"
-msgstr "Montrer l'étiquette de l'icone"
-
-#: src/ng_config.c:219
-msgid "Show Background Box"
-msgstr "Afficher le fond"
-
-#: src/ng_config.c:225
+#: src/ng_config.c:172
 msgid "Icon Size:"
 msgstr "Taille de l'icone :"
 
-#: src/ng_config.c:227
+#: src/ng_config.c:174
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f px"
 
-#: src/ng_config.c:234
-msgid "Background Transparency:"
+#: src/ng_config.c:179
+msgid "Reflection Opacity:"
+msgstr ""
+
+#: src/ng_config.c:181
+#, fuzzy, c-format
+msgid "%1.0f"
+msgstr "%1.0f px"
+
+#: src/ng_config.c:188
+#, fuzzy
+msgid "Background Opacity:"
 msgstr "Transparence du fond :"
 
-#: src/ng_config.c:236
+#: src/ng_config.c:190
 msgid "%1.0f \\%"
 msgstr "%1.0f \\%"
 
-#: src/ng_config.c:261
-msgid "Hide Behavior"
-msgstr "Comportement du masquage"
+#: src/ng_config.c:198
+msgid "Show Background Box"
+msgstr "Afficher le fond"
 
-#: src/ng_config.c:282
-msgid "Hide Timeout:"
-msgstr "Délai avant masquage :"
-
-#: src/ng_config.c:291
+#: src/ng_config.c:203
 msgid "Orientation"
 msgstr "Disposition"
 
-#: src/ng_config.c:603
+#: src/ng_config.c:205
+msgid "Bottom Edge"
+msgstr ""
+
+#: src/ng_config.c:207
+msgid "Top Edge"
+msgstr ""
+
+#: src/ng_config.c:209
+msgid "Left Edge"
+msgstr ""
+
+#: src/ng_config.c:211
+msgid "Right Edge"
+msgstr ""
+
+#: src/ng_config.c:232 src/ng_config.c:251
+#, fuzzy
+msgid "Zoom"
+msgstr "Zoom"
+
+#: src/ng_config.c:233
+#, fuzzy
+msgid "Factor:"
+msgstr "Facteur de zoom :"
+
+#: src/ng_config.c:239
+#, fuzzy
+msgid "Range:"
+msgstr "Étendue du zoom :"
+
+#: src/ng_config.c:245
+#, fuzzy
+msgid "Duration:"
+msgstr "Durée du zoom :"
+
+#: src/ng_config.c:254 src/ng_config.c:282
+msgid "Bar Items"
+msgstr "Éléments de la barre"
+
+#: src/ng_config.c:262 src/ng_config.c:539 src/ng_config_instances.c:104
+msgid "Delete"
+msgstr "Supprimer"
+
+#: src/ng_config.c:264 src/ng_config.c:541 src/ng_config_instances.c:106
+msgid "Configure"
+msgstr "Configurer"
+
+#: src/ng_config.c:266
+msgid "Up"
+msgstr "Monter"
+
+#: src/ng_config.c:268
+msgid "Down"
+msgstr "Descendre"
+
+#: src/ng_config.c:273 src/ng_config.c:537 src/ng_config_instances.c:102
+msgid "Add"
+msgstr "Ajouter"
+
+#: src/ng_config.c:275
+msgid "Taskbar"
+msgstr "Barre des tâches"
+
+#: src/ng_config.c:277
+msgid "Launcher"
+msgstr "Lanceur"
+
+#: src/ng_config.c:279
+msgid "Gadcon"
+msgstr "Gadcon"
+
+#: src/ng_config.c:285 src/ng_config.c:301
+msgid "Auto Hide"
+msgstr ""
+
+#: src/ng_config.c:299
+msgid "Show Bar when Urgent"
+msgstr ""
+
+#: src/ng_config.c:307
+msgid "Stacking"
+msgstr ""
+
+#: src/ng_config.c:309
+msgid "Above All"
+msgstr ""
+
+#: src/ng_config.c:311
+#, fuzzy
+msgid "Below Fullscreen"
+msgstr "Plein écran"
+
+#: src/ng_config.c:315 src/ng_config.c:322
+msgid "Other"
+msgstr ""
+
+#: src/ng_config.c:316
+msgid "Ecomorph Features"
+msgstr ""
+
+#: src/ng_config.c:318
+msgid "Show Icon Label"
+msgstr "Montrer l'étiquette de l'icone"
+
+#: src/ng_config.c:529
 msgid "Launcher Settings"
 msgstr "Paramétrage du lanceur"
 
-#: src/ng_config.c:623
+#: src/ng_config.c:549
 msgid "Taskbar Settings"
 msgstr "Paramétrage de la barre des tâches"
 
-#: src/ng_config.c:625
+#: src/ng_config.c:551
 msgid "Dont Show Dialogs"
 msgstr "Ne pas afficher les boîtes de dialogue"
 
-#: src/ng_config.c:627
+#: src/ng_config.c:554
 msgid "Advanced Window Menu"
 msgstr "Menu avancé de la fenêtre"
 
-#: src/ng_config.c:629
+#: src/ng_config.c:557
 msgid "Only Show Current Desk"
 msgstr "Afficher uniquement le bureau actuel"
 
-#: src/ng_config.c:634
-msgid "Show Iconified"
-msgstr "Afficher la minimisation"
+#: src/ng_config.c:560
+msgid "Group Applications by Window Class"
+msgstr ""
 
-#: src/ng_config.c:720
-#: src/ng_config.c:761
-msgid "Itask NG Bar Configuration"
+#: src/ng_config.c:563
+msgid "Append new Applications on the right Side"
+msgstr ""
+
+#: src/ng_config.c:569
+msgid "Iconified Applications"
+msgstr ""
+
+#: src/ng_config.c:644 src/ng_config.c:684
+#, fuzzy
+msgid "Engage Bar Configuration"
 msgstr "Configuration de la barre NG"
 
-#: src/ng_config.c:869
-msgid "Create new Itask NG source"
+#: src/ng_config.c:789
+#, fuzzy
+msgid "Create new source"
 msgstr "Créer une nouvelle source"
 
-#: src/ng_config.c:870
+#: src/ng_config.c:790
 msgid "Enter a name for this new Application Launcher:"
 msgstr "Entrer un nom pour ce nouveau lanceur :"
 
-#: src/ng_config.c:881
-#, c-format
-msgid "You requested to delete \"%s\".<br><br>Are you sure you want to delete this ng source?"
-msgstr "Vous avez demandé à supprimer « %s ».<br><br>Voulez-vous vraiment supprimer cette source ?"
+#: src/ng_config.c:799
+#, fuzzy, c-format
+msgid ""
+"You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
+"source?"
+msgstr ""
+"Vous avez demandé à supprimer « %s ».<br><br>Voulez-vous vraiment supprimer "
+"cette source ?"
 
-#: src/ng_config.c:885
-msgid "Are you sure you want to delete this Itask NG source?"
-msgstr "Voulez-vous vraiment supprimer cette source ?"
+#: src/ng_config.c:803
+#, fuzzy
+msgid "Are you sure you want to delete this source?"
+msgstr "Voulez-vous vraiment supprimer cette instance ?"
 
-#: src/ng_config_instances.c:49
-msgid "Itask NG Instances"
-msgstr "Instances de Itask NG"
+#: src/ng_config_instances.c:64 src/ng_config_instances.c:94
+#, fuzzy
+msgid "Engage Instances"
+msgstr "N'autoriser qu'une seule instance"
 
-#: src/ng_config_instances.c:82
-msgid "Itask NG - Instances"
-msgstr "Itask NG - Instances"
-
-#: src/ng_config_instances.c:152
+#: src/ng_config_instances.c:164
 msgid "Bar"
 msgstr "Barre"
 
-#: src/ng_config_instances.c:336
+#: src/ng_config_instances.c:338
 #, c-format
-msgid "You requested to delete \"%s\".<br><br>Are you sure you want to delete this Instance?"
-msgstr "Vous avez demandé à supprimer « %s ».<br><br>voulez-vous vraiment le faire ?"
+msgid ""
+"You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
+"Instance?"
+msgstr ""
+"Vous avez demandé à supprimer « %s ».<br><br>voulez-vous vraiment le faire ?"
 
-#: src/ng_config_instances.c:340
+#: src/ng_config_instances.c:342
 msgid "Are you sure you want to delete this Instance?"
 msgstr "Voulez-vous vraiment supprimer cette instance ?"
 
+#~ msgid "Itask NG"
+#~ msgstr "Itask NG"
+
+#~ msgid "Configure Launcher"
+#~ msgstr "Configurer le lanceur"
+
+#~ msgid "Window Locks"
+#~ msgstr "Verrous de la fenêtre"
+
+#~ msgid "Remember"
+#~ msgstr "Mémoriser"
+
+#~ msgid "Borders"
+#~ msgstr "Bordures"
+
+#~ msgid "Send to Desktop"
+#~ msgstr "Envoyer sur le bureau"
+
+#~ msgid "Pin to Desktop"
+#~ msgstr "Épingler au bureau"
+
+#~ msgid "Unpin from Desktop"
+#~ msgstr "Désépingler du bureau"
+
+#~ msgid "State"
+#~ msgstr "État"
+
+#~ msgid "Sticky"
+#~ msgstr "Ancré"
+
+#~ msgid "Skip Window List"
+#~ msgstr "Ne pas afficher dans la liste des fenêtres"
+
+#~ msgid "Add To Favorites Menu"
+#~ msgstr "Ajouter au menu des favoris"
+
+#~ msgid "Add To Launcher"
+#~ msgstr "Ajouter au lanceur"
+
+#~ msgid "Create Icon"
+#~ msgstr "Créer un icone"
+
+#~ msgid "Window Properties"
+#~ msgstr "Propriétés de la fenêtre"
+
+#~ msgid "Kill"
+#~ msgstr "Tuer"
+
+#~ msgid "Shaded"
+#~ msgstr "Enroulée"
+
+#~ msgid "Zoom only one icon"
+#~ msgstr "Ne zoomer qu'un seul icone"
+
+#~ msgid "%0.01f"
+#~ msgstr "%0.01f"
+
+#~ msgid "%0.1f"
+#~ msgstr "%0.1f"
+
+#~ msgid "Hide Behavior"
+#~ msgstr "Comportement du masquage"
+
+#~ msgid "Hide Timeout:"
+#~ msgstr "Délai avant masquage :"
+
+#~ msgid "Show Iconified"
+#~ msgstr "Afficher la minimisation"
+
+#~ msgid "Are you sure you want to delete this Itask NG source?"
+#~ msgstr "Voulez-vous vraiment supprimer cette source ?"
+
+#~ msgid "Itask NG Instances"
+#~ msgstr "Instances de Itask NG"
+
+#~ msgid "Itask NG - Instances"
+#~ msgstr "Itask NG - Instances"

@@ -81,7 +81,7 @@ ngi_configure_module(Config_Item *ci)
    else
       i++;
 
-   snprintf(path, sizeof(path), "extensions/itask_ng::%d", i);
+   snprintf(path, sizeof(path), "extensions/engage::%d", i);
    if (e_config_dialog_find("E", path))
       return;
 
@@ -98,7 +98,7 @@ ngi_configure_module(Config_Item *ci)
    /* Create The Dialog */
    snprintf(buf, sizeof(buf), "%s/e-module-ng.edj", e_module_dir_get(ngi_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-                             D_("Itask NG Configuration"),
+                             D_("Engage Configuration"),
                              "E", path, buf, 0, v, ci);
 
    ci->config_dialog = cfd;
@@ -641,7 +641,7 @@ _cb_box_config(void *data, void *data2)
 
         snprintf(buf, sizeof(buf), "%s/e-module-ng.edj", e_module_dir_get(ngi_config->module));
         cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-                                  D_("Itask NG Bar Configuration"),
+                                  D_("Engage Bar Configuration"),
                                   "e", "_e_mod_ngi_config_dialog_add_box", buf, 0, v, cfdata);
      }
 }
@@ -681,7 +681,7 @@ ngi_configure_box(Ngi_Box *box)
 
    snprintf(buf, sizeof(buf), "%s/e-module-ng.edj", e_module_dir_get(ngi_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-                             D_("Itask NG Bar Configuration"),
+                             D_("Engage Bar Configuration"),
                              "e", "_e_mod_ngi_config_dialog_add_box", buf, 0, v, box);
 }
 
@@ -786,7 +786,7 @@ static void
 _cb_add(void *data, void *data2)
 {
    E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
-   e_entry_dialog_show(D_("Create new Itask NG source"), "enlightenment/e",
+   e_entry_dialog_show(D_("Create new source"), "enlightenment/e",
                        D_("Enter a name for this new Application Launcher:"), "", NULL, NULL,
                        _cb_entry_ok, NULL, cfdata);
 }
@@ -797,10 +797,10 @@ _cb_del(void *data, void *data2)
    char buf[4096];
    E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    snprintf(buf, sizeof(buf), D_("You requested to delete \"%s\".<br><br>"
-                                 "Are you sure you want to delete this ng source?"),
+                                 "Are you sure you want to delete this source?"),
             cfdata->app_dir);
 
-   e_confirm_dialog_show(D_("Are you sure you want to delete this Itask NG source?"),
+   e_confirm_dialog_show(D_("Are you sure you want to delete this source?"),
                          "enlightenment/exit", buf, NULL, NULL,
                          _cb_confirm_dialog_yes, NULL, cfdata, NULL, NULL, NULL);
 }

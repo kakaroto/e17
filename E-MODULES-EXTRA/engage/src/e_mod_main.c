@@ -129,9 +129,9 @@ ngi_new(Config_Item *cfg)
    switch(cfg->orient)
      {
       case E_GADCON_ORIENT_BOTTOM:
-	 ngi_object_theme_set(ng->o_bg,	  "e/modules/itask-ng/bg_bottom");
-	 ngi_object_theme_set(ng->o_frame,"e/modules/itask-ng/frame_bottom");
-	 ngi_object_theme_set(ng->o_label,"e/modules/itask-ng/label_bottom");
+	 ngi_object_theme_set(ng->o_bg,	  "e/modules/engage/bg_bottom");
+	 ngi_object_theme_set(ng->o_frame,"e/modules/engage/frame_bottom");
+	 ngi_object_theme_set(ng->o_label,"e/modules/engage/label_bottom");
 
 	 ng->o_proxy = evas_object_image_add(ng->evas);
 	 evas_object_image_source_set(ng->o_proxy, ng->o_icons);
@@ -144,21 +144,21 @@ ngi_new(Config_Item *cfg)
 	 break;
 
       case E_GADCON_ORIENT_TOP:
-	 ngi_object_theme_set(ng->o_bg,	  "e/modules/itask-ng/bg_top");
-	 ngi_object_theme_set(ng->o_frame,"e/modules/itask-ng/frame_top");
-	 ngi_object_theme_set(ng->o_label,"e/modules/itask-ng/label_top");
+	 ngi_object_theme_set(ng->o_bg,	  "e/modules/engage/bg_top");
+	 ngi_object_theme_set(ng->o_frame,"e/modules/engage/frame_top");
+	 ngi_object_theme_set(ng->o_label,"e/modules/engage/label_top");
          break;
 
       case E_GADCON_ORIENT_LEFT:
-	 ngi_object_theme_set(ng->o_bg,	  "e/modules/itask-ng/bg_left");
-	 ngi_object_theme_set(ng->o_frame,"e/modules/itask-ng/frame_left");
-	 ngi_object_theme_set(ng->o_label,"e/modules/itask-ng/label_left");
+	 ngi_object_theme_set(ng->o_bg,	  "e/modules/engage/bg_left");
+	 ngi_object_theme_set(ng->o_frame,"e/modules/engage/frame_left");
+	 ngi_object_theme_set(ng->o_label,"e/modules/engage/label_left");
          break;
 
       case E_GADCON_ORIENT_RIGHT:
-	 ngi_object_theme_set(ng->o_bg,	  "e/modules/itask-ng/bg_right");
-	 ngi_object_theme_set(ng->o_frame,"e/modules/itask-ng/frame_right");
-	 ngi_object_theme_set(ng->o_label,"e/modules/itask-ng/label_right");
+	 ngi_object_theme_set(ng->o_bg,	  "e/modules/engage/bg_right");
+	 ngi_object_theme_set(ng->o_frame,"e/modules/engage/frame_right");
+	 ngi_object_theme_set(ng->o_label,"e/modules/engage/label_right");
          break;
      }
 
@@ -333,7 +333,7 @@ ngi_free(Ng *ng)
 Eina_Bool
 ngi_object_theme_set(Evas_Object *obj, const char *part)
 {
-   if (e_theme_edje_object_set(obj, "base/theme/modules/itask-ng", part))
+   if (e_theme_edje_object_set(obj, "base/theme/modules/engage", part))
      return 1;
    else
      return edje_object_file_set(obj, ngi_config->theme_path, part);
@@ -1662,7 +1662,7 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
 
 /***************************************************************************/
 
-EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "itask-ng" };
+EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "engage" };
 
 static int
 _ngi_init_timer_cb(void *data)
@@ -1692,7 +1692,7 @@ _e_mod_menu_add(void *data, E_Menu *m)
    E_Menu_Item *mi;
 
    mi = e_menu_item_new(m);
-   e_menu_item_label_set(mi, D_("Itask-NG"));
+   e_menu_item_label_set(mi, D_("Engage"));
    e_util_menu_item_theme_icon_set(mi, "preferences-desktop-shelf");
    e_menu_item_callback_set(mi, _e_mod_run_cb, NULL);
 }
@@ -1780,10 +1780,10 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(ngi_conf_edd, Config, version, INT);
    E_CONFIG_LIST(ngi_conf_edd, Config, items, ngi_conf_item_edd);
 
-   ngi_config = (Config *)e_config_domain_load("module.itask-ng", ngi_conf_edd);
+   ngi_config = (Config *)e_config_domain_load("module.engage", ngi_conf_edd);
 
    if (ngi_config && !e_util_module_config_check
-       (D_("Itask-NG"), ngi_config->version,
+       (D_("Engage"), ngi_config->version,
 	MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
      _ngi_config_free();
 
@@ -1796,7 +1796,7 @@ e_modapi_init(E_Module *m)
    ngi_config->cfd = NULL;
    ngi_config->module = m;
 
-   snprintf(buf, sizeof(buf), "%s/itask-ng.edj", e_module_dir_get(m));
+   snprintf(buf, sizeof(buf), "%s/engage.edj", e_module_dir_get(m));
    ngi_config->theme_path = strdup(buf);
 
    snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/", e_user_homedir_get());
@@ -1806,8 +1806,8 @@ e_modapi_init(E_Module *m)
         return m;
      }
 
-   e_configure_registry_item_add("extensions/itask_ng", 40,
-                                 D_("Itask NG"), NULL,
+   e_configure_registry_item_add("extensions/engage", 40,
+                                 D_("Engage"), NULL,
                                  "preferences-desktop-shelf",
                                  ngi_instances_config);
 
@@ -1865,7 +1865,7 @@ e_modapi_shutdown(E_Module *m)
    E_CONFIG_DD_FREE(ngi_conf_item_edd);
    E_CONFIG_DD_FREE(ngi_conf_edd);
 
-   e_configure_registry_item_del("extensions/itask_ng");
+   e_configure_registry_item_del("extensions/engage");
 
    return 1;
 }
@@ -1873,6 +1873,6 @@ e_modapi_shutdown(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m)
 {
-   e_config_domain_save("module.itask-ng", ngi_conf_edd, ngi_config);
+   e_config_domain_save("module.engage", ngi_conf_edd, ngi_config);
    return 1;
 }

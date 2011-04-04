@@ -4,7 +4,7 @@ EDJE_FLAGS = -v -id $(top_srcdir)/data/themes -fd $(top_srcdir)/data/themes
 
 filesdir = $(datadir)
 files_DATA = \
-itask-ng.edj
+engage.edj
 
 
 EXTRA_DIST = $(files_DATA)
