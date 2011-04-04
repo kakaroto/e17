@@ -1,5 +1,6 @@
 #define BG_OFFSET 20
 #define HOVER_EFFECT 0
+#define RELECTION 0
 
 images
 {
@@ -9,14 +10,15 @@ images
 	image:"itask_im3.png" COMP;
 	image:"itask_im4.png" COMP;
 	image:"itask_im5.png" COMP;
+	image:"itask_im6.png" COMP;
 }
 
 collections{
 group {
 	/* bg frame that keeps is not affected by 'Background
 	 * Transparency' setting */
-
-	name: "e/modules/itask-ng/frame_top";
+	name: "e/modules/itask-ng/frame_bottom";
+	alias: "e/modules/itask-ng/frame_top";
 	alias: "e/modules/itask-ng/frame_left";
 	alias: "e/modules/itask-ng/frame_right";
 
@@ -53,6 +55,7 @@ group {
 	}
 }
 
+#if REFLECTION
 group {
 	name: "e/modules/itask-ng/frame_bottom";
 
@@ -96,13 +99,37 @@ group {
 				rel2.offset: 40 -1;
 				color: 255 255 255 255;
 				image {
-					normal: "itask_im0.png";
-					border: 36 36 1 1;
+					normal: "itask_im6.png";
+					border: 36 36 7 2;
 				}
 			}
 		}
 	}
 }
+#else
+group {
+	name: "e/modules/itask-ng/bg_bottom";
+	parts {
+		part {
+			name: "bg";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+
+				rel1.offset: (-BG_OFFSET) -10;
+				rel2.offset: (-1 + BG_OFFSET) -1;
+
+				image {
+					normal: "itask_im0.png";
+					border: 18 18 20 0;
+				}
+
+			}
+		}
+	}
+}
+#endif
 
 group {
 	name: "e/modules/itask-ng/bg_top";
@@ -175,9 +202,33 @@ group {
  * as it is in this example.
  */
 
+#if REFLECTION
 group {
 	name: "e/modules/itask-ng/separator_bottom";
 }
+#else
+group {
+	name: "e/modules/itask-ng/separator_bottom";
+
+	parts {
+		part {
+			name: "separator";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 182 182 182 255;
+				max: 1 999;
+				align: 0.5 0.0;
+
+				rel1.offset: 0 -5;
+				rel2.offset: 0 2;
+			}
+		}
+	}
+}
+#endif
 
 group {
 	name: "e/modules/itask-ng/separator_top";
