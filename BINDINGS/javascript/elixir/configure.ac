@@ -3,7 +3,7 @@ rm -f config.cache
 
 # Autoconf init.
 AC_PREREQ(2.59)
-AC_INIT([elixir], [0.1.31], [cedric.bail@free.fr])
+AC_INIT([elixir], [0.1.32], [cedric.bail@free.fr])
 AC_CONFIG_SRCDIR([configure.ac])
 
 # Auxiliary files
