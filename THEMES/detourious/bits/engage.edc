@@ -88,7 +88,8 @@ group {
 			description {
 				state: "default" 0.0;
 
-				rel1.offset: -35 15;
+				rel1.relative: 0.0 1.0;
+				rel1.offset: -35 -48;
 				rel2.offset: 34 -1;
 
 				image {
