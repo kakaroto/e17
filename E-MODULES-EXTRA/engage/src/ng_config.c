@@ -292,7 +292,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_radio_add(evas, "Autohide",
                            AUTOHIDE_NORMAL, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, "Autohide on Fullscreen",
+   ob = e_widget_radio_add(evas, "Hide when Window overlaps",
+                           AUTOHIDE_OVERLAP, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, "Hide on Fullscreen",
                            AUTOHIDE_FULLSCREEN, rg);
    e_widget_framelist_object_append(of, ob);
 

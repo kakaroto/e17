@@ -29,7 +29,8 @@ static void           _ngi_zoom_function(Ng *ng, double d, double *disp);
 static Eina_Bool      _ngi_animator(void *data);
 static void           _ngi_redraw(Ng *ng);
 static int            _ngi_autohide(Ng *ng, int hide);
-/* static int            _ngi_check_fullscreen(E_Desk *desk); */
+static Eina_Bool      _ngi_win_border_intersects(Ng *ng);
+
 
 static int initialized = 0;
 
@@ -110,8 +111,8 @@ ngi_new(Config_Item *cfg)
 
    ng->state = unzoomed;
    ng->hide_state = show;
-
-
+   ng->hide = EINA_TRUE;
+   
    ng->clip = evas_object_rectangle_add(ng->evas);
    evas_object_color_set(ng->clip, 255, 255, 255, 0);
 
@@ -221,35 +222,43 @@ ngi_new(Config_Item *cfg)
    }
 
    ng->handlers = eina_list_append
-         (ng->handlers, ecore_event_handler_add
-            (ECORE_X_EVENT_MOUSE_IN, _ngi_win_cb_mouse_in, ng));
+     (ng->handlers, ecore_event_handler_add
+      (ECORE_X_EVENT_MOUSE_IN, _ngi_win_cb_mouse_in, ng));
    ng->handlers = eina_list_append
-         (ng->handlers, ecore_event_handler_add
-            (ECORE_X_EVENT_MOUSE_OUT, _ngi_win_cb_mouse_out, ng));
+     (ng->handlers, ecore_event_handler_add
+      (ECORE_X_EVENT_MOUSE_OUT, _ngi_win_cb_mouse_out, ng));
    ng->handlers = eina_list_append
-         (ng->handlers, ecore_event_handler_add
-            (ECORE_EVENT_MOUSE_BUTTON_DOWN, _ngi_win_cb_mouse_down, ng));
+     (ng->handlers, ecore_event_handler_add
+      (ECORE_EVENT_MOUSE_BUTTON_DOWN, _ngi_win_cb_mouse_down, ng));
    ng->handlers = eina_list_append
-         (ng->handlers, ecore_event_handler_add
-            (ECORE_EVENT_MOUSE_BUTTON_UP, _ngi_win_cb_mouse_up, ng));
+     (ng->handlers, ecore_event_handler_add
+      (ECORE_EVENT_MOUSE_BUTTON_UP, _ngi_win_cb_mouse_up, ng));
    ng->handlers = eina_list_append
-         (ng->handlers, ecore_event_handler_add
-            (ECORE_EVENT_MOUSE_WHEEL, _ngi_win_cb_mouse_wheel, ng));
+     (ng->handlers, ecore_event_handler_add
+      (ECORE_EVENT_MOUSE_WHEEL, _ngi_win_cb_mouse_wheel, ng));
    ng->handlers = eina_list_append
-         (ng->handlers, ecore_event_handler_add
-            (ECORE_EVENT_MOUSE_MOVE, _ngi_win_cb_mouse_move, ng));
+     (ng->handlers, ecore_event_handler_add
+      (ECORE_EVENT_MOUSE_MOVE, _ngi_win_cb_mouse_move, ng));
    ng->handlers = eina_list_append
      (ng->handlers, ecore_event_handler_add
       (E_EVENT_DESK_SHOW, _ngi_win_cb_desk_show, ng));
    ng->handlers = eina_list_append
      (ng->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_PROPERTY, _ngi_win_cb_border_event, ng));
+   ng->handlers = eina_list_append
+     (ng->handlers, ecore_event_handler_add
+      (E_EVENT_BORDER_MOVE, _ngi_win_cb_border_event, ng));
+   ng->handlers = eina_list_append
+     (ng->handlers, ecore_event_handler_add
+      (E_EVENT_BORDER_RESIZE, _ngi_win_cb_border_event, ng));
 
    if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
      {
-	int fullscreen = e_desk_current_get(ng->zone)->fullscreen_borders;
-
-	ng->hide_fullscreen = fullscreen;
+	ng->hide = e_desk_current_get(ng->zone)->fullscreen_borders;
+     }
+   else if (ng->cfg->autohide == AUTOHIDE_OVERLAP)
+     {
+	ng->hide = _ngi_win_border_intersects(ng);
      }
    else if (ng->cfg->stacking == below_fullscreen)
      {
@@ -261,8 +270,9 @@ ngi_new(Config_Item *cfg)
 	  e_popup_show(ng->win->popup);
      }
    
-   if ((ng->cfg->autohide == AUTOHIDE_NORMAL) || ng->hide_fullscreen)
+   if (ng->cfg->autohide && ng->hide)
      {
+	ng->hide = EINA_TRUE;
         ng->hide_step = ng->size + ng->opt.edge_offset + ng->opt.bg_offset;
         ng->hide_state = hidden;
      }
@@ -1085,8 +1095,7 @@ _ngi_zoom_out(Ng *ng)
         ng->zoom = 1.0;
         ng->state = unzoomed;
 
-	if (!(ng->cfg->autohide == AUTOHIDE_NORMAL) &&
-	    !(ng->cfg->autohide == AUTOHIDE_FULLSCREEN && !ng->hide_fullscreen))
+	if (!ng->hide)
 	  ngi_input_extents_calc(ng);
 
         if (ng->item_active)
@@ -1153,6 +1162,7 @@ _ngi_autohide(Ng *ng, int hide)
 	     ng->hide_step = 0;
 
 	     _ngi_proxy_geometry_calc(ng);
+	     ngi_input_extents_calc(ng);
 	     return 0;
 	  }
      }
@@ -1210,8 +1220,7 @@ _ngi_animator(void *data)
 
    if (ng->cfg->autohide)
      {
-        if ((ng->mouse_in || ng->show_bar || ng->menu_wait_timer) ||
-            (ng->cfg->autohide == AUTOHIDE_FULLSCREEN && (!ng->hide_fullscreen)))
+        if (ng->mouse_in || ng->show_bar || ng->menu_wait_timer || (!ng->hide))
           {
              if (ng->hide_state != show)
                {
@@ -1219,7 +1228,7 @@ _ngi_animator(void *data)
                   cont = 1;
                }
           }
-        else if ((ng->cfg->autohide == AUTOHIDE_NORMAL) || (ng->hide_fullscreen))
+        else
           {
              if ((ng->hide_state != hidden) &&
 		 ((ng->zoom - 1.0) <= (ng->cfg->zoomfactor - 1.0) / 2.0))
@@ -1274,7 +1283,7 @@ ngi_reposition(Ng *ng)
 
    range = ng->cfg->zoom_range * ng->size;
 
-   disp = erf(distance / range) * range * (ng->cfg->zoomfactor - 1.0) + 0.6;
+   disp = erf(distance / range) * range * (ng->cfg->zoomfactor - 1.0);
 
    end = ng->start - SIDE_OFFSET + disp;
 
@@ -1360,7 +1369,7 @@ _ngi_zoom_function(Ng *ng, double d, double *disp)
 {
    float range = ng->cfg->zoom_range * ng->size;
 
-   *disp = erf(d / range) * range * (ng->zoom - 1.0) + 0.6;
+   *disp = erf(d / range) * range * (ng->zoom - 1.0);
 }
 
 static void
@@ -1510,7 +1519,15 @@ _ngi_redraw(Ng *ng)
 
 	   _ngi_zoom_function(ng, it->pos + (ng->size * it->scale) - ng->pos, &pos2);
 	   pos2 = (double)it->pos + ((double)ng->size * it->scale) + pos2;
-	   size = (int)pos2 - (int)pos;
+
+	   if (pos2 > ng->pos)
+	     {
+		/* pos2 += 0.5; */
+		size = (int)(pos2 - (pos - 0.5));
+		pos += 0.5;
+	     }
+	   else
+	     size = (int)(pos2 - pos);
 
 	   switch (cfg->orient)
 	     {
@@ -1578,23 +1595,65 @@ ngi_thaw(Ng *ng)
    ngi_animate(ng);
 }
 
-/* static int
- * _ngi_check_fullscreen(E_Desk *desk)
- * {
- *    Eina_List *l;
- *    E_Border *bd;
- * 
- *    EINA_LIST_FOREACH(e_border_client_list(), l, bd)
- *      {
- * 	if (bd->desk != desk)
- * 	  continue;
- * 
- * 	if (bd->fullscreen)
- * 	  return 1;
- *      }
- * 
- *    return 0;
- * } */
+static Eina_Bool
+_ngi_win_border_intersects(Ng *ng)
+{
+   Eina_List *l;
+   E_Border *bd;
+   E_Desk *desk;
+   int x, y, w, h, size;
+   
+   desk = e_desk_current_get(ng->zone);
+   size = ng->size + ng->opt.bg_offset + ng->opt.edge_offset;
+   
+   switch (ng->cfg->orient)
+     {
+      case E_GADCON_ORIENT_BOTTOM:
+	 x = ng->start;
+	 y = ng->win->popup->h - size;
+	 w = ng->w;
+	 h = size;
+	 break;
+
+      case E_GADCON_ORIENT_TOP:
+	 x = ng->start;
+	 y = 0;
+	 w = ng->w;
+	 h = size;
+	 break;
+
+      case E_GADCON_ORIENT_LEFT:
+	 x = 0;
+	 y = ng->start;
+	 w = size;
+	 h = ng->w;
+	 break;
+
+      case E_GADCON_ORIENT_RIGHT:
+	 x = ng->win->popup->w - size;
+	 y = ng->start;
+	 w = size;
+	 h = ng->w;
+	 break;
+     }
+
+   x += ng->zone->x + ng->win->popup->x;
+   y += ng->zone->y + ng->win->popup->y;
+     
+   EINA_LIST_FOREACH(e_border_client_list(), l, bd)
+     {
+	if (bd->zone != ng->zone)
+	  continue;
+
+	if ((bd->desk != desk) && (!bd->sticky))
+	  continue;
+
+	if (E_INTERSECTS(x, y, w, h, bd->x, bd->y, bd->w, bd->h))
+	  return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
 
 static Eina_Bool
 _ngi_win_cb_desk_show(void *data, int type, void *event)
@@ -1616,10 +1675,10 @@ _ngi_win_cb_desk_show(void *data, int type, void *event)
      {
 	fullscreen = ev->desk->fullscreen_borders;
 
-	if (ng->hide_fullscreen != fullscreen)
+	if (ng->hide != fullscreen)
 	  ngi_animate(ng);
 
-	ng->hide_fullscreen = fullscreen;
+	ng->hide = fullscreen;
      }
    return EINA_TRUE;
 }
@@ -1630,37 +1689,43 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
    E_Event_Border_Property *ev = event;
    Ng *ng = data;
    E_Desk *desk;
-   int fullscreen;
+   int hide;
 
    if (ng->cfg->stacking == below_fullscreen)
      {
 	desk = e_desk_current_get(ng->zone);
 
-	if (ev->border->desk != desk)
-	  return EINA_TRUE;
+	hide = desk->fullscreen_borders;
 
-	fullscreen = desk->fullscreen_borders;
-
-	if (fullscreen)
+	if (hide)
 	  e_popup_hide(ng->win->popup);
 	else
 	  e_popup_show(ng->win->popup);
      }
-   else if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
+
+   if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
      {
 	desk = e_desk_current_get(ng->zone);
 
-	if (ev->border->desk != desk)
-	  return EINA_TRUE;
+	hide = desk->fullscreen_borders;
 
-	fullscreen = desk->fullscreen_borders;
-
-	if (ng->hide_fullscreen != fullscreen)
+	if (ng->hide != hide)
 	  ngi_animate(ng);
 
-	ng->hide_fullscreen = fullscreen;
+	ng->hide = hide;
      }
+   else if (ng->cfg->autohide == AUTOHIDE_OVERLAP)
+     {
+	desk = e_desk_current_get(ng->zone);
 
+	hide = _ngi_win_border_intersects(ng);
+	
+	if (ng->hide != hide)
+	  ngi_animate(ng);
+
+	ng->hide = hide;
+     }
+     
    return EINA_TRUE;
 }
 

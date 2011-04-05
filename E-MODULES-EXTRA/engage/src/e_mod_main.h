@@ -11,25 +11,10 @@
 #define MOD_CONFIG_FILE_VERSION					\
   ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
 
-#define AUTOHIDE_NONE 0
-#define AUTOHIDE_NORMAL 1
-#define AUTOHIDE_FULLSCREEN 2
-
-/* #define ITEM_MOUSE_DOWN(_item, _ev)     \
- *   if(_item && _item->cb_mouse_down)     \
- *     _item->cb_mouse_down(_item, _ev);   \
- *
- * #define ITEM_MOUSE_UP(_item, _ev)       \
- *   if(_item && _item->cb_mouse_up)       \
- *     _item->cb_mouse_up(_item, _ev);     \
- *
- * #define ITEM_MOUSE_OUT(_item)           \
- *   if(_item && _item->cb_mouse_out)      \
- *     _item->cb_mouse_out(_item);         \
- *
- * #define ITEM_MOUSE_IN(_item)            \
- *   if(_item && _item->cb_mouse_in)       \
- *     _item->cb_mouse_in(_item);          \ */
+#define AUTOHIDE_NONE		0
+#define AUTOHIDE_NORMAL		1
+#define AUTOHIDE_FULLSCREEN	2
+#define AUTOHIDE_OVERLAP	3
 
 #define ITEM_MOUSE_WHEEL(_item, ev)	\
   if(_item && _item->cb_mouse_wheel)    \
@@ -173,7 +158,7 @@ struct _Ng
 
   enum { unzoomed, zooming, zoomed, unzooming } state;
   enum { hidden, hiding, showing, show } hide_state;
-  int             hide_fullscreen;
+  int              hide;
 
   double           zoom;
   double           start_zoom;
