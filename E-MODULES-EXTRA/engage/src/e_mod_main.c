@@ -251,6 +251,12 @@ ngi_new(Config_Item *cfg)
    ng->handlers = eina_list_append
      (ng->handlers, ecore_event_handler_add
       (E_EVENT_BORDER_RESIZE, _ngi_win_cb_border_event, ng));
+   ng->handlers = eina_list_append
+     (ng->handlers, ecore_event_handler_add
+      (E_EVENT_BORDER_ADD, _ngi_win_cb_border_event, ng));
+   ng->handlers = eina_list_append
+     (ng->handlers, ecore_event_handler_add
+      (E_EVENT_BORDER_REMOVE, _ngi_win_cb_border_event, ng));
 
    if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
      {
@@ -1642,6 +1648,9 @@ _ngi_win_border_intersects(Ng *ng)
      
    EINA_LIST_FOREACH(e_border_client_list(), l, bd)
      {
+	if (bd->delete_requested)
+	  continue;
+
 	if (bd->zone != ng->zone)
 	  continue;
 
