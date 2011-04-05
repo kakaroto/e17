@@ -116,7 +116,7 @@ proxy_text_random.c
 
 expedite_CFLAGS = @WIN32_CFLAGS@
 expedite_CXXFLAGS = @EXPEDITE_CXXFLAGS@
-expedite_LDADD = @SDL_LIBS@ @x_libs@ @gdi_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @glew_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ @EVAS_LIBS@ @EINA_LIBS@ @EVIL_LIBS@ -lm
+expedite_LDADD = @SDL_LIBS@ @x_libs@ @gdi_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ @EVAS_LIBS@ @EINA_LIBS@ @EVIL_LIBS@ -lm
 expedite_LDFLAGS = @lt_enable_auto_import@
 
 if BUILD_SOFTWARE_XLIB
@@ -157,11 +157,6 @@ endif
 if BUILD_DIRECT3D
 expedite_SOURCES += \
 engine_direct3d.cpp engine_direct3d.h
-endif
-
-if BUILD_OPENGL_GLEW
-expedite_SOURCES += \
-engine_gl_glew.c engine_gl_glew.h
 endif
 
 if BUILD_SOFTWARE_SDL

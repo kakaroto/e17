@@ -1158,9 +1158,6 @@ static const Expedite_Engine engines[] = {
 #if HAVE_EVAS_DIRECT3D
   { "direct3d",engine_direct3d_args, engine_direct3d_loop, engine_direct3d_shutdown },
 #endif
-#if HAVE_EVAS_OPENGL_GLEW
-  { "glew" , engine_gl_glew_args, engine_gl_glew_loop, engine_gl_glew_shutdown },
-#endif
 #if HAVE_EVAS_SOFTWARE_SDL
   { "sdl",   engine_software_sdl_args, engine_software_sdl_loop, engine_software_sdl_shutdown },
   { "sdl-16",engine_software_sdl_args, engine_software_sdl_loop, engine_software_sdl_shutdown },

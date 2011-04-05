@@ -48,9 +48,6 @@
 #if HAVE_EVAS_DIRECT3D
 #include "engine_direct3d.h"
 #endif
-#if HAVE_EVAS_OPENGL_GLEW
-#include "engine_gl_glew.h"
-#endif
 #if HAVE_EVAS_SOFTWARE_SDL
 #include "engine_software_sdl.h"
 #endif

@@ -67,10 +67,6 @@ AC_SUBST(ddraw_libs)
 EXPEDITE_CHECK_ENGINE([direct3d], [Direct3D], "yes", [d3d_libs="-ld3d9 -ld3dx9d -lgdi32"])
 AC_SUBST(d3d_libs)
 
-# OpenGL GLEW
-EXPEDITE_CHECK_ENGINE([opengl-glew], [OpenGL Glew], "yes", [glew_libs="-lglew32 -lgdi32"])
-AC_SUBST(glew_libs)
-
 # Software SDL
 EXPEDITE_CHECK_ENGINE([software-sdl], [Software SDL], "yes")
 
@@ -252,7 +248,6 @@ echo "    X Render XCB.................: ${have_xrender_xcb}"
 echo "    Software GDI.................: ${have_software_gdi}"
 echo "    Software DirectDraw..........: ${have_software_ddraw}"
 echo "    Direct3D.....................: ${have_direct3d}"
-echo "    Open GL Glew.................: ${have_opengl_glew}"
 echo "    Software SDL.................: ${have_software_sdl}"
 echo "    Open GL SDL..................: ${have_opengl_sdl}"
 echo "    FB...........................: ${have_fb}"
