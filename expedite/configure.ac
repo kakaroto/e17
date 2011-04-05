@@ -83,10 +83,6 @@ EXPEDITE_CHECK_ENGINE([fb], [Framebuffer], "yes")
 # DIRECTFB
 EXPEDITE_CHECK_ENGINE([directfb], [DirectFB], "yes")
 
-# Quartz
-EXPEDITE_CHECK_ENGINE([quartz], [Quartz], "yes", [quartz_libs="-framework Cocoa -framework ApplicationServices"])
-AC_SUBST(quartz_libs)
-
 # Software 16bit X11
 EXPEDITE_CHECK_ENGINE([software-16-x11], [Software 16 bits X11], "yes")
 
@@ -261,7 +257,6 @@ echo "    Software SDL.................: ${have_software_sdl}"
 echo "    Open GL SDL..................: ${have_opengl_sdl}"
 echo "    FB...........................: ${have_fb}"
 echo "    DirectFB.....................: ${have_directfb}"
-echo "    Quartz.......................: ${have_quartz}"
 echo "    Software X11 16 bits.........: ${have_software_16_x11}"
 echo "    Software DirectDraw 16 bits..: ${have_software_16_ddraw}"
 echo "    Software WinCE 16 bits.......: ${have_software_16_wince}"
