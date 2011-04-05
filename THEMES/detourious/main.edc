@@ -111,7 +111,7 @@ collections {
 	#include "bits/icons.edc" 		/* icons definitions */
 	#include "bits/ilist.edc"		/* icon list */
 	//#include "bits/init.edc"		/* init screen */
-	#include "bits/itask.edc"		/* itask-ng module */
+    #include "bits/engage.edc"		/* engage module */
 	#include "bits/label.edc"		/* label definiton group */
 	#include "bits/fileman.edc" 		/* file manager groups */
 	#include "bits/menu.edc" 		/* menu and context menu groups */

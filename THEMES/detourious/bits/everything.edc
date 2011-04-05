@@ -135,33 +135,33 @@ group {
 				}
 			}
 		}
-		part {
-			name: "list_bg";
-			clip_to: "base";
-			description {
-				state: "default" 0.0;
-				image.normal: "images/dialog_im0.png";
-				rel1 {
-					to: "list_clip";
-					offset: 0 0;
-				}
-				/* rel2 {
-				 * 	/\*to: "list_clip"; *\/
-				 * 	offset: -1  -1;
-				 * } */
-			}
-		}
+		/* part {
+		 * 	name: "list_bg";
+		 * 	clip_to: "base";
+		 * 	description {
+		 * 		state: "default" 0.0;
+		 * 		image.normal: "images/dialog_im0.png";
+		 * 		rel1 {
+		 * 			to: "list_clip";
+		 * 			offset: 0 0;
+		 * 		}
+		 * 		/\* rel2 {
+		 * 		 * 	/\\*to: "list_clip"; *\\/
+		 * 		 * 	offset: -1  -1;
+		 * 		 * } *\/
+		 * 	}
+		 * } */
 
 		/* FIXME: brighten image instead */
 		part {
-			name: "list_bg2";
+			name: "list_bg";
 			clip_to: "base";
 			type: RECT;
 			description {
 				state: "default" 0.0;
 				rel1.to: "list_bg";
 				rel2.to: "list_bg";
-				color: 255 255 255 170;
+				color: 245 245 245 255;
 			}
 		}
 		part {
@@ -235,7 +235,7 @@ group {
 			description {
 				state: "default" 0.0;
 				rel1.relative: 0.0 1.0;
-				rel1.offset: 0 -7;
+				rel1.offset: 0 -3;
 				rel2.offset: -1 -1;
 				rel1.to: "list_clip";
 				rel2.to: "list_clip";

@@ -5,9 +5,9 @@ group {
 	/* bg frame that keeps is not affected by 'Background
 	 * Transparency' setting */
 
-	name: "e/modules/itask-ng/frame_top";
-	alias: "e/modules/itask-ng/frame_left";
-	alias: "e/modules/itask-ng/frame_right";
+	name: "e/modules/engage/frame_top";
+	alias: "e/modules/engage/frame_left";
+	alias: "e/modules/engage/frame_right";
 
 	data {
 		/* space between icons */
@@ -50,7 +50,7 @@ group {
 }
 
 group {
-	name: "e/modules/itask-ng/frame_bottom";
+	name: "e/modules/engage/frame_bottom";
 
 	data {
 		item: "icon_spacing"    "2";
@@ -78,7 +78,7 @@ group {
 }
 
 group {
-	name: "e/modules/itask-ng/bg_bottom";
+	name: "e/modules/engage/bg_bottom";
 	parts {
 
 		part {
@@ -101,7 +101,7 @@ group {
 }
 
 group {
-	name: "e/modules/itask-ng/bg_top";
+	name: "e/modules/engage/bg_top";
 	parts {
 		part {
 			name: "bg";
@@ -123,7 +123,7 @@ group {
 	}
 }
 group {
-	name: "e/modules/itask-ng/bg_left";
+	name: "e/modules/engage/bg_left";
 	parts {
 		part {
 			name: "bg";
@@ -145,7 +145,7 @@ group {
 }
 
 group {
-	name: "e/modules/itask-ng/bg_right";
+	name: "e/modules/engage/bg_right";
 	parts {
 		part {
 			name: "bg";
@@ -172,11 +172,11 @@ group {
  */
 
 group {
-	name: "e/modules/itask-ng/separator_bottom";
+	name: "e/modules/engage/separator_bottom";
 }
 
 group {
-	name: "e/modules/itask-ng/separator_top";
+	name: "e/modules/engage/separator_top";
 
 	parts {
 		part {
@@ -198,8 +198,8 @@ group {
 }
 
 group {
-	name: "e/modules/itask-ng/separator_left";
-	alias: "e/modules/itask-ng/separator_right";
+	name: "e/modules/engage/separator_left";
+	alias: "e/modules/engage/separator_right";
 
 	parts {
 		part {
@@ -221,7 +221,7 @@ group {
 }
 
 group {
-	name: "e/modules/itask-ng/label_bottom";
+	name: "e/modules/engage/label_bottom";
 
 	parts {
 		part {
@@ -356,7 +356,7 @@ group {
 }
 
 group {
-	name: "e/modules/itask-ng/label_top";
+	name: "e/modules/engage/label_top";
 	parts {
 		part {
 			name: "label";
@@ -460,16 +460,16 @@ group {
 
 /* TODO needs to be supported in code */
 /* group {
- * 	name: "e/modules/itask-ng/label_left";
- * 	alias: "e/modules/itask-ng/label_right";
+ * 	name: "e/modules/engage/label_left";
+ * 	alias: "e/modules/engage/label_right";
  * } */
 
 group {
-	name: "e/modules/itask-ng/icon";
-	alias: "e/modules/itask-ng/icon_top";
-	alias: "e/modules/itask-ng/icon_left";
-	alias: "e/modules/itask-ng/icon_right";
-	alias: "e/modules/itask-ng/icon_bottom";
+	name: "e/modules/engage/icon";
+	alias: "e/modules/engage/icon_top";
+	alias: "e/modules/engage/icon_left";
+	alias: "e/modules/engage/icon_right";
+	alias: "e/modules/engage/icon_bottom";
 
 	min: 32 32;
 	max: 128 128;
@@ -678,10 +678,10 @@ group {
 }
 
 group {
-	name: "e/modules/itask-ng/icon_over_top";
-	alias: "e/modules/itask-ng/icon_over_left";
-	alias: "e/modules/itask-ng/icon_over_right";
-	alias: "e/modules/itask-ng/icon_over_bottom";
+	name: "e/modules/engage/icon_over_top";
+	alias: "e/modules/engage/icon_over_left";
+	alias: "e/modules/engage/icon_over_right";
+	alias: "e/modules/engage/icon_over_bottom";
 
 	parts {
 		part {
