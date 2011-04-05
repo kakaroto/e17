@@ -114,9 +114,12 @@ ngi_taskbar_remove(Ngi_Box *box)
 static int
 _border_check(Ngi_Box *box, E_Border *bd)
 {
-   if (box->cfg->taskbar_show_desktop && bd->desk != e_desk_current_get(box->ng->zone))
-      return 0;
+   /* if (box->cfg->taskbar_show_desktop && bd->desk != e_desk_current_get(box->ng->zone))
+    *    return 0; */
 
+   if (box->ng->zone != bd->zone)
+      return 0;
+   
    if (box->cfg->taskbar_show_iconified == 0 && bd->iconic)
       return 0;
 
@@ -377,48 +380,33 @@ _cb_border_event(void *data, int type, void *event)
    return ECORE_CALLBACK_PASS_ON;
 }
 
-/* FIXME set it->visible to skip icons */
 static Eina_Bool
 _cb_desk_show(void *data, int type, void *event)
 {
-   /* E_Event_Desk_Show *ev = (E_Event_Desk_Show*) event; */
-   Ng *ng;
-   Ngi_Box *box;
+   E_Event_Desk_Show *ev = event;
+   Ngi_Box *box = data;
    Ngi_Item_Taskbar *it;
-   Eina_List *l, *ll, *lll;
-   E_Desk *desk;
-   int changed = 0;
+   Eina_List *l;
 
-   EINA_LIST_FOREACH (ngi_config->instances, l, ng)
-   {
-      EINA_LIST_FOREACH (ng->boxes, ll, box)
-      {
-         if ((box->cfg->type != taskbar) ||
-	     (!box->cfg->taskbar_show_desktop))
-            continue;
+   EINA_LIST_FOREACH(box->items, l, it)
+     {
+	if ((it->border->desk == ev->desk) || (it->border->sticky))
+	  {
+	     evas_object_show(it->base.obj);
+	     evas_object_show(it->base.over);	     
+	     it->base.scale = 1.0;
+	  }
+	else
+	  {
+	     evas_object_hide(it->base.obj);
+	     evas_object_hide(it->base.over);
+	     it->base.scale = 0.0;
+	  }
+     }
+   
+   ngi_thaw(box->ng);
 
-         desk = e_desk_current_get(ng->zone);
-
-         EINA_LIST_FOREACH (box->items, lll, it)
-         {
-            if (it->border->desk == desk)
-              {
-                 changed = 1;
-                 it->base.scale = 1.0;
-              }
-            else
-              {
-                 changed = 1;
-                 it->base.scale = 0.0;
-              }
-         }
-         if (changed)
-            ngi_thaw(ng);
-
-         changed = 0;
-      }
-   }
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 /* ***************************  TASKBAR  ITEM  *************************** */
@@ -427,6 +415,7 @@ static void
 _item_new(Ngi_Box *box, E_Border *bd)
 {
    Ngi_Item_Taskbar *it, *l_it = NULL, *ll_it = NULL;
+   Ngi_Item *item;
    Eina_List *l;
 
    if (!_border_check(box, bd))
@@ -437,7 +426,8 @@ _item_new(Ngi_Box *box, E_Border *bd)
 
    it = E_NEW(Ngi_Item_Taskbar, 1);
    it->base.box = box;
-   ngi_item_init_defaults((Ngi_Item*)it);
+   item = (Ngi_Item*) it;
+   ngi_item_init_defaults(item);
 
    e_object_ref(E_OBJECT(bd));
    it->border = bd;
@@ -491,14 +481,24 @@ _item_new(Ngi_Box *box, E_Border *bd)
            box->items = eina_list_prepend(box->items, it);
      }
 
-   ngi_item_show((Ngi_Item*)it, 0);
-
+   if ((box->cfg->taskbar_show_desktop) &&
+       (bd->desk != e_desk_current_get(box->ng->zone)) &&
+       (!bd->sticky))
+     {
+	ngi_item_show(item, 1);
+	item->scale = 0.0;
+     }
+   else
+     {
+	ngi_item_show(item, 0);
+     }
+   
    if (bd->iconic)
-     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,iconic,on");
+     ngi_item_signal_emit(item, "e,state,taskbar,iconic,on");
 
    it->urgent = bd->client.icccm.urgent;
    if (it->urgent)
-     ngi_item_signal_emit((Ngi_Item*)it, "e,state,taskbar,urgent,on");
+     ngi_item_signal_emit(item, "e,state,taskbar,urgent,on");
 }
 
 static void
@@ -507,7 +507,7 @@ _item_cb_free(Ngi_Item *item)
    Ngi_Item_Taskbar *it = (Ngi_Item_Taskbar *) item;
 
    if (it->urgent)
-     ngi_bar_lock(((Ngi_Item*)it)->box->ng, 0);
+     ngi_bar_lock(item->box->ng, 0);
 
    if (it->border)
      e_object_unref(E_OBJECT(it->border));
@@ -558,11 +558,9 @@ _border_icon_add(E_Border *bd, Evas *evas)
                     {
                        evas_object_del(o);
                        o = e_icon_add(evas);
-		       double tmp = e_scale;
-		       e_scale = 3.0;
+		       e_icon_scale_size_set(o, 128); 
                        if (!e_util_icon_theme_set(o, bd->internal_icon))
                          e_util_icon_theme_set(o, "enlightenment");
-		       e_scale = tmp;
                     }
                }
              else
@@ -687,17 +685,19 @@ _item_set_label(Ngi_Item_Taskbar *it)
      {
         char *abbv;
         const char *left, *right;
-
-        abbv = (char *)calloc(E_CLIENTLIST_MAX_CAPTION_LEN + 4, sizeof(char));
+   
+        abbv = E_NEW(char, E_CLIENTLIST_MAX_CAPTION_LEN + 4);
         left = title;
         right = title + (strlen(title) - (max_len / 2));
-
+   
         strncpy(abbv, left, max_len / 2);
         strncat(abbv, "...", 3);
         strncat(abbv, right, max_len / 2);
-
-	ngi_item_label_set((Ngi_Item*)it, abbv);
-	return;
+   
+   	ngi_item_label_set((Ngi_Item*)it, abbv);
+	E_FREE(abbv);
+	
+   	return;
      }
 
    ngi_item_label_set((Ngi_Item*)it, title);

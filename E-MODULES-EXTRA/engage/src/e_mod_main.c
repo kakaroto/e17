@@ -1489,11 +1489,16 @@ _ngi_redraw(Ng *ng)
       else
          evas_object_hide(box->separator);
 
+      pos = 0;
+      
       EINA_LIST_FOREACH (box->items, l, it)
 	{
 	   double size;
 
-	   if (!l->prev)
+	   if (it->scale == 0.0)
+	     continue;
+	   
+	   if (pos == 0)
 	     {
 		_ngi_zoom_function(ng, it->pos - ng->pos,  &pos);
 		pos = (double)it->pos + pos;
