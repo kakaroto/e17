@@ -388,6 +388,9 @@ _cb_desk_show(void *data, int type, void *event)
    Ngi_Item_Taskbar *it;
    Eina_List *l;
 
+   if (!box->cfg->taskbar_show_desktop)
+     return ECORE_CALLBACK_PASS_ON;
+   
    EINA_LIST_FOREACH(box->items, l, it)
      {
 	if ((it->border->desk == ev->desk) || (it->border->sticky))
