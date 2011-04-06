@@ -8,13 +8,13 @@
 
 #include <Eina.h>
 
-enum
+typedef enum
 {
    TD_BASE,
    TD_STRUCT,
    TD_ARRAY,
    TD_ANY,
-};
+} Azy_Base_Type;
 
 typedef struct _Azy_Typedef       Azy_Typedef;
 typedef struct _Azy_Struct_Member Azy_Struct_Member;
@@ -26,11 +26,7 @@ typedef struct _Azy_Error_Code    Azy_Error_Code;
 
 struct _Azy_Typedef
 {
-   int                 type; /* typedef node type */
-   Eina_Bool           fcheader : 1;
-   Eina_Bool           fcfunc : 1;
-   Eina_Bool           mheader : 1;
-   Eina_Bool           mfunc : 1;
+   Azy_Base_Type       type; /* typedef node type */
    const char         *name; /* name of the type (for use in ZER) */
    const char         *cname; /* name of the type (for use in ZER) */
    const char         *ctype; /* C type name */

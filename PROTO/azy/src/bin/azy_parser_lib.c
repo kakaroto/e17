@@ -181,7 +181,7 @@ azy_parser_string_parse_azy(const char *str,
      }
    /* validate types */
    {
-      Eina_List *l, *ll;
+      Eina_List *l;
       Azy_Typedef *t;
       EINA_LIST_FOREACH(parser->data->types, l, t)
         {
