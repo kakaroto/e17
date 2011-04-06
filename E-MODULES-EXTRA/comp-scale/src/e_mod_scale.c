@@ -1067,11 +1067,10 @@ _scale_run(E_Manager *man)
 	use_h = zone->h - spacing;
      }
 
-   /* XXX for what was this intended ??? */
-   min_x = 0; //zone->w * zone->desk_x_current;
-   min_y = 0; //zone->h * zone->desk_y_current;
-   max_x = zone->w; // + zone->w * ((zone->desk_x_count - 1) - zone->desk_x_current);
-   max_y = zone->h; // + zone->h * ((zone->desk_y_count - 1) - zone->desk_y_current);
+   min_x = 0;
+   min_y = 0;
+   max_x = zone->w;
+   max_y = zone->h;
 
    /* scale all windows down to be next to each other on one zone */
    if (scale_layout)
@@ -1736,6 +1735,86 @@ _scale_place(int offset)
 }
 
 static int
+_cb_sort_center(const void *d1, const void *d2)
+{
+   const Item *it1 = d1;
+   const Item *it2 = d2;
+
+   double dx1 = ((it1->x + it1->w/2.0) - (double)(max_width/2));
+   double dy1 = ((it1->y + it1->h/2.0) - (double)(max_height/2));
+
+   double dx2 = ((it2->x + it2->w/2.0) - (double)(max_width/2));
+   double dy2 = ((it2->y + it2->h/2.0) - (double)(max_height/2));
+
+   return (sqrt(dx1*dx1 + dy1*dy1) > sqrt(dx2*dx2 + dy2*dy2)) ? -1 : 1;
+}
+
+static void
+_scale_place_natural()
+{
+   Eina_List *l;
+   int offset, i = 0;
+   Item *it;
+
+   max_width  = zone->w;
+   max_height = zone->h;
+
+   if (show_all_desks)
+     {
+	max_width  = zone->h * zone->desk_x_count;
+	max_height = zone->w * zone->desk_y_count;
+
+	min_x = zone->w * -zone->desk_x_current;
+	min_y = zone->h * -zone->desk_y_current;
+	max_x = zone->w * (zone->desk_x_count - zone->desk_x_current);
+	max_y = zone->h * (zone->desk_y_count - zone->desk_y_current);
+     }
+
+   items = eina_list_sort(items, eina_list_count(items), _cb_sort_center);
+
+   offset = spacing;
+
+   if (scale_conf->grow && (spacing < OFFSET))
+     offset = OFFSET;
+   if (scale_conf->tight && (spacing < OFFSET))
+     offset = OFFSET;
+
+   step_count = 0;
+
+   while ((i++ < PLACE_RUNS) &&
+	  (_scale_place(offset) ||
+	   (min_x < use_x) ||
+	   (min_y < use_y) ||
+	   (max_x > use_w) ||
+	   (max_y > use_h)))
+     {
+	/* shrink region to visible region */
+	if (min_x < use_x) min_x += 2;
+	if (min_y < use_y) min_y += 2;
+	if (min_x > use_x) min_x = use_x;
+	if (min_y > use_y) min_y = use_y;
+
+	if (max_x > use_w) max_x -= 2;
+	if (max_y > use_h) max_y -= 2;
+	if (max_x < use_w) max_x = use_w;
+	if (max_y < use_h) max_y = use_h;
+
+	if (!show_all_desks)
+	  continue;
+
+	/* move other desks windows into visible region */
+	EINA_LIST_FOREACH(items, l, it)
+	  {
+	     if ((min_x < use_x) && (it->dx < 0) && it->x < 0) it->x += 4.0;
+	     if ((min_y < use_y) && (it->dy < 0) && it->y < 0) it->y += 4.0;
+
+	     if ((max_x > use_w) && (it->dx > 0) && it->x > zone->w) it->x -= 4.0;
+	     if ((max_y > use_h) && (it->dy > 0) && it->y > zone->h) it->y -= 4.0;
+	  }
+     }
+}
+
+static int
 _scale_shrink()
 {
    Eina_List *l, *ll;
@@ -2091,79 +2170,4 @@ _scale_place_slotted()
    prev->next = first;
 
    return 1;
-}
-
-static int
-_cb_sort_center(const void *d1, const void *d2)
-{
-   const Item *it1 = d1;
-   const Item *it2 = d2;
-
-   double dx1 = ((it1->x + it1->w/2.0) - (double)(max_width/2));
-   double dy1 = ((it1->y + it1->h/2.0) - (double)(max_height/2));
-
-   double dx2 = ((it2->x + it2->w/2.0) - (double)(max_width/2));
-   double dy2 = ((it2->y + it2->h/2.0) - (double)(max_height/2));
-
-   return (sqrt(dx1*dx1 + dy1*dy1) > sqrt(dx2*dx2 + dy2*dy2)) ? -1 : 1;
-}
-
-static void
-_scale_place_natural()
-{
-   Eina_List *l;
-   int offset, i = 0;
-   Item *it;
-
-   max_width  = zone->w;
-   max_height = zone->h;
-
-   if (show_all_desks)
-     {
-	max_width  = zone->h * zone->desk_x_count;
-	max_height = zone->w * zone->desk_y_count;
-     }
-
-   items = eina_list_sort(items, eina_list_count(items), _cb_sort_center);
-
-   offset = spacing;
-
-   if (scale_conf->grow && (spacing < OFFSET))
-     offset = OFFSET;
-   if (scale_conf->tight && (spacing < OFFSET))
-     offset = OFFSET;
-
-   step_count = 0;
-
-   while ((i++ < PLACE_RUNS) &&
-	  (_scale_place(offset) ||
-	   (min_x < use_x) ||
-	   (min_y < use_y) ||
-	   (max_x > use_w) ||
-	   (max_y > use_h)))
-     {
-	/* shrink region to visible region */
-	if (min_x < use_x) min_x += 2;
-	if (min_y < use_y) min_y += 2;
-	if (min_x > use_x) min_x = use_x;
-	if (min_y > use_y) min_y = use_y;
-
-	if (max_x > use_w) max_x -= 2;
-	if (max_y > use_h) max_y -= 2;
-	if (max_x < use_w) max_x = use_w;
-	if (max_y < use_h) max_y = use_h;
-
-	if (!show_all_desks)
-	  continue;
-
-	/* move other desks windows into visible region */
-	EINA_LIST_FOREACH(items, l, it)
-	  {
-	     if ((min_x < use_x) && (it->dx < 0) && it->x < 0) it->x += 4.0;
-	     if ((min_y < use_y) && (it->dy < 0) && it->y < 0) it->y += 4.0;
-
-	     if ((max_x > use_w) && (it->dx > 0) && it->x > zone->w) it->x -= 4.0;
-	     if ((max_y > use_h) && (it->dy > 0) && it->y > zone->h) it->y -= 4.0;
-	  }
-     }
 }
