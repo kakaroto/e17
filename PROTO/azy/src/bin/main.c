@@ -148,7 +148,6 @@ gen_type_marshalizers(Azy_Typedef *t,
 
    if (header)
      {
-        if (t->mheader) return;
         if (t->type == TD_STRUCT)
           {
              EL(0, "Azy_Value *%s(%s azy_user_type) EINA_WARN_UNUSED_RESULT;", t->march_name,
@@ -158,18 +157,15 @@ gen_type_marshalizers(Azy_Typedef *t,
           }
         else
           {
-             if (!strcmp(t->ctype, "Eina_Bool"))
-               return;
+             if (t->ctype == b) return;
              EL(0, "Azy_Value *%s(%s azy_user_type) EINA_WARN_UNUSED_RESULT;",
                 t->march_name, t->ctype);
              EL(0, "Eina_Bool %s(Azy_Value *azy_value_array, %s* azy_user_type) EINA_WARN_UNUSED_RESULT;",
                 t->demarch_name, t->ctype);
           }
-        t->mheader = EINA_TRUE;
         return;
      }
 
-   if (t->mfunc) return;
    if (t->type == TD_STRUCT)
      {
         EL(0, "Azy_Value *%s(%s azy_user_type)", t->march_name,
@@ -322,7 +318,6 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(0, "}");
         NL;
      }
-   t->mfunc = EINA_TRUE;
 }
 
 static void
@@ -636,9 +631,8 @@ gen_type_esql(Azy_Typedef *t,
         EL(1, "EINA_SAFETY_ON_TRUE_RETURN_VAL(esql_res_rows_count(res) > 1, %s);", t->cnull);
         NL;
         EL(1, "if (!esql_res_rows_count(res))");
-        EL(2, "{");
-        EL(3, "return %s;", t->cnull);
-        EL(2, "}");
+        EL(2, "return %s;", t->cnull);
+        NL;
         EL(2, "ret = %s_new();", t->cname);
         EL(1, "it = esql_res_row_iterator_new(res);");
         EL(1, "EINA_ITERATOR_FOREACH(it, r)");
@@ -674,6 +668,7 @@ gen_type_esql(Azy_Typedef *t,
           }
         EL(4, "}");
         EL(2, "}");
+        EL(1, "eina_iterator_free(it);");
         EL(1, "return ret;");
         EL(0, "}");
         NL;
@@ -722,7 +717,7 @@ gen_type_esql(Azy_Typedef *t,
           }
         if (t->item_type->type == TD_STRUCT)
           {
-             EINA_LIST_FOREACH(t->struct_members, l, m)
+             EINA_LIST_FOREACH(t->item_type->struct_members, l, m)
                {
                   if (l->prev) E(5, "else ");
                   else E(5, "");
@@ -750,6 +745,7 @@ gen_type_esql(Azy_Typedef *t,
         else
           EL(3, "ret = eina_list_append(ret, tmp);");
         EL(2, "}");
+        EL(1, "eina_iterator_free(it);");
         EL(1, "return ret;");
         EL(0, "}");
         NL;
@@ -765,7 +761,6 @@ gen_type_copyfree(Azy_Typedef *t,
 
    if (def)
      {
-        if (t->fcheader) return;
         if (t->type == TD_STRUCT || t->type == TD_ARRAY)
           {
              EL(0, "/** @brief Free a #%s */", t->ctype);
@@ -773,11 +768,9 @@ gen_type_copyfree(Azy_Typedef *t,
              EL(0, "/** @brief Copy a #%s */", t->ctype);
              EL(0, "%s%s(%sorig);", t->ctype, t->copy_func, t->ctype);
           }
-        t->fcheader = EINA_TRUE;
         return;
      }
 
-   if (t->fcfunc) return;
    if (t->type == TD_STRUCT)
      {
         /* free */
@@ -862,7 +855,6 @@ gen_type_copyfree(Azy_Typedef *t,
          EL(0, "}");
          NL;
      }
-   t->fcfunc = EINA_TRUE;
 }
 
 static void
@@ -990,9 +982,8 @@ gen_errors_impl(Azy_Server_Module *s)
 static void
 gen_common_headers(void)
 {
-   Eina_List *i, *j, *k, *l;
-   Azy_Typedef *t, *u;
-   Azy_Server_Module *r, *s;
+   Eina_List *j;
+   Azy_Typedef *t;
 
    OPEN("%s/%s%sCommon.h", out_dir, name, sep);
 
@@ -1042,8 +1033,6 @@ gen_common_headers(void)
    fclose(f);
    if (esql_funcs)
      {
-        Azy_Server_Module *s;
-        Eina_List *l;
         OPEN("%s/%s%sCommon_Esskyuehl.h", out_dir, name, sep);
         EL(0, "#ifndef %s_Common_ESQL_H", (azy->name) ? azy->name : "AZY");
         EL(0, "#define %s_Common_ESQL_H", (azy->name) ? azy->name : "AZY");
@@ -1062,9 +1051,8 @@ gen_common_impl(Azy_Server_Module *s)
 {
    if (!s)
      {
-        Eina_List *i, *j, *k, *l;
-        Azy_Typedef *t, *u;
-        Azy_Server_Module *r, *s;
+        Eina_List *j;
+        Azy_Typedef *t;
 
         OPEN("%s/%s%sCommon.c", out_dir, name, sep);
         EL(0, "#ifdef HAVE_CONFIG_H");
