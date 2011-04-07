@@ -54,39 +54,22 @@ ngi_taskbar_new(Ng *ng, Config_Box *cfg)
                                           _cb_drop_leave, _cb_drop_end,
                                           drop, 3, 0, 0, 0, 0);
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_ADD, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
+#define HANDLE(_event, _cb)						\
+   box->handlers = eina_list_append(box->handlers, ecore_event_handler_add(_event, _cb, box));
 
-   h = ecore_event_handler_add(E_EVENT_BORDER_REMOVE, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_ICONIFY, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_UNICONIFY, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_ICON_CHANGE, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_ZONE_SET, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_URGENT_CHANGE, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_IN, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_BORDER_FOCUS_OUT, _cb_border_event, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
-   h = ecore_event_handler_add(E_EVENT_DESK_SHOW, _cb_desk_show, box);
-   if (h) box->handlers = eina_list_append(box->handlers, h);
-
+   HANDLE(E_EVENT_BORDER_ADD,           _cb_border_event);
+   HANDLE(E_EVENT_BORDER_REMOVE,        _cb_border_event);
+   HANDLE(E_EVENT_BORDER_ICONIFY,       _cb_border_event);
+   HANDLE(E_EVENT_BORDER_UNICONIFY,     _cb_border_event);
+   HANDLE(E_EVENT_BORDER_ICON_CHANGE,   _cb_border_event);
+   HANDLE(E_EVENT_BORDER_PROPERTY,      _cb_border_event);
+   HANDLE(E_EVENT_BORDER_ZONE_SET,      _cb_border_event);
+   HANDLE(E_EVENT_BORDER_URGENT_CHANGE, _cb_border_event);
+   HANDLE(E_EVENT_BORDER_FOCUS_IN,      _cb_border_event);
+   HANDLE(E_EVENT_BORDER_FOCUS_OUT,     _cb_border_event);
+   HANDLE(E_EVENT_DESK_SHOW,            _cb_desk_show);
+#undef HANDLE
+   
    bl = e_container_border_list_first(box->ng->zone->container);
 
    while ((bd = e_container_border_list_next(bl)))
@@ -114,9 +97,6 @@ ngi_taskbar_remove(Ngi_Box *box)
 static int
 _border_check(Ngi_Box *box, E_Border *bd)
 {
-   /* if (box->cfg->taskbar_show_desktop && bd->desk != e_desk_current_get(box->ng->zone))
-    *    return 0; */
-
    if (box->ng->zone != bd->zone)
       return 0;
    

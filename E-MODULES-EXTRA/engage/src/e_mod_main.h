@@ -311,6 +311,7 @@ void         ngi_mouse_in                     (Ng *ng);
 void         ngi_mouse_out                    (Ng *ng);
 Ngi_Item *   ngi_item_at_position_get         (Ng *ng);
 void         ngi_bar_lock                     (Ng *ng, int lock);
+Config_Item *ngi_bar_config_new               (int container_num, int zone_num);
 
 void         ngi_win_show                     (Ngi_Win *win);
 void         ngi_win_hide                     (Ngi_Win *win);

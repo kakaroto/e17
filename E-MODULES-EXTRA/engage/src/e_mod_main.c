@@ -220,44 +220,24 @@ ngi_new(Config_Item *cfg)
             break;
         }
    }
+#define HANDLE(_event, _cb) \
+   ng->handlers = eina_list_append(ng->handlers, ecore_event_handler_add(_event, _cb, ng));
 
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (ECORE_X_EVENT_MOUSE_IN, _ngi_win_cb_mouse_in, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (ECORE_X_EVENT_MOUSE_OUT, _ngi_win_cb_mouse_out, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_BUTTON_DOWN, _ngi_win_cb_mouse_down, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_BUTTON_UP, _ngi_win_cb_mouse_up, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_WHEEL, _ngi_win_cb_mouse_wheel, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (ECORE_EVENT_MOUSE_MOVE, _ngi_win_cb_mouse_move, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (E_EVENT_DESK_SHOW, _ngi_win_cb_desk_show, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (E_EVENT_BORDER_PROPERTY, _ngi_win_cb_border_event, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (E_EVENT_BORDER_MOVE, _ngi_win_cb_border_event, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (E_EVENT_BORDER_RESIZE, _ngi_win_cb_border_event, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (E_EVENT_BORDER_ADD, _ngi_win_cb_border_event, ng));
-   ng->handlers = eina_list_append
-     (ng->handlers, ecore_event_handler_add
-      (E_EVENT_BORDER_REMOVE, _ngi_win_cb_border_event, ng));
+   HANDLE(ECORE_X_EVENT_MOUSE_IN,        _ngi_win_cb_mouse_in);
+   HANDLE(ECORE_X_EVENT_MOUSE_OUT,       _ngi_win_cb_mouse_out);
+   HANDLE(ECORE_EVENT_MOUSE_BUTTON_DOWN, _ngi_win_cb_mouse_down);
+   HANDLE(ECORE_EVENT_MOUSE_BUTTON_UP,   _ngi_win_cb_mouse_up);
+   HANDLE(ECORE_EVENT_MOUSE_WHEEL,       _ngi_win_cb_mouse_wheel);
+   HANDLE(ECORE_EVENT_MOUSE_MOVE,        _ngi_win_cb_mouse_move);
 
+   HANDLE(E_EVENT_DESK_SHOW,       _ngi_win_cb_desk_show);
+   HANDLE(E_EVENT_BORDER_PROPERTY, _ngi_win_cb_border_event);
+   HANDLE(E_EVENT_BORDER_MOVE,     _ngi_win_cb_border_event);
+   HANDLE(E_EVENT_BORDER_RESIZE,   _ngi_win_cb_border_event);
+   HANDLE(E_EVENT_BORDER_ADD,      _ngi_win_cb_border_event);
+   HANDLE(E_EVENT_BORDER_REMOVE,   _ngi_win_cb_border_event);
+#undef HANDLE
+   
    if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
      {
 	ng->hide = e_desk_current_get(ng->zone)->fullscreen_borders;
@@ -1804,6 +1784,78 @@ _ngi_config_free()
    ngi_config = NULL;
 }
 
+Config_Item *
+ngi_bar_config_new(int container_num, int zone_num)
+{
+   Config_Item *cfg;
+   Config_Box *cfg_box;
+   char buf[4096];
+   char tmp[4096];
+   FILE *f;
+   char *app_dir = "engage";
+
+   cfg = E_NEW(Config_Item, 1);
+   cfg->show_label = 1;
+   cfg->show_background = 1;
+   cfg->container = container_num;
+   cfg->zone = zone_num;
+   cfg->orient = E_GADCON_ORIENT_BOTTOM;
+   cfg->size = 36;
+   cfg->autohide = AUTOHIDE_FULLSCREEN;
+   cfg->autohide_show_urgent = 0;
+   cfg->hide_below_windows = 0;
+   cfg->zoom_duration = 0.3;
+   cfg->zoom_range = 1.5;
+   cfg->hide_timeout = 0.1;
+   cfg->zoomfactor = 2.0;
+   cfg->alpha = 255;
+   cfg->stacking = above_all;
+   cfg->mouse_over_anim = 1;
+   cfg->lock_deskswitch = 1;
+   cfg->ecomorph_features = 0;
+   cfg->boxes = NULL;
+
+   cfg_box = E_NEW(Config_Box, 1);
+   cfg_box->type = launcher;
+   cfg_box->launcher_app_dir = eina_stringshare_add(app_dir);
+   cfg_box->launcher_lock_dnd = 0;
+   cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
+
+   cfg_box = E_NEW(Config_Box, 1);
+   cfg_box->type = taskbar;
+   cfg_box->taskbar_adv_bordermenu = 0;
+   cfg_box->taskbar_skip_dialogs = 0;
+   cfg_box->taskbar_show_iconified = 1;
+   cfg_box->taskbar_show_desktop = 0;
+   cfg_box->taskbar_append_right = 0;
+   cfg_box->taskbar_group_apps = 1;
+   cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
+	
+   snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s",
+	    e_user_homedir_get(), app_dir);
+
+   if (!ecore_file_exists(buf))
+     {
+	ecore_file_mkdir(buf);
+	snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s/.order",
+		 e_user_homedir_get(), app_dir);
+	f = fopen(buf, "w");
+	if (f)
+	  {
+	     snprintf(tmp, sizeof(tmp),
+		      "xterm.desktop\n"
+		      "firefox.desktop\n"
+		      "gimp.desktop\n");
+	     fwrite(tmp, sizeof(char), strlen(tmp), f);
+	     fclose(f);
+	  }
+     }
+
+   ngi_config->items = eina_list_append(ngi_config->items, cfg);
+
+   return cfg;
+}
+
 EAPI void *
 e_modapi_init(E_Module *m)
 {
@@ -1870,6 +1922,8 @@ e_modapi_init(E_Module *m)
      {
 	ngi_config = E_NEW(Config, 1);
 	ngi_config->version = (MOD_CONFIG_FILE_EPOCH << 16);
+
+	ngi_bar_new(0, 0);
      }
 
    ngi_config->cfd = NULL;
@@ -1905,8 +1959,8 @@ e_modapi_init(E_Module *m)
    e_module_delayed_set(m, 1);
    _ngi_init_timer_cb(NULL);
 
-   maug = e_int_menus_menu_augmentation_add
-     ("config/1", _e_mod_menu_add, NULL, NULL, NULL);
+   /* maug = e_int_menus_menu_augmentation_add
+    *   ("config/1", _e_mod_menu_add, NULL, NULL, NULL); */
 
    return m;
 }

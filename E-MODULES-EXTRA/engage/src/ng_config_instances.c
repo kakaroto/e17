@@ -228,7 +228,6 @@ _cb_add(void *data, void *data2)
    E_Config_Dialog_Data *cfdata = (E_Config_Dialog_Data *)data;
    Config_Item *cfg;
    Config_Box *cfg_box;
-
    E_Container *con;
    E_Zone *zone;
 
@@ -238,74 +237,8 @@ _cb_add(void *data, void *data2)
    con = e_container_current_get(e_manager_current_get());
    zone = e_zone_current_get(con);
 
-   cfg = E_NEW(Config_Item, 1);
-
-   cfg->show_label = 1;
-   cfg->show_background = 1;
-   cfg->container = con->num;
-   cfg->zone = zone->num;
-   cfg->orient = E_GADCON_ORIENT_BOTTOM;
-   cfg->size = 36;
-   cfg->autohide = AUTOHIDE_FULLSCREEN;
-   cfg->autohide_show_urgent = 0;
-   cfg->hide_below_windows = 0;
-   cfg->zoom_duration = 0.3;
-   cfg->zoom_range = 1.5;
-   cfg->hide_timeout = 0.1;
-   cfg->zoomfactor = 2.0;
-   cfg->alpha = 255;
-   cfg->stacking = above_all;
-   cfg->mouse_over_anim = 1;
-   cfg->lock_deskswitch = 1;
-   cfg->ecomorph_features = 0;
-   cfg->boxes = NULL;
-
-   cfg_box = E_NEW(Config_Box, 1);
-   cfg_box->type = launcher;
-   cfg_box->launcher_app_dir = eina_stringshare_add("default");
-   cfg_box->launcher_lock_dnd = 0;
-   cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
-
-   cfg_box = E_NEW(Config_Box, 1);
-   cfg_box->type = taskbar;
-   cfg_box->taskbar_adv_bordermenu = 0;
-   cfg_box->taskbar_skip_dialogs = 0;
-   cfg_box->taskbar_show_iconified = 1;
-   cfg_box->taskbar_show_desktop = 0;
-   cfg_box->taskbar_append_right = 0;
-   cfg_box->taskbar_group_apps = 1;
-
-   cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
-
-   ngi_config->items = eina_list_append(ngi_config->items, cfg);
-
-   e_config_domain_save("module.ng", ngi_conf_edd, ngi_config);
-
-   char buf[4096];
-   char tmp[4096];
-   FILE *f;
-   char *app_dir = "default";
-
-   snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s",
-            e_user_homedir_get(), app_dir);
-
-   if (!ecore_file_exists(buf))
-     {
-        ecore_file_mkdir(buf);
-        snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s/.order",
-                 e_user_homedir_get(), app_dir);
-        f = fopen(buf, "w");
-        if (f)
-          {
-             /* Populate this .order file with some defaults */
-             snprintf(tmp, sizeof(tmp), "xterm.desktop\n" "sylpheed.desktop\n"
-		      "firefox.desktop\n" "openoffice.desktop\n" "xchat.desktop\n"
-		      "gimp.desktop\n" "xmms.desktop\n");
-             fwrite(tmp, sizeof(char), strlen(tmp), f);
-             fclose(f);
-          }
-     }
-
+   cfg = ngi_bar_config_new(con->num, zone->num);
+   
    ngi_new(cfg);
 
    _ilist_fill(cfdata);
