@@ -76,6 +76,9 @@ _gtk_bookmarks_add(Plugin *p)
 
    while(fgets(line, sizeof(line), fp))
      {
+	if (strncmp(line, "file://", 7))
+	  continue;
+	
 	alias = NULL;
 	line[strlen(line) - 1] = '\0';
 	alias = strchr(line, ' ');
