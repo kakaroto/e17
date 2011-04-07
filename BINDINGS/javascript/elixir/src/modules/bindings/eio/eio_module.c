@@ -83,6 +83,11 @@ static const elixir_parameter_t* _struct_stat_params[2] = {
   NULL
 };
 
+static const elixir_parameter_t* _eio_file_params[2] = {
+  &_eio_file_parameter,
+  NULL
+};
+
 FAST_CALL_PARAMS(eio_init, elixir_int_params_void);
 FAST_CALL_PARAMS(eio_shutdown, elixir_int_params_void);
 
@@ -246,7 +251,7 @@ _elixir_eio_filter_direct_cb(void *data, Eio_File *handler __UNUSED__, const Ein
    if (!parent || !dt) goto on_error;
 
    argv[0] = elixir_void_get_jsval(data);
-   argv[1] = OBJECT_TO_JSVAL(dt->result);
+   elixir_return_ptr(cx, &argv[1], handler, elixir_class_request("Eio_File", NULL));
    if (!elixir_new_eina_direct_info(cx, info, &argv[2])) goto on_error;
    rval = JSVAL_VOID;
 
@@ -295,7 +300,7 @@ _elixir_eio_filter_cb(void *data, Eio_File *handler __UNUSED__, const char *file
    JSObject *parent;
    JSString *str;
    const char *type;
-   char *tmp;
+   char *tmp = NULL;
    jsval argv[2];
    jsval rval;
    Eina_Bool result = EINA_FALSE;
@@ -671,7 +676,7 @@ _elixir_eio_stat_free(JSContext *cx, Elixir_EIO_Stat *st)
 }
 
 static void
-_elixir_eio_direct_stat_error(void *data, Eio_File *handler __UNUSED__, int error)
+_elixir_eio_file_error_cb(void *data, Eio_File *handler __UNUSED__, int error)
 {
    Elixir_EIO_Stat *st;
    JSContext *cx;
@@ -729,7 +734,7 @@ _elixir_eio_direct_stat_done(void *data, Eio_File *handler __UNUSED__, const str
  on_error:
    elixir_function_stop(cx);
 
-   _elixir_eio_direct_stat_error(data, handler, 0);
+   _elixir_eio_file_error_cb(data, handler, 0);
 }
 
 static JSBool
@@ -737,9 +742,9 @@ elixir_eio_file_direct_stat(JSContext *cx, uintN argc, jsval *vp)
 {
    Elixir_EIO_Stat *st = NULL;
    Eio_File *result;
-   char *tmp;
+   char *tmp = NULL;
    void *n;
-   jsval argv[2];
+   jsval argv[3];
    jsval rval;
    elixir_value_t val[4];
 
@@ -772,7 +777,7 @@ elixir_eio_file_direct_stat(JSContext *cx, uintN argc, jsval *vp)
    elixir_function_stop(cx);
    result = eio_file_direct_stat(tmp,
                                  _elixir_eio_direct_stat_done,
-                                 _elixir_eio_direct_stat_error,
+                                 _elixir_eio_file_error_cb,
                                  n);
    elixir_function_start(cx);
 
@@ -786,6 +791,8 @@ elixir_eio_file_direct_stat(JSContext *cx, uintN argc, jsval *vp)
         JS_SET_RVAL(cx, vp, JSVAL_NULL);
      }
 
+   free(tmp);
+
    return JS_TRUE;
 
  on_error:
@@ -797,10 +804,11 @@ elixir_eio_file_direct_stat(JSContext *cx, uintN argc, jsval *vp)
         free(st);
      }
 
-   argv[1] = INT_TO_JSVAL(0);
+   argv[2] = INT_TO_JSVAL(0);
+   argv[1] = JSVAL_NULL;
    argv[0] = val[3].v.any;
 
-   elixir_function_run(cx, val[2].v.fct, JS_THIS_OBJECT(cx, vp), 2, argv, &rval);
+   elixir_function_run(cx, val[2].v.fct, JS_THIS_OBJECT(cx, vp), 3, argv, &rval);
 
    JS_SET_RVAL(cx, vp, JSVAL_NULL);
    return JS_TRUE;
@@ -859,6 +867,123 @@ elixir_boolean_eio_stat(Eina_Bool (*func)(const struct stat *stat),
 FAST_CALL_PARAMS(eio_file_is_dir, elixir_boolean_eio_stat);
 FAST_CALL_PARAMS(eio_file_is_lnk, elixir_boolean_eio_stat);
 
+static void
+_elixir_eio_file_done_cb(void *data, Eio_File *handler)
+{
+  Elixir_EIO_Stat *st;
+  JSContext *cx;
+  JSObject *parent;
+  jsval argv[2];
+  jsval rval;
+
+  parent = elixir_void_get_parent(data);
+  cx = elixir_void_get_cx(data);
+  st = elixir_void_get_private(data);
+  if (!parent || !st || !cx)
+    return ;
+
+  elixir_function_start(cx);
+  argv[0] = elixir_void_get_jsval(data);
+  argv[1] = OBJECT_TO_JSVAL(st->result);
+
+  elixir_function_run(cx, st->func_error, parent, 2, argv, &rval);
+
+  elixir_void_free(data);
+  _elixir_eio_stat_free(cx, st);
+}
+
+static JSBool
+elixir_eio_file_unlink(JSContext *cx, uintN argc, jsval *vp)
+{
+  Elixir_EIO_Stat *st = NULL;
+  Eio_File *result;
+  char *tmp;
+  void *n;
+  jsval argv[3];
+  jsval rval;
+  elixir_value_t val[4];
+
+  if (!elixir_params_check(cx, _string_2func_any, val, argc, JS_ARGV(cx, vp)))
+    return JS_FALSE;
+
+  tmp = elixir_file_canonicalize(elixir_get_string_bytes(val[0].v.str, NULL));
+  if (tmp && !elixir_file_type(tmp))
+    {
+      free(tmp);
+      tmp = NULL;
+    }
+
+  if (!tmp) goto on_error;
+
+  st = malloc(sizeof (Elixir_EIO_Stat));
+  if (!st) goto on_error;
+
+  st->func_done = val[1].v.fct;
+  st->func_error = val[2].v.fct;
+  st->obj_done = JS_GetFunctionObject(st->func_done);
+  st->obj_error = JS_GetFunctionObject(st->func_error);
+
+  elixir_object_register(cx, &st->obj_done, NULL);
+  elixir_object_register(cx, &st->obj_error, NULL);
+
+  n = elixir_void_new(cx, JS_THIS_OBJECT(cx, vp), val[3].v.any, st);
+  if (!n) goto on_error;
+
+  elixir_function_stop(cx);
+  result = eio_file_unlink(tmp,
+			   _elixir_eio_file_done_cb,
+			   _elixir_eio_file_error_cb,
+			   n);
+  elixir_function_start(cx);
+
+  if (result)
+    {
+      st->result = elixir_return_ptr(cx, vp, result, elixir_class_request("Eio_File", NULL));
+      elixir_object_register(cx, &st->result, NULL);
+    }
+  else
+    {
+      JS_SET_RVAL(cx, vp, JSVAL_NULL);
+    }
+
+  free(tmp);
+
+  return JS_TRUE;
+
+ on_error:
+  if (tmp) free(tmp);
+  if (st)
+    {
+      elixir_object_unregister(cx, &st->obj_done);
+      elixir_object_unregister(cx, &st->obj_error);
+      free(st);
+    }
+
+  argv[2] = INT_TO_JSVAL(0);
+  argv[1] = JSVAL_NULL;
+  argv[0] = val[3].v.any;
+
+  elixir_function_run(cx, val[2].v.fct, JS_THIS_OBJECT(cx, vp), 3, argv, &rval);
+
+  JS_SET_RVAL(cx, vp, JSVAL_NULL);
+  return JS_TRUE;
+}
+
+static JSBool
+elixir_eio_file_cancel(JSContext *cx, uintN argc, jsval *vp)
+{
+  Eio_File *ls;
+  elixir_value_t val[1];
+
+  if (!elixir_params_check(cx, _eio_file_params, val, argc, JS_ARGV(cx, vp)))
+    return JS_FALSE;
+
+  GET_PRIVATE(cx, val[0].v.obj, ls);
+
+  JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(eio_file_cancel(ls)));
+  return JS_TRUE;
+}
+
 static JSFunctionSpec eio_functions[] = {
   ELIXIR_FN(eio_init, 0, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_shutdown, 0, JSPROP_ENUMERATE, 0 ),
@@ -873,6 +998,8 @@ static JSFunctionSpec eio_functions[] = {
   ELIXIR_FN(eio_file_size, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_file_is_dir, 1, JSPROP_ENUMERATE, 0 ),
   ELIXIR_FN(eio_file_is_lnk, 1, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(eio_file_unlink, 4, JSPROP_ENUMERATE, 0 ),
+  ELIXIR_FN(eio_file_cancel, 1, JSPROP_ENUMERATE, 0 ),
   JS_FS_END
 };
 
