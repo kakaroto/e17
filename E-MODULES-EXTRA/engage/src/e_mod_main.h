@@ -16,20 +16,6 @@
 #define AUTOHIDE_FULLSCREEN	2
 #define AUTOHIDE_OVERLAP	3
 
-#define ITEM_MOUSE_WHEEL(_item, ev)	\
-  if(_item && _item->cb_mouse_wheel)    \
-    _item->cb_mouse_wheel(_item, ev);	\
-
-#define ITEM_DRAG_START(_item)          \
-  if(_item && _item->cb_drag_start)     \
-    _item->cb_drag_start(_item);        \
-
-#define ITEM_FREE(_item)                \
-  if(_item && _item->cb_free)           \
-    _item->cb_free(_item);              \
-  _item = NULL;                         \
-
-
 typedef struct _Config             Config;
 typedef struct _Config_Item        Config_Item;
 typedef struct _Config_Box         Config_Box;

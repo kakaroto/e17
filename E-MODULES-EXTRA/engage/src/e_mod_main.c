@@ -756,7 +756,9 @@ _ngi_win_cb_mouse_down(void *data, int type, void *event)
         it->drag.y = ev->root.y;
         it->drag.start = 1;
         it->drag.dnd = 0;
-        ng->item_drag = it;
+
+	if (it->cb_drag_start)
+	  ng->item_drag = it;
      }
 
    ngi_item_mouse_down(it, ev);
@@ -853,7 +855,7 @@ _ngi_win_cb_mouse_move(void *data, int type, void *event)
              ng->item_drag->drag.dnd = 1;
              ng->item_drag->drag.start = 0;
 
-             ITEM_DRAG_START(ng->item_drag);
+	     ng->item_drag->cb_drag_start(ng->item_drag);
              ngi_item_mouse_out(ng->item_active);
 
              ng->item_active = NULL;
@@ -1923,7 +1925,7 @@ e_modapi_init(E_Module *m)
 	ngi_config = E_NEW(Config, 1);
 	ngi_config->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
-	ngi_bar_new(0, 0);
+	ngi_bar_config_new(0, 0);
      }
 
    ngi_config->cfd = NULL;
