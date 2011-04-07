@@ -206,7 +206,7 @@ connected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *cli)
       Azy_Content *content;
       Azy_Value *struc;
 
-      content = azy_content_new("T_Test1.undefined");
+      content = azy_content_new("T.Test1.undefined");
       struc = azy_value_struct_new();
       if (!struc)
         {
@@ -235,6 +235,7 @@ main(void)
    eina_init();
    ecore_init();
    azy_init();
+   azy_rpc_log_enable();
 //   eina_log_domain_level_set("ecore_con", EINA_LOG_LEVEL_DBG);
    eina_log_domain_level_set("azy", EINA_LOG_LEVEL_DBG);
    uri = "https://localhost:4444/RPC2";

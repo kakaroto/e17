@@ -356,9 +356,9 @@ azy_content_unserialize_response(Azy_Content      *content,
  * Note that the return value is stringshared but belongs to @p content
  * and should not be freed.
  * Examples:
- * {Module.methodname}<==azy_content_method_full_get
- * Module.{methodname}<==azy_content_method_get
- * {Module}.methodname<==azy_content_module_name_get
+ * [namespace].{Module.methodname}<==azy_content_method_full_get
+ * [namespace].Module.{methodname}<==azy_content_method_get
+ * [namespace].{Module}.methodname<==azy_content_module_name_get
  * @param content The content (NOT #NULL)
  * @return The full method name, or #NULL on failure
  */
@@ -384,9 +384,9 @@ azy_content_method_full_get(Azy_Content *content)
  * Note that the return value is NOT stringshared, belongs to @p content,
  * and CANNOT not be freed.
  * Examples:
- * {Module.methodname}<==azy_content_method_full_get
- * Module.{methodname}<==azy_content_method_get
- * {Module}.methodname<==azy_content_module_name_get
+ * {[namespace].Module.methodname}<==azy_content_method_full_get
+ * [namespace].Module.{methodname}<==azy_content_method_get
+ * [namespace].{Module}.methodname<==azy_content_module_name_get
  * @param content The content (NOT #NULL)
  * @return The method name, or #NULL on failure
  */
@@ -405,7 +405,7 @@ azy_content_method_get(Azy_Content *content)
    if (!content->method)
      return NULL;
 
-   if ((ret = strchr(content->method, '.')))
+   if ((ret = strrchr(content->method, '.')))
      return ret + 1;
 
    return content->method;
@@ -438,7 +438,7 @@ azy_content_module_name_get(Azy_Content *content,
         return NULL;
      }
 
-   if ((!content->method) || (!(ret = strchr(content->method, '.'))))
+   if ((!content->method) || (!(ret = strrchr(content->method, '.'))))
      return eina_stringshare_add(fallback);
 
    return eina_stringshare_add_length(content->method, ret - content->method);

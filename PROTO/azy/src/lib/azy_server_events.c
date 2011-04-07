@@ -276,12 +276,34 @@ _azy_server_client_method_run(Azy_Server_Client *client,
         eina_stringshare_del(module_name);
         if (!def)
           {
+             new = azy_net_new(client->current->conn);
+             new->server_client = EINA_TRUE;
+             new->http.req.http_path = client->current->http.req.http_path;
+             new->type = client->current->type;
+             new->transport = client->current->transport;
+             client->current->http.req.http_path = NULL;
+             new->type = client->current->type;
+             new->transport = client->current->transport;
+             new->http.version = client->current->http.version;
+             azy_net_free(client->current);
+             client->current = new;
              azy_content_error_faultmsg_set(content, -1, "Unknown module %s.", module_name);
              return EINA_FALSE;
           }
 
         if (!(module = _azy_server_module_new(def, client)))
           {
+             new = azy_net_new(client->current->conn);
+             new->server_client = EINA_TRUE;
+             new->http.req.http_path = client->current->http.req.http_path;
+             new->type = client->current->type;
+             new->transport = client->current->transport;
+             client->current->http.req.http_path = NULL;
+             new->type = client->current->type;
+             new->transport = client->current->transport;
+             new->http.version = client->current->http.version;
+             azy_net_free(client->current);
+             client->current = new;
              azy_content_error_faultmsg_set(content, -1, "Module initialization failed.");
              return EINA_FALSE;
           }

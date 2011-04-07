@@ -1634,7 +1634,7 @@ gen_server_impl(Azy_Server_Module *s)
    NL;
    EL(1, "if (module) return module;");
    NL;
-   EL(1, "module = azy_server_module_def_new(\"%s%s%s\");", name, sep, s->name);
+   EL(1, "module = azy_server_module_def_new(\"%s%s%s\");", (azy->name && azy->name[0]) ? azy->name : "", sep[0] ? "." : "", s->name);
    EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(module, NULL);");
    NL;
 
@@ -1758,7 +1758,7 @@ gen_client_impl(Azy_Server_Module *s)
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(cli, retval);");
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(error_, retval);");
         NL;
-        EL(1, "content = azy_content_new(\"%s%s%s.%s\");", name, sep, s->name, method->name);
+        EL(1, "content = azy_content_new(\"%s%s%s.%s\");", (azy->name && azy->name[0]) ? azy->name : "", (azy->name && azy->name[0]) ? "." : "", s->name, method->name);
         EL(1, "if (!content) return 0;");
         EL(1, "if (data) azy_content_data_set(content, data);");
 
