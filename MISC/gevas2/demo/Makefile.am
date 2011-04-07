@@ -2,7 +2,7 @@
 
 INCLUDES = \
 	-I$(top_srcdir)/intl -I$(srcdir) -I$(top_srcdir)/src -I.. -I. \
-	@GTK_CFLAGS@ @evas_cflags@ @edb_cflags@
+	@GTK_CFLAGS@ @eet_cflags@ @evas_cflags@ @edb_cflags@
 
 PIXMAPS = \
 delete.png \
@@ -31,7 +31,7 @@ TESTS = testgevas gwinmaptest imagesize rawimage gevasanim signalconnect gevased
 bin_PROGRAMS = $(TESTS)
 
 testgevas_SOURCES = testgevas.c
-testgevas_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@
+testgevas_LDADD = @eet_libs@ @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@
 
 gwinmaptest_SOURCES = gwinmaptest.c
 gwinmaptest_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @EDJE_LIBS@

@@ -117,7 +117,7 @@ static guint signals[SIG_LAST] = { 0 };
  * Caller must free the return value with eina_list_free();
  */
 Eina_List*
-gevas_obj_collection_to_eina_list( GtkgEvasObjCollection* ev )
+gevas_obj_collection_to_list( GtkgEvasObjCollection* ev )
 {
     Eina_List* ret = 0;
 

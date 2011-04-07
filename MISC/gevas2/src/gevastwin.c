@@ -180,7 +180,7 @@ static void gevastwin_destroy(GtkObject * object)
 
     if( ev->extra_objects )
     {
-        Eina_List* li = gevas_obj_collection_to_eina_list( ev->extra_objects );
+        Eina_List* li = gevas_obj_collection_to_list( ev->extra_objects );
         for( ; li; li = li->next)
         {
             if(li->data)
@@ -299,7 +299,7 @@ void _gevastwin_move_xxx(GtkgEvasObj * object, double x, double y)
 /*             printf("gevastwin_move_xxx(3) extra object. main:%lp aux:%lp obj:%lp\n", */
 /*                    ev->mainobj, ev->auxobj, object ); */
             
-            Eina_List* li = gevas_obj_collection_to_eina_list( ev->extra_objects );
+            Eina_List* li = gevas_obj_collection_to_list( ev->extra_objects );
             for( ; li; li = li->next)
                 if(li->data)
                 {
@@ -417,7 +417,7 @@ void gevastwin_add_extra_object( GtkgEvasTwin* ev, GtkgEvasObj* gobj )
 
 void gevastwin_add_extra_objects( GtkgEvasTwin* ev, GtkgEvasObjCollection* v )
 {
-    Eina_List* li = gevas_obj_collection_to_eina_list( v );
+    Eina_List* li = gevas_obj_collection_to_list( v );
     for( ; li; li = li->next)
     {
         if(li->data)

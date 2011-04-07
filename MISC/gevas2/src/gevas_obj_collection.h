@@ -145,7 +145,7 @@ extern "C" {
     void gevas_obj_collection_set_visible(  GtkgEvasObjCollection* ev, gboolean v );
     gboolean gevas_obj_collection_contains( GtkgEvasObjCollection* ev, GtkgEvasObjCollection_T o );
     gboolean gevas_obj_collection_contains_all( GtkgEvasObjCollection* ev, GtkgEvasObjCollection*s);
-    Eina_List* gevas_obj_collection_to_eina_list( GtkgEvasObjCollection* ev );
+    Eina_List* gevas_obj_collection_to_list( GtkgEvasObjCollection* ev );
     
     
 /* package */

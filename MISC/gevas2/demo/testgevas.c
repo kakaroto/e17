@@ -40,9 +40,11 @@
 #include <gevasgrad.h>
 
 #include <gtk/gtk.h>
+#include <glib/gtestutils.h>
 
 #include <stdio.h>
 
+#include <eina/eina_list.h>
 
 //#define FONT_NAME  "verdana.ttf"
 #define FONT_NAME  "andover"
@@ -1037,10 +1039,15 @@ int main(int argc, char *argv[])
     
 	GtkWidget *window;
 
+
     fprintf(stderr,"main()\n");
 
     gtk_init(&argc, &argv);
 
+    fprintf(stderr,"main(A)\n");
+    g_assert(G_TYPE_IS_OBJECT(gevas_get_type()));
+    fprintf(stderr,"main(B)\n");
+             
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
     fprintf(stderr,"test gevas starting\n\n");

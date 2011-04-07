@@ -1,6 +1,6 @@
 AC_INIT(src/gevas.h)
 AM_CONFIG_HEADER(config.h)
-VERSION=2.2.1
+VERSION=2.2.3
 AM_INIT_AUTOMAKE(gevas, $VERSION )
 
 AM_PATH_GTK_2_0( 2.2.0 )
@@ -49,6 +49,19 @@ PKG_CHECK_MODULES(EDJE, edje >= 0.4.9 ecore >= 0.9.9,
 AM_CONDITIONAL(HAVE_EDJE, test "$have_edje" = yes)
 
 
+have_eet=no
+PKG_CHECK_MODULES(EET, eet, 
+[
+	have_eet=yes
+],
+[
+	AC_MSG_ERROR([Fatal Error: please install latest eet package.])	
+])
+AM_CONDITIONAL(HAVE_EET, test "$have_eet" = yes)
+eet_cflags=$EET_CFLAGS
+eet_libs=$EET_LIBS
+
+
 
 
 have_evas=no
@@ -84,8 +97,10 @@ AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(evas_cflags)
 AC_SUBST(evas_libs)
+AC_SUBST(eet_cflags)
+AC_SUBST(eet_libs)
 
-REQUIREMENTS="edje >= 0.4.9 ecore >= 0.9.9 "
+REQUIREMENTS="edje >= 0.4.9 ecore >= 0.9.9 eet"
 AC_SUBST(REQUIREMENTS)
 
 AC_OUTPUT([

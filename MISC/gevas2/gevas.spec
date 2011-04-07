@@ -1,6 +1,6 @@
 %define	name	 gevas
-%define ver      2.2.1
-%define rel      monkeyiq9000d
+%define ver      2.2.3
+%define rel      monkeyiq13000d
 %define prefix   /usr
 
 %define prefix      %{_prefix}
@@ -17,12 +17,14 @@ Version: %{ver}
 Release: %{rel}
 License: LGPL
 Group: System/Libraries
-Source: http://216.136.171.200/enlightenment/%{name}-%{ver}.tar.gz
+Source: http://216.136.171.200/enlightenment/%{name}-%{ver}.tar.bz2
 BuildRoot: %{buildroot}
 Packager: Ben Martin <monkeyiq@dingoblue.net.au>
 URL: http://sourceforge.net/project/showfiles.php?group_id=2
 Requires: evas >= 0.9.9.013
-BuildRequires: evas-devel >= 0.9.9.013
+BuildRequires: evas-devel
+BuildRequires: edje-devel
+BuildRequires: gtk2-devel
 
 %description
 gevas is a GTK+ wrapper for the Evas API. 
@@ -36,7 +38,7 @@ OpenGL (hardware accelerated).
 %package devel
 Summary: gevas headers and documentation
 Group: System/Libraries
-Requires: %{name} = %{PACKAGE_VERSION}
+Requires: %{name} = %{ver}
 %description devel
 Headers and documentation for gevas.
 
@@ -93,7 +95,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.a
 %{_libdir}/*.la
 %{_includedir}/*
-
+%{_libdir}/pkgconfig/*.pc
 
 %changelog
 * Fri Mar 30 2001 Ben Martin

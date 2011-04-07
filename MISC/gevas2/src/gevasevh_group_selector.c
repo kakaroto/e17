@@ -130,7 +130,7 @@ Eina_List* gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* 
 	g_return_val_if_fail(ev != NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev),0);
     
-    return gevas_obj_collection_to_eina_list( ev->col );
+    return gevas_obj_collection_to_list( ev->col );
 }
 
 /*
@@ -145,7 +145,7 @@ Eina_List* gevasevh_group_selector_get_selected_selectables(GtkgEvasEvHGroupSele
 	g_return_val_if_fail(ev != NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev),0);
 
-	for(tl = gevas_obj_collection_to_eina_list( ev->col ); tl; tl = tl->next)
+	for(tl = gevas_obj_collection_to_list( ev->col ); tl; tl = tl->next)
     {
         if( s = gevas_selectable_get_backref( ev->gevas , tl->data) )
         {
