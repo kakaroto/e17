@@ -34,6 +34,9 @@ group { name: "e/comp/everything";
 				rel1.to: "clipper";
 				rel2.to: "clipper";
             }
+            description { state: "visible" 0.0;
+				inherit: "default" 0.0;
+            }
             description { state: "big" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
@@ -131,6 +134,7 @@ group { name: "e/comp/everything";
             action: STATE_SET "visible" 0.0;
             transition: DECELERATE 0.05;
             target: "clipper";
+            target: "clipper2";
             target: "shower";
             after: "show2";
 		}
@@ -148,6 +152,13 @@ group { name: "e/comp/everything";
             after: "hide2";
 		}
 		program { name: "hide2";
+            action: STATE_SET "default" 0.0;
+            target: "clipper";
+            target: "clipper2";
+            target: "shower";
+            after: "hide3";         
+		}
+		program { name: "hide3";
             action: SIGNAL_EMIT "e,action,hide,done" "e";
 		}
 	}
