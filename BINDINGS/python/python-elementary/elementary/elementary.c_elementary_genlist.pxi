@@ -659,6 +659,7 @@ cdef class Genlist(Object):
         @parm: B{flags:} defines special behavior of this item:
                 - ELM_GENLIST_ITEM_NONE = 0
                 - ELM_GENLIST_ITEM_SUBITEMS = 1
+                - ELM_GENLIST_ITEM_GROUP = 2
         @parm: B{func:} if not None, this must be a callable to be
                called back when the item is selected. The function
                signature is:
@@ -712,6 +713,7 @@ cdef class Genlist(Object):
         @parm: B{flags:} defines special behavior of this item:
                 - ELM_GENLIST_ITEM_NONE = 0
                 - ELM_GENLIST_ITEM_SUBITEMS = 1
+                - ELM_GENLIST_ITEM_GROUP = 2
         @parm: B{func:} if not None, this must be a callable to be
                called back when the item is selected. The function
                signature is:
@@ -763,6 +765,7 @@ cdef class Genlist(Object):
         @parm: B{flags:} defines special behavior of this item:
                 - ELM_GENLIST_ITEM_NONE = 0
                 - ELM_GENLIST_ITEM_SUBITEMS = 1
+                - ELM_GENLIST_ITEM_GROUP = 2
         @parm: B{func:} if not None, this must be a callable to be
                called back when the item is selected. The function
                signature is:
@@ -816,6 +819,7 @@ cdef class Genlist(Object):
         @parm: B{flags:} defines special behavior of this item:
                 - ELM_GENLIST_ITEM_NONE = 0
                 - ELM_GENLIST_ITEM_SUBITEMS = 1
+                - ELM_GENLIST_ITEM_GROUP = 2
         @parm: B{func:} if not None, this must be a callable to be
                called back when the item is selected. The function
                signature is:

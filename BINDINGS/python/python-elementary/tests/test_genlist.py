@@ -20,6 +20,15 @@ def gl_state_get(obj, part, item_data):
 
 def gl_sel(gli, gl, *args, **kwargs):
     print "sel item %s on genlist %s" % (gli, gl)
+
+def glg_label_get(obj, part, item_data):
+    return "Group # %i" % (item_data,)
+
+def glg_icon_get(obj, part, data):
+    ic = elementary.Icon(obj)
+    ic.file_set("images/logo.png")
+    ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
+    return ic
 # -}}}-
 
 #----- Genlist -{{{-
@@ -330,6 +339,44 @@ def genlist2_clicked(obj, it):
 
 # }}}
 
+#----- Genlist 3 -{{{-
+def genlist3_clicked(obj, it):
+    win = elementary.Window("Genlist", elementary.ELM_WIN_BASIC)
+    win.title_set("Genlist Group test")
+    win.autodel_set(True)
+
+    bg = elementary.Background(win)
+    win.resize_object_add(bg)
+    bg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    bg.show()
+
+    gl = elementary.Genlist(win)
+    win.resize_object_add(gl)
+    gl.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    gl.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    gl.show()
+
+    itc_i = elementary.GenlistItemClass(item_style="default",
+                                       label_get_func=gl_label_get,
+                                       icon_get_func=gl_icon_get,
+                                       state_get_func=gl_state_get)
+
+    itc_g = elementary.GenlistItemClass(item_style="group_index",
+                                       label_get_func=glg_label_get,
+                                       icon_get_func=glg_icon_get)
+
+    for i in range(300):
+        if i % 10 == 0:
+            git = gl.item_append(itc_g, i/10,
+                                 flags=elementary.ELM_GENLIST_ITEM_GROUP)
+            git.display_only = True
+        gl.item_append(itc_i, i, git)
+
+    win.resize(320, 320)
+    win.show()
+
+# }}}
+
 #----- Main -{{{-
 if __name__ == "__main__":
     def destroy(obj):
@@ -363,7 +410,8 @@ if __name__ == "__main__":
     lb.show()
 
     items = [("Genlist", genlist_clicked),
-             ("Genlist 2", genlist2_clicked)]
+             ("Genlist 2", genlist2_clicked),
+             ("Genlist Group", genlist3_clicked)]
 
     li = elementary.List(win)
     li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
