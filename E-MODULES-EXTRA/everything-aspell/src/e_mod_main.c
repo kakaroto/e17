@@ -44,7 +44,7 @@ static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
 static Module_Config *_conf;
 static Evry_Plugin *_plug = NULL;
-static char _config_path[] =  "extensions/everything-aspell";
+static char _config_path[] =  "launcher/everything-aspell";
 static char _config_domain[] = "module.everything-aspell";
 static char _module_icon[] = "accessories-dictionary";
 static E_Config_DD *_conf_edd = NULL;
@@ -590,6 +590,9 @@ _conf_init(E_Module *m)
 {
    char title[4096];
 
+   e_configure_registry_category_add
+     ("launcher", 80, _("Launcher"), NULL, "modules-launcher");
+
    snprintf(title, sizeof(title), "%s: %s", _("Everything Plugin"), _("Aspell"));
    e_configure_registry_item_add(_config_path, 110, title,
 				 NULL, _module_icon, _conf_dialog);
@@ -622,6 +625,9 @@ _conf_init(E_Module *m)
 static void
 _conf_shutdown(void)
 {
+   e_configure_registry_item_del(_config_path);
+   e_configure_registry_category_del("launcher");
+
    _conf_free();
 
    E_CONFIG_DD_FREE(_conf_edd);
