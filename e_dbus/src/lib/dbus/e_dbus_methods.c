@@ -67,15 +67,6 @@ _dbus_call__str(E_DBus_Connection *conn, const const char *method_name, const ch
   return ret;
 }
 
-/**
- * Calls the Introspect method on a given bus and object path.
- * @param conn The dbus connection to use
- * @param bus The bus to call the method on
- * @param object_path The path of the bus to call on
- * @param cb_return The callback to call on reply from dbus
- * @param data The data to associate with the callback
- * @return A pending dbus call
- */
 EAPI DBusPendingCall *
 e_dbus_introspect(E_DBus_Connection *conn, const char *bus, const char *object_path, E_DBus_Method_Return_Cb cb_return, const void *data)
 {

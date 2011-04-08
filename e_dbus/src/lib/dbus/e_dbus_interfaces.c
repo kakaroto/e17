@@ -4,7 +4,7 @@
 
 #include "e_dbus_private.h"
 
-/**
+/*
  * This file contains wrappers around the standard interfaces that
  * objects on the bus should implement.
  */
@@ -35,30 +35,12 @@ _dbus_peer_call(E_DBus_Connection *conn, const char *method_name, const char *de
   return ret;
 }
 
-/**
- * Ping the dbus peer
- *
- * @param conn the dbus connection
- * @param destination the bus name that the object is on
- * @param path the object path
- * @param cb_return a callback for a successful return
- * @param data data to pass to the callbacks
- */
 EAPI DBusPendingCall *
 e_dbus_peer_ping(E_DBus_Connection *conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
    return _dbus_peer_call(conn, "Ping", destination, path, cb_return, data);
 }
 
-/**
- * Get the UUID of the peer
- *
- * @param conn the dbus connection
- * @param destination the bus name that the object is on
- * @param path the object path
- * @param cb_return a callback for a successful return
- * @param data data to pass to the callbacks
- */
 EAPI DBusPendingCall *
 e_dbus_peer_get_machine_id(E_DBus_Connection *conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
@@ -119,17 +101,6 @@ e_dbus_properties_get_all(E_DBus_Connection *conn, const char *destination, cons
   return ret;
 }
 
-/**
- * Get the value of a property on an object
- *
- * @param conn the dbus connection
- * @param destination the bus name that the object is on
- * @param path the object path
- * @param interface the interface name of the property
- * @param property the name of the property
- * @param cb_return a callback for a successful return
- * @param data data to pass to the callbacks
- */
 EAPI DBusPendingCall *
 e_dbus_properties_get(E_DBus_Connection *conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
@@ -150,19 +121,6 @@ e_dbus_properties_get(E_DBus_Connection *conn, const char *destination, const ch
   return ret;
 }
 
-/**
- * Set the value of a property on an object
- *
- * @param conn the dbus connection
- * @param destination the bus name that the object is on
- * @param path the object path
- * @param interface the interface name of the property
- * @param property the name of the property
- * @param value_type the type of the property's value
- * @param value a pointer to the value
- * @param cb_return a callback for a successful return
- * @param data data to pass to the callbacks
- */
 EAPI DBusPendingCall *
 e_dbus_properties_set(E_DBus_Connection *conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, const void *value, E_DBus_Method_Return_Cb cb_return, const void *data)
 {

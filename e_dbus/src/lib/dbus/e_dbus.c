@@ -440,10 +440,6 @@ e_dbus_idler(void *data)
   return ECORE_CALLBACK_RENEW;
 }
 
-/**
- * Retrieve a connection to the bus and integrate it with the ecore main loop.
- * @param type the type of bus to connect to, e.g. DBUS_BUS_SYSTEM or DBUS_BUS_SESSION
- */
 EAPI E_DBus_Connection *
 e_dbus_bus_get(DBusBusType type)
 {
@@ -490,11 +486,6 @@ e_dbus_bus_get(DBusBusType type)
   return econn;
 }
 
-/**
- * Integrate a DBus connection with the ecore main loop
- *
- * @param conn - a dbus connection
- */
 EAPI E_DBus_Connection *
 e_dbus_connection_setup(DBusConnection *conn)
 {
@@ -532,10 +523,6 @@ e_dbus_connection_setup(DBusConnection *conn)
 }
 
 
-/**
- * Close out a connection retrieved with e_dbus_bus_get()
- * @param conn the connection to close
- */
 EAPI void
 e_dbus_connection_close(E_DBus_Connection *conn)
 {
@@ -589,18 +576,11 @@ e_dbus_connection_dbus_connection_get(E_DBus_Connection *conn)
   return conn->conn;
 }
 
-/**
- * @brief Initialize e_dbus
- */
 EAPI int
 e_dbus_init(void)
 {
   if (++_edbus_init_count != 1)
     return _edbus_init_count;
-  
-  /**
-   * eina initialization 
-   */
   
   if (!eina_init())
     {
@@ -631,9 +611,6 @@ e_dbus_init(void)
   return _edbus_init_count;
 }
 
-/**
- * Shutdown e_dbus.
- */
 EAPI int
 e_dbus_shutdown(void)
 {
