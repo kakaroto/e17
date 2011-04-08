@@ -159,8 +159,8 @@ group {
 			type: RECT;
 			description {
 				state: "default" 0.0;
-				rel1.to: "list_bg";
-				rel2.to: "list_bg";
+				rel1.to: "list_clip";
+				rel2.to: "list_clip";
 				color: 245 245 245 255;
 			}
 		}
