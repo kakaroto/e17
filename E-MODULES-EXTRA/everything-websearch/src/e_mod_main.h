@@ -1,12 +1,13 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-#define _(str) dgettext(PACKAGE, str)
-
 #define MOD_CONFIG_FILE_EPOCH 0x0002
 #define MOD_CONFIG_FILE_GENERATION 0x00ed
 #define MOD_CONFIG_FILE_VERSION					\
   ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
+
+#define _(str) dgettext(PACKAGE, str)
+#define N_(str) (str)
 
 EAPI extern E_Module_Api e_modapi;
 

@@ -134,7 +134,7 @@ static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
 
 static Module_Config *_conf;
-static char _config_path[] =  "extensions/" PACKAGE;
+static char _config_path[] =  "launcher/" PACKAGE;
 static char _config_domain[] = "module." PACKAGE;
 static E_Config_DD *_conf_edd = NULL;
 
@@ -1537,7 +1537,7 @@ _conf_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/e-module.edj", m->dir);
 
    e_configure_registry_category_add
-     ("extensions", 80, _("Extensions"), NULL, "preferences-extensions");
+     ("launcher", 80, _("Launcher"), NULL, "modules-launcher");
 
    e_configure_registry_item_add
      (_config_path, 110, _("Everything Websearch"), NULL, buf, _conf_dialog);
@@ -1575,6 +1575,9 @@ _conf_init(E_Module *m)
 static void
 _conf_shutdown(void)
 {
+   e_configure_registry_item_del(_config_path);
+   e_configure_registry_category_del("launcher");
+
    _conf_free();
 
    E_CONFIG_DD_FREE(_conf_edd);
