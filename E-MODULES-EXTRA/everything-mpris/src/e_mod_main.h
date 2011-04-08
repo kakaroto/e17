@@ -2,6 +2,7 @@
 #define E_MOD_MAIN_H
 
 #define _(str) dgettext(PACKAGE, str)
+#define N_(str) (str)
 
 EAPI extern E_Module_Api e_modapi;
 
