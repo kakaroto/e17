@@ -486,7 +486,7 @@ group {
             }
 		}
 
-		BORDER_IMAGE("images/window-border-square.png", 2 2 23 1, 25 25);
+		BORDER_IMAGE("images/window-border-square.png", 2 2 23 1, 24 23);
 		
 		BORDER_CLIENT(LEFT, RIGHT, TOP, BOTTOM);
 		
