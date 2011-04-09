@@ -402,27 +402,59 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                }
              break;
           case '4':            /* binary 1bit monochrome */
-             data = malloc(1 * sizeof(DATA8));
+             data = malloc((w + 7) / 8 * sizeof(DATA8));
              if (!data)
                {
                   fclose(f);
                   return 0;
                }
              ptr2 = im->data;
-             j = 0;
-             while ((fread(data, 1, 1, f)) && (j < (w * h)))
+             for (y = 0; y < h; y++)
                {
-                  for (i = 7; i >= 0; i--)
+                  if (!fread(data, (w + 7) / 8, 1, f))
                     {
-                       if (j < (w * h))
+                       free(data);
+                       fclose(f);
+                       return 0;
+                    }
+                  ptr = data;
+                  for (x = 0; x < w; x += 8)
+                    {
+                       j = (w - x >= 8) ? 8 : w - x;
+                       for (i = 0; i < j; i++)
                          {
-                            if (data[0] & (1 << i))
+                            if (ptr[0] & (0x80 >> i))
                                *ptr2 = 0xff000000;
                             else
                                *ptr2 = 0xffffffff;
                             ptr2++;
                          }
-                       j++;
+                       ptr++;
+                    }
+                  if (progress)
+                    {
+                       char                per;
+                       int                 l;
+
+                       per = (char)((100 * y) / im->h);
+                       if (((per - pper) >= progress_granularity)
+                           || (y == (im->h - 1)))
+                         {
+                            l = y - pl;
+
+                            /* fix off by one in case of the last line */
+                            if (y == (im->h - 1))
+                               l++;
+
+                            if (!progress(im, per, 0, pl, im->w, l))
+                              {
+                                 free(idata);
+                                 fclose(f);
+                                 return 2;
+                              }
+                            pper = per;
+                            pl = y;
+                         }
                     }
                }
              break;
