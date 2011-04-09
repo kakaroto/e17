@@ -11,9 +11,9 @@
 #include <ctype.h>
 #include <errno.h>
 #ifdef BUILD_X11
-# include <X11/Xlib.h>
+#include <X11/Xlib.h>
 #else
-# define X_DISPLAY_MISSING
+#define X_DISPLAY_MISSING
 #endif
 #include "image.h"
 #include "file.h"
@@ -25,7 +25,7 @@
 #define FDEBUG 1
 */
 #ifdef FDEBUG
-# define D( str ) printf( "DEBUG: %s\n", str )
+#define D( str ) printf( "DEBUG: %s\n", str )
 #else
 #define  D( str )
 #endif

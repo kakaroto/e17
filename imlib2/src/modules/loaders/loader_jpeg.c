@@ -76,13 +76,13 @@ load(ImlibImage * im, ImlibProgressFunction progress,
      {
         im->w = w = cinfo.output_width;
         im->h = h = cinfo.output_height;
-	if (!IMAGE_DIMENSIONS_OK(w, h))
-	  {
+        if (!IMAGE_DIMENSIONS_OK(w, h))
+          {
              im->w = im->h = 0;
              jpeg_destroy_decompress(&cinfo);
              fclose(f);
              return 0;
-	  }
+          }
         UNSET_FLAG(im->flags, F_HAS_ALPHA);
         im->format = strdup("jpeg");
      }
@@ -138,10 +138,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                     {
                        for (x = 0; x < w; x++)
                          {
-                            *ptr2 =
-                                (0xff000000) | ((ptr[0]) << 16) | ((ptr[1]) <<
-                                                                   8) |
-                                (ptr[2]);
+                            *ptr2 = (0xff000000) | ((ptr[0]) << 16) |
+                               ((ptr[1]) << 8) | (ptr[2]);
                             ptr += cinfo.output_components;
                             ptr2++;
                          }
@@ -184,10 +182,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                     {
                        for (x = 0; x < w; x++)
                          {
-                            *ptr2 =
-                                (0xff000000) | ((ptr[0]) << 16) | ((ptr[0]) <<
-                                                                   8) |
-                                (ptr[0]);
+                            *ptr2 = (0xff000000) | ((ptr[0]) << 16) |
+                               ((ptr[0]) << 8) | (ptr[0]);
                             ptr++;
                             ptr2++;
                          }

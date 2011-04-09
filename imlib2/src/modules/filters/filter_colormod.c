@@ -232,7 +232,7 @@ init(struct imlib_filter_info *info)
    info->name = strdup("Tinting");
    info->author = strdup("Willem Monsuwe (willem@stack.nl)");
    info->description =
-       strdup("Provides most common color modification filters.");
+      strdup("Provides most common color modification filters.");
    info->num_filters = i;
    info->filters = malloc(sizeof(char *) * i);
    while (--i >= 0)

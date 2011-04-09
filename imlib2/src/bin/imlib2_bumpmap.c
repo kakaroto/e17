@@ -45,19 +45,18 @@ main(int argc, char **argv)
     * First tests to determine which rendering task to perform
     */
    if (!display_name)
-       display_name = ":0";
+      display_name = ":0";
    disp = XOpenDisplay(display_name);
    if (!disp)
      {
-       fprintf(stderr, "Can't open display %s\n", display_name);
-       return 1;
+        fprintf(stderr, "Can't open display %s\n", display_name);
+        return 1;
      }
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));
    cm = DefaultColormap(disp, DefaultScreen(disp));
-   win =
-       XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 100, 100, 0, 0,
-                           0);
+   win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 100, 100,
+                             0, 0, 0);
    XSelectInput(disp, win,
                 ButtonPressMask | ButtonReleaseMask | ButtonMotionMask |
                 PointerMotionMask | ExposureMask);
@@ -74,8 +73,8 @@ main(int argc, char **argv)
    imlib_context_set_blend(0);
    imlib_context_set_color_modifier(NULL);
 
-   im_bg = imlib_load_image(PACKAGE_DATA_DIR"/data/images/imlib2.png");
-   im = imlib_load_image(PACKAGE_DATA_DIR"/data/images/imlib2.png");
+   im_bg = imlib_load_image(PACKAGE_DATA_DIR "/data/images/imlib2.png");
+   im = imlib_load_image(PACKAGE_DATA_DIR "/data/images/imlib2.png");
 
    imlib_context_set_image(im_bg);
    w = imlib_image_get_width();
@@ -96,16 +95,16 @@ main(int argc, char **argv)
              XNextEvent(disp, &ev);
              switch (ev.type)
                {
-                 case Expose:
-                    break;
-                 case ButtonRelease:
-                    exit(0);
-                    break;
-                 case MotionNotify:
-                    x = ev.xmotion.x;
-                    y = ev.xmotion.y;
-                 default:
-                    break;
+               case Expose:
+                  break;
+               case ButtonRelease:
+                  exit(0);
+                  break;
+               case MotionNotify:
+                  x = ev.xmotion.x;
+                  y = ev.xmotion.y;
+               default:
+                  break;
 
                }
           }
@@ -122,7 +121,8 @@ main(int argc, char **argv)
          * first = 0; */
 
         imlib_apply_filter
-            ("bump_map_point(x=[],y=[],map="PACKAGE_DATA_DIR"/data/images/imlib2.png);", &x, &y);
+           ("bump_map_point(x=[],y=[],map=" PACKAGE_DATA_DIR
+            "/data/images/imlib2.png);", &x, &y);
 
         temp2 = im_bg;
         im_bg = temp;

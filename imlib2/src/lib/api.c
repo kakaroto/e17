@@ -4,7 +4,7 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 #else
-# define X_DISPLAY_MISSING
+#define X_DISPLAY_MISSING
 #endif
 #include <string.h>
 #include <stdarg.h>

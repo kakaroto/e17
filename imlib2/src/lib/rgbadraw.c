@@ -604,16 +604,16 @@ __imlib_copy_alpha_data(ImlibImage * src, ImlibImage * dst, int x, int y,
    jump = (src->w - w);
    jump2 = (dst->w - w);
 
-    /* work our way thru the array */
-    for (yy = 0; yy < h; yy++)
-      {
-         for (xx = 0; xx < w; xx++)
-           {
-              *p2 = (*p1 & 0xff000000) | (*p2 & 0x00ffffff);
-              p1++;
-              p2++;
-           }
-         p1 += jump;
-         p2 += jump2;
-      }
+   /* work our way thru the array */
+   for (yy = 0; yy < h; yy++)
+     {
+        for (xx = 0; xx < w; xx++)
+          {
+             *p2 = (*p1 & 0xff000000) | (*p2 & 0x00ffffff);
+             p1++;
+             p2++;
+          }
+        p1 += jump;
+        p2 += jump2;
+     }
 }

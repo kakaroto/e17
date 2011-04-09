@@ -45,7 +45,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
           }
         rewind(f);
         png_ptr =
-            png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+           png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
         if (!png_ptr)
           {
              fclose(f);
@@ -110,7 +110,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
            png_set_palette_to_rgb(png_ptr);
         /* expand gray (w/reduced bits) -> 8-bit RGB if necessary */
         if ((color_type == PNG_COLOR_TYPE_GRAY) ||
-           (color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
+            (color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
           {
              png_set_gray_to_rgb(png_ptr);
              if (bit_depth < 8)
@@ -166,7 +166,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         if (progress)
           {
              int                 y, count, prevy, pass, number_passes, per,
-                 nrows = 1;
+                nrows = 1;
 
              count = 0;
              number_passes = png_set_interlace_handling(png_ptr);
@@ -278,7 +278,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    if ((tag = __imlib_GetTag(im, "interlacing")) && tag->val)
      {
 #ifdef PNG_WRITE_INTERLACING_SUPPORTED
-          interlace = PNG_INTERLACE_ADAM7;
+        interlace = PNG_INTERLACE_ADAM7;
 #endif
      }
 
@@ -350,51 +350,51 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
 
    for (pass = 0; pass < num_passes; pass++)
      {
-      ptr = im->data;
+        ptr = im->data;
 
-      for (y = 0; y < im->h; y++)
-        {
-           if (im->flags & F_HAS_ALPHA)
-              row_ptr = (png_bytep) ptr;
-           else
-             {
-                for (j = 0, x = 0; x < im->w; x++)
-                  {
-                     data[j++] = (ptr[x] >> 16) & 0xff;
-                     data[j++] = (ptr[x] >> 8) & 0xff;
-                     data[j++] = (ptr[x]) & 0xff;
-                  }
-                row_ptr = (png_bytep) data;
-             }
-           png_write_rows(png_ptr, &row_ptr, 1);
-           if (progress)
-             {
-                char                per;
-                int                 l;
+        for (y = 0; y < im->h; y++)
+          {
+             if (im->flags & F_HAS_ALPHA)
+                row_ptr = (png_bytep) ptr;
+             else
+               {
+                  for (j = 0, x = 0; x < im->w; x++)
+                    {
+                       data[j++] = (ptr[x] >> 16) & 0xff;
+                       data[j++] = (ptr[x] >> 8) & 0xff;
+                       data[j++] = (ptr[x]) & 0xff;
+                    }
+                  row_ptr = (png_bytep) data;
+               }
+             png_write_rows(png_ptr, &row_ptr, 1);
+             if (progress)
+               {
+                  char                per;
+                  int                 l;
 
-                per = 100 * (pass + y / (float) im->h) / num_passes;
-                if ((per - pper) >= progress_granularity)
-                  {
-                     l = y - pl;
-                     if (!progress(im, per, 0, (y - l), im->w, l))
-                       {
-                          if (data)
-                             free(data);
-                          png_write_end(png_ptr, info_ptr);
-                          png_destroy_write_struct(&png_ptr,
-                                                   (png_infopp) & info_ptr);
-                          png_destroy_info_struct(png_ptr,
-                                                  (png_infopp) & info_ptr);
-                          fclose(f);
-                          return 2;
-                       }
-                     pper = per;
-                     pl = y;
-                  }
-             }
-           ptr += im->w;
-        }
-    }
+                  per = 100 * (pass + y / (float)im->h) / num_passes;
+                  if ((per - pper) >= progress_granularity)
+                    {
+                       l = y - pl;
+                       if (!progress(im, per, 0, (y - l), im->w, l))
+                         {
+                            if (data)
+                               free(data);
+                            png_write_end(png_ptr, info_ptr);
+                            png_destroy_write_struct(&png_ptr,
+                                                     (png_infopp) & info_ptr);
+                            png_destroy_info_struct(png_ptr,
+                                                    (png_infopp) & info_ptr);
+                            fclose(f);
+                            return 2;
+                         }
+                       pper = per;
+                       pl = y;
+                    }
+               }
+             ptr += im->w;
+          }
+     }
    if (data)
       free(data);
    png_write_end(png_ptr, info_ptr);

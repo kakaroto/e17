@@ -23,7 +23,8 @@ int                 image_width = 0, image_height = 0;
 static void
 usage(void)
 {
-   printf("Usage: imlib2_grab [-v] [-id <drawable id>] [-width <width>] [-height <height>] [-noshape] <output file>\n");
+   printf
+      ("Usage: imlib2_grab [-v] [-id <drawable id>] [-width <width>] [-height <height>] [-noshape] <output file>\n");
 }
 
 int
@@ -102,12 +103,12 @@ main(int argc, char **argv)
    file = argv[0];
 
    if (!display_name)
-       display_name = ":0";
+      display_name = ":0";
    disp = XOpenDisplay(display_name);
    if (!disp)
      {
-       fprintf(stderr, "Can't open display %s\n", display_name);
-       return 1;
+        fprintf(stderr, "Can't open display %s\n", display_name);
+        return 1;
      }
 
    vis = DefaultVisual(disp, DefaultScreen(disp));
@@ -123,9 +124,9 @@ main(int argc, char **argv)
 
    XGetGeometry(disp, draw, &rr, &x, &y, &w, &h, &bw, &depth);
    if (wo == 0)
-     wo = w;
+      wo = w;
    if (ho == 0)
-     ho = h;
+      ho = h;
    if (verbose)
      {
         printf("Drawable: %#lx: x,y: %d,%d  wxh=%ux%u  bw=%u  depth=%u\n",

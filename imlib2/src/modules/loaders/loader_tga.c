@@ -156,7 +156,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
                   l = y - pl;
                   if (!progress(im, per, 0, (y - l), im->w, l))
                     {
-		       free(buf);
+                       free(buf);
                        fclose(f);
                        return 2;
                     }
@@ -192,13 +192,13 @@ load(ImlibImage * im, ImlibProgressFunction progress,
      char progress_granularity, char immediate_load)
 {
    int                 fd;
-   void                *seg, *filedata;
+   void               *seg, *filedata;
    struct stat         ss;
    int                 bpp, vinverted = 0;
    int                 rle = 0, footer_present = 0;
 
-   tga_header          *header;
-   tga_footer          *footer;
+   tga_header         *header;
+   tga_footer         *footer;
 
    if (im->data)
       return 0;
@@ -222,7 +222,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    if (seg == MAP_FAILED)
      {
         close(fd);
-	return 0;
+        return 0;
      }
 
    filedata = seg;
@@ -239,10 +239,10 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    /* skip over header */
    filedata = (char *)filedata + sizeof(tga_header);
-   
+
    /* skip over alphanumeric ID field */
    if (header->idLength)
-     filedata = (char *)filedata + header->idLength;
+      filedata = (char *)filedata + header->idLength;
 
    /* now parse the header */
 
@@ -251,20 +251,20 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    switch (header->imageType)
      {
-       case TGA_TYPE_COLOR_RLE:
-       case TGA_TYPE_GRAY_RLE:
-          rle = 1;
-          break;
+     case TGA_TYPE_COLOR_RLE:
+     case TGA_TYPE_GRAY_RLE:
+        rle = 1;
+        break;
 
-       case TGA_TYPE_COLOR:
-       case TGA_TYPE_GRAY:
-          rle = 0;
-          break;
+     case TGA_TYPE_COLOR:
+     case TGA_TYPE_GRAY:
+        rle = 0;
+        break;
 
-       default:
-	  munmap(seg, ss.st_size);
-	  close(fd);
-	  return 0;
+     default:
+        munmap(seg, ss.st_size);
+        close(fd);
+        return 0;
      }
 
    /* bits per pixel */
@@ -272,7 +272,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    if (!((bpp == 32) || (bpp == 24) || (bpp == 8)))
      {
-	munmap(seg, ss.st_size);
+        munmap(seg, ss.st_size);
         close(fd);
         return 0;
      }
@@ -283,7 +283,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    if (!IMAGE_DIMENSIONS_OK(im->w, im->h))
      {
-	munmap(seg, ss.st_size);
+        munmap(seg, ss.st_size);
         close(fd);
         return 0;
      }
@@ -311,7 +311,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         if (!im->data)
           {
              im->w = 0;
-	     munmap(seg, ss.st_size);
+             munmap(seg, ss.st_size);
              close(fd);
              return 0;
           }
@@ -323,13 +323,13 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         /* (this is NOT simply width*height*4, due to compression) */
 
         datasize = ss.st_size - sizeof(tga_header) - header->idLength -
-            (footer_present ? sizeof(tga_footer) : 0);
+           (footer_present ? sizeof(tga_footer) : 0);
 
         /* buffer is ready for parsing */
 
         /* bufptr is the next byte to be read from the buffer */
         bufptr = filedata;
-	bufend = filedata + datasize;
+        bufend = filedata + datasize;
 
         /* dataptr is the next 32-bit pixel to be filled in */
         dataptr = im->data;
@@ -348,56 +348,50 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   else
                      dataptr = im->data + (y * im->w);
 
-                  for (x = 0;
-                       (x < im->w) && (bufptr + bpp / 8 <= bufend);
-                       x++)   /* for each pixel in the row */
+                  for (x = 0; (x < im->w) && (bufptr + bpp / 8 <= bufend); x++) /* for each pixel in the row */
                     {
                        switch (bpp)
                          {
 
-                              /* 32-bit BGRA pixels */
-                           case 32:
-                              WRITE_RGBA(dataptr,
-					 *(bufptr + 2), /* R */
-                                         *(bufptr + 1), /* G */
-                                         *(bufptr + 0), /* B */
-                                         *(bufptr + 3)  /* A */
-                                  );
-                              dataptr++;
-                              bufptr += 4;
-                              break;
+                            /* 32-bit BGRA pixels */
+                         case 32:
+                            WRITE_RGBA(dataptr, *(bufptr + 2),  /* R */
+                                       *(bufptr + 1),   /* G */
+                                       *(bufptr + 0),   /* B */
+                                       *(bufptr + 3)    /* A */
+                               );
+                            dataptr++;
+                            bufptr += 4;
+                            break;
 
-                              /* 24-bit BGR pixels */
-                           case 24:
-                              WRITE_RGBA(dataptr,
-					 *(bufptr + 2), /* R */
-                                         *(bufptr + 1), /* G */
-                                         *(bufptr + 0), /* B */
-                                         (char)0xff     /* A */
-                                  );
-                              dataptr++;
-                              bufptr += 3;
-                              break;
+                            /* 24-bit BGR pixels */
+                         case 24:
+                            WRITE_RGBA(dataptr, *(bufptr + 2),  /* R */
+                                       *(bufptr + 1),   /* G */
+                                       *(bufptr + 0),   /* B */
+                                       (char)0xff       /* A */
+                               );
+                            dataptr++;
+                            bufptr += 3;
+                            break;
 
-                              /* 8-bit grayscale */
-                           case 8:
-                              WRITE_RGBA(dataptr, /* grayscale */
-					 *bufptr,
-                                         *bufptr, 
-					 *bufptr, (char)0xff);
-                              dataptr++;
-                              bufptr += 1;
-                              break;
+                            /* 8-bit grayscale */
+                         case 8:
+                            WRITE_RGBA(dataptr, /* grayscale */
+                                       *bufptr, *bufptr, *bufptr, (char)0xff);
+                            dataptr++;
+                            bufptr += 1;
+                            break;
                          }
 
                     }           /* end for (each pixel) */
-	       }
-	     if (progress)
-	       {
-		  progress(im, 100, 0, 0, im->w, im->h);
-	       } /* end for (each row) */
+               }
+             if (progress)
+               {
+                  progress(im, 100, 0, 0, im->w, im->h);
+               }                /* end for (each row) */
           }
-	/* end if (!RLE) */
+        /* end if (!RLE) */
         /* decode RLE compressed data */
         else
           {
@@ -405,9 +399,9 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              DATA32             *final_pixel = dataptr + im->w * im->h;
 
              /* loop until we've got all the pixels or run out of input */
-	     while ((dataptr < final_pixel) &&
-		    ((bufptr + 1 + (bpp / 8)) <= bufend))
-	       {
+             while ((dataptr < final_pixel) &&
+                    ((bufptr + 1 + (bpp / 8)) <= bufend))
+               {
                   int                 count;
 
                   curbyte = *bufptr++;
@@ -419,39 +413,42 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                        switch (bpp)
                          {
-                           case 32:
-                              blue = *bufptr++;
-                              green = *bufptr++;
-                              red = *bufptr++;
-                              alpha = *bufptr++;
-			    for (i = 0; (i < count) && (dataptr < final_pixel); i++)
-                                {
-                                   WRITE_RGBA(dataptr, red, green, blue, alpha);
-                                   dataptr++;
-                                }
-                              break;
+                         case 32:
+                            blue = *bufptr++;
+                            green = *bufptr++;
+                            red = *bufptr++;
+                            alpha = *bufptr++;
+                            for (i = 0; (i < count) && (dataptr < final_pixel);
+                                 i++)
+                              {
+                                 WRITE_RGBA(dataptr, red, green, blue, alpha);
+                                 dataptr++;
+                              }
+                            break;
 
-                           case 24:
-                              blue = *bufptr++;
-                              green = *bufptr++;
-                              red = *bufptr++;
-			    for (i = 0; (i < count) && (dataptr < final_pixel); i++)
-                                {
-                                   WRITE_RGBA(dataptr, red, green, blue,
-                                              (char)0xff);
-                                   dataptr++;
-                                }
-                              break;
+                         case 24:
+                            blue = *bufptr++;
+                            green = *bufptr++;
+                            red = *bufptr++;
+                            for (i = 0; (i < count) && (dataptr < final_pixel);
+                                 i++)
+                              {
+                                 WRITE_RGBA(dataptr, red, green, blue,
+                                            (char)0xff);
+                                 dataptr++;
+                              }
+                            break;
 
-                           case 8:
-                              alpha = *bufptr++;
-			    for (i = 0; (i < count) && (dataptr < final_pixel); i++)
-                                {
-                                   WRITE_RGBA(dataptr, alpha, alpha, alpha,
-                                              (char)0xff);
-                                   dataptr++;
-                                }
-                              break;
+                         case 8:
+                            alpha = *bufptr++;
+                            for (i = 0; (i < count) && (dataptr < final_pixel);
+                                 i++)
+                              {
+                                 WRITE_RGBA(dataptr, alpha, alpha, alpha,
+                                            (char)0xff);
+                                 dataptr++;
+                              }
+                            break;
                          }
 
                     }           /* end if (RLE packet) */
@@ -465,47 +462,48 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                             switch (bpp)
                               {
 
-                                   /* 32-bit BGRA pixels */
-                                case 32:
-                                   WRITE_RGBA(dataptr, *(bufptr + 2),   /* R */
-                                              *(bufptr + 1),    /* G */
-                                              *(bufptr + 0),    /* B */
-                                              *(bufptr + 3)     /* A */
-                                       );
-                                   dataptr++;
-                                   bufptr += 4;
-                                   break;
+                                 /* 32-bit BGRA pixels */
+                              case 32:
+                                 WRITE_RGBA(dataptr, *(bufptr + 2),     /* R */
+                                            *(bufptr + 1),      /* G */
+                                            *(bufptr + 0),      /* B */
+                                            *(bufptr + 3)       /* A */
+                                    );
+                                 dataptr++;
+                                 bufptr += 4;
+                                 break;
 
-                                   /* 24-bit BGR pixels */
-                                case 24:
-                                   WRITE_RGBA(dataptr, *(bufptr + 2),   /* R */
-                                              *(bufptr + 1),    /* G */
-                                              *(bufptr + 0),    /* B */
-                                              (char)0xff        /* A */
-                                       );
-                                   dataptr++;
-                                   bufptr += 3;
-                                   break;
+                                 /* 24-bit BGR pixels */
+                              case 24:
+                                 WRITE_RGBA(dataptr, *(bufptr + 2),     /* R */
+                                            *(bufptr + 1),      /* G */
+                                            *(bufptr + 0),      /* B */
+                                            (char)0xff  /* A */
+                                    );
+                                 dataptr++;
+                                 bufptr += 3;
+                                 break;
 
-                                   /* 8-bit grayscale */
-                                case 8:
-                                   WRITE_RGBA(dataptr, *bufptr, /* pseudo-grayscale */
-                                              *bufptr, *bufptr, (char)0xff);
-                                   dataptr++;
-                                   bufptr += 1;
-                                   break;
+                                 /* 8-bit grayscale */
+                              case 8:
+                                 WRITE_RGBA(dataptr, *bufptr,   /* pseudo-grayscale */
+                                            *bufptr, *bufptr, (char)0xff);
+                                 dataptr++;
+                                 bufptr += 1;
+                                 break;
                               }
                          }
                     }           /* end if (raw packet) */
                }                /* end for (each packet) */
              /* must now flip a bottom-up image */
-             if (vinverted) tgaflip(im->data, im->w, im->h);
-	     if (progress)
-	       {
-		  progress(im, 100, 0, 0, im->w, im->h);
-	       } /* end for (each row) */
+             if (vinverted)
+                tgaflip(im->data, im->w, im->h);
+             if (progress)
+               {
+                  progress(im, 100, 0, 0, im->w, im->h);
+               }                /* end for (each row) */
           }
-	/* end if (image is RLE) */
+        /* end if (image is RLE) */
      }
    /* end if (loading pixel data) */
 
@@ -534,23 +532,24 @@ formats(ImlibLoader * l)
 /* flip a DATA32 image block vertically in place */
 
 static void
-tgaflip (DATA32 * in, int w, int h)
+tgaflip(DATA32 * in, int w, int h)
 {
-   DATA32 *adv, *adv2;
-   int x, y;
+   DATA32             *adv, *adv2;
+   int                 x, y;
 
    adv = in;
    adv2 = in + (w * (h - 1));
 
    for (y = 0; y < (h / 2); y++)
      {
-	DATA32 tmp;
-	for (x = 0; x < w; x++)
-	  {
-	     tmp = adv[x];
-	     adv[x] = adv2[x];
-	     adv2[x] = tmp;
-	  }
+        DATA32              tmp;
+
+        for (x = 0; x < w; x++)
+          {
+             tmp = adv[x];
+             adv[x] = adv2[x];
+             adv2[x] = tmp;
+          }
         adv2 -= w;
         adv += w;
      }

@@ -79,18 +79,18 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   count++;
                   switch (count)
                     {
-                         /* width */
-                      case 1:
-                         w = atoi(buf);
-                         break;
-                         /* height */
-                      case 2:
-                         h = atoi(buf);
-                         break;
-                         /* max value, only for color and greyscale */
-                      case 3:
-                         v = atoi(buf);
-                         break;
+                       /* width */
+                    case 1:
+                       w = atoi(buf);
+                       break;
+                       /* height */
+                    case 2:
+                       h = atoi(buf);
+                       break;
+                       /* max value, only for color and greyscale */
+                    case 3:
+                       v = atoi(buf);
+                       break;
                     }
                }
           }
@@ -105,8 +105,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    im->h = h;
    if (!IMAGE_DIMENSIONS_OK(w, h))
      {
-	fclose(f);
-	return 0;
+        fclose(f);
+        return 0;
      }
    if (!im->format)
      {
@@ -138,551 +138,557 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         /* start reading the data */
         switch (p)
           {
-            case '1':          /* ASCII monochrome */
-               buf[0] = 0;
-               i = 0;
-               for (y = 0; y < h; y++)
-                 {
-                    x = 0;
-                    while (x < w)
-                      {
-                         if (!buf[i])   /* fill buffer */
-                           {
-                              if (!fgets(buf, 255, f))
-                                {
-                                   fclose(f);
-                                   return 0;
-                                }
-                              i = 0;
-                           }
-                         while (buf[i] && isspace(buf[i]))
+          case '1':            /* ASCII monochrome */
+             buf[0] = 0;
+             i = 0;
+             for (y = 0; y < h; y++)
+               {
+                  x = 0;
+                  while (x < w)
+                    {
+                       if (!buf[i])     /* fill buffer */
+                         {
+                            if (!fgets(buf, 255, f))
+                              {
+                                 fclose(f);
+                                 return 0;
+                              }
+                            i = 0;
+                         }
+                       while (buf[i] && isspace(buf[i]))
+                          i++;
+                       if (buf[i])
+                         {
+                            if (buf[i] == '1')
+                               *ptr2 = 0xff000000;
+                            else if (buf[i] == '0')
+                               *ptr2 = 0xffffffff;
+                            else
+                              {
+                                 fclose(f);
+                                 return 0;
+                              }
+                            ptr2++;
                             i++;
-                         if (buf[i])
-                           {
-                              if (buf[i] == '1')
-                                 *ptr2 = 0xff000000;
-                              else if (buf[i] == '0')
-                                 *ptr2 = 0xffffffff;
-                              else
-                                {
-                                   fclose(f);
-                                   return 0;
-                                }
-                              ptr2++;
-                              i++;
-                           }
-                      }
-                    if (progress)
-                      {
-                         char                per;
-                         int                 l;
+                         }
+                    }
+                  if (progress)
+                    {
+                       char                per;
+                       int                 l;
 
-                         per = (char)((100 * y) / im->h);
-                         if (((per - pper) >= progress_granularity)
-                             || (y == (im->h - 1)))
-                           {
-                              l = y - pl;
+                       per = (char)((100 * y) / im->h);
+                       if (((per - pper) >= progress_granularity)
+                           || (y == (im->h - 1)))
+                         {
+                            l = y - pl;
 
-                              /* fix off by one in case of the last line */
-                              if (y == (im->h - 1))
-                                 l++;
+                            /* fix off by one in case of the last line */
+                            if (y == (im->h - 1))
+                               l++;
 
-                              if (!progress(im, per, 0, pl, im->w, l))
-                                {
-                                   fclose(f);
-                                   return 2;
-                                }
-                              pper = per;
-                              pl = y;
-                           }
-                      }
-                 }
-               break;
-            case '2':          /* ASCII greyscale */
-               idata = malloc(sizeof(int) * w);
+                            if (!progress(im, per, 0, pl, im->w, l))
+                              {
+                                 fclose(f);
+                                 return 2;
+                              }
+                            pper = per;
+                            pl = y;
+                         }
+                    }
+               }
+             break;
+          case '2':            /* ASCII greyscale */
+             idata = malloc(sizeof(int) * w);
 
-               if (!idata)
-                 {
-                    fclose(f);
-                    return 0;
-                 }
-               buf[0] = 0;
-               i = 0;
-               j = 0;
-               for (y = 0; y < h; y++)
-                 {
-                    iptr = idata;
-                    x = 0;
-                    while (x < w)
-                      {
-                         int k;
-                         /* check 4 chars ahead to see if we need to
-                            fill the buffer */
-                         for (k = 0; k < 4; k++)
-                           {
-                              if (!buf[i+k])   /* fill buffer */
-                                {
-                                   if (fseek(f, -k, SEEK_CUR) == -1 || !fgets(buf, 255, f))
-                                     {
-                                        free(idata);
-                                        fclose(f);
-                                        return 0;
-                                     }
-                                   i = 0;
-                                   break;
-                                }
-                           }
-                         while (buf[i] && isspace(buf[i]))
-                            i++;
-                         while (buf[i] && !isspace(buf[i]))
-                            buf2[j++] = buf[i++];
-                         if (j)
-                           {
-                              buf2[j] = 0;
-                              *(iptr++) = atoi(buf2);
-                              j = 0;
-                              x++;
-                           }
-                      }
-                    iptr = idata;
-                    if (v == 255)
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  0xff000000 | (iptr[0] << 16) | (iptr[0] << 8)
-                                  | iptr[0];
-                              ptr2++;
-                              iptr++;
-                           }
-                      }
-                    else
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  0xff000000 | (((iptr[0] * 255) / v) << 16) |
-                                  (((iptr[0] * 255) / v) << 8) | ((iptr[0] *
-                                                                   255) / v);
-                              ptr2++;
-                              iptr++;
-                           }
-                      }
-                    if (progress)
-                      {
-                         char                per;
-                         int                 l;
+             if (!idata)
+               {
+                  fclose(f);
+                  return 0;
+               }
+             buf[0] = 0;
+             i = 0;
+             j = 0;
+             for (y = 0; y < h; y++)
+               {
+                  iptr = idata;
+                  x = 0;
+                  while (x < w)
+                    {
+                       int                 k;
 
-                         per = (char)((100 * y) / im->h);
-                         if (((per - pper) >= progress_granularity)
-                             || (y == (im->h - 1)))
-                           {
+                       /* check 4 chars ahead to see if we need to
+                        * fill the buffer */
+                       for (k = 0; k < 4; k++)
+                         {
+                            if (!buf[i + k])    /* fill buffer */
+                              {
+                                 if (fseek(f, -k, SEEK_CUR) == -1 ||
+                                     !fgets(buf, 255, f))
+                                   {
+                                      free(idata);
+                                      fclose(f);
+                                      return 0;
+                                   }
+                                 i = 0;
+                                 break;
+                              }
+                         }
+                       while (buf[i] && isspace(buf[i]))
+                          i++;
+                       while (buf[i] && !isspace(buf[i]))
+                          buf2[j++] = buf[i++];
+                       if (j)
+                         {
+                            buf2[j] = 0;
+                            *(iptr++) = atoi(buf2);
+                            j = 0;
+                            x++;
+                         }
+                    }
+                  iptr = idata;
+                  if (v == 255)
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               0xff000000 | (iptr[0] << 16) | (iptr[0] << 8)
+                               | iptr[0];
+                            ptr2++;
+                            iptr++;
+                         }
+                    }
+                  else
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               0xff000000 |
+                               (((iptr[0] * 255) / v) << 16) |
+                               (((iptr[0] * 255) / v) << 8) |
+                               ((iptr[0] * 255) / v);
+                            ptr2++;
+                            iptr++;
+                         }
+                    }
+                  if (progress)
+                    {
+                       char                per;
+                       int                 l;
 
-                              l = y - pl;
+                       per = (char)((100 * y) / im->h);
+                       if (((per - pper) >= progress_granularity)
+                           || (y == (im->h - 1)))
+                         {
 
-                              /* fix off by one in case of the last line */
-                              if (y == (im->h - 1))
-                                 l++;
+                            l = y - pl;
 
-                              if (!progress(im, per, 0, pl, im->w, l))
-                                {
-				   free(idata);
-                                   fclose(f);
-                                   return 2;
-                                }
-                              pper = per;
-                              pl = y;
-                           }
-                      }
-                 }
-               break;
-            case '3':          /* ASCII RGB */
-               idata = malloc(3 * sizeof(int) * w);
+                            /* fix off by one in case of the last line */
+                            if (y == (im->h - 1))
+                               l++;
 
-               if (!idata)
-                 {
-                    fclose(f);
-                    return 0;
-                 }
-               buf[0] = 0;
-               i = 0;
-               j = 0;
-               for (y = 0; y < h; y++)
-                 {
-                    int                 w3 = 3 * w;
+                            if (!progress(im, per, 0, pl, im->w, l))
+                              {
+                                 free(idata);
+                                 fclose(f);
+                                 return 2;
+                              }
+                            pper = per;
+                            pl = y;
+                         }
+                    }
+               }
+             break;
+          case '3':            /* ASCII RGB */
+             idata = malloc(3 * sizeof(int) * w);
 
-                    iptr = idata;
-                    x = 0;
-                    while (x < w3)
-                      {
-                         int k;
-                         /* check 4 chars ahead to see if we need to
-                            fill the buffer */
-                         for (k = 0; k < 4; k++)
-                           {
-                              if (!buf[i+k])   /* fill buffer */
-                                {
-                                   if (fseek(f, -k, SEEK_CUR) == -1 || !fgets(buf, 255, f))
-                                     {
-                                        free(idata);
-                                        fclose(f);
-                                        return 0;
-                                     }
-                                   i = 0;
-                                   break;
-                                }
-                           }
-                         while (buf[i] && isspace(buf[i]))
-                            i++;
-                         while (buf[i] && !isspace(buf[i]))
-                            buf2[j++] = buf[i++];
-                         if (j)
-                           {
-                              buf2[j] = 0;
-                              *(iptr++) = atoi(buf2);
-                              j = 0;
-                              x++;
-                           }
-                      }
-                    iptr = idata;
-                    if (v == 255)
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  0xff000000 | (iptr[0] << 16) | (iptr[1] << 8)
-                                  | iptr[2];
-                              ptr2++;
-                              iptr += 3;
-                           }
-                      }
-                    else
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  0xff000000 | (((iptr[0] * 255) / v) << 16) |
-                                  (((iptr[1] * 255) / v) << 8) | ((iptr[2] *
-                                                                   255) / v);
-                              ptr2++;
-                              iptr += 3;
-                           }
-                      }
-                    if (progress)
-                      {
-                         char                per;
-                         int                 l;
+             if (!idata)
+               {
+                  fclose(f);
+                  return 0;
+               }
+             buf[0] = 0;
+             i = 0;
+             j = 0;
+             for (y = 0; y < h; y++)
+               {
+                  int                 w3 = 3 * w;
 
-                         per = (char)((100 * y) / im->h);
-                         if (((per - pper) >= progress_granularity)
-                             || (y == (im->h - 1)))
-                           {
-                              l = y - pl;
+                  iptr = idata;
+                  x = 0;
+                  while (x < w3)
+                    {
+                       int                 k;
 
-                              /* fix off by one in case of the last line */
-                              if (y == (im->h - 1))
-                                 l++;
+                       /* check 4 chars ahead to see if we need to
+                        * fill the buffer */
+                       for (k = 0; k < 4; k++)
+                         {
+                            if (!buf[i + k])    /* fill buffer */
+                              {
+                                 if (fseek(f, -k, SEEK_CUR) == -1 ||
+                                     !fgets(buf, 255, f))
+                                   {
+                                      free(idata);
+                                      fclose(f);
+                                      return 0;
+                                   }
+                                 i = 0;
+                                 break;
+                              }
+                         }
+                       while (buf[i] && isspace(buf[i]))
+                          i++;
+                       while (buf[i] && !isspace(buf[i]))
+                          buf2[j++] = buf[i++];
+                       if (j)
+                         {
+                            buf2[j] = 0;
+                            *(iptr++) = atoi(buf2);
+                            j = 0;
+                            x++;
+                         }
+                    }
+                  iptr = idata;
+                  if (v == 255)
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               0xff000000 | (iptr[0] << 16) | (iptr[1] << 8)
+                               | iptr[2];
+                            ptr2++;
+                            iptr += 3;
+                         }
+                    }
+                  else
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               0xff000000 |
+                               (((iptr[0] * 255) / v) << 16) |
+                               (((iptr[1] * 255) / v) << 8) |
+                               ((iptr[2] * 255) / v);
+                            ptr2++;
+                            iptr += 3;
+                         }
+                    }
+                  if (progress)
+                    {
+                       char                per;
+                       int                 l;
 
-                              if (!progress(im, per, 0, pl, im->w, l))
-                                {
-				   free(idata);
-                                   fclose(f);
-                                   return 2;
-                                }
-                              pper = per;
-                              pl = y;
-                           }
-                      }
-                 }
-               break;
-            case '4':          /* binary 1bit monochrome */
-               data = malloc(1 * sizeof(DATA8));
-               if (!data)
-                 {
-                    fclose(f);
-                    return 0;
-                 }
-               ptr2 = im->data;
-               j = 0;
-               while ((fread(data, 1, 1, f)) && (j < (w * h)))
-                 {
-                    for (i = 7; i >= 0; i--)
-                      {
-                         if (j < (w * h))
-                           {
-                              if (data[0] & (1 << i))
-                                 *ptr2 = 0xff000000;
-                              else
-                                 *ptr2 = 0xffffffff;
-                              ptr2++;
-                           }
-                         j++;
-                      }
-                 }
-               break;
-            case '5':          /* binary 8bit grayscale GGGGGGGG */
-               data = malloc(1 * sizeof(DATA8) * w);
-               if (!data)
-                 {
-                    fclose(f);
-                    return 0;
-                 }
-               ptr2 = im->data;
-               for (y = 0; y < h; y++)
-                 {
-                    if (!fread(data, w * 1, 1, f))
-                      {
-                         free(data);
-                         fclose(f);
-                         return 1;
-                      }
-                    ptr = data;
-                    if (v == 255)
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  0xff000000 | (ptr[0] << 16) | (ptr[0] << 8) |
-                                  ptr[0];
-                              ptr2++;
-                              ptr++;
-                           }
-                      }
-                    else
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  0xff000000 | (((ptr[0] * 255) / v) << 16) |
-                                  (((ptr[0] * 255) / v) << 8) | ((ptr[0] *
-                                                                  255) / v);
-                              ptr2++;
-                              ptr++;
-                           }
-                      }
-                    if (progress)
-                      {
-                         char                per;
-                         int                 l;
+                       per = (char)((100 * y) / im->h);
+                       if (((per - pper) >= progress_granularity)
+                           || (y == (im->h - 1)))
+                         {
+                            l = y - pl;
 
-                         per = (char)((100 * y) / im->h);
-                         if (((per - pper) >= progress_granularity)
-                             || (y == (im->h - 1)))
-                           {
-                              l = y - pl;
+                            /* fix off by one in case of the last line */
+                            if (y == (im->h - 1))
+                               l++;
 
-                              /* fix off by one in case of the last line */
-                              if (y == (im->h - 1))
-                                 l++;
+                            if (!progress(im, per, 0, pl, im->w, l))
+                              {
+                                 free(idata);
+                                 fclose(f);
+                                 return 2;
+                              }
+                            pper = per;
+                            pl = y;
+                         }
+                    }
+               }
+             break;
+          case '4':            /* binary 1bit monochrome */
+             data = malloc(1 * sizeof(DATA8));
+             if (!data)
+               {
+                  fclose(f);
+                  return 0;
+               }
+             ptr2 = im->data;
+             j = 0;
+             while ((fread(data, 1, 1, f)) && (j < (w * h)))
+               {
+                  for (i = 7; i >= 0; i--)
+                    {
+                       if (j < (w * h))
+                         {
+                            if (data[0] & (1 << i))
+                               *ptr2 = 0xff000000;
+                            else
+                               *ptr2 = 0xffffffff;
+                            ptr2++;
+                         }
+                       j++;
+                    }
+               }
+             break;
+          case '5':            /* binary 8bit grayscale GGGGGGGG */
+             data = malloc(1 * sizeof(DATA8) * w);
+             if (!data)
+               {
+                  fclose(f);
+                  return 0;
+               }
+             ptr2 = im->data;
+             for (y = 0; y < h; y++)
+               {
+                  if (!fread(data, w * 1, 1, f))
+                    {
+                       free(data);
+                       fclose(f);
+                       return 1;
+                    }
+                  ptr = data;
+                  if (v == 255)
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               0xff000000 | (ptr[0] << 16) | (ptr[0] << 8) |
+                               ptr[0];
+                            ptr2++;
+                            ptr++;
+                         }
+                    }
+                  else
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               0xff000000 |
+                               (((ptr[0] * 255) / v) << 16) |
+                               (((ptr[0] * 255) / v) << 8) |
+                               ((ptr[0] * 255) / v);
+                            ptr2++;
+                            ptr++;
+                         }
+                    }
+                  if (progress)
+                    {
+                       char                per;
+                       int                 l;
 
-                              if (!progress(im, per, 0, pl, im->w, l))
-                                {
-				   free(data);
-                                   fclose(f);
-                                   return 2;
-                                }
-                              pper = per;
-                              pl = y;
-                           }
-                      }
-                 }
-               break;
-            case '6':          /* 24bit binary RGBRGBRGB */
-               data = malloc(3 * sizeof(DATA8) * w);
-               if (!data)
-                 {
-                    fclose(f);
-                    return 0;
-                 }
-               ptr2 = im->data;
-               for (y = 0; y < h; y++)
-                 {
-                    if (!fread(data, w * 3, 1, f))
-                      {
-                         free(data);
-                         fclose(f);
-                         return 1;
-                      }
-                    ptr = data;
-                    if (v == 255)
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  0xff000000 | (ptr[0] << 16) | (ptr[1] << 8) |
-                                  ptr[2];
-                              ptr2++;
-                              ptr += 3;
-                           }
-                      }
-                    else
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  0xff000000 | (((ptr[0] * 255) / v) << 16) |
-                                  (((ptr[1] * 255) / v) << 8) | ((ptr[2] *
-                                                                  255) / v);
-                              ptr2++;
-                              ptr += 3;
-                           }
-                      }
-                    if (progress)
-                      {
-                         char                per;
-                         int                 l;
+                       per = (char)((100 * y) / im->h);
+                       if (((per - pper) >= progress_granularity)
+                           || (y == (im->h - 1)))
+                         {
+                            l = y - pl;
 
-                         per = (char)((100 * y) / im->h);
-                         if (((per - pper) >= progress_granularity)
-                             || (y == (im->h - 1)))
-                           {
-                              l = y - pl;
+                            /* fix off by one in case of the last line */
+                            if (y == (im->h - 1))
+                               l++;
 
-                              /* fix off by one in case of the last line */
-                              if (y == (im->h - 1))
-                                 l++;
+                            if (!progress(im, per, 0, pl, im->w, l))
+                              {
+                                 free(data);
+                                 fclose(f);
+                                 return 2;
+                              }
+                            pper = per;
+                            pl = y;
+                         }
+                    }
+               }
+             break;
+          case '6':            /* 24bit binary RGBRGBRGB */
+             data = malloc(3 * sizeof(DATA8) * w);
+             if (!data)
+               {
+                  fclose(f);
+                  return 0;
+               }
+             ptr2 = im->data;
+             for (y = 0; y < h; y++)
+               {
+                  if (!fread(data, w * 3, 1, f))
+                    {
+                       free(data);
+                       fclose(f);
+                       return 1;
+                    }
+                  ptr = data;
+                  if (v == 255)
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               0xff000000 | (ptr[0] << 16) | (ptr[1] << 8) |
+                               ptr[2];
+                            ptr2++;
+                            ptr += 3;
+                         }
+                    }
+                  else
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               0xff000000 |
+                               (((ptr[0] * 255) / v) << 16) |
+                               (((ptr[1] * 255) / v) << 8) |
+                               ((ptr[2] * 255) / v);
+                            ptr2++;
+                            ptr += 3;
+                         }
+                    }
+                  if (progress)
+                    {
+                       char                per;
+                       int                 l;
 
-                              if (!progress(im, per, 0, pl, im->w, l))
-                                {
-				   free(data);
-                                   fclose(f);
-                                   return 2;
-                                }
-                              pper = per;
-                              pl = y;
-                           }
-                      }
-                 }
-               break;
-            case '7':          /* XV's 8bit 332 format */
-               data = malloc(1 * sizeof(DATA8) * w);
-               if (!data)
-                 {
-                    fclose(f);
-                    return 0;
-                 }
-               ptr2 = im->data;
-               for (y = 0; y < h; y++)
-                 {
-                    if (!fread(data, w * 1, 1, f))
-                      {
-                         free(data);
-                         fclose(f);
-                         return 1;
-                      }
-                    ptr = data;
-                    for (x = 0; x < w; x++)
-                      {
-                         int                 r, g, b;
+                       per = (char)((100 * y) / im->h);
+                       if (((per - pper) >= progress_granularity)
+                           || (y == (im->h - 1)))
+                         {
+                            l = y - pl;
 
-                         r = (*ptr >> 5) & 0x7;
-                         g = (*ptr >> 2) & 0x7;
-                         b = (*ptr) & 0x3;
-                         *ptr2 =
-                             0xff000000 | (((r << 21) | (r << 18) | (r << 15)) &
-                                           0xff0000) | (((g << 13) | (g << 10) |
-                                                         (g << 7)) & 0xff00) |
-                             ((b << 6) | (b << 4) | (b << 2) | (b << 0));
-                         ptr2++;
-                         ptr++;
-                      }
-                    if (progress)
-                      {
-                         char                per;
-                         int                 l = 0;
+                            /* fix off by one in case of the last line */
+                            if (y == (im->h - 1))
+                               l++;
 
-                         per = (char)((100 * y) / im->h);
-                         if (((per - pper) >= progress_granularity)
-                             || (y == (im->h - 1)))
-                           {
-                              /* fix off by one in case of the last line */
-                              if (y == (im->h - 1))
-                                 l++;
+                            if (!progress(im, per, 0, pl, im->w, l))
+                              {
+                                 free(data);
+                                 fclose(f);
+                                 return 2;
+                              }
+                            pper = per;
+                            pl = y;
+                         }
+                    }
+               }
+             break;
+          case '7':            /* XV's 8bit 332 format */
+             data = malloc(1 * sizeof(DATA8) * w);
+             if (!data)
+               {
+                  fclose(f);
+                  return 0;
+               }
+             ptr2 = im->data;
+             for (y = 0; y < h; y++)
+               {
+                  if (!fread(data, w * 1, 1, f))
+                    {
+                       free(data);
+                       fclose(f);
+                       return 1;
+                    }
+                  ptr = data;
+                  for (x = 0; x < w; x++)
+                    {
+                       int                 r, g, b;
 
-                              if (!progress(im, per, 0, pl, im->w, l))
-                                {
-				   free(data);
-                                   fclose(f);
-                                   return 2;
-                                }
-                              pper = per;
-                              pl = y;
-                           }
-                      }
-                 }
-               break;
-            case '8':          /* 24bit binary RGBARGBARGBA */
-               data = malloc(4 * sizeof(DATA8) * w);
-               if (!data)
-                 {
-                    fclose(f);
-                    return 0;
-                 }
-               ptr2 = im->data;
-               for (y = 0; y < h; y++)
-                 {
-                    if (!fread(data, w * 4, 1, f))
-                      {
-                         free(data);
-                         fclose(f);
-                         return 1;
-                      }
-                    ptr = data;
-                    if (v == 255)
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  (ptr[3] << 24) | (ptr[0] << 16) | (ptr[1] <<
-                                                                     8) |
-                                  ptr[2];
-                              ptr2++;
-                              ptr += 4;
-                           }
-                      }
-                    else
-                      {
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr2 =
-                                  (((ptr[3] * 255) /
-                                    v) << 24) | (((ptr[0] * 255) /
-                                                  v) << 16) | (((ptr[1] * 255) /
-                                                                v) << 8) |
-                                  ((ptr[2] * 255) / v);
-                              ptr2++;
-                              ptr += 4;
-                           }
-                      }
-                    if (progress)
-                      {
-                         char                per;
-                         int                 l = 0;
+                       r = (*ptr >> 5) & 0x7;
+                       g = (*ptr >> 2) & 0x7;
+                       b = (*ptr) & 0x3;
+                       *ptr2 =
+                          0xff000000 |
+                          (((r << 21) | (r << 18) | (r << 15)) & 0xff0000) |
+                          (((g << 13) | (g << 10) | (g << 7)) & 0xff00) |
+                          ((b << 6) | (b << 4) | (b << 2) | (b << 0));
+                       ptr2++;
+                       ptr++;
+                    }
+                  if (progress)
+                    {
+                       char                per;
+                       int                 l = 0;
 
-                         per = (char)((100 * y) / im->h);
-                         if (((per - pper) >= progress_granularity)
-                             || (y == (im->h - 1)))
-                           {
-                              /* fix off by one in case of the last line */
-                              if (y == (im->h - 1))
-                                 l++;
+                       per = (char)((100 * y) / im->h);
+                       if (((per - pper) >= progress_granularity)
+                           || (y == (im->h - 1)))
+                         {
+                            /* fix off by one in case of the last line */
+                            if (y == (im->h - 1))
+                               l++;
 
-                              if (!progress(im, per, 0, pl, im->w, l))
-                                {
-				   free(data);
-                                   fclose(f);
-                                   return 2;
-                                }
-                              pper = per;
-                              pl = y;
-                           }
-                      }
-                 }
-               break;
-            default:
-               fclose(f);
-               return 0;
-               break;
+                            if (!progress(im, per, 0, pl, im->w, l))
+                              {
+                                 free(data);
+                                 fclose(f);
+                                 return 2;
+                              }
+                            pper = per;
+                            pl = y;
+                         }
+                    }
+               }
+             break;
+          case '8':            /* 24bit binary RGBARGBARGBA */
+             data = malloc(4 * sizeof(DATA8) * w);
+             if (!data)
+               {
+                  fclose(f);
+                  return 0;
+               }
+             ptr2 = im->data;
+             for (y = 0; y < h; y++)
+               {
+                  if (!fread(data, w * 4, 1, f))
+                    {
+                       free(data);
+                       fclose(f);
+                       return 1;
+                    }
+                  ptr = data;
+                  if (v == 255)
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               (ptr[3] << 24) | (ptr[0] << 16) |
+                               (ptr[1] << 8) | ptr[2];
+                            ptr2++;
+                            ptr += 4;
+                         }
+                    }
+                  else
+                    {
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr2 =
+                               (((ptr[3] * 255) / v) << 24) |
+                               (((ptr[0] * 255) / v) << 16) |
+                               (((ptr[1] * 255) / v) << 8) |
+                               ((ptr[2] * 255) / v);
+                            ptr2++;
+                            ptr += 4;
+                         }
+                    }
+                  if (progress)
+                    {
+                       char                per;
+                       int                 l = 0;
+
+                       per = (char)((100 * y) / im->h);
+                       if (((per - pper) >= progress_granularity)
+                           || (y == (im->h - 1)))
+                         {
+                            /* fix off by one in case of the last line */
+                            if (y == (im->h - 1))
+                               l++;
+
+                            if (!progress(im, per, 0, pl, im->w, l))
+                              {
+                                 free(data);
+                                 fclose(f);
+                                 return 2;
+                              }
+                            pper = per;
+                            pl = y;
+                         }
+                    }
+               }
+             break;
+          default:
+             fclose(f);
+             return 0;
+             break;
           }
         if (idata)
            free(idata);

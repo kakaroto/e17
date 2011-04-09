@@ -25,9 +25,9 @@ typedef struct tagRGBQUAD {
 
 /* 21.3.3006 - Use enumeration for RLE encoding. This makes it more readable */
 enum {
-  RLE_NEXT = 0, /* Next line */
-  RLE_END = 1,  /* End of RLE encoding */
-  RLE_MOVE = 2  /* Move by X and Y (Offset is stored in two next bytes) */
+   RLE_NEXT = 0,                /* Next line */
+   RLE_END = 1,                 /* End of RLE encoding */
+   RLE_MOVE = 2                 /* Move by X and Y (Offset is stored in two next bytes) */
 };
 
 static int
@@ -38,7 +38,7 @@ ReadleShort(FILE * file, unsigned short *ret)
    if (fread(b, sizeof(unsigned char), 2, file) != 2)
       return 0;
 
-   *ret = (b[1] << 8) | b[0];   
+   *ret = (b[1] << 8) | b[0];
    return 1;
 }
 
@@ -57,9 +57,9 @@ ReadleLong(FILE * file, unsigned long *ret)
 static int
 WriteleByte(FILE * file, unsigned char val)
 {
-   int rc;
+   int                 rc;
 
-   rc = fputc ((int) val & 0xff, file);
+   rc = fputc((int)val & 0xff, file);
    if (rc == EOF)
       return 0;
 
@@ -69,12 +69,12 @@ WriteleByte(FILE * file, unsigned char val)
 static int
 WriteleShort(FILE * file, unsigned short val)
 {
-   int rc;
+   int                 rc;
 
-   rc = fputc ((int) (val & 0xff), file);
+   rc = fputc((int)(val & 0xff), file);
    if (rc == EOF)
       return 0;
-   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   rc = fputc((int)((val >> 8) & 0xff), file);
    if (rc == EOF)
       return 0;
 
@@ -84,18 +84,18 @@ WriteleShort(FILE * file, unsigned short val)
 static int
 WriteleLong(FILE * file, unsigned long val)
 {
-   int rc;
+   int                 rc;
 
-   rc = fputc ((int) (val & 0xff), file);
+   rc = fputc((int)(val & 0xff), file);
    if (rc == EOF)
       return 0;
-   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   rc = fputc((int)((val >> 8) & 0xff), file);
    if (rc == EOF)
       return 0;
-   rc = fputc ((int) ((val >> 16) & 0xff), file);
+   rc = fputc((int)((val >> 16) & 0xff), file);
    if (rc == EOF)
       return 0;
-   rc = fputc ((int) ((val >> 24) & 0xff), file);
+   rc = fputc((int)((val >> 24) & 0xff), file);
    if (rc == EOF)
       return 0;
 
@@ -205,14 +205,16 @@ load(ImlibImage * im, ImlibProgressFunction progress,
            if (headSize == 12)
              {
                 ncols /= 3;
-                if (ncols > 256) ncols = 256;
+                if (ncols > 256)
+                   ncols = 256;
                 for (i = 0; i < ncols; i++)
                    fread(&rgbQuads[i], 3, 1, f);
              }
            else
              {
                 ncols /= 4;
-                if (ncols > 256) ncols = 256;
+                if (ncols > 256)
+                   ncols = 256;
                 fread(rgbQuads, 4, ncols, f);
              }
         }
@@ -227,23 +229,29 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                 ReadleLong(f, &bmask);
                 for (bit = bitcount - 1; bit >= 0; bit--)
                   {
-                     if (bmask & (1 << bit)) bshift = bit;
-                     if (gmask & (1 << bit)) gshift = bit;
-                     if (rmask & (1 << bit)) rshift = bit;
+                     if (bmask & (1 << bit))
+                        bshift = bit;
+                     if (gmask & (1 << bit))
+                        gshift = bit;
+                     if (rmask & (1 << bit))
+                        rshift = bit;
                   }
-                while(((((0xffffL & bmask) >> bshift) << bleftshift) & 0x80) == 0)
+                while (((((0xffffL & bmask) >> bshift) << bleftshift) & 0x80) ==
+                       0)
                   {
                      bleftshift++;
                   }
-                while(((((0xffffL & gmask) >> gshift) << gleftshift) & 0x80) == 0)
+                while (((((0xffffL & gmask) >> gshift) << gleftshift) & 0x80) ==
+                       0)
                   {
                      gleftshift++;
                   }
-                while(((((0xffffL & rmask) >> rshift) << rleftshift) & 0x80) == 0)
+                while (((((0xffffL & rmask) >> rshift) << rleftshift) & 0x80) ==
+                       0)
                   {
                      rleftshift++;
                   }
-              }
+             }
            else if (bitcount == 16)
              {
                 rmask = 0x7C00;
@@ -311,9 +319,9 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                                byte = *(buffer_ptr++);
                             k = (byte >> 7) & 1;
                             *ptr++ = 0xff000000 |
-                                (rgbQuads[k].rgbRed << 16) |
-                                (rgbQuads[k].rgbGreen << 8) |
-                                rgbQuads[k].rgbBlue;
+                               (rgbQuads[k].rgbRed << 16) |
+                               (rgbQuads[k].rgbGreen << 8) |
+                               rgbQuads[k].rgbBlue;
                             byte <<= 1;
                          }
                        buffer_ptr += skip;
@@ -353,7 +361,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
          * - If we use 'byte = *(buffer_ptr++) in main loop we must check if 
          *   'buffer_ptr != buffer_end', because special or incomplete bmp file can generate
          *   segfault (I was writing it, because in RLE we need to read depending count of
-		 *   bytes that depends on requester operation).
+         *   bytes that depends on requester operation).
          *   SOLUTION: Don't read one byte, read two bytes and check.
          * - If RLE teels us than single color length will be larger than allowed, we can
          *   stop, because bitmap is corrupted or crawled.
@@ -372,89 +380,111 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   /*
                    * 21.3.2006: This is better than using 'if buffer_ptr + 1 < buffer_end'
                    */
-                  unsigned char *buffer_end_minus_1 = buffer_end - 1;
+                  unsigned char      *buffer_end_minus_1 = buffer_end - 1;
+
                   x = 0;
                   y = 0;
 
-                  for (i = 0; i < imgsize && buffer_ptr < buffer_end_minus_1; i++)
+                  for (i = 0; i < imgsize && buffer_ptr < buffer_end_minus_1;
+                       i++)
                     {
                        byte1 = buffer_ptr[0];
                        byte2 = buffer_ptr[1];
                        buffer_ptr += 2;
                        if (byte1)
                          {
-                            DATA32 t1, t2;
+                            DATA32              t1, t2;
 
                             l = byte1;
                             /* Check for invalid length */
-                            if (l + x > w) goto _bail;
+                            if (l + x > w)
+                               goto _bail;
 
-                            t1 = 0xff000000 | (rgbQuads[byte2 >>  4].rgbRed   << 16) |
-                                              (rgbQuads[byte2 >>  4].rgbGreen <<  8) |
-                                              (rgbQuads[byte2 >>  4].rgbBlue       ) ;
-                            t2 = 0xff000000 | (rgbQuads[byte2 & 0xF].rgbRed   << 16) |
-                                              (rgbQuads[byte2 & 0xF].rgbGreen <<  8) |
-                                              (rgbQuads[byte2 & 0xF].rgbBlue       ) ;
-                            for (j = l/2; j; j--) {
-                               ptr[0] = t1;
-                               ptr[1] = t2;
-                               ptr += 2;
-                            }
+                            t1 = 0xff000000 |
+                               (rgbQuads[byte2 >> 4].rgbRed << 16) |
+                               (rgbQuads[byte2 >> 4].rgbGreen << 8) |
+                               (rgbQuads[byte2 >> 4].rgbBlue);
+                            t2 = 0xff000000 |
+                               (rgbQuads[byte2 & 0xF].rgbRed << 16) |
+                               (rgbQuads[byte2 & 0xF].rgbGreen << 8) |
+                               (rgbQuads[byte2 & 0xF].rgbBlue);
+                            for (j = l / 2; j; j--)
+                              {
+                                 ptr[0] = t1;
+                                 ptr[1] = t2;
+                                 ptr += 2;
+                              }
                             /* tail */
-                            if (l & 1) *ptr++ = t1;
+                            if (l & 1)
+                               *ptr++ = t1;
                             x += l;
                          }
                        else
                          {
                             switch (byte2)
                               {
-                                case RLE_NEXT:
-                                   x = 0;
-                                   if (++y >= h) goto _bail;
-                                   ptr = im->data + (h - y - 1) * w;
-                                   break;
-                                case RLE_END:
-                                   goto _bail;
-                                case RLE_MOVE:
-                                   /* Need to read two bytes */
-                                   if (buffer_ptr >= buffer_end_minus_1) goto _bail; 
-                                   x += buffer_ptr[0];
-                                   y += buffer_ptr[1];
-                                   buffer_ptr += 2;
-                                   /* Check for correct coordinates */
-                                   if (x >= w) goto _bail;
-                                   if (y >= h) goto _bail;
-                                   ptr = im->data + (h - y - 1) * w + x;
-                                   break;
-                                default:
-                                   l = byte2;
-                                   /* Check for invalid length and valid buffer size */
-                                   if (l + x > w) goto _bail;
-                                   if (buffer_ptr + (l >> 1) + (l & 1) > buffer_end) goto _bail;
+                              case RLE_NEXT:
+                                 x = 0;
+                                 if (++y >= h)
+                                    goto _bail;
+                                 ptr = im->data + (h - y - 1) * w;
+                                 break;
+                              case RLE_END:
+                                 goto _bail;
+                              case RLE_MOVE:
+                                 /* Need to read two bytes */
+                                 if (buffer_ptr >= buffer_end_minus_1)
+                                    goto _bail;
+                                 x += buffer_ptr[0];
+                                 y += buffer_ptr[1];
+                                 buffer_ptr += 2;
+                                 /* Check for correct coordinates */
+                                 if (x >= w)
+                                    goto _bail;
+                                 if (y >= h)
+                                    goto _bail;
+                                 ptr = im->data + (h - y - 1) * w + x;
+                                 break;
+                              default:
+                                 l = byte2;
+                                 /* Check for invalid length and valid buffer size */
+                                 if (l + x > w)
+                                    goto _bail;
+                                 if (buffer_ptr + (l >> 1) + (l & 1) >
+                                     buffer_end)
+                                    goto _bail;
 
-                                   for (j = l/2; j; j--) {
-                                     byte = *buffer_ptr++;
-                                     ptr[0] = 0xff000000 | (rgbQuads[byte >>  4].rgbRed   << 16) |
-                                                           (rgbQuads[byte >>  4].rgbGreen <<  8) |
-                                                           (rgbQuads[byte >>  4].rgbBlue       ) ;
-                                     ptr[1] = 0xff000000 | (rgbQuads[byte & 0xF].rgbRed   << 16) |
-                                                           (rgbQuads[byte & 0xF].rgbGreen <<  8) |
-                                                           (rgbQuads[byte & 0xF].rgbBlue       ) ;
-                                     ptr += 2;
+                                 for (j = l / 2; j; j--)
+                                   {
+                                      byte = *buffer_ptr++;
+                                      ptr[0] =
+                                         0xff000000 |
+                                         (rgbQuads[byte >> 4].rgbRed << 16) |
+                                         (rgbQuads[byte >> 4].rgbGreen << 8) |
+                                         (rgbQuads[byte >> 4].rgbBlue);
+                                      ptr[1] =
+                                         0xff000000 |
+                                         (rgbQuads[byte & 0xF].rgbRed << 16) |
+                                         (rgbQuads[byte & 0xF].rgbGreen << 8) |
+                                         (rgbQuads[byte & 0xF].rgbBlue);
+                                      ptr += 2;
                                    }
-                                   if (l & 1) {
-                                     byte = *buffer_ptr++;
-                                     *ptr++ = 0xff000000 | (rgbQuads[byte >>  4].rgbRed   << 16) |
-                                                           (rgbQuads[byte >>  4].rgbGreen <<  8) |
-                                                           (rgbQuads[byte >>  4].rgbBlue       ) ;
+                                 if (l & 1)
+                                   {
+                                      byte = *buffer_ptr++;
+                                      *ptr++ =
+                                         0xff000000 |
+                                         (rgbQuads[byte >> 4].rgbRed << 16) |
+                                         (rgbQuads[byte >> 4].rgbGreen << 8) |
+                                         (rgbQuads[byte >> 4].rgbBlue);
                                    }
-                                   x += l;
+                                 x += l;
 
-                                   if ((l & 3) == 1)
-                                      buffer_ptr += 2;
-                                   else if ((l & 3) == 2)
-                                      buffer_ptr++;
-                                   break;
+                                 if ((l & 3) == 1)
+                                    buffer_ptr += 2;
+                                 else if ((l & 3) == 2)
+                                    buffer_ptr++;
+                                 break;
                               }
                          }
                        if (progress)
@@ -492,9 +522,9 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                                byte = *(buffer_ptr++);
                             k = (byte & 0xF0) >> 4;
                             *ptr++ = 0xff000000 |
-                                (rgbQuads[k].rgbRed << 16) |
-                                (rgbQuads[k].rgbGreen << 8) |
-                                rgbQuads[k].rgbBlue;
+                               (rgbQuads[k].rgbRed << 16) |
+                               (rgbQuads[k].rgbGreen << 8) |
+                               rgbQuads[k].rgbBlue;
                             byte <<= 4;
                          }
                        buffer_ptr += skip;
@@ -530,63 +560,74 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   /*
                    * 21.3.2006: This is better than using 'if buffer_ptr + 1 < buffer_end'
                    */
-                  unsigned char *buffer_end_minus_1 = buffer_end - 1;
+                  unsigned char      *buffer_end_minus_1 = buffer_end - 1;
+
                   x = 0;
                   y = 0;
-                  for (i = 0; i < imgsize && buffer_ptr < buffer_end_minus_1; i++)
+                  for (i = 0; i < imgsize && buffer_ptr < buffer_end_minus_1;
+                       i++)
                     {
                        byte1 = buffer_ptr[0];
                        byte2 = buffer_ptr[1];
                        buffer_ptr += 2;
                        if (byte1)
                          {
-                            DATA32 pix = 0xff000000 | (rgbQuads[byte2].rgbRed   << 16) |
-                                                      (rgbQuads[byte2].rgbGreen <<  8) |
-                                                      (rgbQuads[byte2].rgbBlue       ) ;
+                            DATA32              pix =
+                               0xff000000 | (rgbQuads[byte2].rgbRed << 16) |
+                               (rgbQuads[byte2].rgbGreen << 8) |
+                               (rgbQuads[byte2].rgbBlue);
                             l = byte1;
-                            if (x + l > w) goto _bail;
-                            for (j = l; j; j--) *ptr++ = pix;
+                            if (x + l > w)
+                               goto _bail;
+                            for (j = l; j; j--)
+                               *ptr++ = pix;
                             x += l;
                          }
                        else
                          {
                             switch (byte2)
                               {
-                                case RLE_NEXT:
-                                   x = 0;
-                                   if (++y >= h) goto _bail;
-                                   ptr = im->data + ((h - y - 1) * w) + x;
-                                   break;
-                                case RLE_END:
-                                   goto _bail;
-                                case RLE_MOVE:
-                                   /* Need to read two bytes */
-                                   if (buffer_ptr >= buffer_end_minus_1) goto _bail; 
-                                   x += buffer_ptr[0];
-                                   y += buffer_ptr[1];
-                                   buffer_ptr += 2;
-                                   /* Check for correct coordinates */
-                                   if (x >= w) goto _bail;
-                                   if (y >= h) goto _bail;
-                                   ptr = im->data + ((h - y - 1) * w) + x;
-                                   break;
-                                default:
-                                   l = byte2;
-                                   if (x + l > w) goto _bail;
-                                   if (buffer_ptr + l > buffer_end) goto _bail;
-                                   for (j = 0; j < l; j++)
-                                     {
-                                        byte = *(buffer_ptr++);
+                              case RLE_NEXT:
+                                 x = 0;
+                                 if (++y >= h)
+                                    goto _bail;
+                                 ptr = im->data + ((h - y - 1) * w) + x;
+                                 break;
+                              case RLE_END:
+                                 goto _bail;
+                              case RLE_MOVE:
+                                 /* Need to read two bytes */
+                                 if (buffer_ptr >= buffer_end_minus_1)
+                                    goto _bail;
+                                 x += buffer_ptr[0];
+                                 y += buffer_ptr[1];
+                                 buffer_ptr += 2;
+                                 /* Check for correct coordinates */
+                                 if (x >= w)
+                                    goto _bail;
+                                 if (y >= h)
+                                    goto _bail;
+                                 ptr = im->data + ((h - y - 1) * w) + x;
+                                 break;
+                              default:
+                                 l = byte2;
+                                 if (x + l > w)
+                                    goto _bail;
+                                 if (buffer_ptr + l > buffer_end)
+                                    goto _bail;
+                                 for (j = 0; j < l; j++)
+                                   {
+                                      byte = *(buffer_ptr++);
 
-                                        *ptr++ = 0xff000000 |
-                                            (rgbQuads[byte].rgbRed << 16) |
-                                            (rgbQuads[byte].rgbGreen << 8) |
-                                            rgbQuads[byte].rgbBlue;
-                                     }
-                                   x += l;
-                                   if (l & 1)
-                                      buffer_ptr++;
-                                   break;
+                                      *ptr++ = 0xff000000 |
+                                         (rgbQuads[byte].rgbRed << 16) |
+                                         (rgbQuads[byte].rgbGreen << 8) |
+                                         rgbQuads[byte].rgbBlue;
+                                   }
+                                 x += l;
+                                 if (l & 1)
+                                    buffer_ptr++;
+                                 break;
                               }
                          }
                     }
@@ -621,9 +662,9 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                          {
                             byte = *(buffer_ptr++);
                             *ptr++ = 0xff000000 |
-                                (rgbQuads[byte].rgbRed << 16) |
-                                (rgbQuads[byte].rgbGreen << 8) |
-                                rgbQuads[byte].rgbBlue;
+                               (rgbQuads[byte].rgbRed << 16) |
+                               (rgbQuads[byte].rgbGreen << 8) |
+                               rgbQuads[byte].rgbBlue;
                          }
                        ptr -= w * 2;
                        buffer_ptr += skip;
@@ -655,7 +696,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         else if (bitcount == 16)
           {
              /* 21.3.2006 - Need to check for buffer_ptr + 1 < buffer_end */
-             unsigned char *buffer_end_minus_1 = buffer_end - 1;
+             unsigned char      *buffer_end_minus_1 = buffer_end - 1;
+
              skip = (((w * 16 + 31) / 32) * 4) - (w * 2);
              for (y = 0; y < h; y++)
                {
@@ -670,10 +712,13 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                         *   bshift;
                         * *ptr++ = 0xff000000 | (r << 16) | (g << 8) | b;
                         */
-                       unsigned short pix = *(unsigned short *)buffer_ptr;
-                       *ptr++ = 0xff000000 | ((((pix & rmask) >> rshift) << rleftshift) << 16) |
-                                             ((((pix & gmask) >> gshift) << gleftshift) <<  8) |
-                                             ((((pix & bmask) >> bshift) << bleftshift)      ) ;
+                       unsigned short      pix = *(unsigned short *)buffer_ptr;
+
+                       *ptr++ =
+                          0xff000000 |
+                          ((((pix & rmask) >> rshift) << rleftshift) << 16) |
+                          ((((pix & gmask) >> gshift) << gleftshift) << 8) |
+                          ((((pix & bmask) >> bshift) << bleftshift));
                        buffer_ptr += 2;
                     }
                   ptr -= w * 2;
@@ -704,7 +749,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         else if (bitcount == 24)
           {
              /* 21.3.2006 - Fix: need to check for buffer_ptr + 2 < buffer_end */
-             unsigned char *buffer_end_minus_2 = buffer_end - 2;
+             unsigned char      *buffer_end_minus_2 = buffer_end - 2;
+
              skip = (4 - ((w * 3) % 4)) & 3;
              for (y = 0; y < h; y++)
                {
@@ -743,7 +789,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         else if (bitcount == 32)
           {
              /* 21.3.2006 - Need to check buffer_ptr + 3 < buffer_end */
-             unsigned char *buffer_end_minus_3 = buffer_end_minus_3;
+             unsigned char      *buffer_end_minus_3 = buffer_end_minus_3;
+
              skip = (((w * 32 + 31) / 32) * 4) - (w * 4);
              for (y = 0; y < h; y++)
                {
@@ -761,10 +808,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                         */
 
                        /* TODO: What about alpha channel...Is used? */
-                       DATA32 pix = *(unsigned int *)buffer_ptr;
+                       DATA32              pix = *(unsigned int *)buffer_ptr;
+
                        *ptr++ = 0xff000000 | (((pix & rmask) >> rshift) << 16) |
-                                             (((pix & gmask) >> gshift) <<  8) |
-                                             (((pix & bmask) >> bshift)      ) ; 
+                          (((pix & gmask) >> gshift) << 8) |
+                          (((pix & bmask) >> bshift));
                        buffer_ptr += 4;
                     }
                   ptr -= w * 2;
@@ -792,7 +840,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                     }
                }
           }
-_bail:
+      _bail:
         free(buffer);
      }
    return 1;
@@ -816,36 +864,36 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    pad = (4 - ((im->w * 3) % 4)) & 0x03;
 
    /* write BMP file header */
-   WriteleShort(f, 0x4d42);   /* prefix */
-   WriteleLong(f, 54 + 3 * im->w * im->h);  /* filesize */
-   WriteleShort(f, 0x0000);   /* reserved #1 */
-   WriteleShort(f, 0x0000);   /* reserved #2 */
-   WriteleLong(f, 54);        /* offset to image data */
+   WriteleShort(f, 0x4d42);     /* prefix */
+   WriteleLong(f, 54 + 3 * im->w * im->h);      /* filesize */
+   WriteleShort(f, 0x0000);     /* reserved #1 */
+   WriteleShort(f, 0x0000);     /* reserved #2 */
+   WriteleLong(f, 54);          /* offset to image data */
 
    /* write BMP bitmap header */
-   WriteleLong(f, 40);   /* 40-byte header */
+   WriteleLong(f, 40);          /* 40-byte header */
    WriteleLong(f, im->w);
    WriteleLong(f, im->h);
-   WriteleShort(f, 1);   /* one plane      */
-   WriteleShort(f, 24);  /* bits per pixel */
-   WriteleLong(f, 0);    /* no compression */
+   WriteleShort(f, 1);          /* one plane      */
+   WriteleShort(f, 24);         /* bits per pixel */
+   WriteleLong(f, 0);           /* no compression */
    WriteleLong(f, 3 * im->w * im->h);
    for (i = 0; i < 4; i++)
-     WriteleLong(f, 0x0000);  /* pad to end of header */
+      WriteleLong(f, 0x0000);   /* pad to end of header */
 
    /* write actual BMP data */
    for (i = 0; i < im->h; i++)
-      {
-         for (j = 0; j < im->w; j++)
-            {
-               imlib_image_query_pixel (j, im->h - i - 1, &pixel_color);
-               WriteleByte(f, pixel_color.blue);
-               WriteleByte(f, pixel_color.green);
-               WriteleByte(f, pixel_color.red);
-            }
-         for (j = 0; j < pad; j++)
-            WriteleByte(f, 0);
-      }
+     {
+        for (j = 0; j < im->w; j++)
+          {
+             imlib_image_query_pixel(j, im->h - i - 1, &pixel_color);
+             WriteleByte(f, pixel_color.blue);
+             WriteleByte(f, pixel_color.green);
+             WriteleByte(f, pixel_color.red);
+          }
+        for (j = 0; j < pad; j++)
+           WriteleByte(f, 0);
+     }
 
    fclose(f);
    return 1;

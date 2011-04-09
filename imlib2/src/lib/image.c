@@ -7,7 +7,7 @@
 #include <ctype.h>
 #include <errno.h>
 #ifdef BUILD_X11
-# include <X11/Xlib.h>
+#include <X11/Xlib.h>
 #endif
 #include "image.h"
 #include "file.h"

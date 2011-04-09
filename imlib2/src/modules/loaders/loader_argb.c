@@ -37,10 +37,10 @@ load(ImlibImage * im, ImlibProgressFunction progress,
            return 0;
         }
       if (!IMAGE_DIMENSIONS_OK(w, h))
-	{
+        {
            fclose(f);
            return 0;
-	}
+        }
       im->w = w;
       im->h = h;
       if (!im->format)

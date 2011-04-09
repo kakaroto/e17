@@ -2327,12 +2327,12 @@ dest += 2; src += 2; \
 #if 0                           /* Old fixed-threshold macros - Remove? */
 
 #ifdef WORDS_BIGENDIAN
-# define WRITE1_RGBA_A1(src, dest)                   \
+#define WRITE1_RGBA_A1(src, dest)                   \
 *dest |= ((*src & 0x80000000) >> (24 + (x & 0x7)));  \
 if ((x & 0x7) == 0x7) dest++;                        \
 src++
 #else
-# define WRITE1_RGBA_A1(src, dest)                   \
+#define WRITE1_RGBA_A1(src, dest)                   \
 *dest |= ((*src & 0x80000000) >> (31 - (x & 0x7))); \
 if ((x & 0x7) == 0x7) dest++;                       \
 src++
@@ -2341,13 +2341,13 @@ src++
 #else
 
 #ifdef WORDS_BIGENDIAN
-# define WRITE1_RGBA_A1(src, dest, threshold) \
+#define WRITE1_RGBA_A1(src, dest, threshold) \
 if ((*src >> 24) >= threshold)      \
   *dest |= (1 << (7 - (x & 0x7)));  \
 if ((x & 0x7) == 0x7) dest++;       \
 src++
 #else
-# define WRITE1_RGBA_A1(src, dest, threshold) \
+#define WRITE1_RGBA_A1(src, dest, threshold) \
 if ((*src >> 24) >= threshold)      \
   *dest |= (1 << (x & 0x7));        \
 if ((x & 0x7) == 0x7) dest++;       \
@@ -2359,7 +2359,7 @@ src++
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> A1 conversion */
 /* FIXME: Mask alpha threshold is not handled (thus the default 128 is used) */
-# define DITHER_RGBA_A1_LUT(num) \
+#define DITHER_RGBA_A1_LUT(num) \
 (_dither_a1[(((x + num) & 0x7) << DM_BS1) | ((y & 0x7) << DM_BS2) | ((src[num] >> 24))])
 #ifdef WORDS_BIGENDIAN
 #define WRITE1_RGBA_A1_DITHER(src, dest, threshold) \
@@ -2382,7 +2382,7 @@ src++;
 /* MACROS for plain RGBA -> RGB8888 conversion */
 #define WRITE1_RGBA_RGB8888(src, dest)             \
 *dest = *src; dest++; src++;
-# define WRITE1_RGBA_BGR8888(src, dest)            \
+#define WRITE1_RGBA_BGR8888(src, dest)            \
 *dest = (((*src) >> 16) & 0x0000ff) |              \
         (((*src)      ) & 0x00ff00) |              \
         (((*src) << 16) & 0xff0000); dest++; src++;

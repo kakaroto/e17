@@ -41,12 +41,12 @@ main(int argc, char **argv)
 
    /* connect to X */
    if (!display_name)
-       display_name = ":0";
+      display_name = ":0";
    disp = XOpenDisplay(display_name);
    if (!disp)
      {
-       fprintf(stderr, "Can't open display %s\n", display_name);
-       return 1;
+        fprintf(stderr, "Can't open display %s\n", display_name);
+        return 1;
      }
    /* get default visual , colormap etc. you could ask imlib2 for what it */
    /* thinks is the best, but this example is intended to be simple */
@@ -68,7 +68,7 @@ main(int argc, char **argv)
    imlib_set_font_cache_size(512 * 1024);
    /* add the ./ttfonts dir to our font path - you'll want a notepad.ttf */
    /* in that dir for the text to display */
-   imlib_add_path_to_font_path(PACKAGE_DATA_DIR"/data/fonts");
+   imlib_add_path_to_font_path(PACKAGE_DATA_DIR "/data/fonts");
    /* set the maximum number of colors to allocate for 8bpp and less to 128 */
    imlib_set_color_usage(128);
    /* dither for depths < 24bpp */
@@ -95,70 +95,71 @@ main(int argc, char **argv)
              XNextEvent(disp, &ev);
              switch (ev.type)
                {
-                 case Expose:
-                    /* window rectangle was exposed - add it to the list of */
-                    /* rectangles we need to re-render */
-                    updates = imlib_update_append_rect(updates,
-                                                       ev.xexpose.x,
-                                                       ev.xexpose.y,
-                                                       ev.xexpose.width,
-                                                       ev.xexpose.height);
-                    break;
-                 case ButtonPress:
-                    /* if we click anywhere in the window, exit */
-                    exit(0);
-                    break;
-                 case MotionNotify:
-                    /* if the mouse moves - note it */
-                    /* add a rectangle update for the new mouse position */
-                    image = imlib_load_image(PACKAGE_DATA_DIR"/data/images/mush.png");
-                    imlib_context_set_image(image);
-                    w = imlib_image_get_width();
-                    h = imlib_image_get_height();
-                    imlib_context_set_image(image);
-                    imlib_free_image();
-                    /* the old position - so we wipe over where it used to be */
-                    updates = imlib_update_append_rect(updates,
-                                                       mouse_x - (w / 2),
-                                                       mouse_y - (h / 2), w, h);
-                    font = imlib_load_font("notepad/30");
-                    if (font)
-                      {
-                         char                text[4096];
+               case Expose:
+                  /* window rectangle was exposed - add it to the list of */
+                  /* rectangles we need to re-render */
+                  updates = imlib_update_append_rect(updates,
+                                                     ev.xexpose.x,
+                                                     ev.xexpose.y,
+                                                     ev.xexpose.width,
+                                                     ev.xexpose.height);
+                  break;
+               case ButtonPress:
+                  /* if we click anywhere in the window, exit */
+                  exit(0);
+                  break;
+               case MotionNotify:
+                  /* if the mouse moves - note it */
+                  /* add a rectangle update for the new mouse position */
+                  image =
+                     imlib_load_image(PACKAGE_DATA_DIR "/data/images/mush.png");
+                  imlib_context_set_image(image);
+                  w = imlib_image_get_width();
+                  h = imlib_image_get_height();
+                  imlib_context_set_image(image);
+                  imlib_free_image();
+                  /* the old position - so we wipe over where it used to be */
+                  updates = imlib_update_append_rect(updates,
+                                                     mouse_x - (w / 2),
+                                                     mouse_y - (h / 2), w, h);
+                  font = imlib_load_font("notepad/30");
+                  if (font)
+                    {
+                       char                text[4096];
 
-                         imlib_context_set_font(font);
-                         sprintf(text, "Mouse is at %i, %i", mouse_x, mouse_y);
-                         imlib_get_text_size(text, &text_w, &text_h);
-                         imlib_free_font();
-                         updates = imlib_update_append_rect(updates,
-                                                            320 - (text_w / 2),
-                                                            240 - (text_h / 2),
-                                                            text_w, text_h);
-                      }
+                       imlib_context_set_font(font);
+                       sprintf(text, "Mouse is at %i, %i", mouse_x, mouse_y);
+                       imlib_get_text_size(text, &text_w, &text_h);
+                       imlib_free_font();
+                       updates = imlib_update_append_rect(updates,
+                                                          320 - (text_w / 2),
+                                                          240 - (text_h / 2),
+                                                          text_w, text_h);
+                    }
 
-                    mouse_x = ev.xmotion.x;
-                    mouse_y = ev.xmotion.y;
-                    /* the new one */
-                    updates = imlib_update_append_rect(updates,
-                                                       mouse_x - (w / 2),
-                                                       mouse_y - (h / 2), w, h);
-                    font = imlib_load_font("notepad/30");
-                    if (font)
-                      {
-                         char                text[4096];
+                  mouse_x = ev.xmotion.x;
+                  mouse_y = ev.xmotion.y;
+                  /* the new one */
+                  updates = imlib_update_append_rect(updates,
+                                                     mouse_x - (w / 2),
+                                                     mouse_y - (h / 2), w, h);
+                  font = imlib_load_font("notepad/30");
+                  if (font)
+                    {
+                       char                text[4096];
 
-                         imlib_context_set_font(font);
-                         sprintf(text, "Mouse is at %i, %i", mouse_x, mouse_y);
-                         imlib_get_text_size(text, &text_w, &text_h);
-                         imlib_free_font();
-                         updates = imlib_update_append_rect(updates,
-                                                            320 - (text_w / 2),
-                                                            240 - (text_h / 2),
-                                                            text_w, text_h);
-                      }
-                 default:
-                    /* any other events - do nothing */
-                    break;
+                       imlib_context_set_font(font);
+                       sprintf(text, "Mouse is at %i, %i", mouse_x, mouse_y);
+                       imlib_get_text_size(text, &text_w, &text_h);
+                       imlib_free_font();
+                       updates = imlib_update_append_rect(updates,
+                                                          320 - (text_w / 2),
+                                                          240 - (text_h / 2),
+                                                          text_w, text_h);
+                    }
+               default:
+                  /* any other events - do nothing */
+                  break;
                }
           }
         while (XPending(disp));
@@ -187,7 +188,7 @@ main(int argc, char **argv)
              /* fill the window background */
              /* load the background image - you'll need to have some images */
              /* in ./test_images lying around for this to actually work */
-             image = imlib_load_image(PACKAGE_DATA_DIR"/data/images/bg.png");
+             image = imlib_load_image(PACKAGE_DATA_DIR "/data/images/bg.png");
              /* we're working with this image now */
              imlib_context_set_image(image);
              /* get its size */
@@ -209,7 +210,7 @@ main(int argc, char **argv)
                }
 
              /* draw an icon centered around the mouse position */
-             image = imlib_load_image(PACKAGE_DATA_DIR"/data/images/mush.png");
+             image = imlib_load_image(PACKAGE_DATA_DIR "/data/images/mush.png");
              imlib_context_set_image(image);
              w = imlib_image_get_width();
              h = imlib_image_get_height();

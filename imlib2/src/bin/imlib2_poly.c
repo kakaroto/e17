@@ -34,19 +34,18 @@ main(int argc, char **argv)
     * First tests to determine which rendering task to perform
     */
    if (!display_name)
-       display_name = ":0";
+      display_name = ":0";
    disp = XOpenDisplay(display_name);
    if (!disp)
      {
-       fprintf(stderr, "Can't open display %s\n", display_name);
-       return 1;
+        fprintf(stderr, "Can't open display %s\n", display_name);
+        return 1;
      }
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));
    cm = DefaultColormap(disp, DefaultScreen(disp));
-   win =
-       XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 100, 100, 0, 0,
-                           0);
+   win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 100, 100,
+                             0, 0, 0);
    XSelectInput(disp, win,
                 ButtonPressMask | ButtonReleaseMask | ButtonMotionMask |
                 PointerMotionMask | ExposureMask | KeyPressMask);
@@ -96,28 +95,28 @@ main(int argc, char **argv)
              XNextEvent(disp, &ev);
              switch (ev.type)
                {
-                 case ButtonRelease:
-                    exit(0);
-                    break;
-                 case KeyPress:
-                    XLookupString(&ev.xkey, (char *)kbuf, sizeof(kbuf), &keysym,
-                                  NULL);
-                    switch (*kbuf)
-                      {
-                        case ' ':
-                           imlib_context_set_anti_alias
-                               (!imlib_context_get_anti_alias());
-                           printf("AA is %s\n",
-                                  imlib_context_get_anti_alias()? "on" : "off");
-                           break;
-                        case 'q':
-                           exit(0);
-                        default:
-                           break;
-                      }
-                    break;
-                 default:
-                    break;
+               case ButtonRelease:
+                  exit(0);
+                  break;
+               case KeyPress:
+                  XLookupString(&ev.xkey, (char *)kbuf, sizeof(kbuf), &keysym,
+                                NULL);
+                  switch (*kbuf)
+                    {
+                    case ' ':
+                       imlib_context_set_anti_alias
+                          (!imlib_context_get_anti_alias());
+                       printf("AA is %s\n",
+                              imlib_context_get_anti_alias()? "on" : "off");
+                       break;
+                    case 'q':
+                       exit(0);
+                    default:
+                       break;
+                    }
+                  break;
+               default:
+                  break;
 
                }
           }

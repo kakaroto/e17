@@ -10,8 +10,8 @@ init(struct imlib_filter_info *info)
    info->name = strdup("Test Filter");
    info->author = strdup("Chris Ross - Boris - chris@darkrock.co.uk");
    info->description =
-       strdup
-       ("This filter is used to show that the imlib2 filter system works!");
+      strdup
+      ("This filter is used to show that the imlib2 filter system works!");
    info->num_filters = 3;
    info->filters = malloc(sizeof(char *) * 3);
    for (i = 0; i < info->num_filters; i++)

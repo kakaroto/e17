@@ -252,8 +252,8 @@ init(struct imlib_filter_info *info)
    info->name = strdup("Bump Mapping");
    info->author = strdup("Willem Monsuwe (willem@stack.nl)");
    info->description =
-       strdup
-       ("Provides bumpmapping to a point and bumpmapping from an infinite light source. *very* cool.");
+      strdup
+      ("Provides bumpmapping to a point and bumpmapping from an infinite light source. *very* cool.");
    info->num_filters = i;
    info->filters = malloc(sizeof(char *) * i);
    while (--i >= 0)

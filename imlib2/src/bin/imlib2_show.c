@@ -110,33 +110,33 @@ main(int argc, char **argv)
         printf("-up\t\tWhen doing scal test scale up, not down.\n");
         printf("-both\t\tScale horizontally AND vertically in scale test.\n");
         printf
-            ("-orig\t\tKeep original width and height in each pass of scale test.\n");
+           ("-orig\t\tKeep original width and height in each pass of scale test.\n");
         printf("-blend\t\tBlending test.\n");
         printf("-dither\t\tTurn dithering on for depths < 24bpp\n");
         printf("-colormod <r> <g> <b> <a>\t\tSet up color mod tables\n");
         printf("-scale\t\tScale test.\n");
         printf("-noloop\t\tDont loop - timing test.\n");
         printf
-            ("-rotate\t\tAlso rotate background image with mouse in interative test.\n");
+           ("-rotate\t\tAlso rotate background image with mouse in interative test.\n");
         printf("-size <w> <h>\t\tScale from w x h down in scaling test.\n");    // require parameters w / h
         printf("-maxcolors <n>\t\tLimit color allocation count to n colors.\n");        // require parameter nb colors
         printf
-            ("-text\t\tDisplays the text following this option. Need a loaded font.\n");
+           ("-text\t\tDisplays the text following this option. Need a loaded font.\n");
         printf
-            ("-font\t\tLoads a font. The parameter must follow the police_name/size format. Example: loading the grunge font at size 18 is : grunge/18.\n\t\tThe XFD font also can be specified. Ex. 'notepad/32,-*--24-*'.\n");
+           ("-font\t\tLoads a font. The parameter must follow the police_name/size format. Example: loading the grunge font at size 18 is : grunge/18.\n\t\tThe XFD font also can be specified. Ex. 'notepad/32,-*--24-*'.\n");
         printf("-poly\t\tPerforms a poly test\n");
         printf("The following options requires a file to work properly.\n");
         printf("-textdir\t\tText Direction. 0: L to R, 1: R to L\n");
         printf("                            2: U to D, 3: D to U, 4: angle\n");
         printf("-xfdtest\t\tXFD Font queue test.\n");
         printf
-            ("-xfdcachetest <f> [<l>]\t\tXFD tFont cache test.\n\t\tThe file f is drawn l times\n");
+           ("-xfdcachetest <f> [<l>]\t\tXFD tFont cache test.\n\t\tThe file f is drawn l times\n");
         printf("-blast\t\tDisplays the file.\n");
         printf("-loop\t\tScales down the image.\n");
         printf("-blendtest\tPerforms a blending test on the file.\n");
         printf("-rotatetest\tPerforms a rotate test on the file.\n");
         printf
-            ("-filter\t\tPerforms filtering. Possible filters are,\n\t\t\t1:Blur filter, 2:Sharpen filter, 3:Color blur filter, \n\t\t\t4:Emboss filter, 5:Grayscale filter, 6:Saturation filter,\n\t\t\t7:Edge detection filter.\n");
+           ("-filter\t\tPerforms filtering. Possible filters are,\n\t\t\t1:Blur filter, 2:Sharpen filter, 3:Color blur filter, \n\t\t\t4:Emboss filter, 5:Grayscale filter, 6:Saturation filter,\n\t\t\t7:Edge detection filter.\n");
         printf("-bmp2pt\t\tPerformas Bump Mapping to a point\n");
         return 0;
      }
@@ -265,13 +265,14 @@ main(int argc, char **argv)
    if (!blendtest)
      {
         const char         *display_name = getenv("DISPLAY");
+
         if (!display_name)
-            display_name = ":0";
+           display_name = ":0";
         disp = XOpenDisplay(display_name);
         if (!disp)
           {
-            fprintf(stderr, "Can't open display %s\n", display_name);
-            return 1;
+             fprintf(stderr, "Can't open display %s\n", display_name);
+             return 1;
           }
         vis = DefaultVisual(disp, DefaultScreen(disp));
         depth = DefaultDepth(disp, DefaultScreen(disp));
@@ -286,8 +287,8 @@ main(int argc, char **argv)
         else
           {
              win =
-                 XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10,
-                                     10, 0, 0, 0);
+                XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10,
+                                    10, 0, 0, 0);
              XSelectInput(disp, win,
                           ButtonPressMask | ButtonReleaseMask | ButtonMotionMask
                           | PointerMotionMask | ExposureMask);
@@ -381,7 +382,7 @@ main(int argc, char **argv)
         if (file)
            im_bg = imlib_load_image(file);
         else
-           im_bg = imlib_load_image(PACKAGE_DATA_DIR"/data/images/bg.png");
+           im_bg = imlib_load_image(PACKAGE_DATA_DIR "/data/images/bg.png");
         imlib_context_set_image(im_bg);
         w = imlib_image_get_width();
         h = imlib_image_get_height();
@@ -406,9 +407,9 @@ main(int argc, char **argv)
                   double              xx, yy;
 
                   xx = (w / 2) +
-                      (cos(a) * points[i][0]) + (cos(a + A90) * points[i][1]);
+                     (cos(a) * points[i][0]) + (cos(a + A90) * points[i][1]);
                   yy = (h / 2) +
-                      (sin(a) * points[i][0]) + (sin(a + A90) * points[i][1]);
+                     (sin(a) * points[i][0]) + (sin(a + A90) * points[i][1]);
                   imlib_polygon_add_point(poly, xx, yy);
                }
              printf("draw angle %3.3f\n", a);
@@ -482,9 +483,9 @@ main(int argc, char **argv)
                             Imlib_Image         im_tmp;
 
                             im_tmp =
-                                imlib_create_cropped_scaled_image(0, 0, w, h, w,
-                                                                  (((i) * h) /
-                                                                   w));
+                               imlib_create_cropped_scaled_image(0, 0, w, h, w,
+                                                                 (((i) * h) /
+                                                                  w));
                             if (im_tmp)
                               {
                                  imlib_context_set_image(im_tmp);
@@ -498,9 +499,9 @@ main(int argc, char **argv)
                             Imlib_Image         im_tmp;
 
                             im_tmp =
-                                imlib_create_cropped_scaled_image(0, 0, w, h, w,
-                                                                  (((i) * h) /
-                                                                   w));
+                               imlib_create_cropped_scaled_image(0, 0, w, h, w,
+                                                                 (((i) * h) /
+                                                                  w));
                             if (im_tmp)
                               {
                                  imlib_context_set_image(im_tmp);
@@ -521,8 +522,8 @@ main(int argc, char **argv)
                             Imlib_Image         im_tmp;
 
                             im_tmp =
-                                imlib_create_cropped_scaled_image(0, 0, w, h,
-                                                                  2 * w - i, h);
+                               imlib_create_cropped_scaled_image(0, 0, w, h,
+                                                                 2 * w - i, h);
                             if (im_tmp)
                               {
                                  imlib_context_set_image(im_tmp);
@@ -547,10 +548,10 @@ main(int argc, char **argv)
                             Imlib_Image         im_tmp;
 
                             im_tmp =
-                                imlib_create_cropped_scaled_image(0, 0, w, h,
-                                                                  2 * w - i,
-                                                                  (((i) * h) /
-                                                                   w));
+                               imlib_create_cropped_scaled_image(0, 0, w, h,
+                                                                 2 * w - i,
+                                                                 (((i) * h) /
+                                                                  w));
                             if (im_tmp)
                               {
                                  imlib_context_set_image(im_tmp);
@@ -616,7 +617,7 @@ main(int argc, char **argv)
     * pixels += (2 * w - i) * (((i) * h) / w);
     * }
     * }
- * } */// end if loop
+    * } */// end if loop
    else if (blendtest)
      {
         Imlib_Image         im2;
@@ -704,74 +705,74 @@ main(int argc, char **argv)
         imlib_context_set_filter(imlib_create_filter(0));
         switch (filter)
           {
-            default:
-            case 1:
-               /*\ Blur filter \ */
-               imlib_filter_set(0, 0, 0, 8, 8, 8);
-               imlib_filter_set(-1, 0, 0, 4, 4, 4);
-               imlib_filter_set(0, -1, 0, 4, 4, 4);
-               imlib_filter_set(1, 0, 0, 4, 4, 4);
-               imlib_filter_set(0, 1, 0, 4, 4, 4);
-               imlib_filter_set(-2, 0, 0, 1, 1, 1);
-               imlib_filter_set(0, -2, 0, 1, 1, 1);
-               imlib_filter_set(2, 0, 0, 1, 1, 1);
-               imlib_filter_set(0, 2, 0, 1, 1, 1);
-               imlib_filter_set(-1, -1, 0, 1, 1, 1);
-               imlib_filter_set(-1, 1, 0, 1, 1, 1);
-               imlib_filter_set(1, -1, 0, 1, 1, 1);
-               imlib_filter_set(1, 1, 0, 1, 1, 1);
-               break;
-            case 2:
-               /*\ Sharpen filter \ */
-               imlib_filter_set(0, 0, 0, 5, 5, 5);
-               imlib_filter_set(-1, 0, 0, -1, -1, -1);
-               imlib_filter_set(0, -1, 0, -1, -1, -1);
-               imlib_filter_set(1, 0, 0, -1, -1, -1);
-               imlib_filter_set(0, 1, 0, -1, -1, -1);
-               break;
-            case 3:
-               /*\ Color blur filter \ */
-               imlib_filter_set(0, 0, 0, 3, 3, 3);
-               imlib_filter_set(-1, -1, 0, 1, 0, 0);
-               imlib_filter_set(1, -1, 0, 0, 1, 0);
-               imlib_filter_set(0, 1, 0, 0, 0, 1);
-               break;
-            case 4:
-               /*\ Emboss filter \ */
-               imlib_filter_set_red(-1, -1, 0, -1, -1, -1);
-               imlib_filter_set_red(0, 0, 0, 1, 1, 1);
-               imlib_filter_set_green(-1, -1, 0, -1, -1, -1);
-               imlib_filter_set_green(0, 0, 0, 1, 1, 1);
-               imlib_filter_set_blue(-1, -1, 0, -1, -1, -1);
-               imlib_filter_set_blue(0, 0, 0, 1, 1, 1);
+          default:
+          case 1:
+             /*\ Blur filter \ */
+             imlib_filter_set(0, 0, 0, 8, 8, 8);
+             imlib_filter_set(-1, 0, 0, 4, 4, 4);
+             imlib_filter_set(0, -1, 0, 4, 4, 4);
+             imlib_filter_set(1, 0, 0, 4, 4, 4);
+             imlib_filter_set(0, 1, 0, 4, 4, 4);
+             imlib_filter_set(-2, 0, 0, 1, 1, 1);
+             imlib_filter_set(0, -2, 0, 1, 1, 1);
+             imlib_filter_set(2, 0, 0, 1, 1, 1);
+             imlib_filter_set(0, 2, 0, 1, 1, 1);
+             imlib_filter_set(-1, -1, 0, 1, 1, 1);
+             imlib_filter_set(-1, 1, 0, 1, 1, 1);
+             imlib_filter_set(1, -1, 0, 1, 1, 1);
+             imlib_filter_set(1, 1, 0, 1, 1, 1);
+             break;
+          case 2:
+             /*\ Sharpen filter \ */
+             imlib_filter_set(0, 0, 0, 5, 5, 5);
+             imlib_filter_set(-1, 0, 0, -1, -1, -1);
+             imlib_filter_set(0, -1, 0, -1, -1, -1);
+             imlib_filter_set(1, 0, 0, -1, -1, -1);
+             imlib_filter_set(0, 1, 0, -1, -1, -1);
+             break;
+          case 3:
+             /*\ Color blur filter \ */
+             imlib_filter_set(0, 0, 0, 3, 3, 3);
+             imlib_filter_set(-1, -1, 0, 1, 0, 0);
+             imlib_filter_set(1, -1, 0, 0, 1, 0);
+             imlib_filter_set(0, 1, 0, 0, 0, 1);
+             break;
+          case 4:
+             /*\ Emboss filter \ */
+             imlib_filter_set_red(-1, -1, 0, -1, -1, -1);
+             imlib_filter_set_red(0, 0, 0, 1, 1, 1);
+             imlib_filter_set_green(-1, -1, 0, -1, -1, -1);
+             imlib_filter_set_green(0, 0, 0, 1, 1, 1);
+             imlib_filter_set_blue(-1, -1, 0, -1, -1, -1);
+             imlib_filter_set_blue(0, 0, 0, 1, 1, 1);
 
-               imlib_filter_constants(0, 768, 768, 768);
-               imlib_filter_divisors(0, 6, 6, 6);
-               break;
-            case 5:
-               /*\ Grayscale filter \ */
-               imlib_filter_set_red(0, 0, 0, 80, 1, 1);
-               imlib_filter_set_green(0, 0, 0, 1, 80, 1);
-               imlib_filter_set_blue(0, 0, 0, 1, 1, 80);
-               break;
-            case 6:
-               /*\ Saturation filter \ */
-               imlib_filter_set_red(0, 0, 0, 80, -1, -1);
-               imlib_filter_set_green(0, 0, 0, -1, 80, -1);
-               imlib_filter_set_blue(0, 0, 0, -1, -1, 80);
-               break;
-            case 7:
-               /*\ Edge detection filter \ */
-               imlib_filter_set(-1, -1, 0, -1, -1, -1);
-               imlib_filter_set(-1, 0, 0, -3, -3, -3);
-               imlib_filter_set(-1, 1, 0, -1, -1, -1);
-               imlib_filter_set(0, -1, 0, -3, -3, -3);
-               imlib_filter_set(0, 0, 0, 16, 16, 16);
-               imlib_filter_set(0, 1, 0, -3, -3, -3);
-               imlib_filter_set(1, -1, 0, -1, -1, -1);
-               imlib_filter_set(1, 0, 0, -3, -3, -3);
-               imlib_filter_set(1, 1, 0, -1, -1, -1);
-               imlib_filter_divisors(0, 3, 3, 3);
+             imlib_filter_constants(0, 768, 768, 768);
+             imlib_filter_divisors(0, 6, 6, 6);
+             break;
+          case 5:
+             /*\ Grayscale filter \ */
+             imlib_filter_set_red(0, 0, 0, 80, 1, 1);
+             imlib_filter_set_green(0, 0, 0, 1, 80, 1);
+             imlib_filter_set_blue(0, 0, 0, 1, 1, 80);
+             break;
+          case 6:
+             /*\ Saturation filter \ */
+             imlib_filter_set_red(0, 0, 0, 80, -1, -1);
+             imlib_filter_set_green(0, 0, 0, -1, 80, -1);
+             imlib_filter_set_blue(0, 0, 0, -1, -1, 80);
+             break;
+          case 7:
+             /*\ Edge detection filter \ */
+             imlib_filter_set(-1, -1, 0, -1, -1, -1);
+             imlib_filter_set(-1, 0, 0, -3, -3, -3);
+             imlib_filter_set(-1, 1, 0, -1, -1, -1);
+             imlib_filter_set(0, -1, 0, -3, -3, -3);
+             imlib_filter_set(0, 0, 0, 16, 16, 16);
+             imlib_filter_set(0, 1, 0, -3, -3, -3);
+             imlib_filter_set(1, -1, 0, -1, -1, -1);
+             imlib_filter_set(1, 0, 0, -3, -3, -3);
+             imlib_filter_set(1, 1, 0, -1, -1, -1);
+             imlib_filter_divisors(0, 3, 3, 3);
           }
         pixels = 0;
         imlib_render_image_on_drawable_at_size(0, 0, w, h);
@@ -812,7 +813,7 @@ main(int argc, char **argv)
 
         /* "ARIAL/30" "COMIC/30" "IMPACT/30" "Prole/30" "Proteron/30" */
         /* "TIMES/30" "badacid/30" "bajoran/30" "bigfish/30" */
-        imlib_add_path_to_font_path(PACKAGE_DATA_DIR"/data/fonts");
+        imlib_add_path_to_font_path(PACKAGE_DATA_DIR "/data/fonts");
 
         if (xfdtest)
           {
@@ -823,10 +824,10 @@ main(int argc, char **argv)
                     f, f->next, f->type, f->ref, f->name);
              imlib_context_set_font((Imlib_Font) f);
              printf
-                 ("\t\t  ascent=%d, descent=%d, max_ascent=%d, max_descent=%d\n",
-                  imlib_get_font_ascent(), imlib_get_font_descent(),
-                  imlib_get_maximum_font_ascent(),
-                  imlib_get_maximum_font_descent());
+                ("\t\t  ascent=%d, descent=%d, max_ascent=%d, max_descent=%d\n",
+                 imlib_get_font_ascent(), imlib_get_font_descent(),
+                 imlib_get_maximum_font_ascent(),
+                 imlib_get_maximum_font_descent());
              imlib_free_font();
              printf("imlib_free_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
@@ -837,10 +838,10 @@ main(int argc, char **argv)
                     f, f->next, f->type, f->ref, f->name);
              imlib_context_set_font((Imlib_Font) f);
              printf
-                 ("\t\t  ascent=%d, descent=%d, max_ascent=%d, max_descent=%d\n",
-                  imlib_get_font_ascent(), imlib_get_font_descent(),
-                  imlib_get_maximum_font_ascent(),
-                  imlib_get_maximum_font_descent());
+                ("\t\t  ascent=%d, descent=%d, max_ascent=%d, max_descent=%d\n",
+                 imlib_get_font_ascent(), imlib_get_font_descent(),
+                 imlib_get_maximum_font_ascent(),
+                 imlib_get_maximum_font_descent());
              imlib_free_font();
              printf("imlib_free_font: f=%p, next=%p, type=%d, ref=%d, '%s'\n",
                     f, f->next, f->type, f->ref, f->name);
@@ -900,10 +901,10 @@ main(int argc, char **argv)
                     f, f->next, f->type, f->ref, f->name);
              imlib_context_set_font((Imlib_Font) f1);
              printf
-                 ("\t\t  ascent=%d, descent=%d, max_ascent=%d, max_descent=%d\n",
-                  imlib_get_font_ascent(), imlib_get_font_descent(),
-                  imlib_get_maximum_font_ascent(),
-                  imlib_get_maximum_font_descent());
+                ("\t\t  ascent=%d, descent=%d, max_ascent=%d, max_descent=%d\n",
+                 imlib_get_font_ascent(), imlib_get_font_descent(),
+                 imlib_get_maximum_font_ascent(),
+                 imlib_get_maximum_font_descent());
 
              printf("Font Cache test end\n");
           }
@@ -932,7 +933,7 @@ main(int argc, char **argv)
         if (file)
            im_bg = imlib_load_image(file);
         else
-           im_bg = imlib_load_image(PACKAGE_DATA_DIR"/data/images/bg.png");
+           im_bg = imlib_load_image(PACKAGE_DATA_DIR "/data/images/bg.png");
         imlib_context_set_image(im_bg);
         im_tmp = imlib_clone_image();
         w = imlib_image_get_width();
@@ -958,47 +959,60 @@ main(int argc, char **argv)
                   XNextEvent(disp, &ev);
                   switch (ev.type)
                     {
-                      case Expose:
-                         up = imlib_update_append_rect(up,
-                                                       ev.xexpose.x,
-                                                       ev.xexpose.y,
-                                                       ev.xexpose.width,
-                                                       ev.xexpose.height);
-                         break;
-                      case ButtonRelease:
-                         if (fon)
-                           {
-                              imlib_context_set_font(fn);
-                              imlib_free_font();
-                           }
-                         exit(0);
-                         break;
-                      case MotionNotify:
-                         x = ev.xmotion.x;
-                         y = ev.xmotion.y;
-                      default:
-                         break;
+                    case Expose:
+                       up = imlib_update_append_rect(up,
+                                                     ev.xexpose.x,
+                                                     ev.xexpose.y,
+                                                     ev.xexpose.width,
+                                                     ev.xexpose.height);
+                       break;
+                    case ButtonRelease:
+                       if (fon)
+                         {
+                            imlib_context_set_font(fn);
+                            imlib_free_font();
+                         }
+                       exit(0);
+                       break;
+                    case MotionNotify:
+                       x = ev.xmotion.x;
+                       y = ev.xmotion.y;
+                    default:
+                       break;
 
                     }
                }
              while (XPending(disp));
 
-             im_sh1 = imlib_load_image(PACKAGE_DATA_DIR"/data/images/sh1.png");
-             im_sh2 = imlib_load_image(PACKAGE_DATA_DIR"/data/images/sh2.png");
-             im_sh3 = imlib_load_image(PACKAGE_DATA_DIR"/data/images/sh3.png");
-             im_ic[0] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/audio.png");
-             im_ic[1] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/folder.png");
-             im_ic[2] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/mush.png");
-             im_ic[3] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/paper.png");
-             im_ic[4] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/mail.png");
-             im_ic[5] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/calc.png");
-             im_ic[6] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/cal.png");
-             im_ic[7] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/stop.png");
-             im_ic[8] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/globe.png");
-             im_ic[9] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/menu.png");
-             im_ic[10] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/tnt.png");
-             im_ic[11] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/bulb.png");
-             im_ic[12] = imlib_load_image(PACKAGE_DATA_DIR"/data/images/lock.png");
+             im_sh1 = imlib_load_image(PACKAGE_DATA_DIR "/data/images/sh1.png");
+             im_sh2 = imlib_load_image(PACKAGE_DATA_DIR "/data/images/sh2.png");
+             im_sh3 = imlib_load_image(PACKAGE_DATA_DIR "/data/images/sh3.png");
+             im_ic[0] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/audio.png");
+             im_ic[1] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/folder.png");
+             im_ic[2] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/mush.png");
+             im_ic[3] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/paper.png");
+             im_ic[4] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/mail.png");
+             im_ic[5] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/calc.png");
+             im_ic[6] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/cal.png");
+             im_ic[7] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/stop.png");
+             im_ic[8] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/globe.png");
+             im_ic[9] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/menu.png");
+             im_ic[10] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/tnt.png");
+             im_ic[11] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/bulb.png");
+             im_ic[12] =
+                imlib_load_image(PACKAGE_DATA_DIR "/data/images/lock.png");
 
              imlib_context_set_image(im);
              if (first)
@@ -1214,7 +1228,7 @@ main(int argc, char **argv)
              else if (fon)
                {
                   int                 retw, reth, tx, ty, nx, ny, cx, cy, cw,
-                      ch, cp;
+                     ch, cp;
                   int                 cx2, cy2, cw2, ch2;
 
                   if (!str)
@@ -1242,15 +1256,15 @@ main(int argc, char **argv)
                        up = imlib_update_append_rect(up, tx, ty, retw, reth);
                        switch (textdir)
                          {
-                           case IMLIB_TEXT_TO_RIGHT:
-                           case IMLIB_TEXT_TO_LEFT:
-                           case IMLIB_TEXT_TO_ANGLE:
-                              ty += ny;
-                              break;
-                           case IMLIB_TEXT_TO_DOWN:
-                           case IMLIB_TEXT_TO_UP:
-                              tx += nx;
-                              break;
+                         case IMLIB_TEXT_TO_RIGHT:
+                         case IMLIB_TEXT_TO_LEFT:
+                         case IMLIB_TEXT_TO_ANGLE:
+                            ty += ny;
+                            break;
+                         case IMLIB_TEXT_TO_DOWN:
+                         case IMLIB_TEXT_TO_UP:
+                            tx += nx;
+                            break;
                          }
                     }
                   cp = imlib_text_get_index_and_location(str, x - 50, y - 50,

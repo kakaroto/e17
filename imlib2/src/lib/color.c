@@ -33,6 +33,7 @@ __imlib_BestVisual(Display * d, int screen, int *depth_return)
    XVisualInfo         xvi, *xvir;
    int                 j, i, num, maxd = 0;
    Visual             *v = NULL;
+
    const int           visprefs[] = {
       PseudoColor, TrueColor, DirectColor, StaticColor, GrayScale, StaticGray
    };

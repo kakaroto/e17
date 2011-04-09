@@ -58,11 +58,11 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                }
              w = gif->Image.Width;
              h = gif->Image.Height;
-	     if (!IMAGE_DIMENSIONS_OK(w, h))
-	       {
+             if (!IMAGE_DIMENSIONS_OK(w, h))
+               {
                   DGifCloseFile(gif);
                   return 0;
-	       }
+               }
              rows = malloc(h * sizeof(GifRowType *));
              if (!rows)
                {
@@ -126,7 +126,8 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                   DGifGetExtensionNext(gif, &ext);
                }
           }
-   } while (rec != TERMINATE_RECORD_TYPE);
+     }
+   while (rec != TERMINATE_RECORD_TYPE);
    if (transp >= 0)
      {
         SET_FLAG(im->flags, F_HAS_ALPHA);

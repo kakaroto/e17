@@ -1722,7 +1722,7 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
       return NULL;
 
 #ifdef DO_MMX_ASM
-   do_mmx = !!(__imlib_get_cpuid() & CPUID_MMX);
+   do_mmx = ! !(__imlib_get_cpuid() & CPUID_MMX);
 #elif DO_AMD64_ASM
    do_mmx = 1;                  // instruction set is always present
 #endif
@@ -1730,7 +1730,7 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
       blend = 0;
    if (blend && cm && rgb_src && (A_CMOD(cm, 0xff) == 0))
       return NULL;
-   return ibfuncs[!!do_mmx][opi][!!cm][!!merge_alpha][!!rgb_src][!!blend];
+   return ibfuncs[! !do_mmx][opi][! !cm][! !merge_alpha][! !rgb_src][! !blend];
 }
 
 void

@@ -668,7 +668,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    if (x_does_shm)
      {
         xim = __imlib_ShmGetXImage(d, v, p, xatt.depth, x, y, w, h, &shminfo);
-        is_shm = !!xim;
+        is_shm = ! !xim;
      }
    if (!xim)
       xim = XGetImage(d, p, x, y, w, h, 0xffffffff, ZPixmap);
@@ -683,7 +683,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
    if ((m) && (domask))
      {
         mxim = __imlib_ShmGetXImage(d, v, m, 1, 0, 0, w, h, &mshminfo);
-        is_mshm = !!mxim;
+        is_mshm = ! !mxim;
         if (!mxim)
            mxim = XGetImage(d, m, 0, 0, w, h, 0xffffffff, ZPixmap);
      }

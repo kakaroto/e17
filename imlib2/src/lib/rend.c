@@ -136,18 +136,14 @@ __imlib_RenderGetPixel(Display * d, Drawable w, Visual * v, Colormap cm,
    return 0;
 }
 
-__hidden void
-                    __imlib_generic_render(DATA32 * src, int jump, int w, int h, int dx, int dy,
-                                           XImage * xim, Visual * v,
-                                           Context * ct);
-
-void
+static void
 __imlib_generic_render(DATA32 * src, int jump, int w, int h, int dx, int dy,
                        XImage * xim, Visual * v, Context * ct)
 {
    unsigned int        x, y, r, g, b, val, hh;
    unsigned int        rmask, gmask, bmask;
    int                 i, rshift, gshift, bshift;
+
    const DATA8         _dither_88[8][8] = {
       {0, 32, 8, 40, 2, 34, 10, 42},
       {48, 16, 56, 24, 50, 18, 58, 26},

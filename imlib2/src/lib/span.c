@@ -1194,7 +1194,7 @@ __imlib_GetPointDrawFunction(ImlibOp op, char dst_alpha, char blend)
    if (opi == -1)
       return NULL;
 
-   return ptfuncs[opi][!!dst_alpha][!!blend];
+   return ptfuncs[opi][! !dst_alpha][! !blend];
 }
 
 ImlibSpanDrawFunction
@@ -1222,7 +1222,7 @@ __imlib_GetSpanDrawFunction(ImlibOp op, char dst_alpha, char blend)
    if (opi == -1)
       return NULL;
 
-   return spanfuncs[opi][!!dst_alpha][!!blend];
+   return spanfuncs[opi][! !dst_alpha][! !blend];
 }
 
 ImlibShapedSpanDrawFunction
@@ -1250,5 +1250,5 @@ __imlib_GetShapedSpanDrawFunction(ImlibOp op, char dst_alpha, char blend)
    if (opi == -1)
       return NULL;
 
-   return shapedspanfuncs[opi][!!dst_alpha][!!blend];
+   return shapedspanfuncs[opi][! !dst_alpha][! !blend];
 }
