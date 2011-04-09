@@ -1,10 +1,36 @@
 #include "loader_common.h"
 #include <ctype.h>
 
+int
+do_progress(ImlibImage * im, ImlibProgressFunction progress,
+            char progress_granularity, char *pper, int *py, int y)
+{
+   int                 rc = 0;
+   int                 h = 0;
+   char                per;
+
+   per = (char)((100 * y) / im->h);
+   if (((per - *pper) >= progress_granularity) || (y == (im->h - 1)))
+     {
+        h = y - *py;
+
+        /* fix off by one in case of the last line */
+        if (y == (im->h - 1))
+           h++;
+
+        rc = !progress(im, per, 0, *py, im->w, h);
+        *pper = per;
+        *py = y;
+     }
+
+   return rc;
+}
+
 char
 load(ImlibImage * im, ImlibProgressFunction progress,
      char progress_granularity, char immediate_load)
 {
+   int                 rc;
    char                p = ' ', numbers = 3, count = 0;
    int                 w = 0, h = 0, v = 255, c = 0;
    char                buf[256];
@@ -25,32 +51,26 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    /* read the header info */
 
+   rc = 0;                      /* Error */
+
    c = fgetc(f);
    if (c != 'P')
-     {
-        fclose(f);
-        return 0;
-     }
+      goto quit;
 
    p = fgetc(f);
    if (p == '1' || p == '4')
       numbers = 2;              /* bitimages don't have max value */
 
    if ((p < '1') || (p > '8'))
-     {
-        fclose(f);
-        return 0;
-     }
+      goto quit;
+
    count = 0;
    while (count < numbers)
      {
         c = fgetc(f);
 
         if (c == EOF)
-          {
-             fclose(f);
-             return 0;
-          }
+           goto quit;
 
         /* eat whitespace */
         while (isspace(c))
@@ -96,18 +116,13 @@ load(ImlibImage * im, ImlibProgressFunction progress,
           }
      }
    if ((v < 0) || (v > 255))
-     {
-        fclose(f);
-        return 0;
-     }
+      goto quit;
 
    im->w = w;
    im->h = h;
    if (!IMAGE_DIMENSIONS_OK(w, h))
-     {
-        fclose(f);
-        return 0;
-     }
+      goto quit;
+
    if (!im->format)
      {
         if (p == '8')
@@ -116,6 +131,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
            UNSET_FLAG(im->flags, F_HAS_ALPHA);
         im->format = strdup("pnm");
      }
+
+   rc = 1;                      /* Ok */
 
    if (((!im->data) && (im->loader)) || (immediate_load) || (progress))
      {
@@ -131,10 +148,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         /* must set the im->data member before callign progress function */
         ptr2 = im->data = malloc(w * h * sizeof(DATA32));
         if (!im->data)
-          {
-             fclose(f);
-             return 0;
-          }
+           goto quit_error;
+
         /* start reading the data */
         switch (p)
           {
@@ -149,10 +164,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                        if (!buf[i])     /* fill buffer */
                          {
                             if (!fgets(buf, 255, f))
-                              {
-                                 fclose(f);
-                                 return 0;
-                              }
+                               goto quit_error;
                             i = 0;
                          }
                        while (buf[i] && isspace(buf[i]))
@@ -164,48 +176,22 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                             else if (buf[i] == '0')
                                *ptr2 = 0xffffffff;
                             else
-                              {
-                                 fclose(f);
-                                 return 0;
-                              }
+                               goto quit_error;
                             ptr2++;
                             i++;
                          }
                     }
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l;
-
-                       per = (char)((100 * y) / im->h);
-                       if (((per - pper) >= progress_granularity)
-                           || (y == (im->h - 1)))
-                         {
-                            l = y - pl;
-
-                            /* fix off by one in case of the last line */
-                            if (y == (im->h - 1))
-                               l++;
-
-                            if (!progress(im, per, 0, pl, im->w, l))
-                              {
-                                 fclose(f);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }
+                  if (progress &&
+                      do_progress(im, progress, progress_granularity,
+                                  &pper, &pl, y))
+                     goto quit_progress;
                }
              break;
           case '2':            /* ASCII greyscale */
              idata = malloc(sizeof(int) * w);
-
              if (!idata)
-               {
-                  fclose(f);
-                  return 0;
-               }
+                goto quit_error;
+
              buf[0] = 0;
              i = 0;
              j = 0;
@@ -225,11 +211,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                               {
                                  if (fseek(f, -k, SEEK_CUR) == -1 ||
                                      !fgets(buf, 255, f))
-                                   {
-                                      free(idata);
-                                      fclose(f);
-                                      return 0;
-                                   }
+                                    goto quit_error;
                                  i = 0;
                                  break;
                               }
@@ -271,42 +253,17 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                             iptr++;
                          }
                     }
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l;
-
-                       per = (char)((100 * y) / im->h);
-                       if (((per - pper) >= progress_granularity)
-                           || (y == (im->h - 1)))
-                         {
-
-                            l = y - pl;
-
-                            /* fix off by one in case of the last line */
-                            if (y == (im->h - 1))
-                               l++;
-
-                            if (!progress(im, per, 0, pl, im->w, l))
-                              {
-                                 free(idata);
-                                 fclose(f);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }
+                  if (progress &&
+                      do_progress(im, progress, progress_granularity,
+                                  &pper, &pl, y))
+                     goto quit_progress;
                }
              break;
           case '3':            /* ASCII RGB */
              idata = malloc(3 * sizeof(int) * w);
-
              if (!idata)
-               {
-                  fclose(f);
-                  return 0;
-               }
+                goto quit_error;
+
              buf[0] = 0;
              i = 0;
              j = 0;
@@ -328,11 +285,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                               {
                                  if (fseek(f, -k, SEEK_CUR) == -1 ||
                                      !fgets(buf, 255, f))
-                                   {
-                                      free(idata);
-                                      fclose(f);
-                                      return 0;
-                                   }
+                                    goto quit_error;
                                  i = 0;
                                  break;
                               }
@@ -374,49 +327,23 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                             iptr += 3;
                          }
                     }
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l;
-
-                       per = (char)((100 * y) / im->h);
-                       if (((per - pper) >= progress_granularity)
-                           || (y == (im->h - 1)))
-                         {
-                            l = y - pl;
-
-                            /* fix off by one in case of the last line */
-                            if (y == (im->h - 1))
-                               l++;
-
-                            if (!progress(im, per, 0, pl, im->w, l))
-                              {
-                                 free(idata);
-                                 fclose(f);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }
+                  if (progress &&
+                      do_progress(im, progress, progress_granularity,
+                                  &pper, &pl, y))
+                     goto quit_progress;
                }
              break;
           case '4':            /* binary 1bit monochrome */
              data = malloc((w + 7) / 8 * sizeof(DATA8));
              if (!data)
-               {
-                  fclose(f);
-                  return 0;
-               }
+                goto quit_error;
+
              ptr2 = im->data;
              for (y = 0; y < h; y++)
                {
                   if (!fread(data, (w + 7) / 8, 1, f))
-                    {
-                       free(data);
-                       fclose(f);
-                       return 0;
-                    }
+                     goto quit_error;
+
                   ptr = data;
                   for (x = 0; x < w; x += 8)
                     {
@@ -431,49 +358,23 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                          }
                        ptr++;
                     }
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l;
-
-                       per = (char)((100 * y) / im->h);
-                       if (((per - pper) >= progress_granularity)
-                           || (y == (im->h - 1)))
-                         {
-                            l = y - pl;
-
-                            /* fix off by one in case of the last line */
-                            if (y == (im->h - 1))
-                               l++;
-
-                            if (!progress(im, per, 0, pl, im->w, l))
-                              {
-                                 free(idata);
-                                 fclose(f);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }
+                  if (progress &&
+                      do_progress(im, progress, progress_granularity,
+                                  &pper, &pl, y))
+                     goto quit_progress;
                }
              break;
           case '5':            /* binary 8bit grayscale GGGGGGGG */
              data = malloc(1 * sizeof(DATA8) * w);
              if (!data)
-               {
-                  fclose(f);
-                  return 0;
-               }
+                goto quit_error;
+
              ptr2 = im->data;
              for (y = 0; y < h; y++)
                {
                   if (!fread(data, w * 1, 1, f))
-                    {
-                       free(data);
-                       fclose(f);
-                       return 1;
-                    }
+                     break;
+
                   ptr = data;
                   if (v == 255)
                     {
@@ -499,49 +400,23 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                             ptr++;
                          }
                     }
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l;
-
-                       per = (char)((100 * y) / im->h);
-                       if (((per - pper) >= progress_granularity)
-                           || (y == (im->h - 1)))
-                         {
-                            l = y - pl;
-
-                            /* fix off by one in case of the last line */
-                            if (y == (im->h - 1))
-                               l++;
-
-                            if (!progress(im, per, 0, pl, im->w, l))
-                              {
-                                 free(data);
-                                 fclose(f);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }
+                  if (progress &&
+                      do_progress(im, progress, progress_granularity,
+                                  &pper, &pl, y))
+                     goto quit_progress;
                }
              break;
           case '6':            /* 24bit binary RGBRGBRGB */
              data = malloc(3 * sizeof(DATA8) * w);
              if (!data)
-               {
-                  fclose(f);
-                  return 0;
-               }
+                goto quit_error;
+
              ptr2 = im->data;
              for (y = 0; y < h; y++)
                {
                   if (!fread(data, w * 3, 1, f))
-                    {
-                       free(data);
-                       fclose(f);
-                       return 1;
-                    }
+                     break;
+
                   ptr = data;
                   if (v == 255)
                     {
@@ -567,49 +442,23 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                             ptr += 3;
                          }
                     }
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l;
-
-                       per = (char)((100 * y) / im->h);
-                       if (((per - pper) >= progress_granularity)
-                           || (y == (im->h - 1)))
-                         {
-                            l = y - pl;
-
-                            /* fix off by one in case of the last line */
-                            if (y == (im->h - 1))
-                               l++;
-
-                            if (!progress(im, per, 0, pl, im->w, l))
-                              {
-                                 free(data);
-                                 fclose(f);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }
+                  if (progress &&
+                      do_progress(im, progress, progress_granularity,
+                                  &pper, &pl, y))
+                     goto quit_progress;
                }
              break;
           case '7':            /* XV's 8bit 332 format */
              data = malloc(1 * sizeof(DATA8) * w);
              if (!data)
-               {
-                  fclose(f);
-                  return 0;
-               }
+                goto quit_error;
+
              ptr2 = im->data;
              for (y = 0; y < h; y++)
                {
                   if (!fread(data, w * 1, 1, f))
-                    {
-                       free(data);
-                       fclose(f);
-                       return 1;
-                    }
+                     break;
+
                   ptr = data;
                   for (x = 0; x < w; x++)
                     {
@@ -626,47 +475,23 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                        ptr2++;
                        ptr++;
                     }
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l = 0;
-
-                       per = (char)((100 * y) / im->h);
-                       if (((per - pper) >= progress_granularity)
-                           || (y == (im->h - 1)))
-                         {
-                            /* fix off by one in case of the last line */
-                            if (y == (im->h - 1))
-                               l++;
-
-                            if (!progress(im, per, 0, pl, im->w, l))
-                              {
-                                 free(data);
-                                 fclose(f);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }
+                  if (progress &&
+                      do_progress(im, progress, progress_granularity,
+                                  &pper, &pl, y))
+                     goto quit_progress;
                }
              break;
           case '8':            /* 24bit binary RGBARGBARGBA */
              data = malloc(4 * sizeof(DATA8) * w);
              if (!data)
-               {
-                  fclose(f);
-                  return 0;
-               }
+                goto quit_error;
+
              ptr2 = im->data;
              for (y = 0; y < h; y++)
                {
                   if (!fread(data, w * 4, 1, f))
-                    {
-                       free(data);
-                       fclose(f);
-                       return 1;
-                    }
+                     break;
+
                   ptr = data;
                   if (v == 255)
                     {
@@ -692,34 +517,18 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                             ptr += 4;
                          }
                     }
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l = 0;
-
-                       per = (char)((100 * y) / im->h);
-                       if (((per - pper) >= progress_granularity)
-                           || (y == (im->h - 1)))
-                         {
-                            /* fix off by one in case of the last line */
-                            if (y == (im->h - 1))
-                               l++;
-
-                            if (!progress(im, per, 0, pl, im->w, l))
-                              {
-                                 free(data);
-                                 fclose(f);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }
+                  if (progress &&
+                      do_progress(im, progress, progress_granularity,
+                                  &pper, &pl, y))
+                     goto quit_progress;
                }
              break;
           default:
-             fclose(f);
-             return 0;
+           quit_error:
+             rc = 0;
+             break;
+           quit_progress:
+             rc = 2;
              break;
           }
         if (idata)
@@ -727,13 +536,15 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         if (data)
            free(data);
      }
+ quit:
    fclose(f);
-   return 1;
+   return rc;
 }
 
 char
 save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
 {
+   int                 rc;
    FILE               *f;
    DATA8              *buf, *bptr;
    DATA32             *ptr;
@@ -746,16 +557,17 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    f = fopen(im->real_file, "wb");
    if (!f)
       return 0;
+
+   rc = 0;                      /* Error */
+
    /* if the image has a useful alpha channel */
    if (im->flags & F_HAS_ALPHA)
      {
         /* allocate a small buffer to convert image data */
         buf = malloc(im->w * 4 * sizeof(DATA8));
         if (!buf)
-          {
-             fclose(f);
-             return 0;
-          }
+           goto quit;
+
         ptr = im->data;
         fprintf(f, "P8\n" "# PNM File written by Imlib2\n" "%i %i\n" "255\n",
                 im->w, im->h);
@@ -772,26 +584,9 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
                   ptr++;
                }
              fwrite(buf, im->w * 4, 1, f);
-             if (progress)
-               {
-                  char                per;
-                  int                 l;
-
-                  per = (char)((100 * y) / im->h);
-                  if (((per - pper) >= progress_granularity)
-                      || (y == (im->h - 1)))
-                    {
-                       l = y - pl;
-                       if (!progress(im, per, 0, (y - l), im->w, l))
-                         {
-                            free(buf);
-                            fclose(f);
-                            return 2;
-                         }
-                       pper = per;
-                       pl = y;
-                    }
-               }
+             if (progress &&
+                 do_progress(im, progress, progress_granularity, &pper, &pl, y))
+                goto quit_progress;
           }
      }
    else
@@ -799,10 +594,8 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
         /* allocate a small buffer to convert image data */
         buf = malloc(im->w * 3 * sizeof(DATA8));
         if (!buf)
-          {
-             fclose(f);
-             return 0;
-          }
+           goto quit;
+
         ptr = im->data;
         fprintf(f, "P6\n" "# PNM File written by Imlib2\n" "%i %i\n" "255\n",
                 im->w, im->h);
@@ -818,33 +611,22 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
                   ptr++;
                }
              fwrite(buf, im->w * 3, 1, f);
-             if (progress)
-               {
-                  char                per;
-                  int                 l;
-
-                  per = (char)((100 * y) / im->h);
-                  if (((per - pper) >= progress_granularity)
-                      || (y == (im->h - 1)))
-                    {
-                       l = y - pl;
-                       if (!progress(im, per, 0, (y - l), im->w, l))
-                         {
-                            free(buf);
-                            fclose(f);
-                            return 2;
-                         }
-                       pper = per;
-                       pl = y;
-                    }
-               }
+             if (progress &&
+                 do_progress(im, progress, progress_granularity, &pper, &pl, y))
+                goto quit_progress;
           }
      }
+
+   rc = 1;                      /* Ok */
+
    /* finish off */
    free(buf);
+ quit:
    fclose(f);
-   return 1;
-   progress = NULL;
+   return rc;
+ quit_progress:
+   rc = 2;
+   goto quit;
 }
 
 void
