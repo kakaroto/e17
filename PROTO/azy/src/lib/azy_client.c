@@ -465,12 +465,13 @@ azy_client_call(Azy_Client       *client,
    msg = azy_net_header_create(client->net);
    EINA_SAFETY_ON_NULL_GOTO(msg, error);
 
-#ifdef ISCOMFITOR
-   char buf[64];
-   snprintf(buf, sizeof(buf), "\nSENDING >>>>>>>>>>>>>>>>>>>>>>>>\n%%.%is%%.%llis\n>>>>>>>>>>>>>>>>>>>>>>>>",
+   if (azy_rpc_log_dom >= 0)
+     {
+        char buf[64];
+        snprintf(buf, sizeof(buf), "\nSENDING >>>>>>>>>>>>>>>>>>>>>>>>\n%%.%is%%.%llis\n>>>>>>>>>>>>>>>>>>>>>>>>",
             eina_strbuf_length_get(msg), content->length);
-   DBG(buf, eina_strbuf_string_get(msg), content->buffer);
-#endif
+        RPC_DBG(buf, eina_strbuf_string_get(msg), content->buffer);
+     }
 
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, eina_strbuf_string_get(msg), eina_strbuf_length_get(msg)), error);
    INFO("Send [1/2] complete! %zu bytes queued for sending.", eina_strbuf_length_get(msg));
