@@ -431,7 +431,7 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
 		continue;
 	     sort = a1;
 	     k = j;
-	     if (sort == 0)
+	     if (spaces[j].p == 0)
 		break;
 	  }
 	if (spaces[k].q == 0 && Conf.place.center_if_desk_full)
