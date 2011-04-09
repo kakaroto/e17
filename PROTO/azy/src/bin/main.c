@@ -1541,7 +1541,6 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "static Eina_Bool method_%s(Azy_Server_Module *module, Azy_Content *content)", method->name);
         EL(0, "{");
         // forward declarations
-        EL(1, "Eina_Bool retval = EINA_FALSE;");
         EL(1, "%s azy_return_module = %s;", method->return_type->ctype, method->return_type->cnull);
         EL(1, "Azy_Value *azy_return_value;");
 
@@ -1563,7 +1562,7 @@ gen_server_impl(Azy_Server_Module *s)
         EL(1, "{");
         EL(2,
            "azy_content_error_faultmsg_set(content, -1, \"Invalid number of parameters passed to stub function!\");");
-        EL(2, "goto out;");
+        EL(2, "return EINA_FALSE;");
         EL(1, "}");
 
         EINA_LIST_FOREACH(method->params, k, p)
@@ -1577,7 +1576,7 @@ gen_server_impl(Azy_Server_Module *s)
              EL(2,
                 "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
                 method->name, p->name);
-             EL(2, "goto out;");
+             EL(2, "return EINA_FALSE;");
              EL(1, "}");
           }
         NL;
@@ -1595,33 +1594,34 @@ gen_server_impl(Azy_Server_Module *s)
           }
         EL(0, ", content);");
         EL(1, "if (azy_content_error_is_set(content))");
-        EL(2, "goto out;");
+        EL(2, "{");
+        if (method->return_type->free_func)
+          EL(3, "%s(azy_return_module);", method->return_type->free_func);
+        EL(3, "return EINA_FALSE;");
+        EL(2, "}");
         NL;
         EL(1, "if (azy_server_module_events_suspended_get(module))");
         EL(2, "return EINA_TRUE;");
         NL;
-        EL(1, "azy_return_value = %s(azy_return_module);", method->return_type->march_name);
-        EL(1, "if (!azy_return_value)");
-        EL(1, "{");
-        EL(2, "azy_content_error_faultmsg_set(content, -1, \"Stub return value marshalization failed. (%s)\");", method->name);
-        EL(2, "goto out;");
-        EL(1, "}");
+        EL(1, "if (!azy_content_retval_get(content))");
+        EL(2, "{");
+        EL(3, "azy_return_value = %s(azy_return_module);", method->return_type->march_name);
+        EL(3, "if (!azy_return_value)");
+        EL(4, "azy_content_error_faultmsg_set(content, -1, \"Stub return value marshalization failed. (%s)\");", method->name);
+        EL(3, "else");
+        EL(4, "azy_content_retval_set(content, azy_return_value);");
         NL;
-        EL(1, "azy_content_retval_set(content, azy_return_value);");
-        EL(1, "retval = EINA_TRUE;");
-        NL;
-        EL(0, "out:");
 
         if (method->return_type->free_func)
-          EL(1, "%s(azy_return_module);", method->return_type->free_func);
-
+          EL(3, "%s(azy_return_module);", method->return_type->free_func);
+        EL(2, "}");
         EINA_LIST_FOREACH(method->params, k, p)
           {
              if ((!p->pass_ownership) && p->type->free_func)
                EL(1, "%s(%s);", p->type->free_func, p->name);
           }
 
-        EL(1, "return retval;");
+        EL(1, "return !azy_content_error_is_set(content);");
         EL(0, "}");
         NL;
      }
