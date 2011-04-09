@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-02-12 12:17+0100\n"
+"POT-Creation-Date: 2011-04-08 19:43+0200\n"
 "PO-Revision-Date: 2010-08-13 16:37+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -177,7 +177,7 @@ msgstr "Enlightenment 終了"
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
-#: src/alert.c:581 src/dialog.c:694 src/dialog.c:1891 src/events.c:93
+#: src/alert.c:581 src/dialog.c:695 src/dialog.c:1892 src/events.c:93
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "了解"
@@ -422,7 +422,7 @@ msgstr "Enlightenment 起動中..."
 msgid "Settings..."
 msgstr "設定"
 
-#: src/container.c:1191 src/dialog.c:705 src/pager.c:1019 config/strings.c:30
+#: src/container.c:1191 src/dialog.c:706 src/pager.c:1019 config/strings.c:30
 #: config/strings.c:122
 msgid "Close"
 msgstr "閉じる"
@@ -521,7 +521,7 @@ msgid "Whirl"
 msgstr "回転"
 
 #: src/container.c:1689 src/settings.c:112 src/settings.c:117
-#: src/settings.c:386
+#: src/settings.c:392
 msgid "Box"
 msgstr "枠線"
 
@@ -710,7 +710,7 @@ msgstr ""
 "Enlightenment 仮想デスクトップ\n"
 "設定ダイアログ"
 
-#: src/dialog.c:699
+#: src/dialog.c:700
 msgid "Apply"
 msgstr "適用"
 
@@ -1365,7 +1365,7 @@ msgstr "E ダイアログ"
 msgid "Tooltips:"
 msgstr "ツールチップ"
 
-#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:376
+#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:382
 msgid "Opaque"
 msgstr "不透明"
 
@@ -1609,15 +1609,15 @@ msgstr "移動方式:"
 msgid "Resize Methods:"
 msgstr "サイズ変更方式:"
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:381
+#: src/settings.c:102 src/settings.c:107 src/settings.c:387
 msgid "Technical"
 msgstr "テクニカル"
 
-#: src/settings.c:123 src/settings.c:128 src/settings.c:391
+#: src/settings.c:123 src/settings.c:128 src/settings.c:397
 msgid "Shaded"
 msgstr "影"
 
-#: src/settings.c:133 src/settings.c:138 src/settings.c:396
+#: src/settings.c:133 src/settings.c:138 src/settings.c:402
 msgid "Semi-Solid"
 msgstr "ぬりつぶし"
 
@@ -1691,79 +1691,86 @@ msgstr ""
 "Enlightenment 移動 & サイズ変更\n"
 "設定ダイアログ"
 
-#: src/settings.c:335
+#: src/settings.c:341
 msgid "Dialog windows appear together with their owner"
 msgstr "ダイアログウィンドウはそれを出したウィンドウと一緒に表示する"
 
-#: src/settings.c:340
+#: src/settings.c:346
 msgid "Switch to desktop where dialog appears"
 msgstr "ダイアログが表示されたデスクトップに移動する"
 
-#: src/settings.c:348
+#: src/settings.c:354
 msgid "Place windows manually"
 msgstr "手動でウィンドウを配置する"
 
-#: src/settings.c:353
+#: src/settings.c:359
 msgid "Place windows under mouse"
 msgstr "マウスのある位置にウィンドウを配置する"
 
-#: src/settings.c:358
+#: src/settings.c:364
 msgid "Center windows when desk is full"
 msgstr "デスクトップが一杯ならウィンドウを中央に配置する"
 
-#: src/settings.c:363
+#: src/settings.c:369
 msgid "Slide windows in when they appear"
 msgstr "ウィンドウをスライドさせながら表示する"
 
-#: src/settings.c:368
+#: src/settings.c:374
 msgid "Slide windows around when cleaning up"
 msgstr "ウィンドウをスライドさせながら整頓する"
 
-#: src/settings.c:373
+#: src/settings.c:379
 msgid "Slide Method:"
 msgstr "スライド方式:"
 
 #
-#: src/settings.c:406
+#: src/settings.c:412
 msgid "Appear Slide speed:"
 msgstr "ウィンドウ出現時のスライド速度"
 
 #
-#: src/settings.c:417
+#: src/settings.c:423
 msgid "Cleanup Slide speed:"
 msgstr "デスクトップ整頓時のスライド速度"
 
-#: src/settings.c:430
+#: src/settings.c:436
 msgid "Animate shading and unshading of windows"
 msgstr "ウィンドウのシェーディング動作をアニメーション表示にする"
 
 #
-#: src/settings.c:436
+#: src/settings.c:442
 msgid "Window Shading speed:"
 msgstr "ウィンドウのシェーディング速度"
 
-#
-#: src/settings.c:449
-msgid "Ignore struts"
-msgstr "リザーブ領域(ストラット)を無視する"
+#: src/settings.c:455
+msgid "Ignore struts/panels for placing normal windows"
+msgstr ""
 
-#: src/settings.c:454
+#: src/settings.c:460
+msgid "Ignore struts/panels when windows are fullscreen"
+msgstr ""
+
+#: src/settings.c:465
+msgid "Ignore struts/panels when maximizing windows"
+msgstr ""
+
+#: src/settings.c:470
 msgid "Raise fullscreen windows"
 msgstr "全画面モードのウィンドウを上に出す"
 
-#: src/settings.c:462
+#: src/settings.c:478
 msgid "Place windows on another head when full"
 msgstr "画面が一杯なら別のディスプレイにウィンドウを配置する"
 
-#: src/settings.c:470
+#: src/settings.c:486
 msgid "Placement"
 msgstr "ウィンドウ配置"
 
-#: src/settings.c:471
+#: src/settings.c:487
 msgid "Window Placement Settings"
 msgstr "ウィンドウ配置設定"
 
-#: src/settings.c:474
+#: src/settings.c:490
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
@@ -1771,32 +1778,32 @@ msgstr ""
 "Enlightenment ウィンドウ配置\n"
 "設定ダイアログ"
 
-#: src/settings.c:521
+#: src/settings.c:537
 msgid "Enable Dialog Headers"
 msgstr "ダイアログヘッダを有効にする"
 
 #
-#: src/settings.c:527
+#: src/settings.c:543
 msgid "Enable Button Images"
 msgstr "ボタン画像を有効にする"
 
-#: src/settings.c:536
+#: src/settings.c:552
 msgid "Enable sliding startup windows"
 msgstr "ログイン後、上下にスライドする初期画面を出す"
 
-#: src/settings.c:544
+#: src/settings.c:560
 msgid "Use saveunders to reduce window exposures"
 msgstr "セーブアンダー機能を使いウィンドウ再描画時の処理を減らす"
 
-#: src/settings.c:550 config/strings.c:136 config/strings.c:152
+#: src/settings.c:566 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "その他"
 
-#: src/settings.c:551
+#: src/settings.c:567
 msgid "Miscellaneous Settings"
 msgstr "その他の設定"
 
-#: src/settings.c:554
+#: src/settings.c:570
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
@@ -1804,55 +1811,55 @@ msgstr ""
 "Enlightenment その他の\n"
 "設定ダイアログ"
 
-#: src/settings.c:598
+#: src/settings.c:614
 msgid "Enable Composite"
 msgstr "コンポジットを有効にする"
 
-#: src/settings.c:606
+#: src/settings.c:622
 msgid "Enable Fading"
 msgstr "フェーディングを有効にする"
 
-#: src/settings.c:612
+#: src/settings.c:628
 msgid "Fading Speed:"
 msgstr "フェーディング速度"
 
-#: src/settings.c:625
+#: src/settings.c:641
 msgid "Shadows Off"
 msgstr "影を付けない"
 
-#: src/settings.c:631
+#: src/settings.c:647
 msgid "Shadows Sharp"
 msgstr "影を明瞭にする"
 
-#: src/settings.c:637
+#: src/settings.c:653
 msgid "Shadows Sharp2"
 msgstr "影を明瞭にする2"
 
-#: src/settings.c:643
+#: src/settings.c:659
 msgid "Shadows Blurred"
 msgstr "影をぼかす"
 
-#: src/settings.c:654
+#: src/settings.c:670
 msgid "Default focused window opacity:"
 msgstr "フォーカスがあるウィンドウのデフォルトの不透明度"
 
-#: src/settings.c:665
+#: src/settings.c:681
 msgid "Default unfocused window opacity:"
 msgstr "フォーカスがないウィンドウのデフォルトの不透明度"
 
-#: src/settings.c:676
+#: src/settings.c:692
 msgid "Default pop-up window opacity:"
 msgstr "ポップアップウィンドウのデフォルトの不透明度"
 
-#: src/settings.c:687
+#: src/settings.c:703
 msgid "Composite"
 msgstr "コンポジット"
 
-#: src/settings.c:688
+#: src/settings.c:704
 msgid "Composite Settings"
 msgstr "コンポジットの設定"
 
-#: src/settings.c:691
+#: src/settings.c:707
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
@@ -1860,7 +1867,7 @@ msgstr ""
 "Enlightenment コンポジットの\n"
 "設定ダイアログ"
 
-#: src/settings.c:776
+#: src/settings.c:792
 msgid "Enlightenment Settings"
 msgstr "Enlightenment の設定"
 
@@ -2767,6 +2774,10 @@ msgstr "その他"
 #: config/strings.c:191
 msgid "Epplets"
 msgstr ""
+
+#
+#~ msgid "Ignore struts"
+#~ msgstr "リザーブ領域(ストラット)を無視する"
 
 #
 #~ msgid "Enable Effect: Raindrops"
