@@ -118,6 +118,7 @@ group {
     }
     programs {
     	//wrap stars signals
+		#undef wrap_stars_signal
 		#define wrap_stars_signal(type, table, num) 		\
 		program { 							 				\
     		name: type" "num;								\
