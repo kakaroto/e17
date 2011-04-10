@@ -1008,7 +1008,7 @@ gen_common_headers(void)
         gen_type_eq(t, EINA_TRUE);
         gen_type_print(t, EINA_TRUE);
         gen_type_isnull(t, EINA_TRUE);
-        gen_type_hash(t, EINA_TRUE);
+//        gen_type_hash(t, EINA_TRUE);
      }
    EL(0, "#endif");
    fclose(f);
@@ -1121,7 +1121,7 @@ gen_common_impl(Azy_Server_Module *s)
              gen_type_eq(t, EINA_FALSE);
              gen_type_print(t, EINA_FALSE);
              gen_type_isnull(t, EINA_FALSE);
-             gen_type_hash(t, EINA_FALSE);
+//             gen_type_hash(t, EINA_FALSE);
           }
 
         gen_errors_impl(NULL);
