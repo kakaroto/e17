@@ -151,7 +151,8 @@ enum {
 	MYERR_CONVDOUBLE,
 	MYERR_CONVTIME,
 	MYERR_CONVTIMESTAMP,
-	MYERR_CONVDATE
+	MYERR_CONVDATE,
+	MYERR_INVALID_EXPECT
 };
 
 extern const char *mysac_type[];
@@ -218,6 +219,19 @@ typedef struct mysac_bind {
 } MYSAC_BIND;
 
 /**
+ * This is the expected response type at a request
+ *
+ * If the request is "SELECT", the expected response is DATA
+ * and the data list must contain EOF paquet
+ *
+ * If the request is other, juste expect OK
+ */
+enum my_expected_response_t {
+	MYSAC_EXPECT_DATA = 0,
+	MYSAC_EXPECT_OK
+};
+
+/**
  * This contain the necessary for one mysql connection
  */
 typedef struct mysac {
@@ -260,10 +274,11 @@ typedef struct mysac {
 	unsigned int flags;
 
 	/* query */
+	enum my_expected_response_t expect;
 	enum my_query_st qst;
 	int read_id;
 	MYSAC_RES *res;
-	unsigned long *stmt_id;
+	unsigned int *stmt_id;
 
 	/* the buffer */
 	unsigned int bufsize;
@@ -536,7 +551,7 @@ int mysac_send_query(MYSAC *mysac);
  *
  * @return 0: ok, -1 nok
  */
-int mysac_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id, const char *fmt, ...);
+int mysac_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id, const char *fmt, ...);
 
 /**
  * Prepare statement
@@ -548,7 +563,7 @@ int mysac_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id, const char *fmt
  *
  * @return 0: ok, -1 nok
  */
-int mysac_v_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id, const char *fmt, va_list ap);
+int mysac_v_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id, const char *fmt, va_list ap);
 
 /**
  * Prepare statement
@@ -559,7 +574,7 @@ int mysac_v_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id, const char *f
  *
  * @return 0: ok, -1 nok
  */
-int mysac_s_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id, const char *request);
+int mysac_s_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id, const char *request);
 
 /**
  * Prepare statement
@@ -571,7 +586,7 @@ int mysac_s_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id, const char *r
  *
  * @return 0: ok, -1 nok
  */
-int mysac_b_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id, const char *request, int len);
+int mysac_b_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id, const char *request, int len);
 
 /**
  * Send sql query command
@@ -598,7 +613,7 @@ int mysac_send_stmt_prepare(MYSAC *mysac);
  *
  * @return 0: ok, -1 nok
  */
-int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned long stmt_id,
+int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned int stmt_id,
                            MYSAC_BIND *values, int nb);
 
 /**

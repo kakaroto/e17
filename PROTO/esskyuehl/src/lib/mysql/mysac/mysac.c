@@ -207,7 +207,7 @@ int mysac_extend_res(MYSAC *m)
 	return 0;
 }
 
-static int my_response(MYSAC *m) {
+static int my_response(MYSAC *m, enum my_expected_response_t expect) {
 	int i;
 	int err;
 	int errcode;
@@ -306,13 +306,20 @@ static int my_response(MYSAC *m) {
 			return MYSAC_RET_ERROR;
 		}
 
-		/* EOF marker: marque la fin d'une serie
-			(la fin des headers dans une requete) */
-		else if ((unsigned char)m->read[0] == 254) {
-			m->warnings = uint2korr(&m->read[1]);
-			m->status = uint2korr(&m->read[3]);
-			m->eof = 1;
-			return MYSAC_RET_EOF;
+		/* response is expecting data. Maybe contain an EOF */
+		else if (expect == MYSAC_EXPECT_DATA) {
+
+			/* EOF marker: marque la fin d'une serie
+				(la fin des headers dans une requete) */
+			if ((unsigned char)m->read[0] == 254) {
+				m->warnings = uint2korr(&m->read[1]);
+				m->status = uint2korr(&m->read[3]);
+				m->eof = 1;
+				return MYSAC_RET_EOF;
+			}
+
+			else
+				return MYSAC_RET_DATA;
 		}
 
 		/* success */
@@ -342,14 +349,11 @@ static int my_response(MYSAC *m) {
 			return MYSAC_RET_OK;
 		}
 
-		/* read response ...
-		 *
-		 * Result Set Packet			  1-250 (first byte of Length-Coded Binary)
-		 * Field Packet					 1-250 ("")
-		 * Row Data Packet				 1-250 ("")
-		 */
-		else
-			return MYSAC_RET_DATA;
+		/* the expect code is not valid */
+		else {
+			m->errorcode = MYERR_UNKNOWN_ERROR;
+			return MYSAC_RET_ERROR;
+		}
 
 	default:
 		m->errorcode = MYERR_UNEXPECT_R_STATE;
@@ -448,7 +452,7 @@ int mysac_connect(MYSAC *mysac) {
 	***********************************************/
 	case MYSAC_READ_GREATINGS:
 
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_DATA);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -598,7 +602,7 @@ int mysac_connect(MYSAC *mysac) {
 		MYSAC_RET_ERROR,
 		MYSAC_RET_DATA
 	*/
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_OK);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -740,7 +744,7 @@ int mysac_send_database(MYSAC *mysac) {
 	*
 	**********************************************************/
 	case MYSAC_RECV_INIT_DB:
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_OK);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -787,7 +791,7 @@ int mysac_send_database(MYSAC *mysac) {
 	return MYERR_BAD_STATE;
 }
 
-int mysac_b_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
+int mysac_b_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id,
                              const char *request, int len) {
 
 	/* set packet number */
@@ -803,6 +807,12 @@ int mysac_b_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
 	/* build sql query */
 	memcpy(&mysac->buf[5], request, len);
 
+	/* request type */
+	mysac->expect = MYSAC_EXPECT_OK;
+	if (len > 6)
+		if (strncasecmp(&mysac->buf[5], "SELECT", 5) == 0)
+			mysac->expect = MYSAC_EXPECT_DATA;
+
 	/* l */
 	to_my_3(len + 1, &mysac->buf[0]);
 
@@ -816,12 +826,12 @@ int mysac_b_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
 	return 0;
 }
 
-int mysac_s_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
+int mysac_s_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id,
                              const char *request) {
 	return mysac_b_set_stmt_prepare(mysac, stmt_id, request, strlen(request));
 }
 
-int mysac_v_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
+int mysac_v_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id,
                              const char *fmt, va_list ap) {
 	int len;
 
@@ -836,6 +846,12 @@ int mysac_v_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
 	if ((unsigned int)len >= mysac->bufsize - 5)
 		return -1;
 
+	/* request type */
+	mysac->expect = MYSAC_EXPECT_OK;
+	if (len > 6)
+		if (strncasecmp(&mysac->buf[5], "SELECT", 5) == 0)
+			mysac->expect = MYSAC_EXPECT_DATA;
+
 	/* len */
 	to_my_3(len + 1, &mysac->buf[0]);
 
@@ -849,7 +865,7 @@ int mysac_v_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
 	return 0;
 }
 
-int mysac_set_stmt_prepare(MYSAC *mysac, unsigned long *stmt_id,
+int mysac_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id,
                            const char *fmt, ...) {
 	va_list ap;
 
@@ -888,7 +904,7 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 	*
 	**********************************************************/
 	case MYSAC_RECV_STMT_QUERY:
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_OK);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -908,6 +924,10 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 		/* 1-4: get statement id */
 		*mysac->stmt_id = uint4korr(&mysac->buf[1]);
 
+		/* if data expected, set MSB */
+		if (mysac->expect == MYSAC_EXPECT_DATA)
+			(*mysac->stmt_id) |= 0x80000000;
+
 		/* 5-6: get nb of columns */
 		mysac->nb_cols = uint2korr(&mysac->buf[5]);
 
@@ -915,6 +935,10 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 		mysac->nb_plhold = uint2korr(&mysac->buf[7]);
 
 		/* 9-.. don't care ! */
+
+		/* if no data expected */
+		if (mysac->expect == MYSAC_EXPECT_OK)
+			return 0;
 
 		if (mysac->nb_plhold > 0)
 			mysac->qst = MYSAC_RECV_QUERY_COLDESC1;
@@ -934,7 +958,7 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 
 	case MYSAC_RECV_QUERY_COLDESC1:
 
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_DATA);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -966,7 +990,7 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 	*
 	**********************************************************/
 	case MYSAC_RECV_QUERY_EOF1:
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_DATA);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -994,7 +1018,7 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 
 	case MYSAC_RECV_QUERY_COLDESC2:
 
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_DATA);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -1026,7 +1050,7 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 	*
 	**********************************************************/
 	case MYSAC_RECV_QUERY_EOF2:
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_DATA);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -1069,7 +1093,7 @@ int mysac_send_stmt_prepare(MYSAC *mysac) {
 
 
 
-int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned long stmt_id,
+int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned int stmt_id,
                            MYSAC_BIND *values, int nb) {
 	int i;
 	int nb_bf;
@@ -1090,6 +1114,15 @@ int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned long stmt_id,
 
 	/* 4 : set mysql command */
 	mysac->buf[4] = COM_STMT_EXECUTE;
+
+	/* dat aexpected */
+	if ((stmt_id & 0x80000000) == 0)
+		mysac->expect = MYSAC_EXPECT_OK;
+	else {
+		stmt_id &= 0x7fffffff;
+		mysac->expect = MYSAC_EXPECT_DATA;
+	}
+	mysac->stmt_id = (void *)1;
 
 	/* 5-8 : build sql query */
 	to_my_4(stmt_id, &mysac->buf[5]);
@@ -1184,6 +1217,15 @@ int mysac_b_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query, int len) 
 	}
 	memcpy(&mysac->buf[5], query, len);
 
+	/* request type */
+	mysac->expect = MYSAC_EXPECT_OK;
+	if (len > 6)
+		if (strncasecmp(&mysac->buf[5], "SELECT", 5) == 0)
+			mysac->expect = MYSAC_EXPECT_DATA;
+	
+	/* unset statement result */
+	mysac->stmt_id = (void *)0;
+
 	/* len */
 	to_my_3(len + 1, &mysac->buf[0]);
 
@@ -1218,6 +1260,15 @@ int mysac_v_set_query(MYSAC *mysac, MYSAC_RES *res, const char *fmt, va_list ap)
 		mysac->len = 0;
 		return -1;
 	}
+
+	/* request type */
+	mysac->expect = MYSAC_EXPECT_OK;
+	if (len > 6)
+		if (strncasecmp(&mysac->buf[5], "SELECT", 5) == 0)
+			mysac->expect = MYSAC_EXPECT_DATA;
+
+	/* unset statement result */
+	mysac->stmt_id = (void *)0;
 
 	/* len */
 	to_my_3(len + 1, &mysac->buf[0]);
@@ -1287,7 +1338,7 @@ int mysac_send_query(MYSAC *mysac) {
 	mysac->read_len = mysac->res->buffer_len;
 
 	case MYSAC_RECV_QUERY_COLNUM:
-		err = my_response(mysac);
+		err = my_response(mysac, mysac->expect);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -1297,8 +1348,20 @@ int mysac_send_query(MYSAC *mysac) {
 			return mysac->errorcode;
 
 		/* ok ( for insert or no return data command ) */
-		if (err == MYSAC_RET_OK)
-			return 0;
+		if (mysac->expect == MYSAC_EXPECT_OK) {
+			if (err == MYSAC_RET_OK)
+				return 0;
+			else {
+				mysac->errorcode = MYERR_PROTOCOL_ERROR;
+				return mysac->errorcode;
+			}
+		}
+
+		/* invalide expect */
+		else if (mysac->expect != MYSAC_EXPECT_DATA) {
+			mysac->errorcode = MYERR_INVALID_EXPECT;
+			return mysac->errorcode;
+		}
 
 		/* protocol error */
 		if (err != MYSAC_RET_DATA) {
@@ -1333,7 +1396,7 @@ int mysac_send_query(MYSAC *mysac) {
 
 	case MYSAC_RECV_QUERY_COLDESC1:
 
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_DATA);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -1379,7 +1442,7 @@ int mysac_send_query(MYSAC *mysac) {
 	*
 	**********************************************************/
 	case MYSAC_RECV_QUERY_EOF1:
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_DATA);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -1483,7 +1546,7 @@ int mysac_send_query(MYSAC *mysac) {
 	mysac->readst = 0;
 
 	case MYSAC_RECV_QUERY_DATA:
-		err = my_response(mysac);
+		err = my_response(mysac, MYSAC_EXPECT_DATA);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;
@@ -1500,7 +1563,7 @@ int mysac_send_query(MYSAC *mysac) {
 		}
 
 		/* read data in string type */
-		else if (err == MYSAC_RET_DATA) {
+		if (mysac->stmt_id == (void *)0) {
 #if 0
 			for (i=0; i<mysac->packet_length; i+=20) {
 				int j;
@@ -1529,7 +1592,7 @@ int mysac_send_query(MYSAC *mysac) {
 		}
 
 		/* read data in binary type */
-		else if (err == MYSAC_RET_OK) {
+		else if (mysac->stmt_id == (void *)1) {
 #if 0
 			for (i=0; i<mysac->packet_length; i++) {
 				fprintf(stderr, "%02x ", (unsigned char)mysac->read[i]);

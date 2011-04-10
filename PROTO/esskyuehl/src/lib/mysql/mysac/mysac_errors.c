@@ -45,6 +45,7 @@ const char *mysac_errors[]  = {
 	[MYERR_CONVDOUBLE]       = "Error in string to double type conversion",
 	[MYERR_CONVTIME]         = "Error in time string to time conversion",
 	[MYERR_CONVTIMESTAMP]    = "Error in timestamp string to time conversion",
-	[MYERR_CONVDATE]         = "Error in date string to time conversion"
+	[MYERR_CONVDATE]         = "Error in date string to time conversion",
+	[MYERR_INVALID_EXPECT]   = "Unknown expect code"
 };
 

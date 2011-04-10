@@ -23,6 +23,8 @@
 
 #include "mysac.h"
 
+#define DEBUG(fmt, args...) fprintf(stderr, "[%s:%d] " fmt "\n", __FILE__, __LINE__, ##args);
+
 /* definitions imported from linux-2.6.24/include/linux/list.h */
 
 static inline void INIT_LIST_HEAD(struct mysac_list_head *list) {
