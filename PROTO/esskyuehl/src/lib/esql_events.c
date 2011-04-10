@@ -181,8 +181,6 @@ esql_connect_handler(Esql             *e,
    DBG("(e=%p, fdh=%p)", e, fdh);
    ev = e->pool_member ? (Esql *)e->pool_struct : e; /* use pool struct for events */
 
-   if (!ecore_main_fd_handler_active_get(fdh, ECORE_FD_READ | ECORE_FD_WRITE))
-     return ECORE_CALLBACK_RENEW;
    ecore_main_fd_handler_active_set(fdh, 0);
    if (e->pool_member)
      INFO("Pool member %u: Running io", e->pool_id);
