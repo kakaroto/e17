@@ -665,6 +665,8 @@ gen_type_esql(Azy_Typedef *t,
                   EL(7, "memcpy(ret->%s, c->value.blob, c->len);");
                   EL(6, "}");
                }
+             else if (!strcmp(m->name, "timestamp"))
+                  EL(7, "ret->%s = (int)mktime(&c->value.tm);", m->name);
           }
         EL(4, "}");
         EL(2, "}");
