@@ -213,7 +213,7 @@ esql_mysac_row_init(Esql_Row *r)
           {
            case MYSQL_TYPE_TIME:
              cell->type = ESQL_CELL_TYPE_TIME;
-             memcpy(&cell->value.tv, &row[i].tv, sizeof(row[i].tv));
+             memcpy(&cell->value.tv, &row[i].tv, sizeof(struct timeval));
              break;
 
            case MYSQL_TYPE_YEAR:
@@ -221,7 +221,7 @@ esql_mysac_row_init(Esql_Row *r)
            case MYSQL_TYPE_DATETIME:
            case MYSQL_TYPE_DATE:
              cell->type = ESQL_CELL_TYPE_TIMESTAMP;
-             memcpy(&cell->value.tm, row[i].tm, sizeof(row[i].tm));
+             memcpy(&cell->value.tm, row[i].tm, sizeof(struct tm));
              break;
 
            case MYSQL_TYPE_STRING:
