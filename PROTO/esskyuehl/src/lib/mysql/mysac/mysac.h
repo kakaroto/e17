@@ -518,7 +518,7 @@ int mysac_s_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query);
  *
  * @return 0: ok, -1 nok
  */
-int mysac_b_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query, int len);
+int mysac_b_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query, unsigned int len);
 
 /**
  * This function return the mysql response pointer

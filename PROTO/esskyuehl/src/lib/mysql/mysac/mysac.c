@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdarg.h>
+#include <ctype.h>
 #include <mysql/mysql.h>
 #include <mysql/my_global.h>
 
@@ -207,6 +208,31 @@ int mysac_extend_res(MYSAC *m)
 	return 0;
 }
 
+enum my_expected_response_t check_action(const char *request, int len) {
+
+	const char *parse;
+
+	/* jump blank char '\r', '\n', '\t' and ' ' */
+	parse = request;
+	while (1) {
+		if (!isspace(*parse))
+			break;
+
+		/* if no more chars in string */
+		len--;
+		if (len <= 0)
+			return MYSAC_EXPECT_OK;
+
+		parse++;
+	}
+
+	/* check request type */
+	if ( (len > 6) && ( strncasecmp(parse, "SELECT", 5) == 0) )
+		return MYSAC_EXPECT_DATA;
+
+	return MYSAC_EXPECT_OK;
+}
+
 static int my_response(MYSAC *m, enum my_expected_response_t expect) {
 	int i;
 	int err;
@@ -301,7 +327,7 @@ static int my_response(MYSAC *m, enum my_expected_response_t expect) {
 
 			/* unknown error */
 			else
-				m->errorcode = MYERR_UNKNOWN_ERROR;
+				m->errorcode = MYERR_PROTOCOL_ERROR;
 
 			return MYSAC_RET_ERROR;
 		}
@@ -322,8 +348,16 @@ static int my_response(MYSAC *m, enum my_expected_response_t expect) {
 				return MYSAC_RET_DATA;
 		}
 
-		/* success */
-		else if ((unsigned char)m->read[0] == 0) {
+		/* reponse is expectig sucess and onmly success */
+		else if (expect == MYSAC_EXPECT_OK) {
+
+			/* not a sucess code */
+			if ((unsigned char)m->read[0] != 0) {
+				m->errorcode = MYERR_PROTOCOL_ERROR;
+				return MYSAC_RET_ERROR;
+			}
+
+			/* is sucess */
 
 			read = &m->read[1];
 			rlen = m->packet_length - 1;
@@ -808,10 +842,7 @@ int mysac_b_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id,
 	memcpy(&mysac->buf[5], request, len);
 
 	/* request type */
-	mysac->expect = MYSAC_EXPECT_OK;
-	if (len > 6)
-		if (strncasecmp(&mysac->buf[5], "SELECT", 5) == 0)
-			mysac->expect = MYSAC_EXPECT_DATA;
+	mysac->expect = check_action(&mysac->buf[5], len);
 
 	/* l */
 	to_my_3(len + 1, &mysac->buf[0]);
@@ -847,10 +878,7 @@ int mysac_v_set_stmt_prepare(MYSAC *mysac, unsigned int *stmt_id,
 		return -1;
 
 	/* request type */
-	mysac->expect = MYSAC_EXPECT_OK;
-	if (len > 6)
-		if (strncasecmp(&mysac->buf[5], "SELECT", 5) == 0)
-			mysac->expect = MYSAC_EXPECT_DATA;
+	mysac->expect = check_action(&mysac->buf[5], len);
 
 	/* len */
 	to_my_3(len + 1, &mysac->buf[0]);
@@ -1098,12 +1126,12 @@ int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned int stmt_id,
 	int i;
 	int nb_bf;
 	int desc_off;
-	int vals_off;
-	int len = 3 + 1 + 1 + 4 + 1 + 4;
+	unsigned int vals_off;
+	unsigned int len = 3 + 1 + 1 + 4 + 1 + 4;
 	int ret;
 
 	/* check len */
-	if (mysac->bufsize < (unsigned int)len) {
+	if (mysac->bufsize < len) {
 		mysac->errorcode = MYERR_BUFFER_TOO_SMALL;
 		mysac->len = 0;
 		return -1;
@@ -1139,7 +1167,7 @@ int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned int stmt_id,
 	vals_off = desc_off + ( nb * 2 );
 
 	/* check len */
-	if (mysac->bufsize < (unsigned int)vals_off) {
+	if (mysac->bufsize < vals_off) {
 		mysac->errorcode = MYERR_BUFFER_TOO_SMALL;
 		mysac->len = 0;
 		return -1;
@@ -1201,7 +1229,7 @@ int mysac_set_stmt_execute(MYSAC *mysac, MYSAC_RES *res, unsigned int stmt_id,
 }
 
 inline
-int mysac_b_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query, int len) {
+int mysac_b_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query, unsigned int len) {
 
 	/* set packet number */
 	mysac->buf[3] = 0;
@@ -1210,7 +1238,7 @@ int mysac_b_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query, int len) 
 	mysac->buf[4] = COM_QUERY;
 
 	/* build sql query */
-	if (mysac->bufsize - 5 < (unsigned int)len) {
+	if (mysac->bufsize - 5 < len) {
 		mysac->errorcode = MYERR_BUFFER_TOO_SMALL;
 		mysac->len = 0;
 		return -1;
@@ -1218,11 +1246,8 @@ int mysac_b_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query, int len) 
 	memcpy(&mysac->buf[5], query, len);
 
 	/* request type */
-	mysac->expect = MYSAC_EXPECT_OK;
-	if (len > 6)
-		if (strncasecmp(&mysac->buf[5], "SELECT", 5) == 0)
-			mysac->expect = MYSAC_EXPECT_DATA;
-	
+	mysac->expect = check_action(&mysac->buf[5], len);
+
 	/* unset statement result */
 	mysac->stmt_id = (void *)0;
 
@@ -1245,7 +1270,7 @@ int mysac_s_set_query(MYSAC *mysac, MYSAC_RES *res, const char *query) {
 
 inline
 int mysac_v_set_query(MYSAC *mysac, MYSAC_RES *res, const char *fmt, va_list ap) {
-	int len;
+	unsigned int len;
 
 	/* set packet number */
 	mysac->buf[3] = 0;
@@ -1255,17 +1280,14 @@ int mysac_v_set_query(MYSAC *mysac, MYSAC_RES *res, const char *fmt, va_list ap)
 
 	/* build sql query */
 	len = vsnprintf(&mysac->buf[5], mysac->bufsize - 5, fmt, ap);
-	if ((unsigned int)len >= mysac->bufsize - 5) {
+	if (len >= mysac->bufsize - 5) {
 		mysac->errorcode = MYERR_BUFFER_TOO_SMALL;
 		mysac->len = 0;
 		return -1;
 	}
 
 	/* request type */
-	mysac->expect = MYSAC_EXPECT_OK;
-	if (len > 6)
-		if (strncasecmp(&mysac->buf[5], "SELECT", 5) == 0)
-			mysac->expect = MYSAC_EXPECT_DATA;
+	mysac->expect = check_action(&mysac->buf[5], len);
 
 	/* unset statement result */
 	mysac->stmt_id = (void *)0;
