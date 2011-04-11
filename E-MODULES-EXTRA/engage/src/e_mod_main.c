@@ -973,7 +973,7 @@ _ngi_item_appear(Ng *ng, Ngi_Item *it)
 
    ngi_reposition(ng);
    ngi_input_extents_calc(ng);
-   ngi_item_activate(ng);
+   /* ngi_item_activate(ng); */
 }
 
 static void
@@ -995,7 +995,7 @@ _ngi_item_disappear(Ng *ng, Ngi_Item *it)
    ngi_reposition(ng);
    ngi_input_extents_calc(ng);
    ngi_animate(ng);
-   ngi_item_activate(ng);
+   /* ngi_item_activate(ng); */
 }
 
 static double
