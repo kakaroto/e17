@@ -1,6 +1,6 @@
 Login:        cmarcelo
 IRC Nick:     cmarcelo
-Cloak:        developer/cmarcelo
+Cloak:         
 Name:         Caio Marcelo de Oliveira Filho
 Location:     Recife, Brazil
 E-Mail:       -cmarcelo@gmail.com
