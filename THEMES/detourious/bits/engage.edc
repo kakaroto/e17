@@ -742,10 +742,9 @@ group {
 	}
 
 	programs {
-#if HOVER_EFFECT == 1
 		program {
             name: "go_active";
-            signal: "e,state,mouse,in";
+            signal: "e,state,animate,in";
             source: "e";
             action: STATE_SET "visible" 0.0;
             target: "background";
@@ -760,7 +759,7 @@ group {
 		}
 		program {
             name: "go_passive";
-            signal: "e,state,mouse,out";
+            signal: "e,state,animate,out";
             source: "e";
             action: ACTION_STOP;
             target: "go_active";
@@ -772,7 +771,6 @@ group {
             action: STATE_SET "default" 0.0;
             target: "background";
 		}
-#endif
 		program {
 			name: "go_big";
 			action: STATE_SET "visible" 0.0;
