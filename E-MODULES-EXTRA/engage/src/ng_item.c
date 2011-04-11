@@ -174,6 +174,9 @@ ngi_item_mouse_in(Ngi_Item *it)
 
    ngi_item_signal_emit(it,"e,state,mouse,in");
 
+   if (it->box->ng->cfg->mouse_over_anim)
+     ngi_item_signal_emit(it,"e,state,animate,in");
+
    if (it->cb_mouse_in)
      it->cb_mouse_in(it);
 }
@@ -184,6 +187,9 @@ ngi_item_mouse_out(Ngi_Item *it)
    if (!it || it->delete_me) return;
 
    ngi_item_signal_emit(it,"e,state,mouse,out");
+
+   if (it->box->ng->cfg->mouse_over_anim)
+     ngi_item_signal_emit(it,"e,state,animate,out");
 
    if (it->cb_mouse_out)
      it->cb_mouse_out(it);

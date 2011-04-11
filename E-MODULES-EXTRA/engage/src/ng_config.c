@@ -5,7 +5,7 @@ struct _E_Config_Dialog_Data
    int              show_label;
    int              show_background;
    int              orient;
-   int           size;
+   int              size;
    double           zoomfactor;
    int              autohide;
    int              autohide_show_urgent;
@@ -196,6 +196,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
      cfdata->alpha = 255;
 
    ob = e_widget_check_add(evas, D_("Show Background Box"), &(cfdata->show_background));
+   e_widget_framelist_object_append(of, ob);
+
+   ob = e_widget_check_add(evas, D_("Show Mouse-Over Animation"), &(cfdata->mouse_over_anim));
    e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(ol, of, 1, 0, 0.0);
