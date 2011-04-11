@@ -693,7 +693,9 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->cw = cw;
 
    e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
-   it->o_win = e_manager_comp_src_image_mirror_add(man, src);
+   it->o_win = evas_object_image_filled_add(e);
+   evas_object_image_source_set(it->o_win, e_manager_comp_src_image_get(man, src)); 
+   /* it->o_win = e_manager_comp_src_image_mirror_add(man, src); */
    evas_object_show(it->o_win);
    it->o = edje_object_add(e);
    if (!e_theme_edje_object_set(it->o, "base/theme/modules/scale",

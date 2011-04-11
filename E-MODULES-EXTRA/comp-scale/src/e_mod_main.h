@@ -102,6 +102,8 @@ struct _E_Comp_Win
 
   int                   pending_count;
 
+  unsigned int         opacity;
+  
   char                 *title, *name, *clas, *role;
   Ecore_X_Window_Type   primary_type;
 
