@@ -2,6 +2,7 @@
 	- implement multiple level of hash for eina_hash depending on number of child.
 	- improve benchmark (add more real use case, provide option for tracking result more easily)
 	- add open/fstat/mmap/munmap/close helper.
+	- improve mempool repacker to take a more fine grained lock.
 
 * Eet
 	- add inheritance
@@ -27,6 +28,7 @@ h	- Add specialized task for each match automate case
 	- Add group { text, drag } setter.
 	- Add group inheritance.
 	- Add virtual part and program support.
+	- Merge edje parser and edje preprocessor.
 	- Move the parser into edje and expose an Edje AST API.
 
 * Elixir
@@ -66,6 +68,8 @@ h	- provide a completly asynchronous IO API using ecore thread infra
 h	- use dirfd helper (partial support with eina 1.0 and full with 1.1)
 h	- add tutorial
 	- add tests suite
+	- use ecore_thread_reschedule_after and take device id into account
+	during IO operation to limit a one disk per thread load.
 
 * Efreet 1.0
 d	- implement cache with icons directory content to avoid uneeded stat
@@ -76,6 +80,7 @@ d	- implement cache with icons directory content to avoid uneeded stat
 * Ecore 1.1
 	- add ecore_thread_batch_run/ecore_thread_batch_feedback_run (to create
 	batch, a list of data instead of creating one ecore_thread per data)
+	- add ecore_thread_reschedule_after.
 
 * eak - configuration library on top of eet
 	- support text config and binary file
