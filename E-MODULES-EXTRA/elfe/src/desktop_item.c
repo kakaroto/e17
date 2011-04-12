@@ -99,7 +99,7 @@ _app_add(Elfe_Desktop_Item *dit, const char *name)
    edje_object_file_set(item, elfe_home_cfg->theme, "elfe/desktop/app/frame");
 
    icon = elfe_utils_fdo_icon_add(dit->frame, dit->desktop->icon, elfe_home_cfg->icon_size); 
-   evas_object_size_hint_min_set(icon, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
+   //evas_object_size_hint_min_set(icon, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
    evas_object_size_hint_max_set(icon, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
 
    edje_object_part_swallow(item, "elfe.swallow.content", icon);

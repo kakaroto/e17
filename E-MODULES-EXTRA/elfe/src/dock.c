@@ -85,16 +85,8 @@ static void
 _app_icon_clicked_cb(void *data , Evas_Object *obj, void *event_info )
 {
    Elfe_Dock *dock = data;
-   printf("Icon clicked\n");
-   if (!dock->edit_mode)
-     elfe_home_win_allapps_togle();
-   else
-     {
-	elfe_home_win_editmode_off();
-	dock->edit_mode = EINA_FALSE;
-	printf("Clicked cb and edit mode %s\n", dock->edit_mode ? "True": "False");
-	_allapps_icon_add(dock, "icon/widgets");
-     }
+
+   evas_object_smart_callback_call(dock->edje, "allapps,clicked", NULL);
 }
 
 static void
@@ -104,11 +96,8 @@ _allapps_icon_add(Elfe_Dock *dock, const char *name)
 
    if (dock->allapps_icon)
      {
-	printf("delete icon\n");
 	evas_object_del(dock->allapps_icon);
      }
-
-   printf("Add icon %s\n", name);
 
    ic = elfe_desktop_item_add(dock->table, 0, elfe_home_cfg->cols - 1,
                               name, ELFE_DESKTOP_ITEM_ICON, NULL);
@@ -164,6 +153,9 @@ elfe_dock_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
    Eina_List *l;
    Eina_Iterator *iter;
    Eina_Matrixsparse_Cell *cell;
+
+   if (dock->edit_mode == mode)
+       return;
 
    dock->edit_mode = mode;
 

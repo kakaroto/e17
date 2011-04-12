@@ -102,25 +102,6 @@ collections
          image: "windows.png" COMP;
          image: "mainmenu_bg_bottom.png" COMP;
       }
-      script {
-         public apps_list_visible;
-         public progress_bar_visible;
-
-         public apps_list_hide() {
-            set_state(PART:"apps-list", "default", 0.0);
-            set_int(apps_list_visible, 0);
-         }
-         public apps_list_show() {
-            set_int(apps_list_visible, 1);
-            set_state(PART:"apps-list", "visible", 0.0);
-         }
-         public apps_list_toggle() {
-            if (get_int(apps_list_visible) == 1) apps_list_hide();
-            else apps_list_show();
-         }
-
-
-      }
       parts {
          /* background  */
          part {
@@ -137,89 +118,14 @@ collections
          part {
             name: "elfe.swallow.desktop";
             type: SWALLOW;
-            mouse_events: 1;
             description {
                state: "default" 0.0;
+               visible: 1;
                rel1 { relative: 0.0 0.0;
                }
                rel2 { relative: 1.0 1.0;
                }
             }
-         }
-
-
-         part { name: "apps-list-bg";
-            type: RECT;
-            clip_to: "apps-list";
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               rel1 {
-                  to: "apps-list";
-                  relative: 0.0 0.0;
-               }
-               rel2 {
-                  to: "apps-list";
-                  relative: 1.0 1.0;
-               }
-               color: 0 0 0 255;
-            }
-         }
-         part { name: "elfe.swallow.allapps";
-            clip_to: "apps-list";
-            type: SWALLOW;
-            repeat_events: 1;
-
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               rel1 {
-                  to: "apps-list";
-                  relative: 0.0 0.0;
-                  offset: 0 -1;
-               }
-               rel2 {
-                  to: "apps-list";
-                  relative: 1.0 1.0;
-               }
-            }
-
-         }
-
-         part { name: "apps-list";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-               fixed: 1 1;
-               visible: 0;
-               color: 255 255 255 0;
-            }
-            description { state: "visible" 0.0;
-            }
-         }
-
-
-
-      }
-      programs {
-         program { name: "load,hide,appslist";
-            signal: "load";
-            script { apps_list_hide(); }
-         }
-         program { name: "show-apps-list";
-            action: STATE_SET "visible" 0.0;
-            target: "apps-list";
-            transition: ACCELERATE 0.2;
-         }
-
-         program { name: "hide-apps-list";
-            action: STATE_SET "default" 0.0;
-            target: "apps-list";
-            transition: DECELERATE 0.2;
-         }
-
-         program { name: "appslist,toggle";
-            signal: "appslist,toggle";
-            source: "elfe";
-            script { apps_list_toggle(); }
          }
       }
    }
@@ -251,7 +157,7 @@ collections
                visible: 0;
             }
             description {
-               state: "edit" 0.1;
+               state: "edit" 0.0;
                color: 255 255 255 255;
                visible: 1;
             }
@@ -285,6 +191,16 @@ collections
                   rotation.z: 5;
                }
             }
+            description {
+               state: "tiny" 0.0;
+               rel1.relative: 0.4 0.4;
+               rel2.relative: 0.6 0.6;
+            }
+            description {
+               state: "medium" 0.0;
+               rel1.relative: 0.25 0.25;
+               rel2.relative: 0.75 0.75;
+            }
          }
 
 
@@ -309,7 +225,7 @@ collections
             name: "edit,on";
             signal: "action,edit,on";
             source: "elfe";
-            action: STATE_SET "edit" 0.1;
+            action: STATE_SET "edit" 0.0;
             target: "clip";
             transition: "SINUSOIDAL" 0.2;
          }
@@ -318,7 +234,7 @@ collections
             name: "edit,off";
             signal: "action,edit,off";
             source: "elfe";
-            action: STATE_SET "normal" 0.1;
+            action: STATE_SET "normal" 0.0;
             target: "clip";
             target: "elfe.swallow.content";
             transition: "SINUSOIDAL" 0.2;
@@ -346,6 +262,41 @@ collections
             source: "badge_delete";
             action: SIGNAL_EMIT "elfe,delete,clicked" "";
          }
+         program {
+            name: "load";
+            signal: "load";
+            action: STATE_SET "default" 0.0;
+            target: "elfe.swallow.content";
+            after: "tiny";
+         }
+         program {
+            name: "tiny";
+            action: STATE_SET "tiny" 0.0;
+            target: "elfe.swallow.content";
+            transition: LINEAR 0.1;
+            after: "big";
+         }
+         program {
+            name: "big";
+            action: STATE_SET "default" 0.0;
+            target: "elfe.swallow.content";
+            transition: LINEAR 0.1;
+            after: "medium";
+         }
+         program {
+            name: "medium";
+            action: STATE_SET "medium" 0.0;
+            target: "elfe.swallow.content";
+            transition: LINEAR 0.1;
+            after: "default";
+         }
+         program {
+            name: "default";
+            action: STATE_SET "default" 0.0;
+            target: "elfe.swallow.content";
+            transition: LINEAR 0.1;
+         }
+
       }
    }
 
@@ -365,7 +316,7 @@ collections
             }
             description {
                state: "active" 0.0;
-               color: 255 255 255 128;
+               color: 255 255 255 255;
             }
          }
 
@@ -430,19 +381,6 @@ collections
             clip_to: "clip";
             description {
                state: "default" 0.0;
-               rel1.offset: 32 32;
-               rel2.offset: -32 -32;
-            }
-            description {
-               state: "normal" 0.0;
-               align: 0.5 0.2;
-               aspect: 1 1;
-               aspect_preference: BOTH;
-            }
-            description {
-               state: "big" 0.0;
-               rel1.offset: -16 -16;
-               rel2.offset: 16 16;
             }
             program {
                name:   "bt_click";
@@ -478,27 +416,6 @@ collections
             target: "elfe.text.label";
             transition: ACCELERATE 0.2;
          }
-         program {
-            name: "load";
-            signal: "load";
-            action: STATE_SET "default" 0.0;
-            target: "elfe.swallow.content";
-            transition: ACCELERATE 0.1;
-            after: "big";
-         }
-         program {
-            name: "big";
-            action: STATE_SET "big" 0.0;
-            target: "elfe.swallow.content";
-            transition: ACCELERATE 0.1;
-            after: "normal";
-         }
-         program {
-            name: "normal";
-            action: STATE_SET "normal" 0.0;
-            target: "elfe.swallow.content";
-            transition: ACCELERATE 0.1;
-         }
       }
    }
 
@@ -531,18 +448,18 @@ collections
                rel2.relative: 1 1;
                rel2.offset: -32 -32-4;
             }
-            description {
-               state: "normal" 0.0;
-               inherit: "default" 0.0;
-               rel1.offset: 0 0;
-               rel2.offset: 0 -4;
-            }
-            description {
-               state: "big" 0.0;
-               inherit: "default" 0.0;
-               rel1.offset: -16 -16;
-               rel2.offset: 16 16-4;
-            }
+            /* description { */
+            /*    state: "normal" 0.0; */
+            /*    inherit: "default" 0.0; */
+            /*    rel1.offset: 0 0; */
+            /*    rel2.offset: 0 -4; */
+            /* } */
+            /* description { */
+            /*    state: "big" 0.0; */
+            /*    inherit: "default" 0.0; */
+            /*    rel1.offset: -16 -16; */
+            /*    rel2.offset: 16 16-4; */
+            /* } */
             program {
                name:   "bt_click";
                signal: "mouse,clicked,1";
@@ -570,21 +487,21 @@ collections
 
       }
       programs {
-         program {
-            name: "load";
-            signal: "load";
-            action: STATE_SET "big" 0.0;
-            target: "elfe.swallow.content";
-            transition: ACCELERATE 0.1;
-            after: "normal";
-         }
-         program {
-            name: "normal";
-            signal: "normal";
-            action: STATE_SET "normal" 0.0;
-            target: "elfe.swallow.content";
-            transition: ACCELERATE 0.1;
-         }
+         /* program { */
+         /*    name: "load"; */
+         /*    signal: "load"; */
+         /*    action: STATE_SET "big" 0.0; */
+         /*    target: "elfe.swallow.content"; */
+         /*    transition: ACCELERATE 0.1; */
+         /*    after: "normal"; */
+         /* } */
+         /* program { */
+         /*    name: "normal"; */
+         /*    signal: "normal"; */
+         /*    action: STATE_SET "normal" 0.0; */
+         /*    target: "elfe.swallow.content"; */
+         /*    transition: ACCELERATE 0.1; */
+         /* } */
       }
    }
 
@@ -687,16 +604,103 @@ collections
    }
    group {
       name: "elfe/desktop/layout";
+      script {
+         public apps_list_visible;
+         public apps_list_hide() {
+            run_program(PROGRAM:"allapps,hide");
+            set_int(apps_list_visible, 0);
+         }
+         public apps_list_show() {
+            set_int(apps_list_visible, 1);
+            run_program(PROGRAM:"allapps,show");
+         }
+         public apps_list_toggle() {
+            if (get_int(apps_list_visible) == 1) apps_list_hide();
+            else apps_list_show();
+         }
+
+
+      }
       parts {
          part {
             name: "elfe.swallow.content";
             type: SWALLOW;
+            clip_to: "elfe.clip.content";
             description {
                state: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 0;
                rel2.to_y: "elfe.swallow.selector";
-
             }
+         }
+         part {
+            name: "elfe.clip.content";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+            description {
+               state: "visible" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+            }
+         }
+         part {
+            name: "elfe.clip.background";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+            }
+            description {
+               state: "visible" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
 
+         part {
+            name: "background";
+            type: RECT;
+            mouse_events: 0;
+            clip_to: "elfe.clip.background";
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 128;
+            }
+         }
+
+         part {
+            name: "elfe.swallow.allapps";
+            type: SWALLOW;
+            clip_to: "elfe.clip.allapps";
+            repeat_events: 1;
+            description {
+               state: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+               rel2.to_y: "elfe.swallow.selector";
+            }
+         }
+         part {
+            name: "elfe.clip.allapps";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+            }
+            description {
+               state: "visible" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
          }
          part {
             name: "elfe.swallow.selector";
@@ -721,6 +725,44 @@ collections
                rel1.relative: 0 1;
                rel2.relative: 1 1;
             }
+         }
+      }
+      programs {
+         program { name: "load,hide,allapps";
+            signal: "load";
+            script { apps_list_hide(); }
+         }
+         program { name: "allapps,show";
+            action: STATE_SET "visible" 0.0;
+            target: "elfe.clip.content";
+            target: "elfe.clip.allapps";
+            transition: ACCELERATE 0.2;
+            after: "background,show";
+         }
+
+         program { name: "allapps,hide";
+            action: STATE_SET "default" 0.0;
+            target: "elfe.clip.content";
+            target: "elfe.clip.allapps";
+            transition: DECELERATE 0.2;
+            after: "background,hide";
+         }
+         program { name: "background,hide";
+            action: STATE_SET "default" 0.0;
+            target: "elfe.clip.background";
+            transition: DECELERATE 0.2;
+         }
+         program { name: "background,show";
+            action: STATE_SET "visible" 0.0;
+            target: "elfe.clip.background";
+            transition: DECELERATE 0.2;
+         }
+         
+
+         program { name: "allapps,toggle";
+            signal: "allapps,toggle";
+            source: "elfe";
+            script { apps_list_toggle(); }
          }
       }
    }

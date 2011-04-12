@@ -1,10 +1,12 @@
 #include <e.h>
 #include <Elementary.h>
 
+#include "desktop.h"
 #include "desktop_page.h"
 #include "elfe_config.h"
 #include "utils.h"
 #include "dock.h"
+#include "allapps.h"
 
 #define ELFE_DESKTOP_NUM 5
 #define ELFE_DESKTOP_PADDING_W 10
@@ -17,6 +19,10 @@ struct _Elfe_Desktop
    Evas_Object *layout;
    Evas_Object *sc;
    Evas_Object *dock;
+   Evas_Object *allapps;
+   Evas_Object *floating_icon;
+   Efreet_Menu *selected_app;
+   const char *selected_gadget;
    Eina_List *pads;
    Eina_List *gadgets;
    Evas_Object *selector;
@@ -102,10 +108,8 @@ _longpress_timer_cb(void *data)
    Elfe_Desktop *desk = data;
    Evas_Object *gad;
 
-
-   printf("Longpress edit mode\n");
    gad = eina_list_nth(desk->gadgets, desk->current_desktop);
-
+   /* Set edit mode only when not in edit mode */
    if (!desk->edit_mode)
      {
 	desk->edit_mode = EINA_TRUE;
@@ -158,10 +162,13 @@ _scroller_mouse_down_cb(void *data,Evas *evas, Evas_Object *obj, void *event_inf
    Elfe_Desktop *desk = data;
    Evas_Event_Mouse_Down *ev = event_info;
 
-   desk->on_hold = EINA_TRUE;
-   if (desk->longpress_timer)
-     ecore_timer_del(desk->longpress_timer);
-   desk->longpress_timer = ecore_timer_add(1.0, _longpress_timer_cb, desk);
+   if (!desk->edit_mode)
+     {
+	desk->on_hold = EINA_TRUE;
+	if (desk->longpress_timer)
+	  ecore_timer_del(desk->longpress_timer);
+	desk->longpress_timer = ecore_timer_add(1.0, _longpress_timer_cb, desk);
+     }
 }
 
 
@@ -191,6 +198,179 @@ _cb_object_resize(void *data , Evas *e , Evas_Object *obj, void *event_info )
 	evas_object_size_hint_min_set(gad, w - 2 * ELFE_DESKTOP_PADDING_W,  h - 2 * ELFE_DESKTOP_PADDING_H);
      }
 
+}
+
+
+static void
+_icon_mouse_move_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
+{
+   Elfe_Desktop *desk = data;
+   Evas_Event_Mouse_Move *ev = event_info;
+
+   evas_object_move(desk->floating_icon, ev->cur.output.x - 92 / 2, ev->cur.output.y - 92 / 2);
+
+}
+
+
+static void
+_icon_mouse_up_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
+{
+
+   Elfe_Desktop *desktop = data;
+   Evas_Event_Mouse_Up *ev = event_info;
+
+   printf("icon mouse up\n");
+
+   evas_object_del(desk->floating_icon);
+   evas_object_event_callback_del(desk->layout, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb);
+   evas_object_event_callback_del(desk->layout, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb);
+   elfe_desktop_edit_mode_set(desk->layout, EINA_FALSE);
+
+   if (desk->selected_app)
+     elfe_desktop_app_add(desk->layout, desk->selected_app, ev->output.x, ev->output.y);
+   else if (desk->selected_gadget)
+     elfe_desktop_gadget_add(desk->layout, desk->selected_gadget, ev->output.x, ev->output.y);
+
+}
+
+static void
+_app_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
+{
+   Elfe_Desktop *desk = data;
+   Efreet_Menu *entry = event_info;
+   Evas_Object *ic;
+   Evas_Coord x, y;
+   Evas_Object *o_edje;
+   Evas_Coord ow, oh;
+   Evas_Coord size = elfe_home_cfg->icon_size;
+
+   evas_object_geometry_get(desk->layout, NULL, NULL, &ow, &oh);
+
+   printf("Apps longmressed\n");
+
+   elfe_desktop_edit_mode_set(desk->layout, EINA_TRUE);
+
+   o_edje = elm_layout_edje_get(desk->layout);
+   edje_object_signal_emit(o_edje, "allapps,toggle", "elfe");
+
+   ic = elfe_utils_fdo_icon_add(o_edje, entry->icon, size);
+   evas_object_show(ic);
+   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
+   evas_object_resize(ic, size, size);
+   evas_object_move(ic, x - size / 2, y - size /2);
+   desk->floating_icon = ic;
+
+   evas_object_del(desk->allapps);
+   desk->allapps = NULL;
+   evas_object_pass_events_set(ic, EINA_TRUE);
+
+   desk->selected_app = entry;
+
+   evas_object_event_callback_add(desk->layout, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb, desk);
+   evas_object_event_callback_add(desk->layout, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb, desk);
+}
+
+
+static void
+_gadget_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
+{
+   Elfe_Desktop *desk = data;
+   const char *name = event_info;
+   Evas_Coord x, y;
+   Evas_Object *o_edje;
+   Evas_Coord ow, oh;
+   Evas_Coord size = 0;
+   Evas_Object *ic;
+   E_Gadcon_Client_Class *gcc = NULL;
+
+   gcc = elfe_utils_gadcon_client_class_from_name(name);
+   if (!gcc)
+     {
+         printf("error : unable to find gadcon client class from name : %s\n", name);
+         return;
+     }
+
+   evas_object_geometry_get(desk->layout, NULL, NULL, &ow, &oh);
+
+   size = MIN(ow, oh) / 5;
+
+   printf("Gadget long pressed\n");
+
+   elfe_desktop_edit_mode_set(desk->layout, EINA_TRUE);
+
+   o_edje = elm_layout_edje_get(desk->layout);
+   edje_object_signal_emit(o_edje, "allapps,toggle", "elfe");
+
+   ic = gcc->func.icon(gcc, evas_object_evas_get(obj));
+   if (!ic)
+     ic = elfe_utils_fdo_icon_add(obj, NULL, 64);
+
+   evas_object_show(ic);
+   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
+   evas_object_resize(ic, size, size);
+   evas_object_move(ic, x - size / 2, y - size /2);
+   desk->floating_icon = ic;
+
+   evas_object_del(desk->allapps);
+   desk->allapps = NULL;
+   evas_object_pass_events_set(ic, EINA_TRUE);
+
+   desk->selected_app = NULL;
+   desk->selected_gadget = name;
+
+   evas_object_event_callback_add(desk->layout, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb, desk);
+   evas_object_event_callback_add(desk->layout, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb, desk);
+}
+
+static void*
+_app_exec_cb(void *data, Efreet_Desktop *desktop, char *command, int remaining)
+{
+    ecore_exe_run(command, NULL);
+}
+
+static void
+_allapps_item_selected_cb(void *data , Evas_Object *obj, void *event_info)
+{
+    Efreet_Menu *menu = event_info;
+    Evas_Object *o_edje;
+    Elfe_Desktop *desk = data;
+
+    o_edje = elm_layout_edje_get(desk->layout);
+    edje_object_signal_emit(o_edje, "allapps,toggle", "elfe");
+
+    efreet_desktop_command_get(menu->desktop, NULL,
+                               _app_exec_cb, NULL);
+}
+
+static void
+_dock_allapps_clicked_cb(void *data , Evas_Object *obj, void *event_info )
+{
+   Elfe_Desktop *desk = data;
+   Evas_Object *o_edje;
+
+   printf("CLICKEKEKKDEKDK\n");
+
+   if (!desk->edit_mode)
+     {
+
+	if (!desk->allapps)
+	  {
+	     desk->allapps = elfe_allapps_add(desk->layout);
+	     printf("Create allapps object\n");
+	     evas_object_smart_callback_add(desk->allapps, "entry,longpressed", _app_longpressed_cb, desk);
+	     evas_object_smart_callback_add(desk->allapps, "gadget,longpressed", _gadget_longpressed_cb, desk);
+	     evas_object_smart_callback_add(desk->allapps, "item,selected", _allapps_item_selected_cb, desk);
+	     evas_object_show(desk->allapps);
+	     elm_layout_content_set(desk->layout, "elfe.swallow.allapps", desk->allapps);
+	  }
+
+	o_edje = elm_layout_edje_get(desk->layout);
+	edje_object_signal_emit(o_edje, "allapps,toggle", "elfe");
+     }
+   else
+     {
+	elfe_desktop_edit_mode_set(desk->layout, EINA_FALSE);
+     }
 }
 
 void
@@ -324,6 +504,7 @@ elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
    evas_object_show(bx);
 
    desk->dock = elfe_dock_add(bx);
+   evas_object_smart_callback_add(desk->dock, "allapps,clicked", _dock_allapps_clicked_cb, desk);
    /* evas_object_size_hint_min_set(desk->dock, 0, 80); */
    /* evas_object_size_hint_max_set(desk->dock, 9999, 80); */
 
@@ -367,7 +548,7 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
    if (desk->edit_mode == mode)
        return;
    
-   printf("Elfe desktop edit mode\n");
+   printf("Elfe desktop edit mode %d\n",mode);
 
    desk->edit_mode = mode;
 

@@ -21,27 +21,11 @@ struct _Elfe_Home_Win
    Evas_Object *o_bg;
    Evas_Object *layout;
    Evas_Object *desktop;
-   Evas_Object *allapps;
-   Evas_Object *rect;
-   Evas_Object *floating_icon;
+
    E_Zone *zone;
-   Efreet_Menu *selected_app;
-   const char *selected_gadget;
+
 };
 
-typedef enum
-  {
-    GADMAN_LAYER_BG = 0, /* layer is considered unsigned int */
-    GADMAN_LAYER_TOP,
-    GADMAN_LAYER_COUNT
-  } Gadman_Layer_Type;
-
-#define DEFAULT_POS_X  0.1
-#define DEFAULT_POS_Y  0.1
-#define DEFAULT_SIZE_W 0.07
-#define DEFAULT_SIZE_H 0.07
-
-static E_Gadcon *gc = NULL;
 static Elfe_Home_Win *hwin;
 
 /* local function prototypes */
@@ -142,226 +126,6 @@ elfe_home_win_cfg_update(void)
 }
 
 static void
-_desktop_editmode_cb(void *data , Evas_Object *obj, void *event_info)
-{
-    Elfe_Home_Win *hwin = data;
-    Evas_Object *o_edje;
-
-    printf("Enter Edit mode\n");
-    o_edje = elm_layout_edje_get(hwin->layout);
-    edje_object_signal_emit(o_edje, "editmode,show", "elfe");
-}
-
-static void
-_gadget_added_cb(void *data , Evas_Object *obj, void *event_info)
-{
-   Elfe_Home_Win *hwin = data;
-   Evas_Object *o_edje;
-
-   o_edje = elm_layout_edje_get(hwin->layout);
-   edje_object_signal_emit(o_edje, "inwin,hide", "elfe");
-}
-
-static void
-_icon_mouse_move_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
-{
-   Elfe_Home_Win *hwin = data;
-   Evas_Event_Mouse_Move *ev = event_info;
-
-   evas_object_move(hwin->floating_icon, ev->cur.output.x - 92 / 2, ev->cur.output.y - 92 / 2);
-
-}
-
-
-static void
-_icon_mouse_up_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
-{
-
-   Elfe_Home_Win *hwin = data;
-   Evas_Event_Mouse_Up *ev = event_info;
-
-   evas_object_del(hwin->floating_icon);
-   evas_object_event_callback_del(hwin->desktop, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb);
-   evas_object_event_callback_del(hwin->desktop, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb);
-   elfe_desktop_edit_mode_set(hwin->desktop, EINA_FALSE);
-
-   if (hwin->selected_app)
-       elfe_desktop_app_add(hwin->desktop, hwin->selected_app, ev->output.x, ev->output.y);
-   else if (hwin->selected_gadget)
-       elfe_desktop_gadget_add(hwin->desktop, hwin->selected_gadget, ev->output.x, ev->output.y);
-
-}
-
-
-static void
-_app_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
-{
-   Elfe_Home_Win *hwin = data;
-   Efreet_Menu *entry = event_info;
-   Evas_Object *ic;
-   Evas_Coord x, y;
-   Evas_Object *o_edje;
-   Evas_Coord ow, oh;
-   Evas_Coord size = elfe_home_cfg->icon_size;
-
-   evas_object_geometry_get(hwin->desktop, NULL, NULL, &ow, &oh);
-
-
-
-   elfe_desktop_edit_mode_set(hwin->desktop, EINA_TRUE);
-
-   o_edje = elm_layout_edje_get(hwin->layout);
-   edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
-
-   ic = elfe_utils_fdo_icon_add(o_edje, entry->icon, size);
-   evas_object_show(ic);
-   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
-   evas_object_resize(ic, size, size);
-   evas_object_move(ic, x - size / 2, y - size /2);
-   hwin->floating_icon = ic;
-
-   evas_object_del(hwin->allapps);
-   hwin->allapps = NULL;
-   evas_object_pass_events_set(ic, EINA_TRUE);
-
-   hwin->selected_app = entry;
-
-   evas_object_event_callback_add(hwin->desktop, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb, hwin);
-   evas_object_event_callback_add(hwin->desktop, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb, hwin);
-}
-
-static void
-_gadget_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
-{
-   Elfe_Home_Win *hwin = data;
-   const char *name = event_info;
-   Evas_Coord x, y;
-   Evas_Object *o_edje;
-   Evas_Coord ow, oh;
-   Evas_Coord size = 0;
-   Evas_Object *ic;
-   E_Gadcon_Client_Class *gcc = NULL;
-
-   gcc = elfe_utils_gadcon_client_class_from_name(name);
-   if (!gcc)
-     {
-         printf("error : unable to find gadcon client class from name : %s\n", name);
-         return;
-     }
-
-   evas_object_geometry_get(hwin->desktop, NULL, NULL, &ow, &oh);
-
-   size = MIN(ow, oh) / 5;
-
-   elfe_desktop_edit_mode_set(hwin->desktop, EINA_TRUE);
-
-   o_edje = elm_layout_edje_get(hwin->layout);
-   edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
-
-   ic = gcc->func.icon(gcc, evas_object_evas_get(obj));
-   if (!ic)
-     ic = elfe_utils_fdo_icon_add(obj, NULL, 64);
-
-   evas_object_show(ic);
-   evas_pointer_canvas_xy_get(evas_object_evas_get(obj), &x, &y);
-   evas_object_resize(ic, size, size);
-   evas_object_move(ic, x - size / 2, y - size /2);
-   hwin->floating_icon = ic;
-
-   evas_object_del(hwin->allapps);
-   hwin->allapps = NULL;
-   evas_object_pass_events_set(ic, EINA_TRUE);
-
-   hwin->selected_app = NULL;
-   hwin->selected_gadget = name;
-
-   evas_object_event_callback_add(hwin->desktop, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb, hwin);
-   evas_object_event_callback_add(hwin->desktop, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb, hwin);
-}
-
-static void*
-_app_exec_cb(void *data, Efreet_Desktop *desktop, char *command, int remaining)
-{
-    ecore_exe_run(command, NULL);
-}
-
-static void
-_allapps_item_selected_cb(void *data , Evas_Object *obj, void *event_info)
-{
-    Efreet_Menu *menu = event_info;
-    Evas_Object *o_edje;
-    Elfe_Home_Win *hwin = data;
-
-
-
-    o_edje = elm_layout_edje_get(hwin->layout);
-    edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
-
-    efreet_desktop_command_get(menu->desktop, NULL,
-                               _app_exec_cb, NULL);
-}
-
-static void  _edje_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
-{
-   Elfe_Home_Win *hwin = data;
-   Evas_Object *o_edje;
-   Evas_Object *winlist;
-
-   if (!strcmp(emission, "action,settings"))
-     {
-	//elfe_desktop_edit_mode_set(hwin->desktop, EINA_TRUE);
-     }
-   else if (!strcmp(emission, "action,windows"))
-     {
-	/* printf("Receive edje signal %s:%s\n", emission, source); */
-
-	/* winlist = e_winilist_add(hwin->layout); */
-	/* elm_layout_content_set(hwin->layout, "windowlist.swallow", winlist); */
-	/* o_edje = elm_layout_edje_get(hwin->layout); */
-	/* edje_object_signal_emit(o_edje, "windowlist,show", "elfe"); */
-     }
-   else if (!strcmp(emission, "action,apps"))
-     {
-
-     }
-   else if (!strcmp(emission, "action,badge_delete"))
-     {
-	    Evas_Object *o_edje;
-
-	    elfe_desktop_edit_mode_set(hwin->desktop, EINA_FALSE);
-	    o_edje = elm_layout_edje_get(hwin->layout);
-	    edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
-     }
-}
-
-void elfe_home_win_allapps_togle(void)
-{
-    Evas_Object *o_edje;
-
-    if (!hwin->allapps)
-        {
-            printf("Create allapps\n");
-            hwin->allapps = elfe_allapps_add(hwin->layout);
-            evas_object_smart_callback_add(hwin->allapps, "entry,longpressed", _app_longpressed_cb, hwin);
-            evas_object_smart_callback_add(hwin->allapps, "gadget,longpressed", _gadget_longpressed_cb, hwin);
-            evas_object_smart_callback_add(hwin->allapps, "item,selected", _allapps_item_selected_cb, hwin);
-            evas_object_show(hwin->allapps);
-            elm_layout_content_set(hwin->layout, "elfe.swallow.allapps", hwin->allapps);
-	    o_edje = elm_layout_edje_get(hwin->layout);
-	    edje_object_signal_emit(o_edje, "appslist,toggle", "elfe");
-        }
-}
-
-void elfe_home_win_editmode_off()
-{
-    Evas_Object *o_edje;
-
-    elfe_desktop_edit_mode_set(hwin->desktop, EINA_FALSE);
-    o_edje = elm_layout_edje_get(hwin->layout);
-    edje_object_signal_emit(o_edje, "editmode,hide", "elfe");
-}
-
-static void
 _elfe_home_win_new(E_Zone *zone)
 {
 
@@ -430,7 +194,6 @@ _elfe_home_win_new(E_Zone *zone)
 	  }
      }
    o_edje = elm_layout_edje_get(hwin->layout);
-   edje_object_signal_callback_add(o_edje, "*", "*", _edje_signal_cb, hwin);
 
    theme = elm_theme_new();
    /* Use specific module theme as elm theme overlay */
@@ -439,9 +202,6 @@ _elfe_home_win_new(E_Zone *zone)
 
    hwin->desktop = elfe_desktop_add(hwin->layout, hwin->zone);
    elm_layout_content_set(hwin->layout, "elfe.swallow.desktop", hwin->desktop);
-   evas_object_smart_callback_add(hwin->desktop, "gadget,added", _gadget_added_cb, hwin);
-   evas_object_smart_callback_add(hwin->desktop, "editmode,on", _desktop_editmode_cb, hwin);
-
 
    evas_object_move(hwin->layout, 0, 0);
    evas_object_show(hwin->layout);
@@ -451,13 +211,6 @@ _elfe_home_win_new(E_Zone *zone)
    e_border_zone_set(hwin->win->border, zone);
    if (hwin->win->evas_win)
      e_drop_xdnd_register_set(hwin->win->evas_win, EINA_TRUE);
-
-   hwin->rect = evas_object_rectangle_add(evas);
-   evas_object_resize(hwin->rect, zone->w, zone->h);
-   evas_object_move(hwin->rect, 0, 0);
-   //evas_object_show(hwin->rect);
-   evas_object_color_set(hwin->rect, 0, 0, 0, 0);
-   evas_object_raise(hwin->rect);
 
    hwins = eina_list_append(hwins, hwin);
 }
