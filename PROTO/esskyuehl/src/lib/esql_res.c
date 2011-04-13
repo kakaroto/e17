@@ -61,10 +61,11 @@ esql_res_free(void *data __UNUSED__,
    Esql_Row *r;
    Eina_Inlist *l;
 
-   if ((!res) || (!res->rows)) return;
+   if (!res) return;
 
-   EINA_INLIST_FOREACH_SAFE(res->rows, l, r)
-     esql_row_free(r);
+   if (res->rows)
+     EINA_INLIST_FOREACH_SAFE(res->rows, l, r)
+       esql_row_free(r);
    res->e->backend.res_free(res);
    free(res->query);
    free(res);
