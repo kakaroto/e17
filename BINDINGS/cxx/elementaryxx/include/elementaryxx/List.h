@@ -14,7 +14,7 @@ namespace Elmxx {
 
 /*!
  * smart callbacks called:
- * "clicked" - when the user double-clicked an item
+ * "clicked,double" - when the user double-clicked an item
  * "selected" - when the user selected an item
  * "unselected" - when the user unselected an item
  */

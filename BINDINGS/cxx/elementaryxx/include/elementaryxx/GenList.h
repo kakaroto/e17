@@ -30,7 +30,7 @@ class GenListColumnSelector;
  *
  * Signals that you can add callbacks for are:
  *
- * clicked - This is called when a user has double-clicked an item. The
+ * clicked,double - This is called when a user has double-clicked an item. The
  * event_info parameter is the genlist item that was double-clicked.
  *
  * selected - This is called when a user has made an item selected. The
