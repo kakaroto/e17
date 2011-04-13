@@ -34,6 +34,7 @@ esql_string_escape(Eina_Bool   backslashes,
    char *ret, *rp;
    const char *p;
 
+   if (!s) return NULL;
    ret = malloc(sizeof(char) * strlen(s) * 2 + 1);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
    if (!backslashes) /* no backslashes allowed, so just double up single quotes */
@@ -161,6 +162,7 @@ top:
                   goto err;
                }
              s = va_arg(args, char *);
+             if (!s) break;
              s = esql_string_escape(backslashes, s);
              EINA_SAFETY_ON_NULL_GOTO(s, err);
              EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append(buf, s), err);
