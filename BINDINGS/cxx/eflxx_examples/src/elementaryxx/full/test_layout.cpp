@@ -7,7 +7,7 @@ void test_layout (void *data, Evas_Object *obj, void *event_info)
   Window *win = Window::factory ("layout", ELM_WIN_BASIC);
   win->setTitle ("Layout");
   win->setAutoDel (true);
-  
+
   Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

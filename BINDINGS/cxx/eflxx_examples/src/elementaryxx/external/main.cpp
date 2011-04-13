@@ -32,7 +32,7 @@ int main (int argc, char **argv)
 
   Window *elmWin = Window::factory ("window1", ELM_WIN_BASIC);
   elmWin->getEventSignal ("delete-request")->connect (sigc::ptr_fun (&my_win_del));
-  
+
   Background *bg = Background::factory (*elmWin);
 
   // TODO wrap this
@@ -110,7 +110,7 @@ int main (int argc, char **argv)
   {
     cerr << ene.what () << endl;
   }
-  
+
   // This External access is save as it only calls the ExternalParam interface
   try
   {
@@ -126,7 +126,7 @@ int main (int argc, char **argv)
   {
     cerr << pne.what () << endl;
   }
-  
+
   bg->setWeightHintSize (1.0, 1.0);
   elmWin->addObjectResize (*bg);
 
@@ -138,9 +138,9 @@ int main (int argc, char **argv)
    * with evas_object_size_hint_min_set() at the same size to make a
    * window not resizable */
   bg->setMaxHintSize (Size (640, 640));
-    
+
   elmWin->setTitle ("Elementaryxx Simple Example");
-  
+
   elmWin->setAutoDel (true);
 
   elmWin->show ();

@@ -5,12 +5,12 @@ void test_clock (void *data, Evas_Object *obj, void *event_info)
   Window *win = Window::factory ("clock", ELM_WIN_BASIC);
   win->setTitle ("Clock");
   win->setAutoDel (true);
-  
+
   Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
-  
+
   Box *bx = Box::factory (*win);
   win->addObjectResize (*bx);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -19,7 +19,7 @@ void test_clock (void *data, Evas_Object *obj, void *event_info)
   Clock *ck = Clock::factory (*win);
   bx->packEnd (*ck);
   ck->show ();
-  
+
   Clock *ck2 = Clock::factory (*win);
   ck2->setShowAmPm (true);
   bx->packEnd (*ck2);

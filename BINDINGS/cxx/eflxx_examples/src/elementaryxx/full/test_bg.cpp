@@ -43,7 +43,7 @@ void test_bg_image (void *data, Evas_Object *obj, void *event_info)
 
   bg->setMinHintSize (size160x160);
   bg->setMaxHintSize (size640x640);
-  
+
   win->resize (Size (size320x320));
   win->show ();
 }

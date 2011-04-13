@@ -22,21 +22,21 @@ static void _my_progressbar_value_set ()
   double progress;
 
   progress = _test_progressbar.pb1->getValue ();
-  
+
   if (progress < 1.0)
   {
     progress += 0.0123;
   }
-  else 
+  else
   {
     progress = 0.0;
   }
-  
+
   _test_progressbar.pb1->setValue (progress);
   _test_progressbar.pb4->setValue (progress);
   _test_progressbar.pb3->setValue (progress);
   _test_progressbar.pb6->setValue (progress);
-  
+
   if (progress > 1.0)
   {
     _test_progressbar.run = false;
@@ -50,7 +50,7 @@ static void my_progressbar_test_start (Evasxx::Object &obj, void *event_info)
   _test_progressbar.pb2->pulse (true);
   _test_progressbar.pb5->pulse (true);
   _test_progressbar.pb7->pulse (true);
-  
+
   if (!_test_progressbar.run)
   {
     _test_progressbar.timer = new Ecorexx::Timer (0.1);
@@ -64,7 +64,7 @@ static void _test_stop ()
   _test_progressbar.pb2->pulse (false);
   _test_progressbar.pb5->pulse (false);
   _test_progressbar.pb7->pulse (false);
-   
+
   if (_test_progressbar.run)
   {
      _test_progressbar.timer->del ();
@@ -89,31 +89,31 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   Icon *ic1 = NULL;
   Icon *ic2 = NULL;
   Button *bt = NULL;
-  
+
   // start in stop mode
   _test_progressbar.run = false;
-  
+
   Window *win = Window::factory ("progressbar", ELM_WIN_BASIC);
   win->setTitle ("Progressbar");
   win->getEventSignal ("delete,request")->connect (sigc::ptr_fun (&my_progressbar_destroy));
-  
+
   Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
-  
+
   Box *bx = Box::factory (*win);
   win->addObjectResize (*bx);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->show ();
-  
+
   pb = Progressbar::factory (*win);
   pb->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   pb->setAlignHintSize (EVAS_HINT_FILL, 0.5);
   bx->packEnd (*pb);
   pb->show ();
   _test_progressbar.pb1 = pb;
-  
+
   pb = Progressbar::factory (*win);
   pb->setAlignHintSize (EVAS_HINT_FILL, 0.5);
   pb->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -122,11 +122,11 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*pb);
   pb->show ();
   _test_progressbar.pb2 = pb;
-  
+
   ic1 = Icon::factory (*win);
   ic1->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic1->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
-  
+
   pb = Progressbar::factory (*win);
   pb->setLabel ("Label");
   pb->setIcon (*ic1);
@@ -146,7 +146,7 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   hbx->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx->packEnd (*hbx);
   hbx->show ();
-  
+
   pb = Progressbar::factory (*win);
   pb->setOrientation (Progressbar::Vertical);
   pb->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -156,7 +156,7 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   pb->setLabel ("percent");
   pb->show ();
   _test_progressbar.pb4 = pb;
-  
+
   pb = Progressbar::factory (*win);
   pb->setOrientation (Progressbar::Vertical);
   pb->setAlignHintSize (EVAS_HINT_FILL, 0.5);
@@ -171,7 +171,7 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   ic2 = Icon::factory (*win);
   ic2->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic2->setAspectHintSize (EVAS_ASPECT_CONTROL_HORIZONTAL, Size (1, 1));
-  
+
   pb = Progressbar::factory (*win);
   pb->setOrientation (Progressbar::Vertical);
   pb->setLabel ("Label");
@@ -184,7 +184,7 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   hbx->packEnd (*pb);
   pb->show ();
   _test_progressbar.pb6 = pb;
-  
+
   pb = Progressbar::factory (*win);
   pb->setStyle ("wheel");
   pb->setLabel ("Style: wheel");
@@ -193,13 +193,13 @@ void test_progressbar(void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*pb);
   pb->show ();
   _test_progressbar.pb7 = pb;
-  
+
   Box *bt_bx = Box::factory (*win);
   bt_bx->setOrientation (Box::Horizontal);
   bt_bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->packEnd (*bt_bx);
   bt_bx->show ();
-  
+
   bt = Button::factory (*win);
   bt->setLabel ("Start");
   bt->getEventSignal ("clicked")->connect (sigc::ptr_fun (&my_progressbar_test_start));

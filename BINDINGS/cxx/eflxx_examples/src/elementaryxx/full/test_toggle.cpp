@@ -5,17 +5,17 @@ void test_toggle (void *data, Evas_Object *obj, void *event_info)
   Window *win = Window::factory ("toggles", ELM_WIN_BASIC);
   win->setTitle ("Toggles");
   win->setAutoDel (true);
-  
+
   Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
-  
+
   Box *bx = Box::factory (*win);
   win->addObjectResize (*bx);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->show ();
-  
+
   Icon *ic = Icon::factory (*win);
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
@@ -39,7 +39,7 @@ void test_toggle (void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*tg2);
   tg2->show ();
   ic2->show ();
-  
+
   Toggle *tg3 = Toggle::factory (*win);
   tg3->setLabel ("Label Only");
   tg3->setLabelsStates ("Big long fun times label", "Small long happy fun label");

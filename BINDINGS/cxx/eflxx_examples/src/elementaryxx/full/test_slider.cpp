@@ -23,7 +23,7 @@ void test_slider (void *data, Evas_Object *obj, void *event_info)
   ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
   ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Size (1, 1));
   ic->show ();
-  
+
   sl = Slider::factory (*win);
   sl->setLabel ("Label");
   sl->setIcon (*ic);

@@ -7,7 +7,7 @@ void test_table (void *data, Evas_Object *obj, void *event_info)
   Window *win = Window::factory ("table", ELM_WIN_BASIC);
   win->setTitle ("Table");
   win->setAutoDel (true);
-  
+
   Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -17,14 +17,14 @@ void test_table (void *data, Evas_Object *obj, void *event_info)
   win->addObjectResize (*tb);
   tb->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   tb->show ();
-  
+
   Button *bt = Button::factory (*win);
   bt->setLabel ("Button 1");
   bt->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bt->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   tb->pack (*bt, Rect (0, 0, 1, 1));
   bt->show ();
-  
+
   Button *bt2 = Button::factory (*win);
   bt2->setLabel ("Button 2");
   bt2->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

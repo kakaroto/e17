@@ -12,10 +12,10 @@ public:
   GenListColumnConstructor1 () :
     mItemNum (0)
   {}
-  
+
   void setItemNum (int num) {mItemNum = num;}
   int getItemNum () const {return mItemNum;}
-  
+
 private:
   int mItemNum;
 };
@@ -29,14 +29,14 @@ public:
   ~GenListDataModel1 () {}
 
   std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
-  { 
+  {
     GenListColumnConstructor1 *construct1 = static_cast <GenListColumnConstructor1*> (construction);
     cout << "GenListDataModel::getLabel" << endl;
 
     //return strdup(ecore_file_file_get(data));
     return "Item " + toString <int> (construct1->getItemNum ());
   }
-    
+
   Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
   {
     Window *win = static_cast <Window*> (&obj);
@@ -45,7 +45,7 @@ public:
     ic->setAspectHintSize (EVAS_ASPECT_CONTROL_VERTICAL, Eflxx::Size (1, 1));
 
     /*
-    if (!strcmp(source, "elm.swallow.icon")) 
+    if (!strcmp(source, "elm.swallow.icon"))
      {
         Evas_Object *ic;
 
@@ -60,7 +60,7 @@ public:
      }
    return NULL;
      */
-    
+
     //part: elm.swallow.icon
     //part: elm.swallow.end
 
@@ -75,12 +75,12 @@ public:
 
 static GenListDataModel1 model ("default");
 
-void test_panel (void *data, Evas_Object *obj, void *event_info) 
+void test_panel (void *data, Evas_Object *obj, void *event_info)
 {
   Window *win = Window::factory ("panel", ELM_WIN_BASIC);
   win->setTitle ("Panel");
   win->setAutoDel (true);
-  
+
   Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -90,7 +90,7 @@ void test_panel (void *data, Evas_Object *obj, void *event_info)
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
   bx->show ();
-  
+
   Panel *panel = Panel::factory (*win);
   panel->setOrientation (ELM_PANEL_ORIENT_LEFT);
   panel->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -118,14 +118,14 @@ void test_panel (void *data, Evas_Object *obj, void *event_info)
 #if 0
 
 
-static void 
-_item_del(const void *data, Evas_Object *obj) 
+static void
+_item_del(const void *data, Evas_Object *obj)
 {
    eina_stringshare_del(data);
 }
 #endif
 
-static void _fill_list (Evasxx::Object *obj) 
+static void _fill_list (Evasxx::Object *obj)
 {
   DIR *d;
   struct dirent *de;
@@ -133,7 +133,7 @@ static void _fill_list (Evasxx::Object *obj)
   char *real;
 
   if (!(d = opendir(getenv("HOME")))) return;
-  while ((de = readdir(d)) != NULL) 
+  while ((de = readdir(d)) != NULL)
   {
     char buff[PATH_MAX];
 
@@ -147,17 +147,17 @@ static void _fill_list (Evasxx::Object *obj)
 
   dirs = eina_list_sort(dirs, eina_list_count(dirs), EINA_COMPARE_CB(strcoll));
 #if 0
-   EINA_LIST_FOREACH(dirs, l, real) 
+   EINA_LIST_FOREACH(dirs, l, real)
      {
         Eina_Bool result = EINA_FALSE;
 
         result = _dir_has_subs(real);
-        if (!result) 
-          elm_genlist_item_append(obj, &itc, eina_stringshare_add(real), 
+        if (!result)
+          elm_genlist_item_append(obj, &itc, eina_stringshare_add(real),
                                   NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
-        else 
-          elm_genlist_item_append(obj, &itc, eina_stringshare_add(real), 
-                                  NULL, ELM_GENLIST_ITEM_SUBITEMS, 
+        else
+          elm_genlist_item_append(obj, &itc, eina_stringshare_add(real),
+                                  NULL, ELM_GENLIST_ITEM_SUBITEMS,
                                   NULL, NULL);
         free(real);
      }
@@ -165,7 +165,7 @@ static void _fill_list (Evasxx::Object *obj)
 #endif
 }
 
-static Eina_Bool _dir_has_subs(const char *path) 
+static Eina_Bool _dir_has_subs(const char *path)
 {
   DIR *d;
   struct dirent *de;
@@ -173,13 +173,13 @@ static Eina_Bool _dir_has_subs(const char *path)
 
   if (!path) return result;
   if (!(d = opendir(path))) return result;
-  while ((de = readdir(d)) != NULL) 
+  while ((de = readdir(d)) != NULL)
   {
     char buff[PATH_MAX];
 
     if (de->d_name[0] == '.') continue;
     snprintf(buff, sizeof(buff), "%s/%s", path, de->d_name);
-    if (ecore_file_is_dir(buff)) 
+    if (ecore_file_is_dir(buff))
     {
       result = EINA_TRUE;
       break;

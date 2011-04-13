@@ -3,7 +3,7 @@
 void test_spinner(void *data, Evas_Object *obj, void *event_info)
 {
   Spinner *sp = NULL;
-  
+
   Window *win = Window::factory ("spinner", ELM_WIN_BASIC);
   win->setTitle ("Spinner");
   win->setAutoDel (true);
@@ -27,7 +27,7 @@ void test_spinner(void *data, Evas_Object *obj, void *event_info)
   sp->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->packEnd (*sp);
   sp->show ();
-  
+
   sp = Spinner::factory (*win);
   sp->setLabelFormat ("%1.1f units");
   sp->setStep (1.3);
@@ -38,7 +38,7 @@ void test_spinner(void *data, Evas_Object *obj, void *event_info)
   sp->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->packEnd (*sp);
   sp->show ();
-  
+
   sp = Spinner::factory (*win);
   sp->setLabelFormat ("Disabled %.0f");
   sp->setDisabled (true);
@@ -47,6 +47,6 @@ void test_spinner(void *data, Evas_Object *obj, void *event_info)
   sp->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bx->packEnd (*sp);
   sp->show ();
-  
+
   win->show ();
 }

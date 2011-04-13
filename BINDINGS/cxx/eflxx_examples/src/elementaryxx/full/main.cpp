@@ -87,7 +87,7 @@ int main (int argc, char **argv)
    * the evas object returned - the window will respond. elm_win makes sure
    * of that so you can blindly treat it like any other evas object
    * pretty much, just as long as you know it has special significance */
-  
+
   /* the first parameter is a "parent" window - eg for a dialog you want to
    * have a main window it is related to, here it is NULL meaning there
    * is no parent. "main" is the name of the window - used by the window
@@ -95,7 +95,7 @@ int main (int argc, char **argv)
    * within this application (and all instances of the application). the
    * type is a basic window (the final parameter) */
   Window *win = Window::factory ("main", ELM_WIN_BASIC);
-  
+
   /* set the title of the window - this is in the titlebar */
   win->setTitle ("Elementary Tests");
 
@@ -105,7 +105,7 @@ int main (int argc, char **argv)
    * case it is NULL). This is how you can pass specific things to a
    * callback like objects or data layered on top */
   win->getEventSignal ("delete-request")->connect (sigc::ptr_fun (&my_win_del));
-  
+
   /* add a background to our window. this just uses the standard theme set
    * background. without a backgorund, you could make a window seem
    * transparent with elm_win_alpha_set(win, 1); for example. if you have
@@ -152,7 +152,7 @@ int main (int argc, char **argv)
   li->setAlignHintSize (EVAS_HINT_FILL, EVAS_HINT_FILL);
   bx0->packEnd (*li);
   li->show ();
-  
+
   li->append ("Bg Plain", test_bg_plain, NULL);
   li->append ("Bg Image", test_bg_image, NULL);
   li->append ("Icon Transparent", test_icon, NULL);
@@ -212,7 +212,7 @@ int main (int argc, char **argv)
   li->append ("Panel", test_panel, NULL);
 
   li->go ();
-  
+
   /* set an initial window size */
   win->resize (Size (240, 480));
   /* show the window */

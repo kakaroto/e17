@@ -29,7 +29,7 @@ int main (int argc, char **argv)
 
   Window *elmWin = Window::factory ("window1", ELM_WIN_BASIC);
   elmWin->getEventSignal ("delete-request")->connect (sigc::ptr_fun (&my_win_del));
-  
+
   Background *bg = Background::factory (*elmWin);
 
   Evas *e = evas_object_evas_get(bg->obj ());
@@ -68,17 +68,17 @@ int main (int argc, char **argv)
   elmScroller->setGeometry (Rect (250, 120, 200, 200));
   elmEntry->setGeometry (Rect (150, 200, 100, 50));
   elmSlider->setGeometry (Rect (200, 200, 100, 50));
-    
+
   elmWin->setTitle ("Elementaryxx Simple Example");
-  
+
   elmButton->setLabel ("Text");
-  
+
   elmClock->setEdit (true);
-  
+
   elmWin->setAutoDel (true);
 
   //elmToggle->getEventSignal ("sub-object-del")->connect (sigc::ptr_fun (&testFunc));
-  
+
   elmWin->show ();
   bg->show ();
   elmButton->show ();

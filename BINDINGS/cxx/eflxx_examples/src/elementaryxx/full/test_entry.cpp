@@ -25,16 +25,16 @@ static void my_entry_bt_4 (Evasxx::Object &obj, void *event_info, Entry *en)
 void test_entry (void *data, Evas_Object *obj, void *event_info)
 {
   Button *bt = NULL;
-  
+
   Window *win = Window::factory ("entry", ELM_WIN_BASIC);
   win->setTitle ("Entry");
   win->setAutoDel (true);
-  
+
   Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
-  
+
   Box *bx = Box::factory (*win);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
@@ -104,16 +104,16 @@ void test_entry_scolled (void *data, Evas_Object *obj, void *event_info)
   Button *bt = NULL;
   Entry *en = NULL;
   Scroller *sc = NULL;
-  
+
   Window *win = Window::factory ("entry-scrolled", ELM_WIN_BASIC);
   win->setTitle ("Entry Scrolled");
   win->setAutoDel (true);
-  
+
   Background *bg = Background::factory (*win);
   win->addObjectResize (*bg);
   bg->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   bg->show ();
-  
+
   Box *bx = Box::factory (*win);
   bx->setWeightHintSize (EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
   win->addObjectResize (*bx);
