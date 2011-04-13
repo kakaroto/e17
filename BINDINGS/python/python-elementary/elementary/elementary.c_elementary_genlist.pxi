@@ -917,6 +917,13 @@ cdef class Genlist(Object):
         it = elm_genlist_at_xy_item_get(self.obj, x, y, NULL)
         return _elm_genlist_item_to_python(it)
 
+    def callback_clicked_double_add(self, func, *args, **kwargs):
+        self._callback_add_full("clicked,double", _genlist_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_clicked_double_del(self, func):
+        self._callback_del_full("clicked,double",  _genlist_item_conv, func)
+
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add_full("clicked", _genlist_item_conv,
                                 func, *args, **kwargs)

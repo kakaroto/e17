@@ -37,8 +37,8 @@ def gg_sel(gg, ggi, *args, **kwargs):
 def gg_unsel(gg, ggi, *args, **kwargs):
     print "[item unselected] # %d" % (ggi.data)
 
-def gg_clicked(gg, ggi, *args, **kwargs):
-    print "[item clicked] # %d" % (ggi.data)
+def gg_clicked_double(gg, ggi, *args, **kwargs):
+    print "[item double clicked] # %d" % (ggi.data)
 # -}}}-
 
 #----- Gengrid -{{{-
@@ -81,7 +81,7 @@ def gengrid_clicked(obj, it):
     tb.pack(gg, 0, 0, 6, 1)
     gg.callback_selected_add(gg_sel)
     gg.callback_unselected_add(gg_unsel)
-    gg.callback_clicked_add(gg_clicked)
+    gg.callback_clicked_double_add(gg_clicked_double)
     gg.show()
 
     # add the first items

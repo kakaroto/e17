@@ -822,6 +822,13 @@ cdef class Gengrid(Object):
         def __get__(self):
             return self.last_item_get()
 
+    def callback_clicked_double_add(self, func, *args, **kwargs):
+        self._callback_add_full("clicked,double", _gengrid_item_conv,
+                                func, *args, **kwargs)
+
+    def callback_clicked_double_del(self, func):
+        self._callback_del_full("clicked,double", _gengrid_item_conv, func)
+
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add_full("clicked", _gengrid_item_conv,
                                 func, *args, **kwargs)

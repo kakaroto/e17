@@ -51,9 +51,9 @@ def genlist_clicked(obj, it):
     def _gl_selected(gl, gli, *args, **kwargs):
         print "selected"
     gl.callback_selected_add(_gl_selected)
-    def _gl_clicked(gl, gli):
-        print "clicked"
-    gl.callback_clicked_add(_gl_clicked)
+    def _gl_clicked_double(gl, gli):
+        print "double clicked"
+    gl.callback_clicked_double_add(_gl_clicked_double)
     def _gl_longpressed(gl, gli, *args, **kwargs):
         print "longpressed"
     gl.callback_longpressed_add(_gl_longpressed)
