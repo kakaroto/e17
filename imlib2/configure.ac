@@ -126,9 +126,8 @@ fi
 
 if test "x$have_x" = "xyes"; then
   AC_PATH_XTRA
-  x_dir=${x_dir:-/usr/X11R6}
-  x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
-  x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
+  x_cflags=$X_CFLAGS
+  x_libs=$X_LIBS" -lX11 -lXext"
   AC_DEFINE(BUILD_X11, 1, [enabling X11 support])
 else
   x_cflags=""
