@@ -1172,6 +1172,16 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
         break;
      }
    module->rewind = EINA_FALSE;
+   if (module->new_net && (client->current != module->new_net) && (client->current == client->resume))
+     {
+        client->current->http.req.http_path = NULL;
+        module->new_net->type = client->current->type;
+        module->new_net->transport = client->current->transport;
+        module->new_net->http.version = client->current->http.version;
+        azy_net_free(client->current);
+        client->resume = client->current = module->new_net;
+        module->new_net = NULL;
+     }
    _azy_server_client_handler_request(client);
    if (client->suspend)
      {
