@@ -648,8 +648,6 @@ gen_type_esql(Azy_Typedef *t,
              if (l->prev) E(5, "else ");
              else E(5, "");
              EL(0, "if (!strcmp(c->colname, \"%s\"))", m->name);
-             if ((m->type->type == TD_ARRAY) || (m->type->type == TD_STRUCT))
-               EL(6, "ret->%s = NULL;", m->name);
              if (m->type->ctype == b)
                EL(6, "ret->%s = esql_cell_to_lli(c);", m->name);
              else if (m->type->ctype == i)
@@ -661,12 +659,47 @@ gen_type_esql(Azy_Typedef *t,
              else if (m->type->ctype == b64)
                {
                   EL(6, "{");
-                  EL(7, "ret->%s = malloc(c->len);;", m->name);
+                  EL(7, "ret->%s = malloc(c->len);", m->name);
                   EL(7, "memcpy(ret->%s, c->value.blob, c->len);");
                   EL(6, "}");
                }
-             else if (!strcmp(m->name, "timestamp"))
-                  EL(7, "ret->%s = (int)mktime(&c->value.tm);", m->name);
+             else if ((!strcmp(m->name, "timestamp")) && (m->type->ctype == i))
+               EL(7, "ret->%s = (int)mktime(&c->value.tm);", m->name);
+             else if ((m->type->type == TD_ARRAY) && (m->type->item_type->ctype == i))
+               {
+                  EL(6, "{");
+                  EL(7, "const char *s;");
+                  EL(7, "char *n;");
+                  EL(7, "long long int i;");
+                  EL(7, "for (s = c->value.string; s && s[0] && s[1]; s = strchr(s, ','))");
+                  EL(8, "{");
+                  EL(9, "if (s[0] == ',') s++;");
+                  EL(9, "errno = 0;");
+                  EL(9, "i = strtol(s, &n, 10);");
+                  EL(9, "if (errno)");
+                  EL(10, "{");
+                  EL(11, "char strerr[128];");
+                  EL(11, "EINA_LOG_WARN(\"Failed to convert '%%s' to int: %%s\", s, strerror_r(errno, strerr, sizeof(strerr)));");
+                  EL(10, "}");
+                  EL(9, "ret->%s = eina_list_append(ret->%s, &i);", m->name, m->name);
+                  EL(9, "if (n && *n) s = n;");
+                  EL(8, "}");
+                  EL(7, "if ((!ret->%s) && c->value.string && c->value.string[0])", m->name);
+                  EL(8, "{");
+                  EL(9, "long long int i;");
+                  EL(9, "errno = 0;");
+                  EL(9, "i = strtol(c->value.string, NULL, 10);");
+                  EL(9, "if (errno)");
+                  EL(10, "{");
+                  EL(11, "char strerr[128];");
+                  EL(11, "EINA_LOG_WARN(\"Failed to convert '%%s' to int: %%s\", s, strerror_r(errno, strerr, sizeof(strerr)));");
+                  EL(10, "}");
+                  EL(9, "ret->%s = eina_list_append(ret->%s, &i);", m->name, m->name);
+                  EL(8, "}");
+                  EL(6, "}");
+               }
+             else
+               EL(6, "ret->%s = NULL;", m->name);
           }
         EL(4, "}");
         EL(2, "}");
@@ -739,6 +772,43 @@ gen_type_esql(Azy_Typedef *t,
                        EL(7, "memcpy(tmp->%s, c->value.blob, c->len);");
                        EL(6, "}");
                     }
+                  else if ((!strcmp(m->name, "timestamp")) && (m->type->ctype == i))
+                    EL(7, "tmp->%s = (int)mktime(&c->value.tm);", m->name);
+                  else if ((m->type->type == TD_ARRAY) && (m->type->item_type->ctype == i))
+                    {
+                       EL(6, "{");
+                       EL(7, "const char *s;");
+                       EL(7, "char *n;");
+                       EL(7, "long long int i;");
+                       EL(7, "for (s = c->value.string; s && s[0] && s[1]; s = strchr(s, ','))");
+                       EL(8, "{");
+                       EL(9, "if (s[0] == ',') s++;");
+                       EL(9, "errno = 0;");
+                       EL(9, "i = strtol(s, &n, 10);");
+                       EL(9, "if (errno)");
+                       EL(10, "{");
+                       EL(11, "char strerr[128];");
+                       EL(11, "EINA_LOG_WARN(\"Failed to convert '%%s' to int: %%s\", s, strerror_r(errno, strerr, sizeof(strerr)));");
+                       EL(10, "}");
+                       EL(9, "tmp->%s = eina_list_append(tmp->%s, &i);", m->name, m->name);
+                       EL(9, "if (n && *n) s = n;");
+                       EL(8, "}");
+                       EL(7, "if ((!tmp->%s) && c->value.string && c->value.string[0])", m->name);
+                       EL(8, "{");
+                       EL(9, "long long int i;");
+                       EL(9, "errno = 0;");
+                       EL(9, "i = strtol(c->value.string, NULL, 10);");
+                       EL(9, "if (errno)");
+                       EL(10, "{");
+                       EL(11, "char strerr[128];");
+                       EL(11, "EINA_LOG_WARN(\"Failed to convert '%%s' to int: %%s\", s, strerror_r(errno, strerr, sizeof(strerr)));");
+                       EL(10, "}");
+                       EL(9, "tmp->%s = eina_list_append(tmp->%s, &i);", m->name, m->name);
+                       EL(8, "}");
+                       EL(6, "}");
+                    }
+                  else
+                    EL(6, "tmp->%s = NULL;", m->name);
                }
           }
         EL(4, "}");
@@ -1136,7 +1206,11 @@ gen_common_impl(Azy_Server_Module *s)
           {
              fclose(f);
              OPEN("%s/%s%sCommon_Esskyuehl.c", out_dir, name, sep);
+             EL(0, "#ifdef HAVE_CONFIG_H");
+             EL(0, "# include \"config.h\"");
+             EL(0, "#endif");
              EL(0, "#include \"%s%sCommon_Esskyuehl.h\"", name, sep);
+             EL(0, "#include <errno.h>");
              EINA_LIST_FOREACH(azy->types, j, t)
                gen_type_esql(t, EINA_FALSE);
           }
@@ -1305,9 +1379,14 @@ gen_server_headers(Azy_Server_Module *s)
              EL(0, " */ ");
           }
 
-        E(0, "%s %s%s%s_module_%s(Azy_Server_Module *module",
-          method->return_type->ctype, name, sep, s->name,
-          method->name);
+        if (suspend_funcs)
+          E(0, "Eina_Bool %s%s%s_module_%s(Azy_Server_Module *module",
+            name, sep, s->name,
+            method->name);
+        else
+          E(0, "%s %s%s%s_module_%s(Azy_Server_Module *module",
+            method->return_type->ctype, name, sep, s->name,
+            method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
@@ -1507,7 +1586,10 @@ gen_server_impl(Azy_Server_Module *s)
 
    EINA_LIST_FOREACH(s->methods, j, method)
      {
-        E(0, "%s %s%s%s_module_%s(Azy_Server_Module *module", method->return_type->ctype, name, sep, s->name, method->name);
+        if (suspend_funcs)
+          E(0, "Eina_Bool %s%s%s_module_%s(Azy_Server_Module *module", name, sep, s->name, method->name);
+        else
+          E(0, "%s %s%s%s_module_%s(Azy_Server_Module *module", method->return_type->ctype, name, sep, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
@@ -1542,8 +1624,8 @@ gen_server_impl(Azy_Server_Module *s)
 
         EL(0, "static Eina_Bool method_%s(Azy_Server_Module *module, Azy_Content *content)", method->name);
         EL(0, "{");
-        // forward declarations
-        EL(1, "%s azy_return_module = %s;", method->return_type->ctype, method->return_type->cnull);
+        if (!suspend_funcs)
+          EL(1, "%s azy_return_module = %s;", method->return_type->ctype, method->return_type->cnull);
         EL(1, "Azy_Value *azy_return_value;");
 
         EINA_LIST_FOREACH(method->params, k, p)
@@ -1588,7 +1670,9 @@ gen_server_impl(Azy_Server_Module *s)
           {
              EL(1, "azy_server_module_events_suspend(module);");
           }
-        E(1, "azy_return_module = %s%s%s_module_%s(module", name, sep, s->name, method->name);
+        else
+          E(1, "azy_return_module = ");
+        E(suspend_funcs ? 1 : 0, "%s%s%s_module_%s(module", name, sep, s->name, method->name);
 
         EINA_LIST_FOREACH(method->params, k, p)
           {
@@ -1597,7 +1681,7 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, ", content);");
         EL(1, "if (azy_content_error_is_set(content))");
         EL(2, "{");
-        if (method->return_type->free_func)
+        if (method->return_type->free_func && (!suspend_funcs))
           EL(3, "%s(azy_return_module);", method->return_type->free_func);
         EL(3, "return EINA_FALSE;");
         EL(2, "}");
@@ -1607,14 +1691,15 @@ gen_server_impl(Azy_Server_Module *s)
         NL;
         EL(1, "if (!azy_content_retval_get(content))");
         EL(2, "{");
-        EL(3, "azy_return_value = %s(azy_return_module);", method->return_type->march_name);
+        if (!suspend_funcs)
+          EL(3, "azy_return_value = %s(azy_return_module);", method->return_type->march_name);
         EL(3, "if (!azy_return_value)");
         EL(4, "azy_content_error_faultmsg_set(content, -1, \"Stub return value marshalization failed. (%s)\");", method->name);
         EL(3, "else");
         EL(4, "azy_content_retval_set(content, azy_return_value);");
         NL;
 
-        if (method->return_type->free_func)
+        if (method->return_type->free_func && (!suspend_funcs))
           EL(3, "%s(azy_return_module);", method->return_type->free_func);
         EL(2, "}");
         EINA_LIST_FOREACH(method->params, k, p)
