@@ -244,6 +244,7 @@ struct Azy_Server_Module
    Azy_Net                *new_net;
    Eina_Bool               suspend : 1;
    Eina_Bool               run_method : 1;
+   Eina_Bool               post : 1;
    Eina_Bool               rewind : 1;
    Eina_Bool               rewind_now : 1;
    Eina_Bool               executing : 1;

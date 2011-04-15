@@ -110,7 +110,7 @@ _azy_server_module_free(Azy_Server_Module *module,
 
    if (shutdown)
      {
-        if ((module->state < AZY_SERVER_MODULE_STATE_POST) && module->def && module->def->post)
+        if ((!module->post) && (module->state < AZY_SERVER_MODULE_STATE_POST) && module->def && module->def->post)
           {
              module->executing = EINA_TRUE;
              module->rewind_now = EINA_FALSE;
@@ -314,6 +314,7 @@ _azy_server_client_method_run(Azy_Server_Client *client,
      eina_stringshare_del(module_name);
 
    module->executing = EINA_TRUE;
+   module->post = EINA_FALSE;
    module->content = content;
    method = _azy_server_module_method_find(module, azy_content_method_get(content));
 
@@ -424,6 +425,7 @@ post:
    module->state = AZY_SERVER_MODULE_STATE_INIT;
    module->content = NULL;
    module->run_method = EINA_TRUE;
+   module->post = EINA_TRUE;
    client->resume_rpc = NULL;
    module->executing = EINA_FALSE;
    return client->resume_ret;
@@ -605,6 +607,7 @@ not_impl:
         return EINA_TRUE;
      }
    module->executing = EINA_TRUE;
+   module->post = EINA_FALSE;
 top:
    module->rewind_now = EINA_FALSE;
    switch (module->state)
@@ -700,6 +703,7 @@ post:
         module->recv.data = NULL;
      }
    module->run_method = EINA_TRUE;
+   module->post = EINA_TRUE;
    module->state = AZY_SERVER_MODULE_STATE_INIT;
    module->executing = EINA_FALSE;
    return client->resume_ret;
