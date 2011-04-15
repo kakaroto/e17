@@ -811,11 +811,11 @@ gen_type_esql(Azy_Typedef *t,
                     EL(6, "tmp->%s = NULL;", m->name);
                }
           }
-        EL(4, "}");
         if ((t->item_type->type == TD_BASE) && (t->item_type->ctype != c) && (t->item_type->ctype != b64))
-          EL(3, "ret = eina_list_append(ret, &tmp);");
+          EL(5, "ret = eina_list_append(ret, &tmp);");
         else
-          EL(3, "ret = eina_list_append(ret, tmp);");
+          EL(5, "ret = eina_list_append(ret, tmp);");
+        EL(4, "}");
         EL(2, "}");
         EL(1, "eina_iterator_free(it);");
         EL(1, "return ret;");
@@ -1420,7 +1420,7 @@ gen_server_impl(Azy_Server_Module *s)
    EL(0, "#include \"%s%sCommon_Azy.h\"", name, sep);
    NL;
 
-   EL(0, "static Azy_Server_Module_Def *module = NULL;");
+   EL(0, "static Azy_Server_Module_Def *module_def = NULL;");
    NL;
    EL(0, "typedef struct %s%s%s_Module", name, sep, s->name);
    EL(0, "{");
@@ -1719,45 +1719,45 @@ gen_server_impl(Azy_Server_Module *s)
    EL(0, "{");
    EL(1, "Azy_Server_Module_Method *method;");
    NL;
-   EL(1, "if (module) return module;");
+   EL(1, "if (module_def) return module_def;");
    NL;
-   EL(1, "module = azy_server_module_def_new(\"%s%s%s\");", (azy->name && azy->name[0]) ? azy->name : "", sep[0] ? "." : "", s->name);
-   EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(module, NULL);");
+   EL(1, "module_def = azy_server_module_def_new(\"%s%s%s\");", (azy->name && azy->name[0]) ? azy->name : "", sep[0] ? "." : "", s->name);
+   EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(module_def, NULL);");
    NL;
 
-   E(1, "azy_server_module_def_init_shutdown_set(module, ");
+   E(1, "azy_server_module_def_init_shutdown_set(module_def, ");
    GET_NAME(init);
    E(0, ", ");
    GET_NAME(shutdown);
    EL(0, ");");
 
-   E(1, "azy_server_module_def_pre_post_set(module, ");
+   E(1, "azy_server_module_def_pre_post_set(module_def, ");
    GET_NAME(pre);
    E(0, ", ");
    GET_NAME(post);
    EL(0, ");");
 
-   E(1, "azy_server_module_def_download_upload_set(module, ");
+   E(1, "azy_server_module_def_download_upload_set(module_def, ");
    GET_NAME(download);
    E(0, ", ");
    GET_NAME(upload);
    EL(0, ");");
 
-   E(1, "azy_server_module_def_fallback_set(module, ");
+   E(1, "azy_server_module_def_fallback_set(module_def, ");
    GET_NAME(fallback);
    EL(0, ");");
 
-   EL(1, "azy_server_module_size_set(module, sizeof(%s%s%s_Module));", name, sep, s->name);
+   EL(1, "azy_server_module_size_set(module_def, sizeof(%s%s%s_Module));", name, sep, s->name);
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         EL(1, "method = azy_server_module_method_new(\"%s\", method_%s);", method->name, method->name);
         EL(1, "EINA_SAFETY_ON_NULL_GOTO(method, error);");
-        EL(1, "azy_server_module_def_method_add(module, method);");
+        EL(1, "azy_server_module_def_method_add(module_def, method);");
      }
    NL;
-   EL(1, "return module;");
+   EL(1, "return module_def;");
    EL(0, "error:");
-   EL(2, "azy_server_module_def_free(module);");
+   EL(2, "azy_server_module_def_free(module_def);");
    EL(1, "return NULL;");
    EL(0, "}");
    fclose(f);
