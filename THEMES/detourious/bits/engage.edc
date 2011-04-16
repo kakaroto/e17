@@ -589,7 +589,7 @@ group {
 		/* when minimizing an application */
 		program {
 			name: "go_iconic1";
-			signal: "e,state,taskbar,iconic,1";
+			signal: "e,state,taskbar,iconic,on";
 			source: "e";
 			action: STATE_SET "iconic" 0.0;
 			transition: LINEAR 0.3;
@@ -597,7 +597,7 @@ group {
 		}
 		program {
 			name: "go_iconic0";
-			signal: "e,state,taskbar,iconic,0";
+			signal: "e,state,taskbar,iconic,off";
 			source: "e";
 			action: STATE_SET "default" 0.0;
 			transition: LINEAR 0.3;
@@ -607,7 +607,7 @@ group {
 		/* when an application got focus */
 		program {
 			name: "go_focused1";
-			signal: "e,state,taskbar,focus,1";
+			signal: "e,state,taskbar,focus,on";
 			source: "e";
 			action: STATE_SET "focused" 0.0;
 			transition: SINUSOIDAL 0.3;
@@ -616,7 +616,7 @@ group {
 
 		program {
 			name: "go_focused0";
-			signal: "e,state,taskbar,focus,0";
+			signal: "e,state,taskbar,focus,off";
 			source: "e";
 			action: STATE_SET "default" 0.0;
 			transition: SINUSOIDAL 0.3;
@@ -626,7 +626,7 @@ group {
 		/* application is sending urgent signal  */
 		program {
 			name: "go_urgent1";
-			signal: "e,state,taskbar,urgent,1";
+			signal: "e,state,taskbar,urgent,on";
 			source: "e";
 			action: STATE_SET "urgent" 0.0;
 			transition: LINEAR 1.0;
@@ -644,7 +644,7 @@ group {
 
 		program {
 			name: "go_urgent0";
-			signal: "e,state,taskbar,urgent,0";
+			signal: "e,state,taskbar,urgent,off";
 			source: "e";
 			action: ACTION_STOP;
 			target: "go_urgent1";
