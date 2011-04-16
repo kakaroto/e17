@@ -400,6 +400,12 @@ _notification_popup_refresh(Popup_Data *popup)
 	evas_object_image_alpha_set(popup->app_icon, 1);
 	evas_object_image_size_get(popup->app_icon, &w, &h);
      }
+   else if ((img = e_notification_hint_image_data_get(popup->notif)))
+     {
+	popup->app_icon = e_notification_image_evas_object_add(popup->e, img);
+	evas_object_image_alpha_set(popup->app_icon, 1);
+	evas_object_image_size_get(popup->app_icon, &w, &h);
+     }
 
    if (!popup->app_icon)
      {
