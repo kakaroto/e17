@@ -1128,7 +1128,7 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
    client->resuming = EINA_TRUE;
    if (client->dead && (!client->executing))
      {
-        azy_net_free(client->resume);
+        if (client->resume) azy_net_free(client->resume);
         client->resume = NULL;
         if (client->resume_rpc) azy_content_free(client->resume_rpc);
         client->suspend = EINA_FALSE;
@@ -1172,7 +1172,8 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
         break;
      }
    module->rewind = EINA_FALSE;
-   if (module->new_net && (client->current != module->new_net) && (client->current == client->resume))
+   if (module->new_net && (client->current != module->new_net) && (client->current == client->resume) &&
+       client->resume_rpc && client->resume_rpc->error_set)
      {
         client->current->http.req.http_path = NULL;
         module->new_net->type = client->current->type;
