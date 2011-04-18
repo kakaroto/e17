@@ -1606,8 +1606,8 @@ gen_server_impl(Azy_Server_Module *s)
 
         if ((method->stub_impl) && (strstr(method->stub_impl, "data_")))
           EL(1, "%s%s%s_Module *data_ = azy_server_module_data_get(module);", name, sep, s->name);
-
-        EL(1, "%s retval = %s;", method->return_type->ctype, method->return_type->cnull);
+        if (!suspend_funcs)
+          EL(1, "%s retval = %s;", method->return_type->ctype, method->return_type->cnull);
 
         if (method->stub_impl)
           {
@@ -1617,7 +1617,8 @@ gen_server_impl(Azy_Server_Module *s)
           }
         else
           EL(1, "azy_content_error_faultmsg_set(error_, -1, \"Method is not implemented. (%s)\");", method->name);
-        EL(1, "return retval;");
+        if (!suspend_funcs)
+          EL(1, "return retval;");
         EL(0, "}");
         NL;
      }
