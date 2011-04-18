@@ -273,9 +273,6 @@ azy_server_cert_add(Azy_Server *server,
  * If the server's listen address has been previously specified, @p type should be
  * #AZY_SERVER_NONE, otherwise it will be detected based on @p type.
  * @param server The server object (NOT NULL)
- * @param type The #Azy_Server_Type of the server; #AZY_SERVER_LOCAL for localhost,
- * #AZY_SERVER_BROADCAST for 0.0.0.0, else #AZY_SERVER_NONE and call azy_server_addr_set
- * @param port The port to listen on (-1 < port < 65536)
  * @return EINA_TRUE on success (after main loop exits), else the function will return
  * immediately with EINA_FALSE
  */

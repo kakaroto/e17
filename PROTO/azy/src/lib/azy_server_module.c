@@ -216,7 +216,7 @@ azy_server_module_del(Azy_Server            *server,
  * Note that this function only removes the module from the server's list
  * and does not actually free the module.
  * @param server The server object (NOT #NULL)
- * @param module The module's name (NOT #NULL)
+ * @param name The module's name (NOT #NULL)
  * @return EINA_TRUE on success or module not found, else EINA_FALSE
  */
 Eina_Bool
