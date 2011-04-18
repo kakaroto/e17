@@ -503,7 +503,7 @@ azy_net_header_set(Azy_Net    *net,
                    const char *value)
 {
    DBG("(net=%p)", net);
-   const char *old;
+   const char *old, *n;
    char *tmp;
 
    if (!AZY_MAGIC_CHECK(net, AZY_MAGIC_NET))
@@ -521,8 +521,13 @@ azy_net_header_set(Azy_Net    *net,
    if (EINA_UNLIKELY(!net->http.headers))
      net->http.headers = eina_hash_string_small_new((Eina_Free_Cb)eina_stringshare_del);
 
-   if ((old = eina_hash_set(net->http.headers, tmp, eina_stringshare_add(value))))
-     eina_stringshare_del(old);
+   n = eina_stringshare_add(value);
+   if ((old = eina_hash_set(net->http.headers, tmp, n)))
+     {
+        eina_hash_set(net->http.headers, tmp, eina_stringshare_printf("%s;%s", old, value));
+        eina_stringshare_del(old);
+        eina_stringshare_del(n);
+     }
 }
 
 /**
