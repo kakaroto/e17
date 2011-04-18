@@ -77,10 +77,9 @@ static void
 _gl_longpress(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *popup;
-   Evas_Object *ic;
    Elfe_Grid_Item *gitem;
-   Elm_Ctxpopup_Item *it;
    Elfe_Allapps *allapps = data;
+   Elm_Gengrid_Item *it = event_info;
 
    gitem = elm_gengrid_item_data_get(event_info);
 
@@ -89,6 +88,7 @@ _gl_longpress(void *data, Evas_Object *obj, void *event_info)
 
    evas_object_smart_callback_call(allapps->box,
 				   "entry,longpressed", gitem->menu);
+   elm_gengrid_item_selected_set(it, EINA_FALSE);
 }
 
 static void
@@ -96,18 +96,22 @@ _widget_longpress(void *data, Evas_Object *obj, void *event_info)
 {
    const char *name = event_info;
    Elfe_Allapps *allapps = data;
+   Elm_Genlist_Item *it = event_info;
 
    printf("Send widget longpressed\n");
    evas_object_smart_callback_call(allapps->box,
 				   "gadget,longpressed", (void*)name);
+   elm_genlist_item_selected_set(it, EINA_FALSE);
 }
 
 static void
 _item_selected(void *data, Evas_Object *obj, void *event_info)
 {
    Elfe_Grid_Item *gitem = data;
+   Elm_Gengrid_Item *it = event_info;
 
    evas_object_smart_callback_call(gitem->allapps->box, "item,selected", gitem->menu);
+   elm_gengrid_item_selected_set(it, EINA_FALSE);
 }
 
 
