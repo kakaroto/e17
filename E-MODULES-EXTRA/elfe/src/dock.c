@@ -20,35 +20,11 @@ struct _Elfe_Dock
 static void _allapps_icon_add(Elfe_Dock *dock, const char *name);
 
 static void
-_pos_to_geom(Elfe_Dock *dock,
-	     int row, int col,
-	     Evas_Coord *x, Evas_Coord *y,
-	     Evas_Coord *w, Evas_Coord *h)
-{
-    Evas_Coord ox, oy, ow, oh;
-
-    if(!dock)
-        return;
-
-    evas_object_geometry_get(dock->edje, &ox, &oy, &ow, &oh);
-
-    if (elfe_home_cfg->cols && w)
-        *w = ow / elfe_home_cfg->cols;
-    if (h)
-        *h = oh;
-
-    if (x && w)
-        *x = col * *w;
-    if (y && h)
-        *y = 0;
-}
-
-static void
-_xy_to_pos(Elfe_Dock *dock, Evas_Coord x, Evas_Coord y,
+_xy_to_pos(Elfe_Dock *dock, Evas_Coord x, Evas_Coord y __UNUSED__,
 	   int *col)
 {
    Evas_Coord ow, oh;
-   Evas_Coord w = 0, h = 0;
+   Evas_Coord w = 0;
 
    if(!dock)
      return;
@@ -66,7 +42,7 @@ _xy_to_pos(Elfe_Dock *dock, Evas_Coord x, Evas_Coord y,
 
 
 static void
-_item_delete_cb(void *data , Evas_Object *obj, void *event_info)
+_item_delete_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info)
 {
    Evas_Object *item = event_info;
    Elfe_Dock *dock = data;
@@ -82,7 +58,7 @@ _item_delete_cb(void *data , Evas_Object *obj, void *event_info)
 
 
 static void
-_app_icon_clicked_cb(void *data , Evas_Object *obj, void *event_info )
+_app_icon_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Dock *dock = data;
 
@@ -121,8 +97,6 @@ _populate_dock(Elfe_Dock *dock)
    Evas_Object *item;
    Eina_List *l;
 
-   Evas_Coord x = 0, y = 0, w = 0, h = 0;
-
    EINA_LIST_FOREACH(elfe_home_cfg->dock_items, l, dic)
      {
 
@@ -150,7 +124,6 @@ elfe_dock_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 {
    Elfe_Dock *dock = evas_object_data_get(obj, "dock");;
    Evas_Object *item;
-   Eina_List *l;
    Eina_Iterator *iter;
    Eina_Matrixsparse_Cell *cell;
 
@@ -181,7 +154,6 @@ elfe_dock_item_app_add(Evas_Object *obj, Efreet_Menu *menu,
 {
     Elfe_Dock *dock = evas_object_data_get(obj, "dock");
     Evas_Object *item;
-    Evas_Coord ox = 0, oy = 0, ow = 0, oh = 0;
     int col = 0;
 
     _xy_to_pos(dock, x, y, &col);
@@ -214,9 +186,6 @@ Evas_Object *
 elfe_dock_add(Evas_Object *parent)
 {
    Elfe_Dock *dock;
-   Evas_Object *bx;
-   Evas_Object *ic;
-   int i;
 
    dock = calloc(1, sizeof(Elfe_Dock));
    if (!dock)

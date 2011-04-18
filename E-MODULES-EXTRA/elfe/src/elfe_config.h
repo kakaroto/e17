@@ -54,7 +54,8 @@ void elfe_home_config_desktop_item_add(int desktop,
                                        Evas_Coord x, Evas_Coord y,
                                        Evas_Coord w, Evas_Coord h,
                                        const char *name);
-
+void elfe_home_config_desktop_item_del(int desktop,
+				       int row, int col);
 
 extern EAPI Elfe_Home_Config *elfe_home_cfg;
 

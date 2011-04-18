@@ -37,38 +37,12 @@ struct _Elfe_Desktop
 
 static Elfe_Desktop *desk;
 
-static void
-_scroller_edge_left_cb(void *data , Evas_Object *obj, void *event_info )
-{
-
-}
 
 static void
-_scroller_edge_right_cb(void *data , Evas_Object *obj, void *event_info )
-{
-
-}
-
-
-static void
-_scroller_scroll_cb(void *data , Evas_Object *obj, void *event_info )
-{
-
-}
-
-
-static void
-_scroller_scroll_anim_start_cb(void *data , Evas_Object *obj, void *event_info )
-{
-
-}
-
-static void
-_scroller_scroll_anim_stop_cb(void *data , Evas_Object *obj, void *event_info )
+_scroller_scroll_anim_stop_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Desktop *desk = data;
    Evas_Coord x, y, w, h;
-   int num;
    int i;
 
 
@@ -88,18 +62,6 @@ _scroller_scroll_anim_stop_cb(void *data , Evas_Object *obj, void *event_info )
 	      edje_object_signal_emit(o_edje, "unselect", "elfe");
 	  }
      }
-}
-
-static void
-_scroller_scroll_drag_start_cb(void *data , Evas_Object *obj, void *event_info )
-{
-
-}
-
-static void
-_scroller_scroll_drag_stop_cb(void *data , Evas_Object *obj, void *event_info )
-{
-
 }
 
 static Eina_Bool
@@ -124,10 +86,9 @@ _longpress_timer_cb(void *data)
 }
 
 static void
-_scroller_mouse_move_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
+_scroller_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Desktop *desk = data;
-   Evas_Event_Mouse_Move *ev = event_info;
 
    if (!desk->on_hold)
      {
@@ -143,7 +104,7 @@ _scroller_mouse_move_cb(void *data,Evas *evas, Evas_Object *obj, void *event_inf
 
 
 static void
-_scroller_mouse_up_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
+_scroller_mouse_up_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Desktop *desk = data;
 
@@ -157,10 +118,9 @@ _scroller_mouse_up_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
 
 
 static void
-_scroller_mouse_down_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
+_scroller_mouse_down_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Desktop *desk = data;
-   Evas_Event_Mouse_Down *ev = event_info;
 
    if (!desk->edit_mode)
      {
@@ -176,7 +136,7 @@ _scroller_mouse_down_cb(void *data,Evas *evas, Evas_Object *obj, void *event_inf
 
 
 static void
-_cb_object_resize(void *data , Evas *e , Evas_Object *obj, void *event_info )
+_cb_object_resize(void *data , Evas *e __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 {
    Elfe_Desktop *desk = data;
    Evas_Coord x, y, w, h;
@@ -202,7 +162,7 @@ _cb_object_resize(void *data , Evas *e , Evas_Object *obj, void *event_info )
 
 
 static void
-_icon_mouse_move_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
+_icon_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Elfe_Desktop *desk = data;
    Evas_Event_Mouse_Move *ev = event_info;
@@ -213,10 +173,9 @@ _icon_mouse_move_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
 
 
 static void
-_icon_mouse_up_cb(void *data,Evas *evas, Evas_Object *obj, void *event_info)
+_icon_mouse_up_cb(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
 
-   Elfe_Desktop *desktop = data;
    Evas_Event_Mouse_Up *ev = event_info;
 
    printf("icon mouse up\n");
@@ -322,13 +281,14 @@ _gadget_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
 }
 
 static void*
-_app_exec_cb(void *data, Efreet_Desktop *desktop, char *command, int remaining)
+_app_exec_cb(void *data __UNUSED__, Efreet_Desktop *desktop __UNUSED__, char *command, int remaining __UNUSED__)
 {
     ecore_exe_run(command, NULL);
+    return NULL;
 }
 
 static void
-_allapps_item_selected_cb(void *data , Evas_Object *obj, void *event_info)
+_allapps_item_selected_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info)
 {
     Efreet_Menu *menu = event_info;
     Evas_Object *o_edje;
@@ -342,7 +302,7 @@ _allapps_item_selected_cb(void *data , Evas_Object *obj, void *event_info)
 }
 
 static void
-_dock_allapps_clicked_cb(void *data , Evas_Object *obj, void *event_info )
+_dock_allapps_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Desktop *desk = data;
    Evas_Object *o_edje;
@@ -398,10 +358,9 @@ elfe_desktop_gadget_add(Evas_Object *obj, const char *name, Evas_Coord x, Evas_C
 Evas_Object *
 elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
 {
-   Evas_Object *tb, *pad, *bx, *ly;
+   Evas_Object *tb, *pad, *bx;
 
    int i;
-   Evas_Coord x, y, w, h;
    const char *desktop_name;
    Evas_Object *gad;
    char buf[4096];
@@ -504,13 +463,7 @@ elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
    /* evas_object_size_hint_min_set(desk->dock, 0, 80); */
    /* evas_object_size_hint_max_set(desk->dock, 9999, 80); */
 
-   evas_object_smart_callback_add(desk->sc, "edge,left", _scroller_edge_left_cb, desk);
-   evas_object_smart_callback_add(desk->sc, "edge,right", _scroller_edge_right_cb, desk);
-   evas_object_smart_callback_add(desk->sc, "scroll", _scroller_scroll_cb, desk);
-   evas_object_smart_callback_add(desk->sc, "scroll,anim,start", _scroller_scroll_anim_start_cb, desk);
    evas_object_smart_callback_add(desk->sc, "scroll,anim,stop", _scroller_scroll_anim_stop_cb, desk);
-   evas_object_smart_callback_add(desk->sc, "scroll,drag,start", _scroller_scroll_drag_start_cb, desk);
-   evas_object_smart_callback_add(desk->sc, "scroll,drag,stop", _scroller_scroll_drag_stop_cb, desk);
 
    evas_object_event_callback_add(desk->sc, EVAS_CALLBACK_MOUSE_MOVE, _scroller_mouse_move_cb, desk);
    evas_object_event_callback_add(desk->sc, EVAS_CALLBACK_MOUSE_UP, _scroller_mouse_up_cb, desk);

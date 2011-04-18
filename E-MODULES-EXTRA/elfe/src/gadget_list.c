@@ -5,10 +5,8 @@
 #include "utils.h"
 
 static void
-_list_longpress(void *data, Evas_Object *obj, void *event_info)
+_list_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Evas_Object *ic;
-   E_Gadcon_Client_Class *gcc = NULL;
    const char *name;
    Elm_List_Item *it = event_info;
 
@@ -26,7 +24,7 @@ elfe_gadget_list_add(Evas_Object *obj)
    Evas_Object *list;
    E_Gadcon_Client_Class *gcc = NULL;
    Eina_List *l;
-   Evas_Object *icon = NULL, *end;
+   Evas_Object *icon = NULL;
    const char *lbl = NULL;
 
    list = elm_list_add(obj);

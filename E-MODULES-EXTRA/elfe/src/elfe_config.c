@@ -5,13 +5,6 @@
 #include "elfe_config.h"
 
 /* local function prototypes */
-static void *_elfe_home_config_create(E_Config_Dialog *cfd);
-static void _elfe_home_config_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_elfe_home_config_ui(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-static void _elfe_home_config_changed(void *data, Evas_Object *obj, void *event);
-static void _elfe_home_config_slider_changed(void *data, Evas_Object *obj);
-static void _elfe_home_config_click_changed(void *data, Evas_Object *obj, void *event);
-static Eina_Bool _elfe_home_config_change_timeout(void *data);
 
 /* local variables */
 EAPI Elfe_Home_Config *elfe_home_cfg = NULL;
@@ -22,11 +15,9 @@ Ecore_Timer *_elfe_home_config_change_timer = NULL;
 Evas_Object *delay_label, *delay_slider;
 
 /* public functions */
-int 
-elfe_home_config_init(E_Module *m) 
+int
+elfe_home_config_init(E_Module *m)
 {
-   Eina_List *l;
-
    conf_desktop_item_edd = E_CONFIG_DD_NEW("Elfe_Desktop_Item_Cfg", Elfe_Desktop_Item_Config);
 
 #undef T
@@ -92,8 +83,8 @@ elfe_home_config_init(E_Module *m)
    return 1;
 }
 
-int 
-elfe_home_config_shutdown(void) 
+int
+elfe_home_config_shutdown(void)
 {
    e_configure_registry_item_del("illume/elfe");
    e_configure_registry_category_del("illume");
@@ -107,8 +98,8 @@ elfe_home_config_shutdown(void)
    return 1;
 }
 
-int 
-elfe_home_config_save(void) 
+int
+elfe_home_config_save(void)
 {
    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<< CONFIG SAVE\n");
    e_config_domain_save("module.elfe", conf_edd, elfe_home_cfg);
@@ -116,57 +107,6 @@ elfe_home_config_save(void)
 }
 
 /* local functions */
-static void *
-_elfe_home_config_create(E_Config_Dialog *cfd __UNUSED__) 
-{
-   return NULL;
-}
-
-static void 
-_elfe_home_config_free(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata __UNUSED__) 
-{
-   elfe_home_win_cfg_update();
-}
-
-static Evas_Object *
-_elfe_home_config_ui(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data *cfdata __UNUSED__) 
-{
- 
-}
-
-static void 
-_elfe_home_config_changed(void *data, Evas_Object *obj __UNUSED__, void *event __UNUSED__) 
-{
-   if (_elfe_home_config_change_timer) 
-     ecore_timer_del(_elfe_home_config_change_timer);
-   _elfe_home_config_change_timer = 
-     ecore_timer_add(0.5, _elfe_home_config_change_timeout, data);
-}
-
-static void 
-_elfe_home_config_slider_changed(void *data, Evas_Object *obj __UNUSED__) 
-{
-   if (_elfe_home_config_change_timer) 
-     ecore_timer_del(_elfe_home_config_change_timer);
-   _elfe_home_config_change_timer = 
-     ecore_timer_add(0.5, _elfe_home_config_change_timeout, data);
-}
-
-static void 
-_elfe_home_config_click_changed(void *data, Evas_Object *obj, void *event) 
-{
-   _elfe_home_config_changed(data, obj, event);
-}
-
-static Eina_Bool
-_elfe_home_config_change_timeout(void *data __UNUSED__) 
-{
-   elfe_home_win_cfg_update();
-   e_config_save_queue();
-   _elfe_home_config_change_timer = NULL;
-   return ECORE_CALLBACK_CANCEL;
-}
-
 void elfe_home_config_desktop_item_add(int desktop,
                                        Elfe_Desktop_Item_Type type,
                                        int row, int col,

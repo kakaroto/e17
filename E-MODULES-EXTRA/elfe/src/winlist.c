@@ -190,7 +190,7 @@ e_winilist_optimial_size_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
 
 /* internal calls */
 static void
-_cb_item_sel(void *data, Evas_Object *obj, void *event_info)
+_cb_item_sel(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Data *d;
 
@@ -202,7 +202,7 @@ _cb_item_sel(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_cb_special_sel(void *data, Evas_Object *obj, void *event_info)
+_cb_special_sel(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Special *s;
 
@@ -278,7 +278,6 @@ static void
 _cb_object_resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 {
    Data *d;
-   Evas_Coord lw, lh, vw, vh;
 
    d = evas_object_data_get(obj, "..[winilist]");
    if (!d) return;
@@ -288,7 +287,6 @@ _cb_object_resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, v
 static void
 _refill(Data *d)
 {
-   Evas_Coord w, h, lw, lh, vw, vh;
    Eina_List *borders, *l, *l2, *l3;
 
    borders = e_border_client_list();

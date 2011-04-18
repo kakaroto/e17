@@ -68,18 +68,19 @@ _xy_to_pos(Elfe_Desktop_Page *page, Evas_Coord x, Evas_Coord y,
 }
 
 static void
-_gadcon_populate_class(void *data, E_Gadcon *gc, const E_Gadcon_Client_Class *cc)
+_gadcon_populate_class(void *data __UNUSED__, E_Gadcon *gc __UNUSED__, const E_Gadcon_Client_Class *cc __UNUSED__)
 {
 }
 
+
 static int
-_gadcon_client_add(void *data, const E_Gadcon_Client_Class *cc)
+_gadcon_client_add(void *data __UNUSED__, const E_Gadcon_Client_Class *cc __UNUSED__)
 {
    return 0;
 }
 
 static void
-_gadcon_client_remove(void *data, E_Gadcon_Client *gcc)
+_gadcon_client_remove(void *data __UNUSED__, E_Gadcon_Client *gcc __UNUSED__)
 {
 }
 
@@ -119,13 +120,8 @@ _gadcon_add(Evas *e,
    return gc;
 }
 
-static void _gadcon_del(E_Gadcon *gc)
-{
-   /* FIXME delete gadcon */
-}
-
 static void
-_item_delete_cb(void *data , Evas_Object *obj, void *event_info)
+_item_delete_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info)
 {
    Evas_Object *item = event_info;
    Elfe_Desktop_Page *page = data;
@@ -176,13 +172,12 @@ _populate_page(Elfe_Desktop_Page *page)
 }
 
 static void
-_page_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
+_page_resize_cb(void *data , Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Desktop_Page *page = data;
    Evas_Coord x, y, w, h;
    Evas_Coord ow, oh;
    Evas_Object *item;
-   Eina_List *l;
    int col = 0, row = 0;
    Eina_Iterator *iter;
    Eina_Matrixsparse_Cell *cell;
@@ -285,7 +280,6 @@ elfe_desktop_page_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 {
    Elfe_Desktop_Page *page = evas_object_data_get(obj, "desktop_page");;
    Evas_Object *item;
-   Eina_List *l;
    Eina_Iterator *iter;
    Eina_Matrixsparse_Cell *cell;
 

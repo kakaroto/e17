@@ -31,7 +31,6 @@ _gadget_add(Elfe_Desktop_Item *dit, const char *name, E_Gadcon *gc)
 {
    Evas_Object *item;
    E_Gadcon_Client_Class *cc = NULL;
-   Eina_List *l;
    E_Gadcon_Client *gcc = NULL;
 
    if (!gc) return NULL;
@@ -61,13 +60,14 @@ _gadget_add(Elfe_Desktop_Item *dit, const char *name, E_Gadcon *gc)
 }
 
 static void*
-_app_exec_cb(void *data, Efreet_Desktop *desktop, char *command, int remaining)
+_app_exec_cb(void *data __UNUSED__, Efreet_Desktop *desktop __UNUSED__, char *command, int remaining __UNUSED__)
 {
    ecore_exe_run(command, NULL);
+   return NULL;
 }
 
 static void
-_clicked_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+_clicked_signal_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Elfe_Desktop_Item *dit = data;
 
@@ -79,7 +79,7 @@ _clicked_signal_cb(void *data, Evas_Object *obj, const char *emission, const cha
 }
 
 static void
-_delete_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+_delete_signal_cb(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Elfe_Desktop_Item *dit = data;
 
@@ -90,7 +90,7 @@ _delete_signal_cb(void *data, Evas_Object *obj, const char *emission, const char
 
 
 static Evas_Object *
-_app_add(Elfe_Desktop_Item *dit, const char *name)
+_app_add(Elfe_Desktop_Item *dit, const char *name __UNUSED__)
 {
    Evas_Object *item;
    Evas_Object *icon;
@@ -167,7 +167,7 @@ elfe_desktop_item_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 }
 
 static void
-_obj_del_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
+_obj_del_cb(void *data , Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Desktop_Item *dit = data;
 

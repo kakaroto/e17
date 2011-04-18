@@ -29,12 +29,10 @@ struct _Elfe_Grid_Item
 };
 
 static Elm_Gengrid_Item_Class app_itc;
-static Efreet_Menu *menus;
 
-static void _populate_items_cb(void *data, Evas_Object *obj, void *event_info);
 
 static char *
-_label_get(void *data, Evas_Object *obj, const char *part)
+_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
 
    Elfe_Grid_Item *gitem = data;
@@ -49,7 +47,6 @@ _label_get(void *data, Evas_Object *obj, const char *part)
 static Evas_Object *
 _icon_get(void *data, Evas_Object *obj, const char *part)
 {
-   const char *path;
    Evas_Object *ic = NULL;
    Elfe_Grid_Item *gitem = data;
 
@@ -74,9 +71,8 @@ _icon_get(void *data, Evas_Object *obj, const char *part)
 
 
 static void
-_gl_longpress(void *data, Evas_Object *obj, void *event_info)
+_gl_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Evas_Object *popup;
    Elfe_Grid_Item *gitem;
    Elfe_Allapps *allapps = data;
    Elm_Gengrid_Item *it = event_info;
@@ -92,7 +88,7 @@ _gl_longpress(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_widget_longpress(void *data, Evas_Object *obj, void *event_info)
+_widget_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    const char *name = event_info;
    Elfe_Allapps *allapps = data;
@@ -105,7 +101,7 @@ _widget_longpress(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
-_item_selected(void *data, Evas_Object *obj, void *event_info)
+_item_selected(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Elfe_Grid_Item *gitem = data;
    Elm_Gengrid_Item *it = event_info;
@@ -155,12 +151,11 @@ _add_items(Elfe_Allapps *allapps, Efreet_Menu *entry)
 }
 
 static void
-_obj_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
+_obj_resize_cb(void *data , Evas *e __UNUSED__ , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Evas_Coord w, h;
-   Evas_Coord size = 0;
    Elfe_Allapps *allapps = data;
-   Evas_Coord ow, oh;
+   Evas_Coord ow;
 
    evas_object_geometry_get(allapps->box, NULL, NULL, &w, &h);
 
@@ -175,7 +170,7 @@ _obj_resize_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
 }
 
 static void
-_obj_del_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
+_obj_del_cb(void *data , Evas *e __UNUSED__ , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Allapps *allapps = data;
    Elfe_Grid_Item *it;
@@ -191,7 +186,7 @@ _obj_del_cb(void *data , Evas *e , Evas_Object *obj, void *event_info )
 }
 
 static void
-_apps_clicked_cb(void *data , Evas_Object *obj, void *event_info)
+_apps_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Allapps *allapps = data;
    Evas_Object *bt;
@@ -211,7 +206,7 @@ _apps_clicked_cb(void *data , Evas_Object *obj, void *event_info)
 
 
 static void
-_widgets_clicked_cb(void *data , Evas_Object *obj, void *event_info)
+_widgets_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Allapps *allapps = data;
    Evas_Object *bt;
@@ -230,7 +225,7 @@ _widgets_clicked_cb(void *data , Evas_Object *obj, void *event_info)
 
 
 static void
-_config_clicked_cb(void *data , Evas_Object *obj, void *event_info)
+_config_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Elfe_Allapps *allapps = data;
    Evas_Object *bt;
@@ -252,12 +247,9 @@ Evas_Object *
 elfe_allapps_add(Evas_Object *parent)
 {
    Elfe_Allapps *allapps;
-   Evas_Object *list;
-   char *path;
    Evas_Object *ic;
    Evas_Object *bt;
    Evas_Object *sep;
-   Eina_List *l;
 
    /* Fixme create an edje layout instead of a box */
 

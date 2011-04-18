@@ -32,21 +32,11 @@ static Elfe_Home_Win *hwin;
 static void _elfe_home_win_new(E_Zone *zone);
 static void _elfe_home_win_cb_free(Elfe_Home_Win *hwin);
 static void _elfe_home_win_cb_resize(E_Win *win);
-
-static Eina_Bool _elfe_home_update_deferred(void *data __UNUSED__);
-static Eina_Bool _elfe_home_desktop_cache_update(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__);
-static Eina_Bool _elfe_home_cb_border_add(void *data __UNUSED__, int type __UNUSED__, void *event);
-static Eina_Bool _elfe_home_cb_border_del(void *data __UNUSED__, int type __UNUSED__, void *event);
-static Eina_Bool _elfe_home_cb_exe_del(void *data __UNUSED__, int type __UNUSED__, void *event);
-static Eina_Bool _elfe_home_cb_client_message(void *data __UNUSED__, int type __UNUSED__, void *event);
-static Eina_Bool _elfe_home_cb_prop_change(void *data __UNUSED__, int type __UNUSED__, void *event);
-static Eina_Bool _elfe_home_cb_bg_change(void *data __UNUSED__, int type __UNUSED__, void *event);
+static Eina_Bool _elfe_home_cb_bg_change(void *data __UNUSED__, int type, void *event __UNUSED__);
 
 /* local variables */
 static Eina_List *hwins = NULL;
 static Eina_List *hdls = NULL;
-static Eina_List *exes = NULL;
-static Ecore_Timer *defer = NULL;
 
 /* public functions */
 EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "Illume Home" };
@@ -134,7 +124,6 @@ _elfe_home_win_new(E_Zone *zone)
    char buf[PATH_MAX];
    const char *bgfile;
    Elm_Theme *theme;
-   Evas_Object *winlist;
    Evas_Object *o_edje;
    const char *file;
 
@@ -234,42 +223,6 @@ _elfe_home_win_cb_resize(E_Win *win)
    if (hwin->o_bg) evas_object_resize(hwin->o_bg, win->w, win->h);
    if (hwin->layout) evas_object_resize(hwin->layout, win->w, win->h);
 }
-
-
-static Eina_Bool
-_elfe_home_cb_client_message(void *data __UNUSED__, int type __UNUSED__, void *event)
-{
-   Ecore_X_Event_Client_Message *ev;
-
-   ev = event;
-   if (ev->message_type == ECORE_X_ATOM_E_ILLUME_HOME_NEW)
-     {
-        E_Zone *zone;
-
-        zone = e_util_zone_window_find(ev->win);
-        if (zone->black_win != ev->win) return ECORE_CALLBACK_PASS_ON;
-        _elfe_home_win_new(zone);
-     }
-   else if (ev->message_type == ECORE_X_ATOM_E_ILLUME_HOME_DEL)
-     {
-        E_Border *bd;
-        Eina_List *l;
-        Elfe_Home_Win *hwin;
-
-        if (!(bd = e_border_find_by_client_window(ev->win))) return ECORE_CALLBACK_PASS_ON;
-        EINA_LIST_FOREACH(hwins, l, hwin)
-          {
-             if (hwin->win->border == bd)
-               {
-                  hwins = eina_list_remove_list(hwins, hwins);
-                  e_object_del(E_OBJECT(hwin));
-                  break;
-               }
-          }
-     }
-   return ECORE_CALLBACK_PASS_ON;
-}
-
 
 static Eina_Bool
 _elfe_home_cb_bg_change(void *data __UNUSED__, int type, void *event __UNUSED__)
