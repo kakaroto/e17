@@ -109,7 +109,7 @@ DEF(author)
  * @p indent times using @p pre string.
  * @param pre String to indent with
  * @param indent Number of times to indent
- * @param rss The rss item object (NOT #NULL)
+ * @param item The rss item object (NOT #NULL)
  */
 void
 azy_rss_item_print(const char   *pre,
