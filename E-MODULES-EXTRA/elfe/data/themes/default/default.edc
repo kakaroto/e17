@@ -631,6 +631,7 @@ collections
                visible: 1;
                color: 255 255 255 0;
                rel2.to_y: "elfe.swallow.selector";
+               rel2.relative: 1 0;
             }
          }
          part {
@@ -684,7 +685,9 @@ collections
                state: "default" 0.0;
                visible: 1;
                color: 255 255 255 255;
-               rel2.to_y: "elfe.swallow.selector";
+               rel2.to_y: "elfe.swallow.dock";
+               rel2.relative: 1 0;
+
             }
          }
          part {
@@ -705,6 +708,7 @@ collections
          part {
             name: "elfe.swallow.selector";
             type: SWALLOW;
+            clip_to: "elfe.clip.content";
             description {
                state: "default" 0.0;
                rel1.offset: 0 -16;

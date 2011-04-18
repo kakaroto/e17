@@ -244,9 +244,8 @@ _app_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
    Evas_Coord ow, oh;
    Evas_Coord size = elfe_home_cfg->icon_size;
 
-   evas_object_geometry_get(desk->layout, NULL, NULL, &ow, &oh);
 
-   printf("Apps longmressed\n");
+   evas_object_geometry_get(desk->layout, NULL, NULL, &ow, &oh);
 
    elfe_desktop_edit_mode_set(desk->layout, EINA_TRUE);
 
@@ -348,15 +347,12 @@ _dock_allapps_clicked_cb(void *data , Evas_Object *obj, void *event_info )
    Elfe_Desktop *desk = data;
    Evas_Object *o_edje;
 
-   printf("CLICKEKEKKDEKDK\n");
-
    if (!desk->edit_mode)
      {
 
 	if (!desk->allapps)
 	  {
 	     desk->allapps = elfe_allapps_add(desk->layout);
-	     printf("Create allapps object\n");
 	     evas_object_smart_callback_add(desk->allapps, "entry,longpressed", _app_longpressed_cb, desk);
 	     evas_object_smart_callback_add(desk->allapps, "gadget,longpressed", _gadget_longpressed_cb, desk);
 	     evas_object_smart_callback_add(desk->allapps, "item,selected", _allapps_item_selected_cb, desk);
