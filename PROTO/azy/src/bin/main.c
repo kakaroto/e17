@@ -1380,7 +1380,7 @@ gen_server_headers(Azy_Server_Module *s)
           }
 
         if (suspend_funcs)
-          E(0, "Eina_Bool %s%s%s_module_%s(Azy_Server_Module *module",
+          E(0, "void %s%s%s_module_%s(Azy_Server_Module *module",
             name, sep, s->name,
             method->name);
         else
@@ -1477,7 +1477,8 @@ gen_server_impl(Azy_Server_Module *s)
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
         if (suspend_funcs)
           {
-             EL(1, "azy_server_module_events_suspend(module);");
+             EL(1, "if (azy_server_module_active_get(module))");
+             EL(2, "azy_server_module_events_suspend(module);");
           }
         STUB(s->stub_pre);
         EL(1, "if (azy_server_module_events_suspended_get(module))");
@@ -1502,7 +1503,8 @@ gen_server_impl(Azy_Server_Module *s)
           EL(1, "(void)content;");
         if (suspend_funcs)
           {
-             EL(1, "azy_server_module_events_suspend(module);");
+             EL(1, "if (azy_server_module_active_get(module))");
+             EL(2, "azy_server_module_events_suspend(module);");
           }
         STUB(s->stub_post);
         EL(1, "if (azy_server_module_events_suspended_get(module))");
@@ -1527,7 +1529,8 @@ gen_server_impl(Azy_Server_Module *s)
           EL(1, "(void)content;");
         if (suspend_funcs)
           {
-             EL(1, "azy_server_module_events_suspend(module);");
+             EL(1, "if (azy_server_module_active_get(module))");
+             EL(2, "azy_server_module_events_suspend(module);");
           }
         STUB(s->stub_fallback);
         EL(1, "if (azy_server_module_events_suspended_get(module))");
@@ -1550,7 +1553,8 @@ gen_server_impl(Azy_Server_Module *s)
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
         if (suspend_funcs)
           {
-             EL(1, "azy_server_module_events_suspend(module);");
+             EL(1, "if (azy_server_module_active_get(module))");
+             EL(2, "azy_server_module_events_suspend(module);");
           }
         STUB(s->stub_download);
         EL(1, "if (azy_server_module_events_suspended_get(module))");
@@ -1573,7 +1577,8 @@ gen_server_impl(Azy_Server_Module *s)
           EL(1, "Azy_Net* net_ = azy_server_module_net_get(module);");
         if (suspend_funcs)
           {
-             EL(1, "azy_server_module_events_suspend(module);");
+             EL(1, "if (azy_server_module_active_get(module))");
+             EL(2, "azy_server_module_events_suspend(module);");
           }
         STUB(s->stub_upload);
         EL(1, "if (azy_server_module_events_suspended_get(module))");
@@ -1587,7 +1592,7 @@ gen_server_impl(Azy_Server_Module *s)
    EINA_LIST_FOREACH(s->methods, j, method)
      {
         if (suspend_funcs)
-          E(0, "Eina_Bool %s%s%s_module_%s(Azy_Server_Module *module", name, sep, s->name, method->name);
+          E(0, "void %s%s%s_module_%s(Azy_Server_Module *module", name, sep, s->name, method->name);
         else
           E(0, "%s %s%s%s_module_%s(Azy_Server_Module *module", method->return_type->ctype, name, sep, s->name, method->name);
 
@@ -1625,9 +1630,10 @@ gen_server_impl(Azy_Server_Module *s)
         EL(0, "static Eina_Bool method_%s(Azy_Server_Module *module, Azy_Content *content)", method->name);
         EL(0, "{");
         if (!suspend_funcs)
-          EL(1, "%s azy_return_module = %s;", method->return_type->ctype, method->return_type->cnull);
-        EL(1, "Azy_Value *azy_return_value;");
-
+          {
+             EL(1, "%s azy_return_module = %s;", method->return_type->ctype, method->return_type->cnull);
+             EL(1, "Azy_Value *azy_return_value;");
+	  }
         EINA_LIST_FOREACH(method->params, k, p)
           {
              EL(1, "%s %s = %s;", p->type->ctype,
@@ -1668,7 +1674,8 @@ gen_server_impl(Azy_Server_Module *s)
         NL;
         if (suspend_funcs)
           {
-             EL(1, "azy_server_module_events_suspend(module);");
+             EL(1, "if (azy_server_module_active_get(module))");
+             EL(2, "azy_server_module_events_suspend(module);");
           }
         else
           E(1, "azy_return_module = ");
@@ -1692,11 +1699,16 @@ gen_server_impl(Azy_Server_Module *s)
         EL(1, "if (!azy_content_retval_get(content))");
         EL(2, "{");
         if (!suspend_funcs)
-          EL(3, "azy_return_value = %s(azy_return_module);", method->return_type->march_name);
-        EL(3, "if (!azy_return_value)");
+          {
+             EL(3, "azy_return_value = %s(azy_return_module);", method->return_type->march_name);
+             EL(3, "if (!azy_return_value)");
+	  }
         EL(4, "azy_content_error_faultmsg_set(content, -1, \"Stub return value marshalization failed. (%s)\");", method->name);
-        EL(3, "else");
-        EL(4, "azy_content_retval_set(content, azy_return_value);");
+        if (!suspend_funcs)
+          {
+             EL(3, "else");
+             EL(4, "azy_content_retval_set(content, azy_return_value);");
+	  }
         NL;
 
         if (method->return_type->free_func && (!suspend_funcs))
