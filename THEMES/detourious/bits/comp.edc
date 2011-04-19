@@ -176,11 +176,11 @@ group { name: "e/comp/default";
 				color: 255 255 255 100;
 				rel1 {
 					relative: -1.0  -1.0;
-					offset: -9999 -9999;
+					/* offset: -9999 -9999; */
 				}
 				rel2 {
 					relative: 2.0   2.0;
-					offset: 9999  9999;
+					/* offset: 9999  9999; */
 				}
             }
             description { state: "visible" 0.0;
@@ -298,7 +298,8 @@ group { name: "e/comp/default";
 	}
 }
 
-group { name: "e/comp/menu";
+group {
+	name: "e/comp/menu";
 	parts {
 		part { name: "clipper";
             type: RECT;
@@ -308,11 +309,11 @@ group { name: "e/comp/menu";
 				color: 255 255 255 0;
 				rel1 {
 					relative: -1.0  -1.0;
-					offset: -9999 -9999;
+					/* offset: -9999 -9999; */
 				}
 				rel2 {
 					relative: 2.0   2.0;
-					offset: 9999  9999;
+					/* offset: 9999  9999; */
 				}
             }
             description { state: "visible" 0.0;
@@ -347,41 +348,41 @@ group { name: "e/comp/menu";
 				visible: 0;
             }
 		}
-		part { name: "shower";
-            type: RECT;
-            mouse_events: 0;
-            description { state: "default" 0.0;
-				visible: 0;
-				rel1 {
-					relative: 0.05  0.0;
-					offset: 0    0;
-				}
-				rel2 {
-					relative: 0.95  0.85;
-					offset: -1   -1;
-				}
-            }
-            description { state: "visible" 0.0;
-				inherit: "default" 0.0;
-				rel1 {
-					relative: 0.0  0.0;
-				}
-				rel2 {
-					relative: 1.0  1.0;
-				}
-            }
-		}
+		/* part { name: "shower";
+         *     type: RECT;
+         *     mouse_events: 0;
+         *     description { state: "default" 0.0;
+		 * 		visible: 0;
+		 * 		rel1 {
+		 * 			relative: 0.05  0.0;
+		 * 			offset: 0    0;
+		 * 		}
+		 * 		rel2 {
+		 * 			relative: 0.95  0.85;
+		 * 			offset: -1   -1;
+		 * 		}
+         *     }
+         *     description { state: "visible" 0.0;
+		 * 		inherit: "default" 0.0;
+		 * 		rel1 {
+		 * 			relative: 0.0  0.0;
+		 * 		}
+		 * 		rel2 {
+		 * 			relative: 1.0  1.0;
+		 * 		}
+         *     }
+		 * } */
 		part { name: "e.swallow.content";
             type: SWALLOW;
             clip_to: "clipper";
             mouse_events: 0;
             description { state: "default" 0.0;
-				rel1 {
-					to: "shower";
-				}
-				rel2 {
-					to: "shower";
-				}
+				/* rel1 {
+				 * 	to: "shower";
+				 * }
+				 * rel2 {
+				 * 	to: "shower";
+				 * } */
             }
 		}
 	}
@@ -404,7 +405,7 @@ group { name: "e/comp/menu";
             action: STATE_SET "visible" 0.0;
             transition: DECELERATE 0.15;
             target: "clipper";
-            target: "shower";
+            /* target: "shower"; */
             after: "show2";
 		}
 		program { name: "show2";
@@ -416,7 +417,7 @@ group { name: "e/comp/menu";
             action: STATE_SET "default" 0.0;
             transition: DECELERATE 0.15;
             target: "clipper";
-            target: "shower";
+            /* target: "shower"; */
             after: "hide2";
 		}
 		program { name: "hide2";
@@ -426,6 +427,7 @@ group { name: "e/comp/menu";
 }
 
 group { name: "e/comp/still";
+	alias: "e/comp/popup";
 	parts {
 
 		part { name: "clipper";
@@ -435,12 +437,12 @@ group { name: "e/comp/still";
 				visible: 0;
 				color: 255 255 255 100;
 				rel1 {
-					relative: -1.0  -1.0;
-					offset: -9999 -9999;
+					/* relative: -1.0  -1.0; */
+					offset: -20 -20;
 				}
 				rel2 {
-					relative: 2.0   2.0;
-					offset: 9999  9999;
+					/* relative: 2.0   2.0; */
+					offset: 20  20;
 				}
             }
             description { state: "visible" 0.0;
