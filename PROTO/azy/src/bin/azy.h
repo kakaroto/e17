@@ -105,7 +105,7 @@ struct _Azy_Server_Module
 struct _Azy_Error_Code
 {
    const char *name;
-   const char *cenum;      /* C enum value */
+   const char *cname;      /* C enum value */
    const char *msg;
    int         code;
    const char *doc;
@@ -129,7 +129,6 @@ Azy_Model *azy_parse_file_azy(const char *str,
                             Eina_Bool  *err);
 
 Azy_Error_Code *azy_error_new(Azy_Model         *azy,
-                                Azy_Server_Module *module,
                                 const char         *name,
                                 int                 code,
                                 const char         *msg);

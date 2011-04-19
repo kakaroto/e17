@@ -168,26 +168,19 @@ azy_method_compare(Azy_Method *m1,
 
 Azy_Error_Code *
 azy_error_new(Azy_Model *azy,
-              Azy_Server_Module *module,
               const char *name,
               int code,
               const char *msg)
 {
-   Azy_Error_Code *e = calloc(1, sizeof(Azy_Error_Code));
+   Azy_Error_Code *e;
+
+   e = calloc(1, sizeof(Azy_Error_Code));
    e->name = eina_stringshare_add(name);
    e->msg = eina_stringshare_add(msg);
    e->code = code;
 
-   if (module != NULL)
-     {
-        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s_%s", (azy->name) ? azy_stringshare_toupper(azy->name) : "AZY", azy_stringshare_toupper(module->name), azy_stringshare_toupper(name));
-        module->errors = eina_list_append(module->errors, e);
-     }
-   else
-     {
-        e->cenum = eina_stringshare_printf("%s_RPC_ERROR_%s", (azy->name) ? azy_stringshare_toupper(azy->name) : "AZY", azy_stringshare_toupper(name));
-        azy->errors = eina_list_append(azy->errors, e);
-     }
+   e->cname = eina_stringshare_printf("%s_RPC_ERROR_%s", (azy->name) ? azy_stringshare_toupper(azy->name) : "AZY", azy_stringshare_toupper(name));
+   azy->errors = eina_list_append(azy->errors, e);
 
    return e;
 }
