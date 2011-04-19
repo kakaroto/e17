@@ -112,7 +112,8 @@ image_blend_occlude3_very_many.c \
 poly_blend.c \
 proxy_image.c \
 proxy_text_fixed.c \
-proxy_text_random.c
+proxy_text_random.c \
+image_mask.c
 
 expedite_CFLAGS = @WIN32_CFLAGS@
 expedite_CXXFLAGS = @EXPEDITE_CXXFLAGS@

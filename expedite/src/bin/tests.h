@@ -89,3 +89,4 @@
 #include "proxy_image.c"
 #include "proxy_text_fixed.c"
 #include "proxy_text_random.c"
+#include "image_mask.c"
