@@ -98,11 +98,13 @@ esql_query_escape(Eina_Bool   backslashes,
    Eina_Strbuf *buf;
    const char *p, *pp;
    char *ret = NULL;
+   size_t fmtlen;
 
    buf = eina_strbuf_new();
    *len = 0;
+   fmtlen = strlen(fmt);
    pp = strchr(fmt, '%');
-   if (!pp) pp = fmt + strlen(fmt) - 1;
+   if (!pp) pp = fmt + fmtlen;
    for (p = fmt; p && *p; pp = strchr(p, '%'))
      {
         Eina_Bool l = EINA_FALSE;
@@ -111,7 +113,7 @@ esql_query_escape(Eina_Bool   backslashes,
         double d;
         char *s;
 
-        if (!pp) pp = fmt + strlen(fmt) - 1;
+        if (!pp) pp = fmt + fmtlen;
         EINA_SAFETY_ON_FALSE_GOTO(eina_strbuf_append_length(buf, p, ((pp - p > 1) ? pp - p : 1)), err);
         if (*pp != '%') break;  /* no more fmt strings */
 top:
