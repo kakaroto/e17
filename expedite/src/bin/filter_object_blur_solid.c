@@ -29,7 +29,7 @@ static void _setup(void)
 	evas_object_image_fill_set(o, 0, 0, 120, 160);
 	evas_object_resize(o, 120, 160);
 	evas_object_filter_set(o, EVAS_FILTER_BLUR);
-	evas_object_filter_param_set_int(o, "radius", 5);
+	evas_object_filter_param_int_set(o, "radius", 5);
 	evas_object_layer_set(o,1);
 	evas_object_show(o);
 	src = o;
