@@ -82,7 +82,7 @@ e_modapi_init(E_Module *m)
              /* config too old */
 	    _exebuf_conf_free();
 	     ecore_timer_add(1.0, _exebuf_conf_timer,
-			     _("Exebuf Module Configuration data needed "
+			     D_("Exebuf Module Configuration data needed "
 			     "upgrading. Your old configuration<br> has been"
 			     " wiped and a new set of defaults initialized. "
 			     "This<br>will happen regularly during "
@@ -102,7 +102,7 @@ e_modapi_init(E_Module *m)
              /* config too new...wtf ? */
              _exebuf_conf_free();
 	     ecore_timer_add(1.0, _exebuf_conf_timer, 
-			     _("Your Exebuf Module configuration is NEWER "
+			     D_("Your Exebuf Module configuration is NEWER "
 			     "than the module version. This is "
 			     "very<br>strange. This should not happen unless"
 			     " you downgraded<br>the module or "
@@ -129,14 +129,14 @@ e_modapi_init(E_Module *m)
    if (act)
      {
 	act->func.go = _exebuf_action_exebuf_cb;
-	e_action_predef_name_set(_("Launch"), _("Run Command Dialog"), "exebuf",
+	e_action_predef_name_set(D_("Launch"), D_("Run Command Dialog"), "exebuf",
 				 NULL, NULL, 0);
      }
    maug = e_int_menus_menu_augmentation_add_sorted
-     ("main/1", _("Run Command"), _exebuf_menu_add, NULL, NULL, NULL);
+     ("main/1", D_("Run Command"), _exebuf_menu_add, NULL, NULL, NULL);
 
-   e_configure_registry_category_add("advanced", 80, _("Advanced"), NULL, "preferences-advanced");
-   e_configure_registry_item_add("advanced/run_command", 40, _("Run Command"), NULL, "system-run", exebuf_config_dialog);
+   e_configure_registry_category_add("advanced", 80, D_("Advanced"), NULL, "preferences-advanced");
+   e_configure_registry_item_add("advanced/run_command", 40, D_("Run Command"), NULL, "system-run", exebuf_config_dialog);
 
    /* Give E the module */
    return m;
@@ -157,7 +157,7 @@ e_modapi_shutdown(E_Module *m)
    /* remove module-supplied action */
    if (act)
      {
-	e_action_predef_name_del(_("Launch"), _("Run Command Dialog"));
+	e_action_predef_name_del(D_("Launch"), D_("Run Command Dialog"));
 	e_action_del("exebuf");
 	act = NULL;
      }
@@ -246,7 +246,7 @@ _exebuf_conf_free(void)
 static Eina_Bool 
 _exebuf_conf_timer(void *data) 
 {
-   e_util_dialog_internal(_("Exebuf Configuration Updated"), data);
+   e_util_dialog_internal(D_("Exebuf Configuration Updated"), data);
 
    return EINA_FALSE;
 }
@@ -296,7 +296,7 @@ _exebuf_menu_add(void *data, E_Menu *m)
    E_Menu_Item *mi;
    
    mi = e_menu_item_new(m);
-   e_menu_item_label_set(mi, _("Run Command"));
+   e_menu_item_label_set(mi, D_("Run Command"));
    e_util_menu_item_theme_icon_set(mi, "system-run");
    e_menu_item_callback_set(mi, _exebuf_run_cb, NULL);
 }

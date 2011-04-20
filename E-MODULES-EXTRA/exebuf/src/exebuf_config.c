@@ -47,7 +47,7 @@ exebuf_config_dialog(E_Container *con, const char *params __UNUSED__)
    v->advanced.apply_cfdata = _adv_apply;
    v->advanced.check_changed = _adv_check_changed;
 
-   cfd = e_config_dialog_new(con, _("Run Command Settings"), "E",
+   cfd = e_config_dialog_new(con, D_("Run Command Settings"), "E",
 			     "advanced/run_command", "system-run", 0, v, NULL);
    return cfd;
 }
@@ -108,26 +108,26 @@ _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data 
 
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_framelist_add(evas, _("General"), 0);
-   ow = e_widget_label_add(evas, _("Maximum Apps to List"));
+   of = e_widget_framelist_add(evas, D_("General"), 0);
+   ow = e_widget_label_add(evas, D_("Maximum Apps to List"));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 10, 50, 5, 0, NULL,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 10, 50, 5, 0, NULL,
 			    &(cfdata->max_eap_list), 100);
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_label_add(evas, _("Maximum Exes to List"));
+   ow = e_widget_label_add(evas, D_("Maximum Exes to List"));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 10, 50, 5, 0, NULL,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 10, 50, 5, 0, NULL,
 			    &(cfdata->max_exe_list), 100);
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_label_add(evas, _("Maximum History to List"));
+   ow = e_widget_label_add(evas, D_("Maximum History to List"));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 10, 200, 5, 0, NULL,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 10, 200, 5, 0, NULL,
 			    &(cfdata->max_hist_list), 100);
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 0, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Animations"), 0);
-   ow = e_widget_check_add(evas, _("Animate"), &(cfdata->scroll_animate));
+   of = e_widget_framelist_add(evas, D_("Animations"), 0);
+   ow = e_widget_check_add(evas, D_("Animate"), &(cfdata->scroll_animate));
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 0, 0.5);
 
@@ -178,81 +178,81 @@ _adv_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data *c
 
    /* General Page */
    ol = e_widget_list_add(evas, 0, 0);
-   ow = e_widget_label_add(evas, _("Maximum Apps to List"));
+   ow = e_widget_label_add(evas, D_("Maximum Apps to List"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 10, 50, 5, 0, NULL,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 10, 50, 5, 0, NULL,
 			    &(cfdata->max_eap_list), 100);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_label_add(evas, _("Maximum Exes to List"));
+   ow = e_widget_label_add(evas, D_("Maximum Exes to List"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 10, 50, 5, 0, NULL,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 10, 50, 5, 0, NULL,
 			    &(cfdata->max_exe_list), 100);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_label_add(evas, _("Maximum History to List"));
+   ow = e_widget_label_add(evas, D_("Maximum History to List"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 10, 200, 5, 0, NULL,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 10, 200, 5, 0, NULL,
 			    &(cfdata->max_hist_list), 100);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   e_widget_toolbook_page_append(otb, NULL, _("General"), ol, 1, 0, 1, 0,
+   e_widget_toolbook_page_append(otb, NULL, D_("General"), ol, 1, 0, 1, 0,
 				 0.5, 0.0);
 
    /* Scroll Page */
    ol = e_widget_list_add(evas, 0, 0);
-   ow = e_widget_check_add(evas, _("Animate"), &(cfdata->scroll_animate));
+   ow = e_widget_check_add(evas, D_("Animate"), &(cfdata->scroll_animate));
    e_widget_on_change_hook_set(ow, _cb_animate_changed, cfdata);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_label_add(evas, _("Speed"));
+   ow = e_widget_label_add(evas, D_("Speed"));
    cfdata->gui.scroll_speed_lbl = ow;
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%1.2f"), 0.0, 1.0, 0.01, 0,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%1.2f"), 0.0, 1.0, 0.01, 0,
 			    &(cfdata->scroll_speed), NULL, 100);
    cfdata->gui.scroll_speed_slider = ow;
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   e_widget_toolbook_page_append(otb, NULL, _("Animations"), ol, 1, 0, 1, 0,
+   e_widget_toolbook_page_append(otb, NULL, D_("Animations"), ol, 1, 0, 1, 0,
 				 0.5, 0.0);
 
    /* Size Page */
    ol = e_widget_list_add(evas, 0, 0);
-   ow = e_widget_label_add(evas, _("Minimum Width"));
+   ow = e_widget_label_add(evas, D_("Minimum Width"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%4.0f"), 0, 4000, 50, 0,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%4.0f"), 0, 4000, 50, 0,
 			    NULL, &(cfdata->pos_min_w), 100);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_label_add(evas, _("Minimum Height"));
+   ow = e_widget_label_add(evas, D_("Minimum Height"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%4.0f"), 0, 4000, 50, 0,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%4.0f"), 0, 4000, 50, 0,
 			    NULL, &(cfdata->pos_min_h), 100);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_label_add(evas, _("Maximum Width"));
+   ow = e_widget_label_add(evas, D_("Maximum Width"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%4.0f"), 0, 4000, 50, 0,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%4.0f"), 0, 4000, 50, 0,
 			    NULL, &(cfdata->pos_max_w), 100);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_label_add(evas, _("Maximum Height"));
+   ow = e_widget_label_add(evas, D_("Maximum Height"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%4.0f"), 0, 4000, 50, 0,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%4.0f"), 0, 4000, 50, 0,
 			    NULL, &(cfdata->pos_max_h), 100);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_label_add(evas, _("X-Axis Alignment"));
+   ow = e_widget_label_add(evas, D_("X-Axis Alignment"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%1.2f"), 0.0, 1.0, 0.01, 0,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%1.2f"), 0.0, 1.0, 0.01, 0,
 			    &(cfdata->pos_align_x), NULL, 100);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_label_add(evas, _("Y-Axis Alignment"));
+   ow = e_widget_label_add(evas, D_("Y-Axis Alignment"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   ow = e_widget_slider_add(evas, 1, 0, _("%1.2f"), 0.0, 1.0, 0.01, 0,
+   ow = e_widget_slider_add(evas, 1, 0, D_("%1.2f"), 0.0, 1.0, 0.01, 0,
 			    &(cfdata->pos_align_y), NULL, 100);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   e_widget_toolbook_page_append(otb, NULL, _("Geometry"), ol, 1, 0, 1, 0,
+   e_widget_toolbook_page_append(otb, NULL, D_("Geometry"), ol, 1, 0, 1, 0,
 				 0.5, 0.0);
 
    /* Terminal Page */
    ol = e_widget_list_add(evas, 0, 0);
-   ow = e_widget_label_add(evas, _("Command (CTRL+RETURN to utilize)"));
+   ow = e_widget_label_add(evas, D_("Command (CTRL+RETURN to utilize)"));
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
    ow = e_widget_entry_add(evas, &(cfdata->term_cmd), NULL, NULL, NULL);
    e_widget_list_object_append(ol, ow, 1, 0, 0.5);
-   e_widget_toolbook_page_append(otb, NULL, _("Terminal"), ol, 1, 0, 1, 0,
+   e_widget_toolbook_page_append(otb, NULL, D_("Terminal"), ol, 1, 0, 1, 0,
 				 0.5, 0.0);
 
    e_widget_toolbook_page_show(otb, 0);
