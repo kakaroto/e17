@@ -109,7 +109,7 @@ int main(int argc, char **argv)
     ee = ecore_evas_buffer_new(1,1);
     evas = ecore_evas_get(ee);
 
-    for (i = 0; i < sizeof (tab) / sizeof (Trans_CB); ++i)
+    for (i = 0; i < (int)sizeof (tab) / (int)sizeof (Trans_CB); ++i)
         if (strcmp(trans, tab[i].trans) == 0)
         {
             tab[i].cb(evas, fin, fout);
@@ -169,7 +169,7 @@ static void _enlil_trans_rotate_90(Evas *evas, const char *file, const char *res
     ASSERT_RETURN_VOID(res !=NULL);
 
     unsigned int *im_data, *im_data_new;
-    int index, ind, i, j, ni, nj, ew, eh, nw, nh;
+    int _index, ind, i, j, ni, nj, ew, eh, nw, nh;
 
     LOG_INFO("Start rotation 90° on %s", file);
 
@@ -179,7 +179,7 @@ static void _enlil_trans_rotate_90(Evas *evas, const char *file, const char *res
     evas_object_image_size_get(obj, &ew, &eh);
     im_data = evas_object_image_data_get(obj, 0);
 
-    index = 0;
+    _index = 0;
 
     im_data_new = malloc(sizeof(unsigned int) * ew * eh);
 
@@ -195,9 +195,9 @@ static void _enlil_trans_rotate_90(Evas *evas, const char *file, const char *res
 
             ind = ni * nh + nj;
 
-            im_data_new[index] = im_data[ind];
+            im_data_new[_index] = im_data[ind];
 
-            index++;
+            _index++;
         }
     }
 
@@ -217,7 +217,7 @@ static void _enlil_trans_rotate_R90(Evas *evas, const char *file, const char *re
     ASSERT_RETURN_VOID(res !=NULL);
 
     unsigned int *im_data, *im_data_new;
-    int index, ind, i, j, ni, nj, ew, eh, nw, nh;
+    int _index, ind, i, j, ni, nj, ew, eh, nw, nh;
 
     LOG_INFO("Start rotation -90° on %s", file);
 
@@ -227,7 +227,7 @@ static void _enlil_trans_rotate_R90(Evas *evas, const char *file, const char *re
     evas_object_image_size_get(obj, &ew, &eh);
     im_data = evas_object_image_data_get(obj, 0);
 
-    index = 0;
+    _index = 0;
 
     im_data_new = malloc(sizeof(unsigned int) * ew * eh);
 
@@ -243,9 +243,9 @@ static void _enlil_trans_rotate_R90(Evas *evas, const char *file, const char *re
 
             ind = ni * nh + nj;
 
-            im_data_new[index] = im_data[ind];
+            im_data_new[_index] = im_data[ind];
 
-            index++;
+            _index++;
         }
     }
 

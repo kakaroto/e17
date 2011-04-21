@@ -39,7 +39,8 @@ struct enlil_photo
    const char *file_name;
    const char *path;
    const char *description;
-   long long time;
+   const char *author;
+   long long _time;
    const char *thumb_fdo_large;
    const char *thumb_fdo_normal;
    Eina_Bool eet_save;
@@ -51,9 +52,12 @@ struct enlil_photo
    struct
      {
 		int id;
-		int timestamp_last_update_header;
-		int timestamp_last_update_tags;
-		int timestamp_last_update_file;
+		int version_header;
+		int version_file;
+		int version_tags;
+		int version_header_net;
+		int version_file_net;
+		int version_tags_net;
      } netsync;
 
    Eina_Bool exif_loaded;
@@ -134,7 +138,7 @@ void enlil_photo_copy(Enlil_Photo *photo_src, Enlil_Photo *photo_dest)
    enlil_photo_name_set(photo_dest, enlil_photo_name_get(photo_src));
    enlil_photo_file_name_set(photo_dest, enlil_photo_file_name_get(photo_src));
    enlil_photo_path_set(photo_dest, enlil_photo_path_get(photo_src));
-   enlil_photo_time_set(photo_dest, enlil_photo_time_get(photo_src));
+   enlil_photo__time_set(photo_dest, enlil_photo__time_get(photo_src));
    enlil_photo_thumb_fdo_normal_set(photo_dest, enlil_photo_thumb_fdo_normal_get(photo_src));
    enlil_photo_thumb_fdo_large_set(photo_dest, enlil_photo_thumb_fdo_large_get(photo_src));
    enlil_photo_size_set(photo_dest, enlil_photo_size_get(photo_src));
@@ -247,7 +251,7 @@ void enlil_photo_album_set(Enlil_Photo *photo, Enlil_Album *album)
    SET(type, Enlil_Photo_Type)
    SET(mustNotBeSaved, Eina_Bool)
    STRING_SET(file_name)
-   SET(time, long long)
+   SET(_time, long long)
    SET(eet_save, Eina_Bool)
    SET(exif_loaded, Eina_Bool)
    SET(iptc_loaded, Eina_Bool)
@@ -260,9 +264,10 @@ SET(size_h, int)
    GET(mustNotBeSaved, Eina_Bool)
    GET(album, Enlil_Album*)
    GET(name, const char*)
+   GET(author, const char*)
    GET(path, const char*)
    GET(file_name, const char*)
-   GET(time, long long)
+   GET(_time, long long)
    GET(user_data, void *)
    GET(thumb_fdo_normal, const char*)
    GET(description, const char *)
@@ -287,18 +292,71 @@ int enlil_photo_netsync_id_get(Enlil_Photo *photo)
 }
 
 
-int enlil_photo_netsync_timestamp_last_update_header_get(Enlil_Photo *photo)
+int enlil_photo_netsync_version_header_get(Enlil_Photo *photo)
 {
     ASSERT_RETURN(photo!=NULL);
 
-    return photo->netsync.timestamp_last_update_header;
+    return photo->netsync.version_header;
 }
 
-void _enlil_photo_netsync_timestamp_last_update_header_set(Enlil_Photo *photo, int timestamp)
+int enlil_photo_netsync_version_tags_get(Enlil_Photo *photo)
+{
+    ASSERT_RETURN(photo!=NULL);
+
+    return photo->netsync.version_tags;
+}
+
+int enlil_photo_netsync_version_file_get(Enlil_Photo *photo)
+{
+    ASSERT_RETURN(photo!=NULL);
+
+    return photo->netsync.version_file;
+}
+
+int enlil_photo_netsync_version_header_net_get(Enlil_Photo *photo)
+{
+    ASSERT_RETURN(photo!=NULL);
+
+    return photo->netsync.version_header_net;
+}
+
+int enlil_photo_netsync_version_tags_net_get(Enlil_Photo *photo)
+{
+    ASSERT_RETURN(photo!=NULL);
+
+    return photo->netsync.version_tags_net;
+}
+
+int enlil_photo_netsync_version_file_net_get(Enlil_Photo *photo)
+{
+    ASSERT_RETURN(photo!=NULL);
+
+    return photo->netsync.version_file_net;
+}
+
+
+void _enlil_photo_netsync_version_header_inc(Enlil_Photo *photo)
 {
     ASSERT_RETURN_VOID(photo!=NULL);
 
-    photo->netsync.timestamp_last_update_header = timestamp;
+    photo->netsync.version_header++;
+
+    enlil_photo_eet_save(photo);
+    Enlil_Album *album = enlil_photo_album_get(photo);
+    if(album)
+ 	   enlil_album_eet_photos_list_save(album);
+
+    Enlil_Library *library = enlil_album_library_get(album);
+    if(library && _enlil_library_photo_version_header_increase_cb_get(library))
+    	_enlil_library_photo_version_header_increase_cb_get(library)(
+    			_enlil_library_photo_version_header_increase_data_get(library), photo);
+}
+
+void _enlil_photo_netsync_version_tags_inc(Enlil_Photo *photo)
+{
+    ASSERT_RETURN_VOID(photo!=NULL);
+
+    photo->netsync.version_tags++;
 
     enlil_photo_eet_save(photo);
     Enlil_Album *album = enlil_photo_album_get(photo);
@@ -306,36 +364,51 @@ void _enlil_photo_netsync_timestamp_last_update_header_set(Enlil_Photo *photo, i
  	   enlil_album_eet_photos_list_save(album);
 }
 
-int enlil_photo_netsync_timestamp_last_update_tags_get(Enlil_Photo *photo)
-{
-    ASSERT_RETURN(photo!=NULL);
 
-    return photo->netsync.timestamp_last_update_tags;
-}
-
-void _enlil_photo_netsync_timestamp_last_update_tags_set(Enlil_Photo *photo, int timestamp)
+void _enlil_photo_netsync_version_file_inc(Enlil_Photo *photo)
 {
     ASSERT_RETURN_VOID(photo!=NULL);
 
-    photo->netsync.timestamp_last_update_tags = timestamp;
+    photo->netsync.version_file++;
 
     enlil_photo_eet_save(photo);
     Enlil_Album *album = enlil_photo_album_get(photo);
     if(album)
  	   enlil_album_eet_photos_list_save(album);
 }
-int enlil_photo_netsync_timestamp_last_update_file_get(Enlil_Photo *photo)
-{
-    ASSERT_RETURN(photo!=NULL);
 
-    return photo->netsync.timestamp_last_update_file;
-}
-
-void _enlil_photo_netsync_timestamp_last_update_file_set(Enlil_Photo *photo, int timestamp)
+void _enlil_photo_netsync_version_header_both_set(Enlil_Photo *photo, int version)
 {
     ASSERT_RETURN_VOID(photo!=NULL);
 
-    photo->netsync.timestamp_last_update_file = timestamp;
+    photo->netsync.version_header = version;
+    photo->netsync.version_header_net = version;
+
+    enlil_photo_eet_save(photo);
+    Enlil_Album *album = enlil_photo_album_get(photo);
+    if(album)
+ 	   enlil_album_eet_photos_list_save(album);
+}
+
+void _enlil_photo_netsync_version_file_both_set(Enlil_Photo *photo, int version)
+{
+    ASSERT_RETURN_VOID(photo!=NULL);
+
+    photo->netsync.version_file = version;
+    photo->netsync.version_file_net = version;
+
+    enlil_photo_eet_save(photo);
+    Enlil_Album *album = enlil_photo_album_get(photo);
+    if(album)
+ 	   enlil_album_eet_photos_list_save(album);
+}
+
+void _enlil_photo_netsync_version_tags_both_set(Enlil_Photo *photo, int version)
+{
+    ASSERT_RETURN_VOID(photo!=NULL);
+
+    photo->netsync.version_tags = version;
+    photo->netsync.version_tags_net = version;
 
     enlil_photo_eet_save(photo);
     Enlil_Album *album = enlil_photo_album_get(photo);
@@ -375,8 +448,33 @@ void enlil_photo_name_set(Enlil_Photo *photo, const char *name)
 
    enlil_photo_iptc_add(photo, "ObjectName", photo->name, EINA_FALSE);
 
-   _enlil_photo_netsync_timestamp_last_update_header_set(photo, time(NULL));
+   _enlil_photo_netsync_version_header_inc(photo);
 }
+
+void enlil_photo_author_set(Enlil_Photo *photo, const char *author)
+{
+   ASSERT_RETURN_VOID(photo!=NULL);
+   ASSERT_RETURN_VOID(author != NULL);
+
+   if(author[0] == '\0' && photo->author == NULL)
+   	   return ;
+
+  const char *new_author = eina_stringshare_add(author);
+
+  if(photo->author == new_author)
+  {
+   EINA_STRINGSHARE_DEL(new_author);
+   return ;
+  }
+  EINA_STRINGSHARE_DEL(photo->author);
+
+  photo->author = new_author;
+
+   enlil_photo_iptc_add(photo, "Byline", photo->author, EINA_FALSE);
+
+   _enlil_photo_netsync_version_header_inc(photo);
+}
+
 
 void enlil_photo_description_set(Enlil_Photo *photo, const char *desc)
 {
@@ -399,7 +497,7 @@ void enlil_photo_description_set(Enlil_Photo *photo, const char *desc)
 
    enlil_photo_iptc_add(photo, "Caption", photo->description, EINA_FALSE);
 
-   _enlil_photo_netsync_timestamp_last_update_header_set(photo, time(NULL));
+   _enlil_photo_netsync_version_header_inc(photo);
 }
 
 void enlil_photo_exif_clear(Enlil_Photo *photo)
@@ -563,7 +661,7 @@ void enlil_photo_save_iptc_in_custom_file(Enlil_Photo *photo, const char *file)
    unsigned int iptc_len;
    int ps3_len;
    unsigned char outbuf[256*256];
-   char tmpfile[PATH_MAX];
+   char _tmpfile[PATH_MAX];
    int v;
 
    ASSERT_RETURN_VOID(photo != NULL);
@@ -629,8 +727,8 @@ void enlil_photo_save_iptc_in_custom_file(Enlil_Photo *photo, const char *file)
 	LOG_ERR("Can't reopen input file");
 	return ;
    }
-   snprintf (tmpfile, PATH_MAX, "%s.%d", file, getpid());
-   outfile = fopen (tmpfile, "w");
+   snprintf (_tmpfile, PATH_MAX, "%s.%d", file, getpid());
+   outfile = fopen (_tmpfile, "w");
    if (!outfile) {
 	LOG_ERR("Can't open temporary file for writing");
 	return ;
@@ -640,14 +738,14 @@ void enlil_photo_save_iptc_in_custom_file(Enlil_Photo *photo, const char *file)
    fclose (infile);
    fclose (outfile);
    if (v < 0) {
-	unlink (tmpfile);
+	unlink (_tmpfile);
 	LOG_ERR("Failed to save image");
 	return ;
    }
 
-   if (rename (tmpfile, file) < 0) {
+   if (rename (_tmpfile, file) < 0) {
 	LOG_ERR("Failed to save image");
-	unlink (tmpfile);
+	unlink (_tmpfile);
 	return ;
    }
 }
@@ -859,6 +957,20 @@ void enlil_photo_iptcs_set(Enlil_Photo *photo, Eina_List *iptcs)
 	break;
      }
 
+   //load the author
+      iptc_tag_find_by_name ("Byline", &iptcrecord, &iptctag);
+
+      EINA_LIST_FOREACH(photo->iptcs->l, l, iptc)
+        {
+   	if(enlil_iptc_record_get(iptc) != iptcrecord
+   	      || enlil_iptc_tag_get(iptc) != iptctag)
+   	  continue;
+
+   	EINA_STRINGSHARE_DEL(photo->author);
+   	photo->author = eina_stringshare_add(enlil_iptc_value_get(iptc));
+   	break;
+        }
+
    enlil_photo_eet_save(photo);
    _photo_eet_iptc_save(photo);
 }
@@ -1037,6 +1149,10 @@ Eina_Bool enlil_photo_iptc_add(Enlil_Photo *photo, const char *name, const char 
    ASSERT_RETURN(photo != NULL);
    ASSERT_RETURN(name != NULL);
 
+   if(!photo->iptcs)
+	   _photo_eet_iptcs_load(photo);
+
+
    iptc = enlil_iptc_new_from_name(name);
    if(check_value)
      iptc1 = enlil_photo_iptc_get_from_name_and_value(photo, enlil_iptc_name_get(iptc), value);
@@ -1077,6 +1193,9 @@ void enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag)
    ASSERT_RETURN_VOID(photo != NULL);
    ASSERT_RETURN_VOID(photo_tag != NULL);
 
+   if(!photo->iptcs)
+	   _photo_eet_iptcs_load(photo);
+
    photo->tags = eina_list_remove(photo->tags, photo_tag);
 
    if(photo->album && enlil_album_library_get(photo->album)) 
@@ -1101,6 +1220,9 @@ Eina_Bool enlil_photo_iptc_remove(Enlil_Photo *photo, const char *name, const ch
 
    ASSERT_RETURN(photo != NULL);
    ASSERT_RETURN(name != NULL);
+
+   if(!photo->iptcs)
+	   _photo_eet_iptcs_load(photo);
 
    name = eina_stringshare_add(name);
    iptc = enlil_photo_iptc_get_from_name_and_value(photo, name, value);
@@ -1372,9 +1494,12 @@ Eet_Data_Descriptor * _enlil_photo_file_name_edd_new()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "file_name", file_name, EET_T_STRING);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.id", netsync.id, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_header", netsync.timestamp_last_update_header, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_tags", netsync.timestamp_last_update_tags, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_file", netsync.timestamp_last_update_file, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_header", netsync.version_header, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_tags", netsync.version_tags, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_file", netsync.version_file, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_header_net", netsync.version_header_net, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_tags_net", netsync.version_tags_net, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_file_net", netsync.version_file_net, EET_T_INT);
 
    return edd;
 }
@@ -1397,8 +1522,9 @@ Eet_Data_Descriptor * enlil_photo_edd_new(Eet_Data_Descriptor *edd_tag)
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "name", name, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "path", path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "file_name", file_name, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "author", author, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "description", description, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "time", time, EET_T_LONG_LONG);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "_time", _time, EET_T_LONG_LONG);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "thumb_fdo_large", thumb_fdo_large, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "thumb_fdo_normal", thumb_fdo_normal, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "size", size, EET_T_INT);
@@ -1413,9 +1539,12 @@ Eet_Data_Descriptor * enlil_photo_edd_new(Eet_Data_Descriptor *edd_tag)
    EET_DATA_DESCRIPTOR_ADD_LIST(edd, Enlil_Photo, "tags", tags, edd_tag);
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.id", netsync.id, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_header", netsync.timestamp_last_update_header, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_tags", netsync.timestamp_last_update_tags, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.timestamp_last_update_file", netsync.timestamp_last_update_file, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_header", netsync.version_header, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_tags", netsync.version_tags, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_file", netsync.version_file, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_header_net", netsync.version_header_net, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_tags_net", netsync.version_tags_net, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Photo, "netsync.version_file_net", netsync.version_file_net, EET_T_INT);
 
    return edd;
 }

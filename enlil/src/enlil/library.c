@@ -36,11 +36,22 @@ struct enlil_library
    //list of Enlil_Tag *
    Eina_List *tags;
 
-   //associated Flickr account.
-   const char *flickr_account;
-   const char *flickr_auth_token;
+   //associated netsync
+   struct
+   {
+	   const char *username;
+	   const char *password;
+	   const char *host;
+	   const char *path;
+   }netsync;
 
    Eina_Bool header_load_is : 1;
+
+   Enlil_Album_Version_Header_Increase_Cb album_version_header_increase_cb;
+   void *album_version_header_increase_data;
+
+   Enlil_Photo_Version_Header_Increase_Cb photo_version_header_increase_cb;
+   void *photo_version_header_increase_data;
 };
 
 #define ROOT_HEADER_LOAD(library) \
@@ -156,6 +167,7 @@ void enlil_library_monitor_stop(Enlil_Library *library)
 
    if(library->monitor)
      ecore_file_monitor_del(library->monitor);
+   library->monitor = NULL;
 }
 
 #define FCT_NAME enlil_library
@@ -195,6 +207,47 @@ void enlil_library_path_set(Enlil_Library *library, const char *path)
    FREE(_path);
 }
 
+
+void enlil_library_album_version_header_increase_cb_set(Enlil_Library *library,
+									Enlil_Album_Version_Header_Increase_Cb cb, void *data)
+{
+	ASSERT_RETURN_VOID(library != NULL);
+
+	library->album_version_header_increase_cb = cb;
+	library->album_version_header_increase_data = data;
+}
+
+void enlil_library_photo_version_header_increase_cb_set(Enlil_Library *library,
+									Enlil_Photo_Version_Header_Increase_Cb cb, void *data)
+{
+	ASSERT_RETURN_VOID(library != NULL);
+
+	library->photo_version_header_increase_cb = cb;
+	library->photo_version_header_increase_data = data;
+}
+
+
+
+Enlil_Album_Version_Header_Increase_Cb _enlil_library_album_version_header_increase_cb_get(Enlil_Library *library)
+{
+	return library->album_version_header_increase_cb;
+}
+
+void *_enlil_library_album_version_header_increase_data_get(Enlil_Library *library)
+{
+	return library->album_version_header_increase_data;
+}
+
+Enlil_Photo_Version_Header_Increase_Cb _enlil_library_photo_version_header_increase_cb_get(Enlil_Library *library)
+{
+	return library->photo_version_header_increase_cb;
+}
+
+void *_enlil_library_photo_version_header_increase_data_get(Enlil_Library *library)
+{
+	return library->photo_version_header_increase_data;
+}
+
 /**
  * Set the default photo of the album
  *
@@ -226,18 +279,16 @@ void enlil_library_photo_set(Enlil_Library *library, const Enlil_Photo *photo, i
 	_library_eet_header_save(library);
 }
 
-void enlil_library_netsync_account_set(Enlil_Library *library, const char *account)
+void enlil_library_netsync_account_set(Enlil_Library *library, const char *username)
 {
    ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(account!=NULL);
-
-   if(account == library->flickr_account) return ;
+   ASSERT_RETURN_VOID(username!=NULL);
 
    ROOT_HEADER_LOAD(library);
 
-   EINA_STRINGSHARE_DEL(library->flickr_account);
+   EINA_STRINGSHARE_DEL(library->netsync.username);
 
-   library->flickr_account = eina_stringshare_add(account);
+   library->netsync.username = eina_stringshare_add(username);
    _library_eet_header_save(library);
 }
 
@@ -248,35 +299,80 @@ const char *enlil_library_netsync_account_get(Enlil_Library *library)
 
    ROOT_HEADER_LOAD(library);
 
-   return library->flickr_account;
+   return library->netsync.username;
 }
 
-void enlil_library_flickr_auth_token_set(Enlil_Library *library, const char *auth_token)
+void enlil_library_netsync_host_set(Enlil_Library *library, const char *host)
 {
    ASSERT_RETURN_VOID(library!=NULL);
-
-   if(auth_token == library->flickr_auth_token) return ;
+   ASSERT_RETURN_VOID(host!=NULL);
 
    ROOT_HEADER_LOAD(library);
 
-   EINA_STRINGSHARE_DEL(library->flickr_auth_token);
+   EINA_STRINGSHARE_DEL(library->netsync.host);
 
-   if(auth_token)
-     library->flickr_auth_token = eina_stringshare_add(auth_token);
-   else
-     library->flickr_auth_token = NULL;
+   library->netsync.host = eina_stringshare_add(host);
    _library_eet_header_save(library);
 }
 
 
-const char *enlil_library_flickr_auth_token_get(Enlil_Library *library)
+const char *enlil_library_netsync_host_get(Enlil_Library *library)
 {
    ASSERT_RETURN(library != NULL);
 
    ROOT_HEADER_LOAD(library);
 
-   return library->flickr_auth_token;
+   return library->netsync.host;
 }
+
+
+void enlil_library_netsync_path_set(Enlil_Library *library, const char *path)
+{
+   ASSERT_RETURN_VOID(library!=NULL);
+   ASSERT_RETURN_VOID(path!=NULL);
+
+   ROOT_HEADER_LOAD(library);
+
+   EINA_STRINGSHARE_DEL(library->netsync.path);
+
+   library->netsync.path = eina_stringshare_add(path);
+   _library_eet_header_save(library);
+}
+
+
+const char *enlil_library_netsync_path_get(Enlil_Library *library)
+{
+   ASSERT_RETURN(library != NULL);
+
+   ROOT_HEADER_LOAD(library);
+
+   return library->netsync.path;
+}
+
+void enlil_library_netsync_password_set(Enlil_Library *library, const char *password)
+{
+   ASSERT_RETURN_VOID(library!=NULL);
+   ASSERT_RETURN_VOID(password!=NULL);
+
+   ROOT_HEADER_LOAD(library);
+
+   EINA_STRINGSHARE_DEL(library->netsync.password);
+
+   library->netsync.password = eina_stringshare_add(password);
+   _library_eet_header_save(library);
+}
+
+
+const char *enlil_library_netsync_password_get(Enlil_Library *library)
+{
+   ASSERT_RETURN(library != NULL);
+
+   ROOT_HEADER_LOAD(library);
+
+   return library->netsync.password;
+}
+
+
 
 /**
  * @brief
@@ -1179,8 +1275,10 @@ static void _library_eet_header_load(Enlil_Library *library)
 
    if(data)
      {
-	library->flickr_account = eina_stringshare_add(data->flickr_account);
-	library->flickr_auth_token = eina_stringshare_add(data->flickr_auth_token);
+	library->netsync.host = eina_stringshare_add(data->netsync.host);
+	library->netsync.path = eina_stringshare_add(data->netsync.path);
+	library->netsync.username = eina_stringshare_add(data->netsync.username);
+	library->netsync.password = eina_stringshare_add(data->netsync.password);
 	library->photo1 = eina_stringshare_add(data->photo1);
 	library->photo2 = eina_stringshare_add(data->photo2);
      }
@@ -1221,7 +1319,7 @@ int enlil_library_eet_album_remove(Enlil_Library *library, const char* key)
    return 1;
 }
 
-static void _enlil_library_monitor_cb(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
+static void _enlil_library_monitor_cb(void *data, __UNUSED__ Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
 {
    Enlil_Library *library = (Enlil_Library *)data;
    switch(event)
@@ -1302,8 +1400,10 @@ static Eet_Data_Descriptor * _enlil_library_header_edd_new()
 
    edd = eet_data_descriptor_file_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Library, "flickr_account", flickr_account, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Library, "flickr_auth_token", flickr_auth_token, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Library, "netsync.username", netsync.username, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Library, "netsync.password", netsync.password, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Library, "netsync.host", netsync.host, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Library, "netsync.path", netsync.path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Library, "photo1", photo1, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Enlil_Library, "photo2", photo2, EET_T_STRING);
 

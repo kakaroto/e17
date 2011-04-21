@@ -235,7 +235,7 @@ static void _exif_data_foreach(ExifContent * ec, void *data)
    exif_content_foreach_entry(ec, _exif_content_foreach, data);
 }
 
-static void _exif_thread(void *data, Ecore_Thread *thread)
+static void _exif_thread(void *data, __UNUSED__ Ecore_Thread *thread)
 {
    Enlil_Exif_Thread_Data *t_data = data;
    const char *file = t_data->file;
@@ -252,7 +252,7 @@ end:
    ;
 }
 
-static void _end_cb(void *data, Ecore_Thread *thread)
+static void _end_cb(void *data, __UNUSED__ Ecore_Thread *thread)
 {
    Enlil_Exif_Thread_Data *t_data = data;
    Enlil_Exif_Job *job = job_current;

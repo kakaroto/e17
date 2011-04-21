@@ -65,7 +65,7 @@ int main(int argc, char **argv)
     return 0;
 }
 
-static Eina_Bool _print_cb(const Eina_Hash *hash, const void *key, void *data, void *fdata)
+static Eina_Bool _print_cb(__UNUSED__ const Eina_Hash *hash, __UNUSED__ const void *key, void *data, __UNUSED__ void *fdata)
 {
     Eina_List *l;
     Enlil_Geocaching_Log *log;
@@ -122,7 +122,7 @@ static Eina_Bool _print_cb(const Eina_Hash *hash, const void *key, void *data, v
     return EINA_TRUE;
 }
 
-static void _done_cb(void *data, Eina_Hash *db)
+static void _done_cb(__UNUSED__ void *data, Eina_Hash *db)
 {
     eina_hash_foreach(db, _print_cb, NULL);
 

@@ -168,7 +168,7 @@ static void _album_load(Enlil_Load *load, Enlil_Album *album)
     ENLIL_MUTEX_LOCK(load);
 }
 
-static void _enlil_load(void *data, Ecore_Thread *thread)
+static void _enlil_load(void *data, __UNUSED__ Ecore_Thread *thread)
 {
     Enlil_Load *load = data;
     Enlil_Library *library, *library_list;
@@ -209,7 +209,7 @@ static void _enlil_load(void *data, Ecore_Thread *thread)
     enlil_library_free(&library_list);
 }
 
-static void _enlil_load_message_cb(void *data, void *buffer, unsigned int nbyte)
+static void _enlil_load_message_cb(void *data, __UNUSED__ void *buffer, __UNUSED__ unsigned int nbyte)
 {
    Enlil_Load *load = (Enlil_Load*) data;
 
@@ -233,7 +233,7 @@ static void _enlil_load_message_cb(void *data, void *buffer, unsigned int nbyte)
    EINA_STRINGSHARE_DEL(msg);
 }
 
-static void _enlil_load_end_cb(void *data, Ecore_Thread *thread)
+static void _enlil_load_end_cb(void *data, __UNUSED__ Ecore_Thread *thread)
 {
    double t;
    Enlil_Load *load = (Enlil_Load*) data;
@@ -242,9 +242,9 @@ static void _enlil_load_end_cb(void *data, Ecore_Thread *thread)
     Eina_List *l_enlil = enlil_library_albums_get(load->library);
 
     t = ecore_time_get();
-    double time = t - load->t0;
-    LOG_ERR("(%f sec) Loading the library \"%s\" done. %d albums and %d photos.",
-            time, enlil_library_path_get(load->library), eina_list_count(l_enlil), load->photos_count);
+    double _time = t - load->t0;
+    LOG_DBG("(%f sec) Loading the library \"%s\" done. %d albums and %d photos.",
+            _time, enlil_library_path_get(load->library), eina_list_count(l_enlil), load->photos_count);
     load->conf.done_cb(load->conf.data, load, eina_list_count(l_enlil), load->photos_count);
 }
 

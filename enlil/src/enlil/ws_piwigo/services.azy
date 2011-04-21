@@ -1,0 +1,141 @@
+Azy_Namespace pwg;
+
+
+struct Status
+{
+   string username;
+   string status;
+   string theme;
+   string language;
+   string pwg_token;
+   string charset;
+};
+
+struct Category
+{
+	int id;
+	string name;
+	string permalink;
+	string uppercasts;
+	string global_rank;
+	string comment;
+	int version_header;
+	string url;
+	string status;
+};
+
+struct Categories
+{
+	array<Category> categories;
+};
+
+struct Category_Added
+{
+	string info;
+	int id;
+	int version_header;
+};
+
+
+struct Image
+{
+	int id;
+	int width;
+	int height;
+	int hit;
+	int version_header;
+	int version_tags;
+	int version_file;
+	string file;
+	string name;
+	string comment;
+	string tn_url;
+	string element_url;
+	string high_url;
+	
+	//if using pwg.images.getInfo
+	string date_available;
+	string date_creation;
+	string tn_ext;
+	string author;
+	int filesize;
+	string representative_ext;
+	string date_metadata_update;
+	string average_rate;
+	string has_high;
+	string high_filesize;
+	string level;
+	string md5sum;
+	string added_by;
+	
+	string lat;
+	string lon;
+};
+
+struct Category_Image
+{
+	int id;
+	int version_header;
+	int version_tags;
+	int version_file;
+};
+
+struct Category_Images
+{
+	array<Category_Image> images;
+};
+
+
+Azy_Module images
+{
+Image getAdminInfo(int image_id)
+<%
+	return NULL;
+%>
+
+int setInfo(int image_id, string name, string comment, string author)
+<%
+	return 0;
+%>
+}
+
+
+Azy_Module categories
+{
+Categories getAdminList(int cat_id)
+<%
+	return NULL;
+%>
+
+int setInfo(int category_id, string name, string comment, string status)
+<%
+	return 0;
+%>
+
+Category_Added add(string name, string comment, string status)
+<%
+	return NULL;
+%>
+
+Category_Images getAdminImages(int cat_id, int per_page)
+<%
+	return NULL;
+%>
+}
+
+Azy_Module session
+{
+boolean login(string username, string password)
+<%
+	return 0;
+%>
+
+
+Status getStatus()
+<%
+	return NULL;
+%>
+
+}
+
+

@@ -243,7 +243,7 @@ static void _job_next()
     running = 1;
 }
 
-static void _iptc_thread(void *data, Ecore_Thread *thread)
+static void _iptc_thread(void *data, __UNUSED__ Ecore_Thread *thread)
 {
    Enlil_IPTC_Thread_Data *t_data = data;
    const char *file = t_data->file;
@@ -256,7 +256,7 @@ static void _iptc_thread(void *data, Ecore_Thread *thread)
    if(!d)
      goto end;
 
-   for (i=0; i < d->count; i++)
+   for (i=0; i < (int)d->count; i++)
      {
 	IptcDataSet * e = d->datasets[i];
 	Enlil_IPTC *iptc = calloc(1, sizeof(Enlil_IPTC));
@@ -289,7 +289,7 @@ end:
    ;
 }
 
-static void _end_cb(void *data, Ecore_Thread *thread)
+static void _end_cb(void *data, __UNUSED__ Ecore_Thread *thread)
 {
    Enlil_IPTC_Thread_Data *t_data = data;
    Enlil_IPTC_Job *job = job_current;

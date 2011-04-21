@@ -145,7 +145,7 @@ static void _job_free(Enlil_Thumb_Job *job)
    free(job);
 }
 
-static void _thumb_connect_cb(void *data, Ethumb_Client *client, Eina_Bool success)
+static void _thumb_connect_cb(__UNUSED__ void *data, __UNUSED__ Ethumb_Client *client, Eina_Bool success)
 {
    if(success)
      {
@@ -160,7 +160,7 @@ static void _thumb_connect_cb(void *data, Ethumb_Client *client, Eina_Bool succe
      }
 }
 
-static void _thumb_die_cb(void *data, Ethumb_Client *client)
+static void _thumb_die_cb(__UNUSED__ void *data, __UNUSED__ Ethumb_Client *client)
 {
    if(thumb.current_job)
      {
@@ -216,13 +216,13 @@ static void _job_next()
    ecore_thread_run(_check_exists_thread_cb, _check_exists_thread_done_cb, NULL, job);
 }
 
-static void _check_exists_thread_cb(void *data, Ecore_Thread *thread)
+static void _check_exists_thread_cb(__UNUSED__ void *data, __UNUSED__ Ecore_Thread *thread)
 {
    ethumb_client_thumb_exists(thumb.ethumb);
 }
 
 
-static void _check_exists_thread_done_cb(void *data, Ecore_Thread *thread)
+static void _check_exists_thread_done_cb(void *data, __UNUSED__ Ecore_Thread *thread)
 {
    Enlil_Thumb_Job *job = data;
    const char *path = NULL;
@@ -258,7 +258,9 @@ static void _check_exists_thread_done_cb(void *data, Ecore_Thread *thread)
 	ethumb_client_generate(thumb.ethumb, _thumb_done_cb, job, NULL);
 }
 
-static void _thumb_done_cb(void *data, Ethumb_Client *client, int id, const char *file, const char *key, const char *thumb_path, const char *thumb_key, Eina_Bool success)
+static void _thumb_done_cb(void *data, __UNUSED__ Ethumb_Client *client, __UNUSED__ int id,
+		__UNUSED__ const char *file, __UNUSED__ const char *key, const char *thumb_path,
+		__UNUSED__ const char *thumb_key, Eina_Bool success)
 {
    Enlil_Thumb_Job *job = (Enlil_Thumb_Job*) data;
   

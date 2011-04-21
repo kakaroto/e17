@@ -84,47 +84,47 @@ int main(int argc, char **argv)
 }
 
 
-static void _sync_done_cb(void *data, Enlil_Sync *sync)
+static void _sync_done_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *sync)
 {
     ecore_main_loop_quit();
 }
 
-static void _sync_start_cb(void *data, Enlil_Sync *sync)
+static void _sync_start_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *sync)
 {
     ;
 }
 
-static void _sync_error_cb(void *data, Enlil_Sync *sync,  Sync_Error error, const char* msg)
+static void _sync_error_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *sync,  __UNUSED__ Sync_Error error, const char* msg)
 {
     printf("SYNC CB ERROR : %s\n",msg);
 }
 
-static void _sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
+static void _sync_album_new_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *sync, __UNUSED__ Enlil_Library *library, __UNUSED__ Enlil_Album *album)
 {
     ;
 }
 
-static void _sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
+static void _sync_album_update_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *sync, __UNUSED__ Enlil_Library *library, __UNUSED__ Enlil_Album *album)
 {
     ;
 }
 
-static void _sync_album_disapear_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
+static void _sync_album_disapear_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *sync, __UNUSED__ Enlil_Library *library, __UNUSED__ Enlil_Album *album)
 {
     ;
 }
 
-static void _sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo)
+static void _sync_photo_new_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *sync, __UNUSED__ Enlil_Album *album, __UNUSED__ Enlil_Photo *photo)
 {
     ;
 }
 
-static void _sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo)
+static void _sync_photo_update_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *sync, __UNUSED__ Enlil_Album *album, __UNUSED__ Enlil_Photo *photo)
 {
     ;
 }
 
-static void _sync_photo_disapear_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo)
+static void _sync_photo_disapear_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *sync, __UNUSED__ Enlil_Album *album, __UNUSED__ Enlil_Photo *photo)
 {
     ;
 }

@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 }
 
 
-static void _load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
+static void _load_done_cb(void *data, Enlil_Load *load, __UNUSED__ int nb_albums, __UNUSED__ int nb_photos)
 {
     Enlil_Library *library = (Enlil_Library*)data;
 
@@ -91,12 +91,12 @@ static void _load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_ph
 }
 
 
-static void _load_error_cb(void *data, Enlil_Load *load,  Load_Error error, const char* msg)
+static void _load_error_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Load *load,  __UNUSED__ Load_Error error, const char* msg)
 {
     printf("LOAD CB ERROR : %s\n",msg);
 }
 
-static void _load_album_done_cb(void *data, Enlil_Load *load,Enlil_Library *library, Enlil_Album *album)
+static void _load_album_done_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Load *load, __UNUSED__ Enlil_Library *library, __UNUSED__ Enlil_Album *album)
 {
     ;//printf("Enlil_Album loaded\n");
 }

@@ -196,8 +196,7 @@ eina_list_sorted_diff(Eina_List *list1, Eina_List *list2, Eina_List **elt_list1,
    return elt_common;
 }
 
-   EAPI Eina_List *
-eina_list_left_sorted_diff(Eina_List *sorted_list, Eina_List *list2, Eina_List **elt_list1, Eina_List **elt_list2, Eina_Compare_Cb func)
+Eina_List *eina_list_left_sorted_diff(Eina_List *sorted_list, Eina_List *list2, Eina_List **elt_list1, Eina_List **elt_list2, Eina_Compare_Cb func)
 {
    Eina_List *elt_common = NULL;
    Eina_List *l1, *l2;
@@ -326,5 +325,27 @@ eina_list_right_sorted_diff(Eina_List *list1, Eina_List *sorted_list, Eina_List 
      }
 
    return elt_common;
+}
+
+
+const char * album_access_type_to_string(Enlil_Album_Access_Type access_type)
+{
+	switch(access_type)
+	{
+	case ENLIL_ALBUM_ACCESS_TYPE_PUBLIC:
+		return "public";
+	case ENLIL_ALBUM_ACCESS_TYPE_PRIVATE:
+		return "private";
+	}
+
+	return NULL;
+}
+
+Enlil_Album_Access_Type string_to_album_access_type(const char *access_type)
+{
+	if(!strcmp(access_type, "public"))
+		return ENLIL_ALBUM_ACCESS_TYPE_PUBLIC;
+	else
+		return ENLIL_ALBUM_ACCESS_TYPE_PRIVATE;
 }
 

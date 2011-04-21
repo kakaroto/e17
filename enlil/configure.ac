@@ -69,7 +69,7 @@ PKG_CHECK_EXISTS([eabzu_client >= 0.0.1],
    [
     requirements="eabzu_client >= 0.0.1 ${requirements}"
     have_eabzu="yes"
-    AC_DEFINE_UNQUOTED(HAVE_EABZU, [1]", [have network synchronization (eabzu) support])
+    AC_DEFINE_UNQUOTED(HAVE_EABZU, [1], [have network synchronization (eabzu) support])
    ],
    [have_eabzu="no"])
 

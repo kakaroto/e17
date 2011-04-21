@@ -8,15 +8,15 @@
 
 #include "../define.h"
 
-static void _sync_done_cb(void *data, Enlil_Sync *sync);
-static void _sync_start_cb(void *data, Enlil_Sync *sync);
-static void _sync_error_cb(void *data, Enlil_Sync *sync,  Sync_Error error, const char* msg);
-static void _sync_album_new_cb(void *data, Enlil_Sync *sync, Enlil_Library *library, Enlil_Album *album);
-static void _sync_album_update_cb(void *data, Enlil_Sync *sync, Enlil_Library *library, Enlil_Album *album);
-static void _sync_album_disappear_cb(void *data, Enlil_Sync *sync, Enlil_Library *library, Enlil_Album *album);
-static void _sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo);
-static void _sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo);
-static void _sync_photo_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo);
+static void _sync_done_cb(void *data, Enlil_Sync *_sync);
+static void _sync_start_cb(void *data, Enlil_Sync *_sync);
+static void _sync_error_cb(void *data, Enlil_Sync *_sync,  Sync_Error error, const char* msg);
+static void _sync_album_new_cb(void *data, Enlil_Sync *_sync, Enlil_Library *library, Enlil_Album *album);
+static void _sync_album_update_cb(void *data, Enlil_Sync *_sync, Enlil_Library *library, Enlil_Album *album);
+static void _sync_album_disappear_cb(void *data, Enlil_Sync *_sync, Enlil_Library *library, Enlil_Album *album);
+static void _sync_photo_new_cb(void *data, Enlil_Sync *_sync,Enlil_Album *album, Enlil_Photo *photo);
+static void _sync_photo_update_cb(void *data, Enlil_Sync *_sync,Enlil_Album *album, Enlil_Photo *photo);
+static void _sync_photo_disappear_cb(void *data, Enlil_Sync *_sync,Enlil_Album *album, Enlil_Photo *photo);
 
 static void _load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos);
 static void _load_error_cb(void *data, Enlil_Load *load,  Load_Error error, const char* msg);
@@ -98,11 +98,11 @@ int main(int argc, char **argv)
     enlil_library_path_set(library, library_path);
 
 
-    Enlil_Sync *sync = enlil_sync_new(enlil_library_path_get(library),
+    Enlil_Sync *_sync = enlil_sync_new(enlil_library_path_get(library),
             _sync_album_new_cb, _sync_album_update_cb, _sync_album_disappear_cb,
             _sync_photo_new_cb, _sync_photo_update_cb, _sync_photo_disappear_cb,
             _sync_done_cb, _sync_start_cb, _sync_error_cb, library);
-    enlil_library_sync_set(library, sync);
+    enlil_library_sync_set(library, _sync);
 
     Enlil_Load *load = enlil_load_new(library,
             _load_album_done_cb,
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
     enlil_load_run(load);
     ecore_main_loop_begin();
 
-    enlil_sync_free(&sync);
+    enlil_sync_free(&_sync);
     enlil_library_free(&library);
     eina_log_domain_unregister(LOG_DOMAIN);
 
@@ -125,28 +125,28 @@ int main(int argc, char **argv)
 }
 
 
-static void _load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
+static void _load_done_cb(void *data, Enlil_Load *load, __UNUSED__ int nb_albums, __UNUSED__ int nb_photos)
 {
     Enlil_Library *library = (Enlil_Library*)data;
 
     enlil_load_free(&load);
 
     t = ecore_time_get();
-    double time = t - t0;
-    LOG_ERR("Load Time: %f sec)", time);
+    double _time = t - t0;
+    LOG_ERR("Load Time: %f sec)", _time);
 
     t0_sync = ecore_time_get();
-    Enlil_Sync *sync = enlil_library_sync_get(library);
-    enlil_sync_job_all_add(sync);
+    Enlil_Sync *_sync = enlil_library_sync_get(library);
+    enlil_sync_job_all_add(_sync);
 }
 
 
-static void _load_error_cb(void *data, Enlil_Load *load,  Load_Error error, const char* msg)
+static void _load_error_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Load *load, __UNUSED__ Load_Error error, const char* msg)
 {
     printf("LOAD CB ERROR : %s\n",msg);
 }
 
-static void _load_album_done_cb(void *data, Enlil_Load *load,Enlil_Library *library, Enlil_Album *album)
+static void _load_album_done_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Load *load, __UNUSED__ Enlil_Library *library, Enlil_Album *album)
 {
     //printf("Enlil_Album loaded\n");
     enlil_album_monitor_start(album);
@@ -154,7 +154,7 @@ static void _load_album_done_cb(void *data, Enlil_Load *load,Enlil_Library *libr
 
 
 
-static void _sync_done_cb(void *data, Enlil_Sync *sync)
+static void _sync_done_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *_sync)
 {
     //Enlil_Root *library = (Enlil*)data;
     //enlil_print(enlil);
@@ -162,26 +162,26 @@ static void _sync_done_cb(void *data, Enlil_Sync *sync)
     enlil_file_manager_flush();
 
     t = ecore_time_get();
-    double time = t - t0_sync;
-    LOG_ERR("Sync Time: %f sec", time);
-    time = t - t0;
-    LOG_ERR("Total Time: %f sec", time);
+    double _time = t - t0_sync;
+    LOG_ERR("Sync Time: %f sec", _time);
+    _time = t - t0;
+    LOG_ERR("Total Time: %f sec", _time);
 
     //ecore_main_loop_quit();
 }
 
-static void _sync_start_cb(void *data, Enlil_Sync *sync)
+static void _sync_start_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *_sync)
 {
    //Enlil_Root *library = (Enlil*)data;
    t0_sync = ecore_time_get();
 }
 
-static void _sync_error_cb(void *data, Enlil_Sync *sync,  Sync_Error error, const char* msg)
+static void _sync_error_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Sync *_sync,  __UNUSED__ Sync_Error error, const char* msg)
 {
     printf("SYNC CB ERROR : %s\n",msg);
 }
 
-static void _sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
+static void _sync_album_new_cb(void *data, __UNUSED__ Enlil_Sync *_sync, __UNUSED__ Enlil_Library *library, Enlil_Album *album)
 {
     Enlil_Library *_library = (Enlil_Library*) data;
     Enlil_Album *_album = enlil_album_copy_new(album);
@@ -189,7 +189,7 @@ static void _sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Library *libra
     enlil_album_monitor_start(_album);
 }
 
-static void _sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
+static void _sync_album_update_cb(void *data, __UNUSED__ Enlil_Sync *_sync, __UNUSED__ Enlil_Library *library, Enlil_Album *album)
 {
     Enlil_Library *_library = (Enlil_Library*) data;
 
@@ -199,7 +199,7 @@ static void _sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Library *li
     enlil_album_copy(album, _album);
 }
 
-static void _sync_album_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
+static void _sync_album_disappear_cb(void *data, __UNUSED__ Enlil_Sync *_sync, __UNUSED__ Enlil_Library *library, Enlil_Album *album)
 {
     Enlil_Library *_library = (Enlil_Library*) data;
 
@@ -210,7 +210,7 @@ static void _sync_album_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Library 
     enlil_album_free(&_album);
 }
 
-static void _sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo)
+static void _sync_photo_new_cb(void *data, __UNUSED__ Enlil_Sync *_sync,Enlil_Album *album, Enlil_Photo *photo)
 {
     Enlil_Library *_library = (Enlil_Library*) data;
 
@@ -221,7 +221,7 @@ static void _sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, 
     enlil_album_photo_add(_album, _photo);
 }
 
-static void _sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo)
+static void _sync_photo_update_cb(void *data, __UNUSED__ Enlil_Sync *_sync,Enlil_Album *album, Enlil_Photo *photo)
 {
     Enlil_Library *_library = (Enlil_Library*) data;
 
@@ -232,7 +232,7 @@ static void _sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *albu
     enlil_photo_copy(photo, _photo);
 }
 
-static void _sync_photo_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo)
+static void _sync_photo_disappear_cb(void *data, __UNUSED__ Enlil_Sync *_sync,Enlil_Album *album, Enlil_Photo *photo)
 {
     Enlil_Library *_library = (Enlil_Library*) data;
 
@@ -244,45 +244,45 @@ static void _sync_photo_disappear_cb(void *data, Enlil_Sync *sync,Enlil_Album *a
     enlil_photo_free(&_photo);
 }
 
-static void _monitor_album_new_cb(void *data, Enlil_Library *library, const char *path)
+static void _monitor_album_new_cb(__UNUSED__ void *data, Enlil_Library *library, const char *path)
 {
     const char *file_name = ecore_file_file_get(path);
 
-    Enlil_Sync *sync = enlil_library_sync_get(library);
-    enlil_sync_job_album_folder_add(sync, file_name);
+    Enlil_Sync *_sync = enlil_library_sync_get(library);
+    enlil_sync_job_album_folder_add(_sync, file_name);
 }
 
-static void _monitor_album_delete_cb(void *data, Enlil_Library *library, const char *path)
+static void _monitor_album_delete_cb(__UNUSED__ void *data, Enlil_Library *library, const char *path)
 {
     //delete the album
     const char *file_name = ecore_file_file_get(path);
-    Enlil_Sync *sync = enlil_library_sync_get(library);
-    enlil_sync_job_album_folder_add(sync, file_name);
+    Enlil_Sync *_sync = enlil_library_sync_get(library);
+    enlil_sync_job_album_folder_add(_sync, file_name);
 }
 
-static void _monitor_enlil_delete_cb(void *data, Enlil_Library *library)
+static void _monitor_enlil_delete_cb(__UNUSED__ void *data, __UNUSED__ Enlil_Library *library)
 {
     printf("Enlil delete !!!\n");
 }
 
-static void _monitor_photo_new_cb(void *data, Enlil_Library *library, Enlil_Album *album, const char *path)
+static void _monitor_photo_new_cb(__UNUSED__ void *data, Enlil_Library *library, Enlil_Album *album, const char *path)
 {
     const char *file_name = ecore_file_file_get(path);
-    Enlil_Sync *sync = enlil_library_sync_get(library);
-    enlil_sync_job_photo_file_add(sync, enlil_album_file_name_get(album), file_name);
+    Enlil_Sync *_sync = enlil_library_sync_get(library);
+    enlil_sync_job_photo_file_add(_sync, enlil_album_file_name_get(album), file_name);
 }
 
-static void _monitor_photo_delete_cb(void *data, Enlil_Library *library, Enlil_Album *album, const char *path)
+static void _monitor_photo_delete_cb(__UNUSED__ void *data, Enlil_Library *library, Enlil_Album *album, const char *path)
 {
     const char *file_name = ecore_file_file_get(path);
-    Enlil_Sync *sync = enlil_library_sync_get(library);
-    enlil_sync_job_photo_file_add(sync, enlil_album_file_name_get(album), file_name);
+    Enlil_Sync *_sync = enlil_library_sync_get(library);
+    enlil_sync_job_photo_file_add(_sync, enlil_album_file_name_get(album), file_name);
 }
 
-static void _monitor_photo_update_cb(void *data, Enlil_Library *library, Enlil_Album *album, const char *path)
+static void _monitor_photo_update_cb(__UNUSED__ void *data, Enlil_Library *library, Enlil_Album *album, const char *path)
 {
     const char *file_name = ecore_file_file_get(path);
-    Enlil_Sync *sync = enlil_library_sync_get(library);
-    enlil_sync_job_photo_file_add(sync, enlil_album_file_name_get(album), file_name);
+    Enlil_Sync *_sync = enlil_library_sync_get(library);
+    enlil_sync_job_photo_file_add(_sync, enlil_album_file_name_get(album), file_name);
 }
 

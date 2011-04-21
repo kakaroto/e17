@@ -1121,13 +1121,13 @@ static void _end_cb(void *data, Ecore_Thread *thread)
 	 //flickr_time = mktime(&tm);
 
 	 /*if(flickr_time > _enlil_photo_netsync_last_change_get(job->photo)
-	       && flickr_time > enlil_photo_time_get(job->photo))
+	       && flickr_time > enlil_photo__time_get(job->photo))
 	   {
 	      //flickr more update
 	      if(job->photo_notuptodate_cb)
 		job->photo_notuptodate_cb(job->data, job->photo);
 	   }
-	 else if(enlil_photo_time_get(job->photo) > _enlil_photo_netsync_fs_time_get(job->photo))
+	 else if(enlil_photo__time_get(job->photo) > _enlil_photo_netsync_fs_time_get(job->photo))
 	   {
 	      //local more update
 	      if(job->photo_flickrnotuptodate_cb)

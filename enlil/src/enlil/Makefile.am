@@ -31,7 +31,16 @@ exif/exif-i18n.c \
 geocaching.c \
 net_sync.c \
 flickr.c \
-download.c
+download.c \
+pwg_session.azy_client.c \
+pwg_images.azy_client.c  \
+pwg_categories.azy_client.c \
+pwg_Common.c \
+pwg_Common_Azy.c
+
+BUILT_SOURCES = .sources
+.sources: ws_piwigo/services.azy
+	azy_parser -H -p -o ./ ws_piwigo/services.azy
 
 installed_headersdir = $(prefix)/include/enlil
 installed_headers_DATA = Enlil.h

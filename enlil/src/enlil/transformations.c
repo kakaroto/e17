@@ -167,7 +167,7 @@ void enlil_trans_history_clear(Enlil_Trans_History *h)
 const char *enlil_trans_history_goto(Enlil_Trans_History *h, int pos)
 {
     ASSERT_RETURN(h != NULL);
-    ASSERT_RETURN(pos >= 0 && pos < eina_list_count(h->history));
+    ASSERT_RETURN(pos >= 0 && pos < (int)eina_list_count(h->history));
 
     h->current = eina_list_nth(h->history, pos);
     return h->current->file;
@@ -193,6 +193,7 @@ static void _enlil_trans_history_add(Enlil_Trans_History *h, const char *file, E
     ASSERT_RETURN_VOID(h != NULL);
     ASSERT_RETURN_VOID(file != NULL);
 
+    LOG_DBG("Add transition in history");
     l = eina_list_data_find_list(h->history, h->current);
     l = eina_list_next(l);
     EINA_LIST_FOREACH(l, l2, item)
@@ -308,7 +309,7 @@ end:
 }
 
 
-static Eina_Bool _exe_del_cb(void *data, int type, void *event)
+static Eina_Bool _exe_del_cb(__UNUSED__ void *data, __UNUSED__ int type, __UNUSED__ void *event)
 {
    _end_cb(job_current);
    return EINA_TRUE;

@@ -31,6 +31,7 @@ static ENLIL_MUTEX mutex;
 static EET_File_Version current_version;
 static Eet_Data_Descriptor *edd_version = NULL;
 
+static Ecore_Timer *_timer = NULL;
 
 struct EET_File_Version
 {
@@ -41,7 +42,6 @@ struct File_Table_Data
 {
    const char *path;
    Eet_File *f;
-   //pthread_mutex_t mutex;
 };
 
 static int count;
@@ -76,15 +76,7 @@ int enlil_file_manager_shutdown()
    return --count;
 }
 
-File_Table_Data *_enlil_file_manager_find(const char *file)
-{
-   Eina_List *l;
-   File_Table_Data *data;
-   EINA_LIST_FOREACH(file_list, l, data)
-      if(data->path == file)
-	return data;
-   return NULL;
-}
+
 
 void _enlil_file_manager_clean()
 {
@@ -110,6 +102,12 @@ Eet_File *enlil_file_manager_open(const char *file)
    file = eina_stringshare_add(file);
    File_Table_Data *f_data = _enlil_file_manager_find(file);
    EET_File_Version *f_version;
+
+   if(_timer)
+   {
+	   ecore_timer_del(_timer);
+	   _timer = NULL;
+   }
 
    if(f_data)
      {
@@ -156,9 +154,34 @@ Eet_File *enlil_file_manager_open(const char *file)
    return f_data->f;
 }
 
-void enlil_file_manager_close(const char *file)
+
+static Eina_Bool _timer_cb(__UNUSED__ void *data)
+{
+	enlil_file_manager_flush();
+	_timer = NULL;
+	return EINA_FALSE;
+}
+
+File_Table_Data *_enlil_file_manager_find(const char *file)
+{
+   Eina_List *l;
+   File_Table_Data *data;
+   EINA_LIST_FOREACH(file_list, l, data)
+      if(data->path == file)
+	return data;
+   return NULL;
+}
+
+
+void enlil_file_manager_close(__UNUSED__ const char *file)
 {
    //LOG_DBG("Close file %s", file);
+   if(_timer)
+   {
+	   ecore_timer_del(_timer);
+	   _timer = NULL;
+   }
+   _timer = ecore_timer_add(3, _timer_cb, NULL);
    ENLIL_MUTEX_UNLOCK(mutex);
 }
 

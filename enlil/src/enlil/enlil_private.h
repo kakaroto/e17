@@ -63,6 +63,11 @@ void                    _enlil_library_album_add_end(Enlil_Library *library, Enl
 void                    _enlil_library_collection_add_end(Enlil_Library *library, Enlil_Collection *collection, Eina_Bool notify);
 void                    _enlil_library_tag_add_end(Enlil_Library *library, Enlil_Tag *tag, Eina_Bool notify);
 
+Enlil_Album_Version_Header_Increase_Cb _enlil_library_album_version_header_increase_cb_get(Enlil_Library *library);
+void *					_enlil_library_album_version_header_increase_data_get(Enlil_Library *library);
+Enlil_Photo_Version_Header_Increase_Cb _enlil_library_photo_version_header_increase_cb_get(Enlil_Library *library);
+void *					_enlil_library_photo_version_header_increase_data_get(Enlil_Library *library);
+
 void                    _enlil_album_photo_name_changed(Enlil_Album *album, Enlil_Photo *photo);
 void                    _enlil_album_photo_datetimeoriginal_changed(Enlil_Album *album, Enlil_Photo *photo);
 void                    _enlil_library_album_name_changed(Enlil_Library *library, Enlil_Album *album);
@@ -83,15 +88,23 @@ Eet_Data_Descriptor *   _enlil_exif_edd_new();
 Eet_Data_Descriptor *   _enlil_iptc_edd_new();
 
 void                    _enlil_album_netsync_id_set(Enlil_Album *album, int id);
-void                    _enlil_album_netsync_timestamp_last_update_header_set(Enlil_Album *album, int id);
+void                    _enlil_album_netsync_version_header_inc(Enlil_Album *album);
+void                    _enlil_album_netsync_version_header_both_set(Enlil_Album *album, int version);
 void                    _enlil_album_netsync_timestamp_last_update_collections_set(Enlil_Album *album, int id);
 
 void                    _enlil_photo_netsync_id_set(Enlil_Photo *photo, int id);
-void                    _enlil_photo_netsync_timestamp_last_update_header_set(Enlil_Photo *photo, int id);
-void                    _enlil_photo_netsync_timestamp_last_update_tags_set(Enlil_Photo *photo, int id);
-void                    _enlil_photo_netsync_timestamp_last_update_file_set(Enlil_Photo *photo, int id);
+void                    _enlil_photo_netsync_version_header_inc(Enlil_Photo *photo);
+void                    _enlil_photo_netsync_version_tags_inc(Enlil_Photo *photo);
+void                    _enlil_photo_netsync_version_file_inc(Enlil_Photo *photo);
+void                    _enlil_photo_netsync_version_header_both_set(Enlil_Photo *photo, int version);
+void                    _enlil_photo_netsync_version_tags_both_set(Enlil_Photo *photo, int version);
+void                    _enlil_photo_netsync_version_file_both_set(Enlil_Photo *photo, int version);
 
 int                     enlil_trans_init();
 int                     enlil_trans_shutdown();
+
+Eina_List *				eina_list_left_sorted_diff(Eina_List *sorted_list, Eina_List *list2,
+							Eina_List **elt_list1, Eina_List **elt_list2, Eina_Compare_Cb func);
+
 
 #endif   /* ----- #ifndef ENLIL_PRIVATE_INC  ----- */

@@ -51,7 +51,12 @@ void enlil_download_add(Enlil_Photo *photo, const char *source,
     Eina_List *l;
     EINA_LIST_FOREACH(jobs, l, job)
     {
-        if(job->photo == photo && job->source == source)
+        if(job->photo == photo
+        		&& job->source == source
+        		&& job->done_cb == done_cb
+        		&& job->start_cb == start_cb
+        		&& job->progress_cb == progress_cb
+        		&& job->data == data)
             break;
     }
 
@@ -215,7 +220,8 @@ static void _done_cb(void *data, const char *file, int status)
     _job_next();
 }
 
-static int _progress_cb(void *data, const char *file, long int dltotal, long int dlnow, long int ultotal, long int ulnow)
+static int _progress_cb(void *data, __UNUSED__ const char *file, long int dltotal, long int dlnow,
+		__UNUSED__ long int ultotal, __UNUSED__ long int ulnow)
 {
     if(current_job != data) //job deleted
         return 1;
