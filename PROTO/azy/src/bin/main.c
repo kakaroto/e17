@@ -1685,10 +1685,10 @@ gen_server_impl(Azy_Server_Module *s)
                {
                   if ((p->type->ctype == i) || (p->type->ctype == b) || (p->type->ctype == d))
                     {
-                       EL(1, "%s_ptr = azy_server_module_param_get(module, %s);", p->name, p->name);
+                       EL(1, "%s_ptr = azy_server_module_param_get(module, \"%s\");", p->name, p->name);
                        EL(1, "if (!%s_ptr)", p->name);
                        EL(2, "{");
-                       EL(3, "if (!%s(azy_content_param_get(content, %d), &%s))", p->name, p->type->demarch_name, n++, p->name);
+                       EL(3, "if (!%s(azy_content_param_get(content, %d), &%s))", p->type->demarch_name, n++, p->name);
                        EL(4, "{");
                        EL(5, "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
                           method->name, p->name);
