@@ -163,8 +163,6 @@ EAPI    void                    enlil_library_netsync_host_set(Enlil_Library *li
 EAPI    const char *            enlil_library_netsync_host_get(Enlil_Library *library);
 EAPI    void                    enlil_library_netsync_path_set(Enlil_Library *library, const char *path);
 EAPI    const char *            enlil_library_netsync_path_get(Enlil_Library *library);
-EAPI    void                    enlil_library_flickr_auth_token_set(Enlil_Library *library, const char *auth_token);
-EAPI    const char *            enlil_library_flickr_auth_token_get(Enlil_Library *library);
 EAPI    void                    enlil_library_album_add(Enlil_Library *library, Enlil_Album *album);
 EAPI    Enlil_Album *           enlil_library_album_prev_get(Enlil_Library *library, Enlil_Album *album);
 EAPI    Eina_List *             enlil_library_albums_get(const Enlil_Library *library);
@@ -420,121 +418,6 @@ EAPI    void                    enlil_sync_job_album_folder_add(Enlil_Sync *sync
 EAPI    void                    enlil_sync_job_photo_file_add(Enlil_Sync *sync, const char *folder, const char *file);
 //
 
-
-
-typedef struct Enlil_Flickr_Job Enlil_Flickr_Job;
-typedef struct Enlil_Flickr_Photo_Size Enlil_Flickr_Photo_Size;
-
-typedef void (*Enlil_Flickr_Job_Start_Cb) (void *data, Enlil_Flickr_Job *job, Enlil_Album *album, Enlil_Photo *photo);
-typedef void (*Enlil_Flickr_Job_Done_Cb) (void *data, Enlil_Flickr_Job *job, Enlil_Album *album, Enlil_Photo *photo);
-
-typedef void (*Enlil_Flickr_Error_Cb) (void *data, Enlil_Library *library);
-typedef void (*Enlil_Flickr_Album_Error_Cb) (void *data, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Photo_Error_Cb) (void *data, Enlil_Photo *photo);
-
-typedef void (*Enlil_Flickr_Album_New_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_NotInFlickr_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_NotUpToDate_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_FlickrNotUpToDate_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_UpToDate_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
-typedef void (*Enlil_Flickr_Album_Done_Cb) (void *data, Enlil_Library *library, Enlil_Album *album, Eina_Bool error);
-
-typedef void (*Enlil_Flickr_Photo_New_Cb) (void *data, Enlil_Album *album, const char *name, const char *photo_id);
-typedef void (*Enlil_Flickr_Photo_Known_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
-
-typedef void (*Enlil_Flickr_Photo_NotInFlickr_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo);
-typedef void (*Enlil_Flickr_Photo_NotUpToDate_Cb) (void *data, Enlil_Photo *photo);
-typedef void (*Enlil_Flickr_Photo_FlickrNotUpToDate_Cb) (void *data, Enlil_Photo *photo);
-typedef void (*Enlil_Flickr_Photo_UpToDate_Cb) (void *data, Enlil_Photo *photo);
-typedef void (*Enlil_Flickr_Photo_Done_Cb) (void *data, Enlil_Photo *photo);
-
-typedef void (*Enlil_Flickr_Photo_Upload_Start_Cb) (void *data, Enlil_Photo *photo);
-typedef int (*Enlil_Flickr_Photo_Upload_Progress_Cb) (void *data, Enlil_Photo *photo, long int dltotal, long int dlnow);
-typedef void (*Enlil_Flickr_Photo_Upload_Done_Cb) (void *data, Enlil_Photo *photo, int status);
-
-typedef void (*Enlil_Flickr_Photo_Sizes_Cb) (void *data, Eina_List *sizes, Eina_Bool error);
-
-EAPI    Eina_Bool               enlil_flickr_have();
-EAPI    void                    enlil_flickr_job_del(Enlil_Flickr_Job *job);
-
-
-EAPI    void                    enlil_flickr_job_start_cb_set(Enlil_Flickr_Job_Start_Cb start_cb, void *data);
-EAPI    void                    enlil_flickr_job_done_cb_set(Enlil_Flickr_Job_Done_Cb done_cb, void *data);
-
-EAPI    void                    enlil_flickr_reinit(Enlil_Library *library);
-EAPI    const char *            enlil_flickr_auth_url_get();
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_reinit_prepend(Enlil_Library *library);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_update_flickr_append(Enlil_Album *album,
-      Enlil_Flickr_Album_Done_Cb done_cb,
-      void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_update_local_append(Enlil_Album *album,
-      Enlil_Flickr_Album_Done_Cb done_cb,
-      void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_create_flickr_append(Enlil_Album *album,
-      Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
-      Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
-      Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
-      Enlil_Flickr_Photo_Error_Cb error_cb,
-      void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_header_append(Enlil_Album *album,
-      Enlil_Flickr_Album_New_Cb new_cb,
-      Enlil_Flickr_Album_NotInFlickr_Cb notinflickr_cb,
-      Enlil_Flickr_Album_NotUpToDate_Cb notuptodate_cb,
-      Enlil_Flickr_Album_FlickrNotUpToDate_Cb flickrnotuptodate_cb,
-      Enlil_Flickr_Album_UpToDate_Cb uptodate_cb,
-      Enlil_Flickr_Error_Cb error_cb,
-      void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_albums_append(Enlil_Library *library,
-      Enlil_Flickr_Album_New_Cb new_cb,
-      Enlil_Flickr_Album_NotInFlickr_Cb notinflickr_cb,
-      Enlil_Flickr_Album_NotUpToDate_Cb notuptodate_cb,
-      Enlil_Flickr_Album_FlickrNotUpToDate_Cb flickrnotuptodate_cb,
-      Enlil_Flickr_Album_UpToDate_Cb uptodate_cb,
-      Enlil_Flickr_Error_Cb error_cb,
-      void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_album_photos_append(Enlil_Album *album,
-      Enlil_Flickr_Photo_New_Cb new_cb,
-      Enlil_Flickr_Photo_NotInFlickr_Cb notinflickr_cb,
-      Enlil_Flickr_Photo_Known_Cb known_cb,
-      Enlil_Flickr_Album_Error_Cb error_cb,
-      void *data);
-
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_cmp_photo_append(
-      Enlil_Photo *photo,
-      Enlil_Flickr_Photo_FlickrNotUpToDate_Cb flickrnotuptodate_cb,
-      Enlil_Flickr_Photo_NotUpToDate_Cb notuptodate_cb,
-      Enlil_Flickr_Photo_UpToDate_Cb uptodate_cb,
-      Enlil_Flickr_Photo_Error_Cb error_cb,
-      void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_photo_update_flickr_append(
-      Enlil_Photo *photo,
-      Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
-      Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
-      Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
-      Enlil_Flickr_Photo_Error_Cb error_cb,
-      void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_sync_photo_upload_flickr_prepend(
-      Enlil_Photo *photo,
-      Enlil_Flickr_Photo_Upload_Start_Cb start_cb,
-      Enlil_Flickr_Photo_Upload_Progress_Cb progress_cb,
-      Enlil_Flickr_Photo_Upload_Done_Cb done_cb,
-      Enlil_Flickr_Photo_Error_Cb error_cb,
-      void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_get_photo_sizes_prepend(const char *photo_id,
-      Enlil_Flickr_Photo_Sizes_Cb cb,
-      void *data);
-EAPI    Enlil_Flickr_Job *      enlil_flickr_job_set_photo_times_flickr_fs_prepend(
-      Enlil_Photo *photo,
-      Enlil_Flickr_Photo_Error_Cb error_cb,
-      void *data);
-
-EAPI    const char *            enlil_flickr_size_label_get(Enlil_Flickr_Photo_Size *size);
-EAPI    const char *            enlil_flickr_size_source_get(Enlil_Flickr_Photo_Size *size);
-EAPI    const char *            enlil_flickr_size_url_get(Enlil_Flickr_Photo_Size *size);
-EAPI    const char *            enlil_flickr_size_media_get(Enlil_Flickr_Photo_Size *size);
-EAPI    int                     enlil_flickr_size_width_get(Enlil_Flickr_Photo_Size *size);
-EAPI    int                     enlil_flickr_size_height_get(Enlil_Flickr_Photo_Size *size);
-EAPI    int                     enlil_flickr_size_order_get(Enlil_Flickr_Photo_Size *size);
 
 
 

@@ -414,24 +414,6 @@ Enlil_Album *enlil_library_album_search_name(Enlil_Library *library, const char 
    return NULL;
 }
 
-/**
- * @brief
- * @param id The flickr id. The string has to be in eina_stringshare
- */
-Enlil_Album *enlil_library_album_search_flickr_id(Enlil_Library *library, int id)
-{
-   Eina_List *l;
-   Enlil_Album *album;
-   ASSERT_RETURN(library!=NULL);
-
-   EINA_LIST_FOREACH(library->albums, l, album)
-     {
-	if(enlil_album_netsync_id_get(album) == id)
-	  return album;
-     }
-
-   return NULL;
-}
 
 /*
  * Add an album

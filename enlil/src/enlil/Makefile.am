@@ -30,7 +30,6 @@ exif/jpeg-marker.c \
 exif/exif-i18n.c \
 geocaching.c \
 net_sync.c \
-flickr.c \
 download.c \
 pwg_session.azy_client.c \
 pwg_images.azy_client.c  \

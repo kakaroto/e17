@@ -3,7 +3,7 @@
 #include "enlil_private.h"
 #include "../../config.h"
 
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 #include <Azy.h>
 #endif
 
@@ -72,7 +72,7 @@ struct Enlil_NetSync_Job
 	Enlil_NetSync_Photo_Error_Cb photo_error_cb;
 };
 
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 
 static Azy_Client *client = NULL;
 
@@ -105,20 +105,20 @@ static Eina_Bool _disconnected(void *data, int type, void *data2);
 static Eina_Bool _connected(void *data, int type, Azy_Client *cli);
 
 
-static Eina_Error _Eabzu_Login_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_login_ret(Azy_Client *cli, Azy_Content *content, void *_response);
 
-static Eina_Error _Eabzu_Album_ListGet_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
-static Eina_Error _Eabzu_JOB_CMP_ALBUM_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
-static Eina_Error _Eabzu_Album_New_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
-static Eina_Error _Eabzu_Album_Update_Local_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
-static Eina_Error _Eabzu_Album_Update_NetSync_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
-static Eina_Error _Eabzu_Album_Add_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_album_list_get_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_album_new_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_album_update_local_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_album_update_netsync_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_album_add_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_job_cmp_album_ret(Azy_Client *cli, Azy_Content *content, void *_response);
 
-static Eina_Error _Eabzu_Photo_ListGet_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
-static Eina_Error _Eabzu_Photo_New_HeaderGet_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
-static Eina_Error _Eabzu_Photo_Update_Local_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
-static Eina_Error _Eabzu_Photo_Update_NetSync_Ret(Azy_Client *cli, Azy_Content *content, void *_response);
-static Eina_Error _netsync_add_photo_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_photo_list_get_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_photo_new_header_get_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_photo_update_local_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_photo_update_netsync_ret(Azy_Client *cli, Azy_Content *content, void *_response);
+static Eina_Error _netsync_photo_add_ret(Azy_Client *cli, Azy_Content *content, void *_response);
 
 
 #endif
@@ -151,10 +151,10 @@ static Eina_Error _netsync_add_photo_ret(Azy_Client *cli, Azy_Content *content, 
 			} \
 		} while (0)
 
-#define EABZU_SUPPORT_ERR_MSG() \
+#define AZY_SUPPORT_ERR_MSG() \
 		do \
 		{ \
-			LOG_WARN("No network synchronization (eabzu) support."); \
+			LOG_WARN("No network synchronization (AZY) support."); \
 		} while (0)
 
 
@@ -212,26 +212,26 @@ void enlil_netsync_login_failed_cb_set(Enlil_NetSync_Login_Failed_Cb login_faile
 }
 void enlil_netsync_job_start_cb_set(Enlil_NetSync_Job_Start_Cb start_cb, void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	_job_start_cb = start_cb;
 	_job_start_data = data;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 #endif
 }
 void enlil_netsync_job_done_cb_set(Enlil_NetSync_Job_Done_Cb done_cb, void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	_job_done_cb = done_cb;
 	_job_done_data = data;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 #endif
 }
 
 void enlil_netsync_job_del(Enlil_NetSync_Job *job)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	ASSERT_RETURN_VOID(job != NULL);
 
 	LOG_INFO("Delete NetSync's job : %s", _enlil_netsync_job_type_tostring(job->type));
@@ -245,13 +245,13 @@ void enlil_netsync_job_del(Enlil_NetSync_Job *job)
 
 	_job_free(job);
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 #endif
 }
 
 void enlil_netsync_account_set(const char *_host, const char *_path, const char *_account, const char *_password)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	EINA_STRINGSHARE_DEL(account);
 	account = eina_stringshare_add(_account);
 	EINA_STRINGSHARE_DEL(password);
@@ -280,7 +280,7 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_albums_append(Enlil_Library *library,
 		Enlil_NetSync_Error_Cb error_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	Enlil_NetSync_Job *job;
 	Eina_List *l;
 
@@ -312,7 +312,7 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_albums_append(Enlil_Library *library,
 
 	return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -325,7 +325,7 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_album_append(Enlil_Library *library,
 		Enlil_NetSync_Error_Cb error_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	Enlil_NetSync_Job *job;
 	Eina_List *l;
 
@@ -357,17 +357,17 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_album_append(Enlil_Library *library,
 
 	return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
 
 Enlil_NetSync_Job *enlil_netsync_job_get_new_album_header_append(Enlil_Library *library,
-		int eabzu_id,
+		int AZY_id,
 		Enlil_NetSync_Album_Header_Get_Cb get_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	Enlil_NetSync_Job *job;
 	Eina_List *l;
 
@@ -376,7 +376,7 @@ Enlil_NetSync_Job *enlil_netsync_job_get_new_album_header_append(Enlil_Library *
 
 	EINA_LIST_FOREACH(l_jobs, l, job)
 	if(job->type == ENLIL_NETSYNC_JOB_GET_ALBUM_HEADER
-			&& job->album_id == eabzu_id)
+			&& job->album_id == AZY_id)
 		break;
 
 	if(!job)
@@ -384,7 +384,7 @@ Enlil_NetSync_Job *enlil_netsync_job_get_new_album_header_append(Enlil_Library *
 		job = calloc(1, sizeof(Enlil_NetSync_Job));
 		job->library = library;
 		job->type = ENLIL_NETSYNC_JOB_GET_ALBUM_HEADER;
-		job->album_id = eabzu_id;
+		job->album_id = AZY_id;
 		job->album_header_get_cb = get_cb;
 		job->data = data;
 
@@ -395,7 +395,7 @@ Enlil_NetSync_Job *enlil_netsync_job_get_new_album_header_append(Enlil_Library *
 
 	return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -405,7 +405,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_local_album_header_append(Enlil_Libr
 		Enlil_NetSync_Album_Header_Get_Cb get_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	Enlil_NetSync_Job *job;
 	Eina_List *l;
 
@@ -433,7 +433,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_local_album_header_append(Enlil_Libr
 
 	return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -443,7 +443,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_album_header_append(Enlil_Li
 		Enlil_NetSync_Album_Header_Get_Cb get_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	Enlil_NetSync_Job *job;
 	Eina_List *l;
 
@@ -471,7 +471,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_album_header_append(Enlil_Li
 
 	return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -481,7 +481,7 @@ Enlil_NetSync_Job *enlil_netsync_job_add_album_append(Enlil_Library *library,
 		Enlil_NetSync_Album_Header_Get_Cb get_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	Enlil_NetSync_Job *job;
 	Eina_List *l;
 
@@ -509,7 +509,7 @@ Enlil_NetSync_Job *enlil_netsync_job_add_album_append(Enlil_Library *library,
 
 	return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -523,7 +523,7 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_photos_append(Enlil_Album *album,
 		Enlil_NetSync_Photo_Error_Cb error_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 	Enlil_NetSync_Job *job;
 	Eina_List *l;
 
@@ -555,7 +555,7 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_photos_append(Enlil_Album *album,
 
 	return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -565,7 +565,7 @@ Enlil_NetSync_Job *enlil_netsync_job_get_new_photo_header_append(Enlil_Album *al
 		Enlil_NetSync_Photo_Header_New_Get_Cb get_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 		Enlil_NetSync_Job *job;
 		Eina_List *l;
 
@@ -594,7 +594,7 @@ Enlil_NetSync_Job *enlil_netsync_job_get_new_photo_header_append(Enlil_Album *al
 
 		return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -604,7 +604,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_local_photo_header_append(Enlil_Albu
 		Enlil_NetSync_Photo_Header_Get_Cb get_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 		Enlil_NetSync_Job *job;
 		Eina_List *l;
 
@@ -635,7 +635,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_local_photo_header_append(Enlil_Albu
 
 		return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -645,7 +645,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_photo_header_append(Enlil_Al
 		Enlil_NetSync_Photo_Header_Get_Cb get_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 		Enlil_NetSync_Job *job;
 		Eina_List *l;
 
@@ -674,7 +674,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_photo_header_append(Enlil_Al
 
 		return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -684,7 +684,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_photo_header_prepend(Enlil_A
 		Enlil_NetSync_Photo_Header_Get_Cb get_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 		Enlil_NetSync_Job *job;
 		Eina_List *l;
 
@@ -713,7 +713,7 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_photo_header_prepend(Enlil_A
 
 		return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
@@ -722,7 +722,7 @@ Enlil_NetSync_Job *enlil_netsync_job_add_photo_append(Enlil_Photo *photo,
 		Enlil_NetSync_Photo_Header_Get_Cb add_cb,
 		void *data)
 {
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 		Enlil_NetSync_Job *job;
 		Eina_List *l;
 
@@ -749,12 +749,12 @@ Enlil_NetSync_Job *enlil_netsync_job_add_photo_append(Enlil_Photo *photo,
 
 		return job;
 #else
-	EABZU_SUPPORT_ERR_MSG();
+	AZY_SUPPORT_ERR_MSG();
 	return NULL;
 #endif
 }
 
-#ifdef HAVE_EABZU //STATIC METHODS
+#ifdef HAVE_AZY //STATIC METHODS
 
 static Enlil_NetSync_Job *_enlil_netsync_job_cnx_prepend()
 {
@@ -872,7 +872,7 @@ static void _job_next()
 		azy_content_data_set(content, job);
 		ret = pwg_session_login(client, account, password, content, NULL);
 
-		CALL_CHECK(_Eabzu_Login_Ret);
+		CALL_CHECK(_netsync_login_ret);
 
 		azy_content_free(content);
 		break;
@@ -883,7 +883,7 @@ static void _job_next()
 
 		azy_content_data_set(content, job);
 		ret = pwg_categories_getAdminList(client, -1, content, NULL);
-		CALL_CHECK(_Eabzu_Album_ListGet_Ret);
+		CALL_CHECK(_netsync_album_list_get_ret);
 
 		azy_content_free(content);
 		break;
@@ -894,7 +894,7 @@ static void _job_next()
 
 		azy_content_data_set(content, job);
 		ret = pwg_categories_getAdminList(client, enlil_album_netsync_id_get(job->album), content, NULL);
-		CALL_CHECK(_Eabzu_JOB_CMP_ALBUM_Ret);
+		CALL_CHECK(_netsync_job_cmp_album_ret);
 
 		azy_content_free(content);
 		break;
@@ -905,7 +905,7 @@ static void _job_next()
 
 		azy_content_data_set(content, job);
 		ret = pwg_categories_getAdminList(client, job->album_id, content, NULL);
-		CALL_CHECK(_Eabzu_Album_New_Ret);
+		CALL_CHECK(_netsync_album_new_ret);
 
 		azy_content_free(content);
 		break;
@@ -917,7 +917,7 @@ static void _job_next()
 
 		azy_content_data_set(content, job);
 		ret = pwg_categories_getAdminList(client, job->album_id, content, NULL);
-		CALL_CHECK(_Eabzu_Album_Update_Local_Ret);
+		CALL_CHECK(_netsync_album_update_local_ret);
 
 		azy_content_free(content);
 		break;
@@ -932,7 +932,7 @@ static void _job_next()
 				enlil_album_description_get(job->album),
 				album_access_type_to_string(enlil_album_access_type_get(job->album)),
 				content, NULL);
-		CALL_CHECK(_Eabzu_Album_Update_NetSync_Ret);
+		CALL_CHECK(_netsync_album_update_netsync_ret);
 
 		azy_content_free(content);
 		break;
@@ -947,7 +947,7 @@ static void _job_next()
 					enlil_album_description_get(job->album),
 					album_access_type_to_string(enlil_album_access_type_get(job->album)),
 					content, NULL);
-			CALL_CHECK(_Eabzu_Album_Add_Ret);
+			CALL_CHECK(_netsync_album_add_ret);
 
 			azy_content_free(content);
 			break;
@@ -958,7 +958,7 @@ static void _job_next()
 
 			azy_content_data_set(content, job);
 			ret = pwg_categories_getAdminImages(client, enlil_album_netsync_id_get(job->album), 10000, content, NULL);
-			CALL_CHECK(_Eabzu_Photo_ListGet_Ret);
+			CALL_CHECK(_netsync_photo_list_get_ret);
 
 			azy_content_free(content);
 			break;
@@ -969,7 +969,7 @@ static void _job_next()
 
 			azy_content_data_set(content, job);
 			ret = pwg_images_getAdminInfo(client, job->photo_id, content, NULL);
-			CALL_CHECK(_Eabzu_Photo_New_HeaderGet_Ret);
+			CALL_CHECK(_netsync_photo_new_header_get_ret);
 
 			azy_content_free(content);
 			break;
@@ -980,7 +980,7 @@ static void _job_next()
 
 			azy_content_data_set(content, job);
 			ret = pwg_images_getAdminInfo(client, enlil_photo_netsync_id_get(job->photo), content, NULL);
-			CALL_CHECK(_Eabzu_Photo_Update_Local_Ret);
+			CALL_CHECK(_netsync_photo_update_local_ret);
 
 			azy_content_free(content);
 			break;
@@ -995,7 +995,7 @@ static void _job_next()
 					enlil_photo_description_get(job->photo),
 					enlil_photo_author_get(job->photo),
 					content, NULL);
-			CALL_CHECK(_Eabzu_Photo_Update_NetSync_Ret);
+			CALL_CHECK(_netsync_photo_update_netsync_ret);
 
 			azy_content_free(content);
 			break;
@@ -1025,7 +1025,7 @@ static void _job_next()
 					enlil_album_netsync_id_get(enlil_photo_album_get(job->photo)));
 			azy_net_uri_set(azy_client_net_get(client), buf);
 			Azy_Client_Call_Id id = azy_client_put(client, &azy_data, NULL);
-			azy_client_callback_set(client, id, _netsync_add_photo_ret);
+			azy_client_callback_set(client, id, _netsync_photo_add_ret);
 			//
 			munmap(content_file, st.st_size); /* unmap mmapped data */
 
@@ -1091,7 +1091,7 @@ static Eina_Bool _connected(__UNUSED__ void *data, __UNUSED__ int type, __UNUSED
 	return ECORE_CALLBACK_RENEW;
 }
 
-static Eina_Error _Eabzu_Login_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_login_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	int status = (int)_response;
 
@@ -1129,10 +1129,10 @@ static Eina_Error _Eabzu_Login_Ret(Azy_Client *cli, Azy_Content *content, void *
 }
 
 
-static Eina_Error _Eabzu_Album_ListGet_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_list_get_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Categories *albums = _response;
-	pwg_Category *eabzu_album;
+	pwg_Category *AZY_album;
 	Enlil_Album *album;
 	Eina_List *copy, *l,  *l2;
 
@@ -1148,9 +1148,9 @@ static Eina_Error _Eabzu_Album_ListGet_Ret(Azy_Client *cli, Azy_Content *content
 
 	copy = eina_list_clone(enlil_library_albums_get(job->library));
 
-	EINA_LIST_FOREACH(albums->categories, l, eabzu_album)
+	EINA_LIST_FOREACH(albums->categories, l, AZY_album)
 	{
-		int id = eabzu_album->id;
+		int id = AZY_album->id;
 
 		EINA_LIST_FOREACH(copy, l2, album)
 		{
@@ -1178,7 +1178,7 @@ static Eina_Error _Eabzu_Album_ListGet_Ret(Azy_Client *cli, Azy_Content *content
 			//check if both albums are different
 			int version_header_local = enlil_album_netsync_version_header_get(album);
 			int version_header_net = enlil_album_netsync_version_header_net_get(album);
-			if(eabzu_album->version_header != version_header_net
+			if(AZY_album->version_header != version_header_net
 					&& version_header_local != version_header_net
 					&& job->album_netsyncnotuptodate_cb)
 			{
@@ -1186,13 +1186,13 @@ static Eina_Error _Eabzu_Album_ListGet_Ret(Azy_Client *cli, Azy_Content *content
 				//we suppose the local version is the must uptodate -> need update netsync version
 				job->album_netsyncnotuptodate_cb(job->data, job->library, album);
 			}
-			else if(eabzu_album->version_header != version_header_net
+			else if(AZY_album->version_header != version_header_net
 					&& version_header_local == version_header_net
 					&& job->album_notuptodate_cb)
 			{
 				job->album_notuptodate_cb(job->data, job->library, album);
 			}
-			else if(eabzu_album->version_header == version_header_net
+			else if(AZY_album->version_header == version_header_net
 					&& version_header_local != version_header_net
 					&& job->album_netsyncnotuptodate_cb)
 			{
@@ -1218,10 +1218,10 @@ static Eina_Error _Eabzu_Album_ListGet_Ret(Azy_Client *cli, Azy_Content *content
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _Eabzu_JOB_CMP_ALBUM_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_job_cmp_album_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Categories *albums = _response;
-	pwg_Category *eabzu_album;
+	pwg_Category *AZY_album;
 	Enlil_Album *album;
 	Eina_List *copy, *l,  *l2;
 
@@ -1237,9 +1237,9 @@ static Eina_Error _Eabzu_JOB_CMP_ALBUM_Ret(Azy_Client *cli, Azy_Content *content
 
 	copy = eina_list_clone(enlil_library_albums_get(job->library));
 
-	EINA_LIST_FOREACH(albums->categories, l, eabzu_album)
+	EINA_LIST_FOREACH(albums->categories, l, AZY_album)
 	{
-		int id = eabzu_album->id;
+		int id = AZY_album->id;
 
 		EINA_LIST_FOREACH(copy, l2, album)
 		{
@@ -1263,7 +1263,7 @@ static Eina_Error _Eabzu_JOB_CMP_ALBUM_Ret(Azy_Client *cli, Azy_Content *content
 			//check if both albums are different
 			int version_header_local = enlil_album_netsync_version_header_get(album);
 			int version_header_net = enlil_album_netsync_version_header_net_get(album);
-			if(eabzu_album->version_header != version_header_net
+			if(AZY_album->version_header != version_header_net
 					&& version_header_local != version_header_net
 					&& job->album_netsyncnotuptodate_cb)
 			{
@@ -1271,13 +1271,13 @@ static Eina_Error _Eabzu_JOB_CMP_ALBUM_Ret(Azy_Client *cli, Azy_Content *content
 				//we suppose the local version is the must uptodate -> need update netsync version
 				job->album_netsyncnotuptodate_cb(job->data, job->library, album);
 			}
-			else if(eabzu_album->version_header != version_header_net
+			else if(AZY_album->version_header != version_header_net
 					&& version_header_local == version_header_net
 					&& job->album_notuptodate_cb)
 			{
 				job->album_notuptodate_cb(job->data, job->library, album);
 			}
-			else if(eabzu_album->version_header == version_header_net
+			else if(AZY_album->version_header == version_header_net
 					&& version_header_local != version_header_net
 					&& job->album_netsyncnotuptodate_cb)
 			{
@@ -1300,10 +1300,10 @@ static Eina_Error _Eabzu_JOB_CMP_ALBUM_Ret(Azy_Client *cli, Azy_Content *content
 }
 
 
-static Eina_Error _Eabzu_Album_New_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_new_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Categories *albums = _response;
-	pwg_Category *eabzu_album;
+	pwg_Category *AZY_album;
 	char buf[PATH_MAX], buf_name[PATH_MAX];
 
 	Enlil_NetSync_Job *job = job_current;
@@ -1316,16 +1316,16 @@ static Eina_Error _Eabzu_Album_New_Ret(Azy_Client *cli, Azy_Content *content, vo
 		return azy_content_error_code_get(content);
 	}
 
-	eabzu_album = eina_list_data_get(albums->categories);
+	AZY_album = eina_list_data_get(albums->categories);
 
 	//create the album
 	Enlil_Album *album = enlil_album_new();
-	_enlil_album_netsync_id_set(album, eabzu_album->id);
-	enlil_album_description_set(album, eabzu_album->comment);
-	enlil_album_access_type_set(album, string_to_album_access_type(eabzu_album->status));
+	_enlil_album_netsync_id_set(album, AZY_album->id);
+	enlil_album_description_set(album, AZY_album->comment);
+	enlil_album_access_type_set(album, string_to_album_access_type(AZY_album->status));
 
 	//create the path of the new album
-	snprintf(buf_name, sizeof(buf_name), "%s",eabzu_album->name);
+	snprintf(buf_name, sizeof(buf_name), "%s",AZY_album->name);
 	snprintf(buf, sizeof(buf), "%s/%s", enlil_library_path_get(job->library), buf_name);
 	if(ecore_file_exists(buf))
 	{
@@ -1334,9 +1334,9 @@ static Eina_Error _Eabzu_Album_New_Ret(Azy_Client *cli, Azy_Content *content, vo
 		{
 			//add a number
 			if(i>0)
-				snprintf(buf_name, sizeof(buf_name), "%s_Remote_%d", eabzu_album->name, i);
+				snprintf(buf_name, sizeof(buf_name), "%s_Remote_%d", AZY_album->name, i);
 			else
-				snprintf(buf_name, sizeof(buf_name), "%s_Remote", eabzu_album->name);
+				snprintf(buf_name, sizeof(buf_name), "%s_Remote", AZY_album->name);
 
 
 			snprintf(buf, PATH_MAX, "%s/%s", enlil_library_path_get(job->library), buf_name);
@@ -1350,8 +1350,8 @@ static Eina_Error _Eabzu_Album_New_Ret(Azy_Client *cli, Azy_Content *content, vo
 
 	enlil_library_album_add(job->library, album);
 
-	_enlil_album_netsync_version_header_both_set(album, eabzu_album->version_header);
-	//_enlil_album_netsync_timestamp_last_update_collections_set(album, eabzu_album->timestamp_last_update_collections);
+	_enlil_album_netsync_version_header_both_set(album, AZY_album->version_header);
+	//_enlil_album_netsync_timestamp_last_update_collections_set(album, AZY_album->timestamp_last_update_collections);
 
 	enlil_library_eet_albums_save(job->library);
 	enlil_album_eet_header_save(album);
@@ -1371,10 +1371,10 @@ static Eina_Error _Eabzu_Album_New_Ret(Azy_Client *cli, Azy_Content *content, vo
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _Eabzu_Album_Update_Local_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_update_local_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Categories *albums = _response;
-	pwg_Category *eabzu_album;
+	pwg_Category *AZY_album;
 
 	Enlil_NetSync_Job *job = job_current;
 
@@ -1386,16 +1386,16 @@ static Eina_Error _Eabzu_Album_Update_Local_Ret(Azy_Client *cli, Azy_Content *co
 		return azy_content_error_code_get(content);
 	}
 
-	eabzu_album = eina_list_data_get(albums->categories);
+	AZY_album = eina_list_data_get(albums->categories);
 
 	//update the album
 	Enlil_Album *album = job->album;
-	enlil_album_description_set(album, eabzu_album->comment);
-	enlil_album_name_set(album, eabzu_album->name);
-	enlil_album_access_type_set(album, string_to_album_access_type(eabzu_album->status));
+	enlil_album_description_set(album, AZY_album->comment);
+	enlil_album_name_set(album, AZY_album->name);
+	enlil_album_access_type_set(album, string_to_album_access_type(AZY_album->status));
 
-	_enlil_album_netsync_version_header_both_set(album, eabzu_album->version_header);
-	//_enlil_album_netsync_timestamp_last_update_collections_set(album, eabzu_album->timestamp_last_update_collections);
+	_enlil_album_netsync_version_header_both_set(album, AZY_album->version_header);
+	//_enlil_album_netsync_timestamp_last_update_collections_set(album, AZY_album->timestamp_last_update_collections);
 
 	enlil_library_eet_albums_save(job->library);
 	enlil_album_eet_header_save(album);
@@ -1409,7 +1409,7 @@ static Eina_Error _Eabzu_Album_Update_Local_Ret(Azy_Client *cli, Azy_Content *co
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _Eabzu_Album_Update_NetSync_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_update_netsync_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	int version = (int)_response;
 
@@ -1440,9 +1440,9 @@ static Eina_Error _Eabzu_Album_Update_NetSync_Ret(Azy_Client *cli, Azy_Content *
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _Eabzu_Album_Add_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_add_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
-	pwg_Category_Added *eabzu_album = _response;
+	pwg_Category_Added *AZY_album = _response;
 
 	Enlil_NetSync_Job *job = job_current;
 
@@ -1457,8 +1457,8 @@ static Eina_Error _Eabzu_Album_Add_Ret(Azy_Client *cli, Azy_Content *content, vo
 	//create the album
 	Enlil_Album *album = job->album;
 
-	_enlil_album_netsync_id_set(album, eabzu_album->id);
-	_enlil_album_netsync_version_header_both_set(album, eabzu_album->version_header);
+	_enlil_album_netsync_id_set(album, AZY_album->id);
+	_enlil_album_netsync_version_header_both_set(album, AZY_album->version_header);
 
 	enlil_library_eet_albums_save(job->library);
 	enlil_album_eet_header_save(album);
@@ -1473,10 +1473,10 @@ static Eina_Error _Eabzu_Album_Add_Ret(Azy_Client *cli, Azy_Content *content, vo
 }
 
 
-static Eina_Error _Eabzu_Photo_ListGet_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_photo_list_get_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Category_Images *photos = _response;
-	pwg_Category_Image *eabzu_photo;
+	pwg_Category_Image *AZY_photo;
 	Enlil_Photo *photo;
 	Eina_List *copy, *l,  *l2;
 
@@ -1492,9 +1492,9 @@ static Eina_Error _Eabzu_Photo_ListGet_Ret(Azy_Client *cli, Azy_Content *content
 
 	copy = eina_list_clone(enlil_album_photos_get(job->album));
 
-	EINA_LIST_FOREACH(photos->images, l, eabzu_photo)
+	EINA_LIST_FOREACH(photos->images, l, AZY_photo)
 	{
-		int id = eabzu_photo->id;
+		int id = AZY_photo->id;
 
 		EINA_LIST_FOREACH(copy, l2, photo)
 		{
@@ -1518,7 +1518,7 @@ static Eina_Error _Eabzu_Photo_ListGet_Ret(Azy_Client *cli, Azy_Content *content
 			//synchronize header
 			int version_header_local = enlil_photo_netsync_version_header_get(photo);
 			int version_header_net = enlil_photo_netsync_version_header_net_get(photo);
-			if(eabzu_photo->version_header != version_header_net
+			if(AZY_photo->version_header != version_header_net
 					&& version_header_local != version_header_net
 					&& job->photo_netsyncnotuptodate_cb)
 			{
@@ -1526,13 +1526,13 @@ static Eina_Error _Eabzu_Photo_ListGet_Ret(Azy_Client *cli, Azy_Content *content
 				//we suppose the local version is the must uptodate -> need update netsync version
 				job->photo_netsyncnotuptodate_cb(job->data, job->album, photo);
 			}
-			else if(eabzu_photo->version_header != version_header_net
+			else if(AZY_photo->version_header != version_header_net
 					&& version_header_local == version_header_net
 					&& job->photo_notuptodate_cb)
 			{
 				job->photo_notuptodate_cb(job->data, job->album, photo);
 			}
-			else if(eabzu_photo->version_header == version_header_net
+			else if(AZY_photo->version_header == version_header_net
 					&& version_header_local != version_header_net
 					&& job->photo_netsyncnotuptodate_cb)
 			{
@@ -1560,9 +1560,9 @@ static Eina_Error _Eabzu_Photo_ListGet_Ret(Azy_Client *cli, Azy_Content *content
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _Eabzu_Photo_New_HeaderGet_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_photo_new_header_get_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
-	pwg_Image *eabzu_photo = _response;
+	pwg_Image *AZY_photo = _response;
 	char buf[PATH_MAX], buf_name[PATH_MAX];
 
 	Enlil_NetSync_Job *job = job_current;
@@ -1577,11 +1577,11 @@ static Eina_Error _Eabzu_Photo_New_HeaderGet_Ret(Azy_Client *cli, Azy_Content *c
 
 	//create the photo
 	Enlil_Photo *photo = enlil_photo_new();
-	_enlil_photo_netsync_id_set(photo, eabzu_photo->id);
-	enlil_photo_description_set(photo, eabzu_photo->comment);
+	_enlil_photo_netsync_id_set(photo, AZY_photo->id);
+	enlil_photo_description_set(photo, AZY_photo->comment);
 
 	//create the file name of the new photo
-	snprintf(buf_name, sizeof(buf_name), "%s",eabzu_photo->file);
+	snprintf(buf_name, sizeof(buf_name), "%s",AZY_photo->file);
 	snprintf(buf, sizeof(buf), "%s/%s/%s", enlil_album_path_get(job->album),
 			enlil_album_file_name_get(job->album),buf_name);
 
@@ -1592,9 +1592,9 @@ static Eina_Error _Eabzu_Photo_New_HeaderGet_Ret(Azy_Client *cli, Azy_Content *c
 		{
 			//add a number
 			if(i>0)
-				snprintf(buf_name, sizeof(buf_name), "Remote_%d_%s", i, eabzu_photo->name);
+				snprintf(buf_name, sizeof(buf_name), "Remote_%d_%s", i, AZY_photo->name);
 			else
-				snprintf(buf_name, sizeof(buf_name), "Remote_%s", eabzu_photo->name);
+				snprintf(buf_name, sizeof(buf_name), "Remote_%s", AZY_photo->name);
 
 			snprintf(buf, PATH_MAX, "%s/%s", enlil_album_path_get(job->album), buf_name);
 			i++;
@@ -1603,25 +1603,25 @@ static Eina_Error _Eabzu_Photo_New_HeaderGet_Ret(Azy_Client *cli, Azy_Content *c
 	//
 
 	enlil_photo_file_name_set(photo, buf_name);
-	enlil_photo_name_set(photo, eabzu_photo->name);
-	enlil_photo_author_set(photo, eabzu_photo->author);
+	enlil_photo_name_set(photo, AZY_photo->name);
+	enlil_photo_author_set(photo, AZY_photo->author);
 
 	snprintf(buf, sizeof(buf), "%s/%s", enlil_album_path_get(job->album),
 			enlil_album_file_name_get(job->album));
 	enlil_photo_path_set(photo, buf);
 
-	_enlil_photo_netsync_version_header_both_set(photo, eabzu_photo->version_header);
-	_enlil_photo_netsync_version_tags_both_set(photo, eabzu_photo->version_tags);
-	_enlil_photo_netsync_version_file_both_set(photo, eabzu_photo->version_file);
+	_enlil_photo_netsync_version_header_both_set(photo, AZY_photo->version_header);
+	_enlil_photo_netsync_version_tags_both_set(photo, AZY_photo->version_tags);
+	_enlil_photo_netsync_version_file_both_set(photo, AZY_photo->version_file);
 
 	enlil_photo_album_set(photo, job->album);
 
 	//select he bigger url
-	const char *url = eabzu_photo->high_url;
+	const char *url = AZY_photo->high_url;
 	if(!url)
-		url = eabzu_photo->element_url;
+		url = AZY_photo->element_url;
 	if(!url)
-		url = eabzu_photo->tn_url;
+		url = AZY_photo->tn_url;
 
 	if(job->photo_header_new_get)
 		job->photo_header_new_get(job->data, job->album, photo, url);
@@ -1631,9 +1631,9 @@ static Eina_Error _Eabzu_Photo_New_HeaderGet_Ret(Azy_Client *cli, Azy_Content *c
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _Eabzu_Photo_Update_Local_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_photo_update_local_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
-	pwg_Image *eabzu_photo = _response;
+	pwg_Image *AZY_photo = _response;
 
 	Enlil_NetSync_Job *job = job_current;
 
@@ -1647,11 +1647,11 @@ static Eina_Error _Eabzu_Photo_Update_Local_Ret(Azy_Client *cli, Azy_Content *co
 
 	//create the photo
 	Enlil_Photo *photo = job->photo;
-	enlil_photo_description_set(photo, eabzu_photo->comment);
-	enlil_photo_name_set(photo, eabzu_photo->name);
-	enlil_photo_author_set(photo, eabzu_photo->author);
+	enlil_photo_description_set(photo, AZY_photo->comment);
+	enlil_photo_name_set(photo, AZY_photo->name);
+	enlil_photo_author_set(photo, AZY_photo->author);
 
-	_enlil_photo_netsync_version_header_both_set(photo, eabzu_photo->version_header);
+	_enlil_photo_netsync_version_header_both_set(photo, AZY_photo->version_header);
 
 	enlil_album_eet_header_save(job->album);
 	enlil_photo_eet_save(job->photo);
@@ -1664,7 +1664,7 @@ static Eina_Error _Eabzu_Photo_Update_Local_Ret(Azy_Client *cli, Azy_Content *co
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _Eabzu_Photo_Update_NetSync_Ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_photo_update_netsync_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	int version = (int)_response;
 
@@ -1691,7 +1691,7 @@ static Eina_Error _Eabzu_Photo_Update_NetSync_Ret(Azy_Client *cli, Azy_Content *
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _netsync_add_photo_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_photo_add_ret(Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	const char *ret = _response;
 

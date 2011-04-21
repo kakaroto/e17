@@ -7,10 +7,6 @@
 #define EET_FILE_ROOT_DB "libraries.eet"
 #define EET_FILE_GROUNDSPEAK_DB "geocaching.eet"
 
-#define FLICKR_KEY "aae798f1317888cd87622847d77b8df9"
-#define FLICKR_SECRET "0fcf42e527115702"
-#define FLICKR_AUTH_URL "http://www.flickr.com/auth-72157622943823433"
-
 #define TEMP "/tmp/"
 #define FREE(p) do { if(p){ free(p); p=NULL;} }while(0)
 #define PCLOSE(p) do {if(p){pclose(p); p=NULL;} }while(0)

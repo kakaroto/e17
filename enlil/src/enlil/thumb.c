@@ -58,7 +58,6 @@ int enlil_thumb_shutdown()
 }
 
 
-
 const char* enlil_thumb_photo_get(Enlil_Photo *photo, Enlil_Thumb_Job_Type type,
       Enlil_Thumb_Done_Cb done_cb, Enlil_Thumb_Error_Cb error_cb, void *data)
 {

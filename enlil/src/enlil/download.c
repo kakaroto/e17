@@ -201,13 +201,6 @@ static void _done_cb(void *data, const char *file, int status)
 
     ecore_file_mv(file, buf);
 
-#ifdef HAVE_FLICKR
-    //enlil_flickr_job_set_photo_times_flickr_fs_prepend(
-    //        current_job->photo,
-    //        NULL,
-     //       NULL);
-#endif
-
     if(current_job->done_cb)
         current_job->done_cb(current_job->data, current_job->photo, status);
 

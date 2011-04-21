@@ -1,5 +1,6 @@
 #include "enlil_private.h"
 #include <eina_main.h>
+#include <Azy.h>
 
 #ifdef HAVE_EABZU
 #include <Azy.h>
@@ -26,7 +27,7 @@ int enlil_init()
     enlil_thumb_init();
     enlil_trans_init();
 
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
     azy_init();
 #endif
 
