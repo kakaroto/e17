@@ -59,8 +59,7 @@
                                                             \
         program                                             \
         {                                                   \
-            /*set the fade to visible and wait the      \
-            end of the first fade*/                     \
+            /*set the fade to visible and wait the end of the first fade*/ \
             name: "fade_next_next";                      \
             source: "eyelight";                               \
             signal: "fade,next,next";                    \
