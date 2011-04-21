@@ -811,11 +811,11 @@ gen_type_esql(Azy_Typedef *t,
                     EL(6, "tmp->%s = NULL;", m->name);
                }
           }
-        if ((t->item_type->type == TD_BASE) && (t->item_type->ctype != c) && (t->item_type->ctype != b64))
-          EL(5, "ret = eina_list_append(ret, &tmp);");
-        else
-          EL(5, "ret = eina_list_append(ret, tmp);");
         EL(4, "}");
+        if ((t->item_type->type == TD_BASE) && (t->item_type->ctype != c) && (t->item_type->ctype != b64))
+          EL(3, "ret = eina_list_append(ret, &tmp);");
+        else
+          EL(3, "ret = eina_list_append(ret, tmp);");
         EL(2, "}");
         EL(1, "eina_iterator_free(it);");
         EL(1, "return ret;");
