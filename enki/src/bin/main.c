@@ -107,8 +107,8 @@ void library_set(const char *library_path)
 	slideshow_clear();
 
 	enlil_netsync_login_failed_cb_set(netsync_login_failed_cb, NULL);
-	enlil_netsync_job_start_cb_set(flickr_job_start_cb, NULL);
-	enlil_netsync_job_done_cb_set(flickr_job_done_cb, NULL);
+	enlil_netsync_job_start_cb_set(netsync_job_start_cb, NULL);
+	enlil_netsync_job_done_cb_set(netsync_job_done_cb, NULL);
 
 	if(enlil_data->sync)
 		enlil_sync_free(&enlil_data->sync);
@@ -311,9 +311,6 @@ int elm_main(int argc, char **argv)
 	Evas_Object *menu = edje_object_part_external_object_get(edje, "object.menu");
 	enlil_data->tabpanel = tabpanel_add_with_edje(edje, menu);
 
-	/*Evas_Object *flickr = */flickr_menu_new(edje);
-
-
 	panels = tabpanel_panels_obj_get(enlil_data->tabpanel);
 	evas_object_size_hint_weight_set(panels, 1.0, 1.0);
 	evas_object_size_hint_align_set(panels, -1.0, -1.0);
@@ -429,7 +426,7 @@ void enlil_album_data_free(Enlil_Album *album, void *_data)
 {
 	Enlil_Album_Data *data = _data;
 	Enlil_Data *enlil_data = data->enlil_data;
-	Enlil_Flickr_Job *job;
+	Enlil_NetSync_Job *job;
 
 	if(data->import_list_album_item)
 		elm_genlist_item_del(data->import_list_album_item);
@@ -441,7 +438,7 @@ void enlil_album_data_free(Enlil_Album *album, void *_data)
 
 	EINA_LIST_FREE(data->netsync.jobs, job)
 	{
-		enlil_flickr_job_del(job);
+		enlil_netsync_job_del(job);
 	}
 
 	free(data);
@@ -452,7 +449,7 @@ void enlil_photo_data_free(Enlil_Photo *photo, void *_data)
 	Enlil_Photo_Data *data = _data;
 	Slideshow_Item *item;
 	//Enlil_Data *enlil_data = data->enlil_data;
-	Enlil_Flickr_Job *job;
+	Enlil_NetSync_Job *job;
 
 	enlil_thumb_photo_clear(photo);
 	if(data->list_photo_item)
@@ -475,7 +472,7 @@ void enlil_photo_data_free(Enlil_Photo *photo, void *_data)
 
 	EINA_LIST_FREE(data->netsync.jobs, job)
 	{
-		enlil_flickr_job_del(job);
+		enlil_netsync_job_del(job);
 	}
 
 	free(data);
@@ -510,7 +507,7 @@ void enlil_geocaching_data_free(Enlil_Geocaching *gp, void *_data)
 	free(data);
 }
 
-const char *album_flickr_edje_signal_get(Enlil_Album *album)
+const char *album_netsync_edje_signal_get(Enlil_Album *album)
 {
 	ASSERT_RETURN(album != NULL);
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
@@ -531,24 +528,24 @@ const char *album_flickr_edje_signal_get(Enlil_Album *album)
 	EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
 	{
 		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-		if (photo_data && photo_data->netsync.state != PHOTO_FLICKR_NONE)
+		if (photo_data && photo_data->netsync.state != PHOTO_NETSYNC_NONE)
 			return "update";
 	}
 
 	return "uptodate";
 }
 
-const char *photo_flickr_edje_signal_get(Photo_Flickr_Enum e)
+const char *photo_netsync_edje_signal_get(Photo_NetSync_Enum e)
 {
 	switch(e)
 	{
-	case PHOTO_FLICKR_NONE:
+	case PHOTO_NETSYNC_NONE:
 		return "uptodate";
-	case PHOTO_FLICKR_NOTUPTODATE:
+	case PHOTO_NETSYNC_NOTUPTODATE:
 		return "update";
-	case PHOTO_FLICKR_FLICKRNOTUPTODATE:
+	case PHOTO_NETSYNC_NETSYNCNOTUPTODATE:
 		return "update";
-	case PHOTO_FLICKR_NOTINFLICKR:
+	case PHOTO_NETSYNC_NOTINNETSYNC:
 		return "update";
 	}
 	return NULL;

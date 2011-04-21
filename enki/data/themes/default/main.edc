@@ -38,9 +38,9 @@ group {
 	{
 		program
 		{
-			name: "show_flickr_logo_selection";
+			name: "show_netsync_logo_selection";
 			signal: "show";
-			action: SIGNAL_EMIT "object.flickr[content]:show_select" "";
+			action: SIGNAL_EMIT "object.netsync[content]:show_select" "";
 		}
 		program
 		{

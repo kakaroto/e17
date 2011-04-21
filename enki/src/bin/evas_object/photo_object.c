@@ -23,7 +23,7 @@ struct _Smart_Data
 	Eina_Bool progressbar;
 	Evas_Object *o_progressbar;
 
-	Evas_Object *flickr;
+	Evas_Object *netsync;
 
 	Eina_Bool done : 1;
 	Eina_Bool selected: 1;
@@ -279,25 +279,25 @@ void photo_object_text_set(Evas_Object *obj, const char *s)
 	edje_object_part_text_set(sd->obj, "object.text", s);
 }
 
-Evas_Object *photo_object_flickr_state_set(Evas_Object *obj, const char* state)
+Evas_Object *photo_object_netsync_state_set(Evas_Object *obj, const char* state)
 {
 	Smart_Data *sd;
 	sd = evas_object_smart_data_get(obj);
 	if (!sd) return NULL;
 
-	if(!sd->flickr)
+	if(!sd->netsync)
 	{
-		sd->flickr = edje_object_add(evas_object_evas_get(obj));
-		evas_object_show(sd->flickr);
-		edje_object_file_set(sd->flickr, Theme, "flickr/sync");
-		evas_object_size_hint_weight_set(sd->flickr, 1.0, 1.0);
-		evas_object_size_hint_align_set(sd->flickr, 1.0, 0.0);
+		sd->netsync = edje_object_add(evas_object_evas_get(obj));
+		evas_object_show(sd->netsync);
+		edje_object_file_set(sd->netsync, Theme, "netsync/sync");
+		evas_object_size_hint_weight_set(sd->netsync, 1.0, 1.0);
+		evas_object_size_hint_align_set(sd->netsync, 1.0, 0.0);
 
-		edje_object_part_swallow(sd->obj, "object.swallow.sync", sd->flickr);
+		edje_object_part_swallow(sd->obj, "object.swallow.sync", sd->netsync);
 	}
 
-	edje_object_signal_emit(sd->flickr, state, "");
-	return sd->flickr;
+	edje_object_signal_emit(sd->netsync, state, "");
+	return sd->netsync;
 }
 
 static void _preloaded(void *data, Evas *e, Evas_Object *obj, void *event)
@@ -563,8 +563,8 @@ _smart_del(Evas_Object * obj)
 	{
 		evas_object_del(sd->image);
 	}
-	if(sd->flickr)
-		evas_object_del(sd->flickr);
+	if(sd->netsync)
+		evas_object_del(sd->netsync);
 
 
 	free(sd);

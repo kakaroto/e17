@@ -16,7 +16,7 @@ typedef struct enlil_collection_data Enlil_Collection_Data;
 typedef struct enlil_tag_data Enlil_Tag_Data;
 
 
-#include "flickr.h"
+#include "netsync.h"
 #include "download.h"
 #include "upload.h"
 #include "objects.h"
@@ -93,14 +93,14 @@ struct enlil_album_data
 		  Evas_Object *bt;
 		  Evas_Object *pb;
 		  Eina_Bool is_updating;
-	     } notinflickr;
+	     } notinnetsync;
 
 	     struct {
 		  Evas_Object *pager;
 		  Evas_Object *bt;
 		  Evas_Object *pb;
 		  Eina_Bool is_updating;
-	     } flickrupdate;
+	     } netsyncupdate;
 
 
 
@@ -115,7 +115,7 @@ struct enlil_album_data
 	     Evas_Object *bt6;
 	  } inwin;
 
-	Eina_List *jobs; // list of Enlil_Flickr_Job*
+	Eina_List *jobs; // list of Enlil_NetSync_Job*
 	Eina_Bool is_sync; //true if a sync job is running on the album
      } netsync;
 };
@@ -142,8 +142,8 @@ struct enlil_photo_data
 
     struct
      {
-	Photo_Flickr_Enum state;
-	Eina_List *jobs; // list of Enlil_Flickr_Job*
+	Photo_NetSync_Enum state;
+	Eina_List *jobs; // list of Enlil_NetSync_Job*
 	Eina_Bool is_sync; //true if a sync job is running on the photo
      } netsync;
 };

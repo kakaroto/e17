@@ -337,9 +337,6 @@ Inwin *inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb, voi
 Inwin *inwin_preferences_new();
 Inwin *inwin_library_delete_new(Enlil_Data *enlil_data);
 
-Evas_Object *flickr_menu_new(Evas_Object *win);
-void flickr_menu_animated_set(Eina_Bool animated);
-
 
 
 //main menu

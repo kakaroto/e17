@@ -36,7 +36,7 @@ extern const char* Theme;
 
 
 #include "enlil_data.h"
-#include "flickr.h"
+#include "netsync.h"
 #include "objects.h"
 
 

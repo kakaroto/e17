@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="enki_piwigo.svg">
+  <defs
+     id="defs4">
+    <filter
+       inkscape:collect="always"
+       id="filter3799"
+       x="-0.11626794"
+       width="1.2325359"
+       y="-0.12994652"
+       height="1.259893">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="5.578797"
+         id="feGaussianBlur3801" />
+    </filter>
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       id="filter3799-7"
+       x="-0.11626794"
+       width="1.232536"
+       y="-0.12994651"
+       height="1.2598929">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="5.578797"
+         id="feGaussianBlur3801-1" />
+    </filter>
+    <linearGradient
+       y2="329.21875"
+       x2="595.51044"
+       y1="509.84375"
+       x1="595.51044"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3441"
+       xlink:href="#linearGradient3378"
+       inkscape:collect="always" />
+    <linearGradient
+       y2="329.21875"
+       x2="595.51044"
+       y1="509.84375"
+       x1="595.51044"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3411"
+       xlink:href="#linearGradient3378"
+       inkscape:collect="always" />
+    <filter
+       id="filter3398"
+       inkscape:collect="always">
+      <feGaussianBlur
+         id="feGaussianBlur3400"
+         stdDeviation="1.6711459"
+         inkscape:collect="always" />
+    </filter>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2562" />
+    <inkscape:perspective
+       id="perspective10"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       id="linearGradient3378">
+      <stop
+         id="stop3380"
+         offset="0"
+         style="stop-color:#88ff00;stop-opacity:1;" />
+      <stop
+         id="stop3382"
+         offset="1"
+         style="stop-color:#257400;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3378"
+       id="linearGradient3937"
+       gradientUnits="userSpaceOnUse"
+       x1="595.51044"
+       y1="509.84375"
+       x2="595.51044"
+       y2="329.21875" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3378-6"
+       id="linearGradient3937-0"
+       gradientUnits="userSpaceOnUse"
+       x1="595.51044"
+       y1="509.84375"
+       x2="595.51044"
+       y2="329.21875" />
+    <linearGradient
+       id="linearGradient3378-6">
+      <stop
+         id="stop3380-2"
+         offset="0"
+         style="stop-color:#88ff00;stop-opacity:1;" />
+      <stop
+         id="stop3382-8"
+         offset="1"
+         style="stop-color:#257400;stop-opacity:1;" />
+    </linearGradient>
+    <filter
+       color-interpolation-filters="sRGB"
+       id="filter3398-9"
+       inkscape:collect="always">
+      <feGaussianBlur
+         id="feGaussianBlur3400-5"
+         stdDeviation="1.6711459"
+         inkscape:collect="always" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="378.97459"
+     inkscape:cy="946.68056"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1678"
+     inkscape:window-height="980"
+     inkscape:window-x="0"
+     inkscape:window-y="40"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:0.99152538999999995;stroke-dasharray:none;filter:url(#filter3799)"
+       id="rect2985-0"
+       width="115.15739"
+       height="103.03556"
+       x="70.710678"
+       y="186.15637"
+       ry="31.31473"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#67a3f2;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:0.99152538999999995;stroke-dasharray:none"
+       id="rect2985"
+       width="115.15739"
+       height="103.03556"
+       x="70.710678"
+       y="185.65131"
+       ry="31.31473"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="82.832512"
+       y="213.93558"
+       id="text3755"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="82.832512"
+         y="213.93558"
+         id="tspan3761"
+         style="font-weight:bold;-inkscape-font-specification:Sans Bold">Enki</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="80.307129"
+       y="240.70462"
+       id="text3767"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3769"
+         x="80.307129"
+         y="240.70462">Local</tspan><tspan
+         sodipodi:role="line"
+         x="80.307129"
+         y="255.70462"
+         id="tspan3771">photo manager</tspan></text>
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:0.99152539;stroke-dasharray:none;filter:url(#filter3799-7)"
+       id="rect2985-0-5"
+       width="115.15739"
+       height="103.03556"
+       x="327.4213"
+       y="185.13011"
+       ry="31.31473"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#30bf51;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:0.99152539;stroke-dasharray:none"
+       id="rect2985-8"
+       width="115.15739"
+       height="103.03556"
+       x="327.4213"
+       y="184.62505"
+       ry="31.31473"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
+       x="339.54312"
+       y="212.90932"
+       id="text3755-8"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="339.54312"
+         y="212.90932"
+         id="tspan3761-4"
+         style="font-weight:bold;-inkscape-font-specification:Sans Bold;font-style:normal">Piwigo</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="337.01776"
+       y="239.67836"
+       id="text3767-5"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3769-6"
+         x="337.01776"
+         y="239.67836">Distant</tspan><tspan
+         sodipodi:role="line"
+         x="337.01776"
+         y="254.67836"
+         id="tspan3771-5">photo manager</tspan></text>
+    <g
+       id="g3446"
+       transform="matrix(0,0.10753147,-0.10753147,0,259.11028,245.18857)"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         inkscape:connector-curvature="0"
+         id="rect2568"
+         d="m 119.51221,-370.66355 0,559.9133 -97.608163,-0.42408 113.369653,152.17261 113.36965,152.17261 115.70207,-151.11242 115.77275,-151.1831 -102.13164,-0.49475 0,-561.04417 z"
+         style="fill:#88f288;fill-opacity:1;fill-rule:evenodd;stroke:#008b00;stroke-width:18.09391022;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         sodipodi:nodetypes="cccccccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(2.2617387,0,0,2.2617387,-1095.3949,-704.91451)"
+         id="path3364"
+         d="m 549.15625,395.34375 c -0.82074,10.76592 -13.8696,14.20707 -22.8125,11.9375 -5.16273,-0.43111 -11.30291,-0.70165 -4.88091,4.8091 24.3046,32.55302 48.54199,65.15611 72.78716,97.7534 26.02083,-33.95833 52.04167,-67.91667 78.0625,-101.875 -10.95829,-0.0515 -21.91662,-0.10334 -32.875,-0.125 0,-26.20833 0,-52.41667 0,-78.625 -30.09375,0 -60.1875,0 -90.28125,0 0,22.04167 0,44.08333 0,66.125 z"
+         style="fill:url(#linearGradient3937);fill-opacity:1;fill-rule:evenodd;stroke:none;filter:url(#filter3398)" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccccc"
+         id="path3402"
+         d="m 124.03569,189.24975 c -4.28326,10.05286 -26.766552,1.79041 -38.449292,4.3882 -18.235358,-0.0727 -36.470717,-0.14541 -54.706076,-0.21812 76.185068,96.68606 86.879218,113.20375 131.509488,168.8184 28.28853,-138.26124 180.43947,-444.028624 211.07325,-725.8899 -83.14247,0 -166.28491,-2.48841 -249.42737,-2.48841 0,57.39162 0,497.99821 0,555.38983 z"
+         style="opacity:0.55913978;fill:#fff5ee;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+    </g>
+    <g
+       id="g3446-0"
+       transform="matrix(0,0.10753147,0.10753147,0,245.91331,185.37059)"
+       inkscape:export-filename="/media/b25cf802-ea9e-468f-9a68-461b89a559ad/Watchwolf/Images/enki/enki_piwigo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         inkscape:connector-curvature="0"
+         id="rect2568-2"
+         d="m 119.51221,-370.66355 0,559.9133 -97.608163,-0.42408 113.369653,152.17261 113.36965,152.17261 115.70207,-151.11242 115.77275,-151.1831 -102.13164,-0.49475 0,-561.04417 z"
+         style="fill:#88f288;fill-opacity:1;fill-rule:evenodd;stroke:#008b00;stroke-width:18.09391022;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         sodipodi:nodetypes="cccccccccc" />
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(2.2617387,0,0,2.2617387,-1095.3949,-704.91451)"
+         id="path3364-7"
+         d="m 549.15625,395.34375 c -0.82074,10.76592 -13.8696,14.20707 -22.8125,11.9375 -5.16273,-0.43111 -11.30291,-0.70165 -4.88091,4.8091 24.3046,32.55302 48.54199,65.15611 72.78716,97.7534 26.02083,-33.95833 52.04167,-67.91667 78.0625,-101.875 -10.95829,-0.0515 -21.91662,-0.10334 -32.875,-0.125 0,-26.20833 0,-52.41667 0,-78.625 -30.09375,0 -60.1875,0 -90.28125,0 0,22.04167 0,44.08333 0,66.125 z"
+         style="fill:url(#linearGradient3937-0);fill-opacity:1;fill-rule:evenodd;stroke:none;filter:url(#filter3398-9)" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccccc"
+         id="path3402-2"
+         d="m 124.03569,189.24975 c -4.28326,10.05286 -26.766552,1.79041 -38.449292,4.3882 -18.235358,-0.0727 -36.470717,-0.14541 -54.706076,-0.21812 76.185068,96.68606 86.879218,113.20375 131.509488,168.8184 28.28853,-138.26124 180.43947,-444.028624 211.07325,-725.8899 -83.14247,0 -166.28491,-2.48841 -249.42737,-2.48841 0,57.39162 0,497.99821 0,555.38983 z"
+         style="opacity:0.55913978;fill:#fff5ee;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+    </g>
+  </g>
+</svg>

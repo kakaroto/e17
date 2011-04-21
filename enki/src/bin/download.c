@@ -75,7 +75,7 @@ static void _start_cb(void *data, Enlil_Photo *photo)
     elm_progressbar_label_set(dl->pb, enlil_photo_name_get(photo));
     elm_progressbar_pulse_set(dl->pb, 0);
 
-    flickr_job_start_cb(NULL, NULL, enlil_photo_album_get(photo), photo);
+    netsync_job_start_cb(NULL, NULL, enlil_photo_album_get(photo), photo);
 }
 
 static void _done_cb(void *data, Enlil_Photo *photo, int status)
@@ -85,12 +85,12 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
     Download *dl = data;
 
     evas_object_hide(dl->main);
-    flickr_job_done_cb(NULL, NULL, enlil_photo_album_get(photo), photo);
+    netsync_job_done_cb(NULL, NULL, enlil_photo_album_get(photo), photo);
 
     if(photo_data)
     {
         //if the photo is new, the data doesnt exists right now
-        photo_data->netsync.state = PHOTO_FLICKR_NONE;
+        photo_data->netsync.state = PHOTO_NETSYNC_NONE;
         photos_list_object_item_update(photo_data->list_photo_item);
     }
 
@@ -110,15 +110,8 @@ static void _done_cb(void *data, Enlil_Photo *photo, int status)
                 album_data->netsync.inwin.notinlocal.pb);
         elm_progressbar_pulse(album_data->netsync.inwin.notinlocal.pb, EINA_FALSE);
 
-        /*enlil_flickr_job_sync_album_photos_append(album,
-                netsync_photo_new_cb,
-                netsync_photo_notinflickr_cb,
-                flickr_photo_known_cb,
-                netsync_error_cb,
-                enlil_data);*/
-
         if(album_data->netsync.inwin.win)
-            flickr_sync_update(album);
+            netsync_sync_update(album);
     }
 }
 

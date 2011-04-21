@@ -28,7 +28,7 @@ images {
     image:  "star.png" COMP;
     image:  "star_demi.png" COMP;
     image:  "star_empty.png" COMP;
-    image:  "flickr_logo.png" COMP;
+    image:  "netsync_logo.png" COMP;
     image:  "plus.png" COMP;
     image:  "folder.png" COMP;
     image:  "library_txt_bg.png" COMP;
@@ -133,7 +133,7 @@ collections {
 	
 	
 	#include "icons.edc"
-	#include "flickr.edc"
+	#include "netsync.edc"
 	#include "minislideshow.edc"
 	
 	

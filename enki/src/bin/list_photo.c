@@ -21,8 +21,8 @@ static void _bt_unselect_all_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_album_select_all_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_album_unselect_all_cb(void *data, Evas_Object *obj, void *event_info);
 static void _tg_multiselect_changed_cb(void *data, Evas_Object *obj, void *event_info);
-static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _album_sync_netsync_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _photo_sync_netsync_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static void _bt_album_access_type_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_album_access_type_public_cb(void *data, Evas_Object *obj, void *event_info);
@@ -278,12 +278,12 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
    Evas_Object *ic = edje_object_add(evas_object_evas_get(obj));
    album_data->netsync.icon = ic;
    evas_object_show(ic);
-   edje_object_file_set(ic, Theme, "flickr/sync");
+   edje_object_file_set(ic, Theme, "netsync/sync");
    evas_object_size_hint_weight_set(ic, 1.0, 1.0);
    evas_object_size_hint_align_set(ic, 1.0, 0.0);
-   evas_object_event_callback_add(ic, EVAS_CALLBACK_MOUSE_UP, _album_sync_flickr_cb, album);
+   evas_object_event_callback_add(ic, EVAS_CALLBACK_MOUSE_UP, _album_sync_netsync_cb, album);
    edje_object_signal_emit(ic,
-	 album_flickr_edje_signal_get(album), "");
+	 album_netsync_edje_signal_get(album), "");
 
    elm_layout_content_set(ly, "object.swallow.sync", ic);
 
@@ -327,14 +327,14 @@ static Evas_Object *_photo_icon_get(const void *data, Evas_Object *obj)
    if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
      photo_object_camera_set(o, EINA_TRUE);
 
-   Evas_Object *flickr =
-      photo_object_flickr_state_set(o, photo_flickr_edje_signal_get(enlil_photo_data->netsync.state));
-   evas_object_event_callback_add(flickr, EVAS_CALLBACK_MOUSE_UP, _photo_sync_flickr_cb, photo);
+   Evas_Object *netsync =
+      photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(enlil_photo_data->netsync.state));
+   evas_object_event_callback_add(netsync, EVAS_CALLBACK_MOUSE_UP, _photo_sync_netsync_cb, photo);
 
    photo_object_text_set(o, enlil_photo_name_get(photo));
 
    if(enlil_photo_data->netsync.is_sync)
-		photo_object_flickr_state_set(o, "animated");
+		photo_object_netsync_state_set(o, "animated");
 
    evas_object_show(o);
    return o;
@@ -542,36 +542,31 @@ static void _tg_multiselect_changed_cb(void *data, Evas_Object *obj, void *event
      _bt_unselect_all_cb(data, NULL, NULL);
 }
 
-static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void _album_sync_netsync_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Enlil_Album *album = data;
    //Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
    //Evas_Object *sync =
-   flickr_sync_new(enlil_data->win->win, album);
+   netsync_album_new(enlil_data->win->win, album);
 }
 
-static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void _photo_sync_netsync_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Enlil_Photo *photo = data;
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 
-   if(photo_data->netsync.state == PHOTO_FLICKR_FLICKRNOTUPTODATE)
+   if(photo_data->netsync.state == PHOTO_NETSYNC_NETSYNCNOTUPTODATE)
      {
-	upload_add(enlil_data->ul, photo);
+	   ;
      }
-   else if(photo_data->netsync.state == PHOTO_FLICKR_NOTUPTODATE)
+   else if(photo_data->netsync.state == PHOTO_NETSYNC_NOTUPTODATE)
      {
-	//get the list of sizes of the photo
-	//Enlil_Flickr_Job *job =
-	//   enlil_flickr_job_get_photo_sizes_prepend(enlil_photo_netsync_id_get(photo),
-	//	 flickr_photos_notinlocal_sizes_get_cb, photo);
-	//if(!eina_list_data_find(photo_data->netsync.jobs, job))
-	  //photo_data->netsync.jobs = eina_list_append(photo_data->netsync.jobs, job);
+	   ;
      }
-   else if(photo_data->netsync.state == PHOTO_FLICKR_NOTINFLICKR)
+   else if(photo_data->netsync.state == PHOTO_NETSYNC_NOTINNETSYNC)
      {
-	upload_add(enlil_data->ul, photo);
+	   ;
      }
 }
 

@@ -23,8 +23,7 @@ photo_menu.c \
 collection_menu.c \
 tag_menu.c \
 inwin.c \
-flickr_menu.c \
-flickr_sync.c \
+netsync_album.c \
 download.c \
 upload.c \
 main_menu.c \
