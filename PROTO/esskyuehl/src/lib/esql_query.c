@@ -252,7 +252,7 @@ esql_query(Esql       *e,
      {
         e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_query);
         e->backend_set_params = eina_list_append(e->backend_set_params, strdup(query));
-        e->backend_ids = eina_list_append(e->backend_ids, &esql_id);
+        e->backend_ids = eina_list_append(e->backend_ids, (uintptr_t*)esql_id);
         if (data)
           {
              if (!esql_query_data) esql_query_data = eina_hash_int64_new(NULL);
@@ -330,8 +330,9 @@ esql_query_vargs(Esql       *e,
    while (++esql_id < 1) ;
    if (!e->current)
      {
+        e->query_start = ecore_time_get();
         e->backend.query(e, query);
-        DBG("e=%p, query=%s", e, query);
+        DBG("(e=%p, query=\"%s\")", e, query);
         ecore_main_fd_handler_active_set(e->fdh, ECORE_FD_WRITE);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
@@ -342,7 +343,7 @@ esql_query_vargs(Esql       *e,
      {
         e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_query);
         e->backend_set_params = eina_list_append(e->backend_set_params, query);
-        e->backend_ids = eina_list_append(e->backend_ids, &esql_id);
+        e->backend_ids = eina_list_append(e->backend_ids, (uintptr_t*)esql_id);
         if (data)
           {
              if (!esql_query_data) esql_query_data = eina_hash_int64_new(NULL);

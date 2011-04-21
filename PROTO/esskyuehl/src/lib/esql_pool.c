@@ -26,7 +26,7 @@ static Esql *
 esql_pool_idle_find_(Esql_Pool *ep)
 {
    Esql *e, *use = NULL;
-   double time, cur = 100.0;
+   double time, cur = 0.0;
 
    EINA_INLIST_FOREACH(ep->esqls, e)
      {
@@ -58,7 +58,7 @@ esql_pool_rebalance(Esql_Pool *ep, Esql *e /* idle connection */)
      {
         if (it->backend_set_funcs && (it->backend_set_funcs->data == (Esql_Set_Cb)esql_query)) /* queued call */
           {
-             INFO("Load balancing: moving query (%lu) from %u to %u", *((Esql_Query_Id*)it->backend_ids->data), it->pool_id, e->pool_id);
+             INFO("Load balancing: moving query (%lu) from %u to %u", (Esql_Query_Id)((uintptr_t)it->backend_ids->data), it->pool_id, e->pool_id);
 #ifdef HAVE_EINA_LIST_MOVE_LIST
              eina_list_move_list(&e->backend_set_funcs, &it->backend_set_funcs, it->backend_set_funcs);
              eina_list_move_list(&e->backend_set_params, &it->backend_set_params, it->backend_set_params);
@@ -72,6 +72,8 @@ esql_pool_rebalance(Esql_Pool *ep, Esql *e /* idle connection */)
              LIST_MOVE(backend_ids);
 #undef LIST_MOVE
 #endif
+             INFO("Current queue:  #%u:(%lu):%i | #%u:(%lu):%i", e->pool_id, (Esql_Query_Id)((uintptr_t)e->backend_ids->data), eina_list_count(e->backend_ids),
+               it->pool_id, it->backend_ids ? (Esql_Query_Id)((uintptr_t)it->backend_ids->data) : 0, eina_list_count(it->backend_ids));
              return EINA_TRUE;
           }
      }

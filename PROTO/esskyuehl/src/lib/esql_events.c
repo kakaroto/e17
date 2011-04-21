@@ -29,6 +29,8 @@
             e->backend_set_funcs = eina_list_remove_list(e->backend_set_funcs, e->backend_set_funcs);    \
             e->backend_set_params = eina_list_remove_list(e->backend_set_params, e->backend_set_params); \
             e->backend_ids = eina_list_remove_list(e->backend_ids, e->backend_ids);                      \
+            if (e->pool_member) INFO("Pool member %u: %i calls queued", e->pool_id, eina_list_count(e->backend_ids)); \
+            else INFO("%i calls queued", eina_list_count(e->backend_ids));                               \
          }                                                                                               \
   } while (0)
 
@@ -76,15 +78,16 @@ esql_next(Esql *e)
      { /* don't use cb, leads to unnecessary calls and breakage */
         void *data;
 
-        data = eina_hash_find(esql_query_data, e->backend_ids->data);
+        data = eina_hash_find(esql_query_data, &e->backend_ids->data);
         DBG("(e=%p, query=\"%s\")", e, (char*)e->backend_set_params->data);
+        e->query_start = ecore_time_get();
         e->backend.query(e, e->backend_set_params->data);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
-        e->cur_id = *((Esql_Query_Id *)e->backend_ids->data);
+        e->cur_id = (Esql_Query_Id)((uintptr_t)e->backend_ids->data);
         e->cur_query = e->backend_set_params->data;
         e->backend_set_params->data = NULL;
-        if (data) eina_hash_del_by_key(esql_query_data, e->backend_ids->data);
+        if (data) eina_hash_del_by_key(esql_query_data, &e->backend_ids->data);
         UPDATE_LISTS(query);
         if (e->pool_member)
           INFO("Pool member %u: next call: query", e->pool_id);
@@ -101,7 +104,6 @@ esql_call_complete(Esql *e)
 
    DBG("(e=%p)", e);
    ev = e->pool_member ? (Esql *)e->pool_struct : e;
-   DBG("(ev=%p, qid=%lu)", ev, ev->cur_id);
    switch (e->current)
      {
       case ESQL_CONNECT_TYPE_INIT:
@@ -136,6 +138,7 @@ esql_call_complete(Esql *e)
         break;
 
       case ESQL_CONNECT_TYPE_QUERY:
+        DBG("(ev=%p, qid=%lu)", ev, e->cur_id);
         e->query_end = ecore_time_get();
         {
            Esql_Res *res;
