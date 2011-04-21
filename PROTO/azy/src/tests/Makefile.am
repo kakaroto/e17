@@ -1,4 +1,4 @@
-SUBDIRS = unit identi.ca rss
+BSUBDIRS = unit identi.ca rss
 
 TYPES_S = \
   $(top_builddir)/src/tests/type1_Common.c \
@@ -25,8 +25,9 @@ COMMON_S = \
   $(top_builddir)/src/tests/T_Common_Azy.c \
   $(top_builddir)/src/tests/T_Common_Azy.h \
   $(top_builddir)/src/tests/T_Test1.h \
-  $(top_builddir)/src/tests/T_Test1.c \
   $(top_builddir)/src/tests/T_Test2.h
+
+#  $(top_builddir)/src/tests/T_Test1.c
 
 if HAVE_MYSQL
 MYSQL_SERVER_S = \
