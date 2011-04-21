@@ -77,7 +77,7 @@ esql_next(Esql *e)
         void *data;
 
         data = eina_hash_find(esql_query_data, e->backend_ids->data);
-        DBG("(e=%p, query=%s)", e, (char*)e->backend_set_params->data);
+        DBG("(e=%p, query=\"%s\")", e, (char*)e->backend_set_params->data);
         e->backend.query(e, e->backend_set_params->data);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
@@ -101,6 +101,7 @@ esql_call_complete(Esql *e)
 
    DBG("(e=%p)", e);
    ev = e->pool_member ? (Esql *)e->pool_struct : e;
+   DBG("(ev=%p, qid=%lu)", ev, ev->cur_id);
    switch (e->current)
      {
       case ESQL_CONNECT_TYPE_INIT:
@@ -178,7 +179,7 @@ esql_connect_handler(Esql             *e,
 {
    Esql *ev;
 
-   DBG("(e=%p, fdh=%p)", e, fdh);
+   DBG("(e=%p, fdh=%p, qid=%lu)", e, fdh, e->cur_id);
    ev = e->pool_member ? (Esql *)e->pool_struct : e; /* use pool struct for events */
 
    ecore_main_fd_handler_active_set(fdh, 0);

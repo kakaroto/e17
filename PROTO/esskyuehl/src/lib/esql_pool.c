@@ -58,7 +58,7 @@ esql_pool_rebalance(Esql_Pool *ep, Esql *e /* idle connection */)
      {
         if (it->backend_set_funcs && (it->backend_set_funcs->data == (Esql_Set_Cb)esql_query)) /* queued call */
           {
-             INFO("Load balancing: moving query from %u to %u", it->pool_id, e->pool_id);
+             INFO("Load balancing: moving query (%lu) from %u to %u", *((Esql_Query_Id*)it->backend_ids->data), it->pool_id, e->pool_id);
 #ifdef HAVE_EINA_LIST_MOVE_LIST
              eina_list_move_list(&e->backend_set_funcs, &it->backend_set_funcs, it->backend_set_funcs);
              eina_list_move_list(&e->backend_set_params, &it->backend_set_params, it->backend_set_params);
