@@ -115,7 +115,7 @@ esql_mysac_query(Esql *e, const char *query)
 {
    MYSAC_RES *res;
 
-   res = mysac_new_res(1024, 1);
+   res = mysac_new_res(2048, 1);
    EINA_SAFETY_ON_NULL_RETURN(res);
    mysac_s_set_query(e->backend.db, res, query);
 }
