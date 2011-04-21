@@ -311,6 +311,12 @@ extern "C" {
                                          const Azy_Net_Data *data);
    EAPI void                     *azy_server_module_data_get(Azy_Server_Module *module);
    EAPI Azy_Net_Data             *azy_server_module_recv_get(Azy_Server_Module *module);
+   EAPI Eina_Bool                 azy_server_module_param_set(Azy_Server_Module *module,
+                                                              const char        *name,
+                                                              const void        *value,
+                                                              Eina_Free_Cb       free_func);
+   EAPI void *                    azy_server_module_param_get(Azy_Server_Module *module,
+                                                              const char        *name);
    EAPI Azy_Net                  *azy_server_module_net_get(Azy_Server_Module *module);
    EAPI Azy_Server_Module_Def    *azy_server_module_def_find(Azy_Server *server,
                                                              const char *name);

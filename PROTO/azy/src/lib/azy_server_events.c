@@ -133,6 +133,7 @@ top:
 
    if (module->new_net && (module->client->current != module->new_net))
      azy_net_free(module->new_net);
+   if (module->params) eina_hash_free(module->params);
    free(module->data);
    free(module);
    return EINA_TRUE;
@@ -423,6 +424,7 @@ post:
         break;
      }
    module->state = AZY_SERVER_MODULE_STATE_INIT;
+   if (module->params) eina_hash_free_buckets(module->params);
    module->content = NULL;
    module->run_method = EINA_TRUE;
    module->post = EINA_TRUE;
@@ -705,6 +707,7 @@ post:
    module->run_method = EINA_TRUE;
    module->post = EINA_TRUE;
    module->state = AZY_SERVER_MODULE_STATE_INIT;
+   if (module->params) eina_hash_free_buckets(module->params);
    module->executing = EINA_FALSE;
    return client->resume_ret;
 }

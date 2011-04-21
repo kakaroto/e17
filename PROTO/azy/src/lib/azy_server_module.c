@@ -22,6 +22,20 @@
 #include "Azy.h"
 #include "azy_private.h"
 
+typedef struct
+{
+   const void *data;
+   Eina_Free_Cb free_func;
+} Azy_Server_Module_Param;
+
+static void
+azy_server_module_param_free_(Azy_Server_Module_Param *param)
+{
+   if (!param) return;
+   if (param->free_func) param->free_func((void*)param->data);
+   free(param);
+}
+
 /**
  * @defgroup Azy_Server_Module Server Module Functions
  * @brief Functions which affect #Azy_Server_Module objects
@@ -68,6 +82,62 @@ azy_server_module_data_get(Azy_Server_Module *module)
      }
 
    return module->data;
+}
+
+/**
+ * @brief Set a param to a module
+ *
+ * This function sets a method call param named @p name to a module. It is used by the parser.
+ * @param module The module (NOT NULL)
+ * @param name The param name (NOT NULL)
+ * @param value The param value
+ * @param free_func The function to free @p value
+ * @return EINA_TRUE on success, else EINA_FALSE
+ */
+Eina_Bool
+azy_server_module_param_set(Azy_Server_Module *module, const char *name, const void *value, Eina_Free_Cb free_func)
+{
+   Azy_Server_Module_Param *param, *old;
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return EINA_FALSE;
+     }
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(name[0], EINA_FALSE);
+   if (!module->params) module->params = eina_hash_string_djb2_new((Eina_Free_Cb)azy_server_module_param_free_);
+   param = calloc(1, sizeof(Azy_Server_Module_Param));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(param, EINA_FALSE);
+   param->data = value;
+   param->free_func = free_func;
+
+   old = eina_hash_set(module->params, name, value);
+   if (old) azy_server_module_param_free_(old);
+   return EINA_TRUE;
+}
+
+/**
+ * @brief Get a param from a module
+ *
+ * This function gets a previously set method call param
+ * named @p name from module @p module. It is used by the parser.
+ * @param module The module (NOT NULL)
+ * @param name The param name (NOT NULL)
+ * @return The param value, NULL on failure
+ */
+void *
+azy_server_module_param_get(Azy_Server_Module *module, const char *name)
+{
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return NULL;
+     }
+   EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(module->params, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(name[0], NULL);
+
+   return eina_hash_find(module->params, name);
 }
 
 /**

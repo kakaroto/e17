@@ -242,6 +242,7 @@ struct Azy_Server_Module
    Azy_Server_Client      *client;
    Azy_Net_Data            recv;
    Azy_Net                *new_net;
+   Eina_Hash              *params;
    Eina_Bool               suspend : 1;
    Eina_Bool               run_method : 1;
    Eina_Bool               post : 1;

@@ -1651,12 +1651,17 @@ gen_server_impl(Azy_Server_Module *s)
           {
              EL(1, "%s azy_return_module = %s;", method->return_type->ctype, method->return_type->cnull);
              EL(1, "Azy_Value *azy_return_value;");
-	  }
+          }
         EINA_LIST_FOREACH(method->params, k, p)
           {
-             EL(1, "%s %s = %s;", p->type->ctype,
-                p->name,
-                p->type->cnull);
+             if (suspend_funcs)
+               {
+                  if (p->type->ctype == i)
+                    EL(1, "intptr_t *%s_ptr = NULL;", p->name);
+                  else if ((p->type->ctype == b) || (p->type->ctype == d))
+                    EL(1, "%s *%s_ptr = NULL;", p->type->ctype, p->name);
+               }
+             EL(1, "%s %s = %s;", p->type->ctype, p->name, p->type->cnull);
           }
 
         NL;
@@ -1676,16 +1681,43 @@ gen_server_impl(Azy_Server_Module *s)
         EINA_LIST_FOREACH(method->params, k, p)
           {
              NL;
-             EL(1,
-                "if (!%s(azy_content_param_get(content, %d), &%s))",
-                p->type->demarch_name, n++,
-                p->name);
-             EL(1, "{");
-             EL(2,
-                "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
-                method->name, p->name);
-             EL(2, "return EINA_FALSE;");
-             EL(1, "}");
+             if (suspend_funcs)
+               {
+                  if ((p->type->ctype == i) || (p->type->ctype == b) || (p->type->ctype == d))
+                    {
+                       EL(1, "%s_ptr = azy_server_module_param_get(module, %s);", p->name, p->name);
+                       EL(1, "if (!%s_ptr)", p->name);
+                       EL(2, "{");
+                       EL(3, "if (!%s(azy_content_param_get(content, %d), &%s))", p->name, p->type->demarch_name, n++, p->name);
+                       EL(4, "{");
+                       EL(5, "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
+                          method->name, p->name);
+                       EL(5, "return EINA_FALSE;");
+                       EL(4, "}");
+                       EL(2, "}");
+                       EL(1, "else");
+                       EL(2, "%s = *%s_ptr;", p->name, p->name);
+                    }
+                  else
+                    {
+                      EL(1, "%s = azy_server_module_param_get(module, \"%s\");", p->name, p->name);
+                      EL(1, "if ((!%s) && (!%s(azy_content_param_get(content, %d), &%s)))", p->name, p->type->demarch_name, n++, p->name);
+                      EL(1, "{");
+                      EL(2, "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
+                         method->name, p->name);
+                      EL(2, "return EINA_FALSE;");
+                      EL(1, "}");
+                    }
+               }
+             else
+               {
+                  EL(1, "if (!%s(azy_content_param_get(content, %d), &%s))", p->type->demarch_name, n++, p->name);
+                  EL(1, "{");
+                  EL(2, "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
+                     method->name, p->name);
+                  EL(2, "return EINA_FALSE;");
+                  EL(1, "}");
+               }
           }
         NL;
         EL(1, "azy_content_retval_cb_set(content, (Azy_Content_Retval_Cb)%s);", method->return_type->march_name);
@@ -1712,7 +1744,18 @@ gen_server_impl(Azy_Server_Module *s)
         EL(2, "}");
         NL;
         EL(1, "if (azy_server_module_events_suspended_get(module))");
+        EL(2, "{");
+        EINA_LIST_FOREACH(method->params, k, p)
+          {
+             if ((p->type->ctype == b) || (p->type->ctype == d))
+               EL(3, "azy_server_module_param_set(module, \"%s\", &%s, NULL);", p->name, p->name);
+             else if (p->type->ctype == i)
+               EL(3, "azy_server_module_param_set(module, \"%s\", (intptr_t*)&%s, NULL);", p->name, p->name);
+             else
+               EL(3, "azy_server_module_param_set(module, \"%s\", %s, (Eina_Free_Cb)%s);", p->name, p->name, p->type->free_func);
+          }
         EL(2, "return EINA_TRUE;");
+        EL(2, "}");
         NL;
         EL(1, "if (!azy_content_retval_get(content))");
         EL(2, "{");
@@ -1720,13 +1763,13 @@ gen_server_impl(Azy_Server_Module *s)
           {
              EL(3, "azy_return_value = %s(azy_return_module);", method->return_type->march_name);
              EL(3, "if (!azy_return_value)");
-	  }
+          }
         EL(4, "azy_content_error_faultmsg_set(content, -1, \"Stub return value marshalization failed. (%s)\");", method->name);
         if (!suspend_funcs)
           {
              EL(3, "else");
              EL(4, "azy_content_retval_set(content, azy_return_value);");
-	  }
+          }
         NL;
 
         if (method->return_type->free_func && (!suspend_funcs))
