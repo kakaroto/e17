@@ -4,7 +4,7 @@
 #include "../../config.h"
 
 #ifdef HAVE_EABZU
-#include <Eabzu.h>
+#include <Azy.h>
 #endif
 
 //mmap()

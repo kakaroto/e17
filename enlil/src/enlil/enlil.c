@@ -2,7 +2,7 @@
 #include <eina_main.h>
 
 #ifdef HAVE_EABZU
-#include <Eabzu.h>
+#include <Azy.h>
 #endif
 
 int ENLIL_LOG_DOMAIN_99;
