@@ -24,6 +24,10 @@ static void _tg_multiselect_changed_cb(void *data, Evas_Object *obj, void *event
 static void _album_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _photo_sync_flickr_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
+static void _bt_album_access_type_cb(void *data, Evas_Object *obj, void *event_info);
+static void _bt_album_access_type_public_cb(void *data, Evas_Object *obj, void *event_info);
+static void _bt_album_access_type_private_cb(void *data, Evas_Object *obj, void *event_info);
+
 static Evas_Object *_edje;
 
 
@@ -191,6 +195,7 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
    elm_layout_file_set(ly, Theme, "album_header");
    Evas_Object *o = elm_layout_edje_get(ly);
    edje_object_part_text_set(o, "object.text.album_name", enlil_album_name_get(album));
+   edje_object_part_text_set(o, "object.text.album_description", enlil_album_description_get(album));
    evas_object_show(ly);
 
    Evas_Object *bx = elm_box_add(obj);
@@ -255,6 +260,15 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
 
    bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
+   elm_button_label_set(bt, D_("Access type"));
+   evas_object_size_hint_weight_set(bt, 0.0, -1.0);
+   evas_object_size_hint_align_set(bt, 0.0, 0.5);
+   evas_object_smart_callback_add(bt, "clicked", _bt_album_access_type_cb, album);
+   evas_object_show(bt);
+   elm_box_pack_end(bx, bt);
+
+   bt = elm_button_add(obj);
+   elm_object_style_set(bt, "anchor");
    elm_button_label_set(bt, D_("Empty"));
    evas_object_size_hint_weight_set(bt, 1.0, -1.0);
    evas_object_size_hint_align_set(bt, 0.0, 0.5);
@@ -272,6 +286,14 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
 	 album_flickr_edje_signal_get(album), "");
 
    elm_layout_content_set(ly, "object.swallow.sync", ic);
+
+   if(album_data->netsync.is_sync)
+	   edje_object_signal_emit(album_data->netsync.icon, "animated", "");
+
+   if(enlil_album_access_type_get(album) == ENLIL_ALBUM_ACCESS_TYPE_PUBLIC)
+	   edje_object_signal_emit(o, "access,type,public", "");
+   else
+	   edje_object_signal_emit(o, "access,type,private", "");
 
    return ly;
 }
@@ -310,6 +332,9 @@ static Evas_Object *_photo_icon_get(const void *data, Evas_Object *obj)
    evas_object_event_callback_add(flickr, EVAS_CALLBACK_MOUSE_UP, _photo_sync_flickr_cb, photo);
 
    photo_object_text_set(o, enlil_photo_name_get(photo));
+
+   if(enlil_photo_data->netsync.is_sync)
+		photo_object_flickr_state_set(o, "animated");
 
    evas_object_show(o);
    return o;
@@ -431,6 +456,66 @@ static void _bt_album_select_all_cb(void *data, Evas_Object *obj, void *event_in
 	photos_list_object_item_selected_set(photo_data->list_photo_item, EINA_TRUE);
      }
    photos_list_object_multiselect_set(enlil_data->list_photo->o_list, multiselect);
+}
+
+
+static Evas_Object *_hover = NULL;
+static void _bt_album_access_type_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Enlil_Album *album = data;
+   Enlil_Photo *photo;
+   Enlil_Photo_Data *photo_data;
+   Eina_List *l;
+   Evas_Object *bx, *bt;
+
+   if(!_hover)
+	   _hover = elm_hover_add(obj);
+   elm_object_style_set(_hover, "popout");
+   elm_hover_parent_set(_hover, enlil_data->win->win);
+   elm_hover_target_set(_hover, obj);
+
+   bx = elm_box_add(obj);
+
+   bt = elm_button_add(obj);
+   evas_object_show(bt);
+   evas_object_size_hint_align_set(bt, -1.0, 0.5);
+   evas_object_smart_callback_add(bt, "clicked", _bt_album_access_type_public_cb, album);
+   elm_button_label_set(bt, D_("Public"));
+   elm_box_pack_end(bx, bt);
+
+   bt = elm_button_add(obj);
+   evas_object_show(bt);
+   evas_object_size_hint_align_set(bt, -1.0, 0.5);
+   evas_object_smart_callback_add(bt, "clicked", _bt_album_access_type_private_cb, album);
+   elm_button_label_set(bt, D_("Private"));
+   elm_box_pack_end(bx, bt);
+
+   elm_hover_content_set(_hover, "bottom", bx);
+
+   evas_object_show(bx);
+   evas_object_show(_hover);
+}
+
+static void _bt_album_access_type_public_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	   Enlil_Album *album = data;
+	   Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+	   enlil_album_access_type_set(album, ENLIL_ALBUM_ACCESS_TYPE_PUBLIC);
+	   evas_object_hide(_hover);
+	   _hover = NULL;
+
+	   photos_list_object_header_update(album_data->list_photo_item);
+}
+
+static void _bt_album_access_type_private_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	   Enlil_Album *album = data;
+	   Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+	   enlil_album_access_type_set(album, ENLIL_ALBUM_ACCESS_TYPE_PRIVATE);
+	   evas_object_hide(_hover);
+	   _hover = NULL;
+
+	   photos_list_object_header_update(album_data->list_photo_item);
 }
 
 static void _bt_album_unselect_all_cb(void *data, Evas_Object *obj, void *event_info)

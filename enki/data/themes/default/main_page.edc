@@ -15,6 +15,7 @@ group {
     	alias: "object.map.rect_zoom"				"panes[right]:map[map]:object.map.rect_zoom";
     	//
     	
+    	
     	//
     	alias: "object.photos.swallow"					"panes[right]:object.photos.swallow";
     	alias: "object.photo_menu.tools.reload_thumb"	"panes[right]:object.photo_menu.tools.reload_thumb";
@@ -36,6 +37,8 @@ group {
     	alias: "object.list.collections" 			"panes[left]:object.list.collections";
     	alias: "object.list.tags" 					"panes[left]:object.list.tags";
     	alias: "object.library.delete" 				"panes[left]:object.library.delete";
+    	alias: "object.status.loading" 				"panes[left]:object.status.loading";
+    	alias: "object.status.sync" 				"panes[left]:object.status.sync";
     	//
     	
     	//list left menu
@@ -46,6 +49,7 @@ group {
     	alias: "object.main_menu.bt_import_gpx" 	"panes[left]:menu:object.main_menu.bt_import_gpx";
     	alias: "object.main_menu.bt_preference" 	"panes[left]:menu:object.main_menu.bt_preference";
     	alias: "object.main_menu.bt_close" 			"panes[left]:menu:object.main_menu.bt_close";
+    	alias: "object.main_menu.bt_sync" 			"panes[left]:menu:object.main_menu.bt_sync";
     	//
     	
 		part {
@@ -77,6 +81,12 @@ group {
 		transfers_signal("", "list_left,albums,show", "", "panes", "left")
 		transfers_signal("", "list_left,collections,show", "", "panes", "left")
 		transfers_signal("", "list_left,tags,show", "", "panes", "left")
+		transfers_signal("", "status,loading,show,loading", "", "panes", "left")
+		transfers_signal("", "status,loading,show,done", "", "panes", "left")
+		transfers_signal("", "status,loading,hide", "", "panes", "left")
+		transfers_signal("", "status,sync,show,loading", "", "panes", "left")
+		transfers_signal("", "status,sync,show,done", "", "panes", "left")
+		transfers_signal("", "status,sync,hide", "", "panes", "left")
 		//
 		
 		//photo menu

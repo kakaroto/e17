@@ -9,6 +9,7 @@ static Evas_Object *bt_import;
 static Evas_Object *bt_slideshow;
 static Evas_Object *bt_del_bg;
 static Evas_Object *bt_album_new;
+static Evas_Object *bt_sync;
 
 static Elm_Gengrid_Item_Class itc_grid;
 
@@ -28,6 +29,7 @@ static void _geocaching_import_cb(void *data, Evas_Object *obj, void *event_info
 static void _geocaching_import_done_cb(void *data, Evas_Object *obj, void *event_info);
 static void _preferences_cb(void *data, Evas_Object *obj, void *event_info);
 static void _quit_cb(void *data, Evas_Object *obj, void *event_info);
+static void _sync_cb(void *data, Evas_Object *obj, void *event_info);
 
 typedef struct
 {
@@ -73,6 +75,9 @@ void main_menu_new(Evas_Object *edje)
 
     bt = edje_object_part_external_object_get(edje, "object.main_menu.bt_preference");
     evas_object_smart_callback_add(bt, "clicked", _preferences_cb, NULL);
+
+    bt_sync = edje_object_part_external_object_get(edje, "object.main_menu.bt_sync");
+    evas_object_smart_callback_add(bt_sync, "clicked", _sync_cb, NULL);
     //
 
     //Quit
@@ -91,6 +96,7 @@ void main_menu_loading_disable_set(Eina_Bool disabled)
    elm_object_disabled_set(bt_import, disabled);
    elm_object_disabled_set(bt_album_new, disabled);
    elm_object_disabled_set(bt_slideshow, disabled);
+   elm_object_disabled_set(bt_sync, disabled);
 }
 
 void main_menu_sync_disable_set(Eina_Bool disabled)
@@ -103,6 +109,7 @@ void main_menu_nolibrary_disabled_set(Eina_Bool disabled)
    main_menu_loading_disable_set(disabled);
    elm_object_disabled_set(libraries_list, EINA_FALSE);
    elm_object_disabled_set(bt_del_bg, disabled);
+   elm_object_disabled_set(bt_sync, disabled);
 }
 
 void main_menu_update_libraries_list()
@@ -430,6 +437,14 @@ static void _geocaching_import_done_cb(void *data, Evas_Object *obj, void *event
 static void _preferences_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	inwin_preferences_new();
+}
+
+static void _sync_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	//Enlil_Flickr_Job *job =
+	enlil_netsync_job_sync_albums_append(enlil_data->library, netsync_album_new_cb,
+			netsync_album_notinnetsync_cb, netsync_album_notuptodate_cb, netsync_album_netsyncnotuptodate_cb,
+			netsync_album_uptodate_cb, flickr_error_cb, enlil_data);
 }
 
 static void _quit_cb(void *data, Evas_Object *obj, void *event_info)

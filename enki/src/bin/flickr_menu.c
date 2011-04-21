@@ -189,7 +189,7 @@ static void _account_set_apply_cb(void *data, Evas_Object *obj, void *event_info
     if(enlil_data->library)
     {
         enlil_library_netsync_account_set(enlil_data->library, elm_entry_entry_get(data));
-        enlil_library_flickr_auth_token_set(enlil_data->library, NULL);
+        //enlil_library_flickr_auth_token_set(enlil_data->library, NULL);
         enlil_flickr_job_reinit_prepend(enlil_data->library);
     }
     evas_object_del(set_account.inwin);

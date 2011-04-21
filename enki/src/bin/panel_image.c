@@ -17,6 +17,7 @@ static void _panel_image_photo_set(Panel_Image *panel_image, Enlil_Photo *photo)
 
 static void _entry_name_changed_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entry_description_changed_cb(void *data, Evas_Object *obj, void *event_info);
+static void _entry_author_changed_cb(void *data, Evas_Object *obj, void *event_info);
 
 static void _bt_1_1_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_fit_cb(void *data, Evas_Object *obj, void *event_info);
@@ -67,6 +68,8 @@ static void _photo_exif_reload_cb(void *data, Evas_Object *obj, void *event_info
 static void _photo_iptc_reload_cb(void *data, Evas_Object *obj, void *event_info);
 static void _photo_wall_set_cb(void *data, Evas_Object *obj, void *event_info);
 static void _photo_delete_cb(void *data, Evas_Object *obj, void *event_info);
+
+static void _photocal_loaded_cb(void *data, Evas_Object *obj, void *event);
 
 
 Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
@@ -119,6 +122,12 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 	entry = edje_object_part_external_object_get(main_obj, "object.panel.image.description");
 	panel_image->entry_description = entry;
 	evas_object_smart_callback_add(entry, "changed", _entry_description_changed_cb, panel_image);
+	//
+
+	//
+	entry = edje_object_part_external_object_get(main_obj, "object.panel.image.author");
+	panel_image->entry_author = entry;
+	evas_object_smart_callback_add(entry, "changed", _entry_author_changed_cb, panel_image);
 	//
 
 	//
@@ -315,6 +324,7 @@ static void _panel_image_photo_set(Panel_Image *panel_image, Enlil_Photo *photo)
 
 	elm_scrolled_entry_entry_set(panel_image->entry_name, enlil_photo_name_get(photo));
 	elm_scrolled_entry_entry_set(panel_image->entry_description, enlil_photo_description_get(photo));
+	elm_scrolled_entry_entry_set(panel_image->entry_author, enlil_photo_author_get(photo));
 
 	snprintf(buf, sizeof(buf), "%f mo", enlil_photo_size_get(photo) / 1024. / 1024.);
 	elm_label_label_set(panel_image->lbl_file_size, buf);
@@ -323,6 +333,8 @@ static void _panel_image_photo_set(Panel_Image *panel_image, Enlil_Photo *photo)
 
 	snprintf(buf, sizeof(buf),"%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
 	elm_photocam_file_set(panel_image->photocam, buf);
+	evas_object_smart_callback_add(panel_image->photocam, "loaded", _photocal_loaded_cb, NULL);
+	elm_photocam_paused_set(panel_image->photocam, EINA_TRUE);
 
 	panel_image->save.save = EINA_FALSE;
 
@@ -416,6 +428,11 @@ void panel_image_exifs_update(Enlil_Photo *photo)
 			   elm_genlist_item_append(photo_data->panel_image->exifs.gl, &itc_exifs,
 					   exif, NULL, ELM_GENLIST_ITEM_NONE, NULL, exif);
 	}
+}
+
+static void _photocal_loaded_cb(void *data, Evas_Object *obj, void *event)
+{
+	elm_photocam_paused_set(obj, EINA_FALSE);
 }
 
 static char *_gl_exifs_label_get(void *data, Evas_Object *obj, const char *part)
@@ -692,13 +709,17 @@ void panel_image_save(Enlil_Photo *photo)
 	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 	Panel_Image *panel_image = photo_data->panel_image;
 
+	_save_description_name(panel_image);
+
 	const Enlil_Trans_History_Item *item = enlil_trans_history_current_get(panel_image->history);
 
-	snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
-
-	enlil_photo_copy_exif_in_file(photo, enlil_trans_history_item_file_get(item));
-	enlil_photo_save_iptc_in_custom_file(photo, enlil_trans_history_item_file_get(item));
-	ecore_file_cp(enlil_trans_history_item_file_get(item), buf);
+	if(item)
+	{
+		snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
+		enlil_photo_copy_exif_in_file(photo, enlil_trans_history_item_file_get(item));
+		enlil_photo_save_iptc_in_custom_file(photo, enlil_trans_history_item_file_get(item));
+		ecore_file_cp(enlil_trans_history_item_file_get(item), buf);
+	}
 
 	panel_image->save.save = EINA_FALSE;
 }
@@ -1296,8 +1317,9 @@ static void _save_description_name(Panel_Image *panel_image)
 	}
 
 	enlil_photo_description_set(photo, elm_scrolled_entry_entry_get(panel_image->entry_description));
-	enlil_photo_eet_save(photo);
+	enlil_photo_author_set(photo, elm_scrolled_entry_entry_get(panel_image->entry_author));
 
+	enlil_photo_eet_save(photo);
 	enlil_photo_save_iptc_in_file(photo);
 
 	if(panel_image->timer_description_name)
@@ -1329,6 +1351,28 @@ static void _entry_description_changed_cb(void *data, Evas_Object *obj, void *ev
 }
 
 
+static void _entry_author_changed_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	Panel_Image *panel_image = data;
+	Enlil_Photo *photo = panel_image->photo;
+	//Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+
+	const char *entry = elm_scrolled_entry_entry_get(panel_image->entry_author);
+	if(entry != NULL
+			&& !strcmp(entry, "")
+			&& enlil_photo_author_get(photo) == NULL)
+		return ;
+
+	if(entry == enlil_photo_author_get(photo))
+		return ;
+
+	panel_image->save_description_name = EINA_TRUE;
+
+	if(panel_image->timer_description_name)
+		ecore_timer_del(panel_image->timer_description_name);
+	panel_image->timer_description_name =
+			ecore_timer_add(5, _save_description_name_timer, panel_image);
+}
 
 static Evas_Object *_slideshow_icon_get(const void *data, Evas_Object *obj)
 {

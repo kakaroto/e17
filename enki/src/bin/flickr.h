@@ -14,6 +14,7 @@ const char *album_flickr_edje_signal_get(Enlil_Album *album);
 const char *photo_flickr_edje_signal_get(Photo_Flickr_Enum e);
 
 
+void netsync_login_failed_cb(void *data, const char *username, const char *password);
 void flickr_job_start_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album, Enlil_Photo *photo);
 void flickr_job_done_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album, Enlil_Photo *photo);
 

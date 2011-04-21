@@ -1450,7 +1450,7 @@ _smart_add(Evas_Object * obj)
         elm_scroller_content_set(sd->scroll, sd->pan_smart);
     }
 
-    sd->header_h = 70;
+    sd->header_h = 90;
 }
 
     static void

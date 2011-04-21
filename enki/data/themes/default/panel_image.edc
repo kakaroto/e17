@@ -12,6 +12,7 @@ group {
         alias: "object.panel.image.description" 	"panes[left]:object.panel.image.description";
         alias: "object.panel.image.photo_size" 		"panes[left]:table[1]:object.panel.image.photo_size";
         alias: "object.panel.image.file_size" 		"panes[left]:table[3]:object.panel.image.file_size";
+        alias: "object.panel.image.author" 			"panes[left]:object.panel.image.author";
         
         alias: "object.panel.image.exifs" 			"panes[left]:object.panel.image.exifs";
         alias: "object.panel.image.iptcs" 			"panes[left]:object.panel.image.iptcs";
@@ -208,7 +209,7 @@ group {
 			}
 		}
 		part {
-			name: "label_description";
+			name: "label_author";
 			type: EXTERNAL;
 			source: "elm/label";
 			clip_to: "info_clipper";
@@ -216,6 +217,47 @@ group {
 				state: "default" 0.0;
 				rel1.to_x: "info_clipper";
 				rel1.to_y: "object.panel.image.name";
+				rel1.offset: 0 5;
+				rel1.relative: 0.0 1.0;
+				rel2.to_x: "info_clipper";
+				rel2.to_y: "object.panel.image.name";
+				rel2.offset: 0 5;
+				rel2.relative: 1.0 1.0;
+				align: 0.0 0.0;
+				params {
+					string: "label" "Author : ";
+				}
+			}
+		}
+		part {
+			name: "object.panel.image.author";
+			type: EXTERNAL;
+			clip_to: "info_clipper";
+			source: "elm/scrolled_entry";
+			description {
+				state: "default" 0.0;
+				rel1.to_x: "info_clipper";
+				rel1.to_y: "label_author";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 0 5;
+				rel2.to_x: "info_clipper";
+				rel2.to_y: "label_author";
+				rel2.relative: 1.0 1.0;
+				align: 0.0 0.0;
+				params {
+					bool: "single line" 1; 
+				}
+			}
+		}
+		part {
+			name: "label_description";
+			type: EXTERNAL;
+			source: "elm/label";
+			clip_to: "info_clipper";
+			description {
+				state: "default" 0.0;
+				rel1.to_x: "info_clipper";
+				rel1.to_y: "object.panel.image.author";
 				rel1.offset: 0 5;
 				rel1.relative: 0.0 1.0;
 				rel2.to: "info_clipper";
@@ -239,7 +281,7 @@ group {
 				rel2.to_x: "info_clipper";
 				rel2.to_y: "table";
 				rel2.relative: 1.0 0.0;
-				rel2.offset: 0 -10;
+				rel2.offset: 0 -20;
 				params {
 					bool: "single line" 0; 
 				}
@@ -762,6 +804,7 @@ group {
 		}
 	}
 }
+
 
 group {
 	name: "panel/image/photo_size";

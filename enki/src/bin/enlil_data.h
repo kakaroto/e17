@@ -44,12 +44,6 @@ struct enlil_data
 
     Evas_Object *main_menu;
 
-    Evas_Object *notify_load;
-    Evas_Object *notify_load_lbl;
-
-    Evas_Object *notify_sync;
-    Evas_Object *notify_sync_lbl;
-
     Eina_List *auto_open;
 };
 
@@ -122,6 +116,7 @@ struct enlil_album_data
 	  } inwin;
 
 	Eina_List *jobs; // list of Enlil_Flickr_Job*
+	Eina_Bool is_sync; //true if a sync job is running on the album
      } netsync;
 };
 
@@ -149,6 +144,7 @@ struct enlil_photo_data
      {
 	Photo_Flickr_Enum state;
 	Eina_List *jobs; // list of Enlil_Flickr_Job*
+	Eina_Bool is_sync; //true if a sync job is running on the photo
      } netsync;
 };
 

@@ -59,9 +59,13 @@ void enlil_tag_data_free(Enlil_Tag *tag, void *_data);;
 void enlil_geocaching_data_free(Enlil_Geocaching *gp, void *_data);
 
 /* notifications windows */
-void notify_sync_content_set(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading);
-void notify_load_content_set(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading);
+void loading_status_show(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading);
+void sync_status_show(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading);
 
+//version increase
+void album_version_header_increase_cb(void *data, Enlil_Album *album);
+void photo_version_header_increase_cb(void *data, Enlil_Photo *photo);
+//
 
 /* Photo manager callbacks */
 void sync_done_cb(void *data, Enlil_Sync *sync);

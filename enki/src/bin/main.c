@@ -10,7 +10,7 @@ Enlil_Data *enlil_data = NULL;
 static Tabpanel_Item *tp_list_photo;
 static Tabpanel_Item *tp_menu;
 Evas_Object *global_object;
-
+Evas_Object *main_pagel_object;
 
 static const Ecore_Getopt options = {
 		"Enki",
@@ -106,6 +106,7 @@ void library_set(const char *library_path)
 	slideshow_hide();
 	slideshow_clear();
 
+	enlil_netsync_login_failed_cb_set(netsync_login_failed_cb, NULL);
 	enlil_netsync_job_start_cb_set(flickr_job_start_cb, NULL);
 	enlil_netsync_job_done_cb_set(flickr_job_done_cb, NULL);
 
@@ -163,14 +164,23 @@ void library_set(const char *library_path)
 	enlil_library_monitor_start(library);
 	enlil_data->load = load;
 
-	notify_load_content_set(enlil_data, D_("  Loading ..."), EINA_TRUE);
+	loading_status_show(enlil_data, D_("  Loading ..."), EINA_TRUE);
 
 	photos_list_object_freeze(enlil_data->list_photo->o_list, EINA_TRUE);
 	enlil_load_run(load);
 	//
 
 	//netsync
-	enlil_netsync_account_set(enlil_library_netsync_account_get(library));
+	enlil_netsync_account_set(
+			enlil_library_netsync_host_get(enlil_data->library),
+			enlil_library_netsync_path_get(enlil_data->library),
+			enlil_library_netsync_account_get(enlil_data->library),
+			enlil_library_netsync_password_get(enlil_data->library));
+	//
+
+	//version increase
+	enlil_library_album_version_header_increase_cb_set(enlil_data->library, album_version_header_increase_cb, library);
+	enlil_library_photo_version_header_increase_cb_set(enlil_data->library, photo_version_header_increase_cb, library);
 	//
 
 	//the background
@@ -275,6 +285,7 @@ int elm_main(int argc, char **argv)
 	}
 
 	elm_theme_extension_add(NULL, Theme);
+	elm_theme_overlay_add(NULL, Theme);
 
 	//
 	enlil_data = calloc(1, sizeof(Enlil_Data));
@@ -318,6 +329,7 @@ int elm_main(int argc, char **argv)
 	evas_object_show(ly);
 
 	edje = elm_layout_edje_get(ly);
+	main_pagel_object = edje;
 	evas_object_smart_callback_add(edje, "clicked,double", _panes_clicked_double, enlil_data);
 	enlil_data->library_item =
 			tabpanel_item_add(enlil_data->tabpanel, D_("Library"), ly, _tabpanel_select_page1_cb, enlil_data);
@@ -343,20 +355,6 @@ int elm_main(int argc, char **argv)
 	tabpanel_item_select(tp_menu);
 	//
 
-	//
-	enlil_data->notify_load = elm_notify_add(win->win);
-	elm_win_resize_object_add(win->win, enlil_data->notify_load);
-	evas_object_size_hint_weight_set(enlil_data->notify_load, -1.0, -1.0);
-	evas_object_size_hint_align_set(enlil_data->notify_load, -1.0, -1.0);
-	//
-
-	//
-	enlil_data->notify_sync = elm_notify_add(win->win);
-	elm_notify_orient_set(enlil_data->notify_sync, ELM_NOTIFY_ORIENT_TOP_RIGHT);
-	elm_win_resize_object_add(win->win, enlil_data->notify_sync);
-	evas_object_size_hint_weight_set(enlil_data->notify_sync, -1.0, -1.0);
-	evas_object_size_hint_align_set(enlil_data->notify_sync, -1.0, -1.0);
-	//
 
 	//
 	enlil_data->dl = download_new(win->win);
@@ -398,82 +396,33 @@ int elm_main(int argc, char **argv)
 	return 0;
 }
 
-void notify_sync_content_set(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading)
+
+void sync_status_show(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading)
 {
-	Evas_Object *bx, *lbl, *bt, *pb;
-
-	bx = elm_box_add(enlil_data->win->win);
-	elm_box_horizontal_set(bx, 1);
-	evas_object_show(bx);
-
 	if(loading)
-	{
-		pb = elm_progressbar_add(enlil_data->win->win);
-		elm_object_style_set(pb, "wheel");
-		elm_progressbar_label_set(pb, "");
-		elm_progressbar_pulse(pb, EINA_TRUE);
-		evas_object_size_hint_weight_set(pb, 1.0, 0.0);
-		evas_object_size_hint_align_set(pb, -1.0, 0.5);
-		evas_object_show(pb);
-		elm_box_pack_end(bx, pb);
-		elm_notify_timeout_set(enlil_data->notify_sync, -1);
-	}
+		edje_object_signal_emit(main_pagel_object, "status,sync,show,loading", "");
 	else
-		elm_notify_timeout_set(enlil_data->notify_sync, 2);
+		edje_object_signal_emit(main_pagel_object, "status,sync,show,done", "");
 
-
-	lbl = elm_label_add(enlil_data->win->win);
-	elm_label_label_set(lbl, msg);
-	elm_box_pack_end(bx, lbl);
-	evas_object_show(lbl);
-
-	bt = elm_button_add(enlil_data->win->win);
-	elm_button_label_set(bt, D_("Close"));
-	elm_box_pack_end(bx, bt);
-	evas_object_smart_callback_add(bt, "clicked", _notify_bt_close, enlil_data->notify_sync);
-	evas_object_show(bt);
-
-	elm_notify_content_set(enlil_data->notify_sync, bx);
-	evas_object_show(enlil_data->notify_sync);
+	Evas_Object *lbl = edje_object_part_external_object_get(main_pagel_object, "object.status.sync");
+	if(lbl)
+	{
+		elm_label_label_set(lbl, msg);
+	}
 }
 
-void notify_load_content_set(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading)
+void loading_status_show(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading)
 {
-	Evas_Object *bx, *lbl, *bt, *pb;
-
-	bx = elm_box_add(enlil_data->win->win);
-	elm_box_horizontal_set(bx, 1);
-	evas_object_show(bx);
-
 	if(loading)
-	{
-		pb = elm_progressbar_add(enlil_data->win->win);
-		elm_object_style_set(pb, "wheel");
-		elm_progressbar_label_set(pb, "");
-		elm_progressbar_pulse(pb, EINA_TRUE);
-		evas_object_size_hint_weight_set(pb, 1.0, 0.0);
-		evas_object_size_hint_align_set(pb, -1.0, 0.5);
-		evas_object_show(pb);
-		elm_box_pack_end(bx, pb);
-
-		elm_notify_timeout_set(enlil_data->notify_load, -1);
-	}
+		edje_object_signal_emit(main_pagel_object, "status,loading,show,loading", "");
 	else
-		elm_notify_timeout_set(enlil_data->notify_load, 3);
+		edje_object_signal_emit(main_pagel_object, "status,loading,show,done", "");
 
-	lbl = elm_label_add(enlil_data->win->win);
-	elm_label_label_set(lbl, msg);
-	elm_box_pack_end(bx, lbl);
-	evas_object_show(lbl);
-
-	bt = elm_button_add(enlil_data->win->win);
-	elm_button_label_set(bt, D_("Close"));
-	elm_box_pack_end(bx, bt);
-	evas_object_smart_callback_add(bt, "clicked", _notify_bt_close, enlil_data->notify_load);
-	evas_object_show(bt);
-
-	elm_notify_content_set(enlil_data->notify_load, bx);
-	evas_object_show(enlil_data->notify_load);
+	Evas_Object *lbl = edje_object_part_external_object_get(main_pagel_object, "object.status.loading");
+	if(lbl)
+	{
+		elm_label_label_set(lbl, msg);
+	}
 }
 
 void enlil_album_data_free(Enlil_Album *album, void *_data)

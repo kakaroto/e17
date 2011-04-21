@@ -9,8 +9,34 @@ group {
                 visible: 1;
                 image.normal: "album_header.png";
                 image.border: 6 6 6 6;
+                rel2.to_y: "object.text.album_description";
                 rel1.offset: 10 5;
                 rel2.offset: -10 -4;
+                rel2.relative: 1.0 0.0;
+            }
+        }
+        part {
+            name: "object.text.album_description";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description {
+                state: "default" 0.0;
+                visible: 1;
+                rel1.to_x: "background";
+                rel1.relative: 0.0 1.0;
+                rel1.offset: 20 3;
+                rel2.relative: 1.0 1.0;
+                color: 46 46 46 255;
+                align: 0.0 1.0;
+                fixed: 1 1;
+                text {
+                    font:     "Sans:style=Bold,Edje-Vera-Bold";
+                    size:     10;
+                    min:      1 1;
+                    max:      0 0;
+                    align:    0.0 0.0;
+                }
             }
         }
         part {
@@ -26,7 +52,7 @@ group {
                 rel2.to: "background";
                 rel1.relative: 0.0 0.0;
                 rel1.offset: 20 3;
-                rel2.relative: 1.0 0.0;
+                rel2.relative: 0.0 0.0;
                 color: 240 240 240 255;
                 color3: 0 0 0 64;
                 align: 0.0 0.0;
@@ -34,10 +60,52 @@ group {
                 text {
                     font:     "Sans:style=Bold,Edje-Vera-Bold";
                     size:     16;
-                    min:      0 0;
+                    min:      1 1;
                     max:      0 0;
                     align:    0.0 0.0;
                 }
+            }
+        }
+        part {
+            name: "access";
+            type: IMAGE;
+            description {
+                state: "default" 0.0;
+                min: 148 61;
+                fixed: 1 1;
+                rel1.to: "background";
+                rel1.relative: 1 1.0;
+                rel2.to: "background";
+                rel2.relative: 1.0 1.0;
+                align: 1.0 1.0;
+                image.normal: "album_public.png";
+                rel1.offset: -3 -3;
+                rel2.offset: -3 -3;
+            }
+            description {
+            	state: "public" 0.0;
+            	inherit: "default" 0.0;
+            }
+            description {
+            	state: "private" 0.0;
+            	inherit: "default" 0.0;
+                image.normal: "album_private.png";
+            }
+        }
+        part {
+            name: "object.swallow.sync";
+            type: SWALLOW;
+            description {
+                state: "default" 0.0;
+                align: 1.0 0.0;
+                fixed: 1 1;
+                rel1.to: "background";
+                rel1.relative: 0.82 0.1;
+                rel1.offset: 0.0 10;
+                rel2.to_x: "background";
+                rel2.to_y: "object.text.album_description";
+                rel2.relative: 0.9 -1.0;
+                rel2.offset: -10 0;
             }
         }
         part {
@@ -51,24 +119,25 @@ group {
                 align: 0.0 1.0;
 
                 rel2.to_x: "background";
-                rel2.relative: 0.6 1.0;
+                rel2.to_y: "object.text.album_description";
+                rel2.relative: 0.6 0.0;
                 rel2.offset: 0 -5;
             }
         }
-        part {
-            name: "object.swallow.sync";
-            type: SWALLOW;
-            description {
-                state: "default" 0.0;
-                align: 1.0 0.0;
-                fixed: 1 1;
-                rel1.to: "background";
-                rel1.relative: 0.92 0.1;
-                rel1.offset: 0.0 10;
-                rel2.to_x: "background";
-                rel2.relative: 1.0 0.8;
-                rel2.offset: -10 0;
-            }
-        }
+    }
+    
+    programs {
+    	program {
+    		name: "access_type_public";
+    		signal: "access,type,public";
+    		action: STATE_SET "public" 0.0;
+    		target: "access";
+    	}
+    	program {
+    		name: "access_type_private";
+    		signal: "access,type,private";
+    		action: STATE_SET "private" 0.0;
+    		target: "access";
+    	}
     }
 }

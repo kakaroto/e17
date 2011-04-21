@@ -263,8 +263,11 @@ static char *_gl_label_get(void *data, Evas_Object *obj, const char *part)
    Enlil_Album *album = (Enlil_Album *)data;
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
-   const Evas_Object *o = elm_genlist_item_object_get(album_data->list_album_item);
-   evas_object_event_callback_add((Evas_Object*)o, EVAS_CALLBACK_MOUSE_UP, _right_click_cb, album);
+   if(album_data->list_album_item)
+   {
+	   const Evas_Object *o = elm_genlist_item_object_get(album_data->list_album_item);
+	   evas_object_event_callback_add((Evas_Object*)o, EVAS_CALLBACK_MOUSE_UP, _right_click_cb, album);
+   }
 
    return strdup(enlil_album_name_get(album));
 }

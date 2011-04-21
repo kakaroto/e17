@@ -58,23 +58,29 @@ images {
     image: "geocaching/icon_smile.png" COMP;
     image: "geocaching/icon_sad.png" COMP;
     image: "geocaching/icon_needsmaint.png" COMP;
-    image: "flickr/set_account_0.png" COMP;
-    image: "flickr/set_account_1.png" COMP;
-    image: "flickr/update.png" COMP;
-    image: "flickr/select.png" COMP;
 
 
-    image: "flickr/logo.png" COMP;
-    image: "flickr/logo_1.png" COMP;
-    image: "flickr/logo_2.png" COMP;
-    image: "flickr/logo_3.png" COMP;
-    image: "flickr/logo_4.png" COMP;
-    image: "flickr/logo_5.png" COMP;
-    image: "flickr/logo_6.png" COMP;
-    image: "flickr/logo_7.png" COMP;
-    image: "flickr/logo_8.png" COMP;
-    image: "flickr/logo_9.png" COMP;
-    image: "flickr/logo_10.png" COMP;
+    image: "netsync/select.png" COMP;
+    image: "netsync/logo.png" COMP;
+    image: "netsync/logo_1.png" COMP;
+    image: "netsync/logo_2.png" COMP;
+    image: "netsync/logo_3.png" COMP;
+    image: "netsync/logo_4.png" COMP;
+    image: "netsync/logo_5.png" COMP;
+    image: "netsync/logo_6.png" COMP;
+    image: "netsync/logo_7.png" COMP;
+    image: "netsync/logo_8.png" COMP;
+    image: "netsync/logo_9.png" COMP;
+    image: "netsync/logo_10.png" COMP;
+    image: "netsync/logo_11.png" COMP;
+    image: "netsync/logo_12.png" COMP;
+    image: "netsync/logo_13.png" COMP;
+    image: "netsync/logo_14.png" COMP;
+    image: "netsync/logo_15.png" COMP;
+    image: "netsync/logo_16.png" COMP;
+    image: "netsync/logo_17.png" COMP;
+    image: "netsync/logo_18.png" COMP;
+    image: "netsync/logo_19.png" COMP;
 
     image: "slideshow.png" COMP;
     image: "slideshow_select.png" COMP;
@@ -83,6 +89,8 @@ images {
 
 #include "utils.edc"
 	
+#include "../default_elementary/main.edc"
+
 collections {
 	#include "win_album_new.edc"
 	#include "win_album_rename.edc"
@@ -92,6 +100,7 @@ collections {
 	#include "win_preferences.edc"
 	#include "win_photo_delete.edc"
 	#include "win_library_delete.edc"
+	#include "win_login_failed.edc"
 	
 
 	#include "libraries.edc"

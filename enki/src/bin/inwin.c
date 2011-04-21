@@ -39,6 +39,8 @@ static void _bt_save_as_file_exists_apply_cb(void *data, Evas_Object *obj, void 
 static void _bt_preferences_cancel_cb(void *data, Evas_Object *obj, void *event_info);
 static void _bt_preferences_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
+static void _bt_login_failed_close_cb(void *data, Evas_Object *obj, void *event_info);
+
 // TODO: rewrite with edje external
 Inwin *inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb, void *data, const char *file)
 {
@@ -638,6 +640,15 @@ Inwin *inwin_preferences_new()
 
 		inwin->entry2 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.account");
 		elm_scrolled_entry_entry_set(inwin->entry2, enlil_library_netsync_account_get(enlil_data->library));
+
+		inwin->entry3 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.password");
+		elm_scrolled_entry_entry_set(inwin->entry3, enlil_library_netsync_password_get(enlil_data->library));
+
+		inwin->entry4 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.host");
+		elm_scrolled_entry_entry_set(inwin->entry4, enlil_library_netsync_host_get(enlil_data->library));
+
+		inwin->entry5 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.path");
+		elm_scrolled_entry_entry_set(inwin->entry5, enlil_library_netsync_path_get(enlil_data->library));
 	}
 	else
 		edje_object_signal_emit(edje, "win,preference,library,no,selected", "");
@@ -653,6 +664,29 @@ Inwin *inwin_preferences_new()
 	return inwin;
 }
 
+Inwin *inwin_login_failed_new()
+{
+	Evas_Object *bt, *ly, *lbl;
+
+	Inwin *inwin = calloc(1, sizeof(Inwin));
+	inwin->type = INWIN_LOGIN_FAILED;
+
+
+	inwin->inwin = elm_win_inwin_add(enlil_data->win->win);
+	evas_object_show(inwin->inwin);
+
+	ly = elm_layout_add(enlil_data->win->win);
+	elm_layout_file_set(ly, Theme, "win/login_failed");
+	Evas_Object *edje = elm_layout_edje_get(ly);
+	evas_object_show(ly);
+
+	elm_win_inwin_content_set(inwin->inwin, ly);
+
+	bt = edje_object_part_external_object_get(edje, "object.win.login_failed.close");
+	evas_object_smart_callback_add(bt, "clicked", _bt_login_failed_close_cb, inwin);
+
+	return inwin;
+}
 
 static char *_gl_album_label_get(void *data, Evas_Object *obj, const char *part)
 {
@@ -793,7 +827,21 @@ static void _bt_preferences_apply_cb(void *data, Evas_Object *obj, void *event_i
 	{
 		s = elm_scrolled_entry_entry_get(inwin->entry2);
 		enlil_library_netsync_account_set(enlil_data->library, s);
-		enlil_netsync_account_set(enlil_library_netsync_account_get(enlil_data->library));
+
+		s = elm_scrolled_entry_entry_get(inwin->entry3);
+		enlil_library_netsync_password_set(enlil_data->library, s);
+
+		s = elm_scrolled_entry_entry_get(inwin->entry4);
+		enlil_library_netsync_host_set(enlil_data->library, s);
+
+		s = elm_scrolled_entry_entry_get(inwin->entry5);
+		enlil_library_netsync_path_set(enlil_data->library, s);
+
+		enlil_netsync_account_set(
+				enlil_library_netsync_host_get(enlil_data->library),
+				enlil_library_netsync_path_get(enlil_data->library),
+				enlil_library_netsync_account_get(enlil_data->library),
+				enlil_library_netsync_password_get(enlil_data->library));
 	}
 
 	inwin_free(inwin);
@@ -805,6 +853,11 @@ static void _bt_photo_delete_cancel_cb(void *data, Evas_Object *obj, void *event
 	inwin_free(inwin);
 }
 
+static void _bt_login_failed_close_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	Inwin *inwin = data;
+	inwin_free(inwin);
+}
 
 static void _bt_photo_delete_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
@@ -877,11 +930,6 @@ static void _bt_album_rename_apply_cb(void *data, Evas_Object *obj, void *event_
 		list_left_append_relative(enlil_data->list_left, album, album_data_prev->list_album_item);
 		photos_list_object_header_move_after(album_data->list_photo_item, album_data_prev->list_photo_item);
 	}
-
-	enlil_flickr_job_sync_album_header_append(album, netsync_album_new_cb,
-			netsync_album_notinnetsync_cb, netsync_album_notuptodate_cb,
-			netsync_album_netsyncnotuptodate_cb, netsync_album_uptodate_cb,
-			flickr_error_cb, enlil_data);
 
 	inwin_free(inwin);
 }

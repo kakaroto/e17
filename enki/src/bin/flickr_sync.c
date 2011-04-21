@@ -7,9 +7,12 @@ static void _album_notinnetsync_cb(void *data, Evas_Object *obj, void *event_inf
 static void _photos_notinflickr_cb(void *data, Evas_Object *obj, void *event_info);
 
 
+static void _photos_notuptodate_cb(void *data, Evas_Object *obj, void *event_info);
 static void _photos_notinlocal_cb(void *data, Evas_Object *obj, void *event_info);
 static void _netsync_photos_notinlocal_photo_new_cb(void *data, Enlil_Album *album, int id);
-static void _netsync_photo_get_new_cb(void *data, Enlil_Album *album, Enlil_Photo *photo);
+static void _netsync_photo_get_new_cb(void *data, Enlil_Album *album, Enlil_Photo *photo, const char *url);
+static void _photos_netsync_notuptodate_cb(void *data, Evas_Object *obj, void *event_info);
+static void _photos_netsync_notinnetsync_cb(void *data, Evas_Object *obj, void *event_info);
 
 static void netsync_album_updated_cb(void *data, Enlil_Library *library, Enlil_Album *album);
 
@@ -250,7 +253,7 @@ void flickr_sync_update(Enlil_Album *album)
 	evas_object_size_hint_align_set(bt, -1.0, 0.5);
 	evas_object_size_hint_weight_set(bt, 1.0, 0.0);
 	elm_button_label_set(bt, D_("Sending Them All"));
-	evas_object_smart_callback_add(bt, "clicked", _photos_notinflickr_cb, album);
+	evas_object_smart_callback_add(bt, "clicked", _photos_netsync_notinnetsync_cb, album);
 	evas_object_show(bt);
 	elm_pager_content_push(pager, bt);
 
@@ -306,6 +309,7 @@ void flickr_sync_update(Enlil_Album *album)
 
 	album_data->netsync.inwin.bt5 = bt;
 	elm_button_label_set(bt, D_("Update Them All"));
+	evas_object_smart_callback_add(bt, "clicked", _photos_notuptodate_cb, album);
 	evas_object_show(bt);
 	elm_table_pack(tb2, bt, 1, i, 1, 1);
 
@@ -350,7 +354,7 @@ void flickr_sync_update(Enlil_Album *album)
 	evas_object_size_hint_align_set(bt, -1.0, 0.5);
 	evas_object_size_hint_weight_set(bt, 1.0, 0.0);
 	elm_button_label_set(bt, D_("Update Them All"));
-	//evas_object_smart_callback_add(bt, "clicked", _photos_notinlocal_cb, album);
+	evas_object_smart_callback_add(bt, "clicked", _photos_netsync_notuptodate_cb, album);
 	evas_object_show(bt);
 	elm_pager_content_push(pager, bt);
 
@@ -470,7 +474,6 @@ static void _local_notuptodate_cb(void *data, Evas_Object *obj, void *event_info
 	Enlil_Album *album = data;
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
-
 	Enlil_NetSync_Job *job = enlil_netsync_job_update_local_album_header_append(enlil_album_library_get(album),
 			album,
 			netsync_album_updated_cb, NULL);
@@ -510,7 +513,7 @@ static void _netsync_photos_notinlocal_photo_new_cb(void *data, Enlil_Album *alb
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
    album_data->netsync.nb_photos_dl++;
-   Enlil_NetSync_Job *job = enlil_netsync_job_get_new_photo_append(album,
+   Enlil_NetSync_Job *job = enlil_netsync_job_get_new_photo_header_append(album,
    		id,
    		_netsync_photo_get_new_cb,
    		album);
@@ -518,23 +521,11 @@ static void _netsync_photos_notinlocal_photo_new_cb(void *data, Enlil_Album *alb
         album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
 }
 
-static void _netsync_photo_get_new_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
+static void _netsync_photo_get_new_cb(void *data, Enlil_Album *album, Enlil_Photo *photo, const char *url)
 {
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
-	printf("BUG :)\n");
-
-	album_data->netsync.nb_photos_dl--;
-
-	sync_photo_new_cb(enlil_data, NULL, album, photo);
-
-	if(!album_data->netsync.nb_photos_dl)
-	{
-		album_data->netsync.inwin.notinlocal.is_updating = EINA_FALSE;
-		album_data->netsync.photos_notinlocal = EINA_FALSE;
-		_sync_stop(album_data);
-		flickr_sync_update(album);
-	}
+	download_add(enlil_data->dl, url, photo);
 }
 
 
@@ -594,5 +585,109 @@ static void _photos_notinflickr_cb(void *data, Evas_Object *obj, void *event_inf
 	 album_data->netsync.inwin.notinflickr.pb);
    elm_progressbar_pulse(album_data->netsync.inwin.notinflickr.pb, EINA_TRUE);
 
+}
+
+
+static void netsync_photos_notuptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
+{
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+
+	photo_data->netsync.state = PHOTO_FLICKR_NONE;
+
+	flickr_sync_update(album);
+	photos_list_object_item_update(photo_data->list_photo_item);
+	photos_list_object_header_update(album_data->list_photo_item);
+
+	_sync_stop(album_data);
+}
+
+static void _photos_notuptodate_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	Enlil_Album *album = data;
+	Enlil_Photo *photo;
+	Eina_List *l;
+
+	EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
+	{
+		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+		if (photo_data && photo_data->netsync.state == PHOTO_FLICKR_NOTUPTODATE)
+		{
+			Enlil_NetSync_Job * job = enlil_netsync_job_update_local_photo_header_append(album,
+					photo,
+					netsync_photos_notuptodate_cb,
+					photo);
+		}
+	}
+}
+
+
+static void netsync_photos_netsync_notuptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
+{
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+
+	photo_data->netsync.state = PHOTO_FLICKR_NONE;
+
+	flickr_sync_update(album);
+	photos_list_object_item_update(photo_data->list_photo_item);
+	photos_list_object_header_update(album_data->list_photo_item);
+
+	_sync_stop(album_data);
+}
+
+static void _photos_netsync_notuptodate_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	Enlil_Album *album = data;
+	Enlil_Photo *photo;
+	Eina_List *l;
+
+	EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
+	{
+		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+		if (photo_data && photo_data->netsync.state == PHOTO_FLICKR_FLICKRNOTUPTODATE)
+		{
+			Enlil_NetSync_Job * job = enlil_netsync_job_update_netsync_photo_header_append(album,
+					photo,
+					netsync_photos_netsync_notuptodate_cb,
+					photo);
+		}
+	}
+}
+
+static void _photos_netsync_notinnetsync_done_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
+{
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+
+	photo_data->netsync.state = PHOTO_FLICKR_NONE;
+
+	flickr_sync_update(album);
+	photos_list_object_item_update(photo_data->list_photo_item);
+	photos_list_object_header_update(album_data->list_photo_item);
+
+	_sync_stop(album_data);
+}
+
+static void _photos_netsync_notinnetsync_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	Enlil_Album *album = data;
+	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+	Enlil_Photo *photo;
+	Eina_List *l;
+
+	EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
+	{
+		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+		if (photo_data && photo_data->netsync.state == PHOTO_FLICKR_NOTINFLICKR)
+		{
+			enlil_netsync_job_add_photo_append(photo, _photos_netsync_notinnetsync_done_cb, NULL);
+		}
+	}
+
+	album_data->netsync.inwin.notinflickr.is_updating = EINA_TRUE;
+	elm_pager_content_promote(album_data->netsync.inwin.notinflickr.pager,
+		 album_data->netsync.inwin.notinflickr.pb);
+	elm_progressbar_pulse(album_data->netsync.inwin.notinflickr.pb, EINA_TRUE);
 }
 

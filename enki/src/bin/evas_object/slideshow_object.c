@@ -215,6 +215,25 @@ Eina_List *slideshow_object_items_get(Evas_Object *obj)
 	return sd->items;
 }
 
+
+void slideshow_object_item_update(Slideshow_Item *item)
+{
+	Evas_Object *obj = item->obj;
+	Smart_Data *sd = evas_object_smart_data_get(obj);
+	Eina_List *l;
+	Slideshow_Item *_item;
+	char buf[1024];
+
+	if(item->icon)
+	{
+		//destroy the icon
+		evas_object_del(item->icon);
+		item->icon = NULL;
+	}
+
+	_update(obj);
+}
+
 static void _update(Evas_Object *obj)
 {
 	Smart_Data *sd = evas_object_smart_data_get(obj);

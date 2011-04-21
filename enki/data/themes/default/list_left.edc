@@ -87,7 +87,8 @@ group {
                 state : "default" 0.0;
                 rel1.to_y: "object.menu.lvl1";
 				rel1.relative: 0.0 1.0;	
-				rel2.relative: 1.0 1.0;
+				rel2.to_y: "object.status.loading";
+				rel2.relative: 1.0 0.0;
             }
         }
 		
@@ -283,7 +284,10 @@ group {
 			clip_to: "lvl2_clipper";
 			description {
 				state: "default" 0.0;
-				rel1.relative: 0.0 1.0;
+				rel1.to_y: "object.status.loading";
+				rel1.relative: 0.0 0.0;
+				rel2.to_y: "object.status.loading";
+				rel2.relative: 1.0 0.0;
 				align: 0.5 1.0;
 				params {
 					string: "label" "Delete the library";
@@ -291,6 +295,42 @@ group {
 			}
 		}
 		
+		
+		part {
+			name: "object.status.loading";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.relative: 0.0 1.0;
+				rel2.to_y: "object.status.sync";
+				rel2.relative: 1.0 1.0;
+				align: 0.5 0.0;
+			}
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				rel2.relative: 1.0 0.0;
+				rel2.offset: 0 -5;
+				align: 0.5 1.0;
+			}
+		}
+		
+		part {
+			name: "object.status.sync";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.relative: 0.0 1.0;
+				align: 0.5 0.0;
+			}
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				align: 0.5 1.0;
+			}
+		}
 	}
 	
 	programs {
@@ -395,6 +435,65 @@ group {
 			target: "collections_clipper";
 			target: "tags_clipper";
 		}
+		
+		
+		//status
+		program {
+			name: "show_status_loading_loading";
+			signal: "status,loading,show,loading";
+			action: STATE_SET "visible" 0.0;
+			target: "object.status.loading";
+			transition: SINUSOIDAL 0.2;
+		}
+		program {
+			name: "show_status_loading_done";
+			signal: "status,loading,show,done";
+			action: STATE_SET "visible" 0.0;
+			target: "object.status.loading";
+			transition: SINUSOIDAL 0.2;
+			after: "show_status_loading_done_2";
+		}
+		program {
+			name: "show_status_loading_done_2";
+			in: 3 0;
+			after: "hide_status_loading";
+		}
+		program {
+			name: "hide_status_loading";
+			signal: "status,loading,hide";
+			action: STATE_SET "default" 0.0;
+			target: "object.status.loading";
+			transition: SINUSOIDAL 1.0;
+		}
+		
+		program {
+			name: "show_status_sync_loading";
+			signal: "status,sync,show,loading";
+			action: STATE_SET "visible" 0.0;
+			target: "object.status.sync";
+			transition: SINUSOIDAL 0.2;
+		}
+		program {
+			name: "show_status_sync_done";
+			signal: "status,sync,show,done";
+			action: STATE_SET "visible" 0.0;
+			target: "object.status.sync";
+			transition: SINUSOIDAL 0.2;
+			after: "show_status_sync_done_2";
+		}
+		program {
+			name: "show_status_sync_done_2";
+			in: 3 0;
+			after: "hide_status_sync";
+		}
+		program {
+			name: "hide_status_sync";
+			signal: "status,loading,hide";
+			action: STATE_SET "default" 0.0;
+			target: "object.status.sync";
+			transition: SINUSOIDAL 1.0;
+		}
+		//
 	}
 
 }

@@ -23,6 +23,7 @@ void slideshow_object_item_select(Evas_Object *obj, Slideshow_Item *item);
 void *slideshow_object_item_data_get(Slideshow_Item *item);
 Eina_List *slideshow_object_items_get(Evas_Object *obj);
 void slideshow_object_item_del(Slideshow_Item *item);
+void slideshow_object_item_update(Slideshow_Item *item);
 
 #endif   /* ----- #ifndef SLIDESHOW_OBJECT_INC  ----- */
 

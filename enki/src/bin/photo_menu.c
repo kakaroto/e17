@@ -22,7 +22,8 @@ static Eina_Bool _init = EINA_FALSE;
 void photo_menu_init(List_Photo *enlil_photo, Evas_Object *edje)
 {
 	Evas_Object *bt;
-	Eina_List *photos = NULL, *l, *_l;
+	Eina_List *photos = NULL, *_l;
+	const Eina_List *l;
 	PL_Child_Item *child;
 	Enlil_Photo *photo, *_photo;
 	Enlil_Tag *tag;
@@ -72,7 +73,7 @@ void photo_menu_init(List_Photo *enlil_photo, Evas_Object *edje)
 	elm_list_clear(bt);
 	Enlil_Album *album = enlil_photo_album_get(eina_list_data_get(photos));
 	empty = EINA_TRUE;
-	EINA_LIST_FOREACH(enlil_library_tags_get(enlil_album_library_get(album)),l, tag)
+	EINA_LIST_FOREACH(enlil_library_tags_get(enlil_album_library_get(album)), l, tag)
 	{
 		Eina_Bool find = EINA_FALSE;
 		EINA_LIST_FOREACH(photos, _l, _photo)

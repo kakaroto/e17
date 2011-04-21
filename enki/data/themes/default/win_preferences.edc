@@ -84,12 +84,74 @@ group {
 			}
 		}
 		part {
-			name: "lbl_netsync";
+			name: "lbl_netsync_host";
 			type: EXTERNAL;
 			source: "elm/label";
 			description {
 				state: "default" 0.0;
 				rel1.to_y: "library_title";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 20 10;
+				rel2.offset: -20 0;
+				align: 0.5 0.0;
+				params {
+					string: "label" "Network synchronisation service host : ";
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.library.netsync.host";
+			type: EXTERNAL;
+			source: "elm/scrolled_entry";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "lbl_netsync_host";
+				rel1.offset: 0 5;
+				rel1.relative: 0.05 1.0;
+				align: 0.5 0.0;
+				params {
+					bool: "single line" 1; 
+				}
+			}
+		}
+		part {
+			name: "lbl_netsync_path";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "object.win.preferences.library.netsync.host";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 20 10;
+				rel2.offset: -20 0;
+				align: 0.5 0.0;
+				params {
+					string: "label" "Network synchronisation service path : ";
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.library.netsync.path";
+			type: EXTERNAL;
+			source: "elm/scrolled_entry";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "lbl_netsync_path";
+				rel1.offset: 0 5;
+				rel1.relative: 0.05 1.0;
+				align: 0.5 0.0;
+				params {
+					bool: "single line" 1; 
+				}
+			}
+		}
+		part {
+			name: "lbl_netsync";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "object.win.preferences.library.netsync.path";
 				rel1.relative: 0.0 1.0;
 				rel1.offset: 20 10;
 				rel2.offset: -20 0;
@@ -114,6 +176,39 @@ group {
 				}
 			}
 		}
+		part {
+			name: "lbl_netsync_pwd";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "object.win.preferences.library.netsync.account";
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 20 10;
+				rel2.offset: -20 0;
+				align: 0.5 0.0;
+				params {
+					string: "label" "Network synchronisation password : ";
+				}
+			}
+		}
+		part {
+			name: "object.win.preferences.library.netsync.password";
+			type: EXTERNAL;
+			source: "elm/scrolled_entry";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "lbl_netsync_pwd";
+				rel1.offset: 0 5;
+				rel1.relative: 0.05 1.0;
+				align: 0.5 0.0;
+				params {
+					bool: "single line" 1; 
+					bool: "password" 1;
+					
+				}
+			}
+		}
 		
 		part {
 			name: "library_no_selected";
@@ -123,7 +218,7 @@ group {
 				rel1.to_y: "library_title";
 				rel1.relative: 0.0 1.0;
 				rel1.offset: 0 5;
-				rel2.to_y: "object.win.preferences.library.netsync.account";
+				rel2.to_y: "object.win.preferences.library.netsync.password";
 				rel2.relative: 1.0 1.0;
 				rel2.offset: 0 5;
 				color: 0 0 0 0;

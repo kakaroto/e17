@@ -1,0 +1,85 @@
+
+/*
+ * Contains list of all used images: images list first, icons second.
+ */
+
+image: "images/outdent-top.png" COMP;
+image: "images/outdent-bottom.png" COMP;
+
+image: "images/separator_v.png" COMP;
+image: "images/separator_h.png" COMP;
+
+image: "images/progress_trough.png" COMP;
+
+//~ Window
+image: "images/win_background.png" COMP; /* background */
+
+//~ entry
+image: "images/entry_im0.png" COMP; /* base */
+image: "images/entry_im1.png" COMP; /* focus */
+
+
+//~ button
+image: "images/button_im0.png" COMP; /* base */
+image: "images/button_im1.png" COMP; /* enabled */
+image: "images/button_im2.png" COMP; /* disabled */
+image: "images/button_im3.png" COMP; /* focus */
+image: "images/button_im4.png" COMP; /* top shadow */
+image: "images/button_im5.png" COMP; /* shadow overlay */
+
+// ~segment
+image: "images/segment_left_im1.png" COMP;
+image: "images/segment_middle_im1.png" COMP;
+image: "images/segment_right_im1.png" COMP;
+
+
+//~ frame
+image: "images/frame_im0.png" COMP; /* frame border */
+
+//~ menu
+image: "images/menu_im0.png" COMP; /* background */
+image: "images/menu_im1.png" COMP; /* separator */
+image: "images/menu_im2.png" COMP; /* hilite */
+image: "images/menu_im3.png" COMP; /* inactive arrow */
+
+//~ exebuf
+image: "images/exebuf_im0.png" COMP; /* hilite */
+
+//~ arrow
+image: "images/arrow_left.png" COMP; /* left arrow */
+image: "images/arrow_right.png" COMP; /* right arrow */
+image: "images/arrow_down.png" COMP; /* down arrow */
+
+
+//~ scrollframe
+image: "images/scrollframe_im1.png" COMP; /* inset */
+image: "images/scrollframe_im3.png" COMP; /* inset */
+image: "images/scrollframe_im2.png" COMP; /* focus */
+image: "images/scrollframe-bar_im0.png" COMP; /* vertical bar */
+image: "images/scrollframe-bar_im1.png" COMP; /* vertical bar */
+image: "images/scrollframe-bar_im2.png" COMP; /* vertical bar */
+image: "images/scrollframe-bar_im3.png" COMP; /* vertical bar */
+
+image: "images/sb_runnerh.png" COMP;
+image: "images/sb_runnerv.png" COMP;
+
+//~ check
+image: "images/check_bt0.png" COMP;
+image: "images/check_bt1.png" COMP;
+image: "images/check_bt2.png" COMP;
+
+//~ radio
+image: "images/radio_bt0.png" COMP;
+image: "images/radio_bt1.png" COMP;
+image: "images/radio_bt2.png" COMP;
+
+
+//~ map
+image: "images/map_item.png" COMP;
+image: "images/map_item2.png" COMP;
+image: "images/bubble_content.png" COMP;
+image: "images/bubble_bottom.png" COMP;
+
+//~ toolbar
+image: "images/shelf_def_im0.png" COMP;
+

@@ -111,6 +111,7 @@ struct panel_image
 
    Evas_Object *entry_name;
    Evas_Object *entry_description;
+   Evas_Object *entry_author;
    Evas_Object *lbl_file_size;
    Eina_Bool save_description_name;
    Ecore_Timer *timer_description_name;
@@ -203,7 +204,8 @@ enum inwin_type
    INWIN_ALBUM_RENAME,
    INWIN_SAVE_AS_FILE_EXISTS,
    INWIN_PREFERENCES,
-   INWIN_LIBRARY_DELETE
+   INWIN_LIBRARY_DELETE,
+   INWIN_LOGIN_FAILED
 };
 
 struct inwin
@@ -219,6 +221,9 @@ struct inwin
    Evas_Object *gl;
    Evas_Object *entry;
    Evas_Object *entry2;
+   Evas_Object *entry3;
+   Evas_Object *entry4;
+   Evas_Object *entry5;
    Evas_Object *bt_apply;
    Evas_Object *check;
 
@@ -317,6 +322,7 @@ void import_album_new(Enlil_Album *album);
 
 //inwin
 void inwin_free(Inwin *inwin);
+Inwin *inwin_login_failed_new();
 Inwin *inwin_tag_new_new(Inwin_Del del_cb, void *data, Eina_List *photos);
 Inwin *inwin_album_tag_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album);
 Inwin *inwin_collection_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album);
