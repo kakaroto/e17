@@ -749,6 +749,10 @@ gen_type_esql(Azy_Typedef *t,
                   EL(5, "tmp = malloc(c->len);");
                   EL(5, "memcpy(tmp, c->value.blob, c->len);");
                }
+             if ((t->item_type->ctype != c) && (t->item_type->ctype != b64))
+               EL(5, "ret = eina_list_append(ret, &tmp);");
+             else
+               EL(5, "ret = eina_list_append(ret, tmp);");
           }
         if (t->item_type->type == TD_STRUCT)
           {
@@ -812,9 +816,7 @@ gen_type_esql(Azy_Typedef *t,
                }
           }
         EL(4, "}");
-        if ((t->item_type->type == TD_BASE) && (t->item_type->ctype != c) && (t->item_type->ctype != b64))
-          EL(3, "ret = eina_list_append(ret, &tmp);");
-        else
+        if (t->item_type->type != TD_BASE)
           EL(3, "ret = eina_list_append(ret, tmp);");
         EL(2, "}");
         EL(1, "eina_iterator_free(it);");
