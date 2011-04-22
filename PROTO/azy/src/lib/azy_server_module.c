@@ -85,6 +85,25 @@ azy_server_module_data_get(Azy_Server_Module *module)
 }
 
 /**
+ * @brief Returns whether a module has stored params
+ *
+ * This function can be used to determine whether params from previous
+ * method runs are currently stored. It is used by the parser.
+ * @param module The module (NOT NULL)
+ * @return EINA_TRUE if params are stored, else EINA_FALSE
+ */
+Eina_Bool
+azy_server_module_params_exist(Azy_Server_Module *module)
+{
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return EINA_FALSE;
+     }
+   return !!module->params;
+}
+
+/**
  * @brief Set a param to a module
  *
  * This function sets a method call param named @p name to a module. It is used by the parser.
@@ -104,14 +123,14 @@ azy_server_module_param_set(Azy_Server_Module *module, const char *name, const v
         return EINA_FALSE;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(name[0], EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!name[0], EINA_FALSE);
    if (!module->params) module->params = eina_hash_string_djb2_new((Eina_Free_Cb)azy_server_module_param_free_);
    param = calloc(1, sizeof(Azy_Server_Module_Param));
    EINA_SAFETY_ON_NULL_RETURN_VAL(param, EINA_FALSE);
    param->data = value;
    param->free_func = free_func;
 
-   old = eina_hash_set(module->params, name, value);
+   old = eina_hash_set(module->params, name, param);
    if (old) azy_server_module_param_free_(old);
    return EINA_TRUE;
 }
@@ -128,6 +147,7 @@ azy_server_module_param_set(Azy_Server_Module *module, const char *name, const v
 void *
 azy_server_module_param_get(Azy_Server_Module *module, const char *name)
 {
+   Azy_Server_Module_Param *param;
    if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
      {
         AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
@@ -135,9 +155,11 @@ azy_server_module_param_get(Azy_Server_Module *module, const char *name)
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(module->params, NULL);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(name[0], NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!name[0], NULL);
 
-   return eina_hash_find(module->params, name);
+   param = eina_hash_find(module->params, name);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(param, NULL);
+   return (void*)param->data;
 }
 
 /**

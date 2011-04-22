@@ -424,7 +424,8 @@ post:
         break;
      }
    module->state = AZY_SERVER_MODULE_STATE_INIT;
-   if (module->params) eina_hash_free_buckets(module->params);
+   if (module->params) eina_hash_free(module->params);
+   module->params = NULL;
    module->content = NULL;
    module->run_method = EINA_TRUE;
    module->post = EINA_TRUE;
@@ -707,7 +708,8 @@ post:
    module->run_method = EINA_TRUE;
    module->post = EINA_TRUE;
    module->state = AZY_SERVER_MODULE_STATE_INIT;
-   if (module->params) eina_hash_free_buckets(module->params);
+   if (module->params) eina_hash_free(module->params);
+   module->params = NULL;
    module->executing = EINA_FALSE;
    return client->resume_ret;
 }
@@ -1205,6 +1207,7 @@ azy_server_module_events_resume(Azy_Server_Module *module, Eina_Bool ret)
      }
 
    client->resume = NULL;
+   client->resuming = EINA_FALSE;
    if (client->dead)
      _azy_server_client_free(client);
 }

@@ -296,6 +296,8 @@ gen_type_marshalizers(Azy_Typedef *t,
         NL;
         EL(1, "EINA_LIST_FOREACH(azy_value_children_items_get(azy_value_array), l, v)");
         EL(1, "{");
+        if (t->item_type->ctype == d)
+        EL(2, "double *d;");
         EL(2, "%s azy_item_value = %s;", t->item_type->ctype, t->item_type->cnull);
         NL;
         EL(2, "if (!%s(v, &azy_item_value))", t->item_type->demarch_name);
@@ -305,10 +307,17 @@ gen_type_marshalizers(Azy_Typedef *t,
         EL(2, "}");
         NL;
 
-        if ((t->item_type->ctype == i) || (t->item_type->ctype == b) || (t->item_type->ctype == d))
-          EL(2, "azy_user_type_tmp = eina_list_append(azy_user_type_tmp, &azy_item_value);");
+        if (t->item_type->ctype == i)
+          EL(2, "azy_user_type_tmp = eina_list_append(azy_user_type_tmp, (intptr_t*)azy_item_value);");
+        else if (t->item_type->ctype == b)
+          EL(2, "azy_user_type_tmp = eina_list_append(azy_user_type_tmp, (intptr_t*)(int)(azy_item_value));");
+        else if (t->item_type->ctype == d)
+          {
+             EL(2, "d = malloc(sizeof(double));");
+             EL(2, "*d = azy_item_value;");
+             EL(2, "azy_user_type_tmp = eina_list_append(azy_user_type_tmp, d);");
+          }
         else
-
           EL(2, "azy_user_type_tmp = eina_list_append(azy_user_type_tmp, azy_item_value);");
 
         EL(1, "}");
@@ -566,7 +575,7 @@ gen_type_print(Azy_Typedef *t,
         EL(0, "{");
         EL(1, "Eina_List *l;");
         if ((t->item_type->ctype == i) || (t->item_type->ctype == b))
-          EL(1, "int *t;");
+          EL(1, "intptr_t *t;");
         else if  (t->item_type->ctype == d)
           EL(1, "double *t;");
         else
@@ -670,7 +679,7 @@ gen_type_esql(Azy_Typedef *t,
                   EL(6, "{");
                   EL(7, "const char *s;");
                   EL(7, "char *n;");
-                  EL(7, "long long int i;");
+                  EL(7, "intptr_t i;");
                   EL(7, "for (s = c->value.string; s && s[0] && s[1]; s = strchr(s, ','))");
                   EL(8, "{");
                   EL(9, "if (s[0] == ',') s++;");
@@ -681,12 +690,12 @@ gen_type_esql(Azy_Typedef *t,
                   EL(11, "char strerr[128];");
                   EL(11, "EINA_LOG_WARN(\"Failed to convert '%%s' to int: %%s\", s, strerror_r(errno, strerr, sizeof(strerr)));");
                   EL(10, "}");
-                  EL(9, "ret->%s = eina_list_append(ret->%s, &i);", m->name, m->name);
+                  EL(9, "ret->%s = eina_list_append(ret->%s, (intptr_t*)i);", m->name, m->name);
                   EL(9, "if (n && *n) s = n;");
                   EL(8, "}");
                   EL(7, "if ((!ret->%s) && c->value.string && c->value.string[0])", m->name);
                   EL(8, "{");
-                  EL(9, "long long int i;");
+                  EL(9, "intptr_t i;");
                   EL(9, "errno = 0;");
                   EL(9, "i = strtol(c->value.string, NULL, 10);");
                   EL(9, "if (errno)");
@@ -694,7 +703,7 @@ gen_type_esql(Azy_Typedef *t,
                   EL(11, "char strerr[128];");
                   EL(11, "EINA_LOG_WARN(\"Failed to convert '%%s' to int: %%s\", s, strerror_r(errno, strerr, sizeof(strerr)));");
                   EL(10, "}");
-                  EL(9, "ret->%s = eina_list_append(ret->%s, &i);", m->name, m->name);
+                  EL(9, "ret->%s = eina_list_append(ret->%s, (intptr_t*)i);", m->name, m->name);
                   EL(8, "}");
                   EL(6, "}");
                }
@@ -717,11 +726,13 @@ gen_type_esql(Azy_Typedef *t,
         EL(1, "Esql_Row *r;");
         EL(1, "Eina_List *ret = NULL;");
         if ((t->item_type->ctype == b) || (t->item_type->ctype == i))
-          EL(1, "long long int tmp;");
+          EL(1, "intptr_t tmp;");
         else if (t->item_type->ctype == b64)
           EL(1, "unsigned char *tmp;");
         else
           EL(1, "%s tmp;", t->item_type->ctype);
+        if (t->item_type->ctype == d)
+          EL(1, "double *d;");
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);");
         NL;
         EL(1, "if (!esql_res_rows_count(res)) return NULL;");
@@ -739,7 +750,7 @@ gen_type_esql(Azy_Typedef *t,
         if (t->item_type->type == TD_BASE)
           {
              if ((t->item_type->ctype == b) || (t->item_type->ctype == i))
-               EL(5, "tmp = esql_cell_to_lli(c);");
+               EL(5, "tmp = (intptr_t)esql_cell_to_lli(c);");
              else if (t->item_type->ctype == d)
                EL(5, "tmp = esql_cell_to_double(c);");
              else if (t->item_type->ctype == c)
@@ -749,10 +760,16 @@ gen_type_esql(Azy_Typedef *t,
                   EL(5, "tmp = malloc(c->len);");
                   EL(5, "memcpy(tmp, c->value.blob, c->len);");
                }
-             if ((t->item_type->ctype != c) && (t->item_type->ctype != b64))
-               EL(5, "ret = eina_list_append(ret, &tmp);");
+             if (t->item_type->ctype == i)
+               EL(5, "ret = eina_list_append(ret, (intptr_t*)tmp);");
+             else if (t->item_type->ctype == d)
+               {
+                  EL(5, "d = malloc(sizeof(double));");
+                  EL(5, "*d = tmp;");
+                  EL(5, "ret = eina_list_append(ret, d);");
+               }
              else
-               EL(5, "ret = eina_list_append(ret, tmp);");
+               EL(5, "ret = eina_list_append(ret, (void*)tmp);");
           }
         if (t->item_type->type == TD_STRUCT)
           {
@@ -783,7 +800,7 @@ gen_type_esql(Azy_Typedef *t,
                        EL(6, "{");
                        EL(7, "const char *s;");
                        EL(7, "char *n;");
-                       EL(7, "long long int i;");
+                       EL(7, "intptr_t i;");
                        EL(7, "for (s = c->value.string; s && s[0] && s[1]; s = strchr(s, ','))");
                        EL(8, "{");
                        EL(9, "if (s[0] == ',') s++;");
@@ -794,12 +811,12 @@ gen_type_esql(Azy_Typedef *t,
                        EL(11, "char strerr[128];");
                        EL(11, "EINA_LOG_WARN(\"Failed to convert '%%s' to int: %%s\", s, strerror_r(errno, strerr, sizeof(strerr)));");
                        EL(10, "}");
-                       EL(9, "tmp->%s = eina_list_append(tmp->%s, &i);", m->name, m->name);
+                       EL(9, "tmp->%s = eina_list_append(tmp->%s, (intptr_t*)i);", m->name, m->name);
                        EL(9, "if (n && *n) s = n;");
                        EL(8, "}");
                        EL(7, "if ((!tmp->%s) && c->value.string && c->value.string[0])", m->name);
                        EL(8, "{");
-                       EL(9, "long long int i;");
+                       EL(9, "intptr_t i;");
                        EL(9, "errno = 0;");
                        EL(9, "i = strtol(c->value.string, NULL, 10);");
                        EL(9, "if (errno)");
@@ -807,7 +824,7 @@ gen_type_esql(Azy_Typedef *t,
                        EL(11, "char strerr[128];");
                        EL(11, "EINA_LOG_WARN(\"Failed to convert '%%s' to int: %%s\", s, strerror_r(errno, strerr, sizeof(strerr)));");
                        EL(10, "}");
-                       EL(9, "tmp->%s = eina_list_append(tmp->%s, &i);", m->name, m->name);
+                       EL(9, "tmp->%s = eina_list_append(tmp->%s, (intptr_t*)i);", m->name, m->name);
                        EL(8, "}");
                        EL(6, "}");
                     }
@@ -1653,16 +1670,7 @@ gen_server_impl(Azy_Server_Module *s)
              EL(1, "Azy_Value *azy_return_value;");
           }
         EINA_LIST_FOREACH(method->params, k, p)
-          {
-             if (suspend_funcs)
-               {
-                  if (p->type->ctype == i)
-                    EL(1, "intptr_t *%s_ptr = NULL;", p->name);
-                  else if ((p->type->ctype == b) || (p->type->ctype == d))
-                    EL(1, "%s *%s_ptr = NULL;", p->type->ctype, p->name);
-               }
-             EL(1, "%s %s = %s;", p->type->ctype, p->name, p->type->cnull);
-          }
+          EL(1, "%s %s = %s;", p->type->ctype, p->name, p->type->cnull);
 
         NL;
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(module, EINA_FALSE);");
@@ -1678,54 +1686,57 @@ gen_server_impl(Azy_Server_Module *s)
         EL(2, "return EINA_FALSE;");
         EL(1, "}");
 
-        EINA_LIST_FOREACH(method->params, k, p)
+        if (method->params)
           {
-             NL;
-             if (suspend_funcs)
+             EL(1, "if (azy_server_module_params_exist(module))");
+             EL(2, "{");
+             EINA_LIST_FOREACH(method->params, k, p)
                {
-                  if ((p->type->ctype == i) || (p->type->ctype == b) || (p->type->ctype == d))
-                    {
-                       EL(1, "%s_ptr = azy_server_module_param_get(module, \"%s\");", p->name, p->name);
-                       EL(1, "if (!%s_ptr)", p->name);
-                       EL(2, "{");
-                       EL(3, "if (!%s(azy_content_param_get(content, %d), &%s))", p->type->demarch_name, n++, p->name);
-                       EL(4, "{");
-                       EL(5, "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
-                          method->name, p->name);
-                       EL(5, "return EINA_FALSE;");
-                       EL(4, "}");
-                       EL(2, "}");
-                       EL(1, "else");
-                       EL(2, "%s = *%s_ptr;", p->name, p->name);
-                    }
-                  else
-                    {
-                      EL(1, "%s = azy_server_module_param_get(module, \"%s\");", p->name, p->name);
-                      EL(1, "if ((!%s) && (!%s(azy_content_param_get(content, %d), &%s)))", p->name, p->type->demarch_name, n++, p->name);
-                      EL(1, "{");
-                      EL(2, "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
-                         method->name, p->name);
-                      EL(2, "return EINA_FALSE;");
-                      EL(1, "}");
-                    }
+                       if (p->type->ctype == d)
+                         {
+                            EL(3, "double *%s_ptr = NULL;", p->name);
+                            EL(3, "%s_ptr = azy_server_module_param_get(module, \"%s\");", p->name, p->name);
+                            EL(3, "if (!%s_ptr)", p->name);
+                            EL(4, "{");
+                            EL(5, "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
+                               method->name, p->name);
+                            EL(5, "return EINA_FALSE;");
+                            EL(4, "}");
+                            EL(3, "%s = *%s_ptr;", p->name, p->name);
+                         }
+                       else if (p->type->ctype == b)
+                         {
+                            EL(3, "if (azy_server_module_param_get(module, \"%s\"))", p->name);
+                            EL(4, "%s = EINA_TRUE;", p->name);
+                         }
+                       else
+                         {
+                            if (p->type->ctype == i)
+                              EL(3, "%s = (intptr_t)azy_server_module_param_get(module, \"%s\");", p->name, p->name);
+                            else
+                              EL(3, "%s = azy_server_module_param_get(module, \"%s\");", p->name, p->name);
+                         }
                }
-             else
+             EL(2, "}");
+             EL(1, "else");
+             EL(2, "{");
+             EINA_LIST_FOREACH(method->params, k, p)
                {
-                  EL(1, "if (!%s(azy_content_param_get(content, %d), &%s))", p->type->demarch_name, n++, p->name);
-                  EL(1, "{");
-                  EL(2, "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
+                  EL(3, "if (!%s(azy_content_param_get(content, %d), &%s))", p->type->demarch_name, n++, p->name);
+                  EL(4, "{");
+                  EL(5, "azy_content_error_faultmsg_set(content, -1, \"Stub parameter value demarshalization failed. (%s:%s)\");",
                      method->name, p->name);
-                  EL(2, "return EINA_FALSE;");
-                  EL(1, "}");
+                  EL(5, "return EINA_FALSE;");
+                  EL(4, "}");
                }
+             EL(2, "}");
+             NL;
           }
-        NL;
         EL(1, "azy_content_retval_cb_set(content, (Azy_Content_Retval_Cb)%s);", method->return_type->march_name);
         NL;
         if (suspend_funcs)
           {
-             EL(1, "if (azy_server_module_active_get(module))");
-             EL(2, "azy_server_module_events_suspend(module);");
+             EL(1, "azy_server_module_events_suspend(module);");
           }
         else
           E(1, "azy_return_module = ");
@@ -1737,24 +1748,37 @@ gen_server_impl(Azy_Server_Module *s)
           }
         EL(0, ", content);");
         EL(1, "if (azy_content_error_is_set(content))");
-        EL(2, "{");
         if (method->return_type->free_func && (!suspend_funcs))
-          EL(3, "%s(azy_return_module);", method->return_type->free_func);
+          {
+	     EL(2, "{");
+             EL(3, "%s(azy_return_module);", method->return_type->free_func);
+	  }
         EL(3, "return EINA_FALSE;");
+        if (method->return_type->free_func && (!suspend_funcs))
+          {
         EL(2, "}");
+	  }
         NL;
         EL(1, "if (azy_server_module_events_suspended_get(module))");
         EL(2, "{");
+        EL(3, "if (!azy_server_module_params_exist(module))");
+        EL(4, "{");
         EINA_LIST_FOREACH(method->params, k, p)
           {
-             if ((p->type->ctype == b) || (p->type->ctype == d))
-               EL(3, "azy_server_module_param_set(module, \"%s\", &%s, NULL);", p->name, p->name);
+             if (p->type->ctype == d)
+               {
+                  EL(5, "double *%s_ptr", p->name);
+                  EL(5, "%s_ptr = malloc(sizeof(double));", p->name);
+                  EL(5, "*%s_ptr = %s", p->name);
+                  EL(5, "azy_server_module_param_set(module, \"%s\", %s_ptr, Array_double_free);", p->name, p->name);
+               }
              else if (p->type->ctype == i)
-               EL(3, "azy_server_module_param_set(module, \"%s\", (intptr_t*)&%s, NULL);", p->name, p->name);
+               EL(5, "azy_server_module_param_set(module, \"%s\", (intptr_t*)%s, NULL);", p->name, p->name);
              else
-               EL(3, "azy_server_module_param_set(module, \"%s\", %s, (Eina_Free_Cb)%s);", p->name, p->name, p->type->free_func);
+               EL(5, "azy_server_module_param_set(module, \"%s\", (void*)%s, (Eina_Free_Cb)%s);", p->name, p->name, p->type->free_func ? p->type->free_func : "NULL");
           }
-        EL(2, "return EINA_TRUE;");
+        EL(4, "}");
+        EL(3, "return EINA_TRUE;");
         EL(2, "}");
         NL;
         EL(1, "if (!azy_content_retval_get(content))");
@@ -1775,11 +1799,15 @@ gen_server_impl(Azy_Server_Module *s)
         if (method->return_type->free_func && (!suspend_funcs))
           EL(3, "%s(azy_return_module);", method->return_type->free_func);
         EL(2, "}");
+
+        EL(1, "if (!azy_server_module_params_exist(module))");
+        EL(2, "{");
         EINA_LIST_FOREACH(method->params, k, p)
           {
              if ((!p->pass_ownership) && p->type->free_func)
-               EL(1, "%s(%s);", p->type->free_func, p->name);
+               EL(3, "%s(%s);", p->type->free_func, p->name);
           }
+        EL(2, "}");
 
         EL(1, "return !azy_content_error_is_set(content);");
         EL(0, "}");

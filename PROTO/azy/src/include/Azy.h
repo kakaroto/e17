@@ -306,16 +306,17 @@ extern "C" {
    EAPI void        azy_server_ssl_enable(Azy_Server *server);
 
    /* server module */
-   EAPI Eina_Bool azy_server_module_send(Azy_Server_Module  *module,
-                                         Azy_Net            *net,
-                                         const Azy_Net_Data *data);
+   EAPI Eina_Bool                 azy_server_module_send(Azy_Server_Module  *module,
+                                                         Azy_Net            *net,
+                                                         const Azy_Net_Data *data);
    EAPI void                     *azy_server_module_data_get(Azy_Server_Module *module);
+   EAPI Eina_Bool                 azy_server_module_params_exist(Azy_Server_Module *module);
    EAPI Azy_Net_Data             *azy_server_module_recv_get(Azy_Server_Module *module);
    EAPI Eina_Bool                 azy_server_module_param_set(Azy_Server_Module *module,
                                                               const char        *name,
                                                               const void        *value,
                                                               Eina_Free_Cb       free_func);
-   EAPI void *                    azy_server_module_param_get(Azy_Server_Module *module,
+   EAPI void                     *azy_server_module_param_get(Azy_Server_Module *module,
                                                               const char        *name);
    EAPI Azy_Net                  *azy_server_module_net_get(Azy_Server_Module *module);
    EAPI Azy_Server_Module_Def    *azy_server_module_def_find(Azy_Server *server,
