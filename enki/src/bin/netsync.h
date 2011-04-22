@@ -17,6 +17,7 @@ const char *photo_netsync_edje_signal_get(Photo_NetSync_Enum e);
 void netsync_login_failed_cb(void *data, const char *username, const char *password);
 void netsync_job_start_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album, Enlil_Photo *photo);
 void netsync_job_done_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album, Enlil_Photo *photo);
+void netsync_job_add_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album, Enlil_Photo *photo);
 
 void netsync_album_new_cb(void *data, Enlil_Library *root, int album_id);
 void netsync_album_netsyncnotuptodate_cb(void *data, Enlil_Library *root, Enlil_Album *album);

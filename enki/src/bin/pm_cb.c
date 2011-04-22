@@ -49,8 +49,6 @@ static void _album_new(void *data, Enlil_Album *album)
 			netsync_photo_uptodate_cb,
 			netsync_photo_error_cb,
 			enlil_data);
-	if(!eina_list_data_find(enlil_album_data->netsync.jobs, job))
-		enlil_album_data->netsync.jobs = eina_list_append(enlil_album_data->netsync.jobs, job);
 }
 
 void load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
@@ -188,8 +186,7 @@ void sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enli
 	enlil_netsync_job_sync_albums_append(enlil_data->library, netsync_album_new_cb,
 				netsync_album_notinnetsync_cb, netsync_album_notuptodate_cb, netsync_album_netsyncnotuptodate_cb,
 				netsync_album_uptodate_cb, netsync_error_cb, enlil_data);
-	//if(!eina_list_data_find(album_data->netsync.jobs, job))
-	//	album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
+
 }
 
 void sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enlil_Album *album)
@@ -211,9 +208,6 @@ void sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, E
 	enlil_netsync_job_sync_albums_append(enlil_data->library, netsync_album_new_cb,
 				netsync_album_notinnetsync_cb, netsync_album_notuptodate_cb, netsync_album_netsyncnotuptodate_cb,
 				netsync_album_uptodate_cb, netsync_error_cb, enlil_data);
-
-	//if(!eina_list_data_find(enlil_album_data->netsync.jobs, job))
-		//enlil_album_data->netsync.jobs = eina_list_append(enlil_album_data->netsync.jobs, job);
 
 	//snprintf(buf, PATH_MAX, "%s %s",D_("Update Album : "), enlil_album_name_get(album));
 	//notify_sync_content_set(enlil_data, buf);
@@ -307,8 +301,7 @@ void sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Ph
 				netsync_photo_uptodate_cb,
 				netsync_photo_error_cb,
 				enlil_data);
-		if(!eina_list_data_find(album_data->netsync.jobs, job))
-			album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
+
 	}
 }
 
@@ -689,8 +682,6 @@ void netsync_album_netsyncnotuptodate_cb(void *data, Enlil_Library *library, Enl
 			netsync_photo_uptodate_cb,
 			netsync_photo_error_cb,
 			enlil_data);
-	if(!eina_list_data_find(album_data->netsync.jobs, job))
-		album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
 }
 
 void netsync_album_notuptodate_cb(void *data, Enlil_Library *library, Enlil_Album *album)
@@ -711,8 +702,6 @@ void netsync_album_notuptodate_cb(void *data, Enlil_Library *library, Enlil_Albu
 			netsync_photo_uptodate_cb,
 			netsync_photo_error_cb,
 			enlil_data);
-	if(!eina_list_data_find(album_data->netsync.jobs, job))
-		album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
 }
 
 void netsync_album_notinnetsync_cb(void *data, Enlil_Library *library, Enlil_Album *album)
@@ -731,8 +720,6 @@ void netsync_album_notinnetsync_cb(void *data, Enlil_Library *library, Enlil_Alb
 			netsync_photo_uptodate_cb,
 			netsync_photo_error_cb,
 			enlil_data);
-	if(!eina_list_data_find(album_data->netsync.jobs, job))
-		album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
 }
 
 void netsync_album_uptodate_cb(void *data, Enlil_Library *library, Enlil_Album *album)
@@ -746,8 +733,6 @@ void netsync_album_uptodate_cb(void *data, Enlil_Library *library, Enlil_Album *
 			netsync_photo_uptodate_cb,
 			netsync_photo_error_cb,
 			enlil_data);
-	if(!eina_list_data_find(album_data->netsync.jobs, job))
-		album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
 }
 
 void netsync_error_cb(void *data, Enlil_Library *library)
@@ -843,6 +828,23 @@ void netsync_job_start_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album
 		album_data->netsync.is_sync = EINA_TRUE;
 		if(album_data && album_data->netsync.icon)
 			edje_object_signal_emit(album_data->netsync.icon, "animated", "");
+	}
+}
+
+void netsync_job_add_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album, Enlil_Photo *photo)
+{
+	if(photo)
+	{
+		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+		if(!eina_list_data_find(photo_data->netsync.jobs, job))
+			photo_data->netsync.jobs = eina_list_append(photo_data->netsync.jobs, job);
+	}
+
+	if(album)
+	{
+		Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+		if(!eina_list_data_find(album_data->netsync.jobs, job))
+			album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
 	}
 }
 

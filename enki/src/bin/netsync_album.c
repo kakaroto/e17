@@ -669,6 +669,16 @@ static void _photos_netsync_notinnetsync_done_cb(void *data, Enlil_Album *album,
 	_sync_stop(album_data);
 }
 
+static void _photo_upload_start_cb(void *data, Enlil_Photo *photo)
+{
+	upload_start(enlil_data->ul, photo);
+}
+
+static void _photo_upload_done_cb(void *data, Enlil_Photo *photo)
+{
+	upload_done(enlil_data->ul, photo);
+}
+
 static void _photos_netsync_notinnetsync_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	Enlil_Album *album = data;
@@ -681,7 +691,10 @@ static void _photos_netsync_notinnetsync_cb(void *data, Evas_Object *obj, void *
 		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 		if (photo_data && photo_data->netsync.state == PHOTO_NETSYNC_NOTINNETSYNC)
 		{
-			enlil_netsync_job_add_photo_append(photo, _photos_netsync_notinnetsync_done_cb, NULL);
+			enlil_netsync_job_add_photo_append(photo, _photos_netsync_notinnetsync_done_cb,
+					_photo_upload_start_cb,
+					_photo_upload_done_cb,
+					NULL);
 		}
 	}
 

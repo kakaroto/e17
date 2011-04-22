@@ -1,3 +1,4 @@
+
 #include "main.h"
 #include "upload.h"
 
@@ -59,10 +60,8 @@ void upload_free(Upload **_ul)
 }
 
 
-static void _start_cb(void *data, Enlil_Photo *photo)
+void upload_start(Upload *ul, Enlil_Photo *photo)
 {
-    Upload *ul = data;
-
     evas_object_show(ul->main);
 
     elm_progressbar_label_set(ul->pb, enlil_photo_name_get(photo));
@@ -70,41 +69,14 @@ static void _start_cb(void *data, Enlil_Photo *photo)
     elm_progressbar_pulse(ul->pb, 1);
 }
 
-static void _done_cb(void *data, Enlil_Photo *photo, int status)
+void upload_done(Upload *ul, Enlil_Photo *photo)
 {
     Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-    Upload *ul = data;
     Enlil_Album* album = enlil_photo_album_get(photo);
     Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
     evas_object_hide(ul->main);
 
     photo_data->netsync.state = PHOTO_NETSYNC_NONE;
-
-    if(album_data)
-    {
-        if(album_data->netsync.inwin.win)
-            netsync_sync_update(album);
-    }
-}
-
-
-static int _progress_cb(void *data, Enlil_Photo *photo, long int ultotal, long int ulnow)
-{
-    //currently thes callback didn't work
-    //Upload *ul = data;
-
-    //elm_progressbar_value_set(ul->pb, (double)ulnow / ultotal);
-
-    return 0;
-}
-
-static void _error_cb(void *data, Enlil_Photo *photo)
-{
-    printf("PHOTO ERROR %s\n", enlil_photo_name_get(photo));
-
-    Upload *ul = data;
-
-    evas_object_hide(ul->main);
 }
 

@@ -106,6 +106,7 @@ collections {
 	#include "win_photo_delete.edc"
 	#include "win_library_delete.edc"
 	#include "win_login_failed.edc"
+	#include "win_upload.edc"
 
 
 	#include "libraries.edc"
