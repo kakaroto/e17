@@ -627,7 +627,7 @@ static void _enlil_sync_album_folder_start(Enlil_Sync *_sync, const char *folder
    if(!album && folder_exist)
      {
 	//if an eet file is in the album we delete it
-	snprintf(buf2, PATH_MAX, "%s/"EET_FILE, buf);
+	snprintf(buf2, PATH_MAX, "%s/"EET_FILE, buf_album);
 	remove(buf2);
 
 	//create the new album
