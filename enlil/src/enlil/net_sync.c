@@ -68,6 +68,9 @@ struct Enlil_NetSync_Job
 	Enlil_NetSync_Photo_Header_Get_Cb photo_header_get_cb;
 	Enlil_NetSync_Photo_Header_New_Get_Cb photo_header_new_get;
 
+	Enlil_NetSync_Photo_Upload_Start_Cb upload_start_cb;
+	Enlil_NetSync_Photo_Upload_Done_Cb upload_done_cb;
+
 	Enlil_NetSync_Error_Cb error_cb;
 	Enlil_NetSync_Photo_Error_Cb photo_error_cb;
 };
@@ -90,9 +93,11 @@ static Eina_Bool connected = EINA_FALSE;
 static Enlil_NetSync_Login_Failed_Cb _login_failed_cb = NULL;
 static Enlil_NetSync_Job_Start_Cb _job_start_cb = NULL;
 static Enlil_NetSync_Job_Done_Cb _job_done_cb = NULL;
+static Enlil_NetSync_Job_Add_Cb _job_add_cb = NULL;
 static void *_login_failed_data = NULL;
 static void *_job_start_data = NULL;
 static void *_job_done_data = NULL;
+static void *_job_add_data = NULL;
 
 static Ecore_Idler *_idler = NULL;
 
@@ -157,6 +162,9 @@ static Eina_Error _netsync_photo_add_ret(Azy_Client *cli, Azy_Content *content, 
 			LOG_WARN("No network synchronization (AZY) support."); \
 		} while (0)
 
+#define JOB_ADD(album, photo) 	\
+	if(_job_add_cb) 			\
+		_job_add_cb(_job_add_data, job, album, photo)
 
 static const char *_enlil_netsync_job_type_tostring(Enlil_NetSync_Job_Type type)
 {
@@ -228,6 +236,16 @@ void enlil_netsync_job_done_cb_set(Enlil_NetSync_Job_Done_Cb done_cb, void *data
 	AZY_SUPPORT_ERR_MSG();
 #endif
 }
+void enlil_netsync_job_add_cb_set(Enlil_NetSync_Job_Add_Cb add_cb, void *data)
+{
+#ifdef HAVE_AZY
+	_job_add_cb = add_cb;
+	_job_add_data = data;
+#else
+	AZY_SUPPORT_ERR_MSG();
+#endif
+}
+
 
 void enlil_netsync_job_del(Enlil_NetSync_Job *job)
 {
@@ -308,6 +326,8 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_albums_append(Enlil_Library *library,
 		l_jobs = eina_list_append(l_jobs, job);
 	}
 
+	JOB_ADD(NULL, NULL);
+
 	_job_next();
 
 	return job;
@@ -353,6 +373,8 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_album_append(Enlil_Library *library,
 		l_jobs = eina_list_append(l_jobs, job);
 	}
 
+	JOB_ADD(album, NULL);
+
 	_job_next();
 
 	return job;
@@ -390,6 +412,8 @@ Enlil_NetSync_Job *enlil_netsync_job_get_new_album_header_append(Enlil_Library *
 
 		l_jobs = eina_list_append(l_jobs, job);
 	}
+
+	JOB_ADD(NULL, NULL);
 
 	_job_next();
 
@@ -429,6 +453,8 @@ Enlil_NetSync_Job *enlil_netsync_job_update_local_album_header_append(Enlil_Libr
 		l_jobs = eina_list_append(l_jobs, job);
 	}
 
+	JOB_ADD(album, NULL);
+
 	_job_next();
 
 	return job;
@@ -467,6 +493,8 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_album_header_append(Enlil_Li
 		l_jobs = eina_list_append(l_jobs, job);
 	}
 
+	JOB_ADD(album, NULL);
+
 	_job_next();
 
 	return job;
@@ -504,6 +532,8 @@ Enlil_NetSync_Job *enlil_netsync_job_add_album_append(Enlil_Library *library,
 
 		l_jobs = eina_list_append(l_jobs, job);
 	}
+
+	JOB_ADD(album, NULL);
 
 	_job_next();
 
@@ -551,6 +581,8 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_photos_append(Enlil_Album *album,
 		l_jobs = eina_list_append(l_jobs, job);
 	}
 
+	JOB_ADD(album, NULL);
+
 	_job_next();
 
 	return job;
@@ -589,6 +621,8 @@ Enlil_NetSync_Job *enlil_netsync_job_get_new_photo_header_append(Enlil_Album *al
 
 			l_jobs = eina_list_append(l_jobs, job);
 		}
+
+		JOB_ADD(NULL, NULL);
 
 		_job_next();
 
@@ -631,6 +665,8 @@ Enlil_NetSync_Job *enlil_netsync_job_update_local_photo_header_append(Enlil_Albu
 			l_jobs = eina_list_append(l_jobs, job);
 		}
 
+		JOB_ADD(NULL, photo);
+
 		_job_next();
 
 		return job;
@@ -669,6 +705,8 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_photo_header_append(Enlil_Al
 
 			l_jobs = eina_list_append(l_jobs, job);
 		}
+
+		JOB_ADD(NULL, photo);
 
 		_job_next();
 
@@ -709,6 +747,8 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_photo_header_prepend(Enlil_A
 			l_jobs = eina_list_prepend(l_jobs, job);
 		}
 
+		JOB_ADD(NULL, photo);
+
 		_job_next();
 
 		return job;
@@ -720,6 +760,8 @@ Enlil_NetSync_Job *enlil_netsync_job_update_netsync_photo_header_prepend(Enlil_A
 
 Enlil_NetSync_Job *enlil_netsync_job_add_photo_append(Enlil_Photo *photo,
 		Enlil_NetSync_Photo_Header_Get_Cb add_cb,
+		Enlil_NetSync_Photo_Upload_Start_Cb upload_start_cb,
+		Enlil_NetSync_Photo_Upload_Done_Cb upload_done_cb,
 		void *data)
 {
 #ifdef HAVE_AZY
@@ -740,10 +782,14 @@ Enlil_NetSync_Job *enlil_netsync_job_add_photo_append(Enlil_Photo *photo,
 			job->type = ENLIL_NETSYNC_JOB_ADD_PHOTO;
 			job->photo = photo;
 			job->photo_header_get_cb = add_cb;
+			job->upload_start_cb = upload_start_cb;
+			job->upload_done_cb = upload_done_cb;
 			job->data = data;
 
 			l_jobs = eina_list_append(l_jobs, job);
 		}
+
+		JOB_ADD(NULL, photo);
 
 		_job_next();
 
@@ -1028,6 +1074,9 @@ static void _job_next()
 			azy_client_callback_set(client, id, _netsync_photo_add_ret);
 			//
 			munmap(content_file, st.st_size); /* unmap mmapped data */
+
+			if(job->upload_start_cb)
+				job->upload_start_cb(job->data, job->photo);
 
 			break;
 	}
@@ -1720,6 +1769,9 @@ static Eina_Error _netsync_photo_add_ret(Azy_Client *cli, Azy_Content *content, 
 
 	enlil_netsync_job_update_netsync_photo_header_prepend(enlil_photo_album_get(job->photo),
 			job->photo, job->photo_header_get_cb, job->data);
+
+	if(job->upload_done_cb)
+		job->upload_done_cb(job->data, job->photo);
 
 	_job_done();
 

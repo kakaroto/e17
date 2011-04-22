@@ -636,6 +636,7 @@ EAPI    void                    enlil_geocaching_user_data_set(Enlil_Geocaching 
 typedef struct Enlil_NetSync_Job Enlil_NetSync_Job;
 
 typedef void (*Enlil_NetSync_Login_Failed_Cb) (void *data, const char *username, const char *password);
+typedef void (*Enlil_NetSync_Job_Add_Cb) (void *data, Enlil_NetSync_Job *job, Enlil_Album *album, Enlil_Photo *photo);
 typedef void (*Enlil_NetSync_Job_Start_Cb) (void *data, Enlil_NetSync_Job *job, Enlil_Album *album, Enlil_Photo *photo);
 typedef void (*Enlil_NetSync_Job_Done_Cb) (void *data, Enlil_NetSync_Job *job, Enlil_Album *album, Enlil_Photo *photo);
 
@@ -661,11 +662,15 @@ typedef void (*Enlil_NetSync_Photo_Header_Get_Cb) (void *data, Enlil_Album *albu
 typedef void (*Enlil_NetSync_Photo_Header_New_Get_Cb) (void *data, Enlil_Album *album, Enlil_Photo *photo, const char *url);
 
 
+typedef void (*Enlil_NetSync_Photo_Upload_Start_Cb) (void *data, Enlil_Photo *photo);
+typedef void (*Enlil_NetSync_Photo_Upload_Done_Cb) (void *data, Enlil_Photo *photo);
+
 EAPI    Eina_Bool               enlil_netsync_have();
 EAPI    void                    enlil_netsync_job_del(Enlil_NetSync_Job *job);
 
 EAPI 	void 					enlil_netsync_account_set(const char *host, const char *path, const char *_account, const char *_password);
 EAPI    void                    enlil_netsync_login_failed_cb_set(Enlil_NetSync_Login_Failed_Cb login_failed_cb, void *data);
+EAPI    void                    enlil_netsync_job_add_cb_set(Enlil_NetSync_Job_Add_Cb add_cb, void *data);
 EAPI    void                    enlil_netsync_job_start_cb_set(Enlil_NetSync_Job_Start_Cb start_cb, void *data);
 EAPI    void                    enlil_netsync_job_done_cb_set(Enlil_NetSync_Job_Done_Cb done_cb, void *data);
 
@@ -727,6 +732,8 @@ EAPI 	Enlil_NetSync_Job * 	enlil_netsync_job_update_netsync_photo_header_append(
 		void *data);
 EAPI 	Enlil_NetSync_Job *		enlil_netsync_job_add_photo_append(Enlil_Photo *photo,
 		Enlil_NetSync_Photo_Header_Get_Cb add_cb,
+		Enlil_NetSync_Photo_Upload_Start_Cb upload_start_cb,
+		Enlil_NetSync_Photo_Upload_Done_Cb upload_done_cb,
 		void *data);
 
 
