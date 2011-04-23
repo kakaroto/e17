@@ -28,7 +28,7 @@
  * @{*/
 static const char AZY_ERROR_REQUEST_JSON_OBJECT_err[] = "Can't parse JSON-RPC request. Invalid JSON object.";
 static const char AZY_ERROR_REQUEST_JSON_METHOD_err[] = "Can't parse JSON-RPC request. Missing method.";
-static const char AZY_ERROR_REQUEST_JSON_PARAM_err[] = "Can't parse JSON-RPC request. Failed to unserialize a parameter.";
+static const char AZY_ERROR_REQUEST_JSON_PARAM_err[] = "Can't parse JSON-RPC request. Failed to deserialize a parameter.";
 
 static const char AZY_ERROR_RESPONSE_JSON_OBJECT_err[] = "Can't parse JSON-RPC response. Invalid JSON object.";
 static const char AZY_ERROR_RESPONSE_JSON_ERROR_err[] = "Can't parse JSON-RPC response. Invalid error object.";
@@ -39,15 +39,15 @@ static const char AZY_ERROR_RESPONSE_JSON_INVALID_err[] = "Can't parse JSON-RPC 
 static const char AZY_ERROR_REQUEST_XML_DOC_err[] = "Can't parse XML-RPC request. Invalid XML document.";
 static const char AZY_ERROR_REQUEST_XML_ROOT_err[] = "Can't parse XML-RPC request. Root element is missing.";
 static const char AZY_ERROR_REQUEST_XML_METHODNAME_err[] = "Can't parse XML-RPC request. Missing methodName.";
-static const char AZY_ERROR_REQUEST_XML_PARAM_err[] = "Can't parse XML-RPC request. Failed to unserialize a parameter.";
+static const char AZY_ERROR_REQUEST_XML_PARAM_err[] = "Can't parse XML-RPC request. Failed to deserialize a parameter.";
 
 static const char AZY_ERROR_RESPONSE_XML_DOC_err[] = "Can't parse XML-RPC response. Invalid XML document.";
 static const char AZY_ERROR_RESPONSE_XML_ROOT_err[] = "Can't parse XML-RPC response. Root element is missing.";
-static const char AZY_ERROR_RESPONSE_XML_RETVAL_err[] = "Can't parse XML-RPC response. Failed to unserialize retval.";
+static const char AZY_ERROR_RESPONSE_XML_RETVAL_err[] = "Can't parse XML-RPC response. Failed to deserialize retval.";
 static const char AZY_ERROR_RESPONSE_XML_MULTI_err[] = "Can't parse XML-RPC response. Too many return values.";
-static const char AZY_ERROR_RESPONSE_XML_FAULT_err[] = "Can't parse XML-RPC response. Failed to unserialize fault response.";
+static const char AZY_ERROR_RESPONSE_XML_FAULT_err[] = "Can't parse XML-RPC response. Failed to deserialize fault response.";
 static const char AZY_ERROR_RESPONSE_XML_INVAL_err[] = "Can't parse XML-RPC response. Invalid fault response.";
-static const char AZY_ERROR_XML_UNSERIAL_err[] = "Can't parse XML-RPC. Failed to unserialize XML.";
+static const char AZY_ERROR_XML_UNSERIAL_err[] = "Can't parse XML-RPC. Failed to deserialize XML.";
 #else
 static const char AZY_ERROR_XML_UNSUPPORTED_err[] = "XML support is not enabled.";
 #endif

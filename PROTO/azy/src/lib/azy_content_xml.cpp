@@ -81,7 +81,7 @@ azy_content_xmlnode_to_buf(xml_node       node,
 }
 
 static Azy_Value *
-azy_value_unserialize_xml(xml_node node)
+azy_value_deserialize_xml(xml_node node)
 {
    const char *name;
 
@@ -147,7 +147,7 @@ azy_value_unserialize_xml(xml_node node)
                        return NULL;
                     }
 
-                  val = azy_value_unserialize_xml(it.child("value").first_child());
+                  val = azy_value_deserialize_xml(it.child("value").first_child());
                   azy_value_struct_member_set(v, name, val);
                }
              return v;
@@ -189,7 +189,7 @@ azy_value_unserialize_xml(xml_node node)
                        ERR("%s", eina_error_msg_get(AZY_ERROR_XML_UNSERIAL));
                        return NULL;
                     }
-                  val = azy_value_unserialize_xml(it.first_child());
+                  val = azy_value_deserialize_xml(it.first_child());
                   if (!val)
                     {
                        azy_value_unref(v);
@@ -326,7 +326,7 @@ azy_content_serialize_response_xml(Azy_Content *content)
 }
 
 Eina_Bool
-azy_content_unserialize_request_xml(Azy_Content *content,
+azy_content_deserialize_request_xml(Azy_Content *content,
                                     const char  *buf,
                                     ssize_t      len)
 {
@@ -390,11 +390,11 @@ azy_content_unserialize_request_xml(Azy_Content *content,
              n = *it;
 
              if (std::distance(n.node().begin(), n.node().end()) != 1) return EINA_FALSE;
-             val = azy_value_unserialize_xml(n.node().first_child());
+             val = azy_value_deserialize_xml(n.node().first_child());
              if (!val)
                {
                   azy_content_error_faultmsg_set(content, -1,
-                                                 "Can't parse XML-RPC XML request. Failed to unserialize parameter %i.", 1 + std::distance(params.begin(), it));
+                                                 "Can't parse XML-RPC XML request. Failed to deserialize parameter %i.", 1 + std::distance(params.begin(), it));
                   return EINA_FALSE;
                }
              azy_content_param_add(content, val);
@@ -405,7 +405,7 @@ azy_content_unserialize_request_xml(Azy_Content *content,
 }
 
 Eina_Bool
-azy_content_unserialize_response_xml(Azy_Content *content,
+azy_content_deserialize_response_xml(Azy_Content *content,
                                      const char  *buf,
                                      ssize_t      len)
 {
@@ -496,7 +496,7 @@ azy_content_unserialize_response_xml(Azy_Content *content,
         return EINA_FALSE;
      }
 
-   content->retval = azy_value_unserialize_xml(params.first().node().first_child());
+   content->retval = azy_value_deserialize_xml(params.first().node().first_child());
    if (!content->retval)
      {
         azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_RETVAL);
@@ -506,7 +506,7 @@ azy_content_unserialize_response_xml(Azy_Content *content,
 }
 
 Eina_Bool
-azy_content_unserialize_rss_xml(Azy_Content *content,
+azy_content_deserialize_rss_xml(Azy_Content *content,
                                 const char  *buf,
                                 ssize_t      len)
 {

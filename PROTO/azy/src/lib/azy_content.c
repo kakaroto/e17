@@ -55,7 +55,7 @@ azy_content_buffer_set_(Azy_Content   *content,
  * This function converts a block of xml/json (based on @p type)
  */
 Eina_Bool
-azy_content_unserialize(Azy_Content *content,
+azy_content_deserialize(Azy_Content *content,
                         Azy_Net     *net)
 {
    if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
@@ -72,7 +72,7 @@ azy_content_unserialize(Azy_Content *content,
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!net->buffer[0], EINA_FALSE);
    DBG("(content=%p, net=%p, net->type=%u)", content, net, net->transport);
    if (net->transport == AZY_NET_TRANSPORT_JSON)
-     return azy_content_unserialize_json(content, (char *)net->buffer, net->size);
+     return azy_content_deserialize_json(content, (char *)net->buffer, net->size);
 
    ERR("UNSUPPORTED TYPE PASSED! FIXME!");
    return EINA_FALSE;
@@ -80,7 +80,7 @@ azy_content_unserialize(Azy_Content *content,
    if (type == AZY_NET_TRANSPORT_XML)
      {
 #ifdef HAVE_XML
-        return azy_content_unserialize_xml(content, buf, len);
+        return azy_content_deserialize_xml(content, buf, len);
 #else
         ERR("%s", eina_error_msg_get(AZY_ERROR_XML_UNSUPPORTED));
         return NULL;
@@ -237,7 +237,7 @@ azy_content_serialize_request(Azy_Content      *content,
  * @return EINA_TRUE upon success, or #EINA_FALSE on failure
  */
 Eina_Bool
-azy_content_unserialize_request(Azy_Content      *content,
+azy_content_deserialize_request(Azy_Content      *content,
                                 Azy_Net_Transport type,
                                 const char       *buf,
                                 ssize_t           len)
@@ -252,12 +252,12 @@ azy_content_unserialize_request(Azy_Content      *content,
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!len, EINA_FALSE);
 
    if (type == AZY_NET_TRANSPORT_JSON)
-     return azy_content_unserialize_request_json(content, buf, len);
+     return azy_content_deserialize_request_json(content, buf, len);
 
    if (type == AZY_NET_TRANSPORT_XML)
      {
 #ifdef HAVE_XML
-        return azy_content_unserialize_request_xml(content, buf, len);
+        return azy_content_deserialize_request_xml(content, buf, len);
 #else
         azy_content_error_code_set(content, AZY_ERROR_XML_UNSUPPORTED);
         return EINA_FALSE;
@@ -316,7 +316,7 @@ azy_content_serialize_response(Azy_Content      *content,
  * @return EINA_TRUE upon success, or #EINA_FALSE on failure
  */
 Eina_Bool
-azy_content_unserialize_response(Azy_Content      *content,
+azy_content_deserialize_response(Azy_Content      *content,
                                  Azy_Net_Transport type,
                                  const char       *buf,
                                  ssize_t           len)
@@ -332,12 +332,12 @@ azy_content_unserialize_response(Azy_Content      *content,
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!len, EINA_FALSE);
 
    if (type == AZY_NET_TRANSPORT_JSON)
-     return azy_content_unserialize_response_json(content, buf, len);
+     return azy_content_deserialize_response_json(content, buf, len);
 
    if (type == AZY_NET_TRANSPORT_XML)
      {
 #ifdef HAVE_XML
-        return azy_content_unserialize_response_xml(content, buf, len);
+        return azy_content_deserialize_response_xml(content, buf, len);
 #else
         azy_content_error_code_set(content, AZY_ERROR_XML_UNSUPPORTED);
         return EINA_FALSE;

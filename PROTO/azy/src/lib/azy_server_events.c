@@ -802,7 +802,7 @@ _azy_server_client_rpc(Azy_Server_Client *client,
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);
 
    if (!client->resume_rpc)
-     if ((!azy_content_unserialize_request(content, t, (char *)client->current->buffer, client->current->size)) &&
+     if ((!azy_content_deserialize_request(content, t, (char *)client->current->buffer, client->current->size)) &&
          (!content->faultcode))
        azy_content_error_faultmsg_set(content, -1, "Unserialize request failure.");
 

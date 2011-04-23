@@ -364,11 +364,11 @@ void _azy_event_handler_fake_free(void *data,
                                   void *data2);
 
 Eina_Bool
-azy_content_unserialize(Azy_Content *content,
+azy_content_deserialize(Azy_Content *content,
                         Azy_Net     *net);
 
 Eina_Bool
-azy_content_unserialize_json(Azy_Content *content,
+azy_content_deserialize_json(Azy_Content *content,
                              const char  *buf,
                              ssize_t      len);
 
@@ -378,13 +378,13 @@ extern "C" {
 #endif
 Eina_Bool azy_content_serialize_request_xml(Azy_Content *content);
 Eina_Bool azy_content_serialize_response_xml(Azy_Content *content);
-Eina_Bool azy_content_unserialize_request_xml(Azy_Content *content,
+Eina_Bool azy_content_deserialize_request_xml(Azy_Content *content,
                                               const char  *buf,
                                               ssize_t      len);
-Eina_Bool azy_content_unserialize_response_xml(Azy_Content *content,
+Eina_Bool azy_content_deserialize_response_xml(Azy_Content *content,
                                                const char  *buf,
                                                ssize_t      len);
-Eina_Bool azy_content_unserialize_rss_xml(Azy_Content *content,
+Eina_Bool azy_content_deserialize_rss_xml(Azy_Content *content,
                                           const char  *buf,
                                           ssize_t      len);
 #ifdef __cplusplus
@@ -393,10 +393,10 @@ Eina_Bool azy_content_unserialize_rss_xml(Azy_Content *content,
 #endif
 Eina_Bool azy_content_serialize_request_json(Azy_Content *content);
 Eina_Bool azy_content_serialize_response_json(Azy_Content *content);
-Eina_Bool azy_content_unserialize_request_json(Azy_Content *content,
+Eina_Bool azy_content_deserialize_request_json(Azy_Content *content,
                                                const char  *buf,
                                                ssize_t      len);
-Eina_Bool azy_content_unserialize_response_json(Azy_Content *content,
+Eina_Bool azy_content_deserialize_response_json(Azy_Content *content,
                                                 const char  *buf,
                                                 ssize_t      len);
 

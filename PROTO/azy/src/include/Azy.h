@@ -488,13 +488,13 @@ extern "C" {
    EAPI Azy_Content_Retval_Cb azy_content_retval_cb_get(Azy_Content *content);
    EAPI Eina_Bool   azy_content_serialize_request(Azy_Content      *content,
                                                   Azy_Net_Transport type);
-   EAPI Eina_Bool   azy_content_unserialize_request(Azy_Content      *content,
+   EAPI Eina_Bool   azy_content_deserialize_request(Azy_Content      *content,
                                                     Azy_Net_Transport type,
                                                     const char       *buf,
                                                     ssize_t           len);
    EAPI Eina_Bool azy_content_serialize_response(Azy_Content      *content,
                                                  Azy_Net_Transport type);
-   EAPI Eina_Bool azy_content_unserialize_response(Azy_Content      *content,
+   EAPI Eina_Bool azy_content_deserialize_response(Azy_Content      *content,
                                                    Azy_Net_Transport type,
                                                    const char       *buf,
                                                    ssize_t           len);

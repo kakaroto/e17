@@ -103,7 +103,7 @@ azy_value_serialize_json(Azy_Value *val)
 }
 
 Azy_Value *
-azy_value_unserialize_json(cJSON *object)
+azy_value_deserialize_json(cJSON *object)
 {
    if (!object)
      return NULL;
@@ -123,7 +123,7 @@ azy_value_unserialize_json(cJSON *object)
          while (child)
            {
               name = child->string;
-              azy_value_struct_member_set(str, name, azy_value_unserialize_json(child));
+              azy_value_struct_member_set(str, name, azy_value_deserialize_json(child));
               child = child->next;
            }
          return str;
@@ -136,7 +136,7 @@ azy_value_unserialize_json(cJSON *object)
          uint32_t arr_len = cJSON_GetArraySize(object);
 
          for (i = 0; i < arr_len; i++)
-           azy_value_array_push(arr, azy_value_unserialize_json(cJSON_GetArrayItem(object, i)));
+           azy_value_array_push(arr, azy_value_deserialize_json(cJSON_GetArrayItem(object, i)));
 
          return arr;
       }
@@ -242,7 +242,7 @@ azy_content_serialize_response_json(Azy_Content *content)
 }
 
 Eina_Bool
-azy_content_unserialize_json(Azy_Content *content,
+azy_content_deserialize_json(Azy_Content *content,
                              const char  *buf,
                              ssize_t len  __UNUSED__)
 {
@@ -257,13 +257,13 @@ azy_content_unserialize_json(Azy_Content *content,
         return EINA_FALSE;
      }
 
-   content->retval = azy_value_unserialize_json(object);
+   content->retval = azy_value_deserialize_json(object);
    cJSON_Delete(object);
    return EINA_TRUE;
 }
 
 Eina_Bool
-azy_content_unserialize_request_json(Azy_Content *content,
+azy_content_deserialize_request_json(Azy_Content *content,
                                      const char  *buf,
                                      ssize_t len  __UNUSED__)
 {
@@ -297,9 +297,9 @@ azy_content_unserialize_request_json(Azy_Content *content,
      {
         Azy_Value *v;
 
-        if (!(v = azy_value_unserialize_json(cJSON_GetArrayItem(grab, i))))
+        if (!(v = azy_value_deserialize_json(cJSON_GetArrayItem(grab, i))))
           {
-             azy_content_error_faultmsg_set(content, -1, "Can't parse JSON-RPC request. Failed to unserialize parameter %d.", i);
+             azy_content_error_faultmsg_set(content, -1, "Can't parse JSON-RPC request. Failed to deserialize parameter %d.", i);
              cJSON_Delete(object);
              return EINA_FALSE;
           }
@@ -312,7 +312,7 @@ azy_content_unserialize_request_json(Azy_Content *content,
 }
 
 Eina_Bool
-azy_content_unserialize_response_json(Azy_Content *content,
+azy_content_deserialize_response_json(Azy_Content *content,
                                       const char  *buf,
                                       ssize_t len  __UNUSED__)
 {
@@ -370,7 +370,7 @@ azy_content_unserialize_response_json(Azy_Content *content,
         return EINA_FALSE;
      }
 
-   if (!(ret = azy_value_unserialize_json(grab)))
+   if (!(ret = azy_value_deserialize_json(grab)))
      {
         azy_content_error_code_set(content, AZY_ERROR_RESPONSE_JSON_INVALID);
         cJSON_Delete(object);
