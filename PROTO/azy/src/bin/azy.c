@@ -42,7 +42,10 @@ azy_typedef_new(int type,
                 const char *free_func,
                 const char *fmt_str)
 {
-   Azy_Typedef *t = calloc(1, sizeof(Azy_Typedef));
+   Azy_Typedef *t;
+
+   t = calloc(1, sizeof(Azy_Typedef));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(t, NULL);
    t->type = type;
    t->name = eina_stringshare_add(name);
    t->cname = eina_stringshare_add(cname);
@@ -95,7 +98,7 @@ azy_new(void)
    EINA_SAFETY_ON_NULL_RETURN_VAL(c, NULL);
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "int", "int", "int", "0", "azy_value_int_get", "azy_value_int_new", NULL, "%i"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "boolean", "boolean", "Eina_Bool", "EINA_FALSE", "azy_value_bool_get", "azy_value_bool_new", NULL, "%s"));
-   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_double_get", "azy_value_double_new", NULL, "%.3lf"));
+   c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "double", "double", "double", "0.0", "azy_value_double_get", "azy_value_double_new", NULL, "%g"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "string", "string", "const char *", "NULL", "azy_value_string_get", "azy_value_string_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "time", "time", "const char *", "NULL", "azy_value_string_get", "azy_value_time_new", "eina_stringshare_del", "%s"));
    c->types = eina_list_append(c->types, azy_typedef_new(TD_BASE, "base64", "base64", "const char *", "NULL", "azy_value_base64_get", "azy_value_base64_new", "eina_stringshare_del", "%s"));
