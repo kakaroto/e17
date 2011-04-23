@@ -907,17 +907,18 @@ gen_type_copyfree(Azy_Typedef *t,
    else if (t->type == TD_ARRAY)
      {
         /* free */
-         EL(0, "void %s(%s val)", t->free_func, t->ctype);
+         EL(0, "void %s(Eina_List *val)", t->free_func);
          EL(0, "{");
          if (t->item_type->free_func)
            EL(1, "%s t;", t->item_type->ctype);
-         EL(1, "if (!val)");
-         EL(2, "return;");
+         else if (t->item_type->cname == d)
+           EL(1, "double *t;");
+         EL(1, "if (!val) return;");
 
-         if (t->item_type->free_func)
+         if (t->item_type->free_func || (t->item_type->cname == d))
            {
               EL(1, "EINA_LIST_FREE(val, t)");
-              EL(2, "%s(t);", t->item_type->free_func);
+              EL(2, "%s(t);", t->item_type->free_func ? t->item_type->free_func : "free");
            }
          else
            EL(1, "eina_list_free(val);");
@@ -925,24 +926,35 @@ gen_type_copyfree(Azy_Typedef *t,
          NL;
 
          /* copy */
-         EL(0, "%s %s(%s orig)", t->ctype, t->copy_func, t->ctype);
+         EL(0, "Eina_List *%s(Eina_List *orig)", t->copy_func);
          EL(0, "{");
-         EL(1, "%s copy = NULL;", t->ctype);
-         NL;
-         EL(1, "while (orig)");
-         EL(1, "{");
+         EL(1, "Eina_List *copy = NULL;");
+         if (t->item_type->copy_func || (t->item_type->cname == d))
+           {
+              EL(1, "Eina_List *l;");
+              if (t->item_type->cname == d)
+                EL(1, "double *t, *d;");
+              else
+                EL(1, "%s t;", t->item_type->ctype);
+              NL;
 
-         if (t->item_type->copy_func)
-           EL(2, "copy = eina_list_prepend(copy, %s((%s)orig->data));",
-              t->item_type->copy_func, t->item_type->ctype);
+              EL(1, "EINA_LIST_FOREACH(orig, l, t)");
+              if (t->item_type->cname == d)
+                {
+                   EL(2, "{");
+                   EL(3, "d = malloc(sizeof(double));");
+                   EL(3, "*d = *t;");
+                   EL(3, "copy = eina_list_append(copy, d);");
+                   EL(2, "}");
+                }
+              else
+                EL(2, "copy = eina_list_append(copy, %s((%s)t));", t->item_type->copy_func, t->item_type->ctype);
+           }
          else
-           EL(2, "copy = eina_list_prepend(copy, orig->data);");
+           EL(1, "copy = eina_list_clone(orig);");
 
-         EL(
-           2, "orig = orig->next;");
-         EL(1, "}");
          NL;
-         EL(1, "return eina_list_reverse(copy);");
+         EL(1, "return copy;");
          EL(0, "}");
          NL;
      }
