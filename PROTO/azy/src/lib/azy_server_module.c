@@ -628,7 +628,7 @@ azy_server_module_size_set(Azy_Server_Module_Def *def,
  * generate all http header strings from @p net including the content-length (based on @p data).
  * @param module The client's #Azy_Server_Module object (NOT #NULL)
  * @param net An #Azy_Net object containing http information to use (NOT #NULL)
- * @param data The data to send (NOT #NULL)
+ * @param data The data to send
  * @return EINA_TRUE on success, else EINA_FALSE
  */
 Eina_Bool
@@ -649,8 +649,6 @@ azy_server_module_send(Azy_Server_Module  *module,
         AZY_MAGIC_FAIL(net, AZY_MAGIC_NET);
         return EINA_FALSE;
      }
-   EINA_SAFETY_ON_NULL_RETURN_VAL(data, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(data->data, EINA_FALSE);
 
    azy_net_message_length_set(net, data->size);
    if (!net->http.res.http_code)
@@ -665,7 +663,8 @@ azy_server_module_send(Azy_Server_Module  *module,
         goto error;
      }
 
-   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(net->conn, data->data, data->size), error);
+   if (data && data->data)
+     EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(net->conn, data->data, data->size), error);
 
 error:
    eina_strbuf_free(header);
