@@ -1,8 +1,7 @@
 #include "enlil_private.h"
 #include <eina_main.h>
-#include <Azy.h>
 
-#ifdef HAVE_EABZU
+#ifdef HAVE_AZY
 #include <Azy.h>
 #endif
 
