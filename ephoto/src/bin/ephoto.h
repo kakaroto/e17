@@ -201,7 +201,8 @@ _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
             (strcasecmp(ext, "bmp") == 0) ||
             (strcasecmp(ext, "dib") == 0) ||
             (strcasecmp(ext, "tiff") == 0) ||
-            (strcasecmp(ext, "tif") == 0))
+            (strcasecmp(ext, "tif") == 0) ||
+	    (strcasecmp(ext, "psd") == 0))
           return EINA_TRUE;
      }
 
