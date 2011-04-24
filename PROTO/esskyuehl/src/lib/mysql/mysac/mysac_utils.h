@@ -235,4 +235,15 @@ static inline int set_my_lcb(unsigned long long len, int null, char *out, int ou
 	return -1;
 }
 
+static inline void mysac_print_audit(MYSAC *mysac, const char *fmt, ...) {
+	va_list ap;
+
+	if (mysac->ma == NULL)
+		return;
+
+	va_start(ap, fmt);
+
+	mysac->ma(mysac->ma_arg, fmt, ap);
+}
+
 #endif

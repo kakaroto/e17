@@ -37,9 +37,9 @@
 
 /**************************************************
 
-   read data in binary type
+   read data in binary type 
 
-**************************************************/
+**************************************************/ 
 int mysac_decode_binary_row(char *buf, int packet_len,
                             MYSAC_RES *res, MYSAC_ROWS *row) {
 	int j;
@@ -48,7 +48,7 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 	unsigned long len;
 	int tmp_len;
 	char *wh;
-	char _null_ptr[16] = {0};
+	char _null_ptr[16];
 	char *null_ptr;
 	unsigned char bit;
 
@@ -82,11 +82,11 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 
 		else {
 			switch (res->cols[j].type) {
-
+	
 			/* read null */
 			case MYSQL_TYPE_NULL:
 				row->data[j].blob = NULL;
-
+	
 			/* read blob */
 			case MYSQL_TYPE_TINY_BLOB:
 			case MYSQL_TYPE_MEDIUM_BLOB:
@@ -107,7 +107,7 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				if (tmp_len == -1)
 					return -1;
 				i += tmp_len;
-				if ((unsigned long)(i + len) > (unsigned long)packet_len)
+				if (i + len > (unsigned int)packet_len)
 					return -1;
 				if (nul == 1)
 					row->data[j].blob = NULL;
@@ -120,21 +120,21 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				}
 				row->lengths[j] = len;
 				break;
-
+	
 			case MYSQL_TYPE_TINY:
 				if (i > packet_len - 1)
 					return -1;
 				row->data[j].stiny = buf[i];
 				i++;
 				break;
-
+	
 			case MYSQL_TYPE_SHORT:
 				if (i > packet_len - 2)
 					return -1;
 				row->data[j].ssmall = sint2korr(&buf[i]);
 				i += 2;
 				break;
-
+	
 			case MYSQL_TYPE_INT24:
 			case MYSQL_TYPE_LONG:
 				if (i > packet_len - 4)
@@ -142,28 +142,28 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				row->data[j].sint = sint4korr(&buf[i]);
 				i += 4;
 				break;
-
+	
 			case MYSQL_TYPE_LONGLONG:
 				if (i > packet_len - 8)
 					return -1;
 				row->data[j].sbigint = sint8korr(&buf[i]);
 				i += 8;
 				break;
-
+	
 			case MYSQL_TYPE_FLOAT:
 				if (i > packet_len - 4)
 					return -1;
 				float4get(row->data[j].mfloat, &buf[i]);
 				i += 4;
 				break;
-
+	
 			case MYSQL_TYPE_DOUBLE:
 				if (i > packet_len - 8)
 					return -1;
 				float8get(row->data[j].mdouble, &buf[i]);
 				i += 8;
 				break;
-
+	
 			/* libmysql/libmysql.c:3370
 			 * static void read_binary_time(MYSQL_TIME *tm, uchar **pos) */
 			case MYSQL_TYPE_TIME:
@@ -171,13 +171,13 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				if (tmp_len == -1)
 					return -1;
 				i += tmp_len;
-				if ((unsigned long)(i + len) > (unsigned long)packet_len)
+				if (i + len > (unsigned int)packet_len)
 					return -1;
 				if (nul == 1)
 					row->data[j].blob = NULL;
-
+	
 				if (len > 0) {
-					row->data[j].tv.tv_sec =
+					row->data[j].tv.tv_sec = 
 					              ( uint4korr(&buf[i+1]) * 86400 ) +
 					              ( buf[i+5] * 3600 ) +
 					              ( buf[i+6] * 60 ) +
@@ -191,13 +191,13 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				}
 				i += len;
 				break;
-
+	
 			case MYSQL_TYPE_YEAR:
 				row->data[j].tm->tm_year = uint2korr(&buf[i]) - 1900;
 				row->data[j].tm->tm_mday = 1;
 				i += 2;
 				break;
-
+	
 			/* libmysql/libmysql.c:3400
 			 * static void read_binary_datetime(MYSQL_TIME *tm, uchar **pos) */
 			case MYSQL_TYPE_TIMESTAMP:
@@ -206,11 +206,11 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				if (tmp_len == -1)
 					return -1;
 				i += tmp_len;
-				if ((unsigned long)(i + len) > (unsigned long)packet_len)
+				if (i + len > (unsigned int)packet_len)
 					return -1;
 				if (nul == 1)
 					row->data[j].blob = NULL;
-
+	
 				row->data[j].tm->tm_year = uint2korr(&buf[i+0]) - 1900;
 				row->data[j].tm->tm_mon  = buf[i+2] - 1;
 				row->data[j].tm->tm_mday = buf[i+3];
@@ -224,7 +224,7 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				}
 				i += len;
 				break;
-
+	
 			/* libmysql/libmysql.c:3430
 			 * static void read_binary_date(MYSQL_TIME *tm, uchar **pos) */
 			case MYSQL_TYPE_DATE:
@@ -232,17 +232,17 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 				if (tmp_len == -1)
 					return -1;
 				i += tmp_len;
-				if ((unsigned long)(i + len) > (unsigned long)packet_len)
+				if (i + len > (unsigned int)packet_len)
 					return -1;
 				if (nul == 1)
 					row->data[j].blob = NULL;
-
+	
 				row->data[j].tm->tm_year = uint2korr(&buf[i+0]) - 1900;
 				row->data[j].tm->tm_mon  = buf[i+2] - 1;
 				row->data[j].tm->tm_mday = buf[i+3];
 				i += len;
 				break;
-
+	
 			case MYSQL_TYPE_ENUM:
 			case MYSQL_TYPE_SET:
 			case MYSQL_TYPE_GEOMETRY:
@@ -264,9 +264,9 @@ int mysac_decode_binary_row(char *buf, int packet_len,
 
 /**************************************************
 
-   read data in string type
+   read data in string type 
 
-**************************************************/
+**************************************************/ 
 int mysac_decode_string_row(char *buf, int packet_len,
                             MYSAC_RES *res, MYSAC_ROWS *row) {
 	int i, j;
@@ -288,7 +288,7 @@ int mysac_decode_string_row(char *buf, int packet_len,
 
 		i += tmp_len;
 
-		if ((unsigned long)(i + len) > (unsigned long)packet_len)
+		if (i + len > (unsigned int)packet_len)
 			return -MYERR_LEN_OVER_BUFFER;
 
 		if (nul == 1) {

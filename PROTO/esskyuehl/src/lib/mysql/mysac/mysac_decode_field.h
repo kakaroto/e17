@@ -16,14 +16,14 @@
  * along with MySAC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/** @file */
+/** @file */ 
 
 #ifndef __MYSAC_DECODE_PAQUET__
 #define __MYSAC_DECODE_PAQUET__
 
 #include "mysac.h"
 
-/**
+/** 
  * mysac_decode_field decode field header packet
  *
  * @param buf id the buffer containing packet

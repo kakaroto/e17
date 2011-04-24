@@ -232,6 +232,15 @@ enum my_expected_response_t {
 };
 
 /**
+ * This is prototype of function that dump audit messages
+ *
+ * @param arg is opaque pointer set with the function
+ * @param fmt is format in printf style
+ * @param ap is stdarg list of arguments
+ */
+typedef void (*mysac_audit)(void *arg, const char *fmt, va_list ap);
+
+/**
  * This contain the necessary for one mysql connection
  */
 typedef struct mysac {
@@ -248,6 +257,8 @@ typedef struct mysac {
 	char free_it;
 	int fd;
 	int (*call_it)(/* MYSAC * */ struct mysac *);
+	mysac_audit ma;
+	void *ma_arg;
 
 	/*defconnect */
 	unsigned int protocol;
@@ -408,6 +419,20 @@ int mysac_get_fd(MYSAC *mysac);
  *    MYERR_BAD_STATE : the function does nothing to do (is an error)
  */
 int mysac_io(MYSAC *mysac);
+
+/**
+ * This fonction enable and set audit dump fonction into mysac
+ *
+ * The audit dump memory usage. Is used for tracking calls to
+ * realloc. The realloc is very resource consumer. The best parctice
+ * is to evaluate the good size of the reponse before sending the
+ * request. This function is used for choosing the values.
+ *
+ * @param mysac Should be the address of an existing MYSQL structure.
+ * @param arg is opaque pointer set with the function
+ * @param ma is pointer to print function
+ */
+void mysac_set_audit_fcn(MYSAC *mysac, void *arg, mysac_audit ma);
 
 /**
  * Build use database message
