@@ -56,7 +56,7 @@ _cleanup(void)
 }
 
 static void
-_loop(double t, int f)
+_loop(double t __UNUSED__, int f __UNUSED__)
 {
 }
 

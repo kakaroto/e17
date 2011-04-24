@@ -172,7 +172,7 @@ MainWndProc(HWND   hwnd,
 }
 
 Eina_Bool
-engine_software_gdi_args(const char *engine, int width, int height)
+engine_software_gdi_args(const char *engine __UNUSED__, int width, int height)
 {
    WNDCLASS                       wc;
    RECT                           rect;
@@ -181,7 +181,6 @@ engine_software_gdi_args(const char *engine, int width, int height)
    DWORD                          style;
    DWORD                          exstyle;
    int                            depth;
-   int                            i;
 
    instance = GetModuleHandle(NULL);
    if (!instance) return EINA_FALSE;

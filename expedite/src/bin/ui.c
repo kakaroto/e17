@@ -194,7 +194,7 @@ _ui_all(void)
    double fps = 0.0;
    double wfps = 0.0;
    int t_count = 0;
-   int i;
+   unsigned int i;
    double avgw = 0.0;
 
    evas_object_hide(o_menu_logo);
@@ -281,7 +281,7 @@ _ui_num(int n)
    double wfps = 0.0;
    int t_count = 0;
    Menu_Item *mi;
-   int i;
+   unsigned int i;
    double avgw = 0.0;
 
    evas_object_hide(o_menu_logo);
@@ -359,7 +359,7 @@ _ui_select(void)
 }
 
 static void
-_ui_key(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_ui_key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Evas_Event_Key_Down *ev;
 
@@ -380,7 +380,7 @@ _ui_key(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	if (!strcmp(ev->keyname, "Left")) menu_sel++;
 	if (!strcmp(ev->keyname, "Right")) menu_sel--;
 	if (menu_sel < 0) menu_sel = 0;
-	else if (menu_sel >= eina_list_count(menu)) menu_sel = eina_list_count(menu) - 1;
+	else if ((unsigned int)menu_sel >= eina_list_count(menu)) menu_sel = eina_list_count(menu) - 1;
 	menu_anim_sel = menu_sel;
 	if (!strcmp(ev->keyname, "Return")) _ui_select();
      }
@@ -391,7 +391,7 @@ static int down = 0;
 static int down_menu_sel = 0;
 
 static void
-_ui_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_ui_mouse_down(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Evas_Event_Mouse_Down *ev;
 
@@ -410,7 +410,7 @@ _ui_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void
-_ui_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_ui_mouse_up(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Evas_Event_Mouse_Up *ev;
 
@@ -435,7 +435,7 @@ _ui_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void
-_ui_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_ui_mouse_move(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Evas_Event_Mouse_Move *ev;
 
@@ -446,7 +446,7 @@ _ui_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	menu_sel = down_menu_sel + ((ev->cur.canvas.x - down_x) / 25);
 	/* scroll */
 	if (menu_sel < 0) menu_sel = 0;
-	else if (menu_sel >= eina_list_count(menu)) menu_sel = eina_list_count(menu) - 1;
+	else if ((unsigned int)menu_sel >= eina_list_count(menu)) menu_sel = eina_list_count(menu) - 1;
 	menu_anim_sel = menu_sel;
      }
    else

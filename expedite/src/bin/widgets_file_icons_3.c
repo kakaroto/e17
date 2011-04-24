@@ -75,11 +75,9 @@ static void _cleanup(void)
 static void _loop(double t, int f)
 {
    int i;
-   Evas_Coord x, y, w, h, tw, th, cent;
+   Evas_Coord x, y, tw, th, cent;
    x = 0;
    y = 0 - f;
-   w = ICON_SIZE;
-   h = ICON_SIZE;
    for (i = 0; i < NUM; i++)
      {
 	evas_object_move(o_images[i], x + 8, y);

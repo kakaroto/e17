@@ -52,7 +52,7 @@ static void _loop(double t, int f)
    for (i = 0; i < 1; i++)
      {
 	unsigned int *data, *p;
-	int ff, a, r, g, b;
+	int a, r, g, b;
         w = 640;
 	h = 480;
 	x = (win_w / 2) - (w / 2);
@@ -63,7 +63,6 @@ static void _loop(double t, int f)
 	data = evas_object_image_data_get(o_images[i], 1);
         st = evas_object_image_stride_get(o_images[i]) >> 2;
 	p = data;
-	ff = (f ^ (f << 8) ^ (f << 16) ^ (f << 24));
 	for (y = 0; y < h; y++)
 	  {
 	     for (x = 0; x < w; x++)
