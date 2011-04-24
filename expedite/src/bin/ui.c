@@ -246,7 +246,7 @@ _ui_all(void)
         
         now = time(NULL);
         tim = localtime(&now);
-        if (tim) strftime(datestr, sizeof(datestr), "%F %T", tim);
+        if (tim) strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", tim);
         else snprintf(datestr, sizeof(datestr), "unknown");
 //        printf("%5.2f , EVAS SPEED\n", fps / t_count);
         printf("%5.2f , EVAS SPEED (WEIGHTED), "
