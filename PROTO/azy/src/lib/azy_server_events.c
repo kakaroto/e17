@@ -952,7 +952,10 @@ _azy_server_client_handler_data(Azy_Server_Client           *client,
 
         /* returns offset where http header line ends */
         if (!(offset = azy_events_type_parse(client->net, type, data, len)) && ev && (!client->net->http.req.http_path))
-          return azy_events_connection_kill(client->net->conn, EINA_TRUE, NULL);
+          {
+             overflow = NULL;
+             return azy_events_connection_kill(client->net->conn, EINA_TRUE, NULL);
+          }
         else if (!offset && overflow)
           {
              client->net->buffer = NULL;
