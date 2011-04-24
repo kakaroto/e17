@@ -188,6 +188,7 @@ azy_net_auth_set(Azy_Net    *net,
    enc_auth_str = azy_base64_encode(eina_strbuf_string_get(str), eina_strbuf_length_get(str));
    eina_strbuf_string_free(str);
    eina_strbuf_append_printf(str, "Basic %s", enc_auth_str);
+   azy_net_header_set(net, "Authorization", NULL);
    azy_net_header_set(net, "Authorization", eina_strbuf_string_get(str));
    free(enc_auth_str);
    eina_strbuf_free(str);
@@ -486,16 +487,18 @@ azy_net_message_length_set(Azy_Net *net,
 
    net->http.content_length = length;
    snprintf(buf, sizeof(buf), "%i", length);
-   azy_net_header_set(net, "Content-Length", buf);
+   azy_net_header_set(net, "content-length", NULL);
+   azy_net_header_set(net, "content-length", buf);
 }
 
 /**
  * @brief Set a http header for use in a transmission
  *
- * This function is used to set an http header in @p net object.
+ * This function is used to set an http header in @p net object. If
+ * @p value is NULL, the header with @p name will be deleted.
  * @param net The network object (NOT #NULL)
  * @param name The header's name (NOT #NULL)
- * @param value The header's value (NOT #NULL)
+ * @param value The header's value
  */
 void
 azy_net_header_set(Azy_Net    *net,
@@ -512,14 +515,23 @@ azy_net_header_set(Azy_Net    *net,
         return;
      }
 
-   if ((!name) || (!value))
-     return;
+   EINA_SAFETY_ON_NULL_RETURN(name);
+   EINA_SAFETY_ON_TRUE_RETURN(!name[0]);
+   EINA_SAFETY_ON_TRUE_RETURN(value && (!value[0]));
 
    tmp = strdupa(name);
    eina_str_tolower(&tmp);
 
    if (EINA_UNLIKELY(!net->http.headers))
-     net->http.headers = eina_hash_string_small_new((Eina_Free_Cb)eina_stringshare_del);
+     {
+        if (!value) return;
+        net->http.headers = eina_hash_string_small_new((Eina_Free_Cb)eina_stringshare_del);
+     }
+   else if (!value)
+     {
+        eina_hash_del_by_key(net->http.headers, name);
+        return;
+     }
 
    n = eina_stringshare_add(value);
    if ((old = eina_hash_set(net->http.headers, tmp, n)))
@@ -578,10 +590,12 @@ azy_net_transport_set(Azy_Net          *net,
      }
 
    net->transport = transport;
+   /* reset content-type header */
+   azy_net_header_set(net, "content-type", NULL);
    if (transport == AZY_NET_TRANSPORT_XML)
-     azy_net_header_set(net, "Content-Type", "text/xml");
+     azy_net_header_set(net, "content-type", "text/xml");
    else if (transport == AZY_NET_TRANSPORT_JSON)
-     azy_net_header_set(net, "Content-Type", "application/json");
+     azy_net_header_set(net, "content-type", "application/json");
 }
 
 /**

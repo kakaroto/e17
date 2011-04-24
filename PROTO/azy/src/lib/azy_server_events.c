@@ -592,6 +592,7 @@ not_impl:
         client->current = net;
         net->http.res.http_code = 501;
         net->http.res.http_msg = azy_net_http_msg_get(501);
+        azy_net_header_set(net, "Content-Type", NULL);
         azy_net_header_set(net, "Content-Type", "text/plain");
         if (client->current->type == AZY_NET_TYPE_GET)
           {
@@ -740,6 +741,7 @@ _azy_server_client_send(Azy_Server_Client *client,
      {
         char idstr[48];
         snprintf(idstr, sizeof(idstr), "sessid=%s;", client->session_id);
+        azy_net_header_set(net, "Set-Cookie", NULL);
         azy_net_header_set(net, "Set-Cookie", idstr);
      }
 
