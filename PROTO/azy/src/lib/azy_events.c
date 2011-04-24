@@ -19,7 +19,6 @@
 #include "config.h"
 #endif
 
-#include <regex.h>
 #include <ctype.h>
 #include <errno.h>
 #include "Azy.h"
@@ -33,19 +32,7 @@
          len--;                            \
       } while ((PTR) && isspace(*(PTR)) && (len > 0))
 
-#define MAX_HEADER_SIZE 4096
-
-static char _init = 0;
-static regex_t __response;
-static regex_t request;
-
-static void
-_azy_events_init(void)
-{
-   regcomp(&request, "^(GET|HEAD|POST|PUT) ([^ @\\]+) HTTP/1\\.([0-1])$", REG_EXTENDED);
-   regcomp(&__response, "^HTTP/1\\.([0-1]) ([0-9]{3}) (.+)$", REG_EXTENDED);
-   _init = 1;
-}
+#define MAX_HEADER_SIZE 8092
 
 static unsigned int
 _azy_events_valid_header_name(const char  *start,
@@ -60,6 +47,196 @@ _azy_events_valid_header_name(const char  *start,
      }
 
    if (*start == ':') return len;
+   return 0;
+}
+
+static int
+_azy_events_valid_response(Azy_Net *net,
+                           const unsigned char *header,
+                           int len)
+{
+   const unsigned char *start;
+   unsigned char *p;
+   int code;
+
+   if ((len < 16) || strncmp((char*)header, "HTTP/1.", sizeof("HTTP/1.") - 1)) return 0;
+   start = header;
+   start += 7; len -= 7;
+
+   switch (start[0])
+     {
+      case '0':
+        break;
+      case '1':
+        net->http.version = 1;
+        break;
+      default:
+        return 0;
+     }
+
+   while ((len > 1) && (start[0] == ' '))
+     start++; len--;
+   if ((len < 7) || (!isdigit(start[0]))) return 0;
+
+   errno = 0;
+   code = strtol((char*)start, (char**)&p, 10);
+   if (errno || (code < 1) || (code > 999) || (p[0] != ' ')) return 0;
+   net->http.res.http_code = code;
+   len -= (p - start); start += (p - start);
+
+   while ((len > 1) && (start[0] == ' '))
+     start++; len--;
+   if (len < 3) return 0;
+   for (p = (unsigned char*)start; len; len--)
+     {
+        if ((p[0] == '\r') || (p[0] == '\n'))
+          {
+             if (p == start) return 0;
+             net->http.res.http_msg = eina_stringshare_add_length((char*)start, p - start);
+             break;
+          }
+        if (!isprint(p[0])) return 0;
+        if (len > 1) p++;
+     }
+   if (!net->http.res.http_msg) return 0;
+   net->type = AZY_NET_TYPE_RESPONSE;
+   return (int)(p - header);
+}
+
+static int
+_azy_events_valid_request(Azy_Net *net,
+                          const unsigned char *header,
+                          int len)
+{
+   char *p = NULL, *uri = NULL;
+   const unsigned char *start, *path_start;
+   int orig_len;
+
+   DBG("(net=%p, header=%p, len=%i)", net, header, len);
+   if (len < 16) return 0;
+
+   start = header;;
+   switch (start[0])
+     {
+      case 'H':
+        if (strncmp((char*)start + 1, "EAD", 3)) return 0;
+        return EINA_TRUE; /* FIXME: still unsupported */
+      case 'G':
+        if (strncmp((char*)start + 1, "ET", 2)) return 0;
+        net->type = AZY_NET_TYPE_GET;
+        start += 3; len -= 3;
+        break;
+      case 'P':
+        if (!strncmp((char*)start + 1, "OST", 3))
+          {
+             net->type = AZY_NET_TYPE_POST;
+             start += 4; len -= 4;
+          }
+        else if (!strncmp((char*)start + 1, "UT", 2))
+          {
+             net->type = AZY_NET_TYPE_PUT;
+             start += 3; len -= 3;
+          }
+        else return 0;
+        break;
+      default:
+        return 0;
+     }
+   if (start[0] != ' ') return 0;
+   start++; len--;
+   path_start = start;
+   orig_len = len;
+   for (; len; start++)
+     {
+        start++;
+        const unsigned char *end;
+        for (end = start; len; len--)
+          {
+             switch (end[0])
+               {
+                case '\\':
+                case ';':
+                case '?':
+                case '#':
+                case '[':
+                case ']':
+                  /* reserved chars http://tools.ietf.org/html/rfc3986 */
+                  return 0;
+                case '%':
+                  /* must be 3 char escape code + 8 char http version */
+                  if (len < 11) return 0;
+                  {
+                     char code[3];
+                     long codechar;
+
+                     errno = 0;
+                     code[0] = end[1];
+                     code[1] = end[2];
+                     code[2] = 0;
+                     codechar = strtol(code, NULL, 16);
+                     /* invalid escape code */
+                     if (errno || (codechar < 32) || (codechar > 126)) return 0;
+                     if (!uri)
+                       {
+                          uri = alloca(orig_len);
+                          memcpy(uri, start, end - start);
+                          p = uri + (end - start);
+                       }
+                     else
+                       {
+                          memcpy(p, start, end - start);
+                          p += (end - start);
+                       }
+                     p[0] = (char)codechar;
+                     p++;
+                     if (codechar == '\\')
+                       {
+                          /* escape backslash */
+                          p[0] = '\\';
+                          p++;
+                       }
+                     /* new start */
+                     len -= 3; start = end;
+                     goto out;
+                  }
+                case '\r':
+                case '\n':
+                  {
+                     unsigned int eo = end - header;
+                     if (end - header < 15) return 0;
+                     end--;
+                     switch (end[0])
+                       {
+                        case '0':
+                          break;
+                        case '1':
+                          net->http.version = 1;
+                          break;
+                        default:
+                          return 0;
+                       }
+                     end -= 8;
+                     if (strncmp((char*)end, " HTTP/1.", sizeof(" HTTP/1.") - 1)) return 0;
+                     for (; (len < orig_len) && (end[0] == ' '); end--, len++);
+                     if ((end - path_start < 1) || (end[0] == ' ')) return 0;
+                     end++; /* copy up to the space */
+                     if (uri)
+                       {
+                          memcpy(p, start, end - start);
+                          net->http.req.http_path = eina_stringshare_add_length(uri, (p - uri) + (end - start));
+                       }
+                     else
+                       net->http.req.http_path = eina_stringshare_add_length((char*)start, end - start);
+                     return (int)eo;
+                  }
+                default:
+                  break;
+               }
+             if (len > 1) end++;
+          }
+out:
+        continue;
+     }
    return 0;
 }
 
@@ -84,9 +261,7 @@ azy_events_type_parse(Azy_Net             *net,
                       const unsigned char *header,
                       int                  len)
 {
-   regmatch_t match[4];
-   char *first = NULL;
-   const unsigned char *endline = NULL, *start = NULL;
+   const unsigned char *start = NULL;
    int size;
 
    DBG("(net=%p, header=%p, len=%i)", net, header, len);
@@ -129,74 +304,14 @@ azy_events_type_parse(Azy_Net             *net,
          AZY_SKIP_BLANK(start);
      }
 
-   if (!start)
-     return 0;
+   if (!start) return 0;
 
    /* some clients are dumb and send leading cr/nl/etc */
    AZY_SKIP_BLANK(start);
 
-   if (!(endline = memchr(start, '\r', len)) && !(endline = memchr(start, '\n', len)))
-     /*no newline/cr, so invalid start*/
-     return 0;
-
-   if ((endline - start) > MAX_HEADER_SIZE)
-     /* FIXME: 4kb of headers is waaaaaaaaay too long for right now but I suppose it's possible? */
-     return 0;
-
-   /*null terminate*/
-   first = alloca((endline - start) + 1);
-   memcpy(first, start, endline - start);
-   first[endline - start] = '\0';
-   if (EINA_UNLIKELY(!_init))
-     _azy_events_init();
    if (type == ECORE_CON_EVENT_CLIENT_DATA)
-     {
-        if (!regexec(&request, first, 4, match, 0))
-          {
-             int version = 1;
-             char buf[8];
-
-             memcpy(buf, start + match[3].rm_so, sizeof(buf));
-             sscanf(buf, "%i", &version);
-             net->http.version = version;
-             net->http.req.http_path = eina_stringshare_add_length((const char *)start + match[2].rm_so, match[2].rm_eo - match[2].rm_so);
-
-             if (!strncmp((const char *)start + match[1].rm_so, "GET", match[1].rm_eo - match[1].rm_so))
-               net->type = AZY_NET_TYPE_GET;
-             else if (!strncmp((const char *)start + match[1].rm_so, "POST", match[1].rm_eo - match[1].rm_so))
-               net->type = AZY_NET_TYPE_POST;
-             else if (!strncmp((const char *)start + match[1].rm_so, "PUT", match[1].rm_eo - match[1].rm_so))
-               net->type = AZY_NET_TYPE_PUT;
-
-             return match[3].rm_eo;
-          }
-     }
-   else if (!regexec(&__response, first, 4, match, 0))
-     {
-        int code = -1;
-        char buf[8];
-
-        errno = 0;
-        net->http.version = strtol((char*)(start + match[1].rm_so), NULL, 10);
-        if (errno || (net->http.version < 0) || (net->http.version > 1))
-          {
-             ERR("Invalid HTTP version!");
-             return 0;
-          }
-        memcpy(buf, start + match[2].rm_so, sizeof(buf));
-        if (sscanf(buf, "%3i", &code) == 1)
-          {
-             net->http.res.http_code = code;
-             INFO("Found HTTP reply: %i", code);
-          }
-        eina_stringshare_replace_length(&net->http.res.http_msg, (const char *)start + match[3].rm_so, match[3].rm_eo - match[3].rm_so);
-
-        net->type = AZY_NET_TYPE_RESPONSE;
-
-        return match[3].rm_eo;
-     }
-
-   return 0;
+     return _azy_events_valid_request(net, start, len);
+   return _azy_events_valid_response(net, start, len);
 }
 
 Eina_Bool
@@ -205,7 +320,7 @@ azy_events_header_parse(Azy_Net       *net,
                         size_t         event_len,
                         int            offset)
 {
-   unsigned char *c, *r = NULL, *p = NULL, *start = NULL, *buf_start = NULL;
+   unsigned char *r = NULL, *p = NULL, *start = NULL, *buf_start = NULL;
    unsigned char *data = (event_data) ? event_data + offset : NULL;
    int64_t len = (event_len) ? event_len - offset : 0;
    const char *s = NULL;
@@ -226,16 +341,14 @@ azy_events_header_parse(Azy_Net       *net,
 
    if (net->size && net->buffer)
      {
-#if 0
-        if (event_data)
+        if (event_data && (azy_rpc_log_dom >= 0))
           {
              char buf[64];
              snprintf(buf, sizeof(buf), "STORED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", net->size);
-             INFO(buf, net->buffer);
-             snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%zus\n<<<<<<<<<<<<<", len - offset);
-             INFO(buf, data);
+             RPC_INFO(buf, net->buffer);
+             snprintf(buf, sizeof(buf), "RECEIVED:\n<<<<<<<<<<<<<\n%%.%llis\n<<<<<<<<<<<<<", len - offset);
+             RPC_INFO(buf, data);
           }
-#endif
         /* previous buffer */
         /* alloca should be safe here because ecore_con reads at most 64k
          * and even if no headers were found previously, the entire
@@ -318,7 +431,7 @@ azy_events_header_parse(Azy_Net       *net,
                         if (((unsigned int)(r + 2 - start) < len) && (r[2] == '\r')) /* \n\r\n\r */
                           {
                              if (((unsigned int)(r + 3 - start) < len) && (r[3] == '\n'))
-     /* \n\r\n\r\n oh hey I'm gonna stop here before it gets too insane */
+                               /* \n\r\n\r\n oh hey I'm gonna stop here before it gets too insane */
                                s = "\r\n";
                              else
                                s = "\n\r";
@@ -343,7 +456,7 @@ azy_events_header_parse(Azy_Net       *net,
    line_len = r - p;
    while (len && r)
      {
-        const unsigned char *ptr, *semi = p;
+        unsigned char *ptr, *semi = p;
 
         if (line_len > MAX_HEADER_SIZE)
           {
@@ -359,13 +472,17 @@ azy_events_header_parse(Azy_Net       *net,
 
         if (_azy_events_valid_header_value((const char *)ptr, line_len - (ptr - p)))
           {
-             char *key, *value;
+             const char *key, *value;
 
-             key = strndupa((const char *)p, semi - p);
-             value = strndupa((const char *)ptr, line_len - (ptr - p));
+             p[semi - p] = 0;
+             ptr[line_len - (ptr - p)] = 0;
+             key = (const char *)p;
+             value = (const char *)ptr;
              INFO("Found header: key='%s'", key);
              INFO("Found header: value='%s'", value);
              azy_net_header_set(net, key, value);
+             if (!strcasecmp(key, "content-length"))
+               net->http.content_length = strtol((const char *)value, NULL, 10);
           }
 
 skip_header:
@@ -392,10 +509,7 @@ skip_header:
    if (!net->headers_read)
      return EINA_TRUE;
 
-   if (!(c = eina_hash_find(net->http.headers, "content-length")))
-     net->http.content_length = -1;
-   else
-     net->http.content_length = strtol((const char *)c, NULL, 10);
+   if (!net->http.content_length) net->http.content_length = -1;
    if (len)
      {
         int64_t rlen;
@@ -413,9 +527,10 @@ skip_header:
                   EINA_SAFETY_ON_NULL_RETURN_VAL(net->overflow, EINA_FALSE);
                   memcpy(net->overflow, p + rlen, net->overflow_length);
 #ifdef ISCOMFITOR
+                if (azy_rpc_log_dom >= 0)
                   {
                      int64_t x;
-                     INFO("OVERFLOW:\n<<<<<<<<<<<<<");
+                     RPC_INFO("OVERFLOW:\n<<<<<<<<<<<<<");
                      for (x = 0; x < net->overflow_length; x++)
                        putc(net->overflow[x], stdout);
                      fflush(stdout);
