@@ -124,15 +124,12 @@ AlertDrawHeader(Display * mdd, GC mgc, Window mwin, int mx, int my,
      }
 }
 
-#define DRAW_STRING(mdd, mgc, mwin, mx, my, mstr) \
-        AlertDrawString(mdd, mgc, mwin, mx, my, mstr, \
-        colorful, cols[3])
+#define DRAW_STRING(mdd, mgc, mwin, mx, my, mstr, len) \
+        AlertDrawString(mdd, mgc, mwin, mx, my, mstr, len, colorful, cols[3])
 static void
 AlertDrawString(Display * mdd, GC mgc, Window mwin, int mx, int my,
-		const char *mstr, int colorful, unsigned long ct1)
+		const char *mstr, int len, int colorful, unsigned long ct1)
 {
-   int                 len = strlen(mstr);
-
    if (colorful)
      {
 	XSetForeground(mdd, mgc, ct1);
@@ -163,14 +160,16 @@ AlertButtonText(int btn, const char *text)
 
 static void
 ShowAlert(const char *title,
-	  const char *ignore, const char *restart, const char *quit, char *text)
+	  const char *ignore, const char *restart, const char *quit,
+	  const char *fmt, va_list args)
 {
+   char                text[4096];
    Window              win = 0, b1 = 0, b2 = 0, b3 = 0;
    Display            *dd;
-   int                 wid, hih, w, h, i, j, k, mask;
+   int                 wid, hih, w, h, i, k, mask;
    XGCValues           gcv;
    GC                  gc;
-   char                line[1024];
+   unsigned int        len;
    XEvent              ev;
    XSetWindowAttributes att;
    XRectangle          rect1, rect2;
@@ -179,7 +178,7 @@ ShowAlert(const char *title,
    XColor              xcl;
    Colormap            cmap;
    int                 cnum, fh, x, y, ww, hh, mh;
-   char               *str1, *str2, *str3;
+   char               *str1, *str2, *str3, *p;
    KeyCode             key;
    int                 button;
    char              **missing_charset_list_return, *def_string_return;
@@ -189,8 +188,10 @@ ShowAlert(const char *title,
 
    SoundPlay(SOUND_ALERT);
 
-   if (!text)
+   if (!fmt)
       return;
+
+   Evsnprintf(text, sizeof(text), fmt, args);
 
    /*
     * We may get here from obscure places like an X-error or signal handler
@@ -199,7 +200,7 @@ ShowAlert(const char *title,
    dd = XOpenDisplay(NULL);
    if (!dd)
      {
-	fprintf(stderr, "%s", text);
+	fprintf(stderr, "%s\n", text);
 	fflush(stderr);
 	return;
      }
@@ -257,19 +258,19 @@ ShowAlert(const char *title,
    win = XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
 		       CopyFromParent, InputOutput, CopyFromParent, mask, &att);
 
-   if (str1 && sscanf(str1, "%s", line) > 0)
+   if (str1)
      {
 	b1 = XCreateWindow(dd, win, -100, -100, 1, 1, 0, CopyFromParent,
 			   InputOutput, CopyFromParent, mask, &att);
 	XMapWindow(dd, b1);
      }
-   if (str2 && sscanf(str2, "%s", line) > 0)
+   if (str2)
      {
 	b2 = XCreateWindow(dd, win, -100, -100, 1, 1, 0, CopyFromParent,
 			   InputOutput, CopyFromParent, mask, &att);
 	XMapWindow(dd, b2);
      }
-   if (str3 && sscanf(str3, "%s", line) > 0)
+   if (str3)
      {
 	b3 = XCreateWindow(dd, win, -100, -100, 1, 1, 0, CopyFromParent,
 			   InputOutput, CopyFromParent, mask, &att);
@@ -351,21 +352,21 @@ ShowAlert(const char *title,
      }
    mh += 10;
 
-   if (str1 && sscanf(str1, "%s", line) > 0)
+   if (str1)
      {
 	w = 5 + (((ww - 20 - mh) * 0) / 4);
 	XMoveResizeWindow(dd, b1, w, hh - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b1,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
-   if (str2 && sscanf(str2, "%s", line) > 0)
+   if (str2)
      {
 	w = 5 + (((ww - 20 - mh) * 1) / 2);
 	XMoveResizeWindow(dd, b2, w, hh - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b2,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
-   if (str3 && sscanf(str3, "%s", line) > 0)
+   if (str3)
      {
 	w = 5 + (((ww - 20 - mh) * 2) / 2);
 	XMoveResizeWindow(dd, b3, w, hh - 15 - fh, mh + 10, fh + 10);
@@ -462,21 +463,14 @@ ShowAlert(const char *title,
 	     DRAW_BOX_OUT(dd, gc, win, 0, fh + 10 - 1, ww,
 			  hh - fh - fh - 30 + 2);
 	     DRAW_BOX_OUT(dd, gc, win, 0, hh - fh - 20, ww, fh + 20);
-	     i = 0;
-	     j = 0;
 	     k = fh + 10;
-	     while (text[i])
+	     for (p = text; *p; p += len + 1)
 	       {
-		  line[j++] = text[i++];
-		  if (line[j - 1] == '\n')
-		    {
-		       line[j - 1] = 0;
-		       j = 0;
-		       DRAW_STRING(dd, gc, win, 6, 6 + k + fh, line);
-		       k += fh + 2;
-		    }
+		  len = strcspn(p, "\n");
+		  DRAW_STRING(dd, gc, win, 6, 6 + k + fh, p, len);
+		  k += fh + 2;
 	       }
-	     if (str1 && sscanf(str1, "%s", line) > 0)
+	     if (str1)
 	       {
 		  ExTextExtents(xfs, str1, strlen(str1), &rect1, &rect2);
 		  h = rect2.width;
@@ -486,7 +480,7 @@ ShowAlert(const char *title,
 		  DRAW_THIN_BOX_IN(dd, gc, win, w, hh - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
-	     if (str2 && sscanf(str2, "%s", line) > 0)
+	     if (str2)
 	       {
 		  ExTextExtents(xfs, str2, strlen(str2), &rect1, &rect2);
 		  h = rect2.width;
@@ -496,7 +490,7 @@ ShowAlert(const char *title,
 		  DRAW_THIN_BOX_IN(dd, gc, win, w, hh - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
-	     if (str3 && sscanf(str3, "%s", line) > 0)
+	     if (str3)
 	       {
 		  ExTextExtents(xfs, str3, strlen(str3), &rect1, &rect2);
 		  h = rect2.width;
@@ -544,39 +538,30 @@ void
 AlertX(const char *title, const char *ignore,
        const char *restart, const char *quit, const char *fmt, ...)
 {
-   char                text[10240];
    va_list             args;
 
    va_start(args, fmt);
-   Evsnprintf(text, sizeof(text), fmt, args);
+   ShowAlert(title, ignore, restart, quit, fmt, args);
    va_end(args);
-
-   ShowAlert(title, ignore, restart, quit, text);
 }
 
 void
 Alert(const char *fmt, ...)
 {
-   char                text[10240];
    va_list             args;
 
    va_start(args, fmt);
-   Evsnprintf(text, sizeof(text), fmt, args);
-   va_end(args);
-
    ShowAlert(_("Enlightenment Message Dialog"), _("Ignore this"),
-	     _("Restart Enlightenment"), _("Quit Enlightenment"), text);
+	     _("Restart Enlightenment"), _("Quit Enlightenment"), fmt, args);
+   va_end(args);
 }
 
 void
 AlertOK(const char *fmt, ...)
 {
-   char                text[10240];
    va_list             args;
 
    va_start(args, fmt);
-   Evsnprintf(text, 10240, fmt, args);
+   ShowAlert(_("Attention !!!"), _("OK"), NULL, NULL, fmt, args);
    va_end(args);
-
-   ShowAlert(_("Attention !!!"), _("OK"), NULL, NULL, text);
 }
