@@ -2,7 +2,7 @@
 #include "evas_object/photo_object.h"
 #include "evas_object/slideshow_object.h"
 
-static void _album_new(void *data, Enlil_Album *album)
+void album_new(void *data, Enlil_Album *album)
 {
 	char buf[PATH_MAX];
 	Enlil_Data *enlil_data = (Enlil_Data*) data;
@@ -47,7 +47,9 @@ static void _album_new(void *data, Enlil_Album *album)
 			netsync_photo_notuptodate_cb,
 			netsync_photo_netsyncnotuptodate_cb,
 			netsync_photo_uptodate_cb,
-			netsync_photo_error_cb,
+			netsync_photo_tags_notuptodate_cb,
+			netsync_photo_tags_netsyncnotuptodate_cb,
+			netsync_photo_tags_uptodate_cb,
 			enlil_data);
 }
 
@@ -82,7 +84,7 @@ void load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
 
 	enlil_netsync_job_sync_albums_append(enlil_data->library, netsync_album_new_cb,
 			netsync_album_notinnetsync_cb, netsync_album_notuptodate_cb, netsync_album_netsyncnotuptodate_cb,
-			netsync_album_uptodate_cb, netsync_error_cb, enlil_data);
+			netsync_album_uptodate_cb, enlil_data);
 }
 
 
@@ -179,13 +181,13 @@ void sync_album_new_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, Enli
 
 	Enlil_Album *_album = enlil_album_copy_new(album);
 	enlil_library_album_add(_library, _album);
-	_album_new(data, _album);
+	album_new(data, _album);
 	//Enlil_Album_Data *album_data = enlil_album_user_data_get(_album);
 
 	//Enlil_NetSync_Job *job =
 	enlil_netsync_job_sync_albums_append(enlil_data->library, netsync_album_new_cb,
 				netsync_album_notinnetsync_cb, netsync_album_notuptodate_cb, netsync_album_netsyncnotuptodate_cb,
-				netsync_album_uptodate_cb, netsync_error_cb, enlil_data);
+				netsync_album_uptodate_cb, enlil_data);
 
 }
 
@@ -203,11 +205,9 @@ void sync_album_update_cb(void *data, Enlil_Sync *sync,Enlil_Library *library, E
 	Enlil_Album_Data *enlil_album_data = enlil_album_user_data_get(_album);
 	photos_list_object_header_update(enlil_album_data->list_photo_item);
 
-
-	//Enlil_NetSync_Job *job =
 	enlil_netsync_job_sync_albums_append(enlil_data->library, netsync_album_new_cb,
 				netsync_album_notinnetsync_cb, netsync_album_notuptodate_cb, netsync_album_netsyncnotuptodate_cb,
-				netsync_album_uptodate_cb, netsync_error_cb, enlil_data);
+				netsync_album_uptodate_cb, enlil_data);
 
 	//snprintf(buf, PATH_MAX, "%s %s",D_("Update Album : "), enlil_album_name_get(album));
 	//notify_sync_content_set(enlil_data, buf);
@@ -237,7 +237,6 @@ void sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Ph
 	char buf[PATH_MAX];
 	Enlil_Data *enlil_data = (Enlil_Data*) data;
 	Enlil_Library *_library = enlil_data->library;
-	Eina_Bool must_netsync = EINA_TRUE;
 
 	Enlil_Album *_album = enlil_library_album_search_file_name(_library, enlil_album_file_name_get(album));
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(_album);
@@ -251,7 +250,6 @@ void sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Ph
 	{
 		_photo = enlil_photo_copy_new(photo);
 		enlil_album_photo_add(_album, _photo);
-		must_netsync = EINA_FALSE;
 	}
 
 	Enlil_Photo_Data * enlil_photo_data = calloc(1, sizeof(Enlil_Photo_Data));
@@ -290,19 +288,16 @@ void sync_photo_new_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Ph
 		enlil_photo_data->clear_iptc_data = EINA_TRUE;
 	}
 
-
-	if(must_netsync)
-	{
-		Enlil_NetSync_Job *job = enlil_netsync_job_sync_photos_append(_album,
-				netsync_photo_new_cb,
-				netsync_photo_notinnetsync_cb,
-				netsync_photo_notuptodate_cb,
-				netsync_photo_netsyncnotuptodate_cb,
-				netsync_photo_uptodate_cb,
-				netsync_photo_error_cb,
-				enlil_data);
-
-	}
+	enlil_netsync_job_sync_photos_append(_album,
+			netsync_photo_new_cb,
+			netsync_photo_notinnetsync_cb,
+			netsync_photo_notuptodate_cb,
+			netsync_photo_netsyncnotuptodate_cb,
+			netsync_photo_uptodate_cb,
+			netsync_photo_tags_notuptodate_cb,
+			netsync_photo_tags_netsyncnotuptodate_cb,
+			netsync_photo_tags_uptodate_cb,
+			enlil_data);
 }
 
 void sync_photo_update_cb(void *data, Enlil_Sync *sync,Enlil_Album *album, Enlil_Photo *photo)
@@ -654,245 +649,7 @@ void geocaching_remove_marker_cb(void *data, Eina_Hash *db)
 	eina_hash_foreach(db, _geocaching_remove_marker_foreach_cb, NULL);
 }
 
-void netsync_album_header_get_cb(void *data, Enlil_Library *library, Enlil_Album *album)
-{
-	_album_new(enlil_data, album);
-}
 
-void netsync_album_new_cb(void *data, Enlil_Library *library, int album_id)
-{
-	enlil_netsync_job_get_new_album_header_append(library, album_id,
-			netsync_album_header_get_cb,
-			data);
-}
-
-void netsync_album_netsyncnotuptodate_cb(void *data, Enlil_Library *library, Enlil_Album *album)
-{
-	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-	album_data->netsync.album_netsync_notuptodate = EINA_TRUE;
-
-	if(photos_list_object_header_object_get(album_data->list_photo_item))
-		edje_object_signal_emit(album_data->netsync.icon, album_netsync_edje_signal_get(album), "");
-
-	Enlil_NetSync_Job *job = enlil_netsync_job_sync_photos_append(album,
-			netsync_photo_new_cb,
-			netsync_photo_notinnetsync_cb,
-			netsync_photo_notuptodate_cb,
-			netsync_photo_netsyncnotuptodate_cb,
-			netsync_photo_uptodate_cb,
-			netsync_photo_error_cb,
-			enlil_data);
-}
-
-void netsync_album_notuptodate_cb(void *data, Enlil_Library *library, Enlil_Album *album)
-{
-	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-	album_data->netsync.album_local_notuptodate = EINA_TRUE;
-
-
-	if(photos_list_object_header_object_get(album_data->list_photo_item))
-		edje_object_signal_emit(album_data->netsync.icon,album_netsync_edje_signal_get(album), "");
-
-
-	Enlil_NetSync_Job *job = enlil_netsync_job_sync_photos_append(album,
-			netsync_photo_new_cb,
-			netsync_photo_notinnetsync_cb,
-			netsync_photo_notuptodate_cb,
-			netsync_photo_netsyncnotuptodate_cb,
-			netsync_photo_uptodate_cb,
-			netsync_photo_error_cb,
-			enlil_data);
-}
-
-void netsync_album_notinnetsync_cb(void *data, Enlil_Library *library, Enlil_Album *album)
-{
-	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-	album_data->netsync.album_notinnetsync = EINA_TRUE;
-
-	if(photos_list_object_header_object_get(album_data->list_photo_item))
-		edje_object_signal_emit(album_data->netsync.icon,album_netsync_edje_signal_get(album), "");
-
-	Enlil_NetSync_Job *job = enlil_netsync_job_sync_photos_append(album,
-			netsync_photo_new_cb,
-			netsync_photo_notinnetsync_cb,
-			netsync_photo_notuptodate_cb,
-			netsync_photo_netsyncnotuptodate_cb,
-			netsync_photo_uptodate_cb,
-			netsync_photo_error_cb,
-			enlil_data);
-}
-
-void netsync_album_uptodate_cb(void *data, Enlil_Library *library, Enlil_Album *album)
-{
-	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-	Enlil_NetSync_Job *job = enlil_netsync_job_sync_photos_append(album,
-			netsync_photo_new_cb,
-			netsync_photo_notinnetsync_cb,
-			netsync_photo_notuptodate_cb,
-			netsync_photo_netsyncnotuptodate_cb,
-			netsync_photo_uptodate_cb,
-			netsync_photo_error_cb,
-			enlil_data);
-}
-
-void netsync_error_cb(void *data, Enlil_Library *library)
-{
-	printf("ERROR\n");
-}
-
-void netsync_photo_new_cb(void *data, Enlil_Album *album, int id)
-{
-	printf("photo not in local %d\n", id);
-	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-	album_data->netsync.photos_notinlocal = EINA_TRUE;
-
-	if(photos_list_object_header_object_get(album_data->list_photo_item))
-		edje_object_signal_emit(album_data->netsync.icon,album_netsync_edje_signal_get(album), "");
-}
-
-void netsync_photo_notinnetsync_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
-{
-	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-	photo_data->netsync.state = PHOTO_NETSYNC_NOTINNETSYNC;
-
-	Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
-	if(o)
-		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state));
-}
-
-void netsync_photo_notuptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
-{
-	printf("photo not uptodate %d\n", enlil_photo_netsync_id_get((photo)));
-	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-	photo_data->netsync.state = PHOTO_NETSYNC_NOTUPTODATE;
-
-	Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
-	if(o)
-		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state));
-}
-
-void netsync_photo_netsyncnotuptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
-{
-	printf("photo netsync not uptodate %d\n", enlil_photo_netsync_id_get((photo)));
-	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-	photo_data->netsync.state = PHOTO_NETSYNC_NETSYNCNOTUPTODATE;
-	Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
-	if(o)
-		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state));
-}
-
-
-void netsync_photo_uptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
-{
-	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-	ASSERT_RETURN_VOID(photo_data != NULL);
-	photo_data->netsync.state = PHOTO_NETSYNC_NONE;
-
-	Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
-	if(o)
-		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state));
-}
-
-void netsync_album_error_cb(void *data, Enlil_Album *album)
-{
-	printf("ALBUM ERROR \n");
-}
-
-void netsync_photo_error_cb(void *data, Enlil_Photo *photo)
-{
-	printf("PHOTO ERROR %s\n", enlil_photo_name_get(photo));
-}
-
-
-void netsync_job_start_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album, Enlil_Photo *photo)
-{
-	if(photo)
-	{
-		album = enlil_photo_album_get(photo);
-
-		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-
-		if(photo_data)
-		{
-			photo_data->netsync.is_sync = EINA_TRUE;
-			Evas_Object *o = (Evas_Object*)photos_list_object_item_object_get(photo_data->list_photo_item);
-			if(o)
-				photo_object_netsync_state_set(o, "animated");
-		}
-	}
-
-	if(album)
-	{
-		Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-
-		album_data->netsync.is_sync = EINA_TRUE;
-		if(album_data && album_data->netsync.icon)
-			edje_object_signal_emit(album_data->netsync.icon, "animated", "");
-	}
-}
-
-void netsync_job_add_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album, Enlil_Photo *photo)
-{
-	if(photo)
-	{
-		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-		if(!eina_list_data_find(photo_data->netsync.jobs, job))
-			photo_data->netsync.jobs = eina_list_append(photo_data->netsync.jobs, job);
-	}
-
-	if(album)
-	{
-		Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-		if(!eina_list_data_find(album_data->netsync.jobs, job))
-			album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
-	}
-}
-
-void netsync_login_failed_cb(void *data, const char *username, const char *password)
-{
-	inwin_login_failed_new();
-}
-
-void netsync_job_done_cb(void *data, Enlil_NetSync_Job* job, Enlil_Album *album, Enlil_Photo *photo)
-{
-	if(photo)
-	{
-		album = enlil_photo_album_get(photo);
-
-		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-
-		if(photo_data)
-		{
-			Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
-			if(o)
-				photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state) );
-
-			if(job)
-				photo_data->netsync.jobs = eina_list_remove(photo_data->netsync.jobs, job);
-			photo_data->netsync.is_sync = EINA_FALSE;
-		}
-	}
-
-	if(album)
-	{
-		Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-
-
-		if(album_data && album_data->netsync.icon)
-		{
-			const char *signal = album_netsync_edje_signal_get(album);
-			edje_object_signal_emit(album_data->netsync.icon, signal, "");
-		}
-
-		if(album_data && job)
-		{
-			album_data->netsync.jobs = eina_list_remove(album_data->netsync.jobs, job);
-		}
-
-		if(album_data)
-			album_data->netsync.is_sync = EINA_FALSE;
-	}
-}
 
 
 
@@ -901,7 +658,7 @@ void album_version_header_increase_cb(void *data, Enlil_Album *album)
 	//Enlil_NetSync_Job *job =
 	enlil_netsync_job_sync_album_append(enlil_data->library, album,
 			netsync_album_notuptodate_cb, netsync_album_netsyncnotuptodate_cb,
-				netsync_album_uptodate_cb, netsync_error_cb, enlil_data);
+				netsync_album_uptodate_cb, enlil_data);
 }
 
 void photo_version_header_increase_cb(void *data, Enlil_Photo *photo)
@@ -912,6 +669,8 @@ void photo_version_header_increase_cb(void *data, Enlil_Photo *photo)
 			netsync_photo_notuptodate_cb,
 			netsync_photo_netsyncnotuptodate_cb,
 			netsync_photo_uptodate_cb,
-			netsync_photo_error_cb,
+			netsync_photo_tags_notuptodate_cb,
+			netsync_photo_tags_netsyncnotuptodate_cb,
+			netsync_photo_tags_uptodate_cb,
 			enlil_data);
 }

@@ -78,13 +78,13 @@ group {
                 rel2.to: "background";
                 rel2.relative: 1.0 1.0;
                 align: 1.0 1.0;
-                image.normal: "album_public.png";
                 rel1.offset: -3 -3;
                 rel2.offset: -3 -3;
             }
             description {
             	state: "public" 0.0;
             	inherit: "default" 0.0;
+                image.normal: "album_public.png";
             }
             description {
             	state: "private" 0.0;

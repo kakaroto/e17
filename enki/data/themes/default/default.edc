@@ -60,6 +60,9 @@ images {
     image: "geocaching/icon_needsmaint.png" COMP;
     
     
+    image: "gpx.png" COMP;
+    
+    
     image: "netsync/select.png" COMP;
     image: "netsync/logo.png" COMP;
     image: "netsync/logo_1.png" COMP;
@@ -106,6 +109,7 @@ collections {
 	#include "win_photo_delete.edc"
 	#include "win_library_delete.edc"
 	#include "win_login_failed.edc"
+	#include "win_netsync_error.edc"
 	#include "win_upload.edc"
 
 

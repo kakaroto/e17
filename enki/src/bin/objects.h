@@ -336,6 +336,7 @@ Inwin *inwin_album_rename_new(Inwin_Del del_cb, void *data, Enlil_Album *album);
 Inwin *inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb, void *data, const char *file);
 Inwin *inwin_preferences_new();
 Inwin *inwin_library_delete_new(Enlil_Data *enlil_data);
+Inwin *inwin_netsync_error_new(const char *message);
 
 
 

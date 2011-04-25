@@ -5,7 +5,6 @@ group {
     name: "bubble/geocaching";
     max: 1000 200;
     parts {
-    	
 		alias: "object.geocaching.bubble.date_hidden" 		"header[2]:object.geocaching.panel.date_hidden";
 		alias: "object.geocaching.bubble.cache_size" 		"header[3]:object.geocaching.panel.cache_size";
         part {

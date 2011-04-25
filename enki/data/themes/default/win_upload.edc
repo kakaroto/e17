@@ -1,0 +1,37 @@
+
+//CURRENTLY NOT USE
+group {
+	name: "win/upload";
+	min: 0 50;
+	parts {
+	    part {
+			name: "title";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				min: 400 0;
+				align: 0.0 0.0;
+				rel1.offset: 5 5;
+				rel2.offset: -20 0;
+				params {
+					string: "label" "<title>Uploading a photo.</title>";
+				}
+			}
+		}
+		part {
+			name: "object.win.upload.progressbar";
+			type: EXTERNAL;
+			source: "elm/progressbar";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "title";
+				rel1.offset: 5 5;
+				rel1.relative: 0.0 1.0;
+				rel2.offset: 0 40;
+				align: 0.0 0.0;
+				fixed: 1 1;
+			}
+		}
+	}
+}

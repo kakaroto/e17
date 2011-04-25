@@ -463,8 +463,7 @@ static void _netsync_notuptodate_cb(void *data, Evas_Object *obj, void *event_in
    Enlil_NetSync_Job *job = enlil_netsync_job_update_netsync_album_header_append(enlil_album_library_get(album),
 		   album,
 		   netsync_album_updated_cb, NULL);
-   if(!eina_list_data_find(album_data->netsync.jobs, job))
-     album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
+
    _sync_start(album_data);
 }
 
@@ -477,8 +476,7 @@ static void _local_notuptodate_cb(void *data, Evas_Object *obj, void *event_info
 	Enlil_NetSync_Job *job = enlil_netsync_job_update_local_album_header_append(enlil_album_library_get(album),
 			album,
 			netsync_album_updated_cb, NULL);
-	if(!eina_list_data_find(album_data->netsync.jobs, job))
-		album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
+
 	_sync_start(album_data);
 }
 
@@ -495,11 +493,8 @@ static void _photos_notinlocal_cb(void *data, Evas_Object *obj, void *event_info
    //Retrieve the list of photos which are not in the local library
    Enlil_NetSync_Job *job = enlil_netsync_job_sync_photos_append(album,
 		    _netsync_photos_notinlocal_photo_new_cb,
-   			NULL, NULL, NULL, NULL,
-   			netsync_photo_error_cb,
+   			NULL, NULL, NULL, NULL, NULL, NULL, NULL,
    			album);
-   if(!eina_list_data_find(album_data->netsync.jobs, job))
-     album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
 
    album_data->netsync.inwin.notinlocal.is_updating = EINA_TRUE;
    elm_pager_content_promote(album_data->netsync.inwin.notinlocal.pager,
@@ -517,8 +512,6 @@ static void _netsync_photos_notinlocal_photo_new_cb(void *data, Enlil_Album *alb
    		id,
    		_netsync_photo_get_new_cb,
    		album);
-   if(!eina_list_data_find(album_data->netsync.jobs, job))
-        album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
 }
 
 static void _netsync_photo_get_new_cb(void *data, Enlil_Album *album, Enlil_Photo *photo, const char *url)
@@ -539,9 +532,6 @@ static void _album_notinnetsync_cb(void *data, Evas_Object *obj, void *event_inf
 			album,
 			netsync_album_updated_cb,
 			NULL);
-
-	if(!eina_list_data_find(album_data->netsync.jobs, job))
-		album_data->netsync.jobs = eina_list_append(album_data->netsync.jobs, job);
 
 	_sync_start(album_data);
 }

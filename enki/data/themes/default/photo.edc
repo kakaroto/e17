@@ -117,6 +117,27 @@ group {
 	        }
 	    }
 	    part {
+	        name: "gpx";
+	        type: IMAGE;
+	        repeat_events: 1;
+	        description {
+	            state: "default" 0.0;
+	            image.normal: "gpx.png";
+	            rel1.relative: 0.05 0.05;
+	            rel2.to_y: "object.text";
+	            rel2.relative: 0.95 0.0;
+	            max: 96 96;
+	            aspect: 1 1;
+	            aspect_preference: BOTH;
+	            visible: 0;
+	        }
+	        description {
+	            state: "visible" 0.0;
+	            inherit: "default" 0.0;
+	            visible: 1;
+	        }
+	    }
+	    part {
 	        name: "text_clip";
 	        description {
 	            state: "default" 0.0;
@@ -272,6 +293,13 @@ group {
 	        source: "photo";
 	        action: STATE_SET "default" 0.0;
 	        target: "camera";
+	    }
+	    program {
+	        name: "show_gpx";
+	        signal: "gpx";
+	        source: "photo";
+	        action: STATE_SET "visible" 0.0;
+	        target: "gpx";
 	    }
 	    program {
 	        name: "loading";

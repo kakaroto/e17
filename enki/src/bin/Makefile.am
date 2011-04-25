@@ -24,6 +24,7 @@ collection_menu.c \
 tag_menu.c \
 inwin.c \
 netsync_album.c \
+netsync.c \
 download.c \
 upload.c \
 main_menu.c \

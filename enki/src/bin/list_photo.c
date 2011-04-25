@@ -295,6 +295,9 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
    else
 	   edje_object_signal_emit(o, "access,type,private", "");
 
+   edje_object_message_signal_process(o);
+   edje_object_message_signal_process(album_data->netsync.icon);
+
    return ly;
 }
 
@@ -309,32 +312,41 @@ static Evas_Object *_photo_icon_get(const void *data, Evas_Object *obj)
    Evas_Object *o = photo_object_add(obj);
    photo_object_theme_file_set(o, Theme, "photo");
 
-   if(enlil_photo_data->cant_create_thumb == 1)
-     return o;
+   if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_PHOTO
+       	|| enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
+   {
+	   if(enlil_photo_data->cant_create_thumb == 1)
+		 return o;
 
-   if(enlil_photo->photo_w <= 128 && enlil_photo->photo_h<=128)
-     s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_NORMAL, thumb_done_cb, thumb_error_cb, NULL);
-   else
-     s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
+	   if(enlil_photo->photo_w <= 128 && enlil_photo->photo_h<=128)
+		 s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_NORMAL, thumb_done_cb, thumb_error_cb, NULL);
+	   else
+		 s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
 
-   evas_image_cache_flush (evas_object_evas_get(obj));
+	   evas_image_cache_flush (evas_object_evas_get(obj));
 
-   if(s)
-     photo_object_file_set(o, s , NULL);
-   else
-     photo_object_progressbar_set(o, EINA_TRUE);
+	   if(s)
+		 photo_object_file_set(o, s , NULL);
+	   else
+		 photo_object_progressbar_set(o, EINA_TRUE);
 
-   if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
-     photo_object_camera_set(o, EINA_TRUE);
+	   if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
+		 photo_object_camera_set(o, EINA_TRUE);
 
-   Evas_Object *netsync =
-      photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(enlil_photo_data->netsync.state));
-   evas_object_event_callback_add(netsync, EVAS_CALLBACK_MOUSE_UP, _photo_sync_netsync_cb, photo);
+	   Evas_Object *netsync =
+		  photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(enlil_photo_data->netsync.state));
+	   evas_object_event_callback_add(netsync, EVAS_CALLBACK_MOUSE_UP, _photo_sync_netsync_cb, photo);
+
+
+	   if(enlil_photo_data->netsync.is_sync)
+			photo_object_netsync_state_set(o, "animated");
+   }
+   else //GPX
+   {
+   	photo_object_gpx_set(o);
+   }
 
    photo_object_text_set(o, enlil_photo_name_get(photo));
-
-   if(enlil_photo_data->netsync.is_sync)
-		photo_object_netsync_state_set(o, "animated");
 
    evas_object_show(o);
    return o;

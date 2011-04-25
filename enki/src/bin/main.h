@@ -113,4 +113,7 @@ void geocaching_remove_marker_cb(void *data, Eina_Hash *db);
 void upload_start(Upload *ul, Enlil_Photo *photo);
 void upload_done(Upload *ul, Enlil_Photo *photo);
 
+
+void album_new(void *data, Enlil_Album *album);
+
 #endif

@@ -7078,7 +7078,7 @@ collections {
    group { name: "elm/map/marker_bubble/default";
     data {
             item: size_w 400;
-            item: size_h 100;
+            item: size_h 150;
         }
     parts {
     part { name: "clipper";
@@ -7143,7 +7143,7 @@ collections {
             signal: "show";
             action: STATE_SET "show" 0.0;
             target: "clipper";
-            transition: ACCELERATE 0.5;
+            transition: ACCELERATE 0.2;
         }
     }
   }

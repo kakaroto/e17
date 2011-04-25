@@ -688,6 +688,34 @@ Inwin *inwin_login_failed_new()
 	return inwin;
 }
 
+Inwin *inwin_netsync_error_new(const char *message)
+{
+	Evas_Object *bt, *ly, *lbl;
+
+	Inwin *inwin = calloc(1, sizeof(Inwin));
+	inwin->type = INWIN_LOGIN_FAILED;
+
+
+	inwin->inwin = elm_win_inwin_add(enlil_data->win->win);
+	evas_object_show(inwin->inwin);
+
+	ly = elm_layout_add(enlil_data->win->win);
+	elm_layout_file_set(ly, Theme, "win/netsync_error");
+	Evas_Object *edje = elm_layout_edje_get(ly);
+	evas_object_show(ly);
+
+	elm_win_inwin_content_set(inwin->inwin, ly);
+
+
+	lbl = edje_object_part_external_object_get(edje, "object.win.netsync_error.error");
+	elm_label_label_set(lbl, message);
+
+	bt = edje_object_part_external_object_get(edje, "object.win.netsync_error.close");
+	evas_object_smart_callback_add(bt, "clicked", _bt_login_failed_close_cb, inwin);
+
+	return inwin;
+}
+
 static char *_gl_album_label_get(void *data, Evas_Object *obj, const char *part)
 {
 	Enlil_Album *album = (Enlil_Album *)data;
@@ -805,6 +833,8 @@ static void _bt_preferences_cancel_cb(void *data, Evas_Object *obj, void *event_
 static void _bt_preferences_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	Inwin *inwin = data;
+
+	enlil_netsync_disconnect();
 
 	const char *s = elm_scrolled_entry_entry_get(inwin->entry);
 	if(s && strlen(s)>0)

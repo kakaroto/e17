@@ -29,6 +29,7 @@ struct _Smart_Data
 	Eina_Bool selected: 1;
 	Eina_Bool preloading: 1;
 	Eina_Bool show: 1;
+	Eina_Bool gpx: 1;
 
 	Eina_Bool fill: 1;
 };
@@ -165,6 +166,14 @@ void photo_object_fill_set(Evas_Object *obj, Eina_Bool fill)
 	sd = evas_object_smart_data_get(obj);
 	if (!sd) return;
 	sd->fill = EINA_TRUE;
+}
+
+void photo_object_gpx_set(Evas_Object *obj)
+{
+	Smart_Data *sd;
+	sd = evas_object_smart_data_get(obj);
+	if (!sd) return;
+	sd->gpx = EINA_TRUE;
 }
 
 
@@ -350,6 +359,11 @@ static void _update(Evas_Object *obj)
 		edje_object_signal_emit(sd->obj, "done", "photo");
 	else
 		edje_object_signal_emit(sd->obj, "undone", "photo");
+
+	if(sd->gpx)
+	{
+		edje_object_signal_emit(sd->obj, "gpx", "photo");
+	}
 
 	if(sd->progressbar)
 	{

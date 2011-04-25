@@ -110,7 +110,9 @@ void library_set(const char *library_path)
 	enlil_netsync_job_start_cb_set(netsync_job_start_cb, NULL);
 	enlil_netsync_job_done_cb_set(netsync_job_done_cb, NULL);
 	enlil_netsync_job_add_cb_set(netsync_job_add_cb, NULL);
+	enlil_netsync_job_error_cb_set(netsync_job_error_cb, NULL);
 
+	enlil_netsync_disconnect();
 	if(enlil_data->sync)
 		enlil_sync_free(&enlil_data->sync);
 	if(enlil_data->load)

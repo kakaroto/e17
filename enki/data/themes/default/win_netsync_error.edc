@@ -1,0 +1,58 @@
+
+group {
+	name: "win/netsync_error";
+	parts {
+	    part {
+			name: "title";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				align: 0.0 0.0;
+				rel1.offset: 5 5;
+				rel2.relative: 0.0 0.0;
+				rel2.offset: 0 0;
+				params {
+					string: "label" "<title>Network synchronization error.</title>";
+				}
+			}
+		}
+		part {
+			name: "object.win.netsync_error.error";
+			type: EXTERNAL;
+			source: "elm/label";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "title";
+				rel1.relative: 0.5 1.0;
+				rel1.offset: 20 10;
+				rel2.relative: 0.5 1.0;
+				rel2.offset: -20 0;
+				align: 0.5 0.0;
+				params {
+					string: "label" "error";
+				}
+			}
+		}
+		
+		
+		part {
+			name: "object.win.netsync_error.close";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.to_x: "object.win.netsync_error.error";
+				rel1.offset: 0 10;
+				rel1.relative: 0.5 1.0;
+				rel2.to_x: "object.win.netsync_error.error";
+				rel2.relative: 0.5 1.0;
+				align: 0.5 1.0;
+				fixed: 1 0;
+				params {
+					string: "label" "Close";
+				}
+			}
+		}
+	}
+}

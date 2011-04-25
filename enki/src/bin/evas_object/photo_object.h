@@ -17,6 +17,7 @@ void photo_object_camera_set(Evas_Object *obj, Eina_Bool b);
 void photo_object_text_set(Evas_Object *obj, const char *s);
 void photo_object_done_set(Evas_Object *obj, Eina_Bool b);
 void photo_object_fill_set(Evas_Object *obj, Eina_Bool fill);
+void photo_object_gpx_set(Evas_Object *obj);
 
 Evas_Object *photo_object_netsync_state_set(Evas_Object *obj, const char* state);
 

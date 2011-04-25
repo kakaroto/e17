@@ -443,7 +443,7 @@ static void _sync_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	enlil_netsync_job_sync_albums_append(enlil_data->library, netsync_album_new_cb,
 			netsync_album_notinnetsync_cb, netsync_album_notuptodate_cb, netsync_album_netsyncnotuptodate_cb,
-			netsync_album_uptodate_cb, netsync_error_cb, enlil_data);
+			netsync_album_uptodate_cb, enlil_data);
 }
 
 static void _quit_cb(void *data, Evas_Object *obj, void *event_info)

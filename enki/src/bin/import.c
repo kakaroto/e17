@@ -258,7 +258,9 @@ static void _fs_selected_cb(void *data, Evas_Object *obj, void *event_info)
     EINA_LIST_FOREACH(l, _l, file)
     {
         snprintf(buf, PATH_MAX, "%s/%s", (char *)event_info, file);
-        if(enlil_photo_is(buf) || enlil_video_is(buf))
+        if(enlil_photo_is(buf)
+        		|| enlil_video_is(buf)
+        		|| enlil_gpx_is(buf))
         {
             photo = enlil_photo_new();
             enlil_photo_path_set(photo, event_info);
@@ -271,8 +273,10 @@ static void _fs_selected_cb(void *data, Evas_Object *obj, void *event_info)
 
 	    if(enlil_photo_is(buf))
 	      enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_PHOTO);
-	    else
+	    else if(enlil_video_is(buf))
 	      enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_VIDEO);
+	    else if(enlil_gpx_is(buf))
+	      enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_GPX);
 
             _Import_Photo_Data *photo_data = calloc(1, sizeof(_Import_Photo_Data));
             photo_data->photo = photo;
@@ -294,26 +298,34 @@ static Evas_Object *_icon_get(const void *data, Evas_Object *obj)
     Enlil_Photo *photo = (Enlil_Photo *)data;
     _Import_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 
-    s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_NORMAL,
-            _import_thumb_done_cb, _import_thumb_error_cb, NULL);
+	Evas_Object *o = photo_object_add(obj);
+	photo_object_theme_file_set(o, Theme, "photo/import");
 
-    Evas_Object *o = photo_object_add(obj);
-    photo_object_theme_file_set(o, Theme, "photo/import");
+    if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_PHOTO
+    	|| enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
+    {
+		s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_NORMAL,
+				_import_thumb_done_cb, _import_thumb_error_cb, NULL);
 
-    if(s)
-        photo_object_file_set(o, s , NULL);
-    else
-        photo_object_progressbar_set(o, EINA_TRUE);
+		if(s)
+			photo_object_file_set(o, s , NULL);
+		else
+			photo_object_progressbar_set(o, EINA_TRUE);
 
-    if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
-     photo_object_camera_set(o, EINA_TRUE);
+		if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
+		 photo_object_camera_set(o, EINA_TRUE);
+    }
+    else //GPX
+    {
+    	photo_object_gpx_set(o);
+    }
 
-    photo_object_text_set(o, enlil_photo_name_get(photo));
+	photo_object_text_set(o, enlil_photo_name_get(photo));
 
-    if(photo_data->copy_done)
-      photo_object_done_set(o, EINA_TRUE);
+	if(photo_data->copy_done)
+	  photo_object_done_set(o, EINA_TRUE);
 
-    evas_object_show(o);
+	evas_object_show(o);
 
     return o;
 }
