@@ -36,6 +36,10 @@ struct Category_Added
 	int version_header;
 };
 
+struct Image_Upload
+{
+	int id;
+};
 
 struct Image
 {

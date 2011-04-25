@@ -64,15 +64,15 @@ struct Enlil_NetSync_Job
 	Enlil_NetSync_Photo_NotUpToDate_Cb photo_notuptodate_cb;
 	Enlil_NetSync_Photo_NetSyncNotUpToDate_Cb photo_netsyncnotuptodate_cb;
 	Enlil_NetSync_Photo_UpToDate_Cb photo_uptodate_cb;
+	Enlil_NetSync_Photo_NotUpToDate_Cb photo_tags_notuptodate_cb;
+	Enlil_NetSync_Photo_NetSyncNotUpToDate_Cb photo_tags_netsyncnotuptodate_cb;
+	Enlil_NetSync_Photo_UpToDate_Cb photo_tags_uptodate_cb;
 
 	Enlil_NetSync_Photo_Header_Get_Cb photo_header_get_cb;
 	Enlil_NetSync_Photo_Header_New_Get_Cb photo_header_new_get;
 
 	Enlil_NetSync_Photo_Upload_Start_Cb upload_start_cb;
 	Enlil_NetSync_Photo_Upload_Done_Cb upload_done_cb;
-
-	Enlil_NetSync_Error_Cb error_cb;
-	Enlil_NetSync_Photo_Error_Cb photo_error_cb;
 };
 
 #ifdef HAVE_AZY
@@ -94,10 +94,12 @@ static Enlil_NetSync_Login_Failed_Cb _login_failed_cb = NULL;
 static Enlil_NetSync_Job_Start_Cb _job_start_cb = NULL;
 static Enlil_NetSync_Job_Done_Cb _job_done_cb = NULL;
 static Enlil_NetSync_Job_Add_Cb _job_add_cb = NULL;
+static Enlil_NetSync_Job_Error_Cb _job_error_cb = NULL;
 static void *_login_failed_data = NULL;
 static void *_job_start_data = NULL;
 static void *_job_done_data = NULL;
 static void *_job_add_data = NULL;
+static void *_job_error_data = NULL;
 
 static Ecore_Idler *_idler = NULL;
 
@@ -166,6 +168,10 @@ static Eina_Error _netsync_photo_add_ret(Azy_Client *cli, Azy_Content *content, 
 	if(_job_add_cb) 			\
 		_job_add_cb(_job_add_data, job, album, photo)
 
+#define ERROR(album, photo, msg) \
+		if(_job_error_cb) 			\
+			_job_error_cb(_job_error_data, job, album, photo, msg)
+
 static const char *_enlil_netsync_job_type_tostring(Enlil_NetSync_Job_Type type)
 {
 	switch(type)
@@ -213,11 +219,39 @@ static const char *_enlil_netsync_job_type_tostring(Enlil_NetSync_Job_Type type)
 	return "unknown";
 }
 
+void enlil_netsync_disconnect()
+{
+	Eina_List *l, *l2;
+	Enlil_NetSync_Job *job;
+
+	EINA_LIST_FOREACH_SAFE(l_jobs, l, l2, job)
+	{
+		enlil_netsync_job_del(job);
+	}
+
+	if(job_current)
+		enlil_netsync_job_del(job_current);
+
+
+	LOG_DBG("Disconnected !");
+	azy_client_free(client);
+	client = NULL;
+	connected = EINA_FALSE;
+	EINA_STRINGSHARE_DEL(cookie);
+}
+
+void enlil_netsync_job_error_cb_set(Enlil_NetSync_Job_Error_Cb error_cb, void *data)
+{
+	_job_error_cb = error_cb;
+	_job_error_data = data;
+}
+
 void enlil_netsync_login_failed_cb_set(Enlil_NetSync_Login_Failed_Cb login_failed_cb, void *data)
 {
 	_login_failed_cb = login_failed_cb;
 	_login_failed_data = data;
 }
+
 void enlil_netsync_job_start_cb_set(Enlil_NetSync_Job_Start_Cb start_cb, void *data)
 {
 #ifdef HAVE_AZY
@@ -295,7 +329,6 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_albums_append(Enlil_Library *library,
 		Enlil_NetSync_Album_NotUpToDate_Cb notuptodate_cb,
 		Enlil_NetSync_Album_NetSyncNotUpToDate_Cb netsyncnotuptodate_cb,
 		Enlil_NetSync_Album_UpToDate_Cb uptodate_cb,
-		Enlil_NetSync_Error_Cb error_cb,
 		void *data)
 {
 #ifdef HAVE_AZY
@@ -320,7 +353,6 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_albums_append(Enlil_Library *library,
 		job->album_notuptodate_cb = notuptodate_cb;
 		job->album_netsyncnotuptodate_cb = netsyncnotuptodate_cb;
 		job->album_uptodate_cb = uptodate_cb;
-		job->error_cb = error_cb;
 		job->data = data;
 
 		l_jobs = eina_list_append(l_jobs, job);
@@ -342,7 +374,6 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_album_append(Enlil_Library *library,
 		Enlil_NetSync_Album_NotUpToDate_Cb notuptodate_cb,
 		Enlil_NetSync_Album_NetSyncNotUpToDate_Cb netsyncnotuptodate_cb,
 		Enlil_NetSync_Album_UpToDate_Cb uptodate_cb,
-		Enlil_NetSync_Error_Cb error_cb,
 		void *data)
 {
 #ifdef HAVE_AZY
@@ -367,7 +398,6 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_album_append(Enlil_Library *library,
 		job->album_notuptodate_cb = notuptodate_cb;
 		job->album_netsyncnotuptodate_cb = netsyncnotuptodate_cb;
 		job->album_uptodate_cb = uptodate_cb;
-		job->error_cb = error_cb;
 		job->data = data;
 
 		l_jobs = eina_list_append(l_jobs, job);
@@ -550,7 +580,9 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_photos_append(Enlil_Album *album,
 		Enlil_NetSync_Photo_NotUpToDate_Cb notuptodate_cb,
 		Enlil_NetSync_Photo_NetSyncNotUpToDate_Cb netsyncnotuptodate_cb,
 		Enlil_NetSync_Photo_UpToDate_Cb uptodate_cb,
-		Enlil_NetSync_Photo_Error_Cb error_cb,
+		Enlil_NetSync_Photo_NotUpToDate_Cb tags_notuptodate_cb,
+		Enlil_NetSync_Photo_NetSyncNotUpToDate_Cb tags_netsyncnotuptodate_cb,
+		Enlil_NetSync_Photo_UpToDate_Cb tags_uptodate_cb,
 		void *data)
 {
 #ifdef HAVE_AZY
@@ -575,7 +607,9 @@ Enlil_NetSync_Job *enlil_netsync_job_sync_photos_append(Enlil_Album *album,
 		job->photo_notuptodate_cb = notuptodate_cb;
 		job->photo_netsyncnotuptodate_cb = netsyncnotuptodate_cb;
 		job->photo_uptodate_cb = uptodate_cb;
-		job->photo_error_cb = error_cb;
+		job->photo_tags_notuptodate_cb = tags_notuptodate_cb;
+		job->photo_tags_netsyncnotuptodate_cb = tags_netsyncnotuptodate_cb;
+		job->photo_tags_uptodate_cb = tags_uptodate_cb;
 		job->data = data;
 
 		l_jobs = eina_list_append(l_jobs, job);
@@ -850,8 +884,24 @@ static void _job_free(Enlil_NetSync_Job *job)
 {
 	ASSERT_RETURN_VOID(job != NULL);
 
+	if(job == job_current)
+		job_current = NULL;
+
+	l_jobs = eina_list_remove(l_jobs, job);
+
 	free(job);
 }
+
+
+static void *_to_pwg_image_upload(Azy_Value * value, __UNUSED__ void **data)
+{
+	printf("CONVERT!!!!!\n");
+	pwg_Image_Upload *image = pwg_Image_Upload_new();
+	if(azy_value_to_pwg_Image_Upload(value, &image))
+		return image;
+	return NULL;
+}
+
 
 static void _job_next()
 {
@@ -1070,7 +1120,10 @@ static void _job_next()
 					enlil_photo_file_name_get(job->photo),
 					enlil_album_netsync_id_get(enlil_photo_album_get(job->photo)));
 			azy_net_uri_set(azy_client_net_get(client), buf);
-			Azy_Client_Call_Id id = azy_client_put(client, &azy_data, NULL);
+			//Azy_Client_Call_Id id = azy_client_put(client, &azy_data, NULL);
+			pwg_Image_Upload *response = pwg_Image_Upload_new();
+			Azy_Client_Call_Id id = azy_client_blank(client, AZY_NET_TYPE_POST, &azy_data,
+					azy_value_to_pwg_Image_Upload, &response);
 			azy_client_callback_set(client, id, _netsync_photo_add_ret);
 			//
 			munmap(content_file, st.st_size); /* unmap mmapped data */
@@ -1178,7 +1231,7 @@ static Eina_Error _netsync_login_ret(Azy_Client *cli, Azy_Content *content, void
 }
 
 
-static Eina_Error _netsync_album_list_get_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_list_get_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Categories *albums = _response;
 	pwg_Category *AZY_album;
@@ -1189,10 +1242,9 @@ static Eina_Error _netsync_album_list_get_ret(Azy_Client *cli, Azy_Content *cont
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(job->album, NULL, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	copy = eina_list_clone(enlil_library_albums_get(job->library));
@@ -1267,7 +1319,7 @@ static Eina_Error _netsync_album_list_get_ret(Azy_Client *cli, Azy_Content *cont
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _netsync_job_cmp_album_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_job_cmp_album_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Categories *albums = _response;
 	pwg_Category *AZY_album;
@@ -1278,10 +1330,9 @@ static Eina_Error _netsync_job_cmp_album_ret(Azy_Client *cli, Azy_Content *conte
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(job->album, NULL, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	copy = eina_list_clone(enlil_library_albums_get(job->library));
@@ -1349,7 +1400,7 @@ static Eina_Error _netsync_job_cmp_album_ret(Azy_Client *cli, Azy_Content *conte
 }
 
 
-static Eina_Error _netsync_album_new_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_new_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Categories *albums = _response;
 	pwg_Category *AZY_album;
@@ -1359,10 +1410,9 @@ static Eina_Error _netsync_album_new_ret(Azy_Client *cli, Azy_Content *content, 
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(NULL, NULL, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	AZY_album = eina_list_data_get(albums->categories);
@@ -1420,7 +1470,7 @@ static Eina_Error _netsync_album_new_ret(Azy_Client *cli, Azy_Content *content, 
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _netsync_album_update_local_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_update_local_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Categories *albums = _response;
 	pwg_Category *AZY_album;
@@ -1429,10 +1479,9 @@ static Eina_Error _netsync_album_update_local_ret(Azy_Client *cli, Azy_Content *
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(job->album, NULL, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	AZY_album = eina_list_data_get(albums->categories);
@@ -1458,7 +1507,7 @@ static Eina_Error _netsync_album_update_local_ret(Azy_Client *cli, Azy_Content *
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _netsync_album_update_netsync_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_update_netsync_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	int version = (int)_response;
 
@@ -1466,10 +1515,9 @@ static Eina_Error _netsync_album_update_netsync_ret(Azy_Client *cli, Azy_Content
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(job->album, NULL, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	//create the album
@@ -1489,7 +1537,7 @@ static Eina_Error _netsync_album_update_netsync_ret(Azy_Client *cli, Azy_Content
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _netsync_album_add_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_album_add_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Category_Added *AZY_album = _response;
 
@@ -1497,10 +1545,9 @@ static Eina_Error _netsync_album_add_ret(Azy_Client *cli, Azy_Content *content, 
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(job->album, NULL, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	//create the album
@@ -1522,7 +1569,7 @@ static Eina_Error _netsync_album_add_ret(Azy_Client *cli, Azy_Content *content, 
 }
 
 
-static Eina_Error _netsync_photo_list_get_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_photo_list_get_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Category_Images *photos = _response;
 	pwg_Category_Image *AZY_photo;
@@ -1533,10 +1580,9 @@ static Eina_Error _netsync_photo_list_get_ret(Azy_Client *cli, Azy_Content *cont
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(job->album, NULL, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	copy = eina_list_clone(enlil_album_photos_get(job->album));
@@ -1591,6 +1637,33 @@ static Eina_Error _netsync_photo_list_get_ret(Azy_Client *cli, Azy_Content *cont
 				job->photo_uptodate_cb(job->data, job->album, photo);
 			//
 
+			//synchronize tags
+			int version_tags_local = enlil_photo_netsync_version_tags_get(photo);
+			int version_tags_net = enlil_photo_netsync_version_tags_net_get(photo);
+			if(AZY_photo->version_tags != version_tags_net
+					&& version_tags_local != version_tags_net
+					&& job->photo_tags_netsyncnotuptodate_cb)
+			{
+				//conflict
+				//we suppose the local version is the must uptodate -> need update netsync version
+				job->photo_tags_netsyncnotuptodate_cb(job->data, job->album, photo);
+			}
+			else if(AZY_photo->version_tags != version_tags_net
+					&& version_tags_local == version_tags_net
+					&& job->photo_tags_notuptodate_cb)
+			{
+				job->photo_tags_notuptodate_cb(job->data, job->album, photo);
+			}
+			else if(AZY_photo->version_tags == version_tags_net
+					&& version_tags_local != version_tags_net
+					&& job->photo_tags_netsyncnotuptodate_cb)
+			{
+				job->photo_tags_netsyncnotuptodate_cb(job->data, job->album, photo);
+			}
+			else if(job->photo_tags_uptodate_cb)
+				job->photo_tags_uptodate_cb(job->data, job->album, photo);
+			//
+
 		}
 	}
 
@@ -1609,7 +1682,7 @@ static Eina_Error _netsync_photo_list_get_ret(Azy_Client *cli, Azy_Content *cont
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _netsync_photo_new_header_get_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_photo_new_header_get_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Image *AZY_photo = _response;
 	char buf[PATH_MAX], buf_name[PATH_MAX];
@@ -1618,10 +1691,9 @@ static Eina_Error _netsync_photo_new_header_get_ret(Azy_Client *cli, Azy_Content
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(NULL, NULL, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	//create the photo
@@ -1680,7 +1752,7 @@ static Eina_Error _netsync_photo_new_header_get_ret(Azy_Client *cli, Azy_Content
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _netsync_photo_update_local_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_photo_update_local_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Image *AZY_photo = _response;
 
@@ -1688,10 +1760,9 @@ static Eina_Error _netsync_photo_update_local_ret(Azy_Client *cli, Azy_Content *
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(NULL, job->photo, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	//create the photo
@@ -1713,7 +1784,7 @@ static Eina_Error _netsync_photo_update_local_ret(Azy_Client *cli, Azy_Content *
 	return AZY_ERROR_NONE;
 }
 
-static Eina_Error _netsync_photo_update_netsync_ret(Azy_Client *cli, Azy_Content *content, void *_response)
+static Eina_Error _netsync_photo_update_netsync_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	int version = (int)_response;
 
@@ -1721,10 +1792,9 @@ static Eina_Error _netsync_photo_update_netsync_ret(Azy_Client *cli, Azy_Content
 
 	if (azy_content_error_is_set(content))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
+		ERROR(NULL, job->photo, azy_content_error_message_get(content));
+		_job_done();
+		return AZY_ERROR_NONE;
 	}
 
 	_enlil_photo_netsync_version_header_both_set(job->photo, version);
@@ -1746,23 +1816,32 @@ static Eina_Error _netsync_photo_add_ret(Azy_Client *cli, Azy_Content *content, 
 
 	Enlil_NetSync_Job *job = job_current;
 
-	if (azy_content_error_is_set(content))
+//	if (azy_content_error_is_set(content))
+//	{
+//		printf("Error encountered: %s\n", azy_content_error_message_get(content));
+//		azy_client_close(cli);
+//		ecore_main_loop_quit();
+//		return azy_content_error_code_get(content);
+//	}
+
+	const char *ok_string = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?><methodResponse>\n" \
+"  <params>\n" \
+"    <param>\n" \
+"      <value>\n" \
+"        <struct>\n" \
+"  <member><name>id</name><value><int>";
+	if(!ret || strncmp(ret, ok_string, strlen(ok_string)))
 	{
-		printf("Error encountered: %s\n", azy_content_error_message_get(content));
+		LOG_ERR("Error encountered: %s\n", ret);
 		azy_client_close(cli);
 		ecore_main_loop_quit();
 		return azy_content_error_code_get(content);
 	}
 
-	const char *ok_string = "upload ok, image_id : ";
-	if(strncmp(ret, ok_string, strlen(ok_string)))
-	{
-
-		printf("Error encountered: %s\n", ret);
-		azy_client_close(cli);
-		ecore_main_loop_quit();
-		return azy_content_error_code_get(content);
-	}
+	char *tmp = (char*) ret + strlen(ok_string);
+	while(*tmp != '<' && *tmp != '\0')
+		tmp++;
+	*tmp = '\0';
 
 	int id = atoi(ret + strlen(ok_string));
 	_enlil_photo_netsync_id_set(job->photo, id);

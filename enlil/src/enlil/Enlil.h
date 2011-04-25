@@ -97,7 +97,8 @@ enum enlil_photo_sort
 enum Enlil_Photo_Type
 {
    ENLIL_PHOTO_TYPE_PHOTO,
-   ENLIL_PHOTO_TYPE_VIDEO
+   ENLIL_PHOTO_TYPE_VIDEO,
+   ENLIL_PHOTO_TYPE_GPX
 };
 
 enum Enlil_Album_Access_Type
@@ -332,6 +333,7 @@ EAPI    void                    enlil_photo_print(const Enlil_Photo *photo);
 EAPI    int                     enlil_photo_is(const char *file);
 EAPI    int                     enlil_photo_jpg_is(const char *file);
 EAPI    int                     enlil_video_is(const char *file);
+EAPI    int                     enlil_gpx_is(const char *file);
 EAPI    Enlil_Photo *           enlil_photo_copy_new(Enlil_Photo *photo);
 EAPI    void                    enlil_photo_copy(Enlil_Photo *photo_src, Enlil_Photo *photo_dest);
 EAPI    void                    enlil_photo_user_data_set(Enlil_Photo *photo, void *user_data, Enlil_Photo_Free_Cb cb);
@@ -639,10 +641,7 @@ typedef void (*Enlil_NetSync_Login_Failed_Cb) (void *data, const char *username,
 typedef void (*Enlil_NetSync_Job_Add_Cb) (void *data, Enlil_NetSync_Job *job, Enlil_Album *album, Enlil_Photo *photo);
 typedef void (*Enlil_NetSync_Job_Start_Cb) (void *data, Enlil_NetSync_Job *job, Enlil_Album *album, Enlil_Photo *photo);
 typedef void (*Enlil_NetSync_Job_Done_Cb) (void *data, Enlil_NetSync_Job *job, Enlil_Album *album, Enlil_Photo *photo);
-
-typedef void (*Enlil_NetSync_Error_Cb) (void *data, Enlil_Library *library);
-typedef void (*Enlil_NetSync_Album_Error_Cb) (void *data, Enlil_Album *album);
-typedef void (*Enlil_NetSync_Photo_Error_Cb) (void *data, Enlil_Photo *photo);
+typedef void (*Enlil_NetSync_Job_Error_Cb) (void *data, Enlil_NetSync_Job *job, Enlil_Album *album, Enlil_Photo *photo, const char *error);
 
 typedef void (*Enlil_NetSync_Album_New_Cb) (void *data, Enlil_Library *library, int album_id);
 typedef void (*Enlil_NetSync_Album_NotInNetSync_Cb) (void *data, Enlil_Library *library, Enlil_Album *album);
@@ -673,6 +672,8 @@ EAPI    void                    enlil_netsync_login_failed_cb_set(Enlil_NetSync_
 EAPI    void                    enlil_netsync_job_add_cb_set(Enlil_NetSync_Job_Add_Cb add_cb, void *data);
 EAPI    void                    enlil_netsync_job_start_cb_set(Enlil_NetSync_Job_Start_Cb start_cb, void *data);
 EAPI    void                    enlil_netsync_job_done_cb_set(Enlil_NetSync_Job_Done_Cb done_cb, void *data);
+EAPI    void                    enlil_netsync_job_error_cb_set(Enlil_NetSync_Job_Error_Cb error_cb, void *data);
+EAPI 	void 					enlil_netsync_disconnect();
 
 EAPI    void                    enlil_netsync_reinit(Enlil_Library *library);
 EAPI    const char *            enlil_netsync_auth_url_get();
@@ -684,14 +685,12 @@ EAPI    Enlil_NetSync_Job *     enlil_netsync_job_sync_albums_append(Enlil_Libra
       Enlil_NetSync_Album_NotUpToDate_Cb notuptodate_cb,
       Enlil_NetSync_Album_NetSyncNotUpToDate_Cb netsyncnotuptodate_cb,
       Enlil_NetSync_Album_UpToDate_Cb uptodate_cb,
-      Enlil_NetSync_Error_Cb error_cb,
       void *data);
 EAPI 	Enlil_NetSync_Job *		enlil_netsync_job_sync_album_append(Enlil_Library *library,
 		Enlil_Album *album,
 		Enlil_NetSync_Album_NotUpToDate_Cb notuptodate_cb,
 		Enlil_NetSync_Album_NetSyncNotUpToDate_Cb netsyncnotuptodate_cb,
 		Enlil_NetSync_Album_UpToDate_Cb uptodate_cb,
-		Enlil_NetSync_Error_Cb error_cb,
 		void *data);
 EAPI 	Enlil_NetSync_Job *		enlil_netsync_job_get_new_album_header_append(Enlil_Library *library,
 		int id,
@@ -716,7 +715,9 @@ EAPI    Enlil_NetSync_Job *     enlil_netsync_job_sync_photos_append(Enlil_Album
       Enlil_NetSync_Photo_NotUpToDate_Cb notuptodate_cb,
       Enlil_NetSync_Photo_NetSyncNotUpToDate_Cb netsyncnotuptodate_cb,
       Enlil_NetSync_Photo_UpToDate_Cb uptodate_cb,
-      Enlil_NetSync_Photo_Error_Cb error_cb,
+		Enlil_NetSync_Photo_NotUpToDate_Cb tags_notuptodate_cb,
+		Enlil_NetSync_Photo_NetSyncNotUpToDate_Cb tags_netsyncnotuptodate_cb,
+		Enlil_NetSync_Photo_UpToDate_Cb tags_uptodate_cb,
       void *data);
 EAPI 	Enlil_NetSync_Job *		enlil_netsync_job_get_new_photo_header_append(Enlil_Album *album,
 		int id,

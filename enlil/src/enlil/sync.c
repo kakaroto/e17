@@ -508,8 +508,10 @@ static void _enlil_sync_photo_file_start(Enlil_Sync *_sync, const char *folder, 
 
 	if(enlil_photo_is(buf_file))
 	  enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_PHOTO);
-	else
+	else if(enlil_video_is(buf_file))
 	  enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_VIDEO);
+	else if(enlil_gpx_is(buf_file))
+	  enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_GPX);
 
 	SAVE();
 
@@ -753,8 +755,10 @@ static void _enlil_sync_all_photo_new(Enlil_Sync *_sync, Enlil_Album *album, con
 
    if(enlil_photo_is(buf_file))
      enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_PHOTO);
-   else
-     enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_VIDEO);
+	else if(enlil_video_is(buf_file))
+	  enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_VIDEO);
+	else if(enlil_gpx_is(buf_file))
+	  enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_GPX);
 
    FILE_INFO_GET(buf_file, _time, size);
    enlil_photo__time_set(photo, _time);
@@ -865,7 +869,7 @@ static void _enlil_sync_all_album_sync(Enlil_Sync *_sync, Enlil_Album *album)
    EINA_LIST_FOREACH(l_files_new, l, file)
      {
 	snprintf(buf, PATH_MAX, "%s/%s", buf_path, file);
-	if(enlil_photo_is(buf) || enlil_video_is(buf))
+	if(enlil_photo_is(buf) || enlil_video_is(buf) || enlil_gpx_is(buf))
 	  _enlil_sync_all_photo_new(_sync, album, file);
      }
 

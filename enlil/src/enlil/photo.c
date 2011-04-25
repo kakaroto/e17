@@ -1057,6 +1057,21 @@ int enlil_video_is(const char *file)
    return 0;
 }
 
+int enlil_gpx_is(const char *file)
+{
+   ASSERT_RETURN(file!=NULL);
+
+   char *strip_ext = ecore_file_strip_ext(file);
+   const char *ext = file + strlen(strip_ext);
+   FREE(strip_ext);
+
+   if(ext && (strcmp(ext,".gpx") == 0
+	    || strcmp(ext, ".GPX") == 0 ) )
+     return 1;
+
+   return 0;
+}
+
 int enlil_photo_jpg_is(const char *file)
 {
    ASSERT_RETURN(file!=NULL);
