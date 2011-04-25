@@ -51,13 +51,14 @@
 #define __FLAG_TITLE_AND_ICON   3
 
 /* fill rules for imageclasses */
-#define __STRETCH              0
-#define __TILE_H               1
-#define __TILE_V               2
-#define __TILE                 3
-#define __INTEGER_TILE_H       4
-#define __INTEGER_TILE_V       8
-#define __INTEGER_TILE         12
+#define __SCALE             0
+#define __STRETCH           0
+#define __TILE_H            1
+#define __TILE_V            2
+#define __TILE              3
+#define __INTEGER_TILE_H    4
+#define __INTEGER_TILE_V    8
+#define __INTEGER_TILE     12
 
 /* major sections in the config */
 #define __CONTROL 0
@@ -95,8 +96,9 @@
 #define __FONT_TO_UP    2
 #define __FONT_TO_LEFT  3
 
-#define __EFFECT_NORMAL 0
-#define __EFFECT_SHADOW 1
+#define __EFFECT_NONE    0
+#define __EFFECT_NORMAL  0
+#define __EFFECT_SHADOW  1
 #define __EFFECT_OUTLINE 2
 
 #define __FOCUS_MODE 307
