@@ -947,9 +947,6 @@ EventsMain(void)
 	       }
 	  }
 
-	/* Run idlers */
-	IdlersRun();
-
 	/* time2 = current time */
 	time2 = GetTimeMs();
 	dt = time2 - time1;
@@ -958,6 +955,9 @@ EventsMain(void)
 
 	/* Run all expired timers, get time to first non-expired (0. means none) */
 	time2 = TimersRun(time2);
+
+	/* Run idlers */
+	IdlersRun();
 
 	if (Mode.wm.exit_mode)
 	   break;
