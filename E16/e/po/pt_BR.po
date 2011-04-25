@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-04-08 19:43+0200\n"
+"POT-Creation-Date: 2011-04-25 12:39+0200\n"
 "PO-Revision-Date: 2010-02-14 04:53+0000\n"
 "Last-Translator: Teylo Laundos Aguiar <teylo.aguiar@gmail.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -140,32 +140,32 @@ msgstr ""
 "Houve um erro ao inicializar o programa:\n"
 "%s"
 
-#: src/alert.c:210
+#: src/alert.c:211
 msgid "Enlightenment Error"
 msgstr "Erro do Enlightenment"
 
 # melhor assim, né, Rainer? :)
-#: src/alert.c:567
+#: src/alert.c:554
 msgid "Enlightenment Message Dialog"
 msgstr "Mensagem de Diálogo do Enlightenment"
 
-#: src/alert.c:567
+#: src/alert.c:554
 msgid "Ignore this"
 msgstr "Ignorar Isso"
 
-#: src/alert.c:568
+#: src/alert.c:555
 msgid "Restart Enlightenment"
 msgstr "Reiniciar o Enlightenment"
 
-#: src/alert.c:568 src/setup.c:170
+#: src/alert.c:555 src/setup.c:170
 msgid "Quit Enlightenment"
 msgstr "Sair do Enlightenment"
 
-#: src/alert.c:581
+#: src/alert.c:565
 msgid "Attention !!!"
 msgstr "Atenção !!!"
 
-#: src/alert.c:581 src/dialog.c:695 src/dialog.c:1892 src/events.c:93
+#: src/alert.c:565 src/dialog.c:695 src/dialog.c:1892 src/events.c:93
 #: src/setup.c:159 src/sound.c:310
 msgid "OK"
 msgstr "OK"
