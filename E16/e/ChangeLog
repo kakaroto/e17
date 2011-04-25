@@ -5457,3 +5457,17 @@ Fix trouble around initially iconified windows and manual placement (noted by
 Warning fixes for gcc-4.6.
 Fix handling rescheduled timers that are already expired.
 Remove compositing resize fixup hack for old Xorgs.
+
+-------------------------------------------------------------------------------
+
+Thu Apr 21 20:10:44 CEST 2011
+
+--- 1.0.8 ---
+Add options to ignore struts when maximising/fullscreening (patch by Daniel Manjarres).
+Improve maximzation (based on patch by Daniel Manjarres).
+Portuguese translation update (Sérgio Marques).
+Fix windows sometimes not being placed in unoccupied areas.
+Fix selection of next focus window when iconifing a window (noted by Daniel Manjarres).
+Add __SCALE and __EFFECT_NONE - seem to be used in most themes.
+Show alert text also when there is no final newline in string.
+Run idlers after timers (fixes last fadeout step in certain situations).
