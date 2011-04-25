@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -286,9 +286,9 @@ struct _ewin {
 #define EWIN_GRAVITY_SW         2
 #define EWIN_GRAVITY_SE         3
 
+#define EwinIsMapped(ewin)		EoIsMapped(ewin)
 #define EwinGetDesk(ewin)		EoGetDesk(ewin)
 
-#define EwinIsMapped(ewin)		((ewin)->state.state >= EWIN_STATE_MAPPED)
 #define EwinIsInternal(ewin)		((ewin)->type != EWIN_TYPE_NORMAL)
 #define EwinIsTransientChild(ewin)	((ewin)->icccm.transient > 0)
 #define EwinIsTransient(ewin)		((ewin)->icccm.transient != 0)

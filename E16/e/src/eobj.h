@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -79,6 +79,7 @@ struct _eobj {
 #define EobjGetW(eo)            WinGetW(EobjGetWin(eo))
 #define EobjGetH(eo)            WinGetH(EobjGetWin(eo))
 #define EobjGetBW(eo)           WinGetBorderWidth(EobjGetWin(eo))
+#define EoIsMapped(eo)          WinIsMapped(EoGetWin(eo))
 #define EobjHasEmptyShape(eo)   (WinGetNumRect(EobjGetWin(eo)) < 0)
 
 #define EobjGetType(eo)         ((eo)->type)
