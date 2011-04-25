@@ -240,9 +240,12 @@ Panel_Image *panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 	itc_slideshow.icon_get = _slideshow_icon_get;
 	EINA_LIST_FOREACH(enlil_album_photos_get(enlil_photo_album_get(photo)), l, _photo)
 	{
-		Enlil_Photo_Data *_photo_data = enlil_photo_user_data_get(_photo);
-		Slideshow_Item *_item = slideshow_object_item_append(slideshow, &itc_slideshow,  _photo);
-		_photo_data->slideshow_object_items = eina_list_append(_photo_data->slideshow_object_items, _item);
+		if(enlil_photo_type_get(_photo) == ENLIL_PHOTO_TYPE_PHOTO)
+		{
+			Enlil_Photo_Data *_photo_data = enlil_photo_user_data_get(_photo);
+			Slideshow_Item *_item = slideshow_object_item_append(slideshow, &itc_slideshow,  _photo);
+			_photo_data->slideshow_object_items = eina_list_append(_photo_data->slideshow_object_items, _item);
+		}
 	}
 
 	Slideshow_Item *_item = eina_list_data_get(eina_list_last(photo_data->slideshow_object_items));
