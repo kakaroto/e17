@@ -1587,6 +1587,12 @@ static Eina_Error _netsync_photo_list_get_ret(__UNUSED__ Azy_Client *cli, Azy_Co
 
 	copy = eina_list_clone(enlil_album_photos_get(job->album));
 
+	EINA_LIST_FOREACH(copy, l2, photo)
+	{
+		if(enlil_photo_type_get(photo) != ENLIL_PHOTO_TYPE_PHOTO)
+			copy = eina_list_remove_list(copy, l2);
+	}
+
 	EINA_LIST_FOREACH(photos->images, l, AZY_photo)
 	{
 		int id = AZY_photo->id;
