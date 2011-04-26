@@ -53,7 +53,7 @@ static void _setup(void)
       "<br>"
       "In the next text, the paragraph should be right aligned and the<br>"
       "words should appear in the following order: 'דוגמה' first, 'of' second,<br>"
-      "'טקסט' third, 'english' fourth and 'in' fifth, counting from right to left<ps>"
+      "‎'טקסט' third, 'english' fourth and 'in' fifth, counting from right to left<ps>"
       "דוגמה of טקסט in english."
       );
 
