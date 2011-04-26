@@ -38,6 +38,7 @@ AC_MSG_RESULT(${_cv_have___attribute__})
 PKG_CHECK_MODULES(EDJE_VIEWER,
   [
    eina
+   eet
    evas >= 0.9.9
    ecore >= 0.9.9
    ecore-file >= 0.9.9
