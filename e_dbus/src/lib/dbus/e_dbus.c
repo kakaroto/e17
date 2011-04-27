@@ -185,7 +185,7 @@ e_dbus_connection_free(void *data)
 
   if (cd->conn_name) free(cd->conn_name);
 
-  if (cd->idler) ecore_idler_del(cd->idler);
+  if (cd->idler) ecore_idle_enterer_del(cd->idler);
 
   free(cd);
 }
@@ -199,8 +199,22 @@ cb_main_wakeup(void *data)
 
   cd = data;
 
-  if (!cd->idler) cd->idler = ecore_idler_add(e_dbus_idler, cd);
+  if (!cd->idler) cd->idler = ecore_idle_enterer_add(e_dbus_idler, cd);
   else DBG("already idling");
+}
+
+static void
+e_dbus_loop_wakeup(void)
+{
+  static int dummy_event = 0;
+
+  /* post a dummy event to get the mainloop back to normal - this is
+   * needed because idlers are very special things that won't re-evaluate
+   * timers and other stuff while idelrs run - idle_exiters and enterers
+   * can do this safely, but not idlers. idelrs were meant to be used
+   * very sparingly for very special cases */
+  if (dummy_event == 0) dummy_event = ecore_event_type_new();
+  ecore_event_add(dummy_event, NULL, NULL, NULL);
 }
 
 static void
@@ -211,21 +225,13 @@ cb_dispatch_status(DBusConnection *conn __UNUSED__, DBusDispatchStatus new_statu
   DBG("dispatch status: %d!", new_status);
   cd = data;
 
-  if (new_status == DBUS_DISPATCH_DATA_REMAINS && !cd->idler) cd->idler = ecore_idler_add(e_dbus_idler, cd);
+  if (new_status == DBUS_DISPATCH_DATA_REMAINS && !cd->idler) cd->idler = ecore_idle_enterer_add(e_dbus_idler, cd);
 
   else if (new_status != DBUS_DISPATCH_DATA_REMAINS && cd->idler) 
   {
-    static int dummy_event = 0;
-
-    ecore_idler_del(cd->idler);
+    ecore_idle_enterer_del(cd->idler);
     cd->idler = NULL;
-    /* post a dummy event to get the mainloop back to normal - this is
-     * needed because idlers are very special things that won't re-evaluate
-     * timers and other stuff while idelrs run - idle_exiters and enterers
-     * can do this safely, but not idlers. idelrs were meant to be used
-     * very sparingly for very special cases */
-    if (dummy_event == 0) dummy_event = ecore_event_type_new();
-    ecore_event_add(dummy_event, NULL, NULL, NULL);
+    e_dbus_loop_wakeup();
   }
 }
 
@@ -437,6 +443,7 @@ e_dbus_idler(void *data)
       e_dbus_connection_close(cd);
     } while (--close_connection);
   }
+  e_dbus_loop_wakeup();
   return ECORE_CALLBACK_RENEW;
 }
 
@@ -554,7 +561,7 @@ e_dbus_connection_close(E_DBus_Connection *conn)
   /* Idler functin must be cancelled when dbus connection is  unreferenced */
   if (conn->idler)
     {
-      ecore_idler_del(conn->idler);
+      ecore_idle_enterer_del(conn->idler);
       conn->idler = NULL;
     }
 
