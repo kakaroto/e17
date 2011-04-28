@@ -51,10 +51,10 @@ void close_cb(void *data, Evas_Object *obj, void *event_info)
 
 	tabpanel_item_del(enlil_data->library_item);
 	tabpanel_del(enlil_data->tabpanel);
-	free(enlil_data);
 	free(enlil_data->list_photo);
 	free(enlil_data->list_left);
 	free(enlil_data->win);
+	free(enlil_data);
 
 	EINA_STRINGSHARE_DEL(media_player);
 
