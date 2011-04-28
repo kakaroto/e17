@@ -72,14 +72,16 @@ ngi_configure_module(Config_Item *ci)
    Config_Item *ci2;
    int i = 0;
 
+   if (!ci->ng)
+     return;
+   
    if (ci->config_dialog)
       return;
 
    EINA_LIST_FOREACH(ngi_config->items, l, ci2)
    if (ci == ci2)
       break;
-   else
-      i++;
+   else i++;
 
    snprintf(path, sizeof(path), "extensions/engage::%d", i);
    if (e_config_dialog_find("E", path))
