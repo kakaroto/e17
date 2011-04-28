@@ -234,7 +234,7 @@ void enlil_netsync_disconnect()
 
 
 	LOG_DBG("Disconnected !");
-	azy_client_free(client);
+	if (client) azy_client_free(client);
 	client = NULL;
 	connected = EINA_FALSE;
 	EINA_STRINGSHARE_DEL(cookie);
