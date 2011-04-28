@@ -104,6 +104,7 @@ int
 elsa_xserver_init(Elsa_X_Cb start, const char *dname)
 {
    int pid;
+   char buf[64];
    sigset_t newset;
    sigemptyset(&newset);
 
@@ -111,10 +112,18 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
    _xserver->dname = eina_stringshare_add(dname);
    _xserver->start = start;
    pid = _xserver_start();
+   snprintf(buf, sizeof(buf), "ELSA_XPID=%d", pid);
+   putenv(buf);
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,
                                             NULL);
    return pid;
+}
+
+void
+elsa_xserver_end()
+{
+   unsetenv("ELSA_XPID");
 }
 
 void

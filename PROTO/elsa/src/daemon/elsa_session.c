@@ -15,7 +15,7 @@
 char *_mcookie;
 char **env;
 char *_login = NULL;
-Ecore_Thread *_running;
+unsigned char _logged = 0;
 static pid_t _session_pid;
 static int _elsa_session_userid_set(struct passwd *pwd);
 static void _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie);
@@ -106,18 +106,19 @@ static void
 _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 {
 #ifdef HAVE_PAM
-   char **tmp;
+   //char **tmp;
    char buf[PATH_MAX];
    pid_t pid;
    pid = fork();
    if (pid == 0)
      {
-        fprintf(stderr, PACKAGE": Session Run\n");
         elsa_close_log();
+//        fprintf(stderr, PACKAGE": Session Run\n");
+//d        elsa_close_log();
         env = elsa_pam_env_list_get();
         elsa_pam_end();
-        for (tmp = env; *tmp; ++tmp)
-          fprintf(stderr, "%s: env %s\n", PACKAGE, *tmp);
+//        for (tmp = env; *tmp; ++tmp)
+//          fprintf(stderr, "%s: env %s\n", PACKAGE, *tmp);
         snprintf(buf, sizeof(buf),
                  "%s %s ",
                  elsa_config->command.session_start,
@@ -132,7 +133,7 @@ _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
              fprintf(stderr, PACKAGE": change directory for user fail\n");
              return;
           }
-        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
+//        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
         snprintf(buf, sizeof(buf), "%s/.elsa_session.log", pwd->pw_dir);
         remove(buf);
         snprintf(buf, sizeof(buf), "%s > %s/.elsa_session.log 2>&1",
@@ -141,6 +142,20 @@ _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         fprintf(stderr, PACKAGE": The Xsessions are not launched :(\n");
      }
 #endif
+}
+
+void
+elsa_session_end(const char *user)
+{
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf),
+            "%s %s ", elsa_config->command.session_stop, user);
+   if (-1 == system(buf))
+     fprintf(stderr, PACKAGE": Error on session stop command %s", buf);
+   elsa_pam_close_session();
+   kill(getpid(), SIGTERM);
+   elsa_pam_end();
+   elsa_pam_shutdown();
 }
 
 void
@@ -193,8 +208,6 @@ elsa_session_init(const char *file)
 void
 elsa_session_shutdown()
 {
-   if (_running)
-     ecore_thread_cancel(_running);
 }
 
 Eina_Bool
@@ -215,6 +228,7 @@ elsa_session_login(const char *command)
      {
         pwd = getpwnam(elsa_pam_item_get(ELSA_PAM_ITEM_USER));
         endpwent();
+        _logged = EINA_TRUE;
         if (!pwd) return ECORE_CALLBACK_CANCEL;
         snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
         if (!_elsa_session_begin(pwd, buf))
@@ -234,5 +248,11 @@ char *
 elsa_session_login_get()
 {
    return _login;
+}
+
+int
+elsa_session_logged_get()
+{
+   return !!_logged;
 }
 

@@ -34,8 +34,7 @@ elsa_LDFLAGS =
 elsa_LDADD = @ELSA_LIBS@ -lpam -lrt
 
 elsa_wait_SOURCES = \
-elsa_wait.c         \
-elsa_pam.c
+elsa_wait.c
 
 elsa_wait_LDFLAGS =
-elsa_wait_LDADD = -lpam
+elsa_wait_LDADD =

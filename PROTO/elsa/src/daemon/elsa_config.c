@@ -7,7 +7,7 @@
 
 static void _defaults_set(Elsa_Config *config);
 static void _users_get();
-static const char *_config_free(Elsa_Config *config);
+static void _config_free(Elsa_Config *config);
 static Elsa_Config *_cache_get(Eet_Data_Descriptor *edd);
 
 static void
@@ -107,7 +107,7 @@ _cache_get(Eet_Data_Descriptor *edd)
    return config;
 }
 
-static const char *
+static void
 _config_free(Elsa_Config *config)
 {
    const char *session_end;
@@ -119,7 +119,7 @@ _config_free(Elsa_Config *config)
    eina_stringshare_del(config->command.xauth_file);
    eina_stringshare_del(config->command.session_start);
    eina_stringshare_del(config->command.session_login);
-   //eina_stringshare_del(config->command.session_stop);
+   eina_stringshare_del(config->command.session_stop);
    session_end = config->command.session_stop;
    eina_stringshare_del(config->command.shutdown);
    eina_stringshare_del(config->command.reboot);
@@ -128,7 +128,6 @@ _config_free(Elsa_Config *config)
    eina_stringshare_del(config->lockfile);
    eina_stringshare_del(config->logfile);
    free(config);
-   return session_end;
 }
 
 void
@@ -197,12 +196,10 @@ elsa_config_last_session_set(const char *session)
    elsa_config->last_session = strdup(session);
 }
 
-const char *
+void
 elsa_config_shutdown()
 {
-   const char *r;
-   r = _config_free(elsa_config);
+   _config_free(elsa_config);
    eet_shutdown();
-   return r;
 }
 

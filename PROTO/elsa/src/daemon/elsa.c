@@ -121,24 +121,21 @@ elsa_close_log()
 }
 
 static void
-_elsa_wait(int pid, const char *display, const char *session_end)
+_elsa_wait()
 {
-   char buf[16]; /* I think is sufisant ... */
-   snprintf(buf, sizeof(buf), "%d", pid);
-   execl(PACKAGE_BIN_DIR"/elsa_wait", "elsa",
-         buf, elsa_session_login_get(), display, session_end, NULL);
+   execl(PACKAGE_BIN_DIR"/elsa_wait", "/usr/sbin/elsa", NULL);
    fprintf(stderr, PACKAGE": HUM HUM HUM ...\n\n\n");
 }
 
 int
 elsa_main()
 {
-   fprintf(stderr, PACKAGE": Run client\n");
    if (!elsa_config->autologin)
      {
-     ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                             _elsa_client_del, NULL);
-     _elsa_client = ecore_exe_run(PACKAGE_BIN_DIR"/elsa_client -d ':0.0'", NULL);
+        ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
+                                _elsa_client_del, NULL);
+        fprintf(stderr, PACKAGE": Run client\n");
+        _elsa_client = ecore_exe_run(PACKAGE_BIN_DIR"/elsa_client -d ':0.0'", NULL);
      }
    else
      ecore_main_loop_quit();
@@ -159,7 +156,7 @@ _elsa_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 
 static const Ecore_Getopt options =
 {
-   "elsa",
+   PACKAGE,
    "%prog [options]",
    VERSION,
    "(C) 2011 Enlightenment, see AUTHORS",
@@ -183,8 +180,10 @@ main (int argc, char ** argv)
    int args;
    int pid;
    char *dname = strdup(ELSA_DISPLAY);
+   char *elsa_user = NULL;
    unsigned char nodaemon = 0;
    unsigned char quit_option = 0;
+   char buf[1024];
    Ecore_Getopt_Value values[] =
      {
         ECORE_GETOPT_VALUE_BOOL(nodaemon),
@@ -231,13 +230,30 @@ main (int argc, char ** argv)
 
    if (!_open_log())
       exit(1);
+
+   fprintf(stderr, "\n\n"PACKAGE": Welcome\n");
+   elsa_pam_init(PACKAGE, dname, elsa_user);
+   elsa_user = getenv("ELSA_USER");
+   if (elsa_user)
+     {
+        char *quit;
+        elsa_session_end(elsa_user);
+        sleep(2);
+        elsa_xserver_end();
+        unsetenv("ELSA_USER");
+        quit = getenv("ELSA_QUIT");
+        if (quit)
+          {
+             unsetenv("ELSA_QUIT");
+             elsa_config_shutdown();
+             exit(1);
+          }
+        sleep(3);
+        elsa_pam_init(PACKAGE, dname, NULL);
+     }
    ecore_init();
    /* Initialise event handler */
 
-   elsa_pam_init(PACKAGE, dname, NULL);
-   elsa_session_init(elsa_config->command.xauth_file);
-
-   pid = elsa_xserver_init(elsa_main, dname);
    signal(SIGQUIT, _signal_cb);
    signal(SIGTERM, _signal_cb);
    signal(SIGKILL, _signal_cb);
@@ -245,7 +261,9 @@ main (int argc, char ** argv)
    signal(SIGHUP, _signal_cb);
    signal(SIGPIPE, _signal_cb);
    signal(SIGALRM, _signal_cb);
-   if (elsa_config->autologin)
+   elsa_session_init(elsa_config->command.xauth_file);
+   pid = elsa_xserver_init(elsa_main, dname);
+   if (elsa_config->autologin && !elsa_user)
      {
         xcb_connection_t *disp = NULL;
         disp = xcb_connect(dname, NULL);
@@ -264,9 +282,17 @@ main (int argc, char ** argv)
    elsa_xserver_shutdown();
    elsa_pam_shutdown();
    ecore_shutdown();
-   _elsa_wait(pid, dname, elsa_config_shutdown());
-   _remove_lock();
    elsa_close_log();
+   elsa_config_shutdown();
+   if (elsa_session_logged_get())
+     {
+        /* FIXME I lose my env :( */
+        printf("Env xserver %s\n", getenv("ELSA_XPID"));
+        snprintf(buf, sizeof(buf), "ELSA_XPID=%d", pid);
+        putenv(buf);
+        _elsa_wait();
+     }
+   _remove_lock();
    return 0;
 }
 
