@@ -1,8 +1,6 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-BUILT_SOURCES = .sources
-
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src/enlil \
 -I$(top_builddir)/src/enlil \
@@ -39,7 +37,7 @@ pwg_categories.azy_client.c \
 pwg_Common.c \
 pwg_Common_Azy.c
 
-.sources: ws_piwigo/services.azy
+pwg_session.azy_client.c pwg_images.azy_client.c pwg_categories.azy_client.c pwg_Common.c pwg_Common_Azy.c: ws_piwigo/services.azy
 	azy_parser -H -p -o ./ ws_piwigo/services.azy
 
 installed_headersdir = $(prefix)/include/enlil
