@@ -126,6 +126,8 @@ image_mask_10.c \
 image_mask_11.c \
 image_mask_12.c \
 image_mask_13.c \
+image_mask_14.c \
+image_mask_15.c \
 filter_object_colors.c \
 filter_object_colors_solid.c \
 filter_object_sepia.c \

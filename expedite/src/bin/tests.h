@@ -102,6 +102,8 @@
 #include "image_mask_11.c"
 #include "image_mask_12.c"
 #include "image_mask_13.c"
+#include "image_mask_14.c"
+#include "image_mask_15.c"
 #include "filter_object_colors.c"
 #include "filter_object_colors_solid.c"
 #include "filter_object_invert.c"
