@@ -114,6 +114,16 @@ proxy_image.c \
 proxy_text_fixed.c \
 proxy_text_random.c \
 image_mask.c \
+image_mask_2.c \
+image_mask_3.c \
+image_mask_4.c \
+image_mask_5.c \
+image_mask_6.c \
+image_mask_7.c \
+image_mask_8.c \
+image_mask_9.c \
+image_mask_10.c \
+image_mask_11.c \
 filter_object_colors.c \
 filter_object_colors_solid.c \
 filter_object_sepia.c \

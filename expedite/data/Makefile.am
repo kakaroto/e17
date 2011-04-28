@@ -52,7 +52,9 @@ blend.png \
 map.png \
 3d.png \
 data.png \
-widgets.png
-
+widgets.png \
+e-logo-2.png \
+e-logo-mask.png \
+texture.png
 
 EXTRA_DIST = $(files_DATA)
