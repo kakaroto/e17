@@ -1,0 +1,73 @@
+collections {
+   images {
+      image: "bg.jpg" COMP;
+      image: "bg_tile.png" COMP;
+   }
+   group {
+      name: "interface";
+      parts {
+         /* Rectangle Noir */
+         part {
+            name: "Rectangle";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "Fond";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "bg.jpg";
+            }
+         }
+         part {
+            name: "Hachage";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "bg_tile.png";
+               fill {
+                  size {
+                     relative: 0.0 0.0;
+                     offset: 20 20;
+                  }
+               }
+            }
+         }
+      }
+   }
+   group {
+      name: "icon";
+      images {
+         image: "icon.png" COMP;
+      }
+      parts {
+         part {
+            name: "icon";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "icon.png";
+            }
+         }
+         part {
+            name: "text";
+            type: TEXT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               text {
+                  font: "Sans";
+                  size: 12;
+                  text: "Description";
+               }
+            }
+         }
+      }
+   }
+}

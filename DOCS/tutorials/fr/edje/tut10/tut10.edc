@@ -1,0 +1,125 @@
+collections {
+   images {
+      image: "bg.jpg" COMP;
+      image: "bg_tile.png" COMP;
+   }
+   group {
+      name: "interface";
+      parts {
+         /* Rectangle Noir */
+         part {
+            name: "Rectangle";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "Fond";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "bg.jpg";
+            }
+         }
+         part {
+            name: "Hachage";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "bg_tile.png";
+               fill {
+                  size {
+                     relative: 0.0 0.0;
+                     offset: 20 20;
+                  }
+               }
+            }
+         }
+      }
+   }
+   group {
+      name: "icon";
+      images {
+         image: "icon.png" COMP;
+         image: "text_bg.png" COMP;
+      }
+      parts {
+         part {
+            name: "icon";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+               image.normal: "icon.png";
+               rel1.relative: 0 0;
+               rel1.offset: 8 8;
+               rel2.relative: 1 0;
+               rel2.offset: -7 -7;
+               rel2.to_y: "text";
+               align: 0.5 0.5;
+            }
+            description {
+               state: "down" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 128;
+            }
+         }
+         part {
+            name: "text_bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1.to: "text";
+               rel1.offset: -3 -3;
+               rel2.to: "text";
+               rel2.offset: 4 4;
+               image.normal: "text_bg.png";
+               image.border: 5 5 5 5;
+            }
+         }
+         part {
+            name: "text";
+            type: TEXT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 1.0;
+               align: 0.5 1.0;
+               text {
+                  font: "Sans";
+                  size: 12;
+                  text: "Description";
+                  min: 1 1;
+                  max: 1 1;
+               }
+            }
+         }
+         part {
+            name: "events";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               visible: 1;
+            }
+         }
+      }
+      programs {
+         program {
+            name: "mouse_down";
+            signal: "mouse,down,1";
+            source: "events";
+            action: STATE_SET "down" 0.0;
+            target: "icon";
+         }
+      }
+   }
+}

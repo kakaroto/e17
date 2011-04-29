@@ -1,0 +1,27 @@
+collections {
+   images {
+      image: "bg.jpg" COMP;
+   }
+   group {
+      name: "interface";
+      parts {
+         /* Rectangle Noir */
+         part {
+            name: "Rectangle";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "Fond";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "bg.jpg";
+            }
+         }
+      }
+   }
+}

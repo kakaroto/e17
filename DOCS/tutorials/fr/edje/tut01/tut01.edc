@@ -1,0 +1,16 @@
+collections {
+   group {
+      name: "interface";
+      parts {
+         /* Rectangle Rouge */
+         part {
+            name: "Rectangle";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 255;
+            }
+         }
+      }
+   }
+}

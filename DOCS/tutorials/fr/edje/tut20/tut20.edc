@@ -1,0 +1,310 @@
+#define ICON(icon_file, icon_name)                                      \
+   group {                                                              \
+      name: icon_name;                                                  \
+      images {                                                          \
+         image: "text_bg.png" COMP;                                     \
+         set {                                                          \
+            name: icon_file;                                            \
+            image {                                                     \
+               image: icon_file"-512.png" LOSSY 90;                     \
+               size: 257 257 512 512;                                   \
+            }                                                           \
+            image {                                                     \
+               image: icon_file"-256.png" COMP;                         \
+               size: 129 129 256 256;                                   \
+            }                                                           \
+            image {                                                     \
+               image: icon_file"-128.png" COMP;                         \
+               size: 65 65 128 128;                                     \
+            }                                                           \
+            image {                                                     \
+               image: icon_file"-64.png" COMP;                          \
+               size: 31 31 64 64;                                       \
+            }                                                           \
+            image {                                                     \
+               image: icon_file"-32.png" COMP;                          \
+               size: 17 17 32 32;                                       \
+            }                                                           \
+            image {                                                     \
+               image: icon_file"-16.png" COMP;                          \
+               size: 0 0 16 16;                                         \
+            }                                                           \
+         }                                                              \
+      }                                                                 \
+      parts {                                                           \
+         part {                                                         \
+            name: "icon";                                               \
+            type: IMAGE;                                                \
+            mouse_events: 0;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               aspect: 1.0 1.0;                                         \
+               aspect_preference: BOTH;                                 \
+               image.normal: icon_file;                                 \
+               rel1.relative: 0 0;                                      \
+               rel1.offset: 8 8;                                        \
+               rel2.relative: 1 0;                                      \
+               rel2.offset: -7 -7;                                      \
+               rel2.to_y: "text";                                       \
+               align: 0.5 0.5;                                          \
+            }                                                           \
+            description {                                               \
+               state: "down" 0.0;                                       \
+               inherit: "default" 0.0;                                  \
+               color: 255 255 255 128;                                  \
+               image.normal: icon_file;                                 \
+            }                                                           \
+         }                                                              \
+         part {                                                         \
+            name: "text_bg";                                            \
+            type: IMAGE;                                                \
+            mouse_events: 0;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               rel1.to: "text";                                         \
+               rel1.offset: -8 -8;                                      \
+               rel2.to: "text";                                         \
+               rel2.offset: 7 7;                                        \
+               image.normal: "text_bg.png";                             \
+               image.border: 8 8 8 8;                                   \
+            }                                                           \
+            description {                                               \
+               state: "down" 0.0;                                       \
+               inherit: "default" 0.0;                                  \
+               color: 255 255 255 128;                                  \
+            }                                                           \
+         }                                                              \
+         part {                                                         \
+            name: "text";                                               \
+            type: TEXT;                                                 \
+            mouse_events: 0;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               color: 255 255 255 255;                                  \
+               rel1.relative: 0.0 1.0;                                  \
+               rel1.offset: 0 -12;                                      \
+               rel2.relative: 1.0 1.0;                                  \
+               rel2.offset: 0 -12;                                      \
+               align: 0.5 1.0;                                          \
+               fixed: 1 1;                                              \
+               text {                                                   \
+                  font: "Sans";                                         \
+                  size: 12;                                             \
+                  text: icon_name;                                      \
+                  min: 1 1;                                             \
+                  max: 1 1;                                             \
+               }                                                        \
+            }                                                           \
+            description {                                               \
+               state: "down" 0.0;                                       \
+               inherit: "default" 0.0;                                  \
+               color: 0 0 0 128;                                        \
+            }                                                           \
+         }                                                              \
+         part {                                                         \
+            name: "events";                                             \
+            type: RECT;                                                 \
+            mouse_events: 1;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               color: 0 0 0 0;                                          \
+               visible: 1;                                              \
+            }                                                           \
+         }                                                              \
+      }                                                                 \
+      programs {                                                        \
+         program {                                                      \
+            name: "mouse_down";                                         \
+            signal: "mouse,down,1";                                     \
+            source: "events";                                           \
+            action: STATE_SET "down" 0.0;                               \
+            transition: LINEAR 1.0;                                     \
+            target: "icon";                                             \
+            target: "text_bg";                                          \
+            target: "text";                                             \
+         }                                                              \
+         program {                                                      \
+            name: "mouse_up";                                           \
+            signal: "mouse,up,1";                                       \
+            source: "events";                                           \
+            action: STATE_SET "default" 0.0;                            \
+            transition: LINEAR 1.0;                                     \
+            target: "icon";                                             \
+            target: "text_bg";                                          \
+            target: "text";                                             \
+         }                                                              \
+         program {                                                      \
+            name: "mouse_click";                                        \
+            signal: "mouse,clicked,1";                                  \
+            source: "events";                                           \
+            action: SIGNAL_EMIT icon_name",clicked" "";                 \
+         }                                                              \
+      }                                                                 \
+   }                                                                    \
+
+
+collections {
+   images {
+      image: "bg.jpg" COMP;
+      image: "bg_tile.png" COMP;
+   }
+   group {
+      name: "interface";
+      min: 512 512;
+      parts {
+         /* Rectangle Noir */
+         part {
+            name: "Rectangle";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "Fond";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "bg.jpg";
+            }
+         }
+         part {
+            name: "Hachage";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "bg_tile.png";
+               fill {
+                  size {
+                     relative: 0.0 0.0;
+                     offset: 20 20;
+                  }
+               }
+            }
+         }
+         part {
+            name: "table_bg";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "text_bg.png";
+               rel1.offset: 15 15;
+               rel2.offset: -16 -16;
+               image.border: 8 8 8 8;
+            }
+         }
+         part {
+            name: "table_swallow";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1.to: "table_bg";
+               rel2.to: "table_bg";
+            }
+         }
+      }
+   }
+
+
+
+   group {
+      name: "table";
+      parts {
+         part {
+            name : "table_description";
+            type : TABLE;
+            description {
+               state : "default" 0.0;
+               fixed: 1 1;
+               table {
+                  //layout: horizontal_flow;
+                  //padding: 0 0;
+                  //min: 0 0;
+               }
+            }
+            table {
+               items {
+                  item {
+                     type: GROUP;
+                     source: "calc";
+                     weight: 0.5 0.5;
+                     align: -1 -1;
+                     position: 0 0;
+                  }
+                  item {
+                     type: GROUP;
+                     source: "calendar";
+                     weight: 1 1;
+                     align: -1 -1;
+                     position: 0 1;
+                  }
+                  item {
+                     type: GROUP;
+                     source: "clock";
+                     weight: 1 1;
+                     position: 0 2;
+                     align: -1 -1;
+                  }
+                  item {
+                     type: GROUP;
+                     source: "config";
+                     weight: 1 1;
+                     position: 1 0;
+                     align: -1 -1;
+                  }
+                  item {
+                     type: GROUP;
+                     source: "info";
+                     weight: 1 1;
+                     position: 1 1;
+                     align: -1 -1;
+                  }
+                  item {
+                     type: GROUP;
+                     source: "mail";
+                     weight: 1 1;
+                     position: 1 2;
+                     align: -1 -1;
+                  }
+                  item {
+                     type: GROUP;
+                     source: "music";
+                     weight: 1 1;
+                     position: 2 0;
+                     align: -1 -1;
+                  }
+                  item {
+                     type: GROUP;
+                     source: "rss";
+                     weight: 1 1;
+                     position: 2 1;
+                     align: -1 -1;
+                  }
+                  item {
+                     type: GROUP;
+                     source: "video";
+                     weight: 1 1;
+                     position: 2 2;
+                     align: -1 -1;
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   ICON("calc", "calc");
+   ICON("calendar", "calendar");
+   ICON("clock", "clock");
+   ICON("config", "config");
+   ICON("info", "info");
+   ICON("mail", "mail");
+   ICON("music", "music");
+   ICON("rss", "rss");
+   ICON("video", "video");
+
+}
+
+
+
