@@ -1248,41 +1248,42 @@ ngi_reposition(Ng *ng)
    int cnt = 0, end;
    int width = ng->horizontal ? ng->win->popup->w : ng->win->popup->h;
 
-   ng->w = 0;
-
-   EINA_LIST_FOREACH (ng->boxes, l, box)
-   {
-      box->w = 0;
-
-      EINA_LIST_FOREACH (box->items, ll, it)
-      {
-         if (it->scale == 0.0) continue;
-         box->w += (size * it->scale) + ng->opt.item_spacing;
-      }
-
-      ng->w += box->w;
-
-      if (cnt++ > 0) ng->w += ng->opt.separator_width;
-   }
-
-   ng->start = (width - ng->w) / 2;
-
-   distance = ng->start - SIDE_OFFSET - width/2;
-
-   range = ng->cfg->zoom_range * ng->size;
-
-   disp = erf(distance / range) * range * (ng->cfg->zoomfactor - 1.0);
-
-   end = ng->start - SIDE_OFFSET + disp;
-
-   /* shrink bar when it becomes larger than screen height/width  */
-   if (end < 0 && size > 1)
+   while (1)
      {
-        ng->size -= 1;
-        ngi_reposition(ng);
-        return;
-     }
+	ng->w = 0;
 
+	EINA_LIST_FOREACH (ng->boxes, l, box)
+	  {
+	     box->w = 0;
+
+	     EINA_LIST_FOREACH (box->items, ll, it)
+	       {
+		  if (it->scale == 0.0) continue;
+		  box->w += (size * it->scale) + ng->opt.item_spacing;
+	       }
+
+	     ng->w += box->w;
+
+	     if (cnt++ > 0) ng->w += ng->opt.separator_width;
+	  }
+
+	ng->start = (width - ng->w) / 2;
+
+	distance = ng->start - SIDE_OFFSET - width/2;
+
+	range = ng->cfg->zoom_range * ng->size;
+
+	disp = erf(distance / range) * range * (ng->cfg->zoomfactor - 1.0);
+
+	end = ng->start - SIDE_OFFSET + disp;
+
+	if ((end > 0) || (size <= 0))
+	  break;
+	
+	/* shrink bar when it becomes larger than screen height/width  */
+	ng->size = size = size - 1;
+     }
+   
    cnt = 0;
    pos = ng->start;
 
@@ -1639,6 +1640,12 @@ _ngi_win_border_intersects(Ng *ng)
 	if ((bd->desk != desk) && (!bd->sticky))
 	  continue;
 
+	if (bd->iconic)
+	  continue;
+
+	if (!bd->visible)
+	  continue;
+
 	if (E_INTERSECTS(x, y, w, h, bd->x, bd->y, bd->w, bd->h))
 	  return EINA_TRUE;
      }
@@ -1646,46 +1653,13 @@ _ngi_win_border_intersects(Ng *ng)
    return EINA_FALSE;
 }
 
-static Eina_Bool
-_ngi_win_cb_desk_show(void *data, int type, void *event)
+static void
+_ngi_win_autohide_check(Ng *ng, E_Desk *desk)
 {
-   E_Event_Desk_Show *ev = event;
-   Ng *ng = data;
-   int fullscreen;
-
-   if (ng->cfg->stacking == below_fullscreen)
-     {
-	fullscreen = ev->desk->fullscreen_borders;
-
-	if (fullscreen)
-	  e_popup_hide(ng->win->popup);
-	else
-	  e_popup_show(ng->win->popup);
-     }
-   else if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
-     {
-	fullscreen = ev->desk->fullscreen_borders;
-
-	if (ng->hide != fullscreen)
-	  ngi_animate(ng);
-
-	ng->hide = fullscreen;
-     }
-   return EINA_TRUE;
-}
-
-static Eina_Bool
-_ngi_win_cb_border_event(void *data, int type, void *event)
-{
-   E_Event_Border_Property *ev = event;
-   Ng *ng = data;
-   E_Desk *desk;
    int hide;
-
+   
    if (ng->cfg->stacking == below_fullscreen)
      {
-	desk = e_desk_current_get(ng->zone);
-
 	hide = desk->fullscreen_borders;
 
 	if (hide)
@@ -1696,8 +1670,6 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
 
    if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
      {
-	desk = e_desk_current_get(ng->zone);
-
 	hide = desk->fullscreen_borders;
 
 	if (ng->hide != hide)
@@ -1707,8 +1679,6 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
      }
    else if (ng->cfg->autohide == AUTOHIDE_OVERLAP)
      {
-	desk = e_desk_current_get(ng->zone);
-
 	hide = _ngi_win_border_intersects(ng);
 	
 	if (ng->hide != hide)
@@ -1716,6 +1686,30 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
 
 	ng->hide = hide;
      }
+}
+
+static Eina_Bool
+_ngi_win_cb_desk_show(void *data, int type, void *event)
+{
+   E_Event_Desk_Show *ev = event;
+   Ng *ng = data;
+
+   _ngi_win_autohide_check(ng, ev->desk);
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+_ngi_win_cb_border_event(void *data, int type, void *event)
+{
+   E_Event_Border_Property *ev = event;
+   Ng *ng = data;
+   E_Desk *desk;
+   
+   desk = e_desk_current_get(ng->zone);
+
+   if ((ev->border->desk == desk) || (ev->border->sticky))
+     _ngi_win_autohide_check(ng, desk);
      
    return EINA_TRUE;
 }
@@ -1725,18 +1719,23 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
 
 EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "engage" };
 
-static int
+static Eina_Bool
 _ngi_init_timer_cb(void *data)
 {
    Eina_List *l;
    Config_Item *ci;
+
+   /* if (ecore_x_screen_is_composited(0)) */
+     ngi_config->use_composite = 1;
+   /* else
+    *   ngi_config->use_composite = 0; */
 
    EINA_LIST_FOREACH (ngi_config->items, l, ci)
      ngi_new(ci);
 
    initialized = 1;
 
-   return 0;
+   return ECORE_CALLBACK_CANCEL;
 }
 
 /* menu item callback(s) */
@@ -1953,13 +1952,11 @@ e_modapi_init(E_Module *m)
    ngi_taskbar_init();
    ngi_gadcon_init();
 
-   if (ecore_x_screen_is_composited(0))
-     ngi_config->use_composite = 1;
-   else
-     ngi_config->use_composite = 0;
-
    e_module_delayed_set(m, 1);
-   _ngi_init_timer_cb(NULL);
+
+   ecore_timer_add(1.0, _ngi_init_timer_cb, NULL);
+   
+   /* _ngi_init_timer_cb(NULL); */
 
    /* maug = e_int_menus_menu_augmentation_add
     *   ("config/1", _e_mod_menu_add, NULL, NULL, NULL); */
@@ -2009,5 +2006,6 @@ EAPI int
 e_modapi_save(E_Module *m)
 {
    e_config_domain_save("module.engage", ngi_conf_edd, ngi_config);
+
    return 1;
 }
