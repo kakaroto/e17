@@ -30,37 +30,6 @@
     \end{flushright}
  }
 
-  \newenvironment{note}
-  {
-    \begin{myboxenv}{
-        \includegraphics[scale=0.4]{images/note.pdf}
-        Note}
-   }
-    {
-    \end{myboxenv}
- }
-
-  \newenvironment{warning}
-  {
-    \begin{myboxenv}{
-        \includegraphics[scale=0.5]{images/attention.pdf}
-        Warning}
-   }
-    {
-    \end{myboxenv}
- }
-
-  \newenvironment{important}
-  {
-    \begin{myboxenv}{
-        \includegraphics[scale=0.5]{images/important.pdf}
-        Important}
-   }
-    {
-    \end{myboxenv}
- }
-
-
 \title{The Enlightenment Foundation Libraries\\
   \normalsize{Prise en main de Edje}}
 
@@ -199,6 +168,108 @@ Voici le résultat final:
   \end{center}
   \caption{Interface edje à la fin de ce tutoriel}
 \end{figure}
+
+\section{Les Images}
+\subsection{Les parts de type IMAGE}
+Les explication de cette section portent sur le fichier
+\href{file://tut02/tut02.edc}{tut02/tut02.edc}.
+
+En partant du premier exemple, nous allons ajouter un fichier qui sera le fond
+de notre interface.
+
+Edje supporte un large type d'images, celles supportées par Evas,
+PNG, JPEG, TIFF, BMP, ...
+Pour décrire une image, il faut créer un part de type ``IMAGE''.
+Et dire a edje quelle image insérer :
+
+\begin{lstlisting}
+ part {
+   name: "Fond";
+   type: IMAGE;
+   description {
+     state: "default" 0.0;
+     image.normal: "bg.jpg";
+   }
+ }
+\end{lstlisting}
+\subsection{la directive images}
+Comme nous avons vu précédement, le fichier EDJ généré contient toutes les
+ressources de notre interface, images incluses. Si nous compilons avec edje\_cc
+ce fichier, ``bg.jpg'' ne sera pas trouvé dans nos ressources. Il faut ajouter
+cette images dans la collection. Ceci est réalisé par l'ajout de cette directive
+:
+\begin{lstlisting}
+   images {
+      image: "bg.jpg" COMP;
+   }
+\end{lstlisting}
+
+A quoi correspond ``COMP''. Edje ajoute les images dans le fichier binaire EDJ,
+et nous pouvons lui dire de compresser ou non cette image.
+Plusieurs type de compressions sont supportés :
+\begin{itemize}
+\item RAW: Uncompressed.
+\item COMP: compression sans perte, comparable au format PNG.
+\item LOSSY [0-100]: comression avec perte avec une qualité pouvant allé
+de 0 à 100, comparable au format JPEG
+\item USER: l'image n'est pas intégrée au fichier edje, mais est lue depuis
+le disque.
+\end{itemize}
+
+Attention cependant, si vous utilisez la balise RAW, a la taille
+finale de votre fichier binaire.
+Pour une image de 800x600 en 32bits de couleurs (RGBA), la taille embarqué dans
+le fichier binaire sera : 800x600x4 ~= 1.8MO !
+
+\subsection{edje\_cc et les images}
+Le compilateur edje cherche les images dans les repertoires relativement au
+repertoire ou il est executé.
+Nous avons la possibilité de donner l'emplacement relative dans nos fichiers
+edc. Par exemple :
+
+\begin{lstlisting}
+   images {
+      image: "images\bg.jpg" COMP;
+   }
+\end{lstlisting}
+
+Ceci peut tres vite devenir rebarbatif et long a écrire, nous pouvons donc
+ajouter les répertoires qui contiennent nos images en utilisant l'argument
+``-id'' (image directory) de edje\_cc
+
+\begin{lstlisting}
+edje_cc -id images -id images\icons file.edc
+\end{lstlisting}
+
+Pour faciliter la compilation, vous trouverez dans le répertoire de ce tutorial,
+un script shell qui permet de compiler tous les fichiers edc (et C dans la
+suite) nommé build.sh
+
+\begin{lstlisting}
+.\build.sh #compile l'intégralite des exemples.
+.\build.sh #tut02 compile l'exemple contenu dans le repertoire tut02
+\end{lstlisting}
+
+Les fichiers binaires sont quand a eux générés dans le répertoire build.
+
+\subsection{Les motifs}
+Edje permet également l'affichage de motifs a l'écran en répétant une images.
+Le fichier \href{file://tut03/tut03.edc}{tut03/tut03.edc} montre comment
+utiliser une image motif avec la balise fill
+\begin{lstlisting}
+ size {
+   relative: 0.0 0.0;
+   offset: 20 20;
+ }
+\end{lstlisting}
+
+Dans notre cas l'image a une taille de 20x20px nous voulons qu'elle soit répétée
+sur l'axe des X et des Y.
+
+Il y a plusieurs autres options permettant de repeter les motifs, je vous laisse
+les découvrir par vous même, tout est décris dans la 
+\href{http://docs.enlightenment.org/auto/edje/edcref.html}[documentation de edje]
+
 
 \end{document}
 

@@ -37,7 +37,7 @@
 % Header
 \lhead{\linespread{0.7} \@title}
 \chead{}
-\rhead{\includegraphics[height=15pt]{logo_e.fr.png}}
+\rhead{\includegraphics[height=15pt]{images/logo_e.fr.png}}
 \renewcommand{\headrulewidth}{0.5pt}
 \renewcommand{\headheight}{45pt} % to fit 2 lines title in header + logo
 \addtolength{\textheight}{-50pt}
@@ -50,7 +50,7 @@
 \renewcommand\maketitle{
   \begin{titlepage}
     \begin{center}
-      \includegraphics[width=\textwidth]{logo_e.fr.png}
+      \includegraphics[width=\textwidth]{images/logo_e.fr.png}
     \end{center}
 
     \vspace{5cm}
