@@ -1,0 +1,204 @@
+\documentclass[a4paper]{efr}
+
+\usepackage{verbatim}
+\usepackage{graphicx}
+%\usepackage{ctable}
+%\usepackage{longtable}
+%\usepackage{rotating}
+%\usepackage{makecell}
+
+%\bibliographystyle{plain}
+
+\def\fboxsep{5pt}
+  \newenvironment{myboxenv}[1]
+  {
+    \begin{flushright}
+      \begin{boxedminipage}{0.9\textwidth}
+        \textbf{%% \sffamily
+          \large #1:}
+
+        \hspace{-5pt}\rule{0.3\textwidth}{0.5pt}
+        \begin{center}
+          \begin{minipage}{0.95\textwidth}
+
+            \small%% \slshape
+         }
+          {
+          \end{minipage}
+        \end{center}
+      \end{boxedminipage}
+    \end{flushright}
+ }
+
+  \newenvironment{note}
+  {
+    \begin{myboxenv}{
+        \includegraphics[scale=0.4]{images/note.pdf}
+        Note}
+   }
+    {
+    \end{myboxenv}
+ }
+
+  \newenvironment{warning}
+  {
+    \begin{myboxenv}{
+        \includegraphics[scale=0.5]{images/attention.pdf}
+        Warning}
+   }
+    {
+    \end{myboxenv}
+ }
+
+  \newenvironment{important}
+  {
+    \begin{myboxenv}{
+        \includegraphics[scale=0.5]{images/important.pdf}
+        Important}
+   }
+    {
+    \end{myboxenv}
+ }
+
+
+\title{The Enlightenment Foundation Libraries\\
+  \normalsize{Prise en main de Edje}}
+
+\EfrMail{aguirre.nicolas@gmail.com}
+\author{Nicolas Aguirre}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\section{Avant Propos}
+Le but de ce tutorial est de survoler au travers d'un exemple pratique toutes
+les fonctionnalités de Edje.
+
+J'espére qu'il vous permettra également de vous faire comprendre comment Edje
+peut vous aider dans le développement de vos interfaces graphiques.
+
+De considerer cette technologie comme l'un des outils les plus puissant des
+EFL plutôt que comme votre plus grand cauchemar.
+
+Comment, en séparant la logique et le code d'une part et l'interface d'une
+autre, vos interfaces graphiques peuvent gagner en flexibilité.
+
+Comme exemple concret, permettant d'illustrer cette présentation, j'ai choisis
+le développement d'un interface (tactile) tres simple.
+Voici a quoi ressemblera l'interface a la fin de ce tutoriel :
+
+\section{Introduction}
+Edje est une des briques de base des EFL. Elle vous permet de décrire une
+interface graphique sans écrire une seule ligne de C. Ce qui permet,de facto,
+de réaliser une des choses les plus complexes lors du développement d'un
+programme avec une interface utilisateur : la séparation de l'interface et du
+code. Cette séparation est importante à plus d'un titre. Elle permet d'une part
+d'avoir la logique du programme et la gestion des données d'un côté et
+l'interface utilsateur de l'autre. Elle permet donc d'avoir deux équipes
+distincte qui travaille sur le projet, les graphistes, designer, ergonomes et
+les développeurs.
+
+Parler de ``Edje'', c'est employer un therme générique pour 3 concepts
+différents:
+\begin{itemize}
+\item Le format de description, le format EDC, pour Edje Data Collection;
+\item Le fichier binaire EDJ, résultante compilée de toutes les ressources
+décrites dans le fichier EDC;
+\item La bibliotheque de fonctions libedje.so, permettant de manipuler les
+objets décrits dans le EDC au niveau de evas.
+\end{itemize}
+
+Le schémas ci dessus montre a quel moment ces trois concepts sont utilisés lors
+de la création d'une application utilisant Edje :
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.7]{images/workflow.pdf}
+  \end{center}
+  \caption{Edje Workflow}
+\end{figure}
+
+\section{Les Bases}
+Dans ce chapitres, nous allons voir les bases du language de description EDC.
+
+Une fichier EDC (Edje Data Collection) minimal ressemble a ceci : (fichier
+tut01/tut01.edc)
+
+\begin{lstlisting}[language=c]
+ collections {
+   group {
+      name: "interface";
+      parts {
+         /* Rectangle Rouge */
+         part {
+            name: "Rectangle";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 255;
+            }
+         }
+      }
+   }
+}
+\end{lstlisting}
+
+Nous pouvons voir dans cette exemple le mot clef ``collection'' qui comme son
+nom l'indique est un ensemble de ``groupes''.
+Dans cette exemple nous avons un seul groupe, nommée ``interface''.
+Un groupe est lui meme un ensemble, et représente un objet, qui pourra être
+manipulé sur le canvas graphique plus tard dans notre programme ou réutilisé
+dans le fichier edc.
+Un Group contient des ``parts'' qui sont les primitives que sais manipuler Evas.
+Voici une liste exhaustive des ``parts'' que nous pouvons utiliser :
+\begin{itemize}
+\item Les rectangles : RECT;
+\item Les images : IMAGE;
+\item Les textes : TEXT;
+\item Les blocs de texte : TEXTBLOCK;
+\item Les containers : SWALLOW;
+\item Les groupes : GROUP;
+\item Les boites : BOX;
+\item Les tables : TABLE;
+\item Les objects externes : EXTERNAL;
+\end{itemize}
+Chaque type fera l'objet d'une étude plus approfondie dans la suite de ce
+tutoriel.
+
+Dans notre exemple nous décrivons donc un Rectangle rouge, rien de bien
+original. Nous allons maintenant compiler ce fichier edc en un fichier binaire
+EDJ.  :
+
+\begin{lstlisting}
+edje_cc tut01.edc
+\end{lstlisting}
+
+Si tout c'est bien passé, nous devrions trouver un fichier tut01.edj dans notre
+répertoire. Comme nous l'avons vu un peu plus haut. Ce fichier edj doit être
+chargé par notre programme pour pouvoir être affiché. Dans un premier temps nous
+allons donc utiliser un outil tres pratique proposé par edje : edje\_player.
+
+\begin{lstlisting}
+edje_player tut01.edc
+\end{lstlisting}
+
+Et voici le résultat : Un Rectangle Rouge affiché a l'écran ! Emotionnelement
+intense.
+Que ceux qui n'ont pas la cher de poule a ce moment précis arrêtent tout de
+suite la lecture. Quand aux autres, vous pouvez trouver ci-dessous une capture
+d'écran de l'interface que nous allons développer dans la suite de ce tutoriel.
+j'ai choisis le développement d'un interface (tactile) simple, qui nous
+permettra d'apprehender les différents concept de Edje par la pratique.
+
+Voici le résultat final:
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.5]{images/screenshot1.png}
+  \end{center}
+  \caption{Interface edje à la fin de ce tutoriel}
+\end{figure}
+
+\end{document}
+
