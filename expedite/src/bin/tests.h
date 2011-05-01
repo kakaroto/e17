@@ -110,6 +110,8 @@
 #include "filter_object_invert_solid.c"
 #include "filter_object_greyscale.c"
 #include "filter_object_greyscale_solid.c"
+#include "filter_object_brightness.c"
+#include "filter_object_brightness_solid.c"
 #include "filter_object_sepia.c"
 #include "filter_object_sepia_solid.c"
 #include "filter_object_blur.c"

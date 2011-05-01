@@ -136,6 +136,8 @@ filter_object_greyscale.c \
 filter_object_greyscale_solid.c \
 filter_object_invert.c \
 filter_object_invert_solid.c \
+filter_object_brightness.c \
+filter_object_brightness_solid.c \
 filter_object_blur.c \
 filter_object_blur_solid.c
 
