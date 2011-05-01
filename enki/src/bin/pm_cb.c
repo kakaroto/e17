@@ -674,3 +674,17 @@ void photo_version_header_increase_cb(void *data, Enlil_Photo *photo)
 			netsync_photo_tags_uptodate_cb,
 			enlil_data);
 }
+
+void photo_version_tags_increase_cb(void *data, Enlil_Photo *photo)
+{
+	Enlil_NetSync_Job *job = enlil_netsync_job_sync_photos_append(enlil_photo_album_get(photo),
+			netsync_photo_new_cb,
+			netsync_photo_notinnetsync_cb,
+			netsync_photo_notuptodate_cb,
+			netsync_photo_netsyncnotuptodate_cb,
+			netsync_photo_uptodate_cb,
+			netsync_photo_tags_notuptodate_cb,
+			netsync_photo_tags_netsyncnotuptodate_cb,
+			netsync_photo_tags_uptodate_cb,
+			enlil_data);
+}

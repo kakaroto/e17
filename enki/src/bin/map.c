@@ -83,14 +83,26 @@ void map_free(Map *map)
 
 void map_photo_add(Map *map, Enlil_Photo *photo)
 {
+   char buf[PATH_MAX];
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 
-   if(enlil_photo_longitude_get(photo) != 360 && enlil_photo_latitude_get(photo)!= 360)
-     {
-	photo_data->marker = elm_map_marker_add(map->map,
-	      enlil_photo_longitude_get(photo), enlil_photo_latitude_get(photo),
-	      itc, itc_group, photo);
-     }
+   switch(enlil_photo_type_get(photo))
+   {
+   case ENLIL_PHOTO_TYPE_PHOTO:
+	   if(enlil_photo_longitude_get(photo) != 360 && enlil_photo_latitude_get(photo)!= 360)
+		 {
+		photo_data->marker = elm_map_marker_add(map->map,
+			  enlil_photo_longitude_get(photo), enlil_photo_latitude_get(photo),
+			  itc, itc_group, photo);
+		 }
+	   break;
+   case ENLIL_PHOTO_TYPE_GPX:
+	   snprintf(buf, sizeof(buf), "%s/%s",
+			   enlil_photo_path_get(photo),
+			   enlil_photo_file_name_get(photo));
+	   photo_data->route.route = elm_map_route_from_gpx_file_add(map->map, buf);
+	   break;
+   }
 }
 
 void map_photo_update(Map *map, Enlil_Photo *photo)
@@ -121,8 +133,18 @@ void map_photo_remove(Map *map, Enlil_Photo *photo)
 
    if(map->selected == photo)
      map->selected = NULL;
-   elm_map_marker_remove(photo_data->marker);
-   photo_data->marker = NULL;
+
+   switch(enlil_photo_type_get(photo))
+      {
+      case ENLIL_PHOTO_TYPE_PHOTO:
+    	   elm_map_marker_remove(photo_data->marker);
+    	   photo_data->marker = NULL;
+   	   break;
+      case ENLIL_PHOTO_TYPE_GPX:
+    	   elm_map_route_remove(photo_data->route.route);
+    	   photo_data->route.route = NULL;
+   	   break;
+      }
 }
 
 void map_geocaching_add(Map *map, Enlil_Geocaching *gp)

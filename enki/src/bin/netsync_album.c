@@ -58,6 +58,46 @@ Evas_Object *netsync_album_new(Evas_Object *win, Enlil_Album *album)
    return inwin;
 }
 
+static int count_photos(Enlil_Album *album, Photo_NetSync_Enum type)
+{
+	Eina_List *l;
+	Enlil_Photo *photo;
+   int nb_photos = 0;
+   EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
+	 {
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+	if (photo_data && photo_data->netsync.state == type)
+	  {
+		 nb_photos++;
+	  }
+	 }
+   return nb_photos;
+}
+
+static int count_photos_tags(Enlil_Album *album, Photo_NetSync_Enum type)
+{
+	Eina_List *l;
+	Enlil_Photo *photo;
+   int nb_photos = 0;
+   EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
+	 {
+	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+	if (photo_data && photo_data->netsync.state_tags == type)
+	  {
+		 nb_photos++;
+	  }
+	 }
+   return nb_photos;
+}
+
+
+#define MSG(BUF, MORE, ONE) 									\
+		if(nb_photos > 1) 										\
+			  snprintf(BUF, sizeof(BUF), D_(MORE), nb_photos);	\
+		else													\
+			  snprintf(BUF, sizeof(BUF), D_(ONE));
+
+
 void netsync_sync_update(Enlil_Album *album)
 {
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
@@ -94,7 +134,7 @@ void netsync_sync_update(Enlil_Album *album)
    if(album_data->netsync.album_netsync_notuptodate)
      {
 	lbl = elm_label_add(inwin);
-	elm_label_label_set(lbl, D_("Update the distant album header."));
+	elm_label_label_set(lbl, D_("Update"));
 	evas_object_show(lbl);
 	elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
@@ -187,7 +227,7 @@ void netsync_sync_update(Enlil_Album *album)
 	album_data->netsync.inwin.bt4 = bt;
 	evas_object_size_hint_align_set(bt, -1.0, 0.5);
 	evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-	elm_button_label_set(bt, D_("Download Them All"));
+	elm_button_label_set(bt, D_("Download"));
 	evas_object_smart_callback_add(bt, "clicked", _photos_notinlocal_cb, album);
 	evas_object_show(bt);
 	elm_pager_content_push(pager, bt);
@@ -218,174 +258,102 @@ void netsync_sync_update(Enlil_Album *album)
 	i++;
      }
 
-   nb_photos = 0;
-   EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
-     {
-	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-	if (photo_data && photo_data->netsync.state == PHOTO_NETSYNC_NOTINNETSYNC)
-	  {
-	     nb_photos++;
-	  }
-     }
-   if(nb_photos>0)
-     {
-	if(nb_photos > 1)
-	  snprintf(buf, sizeof(buf), D_("%d photos are not in the distant album"), nb_photos);
-	else
-	  snprintf(buf, sizeof(buf), D_("1 photo is not is the distant album"));
-
-	lbl = elm_label_add(inwin);
-	elm_label_label_set(lbl, buf);
-	evas_object_show(lbl);
+#define LBL(LABEL) 						\
+	lbl = elm_label_add(inwin); 		\
+	elm_label_label_set(lbl, LABEL);	\
+	evas_object_show(lbl); 				\
 	elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
-	pager = elm_pager_add(inwin);
-	album_data->netsync.inwin.notinnetsync.pager = pager;
-	evas_object_size_hint_align_set(pager, 0.5, 0.5);
-	evas_object_size_hint_weight_set(pager, 1.0, 0.0);
-	evas_object_show(pager);
-	elm_table_pack(tb2, pager, 1, i, 1, 1);
+#define PAGER(TARGET) \
+	pager = elm_pager_add(inwin); 							\
+	TARGET = pager; 										\
+	evas_object_size_hint_align_set(pager, 0.5, 0.5);		\
+	evas_object_size_hint_weight_set(pager, 1.0, 0.0);		\
+	evas_object_show(pager);								\
+	elm_table_pack(tb2, pager, 1, i, 1, 1);					\
 	elm_object_style_set(pager, "fade_invisible");
 
-	bt = elm_button_add(inwin);
-	album_data->netsync.inwin.notinnetsync.bt = bt;
-	album_data->netsync.inwin.bt5 = bt;
-	evas_object_size_hint_align_set(bt, -1.0, 0.5);
-	evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-	elm_button_label_set(bt, D_("Sending Them All"));
-	evas_object_smart_callback_add(bt, "clicked", _photos_netsync_notinnetsync_cb, album);
-	evas_object_show(bt);
-	elm_pager_content_push(pager, bt);
+#define BUTTON_PAGER(TARGET, LABEL, CB) 					\
+	bt = elm_button_add(inwin);								\
+	TARGET = bt;											\
+	evas_object_size_hint_align_set(bt, -1.0, 0.5);			\
+	evas_object_size_hint_weight_set(bt, 1.0, 0.0);			\
+	elm_button_label_set(bt, D_(LABEL));					\
+	evas_object_smart_callback_add(bt, "clicked", CB, album);\
+	evas_object_show(bt);									\
+	elm_pager_content_push(pager, bt);						\
 
-	pb = elm_progressbar_add(inwin);
-	album_data->netsync.inwin.notinnetsync.pb = pb;
-	evas_object_size_hint_align_set(pb, -1.0, 0.5);
-	evas_object_size_hint_weight_set(pb, 1.0, 0.0);
-	elm_progressbar_pulse_set(pb, EINA_TRUE);
-	elm_progressbar_label_set(pb, D_("Send in progress ..."));
-	evas_object_show(pb);
-	elm_pager_content_push(pager, pb);
-	evas_object_size_hint_max_set(pb, 0, 0);
+#define BUTTON(TARGET, LABEL, CB) 							\
+	bt = elm_button_add(inwin); 							\
+	evas_object_size_hint_align_set(bt, 0.5, 0.5);			\
+	evas_object_size_hint_weight_set(bt, 1.0, 0.0);			\
+	TARGET = bt; 											\
+	elm_button_label_set(bt, D_(LABEL)); 					\
+	evas_object_smart_callback_add(bt, "clicked", CB, album); \
+	evas_object_show(bt);									\
+	elm_table_pack(tb2, bt, 1, i, 1, 1);					\
 
-	if(album_data->netsync.inwin.notinnetsync.is_updating)
-	  {
-	     elm_progressbar_pulse(pb, EINA_TRUE);
-	     elm_pager_content_promote(pager, pb);
-	  }
-	else
+#define PROGRESSBAR(TARGET, LABEL, STATUS) 					\
+	pb = elm_progressbar_add(inwin);						\
+	album_data->netsync.inwin.notinnetsync.pb = pb;			\
+	evas_object_size_hint_align_set(pb, -1.0, 0.5);			\
+	evas_object_size_hint_weight_set(pb, 1.0, 0.0);			\
+	elm_progressbar_pulse_set(pb, EINA_TRUE);				\
+	elm_progressbar_label_set(pb, D_("Send in progress ..."));\
+	evas_object_show(pb);									\
+	elm_pager_content_push(pager, pb);						\
+	evas_object_size_hint_max_set(pb, 0, 0);				\
+															\
+	if(album_data->netsync.inwin.notinnetsync.is_updating)	\
+	  {														\
+	     elm_progressbar_pulse(pb, EINA_TRUE);				\
+	     elm_pager_content_promote(pager, pb);				\
+	  }														\
+	else													\
 	  elm_pager_content_promote(pager, bt);
 
+#define SEPARATOR() 						\
+	sep = elm_separator_add(inwin);			\
+	evas_object_show(sep);					\
+	elm_table_pack(tb2, sep, 0, i, 2, 1);	\
 	i++;
 
-	sep = elm_separator_add(inwin);
-	evas_object_show(sep);
-	elm_table_pack(tb2, sep, 0, i, 2, 1);
-	i++;
-     }
 
-
-   nb_photos = 0;
-   EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
-     {
-	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-	if (photo_data && photo_data->netsync.state == PHOTO_NETSYNC_NOTUPTODATE)
-	  nb_photos++;
-     }
+   nb_photos = count_photos(album, PHOTO_NETSYNC_NOTINNETSYNC);
    if(nb_photos>0)
      {
-	if(nb_photos>1)
-	  snprintf(buf, sizeof(buf), D_("%d local photos need to be updated"), nb_photos);
-	else
-	  snprintf(buf, sizeof(buf), D_("1 local photo needs to be updated"));
-
-	lbl = elm_label_add(inwin);
-	elm_label_label_set(lbl, buf);
-	evas_object_show(lbl);
-	elm_table_pack(tb2, lbl, 0, i, 1, 1);
-
-	bt = elm_button_add(inwin);
-	evas_object_size_hint_align_set(bt, 0.5, 0.5);
-	evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-
-	album_data->netsync.inwin.bt5 = bt;
-	elm_button_label_set(bt, D_("Update Them All"));
-	evas_object_smart_callback_add(bt, "clicked", _photos_notuptodate_cb, album);
-	evas_object_show(bt);
-	elm_table_pack(tb2, bt, 1, i, 1, 1);
-
+	MSG(buf, "%d photos are not in the distant album", "1 photo is not is the distant album");
+	LBL(buf);
+	PAGER(album_data->netsync.inwin.notinnetsync.pager);
+	BUTTON_PAGER(album_data->netsync.inwin.notinnetsync.bt, "Upload", _photos_netsync_notinnetsync_cb);
+	PROGRESSBAR(album_data->netsync.inwin.notinnetsync.pb, "Send in progress ...", album_data->netsync.inwin.notinnetsync.is_updating);
 	i++;
-
-	sep = elm_separator_add(inwin);
-	evas_object_show(sep);
-	elm_table_pack(tb2, sep, 0, i, 2, 1);
-	i++;
+	SEPARATOR();
      }
 
-   nb_photos = 0;
-   EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
-     {
-	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-	if (photo_data && photo_data->netsync.state == PHOTO_NETSYNC_NETSYNCNOTUPTODATE)
-	  nb_photos++;
-     }
+   nb_photos = count_photos(album, PHOTO_NETSYNC_NOTUPTODATE);
+   nb_photos += count_photos_tags(album, PHOTO_NETSYNC_TAGS_NOTUPTODATE);
    if(nb_photos>0)
      {
-	if(nb_photos > 1)
-	  snprintf(buf, sizeof(buf), D_("%d photos of the distant album need to be updated"), nb_photos);
-	else
-	  snprintf(buf, sizeof(buf), D_("1 photo of the distant album needs to be updated"));
-
-	lbl = elm_label_add(inwin);
-	elm_label_label_set(lbl, buf);
-	evas_object_show(lbl);
-	elm_table_pack(tb2, lbl, 0, i, 1, 1);
-
-	pager = elm_pager_add(inwin);
-	album_data->netsync.inwin.netsyncupdate.pager = pager;
-	evas_object_size_hint_align_set(pager, 0.5, 0.5);
-	evas_object_size_hint_weight_set(pager, 1.0, 0.0);
-	evas_object_show(pager);
-	elm_table_pack(tb2, pager, 1, i, 1, 1);
-	elm_object_style_set(pager, "fade_invisible");
-
-	bt = elm_button_add(inwin);
-	album_data->netsync.inwin.netsyncupdate.bt = bt;
-	album_data->netsync.inwin.bt5 = bt;
-	evas_object_size_hint_align_set(bt, -1.0, 0.5);
-	evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-	elm_button_label_set(bt, D_("Update Them All"));
-	evas_object_smart_callback_add(bt, "clicked", _photos_netsync_notuptodate_cb, album);
-	evas_object_show(bt);
-	elm_pager_content_push(pager, bt);
-
-	pb = elm_progressbar_add(inwin);
-	album_data->netsync.inwin.netsyncupdate.pb = pb;
-	evas_object_size_hint_align_set(pb, -1.0, 0.5);
-	evas_object_size_hint_weight_set(pb, 1.0, 0.0);
-	elm_progressbar_pulse_set(pb, EINA_TRUE);
-	elm_progressbar_label_set(pb, D_("Updating in progress ..."));
-	evas_object_show(pb);
-	elm_pager_content_push(pager, pb);
-	evas_object_size_hint_max_set(pb, 0, 0);
-
-	if(album_data->netsync.inwin.netsyncupdate.is_updating)
-	  {
-	     elm_progressbar_pulse(pb, EINA_TRUE);
-	     elm_pager_content_promote(pager, pb);
-	  }
-	else
-	  elm_pager_content_promote(pager, bt);
-
-
-	i++;
-
-	sep = elm_separator_add(inwin);
-	evas_object_show(sep);
-	elm_table_pack(tb2, sep, 0, i, 2, 1);
-	i++;
+   	MSG(buf, "%d local photos need to be updated", "1 local photo needs to be updated");
+   	LBL(buf);
+   	BUTTON(album_data->netsync.inwin.bt5, "Update", _photos_notuptodate_cb);
+   	i++;
+   	SEPARATOR();
      }
 
-
+   nb_photos = count_photos(album, PHOTO_NETSYNC_NETSYNCNOTUPTODATE);
+   nb_photos += count_photos_tags(album, PHOTO_NETSYNC_TAGS_NETSYNCNOTUPTODATE);
+   if(nb_photos>0)
+	{
+	MSG(buf, "%d photos of the distant album need to be updated", "1 photo of the distant album needs to be updated");
+   	LBL(buf);
+   	PAGER(album_data->netsync.inwin.netsyncupdate.pager);
+	BUTTON_PAGER(album_data->netsync.inwin.netsyncupdate.bt, "Update", _photos_netsync_notuptodate_cb);
+	PROGRESSBAR(album_data->netsync.inwin.netsyncupdate.pb, "Updating in progress ...", album_data->netsync.inwin.netsyncupdate.is_updating);
+	i++;
+	SEPARATOR();
+	}
 
    if(i!=0)
      {
@@ -584,6 +552,7 @@ static void netsync_photos_notuptodate_cb(void *data, Enlil_Album *album, Enlil_
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
 	photo_data->netsync.state = PHOTO_NETSYNC_NONE;
+	photo_data->netsync.state_tags = PHOTO_NETSYNC_NONE;
 
 	netsync_sync_update(album);
 	photos_list_object_item_update(photo_data->list_photo_item);
@@ -601,7 +570,8 @@ static void _photos_notuptodate_cb(void *data, Evas_Object *obj, void *event_inf
 	EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
 	{
 		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-		if (photo_data && photo_data->netsync.state == PHOTO_NETSYNC_NOTUPTODATE)
+		if (photo_data && photo_data->netsync.state == PHOTO_NETSYNC_NOTUPTODATE
+				|| photo_data && photo_data->netsync.state_tags == PHOTO_NETSYNC_TAGS_NOTUPTODATE)
 		{
 			Enlil_NetSync_Job * job = enlil_netsync_job_update_local_photo_header_append(album,
 					photo,
@@ -618,6 +588,7 @@ static void netsync_photos_netsync_notuptodate_cb(void *data, Enlil_Album *album
 	Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
 	photo_data->netsync.state = PHOTO_NETSYNC_NONE;
+	photo_data->netsync.state_tags = PHOTO_NETSYNC_NONE;
 
 	netsync_sync_update(album);
 	photos_list_object_item_update(photo_data->list_photo_item);
@@ -635,7 +606,8 @@ static void _photos_netsync_notuptodate_cb(void *data, Evas_Object *obj, void *e
 	EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
 	{
 		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-		if (photo_data && photo_data->netsync.state == PHOTO_NETSYNC_NETSYNCNOTUPTODATE)
+		if (photo_data && photo_data->netsync.state == PHOTO_NETSYNC_NETSYNCNOTUPTODATE
+				|| photo_data && photo_data->netsync.state_tags == PHOTO_NETSYNC_TAGS_NETSYNCNOTUPTODATE)
 		{
 			Enlil_NetSync_Job * job = enlil_netsync_job_update_netsync_photo_header_append(album,
 					photo,
@@ -644,6 +616,7 @@ static void _photos_netsync_notuptodate_cb(void *data, Evas_Object *obj, void *e
 		}
 	}
 }
+
 
 static void _photos_netsync_notinnetsync_done_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
 {

@@ -184,6 +184,7 @@ void library_set(const char *library_path)
 	//version increase
 	enlil_library_album_version_header_increase_cb_set(enlil_data->library, album_version_header_increase_cb, library);
 	enlil_library_photo_version_header_increase_cb_set(enlil_data->library, photo_version_header_increase_cb, library);
+	enlil_library_photo_version_tags_increase_cb_set(enlil_data->library, photo_version_tags_increase_cb, library);
 	//
 
 	//the background
@@ -531,7 +532,9 @@ const char *album_netsync_edje_signal_get(Enlil_Album *album)
 	EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
 	{
 		Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-		if (photo_data && photo_data->netsync.state != PHOTO_NETSYNC_NONE)
+		if (photo_data &&
+				( photo_data->netsync.state != PHOTO_NETSYNC_NONE
+					|| photo_data->netsync.state_tags != PHOTO_NETSYNC_NONE ))
 			return "update";
 	}
 
@@ -549,6 +552,10 @@ const char *photo_netsync_edje_signal_get(Photo_NetSync_Enum e)
 	case PHOTO_NETSYNC_NETSYNCNOTUPTODATE:
 		return "update";
 	case PHOTO_NETSYNC_NOTINNETSYNC:
+		return "update";
+	case PHOTO_NETSYNC_TAGS_NETSYNCNOTUPTODATE:
+		return "update";
+	case PHOTO_NETSYNC_TAGS_NOTUPTODATE:
 		return "update";
 	}
 	return NULL;

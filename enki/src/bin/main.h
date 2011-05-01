@@ -65,6 +65,7 @@ void sync_status_show(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading
 //version increase
 void album_version_header_increase_cb(void *data, Enlil_Album *album);
 void photo_version_header_increase_cb(void *data, Enlil_Photo *photo);
+void photo_version_tags_increase_cb(void *data, Enlil_Photo *photo);
 //
 
 /* Photo manager callbacks */

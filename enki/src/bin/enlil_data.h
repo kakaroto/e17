@@ -103,6 +103,19 @@ struct enlil_album_data
 	     } netsyncupdate;
 
 
+	     struct {
+			  Evas_Object *pager;
+			  Evas_Object *bt;
+			  Evas_Object *pb;
+			  Eina_Bool is_updating;
+	     } tags_local_notuptodate;
+
+	     struct {
+			  Evas_Object *pager;
+			  Evas_Object *bt;
+			  Evas_Object *pb;
+			  Eina_Bool is_updating;
+	     } tags_netsync_notuptodate;
 
 	     Evas_Object *tb;
 	     Evas_Object *fr;
@@ -143,9 +156,15 @@ struct enlil_photo_data
     struct
      {
 	Photo_NetSync_Enum state;
+	Photo_NetSync_Enum state_tags;
 	Eina_List *jobs; // list of Enlil_NetSync_Job*
 	Eina_Bool is_sync; //true if a sync job is running on the photo
      } netsync;
+
+     struct
+     {
+    	 Elm_Map_Route *route;
+     } route;
 };
 
 struct enlil_collection_data

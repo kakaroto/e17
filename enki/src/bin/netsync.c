@@ -143,34 +143,35 @@ void netsync_photo_uptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *phot
 	if(o)
 		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state));
 }
+
 void netsync_photo_tags_notuptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
 {
 	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-	photo_data->netsync.state = PHOTO_NETSYNC_NOTUPTODATE;
+	photo_data->netsync.state_tags = PHOTO_NETSYNC_TAGS_NOTUPTODATE;
 
 	Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
 	if(o)
-		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state));
+		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state_tags));
 }
 
 void netsync_photo_tags_netsyncnotuptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
 {
 	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-	photo_data->netsync.state = PHOTO_NETSYNC_NETSYNCNOTUPTODATE;
+	photo_data->netsync.state_tags = PHOTO_NETSYNC_TAGS_NETSYNCNOTUPTODATE;
 	Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
 	if(o)
-		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state));
+		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state_tags));
 }
 
 void netsync_photo_tags_uptodate_cb(void *data, Enlil_Album *album, Enlil_Photo *photo)
 {
 	Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 	ASSERT_RETURN_VOID(photo_data != NULL);
-	photo_data->netsync.state = PHOTO_NETSYNC_NONE;
-
-	Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
-	if(o)
-		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state));
+//	photo_data->netsync.state = PHOTO_NETSYNC_NONE;
+//
+//	Evas_Object *o = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
+//	if(o)
+//		photo_object_netsync_state_set(o, photo_netsync_edje_signal_get(photo_data->netsync.state));
 }
 
 void netsync_album_error_cb(void *data, Enlil_Album *album)
