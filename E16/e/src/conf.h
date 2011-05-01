@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -167,6 +167,10 @@
 #define BG_BG2 562
 #define BG_NAME 563
 #define BG_DESKNUM 564
+#define BG_BG_FILE 565
+#define BG_BG_PARAM 566
+#define BG_TOP_FILE 567
+#define BG_TOP_PARAM 568
 
 #define COLORMOD_RED 600
 #define COLORMOD_GREEN 601

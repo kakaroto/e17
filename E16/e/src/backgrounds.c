@@ -1078,27 +1078,39 @@ BackgroundsConfigLoad(FILE * fs)
    unsigned int        color;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
+   char               *p2, *p3;
    int                 ii1;
    int                 r, g, b;
    int                 i1 = 0, i2 = 0, i3 = 0, i4 = 0, i5 = 0, i6 = 0;
    int                 j1 = 0, j2 = 0, j3 = 0, j4 = 0, j5 = 0;
    char               *bg1 = 0;
    char               *bg2 = 0;
-   char               *name = 0;
-   char                ignore = 0;
    int                 desk;
 
    COLOR32_FROM_RGB(color, 0, 0, 0);
 
    while (GetLine(s, sizeof(s), fs))
      {
-	ii1 = ConfigParseline1(s, s2, NULL, NULL);
+	ii1 = ConfigParseline1(s, s2, &p2, &p3);
 	switch (ii1)
 	  {
 	  case CONFIG_CLOSE:
-	     if (!ignore && !bg && name)
-		BackgroundCreate(name, color, bg1, i1, i2, i3, i4, i5,
-				 i6, bg2, j1, j2, j3, j4, j5);
+	     if (!bg)
+		goto done;
+	     bg->bg.file = bg1;
+	     bg->top.file = bg2;
+	     bg1 = bg2 = NULL;
+	     bg->bg_tile = i1;
+	     bg->bg.keep_aspect = i2;
+	     bg->bg.xjust = i3;
+	     bg->bg.yjust = i4;
+	     bg->bg.xperc = i5;
+	     bg->bg.yperc = i6;
+	     bg->top.keep_aspect = j1;
+	     bg->top.xjust = j2;
+	     bg->top.yjust = j3;
+	     bg->top.xperc = j4;
+	     bg->top.yperc = j5;
 	     goto done;
 
 	  case CONFIG_COLORMOD:
@@ -1108,21 +1120,35 @@ BackgroundsConfigLoad(FILE * fs)
 	  case CONFIG_CLASSNAME:
 	  case BG_NAME:
 	     bg = BackgroundFind(s2);
-	     if (bg)
+	     if (!bg)
 	       {
-		  ignore = 1;
+		  bg = BackgroundCreate(s2, color,
+					bg1, i1, i2, i3, i4, i5, i6,
+					bg2, j1, j2, j3, j4, j5);
 	       }
 	     else
 	       {
-		  Efree(name);
-		  name = Estrdup(s2);
+		  Efree(bg1);
+		  Efree(bg2);
+		  bg1 = bg->bg.file;
+		  bg2 = bg->top.file;
+		  bg->bg.file = NULL;
+		  bg->top.file = NULL;
+		  i1 = bg->bg_tile;
+		  i2 = bg->bg.keep_aspect;
+		  i3 = bg->bg.xjust;
+		  i4 = bg->bg.yjust;
+		  i5 = bg->bg.xperc;
+		  i6 = bg->bg.yperc;
+		  j1 = bg->top.keep_aspect;
+		  j2 = bg->top.xjust;
+		  j3 = bg->top.yjust;
+		  j4 = bg->top.xperc;
+		  j5 = bg->top.yperc;
 	       }
 	     break;
 
 	  case BG_DESKNUM:
-	     if (!ignore && !bg && name)
-		bg = BackgroundCreate(name, color, bg1, i1, i2, i3, i4, i5,
-				      i6, bg2, j1, j2, j3, j4, j5);
 	     if (!bg)
 		break;
 	     desk = atoi(s2);
@@ -1149,53 +1175,41 @@ BackgroundsConfigLoad(FILE * fs)
 
 	  case BG_RGB:
 	     r = g = b = 0;
-	     sscanf(s, "%*s %d %d %d", &r, &g, &b);
+	     sscanf(p2, "%d %d %d", &r, &g, &b);
 	     COLOR32_FROM_RGB(color, r, g, b);
-	     if (bg && ignore)
-		bg->bg_solid = color;
 	     break;
 
+	  case BG_BG_FILE:
+	   set_file_bg:
+	     Efree(bg1);
+	     bg1 = Estrdup(s2);
+	     break;
+
+	  case BG_BG_PARAM:
+	     sscanf(p2, "%d %d %d %d %d %d", &i1, &i2, &i3, &i4, &i5, &i6);
+	     break;
+
+#if 1				/* Obsolete - backward compatibility */
 	  case BG_BG1:
-	     sscanf(s, "%*s %4000s %d %d %d %d %d %d", s2, &i1, &i2,
-		    &i3, &i4, &i5, &i6);
-	     if (!ignore)
-	       {
-		  Efree(bg1);
-		  bg1 = Estrdup(s2);
-	       }
-	     else if (bg)
-	       {
-		  Efree(bg->bg.file);
-		  Efree(bg->top.file);
-		  bg->top.file = NULL;
-		  bg->bg.file = Estrdup(s2);
-		  bg->bg_tile = i1;
-		  bg->bg.keep_aspect = i2;
-		  bg->bg.xjust = i3;
-		  bg->bg.yjust = i4;
-		  bg->bg.xperc = i5;
-		  bg->bg.yperc = i6;
-	       }
+	     sscanf(p3, "%d %d %d %d %d %d", &i1, &i2, &i3, &i4, &i5, &i6);
+	     goto set_file_bg;
+#endif
+
+	  case BG_TOP_FILE:
+	   set_file_top:
+	     Efree(bg2);
+	     bg2 = Estrdup(s2);
 	     break;
 
-	  case BG_BG2:
-	     sscanf(s, "%*s %4000s %d %d %d %d %d", s2, &j1, &j2, &j3,
-		    &j4, &j5);
-	     if (!ignore)
-	       {
-		  Efree(bg2);
-		  bg2 = Estrdup(s2);
-	       }
-	     else if (bg)
-	       {
-		  bg->top.file = Estrdup(s2);
-		  bg->top.keep_aspect = j1;
-		  bg->top.xjust = j2;
-		  bg->top.yjust = j3;
-		  bg->top.xperc = j4;
-		  bg->top.yperc = j5;
-	       }
+	  case BG_TOP_PARAM:
+	     sscanf(p2, "%d %d %d %d %d", &j1, &j2, &j3, &j4, &j5);
 	     break;
+
+#if 1				/* Obsolete - backward compatibility */
+	  case BG_BG2:
+	     sscanf(p3, "%d %d %d %d %d", &j1, &j2, &j3, &j4, &j5);
+	     goto set_file_top;
+#endif
 
 	  default:
 	     break;
@@ -1204,7 +1218,6 @@ BackgroundsConfigLoad(FILE * fs)
    err = -1;
 
  done:
-   Efree(name);
    Efree(bg1);
    Efree(bg2);
 
@@ -1216,9 +1229,14 @@ BackgroundsConfigLoadUser(void)
 {
    char                s[4096];
 
-   Esnprintf(s, sizeof(s), "%s.backgrounds", EGetSavePrefix());
+   Esnprintf(s, sizeof(s), "%s.bg", EGetSavePrefix());
    if (!exists(s))
-      Mode.backgrounds.force_scan = 1;
+     {
+	Mode.backgrounds.force_scan = 1;
+	Esnprintf(s, sizeof(s), "%s.backgrounds", EGetSavePrefix());
+	if (!exists(s))
+	   return;
+     }
    ConfigFileLoad(s, NULL, ConfigFileRead, 0);
 }
 
@@ -1261,22 +1279,30 @@ BackgroundsConfigSave(void)
 
 	fprintf(fs, "100 %s\n", bg->name);
 	COLOR32_TO_RGB(bg->bg_solid, r, g, b);
-	fprintf(fs, "560 %d %d %d\n", r, g, b);
+	if (r != 0 || g != 0 || b != 0)
+	   fprintf(fs, "%d %d %d %d\n", BG_RGB, r, g, b);
 
 	if (bg->bg.file)
-	   fprintf(fs, "561 %s %d %d %d %d %d %d\n",
-		   bg->bg.file, bg->bg_tile, bg->bg.keep_aspect,
-		   bg->bg.xjust, bg->bg.yjust, bg->bg.xperc, bg->bg.yperc);
+	  {
+	     fprintf(fs, "%d %s\n", BG_BG_FILE, bg->bg.file);
+	     fprintf(fs, "%d %d %d %d %d %d %d\n", BG_BG_PARAM,
+		     bg->bg_tile, bg->bg.keep_aspect,
+		     bg->bg.xjust, bg->bg.yjust, bg->bg.xperc, bg->bg.yperc);
+	  }
 
 	if (bg->top.file)
-	   fprintf(fs, "562 %s %d %d %d %d %d\n",
-		   bg->top.file, bg->top.keep_aspect,
-		   bg->top.xjust, bg->top.yjust, bg->top.xperc, bg->top.yperc);
+	  {
+	     fprintf(fs, "%d %s\n", BG_TOP_FILE, bg->top.file);
+	     fprintf(fs, "%d %d %d %d %d %d\n", BG_TOP_PARAM,
+		     bg->top.keep_aspect,
+		     bg->top.xjust, bg->top.yjust,
+		     bg->top.xperc, bg->top.yperc);
+	  }
 
 	for (j = 0; j < N_BG_ASSIGNED; j++)
 	  {
 	     if (bg == bg_assigned[j])
-		fprintf(fs, "564 %d\n", j);
+		fprintf(fs, "%d %d\n", BG_DESKNUM, j);
 	  }
 
 	fprintf(fs, "1000\n");
@@ -1284,7 +1310,7 @@ BackgroundsConfigSave(void)
 
    fclose(fs);
 
-   Esnprintf(s, sizeof(s), "%s.backgrounds", EGetSavePrefix());
+   Esnprintf(s, sizeof(s), "%s.bg", EGetSavePrefix());
    E_mv(st, s);
 }
 
