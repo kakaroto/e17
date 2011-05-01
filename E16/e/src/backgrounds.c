@@ -767,7 +767,8 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
    int                 scalex = 0, scaley = 0;
    int                 scr_asp, im_asp;
    int                 w2, h2;
-   int                 maxw = 48, maxh = 48;
+   int                 maxw = Mode.backgrounds.mini_w;
+   int                 maxh = Mode.backgrounds.mini_h;
    int                 justx = 512, justy = 512;
 
    bg = BackgroundFind(bgid);
@@ -940,6 +941,8 @@ BackgroundCacheMini(Background * bg, int keep, int nuke)
    char                s[4096];
    EImage             *im;
    Pixmap              pmap;
+   int                 mini_w = Mode.backgrounds.mini_w;
+   int                 mini_h = Mode.backgrounds.mini_h;
 
    Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s.png", EDirUserCache(),
 	     BackgroundGetName(bg));
@@ -954,9 +957,9 @@ BackgroundCacheMini(Background * bg, int keep, int nuke)
      }
 
    /* Create new cached bg mini image */
-   pmap = ECreatePixmap(VROOT, 64, 48, 0);
-   BackgroundApplyPmap(bg, VROOT, pmap, 64, 48);
-   im = EImageGrabDrawable(pmap, None, 0, 0, 64, 48, 0);
+   pmap = ECreatePixmap(VROOT, mini_w, mini_h, 0);
+   BackgroundApplyPmap(bg, VROOT, pmap, mini_w, mini_h);
+   im = EImageGrabDrawable(pmap, None, 0, 0, mini_w, mini_h, 0);
    EImageSave(im, s);
    EFreePixmap(pmap);
 
@@ -1637,6 +1640,8 @@ BG_RedrawView(void)
    Win                 win;
    Pixmap              pmap;
    ImageClass         *ic;
+   int                 mini_w = Mode.backgrounds.mini_w;
+   int                 mini_h = Mode.backgrounds.mini_h;
 
    num = ecore_list_count(bg_list);
    if (num <= 0)
@@ -1653,17 +1658,17 @@ BG_RedrawView(void)
 
    ImageclassApplySimple(ic, win, pmap, STATE_NORMAL, 0, 0, w, h);
 
-   x = -(num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num);
+   x = -(num * (mini_w + 8) - w) * tmp_bg_sel_sliderval / (4 * num);
 
    ECORE_LIST_FOR_EACH(bg_list, bg)
    {
-      if (((x + 64 + 8) >= 0) && (x < w))
+      if (((x + mini_w + 8) >= 0) && (x < w))
 	{
 	   EImage             *im;
 
 	   ImageclassApplySimple(ic, win, pmap,
 				 (bg == tmp_bg) ? STATE_CLICKED : STATE_NORMAL,
-				 x, 0, 64 + 8, 48 + 8);
+				 x, 0, mini_w + 8, mini_h + 8);
 
 	   if (BackgroundIsNone(bg))
 	     {
@@ -1678,7 +1683,7 @@ BG_RedrawView(void)
 			      _("No\nBackground"), &tw, &th, 17);
 		     TextDraw(tc, win, pmap, 0, 0, STATE_NORMAL,
 			      _("No\nBackground"), x + 4,
-			      4 + ((48 - th) / 2), 64, 48, 17, 512);
+			      4 + ((mini_h - th) / 2), mini_w, mini_h, 17, 512);
 		  }
 	     }
 	   else
@@ -1686,12 +1691,13 @@ BG_RedrawView(void)
 		im = BackgroundCacheMini(bg, 1, 0);
 		if (im)
 		  {
-		     EImageRenderOnDrawable(im, win, pmap, 0, x + 4, 4, 64, 48);
+		     EImageRenderOnDrawable(im, win, pmap, 0, x + 4, 4,
+					    mini_w, mini_h);
 		     EImageFree(im);
 		  }
 	     }
 	}
-      x += (64 + 8);
+      x += (mini_w + 8);
    }
 
    EClearWindow(win);
@@ -1729,6 +1735,7 @@ CB_BGAreaEvent(DItem * di, int val __UNUSED__, void *data)
    int                 x, num, w, h;
    Background         *bg;
    XEvent             *ev = (XEvent *) data;
+   int                 mini_w = Mode.backgrounds.mini_w;
 
    DialogItemAreaGetSize(di, &w, &h);
 
@@ -1739,9 +1746,10 @@ CB_BGAreaEvent(DItem * di, int val __UNUSED__, void *data)
 	  {
 	  case 1:
 	     num = ecore_list_count(bg_list);
-	     x = (num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num) +
+	     x = (num * (mini_w + 8) - w) * tmp_bg_sel_sliderval / (4 * num) +
 		ev->xbutton.x;
-	     bg = (Background *) ecore_list_index_goto(bg_list, x / (64 + 8));
+	     bg =
+		(Background *) ecore_list_index_goto(bg_list, x / (mini_w + 8));
 	     if (!bg || bg == DeskBackgroundGet(DesksGetCurrent()))
 		break;
 	     BgDialogSetNewCurrent(bg);
@@ -1952,6 +1960,8 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DItem              *di, *table2, *table3, *area, *label;
    int                 i, num;
    char                s[1024];
+   int                 mini_w = Mode.backgrounds.mini_w;
+   int                 mini_h = Mode.backgrounds.mini_h;
 
    if (!Conf.backgrounds.no_scan)
       ScanBackgroundMenu();
@@ -2035,7 +2045,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
-   DialogItemSliderSetJump(di, 64);
+   DialogItemSliderSetJump(di, mini_w);
    DialogItemSliderSetValPtr(di, &tmp_bg_xjust);
 
    DialogAddItem(table3, DITEM_NONE);
@@ -2046,11 +2056,11 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSetFill(di, 0, 1);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
-   DialogItemSliderSetJump(di, 64);
+   DialogItemSliderSetJump(di, mini_w);
    DialogItemSliderSetValPtr(di, &tmp_bg_yjust);
 
    di = bg_mini_disp = area = DialogAddItem(table3, DITEM_AREA);
-   DialogItemAreaSetSize(di, 64, 48);
+   DialogItemAreaSetSize(di, mini_w, mini_h);
 #if 0				/* Remove? */
    DialogItemAreaSetInitFunc(di, CB_DesktopMiniDisplayAreaInit);
 #endif
@@ -2061,7 +2071,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSetFill(di, 0, 1);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
-   DialogItemSliderSetJump(di, 64);
+   DialogItemSliderSetJump(di, mini_w);
    DialogItemSliderSetValPtr(di, &tmp_bg_yperc);
 
    DialogAddItem(table3, DITEM_NONE);
@@ -2070,7 +2080,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
-   DialogItemSliderSetJump(di, 64);
+   DialogItemSliderSetJump(di, mini_w);
    DialogItemSliderSetValPtr(di, &tmp_bg_xperc);
 
    table3 = DialogAddItem(table2, DITEM_TABLE);
@@ -2164,7 +2174,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
 #endif
 
    di = bg_sel = DialogAddItem(table, DITEM_AREA);
-   DialogItemAreaSetSize(di, 160, 56);
+   DialogItemAreaSetSize(di, 160, 8 + Mode.backgrounds.mini_h);
    DialogItemAreaSetEventFunc(di, CB_BGAreaEvent);
    DialogItemAreaSetInitFunc(di, CB_InitView);
 

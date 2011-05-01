@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -2141,6 +2141,9 @@ DesksInit(void)
    Mode.screen.w_old = WinGetW(VROOT);
    Mode.screen.h_old = WinGetH(VROOT);
 
+   Mode.backgrounds.mini_w = WinGetW(VROOT) / 12;
+   Mode.backgrounds.mini_h = WinGetH(VROOT) / 12;
+
    /* Backward compatibility hack */
    if (Conf.desks.edge_flip_resistance <= 0)
       Conf.desks.edge_flip_mode = EDGE_FLIP_OFF;
@@ -2271,7 +2274,9 @@ CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 	  {
 	     Background         *bg;
 
-	     dd->wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
+	     dd->wins[i] =
+		ECreateWindow(win, 0, 0, Mode.backgrounds.mini_w,
+			      Mode.backgrounds.mini_h, 0);
 	     ESetWindowBorderWidth(dd->wins[i], 1);
 
 	     bg = DeskBackgroundGet(DeskGet(i));
@@ -2280,7 +2285,9 @@ CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 		  Pixmap              pmap;
 
 		  pmap = EGetWindowBackgroundPixmap(dd->wins[i]);
-		  BackgroundApplyPmap(bg, dd->wins[i], pmap, 64, 48);
+		  BackgroundApplyPmap(bg, dd->wins[i], pmap,
+				      Mode.backgrounds.mini_w,
+				      Mode.backgrounds.mini_h);
 	       }
 	     else
 	       {
@@ -2298,8 +2305,8 @@ CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 	num = dd->desktops - 1;
 	if (num < 1)
 	   num = 1;
-	EMoveWindow(dd->wins[i], (i * (w - 64 - 2)) / num,
-		    (i * (h - 48 - 2)) / num);
+	EMoveWindow(dd->wins[i], (i * (w - Mode.backgrounds.mini_w - 2)) / num,
+		    (i * (h - Mode.backgrounds.mini_h - 2)) / num);
 	ERaiseWindow(dd->wins[i]);
 	EMapWindow(dd->wins[i]);
      }
@@ -2362,7 +2369,8 @@ _DlgFillDesks(Dialog * d, DItem * table, void *data __UNUSED__)
 
    di = DialogAddItem(table, DITEM_AREA);
    DialogItemSetColSpan(di, 2);
-   DialogItemAreaSetSize(di, 128, 96);
+   DialogItemAreaSetSize(di, 2 * Mode.backgrounds.mini_w,
+			 2 * Mode.backgrounds.mini_h);
    DialogItemAreaSetInitFunc(di, CB_DesktopDisplayAreaRedraw);
 
    DialogItemSetCallback(slider, CB_DesktopDisplayRedraw, 0, di);
