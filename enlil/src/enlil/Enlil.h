@@ -85,6 +85,7 @@ typedef void (*Enlil_Geocaching_Free_Cb)     (Enlil_Geocaching *gp, void *data);
 //when the version change
 typedef void (*Enlil_Album_Version_Header_Increase_Cb) (void *data, Enlil_Album *album);
 typedef void (*Enlil_Photo_Version_Header_Increase_Cb) (void *data, Enlil_Photo *photo);
+typedef void (*Enlil_Photo_Version_Tags_Increase_Cb) (void *data, Enlil_Photo *photo);
 //
 
 enum enlil_photo_sort
@@ -194,6 +195,8 @@ EAPI 	void 					enlil_library_album_version_header_increase_cb_set(Enlil_Library
 									Enlil_Album_Version_Header_Increase_Cb cb, void *data);
 EAPI 	void 					enlil_library_photo_version_header_increase_cb_set(Enlil_Library *library,
 									Enlil_Photo_Version_Header_Increase_Cb cb, void *data);
+EAPI 	void 					enlil_library_photo_version_tags_increase_cb_set(Enlil_Library *library,
+									Enlil_Photo_Version_Tags_Increase_Cb cb, void *data);
 
 EAPI    Eina_List *             enlil_library_eet_path_load();
 EAPI    int                     enlil_library_eet_path_save(Enlil_Library *library);
@@ -347,6 +350,7 @@ EAPI    void                    enlil_photo_tag_process(Enlil_Photo *photo);
 EAPI    void                    enlil_photo_tag_add(Enlil_Photo *photo, const char *tag_name);
 EAPI    const Eina_List *       enlil_photo_tags_get(const Enlil_Photo *photo);
 EAPI    void                    enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag);
+EAPI 	void 					enlil_photo_tag_clear(Enlil_Photo *photo);
 
 EAPI    void                    enlil_photo_exifs_set(Enlil_Photo *photo, Eina_List *exifs);
 EAPI    const Eina_List *       enlil_photo_exifs_get(const Enlil_Photo *photo);

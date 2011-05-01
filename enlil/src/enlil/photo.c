@@ -257,7 +257,7 @@ void enlil_photo_album_set(Enlil_Photo *photo, Enlil_Album *album)
    SET(iptc_loaded, Eina_Bool)
    SET(size, int)
    SET(size_w, int)
-SET(size_h, int)
+   SET(size_h, int)
 
 
    GET(type, Enlil_Photo_Type)
@@ -362,6 +362,12 @@ void _enlil_photo_netsync_version_tags_inc(Enlil_Photo *photo)
     Enlil_Album *album = enlil_photo_album_get(photo);
     if(album)
  	   enlil_album_eet_photos_list_save(album);
+
+
+    Enlil_Library *library = enlil_album_library_get(album);
+    if(library && _enlil_library_photo_version_tags_increase_cb_get(library))
+    	_enlil_library_photo_version_tags_increase_cb_get(library)(
+    			_enlil_library_photo_version_tags_increase_data_get(library), photo);
 }
 
 
@@ -1153,6 +1159,8 @@ void enlil_photo_tag_add(Enlil_Photo *photo, const char *tag_name)
 
    enlil_photo_eet_save(photo);
 
+   _enlil_photo_netsync_version_tags_inc(photo);
+
 end:
    eina_stringshare_del(tag_name);
 }
@@ -1227,6 +1235,21 @@ void enlil_photo_tag_remove(Enlil_Photo *photo, Enlil_Photo_Tag *photo_tag)
    free(photo_tag);
 
    enlil_photo_eet_save(photo);
+
+   _enlil_photo_netsync_version_tags_inc(photo);
+}
+
+void enlil_photo_tag_clear(Enlil_Photo *photo)
+{
+	   ASSERT_RETURN_VOID(photo != NULL);
+
+	   const Eina_List *l, *l2;
+	   Enlil_Photo_Tag *tag;
+
+	   EINA_LIST_FOREACH_SAFE(enlil_photo_tags_get(photo), l, l2, tag)
+	   {
+		   enlil_photo_tag_remove(photo, tag);
+	   }
 }
 
 Eina_Bool enlil_photo_iptc_remove(Enlil_Photo *photo, const char *name, const char *value)

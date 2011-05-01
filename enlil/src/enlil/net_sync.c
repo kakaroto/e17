@@ -1085,11 +1085,22 @@ static void _job_next()
 			content = azy_content_new(NULL);
 			err = azy_content_new(NULL);
 
+			//
+			Eina_List *tags = NULL; //list of const char*
+			Eina_List *l;
+		    Enlil_Photo_Tag *tag;
+			EINA_LIST_FOREACH(enlil_photo_tags_get(job->photo), l, tag)
+			{
+				tags = eina_list_append(tags, eina_stringshare_add(tag->name));
+			}
+			//
+
 			azy_content_data_set(content, job);
 			ret = pwg_images_setInfo(client, enlil_photo_netsync_id_get(job->photo),
 					enlil_photo_name_get(job->photo),
 					enlil_photo_description_get(job->photo),
 					enlil_photo_author_get(job->photo),
+					tags,
 					content, NULL);
 			CALL_CHECK(_netsync_photo_update_netsync_ret);
 
@@ -1761,6 +1772,8 @@ static Eina_Error _netsync_photo_new_header_get_ret(__UNUSED__ Azy_Client *cli, 
 static Eina_Error _netsync_photo_update_local_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
 	pwg_Image *AZY_photo = _response;
+	Eina_List *l;
+	const char *tag;
 
 	Enlil_NetSync_Job *job = job_current;
 
@@ -1777,7 +1790,14 @@ static Eina_Error _netsync_photo_update_local_ret(__UNUSED__ Azy_Client *cli, Az
 	enlil_photo_name_set(photo, AZY_photo->name);
 	enlil_photo_author_set(photo, AZY_photo->author);
 
+	enlil_photo_tag_clear(job->photo);
+	EINA_LIST_FOREACH(AZY_photo->tags, l, tag)
+	{
+		enlil_photo_tag_add(job->photo, tag);
+	}
+
 	_enlil_photo_netsync_version_header_both_set(photo, AZY_photo->version_header);
+	_enlil_photo_netsync_version_tags_both_set(photo, AZY_photo->version_tags);
 
 	enlil_album_eet_header_save(job->album);
 	enlil_photo_eet_save(job->photo);
@@ -1792,7 +1812,7 @@ static Eina_Error _netsync_photo_update_local_ret(__UNUSED__ Azy_Client *cli, Az
 
 static Eina_Error _netsync_photo_update_netsync_ret(__UNUSED__ Azy_Client *cli, Azy_Content *content, void *_response)
 {
-	int version = (int)_response;
+	pwg_Photo_Versions *versions = _response;
 
 	Enlil_NetSync_Job *job = job_current;
 
@@ -1803,7 +1823,8 @@ static Eina_Error _netsync_photo_update_netsync_ret(__UNUSED__ Azy_Client *cli, 
 		return AZY_ERROR_NONE;
 	}
 
-	_enlil_photo_netsync_version_header_both_set(job->photo, version);
+	_enlil_photo_netsync_version_header_both_set(job->photo, versions->version_header);
+	_enlil_photo_netsync_version_tags_both_set(job->photo, versions->version_tags);
 
 	enlil_album_eet_header_save(job->album);
 	enlil_photo_eet_save(job->photo);

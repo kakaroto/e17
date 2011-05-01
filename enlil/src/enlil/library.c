@@ -52,6 +52,9 @@ struct enlil_library
 
    Enlil_Photo_Version_Header_Increase_Cb photo_version_header_increase_cb;
    void *photo_version_header_increase_data;
+
+   Enlil_Photo_Version_Tags_Increase_Cb photo_version_tags_increase_cb;
+   void *photo_version_tags_increase_data;
 };
 
 #define ROOT_HEADER_LOAD(library) \
@@ -226,6 +229,14 @@ void enlil_library_photo_version_header_increase_cb_set(Enlil_Library *library,
 	library->photo_version_header_increase_data = data;
 }
 
+void enlil_library_photo_version_tags_increase_cb_set(Enlil_Library *library,
+									Enlil_Photo_Version_Tags_Increase_Cb cb, void *data)
+{
+	ASSERT_RETURN_VOID(library != NULL);
+
+	library->photo_version_tags_increase_cb = cb;
+	library->photo_version_tags_increase_data = data;
+}
 
 
 Enlil_Album_Version_Header_Increase_Cb _enlil_library_album_version_header_increase_cb_get(Enlil_Library *library)
@@ -246,6 +257,16 @@ Enlil_Photo_Version_Header_Increase_Cb _enlil_library_photo_version_header_incre
 void *_enlil_library_photo_version_header_increase_data_get(Enlil_Library *library)
 {
 	return library->photo_version_header_increase_data;
+}
+
+Enlil_Photo_Version_Tags_Increase_Cb _enlil_library_photo_version_tags_increase_cb_get(Enlil_Library *library)
+{
+	return library->photo_version_tags_increase_cb;
+}
+
+void *_enlil_library_photo_version_tags_increase_data_get(Enlil_Library *library)
+{
+	return library->photo_version_tags_increase_data;
 }
 
 /**

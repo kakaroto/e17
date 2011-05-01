@@ -67,6 +67,8 @@ Enlil_Album_Version_Header_Increase_Cb _enlil_library_album_version_header_incre
 void *					_enlil_library_album_version_header_increase_data_get(Enlil_Library *library);
 Enlil_Photo_Version_Header_Increase_Cb _enlil_library_photo_version_header_increase_cb_get(Enlil_Library *library);
 void *					_enlil_library_photo_version_header_increase_data_get(Enlil_Library *library);
+Enlil_Photo_Version_Tags_Increase_Cb _enlil_library_photo_version_tags_increase_cb_get(Enlil_Library *library);
+void *					_enlil_library_photo_version_tags_increase_data_get(Enlil_Library *library);
 
 void                    _enlil_album_photo_name_changed(Enlil_Album *album, Enlil_Photo *photo);
 void                    _enlil_album_photo_datetimeoriginal_changed(Enlil_Album *album, Enlil_Photo *photo);

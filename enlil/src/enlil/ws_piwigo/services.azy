@@ -72,8 +72,16 @@ struct Image
 	string md5sum;
 	string added_by;
 	
+	array<string> tags;
+	
 	string lat;
 	string lon;
+};
+
+struct Photo_Versions
+{
+	int version_header;
+	int version_tags;
 };
 
 struct Category_Image
@@ -97,7 +105,7 @@ Image getAdminInfo(int image_id)
 	return NULL;
 %>
 
-int setInfo(int image_id, string name, string comment, string author)
+Photo_Versions setInfo(int image_id, string name, string comment, string author, array<string> tags)
 <%
 	return 0;
 %>
