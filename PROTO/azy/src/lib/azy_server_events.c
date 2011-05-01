@@ -703,7 +703,7 @@ post:
           }
 
       default:
-        if (module->recv.data) free(module->recv.data);
+        free(module->recv.data);
         module->recv.data = NULL;
      }
    module->run_method = EINA_TRUE;
@@ -914,7 +914,7 @@ _azy_server_client_handler_data(Azy_Server_Client           *client,
 
    if (type == -500)
      {
-        if (overflow) free(overflow);
+        free(overflow);
 
         overflow = NULL;
         overflow_length = 0;

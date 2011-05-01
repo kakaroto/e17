@@ -3024,7 +3024,7 @@ char *mode;
 {
         FILE *fp;
 
-        if ( lemp->outname ) free(lemp->outname);
+        free(lemp->outname);
 
         lemp->outname = file_makename(lemp, suffix);
         fp = fopen(lemp->outname,mode);

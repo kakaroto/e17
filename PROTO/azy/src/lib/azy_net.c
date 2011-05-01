@@ -85,8 +85,7 @@ azy_net_free(Azy_Net *net)
      eina_stringshare_del(net->http.req.http_path);
    if (net->http.res.http_msg)
      eina_stringshare_del(net->http.res.http_msg);
-   if (net->buffer)
-     free(net->buffer);
+   free(net->buffer);
    memset(net, 0, sizeof(Azy_Net)); /* zero out data for security */
    free(net);
 }

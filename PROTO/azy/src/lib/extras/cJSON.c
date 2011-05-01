@@ -655,9 +655,9 @@ static char *print_object(cJSON *item,int depth,int fmt)
         if (fail)
         {
                 for (i=0; i<numentries; i++) {
-                        if (names[i]) free(names[i]);
+                        free(names[i]);
 
-                        if (entries[i]) free(entries[i]);
+                        free(entries[i]);
                 }
 
                 free(names);

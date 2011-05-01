@@ -41,8 +41,7 @@ azy_content_buffer_set_(Azy_Content   *content,
    if ((!buffer) || (length < 1))
      return EINA_FALSE;
 
-   if (content->buffer)
-     free(content->buffer);
+   free(content->buffer);
 
    content->buffer = buffer;
    content->length = length;
