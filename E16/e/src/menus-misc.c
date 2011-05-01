@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -111,7 +111,7 @@ MenuLoadFromDirectory(Menu * m)
    if (stat(dir, &st) < 0)
       return 1;
 
-   Esnprintf(cs, sizeof(cs), "%s/cached/img/%s",
+   Esnprintf(cs, sizeof(cs), "%s/cached/img/%s.dir",
 	     EDirUserCache(), _dircache_filename(ss, sizeof(ss), &st));
 
    if (Mode.backgrounds.force_scan)
@@ -133,8 +133,8 @@ MenuLoadFromDirectory(Menu * m)
 	     sscanf(s, "%1000s %1000s %n", ss, s2, &len);
 	     if (!strcmp(ss, "BG"))
 	       {
-		  Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
-		  mi = MenuItemCreateFromBackground(s + len, ss);
+		  Esnprintf(ss, sizeof(ss), "%s/%s", dir, s + len);
+		  mi = MenuItemCreateFromBackground(s2, ss);
 		  MenuAddItem(m, mi);
 	       }
 	     else if (!strcmp(ss, "EXE"))
@@ -210,7 +210,7 @@ MenuLoadFromDirectory(Menu * m)
 		  MenuAddItem(m, mi);
 
 		  if (f)
-		     fprintf(f, "BG %s %s\n", list[i], s3);
+		     fprintf(f, "BG %s %s\n", s3, list[i]);
 	       }
 	  }
      }
