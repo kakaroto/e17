@@ -79,6 +79,7 @@ struct _Azy_Server_Module
 
    Eina_List  *methods;      /* methods */
    Eina_List  *errors;
+   double      version;
 
    const char *stub_header;
    const char *stub_init;

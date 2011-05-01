@@ -88,6 +88,9 @@ Azy_Module Test1
     #include <inttypes.h>
    %>
 
+   /** module-specific version numbers can be set like this: */
+   __version__(1.0);
+
    /**
     * define some module-specific errors which are only used
     * within this module

@@ -1859,7 +1859,7 @@ gen_server_impl(Azy_Server_Module *s)
    E(1, "azy_server_module_def_fallback_set(module_def, ");
    GET_NAME(fallback);
    EL(0, ");");
-
+   if (s->version) EL(1, "azy_server_module_def_version_set(module_def, %g);", s->version);
    EL(1, "azy_server_module_size_set(module_def, sizeof(%s%s%s_Module));", name, sep, s->name);
    EINA_LIST_FOREACH(s->methods, j, method)
      {

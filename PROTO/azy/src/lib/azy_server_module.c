@@ -580,6 +580,46 @@ azy_server_module_method_free(Azy_Server_Module_Method *method)
 }
 
 /**
+ * @brief Get the version of a module
+ *
+ * This function returns the version number of a module as set with
+ * azy_server_module_def_version_set or the __version__() directive in a .azy file.
+ * @param m The module (NOT #NULL)
+ * @return The version of the module, or -1.0 on failure
+ */
+double
+azy_server_module_version_get(Azy_Server_Module *m)
+{
+   if (!AZY_MAGIC_CHECK(m, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(m, AZY_MAGIC_SERVER_MODULE);
+        return -1.0;
+     }
+
+   return m->def->version;
+}
+
+/**
+ * @brief Set the version of a module
+ *
+ * This function sets the version number of a server module.
+ * @param def The module def (NOT #NULL)
+ * @param version The version number of the module
+ */
+void
+azy_server_module_def_version_set(Azy_Server_Module_Def *def,
+                              double version)
+{
+   if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
+     {
+        AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
+        return;
+     }
+
+   def->version = version;
+}
+
+/**
  * @brief Return the size of the private data of a module
  *
  * This function is equivalent to calling sizeof(Azy_Server_Module).

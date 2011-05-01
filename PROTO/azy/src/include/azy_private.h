@@ -309,6 +309,7 @@ struct Azy_Server_Module_Def
                                  AZY_MAGIC;
    const char                   *name;
    int                           data_size;
+   double                        version;
    Azy_Server_Module_Cb          init;
    Azy_Server_Module_Shutdown_Cb shutdown;
    Azy_Server_Module_Pre_Cb      pre;

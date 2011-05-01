@@ -113,6 +113,7 @@ main:
    "__fallback__"     { RET(AZY_FALLBACK); }
    "__download__"     { RET(AZY_DOWNLOAD); }
    "__upload__"       { RET(AZY_UPLOAD); }
+   "__version__"      { RET(AZY_VERSION); }
    "Azy_Error"        { RET(AZY_ERROR); }
    "Azy_Namespace"    { RET(AZY_NAMESPACE); }
    "Azy_Module"       { RET(AZY_MODULE); }
@@ -122,6 +123,7 @@ main:
    [{][ ]S+/[ ][}]    { RET(AZY_STRUCTMEMSTR); }
    L (L|D)*           { RET(AZY_ID); }
    D+                 { RET(AZY_INTEGER); }
+   D+"."D+            { RET(AZY_DOUBLE); }
    "="                { RET(AZY_EQ); }
    ";"                { RET(AZY_SEMICOL); }
    "<"                { RET(AZY_LT); }
@@ -268,6 +270,11 @@ module_decl_body ::= LB opt_inline_code(C) module_body_decls RB. {
 module_body_decls ::= module_body_decl.
 module_body_decls ::= module_body_decls module_body_decl.
 
+module_body_decl ::= VERSION LP DOUBLE(D) RP SEMICOL.
+{
+   MODEL->cur_module->version = strtod(D->text, NULL);
+   azy_parser_token_free(D);
+}
 module_body_decl ::= struct_decl(S). {MODEL->types = eina_list_append(MODEL->types, S);}
 module_body_decl ::= method_decl(M) CODE(C). {
    MODEL->cur_module->methods = eina_list_append(MODEL->cur_module->methods, M);
