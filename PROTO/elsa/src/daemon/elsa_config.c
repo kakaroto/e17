@@ -31,6 +31,7 @@ _defaults_set(Elsa_Config *config)
    config->userlogin = eina_stringshare_add("mylogintouse");
    config->lockfile = eina_stringshare_add("/var/run/elsa.pid");
    config->logfile = eina_stringshare_add("/var/log/elsa.log");
+   config->theme = eina_stringshare_add("default");
 }
 
 
@@ -127,6 +128,7 @@ _config_free(Elsa_Config *config)
    eina_stringshare_del(config->userlogin);
    eina_stringshare_del(config->lockfile);
    eina_stringshare_del(config->logfile);
+   eina_stringshare_del(config->theme);
    free(config);
 }
 
@@ -160,6 +162,7 @@ elsa_config_init()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "userlogin", userlogin, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "lockfile", lockfile, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "logfile", logfile, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "theme", theme, EET_T_STRING);
 
    if (stat( "/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE, &cache) == -1)
      {

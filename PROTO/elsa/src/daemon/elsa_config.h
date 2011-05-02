@@ -28,6 +28,7 @@ struct _Elsa_Config
    const char *userlogin;
    const char *lockfile;
    const char *logfile;
+   const char *theme;
    char *last_session;
 };
 

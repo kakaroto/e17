@@ -22,7 +22,7 @@ struct Elsa_Xsession_
    const char *icon;
 };
 
-static Evas_Object *_elsa_gui_theme_get(Evas_Object *win, const char *group);
+static Evas_Object *_elsa_gui_theme_get(Evas_Object *win, const char *group, const char *theme);
 static void _elsa_gui_hostname_activated_cb(void *data, Evas_Object *obj, void *event_info);
 static void _elsa_gui_password_activated_cb(void *data, Evas_Object *obj, void *event_info);
 static void _elsa_gui_shutdown(void *data, Evas_Object *obj, void *event_info);
@@ -30,13 +30,24 @@ static void _elsa_gui_shutdown(void *data, Evas_Object *obj, void *event_info);
 static Elsa_Gui *_gui;
 
 static Evas_Object *
-_elsa_gui_theme_get (Evas_Object *win, const char *group)
+_elsa_gui_theme_get (Evas_Object *win, const char *group, const char *theme)
 {
    Evas_Object *edje = NULL;
+   char buf[PATH_MAX];
 
    edje = elm_layout_add(win);
-   elm_layout_file_set(edje, PACKAGE_DATA_DIR"/themes/default.edj", group);
-
+   snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/themes/%s.edj", theme);
+   if (theme)
+     {
+        snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/themes/%s.edj", theme);
+        if (!elm_layout_file_set(edje, buf, group))
+          {
+             printf("can't load %s theme fallback to default\n", theme);
+             elm_layout_file_set(edje, PACKAGE_DATA_DIR"/themes/default.edj", group);
+          }
+     }
+   else
+     elm_layout_file_set(edje, PACKAGE_DATA_DIR"/themes/default.edj", group);
    return edje;
 }
 
@@ -76,6 +87,7 @@ _elsa_gui_login_cancel_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, co
 
    o = ELSA_GUI_GET(_gui->edj, "hostname");
    elm_scrolled_entry_entry_set(o, "");
+   elm_object_focus(o);
    o = ELSA_GUI_GET(_gui->edj, "password");
    elm_scrolled_entry_entry_set(o, "");
    edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
@@ -196,7 +208,7 @@ elsa_gui_xsession_set(Eina_List *xsessions)
 }
 
 int
-elsa_gui_init()
+elsa_gui_init(const char *theme)
 {
 
    Ecore_X_Window root;
@@ -224,7 +236,7 @@ elsa_gui_init()
    evas_object_smart_callback_add(_gui->win, "delete,request",
                                   _elsa_gui_shutdown, NULL);
 
-   _gui->edj = _elsa_gui_theme_get(_gui->win, "elsa");
+   _gui->edj = _elsa_gui_theme_get(_gui->win, "elsa", theme);
    if (!_gui->edj)
      {
         fprintf(stderr, PACKAGE": client Tut Tut Tut no theme\n");

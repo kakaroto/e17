@@ -130,12 +130,17 @@ _elsa_wait()
 int
 elsa_main()
 {
+   printf("My loosing elsa_main env %s\n", getenv("ELSA_XPID"));
    if (!elsa_config->autologin)
      {
+        char buf[PATH_MAX];
         ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                                 _elsa_client_del, NULL);
         fprintf(stderr, PACKAGE": Run client\n");
-        _elsa_client = ecore_exe_run(PACKAGE_BIN_DIR"/elsa_client -d ':0.0'", NULL);
+        snprintf(buf, sizeof(buf),
+                 PACKAGE_BIN_DIR"/elsa_client -d :0.0 -t %s",
+                 elsa_config->theme);
+        _elsa_client = ecore_exe_run(buf, NULL);
      }
    else
      ecore_main_loop_quit();
@@ -150,6 +155,7 @@ _elsa_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
    if (ev->exe != _elsa_client)
      return ECORE_CALLBACK_PASS_ON;
    ecore_main_loop_quit();
+   _elsa_client = NULL;
    return ECORE_CALLBACK_DONE;
 }
 
@@ -276,6 +282,7 @@ main (int argc, char ** argv)
    else
      {
         elsa_server_init();
+        printf("My loosing env %s\n", getenv("ELSA_XPID"));
         ecore_main_loop_begin();
         elsa_server_shutdown();
      }
