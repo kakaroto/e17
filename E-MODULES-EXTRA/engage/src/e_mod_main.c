@@ -1735,10 +1735,7 @@ _ngi_init_timer_cb(void *data)
    Eina_List *l;
    Config_Item *ci;
 
-   /* if (ecore_x_screen_is_composited(0)) */
-     ngi_config->use_composite = 1;
-   /* else
-    *   ngi_config->use_composite = 0; */
+   ngi_config->use_composite = ecore_x_screen_is_composited(0);
 
    EINA_LIST_FOREACH (ngi_config->items, l, ci)
      ngi_new(ci);
