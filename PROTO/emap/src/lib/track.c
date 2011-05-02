@@ -14,7 +14,7 @@ EMap_Track *emap_track_new(EMap_Track_Type type)
    return track;
 }
 
-void map_track_node_add(EMap_Track *track, EMap_Track_Node *node)
+void emap_track_node_add(EMap_Track *track, EMap_Track_Node *node)
 {
    track->nodes = eina_list_append(track->nodes, node);
 }
