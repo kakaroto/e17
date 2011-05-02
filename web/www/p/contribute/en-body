@@ -47,6 +47,9 @@
 <p><pre><code>git svn clone http://svn.enlightenment.org/svn/e
 </code></pre></p>
  <p>
+  You can alternatively download the git-svn tars from <a href=http://download.enlightenment.org/git_svn>here</a>
+  and use them instead; This alternative is significantly faster.
+ <p>
   To update the code in your tree (pull in changes from our master
   tree), just use:
  </p>
@@ -88,6 +91,15 @@
 </code></pre></p>
 <p><pre><code>git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas
 </code></pre></p>
+ <p>
+  You can also use the git svn tars with a developer access, only difference
+  is that you need to edit each module's "MODULE/.git/config" and change:
+<p><pre><code>
+url = http://svn.enlightenment.org/svn/e/trunk/MODULE
+to
+url =  svn+ssh://USER@svn.enlightenment.org/var/svn/e/trunk/MODULE
+</code></pre></p>
+ </p>
  <p>
   Our SVN tree is divided up and categorized. The <b>trunk</b>
   directory is where all the main development happens. Inside this
