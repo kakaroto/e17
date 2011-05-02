@@ -23,6 +23,7 @@ static void _setup(void)
 {
    int i, y;
    FILE *f;
+   size_t r;
    unsigned char **data, **lp;
    Evas_Object *o;
    for (i = 0; i < 1; i++)
@@ -42,9 +43,9 @@ static void _setup(void)
 	f = fopen(build_path("tp.yuv"), "rb");
 	if (f)
 	  {
-	     fread(yp, 640 * 480, 1, f);
-	     fread(up, 320 * 240, 1, f);
-	     fread(vp, 320 * 240, 1, f);
+	     r = fread(yp, 640 * 480, 1, f);
+	     r = fread(up, 320 * 240, 1, f);
+	     r = fread(vp, 320 * 240, 1, f);
 	     fclose(f);
 	  }
 	data = evas_object_image_data_get(o_images[i], 1);
