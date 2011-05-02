@@ -100,7 +100,8 @@ void map_photo_add(Map *map, Enlil_Photo *photo)
 	   snprintf(buf, sizeof(buf), "%s/%s",
 			   enlil_photo_path_get(photo),
 			   enlil_photo_file_name_get(photo));
-	   photo_data->route.route = elm_map_route_from_gpx_file_add(map->map, buf);
+	   /* photo_data->route.route = elm_map_route_from_gpx_file_add(map->map, buf); */
+	   photo_data->route.route = NULL;
 	   break;
    }
 }

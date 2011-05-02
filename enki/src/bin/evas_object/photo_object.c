@@ -209,9 +209,6 @@ void photo_object_file_set(Evas_Object *obj, const char *image, const char *phot
 	sd->iw = iw;
 	sd->ih = ih;
 
-	if(sd->obj)
-		edje_object_part_swallow(sd->obj, "object.photo.swallow", sd->image);
-
 	evas_object_hide(sd->image);
 	evas_object_image_preload(sd->image, EINA_FALSE);
 	sd->preloading = EINA_TRUE;
@@ -311,11 +308,15 @@ Evas_Object *photo_object_netsync_state_set(Evas_Object *obj, const char* state)
 
 static void _preloaded(void *data, Evas *e, Evas_Object *obj, void *event)
 {
-	Smart_Data *sd = data;
+   Smart_Data *sd = data;
 
-	sd->preloading = EINA_FALSE;
-	if(sd->show)
-		evas_object_show(sd->image);
+   sd->preloading = EINA_FALSE;
+
+   if (sd->show)
+     evas_object_show(sd->image);
+
+   if (sd->obj)
+     edje_object_part_swallow(sd->obj, "object.photo.swallow", sd->image);
 }
 
 
