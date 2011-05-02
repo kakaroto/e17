@@ -301,6 +301,13 @@ static Evas_Object *_album_icon_get(const void *data, Evas_Object *obj)
    return ly;
 }
 
+static void _photo_thumb_stop(void *data, Evas *e, Evas_Object *obj, void *event)
+{
+  Enlil_Photo *photo = data;
+
+  enlil_thumb_photo_clear(photo);
+}
+
 static Evas_Object *_photo_icon_get(const void *data, Evas_Object *obj)
 {
    const char *s = NULL;
@@ -325,10 +332,16 @@ static Evas_Object *_photo_icon_get(const void *data, Evas_Object *obj)
 
 	   evas_image_cache_flush (evas_object_evas_get(obj));
 
-	   if(s)
-		 photo_object_file_set(o, s , NULL);
+	   if (s)
+	     {
+	       photo_object_file_set(o, s , NULL);
+	       evas_object_event_callback_del_full(o, EVAS_CALLBACK_DEL, _photo_thumb_stop, photo);
+	     }
 	   else
-		 photo_object_progressbar_set(o, EINA_TRUE);
+	     {
+	       photo_object_progressbar_set(o, EINA_TRUE);
+	       evas_object_event_callback_add(o, EVAS_CALLBACK_DEL, _photo_thumb_stop, photo);
+	     }
 
 	   if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
 		 photo_object_camera_set(o, EINA_TRUE);
