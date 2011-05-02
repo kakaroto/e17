@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: emap
+Description: :)
+Version: @VERSION@
+Libs: -L${libdir} -lemap
+Cflags: -I${includedir}
+Requires: @requirements@
