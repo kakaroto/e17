@@ -37,7 +37,7 @@ pwg_categories.azy_client.c \
 pwg_Common.c \
 pwg_Common_Azy.c
 
-pwg_session.azy_client.c pwg_images.azy_client.c pwg_categories.azy_client.c pwg_Common.c pwg_Common_Azy.c: ws_piwigo/services.azy
+pwg_categories.azy_client.h  pwg_categories.azy_server.h  pwg_Common_Azy.h  pwg_Common.h  pwg_images.azy_client.h  pwg_images.azy_server.h  pwg_session.azy_client.h  pwg_session.azy_server.h pwg_session.azy_client.c pwg_images.azy_client.c pwg_categories.azy_client.c pwg_Common.c pwg_Common_Azy.c: ws_piwigo/services.azy
 	azy_parser -H -p -o ./ ws_piwigo/services.azy
 
 installed_headersdir = $(prefix)/include/enlil

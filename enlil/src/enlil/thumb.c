@@ -80,7 +80,7 @@ enlil_exists_cb(Ethumb_Client *client,
               break;
           }
 
-        if(job->done_cb)
+        if (job->done_cb)
           job->done_cb(job->data, job->photo, path);
 
         thumb.jobs = eina_list_remove(thumb.jobs, job);
