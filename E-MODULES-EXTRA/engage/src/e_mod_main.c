@@ -512,22 +512,32 @@ ngi_input_extents_calc(Ng *ng)
 	   case E_GADCON_ORIENT_BOTTOM:
 	      e_drop_handler_geometry_set
 		(box->drop_handler,
-		 box->pos, win->popup->h - item_zoomed, w, item_zoomed);
+		 ng->zone->x + box->pos,
+		 ng->zone->y + win->popup->h - item_zoomed,
+		 w, item_zoomed);
 	      break;
 
 	   case E_GADCON_ORIENT_TOP:
 	      e_drop_handler_geometry_set
-		(box->drop_handler, box->pos, 0, w, item_zoomed);
+		(box->drop_handler,
+		 ng->zone->x + box->pos,
+		 ng->zone->y,
+		 w, item_zoomed);
 	      break;
 
 	   case E_GADCON_ORIENT_LEFT:
 	      e_drop_handler_geometry_set
-		(box->drop_handler, 0, box->pos, item_zoomed, w);
+		(box->drop_handler,
+		 ng->zone->x,
+		 ng->zone->y + box->pos,
+		 item_zoomed, w);
 	      break;
 
 	   case E_GADCON_ORIENT_RIGHT:
 	      e_drop_handler_geometry_set
-		(box->drop_handler, win->popup->w - item_zoomed, box->pos,
+		(box->drop_handler,
+		 ng->zone->x + win->popup->w - item_zoomed,
+		 ng->zone->y + box->pos,
 		 item_zoomed, w);
 	      break;
 	  }

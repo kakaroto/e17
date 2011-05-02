@@ -152,9 +152,9 @@ _drop_handle_move(Ngi_Box *box, int x, int y)
    Eina_List *l;
 
    if (box->ng->horizontal)
-     box->ng->pos = x + box->ng->size/2;
+     box->ng->pos = x + box->ng->size/2 - box->ng->zone->x;
    else
-     box->ng->pos = y + box->ng->size/2;
+     box->ng->pos = y + box->ng->size/2 - box->ng->zone->y;
 
    item = ngi_item_at_position_get(box->ng);
 
@@ -266,7 +266,8 @@ _cb_drop_end(void *data, const char *type, void *event_info)
    l = eina_list_data_find_list(box->items, box->item_drop);
    if (l) it = eina_list_data_get(l->next);
 
-   ngi_item_free(box->item_drop);
+   if (box->item_drop)
+     ngi_item_free(box->item_drop);
 
    if (it && it->app)
      e_order_prepend_relative(box->apps, app, it->app);
