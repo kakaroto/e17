@@ -48,6 +48,7 @@
       <li>openssl</li>
       <li>curl</li>
       <li>libudev</li>
+      <li>lua</li>
      </ul>
     </p>
    </div>
