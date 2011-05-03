@@ -22,10 +22,14 @@ enum emap_track_type
 
 EAPI    EMap_Track *            emap_track_new();
 EAPI    void                    emap_track_node_add(EMap_Track *track, EMap_Track_Node *node);
+EAPI    void                    emap_track_free(EMap_Track *track);
+EAPI    void                    emap_track_name_set(EMap_Track *track, const char *name);
+EAPI    const char *            emap_track_name_get(EMap_Track *track);
 
 EAPI    EMap_Track_Node *       emap_track_node_new();
 EAPI    void                    emap_track_node_lon_set(EMap_Track_Node *node, double lon);
 EAPI    void                    emap_track_node_lat_set(EMap_Track_Node *node, double lat);
+EAPI    void                    emap_track_node_free(EMap_Track_Node *node);
 
 EAPI    EMap_Track *            emap_track_gpx_new(const char *file);
 
