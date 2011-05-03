@@ -271,5 +271,141 @@ les découvrir par vous même, tout est décris dans la
 \href{http://docs.enlightenment.org/auto/edje/edcref.html}[documentation de edje]
 
 
+\section{Le Texte}
+\subsection{description d'une icone}
+Regardons le code du fichier \href{file://tut04/tut04.edc}{tut04/tut04.edc} plus
+en détails. Un nouveau groupe a été ajouté nommée ``icon''. Il contient une
+image ``icon.png'' et un nouveau part de type ``TEXT''.
+
+\begin{lstlisting}
+  part {
+    name: "text";
+    type: TEXT;
+    description {
+      state: "default" 0.0;
+      color: 0 0 0 255;
+      text {
+        font: "Sans";
+        size: 12;
+        text: "Description";
+      }
+    }
+  }
+\end{lstlisting}
+
+Les différentes options parlent d'elle méme : 
+\begin{itemize}
+\item Couleur du texte : Noir;
+\item Fonte utilisée ``Sans'';
+\item Taille de la fonte : 12;
+\item Texte a afficher ``Description'';
+\end{itemize}
+
+Regardons a quoi ressemble notre exemple avec edje\_player. Attention dans cet
+exemple nous avons deux groupes. Nous devons donc spécifier a ejde\_player quel
+groupe nous voulons visualiser, et nous allons également lui dire de changer la
+couleur de fond.
+
+\begin{lstlisting}
+edje_player -c=255,255,255,255 -g icon tut04.edj
+\end{lstlisting}
+
+Nous sommes loins du résultat escompté ! Par défaut tous les parts sont
+centrés au centre de l'écran et occupe tout le taille du groupe. Nous devons
+décrire comment les objets sont placés les uns par rapport aux autres.
+C'est l'objet des tutoriaux 5 à 8.
+
+
+\section{Placement des objets}
+\subsection{Proportions}
+
+L'icône se doit d'être carré, c'est le cas de toutes les icônes en informatique
+non ?  Pour cela Edje propose la balise aspect et aspect preference. Ces deux
+balises sont liés. Regardons a quoi ca ressemble pour un définir un part carré:
+\begin{lstlisting}
+  aspect: 1.0 1.0;
+  aspect_preference: BOTH;
+\end{lstlisting}
+
+aspect prends deux flottants comme paramétres, min et max. Dans un cas normal,
+les dimensions de l'objet ne sont pas liés, en utilisant le paramétre aspect,
+on force edje a garder un ration entre la largeur et la hauteur de notre part.
+Dans le cas 1.0 1.0 l'icône aura donc meme hauteur et largeur.
+aspect\_preference, lui donne la direction on veux que ce ration s'applique.
+Rien de mieux pour comprendre qu'un exemple. regardez les fichier tut05.1.edj,
+tut05.2.edj et tut05.3.edj pour visualiser les effets de aspect et
+aspect\_preference
+
+\subsection{Positions relatives et offset}
+
+Edje permet de positionner les objets les uns par rapport aux autres de deux
+façons. Positionnement relatifs et positionnement absolu.
+
+Le positionnement relatif est en pourcent (valeur ramenée a un floatant entre
+0.0 et 1.0) alors que les positions absolu sont en pixels.
+
+Les balises rel1 et rel2 permettent de donner la position d'un objet par rapport
+à un autre. Par défaut la position est celle par rapport au groupe.
+Le positionnement relatif est donnée avec la balise rel1.relative et
+rel2.relative alors que le positionnement absolu est donnée par rel1.offset et 
+rel2.offset.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.7]{images/rel1rel2.pdf}
+  \end{center}
+  \caption{Positionnement relatif et absolu}
+\end{figure}
+
+Dans cet exemple le positionnement est relatif au groupes, mais nous pouvons
+spécifier un positonnement par rapport à un autre part en utilisant la balise : 
+
+\begin{lstlisting}
+rel1.to: "autre_part1";
+rel1.to: "autre_part2";
+\end{lstlisting}
+
+Ou encore relativement à un autre part mais uniquement sur un l'axe X ou Y : 
+\begin{lstlisting}
+rel1.to_x: "autre_part1";
+rel1.to_y: "autre_part2";
+\end{lstlisting}
+
+
+Pour l'exemple du fichier tut06.edc, j'ai choisis depositionner le texte en bas
+du groupe. Le texte pouvant être dynamique, comme nous allons voir plus loin,
+nous pouvons demander a Edje de calculer sa taille, c'est le role de 
+\begin{lstlisting}
+min:: 1 1;
+\end{lstlisting}
+
+Edje vas calculer la  hauteur et la largeur du texte en fonction de la police,
+et le part aura donc cette taile. Il nous reste plus qu'ensuite a positionner
+l'icone au dessus de ce texte (balise rel2.to: \"texte\")
+On ajoute également un bordure de 8 pixels autour de l'icone pour plus de
+lisibilité.
+\begin{lstlisting}
+  rel1.relative: 0 0;
+  rel1.offset: 8 8;
+  rel2.relative: 1 0;
+  rel2.offset: -7 -7;
+  rel2.to: "text";
+\end{lstlisting}
+
+Vous verrez également une telle description sous cette forme :
+\begin{lstlisting}
+  rel1 {
+    relative: 0 0;
+    offset: 8 8;
+  }
+  rel2 {
+    relative: 1 0;
+    offset: -7 -7;
+    to: "text";
+  }
+\end{lstlisting}
+
+Ces deux notations sont entiérement identiques.
+
 \end{document}
 
