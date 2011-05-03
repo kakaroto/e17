@@ -92,12 +92,12 @@
 <p><pre><code>git svn clone svn+ssh://USER@svn.enlightenment.org/var/svn/e/evas
 </code></pre></p>
  <p>
-  You can also use the git svn tars with a developer access, only difference
-  is that you need to edit each module's "MODULE/.git/config" and change:
+  You can also use the git svn tars with a developer access, you just need to
+  run the <a href=http://download.enlightenment.org/git_svn/gsvn_to_developer.sh>conversion script</a> as follows:
 <p><pre><code>
-url = http://svn.enlightenment.org/svn/e/trunk/MODULE
-to
-url =  svn+ssh://USER@svn.enlightenment.org/var/svn/e/trunk/MODULE
+  ./gsvn_to_developer.sh USER MODULE
+  for example:
+  ./gsvn_to_developer.sh tasn evas
 </code></pre></p>
  </p>
  <p>
