@@ -4,66 +4,71 @@
  * The file name, the path and the name are saved into library/data.eet. Consequently if the name of the album changed do not forget to update the list of album (enlil_library_eet_albums_save()).
  */
 
-static void _enlil_library_monitor_cb(void *data, Ecore_File_Monitor *em, Ecore_File_Event event, const char *path);
+static void _enlil_library_monitor_cb(void               *data,
+                                      Ecore_File_Monitor *em,
+                                      Ecore_File_Event    event,
+                                      const char         *path);
 static Eet_Data_Descriptor *_enlil_library_albums_file_name_edd_new(Eet_Data_Descriptor *edd_file_name);
-static Eet_Data_Descriptor * _enlil_library_collections_edd_new(Eet_Data_Descriptor *collection_edd);
-static Eet_Data_Descriptor * _enlil_library_tags_edd_new(Eet_Data_Descriptor *tag_edd);
-static Eet_Data_Descriptor * _enlil_library_header_edd_new();
-static int _sort_albums_name_cb(const void *d1, const void *d2);
-static int _sort_collections_name_cb(const void *d1, const void *d2);
-static int _sort_tags_name_cb(const void *d1, const void *d2);
+static Eet_Data_Descriptor *_enlil_library_collections_edd_new(Eet_Data_Descriptor *collection_edd);
+static Eet_Data_Descriptor *_enlil_library_tags_edd_new(Eet_Data_Descriptor *tag_edd);
+static Eet_Data_Descriptor *_enlil_library_header_edd_new();
+static int                  _sort_albums_name_cb(const void *d1,
+                                                 const void *d2);
+static int                  _sort_collections_name_cb(const void *d1,
+                                                      const void *d2);
+static int                  _sort_tags_name_cb(const void *d1,
+                                               const void *d2);
 
-static int _library_eet_header_save(const Enlil_Library *library);
+static int  _library_eet_header_save(const Enlil_Library *library);
 static void _library_eet_header_load(Enlil_Library *library);
 
 struct enlil_library
 {
-   const char *path;
-   Eina_List *albums;
+   const char         *path;
+   Eina_List          *albums;
 
    //generally  a sync is associated to a photo manager
    //that's why we allow the user to set a sync here
-   Enlil_Sync *sync;
+   Enlil_Sync         *sync;
 
    Ecore_File_Monitor *monitor;
    Enlil_Configuration conf;
 
-   const char *photo1; //photo use to describe the library
-   const char *photo2;
+   const char         *photo1; //photo use to describe the library
+   const char         *photo2;
 
    //list of Enlil_Collection *
-   Eina_List *collections;
+   Eina_List          *collections;
    //list of Enlil_Tag *
-   Eina_List *tags;
+   Eina_List          *tags;
 
    //associated netsync
    struct
    {
-	   const char *username;
-	   const char *password;
-	   const char *host;
-	   const char *path;
-   }netsync;
+      const char *username;
+      const char *password;
+      const char *host;
+      const char *path;
+   } netsync;
 
-   Eina_Bool header_load_is : 1;
+   Eina_Bool                              header_load_is : 1;
 
    Enlil_Album_Version_Header_Increase_Cb album_version_header_increase_cb;
-   void *album_version_header_increase_data;
+   void                                  *album_version_header_increase_data;
 
    Enlil_Photo_Version_Header_Increase_Cb photo_version_header_increase_cb;
-   void *photo_version_header_increase_data;
+   void                                  *photo_version_header_increase_data;
 
-   Enlil_Photo_Version_Tags_Increase_Cb photo_version_tags_increase_cb;
-   void *photo_version_tags_increase_data;
+   Enlil_Photo_Version_Tags_Increase_Cb   photo_version_tags_increase_cb;
+   void                                  *photo_version_tags_increase_data;
 };
 
-#define ROOT_HEADER_LOAD(library) \
-    if(!library->header_load_is) \
-    { \
-        _library_eet_header_load(library); \
-        library->header_load_is = 1; \
+#define ROOT_HEADER_LOAD(library)         \
+  if(!library->header_load_is)            \
+    {                                     \
+       _library_eet_header_load(library); \
+       library->header_load_is = 1;       \
     }
-
 
 /*
  * Create a new library node. The callbacks arguments named monitor_* can be NULL if the folder
@@ -78,20 +83,25 @@ struct enlil_library
  * @param user_data Data sent in the callbacks
  * @param Returns the new library struct
  */
-Enlil_Library *enlil_library_new(
-      Enlil_Album_New_Cb monitor_album_new_cb, Enlil_Album_Delete_Cb monitor_album_delete_cb,
-      Enlil_Delete_Cb monitor_enlil_delete_cb,
-      Enlil_Photo_New_Cb monitor_photo_new_cb, Enlil_Photo_Delete_Cb monitor_photo_delete_cb,
-      Enlil_Photo_Update_Cb monitor_photo_update_cb,
-      Enlil_Collection_New_Cb col_new_cb, Enlil_Collection_Delete_Cb col_delete_cb,
-      Enlil_Collection_Album_New_Cb col_album_new_cb,
-      Enlil_Collection_Album_Delete_Cb col_album_delete_cb,
-      Enlil_Tag_New_Cb tag_new_cb, Enlil_Tag_Delete_Cb tag_delete_cb,
-      Enlil_Tag_Photo_New_Cb tag_photo_new_cb,
-      Enlil_Tag_Photo_Delete_Cb tag_photo_delete_cb,
-      void *user_data)
+Enlil_Library *
+enlil_library_new(
+  Enlil_Album_New_Cb               monitor_album_new_cb,
+  Enlil_Album_Delete_Cb            monitor_album_delete_cb,
+  Enlil_Delete_Cb                  monitor_enlil_delete_cb,
+  Enlil_Photo_New_Cb               monitor_photo_new_cb,
+  Enlil_Photo_Delete_Cb            monitor_photo_delete_cb,
+  Enlil_Photo_Update_Cb            monitor_photo_update_cb,
+  Enlil_Collection_New_Cb          col_new_cb,
+  Enlil_Collection_Delete_Cb       col_delete_cb,
+  Enlil_Collection_Album_New_Cb    col_album_new_cb,
+  Enlil_Collection_Album_Delete_Cb col_album_delete_cb,
+  Enlil_Tag_New_Cb                 tag_new_cb,
+  Enlil_Tag_Delete_Cb              tag_delete_cb,
+  Enlil_Tag_Photo_New_Cb           tag_photo_new_cb,
+  Enlil_Tag_Photo_Delete_Cb        tag_photo_delete_cb,
+  void                            *user_data)
 {
-   Enlil_Library *library = calloc(1,sizeof(Enlil_Library));
+   Enlil_Library *library = calloc(1, sizeof(Enlil_Library));
    library->conf.monitor.album_new_cb = monitor_album_new_cb;
    library->conf.monitor.album_delete_cb = monitor_album_delete_cb;
    library->conf.monitor.enlil_delete_cb = monitor_enlil_delete_cb;
@@ -118,29 +128,30 @@ Enlil_Library *enlil_library_new(
  * @brief Free a library struct
  * @param library the library struct
  */
-void enlil_library_free(Enlil_Library **library)
+void
+enlil_library_free(Enlil_Library **library)
 {
    Enlil_Album *album;
    Enlil_Collection *col;
    Enlil_Tag *tag;
    Eina_List *l, *l_next;
 
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID((*library)!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID((*library) != NULL);
 
    EINA_STRINGSHARE_DEL((*library)->path);
    EINA_STRINGSHARE_DEL((*library)->photo1);
    EINA_STRINGSHARE_DEL((*library)->photo2);
-   EINA_LIST_FOREACH_SAFE( (*library)->albums, l, l_next, album)
-      enlil_album_free(&album);
+   EINA_LIST_FOREACH_SAFE((*library)->albums, l, l_next, album)
+     enlil_album_free(&album);
 
    enlil_library_monitor_stop(*library);
 
-   EINA_LIST_FREE( (*library)->collections, col)
-      enlil_collection_free(&col);
+   EINA_LIST_FREE((*library)->collections, col)
+     enlil_collection_free(&col);
 
-   EINA_LIST_FREE( (*library)->tags, tag)
-      enlil_tag_free(&tag);
+   EINA_LIST_FREE((*library)->tags, tag)
+     enlil_tag_free(&tag);
 
    FREE(*library);
 }
@@ -150,13 +161,14 @@ void enlil_library_free(Enlil_Library **library)
  *
  * @param library the library struct
  */
-void enlil_library_monitor_start(Enlil_Library *library)
+void
+enlil_library_monitor_start(Enlil_Library *library)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(library->monitor==NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(library->monitor == NULL);
 
    library->monitor = ecore_file_monitor_add(enlil_library_path_get(library), _enlil_library_monitor_cb, library);
-   ASSERT_RETURN_VOID(library->monitor!=NULL);
+   ASSERT_RETURN_VOID(library->monitor != NULL);
 }
 
 /**
@@ -164,45 +176,47 @@ void enlil_library_monitor_start(Enlil_Library *library)
  *
  * @param library the library struct
  */
-void enlil_library_monitor_stop(Enlil_Library *library)
+void
+enlil_library_monitor_stop(Enlil_Library *library)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
 
    if(library->monitor)
      ecore_file_monitor_del(library->monitor);
    library->monitor = NULL;
 }
 
-#define FCT_NAME enlil_library
+#define FCT_NAME    enlil_library
 #define STRUCT_TYPE Enlil_Library
 
 SET(sync, Enlil_Sync *)
 
-   GET(path, const char*)
-   GET(albums, Eina_List *)
-   GET(sync, Enlil_Sync *)
-   GET(collections, const Eina_List *)
+GET(path, const char *)
+GET(albums, Eina_List *)
+GET(sync, Enlil_Sync *)
+GET(collections, const Eina_List *)
 GET(tags, const Eina_List *)
-
 
 #undef FCT_NAME
 #undef STRUCT_TYPE
 
-   /**
-    * Set the path
-    *
-    * @param library the library struct
-    * @param path the new path
-    */
-void enlil_library_path_set(Enlil_Library *library, const char *path)
+/**
+ * Set the path
+ *
+ * @param library the library struct
+ * @param path the new path
+ */
+void
+enlil_library_path_set(Enlil_Library *library,
+                       const char    *path)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(path!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(path != NULL);
 
    EINA_STRINGSHARE_DEL(library->path);
 
    char *_path = strdup(path);
-   int len = strlen(_path) -1;
+   int len = strlen(_path) - 1;
    if(_path[len] == '/')
      _path[len] = '\0';
 
@@ -210,63 +224,73 @@ void enlil_library_path_set(Enlil_Library *library, const char *path)
    FREE(_path);
 }
 
-
-void enlil_library_album_version_header_increase_cb_set(Enlil_Library *library,
-									Enlil_Album_Version_Header_Increase_Cb cb, void *data)
+void
+enlil_library_album_version_header_increase_cb_set(Enlil_Library                         *library,
+                                                   Enlil_Album_Version_Header_Increase_Cb cb,
+                                                   void                                  *data)
 {
-	ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(library != NULL);
 
-	library->album_version_header_increase_cb = cb;
-	library->album_version_header_increase_data = data;
+   library->album_version_header_increase_cb = cb;
+   library->album_version_header_increase_data = data;
 }
 
-void enlil_library_photo_version_header_increase_cb_set(Enlil_Library *library,
-									Enlil_Photo_Version_Header_Increase_Cb cb, void *data)
+void
+enlil_library_photo_version_header_increase_cb_set(Enlil_Library                         *library,
+                                                   Enlil_Photo_Version_Header_Increase_Cb cb,
+                                                   void                                  *data)
 {
-	ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(library != NULL);
 
-	library->photo_version_header_increase_cb = cb;
-	library->photo_version_header_increase_data = data;
+   library->photo_version_header_increase_cb = cb;
+   library->photo_version_header_increase_data = data;
 }
 
-void enlil_library_photo_version_tags_increase_cb_set(Enlil_Library *library,
-									Enlil_Photo_Version_Tags_Increase_Cb cb, void *data)
+void
+enlil_library_photo_version_tags_increase_cb_set(Enlil_Library                       *library,
+                                                 Enlil_Photo_Version_Tags_Increase_Cb cb,
+                                                 void                                *data)
 {
-	ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(library != NULL);
 
-	library->photo_version_tags_increase_cb = cb;
-	library->photo_version_tags_increase_data = data;
+   library->photo_version_tags_increase_cb = cb;
+   library->photo_version_tags_increase_data = data;
 }
 
-
-Enlil_Album_Version_Header_Increase_Cb _enlil_library_album_version_header_increase_cb_get(Enlil_Library *library)
+Enlil_Album_Version_Header_Increase_Cb
+_enlil_library_album_version_header_increase_cb_get(Enlil_Library *library)
 {
-	return library->album_version_header_increase_cb;
+   return library->album_version_header_increase_cb;
 }
 
-void *_enlil_library_album_version_header_increase_data_get(Enlil_Library *library)
+void *
+_enlil_library_album_version_header_increase_data_get(Enlil_Library *library)
 {
-	return library->album_version_header_increase_data;
+   return library->album_version_header_increase_data;
 }
 
-Enlil_Photo_Version_Header_Increase_Cb _enlil_library_photo_version_header_increase_cb_get(Enlil_Library *library)
+Enlil_Photo_Version_Header_Increase_Cb
+_enlil_library_photo_version_header_increase_cb_get(Enlil_Library *library)
 {
-	return library->photo_version_header_increase_cb;
+   return library->photo_version_header_increase_cb;
 }
 
-void *_enlil_library_photo_version_header_increase_data_get(Enlil_Library *library)
+void *
+_enlil_library_photo_version_header_increase_data_get(Enlil_Library *library)
 {
-	return library->photo_version_header_increase_data;
+   return library->photo_version_header_increase_data;
 }
 
-Enlil_Photo_Version_Tags_Increase_Cb _enlil_library_photo_version_tags_increase_cb_get(Enlil_Library *library)
+Enlil_Photo_Version_Tags_Increase_Cb
+_enlil_library_photo_version_tags_increase_cb_get(Enlil_Library *library)
 {
-	return library->photo_version_tags_increase_cb;
+   return library->photo_version_tags_increase_cb;
 }
 
-void *_enlil_library_photo_version_tags_increase_data_get(Enlil_Library *library)
+void *
+_enlil_library_photo_version_tags_increase_data_get(Enlil_Library *library)
 {
-	return library->photo_version_tags_increase_data;
+   return library->photo_version_tags_increase_data;
 }
 
 /**
@@ -275,35 +299,40 @@ void *_enlil_library_photo_version_tags_increase_data_get(Enlil_Library *library
  * @param library the library struct
  * @param photo the photo
  */
-void enlil_library_photo_set(Enlil_Library *library, const Enlil_Photo *photo, int first_second)
+void
+enlil_library_photo_set(Enlil_Library     *library,
+                        const Enlil_Photo *photo,
+                        int                first_second)
 {
-	char buf[PATH_MAX];
+   char buf[PATH_MAX];
 
-	ASSERT_RETURN_VOID(library!=NULL);
-	ASSERT_RETURN_VOID(photo!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(photo != NULL);
 
-	ROOT_HEADER_LOAD(library);
+   ROOT_HEADER_LOAD(library);
 
-	snprintf(buf, sizeof(buf), "%s/%s", enlil_album_file_name_get(enlil_photo_album_get(photo)), enlil_photo_file_name_get(photo));
+   snprintf(buf, sizeof(buf), "%s/%s", enlil_album_file_name_get(enlil_photo_album_get(photo)), enlil_photo_file_name_get(photo));
 
-	if(first_second == 1)
-	{
-		EINA_STRINGSHARE_DEL(library->photo1);
-		library->photo1 = eina_stringshare_add(buf);
-	}
-	else
-	{
-		EINA_STRINGSHARE_DEL(library->photo2);
-		library->photo2 = eina_stringshare_add(buf);
-	}
+   if(first_second == 1)
+     {
+        EINA_STRINGSHARE_DEL(library->photo1);
+        library->photo1 = eina_stringshare_add(buf);
+     }
+   else
+     {
+        EINA_STRINGSHARE_DEL(library->photo2);
+        library->photo2 = eina_stringshare_add(buf);
+     }
 
-	_library_eet_header_save(library);
+   _library_eet_header_save(library);
 }
 
-void enlil_library_netsync_account_set(Enlil_Library *library, const char *username)
+void
+enlil_library_netsync_account_set(Enlil_Library *library,
+                                  const char    *username)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(username!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(username != NULL);
 
    ROOT_HEADER_LOAD(library);
 
@@ -313,8 +342,8 @@ void enlil_library_netsync_account_set(Enlil_Library *library, const char *usern
    _library_eet_header_save(library);
 }
 
-
-const char *enlil_library_netsync_account_get(Enlil_Library *library)
+const char *
+enlil_library_netsync_account_get(Enlil_Library *library)
 {
    ASSERT_RETURN(library != NULL);
 
@@ -323,10 +352,12 @@ const char *enlil_library_netsync_account_get(Enlil_Library *library)
    return library->netsync.username;
 }
 
-void enlil_library_netsync_host_set(Enlil_Library *library, const char *host)
+void
+enlil_library_netsync_host_set(Enlil_Library *library,
+                               const char    *host)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(host!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(host != NULL);
 
    ROOT_HEADER_LOAD(library);
 
@@ -336,8 +367,8 @@ void enlil_library_netsync_host_set(Enlil_Library *library, const char *host)
    _library_eet_header_save(library);
 }
 
-
-const char *enlil_library_netsync_host_get(Enlil_Library *library)
+const char *
+enlil_library_netsync_host_get(Enlil_Library *library)
 {
    ASSERT_RETURN(library != NULL);
 
@@ -346,11 +377,12 @@ const char *enlil_library_netsync_host_get(Enlil_Library *library)
    return library->netsync.host;
 }
 
-
-void enlil_library_netsync_path_set(Enlil_Library *library, const char *path)
+void
+enlil_library_netsync_path_set(Enlil_Library *library,
+                               const char    *path)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(path!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(path != NULL);
 
    ROOT_HEADER_LOAD(library);
 
@@ -360,8 +392,8 @@ void enlil_library_netsync_path_set(Enlil_Library *library, const char *path)
    _library_eet_header_save(library);
 }
 
-
-const char *enlil_library_netsync_path_get(Enlil_Library *library)
+const char *
+enlil_library_netsync_path_get(Enlil_Library *library)
 {
    ASSERT_RETURN(library != NULL);
 
@@ -370,10 +402,12 @@ const char *enlil_library_netsync_path_get(Enlil_Library *library)
    return library->netsync.path;
 }
 
-void enlil_library_netsync_password_set(Enlil_Library *library, const char *password)
+void
+enlil_library_netsync_password_set(Enlil_Library *library,
+                                   const char    *password)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(password!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(password != NULL);
 
    ROOT_HEADER_LOAD(library);
 
@@ -383,8 +417,8 @@ void enlil_library_netsync_password_set(Enlil_Library *library, const char *pass
    _library_eet_header_save(library);
 }
 
-
-const char *enlil_library_netsync_password_get(Enlil_Library *library)
+const char *
+enlil_library_netsync_password_get(Enlil_Library *library)
 {
    ASSERT_RETURN(library != NULL);
 
@@ -393,23 +427,23 @@ const char *enlil_library_netsync_password_get(Enlil_Library *library)
    return library->netsync.password;
 }
 
-
-
 /**
  * @brief
  * @param file_name The album file name. The string has to be in eina_stringshare
  */
-Enlil_Album *enlil_library_album_search_file_name(Enlil_Library *library, const char *file_name)
+Enlil_Album *
+enlil_library_album_search_file_name(Enlil_Library *library,
+                                     const char    *file_name)
 {
    Eina_List *l;
    Enlil_Album *album;
-   ASSERT_RETURN(library!=NULL);
-   ASSERT_RETURN(file_name!=NULL);
+   ASSERT_RETURN(library != NULL);
+   ASSERT_RETURN(file_name != NULL);
 
    EINA_LIST_FOREACH(library->albums, l, album)
      {
-	if(enlil_album_file_name_get(album) == file_name)
-	  return album;
+        if(enlil_album_file_name_get(album) == file_name)
+          return album;
      }
 
    return NULL;
@@ -419,22 +453,23 @@ Enlil_Album *enlil_library_album_search_file_name(Enlil_Library *library, const 
  * @brief
  * @param name The album name. The string has to be in eina_stringshare
  */
-Enlil_Album *enlil_library_album_search_name(Enlil_Library *library, const char *name)
+Enlil_Album *
+enlil_library_album_search_name(Enlil_Library *library,
+                                const char    *name)
 {
    Eina_List *l;
    Enlil_Album *album;
-   ASSERT_RETURN(library!=NULL);
-   ASSERT_RETURN(name!=NULL);
+   ASSERT_RETURN(library != NULL);
+   ASSERT_RETURN(name != NULL);
 
    EINA_LIST_FOREACH(library->albums, l, album)
      {
-	if(enlil_album_name_get(album) == name)
-	  return album;
+        if(enlil_album_name_get(album) == name)
+          return album;
      }
 
    return NULL;
 }
-
 
 /*
  * Add an album
@@ -442,25 +477,32 @@ Enlil_Album *enlil_library_album_search_name(Enlil_Library *library, const char 
  * @param library the library struct
  * @param album the album to add
  */
-void enlil_library_album_add(Enlil_Library *library, Enlil_Album *album)
+void
+enlil_library_album_add(Enlil_Library *library,
+                        Enlil_Album   *album)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(album!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(album != NULL);
 
    enlil_album_library_set(album, library);
    library->albums = eina_list_sorted_insert(library->albums, _sort_albums_name_cb, album);
 }
 
-void _enlil_library_album_add_end(Enlil_Library *library, Enlil_Album *album)
+void
+_enlil_library_album_add_end(Enlil_Library *library,
+                             Enlil_Album   *album)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(album!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(album != NULL);
 
    enlil_album_library_set(album, library);
    library->albums = eina_list_append(library->albums, album);
 }
 
-void _enlil_library_collection_add_end(Enlil_Library *library, Enlil_Collection *collection, Eina_Bool notify)
+void
+_enlil_library_collection_add_end(Enlil_Library    *library,
+                                  Enlil_Collection *collection,
+                                  Eina_Bool         notify)
 {
    ASSERT_RETURN_VOID(library != NULL);
    ASSERT_RETURN_VOID(collection != NULL);
@@ -468,11 +510,14 @@ void _enlil_library_collection_add_end(Enlil_Library *library, Enlil_Collection 
    library->collections = eina_list_append(library->collections, collection);
 
    if (notify)
-      if(library->conf.collection.new_cb)
-	 library->conf.collection.new_cb(library->conf.data, library, collection);
+     if(library->conf.collection.new_cb)
+       library->conf.collection.new_cb(library->conf.data, library, collection);
 }
 
-void _enlil_library_tag_add_end(Enlil_Library *library, Enlil_Tag *tag, Eina_Bool notify)
+void
+_enlil_library_tag_add_end(Enlil_Library *library,
+                           Enlil_Tag     *tag,
+                           Eina_Bool      notify)
 {
    ASSERT_RETURN_VOID(library != NULL);
    ASSERT_RETURN_VOID(tag != NULL);
@@ -480,11 +525,13 @@ void _enlil_library_tag_add_end(Enlil_Library *library, Enlil_Tag *tag, Eina_Boo
    library->tags = eina_list_append(library->tags, tag);
 
    if (notify)
-      if(library->conf.tag.new_cb)
-	 library->conf.tag.new_cb(library->conf.data, library, tag);
+     if(library->conf.tag.new_cb)
+       library->conf.tag.new_cb(library->conf.data, library, tag);
 }
 
-Enlil_Album *enlil_library_album_prev_get(Enlil_Library *library, Enlil_Album *album)
+Enlil_Album *
+enlil_library_album_prev_get(Enlil_Library *library,
+                             Enlil_Album   *album)
 {
    ASSERT_RETURN(library != NULL);
    ASSERT_RETURN(album != NULL);
@@ -496,7 +543,8 @@ Enlil_Album *enlil_library_album_prev_get(Enlil_Library *library, Enlil_Album *a
 /*
  * Sort the list of albums by name
  */
-void enlil_library_albums_sort(Enlil_Library *library)
+void
+enlil_library_albums_sort(Enlil_Library *library)
 {
    ASSERT_RETURN_VOID(library != NULL);
 
@@ -508,19 +556,23 @@ void enlil_library_albums_sort(Enlil_Library *library)
  *
  * @param library the library struct
  */
-void enlil_library_album_remove(Enlil_Library *library, Enlil_Album *album)
+void
+enlil_library_album_remove(Enlil_Library *library,
+                           Enlil_Album   *album)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(album!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(album != NULL);
 
    enlil_album_library_set(album, NULL);
    library->albums = eina_list_remove(library->albums, album);
 }
 
-void _enlil_library_album_name_changed(Enlil_Library *library, Enlil_Album *album)
+void
+_enlil_library_album_name_changed(Enlil_Library *library,
+                                  Enlil_Album   *album)
 {
-   ASSERT_RETURN_VOID(library!=NULL);
-   ASSERT_RETURN_VOID(album!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
+   ASSERT_RETURN_VOID(album != NULL);
 
    library->albums = eina_list_remove(library->albums, album);
    enlil_library_album_add(library, album);
@@ -530,7 +582,8 @@ void _enlil_library_album_name_changed(Enlil_Library *library, Enlil_Album *albu
 /*
  * Sort the list of collections by name
  */
-void enlil_library_collections_sort(Enlil_Library *library)
+void
+enlil_library_collections_sort(Enlil_Library *library)
 {
    ASSERT_RETURN_VOID(library != NULL);
 
@@ -540,7 +593,8 @@ void enlil_library_collections_sort(Enlil_Library *library)
 /*
  * Sort the list of tags by name
  */
-void enlil_library_tags_sort(Enlil_Library *library)
+void
+enlil_library_tags_sort(Enlil_Library *library)
 {
    ASSERT_RETURN_VOID(library != NULL);
 
@@ -552,20 +606,20 @@ void enlil_library_tags_sort(Enlil_Library *library)
  *
  * @param library the library struct
  */
-void enlil_library_print(Enlil_Library *library)
+void
+enlil_library_print(Enlil_Library *library)
 {
    Eina_List *l;
    Enlil_Album *album;
 
-   ASSERT_RETURN_VOID(library!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
 
    printf("#######################################\n");
-   printf("####### Path : %s\n",library->path);
+   printf("####### Path : %s\n", library->path);
    printf("#######################################\n");
-   EINA_LIST_FOREACH(library->albums,l,album)
-      enlil_album_print(album);
+   EINA_LIST_FOREACH(library->albums, l, album)
+     enlil_album_print(album);
 }
-
 
 /**
  * Add the album in the collection named @p album_col. If the collection does not exists, it is created.
@@ -574,7 +628,10 @@ void enlil_library_print(Enlil_Library *library)
  * @param album_col The album collection struct.
  * @param album The album
  */
-void _enlil_library_collection_album_add(Enlil_Library *library, Enlil_Album_Collection *album_col, Enlil_Album *album)
+void
+_enlil_library_collection_album_add(Enlil_Library          *library,
+                                    Enlil_Album_Collection *album_col,
+                                    Enlil_Album            *album)
 {
    Eina_List *l;
    Enlil_Collection *col;
@@ -585,14 +642,14 @@ void _enlil_library_collection_album_add(Enlil_Library *library, Enlil_Album_Col
 
    EINA_LIST_FOREACH(library->collections, l, col)
      {
-	if(album_col->name == enlil_collection_name_get(col))
-	  {
-	     enlil_collection_album_add(col, album);
-	     album_col->collection = col;
-	     if(library->conf.collection.album_new_cb)
-	       library->conf.collection.album_new_cb(library->conf.data, library, col, album);
-	     return ;
-	  }
+        if(album_col->name == enlil_collection_name_get(col))
+          {
+             enlil_collection_album_add(col, album);
+             album_col->collection = col;
+             if(library->conf.collection.album_new_cb)
+               library->conf.collection.album_new_cb(library->conf.data, library, col, album);
+             return;
+          }
      }
 
    col = enlil_collection_new();
@@ -602,12 +659,14 @@ void _enlil_library_collection_album_add(Enlil_Library *library, Enlil_Album_Col
    album_col->collection = col;
 
    if(library->conf.collection.new_cb)
-	   library->conf.collection.new_cb(library->conf.data, library, col);
+     library->conf.collection.new_cb(library->conf.data, library, col);
    if(library->conf.collection.album_new_cb)
-	   library->conf.collection.album_new_cb(library->conf.data, library, col, album);
+     library->conf.collection.album_new_cb(library->conf.data, library, col, album);
 }
 
-static int _sort_albums_name_cb(const void *d1, const void *d2)
+static int
+_sort_albums_name_cb(const void *d1,
+                     const void *d2)
 {
    const Enlil_Album *album1 = d1;
    const Enlil_Album *album2 = d2;
@@ -622,7 +681,9 @@ static int _sort_albums_name_cb(const void *d1, const void *d2)
    return strcmp(name1, name2);
 }
 
-static int _sort_collections_name_cb(const void *d1, const void *d2)
+static int
+_sort_collections_name_cb(const void *d1,
+                          const void *d2)
 {
    const Enlil_Collection *collection1 = d1;
    const Enlil_Collection *collection2 = d2;
@@ -637,7 +698,9 @@ static int _sort_collections_name_cb(const void *d1, const void *d2)
    return strcmp(name1, name2);
 }
 
-static int _sort_tags_name_cb(const void *d1, const void *d2)
+static int
+_sort_tags_name_cb(const void *d1,
+                   const void *d2)
 {
    const Enlil_Tag *tag1 = d1;
    const Enlil_Tag *tag2 = d2;
@@ -659,7 +722,10 @@ static int _sort_tags_name_cb(const void *d1, const void *d2)
  * @param album_col The album collection struct.
  * @param album The album
  */
-void _enlil_library_collection_album_remove(Enlil_Library *library, Enlil_Album_Collection *album_col, Enlil_Album *album)
+void
+_enlil_library_collection_album_remove(Enlil_Library          *library,
+                                       Enlil_Album_Collection *album_col,
+                                       Enlil_Album            *album)
 {
    Eina_List *l;
    Enlil_Collection *col;
@@ -670,14 +736,14 @@ void _enlil_library_collection_album_remove(Enlil_Library *library, Enlil_Album_
 
    EINA_LIST_FOREACH(library->collections, l, col)
      {
-	if(album_col->name == enlil_collection_name_get(col))
-	  {
-	     enlil_collection_album_remove(col, album);
-	     album_col->collection = NULL;
-	     if(library->conf.collection.album_delete_cb)
-	       library->conf.collection.album_delete_cb(library->conf.data, library, col, album);
-	     return ;
-	  }
+        if(album_col->name == enlil_collection_name_get(col))
+          {
+             enlil_collection_album_remove(col, album);
+             album_col->collection = NULL;
+             if(library->conf.collection.album_delete_cb)
+               library->conf.collection.album_delete_cb(library->conf.data, library, col, album);
+             return;
+          }
      }
 }
 
@@ -688,7 +754,9 @@ void _enlil_library_collection_album_remove(Enlil_Library *library, Enlil_Album_
  * @param album_col The album collection struct.
  * @param album The album
  */
-void enlil_library_collection_del(Enlil_Library *library, Enlil_Collection *col)
+void
+enlil_library_collection_del(Enlil_Library    *library,
+                             Enlil_Collection *col)
 {
    Eina_List *l, *l_next;
    const Eina_List *l2;
@@ -700,12 +768,12 @@ void enlil_library_collection_del(Enlil_Library *library, Enlil_Collection *col)
 
    EINA_LIST_FOREACH_SAFE(enlil_collection_albums_get(col), l, l_next, album)
      {
-	EINA_LIST_FOREACH(enlil_album_collections_get(album), l2, album_col)
-	  {
-	     if(album_col->name == enlil_collection_name_get(col))
-	       break;
-	  }
-	enlil_album_collection_remove(album, album_col);
+        EINA_LIST_FOREACH(enlil_album_collections_get(album), l2, album_col)
+          {
+             if(album_col->name == enlil_collection_name_get(col))
+               break;
+          }
+        enlil_album_collection_remove(album, album_col);
      }
 
    if(library->conf.collection.delete_cb)
@@ -719,17 +787,19 @@ void enlil_library_collection_del(Enlil_Library *library, Enlil_Collection *col)
  * @brief
  * @param name The collection  name. The string has to be in eina_stringshare
  */
-Enlil_Collection *enlil_library_collection_search_name(Enlil_Library *library, const char *name)
+Enlil_Collection *
+enlil_library_collection_search_name(Enlil_Library *library,
+                                     const char    *name)
 {
    Eina_List *l;
    Enlil_Collection *collection;
-   ASSERT_RETURN(library!=NULL);
-   ASSERT_RETURN(name!=NULL);
+   ASSERT_RETURN(library != NULL);
+   ASSERT_RETURN(name != NULL);
 
    EINA_LIST_FOREACH(library->collections, l, collection)
      {
-	if(enlil_collection_name_get(collection) == name)
-	  return collection;
+        if(enlil_collection_name_get(collection) == name)
+          return collection;
      }
 
    return NULL;
@@ -742,7 +812,10 @@ Enlil_Collection *enlil_library_collection_search_name(Enlil_Library *library, c
  * @param photo_tag The photo tag struct.
  * @param photo The photo
  */
-void _enlil_library_tag_photo_add(Enlil_Library *library, Enlil_Photo_Tag *photo_tag, Enlil_Photo *photo)
+void
+_enlil_library_tag_photo_add(Enlil_Library   *library,
+                             Enlil_Photo_Tag *photo_tag,
+                             Enlil_Photo     *photo)
 {
    Eina_List *l;
    Enlil_Tag *tag;
@@ -753,14 +826,14 @@ void _enlil_library_tag_photo_add(Enlil_Library *library, Enlil_Photo_Tag *photo
 
    EINA_LIST_FOREACH(library->tags, l, tag)
      {
-	if(photo_tag->name == enlil_tag_name_get(tag))
-	  {
-	     enlil_tag_photo_add(tag, photo);
-	     photo_tag->tag = tag;
-	     if(library->conf.tag.photo_new_cb)
-	       library->conf.tag.photo_new_cb(library->conf.data, library, tag, photo);
-	     return ;
-	  }
+        if(photo_tag->name == enlil_tag_name_get(tag))
+          {
+             enlil_tag_photo_add(tag, photo);
+             photo_tag->tag = tag;
+             if(library->conf.tag.photo_new_cb)
+               library->conf.tag.photo_new_cb(library->conf.data, library, tag, photo);
+             return;
+          }
      }
 
    tag = enlil_tag_new();
@@ -782,7 +855,10 @@ void _enlil_library_tag_photo_add(Enlil_Library *library, Enlil_Photo_Tag *photo
  * @param photo_tag The photo tag struct.
  * @param photo The photo
  */
-void _enlil_library_tag_photo_remove(Enlil_Library *library, Enlil_Photo_Tag *photo_tag, Enlil_Photo *photo)
+void
+_enlil_library_tag_photo_remove(Enlil_Library   *library,
+                                Enlil_Photo_Tag *photo_tag,
+                                Enlil_Photo     *photo)
 {
    Eina_List *l;
    Enlil_Tag *tag;
@@ -793,14 +869,14 @@ void _enlil_library_tag_photo_remove(Enlil_Library *library, Enlil_Photo_Tag *ph
 
    EINA_LIST_FOREACH(library->tags, l, tag)
      {
-	if(photo_tag->name == enlil_tag_name_get(tag))
-	  {
-	     enlil_tag_photo_remove(tag, photo);
-	     photo_tag->tag = NULL;
-	     if(library->conf.tag.photo_delete_cb)
-	       library->conf.tag.photo_delete_cb(library->conf.data, library, tag, photo);
-	     return ;
-	  }
+        if(photo_tag->name == enlil_tag_name_get(tag))
+          {
+             enlil_tag_photo_remove(tag, photo);
+             photo_tag->tag = NULL;
+             if(library->conf.tag.photo_delete_cb)
+               library->conf.tag.photo_delete_cb(library->conf.data, library, tag, photo);
+             return;
+          }
      }
 }
 
@@ -811,7 +887,9 @@ void _enlil_library_tag_photo_remove(Enlil_Library *library, Enlil_Photo_Tag *ph
  * @param photo_tag The photo tag struct.
  * @param photo The photo
  */
-void enlil_library_tag_del(Enlil_Library *library, Enlil_Tag *tag)
+void
+enlil_library_tag_del(Enlil_Library *library,
+                      Enlil_Tag     *tag)
 {
    Eina_List *l, *l_next;
    const Eina_List *l2;
@@ -823,12 +901,12 @@ void enlil_library_tag_del(Enlil_Library *library, Enlil_Tag *tag)
 
    EINA_LIST_FOREACH_SAFE(enlil_tag_photos_get(tag), l, l_next, photo)
      {
-	EINA_LIST_FOREACH(enlil_photo_tags_get(photo), l2, photo_tag)
-	  {
-	     if(photo_tag->name == enlil_tag_name_get(tag))
-	       break;
-	  }
-	enlil_photo_tag_remove(photo, photo_tag);
+        EINA_LIST_FOREACH(enlil_photo_tags_get(photo), l2, photo_tag)
+          {
+             if(photo_tag->name == enlil_tag_name_get(tag))
+               break;
+          }
+        enlil_photo_tag_remove(photo, photo_tag);
      }
 
    if(library->conf.tag.delete_cb)
@@ -842,17 +920,19 @@ void enlil_library_tag_del(Enlil_Library *library, Enlil_Tag *tag)
  * @brief
  * @param name The tag name. The string has to be in eina_stringshare
  */
-Enlil_Tag *enlil_library_tag_search_name(Enlil_Library *library, const char *name)
+Enlil_Tag *
+enlil_library_tag_search_name(Enlil_Library *library,
+                              const char    *name)
 {
    Eina_List *l;
    Enlil_Tag *tag;
-   ASSERT_RETURN(library!=NULL);
-   ASSERT_RETURN(name!=NULL);
+   ASSERT_RETURN(library != NULL);
+   ASSERT_RETURN(name != NULL);
 
    EINA_LIST_FOREACH(library->tags, l, tag)
      {
-	if(enlil_tag_name_get(tag) == name)
-	  return tag;
+        if(enlil_tag_name_get(tag) == name)
+          return tag;
      }
 
    return NULL;
@@ -863,7 +943,8 @@ Enlil_Tag *enlil_library_tag_search_name(Enlil_Library *library, const char *nam
  *
  * @param library The library struct
  */
-int enlil_library_eet_path_save(Enlil_Library *library)
+int
+enlil_library_eet_path_save(Enlil_Library *library)
 {
    int res;
    Eet_Data_Descriptor *edd;
@@ -872,21 +953,20 @@ int enlil_library_eet_path_save(Enlil_Library *library)
    char key[PATH_MAX];
    Enlil_String string;
 
-   ASSERT_RETURN(library!=NULL);
-   ASSERT_RETURN(enlil_library_path_get(library)!=NULL);
+   ASSERT_RETURN(library != NULL);
+   ASSERT_RETURN(enlil_library_path_get(library) != NULL);
 
-
-   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB, getenv("HOME"));
+   snprintf(path, PATH_MAX, "%s/" EET_FOLDER_ROOT_DB, getenv("HOME"));
    if(!ecore_file_exists(path))
      ecore_file_mkdir(path);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB"/"EET_FILE_ROOT_DB, getenv("HOME"));
+   snprintf(path, PATH_MAX, "%s/" EET_FOLDER_ROOT_DB "/" EET_FILE_ROOT_DB, getenv("HOME"));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd = enlil_string_edd_new();
 
-   snprintf(key,PATH_MAX,"/library %s", enlil_library_path_get(library));
+   snprintf(key, PATH_MAX, "/library %s", enlil_library_path_get(library));
    string.string = enlil_library_path_get(library);
 
    res = eet_data_write(f, edd, key, &string, 0);
@@ -902,25 +982,26 @@ int enlil_library_eet_path_save(Enlil_Library *library)
  *
  * @param library The library struct
  */
-int enlil_library_eet_path_delete(Enlil_Library *library)
+int
+enlil_library_eet_path_delete(Enlil_Library *library)
 {
    int res;
    Eet_File *f;
    char path[PATH_MAX];
    char key[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
-   ASSERT_RETURN(enlil_library_path_get(library)!=NULL);
+   ASSERT_RETURN(library != NULL);
+   ASSERT_RETURN(enlil_library_path_get(library) != NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB, getenv("HOME"));
+   snprintf(path, PATH_MAX, "%s/" EET_FOLDER_ROOT_DB, getenv("HOME"));
    if(!ecore_file_exists(path))
      ecore_file_mkdir(path);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB"/"EET_FILE_ROOT_DB, getenv("HOME"));
+   snprintf(path, PATH_MAX, "%s/" EET_FOLDER_ROOT_DB "/" EET_FILE_ROOT_DB, getenv("HOME"));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
-   snprintf(key,PATH_MAX,"/library %s", enlil_library_path_get(library));
+   snprintf(key, PATH_MAX, "/library %s", enlil_library_path_get(library));
    res = eet_delete(f, key);
 
    enlil_file_manager_close(path);
@@ -933,7 +1014,8 @@ int enlil_library_eet_path_delete(Enlil_Library *library)
  *
  * @return Returns a list of String* containing the library path
  */
-Eina_List *enlil_library_eet_path_load()
+Eina_List *
+enlil_library_eet_path_load()
 {
    Eet_Data_Descriptor *edd;
    Eet_File *f;
@@ -943,18 +1025,18 @@ Eina_List *enlil_library_eet_path_load()
    char **list;
    int len, i;
 
-   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB"/"EET_FILE_ROOT_DB, getenv("HOME"));
+   snprintf(path, PATH_MAX, "%s/" EET_FOLDER_ROOT_DB "/" EET_FILE_ROOT_DB, getenv("HOME"));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd = enlil_string_edd_new();
 
    list = eet_list(f, "/library *", &len);
 
-   for(i=0; list && i<len; i++)
+   for(i = 0; list && i < len; i++)
      {
-	data = eet_data_read(f, edd, list[i]);
-	l = eina_list_append(l, data);
+        data = eet_data_read(f, edd, list[i]);
+        l = eina_list_append(l, data);
      }
    FREE(list);
 
@@ -964,12 +1046,6 @@ Eina_List *enlil_library_eet_path_load()
    return l;
 }
 
-
-
-
-
-
-
 /*
  * Load the list of albums from the Eet file.
  * This list contains only the path and the file name of each album.
@@ -978,18 +1054,19 @@ Eina_List *enlil_library_eet_path_load()
  * @param library the library struct
  * @return Returns a new library with the list of albums
  */
-Enlil_Library *enlil_library_eet_albums_load(Enlil_Library *library)
+Enlil_Library *
+enlil_library_eet_albums_load(Enlil_Library *library)
 {
    Eet_Data_Descriptor *edd, *edd_album;
    Eet_File *f;
    Enlil_Library *data;
    char path[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
+   ASSERT_RETURN(library != NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_library_path_get(library));
+   snprintf(path, PATH_MAX, "%s/" EET_FILE, enlil_library_path_get(library));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd_album = _enlil_album_file_name_edd_new();
    edd = _enlil_library_albums_file_name_edd_new(edd_album);
@@ -1008,18 +1085,19 @@ Enlil_Library *enlil_library_eet_albums_load(Enlil_Library *library)
  *
  * @param library the library struct
  */
-int enlil_library_eet_albums_save(Enlil_Library *library)
+int
+enlil_library_eet_albums_save(Enlil_Library *library)
 {
    int res;
    Eet_Data_Descriptor *edd, *edd_album;
    Eet_File *f;
    char path[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
+   ASSERT_RETURN(library != NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_library_path_get(library));
+   snprintf(path, PATH_MAX, "%s/" EET_FILE, enlil_library_path_get(library));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd_album = _enlil_album_file_name_edd_new();
    edd = _enlil_library_albums_file_name_edd_new(edd_album);
@@ -1040,20 +1118,22 @@ int enlil_library_eet_albums_save(Enlil_Library *library)
  * @param name the file name of the album to load
  * @return Returns the album or NULL if the album is not in the Eet file
  */
-Enlil_Album *enlil_library_eet_album_load(Enlil_Library *library, const char* name)
+Enlil_Album *
+enlil_library_eet_album_load(Enlil_Library *library,
+                             const char    *name)
 {
    Eet_Data_Descriptor *edd, *edd_collection;
    Eet_File *f;
    Enlil_Album *data;
    char path[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
-   ASSERT_RETURN(name!=NULL);
+   ASSERT_RETURN(library != NULL);
+   ASSERT_RETURN(name != NULL);
 
-   snprintf(path,PATH_MAX,"%s/%s/"EET_FILE,enlil_library_path_get(library),name);
+   snprintf(path, PATH_MAX, "%s/%s/" EET_FILE, enlil_library_path_get(library), name);
 
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd_collection = _enlil_album_collection_edd_new();
    edd = _enlil_album_header_edd_new(edd_collection);
@@ -1064,12 +1144,11 @@ Enlil_Album *enlil_library_eet_album_load(Enlil_Library *library, const char* na
    eet_data_descriptor_free(edd_collection);
    eet_data_descriptor_free(edd);
 
-   if(data && strcmp(name, enlil_album_file_name_get(data))!=0)
+   if(data && strcmp(name, enlil_album_file_name_get(data)) != 0)
      enlil_album_free(&data);
 
    return data;
 }
-
 
 /*
  * Load the list of collections from the Eet file.
@@ -1079,18 +1158,19 @@ Enlil_Album *enlil_library_eet_album_load(Enlil_Library *library, const char* na
  * @param library the library struct
  * @return Returns a new library with the list of collections
  */
-Enlil_Library *enlil_library_eet_collections_load(Enlil_Library *library)
+Enlil_Library *
+enlil_library_eet_collections_load(Enlil_Library *library)
 {
    Eet_Data_Descriptor *edd, *edd_collection;
    Eet_File *f;
    Enlil_Library *data;
    char path[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
+   ASSERT_RETURN(library != NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_library_path_get(library));
+   snprintf(path, PATH_MAX, "%s/" EET_FILE, enlil_library_path_get(library));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd_collection = _enlil_collection_edd_new();
    edd = _enlil_library_collections_edd_new(edd_collection);
@@ -1109,18 +1189,19 @@ Enlil_Library *enlil_library_eet_collections_load(Enlil_Library *library)
  *
  * @param library the library struct
  */
-int enlil_library_eet_collections_save(Enlil_Library *library)
+int
+enlil_library_eet_collections_save(Enlil_Library *library)
 {
    int res;
    Eet_Data_Descriptor *edd, *edd_collection;
    Eet_File *f;
    char path[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
+   ASSERT_RETURN(library != NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_library_path_get(library));
+   snprintf(path, PATH_MAX, "%s/" EET_FILE, enlil_library_path_get(library));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd_collection = _enlil_collection_edd_new();
    edd = _enlil_library_collections_edd_new(edd_collection);
@@ -1134,13 +1215,6 @@ int enlil_library_eet_collections_save(Enlil_Library *library)
    return res;
 }
 
-
-
-
-
-
-
-
 /*
  * Load the list of tags from the Eet file.
  * This list contains only the name and the description of each tag.
@@ -1149,18 +1223,19 @@ int enlil_library_eet_collections_save(Enlil_Library *library)
  * @param library the library struct
  * @return Returns a new library with the list of tags
  */
-Enlil_Library *enlil_library_eet_tags_load(Enlil_Library *library)
+Enlil_Library *
+enlil_library_eet_tags_load(Enlil_Library *library)
 {
    Eet_Data_Descriptor *edd, *edd_tag;
    Eet_File *f;
    Enlil_Library *data;
    char path[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
+   ASSERT_RETURN(library != NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_library_path_get(library));
+   snprintf(path, PATH_MAX, "%s/" EET_FILE, enlil_library_path_get(library));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd_tag = _enlil_tag_edd_new();
    edd = _enlil_library_tags_edd_new(edd_tag);
@@ -1179,18 +1254,19 @@ Enlil_Library *enlil_library_eet_tags_load(Enlil_Library *library)
  *
  * @param library the library struct
  */
-int enlil_library_eet_tags_save(Enlil_Library *library)
+int
+enlil_library_eet_tags_save(Enlil_Library *library)
 {
    int res;
    Eet_Data_Descriptor *edd, *edd_tag;
    Eet_File *f;
    char path[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
+   ASSERT_RETURN(library != NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_library_path_get(library));
+   snprintf(path, PATH_MAX, "%s/" EET_FILE, enlil_library_path_get(library));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd_tag = _enlil_tag_edd_new();
    edd = _enlil_library_tags_edd_new(edd_tag);
@@ -1204,41 +1280,24 @@ int enlil_library_eet_tags_save(Enlil_Library *library)
    return res;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
  * Save the header of a library
  *
  * @param library the library struct
  */
-static int _library_eet_header_save(const Enlil_Library *library)
+static int
+_library_eet_header_save(const Enlil_Library *library)
 {
    int res;
    Eet_Data_Descriptor *edd;
    Eet_File *f;
    char path[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
+   ASSERT_RETURN(library != NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_library_path_get(library));
+   snprintf(path, PATH_MAX, "%s/" EET_FILE, enlil_library_path_get(library));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd = _enlil_library_header_edd_new();
 
@@ -1255,19 +1314,20 @@ static int _library_eet_header_save(const Enlil_Library *library)
  *
  * @param library the library struct
  */
-static void _library_eet_header_load(Enlil_Library *library)
+static void
+_library_eet_header_load(Enlil_Library *library)
 {
    Eet_Data_Descriptor *edd;
    Eet_File *f;
    Enlil_Library *data;
    char path[PATH_MAX];
 
-   ASSERT_RETURN_VOID(library!=NULL);
+   ASSERT_RETURN_VOID(library != NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FILE,enlil_library_path_get(library));
+   snprintf(path, PATH_MAX, "%s/" EET_FILE, enlil_library_path_get(library));
 
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN_VOID(f!=NULL);
+   ASSERT_RETURN_VOID(f != NULL);
 
    edd = _enlil_library_header_edd_new();
 
@@ -1278,12 +1338,12 @@ static void _library_eet_header_load(Enlil_Library *library)
 
    if(data)
      {
-	library->netsync.host = eina_stringshare_add(data->netsync.host);
-	library->netsync.path = eina_stringshare_add(data->netsync.path);
-	library->netsync.username = eina_stringshare_add(data->netsync.username);
-	library->netsync.password = eina_stringshare_add(data->netsync.password);
-	library->photo1 = eina_stringshare_add(data->photo1);
-	library->photo2 = eina_stringshare_add(data->photo2);
+        library->netsync.host = eina_stringshare_add(data->netsync.host);
+        library->netsync.path = eina_stringshare_add(data->netsync.path);
+        library->netsync.username = eina_stringshare_add(data->netsync.username);
+        library->netsync.password = eina_stringshare_add(data->netsync.password);
+        library->photo1 = eina_stringshare_add(data->photo1);
+        library->photo2 = eina_stringshare_add(data->photo2);
      }
 
    enlil_library_free(&data);
@@ -1295,23 +1355,24 @@ static void _library_eet_header_load(Enlil_Library *library)
  * @param library the library struct
  * @param key the file name of the album to delete
  */
-int enlil_library_eet_album_remove(Enlil_Library *library, const char* key)
+int
+enlil_library_eet_album_remove(Enlil_Library *library,
+                               const char    *key)
 {
    Eet_File *f;
    char buf[PATH_MAX], path[PATH_MAX];
 
-   ASSERT_RETURN(library!=NULL);
-   ASSERT_RETURN(key!=NULL);
+   ASSERT_RETURN(library != NULL);
+   ASSERT_RETURN(key != NULL);
 
-
-   snprintf(path, PATH_MAX, "%s/"EET_FILE, enlil_library_path_get(library));
+   snprintf(path, PATH_MAX, "%s/" EET_FILE, enlil_library_path_get(library));
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
-   if(key[0]!='/')
-     snprintf(buf,PATH_MAX,"/album %s",key);
+   if(key[0] != '/')
+     snprintf(buf, PATH_MAX, "/album %s", key);
    else
-     snprintf(buf,PATH_MAX,"%s",key);
+     snprintf(buf, PATH_MAX, "%s", key);
 
    snprintf(buf, PATH_MAX, "/album %s", buf);
 
@@ -1322,29 +1383,37 @@ int enlil_library_eet_album_remove(Enlil_Library *library, const char* key)
    return 1;
 }
 
-static void _enlil_library_monitor_cb(void *data, __UNUSED__ Ecore_File_Monitor *em, Ecore_File_Event event, const char *path)
+static void
+_enlil_library_monitor_cb(void                          *data,
+                          __UNUSED__ Ecore_File_Monitor *em,
+                          Ecore_File_Event               event,
+                          const char                    *path)
 {
    Enlil_Library *library = (Enlil_Library *)data;
    switch(event)
      {
       case ECORE_FILE_EVENT_CREATED_DIRECTORY:
-	 LOG_INFO("New album: %s", path);
-	 library->conf.monitor.album_new_cb(library->conf.data, library, path);
-	 break;
+        LOG_INFO("New album: %s", path);
+        library->conf.monitor.album_new_cb(library->conf.data, library, path);
+        break;
+
       case ECORE_FILE_EVENT_DELETED_DIRECTORY:
-	 LOG_INFO("Deleted album; %s", path);
-	 library->conf.monitor.album_delete_cb(library->conf.data, library, path);
-	 break;
+        LOG_INFO("Deleted album; %s", path);
+        library->conf.monitor.album_delete_cb(library->conf.data, library, path);
+        break;
+
       case ECORE_FILE_EVENT_DELETED_SELF:
-	 LOG_INFO("Deleted enlil library: %s", path);
-	 library->conf.monitor.enlil_delete_cb(library->conf.data, library);
-	 break;
-      default: ;
-	       break;
+        LOG_INFO("Deleted enlil library: %s", path);
+        library->conf.monitor.enlil_delete_cb(library->conf.data, library);
+        break;
+
+      default:;
+        break;
      }
 }
 
-static Eet_Data_Descriptor * _enlil_library_albums_file_name_edd_new(Eet_Data_Descriptor *edd_file_name)
+static Eet_Data_Descriptor *
+_enlil_library_albums_file_name_edd_new(Eet_Data_Descriptor *edd_file_name)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -1360,7 +1429,8 @@ static Eet_Data_Descriptor * _enlil_library_albums_file_name_edd_new(Eet_Data_De
    return edd;
 }
 
-static Eet_Data_Descriptor * _enlil_library_collections_edd_new(Eet_Data_Descriptor *collection_edd)
+static Eet_Data_Descriptor *
+_enlil_library_collections_edd_new(Eet_Data_Descriptor *collection_edd)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -1376,7 +1446,8 @@ static Eet_Data_Descriptor * _enlil_library_collections_edd_new(Eet_Data_Descrip
    return edd;
 }
 
-static Eet_Data_Descriptor * _enlil_library_tags_edd_new(Eet_Data_Descriptor *tag_edd)
+static Eet_Data_Descriptor *
+_enlil_library_tags_edd_new(Eet_Data_Descriptor *tag_edd)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -1392,7 +1463,8 @@ static Eet_Data_Descriptor * _enlil_library_tags_edd_new(Eet_Data_Descriptor *ta
    return edd;
 }
 
-static Eet_Data_Descriptor * _enlil_library_header_edd_new()
+static Eet_Data_Descriptor *
+_enlil_library_header_edd_new()
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -1413,99 +1485,98 @@ static Eet_Data_Descriptor * _enlil_library_header_edd_new()
    return edd;
 }
 
-
-
-
-Enlil_Configuration enlil_conf_get(Enlil_Library *library)
+Enlil_Configuration
+enlil_conf_get(Enlil_Library *library)
 {
    return library->conf;
 }
 
-
-
-Enlil_Photo * enlil_library_photo_get(const char *library_path, int first_second)
+Enlil_Photo *
+enlil_library_photo_get(const char *library_path,
+                        int         first_second)
 {
-	Enlil_Photo *photo = NULL;
-	char buf[PATH_MAX];
-	const char* photo_file;
+   Enlil_Photo *photo = NULL;
+   char buf[PATH_MAX];
+   const char *photo_file;
 
-	ASSERT_RETURN(library_path != NULL);
-	ASSERT_RETURN(first_second > 0);
-	ASSERT_RETURN(first_second < 3);
+   ASSERT_RETURN(library_path != NULL);
+   ASSERT_RETURN(first_second > 0);
+   ASSERT_RETURN(first_second < 3);
 
-	Enlil_Library *library = enlil_library_new(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-	enlil_library_path_set(library, library_path);
-	ROOT_HEADER_LOAD(library);
+   Enlil_Library *library = enlil_library_new(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+   enlil_library_path_set(library, library_path);
+   ROOT_HEADER_LOAD(library);
 
-	if(first_second == 1)
-		photo_file = library->photo1;
-	else
-		photo_file = library->photo2;
+   if(first_second == 1)
+     photo_file = library->photo1;
+   else
+     photo_file = library->photo2;
 
-	if(photo_file)
-	{
+   if(photo_file)
+     {
+        snprintf(buf, sizeof(buf), "%s/%s", library_path, photo_file);
 
-		snprintf(buf, sizeof(buf), "%s/%s", library_path, photo_file);
+        if(ecore_file_exists(buf))
+          {
+             photo = enlil_photo_new();
+             enlil_photo_path_set(photo, library_path);
+             enlil_photo_file_name_set(photo, photo_file);
+          }
+     }
 
-		if(ecore_file_exists(buf))
-		{
-			photo = enlil_photo_new();
-			enlil_photo_path_set(photo, library_path);
-			enlil_photo_file_name_set(photo, photo_file);
-		}
-	}
+   if(!photo)
+     photo = enlil_library_search_photo_get(library_path, first_second);
 
-	if(!photo)
-		photo = enlil_library_search_photo_get(library_path, first_second);
-
-	enlil_library_free(&(library));
-	return photo;
+   enlil_library_free(&(library));
+   return photo;
 }
 
-
-Enlil_Photo * enlil_library_search_photo_get(const char *library_path, int first_second)
+Enlil_Photo *
+enlil_library_search_photo_get(const char *library_path,
+                               int         first_second)
 {
-	char buf[PATH_MAX];
-	Eina_Bool found = EINA_TRUE, found2 = EINA_TRUE;
-	Eina_Bool first_found = EINA_FALSE;
-	Enlil_Photo *photo = NULL;
-	char *folder, *file;
+   char buf[PATH_MAX];
+   Eina_Bool found = EINA_TRUE, found2 = EINA_TRUE;
+   Eina_Bool first_found = EINA_FALSE;
+   Enlil_Photo *photo = NULL;
+   char *folder, *file;
 
-	ASSERT_RETURN(library_path != NULL);
-	ASSERT_RETURN(first_second > 0);
-	ASSERT_RETURN(first_second < 3);
+   ASSERT_RETURN(library_path != NULL);
+   ASSERT_RETURN(first_second > 0);
+   ASSERT_RETURN(first_second < 3);
 
-	Eina_List *folders = ecore_file_ls(library_path);
+   Eina_List *folders = ecore_file_ls(library_path);
 
-	EINA_LIST_FREE(folders, folder)
-	{
-		if(found)
-		{
-			snprintf(buf, PATH_MAX, "%s/%s", library_path, folder);
-			Eina_List *files = ecore_file_ls(buf);
+   EINA_LIST_FREE(folders, folder)
+     {
+        if(found)
+          {
+             snprintf(buf, PATH_MAX, "%s/%s", library_path, folder);
+             Eina_List *files = ecore_file_ls(buf);
 
-			EINA_LIST_FREE(files, file)
-			{
-				if(found2)
-				{
-					if( enlil_photo_is(file) )
-					{
-						if(first_found || first_second == 1)
-						{
-							photo = enlil_photo_new();
-							enlil_photo_path_set(photo, buf);
-							enlil_photo_file_name_set(photo, file);
-							found2 = EINA_FALSE;
-							found = EINA_FALSE;
-						}
-						first_found = EINA_TRUE;
-					}
-				}
-				FREE(file);
-			}
-		}
-		FREE(folder);
-	}
+             EINA_LIST_FREE(files, file)
+               {
+                  if(found2)
+                    {
+                       if( enlil_photo_is(file))
+                         {
+                            if(first_found || first_second == 1)
+                              {
+                                 photo = enlil_photo_new();
+                                 enlil_photo_path_set(photo, buf);
+                                 enlil_photo_file_name_set(photo, file);
+                                 found2 = EINA_FALSE;
+                                 found = EINA_FALSE;
+                              }
+                            first_found = EINA_TRUE;
+                         }
+                    }
+                  FREE(file);
+               }
+          }
+        FREE(folder);
+     }
 
-	return photo;
+   return photo;
 }
+

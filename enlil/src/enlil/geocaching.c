@@ -3,26 +3,23 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
-#define XML_GOTO(CUR, TAG, VALUE) \
-   while( CUR && (VALUE = (const char *)CUR->name) && strcmp(VALUE, TAG)) \
-CUR = CUR->next;
+#define XML_GOTO(CUR, TAG, VALUE)                                        \
+  while( CUR && (VALUE = (const char *)CUR->name) && strcmp(VALUE, TAG)) \
+                   CUR = CUR->next;
 
-#define XML_DOWN(CUR) \
-   if(CUR->xmlChildrenNode) \
-CUR = CUR->xmlChildrenNode;\
-if(CUR) CUR = CUR->next
+#define XML_DOWN(CUR)            \
+  if(CUR->xmlChildrenNode)       \
+    CUR = CUR->xmlChildrenNode;  \
+  if(CUR) CUR = CUR->next
 
+#define XML_UP(CUR)     \
+  if(CUR->parent)       \
+    CUR = CUR->parent;  \
+  if(CUR) CUR = CUR->next
 
-#define XML_UP(CUR) \
-   if(CUR->parent)\
-CUR = CUR->parent;\
-if(CUR) CUR = CUR->next
-
-
-#define XML_NEXT(CUR) \
-   if(CUR) CUR = CUR->next; \
-if(CUR) CUR = CUR->next
-
+#define XML_NEXT(CUR)       \
+  if(CUR) CUR = CUR->next;  \
+  if(CUR) CUR = CUR->next
 
 struct Enlil_Geocaching_Log
 {
@@ -44,161 +41,158 @@ struct Enlil_Geocaching_Travelbug
 
 struct Enlil_Geocaching
 {
-   double longitude, latitude;
-   const char *name;
-   const char *time;
-   const char *description;
-   const char *url;
-   const char *url_name;
-   const char *sym;
-   const char *type;
+   double                   longitude, latitude;
+   const char              *name;
+   const char              *time;
+   const char              *description;
+   const char              *url;
+   const char              *url_name;
+   const char              *sym;
+   const char              *type;
 
-   const char *gp_name;
-   const char *gp_id;
-   const char *gp_available;
-   const char *gp_archived;
-   const char *gp_short_desc;
-   const char *gp_long_desc;
-   const char *gp_hints;
-   const char *gp_state;
-   const char *gp_placed_by;
-   const char *gp_owner;
-   const char *gp_owner_id;
-   const char *gp_type;
-   const char *gp_container;
-   const char *gp_difficulty;
-   const char *gp_terrain;
-   const char *gp_country;
+   const char              *gp_name;
+   const char              *gp_id;
+   const char              *gp_available;
+   const char              *gp_archived;
+   const char              *gp_short_desc;
+   const char              *gp_long_desc;
+   const char              *gp_hints;
+   const char              *gp_state;
+   const char              *gp_placed_by;
+   const char              *gp_owner;
+   const char              *gp_owner_id;
+   const char              *gp_type;
+   const char              *gp_container;
+   const char              *gp_difficulty;
+   const char              *gp_terrain;
+   const char              *gp_country;
 
-   Eina_List *logs;
-   Eina_List *tbs;
+   Eina_List               *logs;
+   Eina_List               *tbs;
 
-   void *user_data;
+   void                    *user_data;
    Enlil_Geocaching_Free_Cb free_cb;
 };
 
 typedef struct Enlil_Geocaching_Db
 {
-   Eina_Bool loaded : 1;
-   Eina_Hash *hash;
+   Eina_Bool                loaded : 1;
+   Eina_Hash               *hash;
    Enlil_Geocaching_Done_Cb done_cb;
-   void *data;
+   void                    *data;
 } Enlil_Geocaching_Db;
 
 static Enlil_Geocaching_Db _db;
 
+static Eet_Data_Descriptor *_enlil_geocaching_edd_new(Eet_Data_Descriptor *edd_log,
+                                                      Eet_Data_Descriptor *edd_tb);
+static Eet_Data_Descriptor *_enlil_hashtable_edd_new(Eet_Data_Descriptor *edd_gp);
+static Eet_Data_Descriptor *_enlil_geocaching_log_edd_new();
+static Eet_Data_Descriptor *_enlil_geocaching_tb_edd_new();
+static void                 _load();
+static int                  _save();
 
-static Eet_Data_Descriptor * _enlil_geocaching_edd_new(Eet_Data_Descriptor *edd_log, Eet_Data_Descriptor *edd_tb);
-static Eet_Data_Descriptor * _enlil_hashtable_edd_new(Eet_Data_Descriptor *edd_gp);
-static Eet_Data_Descriptor * _enlil_geocaching_log_edd_new();
-static Eet_Data_Descriptor * _enlil_geocaching_tb_edd_new();
-static void _load();
-static int _save();
-
-
-#define FCT_NAME enlil_geocaching
+#define FCT_NAME    enlil_geocaching
 #define STRUCT_TYPE Enlil_Geocaching
 
-   STRING_SET(name)
-   STRING_SET(gp_name)
-   STRING_SET(gp_short_desc)
-   STRING_SET(gp_long_desc)
-   STRING_SET(gp_placed_by)
-   STRING_SET(gp_owner)
-   STRING_SET(gp_type)
-   STRING_SET(gp_container)
-   STRING_SET(gp_difficulty)
-   STRING_SET(gp_terrain)
+STRING_SET(name)
+STRING_SET(gp_name)
+STRING_SET(gp_short_desc)
+STRING_SET(gp_long_desc)
+STRING_SET(gp_placed_by)
+STRING_SET(gp_owner)
+STRING_SET(gp_type)
+STRING_SET(gp_container)
+STRING_SET(gp_difficulty)
+STRING_SET(gp_terrain)
 STRING_SET(gp_country)
 
-   STRING_SET(time)
-   STRING_SET(description)
-   STRING_SET(url)
-   STRING_SET(url_name)
-   STRING_SET(sym)
-   STRING_SET(type)
-   STRING_SET(gp_id)
-   STRING_SET(gp_available)
-   STRING_SET(gp_archived)
-   STRING_SET(gp_hints)
-   STRING_SET(gp_state)
+STRING_SET(time)
+STRING_SET(description)
+STRING_SET(url)
+STRING_SET(url_name)
+STRING_SET(sym)
+STRING_SET(type)
+STRING_SET(gp_id)
+STRING_SET(gp_available)
+STRING_SET(gp_archived)
+STRING_SET(gp_hints)
+STRING_SET(gp_state)
 STRING_SET(gp_owner_id)
 
-   SET(longitude, double)
+SET(longitude, double)
 SET(latitude, double)
 
-   GET(name, const char *)
-   GET(gp_name, const char *)
-   GET(gp_short_desc, const char *)
-   GET(gp_long_desc, const char *)
-   GET(gp_placed_by, const char *)
-   GET(gp_owner, const char *)
-   GET(gp_type, const char *)
-   GET(gp_container, const char *)
-   GET(gp_difficulty, const char *)
-   GET(gp_terrain, const char *)
-   GET(gp_country, const char *)
-   GET(longitude, double)
-   GET(latitude, double)
+GET(name, const char *)
+GET(gp_name, const char *)
+GET(gp_short_desc, const char *)
+GET(gp_long_desc, const char *)
+GET(gp_placed_by, const char *)
+GET(gp_owner, const char *)
+GET(gp_type, const char *)
+GET(gp_container, const char *)
+GET(gp_difficulty, const char *)
+GET(gp_terrain, const char *)
+GET(gp_country, const char *)
+GET(longitude, double)
+GET(latitude, double)
 GET(user_data, void *)
 
-   GET(time, const char *)
-   GET(description, const char *)
-   GET(url, const char *)
-   GET(url_name, const char *)
-   GET(sym, const char *)
-   GET(type, const char *)
-   GET(gp_id, const char *)
-   GET(gp_available, const char *)
-   GET(gp_archived, const char *)
-   GET(gp_hints, const char *)
-   GET(gp_state, const char *)
-   GET(gp_owner_id, const char *)
-   GET(logs, Eina_List *)
+GET(time, const char *)
+GET(description, const char *)
+GET(url, const char *)
+GET(url_name, const char *)
+GET(sym, const char *)
+GET(type, const char *)
+GET(gp_id, const char *)
+GET(gp_available, const char *)
+GET(gp_archived, const char *)
+GET(gp_hints, const char *)
+GET(gp_state, const char *)
+GET(gp_owner_id, const char *)
+GET(logs, Eina_List *)
 GET(tbs, Eina_List *)
 
 #undef FCT_NAME
 #undef STRUCT_TYPE
 
-#define FCT_NAME enlil_geocaching_log
+#define FCT_NAME    enlil_geocaching_log
 #define STRUCT_TYPE Enlil_Geocaching_Log
 
-   STRING_SET(id)
-   STRING_SET(date)
-   STRING_SET(type)
-   STRING_SET(finder)
-   STRING_SET(finder_id)
-   STRING_SET(text)
+STRING_SET(id)
+STRING_SET(date)
+STRING_SET(type)
+STRING_SET(finder)
+STRING_SET(finder_id)
+STRING_SET(text)
 STRING_SET(encoded)
 
-   GET(id, const char *)
-   GET(date, const char *)
-   GET(type, const char *)
-   GET(finder, const char *)
-   GET(finder_id, const char *)
-   GET(text, const char *)
+GET(id, const char *)
+GET(date, const char *)
+GET(type, const char *)
+GET(finder, const char *)
+GET(finder_id, const char *)
+GET(text, const char *)
 GET(encoded, const char *)
 
 #undef FCT_NAME
 #undef STRUCT_TYPE
 
-
-#define FCT_NAME enlil_geocaching_tb
+#define FCT_NAME    enlil_geocaching_tb
 #define STRUCT_TYPE Enlil_Geocaching_Travelbug
 
-   STRING_SET(id)
-   STRING_SET(ref)
+STRING_SET(id)
+STRING_SET(ref)
 STRING_SET(name)
 
-   GET(id, const char *)
-   GET(ref, const char *)
+GET(id, const char *)
+GET(ref, const char *)
 GET(name, const char *)
 
 #undef FCT_NAME
 #undef STRUCT_TYPE
 
-
-Enlil_Geocaching *enlil_geocaching_new()
+Enlil_Geocaching * enlil_geocaching_new()
 {
    Enlil_Geocaching *gp = calloc(1, sizeof(Enlil_Geocaching));
 
@@ -207,7 +201,8 @@ Enlil_Geocaching *enlil_geocaching_new()
    return gp;
 }
 
-void enlil_geocaching_free(Enlil_Geocaching *gp)
+void
+enlil_geocaching_free(Enlil_Geocaching *gp)
 {
    Enlil_Geocaching_Travelbug *tb;
    Enlil_Geocaching_Log *log;
@@ -243,29 +238,34 @@ void enlil_geocaching_free(Enlil_Geocaching *gp)
    EINA_STRINGSHARE_DEL(gp->gp_owner_id);
 
    EINA_LIST_FREE(gp->logs, log)
-      enlil_geocaching_log_free(log);
+     enlil_geocaching_log_free(log);
 
    EINA_LIST_FREE(gp->tbs, tb)
-      enlil_geocaching_tb_free(tb);
+     enlil_geocaching_tb_free(tb);
 
    FREE(gp);
 }
 
-void enlil_geocaching_user_data_set(Enlil_Geocaching *gp, void *user_data, Enlil_Geocaching_Free_Cb cb)
+void
+enlil_geocaching_user_data_set(Enlil_Geocaching        *gp,
+                               void                    *user_data,
+                               Enlil_Geocaching_Free_Cb cb)
 {
-   ASSERT_RETURN_VOID(gp!=NULL);
+   ASSERT_RETURN_VOID(gp != NULL);
    gp->user_data = user_data;
    gp->free_cb = cb;
 }
 
-Enlil_Geocaching_Log *enlil_geocaching_log_new()
+Enlil_Geocaching_Log *
+enlil_geocaching_log_new()
 {
    Enlil_Geocaching_Log *gp_log = calloc(1, sizeof(Enlil_Geocaching_Log));
 
    return gp_log;
 }
 
-void enlil_geocaching_log_free(Enlil_Geocaching_Log *gp_log)
+void
+enlil_geocaching_log_free(Enlil_Geocaching_Log *gp_log)
 {
    ASSERT_RETURN_VOID(gp_log != NULL);
 
@@ -280,14 +280,16 @@ void enlil_geocaching_log_free(Enlil_Geocaching_Log *gp_log)
    FREE(gp_log);
 }
 
-Enlil_Geocaching_Travelbug *enlil_geocaching_tb_new()
+Enlil_Geocaching_Travelbug *
+enlil_geocaching_tb_new()
 {
    Enlil_Geocaching_Travelbug *gp_tb = calloc(1, sizeof(Enlil_Geocaching_Travelbug));
 
    return gp_tb;
 }
 
-void enlil_geocaching_tb_free(Enlil_Geocaching_Travelbug *gp_tb)
+void
+enlil_geocaching_tb_free(Enlil_Geocaching_Travelbug *gp_tb)
 {
    ASSERT_RETURN_VOID(gp_tb != NULL);
 
@@ -299,11 +301,16 @@ void enlil_geocaching_tb_free(Enlil_Geocaching_Travelbug *gp_tb)
 }
 
 static Eina_Bool running = EINA_FALSE;
-static void _load_thread(void *data, Ecore_Thread *thread);
-static void _import_thread(void *data, Ecore_Thread *thread);
-static void _import_end_cb(void *data, Ecore_Thread *thread);
+static void _load_thread(void         *data,
+                         Ecore_Thread *thread);
+static void _import_thread(void         *data,
+                           Ecore_Thread *thread);
+static void _import_end_cb(void         *data,
+                           Ecore_Thread *thread);
 
-void enlil_geocaching_get(Enlil_Geocaching_Done_Cb done_cb, void *data)
+void
+enlil_geocaching_get(Enlil_Geocaching_Done_Cb done_cb,
+                     void                    *data)
 {
    ASSERT_RETURN_VOID(done_cb != NULL);
 
@@ -311,10 +318,10 @@ void enlil_geocaching_get(Enlil_Geocaching_Done_Cb done_cb, void *data)
    _db.data = data;
 
    if(_db.loaded)
-     {
-	_db.done_cb(_db.data, _db.hash);
-	return ;
-     }
+   {
+      _db.done_cb(_db.data, _db.hash);
+      return;
+   }
 
    ASSERT_RETURN_VOID(running != EINA_TRUE);
    running = EINA_TRUE;
@@ -322,7 +329,10 @@ void enlil_geocaching_get(Enlil_Geocaching_Done_Cb done_cb, void *data)
    ecore_thread_run(_load_thread, _import_end_cb, NULL, NULL);
 }
 
-void enlil_geocaching_import(const char *file, Enlil_Geocaching_Done_Cb done_cb, void *data)
+void
+enlil_geocaching_import(const char              *file,
+                        Enlil_Geocaching_Done_Cb done_cb,
+                        void                    *data)
 {
    ASSERT_RETURN_VOID(running != EINA_TRUE);
    ASSERT_RETURN_VOID(done_cb != NULL);
@@ -336,27 +346,30 @@ void enlil_geocaching_import(const char *file, Enlil_Geocaching_Done_Cb done_cb,
    ecore_thread_run(_import_thread, _import_end_cb, NULL, eina_stringshare_add(file));
 }
 
-static void _load_thread(__UNUSED__ void *data, __UNUSED__ Ecore_Thread *thread)
+static void
+_load_thread(__UNUSED__ void         *data,
+             __UNUSED__ Ecore_Thread *thread)
 {
    if(_db.hash)
-     {
-	eina_hash_free(_db.hash);
-	_db.hash = NULL;
-     }
+   {
+      eina_hash_free(_db.hash);
+      _db.hash = NULL;
+   }
 
    _load();
 }
 
-static void _load()
+static void
+_load()
 {
    Eet_Data_Descriptor *edd, *edd_gp, *edd_log, *edd_tb;
    Eet_File *f;
    char path[PATH_MAX];
    Enlil_Geocaching_Db *db;
 
-   ASSERT_RETURN_VOID(_db.hash==NULL);
+   ASSERT_RETURN_VOID(_db.hash == NULL);
 
-   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB, getenv("HOME"));
+   snprintf(path, PATH_MAX, "%s/" EET_FOLDER_ROOT_DB, getenv("HOME"));
 
    LOG_INFO("Load %s\n", path);
 
@@ -365,7 +378,7 @@ static void _load()
    strcat(path, EET_FILE_GROUNDSPEAK_DB);
 
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN_VOID(f!=NULL);
+   ASSERT_RETURN_VOID(f != NULL);
 
    edd_log = _enlil_geocaching_log_edd_new();
    edd_tb = _enlil_geocaching_tb_edd_new();
@@ -381,22 +394,23 @@ static void _load()
    eet_data_descriptor_free(edd_tb);
 
    if(db)
-     {
-	_db.hash = db->hash;
-	FREE(db);
-     }
+   {
+      _db.hash = db->hash;
+      FREE(db);
+   }
    else
      _db.hash = eina_hash_stringshared_new(EINA_FREE_CB(enlil_geocaching_free));
 }
 
-static int _save()
+static int
+_save()
 {
    Eet_Data_Descriptor *edd, *edd_gp, *edd_log, *edd_tb;
    Eet_File *f;
    char path[PATH_MAX];
    int res;
 
-   snprintf(path,PATH_MAX,"%s/"EET_FOLDER_ROOT_DB, getenv("HOME"));
+   snprintf(path, PATH_MAX, "%s/" EET_FOLDER_ROOT_DB, getenv("HOME"));
 
    LOG_INFO("Save %s\n", path);
 
@@ -405,7 +419,7 @@ static int _save()
    strcat(path, EET_FILE_GROUNDSPEAK_DB);
 
    f = enlil_file_manager_open(path);
-   ASSERT_RETURN(f!=NULL);
+   ASSERT_RETURN(f != NULL);
 
    edd_log = _enlil_geocaching_log_edd_new();
    edd_tb = _enlil_geocaching_tb_edd_new();
@@ -423,7 +437,9 @@ static int _save()
    return res;
 }
 
-static void _import_thread(void *data, __UNUSED__ Ecore_Thread *thread)
+static void
+_import_thread(void         *data,
+               Ecore_Thread *thread __UNUSED__)
 {
    const char *file = data;
    const char *value, *tag = NULL, *prefix = NULL;
@@ -433,15 +449,14 @@ static void _import_thread(void *data, __UNUSED__ Ecore_Thread *thread)
    Eina_Bool log = EINA_FALSE, tb = EINA_FALSE;
 
    const char *_wpt, *_name, *_time, *_description, *_url,
-	 *_url_name, *_sym, *_type,
-	 *_gp_name, *_gp_cache,
-	 *_gp_short_desc, *_gp_long_desc, *_gp_placed_by,
-	 *_gp_owner, *_gp_type, *_gp_container, *_gp_difficulty, *_gp_terrain,
-	 *_gp_country, *_gp_id, *_gp_available, *_gp_archived, *_gp_hints, *_gp_state, *_gp_owner_id,
-	 *_gp_log, *_gp_logs, *_gp_date, *_gp_finder, *_gp_text,
-	 *_gp_tbs, *_gp_tb;
-   const char * pr_groundspeak;
-
+   *_url_name, *_sym, *_type,
+   *_gp_name, *_gp_cache,
+   *_gp_short_desc, *_gp_long_desc, *_gp_placed_by,
+   *_gp_owner, *_gp_type, *_gp_container, *_gp_difficulty, *_gp_terrain,
+   *_gp_country, *_gp_id, *_gp_available, *_gp_archived, *_gp_hints, *_gp_state, *_gp_owner_id,
+   *_gp_log, *_gp_logs, *_gp_date, *_gp_finder, *_gp_text,
+   *_gp_tbs, *_gp_tb;
+   const char *pr_groundspeak;
 
    pr_groundspeak = eina_stringshare_add("groundspeak");
 
@@ -489,322 +504,324 @@ static void _import_thread(void *data, __UNUSED__ Ecore_Thread *thread)
    FREE(strip_ext);
 
    if(ext && !strcmp(ext, ".gpx"))
-     {
-	LOG_INFO("Import geocaching file %s",file);
+   {
+      LOG_INFO("Import geocaching file %s", file);
 
-	xmlDocPtr doc;
-	xmlNodePtr cur;
+      xmlDocPtr doc;
+      xmlNodePtr cur;
 
-	doc = xmlParseFile(file);
+      doc = xmlParseFile(file);
 
-	if(doc)
-	  {
-	     cur = xmlDocGetRootElement(doc);
+      if(doc)
+      {
+         cur = xmlDocGetRootElement(doc);
 
-	     XML_DOWN(cur);
+         XML_DOWN(cur);
 
-	     XML_GOTO(cur, "wpt", value);
+         XML_GOTO(cur, "wpt", value);
 
-	     do
-	       {
-		  EINA_STRINGSHARE_DEL(tag);
-		  EINA_STRINGSHARE_DEL(prefix);
-		  tag = eina_stringshare_add((const char *)cur->name);
-		  if(cur->ns)
-		    prefix = eina_stringshare_add((const char *)cur->ns->prefix);
+         do
+         {
+            EINA_STRINGSHARE_DEL(tag);
+            EINA_STRINGSHARE_DEL(prefix);
+            tag = eina_stringshare_add((const char *)cur->name);
+            if(cur->ns)
+              prefix = eina_stringshare_add((const char *)cur->ns->prefix);
 
-		  if(tag)
-		    {
-		       if(!prefix && tag == _wpt)
-			 {
-			    gp = enlil_geocaching_new();
-			    xmlChar *s = xmlGetProp(cur, (xmlChar *)"lon");
-			    if(s)
-			      {
-				 enlil_geocaching_longitude_set(gp, atof((const char *)s));
-				 xmlFree(s);
-			      }
+            if(tag)
+            {
+               if(!prefix && tag == _wpt)
+               {
+                  gp = enlil_geocaching_new();
+                  xmlChar *s = xmlGetProp(cur, (xmlChar *)"lon");
+                  if(s)
+                  {
+                     enlil_geocaching_longitude_set(gp, atof((const char *)s));
+                     xmlFree(s);
+                  }
 
-			    s = xmlGetProp(cur, (xmlChar *)"lat");
-			    if(s)
-			      {
-				 enlil_geocaching_latitude_set(gp, atof((const char *)s));
-				 xmlFree(s);
-			      }
+                  s = xmlGetProp(cur, (xmlChar *)"lat");
+                  if(s)
+                  {
+                     enlil_geocaching_latitude_set(gp, atof((const char *)s));
+                     xmlFree(s);
+                  }
 
-			    XML_DOWN(cur);
-			 }
-		       else if(prefix == pr_groundspeak && tag == _gp_cache)
-			 {
-			    xmlChar* s = xmlGetProp(cur, (xmlChar *)"id");
-			    if(s)
-			      {
-				 enlil_geocaching_gp_id_set(gp, (const char *)s);
-				 xmlFree(s);
-			      }
+                  XML_DOWN(cur);
+               }
+               else if(prefix == pr_groundspeak && tag == _gp_cache)
+               {
+                  xmlChar *s = xmlGetProp(cur, (xmlChar *)"id");
+                  if(s)
+                  {
+                     enlil_geocaching_gp_id_set(gp, (const char *)s);
+                     xmlFree(s);
+                  }
 
-			    s = xmlGetProp(cur, (xmlChar *)"available");
-			    if(s)
-			      {
-				 enlil_geocaching_gp_available_set(gp, (const char *)s);
-				 xmlFree(s);
-			      }
+                  s = xmlGetProp(cur, (xmlChar *)"available");
+                  if(s)
+                  {
+                     enlil_geocaching_gp_available_set(gp, (const char *)s);
+                     xmlFree(s);
+                  }
 
-			    s = xmlGetProp(cur, (xmlChar *)"archived");
-			    if(s)
-			      {
-				 enlil_geocaching_gp_archived_set(gp, (const char *)s);
-				 xmlFree(s);
-			      }
+                  s = xmlGetProp(cur, (xmlChar *)"archived");
+                  if(s)
+                  {
+                     enlil_geocaching_gp_archived_set(gp, (const char *)s);
+                     xmlFree(s);
+                  }
 
-			    XML_DOWN(cur);
-			 }
-		       else if(prefix == pr_groundspeak && tag == _gp_logs)
-			 {
-			    XML_DOWN(cur);
-			 }
-		       else if(prefix == pr_groundspeak && tag == _gp_log)
-			 {
-			    gp_log = enlil_geocaching_log_new();
-			    Eina_List *l = enlil_geocaching_logs_get(gp);
-			    l = eina_list_append(l, gp_log);
-			    gp->logs = l;
+                  XML_DOWN(cur);
+               }
+               else if(prefix == pr_groundspeak && tag == _gp_logs)
+               {
+                  XML_DOWN(cur);
+               }
+               else if(prefix == pr_groundspeak && tag == _gp_log)
+               {
+                  gp_log = enlil_geocaching_log_new();
+                  Eina_List *l = enlil_geocaching_logs_get(gp);
+                  l = eina_list_append(l, gp_log);
+                  gp->logs = l;
 
-			    xmlChar *s = xmlGetProp(cur, (xmlChar *)"id");
-			    if(s)
-			      {
-				 enlil_geocaching_log_id_set(gp_log, (const char *)s);
-				 xmlFree(s);
-			      }
+                  xmlChar *s = xmlGetProp(cur, (xmlChar *)"id");
+                  if(s)
+                  {
+                     enlil_geocaching_log_id_set(gp_log, (const char *)s);
+                     xmlFree(s);
+                  }
 
-			    log = EINA_TRUE;
-			    XML_DOWN(cur);
-			 }
-		       else if(prefix == pr_groundspeak && tag == _gp_tbs)
-			 {
-			    XML_DOWN(cur);
-			 }
-		       else if(prefix == pr_groundspeak && tag == _gp_tb)
-			 {
-			    gp_tb = enlil_geocaching_tb_new();
-			    Eina_List *l = enlil_geocaching_tbs_get(gp);
-			    l = eina_list_append(l, gp_tb);
-			    gp->tbs = l;
+                  log = EINA_TRUE;
+                  XML_DOWN(cur);
+               }
+               else if(prefix == pr_groundspeak && tag == _gp_tbs)
+               {
+                  XML_DOWN(cur);
+               }
+               else if(prefix == pr_groundspeak && tag == _gp_tb)
+               {
+                  gp_tb = enlil_geocaching_tb_new();
+                  Eina_List *l = enlil_geocaching_tbs_get(gp);
+                  l = eina_list_append(l, gp_tb);
+                  gp->tbs = l;
 
-			    xmlChar *s = xmlGetProp(cur, (xmlChar *)"id");
-			    if(s)
-			      {
-				 enlil_geocaching_tb_id_set(gp_tb, (const char *)s);
-				 xmlFree(s);
-			      }
+                  xmlChar *s = xmlGetProp(cur, (xmlChar *)"id");
+                  if(s)
+                  {
+                     enlil_geocaching_tb_id_set(gp_tb, (const char *)s);
+                     xmlFree(s);
+                  }
 
-			    s = xmlGetProp(cur, (xmlChar *)"ref");
-			    if(s)
-			      {
-				 enlil_geocaching_tb_ref_set(gp_tb, (const char *)s);
-				 xmlFree(s);
-			      }
+                  s = xmlGetProp(cur, (xmlChar *)"ref");
+                  if(s)
+                  {
+                     enlil_geocaching_tb_ref_set(gp_tb, (const char *)s);
+                     xmlFree(s);
+                  }
 
-			    tb = EINA_TRUE;
-			    XML_DOWN(cur);
-			 }
-		       else
-			 {
-			    if(!prefix && tag == _name)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_name_set(gp, (const char *)xs);
-				 xmlFree(xs);
+                  tb = EINA_TRUE;
+                  XML_DOWN(cur);
+               }
+               else
+               {
+                  if(!prefix && tag == _name)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_name_set(gp, (const char *)xs);
+                     xmlFree(xs);
 
-				 gp2 = eina_hash_find(_db.hash, enlil_geocaching_name_get(gp));
-				 if(gp2)
-				   eina_hash_del(_db.hash, enlil_geocaching_name_get(gp2), gp2);
-				 eina_hash_direct_add(_db.hash,  enlil_geocaching_name_get(gp), gp);
-			      }
-			    else if(!prefix && tag == _time)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_time_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(!prefix && tag == _description)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_description_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(!prefix && tag == _url)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_url_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(!prefix && tag == _url_name)
-			      { 
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_url_name_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(!prefix && tag == _sym)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_sym_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(!prefix && tag == _type)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_type_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_name)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 if(!tb)
-				   enlil_geocaching_gp_name_set(gp, (const char *)xs);
-				 else
-				   enlil_geocaching_tb_name_set(gp_tb, (const char *)xs);
-				 tb = EINA_FALSE;
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_short_desc)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_short_desc_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_long_desc)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_long_desc_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_placed_by)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_placed_by_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_owner)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_owner_set(gp, (const char *)xs);
-				 xmlFree(xs);
+                     gp2 = eina_hash_find(_db.hash, enlil_geocaching_name_get(gp));
+                     if(gp2)
+                       eina_hash_del(_db.hash, enlil_geocaching_name_get(gp2), gp2);
+                     eina_hash_direct_add(_db.hash, enlil_geocaching_name_get(gp), gp);
+                  }
+                  else if(!prefix && tag == _time)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_time_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(!prefix && tag == _description)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_description_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(!prefix && tag == _url)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_url_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(!prefix && tag == _url_name)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_url_name_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(!prefix && tag == _sym)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_sym_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(!prefix && tag == _type)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_type_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_name)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     if(!tb)
+                       enlil_geocaching_gp_name_set(gp, (const char *)xs);
+                     else
+                       enlil_geocaching_tb_name_set(gp_tb, (const char *)xs);
+                     tb = EINA_FALSE;
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_short_desc)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_short_desc_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_long_desc)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_long_desc_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_placed_by)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_placed_by_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_owner)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_owner_set(gp, (const char *)xs);
+                     xmlFree(xs);
 
-				 xmlChar *s = xmlGetProp(cur, (xmlChar*)"id");
-				 if(s)
-				   {
-				      enlil_geocaching_gp_owner_id_set(gp, (const char *)s);
-				      xmlFree(s);
-				   }
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_type)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 if(!log)
-				   enlil_geocaching_gp_type_set(gp, (const char *)xs);
-				 else
-				   enlil_geocaching_log_type_set(gp_log, (const char *)xs);
+                     xmlChar *s = xmlGetProp(cur, (xmlChar *)"id");
+                     if(s)
+                     {
+                        enlil_geocaching_gp_owner_id_set(gp, (const char *)s);
+                        xmlFree(s);
+                     }
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_type)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     if(!log)
+                       enlil_geocaching_gp_type_set(gp, (const char *)xs);
+                     else
+                       enlil_geocaching_log_type_set(gp_log, (const char *)xs);
 
-				 log = EINA_FALSE;
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_container)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_container_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_difficulty)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_difficulty_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_terrain)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_terrain_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_country)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_country_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_hints)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_hints_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_state)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_gp_state_set(gp, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_date)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_log_date_set(gp_log, (const char *)xs);
-				 xmlFree(xs);
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_text)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_log_text_set(gp_log, (const char *)xs);
-				 xmlFree(xs);
+                     log = EINA_FALSE;
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_container)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_container_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_difficulty)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_difficulty_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_terrain)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_terrain_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_country)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_country_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_hints)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_hints_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_state)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_gp_state_set(gp, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_date)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_log_date_set(gp_log, (const char *)xs);
+                     xmlFree(xs);
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_text)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_log_text_set(gp_log, (const char *)xs);
+                     xmlFree(xs);
 
-				 xmlChar *s = xmlGetProp(cur, (xmlChar*)"encoded");
-				 if(s)
-				   {
-				      enlil_geocaching_log_encoded_set(gp_log, (const char *)s);
-				      xmlFree(s);
-				   }
-			      }
-			    else if(prefix == pr_groundspeak && tag == _gp_finder)
-			      {
-				 xmlChar* xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				 enlil_geocaching_log_finder_set(gp_log, (const char *)xs);
-				 xmlFree(xs);
+                     xmlChar *s = xmlGetProp(cur, (xmlChar *)"encoded");
+                     if(s)
+                     {
+                        enlil_geocaching_log_encoded_set(gp_log, (const char *)s);
+                        xmlFree(s);
+                     }
+                  }
+                  else if(prefix == pr_groundspeak && tag == _gp_finder)
+                  {
+                     xmlChar *xs = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                     enlil_geocaching_log_finder_set(gp_log, (const char *)xs);
+                     xmlFree(xs);
 
-				 xmlChar *s = xmlGetProp(cur, (xmlChar*)"id");
-				 if(s)
-				   {
-				      enlil_geocaching_log_finder_id_set(gp_log, (const char *)s);
-				      xmlFree(s);
-				   }
-			      }
+                     xmlChar *s = xmlGetProp(cur, (xmlChar *)"id");
+                     if(s)
+                     {
+                        enlil_geocaching_log_finder_id_set(gp_log, (const char *)s);
+                        xmlFree(s);
+                     }
+                  }
 
-			    if(cur && (!cur->next || !cur->next->next))
-			      {
-				 XML_UP(cur);
+                  if(cur && (!cur->next || !cur->next->next))
+                  {
+                     XML_UP(cur);
 
-				 while(cur && (!cur->next || !cur->next->next))
-				   {
-				      XML_UP(cur);
-				   }
-			      }
-			    else if(cur)
-			      XML_NEXT(cur);
-			 }
-		    }
-	       } while(cur);
+                     while(cur && (!cur->next || !cur->next->next))
+                     {
+                        XML_UP(cur);
+                     }
+                  }
+                  else if(cur)
+                    XML_NEXT(cur);
+               }
+            }
+         } while(cur);
 
-	     EINA_STRINGSHARE_DEL(tag);
-	     EINA_STRINGSHARE_DEL(prefix);
-	     xmlFreeDoc(doc);
-	  }
-     }
+         EINA_STRINGSHARE_DEL(tag);
+         EINA_STRINGSHARE_DEL(prefix);
+         xmlFreeDoc(doc);
+      }
+   }
 
    eina_stringshare_del(file);
 
    _save();
 }
 
-static void _import_end_cb(__UNUSED__ void *data, __UNUSED__ Ecore_Thread *thread)
+static void
+_import_end_cb(__UNUSED__ void         *data,
+               __UNUSED__ Ecore_Thread *thread)
 {
    running = EINA_FALSE;
 
@@ -812,7 +829,9 @@ static void _import_end_cb(__UNUSED__ void *data, __UNUSED__ Ecore_Thread *threa
    _db.done_cb(_db.data, _db.hash);
 }
 
-static Eet_Data_Descriptor * _enlil_geocaching_edd_new(Eet_Data_Descriptor *edd_log, Eet_Data_Descriptor *edd_tb)
+static Eet_Data_Descriptor *
+_enlil_geocaching_edd_new(Eet_Data_Descriptor *edd_log,
+                          Eet_Data_Descriptor *edd_tb)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -860,7 +879,8 @@ static Eet_Data_Descriptor * _enlil_geocaching_edd_new(Eet_Data_Descriptor *edd_
    return edd;
 }
 
-static Eet_Data_Descriptor * _enlil_hashtable_edd_new(Eet_Data_Descriptor *edd_gp)
+static Eet_Data_Descriptor *
+_enlil_hashtable_edd_new(Eet_Data_Descriptor *edd_gp)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -878,7 +898,8 @@ static Eet_Data_Descriptor * _enlil_hashtable_edd_new(Eet_Data_Descriptor *edd_g
    return edd;
 }
 
-static Eet_Data_Descriptor * _enlil_geocaching_log_edd_new()
+static Eet_Data_Descriptor *
+_enlil_geocaching_log_edd_new()
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -900,7 +921,8 @@ static Eet_Data_Descriptor * _enlil_geocaching_log_edd_new()
    return edd;
 }
 
-static Eet_Data_Descriptor * _enlil_geocaching_tb_edd_new()
+static Eet_Data_Descriptor *
+_enlil_geocaching_tb_edd_new()
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
