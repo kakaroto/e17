@@ -31,8 +31,6 @@ static ENLIL_MUTEX mutex;
 static EET_File_Version current_version;
 static Eet_Data_Descriptor *edd_version = NULL;
 
-static Ecore_Timer *_timer = NULL;
-
 struct EET_File_Version
 {
    double version;
@@ -105,12 +103,6 @@ enlil_file_manager_open(const char *file)
      File_Table_Data *f_data = _enlil_file_manager_find(file);
      EET_File_Version *f_version;
 
-     if(_timer)
-       {
-          ecore_timer_del(_timer);
-          _timer = NULL;
-       }
-
      if(f_data)
        {
           file_list = eina_list_remove(file_list, f_data);
@@ -156,14 +148,6 @@ enlil_file_manager_open(const char *file)
      return f_data->f;
 }
 
-static Eina_Bool
-_timer_cb(void *data __UNUSED__)
-{
-   enlil_file_manager_flush();
-   _timer = NULL;
-   return EINA_FALSE;
-}
-
 File_Table_Data *
 _enlil_file_manager_find(const char *file)
 {
@@ -179,12 +163,6 @@ void
 enlil_file_manager_close(const char *file __UNUSED__)
 {
    //LOG_DBG("Close file %s", file);
-   if(_timer)
-     {
-        ecore_timer_del(_timer);
-        _timer = NULL;
-     }
-   _timer = ecore_timer_add(3, _timer_cb, NULL);
    ENLIL_MUTEX_UNLOCK(mutex);
 }
 
