@@ -270,7 +270,7 @@ esql_free(Esql *e)
    if (e->backend_ids) eina_list_free(e->backend_set_funcs);
    if (e->backend_set_params) eina_list_free(e->backend_set_params);
    if (e->backend_ids) eina_list_free(e->backend_ids);
-   if (e->cur_query) free(e->cur_query);
+   free(e->cur_query);
    free(e);
 }
 

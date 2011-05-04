@@ -25,7 +25,7 @@
 #define UPDATE_LISTS(TYPE) do {                                                                          \
        if (e->backend_set_funcs && (e->backend_set_funcs->data == esql_##TYPE))                          \
          {                                                                                               \
-            if (e->backend_set_params->data) free(e->backend_set_params->data);                          \
+            free(e->backend_set_params->data);                          \
             e->backend_set_funcs = eina_list_remove_list(e->backend_set_funcs, e->backend_set_funcs);    \
             e->backend_set_params = eina_list_remove_list(e->backend_set_params, e->backend_set_params); \
             e->backend_ids = eina_list_remove_list(e->backend_ids, e->backend_ids);                      \
