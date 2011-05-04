@@ -148,7 +148,6 @@ _azy_events_valid_request(Azy_Net *net,
    orig_len = len;
    for (; len; start++)
      {
-        start++;
         const unsigned char *end;
         for (end = start; len; len--)
           {
@@ -203,7 +202,7 @@ _azy_events_valid_request(Azy_Net *net,
                 case '\n':
                   {
                      unsigned int eo = end - header;
-                     if (end - header < 15) return 0;
+                     if (end - header < 14) return 0;
                      end--;
                      switch (end[0])
                        {
@@ -218,7 +217,7 @@ _azy_events_valid_request(Azy_Net *net,
                      end -= 8;
                      if (strncmp((char*)end, " HTTP/1.", sizeof(" HTTP/1.") - 1)) return 0;
                      for (; (len < orig_len) && (end[0] == ' '); end--, len++);
-                     if ((end - path_start < 1) || (end[0] == ' ')) return 0;
+                     if ((end - path_start < 0) || (end[0] == ' ')) return 0;
                      end++; /* copy up to the space */
                      if (uri)
                        {
