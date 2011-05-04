@@ -126,7 +126,7 @@ enlil_eet_app_data_load(Eet_Data_Descriptor *edd,
 }
 
 Eet_Data_Descriptor *
-enlil_string_edd_new()
+enlil_string_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;

@@ -66,7 +66,7 @@ static Eet_Data_Descriptor *_enlil_album_photos_file_name_edd_new(Eet_Data_Descr
     }
 
 Enlil_Album *
-enlil_album_new()
+enlil_album_new(void)
 {
    return calloc(1, sizeof(Enlil_Album));
 }
@@ -838,7 +838,7 @@ _album_eet_photos_save(Enlil_Album *album)
 }
 
 Eet_Data_Descriptor *
-_enlil_album_file_name_edd_new()
+_enlil_album_file_name_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -908,7 +908,7 @@ _enlil_album_header_edd_new(Eet_Data_Descriptor *edd_collection)
 }
 
 Eet_Data_Descriptor *
-_enlil_album_collection_edd_new()
+_enlil_album_collection_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;

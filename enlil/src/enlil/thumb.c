@@ -44,7 +44,7 @@ static Enlil_Thumb thumb;
 
 static int count = 0;
 int
-enlil_thumb_init()
+enlil_thumb_init(void)
 {
    if(count > 0) return ++count;
 
@@ -56,7 +56,7 @@ enlil_thumb_init()
 }
 
 int
-enlil_thumb_shutdown()
+enlil_thumb_shutdown(void)
 {
    if(count > 1) return --count;
 
@@ -174,7 +174,7 @@ enlil_thumb_photo_get(Enlil_Photo         *photo,
 }
 
 void
-enlil_thumb_clear()
+enlil_thumb_clear(void)
 {
    Enlil_Thumb_Job *job;
 

@@ -52,14 +52,14 @@ Enlil_Configuration
 enlil_conf_get(Enlil_Library *library);
 
 int
- enlil_file_manager_init();
+ enlil_file_manager_init(void);
 int
- enlil_file_manager_shutdown();
+ enlil_file_manager_shutdown(void);
 
 int
-     enlil_thumb_init();
+     enlil_thumb_init(void);
 int
-     enlil_thumb_shutdown();
+     enlil_thumb_shutdown(void);
 
 void _enlil_library_collection_album_add(Enlil_Library *library,
                                           Enlil_Album_Collection *album_col,
@@ -99,18 +99,18 @@ void                                   _enlil_library_album_name_changed(Enlil_L
 
 const char          *_enlil_photo_exif_datetimeoriginal_get(const Enlil_Photo *photo);
 
-Eet_Data_Descriptor *_enlil_album_file_name_edd_new();
-Eet_Data_Descriptor *_enlil_photo_file_name_edd_new();
+Eet_Data_Descriptor *_enlil_album_file_name_edd_new(void);
+Eet_Data_Descriptor *_enlil_photo_file_name_edd_new(void);
 
 Eet_Data_Descriptor *
                      enlil_photo_edd_new(Eet_Data_Descriptor *edd_tag);
 Eet_Data_Descriptor *_enlil_album_header_edd_new(Eet_Data_Descriptor *edd_collection);
-Eet_Data_Descriptor *_enlil_album_collection_edd_new();
-Eet_Data_Descriptor *_enlil_collection_edd_new();
-Eet_Data_Descriptor *_enlil_tag_edd_new();
-Eet_Data_Descriptor *_enlil_photo_tag_edd_new();
-Eet_Data_Descriptor *_enlil_exif_edd_new();
-Eet_Data_Descriptor *_enlil_iptc_edd_new();
+Eet_Data_Descriptor *_enlil_album_collection_edd_new(void);
+Eet_Data_Descriptor *_enlil_collection_edd_new(void);
+Eet_Data_Descriptor *_enlil_tag_edd_new(void);
+Eet_Data_Descriptor *_enlil_photo_tag_edd_new(void);
+Eet_Data_Descriptor *_enlil_exif_edd_new(void);
+Eet_Data_Descriptor *_enlil_iptc_edd_new(void);
 
 void                 _enlil_album_netsync_id_set(Enlil_Album *album,
                                                   int id);
@@ -133,9 +133,9 @@ void _enlil_photo_netsync_version_file_both_set(Enlil_Photo *photo,
                                                 int version);
 
 int
-           enlil_trans_init();
+           enlil_trans_init(void);
 int
-           enlil_trans_shutdown();
+           enlil_trans_shutdown(void);
 
 Eina_List *eina_list_left_sorted_diff(Eina_List *sorted_list,
                                        Eina_List *list2,

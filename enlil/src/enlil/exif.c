@@ -34,14 +34,14 @@ static Enlil_Exif_Job *job_current = NULL;
 static int running = 0;
 
 static void _job_free(Enlil_Exif_Job *job);
-static void _job_next();
+static void _job_next(void);
 static void _exif_thread(void         *data,
                          Ecore_Thread *thread);
 static void _end_cb(void         *data,
                     Ecore_Thread *thread);
 
 Enlil_Exif *
-enlil_exif_new()
+enlil_exif_new(void)
 {
    Enlil_Exif *exif = calloc(1, sizeof(Enlil_Exif));
    return exif;
@@ -109,7 +109,7 @@ enlil_exif_description_get(Enlil_Exif *exif)
 }
 
 Eet_Data_Descriptor *
-_enlil_exif_edd_new()
+_enlil_exif_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -209,7 +209,7 @@ _job_free(Enlil_Exif_Job *job)
 }
 
 static void
-_job_next()
+_job_next(void)
 {
    char buf[PATH_MAX];
 

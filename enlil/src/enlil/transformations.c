@@ -40,7 +40,7 @@ static void _enlil_trans_history_add(Enlil_Trans_History *h,
                                      Enlil_Trans_Job_Type type);
 
 static void      _job_free(Enlil_Trans_Job *job);
-static void      _job_next();
+static void      _job_next(void);
 static void      _end_cb(void *data);
 static Eina_Bool _exe_del_cb(void *data,
                              int   type,
@@ -50,7 +50,7 @@ static int count = 0;
 static Ecore_Event_Handler *handler_exe_del = NULL;
 
 int
-enlil_trans_init()
+enlil_trans_init(void)
 {
    if(count++ > 0) return count;
    handler_exe_del = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _exe_del_cb, NULL);
@@ -59,7 +59,7 @@ enlil_trans_init()
 }
 
 int
-enlil_trans_shutdown()
+enlil_trans_shutdown(void)
 {
    if(count-- > 1) return count;
    ecore_event_handler_del(handler_exe_del);
@@ -245,7 +245,7 @@ _job_free(Enlil_Trans_Job *job)
 }
 
 static void
-_job_next()
+_job_next(void)
 {
    char buf[PATH_MAX], buf2[PATH_MAX];
    char *trans = NULL;

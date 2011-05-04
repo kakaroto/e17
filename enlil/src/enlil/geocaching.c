@@ -87,10 +87,10 @@ static Enlil_Geocaching_Db _db;
 static Eet_Data_Descriptor *_enlil_geocaching_edd_new(Eet_Data_Descriptor *edd_log,
                                                       Eet_Data_Descriptor *edd_tb);
 static Eet_Data_Descriptor *_enlil_hashtable_edd_new(Eet_Data_Descriptor *edd_gp);
-static Eet_Data_Descriptor *_enlil_geocaching_log_edd_new();
-static Eet_Data_Descriptor *_enlil_geocaching_tb_edd_new();
-static void                 _load();
-static int                  _save();
+static Eet_Data_Descriptor *_enlil_geocaching_log_edd_new(void);
+static Eet_Data_Descriptor *_enlil_geocaching_tb_edd_new(void);
+static void                 _load(void);
+static int                  _save(void);
 
 #define FCT_NAME    enlil_geocaching
 #define STRUCT_TYPE Enlil_Geocaching
@@ -192,7 +192,7 @@ GET(name, const char *)
 #undef FCT_NAME
 #undef STRUCT_TYPE
 
-Enlil_Geocaching * enlil_geocaching_new()
+Enlil_Geocaching * enlil_geocaching_new(void)
 {
    Enlil_Geocaching *gp = calloc(1, sizeof(Enlil_Geocaching));
 
@@ -257,7 +257,7 @@ enlil_geocaching_user_data_set(Enlil_Geocaching        *gp,
 }
 
 Enlil_Geocaching_Log *
-enlil_geocaching_log_new()
+enlil_geocaching_log_new(void)
 {
    Enlil_Geocaching_Log *gp_log = calloc(1, sizeof(Enlil_Geocaching_Log));
 
@@ -281,7 +281,7 @@ enlil_geocaching_log_free(Enlil_Geocaching_Log *gp_log)
 }
 
 Enlil_Geocaching_Travelbug *
-enlil_geocaching_tb_new()
+enlil_geocaching_tb_new(void)
 {
    Enlil_Geocaching_Travelbug *gp_tb = calloc(1, sizeof(Enlil_Geocaching_Travelbug));
 
@@ -360,7 +360,7 @@ _load_thread(__UNUSED__ void         *data,
 }
 
 static void
-_load()
+_load(void)
 {
    Eet_Data_Descriptor *edd, *edd_gp, *edd_log, *edd_tb;
    Eet_File *f;
@@ -403,7 +403,7 @@ _load()
 }
 
 static int
-_save()
+_save(void)
 {
    Eet_Data_Descriptor *edd, *edd_gp, *edd_log, *edd_tb;
    Eet_File *f;
@@ -899,7 +899,7 @@ _enlil_hashtable_edd_new(Eet_Data_Descriptor *edd_gp)
 }
 
 static Eet_Data_Descriptor *
-_enlil_geocaching_log_edd_new()
+_enlil_geocaching_log_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -922,7 +922,7 @@ _enlil_geocaching_log_edd_new()
 }
 
 static Eet_Data_Descriptor *
-_enlil_geocaching_tb_edd_new()
+_enlil_geocaching_tb_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;

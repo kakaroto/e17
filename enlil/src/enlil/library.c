@@ -11,7 +11,7 @@ static void _enlil_library_monitor_cb(void               *data,
 static Eet_Data_Descriptor *_enlil_library_albums_file_name_edd_new(Eet_Data_Descriptor *edd_file_name);
 static Eet_Data_Descriptor *_enlil_library_collections_edd_new(Eet_Data_Descriptor *collection_edd);
 static Eet_Data_Descriptor *_enlil_library_tags_edd_new(Eet_Data_Descriptor *tag_edd);
-static Eet_Data_Descriptor *_enlil_library_header_edd_new();
+static Eet_Data_Descriptor *_enlil_library_header_edd_new(void);
 static int                  _sort_albums_name_cb(const void *d1,
                                                  const void *d2);
 static int                  _sort_collections_name_cb(const void *d1,
@@ -1015,7 +1015,7 @@ enlil_library_eet_path_delete(Enlil_Library *library)
  * @return Returns a list of String* containing the library path
  */
 Eina_List *
-enlil_library_eet_path_load()
+enlil_library_eet_path_load(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_File *f;
@@ -1464,7 +1464,7 @@ _enlil_library_tags_edd_new(Eet_Data_Descriptor *tag_edd)
 }
 
 static Eet_Data_Descriptor *
-_enlil_library_header_edd_new()
+_enlil_library_header_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;

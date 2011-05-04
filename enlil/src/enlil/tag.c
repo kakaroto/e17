@@ -11,7 +11,7 @@ struct enlil_tag
 };
 
 Enlil_Tag *
-enlil_tag_new()
+enlil_tag_new(void)
 {
    return calloc(1, sizeof(Enlil_Tag));
 }
@@ -138,7 +138,7 @@ enlil_tag_print(const Enlil_Tag *tag)
 }
 
 Eet_Data_Descriptor *
-_enlil_tag_edd_new()
+_enlil_tag_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;

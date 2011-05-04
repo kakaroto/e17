@@ -103,10 +103,10 @@ static void *_job_error_data = NULL;
 
 static Ecore_Idler *_idler = NULL;
 
-static void        _job_next();
+static void        _job_next(void);
 static void        _job_free(Enlil_NetSync_Job *job);
 static const char *_enlil_netsync_job_type_tostring(Enlil_NetSync_Job_Type type);
-static void        _job_done();
+static void        _job_done(void);
 static Eina_Bool   _disconnected(void *data,
                                  int   type,
                                  void *data2);
@@ -257,7 +257,7 @@ _enlil_netsync_job_type_tostring(Enlil_NetSync_Job_Type type)
 }
 
 void
-enlil_netsync_disconnect()
+enlil_netsync_disconnect(void)
 {
    Eina_List *l, *l2;
    Enlil_NetSync_Job *job;
@@ -901,7 +901,7 @@ enlil_netsync_job_add_photo_append(Enlil_Photo                        *photo,
 #ifdef HAVE_AZY //STATIC METHODS
 
 static Enlil_NetSync_Job *
-_enlil_netsync_job_cnx_prepend()
+_enlil_netsync_job_cnx_prepend(void)
 {
    Enlil_NetSync_Job *job;
    Eina_List *l;
@@ -924,7 +924,7 @@ _enlil_netsync_job_cnx_prepend()
 }
 
 static Enlil_NetSync_Job *
-_enlil_netsync_job_login_prepend()
+_enlil_netsync_job_login_prepend(void)
 {
    Enlil_NetSync_Job *job;
    Eina_List *l;
@@ -971,7 +971,7 @@ _to_pwg_image_upload(Azy_Value*value,
 }
 
 static void
-_job_next()
+_job_next(void)
 {
    unsigned int ret;
    Azy_Content *content;
@@ -1235,7 +1235,7 @@ _idler_cb(void *data __UNUSED__)
 }
 
 static void
-_job_done()
+_job_done(void)
 {
    l_jobs = eina_list_remove(l_jobs, job_current);
 

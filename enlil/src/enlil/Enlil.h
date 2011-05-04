@@ -116,7 +116,7 @@ struct Enlil_String
    /* this field is in eina_stringshare, use eina_stringshare_del() to free it */
     const char *string;
 };
-EAPI Eet_Data_Descriptor *enlil_string_edd_new();
+EAPI Eet_Data_Descriptor *enlil_string_edd_new(void);
 
 struct enlil_album_collection
 {
@@ -134,8 +134,8 @@ struct enlil_photo_tag
    Enlil_Photo *photo;
 };
 
-EAPI int enlil_init();
-EAPI int enlil_shutdown();
+EAPI int enlil_init(void);
+EAPI int enlil_shutdown(void);
 EAPI int enlil_eet_app_data_save(Eet_Data_Descriptor *edd,
 				 const char *key,
 				 void *data);
@@ -226,7 +226,7 @@ EAPI void enlil_library_photo_version_tags_increase_cb_set(Enlil_Library *librar
                                                            Enlil_Photo_Version_Tags_Increase_Cb cb,
                                                            void *data);
 
-EAPI Eina_List *enlil_library_eet_path_load();
+EAPI Eina_List *enlil_library_eet_path_load(void);
 EAPI int enlil_library_eet_path_save(Enlil_Library *library);
 EAPI Enlil_Library *enlil_library_eet_albums_load(Enlil_Library *library);
 EAPI int enlil_library_eet_albums_save(Enlil_Library *library);
@@ -239,7 +239,7 @@ EAPI int enlil_library_eet_collections_save(Enlil_Library *library);
 EAPI Enlil_Library *enlil_library_eet_tags_load(Enlil_Library *library);
 EAPI int enlil_library_eet_tags_save(Enlil_Library *library);
 
-EAPI Enlil_Collection * enlil_collection_new();
+EAPI Enlil_Collection * enlil_collection_new(void);
 EAPI void enlil_collection_free(Enlil_Collection **col);
 EAPI Enlil_Collection *enlil_collection_copy_new(const Enlil_Collection *tag);
 EAPI void enlil_collection_copy(const Enlil_Collection *col_src,
@@ -261,7 +261,7 @@ EAPI void enlil_collection_user_data_set(Enlil_Collection *col,
                                          Enlil_Collection_Free_Cb cb);
 EAPI void *enlil_collection_user_data_get(const Enlil_Collection *col);
 
-EAPI Enlil_Tag *enlil_tag_new();
+EAPI Enlil_Tag *enlil_tag_new(void);
 EAPI void enlil_tag_free(Enlil_Tag **tag);
 EAPI Enlil_Tag *enlil_tag_copy_new(const Enlil_Tag *tag);
 EAPI void enlil_tag_copy(const Enlil_Tag *tag_src,
@@ -285,7 +285,7 @@ EAPI void *enlil_tag_user_data_get(const Enlil_Tag *tag);
 EAPI void enlil_tags_list_print(const Eina_List *tags);
 EAPI void enlil_tag_print(const Enlil_Tag *tag);
 
-EAPI Enlil_Album *enlil_album_new();
+EAPI Enlil_Album *enlil_album_new(void);
 EAPI Enlil_Album *enlil_album_copy_new(const Enlil_Album *album);
 EAPI void enlil_album_copy(const Enlil_Album *album_src,
                            Enlil_Album *album_dest);
@@ -362,7 +362,7 @@ EAPI int enlil_album_netsync_version_header_get(Enlil_Album *album);
 EAPI int enlil_album_netsync_version_header_net_get(Enlil_Album *album);
 EAPI int enlil_album_netsync_timestamp_last_update_collections_get(Enlil_Album *album);
 
-EAPI Enlil_Photo *enlil_photo_new();
+EAPI Enlil_Photo *enlil_photo_new(void);
 EAPI void enlil_photo_free(Enlil_Photo **photo);
 EAPI void enlil_photo_album_set(Enlil_Photo *photo,
                                 Enlil_Album *album);
@@ -483,7 +483,7 @@ EAPI int enlil_photo_netsync_version_file_net_get(Enlil_Photo *photo);
 /* File manager */
 EAPI Eet_File *enlil_file_manager_open(const char *file);
 EAPI void enlil_file_manager_close(const char *file);
-EAPI void enlil_file_manager_flush();
+EAPI void enlil_file_manager_flush(void);
 
 /* Synchronisation Files <-> .eet */
 
@@ -562,7 +562,7 @@ enlil_thumb_photo_get(Enlil_Photo *photo,
                       Enlil_Thumb_Done_Cb done_cb,
                       Enlil_Thumb_Error_Cb error_cb,
                       void *data);
-EAPI void enlil_thumb_clear();
+EAPI void enlil_thumb_clear(void);
 EAPI void enlil_thumb_photo_clear(const Enlil_Photo *photo);
 
 /* transformations */
@@ -612,7 +612,7 @@ EAPI Enlil_Exif_Job *enlil_exif_job_prepend(Enlil_Photo *photo,
                                             void *data);
 EAPI void enlil_exif_job_del(Enlil_Exif_Job *job);
 
-EAPI Enlil_Exif *enlil_exif_new();
+EAPI Enlil_Exif *enlil_exif_new(void);
 EAPI Enlil_Exif *enlil_exif_copy_new(Enlil_Exif *exif);
 EAPI void enlil_exif_copy(Enlil_Exif *exif_src,
                           Enlil_Exif *exif_dest);
@@ -649,7 +649,7 @@ EAPI Enlil_IPTC_Job *enlil_iptc_job_prepend(Enlil_Photo *photo,
                                             void *data);
 EAPI void enlil_iptc_job_del(Enlil_IPTC_Job *job);
 
-EAPI Enlil_IPTC *enlil_iptc_new();
+EAPI Enlil_IPTC *enlil_iptc_new(void);
 EAPI Enlil_IPTC *enlil_iptc_new_from_name(const char *name);
 EAPI Enlil_IPTC *enlil_iptc_copy_new(Enlil_IPTC *iptc);
 EAPI void enlil_iptc_copy(Enlil_IPTC *iptc_src,
@@ -667,7 +667,7 @@ EAPI void enlil_iptc_value_set(Enlil_IPTC *iptc,
 //Geocaching
 typedef void (*Enlil_Geocaching_Done_Cb)(void *data, Eina_Hash *db);
 
-EAPI Enlil_Geocaching *enlil_geocaching_new();
+EAPI Enlil_Geocaching *enlil_geocaching_new(void);
 EAPI void enlil_geocaching_free(Enlil_Geocaching *gp);
 EAPI const char *enlil_geocaching_name_get(const Enlil_Geocaching *gp);
 EAPI void enlil_geocaching_name_set(Enlil_Geocaching *gp,
@@ -780,9 +780,9 @@ EAPI const char *enlil_geocaching_tb_name_get(const Enlil_Geocaching_Travelbug *
 EAPI void enlil_geocaching_tb_name_set(Enlil_Geocaching_Travelbug *tb,
                                        const char *tb_name);
 
-EAPI Enlil_Geocaching_Log *enlil_geocaching_log_new();
+EAPI Enlil_Geocaching_Log *enlil_geocaching_log_new(void);
 EAPI void enlil_geocaching_log_free(Enlil_Geocaching_Log *gp_log);
-EAPI Enlil_Geocaching_Travelbug *enlil_geocaching_tb_new();
+EAPI Enlil_Geocaching_Travelbug *enlil_geocaching_tb_new(void);
 EAPI void enlil_geocaching_tb_free(Enlil_Geocaching_Travelbug *gp_tb);
 
 EAPI void enlil_geocaching_import(const char *file,
@@ -824,7 +824,7 @@ typedef void                   (*Enlil_NetSync_Photo_Header_New_Get_Cb)(void *da
 typedef void                   (*Enlil_NetSync_Photo_Upload_Start_Cb)(void *data, Enlil_Photo *photo);
 typedef void                   (*Enlil_NetSync_Photo_Upload_Done_Cb)(void *data, Enlil_Photo *photo);
 
-EAPI Eina_Bool enlil_netsync_have();
+EAPI Eina_Bool enlil_netsync_have(void);
 EAPI void enlil_netsync_job_del(Enlil_NetSync_Job *job);
 
 EAPI void enlil_netsync_account_set(const char *host,
@@ -841,10 +841,10 @@ EAPI void enlil_netsync_job_done_cb_set(Enlil_NetSync_Job_Done_Cb done_cb,
                                         void *data);
 EAPI void enlil_netsync_job_error_cb_set(Enlil_NetSync_Job_Error_Cb error_cb,
                                          void *data);
-EAPI void enlil_netsync_disconnect();
+EAPI void enlil_netsync_disconnect(void);
 
 EAPI void enlil_netsync_reinit(Enlil_Library *library);
-EAPI const char *enlil_netsync_auth_url_get();
+EAPI const char *enlil_netsync_auth_url_get(void);
 EAPI Enlil_NetSync_Job *enlil_netsync_job_reinit_prepend(Enlil_Library *library);
 
 EAPI Enlil_NetSync_Job *enlil_netsync_job_sync_albums_append(Enlil_Library *library,

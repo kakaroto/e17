@@ -11,7 +11,7 @@ struct enlil_collection
 };
 
 Enlil_Collection *
-enlil_collection_new()
+enlil_collection_new(void)
 {
    return calloc(1, sizeof(Enlil_Collection));
 }
@@ -111,7 +111,7 @@ enlil_collection_album_remove(Enlil_Collection *col,
 }
 
 Eet_Data_Descriptor *
-_enlil_collection_edd_new()
+_enlil_collection_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;

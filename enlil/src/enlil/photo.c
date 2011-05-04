@@ -105,7 +105,7 @@ static Eet_Data_Descriptor *
 static int               _photo_eet_iptc_save(Enlil_Photo *photo);
 
 Enlil_Photo *
-enlil_photo_new()
+enlil_photo_new(void)
 {
    Enlil_Photo *photo = calloc(1, sizeof(Enlil_Photo));
    photo->eet_save = 1;
@@ -1593,7 +1593,7 @@ _photo_eet_iptc_save(Enlil_Photo *photo)
 }
 
 Eet_Data_Descriptor *
-_enlil_photo_file_name_edd_new()
+_enlil_photo_file_name_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -1702,7 +1702,7 @@ enlil_photo_iptc_edd_new(Eet_Data_Descriptor *edd_iptc)
 }
 
 Eet_Data_Descriptor *
-_enlil_photo_tag_edd_new()
+_enlil_photo_tag_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;

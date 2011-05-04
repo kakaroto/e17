@@ -38,14 +38,14 @@ static Enlil_IPTC_Job *job_current = NULL;
 static int running = 0;
 
 static void _job_free(Enlil_IPTC_Job *job);
-static void _job_next();
+static void _job_next(void);
 static void _iptc_thread(void         *data,
                          Ecore_Thread *thread);
 static void _end_cb(void         *data,
                     Ecore_Thread *thread);
 
 Enlil_IPTC *
-enlil_iptc_new()
+enlil_iptc_new(void)
 {
    Enlil_IPTC *iptc = calloc(1, sizeof(Enlil_IPTC));
    return iptc;
@@ -132,7 +132,7 @@ GET(format, const char *)
 #undef FCT_NAME
 #undef STRUCT_TYPE
 
-Eet_Data_Descriptor * _enlil_iptc_edd_new()
+Eet_Data_Descriptor * _enlil_iptc_edd_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -234,7 +234,7 @@ _job_free(Enlil_IPTC_Job *job)
 }
 
 static void
-_job_next()
+_job_next(void)
 {
    char buf[PATH_MAX];
 

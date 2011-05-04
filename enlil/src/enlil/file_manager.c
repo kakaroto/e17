@@ -23,7 +23,7 @@ typedef struct EET_File_Version EET_File_Version;
 
 static void                 _data_free(File_Table_Data *data);
 File_Table_Data            *_enlil_file_manager_find(const char *file);
-static Eet_Data_Descriptor *_edd_version_new();
+static Eet_Data_Descriptor *_edd_version_new(void);
 
 static Eina_List *file_list = NULL;
 static ENLIL_MUTEX mutex;
@@ -46,7 +46,7 @@ struct File_Table_Data
 
 static int count;
 int
-enlil_file_manager_init()
+enlil_file_manager_init(void)
 {
    if(count > 0) return ++count;
 
@@ -59,7 +59,7 @@ enlil_file_manager_init()
 }
 
 int
-enlil_file_manager_shutdown()
+enlil_file_manager_shutdown(void)
 {
    File_Table_Data *data;
    if(count > 1) return --count;
@@ -79,7 +79,7 @@ enlil_file_manager_shutdown()
 }
 
 void
-_enlil_file_manager_clean()
+_enlil_file_manager_clean(void)
 {
    if(eina_list_count(file_list) > MAX_SIZE_LIST - 1)
      {
@@ -189,7 +189,7 @@ enlil_file_manager_close(const char *file __UNUSED__)
 }
 
 void
-enlil_file_manager_flush()
+enlil_file_manager_flush(void)
 {
    Eina_List *l;
    File_Table_Data *data;
@@ -215,7 +215,7 @@ _data_free(File_Table_Data *data)
 }
 
 static Eet_Data_Descriptor *
-_edd_version_new()
+_edd_version_new(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;

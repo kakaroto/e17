@@ -2,7 +2,7 @@
 #include "../../config.h"
 
 static void _job_free(Enlil_Download_Job *job);
-static void _job_next();
+static void _job_next(void);
 static void _done_cb(void       *data,
                      const char *file,
                      int         status);
@@ -146,7 +146,7 @@ enlil_download_photos_of_album_in_list(const Enlil_Album *album,
 }
 
 static void
-_job_next()
+_job_next(void)
 {
    char buf[PATH_MAX];
    int i = 0;
@@ -225,12 +225,12 @@ _done_cb(void       *data,
 }
 
 static int
-_progress_cb(void                  *data,
-             __UNUSED__ const char *file,
-             long int               dltotal,
-             long int               dlnow,
-             __UNUSED__ long int    ultotal,
-             __UNUSED__ long int    ulnow)
+_progress_cb(void       *data,
+             const char *file __UNUSED__,
+             long int    dltotal,
+             long int    dlnow,
+             long int    ultotal __UNUSED__,
+             long int    ulnow __UNUSED__)
 {
    if(current_job != data) //job deleted
      return 1;
