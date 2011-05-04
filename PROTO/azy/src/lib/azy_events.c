@@ -30,7 +30,7 @@
       {                                    \
          (PTR)++;                          \
          len--;                            \
-      } while ((PTR) && isspace(*(PTR)) && (len > 0))
+      } while ((PTR) && (len > 0) && isspace(*(PTR)))
 
 #define MAX_HEADER_SIZE 8092
 
