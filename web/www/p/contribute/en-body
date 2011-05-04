@@ -161,7 +161,7 @@
    <li>libjpeg dev headers</li>
    <li>zlib dev headers</li>
    <li>libdbus dev headers</li>
-   <li>libblua 5.1 or better dev headers</li>
+   <li>liblua 5.1 or better dev headers</li>
    <li>libx11 dev headers</li>
    <li>libxcursor dev headers</li>
    <li>libxrender dev headers</li>
