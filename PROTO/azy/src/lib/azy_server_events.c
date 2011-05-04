@@ -690,7 +690,7 @@ top:
       case AZY_SERVER_MODULE_STATE_ERR:
 post:
         module->new_net = NULL;
-        if (!client->resume_ret) goto not_impl;  /* line 504ish (above) */
+        if (!client->resume_ret) goto not_impl;  /* line 581ish (above) */
         if (module->def->post)
           client->resume_ret = module->def->post(module, NULL);
 
@@ -760,13 +760,18 @@ _azy_server_client_send(Azy_Server_Client *client,
    if (content)
      INFO("Sending response for method: '%s'", content->method);
    else
-     INFO("Sending HTTP: %s", client->net->http.res.http_msg);
+     INFO("Sending HTTP: %i", client->net->http.res.http_code);
 
    if (azy_rpc_log_dom >= 0)
      {
-        char buf[64];
-        snprintf(buf, sizeof(buf), "SENDING:\n<<<<<<<<<<<<<\n%%.%is%%.%llis\n<<<<<<<<<<<<<", (int)eina_strbuf_length_get(header), content->length);
-        RPC_INFO(buf, eina_strbuf_string_get(header), content->buffer);
+        if (content)
+          {
+             char buf[64];
+             snprintf(buf, sizeof(buf), "SENDING:\n<<<<<<<<<<<<<\n%%.%is%%.%llis\n<<<<<<<<<<<<<", (int)eina_strbuf_length_get(header), content->length);
+             RPC_INFO(buf, eina_strbuf_string_get(header), content->buffer);
+          }
+        else
+          RPC_INFO("SENDING:\n<<<<<<<<<<<<<\n%s\n<<<<<<<<<<<<<", eina_strbuf_string_get(header));
      }
 
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_client_send(net->conn, eina_strbuf_string_get(header), eina_strbuf_length_get(header)), error);

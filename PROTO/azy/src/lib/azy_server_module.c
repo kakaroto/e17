@@ -690,7 +690,7 @@ azy_server_module_send(Azy_Server_Module  *module,
         return EINA_FALSE;
      }
 
-   azy_net_message_length_set(net, data->size);
+   if (data) azy_net_message_length_set(net, data->size);
    if (!net->http.res.http_code)
      azy_net_code_set(net, 200);  /* OK */
    if (!net->type)
