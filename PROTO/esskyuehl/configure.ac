@@ -24,11 +24,8 @@ AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER([config.h])
 
-AC_LIBLTDL_CONVENIENCE
 AC_GNU_SOURCE
 AC_ISC_POSIX
-AC_SUBST(INCLTDL)
-AC_SUBST(LIBLTDL)
 
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
