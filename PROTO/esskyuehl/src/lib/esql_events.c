@@ -257,7 +257,7 @@ esql_connect_handler(Esql             *e,
         else
           {
              if (ev->connect_cb)
-               ev->connect_cb(ev, e->connect_cb_data);
+               ev->connect_cb(ev, e ? e->connect_cb_data : NULL);
              else
                ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
           }
