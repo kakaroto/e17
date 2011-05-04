@@ -1,0 +1,25 @@
+collections {
+
+   group {
+      name: "icon";
+      min: 22 22;
+      max: 22 22;
+      images {
+         image: "icon.png" COMP;
+         image: "text_bg.png" COMP;
+      }
+      parts {
+         
+         part {
+            name: "text_bg";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "text_bg.png";
+               image.border: 8 8 8 8;
+            }
+         }
+
+      }
+   }
+}

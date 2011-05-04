@@ -267,7 +267,7 @@ Dans notre cas l'image a une taille de 20x20px nous voulons qu'elle soit répét
 sur l'axe des X et des Y.
 
 Il y a plusieurs autres options permettant de repeter les motifs, je vous laisse
-les découvrir par vous même, tout est décris dans la 
+les découvrir par vous même, tout est décris dans la
 \href{http://docs.enlightenment.org/auto/edje/edcref.html}[documentation de edje]
 
 
@@ -293,7 +293,7 @@ image ``icon.png'' et un nouveau part de type ``TEXT''.
   }
 \end{lstlisting}
 
-Les différentes options parlent d'elle méme : 
+Les différentes options parlent d'elle méme :
 \begin{itemize}
 \item Couleur du texte : Noir;
 \item Fonte utilisée ``Sans'';
@@ -347,7 +347,7 @@ Le positionnement relatif est en pourcent (valeur ramenée a un floatant entre
 Les balises rel1 et rel2 permettent de donner la position d'un objet par rapport
 à un autre. Par défaut la position est celle par rapport au groupe.
 Le positionnement relatif est donnée avec la balise rel1.relative et
-rel2.relative alors que le positionnement absolu est donnée par rel1.offset et 
+rel2.relative alors que le positionnement absolu est donnée par rel1.offset et
 rel2.offset.
 
 \begin{figure}
@@ -358,14 +358,14 @@ rel2.offset.
 \end{figure}
 
 Dans cet exemple le positionnement est relatif au groupes, mais nous pouvons
-spécifier un positonnement par rapport à un autre part en utilisant la balise : 
+spécifier un positonnement par rapport à un autre part en utilisant la balise :
 
 \begin{lstlisting}
 rel1.to: "autre_part1";
 rel1.to: "autre_part2";
 \end{lstlisting}
 
-Ou encore relativement à un autre part mais uniquement sur un l'axe X ou Y : 
+Ou encore relativement à un autre part mais uniquement sur un l'axe X ou Y :
 \begin{lstlisting}
 rel1.to_x: "autre_part1";
 rel1.to_y: "autre_part2";
@@ -374,7 +374,7 @@ rel1.to_y: "autre_part2";
 
 Pour l'exemple du fichier tut06.edc, j'ai choisis depositionner le texte en bas
 du groupe. Le texte pouvant être dynamique, comme nous allons voir plus loin,
-nous pouvons demander a Edje de calculer sa taille, c'est le role de 
+nous pouvons demander a Edje de calculer sa taille, c'est le role de
 \begin{lstlisting}
 min:: 1 1;
 \end{lstlisting}
@@ -406,6 +406,152 @@ Vous verrez également une telle description sous cette forme :
 \end{lstlisting}
 
 Ces deux notations sont entiérement identiques.
+
+\section{Images bordurées}
+
+Nous arrivons ici a une des fonctionalités que je préfére dans edje ! les
+bordures (borders en anglais). Ca tient en une ligne, mais ca rends de grands
+services.
+
+\begin{lstlisting}
+image.border: 8 8 8 8;
+\end{lstlisting}
+
+C'est spécifique aux parts de type ``IMAGES''. Cette ligne impose a Edje de ne
+redimensionner toutes les parties de l'image, sauf les bordures. Le cas se
+présente souvent lorsque on utilise une image avec des coins arrondis par
+exemples, comme c'est le cas avec le contour du texte.
+
+les paramétres de cette balise sont les suivants left, right, top, width et les
+parmétres sont donnés en pixels.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.5]{images/border_diff.pdf}
+  \end{center}
+  \caption{Avec et sans bordure}
+\end{figure}
+
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.5]{images/border2.png}
+  \end{center}
+  \caption{Gimp et bordures}
+\end{figure}
+
+
+
+\section{Les programmes}
+
+\subsection{Evenements souris}
+
+Pour nous simplifier la vie par la suite, j'ai ajouté dans le fichier tut09
+un part que j'ai nommé ``events'', qui se place au dessus de tous les autres
+parts. L'ordre des parts est fonction de la position de la description dans le
+groupe. C'est a dire que le part le plus bas dans le fichier est le plus haut
+dans l'interface.
+
+Ce part ``events'' semble ne servir a rien, puisqu'il a une transparence à 0,
+mais il va nous rendre de grand service. Dans la suite il va nous permettre de
+capturer tous les évenements souris de notre icone.
+
+La balise visible indique a Edje si le part doit être affiché ou pas à l'écran
+quelque soit la position, la taille ou toute autre propriétée du part.
+Par défaut les parts sont visibles, mais parfois, nous pouvons faire en sorte
+qu'un part devienne invisible. Nous voudrions par exemple a moment donné que
+les évenements souris ne soient pas capturés, Il nous suffirait dont de mettre
+cette propriété a 0 pour que plus aucun evenements ne soient traités pour ce
+part.
+
+\subsection{Les Programmes}
+
+Un programme est une action que Edje va réaliser. Cela peut être de différents
+types, un événement souris sur notre groupe, une signal provenant du programme
+qui manipule notre groupe, un signal envoyé par un autre programme, un signal
+envoyé par edje.
+
+Le fichier tut10.edc présente un exemple de programme qui réagit a un événement
+bouton 1 de la souris enfoncé :
+
+\begin{lstlisting}
+  program {
+    name: "mouse_down";
+    signal: "mouse,down,1";
+    source: "events";
+    action: STATE_SET "down" 0.0;
+    target: "icon";
+  }
+\end{lstlisting}
+
+A quoi correspondent les différentes balises :
+
+\begin{itemize}
+\item name: C'est le nom du programme
+\item signal: c'est la chaine de caractére qui défiini le signal reçu, dans ce
+cas c'est un signal envoyé par edje lorsque le bouton 1 de la souris est enfoncé
+sur le part défini dans la balise ``source''.
+\item source le part qui est responsable  du signal. La souris doit être enfoncé sur ce
+part. On voit ici que ce part nous sert a quelque chose ! Si il n'existait pas
+nous aurions du dupliquer ce programme pour réaliser l'action sur le part icon,
+texte et texte_bg !
+\item action: L'action a réalisée lorsque le signal est reçu. Ici nous demandons
+a Edje de changer l'état du part défini dans la balise ``target'' à "down" 0.0
+\end{itemize}
+
+Un part avoir plusieurs états, si il existe plusieurs description de celui-ci
+C'est le role de la balise ``description'' que nous avons rencontrée mais pas
+encore expliquée.
+
+Tous les paramétres d'un part que nous avons vu jusqu'à présente : couleur,
+alignement, la fonte ou la taille pour un texte, .... peuvent avoir différentes
+valeurs d'une description a une autre.
+
+\begin{lstlisting}
+state: "default" 0.0;
+\end{lstlisting}
+
+Ce balise permet de donner un nom a notre état, ainsi qu'une flotant.
+Revenons a notre exemple :
+
+\begin{lstlisting}
+  part {
+    name: "icon";
+    type: IMAGE;
+    mouse_events: 0;
+    description {
+      state: "default" 0.0;
+      aspect: 1.0 1.0;
+      aspect_preference: BOTH;
+      image.normal: "icon.png";
+      rel1.relative: 0 0;
+      rel1.offset: 8 8;
+      rel2.relative: 1 0;
+      rel2.offset: -7 -7;
+      rel2.to_y: "text";
+      align: 0.5 0.5;
+    }
+    description {
+      state: "down" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 128;
+    }
+  }
+\end{lstlisting}
+
+Ici nous avons deux états : \"default\" 0.0 et \"down\" 0.0.
+L'état down, hérite de toutes les propriétés de default sauf pour la couleur, ou
+nous changeons l'alpha.
+
+Couplé au programme précédent, cela aura pour effet de changer la transparence
+lors d'un clic sur l'icone.
+
+Nous pouvons vérifier ceci avec edje\_player :
+\begin{lstlisting}
+edje\_player tut10.edj -g icon
+\end{lstlisting}
+
+
 
 \end{document}
 
