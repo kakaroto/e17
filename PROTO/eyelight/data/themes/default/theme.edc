@@ -604,11 +604,13 @@ collections
                     state: "default" 0.0;
                     rel1.to: "main";
                     rel2.to: "main";
+		    align: 0 0;
                     text {
                         text: "TEXT";
                         style: "itemStyle";
                         min: 0 0;
                         max: 0 0;
+			align: 0 0;
                     }
                 }
             }
@@ -673,6 +675,7 @@ collections
                         style: "itemStyle";
                         min: 0 0;
                         max: 0 0;
+		        align: 0 0;
                     }
                 }
             }
@@ -713,6 +716,7 @@ collections
                         style: "itemStyle";
                         min: 0 0;
                         max: 0 0;
+			align: 0 0;
                     }
                 }
                 description {
@@ -1068,6 +1072,7 @@ collections
                     inherit: "default" 0.0;
                     text {
                         text: "Play";
+			align: 0 0;
                     }
                 }
                 description {
@@ -1075,6 +1080,7 @@ collections
                     inherit: "default" 0.0;
                     text {
                         text: "Stop";
+			align: 0 0;
                     }
                 }
                 description {
@@ -1082,6 +1088,7 @@ collections
                     inherit: "default" 0.0;
                     text {
                         text: "Pause";
+			align: 0 0;
                     }
                 }
             }
