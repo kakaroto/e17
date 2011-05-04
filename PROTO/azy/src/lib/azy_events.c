@@ -20,6 +20,7 @@
 #endif
 
 #include <ctype.h>
+#include <inttypes.h>
 #include <errno.h>
 #include "Azy.h"
 #include "azy_private.h"
@@ -81,6 +82,7 @@ _azy_events_valid_response(Azy_Net *net,
    errno = 0;
    code = strtol((char*)start, (char**)&p, 10);
    if (errno || (code < 1) || (code > 999) || (p[0] != ' ')) return 0;
+   INFO("HTTP RESPONSE %"PRIi32, code);
    net->http.res.http_code = code;
    len -= (p - start); start += (p - start);
 
@@ -155,7 +157,6 @@ _azy_events_valid_request(Azy_Net *net,
                {
                 case '\\':
                 case ';':
-                case '?':
                 case '#':
                 case '[':
                 case ']':
@@ -226,6 +227,7 @@ _azy_events_valid_request(Azy_Net *net,
                        }
                      else
                        net->http.req.http_path = eina_stringshare_add_length((char*)start, end - start);
+                     INFO("Requested URI: '%s'", net->http.req.http_path);
                      return (int)eo;
                   }
                 default:
