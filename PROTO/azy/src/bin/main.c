@@ -1603,10 +1603,7 @@ gen_server_impl(Azy_Server_Module *s)
              EL(2, "azy_server_module_events_suspend(module);");
           }
         STUB(s->stub_download);
-        EL(1, "if (azy_server_module_events_suspended_get(module))");
-        EL(2, "return EINA_TRUE;");
-        NL;
-        EL(1, "return EINA_FALSE;");
+        EL(1, "return EINA_TRUE;");
         EL(0, "}");
         NL;
      }
@@ -1627,10 +1624,7 @@ gen_server_impl(Azy_Server_Module *s)
              EL(2, "azy_server_module_events_suspend(module);");
           }
         STUB(s->stub_upload);
-        EL(1, "if (azy_server_module_events_suspended_get(module))");
-        EL(2, "return EINA_TRUE;");
-        NL;
-        EL(1, "return EINA_FALSE;");
+        EL(1, "return EINA_TRUE;");
         EL(0, "}");
         NL;
      }
