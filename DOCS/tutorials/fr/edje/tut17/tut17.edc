@@ -163,62 +163,48 @@ collections {
             description {
                state : "default" 0.0;
                fixed: 1 1;
-               table {
-                  //layout: horizontal_flow;
-                  //padding: 0 0;
-                  //min: 0 0;
-               }
             }
             table {
                items {
                   item {
                      type: GROUP;
                      source: "video";
-                     weight: 0.5 0.5;
                      align: -1 -1;
                      position: 0 0;
-                     prefer: 256 256;
-                     min: 0 0;
                   }
                   item {
                      type: GROUP;
                      source: "meteo";
-                     weight: 1 1;
                      align: -1 -1;
                      position: 0 1;
                   }
                   item {
                      type: GROUP;
                      source: "calc";
-                     weight: 1 1;
                      position: 0 2;
                      align: -1 -1;
                   }
                   item {
                      type: GROUP;
                      source: "music";
-                     weight: 1 1;
                      position: 1 0;
                      align: -1 -1;
                   }
                   item {
                      type: GROUP;
                      source: "calendar";
-                     weight: 1 1;
                      position: 1 1;
                      align: -1 -1;
                   }
                   item {
                      type: GROUP;
                      source: "mail";
-                     weight: 1 1;
                      position: 1 2;
                      align: -1 -1;
                   }
                   item {
                      type: GROUP;
                      source: "rss";
-                     weight: 1 1;
                      position: 2 0;
                      align: -1 -1;
                   }

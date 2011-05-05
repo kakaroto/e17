@@ -18,12 +18,12 @@ _edje_signal_textblock_cb(void *data, Evas_Object *obj, const char *emission, co
 
    if (!strncmp(emission, "anchor,mouse,up,1,", strlen("anchor,mouse,up,1,")))
      {
-	const char *href = emission + strlen("anchor,mouse,up,1,");
-	printf("href = %s\n", href);
-	if (!strcmp(href, "\"evas_map\""))
-	  {
-	     printf("action\n");
-	  }
+        const char *href = emission + strlen("anchor,mouse,up,1,");
+        printf("href = %s\n", href);
+        if (!strcmp(href, "\"evas_map\""))
+          {
+             printf("action\n");
+          }
      }
 
 }
@@ -35,26 +35,26 @@ _edje_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *
 
    if (!strcmp(emission, "info,clicked"))
      {
-	Evas_Object *textblock;
+        Evas_Object *textblock;
 
-	Evas_Object *edje;
+        Evas_Object *edje;
 
-	printf("info clicked \n");
+        printf("info clicked \n");
 
-	textblock = elm_layout_add(win);
-	elm_layout_file_set(textblock, "tut21.edj", "infos_panel");
-	evas_object_show(textblock);
-	evas_object_size_hint_weight_set(textblock, 1, 1);
-	elm_layout_content_set(layout, "table_swallow", textblock);
-	evas_object_show(textblock);
-	elm_layout_text_set(textblock, "textblock", "<h1>What is Enlightenment?</h1><br>"
-			    "<tab><h4>Enlightenment is not just a window manager for <hilight>Linux/X11</hilight> and others, but also a whole suite of libraries to help you create beautiful user interfaces with much less work than doing it the old fashioned way and fighting with traditional toolkits, not to mention a traditional window manager. It covers uses from small mobile devices like phones all the way to powerful multi-core desktops (which are the primary development environment). </h4><br>"
-			    "<br><h1>Enlightenment Foundation Libraries (EFL)</h1> <br>"
-			    "<tab>These provide both a semi-traditional toolkit set in <rhinoceros>Elementary</rhinoceros> as well as the object canvas <h2>(Evas)</h2> and powerful abstracted objects (Edje) that you can combine, mix and match, even layer on top of each other with alpha channels and events in-tact. It has <link><a href=\"evas_map\">3D transformations</a></link> for all objects and more. )");
+        textblock = elm_layout_add(win);
+        elm_layout_file_set(textblock, "tut21.edj", "infos_panel");
+        evas_object_show(textblock);
+        evas_object_size_hint_weight_set(textblock, 1, 1);
+        elm_layout_content_set(layout, "table_swallow", textblock);
+        evas_object_show(textblock);
+        elm_layout_text_set(textblock, "textblock", "<h1>What is Enlightenment?</h1><br>"
+                            "<tab><h4>Enlightenment is not just a window manager for <hilight>Linux/X11</hilight> and others, but also a whole suite of libraries to help you create beautiful user interfaces with much less work than doing it the old fashioned way and fighting with traditional toolkits, not to mention a traditional window manager. It covers uses from small mobile devices like phones all the way to powerful multi-core desktops (which are the primary development environment). </h4><br>"
+                            "<br><h1>Enlightenment Foundation Libraries (EFL)</h1> <br>"
+                            "<tab>These provide both a semi-traditional toolkit set in <rhinoceros>Elementary</rhinoceros> as well as the object canvas <h2>(Evas)</h2> and powerful abstracted objects (Edje) that you can combine, mix and match, even layer on top of each other with alpha channels and events in-tact. It has <link><a href=\"evas_map\">3D transformations</a></link> for all objects and more. )");
 
-	edje = elm_layout_edje_get(textblock);
+        edje = elm_layout_edje_get(textblock);
 
-	edje_object_signal_callback_add(edje, "*", "*", _edje_signal_textblock_cb, NULL);
+        edje_object_signal_callback_add(edje, "*", "*", _edje_signal_textblock_cb, NULL);
 
      }
 

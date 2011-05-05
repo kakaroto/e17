@@ -329,8 +329,7 @@ collections {
             name: "textblock";
             type: TEXTBLOCK;
             entry_mode: EDITABLE;
-            //select_mode: EXPLICIT;
-            source5: "anchor"; // anchor under
+            source5: "anchor";
             description {
                state: "default" 0.0;
 

@@ -494,7 +494,7 @@ sur le part défini dans la balise ``source''.
 \item source le part qui est responsable  du signal. La souris doit être enfoncé sur ce
 part. On voit ici que ce part nous sert a quelque chose ! Si il n'existait pas
 nous aurions du dupliquer ce programme pour réaliser l'action sur le part icon,
-texte et texte_bg !
+texte et texte\_bg !
 \item action: L'action a réalisée lorsque le signal est reçu. Ici nous demandons
 a Edje de changer l'état du part défini dans la balise ``target'' à "down" 0.0
 \end{itemize}
@@ -551,7 +551,422 @@ Nous pouvons vérifier ceci avec edje\_player :
 edje\_player tut10.edj -g icon
 \end{lstlisting}
 
+Effectivement la couleur change, mais lorsque nous relachons le clic, notre
+icone reste dans cet état. Nous devons ajouter le programme équivalent pour le
+mouse up. Le fichier tut11.edc montre ceci.
 
+\subsection{Les animations}
+Comme nous pouvons voir, la transition est abrupte. Pour réaliser un effet plus
+relaxant, nous allons ajouter une animation entre deux états de nos parts.
+
+\begin{lstlisting}
+  transition: LINEAR 1.0;
+\end{lstlisting}
+
+La balise transition, permet comme son nom l'indique d'indiquer a Edje qu'il
+doit changer l'état, que ce changement doit durer 1 seconde.
+Entre nos deux états Edje va interpoler la position et la couleur de notre
+objet et cet interpolation sera de type linéaire. Le framerate par défaut de
+Edje et de 60 images par secondes, il va donc calculer 60 image clés différentes
+pour notre part.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.5]{images/animation.pdf}
+  \end{center}
+  \caption{Création des images clés}
+\end{figure}
+
+\section{Intégrer un objet Edje dans un programme C}
+Nous avons décris des objets, nous avons généré le binaire et nous avons testé
+le tout avec edje\_player. Mais notre but est de creer un interface, un creer un
+executable.
+
+Dans ce chapitre, nous allons voir comment intégrer les groupes que nous avons
+créés dans une application Elementary.
+
+Pourquoi avec ELementary et pas avec Edje ? Tout simplement parce que c'est plus
+simple, et concis avec elementary, que Elementary utilise Edje pour nous et que
+je suis plutot de nature fénéante !
+
+Tout d'abord créons un programme tres simple qui cree une fenêtre avec un titre,
+et qui quitte lorsque on clique sur la croix. (fichier tut13.c)
+\begin{lstlisting}
+  /* gcc -o test tut13.c `pkg-config elementary --cflags --libs` */
+
+  #include <Elementary.h>
+
+  static void
+  _win_del(void *data, Evas_Object *obj, void *event_info)
+  {
+    elm_exit();
+  }
+
+  int main(int argc, char **argv)
+  {
+    Evas_Object *win;
+
+    elm_init(argc, argv);
+
+    win = elm_win_add(NULL, "tuto", ELM_WIN_BASIC);
+    elm_win_title_set(win, "Edje Tutorial");
+    evas_object_smart_callback_add(win, "delete,request", _win_del, NULL);
+
+    evas_object_resize(win, 800, 480);
+
+    evas_object_show(win);
+
+    elm_run();
+    elm_shutdown();
+  }
+\end{lstlisting}
+
+Maintenant ajoutons notre groupe ``interface'' que nous avons creer au tout
+début de ce tutorial dans notre fenêtre :
+
+\begin{lstlisting}
+  layout = elm_layout_add(win);
+  elm_layout_file_set(layout, "tut14.edj", "interface");
+  evas_object_show(layout);
+\end{lstlisting}
+
+Et faisons en sorte que celui-ci soit redimensionné lorsqu'on redimensionne la
+fenêtre :
+\begin{lstlisting}
+   elm_win_resize_object_add(win, layout);
+\end{lstlisting}
+
+Nous rencontrons ici un des concepts les plus importants de Evas. Les Smart
+Objects. elm\_layout\_add utilise edje en interne, et cree un Smart Objet qui
+pourra ensuite être manipulé par les primitives de evas, move, resize, ....
+Nous démandons ensuite a ce que cet objet utilise le groupe \"interface\# du
+fichier tut14.edj. Et nous affichons cet objet a l'écran avec
+evas\_object\_show. elm\_win\_resize\_object\_add va faire en sorte que evas
+redimensionne notre objet a la taille de la fenêtre.
+
+Recompilons notre programme et testons :
+\begin{lstlisting}
+./tut14
+\end{lstlisting}
+
+Nous avons écris notre premier programme intégrant une objet edje !
+
+Rajoutons maintenant le groupe icon : (fichier tut15.c)
+\begin{lstlisting}
+   icon = elm_layout_add(win);
+   elm_layout_file_set(icon, "tut14.edj", "icon");
+   evas_object_resize(icon, 256, 256);
+   evas_object_move(icon, 64, 64);
+   evas_object_show(icon);
+\end{lstlisting}
+
+Notre Smart Object est cree comme précédement, et cette fois-ci nous allons
+le manipuler nous meme, en luis donnant une taille de 256x256px et en le
+placant en haut à gauche x=64px et y=64px.
+
+Notre icone posséde un texte (part \"text\", que nous allons changer grâce à :
+\begin{lstlisting}
+   elm_layout_text_set(icon, "text", "Vers l'infini et au dela!");
+\end{lstlisting}
+
+Elementary my dear Watson !
+
+\subsection{La multiplication des icones}
+Notre exemple final contient plus qu'une seule icone. Machinalement, nous
+pourrions dupliquer a la fois dans Edje et dans le code C les blocs permettant
+de changer le nom de l'icône et le texte. Mais cela serait d'une part tres long,
+source d'erreur mais surtout tres rébarbatif. Et comme je le disais précédement
+je suis fénéant. Nous allons donc utiliser ce que Edje nous propose pour nous
+faciliter la vie.
+
+Les descriptions Edje sont préprocéssées. Comme les fichier .c et .h par le
+programme cpp. Le rôle de celui-ci est de remplacer les toute occurence a une
+macro dans le texte par le morceau de code défini dans la macro. Lorsqu'il
+recontre un \#include il copie l'intégratlite de ce fichier a cette position.
+
+Comme dans un programme C, nous allons donc creer une macro ICON pour nous
+faicilité la vie.
+
+Notre macro prendra comme paramétre d'entrée le nom de l'icone et le nom du
+fichier icon à utiliser.
+
+Nous pouvons ensuite ajouter nos différents groupes comme ceci :
+\begin{lstlisting}
+   ICON("video.png", "video");
+   ICON("meteo.png", "meteo");
+   ICON("calc.png", "calc");
+   ICON("music.png", "music");
+   ICON("calendar.png", "calendar");
+   ICON("mail.png", "mail");
+   ICON("rss.png", "rss");
+\end{lstlisting}
+
+\section{les tables}
+
+Maintenant que nos groupes ont étés ajoutés a notre fichier edje, nous pourrions
+afficher chaque icones à l'écran, les positionner les unes par rapport aux
+autres avec evas\_object\_move. Cela serait fastidieux. D'autre part si nous
+voulons changer le layout, il faudrait fournir une nouvelle version du programme
+et l'avantage de edje c'est de pouvoir faire ca pour nous.
+
+Nous allons donc utiliser un nouveau type de parts, apres les TEXT, les RECT et
+les IMAGES : les TABLE.
+Voici comment positionner les icones que nous avons créés précédement :
+\begin{lstlisting}
+  part {
+    name : "table_description";
+    type : TABLE;
+    description {
+      state : "default" 0.0;
+      fixed: 1 1;
+    }
+    table {
+      items {
+        item {
+          type: GROUP;
+          source: "video";
+          align: -1 -1;
+          position: 0 0;
+        }
+        item {
+          type: GROUP;
+          source: "meteo";
+          align: -1 -1;
+          position: 0 1;
+        }
+        item {
+          type: GROUP;
+          source: "calc";
+          position: 0 2;
+          align: -1 -1;
+        }
+        item {
+          type: GROUP;
+          source: "music";
+          position: 1 0;
+          align: -1 -1;
+        }
+        item {
+          type: GROUP;
+          source: "calendar";
+          position: 1 1;
+          align: -1 -1;
+        }
+        item {
+          type: GROUP;
+          source: "mail";
+          position: 1 2;
+          align: -1 -1;
+        }
+        item {
+          type: GROUP;
+          source: "rss";
+          position: 2 0;
+          align: -1 -1;
+        }
+      }
+    }
+  }
+\end{lstlisting}
+
+Chaque items de la table a une balise position, qui donne sa postion dans la
+table. La petite subtilité ici est l'alignement de chaque items. On demande
+à Edje de desactiver l'alignement (valeur -1) et donc de s'adapter a la taille
+de la celulle.
+
+\section{Icônes et multi-résolutions}
+
+Nous allons étudier ici une autre fonctionalités interessante de edje, les ``set
+d'icones''. Nous voulons que notre applications s'affiche quelque soit sa taille
+et nous somme aidé par l'utilisation de la balise border dans les images.
+Imaginons que nous voulons intégrer des icônes qui s'affichent aussi bien en
+512x512 que en 16x16. Nous avons plusieurs possibilité.
+La plus simple est d'utiliser une icone source de 512x512. Dans le cas d'un
+affichage en 16x16, celle-ci est réduite par Evas et Edje avec la perte
+d'informations que cela améne. Une autre solution serait d'utiliser une image
+de type SVG, qui s'adaptera en fonction de la résolution. Mais le plus souvent
+ce type de fichier est tres lourd a gérer, en tout cas bien plus qu'un fichier
+bitmap.
+Pour résoudre ce probléme, Edje intégre les set d'icones. Nous pouvons lui
+indiquer quelle image utiliser en fonction de la taille. Un autre type
+d'utilisation de cette fonctionalité et d'afficher une image complétement
+différente en fonction de la taille de la zone d'affichage.
+
+Le fichier tut18 présente cette fonctionalité. J'ai ajouté un script dans le
+répertoire images, qui permet a partir d'un fichier svg source de généré les
+fichier png dans les différentes résolutions voulues.
+
+Lorsque nous testons avec edje\_player -g calc tut18.edj, et que nous
+redimensionnons la fenêtre, on peut voir que Edje adapte la résolution de
+l'icône à la taille.
+
+\section{Les Containeurs}
+
+Nous Avons vu comment creer des groupes, et comment ajouter ces groupes via
+notre programme.
+Dans le cas du fond d'écran, c'est un layout Evas qui affiche un Objet Edje
+Dans le cas de l'icone, c'est un layout Edje avec pilotage Edje, puisque c'est
+la table qui fait l'affichage et le layout.
+La fonctionalité que nous allons voir, c'est la troisiéme possibilité :
+Un layout Edje avec pilotage par Evas : les Swallows ou containeurs.
+C'est un part de type SWALLOW. C'est une zone, qui comme les autres parts peut
+avoir différentes position, taille, .... en fonction de la description et qui
+peut contenir un Smart Object. C'est notre programme qui décidera quoi mettre
+à l'intérieur.
+
+Voici un exemple de part de type swallow :
+\begin{lstlisting}
+  part {
+    name: "table_swallow";
+    type: SWALLOW;
+    description {
+      state: "default" 0.0;
+      rel1.to: "table_bg";
+      rel2.to: "table_bg";
+    }
+  }
+\end{lstlisting}
+
+et coté programme, on cree un rectangle avec Evas et on l'ajoute dans notre part
+\begin{lstlisting}
+   rect = evas_object_rectangle_add(evas_object_evas_get(win));
+   evas_object_color_set(rect, 0, 255, 0, 128);
+   evas_object_resize(rect, 10000, 10000);
+   evas_object_move(rect, -5000, -5000);
+   evas_object_show(rect);
+   elm_layout_content_set(layout, "table_swallow", rect);
+\end{lstlisting}
+
+Comme on peut le voir ici, j'ai changé la position de l'objet ainsi que sa
+taille en donnant des valeurs absurdes, on voit bien en éxécutant tut19 que
+Edje drive l'affichage de notre objet.
+
+Nous avons ajouté un rectangle mais nous pouvons ajouter n'importe que tupe
+de Smart Objects.
+Dans l'example suivant nous allons ajouter un panel a notre interface, qui
+affichera sous forme de texte des infos a l'écran. Et lorsque nous cliquerons
+sur l'icone info nous afficherons ce nouveau groupe a l'écran depuis notre
+programme.
+
+\section{les TEXTBLOCKS}
+
+Notre pannaux d'information affichera du texte. Tout à l'heure nous avons
+ajouter un nom a notre icône. Mais celui-ci avait une couleur unique. Si nous
+voulons ajouter des styles de texte différents, afficher le texte sur plusieurs
+ligne, Edje propose pour cela les TEXTBLOCKS.
+
+Edje utilise un systeme de marqueurs pour différencier les différentes styles.
+Si vous connaissez les balises html, vous ne serer pas perdu ici.
+Un style ressemble a ceci :
+\begin{lstlisting}
+  styles {
+    style { name: "textblock_style";
+      base: "font=Sans font_size=16 color=#EEE wrap=word";
+      tag:  "br" "\n";
+      tag:  "ps" "ps";
+      tag:  "hilight" "+ font=Sans:style=Bold color=#3dadff";
+      tag:  "b" "+ font=Sans:style=Bold colo=#2d3e46";
+      tag:  "tab" "\t";
+      tag:  "h1" "+ font_size=40 color=#b5de29";
+      tag:  "h2" "+ font_size=30";
+      tag:  "h3" "+ font_size=30";
+      tag:  "h4" "+ font_size=18";
+      tag:  "rhinoceros" "+ color=#F0F";
+      tag:  "link" "+ color=#00000080";
+    }
+  }
+\end{lstlisting}
+
+Comme toujours un nom, unique auquel on pourra faire référence.
+Une base, qui est la valeur par défaut de notre texte, c'est a dire
+quand nous n'utilisons pas de balise. Et enfin les tags, qui définissent
+chacune des balises que nous pouvons utiliser pour ce style.
+J'ai défini des balises que nous retrouvons pour la plus part dans le HTML.
+Mais nous pouvons mettre dans le nom des tags ce que nous voulons.
+C'est le cas par exemple de la balise ``rhinoceros''. Elle change uniquement
+la couleur du texte, mais comme on peut le voir pour les autres balises, on peut
+changer la fonte du texte, sa couleur, sa taille.....
+
+Une fois un style défini, nous pouvons déclarer notre nouveau part de type
+TEXTBLOCK :
+
+\begin{lstlisting}
+  part {
+    name: "textblock";
+    type: TEXTBLOCK;
+    entry_mode: EDITABLE;
+    source5: "anchor";
+    description {
+      state: "default" 0.0;
+
+      text {
+        style: "textblock_style";
+      }
+    }
+  }
+\end{lstlisting}
+
+Dans notre programme nous pouvons spécifier le texte comme tout à l'heure, mais
+et enrobé certaines partie avec les balises que nous avons définis dans le style.
+
+\begin{lstlisting}
+ elm_layout_text_set(textblock,"textblock", "<h1>What is Enlightenment?</h1><br>");
+\end{lstlisting}
+
+\section{Capturer les signaux edje dans le programme}
+
+Pour avoir une interraction entre edje et notre programme, nous pouvons utiliser
+des programmes contenant l'action SIGNAL\_EMIT. Lorsque ce programme est
+exécuté, Edje envoie alors ce signal. A nous de le capter et de réagir en
+fonction.
+Voici le code d'exemple qui permet de capture absolument tous les signaux emis
+par le groupe layout :
+\begin{lstlisting}
+  edje = elm_layout_edje_get(table);
+  edje_object_signal_callback_add(edje, "*", "*", _edje_signal_cb, NULL);
+\end{lstlisting}
+
+et le code du callback executé lorsque un signal est reçu :
+\begin{lstlisting}
+static void
+_edje_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   printf("Emission : %s - Source : %s\n", emission, source);
+}
+\end{lstlisting}
+
+Les * utilisé dans l'ajout du callback permettent de filtrer les signaux, ici
+nous affichons tout.
+
+Pour le besoin de notre exemple, nous allons envoyer, lors d'un clic sur une
+icone, le nom de l'icone.
+\begin{lstlisting}
+   program {                                                      \
+     name: "mouse_click";
+     signal: "mouse,clicked,1";
+     source: "events";
+     action: SIGNAL_EMIT "info,clicked" "";
+   }
+\end{lstlisting}
+
+Attention ici, nous utilisons le signal mouse,clicked, qui est différent de
+mouse down et mouse up. Celui-ci est envoyé uniquement si on relache la souris
+au dessus de la source.
+
+Dans le programme nous allons recevoir les données : emission == "info\_clicked"
+et source == "".
+
+Lorsque info\_clicked sera reçu, nous allons alors creer notre panel, et
+l'afficher à la place de la table.
+
+\subsection{Les Ancres(anchors)}
+
+Les textblock peuvent en plus du texte de différents style être clickables.
+C'est le rôle des encres ..... blablablalbla
+
+\subsection{Transformations 3D}
+
+blablablalbalbalbal....
 
 \end{document}
 
