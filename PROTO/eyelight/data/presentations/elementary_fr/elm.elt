@@ -64,7 +64,7 @@ slide {
                 items {
                         text: " Pour utiliser Elementary on peut:";
 			items {
-                        	text: " <b>juste utiliser Elementary comme n’importe quels bibliothèques de Widget (gtk, qt ...)</b>";
+                        	text: " <b>juste utiliser Elementary comme n’importe quelles bibliothèques de Widget (gtk, qt ...)</b>";
 				text: " <b>l’utiliser comme une brique qu'on améliore</b>";
 				items {
 					text: " utilisation de Edje pour le layout";
@@ -277,7 +277,7 @@ slide {
                 items {
 			text: " Pas fini: manque de widgets et de finition.";
 			text: " Le non tactile n'est pas la priorité.";
-			text: " Le thème par défaut qui ressemble a rien.";
+			text: " Le thème par défaut qui ne ressemble à rien.";
 			text: " De la documentation.";
                 }
         }
