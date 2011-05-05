@@ -245,7 +245,7 @@ _azy_server_client_method_run(Azy_Server_Client *client,
 {
    Azy_Server_Module *module = NULL;
    Azy_Server_Module_Method *method;
-   Azy_Net *new;
+   Azy_Net *net = NULL;
    const char *module_name;
 
    DBG("(client=%p, content=%p)", client, content);
@@ -277,34 +277,34 @@ _azy_server_client_method_run(Azy_Server_Client *client,
         eina_stringshare_del(module_name);
         if (!def)
           {
-             new = azy_net_new(client->current->conn);
-             new->server_client = EINA_TRUE;
-             new->http.req.http_path = client->current->http.req.http_path;
-             new->type = client->current->type;
-             new->transport = client->current->transport;
+             net = azy_net_new(client->current->conn);
+             net->server_client = EINA_TRUE;
+             net->http.req.http_path = client->current->http.req.http_path;
+             net->type = client->current->type;
+             net->transport = client->current->transport;
              client->current->http.req.http_path = NULL;
-             new->type = client->current->type;
-             new->transport = client->current->transport;
-             new->http.version = client->current->http.version;
+             net->type = client->current->type;
+             net->transport = client->current->transport;
+             net->http.version = client->current->http.version;
              azy_net_free(client->current);
-             client->current = new;
+             client->current = net;
              azy_content_error_faultmsg_set(content, -1, "Unknown module %s.", module_name);
              return EINA_FALSE;
           }
 
         if (!(module = _azy_server_module_new(def, client)))
           {
-             new = azy_net_new(client->current->conn);
-             new->server_client = EINA_TRUE;
-             new->http.req.http_path = client->current->http.req.http_path;
-             new->type = client->current->type;
-             new->transport = client->current->transport;
+             net = azy_net_new(client->current->conn);
+             net->server_client = EINA_TRUE;
+             net->http.req.http_path = client->current->http.req.http_path;
+             net->type = client->current->type;
+             net->transport = client->current->transport;
              client->current->http.req.http_path = NULL;
-             new->type = client->current->type;
-             new->transport = client->current->transport;
-             new->http.version = client->current->http.version;
+             net->type = client->current->type;
+             net->transport = client->current->transport;
+             net->http.version = client->current->http.version;
              azy_net_free(client->current);
-             client->current = new;
+             client->current = net;
              azy_content_error_faultmsg_set(content, -1, "Module initialization failed.");
              return EINA_FALSE;
           }
@@ -326,19 +326,19 @@ top:
       case AZY_SERVER_MODULE_STATE_INIT:
         if (!module->new_net)
           {
-             new = azy_net_new(module->client->current->conn);
-             new->server_client = EINA_TRUE;
+             net = azy_net_new(module->client->current->conn);
+             net->server_client = EINA_TRUE;
           }
         if (module->def->pre)
-          module->run_method = module->def->pre(module, module->new_net ? module->new_net : new);
+          module->run_method = module->def->pre(module, net ? net : module->new_net);
 
-        if (!module->new_net)
+        if (net)
           {
              /* grab the req path before it gets freed */
-             new->http.req.http_path = module->client->current->http.req.http_path;
-             new->type = module->client->current->type;
-             new->transport = module->client->current->transport;
-             module->new_net = new;
+             net->http.req.http_path = module->client->current->http.req.http_path;
+             net->type = module->client->current->type;
+             net->transport = module->client->current->transport;
+             module->new_net = net;
           }
 
         if (module->rewind_now) goto top;
@@ -534,7 +534,7 @@ _azy_server_client_get_put(Azy_Server_Client *client)
    Eina_List *l;
    Azy_Server_Module *module = NULL;
    Azy_Server_Module_Def *def;
-   Azy_Net *net;
+   Azy_Net *net = NULL;
    Azy_Server_Module_Cb cb = NULL;
    Azy_Server_Module_Content_Cb fallback = NULL;
 
@@ -585,8 +585,8 @@ not_impl:
         /* grab the req path before it gets freed */
         net->http.req.http_path = client->current->http.req.http_path;
         client->current->http.req.http_path = NULL;
-        net->type = module->client->current->type;
-        net->transport = module->client->current->transport;
+        net->type = client->current->type;
+        net->transport = client->current->transport;
 
         azy_net_free(client->current);
         client->current = net;
@@ -597,12 +597,12 @@ not_impl:
         if (client->current->type == AZY_NET_TYPE_GET)
           {
              data.data = (unsigned char *)"Download hook is not implemented.";
-             data.size = 31;
+             data.size = sizeof("Download hook is not implemented.") - 1;
           }
         else
           {
              data.data = (unsigned char *)"Upload hook is not implemented.";
-             data.size = 31;
+             data.size = sizeof("Upload hook is not implemented.") - 1;
           }
         _azy_server_client_send(client, &data, NULL);
         if (module && module->recv.data) free(module->recv.data);
@@ -623,11 +623,11 @@ top:
              net->server_client = EINA_TRUE;
           }
         if (def->pre)
-          module->run_method = def->pre(module, module->new_net ? module->new_net : net);
+          module->run_method = def->pre(module, net ? net : module->new_net);
 
         module->recv.data = client->current->buffer;
         module->recv.size = client->current->size;
-        if (!module->new_net)
+        if (net)
           {
              /* grab the req path before it gets freed */
              net->http.req.http_path = client->current->http.req.http_path;
@@ -831,7 +831,7 @@ _azy_server_client_rpc(Azy_Server_Client *client,
 static Eina_Bool
 _azy_server_client_handler_request(Azy_Server_Client *client)
 {
-   Azy_Net *new;
+   Azy_Net *net;
 
    DBG("(client=%p)", client);
    client->handled = EINA_TRUE;
@@ -848,13 +848,13 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
      client->current = client->resume;
    else
      {
-        new = azy_net_new(client->net->conn);
-        new->server_client = EINA_TRUE;
-        new->transport = client->net->transport;
-        new->http.version = client->net->http.version;
-        new->type = client->net->type;
+        net = azy_net_new(client->net->conn);
+        net->server_client = EINA_TRUE;
+        net->transport = client->net->transport;
+        net->http.version = client->net->http.version;
+        net->type = client->net->type;
         client->current = client->net;
-        client->net = new;
+        client->net = net;
      }
    client->executing = EINA_TRUE;
    switch (client->current->type)
@@ -1080,7 +1080,10 @@ _azy_server_client_handler_del(Azy_Server_Client          *client,
         return ECORE_CALLBACK_PASS_ON;
      }
 
-   INFO("Client %s has disconnected!", ecore_con_client_ip_get(ev->client));
+   if (ev)
+     INFO("Client %s has disconnected!", ecore_con_client_ip_get(ev->client));
+   else
+     INFO("Client has disconnected!");
 
    if (!ecore_con_server_clients_get(client->server->server))
      _azy_server_client_handler_data(NULL, -500, NULL);
@@ -1099,8 +1102,8 @@ azy_server_client_handler_add(Azy_Server                 *server,
                               int type                    __UNUSED__,
                               Ecore_Con_Event_Client_Add *ev)
 {
-   DBG("(server=%p, server->client=%p)", server, (ev) ? ecore_con_server_data_get(ecore_con_client_server_get(ev->client)) : NULL);
-   if (ev && (server != ecore_con_server_data_get(ecore_con_client_server_get(ev->client))))
+   DBG("(server=%p, server->client=%p)", server, ecore_con_server_data_get(ecore_con_client_server_get(ev->client)));
+   if (server != ecore_con_server_data_get(ecore_con_client_server_get(ev->client)))
      {
         DBG("Ignoring callback due to pointer mismatch");
         return ECORE_CALLBACK_PASS_ON;
