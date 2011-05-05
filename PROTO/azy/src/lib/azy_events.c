@@ -300,7 +300,6 @@ azy_events_type_parse(Azy_Net             *net,
      {
         /* copy pointer */
          start = header;
-         size = len;
          /* skip all spaces/newlines/etc and decrement len */
          AZY_SKIP_BLANK(start);
      }
