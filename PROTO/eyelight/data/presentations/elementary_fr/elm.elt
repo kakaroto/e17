@@ -283,4 +283,12 @@ slide {
         }
 }
 
-
+slide {
+        layout: 1_area;
+        title: " Les questions";
+	custom_area: "custom" 0.4 0.4 0.6 0.5;
+	area {
+                name: "custom";
+		text: " <outline>Des questions?</outline>";
+        }
+}
