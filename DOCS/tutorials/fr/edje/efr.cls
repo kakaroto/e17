@@ -19,7 +19,7 @@
 \usepackage{titlesec}
 \usepackage{titletoc}
 \usepackage{caption}
-\usepackage[english]{babel}
+\usepackage[french]{babel}
 \usepackage{fullpage} % small margins
 \usepackage[xetex]{graphicx}
 \usepackage{listings}
@@ -30,7 +30,7 @@
 \usepackage{xltxtra}
 \defaultfontfeatures{Mapping=tex-text}
 
-\renewcommand{\textbullet}{-}
+\renewcommand{\textbullet}{*}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
