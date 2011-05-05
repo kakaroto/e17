@@ -4,7 +4,7 @@ Match_Type match_type[] = {
   { "Tshirt", CLOTHING_TYPE_TSHIRT, _serialisation_clothing_tshirt_dd },
   { "Pullover", CLOTHING_TYPE_PULLOVER, _serialisation_clothing_pullover_dd },
   { "Jean", CLOTHING_TYPE_JEAN, _serialisation_clothing_jean_dd },
-  { "underwear", CLOTHING_TYPE_UNDERWEAR, _serialisation_clothing_underwear_dd },
+  { "Underwear", CLOTHING_TYPE_UNDERWEAR, _serialisation_clothing_underwear_dd },
   { NULL, 0, NULL }
 };
 
