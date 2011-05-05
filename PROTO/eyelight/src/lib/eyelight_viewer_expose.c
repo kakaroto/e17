@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  eyelight_viewer_expose.c
- *
- *    Description:
- *
- *        Version:  1.0
- *        Created:  08/14/2008 08:47:29 PM CEST
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  (Watchwolf), Atton Jonathan <watchwolf@watchwolf.fr>
- *        Company:
- *
- * =====================================================================================
- */
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif

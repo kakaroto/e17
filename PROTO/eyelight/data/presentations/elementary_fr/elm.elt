@@ -1,0 +1,286 @@
+layout: 2_columns;
+foot_text :" Atton Jonathan, jonathan.atton@gmail.com";
+foot_image: "";
+header_image: "logo.png";
+
+transition: fade_content;
+
+slide
+{
+    layout: title;
+    header_image: "";
+    title: " Présentation d'Elementary";
+    subtitle: " bibliothèque de widgets";
+    custom_area: "top" 0.15 -0.2 0.85 0.5;
+
+    area
+    {
+        name: "top";
+        image
+        {
+            image: "logo.png";
+        }
+    }
+    area
+    {
+        name: bottom;
+	text: "";
+        text: " Autheur : ATTON Jonathan, jonathan.atton@gmail.com";
+    }
+}
+
+slide {
+        layout: "1_area";
+        title: " Qu'est ce que Elementary ?";
+        custom_area: "screen" 0.5 0.23 0.95 0.75;
+
+	area {
+                name: "center";
+                items {
+                        text: " Elementary est une bibliothèque de widgets";
+			items {
+                        	text: " bouttons";
+				text: " checkboxs";
+				text: " listes";
+				text: " ...";
+			}
+                }
+                items {
+                        text: " <outline>L’objectif est de fournir des briques de GUI afin de simplifier la vie des développeurs.</outline>";
+                }
+        }
+	area {
+        	name: "screen";
+		image: "widgets.png";
+	}
+}
+
+slide {
+        layout: "1_area";
+        title: " Qu'est ce que Elementary ?";
+
+	area {
+                name: "center";
+                items {
+                        text: " Pour utiliser Elementary on peut:";
+			items {
+                        	text: " <b>juste utiliser Elementary comme n’importe quels bibliothèques de Widget (gtk, qt ...)</b>";
+				text: " <b>l’utiliser comme une brique qu'on améliore</b>";
+				items {
+					text: " utilisation de Edje pour le layout";
+					text: " surcharge du thème Elementary avec ses propres styles";
+				}
+			}
+                }
+        }
+}
+
+slide {
+        layout: "title";
+   	header_image: "";
+        title: " Les forces d'Elementary ?";
+}
+
+slide {
+        layout: "1_area";
+        title: " Basé sur les EFL ";
+	subtitle: " (evas, edje, eina, ecore ...)";
+	custom_area: "txt" 0.05 0.15 0.5 0.7;
+	custom_area: "screen" 0.5 0.23 0.95 0.75;
+
+	area {
+                name: "txt";
+		text: "";
+                items {
+			text: " Faible empreinte mémoire";
+			text: " pipeline de rendue performant";
+			text: " évolution des widgets dans un canvas";
+                }
+        }
+	
+	area {
+        	name: "screen";
+		image: "efl.png";
+	}
+}
+
+slide {
+        layout: 2_lines;
+        title: " Adapté à une utilisation tactile";
+
+	area {
+                name: "top";
+                items {
+			text: " Ne pas cacher les informations avec le doigt";
+			text: " zones événementielles suffisamment grande";
+			text: " tactile multipoint";
+                }
+        }
+	
+	area {
+                name: "bottom";
+		image: "tactile.png";
+        }
+}
+
+
+slide {
+        layout: 2_lines;
+        title: " Adapté à une utilisation tactile";
+
+	area {
+                name: "top";
+                items {
+			text: " La taille du doigt (Fingersize)";
+			text: " Configuration de la taille du doigt";
+			text: " objectif: les zones événementielles s’adapte";
+			text: " le pointeur de la souris est un petit doigt";
+                }
+        }
+	
+	area {
+                name: "bottom";
+		image: "tactile2.png";
+        }
+}
+
+slide {
+        layout: 1_area;
+        title: " tactile et non tactile";
+
+	area {
+                name: "center";
+                items {
+			text: " Les widgets s’adaptent";
+			text: " Configuration du profil: tactile / non tactile";
+			text: " Exemples:";
+			items {
+				text: " scroller en sélectionnant la liste et en déplaçant le doigt";
+				text: " scroller en utilisant l’ascenseur";
+				text: " afficher un menu avec un appuie long";
+				text: " afficher un menu avec un clic droit";
+			}
+			text: " <b>Une même application en utilisation tactile et non tactile</b>";
+                }
+        }
+	
+}
+
+slide {
+        layout: 2_lines;
+        title: " Support des résolutions (scalability)";
+
+	area {
+                name: "top";
+                items {
+			text: " Les widgets adaptent leur taille en fonction du paramètre d'échelle.";
+			text: " Un petit écran avec une grande résolution ? il suffit d’augmenter l'échelle.";
+                }
+        }
+
+	area {
+                name: "bottom";
+		image: "scale.png";
+        }
+	
+}
+
+slide {
+        layout: 2_lines;
+        title: " Utilisation de Edje";
+	subtitle: " pour le thème";
+
+	area {
+                name: "top";
+                items {
+			text: " Les thèmes Elementary sont des fichiers Edje.";
+			text: " Toute la puissance de Edje: animations, signaux, parts.";
+			text: " Un thème peut être très diffèrent d’un autre";
+                }
+		items {
+			text: " On peut surcharger le thème";
+			items {
+				text: " réécriture d’un style existant";
+				text: " ajout d’un style";
+			}
+		}
+        }
+
+	area {
+                name: "bottom";
+		image: "toggles.png";
+        }
+	
+}
+
+slide {
+        layout: 1_area;
+        title: " Utilisation de Edje";
+	subtitle: " pour le layout";
+
+	area {
+                name: "center";
+                items {
+			text: " Utilisation de Edje pour le layout.";
+			text: " En utilisant Elementary edje external.";
+			text: " Ajout d’objets Elementary dans la description Edje";
+			text: " dans le futur: utilisation d’interface commune entre les widgets ce qui permettra de changer de widgets dans les thèmes.";
+                }
+        }
+}
+
+slide {
+        layout: 1_area;
+        title: " Utilisation de Edje";
+	subtitle: " pour le layout";
+
+	area {
+                name: "center";
+		image: "enki.png";
+        }
+}
+
+
+slide {
+        layout: 1_area;
+        title: " Des widgets performants";
+
+	area {
+                name: "center";
+                items {
+			text: " Les genlists, gengrids et maps principalement.";
+			text: " Pourquoi chercher à afficher ce qui ne l’est pas ?";
+			items {
+				text: " Découpage de la liste des éléments d’une liste dans un arbre.";
+				text: " Création de l’objet graphique de l’élément lorsqu’il est affiché.";
+				text: " Destruction lorsqu’il ne l’est plus.";
+				text: " 3000 éléments et seul 10 affichées, pourquoi prendre de la mémoire pour 3000 éléments ?";
+			}
+                }
+        }
+}
+
+
+
+slide {
+        layout: "title";
+   	header_image: "";
+        title: " Les faiblesses d'Elementary ?";
+}
+
+slide {
+        layout: 1_area;
+        title: " Les faiblesses d'Elementary ?";
+
+	area {
+                name: "center";
+                items {
+			text: " Pas fini: manque de widgets et de finition.";
+			text: " Le non tactile n'est pas la priorité.";
+			text: " Le thème par défaut qui ressemble a rien.";
+			text: " De la documentation.";
+                }
+        }
+}
+
+
