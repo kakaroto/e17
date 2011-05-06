@@ -18,7 +18,7 @@ slide
 	area
     	{
 		name: bottom;
-  		text: " Author: Cedric BAIL";
+  		text: " Auteur: Cedric BAIL";
     	}
 }
 
@@ -374,7 +374,7 @@ slide
 			text: " Donne la possibilité d'écrire une application quel que soit le terminal";
 			text: " Peut être utilisé pour le thème de chaque widget";
 			text: " Description d'une machine à état et des transitions dans le thème";
-			text: " Application envoie juste des signaux et attend des réactions du thème";
+			text: " L'application envoie juste des signaux et attend des réactions du thème";
 			text: " Très certainement la bibliothèque la plus importante des EFL que vous devriez connaître";
 		}
 	}

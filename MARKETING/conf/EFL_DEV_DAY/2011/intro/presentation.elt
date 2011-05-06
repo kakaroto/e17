@@ -16,7 +16,7 @@ slide
 	area
 	{
 		name: bottom;
-		text: " Author: Cedric BAIL";
+		text: " Auteur: Cedric BAIL";
 	}
 }
 
@@ -82,7 +82,7 @@ slide
 	area
 	{
 		name: right;
-		text: "croissant et café de bienvenue";
+		text: "croissant(s) et café(s) de bienvenue";
 		text: "présentation des EFL (Cédric)";
 		text: "présentation de Edje (Nicolas)";
 		text: "pause déjeuner";
@@ -90,7 +90,7 @@ slide
 		text: "présentation de Elementary (Jonathan)";
 		text: "aide aux projets personnels";
 		text: "réunion de Enlightenment France";
-		text: "restaurant et fin de soirée !";
+		text: "restaurant et fin de soirée !";
 	}
 }
 
