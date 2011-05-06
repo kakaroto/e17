@@ -307,8 +307,11 @@ static Eina_Bool _eyelight_viewer_thumbnails_load_idle(void *data)
 
 void eyelight_viewer_thumbnails_destroy(Eyelight_Viewer* pres)
 {
-    if(pres->thumbnails.idle)
+   if (pres->thumbnails.idle)
+     {
         ecore_idler_del(pres->thumbnails.idle);
+	pres->thumbnails.idle = NULL;
+     }
 }
 
 

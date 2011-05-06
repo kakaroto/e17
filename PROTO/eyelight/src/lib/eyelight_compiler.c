@@ -272,7 +272,10 @@ Eyelight_Node *eyelight_ignore_area_is(Eyelight_Slide *slide, const char *area)
 char* eyelight_retrieve_value_of_prop(Eyelight_Node* node,int i)
 {
     Eyelight_Node *data;
-    data = eina_list_nth(node->l,i);
+
+    data = eina_list_nth(node->l, i);
+
+    if (!data) return NULL;
     return data->value;
 }
 
