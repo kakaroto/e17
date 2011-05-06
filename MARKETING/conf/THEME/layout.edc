@@ -1,0 +1,670 @@
+//theme's macro
+#define default_area()  \
+custom_area("custom",0.0,0.0,1.0,1.0,"stack")
+//
+
+#define default_area_data(s) \
+item: "areas" "title subtitle header_image foot_image foot_text pages "s; \
+item: "title" "0.01 0.01 0.8 0.1";\
+item: "subtitle" "0.6 0.15 0.99 0.2";\
+item: "header_image" "0.95 0.1 0.99 0.15";\
+item: "foot_image" "0.03 0.9 0.2 0.995";\
+item: "foot_text" "0.22 0.95 0.72 1.0"; \
+item: "pages" "0.8 0.955 0.9 1.0";
+
+#define custom_area(area_name,rel11,rel12,rel21,rel22,_layout)  \
+part                            \
+{                               \
+    name: "area."area_name;     \
+    type: BOX;                  \
+                 \
+    clip_to: "slide";           \
+    repeat_events: 1;           \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: 1;             \
+        rel1                    \
+        {                       \
+            relative: rel11 rel12;\
+            to: "slide";        \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: rel21 rel22;\
+            to: "slide";        \
+        }                       \
+        box {                   \
+            layout: _layout;    \
+            align: 0.0 0.0;     \
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "horizontal" 0.0;\
+        inherit: "default" 0.0; \
+        box {                   \
+            layout: "horizontal";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "vertical" 0.0;  \
+        inherit: "default" 0.0; \
+        box {                   \
+            layout: "vertical"; \
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "vertical_homogeneous" 0.0;\
+        inherit: "default" 0.0; \
+        box {                   \
+            layout: "vertical_homogeneous";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "horizontal_homogeneous" 0.0;\
+        inherit: "default" 0.0; \
+        box {                   \
+            layout: "horizontal_homogeneous";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "vertical_max" 0.0;\
+        inherit: "default" 0.0; \
+        box {                   \
+            layout: "vertical_max";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "horizontal_max" 0.0;\
+        inherit: "default" 0.0; \
+        box {                   \
+            layout: "horizontal_max";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "vertical_flow" 0.0;\
+        inherit: "default" 0.0; \
+        box {                   \
+            layout: "vertical_flow";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "horizontal_flow" 0.0;\
+        inherit: "default" 0.0; \
+        box {                   \
+            layout: "horizontal_flow";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "stack" 0.0;     \
+        inherit: "default" 0.0; \
+        box {                   \
+            layout: "stack";    \
+        }                       \
+    }                           \
+}                               \
+part                            \
+{                               \
+    name: "area_"area_name"_border";   \
+    type: IMAGE;                \
+                 \
+    repeat_events: 1;           \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: 0;             \
+        align: 0.0 0.0;         \
+        color: 255 255 255 255; \
+        rel1                    \
+        {                       \
+            relative: rel11 rel12;\
+            to: "slide";        \
+            offset: -2 -2;      \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: rel21 rel22;\
+            to: "slide";        \
+            offset: +2 +2;      \
+        }                       \
+        image                   \
+        {                       \
+            normal: "black.png";\
+            middle: 0;          \
+            border: 1 1 1 1;    \
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "visible" 0.0;   \
+        inherit: "default" 0.0; \
+        visible: 1;             \
+    }                           \
+}                               \
+part                            \
+{                               \
+    name: "area."area_name".name";     \
+    type: TEXT;                 \
+    scale: 1;                    \
+    effect: SOFT_OUTLINE;       \
+    repeat_events: 1;           \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: 0;             \
+        align: 0.0 0.0;         \
+        color: 0 0 0 255;       \
+        color2: 255 0 0 40;     \
+        rel1                    \
+        {                       \
+            relative: rel11 rel12;\
+            to: "slide";        \
+            offset: -3 -3;      \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: rel21 rel22;\
+            to: "slide";        \
+            offset: +3 +3;      \
+        }                       \
+        text                    \
+        {                       \
+            font: "DejaVuSans"; \
+            size: 16 ;          \
+            text: area_name;    \
+            align: 1.0 0.0;     \
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "visible" 0.0;   \
+        inherit: "default" 0.0; \
+        visible: 1;             \
+    }                           \
+}                               \
+program                         \
+{                               \
+    name: area_name"_visible";  \
+    signal: "border,show";      \
+    source: "eyelight";         \
+    action: STATE_SET "visible" 0.0;  \
+    target: "area_"area_name"_border";\
+    target: "area."area_name".name";  \
+}                               \
+program                         \
+{                               \
+    name: area_name"_horizontal";\
+    signal: "area,"area_name",layout,horizontal";\
+    source: "eyelight";         \
+    action: STATE_SET "horizontal" 0.0;  \
+    target: "area."area_name;   \
+}                               \
+program                         \
+{                               \
+    name: area_name"_vertical";\
+    signal: "area,"area_name",layout,vertical";\
+    source: "eyelight";         \
+    action: STATE_SET "vertical" 0.0;  \
+    target: "area."area_name;   \
+}                               \
+program                         \
+{                               \
+    name: area_name"_horizontal_homogeneous";\
+    signal: "area,"area_name",layout,horizontal_homogeneous";\
+    source: "eyelight";         \
+    action: STATE_SET "horizontal_homogeneous" 0.0;  \
+    target: "area."area_name;   \
+}                               \
+program                         \
+{                               \
+    name: area_name"_vertical_homogeneous";\
+    signal: "area,"area_name",layout,vertical_homogeneous";\
+    source: "eyelight";         \
+    action: STATE_SET "vertical_homogeneous" 0.0;  \
+    target: "area."area_name;   \
+}                               \
+program                         \
+{                               \
+    name: area_name"_horizontal_max";\
+    signal: "area,"area_name",layout,horizontal_max";\
+    source: "eyelight";         \
+    action: STATE_SET "horizontal_max" 0.0;  \
+    target: "area."area_name;   \
+}                               \
+program                         \
+{                               \
+    name: area_name"_vertical_max";\
+    signal: "area,"area_name",layout,vertical_max";\
+    source: "eyelight";         \
+    action: STATE_SET "vertical_max" 0.0;  \
+    target: "area."area_name;   \
+}                               \
+program                         \
+{                               \
+    name: area_name"_horizontal_flow";\
+    signal: "area,"area_name",layout,horizontal_flow";\
+    source: "eyelight";         \
+    action: STATE_SET "horizontal_flow" 0.0;  \
+    target: "area."area_name;   \
+}                               \
+program                         \
+{                               \
+    name: area_name"_vertical_flow";\
+    signal: "area,"area_name",layout,vertical_flow";\
+    source: "eyelight";         \
+    action: STATE_SET "vertical_flow" 0.0;  \
+    target: "area."area_name;   \
+}                               \
+program                         \
+{                               \
+    name: area_name"_stack";\
+    signal: "area,"area_name",layout,stack";\
+    source: "eyelight";         \
+    action: STATE_SET "stack" 0.0;  \
+    target: "area."area_name;   \
+}                               \
+
+
+
+
+
+
+
+
+
+
+    group
+    {
+        name: "eyelight/layout_title";
+        data {
+            item: "areas" "title subtitle header_image foot_image foot_text bottom pages";
+            item: "title" "0.05 0.4 0.99 0.52";
+            item: "subtitle" "0.05 0.5 0.99 0.55";
+            item: "foot_image" "0.03 0.9 0.2 0.995";
+            item: "foot_text" "0.2 0.95 0.8 1.0";
+            item: "bottom" "0.09 0.65 0.98 0.9";
+            item: "pages" "0.85 0.955 0.95 1.0";
+        }
+        parts
+        {
+            pre_fct();
+            part { name: "anim";
+               clip_to: "slide";
+               type: GROUP;
+               source: "eyelight/enlightenment";
+               description { state: "defaul" 0.0;
+                  rel1.relative: 0.2 0.0;
+                  rel2.relative: 0.8 0.4;
+               }
+            }
+            custom_area("custom",0.0,0.0,1.0,1.0,"stack");
+            post_fct();
+        }
+
+        program_list;
+        programs
+        {
+            program
+            {
+                name: "thumbnail";
+                signal: "thumbnail";
+                source: "eyelight";
+                action: STATE_SET "big" 0.0;
+                target: "background_top";
+                target: "background_bottom";
+            }
+            program
+            {
+                name: "show_layout_title";
+                signal: "show,layout";
+                source: "eyelight";
+                action: STATE_SET "default" 0.0;
+                target: "background_top";
+                target: "background_bottom";
+                after: "show_layout_title_2";
+            }
+            program
+            {
+                name: "show_layout_title_2";
+                signal: "show,layout";
+                source: "eyelight";
+                action: STATE_SET "big" 0.0;
+                target: "background_top";
+                target: "background_bottom";
+                transition: ACCELERATE 0.8;
+            }
+            program
+            {
+                name: "show_layout_title_show";
+                signal: "show";
+                after: "show_layout_title";
+            }
+            program
+            {
+                name: "hide_layout_title";
+                signal: "hide,layout";
+                source: "eyelight";
+                action: STATE_SET "default" 0.0;
+                target: "background_top";
+                target: "background_bottom";
+                transition: ACCELERATE 0.5;
+            }
+            program
+            {
+                name: "hide_layout_title_hide";
+                signal: "hide";
+                after: "hide_layout_title";
+            }
+        }
+    }
+
+    group
+    {
+        name: "eyelight/layout_summary";
+        data {
+            default_area_data("center");
+            item: "center" "0.13 0.2 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+
+            part {
+                name: "black_line";
+                type: RECT;
+                clip_to: "slide";
+                description {
+                    state: "default" 0.0;
+                    rel1.relative: 0.10 0.2;
+                    rel2.relative: 0.10 0.82;
+                    rel2.offset: 2 0;
+                    rel1.to: "slide";
+                    rel2.to: "slide";
+                    color: 0 0 0 200;
+                }
+            }
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_blank";
+        data {
+            default_area_data("");
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+    group
+    {
+        name: "eyelight/layout_1_area";
+        data {
+            default_area_data("center");
+            item: "center" "0.11 0.2 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_1_line_2_columns";
+        data {
+            default_area_data("top left right");
+            item: "top" "0.11 0.2 0.9 0.55";
+            item: "left" "0.11 0.56 0.5 0.82";
+            item: "right" "0.51 0.56 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_1_small_line_2_columns";
+        data {
+            default_area_data("top left right");
+            item: "top" "0.11 0.2 0.9 0.40";
+            item: "left" "0.11 0.40 0.5 0.82";
+            item: "right" "0.51 0.40 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_2_columns_1_line";
+        data {
+            default_area_data("bottom left right");
+            item: "bottom" "0.11 0.56 0.9 0.82";
+            item: "left" "0.11 0.2 0.5 0.55";
+            item: "right" "0.51 0.2 0.9 0.55";
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_2_columns_1_small_line";
+        data {
+            default_area_data("bottom left right");
+            item: "bottom" "0.11 0.71 0.9 0.82";
+            item: "left" "0.11 0.2 0.5 0.70";
+            item: "right" "0.51 0.2 0.9 0.70";
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_4_areas";
+        data {
+            default_area_data("top_right top_left bottom_right bottom_left");
+            item: "top_right" "0.51 0.2 0.9 0.51";
+            item: "top_left" "0.11 0.2 0.5 0.51";
+            item: "bottom_right" "0.51 0.52 0.9 0.83";
+            item: "bottom_left" "0.11 0.52 0.5 0.83";
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_6_areas";
+        data {
+            default_area_data("top_right top_left middle_right middle_left bottom_right bottom_left");
+            item: "top_right" "0.51 0.2 0.9 0.48";
+            item: "top_left" "0.11 0.2 0.5 0.48";
+            item: "middle_right" "0.51 0.49 0.9 0.68";
+            item: "middle_left" "0.11 0.49 0.5 0.68";
+            item: "bottom_right" "0.51 0.69 0.9 0.82";
+            item: "bottom_left" "0.11 0.69 0.5 0.82";
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_2_columns";
+        data {
+            default_area_data("left right");
+            item: "left" "0.06 0.2 0.5 0.82";
+            item: "right" "0.51 0.2 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_2_columns_right";
+        data {
+            default_area_data("left right");
+            item: "left" "0.06 0.2 0.29 0.82";
+            item: "right" "0.30 0.2 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_2_columns_left";
+        data {
+            default_area_data("left right");
+            item: "left" "0.06 0.2 0.7 0.82";
+            item: "right" "0.71 0.2 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_2_lines";
+        data {
+            default_area_data("top bottom");
+            item: "top" "0.1 0.2 0.9 0.55";
+            item: "bottom" "0.1 0.56 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_2_lines_top";
+        data {
+            default_area_data("top bottom");
+            item: "top" "0.1 0.2 0.9 0.69";
+            item: "bottom" "0.1 0.7 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+    group
+    {
+        name: "eyelight/layout_2_lines_bottom";
+        data {
+            default_area_data("top bottom");
+            item: "top" "0.1 0.2 0.9 0.41";
+            item: "bottom" "0.1 0.42 0.9 0.82";
+        }
+        parts
+        {
+            pre_fct();
+            default_area();
+
+            post_fct();
+        }
+        program_list;
+    }
+
+

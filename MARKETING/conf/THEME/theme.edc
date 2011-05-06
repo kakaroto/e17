@@ -1,0 +1,2350 @@
+#include "transition/transition.edc"
+
+//theme's macro
+#define tag_list() \
+tag: "big" "+ font_size=35 ";\
+tag: "small" "+ font_size=15 ";\
+tag: "u" "+ style=underline underline_color=#00ff00ff underline2_color=#00ff00ff";\
+tag: "b" "+ font=DejaVuSans_Bold ";\
+tag: "i" "+ font=DejaVuSans_Oblique ";\
+tag: "strike" "+ style=strikethrough strikethrough_color=#000000ff";\
+tag: "outline" "+ style=soft_outline outline_color=#dea909 color=#ffffff";\
+tag: "shadow" "+ style=soft_shadow shadow_color=#2c272799";\
+tag: "outline_shadow" "+ style=outline_soft_shadow shadow_color=#2c272799 outline_color=#dea909  color=#c4d8e0";\
+tag: "c" "+ align=middle";\
+tag: "l" "+ align=left";\
+tag: "br" "\n";		\
+tag: "r" "+ align=right";
+
+#define edit() \
+part { \
+    name: "edit_border_glow"; \
+    type: IMAGE; \
+    description { \
+        state: "default" 0.0; \
+        visible: 0; \
+        color: 255 255 255 0; \
+        image.normal: "border_glow.png"; \
+        rel1.offset: -4 -4; \
+        rel2.offset: 4 4; \
+        image.border: 13 22 13 23; \
+    } \
+    description { \
+        state: "edit" 0.0; \
+        inherit: "default" 0.0; \
+        visible: 1; \
+    }  \
+    description { \
+        state: "select" 0.0; \
+        inherit: "default" 0.0; \
+        inherit: "edit" 0.0; \
+        color: 255 255 255 255; \
+    } \
+} \
+part { \
+    name: "edit_border_glow_2"; \
+    type: IMAGE; \
+    repeat_events: 1; \
+    description { \
+        state: "default" 0.0; \
+        visible: 0; \
+        color: 255 255 255 0; \
+        rel1.offset: -4 -4; \
+        rel2.offset: 4 4; \
+        image.normal: "border_glow_2.png"; \
+        image.border: 13 22 13 23; \
+    } \
+    description { \
+        state: "edit" 0.0; \
+        inherit: "default" 0.0; \
+        visible: 1; \
+    }  \
+    description { \
+        state: "select" 0.0; \
+        inherit: "default" 0.0; \
+        inherit: "edit" 0.0; \
+        color: 255 255 255 255; \
+    } \
+} \
+program { \
+    name: "edit_mode"; \
+    signal: "edit,mode,1"; \
+    source: "eyelight"; \
+    action: STATE_SET "edit" 0.0; \
+    target: "edit_border_glow"; \
+    target: "edit_border_glow_2"; \
+} \
+program { \
+    name: "edit_mode_select"; \
+    signal: "select"; \
+    source: "eyelight"; \
+    action: STATE_SET "select" 0.0; \
+    target: "edit_border_glow"; \
+    transition: LINEAR 0.2;\
+} \
+program { \
+    name: "edit_mode_unselect"; \
+    signal: "unselect"; \
+    source: "eyelight"; \
+    action: STATE_SET "edit" 0.0; \
+    target: "edit_border_glow"; \
+    transition: LINEAR 0.2; \
+} \
+program { \
+    name: "select"; \
+    signal: "mouse,down,1"; \
+    source: "edit_border_glow"; \
+    action: SIGNAL_EMIT "select" "image"; \
+    after: "edit_mode_select"; \
+} \
+program { \
+    name: "edit_over"; \
+    signal: "mouse,in"; \
+    source: "edit_border_glow"; \
+    action: STATE_SET "select" 0.0; \
+    target: "edit_border_glow_2"; \
+    transition: LINEAR 0.2; \
+} \
+program { \
+    name: "edit_over_out"; \
+    signal: "mouse,out"; \
+    source: "edit_border_glow"; \
+    action: STATE_SET "edit" 0.0; \
+    target: "edit_border_glow_2"; \
+    transition: LINEAR 0.2; \
+}
+
+
+#define slide_description(x1,y1)        \
+description                             \
+{                                       \
+    state: "state_"x1"_"y1 0.0;         \
+    visible: 1;                         \
+    color: 255 255 255 255;             \
+    rel1                                \
+    {                                   \
+        relative: x1 y1;                \
+    }                                   \
+    rel2                                \
+    {                                   \
+        relative: (x1+1.0) (y1+1.0);    \
+    }                                   \
+}
+
+
+#define program_item_depth(part_name,depth_off_x) \
+program                                                                 \
+{                                                                       \
+    name: part_name;                                                    \
+    source: "eyelight";                                                 \
+    signal: "increase,depth";                                           \
+    script                                                              \
+    {                                                                   \
+        new off_x,off_y;                                                \
+        custom_state(PART:part_name, "default", 0.0);                   \
+        get_state_val(PART:part_name, STATE_REL2_OFFSET, off_x, off_y); \
+        \
+        off_x = off_x + depth_off_x;                                    \
+        set_state_val(PART:part_name, STATE_REL2_OFFSET, off_x, off_y); \
+        \
+        set_state(PART:part_name, "custom", 0.0);                       \
+    }                                                                   \
+}
+
+
+#define add_border(relative_part,border_size)   \
+part                                                \
+{                                                   \
+    name: relative_part"_border_left";              \
+    type: RECT;                                     \
+    \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 0;                                 \
+        color: 0 0 0 255;                           \
+        rel1                                        \
+        {                                           \
+            relative: 0.0 0.0;                      \
+            to: relative_part;                      \
+            offset: -border_size -border_size;      \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 0.0 1.0;                      \
+            offset: -1 (border_size-1);             \
+            to: relative_part;                      \
+        }                                           \
+    }                                               \
+    description                                     \
+    {                                               \
+        state: "visible" 0.0;                       \
+        inherit: "default" 0.0;                     \
+        visible: 1;                                 \
+    }                                               \
+}                                                   \
+part                                                \
+{                                                   \
+    name: relative_part"_border_right";             \
+    type: RECT;                                     \
+    \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 0;                                 \
+        color: 0 0 0 255;                           \
+        rel1                                        \
+        {                                           \
+            relative: 1.0 0.0;                      \
+            to: relative_part;                      \
+            offset: 0 -border_size;                 \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 1.0 1.0;                      \
+            offset: (border_size-1) (border_size-1);\
+            to: relative_part;                      \
+        }                                           \
+    }                                               \
+    description                                     \
+    {                                               \
+        state: "visible" 0.0;                       \
+        inherit: "default" 0.0;                     \
+        visible: 1;                                 \
+    }                                               \
+}                                                   \
+part                                                \
+{                                                   \
+    name: relative_part"_border_top";               \
+    type: RECT;                                     \
+    \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 0;                                 \
+        color: 0 0 0 255;                           \
+        rel1                                        \
+        {                                           \
+            relative: 0.0 0.0;                      \
+            to: relative_part;                      \
+            offset: -border_size -border_size;      \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 1.0 0.0;                      \
+            offset: (border_size-1) -1;             \
+            to: relative_part;                      \
+        }                                           \
+    }                                               \
+    description                                     \
+    {                                               \
+        state: "visible" 0.0;                       \
+        inherit: "default" 0.0;                     \
+        visible: 1;                                 \
+    }                                               \
+}                                                   \
+part                                                \
+{                                                   \
+    name: relative_part"_border_bottom";            \
+    type: RECT;                                     \
+    \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 0;                                 \
+        color: 0 0 0 255;                           \
+        rel1                                        \
+        {                                           \
+            relative: 0.0 1.0;                      \
+            to: relative_part;                      \
+            offset: -border_size 0;                 \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 1.0 1.0;                      \
+            offset: (border_size-1) (border_size-1);  \
+            to: relative_part;                      \
+        }                                           \
+    }                                               \
+    description                                     \
+    {                                               \
+        state: "visible" 0.0;                       \
+        inherit: "default" 0.0;                     \
+        visible: 1;                                 \
+    }                                               \
+}
+
+
+
+
+fonts
+{
+    font:"fonts/DejaVuSans-Bold.ttf" "DejaVuSans_Bold";
+    font:"fonts/DejaVuSans.ttf" "DejaVuSans";
+    font:"fonts/DejaVuSans-Oblique.ttf" "DejaVuSans_Oblique";
+}
+
+images
+{
+    image: "item_00.png" COMP;
+    image: "item_01.png" COMP;
+    image: "item_02.png" COMP;
+    image: "item_03.png" COMP;
+    image: "expose_shadow.png" COMP;
+    image: "expose_selection.png" COMP;
+    image: "tableofcontents_selection.png" COMP;
+    image: "expose_previous.png" COMP;
+    image: "expose_next.png" COMP;
+    image: "black.png" COMP;
+    image: "background_top.png" COMP;
+    image: "background.png" COMP;
+    image: "background_bottom.png" COMP;
+    image: "title_background.png" COMP;
+    image: "subtitle_background.png" COMP;
+    image: "play.png" COMP;
+    image: "play_glow.png" COMP;
+    image: "play_select.png" COMP;
+    image: "pause.png" COMP;
+    image: "pause_glow.png" COMP;
+    image: "pause_select.png" COMP;
+    image: "stop.png" COMP;
+    image: "stop_glow.png" COMP;
+    image: "stop_select.png" COMP;
+    image: "slider_back.png" COMP;
+    image: "slider_back_select.png" COMP;
+    image: "slider.png" COMP;
+    image: "slider_glow.png" COMP;
+    image: "slider_select.png" COMP;
+    image: "cadre.png" COMP;
+    image: "cadre_glow.png" COMP;
+    image: "cadre_glow_2.png" COMP;
+    image: "border_glow.png" COMP;
+    image: "border_glow_2.png" COMP;
+    image: "glow.png" COMP;
+}
+
+styles {
+    style {
+        name: "summaryBeforeStyle";
+        base: "font=DejaVuSans font_size=18 align=0.0 valign=center color=#000000ff  wrap=word style=glow glow_color=#ffffff ";
+        tag_list();
+    }
+    style {
+        name: "summaryCurrentStyle";
+        base: "font=DejaVuSans font_size=18 align=0.0 valign=center color=#000000ff wrap=word style=glow glow_color=#a1c2e8 ";
+        tag_list();
+    }
+    style {
+        name: "summaryAfterStyle";
+        base: "font=DejaVuSans font_size=18 align=0.0 valign=center color=#00000088  wrap=word style=glow glow_color=#ffffff ";
+        tag_list();
+    }
+    style {
+        name: "itemStyle";
+        base: "font=DejaVuSans font_size=22 align=0.0 valign=0 color=#000000  wrap=word style=glow glow_color=#ffffff ";
+        tag_list();
+    }
+    style {
+        name: "numberingStyle";
+        base: "font=DejaVuSans font_size=22 align=0.0 valign=0 color=#000000  wrap=word style=glow glow_color=#ffffff style=soft_outline outline_color=#7fa3ed color=#d8e0e3";
+    }
+    style {
+        name: "titleStyle";
+        base: "font=DejaVuSans_Oblique font_size=40 align=center valign=0.0 wrap=word style=glow glow_color=#ffc516 color=#ffffff";
+        tag_list();
+    }
+    style {
+        name: "subtitleStyle";
+        base: "font=DejaVuSans font_size=20 align=center valign=bottom color=#ffffff  wrap=word style=soft_outline outline_color=#a1c2e8";
+        tag_list();
+    }
+    style {
+        name: "itemCodeStyle";
+        base: "left_margin=+5 font=DejaVuSansMono font_size=16 align=0.0 valign=0 color=#000000  wrap=word";  /* style=glow glow_color=#ffffff  */
+        tag_list();
+    }
+    style {
+        name: "footStyle";
+        base: "+ font=DejaVuSans font_size=18 aligncenter valign=bottom color=#ffffff  wrap=word ";
+        tag_list();
+    }
+    style {
+        name: "nbPagesStyle";
+        base: "+ font=DejaVuSans font_size=18 align=right valign=bottom color=#ffffff  wrap=word ";
+        tag_list();
+    }
+}
+
+//first function called in a slide
+#define pre_fct()                                       \
+part                                \
+{                                   \
+    name: "slide";                  \
+    type: RECT;                     \
+    \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible: 1;                 \
+        rel1                        \
+        {                           \
+            relative: 1.0 1.0;      \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 2.0 2.0;      \
+        }                           \
+    }                               \
+    description                             \
+    {                                       \
+        state: "not_visible" 0.0;           \
+        visible: 1;                         \
+        color: 255 255 255 0;               \
+        rel1                                \
+        {                                   \
+            relative: 0 0;                  \
+        }                                   \
+        rel2                                \
+        {                                   \
+            relative: 1.0 1.0;              \
+        }                                   \
+    }                                       \
+    slide_description(0.0,0.0);     \
+    slide_description(-1.0,0.0);    \
+    slide_description(0.0,1.0);     \
+    slide_description(1.0,0.0);     \
+    slide_description(0.0,-1.0);    \
+}                                   \
+part                                            \
+{                                               \
+    name: "background";                     \
+    type: IMAGE;                            \
+    \
+    description                             \
+    {                                       \
+        state: "default" 0.0;           \
+        visible: 1;                     \
+        color: 255 255 255 255;         \
+        rel1                            \
+        {                               \
+            relative: 0.0 0.0;      \
+            to: "slide";            \
+        }                               \
+        rel2                            \
+        {                               \
+            relative: 1.0 1.0;      \
+            to: "slide";            \
+        }                               \
+        image                           \
+        {                               \
+            normal: "background.png";\
+        }                               \
+    }                           \
+}                                   \
+part                                    \
+{                                       \
+    name: "background_top_color";   \
+    type: RECT;                     \
+    \
+    description                     \
+    {                               \
+        state: "default" 0.0;   \
+        visible: 1;             \
+        color: 0 0 0 255;       \
+        rel1.to: "slide";       \
+        rel2.to: "background_top"; \
+        rel2.relative: 1.0 0.0; \
+    }                               \
+}                                       \
+part                                \
+{                                   \
+    name: "background_top";         \
+    type: IMAGE;                    \
+    \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible:1;                  \
+        color: 255 255 255 255;     \
+        rel1                        \
+        {                           \
+            relative: 0.0 0.0;      \
+            offset: -2 0;           \
+            to: "slide";            \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 1.0 0.27;     \
+            to: "slide";            \
+        }                           \
+        image                       \
+        {                           \
+            scale_hint: STATIC;     \
+            normal: "background_top.png";\
+        }                           \
+    }                               \
+    description                     \
+    {                               \
+        state: "big" 0.0;           \
+        inherit: "default" 0.0;     \
+        rel1.relative: 0.0 0.2;     \
+        rel2.relative: 1.0 0.2+0.27;\
+    }                               \
+}                                   \
+part                                    \
+{                                       \
+    name: "background_bottom_color";\
+    type: RECT;                     \
+    \
+    description                     \
+    {                               \
+        state: "default" 0.0;   \
+        visible: 1;             \
+        color: 0 0 0 255;       \
+        rel2.to: "slide";       \
+        rel1.to: "background_bottom"; \
+        rel1.relative: 0.0 1.0; \
+    }                               \
+}                                       \
+part                                \
+{                                   \
+    name: "background_bottom";      \
+    type: IMAGE;                    \
+    \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible:1;                  \
+        color: 255 255 255 255;     \
+        rel1                        \
+        {                           \
+            relative: 0.0 0.75;     \
+            to: "slide";            \
+            offset: -2 0;           \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 1.0 1.0;      \
+            to: "slide";            \
+        }                           \
+        image                       \
+        {                           \
+            scale_hint: STATIC;     \
+            normal: "background_bottom.png";\
+        }                           \
+    }                               \
+    description                     \
+    {                               \
+        state: "big" 0.0;           \
+        inherit: "default" 0.0;     \
+        rel1.relative: 0.0 0.5;    \
+        rel2.relative: 1.0 0.5+0.25;\
+    }                               \
+}                                   \
+
+//last function called in a slide
+#define post_fct()              \
+part                            \
+{                               \
+    name: "fade";               \
+    type: RECT;                 \
+    \
+    clip_to: "slide";           \
+    repeat_events: 1;           \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        color: 0 0 0 0;         \
+        rel1                    \
+        {                       \
+            relative: 0.0 0.0;  \
+            to: "slide";        \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: 1.0 1.0;  \
+            to: "slide";        \
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "visible" 0.0;   \
+        color: 0 0 0 255;       \
+        rel1                    \
+        {                       \
+            relative: 0.0 0.0;  \
+            to: "slide";        \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: 1.0 1.0;  \
+            to: "slide";        \
+        }                       \
+    }                           \
+}
+
+
+collections
+{
+
+
+    group {
+        name: "eyelight/item_text";
+        parts {
+            part {
+                name: "main";
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    rel1.offset: 3 3;
+                    rel2.offset: -3 -3;
+                }
+            }
+            part {
+                name : "object.text";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "main";
+                    rel2.to: "main";
+                    align: 0 0;
+                    text {
+                        text: "TEXT";
+                        style: "itemStyle";
+                        min: 0 0;
+                        max: 0 0;
+                        align: 0 0;
+                    }
+                }
+            }
+            edit();
+        }
+    }
+    group {
+        name: "eyelight/item_code";
+        parts {
+            part {
+                name: "main";
+    	        mouse_events: 0;
+                type: RECT;
+                description {
+                    state: "default" 0.0;
+                    visible: 1;
+                    rel1.to: "object.text";
+                    rel2.to: "object.text";
+                    rel1.offset: -11 -10;
+                    rel2.offset: 8 8;
+                    color: 100 100 100 255;
+                }
+            }
+            part {
+                name: "back";
+    	        mouse_events: 0;
+                type: RECT;
+                description {
+                    state: "default" 0.0;
+                    visible: 1;
+                    rel1.offset: -9 -9;
+                    rel2.offset: 7 7;
+                    rel1.to: "object.text";
+                    rel2.to: "object.text";
+                    color: 160 160 160 255;
+                }
+            }
+            part {
+                name : "object.text";
+                type: TEXTBLOCK;
+    	        mouse_events: 0;
+                scale: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1.offset: 10 10;
+                    rel2.offset: -11 -10;
+                    align: 0.0 0.0;
+                    text {
+                        text: "TEXT";
+                        style: "itemCodeStyle";
+                        min: 1 1;
+                        max: 0 1;
+                        align: 0.0 0.0;
+                    }
+                }
+            }
+            edit();
+        }
+    }
+    group
+    {
+        name: "eyelight/item_simple_text";
+        parts
+        {
+            part
+            {
+                name: "depth";
+                type: RECT;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.0 0.0;
+                    rel2.relative: 0.0 0.0;
+                }
+            }
+            part
+            {
+                name: "image";
+                type: IMAGE;
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    min: 24 24;
+                    max: 24 24;
+                    rel1.relative: 1.0 0.0;
+                    rel1.to_x: "depth";
+                    rel1.offset: 0 7;
+                    align: 0 0;
+                    image.normal: "item_00.png";
+                }
+            }
+            part
+            {
+                name : "object.text";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1
+                    {
+                        relative: 1.0 0.0;
+                        to_x: "image";
+                        offset: 2 0;
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                    text
+                    {
+                        text: "TEXT";
+                        style: "itemStyle";
+                        min: 0 0;
+                        max: 0 0;
+                        align: 0.0 0.0;
+                    }
+                }
+            }
+            edit();
+        }
+        programs
+        {
+            program_item_depth("depth",50);
+        }
+    }
+    group
+    {
+        name: "eyelight/item_summary_text";
+        parts
+        {
+            part
+            {
+                name: "depth";
+                type: RECT;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.0 0.0;
+                    rel2.relative: 0.0 0.0;
+                }
+            }
+            part {
+                name : "object.text";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1.relative: 1.0 0.0;
+                    rel1.to_x: "depth";
+                    text {
+                        text: "TEXT";
+                        style: "itemStyle";
+                        min: 0 0;
+                        max: 0 0;
+                        align: 0.0 0.0;
+                    }
+                }
+                description {
+                    state: "before" 0.0;
+                    inherit: "default" 0.0;
+                    text.style: "summaryBeforeStyle";
+                }
+                description {
+                    state: "current" 0.0;
+                    inherit: "default" 0.0;
+                    text.style: "summaryCurrentStyle";
+                }
+                description {
+                    state: "after" 0.0;
+                    inherit: "default" 0.0;
+                    text.style: "summaryAfterStyle";
+                }
+            }
+            edit();
+        }
+        programs {
+            program_item_depth("depth",50);
+            program {
+                name: "before";
+                signal: "before";
+                source: "eyelight";
+                action: STATE_SET "before" 0.0;
+                target: "object.text";
+            }
+            program {
+                name: "current";
+                signal: "current";
+                source: "eyelight";
+                action: STATE_SET "current" 0.0;
+                target: "object.text";
+            }
+            program {
+                name: "after";
+                signal: "after";
+                source: "eyelight";
+                action: STATE_SET "after" 0.0;
+                target: "object.text";
+            }
+        }
+    }
+    group
+    {
+        name: "eyelight/item_numbering_text";
+        parts
+        {
+            part
+            {
+                name: "depth";
+                type: RECT;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1.relative: 0.0 0.0;
+                    rel2.relative: 0.0 0.0;
+                }
+            }
+            part
+            {
+                name : "object.numbering";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    align: 0 0;
+                    rel1
+                    {
+                        relative: 1.0 0.0;
+                        to_x: "depth";
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                    text
+                    {
+                        text: "TEXT NUMBER";
+                        style: "numberingStyle";
+                        min: 1 1;
+                        max: 1 1;
+                        align: 0.0 0.0;
+                    }
+                }
+            }
+            part
+            {
+                name : "object.text";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+
+                    rel1
+                    {
+                        relative: 1.0 0.0;
+                        to_x: "object.numbering";
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                    text
+                    {
+                        text: "TEXT";
+                        style: "itemStyle";
+                        min: 0 0;
+                        max: 0 0;
+                        align: 0.0 0.0;
+                    }
+                }
+            }
+            edit();
+        }
+        programs
+        {
+            program_item_depth("depth",50);
+        }
+    }
+    group {
+        name: "eyelight/item_image";
+        script {
+            //set the aspect of the image
+            public message(Msg_Type:type, id, ...) {
+                if( (type==MSG_FLOAT_SET) && (id==0) )
+                {
+                    new Float:ax;
+                    new Float:ay;
+
+                    custom_state(PART:"object.image", "default", 0.0);
+
+                    ax = getfarg(2);
+                    ay = getfarg(3);
+                    set_state_val(PART:"object.image", STATE_ASPECT, ax, ay);
+                    set_state(PART:"object.image", "custom", 0.0);
+                }
+            }
+        }
+        parts {
+            part {
+                name: "main";
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    rel1.offset: 3 3;
+                    rel2.offset: -3 -3;
+                }
+            }
+            part {
+                name :"shadow";
+                type: IMAGE;
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    rel1.to: "object.image";
+                    rel1.offset: -5 -5;
+                    rel2.to: "object.image";
+                    rel2.offset: 12 12;
+                    image.normal: "expose_shadow.png";
+                    image.border: 10 10 10 10;
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                }
+            }
+            part {
+                name : "object.image";
+                type: IMAGE;
+                description {
+                    state: "default" 0.0;
+                    aspect: 0 0;
+                    aspect_preference: BOTH;
+                    rel1.to: "main";
+                    rel2.to: "main";
+                    rel2.offset: -12 -12;
+                }
+            }
+            add_border("object.image",1);
+            program {
+                name :"display_border";
+                signal: "border,show";
+                source: "eyelight";
+                action: STATE_SET "visible" 0.0;
+                target: "object.image_border_left";
+                target: "object.image_border_right";
+                target: "object.image_border_top";
+                target: "object.image_border_bottom";
+            }
+            program {
+                name: "display_shadow";
+                signal: "shadow,show";
+                source: "eyelight";
+                action: STATE_SET "visible" 0.0;
+                target: "shadow";
+            }
+            program {
+                name :"hide_border";
+                signal: "border,hide";
+                source: "eyelight";
+                action: STATE_SET "default" 0.0;
+                target: "object.image_border_left";
+                target: "object.image_border_right";
+                target: "object.image_border_top";
+                target: "object.image_border_bottom";
+            }
+            program {
+                name: "hide_shadow";
+                signal: "shadow,hide";
+                source: "eyelight";
+                action: STATE_SET "default" 0.0;
+                target: "shadow";
+            }
+            edit();
+        }
+    }
+    group
+    {
+        name: "eyelight/item_edje";
+        parts
+        {
+            part
+            {
+                name : "object.swallow";
+                type: SWALLOW;
+
+                description
+                {
+                    state: "default" 0.0;
+                    rel1
+                    {
+                        relative: 0.0 0.0;
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                }
+            }
+            edit();
+        }
+    }
+    group {
+        name: "eyelight/item_video";
+        script {
+            public controls;
+            public pause_play;
+        }
+        parts {
+            part {
+                name :"shadow";
+                type: IMAGE;
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    image.normal: "expose_shadow.png";
+                    image.border: 10 10 10 10;
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                }
+            }
+            part {
+                name : "object.swallow";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "main";
+                    rel2.to: "main";
+                }
+            }
+            part {
+                name: "main";
+                type: RECT;
+                description {
+                    state: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                    rel1.to: "shadow";
+                    rel2.to: "shadow";
+                    rel2.offset: -12 -12;
+                    rel1.offset: 1 1;
+                }
+            }
+            add_border("main",1);
+            part {
+                name: "controls";
+                type: RECT;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.relative: 0.0 1.0;
+                    rel2.relative: 1.0 1.2;
+                    color: 255 255 255 0;
+                    visible: 0;
+                    rel1.to: "main";
+                    rel2.to: "main";
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 0 0 0 255;
+                    rel1.relative: 0.0 0.8;
+                    rel2.relative: 1.0 1.0;
+                }
+            }
+            part {
+                name: "controls_background";
+                type: IMAGE;
+                clip_to: "controls";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "controls";
+                    rel2.to: "controls";
+                    color: 255 255 255 230;
+                    image.normal: "background_bottom.png";
+                }
+            }
+            part {
+                name: "state";
+                type: TEXT;
+                scale: 1;
+                clip_to: "main";
+                effect: SOFT_OUTLINE;
+                description {
+                    state: "default" 0.0;
+                    rel1.relative: 0.01 0.7;
+                    rel2.relative: 0.1 0.95;
+                    rel1.to: controls;
+                    rel2.to: controls;
+                    color: 0 0 0 255;
+                    align: 0.0 0.5;
+                    color2: 255 255 255 255;
+                    text {
+                        text: "";
+                        font: "DejaVuSans";
+                        align: 0.0 0.5;
+                        size: 12;
+                        fit: 1 1;
+                    }
+                }
+                description {
+                    state: "play" 0.0;
+                    inherit: "default" 0.0;
+                    text {
+                        text: "Play";
+                    }
+                }
+                description {
+                    state: "stop" 0.0;
+                    inherit: "default" 0.0;
+                    text {
+                        text: "Stop";
+                    }
+                }
+                description {
+                    state: "pause" 0.0;
+                    inherit: "default" 0.0;
+                    text {
+                        text: "Pause";
+                    }
+                }
+            }
+            part {
+                name : "capture";
+                type: RECT;
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 0;
+                }
+            }
+            part {
+                name: "play_glow";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "play";
+                    rel2.to: "play";
+                    color: 255 255 255 0;
+                    visible: 0;
+                    image.normal: "play_glow.png";
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "play";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: controls;
+                    rel2.to: controls;
+                    color: 255 255 255 255;
+                    rel1.relative: 0.07 0.6;
+                    rel2.relative: 0.12 1.0;
+                    image.normal: "play.png";
+                }
+            }
+            part {
+                name: "play_select";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "play";
+                    rel2.to: "play";
+                    color: 255 255 255 0;
+                    visible: 0;
+                    image.normal: "play_select.png";
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "pause_glow";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "pause";
+                    rel2.to: "pause";
+                    color: 255 255 255 0;
+                    visible: 0;
+                    image.normal: "pause_glow.png";
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "pause";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: controls;
+                    rel2.to: controls;
+                    color: 255 255 255 255;
+                    rel1.relative: 0.12 0.6;
+                    rel2.relative: 0.17 1.0;
+                    image.normal: "pause.png";
+                }
+            }
+            part {
+                name: "pause_select";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "pause";
+                    rel2.to: "pause";
+                    color: 255 255 255 0;
+                    visible: 0;
+                    image.normal: "pause_select.png";
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "stop_glow";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "stop";
+                    rel2.to: "stop";
+                    color: 255 255 255 0;
+                    visible: 0;
+                    image.normal: "stop_glow.png";
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "stop";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: controls;
+                    rel2.to: controls;
+                    color: 255 255 255 255;
+                    rel1.relative: 0.17 0.6;
+                    rel2.relative: 0.22 1.0;
+                    image.normal: "stop.png";
+                }
+            }
+            part {
+                name: "stop_select";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "stop";
+                    rel2.to: "stop";
+                    color: 255 255 255 0;
+                    visible: 0;
+                    image.normal: "stop_select.png";
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+
+            part {
+                name: "slider_back";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: controls;
+                    rel2.to: controls;
+                    color: 255 255 255 255;
+                    rel1.relative: 0.2 0.75;
+                    rel2.relative: 0.8 0.95;
+                    image.normal: "slider_back.png";
+                    image.border: 2 5 5 2;
+                }
+            }
+            part {
+                name: "slider_back_select";
+                type: IMAGE;
+                clip_to: "main";
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "slider_back";
+                    rel2.to: "slider_back";
+                    color: 255 255 255 0;
+                    visible: 0;
+                    image.normal: "slider_back_select.png";
+                    image.border: 2 5 5 2;
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "confine";
+                type: RECT;
+                repeat_events: 1;
+                clip_to:"main";
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    color: 255 255 255 0;
+                    rel1.to: "slider_back";
+                    rel2.to: "slider_back";
+                    rel1.relative: 0.08 0.8;
+                    rel2.relative: 0.9 1.3;
+                }
+            }
+            part {
+                name: "object.slider";
+                type: RECT;
+                clip_to:"main";
+                scale:1;
+                dragable {
+                    confine: "confine";
+                    x: 1 1 0;
+                    y: 0 0 0;
+                }
+                description {
+                    state: "default" 0.0;
+                    min: 34 28;
+                    max: 34 28;
+                    visible: 1;
+                    color: 255 255 255 0;
+                }
+            }
+            part {
+                name: "slider_glow";
+                type: IMAGE;
+                clip_to: "main";
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "slider";
+                    rel2.to: "slider";
+                    color: 255 255 255 0;
+                    visible: 0;
+                    image.normal: "slider_glow.png";
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "slider";
+                type: IMAGE;
+                clip_to: "main";
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "object.slider";
+                    rel2.to: "object.slider";
+                    color: 255 255 255 255;
+                    image.normal: "slider.png";
+                }
+            }
+            part {
+                name: "slider_select";
+                type: IMAGE;
+                clip_to: "main";
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "slider";
+                    rel2.to: "slider";
+                    color: 255 255 255 0;
+                    visible: 0;
+                    image.normal: "slider_select.png";
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            edit();
+        }
+        programs {
+            program {
+                name: "show";
+                signal: "show";
+                after: "controls_hide";
+            }
+            program {
+                name: "display_shadow";
+                signal: "shadow,show";
+                source: "eyelight";
+                action: STATE_SET "visible" 0.0;
+                target: "shadow";
+            }
+
+            program {
+                name: "display_border";
+                signal: "border,show";
+                source: "eyelight";
+                action: STATE_SET "visible" 0.0;
+                target: "main_border_left";
+                target: "main_border_right";
+                target: "main_border_top";
+                target: "main_border_bottom";
+            }
+
+            program {
+                name: "pause_play_auto";
+                signal: "mouse,up,3";
+                source: "capture";
+                script {
+                    if( get_int(pause_play) == 0 ) {
+                        run_program(PROGRAM:"play_up");
+                    }
+                    if( get_int(pause_play) == 1 ) {
+                        run_program(PROGRAM:"pause_up");
+                    }
+                }
+            }
+
+            program {
+                name: "controls_show";
+                signal: "mouse,up,1";
+                source: "capture";
+                script {
+                    if( get_int(controls) == 0 ) {
+                        run_program(PROGRAM:"show_controls");
+                    }
+                }
+            }
+            program {
+                name: "show_controls";
+                action: STATE_SET "visible" 0.0;
+                target: "controls";
+                transition: DECELERATE 0.5;
+                after: "show_controls_2";
+            }
+
+            program {
+                name: "show_controls_2";
+                script {
+                    set_int(controls, 1);
+                }
+            }
+
+            program {
+                name: "controls_hide";
+                signal: "mouse,up,1";
+                source: "capture";
+                script {
+                    if( get_int(controls) == 1)  {
+                        run_program(PROGRAM:"hide_controls");
+                    }
+                }
+            }
+            program {
+                name: "hide_controls";
+                action: STATE_SET "default" 0.0;
+                target: "controls";
+                transition: ACCELERATE 0.7;
+                after: "hide_controls_2";
+            }
+            program {
+                name: "hide_controls_2";
+                script {
+                    set_int(controls, 0);
+                }
+            }
+
+            //button play
+            program {
+                name: "play_in";
+                signal: "mouse,in";
+                source: "play";
+                action: STATE_SET "visible" 0.0;
+                target: "play_glow";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "play_out";
+                signal: "mouse,out";
+                source: "play";
+                action: STATE_SET "default" 0.0;
+                target: "play_glow";
+                target: "play_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "play_down";
+                signal: "mouse,down,1";
+                source: "play";
+                action: STATE_SET "visible" 0.0;
+                target: "play_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "play_up";
+                signal: "mouse,up,1";
+                source: "play";
+                after: "play_signal";
+                after: "play_up_1";
+            }
+            program {
+                name: "play_up_1";
+                action: STATE_SET "default" 0.0;
+                target: "play_select";
+                transition: DECELERATE 0.2;
+            }
+
+            program {
+                name: "play_signal";
+                action: SIGNAL_EMIT "play" "video_control";
+            }
+
+            //button pause
+            program {
+                name: "pause_in";
+                signal: "mouse,in";
+                source: "pause";
+                action: STATE_SET "visible" 0.0;
+                target: "pause_glow";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "pause_out";
+                signal: "mouse,out";
+                source: "pause";
+                action: STATE_SET "default" 0.0;
+                target: "pause_glow";
+                target: "pause_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "pause_down";
+                signal: "mouse,down,1";
+                source: "pause";
+                action: STATE_SET "visible" 0.0;
+                target: "pause_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "pause_up";
+                signal: "mouse,up,1";
+                source: "pause";
+                after: "pause_signal";
+                after: "pause_up_1";
+            }
+            program {
+                name: "pause_up_1";
+                action: STATE_SET "default" 0.0;
+                target: "pause_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "pause_signal";
+                action: SIGNAL_EMIT "pause" "video_control";
+            }
+
+            //button stop
+            program {
+                name: "stop_in";
+                signal: "mouse,in";
+                source: "stop";
+                action: STATE_SET "visible" 0.0;
+                target: "stop_glow";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "stop_out";
+                signal: "mouse,out";
+                source: "stop";
+                action: STATE_SET "default" 0.0;
+                target: "stop_glow";
+                target: "stop_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "stop_down";
+                signal: "mouse,down,1";
+                source: "stop";
+                action: STATE_SET "visible" 0.0;
+                target: "stop_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "stop_up";
+                signal: "mouse,up,1";
+                source: "stop";
+                after: "stop_signal";
+                after: "stop_up_1";
+            }
+            program {
+                name: "stop_up_1";
+                action: STATE_SET "default" 0.0;
+                target: "stop_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "stop_signal";
+                action: SIGNAL_EMIT "stop" "video_control";
+            }
+
+            //slider
+            program {
+                name: "slider_in";
+                signal: "mouse,in";
+                source: "object.slider";
+                action: STATE_SET "visible" 0.0;
+                target: "slider_glow";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "slider_out";
+                signal: "mouse,out";
+                source: "object.slider";
+                action: STATE_SET "default" 0.0;
+                target: "slider_glow";
+                target: "slider_select";
+                target: "slider_back";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "slider_down";
+                signal: "mouse,down,1";
+                source: "object.slider";
+                action: STATE_SET "visible" 0.0;
+                target: "slider_select";
+                target: "slider_back_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "slider_up";
+                signal: "mouse,up,1";
+                source: "object.slider";
+                after: "slider_signal";
+                after: "slider_up_1";
+            }
+            program {
+                name: "slider_up_1";
+                action: STATE_SET "default" 0.0;
+                target: "slider_select";
+                target: "slider_back_select";
+                transition: DECELERATE 0.2;
+            }
+            program {
+                name: "slider_signal";
+                action: SIGNAL_EMIT "move" "video_control";
+            }
+
+
+            //state
+            program {
+                name: "state_play";
+                signal: "play";
+                source: "video_state";
+                action: STATE_SET "play" 0.0;
+                target: "state";
+                after: "play_variable";
+            }
+            program {
+                name: "state_pause";
+                signal: "pause";
+                source: "video_state";
+                action: STATE_SET "pause" 0.0;
+                target: "state";
+                after: "pause_variable";
+            }
+            program {
+                name: "state_stop";
+                signal: "stop";
+                source: "video_state";
+                action: STATE_SET "stop" 0.0;
+                target: "state";
+                after: "pause_variable";
+            }
+
+            program {
+                name: "pause_variable";
+                script {
+                    set_int(pause_play,0);
+                }
+            }
+
+            program {
+                name: "play_variable";
+                script {
+                    set_int(pause_play,1);
+                }
+            }
+        }
+    }
+     group {
+        name: "eyelight/item_presentation";
+        parts {
+            part {
+                name :"shadow";
+                type: IMAGE;
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    image.normal: "expose_shadow.png";
+                    image.border: 10 10 10 10;
+                }
+                description {
+                    state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                }
+            }
+            part {
+                name : "object.swallow";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "main";
+                    rel2.to: "main";
+                }
+            }
+            part {
+                name: "main";
+                type: RECT;
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    color: 255 255 255 0;
+                    rel1.to: "shadow";
+                    rel2.to: "shadow";
+                    rel2.offset: -12 -12;
+                    rel1.offset: 1 1;
+                }
+            }
+            add_border("main",1);
+            edit();
+        }
+        programs {
+            program {
+                name: "display_shadow";
+                signal: "shadow,show";
+                source: "eyelight";
+                action: STATE_SET "visible" 0.0;
+                target: "shadow";
+            }
+
+            program {
+                name: "display_border";
+                signal: "border,show";
+                source: "eyelight";
+                action: STATE_SET "visible" 0.0;
+                target: "main_border_left";
+                target: "main_border_right";
+                target: "main_border_top";
+                target: "main_border_bottom";
+            }
+        }
+    }
+    group
+    {
+        name: "eyelight/header_image";
+        parts
+        {
+           part
+           {
+               name : "object.header_image";
+                type: IMAGE;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1
+                    {
+                        relative: 0.0 0.0;
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                }
+            }
+            edit();
+        }
+    }
+    group
+    {
+        name: "eyelight/foot_image";
+        parts
+        {
+            part
+            {
+                name : "object.foot_image";
+                type: IMAGE;
+
+                description
+                {
+                    state: "default" 0.0;
+                    rel1
+                    {
+                        relative: 0.0 0.0;
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                }
+            }
+            edit();
+        }
+    }
+    group
+    {
+        name: "eyelight/foot_text";
+        parts
+        {
+            part
+            {
+                name : "object.foot_text";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1
+                    {
+                        relative: 0.0 0.0;
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                    text
+                    {
+                        text: "TITLE";
+                        style: "itemStyle";
+                        align: 0.0 0.0;
+                    }
+                }
+            }
+            edit();
+        }
+    }
+    group
+    {
+        name: "eyelight/pages";
+        parts
+        {
+            part
+            {
+                name : "object.pages";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1
+                    {
+                        relative: 0.0 0.0;
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                    text
+                    {
+                        text: "TITLE";
+                        style: "itemStyle";
+                        align: 0.0 0.0;
+                    }
+                }
+            }
+            edit();
+        }
+    }
+    group
+    {
+        name: "eyelight/title";
+        parts
+        {
+            part
+            {
+                name : "title_background";
+                type: IMAGE;
+
+                description
+                {
+                    state: "default" 0.0;
+                    color: 255 255 255 255;
+                    rel1
+                    {
+                        relative: -0.1 0.0;
+                        to: "object.title";
+                    }
+                    rel2
+                    {
+                        relative: 1.1 1.0;
+                        to: "object.title";
+                    }
+                    image.normal: "title_background.png";
+                    image.border: 2 2 2 2;
+                }
+            }
+            part
+            {
+                name : "object.title";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1
+                    {
+                        relative: 0.0 0.0;
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                    text
+                    {
+                        max: 1 0; //max: 1 1; are needed here
+                        fit: 0 1;
+                        text: "TITLE";
+                        style: "titleStyle";
+                        align: 0.0 0.0;
+                    }
+                }
+            }
+            edit();
+        }
+    }
+    group
+    {
+        name: "eyelight/subtitle";
+        parts
+        {
+            part
+            {
+                name : "subtitle_background";
+                type: IMAGE;
+
+                description
+                {
+                    state: "default" 0.0;
+                    color: 255 255 255 255;
+                    rel1
+                    {
+                        relative: -0.1 0.0;
+                        to: "object.subtitle";
+                    }
+                    rel2
+                    {
+                        relative: 1.1 1.0;
+                        to: "object.subtitle";
+                    }
+                    image.normal: "subtitle_background.png";
+                }
+            }
+            part
+            {
+                name : "object.subtitle";
+                type: TEXTBLOCK;
+
+                scale: 1;
+                description
+                {
+                    state: "default" 0.0;
+                    rel1
+                    {
+                        relative: 0.0 0.0;
+                    }
+                    rel2
+                    {
+                        relative: 1.0 1.0;
+                    }
+                    text
+                    {
+                        max: 1 0; //max: 1 1; are needed here
+                        fit: 0 1;
+                        text: "subtitle";
+                        style: "subtitleStyle";
+                        align: 0.0 0.0;
+                    }
+                }
+            }
+            edit();
+        }
+    }
+
+    #include "layout.edc"
+#include "custom.edc"
+
+    group
+    {
+        name: "eyelight/custom_area";
+        script {
+            //resize the area
+            public message(Msg_Type:type, id, ...) {
+                if( (type==MSG_FLOAT_SET) && (id==0) )
+                {
+                    new Float:rel1_x;
+                    new Float:rel1_y;
+                    new Float:rel2_x;
+                    new Float:rel2_y;
+
+                    custom_state(PART:"object.area", "default", 0.0);
+
+                    rel1_x = getfarg(2);
+                    rel1_y = getfarg(3);
+                    rel2_x = getfarg(4);
+                    rel2_y = getfarg(5);
+                    set_state_val(PART:"object.area", STATE_REL1, rel1_x, rel1_y);
+                    set_state_val(PART:"object.area", STATE_REL2, rel2_x, rel2_y);
+                    set_state(PART:"object.area", "custom", 0.0);
+                }
+            }
+        }
+        parts
+        {
+            part {
+                name: "main";
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                }
+            }
+            part {
+                name: "object.area";
+                repeat_events: 0;
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "main";
+                    rel2.to: "main";
+                    rel1.relative: 0.2 0.2;
+                    rel2.relative: 0.8 0.8;
+                }
+            }
+            //Edit parts
+            part {
+                name: "edit_border";
+                type: IMAGE;
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    color: 255 255 255 255;
+                    rel1 {
+                        to: "slide";
+                        offset: -7 -7;
+                    }
+                    rel2 {
+                        offset: 6 6;
+                        to: "slide";
+                    }
+                    image.normal: "cadre.png";
+                    image.border: 13 22 13 23;
+                }
+                description {
+                    state: "edit" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                }
+                description {
+                    state: "select" 0.0;
+                    inherit: "default" 0.0;
+                    inherit: "edit" 0.0;
+                    color: 255 255 255 0;
+                }
+            }
+            part {
+                name: "edit_border_glow";
+                type: IMAGE;
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    color: 255 255 255 0;
+                    rel1 {
+                        to: "slide";
+                        offset: -7 -7;
+                    }
+                    rel2 {
+                        offset: 6 6;
+                        to: "slide";
+                    }
+                    image.normal: "cadre_glow.png";
+                    image.border: 13 22 13 23;
+                }
+                description {
+                    state: "edit" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                }
+                description {
+                    state: "select" 0.0;
+                    inherit: "default" 0.0;
+                    inherit: "edit" 0.0;
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "edit_border_glow_2";
+                type: IMAGE;
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    color: 255 255 255 0;
+                    rel1 {
+                        to: "slide";
+                        offset: -7 -7;
+                    }
+                    rel2 {
+                        offset: 6 6;
+                        to: "slide";
+                    }
+                    image.normal: "cadre_glow_2.png";
+                    image.border: 13 22 13 23;
+                }
+                description {
+                    state: "edit" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                }
+                description {
+                    state: "select" 0.0;
+                    inherit: "default" 0.0;
+                    inherit: "edit" 0.0;
+                    color: 255 255 255 255;
+                }
+            }
+            //end edit part
+            custom_area("custom",0.0,0.0,1.0,1.0,"vertical");
+            part {
+                name:"slide";
+                type:RECT;
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                    rel1.to: "object.area";
+                    rel2.to: "object.area";
+                    visible: 1;
+                    color: 255 255 255 255;
+                }
+            }
+            part {
+                name: "edit_resize";
+                type: RECT;
+                description {
+                    state: "default" 0.0;
+                    visible: 0;
+                    color: 0 0 255 0;
+                    rel1 {
+                        relative: 1.0 1.0;
+                        to: "slide";
+                        offset: -6 -6;
+                    }
+                    rel2 {
+                        relative: 1.0 1.0;
+                        offset: 5 5 ;
+                        to: "slide";
+                    }
+                }
+                description {
+                    state: "edit" 0.0;
+                    inherit: "default" 0.0;
+                    visible: 1;
+                }
+            }
+        }
+        programs {
+            program {
+                name: "edit_mode";
+                signal: "edit,mode,1";
+                source: "eyelight";
+                action: STATE_SET "edit" 0.0;
+                target: "edit_border";
+                target: "edit_border_glow";
+                target: "edit_border_glow_2";
+                target: "edit_resize";
+            }
+            program {
+                name: "move_start";
+                signal: "mouse,down,1";
+                source: "edit_border_glow";
+                action: SIGNAL_EMIT "move,start" "area";
+            }
+            program {
+                name: "move_end";
+                signal: "mouse,up,1";
+                source: "edit_border_glow";
+                action: SIGNAL_EMIT "move,end" "area";
+            }
+            program {
+                name: "resize_start";
+                signal: "mouse,down,1";
+                source: "edit_resize";
+                action: SIGNAL_EMIT "resize,start" "area";
+            }
+            program {
+                name: "resize_end";
+                signal: "mouse,up,1";
+                source: "edit_resize";
+                action: SIGNAL_EMIT "resize,end" "area";
+            }
+            program {
+                name: "move_border";
+                signal: "mouse,move";
+                source: "edit_border_glow";
+                action: SIGNAL_EMIT "move" "area";
+            }
+            program {
+                name: "move_resize";
+                signal: "mouse,move";
+                source: "edit_resize";
+                action: SIGNAL_EMIT "move" "area";
+            }
+            //select / unselect
+            program {
+                name: "select_from_eyelight";
+                signal: "select";
+                source: "eyelight";
+                action: SIGNAL_EMIT "select" "area";
+                after: "select_glow";
+            }
+            program {
+                name: "select";
+                signal: "mouse,down,1";
+                source: "edit_border_glow";
+                action: SIGNAL_EMIT "select" "area";
+                after: "select_glow";
+            }
+            program {
+                name: "select_resize";
+                signal: "mouse,down,1";
+                source: "edit_resize";
+                action: SIGNAL_EMIT "select" "area";
+                after: "select_glow";
+            }
+            program {
+                name: "select_glow";
+                action: STATE_SET "select" 0.0;
+                target: "edit_border_glow";
+                target: "edit_border";
+                transition: LINEAR 0.3;
+            }
+            program {
+                name: "mouse_glow2_in";
+                signal: "mouse,in";
+                source: "edit_border_glow_2";
+                action: STATE_SET "select" 0.0;
+                target: "edit_border_glow_2";
+            }
+            program {
+                name: "mouse_glow2_out";
+                signal: "mouse,out";
+                source: "edit_border_glow_2";
+                action: STATE_SET "edit" 0.0;
+                target: "edit_border_glow_2";
+            }
+            program {
+                name: "mouse_glow2_resize_in";
+                signal: "mouse,in";
+                source: "edit_resize";
+                action: STATE_SET "select" 0.0;
+                target: "edit_border_glow_2";
+            }
+            program {
+                name: "mouse_glow2_resize_out";
+                signal: "mouse,out";
+                source: "edit_resize";
+                action: STATE_SET "edit" 0.0;
+                target: "edit_border_glow_2";
+            }
+            program {
+                name: "unselect";
+                signal: "unselect";
+                source: "eyelight";
+                action: STATE_SET "edit" 0.0;
+                target: "edit_border_glow";
+                target: "edit_border";
+                transition: LINEAR 0.3;
+            }
+            //
+        }
+    }
+
+    #include "expose.edc"
+    #include "gotoslide.edc"
+    #include "slideshow.edc"
+    #include "tableofcontents.edc"
+}
+

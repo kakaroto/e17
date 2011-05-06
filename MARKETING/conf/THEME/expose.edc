@@ -1,0 +1,284 @@
+#define expose_slide(id_slide, rel11, rel12, rel21, rel22) \
+        part { \
+            name: "whole/"id_slide; \
+            type: RECT;  \
+            description {  \
+                state: "default" 0.0;  \
+                visible: 0;  \
+                rel1.relative: rel11 rel12;  \
+                rel2.relative: rel21 rel22;  \
+            }  \
+        }  \
+        part {  \
+            name :"base/"id_slide;  \
+            type: RECT;  \
+            mouse_events: 0;  \
+            description {  \
+                state: "default" 0.0;  \
+                visible: 0;  \
+                rel1.to: "whole/"id_slide;  \
+                rel2.to: "whole/"id_slide;  \
+            }  \
+            description {  \
+                state: "max" 0.0;  \
+                inherit: "default" 0.0;  \
+                rel1.relative: -0.05 -0.05;  \
+                rel2.relative: 1.05 1.05;  \
+            }  \
+            description {  \
+                state: "max2" 0.0;  \
+                inherit: "default" 0.0;  \
+                rel1.relative: -0.02 -0.02;  \
+                rel2.relative: 1.02 1.02;  \
+            }  \
+            description {  \
+                state: "min" 0.0;  \
+                inherit: "default" 0.0;  \
+                rel1.relative: 0.5 0.5;  \
+                rel2.relative: 0.5 0.5;  \
+            }  \
+        }  \
+        part {  \
+            name :"selection/"id_slide;  \
+            type: IMAGE;  \
+            mouse_events: 0;  \
+            description {  \
+                state: "default" 0.0;  \
+                visible: 0;  \
+                image {  \
+                    normal: "expose_selection.png";  \
+                }  \
+                rel1.relative: 0.0 0.0;  \
+                rel1.to: "base/"id_slide;  \
+                rel2.relative: 1.0 1.0;  \
+                rel2.to: "base/"id_slide;  \
+            }  \
+            description {  \
+                state: "unselect" 0.0;  \
+                inherit: "default" 0.0;  \
+                color: 0 0 0 0;  \
+            }  \
+            description {  \
+                state: "select" 0.0;  \
+                inherit: "default" 0.0;  \
+                visible: 1;  \
+            }  \
+        }  \
+        part {  \
+            name :"shadow/"id_slide;  \
+            type: IMAGE;  \
+            mouse_events: 0;  \
+            description {  \
+                state: "default" 0.0;  \
+                visible: 1;  \
+                image {  \
+                    normal: "expose_shadow.png";  \
+                    border: 10 10 10 10;  \
+                }  \
+                rel1.relative: 0.1 0.1;  \
+                rel1.to: "base/"id_slide;  \
+                rel2.relative: 0.97 0.97;  \
+                rel2.to: "base/"id_slide;  \
+            }  \
+        }  \
+        part {  \
+            name :"border/"id_slide;  \
+            type: RECT;  \
+            mouse_events: 0;  \
+            description {  \
+                state: "default" 0.0;  \
+                visible: 1;  \
+                color: 0 0 0 255;  \
+                rel1.to: "shadow/"id_slide;  \
+                rel2.to: "shadow/"id_slide;  \
+                rel2.offset: -15 -15;  \
+            }  \
+        }  \
+        part {  \
+            name: "object.swallow_"id_slide;  \
+            type: SWALLOW;  \
+            mouse_events: 1;  \
+            description {  \
+                state: "default" 0.0;  \
+                visible: 1;  \
+                color: 0 0 0 0;  \
+                rel1.relative: 0.0 0.0;  \
+                rel1.offset: 1 1;  \
+                rel1.to: "shadow/"id_slide;  \
+                rel2.offset: -16 -16;  \
+                rel2.to: "shadow/"id_slide;  \
+            }  \
+        }  \
+    program {  \
+        name: "expose_slide_show_"id_slide;  \
+        source: "eyelight";  \
+        signal: "show,"id_slide;  \
+        action: STATE_SET "min" 0.0;  \
+        target: "base/"id_slide;  \
+        after: "expose_slide_show_1_"id_slide;  \
+    }  \
+    program {  \
+        name: "expose_slide_hide_"id_slide;  \
+        source: "eyelight";  \
+        signal: "hide,"id_slide;  \
+        action: STATE_SET "min" 0.0;  \
+        target: "base/"id_slide;  \
+    }  \
+    program {  \
+        name: "expose_slide_show_1_"id_slide;  \
+        source: "eyelight";  \
+        signal: "expose,slide,1,"id_slide;  \
+        action: STATE_SET "max" 0.0;  \
+        target: "base/"id_slide;  \
+        transition: DECELERATE 0.2;  \
+        after: "expose_slide_show_2_"id_slide; \
+    }  \
+    program {  \
+        name: "expose_slide_show_2_"id_slide;  \
+        source: "eyelight";  \
+        signal: "expose,slide,2,"id_slide;  \
+        action: STATE_SET "default" 0.0;  \
+        target: "base/"id_slide;  \
+        transition: SINUSOIDAL 0.1;  \
+        after: "expose_slide_show_3_"id_slide; \
+    }  \
+    program {  \
+        name: "expose_slide_show_3_"id_slide;  \
+        source: "eyelight";  \
+        signal: "expose,slide,3,"id_slide;  \
+        action: STATE_SET "max2" 0.0;  \
+        target: "base/"id_slide;  \
+        transition: SINUSOIDAL 0.2;  \
+        after: "expose_slide_show_4_"id_slide; \
+    }  \
+    program {  \
+        name: "expose_slide_show_4_"id_slide;  \
+        source: "eyelight";  \
+        signal: "expose,slide,4,"id_slide;  \
+        action: STATE_SET "default" 0.0;  \
+        target: "base/"id_slide;  \
+        transition: SINUSOIDAL 0.3;  \
+    }  \
+    program {  \
+        name: "expose_slide_unselect_"id_slide;  \
+        source: "eyelight";  \
+        signal: "expose,slide,unselect,"id_slide;  \
+        action: STATE_SET "unselect" 0.0;  \
+        target: "selection/"id_slide;  \
+        transition: LINEAR 1.0;  \
+    }  \
+    program {  \
+        name: "expose_slide_select_"id_slide;  \
+        source: "eyelight";  \
+        signal: "expose,slide,select,"id_slide;  \
+        action: STATE_SET "select" 0.0;  \
+        target: "selection/"id_slide;  \
+    }
+
+
+group {
+    name: "eyelight/expose";
+    data {
+        item: nb_lines 4;
+        item: nb_cols 4;
+    }
+    parts {
+        part {
+            name: "background";
+            type: RECT;
+            mouse_events: 0;
+            description {
+                state: "default" 0.0;
+                visible: 1;
+                color: 80 90 95 200;
+                rel1.relative: 0.0 0.0;
+                rel2.relative: 1.0 1.0;
+            }
+        }
+        part {
+            name: "body";
+            type: RECT;
+            mouse_events: 0;
+            description {
+                state: "default" 0.0;
+                visible: 1;
+                color: 0 0 0 0;
+                rel1.relative: 0.0 0.05;
+                rel2.relative: 1.0 0.95;
+            }
+        }
+        part {
+            name :"previous";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+                state: "default" 0.0;
+                visible: 1;
+                image.normal: "expose_previous.png";
+                rel1.relative: 0.43 0.0;
+                rel2.relative: 0.57 0.05;
+            }
+        }
+        part {
+            name :"next";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+                state: "default" 0.0;
+                visible: 1;
+                image.normal: "expose_next.png";
+                rel1.relative: 0.43 0.95;
+                rel2.relative: 0.57 1.0;
+            }
+        }
+        #define W_SLIDE 0.235
+        #define W_EXTREM 0.026
+        #define W_INTER 0.002
+        #define H_SLIDE 0.21
+        #define H_EXTREM 0.071
+        #define H_INTER 0.005
+
+        expose_slide(0_0, W_EXTREM, H_EXTREM, (W_EXTREM+W_SLIDE), (H_EXTREM+H_SLIDE));
+        expose_slide(0_1,(W_EXTREM+W_INTER*1+W_SLIDE*1), H_EXTREM, (W_EXTREM+W_INTER*1+W_SLIDE*2), (H_EXTREM+H_SLIDE));
+        expose_slide(0_2,(W_EXTREM+W_INTER*2+W_SLIDE*2), H_EXTREM, (W_EXTREM+W_INTER*2+W_SLIDE*3), (H_EXTREM+H_SLIDE));
+        expose_slide(0_3,(W_EXTREM+W_INTER*3+W_SLIDE*3), H_EXTREM, (W_EXTREM+W_INTER*3+W_SLIDE*4), (H_EXTREM+H_SLIDE));
+
+
+        expose_slide(1_0, W_EXTREM, (H_EXTREM+H_INTER*1+H_SLIDE*1), (W_EXTREM+W_SLIDE), (H_EXTREM+H_INTER*1+H_SLIDE*2));
+        expose_slide(1_1,(W_EXTREM+W_INTER*1+W_SLIDE*1),  (H_EXTREM+H_INTER*1+H_SLIDE*1), (W_EXTREM+W_INTER*1+W_SLIDE*2),(H_EXTREM+H_INTER*1+H_SLIDE*2));
+        expose_slide(1_2,(W_EXTREM+W_INTER*2+W_SLIDE*2),  (H_EXTREM+H_INTER*1+H_SLIDE*1), (W_EXTREM+W_INTER*2+W_SLIDE*3),(H_EXTREM+H_INTER*1+H_SLIDE*2));
+        expose_slide(1_3,(W_EXTREM+W_INTER*3+W_SLIDE*3),  (H_EXTREM+H_INTER*1+H_SLIDE*1), (W_EXTREM+W_INTER*3+W_SLIDE*4),(H_EXTREM+H_INTER*1+H_SLIDE*2));
+
+        expose_slide(2_0, W_EXTREM, (H_EXTREM+H_INTER*2+H_SLIDE*2), (W_EXTREM+W_SLIDE), (H_EXTREM+H_INTER*2+H_SLIDE*3));
+        expose_slide(2_1,(W_EXTREM+W_INTER*1+W_SLIDE*1),  (H_EXTREM+H_INTER*2+H_SLIDE*2), (W_EXTREM+W_INTER*1+W_SLIDE*2),(H_EXTREM+H_INTER*2+H_SLIDE*3));
+        expose_slide(2_2,(W_EXTREM+W_INTER*2+W_SLIDE*2),  (H_EXTREM+H_INTER*2+H_SLIDE*2), (W_EXTREM+W_INTER*2+W_SLIDE*3),(H_EXTREM+H_INTER*2+H_SLIDE*3));
+        expose_slide(2_3,(W_EXTREM+W_INTER*3+W_SLIDE*3),  (H_EXTREM+H_INTER*2+H_SLIDE*2), (W_EXTREM+W_INTER*3+W_SLIDE*4),(H_EXTREM+H_INTER*2+H_SLIDE*3));
+
+        expose_slide(3_0, W_EXTREM, (H_EXTREM+H_INTER*3+H_SLIDE*3), (W_EXTREM+W_SLIDE), (H_EXTREM+H_INTER*3+H_SLIDE*4));
+        expose_slide(3_1,(W_EXTREM+W_INTER*1+W_SLIDE*1),  (H_EXTREM+H_INTER*3+H_SLIDE*3), (W_EXTREM+W_INTER*1+W_SLIDE*2),(H_EXTREM+H_INTER*3+H_SLIDE*4));
+        expose_slide(3_2,(W_EXTREM+W_INTER*2+W_SLIDE*2),  (H_EXTREM+H_INTER*3+H_SLIDE*3), (W_EXTREM+W_INTER*2+W_SLIDE*3),(H_EXTREM+H_INTER*3+H_SLIDE*4));
+        expose_slide(3_3,(W_EXTREM+W_INTER*3+W_SLIDE*3),  (H_EXTREM+H_INTER*3+H_SLIDE*3), (W_EXTREM+W_INTER*3+W_SLIDE*4),(H_EXTREM+H_INTER*3+H_SLIDE*4));
+
+        #undef W_SLIDE
+        #undef W_EXTREM
+        #undef W_INTER
+        #undef H_SLIDE
+        #undef H_EXTREM
+        #undef H_INTER
+    }
+    program {
+        name: "expose_next";
+        source: "expose/next";
+        signal: "mouse,down,1";
+        action: SIGNAL_EMIT "expose,window,next" "eyelight";
+    }
+    program {
+        name: "expose_previous";
+        source: "expose/previous";
+        signal: "mouse,down,1";
+        action: SIGNAL_EMIT "expose,window,previous" "eyelight";
+    }
+}
+
+
+
