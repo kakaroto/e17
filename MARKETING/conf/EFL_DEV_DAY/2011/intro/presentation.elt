@@ -1,0 +1,137 @@
+layout: 2_columns_left;
+foot_text: "EFL Dev Day 2011";
+foot_image: "";
+header_image: "logo.png";
+title: " Enlightenment Foundation Library";
+subtitle: " When geek meets beauty";
+
+transition: fade_content;
+
+slide
+{
+	ignore_area: header_image;
+	layout: title;
+	header_image: "";
+
+	area
+	{
+		name: bottom;
+		text: " Author: Cedric BAIL";
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: Objectifs;
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Formation théorique aux EFLs";
+			text: " Formation pratique à Edje";
+			text: " Formation théorique à Elementary";
+			text: " Assistance pour le démarrage d'un projet personnel";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: Prérequis;
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Avoir un ordinnateur en état de marche";
+			text: " Avec la dernière version des EFLs";
+			text: " Maîtrise des concepts de base de la programmation";
+			items
+			{
+				text: " Fonctions, boucles, conditions";
+			}
+		}
+	}
+}
+
+slide
+{
+	layout: 2_columns;
+	title: "Emploi du temps";
+	subtitle: "Samedi 7 mai 2011";
+
+	area
+	{
+		name: left;
+		text: "<l><b>09h30 - 10h00</b> <i>Ordissimo</i></l>";
+		text: "<l><b>10h00 - 11h00</b></l>";
+		text: "<l><b>11h00 - 12h00</b></l>";
+		text: "<l><b>12h00 - 13h30</b> <i>Boulangerie</i></l>";
+		text: "<l><b>13h30 - 15h00</b> <i>Ordissimo</i></l>";
+		text: "<l><b>15h00 - 16h00</b></l>";
+		text: "<l><b>16h00 - 18h30</b></l>";
+		text: "<l><b>18h30 - 19h30</b></l>";
+		text: "<l><b>20h00 - -------</b> <i>Au Moulin Vert</i></l>";
+	}
+
+	area
+	{
+		name: right;
+		text: "croissant et café de bienvenue";
+		text: "présentation des EFL (Cédric)";
+		text: "présentation de Edje (Nicolas)";
+		text: "pause déjeuner";
+		text: "suite des tutoriaux sur Edje";
+		text: "présentation de Elementary (Jonathan)";
+		text: "aide aux projets personnels";
+		text: "réunion de Enlightenment France";
+		text: "restaurant et fin de soirée !";
+	}
+}
+
+slide
+{
+	layout: 2_columns;
+	title: "Emploi du temps";
+	subtitle: "Samedi 7 mai 2011";
+
+	area
+	{
+		name: left;
+		text: "Au Moulin Vert";
+		text: "34bis rue des Plantes, Paris";
+		text: "30 min de marche";
+	}
+	area
+	{
+		name: right;
+		image {
+			image: plan.png;
+			shadow: 1;
+			border: 1;
+		}
+	}
+}
+
+slide
+{
+    layout: 1_area;
+    title: "Intervenants";
+
+    area
+    {
+        name: center;
+        items
+        {
+            text: " <b>Jonathan Atton</b> <i>E.fr</i>";
+            text: " <b>Cédric Bail</b> <i>E.fr</i>";
+	    text: " <b>Nicolas Aguirre</b> <i>E.fr</i>";
+	    text: " <b>Michael Bouchaud</b> <i>Ordissimo</i>";
+        }
+    }
+}
