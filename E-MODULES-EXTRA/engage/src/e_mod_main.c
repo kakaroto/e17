@@ -114,7 +114,7 @@ ngi_new(Config_Item *cfg)
    ng->hide = EINA_TRUE;
    
    ng->clip = evas_object_rectangle_add(ng->evas);
-   evas_object_color_set(ng->clip, 255, 255, 255, 0);
+   evas_object_color_set(ng->clip, 255, 255, 255, 255);
 
    ng->bg_clip = evas_object_rectangle_add(ng->evas);
    alpha = cfg->alpha;
@@ -139,7 +139,8 @@ ngi_new(Config_Item *cfg)
 
 	 evas_object_map_enable_set(ng->o_proxy, 1);
 	 evas_object_show(ng->o_proxy);
-
+	 evas_object_show(ng->clip); 
+	 evas_object_clip_set(ng->o_proxy, ng->clip); 
 	 alpha = cfg->rflxn_alpha;
 	 evas_object_color_set(ng->o_proxy, alpha, alpha, alpha, alpha);
 	 break;
@@ -192,7 +193,6 @@ ngi_new(Config_Item *cfg)
 
    evas_object_clip_set(ng->o_bg, ng->bg_clip);
    evas_object_show(ng->bg_clip);
-
 
    if (cfg->show_label)
      evas_object_show(ng->o_label);
@@ -560,17 +560,17 @@ _ngi_proxy_geometry_calc(Ng *ng)
 	evas_object_move(ng->o_proxy, 0, h + ng->hide_step - ng->opt.edge_offset -
 			 ng->opt.reflection_offset);
 
-	evas_object_resize(ng->o_proxy, w, ng->opt.edge_offset);
+	evas_object_resize(ng->o_proxy, w, ng->size);//ng->opt.edge_offset);
 
 	Evas_Map *m = evas_map_new(4);
 	evas_map_util_points_populate_from_object(m, ng->o_proxy);
 
-	evas_map_point_image_uv_set(m, 0, 0, h);
-	evas_map_point_image_uv_set(m, 1, w, h);
-	evas_map_point_image_uv_set(m, 2, w, 0);
+	evas_map_point_image_uv_set(m, 0, 0, 1);
+	evas_map_point_image_uv_set(m, 1, 1, 1);
+	evas_map_point_image_uv_set(m, 2, 1, 0);
 	evas_map_point_image_uv_set(m, 3, 0, 0);
 
-	evas_map_util_3d_perspective(m, w/2, h/2, 1, 1000);
+	/* evas_map_util_3d_perspective(m, w/2, h/2, 1, 1000); */
 
 	evas_object_map_set(ng->o_proxy, m);
 	evas_map_free(m);
@@ -620,8 +620,8 @@ ngi_win_position_calc(Ngi_Win *win)
 	win->fake_iwin->h = win->popup->h;
      }
 
-   evas_object_move(ng->clip, 0, 0);
-   evas_object_resize(ng->clip, win->popup->w, win->popup->h - ng->opt.edge_offset);
+   evas_object_move(ng->clip, 0, win->popup->h - ng->opt.edge_offset);
+   evas_object_resize(ng->clip, win->popup->w, ng->opt.edge_offset - ng->opt.reflection_offset);
 
    evas_object_move(ng->bg_clip, 0, 0);
    evas_object_resize(ng->bg_clip, win->popup->w, win->popup->h);
