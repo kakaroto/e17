@@ -347,8 +347,10 @@ tut05.2.edj et tut05.3.edj pour visualiser les effets de ``aspect'' et
 Edje permet de positionner les objets les uns par rapport aux autres de deux
 façons. Positionnement relatif et positionnement absolu.
 
-Le positionnement relatif est en pourcent (valeur ramenée à un flottant entre
-0.0 et 1.0) alors que les positions absolues sont en pixels.
+Le positionnement relatif est en pourcent, 1.0 représente 100\% et 0.0 0\%. Vous
+pouvez également spécifier des valeurs supérieures à 1.0 et inférieures à 0.0,
+dans le cas ou vous voulez que votre part s'affiche au dela du part parent,
+alors que les positions absolues sont en pixels.
 
 Les balises ``rel1'' et ``rel2'' permettent de donner la position d'un objet par rapport
 à un autre. Par défaut la position est celle par rapport au groupe.
