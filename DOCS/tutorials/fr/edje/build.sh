@@ -34,11 +34,11 @@ else
         done
 
 
-        for f in `ls $1/*.c`; do
+        for f in `ls $i/*.c`; do
             file=`basename $f`
             file=$(echo $file | cut -f1 -d '.')
             echo "building $f"
-            gcc -o $builddir/$1 $f `pkg-config elementary --cflags --libs`
+            gcc -o $builddir/$i $f `pkg-config elementary --cflags --libs`
         done
 
 
