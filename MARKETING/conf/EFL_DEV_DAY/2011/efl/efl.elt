@@ -1,0 +1,813 @@
+layout: 2_columns_left;
+foot_text :"Cedric BAIL, cedric.bail@free.fr";
+foot_image: ""; // FIXME
+header_image: "logo.png"; // FIXME
+title: " Enlightenment Foundation Library";
+subtitle: " When geek meets beauty";
+
+transition: fade_content;
+
+slide
+{
+	// do not display the area 'top'. This area is defined in the layout 'title'
+	ignore_area: "header_image";
+	layout: title;
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	header_image: "";
+
+	area
+    	{
+		name: bottom;
+  		text: " Author: Cedric BAIL";
+    	}
+}
+
+slide
+{
+	layout: summary;
+	title: " Plan";
+	subtitle: "";
+	header_image: "logo-s.png";
+	transition_next: "fade";
+	area
+	{
+		name: "center";
+
+		text: " Qu'est-ce que les EFL ?";
+		text: " Canvas &amp; Layout";
+		text: " Petites bibliothèques complémentaires";
+		text: " Optimisation";
+		text: " La sortie des EFL";
+		text: " Roadmap pour E17 et elementary";
+		text: " TODO";
+    	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Qu'est-ce que les EFL ?";
+	subtitle: " Qui suis-je pour en parler !";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Cedric BAIL, cedric.bail@free.fr";
+			text: " Travaillé pendant environ 5 ans chez Freebox";
+			text: " A optimisé les EFL pour tenir dans une Freebox v5";
+			text: " A nettoyé l'API pour en faire un SDK";
+			text: " A créé un binding JavaScript autour des EFL";
+			text: " Et vend maintenant du support pour les EFLs";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " E quoi ?";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " <b>E</b>nlightenment <b>F</b>oundation <b>L</b>ibraries";
+			text: " Créées pour fournir les bases propres à des applications rapides, fluides  et légères";
+			text: " Créées pour le monde de l'embarqué dès le debut";
+			text: " Car de notre point de vue, la bataille pour le desktop est perdu, pas juste pour nous, mais pour tous les desktop Linux";
+			text: " 10 ans plus tard, c'est toujours vrai, voire plus que jamais";
+			text: " Mais la bataille pour l'embarqué ne fait que commencer !";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " Un petit mot d'histoire";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Créées pour Enlightenment 17";
+			text: " Fournissent un cœur portable, souple et rapide";
+			text: " Ont suffisament grossi pour permettre la création de n'importes quelles applications";
+			text: " Capables de fonctionner sur des SoC à 50Mhz jusqu'aux multi-cœurs x86 de plusieurs gigahertz avec un GPU OpenGL";
+			text: " Et depuis quelques semaines, nous pouvons garantir la stabilité de l'API et de l'ABI sur le long terme !";
+		}
+	}
+}
+
+slide
+{
+        layout: "title";
+	title: " RELEASE";
+	ignore_area: "header_image";
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	header_image: "";
+	subtitle: "Yes, we did it !";
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Regardons les EFL";
+	subtitle: " LEGO !";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		image {
+		     image: "diagram-efl-simple-small.png";
+		     border: 0;
+		     shadow: 0;
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Regardons les EFL";
+	subtitle: " Les bibliothèques sorties";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Eina: la trousse à outils des EFL";
+			text: " Eet: sérialisation et stockage de données";
+			text: " Evas: bibliothèque de canvas statefull";
+			text: " Ecore: boucle principale, gestion des évènements, timer, réseau, thread, ...";
+			text: " Edje: layout et thème";
+			text: " Efreet: FreeDesktop";
+			text: " E_DBus: DBus";
+			text: " Eeze: udev";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Regardons les EFL";
+	subtitle: " Eina";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Type de données simples: liste, hash, arbre rouge/noir, tableau, stringshare, string buffer";
+			text: " Type de données graphiques: virgule fixe, logique de conversion, rectangle, sparsematrix, tiler";
+			text: " Aide: itérateurs, accesseurs, mempools, compteurs, log, magic, fichier, scheduler";
+			text: " et on a même un petit hamster pour mettre un peu de fun dans cette bibliothèque bien ennuyante";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Regardons les EFL";
+	subtitle: " Eet";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " sérialise et dump toutes structures C en mémoire (inclus les unions et les objets)";
+			text: " envoie/reçoit au travers d'un lien réseau";
+			text: " reduit la pression mémoire (mmap le fichier et partage des chaînes de caractères dans un dictionnaire)";
+			text: " enregistre et restaure des images sans avoir besoin d'une logique externe";
+			text: " système de signature et de cryptographie";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Regardons les EFL";
+	subtitle: " Ecore";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Evénements, timers, animators, pollers";
+			text: " Création de fenêtres et envoi des inputs à tous les backends (X11, SDL, Windows, FrameBuffer, ...)";
+			text: " Réseau (tcp, udp unicast et multicast, asynchronous dns, http, ftp)";
+			text: " Simplification de l'utilisation des threads";
+		}
+	}
+}
+
+
+slide
+{
+	layout: 1_area;
+	title: " Regardons les EFL";
+	subtitle: " Ecore";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		image {
+		     image: "loop2.png";
+		     border: 0;
+		     shadow: 0;
+		}
+	}
+}
+
+slide
+{
+	layout: "2_columns_left";
+	title: " Canvas &amp; Layout";
+	subtitle: " Evas - canvas stateful";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: "left";
+		items
+		{
+			text: " Fournit un ensemble d'objets graphiques simples";
+			items
+			{
+				text: " Rectangle";
+				text: " Image";
+				text: " Text";
+				text: " Polygon";
+				text: " Line";
+			}
+		}
+	}
+        area {
+                name : "right" ;
+                edje {
+                        file : "edje.edj" ;
+                        group : "animation" ;
+                }
+        }
+}
+
+slide
+{
+	layout: "1_area";
+	title: " Canvas &amp; Layout";
+	subtitle: " Evas - canvas stateful";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: "center";
+		items
+		{
+			text: " Modification des propriétés pour un coût nul ou presque";
+			text: " Effectue le rendu quand tous les objets ont été modifiés => pas de rendu partiel, uniquement des scènes complètes";
+			text: " Centralise les informations sur la scène à rendre à un seul endroit, ce qui permet d'optimiser le rendu sans que l'application ou les widgets aient à s'en soucier";
+		}
+	}
+}
+
+slide
+{
+    layout: 1_area;
+    title: "Evas : création d'un rectangle";
+    subtitle: "Mise en place de l'objet";
+
+    area
+    {
+        name: center;
+	text: "";
+        code: "<outline>var rectangle = evas_object_rectangle_add(evas);<br>
+evas_object_resize(rectangle, 250, 200);<br>
+evas_object_move(rectangle, 450, 350);</outline><br>
+evas_object_color_set(rectangle, 128, 64, 0, 180);<br>
+evas_object_show(rectangle);<br>";
+	text: "";
+    }
+}
+
+slide
+{
+    layout: 1_area;
+    title: "Evas : création d'un rectangle";
+    subtitle: " Rectangle coloré, semi-transparent";
+
+    area
+    {
+        name: center;
+	text: "";
+        code: "var rectangle = evas_object_rectangle_add(evas);<br>
+evas_object_resize(rectangle, 250, 200);<br>
+evas_object_move(rectangle, 450, 350);<br>
+<outline>evas_object_color_set(rectangle, 128, 64, 0, 180);</outline><br>
+evas_object_show(rectangle);<br>";
+	text: "";
+    }
+}
+
+slide
+{
+    layout: 1_area;
+    title: "Evas : création d'un rectangle";
+    subtitle: "Affichage de l'objet";
+	custom_area: "bottom" "0.7" "0.6" "0.9" "0.9";
+
+    area
+    {
+        name: center;
+	text: "";
+        code: "var rectangle = evas_object_rectangle_add(evas);<br>
+evas_object_resize(rectangle, 250, 200);<br>
+evas_object_move(rectangle, 450, 350);<br>
+evas_object_color_set(rectangle, 128, 64, 0, 180);<br>
+<outline>evas_object_show(rectangle);</outline><br>";
+	text: "";
+    }
+    area
+    {
+        name: "bottom";
+        image
+        {
+            image: "rectangle.png";
+        }
+    }
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Canvas &amp; Layout";
+	subtitle: " Edje";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Solution de thème portable, rapide, légère et souple";
+			text: " Peut être utilisé pour gérer le layout d'une application entière";
+			text: " Donne la possibilité d'écrire une application quel que soit le terminal";
+			text: " Peut être utilisé pour le thème de chaque widget";
+			text: " Description d'une machine à état et des transitions dans le thème";
+			text: " Application envoie juste des signaux et attend des réactions du thème";
+			text: " Très certainement la bibliothèque la plus importante des EFL que vous devriez connaître";
+		}
+	}
+}
+
+
+slide
+{
+	layout: 1_area;
+	title: " Looking at the EFL";
+	subtitle: " Edje";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+                edje {
+                        file : "demo.edj" ;
+                        group : "demo" ;
+                }
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Canvas &amp; Layout";
+	subtitle: " Application";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " utiliser Edje pour le design de chaque fenêtre";
+		      	text: " envoyer des signaux, appliquer du texte et des valeurs aux objets Edje";
+		 	text: " utiliser les Edje External et les swallow pour instancier et définir la position de vos objets Elementary";
+			text: " laissez Evas optimiser le rendu autant que possible, focalisez-vous sur la logique de votre application";
+			text: " laissez le designer faire son travail, fournir le layout et les graphismes de votre application";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Canvas &amp; Layout";
+	subtitle: " Technique de thème classique";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		layout: "horizontal";
+		image {
+		      image: "gtk_1.png";
+ 		      border: 0;
+		      shadow: 0;
+		}
+		image {
+		      image: "gtk_2.png";
+		      border: 0;
+		      shadow: 0;
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Canvas &amp; Layout";
+	subtitle: " Thème avec Edje";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		layout: "horizontal";
+		image {
+			image: "elm_1.png";
+ 		      	border: 0;
+		      	shadow: 0;
+		}
+		image {
+			image: "elm_2.png";
+ 		      	border: 0;
+		      	shadow: 0;
+		}
+		image {
+			image: "elm_0.png";
+ 		      	border: 0;
+		      	shadow: 0;
+		}
+	}
+}
+
+slide {
+	layout : "2_columns" ;
+	title: " Canvas &amp; Layout";
+	subtitle : " Une liste d'objets" ;
+	area {
+		name : "left" ;
+		items {
+			text : " Un <b>Edje</b> est une liste d'objets" ;
+			text : " Un objet = un bloc <b>part</b>." ;
+			text : " L'ordre est important." ;
+			text : " Le premier objet est 'derrière'." ;
+			text : " Le dernier objet est 'devant'." ;
+		}
+	}
+	area {
+		name : "right" ;
+		edje {
+			file : "edje_demos/edje.edj" ;
+			group : "parts" ;
+		}
+	}
+}
+
+slide {
+	layout : "2_columns" ;
+	title: " Canvas &amp; Layout";
+	subtitle : " Une liste d'objets" ;
+	area {
+		name : "left" ;
+		code : "group {<br>    name: &quot;parts&quot;;<br>    parts {<br>        part {<br>            name: &quot;rect&quot;;<br>            type: RECT;<br>            description {<br>                state: &quot;default&quot; 0.0;<br>                visible: 1;<br>                color: 255 0 0 255;<br>                rel1.relative: 0.01 0.01;<br>                rel2.relative: 0.7 0.7;<br>            }<br>        }" ;
+	}
+	area {
+		name : "right" ;
+		code : "        part {<br>            name: &quot;image&quot;;<br>            type: IMAGE;<br>            description {<br>                state: &quot;default&quot; 0.0;<br>                visible: 1;<br>                color: 255 255 255 255;<br>                rel1.relative: 0.5 0.5;<br>                rel2.relative: 0.95 0.95;<br>                image.normal: &quot;logo.png&quot;;<br>            }<br>        }<br>    }<br>}" ;
+	}
+	area {
+		name : "edje" ;
+		edje {
+			file : "edje_demos/edje.edj" ;
+			group : "parts" ;
+		}
+	}
+	custom_area : "left" "0.060000" "0.200000" "0.496094" "0.812188" ;
+	custom_area : "right" "0.513906" "0.194792" "0.942966" "0.806980" ;
+	custom_area : "edje" "0.674611" "0.645316" "0.933201" "0.876564" ;
+}
+
+slide {
+	layout : "2_columns" ;
+	title: " Canvas &amp; Layout";
+	subtitle : " Le placement des objets" ;
+	area {
+		name : "left" ;
+		items {
+			text : " La propriété <b>relative</b>" ;
+			text : " Positionnement relatif<br> et non absolu" ;
+			text : " rel1 -> coin haut gauche" ;
+			text : " rel2 -> coin bas droit" ;
+			text : " La propriété <b>to</b>" ;
+		}
+	}
+	area {
+		name : "right" ;
+		image : "relative.png" ;
+	}
+}
+
+slide {
+	layout : "2_columns" ;
+	title: " Canvas &amp; Layout";
+	subtitle : " Le placement des objets" ;
+	area {
+		name : "left" ;
+		image : "relative.png" ;
+	}
+	area {
+		name : "right" ;
+		image : "relative2.png" ;
+	}
+}
+
+slide {
+	layout : "2_columns" ;
+	title: " Canvas &amp; Layout";
+	subtitle : " Les programmes" ;
+	area {
+		name : "left" ;
+		items {
+			text : " Modifier l'état d'un objet." ;
+			text : " Durée de l'action." ;
+			text : " Interpolation de la position,<br> taille, couleur, opacité ..." ;
+			text : " <b>Le résultat est une animation." ;
+		}
+	}
+	area {
+		name : "right" ;
+		code : "part {<br>    name: &quot;rect&quot;;<br>    type: RECT;<br>    <outline>description</outline> {<br>        state: &quot;default&quot; 0.0;<br>        color: 255 0 0 255;<br>        rel1.relative: 0.0 0.0;<br>        rel2.relative: 0.4 0.4;<br>    }<br>    <outline>description </outline>{<br>        state: &quot;bas_droit&quot; 0.0;<br>        inherit : &quot;default&quot; 0.0;<br>        rel1.relative: 0.5 0.5;<br>        rel2.relative: 0.9 0.9;<br>} }" ;
+	}
+	area {
+		name : "demo" ;
+		edje {
+			file : "edje_demos/edje.edj" ;
+			group : "move" ;
+		}
+	}
+	custom_area : "right" "0.547107" "0.202608" "0.937107" "0.822607" ;
+	custom_area : "demo" "0.84" "0.739575" "0.996077" "0.901052" ;
+}
+
+slide {
+	layout : "2_columns" ;
+	title: " Canvas &amp; Layout";
+	subtitle : " Les programmes" ;
+	area {
+		name : "left" ;
+		items {
+			text : " Déclenchement par le nom." ;
+			text : " Ou par un <outline>signal</outline> :" ;
+			items {
+				text : " Un évènement clavier, souris ..." ;
+				text : " Un signal envoyé par le programme." ;
+			}
+			text : " Différentes <outline>actions</outline> possibles : " ;
+			items {
+				text : " STATE_SET : changer l'état." ;
+				text : " SIGNAL_EMIT : lancer un signal." ;
+			}
+		}
+	}
+	area {
+		name : "right" ;
+		code : "program {<br>    name : &quot;show&quot;;<br>    <outline>signal:</outline> &quot;show&quot;;<br>    <outline>action: STATE_SET</outline> &quot;default&quot; 0.0;<br>    <outline>target:</outline> &quot;rect&quot;;<br>    <outline>transition :</outline> LINEAR 2.0;<br>    after : &quot;move&quot;;<br>}<br>program {<br>    name : &quot;move&quot;;<br>    action : STATE_SET &quot;bas_droit&quot; 0.0;<br>    transition : LINEAR 2.0;<br>    target: &quot;rect&quot;;<br>    after : &quot;show&quot;;<br>}" ;
+	}
+	custom_area : "left" "0.018985" "0.202604" "0.572260" "0.827812" ;
+	custom_area : "right" "0.584214" "0.202604" "0.974215" "0.822604" ;
+	area {
+		name : "demo" ;
+		edje {
+			file : "edje_demos/edje.edj" ;
+			group : "move" ;
+		}
+	}
+	custom_area : "demo" "0.84" "0.739575" "0.994124" "0.895844" ;
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Complémentaires";
+	subtitle: " Dans la prochaine série de release";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Ethumb: génération de miniatures";
+			text: " Eio: accès asynchrone au système de fichiers";
+			text: " Emotion: bibliothèque de playback audio/vidéo";
+			text: " Elementary: ensemble de widgets classiques (bouton, liste, ...)";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Optimisation";
+	subtitle: " Sans fin !";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+		items
+		{
+			text: " Factorisez votre code en premier";
+			text: " Benchmarkez des cas d'utilisation réelle avec un processus de tests reproductibles";
+			text: " Identifiez les goulots d'étranglements (CPU, mémoire, bande passante) potentiels";
+			text: " Utilisez le bon outil pour déterminer quels sont les plus gros consommateurs de ressource";
+			text: " oprofile, valgrind, mallinfo, memprof, perf, ...";
+			text: " <b>N'OPTIMISEZ JAMAIS SANS STATISTIQUE ! N'AYEZ PAS DE CROYANCE, NE PRENEZ QUE LES FAITS EN COMPTE !</b>";
+			text: " Mesurez encore, encore et encore !";
+			text: " Il y a toujours quelque chose à améliorer, rien n'est jamais parfait !";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " E17";
+	subtitle: " Le porte drapeau des EFL";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " Fonctionne et est utilisable";
+			text: " Léger (environ 23Mo avec les graphismes sur ce netbook)";
+			text: " Rapide";
+			text: " Suit l'état de l'art des standards Linux (dbus, udev, Freedesktop, ...)";
+			text: " Seul Window Manager à fournir un Composite Manager software et opengl (grace à Evas)";
+			text: " Vous laisse themer tout (même les effets de compositing !)";
+			text: " Vous laisse changer tous les modules et vous fournit la mécanique pour définir un E17 spécifique pour votre terminal";
+		}
+	}
+}
+
+slide
+{
+	layout: "2_lines_bottom";
+	title: " E17";
+	subtitle: " Release !";
+	header_image: "logo-s.png";
+
+	area {
+		name : "top";
+		items {
+			text: " En 'rolling release' depuis 10 ans :-)";
+			text: " Comme nos amis brésiliens le disent: 'we are a bunch of trator !'";
+			text: " Mais nous avons maintenant un plan, une todo et nous nous y tenons.";
+		}
+	}
+	area {
+		name: "bottom";
+        	image {
+			image: "Trator.jpg";
+			border: 0;
+			shadow: 0;
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " E17";
+	subtitle: " Plus sérieusement";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " Sortie des Enlightenment Foundation Library !";
+			text: " Les EFL vont recevoir de nombreuses améliorations durant les mois à venir et tout en restant compatibles avec l'API et l'ABI de la version 1.0";
+			text: " Le focus va être donné à la sortie de E17, Elementary, Ethumb, Eio et Emotion";
+			text: " Nous avons une petite TODO à finir avant de switcher ces composants en alpha";
+			text: " Tous les changements majeurs sont maintenant repoussés à E18";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " EFL";
+	subtitle: " Et après ?";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " Amélioration de la vitesse (eina, eet, evas, edje, efreet) !";
+			text: " Diminution de la consomation mémoire (edje, efreet) !";
+			text: " Un meilleur support de l'internationalisation (ltr/rtl, theming, ...)";
+			text: " Amélioration de la portabilité";
+			text: " Ajout de plus de fonctionnalités aux evas map (proxy, mesh, effect, ...)";
+			text: " Amélioration des rapports d'erreurs (edje, ecore)";
+			text: " Ajout de plus de fonctionnalités de theming à edje";
+			text: " TextGrid";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " E17";
+	subtitle: " TODO";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " nettoyage, correction et amélioration de Efm";
+			text: " nettoyage et amélioration de l'interface de configuration";
+			text: " ajout d'une interface de configuration de xrandr";
+			text: " suppression des avertissements détectés par gcc et llvm";
+			text: " enfin démarrage d'un cycle d'alpha, beta et RC !";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " EFL &amp; E17";
+	subtitle: " Communication";
+	header_image: "logo-s.png";
+
+	area {
+		name : "center";
+		items {
+			text: " Nous avons des lacunes en communication";
+			text: " Nous avons besoin de tutoriaux...";
+			text: " ...d'exemples de code...";
+			text: " ...et de documentations...";
+			text: " ...de présentation !";
+			text: " et d'applications !";
+			text: " Et nous apprécions les contributions de chacun !";
+		}
+	}
+}
+
+slide
+{
+	layout: 1_area;
+	title: " Emotion, Edje et Elementary";
+	subtitle: " Ca bouge ?";
+	header_image: "logo-s.png";
+
+	area
+	{
+		name: center;
+                edje {
+                        file : "video-player.edj" ;
+                        group : "main" ;
+                }
+	}
+}
+
+slide
+{
+        layout: "title";
+	title: " Conclusion";
+	ignore_area: "header_image";
+	custom_area: "top" 0.15 -0.2 0.85 0.5;
+	header_image: "";
+	subtitle: "Questions ?";
+}
+
