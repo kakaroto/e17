@@ -382,6 +382,9 @@ void
 elm_box_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
 
 void
+elm_box_homogeneous_set(Evas_Object *obj, Eina_Bool homogeneous)
+
+void
 elm_box_homogenous_set(Evas_Object *obj, Eina_Bool homogenous)
 
 void

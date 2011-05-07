@@ -35,9 +35,14 @@ void Box::setOrientation (Box::Orientation orient)
   }
 }
 
+void Box::setHomogeneous (bool homogeneous)
+{
+  elm_box_homogeneous_set (o, homogeneous);
+}
+
 void Box::setHomogenous (bool homogenous)
 {
-  elm_box_homogenous_set (o, homogenous);
+  elm_box_homogeneous_set (o, homogenous);
 }
 
 void Box::packStart (const Evasxx::Object &subobj)

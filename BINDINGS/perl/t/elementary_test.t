@@ -1228,7 +1228,7 @@ sub test_notepad {
 
     $bx2 = elm_box_add($win);
     elm_box_horizontal_set($bx2, 1);
-    elm_box_homogenous_set($bx2, 1);
+    elm_box_homogeneous_set($bx2, 1);
     evas_object_size_hint_weight_set($bx2, EVAS_HINT_EXPAND, 0.0);
     evas_object_size_hint_align_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -2068,7 +2068,7 @@ sub test_list2 {
 
     $bx2 = elm_box_add($win);
     elm_box_horizontal_set($bx2, 1);
-    elm_box_homogenous_set($bx2, 1);
+    elm_box_homogeneous_set($bx2, 1);
     evas_object_size_hint_weight_set($bx2, EVAS_HINT_EXPAND, 0.0);
     evas_object_size_hint_align_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -2800,7 +2800,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 
    bx2 = elm_box_add(win);
    elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
+   elm_box_homogeneous_set(bx2, 1);
    evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -2841,7 +2841,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 
    bx2 = elm_box_add(win);
    elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
+   elm_box_homogeneous_set(bx2, 1);
    evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -2874,7 +2874,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 
    bx3 = elm_box_add(win);
    elm_box_horizontal_set(bx3, 1);
-   elm_box_homogenous_set(bx3, 1);
+   elm_box_homogeneous_set(bx3, 1);
    evas_object_size_hint_weight_set(bx3, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(bx3, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -3013,7 +3013,7 @@ sub test_genlist3
 
    $bx2 = elm_box_add($win);
    elm_box_horizontal_set($bx2, 1);
-   elm_box_homogenous_set($bx2, 1);
+   elm_box_homogeneous_set($bx2, 1);
    evas_object_size_hint_weight_set($bx2, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -3164,7 +3164,7 @@ test_genlist4(void *data, Evas_Object *obj, void *event_info)
 
    bx2 = elm_box_add(win);
    elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
+   elm_box_homogeneous_set(bx2, 1);
    evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -3361,7 +3361,7 @@ test_genlist5(void *data, Evas_Object *obj, void *event_info)
 
    bx2 = elm_box_add(win);
    elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
+   elm_box_homogeneous_set(bx2, 1);
    evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -3526,7 +3526,7 @@ test_genlist6(void *data, Evas_Object *obj, void *event_info)
 
    bx2 = elm_box_add(win);
    elm_box_horizontal_set(bx2, 1);
-   elm_box_homogenous_set(bx2, 1);
+   elm_box_homogeneous_set(bx2, 1);
    evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -3948,7 +3948,7 @@ sub test_win_state
 
    $bx2 = elm_box_add($win);
    elm_box_horizontal_set($bx2, 1);
-   elm_box_homogenous_set($bx2, 1);
+   elm_box_homogeneous_set($bx2, 1);
    evas_object_size_hint_weight_set($bx2, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_fill_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -3973,7 +3973,7 @@ sub test_win_state
 
    $bx2 = elm_box_add($win);
    elm_box_horizontal_set($bx2, 1);
-   elm_box_homogenous_set($bx2, 1);
+   elm_box_homogeneous_set($bx2, 1);
    evas_object_size_hint_weight_set($bx2, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
@@ -3994,7 +3994,7 @@ sub test_win_state
 
    $bx2 = elm_box_add($win);
    elm_box_horizontal_set($bx2, 1);
-   elm_box_homogenous_set($bx2, 1);
+   elm_box_homogeneous_set($bx2, 1);
    evas_object_size_hint_weight_set($bx2, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_fill_set($bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
 

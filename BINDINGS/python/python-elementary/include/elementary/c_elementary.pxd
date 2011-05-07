@@ -363,6 +363,7 @@ cdef extern from "Elementary.h":
     # Box object
     evas.c_evas.Evas_Object *elm_box_add(evas.c_evas.Evas_Object *parent)
     void elm_box_horizontal_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool horizontal)
+    void elm_box_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
     void elm_box_homogenous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogenous)
     void elm_box_pack_start(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
     void elm_box_pack_end(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj)
@@ -425,6 +426,7 @@ cdef extern from "Elementary.h":
 
     # Table object
     evas.c_evas.Evas_Object *elm_table_add(evas.c_evas.Evas_Object *parent)
+    void elm_table_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
     void elm_table_homogenous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogenous)
     void elm_table_padding_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord horizontal, evas.c_evas.Evas_Coord vertical)
     void elm_table_pack(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *subobj, int x, int y, int w, int h)
@@ -630,6 +632,7 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool elm_toolbar_item_separator_get(Elm_Toolbar_Item *item)
     evas.c_evas.Eina_Bool  elm_toolbar_no_select_mode_get(evas.c_evas.Evas_Object *obj)
     void  elm_toolbar_no_select_mode_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool setting)
+    void  elm_toolbar_homogeneous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogeneous)
     void  elm_toolbar_homogenous_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool homogenous)
     void  elm_toolbar_menu_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     void  elm_toolbar_align_set(evas.c_evas.Evas_Object *obj, double align)

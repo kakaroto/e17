@@ -37,7 +37,7 @@ def toolbar_clicked(obj, it):
     bx.show()
 
     tb = elementary.Toolbar(win)
-    tb.homogenous = False
+    tb.homogeneous = False
     tb.size_hint_weight_set(0.0, 0.0)
     tb.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
 

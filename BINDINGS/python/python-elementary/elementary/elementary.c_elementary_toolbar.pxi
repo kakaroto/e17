@@ -315,13 +315,19 @@ cdef class Toolbar(Object):
             elm_toolbar_menu_parent_set(self.obj, parent.obj)
 
 
+    def homogeneous_set(self, homogeneous):
+        elm_toolbar_homogeneous_set(self.obj, homogeneous)
+
+    property homogeneous:
+        def __set__(self, homogeneous):
+            elm_toolbar_homogeneous_set(self.obj, homogeneous)
+
     def homogenous_set(self, homogenous):
-        elm_toolbar_homogenous_set(self.obj, homogenous)
+        elm_toolbar_homogeneous_set(self.obj, homogenous)
 
     property homogenous:
-        def __set__(self, homogenous):
-            elm_toolbar_homogenous_set(self.obj, homogenous)
-
+        def __set__(self, homogeneous):
+            elm_toolbar_homogeneous_set(self.obj, homogeneous)
 
     def align_set(self, align):
         elm_toolbar_align_set(self.obj, align)

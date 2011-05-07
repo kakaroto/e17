@@ -24,8 +24,11 @@ cdef class Box(Object):
     def horizontal_set(self,horizontal):
         elm_box_horizontal_set(self.obj,horizontal)
 
+    def homogeneous_set(self,homogeneous):
+        elm_box_homogeneous_set(self.obj,homogeneous)
+
     def homogenous_set(self,homogenous):
-        elm_box_homogenous_set(self.obj,homogenous)
+        elm_box_homogeneous_set(self.obj,homogenous)
 
     def pack_start(self, c_evas.Object obj):
         elm_box_pack_start(self.obj,obj.obj)

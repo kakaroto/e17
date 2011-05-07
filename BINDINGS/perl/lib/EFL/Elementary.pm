@@ -227,6 +227,7 @@ my @elm_image = qw(
 my @elm_box = qw(
   elm_box_add
   elm_box_horizontal_set
+  elm_box_homogeneous_set
   elm_box_homogenous_set
   elm_box_pack_start
   elm_box_pack_end
@@ -286,6 +287,7 @@ my @elm_frame = qw(
 
 my @elm_table = qw(
   elm_table_add
+  elm_table_homogeneous_set
   elm_table_homogenous_set
   elm_table_pack
   elm_table_padding_set
@@ -437,6 +439,7 @@ my @elm_toolbar = qw(
   elm_toolbar_item_menu_get
   elm_toolbar_menu_parent_set
   elm_toolbar_scrollable_set
+  elm_toolbar_homogeneous_set
   elm_toolbar_homogenous_set
 );
 
@@ -994,6 +997,7 @@ may change in future releases.
     elm_bg_file_set
     elm_box_add
     elm_box_clear
+    elm_box_homogeneous_set
     elm_box_homogenous_set
     elm_box_horizontal_set
     elm_box_pack_after
@@ -1363,6 +1367,7 @@ may change in future releases.
     elm_spinner_value_set
     elm_spinner_wrap_set
     elm_table_add
+    elm_table_homogeneous_set
     elm_table_homogenous_set
     elm_table_pack
     elm_table_padding_set
@@ -1382,6 +1387,7 @@ may change in future releases.
     elm_toggle_states_labels_set
     elm_toolbar_add
     elm_toolbar_align_set
+    elm_toolbar_homogeneous_set
     elm_toolbar_homogenous_set
     elm_toolbar_icon_size_get
     elm_toolbar_icon_size_set

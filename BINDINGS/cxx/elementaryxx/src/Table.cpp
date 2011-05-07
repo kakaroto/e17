@@ -22,9 +22,14 @@ Table *Table::factory (Evasxx::Object &parent)
   return new Table (parent);
 }
 
+void Table::setHomogeneous (bool homogeneous)
+{
+  elm_table_homogeneous_set (o, homogeneous);
+}
+
 void Table::setHomogenous (bool homogenous)
 {
-  elm_table_homogenous_set (o, homogenous);
+  elm_table_homogeneous_set (o, homogenous);
 }
 
 void Table::pack (const Evasxx::Object &subobj, const Eflxx::Rect &rect)

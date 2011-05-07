@@ -21,8 +21,11 @@ cdef class Table(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_table_add(parent.obj))
 
-    def homogenous_set(self, homogenous):
-        elm_table_homogenous_set(self.obj, homogenous)
+    def homogeneous_set(self, homogeneous):
+        elm_table_homogeneous_set(self.obj, homogeneous)
+
+    def homogenous_set(self, homogeneous):
+        elm_table_homogeneous_set(self.obj, homogeneous)
 
     def padding_set(self, horizontal, vertical):
         elm_table_padding_set(self.obj, horizontal, vertical)

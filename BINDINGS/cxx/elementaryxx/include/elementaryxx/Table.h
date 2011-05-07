@@ -14,6 +14,8 @@ class Table : public Object
 public:
   static Table *factory (Evasxx::Object &parent);
   
+  void setHomogeneous (bool homogeneous);
+
   void setHomogenous (bool homogenous);
 
   void pack (const Evasxx::Object &subobj, const Eflxx::Rect &rect);
