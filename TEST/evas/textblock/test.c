@@ -149,8 +149,9 @@ main(int argc, char *argv[])
    printf("Running using: '%s' with filename: '%s'\n"
          "size: %dx%d\n"
          "wrap mode: '%s'\n"
+         "plain utf8: %d\n"
          "========================================================\n\n",
-         type, filename, w, h, wrapt);
+         type, filename, w, h, wrapt, plain_utf8);
 
    elm_init(argc, argv);
 
