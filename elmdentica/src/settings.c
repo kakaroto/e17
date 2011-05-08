@@ -386,7 +386,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 		elm_scroller_bounce_set(scroller, 0, 1);
 
 		table = elm_table_add(parent);
-			elm_table_homogenous_set(table, TRUE);
+			elm_table_homogeneous_set(table, TRUE);
 			evas_object_size_hint_weight_set(table, 1, 1);
 			evas_object_size_hint_align_set(table, -1, 0);
 
@@ -525,7 +525,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 		evas_object_size_hint_weight_set(button_list, 1, 0);
 		evas_object_size_hint_align_set(button_list, -1, 1);
 		elm_box_horizontal_set(button_list, TRUE);
-		elm_box_homogenous_set(button_list, TRUE);
+		elm_box_homogeneous_set(button_list, TRUE);
 
 		button = elm_button_add(user_data_dialog);
 			evas_object_size_hint_weight_set(button, 1, 1);
@@ -731,7 +731,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 
 		button_list = elm_box_add(settings_area);
 			elm_box_horizontal_set(button_list, 1);
-			elm_box_homogenous_set(button_list, 1);
+			elm_box_homogeneous_set(button_list, 1);
 
 			evas_object_size_hint_weight_set(button_list, 1, 0);
 			evas_object_size_hint_align_set(button_list, -1, 0);
@@ -1364,7 +1364,7 @@ void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
 
 		button_list = elm_box_add(settings_area);
 			elm_box_horizontal_set(button_list, 1);
-			elm_box_homogenous_set(button_list, 1);
+			elm_box_homogeneous_set(button_list, 1);
 
 			evas_object_size_hint_weight_set(button_list, 1, 0);
 			evas_object_size_hint_align_set(button_list, -1, 0);

@@ -1150,7 +1150,7 @@ static void ed_save_attachment(void* data, Evas_Object *obj, void *event_info) {
                 Evas_Object *table = elm_table_add(gui.win);
                     //evas_object_size_hint_weight_set(table, EVAS_HINT_EXPAND, 0);
                     //evas_object_size_hint_align_set(table, EVAS_HINT_FILL, 0);
-                    elm_table_homogenous_set(table, EINA_FALSE);
+                    elm_table_homogeneous_set(table, EINA_FALSE);
                     evas_object_name_set(table, "download_table");
                     Evas_Object *url_frame = elm_frame_add(gui.win);
                         evas_object_size_hint_weight_set(url_frame, EVAS_HINT_EXPAND, EVAS_HINT_FILL);
@@ -1265,7 +1265,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 	evas_object_show(pager);
 
 	box = elm_box_add(gui.win);
-		elm_box_homogenous_set(box, EINA_FALSE);
+		elm_box_homogeneous_set(box, EINA_FALSE);
 		evas_object_size_hint_weight_set(box, 1, 1);
 		evas_object_size_hint_align_set(box, -1, -1);
 
@@ -1875,7 +1875,7 @@ static void on_post_dm(void *data, Evas_Object *obj, void *event_info) {
 
 				buttons = elm_box_add(gui.win);
 					elm_box_horizontal_set(buttons, EINA_TRUE);
-					elm_box_homogenous_set(buttons, EINA_TRUE);
+					elm_box_homogeneous_set(buttons, EINA_TRUE);
 
 					button = elm_button_add(gui.win);
 						elm_button_label_set(button, _("OK"));
@@ -2097,10 +2097,10 @@ EAPI int elm_main(int argc, char **argv)
 		settings->rel_ts_timer = ecore_timer_add(60, ed_statuses_update_time, NULL);
 
 	gui.edit = elm_box_add(gui.win);
-		elm_box_homogenous_set(gui.edit, 0);
+		elm_box_homogeneous_set(gui.edit, 0);
 
 		box2 = elm_box_add(gui.win);
-			elm_box_homogenous_set(box2, 0);
+			elm_box_homogeneous_set(box2, 0);
 			elm_box_horizontal_set(box2, 1);
 			evas_object_size_hint_align_set(box2, -1, 1);
 
@@ -2129,7 +2129,7 @@ EAPI int elm_main(int argc, char **argv)
 		elm_box_pack_end(gui.edit, box2);
 
 		box2 = elm_box_add(gui.win);
-			elm_box_homogenous_set(box2, 1);
+			elm_box_homogeneous_set(box2, 1);
 			elm_box_horizontal_set(box2, EINA_TRUE);
 			evas_object_size_hint_align_set(box2, -1, -1);
 
@@ -2183,7 +2183,7 @@ EAPI int elm_main(int argc, char **argv)
 	toolbar = elm_toolbar_add(gui.win);
 		evas_object_size_hint_weight_set(toolbar, 1.0, 0.0);
 		evas_object_size_hint_align_set(toolbar, -1, 0);
-		elm_toolbar_homogenous_set(toolbar, EINA_TRUE);
+		elm_toolbar_homogeneous_set(toolbar, EINA_TRUE);
 		elm_toolbar_no_select_mode_set(toolbar, EINA_TRUE);
 		elm_object_style_set(toolbar, "elmdentica");
 
