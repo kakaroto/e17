@@ -2114,7 +2114,7 @@ EAPI int elm_main(int argc, char **argv)
 			entry = elm_entry_add(gui.win);
 				elm_entry_entry_set(entry, _("Type your status here..."));
 				elm_entry_single_line_set(entry, 0);
-				elm_entry_line_char_wrap_set(entry, 1);
+				elm_entry_line_wrap_set(entry, ELM_WRAP_CHAR);
 				evas_object_size_hint_weight_set(entry, 1, 0);
 				evas_object_size_hint_align_set(entry, -1, 0);
 				evas_object_smart_callback_add(entry, "cursor,changed", on_entry_clicked, NULL);
