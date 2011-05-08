@@ -181,6 +181,9 @@ main(int argc, char *argv[])
    evas_object_resize(win, w, h);
    evas_object_resize(tb, w, h);
 
+   evas_object_show(tb);
+   evas_object_show(win);
+
    /* Set the text */
      {
         char *buf = _load_file(filename);
@@ -192,19 +195,15 @@ main(int argc, char *argv[])
         else if (!strcmp(type, "edje"))
           {
              edje_object_part_text_set(tb, "elm.text", buf);
+             evas_object_focus_set(tb, EINA_TRUE);
           }
         else if (!strcmp(type, "elm"))
           {
              elm_scrolled_entry_entry_set(tb, buf);
+             elm_object_focus(win);
           }
         free(buf);
      }
-
-   evas_object_show(tb);
-   /* End of interesting */
-
-   evas_object_show(win);
-   evas_object_focus_set(tb, EINA_TRUE);
 
    elm_run();
    return 0;
