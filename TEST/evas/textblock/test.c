@@ -51,6 +51,23 @@ _load_file(const char *file)
    return text;
 }
 
+static char *
+_load_plain(const char *file)
+{
+   char *text;
+
+   text = _load_file(file);
+   if (text)
+     {
+        char *text2;
+
+        text2 = elm_entry_utf8_to_markup(text);
+        free(text);
+        return text2;
+     }
+   return NULL;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -64,10 +81,11 @@ main(int argc, char *argv[])
    Elm_Wrap_Type wrap = ELM_WRAP_WORD;
    const char *wrapt = "word";
    /* end of wrap mode */
+   Eina_Unicode plain_utf8 = EINA_FALSE;
 
    opterr = 0;
 
-   while ((c = getopt (argc, argv, "w:h:f:l:r:")) != -1)
+   while ((c = getopt (argc, argv, "w:h:f:l:r:p")) != -1)
      {
         switch (c)
           {
@@ -105,6 +123,9 @@ main(int argc, char *argv[])
                    print_usage(argv[0]);
                    return 1;
                 }
+              break;
+           case 'p':
+              plain_utf8 = EINA_TRUE;
               break;
            case '?':
               print_usage(argv[0]);
@@ -186,7 +207,12 @@ main(int argc, char *argv[])
 
    /* Set the text */
      {
-        char *buf = _load_file(filename);
+        char *buf;
+
+        if (plain_utf8)
+           buf = _load_plain(filename);
+        else
+           buf = _load_file(filename);
 
         if (!strcmp(type, "evas"))
           {
@@ -213,9 +239,10 @@ static void
 print_usage(const char *bin)
 {
    fprintf(stderr,
-         "Usage: %s [-w width] [-h height] [-f filename] [-l lib] [-r wrap]\n"
+         "Usage: %s [-p] [-w width] [-h height] [-f filename] [-l lib] [-r wrap]\n"
          "-w,-h = size of window in pixels.\n"
          "-f = filename to use\n"
          "-l = lib to use: evas, edje, or elm.\n"
-         "-r = wrap type: none, char, word, or mixed.\n", bin);
+         "-r = wrap type: none, char, word, or mixed.\n"
+         "-p = load as plain utf8 instead of markup.\n", bin);
 }
