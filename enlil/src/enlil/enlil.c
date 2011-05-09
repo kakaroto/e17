@@ -21,7 +21,6 @@ enlil_init(void)
    ecore_init();
    ecore_file_init();
    ethumb_client_init();
-   eina_threads_init();
 
    enlil_file_manager_init();
    enlil_thumb_init();
@@ -49,7 +48,6 @@ enlil_shutdown(void)
    enlil_trans_shutdown();
    enlil_thumb_shutdown();
    enlil_file_manager_shutdown();
-   eina_threads_shutdown();
    ethumb_client_shutdown();
    ecore_file_shutdown();
    ecore_shutdown();
