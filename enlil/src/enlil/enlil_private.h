@@ -5,15 +5,15 @@
 # include <config.h>
 #endif
 
-#ifdef EFL_HAVE_POSIX_THREADS
-# include <pthread.h>
-#endif
-
 #include <errno.h>
 
 #include "Enlil.h"
 
 #include "../define.h"
+
+#ifdef EFL_HAVE_POSIX_THREADS
+# include <pthread.h>
+#endif
 
 extern int Enlil_LOG_DOMAIN_99;
 #define LOG_DOMAIN Enlil_LOG_DOMAIN_99
