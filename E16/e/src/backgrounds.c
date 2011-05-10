@@ -1180,9 +1180,8 @@ BackgroundsConfigLoad(FILE * fs)
 	     break;
 
 	  case BG_BG_FILE:
-	   set_file_bg:
 	     Efree(bg1);
-	     bg1 = Estrdup(s2);
+	     bg1 = Estrdup(p2);
 	     break;
 
 	  case BG_BG_PARAM:
@@ -1192,13 +1191,14 @@ BackgroundsConfigLoad(FILE * fs)
 #if 1				/* Obsolete - backward compatibility */
 	  case BG_BG1:
 	     sscanf(p3, "%d %d %d %d %d %d", &i1, &i2, &i3, &i4, &i5, &i6);
-	     goto set_file_bg;
+	     Efree(bg1);
+	     bg1 = Estrdup(s2);
+	     break;
 #endif
 
 	  case BG_TOP_FILE:
-	   set_file_top:
 	     Efree(bg2);
-	     bg2 = Estrdup(s2);
+	     bg2 = Estrdup(p2);
 	     break;
 
 	  case BG_TOP_PARAM:
@@ -1208,7 +1208,9 @@ BackgroundsConfigLoad(FILE * fs)
 #if 1				/* Obsolete - backward compatibility */
 	  case BG_BG2:
 	     sscanf(p3, "%d %d %d %d %d", &j1, &j2, &j3, &j4, &j5);
-	     goto set_file_top;
+	     Efree(bg2);
+	     bg2 = Estrdup(s2);
+	     break;
 #endif
 
 	  default:
