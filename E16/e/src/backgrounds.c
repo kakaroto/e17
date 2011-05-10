@@ -1097,6 +1097,7 @@ BackgroundsConfigLoad(FILE * fs)
 	  case CONFIG_CLOSE:
 	     if (!bg)
 		goto done;
+	     bg->bg_solid = color;
 	     bg->bg.file = bg1;
 	     bg->top.file = bg2;
 	     bg1 = bg2 = NULL;
@@ -1128,6 +1129,7 @@ BackgroundsConfigLoad(FILE * fs)
 	       }
 	     else
 	       {
+		  color = bg->bg_solid;
 		  Efree(bg1);
 		  Efree(bg2);
 		  bg1 = bg->bg.file;
