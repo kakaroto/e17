@@ -54,7 +54,7 @@ void Entry::insertText (const std::string &entry)
   elm_entry_entry_insert (o, entry.c_str ());
 }
 
-void Entry::setLineWrap (bool wrap)
+void Entry::setLineWrap (Elm_Wrap_Type wrap)
 {
   elm_entry_line_wrap_set (o, wrap);
 }

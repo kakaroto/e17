@@ -32,12 +32,12 @@ const std::string Label::getLabel () const
   return elm_label_label_get (o);
 }
 
-void Label::setLineWrap (bool wrap)
+void Label::setLineWrap (Elm_Wrap_Type wrap)
 {
   elm_label_line_wrap_set (o, wrap);
 }
 
-bool Label::getLineWrap () const
+Elm_Wrap_Type Label::getLineWrap () const
 {
   return elm_label_line_wrap_get (o);
 }

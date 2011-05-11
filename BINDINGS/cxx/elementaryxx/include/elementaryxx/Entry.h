@@ -43,7 +43,7 @@ public:
   
   void insertText (const std::string &entry);
   
-  void setLineWrap (bool wrap);
+  void setLineWrap (Elm_Wrap_Type wrap);
   
   void setEditable (bool editable);
   

@@ -21,9 +21,9 @@ public:
 
   const std::string getLabel () const;
 
-  void setLineWrap (bool wrap);
+  void setLineWrap (Elm_Wrap_Type wrap);
 
-  bool getLineWrap () const;
+  Elm_Wrap_Type getLineWrap () const;
 
   void setWrapWidth (Evas_Coord w);
 
