@@ -167,14 +167,14 @@ _scale_redraw(void *data)
 {
    Eina_List *l;
    Item *it;
-   double in, duration;
+   double adv, in, duration;
 
    if (show_all_desks)
      duration = scale_conf->desks_duration;
    else
      duration = scale_conf->scale_duration;
 
-   in = (ecore_loop_time_get() - start_time) / duration;
+   in = adv = (ecore_loop_time_get() - start_time) / duration;
 
    if (scale_state)
      {
@@ -190,6 +190,8 @@ _scale_redraw(void *data)
      }
    else
      {
+	adv = 1.0 - adv;
+	
 	if (in >= 1.0)
 	  {
 	     _scale_finish();
@@ -203,24 +205,43 @@ _scale_redraw(void *data)
      }
 
    _scale_place_windows(in);
-
+   
    if (scale_conf->fade_windows)
      {
 	EINA_LIST_FOREACH(items, l, it)
 	  {
 	     double a = 255.0;
 
+	     if (it->was_hidden)
+	       continue;
+	     
 	     if ((it->bd->desk != current_desk) && (selected_item != it))
 	       {
-		  double ax = it->cur_x - it->x;
-		  double ay = it->cur_y - it->y;
-		  double bx = it->bd_x  - it->x;
-		  double by = it->bd_y  - it->y;
+		  /* double ax = it->cur_x - it->x;
+		   * double ay = it->cur_y - it->y;
+		   * double bx = it->bd_x  - it->x;
+		   * double by = it->bd_y  - it->y;
+		   * 
+		   * a = (1.0 - (ax*ax + ay*ay) / (bx*bx + by*by)) * 255.0; */
 
-		  a = (1.0 - (ax*ax + ay*ay) / (bx*bx + by*by)) * 255.0;
+		  a = 255.0 * adv;
+		  
 	       }
 
 	     evas_object_color_set(it->o, a, a, a, a);
+	  }
+     }
+
+   EINA_LIST_FOREACH(items, l, it)
+     {
+	if (it->was_hidden)
+	  {
+	     double a = 255.0 * adv;
+
+	     if ((!scale_state) && (it == selected_item))
+	       continue;
+
+	     evas_object_color_set(it->o, a, a, a, a);	     
 	  }
      }
 
@@ -742,12 +763,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->cur_h = it->h;
 
    if (!it->bd->visible)
-     {
-	if (it->bd->iconic)
-	  it->was_hidden = EINA_TRUE;
-
-	e_border_show(it->bd);
-     }
+     e_border_show(it->bd);
 
    /* if (it->bd->shaded)
     *   e_border_unshade(it->bd, );  */
@@ -755,15 +771,29 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    edje_object_part_text_set(it->o, "e.text.label", e_border_name_get(it->bd));
    edje_object_signal_emit(it->o, "show", "e");
 
-   if ((match_class) && (!e_util_glob_match(cw->bd->client.icccm.class, match_class)))
+   if (match_class) 
      {
-	items_fade = eina_list_append(items_fade, it);
-	evas_object_move(it->o, it->bd->x, it->bd->y);
-	evas_object_resize(it->o, it->cw->pw, it->cw->ph);
-	evas_object_pass_events_set(it->o, 1);
-	if (it->bd->desk != desk)
-	  evas_object_color_set(it->o, 0, 0, 0, 0);
-	return it;
+	if (!e_util_glob_match(cw->bd->client.icccm.class, match_class))
+	  {
+	     if (!it->bd->iconic)
+	       {
+		  items_fade = eina_list_append(items_fade, it);
+		  evas_object_move(it->o, it->bd->x, it->bd->y);
+		  evas_object_resize(it->o, it->cw->pw, it->cw->ph);
+		  evas_object_pass_events_set(it->o, 1);
+		  if (it->bd->desk != desk)
+		    evas_object_color_set(it->o, 0, 0, 0, 0);
+		  return it;
+	       }
+	  }
+	else
+	  {
+	     if (it->bd->iconic)
+	       {
+		  evas_object_color_set(it->o, 0, 0, 0, 0);
+		  it->was_hidden = EINA_TRUE;
+	       }
+	  }
      }
 
    evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN,
