@@ -362,25 +362,37 @@ _scale_finish()
 {
    Ecore_Event_Handler *handler;
    Item *it;
-   E_Desk *desk;
 
-   desk = e_desk_current_get(zone);
-
-   if (selected_item &&  selected_item->bd->desk != desk)
+   if (selected_item)
      {
-	if (send_to_desk)
-	  {
-	     e_border_desk_set(selected_item->bd, desk);
-	  }
-	else
-	  {
-	     int tmp = e_config->desk_flip_animate_mode;
-	     desk = selected_item->bd->desk;
+	E_Desk *desk;
 
-	     e_config->desk_flip_animate_mode = 0;
-	     e_desk_show(desk);
-	     e_config->desk_flip_animate_mode = tmp;
-	     current_desk = desk;
+	it = selected_item;
+		
+	desk = e_desk_current_get(zone);
+
+	if (it->bd->desk != desk)
+	  {
+	     if (send_to_desk)
+	       {
+		  e_border_desk_set(it->bd, desk);
+	       }
+	     else
+	       {
+		  int tmp = e_config->desk_flip_animate_mode;
+		  desk = it->bd->desk;
+
+		  e_config->desk_flip_animate_mode = 0;
+		  e_desk_show(desk);
+		  e_config->desk_flip_animate_mode = tmp;
+		  current_desk = desk;
+	       }
+	  }
+
+	if (it->was_hidden)
+	  {
+	     it->was_hidden = EINA_FALSE;
+	     e_border_uniconify(it->bd);
 	  }
      }
 
@@ -743,19 +755,15 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    edje_object_part_text_set(it->o, "e.text.label", e_border_name_get(it->bd));
    edje_object_signal_emit(it->o, "show", "e");
 
-   if (match_class)
+   if ((match_class) && (!e_util_glob_match(cw->bd->client.icccm.class, match_class)))
      {
-	if ((!(cw->bd->client.icccm.class) ||
-	     (strcmp(cw->bd->client.icccm.class, match_class))))
-	  {
-	     items_fade = eina_list_append(items_fade, it);
-	     evas_object_move(it->o, it->bd->x, it->bd->y);
-	     evas_object_resize(it->o, it->cw->pw, it->cw->ph);
-	     evas_object_pass_events_set(it->o, 1);
-	     if (it->bd->desk != desk)
-	       evas_object_color_set(it->o, 0, 0, 0, 0);
-	     return it;
-	  }
+	items_fade = eina_list_append(items_fade, it);
+	evas_object_move(it->o, it->bd->x, it->bd->y);
+	evas_object_resize(it->o, it->cw->pw, it->cw->ph);
+	evas_object_pass_events_set(it->o, 1);
+	if (it->bd->desk != desk)
+	  evas_object_color_set(it->o, 0, 0, 0, 0);
+	return it;
      }
 
    evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN,
