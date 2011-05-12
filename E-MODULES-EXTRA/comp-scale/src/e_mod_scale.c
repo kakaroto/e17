@@ -1866,7 +1866,8 @@ _scale_shrink()
    int shrunk = 0;
    double move_x;
    double move_y;
-
+   int x, y, w, h;
+   
    EINA_LIST_REVERSE_FOREACH(items, l, it)
      {
 	if (show_all_desks)
@@ -1885,27 +1886,20 @@ _scale_shrink()
 	if (!(move_y || move_x))
 	  continue;
 
+	x = it->x - spacing;
+	y = it->y - spacing;
+	w = it->w + spacing*2;
+	h = it->h + spacing*2;
+
 	EINA_LIST_FOREACH(items, ll, ot)
 	  {
 	     if (it == ot) continue;
 
-	     while(move_x)
-	       {
-		  if (E_INTERSECTS(it->x - move_x, it->y, it->w, it->h,
-				   ot->x - spacing, ot->y - spacing,
-				   ot->w + spacing*2, ot->h + spacing*2))
-		    move_x = move_x / 2.0;
-		  else break;
-	       }
+	     while ((move_x) && (E_INTERSECTS(x - move_x, y, w, h, ot->x, ot->y, ot->w, ot->h)))
+	       move_x = move_x / 2.0;
 
-	     while(move_y)
-	       {
-		  if (E_INTERSECTS(it->x, it->y - move_y, it->w, it->h,
-				   ot->x - spacing, ot->y - spacing,
-				   ot->w + spacing*2, ot->h + spacing*2))
-		    move_y = move_y / 2.0;
-		  else break;
-	       }
+	     while ((move_y) && (E_INTERSECTS(x, y - move_y, w, h, ot->x, ot->y, ot->w, ot->h)))
+	       move_y = move_y / 2.0;
 
 	     if (!(move_y || move_x)) break;
 	  }
