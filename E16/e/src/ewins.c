@@ -1878,7 +1878,8 @@ typedef union {
       unsigned            ctf:1;
       unsigned            nbg:1;
       unsigned            autoshade:1;
-      unsigned:           4;
+      unsigned            ia:1;
+      unsigned:           3;
       unsigned:           8;
       unsigned:           8;
       unsigned            no_fade:1;
@@ -1899,6 +1900,7 @@ EwinFlagsEncode(const EWin * ewin, unsigned int *flags)
    fm.f.inh_wm = ewin->inh_wm.all;
 
    fm2.all = 0;
+   fm2.f.ia = ewin->props.ignorearrange;
    fm2.f.nua = ewin->props.never_use_area;
    fm2.f.ctf = ewin->props.focusclick;
    fm2.f.nbg = ewin->props.no_button_grabs;
@@ -1924,6 +1926,7 @@ EwinFlagsDecode(EWin * ewin, const unsigned int *flags)
    ewin->inh_wm.all = fm.f.inh_wm;
 
    fm2.all = flags[1];
+   ewin->props.ignorearrange = fm2.f.ia;
    ewin->props.never_use_area = fm2.f.nua;
    ewin->props.focusclick = fm2.f.ctf;
    ewin->props.no_button_grabs = fm2.f.nbg;

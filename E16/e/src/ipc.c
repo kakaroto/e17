@@ -743,6 +743,13 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	   EwinOpSkipLists(ewin, OPSRC_USER, on);
 	break;
 
+     case EWIN_OP_IGNORE_ARRANGE:
+	on = ewin->props.ignorearrange;
+	SetEwinBoolean(wop->name, &on, param1, 1);
+	ewin->props.ignorearrange = on;
+	goto ewin_update_snap_flags;
+	break;
+
      case EWIN_OP_NEVER_USE_AREA:
 	on = ewin->props.never_use_area;
 	SetEwinBoolean(wop->name, &on, param1, 1);

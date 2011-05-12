@@ -80,6 +80,7 @@ static const WinOp  winops[] = {
 
    {"snap", 0, 1, 0, EWIN_OP_SNAP},
 
+   {"ignore_arrange", 0, 1, 1, EWIN_OP_IGNORE_ARRANGE},
    {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
    {"no_button_grabs", 0, 1, 1, EWIN_OP_NO_BUTTON_GRABS},
    {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
