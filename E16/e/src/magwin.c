@@ -84,12 +84,15 @@ static unsigned int
 MagwinGetPixel(Drawable draw, unsigned int x, unsigned int y)
 {
    EImage             *im;
-   unsigned int       *pd, pixel;
+   unsigned int       *pd, pixel = 0;
 
    im = EImageGrabDrawable(draw, None, x, y, 1, 1, 0);
-   pd = (unsigned int *)EImageGetData(im);
-   pixel = *pd;
-   EImageFree(im);
+   if (im)
+     {
+	pd = (unsigned int *)EImageGetData(im);
+	pixel = *pd;
+	EImageFree(im);
+     }
 
    return pixel;
 }
