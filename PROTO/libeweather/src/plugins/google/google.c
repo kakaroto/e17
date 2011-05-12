@@ -12,6 +12,7 @@ static void _poll_time_updated(EWeather *eweather);
 static void _code_updated(EWeather *eweather);
 static Eina_Bool _server_add(void *data, int type, void *event);
 static Eina_Bool _server_del(void *data, int type, void *event);
+static Eina_Bool _server_error(void *data, int type, void *event);
 static Eina_Bool _server_data(void *data, int type, void *event);
 static Eina_Bool _weather_cb_check(void *data);
 static EWeather_Type _weather_type_get(const char* id);
@@ -59,6 +60,7 @@ struct Instance
    Ecore_Con_Server *server;
    Ecore_Event_Handler *add_handler;
    Ecore_Event_Handler *del_handler;
+   Ecore_Event_Handler *err_handler;
    Ecore_Event_Handler *data_handler;
    Ecore_Timer *check_timer;
 
@@ -94,6 +96,9 @@ static void _init(EWeather *eweather)
    inst->del_handler =
       ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL,
 	    _server_del, inst);
+   inst->err_handler =
+      ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ERROR,
+	    _server_error, inst);
    inst->data_handler =
       ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
 	    _server_data, inst);
@@ -113,6 +118,7 @@ static void _shutdown(EWeather *eweather)
    if (inst->check_timer) ecore_timer_del(inst->check_timer);
    if (inst->add_handler) ecore_event_handler_del(inst->add_handler);
    if (inst->data_handler) ecore_event_handler_del(inst->data_handler);
+   if (inst->err_handler) ecore_event_handler_del(inst->err_handler);
    if (inst->del_handler) ecore_event_handler_del(inst->del_handler);
    if (inst->server) ecore_con_server_del(inst->server);
 
@@ -221,6 +227,22 @@ _server_del(void *data, int type, void *event)
 
    if(inst->buffer) free(inst->buffer);
    inst->buffer = NULL;
+   return EINA_FALSE;
+}
+
+static Eina_Bool
+_server_error(void *data, int type, void *event)
+{
+   Instance *inst;
+   Ecore_Con_Event_Server_Error *ev;
+
+   inst = data;
+   ev = event;
+   if ((!inst->server) || (inst->server != ev->server)) return EINA_TRUE;
+
+   fprintf(stderr, "Connection error to %s : %s\n",
+           ecore_con_server_name_get(inst->server) ,ev->error);
+
    return EINA_FALSE;
 }
 
