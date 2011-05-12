@@ -18,8 +18,8 @@ extern int _language_log_dom;
 #undef E_FREE
 #define E_FREE(arg) \
 { \
-    arg = NULL; \
     free(arg); \
+    arg = NULL; \
 }
 
 #undef E_FREE_IF

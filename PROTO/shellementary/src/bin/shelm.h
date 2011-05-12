@@ -16,7 +16,7 @@
 #ifdef E_FREE
 #undef E_FREE
 #endif
-#define E_FREE(ptr) if(ptr) { ptr = NULL; free (ptr);}
+#define E_FREE(ptr) if(ptr) { free(ptr); ptr = NULL;}
 
 # ifdef SH_API
 #  undef SH_API
