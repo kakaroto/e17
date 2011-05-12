@@ -1735,8 +1735,11 @@ _ngi_init_timer_cb(void *data)
    Eina_List *l;
    Config_Item *ci;
 
-   ngi_config->use_composite = ecore_x_screen_is_composited(0);
+   if (e_config->use_composite || ecore_x_screen_is_composited(0))
+     ngi_config->use_composite = EINA_TRUE;
 
+   /* ngi_config->use_composite = ecore_x_screen_is_composited(0); */
+   
    EINA_LIST_FOREACH (ngi_config->items, l, ci)
      ngi_new(ci);
 
@@ -1961,7 +1964,7 @@ e_modapi_init(E_Module *m)
 
    e_module_delayed_set(m, 1);
 
-   ecore_timer_add(1.0, _ngi_init_timer_cb, NULL);
+   ecore_idler_add(_ngi_init_timer_cb, NULL);
    
    /* _ngi_init_timer_cb(NULL); */
 
