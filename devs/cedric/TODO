@@ -1,14 +1,15 @@
 * Eina 1.1
 	- implement multiple level of hash for eina_hash depending on number of child.
 	- improve benchmark (add more real use case, provide option for tracking result more easily)
-h	- add open/fstat/mmap/munmap/close helper.
 	- improve mempool repacker to take a more fine grained lock.
-h	- use eina_lock
 
 * Eet
 	- add inheritance
 	- use eina_lock
 	- use eina_file_map
+	- add Eet_Config api (eet_config_open, eet_config_load, eet_config_save, eet_config_close).
+	- make it possible to have text and binary Eet_Config file with section per .cfg file in a directory.
+	- add support for variable number of backup file
 
 * Evas
 	- add _stringshared version for evas_event_feed_*
@@ -17,7 +18,6 @@ h	- use eina_lock
 	- add a prepare phase that could be used by all engine when we got many main CPU to prepare font, polygon and load image in parallel (should work also with dsp)
 h	- try quadtree support
 	- fix Evas_Object_Polygon resize issue and API.
-h	- use eina_lock
 	- use eina_file_map
 
 * Edje 1.1
@@ -32,6 +32,7 @@ h	- Add specialized task for each match automate case
 	- Try to improve speed of object destruction by moving them to another thread.
 	- Add group { text, drag } setter.
 	- Add group inheritance.
+	- Add group interface, and make it possible to move from one theme of the interface to another, without loosing swallowed and external object state.
 	- Add virtual part and program support.
 	- Merge edje parser and edje preprocessor.
 	- Move the parser into edje and expose an Edje AST API.
@@ -70,7 +71,7 @@ h	- fix expose and thumbnail display to be fully async
 	- fix keyboard handling
 
 * Eio 1.0
-	- add notify support
+h	- add notify support
 h	- use dirfd helper (partial support with eina 1.0 and full with 1.1)
 h	- add tutorial
 	- add tests suite
@@ -78,11 +79,10 @@ h	- add tutorial
 	during IO operation to limit a one disk per thread load.
 	- handle all io in another process
 	- pack result for same filename when calling eio_file_direct_stat (add a new set of call for that purpose).
+	- add eina_file_map support
+	- make it possible to get current dirfd inside eio_*_ls operation
 
 * Efreet 1.0
-d	- implement cache with icons directory content to avoid uneeded stat
-	(should require a daemon to do the monitoring and the generation for
-	every one in the background).
 	- make mime check thread safe
 	- make it a dbus daemon.
 
@@ -92,15 +92,15 @@ d	- implement cache with icons directory content to avoid uneeded stat
 	- add ecore_thread_reschedule_after.
 	- use eina_lock
 	- add ecore_thread_ugly_run (better name: ecore_thread_message_run ?).
-
-* eak - configuration library on top of eet
-	- support text config and binary file
-	- support variable number and location of backup file
-	- look at elsa to understand the idea
+	- make it possible to send message async/sync from thread to main loop (for msg_run).
+	- make it possible to make async/sync call from thread to main loop (for msg_run).
+	- make it possible to send message async from main loop to thread (for msg_run).
+	- make it possible to make async call from main loop to thread (for msg_run).
+	- make it possible to raise priority of a worker job.
+	- make it possible to create another worker job from a worker job.
 
 * ethumb
-d	- make exist function asynchronous
-	- add generate cache
+	- make it possible to have one slave per available CPU.
 
 * enlil
 	- use eio
