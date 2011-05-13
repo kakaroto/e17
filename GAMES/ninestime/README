@@ -1,0 +1,23 @@
+Nines Time is a game about digit 9 tyranny over the other digits.
+
+You are a 6 undercovered for years studying the 9s and providing information
+for your HQ so you could stop them, but your arms fail after years of handplant
+and you need to survive for 9 minutes until your pals rescue you.
+
+What's your weapon? Math, dude! You need to operate the number trying
+to get you.
+
+It's a game developed in python using bindings for EFL (Enlightnment Foundation
+Libraries), so to play it you'll need to install python-ecore, python-evas,
+python-edje and python-emotion that can be get from "e" project repository:
+
+  svn co http://svn.enlightenment.org/svn/e/trunk/BINDINGS/python/
+
+Info available at:
+
+  http://trac.enlightenment.org/e/wiki/Python
+
+
+To build the theme, run build_theme.sh.
+
+Good luck ;)

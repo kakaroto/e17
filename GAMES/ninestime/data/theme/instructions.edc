@@ -1,0 +1,1774 @@
+#define ADD_FAKE_COMBO(_pos, _value) \
+part { name: "combo"##_pos##"_clip"; \
+   type: RECT; \
+   description { state: "default " 0.0; \
+      color: 255 255 255 0; \
+   } \
+   description { state: "visible" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 255; \
+   } \
+   description { state: "pop" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 0; \
+   } \
+} \
+part { name: "combo"##_pos; \
+   clip_to: "combo"##_pos##"_clip"; \
+   type: TEXT; \
+   description { state: "default " 0.0; \
+      rel1.offset: (80 + _pos * 30) (300 - _pos * 50); \
+      color_class: "combo"; \
+      text { \
+         font: "nines"; \
+         size: 20; \
+         text: "+"_value; \
+      } \
+   } \
+   description { state: "visible" 0.0; \
+      inherit: "default" 0.0; \
+   } \
+   description { state: "pop" 0.0; \
+      inherit: "default" 0.0; \
+      text.size: 100; \
+      } \
+}
+
+#define ADD_FAKE_OPERATION(_name) \
+part { name: "operation_"_name; \
+    description { state: "default" 0.0; \
+        min: 30 30; \
+        max: 30 30; \
+        rel1.to: "hud_bar"; \
+        rel1.relative: 0 1; \
+        color: 255 255 255 0; \
+        image.normal: _name"_full.png"; \
+    } \
+    description { state: "visible" 0.0; \
+        inherit: "default" 0.0; \
+        color: 255 255 255 255; \
+    } \
+    description { state: "big" 0.0; \
+        inherit: "default" 0.0; \
+        color: 255 255 255 0; \
+        min: 600 600; \
+        max: 600 600; \
+    } \
+} \
+program { name: _name"_operation_show"; \
+    signal: _name; \
+    action: STATE_SET "visible" 0.0; \
+    target: "operation_"_name; \
+    after: _name"_operation_enlarge"; \
+} \
+program { name: _name"_operation_enlarge"; \
+    action: STATE_SET "big" 0.0; \
+    target: "operation_"_name; \
+    transition: ACCELERATE 0.5; \
+        after: _name"_hide_op"; \
+    } \
+    program { name: _name"_hide_op"; \
+        action: STATE_SET "default" 0.0; \
+        target: "operation_"_name; \
+    }
+
+#define ADD_DEAD_BUTTON_I(_pos, _name) \
+part { name: _name"_bg"; \
+   type: RECT; \
+   clip_to: "ops_clipper"; \
+   description { state: "default" 0.0; \
+      min: 40 36; \
+      max: 40 36; \
+      align: 0 0; \
+      rel1.to: "ops_bar"; \
+      rel1.offset: (_pos * 40) 0; \
+      rel2.to: "ops_bar"; \
+      color: 255 255 255 0; \
+   } \
+} \
+part { name: _name; \
+   clip_to: "ops_clipper"; \
+   description { state: "default" 0.0; \
+      rel1.to: _name"_bg"; \
+      rel2.to: _name"_bg"; \
+      image.normal: _name"_bt.png"; \
+   } \
+}
+
+#define ADD_BUTTON_I(_pos, _name) \
+part { name: _name"_bg"; \
+   type: RECT; \
+   clip_to: "ops_clipper"; \
+   description { state: "default" 0.0; \
+      min: 40 36; \
+      max: 40 36; \
+      align: 0 0; \
+      rel1.to: "ops_bar"; \
+      rel1.offset: (_pos * 40) 0; \
+      rel2.to: "ops_bar"; \
+      color: 255 255 255 0; \
+   } \
+} \
+part { name: _name; \
+   clip_to: "ops_clipper"; \
+   description { state: "default" 0.0; \
+      rel1.to: _name"_bg"; \
+      rel2.to: _name"_bg"; \
+      image.normal: _name"_bt.png"; \
+   } \
+} \
+part { name: _name"_shadow"; \
+   type: RECT; \
+   clip_to: "ops_clipper"; \
+   description { state: "default" 0.0; \
+      rel1.to: _name"_bg"; \
+      rel2 { \
+        to: _name"_bg"; \
+        relative: 1 0; \
+      } \
+      color: 0 0 0 192; \
+   } \
+   description { state: "full" 0.0; \
+      inherit: "default" 0.0; \
+      rel2.relative: 1 1; \
+   } \
+} \
+part { name: _name"_hi"; \
+   type: RECT; \
+   clip_to: "ops_clipper"; \
+   description { state: "default" 0.0; \
+      rel1.to: _name"_bg"; \
+      rel2.to: _name"_bg"; \
+      color: 255 255 255 0; \
+   } \
+   description { state: "visible" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 180; \
+   } \
+}
+
+#define ADD_HUD_CLIPPER(_part) \
+    part { name: _part"_clipper"; \
+        type: RECT; \
+        clip_to: "fader_clipper"; \
+        description { state: "default" 0.0; \
+            rel1.to: "hud_bar"; \
+            rel2.to: "hud_bar"; \
+            color: 255 255 255 255; \
+        } \
+        description { state: "hidden" 0.0; \
+            inherit: "default" 0.0; \
+            color: 255 255 255 0; \
+        } \
+    }
+
+#define ADD_MSG_PROG(_step) \
+program { name: "show_msg_"##_step; \
+   signal: "step_"##_step; \
+   action: STATE_SET "default" 0.0; \
+   transition: DECELERATE 0.3; \
+   target: "instructions_clipper"; \
+   after: "show_msg_"##_step##"_2"; \
+} \
+program { name: "show_msg_"##_step##"_2"; \
+   action: STATE_SET "step_"##_step 0.0; \
+   target: "instructions_msgs"; \
+   after: "show_msg_"##_step##"_3"; \
+} \
+program { name: "show_msg_"##_step##"_3"; \
+   action: STATE_SET "visible" 0.0; \
+   transition: ACCELERATE 0.3; \
+   target: "instructions_clipper"; \
+}
+
+#define ADD_MSG(_step, _msg) \
+description { state: "step_"##_step 0.0; \
+   inherit: "default" 0.0; \
+   text.text: _msg; \
+}
+
+#define ADD_DAY(_day) \
+description { state: "day_"##_day 0.0; \
+   inherit: "default" 0.0; \
+   text.text: "Day "##_day; \
+}
+
+group { name: "instructions";
+
+    data {
+        item: "max_steps" "16";
+    }
+
+    styles {
+        style { name: "instructions";
+            base: "font=nines font_size=14 color=#cfcfcfff wrap=word";
+            tag: "br" "\n";
+        }
+    }
+
+   images {
+      image: "intro1.png" COMP;
+      image: "intro2.png" COMP;
+      image: "intro3.png" COMP;
+      image: "background.png" COMP;
+      image: "button.png" COMP;
+      image: "plus_bt.png" COMP;
+      image: "minus_bt.png" COMP;
+      image: "times_bt.png" COMP;
+      image: "over_bt.png" COMP;
+      image: "plus_full.png" COMP;
+      image: "times_full.png" COMP;
+      image: "sky0.png" COMP;
+      image: "top-bar.png" COMP;
+      image: "9cloud.png" COMP;
+      image: "1.png" COMP;
+      image: "2.png" COMP;
+      image: "3.png" COMP;
+      image: "4.png" COMP;
+      image: "5.png" COMP;
+   }
+
+
+    parts {
+
+        part { name: "blackbackground";
+            type: RECT;
+            description { state: "default" 0.0;
+                color: 0 0 0 255;
+            }
+        }
+
+        part { name: "intro_clipper";
+            type: RECT;
+            description { state: "default" 0.0;
+                color: 255 255 255 0;
+            }
+            description { state: "visible" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+            }
+        }
+
+        part { name: "intro";
+           clip_to: "intro_clipper";
+           description { state: "default" 0.0;
+              min: 400 480;
+              max: 400 480;
+              align: 0 0;
+              image.normal: "intro1.png";
+           }
+           description { state: "intro2" 0.0;
+              inherit: "default" 0.0;
+              image.normal: "intro2.png";
+           }
+           description { state: "intro3" 0.0;
+              inherit: "default" 0.0;
+              image.normal: "intro3.png";
+           }
+        }
+
+        part { name: "fader_clipper";
+            type: RECT;
+            description { state: "default" 0.0;
+                color: 255 255 255 0;
+            }
+            description { state: "visible" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+            }
+        }
+
+      part { name: "sky_day";
+         clip_to: "fader_clipper";
+         description { state: "default" 0.0;
+            min: 400 278;
+            max: 400 278;
+            align: 0 0;
+            image.normal: "sky0.png";
+         }
+      }
+
+      part { name: "background";
+         clip_to: "background_light";
+         description { state: "default" 0.0;
+            image.normal: "background.png";
+         }
+      }
+
+      part { name: "background_light";
+         type: RECT;
+         clip_to: "fader_clipper";
+         description { state: "default" 0.0;
+            color: 255 220 200 255;
+         }
+      }
+
+      part { name: "hud_bar_shadow";
+         type: RECT;
+         clip_to: "fader_clipper";
+         description { state: "default" 0.0;
+            rel1.to: "hud_bar";
+            rel1.to: "hud_bar";
+            min: 400 66;
+            max: 400 66;
+            align: 0 0;
+            color: 0 0 0 92;
+         }
+      }
+
+      part { name: "hud_bar";
+         clip_to: "fader_clipper";
+         description { state: "default" 0.0;
+            min: 400 64;
+            max: 400 64;
+            align: 0 0;
+            rel1.offset: 0 -66;
+            image.normal: "top-bar.png";
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 0 0;
+         }
+      }
+
+        ADD_HUD_CLIPPER("time")
+        ADD_HUD_CLIPPER("score")
+        ADD_HUD_CLIPPER("hiscore")
+        ADD_HUD_CLIPPER("ops")
+
+        ADD_FAKE_OPERATION("plus")
+        ADD_FAKE_OPERATION("times")
+
+      part { name: "result_clip";
+         type: RECT;
+         clip_to: "fader_clipper";
+         description { state: "default " 0.0;
+            rel1.to: "hud_bar";
+            rel1.relative: 0 1;
+            color: 255 255 255 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "correct" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 0;
+         }
+         description { state: "wrong" 0.0;
+            inherit: "default" 0.0;
+            color: 255 0 0 255;
+         }
+      }
+
+      part { name: "result_text";
+         clip_to: "result_clip";
+         type: TEXT;
+         description { state: "default " 0.0;
+            rel1.to: "hud_bar";
+            rel1.relative: 0 1;
+            color_class: "result";
+            text {
+               font: "nines";
+               size: 60;
+               text: "|";
+            }
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "2" 0.0;
+            inherit: "default" 0.0;
+            text.text: "2";
+         }
+         description { state: "20" 0.0;
+            inherit: "default" 0.0;
+            text.text: "20";
+         }
+         description { state: "25" 0.0;
+            inherit: "default" 0.0;
+            text.text: "25";
+         }
+         description { state: "correct" 0.0;
+            inherit: "default" 0.0;
+            text.size: 240;
+            }
+         description { state: "wrong" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+
+      part { name: "hi-score";
+         type: TEXT;
+         effect: OUTLINE_SOFT_SHADOW;
+         clip_to: "hiscore_clipper";
+         description { state: "default" 0.0;
+            rel1.to: "hud_bar";
+            rel2 {
+               to_x: "ops_bar";
+               to_y: "hud_bar";
+               relative: 0 1;
+            }
+            color_class: "hi-score";
+            text {
+               font: "nines";
+               size: 18;
+               text: "009999";
+               align: 0.5 0;
+            }
+         }
+          }
+
+          part { name: "score";
+             type: TEXT;
+             effect: OUTLINE_SOFT_SHADOW;
+             clip_to: "score_clipper";
+             description { state: "default" 0.0;
+                rel1.to: "hud_bar";
+                rel2 {
+                   to_x: "ops_bar";
+                   to_y: "hud_bar";
+                   relative: 0 1;
+                }
+                color_class: "score";
+                text {
+                   font: "nines";
+                   size: 18;
+                   text: "000666";
+                   align: 0.5 1;
+                }
+             }
+             description { state: "incremented" 0.0;
+                inherit: "default" 0.0;
+                text.text: "000676";
+             }
+          }
+
+          part { name: "ops_bar";
+             type: RECT;
+             clip_to: "fader_clipper";
+             description { state: "default" 0.0;
+                visible: 0;
+                max: 160 36;
+                rel1.to: "hud_bar";
+                rel1.offset: 0 4;
+                rel2.to: "hud_bar";
+                align: 0.5 0.5;
+             }
+          }
+
+          ADD_DEAD_BUTTON_I(0, "plus")
+          ADD_DEAD_BUTTON_I(1, "minus")
+          ADD_BUTTON_I(2, "times")
+          ADD_DEAD_BUTTON_I(3, "over")
+
+          part { name: "time";
+             type: TEXT;
+             effect: OUTLINE_SOFT_SHADOW;
+             clip_to: "time_clipper";
+             description { state: "default" 0.0;
+                rel1 {
+                   to_x: "ops_bar";
+                   to_y: "hud_bar";
+                   relative: 1 0;
+                }
+                rel2.to: "hud_bar";
+                color_class: "time";
+                text {
+                   font: "nines";
+                   size: 20;
+                   text: "Day 1";
+                   align: 0.5 0.5;
+                }
+             }
+             ADD_DAY(2)
+             ADD_DAY(3)
+             ADD_DAY(4)
+             ADD_DAY(5)
+             ADD_DAY(6)
+             ADD_DAY(7)
+             ADD_DAY(8)
+             ADD_DAY(9)
+          }
+
+          part { name: "master9";
+             clip_to: "fader_clipper";
+             description { state: "default" 0.0;
+                image.normal: "9cloud.png";
+                min: 150 80;
+                max: 150 80;
+                rel1.offset: 280 70;
+                align: 0 0;
+                color: 255 255 255 0;
+             }
+             description { state: "visible" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+             }
+          }
+
+          part { name: "num1";
+             clip_to: "fader_clipper";
+             description { state: "default" 0.0;
+                image.normal: "1.png";
+                min: 50 50;
+                max: 50 50;
+                rel1.offset: 90 120;
+                align: 0 0;
+                color: 255 255 255 0;
+             }
+             description { state: "visible" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+             }
+          }
+
+          part { name: "sigplus";
+             clip_to: "fader_clipper";
+             description { state: "default" 0.0;
+                image.normal: "plus_full.png";
+                min: 40 40;
+                max: 40 40;
+                rel1.offset: 170 130;
+                align: 0 0;
+                color: 255 255 255 0;
+             }
+             description { state: "visible" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+             }
+          }
+
+          part { name: "num2";
+             clip_to: "fader_clipper";
+             description { state: "default" 0.0;
+                image.normal: "2.png";
+                min: 50 50;
+                max: 50 50;
+                rel1.offset: 240 120;
+                align: 0 0;
+                color: 255 255 255 0;
+             }
+             description { state: "visible" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+             }
+          }
+
+          part { name: "num3";
+             clip_to: "fader_clipper";
+             description { state: "default" 0.0;
+                image.normal: "3.png";
+                min: 10 10;
+                max: 10 10;
+                rel1.offset: 100 270;
+                align: 0 0;
+                color: 255 255 255 0;
+             }
+             description { state: "visible" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+             }
+             description { state: "pos_final" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+                rel1.offset: 140 430;
+                min: 50 50;
+                max: 50 50;
+             }
+             description { state: "pos_final_hidden" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 0;
+                rel1.offset: 140 430;
+                min: 50 50;
+                max: 50 50;
+             }
+             description { state: "pos_op" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+                rel1.offset: 140 320;
+                min: 35 35;
+                max: 35 35;
+             }
+          }
+
+          part { name: "num4";
+             clip_to: "fader_clipper";
+             description { state: "default" 0.0;
+                image.normal: "4.png";
+                min: 15 15;
+                max: 15 15;
+                rel1.offset: 100 290;
+                align: 0 0;
+                color: 255 255 255 0;
+             }
+             description { state: "visible" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+             }
+             description { state: "pos_op" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+                rel1.offset: 140 370;
+                min: 40 40;
+                max: 40 40;
+             }
+             description { state: "pos_op_hide" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 0;
+                rel1.offset: 140 370;
+                min: 40 40;
+                max: 40 40;
+             }
+          }
+
+          part { name: "num5";
+             clip_to: "fader_clipper";
+             description { state: "default" 0.0;
+                image.normal: "5.png";
+                min: 20 20;
+                max: 20 20;
+                rel1.offset: 100 310;
+                align: 0 0;
+                color: 255 255 255 0;
+             }
+             description { state: "visible" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+             }
+             description { state: "pos_op" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+                rel1.offset: 140 430;
+                min: 50 50;
+                max: 50 50;
+             }
+             description { state: "pos_op_hide" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 0;
+                rel1.offset: 140 430;
+                min: 50 50;
+                max: 50 50;
+             }
+          }
+
+          ADD_FAKE_COMBO(1, "1")
+          ADD_FAKE_COMBO(2, "4")
+          ADD_FAKE_COMBO(3, "2")
+          ADD_FAKE_COMBO(5, "3")
+
+            part { name: "instructions_box";
+                type: RECT;
+                description { state: "default" 0.0;
+                    rel1.relative: 0 0.8;
+                    color: 0 0 0 255;
+                }
+            }
+
+            part { name: "instructions_clipper";
+                type: RECT;
+                description { state: "default" 0.0;
+                    rel1.to: "instructions_box";
+                    rel1.offset: 10 4;
+                    rel2.to: "instructions_box";
+                    rel2.offset: -10 -4;
+                    color: 255 255 255 0;
+                }
+                description { state: "visible" 0.0;
+                    inherit: "default" 0.0;
+                    color: 255 255 255 255;
+                }
+            }
+
+            part { name: "instructions_msgs";
+                type: TEXTBLOCK;
+                clip_to: "instructions_clipper";
+                description { state: "default" 0.0;
+                    rel1.to: "instructions_clipper";
+                    rel2.to: "instructions_clipper";
+                    color_class: "instructions";
+                    text {
+                        text: "";
+                        style: "instructions";
+                    }
+                }
+               ADD_MSG(1, "These are hard times.<br>The digits 9 are enslaving the other digits for these operating continuously in order to generate more 9s.")
+               ADD_MSG(2, "You're a digit 6, one of the few fugitives who survived. You were undercovered as 9 for years, providing information for your HQ.")
+               ADD_MSG(3, "But your arms fail after years of handplant and you have to survive for nine days until your comrades rescue you.")
+               ADD_MSG(4, "Now, the instructions!<br>You can press 'Enter' at any time to go to the next tip, or 'Esc' to go back to the menu.")
+               ADD_MSG(5, "Let's start by the hud (heads-up display).")
+               ADD_MSG(6, "Days counter...<br>Don't forget, you need to survive for nine days...")
+               ADD_MSG(7, "Here are the operations cooldown. Every time you use one of them, it will be darkened. You can't use it again until the shadow is gone.")
+               ADD_MSG(8, "In the left, you can see the hi-score at the top, and your current score just below it.")
+               ADD_MSG(9, "The master 9 will be forcing the other digits to operate. The generated numbers will cross the desert hunting you. Looking at them, you'll know the next number to run searching for you.")
+               ADD_MSG(10, "You can defend yourself operating two numbers. You just need to press the operation key on your keyboard: '+', '-', '/' or '*'. The two numbers nearest to you will be used.")
+               ADD_MSG(11, "After you select an operation, a cursor will start to blink in the center of the screen. You should enter the result between the 2 numbers using the selected operation. Press 'Enter' to confirm.")
+               ADD_MSG(12, "Minus and division will always use the largest number as first operand.<br>If the result is correct, score will be incremented.")
+               ADD_MSG(13, "But if it's wrong, you won't earn anything.")
+               ADD_MSG(14, "If you take too long, the number will reach you, at the bottom of the screen.")
+               ADD_MSG(15, "At each correct operation you'll receive an incremented bonus. But if a number reaches you, the bonus counter will be reseted.")
+               ADD_MSG(16, "Good luck, digit 6.")
+            }
+
+        }
+
+        programs {
+
+         ADD_MSG_PROG(1)
+         ADD_MSG_PROG(2)
+         ADD_MSG_PROG(3)
+         ADD_MSG_PROG(4)
+         ADD_MSG_PROG(5)
+         ADD_MSG_PROG(6)
+         ADD_MSG_PROG(7)
+         ADD_MSG_PROG(8)
+         ADD_MSG_PROG(9)
+         ADD_MSG_PROG(10)
+         ADD_MSG_PROG(11)
+         ADD_MSG_PROG(12)
+         ADD_MSG_PROG(13)
+         ADD_MSG_PROG(14)
+         ADD_MSG_PROG(15)
+         ADD_MSG_PROG(16)
+
+         program { name: "show_intro1_1";
+            signal: "step_1";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.3;
+            target: "intro_clipper";
+            after: "show_intro1_3";
+         }
+         program { name: "show_intro1_3";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "intro_clipper";
+         }
+
+         program { name: "show_intro2_1";
+            signal: "step_2";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.3;
+            target: "intro_clipper";
+            after: "show_intro2_2";
+         }
+         program { name: "show_intro2_2";
+            action: STATE_SET "intro2" 0.0;
+            target: "intro";
+            after: "show_intro2_3";
+         }
+         program { name: "show_intro2_3";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "intro_clipper";
+         }
+
+         program { name: "show_intro3_1";
+            signal: "step_3";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.3;
+            target: "intro_clipper";
+            after: "show_intro3_2";
+         }
+         program { name: "show_intro3_2";
+            action: STATE_SET "intro3" 0.0;
+            target: "intro";
+            after: "show_intro3_3";
+         }
+         program { name: "show_intro3_3";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "intro_clipper";
+         }
+
+         program { name: "intro_restore";
+            signal: "step_4";
+            action: STATE_SET "default" 0.0;
+            target: "intro_clipper";
+            target: "intro";
+         }
+
+         program { name: "fader_show";
+            signal: "step_4";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "fader_clipper";
+         }
+
+         program { name: "hud_anim";
+            signal: "step_5";
+            action: STATE_SET "visible" 0.0;
+            transition: DECELERATE 1;
+            target: "hud_bar";
+         }
+         program { name: "hud_restore";
+            signal: "step_6";
+            action: STATE_SET "visible" 0.0;
+            target: "hud_bar";
+         }
+
+         program { name: "day_anim";
+            signal: "step_6";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time_clipper";
+            after: "day_anim2";
+         }
+         program { name: "day_anim2";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time_clipper";
+            after: "day_anim3";
+         }
+         program { name: "day_anim3";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time_clipper";
+            after: "day_anim4";
+         }
+         program { name: "day_anim4";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time_clipper";
+            after: "day_anim5";
+         }
+         program { name: "day_anim5";
+            action: STATE_SET "day_2" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time";
+            after: "day_anim6";
+         }
+         program { name: "day_anim6";
+            action: STATE_SET "day_3" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time";
+            after: "day_anim7";
+         }
+         program { name: "day_anim7";
+            action: STATE_SET "day_4" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time";
+            after: "day_anim8";
+         }
+         program { name: "day_anim8";
+            action: STATE_SET "day_5" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time";
+            after: "day_anim9";
+         }
+         program { name: "day_anim9";
+            action: STATE_SET "day_6" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time";
+            after: "day_anim10";
+         }
+         program { name: "day_anim10";
+            action: STATE_SET "day_7" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time";
+            after: "day_anim11";
+         }
+         program { name: "day_anim11";
+            action: STATE_SET "day_8" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time";
+            after: "day_anim12";
+         }
+         program { name: "day_anim12";
+            action: STATE_SET "day_9" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time";
+            after: "day_anim13";
+         }
+         program { name: "day_anim13";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time_clipper";
+            after: "day_anim14";
+         }
+         program { name: "day_anim14";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time_clipper";
+            after: "day_anim15";
+         }
+         program { name: "day_anim15";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time_clipper";
+            after: "day_anim16";
+         }
+         program { name: "day_anim16";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "time_clipper";
+            after: "day_anim17";
+         }
+         program { name: "day_anim17";
+            action: STATE_SET "default" 0.0;
+            target: "time";
+            after: "day_anim";
+         }
+         program { name: "day_restore";
+            signal: "step_7";
+            action: STATE_SET "default" 0.0;
+            target: "time_clipper";
+            target: "time";
+         }
+
+         program { name: "ops_anim";
+            signal: "step_7";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "ops_clipper";
+            after: "ops_anim2";
+         }
+         program { name: "ops_anim2";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "ops_clipper";
+            after: "ops_anim3";
+         }
+         program { name: "ops_anim3";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "ops_clipper";
+            after: "ops_anim4";
+         }
+         program { name: "ops_anim4";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "ops_clipper";
+            after: "ops_anim5";
+         }
+         program { name: "ops_anim5";
+            action: STATE_SET "full" 0.0;
+            target: "times_shadow";
+            after: "ops_anim6";
+         }
+         program { name: "ops_anim6";
+            action: STATE_SET "default" 0.0;
+            target: "times_shadow";
+            transition: LINEAR 2.5;
+            after: "ops_anim7";
+         }
+         program { name: "ops_anim7";
+            action: STATE_SET "visible" 0.0;
+            target: "times_hi";
+            after: "ops_anim8";
+         }
+         program { name: "ops_anim8";
+            action: STATE_SET "default" 0.0;
+            target: "times_hi";
+            transition: ACCELERATE 0.3;
+            after: "ops_anim";
+         }
+         program { name: "ops_restore";
+            signal: "step_8";
+            action: STATE_SET "default" 0.0;
+            target: "ops_clipper";
+            target: "times_shadow";
+            target: "times_hi";
+         }
+
+         program { name: "score_anim";
+            signal: "step_8";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            target: "hiscore_clipper";
+            after: "score_anim2";
+         }
+         program { name: "score_anim2";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            target: "hiscore_clipper";
+            after: "score_anim3";
+         }
+         program { name: "score_anim3";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            target: "hiscore_clipper";
+            after: "score_anim4";
+         }
+         program { name: "score_anim4";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            target: "hiscore_clipper";
+            after: "score_anim5";
+         }
+         program { name: "score_anim5";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "hiscore_clipper";
+            after: "score_anim6";
+         }
+         program { name: "score_anim6";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "hiscore_clipper";
+            after: "score_anim7";
+         }
+         program { name: "score_anim7";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "hiscore_clipper";
+            after: "score_anim8";
+         }
+         program { name: "score_anim8";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "hiscore_clipper";
+            after: "score_anim9";
+         }
+         program { name: "score_anim9";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "score_anim10";
+         }
+         program { name: "score_anim10";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "score_anim11";
+         }
+         program { name: "score_anim11";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "score_anim12";
+         }
+         program { name: "score_anim12";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "score_anim";
+         }
+         program { name: "score_restore";
+            signal: "step_9";
+            action: STATE_SET "default" 0.0;
+            target: "score_clipper";
+            target: "hiscore_clipper";
+         }
+
+         program { name: "master_anim";
+            signal: "step_9";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "master9";
+            after: "master_anim2";
+         }
+         program { name: "master_anim2";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "master9";
+            after: "master_anim3";
+         }
+         program { name: "master_anim3";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "master9";
+            after: "master_anim4";
+         }
+         program { name: "master_anim4";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "master9";
+            after: "master_anim5";
+         }
+         program { name: "master_anim5";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "master9";
+            after: "master_anim6";
+         }
+         program { name: "master_anim6";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num1";
+            target: "num2";
+            target: "sigplus";
+            after: "master_anim7";
+         }
+         program { name: "master_anim7";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num1";
+            target: "num2";
+            target: "sigplus";
+            after: "master_anim8";
+         }
+         program { name: "master_anim8";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num1";
+            target: "num2";
+            target: "sigplus";
+            after: "master_anim9";
+         }
+         program { name: "master_anim9";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num1";
+            target: "num2";
+            target: "sigplus";
+            after: "master_anim10";
+         }
+         program { name: "master_anim10";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num1";
+            target: "num2";
+            target: "sigplus";
+            after: "master_anim11";
+         }
+         program { name: "master_anim11";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num1";
+            target: "num2";
+            target: "sigplus";
+            after: "master_anim12";
+         }
+         program { name: "master_anim12";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num3";
+            after: "master_anim13";
+         }
+         program { name: "master_anim13";
+            action: STATE_SET "pos_final" 0.0;
+            transition: ACCELERATE 3;
+            target: "num3";
+            after: "master_anim14";
+         }
+         program { name: "master_anim14";
+            action: STATE_SET "default" 0.0;
+            target: "num3";
+            target: "master9";
+            after: "master_anim";
+         }
+         program { name: "master_restore";
+            signal: "step_10";
+            action: STATE_SET "default" 0.0;
+            target: "num1";
+            target: "num2";
+            target: "num3";
+            target: "sigplus";
+         }
+         program { name: "master_restore2";
+            signal: "step_10";
+            action: STATE_SET "visible" 0.0;
+            target: "master9";
+         }
+
+         program { name: "defense_anim";
+            signal: "step_10";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num3";
+            target: "num4";
+            target: "num5";
+            after: "defense_anim2";
+         }
+         program { name: "defense_anim2";
+            action: STATE_SET "pos_op" 0.0;
+            transition: ACCELERATE 1.4;
+            target: "num3";
+            target: "num4";
+            target: "num5";
+            after: "defense_anim3";
+         }
+         program { name: "defense_anim3";
+            action: SIGNAL_EMIT "plus" "";
+            after: "defense_anim4";
+         }
+         program { name: "defense_anim4";
+            action: STATE_SET "pos_op_hide" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num4";
+            target: "num5";
+            after: "defense_anim5";
+         }
+         program { name: "defense_anim5";
+            action: STATE_SET "pos_op" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num4";
+            target: "num5";
+            after: "defense_anim6";
+         }
+         program { name: "defense_anim6";
+            action: STATE_SET "pos_op_hide" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num4";
+            target: "num5";
+            after: "defense_anim7";
+         }
+         program { name: "defense_anim7";
+            action: STATE_SET "pos_op" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num4";
+            target: "num5";
+            after: "defense_anim8";
+         }
+         program { name: "defense_anim8";
+            action: STATE_SET "pos_op_hide" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num4";
+            target: "num5";
+            after: "defense_anim9";
+         }
+         program { name: "defense_anim9";
+            action: STATE_SET "pos_op" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "num4";
+            target: "num5";
+            after: "defense_anim10";
+         }
+         program { name: "defense_anim10";
+            action: STATE_SET "default" 0.0;
+            target: "num3";
+            target: "num4";
+            target: "num5";
+            target: "operation_plus";
+            after: "defense_anim";
+         }
+         program { name: "defense_restore";
+            signal: "step_11";
+            action: STATE_SET "default" 0.0;
+            target: "num3";
+            target: "operation_plus";
+         }
+         program { name: "defense_restore2";
+            signal: "step_11";
+            action: STATE_SET "pos_op" 0.0;
+            target: "num4";
+            target: "num5";
+         }
+
+         program { name: "confirm_anim";
+            signal: "step_11";
+            action: SIGNAL_EMIT "times" "";
+            after: "confirm_anim2";
+         }
+         program { name: "confirm_anim2";
+             action: STATE_SET "visible" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "confirm_anim3";
+          }
+         program { name: "confirm_anim3";
+             action: STATE_SET "default" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "confirm_anim4";
+          }
+         program { name: "confirm_anim4";
+             action: STATE_SET "visible" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "confirm_anim5";
+          }
+         program { name: "confirm_anim5";
+             action: STATE_SET "default" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "confirm_anim6";
+          }
+         program { name: "confirm_anim6";
+             action: STATE_SET "visible" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "confirm_anim7";
+          }
+         program { name: "confirm_anim7";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "result_text";
+            target: "result_clip";
+            after: "confirm_anim8";
+         }
+         program { name: "confirm_anim8";
+            action: STATE_SET "2" 0.0;
+            target: "result_text";
+            transition: ACCELERATE 0.3;
+            after: "confirm_anim9";
+         }
+         program { name: "confirm_anim9";
+            action: STATE_SET "20" 0.0;
+            target: "result_text";
+            transition: ACCELERATE 0.3;
+            after: "confirm_anim10";
+         }
+         program { name: "confirm_anim10";
+            action: STATE_SET "20" 0.0;
+            target: "result_text";
+            transition: ACCELERATE 0.3;
+            after: "confirm_anim11";
+         }
+         program { name: "confirm_anim11";
+            action: STATE_SET "default" 0.0;
+            target: "result_text";
+            target: "result_clip";
+            after: "confirm_anim";
+         }
+         program { name: "confirm_restore";
+            signal: "step_12";
+            action: STATE_SET "default" 0.0;
+            target: "result_text";
+            target: "result_clip";
+            target: "operation_times";
+         }
+
+         program { name: "correct_anim";
+            signal: "step_12";
+            action: SIGNAL_EMIT "times" "";
+            after: "correct_anim2";
+         }
+         program { name: "correct_anim2";
+             action: STATE_SET "visible" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "correct_anim3";
+          }
+         program { name: "correct_anim3";
+             action: STATE_SET "default" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "correct_anim4";
+          }
+         program { name: "correct_anim4";
+             action: STATE_SET "visible" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "correct_anim5";
+          }
+         program { name: "correct_anim5";
+             action: STATE_SET "default" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "correct_anim6";
+          }
+         program { name: "correct_anim6";
+             action: STATE_SET "visible" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "correct_anim7";
+          }
+         program { name: "correct_anim7";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "result_text";
+            target: "result_clip";
+            after: "correct_anim8";
+         }
+         program { name: "correct_anim8";
+            action: STATE_SET "2" 0.0;
+            target: "result_text";
+            transition: ACCELERATE 0.3;
+            after: "correct_anim9";
+         }
+         program { name: "correct_anim9";
+            action: STATE_SET "20" 0.0;
+            target: "result_text";
+            transition: ACCELERATE 0.3;
+            after: "correct_anim10";
+         }
+         program { name: "correct_anim10";
+            action: STATE_SET "20" 0.0;
+            target: "result_text";
+            transition: ACCELERATE 0.3;
+            after: "correct_anim11";
+         }
+         program { name: "correct_anim11";
+             action: STATE_SET "correct" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.2;
+             after: "correct_anim12";
+         }
+         program { name: "correct_anim12";
+            action: STATE_SET "default" 0.0;
+            target: "result_text";
+            target: "result_clip";
+            after: "correct_anim13";
+         }
+         program { name: "correct_anim13";
+            action: STATE_SET "default" 0.0;
+            target: "num4";
+            target: "num5";
+            after: "correct_anim14";
+         }
+         program { name: "correct_anim14";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "correct_anim15";
+         }
+         program { name: "correct_anim15";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "correct_anim16";
+         }
+         program { name: "correct_anim16";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "correct_anim17";
+         }
+         program { name: "correct_anim17";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "correct_anim18";
+         }
+         program { name: "correct_anim18";
+            action: STATE_SET "incremented" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score";
+            after: "correct_anim19";
+         }
+         program { name: "correct_anim19";
+            action: STATE_SET "hidden" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "correct_anim20";
+         }
+         program { name: "correct_anim20";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            after: "correct_anim21";
+         }
+         program { name: "correct_anim21";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "score_clipper";
+            target: "score";
+            after: "correct_anim22";
+         }
+         program { name: "correct_anim22";
+            action: STATE_SET "pos_op" 0.0;
+            target: "num4";
+            target: "num5";
+            after: "correct_anim";
+         }
+         program { name: "correct_restore";
+            signal: "step_13";
+            action: STATE_SET "default" 0.0;
+            target: "result_text";
+            target: "result_clip";
+            target: "score";
+            target: "score_clipper";
+            target: "operation_times";
+         }
+         program { name: "correct_restore2";
+            signal: "step_13";
+            action: STATE_SET "pos_op" 0.0;
+            target: "num4";
+            target: "num5";
+         }
+
+         program { name: "wrong_anim";
+            signal: "step_13";
+            action: SIGNAL_EMIT "times" "";
+            after: "wrong_anim2";
+         }
+         program { name: "wrong_anim2";
+             action: STATE_SET "visible" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "wrong_anim3";
+          }
+         program { name: "wrong_anim3";
+             action: STATE_SET "default" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "wrong_anim4";
+          }
+         program { name: "wrong_anim4";
+             action: STATE_SET "visible" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "wrong_anim5";
+          }
+         program { name: "wrong_anim5";
+             action: STATE_SET "default" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "wrong_anim6";
+          }
+         program { name: "wrong_anim6";
+             action: STATE_SET "visible" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.3;
+             after: "wrong_anim7";
+          }
+         program { name: "wrong_anim7";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "result_text";
+            target: "result_clip";
+            after: "wrong_anim8";
+         }
+         program { name: "wrong_anim8";
+            action: STATE_SET "2" 0.0;
+            target: "result_text";
+            transition: ACCELERATE 0.3;
+            after: "wrong_anim9";
+         }
+         program { name: "wrong_anim9";
+            action: STATE_SET "25" 0.0;
+            target: "result_text";
+            transition: ACCELERATE 0.3;
+            after: "wrong_anim10";
+         }
+         program { name: "wrong_anim10";
+            action: STATE_SET "25" 0.0;
+            target: "result_text";
+            transition: ACCELERATE 0.3;
+            after: "wrong_anim11";
+         }
+         program { name: "wrong_anim11";
+             action: STATE_SET "wrong" 0.0;
+             target: "result_text";
+             target: "result_clip";
+             transition: ACCELERATE 0.2;
+             after: "wrong_anim12";
+         }
+         program { name: "wrong_anim12";
+            action: STATE_SET "default" 0.0;
+            target: "result_text";
+            target: "result_clip";
+            after: "wrong_anim";
+         }
+         program { name: "wrong_restore";
+            signal: "step_14";
+            action: STATE_SET "default" 0.0;
+            target: "result_text";
+            target: "result_clip";
+            target: "operation_times";
+            target: "num4";
+            target: "num5";
+         }
+
+         program { name: "fail_anim";
+            signal: "step_14";
+            action: STATE_SET "visible" 0.0;
+            target: "num3";
+            transition: ACCELERATE 0.3;
+            after: "fail_anim2";
+         }
+         program { name: "fail_anim2";
+            action: STATE_SET "pos_final" 0.0;
+            target: "num3";
+            transition: ACCELERATE 3;
+            after: "fail_anim3";
+         }
+         program { name: "fail_anim3";
+            action: STATE_SET "pos_final_hidden" 0.0;
+            target: "num3";
+            transition: ACCELERATE 0.3;
+            after: "fail_anim4";
+         }
+         program { name: "fail_anim4";
+            action: STATE_SET "pos_final" 0.0;
+            target: "num3";
+            transition: ACCELERATE 0.3;
+            after: "fail_anim5";
+         }
+         program { name: "fail_anim5";
+            action: STATE_SET "pos_final_hidden" 0.0;
+            target: "num3";
+            transition: ACCELERATE 0.3;
+            after: "fail_anim6";
+         }
+         program { name: "fail_anim6";
+            action: STATE_SET "pos_final" 0.0;
+            target: "num3";
+            transition: ACCELERATE 0.3;
+            after: "fail_anim7";
+         }
+         program { name: "fail_anim7";
+            action: STATE_SET "pos_final_hidden" 0.0;
+            target: "num3";
+            transition: ACCELERATE 0.3;
+            after: "fail_anim8";
+         }
+         program { name: "fail_anim8";
+            action: STATE_SET "pos_final" 0.0;
+            target: "num3";
+            transition: ACCELERATE 0.3;
+            after: "fail_anim9";
+         }
+         program { name: "fail_anim9";
+            action: STATE_SET "pos_final_hidden" 0.0;
+            target: "num3";
+            transition: ACCELERATE 0.3;
+            after: "fail_anim10";
+         }
+         program { name: "fail_anim10";
+            action: STATE_SET "default" 0.0;
+            target: "num3";
+            after: "fail_anim";
+         }
+         program { name: "fail_restore";
+            signal: "step_15";
+            action: STATE_SET "default" 0.0;
+            target: "num3";
+         }
+
+         program { name: "bonus_anim";
+            signal: "step_15";
+            action: STATE_SET "visible" 0.0;
+            target: "combo1";
+            target: "combo1_clip";
+            after: "bonus_anim2";
+         }
+         program { name: "bonus_anim2";
+            action: STATE_SET "pop" 0.0;
+            target: "combo1";
+            target: "combo1_clip";
+            transition: ACCELERATE 1;
+            after: "bonus_anim3";
+         }
+         program { name: "bonus_anim3";
+            action: STATE_SET "default" 0.0;
+            target: "combo1";
+            target: "combo1_clip";
+            after: "bonus_anim4";
+         }
+         program { name: "bonus_anim4";
+            action: STATE_SET "visible" 0.0;
+            target: "combo3";
+            target: "combo3_clip";
+            after: "bonus_anim5";
+         }
+         program { name: "bonus_anim5";
+            action: STATE_SET "pop" 0.0;
+            target: "combo3";
+            target: "combo3_clip";
+            transition: ACCELERATE 1;
+            after: "bonus_anim6";
+         }
+         program { name: "bonus_anim6";
+            action: STATE_SET "default" 0.0;
+            target: "combo3";
+            target: "combo3_clip";
+            after: "bonus_anim7";
+         }
+         program { name: "bonus_anim7";
+            action: STATE_SET "visible" 0.0;
+            target: "combo5";
+            target: "combo5_clip";
+            after: "bonus_anim8";
+         }
+         program { name: "bonus_anim8";
+            action: STATE_SET "pop" 0.0;
+            target: "combo5";
+            target: "combo5_clip";
+            transition: ACCELERATE 1;
+            after: "bonus_anim9";
+         }
+         program { name: "bonus_anim9";
+            action: STATE_SET "default" 0.0;
+            target: "combo5";
+            target: "combo5_clip";
+            after: "bonus_anim10";
+         }
+         program { name: "bonus_anim10";
+            action: STATE_SET "visible" 0.0;
+            target: "combo2";
+            target: "combo2_clip";
+            after: "bonus_anim11";
+         }
+         program { name: "bonus_anim11";
+            action: STATE_SET "pop" 0.0;
+            target: "combo2";
+            target: "combo2_clip";
+            transition: ACCELERATE 1;
+            after: "bonus_anim12";
+         }
+         program { name: "bonus_anim12";
+            action: STATE_SET "default" 0.0;
+            target: "combo2";
+            target: "combo2_clip";
+            after: "bonus_anim";
+         }
+         program { name: "bonus_restore";
+            signal: "step_16";
+            action: STATE_SET "default" 0.0;
+            target: "combo1";
+            target: "combo1_clip";
+            target: "combo2";
+            target: "combo2_clip";
+            target: "combo3";
+            target: "combo3_clip";
+            target: "combo5";
+            target: "combo5_clip";
+         }
+
+         program { name: "good_luck";
+            signal: "step_16";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.3;
+            target: "fader_clipper";
+         }
+
+         program { name: "reset";
+            signal: "reset";
+            action: STATE_SET "default" 0.0;
+            target: "combo1";
+            target: "combo1_clip";
+            target: "combo2";
+            target: "combo2_clip";
+            target: "combo3";
+            target: "combo3_clip";
+            target: "combo5";
+            target: "combo5_clip";
+            target: "fader_clipper";
+            target: "intro_clipper";
+            target: "intro";
+            target: "hud_bar";
+            target: "time_clipper";
+            target: "time";
+            target: "ops_clipper";
+            target: "times_shadow";
+            target: "times_hi";
+            target: "master9";
+            target: "num1";
+            target: "num2";
+            target: "num3";
+            target: "num4";
+            target: "num5";
+            target: "sigplus";
+            target: "operation_plus";
+            target: "operation_times";
+            target: "result_text";
+            target: "result_clip";
+            target: "score";
+            target: "score_clipper";
+            target: "hiscore_clipper";
+            target: "operation_times";
+         }
+    }
+}

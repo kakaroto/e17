@@ -1,0 +1,16 @@
+group { name: "win";
+
+   images {
+      image: "win.png" COMP;
+   }
+
+   parts {
+
+      part { name: "winscreen";
+         description { state: "default" 0.0;
+            image.normal: "win.png";
+         }
+      }
+
+   }
+}

@@ -1,0 +1,17 @@
+improve cooldown system (it should have more cooldown time to +,
+ then, -, and then * /)
+when applying an operation to two numbers, the result should be put into the
+list of numbers again, as a new number;
+
+ - make the two numbers at the top with the operation start to move as the timer
+   goes on;
+ - show the two numbers that are being operated in the middle of the screen.
+
+
+Maybe in the future
+===================
+
+ - make different points for each operation?
+ - increase the points when different operations are used? Maybe a combo for this too?
+ - increase the game difficult with more days, reducing the number of 0s and 1s that appear,
+   maybe even increasing the digits of the generated numbers?

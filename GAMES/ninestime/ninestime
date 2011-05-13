@@ -1,0 +1,759 @@
+#!/usr/bin/python
+#
+# Bruno Dilly, Joao Vita, Rafael Antognolli and Leandro Pereira wrote this file.
+# As long as you retain this notice you can do whatever you want with this
+# stuff. If we meet some day, and you think this stuff if worth it, you can buy
+# me a beer in return.
+#
+
+from os.path import abspath, join
+from ecore.evas import SoftwareX11
+from ecore import main_loop_begin, main_loop_quit, animator_frametime_set, \
+        timer_add, animator_add
+from edje import Edje
+from evas import ClippedSmartObject, Rectangle, FilledImage
+from collections import defaultdict
+from functools import partial
+from time import strftime, gmtime
+from emotion import Emotion
+from random import Random
+from math import log
+
+import cPickle
+
+DATA_DIR = abspath("./data")
+THEME = join(DATA_DIR, "theme", "default.edj")
+MENU_MUSIC = "flanicx_-_2_dias_(synth_wave_gap_solo).mp3"
+GAME_MUSIC = "annabloom_-_Percussion_Loops_1a_(5_4).mp3"
+OPS_SOUND = "111872__candlegravity__tweak_scratch_2.wav"
+RIGHT_SOUND = "111877__candlegravity__zipper_1.wav"
+WRONG_SOUND = "111873__candlegravity__tweat_down_1.wav"
+GAME_START_SOUND = "Strong_Punch-Mike_Koenig-574430706.wav"
+NTDATAFILE = ".ntdata.pickle"
+
+def _get_home():
+    import os
+    HOME = os.getenv("HOME", "/tmp")
+    return HOME
+
+class NTData:
+    """
+    Class that will store all persistent data of the game.
+    """
+
+    def __init__(self):
+        self.hiscore = 0
+
+    @staticmethod
+    def load():
+        try:
+            f = open(_get_home() + "/.ntdata.pickle")
+        except IOError, e:
+            print "Couldn't open pickle file:", e
+            ntdata = NTData()
+        else:
+            try:
+                ntdata = cPickle.load(f)
+            except:
+                print "couldn't load pickle file, use a new data file"
+                ntdata = NTData()
+            finally:
+                f.close()
+
+        return ntdata
+
+    def save(self):
+        try:
+            f = open(_get_home() + "/.ntdata.pickle", "w")
+        except IOError, e:
+            print "Couldn't open pickle file:", e
+        else:
+            cPickle.dump(self, f)
+            f.close()
+
+    def hiscore_update(self, points):
+        if points > self.hiscore:
+            self.hiscore = points
+
+    def hiscore_get(self):
+        return self.hiscore
+
+    def hiscore_set(self, points):
+        self.hiscore = points
+
+
+class Operation:
+    def __init__(self, game, signal, symbol):
+        self.signal = signal
+        self.symbol = symbol
+        self.game = game
+        self.cooldown = 0
+        self.game.part_drag_value_set(self.signal + "_block", 0, 0)
+        self.result = ""
+        self.digits = []
+        self.timer = None
+        for i in range(10):
+            self.digits.append(str(i))
+
+    def decrease_cooldown(self):
+        self.cooldown = self.cooldown - 4
+        drag = self.cooldown / 100.
+        self.game.part_drag_value_set(self.signal + "_block", 0, drag)
+        if not drag:
+            self.game.signal_emit(self.signal + "_hi", "")
+            self.timer.delete()
+            self.timer = None
+        return self.cooldown
+
+    def stop(self):
+        if self.timer:
+            self.timer.delete()
+        self.cooldown = 0
+        self.game.part_drag_value_set(self.signal + "_block", 0, 0)
+
+    def input_text(self, obj, event):
+        kn = event.keyname
+        if kn in self.digits:
+            self.result += kn
+            self.game.part_text_set("result_text", self.result)
+            self.game.signal_emit("result_stop_blinking", "")
+        elif kn in ["Delete", "BackSpace"]:
+            self.result = "";
+            self.game.part_text_set("result_text", "|")
+            self.game.signal_emit("result_start_blinking", "")
+        elif kn == "Escape" or kn == "Return":
+            self.game.on_key_down_del(self.input_text)
+            result = int(self.result)
+            Hooks.fire("resultready", self.symbol, result)
+            self.result = ""
+
+    def fire(self):
+        if self.cooldown:
+            return
+        self.game.signal_emit(self.signal, "")
+        Hooks.fire("sound", OPS_SOUND)
+        self.cooldown = 100
+        self.timer = timer_add(0.1, self.decrease_cooldown)
+        drag = self.cooldown / 100.
+        self.game.part_drag_value_set(self.signal + "_block", 0, drag)
+        self.game.on_key_down_add(self.input_text)
+
+
+class Player:
+    def  __init__(self, ee):
+        game = ee.data["game"]
+        self.minus = Operation(game, "minus", '-')
+        self.plus = Operation(game, "plus", '+')
+        self.times = Operation(game, "times", '*')
+        self.over = Operation(game, "over", '/')
+        self.ee = ee
+
+    def stop_ops(self):
+        self.minus.stop()
+        self.plus.stop()
+        self.times.stop()
+        self.over.stop()
+
+
+class Score:
+    points = 0
+    combo = 0
+    inc = 10
+
+    def points_inc(self):
+        self.points += self.inc + self.combo
+        self._combo_inc()
+
+    def points_get(self):
+        return self.points
+
+    def combo_get(self):
+        return self.combo
+
+    def reset(self):
+        self.points = 0
+        self.combo = 0
+
+    def _combo_inc(self):
+        self.combo += 1
+
+    def combo_stop(self):
+        self.combo = 0
+
+    def __iadd__(self, y):
+        self.points_inc(y)
+
+    def __isub__(self, y):
+        self.points_dec(y)
+
+    def __str__(self):
+        return str(self.points)
+
+
+class Hooks:
+    hooks = defaultdict(list)
+
+    @staticmethod
+    def add(kind, fn, *args, **kwargs):
+        Hooks.hooks[kind].append(partial(fn, *args, **kwargs))
+
+    @staticmethod
+    def fire(kind, *args, **kwargs):
+        for hook in Hooks.hooks[kind]:
+            hook(*args, **kwargs)
+
+
+class RandomGen:
+
+    ops = ('+', '-', '*')
+
+    def __init__(self, cb=None, seed=None):
+        self.random = Random()
+        self.random.seed(seed)
+
+    def get_number(self):
+        return self.random.randint(0, 8)
+
+    def get_pair(self):
+        return (self.get_number(), self.get_number())
+
+    def get_op(self):
+        return self.random.choice(self.ops)
+
+
+def resize_cb(ee):
+    for d in ["bg", "menu", "game", "win"]:
+        ee.data[d].size = ee.evas.size
+
+class Screen:
+    def __init__(self, ee, name, on_show_hook_name=None):
+        self.ee = ee
+        self.screen = Edje(ee.evas, file=THEME, group=name)
+        self.screen.size = ee.evas.size
+        ee.data[name] = self.screen
+        if on_show_hook_name:
+            Hooks.add(on_show_hook_name, self.on_show)
+        else:
+            Hooks.add(name, self.on_show)
+        self.screen.on_key_down_add(self.on_key_down)
+
+        self.give_focus()
+
+    def on_show(self):
+        pass
+
+    def on_key_down(self):
+        pass
+
+    def hide(self):
+        self.lose_focus()
+        self.screen.hide()
+
+    def show(self):
+        self.screen.show()
+        self.give_focus()
+
+    def give_focus(self):
+        self.screen.focus = True
+
+    def lose_focus(self):
+        self.screen.focus = False
+
+class WinScreen(Screen):
+    def __init__(self, ee):
+        Screen.__init__(self, ee, "win")
+
+    def on_show(self):
+        self.give_focus()
+        self.show()
+
+    def on_key_down(self, obj, event):
+        kn = event.keyname
+        if kn == "Escape":
+            self.hide()
+            Hooks.fire("show_menu")
+
+
+class VisualNumber(ClippedSmartObject):
+
+    def __init__(self, canvas, number):
+        ClippedSmartObject.__init__(self, canvas)
+
+        self.img1 = FilledImage(canvas)
+        self.member_add(self.img1)
+        self.img1.show()
+        d1 = number % 10;
+        self.img1.file_set("data/theme/images/" + str(d1) + ".png")
+
+        if number >= 10:
+            self.img2 = FilledImage(canvas)
+            self.member_add(self.img2)
+            self.img2.show()
+            d2 = number / 10;
+            self.img2.file_set("data/theme/images/" + str(d2) + ".png")
+        self.number = number
+
+    def __str__(self):
+        return str(self.number)
+
+    def number_get(self):
+        return self.number
+
+    def resize(self, w, h):
+        self.img1.resize(w / 2, h)
+        self.img1.move(self.pos[0] + w / 2, self.pos[1])
+
+        if self.number >= 10:
+            self.img2.resize(w / 2, h)
+            self.img2.move(self.pos[0], self.pos[1])
+
+
+class VisualOperation(ClippedSmartObject):
+
+    op_file = {
+        '+': 'plus_bt.png',
+        '-': 'minus_bt.png',
+        '*': 'times_bt.png',
+        '/': 'over_bt.png',
+    }
+
+    def __init__(self, canvas, op):
+        ClippedSmartObject.__init__(self, canvas)
+
+        self.img = FilledImage(canvas)
+        self.member_add(self.img)
+        self.op = op
+
+        self._select_image()
+
+    def _select_image(self):
+        if self.op is None or not (self.op in self.op_file.keys()):
+            self.img.hide()
+            return
+
+        imgpath = 'data/theme/images/'
+        imgfile = imgpath + self.op_file[self.op]
+        self.img.file_set(imgfile)
+        self.img.show()
+
+    def op_set(self, op):
+        self.op = op
+        self._select_image()
+
+    def op_get(self):
+        return self.op
+
+    def __str__(self):
+        return str(self.op)
+
+    def __eq__(self, other):
+        return self.op == other
+
+    def __ne__(self, other):
+        return self.op != other
+
+    def resize(self, w, h):
+        self.img.resize(w, h)
+
+
+class NumbersArea(ClippedSmartObject):
+    """
+    Numbers will run from 0 to 1000.
+
+    Each tick of the clock will move them by 1, multiplied by a number of
+    pixels plus/times a speed (difficulty).
+
+    speed should go from 10 to 1000
+    """
+
+    min_run = 0
+    max_run = 1000
+
+    min_speed = 10.0
+
+    speed_increment = 1
+    speed_decrement = 10
+
+    max_timer_simulator = 1500
+
+    def __init__(self, ee):
+        ClippedSmartObject.__init__(self, ee.evas)
+
+        self.numbers = [] # list of tuples (visual number, position [0-100])
+        self.n1 = None
+        self.n2 = None
+        self.op = VisualOperation(ee.evas, None)
+        self.member_add(self.op)
+        self.op.resize(50, 50)
+        self.op.move(self.pos[0] + 150, self.pos[1])
+        self.op.show()
+        self.anim = None
+        self.speed = self.min_speed
+        self.ee = ee
+        self.randomgen = RandomGen(self._gen_cb)
+        self.timer_simulator = 0
+
+    def _gen_cb(self, pair, op):
+        self.add_tuple(pair, op)
+
+    def _add_new_tuple(self):
+        self.timer_simulator = 0
+        n1, n2 = self.randomgen.get_pair()
+        op = self.randomgen.get_op()
+
+        if n1 < n2:
+            n1, n2 = n2, n1
+        self.add_tuple((n1, n2), op)
+
+    def _anim_cb(self):
+        self.timer_simulator += self.speed
+        if self.timer_simulator > self.max_timer_simulator:
+            self._add_new_tuple()
+        for i, vn in enumerate(self.numbers):
+            vn = (vn[0], vn[1] + self.speed / 10)
+            self.numbers[i] = vn
+            if vn[1] > self.max_run:
+                self.expire_number(vn[0])
+                self.numbers.pop(i)[0].delete()
+            else:
+                self.move_number(vn[0], vn[1])
+        return True
+
+    def anim_start(self):
+        if not self.anim:
+            self.anim = animator_add(self._anim_cb)
+
+    def anim_stop(self):
+        if self.anim:
+            self.anim.delete()
+            self.anim = None
+
+    def speed_inc(self):
+        self.speed += self.speed_increment
+
+    def speed_dec(self):
+        self.speed -= self.speed_decrement
+        if self.speed < self.min_speed:
+            self.speed = self.min_speed
+
+    def add_tuple(self, pair, op):
+
+        if self.n1 != None and self.n2 != None and self.op != None:
+            mystr = str(self.n1) + ' ' + str(self.op) + ' ' + str(self.n2)
+            number = eval(mystr)
+            visual_number = VisualNumber(self.evas, number)
+            visual_number.resize(100, 50)
+            visual_number.show()
+            self.member_add(visual_number)
+            self.numbers.append((visual_number, 0))
+            self.move_number(visual_number, 0)
+            self.n1.delete()
+            self.n2.delete()
+
+        self.n1 = VisualNumber(self.evas, pair[0])
+        self.n1.resize(100, 50)
+        self.n1.show()
+        self.member_add(self.n1)
+        self.n2 = VisualNumber(self.evas, pair[1])
+        self.n2.resize(100, 50)
+        self.n2.show()
+        self.member_add(self.n2)
+        self.n1.move(self.pos[0] + 20, self.pos[1])
+        self.n2.move(self.pos[0] + 200, self.pos[1])
+        self.op.op_set(op)
+
+    @staticmethod
+    def size_function(y):
+        return 67.503 * log(y) - 362.115
+
+    @staticmethod
+    def walk_function(y):
+        return 15.1659554629 * log(y) + 19.9185536599
+
+    def move_number(self, vn, pos):
+        pos_y = self.pos[1] + 100 + pos * (self.size[1] - 100 - vn.size[1]) / \
+             self.max_run
+        pos_x = NumbersArea.walk_function(pos_y)
+        wid = hei = NumbersArea.size_function(pos_y)
+        vn.move(pos_x, pos_y + 45)
+        vn.resize(wid, hei)
+
+    def expire_number(self, vn):
+        self.speed_dec()
+        Hooks.fire("scoreslowdown")
+
+    def apply_result_operation(self, op, result):
+        if not self.check_operation(op):
+            self.ee.data["game"].signal_emit("result_wrong", "")
+            return
+        n1, pos = self.numbers[0]
+        n2, pos = self.numbers[1]
+        if n2.number_get() > n1.number_get():
+            n1, n2 = n2, n1
+        r = eval(str(n1) + ' ' + op + ' ' + str(n2))
+        if r != result:
+            self.ee.data["game"].signal_emit("result_wrong", "")
+            Hooks.fire("sound", WRONG_SOUND)
+        else:
+            self.ee.data["game"].signal_emit("result_correct", "")
+            Hooks.fire("sound", RIGHT_SOUND)
+            self.speed_inc()
+            Hooks.fire("scoreinc")
+
+            self.numbers.pop(0)
+            self.numbers.pop(0)
+            n1.delete()
+            n2.delete()
+
+    def check_operation(self, op):
+        if len(self.numbers) < 2:
+            return False
+        if op == '/' and self.numbers[1][0].number_get() == 0:
+            return False
+        return True
+
+    def clear(self):
+        for vn in self.numbers:
+            vn[0].delete()
+        self.numbers = []
+        if self.n1:
+            self.n1.delete()
+            self.n1 = None
+        if self.n2:
+            self.n2.delete()
+            self.n2 = None
+        self.op.op_set(None)
+        self.anim_stop()
+        self.speed = self.min_speed
+        self.timer_simulator = 0
+        self.anim = None
+
+    def resize(self, w, h):
+        for vn in self.numbers:
+            self.move_number(vn[0], vn[1])
+
+
+class GameScreen(Screen):
+    def __init__(self, ee):
+        Screen.__init__(self, ee, "game", on_show_hook_name="start_game")
+        self.numbers_area = NumbersArea(ee)
+        self.screen.part_swallow("numbers_area", self.numbers_area)
+        self.random = Random()
+        Hooks.add("resultready", self.apply_result_operation)
+        Hooks.add("scoreinc", self.score_inc)
+        Hooks.add("scoreslowdown", self.score_slowdown)
+
+    def _tock(self):
+        day = ((540 - self.ee.data["time"]) / 60) + 1
+        self.screen.part_text_set("time", "Day " + str(day))
+        if (self.ee.data["time"] < 1):
+            return False
+        return True
+
+    def _tick(self):
+        self.ee.data["time"] = self.ee.data["time"] - 1
+        if (self.ee.data["time"] < 1):
+            self._quit()
+            Hooks.fire("win")
+            return False
+        return True
+
+    def _quit(self):
+        self.ee.data.pop("timer").delete()
+        self.ee.data.pop("timer2").delete()
+        self.ee.data["player"].stop_ops()
+        self.numbers_area.clear()
+        self.hide()
+
+    def on_show(self):
+        self.screen.signal_emit("reset", "")
+        self.screen.part_text_set("time", "Day 1")
+        self.ee.data["time"] = 540
+        self.ee.data["timer"] = timer_add(1, self._tick)
+        self.ee.data["timer2"] = timer_add(60, self._tock)
+        Hooks.fire("music", GAME_MUSIC)
+        self.ee.data["player"] = Player(self.ee)
+        self.give_focus()
+        self.screen.part_text_set("hi-score",
+                '%06d' % (self.ee.data["ntdata"].hiscore_get()))
+        self.screen.part_text_set("score", "000000")
+        self.show()
+        self.numbers_area.anim_start()
+
+    def on_key_down(self, obj, event):
+        kn = event.key
+        if kn == "Escape":
+            self._quit()
+            Hooks.fire("show_menu")
+        elif kn in ["plus", "KP_Add"]:
+            self.ee.data["player"].plus.fire()
+            self.screen.part_text_set("result_text", "|")
+        elif kn in ["minus", "KP_Subtract"]:
+            self.ee.data["player"].minus.fire()
+            self.screen.part_text_set("result_text", "|")
+        elif kn in ["asterisk", "KP_Multiply"]:
+            self.ee.data["player"].times.fire()
+            self.screen.part_text_set("result_text", "|")
+        elif kn in ["slash", "KP_Divide"]:
+            self.ee.data["player"].over.fire()
+            self.screen.part_text_set("result_text", "|")
+
+    def apply_result_operation(self, op, result):
+        self.numbers_area.apply_result_operation(op, result)
+
+    def score_inc(self):
+        score = self.ee.data["score"]
+        score.points_inc()
+        combo = score.combo_get() - 1
+        if combo:
+            pos = self.random.randint(1, 5)
+            self.screen.part_text_set("combo%d" % (pos), "+" + str(combo))
+            self.screen.signal_emit("combo%d_pop" % (pos), "")
+        self.screen.part_text_set("score", '%06d' % (score.points_get()))
+
+    def score_slowdown(self):
+        score = self.ee.data["score"]
+        score.combo_stop()
+
+class MenuScreen(Screen):
+    def __init__(self, ee):
+        Screen.__init__(self, ee, "menu", on_show_hook_name="show_menu")
+
+    def on_show(self):
+        score = self.ee.data["score"]
+        points = score.points_get()
+        score.reset()
+        self.ee.data["ntdata"].hiscore_update(points)
+        self.screen.part_text_set(
+            "hi-score", '%06d' % (self.ee.data["ntdata"].hiscore_get()))
+        self.give_focus()
+        Hooks.fire("music", MENU_MUSIC)
+        self.show()
+
+    def on_key_down(self, obj, event):
+        kn = event.keyname
+        if kn  == "Escape":
+            main_loop_quit()
+        elif kn == "Return":
+            Hooks.fire("sound", GAME_START_SOUND)
+            self.hide()
+            Hooks.fire("start_game")
+        elif kn == "i":
+            self.hide()
+            Hooks.fire("show_instructions")
+
+class InstructionsScreen(Screen):
+    def __init__(self, ee):
+        Screen.__init__(self, ee, "instructions",
+                on_show_hook_name="show_instructions")
+        self.step = 1
+        self.timer = None
+        # get max steps from theme
+        self.max_step = int(self.screen.data_get("max_steps"))
+
+    def on_show(self):
+        Hooks.fire("music", GAME_MUSIC)
+        self.step = 1
+        self.give_focus()
+        self.screen.signal_emit("reset", "")
+        self.show()
+        self.screen.signal_emit("step_1", "")
+        self.timer = timer_add(8, self.increase_step)
+
+    def increase_step(self):
+        if self.step < 4:
+            self.step += 1
+            self.screen.signal_emit("step_%i" % (self.step), "")
+            return True
+        self.timer = None
+        return False
+
+    def on_key_down(self, obj, event):
+        kn = event.keyname
+        if kn  == "Escape":
+            if self.timer:
+                self.timer.delete
+                self.timer = None
+            self.hide()
+            Hooks.fire("show_menu")
+        elif kn == "Return":
+            if self.step < 4 and self.timer:
+                self.timer.delete()
+                self.timer = None
+            if self.step == self.max_step:
+                self.hide()
+                Hooks.fire("show_menu")
+            else:
+                self.step += 1
+                self.screen.signal_emit("step_%i" % (self.step), "")
+
+def sweet_emotion(ee):
+    def play(player, source = ""):
+        if source:
+            file_path = join(DATA_DIR, "sound", source)
+        else:
+            file_path = player.file
+        player.file = ""
+        player.file = file_path
+        player.play = True
+
+    music_player = Emotion(ee.evas, module_filename="gstreamer")
+    music_player.on_playback_finished_add(play)
+    sound_player = Emotion(ee.evas, module_filename="gstreamer")
+    Hooks.add("music", play, music_player)
+    Hooks.add("sound", play, sound_player)
+
+def _load_ntdata(ee):
+    try:
+        f = open("score.pickle")
+    except IOError, e:
+        print "No pickle file, start with a new score."
+        ee.data["ntdata"] = NTData()
+    else:
+        try:
+            ee.data["ntdata"] = cPickle.load(f)
+        except:
+            print "couldn't load pickle file, use a new data file"
+            ee.data["ntdata"] = NTData()
+        f.close()
+
+def game_main():
+    screen_size = (400, 600)
+    ee = SoftwareX11(w=screen_size[0], h=screen_size[1])
+
+    canvas = ee.evas
+    bg = canvas.Rectangle(color=(0, 0, 0, 255))
+    bg.size = canvas.size
+    bg.show()
+
+    ee.data["bg"] = bg
+    ee.data["score"] = Score()
+    ee.data["ntdata"] = NTData.load()
+    ee.size_min_set(*screen_size)
+    ee.size_max_set(*screen_size)
+    ee.callback_resize = resize_cb
+    ee.title = "Nines Time"
+
+    sweet_emotion(ee)
+
+    menu = MenuScreen(ee)
+    game = GameScreen(ee)
+    win = WinScreen(ee)
+    instructions = InstructionsScreen(ee)
+
+    Hooks.fire("show_menu")
+
+    # Sets the framerate of the game to 60FPS
+    animator_frametime_set(1.0 / 60.0)
+
+    ee.show()
+    main_loop_begin()
+
+    ee.data["ntdata"].save()
+
+    del canvas
+    del ee
+
+
+if __name__ == "__main__":
+    game_main()

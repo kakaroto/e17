@@ -1,0 +1,611 @@
+#define ADD_COMBO(_pos) \
+part { name: "combo"##_pos##"_clip"; \
+   type: RECT; \
+   description { state: "default " 0.0; \
+      color: 255 255 255 0; \
+   } \
+   description { state: "visible" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 255; \
+   } \
+   description { state: "pop" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 0; \
+   } \
+} \
+part { name: "combo"##_pos; \
+   clip_to: "combo"##_pos##"_clip"; \
+   type: TEXT; \
+   description { state: "default " 0.0; \
+      rel1.offset: (80 + _pos * 30) (300 - _pos * 50); \
+      color_class: "combo"; \
+      text { \
+         font: "nines"; \
+         size: 20; \
+         text: "0"; \
+      } \
+   } \
+   description { state: "visible" 0.0; \
+      inherit: "default" 0.0; \
+   } \
+   description { state: "pop" 0.0; \
+      inherit: "default" 0.0; \
+      text.size: 100; \
+      } \
+} \
+program { name: "combo"##_pos##"_visible"; \
+    signal: "combo"##_pos##"_pop"; \
+    action: STATE_SET "visible" 0.0; \
+    target: "combo"##_pos; \
+    target: "combo"##_pos##"_clip"; \
+    after: "combo"##_pos##"_pop"; \
+ } \
+program { name: "combo"##_pos##"_pop"; \
+    action: STATE_SET "pop" 0.0; \
+    target: "combo"##_pos; \
+    target: "combo"##_pos##"_clip"; \
+    transition: ACCELERATE 1; \
+    after: "combo"##_pos##"_hide"; \
+ } \
+program { name: "combo"##_pos##"_hide"; \
+   action: STATE_SET "default" 0.0; \
+   target: "combo"##_pos; \
+   target: "combo"##_pos##"_clip"; \
+}
+
+#define ADD_OPERATION(_name) \
+part { name: "operation_"_name; \
+    description { state: "default" 0.0; \
+        min: 30 30; \
+        max: 30 30; \
+        rel1.to: "hud_bar"; \
+        rel1.relative: 0 1; \
+        color: 255 255 255 0; \
+        image.normal: _name"_full.png"; \
+    } \
+    description { state: "visible" 0.0; \
+        inherit: "default" 0.0; \
+        color: 255 255 255 255; \
+    } \
+    description { state: "big" 0.0; \
+        inherit: "default" 0.0; \
+        color: 255 255 255 0; \
+        min: 600 600; \
+        max: 600 600; \
+    } \
+} \
+program { name: _name"_operation_show"; \
+    signal: _name; \
+    action: STATE_SET "visible" 0.0; \
+    target: "operation_"_name; \
+    after: _name"_operation_enlarge"; \
+} \
+program { name: _name"_operation_enlarge"; \
+    action: STATE_SET "big" 0.0; \
+    target: "operation_"_name; \
+    transition: ACCELERATE 0.5; \
+        after: _name"_hide_op"; \
+    } \
+    program { name: _name"_hide_op"; \
+        action: STATE_SET "default" 0.0; \
+        target: "operation_"_name; \
+    } \
+    program { name: _name"_result_box"; \
+        signal: _name; \
+        after: "show_result_text_and_box"; \
+    }
+
+#define ADD_BUTTON(_pos, _name) \
+part { name: _name"_bg"; \
+   type: RECT; \
+   description { state: "default" 0.0; \
+      min: 40 36; \
+      max: 40 36; \
+      align: 0 0; \
+      rel1.to: "ops_bar"; \
+      rel1.offset: (_pos * 40) 0; \
+      rel2.to: "ops_bar"; \
+      color: 255 255 255 0; \
+   } \
+} \
+part { name: _name; \
+   description { state: "default" 0.0; \
+      rel1.to: _name"_bg"; \
+      rel2.to: _name"_bg"; \
+      image.normal: _name"_bt.png"; \
+   } \
+} \
+part { name: _name"_block"; \
+   type: RECT; \
+   dragable { \
+      confine: _name"_bg"; \
+      x: 0 0 0; \
+      y: 1 1 0; \
+   } \
+   description { state: "default" 0.0; \
+      rel1.to: _name"_bg"; \
+      rel2.to: _name"_bg"; \
+      max: 1 1; \
+      visible: 0; \
+   } \
+} \
+part { name: _name"_shadow"; \
+   type: RECT; \
+   description { state: "default" 0.0; \
+      rel1.to: _name"_bg"; \
+      rel2 { \
+        to_x: _name"_bg"; \
+        to_y: _name"_block"; \
+      } \
+      color: 0 0 0 192; \
+   } \
+} \
+part { name: _name"_hi"; \
+   type: RECT; \
+   description { state: "default" 0.0; \
+      rel1.to: _name"_bg"; \
+      rel2.to: _name"_bg"; \
+      color: 255 255 255 0; \
+   } \
+   description { state: "visible" 0.0; \
+      inherit: "default" 0.0; \
+      color: 255 255 255 180; \
+   } \
+} \
+program { name: _name"_hi_on"; \
+   signal: _name"_hi"; \
+   action: STATE_SET "visible" 0.0; \
+   target: _name"_hi"; \
+   after: _name"_hi_off"; \
+} \
+program { name: _name"_hi_off"; \
+   action: STATE_SET "default" 0.0; \
+   target: _name"_hi"; \
+   transition: ACCELERATE 0.3; \
+}
+
+group { name: "game";
+
+   images {
+      image: "background.png" COMP;
+      image: "button.png" COMP;
+      image: "plus_bt.png" COMP;
+      image: "minus_bt.png" COMP;
+      image: "times_bt.png" COMP;
+      image: "over_bt.png" COMP;
+      image: "plus_full.png" COMP;
+      image: "minus_full.png" COMP;
+      image: "times_full.png" COMP;
+      image: "over_full.png" COMP;
+      image: "sky0.png" COMP;
+      image: "sky1.png" COMP;
+      image: "sky2.png" COMP;
+      image: "top-bar.png" COMP;
+      image: "clo.png" COMP;
+      image: "9cloud.png" COMP;
+   }
+
+   parts {
+
+      part { name: "sky_day";
+         description { state: "default" 0.0;
+            min: 400 278;
+            max: 400 278;
+            align: 0 0;
+            image.normal: "sky0.png";
+         }
+      }
+
+      part { name: "sky_low";
+         description { state: "default" 0.0;
+            min: 400 278;
+            max: 400 278;
+            color: 255 255 255 0;
+            align: 0 0;
+            image.normal: "sky2.png";
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+
+      part { name: "sky_night";
+         description { state: "default" 0.0;
+            min: 400 278;
+            max: 400 278;
+            color: 255 255 255 0;
+            align: 0 0;
+            image.normal: "sky1.png";
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+
+    programs {
+        program { name: "sky_low_anim";
+            signal: "start";
+            action: STATE_SET "visible" 0.0;
+            target: "sky_low";
+            transition: ACCELERATE 15;
+            after: "sky_night_anim";
+        }
+        program { name: "sky_night_anim";
+            action: STATE_SET "visible" 0.0;
+            target: "sky_night";
+            transition: DECELERATE 15;
+            after: "sky_up_anim";
+        }
+        program { name: "sky_up_anim";
+            action: STATE_SET "default" 0.0;
+            target: "sky_night";
+            transition: ACCELERATE 15;
+            after: "sky_day_anim";
+        }
+        program { name: "sky_day_anim";
+            action: STATE_SET "default" 0.0;
+            target: "sky_low";
+            transition: DECELERATE 15;
+            after: "sky_low_anim";
+        }
+    }
+
+      part { name: "background";
+         clip_to: "background_light";
+         description { state: "default" 0.0;
+            image.normal: "background.png";
+         }
+      }
+
+      part { name: "background_light";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 220 200 255;
+         }
+         description { state: "night" 0.0;
+            color: 60 60 60 255;
+         }
+      }
+
+    programs {
+        program { name: "sunset";
+            signal: "start";
+            action: STATE_SET "night" 0.0;
+            target: "background_light";
+            transition: ACCELERATE 30;
+            after: "sunrise";
+        }
+        program { name: "sunrise";
+            action: STATE_SET "default" 0.0;
+            target: "background_light";
+            transition: ACCELERATE 30;
+            after: "sunset";
+        }
+    }
+         part { name: "clo";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+                  min: 1330 480;
+                  max: 1330 480;
+                  align: 0 0;
+               fill {
+                  smooth: 0;
+                  origin {
+                     relative: 0.0 0.0;
+                     offset: 0 0;
+                  }
+                  size {
+                     relative: 1.84722 1.0;
+                     offset: 0 0;
+                  }
+               }
+               image.normal: "clo.png";
+            }
+            description { state: "drift" 0.0;
+               inherit: "default" 0.0;
+               fill {
+                  origin {
+                     relative: 1.84722 0.0;
+                     offset: 0 0;
+                  }
+                  size {
+                     relative: 1.84722 1.0;
+                     offset: 0 0;
+                  }
+               }
+            }
+         }
+      programs {
+         program { name: "anim1";
+            signal: "start";
+            source: "";
+            action: STATE_SET "drift" 0.0;
+            transition: LINEAR 120;
+            target: "clo";
+            after: "anim2";
+         }
+         program { name: "anim2";
+            action: STATE_SET "default" 0.0;
+            target: "clo";
+            after: "anim1";
+         }
+      }
+
+      part { name: "hud_bar_shadow";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "hud_bar";
+            rel1.to: "hud_bar";
+            min: 400 66;
+            max: 400 66;
+            align: 0 0;
+            color: 0 0 0 92;
+         }
+      }
+
+      part { name: "hud_bar";
+         description { state: "default" 0.0;
+            min: 400 64;
+            max: 400 64;
+            align: 0 0;
+            rel1.offset: 0 -66;
+            image.normal: "top-bar.png";
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            rel1.offset: 0 0;
+         }
+      }
+         program { name: "hud_anim";
+            signal: "start";
+            action: STATE_SET "visible" 0.0;
+            transition: DECELERATE 1;
+            target: "hud_bar";
+         }
+
+      part { name: "numbers_area_bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1 {
+               to: "hud_bar";
+               relative: 0.0 1.0;
+               offset: 20 50;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -21 -21;
+            }
+         }
+      }
+
+      part { name: "numbers_area";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.to: "numbers_area_bg";
+            rel2.to: "numbers_area_bg";
+         }
+      }
+
+        ADD_OPERATION("minus")
+        ADD_OPERATION("plus")
+        ADD_OPERATION("times")
+        ADD_OPERATION("over")
+
+      part { name: "result_clip";
+         type: RECT;
+         description { state: "default " 0.0;
+            rel1.to: "hud_bar";
+            rel1.relative: 0 1;
+            color: 255 255 255 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "correct" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 0;
+         }
+         description { state: "wrong" 0.0;
+            inherit: "default" 0.0;
+            color: 255 0 0 255;
+         }
+      }
+
+      part { name: "result_text";
+         clip_to: "result_clip";
+         type: TEXT;
+         description { state: "default " 0.0;
+            rel1.to: "hud_bar";
+            rel1.relative: 0 1;
+            color_class: "result";
+            text {
+               font: "nines";
+               size: 60;
+               text: "|";
+            }
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+         }
+         description { state: "correct" 0.0;
+            inherit: "default" 0.0;
+            text.size: 240;
+            }
+         description { state: "wrong" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+
+      program { name: "result_box_hide";
+         action: STATE_SET "default" 0.0;
+         target: "result_text";
+         target: "result_clip";
+      }
+
+      part { name: "hi-score";
+         type: TEXT;
+         effect: OUTLINE_SOFT_SHADOW;
+         description { state: "default" 0.0;
+            rel1.to: "hud_bar";
+            rel2 {
+               to_x: "ops_bar";
+               to_y: "hud_bar";
+               relative: 0 1;
+            }
+            color_class: "hi-score";
+            text {
+               font: "nines";
+               size: 18;
+               text: "";
+               align: 0.5 0;
+            }
+         }
+      }
+
+      part { name: "score";
+         type: TEXT;
+         effect: OUTLINE_SOFT_SHADOW;
+         description { state: "default" 0.0;
+            rel1.to: "hud_bar";
+            rel2 {
+               to_x: "ops_bar";
+               to_y: "hud_bar";
+               relative: 0 1;
+            }
+            color_class: "score";
+            text {
+               font: "nines";
+               size: 18;
+               text: "";
+               align: 0.5 1;
+            }
+         }
+      }
+
+      part { name: "ops_bar";
+         type: RECT;
+         description { state: "default" 0.0;
+            visible: 0;
+            max: 160 36;
+            rel1.to: "hud_bar";
+            rel1.offset: 0 4;
+            rel2.to: "hud_bar";
+            align: 0.5 0.5;
+         }
+      }
+
+      ADD_BUTTON(0, "plus")
+      ADD_BUTTON(1, "minus")
+      ADD_BUTTON(2, "times")
+      ADD_BUTTON(3, "over")
+
+      part { name: "time";
+         type: TEXT;
+         effect: OUTLINE_SOFT_SHADOW;
+         description { state: "default" 0.0;
+            rel1 {
+               to_x: "ops_bar";
+               to_y: "hud_bar";
+               relative: 1 0;
+            }
+            rel2.to: "hud_bar";
+            color_class: "time";
+            text {
+               font: "nines";
+               size: 20;
+               text: "";
+               align: 0.5 0.5;
+            }
+         }
+      }
+
+      part { name: "master9";
+         description { state: "default" 0.0;
+            image.normal: "9cloud.png";
+            min: 150 80;
+            max: 150 80;
+            rel1.offset: 280 70;
+            align: 0 0;
+         }
+      }
+
+      ADD_COMBO(1)
+      ADD_COMBO(2)
+      ADD_COMBO(3)
+      ADD_COMBO(4)
+      ADD_COMBO(5)
+
+   }
+
+   programs {
+       program { name: "reset";
+            signal: "reset";
+            action: STATE_SET "default" 0.0;
+            target: "plus_block";
+            target: "plus_hi";
+            target: "minus_block";
+            target: "minus_hi";
+            target: "times_block";
+            target: "times_hi";
+            target: "over_block";
+            target: "over_hi";
+            target: "background_light";
+            target: "sky_day";
+            target: "sky_night";
+            target: "sky_low";
+            target: "clo";
+            target: "result_text";
+            target: "result_clip";
+            target: "hud_bar";
+            target: "operation_plus";
+            target: "operation_minus";
+            target: "operation_times";
+            target: "operation_over";
+            after: "start_sig";
+       }
+       program { name: "start_sig";
+            action: SIGNAL_EMIT "start" "";
+       }
+       program { name: "show_result_text_and_box";
+           signal: "result_start_blinking";
+           action: STATE_SET "visible" 0.0;
+           target: "result_text";
+           target: "result_clip";
+           transition: ACCELERATE 0.3;
+           after: "hide_result_text_and_box";
+        }
+       program { name: "hide_result_text_and_box";
+           action: STATE_SET "default" 0.0;
+           target: "result_text";
+           target: "result_clip";
+           transition: ACCELERATE 0.3;
+           after: "show_result_text_and_box";
+        }
+       program { name: "stop_blink";
+           signal: "result_stop_blinking";
+           action: STATE_SET "visible" 0.0;
+           target: "result_text";
+           target: "result_clip";
+        }
+       program { name: "result_correct";
+           signal: "result_correct";
+           action: STATE_SET "correct" 0.0;
+           target: "result_text";
+           target: "result_clip";
+           transition: ACCELERATE 0.2;
+           after: "result_box_hide";
+        }
+       program { name: "result_wrong";
+           signal: "result_wrong";
+           action: STATE_SET "wrong" 0.0;
+           target: "result_text";
+           target: "result_clip";
+           transition: ACCELERATE 0.2;
+           after: "result_box_hide";
+        }
+   }
+}
