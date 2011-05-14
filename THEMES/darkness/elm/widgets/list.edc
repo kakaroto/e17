@@ -72,7 +72,7 @@
       parts {
          LIST_PART_EVENT
          LIST_PART_BASE
-         LIST_PART_BG( )
+         LIST_PART_BG(;)
          LIST_PART_FG("bg")
          LIST_PART_SWALLOW_ICON
          LIST_PART_SWALLOW_END
@@ -107,7 +107,7 @@
       parts {
          LIST_PART_EVENT
          LIST_PART_BASE_ODD
-         LIST_PART_BG( )
+         LIST_PART_BG(;)
          LIST_PART_FG("bg")
          LIST_PART_SWALLOW_ICON
          LIST_PART_SWALLOW_END
@@ -141,7 +141,7 @@
       parts {
          LIST_PART_EVENT
          LIST_PART_BASE
-         LIST_PART_BG( )
+         LIST_PART_BG(;)
          LIST_PART_FG("bg")
          LIST_PART_SWALLOW_ICON_HORIZ
          LIST_PART_SWALLOW_END_HORIZ
@@ -176,7 +176,7 @@
       parts {
          LIST_PART_EVENT
          LIST_PART_BASE_ODD
-         LIST_PART_BG( )
+         LIST_PART_BG(;)
          LIST_PART_FG("bg")
          LIST_PART_SWALLOW_ICON_HORIZ
          LIST_PART_SWALLOW_END_HORIZ
@@ -211,7 +211,7 @@
       parts {
          LIST_PART_EVENT
          LIST_PART_BASE
-         LIST_PART_BG( )
+         LIST_PART_BG(;)
          LIST_PART_FG("bg")
          LIST_PART_SWALLOW_ICON_HORIZ
          LIST_PART_SWALLOW_END_HORIZ
@@ -246,7 +246,7 @@
       parts {
          LIST_PART_EVENT
          LIST_PART_BASE_ODD
-         LIST_PART_BG( )
+         LIST_PART_BG(;)
          LIST_PART_FG("bg")
          LIST_PART_SWALLOW_ICON_HORIZ
          LIST_PART_SWALLOW_END_HORIZ

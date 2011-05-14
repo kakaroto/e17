@@ -425,7 +425,7 @@
        }
        parts {
            LIST_PART_EVENT
-           GENGRID_PART_BG( )
+           GENGRID_PART_BG(;)
            part { name: "border-shadow";
                type: IMAGE;
                mouse_events: 0;
