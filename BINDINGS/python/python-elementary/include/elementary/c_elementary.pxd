@@ -141,6 +141,13 @@ cdef extern from "Elementary.h":
         ELM_ICON_FILE
         ELM_ICON_STANDARD
 
+    ctypedef enum Elm_Wrap_Type:
+        ELM_WRAP_NONE
+        ELM_WRAP_CHAR
+        ELM_WRAP_WORD
+        ELM_WRAP_MIXED
+        ELM_WRAP_LAST
+
     ctypedef struct Elm_Entry_Anchor_Info
     ctypedef struct Elm_Entry_Anchorview_Info:
         char *name
@@ -520,8 +527,7 @@ cdef extern from "Elementary.h":
     char  *elm_scrolled_entry_entry_get(evas.c_evas.Evas_Object *obj)
     char  *elm_scrolled_entry_selection_get(evas.c_evas.Evas_Object *obj)
     void         elm_scrolled_entry_entry_insert(evas.c_evas.Evas_Object *obj, char *entry)
-    void         elm_scrolled_entry_line_wrap_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool wrap)
-    void         elm_scrolled_entry_line_char_wrap_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool wrap)
+    void         elm_scrolled_entry_line_wrap_set(evas.c_evas.Evas_Object *obj, Elm_Wrap_Type wrap_type)
     void         elm_scrolled_entry_editable_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool editable)
     evas.c_evas.Eina_Bool    elm_scrolled_entry_editable_get(evas.c_evas.Evas_Object *obj)
     void         elm_scrolled_entry_select_none(evas.c_evas.Evas_Object *obj)

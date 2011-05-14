@@ -134,11 +134,8 @@ cdef class ScrolledEntry(Object):
     def entry_insert(self, entry):
         elm_scrolled_entry_entry_insert(self.obj, entry)
 
-    def line_wrap_set(self, wrap):
-        elm_scrolled_entry_line_wrap_set(self.obj, wrap)
-
-    def line_char_wrap_set(self, wrap):
-        elm_scrolled_entry_line_char_wrap_set(self.obj, wrap)
+    def line_wrap_set(self, wrap_type):
+        elm_scrolled_entry_line_wrap_set(self.obj, wrap_type)
 
     def editable_set(self, editable):
         elm_scrolled_entry_editable_set(self.obj, editable)
