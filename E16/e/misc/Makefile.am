@@ -12,12 +12,17 @@ misc_SCRIPTS = $(XCLIENTS) starte16 e16-dbus-cmd
 
 applicationdir = $(datadir)/applications
 xsessiondir = $(datadir)/xsessions
+gsessiondir = $(datadir)/gnome-session/sessions
 
 # Is this Fedora only stuff?
 #xclientsdir = $(sysconfdir)/X11/xinit/Xclients.d
 #xclients_SCRIPTS = $(XCLIENTS)
 
-EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SCRIPTS) starte16.in
+xsession_DATA = e16-gnome-session.desktop
+gsession_DATA = e16-gnome.session
+
+EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SCRIPTS) starte16.in \
+		$(xsession_DATA) $(gsession_DATA)
 
 CLEANFILES = $(DESKTOPS) starte16
 
