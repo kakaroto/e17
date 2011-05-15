@@ -53,6 +53,7 @@ typedef struct {
    int                 scale;	/* Zoom level */
    int                 sx, sy;	/* Scene x,y */
    int                 sw, sh;	/* Scene wxh */
+   char                disable_text;
    char                bpress;
    char                filter;
    char                grabbing;
@@ -70,6 +71,9 @@ MagwinDrawText(MagWindow * mw, int x, int y, const char *txt)
 {
    TextClass          *tc;
    int                 cw, ch;
+
+   if (mw->disable_text)
+      return;
 
    tc = TextclassFind("COORDS", 1);
    if (!tc)
@@ -249,6 +253,9 @@ MagwinKeyPress(MagWindow * mw, KeySym key)
 	     GrabKeyboardSet(EwinGetClientWin(mw->ewin));
 	     mw->grabbing = 1;
 	  }
+	break;
+     case XK_t:		/* Toggle text */
+	mw->disable_text = !mw->disable_text;
 	break;
      case XK_f:		/* Toggle filter */
 	mw->filter += 1;
