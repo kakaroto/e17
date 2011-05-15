@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -124,12 +124,18 @@ ArrangeMakeFillLists(const RectBox * sorted, int num_sorted,
       ;
    for (j = 0; j < num_sorted; j++)
      {
+	if (sorted[j].x + sorted[j].w <= xarray[0] ||
+	    sorted[j].x >= xarray[xsize - 1])
+	   continue;
+	if (sorted[j].y + sorted[j].h <= yarray[0] ||
+	    sorted[j].y >= yarray[ysize - 1])
+	   continue;
 	x1 = -1;
 	x2 = -1;
 	y1 = -1;
 	y2 = -1;
 	for (k = 0; k < xsize - 1; k++)
-	   if (sorted[j].x == xarray[k])
+	   if (sorted[j].x <= xarray[k])
 	     {
 		x1 = x2 = k;
 		break;
@@ -138,7 +144,7 @@ ArrangeMakeFillLists(const RectBox * sorted, int num_sorted,
 	   if (sorted[j].x + sorted[j].w > xarray[k])
 	      x2 = k;
 	for (k = 0; k < ysize - 1; k++)
-	   if (sorted[j].y == yarray[k])
+	   if (sorted[j].y <= yarray[k])
 	     {
 		y1 = y2 = k;
 		break;
