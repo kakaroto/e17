@@ -3,6 +3,17 @@
 
 #include "EMap.h"
 
+
+extern int LOG_DOMAIN;
+
+#define WAR(...)           EINA_LOG_DOM_WARN(LOG_DOMAIN, __VA_ARGS__)
+#define CRI(...)           EINA_LOG_DOM_CRIT(LOG_DOMAIN, __VA_ARGS__)
+#define INF(...)           EINA_LOG_DOM_INFO(LOG_DOMAIN, __VA_ARGS__)
+#define ERR(...)           EINA_LOG_DOM_ERR(LOG_DOMAIN, __VA_ARGS__)
+#define DBG(...)           EINA_LOG_DOM_DBG(LOG_DOMAIN, __VA_ARGS__)
+
+
+
 struct emap_track
 {
    EMap_Track_Type type;
@@ -10,10 +21,13 @@ struct emap_track
    const char *name;
    Eina_List *nodes; //list of EMap_Track_Node*
 
-   union {
+   struct {
       const char *file;
 
       Eina_Bool xml_is_name;
+      Eina_Bool xml_is_ele;
+      Eina_Bool xml_is_time;
+      EMap_Track_Node *xml_current_node;
    } gpx;
 };
 

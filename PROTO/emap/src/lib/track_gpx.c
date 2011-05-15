@@ -1,15 +1,18 @@
 
 #include "emap_private.h"
+#include <time.h>
 
 
-#define GPX_NAME "name "
+#define GPX_NAME "name>"
 #define GPX_COORDINATES "trkpt "
 #define GPX_LON "lon"
 #define GPX_LAT "lat"
+#define GPX_ELE "ele>"
+#define GPX_TIME "time>"
 
 static  void             _parse(EMap_Track *track);
 static  Eina_Bool        _parser_cb(void *data, Eina_Simple_XML_Type type,
-                            const char *content, unsigned offset, unsigned length);
+                                    const char *content, unsigned offset, unsigned length);
 static  Eina_Bool        _parser_attributes_cb(void *data, const char *key, const char *value);
 
 EMap_Track *emap_track_gpx_new(const char *file)
@@ -71,6 +74,10 @@ static Eina_Bool _parser_cb(void *data, Eina_Simple_XML_Type type,
                             const char *content, unsigned offset, unsigned length)
 {
    EMap_Track *track = data;
+   double d;
+   struct tm time;
+   time_t timet;
+   char buf[length+1];
 
    if(type == EINA_SIMPLE_XML_OPEN)
    {
@@ -78,24 +85,50 @@ static Eina_Bool _parser_cb(void *data, Eina_Simple_XML_Type type,
       {
          track->gpx.xml_is_name = EINA_TRUE;
       }
+      else if(!strncmp(GPX_ELE, content, strlen(GPX_ELE)))
+      {
+         track->gpx.xml_is_ele = EINA_TRUE;
+      }
+      else if(!strncmp(GPX_TIME, content, strlen(GPX_TIME)))
+      {
+         track->gpx.xml_is_time = EINA_TRUE;
+      }
       else if(!strncmp(GPX_COORDINATES, content, strlen(GPX_COORDINATES)))
       {
          EMap_Track_Node *node = emap_track_node_new(eina_list_count(track->nodes));
+         track->gpx.xml_current_node = node;
          emap_track_node_add(track, node);
 
          const char *tags = eina_simple_xml_tag_attributes_find(content, length);
          eina_simple_xml_attributes_parse(tags, length - (tags - content), _parser_attributes_cb, node);
       }
    }
-   else if(type == EINA_SIMPLE_XML_DATA
-            && track->gpx.xml_is_name)
+   else if(type == EINA_SIMPLE_XML_DATA)
    {
-      emap_track_name_set(track, content);
-      track->gpx.xml_is_name = EINA_FALSE;
-   }
+      if(track->gpx.xml_is_name)
+      {
+         eina_stringshare_replace_length(&track->name, content, length);
+         track->gpx.xml_is_name = EINA_FALSE;
+      }
+      else if(track->gpx.xml_is_ele)
+      {
+         sscanf(content, "%lf", &d);
+         emap_track_node_elevation_set(track->gpx.xml_current_node, d);
 
+         track->gpx.xml_is_ele = EINA_FALSE;
+      }
+      else if(track->gpx.xml_is_time)
+      {
+         snprintf(buf, length + 1, content);
+         strptime(buf, "%Y-%m-%dT%H:%M:%S%Z", &time);
+         timet = mktime(&time);
+         emap_track_node_time_set(track->gpx.xml_current_node, timet);
+         track->gpx.xml_is_time = EINA_FALSE;
+      }
+   }
    return EINA_TRUE;
 }
+
 
 static Eina_Bool _parser_attributes_cb(void *data, const char *key, const char *value)
 {
