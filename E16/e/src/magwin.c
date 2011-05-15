@@ -60,6 +60,8 @@ typedef struct {
    char                step;
    unsigned int        damage_count;
    char                update;
+   char                update_always;
+   char                update_trig;
 } MagWindow;
 
 static void         MagwinDestroy(MagWindow * mw);
@@ -195,8 +197,18 @@ _MagwinUpdate(MagWindow * mw)
    if (!EwinFindByPtr(mw->ewin))
       return 0;
 
-   if (!mw->update && Mode.events.damage_count == mw->damage_count)
+   /* When switching CM off do a delayed repaint. This will catch up on
+    * at least some clients having processed expose events. */
+   if (Mode.events.damage_count == 0 && mw->damage_count != 0)
+      mw->update_trig = 10;
+   if (mw->update_trig && --mw->update_trig == 0)
+      mw->update = 1;
+
+   if (!(mw->update ||
+	 (Mode.events.damage_count == 0 && mw->update_always) ||
+	 (Mode.events.damage_count != mw->damage_count)))
       return 1;
+
    mw->damage_count = Mode.events.damage_count;
 
    /* FIXME - Check damage */
@@ -256,6 +268,9 @@ MagwinKeyPress(MagWindow * mw, KeySym key)
 	break;
      case XK_t:		/* Toggle text */
 	mw->disable_text = !mw->disable_text;
+	break;
+     case XK_u:		/* Toggle update always */
+	mw->update_always = !mw->update_always;
 	break;
      case XK_f:		/* Toggle filter */
 	mw->filter += 1;

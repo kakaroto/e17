@@ -2271,6 +2271,7 @@ ECompMgrStop(void)
 #if !USE_BG_WIN_ON_ALL_DESKS
    DesksBackgroundRefresh(NULL, DESK_BG_RECONFIGURE_ALL);
 #endif
+   Mode.events.damage_count = 0;
    EUngrabServer();
    ESync(0);
 }
