@@ -334,6 +334,23 @@ AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale,, [
   echo "  We highly suggest that you rectify this situation immediately."
 ])
 
+# GNOME session support
+AC_ARG_WITH(gnome,
+  [  --with-gnome          compile with gnome support @<:@default=auto@:>@],,
+  with_gnome=auto)
+if test "x$with_gnome" = "xauto"; then
+  with_gnome2=yes
+  with_gnome3=yes
+fi
+if test "x$with_gnome" = "xgnome2"; then
+  with_gnome2=yes
+fi
+if test "x$with_gnome" = "xgnome3"; then
+  with_gnome3=yes
+fi
+AM_CONDITIONAL(WITH_GNOME2, test "x$with_gnome2" = "xyes")
+AM_CONDITIONAL(WITH_GNOME3, test "x$with_gnome3" = "xyes")
+
 # Restore CPPFLAGS/LDFLAGS
 CPPFLAGS="$SAVE_CPPFLAGS"
 LDFLAGS="$SAVE_LDFLAGS"
@@ -473,6 +490,7 @@ echo "  RandR ........................ $enable_xrandr"
 echo "  Render ....................... $enable_xrender"
 echo "  Sync ......................... $enable_xsync"
 echo "  Composite .................... $enable_composite"
+echo "  GNOME session support ........ $with_gnome"
 echo "  Modules ...................... $enable_modules"
 echo "  Visibility hiding ............ $enable_visibility_hiding (only useful with modules)"
 echo "  Window mode helper library ... $enable_libhack"

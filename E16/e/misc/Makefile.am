@@ -1,25 +1,37 @@
 DESKTOPS_APP = e16.desktop
-DESKTOPS_SES = e16.desktop e16-gnome.desktop e16-kde.desktop
-DESKTOPS_IN = e16.desktop-app.in e16.desktop.in e16-gnome.desktop.in e16-kde.desktop.in
+DESKTOPS_IN = e16.desktop.in \
+		e16-session.desktop.in e16-gnome2-session.desktop.in e16-kde-session.desktop.in
+XSESSION_MISC = e16-session.desktop e16-kde-session.desktop
+if WITH_GNOME2
+XSESSION_GNOME2 = e16-gnome2-session.desktop
+endif
+if WITH_GNOME3
+XSESSION_GNOME3 = e16-gnome3-session.desktop
+endif
 XCLIENTS = Xclients.e16.sh Xclients.e16-gnome.sh Xclients.e16-kde.sh
 STARTUPS = starte16-gnome starte16-kde
 
-DESKTOPS = $(DESKTOPS_APP:.desktop=.desktop-app) $(DESKTOPS_SES)
+XSESSION_DESKTOPS = $(XSESSION_MISC) $(XSESSION_GNOME2) $(XSESSION_GNOME3)
+
+DESKTOPS = $(DESKTOPS_APP) $(XSESSION_DESKTOPS)
 
 miscdir = $(pkgdatadir)/misc
-misc_DATA = $(DESKTOPS)
 misc_SCRIPTS = $(XCLIENTS) starte16 e16-dbus-cmd
 
 applicationdir = $(datadir)/applications
+application_DATA = $(DESKTOPS_APP)
+
 xsessiondir = $(datadir)/xsessions
+xsession_DATA = $(XSESSION_DESKTOPS)
+
+if WITH_GNOME3
 gsessiondir = $(datadir)/gnome-session/sessions
+gsession_DATA = e16-gnome.session
+endif
 
 # Is this Fedora only stuff?
 #xclientsdir = $(sysconfdir)/X11/xinit/Xclients.d
 #xclients_SCRIPTS = $(XCLIENTS)
-
-xsession_DATA = e16-gnome-session.desktop
-gsession_DATA = e16-gnome.session
 
 EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SCRIPTS) starte16.in \
 		$(xsession_DATA) $(gsession_DATA)
@@ -41,20 +53,9 @@ $(DESKTOPS):
 
 install-data-hook:
 	cd $(DESTDIR)$(bindir); rm -f starte16; $(LN_S) $(miscdir)/starte16 .
-	$(mkinstalldirs) $(DESTDIR)$(xsessiondir)
-	cd $(DESTDIR)$(xsessiondir); rm -f $(DESKTOPS_SES); \
-	  for f in $(DESKTOPS_SES); do $(LN_S) $(miscdir)/$$f .; done
-	cd $(DESTDIR)$(miscdir); rm -f $(STARTUPS); \
-	  for f in $(STARTUPS); do $(LN_S) starte16 $$f; done
-	$(mkinstalldirs) $(DESTDIR)$(applicationdir)
-	cd $(DESTDIR)$(applicationdir); rm -f $(DESKTOPS_APP); \
-	  for f in $(DESKTOPS_APP); do $(LN_S) $(miscdir)/$$f-app $$f; done
 	cd $(DESTDIR)$(miscdir); rm -f $(STARTUPS); \
 	  for f in $(STARTUPS); do $(LN_S) starte16 $$f; done
 
 uninstall-local:
-	rm -f $(DESKTOPS)
 	cd $(DESTDIR)$(bindir); rm -f starte16
-	cd $(DESTDIR)$(applicationdir); rm -f $(DESKTOPS_APP)
-	cd $(DESTDIR)$(xsessiondir); rm -f $(DESKTOPS_SES)
 	cd $(DESTDIR)$(miscdir); rm -f $(STARTUPS)
