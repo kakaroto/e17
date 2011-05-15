@@ -480,7 +480,7 @@ static void
 MagwinShow(void)
 {
    if (MagWin)
-      return;
+      goto done;
 
    MagWin = MagwinCreate(_("Magnifier"),
 			 WinGetW(VROOT) / 4, WinGetH(VROOT) / 4);
@@ -490,7 +490,16 @@ MagwinShow(void)
 	return;
      }
 
+ done:
    EwinShow(MagWin->ewin);
+}
+
+static void
+MagwinHide(void)
+{
+   if (!MagWin)
+      return;
+   EwinHide(MagWin->ewin);
 }
 
 /*
@@ -502,7 +511,7 @@ MagwinIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];
-   int                 len;
+   int                 len, show;
 
    cmd[0] = prm[0] = '\0';
    p = params;
@@ -513,10 +522,24 @@ MagwinIpc(const char *params)
 	p += len;
      }
 
-   if (!p || !strcmp(cmd, "show"))
+   show = MagWin && EoIsShown(MagWin->ewin);
+   if (!p)
      {
-	MagwinShow();
+	show = !show;
      }
+   else if (!strcmp(cmd, "show"))
+     {
+	show = 1;
+     }
+   else if (!strcmp(cmd, "hide"))
+     {
+	show = 0;
+     }
+
+   if (show)
+      MagwinShow();
+   else
+      MagwinHide();
 }
 
 static const IpcItem MagwinIpcArray[] = {
@@ -524,7 +547,7 @@ static const IpcItem MagwinIpcArray[] = {
     MagwinIpc,
     "magwin", "mag",
     "Magnifier functions",
-    "  magwin show\n"}
+    "  mag [show|hide]\n"}
    ,
 };
 #define N_IPC_FUNCS (sizeof(MagwinIpcArray)/sizeof(IpcItem))
