@@ -302,15 +302,15 @@ _cb_border_event(void *data, int type, void *event)
      {
 	if (it) _item_set_icon((Ngi_Item_Taskbar *)it);
      }
-   else if (type ==E_EVENT_BORDER_ADD)
+   else if (type == E_EVENT_BORDER_ADD)
      {
 	_item_new(box, bd);
      }
-   else if (type ==E_EVENT_BORDER_REMOVE)
+   else if (type == E_EVENT_BORDER_REMOVE)
      {
 	if (it) ngi_item_remove(it);
      }
-   else if (type ==E_EVENT_BORDER_ZONE_SET)
+   else if (type == E_EVENT_BORDER_ZONE_SET)
      {
 	if (box->ng->zone == bd->zone)
 	  _item_new(box, bd);
@@ -342,7 +342,7 @@ _cb_border_event(void *data, int type, void *event)
 		}
 	   }
      }
-   else if (type ==E_EVENT_BORDER_PROPERTY)
+   else if (type == E_EVENT_BORDER_PROPERTY)
      {
 	if (it)
 	  {
@@ -367,6 +367,9 @@ _cb_desk_show(void *data, int type, void *event)
    Ngi_Box *box = data;
    Ngi_Item_Taskbar *it;
    Eina_List *l;
+
+   if (ev->desk->zone != box->ng->zone)
+     return ECORE_CALLBACK_PASS_ON;
 
    if (!box->cfg->taskbar_show_desktop)
      return ECORE_CALLBACK_PASS_ON;
