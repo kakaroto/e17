@@ -171,8 +171,9 @@ struct _View_Smart_Data
       Eina_Bool animated_zoom : 1;
       Eina_Bool touch_interface : 1;
    } flags;
-
+#if 0
    Evas_Object *context_menu;
+#endif
 };
 
 /***********************************************************************
@@ -921,7 +922,7 @@ _view_contextmenu_free(void *data)
    evas_object_del(notify);
    return EINA_FALSE;
 }
-
+#if 0
 static void
 _view_contextmenu_item_selected(void *data, Evas_Object *li, void *event_info __UNUSED__)
 {
@@ -1003,7 +1004,7 @@ on_view_contextmenu_freed(void *data, Evas_Object *view, void *event_info)
    ewk_context_menu_unref(menu);
    ecore_idler_add(_view_contextmenu_free, notify);
 }
-
+#endif
 /***********************************************************************
  * Smart Class Methods:                                                *
  *                                                                     *
@@ -1041,13 +1042,14 @@ _view_smart_add(Evas_Object *o)
       (o, "load,finished", _view_load_finished, sd);
    evas_object_smart_callback_add
       (o, "uri,changed", _view_uri_changed, sd);
-
+#if 0
    evas_object_smart_callback_add
       (o, "contextmenu,new", on_view_contextmenu_new, sd);
    evas_object_smart_callback_add
       (o, "contextmenu,free", on_view_contextmenu_freed, sd);
    evas_object_smart_callback_add
       (o, "contextmenu,show", on_view_contextmenu_show, sd);
+#endif
 }
 
 /* object destructor. receives object that dies when this function returns */
@@ -1200,8 +1202,10 @@ _view_smart_mouse_down(Ewk_View_Smart_Data *esd, const Evas_Event_Mouse_Down *ev
    return EINA_TRUE;
 
 forward_event:
+#if 0
    if (ev->button == 3) // forward of context menu event is special
       return ewk_view_context_menu_forward_event(sd->base.self, ev);
+#endif
 
    /* If we should forward/feed event using parent class method, then
     * just do it and do NOT create an animator. See _view_smart_mouse_up().
@@ -1630,6 +1634,7 @@ void view_zoom_next_down(Evas_Object *view)
       (view, zoom, ZOOM_AUTO_ANIMATION_DURATION, w / 2, h / 2);
 }
 
+#if 0
 Eina_Bool view_context_menu_set(Evas_Object *view, Evas_Object *widget, Ewk_Context_Menu *menu)
 {
    VIEW_SD_GET_OR_RETURN(view, sd, EINA_FALSE);
@@ -1658,6 +1663,7 @@ Ewk_Context_Menu *view_context_menu_get(Evas_Object *view)
 {
    return evas_object_data_get(view, "context-menu");
 }
+#endif
 
 void view_touch_interface_set(Evas_Object *view, Eina_Bool setting)
 {

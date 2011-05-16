@@ -91,9 +91,12 @@ Evas_Object *         view_add(Evas_Object *parent, Backing_Store bs);
 void                  view_zoom_reset(Evas_Object *view);
 void                  view_zoom_next_up(Evas_Object *view);
 void                  view_zoom_next_down(Evas_Object *view);
+#if 0
 Eina_Bool             view_context_menu_set(Evas_Object *view, Evas_Object *widget, Ewk_Context_Menu *menu);
 Evas_Object *         view_context_menu_widget_get(Evas_Object *view);
 Ewk_Context_Menu *    view_context_menu_get(Evas_Object *view);
+#endif
+
 void                  view_touch_interface_set(Evas_Object *view, Eina_Bool setting);
 Eina_Bool             view_touch_interface_get(const Evas_Object *view);
 
