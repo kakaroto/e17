@@ -5,8 +5,6 @@
 
 * Eet
 	- add inheritance
-	- use eina_lock
-	- use eina_file_map
 	- add Eet_Config api (eet_config_open, eet_config_load, eet_config_save, eet_config_close).
 	- make it possible to have text and binary Eet_Config file with section per .cfg file in a directory.
 	- add support for variable number of backup file
@@ -98,6 +96,7 @@ h	- add tutorial
 	- make it possible to make async call from main loop to thread (for msg_run).
 	- make it possible to raise priority of a worker job.
 	- make it possible to create another worker job from a worker job.
+	- add ecore_timer_dump to help track timer allocator and reduce number of wakeup.
 
 * ethumb
 	- make it possible to have one slave per available CPU.
