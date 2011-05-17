@@ -1,6 +1,7 @@
 #include "ephoto.h"
 
-int EPHOTO_EVENT_ENTRY_CREATE = 0;
+int EPHOTO_EVENT_ENTRY_CREATE_DIR = 0;
+int EPHOTO_EVENT_ENTRY_CREATE_THUMB = 0;
 int EPHOTO_EVENT_POPULATE_START = 0;
 int EPHOTO_EVENT_POPULATE_END = 0;
 int EPHOTO_EVENT_POPULATE_ERROR = 0;
@@ -20,155 +21,18 @@ _ephoto_state_set(Ephoto *ephoto, Ephoto_State state)
 }
 
 static void
-_ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
-{
-   DBG("entry '%s'", entry ? entry->path : "");
-
-   ephoto_single_browser_entry_set(ephoto->single_browser, NULL);
-   ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
-   elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
-   _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
-
-   if ((entry) && (entry->item)) elm_gengrid_item_bring_in(entry->item);
-   ephoto_thumb_browser_entry_set(ephoto->thumb_browser, entry);
-}
-
-static void
-_ephoto_flow_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
-{
-   DBG("entry '%s'", entry->path);
-   ephoto_flow_browser_entry_set(ephoto->flow_browser, entry);
-   elm_pager_content_promote(ephoto->pager, ephoto->flow_browser);
-   elm_object_focus(ephoto->flow_browser);
-   _ephoto_state_set(ephoto, EPHOTO_STATE_FLOW);
-}
-
-static void
-_ephoto_single_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
-{
-   DBG("entry '%s'", entry->path);
-   ephoto_single_browser_entry_set(ephoto->single_browser, entry);
-   elm_pager_content_promote(ephoto->pager, ephoto->single_browser);
-   _ephoto_state_set(ephoto, EPHOTO_STATE_SINGLE);
-}
-
-static void
-_ephoto_slideshow_show(Ephoto *ephoto, Ephoto_Entry *entry)
-{
-   DBG("entry '%s'", entry->path);
-   ephoto_slideshow_entry_set(ephoto->slideshow, entry);
-   elm_pager_content_promote(ephoto->pager, ephoto->slideshow);
-   _ephoto_state_set(ephoto, EPHOTO_STATE_SLIDESHOW);
-}
-
-static void
-_ephoto_single_browser_back(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+_back_clicked(void *data, Evas_Object *o __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Ephoto *ephoto = data;
-   Ephoto_Entry *entry = event_info;
-   switch (ephoto->prev_state)
+
+   switch (ephoto->state)
      {
-      case EPHOTO_STATE_THUMB:
-         _ephoto_thumb_browser_show(ephoto, entry);
-         break;
-      case EPHOTO_STATE_FLOW:
-         _ephoto_flow_browser_show(ephoto, entry);
-         break;
-      default:
-         ERR("unhandled previous state %d", ephoto->prev_state);
+        case EPHOTO_STATE_SINGLE : ephoto_promote_thumb_browser(ephoto); break;
+        case EPHOTO_STATE_THUMB : ephoto_promote_list_browser(ephoto); break;
+        case EPHOTO_STATE_LIST : break;
+        default : break;
      }
-}
-
-static void
-_ephoto_flow_browser_back(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Ephoto *ephoto = data;
-   Ephoto_Entry *entry = event_info;
-   _ephoto_thumb_browser_show(ephoto, entry);
-}
-
-static void
-_ephoto_slideshow_back(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Ephoto *ephoto = data;
-   Ephoto_Entry *entry = event_info;
-   switch (ephoto->prev_state)
-     {
-      case EPHOTO_STATE_SINGLE:
-         _ephoto_single_browser_show(ephoto, entry);
-         break;
-      case EPHOTO_STATE_THUMB:
-         _ephoto_thumb_browser_show(ephoto, entry);
-         break;
-      case EPHOTO_STATE_FLOW:
-         _ephoto_flow_browser_show(ephoto, entry);
-         break;
-      default:
-         ERR("unhandled previous state %d", ephoto->prev_state);
-     }
-   elm_win_fullscreen_set(ephoto->win, EINA_FALSE);
-}
-
-static void
-_ephoto_thumb_browser_view(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Ephoto *ephoto = data;
-   Ephoto_Entry *entry = event_info;
-   if (!entry)
-     entry = eina_list_nth(ephoto->entries, 0); 
-   _ephoto_single_browser_show(ephoto, entry);
-}
-
-static void
-_ephoto_thumb_browser_flow(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Ephoto *ephoto = data;
-   Ephoto_Entry *entry = event_info;
-   if (!entry)
-     entry = eina_list_nth(ephoto->entries, 0);
-   _ephoto_flow_browser_show(ephoto, entry);
-}
-
-static void
-_ephoto_thumb_browser_changed_directory(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   Ephoto *ephoto = data;
-   ephoto_single_browser_entry_set(ephoto->single_browser, NULL);
-   ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
-}
-
-static void
-_ephoto_thumb_browser_slideshow(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Ephoto *ephoto = data;
-   Ephoto_Entry *entry = event_info;
-   if (!entry)
-     entry = eina_list_nth(ephoto->entries, 0);
-   _ephoto_slideshow_show(ephoto, entry);
-}
-
-static void
-_ephoto_flow_browser_slideshow(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Ephoto *ephoto = data;
-   Ephoto_Entry *entry = event_info;
-   _ephoto_slideshow_show(ephoto, entry);
-}
-
-static void
-_ephoto_flow_browser_single(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Ephoto *ephoto = data;
-   Ephoto_Entry *entry = event_info;
-   _ephoto_single_browser_show(ephoto, entry);
-}
-
-static void
-_ephoto_single_browser_slideshow(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Ephoto *ephoto = data;
-   Ephoto_Entry *entry = event_info;
-   _ephoto_slideshow_show(ephoto, entry);
+   ephoto_title_set(ephoto, ephoto->config->directory);
 }
 
 static void
@@ -184,10 +48,13 @@ ephoto_window_add(const char *path)
 {
    Ephoto *ephoto = calloc(1, sizeof(Ephoto));
    Ethumb_Client *client = elm_thumb_ethumb_client_get();
+   Evas_Object *o;
    char buf[PATH_MAX];
+   int w, h;
    EINA_SAFETY_ON_NULL_RETURN_VAL(ephoto, NULL);
 
-   EPHOTO_EVENT_ENTRY_CREATE = ecore_event_type_new();
+   EPHOTO_EVENT_ENTRY_CREATE_DIR = ecore_event_type_new();
+   EPHOTO_EVENT_ENTRY_CREATE_THUMB = ecore_event_type_new();
    EPHOTO_EVENT_POPULATE_START = ecore_event_type_new();
    EPHOTO_EVENT_POPULATE_END = ecore_event_type_new();
    EPHOTO_EVENT_POPULATE_ERROR = ecore_event_type_new();
@@ -224,14 +91,63 @@ ephoto_window_add(const char *path)
    elm_win_resize_object_add(ephoto->win, ephoto->bg);
    evas_object_show(ephoto->bg);
 
+   ephoto->layout = elm_layout_add(ephoto->win);
+   if (!ephoto->layout)
+     {
+      evas_object_del(ephoto->win);
+      return NULL;
+     }
+   if (!elm_layout_theme_set
+          (ephoto->layout, "layout", "application", "content-back"))
+     {
+        ERR("Content-back");
+        evas_object_del(ephoto->win);
+        return NULL;
+     }
+   evas_object_size_hint_weight_set
+     (ephoto->layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_fill_set(ephoto->layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(ephoto->win, ephoto->layout);
+   ephoto->edje = elm_layout_edje_get(ephoto->layout);  
+   edje_object_signal_callback_add(ephoto->edje, "elm,action,back", "", 
+     _back_clicked, ephoto);
+   evas_object_show(ephoto->layout);
+
+   o = edje_object_part_external_object_get(ephoto->edje, "back");
+   evas_object_geometry_get(o, 0, 0, &w, &h);
+
    ephoto->pager = elm_pager_add(ephoto->win);
    elm_object_style_set(ephoto->pager, "fade_invisible");
    evas_object_size_hint_weight_set
      (ephoto->pager, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set
      (ephoto->pager, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_win_resize_object_add(ephoto->win, ephoto->pager);
    evas_object_show(ephoto->pager);
+   elm_layout_content_set(ephoto->layout, "elm.swallow.content", ephoto->pager);
+
+   ephoto->help_but = elm_button_add(ephoto->win);
+   o = elm_icon_add(ephoto->help_but);
+   elm_icon_standard_set(o, "help-browser");
+   evas_object_size_hint_aspect_set(o, EVAS_ASPECT_CONTROL_BOTH, 1, 1);   
+   elm_button_icon_set(ephoto->help_but, o);
+   evas_object_size_hint_weight_set
+     (ephoto->help_but, 0.0, 0.0);
+   evas_object_size_hint_fill_set
+     (ephoto->help_but, 0.0, 0.0);
+   evas_object_size_hint_min_set(ephoto->help_but, w, h);
+   evas_object_size_hint_max_set(ephoto->help_but, w, h);
+   evas_object_show(ephoto->help_but);
+   elm_layout_content_set(ephoto->layout, "elm.swallow.end", ephoto->help_but);
+
+
+   ephoto->list_browser = ephoto_list_browser_add(ephoto, ephoto->pager);
+   if (!ephoto->list_browser)
+     {
+        ERR("could not add list browser");
+        evas_object_del(ephoto->win);
+        return NULL;
+     }
+   elm_pager_content_push(ephoto->pager, ephoto->list_browser);
 
    ephoto->thumb_browser = ephoto_thumb_browser_add(ephoto, ephoto->pager);
    if (!ephoto->thumb_browser)
@@ -241,32 +157,6 @@ ephoto_window_add(const char *path)
         return NULL;
      }
    elm_pager_content_push(ephoto->pager, ephoto->thumb_browser);
-   evas_object_smart_callback_add
-     (ephoto->thumb_browser, "view", _ephoto_thumb_browser_view, ephoto);
-   evas_object_smart_callback_add
-     (ephoto->thumb_browser, "flow", _ephoto_thumb_browser_flow, ephoto);
-   evas_object_smart_callback_add
-     (ephoto->thumb_browser, "changed,directory",
-      _ephoto_thumb_browser_changed_directory, ephoto);
-   evas_object_smart_callback_add
-     (ephoto->thumb_browser, "slideshow",
-      _ephoto_thumb_browser_slideshow, ephoto);
-
-   ephoto->flow_browser = ephoto_flow_browser_add(ephoto, ephoto->pager);
-   if (!ephoto->flow_browser)
-     {
-        ERR("could not add flow browser");
-        evas_object_del(ephoto->win);
-        return NULL;
-     }
-   elm_pager_content_push(ephoto->pager, ephoto->flow_browser);
-   evas_object_smart_callback_add
-     (ephoto->flow_browser, "back", _ephoto_flow_browser_back, ephoto);
-   evas_object_smart_callback_add
-     (ephoto->flow_browser, "slideshow",
-      _ephoto_flow_browser_slideshow, ephoto);
-   evas_object_smart_callback_add
-     (ephoto->flow_browser, "single", _ephoto_flow_browser_single, ephoto);
 
    ephoto->single_browser = ephoto_single_browser_add(ephoto, ephoto->pager);
    if (!ephoto->single_browser)
@@ -276,22 +166,6 @@ ephoto_window_add(const char *path)
         return NULL;
      }
    elm_pager_content_push(ephoto->pager, ephoto->single_browser);
-   evas_object_smart_callback_add
-     (ephoto->single_browser, "back", _ephoto_single_browser_back, ephoto);
-   evas_object_smart_callback_add
-     (ephoto->single_browser, "slideshow",
-      _ephoto_single_browser_slideshow, ephoto);
-
-   ephoto->slideshow = ephoto_slideshow_add(ephoto, ephoto->pager);
-   if (!ephoto->slideshow)
-     {
-        ERR("could not add slideshow");
-        evas_object_del(ephoto->win);
-        return NULL;
-     }
-   elm_pager_content_push(ephoto->pager, ephoto->slideshow);
-   evas_object_smart_callback_add
-     (ephoto->slideshow, "back", _ephoto_slideshow_back, ephoto);
 
    if ((!path) || (!ecore_file_exists(path)))
      {
@@ -308,22 +182,20 @@ ephoto_window_add(const char *path)
 
    if (ecore_file_is_dir(path))
      {
+        ephoto_promote_list_browser(ephoto);
         ephoto_directory_set(ephoto, path);
-        _ephoto_thumb_browser_show(ephoto, NULL);
      }
    else
      {
+        ephoto_single_browser_path_pending_set(ephoto->single_browser, path);
+        ephoto_promote_single_browser(ephoto, NULL);
         char *dir = ecore_file_dir_get(path);
         ephoto_directory_set(ephoto, dir);
         free(dir);
-        ephoto_single_browser_path_pending_set(ephoto->single_browser, path);
-
-        elm_pager_content_promote(ephoto->pager, ephoto->single_browser);
-        ephoto->state = EPHOTO_STATE_SINGLE;
      }
 
    /* TODO restore size from last run as well? */
-   evas_object_resize(ephoto->win, 900, 600);
+   evas_object_resize(ephoto->win, 800, 600);
    evas_object_show(ephoto->win);
 
    return ephoto->win;
@@ -334,8 +206,34 @@ ephoto_title_set(Ephoto *ephoto, const char *title)
 {
    char buf[1024] = "Ephoto";
 
-   if (title) snprintf(buf, sizeof(buf), "%s - Ephoto", title);
+   if (title) snprintf(buf, sizeof(buf), "Ephoto - %s", title);
    elm_win_title_set(ephoto->win, buf);
+   edje_object_part_text_set(ephoto->edje, "elm.text.title", title);
+}
+
+void
+ephoto_promote_list_browser(Ephoto *ephoto)
+{
+   elm_pager_content_promote(ephoto->pager, ephoto->list_browser);
+   edje_object_signal_emit(ephoto->edje, "elm,back,hide", "elm");
+   _ephoto_state_set(ephoto, EPHOTO_STATE_LIST);
+}
+
+void
+ephoto_promote_thumb_browser(Ephoto *ephoto)
+{
+   elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
+   edje_object_signal_emit(ephoto->edje, "elm,back,show", "elm");
+   _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
+}
+
+void
+ephoto_promote_single_browser(Ephoto *ephoto, Ephoto_Entry *e)
+{
+   elm_pager_content_promote(ephoto->pager, ephoto->single_browser);
+   if (e)
+     ephoto_single_browser_entry_set(ephoto->single_browser, e);
+   _ephoto_state_set(ephoto, EPHOTO_STATE_SINGLE);
 }
 
 static int
@@ -368,7 +266,14 @@ _ephoto_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_
    ev = calloc(1, sizeof(Ephoto_Event_Entry_Create));
    ev->entry = e;
 
-   ecore_event_add(EPHOTO_EVENT_ENTRY_CREATE, ev, NULL, NULL);
+   if (ecore_file_is_dir(info->path))
+     ecore_event_add(EPHOTO_EVENT_ENTRY_CREATE_DIR, ev, NULL, NULL);
+   else
+     {
+        ecore_event_add(EPHOTO_EVENT_ENTRY_CREATE_THUMB, ev, NULL, NULL);
+        if (ephoto->state == EPHOTO_STATE_LIST)
+          ephoto_promote_thumb_browser(ephoto);
+     }
 }
 
 static Eina_Bool
@@ -378,7 +283,10 @@ _ephoto_populate_filter(void *data __UNUSED__, Eio_File *handler __UNUSED__, con
 
    if (bname[0] == '.') return EINA_FALSE;
 
-   return _ephoto_eina_file_direct_info_image_useful(info);
+   if (ecore_file_is_dir(info->path))
+     return EINA_TRUE;
+   else
+     return _ephoto_eina_file_direct_info_image_useful(info);
 }
 
 static void
@@ -537,6 +445,23 @@ ephoto_thumb_path_set(Evas_Object *o, const char *path)
    elm_thumb_file_set(o, path, NULL);
 }
 
+Evas_Object *
+ephoto_list_icon_add(Ephoto *ephoto, Evas_Object *parent, const char *standard)
+{
+   Evas_Object *o;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
+
+   o = elm_icon_add(parent);
+   if (!o) return NULL;
+
+   if (standard) elm_icon_standard_set(o, standard);
+   evas_object_size_hint_aspect_set(o, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
+   ephoto->dirs = eina_list_append(ephoto->dirs, o);
+   
+   return o;
+}
+
 Ephoto_Entry *
 ephoto_entry_new(Ephoto *ephoto, const char *path, const char *label)
 {
@@ -603,23 +528,5 @@ ephoto_entries_free(Ephoto *ephoto)
 {
    Ephoto_Entry *entry;
    EINA_LIST_FREE(ephoto->entries, entry) ephoto_entry_free(entry);
-}
-
-Eina_Bool
-_toolbar_hide(void *data)
-{
-   Evas_Object *edje = data;
-
-   edje_object_signal_emit(edje, "hide", "toolbar_event");
-
-   return EINA_TRUE;
-}
-
-void
-ephoto_auto_hide_toolbar(void *data __UNUSED__, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__)
-{
-   Ecore_Timer *timer;
-
-   timer = ecore_timer_add(5, _toolbar_hide, obj);
 }
 

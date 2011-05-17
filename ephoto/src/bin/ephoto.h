@@ -39,8 +39,11 @@ void         ephoto_title_set(Ephoto *ephoto, const char *title);
 void         ephoto_thumb_size_set(Ephoto *ephoto, int size);
 Evas_Object *ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path);
 void         ephoto_thumb_path_set(Evas_Object *o, const char *path);
+Evas_Object *ephoto_list_icon_add(Ephoto *ephoto, Evas_Object *parent, const char *standard);
 void         ephoto_directory_set(Ephoto *ephoto, const char *path);
-void         ephoto_auto_hide_toolbar(void *data __UNUSED__, Evas_Object *obj, const char *emission __UNUSED__, const char *source __UNUSED__);
+void         ephoto_promote_list_browser(Ephoto *ephoto);
+void         ephoto_promote_thumb_browser(Ephoto *ephoto);
+void         ephoto_promote_single_browser(Ephoto *ephoto, Ephoto_Entry *e);
 
 /*Get the exif orientation of a JPEG*/
 Ephoto_Orient ephoto_file_orient_get(const char *path);
@@ -50,43 +53,24 @@ Eina_Bool    ephoto_config_init(Ephoto *em);
 void         ephoto_config_save(Ephoto *em, Eina_Bool instant);
 void         ephoto_config_free(Ephoto *em);
 
-/*Single Browser Functions/Callbacks*/
-Evas_Object *ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent);
-void         ephoto_single_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
-void         ephoto_single_browser_path_pending_set(Evas_Object *obj, const char *path);
- /* smart callbacks called:
-  * "back" - the user wants to go back to the previous screen.
-  * "slideshow" - the user wants to view a slideshow.
-  */
+/*List Browser*/
+Evas_Object *ephoto_list_browser_add(Ephoto *ephoto, Evas_Object *parent);
+void         ephoto_list_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
 
-/*Flow Browser Functions/Callbacks*/
-Evas_Object *ephoto_flow_browser_add(Ephoto *e, Evas_Object *parent);
-void         ephoto_flow_browser_entry_set(Evas_Object *obj __UNUSED__, Ephoto_Entry *entry);
-/* smart callbacks called:
- * "back" - the user wants to go back to the previous screen.
- * "slideshow" - the user wants to view a slideshow.
- */
-
-/*Slideshow Functions/Callbacks*/
-Evas_Object *ephoto_slideshow_add(Ephoto *ephoto, Evas_Object *parent);
-void         ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
- /* smart callbacks called:
-  * "back" - the user want to go back to the previous screen.
-  */
-
-/*Main Thumb Browser Function*/
+/*Thumb Browser*/
 Evas_Object *ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent);
 void         ephoto_thumb_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
 
-/* smart callbacks called:
- * "selected" - an item in the thumb browser is selected. The selected Ephoto_Entry is passed as event_info argument.
- */
+/*Single Browser*/
+Evas_Object *ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent);
+void         ephoto_single_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
+void         ephoto_single_browser_path_pending_set(Evas_Object *obj, const char *path);
 
 /*Ephoto View*/
 enum _Ephoto_State
 {
+  EPHOTO_STATE_LIST,
   EPHOTO_STATE_THUMB,
-  EPHOTO_STATE_FLOW,
   EPHOTO_STATE_SINGLE,
   EPHOTO_STATE_SLIDESHOW
 };
@@ -122,15 +106,19 @@ struct _Ephoto
 {
    Evas_Object *win;
    Evas_Object *bg;
+   Evas_Object *layout;
+   Evas_Object *edje;
    Evas_Object *pager;
+   Evas_Object *help_but;
 
+   Evas_Object *list_browser;
    Evas_Object *thumb_browser;
-   Evas_Object *flow_browser;
    Evas_Object *single_browser;
    Evas_Object *slideshow;
 
    Eina_List *entries;
    Eina_List *thumbs;
+   Eina_List *dirs;
 
    int thumb_gen_size;
    struct {
@@ -156,6 +144,7 @@ struct _Ephoto_Entry
    const char *label;
    Ephoto *ephoto;
    Elm_Gengrid_Item *item;
+   Elm_Genlist_Item *list_item;
    Eina_List *free_listeners;
 };
 
@@ -210,7 +199,8 @@ _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
 }
 
 /*Ephoto Event Handlers*/
-extern int EPHOTO_EVENT_ENTRY_CREATE;
+extern int EPHOTO_EVENT_ENTRY_CREATE_DIR;
+extern int EPHOTO_EVENT_ENTRY_CREATE_THUMB;
 extern int EPHOTO_EVENT_POPULATE_START;
 extern int EPHOTO_EVENT_POPULATE_END;
 extern int EPHOTO_EVENT_POPULATE_ERROR;
