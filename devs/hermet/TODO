@@ -11,4 +11,6 @@ elementary_test - seg-fault in alpha window with gl backend
 
 elm_transit - auto show?
 
+evas_direct3d - start hurry (vicent torri)
 
+pong game? - (discomfitor)
