@@ -708,11 +708,17 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
      return NULL;
 
 
-   if (!match_class)
+   if (cw->bd->iconic)
      {
-	/* TODO make option */
-	if (cw->bd->iconic)
-	  return NULL;
+	if (!match_class)
+	  {
+	     /* TODO make option */	     
+	     return NULL;
+	  }
+	else if (!e_util_glob_match(cw->bd->client.icccm.class, match_class))
+	  {	     
+	     return NULL;
+	  }
      }
 
    it = E_NEW(Item, 1);
@@ -770,26 +776,26 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 
    if (match_class) 
      {
-	if (!e_util_glob_match(cw->bd->client.icccm.class, match_class))
-	  {
-	     if (!it->bd->iconic)
-	       {
-		  items_fade = eina_list_append(items_fade, it);
-		  evas_object_move(it->o, it->bd->x, it->bd->y);
-		  evas_object_resize(it->o, it->cw->pw, it->cw->ph);
-		  evas_object_pass_events_set(it->o, 1);
-		  if (it->bd->desk != desk)
-		    evas_object_color_set(it->o, 0, 0, 0, 0);
-		  return it;
-	       }
-	  }
-	else
+	if (e_util_glob_match(cw->bd->client.icccm.class, match_class))
 	  {
 	     if (it->bd->iconic)
 	       {
 		  evas_object_color_set(it->o, 0, 0, 0, 0);
 		  it->was_hidden = EINA_TRUE;
 	       }
+	  }
+	else
+	  {
+	     items_fade = eina_list_append(items_fade, it);
+
+	     if (it->bd->desk != desk)
+	       evas_object_color_set(it->o, 0, 0, 0, 0);
+
+	     evas_object_move(it->o, it->bd->x, it->bd->y);
+	     evas_object_resize(it->o, it->cw->pw, it->cw->ph);
+	     evas_object_pass_events_set(it->o, 1);
+	     return it;
+
 	  }
      }
 
