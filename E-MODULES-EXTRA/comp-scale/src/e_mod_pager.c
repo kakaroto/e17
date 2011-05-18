@@ -130,37 +130,24 @@ _pager_place_windows(double scale)
 static Eina_Bool
 _pager_redraw(void *data)
 {
-   double in;
+   double in, adv;
 
-   in = (ecore_loop_time_get() - start_time) / scale_conf->pager_duration;
+   in = adv = (ecore_loop_time_get() - start_time) / scale_conf->pager_duration;
 
    if (scale_state)
      {
-	if (in >= 1.0)
-	  {
-	     _pager_place_windows(0.0);
-	     _pager_place_desks(0.0);
-	     scale_animator = NULL;
-	     return ECORE_CALLBACK_CANCEL;
-	  }
-
 	in = log(14) * in;
 	in = 1.0 / exp(in*in);
-	if (in > 1.0) in = 1.0;
      }
    else
      {
-	if (in >= 1.0)
-	  {
-	     _pager_finish();
-	     scale_animator = NULL;
-	     return ECORE_CALLBACK_CANCEL;
-	  }
-
+	adv = 1.0 - adv;
 	in = log(14) * (1.0 - in);
 	in = 1.0 / exp(in*in);
-	if (in < 0.0) in = 0.0;
      }
+
+   if (in > 1.0) in = 1.0;
+   if (in < 0.0) in = 0.0;
 
    _pager_place_desks(in);
    _pager_place_windows(in);
@@ -177,13 +164,13 @@ _pager_redraw(void *data)
 	     if ((it->desk != current_desk) &&
 		(it->desk != previous_desk))
 	       {
-		  double ax = it->cur_x - it->x;
-		  double ay = it->cur_y - it->y;
-		  double bx = it->bd_x  - it->x;
-		  double by = it->bd_y  - it->y;
-
-		  a = (1.0 - sqrt(ax*ax + ay*ay) /
-		       sqrt(bx*bx + by*by)) * 255.0;
+		  /* double ax = it->cur_x - it->x;
+		   * double ay = it->cur_y - it->y;
+		   * double bx = it->bd_x  - it->x;
+		   * double by = it->bd_y  - it->y;
+		   * 
+		   * a = (1.0 - sqrt(ax*ax + ay*ay) /
+		   *      sqrt(bx*bx + by*by)) * 255.0; */
 	       }
 
 	     evas_object_color_set(it->o, a, a, a, a);
@@ -210,6 +197,16 @@ _pager_redraw(void *data)
 
    e_manager_comp_evas_update(e_manager_current_get());
 
+   if (((scale_state)  && (adv >= 1.0)) ||
+       ((!scale_state) && (adv <= 0.0)))
+     {
+	if (!scale_state)
+	  _pager_finish();
+
+	scale_animator = NULL;
+	return ECORE_CALLBACK_CANCEL;
+     }
+   
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -641,6 +638,9 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 	     if ((cw->pop) && (cw->pop->zone != zone))
 	       return NULL;
 
+	     if ((cw->pop) && (cw->pop->zone != zone))
+	       return NULL;
+
 	     it = E_NEW(Item, 1);
 	     it->man = man;
 	     it->o_win = o;
@@ -672,7 +672,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    it->o_win = evas_object_image_filled_add(e);
    o = e_manager_comp_src_image_get(man, src);
    evas_object_image_source_set(it->o_win, o);
-   evas_object_image_smooth_scale_set(it->o_win, evas_object_image_smooth_scale_get(o)); 
+   evas_object_image_smooth_scale_set(it->o_win, evas_object_image_smooth_scale_get(o));
 
    it->o = edje_object_add(e);
    if (!e_theme_edje_object_set(it->o, "base/theme/modules/scale",

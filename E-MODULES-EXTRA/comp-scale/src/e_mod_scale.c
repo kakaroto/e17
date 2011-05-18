@@ -178,31 +178,18 @@ _scale_redraw(void *data)
 
    if (scale_state)
      {
-	if (in >= 1.0)
-	  {
-	     _scale_place_windows(0.0);
-	     scale_animator = NULL;
-	     return ECORE_CALLBACK_CANCEL;
-	  }
 	in = log(14) * in;
 	in = 1.0 / exp(in*in);
-	if (in > 1.0) in = 1.0;
      }
    else
      {
-	adv = 1.0 - adv;
-	
-	if (in >= 1.0)
-	  {
-	     _scale_finish();
-	     scale_animator = NULL;
-	     return ECORE_CALLBACK_CANCEL;
-	  }
-
+	adv = 1.0 - adv;	
 	in = log(14) * (1.0 - in);
 	in = 1.0 / exp(in*in);
-	if (in < 0.0) in = 0.0;
      }
+
+   if (in > 1.0) in = 1.0;
+   if (in < 0.0) in = 0.0;
 
    _scale_place_windows(in);
    
@@ -272,6 +259,16 @@ _scale_redraw(void *data)
      }
 
    e_manager_comp_evas_update(e_manager_current_get());
+
+   if (((scale_state)  && (adv >= 1.0)) ||
+       ((!scale_state) && (adv <= 0.0)))
+     {
+	if (!scale_state)
+	  _scale_finish();
+
+	scale_animator = NULL;
+	return ECORE_CALLBACK_CANCEL;
+     }
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -731,7 +728,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->o_win = evas_object_image_filled_add(e);
    o = e_manager_comp_src_image_get(man, src);
    evas_object_image_source_set(it->o_win, o);
-   evas_object_image_smooth_scale_set(it->o_win, evas_object_image_smooth_scale_get(o)); 
+   evas_object_image_smooth_scale_set(it->o_win, evas_object_image_smooth_scale_get(o));
 
    evas_object_show(it->o_win);
    it->o = edje_object_add(e);
