@@ -18,7 +18,10 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
-    """Text object.
+    """Text(canvas, size=None, pos=None, geometry=None, color=None, name=None,
+            text=None, font=None, font_source=None, style=None,
+            shadow_color=None, glow_color=None, glow2_color=None,
+            outline_color=None) -> Text instance
 
     @group Font settings: font_source_set, font_source_get, font_source,
        font_set, font_get, font
@@ -31,8 +34,8 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
        max_ascent, max_descent_get, max_descent, horiz_advance_get,
        horiz_advance, vert_advance_get, vert_advance, inset_get, inset,
        char_pos_get, char_coords_get
-    """
 
+    """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:

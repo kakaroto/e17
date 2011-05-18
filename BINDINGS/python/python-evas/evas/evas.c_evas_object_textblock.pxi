@@ -18,7 +18,9 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef public class Textblock(Object) [object PyEvasTextblock, type PyEvasTextblock_Type]:
-    """Textblock object.
+    """Textblock(canvas, size=None, pos=None, geometry=None, color=None, name=None,
+                 text_markup=None, style=None) -> Textblock instance
+
     """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)

@@ -46,7 +46,10 @@ cdef int _data_size_get(Evas_Object *obj):
 
 
 cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
-    """Image from file or buffer.
+    """Image(canvas, size=None, pos=None, geometry=None, color=None, name=None,
+             file=None) -> Image instance
+
+    Image from file or buffer.
 
     Introduction
     ============
@@ -129,6 +132,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
     @group Often unused: alpha_set, alpha_get, alpha, colorspace_set,
        colorspace_get, colorspace, pixels_dirty_set, pixels_dirty_get,
        pixels_dirty, image_data_set, image_data_update_add
+
     """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)

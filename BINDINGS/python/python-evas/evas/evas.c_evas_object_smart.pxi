@@ -292,7 +292,10 @@ cdef object _smart_class_get_impl_method_cls(object cls, object parent_cls,
 
 cdef public class SmartObject(Object) [object PyEvasSmartObject,
                                        type PyEvasSmartObject_Type]:
-    """Smart Evas Objects.
+    """SmartObject(canvas, size=None, pos=None, geometry=None, color=None,
+                   name=None) -> SmartObject instance
+
+    Smart Evas Objects.
 
     Smart objects are user-defined Evas components, often used to group
     multiple basic elements, associate an object with a clip and deal with
@@ -358,6 +361,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
     @group Event system: callback_add, callback_del, callback_call
 
     @see: L{ClippedSmartObject}
+
     """
     def __cinit__(self, *a, **ka):
         self._smart_callbacks = dict()
@@ -688,7 +692,10 @@ _install_metaclass(&PyEvasSmartObject_Type, EvasSmartObjectMeta)
 
 cdef public class ClippedSmartObject(SmartObject) \
          [object PyEvasClippedSmartObject, type PyEvasClippedSmartObject_Type]:
-    """SmartObject subclass that automatically handles an internal clipper.
+    """ClippedSmartObject(canvas, size=None, pos=None, geometry=None,
+                          color=None, name=None) -> ClippedSmartObject instance
+
+    SmartObject subclass that automatically handles an internal clipper.
 
     This class is optimized for the recommended SmartObject usage of
     having an internal clipper, with all member objects clipped to it and
@@ -708,6 +715,7 @@ cdef public class ClippedSmartObject(SmartObject) \
        mess with it.
 
     @todo: remove current code and wrap C version (now it's in evas).
+
     """
     def __init__(self, Canvas canvas not None, **kargs):
         if type(self) is ClippedSmartObject:

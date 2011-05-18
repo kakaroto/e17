@@ -19,6 +19,9 @@
 
 cdef public class Rectangle(Object) [object PyEvasRectangle,
                                      type PyEvasRectangle_Type]:
+    """Rectangle(canvas, size=None, pos=None, geometry=None, color=None, name=None) -> Rectangle instance
+
+    """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:

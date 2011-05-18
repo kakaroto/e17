@@ -19,6 +19,10 @@
 
 cdef public class Polygon(Object) [object PyEvasPolygon,
                                    type PyEvasPolygon_Type]:
+    """Polygon(canvas, size=None, pos=None, geometry=None, color=None, name=None,
+               points=None) -> Polygon instance
+
+    """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:

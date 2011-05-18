@@ -20,8 +20,9 @@
 
 
 cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
-    """Box object"""
+    """Box(canvas, size=None, pos=None, geometry=None, color=None, name=None) -> Box instance
 
+    """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:

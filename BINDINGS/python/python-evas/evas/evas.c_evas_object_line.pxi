@@ -18,7 +18,12 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef public class Line(Object) [object PyEvasLine, type PyEvasLine_Type]:
-    "Straight line."
+    """Line(canvas, size=None, pos=None, geometry=None, color=None, name=None,
+            start=None, end=None) -> Line instance
+
+    Straight line.
+
+    """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
