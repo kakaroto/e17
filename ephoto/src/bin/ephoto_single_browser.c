@@ -10,6 +10,7 @@
  */
 
 #define ROTATION 0
+#define ZOOM_STEP 0.2
 
 typedef struct _Ephoto_Single_Browser Ephoto_Single_Browser;
 typedef struct _Ephoto_Viewer Ephoto_Viewer;
@@ -96,6 +97,8 @@ _viewer_zoom_apply(Ephoto_Viewer *v, double zoom)
    evas_object_image_size_get(v->image, &w, &h);
    w *= zoom;
    h *= zoom;
+   /*Nasty workaround. The 10 compensates for the box.
+    *Should be done by calculating box geometry*/ 
    evas_object_size_hint_min_set(v->image, w-10, h-10);
    evas_object_size_hint_max_set(v->image, w-10, h-10);
    elm_box_unpack(v->box, v->image);
@@ -131,6 +134,29 @@ _viewer_resized(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, voi
 }
 
 static void
+_viewer_zoom_set(Evas_Object *obj, double zoom)
+{
+   Ephoto_Viewer *v = evas_object_data_get(obj, "viewer");
+   EINA_SAFETY_ON_NULL_RETURN(v);
+   _viewer_zoom_apply(v, zoom);
+
+   if (v->fit)
+     {
+        evas_object_event_callback_del_full
+          (v->scroller, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
+        v->fit = EINA_FALSE;
+     }
+}
+
+static double
+_viewer_zoom_get(Evas_Object *obj)
+{
+   Ephoto_Viewer *v = evas_object_data_get(obj, "viewer");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(v, 0.0);
+   return v->zoom;
+}
+
+static void
 _viewer_zoom_fit(Evas_Object *obj)
 {
    Ephoto_Viewer *v = evas_object_data_get(obj, "viewer");
@@ -143,6 +169,59 @@ _viewer_zoom_fit(Evas_Object *obj)
      (v->scroller, EVAS_CALLBACK_RESIZE, _viewer_resized, v);
 
    _viewer_zoom_fit_apply(v);
+}
+
+static void
+_zoom_set(Ephoto_Single_Browser *sb, double zoom)
+{
+   if (zoom <= 0.0) return;
+     _viewer_zoom_set(sb->viewer, zoom);
+}
+
+static void
+_zoom_fit(Ephoto_Single_Browser *sb)
+{
+   if (sb->viewer)
+     _viewer_zoom_fit(sb->viewer);
+}
+
+static void
+_zoom_in(Ephoto_Single_Browser *sb)
+{
+   double change = (1.0 + ZOOM_STEP);
+   _viewer_zoom_set(sb->viewer, _viewer_zoom_get(sb->viewer) * change);
+}
+
+static void
+_zoom_out(Ephoto_Single_Browser *sb)
+{
+   double change = (1.0 - ZOOM_STEP);
+   _viewer_zoom_set(sb->viewer, _viewer_zoom_get(sb->viewer) * change);
+}
+
+static void
+_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
+{
+   Ephoto_Single_Browser *sb = data;
+   Evas_Event_Key_Down *ev = event_info;
+   Eina_Bool ctrl = evas_key_modifier_is_set(ev->modifiers, "Control");
+   Eina_Bool shift = evas_key_modifier_is_set(ev->modifiers, "Shift");
+   const char *k = ev->keyname;
+
+   if (ctrl)
+     {
+        if ((!strcmp(k, "plus")) || (!strcmp(k, "equal")))
+          _zoom_in(sb);
+        else if (!strcmp(k, "minus"))
+          _zoom_out(sb);
+        else if (!strcmp(k, "0"))
+          {
+             if (shift) _zoom_fit(sb);
+             else _zoom_set(sb, 1.0);
+          }
+
+        return;
+     }
 }
 
 static void
@@ -218,6 +297,7 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
      (sb->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set
      (sb->box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_event_callback_add(sb->box, EVAS_CALLBACK_KEY_DOWN, _key_down, sb);
    evas_object_event_callback_add(sb->box, EVAS_CALLBACK_DEL, _box_del, sb);
    evas_object_data_set(sb->box, "single_browser", sb);
    evas_object_show(sb->box);
