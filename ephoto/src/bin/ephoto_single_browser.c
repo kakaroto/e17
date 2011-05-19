@@ -30,6 +30,7 @@ struct _Ephoto_Single_Browser
 struct _Ephoto_Viewer
 {
    Evas_Object *scroller;
+   Evas_Object *box;
    Evas_Object *image;
    double zoom;
    Eina_Bool fit:1;
@@ -53,6 +54,12 @@ _viewer_add(Evas_Object *parent, const char *path)
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    obj = v->scroller = elm_scroller_add(parent);
    EINA_SAFETY_ON_NULL_GOTO(obj, error);
+
+   v->box = elm_box_add(obj);
+   evas_object_size_hint_weight_set(v->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(v->box, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(v->box);
+
    v->image = evas_object_image_filled_add(evas_object_evas_get(parent));
    evas_object_image_file_set(v->image, path, NULL);
    err = evas_object_image_load_error_get(v->image);
@@ -64,7 +71,8 @@ _viewer_add(Evas_Object *parent, const char *path)
    evas_object_size_hint_max_set(v->image, w, h);
    evas_object_resize(v->image, w, h);
    evas_object_show(v->image);
-   elm_scroller_content_set(obj, v->image);
+   elm_box_pack_end(v->box, v->image);
+   elm_scroller_content_set(obj, v->box);
    evas_object_size_hint_weight_set(obj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(obj, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_data_set(obj, "viewer", v);
@@ -88,8 +96,12 @@ _viewer_zoom_apply(Ephoto_Viewer *v, double zoom)
    evas_object_image_size_get(v->image, &w, &h);
    w *= zoom;
    h *= zoom;
-   evas_object_size_hint_min_set(v->image, w, h);
-   evas_object_size_hint_max_set(v->image, w, h);
+   evas_object_size_hint_min_set(v->image, w-10, h-10);
+   evas_object_size_hint_max_set(v->image, w-10, h-10);
+   elm_box_unpack(v->box, v->image);
+   elm_scroller_content_unset(v->scroller);
+   elm_box_pack_end(v->box, v->image);
+   elm_scroller_content_set(v->scroller, v->box);
 }
 
 static void

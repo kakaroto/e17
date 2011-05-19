@@ -106,6 +106,7 @@ struct _Ephoto
 {
    Evas_Object *win;
    Evas_Object *bg;
+   Evas_Object *overlay;
    Evas_Object *layout;
    Evas_Object *edje;
    Evas_Object *pager;

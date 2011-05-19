@@ -39,6 +39,7 @@ static void
 _win_free(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto *ephoto = data;
+   evas_object_del(ephoto->overlay);
    if (ephoto->timer.thumb_regen) ecore_timer_del(ephoto->timer.thumb_regen);
    free(ephoto);
 }
@@ -88,6 +89,15 @@ ephoto_window_add(const char *path)
    evas_object_size_hint_weight_set
      (ephoto->bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set(ephoto->bg, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_win_resize_object_add(ephoto->win, ephoto->bg);
+   evas_object_show(ephoto->bg);
+
+   ephoto->overlay = elm_bg_add(ephoto->bg);
+   evas_object_size_hint_weight_set
+     (ephoto->overlay, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_fill_set(ephoto->overlay, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_bg_color_set(ephoto->overlay, 0, 0, 0);
+
    elm_win_resize_object_add(ephoto->win, ephoto->bg);
    evas_object_show(ephoto->bg);
 
@@ -222,6 +232,11 @@ ephoto_promote_list_browser(Ephoto *ephoto)
 void
 ephoto_promote_thumb_browser(Ephoto *ephoto)
 {
+   if (elm_bg_overlay_get(ephoto->bg))
+     {
+        evas_object_hide(ephoto->overlay);
+        elm_bg_overlay_unset(ephoto->bg);
+     }
    elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
    edje_object_signal_emit(ephoto->edje, "elm,back,show", "elm");
    _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
@@ -231,6 +246,7 @@ void
 ephoto_promote_single_browser(Ephoto *ephoto, Ephoto_Entry *e)
 {
    elm_pager_content_promote(ephoto->pager, ephoto->single_browser);
+   elm_bg_overlay_set(ephoto->bg, ephoto->overlay);
    if (e)
      ephoto_single_browser_entry_set(ephoto->single_browser, e);
    _ephoto_state_set(ephoto, EPHOTO_STATE_SINGLE);
