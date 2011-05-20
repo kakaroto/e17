@@ -4,7 +4,7 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-#define PRINT_LOTS_OF_DEBUG 1
+#define PRINT_LOTS_OF_DEBUG 0
 
 typedef enum 
 {
