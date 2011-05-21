@@ -316,7 +316,7 @@ elm_main(int    argc,
    //
    Enlil_Win *win = enlil_win_new();
    enlil_data->win = win;
-   evas_object_smart_callback_add(win->win, "delete-request", close_cb, NULL);
+   evas_object_smart_callback_add(win->win, "delete,request", close_cb, NULL);
 
    //
    ly = elm_layout_add(win->win);
