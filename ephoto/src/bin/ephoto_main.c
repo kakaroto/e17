@@ -39,7 +39,6 @@ static void
 _win_free(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto *ephoto = data;
-   evas_object_del(ephoto->overlay);
    if (ephoto->timer.thumb_regen) ecore_timer_del(ephoto->timer.thumb_regen);
    free(ephoto);
 }
@@ -277,8 +276,6 @@ _ephoto_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_
 
    e = ephoto_entry_new(ephoto, info->path, info->path + info->name_start);
    
-   ephoto->entries = eina_list_sorted_insert(ephoto->entries, _entry_cmp, e);
-
    ev = calloc(1, sizeof(Ephoto_Event_Entry_Create));
    ev->entry = e;
 
@@ -286,6 +283,7 @@ _ephoto_populate_main(void *data, Eio_File *handler __UNUSED__, const Eina_File_
      ecore_event_add(EPHOTO_EVENT_ENTRY_CREATE_DIR, ev, NULL, NULL);
    else
      {
+        ephoto->entries = eina_list_sorted_insert(ephoto->entries, _entry_cmp, e);
         ecore_event_add(EPHOTO_EVENT_ENTRY_CREATE_THUMB, ev, NULL, NULL);
         if (ephoto->state == EPHOTO_STATE_LIST)
           ephoto_promote_thumb_browser(ephoto);
