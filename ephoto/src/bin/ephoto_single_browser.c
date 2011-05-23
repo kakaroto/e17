@@ -347,6 +347,40 @@ _last_entry(Ephoto_Single_Browser *sb)
 }
 
 static void
+_viewer_scrolled(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Ephoto_Single_Browser *sb = data;
+   Ephoto_Viewer *v = evas_object_data_get(sb->viewer, "viewer");
+   int sx, sw, cx;
+   if (!v->fit)
+     return;
+   evas_object_geometry_get(sb->viewer, &sx, 0, &sw, 0);
+   if (v->photocam)
+     {
+        Evas_Object *i = elm_photocam_internal_image_get(v->photocam);
+        evas_object_geometry_get(i, &cx, 0, 0, 0);
+     }
+   else
+     evas_object_geometry_get(v->image, &cx, 0, 0, 0);
+   if (cx < (sx-(sw/2)))
+     _next_entry(sb);
+   else if (cx > (sw/2))
+     _prev_entry(sb);
+}
+
+static void
+_mouse_wheel(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
+{
+   Ephoto_Single_Browser *sb = data;
+   Ephoto_Viewer *v = evas_object_data_get(sb->viewer, "viewer");
+   Evas_Event_Mouse_Wheel *ev = event_info;
+   if (!evas_key_modifier_is_set(ev->modifiers, "Control")) return;
+
+   if (ev->z > 0) _zoom_set(sb, v->zoom + ZOOM_STEP);
+   else _zoom_set(sb, v->zoom - ZOOM_STEP);
+}
+
+static void
 _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Single_Browser *sb = data;
@@ -393,6 +427,10 @@ _ephoto_single_browser_recalc(Ephoto_Single_Browser *sb)
         const char *bname = ecore_file_file_get(sb->entry->path);
         sb->viewer = _viewer_add(sb->layout, sb->entry->path);
         elm_layout_content_set(sb->layout, "ephoto.swallow.content", sb->viewer);
+        evas_object_event_callback_add
+          (sb->viewer, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, sb);
+        evas_object_smart_callback_add
+          (sb->viewer, "scroll", _viewer_scrolled, sb);
         evas_object_show(sb->viewer);
         ephoto_title_set(sb->ephoto, bname);       
      }
