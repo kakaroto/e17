@@ -1,8 +1,6 @@
-elm_list callback deletion 
+elm_list - callback deletion 
 
-elm_conform pre - calculation 
-
-elm_transit - make available adding one object to multiple transit
+elm_conform - precalculation 
 
 elm_ctxpopup - use elm_list
 
@@ -16,3 +14,7 @@ evas_direct3d - start hurry (vicent torri)
 pong game? - (discomfitor)
 
 elm_pager_content_bottom_get . logic error! 
+
+ecore_input - multiple touch problem. 
+
+evas_map - afterimage problem 
