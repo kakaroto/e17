@@ -8,6 +8,25 @@ collections {
    }
    group
    {
+      name: "ephoto/layout/single/browser";
+      parts
+      {
+         part
+         {
+            name: "ephoto.swallow.content";
+            type: SWALLOW;
+            description
+            {
+               rel1.relative: 0.0 0.0;
+               rel1.offset: 0 0;
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -1 -1;
+            }
+         }
+      }
+   }
+   group
+   {
       name: "elm/layout/ephoto/orient";
       parts
       {
