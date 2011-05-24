@@ -119,11 +119,11 @@ MagwinRedraw(MagWindow * mw, int paint)
    ww = mw->ewin->client.w;
    wh = mw->ewin->client.h;
 
-   if (mw->scale < -6)
-      mw->scale = -6;
-   else if (mw->scale > 6)
-      mw->scale = 6;
-   scale = pow(2., (double)(mw->scale));
+   if (mw->scale < -24)
+      mw->scale = -24;
+   else if (mw->scale > 24)
+      mw->scale = 24;
+   scale = pow(2., (double)0.25 * (mw->scale));
    sw = (int)((ww + .999 * scale) / scale);
    if (sw > WinGetW(VROOT))
       scale = (double)ww / (double)WinGetW(VROOT);
@@ -462,7 +462,7 @@ MagwinCreate(const char *title, int width, int height)
    EventCallbackRegister(win, MagwinEvent, mw);
 
    EQueryPointer(VROOT, &mw->cx, &mw->cy, NULL, NULL);
-   mw->scale = 1;
+   mw->scale = 4;
    mw->step = 4;
 
    return mw;
