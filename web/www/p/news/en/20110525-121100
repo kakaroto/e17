@@ -1,0 +1,38 @@
+1.0.1 Release of core EFL
+Cedric Bail
+cedric.bail@free.fr
+
+<p>
+After a few months, we are pleased to announce the 1.0.1 release of the
+core EFL libraries (With the excepetion of Eet at 1.4.1). This is a bug
+fixes only release on top of the previous 1.0 release. Only libraries
+that require bug fix are being released (Embryo stay in 1.0.0 as no bug
+where reported on it). For new shiny feature, you will have to wait a
+little bit more.
+The following libraries have been released:
+</p>
+
+<p><ul>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eina">Eina</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eet">Eet</a> - 1.4.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Evas">Evas</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Ecore">Ecore</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Embryo">Embryo</a> - 1.0.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Edje">Edje</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/E_Dbus">E_Dbus</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Efreet">Efreet</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> - 1.0.1</li>
+</ul></p>
+
+<p>
+You can download the respective libraries from our
+<a href="http://www.enlightenment.org/p.php?p=download&l=en">Download Page</a>.
+
+Or checkout the 1.0 branch with subversion revision r59661.
+</p>
+
+<p>
+For applications and bindings compatible with this release, take a look at
+<a href="http://download.enlightenment.org/snapshots/2010-12-03/">this snapshot</a>.
+</p>
+<!-- cut -->
