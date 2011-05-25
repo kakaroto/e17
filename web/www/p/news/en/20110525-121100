@@ -4,7 +4,7 @@ cedric.bail@free.fr
 
 <p>
 After a few months, we are pleased to announce the 1.0.1 release of the
-core EFL libraries (With the excepetion of Eet at 1.4.1). This is a bug
+core EFL libraries (With the exception of Eet at 1.4.1). This is a bug
 fixes only release on top of the previous 1.0 release. Only libraries
 that require bug fix are being released (Embryo stay in 1.0.0 as no bug
 where reported on it). For new shiny feature, you will have to wait a
