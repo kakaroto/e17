@@ -18,3 +18,9 @@ elm_pager_content_bottom_get . logic error!
 ecore_input - multiple touch problem. 
 
 evas_map - afterimage problem 
+
+evas_map - check rotation util  inconsistency rotation
+
+elm_transit - eina_hash_find 
+
+
