@@ -11,3 +11,12 @@ install/libedje-doc::
 
 #DEB_INSTALL_MANPAGES_libedje-doc := $(DEB_SRCDIR)/doc/man/man3/*.3
 DEB_CONFIGURE_EXTRA_FLAGS := --enable-doc
+
+refresh-patches:
+	@dh_testdir
+	@echo 'refreshing debian/patches:'
+	@rm -rf '$(CURDIR)'/debian/patches
+	@mkdir -p '$(CURDIR)'/debian/patches
+	@cd '$(CURDIR)'/debian/patches && git format-patch upstream..upstream-$(DEB_UPSTREAM_VERSION)+patches | tee series
+	@sed -i s:^debian/patches/:: '$(CURDIR)'/debian/patches/series
+	@echo .

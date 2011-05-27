@@ -1,8 +1,41 @@
-edje (0.9.93.063+svn44144-3) unstable; urgency=low
+edje (1.0.999-1) unstable; urgency=low
 
-  * Version for packages.enlightenment.org
+  * update to work with svn
 
- -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 14:53:00 +0100
+ -- Michael Bouchaud <michael@substantiel.fr>  Thu, 07 Apr 2011 11:51:32 +0200
+
+edje (1.0.0-1) unstable; urgency=low
+
+  * Upstream release 1.0.0
+  * Add new binaries to libedje-bin: edje_inspector and edje_external_inspector
+  * Add debian/patches/0001_add_edje_convert_back.diff
+    - The edje_convert binary is no longer built by default but we still need
+      it, so put it back in the Makefile
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 13 Mar 2011 18:16:28 +0100
+
+edje (1.0.0~beta-1) experimental; urgency=low
+
+  * First upstream beta release
+  * debian/watch: watch the release directory instead of the snapshots
+  * Remove the soname lintian override, no longer needed
+  * Bump Standards-Version, no change required
+  * Drop 01_fix_edje_externals_install_path.diff: applied upstream
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 03 Oct 2010 17:05:28 +0200
+
+edje (0.9.99.49898-1) unstable; urgency=low
+
+  * New upstream snapshot
+    - Fix FTBFS on Hurd (Closes: #535771)
+  * Bump Standards-Version, no change required
+  * Remove Xavier Oswald from uploaders, he is no longer active
+  * Switch to '3.0 (quilt)' source format
+  * Add edje_player to libedje-bin
+  * Add patches/01_fix_edje_externals_install_path.diff:
+    - Make the external modules path versionned
+
+ -- Albin Tonnerre <lutin@debian.org>  Thu, 22 Jul 2010 20:08:29 +0200
 
 edje (0.9.93.063-2) unstable; urgency=low
 
