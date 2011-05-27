@@ -1,0 +1,5 @@
+eeze (1.0.999-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Michael Bouchaud <michael@substantiel.fr>  Tue, 25 Jan 2011 14:26:22 +0100
