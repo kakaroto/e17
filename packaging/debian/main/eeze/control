@@ -13,12 +13,12 @@ Provides: libeeze0
 Conflicts: libeeze0
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Eeze is a library for manipulating devices through udev with a simple and fast api.
+ Eeze is a library for manipulating devices through udev with a simple and fast api. It interfaces directly with libudev, avoiding such middleman daemons as udisks/upower or hal, to immediately gather device information the instant it becomes known to the system. 
 
 Package: libeeze-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, libeeze-svn-08 (= ${binary:Version}), pkg-config
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Eeze is a library for manipulating devices through udev with a simple and fast api.
+ Eeze is a library for manipulating devices through udev with a simple and fast api. It interfaces directly with libudev, avoiding such middleman daemons as udisks/upower or hal, to immediately gather device information the instant it becomes known to the system. 
