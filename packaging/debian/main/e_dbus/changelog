@@ -1,8 +1,35 @@
-edbus (0.5.0.063+svn44144-2) unstable; urgency=low
+edbus (1.0.999-1) unstable; urgency=low
 
-  * Version for packages.enlightenment.org
+  * update to work with svn
 
- -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 14:48:38 +0100
+ -- Michael Bouchaud <michael@substantiel.fr>  Thu, 07 Apr 2011 11:58:32 +0200
+
+edbus (1.0.0-1) unstable; urgency=low
+
+  * Upstream release 1.0.0
+
+ -- Albin Tonnerre <lutin@debian.org>  Tue, 15 Mar 2011 20:56:45 +0100
+
+edbus (1.0.0~beta-1) experimental; urgency=low
+
+  * First upstream beta release
+  * debian/watch: watch the release directory instead of the snapshots
+  * Remove the soname lintian override, no longer needed
+  * Bump Standards-Version, no change required
+  * Update debian/copyright to reflect the actual text from COPYING
+  * Add the connman abstraction library to libedbus
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 03 Oct 2010 16:29:01 +0200
+
+edbus (0.5.0.49898-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * Bump Standards-Version, no change required
+  * Remove Xavier Oswald from uploaders, he is no longer active
+  * Fix typo in package description
+  * Add the bluez and ukit astraction libraries
+
+ -- Albin Tonnerre <lutin@debian.org>  Thu, 22 Jul 2010 21:24:54 +0200
 
 edbus (0.5.0.063-1) unstable; urgency=low
 
