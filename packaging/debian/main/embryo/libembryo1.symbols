@@ -1,4 +1,4 @@
-libembryo.so.0 libembryo0 #MINVER#
+libembryo.so.1 libembryo1 #MINVER#
  embryo_data_address_get@Base 0.9.1.042
  embryo_data_heap_pop@Base 0.9.1.042
  embryo_data_heap_push@Base 0.9.1.042
@@ -34,3 +34,4 @@ libembryo.so.0 libembryo0 #MINVER#
  embryo_shutdown@Base 0.9.1.042
  embryo_swap_16@Base 0.9.1.042
  embryo_swap_32@Base 0.9.1.042
+ embryo_version@Base 1.0.0~beta

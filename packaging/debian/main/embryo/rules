@@ -1,17 +1,17 @@
 #!/usr/bin/make -f
 
-include /usr/share/cdbs/1/class/autotools.mk
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
-
 CFLAGS += -fvisibility=hidden
 
-build/libembryo-doc::
+binary: binary-indep binary-arch
+binary-indep: build-doc
+build-doc: build
 	$(MAKE) doc
 
-install/libembryo-doc::
-	cp -R $(DEB_SRCDIR)/doc/html debian/libembryo-doc/usr/share/doc/libembryo-doc/
+%:
+	dh $@
 
-#DEB_INSTALL_MANPAGES_libembryo-doc := $(DEB_SRCDIR)/doc/man/man3/*.3
-DEB_DH_STRIP_ARGS := --dbg-package=libembryo-dbg
-DEB_CONFIGURE_EXTRA_FLAGS := --disable-rpath --enable-doc
+override_dh_auto_configure:
+	dh_auto_configure --enable-doc --disable-rpath
+
+override_dh_strip:
+	dh_strip --dbg-package=libembryo-dbg
