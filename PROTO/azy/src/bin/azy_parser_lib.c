@@ -33,7 +33,7 @@ strndup(const char *s, size_t n)
    ret = malloc(n + 1);
    if (!ret) return NULL;
 
-   memcpy(&ret, s, n);
+   memcpy(ret, s, n);
    ret[n] = 0;
    return ret;
 }

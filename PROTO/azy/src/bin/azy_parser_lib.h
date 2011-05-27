@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PARSER_LIB_H
-#define PARSER_LIB_H
+#ifndef AZY_PARSER_LIB_H
+#define AZY_PARSER_LIB_H
 
 #include <Eina.h>
 #include "azy.h"
@@ -53,14 +53,6 @@ typedef void      *(*Azy_Parser_New_Cb)(void *(*)(size_t));
 typedef void       (*Azy_Parser_Free_Cb)(void *, void (*)(void *));
 typedef void       (*Azy_Parser_Cb)(void *, int, Azy_Token *, Azy_Parser *parser);
 typedef Azy_Token *(*Azy_Token_Cb)(Azy_Stream *);
-
-#ifndef strdupa
-# define strdupa(str)       strcpy(alloca(strlen(str) + 1), str)
-#endif
-
-#ifndef strndupa
-# define strndupa(str, len) strncpy(alloca(len + 1), str, len)
-#endif
 
 #define SYNTAX_ERROR(TOKEN)                                                                                 \
     eina_stringshare_del(parser->error);                                                                    \
