@@ -1,8 +1,48 @@
-eet (1.2.3+svn44144-2) unstable; urgency=low
+eet (1.4.999) unstable; urgency=low
 
-  * Version for packages.enlightenment.org
+  * update to work with svn
 
- -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 15:41:43 +0100
+ -- Michael Bouchaud <michael@substantiel.fr>  Thu, 07 Apr 2011 11:02:57 +0200
+
+eet (1.4.0-2) unstable; urgency=low
+
+  * Actually upload eet 1.4.0, not 1.4.0 beta
+    - eet 1.4.0-1 was mistakenly uploaded with the contents of eet 1.4.0-beta,
+      so let's upload the actual 1.4.0 release
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 20 Mar 2011 15:08:29 +0100
+
+eet (1.4.0-1) unstable; urgency=low
+
+  * Upstream release 1.4.0
+    - Fix FTBFS with ld --no-add-needed (Closes: #554317)
+
+ -- Albin Tonnerre <lutin@debian.org>  Sat, 12 Feb 2011 20:22:08 +0100
+
+eet (1.4.0~beta+1.3.2-1) unstable; urgency=low
+
+  * eet 1.4.0~beta-1 erroneously got into unstable. This upload reverts eet to
+    the version it previously was in unstable, 1.3.2
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 17 Oct 2010 15:30:11 +0200
+
+eet (1.4.0~beta+1.4.0-1) experimental; urgency=low
+
+  * New upstream release
+  * Bump Standards-Version, no change required
+  * Update symbols file
+  * Update debian/copyright to reflect the actual text from COPYING
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 03 Oct 2010 17:04:34 +0200
+
+eet (1.3.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Update symbols file with new symbols
+  * Bump Standards-Version, no change required
+  * Fix spelling mistakes in debian/control
+
+ -- Albin Tonnerre <lutin@debian.org>  Thu, 22 Jul 2010 20:16:05 +0200
 
 eet (1.2.3-1) unstable; urgency=low
 
