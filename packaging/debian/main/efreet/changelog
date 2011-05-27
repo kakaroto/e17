@@ -1,8 +1,40 @@
-efreet (0.5.0.063+svn45444-2) unstable; urgency=low
+efreet (1.0.999-1) unstable; urgency=low
 
-  * Version for packages.enlightenment.org
+  * update to work with svn
 
- -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 15:45:12 +0100
+ -- Michael Bouchaud <michael@substantiel.fr>  Thu, 07 Apr 2011 11:56:44 +0200
+
+efreet (1.0.0-1) unstable; urgency=low
+
+  * Upstream release 1.0.0
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 13 Feb 2011 13:35:44 +0100
+
+efreet (1.0.0~beta-1) experimental; urgency=low
+
+  * First upstream beta release
+  * debian/watch: watch the release directory instead of the snapshots
+  * Remove the soname lintian override, no longer needed
+  * Bump Standards-Version, no change required
+  * Update debian/copyright to reflect the actual text from COPYING
+  * Drop 01_fix_internal_helper.diff: no longer needed
+  * debian/control: fix typo in description
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 03 Oct 2010 17:05:42 +0200
+
+efreet (0.5.0.49898-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * Switch to '3.0 (quilt)' source format
+  * Switch from CDBS to dh7
+  * Bump Standards-Version, no change required
+  * Run the testsuite automatically when building
+  * Remove Xavier Oswald from uploaders, no longer active
+  * Drop patches/01_support_svg_by_default.diff, fixed upstream
+  * Drop --disable-rpath configure option, no longer recognized
+  * Install internal helper binary in libefreet-svn-06
+
+ -- Albin Tonnerre <lutin@debian.org>  Thu, 22 Jul 2010 19:40:00 +0200
 
 efreet (0.5.0.063-1) unstable; urgency=low
 

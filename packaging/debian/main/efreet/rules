@@ -1,10 +1,25 @@
 #!/usr/bin/make -f
 
-include /usr/share/cdbs/1/class/autotools.mk
-include /usr/share/cdbs/1/rules/debhelper.mk
+CFLAGS += -fvisibility=hidden
 
-install/libefreet-doc::
+binary: binary-indep binary-arch
+binary-indep: build-doc-stamp
+binary-arch: build-test-stamp
+
+build-doc-stamp: build
 	$(MAKE) doc
-	cp -R $(DEB_SRCDIR)/doc/html debian/libefreet-doc/usr/share/doc/libefreet-doc/
+	touch $@
 
-DEB_CONFIGURE_EXTRA_FLAGS := --disable-rpath --enable-doc
+build-test-stamp: build
+	$(MAKE) check
+	touch $@
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+	--enable-doc
+
+override_dh_makeshlibs:
+	dh_makeshlibs -V

@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/libefreet.so.*
+debian/tmp/usr/lib/libefreet_mime.so.*
+debian/tmp/usr/lib/libefreet_trash.so.*
+debian/tmp/usr/lib/efreet
