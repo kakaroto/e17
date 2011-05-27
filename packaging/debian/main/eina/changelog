@@ -1,8 +1,54 @@
-eina (0.9.9.063+svn44144-4) unstable; urgency=low
+eina (1.0.999-1) unstable; urgency=low
 
-  * Version for packages.enlightenment.org
+  * update to work with svn
 
- -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 15:46:52 +0100
+ -- Michael Bouchaud <michael@substantiel.fr>  Sat, 07 Apr 2011 19:02:54 +0200
+
+eina (1.0.0-1) unstable; urgency=low
+
+  * Upstream release 1.0.0
+    - testsuite now works on non-linux with pthreds enabled (Closes: #605818)
+  * This version breaks older versions of eet , add Breaks: accordingly
+  * Update symbols file with new symbol: eina_file_stat_ls
+  * Added patches/01_restore_eina_abi.diff:
+    - eina_array_clean is now only defined as static inline in header files.
+      This patch exports the symbol again to keep ABI compatilibty with
+      previous versions
+
+ -- Albin Tonnerre <lutin@debian.org>  Sat, 12 Feb 2011 19:02:54 +0100
+
+eina (1.0.0~beta-1) experimental; urgency=low
+
+  * First upstream beta release
+  * debian/watch: watch the release directory instead of the snapshots
+  * debian/rules: use the correct option to enable pthreads
+  * Drop patches/01_fix_mempool_alignment_issues.diff, applied upstream
+  * Remove the soname lintian override, no longer needed
+  * Switch to using a .symbols file
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 03 Oct 2010 17:03:57 +0200
+
+eina (0.9.9.49898-2) unstable; urgency=low
+
+  * Add patches/01_fix_mempool_alignment_issues.diff. The memory
+    allocator now returns correctly aligned data, fixes issues on SPARC
+    (Closes: #592522)
+  * Bump Standards-Version, no change required
+
+ -- Albin Tonnerre <lutin@debian.org>  Tue, 10 Aug 2010 21:17:25 +0200
+
+eina (0.9.9.49898-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * debian/rules: update configure options
+  * Explicitly enable pthread support in configure options
+  * Bump Standards-Version, no change required
+  * Drop patches/03_fix_compile_hurd.diff, applied upstream
+  * Switch to '3.0 (quilt)' source format
+  * Drop patches/01_fix_compile_kbsd.diff, applied upstream
+  * No longer ship mp modules, since we build them inside the lib
+
+ -- Albin Tonnerre <lutin@debian.org>  Wed, 21 Jul 2010 21:55:38 +0200
 
 eina (0.9.9.063-3) unstable; urgency=low
 

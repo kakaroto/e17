@@ -3,15 +3,18 @@ Section: libs
 Priority: optional
 Maintainer: Debian Pkg-e Team <pkg-e-devel@lists.alioth.debian.org>
 Uploaders: Albin Tonnerre <lutin@debian.org>, Jan Lübbe <jluebbe@debian.org>
-Build-Depends: debhelper (>= 6), cdbs, pkg-config, check, doxygen
-Standards-Version: 3.8.3
+Build-Depends: debhelper (>= 6), cdbs, pkg-config, check
+Build-Depends-Indep: doxygen
+Standards-Version: 3.9.1
+Vcs-Git: git://git.debian.org/pkg-e/libs/eina.git
+Vcs-Browser: http://git.debian.org/?p=pkg-e/libs/eina.git
 Homepage: http://www.enlightenment.org
 
-Package: libeina-svn-05
+Package: libeina1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Provides: libeina0
 Conflicts: libeina0
+Breaks: libeet1 (<= 1.4.0~beta+1.4.0)
 Description: Enlightenment Foundation Library providing optimized data types
  Eina is a multi-platform library that provides optimized data types and a few
  tools. It supports the following data types:
@@ -27,7 +30,7 @@ Description: Enlightenment Foundation Library providing optimized data types
 Package: libeina-dev
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}, libeina-svn-05 (= ${binary:Version}), pkg-config
+Depends: ${misc:Depends}, libeina1 (= ${binary:Version}), pkg-config
 Recommends: libeina-doc
 Description: Development files for libeina
  Eina is a multi-platform library that provides optimized data types and a few
@@ -67,7 +70,7 @@ Description: Documentation for use with libeina
 Package: libeina-dbg
 Architecture: any
 Section: debug
-Depends: ${misc:Depends}, libeina-svn-05 (= ${binary:Version})
+Depends: ${misc:Depends}, libeina1 (= ${binary:Version})
 Priority: extra
 Description: debugging symbols for use with libeina
  Eina is a multi-platform library that provides optimized data types and a few

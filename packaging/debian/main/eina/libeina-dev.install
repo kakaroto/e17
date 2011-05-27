@@ -1,4 +1,5 @@
 debian/tmp/usr/include/*
 debian/tmp/usr/lib/pkgconfig/*
 debian/tmp/usr/lib/libeina.a
+debian/tmp/usr/lib/libeina.la
 debian/tmp/usr/lib/libeina.so
