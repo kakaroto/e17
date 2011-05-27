@@ -3,21 +3,23 @@ Section: x11
 Priority: optional
 Maintainer:  Debian Pkg-e Team <pkg-e-devel@lists.alioth.debian.org>
 Uploaders: Albin Tonnerre <lutin@debian.org>,
- Xavier Oswald <x.oswald@free.fr>, Jan Lübbe <jluebbe@debian.org>
-Build-Depends: debhelper (>= 6), cdbs, libeet-dev (>= 1.2.3),
- libedje-dev (>= 0.9.93.063), libefreet-dev (>= 0.5.0.063),
- libecore-dev (>= 0.9.9.063), libedbus-dev (>= 0.5.0.063),
- libevas-dev (>= 0.9.9.063), libeina-dev (>= 0.9.9.063),
+ Jan Lübbe <jluebbe@debian.org>
+Build-Depends: debhelper (>= 6), cdbs, libeet-dev (>= 1.4.0),
+ libedje-dev (>= 1.0.0), libefreet-dev (>= 1.0.0),
+ libecore-dev (>= 1.0.0), libedbus-dev (>= 1.0.0),
+ libevas-dev (>= 1.0.0), libeina-dev (>= 1.0.0),
  libasound2-dev [!kfreebsd-amd64 !kfreebsd-i386 !hurd-i386], libxext-dev, libeet-bin, libpam0g-dev
-Standards-Version: 3.8.3
+Standards-Version: 3.9.1
+Vcs-Git: git://git.debian.org/pkg-e/apps/e.git
+Vcs-Browser: http://git.debian.org/?p=pkg-e/apps/e.git
 Homepage: http://www.enlightenment.org
 
 Package: e17
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, e17-data (= ${source:Version}), libevas-svn-05-engine-software-x11, libedje-bin
+Depends: ${misc:Depends}, ${shlibs:Depends}, e17-data (= ${source:Version}),
+ libevas1-engines-x, libedje-bin, dbus-x11
 Conflicts: enlightenment
 Provides: x-window-manager
-Replaces: emodule-mixer, emodule-systray
 Description: The Enlightenment DR17 Window Manager
  Enlightenment is an advanced window manager for X11. Unique
  features include: a fully animated background, nice drop shadows
@@ -56,10 +58,10 @@ Description: Enlightenment headers, static libraries and documentation
 Package: efl-dev
 Architecture: any
 Section: devel
-Depends: ${misc:Depends}, libeet-dev (>= 1.0.1),
- libedje-dev (>= 0.9.93.063), libefreet-dev (>= 0.5.0.063),
- libecore-dev (>= 0.9.9.063), libedbus-dev (>= 0.5.0.063),
- libevas-dev (>= 0.9.9.063), libeina-dev (>= 0.9.9.063)
+Depends: ${misc:Depends}, libeet-dev (>= 1.4.0),
+ libedje-dev (>= 1.0.0), libefreet-dev (>= 1.0.0),
+ libecore-dev (>= 1.0.0), libedbus-dev (>= 1.0.0),
+ libevas-dev (>= 1.0.0), libeina-dev (>= 1.0.0)
 Description: EFL headers, static libraries and documentation
  Enlightenment is an advanced window manager for X11. Unique
  features include: a fully animated background, nice drop shadows
