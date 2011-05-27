@@ -1,9 +1,62 @@
-ecore (0.9.9.063+svn44144-4) unstable; urgency=low
+ecore (1.0.999-1) unstable; urgency=low
 
-  * Version for packages.enlightenment.org
-  * Conversion back to cdbs for now, when hardy won't be supported, i'll use dh7
+  * update to work with svn
 
- -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 14:26:08 +0100
+ -- Michael Bouchaud <michael@substantiel.fr>  Thu, 07 Apr 2011 11:11:48 +0200
+
+ecore (1.0.0-2) unstable; urgency=low
+
+  * Fix missing dependency of libecore-dev on libc-ares-dev
+    - Fix FTBFS in edje (Closes: #618504)
+    - Fix FTBFS in efreet(Closes: #618502)
+
+ -- Albin Tonnerre <lutin@debian.org>  Sat, 19 Mar 2011 14:32:28 +0100
+
+ecore (1.0.0-1) unstable; urgency=low
+
+  * Upstream release 1.0.0
+  * debian/control: use architecture wildcards for libecore-fb (Closes: #604654)
+  * Enable c-ares support for dns lookups in ecore-con
+  * Add patches/02_fix_missing_flags_in_ecore_suite.diff:
+    - fix compilation with --no-add-needed (Closes: #609246)
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 13 Feb 2011 11:25:54 +0100
+
+ecore (1.0.0~beta-1) experimental; urgency=low
+
+  * First upstream beta release
+  * debian/watch: watch the release directory instead of the snapshots
+  * Remove the soname lintian override, no longer needed
+  * debian/rules: use the correct option to enable pthreads
+  * Bump Standards-Version, no change required
+  * Update debian/copyright to reflect the actual text from COPYING
+  * Switch to '3.0 (quilt)' source format
+  * Add patches/01_no_x_ecore_testsuite.diff: the ecore_x_bell test
+    fails if no X server is running, disable it for now.
+
+ -- Albin Tonnerre <lutin@debian.org>  Sun, 03 Oct 2010 17:04:52 +0200
+
+ecore (0.9.9.49898-1) unstable; urgency=low
+
+  * New upstream snapshot
+    - Fix FTBFS on Hurd (Closes: #535773)
+    - Add German translations (Closes: #563896)
+  * Add build-dependency on libxi-dev to get XInput2 support in ecore_x
+  * Remove libecore-job, it got merged in libecore
+  * Add the new libecore_input_evas library to the libecore-input package
+  * ecore-config is deprecated and unused, remove libecore-config and
+    libecore-bin
+  * libecore-txt is also deprecated, remove it as well
+  * Re-order configure options in debian/rules to match the configure
+    output
+  * Run the testsuite automatically when building
+  * Explicitly enable pthread support in configure options
+  * Bump Standards-Version, no change required
+  * Create stamp files for build-doc and build-test
+  * Remove leftover lintian-overrides files after build
+  * Build libecore-fb on avr32, powerpcspe and sparc64 (Closes: #586119)
+
+ -- Albin Tonnerre <lutin@debian.org>  Wed, 21 Jul 2010 22:29:43 +0200
 
 ecore (0.9.9.063-3) unstable; urgency=low
 

@@ -4,15 +4,19 @@ Priority: optional
 Maintainer: Debian Pkg-e Team <pkg-e-devel@lists.alioth.debian.org>
 Uploaders: Albin Tonnerre <lutin@debian.org>, Niv Sardi <xaiki@debian.org>,
  Xavier Oswald <x.oswald@free.fr>, Jan Lübbe <jluebbe@debian.org>
-Build-Depends: debhelper (>= 6), cdbs, libeina-dev (>= 0.9.9.063),
- libeet-dev (>= 1.2.3), libevas-dev (>= 0.9.9.063), libgnutls-dev,
+Build-Depends: dpkg-dev (>= 1.14.8), debhelper (>= 7.0.50~), libeina-dev (>= 1.0.0~),
+ libeet-dev (>= 1.4.0~), libevas-dev (>= 1.0.0~), libgnutls-dev,
  libcurl4-gnutls-dev, libxcursor-dev, libxss-dev, libxrender-dev, libxinerama-dev,
- libxrandr-dev, libxext-dev, libxp-dev, libxcomposite-dev, libjpeg62-dev,
- libxdamage-dev, x11proto-xext-dev, libxtst-dev, libglib2.0-dev, doxygen
-Standards-Version: 3.8.3
+ libxrandr-dev, libxext-dev, libxp-dev, libxcomposite-dev, libxi-dev,
+ libxdamage-dev, x11proto-xext-dev, libxtst-dev, libglib2.0-dev, libjpeg62-dev,
+ libc-ares-dev, check
+Build-Depends-Indep: doxygen
+Standards-Version: 3.9.1
 Homepage: http://enlightenment.org
+Vcs-Git: git://git.debian.org/pkg-e/libs/ecore.git
+Vcs-Browser: http://git.debian.org/?p=pkg-e/libs/ecore.git
 
-Package: libecore-svn-05
+Package: libecore1
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Core abstraction layer for enlightenment DR 0.17
@@ -22,7 +26,7 @@ Description: Core abstraction layer for enlightenment DR 0.17
  can make use of the work put into Ecore to make this job easy for
  applications.
 
-Package: libecore-con-svn-05
+Package: libecore-con1
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Ecore Connection Library
@@ -34,19 +38,7 @@ Description: Ecore Connection Library
  .
  This package contains the Ecore Connection Library.
 
-Package: libecore-config-svn-05
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Ecore Enlightened Property Library
- This is the core event abstraction layer and X abstraction layer that makes
- doing selections, Xdnd, general X stuff, and event loops, timeouts and idle
- handlers fast, optimized, and convenient. It's a separate library so anyone
- can make use of the work put into Ecore to make this job easy for
- applications.
- .
- This package contains the Enlightened Property Library.
-
-Package: libecore-evas-svn-05
+Package: libecore-evas1
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Ecore Evas Wrapper Library
@@ -58,8 +50,8 @@ Description: Ecore Evas Wrapper Library
  .
  This package contains the Ecore Evas wrapper functions.
 
-Package: libecore-fb-svn-05
-Architecture: alpha amd64 armel hppa i386 ia64 lpia m68k mips mipsel powerpc s390 sh4 sparc
+Package: libecore-fb1
+Architecture: linux-any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Ecore frame buffer system functions
  This is the core event abstraction layer and X abstraction layer that makes
@@ -70,7 +62,7 @@ Description: Ecore frame buffer system functions
  .
  This package contains the Ecore frame buffer system functions.
 
-Package: libecore-file-svn-05
+Package: libecore-file1
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Ecore File Library
@@ -82,7 +74,7 @@ Description: Ecore File Library
  .
  This package contains the Ecore File Library.
 
-Package: libecore-imf-svn-05
+Package: libecore-imf1
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Ecore Input Method Framework module
@@ -95,7 +87,7 @@ Description: Ecore Input Method Framework module
  This package contains the Ecore Input Method Framework module, and the Evas
  helper functions for it.
 
-Package: libecore-input-svn-05
+Package: libecore-input1
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Ecore input module
@@ -106,8 +98,8 @@ Description: Ecore input module
  applications.
  .
  This package contains the Ecore input module.
- 
-Package: libecore-ipc-svn-05
+
+Package: libecore-ipc1
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Ecore inter-process communication functions
@@ -119,31 +111,7 @@ Description: Ecore inter-process communication functions
  .
  This package contains the Ecore inter-process communication functions.
 
-Package: libecore-job-svn-05
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Ecore job dealing functions
- This is the core event abstraction layer and X abstraction layer that makes
- doing selections, Xdnd, general X stuff, and event loops, timeouts and idle
- handlers fast, optimized, and convenient. It's a separate library so anyone
- can make use of the work put into Ecore to make this job easy for
- applications.
- .
- This package contains functions for dealing with Ecore jobs.
-
-Package: libecore-txt-svn-05
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Ecore text encoding conversion functions
- This is the core event abstraction layer and X abstraction layer that makes
- doing selections, Xdnd, general X stuff, and event loops, timeouts and idle
- handlers fast, optimized, and convenient. It's a separate library so anyone
- can make use of the work put into Ecore to make this job easy for
- applications.
- .
- This package contains the Ecore text encoding conversion functions.
-
-Package: libecore-x-svn-05
+Package: libecore-x1
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Ecore functions for dealing with the X Windows System
@@ -160,22 +128,19 @@ Package: libecore-dev
 Architecture: any
 Section: libdevel
 Suggests: libecore-doc
-Depends: ${misc:Depends}, libecore-svn-05 (= ${binary:Version}),
-         libecore-con-svn-05 (= ${binary:Version}),
-         libecore-config-svn-05 (= ${binary:Version}),
-         libecore-evas-svn-05 (= ${binary:Version}),
-         libecore-fb-svn-05 (= ${binary:Version}) [!kfreebsd-amd64 !kfreebsd-i386 !hurd-i386],
-         libecore-file-svn-05 (= ${binary:Version}),
-         libecore-imf-svn-05 (= ${binary:Version}),
-         libecore-ipc-svn-05 (= ${binary:Version}),
-         libecore-job-svn-05 (= ${binary:Version}),
-         libecore-txt-svn-05 (= ${binary:Version}),
-         libecore-x-svn-05 (= ${binary:Version}),
-         libeet-dev, libevas-dev (>= 0.9.9.063), libeina-dev (>= 0.9.9.063), pkg-config,
+Depends: ${misc:Depends}, libecore1 (= ${binary:Version}),
+         libecore-con1 (= ${binary:Version}),
+         libecore-evas1 (= ${binary:Version}),
+         libecore-fb1 (= ${binary:Version}) [linux-any],
+         libecore-file1 (= ${binary:Version}),
+         libecore-imf1 (= ${binary:Version}),
+         libecore-ipc1 (= ${binary:Version}),
+         libecore-x1 (= ${binary:Version}),
+         libeet-dev (>= 1.4.0~), libevas-dev (>= 1.0.0~), libeina-dev (>= 1.0.0~),
          libgnutls-dev, libcurl4-gnutls-dev, libxcursor-dev, libxss-dev,
-         libxrender-dev, libxinerama-dev, libxrandr-dev, libxext-dev,
+         libxrender-dev, libxinerama-dev, libxrandr-dev, libxext-dev, libxi-dev,
          libxp-dev, libxcomposite-dev, libxdamage-dev, x11proto-xext-dev, libxtst-dev,
-         libglib2.0-dev
+         libglib2.0-dev, libc-ares-dev, pkg-config
 Description: Ecore headers and static libraries
  This is the core event abstraction layer and X abstraction layer that makes
  doing selections, Xdnd, general X stuff, and event loops, timeouts and idle
@@ -200,35 +165,18 @@ Description: Ecore API Documentation
  This package provides development documentation (html and manpages)for the
  Ecore library.
 
-Package: libecore-bin
-Architecture: any
-Section: utils
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Tools that support Ecore
- This is the core event abstraction layer and X abstraction layer that makes
- doing selections, Xdnd, general X stuff, and event loops, timeouts and idle
- handlers fast, optimized, and convenient. It's a separate library so anyone
- can make use of the work put into Ecore to make this job easy for
- applications.
- .
- This package includes:
-  - ecore_config: allows creation/editing of ecore_config databases
-
 Package: libecore-dbg
 Architecture: any
 Section: debug
 Priority: extra
-Depends: ${misc:Depends}, libecore-svn-05 (= ${binary:Version})
-Recommends: libecore-con-svn-05 (= ${binary:Version}),
-            libecore-config-svn-05 (= ${binary:Version}),
-            libecore-evas-svn-05 (= ${binary:Version}),
-            libecore-fb-svn-05 (= ${binary:Version}),
-            libecore-file-svn-05 (= ${binary:Version}),
-            libecore-imf-svn-05 (= ${binary:Version}),
-            libecore-ipc-svn-05 (= ${binary:Version}),
-            libecore-job-svn-05 (= ${binary:Version}),
-            libecore-txt-svn-05 (= ${binary:Version}),
-            libecore-x-svn-05 (= ${binary:Version})
+Depends: ${misc:Depends}, libecore1 (= ${binary:Version})
+Recommends: libecore-con1 (= ${binary:Version}),
+            libecore-evas1 (= ${binary:Version}),
+            libecore-fb1 (= ${binary:Version}),
+            libecore-file1 (= ${binary:Version}),
+            libecore-imf1 (= ${binary:Version}),
+            libecore-ipc1 (= ${binary:Version}),
+            libecore-x1 (= ${binary:Version})
 Description: Debugging symbols for libecore
  This is the core event abstraction layer and X abstraction layer that makes
  doing selections, Xdnd, general X stuff, and event loops, timeouts and idle
