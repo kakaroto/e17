@@ -3,19 +3,22 @@ Section: libs
 Priority: optional
 Maintainer: Debian Pkg-e Team <pkg-e-devel@lists.alioth.debian.org>
 Uploaders: Albin Tonnerre <lutin@debian.org>,
- Niv Sardi <xaiki@debian.org>, Xavier Oswald <x.oswald@free.fr>,
+ Niv Sardi <xaiki@debian.org>,
  Jan Lübbe <jluebbe@debian.org>,
  Nikita V. Youshchenko <yoush@debian.org>
-Build-Depends: debhelper (>= 6), cdbs, libeet-dev (>= 1.1.0), libeina-dev (>= 0.9.9.063),
+Build-Depends: debhelper (>= 7.0.50~), libeet-dev (>= 1.4.0~), libeina-dev (>= 1.0.0~),
  libfreetype6-dev, libpng12-dev | libpng-dev, libx11-dev, libxrender-dev,
  x11proto-xext-dev, zlib1g, libjpeg62-dev, libtiff4-dev, libgif-dev,
  libfontconfig1-dev, libglu1-mesa-dev, mesa-common-dev, libxpm-dev,
- librsvg2-dev,
- libpixman-1-dev, libxcb-shm0-dev, libxcb-image0-dev, libxcb1-dev, doxygen
-Standards-Version: 3.8.3
+ librsvg2-dev, libfribidi-dev,
+ libpixman-1-dev, libxcb-shm0-dev, libxcb-image0-dev, libxcb1-dev
+Build-Depends-Indep: doxygen
+Standards-Version: 3.9.1
+Vcs-Git: git://git.debian.org/pkg-e/libs/evas.git
+Vcs-Browser: http://git.debian.org/?p=pkg-e/libs/evas.git
 Homepage: http://www.enlightenment.org
 
-Package: libevas-svn-05
+Package: libevas1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Enlightenment DR17 advanced canvas library
@@ -45,8 +48,9 @@ Description: Evas API Documentation
 Package: libevas-dev
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}, libevas-svn-05 (= ${binary:Version}), libjpeg62-dev, libx11-dev,
- libfreetype6-dev, libfontconfig1-dev, libeet-dev, pkg-config, libeina-dev (>= 0.9.9.063)
+Depends: ${misc:Depends}, libevas1 (= ${binary:Version}), libjpeg62-dev, libx11-dev,
+ libfreetype6-dev, libfontconfig1-dev, libeet-dev (>= 1.4.0~), libeina-dev (>= 1.0.0~),
+ libfribidi-dev, pkg-config
 Suggests: libevas-doc
 Description: Enlightenment DR17 advanced canvas library development files
  Evas is an advanced canvas library, providing six engines for rendering: X11,
@@ -61,7 +65,7 @@ Description: Enlightenment DR17 advanced canvas library development files
 Package: libevas-dbg
 Architecture: any
 Section: debug
-Depends: ${misc:Depends}, libevas-svn-05 (= ${binary:Version})
+Depends: ${misc:Depends}, libevas1 (= ${binary:Version})
 Priority: extra
 Description: enlightenment advanced canvas library
  Evas is an advanced canvas library, providing six engines for rendering: X11,
@@ -73,12 +77,12 @@ Description: enlightenment advanced canvas library
  easier to interpret core dumps. The libraries are installed in
  /usr/lib/debug and are automatically used by gdb.
 
-Package: libevas-svn-05-engines-core
+Package: libevas1-engines-core
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: libevas-0.9.9.050a-engines
 Replaces: libevas-engines
-Provides: libevas-svn-05-engine-buffer, libevas-svn-05-engine-software-generic
+Provides: libevas1-engine-buffer, libevas1-engine-software-generic
 Description: Evas module providingg the framebuffer render engine
  Evas is an advanced canvas library, providing six engines for rendering: X11,
  OpenGL (hardware accelerated), DirectFB, the framebuffer, Microsoft Windows
@@ -89,12 +93,12 @@ Description: Evas module providingg the framebuffer render engine
   - buffer
   - software/genenric
 
-Package: libevas-svn-05-engines-x
+Package: libevas1-engines-x
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libevas-svn-05-engines-core
+Depends: ${shlibs:Depends}, ${misc:Depends}, libevas1-engines-core
 Conflicts: libevas-0.9.9.050a-engines
 Replaces: libevas-engines, libevas-engines-extras
-Provides: libevas-svn-05-engine-software-x11, libevas-svn-05-engine-xrender-x11, libevas-svn-05-engine-gl-x11
+Provides: libevas1-engine-software-x11, libevas1-engine-xrender-x11, libevas1-engine-gl-x11
 Description: Evas module providing the X11 engines
  Evas is an advanced canvas library, providing six engines for rendering: X11,
  OpenGL (hardware accelerated), DirectFB, the framebuffer, Microsoft Windows
@@ -106,9 +110,9 @@ Description: Evas module providing the X11 engines
   - Software/X11 (Xlib/XCB)
   - Xrender/X11
 
-Package: libevas-svn-05-engine-fb
+Package: libevas1-engine-fb
 Architecture: alpha amd64 armel hppa i386 ia64 lpia m68k mips mipsel powerpc s390 sh4 sparc
-Depends: ${shlibs:Depends}, ${misc:Depends}, libevas-svn-05-engines-core
+Depends: ${shlibs:Depends}, ${misc:Depends}, libevas1-engines-core
 Conflicts: libevas-0.9.9.050a-engines-extras
 Replaces: libevas-engines-extras
 Description: Evas module providing the Framebuffer engine

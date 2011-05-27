@@ -1,9 +1,5 @@
 #!/usr/bin/make -f
 
-include /usr/share/cdbs/1/class/autotools.mk
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
-
 CFLAGS += -fvisibility=hidden
 
 ifeq (hppa,$(DEB_HOST_ARCH))
@@ -16,22 +12,26 @@ ifeq (linux,$(DEB_HOST_ARCH_OS))
 	arch_flags += --enable-fb
 endif
 
-install/libevas-doc::
+binary: binary-indep binary-arch
+binary-indep: build-doc-stamp
+
+build-doc-stamp: build
 	$(MAKE) doc
+	touch $@
 
-install/libevas-doc::
-	cp -R $(DEB_SRCDIR)/doc/html debian/libevas-doc/usr/share/doc/libevas-doc/
+%:
+	dh $@
 
-#DEB_INSTALL_MANPAGES_libevas-doc := $(DEB_SRCDIR)/doc/man/man3/*.3
-
-DEB_CONFIGURE_EXTRA_FLAGS := --enable-strict \
+override_dh_auto_configure:
+	dh_auto_configure -- \
+	--enable-strict \
 	--enable-fontconfig \
+	--enable-fribidi \
 	--enable-software-xlib \
 	--enable-software-xcb \
 	--enable-static-software-generic \
 	--enable-buffer \
 	--enable-gl-x11 \
-	--enable-xrender-x11 \
 	--disable-directfb \
 	--enable-image-loader-gif \
 	--enable-image-loader-png \
@@ -41,6 +41,7 @@ DEB_CONFIGURE_EXTRA_FLAGS := --enable-strict \
 	--enable-image-loader-tiff \
 	--enable-image-loader-xpm \
 	--enable-image-loader-svg \
+	--enable-image-loader-generic \
 	--enable-scale-sample \
 	--enable-scale-smooth \
 	--enable-convert-yuv \
@@ -73,7 +74,13 @@ DEB_CONFIGURE_EXTRA_FLAGS := --enable-strict \
 	--enable-convert-32-rgb-rot-270 \
 	--enable-convert-32-rgb-rot-90 \
 	--disable-image-loader-edb \
+	--disable-software-8-x11 \
 	--disable-software-16-x11 \
 	--enable-doc \
-	--disable-fribidi \
-	--disable-rpath $(arch_flags)
+	$(arch_flags)
+
+override_dh_makeshlibs:
+	dh_makeshlibs -V
+
+override_dh_strip:
+	dh_strip --dbg-package=libevas-dbg
