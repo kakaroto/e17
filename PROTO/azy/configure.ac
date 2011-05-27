@@ -73,7 +73,7 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_C___ATTRIBUTE__
-AC_CHECK_FUNCS([strndup])
+AC_CHECK_FUNCS([strdup strndup])
 CC_PIC="$lt_prog_compiler_pic"
 CXX_PIC="$lt_prog_compiler_pic_CXX"
 AC_SUBST([CC_PIC])
