@@ -1,0 +1,12 @@
+* Elementary
+	- Genlist : Check elm_genlist_item_sorted_insert() API with group index, expandable list and etc.
+	- Add performance test application.
+
+* MARKETTING
+	- Refine cebit2011 presentation and move this to MARKETTING.
+
+* Ephoto
+	- Enhance it!
+
+* Private
+	- Spank raster!
