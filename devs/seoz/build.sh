@@ -65,5 +65,6 @@ pushd THEMES/darkness
     popd
 popd
 
+rm tags
 ctags -R
 enlightenment_remote -restart
