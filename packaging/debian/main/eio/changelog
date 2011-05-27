@@ -1,0 +1,5 @@
+eio (0.9.999-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Michaël Bouchaud <michael@substantiel.fr>  Wed, 20 Apr 2011 14:11:16 +0200
