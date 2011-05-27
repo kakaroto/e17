@@ -1,8 +1,20 @@
-elementary (0.6.0.063+svn44144-2) unstable; urgency=low
+elementary (0.7.0.999-1) unstable; urgency=low
 
-  * Version for packages.enlightenment.org
+  * update to work with svn
 
- -- quaker <quaker66@gmail.com>  Sat, 16 Jan 2010 15:48:54 +0100
+ -- Michaël Bouchaud <michael@substantiel.fr>  Mon, 04 Apr 2011 15:57:23 +0200
+
+elementary (0.7.0.49898-1) unstable; urgency=low
+
+  * New upstream snapshot
+  * Bump Standards-Version, no change required
+  * Add new build-dep on libeet-bin
+  * Switch to '3.0 (quilt)' source format
+  * Tighten libeet1 build-dep to >= 1.2.3
+  * Add patches/01_fix_edje_external_soname.diff:
+    - Install edje_external modules in a versionned path
+
+ -- Albin Tonnerre <lutin@debian.org>  Sat, 24 Jul 2010 09:20:29 +0200
 
 elementary (0.6.0.063-1) unstable; urgency=low
 

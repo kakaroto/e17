@@ -1,3 +1,5 @@
 debian/tmp/usr/bin/elementary_quicklaunch
 debian/tmp/usr/bin/elementary_run
 debian/tmp/usr/bin/elementary_test
+debian/tmp/usr/bin/elementary_testql
+debian/tmp/usr/bin/elementary_config

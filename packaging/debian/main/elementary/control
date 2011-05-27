@@ -3,14 +3,18 @@ Section: libs
 Priority: optional
 Maintainer: Debian Pkg-e Team <pkg-e-devel@lists.alioth.debian.org>
 Uploaders: Joachim Breitner <nomeata@debian.org>, Albin Tonnerre <lutin@debian.org>
-Build-Depends: debhelper (>= 6), cdbs, doxygen, pkg-config, libeina-dev (>= 0.9.9.063), libeet-dev, libevas-dev (>= 0.9.9.063), libecore-dev (>= 0.9.9.063), libedje-dev (>= 0.9.93.063)
-Standards-Version: 3.8.3
+Build-Depends: debhelper (>= 6), cdbs, doxygen, pkg-config,
+ libeina-dev (>= 1.0.0), libeet-dev (>= 1.4.0), libevas-dev (>= 1.0.999),
+ libecore-dev (>= 1.0.0), libedje-dev (>= 1.0.999),
+ libeet-bin
+Standards-Version: 3.9.0
+Vcs-Git: git://git.debian.org/pkg-e/libs/elementary.git
+Vcs-Browser: http://git.debian.org/?p=pkg-e/libs/elementary.git
 Homepage: http://www.enlightenment.org
 
-Package: libelementary-svn-05
+Package: libelementary-svn-09
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libelementary-data (= ${source:Version})
-Conflicts: libelm-svn-05, libelm-svn-03, libelm-svn-02, libelm-svn-01, libelm0
 Description: The Elementary widget set library
  Elementary is a widget set based on the Enlightenment Foundation Libraries,
  primarily aimed at creating graphical user interfaces for mobile and embedded
@@ -18,8 +22,7 @@ Description: The Elementary widget set library
 
 Package: libelementary-bin
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Conflicts: libelm-bin
+Depends: ${shlibs:Depends}, ${misc:Depends}, libelementary-svn-09
 Description: The Elementary widget set library - helper programs
  Elementary is a widget set based on the Enlightenment Foundation Libraries,
  primarily aimed at creating graphical user interfaces for mobile and embedded
@@ -30,7 +33,6 @@ Description: The Elementary widget set library - helper programs
 Package: libelementary-data
 Architecture: all
 Depends: ${misc:Depends}
-Conflicts: libelm-data
 Description: runtime data-files for libelementary
  Elementary is a widget set based on the Enlightenment Foundation Libraries,
  primarily aimed at creating graphical user interfaces for mobile and embedded
@@ -42,8 +44,9 @@ Description: runtime data-files for libelementary
 Package: libelementary-dev
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}, libelementary-svn-05 (= ${binary:Version}), libeet-dev, libeina-dev (>= 0.9.9.063), libevas-dev (>= 0.9.9.063), libecore-dev (>= 0.9.9.063), libedje-dev (>= 0.9.93.063), pkg-config
-Conflicts: libelm-svn-05, libelm-svn-03, libelm-svn-02, libelm-svn-01, libelm0
+Depends: ${misc:Depends}, libelementary-svn-09 (= ${binary:Version}),
+ libeet-dev (>= 1.4.0), libeina-dev (>= 1.0.0), libevas-dev (>= 1.0.999),
+ libecore-dev (>= 1.0.0), libedje-dev (>= 1.0.999), pkg-config
 Description: Development files for libelementary
  Elementary is a widget set based on the Enlightenment Foundation Libraries,
  primarily aimed at creating graphical user interfaces for mobile and embedded
@@ -55,7 +58,7 @@ Description: Development files for libelementary
 Package: libelementary-dbg
 Architecture: any
 Section: debug
-Depends: ${misc:Depends}, libelementary-svn-05 (= ${binary:Version})
+Depends: ${misc:Depends}, libelementary-svn-09 (= ${binary:Version})
 Priority: extra
 Description: debugging symbols for use with libelementary
  Elementary is a widget set based on the Enlightenment Foundation Libraries,
