@@ -24,6 +24,21 @@
 #include <unistd.h>
 #include "azy_parser_lib.h"
 
+#ifndef HAVE_STRNDUP
+char *
+strndup(const char *s, size_t n)
+{
+   char *ret;
+
+   ret = malloc(n + 1);
+   if (!ret) return NULL;
+
+   memcpy(&ret, s, n);
+   ret[n] = 0;
+   return ret;
+}
+#endif
+
 Azy_Stream *
 azy_parser_stream_new(const char *str)
 {

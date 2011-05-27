@@ -54,6 +54,14 @@ typedef void       (*Azy_Parser_Free_Cb)(void *, void (*)(void *));
 typedef void       (*Azy_Parser_Cb)(void *, int, Azy_Token *, Azy_Parser *parser);
 typedef Azy_Token *(*Azy_Token_Cb)(Azy_Stream *);
 
+#ifndef strdupa
+# define strdupa(str)       strcpy(alloca(strlen(str) + 1), str)
+#endif
+
+#ifndef strndupa
+# define strndupa(str, len) strncpy(alloca(len + 1), str, len)
+#endif
+
 #define SYNTAX_ERROR(TOKEN)                                                                                 \
     eina_stringshare_del(parser->error);                                                                    \
   if ((!TOKEN) || (!TOKEN->type))                                                                           \
@@ -83,5 +91,9 @@ void *azy_parser_file_parse_azy(const char  *path,
                    Azy_Parser_New_Cb new_cb,
                    Azy_Parser_Free_Cb  free_cb,
                    Azy_Token_Cb        token_cb);
+
+#ifndef HAVE_STRNDUP
+char *strndup(const char *s, size_t n);
+#endif
 
 #endif
