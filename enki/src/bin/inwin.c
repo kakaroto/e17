@@ -1,5 +1,13 @@
 #include "main.h"
 
+static Elm_Genlist_Item_Class itc_theme;
+static char *_gl_theme_label_get(void *data,
+                                 Evas_Object *obj,
+                                 const char  *part);
+static void _gl_theme_select_cb(void        *data,
+                                Evas_Object *obj,
+                                void        *event_info);
+
 static void _bt_tag_new_cancel_cb(void        *data,
                                   Evas_Object *obj,
                                   void        *event_info);
@@ -101,7 +109,7 @@ inwin_save_as_file_exists_new(Inwin_Del   del_cb,
                               Inwin_Apply apply_cb,
                               void       *data,
                               const char *file)
-{
+                              {
    Evas_Object *hbox, *fr, *bt, *tb, *lbl;
    char buf[PATH_MAX];
 
@@ -165,7 +173,7 @@ inwin_save_as_file_exists_new(Inwin_Del   del_cb,
    elm_notify_content_set(inwin->inwin, fr);
 
    return inwin;
-}
+                              }
 
 Inwin *
 inwin_photo_save_new(Inwin_Del    del_cb,
@@ -173,7 +181,7 @@ inwin_photo_save_new(Inwin_Del    del_cb,
                      Inwin_Close  close_cb,
                      void        *data,
                      Enlil_Photo *photo)
-{
+                     {
    Evas_Object *hbox, *fr, *fr2, *lbl, *bt, *tb;
    char buf[PATH_MAX];
 
@@ -256,7 +264,7 @@ inwin_photo_save_new(Inwin_Del    del_cb,
    elm_notify_content_set(inwin->inwin, fr);
 
    return inwin;
-}
+                     }
 
 //
 
@@ -300,7 +308,7 @@ Inwin *
 inwin_tag_new_new(Inwin_Del  del_cb,
                   void      *data,
                   Eina_List *photos)
-{
+                  {
    Evas_Object *bt, *ly;
 
    ASSERT_RETURN(del_cb != NULL);
@@ -333,13 +341,13 @@ inwin_tag_new_new(Inwin_Del  del_cb,
    evas_object_smart_callback_add(bt, "clicked", _bt_tag_new_apply_cb, inwin);
 
    return inwin;
-}
+                  }
 
 Inwin *
 inwin_album_tag_new_new(Inwin_Del    del_cb,
                         void        *data,
                         Enlil_Album *album)
-{
+                        {
    Evas_Object *bt, *ly;
 
    ASSERT_RETURN(del_cb != NULL);
@@ -372,13 +380,13 @@ inwin_album_tag_new_new(Inwin_Del    del_cb,
    evas_object_smart_callback_add(bt, "clicked", _bt_album_tag_new_apply_cb, inwin);
 
    return inwin;
-}
+                        }
 
 Inwin *
 inwin_collection_new_new(Inwin_Del    del_cb,
                          void        *data,
                          Enlil_Album *album)
-{
+                         {
    Evas_Object *bt, *ly;
 
    ASSERT_RETURN(del_cb != NULL);
@@ -411,12 +419,12 @@ inwin_collection_new_new(Inwin_Del    del_cb,
    evas_object_smart_callback_add(bt, "clicked", _bt_collection_new_apply_cb, inwin);
 
    return inwin;
-}
+                         }
 
 Inwin *
 inwin_album_new_new(Inwin_Del del_cb,
                     void     *data)
-{
+                    {
    Evas_Object *bt, *ly;
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_ALBUM_NEW;
@@ -443,14 +451,14 @@ inwin_album_new_new(Inwin_Del del_cb,
    evas_object_smart_callback_add(bt, "clicked", _bt_album_new_apply_cb, inwin);
 
    return inwin;
-}
+                    }
 
 Inwin *
 inwin_photo_delete_new(Evas_Object *win,
                        Inwin_Del    del_cb,
                        void        *data,
                        Eina_List   *photos)
-{
+                       {
    Evas_Object *ly, *bt, *entry;
    char buf[PATH_MAX];
    char buf2[PATH_MAX];
@@ -480,10 +488,10 @@ inwin_photo_delete_new(Evas_Object *win,
 
    buf[0] = '\0';
    EINA_LIST_FOREACH(photos, l, photo)
-     {
-        snprintf(buf2, sizeof(buf), "%s - %s<br>", buf, enlil_photo_name_get(photo));
-        strcpy(buf, buf2);
-     }
+   {
+      snprintf(buf2, sizeof(buf), "%s - %s<br>", buf, enlil_photo_name_get(photo));
+      strcpy(buf, buf2);
+   }
    elm_scrolled_entry_entry_set(entry, buf);
 
    bt = edje_object_part_external_object_get(edje, "object.win.photo.delete.cancel");
@@ -493,13 +501,13 @@ inwin_photo_delete_new(Evas_Object *win,
    evas_object_smart_callback_add(bt, "clicked", _bt_photo_delete_apply_cb, inwin);
 
    return inwin;
-}
+                       }
 
 Inwin *
 inwin_album_delete_new(Inwin_Del    del_cb,
                        void        *data,
                        Enlil_Album *album)
-{
+                       {
    Evas_Object *bt, *ly, *lbl;
 
    ASSERT_RETURN(album != NULL);
@@ -531,13 +539,13 @@ inwin_album_delete_new(Inwin_Del    del_cb,
    evas_object_smart_callback_add(bt, "clicked", _bt_album_delete_apply_cb, inwin);
 
    return inwin;
-}
+                       }
 
 Inwin *
 inwin_album_rename_new(Inwin_Del    del_cb,
                        void        *data,
                        Enlil_Album *album)
-{
+                       {
    Evas_Object *lbl, *bt, *ly;
 
    ASSERT_RETURN(del_cb != NULL);
@@ -573,13 +581,13 @@ inwin_album_rename_new(Inwin_Del    del_cb,
    evas_object_smart_callback_add(bt, "clicked", _bt_album_rename_apply_cb, inwin);
 
    return inwin;
-}
+                       }
 
 Inwin *
 inwin_photo_move_album_new(Inwin_Del  del_cb,
                            void      *data,
                            Eina_List *photos)
-{
+                           {
    Evas_Object *hbox, *fr, *fr2, *lbl, *bt, *tb, *gl;
    char buf[PATH_MAX], buf2[PATH_MAX], buf3[PATH_MAX];
    const Eina_List *l;
@@ -613,10 +621,10 @@ inwin_photo_move_album_new(Inwin_Del  del_cb,
 
    *buf3 = '\0';
    EINA_LIST_FOREACH(photos, l, photo)
-     {
-        snprintf(buf2, PATH_MAX, "%s<br>%s", buf3, enlil_photo_name_get(photo));
-        strncpy(buf3, buf2, PATH_MAX);
-     }
+   {
+      snprintf(buf2, PATH_MAX, "%s<br>%s", buf3, enlil_photo_name_get(photo));
+      strncpy(buf3, buf2, PATH_MAX);
+   }
 
    snprintf(buf, PATH_MAX, D_("Move %d photo(s): <br> %s <br><br>into an new album"), eina_list_count(photos), buf3);
    fr2 = elm_frame_add(enlil_data->win->win);
@@ -650,15 +658,15 @@ inwin_photo_move_album_new(Inwin_Del  del_cb,
    itc_album.func.del = NULL;
 
    EINA_LIST_FOREACH(enlil_library_albums_get(enlil_data->library), l, album)
-     {
-        Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-        album_data->inwin_photo_move_album = inwin;
+   {
+      Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+      album_data->inwin_photo_move_album = inwin;
 
-        album_data->photo_move_album_list_album_item =
-          elm_genlist_item_append(gl, &itc_album,
-                                  album, NULL, ELM_GENLIST_ITEM_NONE, _gl_album_sel,
-                                  album);
-     }
+      album_data->photo_move_album_list_album_item =
+               elm_genlist_item_append(gl, &itc_album,
+                                       album, NULL, ELM_GENLIST_ITEM_NONE, _gl_album_sel,
+                                       album);
+   }
 
    hbox = elm_box_add(enlil_data->win->win);
    elm_box_horizontal_set(hbox, 1);
@@ -687,12 +695,14 @@ inwin_photo_move_album_new(Inwin_Del  del_cb,
    elm_win_inwin_content_set(inwin->inwin, fr);
 
    return inwin;
-}
+                           }
 
 Inwin *
 inwin_preferences_new()
 {
-   Evas_Object *bt, *ly, *lbl;
+   Evas_Object *bt, *ly, *lbl, *gl;
+   Eina_List *l;
+   char *str;
 
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_PREFERENCES;
@@ -710,28 +720,64 @@ inwin_preferences_new()
    inwin->entry = edje_object_part_external_object_get(edje, "object.win.preferences.video_software");
    elm_scrolled_entry_entry_set(inwin->entry, media_player);
 
+   //themes
+   itc_theme.item_style = "default";
+   itc_theme.func.label_get = _gl_theme_label_get;
+   itc_theme.func.icon_get = NULL;
+   itc_theme.func.state_get = NULL;
+   itc_theme.func.del = NULL;
+
+   gl = edje_object_part_external_object_get(edje, "object.win.preferences.themes");
+
+   inwin->themes = ecore_file_ls(PACKAGE_DATA_DIR "/themes/");
+
+   EINA_LIST_FOREACH(inwin->themes, l, str)
+   {
+      if(!strcmp(str, "default_small.edj"))
+         continue;
+
+      Elm_Genlist_Item *item = elm_genlist_item_append(gl, &itc_theme, str, NULL, ELM_GENLIST_ITEM_NONE, _gl_theme_select_cb, str);
+
+      int i, j = strlen(Theme) - 1;
+      for(i = strlen(str) - 1; i>=0 && j >= 0; i--)
+      {
+         if(str[i] == Theme[j])
+         {
+            j--;
+            if(i == 0 && j>0 && Theme[j]=='/')
+            {
+               elm_genlist_item_selected_set(item, EINA_TRUE);
+               break;
+            }
+         }
+         else
+            break;
+      }
+   }
+   //
+
    //library
    if(enlil_data->library)
-     {
-        edje_object_signal_emit(edje, "win,preference,library,selected", "");
+   {
+      edje_object_signal_emit(edje, "win,preference,library,selected", "");
 
-        lbl = edje_object_part_external_object_get(edje, "object.win.preferences.library.name");
-        elm_label_label_set(lbl, enlil_library_path_get(enlil_data->library));
+      lbl = edje_object_part_external_object_get(edje, "object.win.preferences.library.name");
+      elm_label_label_set(lbl, enlil_library_path_get(enlil_data->library));
 
-        inwin->entry2 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.account");
-        elm_scrolled_entry_entry_set(inwin->entry2, enlil_library_netsync_account_get(enlil_data->library));
+      inwin->entry2 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.account");
+      elm_scrolled_entry_entry_set(inwin->entry2, enlil_library_netsync_account_get(enlil_data->library));
 
-        inwin->entry3 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.password");
-        elm_scrolled_entry_entry_set(inwin->entry3, enlil_library_netsync_password_get(enlil_data->library));
+      inwin->entry3 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.password");
+      elm_scrolled_entry_entry_set(inwin->entry3, enlil_library_netsync_password_get(enlil_data->library));
 
-        inwin->entry4 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.host");
-        elm_scrolled_entry_entry_set(inwin->entry4, enlil_library_netsync_host_get(enlil_data->library));
+      inwin->entry4 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.host");
+      elm_scrolled_entry_entry_set(inwin->entry4, enlil_library_netsync_host_get(enlil_data->library));
 
-        inwin->entry5 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.path");
-        elm_scrolled_entry_entry_set(inwin->entry5, enlil_library_netsync_path_get(enlil_data->library));
-     }
+      inwin->entry5 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.path");
+      elm_scrolled_entry_entry_set(inwin->entry5, enlil_library_netsync_path_get(enlil_data->library));
+   }
    else
-     edje_object_signal_emit(edje, "win,preference,library,no,selected", "");
+      edje_object_signal_emit(edje, "win,preference,library,no,selected", "");
    //
 
    bt = edje_object_part_external_object_get(edje, "object.win.preferences.cancel");
@@ -798,11 +844,11 @@ static char *
 _gl_album_label_get(void        *data,
                     Evas_Object *obj,
                     const char  *part)
-{
+                    {
    Enlil_Album *album = (Enlil_Album *)data;
 
    return strdup(enlil_album_name_get(album));
-}
+                    }
 
 static void
 _gl_album_sel(void        *data,
@@ -813,7 +859,7 @@ _gl_album_sel(void        *data,
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
 
    if(album_data->inwin_photo_move_album)
-     elm_object_disabled_set(album_data->inwin_photo_move_album->bt_apply, 0);
+      elm_object_disabled_set(album_data->inwin_photo_move_album->bt_apply, 0);
 }
 
 static void
@@ -834,12 +880,12 @@ _bt_tag_new_apply_cb(void        *data,
 
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
    if(s && strlen(s) > 0)
-     {
-        Eina_List *l;
-        Enlil_Photo *photo;
-        EINA_LIST_FOREACH(inwin->photos, l, photo)
-          enlil_photo_tag_add(photo, s);
-     }
+   {
+      Eina_List *l;
+      Enlil_Photo *photo;
+      EINA_LIST_FOREACH(inwin->photos, l, photo)
+      enlil_photo_tag_add(photo, s);
+   }
 
    inwin_free(inwin);
 }
@@ -854,23 +900,23 @@ _bt_album_tag_new_apply_cb(void        *data,
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
    const char *__s = eina_stringshare_add(s);
    if(s && strlen(s) > 0)
-     {
-        Enlil_Photo *photo;
-        Enlil_Photo_Tag *photo_tag;
-        Eina_List *l;
-        const Eina_List *_l;
-        EINA_LIST_FOREACH(enlil_album_photos_get(inwin->album), l, photo)
-          {
-             EINA_LIST_FOREACH(enlil_photo_tags_get(photo), _l, photo_tag)
-               {
-                  if(photo_tag->name == __s)
-                    break;
-               }
+   {
+      Enlil_Photo *photo;
+      Enlil_Photo_Tag *photo_tag;
+      Eina_List *l;
+      const Eina_List *_l;
+      EINA_LIST_FOREACH(enlil_album_photos_get(inwin->album), l, photo)
+      {
+         EINA_LIST_FOREACH(enlil_photo_tags_get(photo), _l, photo_tag)
+                        {
+            if(photo_tag->name == __s)
+               break;
+                        }
 
-             if(!photo_tag)
-               enlil_photo_tag_add(photo, __s);
-          }
-     }
+         if(!photo_tag)
+            enlil_photo_tag_add(photo, __s);
+      }
+   }
 
    eina_stringshare_del(__s);
    inwin_free(inwin);
@@ -894,7 +940,7 @@ _bt_collection_new_apply_cb(void        *data,
 
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
    if(s && strlen(s) > 0)
-     enlil_album_collection_add(inwin->album, s);
+      enlil_album_collection_add(inwin->album, s);
 
    inwin_free(inwin);
 }
@@ -917,11 +963,11 @@ _bt_album_new_apply_cb(void        *data,
 
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
    if(s && strlen(s) > 0)
-     {
-        char buf[PATH_MAX];
-        snprintf(buf, PATH_MAX, "%s/%s", enlil_library_path_get(enlil_data->library), s);
-        ecore_file_mkdir(buf);
-     }
+   {
+      char buf[PATH_MAX];
+      snprintf(buf, PATH_MAX, "%s/%s", enlil_library_path_get(enlil_data->library), s);
+      ecore_file_mkdir(buf);
+   }
 
    inwin_free(inwin);
 }
@@ -931,7 +977,14 @@ _bt_preferences_cancel_cb(void        *data,
                           Evas_Object *obj,
                           void        *event_info)
 {
+   char *s;
    Inwin *inwin = data;
+
+   EINA_LIST_FREE(inwin->themes, s)
+   {
+      FREE(s);
+   }
+
    inwin_free(inwin);
 }
 
@@ -946,43 +999,43 @@ _bt_preferences_apply_cb(void        *data,
 
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
    if(s && strlen(s) > 0)
-     {
-        Eet_Data_Descriptor *edd;
-        Enlil_String string;
+   {
+      Eet_Data_Descriptor *edd;
+      Enlil_String string;
 
-        EINA_STRINGSHARE_DEL(media_player);
-        media_player = eina_stringshare_add(s);
+      EINA_STRINGSHARE_DEL(media_player);
+      media_player = eina_stringshare_add(s);
 
-        string.string = eina_stringshare_add(s);
-        edd = enlil_string_edd_new();
+      string.string = eina_stringshare_add(s);
+      edd = enlil_string_edd_new();
 
-        enlil_eet_app_data_save(edd, APP_NAME " media_player", &string);
-        eet_data_descriptor_free(edd);
-        eina_stringshare_del(string.string);
-     }
+      enlil_eet_app_data_save(edd, APP_NAME " media_player", &string);
+      eet_data_descriptor_free(edd);
+      eina_stringshare_del(string.string);
+   }
 
    if(enlil_data->library)
-     {
-        s = elm_scrolled_entry_entry_get(inwin->entry2);
-        enlil_library_netsync_account_set(enlil_data->library, s);
+   {
+      s = elm_scrolled_entry_entry_get(inwin->entry2);
+      enlil_library_netsync_account_set(enlil_data->library, s);
 
-        s = elm_scrolled_entry_entry_get(inwin->entry3);
-        enlil_library_netsync_password_set(enlil_data->library, s);
+      s = elm_scrolled_entry_entry_get(inwin->entry3);
+      enlil_library_netsync_password_set(enlil_data->library, s);
 
-        s = elm_scrolled_entry_entry_get(inwin->entry4);
-        enlil_library_netsync_host_set(enlil_data->library, s);
+      s = elm_scrolled_entry_entry_get(inwin->entry4);
+      enlil_library_netsync_host_set(enlil_data->library, s);
 
-        s = elm_scrolled_entry_entry_get(inwin->entry5);
-        enlil_library_netsync_path_set(enlil_data->library, s);
+      s = elm_scrolled_entry_entry_get(inwin->entry5);
+      enlil_library_netsync_path_set(enlil_data->library, s);
 
-        enlil_netsync_account_set(
-          enlil_library_netsync_host_get(enlil_data->library),
-          enlil_library_netsync_path_get(enlil_data->library),
-          enlil_library_netsync_account_get(enlil_data->library),
-          enlil_library_netsync_password_get(enlil_data->library));
-     }
+      enlil_netsync_account_set(
+               enlil_library_netsync_host_get(enlil_data->library),
+               enlil_library_netsync_path_get(enlil_data->library),
+               enlil_library_netsync_account_get(enlil_data->library),
+               enlil_library_netsync_password_get(enlil_data->library));
+   }
 
-   inwin_free(inwin);
+   _bt_preferences_cancel_cb(inwin, NULL, NULL);
 }
 
 static void
@@ -1014,12 +1067,12 @@ _bt_photo_delete_apply_cb(void        *data,
    Enlil_Photo *photo;
 
    EINA_LIST_FOREACH(inwin->photos, l, photo)
-     {
-        snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(photo),
-                 enlil_photo_file_name_get(photo));
-        LOG_INFO("Delete the photo %s", buf);
-        remove(buf);
-     }
+   {
+      snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(photo),
+               enlil_photo_file_name_get(photo));
+      LOG_INFO("Delete the photo %s", buf);
+      remove(buf);
+   }
 
    inwin_free(inwin);
 }
@@ -1078,16 +1131,16 @@ _bt_album_rename_apply_cb(void        *data,
 
    Enlil_Album *album_prev = enlil_library_album_prev_get(enlil_album_library_get(album), album);
    if(!album_prev)
-     {
-        list_left_append_relative(enlil_data->list_left, album, NULL);
-        photos_list_object_header_move_after(album_data->list_photo_item, NULL);
-     }
+   {
+      list_left_append_relative(enlil_data->list_left, album, NULL);
+      photos_list_object_header_move_after(album_data->list_photo_item, NULL);
+   }
    else
-     {
-        Enlil_Album_Data *album_data_prev = enlil_album_user_data_get(album_prev);
-        list_left_append_relative(enlil_data->list_left, album, album_data_prev->list_album_item);
-        photos_list_object_header_move_after(album_data->list_photo_item, album_data_prev->list_photo_item);
-     }
+   {
+      Enlil_Album_Data *album_data_prev = enlil_album_user_data_get(album_prev);
+      list_left_append_relative(enlil_data->list_left, album, album_data_prev->list_album_item);
+      photos_list_object_header_move_after(album_data->list_photo_item, album_data_prev->list_photo_item);
+   }
 
    inwin_free(inwin);
 }
@@ -1109,10 +1162,10 @@ _bt_library_delete_apply_cb(void        *data,
    Inwin *inwin = data;
 
    if(elm_check_state_get(inwin->check))
-     {
-        //delete file on hard drive
-          eio_dir_unlink(enlil_library_path_get(enlil_data->library), NULL, NULL, NULL);
-     }
+   {
+      //delete file on hard drive
+      eio_dir_unlink(enlil_library_path_get(enlil_data->library), NULL, NULL, NULL);
+   }
 
    enlil_library_eet_path_delete(enlil_data->library);
    library_set(NULL);
@@ -1132,11 +1185,11 @@ _bt_photo_move_album_cancel_cb(void        *data,
    Enlil_Album *album;
 
    EINA_LIST_FOREACH(enlil_library_albums_get(enlil_data->library), l, album)
-     {
-        Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-        album_data->inwin_photo_move_album = NULL;
-        album_data->photo_move_album_list_album_item = NULL;
-     }
+   {
+      Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+      album_data->inwin_photo_move_album = NULL;
+      album_data->photo_move_album_list_album_item = NULL;
+   }
 
    inwin_free(inwin);
 }
@@ -1156,15 +1209,15 @@ _bt_photo_move_album_apply_cb(void        *data,
    ASSERT_RETURN_VOID(album != NULL);
 
    EINA_LIST_FOREACH(inwin->photos, l, photo)
-     {
-        snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(photo),
-                 enlil_photo_file_name_get(photo));
+   {
+      snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(photo),
+               enlil_photo_file_name_get(photo));
 
-        snprintf(buf2, PATH_MAX, "%s/%s/%s", enlil_album_path_get(album), enlil_album_file_name_get(album),
-                 enlil_photo_file_name_get(photo));
+      snprintf(buf2, PATH_MAX, "%s/%s/%s", enlil_album_path_get(album), enlil_album_file_name_get(album),
+               enlil_photo_file_name_get(photo));
 
-        ecore_file_mv(buf, buf2);
-     }
+      ecore_file_mv(buf, buf2);
+   }
 
    _bt_photo_move_album_cancel_cb(inwin, NULL, NULL);
 }
@@ -1177,7 +1230,7 @@ _bt_photo_save_cancel_cb(void        *data,
    Inwin *inwin = data;
 
    if(inwin->del_cb)
-     inwin->del_cb(inwin->data);
+      inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
@@ -1190,10 +1243,10 @@ _bt_photo_save_dont_cb(void        *data,
    Inwin *inwin = data;
 
    if(inwin->close_cb)
-     inwin->close_cb(inwin->data);
+      inwin->close_cb(inwin->data);
 
    if(inwin->del_cb)
-     inwin->del_cb(inwin->data);
+      inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
@@ -1206,10 +1259,10 @@ _bt_photo_save_save_cb(void        *data,
    Inwin *inwin = data;
 
    if(inwin->apply_cb)
-     inwin->apply_cb(inwin->data);
+      inwin->apply_cb(inwin->data);
 
    if(inwin->del_cb)
-     inwin->del_cb(inwin->data);
+      inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
@@ -1222,7 +1275,7 @@ _bt_save_as_file_exists_cancel_cb(void        *data,
    Inwin *inwin = data;
 
    if(inwin->del_cb)
-     inwin->del_cb(inwin->data);
+      inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
@@ -1235,10 +1288,10 @@ _bt_save_as_file_exists_apply_cb(void        *data,
    Inwin *inwin = data;
 
    if(inwin->apply_cb)
-     inwin->apply_cb(inwin->data);
+      inwin->apply_cb(inwin->data);
 
    if(inwin->del_cb)
-     inwin->del_cb(inwin->data);
+      inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
@@ -1249,10 +1302,35 @@ inwin_free(Inwin *inwin)
    ASSERT_RETURN_VOID(inwin != NULL);
 
    if(inwin->del_cb)
-     inwin->del_cb(inwin->data);
+      inwin->del_cb(inwin->data);
 
    EINA_STRINGSHARE_DEL(inwin->file);
    evas_object_del(inwin->inwin);
    FREE(inwin);
 }
 
+
+static char *_gl_theme_label_get(void *data,
+                                 Evas_Object *obj,
+                                 const char  *part)
+{
+   return strdup(data);
+}
+
+static void _gl_theme_select_cb(void        *data,
+                                Evas_Object *obj,
+                                void        *event_info)
+{
+   char buf[PATH_MAX];
+   Enlil_String s;
+   Eet_Data_Descriptor *edd;
+
+   snprintf(buf, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s", (char*)data);
+   s.string = eina_stringshare_add(buf);
+   edd = enlil_string_edd_new();
+
+   snprintf(buf, PATH_MAX, "%s", APP_NAME " theme");
+   enlil_eet_app_data_save(edd, buf, &s);
+   eet_data_descriptor_free(edd);
+   eina_stringshare_del(s.string);
+}

@@ -280,31 +280,31 @@ elm_main(int    argc,
      return 0;
    //
 
-   //window size
-   if(size && !theme)
-     {
-        //TODO: check if the string is valid (not '123321' or 'x12' or 'oueox23'...)
-          char *x = strchr(size, 'x');
-          if(x)
-            {
-               *x = '\0';
-               w = atoi(size);
-               h = atoi(x + 1);
 
-               if(w < 1000 || h < 700)
-                 {
-                    Theme = THEME_SMALL;
-                    LOG_INFO("Use small theme " THEME_SMALL);
-                 }
-            }
-     }
-   //
 
    if(theme)
-     {
-        Theme = theme;
-        LOG_INFO("Use custom theme %s", theme);
-     }
+   {
+      Theme = theme;
+      LOG_INFO("Use custom theme %s", theme);
+   }
+   else
+   {
+      //get the theme from the conf file
+      Enlil_String *s;
+      Eet_Data_Descriptor *edd;
+      char buf[PATH_MAX];
+      edd = enlil_string_edd_new();
+      snprintf(buf, PATH_MAX, "%s", APP_NAME " theme");
+      s = enlil_eet_app_data_load(edd, buf);
+      eet_data_descriptor_free(edd);
+      if(s)
+      {
+         Theme = eina_stringshare_add(s->string);
+         eina_stringshare_del(s->string);
+         FREE(s);
+      }
+      //
+   }
 
    elm_theme_extension_add(NULL, Theme);
    elm_theme_overlay_add(NULL, Theme);

@@ -215,6 +215,7 @@ struct inwin
    Inwin_Close  close_cb;
    void        *data;
 
+   Eina_List *themes; //list of char*
    Evas_Object *gl;
    Evas_Object *entry;
    Evas_Object *entry2;
