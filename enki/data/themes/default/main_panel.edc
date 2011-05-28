@@ -18,11 +18,13 @@ group {
 				state: "photos" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "map" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "menu_done" 0.0;
@@ -75,11 +77,13 @@ group {
 				state: "menu" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "photos" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "map" 0.0;
@@ -136,6 +140,7 @@ group {
 				state: "menu" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "photos" 0.0;
@@ -145,6 +150,7 @@ group {
 				state: "map" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "menu_done" 0.0;

@@ -44,7 +44,7 @@ group {
 	        ignore_flags: ON_HOLD;
 	        description {
 	            state: "default" 0.0;
-	            visible: 1;
+				visible: 1;
 	            color: 255 255 255 0;
 	            image.normal: "select.png";
 	            rel1.offset: -5 -5;
@@ -55,6 +55,7 @@ group {
 	            state: "select" 0.0;
 	            inherit: "default" 0.0;
 	            color: 255 255 255 200;
+				visible: 1;
 	        }
 	        description {
 	            state: "unselect" 0.0;
@@ -102,6 +103,7 @@ group {
 	            state: "visible" 0.0;
 	            inherit: "default" 0.0;
 	            color: 255 255 255 255;
+				visible: 1;
 	        }
 	    }
 	    part {
@@ -204,11 +206,13 @@ group {
 	        description {
 	            state: "default" 0.0;
 	            color: 255 255 255 0;
+				visible: 0;
 	        }
 	        description {
 	            state: "loading" 0.0;
 	            inherit: "default" 0.0;
 	            color: 255 255 255 255;
+				visible: 1;
 	        }
 	    }
 	    part {
@@ -227,7 +231,7 @@ group {
 	        mouse_events: 0;
 	        description {
 	            state: "default" 0.0;
-	            visible: 1;
+	            visible: 0;
 	            color: 255 255 255 0;
 	            aspect: 1 1;
 	            aspect_preference: BOTH;
@@ -238,6 +242,7 @@ group {
 	            state: "visible" 0.0;
 	            inherit: "default" 0.0;
 	            color: 255 255 255 255;
+				visible: 1;
 	        }
 	    }
 	}

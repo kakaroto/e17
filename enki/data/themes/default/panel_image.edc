@@ -144,6 +144,7 @@ group {
 				state: "exifs" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "exifs_done" 0.0;
@@ -155,6 +156,7 @@ group {
 				state: "iptcs" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "iptcs_done" 0.0;
@@ -166,6 +168,7 @@ group {
 				state: "edition" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}	
 			description {
 				state: "edition_done" 0.0;
@@ -355,6 +358,7 @@ group {
 				state: "info" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "info_done" 0.0;
@@ -376,6 +380,7 @@ group {
 				state: "iptcs" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "iptcs_done" 0.0;
@@ -423,6 +428,7 @@ group {
 				state: "info" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "info_done" 0.0;
@@ -434,6 +440,7 @@ group {
 				state: "exifs" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "exifs_done" 0.0;
@@ -455,6 +462,7 @@ group {
 				state: "edition" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}	
 			description {
 				state: "edition_done" 0.0;
@@ -493,6 +501,7 @@ group {
 				state: "info" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "info_done" 0.0;
@@ -504,6 +513,7 @@ group {
 				state: "exifs" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "exifs_done" 0.0;
@@ -515,6 +525,7 @@ group {
 				state: "iptcs" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}	
 			description {
 				state: "iptcs_done" 0.0;

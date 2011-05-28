@@ -41,6 +41,7 @@ extern const char *Theme;
 extern Enlil_Photo *current_photo;
 extern Enlil_Data *enlil_data;
 extern Evas_Object *global_object;
+extern Evas_Object *main_panel_object;
 
 void library_set(const char *root_path);
 void close_cb(void *data,

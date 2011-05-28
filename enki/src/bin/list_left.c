@@ -1,4 +1,5 @@
 #include "main.h"
+#include "evas_object/enki_elm_genlist_tree.h"
 
 static Elm_Genlist_Item_Class itc_album;
 static Elm_Genlist_Item_Class itc_col;
@@ -91,19 +92,11 @@ list_left_new(Evas_Object *edje)
    list_left->tabpanel = tabpanel_add_with_edje(edje, edje_object_part_external_object_get(edje, "object.menu.lvl2"));
    //
 
-   gl = edje_object_part_external_object_get(edje, "object.list.albums");
-   list_left->gl_albums = gl;
-
    itc_album.item_style = "default";
    itc_album.func.label_get = _gl_label_get;
    itc_album.func.icon_get = NULL;
    itc_album.func.state_get = NULL;
    itc_album.func.del = NULL;
-
-   tp_item = tabpanel_item_add_with_signal(list_left->tabpanel, D_("Albums"), edje, "list_left,albums,show", _tabpanel_album_select_cb, list_left);
-
-   gl = edje_object_part_external_object_get(edje, "object.list.collections");
-   list_left->gl_collections = gl;
 
    itc_col.item_style = "default";
    itc_col.func.label_get = _gl_col_label_get;
@@ -117,25 +110,50 @@ list_left_new(Evas_Object *edje)
    itc_col_album.func.state_get = NULL;
    itc_col_album.func.del = NULL;
 
-   evas_object_smart_callback_add(gl, "expanded", _gl_col_exp, gl);
-   evas_object_smart_callback_add(gl, "contracted", _gl_col_con, gl);
-   evas_object_smart_callback_add(gl, "expand,request", _gl_col_exp_req, gl);
-   evas_object_smart_callback_add(gl, "contract,request", _gl_col_con_req, gl);
-
-   tabpanel_item_add_with_signal(list_left->tabpanel, D_("Collections"), edje, "list_left,collections,show", _tabpanel_collection_select_cb, list_left);
-
-   gl = edje_object_part_external_object_get(edje, "object.list.tags");
-   list_left->gl_tags = gl;
-
    itc_tag.item_style = "default";
    itc_tag.func.label_get = _gl_tag_label_get;
    itc_tag.func.icon_get = NULL;
    itc_tag.func.state_get = NULL;
    itc_tag.func.del = NULL;
 
-   tabpanel_item_add_with_signal(list_left->tabpanel, D_("Tags"), edje, "list_left,tags,show", _tabpanel_tag_select_cb, list_left);
+   //
+   if(list_left->tabpanel)
+   {
+      tp_item = tabpanel_item_add_with_signal(list_left->tabpanel, D_("Albums"), edje, "list_left,albums,show", _tabpanel_album_select_cb, list_left);
+      tabpanel_item_add_with_signal(list_left->tabpanel, D_("Collections"), edje, "list_left,collections,show", _tabpanel_collection_select_cb, list_left);
+      tabpanel_item_add_with_signal(list_left->tabpanel, D_("Tags"), edje, "list_left,tags,show", _tabpanel_tag_select_cb, list_left);
+      tabpanel_item_select(tp_item);
+   }
+   //
 
-   tabpanel_item_select(tp_item);
+   gl = edje_object_part_external_object_get(edje, "object.list.tree");
+   if(gl)
+   {
+      evas_object_smart_callback_add(gl, "expanded", _gl_col_exp, gl);
+      evas_object_smart_callback_add(gl, "contracted", _gl_col_con, gl);
+      evas_object_smart_callback_add(gl, "expand,request", _gl_col_exp_req, gl);
+      evas_object_smart_callback_add(gl, "contract,request", _gl_col_con_req, gl);
+      list_left->gl_albums = gl;
+      list_left->gl_collections = gl;
+      list_left->gl_tags = gl;
+   }
+   else
+   {
+
+      gl = edje_object_part_external_object_get(edje, "object.list.albums");
+      list_left->gl_albums = gl;
+
+      gl = edje_object_part_external_object_get(edje, "object.list.collections");
+      list_left->gl_collections = gl;
+      evas_object_smart_callback_add(gl, "expanded", _gl_col_exp, gl);
+      evas_object_smart_callback_add(gl, "contracted", _gl_col_con, gl);
+      evas_object_smart_callback_add(gl, "expand,request", _gl_col_exp_req, gl);
+      evas_object_smart_callback_add(gl, "contract,request", _gl_col_con_req, gl);
+
+      gl = edje_object_part_external_object_get(edje, "object.list.tags");
+      list_left->gl_tags = gl;
+   }
+
 
    //delete library
    bt = edje_object_part_external_object_get(edje, "object.library.delete");
@@ -156,9 +174,6 @@ list_left_data_set(List_Left  *list_left,
    list_left->enlil_data = enlil_data;
    enlil_data->list_left = list_left;
 
-   elm_genlist_clear(list_left->gl_albums);
-   elm_genlist_clear(list_left->gl_collections);
-
    EINA_LIST_FOREACH(enlil_library_albums_get(library), l, album)
      list_left_add(list_left, album);
 }
@@ -169,9 +184,8 @@ list_left_add(List_Left   *list_left,
 {
    Enlil_Album_Data *enlil_album_data = enlil_album_user_data_get(album);
 
-   enlil_album_data->list_album_item = elm_genlist_item_append(list_left->gl_albums, &itc_album,
-                                                               album, NULL, ELM_GENLIST_ITEM_NONE, _gl_sel,
-                                                               album);
+   enlil_album_data->list_album_item =  enki_elm_genlist_item_album_append(
+            main_panel_object, &itc_album, album, NULL, _gl_sel, album);
 }
 
 void
@@ -182,13 +196,11 @@ list_left_append_relative(List_Left        *list_left,
    Enlil_Album_Data *enlil_album_data = enlil_album_user_data_get(album);
 
    if(!relative)
-     enlil_album_data->list_album_item = elm_genlist_item_prepend(list_left->gl_albums, &itc_album,
-                                                                  album, NULL, ELM_GENLIST_ITEM_NONE, _gl_sel,
-                                                                  album);
+     enlil_album_data->list_album_item =enki_elm_genlist_item_album_prepend(
+              main_panel_object, &itc_album, album, NULL, _gl_sel, album);
    else
-     enlil_album_data->list_album_item = elm_genlist_item_insert_after(list_left->gl_albums, &itc_album,
-                                                                       album, NULL, relative, ELM_GENLIST_ITEM_NONE, _gl_sel,
-                                                                       album);
+     enlil_album_data->list_album_item = enki_elm_genlist_item_album_insert_after(
+              main_panel_object, &itc_album, album, NULL, relative, _gl_sel, album);
 }
 
 void
@@ -197,8 +209,8 @@ list_left_col_add(List_Left        *list_left,
 {
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
 
-   col_data->list_col_item = elm_genlist_item_append(list_left->gl_collections, &itc_col,
-                                                     col, NULL, ELM_GENLIST_ITEM_SUBITEMS, _gl_col_sel,
+   col_data->list_col_item = enki_elm_genlist_item_collection_append(main_panel_object, &itc_col,
+                                                     col, NULL, _gl_col_sel,
                                                      col);
 }
 
@@ -215,8 +227,8 @@ list_left_col_album_add(List_Left        *list_left,
 
    if(elm_genlist_item_expanded_get(col_data->list_col_item))
      {
-        elm_genlist_item_append(list_left->gl_collections, &itc_col_album,
-                                album, col_data->list_col_item, ELM_GENLIST_ITEM_NONE, _gl_col_album_sel,
+         enki_elm_genlist_item_collection_append(main_panel_object, &itc_col_album,
+                                album, col_data->list_col_item, _gl_col_album_sel,
                                 album);
      }
 }
@@ -227,8 +239,8 @@ list_left_tag_add(List_Left *list_left,
 {
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag);
 
-   tag_data->list_tag_item = elm_genlist_item_append(list_left->gl_tags, &itc_tag,
-                                                     tag, NULL, ELM_GENLIST_ITEM_NONE, _gl_tag_sel,
+   tag_data->list_tag_item = enki_elm_genlist_item_tag_append(main_panel_object, &itc_tag,
+                                                     tag, NULL, _gl_tag_sel,
                                                      tag);
 }
 
@@ -316,13 +328,13 @@ _tabpanel_collection_select_cb(void          *data,
    List_Left *list_left = data;
    Elm_Genlist_Item *gl_item;
 
-   gl_item = elm_genlist_first_item_get(list_left->gl_collections);
-   for(; gl_item; gl_item = elm_genlist_item_next_get(gl_item))
-     elm_genlist_item_expanded_set(gl_item, 0);
-
-   gl_item = elm_genlist_selected_item_get(list_left->gl_collections);
-   if(gl_item)
-     elm_genlist_item_selected_set(gl_item, 0);
+//   gl_item = elm_genlist_first_item_get(list_left->gl_collections);
+//   for(; gl_item; gl_item = elm_genlist_item_next_get(gl_item))
+//     elm_genlist_item_expanded_set(gl_item, 0);
+//
+//   gl_item = elm_genlist_selected_item_get(list_left->gl_collections);
+//   if(gl_item)
+//     elm_genlist_item_selected_set(gl_item, 0);
 
    if(list_left->enlil_data)
      photos_list_object_show_all(list_left->enlil_data->list_photo->o_list);
@@ -355,6 +367,8 @@ _gl_sel(void        *data,
    Eina_List *markers = NULL;
    Enlil_Photo *photo;
    Enlil_Album_Data *enlil_album_data = (Enlil_Album_Data *)enlil_album_user_data_get(album);
+
+   photos_list_object_show_all(enlil_album_data->enlil_data->list_photo->o_list);
 
    if(!enlil_data->list_left->is_map)
      {
@@ -505,8 +519,8 @@ _gl_col_exp(void        *data,
 
    EINA_LIST_FOREACH(enlil_collection_albums_get(col), l, album)
      {
-        elm_genlist_item_append(col_data->enlil_data->list_left->gl_collections, &itc_col_album,
-                                album, it, ELM_GENLIST_ITEM_NONE, _gl_col_album_sel,
+      enki_elm_genlist_item_collection_append(main_panel_object, &itc_col_album,
+                                album, it, _gl_col_album_sel,
                                 album);
      }
 }

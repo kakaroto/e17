@@ -52,7 +52,7 @@ group {
 			description {
 				state: "invisible" 0.0;
 				inherit: "default" 0.0;
-				visible: 1;
+				visible: 0;
 				color: 255 255 255 0;
 			}
 			description {

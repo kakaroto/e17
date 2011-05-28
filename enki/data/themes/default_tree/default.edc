@@ -101,52 +101,52 @@ images {
 }
 
 
-#include "utils.edc"
+#include "../default/utils.edc"
 	
 	
 #include "../default_elementary/main.edc"
 
 collections {
 	
-	#include "win_album_new.edc"
-	#include "win_album_rename.edc"
-	#include "win_album_delete.edc"
-	#include "win_album_tag_new.edc"
-	#include "win_album_collection_new.edc"
-	#include "win_preferences.edc"
-	#include "win_photo_delete.edc"
-	#include "win_library_delete.edc"
-	#include "win_login_failed.edc"
-	#include "win_netsync_error.edc"
-	#include "win_upload.edc"
+	#include "../default/win_album_new.edc"
+	#include "../default/win_album_rename.edc"
+	#include "../default/win_album_delete.edc"
+	#include "../default/win_album_tag_new.edc"
+	#include "../default/win_album_collection_new.edc"
+	#include "../default/win_preferences.edc"
+	#include "../default/win_photo_delete.edc"
+	#include "../default/win_library_delete.edc"
+	#include "../default/win_login_failed.edc"
+	#include "../default/win_netsync_error.edc"
+	#include "../default/win_upload.edc"
 
 
-	#include "libraries.edc"
-	#include "map.edc"
-	#include "main_panel.edc"
-	#include "slideshow.edc"
+	#include "../default/libraries.edc"
+	#include "../default/map.edc"
+	#include "../default/main_panel.edc"
+	#include "../default/slideshow.edc"
 	#include "list_left.edc"
 	#include "main_page.edc"
 	
-	#include "main.edc"
+	#include "../default/main.edc"
 	
 	
-	#include "geocaching.edc"
-	#include "geocaching_bubble.edc"
+	#include "../default/geocaching.edc"
+	#include "../default/geocaching_bubble.edc"
 	
-	#include "panel_image.edc"
+	#include "../default/panel_image.edc"
 	
-	#include "album_header.edc"
-	#include "photo.edc"
-	#include "photo_library.edc"
-	#include "photo_simple.edc"
-	#include "photo_import.edc"
-	#include "photo_slideshow.edc"
+	#include "../default/album_header.edc"
+	#include "../default/photo.edc"
+	#include "../default/photo_library.edc"
+	#include "../default/photo_simple.edc"
+	#include "../default/photo_import.edc"
+	#include "../default/photo_slideshow.edc"
 	
 	
-	#include "icons.edc"
-	#include "netsync.edc"
-	#include "minislideshow.edc"
+	#include "../default/icons.edc"
+	#include "../default/netsync.edc"
+	#include "../default/minislideshow.edc"
 	
 	
 	#include "elm.edc"

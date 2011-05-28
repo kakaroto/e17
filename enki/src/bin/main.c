@@ -10,7 +10,7 @@ Enlil_Data *enlil_data = NULL;
 static Tabpanel_Item *tp_list_photo;
 static Tabpanel_Item *tp_menu;
 Evas_Object *global_object;
-Evas_Object *main_pagel_object;
+Evas_Object *main_panel_object;
 
 static const Ecore_Getopt options = {
    "Enki",
@@ -347,7 +347,7 @@ elm_main(int    argc,
    evas_object_show(ly);
 
    edje = elm_layout_edje_get(ly);
-   main_pagel_object = edje;
+   main_panel_object = edje;
    evas_object_smart_callback_add(edje, "clicked,double", _panes_clicked_double, enlil_data);
    enlil_data->library_item =
      tabpanel_item_add(enlil_data->tabpanel, D_("Library"), ly, _tabpanel_select_page1_cb, enlil_data);
@@ -415,11 +415,11 @@ sync_status_show(Enlil_Data *enlil_data,
                  Eina_Bool   loading)
 {
    if(loading)
-     edje_object_signal_emit(main_pagel_object, "status,sync,show,loading", "");
+     edje_object_signal_emit(main_panel_object, "status,sync,show,loading", "");
    else
-     edje_object_signal_emit(main_pagel_object, "status,sync,show,done", "");
+     edje_object_signal_emit(main_panel_object, "status,sync,show,done", "");
 
-   Evas_Object *lbl = edje_object_part_external_object_get(main_pagel_object, "object.status.sync");
+   Evas_Object *lbl = edje_object_part_external_object_get(main_panel_object, "object.status.sync");
    if(lbl)
      {
         elm_label_label_set(lbl, msg);
@@ -432,11 +432,11 @@ loading_status_show(Enlil_Data *enlil_data,
                     Eina_Bool   loading)
 {
    if(loading)
-     edje_object_signal_emit(main_pagel_object, "status,loading,show,loading", "");
+     edje_object_signal_emit(main_panel_object, "status,loading,show,loading", "");
    else
-     edje_object_signal_emit(main_pagel_object, "status,loading,show,done", "");
+     edje_object_signal_emit(main_panel_object, "status,loading,show,done", "");
 
-   Evas_Object *lbl = edje_object_part_external_object_get(main_pagel_object, "object.status.loading");
+   Evas_Object *lbl = edje_object_part_external_object_get(main_panel_object, "object.status.loading");
    if(lbl)
      {
         elm_label_label_set(lbl, msg);

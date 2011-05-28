@@ -29,6 +29,7 @@ group {
 				state: "menu" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "menu_done" 0.0;
@@ -69,6 +70,7 @@ group {
 				state: "lvl2" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "lvl2_done" 0.0;
@@ -79,10 +81,10 @@ group {
 		}
 		
 		part {
-            name: "menu";
-            type: GROUP;
+            name: "object.list.menu";
+            type: EXTERNAL;
             clip_to: "menu_clipper";
-            source: "list_left_menu";
+            source: "elm/genlist";
             description {
                 state : "default" 0.0;
                 rel1.to_y: "object.menu.lvl1";
@@ -121,6 +123,7 @@ group {
 				state: "albums" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "collections" 0.0;
@@ -130,6 +133,7 @@ group {
 				state: "tags" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "albums_done" 0.0;
@@ -177,11 +181,13 @@ group {
 				state: "albums" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "collections" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "tags" 0.0;
@@ -237,11 +243,13 @@ group {
 				state: "collections" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "tags" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
+				visible: 0;
 			}
 			description {
 				state: "albums_done" 0.0;

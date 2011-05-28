@@ -124,7 +124,10 @@ tabpanel_item_add(Tabpanel        *tab,
 void
 tabpanel_item_select(Tabpanel_Item *item)
 {
-   elm_toolbar_item_selected_set(item->item_tb, EINA_TRUE);
+   if(item->item_tb)
+      elm_toolbar_item_selected_set(item->item_tb, EINA_TRUE);
+   else
+      _tb_select_cb(item, NULL, NULL);
 }
 
 Tabpanel_Item *

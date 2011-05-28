@@ -44,13 +44,14 @@ group {
 	        ignore_flags: ON_HOLD;
 	        description {
 	            state: "default" 0.0;
-	            visible: 1;
+	            visible: 0;
 	            color: 255 255 255 0;
 	        }
 	        description {
 	            state: "select" 0.0;
 	            inherit: "default" 0.0;
 	            color: 0 0 200 100;
+				visible: 1;
 	        }
 	        description {
 	            state: "unselect" 0.0;
@@ -87,7 +88,7 @@ group {
 	        repeat_events: 1;
 	        description {
 	            state: "default" 0.0;
-	            visible: 1;
+	            visible: 0;
 	            color: 255 255 255 0;
 	            rel1.to: "border";
 	            rel2.to: "border";
@@ -98,6 +99,7 @@ group {
 	            state: "visible" 0.0;
 	            inherit: "default" 0.0;
 	            color: 255 255 255 255;
+				visible: 1;
 	        }
 	    }
 	    part {

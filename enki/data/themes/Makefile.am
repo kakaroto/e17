@@ -1,4 +1,4 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = default default_small
+SUBDIRS = default default_small default_tree
 

@@ -38,6 +38,7 @@ styles
 collections {
 #include "entry_text.edc"
 #include "segment.edc"
+#include "enki_genlist.edc"
 
     ///////////////////////////////////////////////////////////////////////////////
     group {

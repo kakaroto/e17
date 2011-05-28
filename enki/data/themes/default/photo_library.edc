@@ -50,7 +50,7 @@ group {
 	        repeat_events: 1;
 	        description {
 	            state: "default" 0.0;
-	            visible: 1;
+	            visible: 0;
 	            color: 255 255 255 0;
 	            rel1.to: "bg_back";
 	            rel2.to: "bg_back";
@@ -67,6 +67,7 @@ group {
 	            state: "visible" 0.0;
 	            inherit: "default" 0.0;
 	            color: 255 255 255 255;
+				visible: 1;
 	        }
 	        description {
 	            state: "display_back" 0.0;
@@ -138,6 +139,7 @@ group {
 	            state: "display_back" 0.0;
 	            inherit: "default" 0.0;
 	            color : 255 255 255 0;
+				visible: 0;
 	            map {
 		        	on: 1;
 		            rotation {
@@ -152,7 +154,7 @@ group {
 	        repeat_events: 1;
 	        description {
 	            state: "default" 0.0;
-	            visible: 1;
+	            visible: 0;
 	            color: 255 255 255 0;
 	            rel1.to: "bg_front";
 	            rel2.to: "bg_front";
@@ -169,12 +171,14 @@ group {
 	            state: "visible" 0.0;
 	            inherit: "default" 0.0;
 	            color: 255 255 255 255;
+				visible: 1;
 	        }
 	        description {
 	            state: "display_back" 0.0;
 	            inherit: "default" 0.0;
 	            inherit: "visible" 0.0;
 	            color : 255 255 255 0;
+				visible: 0;
 	            map {
 		        	on: 1;
 		            rotation {

@@ -31,12 +31,7 @@ group {
     	//
     	
     	//list left
-    	alias: "object.menu.lvl1" 					"panes[left]:object.menu.lvl1";
-    	alias: "object.menu.lvl2" 					"panes[left]:object.menu.lvl2";
-    	alias: "object.list.menu"	 				"panes[left]:object.list.menu";
-    	alias: "object.list.albums" 				"panes[left]:object.list.albums";
-    	alias: "object.list.collections" 			"panes[left]:object.list.collections";
-    	alias: "object.list.tags" 					"panes[left]:object.list.tags";
+    	alias: "object.list.tree" 					"panes[left]:object.list.tree";
     	alias: "object.library.delete" 				"panes[left]:object.library.delete";
     	alias: "object.status.loading" 				"panes[left]:object.status.loading";
     	alias: "object.status.sync" 				"panes[left]:object.status.sync";

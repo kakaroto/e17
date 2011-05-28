@@ -1,0 +1,22 @@
+
+group {
+	name: "list_left";
+	
+	parts {
+		part {
+			name: "object.list.tree";
+			type: EXTERNAL;
+			source: "elm/genlist";
+			description {
+				state: "default" 0.0;
+				params {
+					string: "style" "enki_menu";
+				}
+			}
+		}
+	}
+	
+	programs {
+	}
+}
+

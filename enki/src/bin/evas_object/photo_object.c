@@ -1,7 +1,6 @@
 #include "photo_object.h"
 #include <locale.h>
 
-//TODO: REMOVE this dependance "#define THEME"
 #include "../main.h"
 
 typedef struct _Smart_Data Smart_Data;

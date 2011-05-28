@@ -76,6 +76,7 @@ data/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default_small/Makefile
+data/themes/default_tree/Makefile
 ])
 
 AC_OUTPUT

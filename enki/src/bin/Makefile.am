@@ -31,7 +31,8 @@ main_menu.c \
 evas_object/photos_list_object.c \
 evas_object/photo_object.c \
 evas_object/slideshow_object.c \
-evas_object/tabpanel.c
+evas_object/tabpanel.c \
+evas_object/enki_elm_genlist_tree.c
 
 enki_LDADD = @ENKI_LIBS@ @LTLIBINTL@
 
