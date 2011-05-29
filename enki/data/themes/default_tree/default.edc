@@ -40,6 +40,11 @@ images {
     image:  "icons/view.png" COMP;
     image:  "icons/map.png" COMP;
     image:  "icons/photos.png" COMP;
+    image:  "icons/websync.png" COMP;
+    image:  "icons/close.png" COMP;
+    image:  "icons/plus.png" COMP;
+    image:  "icons/slideshow.png" COMP;
+    image:  "icons/plus.png" COMP;
     
     
     image:  "library_photo.png" COMP;

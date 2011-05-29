@@ -2,14 +2,6 @@
 #include "slideshow.h"
 #include "evas_object/photo_object.h"
 
-#define SLIDESHOW 1
-#define ALBUM_NEW 2
-#define IMPORT_PHOTOS 3
-#define DEL_BG 4
-#define GEOCACHING 5
-#define PREFERENCES 6
-#define WEBSYNC 7
-#define CLOSEENKI 8
 
 static Evas_Object *inwin = NULL;
 static Evas_Object *list = NULL;
@@ -31,8 +23,8 @@ static void _gl_sel(void        *data,
                     Evas_Object *obj,
                     void        *event_info);
 static Evas_Object *_gl_icon_get(void *data,
-              Evas_Object *obj,
-              const char  *part);
+                                 Evas_Object *obj,
+                                 const char  *part);
 
 static Elm_Gengrid_Item_Class itc_grid;
 
@@ -97,36 +89,36 @@ main_menu_new(Evas_Object *edje)
    itc_menu.func.del = NULL;
 
    bt_slideshow = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                              (void*)SLIDESHOW, NULL,
-                                              _gl_sel, (void*)SLIDESHOW);
+                                                    (void*)MENU_SLIDESHOW, NULL,
+                                                    _gl_sel, (void*)MENU_SLIDESHOW);
 
    bt_album_new = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                                    (void*)ALBUM_NEW, NULL,
-                                              _gl_sel, (void*)ALBUM_NEW);
+                                                    (void*)MENU_ALBUM_NEW, NULL,
+                                                    _gl_sel, (void*)MENU_ALBUM_NEW);
 
    bt_import = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                                 (void*)IMPORT_PHOTOS, NULL,
-                                              _gl_sel, (void*)IMPORT_PHOTOS);
+                                                 (void*)MENU_IMPORT_PHOTOS, NULL,
+                                                 _gl_sel, (void*)MENU_IMPORT_PHOTOS);
 
    bt_del_bg = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                                 (void*)DEL_BG, NULL,
-                                              _gl_sel, (void*)DEL_BG);
+                                                 (void*)MENU_DEL_BG, NULL,
+                                                 _gl_sel, (void*)MENU_DEL_BG);
 
    bt = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                          (void*)GEOCACHING, NULL,
-                                              _gl_sel, (void*)GEOCACHING);
+                                          (void*)MENU_GEOCACHING, NULL,
+                                          _gl_sel, (void*)MENU_GEOCACHING);
 
    bt = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                          (void*)PREFERENCES, NULL,
-                                              _gl_sel, (void*)PREFERENCES);
+                                          (void*)MENU_PREFERENCES, NULL,
+                                          _gl_sel, (void*)MENU_PREFERENCES);
+
+   bt_sync = enki_elm_genlist_item_menu_append(edje, &itc_menu,
+                                               (void*)MENU_WEBSYNC, NULL,
+                                               _gl_sel, (void*)MENU_WEBSYNC);
 
    bt = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                          (void*)WEBSYNC, NULL,
-                                              _gl_sel, (void*)WEBSYNC);
-
-   bt = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                          (void*)CLOSEENKI, NULL,
-                                              _gl_sel, (void*)CLOSEENKI);
+                                          (void*)MENU_CLOSEENKI, NULL,
+                                          _gl_sel, (void*)MENU_CLOSEENKI);
 
    //library list
    main_menu_update_libraries_list();
@@ -136,24 +128,24 @@ static char *
 _gl_label_get(void        *data,
               Evas_Object *obj,
               const char  *part)
-{
-   if((int)data == SLIDESHOW)
+              {
+   if((int)data == MENU_SLIDESHOW)
       return strdup("Slideshow");
-   if((int)data == ALBUM_NEW)
+   if((int)data == MENU_ALBUM_NEW)
       return strdup("New Album");
-   if((int)data == IMPORT_PHOTOS)
+   if((int)data == MENU_IMPORT_PHOTOS)
       return strdup("Import Photos");
-   if((int)data == DEL_BG)
+   if((int)data == MENU_DEL_BG)
       return strdup("Remove the wallpaper");
-   if((int)data == GEOCACHING)
+   if((int)data == MENU_GEOCACHING)
       return strdup("Import Geocaching");
-   if((int)data == PREFERENCES)
+   if((int)data == MENU_PREFERENCES)
       return strdup("Preferences");
-   if((int)data == WEBSYNC)
+   if((int)data == MENU_WEBSYNC)
       return strdup("Launch WEB Synchronization");
-   if((int)data == CLOSEENKI)
+   if((int)data == MENU_CLOSEENKI)
       return strdup("Close Enki");
-}
+              }
 
 
 
@@ -162,30 +154,30 @@ _gl_sel(void        *data,
         Evas_Object *obj,
         void        *event_info)
 {
-   if((int)data == SLIDESHOW)
+   if((int)data == MENU_SLIDESHOW)
       _slideshow_cb();
-      if((int)data == ALBUM_NEW)
-         _album_new_cb();
-      if((int)data == IMPORT_PHOTOS)
-         _import_cb();
-      if((int)data == DEL_BG)
-         _del_bg_cb();
-      if((int)data == GEOCACHING)
-         _geocaching_import_cb();
-      if((int)data == PREFERENCES)
-         _preferences_cb();
-      if((int)data == WEBSYNC)
-         _sync_cb();
-      if((int)data == CLOSEENKI)
-         _quit_cb();
+   if((int)data == MENU_ALBUM_NEW)
+      _album_new_cb();
+   if((int)data == MENU_IMPORT_PHOTOS)
+      _import_cb();
+   if((int)data == MENU_DEL_BG)
+      _del_bg_cb();
+   if((int)data == MENU_GEOCACHING)
+      _geocaching_import_cb();
+   if((int)data == MENU_PREFERENCES)
+      _preferences_cb();
+   if((int)data == MENU_WEBSYNC)
+      _sync_cb();
+   if((int)data == MENU_CLOSEENKI)
+      _quit_cb();
 
-      Elm_Genlist_Item *item = elm_genlist_selected_item_get(obj);
-      elm_genlist_item_selected_set(item, EINA_FALSE);
+   Elm_Genlist_Item *item = elm_genlist_selected_item_get(obj);
+   elm_genlist_item_selected_set(item, EINA_FALSE);
 }
 
 static Evas_Object *_gl_icon_get(void *data,
-              Evas_Object *obj,
-              const char  *part)
+                                 Evas_Object *obj,
+                                 const char  *part)
 {
    Evas_Object *icon = elm_icon_add(obj);
    evas_object_size_hint_aspect_set(icon, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
@@ -193,7 +185,21 @@ static Evas_Object *_gl_icon_get(void *data,
    if(strcmp(part, "elm.swallow.icon"))
       return NULL;
 
-   //if((int)data == SLIDESHOW)
+   if((int)data == MENU_SLIDESHOW)
+      elm_icon_file_set(icon, Theme, "icons/slideshow");
+   else  if((int)data == MENU_ALBUM_NEW)
+      elm_icon_file_set(icon, Theme, "icons/add");
+   else  if((int)data == MENU_IMPORT_PHOTOS)
+      elm_icon_file_set(icon, Theme, "icons/add");
+   else  if((int)data == MENU_GEOCACHING)
+      elm_icon_file_set(icon, Theme, "icons/add");
+   else  if((int)data == MENU_DEL_BG)
+      elm_icon_file_set(icon, Theme, "icons/delete");
+   else  if((int)data == MENU_WEBSYNC)
+      elm_icon_file_set(icon, Theme, "icons/websync");
+   else  if((int)data == MENU_CLOSEENKI)
+      elm_icon_file_set(icon, Theme, "icons/close");
+   else
       elm_icon_file_set(icon, Theme, "icons/menu");
 
    return icon;
@@ -240,58 +246,58 @@ main_menu_update_libraries_list()
    //
 
    EINA_LIST_FREE(list, string)
-     {
-        Library *lib = calloc(1, sizeof(Library));
-        lib->is_new_library = EINA_FALSE;
-        lib->path = eina_stringshare_add(string->string);
+   {
+      Library *lib = calloc(1, sizeof(Library));
+      lib->is_new_library = EINA_FALSE;
+      lib->path = eina_stringshare_add(string->string);
 
-        lib->photo1 = enlil_photo_new();
-        Enlil_Photo_Data *photo_data1 = calloc(1, sizeof(Enlil_Photo_Data));
-        enlil_photo_user_data_set(lib->photo1, photo_data1, enlil_photo_data_free);
-        enlil_photo_mustNotBeSaved_set(lib->photo1, EINA_TRUE);
+      lib->photo1 = enlil_photo_new();
+      Enlil_Photo_Data *photo_data1 = calloc(1, sizeof(Enlil_Photo_Data));
+      enlil_photo_user_data_set(lib->photo1, photo_data1, enlil_photo_data_free);
+      enlil_photo_mustNotBeSaved_set(lib->photo1, EINA_TRUE);
 
-        lib->photo2 = enlil_photo_new();
-        Enlil_Photo_Data *photo_data2 = calloc(1, sizeof(Enlil_Photo_Data));
-        enlil_photo_user_data_set(lib->photo2, photo_data2, enlil_photo_data_free);
-        enlil_photo_mustNotBeSaved_set(lib->photo2, EINA_TRUE);
+      lib->photo2 = enlil_photo_new();
+      Enlil_Photo_Data *photo_data2 = calloc(1, sizeof(Enlil_Photo_Data));
+      enlil_photo_user_data_set(lib->photo2, photo_data2, enlil_photo_data_free);
+      enlil_photo_mustNotBeSaved_set(lib->photo2, EINA_TRUE);
 
-        photo_data1->library_item = elm_gengrid_item_append(libraries_list, &itc_grid, lib, _library_select, NULL);
-        photo_data2->library_item = photo_data1->library_item;
+      photo_data1->library_item = elm_gengrid_item_append(libraries_list, &itc_grid, lib, _library_select, NULL);
+      photo_data2->library_item = photo_data1->library_item;
 
-        EINA_STRINGSHARE_DEL(string->string);
-        FREE(string);
-     }
+      EINA_STRINGSHARE_DEL(string->string);
+      FREE(string);
+   }
 }
 
 static char *
 _library_get(void        *data,
              Evas_Object *obj,
              const char  *part)
-{
+             {
    Library *lib = data;
    char *name = strdup(lib->path);
    char *name_old = name;
 
    if(strlen(name) > 40)
-     {
-        name = name + strlen(name) - 40;
+   {
+      name = name + strlen(name) - 40;
 
-        int i = 0;
-        name--;
-        while(i < 3 && name >= name_old)
-          {
-             *name = '.';
-             name--;
-             i++;
-          }
-        name++;
-     }
+      int i = 0;
+      name--;
+      while(i < 3 && name >= name_old)
+      {
+         *name = '.';
+         name--;
+         i++;
+      }
+      name++;
+   }
 
    name = strdup(name);
    FREE(name_old);
 
    return name;
-}
+             }
 
 static void
 _library_del(void        *data,
@@ -300,9 +306,9 @@ _library_del(void        *data,
    Library *lib = data;
    EINA_STRINGSHARE_DEL(lib->path);
    if(lib->photo1)
-     enlil_photo_free(&(lib->photo1));
+      enlil_photo_free(&(lib->photo1));
    if(lib->photo2)
-     enlil_photo_free(&(lib->photo2));
+      enlil_photo_free(&(lib->photo2));
    FREE(lib);
 }
 
@@ -310,30 +316,30 @@ static Evas_Object *
 _library_icon_get(void        *data,
                   Evas_Object *obj,
                   const char  *part)
-{
+                  {
    const char *s1 = NULL, *s2 = NULL, *g1 = NULL, *g2 = NULL;
    Library *lib = data;
 
    if(strcmp(part, "elm.swallow.icon"))
-     return NULL;
+      return NULL;
 
    if(lib->is_new_library)
-     {
-        Evas_Object *o = elm_layout_add(obj);
-        elm_layout_file_set(o, Theme, "photo_library");
+   {
+      Evas_Object *o = elm_layout_add(obj);
+      elm_layout_file_set(o, Theme, "photo_library");
 
-        Evas_Object *icon = elm_icon_add(obj);
-        elm_icon_file_set(icon, Theme, "icons/plus");
-        elm_icon_fill_outside_set(icon, EINA_TRUE);
-        elm_layout_content_set(o, "object.photo.front.swallow", icon);
+      Evas_Object *icon = elm_icon_add(obj);
+      elm_icon_file_set(icon, Theme, "icons/plus");
+      elm_icon_fill_outside_set(icon, EINA_TRUE);
+      elm_layout_content_set(o, "object.photo.front.swallow", icon);
 
-        icon = elm_icon_add(obj);
-        elm_icon_file_set(icon, Theme, "icons/folder");
-        elm_icon_fill_outside_set(icon, EINA_TRUE);
-        elm_layout_content_set(o, "object.photo.back.swallow", icon);
+      icon = elm_icon_add(obj);
+      elm_icon_file_set(icon, Theme, "icons/folder");
+      elm_icon_fill_outside_set(icon, EINA_TRUE);
+      elm_layout_content_set(o, "object.photo.back.swallow", icon);
 
-        return o;
-     }
+      return o;
+   }
 
    Evas_Object *o = elm_layout_add(obj);
    elm_layout_file_set(o, Theme, "photo_library");
@@ -341,55 +347,55 @@ _library_icon_get(void        *data,
    //
    Enlil_Photo *photo1 = enlil_library_photo_get(lib->path, 1);
    if(photo1)
-     {
-        if( enlil_photo_path_get(lib->photo1) != enlil_photo_path_get(photo1)
-            || enlil_photo_file_name_get(lib->photo1) != enlil_photo_file_name_get(photo1))
-          {
-             enlil_photo_path_set(lib->photo1, enlil_photo_path_get(photo1));
-             enlil_photo_file_name_set(lib->photo1, enlil_photo_file_name_get(photo1));
-          }
-        Enlil_Photo_Data *photo_data1 = enlil_photo_user_data_get(lib->photo1);
+   {
+      if( enlil_photo_path_get(lib->photo1) != enlil_photo_path_get(photo1)
+               || enlil_photo_file_name_get(lib->photo1) != enlil_photo_file_name_get(photo1))
+      {
+         enlil_photo_path_set(lib->photo1, enlil_photo_path_get(photo1));
+         enlil_photo_file_name_set(lib->photo1, enlil_photo_file_name_get(photo1));
+      }
+      Enlil_Photo_Data *photo_data1 = enlil_photo_user_data_get(lib->photo1);
 
-        if(photo1 && !photo_data1->cant_create_thumb)
-          s1 = enlil_thumb_photo_get(lib->photo1, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
+      if(photo1 && !photo_data1->cant_create_thumb)
+         s1 = enlil_thumb_photo_get(lib->photo1, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
 
-        enlil_photo_free(&(photo1));
-        //
+      enlil_photo_free(&(photo1));
+      //
 
-        //
-        Enlil_Photo *photo2 = enlil_library_photo_get(lib->path, 2);
-        if( enlil_photo_path_get(lib->photo2) != enlil_photo_path_get(photo2)
-            || enlil_photo_file_name_get(lib->photo2) != enlil_photo_file_name_get(photo2))
-          {
-             enlil_photo_path_set(lib->photo2, enlil_photo_path_get(photo2));
-             enlil_photo_file_name_set(lib->photo2, enlil_photo_file_name_get(photo2));
-          }
-        Enlil_Photo_Data *photo_data2 = enlil_photo_user_data_get(lib->photo2);
+      //
+      Enlil_Photo *photo2 = enlil_library_photo_get(lib->path, 2);
+      if( enlil_photo_path_get(lib->photo2) != enlil_photo_path_get(photo2)
+               || enlil_photo_file_name_get(lib->photo2) != enlil_photo_file_name_get(photo2))
+      {
+         enlil_photo_path_set(lib->photo2, enlil_photo_path_get(photo2));
+         enlil_photo_file_name_set(lib->photo2, enlil_photo_file_name_get(photo2));
+      }
+      Enlil_Photo_Data *photo_data2 = enlil_photo_user_data_get(lib->photo2);
 
-        if(photo2 && !photo_data2->cant_create_thumb)
-          s2 = enlil_thumb_photo_get(lib->photo2, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
+      if(photo2 && !photo_data2->cant_create_thumb)
+         s2 = enlil_thumb_photo_get(lib->photo2, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
 
-        enlil_photo_free(&(photo2));
-        //
+      enlil_photo_free(&(photo2));
+      //
 
-        if(!s1)
-          {
-             s1 = Theme;
-             g1 = "libraries/icon/nophoto";
-          }
-        if(!s2)
-          {
-             s2 = Theme;
-             g2 = "libraries/icon/nophoto";
-          }
-     }
+      if(!s1)
+      {
+         s1 = Theme;
+         g1 = "libraries/icon/nophoto";
+      }
+      if(!s2)
+      {
+         s2 = Theme;
+         g2 = "libraries/icon/nophoto";
+      }
+   }
    else
-     {
-        s1 = Theme;
-        s2 = Theme;
-        g1 = "libraries/icon/nophoto";
-        g2 = "libraries/icon/nophoto";
-     }
+   {
+      s1 = Theme;
+      s2 = Theme;
+      g1 = "libraries/icon/nophoto";
+      g2 = "libraries/icon/nophoto";
+   }
 
    Evas_Object *icon = elm_icon_add(obj);
    elm_icon_file_set(icon, s1, g1);
@@ -403,7 +409,7 @@ _library_icon_get(void        *data,
 
    evas_object_show(o);
    return o;
-}
+                  }
 
 static void
 _library_select(void        *data,
@@ -413,14 +419,14 @@ _library_select(void        *data,
    Library *lib = elm_gengrid_item_data_get(elm_gengrid_selected_item_get(obj));
 
    if(lib->is_new_library)
-     {
-        _new_library();
-     }
+   {
+      _new_library();
+   }
    else
-     {
-        library_set(lib->path);
-        select_list_photo();
-     }
+   {
+      library_set(lib->path);
+      select_list_photo();
+   }
 
    //unselect items
    elm_gengrid_item_selected_set(elm_gengrid_selected_item_get(obj), EINA_FALSE);
@@ -460,17 +466,17 @@ _new_library_done_cb(void        *data,
 {
    const char *selected = event_info;
    if (selected)
-     {
-        LOG_INFO("Create new library: %s\n", elm_fileselector_selected_get(obj));
-        if(!ecore_file_exists(selected))
-          ecore_file_mkdir(selected);
-        if(ecore_file_is_dir(selected))
-          {
-             library_set(selected);
-             select_list_photo();
-             main_menu_update_libraries_list();
-          }
-     }
+   {
+      LOG_INFO("Create new library: %s\n", elm_fileselector_selected_get(obj));
+      if(!ecore_file_exists(selected))
+         ecore_file_mkdir(selected);
+      if(ecore_file_is_dir(selected))
+      {
+         library_set(selected);
+         select_list_photo();
+         main_menu_update_libraries_list();
+      }
+   }
 
    evas_object_del(data);
 }
@@ -483,10 +489,10 @@ static void _slideshow_cb()
    Eina_List *items = photos_list_object_selected_get(enlil_data->list_photo->o_list);
 
    if(items)
-     {
-        item = eina_list_data_get(items);
-        photo = photos_list_object_item_data_get(item);
-     }
+   {
+      item = eina_list_data_get(items);
+      photo = photos_list_object_item_data_get(item);
+   }
 
    slideshow_clear();
    slideshow_library_add(enlil_data->library, photo);
@@ -543,19 +549,19 @@ static void _geocaching_import_cb()
 }
 
 static void _geocaching_import_done_cb(void        *data,
-                           Evas_Object *obj,
-                           void        *event_info)
+                                       Evas_Object *obj,
+                                       void        *event_info)
 {
    const char *selected = event_info;
 
    if (selected)
-     {
-        char *ext = strchr(selected, '.');
-        if(ext && !strcmp(ext, ".gpx"))
-          {
-             enlil_geocaching_import(selected, geocaching_done_cb, NULL);
-          }
-     }
+   {
+      char *ext = strchr(selected, '.');
+      if(ext && !strcmp(ext, ".gpx"))
+      {
+         enlil_geocaching_import(selected, geocaching_done_cb, NULL);
+      }
+   }
    evas_object_del(inwin);
 }
 

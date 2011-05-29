@@ -14,144 +14,40 @@ group {
         }
     }
 }
-group {
-    name: "icons/menu";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                max: 64 64;
-                image.normal: "icons/menu.png";
-				aspect: 1 1;
-				aspect_preference: BOTH;
-				align: 0.5 0.5;
-            }
-        }
-    }
+
+#define ICON(NAME, FILE) 	\
+group { 					\
+    name: NAME;				\
+    parts {					\
+        part {				\
+            name: "icon";	\
+            description {						\
+                state: "default" 0.0;			\
+                max: 64 64;						\
+                image.normal: FILE;				\
+				aspect: 1 1;					\
+				aspect_preference: BOTH;		\
+				align: 0.5 0.5;					\
+            }									\
+        }										\
+    }											\
 }
-group {
-    name: "icons/view";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                max: 64 64;
-                image.normal: "icons/view.png";
-				aspect: 1 1;
-				aspect_preference: BOTH;
-				align: 0.5 0.5;
-            }
-        }
-    }
-}
-group {
-    name: "icons/map";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                max: 64 64;
-                image.normal: "icons/map.png";
-				aspect: 1 1;
-				aspect_preference: BOTH;
-				align: 0.5 0.5;
-            }
-        }
-    }
-}
-group {
-    name: "icons/photos";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                max: 64 64;
-                image.normal: "icons/photos.png";
-				aspect: 1 1;
-				aspect_preference: BOTH;
-				align: 0.5 0.5;
-            }
-        }
-    }
-}
-group {
-    name: "icons/albums";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                max: 64 64;
-                image.normal: "icons/albums.png";
-				aspect: 1 1;
-				aspect_preference: BOTH;
-				align: 0.5 0.5;
-            }
-        }
-    }
-}
-group {
-    name: "icons/collections";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                max: 64 64;
-                image.normal: "icons/collections.png";
-				aspect: 1 1;
-				aspect_preference: BOTH;
-				align: 0.5 0.5;
-            }
-        }
-    }
-}
-group {
-    name: "icons/tags";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                max: 64 64;
-                image.normal: "icons/tags.png";
-				aspect: 1 1;
-				aspect_preference: BOTH;
-				align: 0.5 0.5;
-            }
-        }
-    }
-}
-group {
-    name: "icons/plus";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                max: 64 64;
-                image.normal: "plus.png";
-            }
-        }
-    }
-}
-group {
-    name: "icons/folder";
-    parts {
-        part {
-            name: "icon";
-            description {
-                state: "default" 0.0;
-                max: 64 64;
-                image.normal: "folder.png";
-            }
-        }
-    }
-}
+
+ICON("icons/menu", "icons/menu.png");
+ICON("icons/view", "icons/view.png");
+ICON("icons/map", "icons/map.png");
+ICON("icons/photos", "icons/photos.png");
+ICON("icons/albums", "icons/albums.png");
+ICON("icons/collections", "icons/collections.png");
+ICON("icons/tags", "icons/tags.png");
+ICON("icons/folder", "folder.png");
+ICON("icons/plus", "plus.png");
+ICON("icons/add", "icons/plus.png");
+ICON("icons/slideshow", "icons/slideshow.png");
+ICON("icons/delete", "icons/close.png");
+ICON("icons/close", "icons/close.png");
+ICON("icons/websync", "icons/websync.png");
+
 group {
     name: "icons/rotate/90/reverse";
     parts {

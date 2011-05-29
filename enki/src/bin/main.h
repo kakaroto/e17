@@ -27,6 +27,17 @@
 #define THEME_BIG   PACKAGE_DATA_DIR "/themes/default.edj"
 #define THEME_SMALL PACKAGE_DATA_DIR "/themes/default_small.edj"
 
+
+#define MENU_SLIDESHOW 1
+#define MENU_ALBUM_NEW 2
+#define MENU_IMPORT_PHOTOS 3
+#define MENU_DEL_BG 4
+#define MENU_GEOCACHING 5
+#define MENU_PREFERENCES 6
+#define MENU_WEBSYNC 7
+#define MENU_CLOSEENKI 8
+
+
 extern int APP_LOG_DOMAIN;
 #define LOG_DOMAIN  APP_LOG_DOMAIN
 
