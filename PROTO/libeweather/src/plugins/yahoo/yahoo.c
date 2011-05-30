@@ -247,7 +247,6 @@ _server_error(void *data, int type, void *event)
 {
    Instance *inst;
    Ecore_Con_Event_Server_Error *ev;
-   int ret;
 
    inst = data;
    ev = event;
