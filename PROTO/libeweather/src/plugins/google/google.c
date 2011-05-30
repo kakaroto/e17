@@ -28,28 +28,35 @@ struct _Id_Type
  
 static struct _Id_Type _tab[] =
 {
-     {"/ig/images/weather/chance_of_rain.gif", EWEATHER_TYPE_RAIN}, 
-     {"/ig/images/weather/sunny.gif", EWEATHER_TYPE_SUNNY}, 
-     {"/ig/images/weather/mostly_sunny.gif", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
-     {"/ig/images/weather/partly_cloudy.gif", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
-     {"/ig/images/weather/mostly_cloudy.gif", EWEATHER_TYPE_MOSTLY_CLOUDY_DAY}, 
-     {"/ig/images/weather/chance_of_storm.gif", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, 
-     {"/ig/images/weather/rain.gif", EWEATHER_TYPE_RAIN}, 
-     {"/ig/images/weather/chance_of_rain.gif", EWEATHER_TYPE_RAIN}, 
-     {"/ig/images/weather/chance_of_snow.gif", EWEATHER_TYPE_SNOW},
-     {"/ig/images/weather/cloudy.gif", EWEATHER_TYPE_CLOUDY}, 
-     {"/ig/images/weather/mist.gif", EWEATHER_TYPE_FOGGY}, 
-     {"/ig/images/weather/storm.gif", EWEATHER_TYPE_SCATTERED_THUNDERSTORMS}, 
-     {"/ig/images/weather/chance_of_tstorm.gif", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, 
-     {"/ig/images/weather/sleet.gif", EWEATHER_TYPE_RAIN_SNOW}, 
-     {"/ig/images/weather/rain_snow.gif", EWEATHER_TYPE_RAIN_SNOW},
-     {"/ig/images/weather/snow.gif", EWEATHER_TYPE_SNOW}, 
-     {"/ig/images/weather/icy.gif", EWEATHER_TYPE_SNOW}, 
-     {"/ig/images/weather/dust.gif", EWEATHER_TYPE_FOGGY}, 
-     {"/ig/images/weather/fog.gif", EWEATHER_TYPE_FOGGY}, 
-     {"/ig/images/weather/smoke.gif", EWEATHER_TYPE_FOGGY}, 
-     {"/ig/images/weather/haze.gif", EWEATHER_TYPE_FOGGY}, 
-     {"/ig/images/weather/flurries.gif", EWEATHER_TYPE_SNOW}, 
+     {"Clear", EWEATHER_TYPE_SUNNY}, 
+     {"Chance of Rain", EWEATHER_TYPE_RAIN}, 
+     {"Chance of Snow", EWEATHER_TYPE_SNOW},
+     {"Chance of Storm", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, 
+     {"Cloudy", EWEATHER_TYPE_CLOUDY}, 
+     {"Fog", EWEATHER_TYPE_FOGGY}, 
+     {"Isolated Thunderstorms", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, 
+     {"Mostly Cloudy", EWEATHER_TYPE_MOSTLY_CLOUDY_DAY}, 
+     {"Mostly Sunny", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
+     {"Overcast", EWEATHER_TYPE_CLOUDY}, 
+     {"Partly Cloudy", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
+     {"Partly Sunny", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
+     {"Rain", EWEATHER_TYPE_RAIN}, 
+     {"Showers", EWEATHER_TYPE_RAIN}, 
+     {"Sunny", EWEATHER_TYPE_SUNNY}, 
+     {"Scattered Showers", EWEATHER_TYPE_RAIN}, 
+     {"Scattered Thunderstorms", EWEATHER_TYPE_SCATTERED_THUNDERSTORMS}, 
+     {"Snow Showers", EWEATHER_TYPE_RAIN_SNOW}, 
+     {"Thunderstorms", EWEATHER_TYPE_THUNDERSTORMS}, 
+     {"Windy", EWEATHER_TYPE_WINDY},
+//     {"/ig/images/weather/rain_snow.gif", EWEATHER_TYPE_RAIN_SNOW},
+     {"Sleet", EWEATHER_TYPE_RAIN_SNOW}, /* not sure */
+     {"Mist", EWEATHER_TYPE_FOGGY}, /* not sure */
+     {"Snow", EWEATHER_TYPE_SNOW}, /* not sure */
+     {"Icy", EWEATHER_TYPE_SNOW}, /* not sure */
+     {"Dust", EWEATHER_TYPE_FOGGY}, /* not sure */
+     {"Smoke", EWEATHER_TYPE_FOGGY}, /* not sure */
+     {"Haze", EWEATHER_TYPE_FOGGY}, /* not sure */
+     {"Flurries", EWEATHER_TYPE_SNOW}, /* not sure */
      {"", EWEATHER_TYPE_UNKNOWN}
 };
 
@@ -289,7 +296,7 @@ _parse(Instance *inst)
    if (!inst->buffer) return 0;
 
    //printf("%s\n", inst->buffer);
-   
+
    needle = strstr(inst->buffer, "<city data=\"");
    if (!needle) goto error;
    needle+=12;
@@ -300,18 +307,17 @@ _parse(Instance *inst)
    needle+=25;
    sscanf(needle, "%[^+]+", date);
 
+   needle = strstr(needle, "<condition data=\"");
+   if (!needle) goto error;
+   needle += 17;
+   sscanf(needle, "%[^\"]\"", code);
+
+   e_data->type = _weather_type_get(code);
 
    needle = strstr(needle, "<temp_f data=\"");
    if (!needle) goto error;
    needle+=14;
    sscanf(needle, "%lf\"", &(e_data->temp));
-
-   needle = strstr(needle, "<icon data=\"");
-   if (!needle) goto error;
-   needle += 12; 
-   sscanf(needle, "%[^\"]\"", code);
-
-   e_data->type = _weather_type_get(code);
 
    needle = strstr(needle, "<day_of_week data=\"");
    if (!needle) goto error;
@@ -354,9 +360,9 @@ _parse(Instance *inst)
 
 	e_data->temp = ( e_data->temp_min + e_data->temp_max ) / 2;
 
-	needle = strstr(needle, "<icon data=\"");
+	needle = strstr(needle, "<condition data=\"");
 	if (!needle) goto error;
-	needle += 12; 
+	needle += 17;
 	sscanf(needle, "%[^\"]\"", code);
 
 	e_data->type = _weather_type_get(code);
