@@ -183,7 +183,7 @@ Available options:
 EOF
 }
 
-PKGS="eina eet embryo evas ecore efreet edje e_dbus ethumb TMP/st/elementary e"
+PKGS="eina eet embryo evas ecore efreet edje e_dbus ethumb elementary e"
 
 # Repository details
 SVNREP="http://svn.enlightenment.org/svn/e/trunk"
