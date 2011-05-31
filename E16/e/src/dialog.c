@@ -1968,6 +1968,8 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 	   break;
 	if (ev->xmotion.window == WinGetXwin(di->item.slider.knob_win))
 	  {
+	     EQueryPointer(di->item.slider.knob_win,
+			   &ev->xbutton.x, &ev->xbutton.y, NULL, NULL);
 	     if (di->item.slider.horizontal)
 	       {
 		  val =
