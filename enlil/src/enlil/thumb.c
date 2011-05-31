@@ -181,7 +181,7 @@ enlil_thumb_clear(void)
    EINA_LIST_FREE(thumb.jobs, job)
      {
         if (job->thread)
-          ethumb_client_thumb_exists_cancel(job->thread);
+          ethumb_client_thumb_exists_cancel(job->thread, enlil_exists_cb, job);
         else
           ethumb_client_generate_cancel(thumb.ethumb, job->id, NULL, NULL, NULL);
      }
@@ -200,7 +200,7 @@ enlil_thumb_photo_clear(const Enlil_Photo *photo)
              thumb.jobs = eina_list_remove(thumb.jobs, job);
 
              if (job->thread)
-               ethumb_client_thumb_exists_cancel(job->thread);
+               ethumb_client_thumb_exists_cancel(job->thread, enlil_exists_cb, job);
              else
                ethumb_client_generate_cancel(thumb.ethumb, job->id, NULL, NULL, NULL);
           }
