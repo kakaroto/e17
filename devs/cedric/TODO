@@ -16,7 +16,7 @@
 	- add a prepare phase that could be used by all engine when we got many main CPU to prepare font, polygon and load image in parallel (should work also with dsp)
 h	- try quadtree support
 	- fix Evas_Object_Polygon resize issue and API.
-	- use eina_file_map
+h	- use eina_file_map
 
 * Edje 1.1
 	- Add REVERSE to edje possible program action
@@ -34,7 +34,6 @@ h	- Add specialized task for each match automate case
 	- Add virtual part and program support.
 	- Merge edje parser and edje preprocessor.
 	- Move the parser into edje and expose an Edje AST API.
-	- use ecore_animator_timeline_add.
 
 * Elixir
 h	- add eet -> js object
@@ -78,7 +77,7 @@ h	- add tutorial
 	- handle all io in another process
 	- pack result for same filename when calling eio_file_direct_stat (add a new set of call for that purpose).
 	- add eina_file_map support
-	- make it possible to get current dirfd inside eio_*_ls operation
+d	- make it possible to get current dirfd inside eio_*_ls operation
 
 * Efreet 1.0
 	- make mime check thread safe
@@ -88,15 +87,16 @@ h	- add tutorial
 	- add ecore_thread_batch_run/ecore_thread_batch_feedback_run (to create
 	batch, a list of data instead of creating one ecore_thread per data)
 	- add ecore_thread_reschedule_after.
-	- use eina_lock
-	- add ecore_thread_ugly_run (better name: ecore_thread_message_run ?).
+h	- use eina_lock
+h	- add ecore_thread_ugly_run (better name: ecore_thread_message_run ?).
 	- make it possible to send message async/sync from thread to main loop (for msg_run).
 	- make it possible to make async/sync call from thread to main loop (for msg_run).
 	- make it possible to send message async from main loop to thread (for msg_run).
 	- make it possible to make async call from main loop to thread (for msg_run).
 	- make it possible to raise priority of a worker job.
 	- make it possible to create another worker job from a worker job.
-	- add ecore_timer_dump to help track timer allocator and reduce number of wakeup.
+d	- add ecore_timer_dump to help track timer allocator and reduce number of wakeup.
+	- add ecore_pipe_wait.
 
 * ethumb
 	- make it possible to have one slave per available CPU.
@@ -106,6 +106,9 @@ h	- add tutorial
 	- improve use of multi cpu
 	- make sync faster
 
+* enm
+	- describe protocol
+	- describe jobs of each daemon/part
 
 h: half done
 d: done
