@@ -48,7 +48,7 @@ static void _setup(void)
       "Icelandic: 'Kæmi ný öxi hér ykist þjófum nú bæði víl og ádrepa'<br>"
       "Japanese (hiragana): 'いろはにほへとちりぬるを'<br>"
       "Japanese (katakana): 'イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム'<br>"
-      "Hebrew: '? דג סקרן שט בים מאוכזב ולפתע מצא לו חברה איך הקליטה'<br>"
+      "Hebrew: 'דג סקרן שט בים מאוכזב ולפתע מצא לו חברה איך הקליטה?‏'<br>"
       "Polish: 'Pchnąć w tę łódź jeża lub ośm skrzyń fig'<br>"
       "Russian: 'В чащах юга жил бы цитрус? Да, но фальшивый экземпляр!'<br>"
       "IPA: 'ˈjunɪˌkoːd'<br>"
