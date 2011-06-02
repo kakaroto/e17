@@ -8,12 +8,12 @@ group {
     	//
     	
     	//map
-    	alias: "object.map.map"						"panes[right]:map[map]:object.map.map";
-    	alias: "object.map.display_photos"			"panes[right]:map[map]:object.map.display_photos";
-    	alias: "object.map.display_geocaching"		"panes[right]:map[map]:object.map.display_geocaching";
-    	alias: "object.map.import_geocaching"		"panes[right]:map[map]:object.map.import_geocaching";
-    	alias: "object.map.zoom"					"panes[right]:map[map]:object.map.zoom";
-    	alias: "object.map.rect_zoom"				"panes[right]:map[map]:object.map.rect_zoom";
+    	alias: "object.map.map"						"panes[right]:map:object.map.map";
+    	alias: "object.map.display_photos"			"panes[right]:map:object.map.display_photos";
+    	alias: "object.map.display_geocaching"		"panes[right]:map:object.map.display_geocaching";
+    	alias: "object.map.import_geocaching"		"panes[right]:map:object.map.import_geocaching";
+    	alias: "object.map.zoom"					"panes[right]:map:object.map.zoom";
+    	alias: "object.map.rect_zoom"				"panes[right]:map:object.map.rect_zoom";
     	//
     	
     	

@@ -48,25 +48,12 @@ group {
     	
         part {
             name: "map";
-            type: BOX;
+            type: GROUP;
             clip_to: "map_clipper";
+            source: "map";
             description {
                 state : "default" 0.0;
-                box {
-                    layout: "vertical";    
-                }
             }
-            box {
-            	items {
-            		item {
-                        type: GROUP;
-                        source: "map";
-                        name: "map";
-                        align: -1 -1;
-                        weight: 1 1;
-                    }
-               }
-           }
         }
         
         part {
