@@ -128,12 +128,12 @@ collections {
 
 	#include "../default/libraries.edc"
 	#include "../default/map.edc"
-	#include "../default/main_panel.edc"
+	#include "main_panel.edc"
 	#include "../default/slideshow.edc"
 	#include "list_left.edc"
 	#include "main_page.edc"
 	
-	#include "../default/main.edc"
+	#include "main.edc"
 	
 	
 	#include "../default/geocaching.edc"

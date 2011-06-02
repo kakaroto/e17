@@ -16,6 +16,7 @@ group {
     	alias: "object.map.map"						"main_panel:map[map]:object.map.map";
     	alias: "object.map.display_photos"			"main_panel:map[map]:object.map.display_photos";
     	alias: "object.map.display_geocaching"		"main_panel:map[map]:object.map.display_geocaching";
+    	alias: "object.map.import_geocaching"		"main_panel:map[map]:object.map.import_geocaching";
     	alias: "object.map.zoom"					"main_panel:map[map]:object.map.zoom";
     	alias: "object.map.rect_zoom"				"main_panel:map[map]:object.map.rect_zoom";
     	//

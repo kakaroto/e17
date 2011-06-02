@@ -9,7 +9,7 @@ group {
 			source: "elm/map";
 			description {
 				state: "default" 0.0;
-				rel2.to_y: "object.map.zoom";
+				rel2.to_y: "object.map.import_geocaching";
 				rel2.relative: 1.0 0.0;
 			}
 		}
@@ -20,9 +20,9 @@ group {
 			source: "elm/toggle";
 			description {
 				state: "default" 0.0;
-				rel1.to_y: "object.map.zoom";
+				rel1.to_y: "object.map.import_geocaching";
 				rel1.relative: 0.0 0.5;
-				rel2.to_y: "object.map.zoom";
+				rel2.to_y: "object.map.import_geocaching";
 				rel2.relative: 0.0 0.5;
 				align: 0.0 0.5;
 				fixed: 1 1;
@@ -41,9 +41,9 @@ group {
 			description {
 				state: "default" 0.0;
 				rel1.to_x: "object.map.display_photos";
-				rel1.to_y: "object.map.zoom";
+				rel1.to_y: "object.map.import_geocaching";
 				rel2.to_x: "object.map.display_photos";
-				rel2.to_y: "object.map.zoom";
+				rel2.to_y: "object.map.import_geocaching";
 				rel1.relative: 1.0 0.5;
 				rel2.relative: 1.0 0.5;
 				align: 0.0 0.5;
@@ -55,6 +55,23 @@ group {
 				}
 			}
 		}
+		part {
+			name: "object.map.import_geocaching";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.to_x: "object.map.display_geocaching";
+				rel2.to_x: "object.map.display_geocaching";
+				rel1.relative: 1.0 1.0;
+				rel2.relative: 1.0 1.0;
+				align: 0.0 1.0;
+				fixed: 1 1;
+				params {
+					string: "label" "Import geocaching";
+				}
+			}
+		}
 		
 		part {
 			name: "object.map.zoom";
@@ -62,9 +79,11 @@ group {
 			source: "elm/slider";
 			description {
 				state: "default" 0.0;
-				rel1.relative: 1.0 1.0;
-				rel2.relative: 1.0 1.0;
-				align: 1.0 1.0;
+				rel1.to_y: "object.map.import_geocaching";
+				rel1.relative: 1.0 0.5;
+				rel2.to_y: "object.map.import_geocaching";
+				rel2.relative: 1.0 0.5;
+				align: 1.0 0.5;
 				fixed: 1 1;
 				params {
 					string: "label" "Zoom";

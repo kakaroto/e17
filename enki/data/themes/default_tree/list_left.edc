@@ -4,13 +4,56 @@ group {
 	
 	parts {
 		part {
+			name: "object.menu.lvl1";
+			type: EXTERNAL;
+			source: "elm/toolbar";
+			description {
+				state: "default" 0.0;
+				rel2.relative: 1.0 0.0;
+				align: 0.5 0.0;
+				fixed: 1 1;
+			}
+		}
+		part {
 			name: "object.list.tree";
 			type: EXTERNAL;
 			source: "elm/genlist";
 			description {
 				state: "default" 0.0;
+				rel1.to_y: "object.menu.lvl1";
+				rel1.relative: 0.0 1.0;
+				rel2.to_y: "object.menu.bt.preferences";
+				rel2.relative: 1.0 0.0;
 				params {
 					string: "style" "enki_menu";
+				}
+			}
+		}
+		part {
+			name: "object.menu.bt.preferences";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.relative: 0.0 1.0;
+				align: 0.0 1.0;
+				rel2.relative: 0.5 1.0;
+				params {
+					string: "label" "Preferences";
+				}
+			}
+		}
+		part {
+			name: "object.menu.bt.libraries";
+			type: EXTERNAL;
+			source: "elm/button";
+			description {
+				state: "default" 0.0;
+				rel1.relative: 0.5 1.0;
+				align: 0.0 1.0;
+				rel2.relative: 1.0 1.0;
+				params {
+					string: "label" "Libraries";
 				}
 			}
 		}

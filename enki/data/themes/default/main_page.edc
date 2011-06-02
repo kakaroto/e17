@@ -4,13 +4,14 @@ group {
 	
 	parts {
 		//libraries
-    	alias: "object.main_menu.list_libraries" 	"panes[right]:menu[libraries]:object.main_menu.libraries";
+    	alias: "object.main_menu.list_libraries" 	"panes[right]:menu:object.main_menu.libraries";
     	//
     	
     	//map
     	alias: "object.map.map"						"panes[right]:map[map]:object.map.map";
     	alias: "object.map.display_photos"			"panes[right]:map[map]:object.map.display_photos";
     	alias: "object.map.display_geocaching"		"panes[right]:map[map]:object.map.display_geocaching";
+    	alias: "object.map.import_geocaching"		"panes[right]:map[map]:object.map.import_geocaching";
     	alias: "object.map.zoom"					"panes[right]:map[map]:object.map.zoom";
     	alias: "object.map.rect_zoom"				"panes[right]:map[map]:object.map.rect_zoom";
     	//
@@ -56,6 +57,7 @@ group {
 				}
 			}
 		}
+		
 	}
 	
 	programs {

@@ -16,6 +16,11 @@ static Elm_Genlist_Item *bt_album_new;
 static Elm_Genlist_Item *bt_sync;
 
 
+
+static void _libraries_cb(void        *data,
+                        Evas_Object *obj,
+                        void        *event_info);
+
 static char *_gl_label_get(void        *data,
                            Evas_Object *obj,
                            const char  *part);
@@ -49,10 +54,6 @@ static void _slideshow_cb();
 static void _album_new_cb();
 static void _import_cb();
 static void _del_bg_cb();
-static void _geocaching_import_cb();
-static void _geocaching_import_done_cb(void        *data,
-                                       Evas_Object *obj,
-                                       void        *event_info);
 static void _preferences_cb();
 static void _quit_cb();
 static void _sync_cb();
@@ -65,16 +66,17 @@ typedef struct
    Enlil_Photo *photo2;
 } Library;
 
-void
-main_menu_new(Evas_Object *edje)
+void main_menu_new(Evas_Object *edje)
 {
-   Elm_Genlist_Item *bt;
+   Elm_Genlist_Item *item;
+   Evas_Object *bt;
 
    //Libraries
    //libraries_list = edje_object_part_external_object_get(edje, "object.main_menu.list_libraries");
    libraries_list = elm_gengrid_add(edje);
    elm_gengrid_item_size_set(libraries_list, 256, 256);
-   edje_object_part_swallow(edje, "object.main_menu.list_libraries", libraries_list);
+   if(!edje_object_part_swallow(edje, "object.main_menu.list_libraries", libraries_list))
+      edje_object_part_swallow(global_object, "object.main_menu.list_libraries", libraries_list);
 
    itc_grid.func.label_get = _library_get;
    itc_grid.func.del = _library_del;
@@ -104,11 +106,7 @@ main_menu_new(Evas_Object *edje)
                                                  (void*)MENU_DEL_BG, NULL,
                                                  _gl_sel, (void*)MENU_DEL_BG);
 
-   bt = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                          (void*)MENU_GEOCACHING, NULL,
-                                          _gl_sel, (void*)MENU_GEOCACHING);
-
-   bt = enki_elm_genlist_item_menu_append(edje, &itc_menu,
+   item = enki_elm_genlist_item_menu_append(edje, &itc_menu,
                                           (void*)MENU_PREFERENCES, NULL,
                                           _gl_sel, (void*)MENU_PREFERENCES);
 
@@ -116,9 +114,18 @@ main_menu_new(Evas_Object *edje)
                                                (void*)MENU_WEBSYNC, NULL,
                                                _gl_sel, (void*)MENU_WEBSYNC);
 
-   bt = enki_elm_genlist_item_menu_append(edje, &itc_menu,
-                                          (void*)MENU_CLOSEENKI, NULL,
-                                          _gl_sel, (void*)MENU_CLOSEENKI);
+   bt = edje_object_part_external_object_get(edje, "object.menu.bt.preferences");
+   if(bt)
+      evas_object_smart_callback_add(bt, "clicked", (Evas_Smart_Cb)_preferences_cb, NULL);
+
+   bt = edje_object_part_external_object_get(edje, "object.menu.bt.libraries");
+   if(bt)
+      evas_object_smart_callback_add(bt, "clicked", _libraries_cb, edje);
+
+//
+//   bt = enki_elm_genlist_item_menu_append(edje, &itc_menu,
+//                                          (void*)MENU_CLOSEENKI, NULL,
+//                                          _gl_sel, (void*)MENU_CLOSEENKI);
 
    //library list
    main_menu_update_libraries_list();
@@ -137,8 +144,6 @@ _gl_label_get(void        *data,
       return strdup("Import Photos");
    if((int)data == MENU_DEL_BG)
       return strdup("Remove the wallpaper");
-   if((int)data == MENU_GEOCACHING)
-      return strdup("Import Geocaching");
    if((int)data == MENU_PREFERENCES)
       return strdup("Preferences");
    if((int)data == MENU_WEBSYNC)
@@ -162,8 +167,6 @@ _gl_sel(void        *data,
       _import_cb();
    if((int)data == MENU_DEL_BG)
       _del_bg_cb();
-   if((int)data == MENU_GEOCACHING)
-      _geocaching_import_cb();
    if((int)data == MENU_PREFERENCES)
       _preferences_cb();
    if((int)data == MENU_WEBSYNC)
@@ -190,8 +193,6 @@ static Evas_Object *_gl_icon_get(void *data,
    else  if((int)data == MENU_ALBUM_NEW)
       elm_icon_file_set(icon, Theme, "icons/add");
    else  if((int)data == MENU_IMPORT_PHOTOS)
-      elm_icon_file_set(icon, Theme, "icons/add");
-   else  if((int)data == MENU_GEOCACHING)
       elm_icon_file_set(icon, Theme, "icons/add");
    else  if((int)data == MENU_DEL_BG)
       elm_icon_file_set(icon, Theme, "icons/delete");
@@ -525,45 +526,7 @@ static void _del_bg_cb()
    eet_data_descriptor_free(edd);
 }
 
-static void _geocaching_import_cb()
-{
-   Evas_Object *fs, *vbox;
 
-   inwin = elm_win_inwin_add(enlil_data->win->win);
-   evas_object_show(inwin);
-
-   vbox = elm_box_add(inwin);
-   evas_object_size_hint_weight_set(vbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(vbox);
-   elm_win_inwin_content_set(inwin, vbox);
-
-   fs = elm_fileselector_add(inwin);
-   elm_fileselector_expandable_set(fs, EINA_FALSE);
-   elm_fileselector_path_set(fs, getenv("HOME"));
-   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(vbox, fs);
-   evas_object_show(fs);
-
-   evas_object_smart_callback_add(fs, "done", _geocaching_import_done_cb, NULL);
-}
-
-static void _geocaching_import_done_cb(void        *data,
-                                       Evas_Object *obj,
-                                       void        *event_info)
-{
-   const char *selected = event_info;
-
-   if (selected)
-   {
-      char *ext = strchr(selected, '.');
-      if(ext && !strcmp(ext, ".gpx"))
-      {
-         enlil_geocaching_import(selected, geocaching_done_cb, NULL);
-      }
-   }
-   evas_object_del(inwin);
-}
 
 static void _preferences_cb()
 {
@@ -582,3 +545,11 @@ static void _quit_cb()
    close_cb(NULL, NULL, NULL);
 }
 
+static void _libraries_cb(void        *data,
+                        Evas_Object *obj,
+                        void        *event_info)
+{
+   edje_object_signal_emit(data, "main_panel,menu,show", "");
+   edje_object_signal_emit(global_object, "main_panel,menu,show", "");
+   enlil_data->list_left->is_map = EINA_FALSE;
+}

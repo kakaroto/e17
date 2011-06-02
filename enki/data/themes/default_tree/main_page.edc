@@ -11,6 +11,7 @@ group {
     	alias: "object.map.map"						"panes[right]:map[map]:object.map.map";
     	alias: "object.map.display_photos"			"panes[right]:map[map]:object.map.display_photos";
     	alias: "object.map.display_geocaching"		"panes[right]:map[map]:object.map.display_geocaching";
+    	alias: "object.map.import_geocaching"		"panes[right]:map[map]:object.map.import_geocaching";
     	alias: "object.map.zoom"					"panes[right]:map[map]:object.map.zoom";
     	alias: "object.map.rect_zoom"				"panes[right]:map[map]:object.map.rect_zoom";
     	//
@@ -31,6 +32,9 @@ group {
     	//
     	
     	//list left
+    	alias: "object.menu.lvl1" 					"panes[left]:object.menu.lvl1";
+    	alias: "object.menu.bt.preferences"			"panes[left]:object.menu.bt.preferences";
+    	alias: "object.menu.bt.libraries"			"panes[left]:object.menu.bt.libraries";
     	alias: "object.list.tree" 					"panes[left]:object.list.tree";
     	alias: "object.library.delete" 				"panes[left]:object.library.delete";
     	alias: "object.status.loading" 				"panes[left]:object.status.loading";
@@ -51,6 +55,9 @@ group {
 				}
 			}
 		}
+		
+        
+        
 	}
 	
 	programs {
@@ -79,6 +86,7 @@ group {
 		transfers_signal("", "photo,menu,show", "", "panes", "right")
 		transfers_signal("", "photo,menu,hide", "", "panes", "right")
 		//
+		
 		
 	}
 }

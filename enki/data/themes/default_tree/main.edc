@@ -1,0 +1,131 @@
+
+
+group {
+	name: "main";
+	
+	parts {
+		
+    	alias: "object.main_menu.list_libraries" 	"libraries:object.main_menu.libraries";
+    	
+    	
+		part {
+			name: "object.menu";
+			type: EXTERNAL;
+			source: "elm/toolbar";
+			description {
+				state: "default" 0.0;
+				rel1.relative: 0.0 -1.0;
+				rel2.relative: 1.0 0.0;
+				align: 0.0 0.0;
+				fixed: 0 1;
+			}
+			description {
+				state: "display" 0.0;
+				inherit: "default" 0.0;
+				rel1.relative: 0.0 0.0;
+			}
+            description {
+                state : "libraries_visible" 0.0;
+                inherit: "default" 0.0;
+				rel1.relative: -1.0 0.0;
+				rel2.relative: 0.0 0.0;
+            }
+		}
+		
+		part {
+			name: "object.pages";
+			type: "SWALLOW";
+			description {
+				state: "default" 0.0;
+				rel1.to_y: "object.menu";
+				rel1.relative: 0.0 1.0;
+			}
+            description {
+                state : "libraries_visible" 0.0;
+                inherit: "default" 0.0;
+				rel1.to_y: "object.menu";
+				rel1.relative: -1.0 1.0;
+				rel2.relative: 0.0 1.0;
+            }
+		}
+		
+		
+		
+		part {
+            name: "libraries";
+            type: GROUP;
+            source: "libraries";
+            description {
+                state : "default" 0.0;
+                visible: 0;
+                color: 255 255 255 255;
+				rel1.relative: 1.0 0.0;
+				rel2.relative: 2.0 1.0;
+            }
+            description {
+                state : "libraries_visible" 0.0;
+                inherit: "default" 0.0;
+                visible: 1;
+                color: 255 255 255 255;
+				rel1.relative: 0.0 0.0;
+				rel2.relative: 1.0 1.0;
+            }
+        }
+	}
+	
+	programs
+	{
+		program
+		{
+			name: "show";
+			signal: "show";
+			action: STATE_SET "libraries_visible" 0.0;
+			target: "libraries";
+			target: "object.pages";
+			target: "object.menu";
+		}
+		program
+		{
+			name: "show_netsync_logo_selection";
+			signal: "show";
+			action: SIGNAL_EMIT "object.netsync[content]:show_select" "";
+		}
+		program
+		{
+			name: "toolbar_show";
+			signal: "toolbar,show";
+			action: STATE_SET "display" 0.0;
+			target: "object.menu";
+			transition: DECELERATE 0.4;
+		}
+		program
+		{
+			name: "toolbar_hide";
+			signal: "toolbar,hide";
+			action: STATE_SET "default" 0.0;
+			target: "object.menu";
+			transition: ACCELERATE 0.4;
+		}
+		
+		
+		program {
+			signal: "main_panel,menu,show";
+			source: "";
+			action: STATE_SET "libraries_visible" 0.0;
+			target: "libraries";
+			target: "object.pages";
+			target: "object.menu";
+			transition: LINEAR 0.3;
+		}
+		
+		program {
+			signal: "main_panel,photos,show";
+			source: "";
+			action: STATE_SET "default" 0.0;
+			target: "libraries";
+			target: "object.pages";
+			target: "object.menu";
+			transition: LINEAR 0.3;
+		}
+	}
+}

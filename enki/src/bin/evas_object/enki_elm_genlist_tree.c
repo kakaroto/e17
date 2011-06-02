@@ -5,23 +5,16 @@ static Eina_Bool is_init = EINA_FALSE;
 
 static Elm_Genlist_Item_Class itc;
 static Elm_Genlist_Item_Class itc_header;
-Elm_Genlist_Item *header_menu = NULL;
 Elm_Genlist_Item *header_library = NULL;
-Elm_Genlist_Item *header_view = NULL;
 Elm_Genlist_Item *header_albums = NULL;
 Elm_Genlist_Item *header_collections = NULL;
 Elm_Genlist_Item *header_tags = NULL;
 Elm_Genlist_Item *item_album_new = NULL;
 
 #define LIBRARY 0
-#define VIEW_LIBRARY 1
-#define MENU 2
 #define ALBUMS 3
 #define COLLECTIONS 4
 #define TAGS 5
-#define VIEW 6
-#define PHOTOS 7
-#define MAP 8
 
 #define INIT() \
          if(!is_init) \
@@ -36,53 +29,22 @@ static char *_gl_header_label_get(void *data,
 {
    if((int)data == LIBRARY)
       return strdup("Library");
-   if((int)data == MENU)
-      return strdup("Menu");
-   else if((int)data == VIEW_LIBRARY)
-      return strdup("Select Library");
    else if((int)data == ALBUMS)
       return strdup("Albums");
    else  if((int)data == COLLECTIONS)
       return strdup("Collections");
    else  if((int)data == TAGS)
       return strdup("Tags");
-   else  if((int)data == VIEW)
-      return strdup("View");
-   else  if((int)data == PHOTOS)
-      return strdup("Photos");
-   else  if((int)data == MAP)
-      return strdup("Map");
 }
 
-static void _library_cb(void        *data,
-                        Evas_Object *obj,
-                        void        *event_info)
-{
-   edje_object_signal_emit(data, "main_panel,menu,show", "");
-   enlil_data->list_left->is_map = EINA_FALSE;
-}
-static void _photos_cb(void        *data,
-                       Evas_Object *obj,
-                       void        *event_info)
-{
-   edje_object_signal_emit(data, "main_panel,photos,show", "");
-   enlil_data->list_left->is_map = EINA_FALSE;
-   photos_list_object_show_all(enlil_data->list_photo->o_list);
-}
-static void _map_cb(void        *data,
-                    Evas_Object *obj,
-                    void        *event_info)
-{
-   edje_object_signal_emit(data, "main_panel,map,show", "");
-   enlil_data->list_left->is_map = EINA_TRUE;
-   photos_list_object_show_all(enlil_data->list_photo->o_list);
-}
+
 static void _display_all_photos_cb(void        *data,
                                    Evas_Object *obj,
                                    void        *event_info)
 {
    photos_list_object_show_all(enlil_data->list_photo->o_list);
 }
+
 static Evas_Object *_gl_header_icon_get(void *data,
                                         Evas_Object *obj,
                                         const char  *part)
@@ -95,22 +57,12 @@ static Evas_Object *_gl_header_icon_get(void *data,
 
    if((int)data == LIBRARY)
       elm_icon_file_set(icon, Theme, "icons/menu");
-   if((int)data == MENU)
-      elm_icon_file_set(icon, Theme, "icons/menu");
-   else if((int)data == VIEW_LIBRARY)
-      elm_icon_file_set(icon, Theme, "icons/menu");
    else if((int)data == ALBUMS)
       elm_icon_file_set(icon, Theme, "icons/albums");
    else  if((int)data == COLLECTIONS)
       elm_icon_file_set(icon, Theme, "icons/collections");
    else  if((int)data == TAGS)
       elm_icon_file_set(icon, Theme, "icons/tags");
-   else  if((int)data == VIEW)
-      elm_icon_file_set(icon, Theme, "icons/view");
-   else  if((int)data == MAP)
-      elm_icon_file_set(icon, Theme, "icons/map");
-   else  if((int)data == PHOTOS)
-      elm_icon_file_set(icon, Theme, "icons/photos");
 
    return icon;
 }
@@ -133,24 +85,11 @@ static void init(Evas_Object *edje)
       itc.func.state_get = NULL;
       itc.func.del = NULL;
 
+
       header_library = elm_genlist_item_append(tree, &itc_header,
                                                (void *)LIBRARY, NULL, ELM_GENLIST_ITEM_NONE,
                                                NULL, (void *)LIBRARY);
 
-      //
-      header_view = elm_genlist_item_append(tree, &itc_header,
-                                            (void *)VIEW, NULL, ELM_GENLIST_ITEM_NONE,
-                                            NULL, (void *)VIEW);
-      elm_genlist_item_append(tree, &itc,
-                              (void *)VIEW_LIBRARY, header_view, ELM_GENLIST_ITEM_NONE,
-                              _library_cb, edje);
-      elm_genlist_item_append(tree, &itc,
-                              (void *)PHOTOS, header_view, ELM_GENLIST_ITEM_NONE,
-                              _photos_cb, edje);
-      elm_genlist_item_append(tree, &itc,
-                              (void *)MAP, header_view, ELM_GENLIST_ITEM_NONE,
-                              _map_cb, edje);
-      //
 
       header_albums = elm_genlist_item_append(tree, &itc_header,
                                               (void *)ALBUMS, NULL, ELM_GENLIST_ITEM_NONE,
@@ -163,11 +102,6 @@ static void init(Evas_Object *edje)
       header_tags = elm_genlist_item_append(tree, &itc_header,
                                             (void *)TAGS, NULL, ELM_GENLIST_ITEM_NONE,
                                             _display_all_photos_cb, edje);
-
-
-      header_menu = elm_genlist_item_append(tree, &itc_header,
-                                            (void *)MENU, NULL, ELM_GENLIST_ITEM_NONE,
-                                            NULL, (void *)MENU);
    }
    is_init = EINA_TRUE;
 }
@@ -201,10 +135,8 @@ Elm_Genlist_Item *enki_elm_genlist_item_menu_append(Evas_Object *edje, Elm_Genli
                                       data, header_library, ELM_GENLIST_ITEM_NONE,
                                       func, func_data);
       }
-
-      return elm_genlist_item_append(tree, itc,
-                                     data, header_menu, ELM_GENLIST_ITEM_NONE,
-                                     func, func_data);
+      else
+         return NULL;
    }
    else
    {

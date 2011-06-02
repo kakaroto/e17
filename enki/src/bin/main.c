@@ -357,7 +357,9 @@ elm_main(int    argc,
 
    //
    main_menu_new(edje);
-   tp_menu = tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Menu"), edje, "main_panel,menu,show", _menu_select_cb, enlil_data);
+
+   if(!edje_object_part_external_object_get(edje, "object.menu.bt.preferences"))
+      tp_menu = tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Menu"), edje, "main_panel,menu,show", _menu_select_cb, enlil_data);
 
    List_Photo *list_photo = list_photo_new(edje);
    list_photo_data_set(list_photo, enlil_data);
@@ -368,7 +370,10 @@ elm_main(int    argc,
    enlil_data->map = map;
    tabpanel_item_add_with_signal(list_album->tb_liste_map, D_("Map"), edje, "main_panel,map,show", _map_select_cb, enlil_data);
 
-   tabpanel_item_select(tp_menu);
+   if(tp_menu)
+      tabpanel_item_select(tp_menu);
+   else if(tp_list_photo)
+      tabpanel_item_select(tp_list_photo);
    //
 
    //
@@ -597,12 +602,16 @@ void
 select_list_photo()
 {
    tabpanel_item_select(tp_list_photo);
+   edje_object_signal_emit(main_panel_object, "main_panel,photos,show", "");
+   edje_object_signal_emit(global_object, "main_panel,photos,show", "");
 }
 
 void
 select_menu()
 {
    tabpanel_item_select(tp_menu);
+   edje_object_signal_emit(main_panel_object, "main_panel,menu,show", "");
+   edje_object_signal_emit(global_object, "main_panel,menu,show", "");
 }
 
 ELM_MAIN()

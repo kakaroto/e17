@@ -7,6 +7,13 @@ Elm_Map_Group_Class *itc_group;
 Elm_Map_Marker_Class *itc_gp;
 Elm_Map_Group_Class *itc_gp_group;
 
+
+static void _geocaching_import_cb(void        *data,
+                                  Evas_Object *obj,
+                                  void        *event_info);
+static void _geocaching_import_done_cb(void        *data,
+                                       Evas_Object *obj,
+                                       void        *event_info);
 static void _slider_zoom_cb(void        *data,
                             Evas_Object *obj,
                             void        *event_info);
@@ -50,6 +57,7 @@ static void _bt_geocaching_cb(void        *data,
 Map *
 map_new(Evas_Object *edje)
 {
+   Evas_Object *bt;
    Map *map = calloc(1, sizeof(Map));
 
    //
@@ -89,6 +97,11 @@ map_new(Evas_Object *edje)
    //
    map->rect = (Evas_Object *)edje_object_part_object_get(edje, "object.map.rect_zoom");
    evas_object_event_callback_add(map->rect, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel_cb, map);
+   //
+
+   //
+   bt = edje_object_part_external_object_get(edje, "object.map.import_geocaching");
+   evas_object_smart_callback_add(bt, "clicked", _geocaching_import_cb, NULL);
    //
 
    return map;
@@ -490,3 +503,47 @@ _bt_geocaching_cb(void        *data,
    panel_geocaching_new(obj, data);
 }
 
+
+static Evas_Object *inwin = NULL;
+static void _geocaching_import_cb(void        *data,
+                                  Evas_Object *obj,
+                                  void        *event_info)
+{
+   printf("HEHE\n");
+   Evas_Object *fs, *vbox;
+
+   inwin = elm_win_inwin_add(enlil_data->win->win);
+   evas_object_show(inwin);
+
+   vbox = elm_box_add(inwin);
+   evas_object_size_hint_weight_set(vbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(vbox);
+   elm_win_inwin_content_set(inwin, vbox);
+
+   fs = elm_fileselector_add(inwin);
+   elm_fileselector_expandable_set(fs, EINA_FALSE);
+   elm_fileselector_path_set(fs, getenv("HOME"));
+   evas_object_size_hint_weight_set(fs, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(fs, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(vbox, fs);
+   evas_object_show(fs);
+
+   evas_object_smart_callback_add(fs, "done", _geocaching_import_done_cb, NULL);
+}
+
+static void _geocaching_import_done_cb(void        *data,
+                                       Evas_Object *obj,
+                                       void        *event_info)
+{
+   const char *selected = event_info;
+
+   if (selected)
+   {
+      char *ext = strchr(selected, '.');
+      if(ext && !strcmp(ext, ".gpx"))
+      {
+         enlil_geocaching_import(selected, geocaching_done_cb, NULL);
+      }
+   }
+   evas_object_del(inwin);
+}
