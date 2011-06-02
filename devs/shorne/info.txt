@@ -1,10 +1,9 @@
 Login:        shorne
 IRC Nick:     shorne
 Name:         Stafford Mitchell Horne
-Location:     Tokyo, Japan
+Location:     London, England
 E-Mail:       shorne@gmail.com
-WWW:          http://blog.shorne-pla.net/
 Contributing: enlightenment, edje, evas
 Group:        Core
 Platform:     Fedora (Linux), Ubuntu (Linux)
-GeoData:      35.606 139.665
+GeoData:      51.492 -0.149
