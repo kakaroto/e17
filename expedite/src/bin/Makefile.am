@@ -112,34 +112,35 @@ image_blend_occlude3_very_many.c \
 poly_blend.c \
 proxy_image.c \
 proxy_text_fixed.c \
-proxy_text_random.c \
-image_mask.c \
-image_mask_2.c \
-image_mask_3.c \
-image_mask_4.c \
-image_mask_5.c \
-image_mask_6.c \
-image_mask_7.c \
-image_mask_8.c \
-image_mask_9.c \
-image_mask_10.c \
-image_mask_11.c \
-image_mask_12.c \
-image_mask_13.c \
-image_mask_14.c \
-image_mask_15.c \
-filter_object_colors.c \
-filter_object_colors_solid.c \
-filter_object_sepia.c \
-filter_object_sepia_solid.c \
-filter_object_greyscale.c \
-filter_object_greyscale_solid.c \
-filter_object_invert.c \
-filter_object_invert_solid.c \
-filter_object_brightness.c \
-filter_object_brightness_solid.c \
-filter_object_blur.c \
-filter_object_blur_solid.c
+proxy_text_random.c
+
+#image_mask.c \
+#image_mask_2.c \
+#image_mask_3.c \
+#image_mask_4.c \
+#image_mask_5.c \
+#image_mask_6.c \
+#image_mask_7.c \
+#image_mask_8.c \
+#image_mask_9.c \
+#image_mask_10.c \
+#image_mask_11.c \
+#image_mask_12.c \
+#image_mask_13.c \
+#image_mask_14.c \
+#image_mask_15.c \
+#filter_object_colors.c \
+#filter_object_colors_solid.c \
+#filter_object_sepia.c \
+#filter_object_sepia_solid.c \
+#filter_object_greyscale.c \
+#filter_object_greyscale_solid.c \
+#filter_object_invert.c \
+#filter_object_invert_solid.c \
+#filter_object_brightness.c \
+#filter_object_brightness_solid.c \
+#filter_object_blur.c \
+#filter_object_blur_solid.c
 
 expedite_CFLAGS = @WIN32_CFLAGS@
 expedite_CXXFLAGS = @EXPEDITE_CXXFLAGS@

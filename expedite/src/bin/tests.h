@@ -89,6 +89,7 @@
 #include "proxy_image.c"
 #include "proxy_text_fixed.c"
 #include "proxy_text_random.c"
+#if 0 // test disabled - evas having code disabled
 #include "image_mask.c"
 #include "image_mask_2.c"
 #include "image_mask_3.c"
@@ -116,3 +117,4 @@
 #include "filter_object_sepia_solid.c"
 #include "filter_object_blur.c"
 #include "filter_object_blur_solid.c"
+#endif
