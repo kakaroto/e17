@@ -17,7 +17,11 @@ MAINTAINERCLEANFILES = \
 # no idea why this is required, it should not be:
 DISTCLEANFILES = po/stamp-po
 
-SUBDIRS = src data po
+SUBDIRS = src data
+
+if HAVE_PO
+SUBDIRS += po
+endif
 
 EXTRA_DIST = README AUTHORS COPYING COPYING.icons ephoto.spec
 

@@ -69,8 +69,18 @@ EFL_LINKER_FLAG([-Wl,--gc-sections])
 ALL_LINGUAS=`cat po/LINGUAS | grep -v '^[ ]*#'`
 AC_SUBST(ALL_LINGUAS)
 
+m4_ifdef([AM_GNU_GETTEXT_VERSION], [
 AM_GNU_GETTEXT_VERSION([0.12.1])
+])
+
+m4_ifdef([AM_GNU_GETTEXT], [
 AM_GNU_GETTEXT([external])
+po_makefile_in=po/Makefile.in
+AM_CONDITIONAL([HAVE_PO], [true])
+],[
+AM_CONDITIONAL([HAVE_PO], [false])
+])
+AC_SUBST(LTLIBINTL)
 
 PKG_CHECK_MODULES([ELEMENTARY], [elementary ecore-file ethumb_client])
 PKG_CHECK_MODULES([EFREET_MIME], [efreet-mime])
@@ -159,7 +169,7 @@ data/themes/default/Makefile
 data/themes/default/images/Makefile
 src/Makefile
 src/bin/Makefile
-po/Makefile.in
+$po_makefile_in
 ])
 
 
