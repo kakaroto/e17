@@ -7,8 +7,6 @@ elm_ctxpopup - use elm_list
 elementary_test - seg-fault in alpha window with gl backend
 (glx - ctx problem)
 
-elm_transit - auto show?
-
 evas_direct3d - start hurry (vicent torri)
 
 pong game? - (discomfitor)
@@ -20,7 +18,3 @@ ecore_input - multiple touch problem.
 evas_map - afterimage problem 
 
 evas_map - check rotation util  inconsistency rotation
-
-elm_transit - eina_hash_find 
-
-

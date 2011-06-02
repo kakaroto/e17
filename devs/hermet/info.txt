@@ -2,7 +2,7 @@ Login:        hermet
 IRC Nick:     Hermet
 Name:         ChunEon Park
 Location:     HwaSeong, Korea
-E-Mail:       chuneon.park@samsung.com/hermet@naver.com
+E-Mail:       chuneon.park@samsung.com
 WWW:          http://www.hermet.pe.kr
 Contributing: elementary
 Group:        Core, Applications, Libraries
