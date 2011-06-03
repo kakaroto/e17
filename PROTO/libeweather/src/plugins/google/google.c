@@ -28,30 +28,31 @@ struct _Id_Type
  
 static struct _Id_Type _tab[] =
 {
-     {"Clear", EWEATHER_TYPE_SUNNY}, 
-     {"Chance of Rain", EWEATHER_TYPE_RAIN}, 
+     {"Clear", EWEATHER_TYPE_SUNNY},
+     {"Chance of Rain", EWEATHER_TYPE_RAIN},
      {"Chance of Snow", EWEATHER_TYPE_SNOW},
-     {"Chance of Storm", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, 
-     {"Cloudy", EWEATHER_TYPE_CLOUDY}, 
-     {"Fog", EWEATHER_TYPE_FOGGY}, 
-     {"Isolated Thunderstorms", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS}, 
-     {"Mostly Cloudy", EWEATHER_TYPE_MOSTLY_CLOUDY_DAY}, 
-     {"Mostly Sunny", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
-     {"Overcast", EWEATHER_TYPE_CLOUDY}, 
-     {"Partly Cloudy", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
-     {"Partly Sunny", EWEATHER_TYPE_PARTLY_CLOUDY_DAY}, 
-     {"Rain", EWEATHER_TYPE_RAIN}, 
-     {"Showers", EWEATHER_TYPE_RAIN}, 
-     {"Sunny", EWEATHER_TYPE_SUNNY}, 
-     {"Scattered Showers", EWEATHER_TYPE_RAIN}, 
-     {"Scattered Thunderstorms", EWEATHER_TYPE_SCATTERED_THUNDERSTORMS}, 
-     {"Snow Showers", EWEATHER_TYPE_RAIN_SNOW}, 
-     {"Thunderstorms", EWEATHER_TYPE_THUNDERSTORMS}, 
+     {"Chance of Storm", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS},
+     {"Chance of Snow", EWEATHER_TYPE_SNOW},
+     {"Cloudy", EWEATHER_TYPE_CLOUDY},
+     {"Fog", EWEATHER_TYPE_FOGGY},
+     {"Isolated Thunderstorms", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS},
+     {"Mostly Cloudy", EWEATHER_TYPE_MOSTLY_CLOUDY_DAY},
+     {"Mostly Sunny", EWEATHER_TYPE_PARTLY_CLOUDY_DAY},
+     {"Overcast", EWEATHER_TYPE_CLOUDY},
+     {"Partly Cloudy", EWEATHER_TYPE_PARTLY_CLOUDY_DAY},
+     {"Partly Sunny", EWEATHER_TYPE_PARTLY_CLOUDY_DAY},
+     {"Rain", EWEATHER_TYPE_RAIN},
+     {"Showers", EWEATHER_TYPE_RAIN},
+     {"Sunny", EWEATHER_TYPE_SUNNY},
+     {"Scattered Showers", EWEATHER_TYPE_RAIN},
+     {"Scattered Thunderstorms", EWEATHER_TYPE_SCATTERED_THUNDERSTORMS},
+     {"Snow Showers", EWEATHER_TYPE_RAIN_SNOW},
+     {"Thunderstorms", EWEATHER_TYPE_THUNDERSTORMS},
      {"Windy", EWEATHER_TYPE_WINDY},
+     {"Snow", EWEATHER_TYPE_SNOW},
 //     {"/ig/images/weather/rain_snow.gif", EWEATHER_TYPE_RAIN_SNOW},
      {"Sleet", EWEATHER_TYPE_RAIN_SNOW}, /* not sure */
      {"Mist", EWEATHER_TYPE_FOGGY}, /* not sure */
-     {"Snow", EWEATHER_TYPE_SNOW}, /* not sure */
      {"Icy", EWEATHER_TYPE_SNOW}, /* not sure */
      {"Dust", EWEATHER_TYPE_FOGGY}, /* not sure */
      {"Smoke", EWEATHER_TYPE_FOGGY}, /* not sure */
