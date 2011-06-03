@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Elev8
+Comment=Elev8 Runtime Interpreter
+Exec=elev8
+Icon=elev8
+Terminal=false
+Type=Application
+Categories=Application;Utility;
