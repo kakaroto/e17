@@ -1,5 +1,10 @@
 * Elementary
+	- Genlist : Check why genlist 4 is broken.
+	- Genlist : Apply seunggyun's reorder patch.
+	- elementary_config : Check 'Fonts'
+	- Genlist : Fix reorder bug when the window edge is going out of the screen.
 	- Genlist : Check elm_genlist_item_sorted_insert() API with group index, expandable list and etc.
+	- Elementary : Changed edje_object to elm_layout.
 	- Add performance test application.
 
 * MARKETTING
