@@ -555,7 +555,6 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 		  unsigned long *ppixel)
 {
    Pixmap              pmap;
-   GC                  gc;
    int                 x, y, ww, hh;
    unsigned int        w, h;
    char               *file, hasbg, hasfg;
@@ -590,6 +589,8 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 
 	if (!is_win)
 	  {
+	     GC                  gc;
+
 	     gc = EXCreateGC(draw, 0, NULL);
 	     XSetClipMask(disp, gc, 0);
 	     XSetFillStyle(disp, gc, FillSolid);
