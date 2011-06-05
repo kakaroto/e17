@@ -2166,6 +2166,7 @@ DesksInit(void)
    EHintsGetDeskInfo();
 
    HintsSetDesktopConfig();
+   HintsSetDesktopViewport();
 }
 
 static void

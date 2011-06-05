@@ -163,7 +163,6 @@ HintsSetCurrentDesktop(void)
    GNOME_SetCurrentDesk();
 #endif
    EWMH_SetCurrentDesktop();
-   HintsSetDesktopViewport();
 }
 
 void
