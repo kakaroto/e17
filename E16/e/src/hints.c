@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 Kim Woelders
+ * Copyright (C) 2003-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -513,7 +513,7 @@ EHintsSetDeskInfo(void)
 
    Efree(c);
 
-   if (Mode.root.ext_pmap_valid)
+   if (Mode.wm.exiting && Mode.root.ext_pmap_valid)
      {
 	HintsSetRootInfo(VROOT, Mode.root.ext_pmap, 0);
 	ESetWindowBackgroundPixmap(VROOT, Mode.root.ext_pmap);
