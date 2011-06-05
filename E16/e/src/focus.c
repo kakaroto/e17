@@ -83,7 +83,7 @@ FocusEwinValid(EWin * ewin, int want_on_screen, int click, int want_visible)
    if (ewin->state.inhibit_focus)
       return 0;
 
-   if (!EwinIsMapped(ewin) || !EoIsShown(ewin))
+   if (!EoIsMapped(ewin) || !EoIsShown(ewin))
       return 0;
 
    if (ewin->props.focusclick && !click)

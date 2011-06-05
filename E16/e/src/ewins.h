@@ -286,9 +286,6 @@ struct _ewin {
 #define EWIN_GRAVITY_SW         2
 #define EWIN_GRAVITY_SE         3
 
-#define EwinIsMapped(ewin)		EoIsMapped(ewin)
-#define EwinGetDesk(ewin)		EoGetDesk(ewin)
-
 #define EwinIsInternal(ewin)		((ewin)->type != EWIN_TYPE_NORMAL)
 #define EwinIsTransientChild(ewin)	((ewin)->icccm.transient > 0)
 #define EwinIsTransient(ewin)		((ewin)->icccm.transient != 0)

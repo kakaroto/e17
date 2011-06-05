@@ -1291,7 +1291,7 @@ MenuEventKeyPress(Menu * m, XEvent * ev)
 	if (!m || m->num <= 0)
 	   break;
 	ewin = m->ewin;
-	if (!ewin || !EwinIsMapped(ewin))
+	if (!ewin || !EoIsMapped(ewin))
 	   break;
 	mi = MenuFindItemByChild(m, m->child);
 	goto check_activate;

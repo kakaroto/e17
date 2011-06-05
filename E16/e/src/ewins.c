@@ -507,7 +507,7 @@ GetEwinPointerInClient(void)
 	w = EoGetW(ewin);
 	h = EoGetH(ewin);
 	if ((px >= x) && (py >= y) && (px < (x + w)) && (py < (y + h)) &&
-	    EwinIsMapped(ewin))
+	    EoIsMapped(ewin))
 	   return ewin;
      }
 
@@ -1523,7 +1523,7 @@ EwinShow(EWin * ewin)
 void
 EwinHide(EWin * ewin)
 {
-   if (!EwinIsInternal(ewin) && (!EoIsShown(ewin) || !EwinIsMapped(ewin)))
+   if (!EwinIsInternal(ewin) && (!EoIsShown(ewin) || !EoIsMapped(ewin)))
       return;
 
    EwinUnmap1(ewin);
@@ -2155,7 +2155,7 @@ EwinsTouch(Desk * dsk)
    for (i = num - 1; i >= 0; i--)
      {
 	ewin = lst[i];
-	if (EwinIsMapped(ewin) && EwinIsOnScreen(ewin))
+	if (EoIsMapped(ewin) && EwinIsOnScreen(ewin))
 #if 1				/* FIXME - Which one? */
 	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin));
 #else
