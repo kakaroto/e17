@@ -14,12 +14,12 @@ extern int LOG_DOMAIN;
 
 
 
-struct emap_track
+struct emap_route
 {
-   EMap_Track_Type type;
+   EMap_Route_Type type;
 
    const char *name;
-   Eina_List *nodes; //list of EMap_Track_Node*
+   Eina_List *nodes; //list of EMap_Route_Node*
 
    struct {
       const char *file;
@@ -27,7 +27,7 @@ struct emap_track
       Eina_Bool xml_is_name;
       Eina_Bool xml_is_ele;
       Eina_Bool xml_is_time;
-      EMap_Track_Node *xml_current_node;
+      EMap_Route_Node *xml_current_node;
    } gpx;
 };
 

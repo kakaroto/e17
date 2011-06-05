@@ -22,9 +22,9 @@ include_HEADERS = EMap.h
 lib_LTLIBRARIES = libemap.la
 
 libemap_la_SOURCES  = \
-track.c \
-track_node.c \
-track_gpx.c 
+route.c \
+route_node.c \
+route_gpx.c 
 
 libemap_la_DEPENDENCIES = $(top_builddir)/config.h
 libemap_la_LDFLAGS = @E_LIBS@
