@@ -65,6 +65,7 @@ static void         EwinHandleEventsToplevel(Win win, XEvent * ev, void *prm);
 static void         EwinHandleEventsContainer(Win win, XEvent * ev, void *prm);
 static void         EwinHandleEventsClient(Win win, XEvent * ev, void *prm);
 
+static void         EwinUnmap1(EWin * ewin);
 static void         EwinUnmap2(EWin * ewin);
 
 Window
@@ -384,6 +385,8 @@ EwinDestroy(EWin * ewin)
 
    if (!ewin)
       return;
+
+   EwinUnmap1(ewin);
 
    if (ewin->state.state == EWIN_STATE_MAPPED)
       EwinUnmap2(ewin);

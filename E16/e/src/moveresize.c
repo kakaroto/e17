@@ -213,6 +213,7 @@ _MoveResizeMoveEnd(EWin * ewin)
    Mode.mode = MODE_NONE;
    Mode.move.swap = 0;
    Mode.place.doing_manual = 0;
+   Mode_mr.ewin = NULL;
 
    if (Mode_mr.grab_server)
      {
@@ -490,6 +491,7 @@ _MoveResizeResizeEnd(EWin * ewin)
    ESync(ESYNC_MOVRES);
 
  done:
+   Mode_mr.ewin = NULL;
    if (Mode_mr.grab_server)
      {
 	EUngrabServer();
@@ -929,6 +931,8 @@ MoveResizeEnd(EWin * ewin)
 static void
 _MoveResizeEventHandler(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 {
+   EWin               *ewin;
+
 #if 0
    Eprintf("%s: type=%2d win=%#lx\n", __func__, ev->type, ev->xany.window);
 #endif
@@ -944,9 +948,11 @@ _MoveResizeEventHandler(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 	break;
 #endif
      case ButtonRelease:
-	MoveResizeEnd(NULL);
-	if (Mode_mr.ewin)
-	   BorderCheckState(Mode_mr.ewin, ev);
+	ewin = Mode_mr.ewin;
+	if (!ewin)
+	   break;
+	MoveResizeEnd(ewin);
+	BorderCheckState(ewin, ev);
 	break;
      case MotionNotify:
 	_MoveResizeHandleMotion();
