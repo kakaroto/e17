@@ -1146,7 +1146,6 @@ DeskEnter(Desk * dsk)
    EwinsMoveStickyToDesk(dsk);
    ButtonsMoveStickyToDesk(dsk);
    DesksStackingCheck();
-   HintsSetCurrentDesktop();
    EdgeWindowsShow();
 
    EUngrabServer();
@@ -1175,6 +1174,7 @@ DeskSwitchStart(void)
 static void
 DeskSwitchDone(void)
 {
+   HintsSetCurrentDesktop();
    FocusNewDesk();
 }
 
@@ -1317,7 +1317,6 @@ DeskLower(unsigned int desk)
    DeskSwitchDone();
    if (Mode.mode == MODE_NONE)
       ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
-   HintsSetCurrentDesktop();
 
    EUngrabServer();
    ESync(ESYNC_DESKS);
@@ -1623,6 +1622,19 @@ _DeskAreaSwitchCheckEwins(void)
    return 0;
 }
 
+static void
+DeskAreaSwitchStart(void)
+{
+   FocusNewDeskBegin();
+}
+
+static void
+DeskAreaSwitchDone(void)
+{
+   HintsSetDesktopViewport();
+   FocusNewDesk();
+}
+
 void
 DeskCurrentGotoArea(int ax, int ay)
 {
@@ -1661,9 +1673,7 @@ DeskCurrentGotoArea(int ax, int ay)
 
    MoveResizeSuspend();
 
-   /* remove lots of event masks from windows.. we dont want to bother */
-   /* handling events as a result of our playing wiht windows */
-   DeskSwitchStart();
+   DeskAreaSwitchStart();
 
    /* set the current area up in out data structs */
    DeskCurrentSetArea(ax, ay);
@@ -1723,13 +1733,10 @@ DeskCurrentGotoArea(int ax, int ay)
    if (!Conf.desks.slidein)
       EobjsRepaint();
 
-   /* set hints up for it */
-   HintsSetDesktopViewport();
-
    MoveResizeResume();
 
    /* re-focus on a new ewin on that new desktop area */
-   DeskSwitchDone();
+   DeskAreaSwitchDone();
 
    ModulesSignal(ESIGNAL_AREA_SWITCH_DONE, DesksGetCurrent());
 
