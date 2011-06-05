@@ -57,6 +57,8 @@ static const char  *const atoms_misc_names[] = {
 
 unsigned int        atoms_misc[10];
 
+static unsigned int desk_info = 0;
+
 void
 AtomListIntern(const char *const *names, unsigned int num, unsigned int *atoms)
 {
@@ -163,6 +165,7 @@ HintsSetCurrentDesktop(void)
    GNOME_SetCurrentDesk();
 #endif
    EWMH_SetCurrentDesktop();
+   EHintsSetDeskInfo();
 }
 
 void
@@ -419,6 +422,10 @@ EHintsGetInfo(EWin * ewin)
    if (EwinIsInternal(ewin))
       return;
 
+   /* Fix window position on hidden desks if restarting after a crash */
+   if (desk_info & (1U << EoGetDeskNum(ewin)))
+      ewin->client.x -= WinGetW(VROOT);
+
    num =
       ecore_x_window_prop_card32_get(EwinGetClientXwin(ewin), E16_ATOM_WIN_DATA,
 				     (unsigned int *)c, ENL_DATA_ITEMS + 1);
@@ -471,7 +478,7 @@ void
 EHintsSetDeskInfo(void)
 {
    int                 i, ax, ay, n_desks;
-   unsigned int       *c;
+   unsigned int       *c, desk_pos_info;
 
    if (!DesksGetCurrent())	/* Quit if current desk isn't assigned yet */
       return;
@@ -484,19 +491,25 @@ EHintsSetDeskInfo(void)
    if (!c)
       return;
 
+   desk_pos_info = 0;
    for (i = 0; i < n_desks; i++)
      {
-	DeskGetArea(DeskGet(i), &ax, &ay);
+	Desk               *dsk = DeskGet(i);
+
+	DeskGetArea(dsk, &ax, &ay);
 	c[(i * 2)] = ax;
 	c[(i * 2) + 1] = ay;
+	if (EoGetY(dsk) == 0 && EoGetX(dsk) == WinGetW(VROOT))
+	   desk_pos_info |= 1U << i;	/* Desk is "hidden" */
      }
 
    ecore_x_window_prop_card32_set(WinGetXwin(VROOT),
 				  E16_ATOM_INTERNAL_AREA_DATA, c, 2 * n_desks);
 
    c[0] = DesksGetCurrentNum();
+   c[1] = Mode.wm.exiting ? 0 : desk_pos_info;
    ecore_x_window_prop_card32_set(WinGetXwin(VROOT),
-				  E16_ATOM_INTERNAL_DESK_DATA, c, 1);
+				  E16_ATOM_INTERNAL_DESK_DATA, c, 2);
 
    Efree(c);
 
@@ -529,10 +542,12 @@ EHintsGetDeskInfo(void)
      }
 
    num = ecore_x_window_prop_card32_get(WinGetXwin(VROOT),
-					E16_ATOM_INTERNAL_DESK_DATA, c, 1);
+					E16_ATOM_INTERNAL_DESK_DATA, c, 2);
    if (num > 0)
      {
 	DesksSetCurrent(DeskGet(c[0]));
+	if (num > 1)
+	   desk_info = c[1];
      }
    else
      {
