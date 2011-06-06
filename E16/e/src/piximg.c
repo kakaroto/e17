@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2010 Kim Woelders
+ * Copyright (C) 2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -124,7 +124,7 @@ PixImgPaste(PixImg * src, PixImg * dst, int xs, int ys,
 }
 
 void
-PixImgBlend(PixImg * src, PixImg * xxx, PixImg * dst, Drawable draw,
+PixImgBlend(PixImg * src, PixImg * xxx, PixImg * dst, Drawable draw __UNUSED__,
 	    int x, int y, int w, int h)
 {
    if (dst->alpha == None)
@@ -139,8 +139,6 @@ PixImgBlend(PixImg * src, PixImg * xxx, PixImg * dst, Drawable draw,
 		    0, 0, 0, 0, x, y, w, h);
    XRenderComposite(disp, PictOpSrc, dst->buf, None, dst->pict,
 		    x, y, 0, 0, x, y, w, h);
-   src = NULL;
-   draw = None;
 }
 
 #else
