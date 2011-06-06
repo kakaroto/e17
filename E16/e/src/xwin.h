@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -208,6 +208,7 @@ Pixmap              ECreatePixmap(Win win, unsigned int width,
 				  unsigned int height, unsigned int depth);
 void                EFreePixmap(Pixmap pixmap);
 
+void                EShapeUpdate(Win win);
 void                EShapeSetMask(Win win, int x, int y, Pixmap mask);
 void                EShapeUnionMask(Win win, int x, int y, Pixmap mask);
 void                EShapeSetMaskTiled(Win win, int x, int y, Pixmap mask,

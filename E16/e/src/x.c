@@ -1239,7 +1239,7 @@ EShapeShow(const char *txt, Window xwin, XRectangle * pr, int nr)
 }
 #endif
 
-static void
+void
 EShapeUpdate(Win win)
 {
    if (win->rects)
