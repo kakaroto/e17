@@ -356,7 +356,7 @@ ephoto_directory_set(Ephoto *ephoto, const char *path)
 {
    EINA_SAFETY_ON_NULL_RETURN(ephoto);
 
-   ephoto_title_set(ephoto, path);
+   ephoto_title_set(ephoto, basename(path));
    eina_stringshare_replace(&ephoto->config->directory, path);
    if (ephoto->job.change_dir) ecore_job_del(ephoto->job.change_dir);
    ephoto->job.change_dir = ecore_job_add(_ephoto_change_dir, ephoto);

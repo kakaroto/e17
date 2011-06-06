@@ -191,23 +191,27 @@ static Eina_Bool
 _ephoto_list_populate_start(void *data, int type __UNUSED__, void *event __UNUSED__)
 {
    Ephoto_List_Browser *lb = data;
-   char *parent_dir;
+   char *parent_dir, p[PATH_MAX];
 
    _todo_items_free(lb);
    _list_items_free(lb);
    elm_genlist_clear(lb->list);
 
    parent_dir = ecore_file_dir_get(lb->ephoto->config->directory);
-   if (parent_dir && strcmp(lb->ephoto->config->directory, "/"))
+   snprintf(p, PATH_MAX, "%s/.e/e/fileman/favorites", getenv("HOME"));
+   if (strcmp (lb->ephoto->config->directory, p))
      {
-        Elm_Genlist_Item_Class *ic;
+        if (parent_dir && strcmp(lb->ephoto->config->directory, "/"))
+          {
+             Elm_Genlist_Item_Class *ic;
 
-        if (up_entry)
-          ephoto_entry_free(up_entry);
-        up_entry = ephoto_entry_new(lb->ephoto, parent_dir, "Up");
-        ic = &_ephoto_list_up_item_class;
-        elm_genlist_item_append
-           (lb->list, ic, up_entry, NULL, ELM_GENLIST_ITEM_NONE, _change_dir, up_entry);
+             if (up_entry)
+               ephoto_entry_free(up_entry);
+             up_entry = ephoto_entry_new(lb->ephoto, parent_dir, "Up");
+             ic = &_ephoto_list_up_item_class;
+             elm_genlist_item_append
+                (lb->list, ic, up_entry, NULL, ELM_GENLIST_ITEM_NONE, _change_dir, up_entry);
+          }
      }
 
    return ECORE_CALLBACK_PASS_ON;
