@@ -6,7 +6,14 @@
 #include <E_Notification_Daemon.h>
 #include "config.h"
 
-#define D_(str) dgettext(PACKAGE, str)
+#ifdef ENABLE_NLS
+# include <libintl.h>
+# define D_(string) dgettext(PACKAGE, string)
+#else
+# define bindtextdomain(domain,dir)
+# define bind_textdomain_codeset(domain,codeset)
+# define D_(string) (string)
+#endif
 
 #define MOD_CFG_FILE_EPOCH 0x0002
 #define MOD_CFG_FILE_GENERATION 0x0004

@@ -7,7 +7,14 @@
 
 #include <e.h>
 
-#define _(str) dgettext(PACKAGE, str)
+#ifdef ENABLE_NLS
+# include <libintl.h>
+# define _(string) dgettext(PACKAGE, string)
+#else
+# define bindtextdomain(domain,dir)
+# define bind_textdomain_codeset(domain,codeset)
+# define _(string) (string)
+#endif
 
 typedef struct E_Quick_Access_Entry
 {

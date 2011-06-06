@@ -1,8 +1,8 @@
-#include <e.h>
-#include <Efreet.h>
-
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
+
+#include <e.h>
+#include <Efreet.h>
 
 
 typedef struct _Config      Config;

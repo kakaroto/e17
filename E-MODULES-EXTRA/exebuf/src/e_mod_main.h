@@ -1,7 +1,14 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-#include <libintl.h>
+#ifdef ENABLE_NLS
+# include <libintl.h>
+# define D_(string) dgettext(PACKAGE, string)
+#else
+# define bindtextdomain(domain,dir)
+# define bind_textdomain_codeset(domain,codeset)
+# define D_(string) (string)
+#endif
 
 /* Macros used for config file versioning */
 /* You can increment the EPOCH value if the old configuration is not
@@ -15,10 +22,6 @@
 
 /* More mac/def; Define your own. What do you need ? */
 #define CONN_DEVICE_ETHERNET 0
-
-/* Gettext: you need to use the D_ prefix for all your messages,
- * like  printf D_("Hello World\n");  so can be replaced by gettext */
-#define D_(str) dgettext(PACKAGE, str)
 
 /* We create a structure config for our module, and also a config structure
  * for every item element (you can have multiple gadgets for the same module) */

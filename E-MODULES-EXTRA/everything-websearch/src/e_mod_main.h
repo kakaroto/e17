@@ -6,7 +6,14 @@
 #define MOD_CONFIG_FILE_VERSION					\
   ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
 
-#define _(str) dgettext(PACKAGE, str)
+#ifdef ENABLE_NLS
+# include <libintl.h>
+# define _(string) dgettext(PACKAGE, string)
+#else
+# define bindtextdomain(domain,dir)
+# define bind_textdomain_codeset(domain,codeset)
+# define _(string) (string)
+#endif
 #define N_(str) (str)
 
 EAPI extern E_Module_Api e_modapi;

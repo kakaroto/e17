@@ -1,7 +1,14 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-#define D_(str) dgettext(PACKAGE, str)
+#ifdef ENABLE_NLS
+# include <libintl.h>
+# define D_(string) dgettext(PACKAGE, string)
+#else
+# define bindtextdomain(domain,dir)
+# define bind_textdomain_codeset(domain,codeset)
+# define D_(string) (string)
+#endif
 
 EAPI extern E_Module_Api e_modapi;
 
