@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -91,58 +91,58 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    radio1 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio1);
-   DialogItemRadioButtonGroupSetVal(di, 0);
+   DialogItemRadioButtonGroupSetVal(di, MR_OPAQUE);
 
    radio2 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 0);
+   DialogItemRadioButtonGroupSetVal(di, MR_OPAQUE);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio1);
-   DialogItemRadioButtonGroupSetVal(di, 1);
+   DialogItemRadioButtonGroupSetVal(di, MR_TECHNICAL);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 1);
+   DialogItemRadioButtonGroupSetVal(di, MR_TECHNICAL);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio1);
-   DialogItemRadioButtonGroupSetVal(di, 2);
+   DialogItemRadioButtonGroupSetVal(di, MR_BOX);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 2);
+   DialogItemRadioButtonGroupSetVal(di, MR_BOX);
 
 #if ENABLE_OLDMOVRES
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio1);
-   DialogItemRadioButtonGroupSetVal(di, 3);
+   DialogItemRadioButtonGroupSetVal(di, MR_SHADED);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 3);
+   DialogItemRadioButtonGroupSetVal(di, MR_SHADED);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio1);
-   DialogItemRadioButtonGroupSetVal(di, 4);
+   DialogItemRadioButtonGroupSetVal(di, MR_SEMI_SOLID);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio2);
-   DialogItemRadioButtonGroupSetVal(di, 4);
+   DialogItemRadioButtonGroupSetVal(di, MR_SEMI_SOLID);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Translucent"));
    DialogItemRadioButtonSetFirst(di, radio1);
-   DialogItemRadioButtonGroupSetVal(di, 5);
+   DialogItemRadioButtonGroupSetVal(di, MR_TRANSLUCENT);
 
    DialogAddItem(table, DITEM_NONE);
 #endif /* ENABLE_OLDMOVRES */
@@ -381,28 +381,30 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Opaque"));
    DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 0);
+   DialogItemRadioButtonGroupSetVal(di, MR_OPAQUE);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Technical"));
    DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 1);
+   DialogItemRadioButtonGroupSetVal(di, MR_TECHNICAL);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 2);
+   DialogItemRadioButtonGroupSetVal(di, MR_BOX);
 
+#if ENABLE_OLDMOVRES
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Shaded"));
    DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 3);
+   DialogItemRadioButtonGroupSetVal(di, MR_SHADED);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Semi-Solid"));
    DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 4);
+   DialogItemRadioButtonGroupSetVal(di, MR_SEMI_SOLID);
    DialogItemRadioButtonGroupSetValPtr(radio, &dd->slide_mode);
+#endif /* ENABLE_OLDMOVRES */
 
    DialogAddItem(table, DITEM_NONE);
 

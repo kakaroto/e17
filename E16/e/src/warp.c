@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -49,7 +49,7 @@ static void
 WarpShapeDraw(EWin * ewin)
 {
    static ShapeWin    *shape_win = NULL;
-   int                 md = 2, bl, br, bt, bb;
+   int                 bl, br, bt, bb;
 
    if (!ewin)
      {
@@ -59,12 +59,12 @@ WarpShapeDraw(EWin * ewin)
      }
 
    if (!shape_win)
-      shape_win = ShapewinCreate(md);
+      shape_win = ShapewinCreate(MR_BOX);
    if (!shape_win)
       return;
 
    EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
-   ShapewinShapeSet(shape_win, md, EoGetX(ewin), EoGetY(ewin),
+   ShapewinShapeSet(shape_win, MR_BOX, EoGetX(ewin), EoGetY(ewin),
 		    ewin->client.w, ewin->client.h, bl, br, bt, bb, 0);
    EoMap(shape_win, 0);
 }

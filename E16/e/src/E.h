@@ -481,6 +481,18 @@ void                DialogOKstr(const char *title, const char *txt);
 #define DialogOKstr(title, fmt) do {} while(0)
 #endif /* ENABLE_DIALOGS */
 
+/* draw.c (move to moveresize.h?) */
+/* Move/resize modes */
+#define MR_OPAQUE       0
+#define MR_TECHNICAL    1
+#define MR_BOX          2
+#define MR_SHADED       3
+#define MR_SEMI_SOLID   4
+#define MR_TRANSLUCENT  5
+
+int                 MoveResizeModeValidateMove(int md);
+int                 MoveResizeModeValidateResize(int md);
+
 /* econfig.c */
 void                ConfigurationLoad(void);
 void                ConfigurationSave(void);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2010 Kim Woelders
+ * Copyright (C) 2007-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -86,7 +86,7 @@ ShapewinCreate(int md)
 			   ShapeInput, 0, 0, NULL, 0, ShapeSet, Unsorted);
 #endif
 
-   if (md == 1)
+   if (md == MR_TECHNICAL)
      {
 	sw->mask =
 	   ECreatePixmap(EoGetWin(sw), WinGetW(VROOT), WinGetH(VROOT), 1);
@@ -111,13 +111,13 @@ ShapewinShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
    w2 = w + bl + br;
    h2 = h + bt + bb;
 
-   if (md == 1)
+   if (md == MR_TECHNICAL)
      {
 	XSetForeground(disp, sw->gc, 0);
 	XFillRectangle(disp, sw->mask, sw->gc,
 		       0, 0, WinGetW(VROOT), WinGetH(VROOT));
 	XSetForeground(disp, sw->gc, 1);
-	do_draw_mode_1(sw->mask, sw->gc, x, y, w, h, bl, br, bt, bb);
+	do_draw_technical(sw->mask, sw->gc, x, y, w, h, bl, br, bt, bb);
 	if (seqno == 0)
 	   EShapeSetMask(EoGetWin(sw), 0, 0, sw->mask);
 	else

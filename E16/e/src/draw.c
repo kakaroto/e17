@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2007-2010 Kim Woelders
+ * Copyright (C) 2007-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -29,11 +29,16 @@
 #include "xwin.h"
 
 #if ENABLE_OLDMOVRES
-#define ENABLE_MODE_34	1	/* Enable shaded/semi-solid modes */
-#define ENABLE_MODE_5	1	/* Enable translucent mode */
+#define MR_ENABLE_STIPPLED         1	/* Enable shaded/semi-solid modes */
+#define MR_ENABLE_TRANSLUCENT      1	/* Enable translucent mode */
+#define MR_MODES_MOVE           0x3f	/* MR_OPAQUE through MR_TRANSLUCENT */
+#define MR_MODES_RESIZE         0x1f	/* MR_OPAQUE through MR_SEMI_SOLID  */
+#else
+#define MR_MODES_MOVE           0x07	/* MR_OPAQUE through MR_BOX */
+#define MR_MODES_RESIZE         0x07	/* MR_OPAQUE through MR_BOX */
 #endif
 
-#if ENABLE_MODE_34
+#if MR_ENABLE_STIPPLED
 #if 0
 #include <X11/bitmaps/gray>
 #include <X11/bitmaps/gray3>
@@ -52,7 +57,7 @@ static const char   gray3_bits[] = { 0x01, 0x00, 0x04, 0x00 };
 
 static Pixmap       b2 = None;	/* Used in modes 3,4 */
 static Pixmap       b3 = None;	/* Used in mode 3 */
-#endif /* ENABLE_MODE_34 */
+#endif /* MR_ENABLE_STIPPLED */
 
 static Font         font = None;	/* Used in mode 1 (technical) */
 
@@ -97,8 +102,8 @@ draw_v_arrow(Drawable dr, GC gc, int y1, int y2, int x1)
 }
 
 void
-do_draw_mode_1(Drawable dr, GC gc,
-	       int a, int b, int c, int d, int bl, int br, int bt, int bb)
+do_draw_technical(Drawable dr, GC gc,
+		  int a, int b, int c, int d, int bl, int br, int bt, int bb)
 {
    if (!font)
       font = XLoadFont(disp, "-*-helvetica-medium-r-*-*-10-*-*-*-*-*-*-*");
@@ -127,8 +132,8 @@ do_draw_mode_1(Drawable dr, GC gc,
 }
 
 static void
-do_draw_mode_2(Drawable dr, GC gc,
-	       int a, int b, int c, int d, int bl, int br, int bt, int bb)
+do_draw_boxy(Drawable dr, GC gc,
+	     int a, int b, int c, int d, int bl, int br, int bt, int bb)
 {
    if (c < 3)
       c = 3;
@@ -138,9 +143,9 @@ do_draw_mode_2(Drawable dr, GC gc,
    XDrawRectangle(disp, dr, gc, a + bl + 1, b + bt + 1, c - 3, d - 3);
 }
 
-#if ENABLE_MODE_34
+#if MR_ENABLE_STIPPLED
 static void
-do_draw_mode_3(Drawable dr, GC gc,
+do_draw_shaded(Drawable dr, GC gc,
 	       int a, int b, int c, int d, int bl, int br, int bt, int bb)
 {
    XSetFillStyle(disp, gc, FillStippled);
@@ -160,14 +165,14 @@ do_draw_mode_3(Drawable dr, GC gc,
 }
 
 static void
-do_draw_mode_4(Drawable dr, GC gc,
-	       int a, int b, int c, int d, int bl, int br, int bt, int bb)
+do_draw_semi_solid(Drawable dr, GC gc,
+		   int a, int b, int c, int d, int bl, int br, int bt, int bb)
 {
    XSetFillStyle(disp, gc, FillStippled);
    XSetStipple(disp, gc, b2);
    XFillRectangle(disp, dr, gc, a, b, c + bl + br, d + bt + bb);
 }
-#endif /* ENABLE_MODE_34 */
+#endif /* MR_ENABLE_STIPPLED */
 
 typedef struct {
    EWin               *ewin;
@@ -175,7 +180,7 @@ typedef struct {
    GC                  gc;
    int                 xo, yo, wo, ho;
    int                 bl, br, bt, bb;
-#if ENABLE_MODE_5
+#if MR_ENABLE_TRANSLUCENT
    PixImg             *root_pi;
    PixImg             *ewin_pi;
    PixImg             *draw_pi;
@@ -183,8 +188,8 @@ typedef struct {
 } ShapeData;
 
 static void
-_ShapeDrawNograb1_2(ShapeData * psd, int md, int firstlast,
-		    int xn, int yn, int wn, int hn, int seqno)
+_ShapeDrawNograb_tech_box(ShapeData * psd, int md, int firstlast,
+			  int xn, int yn, int wn, int hn, int seqno)
 {
    static ShapeWin    *shape_win = NULL;
 
@@ -209,16 +214,16 @@ _ShapeDrawNograb1_2(ShapeData * psd, int md, int firstlast,
 typedef void        (DrawFunc) (Drawable dr, GC gc, int a, int b, int c, int d,
 				int bl, int br, int bt, int bb);
 
-static DrawFunc    *const drf1_4[] = {
-   do_draw_mode_1, do_draw_mode_2,
-#if ENABLE_MODE_34
-   do_draw_mode_3, do_draw_mode_4
-#endif /* ENABLE_MODE_34 */
+static DrawFunc    *const draw_functions[] = {
+   do_draw_technical, do_draw_boxy,
+#if MR_ENABLE_STIPPLED
+   do_draw_shaded, do_draw_semi_solid
+#endif /* MR_ENABLE_STIPPLED */
 };
 
 static void
-_ShapeDraw1_4(ShapeData * psd, int md, int firstlast,
-	      int xn, int yn, int wn, int hn)
+_ShapeDrawNontranslucent(ShapeData * psd, int md, int firstlast,
+			 int xn, int yn, int wn, int hn)
 {
    DrawFunc           *drf;
 
@@ -233,8 +238,8 @@ _ShapeDraw1_4(ShapeData * psd, int md, int firstlast,
 	gcv.subwindow_mode = IncludeInferiors;
 	psd->gc = EXCreateGC(psd->root,
 			     GCFunction | GCForeground | GCSubwindowMode, &gcv);
-#if ENABLE_MODE_34
-	if (md == 3 || md == 4)
+#if MR_ENABLE_STIPPLED
+	if (md == MR_SHADED || md == MR_SEMI_SOLID)
 	  {
 	     if (!b2)
 		b2 = XCreateBitmapFromData(disp, psd->root, gray_bits,
@@ -243,10 +248,10 @@ _ShapeDraw1_4(ShapeData * psd, int md, int firstlast,
 		b3 = XCreateBitmapFromData(disp, psd->root, gray3_bits,
 					   gray3_width, gray3_height);
 	  }
-#endif /* ENABLE_MODE_34 */
+#endif /* MR_ENABLE_STIPPLED */
      }
 
-   drf = drf1_4[md - 1];
+   drf = draw_functions[md - 1];
 
    if (firstlast > 0)
       drf(psd->root, psd->gc, psd->xo, psd->yo, psd->wo, psd->ho,
@@ -265,10 +270,10 @@ _ShapeDraw1_4(ShapeData * psd, int md, int firstlast,
      }
 }
 
-#if ENABLE_MODE_5
+#if MR_ENABLE_TRANSLUCENT
 static void
-_ShapeDraw5(ShapeData * psd, int md __UNUSED__, int firstlast,
-	    int xn, int yn, int wn, int hn)
+_ShapeDrawTranslucent(ShapeData * psd, int md __UNUSED__, int firstlast,
+		      int xn, int yn, int wn, int hn)
 {
    XGCValues           gcv;
    int                 dx, dy, adx, ady;
@@ -296,7 +301,7 @@ _ShapeDraw5(ShapeData * psd, int md __UNUSED__, int firstlast,
 	if ((!psd->root_pi) || (!psd->ewin_pi) || (!psd->draw_pi))
 	  {
 	     /* Trouble - Fall back to opaque mode */
-	     Conf.movres.mode_move = 0;
+	     Conf.movres.mode_move = MR_OPAQUE;
 	     goto do_cleanup;
 	  }
 
@@ -383,7 +388,7 @@ _ShapeDraw5(ShapeData * psd, int md __UNUSED__, int firstlast,
 	break;
      }
 }
-#endif /* ENABLE_MODE_5 */
+#endif /* MR_ENABLE_TRANSLUCENT */
 
 void
 DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
@@ -399,7 +404,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	(ewin->state.shaded || (w == ewin->shape_w && h == ewin->shape_h))))
       return;
 
-   if (md == 0)
+   if (md == MR_OPAQUE)
      {
 	EwinOpMoveResize(ewin, OPSRC_USER, x, y, w, h);
 	EwinShapeSet(ewin);
@@ -435,31 +440,31 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 
    EwinBorderGetSize(ewin, &psd->bl, &psd->br, &psd->bt, &psd->bb);
 
-   if (md <= 2 && Conf.movres.avoid_server_grab)
+   if (md <= MR_BOX && Conf.movres.avoid_server_grab)
      {
-	_ShapeDrawNograb1_2(psd, md, firstlast, x, y, w, h, seqno);
+	_ShapeDrawNograb_tech_box(psd, md, firstlast, x, y, w, h, seqno);
 	goto done;
      }
 
    switch (md)
      {
-     case 1:
-     case 2:
-#if ENABLE_MODE_34
-     case 3:
-     case 4:
+     case MR_TECHNICAL:
+     case MR_BOX:
+#if MR_ENABLE_STIPPLED
+     case MR_SHADED:
+     case MR_SEMI_SOLID:
 #endif
-	_ShapeDraw1_4(psd, md, firstlast, x, y, w, h);
+	_ShapeDrawNontranslucent(psd, md, firstlast, x, y, w, h);
 	break;
-#if ENABLE_MODE_5
-     case 5:
-	_ShapeDraw5(psd, md, firstlast, x, y, w, h);
+#if MR_ENABLE_TRANSLUCENT
+     case MR_TRANSLUCENT:
+	_ShapeDrawTranslucent(psd, md, firstlast, x, y, w, h);
 	CoordsShow(ewin);
 	break;
 #endif
      default:
 	/* Fall back to opaque mode */
-	Conf.movres.mode_move = 0;
+	Conf.movres.mode_move = MR_OPAQUE;
 	break;
      }
 
@@ -476,4 +481,26 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	if (firstlast == 2)
 	   CoordsHide();
      }
+}
+
+static int
+_MoveResizeModeValidate(unsigned int valid, int md)
+{
+   if (md & ~0x1f)
+      return MR_OPAQUE;
+   if (valid & (1U << md))
+      return md;
+   return MR_OPAQUE;
+}
+
+int
+MoveResizeModeValidateMove(int md)
+{
+   return _MoveResizeModeValidate(MR_MODES_MOVE, md);
+}
+
+int
+MoveResizeModeValidateResize(int md)
+{
+   return _MoveResizeModeValidate(MR_MODES_RESIZE, md);
 }

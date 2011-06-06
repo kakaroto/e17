@@ -494,8 +494,8 @@ void                ShapewinShapeSet(ShapeWin * sw, int md, int x, int y, int w,
 				     int h, int bl, int br, int bt, int bb,
 				     int seqno);
 
-void                do_draw_mode_1(Drawable dr, GC gc,
-				   int a, int b, int c, int d, int bl, int br,
-				   int bt, int bb);
+void                do_draw_technical(Drawable dr, GC gc,
+				      int a, int b, int c, int d, int bl,
+				      int br, int bt, int bb);
 
 #endif /* _EWIN_H_ */

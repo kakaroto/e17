@@ -1694,7 +1694,7 @@ DeskCurrentGotoArea(int ax, int ay)
 	     if (EoGetDesk(ewin) != DesksGetCurrent() && !EoIsFloating(ewin))
 		continue;
 
-	     if (EoIsFloating(ewin) && Conf.movres.mode_move == 0)
+	     if (EoIsFloating(ewin) && Conf.movres.mode_move == MR_OPAQUE)
 		continue;
 
 	     wnum++;
@@ -1722,7 +1722,7 @@ DeskCurrentGotoArea(int ax, int ay)
 	   continue;
 
 	if (EoIsSticky(ewin) ||
-	    (EoIsFloating(ewin) && Conf.movres.mode_move == 0) ||
+	    (EoIsFloating(ewin) && Conf.movres.mode_move == MR_OPAQUE) ||
 	    (!ewin->state.iconified && Conf.desks.slidein))
 	   EwinMove(ewin, EoGetX(ewin), EoGetY(ewin));
 	else

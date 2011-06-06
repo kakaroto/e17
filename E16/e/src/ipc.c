@@ -240,8 +240,8 @@ IPC_MoveResize(const char *params)
      {
 	if (param2[0] == '\n' || param2[0] == '?')
 	  {
-	     if (Conf.movres.mode_move < 0 || Conf.movres.mode_move > 5)
-		Conf.movres.mode_move = 0;
+	     Conf.movres.mode_move =
+		MoveResizeModeValidateMove(Conf.movres.mode_move);
 	     IpcPrintf("Move mode: %s\n",
 		       MovResCfgMoveModes[Conf.movres.mode_move]);
 	     return;
@@ -262,8 +262,8 @@ IPC_MoveResize(const char *params)
      {
 	if (param2[0] == '\n' || param2[0] == '?')
 	  {
-	     if (Conf.movres.mode_resize < 0 || Conf.movres.mode_resize > 4)
-		Conf.movres.mode_resize = 0;
+	     Conf.movres.mode_resize =
+		MoveResizeModeValidateResize(Conf.movres.mode_resize);
 	     IpcPrintf("Resize mode: %s\n",
 		       MovResCfgResizeModes[Conf.movres.mode_resize]);
 	     return;

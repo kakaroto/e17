@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -35,14 +35,6 @@
 #include "xwin.h"
 #include <X11/keysym.h>
 
-#if ENABLE_OLDMOVRES
-#define MODE_MOVE_MAX	5
-#define MOVE_SIZE_MAX	4
-#else
-#define MODE_MOVE_MAX	2
-#define MOVE_SIZE_MAX	2
-#endif
-
 static struct {
    Win                 events;
    EWin               *ewin;
@@ -62,9 +54,9 @@ static void         _MoveResizeInit(void);
 static int
 _NeedServerGrab(int mode)
 {
-   if (mode == 0)
+   if (mode == MR_OPAQUE)
       return 0;
-   if (mode <= 2)
+   if (mode <= MR_BOX)
       return !Conf.movres.avoid_server_grab;
    return 1;
 }
@@ -123,12 +115,11 @@ MoveResizeMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, nogroup
 				      || Mode.move.swap, &num);
 
-   if (Conf.movres.mode_move < 0 || Conf.movres.mode_move > MODE_MOVE_MAX)
-      Conf.movres.mode_move = 0;
+   Conf.movres.mode_move = MoveResizeModeValidateMove(Conf.movres.mode_move);
    Mode_mr.mode = Conf.movres.mode_move;
 #if ENABLE_OLDMOVRES
-   if (num > 1 && Conf.movres.mode_move == 5)
-      Mode_mr.mode = 0;
+   if (num > 1 && Conf.movres.mode_move == MR_TRANSLUCENT)
+      Mode_mr.mode = MR_OPAQUE;
 #endif
    Mode_mr.grab_server = _NeedServerGrab(Mode_mr.mode);
 
@@ -136,7 +127,7 @@ MoveResizeMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
      {
 	EwinShapeSet(gwins[i]);
 	EwinOpFloatAt(gwins[i], OPSRC_USER, EoGetX(gwins[i]), EoGetY(gwins[i]));
-	if (Mode_mr.mode == 0)
+	if (Mode_mr.mode == MR_OPAQUE)
 	  {
 	     ewin->state.moving = 1;
 	     EwinUpdateOpacity(gwins[i]);
@@ -198,7 +189,7 @@ _MoveResizeMoveEnd(EWin * ewin)
 	   EwinOpUnfloatAt(ewin, OPSRC_USER, d2,
 			   ewin->shape_x - (EoGetX(d2) - EoGetX(d1)),
 			   ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
-	if (Mode_mr.mode == 0)
+	if (Mode_mr.mode == MR_OPAQUE)
 	  {
 	     ewin->state.moving = 0;
 	     EwinUpdateOpacity(ewin);
@@ -267,7 +258,7 @@ _MoveResizeMoveResume(void)
    GrabPointerSet(Mode_mr.events, ECSR_ACT_MOVE, 1);
 
 #if ENABLE_OLDMOVRES
-   fl = (Mode_mr.mode == 5) ? 4 : 0;
+   fl = (Mode_mr.mode == MR_TRANSLUCENT) ? 4 : 0;
 #else
    fl = 0;
 #endif
@@ -325,8 +316,8 @@ MoveResizeResizeStart(EWin * ewin, int kbd, int hv)
 
    SoundPlay(SOUND_RESIZE_START);
 
-   if (Conf.movres.mode_resize < 0 || Conf.movres.mode_resize > MOVE_SIZE_MAX)
-      Conf.movres.mode_resize = 0;
+   Conf.movres.mode_resize =
+      MoveResizeModeValidateResize(Conf.movres.mode_resize);
    Mode_mr.mode = Conf.movres.mode_resize;
    Mode_mr.using_kbd = kbd;
    Mode_mr.grab_server = _NeedServerGrab(Mode_mr.mode);
@@ -337,7 +328,7 @@ MoveResizeResizeStart(EWin * ewin, int kbd, int hv)
 	/* Run idlers (stacking, border updates, ...) before drawing lines */
 	IdlersRun();
      }
-   if (Mode_mr.mode == 0)
+   if (Mode_mr.mode == MR_OPAQUE)
      {
 	ewin->state.resizing = 1;
 	EwinUpdateOpacity(ewin);
@@ -474,7 +465,7 @@ _MoveResizeResizeEnd(EWin * ewin)
    DrawEwinShape(ewin, Conf.movres.mode_resize, ewin->shape_x, ewin->shape_y,
 		 ewin->shape_w, ewin->shape_h, 2, 0);
 
-   if (Mode_mr.mode == 0)
+   if (Mode_mr.mode == MR_OPAQUE)
      {
 	ewin->state.resizing = 0;
 	EwinUpdateOpacity(ewin);
@@ -529,7 +520,7 @@ _MoveResizeMoveHandleMotion(void)
 	     ModulesSignal(ESIGNAL_ANIMATION_SUSPEND, NULL);
 	  }
 
-	if (Mode_mr.mode == 0 || num == 1)
+	if (Mode_mr.mode == MR_OPAQUE || num == 1)
 	   ewin->state.show_coords = 1;
 
 	for (i = 0; i < num; i++)
@@ -537,8 +528,8 @@ _MoveResizeMoveHandleMotion(void)
 	     ewin1 = gwins[i];
 	     DrawEwinShape(ewin1, Mode_mr.mode, EoGetX(ewin1), EoGetY(ewin1),
 			   ewin1->client.w, ewin1->client.h, 0, i);
-	     if (Conf.movres.mode_move == 0)
-		Mode_mr.mode = 0;
+	     if (Conf.movres.mode_move == MR_OPAQUE)
+		Mode_mr.mode = MR_OPAQUE;
 	  }
 	dx = Mode.events.mx - Mode_mr.start_x;
 	dy = Mode.events.my - Mode_mr.start_y;
@@ -654,7 +645,7 @@ _MoveResizeMoveHandleMotion(void)
 
 	/* if its opaque move mode check to see if we have to float */
 	/* the window above all desktops (reparent to root) */
-	if (Mode_mr.mode == 0)
+	if (Mode_mr.mode == MR_OPAQUE)
 	  {
 	     Desk               *dsk;
 

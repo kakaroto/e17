@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2009 Kim Woelders
+ * Copyright (C) 2003-2011 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -150,8 +150,8 @@ static const CfgItem MiscCfgItems[] = {
 
    CFG_ITEM_BOOL(Conf, hints.set_xroot_info_on_root_window, 0),
 
-   CFG_ITEM_INT(Conf, movres.mode_move, 0),
-   CFG_ITEM_INT(Conf, movres.mode_resize, 2),
+   CFG_ITEM_INT(Conf, movres.mode_move, MR_OPAQUE),
+   CFG_ITEM_INT(Conf, movres.mode_resize, MR_BOX),
    CFG_ITEM_INT(Conf, movres.mode_info, 1),
    CFG_ITEM_INT(Conf, movres.mode_maximize_default, 1),
    CFG_ITEM_HEX(Conf, movres.color, 0x00ff0000),
