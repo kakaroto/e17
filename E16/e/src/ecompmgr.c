@@ -1207,7 +1207,10 @@ ECompMgrWinNew(EObj * eo)
 	eo->shadow = 0;
      }
    if (eo->type == EOBJ_TYPE_EXT)
-      XShapeSelectInput(disp, EobjGetXwin(eo), ShapeNotifyMask);
+     {
+	XShapeSelectInput(disp, EobjGetXwin(eo), ShapeNotifyMask);
+	EShapeUpdate(EobjGetWin(eo));
+     }
 
    if (eo->noredir)
      {
@@ -1409,6 +1412,9 @@ ECompMgrWinChangeShape(EObj * eo)
    ECmWinInfo         *cw = eo->cmhook;
 
    D1printf("ECompMgrWinChangeShape %#lx\n", EobjGetXwin(eo));
+
+   EShapeUpdate(EobjGetWin(eo));
+
    if (cw->extents == None)
       return;
 
