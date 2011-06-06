@@ -1,0 +1,528 @@
+/* Based on http://www.qlocktwo.com/ */
+collections {
+    group {
+        name: "e/desktop/background";
+
+        script {
+            public clock_cb(unused) {
+                new year, month, day, yearday, weekday, hour, minute;
+                new Float:second;
+
+                date(year, month, day, yearday, weekday, hour, minute, second);
+                // Callback every 5 minutes
+                timer(60 * (4 - (minute % 5)) + 60.0 - second, "clock_cb", 1);
+#define SHUTOFF(_name)                                       \
+                set_state(PART:"on_"_name,  "hidden",  0.0); \
+                set_state(PART:"off_"_name, "default", 0.0)
+
+                SHUTOFF("l0.0");
+                SHUTOFF("l1.0");
+                SHUTOFF("l2.0");
+                SHUTOFF("l3.0");
+                SHUTOFF("l4.0");
+                SHUTOFF("l5.0");
+                SHUTOFF("l6.0");
+                SHUTOFF("l7.0");
+                SHUTOFF("l8.0");
+                SHUTOFF("l9.0");
+                SHUTOFF("la.0");
+                SHUTOFF("l0.1");
+                SHUTOFF("l1.1");
+                SHUTOFF("l2.1");
+                SHUTOFF("l3.1");
+                SHUTOFF("l4.1");
+                SHUTOFF("l5.1");
+                SHUTOFF("l6.1");
+                SHUTOFF("l7.1");
+                SHUTOFF("l8.1");
+                SHUTOFF("l9.1");
+                SHUTOFF("la.1");
+                SHUTOFF("l0.2");
+                SHUTOFF("l1.2");
+                SHUTOFF("l2.2");
+                SHUTOFF("l3.2");
+                SHUTOFF("l4.2");
+                SHUTOFF("l5.2");
+                SHUTOFF("l6.2");
+                SHUTOFF("l7.2");
+                SHUTOFF("l8.2");
+                SHUTOFF("l9.2");
+                SHUTOFF("la.2");
+                SHUTOFF("l0.3");
+                SHUTOFF("l1.3");
+                SHUTOFF("l2.3");
+                SHUTOFF("l3.3");
+                SHUTOFF("l4.3");
+                SHUTOFF("l5.3");
+                SHUTOFF("l6.3");
+                SHUTOFF("l7.3");
+                SHUTOFF("l8.3");
+                SHUTOFF("l9.3");
+                SHUTOFF("la.3");
+                SHUTOFF("l0.4");
+                SHUTOFF("l1.4");
+                SHUTOFF("l2.4");
+                SHUTOFF("l3.4");
+                SHUTOFF("l4.4");
+                SHUTOFF("l5.4");
+                SHUTOFF("l6.4");
+                SHUTOFF("l7.4");
+                SHUTOFF("l8.4");
+                SHUTOFF("l9.4");
+                SHUTOFF("la.4");
+                SHUTOFF("l0.5");
+                SHUTOFF("l1.5");
+                SHUTOFF("l2.5");
+                SHUTOFF("l3.5");
+                SHUTOFF("l4.5");
+                SHUTOFF("l5.5");
+                SHUTOFF("l6.5");
+                SHUTOFF("l7.5");
+                SHUTOFF("l8.5");
+                SHUTOFF("l9.5");
+                SHUTOFF("la.5");
+                SHUTOFF("l0.6");
+                SHUTOFF("l1.6");
+                SHUTOFF("l2.6");
+                SHUTOFF("l3.6");
+                SHUTOFF("l4.6");
+                SHUTOFF("l5.6");
+                SHUTOFF("l6.6");
+                SHUTOFF("l7.6");
+                SHUTOFF("l8.6");
+                SHUTOFF("l9.6");
+                SHUTOFF("la.6");
+                SHUTOFF("l0.7");
+                SHUTOFF("l1.7");
+                SHUTOFF("l2.7");
+                SHUTOFF("l3.7");
+                SHUTOFF("l4.7");
+                SHUTOFF("l5.7");
+                SHUTOFF("l6.7");
+                SHUTOFF("l7.7");
+                SHUTOFF("l8.7");
+                SHUTOFF("l9.7");
+                SHUTOFF("la.7");
+                SHUTOFF("l0.8");
+                SHUTOFF("l1.8");
+                SHUTOFF("l2.8");
+                SHUTOFF("l3.8");
+                SHUTOFF("l4.8");
+                SHUTOFF("l5.8");
+                SHUTOFF("l6.8");
+                SHUTOFF("l7.8");
+                SHUTOFF("l8.8");
+                SHUTOFF("l9.8");
+                SHUTOFF("la.8");
+                SHUTOFF("l0.9");
+                SHUTOFF("l1.9");
+                SHUTOFF("l2.9");
+                SHUTOFF("l3.9");
+                SHUTOFF("l4.9");
+                SHUTOFF("l5.9");
+                SHUTOFF("l6.9");
+                SHUTOFF("l7.9");
+                SHUTOFF("l8.9");
+                SHUTOFF("l9.9");
+                SHUTOFF("la.9");
+
+
+#define SHUTON(_name)                                        \
+                set_state(PART:"off_"_name, "hidden",  0.0); \
+                set_state(PART:"on_"_name,  "default",  0.0)
+
+                SHUTON("l0.0");
+                SHUTON("l1.0");
+                SHUTON("l3.0");
+                SHUTON("l4.0");
+                if (0 <= minute && minute < 5) {
+                    // OCLOCK
+                    SHUTON("l5.9");
+                    SHUTON("l6.9");
+                    SHUTON("l7.9");
+                    SHUTON("l8.9");
+                    SHUTON("l9.9");
+                    SHUTON("la.9");
+                }
+                if ((5 <= minute && minute < 10)
+                ||  (25 <= minute && minute < 30)
+                ||  (35 <= minute && minute < 40)
+                ||  (55 <= minute && minute < 60))
+                {
+                    // FIVE
+                    SHUTON("l6.2");
+                    SHUTON("l7.2");
+                    SHUTON("l8.2");
+                    SHUTON("l9.2");
+                }
+                if ((10 <= minute && minute < 15)
+                ||  (50 <= minute && minute < 55))
+                {
+                    // TEN
+                    SHUTON("l5.3");
+                    SHUTON("l6.3");
+                    SHUTON("l7.3");
+                }
+                if ((15 <= minute && minute < 20)
+                ||  (45 <= minute && minute < 50))
+                {
+                    // A QUARTER
+                    SHUTON("l0.1");
+                    SHUTON("l2.1");
+                    SHUTON("l3.1");
+                    SHUTON("l4.1");
+                    SHUTON("l5.1");
+                    SHUTON("l6.1");
+                    SHUTON("l7.1");
+                    SHUTON("l8.1");
+                }
+                if ((20 <= minute && minute < 30)
+                ||  (40 <= minute && minute < 45))
+                {
+                    // TWENTY
+                    SHUTON("l0.2");
+                    SHUTON("l1.2");
+                    SHUTON("l2.2");
+                    SHUTON("l3.2");
+                    SHUTON("l4.2");
+                    SHUTON("l5.2");
+                }
+                if (30 <= minute && minute < 35) {
+                    //HALF
+                    SHUTON("l0.3");
+                    SHUTON("l1.3");
+                    SHUTON("l2.3");
+                    SHUTON("l3.3");
+                }
+
+                if (5 <= minute && minute < 35) {
+                    // PAST
+                    SHUTON("l0.4");
+                    SHUTON("l1.4");
+                    SHUTON("l2.4");
+                    SHUTON("l3.4");
+                }
+                if (35 <= minute && minute < 60) {
+                    // TO
+                    SHUTON("l9.3");
+                    SHUTON("la.3");
+                }
+
+
+                // HOUR
+                if (hour == 0 || hour == 12) {
+                    // TWELVE
+                    SHUTON("l5.8");
+                    SHUTON("l6.8");
+                    SHUTON("l7.8");
+                    SHUTON("l8.8");
+                    SHUTON("l9.8");
+                    SHUTON("la.8");
+                } else
+                if (hour == 1 || hour == 13) {
+                    // ONE
+                    SHUTON("l0.5");
+                    SHUTON("l1.5");
+                    SHUTON("l2.5");
+                } else
+                if (hour == 2 || hour == 14) {
+                    // TWO
+                    SHUTON("l8.6");
+                    SHUTON("l9.6");
+                    SHUTON("la.6");
+                } else
+                if (hour == 3 || hour == 15) {
+                    // THREE
+                    SHUTON("l6.5");
+                    SHUTON("l7.5");
+                    SHUTON("l8.5");
+                    SHUTON("l9.5");
+                    SHUTON("la.5");
+                } else
+                if (hour == 4 || hour == 16) {
+                    // FOUR
+                    SHUTON("l0.6");
+                    SHUTON("l1.6");
+                    SHUTON("l2.6");
+                    SHUTON("l3.6");
+                } else
+                if (hour == 5 || hour == 17) {
+                    // FIVE
+                    SHUTON("l4.6");
+                    SHUTON("l5.6");
+                    SHUTON("l6.6");
+                    SHUTON("l7.6");
+                } else
+                if (hour == 6 || hour == 18) {
+                    // SIX
+                    SHUTON("l3.5");
+                    SHUTON("l4.5");
+                    SHUTON("l5.5");
+                } else
+                if (hour == 7 || hour == 19) {
+                    // SEVEN
+                    SHUTON("l0.8");
+                    SHUTON("l1.8");
+                    SHUTON("l2.8");
+                    SHUTON("l3.8");
+                    SHUTON("l4.8");
+                } else
+                if (hour == 8 || hour == 20) {
+                    // EIGHT
+                    SHUTON("l0.7");
+                    SHUTON("l1.7");
+                    SHUTON("l2.7");
+                    SHUTON("l3.7");
+                    SHUTON("l4.7");
+                } else
+                if (hour == 9 || hour == 21) {
+                    // NINE
+                    SHUTON("l7.4");
+                    SHUTON("l8.4");
+                    SHUTON("l9.4");
+                    SHUTON("la.4");
+                } else
+                if (hour == 10 || hour == 22) {
+                    // TEN
+                    SHUTON("l0.9");
+                    SHUTON("l1.9");
+                    SHUTON("l2.9");
+                } else
+                if (hour == 11 || hour == 23) {
+                    // ELEVEN
+                    SHUTON("l5.7");
+                    SHUTON("l6.7");
+                    SHUTON("l7.7");
+                    SHUTON("l8.7");
+                    SHUTON("l9.7");
+                    SHUTON("la.7");
+                }
+
+             }
+        }
+
+        parts {
+            part {
+                name: "bg";
+                type: RECT;
+                description {
+                    state: "default" 0.0;
+                    color: 0 43 54 255;
+                }
+            }
+            part {
+                name: "bg.square";
+                type: RECT;
+                scale: 1;
+                description {
+                    state: "default" 0.0;
+                    color: 0 0 0 0;
+                    min: 220 220;
+                    align: 0.5 0.5;
+                    aspect: 1.0 1.0;
+                    aspect_preference: BOTH;
+                }
+            }
+
+            #define LETTER(_name, _x0, _y0, _x1, _y1, _letter)  \
+            part {                                              \
+                name: "off_"_name;                              \
+                type: TEXT;                                     \
+                scale: 1;                                       \
+                description {                                   \
+                    state: "default" 0.0;                       \
+                    color: 88 110 117 255;                      \
+                    fixed: 1 1;                                 \
+                    step: 10 11;                                \
+                    rel1 {                                      \
+                        relative: _x0 _y0;                      \
+                        to: "bg.square";                        \
+                    }                                           \
+                    rel2 {                                      \
+                        relative: _x1 _y1;                      \
+                        to: "bg.square";                        \
+                    }                                           \
+                    text {                                      \
+                        font: "Sans:style=Mono";                \
+                        size: 10;                               \
+                        min: 1 1;                               \
+                        fit: 1 1;                               \
+                        align: 0.5 0.5;                         \
+                        text:  _letter;                         \
+                        text_class: "klok_letter";              \
+                    }                                           \
+                }                                               \
+                description {                                   \
+                    state: "hidden" 0.0;                        \
+                    inherit: "default" 0.0;                     \
+                    visible: 0;                                 \
+                }                                               \
+            }                                                   \
+            part {                                              \
+                name: "on_"_name;                               \
+                type: TEXT;                                     \
+                effect: GLOW;                                   \
+                scale: 1;                                       \
+                description {                                   \
+                    state: "default" 0.0;                       \
+                    color: 253 246 227 255;                     \
+                    fixed: 1 1;                                 \
+                    step: 10 11;                                \
+                    rel1 {                                      \
+                        relative: _x0 _y0;                      \
+                        to: "bg.square";                        \
+                    }                                           \
+                    rel2 {                                      \
+                        relative: _x1 _y1;                      \
+                        to: "bg.square";                        \
+                    }                                           \
+                    text {                                      \
+                        font: "Sans:style=Mono";                \
+                        size: 10;                               \
+                        min: 1 1;                               \
+                        fit: 1 1;                               \
+                        align: 0.5 0.5;                         \
+                        text:  _letter;                         \
+                        text_class: "klok_letter";              \
+                    }                                           \
+                }                                               \
+                description {                                   \
+                    state: "hidden" 0.0;                        \
+                    inherit: "default" 0.0;                     \
+                    visible: 0;                                 \
+                }                                               \
+            }
+
+            LETTER("l0.0", 0,     0,   0.091, 0.1, "I")
+            LETTER("l1.0", 0.091, 0,   0.182, 0.1, "T")
+            LETTER("l2.0", 0.182, 0,   0.273, 0.1, "L")
+            LETTER("l3.0", 0.273, 0,   0.364, 0.1, "I")
+            LETTER("l4.0", 0.364, 0,   0.455, 0.1, "S")
+            LETTER("l5.0", 0.455, 0,   0.545, 0.1, "A")
+            LETTER("l6.0", 0.545, 0,   0.636, 0.1, "S")
+            LETTER("l7.0", 0.636, 0,   0.727, 0.1, "T")
+            LETTER("l8.0", 0.727, 0,   0.818, 0.1, "I")
+            LETTER("l9.0", 0.818, 0,   0.909, 0.1, "M")
+            LETTER("la.0", 0.909, 0,   1    , 0.1, "E")
+
+            LETTER("l0.1", 0,     0.1, 0.091, 0.2, "A")
+            LETTER("l1.1", 0.091, 0.1, 0.182, 0.2, "C")
+            LETTER("l2.1", 0.182, 0.1, 0.273, 0.2, "Q")
+            LETTER("l3.1", 0.273, 0.1, 0.364, 0.2, "U")
+            LETTER("l4.1", 0.364, 0.1, 0.455, 0.2, "A")
+            LETTER("l5.1", 0.455, 0.1, 0.545, 0.2, "R")
+            LETTER("l6.1", 0.545, 0.1, 0.636, 0.2, "T")
+            LETTER("l7.1", 0.636, 0.1, 0.727, 0.2, "E")
+            LETTER("l8.1", 0.727, 0.1, 0.818, 0.2, "R")
+            LETTER("l9.1", 0.818, 0.1, 0.909, 0.2, "D")
+            LETTER("la.1", 0.909, 0.1, 1    , 0.2, "C")
+
+            LETTER("l0.2", 0,     0.2, 0.091, 0.3, "T")
+            LETTER("l1.2", 0.091, 0.2, 0.182, 0.3, "W")
+            LETTER("l2.2", 0.182, 0.2, 0.273, 0.3, "E")
+            LETTER("l3.2", 0.273, 0.2, 0.364, 0.3, "N")
+            LETTER("l4.2", 0.364, 0.2, 0.455, 0.3, "T")
+            LETTER("l5.2", 0.455, 0.2, 0.545, 0.3, "Y")
+            LETTER("l6.2", 0.545, 0.2, 0.636, 0.3, "F")
+            LETTER("l7.2", 0.636, 0.2, 0.727, 0.3, "I")
+            LETTER("l8.2", 0.727, 0.2, 0.818, 0.3, "V")
+            LETTER("l9.2", 0.818, 0.2, 0.909, 0.3, "E")
+            LETTER("la.2", 0.909, 0.2, 1    , 0.3, "X")
+
+            LETTER("l0.3", 0,     0.3, 0.091, 0.4, "H")
+            LETTER("l1.3", 0.091, 0.3, 0.182, 0.4, "A")
+            LETTER("l2.3", 0.182, 0.3, 0.273, 0.4, "L")
+            LETTER("l3.3", 0.273, 0.3, 0.364, 0.4, "F")
+            LETTER("l4.3", 0.364, 0.3, 0.455, 0.4, "B")
+            LETTER("l5.3", 0.455, 0.3, 0.545, 0.4, "T")
+            LETTER("l6.3", 0.545, 0.3, 0.636, 0.4, "E")
+            LETTER("l7.3", 0.636, 0.3, 0.727, 0.4, "N")
+            LETTER("l8.3", 0.727, 0.3, 0.818, 0.4, "F")
+            LETTER("l9.3", 0.818, 0.3, 0.909, 0.4, "T")
+            LETTER("la.3", 0.909, 0.3, 1    , 0.4, "O")
+
+            LETTER("l0.4", 0,     0.4, 0.091, 0.5, "P")
+            LETTER("l1.4", 0.091, 0.4, 0.182, 0.5, "A")
+            LETTER("l2.4", 0.182, 0.4, 0.273, 0.5, "S")
+            LETTER("l3.4", 0.273, 0.4, 0.364, 0.5, "T")
+            LETTER("l4.4", 0.364, 0.4, 0.455, 0.5, "E")
+            LETTER("l5.4", 0.455, 0.4, 0.545, 0.5, "R")
+            LETTER("l6.4", 0.545, 0.4, 0.636, 0.5, "U")
+            LETTER("l7.4", 0.636, 0.4, 0.727, 0.5, "N")
+            LETTER("l8.4", 0.727, 0.4, 0.818, 0.5, "I")
+            LETTER("l9.4", 0.818, 0.4, 0.909, 0.5, "N")
+            LETTER("la.4", 0.909, 0.4, 1    , 0.5, "E")
+
+            LETTER("l0.5", 0,     0.5, 0.091, 0.6, "O")
+            LETTER("l1.5", 0.091, 0.5, 0.182, 0.6, "N")
+            LETTER("l2.5", 0.182, 0.5, 0.273, 0.6, "E")
+            LETTER("l3.5", 0.273, 0.5, 0.364, 0.6, "S")
+            LETTER("l4.5", 0.364, 0.5, 0.455, 0.6, "I")
+            LETTER("l5.5", 0.455, 0.5, 0.545, 0.6, "X")
+            LETTER("l6.5", 0.545, 0.5, 0.636, 0.6, "T")
+            LETTER("l7.5", 0.636, 0.5, 0.727, 0.6, "H")
+            LETTER("l8.5", 0.727, 0.5, 0.818, 0.6, "R")
+            LETTER("l9.5", 0.818, 0.5, 0.909, 0.6, "E")
+            LETTER("la.5", 0.909, 0.5, 1    , 0.6, "E")
+
+            LETTER("l0.6", 0,     0.6, 0.091, 0.7, "F")
+            LETTER("l1.6", 0.091, 0.6, 0.182, 0.7, "O")
+            LETTER("l2.6", 0.182, 0.6, 0.273, 0.7, "U")
+            LETTER("l3.6", 0.273, 0.6, 0.364, 0.7, "R")
+            LETTER("l4.6", 0.364, 0.6, 0.455, 0.7, "F")
+            LETTER("l5.6", 0.455, 0.6, 0.545, 0.7, "I")
+            LETTER("l6.6", 0.545, 0.6, 0.636, 0.7, "V")
+            LETTER("l7.6", 0.636, 0.6, 0.727, 0.7, "E")
+            LETTER("l8.6", 0.727, 0.6, 0.818, 0.7, "T")
+            LETTER("l9.6", 0.818, 0.6, 0.909, 0.7, "W")
+            LETTER("la.6", 0.909, 0.6, 1    , 0.7, "O")
+
+            LETTER("l0.7", 0,     0.7, 0.091, 0.8, "E")
+            LETTER("l1.7", 0.091, 0.7, 0.182, 0.8, "I")
+            LETTER("l2.7", 0.182, 0.7, 0.273, 0.8, "G")
+            LETTER("l3.7", 0.273, 0.7, 0.364, 0.8, "H")
+            LETTER("l4.7", 0.364, 0.7, 0.455, 0.8, "T")
+            LETTER("l5.7", 0.455, 0.7, 0.545, 0.8, "E")
+            LETTER("l6.7", 0.545, 0.7, 0.636, 0.8, "L")
+            LETTER("l7.7", 0.636, 0.7, 0.727, 0.8, "E")
+            LETTER("l8.7", 0.727, 0.7, 0.818, 0.8, "V")
+            LETTER("l9.7", 0.818, 0.7, 0.909, 0.8, "E")
+            LETTER("la.7", 0.909, 0.7, 1    , 0.8, "N")
+
+            LETTER("l0.8", 0,     0.8, 0.091, 0.9, "S")
+            LETTER("l1.8", 0.091, 0.8, 0.182, 0.9, "E")
+            LETTER("l2.8", 0.182, 0.8, 0.273, 0.9, "V")
+            LETTER("l3.8", 0.273, 0.8, 0.364, 0.9, "E")
+            LETTER("l4.8", 0.364, 0.8, 0.455, 0.9, "N")
+            LETTER("l5.8", 0.455, 0.8, 0.545, 0.9, "T")
+            LETTER("l6.8", 0.545, 0.8, 0.636, 0.9, "W")
+            LETTER("l7.8", 0.636, 0.8, 0.727, 0.9, "E")
+            LETTER("l8.8", 0.727, 0.8, 0.818, 0.9, "L")
+            LETTER("l9.8", 0.818, 0.8, 0.909, 0.9, "V")
+            LETTER("la.8", 0.909, 0.8, 1    , 0.9, "E")
+
+            LETTER("l0.9", 0,     0.9, 0.091, 1,   "T")
+            LETTER("l1.9", 0.091, 0.9, 0.182, 1,   "E")
+            LETTER("l2.9", 0.182, 0.9, 0.273, 1,   "N")
+            LETTER("l3.9", 0.273, 0.9, 0.364, 1,   "S")
+            LETTER("l4.9", 0.364, 0.9, 0.455, 1,   "E")
+            LETTER("l5.9", 0.455, 0.9, 0.545, 1,   "O")
+            LETTER("l6.9", 0.545, 0.9, 0.636, 1,   "C")
+            LETTER("l7.9", 0.636, 0.9, 0.727, 1,   "L")
+            LETTER("l8.9", 0.727, 0.9, 0.818, 1,   "O")
+            LETTER("l9.9", 0.818, 0.9, 0.909, 1,   "C")
+            LETTER("la.9", 0.909, 0.9, 1    , 1,   "K")
+        }
+        // Get everything started at load
+        programs {
+            program {
+                name: "init";
+                signal: "load";
+                source: "";
+                script {
+                    clock_cb(0);
+                }
+            }
+        }
+    }
+}
