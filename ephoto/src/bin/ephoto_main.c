@@ -178,7 +178,9 @@ ephoto_window_add(const char *path)
 
    if ((!path) || (!ecore_file_exists(path)))
      {
-        path = ephoto->config->directory;
+        char p[PATH_MAX];
+	snprintf(p, PATH_MAX, "%s/.e/e/fileman/favorites", getenv("HOME"));
+        path = p;
         if ((path) && (!ecore_file_exists(path))) path = NULL;
         if (!path)
           {
