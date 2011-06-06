@@ -1,7 +1,13 @@
 ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = src data po
+SUBDIRS = src data
+
+if HAVE_PO
+
+SUBDIRS += po
+
+endif
 
 filesdir = $(datadir)
 files_DATA = module.desktop

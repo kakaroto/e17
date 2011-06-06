@@ -4,7 +4,13 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 		       missing module.desktop config.rpath mkinstalldirs \
 		       drawer.pc
 
-SUBDIRS = data src po
+SUBDIRS = data src
+
+if HAVE_PO
+
+SUBDIRS += po
+
+endif
 
 # data files for the module
 filesdir =  $(datadir)

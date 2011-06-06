@@ -15,7 +15,13 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
                        m4/signed.m4 m4/size_max.m4 m4/wchar_t.m4 \
                        m4/wint_t.m4 m4/xsize.m4
 
-SUBDIRS = src po
+SUBDIRS = src
+
+if HAVE_PO
+
+SUBDIRS += po
+
+endif
 
 EDJE_FLAGS = -v \
 	     -id $(top_srcdir)/images

@@ -22,9 +22,6 @@ AC_PROG_LIBTOOL
 ALL_LINGUAS=""
 AC_SUBST(ALL_LINGUAS)
 
-#AM_GNU_GETTEXT([external])
-#AM_GNU_GETTEXT_VERSION(0.14)
-
 PKG_CHECK_MODULES(E, [enlightenment])
 release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"

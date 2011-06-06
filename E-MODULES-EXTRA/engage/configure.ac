@@ -21,8 +21,18 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AC_PROG_LIBTOOL
 
+m4_ifdef([AM_GNU_GETTEXT_VERSION], [
+AM_GNU_GETTEXT_VERSION([0.14])
+])
+
+m4_ifdef([AM_GNU_GETTEXT], [
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION(0.14)
+po_makefile_in=po/Makefile.in
+AM_CONDITIONAL([HAVE_PO], [true])
+],[
+AM_CONDITIONAL([HAVE_PO], [false])
+])
+AC_SUBST(LTLIBINTL)
 
 release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"
@@ -58,7 +68,7 @@ data/Makefile
 data/themes/Makefile
 src/Makefile
 module.desktop
-po/Makefile.in
+$po_makefile_in
 ],[
 ])
 
