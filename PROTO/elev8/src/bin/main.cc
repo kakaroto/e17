@@ -29,6 +29,7 @@ eo_on_animate(void *data)
   v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
   v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
   v8::Local<v8::Value> result = fn->Call(fn, 1, args);
+  return ECORE_CALLBACK_RENEW;
 }
 
 void
@@ -115,7 +116,7 @@ v8::Handle<v8::String>
 string_from_file(const char *filename)
 {
    v8::Handle<v8::String> ret = v8::Handle<v8::String>();
-   int fd, len;
+   int fd, len = 0;
    void *bad_ret = reinterpret_cast<void*>(-1);
    void *p = bad_ret;
 
