@@ -12,6 +12,8 @@
 #define ELFE_DESKTOP_PADDING_W 10
 #define ELFE_DESKTOP_PADDING_H 10
 
+#define  LONGPRESS_THRESHOLD 16
+
 typedef struct _Elfe_Desktop Elfe_Desktop;
 
 struct _Elfe_Desktop
@@ -32,6 +34,7 @@ struct _Elfe_Desktop
    Eina_Bool on_hold;
    Eina_Bool edit_mode;
    Eina_List *overs;
+   Evas_Coord dx, dy;
 };
 
 
@@ -86,20 +89,29 @@ _longpress_timer_cb(void *data)
 }
 
 static void
-_scroller_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_scroller_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Elfe_Desktop *desk = data;
+   Evas_Coord dx, dy;
+   Evas_Event_Mouse_Move *ev = event_info;
 
    if (!desk->on_hold)
      {
 	desk->on_hold = EINA_FALSE;
      }
+
    if (desk->longpress_timer)
      {
-	ecore_timer_del(desk->longpress_timer);
-	desk->longpress_timer = NULL;
+        desk->dx += ev->cur.output.x - ev->prev.output.x;
+        desk->dy += ev->cur.output.y - ev->prev.output.y;
+        if (abs(desk->dx) > LONGPRESS_THRESHOLD || abs(desk->dy) > LONGPRESS_THRESHOLD)
+          {
+             ecore_timer_del(desk->longpress_timer);
+             desk->longpress_timer = NULL;
+             desk->dx = 0;
+             desk->dy = 0;
+          }
      }
-
 }
 
 
@@ -113,6 +125,8 @@ _scroller_mouse_up_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSE
      {
 	ecore_timer_del(desk->longpress_timer);
 	desk->longpress_timer = NULL;
+        desk->dx = 0;
+        desk->dy = 0;
      }
 }
 
@@ -128,12 +142,10 @@ _scroller_mouse_down_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNU
 	if (desk->longpress_timer)
 	  ecore_timer_del(desk->longpress_timer);
 	desk->longpress_timer = ecore_timer_add(1.0, _longpress_timer_cb, desk);
+        desk->dx = 0;
+        desk->dy = 0;
      }
 }
-
-
-
-
 
 static void
 _cb_object_resize(void *data , Evas *e __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
