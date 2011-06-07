@@ -15,7 +15,8 @@
 
 Evas_Object *main_win;
 
-void eo_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
+void
+eo_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
   v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
   v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
@@ -61,14 +62,17 @@ realize_one(v8::Local<v8::Object> obj)
    evas_object_show(eo);
 }
 
-v8::Handle<v8::Value> Realize(const v8::Arguments& args) {
+v8::Handle<v8::Value>
+Realize(const v8::Arguments& args)
+{
    if (args.Length() != 1)
       return v8::ThrowException(v8::String::New("Bad parameters"));
    realize_one(args[0]->ToObject());
    return v8::Undefined();
 }
 
-v8::Handle<v8::Value> Print(const v8::Arguments& args)
+v8::Handle<v8::Value>
+Print(const v8::Arguments& args)
 {
    for (int i = 0; i < args.Length(); i++)
      {
@@ -99,7 +103,8 @@ realize_objects(v8::Handle<v8::Object> elements)
      }
 }
 
-v8::Handle<v8::String> string_from_file(const char *filename)
+v8::Handle<v8::String>
+string_from_file(const char *filename)
 {
    v8::Handle<v8::String> ret = v8::Handle<v8::String>();
    int fd, len;
