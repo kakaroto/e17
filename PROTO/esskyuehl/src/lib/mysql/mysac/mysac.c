@@ -339,8 +339,45 @@ static int my_response(MYSAC *m, enum my_expected_response_t expect) {
 			return MYSAC_RET_ERROR;
 		}
 
+		/* reponse is expectig sucess and onmly success */
+		if (expect == MYSAC_EXPECT_OK || expect == MYSAC_EXPECT_BOTH) {
+
+			/* not a sucess code */
+			if ((unsigned char)m->read[0] == 0xff) {
+				m->errorcode = MYERR_PROTOCOL_ERROR;
+				return MYSAC_RET_ERROR;
+			}
+
+			/* is sucess */
+			if ((unsigned char)m->read[0] == 0) {
+
+				read = &m->read[1];
+				rlen = m->packet_length - 1;
+
+				/* affected rows */
+				len = my_lcb(read, &m->affected_rows, &nul, rlen);
+				rlen -= len;
+				read += len;
+				/* m->affected_rows = uint2korr(&m->read[1]); */
+
+				/* insert id */
+				len = my_lcb(read, &m->insert_id, &nul, rlen);
+				rlen -= len;
+				read += len;
+
+				/* server status */
+				m->status = uint2korr(read);
+				read += 2;
+
+				/* server warnings */
+				m->warnings = uint2korr(read);
+
+				return MYSAC_RET_OK;
+			}
+		}
+
 		/* response is expecting data. Maybe contain an EOF */
-		else if (expect == MYSAC_EXPECT_DATA) {
+		if (expect == MYSAC_EXPECT_DATA || expect == MYSAC_EXPECT_BOTH) {
 
 			/* EOF marker: marque la fin d'une serie
 				(la fin des headers dans une requete) */
@@ -355,46 +392,9 @@ static int my_response(MYSAC *m, enum my_expected_response_t expect) {
 				return MYSAC_RET_DATA;
 		}
 
-		/* reponse is expectig sucess and onmly success */
-		else if (expect == MYSAC_EXPECT_OK) {
-
-			/* not a sucess code */
-			if ((unsigned char)m->read[0] != 0) {
-				m->errorcode = MYERR_PROTOCOL_ERROR;
-				return MYSAC_RET_ERROR;
-			}
-
-			/* is sucess */
-
-			read = &m->read[1];
-			rlen = m->packet_length - 1;
-
-			/* affected rows */
-			len = my_lcb(read, &m->affected_rows, &nul, rlen);
-			rlen -= len;
-			read += len;
-			/* m->affected_rows = uint2korr(&m->read[1]); */
-
-			/* insert id */
-			len = my_lcb(read, &m->insert_id, &nul, rlen);
-			rlen -= len;
-			read += len;
-
-			/* server status */
-			m->status = uint2korr(read);
-			read += 2;
-
-			/* server warnings */
-			m->warnings = uint2korr(read);
-
-			return MYSAC_RET_OK;
-		}
-
 		/* the expect code is not valid */
-		else {
-			m->errorcode = MYERR_UNKNOWN_ERROR;
-			return MYSAC_RET_ERROR;
-		}
+		m->errorcode = MYERR_UNKNOWN_ERROR;
+		return MYSAC_RET_ERROR;
 
 	default:
 		m->errorcode = MYERR_UNEXPECT_R_STATE;
@@ -643,7 +643,7 @@ int mysac_connect(MYSAC *mysac) {
 		MYSAC_RET_ERROR,
 		MYSAC_RET_DATA
 	*/
-		err = my_response(mysac, MYSAC_EXPECT_OK);
+		err = my_response(mysac, MYSAC_EXPECT_BOTH);
 
 		if (err == MYERR_WANT_READ)
 			return MYERR_WANT_READ;

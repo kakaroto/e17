@@ -228,7 +228,8 @@ typedef struct mysac_bind {
  */
 enum my_expected_response_t {
 	MYSAC_EXPECT_DATA = 0,
-	MYSAC_EXPECT_OK
+	MYSAC_EXPECT_OK,
+	MYSAC_EXPECT_BOTH
 };
 
 /**
