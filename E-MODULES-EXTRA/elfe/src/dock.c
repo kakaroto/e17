@@ -53,8 +53,7 @@ _item_delete_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info)
    elfe_desktop_item_pos_get(item, &row, &col);
    eina_matrixsparse_cell_idx_clear(dock->items, row, col);
    evas_object_del(item);
-   //   elfe_home_config_dock_item_del(dock->desktop,
-   //				     row, col);
+   elfe_home_config_dock_item_del(col);
 
 }
 
@@ -121,6 +120,10 @@ _populate_dock(Elfe_Dock *dock)
 	  continue;
 
 	evas_object_smart_callback_add(item, "item,delete", _item_delete_cb, dock);
+        evas_object_size_hint_min_set(item, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
+        evas_object_size_hint_max_set(item, elfe_home_cfg->icon_size, elfe_home_cfg->icon_size);
+        evas_object_size_hint_align_set(item, 0.5, 0.5);
+
         elm_table_pack(dock->table, item, dic->col, 0, 1, 1);
         evas_object_show(item);
 	eina_matrixsparse_data_idx_set(dock->items, 0, dic->col, item);
@@ -193,8 +196,6 @@ elfe_dock_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 
    dock->edit_mode = mode;
 
-   printf("Dock edit mode\n");
-
    iter = eina_matrixsparse_iterator_new(dock->items);
    EINA_ITERATOR_FOREACH(iter, cell)
      {
@@ -233,11 +234,8 @@ elfe_dock_item_app_add(Evas_Object *obj, Efreet_Menu *menu,
     elm_table_pack(dock->table, item, col, 0, 1, 1);
 
     eina_matrixsparse_data_idx_set(dock->items, 0, col, item);
-    /* elfe_home_config_desktop_item_add(page->desktop, */
-    /*     			      ELFE_DESKTOP_ITEM_APP, */
-    /*     			      row, col, */
-    /*     			      0, 0, 0, 0, */
-    /*     			      menu->desktop->orig_path); */
+    elfe_home_config_dock_item_add(col,
+                                      menu->desktop->orig_path);
     evas_object_smart_callback_add(item, "item,delete", _item_delete_cb, dock);
 }
 

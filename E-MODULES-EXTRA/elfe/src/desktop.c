@@ -190,8 +190,6 @@ _icon_mouse_up_cb(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj
 
    Evas_Event_Mouse_Up *ev = event_info;
 
-   printf("icon mouse up\n");
-
    evas_object_del(desk->floating_icon);
    evas_object_event_callback_del(desk->layout, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb);
    evas_object_event_callback_del(desk->layout, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb);
@@ -264,8 +262,6 @@ _gadget_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
    evas_object_geometry_get(desk->layout, NULL, NULL, &ow, &oh);
 
    size = MIN(ow, oh) / 5;
-
-   printf("Gadget long pressed\n");
 
    elfe_desktop_edit_mode_set(desk->layout, EINA_TRUE);
    elfe_dock_place_mode_set(desk->dock, EINA_TRUE);
@@ -511,8 +507,6 @@ elfe_desktop_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 
    if (desk->edit_mode == mode)
        return;
-   
-   printf("Elfe desktop edit mode %d\n",mode);
 
    desk->edit_mode = mode;
 

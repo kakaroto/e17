@@ -101,12 +101,10 @@ elfe_home_config_shutdown(void)
 int
 elfe_home_config_save(void)
 {
-   printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<< CONFIG SAVE\n");
    e_config_domain_save("module.elfe", conf_edd, elfe_home_cfg);
    return 1;
 }
 
-/* local functions */
 void elfe_home_config_desktop_item_add(int desktop,
                                        Elfe_Desktop_Item_Type type,
                                        int row, int col,
@@ -142,16 +140,37 @@ void elfe_home_config_desktop_item_del(int desktop,
     Elfe_Desktop_Item_Config *dic;
     Eina_List *l;
 
-    printf("DELETE CONFIG ITEM %d %d\n", col, row);
     dc = eina_list_nth(elfe_home_cfg->desktops, desktop);
     EINA_LIST_FOREACH(dc->items, l, dic)
       {
 	 if ((dic->row == row) && (dic->col == col))
 	   {
-	      printf("Delete %d %d\n", row, col);
 	      dc->items = eina_list_remove(dc->items, dic);
 	      elfe_home_config_save();
 	      return;
 	   }
       }
+}
+
+
+void elfe_home_config_dock_item_add(int col,
+                                    const char *name)
+{
+   Elfe_Desktop_Item_Config *dic;
+
+   dic = calloc(1, sizeof(Elfe_Desktop_Item_Config));
+   dic->type = ELFE_DESKTOP_ITEM_ICON;
+   dic->name = eina_stringshare_add(name);
+   dic->col = col;
+   elfe_home_cfg->dock_items = eina_list_append(elfe_home_cfg->dock_items, dic);
+   elfe_home_config_save();
+}
+
+void elfe_home_config_dock_item_del(int col)
+{
+    Elfe_Desktop_Item_Config *dic;
+
+    dic = eina_list_nth(elfe_home_cfg->dock_items, col);
+    elfe_home_cfg->dock_items = eina_list_remove(elfe_home_cfg->dock_items, dic);
+    elfe_home_config_save();
 }
