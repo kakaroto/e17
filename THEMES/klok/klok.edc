@@ -177,7 +177,7 @@ collections {
                     SHUTON("l8.1");
                 }
                 if ((20 <= minute && minute < 30)
-                ||  (40 <= minute && minute < 45))
+                ||  (35 <= minute && minute < 45))
                 {
                     // TWENTY
                     SHUTON("l0.2");
