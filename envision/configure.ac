@@ -102,7 +102,7 @@ src/bin/Makefile
 data/Makefile
 data/desktop/Makefile
 data/themes/Makefile
-po/Makefile.in
+$po_makefile_in
 ])
 
 
