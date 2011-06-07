@@ -3,6 +3,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
+@EXTRACXXFLAGS@ \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/bin \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
