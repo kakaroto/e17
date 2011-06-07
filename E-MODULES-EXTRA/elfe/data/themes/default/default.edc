@@ -316,7 +316,7 @@ collections
             }
             description {
                state: "active" 0.0;
-               color: 255 255 255 255;
+               color: 255 255 255 100;
             }
          }
 
