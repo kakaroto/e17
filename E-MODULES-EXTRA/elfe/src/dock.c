@@ -14,7 +14,9 @@ struct _Elfe_Dock
    Evas_Object *table;
    Eina_Matrixsparse *items;
    Evas_Object *allapps_icon;
-   Eina_Bool edit_mode;
+   Eina_Bool edit_mode:  1;
+   Eina_Bool place_mode: 1;
+   Eina_List *overs;
 };
 
 static void _allapps_icon_add(Elfe_Dock *dock, const char *name);
@@ -56,6 +58,14 @@ _item_delete_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info)
 
 }
 
+static Eina_Bool
+_pos_is_free(Elfe_Dock *dock, int row, int col)
+{
+   if (eina_matrixsparse_data_idx_get(dock->items, row, col))
+     return EINA_TRUE;
+   else
+     return EINA_FALSE;
+}
 
 static void
 _app_icon_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
@@ -120,9 +130,60 @@ _populate_dock(Elfe_Dock *dock)
 }
 
 void
+elfe_dock_place_mode_set(Evas_Object *obj, Eina_Bool mode)
+{
+   Elfe_Dock *dock = evas_object_data_get(obj, "dock");
+   int m;
+   int i,j;
+   Evas_Object *over;
+   char buf[PATH_MAX];
+
+   if (dock->place_mode == mode)
+       return;
+
+   dock->place_mode = mode;
+
+   if (mode)
+     {
+	Evas_Coord x, y, w, h;
+
+	evas_object_geometry_get(dock->table, &x, &y, &w, &h);
+	m = w / elfe_home_cfg->cols;
+
+        for (i = 0; i < elfe_home_cfg->cols; i++)
+          {
+             Evas_Object *o_edje;
+             over = elm_layout_add(dock->table);
+             elm_layout_file_set(over, buf, "elfe/gadget/places/over");
+             o_edje = elm_layout_edje_get(over);
+             if (_pos_is_free(dock, 0, i))
+               edje_object_signal_emit(o_edje, "place,busy", "elfe");
+             else
+               edje_object_signal_emit(o_edje, "place,free", "elfe");
+
+             evas_object_resize(o_edje, m, h);
+             evas_object_move(o_edje, x + i*m,  y);
+             evas_object_show(over);
+             dock->overs = eina_list_append(dock->overs, over);
+          }
+     }
+   else
+     {
+	EINA_LIST_FREE(dock->overs, over)
+	  {
+	     evas_object_del(over);
+	  }
+
+	dock->overs = NULL;
+
+     }
+
+}
+
+void
 elfe_dock_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 {
-   Elfe_Dock *dock = evas_object_data_get(obj, "dock");;
+   Elfe_Dock *dock = evas_object_data_get(obj, "dock");
    Evas_Object *item;
    Eina_Iterator *iter;
    Eina_Matrixsparse_Cell *cell;
@@ -157,8 +218,6 @@ elfe_dock_item_app_add(Evas_Object *obj, Efreet_Menu *menu,
     int col = 0;
 
     _xy_to_pos(dock, x, y, &col);
-
-    printf("COLONE : %d\n", col);
 
     /* This position is already used by another item! */
     if (eina_matrixsparse_data_idx_get(dock->items, 0, col)) return;
@@ -208,3 +267,5 @@ elfe_dock_add(Evas_Object *parent)
 
    return dock->edje;
 }
+
+

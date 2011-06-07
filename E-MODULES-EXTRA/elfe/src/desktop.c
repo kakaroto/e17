@@ -196,7 +196,7 @@ _icon_mouse_up_cb(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj
    evas_object_event_callback_del(desk->layout, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb);
    evas_object_event_callback_del(desk->layout, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb);
    elfe_desktop_edit_mode_set(desk->layout, EINA_FALSE);
-
+   elfe_dock_place_mode_set(desk->dock, EINA_FALSE);
    if (desk->selected_app)
      elfe_desktop_app_add(desk->layout, desk->selected_app, ev->output.x, ev->output.y);
    else if (desk->selected_gadget)
@@ -219,6 +219,7 @@ _app_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
    evas_object_geometry_get(desk->layout, NULL, NULL, &ow, &oh);
 
    elfe_desktop_edit_mode_set(desk->layout, EINA_TRUE);
+   elfe_dock_place_mode_set(desk->dock, EINA_TRUE);
 
    o_edje = elm_layout_edje_get(desk->layout);
    edje_object_signal_emit(o_edje, "allapps,toggle", "elfe");
@@ -267,6 +268,7 @@ _gadget_longpressed_cb(void *data , Evas_Object *obj, void *event_info)
    printf("Gadget long pressed\n");
 
    elfe_desktop_edit_mode_set(desk->layout, EINA_TRUE);
+   elfe_dock_place_mode_set(desk->dock, EINA_TRUE);
 
    o_edje = elm_layout_edje_get(desk->layout);
    edje_object_signal_emit(o_edje, "allapps,toggle", "elfe");
@@ -338,6 +340,7 @@ _dock_allapps_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_i
    else
      {
 	elfe_desktop_edit_mode_set(desk->layout, EINA_FALSE);
+        elfe_dock_place_mode_set(desk->dock, EINA_FALSE);
      }
 }
 
