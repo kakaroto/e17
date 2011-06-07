@@ -20,12 +20,12 @@ for I in $BUILD; do
   pushd $I
 	echo ""
 	echo "============ "$I" ============"
-    make clean distclean || true
-    ./autogen.sh --prefix="$PREFIX"
-    make
-    sudo make install
-    sudo ldconfig
-    ctags -R
+	make clean distclean || true
+	./autogen.sh --prefix="$PREFIX"
+	make
+	sudo make install
+	sudo ldconfig
+	ctags -h ".h.x.cpp.c" -R
   popd
 done
 
@@ -33,7 +33,7 @@ done
 echo ""
 echo "============ efenniht ============"
 pushd THEMES/efenniht
-    make install-home
+	make install-home
 popd
 
 #detour theme (elm)
@@ -57,14 +57,14 @@ popd
 echo ""
 echo "============ darkness ============"
 pushd THEMES/darkness
-    #./build.sh -r
+	#./build.sh -r
 	./build.sh
-    pushd elm
-        ./build.sh
-        cp *.edj ~/.elementary/themes
-    popd
+	pushd elm
+		./build.sh
+		cp *.edj ~/.elementary/themes
+	popd
 popd
 
 rm tags -f
-ctags -R
+ctags -h ".h.x.cpp.c" -R
 enlightenment_remote -restart
