@@ -6,6 +6,9 @@ var elements = {
 		height : 30,
 		on_clicked : function() {
 			print("click!");
+		},
+		on_animate : function() {
+			print("animate!");
 		}
 	},
 	cancel_button : {

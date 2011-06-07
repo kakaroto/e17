@@ -22,6 +22,14 @@ void eo_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
   v8::Local<v8::Value> result = fn->Call(fn, 1, args);
 }
 
+Eina_Bool
+eo_on_animate(void *data)
+{
+  v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
+  v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
+  v8::Local<v8::Value> result = fn->Call(fn, 1, args);
+}
+
 void
 realize_one(v8::Local<v8::Object> obj)
 {
@@ -39,6 +47,15 @@ realize_one(v8::Local<v8::Object> obj)
    evas_object_resize(eo, width_val->ToInteger()->Value(), height_val->ToInteger()->Value());
    evas_object_move(eo, x_val->ToInteger()->Value(), y_val->ToInteger()->Value());
    evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN, &eo_on_click, static_cast<void*>(*clicked_val));
+
+   /* set up animator */
+   v8::Local<v8::Value> val = obj->Get(v8::String::New("on_animate"));
+   if (val->IsFunction())
+     {
+        v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
+        v8::Persistent<v8::Function> persist_func = v8::Persistent<v8::Function>::New(local_func);
+        ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
+     }
 
    elm_button_label_set(eo, *str);
    evas_object_show(eo);
