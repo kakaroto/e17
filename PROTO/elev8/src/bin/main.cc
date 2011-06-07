@@ -1,7 +1,9 @@
 #include "main.h"
 
 int
-main(int argc, char **argv)
+elm_main(int argc, char **argv)
 {
    return 0;
 }
+
+ELM_MAIN()
