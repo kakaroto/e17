@@ -30,8 +30,5 @@ var elements = {
 		width : 60,
 		height : 20,
 		style : "default",
-		on_clicked : function() {
-			print("clack!");
-		}
 	}
 };

@@ -39,18 +39,26 @@ realize_one(v8::Local<v8::Object> obj)
    v8::Local<v8::Value> label_val = obj->Get(v8::String::New("label"));
    v8::Local<v8::Value> width_val = obj->Get(v8::String::New("width"));
    v8::Local<v8::Value> height_val = obj->Get(v8::String::New("height"));
-   v8::Local<v8::Function> on_clicked_local = v8::Local<v8::Function>::Cast(obj->Get(v8::String::New("on_clicked")));
-   v8::Persistent<v8::Function> clicked_val = v8::Persistent<v8::Function>::New(on_clicked_local);
    v8::Local<v8::Value> x_val = obj->Get(v8::String::New("x"));
    v8::Local<v8::Value> y_val = obj->Get(v8::String::New("y"));
    v8::String::Utf8Value str(label_val);
 
    evas_object_resize(eo, width_val->ToInteger()->Value(), height_val->ToInteger()->Value());
    evas_object_move(eo, x_val->ToInteger()->Value(), y_val->ToInteger()->Value());
-   evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN, &eo_on_click, static_cast<void*>(*clicked_val));
+
+   v8::Local<v8::Value> val;
+
+   val = obj->Get(v8::String::New("on_clicked"));
+   if (val->IsFunction())
+     {
+        v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
+        v8::Persistent<v8::Function> func = v8::Persistent<v8::Function>::New(local_func);
+        evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN,
+                                       &eo_on_click, static_cast<void*>(*func));
+     }
 
    /* set up animator */
-   v8::Local<v8::Value> val = obj->Get(v8::String::New("on_animate"));
+   val = obj->Get(v8::String::New("on_animate"));
    if (val->IsFunction())
      {
         v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
