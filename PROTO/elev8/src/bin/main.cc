@@ -50,6 +50,19 @@ v8::Handle<v8::Value> Realize(const v8::Arguments& args) {
    return v8::Undefined();
 }
 
+v8::Handle<v8::Value> Print(const v8::Arguments& args)
+{
+   for (int i = 0; i < args.Length(); i++)
+     {
+        v8::HandleScope handle_scope;
+        v8::String::Utf8Value str(args[i]);
+        printf("%s%s", i ? " ":"", *str);
+     }
+   printf("\n");
+   fflush(stdout);
+   return v8::Undefined();
+}
+
 void
 realize_objects(v8::Handle<v8::Object> elements)
 {
@@ -133,6 +146,7 @@ elev8_run(const char *script)
    v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New();
 
    global->Set(v8::String::New("realize"), v8::FunctionTemplate::New(Realize));
+   global->Set(v8::String::New("print"), v8::FunctionTemplate::New(Print));
 
    /* create an empty window first */
    main_win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
