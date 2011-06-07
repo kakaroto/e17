@@ -15,7 +15,7 @@
 
 Evas_Object *main_win;
 
-void button_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
+void eo_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
   v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
   v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
@@ -25,6 +25,8 @@ void button_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 void
 realize_one(v8::Local<v8::Object> obj)
 {
+   Evas_Object *eo = elm_button_add(main_win);
+
    v8::Local<v8::Value> label_val = obj->Get(v8::String::New("label"));
    v8::Local<v8::Value> width_val = obj->Get(v8::String::New("width"));
    v8::Local<v8::Value> height_val = obj->Get(v8::String::New("height"));
@@ -34,13 +36,12 @@ realize_one(v8::Local<v8::Object> obj)
    v8::Local<v8::Value> y_val = obj->Get(v8::String::New("y"));
    v8::String::Utf8Value str(label_val);
 
-   Evas_Object *button = elm_button_add(main_win);
-   evas_object_resize(button, width_val->ToInteger()->Value(), height_val->ToInteger()->Value());
-   evas_object_move(button, x_val->ToInteger()->Value(), y_val->ToInteger()->Value());
-   evas_object_event_callback_add(button, EVAS_CALLBACK_MOUSE_DOWN, &button_on_click, static_cast<void*>(*clicked_val));
+   evas_object_resize(eo, width_val->ToInteger()->Value(), height_val->ToInteger()->Value());
+   evas_object_move(eo, x_val->ToInteger()->Value(), y_val->ToInteger()->Value());
+   evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN, &eo_on_click, static_cast<void*>(*clicked_val));
 
-   elm_button_label_set(button, *str);
-   evas_object_show(button);
+   elm_button_label_set(eo, *str);
+   evas_object_show(eo);
 }
 
 v8::Handle<v8::Value> Realize(const v8::Arguments& args) {
