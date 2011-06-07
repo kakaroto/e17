@@ -22,11 +22,9 @@ void button_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
   v8::Local<v8::Value> result = fn->Call(fn, 1, args);
 }
 
-v8::Handle<v8::Value> Realize(const v8::Arguments& args) {
-   if (args.Length() != 1)
-      return v8::ThrowException(v8::String::New("Bad parameters"));
-
-   v8::Local<v8::Object> obj = v8::Local<v8::Object>::Cast(args[0]);
+void
+realize_one(v8::Local<v8::Object> obj)
+{
    v8::Local<v8::Value> label_val = obj->Get(v8::String::New("label"));
    v8::Local<v8::Value> width_val = obj->Get(v8::String::New("width"));
    v8::Local<v8::Value> height_val = obj->Get(v8::String::New("height"));
@@ -43,9 +41,32 @@ v8::Handle<v8::Value> Realize(const v8::Arguments& args) {
 
    elm_button_label_set(button, *str);
    evas_object_show(button);
+}
+
+v8::Handle<v8::Value> Realize(const v8::Arguments& args) {
+   if (args.Length() != 1)
+      return v8::ThrowException(v8::String::New("Bad parameters"));
+   realize_one(args[0]->ToObject());
    return v8::Undefined();
 }
 
+void
+realize_objects(v8::Handle<v8::Object> elements)
+{
+   if (elements.IsEmpty())
+      return;
+
+   v8::Handle<v8::Array> props = elements->GetPropertyNames();
+
+   /* iterate through elements and instantiate them */
+   for (unsigned int i = 0; i < props->Length(); i++)
+     {
+        v8::Handle<v8::Value> x = props->Get(v8::Integer::New(i));
+        v8::String::Utf8Value val(x);
+
+        realize_one(elements->Get(x->ToString())->ToObject());
+     }
+}
 
 v8::Handle<v8::String> string_from_file(const char *filename)
 {
@@ -127,6 +148,9 @@ elev8_run(const char *script)
    v8::Persistent<v8::Context> context = v8::Context::New(NULL, global);
    v8::Context::Scope context_scope(context);
    run_script(script);
+
+   v8::Handle<v8::Object> glob = context->Global();
+   realize_objects(glob->Get(v8::String::New("elements"))->ToObject());
 
    evas_object_show(main_win);
    elm_run();
