@@ -35,6 +35,8 @@ struct CEvasObject;
 void realize_one(CEvasObject *parent, v8::Local<v8::Object> obj);
 
 class CEvasObject {
+   /* realize_one is a factory for our class */
+   friend void realize_one(CEvasObject *parent, v8::Local<v8::Object> obj);
 protected:
    v8::Persistent<v8::Object> obj;
    Evas_Object *eo;
@@ -274,6 +276,7 @@ realize_one(CEvasObject *parent, v8::Local<v8::Object> obj)
         return;
       }
 
+   parent->add_child(eo->get());
    eo->show();
 }
 
