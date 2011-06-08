@@ -32,54 +32,134 @@ eo_on_animate(void *data)
   return ECORE_CALLBACK_RENEW;
 }
 
+class CEvasObject {
+protected:
+   v8::Persistent<v8::Object> obj;
+   Evas_Object *eo;
+protected:
+   CEvasObject(v8::Local<v8::Object> temp_obj) :
+       obj(temp_obj),
+       eo(NULL)
+     {
+     }
+
+   /*
+    * Two phase constructor required because Evas_Object type needs
+    * to be known to be created.
+    */
+   void construct(Evas_Object *new_eo)
+     {
+       eo = new_eo;
+       assert(eo != NULL);
+       resize(obj->Get(v8::String::New("width")),
+              obj->Get(v8::String::New("height")));
+       move(obj->Get(v8::String::New("x")),
+            obj->Get(v8::String::New("y")));
+       callback_set(obj->Get(v8::String::New("on_clicked")));
+       label_set(obj->Get(v8::String::New("label")));
+       image_set(obj->Get(v8::String::New("image")));
+     }
+public:
+   virtual ~CEvasObject()
+     {
+       obj.Dispose();
+       evas_object_unref(eo);
+       eo = NULL;
+     }
+   void resize(v8::Local<v8::Value> width, v8::Local<v8::Value> height)
+     {
+       if (width->IsNumber() && height->IsNumber())
+         evas_object_resize(eo, width->ToInteger()->Value(), height->ToInteger()->Value());
+     }
+   void move(v8::Local<v8::Value> x, v8::Local<v8::Value> y)
+     {
+       if (x->IsNumber() && y->IsNumber())
+         evas_object_move(eo, x->ToInteger()->Value(), y->ToInteger()->Value());
+     }
+   void callback_set(v8::Local<v8::Value> val)
+     {
+       if (val->IsFunction())
+         {
+            v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
+            v8::Persistent<v8::Function> func = v8::Persistent<v8::Function>::New(local_func);
+            evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN,
+                                           &eo_on_click, static_cast<void*>(*func));
+         }
+     }
+   void label_set(v8::Local<v8::Value> val)
+     {
+       if (val->IsString())
+         {
+            v8::String::Utf8Value str(val);
+            elm_button_label_set(eo, *str);
+         }
+     }
+   virtual void image_set(v8::Local<v8::Value> val)
+     {
+        fprintf(stderr, "no image set\n");
+     }
+   virtual void show()
+     {
+        evas_object_show(eo);
+     }
+};
+
+class CElmButton : public CEvasObject {
+public:
+   CElmButton(Evas_Object *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
+     {
+       eo = elm_button_add(main_win);
+       construct(eo);
+     }
+   virtual ~CElmButton()
+     {
+     }
+};
+
+class CElmBackground : public CEvasObject {
+public:
+   CElmBackground(Evas_Object *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
+     {
+       eo = elm_bg_add(parent);
+       elm_win_resize_object_add(parent, eo);
+       construct(eo);
+     }
+   virtual ~CElmBackground()
+     {
+     }
+   virtual void image_set(v8::Local<v8::Value> val)
+     {
+       if (val->IsString())
+         {
+            v8::String::Utf8Value str(val);
+            elm_bg_file_set(eo, *str, NULL);
+         }
+     }
+};
+
 void
 realize_one(v8::Local<v8::Object> obj)
 {
-   Evas_Object *eo = NULL;
+   CEvasObject *eo = NULL;
 
    v8::Local<v8::Value> val = obj->Get(v8::String::New("type"));
    v8::String::Utf8Value str(val);
 
+   /* create the evas object */
    if (!strcmp(*str, "button"))
       {
-      eo = elm_button_add(main_win);
+        eo = new CElmButton(main_win, obj);
       }
    else if (!strcmp(*str, "background"))
       {
-      eo = elm_bg_add(main_win);
-      elm_win_resize_object_add(main_win, eo);
+        eo = new CElmBackground(main_win, obj);
       }
 
    if (!eo)
       {
-      fprintf(stderr, "Bad object type %s\n", *str);
-      return;
+        fprintf(stderr, "Bad object type %s\n", *str);
+        return;
       }
-
-   /* set the dimensions of the object */
-   v8::Local<v8::Value> width = obj->Get(v8::String::New("width"));
-   v8::Local<v8::Value> height = obj->Get(v8::String::New("height"));
-   if (width->IsNumber() && height->IsNumber())
-      {
-        evas_object_resize(eo, width->ToInteger()->Value(), height->ToInteger()->Value());
-      }
-
-   /* set the position of the object */
-   v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
-   v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
-   if (x->IsNumber() && height->IsNumber())
-      {
-        evas_object_move(eo, x->ToInteger()->Value(), y->ToInteger()->Value());
-      }
-
-   val = obj->Get(v8::String::New("on_clicked"));
-   if (val->IsFunction())
-     {
-        v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
-        v8::Persistent<v8::Function> func = v8::Persistent<v8::Function>::New(local_func);
-        evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN,
-                                       &eo_on_click, static_cast<void*>(*func));
-     }
 
    /* set up animator */
    val = obj->Get(v8::String::New("on_animate"));
@@ -90,23 +170,7 @@ realize_one(v8::Local<v8::Object> obj)
         ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
      }
 
-   /* set the label */
-   val = obj->Get(v8::String::New("label"));
-   if (val->IsString())
-     {
-        v8::String::Utf8Value str(val);
-        elm_button_label_set(eo, *str);
-     }
-
-   /* set the background */
-   val = obj->Get(v8::String::New("image"));
-   if (val->IsString())
-     {
-        v8::String::Utf8Value str(val);
-        elm_bg_file_set(eo, *str, NULL);
-     }
-
-   evas_object_show(eo);
+   eo->show();
 }
 
 v8::Handle<v8::Value>
