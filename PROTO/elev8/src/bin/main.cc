@@ -325,13 +325,29 @@ Print(const v8::Arguments& args)
    return v8::Undefined();
 }
 
+int shebang_length(char *p, int len)
+{
+   int i = 0;
+
+   if (len > 2 && p[0] == '#' && p[1] == '!')
+      {
+        for (i = 2; i < len && p[i] != '\n'; i++)
+          ;
+        if (i < len)
+          i++;
+      }
+
+   return i;
+}
+
 v8::Handle<v8::String>
 string_from_file(const char *filename)
 {
    v8::Handle<v8::String> ret = v8::Handle<v8::String>();
    int fd, len = 0;
-   void *bad_ret = reinterpret_cast<void*>(-1);
-   void *p = bad_ret;
+   char *bad_ret = reinterpret_cast<char*>(MAP_FAILED);
+   char *p = bad_ret;
+   int n;
 
    fd = open(filename, O_RDONLY);
    if (fd < 0)
@@ -341,11 +357,13 @@ string_from_file(const char *filename)
    if (len <= 0)
       goto fail;
 
-   p = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);
+   p = reinterpret_cast<char*>(mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0));
    if (p == bad_ret)
       goto fail;
 
-   ret = v8::String::New(reinterpret_cast<char*>(p), len);
+   n = shebang_length(p, len);
+
+   ret = v8::String::New(&p[n], len - n);
 
 fail:
    if (p == bad_ret)

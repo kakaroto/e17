@@ -1,3 +1,5 @@
+#!/usr/local/bin/elev8
+
 var animate_called = 0;
 
 var elements = {
