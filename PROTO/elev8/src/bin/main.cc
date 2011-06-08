@@ -97,6 +97,15 @@ realize_one(v8::Local<v8::Object> obj)
         v8::String::Utf8Value str(val);
         elm_button_label_set(eo, *str);
      }
+
+   /* set the background */
+   val = obj->Get(v8::String::New("image"));
+   if (val->IsString())
+     {
+        v8::String::Utf8Value str(val);
+        elm_bg_file_set(eo, *str, NULL);
+     }
+
    evas_object_show(eo);
 }
 

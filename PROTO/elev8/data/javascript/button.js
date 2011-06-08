@@ -1,7 +1,7 @@
 var elements = {
 	the_background : {
 		type : "background",
-		image : "images/rock_01.jpg",
+		image : "data/images/rock_01.jpg",
 	},
 	ok_button : {
 		type : "button",
