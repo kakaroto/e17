@@ -34,5 +34,21 @@ var elements = {
 		width : 60,
 		height : 20,
 		style : "default",
+	},
+	radio_on : {
+		type : "radio",
+		label : "on",
+		x : 0,
+		y : 160,
+		width : 60,
+		height : 40,
+	},
+	radio_off : {
+		type : "radio",
+		label : "off",
+		x : 0,
+		y : 210,
+		width : 60,
+		height : 40,
 	}
 };

@@ -86,7 +86,7 @@ public:
                                            &eo_on_click, static_cast<void*>(*func));
          }
      }
-   void label_set(v8::Local<v8::Value> val)
+   virtual void label_set(v8::Local<v8::Value> val)
      {
        if (val->IsString())
          {
@@ -137,6 +137,27 @@ public:
      }
 };
 
+class CElmRadio : public CEvasObject {
+public:
+   CElmRadio(Evas_Object *parent, v8::Local<v8::Object> obj) :
+       CEvasObject(obj)
+     {
+       eo = elm_radio_add(parent);
+       construct(eo);
+     }
+   virtual void label_set(v8::Local<v8::Value> val)
+     {
+       if (val->IsString())
+         {
+            v8::String::Utf8Value str(val);
+            elm_radio_label_set(eo, *str);
+         }
+     }
+   virtual ~CElmRadio()
+     {
+     }
+};
+
 void
 realize_one(v8::Local<v8::Object> obj)
 {
@@ -153,6 +174,10 @@ realize_one(v8::Local<v8::Object> obj)
    else if (!strcmp(*str, "background"))
       {
         eo = new CElmBackground(main_win, obj);
+      }
+   else if (!strcmp(*str, "radio"))
+      {
+        eo = new CElmRadio(main_win, obj);
       }
 
    if (!eo)
