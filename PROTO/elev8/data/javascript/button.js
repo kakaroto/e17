@@ -1,3 +1,5 @@
+var animate_called = 0;
+
 var elements = {
 	the_background : {
 		type : "background",
@@ -14,9 +16,12 @@ var elements = {
 				on_clicked : function() {
 					print("click!");
 				},
-				/* on_animate : function() {
-					print("animate!");
-				} */
+				on_animate : function() {
+					if (!animate_called) {
+						print("animate!");
+						animate_called = 1;
+					}
+				}
 			},
 			cancel_button : {
 				type : "button",
