@@ -7462,7 +7462,7 @@ collections {
            }
            program { name: "show_start2";
                action:  STATE_SET "visible" 0.0;
-               transition: DECELERATE 0.5;
+               transition: DECELERATE 0.0;
                target: "clip";
                after: "show_end";
            }
@@ -7485,7 +7485,7 @@ collections {
            }
            program { name: "hide_start2";
                action:  STATE_SET "hidden" 0.0;
-               transition: DECELERATE 0.5;
+               transition: DECELERATE 0.0;
                target: "clip";
                after: "hide_end";
            }
