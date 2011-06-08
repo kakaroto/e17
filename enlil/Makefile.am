@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src
+SUBDIRS = src doc
 
 MAINTAINERCLEANFILES = \
 Makefile.in \
@@ -28,15 +28,10 @@ COPYING-PLAIN \
 autogen.sh \
 enlil.pc.in \
 enlil.pc \
-README.in \
-README \
-Doxyfile \
-doc \
-gendoc
+README
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = enlil.pc
-ACLOCAL_AMFLAGS = -I m4
 
 .PHONY: doc
 
