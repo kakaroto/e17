@@ -37,12 +37,10 @@ realize_one(v8::Local<v8::Object> obj)
 {
    Evas_Object *eo = elm_button_add(main_win);
 
-   v8::Local<v8::Value> label_val = obj->Get(v8::String::New("label"));
    v8::Local<v8::Value> width_val = obj->Get(v8::String::New("width"));
    v8::Local<v8::Value> height_val = obj->Get(v8::String::New("height"));
    v8::Local<v8::Value> x_val = obj->Get(v8::String::New("x"));
    v8::Local<v8::Value> y_val = obj->Get(v8::String::New("y"));
-   v8::String::Utf8Value str(label_val);
 
    evas_object_resize(eo, width_val->ToInteger()->Value(), height_val->ToInteger()->Value());
    evas_object_move(eo, x_val->ToInteger()->Value(), y_val->ToInteger()->Value());
@@ -67,7 +65,13 @@ realize_one(v8::Local<v8::Object> obj)
         ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
      }
 
-   elm_button_label_set(eo, *str);
+   /* set the label */
+   val = obj->Get(v8::String::New("label"));
+   if (val->IsString())
+     {
+        v8::String::Utf8Value str(val);
+        elm_button_label_set(eo, *str);
+     }
    evas_object_show(eo);
 }
 
