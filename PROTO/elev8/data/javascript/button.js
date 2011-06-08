@@ -1,4 +1,8 @@
 var elements = {
+	the_background : {
+		type : "background",
+		image : "images/rock_01.jpg",
+	},
 	ok_button : {
 		type : "button",
 		label : "OK",
@@ -7,9 +11,9 @@ var elements = {
 		on_clicked : function() {
 			print("click!");
 		},
-		on_animate : function() {
+		/* on_animate : function() {
 			print("animate!");
-		}
+		} */
 	},
 	cancel_button : {
 		type : "button",
