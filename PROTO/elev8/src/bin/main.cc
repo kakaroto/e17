@@ -63,6 +63,9 @@ protected:
        label_set(obj->Get(v8::String::New("label")));
        image_set(obj->Get(v8::String::New("image")));
      }
+   virtual void add_child(Evas_Object *child)
+     {
+     }
 public:
    Evas_Object *get()
      {
@@ -176,12 +179,20 @@ public:
      }
 };
 
-class CElmPack : public CEvasObject {
+class CElmBox : public CEvasObject {
+protected:
+   virtual void add_child(Evas_Object *child)
+     {
+       elm_box_pack_end(eo, child);
+     }
 public:
-   CElmPack(Evas_Object *parent, v8::Local<v8::Object> obj) :
+   CElmBox(Evas_Object *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
      {
-       eo = elm_box_add(parent);
+       // FIXME: could add to the parent here... raster to figure out
+       Evas_Object *top = elm_object_top_widget_get(parent);
+       eo = elm_box_add(top);
+       realize_objects(eo, obj->Get(v8::String::New("elements"))->ToObject());
        construct(eo);
      }
 };
@@ -209,7 +220,7 @@ realize_one(Evas_Object *parent, v8::Local<v8::Object> obj)
       }
    else if (!strcmp(*str, "pack"))
       {
-        eo = new CElmPack(main_win, obj);
+        eo = new CElmBox(main_win, obj);
       }
 
    if (!eo)
@@ -217,8 +228,6 @@ realize_one(Evas_Object *parent, v8::Local<v8::Object> obj)
         fprintf(stderr, "Bad object type %s\n", *str);
         return;
       }
-
-   realize_objects(eo->get(), obj->Get(v8::String::New("elements"))->ToObject());
 
    eo->show();
 }
