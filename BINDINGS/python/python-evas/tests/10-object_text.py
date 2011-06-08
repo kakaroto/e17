@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import evas
 import evas.c_evas
 import unittest
@@ -28,6 +29,37 @@ class TextBasics(unittest.TestCase):
         self.assertEqual(isinstance(o, evas.c_evas.Text), True)
         self.assertEqual(o.color, (255, 0, 0, 255))
 
+    def testASCII(self):
+        """make sure that you can supply a unicode object as text
+
+        This must both be accepted and preserved as Unicode string.
+        """
+        text = "ASCII"
+        o = self.canvas.Text(text=text, font=("sans serif", 20),
+                             color="#ff0000")
+        self.assertEqual(isinstance(o.text_get(), str), True)
+        self.assertEqual(o.text_get(), text)
+
+    def testUnicode1(self):
+        """make sure that you can supply a unicode object as text
+
+        This must both be accepted and preserved as Unicode string.
+        """
+        text = u"Unicode"
+        o = self.canvas.Text(text=text, font=("sans serif", 20),
+                             color="#ff0000")
+        self.assertEqual(isinstance(o.text_get(), unicode), True)
+        self.assertEqual(o.text_get(), text)
+
+    def testUnicode2(self):
+        """make sure that non-ASCII characters are treated correctly
+
+        The used string is the word 'mojibake', btw.
+        """
+        text = u"文字化け"
+        o = self.canvas.Text(text=text, font=("sans serif", 20),
+                             color="#ff0000")
+        self.assertEqual(o.text_get(), text)
 
 unittest.main()
 evas.shutdown()
