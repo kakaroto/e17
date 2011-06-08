@@ -10,8 +10,11 @@
 	- Elementary : Changed edje_object to elm_layout.
 	- Add performance test application.
 
+* Edje
+	- Add an API to reset all parts to default state.
+
 * Elev8
-	- Add parameter check routine and usage.
+	- Add libv8-dev check routine. 
 
 * MARKETTING
 	- Refine cebit2011 presentation and move this to MARKETTING.
