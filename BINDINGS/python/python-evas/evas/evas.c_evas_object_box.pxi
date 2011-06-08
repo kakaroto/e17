@@ -27,6 +27,7 @@ cdef public class Box(Object) [object PyEvasBox, type PyEvasBox_Type]:
         Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(evas_object_box_add(self.evas.obj))
+        self._set_common_params(**kargs)
 
     def align_get(self):
         cdef double horizontal, vertical

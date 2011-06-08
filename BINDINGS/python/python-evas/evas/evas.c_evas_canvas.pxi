@@ -854,3 +854,9 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         @rtype: L{Textblock<evas.Textblock>}
         """
         return Textblock(self, **kargs)
+
+    def Box(self, **kargs):
+        """Factory of L{evas.Box} associated with this canvas.
+        @rtype: L{Box<evas.Box>}
+        """
+        return Box(self, **kargs)
