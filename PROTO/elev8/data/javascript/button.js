@@ -8,6 +8,10 @@ var elements = {
 	pack_box : {
 		type : "pack",
 		elements : {
+			first : {
+				type : "label",
+				label : "<b>This is a label</b><br>It has two lines",
+			},
 			ok_button : {
 				type : "button",
 				label : "OK",
@@ -19,7 +23,7 @@ var elements = {
 						print("animate!");
 						animate_called = 1;
 					}
-				}
+				},
 			},
 			cancel_button : {
 				type : "button",

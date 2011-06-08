@@ -244,6 +244,24 @@ public:
      }
 };
 
+class CElmLabel : public CEvasObject {
+public:
+   CElmLabel(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject(obj)
+     {
+       eo = elm_label_add(parent->top_widget_get());
+       construct(eo);
+     }
+   virtual void label_set(v8::Local<v8::Value> val)
+     {
+       if (val->IsString())
+         {
+            v8::String::Utf8Value str(val);
+            elm_label_label_set(eo, *str);
+         }
+     }
+};
+
 void
 realize_one(CEvasObject *parent, v8::Local<v8::Object> obj)
 {
@@ -260,6 +278,10 @@ realize_one(CEvasObject *parent, v8::Local<v8::Object> obj)
    else if (!strcmp(*str, "background"))
       {
         eo = new CElmBackground(main_win, obj);
+      }
+   else if (!strcmp(*str, "label"))
+      {
+        eo = new CElmLabel(main_win, obj);
       }
    else if (!strcmp(*str, "radio"))
       {
@@ -352,7 +374,10 @@ run_script(const char *filename)
 
    v8::Handle<v8::Script> script = v8::Script::Compile(source, origin);
    if (script.IsEmpty())
-      fprintf(stderr, "compile failed\n");
+     {
+        fprintf(stderr, "compile failed\n");
+        exit(1);
+     }
    v8::Handle<v8::Value> result = script->Run();
 }
 
