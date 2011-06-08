@@ -13,11 +13,7 @@
 #include <fcntl.h>
 #include <assert.h>
 
-Evas_Object *main_win;
-
 /* forward declaration of function used recursively */
-void realize_objects(Evas_Object *parent, v8::Handle<v8::Object> elements);
-
 void
 eo_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -40,6 +36,10 @@ protected:
    v8::Persistent<v8::Object> obj;
    Evas_Object *eo;
 protected:
+   CEvasObject() :
+       eo(NULL)
+     {
+     }
    CEvasObject(v8::Local<v8::Object> temp_obj) :
        obj(temp_obj),
        eo(NULL)
@@ -70,6 +70,12 @@ public:
    Evas_Object *get()
      {
        return eo;
+     }
+
+   // FIXME: could add to the parent here... raster to figure out
+   Evas_Object *top_widget_get()
+     {
+       return elm_object_top_widget_get(eo);
      }
 
    virtual ~CEvasObject()
@@ -125,11 +131,33 @@ public:
      }
 };
 
+void realize_objects(CEvasObject *parent, v8::Handle<v8::Object> elements);
+
+class CElmBasicWindow : public CEvasObject {
+public:
+   CElmBasicWindow(const char *title)
+     {
+       eo = elm_win_add(NULL, "main", ELM_WIN_BASIC);
+       elm_win_title_set(eo, title);
+       evas_object_focus_set(eo, 1);
+       evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
+     }
+   ~CElmBasicWindow()
+     {
+     }
+   static void on_delete(void *data, Evas_Object *obj, void *event_info)
+     {
+       elm_exit();
+     }
+};
+
+CElmBasicWindow *main_win;
+
 class CElmButton : public CEvasObject {
 public:
-   CElmButton(Evas_Object *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
+   CElmButton(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
      {
-       eo = elm_button_add(main_win);
+       eo = elm_button_add(parent->top_widget_get());
        construct(eo);
      }
    virtual ~CElmButton()
@@ -139,10 +167,10 @@ public:
 
 class CElmBackground : public CEvasObject {
 public:
-   CElmBackground(Evas_Object *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
+   CElmBackground(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
      {
-       eo = elm_bg_add(parent);
-       elm_win_resize_object_add(parent, eo);
+       eo = elm_bg_add(parent->top_widget_get());
+       elm_win_resize_object_add(parent->get(), eo);
        construct(eo);
      }
    virtual ~CElmBackground()
@@ -160,10 +188,10 @@ public:
 
 class CElmRadio : public CEvasObject {
 public:
-   CElmRadio(Evas_Object *parent, v8::Local<v8::Object> obj) :
+   CElmRadio(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
      {
-       eo = elm_radio_add(parent);
+       eo = elm_radio_add(parent->top_widget_get());
        construct(eo);
      }
    virtual void label_set(v8::Local<v8::Value> val)
@@ -186,19 +214,17 @@ protected:
        elm_box_pack_end(eo, child);
      }
 public:
-   CElmBox(Evas_Object *parent, v8::Local<v8::Object> obj) :
+   CElmBox(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
      {
-       // FIXME: could add to the parent here... raster to figure out
-       Evas_Object *top = elm_object_top_widget_get(parent);
-       eo = elm_box_add(top);
-       realize_objects(eo, obj->Get(v8::String::New("elements"))->ToObject());
+       eo = elm_box_add(parent->top_widget_get());
+       realize_objects(this, obj->Get(v8::String::New("elements"))->ToObject());
        construct(eo);
      }
 };
 
 void
-realize_one(Evas_Object *parent, v8::Local<v8::Object> obj)
+realize_one(CEvasObject *parent, v8::Local<v8::Object> obj)
 {
    CEvasObject *eo = NULL;
 
@@ -256,7 +282,7 @@ Print(const v8::Arguments& args)
 }
 
 void
-realize_objects(Evas_Object *parent, v8::Handle<v8::Object> elements)
+realize_objects(CEvasObject *parent, v8::Handle<v8::Object> elements)
 {
    if (elements.IsEmpty())
       return;
@@ -326,12 +352,6 @@ run_script(const char *filename)
    v8::Handle<v8::Value> result = script->Run();
 }
 
-static void
-es_window_delete(void *data, Evas_Object *obj, void *event_info)
-{
-   elm_exit();
-}
-
 void
 elev8_run(const char *script)
 {
@@ -341,12 +361,9 @@ elev8_run(const char *script)
    global->Set(v8::String::New("realize"), v8::FunctionTemplate::New(Realize));
    global->Set(v8::String::New("print"), v8::FunctionTemplate::New(Print));
 
-   /* create an empty window first */
-   main_win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
-   elm_win_title_set(main_win, basename(script));
-   evas_object_focus_set(main_win, 1);
-   evas_object_smart_callback_add(main_win, "delete,request", es_window_delete, NULL);
-   evas_object_resize(main_win, 320, 480);
+   main_win = new CElmBasicWindow(basename(script));
+
+   evas_object_resize(main_win->get(), 320, 480);
 
    /* setup V8 */
    v8::Persistent<v8::Context> context = v8::Context::New(NULL, global);
@@ -356,7 +373,7 @@ elev8_run(const char *script)
    v8::Handle<v8::Object> glob = context->Global();
    realize_objects(main_win, glob->Get(v8::String::New("elements"))->ToObject());
 
-   evas_object_show(main_win);
+   main_win->show();
    elm_run();
 
    context.Dispose();
