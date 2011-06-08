@@ -544,6 +544,8 @@ _smart_show(Evas_Object *obj)
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
    evas_object_show(sd->obj);
+   evas_object_show(sd->bt_left);
+   evas_object_show(sd->bt_right);
 }
 
 static void
@@ -554,6 +556,8 @@ _smart_hide(Evas_Object *obj)
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
    evas_object_hide(sd->obj);
+   evas_object_hide(sd->bt_left);
+   evas_object_hide(sd->bt_right);
 }
 
 static void
@@ -565,6 +569,8 @@ _smart_clip_set(Evas_Object *obj,
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
    evas_object_clip_set(sd->obj, clip);
+   evas_object_clip_set(sd->bt_left, clip);
+   evas_object_clip_set(sd->bt_right, clip);
 }
 
 static void
@@ -575,6 +581,8 @@ _smart_clip_unset(Evas_Object *obj)
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
    evas_object_clip_unset(sd->obj);
+   evas_object_clip_unset(sd->bt_left);
+   evas_object_clip_unset(sd->bt_right);
 }
 
 static void
@@ -590,5 +598,7 @@ _smart_color_set(Evas_Object *obj,
    if (!sd) return;
 
    evas_object_color_set(sd->obj, r, g, b, a);
+   evas_object_color_set(sd->bt_left, r, g, b, a);
+   evas_object_color_set(sd->bt_right, r, g, b, a);
 }
 

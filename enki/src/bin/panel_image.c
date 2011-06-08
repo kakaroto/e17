@@ -390,7 +390,11 @@ _panel_image_photo_set(Panel_Image *panel_image,
    panel_image->photo = photo;
    photo_data->panel_image = panel_image;
 
-   tabpanel_item_label_set(panel_image->tabpanel_item, enlil_photo_name_get(photo));
+
+   const char *name = enlil_photo_name_get(photo);
+   if(!name || !strcmp(name, ""))
+      name = "no name";
+   tabpanel_item_label_set(panel_image->tabpanel_item, name);
 
    elm_scrolled_entry_entry_set(panel_image->entry_name, enlil_photo_name_get(photo));
    elm_scrolled_entry_entry_set(panel_image->entry_description, enlil_photo_description_get(photo));
