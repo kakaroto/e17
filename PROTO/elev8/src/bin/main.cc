@@ -126,7 +126,8 @@ public:
      }
    virtual void image_set(v8::Local<v8::Value> val)
      {
-        fprintf(stderr, "no image set\n");
+       if (val->IsString())
+         fprintf(stderr, "no image set\n");
      }
    virtual void show()
      {
