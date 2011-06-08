@@ -59,6 +59,7 @@ protected:
        move(obj->Get(v8::String::New("x")),
             obj->Get(v8::String::New("y")));
        callback_set(obj->Get(v8::String::New("on_clicked")));
+       animator_set(obj->Get(v8::String::New("on_animate")));
        label_set(obj->Get(v8::String::New("label")));
        image_set(obj->Get(v8::String::New("image")));
      }
@@ -92,6 +93,15 @@ public:
             v8::Persistent<v8::Function> func = v8::Persistent<v8::Function>::New(local_func);
             evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN,
                                            &eo_on_click, static_cast<void*>(*func));
+         }
+     }
+   void animator_set(v8::Local<v8::Value> val)
+     {
+       if (val->IsFunction())
+         {
+            v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
+            v8::Persistent<v8::Function> persist_func = v8::Persistent<v8::Function>::New(local_func);
+            ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
          }
      }
    virtual void label_set(v8::Local<v8::Value> val)
@@ -207,15 +217,6 @@ realize_one(Evas_Object *parent, v8::Local<v8::Object> obj)
         fprintf(stderr, "Bad object type %s\n", *str);
         return;
       }
-
-   /* set up animator */
-   val = obj->Get(v8::String::New("on_animate"));
-   if (val->IsFunction())
-     {
-        v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
-        v8::Persistent<v8::Function> persist_func = v8::Persistent<v8::Function>::New(local_func);
-        ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
-     }
 
    realize_objects(eo->get(), obj->Get(v8::String::New("elements"))->ToObject());
 
