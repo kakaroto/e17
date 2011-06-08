@@ -31,6 +31,9 @@ eo_on_animate(void *data)
   return ECORE_CALLBACK_RENEW;
 }
 
+struct CEvasObject;
+void realize_one(CEvasObject *parent, v8::Local<v8::Object> obj);
+
 class CEvasObject {
 protected:
    v8::Persistent<v8::Object> obj;
@@ -129,9 +132,24 @@ public:
      {
         evas_object_show(eo);
      }
+   void realize_objects(v8::Handle<v8::Object> elements)
+     {
+        if (elements.IsEmpty())
+           return;
+
+        v8::Handle<v8::Array> props = elements->GetPropertyNames();
+
+        /* iterate through elements and instantiate them */
+        for (unsigned int i = 0; i < props->Length(); i++)
+          {
+             v8::Handle<v8::Value> x = props->Get(v8::Integer::New(i));
+             v8::String::Utf8Value val(x);
+
+             realize_one(this, elements->Get(x->ToString())->ToObject());
+          }
+     }
 };
 
-void realize_objects(CEvasObject *parent, v8::Handle<v8::Object> elements);
 
 class CElmBasicWindow : public CEvasObject {
 public:
@@ -218,7 +236,7 @@ public:
        CEvasObject(obj)
      {
        eo = elm_box_add(parent->top_widget_get());
-       realize_objects(this, obj->Get(v8::String::New("elements"))->ToObject());
+       realize_objects(obj->Get(v8::String::New("elements"))->ToObject());
        construct(eo);
      }
 };
@@ -279,24 +297,6 @@ Print(const v8::Arguments& args)
    printf("\n");
    fflush(stdout);
    return v8::Undefined();
-}
-
-void
-realize_objects(CEvasObject *parent, v8::Handle<v8::Object> elements)
-{
-   if (elements.IsEmpty())
-      return;
-
-   v8::Handle<v8::Array> props = elements->GetPropertyNames();
-
-   /* iterate through elements and instantiate them */
-   for (unsigned int i = 0; i < props->Length(); i++)
-     {
-        v8::Handle<v8::Value> x = props->Get(v8::Integer::New(i));
-        v8::String::Utf8Value val(x);
-
-        realize_one(parent, elements->Get(x->ToString())->ToObject());
-     }
 }
 
 v8::Handle<v8::String>
@@ -371,7 +371,7 @@ elev8_run(const char *script)
    run_script(script);
 
    v8::Handle<v8::Object> glob = context->Global();
-   realize_objects(main_win, glob->Get(v8::String::New("elements"))->ToObject());
+   main_win->realize_objects(glob->Get(v8::String::New("elements"))->ToObject());
 
    main_win->show();
    elm_run();
