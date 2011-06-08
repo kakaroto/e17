@@ -387,8 +387,6 @@ _photo_icon_get(const void  *data,
         else
           s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_LARGE, thumb_done_cb, thumb_error_cb, NULL);
 
-        evas_image_cache_flush (evas_object_evas_get(obj));
-
         if (s)
           {
              photo_object_file_set(o, s, NULL);
