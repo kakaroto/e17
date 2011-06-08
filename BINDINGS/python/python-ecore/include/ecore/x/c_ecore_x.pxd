@@ -152,6 +152,7 @@ cdef extern from "Ecore_X.h":
         ECORE_X_RENDER_SUBPIXEL_ORDER_NONE
 
     ctypedef enum Ecore_X_Window_State:
+        ECORE_X_WINDOW_STATE_UNKNOWN
         ECORE_X_WINDOW_STATE_ICONIFIED
         ECORE_X_WINDOW_STATE_MODAL
         ECORE_X_WINDOW_STATE_STICKY
@@ -165,7 +166,6 @@ cdef extern from "Ecore_X.h":
         ECORE_X_WINDOW_STATE_ABOVE
         ECORE_X_WINDOW_STATE_BELOW
         ECORE_X_WINDOW_STATE_DEMANDS_ATTENTION
-        ECORE_X_WINDOW_STATE_UNKNOWN
 
     ctypedef enum Ecore_X_Window_State_Action:
         ECORE_X_WINDOW_STATE_ACTION_REMOVE
@@ -705,6 +705,7 @@ cdef extern from "Ecore_X.h":
         ECORE_X_WINDOW_STATE_HINT_ICONIC
 
     ctypedef enum Ecore_X_Window_Type:
+        ECORE_X_WINDOW_TYPE_UNKNOWN
         ECORE_X_WINDOW_TYPE_DESKTOP
         ECORE_X_WINDOW_TYPE_DOCK
         ECORE_X_WINDOW_TYPE_TOOLBAR
@@ -713,7 +714,6 @@ cdef extern from "Ecore_X.h":
         ECORE_X_WINDOW_TYPE_SPLASH
         ECORE_X_WINDOW_TYPE_DIALOG
         ECORE_X_WINDOW_TYPE_NORMAL
-        ECORE_X_WINDOW_TYPE_UNKNOWN
 
     ctypedef enum Ecore_X_Action:
         ECORE_X_ACTION_MOVE
