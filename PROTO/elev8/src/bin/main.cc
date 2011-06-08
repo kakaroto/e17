@@ -35,17 +35,42 @@ eo_on_animate(void *data)
 void
 realize_one(v8::Local<v8::Object> obj)
 {
-   Evas_Object *eo = elm_button_add(main_win);
+   Evas_Object *eo = NULL;
 
-   v8::Local<v8::Value> width_val = obj->Get(v8::String::New("width"));
-   v8::Local<v8::Value> height_val = obj->Get(v8::String::New("height"));
-   v8::Local<v8::Value> x_val = obj->Get(v8::String::New("x"));
-   v8::Local<v8::Value> y_val = obj->Get(v8::String::New("y"));
+   v8::Local<v8::Value> val = obj->Get(v8::String::New("type"));
+   v8::String::Utf8Value str(val);
 
-   evas_object_resize(eo, width_val->ToInteger()->Value(), height_val->ToInteger()->Value());
-   evas_object_move(eo, x_val->ToInteger()->Value(), y_val->ToInteger()->Value());
+   if (!strcmp(*str, "button"))
+      {
+      eo = elm_button_add(main_win);
+      }
+   else if (!strcmp(*str, "background"))
+      {
+      eo = elm_bg_add(main_win);
+      elm_win_resize_object_add(main_win, eo);
+      }
 
-   v8::Local<v8::Value> val;
+   if (!eo)
+      {
+      fprintf(stderr, "Bad object type %s\n", *str);
+      return;
+      }
+
+   /* set the dimensions of the object */
+   v8::Local<v8::Value> width = obj->Get(v8::String::New("width"));
+   v8::Local<v8::Value> height = obj->Get(v8::String::New("height"));
+   if (width->IsNumber() && height->IsNumber())
+      {
+        evas_object_resize(eo, width->ToInteger()->Value(), height->ToInteger()->Value());
+      }
+
+   /* set the position of the object */
+   v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
+   v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
+   if (x->IsNumber() && height->IsNumber())
+      {
+        evas_object_move(eo, x->ToInteger()->Value(), y->ToInteger()->Value());
+      }
 
    val = obj->Get(v8::String::New("on_clicked"));
    if (val->IsFunction())
@@ -190,9 +215,6 @@ elev8_run(const char *script)
    evas_object_focus_set(main_win, 1);
    evas_object_smart_callback_add(main_win, "delete,request", es_window_delete, NULL);
    evas_object_resize(main_win, 320, 480);
-   Evas_Object *bg = elm_bg_add(main_win);
-   elm_win_resize_object_add(main_win, bg);
-   evas_object_show(bg);
 
    /* setup V8 */
    v8::Persistent<v8::Context> context = v8::Context::New(NULL, global);
