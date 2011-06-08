@@ -15,6 +15,9 @@
 
 Evas_Object *main_win;
 
+/* forward declaration of function used recursively */
+void realize_objects(Evas_Object *parent, v8::Handle<v8::Object> elements);
+
 void
 eo_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -60,6 +63,11 @@ protected:
        image_set(obj->Get(v8::String::New("image")));
      }
 public:
+   Evas_Object *get()
+     {
+       return eo;
+     }
+
    virtual ~CEvasObject()
      {
        obj.Dispose();
@@ -158,8 +166,18 @@ public:
      }
 };
 
+class CElmPack : public CEvasObject {
+public:
+   CElmPack(Evas_Object *parent, v8::Local<v8::Object> obj) :
+       CEvasObject(obj)
+     {
+       eo = elm_box_add(parent);
+       construct(eo);
+     }
+};
+
 void
-realize_one(v8::Local<v8::Object> obj)
+realize_one(Evas_Object *parent, v8::Local<v8::Object> obj)
 {
    CEvasObject *eo = NULL;
 
@@ -179,6 +197,10 @@ realize_one(v8::Local<v8::Object> obj)
       {
         eo = new CElmRadio(main_win, obj);
       }
+   else if (!strcmp(*str, "pack"))
+      {
+        eo = new CElmPack(main_win, obj);
+      }
 
    if (!eo)
       {
@@ -195,6 +217,8 @@ realize_one(v8::Local<v8::Object> obj)
         ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
      }
 
+   realize_objects(eo->get(), obj->Get(v8::String::New("elements"))->ToObject());
+
    eo->show();
 }
 
@@ -203,7 +227,7 @@ Realize(const v8::Arguments& args)
 {
    if (args.Length() != 1)
       return v8::ThrowException(v8::String::New("Bad parameters"));
-   realize_one(args[0]->ToObject());
+   realize_one(main_win, args[0]->ToObject());
    return v8::Undefined();
 }
 
@@ -222,7 +246,7 @@ Print(const v8::Arguments& args)
 }
 
 void
-realize_objects(v8::Handle<v8::Object> elements)
+realize_objects(Evas_Object *parent, v8::Handle<v8::Object> elements)
 {
    if (elements.IsEmpty())
       return;
@@ -235,7 +259,7 @@ realize_objects(v8::Handle<v8::Object> elements)
         v8::Handle<v8::Value> x = props->Get(v8::Integer::New(i));
         v8::String::Utf8Value val(x);
 
-        realize_one(elements->Get(x->ToString())->ToObject());
+        realize_one(parent, elements->Get(x->ToString())->ToObject());
      }
 }
 
@@ -320,7 +344,7 @@ elev8_run(const char *script)
    run_script(script);
 
    v8::Handle<v8::Object> glob = context->Global();
-   realize_objects(glob->Get(v8::String::New("elements"))->ToObject());
+   realize_objects(main_win, glob->Get(v8::String::New("elements"))->ToObject());
 
    evas_object_show(main_win);
    elm_run();
