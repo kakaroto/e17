@@ -429,7 +429,18 @@ cdef class Window:
         return (bool(accepts_focus), initial_state, icon_pixmap, icon_mask,
                 icon_window, window_group, bool(is_urgent))
 
+    def type_set(self, int type):
+        ecore_x_netwm_window_type_set(self.xid, <Ecore_X_Window_Type>type)
 
+    def state_set(self, states):
+        # building list
+        cdef Ecore_X_Window_State *_states
+        _states = <Ecore_X_Window_State *>PyMem_Malloc(len(states) * sizeof(Ecore_X_Window_State))
+        for i in xrange(len(states)):
+            _states[i] = states[i]
+
+        ecore_x_netwm_window_state_set(self.xid, _states, len(states))
+        PyMem_Free(<void*>_states)
 
 def Window_from_xid(unsigned long xid):
     """Create a Python wrapper for given window id.
