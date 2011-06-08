@@ -7,10 +7,6 @@
 #define __UNUSED__
 #endif
 
-/* Gettext: you need to use the D_ prefix for all your messages,
- * like  printf D_("Hello World\n");  so can be replaced by gettext */
-#define D_(str) dgettext(PACKAGE, str)
-
 #define DBG(...) EINA_LOG_DBG(__VA_ARGS__)
 #define ERR(...) EINA_LOG_ERR(__VA_ARGS__)
 
