@@ -426,9 +426,25 @@ elev8_run(const char *script)
    context.Dispose();
 }
 
+static void
+main_help(const char *progname)
+{
+   printf
+     ("Usage:\n"
+      "\t%s input_file.js\n"
+      "\tex) %s ../../data/javascript/button.js\n"
+      , progname, progname);
+}
+
 int
 elm_main(int argc, char **argv)
 {
+   if (argc < 2)
+     {
+	fprintf(stderr, "%s: Error: no input file specified.\n", argv[0]);
+	main_help(argv[0]);
+	exit(-1);
+     }
    v8::V8::SetFlagsFromCommandLine(&argc, argv, true);
    elev8_run(argv[1]);
    v8::V8::Dispose();
