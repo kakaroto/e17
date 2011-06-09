@@ -73,7 +73,7 @@ protected:
 
        /* show the object, maybe */
        v8::Local<v8::Value> hidden = obj->Get(v8::String::New("hidden"));
-       if (hidden->IsFalse())
+       if (!hidden->IsTrue())
          show();
      }
 

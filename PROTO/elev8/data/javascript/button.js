@@ -43,6 +43,12 @@ var elements = {
 				label : "check",
 				align : { x : -1.0, y : -1.0 },
 			},
+			hidden_button : {
+				type : "button",
+				label : "no see me",
+				hidden : true,
+				align : { x : -1.0, y : -1.0 },
+			},
 		},
 	},
 };
