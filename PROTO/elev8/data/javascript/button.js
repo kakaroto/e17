@@ -36,11 +36,12 @@ var elements = {
 				weight : EXPAND_BOTH,
 				on_clicked : function() {
 					print("clock!");
-				}
+				},
 			},
 			check_button : {
 				type : "button",
 				label : "check",
+				align : { x : -1.0, y : -1.0 },
 			},
 		},
 	},

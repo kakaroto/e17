@@ -69,6 +69,7 @@ protected:
        label_set(obj->Get(v8::String::New("label")));
        image_set(obj->Get(v8::String::New("image")));
        weight_set(obj->Get(v8::String::New("weight")));
+       align_set(obj->Get(v8::String::New("align")));
      }
 
    virtual void add_child(Evas_Object *child)
@@ -153,7 +154,17 @@ public:
      {
         double x, y;
         if (get_xy_from_object(weight, x, y))
-            evas_object_size_hint_weight_set(eo, x, y);
+          evas_object_size_hint_weight_set(eo, x, y);
+     }
+
+   virtual void align_set(v8::Local<v8::Value> align)
+     {
+        double x, y;
+        if (get_xy_from_object(align, x, y))
+          {
+             evas_object_size_hint_align_set(eo, x, y);
+             fprintf(stderr, "Set alignment %0.2f %0.2f\n", x, y);
+          }
      }
 
    virtual void image_set(v8::Local<v8::Value> val)
@@ -291,7 +302,14 @@ public:
        CEvasObject(obj)
      {
        eo = elm_label_add(parent->top_widget_get());
+       wrap_set(obj->Get(v8::String::New("wrap")));
        construct(eo);
+     }
+
+   void wrap_set(v8::Local<v8::Value> wrap)
+     {
+       if (wrap->IsNumber())
+         elm_label_line_wrap_set(eo, static_cast<Elm_Wrap_Type>(wrap->Int32Value()));
      }
 
    virtual void label_set(v8::Local<v8::Value> val)
