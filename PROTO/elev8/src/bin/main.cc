@@ -67,8 +67,7 @@ protected:
        animator_set(obj->Get(v8::String::New("on_animate")));
        label_set(obj->Get(v8::String::New("label")));
        image_set(obj->Get(v8::String::New("image")));
-       weight_set(obj->Get(v8::String::New("weight_x")),
-                  obj->Get(v8::String::New("weight_y")));
+       weight_set(obj->Get(v8::String::New("weight")));
      }
    virtual void add_child(Evas_Object *child)
      {
@@ -128,12 +127,17 @@ public:
             elm_button_label_set(eo, *str);
          }
      }
-   virtual void weight_set(v8::Local<v8::Value> x, v8::Local<v8::Value> y)
+   virtual void weight_set(v8::Local<v8::Value> weight)
      {
-       if (x->IsNumber() && y->IsNumber()) {
-         evas_object_size_hint_weight_set(eo, x->NumberValue(), y->NumberValue());
-         fprintf(stderr, "weight set %0.2f, %0.2f\n", x->NumberValue(), y->NumberValue());
-       }
+       if (!weight->IsObject())
+         return;
+       v8::Local<v8::Object> obj = weight->ToObject();
+       v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
+       v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
+       if (x->IsNumber() && y->IsNumber())
+         {
+            evas_object_size_hint_weight_set(eo, x->NumberValue(), y->NumberValue());
+         }
      }
    virtual void image_set(v8::Local<v8::Value> val)
      {
