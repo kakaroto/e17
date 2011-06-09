@@ -32,11 +32,11 @@ eo_on_animate(void *data)
 }
 
 class CEvasObject;
-void realize_one(CEvasObject *parent, v8::Local<v8::Object> obj);
+void realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
 
 class CEvasObject {
    /* realize_one is a factory for our class */
-   friend void realize_one(CEvasObject *parent, v8::Local<v8::Object> obj);
+   friend void realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
 protected:
    v8::Persistent<v8::Object> obj;
    Evas_Object *eo;
@@ -178,12 +178,15 @@ public:
         evas_object_show(eo);
      }
 
-   void realize_objects(v8::Handle<v8::Object> elements)
+   void realize_objects(v8::Handle<v8::Value> val)
      {
-        if (elements.IsEmpty())
+        if (!val->IsObject()) {
+           fprintf(stderr, "not an object!\n");
            return;
+        }
 
-        v8::Handle<v8::Array> props = elements->GetPropertyNames();
+        v8::Handle<v8::Object> obj = val->ToObject();
+        v8::Handle<v8::Array> props = obj->GetPropertyNames();
 
         /* iterate through elements and instantiate them */
         for (unsigned int i = 0; i < props->Length(); i++)
@@ -191,7 +194,7 @@ public:
              v8::Handle<v8::Value> x = props->Get(v8::Integer::New(i));
              v8::String::Utf8Value val(x);
 
-             realize_one(this, elements->Get(x->ToString())->ToObject());
+             realize_one(this, obj->Get(x->ToString()));
           }
      }
 };
@@ -290,7 +293,7 @@ public:
        CEvasObject(obj)
      {
        eo = elm_box_add(parent->top_widget_get());
-       realize_objects(obj->Get(v8::String::New("elements"))->ToObject());
+       realize_objects(obj->Get(v8::String::New("elements")));
        elm_win_resize_object_add(parent->get(), eo);
        construct(eo);
      }
@@ -322,15 +325,33 @@ public:
      }
 };
 
+class CElmFlip : public CEvasObject {
+public:
+   CElmFlip(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject(obj)
+     {
+       eo = elm_flip_add(parent->top_widget_get());
+       realize_objects(obj->Get(v8::String::New("elements")));
+       construct(eo);
+     }
+};
+
 void
-realize_one(CEvasObject *parent, v8::Local<v8::Object> obj)
+realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
 {
-   CEvasObject *eo = NULL;
+   if (!object_val->IsObject())
+     {
+        fprintf(stderr, "%s: value is not an object!\n", __FUNCTION__);
+        return;
+     }
+
+   v8::Local<v8::Object> obj = object_val->ToObject();
 
    v8::Local<v8::Value> val = obj->Get(v8::String::New("type"));
    v8::String::Utf8Value str(val);
 
    /* create the evas object */
+   CEvasObject *eo = NULL;
    if (!strcmp(*str, "button"))
       {
         eo = new CElmButton(main_win, obj);
@@ -338,6 +359,10 @@ realize_one(CEvasObject *parent, v8::Local<v8::Object> obj)
    else if (!strcmp(*str, "background"))
       {
         eo = new CElmBackground(main_win, obj);
+      }
+   else if (!strcmp(*str, "flip"))
+      {
+        eo = new CElmFlip(main_win, obj);
       }
    else if (!strcmp(*str, "label"))
       {
@@ -367,7 +392,7 @@ Realize(const v8::Arguments& args)
 {
    if (args.Length() != 1)
       return v8::ThrowException(v8::String::New("Bad parameters"));
-   realize_one(main_win, args[0]->ToObject());
+   realize_one(main_win, args[0]);
    return v8::Undefined();
 }
 
@@ -478,7 +503,7 @@ elev8_run(const char *script)
    run_script(script);
 
    v8::Handle<v8::Object> glob = context->Global();
-   main_win->realize_objects(glob->Get(v8::String::New("elements"))->ToObject());
+   main_win->realize_objects(glob->Get(v8::String::New("elements")));
 
    main_win->show();
    elm_run();
