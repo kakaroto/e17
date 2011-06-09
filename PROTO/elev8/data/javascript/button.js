@@ -1,7 +1,5 @@
 #!/usr/local/bin/elev8
 
-var animate_called = 0;
-
 var elements = {
 	the_background : {
 		type : "background",
@@ -20,10 +18,11 @@ var elements = {
 				on_clicked : function() {
 					print("click!");
 				},
+				animate_called : 0,
 				on_animate : function() {
-					if (!animate_called) {
+					if (!this.animate_called) {
 						print("animate!");
-						animate_called = 1;
+						this.animate_called = 1;
 					}
 				},
 			},
