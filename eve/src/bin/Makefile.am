@@ -18,7 +18,7 @@ if BUILD_QUICKLAUNCH
 bin_PROGRAMS += eve_ql
 endif
 
-eve_LDADD = @ELEMENTARY_LIBS@ @EWEBKIT_LIBS@ @EDBUS_LIBS@
+eve_LDADD = @ELEMENTARY_LIBS@ @EWEBKIT_LIBS@ @EDBUS_LIBS@ -lm
 eve_SOURCES = main.c view.c chrome.c eve_state.c
 
 if BUILD_QUICKLAUNCH
@@ -31,7 +31,7 @@ if BUILD_QUICKLAUNCH
 eve_qldir = $(quicklauncher_libdir)
 eve_ql_LTLIBRARIES = eve_ql.la
 eve_ql_la_SOURCES = main.c view.c chrome.c eve_state.h
-eve_ql_la_LIBADD = @ELEMENTARY_LIBS@ @EWEBKIT_LIBS@ @EDBUS_LIBS@
+eve_ql_la_LIBADD = @ELEMENTARY_LIBS@ @EWEBKIT_LIBS@ @EDBUS_LIBS@ -lm
 eve_ql_la_CFLAGS =
 eve_ql_la_LDFLAGS = -module -avoid-version -no-undefined
 eve_ql_SOURCES = main.c
