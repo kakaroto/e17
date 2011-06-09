@@ -127,17 +127,24 @@ public:
             elm_button_label_set(eo, *str);
          }
      }
-   virtual void weight_set(v8::Local<v8::Value> weight)
+   bool get_xy_from_object(v8::Local<v8::Value> val, double &x_out, double &y_out)
      {
-       if (!weight->IsObject())
-         return;
-       v8::Local<v8::Object> obj = weight->ToObject();
+       if (!val->IsObject())
+         return false;
+       v8::Local<v8::Object> obj = val->ToObject();
        v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
        v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
-       if (x->IsNumber() && y->IsNumber())
-         {
-            evas_object_size_hint_weight_set(eo, x->NumberValue(), y->NumberValue());
-         }
+       if (!x->IsNumber() || !y->IsNumber())
+         return false;
+       x_out = x->NumberValue();
+       y_out = y->NumberValue();
+       return true;
+     }
+   virtual void weight_set(v8::Local<v8::Value> weight)
+     {
+        double x, y;
+        if (get_xy_from_object(weight, x, y))
+            evas_object_size_hint_weight_set(eo, x, y);
      }
    virtual void image_set(v8::Local<v8::Value> val)
      {
