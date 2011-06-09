@@ -31,10 +31,6 @@ AM_GNU_GETTEXT_VERSION([0.14])
 
 m4_ifdef([AM_GNU_GETTEXT], [
 AM_GNU_GETTEXT([external])
-po_makefile_in=po/Makefile.in
-AM_CONDITIONAL([HAVE_PO], [true])
-],[
-AM_CONDITIONAL([HAVE_PO], [false])
 ])
 AC_SUBST(LTLIBINTL)
 
@@ -78,6 +74,5 @@ Makefile
 src/Makefile
 src/module/Makefile
 module.desktop
-$po_makefile_in
 ], [
 ])
