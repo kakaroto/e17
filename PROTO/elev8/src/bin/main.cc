@@ -45,6 +45,7 @@ protected:
        eo(NULL)
      {
      }
+
    CEvasObject(v8::Local<v8::Object> temp_obj) :
        obj(temp_obj),
        eo(NULL)
@@ -69,6 +70,7 @@ protected:
        image_set(obj->Get(v8::String::New("image")));
        weight_set(obj->Get(v8::String::New("weight")));
      }
+
    virtual void add_child(Evas_Object *child)
      {
      }
@@ -90,16 +92,19 @@ public:
        evas_object_unref(eo);
        eo = NULL;
      }
+
    void resize(v8::Local<v8::Value> width, v8::Local<v8::Value> height)
      {
        if (width->IsNumber() && height->IsNumber())
          evas_object_resize(eo, width->Int32Value(), height->Int32Value());
      }
+
    void move(v8::Local<v8::Value> x, v8::Local<v8::Value> y)
      {
        if (x->IsNumber() && y->IsNumber())
          evas_object_move(eo, x->Int32Value(), y->Int32Value());
      }
+
    void callback_set(v8::Local<v8::Value> val)
      {
        if (val->IsFunction())
@@ -110,6 +115,7 @@ public:
                                            &eo_on_click, static_cast<void*>(*func));
          }
      }
+
    void animator_set(v8::Local<v8::Value> val)
      {
        if (val->IsFunction())
@@ -119,6 +125,7 @@ public:
             ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
          }
      }
+
    virtual void label_set(v8::Local<v8::Value> val)
      {
        if (val->IsString())
@@ -127,6 +134,7 @@ public:
             elm_button_label_set(eo, *str);
          }
      }
+
    bool get_xy_from_object(v8::Local<v8::Value> val, double &x_out, double &y_out)
      {
        if (!val->IsObject())
@@ -140,21 +148,25 @@ public:
        y_out = y->NumberValue();
        return true;
      }
+
    virtual void weight_set(v8::Local<v8::Value> weight)
      {
         double x, y;
         if (get_xy_from_object(weight, x, y))
             evas_object_size_hint_weight_set(eo, x, y);
      }
+
    virtual void image_set(v8::Local<v8::Value> val)
      {
        if (val->IsString())
          fprintf(stderr, "no image set\n");
      }
+
    virtual void show()
      {
         evas_object_show(eo);
      }
+
    void realize_objects(v8::Handle<v8::Object> elements)
      {
         if (elements.IsEmpty())
@@ -183,9 +195,11 @@ public:
        evas_object_focus_set(eo, 1);
        evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
      }
+
    ~CElmBasicWindow()
      {
      }
+
    static void on_delete(void *data, Evas_Object *obj, void *event_info)
      {
        elm_exit();
@@ -201,6 +215,7 @@ public:
        eo = elm_button_add(parent->top_widget_get());
        construct(eo);
      }
+
    virtual ~CElmButton()
      {
      }
@@ -214,9 +229,11 @@ public:
        elm_win_resize_object_add(parent->get(), eo);
        construct(eo);
      }
+
    virtual ~CElmBackground()
      {
      }
+
    virtual void image_set(v8::Local<v8::Value> val)
      {
        if (val->IsString())
@@ -235,6 +252,7 @@ public:
        eo = elm_radio_add(parent->top_widget_get());
        construct(eo);
      }
+
    virtual void label_set(v8::Local<v8::Value> val)
      {
        if (val->IsString())
@@ -243,6 +261,7 @@ public:
             elm_radio_label_set(eo, *str);
          }
      }
+
    virtual ~CElmRadio()
      {
      }
@@ -254,6 +273,7 @@ protected:
      {
        elm_box_pack_end(eo, child);
      }
+
 public:
    CElmBox(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
@@ -273,6 +293,7 @@ public:
        eo = elm_label_add(parent->top_widget_get());
        construct(eo);
      }
+
    virtual void label_set(v8::Local<v8::Value> val)
      {
        if (val->IsString())
