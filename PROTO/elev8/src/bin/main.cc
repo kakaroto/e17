@@ -329,7 +329,7 @@ int shebang_length(char *p, int len)
 {
    int i = 0;
 
-   if (len > 2 && p[0] == '#' && p[1] == '!')
+   if ((len > 2) && (p[0] == '#') && (p[1] == '!'))
       {
         for (i = 2; i < len && p[i] != '\n'; i++)
           ;
