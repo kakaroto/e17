@@ -17,21 +17,21 @@
 void
 eo_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-  v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
-  v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
-  v8::Local<v8::Value> result = fn->Call(fn, 1, args);
+   v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
+   v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
+   v8::Local<v8::Value> result = fn->Call(fn, 1, args);
 }
 
 Eina_Bool
 eo_on_animate(void *data)
 {
-  v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
-  v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
-  v8::Local<v8::Value> result = fn->Call(fn, 1, args);
-  return ECORE_CALLBACK_RENEW;
+   v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
+   v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
+   v8::Local<v8::Value> result = fn->Call(fn, 1, args);
+   return ECORE_CALLBACK_RENEW;
 }
 
-struct CEvasObject;
+class CEvasObject;
 void realize_one(CEvasObject *parent, v8::Local<v8::Object> obj);
 
 class CEvasObject {
@@ -439,11 +439,10 @@ elev8_run(const char *script)
 static void
 main_help(const char *progname)
 {
-   printf
-      ("Usage:\n"
+   printf("Usage:\n"
        "\t%s input_file.js\n"
-       "\tex) %s ../../data/javascript/button.js\n"
-       , progname, progname);
+       "\te.g. %s ../../data/javascript/button.js\n",
+	progname, progname);
 }
 
 int
