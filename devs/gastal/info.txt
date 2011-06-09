@@ -1,0 +1,8 @@
+Login:        gastal
+IRC Nick:     gastal
+Name:         Jonas M. Gastal
+Location:     Campinas, Brazil
+E-Mail:       -jgastal@profusion.mobi
+Contributing: Eina, Eet, Evas, Ecore, Emotion, Elementary (documentation)
+Group:        Libraries
+Platform:     Gentoo (Linux)
