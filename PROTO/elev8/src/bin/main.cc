@@ -67,6 +67,8 @@ protected:
        animator_set(obj->Get(v8::String::New("on_animate")));
        label_set(obj->Get(v8::String::New("label")));
        image_set(obj->Get(v8::String::New("image")));
+       weight_set(obj->Get(v8::String::New("weight_x")),
+                  obj->Get(v8::String::New("weight_y")));
      }
    virtual void add_child(Evas_Object *child)
      {
@@ -125,6 +127,13 @@ public:
             v8::String::Utf8Value str(val);
             elm_button_label_set(eo, *str);
          }
+     }
+   virtual void weight_set(v8::Local<v8::Value> x, v8::Local<v8::Value> y)
+     {
+       if (x->IsNumber() && y->IsNumber()) {
+         evas_object_size_hint_weight_set(eo, x->NumberValue(), y->NumberValue());
+         fprintf(stderr, "weight set %0.2f, %0.2f\n", x->NumberValue(), y->NumberValue());
+       }
      }
    virtual void image_set(v8::Local<v8::Value> val)
      {
@@ -240,6 +249,7 @@ public:
      {
        eo = elm_box_add(parent->top_widget_get());
        realize_objects(obj->Get(v8::String::New("elements"))->ToObject());
+       elm_win_resize_object_add(parent->get(), eo);
        construct(eo);
      }
 };

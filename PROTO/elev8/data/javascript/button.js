@@ -15,6 +15,8 @@ var elements = {
 			ok_button : {
 				type : "button",
 				label : "OK",
+				weight_x : -1.0,
+				weight_y : -1.0,
 				on_clicked : function() {
 					print("click!");
 				},
