@@ -92,12 +92,12 @@ public:
    void resize(v8::Local<v8::Value> width, v8::Local<v8::Value> height)
      {
        if (width->IsNumber() && height->IsNumber())
-         evas_object_resize(eo, width->ToInteger()->Value(), height->ToInteger()->Value());
+         evas_object_resize(eo, width->Int32Value(), height->Int32Value());
      }
    void move(v8::Local<v8::Value> x, v8::Local<v8::Value> y)
      {
        if (x->IsNumber() && y->IsNumber())
-         evas_object_move(eo, x->ToInteger()->Value(), y->ToInteger()->Value());
+         evas_object_move(eo, x->Int32Value(), y->Int32Value());
      }
    void callback_set(v8::Local<v8::Value> val)
      {
