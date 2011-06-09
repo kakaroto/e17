@@ -32,11 +32,11 @@ eo_on_animate(void *data)
 }
 
 class CEvasObject;
-void realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
+CEvasObject *realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
 
 class CEvasObject {
    /* realize_one is a factory for our class */
-   friend void realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
+   friend CEvasObject *realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
 protected:
    v8::Persistent<v8::Object> obj;
    Evas_Object *eo;
@@ -70,11 +70,17 @@ protected:
        image_set(obj->Get(v8::String::New("image")));
        weight_set(obj->Get(v8::String::New("weight")));
        align_set(obj->Get(v8::String::New("align")));
+
+       /* show the object, maybe */
+       v8::Local<v8::Value> hidden = obj->Get(v8::String::New("hidden"));
+       if (hidden->IsFalse())
+         show();
      }
 
    virtual void add_child(Evas_Object *child)
      {
      }
+
 public:
    Evas_Object *get()
      {
@@ -191,10 +197,14 @@ public:
         /* iterate through elements and instantiate them */
         for (unsigned int i = 0; i < props->Length(); i++)
           {
+             CEvasObject *child;
+
              v8::Handle<v8::Value> x = props->Get(v8::Integer::New(i));
              v8::String::Utf8Value val(x);
 
-             realize_one(this, obj->Get(x->ToString()));
+             child = realize_one(this, obj->Get(x->ToString()));
+
+             add_child(child->get());
           }
      }
 };
@@ -330,19 +340,27 @@ public:
    CElmFlip(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
      {
+       CEvasObject *front, *back;
+
        eo = elm_flip_add(parent->top_widget_get());
-       realize_objects(obj->Get(v8::String::New("elements")));
        construct(eo);
+
+       /* realize front and back */
+       front = realize_one(this, obj->Get(v8::String::New("front")));
+       elm_flip_content_front_set(eo, front->get());
+
+       back = realize_one(this, obj->Get(v8::String::New("back")));
+       elm_flip_content_back_set(eo, front->get());
      }
 };
 
-void
+CEvasObject *
 realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
 {
    if (!object_val->IsObject())
      {
         fprintf(stderr, "%s: value is not an object!\n", __FUNCTION__);
-        return;
+        return NULL;
      }
 
    v8::Local<v8::Object> obj = object_val->ToObject();
@@ -380,11 +398,10 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    if (!eo)
       {
         fprintf(stderr, "Bad object type %s\n", *str);
-        return;
+        return eo;
       }
 
-   parent->add_child(eo->get());
-   eo->show();
+   return eo;
 }
 
 v8::Handle<v8::Value>
