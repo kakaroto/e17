@@ -71,7 +71,7 @@ _load_plain(const char *file)
 int
 main(int argc, char *argv[])
 {
-   Evas_Object *win, *bg, *tb;
+   Evas_Object *win, *bg, *tb = NULL;
    Evas_Textblock_Style *st;
    Evas_Coord w = 600, h = 600;
    const char *filename = "note.txt";
