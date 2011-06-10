@@ -56,9 +56,8 @@ protected:
     * Two phase constructor required because Evas_Object type needs
     * to be known to be created.
     */
-   void construct(Evas_Object *new_eo)
+   void construct(void)
      {
-       eo = new_eo;
        assert(eo != NULL);
        resize(obj->Get(v8::String::New("width")),
               obj->Get(v8::String::New("height")));
@@ -250,7 +249,7 @@ public:
    CElmButton(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
      {
        eo = elm_button_add(parent->top_widget_get());
-       construct(eo);
+       construct();
      }
 
    virtual ~CElmButton()
@@ -264,7 +263,7 @@ public:
      {
        eo = elm_bg_add(parent->top_widget_get());
        elm_win_resize_object_add(parent->get(), eo);
-       construct(eo);
+       construct();
      }
 
    virtual ~CElmBackground()
@@ -287,7 +286,7 @@ public:
        CEvasObject(obj)
      {
        eo = elm_radio_add(parent->top_widget_get());
-       construct(eo);
+       construct();
      }
 
    virtual void label_set(v8::Local<v8::Value> val)
@@ -319,7 +318,7 @@ public:
        elm_win_resize_object_add(parent->get(), eo);
        realize_objects(obj->Get(v8::String::New("elements")));
        horizontal_set(obj->Get(v8::String::New("horizontal")));
-       construct(eo);
+       construct();
      }
 
    void horizontal_set(v8::Local<v8::Value> val)
@@ -338,7 +337,7 @@ public:
      {
        eo = elm_label_add(parent->top_widget_get());
        wrap_set(obj->Get(v8::String::New("wrap")));
-       construct(eo);
+       construct();
      }
 
    void wrap_set(v8::Local<v8::Value> wrap)
@@ -365,7 +364,7 @@ public:
        CEvasObject *front, *back;
 
        eo = elm_flip_add(parent->top_widget_get());
-       construct(eo);
+       construct();
 
        /* realize front and back */
        front = realize_one(this, obj->Get(v8::String::New("front")));
@@ -382,7 +381,7 @@ public:
        CEvasObject(obj)
      {
        eo = elm_icon_add(parent->top_widget_get());
-       construct(eo);
+       construct();
        scale_set(obj->Get(v8::String::New("scale")));
      }
 
