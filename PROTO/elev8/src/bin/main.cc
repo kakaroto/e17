@@ -156,6 +156,20 @@ public:
        return true;
      }
 
+   bool get_xy_from_object(v8::Local<v8::Value> val, bool &x_out, bool &y_out)
+     {
+       if (!val->IsObject())
+         return false;
+       v8::Local<v8::Object> obj = val->ToObject();
+       v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
+       v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
+       if (!x->IsBoolean() || !y->IsBoolean())
+         return false;
+       x_out = x->BooleanValue();
+       y_out = y->BooleanValue();
+       return true;
+     }
+
    virtual void weight_set(v8::Local<v8::Value> weight)
      {
         double x, y;
@@ -169,7 +183,6 @@ public:
         if (get_xy_from_object(align, x, y))
           {
              evas_object_size_hint_align_set(eo, x, y);
-             fprintf(stderr, "Set alignment %0.2f %0.2f\n", x, y);
           }
      }
 
@@ -303,9 +316,18 @@ public:
        CEvasObject(obj)
      {
        eo = elm_box_add(parent->top_widget_get());
-       realize_objects(obj->Get(v8::String::New("elements")));
        elm_win_resize_object_add(parent->get(), eo);
+       realize_objects(obj->Get(v8::String::New("elements")));
+       horizontal_set(obj->Get(v8::String::New("horizontal")));
        construct(eo);
+     }
+
+   void horizontal_set(v8::Local<v8::Value> val)
+     {
+       if (val->IsBoolean())
+         {
+           elm_box_horizontal_set(eo, val->BooleanValue());
+         }
      }
 };
 
@@ -354,6 +376,37 @@ public:
      }
 };
 
+class CElmIcon : public CEvasObject {
+public:
+   CElmIcon(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject(obj)
+     {
+       eo = elm_icon_add(parent->top_widget_get());
+       construct(eo);
+       scale_set(obj->Get(v8::String::New("scale")));
+     }
+
+   virtual void scale_set(v8::Local<v8::Value> align)
+     {
+        bool x, y;
+        if (get_xy_from_object(align, x, y))
+          {
+             elm_icon_scale_set(eo, x, y);
+          }
+     }
+
+   virtual void image_set(v8::Local<v8::Value> val)
+     {
+       if (val->IsString())
+         {
+            v8::String::Utf8Value str(val);
+            if (0 > access(*str, R_OK))
+              fprintf(stderr, "warning: can't read icon file %s\n", *str);
+            elm_icon_file_set(eo, *str, NULL);
+         }
+     }
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
 {
@@ -381,6 +434,10 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    else if (!strcmp(*str, "flip"))
       {
         eo = new CElmFlip(main_win, obj);
+      }
+   else if (!strcmp(*str, "icon"))
+      {
+        eo = new CElmIcon(main_win, obj);
       }
    else if (!strcmp(*str, "label"))
       {

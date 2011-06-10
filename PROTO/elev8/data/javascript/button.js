@@ -49,6 +49,10 @@ var elements = {
 				hidden : true,
 				align : { x : -1.0, y : -1.0 },
 			},
+			logo : {
+				type : "icon",
+				image : "data/images/logo_small.png",
+			}
 		},
 	},
 };
