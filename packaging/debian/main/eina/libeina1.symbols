@@ -9,6 +9,7 @@ libeina.so.1 libeina1 #MINVER#
  EINA_ERROR_WRONG_MODULE@Base 1.0.0~beta
  EINA_LOG_DOMAIN_GLOBAL@Base 1.0.0~beta
  EINA_UNICODE_EMPTY_STRING@Base 1.0.0~beta
+ _eina_threads_activated@Base 1.0.0-1-svn60184
  eina_accessor_container_get@Base 1.0.0~beta
  eina_accessor_data_get@Base 1.0.0~beta
  eina_accessor_free@Base 1.0.0~beta
@@ -27,6 +28,18 @@ libeina.so.1 libeina1 #MINVER#
  eina_benchmark_new@Base 1.0.0~beta
  eina_benchmark_register@Base 1.0.0~beta
  eina_benchmark_run@Base 1.0.0~beta
+ eina_binbuf_append_char@Base 1.0.0-1-svn60184
+ eina_binbuf_append_length@Base 1.0.0-1-svn60184
+ eina_binbuf_free@Base 1.0.0-1-svn60184
+ eina_binbuf_insert_char@Base 1.0.0-1-svn60184
+ eina_binbuf_insert_length@Base 1.0.0-1-svn60184
+ eina_binbuf_length_get@Base 1.0.0-1-svn60184
+ eina_binbuf_new@Base 1.0.0-1-svn60184
+ eina_binbuf_remove@Base 1.0.0-1-svn60184
+ eina_binbuf_reset@Base 1.0.0-1-svn60184
+ eina_binbuf_string_free@Base 1.0.0-1-svn60184
+ eina_binbuf_string_get@Base 1.0.0-1-svn60184
+ eina_binbuf_string_steal@Base 1.0.0-1-svn60184
  eina_binshare_add_length@Base 1.0.0~beta
  eina_binshare_del@Base 1.0.0~beta
  eina_binshare_dump@Base 1.0.0~beta
@@ -47,7 +60,7 @@ libeina.so.1 libeina1 #MINVER#
  eina_counter_stop@Base 1.0.0~beta
  eina_cpu_count@Base 1.0.0~beta
  eina_cpu_features_get@Base 1.0.0~beta
- eina_error_find@Base 1.0.0-1-svn-09
+ eina_error_find@Base 1.0.0-1-svn60184
  eina_error_get@Base 1.0.0~beta
  eina_error_msg_get@Base 1.0.0~beta
  eina_error_msg_modify@Base 1.0.0~beta
@@ -56,9 +69,17 @@ libeina.so.1 libeina1 #MINVER#
  eina_error_set@Base 1.0.0~beta
  eina_f32p32_cos@Base 1.0.0~beta
  eina_f32p32_sin@Base 1.0.0~beta
+ eina_file_close@Base 1.0.0-1-svn60184
  eina_file_dir_list@Base 1.0.0~beta
  eina_file_direct_ls@Base 1.0.0~beta
+ eina_file_filename_get@Base 1.0.0-1-svn60184
  eina_file_ls@Base 1.0.0~beta
+ eina_file_map_all@Base 1.0.0-1-svn60184
+ eina_file_map_free@Base 1.0.0-1-svn60184
+ eina_file_map_new@Base 1.0.0-1-svn60184
+ eina_file_mtime_get@Base 1.0.0-1-svn60184
+ eina_file_open@Base 1.0.0-1-svn60184
+ eina_file_size_get@Base 1.0.0-1-svn60184
  eina_file_split@Base 1.0.0~beta
  eina_file_stat_ls@Base 1.0.0~beta3
  eina_hamster_count@Base 1.0.0~beta
@@ -105,6 +126,8 @@ libeina.so.1 libeina1 #MINVER#
  eina_inlist_prepend_relative@Base 1.0.0~beta
  eina_inlist_promote@Base 1.0.0~beta
  eina_inlist_remove@Base 1.0.0~beta
+ eina_inlist_sort@Base 1.0.0-1-svn60184
+ eina_inlist_sorted_insert@Base 1.0.0-1-svn60184
  eina_iterator_container_get@Base 1.0.0~beta
  eina_iterator_foreach@Base 1.0.0~beta
  eina_iterator_free@Base 1.0.0~beta
@@ -127,8 +150,8 @@ libeina.so.1 libeina1 #MINVER#
  eina_list_iterator_new@Base 1.0.0~beta
  eina_list_iterator_reversed_new@Base 1.0.0~beta
  eina_list_merge@Base 1.0.0~beta
- eina_list_move@Base 1.0.0-1-svn-09
- eina_list_move_list@Base 1.0.0-1-svn-09
+ eina_list_move@Base 1.0.0-1-svn60184
+ eina_list_move_list@Base 1.0.0-1-svn60184
  eina_list_nth@Base 1.0.0~beta
  eina_list_nth_list@Base 1.0.0~beta
  eina_list_prepend@Base 1.0.0~beta
@@ -200,6 +223,7 @@ libeina.so.1 libeina1 #MINVER#
  eina_mempool_del@Base 1.0.0~beta
  eina_mempool_gc@Base 1.0.0~beta
  eina_mempool_register@Base 1.0.0~beta
+ eina_mempool_repack@Base 1.0.0-1-svn60184
  eina_mempool_statistics@Base 1.0.0~beta
  eina_mempool_unregister@Base 1.0.0~beta
  eina_module_arch_list_get@Base 1.0.0~beta
@@ -216,6 +240,13 @@ libeina.so.1 libeina1 #MINVER#
  eina_module_symbol_get@Base 1.0.0~beta
  eina_module_symbol_path_get@Base 1.0.0~beta
  eina_module_unload@Base 1.0.0~beta
+ eina_prefix_bin_get@Base 1.0.0-1-svn60184
+ eina_prefix_data_get@Base 1.0.0-1-svn60184
+ eina_prefix_free@Base 1.0.0-1-svn60184
+ eina_prefix_get@Base 1.0.0-1-svn60184
+ eina_prefix_lib_get@Base 1.0.0-1-svn60184
+ eina_prefix_locale_get@Base 1.0.0-1-svn60184
+ eina_prefix_new@Base 1.0.0-1-svn60184
  eina_prime_table@Base 1.0.0~beta
  eina_quadtree_add@Base 1.0.0~beta
  eina_quadtree_change@Base 1.0.0~beta
@@ -248,26 +279,26 @@ libeina.so.1 libeina1 #MINVER#
  eina_rectangle_pool_request@Base 1.0.0~beta
  eina_sched_prio_drop@Base 1.0.0~beta
  eina_shutdown@Base 1.0.0~beta
- eina_simple_xml_attribute_free@Base 1.0.0-1-svn-09
- eina_simple_xml_attribute_new@Base 1.0.0-1-svn-09
- eina_simple_xml_attributes_parse@Base 1.0.0-1-svn-09
- eina_simple_xml_node_cdata_free@Base 1.0.0-1-svn-09
- eina_simple_xml_node_cdata_new@Base 1.0.0-1-svn-09
- eina_simple_xml_node_comment_free@Base 1.0.0-1-svn-09
- eina_simple_xml_node_comment_new@Base 1.0.0-1-svn-09
- eina_simple_xml_node_data_free@Base 1.0.0-1-svn-09
- eina_simple_xml_node_data_new@Base 1.0.0-1-svn-09
- eina_simple_xml_node_doctype_free@Base 1.0.0-1-svn-09
- eina_simple_xml_node_doctype_new@Base 1.0.0-1-svn-09
- eina_simple_xml_node_dump@Base 1.0.0-1-svn-09
- eina_simple_xml_node_load@Base 1.0.0-1-svn-09
- eina_simple_xml_node_processing_free@Base 1.0.0-1-svn-09
- eina_simple_xml_node_processing_new@Base 1.0.0-1-svn-09
- eina_simple_xml_node_root_free@Base 1.0.0-1-svn-09
- eina_simple_xml_node_tag_free@Base 1.0.0-1-svn-09
- eina_simple_xml_node_tag_new@Base 1.0.0-1-svn-09
- eina_simple_xml_parse@Base 1.0.0-1-svn-09
- eina_simple_xml_tag_attributes_find@Base 1.0.0-1-svn-09
+ eina_simple_xml_attribute_free@Base 1.0.0-1-svn60184
+ eina_simple_xml_attribute_new@Base 1.0.0-1-svn60184
+ eina_simple_xml_attributes_parse@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_cdata_free@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_cdata_new@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_comment_free@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_comment_new@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_data_free@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_data_new@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_doctype_free@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_doctype_new@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_dump@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_load@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_processing_free@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_processing_new@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_root_free@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_tag_free@Base 1.0.0-1-svn60184
+ eina_simple_xml_node_tag_new@Base 1.0.0-1-svn60184
+ eina_simple_xml_parse@Base 1.0.0-1-svn60184
+ eina_simple_xml_tag_attributes_find@Base 1.0.0-1-svn60184
  eina_str_convert@Base 1.0.0~beta
  eina_str_escape@Base 1.0.0~beta
  eina_str_has_extension@Base 1.0.0~beta
@@ -329,14 +360,14 @@ libeina.so.1 libeina1 #MINVER#
  eina_unicode_strdup@Base 1.0.0~beta
  eina_unicode_strlen@Base 1.0.0~beta
  eina_unicode_strncpy@Base 1.0.0~beta
- eina_unicode_strndup@Base 1.0.0-1-svn-09
+ eina_unicode_strndup@Base 1.0.0-1-svn60184
  eina_unicode_strnlen@Base 1.0.0~beta
  eina_unicode_strstr@Base 1.0.0~beta
- eina_unicode_unicode_to_utf8@Base 1.0.0-1-svn-09
- eina_unicode_utf8_get_len@Base 1.0.0-1-svn-09
- eina_unicode_utf8_get_next@Base 1.0.0-1-svn-09
- eina_unicode_utf8_get_prev@Base 1.0.0-1-svn-09
- eina_unicode_utf8_to_unicode@Base 1.0.0-1-svn-09
+ eina_unicode_unicode_to_utf8@Base 1.0.0-1-svn60184
+ eina_unicode_utf8_get_len@Base 1.0.0-1-svn60184
+ eina_unicode_utf8_get_next@Base 1.0.0-1-svn60184
+ eina_unicode_utf8_get_prev@Base 1.0.0-1-svn60184
+ eina_unicode_utf8_to_unicode@Base 1.0.0-1-svn60184
  eina_ustrbuf_append@Base 1.0.0~beta
  eina_ustrbuf_append_char@Base 1.0.0~beta
  eina_ustrbuf_append_escaped@Base 1.0.0~beta
