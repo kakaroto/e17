@@ -414,6 +414,33 @@ public:
         eo = elm_actionslider_add(parent->top_widget_get());
         construct();
      }
+
+   virtual void label_set(v8::Local<v8::Value> val)
+     {
+        if (val->IsString())
+          {
+             v8::String::Utf8Value middle(val);
+             elm_actionslider_labels_set(eo, NULL, *middle, NULL);
+          }
+
+        if (val->IsObject())
+          {
+             v8::Local<v8::Object> obj = val->ToObject();
+             v8::Local<v8::Value> v[3];
+             v8::Local<v8::String> str[3];
+             const char *name[3] = { "left", "middle", "right" };
+
+             for (int i = 0; i < 3; i++)
+               {
+                 v[i] = obj->Get(v8::String::New(name[i]));
+                 if (v[i]->IsString()) {
+                   str[i] = v[i]->ToString();
+		}
+               }
+             v8::String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
+             elm_actionslider_labels_set(eo, *left, *middle, *right);
+          }
+     }
 };
 
 CEvasObject *

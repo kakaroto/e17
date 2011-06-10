@@ -16,11 +16,13 @@ var elements = {
 				type : "actionslider",
 				weight : { x : 1.0, y : 0.0 },
 				align : { x : -1.0, y : 0.0 },
+				label : { left : "Snooze", right : "Stop" },
 			},
 			slider_middle : {
 				type : "actionslider",
 				weight : { x : 1.0, y : 0.0 },
 				align : { x : -1.0, y : 0.0 },
+				label : "middle",
 			},
 			slider_left : {
 				type : "actionslider",
