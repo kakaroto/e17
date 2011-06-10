@@ -1,16 +1,16 @@
 Source: eio
 Section: libs
 Priority: extra
-Maintainer: root <root@unknown>
+Maintainer: Michaël Bouchaud <michael@substantiel.fr>
 Build-Depends: debhelper (>= 7.0.50~)
 Standards-Version: 3.8.4
 Homepage: <insert the upstream URL, if relevant>
 #Vcs-Git: git://git.debian.org/collab-maint/eio.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/eio.git;a=summary
 
-Package: libeio1
-Provides: libeio1
-Conflicts: libeio1
+Package: libeio0
+Provides: libeio0
+Conflicts: libeio0
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: <insert up to 60 chars description>
@@ -19,6 +19,14 @@ Description: <insert up to 60 chars description>
 Package: libeio-dev
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}, libeio1 (= ${binary:Version}), pkg-config
+Depends: ${misc:Depends}, libeio0 (= ${binary:Version}), pkg-config
 Description: <insert up to 60 chars description>
  <insert long description, indented with spaces>
+
+Package: libeio-dbg
+Architecture: any
+Section: debug
+Depends: ${misc:Depends}, libeio0 (= ${binary:Version})
+Priority: extra
+Description: debugging symbols for use with libeina
+
