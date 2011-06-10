@@ -12,6 +12,7 @@
 	- Elementary : Changed edje_object to elm_layout.
 	- Add performance test application.
 	- Check elm_main.c
+	- Check EXAMPLES/elementary.
 
 * Edje
 	- Add an API to reset all parts to default state.

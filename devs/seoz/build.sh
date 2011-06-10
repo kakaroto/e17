@@ -3,7 +3,7 @@
 set -e
 
 export PREFIX=/usr/local
-export CFLAGS="-O2 -march=native -ffast-math -g3 -W -Wall -Wextra -Wshadow"
+export CFLAGS="-O2 -march=native -ffast-math -g3 -W -Wall -Wextra" # -Wshadow"
 export CC="ccache gcc"
 export MAKEFLAGS="make -j6"
 alias make='make -j6'
@@ -13,8 +13,9 @@ export BUILD_PYTHON_BINDINGS="BINDINGS/python/python-evas BINDINGS/python/python
 export BUILD_C_BINDINGS="BINDINGS/cxx/eflxx BINDINGS/cxx/einaxx BINDINGS/cxx/evasxx BINDINGS/cxx/ecorexx BINDINGS/cxx/elementaryxx"
 export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
 export BUILD_E_MODULES="E-MODULES-EXTRA/comp-scale E-MODULES-EXTRA/elfe E-MODULES-EXTRA/engage"
+export BUILD_EXAMPLE="EXAMPLE/elementary/calculator EXAMPLE/elementary/converter EXAMPLE/elementary/phonebook EXAMPLE/elementary/sticky-notes"
 export BUILD_ETC="editje emotion PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica eio enlil" #enki
-export BUILD=$BUILD_BASIC" "$BUILD_BINDINGS" "$BUILD_E_MODULES" "$BUILD_ETC
+export BUILD=$BUILD_BASIC" "$BUILD_BINDINGS" "$BUILD_E_MODULES" "$BUILD_EXAMPLE" "$BUILD_ETC
 
 for I in $BUILD; do
   pushd $I
