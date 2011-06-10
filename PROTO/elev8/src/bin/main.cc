@@ -415,16 +415,21 @@ public:
         construct();
         magnet_set(obj->Get(v8::String::New("magnet")));
         slider_set(obj->Get(v8::String::New("slider")));
+        labels_set(obj->Get(v8::String::New("labels")));
      }
 
+   /* there's 1 indicator label and 3 position labels */
    virtual void label_set(v8::Local<v8::Value> val)
      {
         if (val->IsString())
           {
-             v8::String::Utf8Value middle(val);
-             elm_actionslider_labels_set(eo, NULL, *middle, NULL);
+             v8::String::Utf8Value str(val);
+             elm_actionslider_indicator_label_set(eo, *str);
           }
+     }
 
+   virtual void labels_set(v8::Local<v8::Value> val)
+     {
         if (val->IsObject())
           {
              v8::Local<v8::Object> obj = val->ToObject();
