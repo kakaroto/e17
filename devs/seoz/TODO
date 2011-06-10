@@ -1,4 +1,6 @@
 * Genlist
+	[High] Fix "Genlist 4" and "Label" in elementary_test.
+	[High] Enhance elm_genlist_height_for_width_mode_set() API.
 	[High] Revise Sohyun's genlist-entry patch.
 	- Changed "moved" item class function to smart callback.
 	- Merge _item_move_after/before().
@@ -9,6 +11,7 @@
 * Elementary
 	- Elementary : Changed edje_object to elm_layout.
 	- Add performance test application.
+	- Check elm_main.c
 
 * Edje
 	- Add an API to reset all parts to default state.
