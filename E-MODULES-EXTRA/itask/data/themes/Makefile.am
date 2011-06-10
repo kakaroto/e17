@@ -1,8 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-#EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v -id images -fd .
-
 filesdir = $(datadir)
 files_DATA = \
 itask.edc \
@@ -16,5 +13,3 @@ EXTRA_DIST = $(files_DATA) $(wildcard images/*.png)
 
 clean-local:
 	rm -f *.edj
-
-
