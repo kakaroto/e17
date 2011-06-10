@@ -7,8 +7,10 @@
  *
  * @author Raphael Kubo da Costa <kubo@profusion.mobi>
  */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include <Elementary.h>
-#include <elementary/elementary_config.h>
 #include <limits.h>
 
 typedef enum
