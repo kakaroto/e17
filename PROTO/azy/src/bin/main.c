@@ -1780,6 +1780,8 @@ gen_server_impl(Azy_Server_Module *s)
                }
              else if (p->type->ctype == i)
                EL(5, "azy_server_module_param_set(module, \"%s\", (intptr_t*)%s, NULL);", p->name, p->name);
+             else if (p->type->ctype == b)
+               EL(5, "azy_server_module_param_set(module, \"%s\", (intptr_t*)!!%s, NULL);", p->name, p->name);
              else
                EL(5, "azy_server_module_param_set(module, \"%s\", (void*)%s, (Eina_Free_Cb)%s);", p->name, p->name, p->type->free_func ? p->type->free_func : "NULL");
           }
