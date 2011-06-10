@@ -371,7 +371,7 @@ public:
        elm_flip_content_front_set(eo, front->get());
 
        back = realize_one(this, obj->Get(v8::String::New("back")));
-       elm_flip_content_back_set(eo, front->get());
+       elm_flip_content_back_set(eo, back->get());
      }
 };
 
