@@ -406,6 +406,16 @@ public:
      }
 };
 
+class CElmActionSlider : public CEvasObject {
+public:
+   CElmActionSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject(obj)
+     {
+        eo = elm_actionslider_add(parent->top_widget_get());
+        construct();
+     }
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
 {
@@ -422,7 +432,11 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
 
    /* create the evas object */
    CEvasObject *eo = NULL;
-   if (!strcmp(*str, "button"))
+   if (!strcmp(*str, "actionslider"))
+      {
+        eo = new CElmActionSlider(main_win, obj);
+      }
+   else if (!strcmp(*str, "button"))
       {
         eo = new CElmButton(main_win, obj);
       }
