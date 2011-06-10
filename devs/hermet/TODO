@@ -1,11 +1,8 @@
-elm_list - callback deletion 
-
 elm_conform - precalculation 
 
 elm_ctxpopup - use elm_list
 
-elementary_test - seg-fault in alpha window with gl backend
-(glx - ctx problem)
+elementary_test - seg-fault in alpha window with gl backend (glx - ctx problem)
 
 evas_direct3d - start hurry (vicent torri)
 
@@ -15,6 +12,8 @@ ecore_input - multiple touch problem.
 
 evas_map - afterimage problem 
 
-evas_map - check rotation util  inconsistency rotation
+evas_map - check rotation util inconsistency rotation
 
 pager - content size calc
+
+actionslider - indicator could be placed at center position incorrectly. (mike_m) 
