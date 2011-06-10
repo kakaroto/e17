@@ -13,9 +13,6 @@ debian/tmp/usr/lib/enlightenment/modules/comp/shadow.edj
 debian/tmp/usr/lib/enlightenment/modules/cpufreq/*/freqset
 debian/tmp/usr/lib/enlightenment/modules/temperature/*/tempget
 debian/tmp/usr/lib/enlightenment/modules/wizard/*/page*.so
-debian/tmp/usr/lib/enlightenment/modules/illume/*/wifiget
-debian/tmp/usr/lib/enlightenment/modules/illume/dicts
-debian/tmp/usr/lib/enlightenment/modules/illume/keyboards
 debian/tmp/usr/lib/enlightenment/modules/illume-keyboard/dicts
 debian/tmp/usr/lib/enlightenment/modules/illume-keyboard/keyboards
 debian/tmp/usr/lib/enlightenment/modules/illume2/keyboards
