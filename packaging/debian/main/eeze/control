@@ -1,14 +1,14 @@
 Source: eeze
 Section: libs
 Priority: extra
-Maintainer: root <root@unknown>
+Maintainer: Michaël Bouchaud <michael@substantiel.fr>
 Build-Depends: debhelper (>= 7.0.50~)
 Standards-Version: 3.8.4
 Homepage: <insert the upstream URL, if relevant>
 #Vcs-Git: git://git.debian.org/collab-maint/eio.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/eio.git;a=summary
 
-Package: libeeze-svn-08
+Package: libeeze1
 Provides: libeeze0
 Conflicts: libeeze0
 Architecture: any
@@ -19,6 +19,14 @@ Description: Eeze is a library for manipulating devices through udev with a simp
 Package: libeeze-dev
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}, libeeze-svn-08 (= ${binary:Version}), pkg-config
+Depends: ${misc:Depends}, libeeze1 (= ${binary:Version}), pkg-config
 Description: Eeze is a library for manipulating devices through udev with a simple and fast api.
  Eeze is a library for manipulating devices through udev with a simple and fast api. It interfaces directly with libudev, avoiding such middleman daemons as udisks/upower or hal, to immediately gather device information the instant it becomes known to the system. 
+
+Package: libeeze-dbg
+Architecture: any
+Section: debug
+Depends: ${misc:Depends}, libeeze1 (= ${binary:Version})
+Priority: extra
+Description: debugging symbols for use with libeeze
+
