@@ -76,7 +76,7 @@ protected:
          show();
      }
 
-   virtual void add_child(Evas_Object *child)
+   virtual void add_child(CEvasObject *child)
      {
      }
 
@@ -216,7 +216,7 @@ public:
 
              child = realize_one(this, obj->Get(x->ToString()));
 
-             add_child(child->get());
+             add_child(child);
           }
      }
 };
@@ -305,9 +305,9 @@ public:
 
 class CElmBox : public CEvasObject {
 protected:
-   virtual void add_child(Evas_Object *child)
+   virtual void add_child(CEvasObject *child)
      {
-       elm_box_pack_end(eo, child);
+       elm_box_pack_end(eo, child->get());
      }
 
 public:
