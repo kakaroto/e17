@@ -413,6 +413,8 @@ public:
      {
         eo = elm_actionslider_add(parent->top_widget_get());
         construct();
+        magnet_set(obj->Get(v8::String::New("magnet")));
+        slider_set(obj->Get(v8::String::New("slider")));
      }
 
    virtual void label_set(v8::Local<v8::Value> val)
@@ -428,7 +430,7 @@ public:
              v8::Local<v8::Object> obj = val->ToObject();
              v8::Local<v8::Value> v[3];
              v8::Local<v8::String> str[3];
-             const char *name[3] = { "left", "middle", "right" };
+             const char *name[3] = { "left", "center", "right" };
 
              for (int i = 0; i < 3; i++)
                {
@@ -440,6 +442,42 @@ public:
              v8::String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
              elm_actionslider_labels_set(eo, *left, *middle, *right);
           }
+     }
+
+   bool position_from_string(v8::Local<v8::Value> val, Elm_Actionslider_Pos &pos)
+     {
+        if (!val->IsString())
+          return false;
+
+        v8::String::Utf8Value str(val);
+        if (!strcmp(*str, "left"))
+          pos = ELM_ACTIONSLIDER_LEFT;
+        else if (!strcmp(*str, "center"))
+          pos = ELM_ACTIONSLIDER_CENTER;
+        else if (!strcmp(*str, "right"))
+          pos = ELM_ACTIONSLIDER_RIGHT;
+        else
+          {
+             fprintf(stderr, "Invalid actionslider position: %s\n", *str);
+             return false;
+          }
+        return true;
+     }
+
+   void slider_set(v8::Local<v8::Value> val)
+     {
+        Elm_Actionslider_Pos pos = ELM_ACTIONSLIDER_NONE;
+
+        if (position_from_string(val, pos))
+          elm_actionslider_indicator_pos_set(eo, pos);
+     }
+
+   void magnet_set(v8::Local<v8::Value> val)
+     {
+        Elm_Actionslider_Pos pos = ELM_ACTIONSLIDER_NONE;
+
+        if (position_from_string(val, pos))
+          elm_actionslider_magnet_pos_set(eo, pos);
      }
 };
 

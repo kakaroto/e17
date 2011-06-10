@@ -12,22 +12,48 @@ var elements = {
 		type : "pack",
 		weight : { x : 1.0, y : 0.0 },
 		elements : {
-			slider_right : {
+			snooze_right : {
 				type : "actionslider",
 				weight : { x : 1.0, y : 0.0 },
 				align : { x : -1.0, y : 0.0 },
 				label : { left : "Snooze", right : "Stop" },
+				magnet : "right",
+				slider : "right",
 			},
-			slider_middle : {
+			snooze_middle : {
 				type : "actionslider",
 				weight : { x : 1.0, y : 0.0 },
 				align : { x : -1.0, y : 0.0 },
-				label : "middle",
+				label : { left : "Snooze", right : "Stop" },
+				magnet : "center",
+				slider : "center",
 			},
-			slider_left : {
+			accept_reject_middle : {
 				type : "actionslider",
 				weight : { x : 1.0, y : 0.0 },
 				align : { x : -1.0, y : 0.0 },
+				label : { center : "Accept", right : "Reject" },
+				magnet : "center",
+			},
+			left_right_left : {
+				type : "actionslider",
+				weight : { x : 1.0, y : 0.0 },
+				align : { x : -1.0, y : 0.0 },
+				label : { center : "Accept", right : "Reject" },
+			},
+			left_right_center : {
+				type : "actionslider",
+				weight : { x : 1.0, y : 0.0 },
+				align : { x : -1.0, y : 0.0 },
+				label : { left: "Left", center : "Center", right : "Right" },
+			},
+			left_right_center : {
+				type : "actionslider",
+				weight : { x : 1.0, y : 0.0 },
+				align : { x : -1.0, y : 0.0 },
+				label : { left: "Left", center : "Center", right : "Right" },
+				magnet : "center",
+				slider : "center",
 			},
 		},
 	},
