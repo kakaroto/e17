@@ -79,6 +79,8 @@ if (is_file("p/$page/$lang-rss"))
 <div id="sitefooter">
 <div class="layout">
 
+xx
+
   <p> Copyright &copy; Enlightenment.org</p>
 
 </div>

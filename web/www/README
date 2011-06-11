@@ -1,6 +1,5 @@
 How this works.
 
-
 1. There is only 1 "page" - p.php - this is the master script that generates
    all pages
 2. Actual page data is under p/
