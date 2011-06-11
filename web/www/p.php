@@ -81,6 +81,8 @@ if (is_file("p/$page/$lang-rss"))
 
   <p> Copyright &copy; Enlightenment.org</p>
 
+XXXXXXX
+
 </div>
 </div>
 
