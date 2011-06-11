@@ -1,0 +1,40 @@
+<description>Official news about Enlightenment window manager, its foundation libraries and community.</description>
+
+<?php
+require_once 'class.news.php';
+
+setlocale(LC_ALL, 'en_EN');
+
+function rfc822($timestamp)
+{
+   return strftime("%a, %d %b %Y %H:%M:%S %z", $timestamp);
+}
+
+$news = new news;
+$list = $news->get(10);
+$is_first = true;
+foreach($list as $new)
+{
+   if (($new = $news->read_content($new)) !== NULL)
+   {
+     $pubdate = rfc822($new['timestamp']);
+     $nid = $new['id'];
+
+     if ($is_first)
+     {
+       $is_first = false;
+       echo "    <lastBuildDate>$pubdate</lastBuildDate>\n";
+     }
+
+     echo "    <item>\n";
+     echo "      <title><![CDATA[".$new['title']."]]></title>\n";
+     echo "      <link>http://enlightenment.org/p.php?p=$page/show&amp;l=$lang&amp;news_id=$nid</link>\n";
+     echo "      <guid isPermaLink=\"true\">http://enlightenment.org/p.php?p=$page/show&amp;l=$lang&amp;news_id=$nid</guid>\n";
+     echo "      <source>http://enlightenment.org/rss.php?p=$page&amp;=$lang</source>\n";
+     echo "      <description><![CDATA[".$new['content']."]]></description>\n";
+     echo "      <pubDate>$pubdate</pubDate>\n";
+     echo "      <author><![CDATA[".$new['email']." (".$new['author']."]]>)</author>\n";
+     echo "    </item>\n";
+   }
+}
+?>

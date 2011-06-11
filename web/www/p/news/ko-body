@@ -1,0 +1,37 @@
+<table class='main'>
+ <tr>
+  <td class='main'>
+   <div class="main">
+<h1>Enlightenment News</h1>
+
+<?php
+require_once 'class.news.php';
+
+setlocale(LC_ALL, 'en_EN');
+
+$news = new news;
+$list = $news->get(10);
+foreach($list as $new)
+{
+   if (($new = $news->read_content($new)) !== NULL)
+   {
+     echo "<div class='post'>\n";
+     echo "<p class='news-title'><a href='p.php?p=news/show&l=".$_GET['l']."&news_id=$new[id]'>".$new['title']."</a></p>";
+     echo "<p class='tiny'><a href='mailto:".$new['email']."'>".$new['author']."</a> - ".$new['date']."</p>";
+     echo "<div class='news-content'>".$new['content']."</div>\n";
+     echo "</div>\n";
+   }
+}
+
+if ($news->has_archives() == true)
+{
+   echo "<p><a href='p.php?p=news/archives&l=".$_GET['l']."' title='Read archives'>News archives</a></p>";
+}
+
+?>
+
+    <p><a href="/rss.php?p=<?php echo $page; ?>&amp;l=<?php echo $lang; ?>"><img src="/i/feed-icon-14x14.png" alt="rss" border="0" /> Be informed of updates using RSS 2.0.</a></p>
+   </div>
+  </td>
+ </tr>
+</table>
