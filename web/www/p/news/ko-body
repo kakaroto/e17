@@ -2,7 +2,7 @@
  <tr>
   <td class='main'>
    <div class="main">
-<h1>Enlightenment News</h1>
+<h1>Enlightenment 뉴스</h1>
 
 <?php
 require_once 'class.news.php';
