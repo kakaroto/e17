@@ -6,8 +6,6 @@ static void _itask_item_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void
 static void _itask_item_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _itask_item_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _itask_item_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _itask_item_cb_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _itask_item_cb_resize(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _itask_item_cb_menu_post(void *data, E_Menu *m);
 static void _itask_item_cb_drag_finished(E_Drag *drag, int dropped);
 static void _itask_item_cb_menu_post(void *data, E_Menu *m);

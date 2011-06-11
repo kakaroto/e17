@@ -1,6 +1,15 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#ifdef ENABLE_NLS
+# include <libintl.h>
+# define N_(string) dgettext(PACKAGE, string)
+#else
+# define bindtextdomain(domain,dir)
+# define bind_textdomain_codeset(domain,codeset)
+# define N_(string) (string)
+#endif
+
 typedef struct _Config      Config;
 typedef struct _Config_Item Config_Item;
 typedef struct _Itask      Itask;
@@ -144,6 +153,7 @@ int   itask_item_add_check(Itask *it, E_Border *bd);
 
 void itask_menu_init(Itask *it);
 void itask_menu_button(Itask *it);
+void itask_menu_remove(Itask *it);
 E_Menu *itask_menu_items_menu(Eina_List *items);
 
 void _itask_config_update(void);
