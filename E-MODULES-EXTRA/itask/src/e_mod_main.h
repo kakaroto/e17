@@ -27,7 +27,7 @@ struct _Config
    Eina_List	   *config_dialog;//E_Config_Dialog *;
 };
 
-struct _Config_Item 
+struct _Config_Item
 {
    const char *id;
    int show_label;
@@ -47,7 +47,7 @@ struct _Config_Item
 
 struct _Itask
 {
-   Instance       *inst; 
+   Instance       *inst;
    Evas_Object    *o_box;
    Evas_Object    *o_button;
    Eina_List      *items;
@@ -69,14 +69,14 @@ struct _Itask
    int 		   hide_menu_button;
    E_Zone         *zone;
    E_Popup        *item_label_popup;
-   
+
    int item_width;
    int item_height;
    int itask_width;
    int itask_height;
    int module_width;
    int module_height;
-   
+
 
    int num_items;
    /* should then better be an idle enterer*/
@@ -84,7 +84,7 @@ struct _Itask
    //E_Border_List *border_list;
    //Eina_List *^borders;
    Eina_List *init_items;
-  
+
    Itask_Item *menubutton;
 };
 
@@ -120,7 +120,7 @@ EAPI int   e_modapi_save     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 
 void     itask_config_update(Config_Item *ci);
-Config_Item *itask_config_item_get(const char *id); 
+Config_Item *itask_config_item_get(const char *id);
 Eina_List *itask_zone_find(E_Zone *zone);
 void itask_update_gc_orient(Itask *it);
 void itask_resize_handle(Itask *it);

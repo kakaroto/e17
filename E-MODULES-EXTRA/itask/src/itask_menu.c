@@ -29,7 +29,7 @@ itask_menu_button(Itask *it)
      it->menubutton = ic;
 }
 
-void 
+void
 itask_menu_remove(Itask *it){
   //edje_object_part_unswallow(it->menubutton->o_holder, it->menubutton->o_icon);
    evas_object_del(it->menubutton->o_holder);
@@ -57,7 +57,7 @@ _itask_menu_icon_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 static void
 _itask_menu_item_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Itask_Item *ic;	
+   Itask_Item *ic;
    E_Border *bd;
 
 
@@ -98,7 +98,7 @@ _e_int_menus_apps_drag(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    E_Border *bd;
    bd = data;
-   
+
    /* start drag! */
    if (mi->icon_object)
       {
@@ -113,7 +113,7 @@ _e_int_menus_apps_drag(void *data, E_Menu *m, E_Menu_Item *mi)
 			      drag_types, 1, bd, -1, NULL, _itask_menu_cb_item_drag_finished);
 
          o = e_border_icon_add(bd, e_drag_evas_get(drag));
-  
+
 	 e_drag_object_set(drag, o);
          e_drag_resize(drag, w, h);
          e_object_ref(E_OBJECT(bd));
@@ -128,10 +128,10 @@ itask_menu_items_menu(Eina_List *items)
   Itask_Item *ic;
   E_Menu *mn = NULL;
   E_Menu_Item *mi;
-  
+
   if(eina_list_count(items) == 0)
     return NULL;
-    
+
   mn = e_menu_new();
   const char *title;
 
@@ -271,7 +271,7 @@ _itask_menu_cb_configuration(void *data, E_Menu *m, E_Menu_Item *mi)
 
    it = data;
    ci = it->inst->ci;
- 
+
    for (l = itask_config->config_dialog; l; l = l->next)
    {
       E_Config_Dialog *cfd;

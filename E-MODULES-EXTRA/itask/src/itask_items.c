@@ -73,7 +73,7 @@ _itask_items_find_item_in_bar(Itask *it, E_Border *bd)
 
    EINA_LIST_FOREACH(it->items_bar, l, ic)
      if (ic->border == bd) return ic;
-   
+
    return NULL;
 }
 
@@ -85,7 +85,7 @@ _itask_items_cb_event_border_add(void *data, int type, void *event)
    Itask *it;
    Eina_List *itask;
    Itask_Item *ic;
-   
+
    ev = event;
    bd = ev->border;
    itask = itask_zone_find(bd->zone);
@@ -231,7 +231,7 @@ _itask_items_cb_event_border_property(void *data, int type, void *event)
 		  it->items = eina_list_remove(it->items, ic);
 		  itask_item_remove(ic);
 		  // itask_resize_handle(it);
-		  itask_update_gc_orient(it); 
+		  itask_update_gc_orient(it);
 		  continue;
 	       }
 	     else /* if(ic && !remove)*/
@@ -263,7 +263,7 @@ _itask_items_cb_event_border_focus_in(void *data, int type, void *event)
      {
 	ic = _itask_items_find_item_in_bar(it, ev->border);
 	if (ic)
-	  {  
+	  {
 	     if(it->swap_on_focus) // this should probably happen always
 	       ic->last_time = ecore_time_get();
 	     itask_icon_signal_emit(ic, "focused", "");
@@ -273,13 +273,13 @@ _itask_items_cb_event_border_focus_in(void *data, int type, void *event)
 	     ic = _itask_items_find_item_in_menu(it, ev->border);
 	     if (ic)
 	       {
-         
+
 		  itask_item_swap_to_bar(ic);
 		  itask_item_swap_oldest_from_bar(it);
-         
+
 		  itask_resize_handle(it);
 		  itask_update_gc_orient(it);
-         
+
 		  itask_icon_signal_emit(ic, "focused", "");
 	       }
 	  }
@@ -320,36 +320,36 @@ _itask_items_cb_event_border_zone_set(void *data, int type, void *event)
 
    ev = event;
    bd = ev->border;
- 
+
    /* delete from current zone itask, add to new one */
    for (l = itask_config->instances; l; l = l->next)
      {
 	if(!l->data){
 	   continue;
-	}         
+	}
 
 	it = ((Instance *) l->data)->itask;
 	if(!it){
 	   continue;
-	}         
+	}
 	if (it->show_zone != 0)
 	  {
 	     if(it->zone == ev->zone && (ic = itask_item_new(it, bd)))
-	       { 
+	       {
 		  if(ic) itask_item_realize(ic);
 	       }
 	     if(it->zone != ev->zone && (ic = _itask_items_find_item(it, ev->border)))
 	       {
 		  itask_item_remove(ic);
 		  itask_item_swap_youngest_from_menu(it);
-	       }   
+	       }
 	  }
      }
 
    return EINA_TRUE;
 }
 
-static Eina_Bool 
+static Eina_Bool
 _itask_items_cb_event_border_stack(void *data, int type, void *event)
 {
    E_Event_Border_Stack *ev;
@@ -359,17 +359,17 @@ _itask_items_cb_event_border_stack(void *data, int type, void *event)
 
    ev = event;
    itask = itask_zone_find(ev->border->zone);
-   
+
    // TODO do this only on stack above event
    EINA_LIST_FREE(itask, it)
      {
 	ic = _itask_items_find_item_in_menu(it, ev->border);
 	if (!ic) continue;
 
-	itask_item_swap_to_bar(ic);         
+	itask_item_swap_to_bar(ic);
 	itask_item_swap_oldest_from_bar(it);
-	itask_resize_handle(it);         
-	itask_icon_signal_emit(ic, "focused", "");       
+	itask_resize_handle(it);
+	itask_icon_signal_emit(ic, "focused", "");
      }
 
    return EINA_TRUE;

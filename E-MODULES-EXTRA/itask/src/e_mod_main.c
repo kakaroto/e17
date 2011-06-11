@@ -1,27 +1,27 @@
 /* TODO
- * 
+ *
  * - submenus for items in menu ?
- * 
- * - post callbacks for apps menuitems ? 
- * 
+ *
+ * - post callbacks for apps menuitems ?
+ *
  * - more config options: 'move pointer to window', 'item width/item height' 'always group'
- * 
+ *
  * - group items, so that an item gets swapped to the menu of another item of the same class (half done)
- * 
+ *
  * - init event handler only if a gcc is shown (this would apply to all modules, imho)
  *
  * - make vertical bar work (initial work done)
- * 
+ *
  * - sort function by desktops (for menu)
- * 
- * -- would be good to have a more specific resize/orientation_callback to know on 
+ *
+ * -- would be good to have a more specific resize/orientation_callback to know on
  *    changes of gcc if items have to be removed from the bar
  *
  */
 
 /* BUGS
- * - update on border property changes doesnt work correctly: on skipwinlist changes the item has to be added/removed 
- * 
+ * - update on border property changes doesnt work correctly: on skipwinlist changes the item has to be added/removed
+ *
  * */
 
 #include "e.h"
@@ -87,7 +87,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    it->hide_menu_button = inst->ci->hide_menu_button;
    it->inst = inst;
    inst->itask = it;
-   
+
    o = it->o_box;
    gcc = e_gadcon_client_new(gc, name, id, style, o);
    gcc->data = inst;
@@ -100,18 +100,18 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    it->item_height = 32; // TODO make this selectable between mix max size that the theme provides
    it->item_width = 114;
    it->num_items = 0;
-   if(!it->hide_menu_button){  
+   if(!it->hide_menu_button){
       itask_menu_button(it);
    }
-   itask_resize_handle(it);	
-   
+   itask_resize_handle(it);
+
    _itask_fill(it);
    return gcc;
 }
 
 static void
 _gc_shutdown(E_Gadcon_Client *gcc)
-{  
+{
    Instance *inst;
 
    inst = gcc->data;
@@ -125,18 +125,18 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 {
    Instance *inst;
    Evas_Coord w, h;
-   int button_size;    
-   Itask_Item *ic;  
-    
+   int button_size;
+   Itask_Item *ic;
+
    inst = gcc->data;
    Itask *it = inst->itask;
-   
+
    evas_object_geometry_get(it->inst->gcc->gadcon->o_container,
 			    NULL, NULL,&it->itask_width, &it->itask_height);
 
    if (it->itask_height < 10)
      it->itask_height = 10;
-        
+
    switch (gcc->gadcon->orient)
      {
       case E_GADCON_ORIENT_FLOAT:
@@ -148,25 +148,25 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
 	 //if (!e_box_orientation_get(it->o_box))
-	 _itask_orient_set(inst->itask, 1); 
-      
+	 _itask_orient_set(inst->itask, 1);
+
 	 int width;
 	 if(it->option_ibox_style)
 	   width = it->itask_height;
 	 else
 	   width = it->item_width;
-      
+
 	 if(it->items_bar)
 	   w = (eina_list_count(it->items_bar) * width) + it->itask_height;
 	 else
 	   w = it->itask_height;
-      
+
 	 h = it->itask_height;
-      
+
 	 /* printf("_gc_orient: %dx%d\n",w,h); */
-	 e_gadcon_client_aspect_set(gcc, w, h); 
+	 e_gadcon_client_aspect_set(gcc, w, h);
 	 break;
-      
+
       case E_GADCON_ORIENT_VERT:
       case E_GADCON_ORIENT_LEFT:
       case E_GADCON_ORIENT_RIGHT:
@@ -176,26 +176,26 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_RB:
 	 //if (e_box_orientation_get(it->o_box))
 	 _itask_orient_set(inst->itask, 0);
-      
+
 	 if(it->items_bar)
 	   {
 	      if(it->option_ibox_style)
 		h = (eina_list_count(it->items_bar) * it->itask_width) + it->itask_width;
-	      else   
+	      else
 		h = (eina_list_count(it->items_bar) * it->item_height) + it->item_height;
 	   }
 	 else
 	   h = it->item_height;
-        
+
 	 if(it->option_ibox_style)
 	   w = it->itask_width;
 	 else
 	   w = it->item_width;
 	 /* printf("_gc_orient: %dx%d\n",w,h); */
-	 e_gadcon_client_aspect_set(gcc, w, h); 
-      
+	 e_gadcon_client_aspect_set(gcc, w, h);
+
 	 break;
-      
+
       default:
 	 break;
      }
@@ -225,7 +225,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 static const char*
 _gc_id_new(E_Gadcon_Client_Class *client_class)
 {
-   Config_Item *ci; 
+   Config_Item *ci;
    ci = itask_config_item_get(NULL);
    return ci->id;
 }
@@ -260,7 +260,7 @@ _itask_free(Itask *it)
      evas_object_del(it->o_button);
 
    eina_hash_free(it->item_groups);
-   
+
    free(it);
 }
 
@@ -316,7 +316,7 @@ itask_resize_handle(Itask *it)
 
    evas_object_geometry_get(it->inst->gcc->gadcon->o_container,
 			    NULL, NULL,&w, &h);
-   
+
    if (e_box_orientation_get(it->o_box))
      {
 	bw = h;
@@ -369,7 +369,7 @@ itask_zone_find(E_Zone *zone)
 	if (!ci)
 	  continue;
 
-	if ((ci->show_zone == 0 ) 
+	if ((ci->show_zone == 0 )
             || ((ci->show_zone != 0) && (inst->itask->zone == zone)))
 	  itask = eina_list_append(itask, inst->itask);
 
@@ -384,13 +384,13 @@ _itask_cb_event_desk_show(void *data, int type, void *event)
    Eina_List *l, *ll, *lll, *itask, *l_items = NULL;
    Itask *it;
    Itask_Item *ic, *ic2;
-   
+
    ev = event;
    int items_on_desk_in_menu = 0;
    int items = 0;
    int items_on_desk_in_bar = 0;
    itask = itask_zone_find(ev->desk->zone);
-   
+
    EINA_LIST_FREE(itask, it)
      {
 	/* If we're 'this desktop only' then we need to refill when the desk changes */
@@ -431,10 +431,10 @@ _itask_cb_event_desk_show(void *data, int type, void *event)
 		    }
 		  continue;
 	       }
-      	 
+
 	     int i;
 	     for(i = 0; items - items_on_desk_in_bar >= i  && i < items_on_desk_in_menu ; i++)
-	       {   
+	       {
 		  ic = l_items->data;
 		  for(lll = l_items->next; lll ; lll = lll->next)
 		    {
@@ -442,9 +442,9 @@ _itask_cb_event_desk_show(void *data, int type, void *event)
 		       if(ic->last_time < ic2->last_time)
 			 {
 			    ic = ic2;
-			 }    		
+			 }
 		    }
-        	
+
 		  itask_item_swap_to_bar(ic);
 		  itask_item_swap_oldest_from_bar(it);
 		  l_items = eina_list_remove(l_items, ic);
@@ -458,10 +458,10 @@ _itask_cb_event_desk_show(void *data, int type, void *event)
 	     itask_resize_handle(it);
 	  }
      }
-  
+
    return EINA_TRUE;
 }
-	
+
 Config_Item *
 itask_config_item_get(const char *id)
 {
@@ -494,7 +494,7 @@ itask_config_item_get(const char *id)
 	     if (!strcmp (ci->id, id))
 	       return ci;
 	  }
-     } 
+     }
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
    ci->show_label = 0;
@@ -541,7 +541,7 @@ itask_config_update(Config_Item *ci)
 	   it->hide_menu_button = ci->hide_menu_button;
 	   _itask_empty(it);
 	   _itask_fill(it);
-	   return;	  
+	   return;
 	}
      }
 }
@@ -562,7 +562,7 @@ e_modapi_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
-  
+
    conf_item_edd = E_CONFIG_DD_NEW("Itask_Config_Item", Config_Item);
 #undef T
 #undef D
