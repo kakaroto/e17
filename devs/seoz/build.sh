@@ -13,7 +13,7 @@ export BUILD_PYTHON_BINDINGS="BINDINGS/python/python-evas BINDINGS/python/python
 export BUILD_C_BINDINGS="BINDINGS/cxx/eflxx BINDINGS/cxx/einaxx BINDINGS/cxx/evasxx BINDINGS/cxx/ecorexx BINDINGS/cxx/elementaryxx"
 export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
 export BUILD_E_MODULES="E-MODULES-EXTRA/comp-scale E-MODULES-EXTRA/elfe E-MODULES-EXTRA/engage"
-export BUILD_EXAMPLE="EXAMPLE/elementary/calculator EXAMPLE/elementary/converter EXAMPLE/elementary/phonebook EXAMPLE/elementary/sticky-notes"
+export BUILD_EXAMPLE="EXAMPLES/elementary/calculator EXAMPLES/elementary/converter EXAMPLES/elementary/phonebook EXAMPLES/elementary/sticky-notes"
 export BUILD_ETC="editje emotion PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica eio enlil" #enki
 export BUILD=$BUILD_BASIC" "$BUILD_BINDINGS" "$BUILD_E_MODULES" "$BUILD_EXAMPLE" "$BUILD_ETC
 
@@ -26,7 +26,7 @@ for I in $BUILD; do
 	make
 	sudo make install
 	sudo ldconfig
-	ctags -h ".h.x.cpp.c" -R
+	#ctags -h ".h.x.cpp.c" -R
   popd
 done
 
