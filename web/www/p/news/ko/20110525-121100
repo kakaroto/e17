@@ -1,0 +1,36 @@
+EFL 핵심 라이브러리 1.0.1 배포
+세드릭 바일
+cedric.bail@free.fr
+
+<p>
+1.0 배포 후 몇 달이 지난 후에, EFL 핵심 라이브러리 1.0.1 버전을 배포합니다.
+ (단, eet 버전은 1.4.1 입니다.) 1.0.1 은 핵심 라이브러리 1.0 에 버그만
+ 수정한 버전입니다. 그래서 버그가 수정된 라이브러리만 배포합니다. Embryo 1.0.0
+ 은 알려진 버그가 없기 때문에 새로 배포하지 않습니다. 새로 추가된 멋진 기능을
+ 사용하려면 조금 더 기다리셔야 할것 같습니다. 배포된 라이브러리는 아래와
+ 같습니다.
+</p>
+
+<p><ul>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eina">Eina</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eet">Eet</a> - 1.4.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Evas">Evas</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Ecore">Ecore</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Embryo">Embryo</a> - 1.0.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Edje">Edje</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/E_Dbus">E_Dbus</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Efreet">Efreet</a> - 1.0.1</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> - 1.0.1</li>
+</ul></p>
+
+<p>
+각 라이브러리는 <a href="http://www.enlightenment.org/p.php?p=download&l=en">Download Page</a>
+ 에서 받으실 수 있으며, Subversion 의 1.0 브랜치에서 리비전 r59661 을 받으셔도 됩니다.
+</p>
+
+<p>
+1.0.1 과 호환이 되는 일부 어플리케이션과 라이브러리 및 바인딩은
+ <a href="http://download.enlightenment.org/snapshots/2010-12-03/">this snapshot</a>
+ 에서 받으실 수 있습니다.
+</p>
+<!-- cut -->

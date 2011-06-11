@@ -1,0 +1,25 @@
+Enlightenment Foundation Library running on 2 millions  little set top box.
+Cedric BAIL
+cedric.bail@free.fr
+<p>
+Since now a few  days, the Enlightenment Foundation Library are running on
+around 2 or 3 millions French set top box. Free.fr is openning the development
+on the Freebox HD by using a combination of the EFL and Mozilla JavaScript
+library. This open with a relatively old hardware some great graphical
+possibility. Free.fr is planning to open some kind of store for this JavaScript
+apps during the beginning of 2010.
+</p> <!-- cut -->
+
+<p>
+So what does this mean for you as users and developers? It means that the EFL
+are able to provide some eye candy with limited hardware and this target is
+here to stay for some time. In the past, Freebox S.A.S as provided code that
+improve some specific bottleneck of the EFL, and will continue in the futur.
+We focus on 720p output, 1080p is also supported. Finally we are also working
+on keyboard issue and some library will see improvement in a near futur, so
+stay tunned on this too !
+</p><p>
+Of course, we are staying close to Enlightenment SVN and we are continuously
+integrating our work in current SVN, so people can watch and help to see what
+they want in it.
+</p>

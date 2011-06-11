@@ -1,0 +1,45 @@
+Eet 1.2.0 released, Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, E snapped
+Carsten Haitzler
+raster@rasterman.com
+<p>
+Eet 1.2.0 has been released with several bugfixes and improvements. It is
+considered stable. It is available from
+<a href="http://download.enlightenment.org/releases/">here</a>.
+</p>
+<p>
+Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet and Enlightenment have had a
+snapshot release (snapshot 060) and can be downloaded from
+<a href="http://download.enlightenment.org/snapshots/2009-04-22/">here</a>. If
+you are taking source from <a href="http://svn.enlightenment.org">SVN</a>, then
+use SVN revision 40284.
+</p>
+<!-- cut -->
+
+<p>
+Eet 1.2.0 was released, with the following changes:
+</p>
+<p>
+<ul>
+<li>Make use of eina</li>
+<li>Fix string in list and hash</li>
+<li>Fix array in eet_data</li>
+<li>Add crypto support to eet with OpenSSL</li>
+<li>Add GNUtls support to eet</li>
+<li>Make password callback work with GNUtls</li>
+<li>Add a function to retrieve raw signature</li>
+<li>Fix a corrupted pointer use in eet_cipher.c</li>
+<li>Add some missing __UNUSED__ flags</li>
+<li>Fix problem reported by llvm</li>
+<li>Add sha1 retrieval for an Eet_File</li>
+<li>Make eet_data thread safe</li>
+<li>Fix eet pkg-config dependencies</li>
+<li>Fix double init of gcry</li>
+</ul>
+</p>
+<p>
+The snapshot release of Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet and
+Enlightenment includes lots of improvements and fixes. Too many to put here,
+but these are not considered stable yet, and thus we don't track changelogs.
+They do impose soname changes and module versioning now to make packaging
+cleaner alongside svn source installs. Please download, try and test these.
+</p>

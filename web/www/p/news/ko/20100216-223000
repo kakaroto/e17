@@ -1,0 +1,72 @@
+EFL brings Ubuntu Netbook Remix to ARM
+Gustavo Sverzut Barbieri
+barbieri@profusion.mobi
+<p>
+<a href="http://www.canonical.com/">Canonical</a> developer Jamie
+Bennett announced in his blog post <a
+href="http://www.linuxuk.org/2010/02/the-new-ui-for-arm-based-ubuntu-devices/">The
+New UI for ARM Based Ubuntu Devices</a> how Enlightenment Foundation
+Libraries (EFL) enabled rich graphical user interfaces even on
+non-3D-accelerated ARM devices.
+</p>
+<!-- cut -->
+
+<p>
+Enlightenment Foundation Libraries were conceived and developed with
+performance in mind. Started in 2000, the current incarnation was
+designed based on previous experience with Imlib and Imlib2, libraries
+known to be quite fast. Over the past 10 years, the API changed a lot to
+be easier to use, but the performance impact of each and every change was
+carefully considered and benchmarked using the <a
+href="http://trac.enlightenment.org/e/wiki/Expedite">Expedite</a> tool.
+</p>
+<p>
+The most performance-critical part of EFL is definitely <a
+href="http://trac.enlightenment.org/e/wiki/Evas">Evas</a>, the canvas
+(drawing) library. Fast in both software- and hardware-accelerated environments,
+it always shipped with lots of engines such as buffer, X11 (Xlib/Xcb)
+and XRender, but it recently gained more interesting engines due to companies
+that contributed back their work:
+<ul>
+<li>16 bit-per-pixel-optimized engine, contributed by <a href="http://www.indt.org.br">INdT</a>.</li>
+<li>SDL, contributed by <a href="http://free.fr">Free.fr</a>.</li>
+<li>DirectFB, contributed by <a href="http://profusion.mobi">ProFUSION</a>.</li>
+<li>OpenGL-ES, contributed by <a href="http://samsung.com">Samsung</a>.</li>
+</ul>
+</p>
+<p>
+However, Evas is not the only optimized piece of EFL. <a
+href="http://trac.enlightenment.org/e/wiki/Eet">Eet</a>, used for
+binary, read-efficient configuration and resources file, boosted
+Canonical's Ubuntu Netbook Remix (UNR) startup time. The initial
+version using GConf was quite slow to provide information, so these
+were cached with Eet for immediate access to background images,
+display modes, and font configuration.
+</p>
+<p>
+Aside from being used for configuration files, Eet is also the base of
+<a href="http://trac.enlightenment.org/e/wiki/Edje">Edje</a>, the
+theme system used by UNR, Enlightenment DR17, Elementary,
+<a href="http://openbossa.indt.org/canola">Canola2</a> and
+others. Edje manages a state machine of Evas objects' states, described in a
+JSON/C-like language, later compiled into an access- and space-efficient
+binary format. Its power and flexibility continually amaze its users,
+as said by Jamie in his post:
+<blockquote>
+Another of the great things about this launcher, as opposed to the 3D
+launcher shipped with Karmic, is that it's extremely theme-able.
+</blockquote>
+</p>
+<p>
+Last but not least, the new kid on the block, <a
+href="http://trac.enlightenment.org/e/wiki/Elementary">Elementary</a>,
+boosted development time with its canned ready-to-use widgets. Like
+all the previously-presented libraries, Elementary is very fast
+and customizable. It is quite unnoticeable in UNR, but it is the base
+of lists and some error dialogs.
+</p>
+<p>
+The Enlightenment team is proud its products are being used more and more
+on embedded systems, be they e-book readers, phones, or TV's&#59; x86,
+ARM, or MIPS&#59; accelerated or non-accelerated hardware.
+</p>

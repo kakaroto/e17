@@ -1,0 +1,14 @@
+1.0.1 Release of Eeze
+Mike Blumenkrantz
+mike@zentific.com
+
+<p>
+This is a bugfix release which corrects behavior which caused udev watch/find
+functions to filter too aggressively, resulting in offlined or disconnected devices
+to not be properly returned in some cases.
+</p>
+
+<p><ul>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> - <a href="http://download.enlightenment.org/releases/eeze-1.0.1.tar.gz">1.0.1</a></li>
+</ul></p>
+<!-- cut -->

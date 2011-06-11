@@ -1,0 +1,30 @@
+ALPHA Release of core EFL
+Carsten Haitzler
+raster@rasterman.com
+<p>
+Several core EFL libraries have now been released as alpha. This means
+the API is "good to go", but there may be bugs. The focus is on fixing
+bugs now and keeping API stable for a full release once bugs are gone.
+You can get the alpha releases of Eina, Eet, Evas, Ecore, Embryo, Edje,
+Efreet, E_Dbus and Eeze 
+<a href="http://download.enlightenment.org/releases/">here</a>.
+</p>
+<p>
+You can also get the above libraries in their alpha state if you check
+out SVN revision 51480. The following libraries are in alpha state for
+the following versions:
+</p><p>
+<ul>
+<li><a href=http://trac.enlightenment.org/e/wiki/Eina>Eina</a> - 1.0.0 ALPHA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Eet>Eet</a> - 1.4.0 ALPHA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Evas>Evas</a> - 1.0.0 ALPHA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Ecore>Ecore</a> - 1.0.0 ALPHA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Embryo>Embryo</a> - 1.0.0 ALPHA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Edje>Edje</a> - 1.0.0 ALPHA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/E_Dbus>E_Dbus</a> - 1.0.0 ALPHA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Efreet>Efreet</a> - 1.0.0 ALPHA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Eeze>Eeze</a> - 1.0.0 ALPHA</li>
+</ul>
+</p>
+<!-- cut -->
+

@@ -1,0 +1,37 @@
+BETA Release of core EFL
+Carsten Haitzler
+raster@rasterman.com
+<p>
+Several core EFL libraries have now been released as beta. There may
+be some minor bugs, but most if not all are gone. We invite input,
+especially on bugs, and any patches you may have to fix them.
+You can get the beta releases of Eina, Eet, Evas, Ecore, Embryo, Edje,
+Efreet, E_Dbus and Eeze 
+<a href="http://download.enlightenment.org/releases/">here</a>.
+</p>
+<p>
+There are also snapshots of Elementary and Enlightenment available from
+<a href="http://download.enlightenment.org/snapshots/2010-10-03/">here</a>.
+They are not considered stable at this time, but do work. They go
+together with the beta release above.
+</p>
+<p>
+You can also get the above libraries in their beta (and snapshot) state if
+you check out SVN revision 52995. Versions released/snapshotted are as below:
+</p><p>
+<ul>
+<li><a href=http://trac.enlightenment.org/e/wiki/Eina>Eina</a> - 1.0.0 BETA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Eet>Eet</a> - 1.4.0 BETA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Evas>Evas</a> - 1.0.0 BETA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Ecore>Ecore</a> - 1.0.0 BETA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Embryo>Embryo</a> - 1.0.0 BETA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Edje>Edje</a> - 1.0.0 BETA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/E_Dbus>E_Dbus</a> - 1.0.0 BETA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Efreet>Efreet</a> - 1.0.0 BETA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Eeze>Eeze</a> - 1.0.0 BETA</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Elementary>Elementary</a> - SNAPSHOT</li>
+<li><a href=http://trac.enlightenment.org/e/wiki/Enlightenment>Enlightenment</a> - SNAPSHOT</li>
+</ul>
+</p>
+<!-- cut -->
+

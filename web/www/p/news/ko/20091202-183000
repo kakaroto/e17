@@ -1,0 +1,48 @@
+Eet 1.2.3 released, Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, E, Elementary snapped
+Carsten Haitzler
+raster@rasterman.com
+<p>
+Eet 1.2.3 has been released with several bugfixes and improvements. It is
+considered stable. It is available from
+<a href="http://download.enlightenment.org/releases/">here</a>.
+</p>
+<p>
+Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, Elementary and Enlightenment
+have had a snapshot release (snapshot 063), and can be downloaded from
+<a href="http://download.enlightenment.org/snapshots/2009-12-02/">here</a>. If
+you are taking source from <a href="http://svn.enlightenment.org">SVN</a>, then
+use SVN revision 44144.
+</p>
+<!-- cut -->
+
+<p>
+Eet 1.2.3 was released, with the following changes:
+</p>
+<p>
+<ul>
+<li>Deprecating eet_data_descriptor*_new</li>
+<li>Add eet_data_descriptor_stream_new and eet_data_descriptor_file_new</li>
+<li>Add eina helper</li>
+<li>Cleanup Eet_Data_Descriptor code</li>
+<li>Fix eet data encode to encode empty structs etc. so save saves something as opposed to nothing</li>
+<li>Fix documentation of eet_data_write() and eet_write() for return value to return # of bytes written, not 1 or 0</li>
+<li>Fix build with suncc (missing alloca() declaration in eet_cipher.c)</li>
+<li>Use new Eina_Log infrastructure to report error</li>
+<li>Remove apparently useless eet_freeleak_* from eet_data</li>
+<li>Add Fixed Point support and make it possible to switch from float and double to any fixed point variant supported by eina</li>
+<li>Remove useless Eina_Log macros</li>
+<li>Check the returned value of eet_init() in the binary</li>
+<li>Use binary mode of fopen() in eet_main() for Windows compatibility</li>
+<li>Initialize eina first in eet_init()</li>
+<li>Allow generation of one single file with all source code in it. See configure help to enable it (--enable-amalgamation)</li>
+<li>Add check on libgcrypt library in configure. Needed when GNUtls support is enabled</li>
+</ul>
+</p>
+<p>
+The snapshot release of Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet,
+Enlightenment and Elementary includes lots of improvements and fixes. Too many
+to put here, but these are not considered stable yet, and thus we don't track
+changelogs. They do impose soname changes and module versioning now to make
+packaging cleaner alongside SVN source installs. Please download, try and test
+these.
+</p>

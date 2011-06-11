@@ -1,0 +1,17 @@
+Eet 1.3.2 released, Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, E, Elementary snapped
+Carsten Haitzler
+raster@rasterman.com
+<p>
+Eet 1.3.2 has been released with several bugfixes and improvements. It is
+considered stable. It is available from
+<a href="http://download.enlightenment.org/releases/">here</a>.
+</p>
+<p>
+Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, Elementary and Enlightenment
+have had a snapshot release (snapshot 49898), and can be downloaded from
+<a href="http://download.enlightenment.org/snapshots/2010-06-27/">here</a>. If
+you are taking source from <a href="http://svn.enlightenment.org">SVN</a>, then
+use SVN revision 49898.
+</p>
+<!-- cut -->
+

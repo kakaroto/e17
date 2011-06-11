@@ -1,0 +1,14 @@
+Announcing smart refrigerator based on the EFL
+Luis Felipe Strano Moraes
+lfelipe@profusion.mobi
+
+<p><a href="http://www.profusion.mobi">ProFUSION</a> has just posted <a href="http://profusion.mobi/first_product_of_profusion_and_electrolux_partnership">news</a> regarding the commercial launch of a new refrigerator called <em>Infinity I-Kitchen</em> by Electrolux (also known as Frigidaire in some countries) that contains a touchscreen-enabled ARM device running Linux.</p>
+
+<!-- cut -->
+
+<p>Part of the new drive for the Smart Kitchen, the Infinity I-Kitchen provides the user with unparalleled control over his refrigerator, all implemented using the EFL in order to provide the kind of smooth and rich user interaction that was requested.</p>
+
+<p>The hardware is a Freescale i.MX25 running at 400Mhz with 128Mb RAM, the display has a resolution of 480x800 and the application is being rendered completely via software, since there was no hardware acceleration available.</p>
+
+<p>Apart from the Evas software render with its outstanding performance, the other libraries that are also worthy of mention due to having made this project a success are Edje and Elementary. They have both enabled a wide array of effects and interactions that otherwise would not have been possible given the hardware and time restrictions. One of the main features of the new product, the Photos application which lets the refrigerator act as a digital photo frame is heavily based on Ethumb.</p>
+

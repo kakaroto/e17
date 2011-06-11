@@ -1,0 +1,65 @@
+Eet 1.3.0 released, Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, E, Elementary snapped
+Carsten Haitzler
+raster@rasterman.com
+<p>
+Eet 1.3.0 has been released with several bugfixes and improvements. It is
+considered stable. It is available from
+<a href="http://download.enlightenment.org/releases/">here</a>.
+</p>
+<p>
+Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, Elementary and Enlightenment
+have had a snapshot release (snapshot 49539), and can be downloaded from
+<a href="http://download.enlightenment.org/snapshots/2010-06-07/">here</a>. If
+you are taking source from <a href="http://svn.enlightenment.org">SVN</a>, then
+use SVN revision 49539.
+</p>
+<!-- cut -->
+
+<p>
+Eet 1.3.0 was released, with the following changes:
+</p>
+<p>
+<ul>
+<li>Make all operations on an Eet_File thread safe</li>
+<li>Fix error when retrieving a different float type than the stored one</li>
+<li>Reduce conversion with a little memory overhead</li>
+<li>Include winsock2.h in eet_image.c for htonl definition on Windows</li>
+<li>Fix Visual Studio project files</li>
+<li>Make eet_data_descriptor_free safe to call on NULL pointer</li>
+<li>More work on eet_node dump code</li>
+<li>Add fully functional eet_node dump code</li>
+<li>Don't mess up when memory realloc failed during data descriptor creation</li>
+<li>Fix another thread deadlock in mutex handling even in a single-threaded app</li>
+<li>Rewrite Eet_Data. Now you can do list/hash/array of strings and all the test suite is passing</li>
+<li>Add eet_data_node_decode_cipher and eet_data_node_read_cipher</li>
+<li>Fix amalgamation</li>
+<li>eet_cipher.c: Fix arithmetic pointer on void *</li>
+<li>Add a mempool for Eet_Node</li>
+<li>Add experimental API to walk Eet_Node tree</li>
+<li>Add VAR_ARRAY tests</li>
+<li>Improve security by zeroying cipher material as soon as possible</li>
+<li>Fix override of global symbols</li>
+<li>Fix clearcache race condition</li>
+<li>Fix eet_data_node_read_cipher return type</li>
+<li>Add Eet_Connection</li>
+<li>Improve eet_eina_file_data_descriptor_class_set by using eina_hash_direct_add to avoid duplication hash key string</li>
+<li>Fix file corruption reported by Tiago Falcao - tiago@profusion.mobi</li>
+<li>Add eet_sync</li>
+<li>Only delete the file at the last possible moment</li>
+<li>Reduce opening file descriptor</li>
+<li>Handle fixed point in data stream</li>
+<li>Add EET_G_UNION and EET_G_VARIANT</li>
+<li>Add EET_VERSION_MAJOR, EET_VERSION_MINOR</li>
+<li>Add Eet_Version, eet_version</li>
+<li>Make configure.ac use m4 defines for version</li>
+<li>Support SVN revision in version check</li>
+</ul>
+</p>
+<p>
+The snapshot release of Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet,
+Enlightenment and Elementary includes lots of improvements and fixes. Too many
+to put here, but these are not considered stable yet, and thus we don't track
+changelogs. They do impose soname changes and module versioning now to make
+packaging cleaner alongside SVN source installs. Please download, try and test
+these.
+</p>

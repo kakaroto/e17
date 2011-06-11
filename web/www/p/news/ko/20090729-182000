@@ -1,0 +1,35 @@
+Eet 1.2.2 released, Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, E, Elementary 0.5.1.0 snapped
+Carsten Haitzler
+raster@rasterman.com
+<p>
+Eet 1.2.2 has been released with several bugfixes and improvements. It is
+considered stable. It is available from
+<a href="http://download.enlightenment.org/releases/">here</a>.
+</p>
+<p>
+Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet and Enlightenment have had a
+snapshot release (snapshot 062), Elementary 0.5.1.0, and can be downloaded from
+<a href="http://download.enlightenment.org/snapshots/2009-07-29/">here</a>. If
+you are taking source from <a href="http://svn.enlightenment.org">SVN</a>, then
+use SVN revision 41533.
+</p>
+<!-- cut -->
+
+<p>
+Eet 1.2.2 was released, with the following changes:
+</p>
+<p>
+<ul>
+<li>Reorder gcry init to be used during gnutls init</li>
+<li>Improve docs/examples in Eet.h</li>
+<li>Fix init on system without SECMEM</li>
+</ul>
+</p>
+<p>
+The snapshot release of Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet,
+Enlightenment and Elementary includes lots of improvements and fixes. Too many
+to put here, but these are not considered stable yet, and thus we don't track
+changelogs. They do impose soname changes and module versioning now to make
+packaging cleaner alongside SVN source installs. Please download, try and test
+these.
+</p>

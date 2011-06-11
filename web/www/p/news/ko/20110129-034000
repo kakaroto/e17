@@ -1,0 +1,27 @@
+1.0 Release of core EFL
+Carsten Haitzler
+raster@rasterman.com
+
+<p>
+Finally after a long time coming, we are pleased to announce the 1.0
+release of the core EFL libraries (With the exception of Eet at 1.4).
+The following libraries have been released:
+</p>
+
+<p><ul>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eina">Eina</a> - 1.0.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eet">Eet</a> - 1.4.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Evas">Evas</a> - 1.0.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Ecore">Ecore</a> - 1.0.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Embryo">Embryo</a> - 1.0.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Edje">Edje</a> - 1.0.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/E_Dbus">E_Dbus</a> - 1.0.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Efreet">Efreet</a> - 1.0.0</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> - 1.0.0</li>
+</ul></p>
+
+<p>
+You can download the respective libraries from our 
+<a href="http://www.enlightenment.org/p.php?p=download&l=en">Download Page</a>.
+</p>
+<!-- cut -->

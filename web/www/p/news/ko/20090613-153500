@@ -1,0 +1,34 @@
+Eet 1.2.1 released, Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet, E, Elementary snapped
+Carsten Haitzler
+raster@rasterman.com
+<p>
+Eet 1.2.1 has been released with several bugfixes and improvements. It is
+considered stable. It is available from
+<a href="http://download.enlightenment.org/releases/">here</a>.
+</p>
+<p>
+Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet and Enlightenment have had a
+snapshot release (snapshot 061), Elementary 0.5.0, and can be downloaded from
+<a href="http://download.enlightenment.org/snapshots/2009-06-14/">here</a>. If
+you are taking source from <a href="http://svn.enlightenment.org">SVN</a>, then
+use SVN revision 41040.
+</p>
+<!-- cut -->
+
+<p>
+Eet 1.2.1 was released, with the following changes:
+</p>
+<p>
+<ul>
+<li>Cleanup Eet_Data code</li>
+<li>Make eet_node API usable</li>
+</ul>
+</p>
+<p>
+The snapshot release of Eina, Evas, Ecore, Embryo, Edje, E_Dbus, Efreet,
+Enlightenment and Elementary includes lots of improvements and fixes. Too many
+to put here, but these are not considered stable yet, and thus we don't track
+changelogs. They do impose soname changes and module versioning now to make
+packaging cleaner alongside svn source installs. Please download, try and test
+these.
+</p>

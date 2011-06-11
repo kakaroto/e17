@@ -1,0 +1,17 @@
+SVN move complete
+Carsten Haitzler (Rasterman)
+raster@rasterman.com
+<p>
+Over the weekend, I have imported our entire CVS history into SVN. At
+<a href=http://svn.enlightenment.org>svn.enlightenment.org</a> you can find
+out how to check out the new respository or use the tracker to browse it and
+all the changes.
+</p>
+
+<!-- cut -->
+
+<p>
+The move to SVN comes after a decade or so of using CVS. We are re-organising
+the content a bit and now using Trac as a way of tracking code changes in
+public, feature requests and bug reporting.
+</p>

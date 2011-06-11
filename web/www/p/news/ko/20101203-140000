@@ -1,0 +1,53 @@
+BETA3 Release of core EFL
+Cedric BAIL
+cedric.bail@free.fr
+
+<p>
+We're excited to announce the third beta release of the Enlightenment Foundation Libraries. The focus of this release is portability and build issues. We'd like to thank all the people who helped us by packaging all this libraries on so many different systems. The libraries run better now, especially on OpenBSD and Mac OS X systems. It's really the right time to help us package it for more targets and rock on all of them!
+</p>
+
+<p>
+The APIs and ABIs of all beta3 libraries are considered stable, but please test your apps with them and report back any issues you may encounter. Thanks to the last beta, a small number of bugs have been identified. Once they are fixed we will jump into the release candidate cycle.
+</p>
+
+<p>
+As the end of the beta cycle get closer, we still need a lot of help to write documentation, tutorials, and examples; if you have time to contribute, this is a good area to help with! As you may have noticed (or not) our documentation situation is already improving. If you take a look at our <a href="http://www.enlightenment.org/p.php?p=docs">daily updated documentation</a> or our <a href="http://trac.enlightenment.org/e/">wiki</a>, you will see progress.
+</p>
+
+<p>
+Testing is pretty easy: if you're using the EFL from our Subversion repository you can test with revision 55246, but to ensure a smooth release later on, please consider testing with the tarballs provided <a href="http://www.enlightenment.org/p.php?p=download&l=en">here</a>.
+</p>
+
+<p>
+The list of libraries that are being considered part of this release are:
+</p>
+<p><ul>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eina">Eina</a> - 1.0.0 BETA3</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eet">Eet</a> - 1.4.0 BETA3</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Evas">Evas</a> - 1.0.0 BETA3</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Ecore">Ecore</a> - 1.0.0 BETA3</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Embryo">Embryo</a> - 1.0.0 BETA3</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Edje">Edje</a> - 1.0.0 BETA3</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/E_Dbus">E_Dbus</a> - 1.0.0 BETA3</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Efreet">Efreet</a> - 1.0.0 BETA3</li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> - 1.0.0 BETA3</li>
+</ul></p>
+
+<p>
+There are also snapshots being made available for the following projects (as well as <a href="http://trac.enlightenment.org/e/wiki/EFLBindings">bindings</a> for Python and Javascript), and we would really appreciate feedback on all of them.  Please notice, however, that they are still considered work in progress and may have bugs, lack certain features, and ABI/API may be broken in the future:
+</p>
+<p><ul>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eio">Eio</a></li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Ethumb">Ethumb</a></li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Elementary">Elementary</a></li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Editje">Editje</a></li>
+<li><a href="http://trac.webkit.org/wiki/EFLWebKit">WebKit-EFL</a></li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eve">Eve</a></li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Ephoto">Ephoto</a></li>
+<li><a href="http://trac.enlightenment.org/e/wiki/Enlightenment">Enlightenment</a></li>
+</ul></p>
+
+<p>
+If you want to join and help us, join on our irc channel #edevelop on the FreeNode server, or ask your questions on the mailing list.
+</p>
+<!-- cut -->
