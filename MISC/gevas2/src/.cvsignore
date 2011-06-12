@@ -1,9 +1,0 @@
-*~
-libgevas.la
-.libs
-.deps
-*.lo
-*.o
-Makefile
-Makefile.in
-*.flc

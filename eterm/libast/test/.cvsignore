@@ -1,8 +1,0 @@
-Makefile
-Makefile.in
-stamp-h*
-*.sddf
-*.o
-.deps
-.libs
-libast-*
