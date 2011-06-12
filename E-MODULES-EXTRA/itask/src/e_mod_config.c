@@ -55,7 +55,7 @@ _config_itask_module(Config_Item *ci)
     /* Create The Dialog */
     snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(itask_config->module));
     cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-                              N_("ITask Configuration"),
+                              D_("ITask Configuration"),
                               "E", "_e_mod_itask_config_dialog",
                               buf, 0, v, ci);
 
@@ -112,34 +112,34 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
     o = e_widget_list_add(evas, 0, 0);
 
-    of = e_widget_framelist_add(evas, N_("General Settings"), 0);
-    ob = e_widget_check_add(evas, N_("Good ol' IBox style (instead of taskbar style)"), &(cfdata->ibox_style));
+    of = e_widget_framelist_add(evas, D_("General Settings"), 0);
+    ob = e_widget_check_add(evas, D_("Good ol' IBox style (instead of taskbar style)"), &(cfdata->ibox_style));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_check_add(evas, N_("Move windows from menu to bar if window gets focus"), &(cfdata->swap_on_focus));
+    ob = e_widget_check_add(evas, D_("Move windows from menu to bar if window gets focus"), &(cfdata->swap_on_focus));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_check_add(evas, N_("Iconify Window on Click if Window has Focus"), &(cfdata->iconify_focused));
+    ob = e_widget_check_add(evas, D_("Iconify Window on Click if Window has Focus"), &(cfdata->iconify_focused));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_check_add(evas, N_("Do not show dialog windows in Itask"), &(cfdata->skip_dialogs));
+    ob = e_widget_check_add(evas, D_("Do not show dialog windows in Itask"), &(cfdata->skip_dialogs));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_check_add(evas, N_("Do not show windows that are always below in Itask"), &(cfdata->skip_always_below_windows));
+    ob = e_widget_check_add(evas, D_("Do not show windows that are always below in Itask"), &(cfdata->skip_always_below_windows));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_check_add(evas, N_("Always group Windows from the same Class"), &(cfdata->always_group));
+    ob = e_widget_check_add(evas, D_("Always group Windows from the same Class"), &(cfdata->always_group));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_check_add(evas, N_("Show Icon Label"), &(cfdata->show_label));
+    ob = e_widget_check_add(evas, D_("Show Icon Label"), &(cfdata->show_label));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_check_add(evas, N_("Show all Windows in Menu"), &(cfdata->menu_all_window));
+    ob = e_widget_check_add(evas, D_("Show all Windows in Menu"), &(cfdata->menu_all_window));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_check_add(evas, N_("Hide Menu Button if no items in bar"), &(cfdata->hide_menu_button));
+    ob = e_widget_check_add(evas, D_("Hide Menu Button if no items in bar"), &(cfdata->hide_menu_button));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_label_add(evas, N_(" Nr of Items in Bar:"));
+    ob = e_widget_label_add(evas, D_(" Nr of Items in Bar:"));
     e_widget_framelist_object_append(of, ob);
-    ob = e_widget_slider_add(evas, 1, 0, N_("%1.0f"), 1, 32, 1, 0, NULL, &(cfdata->max_items), 200);
+    ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 1, 32, 1, 0, NULL, &(cfdata->max_items), 200);
     e_widget_framelist_object_append(of, ob);
 
 
     e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-    of = e_widget_framelist_add(evas, N_("Zone"), 0);
+    of = e_widget_framelist_add(evas, D_("Zone"), 0);
 
     zone_count = 0;
     for (l = e_manager_list(); l; l = l->next)
@@ -160,35 +160,35 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
         cfdata->zone_policy = 1;
 
     rg = e_widget_radio_group_new((int *)&(cfdata->zone_policy));
-    ob = e_widget_radio_add(evas, N_("Show windows from all zones"), 0, rg);
+    ob = e_widget_radio_add(evas, D_("Show windows from all zones"), 0, rg);
     e_widget_on_change_hook_set(ob, _cb_zone_policy_change, cfdata);
     e_widget_framelist_object_append(of, ob);
     if (zone_count <= 1)
         e_widget_disabled_set(ob, 1);
 
-    ob = e_widget_radio_add(evas, N_("Show windows from current zone"), 1, rg);
+    ob = e_widget_radio_add(evas, D_("Show windows from current zone"), 1, rg);
     e_widget_on_change_hook_set(ob, _cb_zone_policy_change, cfdata);
     e_widget_framelist_object_append(of, ob);
 
-    ob = e_widget_radio_add(evas, N_("Show windows from current desktop only"), 2, rg);
+    ob = e_widget_radio_add(evas, D_("Show windows from current desktop only"), 2, rg);
     e_widget_on_change_hook_set(ob, _cb_zone_policy_change, cfdata);
     e_widget_framelist_object_append(of, ob);
 
     e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-    of = e_widget_framelist_add(evas, N_("Desktop"), 0);
+    of = e_widget_framelist_add(evas, D_("Desktop"), 0);
 
-    ob = e_widget_check_add(evas, N_("On desk change put windows of the new desktop from menu to the bar"), &(cfdata->desk_policy));
+    ob = e_widget_check_add(evas, D_("On desk change put windows of the new desktop from menu to the bar"), &(cfdata->desk_policy));
     e_widget_framelist_object_append(of, ob);
 
     /* rg = e_widget_radio_group_new((int *)&(cfdata->desk_policy));
-     ob = e_widget_radio_add(evas, N_("Show windows from all desktops"), 0, rg);
+     ob = e_widget_radio_add(evas, D_("Show windows from all desktops"), 0, rg);
      e_widget_framelist_object_append(of, ob);
      if (cfdata->zone_policy == 0)
         e_widget_disabled_set(ob, 1);
      cfdata->gui.o_desk_show_all = ob;
 
-     ob = e_widget_radio_add(evas, N_("Show windows from active desktop"), 1, rg);
+     ob = e_widget_radio_add(evas, D_("Show windows from active desktop"), 1, rg);
      e_widget_framelist_object_append(of, ob);
      if (cfdata->zone_policy == 0)
         e_widget_disabled_set(ob, 1);

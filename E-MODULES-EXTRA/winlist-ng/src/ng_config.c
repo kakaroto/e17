@@ -44,7 +44,7 @@ ngw_configure_module(Config_Item *ci)
   /* Create The Dialog */
   snprintf(buf, sizeof(buf), "%s/e-module-ng.edj", e_module_dir_get(ngw_config->module));
   cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			    N_("Winlist NG Configuration"),
+			    D_("Winlist NG Configuration"),
 			    "E", "_e_mod_ngw_config_dialog", buf, 0, v, ci);
   ci->ng->cfd = cfd; // TODO: REMOVE
 
@@ -97,12 +97,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
   o = e_widget_list_add(evas, 0, 0);
   /*
-  of = e_widget_framelist_add(evas, N_("Mode"), 0);
-  ob = e_widget_check_add(evas, N_("Use Composite"), &(cfdata->use_composite));
+  of = e_widget_framelist_add(evas, D_("Mode"), 0);
+  ob = e_widget_check_add(evas, D_("Use Composite"), &(cfdata->use_composite));
   e_widget_framelist_object_append(of, ob);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
   */
-  of = e_widget_framelist_add(evas, N_("Fade Animation"), 0);
+  of = e_widget_framelist_add(evas, D_("Fade Animation"), 0);
 
   rg = e_widget_radio_group_new(&cfdata->hide_animation);
   ob = e_widget_radio_add(evas, "None", 0, rg);
@@ -113,23 +113,23 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
   e_widget_framelist_object_append(of, ob);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-  of = e_widget_framelist_add(evas, N_("Size"), 0);
-  ob = e_widget_label_add (evas, N_("Icon Size:"));
+  of = e_widget_framelist_add(evas, D_("Size"), 0);
+  ob = e_widget_label_add (evas, D_("Icon Size:"));
   e_widget_framelist_object_append (of, ob);
-  ob = e_widget_slider_add (evas, 1, 0, N_("%1.0f px"), 16.0, 128,
+  ob = e_widget_slider_add (evas, 1, 0, D_("%1.0f px"), 16.0, 128,
 			    1.0, 0, &(cfdata->size), NULL, 100);
   e_widget_framelist_object_append (of, ob);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-  of = e_widget_framelist_add(evas, N_("Zooming"), 0);
-  ob = e_widget_label_add (evas, N_("Zoomfactor:"));
+  of = e_widget_framelist_add(evas, D_("Zooming"), 0);
+  ob = e_widget_label_add (evas, D_("Zoomfactor:"));
   e_widget_framelist_object_append (of, ob);
-  ob = e_widget_slider_add (evas, 1, 0, N_("%0.1f"), 1.0, 3.0,
+  ob = e_widget_slider_add (evas, 1, 0, D_("%0.1f"), 1.0, 3.0,
 			    0.1, 0, &(cfdata->zoomfactor), NULL, 100);
   e_widget_framelist_object_append (of, ob);
-  ob = e_widget_label_add (evas, N_("Zoom Range:"));
+  ob = e_widget_label_add (evas, D_("Zoom Range:"));
   e_widget_framelist_object_append (of, ob);
-  ob = e_widget_slider_add (evas, 1, 0, N_("%0.1f"), 0.2, 4.0,
+  ob = e_widget_slider_add (evas, 1, 0, D_("%0.1f"), 0.2, 4.0,
 			    0.1, 0, &(cfdata->zoom_range), NULL, 100);
   e_widget_framelist_object_append (of, ob);
   e_widget_list_object_append(o, of, 1, 1, 0.5);

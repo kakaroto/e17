@@ -144,7 +144,7 @@ itask_menu_items_menu(Eina_List *items)
      if ((title) && (title[0]))
         e_menu_item_label_set(mi, title);
      else
-        e_menu_item_label_set(mi, N_("No name!!"));
+        e_menu_item_label_set(mi, D_("No name!!"));
 
      e_menu_item_label_set(mi, title);
      e_menu_item_callback_set(mi, _itask_menu_item_cb, ic);
@@ -179,7 +179,7 @@ _itask_menu_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
 
       m = e_menu_new();
       mi = e_menu_item_new(m);
-      e_menu_item_label_set(mi, N_("Settings"));
+      e_menu_item_label_set(mi, D_("Settings"));
       e_util_menu_item_theme_icon_set(mi, "enlightenment/configuration");
       e_menu_item_callback_set(mi, _itask_menu_cb_configuration, it);
 

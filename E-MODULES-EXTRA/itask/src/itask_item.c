@@ -316,7 +316,7 @@ itask_item_set_label(Itask_Item *ic)
    title = e_border_name_get(ic->border);
 
    if ((!title) || (!title[0]))
-     title  = N_("No name!!");
+     title  = D_("No name!!");
 
    edje_object_part_text_set(ic->o_holder, "label", title);
 

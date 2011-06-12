@@ -1,3 +1,4 @@
+#define D_(str) dgettext(PACKAGE, str)
 #include "e.h"
 
 /* taken from e_int_border_menu */
@@ -38,7 +39,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
 
 
       mi = e_menu_item_new(m);
-      e_menu_item_label_set(mi, N_("Always On Top"));
+      e_menu_item_label_set(mi, D_("Always On Top"));
       e_menu_item_radio_set(mi, 1);
       e_menu_item_radio_group_set(mi, 2);
       e_menu_item_toggle_set(mi, (bd->layer == 150 ? 1 : 0));
@@ -49,7 +50,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
                                 "widgets/border/default/stack_on_top");
 
       mi = e_menu_item_new(m);
-      e_menu_item_label_set(mi, N_("Normal"));
+      e_menu_item_label_set(mi, D_("Normal"));
       e_menu_item_radio_set(mi, 1);
       e_menu_item_radio_group_set(mi, 2);
       e_menu_item_toggle_set(mi, (bd->layer == 100 ? 1 : 0));
@@ -60,7 +61,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
                                 "widgets/border/default/stack_normal");
 
       mi = e_menu_item_new(m);
-      e_menu_item_label_set(mi, N_("Always Below"));
+      e_menu_item_label_set(mi, D_("Always Below"));
       e_menu_item_radio_set(mi, 1);
       e_menu_item_radio_group_set(mi, 2);
       e_menu_item_toggle_set(mi, (bd->layer == 50 ? 1 : 0));
@@ -81,7 +82,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
    //e_menu_item_separator_set(mi, 1);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, N_("Stacking"));
+   e_menu_item_label_set(mi, D_("Stacking"));
    e_menu_item_submenu_set(mi, m_stacking);
    e_menu_item_icon_edje_set(mi,
                              (char *)e_theme_edje_file_get("base/theme/borders",
@@ -94,7 +95,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
       e_menu_item_separator_set(mi, 1);
 
       mi = e_menu_item_new(mn);
-      e_menu_item_label_set(mi, N_("Send to Desktop"));
+      e_menu_item_label_set(mi, D_("Send to Desktop"));
       e_menu_item_submenu_pre_callback_set(mi, _itask_border_menu_cb_sendto_pre, bd);
       e_menu_item_icon_edje_set(mi,
                                 (char *)e_theme_edje_file_get("base/theme/borders",
@@ -106,7 +107,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
    if (!bd->lock_user_sticky && !bd->fullscreen) // sticky with fullscreen doesnt work correct
    {
       mi = e_menu_item_new(mn);
-      e_menu_item_label_set(mi, N_("Sticky"));
+      e_menu_item_label_set(mi, D_("Sticky"));
       e_menu_item_check_set(mi, 1);
       e_menu_item_toggle_set(mi, (bd->sticky ? 1 : 0));
       e_menu_item_callback_set(mi, _itask_border_menu_cb_stick, bd);
@@ -121,7 +122,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
    if ((!bd->lock_user_fullscreen) && (!bd->shaded))
      {
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, N_("Fullscreen"));
+   e_menu_item_label_set(mi, D_("Fullscreen"));
    e_menu_item_check_set(mi, 1);
    e_menu_item_toggle_set(mi, bd->fullscreen);
    e_menu_item_callback_set(mi, _itask_border_menu_cb_fullscreen, bd);
@@ -138,7 +139,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
    if (!bd->lock_close)
    {
       mi = e_menu_item_new(mn);
-      e_menu_item_label_set(mi, N_("Close"));
+      e_menu_item_label_set(mi, D_("Close"));
       e_menu_item_callback_set(mi, _itask_border_menu_cb_close, bd);
       e_menu_item_icon_edje_set(mi,
                                 (char *)e_theme_edje_file_get("base/theme/borders",
@@ -159,7 +160,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
       if(!bd->maximized)
       {
          mi = e_menu_item_new(mn);
-         e_menu_item_label_set(mi, N_("Maximize"));
+         e_menu_item_label_set(mi, D_("Maximize"));
          e_menu_item_callback_set(mi, _itask_border_menu_cb_maximize, bd);
          e_menu_item_icon_edje_set(mi,
                                    (char *)e_theme_edje_file_get("base/theme/borders",
@@ -169,7 +170,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
       else
       {
          mi = e_menu_item_new(mn);
-         e_menu_item_label_set(mi, N_("Unmaximize"));
+         e_menu_item_label_set(mi, D_("Unmaximize"));
          e_menu_item_callback_set(mi, _itask_border_menu_cb_unmaximize, bd);
          e_menu_item_icon_edje_set(mi,
                                    (char *)e_theme_edje_file_get("base/theme/borders",
@@ -184,7 +185,7 @@ itask_border_menu_get(E_Border *bd, E_Menu *mn)
    if ((!bd->lock_user_iconify) && (!bd->fullscreen) && (!bd->iconic))
    {
       mi = e_menu_item_new(mn);
-      e_menu_item_label_set(mi, N_("Iconify"));
+      e_menu_item_label_set(mi, D_("Iconify"));
       e_menu_item_callback_set(mi, _itask_border_menu_cb_iconify, bd);
       e_menu_item_icon_edje_set(mi,
                                 (char *)e_theme_edje_file_get("base/theme/borders",

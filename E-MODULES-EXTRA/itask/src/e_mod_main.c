@@ -206,7 +206,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 static char *
 _gc_label(E_Gadcon_Client_Class *client_class)
 {
-   return N_("Itask");
+   return D_("Itask");
 }
 
 static Evas_Object *

@@ -176,7 +176,7 @@ e_modapi_init(E_Module *m)
    ngw_register_module_actions();
    ngw_register_module_keybindings();
 
-   e_configure_registry_item_add("extensions/winlist_ng", 50, N_("Winlist NG"), NULL, "enlightenment/winlist", _ngw_config_dialog);
+   e_configure_registry_item_add("extensions/winlist_ng", 50, D_("Winlist NG"), NULL, "enlightenment/winlist", _ngw_config_dialog);
 
    return m;
 }
@@ -213,8 +213,8 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(m,N_("Winlist NG Module"),
-			N_("a replacement for the standard winlist"));
+   e_module_dialog_show(m,D_("Winlist NG Module"),
+			D_("a replacement for the standard winlist"));
    return 1;
 }
 

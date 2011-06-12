@@ -727,7 +727,7 @@ _ngw_winlist_set_label(Ng *ng, Ngw_Item *it)
   title = e_border_name_get(it->border);
 
   if ((!title) || (!title[0]))
-    title  = N_("No name!");
+    title  = D_("No name!");
 
   int max_len = 36;
   
