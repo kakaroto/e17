@@ -1,0 +1,9 @@
+Login:        woohyun 
+IRC Nick:     WooHyun 
+Name:         WooHyun Jung
+Location:     Seoul, Korea
+E-Mail:       woohyun0705@gmail.com, wh0705.jung@samsung.com
+WWW:          None 
+Contributing: elementary
+Platform:     Ubuntu (Linux), Mac OS X, Windows XP/7
+GeoData:      37.511762 127.130182 
