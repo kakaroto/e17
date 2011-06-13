@@ -169,6 +169,18 @@ public:
         return true;
      }
 
+   bool get_xy_from_object(v8::Local<v8::Value> val,
+			   v8::Local<v8::Value> &x_val,
+			   v8::Local<v8::Value> &y_val)
+     {
+        if (!val->IsObject())
+          return false;
+        v8::Local<v8::Object> obj = val->ToObject();
+        x_val = obj->Get(v8::String::New("x"));
+        y_val = obj->Get(v8::String::New("y"));
+        return true;
+     }
+
    virtual void weight_set(v8::Local<v8::Value> weight)
      {
         double x, y;
@@ -486,6 +498,65 @@ public:
      }
 };
 
+class CElmScroller : public CEvasObject {
+public:
+   CElmScroller(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject(obj)
+     {
+        CEvasObject *content;
+        eo = elm_scroller_add(parent->top_widget_get());
+        construct();
+        bounce_set(obj->Get(v8::String::New("bounce")));
+        policy_set(obj->Get(v8::String::New("policy")));
+        content = realize_one(this, obj->Get(v8::String::New("content")));
+        if (!content)
+          fprintf(stderr, "scroller has no content\n");
+        elm_scroller_content_set(eo, content->get());
+        elm_win_resize_object_add(parent->get(), eo);
+     }
+
+   void bounce_set(v8::Local<v8::Value> val)
+     {
+        bool x_bounce, y_bounce;
+        if (get_xy_from_object(val, x_bounce, y_bounce))
+          {
+             elm_scroller_bounce_set(eo, x_bounce, y_bounce);
+          }
+     }
+
+   Elm_Scroller_Policy policy_from_string(v8::Local<v8::Value> val)
+     {
+        v8::String::Utf8Value str(val);
+        Elm_Scroller_Policy policy = ELM_SCROLLER_POLICY_AUTO;
+
+        if (!strcmp(*str, "auto"))
+          policy = ELM_SCROLLER_POLICY_AUTO;
+        else if (!strcmp(*str, "on"))
+          policy = ELM_SCROLLER_POLICY_ON;
+        else if (!strcmp(*str, "off"))
+          policy = ELM_SCROLLER_POLICY_OFF;
+        else if (!strcmp(*str, "last"))
+          policy = ELM_SCROLLER_POLICY_LAST;
+        else
+          fprintf(stderr, "unknown scroller policy %s\n", *str);
+
+        return policy;
+     }
+
+   void policy_set(v8::Local<v8::Value> val)
+     {
+        v8::Local<v8::Value> x_val, y_val;
+
+        if (get_xy_from_object(val, x_val, y_val))
+          {
+             Elm_Scroller_Policy x_policy, y_policy;
+             x_policy = policy_from_string(x_val);
+             y_policy = policy_from_string(y_val);
+             elm_scroller_policy_set(eo, x_policy, y_policy);
+          }
+     }
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
 {
@@ -533,6 +604,10 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    else if (!strcmp(*str, "pack"))
       {
          eo = new CElmBox(main_win, obj);
+      }
+   else if (!strcmp(*str, "scroller"))
+      {
+         eo = new CElmScroller(main_win, obj);
       }
 
    if (!eo)
