@@ -276,8 +276,7 @@ MagwinKeyPress(MagWindow * mw, KeySym key)
 	break;
      case XK_f:		/* Toggle filter */
 	mw->filter += 1;
-	if (mw->filter >= 2)
-	   mw->filter = 0;
+	mw->filter %= 2;
 	break;
      case XK_i:		/* Zoom in */
      case XK_Page_Up:
@@ -450,6 +449,9 @@ MagwinCreate(const char *title, int width, int height)
 	Efree(mw);
 	return NULL;
      }
+
+   mw->filter = 1;
+   mw->disable_text = 1;
 
    mw->ewin->o.ghost = 1;
    EoSetLayer(mw->ewin, 10);
