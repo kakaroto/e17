@@ -322,6 +322,7 @@ AC_OUTPUT([
 e_dbus.spec
 Makefile
 doc/Makefile
+doc/Doxyfile
 src/Makefile
 src/lib/Makefile
 src/lib/bluez/Makefile
