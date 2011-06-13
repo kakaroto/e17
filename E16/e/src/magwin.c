@@ -55,6 +55,7 @@ typedef struct {
    int                 sw, sh;	/* Scene wxh */
    char                disable_text;
    char                bpress;
+   char                configured;
    char                filter;
    char                grabbing;
    char                step;
@@ -380,13 +381,16 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      case MapNotify:
+	mw->update = 1;
+	if (mw->configured)
+	   break;
+	mw->configured = 1;
 	MagwinKeyPress(mw, XK_g);
 #if USE_TIMER
 	TIMER_ADD(mw->timer, 50, _MagwinTimeout, 0, mw);
 #elif USE_ANIMATOR
 	AnimatorAdd(_MagwinAnimator, mw);
 #endif
-	mw->update = 1;
 	break;
      }
 
