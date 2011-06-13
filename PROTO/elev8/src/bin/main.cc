@@ -58,22 +58,22 @@ protected:
     */
    void construct(void)
      {
-       assert(eo != NULL);
-       resize(obj->Get(v8::String::New("width")),
-              obj->Get(v8::String::New("height")));
-       move(obj->Get(v8::String::New("x")),
-            obj->Get(v8::String::New("y")));
-       callback_set(obj->Get(v8::String::New("on_clicked")));
-       animator_set(obj->Get(v8::String::New("on_animate")));
-       label_set(obj->Get(v8::String::New("label")));
-       image_set(obj->Get(v8::String::New("image")));
-       weight_set(obj->Get(v8::String::New("weight")));
-       align_set(obj->Get(v8::String::New("align")));
+        assert(eo != NULL);
+        resize(obj->Get(v8::String::New("width")),
+               obj->Get(v8::String::New("height")));
+        move(obj->Get(v8::String::New("x")),
+             obj->Get(v8::String::New("y")));
+        callback_set(obj->Get(v8::String::New("on_clicked")));
+        animator_set(obj->Get(v8::String::New("on_animate")));
+        label_set(obj->Get(v8::String::New("label")));
+        image_set(obj->Get(v8::String::New("image")));
+        weight_set(obj->Get(v8::String::New("weight")));
+        align_set(obj->Get(v8::String::New("align")));
 
-       /* show the object, maybe */
-       v8::Local<v8::Value> hidden = obj->Get(v8::String::New("hidden"));
-       if (!hidden->IsTrue())
-         show();
+        /* show the object, maybe */
+        v8::Local<v8::Value> hidden = obj->Get(v8::String::New("hidden"));
+        if (!hidden->IsTrue())
+          show();
      }
 
    virtual void add_child(CEvasObject *child)
@@ -83,90 +83,90 @@ protected:
 public:
    Evas_Object *get()
      {
-       return eo;
+        return eo;
      }
 
    // FIXME: could add to the parent here... raster to figure out
    Evas_Object *top_widget_get()
      {
-       return elm_object_top_widget_get(eo);
+        return elm_object_top_widget_get(eo);
      }
 
    virtual ~CEvasObject()
      {
-       obj.Dispose();
-       evas_object_unref(eo);
-       eo = NULL;
+        obj.Dispose();
+        evas_object_unref(eo);
+        eo = NULL;
      }
 
    void resize(v8::Local<v8::Value> width, v8::Local<v8::Value> height)
      {
-       if (width->IsNumber() && height->IsNumber())
-         evas_object_resize(eo, width->Int32Value(), height->Int32Value());
+        if (width->IsNumber() && height->IsNumber())
+          evas_object_resize(eo, width->Int32Value(), height->Int32Value());
      }
 
    void move(v8::Local<v8::Value> x, v8::Local<v8::Value> y)
      {
-       if (x->IsNumber() && y->IsNumber())
-         evas_object_move(eo, x->Int32Value(), y->Int32Value());
+        if (x->IsNumber() && y->IsNumber())
+          evas_object_move(eo, x->Int32Value(), y->Int32Value());
      }
 
    void callback_set(v8::Local<v8::Value> val)
      {
-       if (val->IsFunction())
-         {
-            v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
-            v8::Persistent<v8::Function> func = v8::Persistent<v8::Function>::New(local_func);
-            evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN,
-                                           &eo_on_click, static_cast<void*>(*func));
-         }
+        if (val->IsFunction())
+          {
+             v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
+             v8::Persistent<v8::Function> func = v8::Persistent<v8::Function>::New(local_func);
+             evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN,
+                                            &eo_on_click, static_cast<void*>(*func));
+          }
      }
 
    void animator_set(v8::Local<v8::Value> val)
      {
-       if (val->IsFunction())
-         {
-            v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
-            v8::Persistent<v8::Function> persist_func = v8::Persistent<v8::Function>::New(local_func);
-            ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
-         }
+        if (val->IsFunction())
+          {
+             v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
+             v8::Persistent<v8::Function> persist_func = v8::Persistent<v8::Function>::New(local_func);
+             ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
+          }
      }
 
    virtual void label_set(v8::Local<v8::Value> val)
      {
-       if (val->IsString())
-         {
-            v8::String::Utf8Value str(val);
-            elm_button_label_set(eo, *str);
-         }
+        if (val->IsString())
+          {
+             v8::String::Utf8Value str(val);
+             elm_button_label_set(eo, *str);
+          }
      }
 
    bool get_xy_from_object(v8::Local<v8::Value> val, double &x_out, double &y_out)
      {
-       if (!val->IsObject())
-         return false;
-       v8::Local<v8::Object> obj = val->ToObject();
-       v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
-       v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
-       if (!x->IsNumber() || !y->IsNumber())
-         return false;
-       x_out = x->NumberValue();
-       y_out = y->NumberValue();
-       return true;
+        if (!val->IsObject())
+          return false;
+        v8::Local<v8::Object> obj = val->ToObject();
+        v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
+        v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
+        if (!x->IsNumber() || !y->IsNumber())
+          return false;
+        x_out = x->NumberValue();
+        y_out = y->NumberValue();
+        return true;
      }
 
    bool get_xy_from_object(v8::Local<v8::Value> val, bool &x_out, bool &y_out)
      {
-       if (!val->IsObject())
-         return false;
-       v8::Local<v8::Object> obj = val->ToObject();
-       v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
-       v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
-       if (!x->IsBoolean() || !y->IsBoolean())
-         return false;
-       x_out = x->BooleanValue();
-       y_out = y->BooleanValue();
-       return true;
+        if (!val->IsObject())
+          return false;
+        v8::Local<v8::Object> obj = val->ToObject();
+        v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
+        v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
+        if (!x->IsBoolean() || !y->IsBoolean())
+          return false;
+        x_out = x->BooleanValue();
+        y_out = y->BooleanValue();
+        return true;
      }
 
    virtual void weight_set(v8::Local<v8::Value> weight)
@@ -187,8 +187,8 @@ public:
 
    virtual void image_set(v8::Local<v8::Value> val)
      {
-       if (val->IsString())
-         fprintf(stderr, "no image set\n");
+        if (val->IsString())
+          fprintf(stderr, "no image set\n");
      }
 
    virtual void show()
@@ -198,10 +198,11 @@ public:
 
    void realize_objects(v8::Handle<v8::Value> val)
      {
-        if (!val->IsObject()) {
-           fprintf(stderr, "not an object!\n");
-           return;
-        }
+        if (!val->IsObject())
+          {
+             fprintf(stderr, "not an object!\n");
+             return;
+          }
 
         v8::Handle<v8::Object> obj = val->ToObject();
         v8::Handle<v8::Array> props = obj->GetPropertyNames();
@@ -226,10 +227,10 @@ class CElmBasicWindow : public CEvasObject {
 public:
    CElmBasicWindow(const char *title)
      {
-       eo = elm_win_add(NULL, "main", ELM_WIN_BASIC);
-       elm_win_title_set(eo, title);
-       evas_object_focus_set(eo, 1);
-       evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
+        eo = elm_win_add(NULL, "main", ELM_WIN_BASIC);
+        elm_win_title_set(eo, title);
+        evas_object_focus_set(eo, 1);
+        evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
      }
 
    ~CElmBasicWindow()
@@ -238,7 +239,7 @@ public:
 
    static void on_delete(void *data, Evas_Object *obj, void *event_info)
      {
-       elm_exit();
+        elm_exit();
      }
 };
 
@@ -248,8 +249,8 @@ class CElmButton : public CEvasObject {
 public:
    CElmButton(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
      {
-       eo = elm_button_add(parent->top_widget_get());
-       construct();
+        eo = elm_button_add(parent->top_widget_get());
+        construct();
      }
 
    virtual ~CElmButton()
@@ -261,9 +262,9 @@ class CElmBackground : public CEvasObject {
 public:
    CElmBackground(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
      {
-       eo = elm_bg_add(parent->top_widget_get());
-       elm_win_resize_object_add(parent->get(), eo);
-       construct();
+        eo = elm_bg_add(parent->top_widget_get());
+        elm_win_resize_object_add(parent->get(), eo);
+        construct();
      }
 
    virtual ~CElmBackground()
@@ -272,11 +273,11 @@ public:
 
    virtual void image_set(v8::Local<v8::Value> val)
      {
-       if (val->IsString())
-         {
-            v8::String::Utf8Value str(val);
-            elm_bg_file_set(eo, *str, NULL);
-         }
+        if (val->IsString())
+          {
+             v8::String::Utf8Value str(val);
+             elm_bg_file_set(eo, *str, NULL);
+          }
      }
 };
 
@@ -285,17 +286,17 @@ public:
    CElmRadio(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
      {
-       eo = elm_radio_add(parent->top_widget_get());
-       construct();
+        eo = elm_radio_add(parent->top_widget_get());
+        construct();
      }
 
    virtual void label_set(v8::Local<v8::Value> val)
      {
-       if (val->IsString())
-         {
-            v8::String::Utf8Value str(val);
-            elm_radio_label_set(eo, *str);
-         }
+        if (val->IsString())
+          {
+             v8::String::Utf8Value str(val);
+             elm_radio_label_set(eo, *str);
+          }
      }
 
    virtual ~CElmRadio()
@@ -307,26 +308,26 @@ class CElmBox : public CEvasObject {
 protected:
    virtual void add_child(CEvasObject *child)
      {
-       elm_box_pack_end(eo, child->get());
+        elm_box_pack_end(eo, child->get());
      }
 
 public:
    CElmBox(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
      {
-       eo = elm_box_add(parent->top_widget_get());
-       elm_win_resize_object_add(parent->get(), eo);
-       realize_objects(obj->Get(v8::String::New("elements")));
-       horizontal_set(obj->Get(v8::String::New("horizontal")));
-       construct();
+        eo = elm_box_add(parent->top_widget_get());
+        elm_win_resize_object_add(parent->get(), eo);
+        realize_objects(obj->Get(v8::String::New("elements")));
+        horizontal_set(obj->Get(v8::String::New("horizontal")));
+        construct();
      }
 
    void horizontal_set(v8::Local<v8::Value> val)
      {
-       if (val->IsBoolean())
-         {
-           elm_box_horizontal_set(eo, val->BooleanValue());
-         }
+        if (val->IsBoolean())
+          {
+             elm_box_horizontal_set(eo, val->BooleanValue());
+          }
      }
 };
 
@@ -335,24 +336,24 @@ public:
    CElmLabel(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
      {
-       eo = elm_label_add(parent->top_widget_get());
-       wrap_set(obj->Get(v8::String::New("wrap")));
-       construct();
+        eo = elm_label_add(parent->top_widget_get());
+        wrap_set(obj->Get(v8::String::New("wrap")));
+        construct();
      }
 
    void wrap_set(v8::Local<v8::Value> wrap)
      {
-       if (wrap->IsNumber())
-         elm_label_line_wrap_set(eo, static_cast<Elm_Wrap_Type>(wrap->Int32Value()));
+        if (wrap->IsNumber())
+          elm_label_line_wrap_set(eo, static_cast<Elm_Wrap_Type>(wrap->Int32Value()));
      }
 
    virtual void label_set(v8::Local<v8::Value> val)
      {
-       if (val->IsString())
-         {
-            v8::String::Utf8Value str(val);
-            elm_label_label_set(eo, *str);
-         }
+        if (val->IsString())
+          {
+             v8::String::Utf8Value str(val);
+             elm_label_label_set(eo, *str);
+          }
      }
 };
 
@@ -361,17 +362,17 @@ public:
    CElmFlip(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
      {
-       CEvasObject *front, *back;
+        CEvasObject *front, *back;
 
-       eo = elm_flip_add(parent->top_widget_get());
-       construct();
+        eo = elm_flip_add(parent->top_widget_get());
+        construct();
 
-       /* realize front and back */
-       front = realize_one(this, obj->Get(v8::String::New("front")));
-       elm_flip_content_front_set(eo, front->get());
+        /* realize front and back */
+        front = realize_one(this, obj->Get(v8::String::New("front")));
+        elm_flip_content_front_set(eo, front->get());
 
-       back = realize_one(this, obj->Get(v8::String::New("back")));
-       elm_flip_content_back_set(eo, back->get());
+        back = realize_one(this, obj->Get(v8::String::New("back")));
+        elm_flip_content_back_set(eo, back->get());
      }
 };
 
@@ -380,9 +381,9 @@ public:
    CElmIcon(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject(obj)
      {
-       eo = elm_icon_add(parent->top_widget_get());
-       construct();
-       scale_set(obj->Get(v8::String::New("scale")));
+        eo = elm_icon_add(parent->top_widget_get());
+        construct();
+        scale_set(obj->Get(v8::String::New("scale")));
      }
 
    virtual void scale_set(v8::Local<v8::Value> align)
@@ -396,13 +397,13 @@ public:
 
    virtual void image_set(v8::Local<v8::Value> val)
      {
-       if (val->IsString())
-         {
-            v8::String::Utf8Value str(val);
-            if (0 > access(*str, R_OK))
-              fprintf(stderr, "warning: can't read icon file %s\n", *str);
-            elm_icon_file_set(eo, *str, NULL);
-         }
+        if (val->IsString())
+          {
+             v8::String::Utf8Value str(val);
+             if (0 > access(*str, R_OK))
+               fprintf(stderr, "warning: can't read icon file %s\n", *str);
+             elm_icon_file_set(eo, *str, NULL);
+          }
      }
 };
 
@@ -440,9 +441,8 @@ public:
              for (int i = 0; i < 3; i++)
                {
                  v[i] = obj->Get(v8::String::New(name[i]));
-                 if (v[i]->IsString()) {
+                 if (v[i]->IsString())
                    str[i] = v[i]->ToString();
-		}
                }
              v8::String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
              elm_actionslider_labels_set(eo, *left, *middle, *right);
@@ -504,41 +504,41 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    CEvasObject *eo = NULL;
    if (!strcmp(*str, "actionslider"))
       {
-        eo = new CElmActionSlider(main_win, obj);
+         eo = new CElmActionSlider(main_win, obj);
       }
    else if (!strcmp(*str, "button"))
       {
-        eo = new CElmButton(main_win, obj);
+         eo = new CElmButton(main_win, obj);
       }
    else if (!strcmp(*str, "background"))
       {
-        eo = new CElmBackground(main_win, obj);
+         eo = new CElmBackground(main_win, obj);
       }
    else if (!strcmp(*str, "flip"))
       {
-        eo = new CElmFlip(main_win, obj);
+         eo = new CElmFlip(main_win, obj);
       }
    else if (!strcmp(*str, "icon"))
       {
-        eo = new CElmIcon(main_win, obj);
+         eo = new CElmIcon(main_win, obj);
       }
    else if (!strcmp(*str, "label"))
       {
-        eo = new CElmLabel(main_win, obj);
+         eo = new CElmLabel(main_win, obj);
       }
    else if (!strcmp(*str, "radio"))
       {
-        eo = new CElmRadio(main_win, obj);
+         eo = new CElmRadio(main_win, obj);
       }
    else if (!strcmp(*str, "pack"))
       {
-        eo = new CElmBox(main_win, obj);
+         eo = new CElmBox(main_win, obj);
       }
 
    if (!eo)
       {
-        fprintf(stderr, "Bad object type %s\n", *str);
-        return eo;
+         fprintf(stderr, "Bad object type %s\n", *str);
+         return eo;
       }
 
    return eo;
@@ -548,7 +548,7 @@ v8::Handle<v8::Value>
 Realize(const v8::Arguments& args)
 {
    if (args.Length() != 1)
-      return v8::ThrowException(v8::String::New("Bad parameters"));
+     return v8::ThrowException(v8::String::New("Bad parameters"));
    realize_one(main_win, args[0]);
    return v8::Undefined();
 }
@@ -572,12 +572,12 @@ int shebang_length(char *p, int len)
    int i = 0;
 
    if ((len > 2) && (p[0] == '#') && (p[1] == '!'))
-      {
+     {
         for (i = 2; i < len && p[i] != '\n'; i++)
           ;
         if (i < len)
           i++;
-      }
+     }
 
    return i;
 }
@@ -593,15 +593,15 @@ string_from_file(const char *filename)
 
    fd = open(filename, O_RDONLY);
    if (fd < 0)
-      goto fail;
+     goto fail;
 
    len = lseek(fd, 0, SEEK_END);
    if (len <= 0)
-      goto fail;
+     goto fail;
 
    p = reinterpret_cast<char*>(mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0));
    if (p == bad_ret)
-      goto fail;
+     goto fail;
 
    n = shebang_length(p, len);
 
@@ -609,10 +609,10 @@ string_from_file(const char *filename)
 
 fail:
    if (p == bad_ret)
-      munmap(p, len);
+     munmap(p, len);
 
    if (fd >= 0)
-      close(fd);
+     close(fd);
 
    return ret;
 }
