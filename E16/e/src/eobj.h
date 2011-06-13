@@ -94,6 +94,7 @@ struct _eobj {
 #define EoGetType(eo)           EobjGetType(EoObj(eo))
 #define EoGetDesk(eo)           EobjGetDesk(EoObj(eo))
 #define EoGetName(eo)           EobjGetName(EoObj(eo))
+#define EoGetNameSafe(eo)       EobjGetNameSafe(EoObj(eo))
 #define EoGetCName(eo)          EobjGetCName(EoObj(eo))
 #define EoGetClass(eo)          EobjGetClass(EoObj(eo))
 #define EoGetX(eo)              EobjGetX(EoObj(eo))
@@ -147,6 +148,7 @@ void                EobjInit(EObj * eo, int type, Win win, int x, int y,
 			     int w, int h, int su, const char *name);
 void                EobjFini(EObj * eo);
 void                EobjDestroy(EObj * eo);
+const char         *EobjGetNameSafe(const EObj * eo);
 
 EObj               *EobjWindowCreate(int type, int x, int y, int w, int h,
 				     int su, const char *name);

@@ -59,6 +59,20 @@ OpacityToPercent(unsigned int opacity)
    return (int)(opacity / 42949672);
 }
 
+const char         *
+EobjGetNameSafe(const EObj * eo)
+{
+   const char         *name = NULL;
+
+   if (!eo)
+      goto done;
+
+   name = EobjGetName(eo);
+
+ done:
+   return name ? name : "None";
+}
+
 void
 EobjSetLayer(EObj * eo, int layer)
 {
