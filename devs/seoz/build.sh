@@ -17,13 +17,17 @@ export BUILD_EXAMPLE="EXAMPLES/elementary/calculator EXAMPLES/elementary/convert
 export BUILD_ETC="editje emotion PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica eio enlil" #enki
 export BUILD=$BUILD_BASIC" "$BUILD_BINDINGS" "$BUILD_E_MODULES" "$BUILD_EXAMPLE" "$BUILD_ETC
 
+PWD=`pwd`
+LOG_WARN_FILE=$PWD"/warnings.txt"
+
 for I in $BUILD; do
   pushd $I
 	echo ""
 	echo "============ "$I" ============"
+	echo "["$I"]" 2>> $LOG_WARN_FILE
 	make clean distclean || true
-	./autogen.sh --prefix="$PREFIX"
-	make
+	./autogen.sh
+	make 2>> $LOG_WARN_FILE 
 	sudo make install
 	sudo ldconfig
 	#ctags -h ".h.x.cpp.c" -R
