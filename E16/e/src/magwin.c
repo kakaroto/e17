@@ -172,7 +172,7 @@ MagwinRedraw(MagWindow * mw, int paint)
    pixel = (out) ? 0 : MagwinGetPixel(EwinGetClientXwin(mw->ewin), px, py);
 
    /* Show magnified area coordinates */
-   Esnprintf(buf, sizeof(buf), "%d,%d %dx%d", sx, sy, sw, sh);
+   Esnprintf(buf, sizeof(buf), "x%.2f: %d,%d %dx%d", scale, sx, sy, sw, sh);
    MagwinDrawText(mw, 10, 10, buf);
 
    if (out)
