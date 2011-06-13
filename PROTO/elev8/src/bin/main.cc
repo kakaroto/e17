@@ -41,12 +41,7 @@ protected:
    v8::Persistent<v8::Object> obj;
    Evas_Object *eo;
 protected:
-   CEvasObject() :
-       eo(NULL)
-     {
-     }
-
-   CEvasObject(v8::Local<v8::Object> temp_obj) :
+   explicit CEvasObject(v8::Local<v8::Object> temp_obj) :
        obj(temp_obj),
        eo(NULL)
      {
@@ -247,12 +242,23 @@ public:
 
 class CElmBasicWindow : public CEvasObject {
 public:
-   CElmBasicWindow(const char *title)
+   CElmBasicWindow(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject(obj)
      {
-        eo = elm_win_add(NULL, "main", ELM_WIN_BASIC);
-        elm_win_title_set(eo, title);
+        eo = elm_win_add(parent ? parent->get() : NULL, "main", ELM_WIN_BASIC);
+        construct();
+        realize_objects(obj->Get(v8::String::New("elements")));
         evas_object_focus_set(eo, 1);
         evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
+     }
+
+   virtual void label_set(v8::Local<v8::Value> val)
+     {
+        if (val->IsString())
+          {
+             v8::String::Utf8Value str(val);
+             elm_win_title_set(eo, *str);
+          }
      }
 
    ~CElmBasicWindow()
@@ -582,39 +588,39 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    CEvasObject *eo = NULL;
    if (!strcmp(*str, "actionslider"))
       {
-         eo = new CElmActionSlider(main_win, obj);
+         eo = new CElmActionSlider(parent, obj);
       }
    else if (!strcmp(*str, "button"))
       {
-         eo = new CElmButton(main_win, obj);
+         eo = new CElmButton(parent, obj);
       }
    else if (!strcmp(*str, "background"))
       {
-         eo = new CElmBackground(main_win, obj);
+         eo = new CElmBackground(parent, obj);
       }
    else if (!strcmp(*str, "flip"))
       {
-         eo = new CElmFlip(main_win, obj);
+         eo = new CElmFlip(parent, obj);
       }
    else if (!strcmp(*str, "icon"))
       {
-         eo = new CElmIcon(main_win, obj);
+         eo = new CElmIcon(parent, obj);
       }
    else if (!strcmp(*str, "label"))
       {
-         eo = new CElmLabel(main_win, obj);
+         eo = new CElmLabel(parent, obj);
       }
    else if (!strcmp(*str, "radio"))
       {
-         eo = new CElmRadio(main_win, obj);
+         eo = new CElmRadio(parent, obj);
       }
    else if (!strcmp(*str, "pack"))
       {
-         eo = new CElmBox(main_win, obj);
+         eo = new CElmBox(parent, obj);
       }
    else if (!strcmp(*str, "scroller"))
       {
-         eo = new CElmScroller(main_win, obj);
+         eo = new CElmScroller(parent, obj);
       }
 
    if (!eo)
@@ -744,6 +750,20 @@ run_script(const char *filename)
      boom(try_catch);
 }
 
+v8::Handle<v8::Value>
+elm_main_window(const v8::Arguments& args)
+{
+   if (args.Length() != 1)
+     return v8::ThrowException(v8::String::New("Bad parameters"));
+
+   if (!args[0]->IsObject())
+     return v8::Undefined();
+
+   main_win = new CElmBasicWindow(NULL, args[0]->ToObject());
+
+   return v8::String::New("da main window");
+}
+
 void
 elev8_run(const char *script)
 {
@@ -752,20 +772,16 @@ elev8_run(const char *script)
 
    global->Set(v8::String::New("realize"), v8::FunctionTemplate::New(Realize));
    global->Set(v8::String::New("print"), v8::FunctionTemplate::New(Print));
+   v8::Handle<v8::ObjectTemplate> elm = v8::ObjectTemplate::New();
+   global->Set(v8::String::New("elm"), elm);
 
-   main_win = new CElmBasicWindow(basename(script));
-
-   evas_object_resize(main_win->get(), 320, 480);
+   elm->Set(v8::String::New("main"), v8::FunctionTemplate::New(elm_main_window));
 
    /* setup V8 */
    v8::Persistent<v8::Context> context = v8::Context::New(NULL, global);
    v8::Context::Scope context_scope(context);
    run_script(script);
 
-   v8::Handle<v8::Object> glob = context->Global();
-   main_win->realize_objects(glob->Get(v8::String::New("elements")));
-
-   main_win->show();
    elm_run();
 
    context.Dispose();
