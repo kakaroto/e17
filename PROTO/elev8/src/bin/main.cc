@@ -575,8 +575,7 @@ int shebang_length(char *p, int len)
      {
         for (i = 2; i < len && p[i] != '\n'; i++)
           ;
-        if (i < len)
-          i++;
+        /* leave first newline in so line numbers are correct */
      }
 
    return i;
@@ -618,6 +617,26 @@ fail:
 }
 
 void
+boom(v8::TryCatch &try_catch)
+{
+   v8::Handle<v8::Message> msg = try_catch.Message();
+   v8::String::Utf8Value error(try_catch.Exception());
+
+   if (msg.IsEmpty())
+     {
+        fprintf(stderr, "%s\n", *error);
+     }
+   else
+     {
+        v8::String::Utf8Value file(msg->GetScriptResourceName());
+        int line = msg->GetLineNumber();
+
+        fprintf(stderr, "%s:%d %s\n", *file, line, *error);
+     }
+   exit(1);
+}
+
+void
 run_script(const char *filename)
 {
    v8::HandleScope handle_scope;
@@ -632,13 +651,15 @@ run_script(const char *filename)
         return;
      }
 
+   /* compile */
    v8::Handle<v8::Script> script = v8::Script::Compile(source, origin);
-   if (script.IsEmpty())
-     {
-        fprintf(stderr, "compile failed\n");
-        exit(1);
-     }
+   if (try_catch.HasCaught())
+     boom(try_catch);
+
+   /* run */
    v8::Handle<v8::Value> result = script->Run();
+   if (try_catch.HasCaught())
+     boom(try_catch);
 }
 
 void
