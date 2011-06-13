@@ -69,6 +69,7 @@ protected:
         image_set(obj->Get(v8::String::New("image")));
         weight_set(obj->Get(v8::String::New("weight")));
         align_set(obj->Get(v8::String::New("align")));
+        resize_set(obj->Get(v8::String::New("resize")));
 
         /* show the object, maybe */
         v8::Local<v8::Value> hidden = obj->Get(v8::String::New("hidden"));
@@ -232,6 +233,15 @@ public:
              add_child(child);
           }
      }
+
+   /* resize this object when the parent resizes? */
+   void resize_set(v8::Handle<v8::Value> val)
+     {
+        if (val->IsBoolean() && val->BooleanValue())
+          {
+             elm_win_resize_object_add(elm_object_parent_widget_get(eo), eo);
+          }
+     }
 };
 
 
@@ -275,7 +285,6 @@ public:
    CElmBackground(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
      {
         eo = elm_bg_add(parent->top_widget_get());
-        elm_win_resize_object_add(parent->get(), eo);
         construct();
      }
 
@@ -328,7 +337,6 @@ public:
        CEvasObject(obj)
      {
         eo = elm_box_add(parent->top_widget_get());
-        elm_win_resize_object_add(parent->get(), eo);
         realize_objects(obj->Get(v8::String::New("elements")));
         horizontal_set(obj->Get(v8::String::New("horizontal")));
         construct();
@@ -512,7 +520,6 @@ public:
         if (!content)
           fprintf(stderr, "scroller has no content\n");
         elm_scroller_content_set(eo, content->get());
-        elm_win_resize_object_add(parent->get(), eo);
      }
 
    void bounce_set(v8::Local<v8::Value> val)

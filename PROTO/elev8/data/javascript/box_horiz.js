@@ -7,11 +7,13 @@ var elements = {
 	the_background : {
 		type : "background",
 		weight : EXPAND_BOTH,
+		resize : true,
 	},
 	pack_box : {
 		type : "pack",
 		weight : EXPAND_BOTH,
 		horizontal : true,
+		resize : true,
 		elements : {
 			logo_top : {
 				type : "icon",

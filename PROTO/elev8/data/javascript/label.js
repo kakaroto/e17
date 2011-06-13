@@ -1,9 +1,11 @@
 var elements = {
 	bg : {
 		type : "background",
+		resize : true,
 	},
 	box : {
 		type : "pack",
+		resize : true,
 		elements : {
 			small_label : {
 				type : "label",

@@ -7,10 +7,12 @@ var elements = {
 	the_background : {
 		type : "background",
 		weight : EXPAND_BOTH,
+		resize : true,
 	},
 	pack_box : {
 		type : "pack",
 		weight : { x : 1.0, y : 0.0 },
+		resize : true,
 		elements : {
 			snooze_right : {
 				type : "actionslider",

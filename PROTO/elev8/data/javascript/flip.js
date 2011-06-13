@@ -10,10 +10,12 @@ var elements = {
 	the_background : {
 		type : "background",
 		image : "data/images/rock_01.jpg",
+		resize : true,
 	},
 	test_flip : {
 		type : "flip",
 		weight : EXPAND_BOTH,
+		resize : true,
 		front : {
 			type : "button",
 			label : "OK",

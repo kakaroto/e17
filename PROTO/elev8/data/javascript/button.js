@@ -7,11 +7,13 @@ var elements = {
 	the_background : {
 		type : "background",
 		weight : EXPAND_BOTH,
+		resize : true,
 	},
 	scroll : {
 		type : "scroller",
 		bounce : { x : false, y : true },
 		policy : { x : "off", y : "auto" },
+		resize : true,
 		content : {
 			type : "pack",
 			elements : {
