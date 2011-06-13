@@ -346,7 +346,8 @@ typedef struct {
 #endif
    } display;
    struct {
-      Time                time;
+      unsigned int        time_ms;	/* Local ms time */
+      Time                time;	/* Latest X event time */
       int                 cx, cy;	/* Any detected pointer movement */
       int                 mx, my;	/* Motion event */
       int                 px, py;	/* Previous motion event */

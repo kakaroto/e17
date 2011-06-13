@@ -333,8 +333,8 @@ _AnimatorRun(void *_an, void *prm __UNUSED__)
    Animator           *an = (Animator *) _an;
    int                 again;
 
-#if DEBUG_ANIMATORS > 1
-   Eprintf("AnimatorRun %p\n", an);
+#if DEBUG_ANIMATORS > 2
+   Eprintf("%s: %p\n", __func__, an);
 #endif
    again = an->func(an->data);
    if (!again)
@@ -344,7 +344,26 @@ _AnimatorRun(void *_an, void *prm __UNUSED__)
 static int
 AnimatorsRun(void *data __UNUSED__)
 {
+   static unsigned int tms_last = 0;
+   unsigned int        dt_ms;
+
+   dt_ms = Mode.events.time_ms - tms_last;
+   if (2 * dt_ms < Conf.animation.step)
+     {
+#if DEBUG_ANIMATORS > 1
+	Eprintf("%s: dt=%.3f - SKIP\n", __func__, 1e-3f * dt_ms);
+#endif
+	return 1;
+     }
+
    ecore_list_for_each(animator_list, _AnimatorRun, NULL);
+
+#if DEBUG_ANIMATORS > 1
+   Eprintf("%s: dt=%.3f run=%.3f\n", __func__, 1e-3f * dt_ms,
+	   1e-3f * (GetTimeMs() - Mode.events.time_ms));
+#endif
+
+   tms_last = Mode.events.time_ms;
 
    if (ecore_list_count(animator_list))
      {
@@ -368,7 +387,7 @@ AnimatorAdd(AnimatorFunc * func, void *data)
       return NULL;
 
 #if DEBUG_ANIMATORS
-   Eprintf("AnimatorAdd %p func=%p data=%p\n", an, func, data);
+   Eprintf("%s: %p func=%p data=%p\n", __func__, an, func, data);
 #endif
    an->func = func;
    an->data = data;
@@ -393,7 +412,7 @@ void
 AnimatorDel(Animator * an)
 {
 #if DEBUG_ANIMATORS
-   Eprintf("AnimatorDel %p func=%p data=%p\n", an, an->func, an->data);
+   Eprintf("%s: %p func=%p data=%p\n", __func__, an, an->func, an->data);
 #endif
 
    ecore_list_node_remove(animator_list, an);

@@ -950,7 +950,7 @@ EventsMain(void)
 	/* time2 = current time */
 	time2 = GetTimeMs();
 	dt = time2 - time1;
-	time1 = time2;
+	Mode.events.time_ms = time1 = time2;
 	/* dt = time spent since we last were here */
 
 	/* Run all expired timers, get time to first non-expired (0. means none) */
