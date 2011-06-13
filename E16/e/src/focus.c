@@ -613,9 +613,15 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
 {
    Mode.mouse_over_ewin = ewin;
 
+#if 1				/* FIXME - Remove? */
    if (ev->xcrossing.mode == NotifyUngrab &&
        ev->xcrossing.detail == NotifyNonlinearVirtual)
-      return;
+     {
+	if (EDebug(1))
+	   Eprintf("Previously ignored: focused: %s, enter: %s\n",
+		   EoGetNameSafe(Mode.focuswin), EoGetNameSafe(ewin));
+     }
+#endif
 
    if ((int)ev->xcrossing.serial - focus_request < 0)
      {
