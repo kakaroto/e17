@@ -499,6 +499,7 @@ typedef struct {
    char                button_image;
    char                animate_startup;
    char                saveunders;
+   int                 magwin_zoom_res;
 } MiscDlgData;
 
 static void
@@ -513,6 +514,7 @@ CB_ConfigureMiscellaneous(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    Conf.dialogs.button_image = dd->button_image;
    Conf.startup.animate = dd->animate_startup;
    Conf.save_under = dd->saveunders;
+   Conf.magwin.zoom_res = dd->magwin_zoom_res;
 
    autosave();
 }
@@ -531,6 +533,7 @@ _DlgFillMisc(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    dd->button_image = Conf.dialogs.button_image;
    dd->animate_startup = Conf.startup.animate;
    dd->saveunders = Conf.save_under;
+   dd->magwin_zoom_res = Conf.magwin.zoom_res;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
@@ -561,6 +564,21 @@ _DlgFillMisc(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Use saveunders to reduce window exposures"));
    DialogItemCheckButtonSetPtr(di, &dd->saveunders);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetAlign(di, 1024, 512);
+   DialogItemSetText(di, _("Magwin zoom resolution"));
+
+   di = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSliderSetBounds(di, 1, 32);
+   DialogItemSliderSetUnits(di, 1);
+   DialogItemSliderSetJump(di, 1);
+   DialogItemSliderSetValPtr(di, &dd->magwin_zoom_res);
 }
 
 const DialogDef     DlgMisc = {

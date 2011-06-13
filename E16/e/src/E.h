@@ -200,6 +200,9 @@ typedef struct {
       char                set_xroot_info_on_root_window;
    } hints;
    struct {
+      int                 zoom_res;
+   } magwin;
+   struct {
       char                animate;
       char                onscreen;
       char                warp;

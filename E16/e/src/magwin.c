@@ -109,6 +109,7 @@ MagwinRedraw(MagWindow * mw, int paint)
    int                 ww, wh;
    int                 sx, sy, sw, sh;
    double              scale;
+   int                 zoom_res;
    Drawable            draw;
    char                buf[128];
    int                 px, py;
@@ -119,11 +120,12 @@ MagwinRedraw(MagWindow * mw, int paint)
    ww = mw->ewin->client.w;
    wh = mw->ewin->client.h;
 
-   if (mw->scale < -24)
-      mw->scale = -24;
-   else if (mw->scale > 24)
-      mw->scale = 24;
-   scale = pow(2., (double)0.25 * (mw->scale));
+   zoom_res = Conf.magwin.zoom_res;
+   if (mw->scale < -6 * zoom_res)
+      mw->scale = -6 * zoom_res;
+   else if (mw->scale > 6 * zoom_res)
+      mw->scale = 6 * zoom_res;
+   scale = pow(2., (double)(mw->scale) / zoom_res);
    sw = (int)((ww + .999 * scale) / scale);
    if (sw > WinGetW(VROOT))
       scale = (double)ww / (double)WinGetW(VROOT);
@@ -462,7 +464,7 @@ MagwinCreate(const char *title, int width, int height)
    EventCallbackRegister(win, MagwinEvent, mw);
 
    EQueryPointer(VROOT, &mw->cx, &mw->cy, NULL, NULL);
-   mw->scale = 4;
+   mw->scale = Conf.magwin.zoom_res;
    mw->step = 4;
 
    return mw;
