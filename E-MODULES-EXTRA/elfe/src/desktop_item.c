@@ -186,6 +186,15 @@ _obj_del_cb(void *data , Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *
 
 }
 
+void
+elfe_desktop_item_pos_set(Evas_Object *obj, int row, int col)
+{
+    Elfe_Desktop_Item *dit = evas_object_data_get(obj, "desktop_item");
+
+    dit->col = col;
+    dit->row = row;
+}
+
 Evas_Object *
 elfe_desktop_item_add(Evas_Object *parent,
 		      int row, int col,

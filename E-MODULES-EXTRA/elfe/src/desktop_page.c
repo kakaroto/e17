@@ -15,6 +15,10 @@ struct _Elfe_Desktop_Page
    E_Gadcon_Location *location;
    E_Gadcon *gc;
    Eina_Matrixsparse *items;
+   Evas_Object *icon_moved;
+   Eina_Bool edit_mode;
+   Evas_Object *parent;
+   Elm_Transit *placement;
 };
 
 static void
@@ -41,6 +45,8 @@ _pos_to_geom(Elfe_Desktop_Page *page,
         *y = row * *h;
 }
 
+
+/* Get closest position(column, row) of a given position (x,y) */
 static void
 _xy_to_pos(Elfe_Desktop_Page *page, Evas_Coord x, Evas_Coord y,
 	   int *row, int *col)
@@ -206,6 +212,16 @@ elfe_desktop_page_pos_is_free(Evas_Object *obj, int row, int col)
      return EINA_FALSE;
 }
 
+Evas_Object *
+elfe_desktop_page_obj_at_get(Evas_Object *obj, int row, int col)
+{
+   Elfe_Desktop_Page *page = evas_object_data_get(obj, "desktop_page");
+   Evas_Object *item;
+
+   item = eina_matrixsparse_data_idx_get(page->items, row, col);
+   return item;
+}
+
 void
 elfe_desktop_page_item_gadget_add(Evas_Object *obj, const char *name,
 				Evas_Coord x, Evas_Coord y)
@@ -273,6 +289,120 @@ elfe_desktop_page_item_app_add(Evas_Object *obj, Efreet_Menu *menu,
     evas_object_smart_callback_add(item, "item,delete", _item_delete_cb, page);
 }
 
+
+static void
+_icon_mouse_down_cb(void *data, Evas *evas __UNUSED__, Evas_Object *obj, void *event_info)
+{
+    Elfe_Desktop_Page *page = data;
+
+    if (page->edit_mode)
+        {
+	   Evas_Coord x, y;
+	   page->icon_moved = obj;
+	   evas_object_geometry_get(obj, &x, &y, NULL, NULL);
+//	   page->icon_moved_x = x;
+//	   page->icon_moved_y = y;
+        }
+}
+
+static void
+_icon_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Elfe_Desktop_Page *page = data;
+   Evas_Event_Mouse_Move *ev = event_info;
+   Evas_Coord w, h;
+   int col, row;
+
+   if (!page->edit_mode || !page->icon_moved)
+     return;
+
+   /* Move dragged icon on the canvas */
+   evas_object_geometry_get(page->icon_moved, NULL, NULL, &w, &h);
+   evas_object_move(page->icon_moved, ev->cur.output.x - w /2  , ev->cur.output.y - h / 2);
+
+   #if 0
+   /* Whats the position ? */
+   _xy_to_pos(page, ev->cur.output.x, ev->cur.output.y,
+              &row, &col);
+
+   if (elfe_desktop_page_pos_is_free(page->layout,
+                                     row,col))
+       {
+	  /*
+	     This position is not free, move the item under the mouse
+	     at the previous position of the dragged icon
+	  */
+	  Evas_Coord x, y, fx, fy, tx, ty, tw, th;
+	  Evas_Object *item;
+	  int trow, tcol;
+
+	  /* Get item under the mouse */
+	  item = elfe_desktop_page_obj_at_get(page->layout,
+					      row, col);
+	  /* If a transit is always active or we object under mouse
+	     is the dragged item do nothing */
+	  if (!item || item == page->icon_moved || page->old)
+	       return;
+
+	  /* Create Transit */
+	  page->old = elm_transit_add();
+
+	  /* Get the position of dragged item */
+	  elfe_desktop_item_pos_get(page->icon_moved, &trow, &tcol);
+
+	  /* Transform this position into x,y position */
+	  _pos_to_geom(page, trow, tcol, &tx, &ty, &tw, &th);
+
+	  /* Add item under the mouse to the transit */
+	  elm_transit_object_add(page->old, item);
+
+	  /* Get the current position of the item under the mouse */
+	  evas_object_geometry_get(item, &fx, &fy, NULL, NULL);
+	  elm_transit_effect_translation_add(page->old, 0, 0, tx - fx, ty - fy);
+	  elm_transit_objects_final_state_keep_set(page->old, EINA_TRUE);
+	  elm_transit_duration_set(page->old, 1.0);
+	  /* And move it */
+	  elm_transit_go(page->old);
+	  elm_transit_del_cb_set(page->old, _transit_old_del_cb, page);
+	  elfe_desktop_item_pos_set(item, trow, tcol);
+	  elfe_desktop_item_pos_set(page->icon_moved, row, col);
+       }
+   #endif
+}
+
+
+static void
+_icon_mouse_up_cb(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Elfe_Desktop_Page *page = data;
+   Evas_Event_Mouse_Up *ev = event_info;
+   int row, col;
+   Evas_Coord x, y, w, h, fx, fy, tx, ty;
+
+   if (page->edit_mode && page->icon_moved)
+     {
+	_xy_to_pos(page, ev->output.x, ev->output.y,
+		   &row, &col);
+	
+
+	_pos_to_geom(page, row, col,
+		     &tx, &ty, &w, &h);
+
+	page->placement = elm_transit_add();
+	elm_transit_object_add(page->placement, page->icon_moved);
+	evas_object_geometry_get(page->layout, &x, &y, NULL, NULL);
+	evas_object_geometry_get(page->icon_moved, &fx, &fy, NULL, NULL);
+
+	elm_transit_effect_translation_add(page->placement, 0, 0, x + tx - fx, y + ty - fy);
+//	elm_transit_effect_zoom_add(page->placement, 1.0, 2.0);
+//        elm_transit_effect_zoom_add(page->placement, 2.0, 1.0);
+        elm_transit_objects_final_state_keep_set(page->placement, EINA_TRUE);
+	elm_transit_duration_set(page->placement, 0.3);
+	elm_transit_go(page->placement);
+	page->icon_moved = NULL;
+     }
+}
+
 void
 elfe_desktop_page_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
 {
@@ -281,11 +411,24 @@ elfe_desktop_page_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
    Eina_Iterator *iter;
    Eina_Matrixsparse_Cell *cell;
 
+   if (page->edit_mode == mode)
+     return;
+
+   page->edit_mode = mode;
+
+   if (mode)
+     elm_object_scroll_freeze_push(page->parent);
+   else
+     elm_object_scroll_freeze_push(page->parent);
+
    iter = eina_matrixsparse_iterator_new(page->items);
    EINA_ITERATOR_FOREACH(iter, cell)
      {
 	item  = eina_matrixsparse_cell_data_get(cell);
 	elfe_desktop_item_edit_mode_set(item, mode);
+        evas_object_event_callback_add(item, EVAS_CALLBACK_MOUSE_DOWN, _icon_mouse_down_cb, page);
+        evas_object_event_callback_add(page->layout, EVAS_CALLBACK_MOUSE_MOVE, _icon_mouse_move_cb, page);
+        evas_object_event_callback_add(item, EVAS_CALLBACK_MOUSE_UP, _icon_mouse_up_cb, page);
      }
    eina_iterator_free(iter);
 }
@@ -300,6 +443,17 @@ elfe_desktop_page_add(Evas_Object *parent, E_Zone *zone,
    page = calloc(1, sizeof(Elfe_Desktop_Page));
    if (!page)
      return NULL;
+
+   /*
+      This is a warkarround :
+      I need a layout (free position of children) and i'm still using
+      e_layout for that.
+      And as e_layout Object doesn't handle elementary objects
+      hierarchy for scroll_freeze, i keep a pointer on the parent,
+      which is in this case an elm_scroller.
+      TODO: use elm_grid instead of e_layout !
+    */
+   page->parent = parent;
 
    page->items = eina_matrixsparse_new(elfe_home_cfg->rows, elfe_home_cfg->cols,
 				       NULL, NULL);
