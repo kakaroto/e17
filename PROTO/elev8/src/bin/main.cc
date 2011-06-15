@@ -81,6 +81,19 @@ public:
         return eo;
      }
 
+   virtual void prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        if (!strcmp(prop_name, "label"))
+          return label_set(value);
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name)
+     {
+        if (!strcmp(prop_name, "label"))
+          return label_get();
+        return v8::Undefined();
+     }
+
    // FIXME: could add to the parent here... raster to figure out
    Evas_Object *top_widget_get()
      {
@@ -126,7 +139,12 @@ public:
           }
      }
 
-   virtual void label_set(v8::Local<v8::Value> val)
+   virtual v8::Handle<v8::Value> label_get()
+     {
+       return v8::String::New(elm_button_label_get(eo));
+     }
+
+   virtual void label_set(v8::Handle<v8::Value> val)
      {
         if (val->IsString())
           {
@@ -250,7 +268,12 @@ public:
         evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
      }
 
-   virtual void label_set(v8::Local<v8::Value> val)
+   virtual v8::Handle<v8::Value> label_get()
+     {
+        return v8::String::New(elm_win_title_get(eo));
+     }
+
+   virtual void label_set(v8::Handle<v8::Value> val)
      {
         if (val->IsString())
           {
@@ -317,7 +340,7 @@ public:
         construct(eo, obj);
      }
 
-   virtual void label_set(v8::Local<v8::Value> val)
+   virtual void label_set(v8::Handle<v8::Value> val)
      {
         if (val->IsString())
           {
@@ -373,7 +396,7 @@ public:
           elm_label_line_wrap_set(eo, static_cast<Elm_Wrap_Type>(wrap->Int32Value()));
      }
 
-   virtual void label_set(v8::Local<v8::Value> val)
+   virtual void label_set(v8::Handle<v8::Value> val)
      {
         if (val->IsString())
           {
@@ -446,7 +469,7 @@ public:
      }
 
    /* there's 1 indicator label and 3 position labels */
-   virtual void label_set(v8::Local<v8::Value> val)
+   virtual void label_set(v8::Handle<v8::Value> val)
      {
         if (val->IsString())
           {
@@ -632,6 +655,38 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    return eo;
 }
 
+CEvasObject *
+eo_from_info(const v8::AccessorInfo& info)
+{
+   v8::Handle<v8::Value> val = info.This()->Get(v8::String::New("_eo"));
+   return static_cast<CEvasObject *>(v8::External::Unwrap(val));
+}
+
+void
+object_set_eo(v8::Handle<v8::Object> obj, CEvasObject *eo)
+{
+   obj->Set(v8::String::New("_eo"), v8::External::Wrap(eo));
+}
+
+void
+eo_setter(v8::Local<v8::String> property, v8::Local<v8::Value> value,
+               const v8::AccessorInfo& info)
+{
+   CEvasObject *eo = eo_from_info(info);
+   v8::String::Utf8Value prop_name(property);
+   eo->prop_set(*prop_name, value);
+   v8::String::Utf8Value val(value->ToString());
+}
+
+static v8::Handle<v8::Value>
+eo_getter(v8::Local<v8::String> property,
+               const v8::AccessorInfo& info)
+{
+   CEvasObject *eo = eo_from_info(info);
+   v8::String::Utf8Value prop_name(property);
+   return eo->prop_get(*prop_name);
+}
+
 v8::Handle<v8::Value>
 Realize(const v8::Arguments& args)
 {
@@ -761,11 +816,11 @@ elm_main_window(const v8::Arguments& args)
 
    main_win = new CElmBasicWindow(NULL, args[0]->ToObject());
 
-   Evas_Object *eo = main_win->get();
-
    v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
+   ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
+
    v8::Local<v8::Object> out = ot->NewInstance();
-   out->Set(v8::String::New("_eo"), v8::External::Wrap(eo));
+   object_set_eo(out, main_win);
 
    return out;
 }

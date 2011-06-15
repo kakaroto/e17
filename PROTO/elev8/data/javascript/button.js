@@ -68,3 +68,7 @@ var my_window = new elm.main({
 		},
 	},
 });
+
+print(my_window.label);
+
+my_window.label = "Button demo";
