@@ -15,5 +15,3 @@ evas_map - afterimage problem
 evas_map - check rotation util inconsistency rotation
 
 pager - content size calc
-
-actionslider - indicator could be placed at center position incorrectly. (mike_m) 
