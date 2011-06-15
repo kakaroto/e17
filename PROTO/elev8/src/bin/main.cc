@@ -40,7 +40,7 @@ class CEvasObject {
 protected:
    Evas_Object *eo;
 protected:
-   explicit CEvasObject(v8::Local<v8::Object> obj) :
+   explicit CEvasObject() :
        eo(NULL)
      {
      }
@@ -240,7 +240,7 @@ public:
 class CElmBasicWindow : public CEvasObject {
 public:
    CElmBasicWindow(CEvasObject *parent, v8::Local<v8::Object> obj) :
-       CEvasObject(obj)
+       CEvasObject()
      {
         eo = elm_win_add(parent ? parent->get() : NULL, "main", ELM_WIN_BASIC);
         construct(obj);
@@ -272,7 +272,8 @@ CElmBasicWindow *main_win;
 
 class CElmButton : public CEvasObject {
 public:
-   CElmButton(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
+   CElmButton(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
      {
         eo = elm_button_add(parent->top_widget_get());
         construct(obj);
@@ -285,7 +286,8 @@ public:
 
 class CElmBackground : public CEvasObject {
 public:
-   CElmBackground(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject(obj)
+   CElmBackground(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
      {
         eo = elm_bg_add(parent->top_widget_get());
         construct(obj);
@@ -308,7 +310,7 @@ public:
 class CElmRadio : public CEvasObject {
 public:
    CElmRadio(CEvasObject *parent, v8::Local<v8::Object> obj) :
-       CEvasObject(obj)
+       CEvasObject()
      {
         eo = elm_radio_add(parent->top_widget_get());
         construct(obj);
@@ -337,7 +339,7 @@ protected:
 
 public:
    CElmBox(CEvasObject *parent, v8::Local<v8::Object> obj) :
-       CEvasObject(obj)
+       CEvasObject()
      {
         eo = elm_box_add(parent->top_widget_get());
         realize_objects(obj->Get(v8::String::New("elements")));
@@ -357,7 +359,7 @@ public:
 class CElmLabel : public CEvasObject {
 public:
    CElmLabel(CEvasObject *parent, v8::Local<v8::Object> obj) :
-       CEvasObject(obj)
+       CEvasObject()
      {
         eo = elm_label_add(parent->top_widget_get());
         wrap_set(obj->Get(v8::String::New("wrap")));
@@ -383,7 +385,7 @@ public:
 class CElmFlip : public CEvasObject {
 public:
    CElmFlip(CEvasObject *parent, v8::Local<v8::Object> obj) :
-       CEvasObject(obj)
+       CEvasObject()
      {
         CEvasObject *front, *back;
 
@@ -402,7 +404,7 @@ public:
 class CElmIcon : public CEvasObject {
 public:
    CElmIcon(CEvasObject *parent, v8::Local<v8::Object> obj) :
-       CEvasObject(obj)
+       CEvasObject()
      {
         eo = elm_icon_add(parent->top_widget_get());
         construct(obj);
@@ -433,7 +435,7 @@ public:
 class CElmActionSlider : public CEvasObject {
 public:
    CElmActionSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
-       CEvasObject(obj)
+       CEvasObject()
      {
         eo = elm_actionslider_add(parent->top_widget_get());
         construct(obj);
@@ -512,7 +514,7 @@ public:
 class CElmScroller : public CEvasObject {
 public:
    CElmScroller(CEvasObject *parent, v8::Local<v8::Object> obj) :
-       CEvasObject(obj)
+       CEvasObject()
      {
         CEvasObject *content;
         eo = elm_scroller_add(parent->top_widget_get());
