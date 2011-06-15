@@ -40,6 +40,7 @@ class CEvasObject {
    friend CEvasObject *realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
 protected:
    Evas_Object *eo;
+   v8::Persistent<v8::Object> the_object;
 protected:
    explicit CEvasObject() :
        eo(NULL)
@@ -118,10 +119,27 @@ protected:
      }
 
 public:
-   virtual v8::Handle<v8::Object> create_object(void)
+   virtual v8::Local<v8::ObjectTemplate> get_template(void)
      {
-        // FIXME: make pure virtual when all CEvasObjects have a create_object */
-        return v8::Object::New();
+        /* FIXME: only need to create one template per object class */
+        v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
+        ot->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
+        return ot;
+     }
+
+   virtual v8::Handle<v8::Object> get_object(void)
+     {
+        if (the_object.IsEmpty())
+          {
+             v8::Local<v8::ObjectTemplate> ot = get_template();
+             the_object = v8::Persistent<v8::Object>((ot->NewInstance()));
+             object_set_eo(the_object, this);
+
+             /* FIXME: make handle a weak handle, and detect destruction */
+          }
+        return the_object;
      }
 
    virtual v8::Handle<v8::Value> type_get(void)
@@ -367,18 +385,6 @@ public:
         elm_exit();
      }
 
-   virtual v8::Handle<v8::Object> create_object(void)
-     {
-        v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
-        ot->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
-
-        v8::Local<v8::Object> out = ot->NewInstance();
-        object_set_eo(out, this);
-
-        return out;
-     }
 };
 
 CElmBasicWindow *main_win;
@@ -896,7 +902,7 @@ elm_main_window(const v8::Arguments& args)
    if (!main_win)
      return v8::Undefined();
 
-   return main_win->create_object();
+   return main_win->get_object();
 }
 
 void
