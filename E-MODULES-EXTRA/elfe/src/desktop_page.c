@@ -19,6 +19,14 @@ struct _Elfe_Desktop_Page
    Eina_Bool edit_mode;
    Evas_Object *parent;
    Elm_Transit *placement;
+   struct {
+      Ecore_Timer *timer;
+      Evas_Coord dx;
+      Evas_Coord dy;
+      Evas_Coord x;
+      Evas_Coord y;
+      Elm_Transit *transit;
+   }swap;
 };
 
 static void
@@ -306,28 +314,100 @@ _icon_mouse_down_cb(void *data, Evas *evas __UNUSED__, Evas_Object *obj, void *e
 }
 
 static void
-_icon_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+_transit_swap_del_cb(void *data, Elm_Transit *transit)
 {
    Elfe_Desktop_Page *page = data;
-   Evas_Event_Mouse_Move *ev = event_info;
-   Evas_Coord w, h;
-   int col, row;
 
-   if (!page->edit_mode || !page->icon_moved)
-     return;
+   page->swap.transit = NULL;
+}
 
-   /* Move dragged icon on the canvas */
-   evas_object_geometry_get(page->icon_moved, NULL, NULL, &w, &h);
-   evas_object_move(page->icon_moved, ev->cur.output.x - w /2  , ev->cur.output.y - h / 2);
+_icon_placement(Elfe_Desktop_Page *page, Evas_Coord evx, Evas_Coord evy)
+{
+   int row, col;
+   Evas_Coord x, y, w, h, fx, fy, tx, ty;
 
-   #if 0
-   /* Whats the position ? */
-   _xy_to_pos(page, ev->cur.output.x, ev->cur.output.y,
+   _xy_to_pos(page, evx, evy,
               &row, &col);
 
-   if (elfe_desktop_page_pos_is_free(page->layout,
-                                     row,col))
-       {
+   _pos_to_geom(page, row, col,
+                &tx, &ty, &w, &h);
+
+   page->placement = elm_transit_add();
+   elm_transit_object_add(page->placement, page->icon_moved);
+   evas_object_geometry_get(page->layout, &x, &y, NULL, NULL);
+   evas_object_geometry_get(page->icon_moved, &fx, &fy, NULL, NULL);
+
+   elm_transit_effect_translation_add(page->placement, 0, 0, x + tx - fx, y + ty - fy);
+   elm_transit_objects_final_state_keep_set(page->placement, EINA_TRUE);
+   elm_transit_duration_set(page->placement, 0.3);
+   elm_transit_go(page->placement);
+
+   page->icon_moved = NULL;
+   if (page->swap.timer)
+     {
+        ecore_timer_del(page->swap.timer);
+        page->swap.timer = NULL;
+     }
+   page->swap.dx = 0;
+   page->swap.dy = 0;
+
+}
+
+static Eina_Bool
+_swap_timer_cb(void *data)
+{
+   int row, col;
+   int trow, tcol;
+   Evas_Object *item;
+   Evas_Coord tx, ty, tw, th;
+   Evas_Coord fx, fy, fw, fh;
+
+   Elfe_Desktop_Page *page = data;
+
+   _xy_to_pos(page, page->swap.x, page->swap.y,
+              &row, &col);
+
+   /* Get item under the mouse */
+   item = elfe_desktop_page_obj_at_get(page->layout,
+                                       row, col);
+   /* If a transit is always active or we object under mouse
+      is the dragged item : do nothing */
+   if (!item || item == page->icon_moved || page->swap.transit)
+     {
+        page->swap.timer = NULL;
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   /* Create Transit */
+   page->swap.transit = elm_transit_add();
+
+   /* Get the old position of draggef item */
+   elfe_desktop_item_pos_get(page->icon_moved, &trow, &tcol);
+
+   /* Transform this position into x,y position */
+   _pos_to_geom(page, trow, tcol, &tx, &ty, &tw, &th);
+
+   /* Transform the current position into x,y position */
+   _pos_to_geom(page, row, col, &fx, &fy, &fw, &fh);
+
+   /* Add item under the mouse to the transit */
+   elm_transit_object_add(page->swap.transit, item);
+
+
+   elm_transit_effect_translation_add(page->swap.transit, 0, 0, tx - fx, ty - fy);
+   elm_transit_objects_final_state_keep_set(page->swap.transit, EINA_TRUE);
+   elm_transit_duration_set(page->swap.transit, 0.3);
+   elm_transit_go(page->swap.transit);
+   elm_transit_del_cb_set(page->swap.transit, _transit_swap_del_cb, page);
+   elfe_desktop_item_pos_set(item, trow, tcol);
+   elfe_desktop_item_pos_set(page->icon_moved, row, col);
+
+   elfe_desktop_item_pos_set(item, trow, tcol);
+   elfe_desktop_item_pos_set(page->icon_moved, row, col);
+
+   _icon_placement(page, page->swap.x, page->swap.y);
+
+#if 0
 	  /*
 	     This position is not free, move the item under the mouse
 	     at the previous position of the dragged icon
@@ -337,8 +417,7 @@ _icon_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED_
 	  int trow, tcol;
 
 	  /* Get item under the mouse */
-	  item = elfe_desktop_page_obj_at_get(page->layout,
-					      row, col);
+
 	  /* If a transit is always active or we object under mouse
 	     is the dragged item do nothing */
 	  if (!item || item == page->icon_moved || page->old)
@@ -366,8 +445,55 @@ _icon_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED_
 	  elm_transit_del_cb_set(page->old, _transit_old_del_cb, page);
 	  elfe_desktop_item_pos_set(item, trow, tcol);
 	  elfe_desktop_item_pos_set(page->icon_moved, row, col);
-       }
    #endif
+
+   page->swap.timer = NULL;
+   return ECORE_CALLBACK_CANCEL;
+}
+
+
+static void
+_icon_mouse_move_cb(void *data,Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Elfe_Desktop_Page *page = data;
+   Evas_Event_Mouse_Move *ev = event_info;
+   Evas_Coord w, h;
+   int col, row;
+
+   if (!page->edit_mode || !page->icon_moved)
+     return;
+
+   /* Move dragged icon on the canvas */
+   evas_object_geometry_get(page->icon_moved, NULL, NULL, &w, &h);
+   evas_object_move(page->icon_moved, ev->cur.output.x - w /2  , ev->cur.output.y - h / 2);
+
+   if (page->swap.timer)
+     {
+        page->swap.dx += ev->cur.output.x - ev->prev.output.x;
+        page->swap.dy += ev->cur.output.y - ev->prev.output.y;
+        if (abs(page->swap.dx) > LONGPRESS_THRESHOLD ||
+            abs(page->swap.dy) > LONGPRESS_THRESHOLD)
+          {
+             ecore_timer_del(page->swap.timer);
+             page->swap.timer = NULL;
+             page->swap.dx = 0;
+             page->swap.dy = 0;
+          }
+     }
+   else
+     {
+        /* Whats the position ? */
+        _xy_to_pos(page, ev->cur.output.x, ev->cur.output.y,
+                   &row, &col);
+
+        if (elfe_desktop_page_pos_is_free(page->layout,
+                                          row,col))
+          {
+             page->swap.x = ev->cur.output.x;
+             page->swap.y = ev->cur.output.y;
+             page->swap.timer = ecore_timer_add(0.6, _swap_timer_cb, page);
+          }
+     }
 }
 
 
@@ -376,30 +502,10 @@ _icon_mouse_up_cb(void *data __UNUSED__, Evas *evas __UNUSED__, Evas_Object *obj
 {
    Elfe_Desktop_Page *page = data;
    Evas_Event_Mouse_Up *ev = event_info;
-   int row, col;
-   Evas_Coord x, y, w, h, fx, fy, tx, ty;
 
    if (page->edit_mode && page->icon_moved)
      {
-	_xy_to_pos(page, ev->output.x, ev->output.y,
-		   &row, &col);
-	
-
-	_pos_to_geom(page, row, col,
-		     &tx, &ty, &w, &h);
-
-	page->placement = elm_transit_add();
-	elm_transit_object_add(page->placement, page->icon_moved);
-	evas_object_geometry_get(page->layout, &x, &y, NULL, NULL);
-	evas_object_geometry_get(page->icon_moved, &fx, &fy, NULL, NULL);
-
-	elm_transit_effect_translation_add(page->placement, 0, 0, x + tx - fx, y + ty - fy);
-//	elm_transit_effect_zoom_add(page->placement, 1.0, 2.0);
-//        elm_transit_effect_zoom_add(page->placement, 2.0, 1.0);
-        elm_transit_objects_final_state_keep_set(page->placement, EINA_TRUE);
-	elm_transit_duration_set(page->placement, 0.3);
-	elm_transit_go(page->placement);
-	page->icon_moved = NULL;
+        _icon_placement(page, ev->output.x, ev->output.y);
      }
 }
 

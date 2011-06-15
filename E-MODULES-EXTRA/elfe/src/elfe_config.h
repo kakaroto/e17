@@ -4,6 +4,8 @@
 #define IL_CONFIG_MIN 0
 #define IL_CONFIG_MAJ 0
 
+#define  LONGPRESS_THRESHOLD 16
+
 typedef struct _Elfe_Home_Config Elfe_Home_Config;
 typedef struct _Elfe_Desktop_Config Elfe_Desktop_Config;
 typedef struct _Elfe_Desktop_Item_Config Elfe_Desktop_Item_Config;

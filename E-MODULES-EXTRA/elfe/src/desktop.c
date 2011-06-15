@@ -12,8 +12,6 @@
 #define ELFE_DESKTOP_PADDING_W 10
 #define ELFE_DESKTOP_PADDING_H 10
 
-#define  LONGPRESS_THRESHOLD 16
-
 typedef struct _Elfe_Desktop Elfe_Desktop;
 
 struct _Elfe_Desktop
