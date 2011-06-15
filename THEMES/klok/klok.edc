@@ -210,7 +210,11 @@ collections {
 
 
                 // HOUR
-                if (hour == 0 || hour == 12) {
+                if (((hour == 11 || hour == 23) &&
+                     (minute >= 35 ))
+                || ((hour == 0 || hour == 12) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // TWELVE
                     SHUTON("l5.8");
                     SHUTON("l6.8");
@@ -219,19 +223,31 @@ collections {
                     SHUTON("l9.8");
                     SHUTON("la.8");
                 } else
-                if (hour == 1 || hour == 13) {
+                if (((hour == 0 || hour == 12) &&
+                     (minute >= 35 ))
+                || ((hour == 1 || hour == 13) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // ONE
                     SHUTON("l0.5");
                     SHUTON("l1.5");
                     SHUTON("l2.5");
                 } else
-                if (hour == 2 || hour == 14) {
+                if (((hour == 1 || hour == 13) &&
+                     (minute >= 35 ))
+                || ((hour == 2 || hour == 14) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // TWO
                     SHUTON("l8.6");
                     SHUTON("l9.6");
                     SHUTON("la.6");
                 } else
-                if (hour == 3 || hour == 15) {
+                if (((hour == 2 || hour == 14) &&
+                     (minute >= 35 ))
+                || ((hour == 3 || hour == 15) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // THREE
                     SHUTON("l6.5");
                     SHUTON("l7.5");
@@ -239,27 +255,43 @@ collections {
                     SHUTON("l9.5");
                     SHUTON("la.5");
                 } else
-                if (hour == 4 || hour == 16) {
+                if (((hour == 3 || hour == 15) &&
+                     (minute >= 35 ))
+                || ((hour == 4 || hour == 16) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // FOUR
                     SHUTON("l0.6");
                     SHUTON("l1.6");
                     SHUTON("l2.6");
                     SHUTON("l3.6");
                 } else
-                if (hour == 5 || hour == 17) {
+                if (((hour == 4 || hour == 16) &&
+                     (minute >= 35 ))
+                || ((hour == 5 || hour == 17) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // FIVE
                     SHUTON("l4.6");
                     SHUTON("l5.6");
                     SHUTON("l6.6");
                     SHUTON("l7.6");
                 } else
-                if (hour == 6 || hour == 18) {
+                if (((hour == 5 || hour == 17) &&
+                     (minute >= 35 ))
+                || ((hour == 6 || hour == 18) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // SIX
                     SHUTON("l3.5");
                     SHUTON("l4.5");
                     SHUTON("l5.5");
                 } else
-                if (hour == 7 || hour == 19) {
+                if (((hour == 6 || hour == 18) &&
+                     (minute >= 35 ))
+                || ((hour == 7 || hour == 19) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // SEVEN
                     SHUTON("l0.8");
                     SHUTON("l1.8");
@@ -267,7 +299,11 @@ collections {
                     SHUTON("l3.8");
                     SHUTON("l4.8");
                 } else
-                if (hour == 8 || hour == 20) {
+                if (((hour == 7 || hour == 19) &&
+                     (minute >= 35 ))
+                || ((hour == 8 || hour == 20) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // EIGHT
                     SHUTON("l0.7");
                     SHUTON("l1.7");
@@ -275,20 +311,32 @@ collections {
                     SHUTON("l3.7");
                     SHUTON("l4.7");
                 } else
-                if (hour == 9 || hour == 21) {
+                if (((hour == 8 || hour == 20) &&
+                     (minute >= 35 ))
+                || ((hour == 9 || hour == 21) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // NINE
                     SHUTON("l7.4");
                     SHUTON("l8.4");
                     SHUTON("l9.4");
                     SHUTON("la.4");
                 } else
-                if (hour == 10 || hour == 22) {
+                if (((hour == 9 || hour == 21) &&
+                     (minute >= 35 ))
+                || ((hour == 10 || hour == 22) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // TEN
                     SHUTON("l0.9");
                     SHUTON("l1.9");
                     SHUTON("l2.9");
                 } else
-                if (hour == 11 || hour == 23) {
+                if (((hour == 10 || hour == 22) &&
+                     (minute >= 35 ))
+                || ((hour == 11 || hour == 23) &&
+                     (0 <= minute && minute < 35 )))
+                {
                     // ELEVEN
                     SHUTON("l5.7");
                     SHUTON("l6.7");
@@ -297,7 +345,6 @@ collections {
                     SHUTON("l9.7");
                     SHUTON("la.7");
                 }
-
              }
         }
 
