@@ -309,29 +309,36 @@ public:
         evas_object_show(eo);
      }
 
-   void realize_objects(v8::Handle<v8::Value> val)
+   /* returns a list of children in an object */
+   v8::Handle<v8::Object> realize_objects(v8::Handle<v8::Value> val)
      {
+        /* add an list of children */
+        v8::Local<v8::Object> out = v8::Object::New();
+
         if (!val->IsObject())
           {
              fprintf(stderr, "not an object!\n");
-             return;
+             return out;
           }
 
-        v8::Handle<v8::Object> obj = val->ToObject();
-        v8::Handle<v8::Array> props = obj->GetPropertyNames();
+        v8::Handle<v8::Object> in = val->ToObject();
+        v8::Handle<v8::Array> props = in->GetPropertyNames();
 
         /* iterate through elements and instantiate them */
         for (unsigned int i = 0; i < props->Length(); i++)
           {
-             CEvasObject *child;
 
              v8::Handle<v8::Value> x = props->Get(v8::Integer::New(i));
              v8::String::Utf8Value val(x);
 
-             child = realize_one(this, obj->Get(x->ToString()));
-
+             CEvasObject *child = realize_one(this, in->Get(x->ToString()));
              add_child(child);
+
+             v8::Handle<v8::Object> child_obj = child->get_object();
+             out->Set(x, child_obj);
           }
+
+        return out;
      }
 
    /* resize this object when the parent resizes? */
