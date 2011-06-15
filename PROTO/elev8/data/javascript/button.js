@@ -5,7 +5,7 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var my_window = new elm.main({
 	type : "main",
-	label : "main",
+	label : "Button demo",
 	width : 320,
 	height : 480,
 	elements : {
@@ -73,5 +73,6 @@ var my_window = new elm.main({
 
 print("label = " + my_window.label);
 print("type  = " + my_window.type);
+print("width = " + my_window.width);
+print("width = " + my_window.height);
 
-my_window.label = "Button demo";

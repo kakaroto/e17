@@ -65,6 +65,8 @@ protected:
         align_set(obj->Get(v8::String::New("align")));
         resize_set(obj->Get(v8::String::New("resize")));
 
+        v8::Handle<v8::Object> out = get_object();
+
         /* copy properties, one by one */
         v8::Handle<v8::Array> props = obj->GetPropertyNames();
         for (unsigned int i = 0; i < props->Length(); i++)
@@ -76,7 +78,7 @@ protected:
              if (!strcmp(*name_str, "type"))
                continue;
 
-             prop_set(*name_str, obj->Get(name->ToString()));
+             out->Set(name, obj->Get(name->ToString()));
           }
 
         /* show the object, maybe */
