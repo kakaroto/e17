@@ -1,8 +1,5 @@
 1. Focus movement by arrow keys
 	- Consider about the corrcet senario when focus is in elm_scroller
-	
-2. elm_entry 
-	- Improve elm_entry_filter_limit_size func
 
-3. elm_widget
+2. elm_widget
 	- Fix focus bugs
