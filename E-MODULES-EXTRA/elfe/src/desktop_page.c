@@ -525,7 +525,7 @@ elfe_desktop_page_edit_mode_set(Evas_Object *obj, Eina_Bool mode)
    if (mode)
      elm_object_scroll_freeze_push(page->parent);
    else
-     elm_object_scroll_freeze_push(page->parent);
+     elm_object_scroll_freeze_pop(page->parent);
 
    iter = eina_matrixsparse_iterator_new(page->items);
    EINA_ITERATOR_FOREACH(iter, cell)
