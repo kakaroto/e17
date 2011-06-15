@@ -162,30 +162,28 @@ collections
                visible: 1;
             }
          }
-
-
          part {
-            name: "content.clip";
+            name: "clip.content";
             type: RECT;
-            mouse_events: 0;
             description {
                state: "default" 0.0;
-               color: 255 255 255 255;
+               color: 255 255 255 0;
+               visible: 0;
             }
             description {
-               state: "edit" 0.0;
-               color: 255 255 255 200;
+               state: "visible" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
             }
          }
-
          part {
             name: "elfe.swallow.content";
             type: SWALLOW;
-            clip_to: "content.clip";
+            clip_to: "clip.content";
             description {
                state: "default" 0.0;
                map {
-                  on: 1;
+                  on: 0;
                   rotation.z: 0;
                   smooth: 1;
                }
@@ -216,10 +214,9 @@ collections
             description {
                state: "default" 0.0;
                image.normal: "badge_delete.png";
-               min: 29 29;
-               max: 29 29;
+               min: 32 32;
+               max: 32 32;
                align: 0.9 0.9;
-               color: 255 255 255 255;
                rel1.to: "elfe.swallow.content";
                rel2.to: "elfe.swallow.content";
             }
@@ -232,7 +229,6 @@ collections
             source: "elfe";
             action: STATE_SET "edit" 0.0;
             target: "clip";
-            target: "content.clip";
             transition: "SINUSOIDAL" 0.2;
          }
 
@@ -243,7 +239,6 @@ collections
             action: STATE_SET "normal" 0.0;
             target: "clip";
             target: "elfe.swallow.content";
-            target: "content.clip";
             transition: "SINUSOIDAL" 0.2;
          }
 
@@ -272,14 +267,8 @@ collections
          program {
             name: "load";
             signal: "load";
-            action: STATE_SET "hide" 0.0;
-            target: "content.clip";
-            after: "normal";
-         }
-         program {
-            name: "normal";
-            action: STATE_SET "normal" 0.0;
-            target: "content.clip";
+            action: STATE_SET "visible" 0.0;
+            target: "clip.content";
             transition: LINEAR 0.4;
          }
       }
