@@ -31,6 +31,7 @@ eo_on_animate(void *data)
    return ECORE_CALLBACK_RENEW;
 }
 
+/* CEvasObject is a virtual class, representing an evas object */
 class CEvasObject;
 CEvasObject *realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
 
@@ -75,7 +76,42 @@ protected:
      {
      }
 
+   void object_set_eo(v8::Handle<v8::Object> obj, CEvasObject *eo)
+     {
+        obj->Set(v8::String::New("_eo"), v8::External::Wrap(eo));
+     }
+
+   static CEvasObject *eo_from_info(const v8::AccessorInfo& info)
+     {
+        v8::Handle<v8::Value> val = info.This()->Get(v8::String::New("_eo"));
+        return static_cast<CEvasObject *>(v8::External::Unwrap(val));
+     }
+
+   static void eo_setter(v8::Local<v8::String> property,
+                         v8::Local<v8::Value> value,
+                         const v8::AccessorInfo& info)
+     {
+        CEvasObject *eo = eo_from_info(info);
+        v8::String::Utf8Value prop_name(property);
+        eo->prop_set(*prop_name, value);
+        v8::String::Utf8Value val(value->ToString());
+     }
+
+   static v8::Handle<v8::Value> eo_getter(v8::Local<v8::String> property,
+                                          const v8::AccessorInfo& info)
+     {
+        CEvasObject *eo = eo_from_info(info);
+        v8::String::Utf8Value prop_name(property);
+        return eo->prop_get(*prop_name);
+     }
+
 public:
+   virtual v8::Handle<v8::Object> create_object(void)
+     {
+        // FIXME: make pure virtual when all CEvasObjects have a create_object */
+        return v8::Object::New();
+     }
+
    Evas_Object *get()
      {
         return eo;
@@ -289,6 +325,17 @@ public:
    static void on_delete(void *data, Evas_Object *obj, void *event_info)
      {
         elm_exit();
+     }
+
+   virtual v8::Handle<v8::Object> create_object(void)
+     {
+        v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
+        ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
+
+        v8::Local<v8::Object> out = ot->NewInstance();
+        object_set_eo(out, this);
+
+        return out;
      }
 };
 
@@ -655,38 +702,6 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    return eo;
 }
 
-CEvasObject *
-eo_from_info(const v8::AccessorInfo& info)
-{
-   v8::Handle<v8::Value> val = info.This()->Get(v8::String::New("_eo"));
-   return static_cast<CEvasObject *>(v8::External::Unwrap(val));
-}
-
-void
-object_set_eo(v8::Handle<v8::Object> obj, CEvasObject *eo)
-{
-   obj->Set(v8::String::New("_eo"), v8::External::Wrap(eo));
-}
-
-void
-eo_setter(v8::Local<v8::String> property, v8::Local<v8::Value> value,
-               const v8::AccessorInfo& info)
-{
-   CEvasObject *eo = eo_from_info(info);
-   v8::String::Utf8Value prop_name(property);
-   eo->prop_set(*prop_name, value);
-   v8::String::Utf8Value val(value->ToString());
-}
-
-static v8::Handle<v8::Value>
-eo_getter(v8::Local<v8::String> property,
-               const v8::AccessorInfo& info)
-{
-   CEvasObject *eo = eo_from_info(info);
-   v8::String::Utf8Value prop_name(property);
-   return eo->prop_get(*prop_name);
-}
-
 v8::Handle<v8::Value>
 Realize(const v8::Arguments& args)
 {
@@ -815,14 +830,10 @@ elm_main_window(const v8::Arguments& args)
      return v8::Undefined();
 
    main_win = new CElmBasicWindow(NULL, args[0]->ToObject());
+   if (!main_win)
+     return v8::Undefined();
 
-   v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
-   ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
-
-   v8::Local<v8::Object> out = ot->NewInstance();
-   object_set_eo(out, main_win);
-
-   return out;
+   return main_win->create_object();
 }
 
 void
