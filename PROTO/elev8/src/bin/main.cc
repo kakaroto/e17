@@ -60,11 +60,19 @@ protected:
              obj->Get(v8::String::New("y")));
         callback_set(obj->Get(v8::String::New("on_clicked")));
         animator_set(obj->Get(v8::String::New("on_animate")));
-        label_set(obj->Get(v8::String::New("label")));
         image_set(obj->Get(v8::String::New("image")));
         weight_set(obj->Get(v8::String::New("weight")));
         align_set(obj->Get(v8::String::New("align")));
         resize_set(obj->Get(v8::String::New("resize")));
+
+        /* copy properties, one by one */
+        v8::Handle<v8::Array> props = obj->GetPropertyNames();
+        for (unsigned int i = 0; i < props->Length(); i++)
+          {
+             v8::Handle<v8::Value> name = props->Get(v8::Integer::New(i));
+             v8::String::Utf8Value name_str(name);
+             prop_set(*name_str, obj->Get(name->ToString()));
+          }
 
         /* show the object, maybe */
         v8::Local<v8::Value> hidden = obj->Get(v8::String::New("hidden"));
@@ -121,6 +129,7 @@ public:
      {
         if (!strcmp(prop_name, "label"))
           return label_set(value);
+        fprintf(stderr, "property %s is unhandled\n", prop_name);
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name)
