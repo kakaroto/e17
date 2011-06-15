@@ -227,16 +227,12 @@ public:
 
    virtual v8::Handle<v8::Value> label_get()
      {
-       return v8::String::New(elm_button_label_get(eo));
+       return v8::Undefined();
      }
 
    virtual void label_set(v8::Handle<v8::Value> val)
      {
-        if (val->IsString())
-          {
-             v8::String::Utf8Value str(val);
-             elm_button_label_set(eo, *str);
-          }
+        fprintf(stderr, "setting label on non-button\n");
      }
 
    bool get_xy_from_object(v8::Local<v8::Value> val, double &x_out, double &y_out)
@@ -411,6 +407,20 @@ public:
 
    virtual ~CElmButton()
      {
+     }
+
+   virtual void label_set(v8::Handle<v8::Value> val)
+     {
+        if (val->IsString())
+          {
+             v8::String::Utf8Value str(val);
+             elm_button_label_set(eo, *str);
+          }
+     }
+
+   virtual v8::Handle<v8::Value> label_get()
+     {
+       return v8::String::New(elm_button_label_get(eo));
      }
 };
 
