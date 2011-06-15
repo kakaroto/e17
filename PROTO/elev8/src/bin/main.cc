@@ -761,7 +761,13 @@ elm_main_window(const v8::Arguments& args)
 
    main_win = new CElmBasicWindow(NULL, args[0]->ToObject());
 
-   return v8::String::New("da main window");
+   Evas_Object *eo = main_win->get();
+
+   v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
+   v8::Local<v8::Object> out = ot->NewInstance();
+   out->Set(v8::String::New("_eo"), v8::External::Wrap(eo));
+
+   return out;
 }
 
 void
