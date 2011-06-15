@@ -165,41 +165,46 @@ collections
 
 
          part {
+            name: "content.clip";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description {
+               state: "edit" 0.0;
+               color: 255 255 255 200;
+            }
+         }
+
+         part {
             name: "elfe.swallow.content";
             type: SWALLOW;
-
+            clip_to: "content.clip";
             description {
                state: "default" 0.0;
                map {
                   on: 1;
                   rotation.z: 0;
+                  smooth: 1;
                }
             }
             description {
                state: "vibration" 0.1;
-               color: 255 255 255 100;
                map {
                   on: 1;
                   rotation.z: -5;
+                  smooth: 1;
                }
             }
             description {
                state: "vibration" 0.2;
-               color: 255 255 255 200;
                map {
                   on: 1;
                   rotation.z: 5;
+                  smooth: 1;
                }
-            }
-            description {
-               state: "tiny" 0.0;
-               rel1.relative: 0.4 0.4;
-               rel2.relative: 0.6 0.6;
-            }
-            description {
-               state: "medium" 0.0;
-               rel1.relative: 0.25 0.25;
-               rel2.relative: 0.75 0.75;
             }
          }
 
@@ -214,7 +219,7 @@ collections
                min: 29 29;
                max: 29 29;
                align: 0.9 0.9;
-               color: 100 100 100 255;
+               color: 255 255 255 255;
                rel1.to: "elfe.swallow.content";
                rel2.to: "elfe.swallow.content";
             }
@@ -227,6 +232,7 @@ collections
             source: "elfe";
             action: STATE_SET "edit" 0.0;
             target: "clip";
+            target: "content.clip";
             transition: "SINUSOIDAL" 0.2;
          }
 
@@ -237,6 +243,7 @@ collections
             action: STATE_SET "normal" 0.0;
             target: "clip";
             target: "elfe.swallow.content";
+            target: "content.clip";
             transition: "SINUSOIDAL" 0.2;
          }
 
@@ -265,38 +272,16 @@ collections
          program {
             name: "load";
             signal: "load";
-            action: STATE_SET "default" 0.0;
-            target: "elfe.swallow.content";
-            after: "tiny";
+            action: STATE_SET "hide" 0.0;
+            target: "content.clip";
+            after: "normal";
          }
          program {
-            name: "tiny";
-            action: STATE_SET "tiny" 0.0;
-            target: "elfe.swallow.content";
-            transition: LINEAR 0.1;
-            after: "big";
+            name: "normal";
+            action: STATE_SET "normal" 0.0;
+            target: "content.clip";
+            transition: LINEAR 0.4;
          }
-         program {
-            name: "big";
-            action: STATE_SET "default" 0.0;
-            target: "elfe.swallow.content";
-            transition: LINEAR 0.1;
-            after: "medium";
-         }
-         program {
-            name: "medium";
-            action: STATE_SET "medium" 0.0;
-            target: "elfe.swallow.content";
-            transition: LINEAR 0.1;
-            after: "default";
-         }
-         program {
-            name: "default";
-            action: STATE_SET "default" 0.0;
-            target: "elfe.swallow.content";
-            transition: LINEAR 0.1;
-         }
-
       }
    }
 
@@ -427,6 +412,8 @@ collections
             type: RECT;
             description {
                state: "default" 0.0;
+               rel1.relative: -1.0 -1.0;
+               rel2.relative: 2.0 2.0;
                color: 255 255 255 255;
             }
             description {
