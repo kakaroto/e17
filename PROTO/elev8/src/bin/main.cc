@@ -359,7 +359,9 @@ public:
      {
         eo = elm_win_add(parent ? parent->get() : NULL, "main", ELM_WIN_BASIC);
         construct(eo, obj);
-        realize_objects(obj->Get(v8::String::New("elements")));
+        v8::Handle<v8::Object> elements;
+        elements = realize_objects(obj->Get(v8::String::New("elements")));
+        get_object()->Set(v8::String::New("elements"), elements);
         evas_object_focus_set(eo, 1);
         evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
      }
@@ -479,7 +481,9 @@ public:
        CEvasObject()
      {
         eo = elm_box_add(parent->top_widget_get());
-        realize_objects(obj->Get(v8::String::New("elements")));
+        v8::Handle<v8::Object> elements;
+        elements = realize_objects(obj->Get(v8::String::New("elements")));
+        get_object()->Set(v8::String::New("elements"), elements);
         horizontal_set(obj->Get(v8::String::New("horizontal")));
         construct(eo, obj);
      }
