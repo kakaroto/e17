@@ -4,6 +4,7 @@ var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var my_window = new elm.main({
+	type : "main",
 	label : "main",
 	width : 320,
 	height : 480,
@@ -70,6 +71,7 @@ var my_window = new elm.main({
 	},
 });
 
-print(my_window.label);
+print("label = " + my_window.label);
+print("type  = " + my_window.type);
 
 my_window.label = "Button demo";

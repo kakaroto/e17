@@ -70,6 +70,11 @@ protected:
           {
              v8::Handle<v8::Value> name = props->Get(v8::Integer::New(i));
              v8::String::Utf8Value name_str(name);
+
+             /* skip the type property */
+             if (!strcmp(*name_str, "type"))
+               continue;
+
              prop_set(*name_str, obj->Get(name->ToString()));
           }
 
@@ -119,6 +124,12 @@ public:
         return v8::Object::New();
      }
 
+   virtual v8::Handle<v8::Value> type_get(void)
+     {
+        fprintf(stderr, "undefined object type!\n");
+        return v8::Undefined();
+     }
+
    Evas_Object *get()
      {
         return eo;
@@ -126,6 +137,11 @@ public:
 
    virtual void prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
+        if (!strcmp(prop_name, "type"))
+          {
+             fprintf(stderr, "object type cannot be changed");
+             return;
+          }
         if (!strcmp(prop_name, "label"))
           return label_set(value);
         if (!strcmp(prop_name, "image"))
@@ -135,6 +151,8 @@ public:
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name)
      {
+        if (!strcmp(prop_name, "type"))
+          return type_get();
         if (!strcmp(prop_name, "label"))
           return label_get();
         if (!strcmp(prop_name, "image"))
@@ -321,6 +339,11 @@ public:
         evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
      }
 
+   virtual v8::Handle<v8::Value> type_get(void)
+     {
+        return v8::String::New("main");
+     }
+
    virtual v8::Handle<v8::Value> label_get()
      {
         return v8::String::New(elm_win_title_get(eo));
@@ -347,7 +370,9 @@ public:
    virtual v8::Handle<v8::Object> create_object(void)
      {
         v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
+        ot->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
 
         v8::Local<v8::Object> out = ot->NewInstance();
         object_set_eo(out, this);
