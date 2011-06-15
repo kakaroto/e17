@@ -41,7 +41,7 @@ void test_entry (void *data, Evas_Object *obj, void *event_info)
   bx->show ();
 
   Entry *en  = Entry::factory (*win);
-  en->setLineWrap (false);
+  en->setLineWrap (ELM_WRAP_NONE);
   en->setText ("This is an entry widget in this window that<br>"
                "uses markup <b>like this</> for styling and<br>"
                "formatting <em>like this</>, as well as<br>"

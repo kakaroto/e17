@@ -772,7 +772,7 @@ public:
     {
       Label *lb = Label::factory (obj);
 
-      lb->setLineWrap (true);
+      lb->setLineWrap (ELM_WRAP_MIXED);
       lb->setWrapWidth (201);
       lb->setLabel ("ashj ascjscjh n asjkl hcjlh ls hzshnn zjh sh zxjcjsnd h dfw sdv edev efe fwefvv vsd cvs ws wf  fvwf wd fwe f  we wef we wfe rfwewef wfv wswf wefg sdfws w wsdcfwcf wsc vdv  sdsd sdcd cv wsc sdcv wsc d sdcdcsd sdcdsc wdvd sdcsd wscxcv wssvd sd");
       lb->show ();
