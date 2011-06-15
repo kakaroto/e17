@@ -11,6 +11,7 @@ var my_window = new elm.main({
 		the_background : {
 			type : "background",
 			weight : EXPAND_BOTH,
+			image: "data/images/rock_01.jpg",
 			resize : true,
 		},
 		scroll : {

@@ -60,7 +60,6 @@ protected:
              obj->Get(v8::String::New("y")));
         callback_set(obj->Get(v8::String::New("on_clicked")));
         animator_set(obj->Get(v8::String::New("on_animate")));
-        image_set(obj->Get(v8::String::New("image")));
         weight_set(obj->Get(v8::String::New("weight")));
         align_set(obj->Get(v8::String::New("align")));
         resize_set(obj->Get(v8::String::New("resize")));
@@ -129,6 +128,8 @@ public:
      {
         if (!strcmp(prop_name, "label"))
           return label_set(value);
+        if (!strcmp(prop_name, "image"))
+          return image_set(value);
         fprintf(stderr, "property %s is unhandled\n", prop_name);
      }
 
@@ -136,6 +137,8 @@ public:
      {
         if (!strcmp(prop_name, "label"))
           return label_get();
+        if (!strcmp(prop_name, "image"))
+          return image_get();
         return v8::Undefined();
      }
 
@@ -254,10 +257,15 @@ public:
           }
      }
 
-   virtual void image_set(v8::Local<v8::Value> val)
+   virtual void image_set(v8::Handle<v8::Value> val)
      {
         if (val->IsString())
           fprintf(stderr, "no image set\n");
+     }
+
+   virtual v8::Handle<v8::Value> image_get(void)
+     {
+        return v8::Undefined();
      }
 
    virtual void show()
@@ -377,7 +385,7 @@ public:
      {
      }
 
-   virtual void image_set(v8::Local<v8::Value> val)
+   virtual void image_set(v8::Handle<v8::Value> val)
      {
         if (val->IsString())
           {
@@ -385,6 +393,17 @@ public:
              elm_bg_file_set(eo, *str, NULL);
           }
      }
+
+   virtual v8::Handle<v8::Value> image_get(void)
+     {
+        const char *file = NULL, *group = NULL;
+        elm_bg_file_get(eo, &file, &group);
+        if (file)
+          return v8::String::New(file);
+        else
+          return v8::Null();
+     }
+
 };
 
 class CElmRadio : public CEvasObject {
@@ -500,7 +519,7 @@ public:
           }
      }
 
-   virtual void image_set(v8::Local<v8::Value> val)
+   virtual void image_set(v8::Handle<v8::Value> val)
      {
         if (val->IsString())
           {
@@ -509,6 +528,16 @@ public:
                fprintf(stderr, "warning: can't read icon file %s\n", *str);
              elm_icon_file_set(eo, *str, NULL);
           }
+     }
+
+   virtual v8::Handle<v8::Value> image_get(void)
+     {
+        const char *file = NULL, *group = NULL;
+        elm_icon_file_get(eo, &file, &group);
+        if (file)
+          return v8::String::New(file);
+        else
+          return v8::Null();
      }
 };
 
