@@ -101,6 +101,11 @@
 </code></pre></p>
  </p>
  <p>
+  You can also use our git mirror server at:
+ </p>
+<p><pre><code>git clone git://git.enlightenment.org/git/e.git
+</code></pre></p>
+ <p>
   Our SVN tree is divided up and categorized. The <b>trunk</b>
   directory is where all the main development happens. Inside this
   directory most maintained source lives in the base. We divided off
