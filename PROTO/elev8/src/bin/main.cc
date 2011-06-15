@@ -49,8 +49,9 @@ protected:
     * Two phase constructor required because Evas_Object type needs
     * to be known to be created.
     */
-   void construct(v8::Local<v8::Object> obj)
+   void construct(Evas_Object *_eo, v8::Local<v8::Object> obj)
      {
+        eo = _eo;
         assert(eo != NULL);
         resize(obj->Get(v8::String::New("width")),
                obj->Get(v8::String::New("height")));
@@ -243,7 +244,7 @@ public:
        CEvasObject()
      {
         eo = elm_win_add(parent ? parent->get() : NULL, "main", ELM_WIN_BASIC);
-        construct(obj);
+        construct(eo, obj);
         realize_objects(obj->Get(v8::String::New("elements")));
         evas_object_focus_set(eo, 1);
         evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
@@ -276,7 +277,7 @@ public:
        CEvasObject()
      {
         eo = elm_button_add(parent->top_widget_get());
-        construct(obj);
+        construct(eo, obj);
      }
 
    virtual ~CElmButton()
@@ -290,7 +291,7 @@ public:
        CEvasObject()
      {
         eo = elm_bg_add(parent->top_widget_get());
-        construct(obj);
+        construct(eo, obj);
      }
 
    virtual ~CElmBackground()
@@ -313,7 +314,7 @@ public:
        CEvasObject()
      {
         eo = elm_radio_add(parent->top_widget_get());
-        construct(obj);
+        construct(eo, obj);
      }
 
    virtual void label_set(v8::Local<v8::Value> val)
@@ -344,7 +345,7 @@ public:
         eo = elm_box_add(parent->top_widget_get());
         realize_objects(obj->Get(v8::String::New("elements")));
         horizontal_set(obj->Get(v8::String::New("horizontal")));
-        construct(obj);
+        construct(eo, obj);
      }
 
    void horizontal_set(v8::Local<v8::Value> val)
@@ -363,7 +364,7 @@ public:
      {
         eo = elm_label_add(parent->top_widget_get());
         wrap_set(obj->Get(v8::String::New("wrap")));
-        construct(obj);
+        construct(eo, obj);
      }
 
    void wrap_set(v8::Local<v8::Value> wrap)
@@ -390,7 +391,7 @@ public:
         CEvasObject *front, *back;
 
         eo = elm_flip_add(parent->top_widget_get());
-        construct(obj);
+        construct(eo, obj);
 
         /* realize front and back */
         front = realize_one(this, obj->Get(v8::String::New("front")));
@@ -407,7 +408,7 @@ public:
        CEvasObject()
      {
         eo = elm_icon_add(parent->top_widget_get());
-        construct(obj);
+        construct(eo, obj);
         scale_set(obj->Get(v8::String::New("scale")));
      }
 
@@ -438,7 +439,7 @@ public:
        CEvasObject()
      {
         eo = elm_actionslider_add(parent->top_widget_get());
-        construct(obj);
+        construct(eo, obj);
         magnet_set(obj->Get(v8::String::New("magnet")));
         slider_set(obj->Get(v8::String::New("slider")));
         labels_set(obj->Get(v8::String::New("labels")));
@@ -518,7 +519,7 @@ public:
      {
         CEvasObject *content;
         eo = elm_scroller_add(parent->top_widget_get());
-        construct(obj);
+        construct(eo, obj);
         bounce_set(obj->Get(v8::String::New("bounce")));
         policy_set(obj->Get(v8::String::New("policy")));
         content = realize_one(this, obj->Get(v8::String::New("content")));
