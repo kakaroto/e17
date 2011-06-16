@@ -78,7 +78,8 @@ protected:
              if (!strcmp(*name_str, "type"))
                continue;
 
-             out->Set(name, obj->Get(name->ToString()));
+             v8::Handle<v8::Value> value = obj->Get(name->ToString());
+             init_property(out, name, value);
           }
 
         /* show the object, maybe */
@@ -120,6 +121,18 @@ protected:
         return eo->prop_get(*prop_name);
      }
 
+   /* setup the property on construction */
+   virtual void init_property(v8::Handle<v8::Object> out,
+			 v8::Handle<v8::Value> name,
+			 v8::Handle<v8::Value> value)
+     {
+        v8::String::Utf8Value name_str(name);
+
+        /* set or copy the property */
+        if (!prop_set(*name_str, value))
+          out->Set(name, value);
+     }
+
 public:
    virtual v8::Local<v8::ObjectTemplate> get_template(void)
      {
@@ -155,18 +168,22 @@ public:
         return eo;
      }
 
-   virtual void prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
         if (!strcmp(prop_name, "type"))
           {
              fprintf(stderr, "object type cannot be changed");
-             return;
+             return false;
           }
         if (!strcmp(prop_name, "label"))
-          return label_set(value);
-        if (!strcmp(prop_name, "image"))
-          return image_set(value);
-        fprintf(stderr, "property %s is unhandled\n", prop_name);
+          label_set(value);
+        else if (!strcmp(prop_name, "image"))
+          image_set(value);
+        else
+          {
+             return false;
+          }
+        return true;
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name)
