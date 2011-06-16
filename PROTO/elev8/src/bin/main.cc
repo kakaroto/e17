@@ -15,7 +15,7 @@
 
 /* forward declaration of function used recursively */
 void
-eo_on_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
+eo_on_click(void *data, Evas_Object *obj, void *event_info)
 {
    v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
    v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
@@ -210,8 +210,7 @@ public:
           {
              v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
              v8::Persistent<v8::Function> func = v8::Persistent<v8::Function>::New(local_func);
-             evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_DOWN,
-                                            &eo_on_click, static_cast<void*>(*func));
+             evas_object_smart_callback_add(eo, "clicked", &eo_on_click, static_cast<void*>(*func));
           }
      }
 
