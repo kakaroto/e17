@@ -502,7 +502,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
    Eina_List *deleted = NULL;
    Eina_Array_Iterator iter_old, iter_new;
    unsigned int i_old = 0, i_new = 0;
-   void *item_old, *item_new;
+   void *item_old = NULL, *item_new;
    Eina_List *l;
    void *data;
    Eina_Bool interfaces = EINA_FALSE;
