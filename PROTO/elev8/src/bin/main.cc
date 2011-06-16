@@ -39,8 +39,6 @@ protected:
      {
         eo = _eo;
         assert(eo != NULL);
-        resize(obj->Get(v8::String::New("width")),
-               obj->Get(v8::String::New("height")));
         move(obj->Get(v8::String::New("x")),
              obj->Get(v8::String::New("y")));
         callback_set(obj->Get(v8::String::New("on_clicked")));
@@ -121,6 +119,8 @@ public:
      {
         /* FIXME: only need to create one template per object class */
         v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
+        ot->SetAccessor(v8::String::New("width"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("height"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
@@ -154,6 +154,7 @@ public:
 
    virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
+        // FIXME: use a table
         if (!strcmp(prop_name, "type"))
           {
              fprintf(stderr, "object type cannot be changed");
@@ -161,10 +162,16 @@ public:
           }
         if (!strcmp(prop_name, "label"))
           label_set(value);
+        else if (!strcmp(prop_name, "height"))
+          height_set(value);
+        else if (!strcmp(prop_name, "width"))
+          width_set(value);
         else if (!strcmp(prop_name, "image"))
           image_set(value);
         else if (!strcmp(prop_name, "resize"))
           resize_set(value);
+        else if (!strcmp(prop_name, "width"))
+          width_set(value);
         else
           {
              return false;
@@ -174,13 +181,18 @@ public:
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name)
      {
+        // FIXME: use a table
         if (!strcmp(prop_name, "type"))
           return type_get();
-        if (!strcmp(prop_name, "label"))
+        else if (!strcmp(prop_name, "height"))
+          return height_get();
+        else if (!strcmp(prop_name, "width"))
+          return width_get();
+        else if (!strcmp(prop_name, "label"))
           return label_get();
-        if (!strcmp(prop_name, "image"))
+        else if (!strcmp(prop_name, "image"))
           return image_get();
-        if (!strcmp(prop_name, "resize"))
+        else if (!strcmp(prop_name, "resize"))
           return resize_get();
         return v8::Undefined();
      }
@@ -198,10 +210,40 @@ public:
         eo = NULL;
      }
 
-   void resize(v8::Local<v8::Value> width, v8::Local<v8::Value> height)
+   virtual void height_set(v8::Handle<v8::Value> val)
      {
-        if (width->IsNumber() && height->IsNumber())
-          evas_object_resize(eo, width->Int32Value(), height->Int32Value());
+       if (val->IsNumber())
+         {
+           Evas_Coord x, y, width, height;
+           evas_object_geometry_get(eo, &x, &y, &width, &height);
+           height = val->ToInt32()->Value();
+           evas_object_resize(eo, width, height);
+         }
+     }
+
+   virtual v8::Handle<v8::Value> height_get(void)
+     {
+       Evas_Coord x, y, width, height;
+       evas_object_geometry_get(eo, &x, &y, &width, &height);
+       return v8::Number::New(height);
+     }
+
+   virtual void width_set(v8::Handle<v8::Value> val)
+     {
+       if (val->IsNumber())
+         {
+           Evas_Coord x, y, width, height;
+           evas_object_geometry_get(eo, &x, &y, &width, &height);
+           width = val->ToInt32()->Value();
+           evas_object_resize(eo, width, height);
+         }
+     }
+
+   virtual v8::Handle<v8::Value> width_get(void)
+     {
+       Evas_Coord x, y, width, height;
+       evas_object_geometry_get(eo, &x, &y, &width, &height);
+       return v8::Number::New(width);
      }
 
    void move(v8::Local<v8::Value> x, v8::Local<v8::Value> y)
@@ -276,7 +318,7 @@ public:
         fprintf(stderr, "setting label on non-button\n");
      }
 
-   bool get_xy_from_object(v8::Local<v8::Value> val, double &x_out, double &y_out)
+   bool get_xy_from_object(v8::Handle<v8::Value> val, double &x_out, double &y_out)
      {
         if (!val->IsObject())
           return false;
@@ -290,7 +332,7 @@ public:
         return true;
      }
 
-   bool get_xy_from_object(v8::Local<v8::Value> val, bool &x_out, bool &y_out)
+   bool get_xy_from_object(v8::Handle<v8::Value> val, bool &x_out, bool &y_out)
      {
         if (!val->IsObject())
           return false;
@@ -304,9 +346,23 @@ public:
         return true;
      }
 
-   bool get_xy_from_object(v8::Local<v8::Value> val,
-			   v8::Local<v8::Value> &x_val,
-			   v8::Local<v8::Value> &y_val)
+   bool get_xy_from_object(v8::Handle<v8::Value> val, int &x_out, int &y_out)
+     {
+        if (!val->IsObject())
+          return false;
+        v8::Local<v8::Object> obj = val->ToObject();
+        v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
+        v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
+        if (!x->IsInt32() || !y->IsInt32())
+          return false;
+        x_out = x->Int32Value();
+        y_out = y->Int32Value();
+        return true;
+     }
+
+    bool get_xy_from_object(v8::Handle<v8::Value> val,
+			   v8::Handle<v8::Value> &x_val,
+			   v8::Handle<v8::Value> &y_val)
      {
         if (!val->IsObject())
           return false;
