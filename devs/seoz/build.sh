@@ -19,12 +19,14 @@ export BUILD=$BUILD_BASIC" "$BUILD_BINDINGS" "$BUILD_E_MODULES" "$BUILD_EXAMPLE"
 
 PWD=`pwd`
 LOG_WARN_FILE=$PWD"/warnings.txt"
+rm $LOG_WARN_FILE -f
+touch $LOG_WARN_FILE
 
 for I in $BUILD; do
   pushd $I
 	echo ""
 	echo "============ "$I" ============"
-	echo "["$I"]" 2>> $LOG_WARN_FILE
+	echo "["$I"]" >> $LOG_WARN_FILE
 	make clean distclean || true
 	./autogen.sh
 	make 2>> $LOG_WARN_FILE 
