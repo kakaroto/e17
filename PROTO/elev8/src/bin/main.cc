@@ -41,9 +41,11 @@ class CEvasObject {
 protected:
    Evas_Object *eo;
    v8::Persistent<v8::Object> the_object;
+   bool is_resize;
 protected:
    explicit CEvasObject() :
-       eo(NULL)
+       eo(NULL),
+       is_resize(false)
      {
      }
 
@@ -63,7 +65,6 @@ protected:
         animator_set(obj->Get(v8::String::New("on_animate")));
         weight_set(obj->Get(v8::String::New("weight")));
         align_set(obj->Get(v8::String::New("align")));
-        resize_set(obj->Get(v8::String::New("resize")));
 
         v8::Handle<v8::Object> out = get_object();
 
@@ -141,6 +142,7 @@ public:
         ot->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("resize"), &eo_getter, &eo_setter);
         return ot;
      }
 
@@ -179,6 +181,8 @@ public:
           label_set(value);
         else if (!strcmp(prop_name, "image"))
           image_set(value);
+        else if (!strcmp(prop_name, "resize"))
+          resize_set(value);
         else
           {
              return false;
@@ -194,6 +198,8 @@ public:
           return label_get();
         if (!strcmp(prop_name, "image"))
           return image_get();
+        if (!strcmp(prop_name, "resize"))
+          return resize_get();
         return v8::Undefined();
      }
 
@@ -356,12 +362,29 @@ public:
      }
 
    /* resize this object when the parent resizes? */
-   void resize_set(v8::Handle<v8::Value> val)
+   virtual void resize_set(v8::Handle<v8::Value> val)
      {
-        if (val->IsBoolean() && val->BooleanValue())
+        if (val->IsBoolean())
           {
-             elm_win_resize_object_add(elm_object_parent_widget_get(eo), eo);
+             Evas_Object *parent = elm_object_parent_widget_get(eo);
+             if (!parent)
+               fprintf(stderr, "resize object has no parent!\n");
+             else
+               {
+                  is_resize = val->BooleanValue();
+                  if (is_resize)
+                    elm_win_resize_object_add(parent, eo);
+                  else
+                    elm_win_resize_object_del(parent, eo);
+               }
           }
+        else
+          fprintf(stderr, "Resize value not boolean!\n");
+     }
+
+   virtual v8::Handle<v8::Value> resize_get(void)
+     {
+        return v8::Boolean::New(is_resize);
      }
 };
 
@@ -408,6 +431,10 @@ public:
         elm_exit();
      }
 
+   virtual void resize_set(v8::Handle<v8::Value> val)
+     {
+        fprintf(stderr, "warning: resize=true ignored on main window\n");
+     }
 };
 
 CElmBasicWindow *main_win;
