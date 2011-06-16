@@ -27,12 +27,29 @@ var my_window = new elm.main({
 						type : "label",
 						label : "<b>This is a label</b><br>It has two lines",
 					},
+					counter_button : {
+						type : "button",
+						label : "Press me!",
+						weight : { x : -1.0, y : -1.0 },
+						on_clicked : function() {
+							if (this.clicked == 1)
+								this.n++;
+							else
+								this.n = 1;
+							this.clicked = 1;
+							my_window.elements.scroll.content.elements.counter_button.label = "Pressed me " + this.n + " times";
+						},
+					},
 					ok_button : {
 						type : "button",
 						label : "OK",
 						weight : { x : -1.0, y : -1.0 },
 						on_clicked : function() {
-							print("click!");
+							if (my_window.elements.scroll.content.elements.ok_button.label == "OK")
+								my_window.elements.scroll.content.elements.ok_button.label = "not OK";
+							else
+								my_window.elements.scroll.content.elements.ok_button.label = "OK";
+
 						},
 						animate_called : 0,
 						on_animate : function() {

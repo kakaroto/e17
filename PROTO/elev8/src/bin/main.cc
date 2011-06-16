@@ -492,11 +492,11 @@ public:
        CEvasObject()
      {
         eo = elm_box_add(parent->top_widget_get());
+        construct(eo, obj);
         v8::Handle<v8::Object> elements;
         elements = realize_objects(obj->Get(v8::String::New("elements")));
         get_object()->Set(v8::String::New("elements"), elements);
         horizontal_set(obj->Get(v8::String::New("horizontal")));
-        construct(eo, obj);
      }
 
    void horizontal_set(v8::Local<v8::Value> val)
@@ -686,6 +686,8 @@ public:
         content = realize_one(this, obj->Get(v8::String::New("content")));
         if (!content)
           fprintf(stderr, "scroller has no content\n");
+        // FIXME: filter the object list copied in construct for more efficiency
+        get_object()->Set(v8::String::New("content"), content->get_object());
         elm_scroller_content_set(eo, content->get());
      }
 
