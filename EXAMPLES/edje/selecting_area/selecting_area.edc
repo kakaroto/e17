@@ -1,0 +1,83 @@
+collections {
+#include "test.edc"
+  group { name: "select";
+    parts {
+      part { name: "base";
+        type: RECT;
+        description { state: "default" 0.0;
+          visible: 0;
+          rel1.offset: -5 -5;
+          rel2.offset: 5 5;
+        }
+      }
+      part { name: "image";
+        type: GROUP;
+        source: "layout";
+        description { state: "default" 0.0;
+          min: 640 480;
+        }
+      }
+      part { name: "bg_fade";
+        type: RECT;
+        description { state: "default" 0.0;
+           color: 0 0 0 128;
+           visible: 1;
+        }
+      }
+      part { name: "my_view";
+        type: RECT;
+        description { state: "default" 0.0;
+          color: 255 255 255 255;
+          rel1.to: "drag1";
+          rel1.relative: 0.5 0.5;
+          rel2.to: "drag2";
+          rel2.relative: 0.5 0.5;
+        }
+      }
+      part { name: "image_view";
+        type: PROXY;
+        clip_to: "my_view";
+        description { state: "default" 0.0;
+          source: "image";
+        }
+      }
+      part { name: "drag1";
+         type: RECT;
+         dragable {
+            confine: "base";
+            x: 1 1 1;
+            y: 1 1 1;
+         }
+         description { state: "default" 0.0;
+            max: 10 10;
+            min: 10 10;
+            color: 0 255 0 255;
+            align: 0.0 0.0;
+         }
+      }
+      part { name: "drag2";
+        type: RECT;
+        dragable {
+           confine: "base";
+           x: 1 1 1;
+           y: 1 1 1;
+        }
+        description { state: "default" 0.0;
+          min: 10 10;
+          max: 10 10;
+          color: 0 0 255 255;
+        }
+      }
+    }
+    programs {
+      program { name: "load";
+        signal: "load";
+        source: "";
+        script {
+          set_drag(PART:"drag1", 0.2, 0.2);
+          set_drag(PART:"drag2", 0.8, 0.8);
+        }
+      }
+    }
+  }
+}
