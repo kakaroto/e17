@@ -13,24 +13,6 @@
 #include <fcntl.h>
 #include <assert.h>
 
-/* forward declaration of function used recursively */
-void
-eo_on_click(void *data, Evas_Object *obj, void *event_info)
-{
-   v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
-   v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
-   v8::Local<v8::Value> result = fn->Call(fn, 1, args);
-}
-
-Eina_Bool
-eo_on_animate(void *data)
-{
-   v8::Persistent<v8::Function> fn(static_cast<v8::Function*>(data));
-   v8::Handle<v8::Value> args[] = { v8::String::New("arg") };
-   v8::Local<v8::Value> result = fn->Call(fn, 1, args);
-   return ECORE_CALLBACK_RENEW;
-}
-
 /* CEvasObject is a virtual class, representing an evas object */
 class CEvasObject;
 CEvasObject *realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
@@ -212,6 +194,7 @@ public:
    virtual ~CEvasObject()
      {
         evas_object_unref(eo);
+        the_object.Dispose();
         eo = NULL;
      }
 
@@ -227,23 +210,59 @@ public:
           evas_object_move(eo, x->Int32Value(), y->Int32Value());
      }
 
+   virtual void on_click(void *event_info)
+     {
+        v8::HandleScope handle_scope;
+        v8::Local<v8::Object> obj(*get_object());
+        v8::Handle<v8::Value> val = obj->Get(v8::String::New("on_clicked"));
+        // FIXME: pass event_info to the callback
+        // FIXME: turn the pieces below into a do_callback method
+        assert(val->IsFunction());
+        v8::Handle<v8::Function> fn(v8::Function::Cast(*val));
+        v8::Handle<v8::Value> args[1] = { obj };
+        fn->Call(fn, 1, args);
+     }
+
+   static void eo_on_click(void *data, Evas_Object *eo, void *event_info)
+     {
+        CEvasObject *clicked = static_cast<CEvasObject*>(data);
+
+        clicked->on_click(event_info);
+     }
+
    void callback_set(v8::Local<v8::Value> val)
      {
         if (val->IsFunction())
-          {
-             v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
-             v8::Persistent<v8::Function> func = v8::Persistent<v8::Function>::New(local_func);
-             evas_object_smart_callback_add(eo, "clicked", &eo_on_click, static_cast<void*>(*func));
-          }
+          evas_object_smart_callback_add(eo, "clicked", &eo_on_click, this);
+        else
+          evas_object_smart_callback_del(eo, "clicked", &eo_on_click);
+     }
+
+   virtual void on_animate(void)
+     {
+        v8::HandleScope handle_scope;
+        v8::Local<v8::Object> obj(*get_object());
+        v8::Handle<v8::Value> val = obj->Get(v8::String::New("on_animate"));
+        assert(val->IsFunction());
+        v8::Handle<v8::Function> fn(v8::Function::Cast(*val));
+        v8::Handle<v8::Value> args[1] = { obj };
+        fn->Call(fn, 1, args);
+     }
+
+   static Eina_Bool eo_on_animate(void *data)
+     {
+        CEvasObject *clicked = static_cast<CEvasObject*>(data);
+
+        clicked->on_animate();
+
+        return ECORE_CALLBACK_RENEW;
      }
 
    void animator_set(v8::Local<v8::Value> val)
      {
         if (val->IsFunction())
           {
-             v8::Local<v8::Function> local_func = v8::Local<v8::Function>::Cast(val);
-             v8::Persistent<v8::Function> persist_func = v8::Persistent<v8::Function>::New(local_func);
-             ecore_animator_add(&eo_on_animate, static_cast<void*>(*persist_func));
+             ecore_animator_add(&eo_on_animate, this);
           }
      }
 
