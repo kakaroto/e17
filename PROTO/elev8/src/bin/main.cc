@@ -39,8 +39,6 @@ protected:
      {
         eo = _eo;
         assert(eo != NULL);
-        move(obj->Get(v8::String::New("x")),
-             obj->Get(v8::String::New("y")));
         callback_set(obj->Get(v8::String::New("on_clicked")));
         animator_set(obj->Get(v8::String::New("on_animate")));
         weight_set(obj->Get(v8::String::New("weight")));
@@ -119,6 +117,8 @@ public:
      {
         /* FIXME: only need to create one template per object class */
         v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
+        ot->SetAccessor(v8::String::New("x"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("y"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("width"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("height"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
@@ -162,6 +162,10 @@ public:
           }
         if (!strcmp(prop_name, "label"))
           label_set(value);
+        else if (!strcmp(prop_name, "x"))
+          x_set(value);
+        else if (!strcmp(prop_name, "y"))
+          y_set(value);
         else if (!strcmp(prop_name, "height"))
           height_set(value);
         else if (!strcmp(prop_name, "width"))
@@ -184,6 +188,10 @@ public:
         // FIXME: use a table
         if (!strcmp(prop_name, "type"))
           return type_get();
+        else if (!strcmp(prop_name, "x"))
+          return x_get();
+        else if (!strcmp(prop_name, "y"))
+          return y_get();
         else if (!strcmp(prop_name, "height"))
           return height_get();
         else if (!strcmp(prop_name, "width"))
@@ -208,6 +216,42 @@ public:
         evas_object_unref(eo);
         the_object.Dispose();
         eo = NULL;
+     }
+
+   virtual void x_set(v8::Handle<v8::Value> val)
+     {
+       if (val->IsNumber())
+         {
+           Evas_Coord x, y, width, height;
+           evas_object_geometry_get(eo, &x, &y, &width, &height);
+           x = val->ToInt32()->Value();
+           evas_object_move(eo, x, y);
+         }
+     }
+
+   virtual v8::Handle<v8::Value> x_get(void)
+     {
+       Evas_Coord x, y, width, height;
+       evas_object_geometry_get(eo, &x, &y, &width, &height);
+       return v8::Number::New(x);
+     }
+
+   virtual void y_set(v8::Handle<v8::Value> val)
+     {
+       if (val->IsNumber())
+         {
+           Evas_Coord x, y, width, height;
+           evas_object_geometry_get(eo, &x, &y, &width, &height);
+           y = val->ToInt32()->Value();
+           evas_object_move(eo, x, y);
+         }
+     }
+
+   virtual v8::Handle<v8::Value> y_get(void)
+     {
+       Evas_Coord x, y, width, height;
+       evas_object_geometry_get(eo, &x, &y, &width, &height);
+       return v8::Number::New(y);
      }
 
    virtual void height_set(v8::Handle<v8::Value> val)

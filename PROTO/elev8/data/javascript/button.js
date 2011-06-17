@@ -71,6 +71,9 @@ var my_window = new elm.main({
 						type : "button",
 						label : "check",
 						align : { x : -1.0, y : -1.0 },
+						on_clicked : function(me) {
+							my_window.label = "hello world";
+						},
 					},
 					wider_button : {
 						type : "button",
@@ -87,6 +90,22 @@ var my_window = new elm.main({
 						on_clicked : function(me) {
 							my_window.width -= 50;
 							print(my_window.width);
+						},
+					},
+					down_button : {
+						type : "button",
+						label : "Down",
+						align : { x : -1.0, y : -1.0 },
+						on_clicked : function(me) {
+							me.y += 50;
+						},
+					},
+					up_button : {
+						type : "button",
+						label : "Up",
+						align : { x : -1.0, y : -1.0 },
+						on_clicked : function(me) {
+							me.y -= 50;
 						},
 					},
 					hidden_button : {
