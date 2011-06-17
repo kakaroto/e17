@@ -559,13 +559,13 @@ group {
 				rel1 { 
 					to: "background"; 
 					relative: 0.0 0.0; 
-					offset: 3 4; 
+					offset: 7 5; 
 				}
 
 				rel2 { 
 					to: "background"; 
 					relative: 1.0 1.0; 
-					offset: -6 -4; 
+					offset: -6 -5; 
 				}
 			}
 		}
