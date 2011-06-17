@@ -22,6 +22,7 @@ class CEvasObject {
    friend CEvasObject *realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
 protected:
    Evas_Object *eo;
+   v8::Persistent<v8::ObjectTemplate> the_template;
    v8::Persistent<v8::Object> the_object;
    bool is_resize;
 protected:
@@ -49,14 +50,14 @@ protected:
         v8::Handle<v8::Array> props = obj->GetPropertyNames();
         for (unsigned int i = 0; i < props->Length(); i++)
           {
-             v8::Handle<v8::Value> name = props->Get(v8::Integer::New(i));
+             v8::Local<v8::Value> name = props->Get(v8::Integer::New(i));
              v8::String::Utf8Value name_str(name);
 
              /* skip the type property */
              if (!strcmp(*name_str, "type"))
                continue;
 
-             v8::Handle<v8::Value> value = obj->Get(name->ToString());
+             v8::Local<v8::Value> value = obj->Get(name->ToString());
              init_property(out, name, value);
           }
 
@@ -112,28 +113,28 @@ protected:
      }
 
 public:
-   virtual v8::Local<v8::ObjectTemplate> get_template(void)
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
      {
         /* FIXME: only need to create one template per object class */
-        v8::Local<v8::ObjectTemplate> ot = v8::ObjectTemplate::New();
-        ot->SetAccessor(v8::String::New("x"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("y"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("width"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("height"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("resize"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("align"), &eo_getter, &eo_setter);
+        the_template = *v8::ObjectTemplate::New();
+        the_template->SetAccessor(v8::String::New("x"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("y"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("width"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("height"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("resize"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("align"), &eo_getter, &eo_setter);
 
-        return ot;
+        return the_template;
      }
 
    virtual v8::Handle<v8::Object> get_object(void)
      {
         if (the_object.IsEmpty())
           {
-             v8::Local<v8::ObjectTemplate> ot = get_template();
+             v8::Handle<v8::ObjectTemplate> ot = get_template();
              the_object = v8::Persistent<v8::Object>((ot->NewInstance()));
              object_set_eo(the_object, this);
 
