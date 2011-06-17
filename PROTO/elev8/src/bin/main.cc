@@ -116,7 +116,7 @@ public:
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
      {
         /* FIXME: only need to create one template per object class */
-        the_template = *v8::ObjectTemplate::New();
+        the_template = v8::Persistent<v8::ObjectTemplate>::New(v8::ObjectTemplate::New());
         the_template->SetAccessor(v8::String::New("x"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("y"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("width"), &eo_getter, &eo_setter);
@@ -135,7 +135,7 @@ public:
         if (the_object.IsEmpty())
           {
              v8::Handle<v8::ObjectTemplate> ot = get_template();
-             the_object = v8::Persistent<v8::Object>((ot->NewInstance()));
+             the_object = v8::Persistent<v8::Object>::New(ot->NewInstance());
              object_set_eo(the_object, this);
 
              /* FIXME: make handle a weak handle, and detect destruction */
