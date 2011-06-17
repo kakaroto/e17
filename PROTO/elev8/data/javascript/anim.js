@@ -22,11 +22,12 @@ var my_window = new elm.main({
 			height : 50,
 			on_animate : function (arg) {
 				t = elm.loop_time();
-				radius = my_window.width/2 - 50;
+				radius_x = my_window.width/2 - 50;
+				radius_y = my_window.height/2 - 50;
 				PI = 3.14159;
 				angle = t*PI;
-				arg.x = Math.sin(angle) * radius + my_window.width/2 - arg.width/2;
-				arg.y = Math.cos(angle) * radius + my_window.height/2 - arg.height/2;
+				arg.x = Math.sin(angle) * radius_x + my_window.width/2 - arg.width/2;
+				arg.y = Math.cos(angle) * radius_y + my_window.height/2 - arg.height/2;
 			},
 		},
 	},
