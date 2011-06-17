@@ -1,5 +1,3 @@
-elm_conform - precalculation 
-
 elm_ctxpopup - use elm_list
 
 elementary_test - seg-fault in alpha window with gl backend (glx - ctx problem)

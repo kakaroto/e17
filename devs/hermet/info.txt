@@ -4,7 +4,7 @@ Name:         ChunEon Park
 Location:     HwaSeong, Korea
 E-Mail:       hermet@naver.com
 WWW:          http://www.hermet.pe.kr
-Contributing: evas,elementary
+Contributing: evas, elementary
 Group:        Core, Applications, Libraries
 Platform:     Ubuntu (Linux), Windows
 GeoData:      37.20225 127.07137
