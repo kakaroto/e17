@@ -189,6 +189,7 @@ collections
             part
             {
                 name: "whole";
+                type: RECT;
                 mouse_events: 1;
                 description
                 {
