@@ -522,6 +522,39 @@ public:
      }
 };
 
+class CEvasImage : public CEvasObject {
+public:
+   CEvasImage(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
+     {
+fprintf(stderr, "%d %s\n", __LINE__, __FUNCTION__);
+        Evas *evas = evas_object_evas_get(parent->get());
+        eo = evas_object_image_filled_add(evas);
+        construct(eo, obj);
+     }
+
+   virtual void image_set(v8::Handle<v8::Value> val)
+     {
+fprintf(stderr, "%d %s\n", __LINE__, __FUNCTION__);
+       if (val->IsString())
+         {
+            v8::String::Utf8Value str(val);
+             if (0 > access(*str, R_OK))
+               fprintf(stderr, "warning: can't read image file %s\n", *str);
+            evas_object_image_file_set(eo, *str, NULL);
+         }
+     }
+
+   virtual v8::Handle<v8::Value> image_get(void)
+     {
+        const char *file = NULL, *key = NULL;
+        evas_object_image_file_get(eo, &file, &key);
+        if (file)
+          return v8::String::New(file);
+        else
+          return v8::Null();
+     }
+};
 
 class CElmBasicWindow : public CEvasObject {
 public:
@@ -926,6 +959,7 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    v8::String::Utf8Value str(val);
 
    /* create the evas object */
+   // FIXME: make a list here
    CEvasObject *eo = NULL;
    if (!strcmp(*str, "actionslider"))
       {
@@ -962,6 +996,10 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    else if (!strcmp(*str, "scroller"))
       {
          eo = new CElmScroller(parent, obj);
+      }
+   else if (!strcmp(*str, "image"))
+      {
+         eo = new CEvasImage(parent, obj);
       }
 
    if (!eo)
