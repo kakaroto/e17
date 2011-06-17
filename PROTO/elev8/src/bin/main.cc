@@ -1145,6 +1145,12 @@ elm_main_window(const v8::Arguments& args)
    return main_win->get_object();
 }
 
+v8::Handle<v8::Value>
+elm_loop_time(const v8::Arguments& args)
+{
+   return v8::Number::New(ecore_loop_time_get());
+}
+
 void
 elev8_run(const char *script)
 {
@@ -1157,6 +1163,7 @@ elev8_run(const char *script)
    global->Set(v8::String::New("elm"), elm);
 
    elm->Set(v8::String::New("main"), v8::FunctionTemplate::New(elm_main_window));
+   elm->Set(v8::String::New("loop_time"), v8::FunctionTemplate::New(elm_loop_time));
 
    /* setup V8 */
    v8::Persistent<v8::Context> context = v8::Context::New(NULL, global);
