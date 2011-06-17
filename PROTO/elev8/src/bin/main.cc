@@ -42,7 +42,6 @@ protected:
         callback_set(obj->Get(v8::String::New("on_clicked")));
         animator_set(obj->Get(v8::String::New("on_animate")));
         weight_set(obj->Get(v8::String::New("weight")));
-        align_set(obj->Get(v8::String::New("align")));
 
         v8::Handle<v8::Object> out = get_object();
 
@@ -125,6 +124,8 @@ public:
         ot->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("resize"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("align"), &eo_getter, &eo_setter);
+
         return ot;
      }
 
@@ -162,6 +163,8 @@ public:
           }
         if (!strcmp(prop_name, "label"))
           label_set(value);
+        else if (!strcmp(prop_name, "align"))
+          align_set(value);
         else if (!strcmp(prop_name, "x"))
           x_set(value);
         else if (!strcmp(prop_name, "y"))
@@ -188,6 +191,8 @@ public:
         // FIXME: use a table
         if (!strcmp(prop_name, "type"))
           return type_get();
+        else if (!strcmp(prop_name, "align"))
+          return align_get();
         else if (!strcmp(prop_name, "x"))
           return x_get();
         else if (!strcmp(prop_name, "y"))
@@ -423,13 +428,23 @@ public:
           evas_object_size_hint_weight_set(eo, x, y);
      }
 
-   virtual void align_set(v8::Local<v8::Value> align)
+   virtual void align_set(v8::Handle<v8::Value> align)
      {
         double x, y;
         if (get_xy_from_object(align, x, y))
           {
              evas_object_size_hint_align_set(eo, x, y);
           }
+     }
+
+   virtual v8::Handle<v8::Value> align_get(void)
+     {
+       double x, y;
+       evas_object_size_hint_align_get(eo, &x, &y);
+       v8::Local<v8::Object> obj = v8::Object::New();
+       obj->Set(v8::String::New("x"), v8::Number::New(x));
+       obj->Set(v8::String::New("y"), v8::Number::New(y));
+       return obj;
      }
 
    virtual void image_set(v8::Handle<v8::Value> val)
