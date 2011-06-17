@@ -303,8 +303,8 @@ public:
 
    virtual void on_click(void *event_info)
      {
+        v8::Handle<v8::Object> obj = get_object();
         v8::HandleScope handle_scope;
-        v8::Local<v8::Object> obj(*get_object());
         v8::Handle<v8::Value> val = obj->Get(v8::String::New("on_clicked"));
         // FIXME: pass event_info to the callback
         // FIXME: turn the pieces below into a do_callback method
@@ -331,8 +331,8 @@ public:
 
    virtual void on_animate(void)
      {
+        v8::Handle<v8::Object> obj = get_object();
         v8::HandleScope handle_scope;
-        v8::Local<v8::Object> obj(*get_object());
         v8::Handle<v8::Value> val = obj->Get(v8::String::New("on_animate"));
         assert(val->IsFunction());
         v8::Handle<v8::Function> fn(v8::Function::Cast(*val));
@@ -369,6 +369,7 @@ public:
 
    bool get_xy_from_object(v8::Handle<v8::Value> val, double &x_out, double &y_out)
      {
+        v8::HandleScope handle_scope;
         if (!val->IsObject())
           return false;
         v8::Local<v8::Object> obj = val->ToObject();
@@ -383,6 +384,7 @@ public:
 
    bool get_xy_from_object(v8::Handle<v8::Value> val, bool &x_out, bool &y_out)
      {
+        v8::HandleScope handle_scope;
         if (!val->IsObject())
           return false;
         v8::Local<v8::Object> obj = val->ToObject();
@@ -397,6 +399,7 @@ public:
 
    bool get_xy_from_object(v8::Handle<v8::Value> val, int &x_out, int &y_out)
      {
+        v8::HandleScope handle_scope;
         if (!val->IsObject())
           return false;
         v8::Local<v8::Object> obj = val->ToObject();
@@ -413,6 +416,7 @@ public:
 			   v8::Handle<v8::Value> &x_val,
 			   v8::Handle<v8::Value> &y_val)
      {
+        v8::HandleScope handle_scope;
         if (!val->IsObject())
           return false;
         v8::Local<v8::Object> obj = val->ToObject();
@@ -902,7 +906,7 @@ public:
 
    void bounce_set(v8::Local<v8::Value> val)
      {
-        bool x_bounce, y_bounce;
+        bool x_bounce = false, y_bounce = false;
         if (get_xy_from_object(val, x_bounce, y_bounce))
           {
              elm_scroller_bounce_set(eo, x_bounce, y_bounce);
