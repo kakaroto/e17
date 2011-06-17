@@ -187,19 +187,19 @@ _enlil_library_load(Enlil_Library *lib)
 
    if (!lib->loaded->data.albums)
      lib->loaded->data.albums = eina_hash_string_superfast_new(NULL);
-   eina_hash_free_set(lib->loaded->data.albums, _enlil_album_free);
+   eina_hash_free_cb_set(lib->loaded->data.albums, _enlil_album_free);
 
    if (!lib->loaded->data.collections)
      lib->loaded->data.collections = eina_hash_string_superfast_new(NULL);
-   eina_hash_free_set(lib->loaded->data.collections, _enlil_collection_free);
+   eina_hash_free_cb_set(lib->loaded->data.collections, _enlil_collection_free);
 
    if (!lib->loaded->data.tags)
      lib->loaded->data.tags = eina_hash_string_superfast_new(NULL);
-   eina_hash_free_set(lib->loaded->data.tags, _enlil_tag_free);
+   eina_hash_free_cb_set(lib->loaded->data.tags, _enlil_tag_free);
 
    if (!lib->loaded->data.photos)
      lib->loaded->data.photos = eina_hash_string_superfast_new(NULL);
-   eina_hash_free_set(lib->loaded->data.photos, _enlil_photo_free);
+   eina_hash_free_cb_set(lib->loaded->data.photos, _enlil_photo_free);
 
    lib->loaded->source = ef;
    return EINA_TRUE;
