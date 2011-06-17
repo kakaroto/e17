@@ -48,3 +48,4 @@ Makefile.in
 /src/bin/e_dbus_test_client
 /src/bin/e_dbus_ukit_test
 /stamp-h1
+/doc/Doxyfile
