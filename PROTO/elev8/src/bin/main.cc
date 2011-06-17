@@ -1051,10 +1051,10 @@ int shebang_length(char *p, int len)
    return i;
 }
 
-v8::Handle<v8::String>
+v8::Local<v8::String>
 string_from_file(const char *filename)
 {
-   v8::Handle<v8::String> ret = v8::Handle<v8::String>();
+   v8::Local<v8::String> ret;
    int fd, len = 0;
    char *bad_ret = reinterpret_cast<char*>(MAP_FAILED);
    char *p = bad_ret;
