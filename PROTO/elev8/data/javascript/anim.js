@@ -18,24 +18,16 @@ var my_window = new elm.main({
 		bubble1 : {
 			type : "image",
 			image : "data/images/bubble.png",
-			x : 100,
-			y : 100,
-			width : 64,
-			height : 64,
-		},
-		shadow1 : {
-			type : "image",
-			image : "data/images/bubble_sh.png",
-			x : 200,
-			y : 200,
-			width : 64,
-			height : 64,
+			width : 50,
+			height : 50,
+			on_animate : function (arg) {
+				t = elm.loop_time();
+				radius = my_window.width/2 - 50;
+				PI = 3.14159;
+				angle = t*PI;
+				arg.x = Math.sin(angle) * radius + my_window.width/2 - arg.width/2;
+				arg.y = Math.cos(angle) * radius + my_window.height/2 - arg.height/2;
+			},
 		},
 	},
 });
-
-print("label = " + my_window.label);
-print("type  = " + my_window.type);
-print("width = " + my_window.width);
-print("height = " + my_window.height);
-
