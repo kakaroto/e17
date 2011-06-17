@@ -527,7 +527,6 @@ public:
    CEvasImage(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-fprintf(stderr, "%d %s\n", __LINE__, __FUNCTION__);
         Evas *evas = evas_object_evas_get(parent->get());
         eo = evas_object_image_filled_add(evas);
         construct(eo, obj);
@@ -535,7 +534,6 @@ fprintf(stderr, "%d %s\n", __LINE__, __FUNCTION__);
 
    virtual void image_set(v8::Handle<v8::Value> val)
      {
-fprintf(stderr, "%d %s\n", __LINE__, __FUNCTION__);
        if (val->IsString())
          {
             v8::String::Utf8Value str(val);
