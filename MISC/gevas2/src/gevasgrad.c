@@ -88,7 +88,7 @@ GtkgEvasGrad *gevasgrad_new(GtkgEvas * gevas)
 
 	gevasobj_set_gevas(ev, gevas);
 
-	eobj = evas_object_gradient_add(gevas_get_evas(gevas));
+//	eobj = evas_object_gradient_add(gevas_get_evas(gevas));
 	_gevas_set_obj(GTK_OBJECT(ev), eobj);
 	gevasgrad_clear_gradient(GTK_GEVASOBJ(ev));
 
@@ -112,7 +112,7 @@ void gevasgrad_set_angle( GtkgEvasObj* object, double angle)
 	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 	ev = GTK_GEVASGRAD(object);
 
-	evas_object_gradient_angle_set( EVASO(ev), angle);
+//	evas_object_gradient_angle_set( EVASO(ev), angle);
 }
 
 
@@ -123,7 +123,7 @@ void gevasgrad_clear_gradient(GtkgEvasObj * object)
 	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 	ev = GTK_GEVASGRAD(object);
 
-    evas_object_gradient_clear( EVASO(ev) );
+//    evas_object_gradient_clear( EVASO(ev) );
     
 /* 	if (ev->gradient) { */
 /* 		evas_gradient_free(ev->gradient); */
@@ -142,8 +142,7 @@ gevasgrad_add_color(GtkgEvasObj * object, int r, int g, int b, int a, int dist)
 	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 	ev = GTK_GEVASGRAD(object);
 
-    evas_object_gradient_color_stop_add( EVASO(ev), r, g, b, a, dist);
-//    evas_object_gradient_color_add(ev->gradient, r, g, b, a, dist);
+//    evas_object_gradient_color_stop_add( EVASO(ev), r, g, b, a, dist);
 }
 
 

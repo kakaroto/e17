@@ -1,6 +1,6 @@
 AC_INIT(src/gevas.h)
 AM_CONFIG_HEADER(config.h)
-VERSION=2.2.4
+VERSION=2.2.5
 AM_INIT_AUTOMAKE(gevas, $VERSION )
 
 AM_PATH_GTK_2_0( 2.2.0 )

@@ -2,7 +2,7 @@
 
 INCLUDES = \
 	-I$(top_srcdir)/intl -I$(srcdir) -I$(top_srcdir)/src -I.. -I. \
-	@GTK_CFLAGS@ @eet_cflags@ @evas_cflags@ @edb_cflags@
+	@GTK_CFLAGS@ @eet_cflags@ @evas_cflags@ @edb_cflags@ @EDJE_CFLAGS@
 
 PIXMAPS = \
 delete.png \
