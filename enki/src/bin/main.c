@@ -304,6 +304,12 @@ elm_main(int    argc,
          FREE(s);
       }
       //
+
+      if(!ecore_file_exists(Theme))
+      {
+         eina_stringshare_del(Theme);
+         Theme = THEME_BIG;
+      }
    }
 
    elm_theme_extension_add(NULL, Theme);

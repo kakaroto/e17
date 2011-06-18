@@ -33,6 +33,7 @@ void photo_object_gpx_set(Evas_Object *obj);
 
 Evas_Object *photo_object_netsync_state_set(Evas_Object *obj,
 					    const char *state);
+void photo_object_icon_menu_show(Evas_Object *obj, Eina_Bool show);
 
 #endif   /* ----- #ifndef PHOTO_OBJECT_INC  ----- */
 

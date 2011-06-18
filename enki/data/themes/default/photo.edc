@@ -1,3 +1,85 @@
+
+group {
+    name: "photo_list/item";
+	parts {
+	    part {
+	        name: "object.whole";
+	        type: IMAGE;
+	        mouse_events: 0;
+	        description {
+	            state: "default" 0.0;
+	            visible: 0;
+	            color: 255 255 255 0;
+	            image.normal: "select.png";
+	            rel1.offset: -5 -5;
+	            rel2.offset: 5 5;
+	            image.border: 15 15 15 15;
+	        }
+	        description {
+	            state: "select" 0.0;
+	            inherit: "default" 0.0;
+	            color: 255 255 255 200;
+				visible: 1;
+	        }
+	        description {
+	            state: "unselect" 0.0;
+	            inherit: "default" 0.0;
+	        }
+	    }
+	    part {
+	        name: "object.content";
+	        type: SWALLOW;
+	        description {
+	            state: "default" 0.0;
+	        }
+	    }
+	    part {
+	        name: "event";
+	        type: RECT;
+	        repeat_events: 1;
+	        ignore_flags: ON_HOLD;
+	        description {
+	            state: "default" 0.0;
+	            color: 255 255 255 0;
+	        }
+	    }
+	}
+	programs {
+		 program {
+	        name: "selected";
+	        signal: "selected";
+	        action: STATE_SET "select" 0.0;
+	        target: "object.whole";
+	        transition: SINUSOIDAL 0.2;
+	    }
+	    program {
+	        name: "unselected";
+	        signal: "unselected";
+	        action: STATE_SET "unselect" 0.0;
+	        target: "object.whole";
+	        transition: SINUSOIDAL 0.3;
+	    }
+		program {
+	        name: "select";
+	        signal: "mouse,up,1";
+	        source: "event";
+	        action: SIGNAL_EMIT "select" "";
+	    }
+	    program {
+	        name: "click_double";
+	        signal: "mouse,down,1,double";
+	        source: "event";
+	        action: SIGNAL_EMIT "click,double" "";
+	    }
+		program {
+	        name: "click_right";
+	        signal: "mouse,up,3";
+	        source: "event";
+	        action: SIGNAL_EMIT "click,right" "";
+	    }
+	}
+}
+
 group {
     name: "photo";
     data {
@@ -39,33 +121,9 @@ group {
 	}
 	parts {
 	    part {
-	        name: "object.whole";
-	        type: IMAGE;
-	        ignore_flags: ON_HOLD;
-	        description {
-	            state: "default" 0.0;
-	            visible: 1;
-	            color: 255 255 255 0;
-	            image.normal: "select.png";
-	            rel1.offset: -5 -5;
-	            rel2.offset: 5 5;
-	            image.border: 15 15 15 15;
-	        }
-	        description {
-	            state: "select" 0.0;
-	            inherit: "default" 0.0;
-	            color: 255 255 255 200;
-				visible: 1;
-	        }
-	        description {
-	            state: "unselect" 0.0;
-	            inherit: "default" 0.0;
-	        }
-	    }
-	    part {
 	        name: "shadow";
 	        type: IMAGE;
-	        repeat_events: 1;
+	        mouse_events: 0;
 	        description {
 	            state: "default" 0.0;
 	            visible: 1;
@@ -74,54 +132,40 @@ group {
 	        }
 	    }
 	    part {
-	        name: "border";
+	        name: "photo_clipper";
 	        type: RECT;
-	        repeat_events: 1;
+	        mouse_events: 0;
 	        description {
 	            state: "default" 0.0;
-	            visible: 1;
-	            color: 255 255 255 255;
 	            rel1.to: "shadow";
 	            rel2.to: "shadow";
-	            rel1.offset: 8 8;
-	            rel2.offset: -9 -9;
-	        }
-	    }
-	    part {
-	        name: "photo_clipped";
-	        type: RECT;
-	        repeat_events: 1;
-	        description {
-	            state: "default" 0.0;
-	            visible: 0;
+	            rel1.offset: 12 12;
+	            rel2.offset: -13 -13;
+	            visible:0;
 	            color: 255 255 255 0;
-	            rel1.to: "border";
-	            rel2.to: "border";
-	            rel1.offset: 4 4;
-	            rel2.offset: -5 -5;
 	        }
 	        description {
 	            state: "visible" 0.0;
 	            inherit: "default" 0.0;
+	            visible:1;
 	            color: 255 255 255 255;
-				visible: 1;
 	        }
 	    }
 	    part {
 	        name: "object.photo.swallow";
 	        type: SWALLOW;
-	        repeat_events: 1;
-	        clip_to: "photo_clipped";
+	        mouse_events: 0;
+	        clip_to: "photo_clipper";
 	        description {
 	            state: "default" 0.0;
-	            rel1.to: "photo_clipped";
-	            rel2.to: "photo_clipped";
+	            rel1.to: "photo_clipper";
+	            rel2.to: "photo_clipper";
 	        }
 	    }
 	    part {
 	        name: "gpx";
 	        type: IMAGE;
-	        repeat_events: 1;
+	        mouse_events: 0;
 	        description {
 	            state: "default" 0.0;
 	            image.normal: "gpx.png";
@@ -141,6 +185,7 @@ group {
 	    }
 	    part {
 	        name: "text_clip";
+	        mouse_events: 0;
 	        description {
 	            state: "default" 0.0;
 	            rel1.to_x: "camera";
@@ -166,7 +211,7 @@ group {
 	        name: "object.text";
 	        effect: SOFT_SHADOW;
 	        type: TEXT;
-	        repeat_events: 1;
+	        mouse_events: 0;
 	        clip_to: "text_clip";
 	        description {
 	            state: "default" 0.0;
@@ -217,6 +262,7 @@ group {
 	    part {
 	        name: "camera";
 	        type: IMAGE;
+	        mouse_events: 0;
 	        description {
 	            state: "default" 0.0;
 	            visible: 0;
@@ -253,6 +299,7 @@ group {
 	    part {
 	        name: "loading_clip";
 	        type: RECT;
+	        mouse_events: 0;
 	        description {
 	            state: "default" 0.0;
 	            visible: 0;
@@ -268,6 +315,7 @@ group {
 	    part {
 	        name: "object.loading.swallow";
 	        type: SWALLOW;
+	        mouse_events: 0;
 	        clip_to: "loading_clip";
 	        description
 	        {
@@ -279,8 +327,9 @@ group {
 	    program {
 	        name: "show";
 	        signal: "show";
+	        source: "";
 	        action: STATE_SET "visible" 0.0;
-	        target: "photo_clipped";
+	        target: "photo_clipper";
 	        transition: LINEAR 0.5;
 	    }
 	    program {
@@ -314,67 +363,23 @@ group {
 	    }
 	    program {
 	        name: "select";
-	        signal: "mouse,up,1";
-	        source: "object.whole";
-	        action: SIGNAL_EMIT "select" "photo";
-	        after: "select_extern";
-	    }
-	    program {
-	        name: "select_extern";
-	        signal: "select,extern";
-	        source: "photo";
+	        signal: "icon,menu,show";
+	        source: "";
 	        action: STATE_SET "select" 0.0;
-	        target: "object.whole";
 	        target: "menu";
 	        target: "text_clip";
 	        transition: SINUSOIDAL 0.3;
 	        after: "start_text_slide";
 	    }
 	    program {
-	        name: "open";
-	        signal: "mouse,down,1,double";
-	        source: "object.whole";
-	        action: SIGNAL_EMIT "open" "photo";
-	        after: "select_extern";
-	    }
-	    program {
 	        name: "unselect";
-	        signal: "unselect";
-	        source: "photo";
+	        signal: "icon,menu,hide";
+	        source: "";
 	        action: STATE_SET "unselect" 0.0;
-	        target: "object.whole";
 	        target: "menu";
 	        target: "text_clip";
 	        transition: SINUSOIDAL 0.5;
-	        after: "unselect_2";
 	        after: "stop_text_slide";
-	    }
-	    program {
-	        name: "unselect_2";
-	        action: STATE_SET "default" 0.0;
-	        target: "menu";
-	    }
-	    program {
-	        name: "right_clicked";
-	        signal: "mouse,clicked,3";
-	        source: "object.whole";
-	        action: SIGNAL_EMIT "clicked,right" "photo";
-	    }
-	    program {
-	        name: "mouse_in";
-	        signal: "mouse,inuu";
-	        source: "object.whole";
-	        action: STATE_SET "select" 0.0;
-	        target: "menu";
-	        transition: SINUSOIDAL 0.2;
-	    }
-	    program {
-	        name: "mouse_out";
-	        signal: "mouse,outuu";
-	        source: "object.whole";
-	        action: STATE_SET "unselect" 0.0;
-	        target: "menu";
-	        transition: SINUSOIDAL 0.5;
 	    }
 	    program {
 	        name: "menu_clicked";

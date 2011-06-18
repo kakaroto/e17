@@ -4,6 +4,7 @@ group {
         part {
             name: "background";
             type: IMAGE;
+            mouse_events: 0;
             description {
                 state: "default" 0.0;
                 visible: 1;
@@ -69,6 +70,7 @@ group {
         part {
             name: "access";
             type: IMAGE;
+            mouse_events: 0;
             description {
                 state: "default" 0.0;
                 min: 148 61;

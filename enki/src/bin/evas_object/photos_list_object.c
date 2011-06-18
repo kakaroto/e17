@@ -1,4 +1,5 @@
 #include "photos_list_object.h"
+#include "../main.h"
 
 #define NB_ITEMS_MAX 30
 #define LEFT_MARGE   7
@@ -9,6 +10,7 @@ typedef struct _Pan        Pan;
 
 struct PL_Child_Item
 {
+   Smart_Data           *sd;
    Eina_List           *l;
 
    PL_Header_Item      *header;
@@ -16,7 +18,8 @@ struct PL_Child_Item
    void                *data;
    PL_Child_Item_Class *itc;
 
-   Evas_Object         *icon;
+   Evas_Object         *o_item;
+   Evas_Object         *o_icon;
 
    Eina_Bool            hide;
    int                  x, y;
@@ -41,6 +44,7 @@ typedef struct PL_Block
 
 struct PL_Header_Item
 {
+   Smart_Data           *sd;
    Eina_List            *l;
 
    PL_Block             *block;
@@ -64,6 +68,7 @@ struct PL_Header_Item
 
 struct _Smart_Data
 {
+   Evas_Object *obj;
    Evas_Object *scroll, *pan_smart;
    Pan         *pan;
 
@@ -159,9 +164,16 @@ static void _pan_move(Evas_Object *obj,
 static void _photos_list_object_item_selected_set(PL_Child_Item *item,
                                                   Eina_Bool      selected);
 
+static void _header_clear(PL_Header_Item *header);
+static void _header_build(PL_Header_Item *header);
+static void _child_clear(PL_Child_Item *child);
+static void _child_build(PL_Child_Item *child);
+
+
 void _item_select(void        *data,
-                  Evas_Object *_obj,
-                  void        *event_info);
+                  Evas_Object *obj,
+                  const char  *signal,
+                  const char  *source);
 
 static void
 _clicked_right(void        *data,
@@ -205,10 +217,10 @@ _item_open(void        *data,
    evas_object_smart_callback_call(obj, "open", item->data);
 }
 
-void
-_item_select(void        *data,
+void _item_select(void        *data,
              Evas_Object *_obj,
-             void        *event_info)
+             const char  *signal,
+             const char  *source)
 {
    Evas_Object *obj;
    Smart_Data *sd;
@@ -219,20 +231,46 @@ _item_select(void        *data,
    if (!sd) return;
 
    //unselect
-   if(!sd->open_event && eina_list_data_find(sd->selected, item))
-     {
-        _photos_list_object_item_selected_set(item, EINA_FALSE);
-        return;
-     }
-   else if (eina_list_data_find(sd->selected, item))
-     {
-        sd->open_event = EINA_FALSE;
-        return;
-     }
+   if(eina_list_data_find(sd->selected, item))
+       _photos_list_object_item_selected_set(item, EINA_FALSE);
+   else
+      _photos_list_object_item_selected_set(item, EINA_TRUE);
+}
 
-   sd->open_event = EINA_FALSE;
+void _item_click_double(void        *data,
+             Evas_Object *_obj,
+             const char  *signal,
+             const char  *source)
+{
+   Evas_Object *obj;
+   Smart_Data *sd;
+   PL_Child_Item *item = data;
+   obj = item->header->block->obj;
+
+   sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
+
+   _photos_list_object_item_selected_set(item, EINA_FALSE);
+
+   evas_object_smart_callback_call(obj, "click,double", item->data);
+}
+
+void _item_click_right(void        *data,
+             Evas_Object *_obj,
+             const char  *signal,
+             const char  *source)
+{
+   Evas_Object *obj;
+   Smart_Data *sd;
+   PL_Child_Item *item = data;
+   obj = item->header->block->obj;
+
+   sd = evas_object_smart_data_get(obj);
+   if (!sd) return;
 
    _photos_list_object_item_selected_set(item, EINA_TRUE);
+
+   evas_object_smart_callback_call(obj, "click,right", item->data);
 }
 
 Evas_Object *
@@ -344,9 +382,10 @@ _photos_list_object_item_selected_set(PL_Child_Item *item,
 
    if(!selected && eina_list_data_find(sd->selected, item))
      {
-        evas_object_smart_callback_call(item->icon, "unselect", NULL);
+        edje_object_signal_emit(item->o_item, "unselected", "");
         sd->selected = eina_list_remove(sd->selected, item);
-        evas_object_smart_callback_call(obj, "unselected", item->data);
+
+        evas_object_smart_callback_call(obj, "unselect", item->data);
         return;
      }
    else if(selected && !eina_list_data_find(sd->selected, item))
@@ -357,15 +396,15 @@ _photos_list_object_item_selected_set(PL_Child_Item *item,
                {
                   if(item != _item)
                     {
-                       PL_Child_Item *_item = eina_list_data_get(sd->selected);
-                       evas_object_smart_callback_call(_item->icon, "unselect", NULL);
+                       edje_object_signal_emit(_item->o_item, "unselected", "");
                        sd->selected = eina_list_remove(sd->selected, _item);
+                       evas_object_smart_callback_call(obj, "unselect", _item->data);
                     }
                }
           }
-        evas_object_smart_callback_call(obj, "selected", item->data);
-
+        edje_object_signal_emit(item->o_item, "selected", "");
         sd->selected = eina_list_prepend(sd->selected, item);
+        evas_object_smart_callback_call(obj, "select", item->data);
      }
 }
 
@@ -373,32 +412,7 @@ void
 photos_list_object_item_selected_set(PL_Child_Item *item,
                                      Eina_Bool      selected)
 {
-   Evas_Object *obj = item->header->block->obj;
-   Smart_Data *sd;
-   sd = evas_object_smart_data_get(obj);
-   if (!sd) return;
-
-   if(!selected && eina_list_data_find(sd->selected, item))
-     {
-        evas_object_smart_callback_call(item->icon, "unselect", NULL);
-        sd->selected = eina_list_remove(sd->selected, item);
-        evas_object_smart_callback_call(obj, "unselected", item->data);
-        return;
-     }
-   else if(selected && !eina_list_data_find(sd->selected, item))
-     {
-        if(!sd->multiselect && sd->selected && eina_list_data_get(sd->selected) != item)
-          {
-             PL_Child_Item *_item = eina_list_data_get(sd->selected);
-             evas_object_smart_callback_call(_item->icon, "unselect", NULL);
-             sd->selected = eina_list_remove(sd->selected, _item);
-          }
-
-        evas_object_smart_callback_call(obj, "selected", item->data);
-
-        sd->selected = eina_list_prepend(sd->selected, item);
-        evas_object_smart_callback_call(item->icon, "select,extern", NULL);
-     }
+   _photos_list_object_item_selected_set(item, selected);
 }
 
 PL_Header_Item *
@@ -412,6 +426,7 @@ photos_list_object_item_header_append(Evas_Object          *obj,
    if (!sd) return NULL;
 
    PL_Header_Item *header = calloc(1, sizeof(PL_Header_Item));
+   header->sd = sd;
    header->itc = itc;
    header->data = data;
    header->resize = 1;
@@ -450,6 +465,7 @@ photos_list_object_item_header_append_relative(Evas_Object          *obj,
    if (!sd) return NULL;
 
    PL_Header_Item *header = calloc(1, sizeof(PL_Header_Item));
+   header->sd = sd;
    header->itc = itc;
    header->data = data;
    header->resize = 1;
@@ -521,6 +537,7 @@ photos_list_object_item_append(Evas_Object         *obj,
    if (!sd) return NULL;
 
    PL_Child_Item *item = calloc(1, sizeof(PL_Child_Item));
+   item->sd = sd;
    item->itc = itc;
    item->data = data;
    item->header = header;
@@ -549,6 +566,7 @@ photos_list_object_item_append_relative(Evas_Object         *obj,
    if (!sd) return NULL;
 
    PL_Child_Item *item = calloc(1, sizeof(PL_Child_Item));
+   item->sd = sd;
    item->itc = itc;
    item->data = data;
    item->header = header;
@@ -606,8 +624,7 @@ photos_list_object_item_del(PL_Child_Item *item)
      sd->selected = eina_list_remove(sd->selected, item);
 
    header->childs = eina_list_remove(header->childs, item);
-   if(item->icon)
-     evas_object_del(item->icon);
+   _child_clear(item);
    free(item);
 
    _recalc_after(header->block->obj, header);
@@ -626,8 +643,7 @@ photos_list_object_header_childs_del(PL_Header_Item *header)
      {
         if(eina_list_data_find(sd->selected, child))
           sd->selected = eina_list_remove(sd->selected, child);
-        if(child->icon)
-          evas_object_del(child->icon);
+        _child_clear(child);
         free(child);
      }
 
@@ -662,12 +678,10 @@ photos_list_object_header_del(PL_Header_Item *header)
         if(eina_list_data_find(sd->selected, child))
           sd->selected = eina_list_remove(sd->selected, child);
 
-        if(child->icon)
-          evas_object_del(child->icon);
+        _child_clear(child);
         free(child);
      }
-   if(header->icon)
-     evas_object_del(header->icon);
+   _header_clear(header);
    free(header);
 
    if(l_next)
@@ -1024,7 +1038,7 @@ photos_list_object_header_move_after(PL_Header_Item *header,
 const Evas_Object *
 photos_list_object_item_object_get(PL_Child_Item *item)
 {
-   return item->icon;
+   return item->o_icon;
 }
 
 const Evas_Object *
@@ -1259,6 +1273,53 @@ _child_is_after_displayed_area(Evas_Object   *obj,
    return EINA_FALSE;
 }
 
+static void _header_clear(PL_Header_Item *header)
+{
+   if(header->icon)
+      evas_object_del(header->icon);
+   header->icon = NULL;
+}
+
+static void _header_build(PL_Header_Item *header)
+{
+   if(header->itc->func.icon_get)
+      header->icon = header->itc->func.icon_get(header->data, header->sd->obj);
+   evas_object_smart_member_add(header->icon, header->sd->pan_smart);
+}
+
+static void _child_clear(PL_Child_Item *child)
+{
+   if(child->o_icon)
+     evas_object_del(child->o_icon);
+   child->o_icon = NULL;
+
+   if(child->o_item)
+     evas_object_del(child->o_item);
+   child->o_item = NULL;
+}
+
+static void _child_build(PL_Child_Item *child)
+{
+   if(child->itc->func.icon_get)
+      child->o_icon = child->itc->func.icon_get(child->data, child->sd->obj);
+
+   child->o_item = edje_object_add(evas_object_evas_get(child->sd->obj));
+   evas_object_smart_member_add(child->o_item, child->sd->pan_smart);
+   edje_object_file_set(child->o_item, Theme, "photo_list/item");
+   edje_object_part_swallow(child->o_item, "object.content", child->o_icon);
+   evas_object_show(child->o_item);
+   edje_object_signal_callback_add(child->o_item, "select", "",
+                                  _item_select, child);
+   edje_object_signal_callback_add(child->o_item, "click,double", "",
+                                  _item_click_double, child);
+   edje_object_signal_callback_add(child->o_item, "click,right", "",
+                                  _item_click_right, child);
+
+   if(eina_list_data_find(child->sd->selected, child))
+      evas_object_smart_callback_call(child->o_icon, "select,extern", NULL);
+}
+
+
 static void
 _update(Evas_Object *obj)
 {
@@ -1296,18 +1357,14 @@ _update(Evas_Object *obj)
                     {
                        header->is_construct = 1;
 
-     //something is display, test if the header is display
+                       //something is display, test if the header is display
                        if(header->y_start + block->y_start + sd->header_h - hide_diff > y_region
                           && header->y_start + block->y_start - hide_diff < y_region + h_region)
                          {
                             if(sd->header_resize || header->resize || !header->icon)
                               {
-                                 if(header->icon)
-                                   evas_object_del(header->icon);
-                                 header->icon = NULL;
-                                 if(header->itc->func.icon_get)
-                                   header->icon = header->itc->func.icon_get(header->data, obj);
-                                 evas_object_smart_member_add(header->icon, sd->pan_smart);
+                               _header_clear(header);
+                               _header_build(header);
                                  header->resize = 1;
                               }
                             if(sd->header_resize || header->resize)
@@ -1319,11 +1376,7 @@ _update(Evas_Object *obj)
                          }
                        else
                          {
-                            if(header->icon)
-                              {
-                                 evas_object_del(header->icon);
-                                 header->icon = NULL;
-                              }
+                          _header_clear(header);
                          }
 
                        int x_cumul = left_marge;
@@ -1352,52 +1405,29 @@ _update(Evas_Object *obj)
                                  if(y + sd->child_h + header->y_start + block->y_start - hide_diff > y_region
                                     && y + header->y_start + block->y_start - hide_diff < y_region + h_region)
                                    {
-                                      if(sd->child_resize || child->resize || !child->icon)
+                                      if(sd->child_resize || child->resize || !child->o_item)
                                         {
-                                           if(child->icon)
-                                             evas_object_del(child->icon);
-                                           child->icon = NULL;
-                                           if(child->itc->func.icon_get)
-                                             child->icon = child->itc->func.icon_get(child->data, obj);
-                                           evas_object_smart_member_add(child->icon, sd->pan_smart);
-                                           evas_object_smart_callback_add(child->icon, "select",
-                                                                          _item_select, child);
-                                           evas_object_smart_callback_add(child->icon, "open",
-                                                                          _item_open, child);
-                                           evas_object_smart_callback_add(child->icon, "clicked,right",
-                                                                          _clicked_right, child);
-                                           evas_object_smart_callback_add(child->icon, "clicked,menu",
-                                                                          _clicked_menu, child);
-
-                                           if(eina_list_data_find(sd->selected, child))
-                                             evas_object_smart_callback_call(child->icon, "select,extern", NULL);
+                                           _child_clear(child);
+                                           _child_build(child);
 
                                            child->resize = 1;
                                         }
                                       if(sd->child_resize || child->resize)
                                         {
-                                           evas_object_resize(child->icon, sd->child_w, sd->child_h);
+                                           evas_object_resize(child->o_item, sd->child_w, sd->child_h);
                                            child->resize = 0;
                                         }
-                                      evas_object_move(child->icon, x_sc + x,
+                                      evas_object_move(child->o_item, x_sc + x,
                                                        y + header->y_start + block->y_start - y_region + y_sc - hide_diff_child);
                                    }
                                  else
                                    {
-                                      if(child->icon)
-                                        {
-                                           evas_object_del(child->icon);
-                                           child->icon = NULL;
-                                        }
+                                      _child_clear(child);
                                    }
                               }
                             else
                               {
-                                 if(child->icon)
-                                   {
-                                      evas_object_del(child->icon);
-                                      child->icon = NULL;
-                                   }
+                                 _child_clear(child);
                               }
                          }
                     }
@@ -1443,15 +1473,9 @@ _header_objs_del(PL_Header_Item *header)
    PL_Child_Item *child;
    EINA_LIST_FOREACH(header->childs, l, child)
      {
-        if(child->icon)
-          {
-             evas_object_del(child->icon);
-             child->icon = NULL;
-          }
+        _child_clear(child);
      }
-   if(header->icon)
-     evas_object_del(header->icon);
-   header->icon = NULL;
+   _header_clear(header);
    header->is_construct = 0;
 }
 
@@ -1503,6 +1527,7 @@ _smart_add(Evas_Object *obj)
 
    sd = calloc(1, sizeof(Smart_Data));
    if (!sd) return;
+   sd->obj = obj;
    evas_object_smart_data_set(obj, sd);
 
    sd->scroll = elm_scroller_add(obj);
@@ -1553,14 +1578,10 @@ _smart_del(Evas_Object *obj)
           {
              EINA_LIST_FREE(header->childs, child)
                {
-                  if(child->icon)
-                    evas_object_del(child->icon);
-                  child->icon = NULL;
+                  _child_clear(child);
                   free(child);
                }
-             if(header->icon)
-               evas_object_del(header->icon);
-             header->icon = NULL;
+             _header_clear(header);
              free(header);
           }
         free(block);

@@ -24,10 +24,16 @@ static void _collection_cb(void        *data,
 static void _tag_cb(void        *data,
                     Evas_Object *obj,
                     void        *event_info);
-static void _enki_open(void        *data,
+static void _photo_open_cb(void        *data,
                        Evas_Object *obj,
                        void        *event_info);
-static void _right_click(void        *data,
+static void _photo_select_cb(void        *data,
+                         Evas_Object *obj,
+                         void        *event_info);
+static void _photo_unselect_cb(void        *data,
+                         Evas_Object *obj,
+                         void        *event_info);
+static void _photo_right_click(void        *data,
                          Evas_Object *obj,
                          void        *event_info);
 static void _sorts_cb(void        *data,
@@ -85,9 +91,10 @@ list_photo_new(Evas_Object *edje)
 
    enlil_photo->o_list = photos_list_object_add(edje);
    photos_list_object_sub_items_size_set(enlil_photo->o_list, DEFAULT_W, DEFAULT_H);
-   evas_object_smart_callback_add(enlil_photo->o_list, "open", _enki_open, enlil_photo);
-   evas_object_smart_callback_add(enlil_photo->o_list, "clicked,right", _right_click, enlil_photo);
-   evas_object_smart_callback_add(enlil_photo->o_list, "clicked,menu", _right_click, enlil_photo);
+   evas_object_smart_callback_add(enlil_photo->o_list, "click,double", _photo_open_cb, enlil_photo);
+   evas_object_smart_callback_add(enlil_photo->o_list, "click,right", _photo_right_click, NULL);
+   evas_object_smart_callback_add(enlil_photo->o_list, "select", _photo_select_cb, enlil_photo);
+   evas_object_smart_callback_add(enlil_photo->o_list, "unselect", _photo_unselect_cb, enlil_photo);
    evas_object_size_hint_weight_set(enlil_photo->o_list, 1.0, 1.0);
    evas_object_size_hint_align_set(enlil_photo->o_list, -1.0, -1.0);
    evas_object_show(enlil_photo->o_list);
@@ -198,7 +205,7 @@ list_photo_photo_add(List_Photo  *list_photo,
           {
              enlil_photo_data->enlil_data->auto_open = eina_list_remove(
                  enlil_photo_data->enlil_data->auto_open, _s);
-             _enki_open(enlil_photo_data, list_photo->o_list, photo);
+             _photo_open_cb(enlil_photo_data, list_photo->o_list, photo);
              eina_stringshare_del(_s);
           }
      }
@@ -229,7 +236,7 @@ list_photo_photo_append_relative(List_Photo    *list_photo,
           {
              enlil_photo_data->enlil_data->auto_open = eina_list_remove(
                  enlil_photo_data->enlil_data->auto_open, _s);
-             _enki_open(enlil_photo_data, list_photo->o_list, photo);
+             _photo_open_cb(enlil_photo_data, list_photo->o_list, photo);
              eina_stringshare_del(_s);
           }
      }
@@ -407,6 +414,8 @@ _photo_icon_get(const void  *data,
 
         if(enlil_photo_data->netsync.is_sync)
           photo_object_netsync_state_set(o, "animated");
+
+        evas_object_smart_callback_add(o, "clicked,menu", _photo_right_click, photo);
      }
    else //GPX
      {
@@ -458,12 +467,11 @@ _slideshow_cb(void        *data,
 }
 
 static void
-_enki_open(void        *data,
+_photo_open_cb(void        *data,
            Evas_Object *obj,
            void        *event_info)
 {
    char buf[PATH_MAX];
-   //List_Photo *enlil_photo = data;
    Enlil_Photo *photo = event_info;
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 
@@ -478,11 +486,48 @@ _enki_open(void        *data,
      panel_image_new(obj, photo);
 }
 
+static void _photo_select_cb(void        *data,
+                         Evas_Object *obj,
+                         void        *event_info)
+{
+   Enlil_Photo *photo = event_info;
+   Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+
+   Evas_Object *icon = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
+   if(icon)
+   {
+      photo_object_icon_menu_show(icon, EINA_TRUE);
+   }
+}
+
+static void _photo_unselect_cb(void        *data,
+                         Evas_Object *obj,
+                         void        *event_info)
+{
+   Enlil_Photo *photo = event_info;
+   Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+
+   Evas_Object *icon = (Evas_Object *)photos_list_object_item_object_get(photo_data->list_photo_item);
+   if(icon)
+   {
+      photo_object_icon_menu_show(icon, EINA_FALSE);
+   }
+}
+
 static void
-_right_click(void        *data,
+_photo_right_click(void        *data,
              Evas_Object *obj,
              void        *event_info)
 {
+   Enlil_Photo *photo;
+
+   if(!data)
+      photo = event_info;
+   else
+      photo = data;
+   Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+
+   photos_list_object_item_selected_set(photo_data->list_photo_item, EINA_TRUE);
    photo_menu_init(enlil_data->list_photo, _edje);
    edje_object_signal_emit(_edje, "photo,menu,show", "");
 }
