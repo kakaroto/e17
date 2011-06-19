@@ -5471,3 +5471,46 @@ Fix selection of next focus window when iconifing a window (noted by Daniel Manj
 Add __SCALE and __EFFECT_NONE - seem to be used in most themes.
 Show alert text also when there is no final newline in string.
 Run idlers after timers (fixes last fadeout step in certain situations).
+
+-------------------------------------------------------------------------------
+
+Thu Apr 21 20:10:44 CEST 2011
+
+--- 1.0.8.001 ---
+Japanese translation update (Yasufumi Haga).
+Show backgrounds in settings dialogs with same aspect ratio as screen (Daniel Manjarres).
+Swap names in directory cache file (and rename it).
+Enable having background files with whitespace in name.
+Fix having background file names with spaces (Daniel Manjarres).
+Fix solid color backgrounds.
+Enable setting/saving ignorearrange attribute in window menu (Daniel Manjarres).
+Fix segv when iconifying magnifier window with CM enabled (Daniel Manjarres).
+Add GNOME3 gdm/gnome-session support.
+Magnifier: enable toggling text on/off (Daniel Manjarres).
+Rework installation of .desktop files.
+Magnifier tweaks.
+Add commands to show/hide/toggle display of magnifier.
+Fix potential placement breakage when there are windows with struts.
+Enable remembering magnifier window attributes.
+Make magnifier scaling steps smaller (Daniel Manjarres).
+Fix jumpy dialog sliders (Daniel Manjarres).
+Move variable into scope where it is used.
+Eliminate EwinIsMapped() and EwinGetDesk().
+Move desktop hint change to after desk switch has completed.
+Only set _NET_DESKTOP_VIEWPORT when needed.
+Fix window positions on hidden desks when restarting after a crash.
+Fix potential crash during manual window placement.
+Fix root pixmap breakage.
+Another warning fix for gcc-4.6.
+Change move/resize mode open coded values to defined values.
+Expose EShapeUpdate().
+CM: Fix rendering of shaped override-redirect windows.
+Magnifier: Make step size configurable (based on patch by Daniel Manjarres).
+Magnifier: Change defaults - filter on, no text (based on patch by Daniel Manjarres).
+Magnifier: Show magnification factor in info text.
+Magnifier: Only enter grabbing mode first time it is mapped.
+Add EobjGetNameSafe (for debug).
+Fix focus after ungrab (noted by Daniel Manjarres).
+Set lower limit on time between sucessive animator runs.
+Magnifier: Add stroke/drag interface (based on patch by Daniel Manjarres).
+Minor debug printout cleanups.
