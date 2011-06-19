@@ -89,6 +89,8 @@ main(int argc, char **argv)
            return 0;
         }
 
+   enlil_init();
+
    s = enlil_build_suite(argc - 1, (const char **)argv + 1);
    sr = srunner_create(s);
 
@@ -96,5 +98,6 @@ main(int argc, char **argv)
    failed_count = srunner_ntests_failed(sr);
    srunner_free(sr);
 
+   enlil_shutdown();
    return (failed_count == 0) ? 0 : 255;
 }
