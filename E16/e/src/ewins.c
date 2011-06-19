@@ -745,7 +745,8 @@ AddToFamily(EWin * ewin, Window xwin, int startup)
 
    if (EwinGetAttributes(ewin, NULL, xwin))
      {
-	Eprintf("Window is gone %#lx\n", xwin);
+	if (EDebug(EDBUG_TYPE_EWINS))
+	   Eprintf("Window is gone %#lx\n", xwin);
 	/* We got here by MapRequest. DestroyNotify should follow. */
 	goto done;
      }
@@ -1125,8 +1126,9 @@ EwinEventMapRequest(EWin * ewin, XEvent * ev)
 	   AddToFamily(ewin, xwin, 0);
 	else
 	  {
-	     Eprintf("AddToFamily: Already managing %s %#lx\n", "A",
-		     EwinGetClientXwin(ewin));
+	     if (EDebug(EDBUG_TYPE_EWINS))
+		Eprintf("AddToFamily: Already managing %s %#lx\n", "A",
+			EwinGetClientXwin(ewin));
 	     EReparentWindow(EwinGetClientWin(ewin), ewin->win_container, 0, 0);
 	  }
      }
@@ -1138,8 +1140,9 @@ EwinEventMapRequest(EWin * ewin, XEvent * ev)
 	/* Some clients MapRequest more than once ?!? */
 	if (ewin)
 	  {
-	     Eprintf("AddToFamily: Already managing %s %#lx\n", "B",
-		     EwinGetClientXwin(ewin));
+	     if (EDebug(EDBUG_TYPE_EWINS))
+		Eprintf("AddToFamily: Already managing %s %#lx\n", "B",
+			EwinGetClientXwin(ewin));
 	     EReparentWindow(EwinGetClientWin(ewin), ewin->win_container, 0, 0);
 	     EwinShow(ewin);
 	  }

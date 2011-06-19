@@ -539,10 +539,7 @@ MagwinShow(void)
    MagWin = MagwinCreate(_("Magnifier"),
 			 WinGetW(VROOT) / 4, WinGetH(VROOT) / 4);
    if (!MagWin)
-     {
-	Eprintf("Failed to create magnifier window\n");
-	return;
-     }
+      return;
 
  done:
    EwinShow(MagWin->ewin);

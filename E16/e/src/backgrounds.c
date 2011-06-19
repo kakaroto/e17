@@ -1342,7 +1342,7 @@ BackgroundsCheckDups(void)
 
 	     if (BackgroundCmp(bg, bgx))
 		continue;
-#if 1				/* Remove? */
+#if 0
 	     Eprintf("Remove duplicate background %s (==%s)\n", bgx->name,
 		     bg->name);
 #endif
