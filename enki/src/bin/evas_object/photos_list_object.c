@@ -1,5 +1,6 @@
 #include "photos_list_object.h"
 #include "../main.h"
+#include "edje_mempool.h"
 
 #define NB_ITEMS_MAX 30
 #define LEFT_MARGE   7
@@ -1294,7 +1295,7 @@ static void _child_clear(PL_Child_Item *child)
    child->o_icon = NULL;
 
    if(child->o_item)
-     evas_object_del(child->o_item);
+      edje_mempool_object_del(child->o_item);
    child->o_item = NULL;
 }
 
@@ -1303,9 +1304,8 @@ static void _child_build(PL_Child_Item *child)
    if(child->itc->func.icon_get)
       child->o_icon = child->itc->func.icon_get(child->data, child->sd->obj);
 
-   child->o_item = edje_object_add(evas_object_evas_get(child->sd->obj));
+   child->o_item = edje_mempool_object_add("photo_list/item");
    evas_object_smart_member_add(child->o_item, child->sd->pan_smart);
-   edje_object_file_set(child->o_item, Theme, "photo_list/item");
    edje_object_part_swallow(child->o_item, "object.content", child->o_icon);
    evas_object_show(child->o_item);
    edje_object_signal_callback_add(child->o_item, "select", "",

@@ -46,6 +46,15 @@ group {
 	}
 	programs {
 		 program {
+	        name: "init";
+	        signal: "init";
+	        source: "edje_mempool";
+	        action: STATE_SET "default" 0.0;
+	        target: "object.whole";
+	        target: "object.content";
+	        target: "event";
+	    }
+		 program {
 	        name: "selected";
 	        signal: "selected";
 	        action: STATE_SET "select" 0.0;
@@ -185,6 +194,7 @@ group {
 	    }
 	    part {
 	        name: "text_clip";
+	        type: RECT;
 	        mouse_events: 0;
 	        description {
 	            state: "default" 0.0;
@@ -324,6 +334,23 @@ group {
 	    }
 	}
 	programs {
+		 program {
+	        name: "init";
+	        signal: "init";
+	        source: "edje_mempool";
+	        action: STATE_SET "default" 0.0;
+	        target: "shadow";
+	        target: "photo_clipper";
+	        target: "object.photo.swallow";
+	        target: "gpx";
+	        target: "text_clip";
+	        target: "object.text";
+	        target: "menu";
+	        target: "camera";
+	        target: "object.swallow.sync";
+	        target: "loading_clip";
+	        target: "object.loading.swallow";
+	    }
 	    program {
 	        name: "show";
 	        signal: "show";

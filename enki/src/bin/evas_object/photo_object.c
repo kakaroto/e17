@@ -2,6 +2,7 @@
 #include <locale.h>
 
 #include "../main.h"
+#include "edje_mempool.h"
 
 typedef struct _Smart_Data Smart_Data;
 
@@ -113,14 +114,14 @@ photo_object_theme_file_set(Evas_Object *obj, const char *theme,
    sd->theme_group = eina_stringshare_add(theme_group);
 
 
-   sd->obj = edje_object_add(evas_object_evas_get(obj));
+   sd->obj = edje_mempool_object_add(sd->theme_group);
+   evas_object_show(sd->obj);
+
 
    evas_object_move(sd->obj, sd->x, sd->y);
    evas_object_resize(sd->obj, sd->w, sd->h);
 
-   edje_object_file_set(sd->obj, sd->theme_file, sd->theme_group);
    evas_object_smart_member_add(sd->obj, obj);
-   evas_object_clip_set(sd->obj, obj);
    evas_object_show(sd->obj);
    if (!sd->preloading) evas_object_show(sd->image);
 
@@ -176,7 +177,6 @@ photo_object_file_set(Evas_Object *obj, const char *image,
                                   _preloaded, sd);
    evas_object_image_filled_set(sd->image, 1);
    evas_object_smart_member_add(obj, sd->image);
-   evas_object_clip_set(sd->image, obj);
    evas_object_image_file_set(sd->image, NULL, NULL);
    evas_object_image_load_scale_down_set(sd->image, 0);
    evas_object_image_file_set(sd->image, image, photo_group);
@@ -514,7 +514,7 @@ _smart_del(Evas_Object *obj)
 
    if (sd->o_progressbar) evas_object_del(sd->o_progressbar);
 
-   if (sd->obj) evas_object_del(sd->obj);
+   if (sd->obj) edje_mempool_object_del(sd->obj);
    if (sd->image)
    {
       evas_object_del(sd->image);
