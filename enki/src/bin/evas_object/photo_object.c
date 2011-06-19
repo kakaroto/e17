@@ -113,10 +113,8 @@ photo_object_theme_file_set(Evas_Object *obj, const char *theme,
    sd->theme_file = eina_stringshare_add(theme);
    sd->theme_group = eina_stringshare_add(theme_group);
 
-
    sd->obj = edje_mempool_object_add(sd->theme_group);
    evas_object_show(sd->obj);
-
 
    evas_object_move(sd->obj, sd->x, sd->y);
    evas_object_resize(sd->obj, sd->w, sd->h);

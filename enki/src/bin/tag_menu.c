@@ -1,15 +1,12 @@
 #include "main.h"
 
-static void _menu_dismiss_cb(void        *data,
-                             Evas_Object *obj,
-                             void        *event_info);
-static void _tag_del_cb(void        *data,
-                        Evas_Object *obj,
-                        void        *event_info);
+static void
+_menu_dismiss_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_tag_del_cb(void *data, Evas_Object *obj, void *event_info);
 
 Tag_Menu *
-tag_menu_new(Evas_Object *parent,
-             Enlil_Tag   *tag)
+tag_menu_new(Evas_Object *parent, Enlil_Tag *tag)
 {
    Evas_Object *menu;
    Tag_Menu *cm = calloc(1, sizeof(Tag_Menu));
@@ -26,18 +23,14 @@ tag_menu_new(Evas_Object *parent,
 }
 
 static void
-_menu_dismiss_cb(void        *data,
-                 Evas_Object *obj,
-                 void        *event_info)
+_menu_dismiss_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Tag_Menu *tag_menu = data;
    tag_menu_free(tag_menu);
 }
 
 static void
-_tag_del_cb(void        *data,
-            Evas_Object *obj,
-            void        *event_info)
+_tag_del_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Tag_Menu *tag_menu = data;
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag_menu->tag);

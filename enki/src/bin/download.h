@@ -11,10 +11,11 @@ struct Download
 };
 
 /* Download manager */
-Download *download_new(Evas_Object *parent);
-void download_free(Download **_ul);
-void download_add(Download *ul,
-		  const char *source,
-		  Enlil_Photo *photo);
+Download *
+download_new(Evas_Object *parent);
+void
+download_free(Download **_ul);
+void
+download_add(Download *ul, const char *source, Enlil_Photo *photo);
 
 #endif /* DOWNLOAD_H_ */

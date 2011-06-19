@@ -28,8 +28,7 @@ enlil_win_new()
 }
 
 void
-enlil_win_bg_set(Enlil_Win  *win,
-                 const char *file)
+enlil_win_bg_set(Enlil_Win *win, const char *file)
 {
    Evas_Object *bg;
 
@@ -37,8 +36,7 @@ enlil_win_bg_set(Enlil_Win  *win,
 
    bg = elm_bg_add(win->win);
    evas_object_lower(bg);
-   if(file)
-     elm_bg_file_set(bg, file, NULL);
+   if (file) elm_bg_file_set(bg, file, NULL);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win->win, bg);
    evas_object_show(bg);

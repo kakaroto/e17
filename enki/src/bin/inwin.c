@@ -1,115 +1,86 @@
 #include "main.h"
 
 static Elm_Genlist_Item_Class itc_theme;
-static char *_gl_theme_label_get(void *data,
-                                 Evas_Object *obj,
-                                 const char  *part);
-static void _gl_theme_select_cb(void        *data,
-                                Evas_Object *obj,
-                                void        *event_info);
+static char *
+_gl_theme_label_get(void *data, Evas_Object *obj, const char *part);
+static void
+_gl_theme_select_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_tag_new_cancel_cb(void        *data,
-                                  Evas_Object *obj,
-                                  void        *event_info);
-static void _bt_tag_new_apply_cb(void        *data,
-                                 Evas_Object *obj,
-                                 void        *event_info);
-static void _bt_album_tag_new_apply_cb(void        *data,
-                                       Evas_Object *obj,
-                                       void        *event_info);
+static void
+_bt_tag_new_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_tag_new_apply_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_album_tag_new_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_library_delete_cancel_cb(void        *data,
-                                         Evas_Object *obj,
-                                         void        *event_info);
-static void _bt_library_delete_apply_cb(void        *data,
-                                        Evas_Object *obj,
-                                        void        *event_info);
+static void
+_bt_library_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_library_delete_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_collection_new_cancel_cb(void        *data,
-                                         Evas_Object *obj,
-                                         void        *event_info);
-static void _bt_collection_new_apply_cb(void        *data,
-                                        Evas_Object *obj,
-                                        void        *event_info);
+static void
+_bt_collection_new_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_collection_new_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_album_new_cancel_cb(void        *data,
-                                    Evas_Object *obj,
-                                    void        *event_info);
-static void _bt_album_new_apply_cb(void        *data,
-                                   Evas_Object *obj,
-                                   void        *event_info);
+static void
+_bt_album_new_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_album_new_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_photo_delete_cancel_cb(void        *data,
-                                       Evas_Object *obj,
-                                       void        *event_info);
-static void _bt_photo_delete_apply_cb(void        *data,
-                                      Evas_Object *obj,
-                                      void        *event_info);
+static void
+_bt_photo_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_photo_delete_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_album_delete_cancel_cb(void        *data,
-                                       Evas_Object *obj,
-                                       void        *event_info);
-static void _bt_album_delete_apply_cb(void        *data,
-                                      Evas_Object *obj,
-                                      void        *event_info);
+static void
+_bt_album_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_album_delete_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
 static Elm_Genlist_Item_Class itc_album;
-static char *_gl_album_label_get(void        *data,
-                                 Evas_Object *obj,
-                                 const char  *part);
-static void _gl_album_sel(void        *data,
-                          Evas_Object *obj,
-                          void        *event_info);
+static char *
+_gl_album_label_get(void *data, Evas_Object *obj, const char *part);
+static void
+_gl_album_sel(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_photo_move_album_cancel_cb(void        *data,
-                                           Evas_Object *obj,
-                                           void        *event_info);
-static void _bt_photo_move_album_apply_cb(void        *data,
-                                          Evas_Object *obj,
-                                          void        *event_info);
+static void
+_bt_photo_move_album_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_photo_move_album_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_photo_save_dont_cb(void        *data,
-                                   Evas_Object *obj,
-                                   void        *event_info);
-static void _bt_photo_save_cancel_cb(void        *data,
-                                     Evas_Object *obj,
-                                     void        *event_info);
-static void _bt_photo_save_save_cb(void        *data,
-                                   Evas_Object *obj,
-                                   void        *event_info);
+static void
+_bt_photo_save_dont_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_photo_save_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_photo_save_save_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_album_rename_cancel_cb(void        *data,
-                                       Evas_Object *obj,
-                                       void        *event_info);
-static void _bt_album_rename_apply_cb(void        *data,
-                                      Evas_Object *obj,
-                                      void        *event_info);
+static void
+_bt_album_rename_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_album_rename_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_save_as_file_exists_cancel_cb(void        *data,
-                                              Evas_Object *obj,
-                                              void        *event_info);
-static void _bt_save_as_file_exists_apply_cb(void        *data,
-                                             Evas_Object *obj,
-                                             void        *event_info);
+static void
+_bt_save_as_file_exists_cancel_cb(void *data, Evas_Object *obj,
+                                  void *event_info);
+static void
+         _bt_save_as_file_exists_apply_cb(void *data, Evas_Object *obj,
+                                          void *event_info);
 
-static void _bt_preferences_cancel_cb(void        *data,
-                                      Evas_Object *obj,
-                                      void        *event_info);
-static void _bt_preferences_apply_cb(void        *data,
-                                     Evas_Object *obj,
-                                     void        *event_info);
+static void
+_bt_preferences_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_preferences_apply_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_login_failed_close_cb(void        *data,
-                                      Evas_Object *obj,
-                                      void        *event_info);
+static void
+_bt_login_failed_close_cb(void *data, Evas_Object *obj, void *event_info);
 
 // TODO: rewrite with edje external
 Inwin *
-inwin_save_as_file_exists_new(Inwin_Del   del_cb,
-                              Inwin_Apply apply_cb,
-                              void       *data,
-                              const char *file)
-                              {
+inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
+                              void *data, const char *file)
+{
    Evas_Object *hbox, *fr, *bt, *tb, *lbl;
    char buf[PATH_MAX];
 
@@ -139,8 +110,11 @@ inwin_save_as_file_exists_new(Inwin_Del   del_cb,
    evas_object_size_hint_align_set(tb, 0.0, 0.0);
    evas_object_show(tb);
 
-   snprintf(buf, PATH_MAX,
-            D_("You are about to erase the photo <br>%s. Do you want to continue ?"), file);
+   snprintf(
+            buf,
+            PATH_MAX,
+            D_("You are about to erase the photo <br>%s. Do you want to continue ?"),
+            file);
    lbl = elm_label_add(enlil_data->win->win);
    elm_label_label_set(lbl, buf);
    evas_object_size_hint_weight_set(lbl, 0.0, EVAS_HINT_EXPAND);
@@ -157,14 +131,16 @@ inwin_save_as_file_exists_new(Inwin_Del   del_cb,
 
    bt = elm_button_add(enlil_data->win->win);
    elm_button_label_set(bt, D_("Cancel"));
-   evas_object_smart_callback_add(bt, "clicked", _bt_save_as_file_exists_cancel_cb, inwin);
+   evas_object_smart_callback_add(bt, "clicked",
+                                  _bt_save_as_file_exists_cancel_cb, inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
 
    bt = elm_button_add(enlil_data->win->win);
    elm_button_label_set(bt, D_("Apply"));
-   evas_object_smart_callback_add(bt, "clicked", _bt_save_as_file_exists_apply_cb, inwin);
+   evas_object_smart_callback_add(bt, "clicked",
+                                  _bt_save_as_file_exists_apply_cb, inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
@@ -173,15 +149,12 @@ inwin_save_as_file_exists_new(Inwin_Del   del_cb,
    elm_notify_content_set(inwin->inwin, fr);
 
    return inwin;
-                              }
+}
 
 Inwin *
-inwin_photo_save_new(Inwin_Del    del_cb,
-                     Inwin_Apply  apply_cb,
-                     Inwin_Close  close_cb,
-                     void        *data,
-                     Enlil_Photo *photo)
-                     {
+inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
+                     Inwin_Close close_cb, void *data, Enlil_Photo *photo)
+{
    Evas_Object *hbox, *fr, *fr2, *lbl, *bt, *tb;
    char buf[PATH_MAX];
 
@@ -223,7 +196,8 @@ inwin_photo_save_new(Inwin_Del    del_cb,
    evas_object_show(fr2);
    elm_table_pack(tb, fr2, 0, 0, 2, 1);
 
-   snprintf(buf, PATH_MAX, D_("Save the changes to image %s before closing?"), enlil_photo_file_name_get(photo));
+   snprintf(buf, PATH_MAX, D_("Save the changes to image %s before closing?"),
+            enlil_photo_file_name_get(photo));
    lbl = elm_label_add(enlil_data->win->win);
    elm_label_label_set(lbl, buf);
    evas_object_size_hint_weight_set(lbl, 1.0, 1.0);
@@ -248,7 +222,8 @@ inwin_photo_save_new(Inwin_Del    del_cb,
 
    bt = elm_button_add(enlil_data->win->win);
    elm_button_label_set(bt, D_("Cancel"));
-   evas_object_smart_callback_add(bt, "clicked", _bt_photo_save_cancel_cb, inwin);
+   evas_object_smart_callback_add(bt, "clicked", _bt_photo_save_cancel_cb,
+                                  inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
@@ -264,7 +239,7 @@ inwin_photo_save_new(Inwin_Del    del_cb,
    elm_notify_content_set(inwin->inwin, fr);
 
    return inwin;
-                     }
+}
 
 //
 
@@ -290,25 +265,31 @@ inwin_library_delete_new(Enlil_Data *enlil_data)
    evas_object_show(inwin->inwin);
    elm_notify_content_set(inwin->inwin, ly);
 
-   lbl = edje_object_part_external_object_get(edje, "object.win.library.delete.name");
+   lbl = edje_object_part_external_object_get(edje,
+                                              "object.win.library.delete.name");
    elm_label_label_set(lbl, enlil_library_path_get(enlil_data->library));
 
-   bt = edje_object_part_external_object_get(edje, "object.win.library.delete.cancel");
-   evas_object_smart_callback_add(bt, "clicked", _bt_library_delete_cancel_cb, inwin);
+   bt
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.library.delete.cancel");
+   evas_object_smart_callback_add(bt, "clicked", _bt_library_delete_cancel_cb,
+                                  inwin);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.library.delete.apply");
-   evas_object_smart_callback_add(bt, "clicked", _bt_library_delete_apply_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.library.delete.apply");
+   evas_object_smart_callback_add(bt, "clicked", _bt_library_delete_apply_cb,
+                                  inwin);
 
-   inwin->check = edje_object_part_external_object_get(edje, "object.win.library.delete.delete_hard_drive");
+   inwin->check
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.library.delete.delete_hard_drive");
 
    return inwin;
 }
 
 Inwin *
-inwin_tag_new_new(Inwin_Del  del_cb,
-                  void      *data,
-                  Eina_List *photos)
-                  {
+inwin_tag_new_new(Inwin_Del del_cb, void *data, Eina_List *photos)
+{
    Evas_Object *bt, *ly;
 
    ASSERT_RETURN(del_cb != NULL);
@@ -332,22 +313,24 @@ inwin_tag_new_new(Inwin_Del  del_cb,
    evas_object_show(inwin->inwin);
    elm_notify_content_set(inwin->inwin, ly);
 
-   inwin->entry = edje_object_part_external_object_get(edje, "object.win.album.tag.new.name");
+   inwin->entry
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.album.tag.new.name");
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.tag.new.cancel");
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.album.tag.new.cancel");
    evas_object_smart_callback_add(bt, "clicked", _bt_tag_new_cancel_cb, inwin);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.tag.new.apply");
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.album.tag.new.apply");
    evas_object_smart_callback_add(bt, "clicked", _bt_tag_new_apply_cb, inwin);
 
    return inwin;
-                  }
+}
 
 Inwin *
-inwin_album_tag_new_new(Inwin_Del    del_cb,
-                        void        *data,
-                        Enlil_Album *album)
-                        {
+inwin_album_tag_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
+{
    Evas_Object *bt, *ly;
 
    ASSERT_RETURN(del_cb != NULL);
@@ -371,22 +354,25 @@ inwin_album_tag_new_new(Inwin_Del    del_cb,
    evas_object_show(inwin->inwin);
    elm_notify_content_set(inwin->inwin, ly);
 
-   inwin->entry = edje_object_part_external_object_get(edje, "object.win.album.tag.new.name");
+   inwin->entry
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.album.tag.new.name");
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.tag.new.cancel");
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.album.tag.new.cancel");
    evas_object_smart_callback_add(bt, "clicked", _bt_tag_new_cancel_cb, inwin);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.tag.new.apply");
-   evas_object_smart_callback_add(bt, "clicked", _bt_album_tag_new_apply_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.album.tag.new.apply");
+   evas_object_smart_callback_add(bt, "clicked", _bt_album_tag_new_apply_cb,
+                                  inwin);
 
    return inwin;
-                        }
+}
 
 Inwin *
-inwin_collection_new_new(Inwin_Del    del_cb,
-                         void        *data,
-                         Enlil_Album *album)
-                         {
+inwin_collection_new_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
+{
    Evas_Object *bt, *ly;
 
    ASSERT_RETURN(del_cb != NULL);
@@ -410,21 +396,28 @@ inwin_collection_new_new(Inwin_Del    del_cb,
    evas_object_show(inwin->inwin);
    elm_notify_content_set(inwin->inwin, ly);
 
-   inwin->entry = edje_object_part_external_object_get(edje, "object.win.album.collection.new.name");
+   inwin->entry
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.album.collection.new.name");
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.collection.new.cancel");
-   evas_object_smart_callback_add(bt, "clicked", _bt_collection_new_cancel_cb, inwin);
+   bt
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.album.collection.new.cancel");
+   evas_object_smart_callback_add(bt, "clicked", _bt_collection_new_cancel_cb,
+                                  inwin);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.collection.new.apply");
-   evas_object_smart_callback_add(bt, "clicked", _bt_collection_new_apply_cb, inwin);
+   bt
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.album.collection.new.apply");
+   evas_object_smart_callback_add(bt, "clicked", _bt_collection_new_apply_cb,
+                                  inwin);
 
    return inwin;
-                         }
+}
 
 Inwin *
-inwin_album_new_new(Inwin_Del del_cb,
-                    void     *data)
-                    {
+inwin_album_new_new(Inwin_Del del_cb, void *data)
+{
    Evas_Object *bt, *ly;
    Inwin *inwin = calloc(1, sizeof(Inwin));
    inwin->type = INWIN_ALBUM_NEW;
@@ -442,23 +435,26 @@ inwin_album_new_new(Inwin_Del del_cb,
    evas_object_show(inwin->inwin);
    elm_notify_content_set(inwin->inwin, ly);
 
-   inwin->entry = edje_object_part_external_object_get(edje, "object.win.album.new.name");
+   inwin->entry
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.album.new.name");
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.new.cancel");
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.album.new.cancel");
    evas_object_smart_callback_add(bt, "clicked", _bt_album_new_cancel_cb, inwin);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.new.apply");
+   bt
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.album.new.apply");
    evas_object_smart_callback_add(bt, "clicked", _bt_album_new_apply_cb, inwin);
 
    return inwin;
-                    }
+}
 
 Inwin *
-inwin_photo_delete_new(Evas_Object *win,
-                       Inwin_Del    del_cb,
-                       void        *data,
-                       Eina_List   *photos)
-                       {
+inwin_photo_delete_new(Evas_Object *win, Inwin_Del del_cb, void *data,
+                       Eina_List *photos)
+{
    Evas_Object *ly, *bt, *entry;
    char buf[PATH_MAX];
    char buf2[PATH_MAX];
@@ -484,7 +480,8 @@ inwin_photo_delete_new(Evas_Object *win,
    evas_object_show(inwin->inwin);
    elm_notify_content_set(inwin->inwin, ly);
 
-   entry = edje_object_part_external_object_get(edje, "object.win.photo.delete.name");
+   entry = edje_object_part_external_object_get(edje,
+                                                "object.win.photo.delete.name");
 
    buf[0] = '\0';
    EINA_LIST_FOREACH(photos, l, photo)
@@ -494,20 +491,22 @@ inwin_photo_delete_new(Evas_Object *win,
    }
    elm_scrolled_entry_entry_set(entry, buf);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.photo.delete.cancel");
-   evas_object_smart_callback_add(bt, "clicked", _bt_photo_delete_cancel_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.photo.delete.cancel");
+   evas_object_smart_callback_add(bt, "clicked", _bt_photo_delete_cancel_cb,
+                                  inwin);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.photo.delete.apply");
-   evas_object_smart_callback_add(bt, "clicked", _bt_photo_delete_apply_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.photo.delete.apply");
+   evas_object_smart_callback_add(bt, "clicked", _bt_photo_delete_apply_cb,
+                                  inwin);
 
    return inwin;
-                       }
+}
 
 Inwin *
-inwin_album_delete_new(Inwin_Del    del_cb,
-                       void        *data,
-                       Enlil_Album *album)
-                       {
+inwin_album_delete_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
+{
    Evas_Object *bt, *ly, *lbl;
 
    ASSERT_RETURN(album != NULL);
@@ -529,23 +528,26 @@ inwin_album_delete_new(Inwin_Del    del_cb,
    evas_object_show(inwin->inwin);
    elm_notify_content_set(inwin->inwin, ly);
 
-   lbl = edje_object_part_external_object_get(edje, "object.win.album.delete.name");
+   lbl = edje_object_part_external_object_get(edje,
+                                              "object.win.album.delete.name");
    elm_label_label_set(lbl, enlil_album_name_get(album));
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.delete.cancel");
-   evas_object_smart_callback_add(bt, "clicked", _bt_album_delete_cancel_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.album.delete.cancel");
+   evas_object_smart_callback_add(bt, "clicked", _bt_album_delete_cancel_cb,
+                                  inwin);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.delete.apply");
-   evas_object_smart_callback_add(bt, "clicked", _bt_album_delete_apply_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.album.delete.apply");
+   evas_object_smart_callback_add(bt, "clicked", _bt_album_delete_apply_cb,
+                                  inwin);
 
    return inwin;
-                       }
+}
 
 Inwin *
-inwin_album_rename_new(Inwin_Del    del_cb,
-                       void        *data,
-                       Enlil_Album *album)
-                       {
+inwin_album_rename_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
+{
    Evas_Object *lbl, *bt, *ly;
 
    ASSERT_RETURN(del_cb != NULL);
@@ -569,25 +571,31 @@ inwin_album_rename_new(Inwin_Del    del_cb,
    evas_object_show(inwin->inwin);
    elm_notify_content_set(inwin->inwin, ly);
 
-   inwin->entry = edje_object_part_external_object_get(edje, "object.win.album.rename.name");
+   inwin->entry
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.album.rename.name");
 
-   lbl = edje_object_part_external_object_get(edje, "object.win.album.rename.old_name");
+   lbl
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.album.rename.old_name");
    elm_label_label_set(lbl, enlil_album_name_get(album));
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.rename.cancel");
-   evas_object_smart_callback_add(bt, "clicked", _bt_album_rename_cancel_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.album.rename.cancel");
+   evas_object_smart_callback_add(bt, "clicked", _bt_album_rename_cancel_cb,
+                                  inwin);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.album.rename.apply");
-   evas_object_smart_callback_add(bt, "clicked", _bt_album_rename_apply_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.album.rename.apply");
+   evas_object_smart_callback_add(bt, "clicked", _bt_album_rename_apply_cb,
+                                  inwin);
 
    return inwin;
-                       }
+}
 
 Inwin *
-inwin_photo_move_album_new(Inwin_Del  del_cb,
-                           void      *data,
-                           Eina_List *photos)
-                           {
+inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photos)
+{
    Evas_Object *hbox, *fr, *fr2, *lbl, *bt, *tb, *gl;
    char buf[PATH_MAX], buf2[PATH_MAX], buf3[PATH_MAX];
    const Eina_List *l;
@@ -626,7 +634,9 @@ inwin_photo_move_album_new(Inwin_Del  del_cb,
       strncpy(buf3, buf2, PATH_MAX);
    }
 
-   snprintf(buf, PATH_MAX, D_("Move %d photo(s): <br> %s <br><br>into an new album"), eina_list_count(photos), buf3);
+   snprintf(buf, PATH_MAX,
+            D_("Move %d photo(s): <br> %s <br><br>into an new album"),
+            eina_list_count(photos), buf3);
    fr2 = elm_frame_add(enlil_data->win->win);
    elm_object_style_set(fr2, "outdent_top");
    elm_frame_label_set(fr2, "");
@@ -663,9 +673,9 @@ inwin_photo_move_album_new(Inwin_Del  del_cb,
       album_data->inwin_photo_move_album = inwin;
 
       album_data->photo_move_album_list_album_item =
-               elm_genlist_item_append(gl, &itc_album,
-                                       album, NULL, ELM_GENLIST_ITEM_NONE, _gl_album_sel,
-                                       album);
+      elm_genlist_item_append(gl, &itc_album,
+               album, NULL, ELM_GENLIST_ITEM_NONE, _gl_album_sel,
+               album);
    }
 
    hbox = elm_box_add(enlil_data->win->win);
@@ -677,7 +687,8 @@ inwin_photo_move_album_new(Inwin_Del  del_cb,
 
    bt = elm_button_add(enlil_data->win->win);
    elm_button_label_set(bt, D_("Cancel"));
-   evas_object_smart_callback_add(bt, "clicked", _bt_photo_move_album_cancel_cb, inwin);
+   evas_object_smart_callback_add(bt, "clicked",
+                                  _bt_photo_move_album_cancel_cb, inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
@@ -686,7 +697,8 @@ inwin_photo_move_album_new(Inwin_Del  del_cb,
    elm_object_disabled_set(bt, 1);
    elm_button_label_set(bt, D_("Apply"));
    inwin->bt_apply = bt;
-   evas_object_smart_callback_add(bt, "clicked", _bt_photo_move_album_apply_cb, inwin);
+   evas_object_smart_callback_add(bt, "clicked", _bt_photo_move_album_apply_cb,
+                                  inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
@@ -695,7 +707,7 @@ inwin_photo_move_album_new(Inwin_Del  del_cb,
    elm_win_inwin_content_set(inwin->inwin, fr);
 
    return inwin;
-                           }
+}
 
 Inwin *
 inwin_preferences_new()
@@ -717,7 +729,9 @@ inwin_preferences_new()
 
    elm_win_inwin_content_set(inwin->inwin, ly);
 
-   inwin->entry = edje_object_part_external_object_get(edje, "object.win.preferences.video_software");
+   inwin->entry
+            = edje_object_part_external_object_get(edje,
+                                                   "object.win.preferences.video_software");
    elm_scrolled_entry_entry_set(inwin->entry, media_player);
 
    //themes
@@ -727,14 +741,15 @@ inwin_preferences_new()
    itc_theme.func.state_get = NULL;
    itc_theme.func.del = NULL;
 
-   gl = edje_object_part_external_object_get(edje, "object.win.preferences.themes");
+   gl = edje_object_part_external_object_get(edje,
+                                             "object.win.preferences.themes");
 
    inwin->themes = ecore_file_ls(PACKAGE_DATA_DIR "/themes/");
 
    EINA_LIST_FOREACH(inwin->themes, l, str)
    {
       if(!strcmp(str, "default_small.edj"))
-         continue;
+      continue;
 
       Elm_Genlist_Item *item = elm_genlist_item_append(gl, &itc_theme, str, NULL, ELM_GENLIST_ITEM_NONE, _gl_theme_select_cb, str);
 
@@ -751,40 +766,66 @@ inwin_preferences_new()
             }
          }
          else
-            break;
+         break;
       }
    }
    //
 
    //library
-   if(enlil_data->library)
+   if (enlil_data->library)
    {
       edje_object_signal_emit(edje, "win,preference,library,selected", "");
 
-      lbl = edje_object_part_external_object_get(edje, "object.win.preferences.library.name");
+      lbl
+               = edje_object_part_external_object_get(edje,
+                                                      "object.win.preferences.library.name");
       elm_label_label_set(lbl, enlil_library_path_get(enlil_data->library));
 
-      inwin->entry2 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.account");
-      elm_scrolled_entry_entry_set(inwin->entry2, enlil_library_netsync_account_get(enlil_data->library));
+      inwin->entry2
+               = edje_object_part_external_object_get(edje,
+                                                      "object.win.preferences.library.netsync.account");
+      elm_scrolled_entry_entry_set(
+                                   inwin->entry2,
+                                   enlil_library_netsync_account_get(
+                                                                     enlil_data->library));
 
-      inwin->entry3 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.password");
-      elm_scrolled_entry_entry_set(inwin->entry3, enlil_library_netsync_password_get(enlil_data->library));
+      inwin->entry3
+               = edje_object_part_external_object_get(edje,
+                                                      "object.win.preferences.library.netsync.password");
+      elm_scrolled_entry_entry_set(
+                                   inwin->entry3,
+                                   enlil_library_netsync_password_get(
+                                                                      enlil_data->library));
 
-      inwin->entry4 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.host");
-      elm_scrolled_entry_entry_set(inwin->entry4, enlil_library_netsync_host_get(enlil_data->library));
+      inwin->entry4
+               = edje_object_part_external_object_get(edje,
+                                                      "object.win.preferences.library.netsync.host");
+      elm_scrolled_entry_entry_set(
+                                   inwin->entry4,
+                                   enlil_library_netsync_host_get(
+                                                                  enlil_data->library));
 
-      inwin->entry5 = edje_object_part_external_object_get(edje, "object.win.preferences.library.netsync.path");
-      elm_scrolled_entry_entry_set(inwin->entry5, enlil_library_netsync_path_get(enlil_data->library));
+      inwin->entry5
+               = edje_object_part_external_object_get(edje,
+                                                      "object.win.preferences.library.netsync.path");
+      elm_scrolled_entry_entry_set(
+                                   inwin->entry5,
+                                   enlil_library_netsync_path_get(
+                                                                  enlil_data->library));
    }
    else
       edje_object_signal_emit(edje, "win,preference,library,no,selected", "");
    //
 
-   bt = edje_object_part_external_object_get(edje, "object.win.preferences.cancel");
-   evas_object_smart_callback_add(bt, "clicked", _bt_preferences_cancel_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.preferences.cancel");
+   evas_object_smart_callback_add(bt, "clicked", _bt_preferences_cancel_cb,
+                                  inwin);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.preferences.apply");
-   evas_object_smart_callback_add(bt, "clicked", _bt_preferences_apply_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.preferences.apply");
+   evas_object_smart_callback_add(bt, "clicked", _bt_preferences_apply_cb,
+                                  inwin);
 
    return inwin;
 }
@@ -807,8 +848,10 @@ inwin_login_failed_new()
 
    elm_win_inwin_content_set(inwin->inwin, ly);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.login_failed.close");
-   evas_object_smart_callback_add(bt, "clicked", _bt_login_failed_close_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.login_failed.close");
+   evas_object_smart_callback_add(bt, "clicked", _bt_login_failed_close_cb,
+                                  inwin);
 
    return inwin;
 }
@@ -831,141 +874,127 @@ inwin_netsync_error_new(const char *message)
 
    elm_win_inwin_content_set(inwin->inwin, ly);
 
-   lbl = edje_object_part_external_object_get(edje, "object.win.netsync_error.error");
+   lbl = edje_object_part_external_object_get(edje,
+                                              "object.win.netsync_error.error");
    elm_label_label_set(lbl, message);
 
-   bt = edje_object_part_external_object_get(edje, "object.win.netsync_error.close");
-   evas_object_smart_callback_add(bt, "clicked", _bt_login_failed_close_cb, inwin);
+   bt = edje_object_part_external_object_get(edje,
+                                             "object.win.netsync_error.close");
+   evas_object_smart_callback_add(bt, "clicked", _bt_login_failed_close_cb,
+                                  inwin);
 
    return inwin;
 }
 
 static char *
-_gl_album_label_get(void        *data,
-                    Evas_Object *obj,
-                    const char  *part)
-                    {
-   Enlil_Album *album = (Enlil_Album *)data;
+_gl_album_label_get(void *data, Evas_Object *obj, const char *part)
+{
+   Enlil_Album *album = (Enlil_Album *) data;
 
    return strdup(enlil_album_name_get(album));
-                    }
-
-static void
-_gl_album_sel(void        *data,
-              Evas_Object *obj,
-              void        *event_info)
-{
-   Enlil_Album *album = (Enlil_Album *)data;
-   Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-
-   if(album_data->inwin_photo_move_album)
-      elm_object_disabled_set(album_data->inwin_photo_move_album->bt_apply, 0);
 }
 
 static void
-_bt_tag_new_cancel_cb(void        *data,
-                      Evas_Object *obj,
-                      void        *event_info)
+_gl_album_sel(void *data, Evas_Object *obj, void *event_info)
+{
+   Enlil_Album *album = (Enlil_Album *) data;
+   Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+
+   if (album_data->inwin_photo_move_album) elm_object_disabled_set(
+                                                                   album_data->inwin_photo_move_album->bt_apply,
+                                                                   0);
+}
+
+static void
+_bt_tag_new_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    inwin_free(inwin);
 }
 
 static void
-_bt_tag_new_apply_cb(void        *data,
-                     Evas_Object *obj,
-                     void        *event_info)
+_bt_tag_new_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
-   if(s && strlen(s) > 0)
+   if (s && strlen(s) > 0)
    {
       Eina_List *l;
       Enlil_Photo *photo;
-      EINA_LIST_FOREACH(inwin->photos, l, photo)
-      enlil_photo_tag_add(photo, s);
-   }
+EINA_LIST_FOREACH   (inwin->photos, l, photo)
+   enlil_photo_tag_add(photo, s);
+}
 
-   inwin_free(inwin);
+inwin_free(inwin);
 }
 
 static void
-_bt_album_tag_new_apply_cb(void        *data,
-                           Evas_Object *obj,
-                           void        *event_info)
+_bt_album_tag_new_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
    const char *__s = eina_stringshare_add(s);
-   if(s && strlen(s) > 0)
+   if (s && strlen(s) > 0)
    {
       Enlil_Photo *photo;
       Enlil_Photo_Tag *photo_tag;
       Eina_List *l;
       const Eina_List *_l;
-      EINA_LIST_FOREACH(enlil_album_photos_get(inwin->album), l, photo)
+EINA_LIST_FOREACH   (enlil_album_photos_get(inwin->album), l, photo)
+   {
+      EINA_LIST_FOREACH(enlil_photo_tags_get(photo), _l, photo_tag)
       {
-         EINA_LIST_FOREACH(enlil_photo_tags_get(photo), _l, photo_tag)
-                        {
-            if(photo_tag->name == __s)
-               break;
-                        }
-
-         if(!photo_tag)
-            enlil_photo_tag_add(photo, __s);
+         if(photo_tag->name == __s)
+         break;
       }
+
+      if(!photo_tag)
+      enlil_photo_tag_add(photo, __s);
    }
+}
 
-   eina_stringshare_del(__s);
-   inwin_free(inwin);
+eina_stringshare_del(__s);
+inwin_free(inwin);
 }
 
 static void
-_bt_collection_new_cancel_cb(void        *data,
-                             Evas_Object *obj,
-                             void        *event_info)
+_bt_collection_new_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    inwin_free(inwin);
 }
 
 static void
-_bt_collection_new_apply_cb(void        *data,
-                            Evas_Object *obj,
-                            void        *event_info)
+_bt_collection_new_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
-   if(s && strlen(s) > 0)
-      enlil_album_collection_add(inwin->album, s);
+   if (s && strlen(s) > 0) enlil_album_collection_add(inwin->album, s);
 
    inwin_free(inwin);
 }
 
 static void
-_bt_album_new_cancel_cb(void        *data,
-                        Evas_Object *obj,
-                        void        *event_info)
+_bt_album_new_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    inwin_free(inwin);
 }
 
 static void
-_bt_album_new_apply_cb(void        *data,
-                       Evas_Object *obj,
-                       void        *event_info)
+_bt_album_new_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
-   if(s && strlen(s) > 0)
+   if (s && strlen(s) > 0)
    {
       char buf[PATH_MAX];
-      snprintf(buf, PATH_MAX, "%s/%s", enlil_library_path_get(enlil_data->library), s);
+      snprintf(buf, PATH_MAX, "%s/%s",
+               enlil_library_path_get(enlil_data->library), s);
       ecore_file_mkdir(buf);
    }
 
@@ -973,9 +1002,7 @@ _bt_album_new_apply_cb(void        *data,
 }
 
 static void
-_bt_preferences_cancel_cb(void        *data,
-                          Evas_Object *obj,
-                          void        *event_info)
+_bt_preferences_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    char *s;
    Inwin *inwin = data;
@@ -989,16 +1016,14 @@ _bt_preferences_cancel_cb(void        *data,
 }
 
 static void
-_bt_preferences_apply_cb(void        *data,
-                         Evas_Object *obj,
-                         void        *event_info)
+_bt_preferences_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
    enlil_netsync_disconnect();
 
    const char *s = elm_scrolled_entry_entry_get(inwin->entry);
-   if(s && strlen(s) > 0)
+   if (s && strlen(s) > 0)
    {
       Eet_Data_Descriptor *edd;
       Enlil_String string;
@@ -1014,7 +1039,7 @@ _bt_preferences_apply_cb(void        *data,
       eina_stringshare_del(string.string);
    }
 
-   if(enlil_data->library)
+   if (enlil_data->library)
    {
       s = elm_scrolled_entry_entry_get(inwin->entry2);
       enlil_library_netsync_account_set(enlil_data->library, s);
@@ -1029,37 +1054,35 @@ _bt_preferences_apply_cb(void        *data,
       enlil_library_netsync_path_set(enlil_data->library, s);
 
       enlil_netsync_account_set(
-               enlil_library_netsync_host_get(enlil_data->library),
-               enlil_library_netsync_path_get(enlil_data->library),
-               enlil_library_netsync_account_get(enlil_data->library),
-               enlil_library_netsync_password_get(enlil_data->library));
+                                enlil_library_netsync_host_get(
+                                                               enlil_data->library),
+                                enlil_library_netsync_path_get(
+                                                               enlil_data->library),
+                                enlil_library_netsync_account_get(
+                                                                  enlil_data->library),
+                                enlil_library_netsync_password_get(
+                                                                   enlil_data->library));
    }
 
    _bt_preferences_cancel_cb(inwin, NULL, NULL);
 }
 
 static void
-_bt_photo_delete_cancel_cb(void        *data,
-                           Evas_Object *obj,
-                           void        *event_info)
+_bt_photo_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    inwin_free(inwin);
 }
 
 static void
-_bt_login_failed_close_cb(void        *data,
-                          Evas_Object *obj,
-                          void        *event_info)
+_bt_login_failed_close_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    inwin_free(inwin);
 }
 
 static void
-_bt_photo_delete_apply_cb(void        *data,
-                          Evas_Object *obj,
-                          void        *event_info)
+_bt_photo_delete_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    char buf[PATH_MAX];
@@ -1078,18 +1101,14 @@ _bt_photo_delete_apply_cb(void        *data,
 }
 
 static void
-_bt_album_delete_cancel_cb(void        *data,
-                           Evas_Object *obj,
-                           void        *event_info)
+_bt_album_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    inwin_free(inwin);
 }
 
 static void
-_bt_album_delete_apply_cb(void        *data,
-                          Evas_Object *obj,
-                          void        *event_info)
+_bt_album_delete_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    char buf[PATH_MAX];
@@ -1103,18 +1122,14 @@ _bt_album_delete_apply_cb(void        *data,
 }
 
 static void
-_bt_album_rename_cancel_cb(void        *data,
-                           Evas_Object *obj,
-                           void        *event_info)
+_bt_album_rename_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    inwin_free(inwin);
 }
 
 static void
-_bt_album_rename_apply_cb(void        *data,
-                          Evas_Object *obj,
-                          void        *event_info)
+_bt_album_rename_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    Enlil_Album *album = inwin->album;
@@ -1129,8 +1144,9 @@ _bt_album_rename_apply_cb(void        *data,
 
    photos_list_object_header_update(album_data->list_photo_item);
 
-   Enlil_Album *album_prev = enlil_library_album_prev_get(enlil_album_library_get(album), album);
-   if(!album_prev)
+   Enlil_Album *album_prev =
+            enlil_library_album_prev_get(enlil_album_library_get(album), album);
+   if (!album_prev)
    {
       list_left_append_relative(enlil_data->list_left, album, NULL);
       photos_list_object_header_move_after(album_data->list_photo_item, NULL);
@@ -1138,33 +1154,32 @@ _bt_album_rename_apply_cb(void        *data,
    else
    {
       Enlil_Album_Data *album_data_prev = enlil_album_user_data_get(album_prev);
-      list_left_append_relative(enlil_data->list_left, album, album_data_prev->list_album_item);
-      photos_list_object_header_move_after(album_data->list_photo_item, album_data_prev->list_photo_item);
+      list_left_append_relative(enlil_data->list_left, album,
+                                album_data_prev->list_album_item);
+      photos_list_object_header_move_after(album_data->list_photo_item,
+                                           album_data_prev->list_photo_item);
    }
 
    inwin_free(inwin);
 }
 
 static void
-_bt_library_delete_cancel_cb(void        *data,
-                             Evas_Object *obj,
-                             void        *event_info)
+_bt_library_delete_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    inwin_free(inwin);
 }
 
 static void
-_bt_library_delete_apply_cb(void        *data,
-                            Evas_Object *obj,
-                            void        *event_info)
+_bt_library_delete_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
-   if(elm_check_state_get(inwin->check))
+   if (elm_check_state_get(inwin->check))
    {
       //delete file on hard drive
-      eio_dir_unlink(enlil_library_path_get(enlil_data->library), NULL, NULL, NULL);
+      eio_dir_unlink(enlil_library_path_get(enlil_data->library), NULL, NULL,
+                     NULL);
    }
 
    enlil_library_eet_path_delete(enlil_data->library);
@@ -1176,9 +1191,7 @@ _bt_library_delete_apply_cb(void        *data,
 }
 
 static void
-_bt_photo_move_album_cancel_cb(void        *data,
-                               Evas_Object *obj,
-                               void        *event_info)
+_bt_photo_move_album_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    Eina_List *l;
@@ -1195,17 +1208,15 @@ _bt_photo_move_album_cancel_cb(void        *data,
 }
 
 static void
-_bt_photo_move_album_apply_cb(void        *data,
-                              Evas_Object *obj,
-                              void        *event_info)
+_bt_photo_move_album_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
    Elm_Genlist_Item *item = elm_genlist_selected_item_get(inwin->gl);
    char buf[PATH_MAX], buf2[PATH_MAX];
    Eina_List *l;
    Enlil_Photo *photo;
-   if(!item) return;
-   Enlil_Album *album = (Enlil_Album *)elm_genlist_item_data_get(item);
+   if (!item) return;
+   Enlil_Album *album = (Enlil_Album *) elm_genlist_item_data_get(item);
    ASSERT_RETURN_VOID(album != NULL);
 
    EINA_LIST_FOREACH(inwin->photos, l, photo)
@@ -1223,75 +1234,58 @@ _bt_photo_move_album_apply_cb(void        *data,
 }
 
 static void
-_bt_photo_save_cancel_cb(void        *data,
-                         Evas_Object *obj,
-                         void        *event_info)
+_bt_photo_save_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
-   if(inwin->del_cb)
-      inwin->del_cb(inwin->data);
+   if (inwin->del_cb) inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
 
 static void
-_bt_photo_save_dont_cb(void        *data,
-                       Evas_Object *obj,
-                       void        *event_info)
+_bt_photo_save_dont_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
-   if(inwin->close_cb)
-      inwin->close_cb(inwin->data);
+   if (inwin->close_cb) inwin->close_cb(inwin->data);
 
-   if(inwin->del_cb)
-      inwin->del_cb(inwin->data);
+   if (inwin->del_cb) inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
 
 static void
-_bt_photo_save_save_cb(void        *data,
-                       Evas_Object *obj,
-                       void        *event_info)
+_bt_photo_save_save_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
-   if(inwin->apply_cb)
-      inwin->apply_cb(inwin->data);
+   if (inwin->apply_cb) inwin->apply_cb(inwin->data);
 
-   if(inwin->del_cb)
-      inwin->del_cb(inwin->data);
+   if (inwin->del_cb) inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
 
 static void
-_bt_save_as_file_exists_cancel_cb(void        *data,
-                                  Evas_Object *obj,
-                                  void        *event_info)
+_bt_save_as_file_exists_cancel_cb(void *data, Evas_Object *obj,
+                                  void *event_info)
 {
    Inwin *inwin = data;
 
-   if(inwin->del_cb)
-      inwin->del_cb(inwin->data);
+   if (inwin->del_cb) inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
 
 static void
-_bt_save_as_file_exists_apply_cb(void        *data,
-                                 Evas_Object *obj,
-                                 void        *event_info)
+_bt_save_as_file_exists_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
 
-   if(inwin->apply_cb)
-      inwin->apply_cb(inwin->data);
+   if (inwin->apply_cb) inwin->apply_cb(inwin->data);
 
-   if(inwin->del_cb)
-      inwin->del_cb(inwin->data);
+   if (inwin->del_cb) inwin->del_cb(inwin->data);
 
    inwin_free(inwin);
 }
@@ -1301,25 +1295,21 @@ inwin_free(Inwin *inwin)
 {
    ASSERT_RETURN_VOID(inwin != NULL);
 
-   if(inwin->del_cb)
-      inwin->del_cb(inwin->data);
+   if (inwin->del_cb) inwin->del_cb(inwin->data);
 
    EINA_STRINGSHARE_DEL(inwin->file);
    evas_object_del(inwin->inwin);
    FREE(inwin);
 }
 
-
-static char *_gl_theme_label_get(void *data,
-                                 Evas_Object *obj,
-                                 const char  *part)
+static char *
+_gl_theme_label_get(void *data, Evas_Object *obj, const char *part)
 {
    return strdup(data);
 }
 
-static void _gl_theme_select_cb(void        *data,
-                                Evas_Object *obj,
-                                void        *event_info)
+static void
+_gl_theme_select_cb(void *data, Evas_Object *obj, void *event_info)
 {
    char buf[PATH_MAX];
    Enlil_String s;

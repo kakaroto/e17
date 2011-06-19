@@ -1,15 +1,12 @@
 #include "main.h"
 #include "download.h"
 
-static void _done_cb(void        *data,
-                     Enlil_Photo *photo,
-                     int          status);
-static int _progress_cb(void        *data,
-                        Enlil_Photo *photo,
-                        long int     dltotal,
-                        long int     dlnow);
-static void _start_cb(void        *data,
-                      Enlil_Photo *photo);
+static void
+_done_cb(void *data, Enlil_Photo *photo, int status);
+static int
+_progress_cb(void *data, Enlil_Photo *photo, long int dltotal, long int dlnow);
+static void
+_start_cb(void *data, Enlil_Photo *photo);
 
 Download *
 download_new(Evas_Object *parent)
@@ -63,9 +60,7 @@ download_free(Download **_dl)
 }
 
 void
-download_add(Download    *dl,
-             const char  *source,
-             Enlil_Photo *photo)
+download_add(Download *dl, const char *source, Enlil_Photo *photo)
 {
    ASSERT_RETURN_VOID(dl != NULL);
    ASSERT_RETURN_VOID(source != NULL);
@@ -75,8 +70,7 @@ download_add(Download    *dl,
 }
 
 static void
-_start_cb(void        *data,
-          Enlil_Photo *photo)
+_start_cb(void *data, Enlil_Photo *photo)
 {
    Download *dl = data;
 
@@ -89,9 +83,7 @@ _start_cb(void        *data,
 }
 
 static void
-_done_cb(void        *data,
-         Enlil_Photo *photo,
-         int          status)
+_done_cb(void *data, Enlil_Photo *photo, int status)
 {
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
    Enlil_Album *album = enlil_photo_album_get(photo);
@@ -100,43 +92,39 @@ _done_cb(void        *data,
    evas_object_hide(dl->main);
    netsync_job_done_cb(NULL, NULL, enlil_photo_album_get(photo), photo);
 
-   if(photo_data)
-     {
-        //if the photo is new, the data doesnt exists right now
-          photo_data->netsync.state = PHOTO_NETSYNC_NONE;
-          photos_list_object_item_update(photo_data->list_photo_item);
-     }
+   if (photo_data)
+   {
+      //if the photo is new, the data doesnt exists right now
+      photo_data->netsync.state = PHOTO_NETSYNC_NONE;
+      photos_list_object_item_update(photo_data->list_photo_item);
+   }
 
-   if(!enlil_download_photos_of_album_in_list(album, EINA_FALSE))
-     {
-        //set the album as uptodate and force to check if it is really uptodate
-          Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-          album_data->netsync.album_netsync_notuptodate = EINA_FALSE;
-          album_data->netsync.album_notinnetsync = EINA_FALSE;
-          album_data->netsync.album_local_notuptodate = EINA_FALSE;
-          album_data->netsync.photos_notinlocal = EINA_FALSE;
+   if (!enlil_download_photos_of_album_in_list(album, EINA_FALSE))
+   {
+      //set the album as uptodate and force to check if it is really uptodate
+      Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+      album_data->netsync.album_netsync_notuptodate = EINA_FALSE;
+      album_data->netsync.album_notinnetsync = EINA_FALSE;
+      album_data->netsync.album_local_notuptodate = EINA_FALSE;
+      album_data->netsync.photos_notinlocal = EINA_FALSE;
 
-          photos_list_object_header_update(album_data->list_photo_item);
+      photos_list_object_header_update(album_data->list_photo_item);
 
-          album_data->netsync.inwin.notinlocal.is_updating = EINA_FALSE;
-          elm_pager_content_promote(album_data->netsync.inwin.notinlocal.pager,
-                                    album_data->netsync.inwin.notinlocal.pb);
-          elm_progressbar_pulse(album_data->netsync.inwin.notinlocal.pb, EINA_FALSE);
+      album_data->netsync.inwin.notinlocal.is_updating = EINA_FALSE;
+      elm_pager_content_promote(album_data->netsync.inwin.notinlocal.pager,
+                                album_data->netsync.inwin.notinlocal.pb);
+      elm_progressbar_pulse(album_data->netsync.inwin.notinlocal.pb, EINA_FALSE);
 
-          if(album_data->netsync.inwin.win)
-            netsync_sync_update(album);
-     }
+      if (album_data->netsync.inwin.win) netsync_sync_update(album);
+   }
 }
 
 static int
-_progress_cb(void        *data,
-             Enlil_Photo *photo,
-             long int     dltotal,
-             long int     dlnow)
+_progress_cb(void *data, Enlil_Photo *photo, long int dltotal, long int dlnow)
 {
    Download *dl = data;
 
-   elm_progressbar_value_set(dl->pb, (double)dlnow / dltotal);
+   elm_progressbar_value_set(dl->pb, (double) dlnow / dltotal);
 
    return 0;
 }

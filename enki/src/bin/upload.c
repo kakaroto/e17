@@ -1,21 +1,16 @@
-
 #include "main.h"
 #include "upload.h"
 
-static int _progress_cb(void        *data,
-                        Enlil_Photo *photo,
-                        long int     ultotal,
-                        long int     ulnow);
-static void _done_cb(void        *data,
-                     Enlil_Photo *photo,
-                     int          status);
-static void _start_cb(void        *data,
-                      Enlil_Photo *photo);
-static void _error_cb(void        *data,
-                      Enlil_Photo *photo);
-static void _album_create_done_cb(void        *data,
-                                  Enlil_Photo *photo,
-                                  int          status);
+static int
+_progress_cb(void *data, Enlil_Photo *photo, long int ultotal, long int ulnow);
+static void
+_done_cb(void *data, Enlil_Photo *photo, int status);
+static void
+_start_cb(void *data, Enlil_Photo *photo);
+static void
+_error_cb(void *data, Enlil_Photo *photo);
+static void
+_album_create_done_cb(void *data, Enlil_Photo *photo, int status);
 
 Upload *
 upload_new(Evas_Object *parent)
@@ -69,8 +64,7 @@ upload_free(Upload **_ul)
 }
 
 void
-upload_start(Upload      *ul,
-             Enlil_Photo *photo)
+upload_start(Upload *ul, Enlil_Photo *photo)
 {
    evas_object_show(ul->main);
 
@@ -80,8 +74,7 @@ upload_start(Upload      *ul,
 }
 
 void
-upload_done(Upload      *ul,
-            Enlil_Photo *photo)
+upload_done(Upload *ul, Enlil_Photo *photo)
 {
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
    Enlil_Album *album = enlil_photo_album_get(photo);

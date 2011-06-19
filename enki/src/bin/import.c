@@ -2,7 +2,8 @@
 #include "evas_object/photos_list_object.h"
 #include "evas_object/photo_object.h"
 
-static Evas_Object *inwin, *inwin2, *fs, *photos, *gl_albums, *bt_import, *bt_close, *pb, *radio_copy, *radio_move;
+static Evas_Object *inwin, *inwin2, *fs, *photos, *gl_albums, *bt_import,
+         *bt_close, *pb, *radio_copy, *radio_move;
 static PL_Header_Item *header;
 static PL_Header_Item_Class itc_header;
 static PL_Child_Item_Class itc_child;
@@ -13,59 +14,49 @@ static Eina_List *photos_data = NULL;
 static Eina_List *current_import = NULL;
 static int nb_imports;
 
-static void _fs_selected_cb(void        *data,
-                            Evas_Object *obj,
-                            void        *event_info);
-static Evas_Object *_icon_get(const void  *data,
-                              Evas_Object *obj);
+static void
+_fs_selected_cb(void *data, Evas_Object *obj, void *event_info);
+static Evas_Object *
+_icon_get(const void *data, Evas_Object *obj);
 
-static void _import_thumb_done_cb(void        *data,
-                                  Enlil_Photo *photo,
-                                  const char  *file);
-static void _import_thumb_error_cb(void        *data,
-                                   Enlil_Photo *photo);
+static void
+_import_thumb_done_cb(void *data, Enlil_Photo *photo, const char *file);
+static void
+_import_thumb_error_cb(void *data, Enlil_Photo *photo);
 
-void _import_photo_data_free(Enlil_Photo *photo,
-                             void        *_data);
+void
+_import_photo_data_free(Enlil_Photo *photo, void *_data);
 
-static void _bt_select_all_cb(void        *data,
-                              Evas_Object *obj,
-                              void        *event_info);
-static void _bt_unselect_all_cb(void        *data,
-                                Evas_Object *obj,
-                                void        *event_info);
+static void
+_bt_select_all_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_unselect_all_cb(void *data, Evas_Object *obj, void *event_info);
 
 static Elm_Genlist_Item_Class itc_album;
-static char *_gl_album_label_get(void        *data,
-                                 Evas_Object *obj,
-                                 const char  *part);
-static void _gl_album_sel(void        *data,
-                          Evas_Object *obj,
-                          void        *event_info);
-static void _bt_album_new_cb(void        *data,
-                             Evas_Object *obj,
-                             void        *event_info);
+static char *
+_gl_album_label_get(void *data, Evas_Object *obj, const char *part);
+static void
+_gl_album_sel(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_album_new_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _bt_cancel_cb(void        *data,
-                          Evas_Object *obj,
-                          void        *event_info);
-static void _bt_import_cb(void        *data,
-                          Evas_Object *obj,
-                          void        *event_info);
+static void
+_bt_cancel_cb(void *data, Evas_Object *obj, void *event_info);
+static void
+_bt_import_cb(void *data, Evas_Object *obj, void *event_info);
 
-static void _import_next(void         *data,
-                         Ecore_Thread *thread);
-static void _import_thread(void         *data,
-                           Ecore_Thread *thread);
-static void _bt_close_cb(void        *data,
-                         Evas_Object *obj,
-                         void        *event_info);
+static void
+_import_next(void *data, Ecore_Thread *thread);
+static void
+_import_thread(void *data, Ecore_Thread *thread);
+static void
+_bt_close_cb(void *data, Evas_Object *obj, void *event_info);
 
 typedef struct _Import_Photo_Data
 {
-   Enlil_Photo   *photo;
+   Enlil_Photo *photo;
    PL_Child_Item *list_photo_item;
-   Eina_Bool      copy_done : 1;
+   Eina_Bool copy_done :1;
 } _Import_Photo_Data;
 
 Evas_Object *
@@ -73,7 +64,7 @@ import_new(Evas_Object *win)
 {
    Evas_Object *fr, *bt, *bx, *bx2, *vbox, *gl, *tb, *tb2;
    Eina_List *l;
-   Enlil_Album *album;
+   Enlil_Album * album;
 
    //create inwin & file selector
    inwin = elm_win_inwin_add(win);
@@ -190,13 +181,13 @@ import_new(Evas_Object *win)
    itc_album.func.del = NULL;
 
    EINA_LIST_FOREACH(enlil_library_albums_get(enlil_data->library), l, album)
-     {
-        Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-        album_data->import_list_album_item =
-          elm_genlist_item_append(gl_albums, &itc_album,
-                                  album, NULL, ELM_GENLIST_ITEM_NONE, _gl_album_sel,
-                                  album);
-     }
+   {
+      Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
+      album_data->import_list_album_item =
+      elm_genlist_item_append(gl_albums, &itc_album,
+               album, NULL, ELM_GENLIST_ITEM_NONE, _gl_album_sel,
+               album);
+   }
 
    bt = elm_button_add(inwin);
    bt_import = bt;
@@ -217,7 +208,8 @@ import_new(Evas_Object *win)
 
    radio_copy = elm_radio_add(win);
    elm_radio_state_value_set(radio_copy, 0);
-   evas_object_size_hint_weight_set(radio_copy, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(radio_copy, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(radio_copy, EVAS_HINT_FILL, 0.5);
    elm_radio_label_set(radio_copy, "Copy photos");
    elm_box_pack_end(bx2, radio_copy);
@@ -225,7 +217,8 @@ import_new(Evas_Object *win)
 
    radio_move = elm_radio_add(win);
    elm_radio_state_value_set(radio_move, 1);
-   evas_object_size_hint_weight_set(radio_move, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_weight_set(radio_move, EVAS_HINT_EXPAND,
+                                    EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(radio_move, EVAS_HINT_FILL, 0.5);
    elm_radio_group_add(radio_move, radio_copy);
    elm_radio_label_set(radio_move, "Move photos");
@@ -262,9 +255,7 @@ import_new(Evas_Object *win)
 }
 
 static void
-_fs_selected_cb(void        *data,
-                Evas_Object *obj,
-                void        *event_info)
+_fs_selected_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_List *l, *_l;
    char *file;
@@ -275,82 +266,82 @@ _fs_selected_cb(void        *data,
 
    //delete all list
    EINA_LIST_FREE(photos_data, photo)
-     enlil_photo_free(&photo);
+   enlil_photo_free(&photo);
    //
 
    l = ecore_file_ls(event_info);
 
-   EINA_LIST_FOREACH(l, _l, file)
-     {
-        snprintf(buf, PATH_MAX, "%s/%s", (char *)event_info, file);
-        if(enlil_photo_is(buf)
-           || enlil_video_is(buf)
-           || enlil_gpx_is(buf))
-          {
-             photo = enlil_photo_new();
-             enlil_photo_path_set(photo, event_info);
-             enlil_photo_file_name_set(photo, file);
-             enlil_photo_eet_save_set(photo, 0);
+EINA_LIST_FOREACH   (l, _l, file)
+   {
+      snprintf(buf, PATH_MAX, "%s/%s", (char *)event_info, file);
+      if(enlil_photo_is(buf)
+               || enlil_video_is(buf)
+               || enlil_gpx_is(buf))
+      {
+         photo = enlil_photo_new();
+         enlil_photo_path_set(photo, event_info);
+         enlil_photo_file_name_set(photo, file);
+         enlil_photo_eet_save_set(photo, 0);
 
-             char *name = ecore_file_strip_ext(file);
-             enlil_photo_name_set(photo, name);
-             free(name);
+         char *name = ecore_file_strip_ext(file);
+         enlil_photo_name_set(photo, name);
+         free(name);
 
-             if(enlil_photo_is(buf))
-               enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_PHOTO);
-             else if(enlil_video_is(buf))
-               enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_VIDEO);
-             else if(enlil_gpx_is(buf))
-               enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_GPX);
+         if(enlil_photo_is(buf))
+         enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_PHOTO);
+         else if(enlil_video_is(buf))
+         enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_VIDEO);
+         else if(enlil_gpx_is(buf))
+         enlil_photo_type_set(photo, ENLIL_PHOTO_TYPE_GPX);
 
-             _Import_Photo_Data *photo_data = calloc(1, sizeof(_Import_Photo_Data));
-             photo_data->photo = photo;
-             enlil_photo_user_data_set(photo, photo_data, _import_photo_data_free);
+         _Import_Photo_Data *photo_data = calloc(1, sizeof(_Import_Photo_Data));
+         photo_data->photo = photo;
+         enlil_photo_user_data_set(photo, photo_data, _import_photo_data_free);
 
-             photos_data = eina_list_append(photos_data, photo);
-             photo_data->list_photo_item =
-               photos_list_object_item_append(photos, &itc_child, header, photo);
-          }
-     }
+         photos_data = eina_list_append(photos_data, photo);
+         photo_data->list_photo_item =
+         photos_list_object_item_append(photos, &itc_child, header, photo);
+      }
+   }
 
    EINA_LIST_FREE(l, file)
-     FREE(file);
+   FREE(file);
 }
 
 static Evas_Object *
-_icon_get(const void  *data,
-          Evas_Object *obj)
+_icon_get(const void *data, Evas_Object *obj)
 {
    const char *s;
-   Enlil_Photo *photo = (Enlil_Photo *)data;
+   Enlil_Photo *photo = (Enlil_Photo *) data;
    _Import_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
 
    Evas_Object *o = photo_object_add(obj);
    photo_object_theme_file_set(o, Theme, "photo/import");
 
-   if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_PHOTO
-      || enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
-     {
-        s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_NORMAL,
-                                  _import_thumb_done_cb, _import_thumb_error_cb, NULL);
+   if (enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_PHOTO
+            || enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
+   {
+      s = enlil_thumb_photo_get(photo, Enlil_THUMB_FDO_NORMAL,
+                                _import_thumb_done_cb, _import_thumb_error_cb,
+                                NULL);
 
-        if(s)
-          photo_object_file_set(o, s, NULL);
-        else
-          photo_object_progressbar_set(o, EINA_TRUE);
+      if (s)
+         photo_object_file_set(o, s, NULL);
+      else
+         photo_object_progressbar_set(o, EINA_TRUE);
 
-        if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO)
-          photo_object_camera_set(o, EINA_TRUE);
-     }
-   else  //GPX
-     {
-        photo_object_gpx_set(o);
-     }
+      if (enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_VIDEO) photo_object_camera_set(
+                                                                                         o,
+                                                                                         EINA_TRUE);
+   }
+   else //GPX
+   {
+      photo_object_gpx_set(o);
+   }
 
    photo_object_text_set(o, enlil_photo_name_get(photo));
 
-   if(photo_data->copy_done)
-     photo_object_done_set(o, EINA_TRUE);
+   if (photo_data->copy_done) photo_object_done_set(o, EINA_TRUE);
 
    evas_object_show(o);
 
@@ -358,102 +349,84 @@ _icon_get(const void  *data,
 }
 
 static void
-_bt_select_all_cb(void        *data,
-                  Evas_Object *obj,
-                  void        *event_info)
+_bt_select_all_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_List *l;
    Enlil_Photo *photo;
    _Import_Photo_Data *photo_data;
 
-   EINA_LIST_FOREACH(photos_data, l, photo)
-     {
-        photo_data = enlil_photo_user_data_get(photo);
-        photos_list_object_item_selected_set(photo_data->list_photo_item, EINA_TRUE);
-     }
+EINA_LIST_FOREACH(photos_data, l, photo)
+{
+   photo_data = enlil_photo_user_data_get(photo);
+   photos_list_object_item_selected_set(photo_data->list_photo_item, EINA_TRUE);
+}
 }
 
 static void
-_bt_unselect_all_cb(void        *data,
-                    Evas_Object *obj,
-                    void        *event_info)
+_bt_unselect_all_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eina_List *l;
    Enlil_Photo *photo;
    _Import_Photo_Data *photo_data;
 
-   EINA_LIST_FOREACH(photos_data, l, photo)
-     {
-        photo_data = enlil_photo_user_data_get(photo);
-        photos_list_object_item_selected_set(photo_data->list_photo_item, EINA_FALSE);
-     }
+EINA_LIST_FOREACH(photos_data, l, photo)
+{
+   photo_data = enlil_photo_user_data_get(photo);
+   photos_list_object_item_selected_set(photo_data->list_photo_item, EINA_FALSE);
+}
 }
 
 static void
-_import_thumb_done_cb(void        *data,
-                      Enlil_Photo *photo,
-                      const char  *file)
+_import_thumb_done_cb(void *data, Enlil_Photo *photo, const char *file)
 {
    _Import_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
    photos_list_object_item_update(photo_data->list_photo_item);
 }
 
 static void
-_import_thumb_error_cb(void        *data,
-                       Enlil_Photo *photo)
+_import_thumb_error_cb(void *data, Enlil_Photo *photo)
 {
 }
 
 static char *
-_gl_album_label_get(void        *data,
-                    Evas_Object *obj,
-                    const char  *part)
+_gl_album_label_get(void *data, Evas_Object *obj, const char *part)
 {
-   Enlil_Album *album = (Enlil_Album *)data;
+   Enlil_Album *album = (Enlil_Album *) data;
 
    return strdup(enlil_album_name_get(album));
 }
 
 static void
-_gl_album_sel(void        *data,
-              Evas_Object *obj,
-              void        *event_info)
+_gl_album_sel(void *data, Evas_Object *obj, void *event_info)
 {
    //Enlil_Album *album = (Enlil_Album *)data;
    //Enlil_Album_Data *enlil_album_data = (Enlil_Album_Data*) enlil_album_user_data_get(album);
 
-       elm_object_disabled_set(bt_import, 0);
+   elm_object_disabled_set(bt_import, 0);
 }
 
 static void
-_bt_album_new_cb(void        *data,
-                 Evas_Object *obj,
-                 void        *event_info)
+_bt_album_new_cb(void *data, Evas_Object *obj, void *event_info)
 {
    inwin_album_new_new(NULL, NULL);
 }
 
 static void
-_bt_cancel_cb(void        *data,
-              Evas_Object *obj,
-              void        *event_info)
+_bt_cancel_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Enlil_Photo *photo;
 
    EINA_LIST_FREE(photos_data, photo)
-     enlil_photo_free(&photo);
+   enlil_photo_free(&photo);
 
    evas_object_del(inwin);
-   if(inwin2)
-     evas_object_del(inwin2);
+   if (inwin2) evas_object_del(inwin2);
    inwin2 = NULL;
    inwin = NULL;
 }
 
 static void
-_bt_import_cb(void        *data,
-              Evas_Object *obj,
-              void        *event_info)
+_bt_import_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *tb, *bt, *fr, *_pb;
    Enlil_Photo *photo;
@@ -462,26 +435,26 @@ _bt_import_cb(void        *data,
    Eina_List *items;
    Elm_Genlist_Item *item = elm_genlist_selected_item_get(gl_albums);
    ASSERT_RETURN_VOID(item != NULL);
-   album = (Enlil_Album *)elm_genlist_item_data_get(item);
+   album = (Enlil_Album *) elm_genlist_item_data_get(item);
 
    items = photos_list_object_selected_get(photos);
    EINA_LIST_FOREACH_SAFE(photos_data, l, l_next, photo)
-     {
-        Eina_Bool find = EINA_FALSE;
-        EINA_LIST_FOREACH(items, l2, pl_item)
-          {
-             if(photos_list_object_item_data_get(pl_item) == photo)
-               {
-                  find = EINA_TRUE;
-                  break;
-               }
-          }
-        if(!find)
-          {
-             photos_data = eina_list_remove(photos_data, photo);
-             enlil_photo_free(&photo);
-          }
-     }
+   {
+      Eina_Bool find = EINA_FALSE;
+      EINA_LIST_FOREACH(items, l2, pl_item)
+      {
+         if(photos_list_object_item_data_get(pl_item) == photo)
+         {
+            find = EINA_TRUE;
+            break;
+         }
+      }
+      if(!find)
+      {
+         photos_data = eina_list_remove(photos_data, photo);
+         enlil_photo_free(&photo);
+      }
+   }
    photos_list_object_top_goto(photos);
 
    inwin2 = elm_notify_add(enlil_data->win->win);
@@ -536,88 +509,87 @@ _bt_import_cb(void        *data,
 }
 
 static void
-_import_next(void         *data,
-             Ecore_Thread *thread)
+_import_next(void *data, Ecore_Thread *thread)
 {
    char buf[PATH_MAX];
 
-   if(!current_import)
-     current_import = photos_data;
+   if (!current_import)
+      current_import = photos_data;
    else
-     {
-        Enlil_Photo *photo = eina_list_data_get(current_import);
-        _Import_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-        photo_data->copy_done = EINA_TRUE;
-        const Evas_Object *o = photos_list_object_item_object_get(photo_data->list_photo_item);
-        if(o)
-          photo_object_done_set((Evas_Object *)o, EINA_TRUE);
-        current_import = eina_list_next(current_import);
-        if(current_import)
-          {
-             photo = eina_list_data_get(current_import);
-             photo_data = enlil_photo_user_data_get(photo);
-             photos_list_object_item_bring_in(photo_data->list_photo_item);
-          }
-     }
+   {
+      Enlil_Photo *photo = eina_list_data_get(current_import);
+      _Import_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+      photo_data->copy_done = EINA_TRUE;
+      const Evas_Object *o =
+               photos_list_object_item_object_get(photo_data->list_photo_item);
+      if (o) photo_object_done_set((Evas_Object *) o, EINA_TRUE);
+      current_import = eina_list_next(current_import);
+      if (current_import)
+      {
+         photo = eina_list_data_get(current_import);
+         photo_data = enlil_photo_user_data_get(photo);
+         photos_list_object_item_bring_in(photo_data->list_photo_item);
+      }
+   }
    nb_imports++;
 
-   snprintf(buf, PATH_MAX, D_("%d / %d"), nb_imports, eina_list_count(photos_data));
+   snprintf(buf, PATH_MAX, D_("%d / %d"), nb_imports,
+            eina_list_count(photos_data));
 
    elm_progressbar_label_set(pb, buf);
-   elm_progressbar_value_set(pb, nb_imports / (float)eina_list_count(photos_data));
+   elm_progressbar_value_set(pb, nb_imports
+            / (float) eina_list_count(photos_data));
    evas_render(evas_object_evas_get(pb));
 
-   if(!current_import)
-     {
-        //done
-          elm_object_disabled_set(bt_close, 0);
-          enlil_album_monitor_start(album);
-          monitor_album_update_cb(enlil_data, enlil_data->library, album);
-     }
+   if (!current_import)
+   {
+      //done
+      elm_object_disabled_set(bt_close, 0);
+      enlil_album_monitor_start(album);
+      monitor_album_update_cb(enlil_data, enlil_data->library, album);
+   }
    else
-     ecore_thread_run(_import_thread, _import_next, NULL, current_import);
+      ecore_thread_run(_import_thread, _import_next, NULL, current_import);
 }
 
 static void
-_import_thread(void         *data,
-               Ecore_Thread *thread)
+_import_thread(void *data, Ecore_Thread *thread)
 {
    char path[PATH_MAX], path2[PATH_MAX], path3[PATH_MAX];
    Enlil_Photo *photo = eina_list_data_get(data);
 
-   snprintf(path, PATH_MAX, "%s/%s", enlil_album_path_get(album), enlil_album_file_name_get(album));
-   snprintf(path2, PATH_MAX, "%s/%s", enlil_photo_path_get(photo), enlil_photo_file_name_get(photo));
+   snprintf(path, PATH_MAX, "%s/%s", enlil_album_path_get(album),
+            enlil_album_file_name_get(album));
+   snprintf(path2, PATH_MAX, "%s/%s", enlil_photo_path_get(photo),
+            enlil_photo_file_name_get(photo));
    snprintf(path3, PATH_MAX, "%s/%s", path, enlil_photo_file_name_get(photo));
    LOG_INFO("Copy %s into %s", path2, path3);
-   if(!elm_radio_value_get(radio_copy))
-     ecore_file_cp(path2, path3);
+   if (!elm_radio_value_get(radio_copy))
+      ecore_file_cp(path2, path3);
    else
-     ecore_file_mv(path2, path3);
+      ecore_file_mv(path2, path3);
 }
 
 static void
-_bt_close_cb(void        *data,
-             Evas_Object *obj,
-             void        *event_info)
+_bt_close_cb(void *data, Evas_Object *obj, void *event_info)
 {
    _bt_cancel_cb(NULL, NULL, NULL);
 }
 
 void
-_import_photo_data_free(Enlil_Photo *photo,
-                        void        *_data)
+_import_photo_data_free(Enlil_Photo *photo, void *_data)
 {
    Eina_List *l;
-   Enlil_Album *album;
+   Enlil_Album * album;
    Enlil_Album_Data *album_data;
    _Import_Photo_Data *data = _data;
    //Enlil_Data *enlil_data = data->enlil_data;
 
    EINA_LIST_FOREACH(enlil_library_albums_get(enlil_data->library), l, album)
-     {
-        album_data = enlil_album_user_data_get(album);
-        album_data->import_list_album_item = NULL;
-     }
+   {
+      album_data = enlil_album_user_data_get(album);
+      album_data->import_list_album_item = NULL;
+   }
 
    enlil_thumb_photo_clear(photo);
    photos_list_object_item_del(data->list_photo_item);
@@ -628,12 +600,12 @@ _import_photo_data_free(Enlil_Photo *photo,
 void
 import_album_new(Enlil_Album *album)
 {
-   if(!inwin) return;
+   if (!inwin) return;
 
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
-   album_data->import_list_album_item =
-     elm_genlist_item_append(gl_albums, &itc_album,
-                             album, NULL, ELM_GENLIST_ITEM_NONE, _gl_album_sel,
-                             album);
+   album_data->import_list_album_item
+            = elm_genlist_item_append(gl_albums, &itc_album, album, NULL,
+                                      ELM_GENLIST_ITEM_NONE, _gl_album_sel,
+                                      album);
 }
 

@@ -7,92 +7,77 @@ static Evas_Object *win = NULL;
 static Evas_Object *layout;
 static Evas_Object *slideshow, *bt_start, *bt_stop, *edje, *bt_layout, *spin;
 static Elm_Slideshow_Item_Class itc;
-static Evas_Object *_get(void        *data,
-                         Evas_Object *obj);
+static Evas_Object *
+_get(void *data, Evas_Object *obj);
 static Enlil_Album *galbum = NULL;
 static Enlil_Library *glibrary = NULL;
 
 static void
-_key_up_cb(void        *data,
-           Evas        *e,
-           Evas_Object *obj,
-           void        *event_info)
+_key_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Evas_Event_Key_Up *ev = (Evas_Event_Key_Up *)event_info;
+   Evas_Event_Key_Up *ev = (Evas_Event_Key_Up *) event_info;
 
    //printf("%s\n", ev->key);
-   if(!strcmp(ev->key, "Right") || !strcmp(ev->key, "Up"))
-     elm_slideshow_next(slideshow);
-   else if(!strcmp(ev->key, "Left") || !strcmp(ev->key, "Down"))
-     elm_slideshow_previous(slideshow);
-   else if(!strcmp(ev->key, "Escape"))
-     slideshow_hide();
-   else if(!strcmp(ev->key, "Home"))
-     {
-        const Eina_List *l = elm_slideshow_items_get(slideshow);
-        elm_slideshow_show(eina_list_data_get(l));
-     }
-   else if(!strcmp(ev->key, "End"))
-     {
-        const Eina_List *l = elm_slideshow_items_get(slideshow);
-        elm_slideshow_show(eina_list_data_get(eina_list_last(l)));
-     }
+   if (!strcmp(ev->key, "Right") || !strcmp(ev->key, "Up"))
+      elm_slideshow_next(slideshow);
+   else if (!strcmp(ev->key, "Left") || !strcmp(ev->key, "Down"))
+      elm_slideshow_previous(slideshow);
+   else if (!strcmp(ev->key, "Escape"))
+      slideshow_hide();
+   else if (!strcmp(ev->key, "Home"))
+   {
+      const Eina_List *l = elm_slideshow_items_get(slideshow);
+      elm_slideshow_show(eina_list_data_get(l));
+   }
+   else if (!strcmp(ev->key, "End"))
+   {
+      const Eina_List *l = elm_slideshow_items_get(slideshow);
+      elm_slideshow_show(eina_list_data_get(eina_list_last(l)));
+   }
 }
 
 static void
-_bt_layout_cb(void        *data,
-              Evas_Object *obj,
-              void        *event_info)
+_bt_layout_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   if(!strcmp(elm_slideshow_layout_get(data), "fullscreen"))
-     {
-        elm_slideshow_layout_set(data, "not_fullscreen");
-        edje_object_signal_emit(elm_layout_edje_get(layout), "windowed", "");
-     }
+   if (!strcmp(elm_slideshow_layout_get(data), "fullscreen"))
+   {
+      elm_slideshow_layout_set(data, "not_fullscreen");
+      edje_object_signal_emit(elm_layout_edje_get(layout), "windowed", "");
+   }
    else
-     {
-        elm_slideshow_layout_set(data, "fullscreen");
-        edje_object_signal_emit(elm_layout_edje_get(layout), "fullscreen", "");
-     }
+   {
+      elm_slideshow_layout_set(data, "fullscreen");
+      edje_object_signal_emit(elm_layout_edje_get(layout), "fullscreen", "");
+   }
 }
 
 static void
-_next(void        *data,
-      Evas_Object *obj,
-      void        *event_info)
+_next(void *data, Evas_Object *obj, void *event_info)
 {
    elm_slideshow_next(data);
 }
 
 static void
-_previous(void        *data,
-          Evas_Object *obj,
-          void        *event)
+_previous(void *data, Evas_Object *obj, void *event)
 {
    elm_slideshow_previous(slideshow);
 }
 
 static void
-_hv_select(void        *data,
-           Evas_Object *obj,
-           void        *event_info)
+_hv_select(void *data, Evas_Object *obj, void *event_info)
 {
    elm_slideshow_transition_set(slideshow, data);
    elm_hoversel_label_set(obj, data);
 }
 
 static void
-_start(void        *data,
-       Evas_Object *obj,
-       void        *event_info)
+_start(void *data, Evas_Object *obj, void *event_info)
 {
    slideshow_start();
 }
 
 static void
-_stop(void        *data,
-      Evas_Object *obj,
-      void        *event_info)
+_stop(void *data, Evas_Object *obj, void *event_info)
 {
    elm_slideshow_timeout_set(slideshow, 0);
    elm_object_disabled_set(bt_start, 0);
@@ -100,29 +85,27 @@ _stop(void        *data,
 }
 
 static void
-_spin(void        *data,
-      Evas_Object *obj,
-      void        *event_info)
+_spin(void *data, Evas_Object *obj, void *event_info)
 {
-   if(elm_slideshow_timeout_get(slideshow) > 0)
-     elm_slideshow_timeout_set(slideshow, (int)elm_spinner_value_get(data));
+   if (elm_slideshow_timeout_get(slideshow) > 0) elm_slideshow_timeout_set(
+                                                                           slideshow,
+                                                                           (int) elm_spinner_value_get(
+                                                                                                       data));
 }
 
 static void
-_enki_close(void        *data,
-            Evas_Object *obj,
-            void        *event_info)
+_enki_close(void *data, Evas_Object *obj, void *event_info)
 {
    slideshow_hide();
 }
 
 static Evas_Object *
-_get(void        *data,
-     Evas_Object *obj)
+_get(void *data, Evas_Object *obj)
 {
    char buf[PATH_MAX];
 
-   snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(data), enlil_photo_file_name_get(data));
+   snprintf(buf, PATH_MAX, "%s/%s", enlil_photo_path_get(data),
+            enlil_photo_file_name_get(data));
    //Evas_Object *o = photo_object_add(slideshow);
    //photo_object_theme_file_set(o, THEME, "photo/slideshow");
    //photo_object_file_set(o, buf, NULL);
@@ -146,8 +129,7 @@ _init_slideshow()
    const Eina_List *l;
    const char *transition;
 
-   if(win)
-     return;
+   if (win) return;
 
    itc.func.get = _get;
    itc.func.del = NULL;
@@ -181,7 +163,8 @@ _init_slideshow()
    evas_object_smart_callback_add(bt, "clicked", _next, slideshow);
 
    bt_layout = edje_object_part_external_object_get(edje, "object.layout");
-   evas_object_smart_callback_add(bt_layout, "clicked", _bt_layout_cb, slideshow);
+   evas_object_smart_callback_add(bt_layout, "clicked", _bt_layout_cb,
+                                  slideshow);
 
    bt = edje_object_part_external_object_get(edje, "object.close");
    evas_object_smart_callback_add(bt, "clicked", _enki_close, slideshow);
@@ -198,8 +181,12 @@ _init_slideshow()
 
    hv = edje_object_part_external_object_get(edje, "object.styles");
    EINA_LIST_FOREACH(elm_slideshow_transitions_get(slideshow), l, transition)
-     elm_hoversel_item_add(hv, transition, NULL, 0, _hv_select, transition);
-   elm_hoversel_label_set(hv, eina_list_data_get(elm_slideshow_transitions_get(slideshow)));
+   elm_hoversel_item_add(hv, transition, NULL, 0, _hv_select, transition);
+   elm_hoversel_label_set(
+                          hv,
+                          eina_list_data_get(
+                                             elm_slideshow_transitions_get(
+                                                                           slideshow)));
    //
 
    evas_object_event_callback_add(win, EVAS_CALLBACK_KEY_UP, _key_up_cb, NULL);
@@ -209,7 +196,7 @@ _init_slideshow()
 void
 slideshow_start()
 {
-   elm_slideshow_timeout_set(slideshow, (int)elm_spinner_value_get(spin));
+   elm_slideshow_timeout_set(slideshow, (int) elm_spinner_value_get(spin));
 
    elm_object_disabled_set(bt_start, 1);
    elm_object_disabled_set(bt_stop, 0);
@@ -232,8 +219,7 @@ slideshow_win_get()
 }
 
 void
-slideshow_album_add(Enlil_Album *album,
-                    Enlil_Photo *_photo)
+slideshow_album_add(Enlil_Album *album, Enlil_Photo *_photo)
 {
    Eina_List *l;
    Enlil_Photo *photo;
@@ -243,23 +229,21 @@ slideshow_album_add(Enlil_Album *album,
 
    galbum = album;
    EINA_LIST_FOREACH(enlil_album_photos_get(album), l, photo)
-     {
-        if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_PHOTO)
-          {
-             Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-             photo_data->slideshow_item = elm_slideshow_item_add(slideshow, &itc, photo);
+   {
+      if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_PHOTO)
+      {
+         Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+         photo_data->slideshow_item = elm_slideshow_item_add(slideshow, &itc, photo);
 
-             if(photo == _photo)
-               item = photo_data->slideshow_item;
-          }
-     }
-   if(item)
-     elm_slideshow_show(item);
+         if(photo == _photo)
+         item = photo_data->slideshow_item;
+      }
+   }
+   if (item) elm_slideshow_show(item);
 }
 
 void
-slideshow_library_add(Enlil_Library *library,
-                      Enlil_Photo   *_photo)
+slideshow_library_add(Enlil_Library *library, Enlil_Photo *_photo)
 {
    Eina_List *l, *l2;
    Enlil_Photo *photo;
@@ -270,21 +254,20 @@ slideshow_library_add(Enlil_Library *library,
 
    glibrary = library;
    EINA_LIST_FOREACH(enlil_library_albums_get(library), l, album)
-     {
-        EINA_LIST_FOREACH(enlil_album_photos_get(album), l2, photo)
-          {
-             if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_PHOTO)
-               {
-                  Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-                  photo_data->slideshow_item = elm_slideshow_item_add(slideshow, &itc, photo);
-                  if(photo == _photo)
-                    item = photo_data->slideshow_item;
-               }
-          }
-     }
+   {
+      EINA_LIST_FOREACH(enlil_album_photos_get(album), l2, photo)
+      {
+         if(enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_PHOTO)
+         {
+            Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+            photo_data->slideshow_item = elm_slideshow_item_add(slideshow, &itc, photo);
+            if(photo == _photo)
+            item = photo_data->slideshow_item;
+         }
+      }
+   }
 
-   if(item)
-     elm_slideshow_show(item);
+   if (item) elm_slideshow_show(item);
 }
 
 void
@@ -298,28 +281,28 @@ slideshow_clear()
 
    elm_slideshow_clear(slideshow);
 
-   if(galbum)
-     {
-        EINA_LIST_FOREACH(enlil_album_photos_get(galbum), l, photo)
-          {
-             Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-             photo_data->slideshow_item = NULL;
-          }
-        galbum = NULL;
-     }
+   if (galbum)
+   {
+      EINA_LIST_FOREACH(enlil_album_photos_get(galbum), l, photo)
+      {
+         Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+         photo_data->slideshow_item = NULL;
+      }
+      galbum = NULL;
+   }
 
-   if(glibrary)
-     {
-        EINA_LIST_FOREACH(enlil_library_albums_get(glibrary), l, album)
-          {
-             EINA_LIST_FOREACH(enlil_album_photos_get(album), l2, photo)
-               {
-                  Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
-                  photo_data->slideshow_item = NULL;
-               }
-          }
-        glibrary = NULL;
-     }
+   if (glibrary)
+   {
+      EINA_LIST_FOREACH(enlil_library_albums_get(glibrary), l, album)
+      {
+         EINA_LIST_FOREACH(enlil_album_photos_get(album), l2, photo)
+         {
+            Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
+            photo_data->slideshow_item = NULL;
+         }
+      }
+      glibrary = NULL;
+   }
 }
 
 void
