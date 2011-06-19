@@ -93,6 +93,12 @@ if test "x${have_threads}" = "xno" ; then
 fi
 
 
+### Unit tests, coverage and benchmarking
+
+EFL_CHECK_TESTS([enable_tests="yes"], [enable_tests="no"])
+
+####
+
 ### Checks for compiler characteristics
 AM_PROG_CC_STDC
 AC_HEADER_STDC
@@ -124,6 +130,7 @@ src/bin_sync/Makefile
 src/bin_print/Makefile
 src/bin_geocaching_print/Makefile
 src/bin_transformations/Makefile
+src/tests/Makefile
 enlil.pc
 doc/Makefile
 ])
@@ -139,6 +146,7 @@ echo
 echo
 echo "  Network synchronisation..: ${have_azy}"
 echo "  Thread Support...........: ${have_threads}"
+echo "  Tests....................: ${enable_tests}"
 echo
 echo "Installation...............: make install (as root if needed, with 'su' or 'sudo')"
 echo "  prefix...................: $prefix"
