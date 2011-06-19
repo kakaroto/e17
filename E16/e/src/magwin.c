@@ -50,12 +50,16 @@ typedef struct {
    Timer              *timer;
 #endif
    int                 cx, cy;	/* Center */
+   int                 stroke_cx, stroke_cy;
+   int                 stroke_mx, stroke_my;
    int                 scale;	/* Zoom level */
    int                 sx, sy;	/* Scene x,y */
    int                 sw, sh;	/* Scene wxh */
+   Time                grab_time;
    char                disable_text;
-   char                bpress;
    char                configured;
+   char                btn_down;
+   char                stroke;
    char                filter;
    char                grabbing;
    char                step;
@@ -247,6 +251,23 @@ _MagwinAnimator(void *data)
 }
 #endif
 
+static void
+_MagwinGrabSet(MagWindow * mw)
+{
+   GrabPointerSet(EwinGetClientWin(mw->ewin), ECSR_GRAB, 0);
+   GrabKeyboardSet(EwinGetClientWin(mw->ewin));
+   mw->grabbing = 1;
+   mw->grab_time = Mode.events.time;
+}
+
+static void
+_MagwinGrabRelease(MagWindow * mw)
+{
+   GrabPointerRelease();
+   GrabKeyboardRelease();
+   mw->grabbing = 0;
+}
+
 static int
 MagwinKeyPress(MagWindow * mw, KeySym key)
 {
@@ -257,17 +278,9 @@ MagwinKeyPress(MagWindow * mw, KeySym key)
 	return 1;
      case XK_g:		/* Toggle grabs */
 	if (mw->grabbing)
-	  {
-	     GrabPointerRelease();
-	     GrabKeyboardRelease();
-	     mw->grabbing = 0;
-	  }
+	   _MagwinGrabRelease(mw);
 	else
-	  {
-	     GrabPointerSet(EwinGetClientWin(mw->ewin), ECSR_GRAB, 0);
-	     GrabKeyboardSet(EwinGetClientWin(mw->ewin));
-	     mw->grabbing = 1;
-	  }
+	   _MagwinGrabSet(mw);
 	break;
      case XK_t:		/* Toggle text */
 	mw->disable_text = !mw->disable_text;
@@ -348,7 +361,13 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	  default:
 	     break;
 	  case 1:
-	     MagwinKeyPress(mw, XK_g);
+	     if (!mw->grabbing)
+		_MagwinGrabSet(mw);
+	     mw->stroke_mx = Mode.events.mx;
+	     mw->stroke_my = Mode.events.my;
+	     mw->stroke_cx = mw->cx;
+	     mw->stroke_cy = mw->cy;
+	     mw->btn_down = 1;
 	     break;
 	  case 3:
 	     MagwinKeyPress(mw, XK_f);
@@ -360,15 +379,41 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	     MagwinKeyPress(mw, XK_o);
 	     break;
 	  }
-	mw->bpress = 1;
 	mw->update = 1;
 	break;
      case ButtonRelease:
-	mw->bpress = 0;
+	switch (ev->xbutton.button)
+	  {
+	  default:
+	     break;
+	  case 1:
+	     if (mw->grabbing && (ev->xbutton.time - mw->grab_time > 250))
+		_MagwinGrabRelease(mw);
+	     mw->btn_down = 0;
+	     mw->stroke = 0;
+	  }
 	break;
 
      case MotionNotify:
-	if (mw->grabbing)
+	if (mw->btn_down)
+	  {
+	     int                 dx, dy;
+	     double              scale;
+
+	     dx = Mode.events.mx - mw->stroke_mx;
+	     dy = Mode.events.my - mw->stroke_my;
+
+	     if ((abs(dx) > 10) || (abs(dy) > 10))
+		mw->stroke = 1;
+	     if (!mw->stroke)
+		break;
+
+	     scale = pow(2., (double)(mw->scale) / Conf.magwin.zoom_res);
+	     mw->cx = mw->stroke_cx - dx / scale;
+	     mw->cy = mw->stroke_cy - dy / scale;
+	     mw->update = 1;
+	  }
+	else if (mw->grabbing)
 	  {
 	     mw->cx = Mode.events.mx;
 	     mw->cy = Mode.events.my;
@@ -385,7 +430,7 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	if (mw->configured)
 	   break;
 	mw->configured = 1;
-	MagwinKeyPress(mw, XK_g);
+	_MagwinGrabSet(mw);
 #if USE_TIMER
 	TIMER_ADD(mw->timer, 50, _MagwinTimeout, 0, mw);
 #elif USE_ANIMATOR
