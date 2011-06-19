@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-04-25 12:39+0200\n"
+"POT-Creation-Date: 2011-06-19 16:30+0200\n"
 "PO-Revision-Date: 2010-01-25 00:46+0000\n"
 "Last-Translator: Sergiy Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -181,7 +181,7 @@ msgstr "Увага !!!"
 msgid "OK"
 msgstr "Гаразд"
 
-#: src/backgrounds.c:1510
+#: src/backgrounds.c:1544
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -192,11 +192,11 @@ msgstr ""
 "Назва: %s\n"
 "Файл: %s"
 
-#: src/backgrounds.c:1511
+#: src/backgrounds.c:1545
 msgid "-NONE-"
 msgstr "-NONE-"
 
-#: src/backgrounds.c:1678 src/backgrounds.c:1680
+#: src/backgrounds.c:1714 src/backgrounds.c:1716
 msgid ""
 "No\n"
 "Background"
@@ -204,40 +204,40 @@ msgstr ""
 "Немає\n"
 "фону"
 
-#: src/backgrounds.c:1772 src/backgrounds.c:2198
+#: src/backgrounds.c:1811 src/backgrounds.c:2239
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Звільняти невикористані фони після %2i:%02i:%02i"
 
-#: src/backgrounds.c:1984
+#: src/backgrounds.c:2025
 msgid "Use background image"
 msgstr "Використовувати зображення"
 
-#: src/backgrounds.c:1988
+#: src/backgrounds.c:2029
 msgid "Keep aspect on scale"
 msgstr "Зберігати пропорції"
 
-#: src/backgrounds.c:1992
+#: src/backgrounds.c:2033
 msgid "Tile image across background"
 msgstr "Розташувати зображення черепицею"
 
-#: src/backgrounds.c:2001
+#: src/backgrounds.c:2042
 msgid "Move to Front"
 msgstr "Перемістити вперед"
 
-#: src/backgrounds.c:2006
+#: src/backgrounds.c:2047
 msgid "Duplicate"
 msgstr "Дублювати"
 
-#: src/backgrounds.c:2010
+#: src/backgrounds.c:2051
 msgid "Unlist"
 msgstr "Прибрати"
 
-#: src/backgrounds.c:2015
+#: src/backgrounds.c:2056
 msgid "Delete File"
 msgstr "Стерти файл"
 
-#: src/backgrounds.c:2026
+#: src/backgrounds.c:2067
 msgid ""
 "Background\n"
 "Image\n"
@@ -251,59 +251,59 @@ msgstr ""
 "та\n"
 "Вирівнювання\n"
 
-#: src/backgrounds.c:2083
+#: src/backgrounds.c:2124
 msgid "BG Colour"
 msgstr "Колір фону"
 
-#: src/backgrounds.c:2088
+#: src/backgrounds.c:2129
 msgid "Red:"
 msgstr "Червоний:"
 
-#: src/backgrounds.c:2099
+#: src/backgrounds.c:2140
 msgid "Green:"
 msgstr "Зелений:"
 
-#: src/backgrounds.c:2110
+#: src/backgrounds.c:2151
 msgid "Blue:"
 msgstr "Синій:"
 
-#: src/backgrounds.c:2143
+#: src/backgrounds.c:2184
 msgid "Pre-scan BG's"
 msgstr "Попереднє сканування"
 
-#: src/backgrounds.c:2151
+#: src/backgrounds.c:2192
 msgid "Sort by File"
 msgstr "Сортувати за файлами"
 
-#: src/backgrounds.c:2156
+#: src/backgrounds.c:2197
 msgid "Sort by Attr."
 msgstr "Сортувати за атрибутами"
 
-#: src/backgrounds.c:2162
+#: src/backgrounds.c:2203
 msgid "Sort by Image"
 msgstr "Сортувати за зображенням"
 
-#: src/backgrounds.c:2182
+#: src/backgrounds.c:2223
 msgid "Use dithering in Hi-Colour"
 msgstr "Використовувати згладжування в Hi-Colour"
 
-#: src/backgrounds.c:2186
+#: src/backgrounds.c:2227
 msgid "Background overrides theme"
 msgstr "Фонове зображення відкидає установки теми"
 
-#: src/backgrounds.c:2191
+#: src/backgrounds.c:2232
 msgid "Enable background transparency compatibility mode"
 msgstr "Ввімкнути режим сумісності прозорості фону"
 
-#: src/backgrounds.c:2215 src/mod-trans.c:200
+#: src/backgrounds.c:2256 src/mod-trans.c:200
 msgid "Background"
 msgstr "Фон"
 
-#: src/backgrounds.c:2216
+#: src/backgrounds.c:2257
 msgid "Desktop Background Settings"
 msgstr "Параметри фону стільниці"
 
-#: src/backgrounds.c:2219
+#: src/backgrounds.c:2260
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog"
@@ -499,7 +499,7 @@ msgstr "З обох боків"
 msgid "End"
 msgstr "В кінці"
 
-#: src/container.c:1657 src/focus.c:979
+#: src/container.c:1657 src/focus.c:985
 msgid "None"
 msgstr "Немає"
 
@@ -511,7 +511,7 @@ msgstr "Показувати назви піктограм"
 msgid "Animation mode:"
 msgstr ""
 
-#: src/container.c:1679 src/desktops.c:2591
+#: src/container.c:1679 src/desktops.c:2607
 msgid "Off"
 msgstr "Вимкнено"
 
@@ -608,55 +608,55 @@ msgstr ""
 "Натисніть тут, щоб опустити цю\n"
 "стільницю вниз."
 
-#: src/desktops.c:2350
+#: src/desktops.c:2365
 msgid "Number of virtual desktops:"
 msgstr "Кількість віртуальних стільниць:"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2391
 msgid "Slide desktops around when changing"
 msgstr "Ковзання під час зміни стільниць"
 
-#: src/desktops.c:2381
+#: src/desktops.c:2397
 msgid "Desktop Slide speed:"
 msgstr "Швидкість ковзання стільниці:"
 
-#: src/desktops.c:2395
+#: src/desktops.c:2411
 msgid "Wrap desktops around"
 msgstr "Переміщення стільниць по колу"
 
-#: src/desktops.c:2403
+#: src/desktops.c:2419
 msgid "Display desktop dragbar"
 msgstr "Показати панель перетягування"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2425
 msgid "Drag bar position:"
 msgstr "Розташування панелі перетягування:"
 
-#: src/desktops.c:2413
+#: src/desktops.c:2429
 msgid "Top"
 msgstr "Вверху"
 
-#: src/desktops.c:2419
+#: src/desktops.c:2435
 msgid "Bottom"
 msgstr "Внизу"
 
-#: src/desktops.c:2425 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2441 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Left"
 msgstr "Ліворуч"
 
-#: src/desktops.c:2431 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
+#: src/desktops.c:2447 src/pager.c:1933 src/pager.c:1958 src/pager.c:1983
 msgid "Right"
 msgstr "Праворуч"
 
-#: src/desktops.c:2439 src/menus-misc.c:586
+#: src/desktops.c:2455 src/menus-misc.c:586
 msgid "Desks"
 msgstr "Столи"
 
-#: src/desktops.c:2440
+#: src/desktops.c:2456
 msgid "Multiple Desktop Settings"
 msgstr "Параметри складених стільниць"
 
-#: src/desktops.c:2443
+#: src/desktops.c:2459
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog"
@@ -664,39 +664,39 @@ msgstr ""
 "Діалог параметрів складених\n"
 "стільниць Enlightenment"
 
-#: src/desktops.c:2545
+#: src/desktops.c:2561
 msgid "Virtual Desktop size:"
 msgstr "Розмір віртуальної стільниці:"
 
-#: src/desktops.c:2581
+#: src/desktops.c:2597
 msgid "Wrap virtual desktops around"
 msgstr "Переміщення віртуальних стільниць по колу"
 
-#: src/desktops.c:2588
+#: src/desktops.c:2604
 msgid "Edge Flip Mode:"
 msgstr "Режим перегортання з вказівником біля краю:"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2612
 msgid "On"
 msgstr "Увімкнено"
 
-#: src/desktops.c:2601
+#: src/desktops.c:2617
 msgid "Only when moving window"
 msgstr "Лише під час переміщення вікна"
 
-#: src/desktops.c:2607
+#: src/desktops.c:2623
 msgid "Resistance at edge of screen:"
 msgstr "Протидія біля краю екрана:"
 
-#: src/desktops.c:2619
+#: src/desktops.c:2635
 msgid "Areas"
 msgstr "Області"
 
-#: src/desktops.c:2620
+#: src/desktops.c:2636
 msgid "Virtual Desktop Settings"
 msgstr "Параметри віртуальних стільниць"
 
-#: src/desktops.c:2623
+#: src/desktops.c:2639
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog"
@@ -708,7 +708,7 @@ msgstr ""
 msgid "Apply"
 msgstr "Застосувати"
 
-#: src/ecompmgr.c:2297
+#: src/ecompmgr.c:2304
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -744,118 +744,118 @@ msgstr ""
 "\n"
 "Вихід.\n"
 
-#: src/focus.c:820
+#: src/focus.c:826
 msgid "Focus follows pointer"
 msgstr "Фокус слідує за вказівником"
 
-#: src/focus.c:826
+#: src/focus.c:832
 msgid "Focus follows pointer sloppily"
 msgstr "Фокус слідує за вказівником із затримкою"
 
-#: src/focus.c:832
+#: src/focus.c:838
 msgid "Focus follows mouse clicks"
 msgstr "Фокусування клацанням кнопкою миші"
 
-#: src/focus.c:842
+#: src/focus.c:848
 msgid "Clicking in a window always raises it"
 msgstr "Клацання у вікні завжди піднімає його"
 
-#: src/focus.c:850
+#: src/focus.c:856
 msgid "All new windows first get the focus"
 msgstr "Всі нові вікна отримують фокус"
 
-#: src/focus.c:857
+#: src/focus.c:863
 msgid "New windows get the focus if their window group is focused"
 msgstr ""
 
-#: src/focus.c:862
+#: src/focus.c:868
 msgid "Only new dialog windows get the focus"
 msgstr "Лише нові діалоги отримують фокус"
 
-#: src/focus.c:869
+#: src/focus.c:875
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Лише нові діалоги сфокусованих вікон, отримують фокус"
 
-#: src/focus.c:874
+#: src/focus.c:880
 msgid "Raise windows while switching focus"
 msgstr "Піднімати вікна після передачі фокусу"
 
-#: src/focus.c:880
+#: src/focus.c:886
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Переслати вказівник у вікно під час отримання фокусу"
 
-#: src/focus.c:886
+#: src/focus.c:892
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Завжди переслати вказівник у вікно під час отримання фокусу"
 
-#: src/focus.c:894
+#: src/focus.c:900
 msgid "Raise windows automatically"
 msgstr "Піднімати вікна автоматично"
 
-#: src/focus.c:900
+#: src/focus.c:906
 msgid "Autoraise delay:"
 msgstr "Затримка авто-підйому:"
 
-#: src/focus.c:913
+#: src/focus.c:919
 msgid "Display and use focus list"
 msgstr "Відобразити і використовувати список сфокусованих вікон"
 
-#: src/focus.c:918
+#: src/focus.c:924
 msgid "Include sticky windows in focus list"
 msgstr "Включати прикріплені вікна в список сфокусованих вікон"
 
-#: src/focus.c:923
+#: src/focus.c:929
 msgid "Include shaded windows in focus list"
 msgstr "Включати затінені вікна в список сфокусованих вікон"
 
-#: src/focus.c:928
+#: src/focus.c:934
 msgid "Include iconified windows in focus list"
 msgstr "Включати згорнуті вікна в список сфокусованих вікон"
 
-#: src/focus.c:933
+#: src/focus.c:939
 msgid "Include windows on other desks in focus list"
 msgstr "Включати вікна з інших столів в список сфокусованих вікон"
 
-#: src/focus.c:938
+#: src/focus.c:944
 msgid "Focus windows while switching"
 msgstr "Фокусувати вікна після перемикання"
 
-#: src/focus.c:943
+#: src/focus.c:949
 #, fuzzy
 msgid "Outline windows while switching"
 msgstr "Фокусувати вікна після перемикання"
 
-#: src/focus.c:948
+#: src/focus.c:954
 msgid "Raise windows after focus switch"
 msgstr "Піднімати вікна після отримання фокусу"
 
-#: src/focus.c:953
+#: src/focus.c:959
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Посилати вказівник у вікно після отримання фокусу"
 
-#: src/focus.c:963
+#: src/focus.c:969
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Поведінка відображення піктограм в списку сфокусованих вікон (якщо дія не "
 "вдала, спробуйте наступну):"
 
-#: src/focus.c:967
+#: src/focus.c:973
 msgid "First E Icon, then App Icon"
 msgstr "Спочатку піктограма E, потім піктограма програми"
 
-#: src/focus.c:973
+#: src/focus.c:979
 msgid "First App Icon, then E Icon"
 msgstr "Спочатку піктограма програми, потім піктограма E"
 
-#: src/focus.c:987
+#: src/focus.c:993
 msgid "Focus"
 msgstr "Фокусування"
 
-#: src/focus.c:988
+#: src/focus.c:994
 msgid "Focus Settings"
 msgstr "Налаштування фокусування"
 
-#: src/focus.c:991
+#: src/focus.c:997
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog"
@@ -1114,11 +1114,11 @@ msgstr ""
 "операційної системи. Така помилка зустрічається вкрай\n"
 "рідко на оперативному обладнані.\n"
 
-#: src/hints.c:598
+#: src/hints.c:612
 msgid "Selection Error!"
 msgstr "Помилка відбору!"
 
-#: src/hints.c:598
+#: src/hints.c:612
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "Не вдалося зробити відбір: %s"
@@ -1131,28 +1131,28 @@ msgstr "Параметри Iconbox"
 msgid "Iconbox Settings"
 msgstr "Налаштування Iconbox"
 
-#: src/ipc.c:195 src/ipc.c:1464 src/ipc.c:1471 src/theme.c:379
+#: src/ipc.c:195 src/ipc.c:1471 src/ipc.c:1478 src/theme.c:379
 msgid "Message"
 msgstr "Повідомлення"
 
-#: src/ipc.c:1464 src/ipc.c:1471
+#: src/ipc.c:1471 src/ipc.c:1478
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 зібраний без підтримки %s"
 
-#: src/ipc.c:1465
+#: src/ipc.c:1472
 msgid "composite"
 msgstr "композитний"
 
-#: src/ipc.c:1472
+#: src/ipc.c:1479
 msgid "sound"
 msgstr "звук"
 
-#: src/ipc.c:1815
+#: src/ipc.c:1822
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Довідка з команд Enlightenment IPC\n"
 
-#: src/ipc.c:1819
+#: src/ipc.c:1826
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1162,19 +1162,19 @@ msgstr ""
 "Команда \"help <command>\", опис конкретної команди\n"
 "\n"
 
-#: src/ipc.c:1821 src/ipc.c:1841 src/ipc.c:1853
+#: src/ipc.c:1828 src/ipc.c:1848 src/ipc.c:1860
 msgid "Commands currently available:\n"
 msgstr "Доступні на цей час команди:\n"
 
-#: src/ipc.c:1839
+#: src/ipc.c:1846
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Команда \"help full\" надає повний опис всіх команд\n"
 
-#: src/ipc.c:1840
+#: src/ipc.c:1847
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Команда \"help <command>\" надає опис окремої команди\n"
 
-#: src/ipc.c:1842 src/ipc.c:1854
+#: src/ipc.c:1849 src/ipc.c:1861
 msgid "         <command>     : <description>\n"
 msgstr "         <command>     : <description>\n"
 
@@ -1237,7 +1237,7 @@ msgstr ""
 "Будь ласка, розберіться в ситуації і переконайтеся, що\n"
 "утиліта встановлена правильно.\n"
 
-#: src/magwin.c:460
+#: src/magwin.c:539
 msgid "Magnifier"
 msgstr "Лупа"
 
@@ -1578,11 +1578,11 @@ msgstr "Методи зміни розміру:"
 msgid "Technical"
 msgstr "Технічний"
 
-#: src/settings.c:123 src/settings.c:128 src/settings.c:397
+#: src/settings.c:123 src/settings.c:128 src/settings.c:398
 msgid "Shaded"
 msgstr "Затінений"
 
-#: src/settings.c:133 src/settings.c:138 src/settings.c:402
+#: src/settings.c:133 src/settings.c:138 src/settings.c:403
 msgid "Semi-Solid"
 msgstr "Напівсуцільний"
 
@@ -1686,51 +1686,51 @@ msgstr "Ковзання вікон навколо під час очищенн�
 msgid "Slide Method:"
 msgstr "Метод ковзання:"
 
-#: src/settings.c:412
+#: src/settings.c:414
 msgid "Appear Slide speed:"
 msgstr "Швидкість ковзання проявлення:"
 
-#: src/settings.c:423
+#: src/settings.c:425
 msgid "Cleanup Slide speed:"
 msgstr "Очищення швидкості ковзання:"
 
-#: src/settings.c:436
+#: src/settings.c:438
 msgid "Animate shading and unshading of windows"
 msgstr "Анімувати згортання та розгортання вікон"
 
-#: src/settings.c:442
+#: src/settings.c:444
 msgid "Window Shading speed:"
 msgstr "Швидкість згортання вікна:"
 
-#: src/settings.c:455
+#: src/settings.c:457
 msgid "Ignore struts/panels for placing normal windows"
 msgstr ""
 
-#: src/settings.c:460
+#: src/settings.c:462
 msgid "Ignore struts/panels when windows are fullscreen"
 msgstr ""
 
-#: src/settings.c:465
+#: src/settings.c:467
 msgid "Ignore struts/panels when maximizing windows"
 msgstr ""
 
-#: src/settings.c:470
+#: src/settings.c:472
 msgid "Raise fullscreen windows"
 msgstr "Піднімати повноекранні вікна"
 
-#: src/settings.c:478
+#: src/settings.c:480
 msgid "Place windows on another head when full"
 msgstr "Розміщати вікна на іншу стільницю, якщо ця заповнена"
 
-#: src/settings.c:486
+#: src/settings.c:488
 msgid "Placement"
 msgstr "Розміщення"
 
-#: src/settings.c:487
+#: src/settings.c:489
 msgid "Window Placement Settings"
 msgstr "Параметри розміщення вікон"
 
-#: src/settings.c:490
+#: src/settings.c:492
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
@@ -1738,31 +1738,35 @@ msgstr ""
 "Діалог налаштування розміщення\n"
 "вікон Enlightenment"
 
-#: src/settings.c:537
+#: src/settings.c:542
 msgid "Enable Dialog Headers"
 msgstr "Ввімкнути заголовки діалогів"
 
-#: src/settings.c:543
+#: src/settings.c:548
 msgid "Enable Button Images"
 msgstr "Ввімкнути зображення на кнопках"
 
-#: src/settings.c:552
+#: src/settings.c:557
 msgid "Enable sliding startup windows"
 msgstr "Ввімкнути ковзання вікон під час старту"
 
-#: src/settings.c:560
+#: src/settings.c:565
 msgid "Use saveunders to reduce window exposures"
 msgstr "Use saveunders to reduce window exposures"
 
-#: src/settings.c:566 config/strings.c:136 config/strings.c:152
+#: src/settings.c:574
+msgid "Magwin zoom resolution"
+msgstr ""
+
+#: src/settings.c:586 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "Різне"
 
-#: src/settings.c:567
+#: src/settings.c:587
 msgid "Miscellaneous Settings"
 msgstr "Параметри різного"
 
-#: src/settings.c:570
+#: src/settings.c:590
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
@@ -1770,55 +1774,55 @@ msgstr ""
 "Діалог налаштування\n"
 "різного в Enlightenment"
 
-#: src/settings.c:614
+#: src/settings.c:634
 msgid "Enable Composite"
 msgstr "Ввімкнути композит"
 
-#: src/settings.c:622
+#: src/settings.c:642
 msgid "Enable Fading"
 msgstr "Ввімкнути згасання"
 
-#: src/settings.c:628
+#: src/settings.c:648
 msgid "Fading Speed:"
 msgstr "Швидкість згасання:"
 
-#: src/settings.c:641
+#: src/settings.c:661
 msgid "Shadows Off"
 msgstr "Вимкнути тіні"
 
-#: src/settings.c:647
+#: src/settings.c:667
 msgid "Shadows Sharp"
 msgstr "Різкі тіні"
 
-#: src/settings.c:653
+#: src/settings.c:673
 msgid "Shadows Sharp2"
 msgstr "Різкі тіні 2"
 
-#: src/settings.c:659
+#: src/settings.c:679
 msgid "Shadows Blurred"
 msgstr "Розмиті тіні"
 
-#: src/settings.c:670
+#: src/settings.c:690
 msgid "Default focused window opacity:"
 msgstr "Прозорість типового активного вікна:"
 
-#: src/settings.c:681
+#: src/settings.c:701
 msgid "Default unfocused window opacity:"
 msgstr "Прозорість типового неактивного вікна:"
 
-#: src/settings.c:692
+#: src/settings.c:712
 msgid "Default pop-up window opacity:"
 msgstr "Прозорість типового зринаючого вікна:"
 
-#: src/settings.c:703
+#: src/settings.c:723
 msgid "Composite"
 msgstr "Композит"
 
-#: src/settings.c:704
+#: src/settings.c:724
 msgid "Composite Settings"
 msgstr "Налаштування композиту"
 
-#: src/settings.c:707
+#: src/settings.c:727
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
@@ -1826,7 +1830,7 @@ msgstr ""
 "Діалог налаштування\n"
 "композиту Enlightenment"
 
-#: src/settings.c:792
+#: src/settings.c:812
 msgid "Enlightenment Settings"
 msgstr "Налаштування Enlightenment"
 
