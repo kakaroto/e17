@@ -48,7 +48,7 @@ static E_Config_DD *conf_item_edd = NULL;
 Config *cpu_conf = NULL;
 
 static int cpu_count;
-static int cpu_stats[4];
+static int cpu_stats[6];
 static float update_interval;
 
 static const E_Gadcon_Client_Class _gc_class = 
