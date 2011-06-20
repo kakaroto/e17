@@ -1063,6 +1063,7 @@ public:
         ot->SetAccessor(v8::String::New("value"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("min"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("max"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("inverted"), &eo_getter, &eo_setter);
         return ot;
      }
 
@@ -1080,6 +1081,8 @@ public:
           min_set(value);
         else if (!strcmp(prop_name, "max"))
           max_set(value);
+        else if (!strcmp(prop_name, "inverted"))
+          inverted_set(value);
         else
           return CEvasObject::prop_set(prop_name, value);
         return true;
@@ -1099,6 +1102,8 @@ public:
           return min_get();
         else if (!strcmp(prop_name, "max"))
           return max_get();
+        else if (!strcmp(prop_name, "inverted"))
+          return inverted_get();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1202,6 +1207,17 @@ public:
              max = value->NumberValue();
              elm_slider_min_max_set(eo, min, max);
           }
+     }
+
+   virtual v8::Handle<v8::Value> inverted_get() const
+     {
+        return v8::Boolean::New(elm_slider_inverted_get(eo));
+     }
+
+   virtual void inverted_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsBoolean())
+          elm_slider_inverted_set(eo, value->BooleanValue());
      }
 };
 
