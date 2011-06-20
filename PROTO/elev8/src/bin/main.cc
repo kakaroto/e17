@@ -1040,6 +1040,7 @@ public:
 
 class CElmSlider : public CEvasObject {
      v8::Persistent<v8::Value> the_icon;
+     v8::Persistent<v8::Value> the_end_object;
 
 public:
    CElmSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
@@ -1052,6 +1053,7 @@ public:
    virtual ~CElmSlider()
      {
         the_icon.Dispose();
+        the_end_object.Dispose();
      }
 
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
@@ -1064,6 +1066,7 @@ public:
         ot->SetAccessor(v8::String::New("min"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("max"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("inverted"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("end"), &eo_getter, &eo_setter);
         return ot;
      }
 
@@ -1083,6 +1086,8 @@ public:
           max_set(value);
         else if (!strcmp(prop_name, "inverted"))
           inverted_set(value);
+        else if (!strcmp(prop_name, "end"))
+          end_set(value);
         else
           return CEvasObject::prop_set(prop_name, value);
         return true;
@@ -1104,6 +1109,8 @@ public:
           return max_get();
         else if (!strcmp(prop_name, "inverted"))
           return inverted_get();
+        else if (!strcmp(prop_name, "end"))
+          return end_get();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1160,6 +1167,24 @@ public:
         CEvasObject *icon = realize_one(this, value);
         elm_slider_icon_set(eo, icon->get());
         the_icon = v8::Persistent<v8::Value>::New(icon->get_object());
+     }
+
+   virtual v8::Handle<v8::Value> end_get() const
+     {
+        return the_end_object;
+     }
+
+   virtual void end_set(v8::Handle<v8::Value> value)
+     {
+        the_end_object.Dispose();
+        CEvasObject *end_obj = realize_one(this, value);
+        if (end_obj)
+          {
+             elm_slider_end_set(eo, end_obj->get());
+             the_end_object = v8::Persistent<v8::Value>::New(end_obj->get_object());
+          }
+        else
+             elm_slider_end_unset(eo);
      }
 
    virtual v8::Handle<v8::Value> value_get() const
