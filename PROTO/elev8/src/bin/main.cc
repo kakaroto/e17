@@ -93,9 +93,9 @@ protected:
         obj->Set(v8::String::New("_eo"), v8::External::Wrap(eo));
      }
 
-   static CEvasObject *eo_from_info(const v8::AccessorInfo& info)
+   static CEvasObject *eo_from_info(v8::Handle<v8::Object> obj)
      {
-        v8::Handle<v8::Value> val = info.This()->Get(v8::String::New("_eo"));
+        v8::Handle<v8::Value> val = obj->Get(v8::String::New("_eo"));
         return static_cast<CEvasObject *>(v8::External::Unwrap(val));
      }
 
@@ -103,7 +103,7 @@ protected:
                          v8::Local<v8::Value> value,
                          const v8::AccessorInfo& info)
      {
-        CEvasObject *eo = eo_from_info(info);
+        CEvasObject *eo = eo_from_info(info.This());
         v8::String::Utf8Value prop_name(property);
         eo->prop_set(*prop_name, value);
         v8::String::Utf8Value val(value->ToString());
@@ -112,7 +112,7 @@ protected:
    static v8::Handle<v8::Value> eo_getter(v8::Local<v8::String> property,
                                           const v8::AccessorInfo& info)
      {
-        CEvasObject *eo = eo_from_info(info);
+        CEvasObject *eo = eo_from_info(info.This());
         v8::String::Utf8Value prop_name(property);
         return eo->prop_get(*prop_name);
      }
@@ -810,6 +810,19 @@ public:
 
 class CElmFlip : public CEvasObject {
 public:
+   static v8::Handle<v8::Value> do_flip(const v8::Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmFlip *flipper = static_cast<CElmFlip *>(self);
+        flipper->flip(ELM_FLIP_ROTATE_Y_CENTER_AXIS);
+        return v8::Undefined();
+     }
+
+   virtual void flip(Elm_Flip_Mode mode)
+     {
+        elm_flip_go(eo, mode);
+     }
+
    CElmFlip(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
@@ -824,6 +837,8 @@ public:
 
         back = realize_one(this, obj->Get(v8::String::New("back")));
         elm_flip_content_back_set(eo, back->get());
+
+        get_object()->Set(v8::String::New("flip"), v8::FunctionTemplate::New(do_flip)->GetFunction());
      }
 };
 
