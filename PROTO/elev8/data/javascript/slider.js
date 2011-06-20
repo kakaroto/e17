@@ -17,6 +17,8 @@ var win = new elm.main({
 			elements : {
 				the_slider : {
 					type : "slider",
+					label : "Horizontal",
+					units : "%1.1f units",
 					align : { x : -1.0, y : 0.5 },
 					weight : EXPAND_BOTH,
 				},

@@ -1067,6 +1067,20 @@ public:
      {
         return v8::String::New(elm_slider_unit_format_get(eo));
      }
+
+   virtual void label_set(v8::Handle<v8::Value> val)
+     {
+        if (val->IsString())
+          {
+             v8::String::Utf8Value str(val);
+             elm_slider_label_set(eo, *str);
+          }
+     }
+
+   virtual v8::Handle<v8::Value> label_get()
+     {
+        return v8::String::New(elm_slider_label_get(eo));
+     }
 };
 
 CEvasObject *
