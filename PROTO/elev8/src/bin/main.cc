@@ -1030,6 +1030,43 @@ public:
         eo = elm_slider_add(parent->top_widget_get());
         construct(eo, obj);
      }
+
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        ot->SetAccessor(v8::String::New("units"), &eo_getter, &eo_setter);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        if (!strcmp(prop_name, "units"))
+          units_set(value);
+        else
+          return CEvasObject::prop_set(prop_name, value);
+        return true;
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name)
+     {
+        if (!strcmp(prop_name, "units"))
+          return units_get();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+   virtual void units_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsString())
+          {
+            v8::String::Utf8Value str(value);
+            elm_slider_unit_format_set(eo, *str);
+          }
+     }
+
+   virtual v8::Local<v8::Value> units_get()
+     {
+        return v8::String::New(elm_slider_unit_format_get(eo));
+     }
 };
 
 CEvasObject *
