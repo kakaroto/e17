@@ -251,6 +251,7 @@ public:
      {
         evas_object_unref(eo);
         the_object.Dispose();
+        the_template.Dispose();
         on_animate_val.Dispose();
         on_clicked_val.Dispose();
         eo = NULL;
