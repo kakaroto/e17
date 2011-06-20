@@ -1104,6 +1104,8 @@ public:
           inverted_set(value);
         else if (!strcmp(prop_name, "end"))
           end_set(value);
+        else if (!strcmp(prop_name, "horizontal"))
+          horizontal_set(value);
         else
           return CEvasObject::prop_set(prop_name, value);
         return true;
@@ -1127,6 +1129,8 @@ public:
           return inverted_get();
         else if (!strcmp(prop_name, "end"))
           return end_get();
+        else if (!strcmp(prop_name, "horizontal"))
+          return horizontal_get();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1259,6 +1263,17 @@ public:
      {
         if (value->IsBoolean())
           elm_slider_inverted_set(eo, value->BooleanValue());
+     }
+
+   virtual v8::Handle<v8::Value> horizontal_get() const
+     {
+        return v8::Boolean::New(elm_slider_horizontal_get(eo));
+     }
+
+   virtual void horizontal_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsBoolean())
+          elm_slider_horizontal_set(eo, value->BooleanValue());
      }
 };
 
