@@ -15,11 +15,11 @@
 
 /* CEvasObject is a virtual class, representing an evas object */
 class CEvasObject;
-CEvasObject *realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
+CEvasObject *realize_one(CEvasObject *parent, v8::Handle<v8::Value> obj);
 
 class CEvasObject {
    /* realize_one is a factory for our class */
-   friend CEvasObject *realize_one(CEvasObject *parent, v8::Local<v8::Value> obj);
+   friend CEvasObject *realize_one(CEvasObject *parent, v8::Handle<v8::Value> obj);
 protected:
    Evas_Object *eo;
    v8::Persistent<v8::ObjectTemplate> the_template;
@@ -1039,6 +1039,8 @@ public:
 };
 
 class CElmSlider : public CEvasObject {
+     v8::Persistent<v8::Value> the_icon;
+
 public:
    CElmSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
@@ -1047,11 +1049,17 @@ public:
         construct(eo, obj);
      }
 
+   virtual ~CElmSlider()
+     {
+        the_icon.Dispose();
+     }
+
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
         ot->SetAccessor(v8::String::New("units"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("span"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("icon"), &eo_getter, &eo_setter);
         return ot;
      }
 
@@ -1061,6 +1069,8 @@ public:
           units_set(value);
         else if (!strcmp(prop_name, "span"))
           span_set(value);
+        else if (!strcmp(prop_name, "icon"))
+          icon_set(value);
         else
           return CEvasObject::prop_set(prop_name, value);
         return true;
@@ -1072,6 +1082,8 @@ public:
           return units_get();
         else if (!strcmp(prop_name, "span"))
           return span_get();
+        else if (!strcmp(prop_name, "icon"))
+          return icon_get();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1116,10 +1128,23 @@ public:
              elm_slider_span_size_set(eo, span);
           }
      }
+
+   virtual v8::Handle<v8::Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(v8::Handle<v8::Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_slider_icon_set(eo, icon->get());
+        the_icon = v8::Persistent<v8::Value>::New(icon->get_object());
+     }
 };
 
 CEvasObject *
-realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
+realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
    if (!object_val->IsObject())
      {

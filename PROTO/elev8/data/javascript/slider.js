@@ -2,6 +2,11 @@
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 
+var logo_icon = {
+	type : "icon",
+	image : "data/images/logo_small.png",
+};
+
 var win = new elm.main({
 	label : "Slider",
 	elements : {
@@ -22,6 +27,7 @@ var win = new elm.main({
 					span : 120,
 					align : { x : -1.0, y : 0.5 },
 					weight : EXPAND_BOTH,
+					icon : logo_icon,
 				},
 				disabled_slider : {
 					type : "slider",
@@ -31,6 +37,7 @@ var win = new elm.main({
 					disabled : true,
 					align : { x : -1.0, y : 0.5 },
 					weight : EXPAND_BOTH,
+					icon : logo_icon,
 				},
 			},
 		},
