@@ -51,12 +51,9 @@ var my_window = new elm.main({
 								my_window.elements.scroll.content.elements.ok_button.label = "OK";
 
 						},
-						animate_called : 0,
-						on_animate : function() {
-							if (!this.animate_called) {
-								print("animate!");
-								this.animate_called = 1;
-							}
+						on_animate : function(me) {
+							print("animate!");
+							me.on_animate = null;
 						},
 					},
 					cancel_button : {

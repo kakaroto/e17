@@ -24,10 +24,16 @@ protected:
    Evas_Object *eo;
    v8::Persistent<v8::ObjectTemplate> the_template;
    v8::Persistent<v8::Object> the_object;
+
+   /* the animator function and its hook into ecore */
+   v8::Persistent<v8::Value> on_animate_val;
+   Ecore_Animator *current_animator;
+
    bool is_resize;
 protected:
    explicit CEvasObject() :
        eo(NULL),
+       current_animator(NULL),
        is_resize(false)
      {
      }
@@ -41,7 +47,6 @@ protected:
         eo = _eo;
         assert(eo != NULL);
         callback_set(obj->Get(v8::String::New("on_clicked")));
-        animator_set(obj->Get(v8::String::New("on_animate")));
 
         v8::Handle<v8::Object> out = get_object();
 
@@ -126,6 +131,7 @@ public:
         the_template->SetAccessor(v8::String::New("resize"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("align"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("weight"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("on_animate"), &eo_getter, &eo_setter);
 
         return the_template;
      }
@@ -180,6 +186,8 @@ public:
           resize_set(value);
         else if (!strcmp(prop_name, "weight"))
           weight_set(value);
+        else if (!strcmp(prop_name, "on_animate"))
+          on_animate_set(value);
         else
           {
              return false;
@@ -210,6 +218,8 @@ public:
           return resize_get();
         else if (!strcmp(prop_name, "weight"))
           return weight_get();
+        else if (!strcmp(prop_name, "on_animate"))
+          return on_animate_get();
         return v8::Undefined();
      }
 
@@ -223,6 +233,7 @@ public:
      {
         evas_object_unref(eo);
         the_object.Dispose();
+        on_animate_val.Dispose();
         eo = NULL;
      }
 
@@ -332,11 +343,29 @@ public:
           evas_object_smart_callback_del(eo, "clicked", &eo_on_click);
      }
 
+   virtual void on_animate_set(v8::Handle<v8::Value> val)
+     {
+        on_animate_val.Dispose();
+        on_animate_val = v8::Persistent<v8::Value>::New(val);
+        if (val->IsFunction())
+          current_animator = ecore_animator_add(&eo_on_animate, this);
+        else if (current_animator)
+          {
+             ecore_animator_del(current_animator);
+             current_animator = NULL;
+          }
+     }
+
+   virtual v8::Handle<v8::Value> on_animate_get(void)
+     {
+        return on_animate_val;
+     }
+
    virtual void on_animate(void)
      {
         v8::Handle<v8::Object> obj = get_object();
         v8::HandleScope handle_scope;
-        v8::Handle<v8::Value> val = obj->Get(v8::String::New("on_animate"));
+        v8::Handle<v8::Value> val = on_animate_val;
         assert(val->IsFunction());
         v8::Handle<v8::Function> fn(v8::Function::Cast(*val));
         v8::Handle<v8::Value> args[1] = { obj };
@@ -350,14 +379,6 @@ public:
         clicked->on_animate();
 
         return ECORE_CALLBACK_RENEW;
-     }
-
-   void animator_set(v8::Local<v8::Value> val)
-     {
-        if (val->IsFunction())
-          {
-             ecore_animator_add(&eo_on_animate, this);
-          }
      }
 
    virtual v8::Handle<v8::Value> label_get()
