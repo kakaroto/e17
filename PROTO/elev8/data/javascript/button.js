@@ -69,10 +69,12 @@ var my_window = new elm.main({
 					},
 					check_button : {
 						type : "button",
-						label : "check",
-						align : { x : -1.0, y : -1.0 },
+						label : "test",
+						weight : { x : 0 , y : 0 },
+						align : { x : 1, y : 0 },
 						on_clicked : function(me) {
 							my_window.label = "hello world";
+							print("weight.x = " + me.weight.x + " weight.y = " + me.weight.y);
 						},
 					},
 					wider_button : {
@@ -92,22 +94,6 @@ var my_window = new elm.main({
 							print(my_window.width);
 						},
 					},
-					down_button : {
-						type : "button",
-						label : "Down",
-						align : { x : -1.0, y : -1.0 },
-						on_clicked : function(me) {
-							me.y += 50;
-						},
-					},
-					up_button : {
-						type : "button",
-						label : "Up",
-						align : { x : -1.0, y : -1.0 },
-						on_clicked : function(me) {
-							me.y -= 50;
-						},
-					},
 					hidden_button : {
 						type : "button",
 						label : "no see me",
@@ -124,8 +110,4 @@ var my_window = new elm.main({
 	},
 });
 
-print("label = " + my_window.label);
-print("type  = " + my_window.type);
-print("width = " + my_window.width);
-print("height = " + my_window.height);
-
+print("weight.x = " + my_window.elements.scroll.content.elements.check_button.weight.x);

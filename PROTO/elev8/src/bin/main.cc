@@ -42,7 +42,6 @@ protected:
         assert(eo != NULL);
         callback_set(obj->Get(v8::String::New("on_clicked")));
         animator_set(obj->Get(v8::String::New("on_animate")));
-        weight_set(obj->Get(v8::String::New("weight")));
 
         v8::Handle<v8::Object> out = get_object();
 
@@ -126,6 +125,7 @@ public:
         the_template->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("resize"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("align"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("weight"), &eo_getter, &eo_setter);
 
         return the_template;
      }
@@ -178,8 +178,8 @@ public:
           image_set(value);
         else if (!strcmp(prop_name, "resize"))
           resize_set(value);
-        else if (!strcmp(prop_name, "width"))
-          width_set(value);
+        else if (!strcmp(prop_name, "weight"))
+          weight_set(value);
         else
           {
              return false;
@@ -208,6 +208,8 @@ public:
           return image_get();
         else if (!strcmp(prop_name, "resize"))
           return resize_get();
+        else if (!strcmp(prop_name, "weight"))
+          return weight_get();
         return v8::Undefined();
      }
 
@@ -426,11 +428,21 @@ public:
         return true;
      }
 
-   virtual void weight_set(v8::Local<v8::Value> weight)
+   virtual void weight_set(v8::Handle<v8::Value> weight)
      {
         double x, y;
         if (get_xy_from_object(weight, x, y))
           evas_object_size_hint_weight_set(eo, x, y);
+     }
+
+   virtual v8::Handle<v8::Value> weight_get(void)
+     {
+       double x = 0.0, y = 0.0;
+       evas_object_size_hint_weight_get(eo, &x, &y);
+       v8::Local<v8::Object> obj = v8::Object::New();
+       obj->Set(v8::String::New("x"), v8::Number::New(x));
+       obj->Set(v8::String::New("y"), v8::Number::New(y));
+       return obj;
      }
 
    virtual void align_set(v8::Handle<v8::Value> align)
