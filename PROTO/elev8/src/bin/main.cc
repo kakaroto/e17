@@ -1022,6 +1022,16 @@ public:
      }
 };
 
+class CElmSlider : public CEvasObject {
+public:
+   CElmSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
+     {
+        eo = elm_slider_add(parent->top_widget_get());
+        construct(eo, obj);
+     }
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
 {
@@ -1078,6 +1088,10 @@ realize_one(CEvasObject *parent, v8::Local<v8::Value> object_val)
    else if (!strcmp(*str, "image"))
       {
          eo = new CEvasImage(parent, obj);
+      }
+   else if (!strcmp(*str, "slider"))
+      {
+         eo = new CElmSlider(parent, obj);
       }
 
    if (!eo)
