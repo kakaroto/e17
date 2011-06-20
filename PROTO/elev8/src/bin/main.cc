@@ -147,6 +147,7 @@ public:
         the_template->SetAccessor(v8::String::New("weight"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("on_animate"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("on_clicked"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("scale"), &eo_getter, &eo_setter);
 
         return the_template;
      }
@@ -207,6 +208,8 @@ public:
           on_clicked_set(value);
         else if (!strcmp(prop_name, "disabled"))
           disabled_set(value);
+        else if (!strcmp(prop_name, "scale"))
+          scale_set(value);
         else
           {
              return false;
@@ -243,6 +246,8 @@ public:
           return on_clicked_get();
         else if (!strcmp(prop_name, "disabled"))
           return disabled_get();
+        else if (!strcmp(prop_name, "scale"))
+          return scale_get();
         return v8::Undefined();
      }
 
@@ -432,6 +437,17 @@ public:
      {
         if (val->IsBoolean())
           elm_object_disabled_set(eo, val->BooleanValue());
+     }
+
+   virtual v8::Handle<v8::Value> scale_get() const
+     {
+        return v8::Number::New(elm_object_scale_get(eo));
+     }
+
+   virtual void scale_set(v8::Handle<v8::Value> val)
+     {
+        if (val->IsNumber())
+          elm_object_scale_set(eo, val->NumberValue());
      }
 
    bool get_xy_from_object(v8::Handle<v8::Value> val, double &x_out, double &y_out)
