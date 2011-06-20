@@ -34,6 +34,8 @@ var win = new elm.main({
 					label : "Disabled",
 					units : "%1.1f units",
 					span : 120,
+					min : 50,
+					max : 150,
 					value : 80,
 					disabled : true,
 					align : { x : -1.0, y : 0.5 },
@@ -44,3 +46,7 @@ var win = new elm.main({
 		},
 	},
 });
+
+print("min   = " + win.elements.the_box.elements.disabled_slider.min);
+print("max   = " + win.elements.the_box.elements.disabled_slider.max);
+print("value = " + win.elements.the_box.elements.disabled_slider.value);

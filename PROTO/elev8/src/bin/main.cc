@@ -1061,6 +1061,8 @@ public:
         ot->SetAccessor(v8::String::New("span"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("icon"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("value"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("min"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("max"), &eo_getter, &eo_setter);
         return ot;
      }
 
@@ -1074,6 +1076,10 @@ public:
           icon_set(value);
         else if (!strcmp(prop_name, "value"))
           value_set(value);
+        else if (!strcmp(prop_name, "min"))
+          min_set(value);
+        else if (!strcmp(prop_name, "max"))
+          max_set(value);
         else
           return CEvasObject::prop_set(prop_name, value);
         return true;
@@ -1089,6 +1095,10 @@ public:
           return icon_get();
         else if (!strcmp(prop_name, "value"))
           return value_get();
+        else if (!strcmp(prop_name, "min"))
+          return min_get();
+        else if (!strcmp(prop_name, "max"))
+          return max_get();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1156,6 +1166,42 @@ public:
      {
         if (value->IsNumber())
           elm_slider_value_set(eo, value->NumberValue());
+     }
+
+   virtual v8::Handle<v8::Value> min_get() const
+     {
+        double min, max;
+        elm_slider_min_max_get(eo, &min, &max);
+        return v8::Number::New(min);
+     }
+
+   virtual void min_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsNumber())
+          {
+             double min, max;
+             elm_slider_min_max_get(eo, &min, &max);
+             min = value->NumberValue();
+             elm_slider_min_max_set(eo, min, max);
+          }
+     }
+
+   virtual v8::Handle<v8::Value> max_get() const
+     {
+        double min, max;
+        elm_slider_min_max_get(eo, &min, &max);
+        return v8::Number::New(max);
+     }
+
+   virtual void max_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsNumber())
+          {
+             double min, max;
+             elm_slider_min_max_get(eo, &min, &max);
+             max = value->NumberValue();
+             elm_slider_min_max_set(eo, min, max);
+          }
      }
 };
 
