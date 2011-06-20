@@ -1060,6 +1060,7 @@ public:
         ot->SetAccessor(v8::String::New("units"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("span"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("icon"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("value"), &eo_getter, &eo_setter);
         return ot;
      }
 
@@ -1071,6 +1072,8 @@ public:
           span_set(value);
         else if (!strcmp(prop_name, "icon"))
           icon_set(value);
+        else if (!strcmp(prop_name, "value"))
+          value_set(value);
         else
           return CEvasObject::prop_set(prop_name, value);
         return true;
@@ -1084,6 +1087,8 @@ public:
           return span_get();
         else if (!strcmp(prop_name, "icon"))
           return icon_get();
+        else if (!strcmp(prop_name, "value"))
+          return value_get();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1140,6 +1145,17 @@ public:
         CEvasObject *icon = realize_one(this, value);
         elm_slider_icon_set(eo, icon->get());
         the_icon = v8::Persistent<v8::Value>::New(icon->get_object());
+     }
+
+   virtual v8::Handle<v8::Value> value_get() const
+     {
+        return v8::Number::New(elm_slider_value_get(eo));
+     }
+
+   virtual void value_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsNumber())
+          elm_slider_value_set(eo, value->NumberValue());
      }
 };
 

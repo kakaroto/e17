@@ -34,6 +34,7 @@ var win = new elm.main({
 					label : "Disabled",
 					units : "%1.1f units",
 					span : 120,
+					value : 80,
 					disabled : true,
 					align : { x : -1.0, y : 0.5 },
 					weight : EXPAND_BOTH,
