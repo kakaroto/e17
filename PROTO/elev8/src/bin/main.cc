@@ -1035,6 +1035,7 @@ public:
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
         ot->SetAccessor(v8::String::New("units"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("span"), &eo_getter, &eo_setter);
         return ot;
      }
 
@@ -1042,6 +1043,8 @@ public:
      {
         if (!strcmp(prop_name, "units"))
           units_set(value);
+        else if (!strcmp(prop_name, "span"))
+          span_set(value);
         else
           return CEvasObject::prop_set(prop_name, value);
         return true;
@@ -1051,6 +1054,8 @@ public:
      {
         if (!strcmp(prop_name, "units"))
           return units_get();
+        else if (!strcmp(prop_name, "span"))
+          return span_get();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1080,6 +1085,20 @@ public:
    virtual v8::Handle<v8::Value> label_get()
      {
         return v8::String::New(elm_slider_label_get(eo));
+     }
+
+   virtual v8::Local<v8::Value> span_get() const
+     {
+        return v8::Integer::New(elm_slider_span_size_get(eo));
+     }
+
+   virtual void span_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsInt32())
+          {
+             int span = value->Int32Value();
+             elm_slider_span_size_set(eo, span);
+          }
      }
 };
 
