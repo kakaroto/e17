@@ -15,11 +15,20 @@ var win = new elm.main({
 			weight : EXPAND_BOTH,
 			resize : true,
 			elements : {
-				the_slider : {
+				horz_slider : {
 					type : "slider",
 					label : "Horizontal",
 					units : "%1.1f units",
 					span : 120,
+					align : { x : -1.0, y : 0.5 },
+					weight : EXPAND_BOTH,
+				},
+				disabled_slider : {
+					type : "slider",
+					label : "Disabled",
+					units : "%1.1f units",
+					span : 120,
+					disabled : true,
 					align : { x : -1.0, y : 0.5 },
 					weight : EXPAND_BOTH,
 				},

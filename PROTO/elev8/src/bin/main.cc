@@ -136,6 +136,7 @@ public:
         the_template = v8::Persistent<v8::ObjectTemplate>::New(v8::ObjectTemplate::New());
         the_template->SetAccessor(v8::String::New("x"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("y"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("disabled"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("width"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("height"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
@@ -204,6 +205,8 @@ public:
           on_animate_set(value);
         else if (!strcmp(prop_name, "on_clicked"))
           on_clicked_set(value);
+        else if (!strcmp(prop_name, "disabled"))
+          disabled_set(value);
         else
           {
              return false;
@@ -238,6 +241,8 @@ public:
           return on_animate_get();
         else if (!strcmp(prop_name, "on_clicked"))
           return on_clicked_get();
+        else if (!strcmp(prop_name, "disabled"))
+          return disabled_get();
         return v8::Undefined();
      }
 
@@ -416,6 +421,17 @@ public:
    virtual void label_set(v8::Handle<v8::Value> val)
      {
         fprintf(stderr, "setting label on non-button\n");
+     }
+
+   virtual v8::Handle<v8::Value> disabled_get() const
+     {
+        return v8::Boolean::New(elm_object_disabled_get(eo));
+     }
+
+   virtual void disabled_set(v8::Handle<v8::Value> val)
+     {
+        if (val->IsBoolean())
+          elm_object_disabled_set(eo, val->BooleanValue());
      }
 
    bool get_xy_from_object(v8::Handle<v8::Value> val, double &x_out, double &y_out)
