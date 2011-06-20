@@ -25,6 +25,20 @@ protected:
    v8::Persistent<v8::ObjectTemplate> the_template;
    v8::Persistent<v8::Object> the_object;
 
+   /*
+    * Callbacks
+    *
+    * We could set every callback for every object, then check for existence
+    * of the relevant callback function, then call it.  That would mean
+    * a lot of callbacks from evas for functions that don't exist.
+    *
+    * Instead, manage setting and getting of the callback by ourselves.
+    * When a callback is set, the apropriate Evas callback will be set or cleared.
+    */
+
+   /* the on_clicked function */
+   v8::Persistent<v8::Value> on_clicked_val;
+
    /* the animator function and its hook into ecore */
    v8::Persistent<v8::Value> on_animate_val;
    Ecore_Animator *current_animator;
@@ -46,7 +60,6 @@ protected:
      {
         eo = _eo;
         assert(eo != NULL);
-        callback_set(obj->Get(v8::String::New("on_clicked")));
 
         v8::Handle<v8::Object> out = get_object();
 
@@ -132,6 +145,7 @@ public:
         the_template->SetAccessor(v8::String::New("align"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("weight"), &eo_getter, &eo_setter);
         the_template->SetAccessor(v8::String::New("on_animate"), &eo_getter, &eo_setter);
+        the_template->SetAccessor(v8::String::New("on_clicked"), &eo_getter, &eo_setter);
 
         return the_template;
      }
@@ -188,6 +202,8 @@ public:
           weight_set(value);
         else if (!strcmp(prop_name, "on_animate"))
           on_animate_set(value);
+        else if (!strcmp(prop_name, "on_clicked"))
+          on_clicked_set(value);
         else
           {
              return false;
@@ -220,6 +236,8 @@ public:
           return weight_get();
         else if (!strcmp(prop_name, "on_animate"))
           return on_animate_get();
+        else if (!strcmp(prop_name, "on_clicked"))
+          return on_clicked_get();
         return v8::Undefined();
      }
 
@@ -234,6 +252,7 @@ public:
         evas_object_unref(eo);
         the_object.Dispose();
         on_animate_val.Dispose();
+        on_clicked_val.Dispose();
         eo = NULL;
      }
 
@@ -319,7 +338,7 @@ public:
      {
         v8::Handle<v8::Object> obj = get_object();
         v8::HandleScope handle_scope;
-        v8::Handle<v8::Value> val = obj->Get(v8::String::New("on_clicked"));
+        v8::Handle<v8::Value> val = on_clicked_val;
         // FIXME: pass event_info to the callback
         // FIXME: turn the pieces below into a do_callback method
         assert(val->IsFunction());
@@ -333,14 +352,6 @@ public:
         CEvasObject *clicked = static_cast<CEvasObject*>(data);
 
         clicked->on_click(event_info);
-     }
-
-   void callback_set(v8::Local<v8::Value> val)
-     {
-        if (val->IsFunction())
-          evas_object_smart_callback_add(eo, "clicked", &eo_on_click, this);
-        else
-          evas_object_smart_callback_del(eo, "clicked", &eo_on_click);
      }
 
    virtual void on_animate_set(v8::Handle<v8::Value> val)
@@ -357,6 +368,21 @@ public:
      }
 
    virtual v8::Handle<v8::Value> on_animate_get(void)
+     {
+        return on_animate_val;
+     }
+
+   virtual void on_clicked_set(v8::Handle<v8::Value> val)
+     {
+        on_clicked_val.Dispose();
+        on_clicked_val = v8::Persistent<v8::Value>::New(val);
+        if (val->IsFunction())
+          evas_object_smart_callback_add(eo, "clicked", &eo_on_click, this);
+        else
+          evas_object_smart_callback_del(eo, "clicked", &eo_on_click);
+     }
+
+   virtual v8::Handle<v8::Value> on_clicked_get(void)
      {
         return on_animate_val;
      }

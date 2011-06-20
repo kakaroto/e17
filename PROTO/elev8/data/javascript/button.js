@@ -64,6 +64,14 @@ var my_window = new elm.main({
 							print("clock!");
 						},
 					},
+					once_button : {
+						type : "button",
+						label : "Once",
+						on_clicked : function(me) {
+							me.on_clicked = null;
+							print("clicked once button");
+						},
+					},
 					check_button : {
 						type : "button",
 						label : "test",
