@@ -583,6 +583,8 @@ public:
              v8::String::Utf8Value val(x);
 
              CEvasObject *child = realize_one(this, in->Get(x->ToString()));
+             if (!child)
+               continue;
              add_child(child);
 
              v8::Handle<v8::Object> child_obj = child->get_object();
