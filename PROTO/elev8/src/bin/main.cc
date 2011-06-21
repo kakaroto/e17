@@ -1076,6 +1076,7 @@ public:
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
         ot->SetAccessor(v8::String::New("units"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("indicator"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("span"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("icon"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("value"), &eo_getter, &eo_setter);
@@ -1090,6 +1091,8 @@ public:
      {
         if (!strcmp(prop_name, "units"))
           units_set(value);
+        else if (!strcmp(prop_name, "indicator"))
+          indicator_set(value);
         else if (!strcmp(prop_name, "span"))
           span_set(value);
         else if (!strcmp(prop_name, "icon"))
@@ -1115,6 +1118,8 @@ public:
      {
         if (!strcmp(prop_name, "units"))
           return units_get();
+        else if (!strcmp(prop_name, "indicator"))
+          return indicator_get();
         else if (!strcmp(prop_name, "span"))
           return span_get();
         else if (!strcmp(prop_name, "icon"))
@@ -1146,6 +1151,20 @@ public:
    virtual v8::Local<v8::Value> units_get()
      {
         return v8::String::New(elm_slider_unit_format_get(eo));
+     }
+
+   virtual void indicator_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsString())
+          {
+            v8::String::Utf8Value str(value);
+            elm_slider_indicator_format_set(eo, *str);
+          }
+     }
+
+   virtual v8::Local<v8::Value> indicator_get() const
+     {
+        return v8::String::New(elm_slider_indicator_format_get(eo));
      }
 
    virtual void label_set(v8::Handle<v8::Value> val)
