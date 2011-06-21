@@ -1342,6 +1342,17 @@ public:
 
 };
 
+class CElmGenList : public CEvasObject {
+protected:
+public:
+   CElmGenList(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
+     {
+        eo = elm_genlist_add(parent->top_widget_get());
+        construct(eo, obj);
+     }
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -1374,6 +1385,10 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
    else if (!strcmp(*str, "flip"))
       {
          eo = new CElmFlip(parent, obj);
+      }
+   else if (!strcmp(*str, "genlist"))
+      {
+         eo = new CElmGenList(parent, obj);
       }
    else if (!strcmp(*str, "icon"))
       {
