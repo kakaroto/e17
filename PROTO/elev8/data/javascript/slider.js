@@ -1,5 +1,9 @@
 #!/usr/local/bin/elev8
 
+/*
+ * This is a reproduction of the elementary_test Slider example
+ */
+
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 
 var logo_icon = {
@@ -45,10 +49,10 @@ var win = new elm.main({
 				inverted_slider : {
 					type : "slider",
 					label : "Horizontal Inverted",
-					units : "%3.0f units",
 					span : 80,
 					min : 50,
 					max : 150,
+					value : 80,
 					indicator : "%3.0f",
 					align : { x: 0.5, y: 0.5 },
 					weight : { x: 0, y: 0 },
@@ -58,10 +62,10 @@ var win = new elm.main({
 				disabled_inverted : {
 					type : "slider",
 					label : "Disabled Inverted",
-					units : "%3.0f units",
 					span : 80,
 					min : 50,
 					max : 150,
+					value : 80,
 					disabled : true,
 					indicator : "%3.0f",
 					align : { x: 0.5, y: 0.5 },
@@ -100,10 +104,11 @@ var win = new elm.main({
 							horizontal : false,
 							value : 0.2,
 							scale : 1.0,
+							icon : logo_icon,
 						},
 						vertical : {
 							type : "slider",
-							label : "Vertical inverted",
+							label : "Vertical",
 							units : "units",
 							span : 60,
 							align : { x: 0.5, y: -1 },
@@ -123,6 +128,7 @@ var win = new elm.main({
 							value : 0.2,
 							align : { x: 0.5, y: -1 },
 							weight : { x: 0, y: 1 },
+							icon : logo_icon,
 						},
 					},
 				},
@@ -130,7 +136,3 @@ var win = new elm.main({
 		},
 	},
 });
-
-print("min   = " + win.elements.the_box.elements.disabled_slider.min);
-print("max   = " + win.elements.the_box.elements.disabled_slider.max);
-print("value = " + win.elements.the_box.elements.disabled_slider.value);
