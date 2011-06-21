@@ -1057,8 +1057,10 @@ public:
 };
 
 class CElmSlider : public CEvasObject {
-     v8::Persistent<v8::Value> the_icon;
-     v8::Persistent<v8::Value> the_end_object;
+protected:
+   v8::Persistent<v8::Value> the_icon;
+   v8::Persistent<v8::Value> the_end_object;
+   v8::Persistent<v8::Value> on_changed_val;
 
 public:
    CElmSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
@@ -1072,6 +1074,7 @@ public:
      {
         the_icon.Dispose();
         the_end_object.Dispose();
+        on_changed_val.Dispose();
      }
 
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
@@ -1086,6 +1089,7 @@ public:
         ot->SetAccessor(v8::String::New("max"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("inverted"), &eo_getter, &eo_setter);
         ot->SetAccessor(v8::String::New("end"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("on_changed"), &eo_getter, &eo_setter);
         return ot;
      }
 
@@ -1111,6 +1115,8 @@ public:
           end_set(value);
         else if (!strcmp(prop_name, "horizontal"))
           horizontal_set(value);
+        else if (!strcmp(prop_name, "on_changed"))
+          on_changed_set(value);
         else
           return CEvasObject::prop_set(prop_name, value);
         return true;
@@ -1138,6 +1144,8 @@ public:
           return end_get();
         else if (!strcmp(prop_name, "horizontal"))
           return horizontal_get();
+        else if (!strcmp(prop_name, "on_changed"))
+          return on_changed_get();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1296,6 +1304,42 @@ public:
         if (value->IsBoolean())
           elm_slider_horizontal_set(eo, value->BooleanValue());
      }
+
+   static void eo_on_changed(void *data, Evas_Object *eo, void *event_info)
+     {
+        CElmSlider *changed = static_cast<CElmSlider*>(data);
+
+        changed->on_changed(event_info);
+     }
+
+   virtual void on_changed(void *event_info)
+     {
+        v8::Handle<v8::Object> obj = get_object();
+        v8::HandleScope handle_scope;
+        v8::Handle<v8::Value> val = on_changed_val;
+        // FIXME: pass event_info to the callback
+        // FIXME: turn the pieces below into a do_callback method
+        assert(val->IsFunction());
+        v8::Handle<v8::Function> fn(v8::Function::Cast(*val));
+        v8::Handle<v8::Value> args[1] = { obj };
+        fn->Call(fn, 1, args);
+     }
+
+   virtual void on_changed_set(v8::Handle<v8::Value> val)
+     {
+        on_changed_val.Dispose();
+        on_changed_val = v8::Persistent<v8::Value>::New(val);
+        if (val->IsFunction())
+          evas_object_smart_callback_add(eo, "changed", &eo_on_changed, this);
+        else
+          evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
+     }
+
+   virtual v8::Handle<v8::Value> on_changed_get(void)
+     {
+        return on_changed_val;
+     }
+
 };
 
 CEvasObject *

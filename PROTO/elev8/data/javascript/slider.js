@@ -32,6 +32,9 @@ var win = new elm.main({
 					align : { x : -1.0, y : 0.5 },
 					weight : EXPAND_BOTH,
 					icon : logo_icon,
+					on_changed : function(me) {
+						win.elements.the_box.elements.box2.elements.vert_inverted.value = me.value;
+					},
 				},
 				disabled_slider : {
 					type : "slider",
