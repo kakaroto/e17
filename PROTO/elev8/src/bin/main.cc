@@ -45,14 +45,66 @@ protected:
 
    bool is_resize;
 
-   struct CPropHandler {
-     const char *name;
-     v8::Handle<v8::Value> (CEvasObject::*get)(void) const;
-     void (CEvasObject::*set)(v8::Handle<v8::Value> val);
+   /*
+    * List of properties that can be got and set.
+    * It's a template because we don't want all properties to be in CEvasObject.
+    */
+   template<class X> class CPropHandler {
+   public:
+     typedef v8::Handle<v8::Value> (X::*prop_getter)(void) const;
+     typedef void (X::*prop_setter)(v8::Handle<v8::Value> val);
+
+   private:
+     struct property_list {
+       const char *name;
+       prop_getter get;
+       prop_setter set;
+     };
+
+     static property_list list[];
+   public:
+     /*
+      * the get method to get a property we know about
+      */
+     prop_getter get_getter(const char *prop_name) const
+       {
+          for (property_list *prop = list; prop->name; prop++)
+            {
+               if (!strcmp(prop->name, prop_name))
+                 {
+                    return prop->get;
+                 }
+            }
+          return NULL;
+       }
+
+     /*
+      * the get method to set a property we know about
+      */
+     prop_setter get_setter(const char *prop_name)
+       {
+          for (property_list *prop = list; prop->name; prop++)
+            {
+               if (!strcmp(prop->name, prop_name))
+                 {
+                    return prop->set;
+                 }
+            }
+          return NULL;
+       }
+
+     /*
+      * Add an interceptor on a property on the given V8 object template
+      */
+     void fill_template(v8::Handle<v8::ObjectTemplate> &ot)
+       {
+          for (property_list *prop = list; prop->name; prop++)
+            ot->SetAccessor(v8::String::New(prop->name), &eo_getter, &eo_setter);
+       }
    };
 
 #define PROP_HANDLER(cls, foo) { #foo, &cls::foo##_get, &cls::foo##_set }
-   static CPropHandler prop_handlers[];
+   static CPropHandler<CEvasObject> prop_handler;
 
 protected:
    explicit CEvasObject() :
@@ -145,8 +197,7 @@ public:
         /* FIXME: only need to create one template per object class */
         the_template = v8::Persistent<v8::ObjectTemplate>::New(v8::ObjectTemplate::New());
 
-        for (CPropHandler *prop = prop_handlers; prop->name; prop++)
-          the_template->SetAccessor(v8::String::New(prop->name), &eo_getter, &eo_setter);
+        prop_handler.fill_template(the_template);
 
         return the_template;
      }
@@ -180,31 +231,32 @@ public:
         return eo;
      }
 
+   /*
+    * set a property
+    * return true if successful, false if not
+    */
    virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
-        for (CPropHandler *prop = prop_handlers; prop->name; prop++)
+        CPropHandler<CEvasObject>::prop_setter setter;
+
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
           {
-             if (!strcmp(prop->name, prop_name))
-               {
-                  (this->*(prop->set))(value);
-                  return true;
-               }
+             (this->*setter)(value);
+             return true;
           }
         return false;
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
-        for (CPropHandler *prop = prop_handlers; prop->name; prop++)
-          {
-             if (!strcmp(prop->name, prop_name))
-               {
-                  return (this->*(prop->get))();
-               }
-          }
-
+        CPropHandler<CEvasObject>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
         return v8::Undefined();
      }
+
 
    // FIXME: could add to the parent here... raster to figure out
    Evas_Object *top_widget_get() const
@@ -585,7 +637,7 @@ public:
      }
 };
 
-CEvasObject::CPropHandler CEvasObject::prop_handlers[] = {
+template<> CEvasObject::CPropHandler<CEvasObject>::property_list CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, x),
      PROP_HANDLER(CEvasObject, y),
      PROP_HANDLER(CEvasObject, disabled),
@@ -991,6 +1043,9 @@ public:
 };
 
 class CElmActionSlider : public CEvasObject {
+private:
+   static CPropHandler<CElmActionSlider> prop_handler;
+
 public:
    CElmActionSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
