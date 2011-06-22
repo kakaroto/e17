@@ -425,6 +425,15 @@ public:
 
    virtual void label_set(v8::Handle<v8::Value> val)
      {
+        if (val->IsString())
+          {
+             v8::String::Utf8Value str(val);
+             label_set(*str);
+          }
+     }
+
+   virtual void label_set(const char *str)
+     {
         fprintf(stderr, "setting label on non-button\n");
      }
 
@@ -677,13 +686,9 @@ public:
         return v8::String::New(elm_win_title_get(eo));
      }
 
-   virtual void label_set(v8::Handle<v8::Value> val)
+   virtual void label_set(const char *str)
      {
-        if (val->IsString())
-          {
-             v8::String::Utf8Value str(val);
-             elm_win_title_set(eo, *str);
-          }
+        elm_win_title_set(eo, str);
      }
 
    ~CElmBasicWindow()
@@ -716,13 +721,9 @@ public:
      {
      }
 
-   virtual void label_set(v8::Handle<v8::Value> val)
+   virtual void label_set(const char *str)
      {
-        if (val->IsString())
-          {
-             v8::String::Utf8Value str(val);
-             elm_button_label_set(eo, *str);
-          }
+        elm_button_label_set(eo, str);
      }
 
    virtual v8::Handle<v8::Value> label_get() const
@@ -774,13 +775,9 @@ public:
         construct(eo, obj);
      }
 
-   virtual void label_set(v8::Handle<v8::Value> val)
+   virtual void label_set(const char *str)
      {
-        if (val->IsString())
-          {
-             v8::String::Utf8Value str(val);
-             elm_radio_label_set(eo, *str);
-          }
+        elm_radio_label_set(eo, str);
      }
 
    virtual ~CElmRadio()
@@ -902,13 +899,9 @@ public:
         return v8::Integer::New(elm_label_line_wrap_get(eo));
      }
 
-   virtual void label_set(v8::Handle<v8::Value> val)
+   virtual void label_set(const char *str)
      {
-        if (val->IsString())
-          {
-             v8::String::Utf8Value str(val);
-             elm_label_label_set(eo, *str);
-          }
+        elm_label_label_set(eo, str);
      }
 
    virtual v8::Handle<v8::Value> label_get() const
@@ -1067,13 +1060,9 @@ public:
      }
 
    /* there's 1 indicator label and 3 position labels */
-   virtual void label_set(v8::Handle<v8::Value> val)
+   virtual void label_set(const char *str)
      {
-        if (val->IsString())
-          {
-             v8::String::Utf8Value str(val);
-             elm_actionslider_indicator_label_set(eo, *str);
-          }
+        elm_actionslider_indicator_label_set(eo, str);
      }
 
    virtual v8::Handle<v8::Value> label_get(v8::Handle<v8::Value> val) const
@@ -1399,13 +1388,9 @@ public:
         return v8::String::New(elm_slider_indicator_format_get(eo));
      }
 
-   virtual void label_set(v8::Handle<v8::Value> val)
+   virtual void label_set(const char *str)
      {
-        if (val->IsString())
-          {
-             v8::String::Utf8Value str(val);
-             elm_slider_label_set(eo, *str);
-          }
+        elm_slider_label_set(eo, str);
      }
 
    virtual v8::Handle<v8::Value> label_get() const
