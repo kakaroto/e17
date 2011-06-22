@@ -637,7 +637,8 @@ public:
      }
 };
 
-template<> CEvasObject::CPropHandler<CEvasObject>::property_list CEvasObject::CPropHandler<CEvasObject>::list[] = {
+template<> CEvasObject::CPropHandler<CEvasObject>::property_list
+CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, x),
      PROP_HANDLER(CEvasObject, y),
      PROP_HANDLER(CEvasObject, disabled),
@@ -1057,33 +1058,29 @@ public:
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
-        ot->SetAccessor(v8::String::New("magnet"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("slider"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("labels"), &eo_getter, &eo_setter);
+        prop_handler.fill_template(ot);
         return ot;
      }
 
    virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
-        if (!strcmp(prop_name, "magnet"))
-          magnet_set(value);
-        if (!strcmp(prop_name, "slider"))
-          slider_set(value);
-        if (!strcmp(prop_name, "labels"))
-          labels_set(value);
-        else
-          return CEvasObject::prop_set(prop_name, value);
-        return true;
+        CPropHandler<CElmActionSlider>::prop_setter setter;
+
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
-        if (!strcmp(prop_name, "magnet"))
-          return magnet_get();
-        if (!strcmp(prop_name, "slider"))
-          return slider_get();
-        if (!strcmp(prop_name, "labels"))
-          return labels_get();
+        CPropHandler<CElmActionSlider>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1169,6 +1166,14 @@ public:
      {
         return v8::Integer::New(elm_actionslider_magnet_pos_get(eo));
      }
+};
+
+template<> CEvasObject::CPropHandler<CElmActionSlider>::property_list
+CEvasObject::CPropHandler<CElmActionSlider>::list[] = {
+     PROP_HANDLER(CElmActionSlider, magnet),
+     PROP_HANDLER(CElmActionSlider, slider),
+     PROP_HANDLER(CElmActionSlider, labels),
+     { NULL, NULL, NULL },
 };
 
 class CElmScroller : public CEvasObject {
