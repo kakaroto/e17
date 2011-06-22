@@ -425,7 +425,7 @@ public:
 
    virtual void label_set(v8::Handle<v8::Value> val)
      {
-        if (val->IsString())
+        if (val->IsString() || val->IsNumber())
           {
              v8::String::Utf8Value str(val);
              label_set(*str);
