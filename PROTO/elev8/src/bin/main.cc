@@ -810,6 +810,7 @@ public:
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
         ot->SetAccessor(v8::String::New("horizontal"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("homogeneous"), &eo_getter, &eo_setter);
         return ot;
      }
 
@@ -817,6 +818,8 @@ public:
      {
         if (!strcmp(prop_name, "horizontal"))
           horizontal_set(value);
+        else if (!strcmp(prop_name, "homogeneous"))
+          homogeneous_set(value);
         else
           return CEvasObject::prop_set(prop_name, value);
         return true;
@@ -826,6 +829,8 @@ public:
      {
         if (!strcmp(prop_name, "horizontal"))
           return horizontal_get();
+        else if (!strcmp(prop_name, "homogeneous"))
+          return homogeneous_get();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -840,6 +845,17 @@ public:
    virtual v8::Handle<v8::Value> horizontal_get() const
      {
         return v8::Boolean::New(elm_box_horizontal_get(eo));
+     }
+
+   void homogeneous_set(v8::Handle<v8::Value> val)
+     {
+        if (val->IsBoolean())
+          elm_box_homogeneous_set(eo, val->BooleanValue());
+     }
+
+   virtual v8::Handle<v8::Value> homogeneous_get() const
+     {
+        return v8::Boolean::New(elm_box_homogeneous_get(eo));
      }
 };
 
