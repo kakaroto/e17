@@ -14,7 +14,8 @@ _enlil_event_library_loaded_free(void *user_data, void *func_data __UNUSED__)
 {
    Enlil_Library_Loaded *ev = user_data;
 
-   EINA_REFCOUNT_UNREF(ev->library, _enlil_library_free);
+   EINA_REFCOUNT_UNREF(ev->library)
+     _enlil_library_free(ev->library);
 
    free(ev);
 }
@@ -54,8 +55,9 @@ _enlil_album_mark_done(void *data, Ecore_Thread *thread)
 
    lib->process = eina_list_remove(lib->process, thread);
 
-   /* EINA_REFCOUNT_UNREF(album, ); */
-   EINA_REFCOUNT_UNREF(lib, _enlil_library_free);
+   /* EINA_REFCOUNT_UNREF(album) ...; */
+   EINA_REFCOUNT_UNREF(lib)
+     _enlil_library_free(lib);
 }
 
 static Eina_Bool
@@ -136,7 +138,8 @@ _enlil_album_stat_failed(void *data, Eio_File *handler, int error)
    library->loaded->paths.albums = eina_list_remove(library->loaded->paths.albums, album->path);
    eina_hash_del(library->loaded->data.albums, album->path, album);
 
-   EINA_REFCOUNT_UNREF(library, _enlil_library_free);
+   EINA_REFCOUNT_UNREF(library)
+     _enlil_library_free(library);
 }
 
 static void
