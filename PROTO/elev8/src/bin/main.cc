@@ -849,14 +849,41 @@ public:
        CEvasObject()
      {
         eo = elm_label_add(parent->top_widget_get());
-        wrap_set(obj->Get(v8::String::New("wrap")));
         construct(eo, obj);
      }
 
-   void wrap_set(v8::Local<v8::Value> wrap)
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        ot->SetAccessor(v8::String::New("wrap"), &eo_getter, &eo_setter);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        if (!strcmp(prop_name, "wrap"))
+          wrap_set(value);
+        else
+          return CEvasObject::prop_set(prop_name, value);
+        return true;
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        if (!strcmp(prop_name, "wrap"))
+          return wrap_get();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+   virtual void wrap_set(v8::Handle<v8::Value> wrap)
      {
         if (wrap->IsNumber())
           elm_label_line_wrap_set(eo, static_cast<Elm_Wrap_Type>(wrap->Int32Value()));
+     }
+
+   virtual v8::Handle<v8::Value> wrap_get() const
+     {
+        return v8::Integer::New(elm_label_line_wrap_get(eo));
      }
 
    virtual void label_set(v8::Handle<v8::Value> val)
