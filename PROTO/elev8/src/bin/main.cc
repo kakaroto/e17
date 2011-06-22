@@ -1146,8 +1146,6 @@ public:
         CEvasObject *content;
         eo = elm_scroller_add(parent->top_widget_get());
         construct(eo, obj);
-        bounce_set(obj->Get(v8::String::New("bounce")));
-        policy_set(obj->Get(v8::String::New("policy")));
         content = realize_one(this, obj->Get(v8::String::New("content")));
         if (!content)
           fprintf(stderr, "scroller has no content\n");
@@ -1156,7 +1154,35 @@ public:
         elm_scroller_content_set(eo, content->get());
      }
 
-   void bounce_set(v8::Local<v8::Value> val)
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        ot->SetAccessor(v8::String::New("bounce"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("policy"), &eo_getter, &eo_setter);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        if (!strcmp(prop_name, "bounce"))
+          bounce_set(value);
+        else if (!strcmp(prop_name, "policy"))
+          policy_set(value);
+        else
+          return CEvasObject::prop_set(prop_name, value);
+        return true;
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        if (!strcmp(prop_name, "bounce"))
+          return bounce_get();
+        if (!strcmp(prop_name, "policy"))
+          return policy_get();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+    virtual void bounce_set(v8::Handle<v8::Value> val)
      {
         bool x_bounce = false, y_bounce = false;
         if (get_xy_from_object(val, x_bounce, y_bounce))
@@ -1165,7 +1191,18 @@ public:
           }
      }
 
-   Elm_Scroller_Policy policy_from_string(v8::Local<v8::Value> val)
+   virtual v8::Handle<v8::Value> bounce_get() const
+     {
+        Eina_Bool x, y;
+        elm_scroller_bounce_get(eo, &x, &y);
+        v8::Local<v8::Object> obj = v8::Object::New();
+        obj->Set(v8::String::New("x"), v8::Boolean::New(x));
+        obj->Set(v8::String::New("y"), v8::Boolean::New(y));
+        return obj;
+     }
+
+
+   static Elm_Scroller_Policy policy_from_string(v8::Handle<v8::Value> val)
      {
         v8::String::Utf8Value str(val);
         Elm_Scroller_Policy policy = ELM_SCROLLER_POLICY_AUTO;
@@ -1184,7 +1221,24 @@ public:
         return policy;
      }
 
-   void policy_set(v8::Local<v8::Value> val)
+   static v8::Local<v8::Value> string_from_policy(Elm_Scroller_Policy policy)
+     {
+        switch (policy)
+          {
+        case ELM_SCROLLER_POLICY_AUTO:
+          return v8::String::New("auto");
+        case ELM_SCROLLER_POLICY_ON:
+          return v8::String::New("on");
+        case ELM_SCROLLER_POLICY_OFF:
+          return v8::String::New("off");
+        case ELM_SCROLLER_POLICY_LAST:
+          return v8::String::New("last");
+        default:
+          return v8::String::New("unknown");
+          }
+     }
+
+   virtual void policy_set(v8::Handle<v8::Value> val)
      {
         v8::Local<v8::Value> x_val, y_val;
 
@@ -1195,6 +1249,16 @@ public:
              y_policy = policy_from_string(y_val);
              elm_scroller_policy_set(eo, x_policy, y_policy);
           }
+     }
+
+   virtual v8::Handle<v8::Value> policy_get() const
+     {
+        Elm_Scroller_Policy x_policy, y_policy;
+        elm_scroller_policy_get(eo, &x_policy, &y_policy);
+        v8::Local<v8::Object> obj = v8::Object::New();
+        obj->Set(v8::String::New("x"), string_from_policy(x_policy));
+        obj->Set(v8::String::New("y"), string_from_policy(y_policy));
+        return obj;
      }
 };
 

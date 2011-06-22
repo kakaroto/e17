@@ -116,3 +116,5 @@ var my_window = new elm.main({
 });
 
 print("weight.x = " + my_window.elements.scroll.content.elements.check_button.weight.x);
+print("scroller.policy.x = " + my_window.elements.scroll.policy.x);
+print("scroller.policy.y = " + my_window.elements.scroll.policy.y);
