@@ -165,13 +165,13 @@ public:
         return the_object;
      }
 
-   virtual v8::Handle<v8::Value> type_get(void)
+   virtual v8::Handle<v8::Value> type_get(void) const
      {
         fprintf(stderr, "undefined object type!\n");
         return v8::Undefined();
      }
 
-   Evas_Object *get()
+   Evas_Object *get() const
      {
         return eo;
      }
@@ -217,7 +217,7 @@ public:
         return true;
      }
 
-   virtual v8::Handle<v8::Value> prop_get(const char *prop_name)
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
         // FIXME: use a table
         if (!strcmp(prop_name, "type"))
@@ -252,7 +252,7 @@ public:
      }
 
    // FIXME: could add to the parent here... raster to figure out
-   Evas_Object *top_widget_get()
+   Evas_Object *top_widget_get() const
      {
         return elm_object_top_widget_get(eo);
      }
@@ -278,7 +278,7 @@ public:
          }
      }
 
-   virtual v8::Handle<v8::Value> x_get(void)
+   virtual v8::Handle<v8::Value> x_get(void) const
      {
        Evas_Coord x, y, width, height;
        evas_object_geometry_get(eo, &x, &y, &width, &height);
@@ -296,7 +296,7 @@ public:
          }
      }
 
-   virtual v8::Handle<v8::Value> y_get(void)
+   virtual v8::Handle<v8::Value> y_get(void) const
      {
        Evas_Coord x, y, width, height;
        evas_object_geometry_get(eo, &x, &y, &width, &height);
@@ -314,7 +314,7 @@ public:
          }
      }
 
-   virtual v8::Handle<v8::Value> height_get(void)
+   virtual v8::Handle<v8::Value> height_get(void) const
      {
        Evas_Coord x, y, width, height;
        evas_object_geometry_get(eo, &x, &y, &width, &height);
@@ -332,7 +332,7 @@ public:
          }
      }
 
-   virtual v8::Handle<v8::Value> width_get(void)
+   virtual v8::Handle<v8::Value> width_get(void) const
      {
        Evas_Coord x, y, width, height;
        evas_object_geometry_get(eo, &x, &y, &width, &height);
@@ -378,7 +378,7 @@ public:
           }
      }
 
-   virtual v8::Handle<v8::Value> on_animate_get(void)
+   virtual v8::Handle<v8::Value> on_animate_get(void) const
      {
         return on_animate_val;
      }
@@ -393,7 +393,7 @@ public:
           evas_object_smart_callback_del(eo, "clicked", &eo_on_click);
      }
 
-   virtual v8::Handle<v8::Value> on_clicked_get(void)
+   virtual v8::Handle<v8::Value> on_clicked_get(void) const
      {
         return on_animate_val;
      }
@@ -418,7 +418,7 @@ public:
         return ECORE_CALLBACK_RENEW;
      }
 
-   virtual v8::Handle<v8::Value> label_get()
+   virtual v8::Handle<v8::Value> label_get() const
      {
        return v8::Undefined();
      }
@@ -515,7 +515,7 @@ public:
           evas_object_size_hint_weight_set(eo, x, y);
      }
 
-   virtual v8::Handle<v8::Value> weight_get(void)
+   virtual v8::Handle<v8::Value> weight_get(void) const
      {
        double x = 0.0, y = 0.0;
        evas_object_size_hint_weight_get(eo, &x, &y);
@@ -534,7 +534,7 @@ public:
           }
      }
 
-   virtual v8::Handle<v8::Value> align_get(void)
+   virtual v8::Handle<v8::Value> align_get(void) const
      {
        double x, y;
        evas_object_size_hint_align_get(eo, &x, &y);
@@ -550,7 +550,7 @@ public:
           fprintf(stderr, "no image set\n");
      }
 
-   virtual v8::Handle<v8::Value> image_get(void)
+   virtual v8::Handle<v8::Value> image_get(void) const
      {
         return v8::Undefined();
      }
@@ -615,7 +615,7 @@ public:
           fprintf(stderr, "Resize value not boolean!\n");
      }
 
-   virtual v8::Handle<v8::Value> resize_get(void)
+   virtual v8::Handle<v8::Value> resize_get(void) const
      {
         return v8::Boolean::New(is_resize);
      }
@@ -642,7 +642,7 @@ public:
          }
      }
 
-   virtual v8::Handle<v8::Value> image_get(void)
+   virtual v8::Handle<v8::Value> image_get(void) const
      {
         const char *file = NULL, *key = NULL;
         evas_object_image_file_get(eo, &file, &key);
@@ -667,12 +667,12 @@ public:
         evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
      }
 
-   virtual v8::Handle<v8::Value> type_get(void)
+   virtual v8::Handle<v8::Value> type_get(void) const
      {
         return v8::String::New("main");
      }
 
-   virtual v8::Handle<v8::Value> label_get()
+   virtual v8::Handle<v8::Value> label_get() const
      {
         return v8::String::New(elm_win_title_get(eo));
      }
@@ -725,7 +725,7 @@ public:
           }
      }
 
-   virtual v8::Handle<v8::Value> label_get()
+   virtual v8::Handle<v8::Value> label_get() const
      {
        return v8::String::New(elm_button_label_get(eo));
      }
@@ -753,7 +753,7 @@ public:
           }
      }
 
-   virtual v8::Handle<v8::Value> image_get(void)
+   virtual v8::Handle<v8::Value> image_get(void) const
      {
         const char *file = NULL, *group = NULL;
         elm_bg_file_get(eo, &file, &group);
@@ -841,7 +841,7 @@ public:
           }
      }
 
-   virtual v8::Handle<v8::Value> label_get()
+   virtual v8::Handle<v8::Value> label_get() const
      {
         return v8::String::New(elm_label_label_get(eo));
      }
@@ -911,7 +911,7 @@ public:
           }
      }
 
-   virtual v8::Handle<v8::Value> image_get(void)
+   virtual v8::Handle<v8::Value> image_get(void) const
      {
         const char *file = NULL, *group = NULL;
         elm_icon_file_get(eo, &file, &group);
@@ -1127,7 +1127,7 @@ public:
         return true;
      }
 
-   virtual v8::Handle<v8::Value> prop_get(const char *prop_name)
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
         if (!strcmp(prop_name, "units"))
           return units_get();
@@ -1163,7 +1163,7 @@ public:
           }
      }
 
-   virtual v8::Local<v8::Value> units_get()
+   virtual v8::Local<v8::Value> units_get() const
      {
         return v8::String::New(elm_slider_unit_format_get(eo));
      }
@@ -1191,7 +1191,7 @@ public:
           }
      }
 
-   virtual v8::Handle<v8::Value> label_get()
+   virtual v8::Handle<v8::Value> label_get() const
      {
         return v8::String::New(elm_slider_label_get(eo));
      }
@@ -1340,7 +1340,7 @@ public:
           evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
      }
 
-   virtual v8::Handle<v8::Value> on_changed_get(void)
+   virtual v8::Handle<v8::Value> on_changed_get(void) const
      {
         return on_changed_val;
      }
