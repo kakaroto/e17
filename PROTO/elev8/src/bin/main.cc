@@ -840,6 +840,11 @@ public:
              elm_label_label_set(eo, *str);
           }
      }
+
+   virtual v8::Handle<v8::Value> label_get()
+     {
+        return v8::String::New(elm_label_label_get(eo));
+     }
 };
 
 class CElmFlip : public CEvasObject {
