@@ -804,15 +804,42 @@ public:
         v8::Handle<v8::Object> elements;
         elements = realize_objects(obj->Get(v8::String::New("elements")));
         get_object()->Set(v8::String::New("elements"), elements);
-        horizontal_set(obj->Get(v8::String::New("horizontal")));
      }
 
-   void horizontal_set(v8::Local<v8::Value> val)
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        ot->SetAccessor(v8::String::New("horizontal"), &eo_getter, &eo_setter);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        if (!strcmp(prop_name, "horizontal"))
+          horizontal_set(value);
+        else
+          return CEvasObject::prop_set(prop_name, value);
+        return true;
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        if (!strcmp(prop_name, "horizontal"))
+          return horizontal_get();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+   void horizontal_set(v8::Handle<v8::Value> val)
      {
         if (val->IsBoolean())
           {
              elm_box_horizontal_set(eo, val->BooleanValue());
           }
+     }
+
+   virtual v8::Handle<v8::Value> horizontal_get() const
+     {
+        return v8::Boolean::New(elm_box_horizontal_get(eo));
      }
 };
 
