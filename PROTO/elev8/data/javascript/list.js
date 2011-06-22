@@ -18,9 +18,10 @@ var win = new elm.main({
 		},
 		the_list : {
 			type : "list",
+			resize : true,
 			weight : EXPAND_BOTH,
 			align : { x: -1, y: -1 },
-			elements : {
+			items : {
 				0 : {
 					label : "Hello",
 				},

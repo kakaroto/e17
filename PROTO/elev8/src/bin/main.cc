@@ -1361,6 +1361,44 @@ public:
      {
         eo = elm_list_add(parent->top_widget_get());
         construct(eo, obj);
+        items_set(obj->Get(v8::String::New("items")));
+     }
+
+   v8::Handle<v8::Object> items_set(v8::Handle<v8::Value> val)
+     {
+        /* add an list of children */
+        v8::Local<v8::Object> out = v8::Object::New();
+
+        if (!val->IsObject())
+          {
+             fprintf(stderr, "not an object!\n");
+             return out;
+          }
+
+        v8::Local<v8::Object> in = val->ToObject();
+        v8::Local<v8::Array> props = in->GetPropertyNames();
+
+        /* iterate through elements and instantiate them */
+        for (unsigned int i = 0; i < props->Length(); i++)
+          {
+
+             v8::Local<v8::Value> x = props->Get(v8::Integer::New(i));
+             v8::String::Utf8Value val(x);
+
+             v8::Local<v8::Value> item = in->Get(x->ToString());
+             if (!item->IsObject())
+               {
+                  // FIXME: permit adding strings here?
+                 fprintf(stderr, "list item is not an object\n");
+                 continue;
+               }
+             v8::Local<v8::Value> label = item->ToObject()->Get(v8::String::New("label"));
+
+             v8::String::Utf8Value str(label);
+             elm_list_item_append(eo, *str, NULL, NULL, NULL, NULL);
+          }
+
+        return out;
      }
 };
 
