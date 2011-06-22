@@ -1015,9 +1015,39 @@ public:
      {
         eo = elm_actionslider_add(parent->top_widget_get());
         construct(eo, obj);
-        magnet_set(obj->Get(v8::String::New("magnet")));
-        slider_set(obj->Get(v8::String::New("slider")));
-        labels_set(obj->Get(v8::String::New("labels")));
+     }
+
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        ot->SetAccessor(v8::String::New("magnet"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("slider"), &eo_getter, &eo_setter);
+        ot->SetAccessor(v8::String::New("labels"), &eo_getter, &eo_setter);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        if (!strcmp(prop_name, "magnet"))
+          magnet_set(value);
+        if (!strcmp(prop_name, "slider"))
+          slider_set(value);
+        if (!strcmp(prop_name, "labels"))
+          labels_set(value);
+        else
+          return CEvasObject::prop_set(prop_name, value);
+        return true;
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        if (!strcmp(prop_name, "magnet"))
+          return magnet_get();
+        if (!strcmp(prop_name, "slider"))
+          return slider_get();
+        if (!strcmp(prop_name, "labels"))
+          return labels_get();
+        return CEvasObject::prop_get(prop_name);
      }
 
    /* there's 1 indicator label and 3 position labels */
@@ -1030,7 +1060,12 @@ public:
           }
      }
 
-   virtual void labels_set(v8::Local<v8::Value> val)
+   virtual v8::Handle<v8::Value> label_get(v8::Handle<v8::Value> val) const
+     {
+        return v8::String::New(elm_actionslider_indicator_label_get(eo));
+     }
+
+   virtual void labels_set(v8::Handle<v8::Value> val)
      {
         if (val->IsObject())
           {
@@ -1050,7 +1085,13 @@ public:
           }
      }
 
-   bool position_from_string(v8::Local<v8::Value> val, Elm_Actionslider_Pos &pos)
+   virtual v8::Handle<v8::Value> labels_get() const
+     {
+        // FIXME: implement
+        return v8::Undefined();
+     }
+
+   bool position_from_string(v8::Handle<v8::Value> val, Elm_Actionslider_Pos &pos)
      {
         if (!val->IsString())
           return false;
@@ -1070,7 +1111,7 @@ public:
         return true;
      }
 
-   void slider_set(v8::Local<v8::Value> val)
+   virtual void slider_set(v8::Handle<v8::Value> val)
      {
         Elm_Actionslider_Pos pos = ELM_ACTIONSLIDER_NONE;
 
@@ -1078,12 +1119,22 @@ public:
           elm_actionslider_indicator_pos_set(eo, pos);
      }
 
-   void magnet_set(v8::Local<v8::Value> val)
+   virtual v8::Handle<v8::Value> slider_get() const
+     {
+        return v8::Integer::New(elm_actionslider_indicator_pos_get(eo));
+     }
+
+   virtual void magnet_set(v8::Handle<v8::Value> val)
      {
         Elm_Actionslider_Pos pos = ELM_ACTIONSLIDER_NONE;
 
         if (position_from_string(val, pos))
           elm_actionslider_magnet_pos_set(eo, pos);
+     }
+
+   virtual v8::Handle<v8::Value> magnet_get() const
+     {
+        return v8::Integer::New(elm_actionslider_magnet_pos_get(eo));
      }
 };
 
