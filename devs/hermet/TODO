@@ -13,3 +13,7 @@ evas_map - afterimage problem
 evas_map - check rotation util inconsistency rotation
 
 pager - content size calc
+
+elm_transit - check the transit would use the ecore_animator functionalities.
+
+animator - remove it (on end of JULY) 
