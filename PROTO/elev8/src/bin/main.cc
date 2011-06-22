@@ -942,16 +942,48 @@ public:
      {
         eo = elm_icon_add(parent->top_widget_get());
         construct(eo, obj);
-        scale_set(obj->Get(v8::String::New("scale")));
      }
 
-   virtual void scale_set(v8::Local<v8::Value> align)
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        ot->SetAccessor(v8::String::New("scale"), &eo_getter, &eo_setter);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        if (!strcmp(prop_name, "scale"))
+          scale_set(value);
+        else
+          return CEvasObject::prop_set(prop_name, value);
+        return true;
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        if (!strcmp(prop_name, "scale"))
+          return scale_get();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+   virtual void scale_set(v8::Handle<v8::Value> align)
      {
         bool x, y;
         if (get_xy_from_object(align, x, y))
           {
              elm_icon_scale_set(eo, x, y);
           }
+     }
+
+   virtual v8::Handle<v8::Value> scale_get() const
+     {
+        Eina_Bool x, y;
+        elm_icon_scale_get(eo, &x, &y);
+        v8::Local<v8::Object> obj = v8::Object::New();
+        obj->Set(v8::String::New("x"), v8::Boolean::New(x));
+        obj->Set(v8::String::New("y"), v8::Boolean::New(y));
+        return obj;
      }
 
    virtual void image_set(v8::Handle<v8::Value> val)
