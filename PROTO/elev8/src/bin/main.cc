@@ -44,6 +44,16 @@ protected:
    Ecore_Animator *current_animator;
 
    bool is_resize;
+
+   struct CPropHandler {
+     const char *name;
+     v8::Handle<v8::Value> (CEvasObject::*get)(void) const;
+     void (CEvasObject::*set)(v8::Handle<v8::Value> val);
+   };
+
+#define PROP_HANDLER(cls, foo) { #foo, &cls::foo##_get, &cls::foo##_set }
+   static CPropHandler prop_handlers[];
+
 protected:
    explicit CEvasObject() :
        eo(NULL),
@@ -134,20 +144,9 @@ public:
      {
         /* FIXME: only need to create one template per object class */
         the_template = v8::Persistent<v8::ObjectTemplate>::New(v8::ObjectTemplate::New());
-        the_template->SetAccessor(v8::String::New("x"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("y"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("disabled"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("width"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("height"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("image"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("label"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("type"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("resize"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("align"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("weight"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("on_animate"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("on_clicked"), &eo_getter, &eo_setter);
-        the_template->SetAccessor(v8::String::New("scale"), &eo_getter, &eo_setter);
+
+        for (CPropHandler *prop = prop_handlers; prop->name; prop++)
+          the_template->SetAccessor(v8::String::New(prop->name), &eo_getter, &eo_setter);
 
         return the_template;
      }
@@ -171,6 +170,11 @@ public:
         return v8::Undefined();
      }
 
+   virtual void type_set(v8::Handle<v8::Value> value)
+     {
+        fprintf(stderr, "type cannot be set!\n");
+     }
+
    Evas_Object *get() const
      {
         return eo;
@@ -178,76 +182,27 @@ public:
 
    virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
-        // FIXME: use a table
-        if (!strcmp(prop_name, "type"))
+        for (CPropHandler *prop = prop_handlers; prop->name; prop++)
           {
-             fprintf(stderr, "object type cannot be changed");
-             return false;
+             if (!strcmp(prop->name, prop_name))
+               {
+                  (this->*(prop->set))(value);
+                  return true;
+               }
           }
-        if (!strcmp(prop_name, "label"))
-          label_set(value);
-        else if (!strcmp(prop_name, "align"))
-          align_set(value);
-        else if (!strcmp(prop_name, "x"))
-          x_set(value);
-        else if (!strcmp(prop_name, "y"))
-          y_set(value);
-        else if (!strcmp(prop_name, "height"))
-          height_set(value);
-        else if (!strcmp(prop_name, "width"))
-          width_set(value);
-        else if (!strcmp(prop_name, "image"))
-          image_set(value);
-        else if (!strcmp(prop_name, "resize"))
-          resize_set(value);
-        else if (!strcmp(prop_name, "weight"))
-          weight_set(value);
-        else if (!strcmp(prop_name, "on_animate"))
-          on_animate_set(value);
-        else if (!strcmp(prop_name, "on_clicked"))
-          on_clicked_set(value);
-        else if (!strcmp(prop_name, "disabled"))
-          disabled_set(value);
-        else if (!strcmp(prop_name, "scale"))
-          scale_set(value);
-        else
-          {
-             return false;
-          }
-        return true;
+        return false;
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
-        // FIXME: use a table
-        if (!strcmp(prop_name, "type"))
-          return type_get();
-        else if (!strcmp(prop_name, "align"))
-          return align_get();
-        else if (!strcmp(prop_name, "x"))
-          return x_get();
-        else if (!strcmp(prop_name, "y"))
-          return y_get();
-        else if (!strcmp(prop_name, "height"))
-          return height_get();
-        else if (!strcmp(prop_name, "width"))
-          return width_get();
-        else if (!strcmp(prop_name, "label"))
-          return label_get();
-        else if (!strcmp(prop_name, "image"))
-          return image_get();
-        else if (!strcmp(prop_name, "resize"))
-          return resize_get();
-        else if (!strcmp(prop_name, "weight"))
-          return weight_get();
-        else if (!strcmp(prop_name, "on_animate"))
-          return on_animate_get();
-        else if (!strcmp(prop_name, "on_clicked"))
-          return on_clicked_get();
-        else if (!strcmp(prop_name, "disabled"))
-          return disabled_get();
-        else if (!strcmp(prop_name, "scale"))
-          return scale_get();
+        for (CPropHandler *prop = prop_handlers; prop->name; prop++)
+          {
+             if (!strcmp(prop->name, prop_name))
+               {
+                  return (this->*(prop->get))();
+               }
+          }
+
         return v8::Undefined();
      }
 
@@ -628,6 +583,24 @@ public:
      {
         return v8::Boolean::New(is_resize);
      }
+};
+
+CEvasObject::CPropHandler CEvasObject::prop_handlers[] = {
+     PROP_HANDLER(CEvasObject, x),
+     PROP_HANDLER(CEvasObject, y),
+     PROP_HANDLER(CEvasObject, disabled),
+     PROP_HANDLER(CEvasObject, width),
+     PROP_HANDLER(CEvasObject, height),
+     PROP_HANDLER(CEvasObject, image),
+     PROP_HANDLER(CEvasObject, label),
+     PROP_HANDLER(CEvasObject, type),
+     PROP_HANDLER(CEvasObject, resize),
+     PROP_HANDLER(CEvasObject, align),
+     PROP_HANDLER(CEvasObject, weight),
+     PROP_HANDLER(CEvasObject, on_animate),
+     PROP_HANDLER(CEvasObject, on_clicked),
+     PROP_HANDLER(CEvasObject, scale),
+     { NULL, NULL, NULL },
 };
 
 class CEvasImage : public CEvasObject {
