@@ -1655,6 +1655,55 @@ public:
      }
 };
 
+class CElmEntry : public CEvasObject {
+protected:
+   static CPropHandler<CElmEntry> prop_handler;
+public:
+   CElmEntry(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
+     {
+        eo = elm_entry_add(parent->top_widget_get());
+        construct(eo, obj);
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        CPropHandler<CElmEntry>::prop_setter setter;
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        CPropHandler<CElmEntry>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+   // FIXME: rename label to text (everywhere)
+   virtual v8::Handle<v8::Value> label_get() const
+     {
+        return v8::String::New(elm_entry_entry_get(eo));
+     }
+
+   virtual void label_set(const char *str)
+     {
+        elm_entry_entry_set(eo, str);
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmEntry>::property_list
+CEvasObject::CPropHandler<CElmEntry>::list[] = {
+  { NULL, NULL, NULL },
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -1683,6 +1732,10 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
    else if (!strcmp(*str, "background"))
       {
          eo = new CElmBackground(parent, obj);
+      }
+   else if (!strcmp(*str, "entry"))
+      {
+         eo = new CElmEntry(parent, obj);
       }
    else if (!strcmp(*str, "flip"))
       {
