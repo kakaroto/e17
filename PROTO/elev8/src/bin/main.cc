@@ -1345,6 +1345,7 @@ protected:
    v8::Persistent<v8::Value> the_icon;
    v8::Persistent<v8::Value> the_end_object;
    v8::Persistent<v8::Value> on_changed_val;
+   static CPropHandler<CElmSlider> prop_handler;
 
 public:
    CElmSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
@@ -1364,72 +1365,28 @@ public:
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
-        ot->SetAccessor(v8::String::New("units"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("indicator"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("span"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("icon"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("value"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("min"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("max"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("inverted"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("end"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("on_changed"), &eo_getter, &eo_setter);
+        prop_handler.fill_template(ot);
         return ot;
      }
 
    virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
-        if (!strcmp(prop_name, "units"))
-          units_set(value);
-        else if (!strcmp(prop_name, "indicator"))
-          indicator_set(value);
-        else if (!strcmp(prop_name, "span"))
-          span_set(value);
-        else if (!strcmp(prop_name, "icon"))
-          icon_set(value);
-        else if (!strcmp(prop_name, "value"))
-          value_set(value);
-        else if (!strcmp(prop_name, "min"))
-          min_set(value);
-        else if (!strcmp(prop_name, "max"))
-          max_set(value);
-        else if (!strcmp(prop_name, "inverted"))
-          inverted_set(value);
-        else if (!strcmp(prop_name, "end"))
-          end_set(value);
-        else if (!strcmp(prop_name, "horizontal"))
-          horizontal_set(value);
-        else if (!strcmp(prop_name, "on_changed"))
-          on_changed_set(value);
-        else
-          return CEvasObject::prop_set(prop_name, value);
-        return true;
+        CPropHandler<CElmSlider>::prop_setter setter;
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
-        if (!strcmp(prop_name, "units"))
-          return units_get();
-        else if (!strcmp(prop_name, "indicator"))
-          return indicator_get();
-        else if (!strcmp(prop_name, "span"))
-          return span_get();
-        else if (!strcmp(prop_name, "icon"))
-          return icon_get();
-        else if (!strcmp(prop_name, "value"))
-          return value_get();
-        else if (!strcmp(prop_name, "min"))
-          return min_get();
-        else if (!strcmp(prop_name, "max"))
-          return max_get();
-        else if (!strcmp(prop_name, "inverted"))
-          return inverted_get();
-        else if (!strcmp(prop_name, "end"))
-          return end_get();
-        else if (!strcmp(prop_name, "horizontal"))
-          return horizontal_get();
-        else if (!strcmp(prop_name, "on_changed"))
-          return on_changed_get();
+        CPropHandler<CElmSlider>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1442,7 +1399,7 @@ public:
           }
      }
 
-   virtual v8::Local<v8::Value> units_get() const
+   virtual v8::Handle<v8::Value> units_get() const
      {
         return v8::String::New(elm_slider_unit_format_get(eo));
      }
@@ -1456,7 +1413,7 @@ public:
           }
      }
 
-   virtual v8::Local<v8::Value> indicator_get() const
+   virtual v8::Handle<v8::Value> indicator_get() const
      {
         return v8::String::New(elm_slider_indicator_format_get(eo));
      }
@@ -1471,7 +1428,7 @@ public:
         return v8::String::New(elm_slider_label_get(eo));
      }
 
-   virtual v8::Local<v8::Value> span_get() const
+   virtual v8::Handle<v8::Value> span_get() const
      {
         return v8::Integer::New(elm_slider_span_size_get(eo));
      }
@@ -1620,6 +1577,21 @@ public:
         return on_changed_val;
      }
 
+};
+
+template<> CEvasObject::CPropHandler<CElmSlider>::property_list
+CEvasObject::CPropHandler<CElmSlider>::list[] = {
+  PROP_HANDLER(CElmSlider, units),
+  PROP_HANDLER(CElmSlider, indicator),
+  PROP_HANDLER(CElmSlider, span),
+  PROP_HANDLER(CElmSlider, icon),
+  PROP_HANDLER(CElmSlider, value),
+  PROP_HANDLER(CElmSlider, min),
+  PROP_HANDLER(CElmSlider, max),
+  PROP_HANDLER(CElmSlider, inverted),
+  PROP_HANDLER(CElmSlider, end),
+  PROP_HANDLER(CElmSlider, horizontal),
+  PROP_HANDLER(CElmSlider, on_changed),
 };
 
 class CElmGenList : public CEvasObject {
