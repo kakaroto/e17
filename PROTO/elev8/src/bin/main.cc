@@ -1208,6 +1208,9 @@ CEvasObject::CPropHandler<CElmActionSlider>::list[] = {
 };
 
 class CElmScroller : public CEvasObject {
+private:
+   static CPropHandler<CElmScroller> prop_handler;
+
 public:
    CElmScroller(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
@@ -1226,28 +1229,28 @@ public:
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
-        ot->SetAccessor(v8::String::New("bounce"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("policy"), &eo_getter, &eo_setter);
+        prop_handler.fill_template(ot);
         return ot;
      }
 
    virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
-        if (!strcmp(prop_name, "bounce"))
-          bounce_set(value);
-        else if (!strcmp(prop_name, "policy"))
-          policy_set(value);
-        else
-          return CEvasObject::prop_set(prop_name, value);
-        return true;
+        CPropHandler<CElmScroller>::prop_setter setter;
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
-        if (!strcmp(prop_name, "bounce"))
-          return bounce_get();
-        if (!strcmp(prop_name, "policy"))
-          return policy_get();
+        CPropHandler<CElmScroller>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1329,6 +1332,12 @@ public:
         obj->Set(v8::String::New("y"), string_from_policy(y_policy));
         return obj;
      }
+};
+
+template<> CEvasObject::CPropHandler<CElmScroller>::property_list
+CEvasObject::CPropHandler<CElmScroller>::list[] = {
+     PROP_HANDLER(CElmScroller, bounce),
+     PROP_HANDLER(CElmScroller, policy),
 };
 
 class CElmSlider : public CEvasObject {
