@@ -897,6 +897,9 @@ CEvasObject::CPropHandler<CElmBox>::list[] = {
 };
 
 class CElmLabel : public CEvasObject {
+protected:
+   static CPropHandler<CElmLabel> prop_handler;
+
 public:
    CElmLabel(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
@@ -908,23 +911,29 @@ public:
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
-        ot->SetAccessor(v8::String::New("wrap"), &eo_getter, &eo_setter);
+        prop_handler.fill_template(ot);
         return ot;
      }
 
    virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
-        if (!strcmp(prop_name, "wrap"))
-          wrap_set(value);
-        else
-          return CEvasObject::prop_set(prop_name, value);
-        return true;
+        CPropHandler<CElmLabel>::prop_setter setter;
+
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
-        if (!strcmp(prop_name, "wrap"))
-          return wrap_get();
+        CPropHandler<CElmLabel>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -948,6 +957,14 @@ public:
      {
         return v8::String::New(elm_label_label_get(eo));
      }
+};
+
+template<> CEvasObject::CPropHandler<CElmLabel>::property_list
+CEvasObject::CPropHandler<CElmLabel>::list[] = {
+     PROP_HANDLER(CElmLabel, wrap),
+     /* PROP_HANDLER(CElmLabel, label), - not necessary, called from CEvasObject */
+     /* FIXME: add fontsize, wrap_height, wrap_width, ellipsis, slide, slide_duration */
+     { NULL, NULL, NULL },
 };
 
 class CElmFlip : public CEvasObject {
