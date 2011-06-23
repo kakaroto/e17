@@ -43,11 +43,15 @@ protected:
    v8::Persistent<v8::Value> on_animate_val;
    Ecore_Animator *current_animator;
 
+   /* object is resized to the size of the parent (usually the main window) */
    bool is_resize;
 
    /*
     * List of properties that can be got and set.
     * It's a template because we don't want all properties to be in CEvasObject.
+    * The idea is to allow declaring a list of properties
+    * that can be get and set, then the methods to do the setting
+    * and leave the rest up to this template.
     */
    template<class X> class CPropHandler {
    public:
@@ -818,6 +822,8 @@ protected:
         elm_box_pack_end(eo, child->get());
      }
 
+   static CPropHandler<CElmBox> prop_handler;
+
 public:
    CElmBox(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
@@ -832,28 +838,29 @@ public:
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
-        ot->SetAccessor(v8::String::New("horizontal"), &eo_getter, &eo_setter);
-        ot->SetAccessor(v8::String::New("homogeneous"), &eo_getter, &eo_setter);
+        prop_handler.fill_template(ot);
         return ot;
      }
 
    virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
-        if (!strcmp(prop_name, "horizontal"))
-          horizontal_set(value);
-        else if (!strcmp(prop_name, "homogeneous"))
-          homogeneous_set(value);
-        else
-          return CEvasObject::prop_set(prop_name, value);
-        return true;
+        CPropHandler<CElmBox>::prop_setter setter;
+
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
-        if (!strcmp(prop_name, "horizontal"))
-          return horizontal_get();
-        else if (!strcmp(prop_name, "homogeneous"))
-          return homogeneous_get();
+        CPropHandler<CElmBox>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -880,6 +887,13 @@ public:
      {
         return v8::Boolean::New(elm_box_homogeneous_get(eo));
      }
+};
+
+template<> CEvasObject::CPropHandler<CElmBox>::property_list
+CEvasObject::CPropHandler<CElmBox>::list[] = {
+     PROP_HANDLER(CElmBox, horizontal),
+     PROP_HANDLER(CElmBox, homogeneous),
+     { NULL, NULL, NULL },
 };
 
 class CElmLabel : public CEvasObject {
