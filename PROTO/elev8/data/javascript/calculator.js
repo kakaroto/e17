@@ -5,6 +5,9 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var stack = new Array;
 
+/* clear the display when the next button is pressed? */
+var clear = 1;
+
 function multiply(left, right) {
 	return left * right;
 }
@@ -34,11 +37,20 @@ function set_entry(val) {
 }
 
 function append_entry(val) {
-	var cur = calc.elements.vbox.elements.entry.label;
-	if (cur == "0")
-		cur = val;
-        else
-		cur += val;
+	var cur;
+
+	if (clear)
+		cur = "0";
+	else
+		cur = calc.elements.vbox.elements.entry.label;
+	clear = 0;
+
+	if (val != '.' || -1 == cur.indexOf('.')) {
+		if (cur == "0" && val != '.')
+			cur = val;
+		else
+			cur += val;
+	}
 	calc.elements.vbox.elements.entry.label = cur;
 }
 
@@ -77,8 +89,8 @@ function op_button(str, op) {
 	this.label = str;
 	this.on_clicked = function () {
 		push_entry();
-		set_entry("");
 		push(op);
+		clear = 1;
 	};
 }
 
@@ -151,6 +163,7 @@ var calc = new elm.main({
 								set_entry("");
 								var answer = evaluate();
 								set_entry(answer);
+								clear = 1;
 							},
 						},
 						add : new op_button("+", add),
