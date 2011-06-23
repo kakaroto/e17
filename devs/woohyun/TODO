@@ -3,3 +3,6 @@
 
 2. elm_widget
 	- Fix focus bugs
+
+3. edje_entry
+    - Add "preediting" feature
