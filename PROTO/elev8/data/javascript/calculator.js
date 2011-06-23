@@ -61,6 +61,13 @@ function evaluate() {
 	return operand(parseFloat(left), parseFloat(right));
 }
 
+function number_button(num) {
+	this.type = "button";
+	this.label = num;
+	this.weight = { x : -1, y : -1 },
+	this.on_clicked = append_number;
+};
+
 var calc = new elm.main({
 	type : "main",
 	label : "Calculator demo",
@@ -84,24 +91,9 @@ var calc = new elm.main({
 					horizontal : true,
 					homogeneous : true,
 					elements : {
-						b7 : {
-							type : "button",
-							label : "7",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
-						b8 : {
-							type : "button",
-							label : "8",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
-						b9 : {
-							type : "button",
-							label : "9",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
+						b7 : new number_button("7"),
+						b8 : new number_button("8"),
+						b9 : new number_button("9"),
 						divide : {
 							type : "button",
 							label : "/",
@@ -119,24 +111,9 @@ var calc = new elm.main({
 					horizontal : true,
 					homogeneous : true,
 					elements : {
-						b4 : {
-							type : "button",
-							label : "4",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
-						b5 : {
-							type : "button",
-							label : "5",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
-						b6 : {
-							type : "button",
-							label : "6",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
+						b4 : new number_button("4"),
+						b5 : new number_button("5"),
+						b6 : new number_button("6"),
 						multiply : {
 							type : "button",
 							label : "*",
@@ -154,24 +131,9 @@ var calc = new elm.main({
 					horizontal : true,
 					homogeneous : true,
 					elements : {
-						b1 : {
-							type : "button",
-							label : "1",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
-						b2 : {
-							type : "button",
-							label : "2",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
-						b3 : {
-							type : "button",
-							label : "3",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
+						b1 : new number_button("1"),
+						b2 : new number_button("2"),
+						b3 : new number_button("3"),
 						minus : {
 							type : "button",
 							label : "-",
@@ -189,12 +151,7 @@ var calc = new elm.main({
 					horizontal : true,
 					homogeneous : true,
 					elements : {
-						b0 : {
-							type : "button",
-							label : "0",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
+						b0 : new number_button("0"),
 						bdot : {
 							type : "button",
 							label : ".",
