@@ -40,6 +40,7 @@ struct _Config
   int           layout_mode;
   unsigned char tight;
   unsigned char grow;
+  unsigned char show_iconic;
   double	scale_duration;
   double	spacing;
 
@@ -47,6 +48,7 @@ struct _Config
   int           desks_layout_mode;
   unsigned char desks_tight;
   unsigned char desks_grow;
+  unsigned char desks_show_iconic;
   double	desks_duration;
   double	desks_spacing;
   unsigned char fade_windows;

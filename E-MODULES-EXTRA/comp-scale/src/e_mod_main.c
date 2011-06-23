@@ -194,12 +194,14 @@ e_modapi_init(E_Module *m)
 
    E_CONFIG_VAL(D, T, layout_mode, INT);
    E_CONFIG_VAL(D, T, grow, UCHAR);
+   E_CONFIG_VAL(D, T, show_iconic, UCHAR);
    E_CONFIG_VAL(D, T, tight, UCHAR);
    E_CONFIG_VAL(D, T, scale_duration, DOUBLE);
    E_CONFIG_VAL(D, T, spacing, DOUBLE);
 
    E_CONFIG_VAL(D, T, desks_layout_mode, INT);
    E_CONFIG_VAL(D, T, desks_grow, UCHAR);
+   E_CONFIG_VAL(D, T, desks_show_iconic, UCHAR);
    E_CONFIG_VAL(D, T, desks_tight, UCHAR);
    E_CONFIG_VAL(D, T, desks_duration, DOUBLE);
    E_CONFIG_VAL(D, T, desks_spacing, DOUBLE);

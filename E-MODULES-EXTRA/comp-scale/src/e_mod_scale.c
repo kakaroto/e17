@@ -19,6 +19,7 @@ struct _Item
   double scale;
 
   Eina_Bool was_hidden;
+  Eina_Bool was_shaded;
   Eina_Bool fade;
 
   double x;
@@ -105,8 +106,9 @@ static int step_count;
 static Item *background = NULL;
 static Item *selected_item = NULL;
 static E_Desk *current_desk = NULL;
-static int show_all_desks = EINA_FALSE;
-static int send_to_desk = EINA_FALSE;
+static Eina_Bool show_all_desks = EINA_FALSE;
+static Eina_Bool show_iconified = EINA_FALSE;
+static Eina_Bool send_to_desk = EINA_FALSE;
 static int scale_layout;
 static int init_method = 0;
 static const char *match_class = NULL;
@@ -126,10 +128,10 @@ _scale_place_windows(double scale)
 
    EINA_LIST_FOREACH(items, l, it)
      {
-	it->cur_w = it->bd->w * scale + it->w * (1.0 - scale);
-	it->cur_h = it->bd->h * scale + it->h * (1.0 - scale);
-	it->cur_x = it->bd_x  * scale + it->x * (1.0 - scale);
-	it->cur_y = it->bd_y  * scale + it->y * (1.0 - scale);
+	it->cur_w = (double)it->bd->w * scale + it->w * (1.0 - scale) - 0.5;
+	it->cur_h = (double)it->bd->h * scale + it->h * (1.0 - scale) - 0.5;
+	it->cur_x = it->bd_x  * scale + it->x * (1.0 - scale) + 0.5;
+	it->cur_y = it->bd_y  * scale + it->y * (1.0 - scale) + 0.5;
 
 	evas_object_move(it->o, it->cur_x, it->cur_y);
 	evas_object_resize(it->o, it->cur_w, it->cur_h);
@@ -412,6 +414,9 @@ _scale_finish()
 	     it->was_hidden = EINA_FALSE;
 	     e_border_uniconify(it->bd);
 	  }
+
+	it->was_shaded = EINA_FALSE;
+
      }
 
    EINA_LIST_FREE(items, it)
@@ -646,7 +651,11 @@ _scale_win_del(Item *it)
 	     e_border_hide(it->bd, 1);
 	     evas_object_hide(it->cw->shobj);
 	  }
-
+	if (it->was_shaded)
+	  {
+	     e_border_shade(it->bd, E_DIRECTION_DOWN); 
+	  }
+	
 	evas_object_del(it->o_win);
 	evas_object_del(it->o);
 
@@ -707,18 +716,19 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    if ((!show_all_desks) && (cw->bd->desk != desk))
      return NULL;
 
+   if (cw->bd->client.qtopia.soft_menu)
+     return NULL;
+
+   if (cw->bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DOCK)
+     return NULL;
 
    if (cw->bd->iconic)
      {
-	if (!match_class)
-	  {
-	     /* TODO make option */	     
-	     return NULL;
-	  }
-	else if (!e_util_glob_match(cw->bd->client.icccm.class, match_class))
-	  {	     
-	     return NULL;
-	  }
+	if (!show_iconified)
+	  return NULL;
+	
+	if ((match_class) && (!e_util_glob_match(cw->bd->client.icccm.class, match_class)))
+	  return NULL;
      }
 
    it = E_NEW(Item, 1);
@@ -748,6 +758,20 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 
    evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 				  _scale_win_cb_delorig, it);
+   
+   if (!it->bd->visible)
+     e_border_show(it->bd);
+
+   if (it->bd->shaded)
+     {
+	/* int tmp = e_config->border_shade_animate;
+	 * e_config->border_shade_animate = EINA_FALSE;
+	 * 
+	 * e_border_unshade(it->bd, E_DIRECTION_DOWN);
+	 * it->was_shaded = EINA_TRUE;
+	 * 
+	 * e_config->border_shade_animate = tmp; */
+     }
 
    it->dx = cw->bd->desk->x - desk->x;
    it->dy = cw->bd->desk->y - desk->y;
@@ -765,26 +789,18 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->cur_w = it->w;
    it->cur_h = it->h;
 
-   if (!it->bd->visible)
-     e_border_show(it->bd);
-
-   /* if (it->bd->shaded)
-    *   e_border_unshade(it->bd, );  */
-
    edje_object_part_text_set(it->o, "e.text.label", e_border_name_get(it->bd));
    edje_object_signal_emit(it->o, "show", "e");
 
+   if (it->bd->iconic)
+     {
+	evas_object_color_set(it->o, 0, 0, 0, 0);
+	it->was_hidden = EINA_TRUE;
+     }
+   
    if (match_class) 
      {
-	if (e_util_glob_match(cw->bd->client.icccm.class, match_class))
-	  {
-	     if (it->bd->iconic)
-	       {
-		  evas_object_color_set(it->o, 0, 0, 0, 0);
-		  it->was_hidden = EINA_TRUE;
-	       }
-	  }
-	else
+	if (!e_util_glob_match(cw->bd->client.icccm.class, match_class))
 	  {
 	     items_fade = eina_list_append(items_fade, it);
 
@@ -794,8 +810,8 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	     evas_object_move(it->o, it->bd->x, it->bd->y);
 	     evas_object_resize(it->o, it->cw->pw, it->cw->ph);
 	     evas_object_pass_events_set(it->o, 1);
-	     return it;
 
+	     return it;
 	  }
      }
 
@@ -1366,6 +1382,7 @@ scale_run(E_Manager *man, const char *params, int _init_method)
      {
 	scale_layout = scale_conf->desks_layout_mode;
 	show_all_desks = EINA_TRUE;
+	show_iconified = scale_conf->desks_show_iconic;
 	opt = params+12;
      }
    else if (!strncmp(params, "go_scale_class:", 15))
@@ -1375,6 +1392,7 @@ scale_run(E_Manager *man, const char *params, int _init_method)
 
 	scale_layout = 1; /* slotted */
 	show_all_desks = EINA_TRUE;
+	show_iconified = EINA_TRUE;
 	opt = params+15;
 	eina_stringshare_replace(&match_class, opt);
      }
@@ -1382,6 +1400,7 @@ scale_run(E_Manager *man, const char *params, int _init_method)
      {
 	scale_layout = scale_conf->layout_mode;
 	show_all_desks = EINA_FALSE;
+	show_iconified = scale_conf->show_iconic;
 	opt = params+8;
      }
    else

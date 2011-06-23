@@ -92,15 +92,13 @@ _pager_place_desks(double scale)
 	     o = eina_list_data_get(l);
 
 	     evas_object_move(o,
-			      (scale * (min_x + (x - current_desk->x) * zone->w)) +
-			      (1.0 - scale) * (min_x + x * desk_w),
-			      (scale * (min_y + (y - current_desk->y) * zone->h)) +
-			      (1.0 - scale) * (min_y + y * desk_h));
+			      (scale * (double)(min_x + (x - current_desk->x) * zone->w)) +
+			      (1.0 - scale) * (double)(min_x + x * desk_w),
+			      (scale * (double)(min_y + (y - current_desk->y) * zone->h)) +
+			      (1.0 - scale) * (double)(min_y + y * desk_h));
 	     evas_object_resize(o,
-				(scale * zone->w) +
-				(1.0 - scale) * (desk_w - OFFSET),
-				(scale * zone->h) +
-				(1.0 - scale) * (desk_h - OFFSET));
+				(scale * (double)zone->w) + (1.0 - scale) * (double)(desk_w - OFFSET),
+				(scale * (double)zone->h) + (1.0 - scale) * (double)(desk_h - OFFSET));
 
 	     evas_object_color_set(o, a, a, a, a);
 
@@ -117,8 +115,8 @@ _pager_place_windows(double scale)
 
    EINA_LIST_FOREACH(items, l, it)
      {
-	it->cur_w = it->bd->w * scale + it->w * (1.0 - scale);
-	it->cur_h = it->bd->h * scale + it->h * (1.0 - scale);
+	it->cur_w = (double)it->bd->w * scale + it->w * (1.0 - scale);
+	it->cur_h = (double)it->bd->h * scale + it->h * (1.0 - scale);
 	it->cur_x = it->bd_x  * scale + it->x * (1.0 - scale);
 	it->cur_y = it->bd_y  * scale + it->y * (1.0 - scale);
 
@@ -657,6 +655,12 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
      return NULL;
 
    if (cw->bd->iconic)
+     return NULL;
+
+   if (cw->bd->client.qtopia.soft_menu)
+     return NULL;
+
+   if (cw->bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DOCK)
      return NULL;
 
    it = E_NEW(Item, 1);
