@@ -20,7 +20,7 @@ var win = new elm.main({
 			weight : EXPAND_BOTH,
 		},
 		the_box : {
-			type : "pack",
+			type : "box",
 			weight : EXPAND_BOTH,
 			resize : true,
 			elements : {
@@ -91,7 +91,7 @@ var win = new elm.main({
 					weight : EXPAND_BOTH,
 				},
 				box2 : {
-					type : "pack",
+					type : "box",
 					horizontal : true,
 					weight : EXPAND_BOTH,
 					elements : {

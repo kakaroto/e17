@@ -1709,7 +1709,7 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
       {
          eo = new CElmRadio(parent, obj);
       }
-   else if (!strcmp(*str, "pack"))
+   else if (!strcmp(*str, "box"))
       {
          eo = new CElmBox(parent, obj);
       }

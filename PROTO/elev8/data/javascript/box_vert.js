@@ -11,8 +11,8 @@ var my_window = new elm.main({
 			weight : EXPAND_BOTH,
 			resize : true,
 		},
-		pack_box : {
-			type : "pack",
+		the_box : {
+			type : "box",
 			weight : EXPAND_BOTH,
 			resize : true,
 			elements : {

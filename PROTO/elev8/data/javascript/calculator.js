@@ -71,7 +71,7 @@ var calc = new elm.main({
 			resize : true,
 		},
 		vbox : {
-			type : "pack",
+			type : "box",
 			resize : true,
 			elements : {
 				entry : {
@@ -80,7 +80,7 @@ var calc = new elm.main({
 					align : { x : 1, y : 0 },
 				},
 				hbox1 : {
-					type : "pack",
+					type : "box",
 					horizontal : true,
 					homogeneous : true,
 					elements : {
@@ -115,7 +115,7 @@ var calc = new elm.main({
 					},
 				},
 				hbox2 : {
-					type : "pack",
+					type : "box",
 					horizontal : true,
 					homogeneous : true,
 					elements : {
@@ -150,7 +150,7 @@ var calc = new elm.main({
 					},
 				},
 				hbox3 : {
-					type : "pack",
+					type : "box",
 					horizontal : true,
 					homogeneous : true,
 					elements : {
@@ -185,7 +185,7 @@ var calc = new elm.main({
 					},
 				},
 				hbox4 : {
-					type : "pack",
+					type : "box",
 					horizontal : true,
 					homogeneous : true,
 					elements : {

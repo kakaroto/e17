@@ -17,7 +17,7 @@ var win = new elm.main({
 			weight : EXPAND_BOTH,
 		},
 		the_box : {
-			type : "pack",
+			type : "box",
 			weight : EXPAND_BOTH,
 			resize : true,
 			elements : {

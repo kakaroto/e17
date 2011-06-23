@@ -8,7 +8,7 @@ var my_window = new elm.main({
 			resize : true,
 		},
 		box : {
-			type : "pack",
+			type : "box",
 			resize : true,
 			elements : {
 				small_label : {

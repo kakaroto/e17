@@ -21,7 +21,7 @@ var my_window = new elm.main({
 			policy : { x : "off", y : "auto" },
 			resize : true,
 			content : {
-				type : "pack",
+				type : "box",
 				elements : {
 					first : {
 						type : "label",
