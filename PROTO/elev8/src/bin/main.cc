@@ -278,10 +278,10 @@ public:
      {
        if (val->IsNumber())
          {
-           Evas_Coord x, y, width, height;
-           evas_object_geometry_get(eo, &x, &y, &width, &height);
-           x = val->ToInt32()->Value();
-           evas_object_move(eo, x, y);
+            Evas_Coord x, y, width, height;
+            evas_object_geometry_get(eo, &x, &y, &width, &height);
+            x = val->ToInt32()->Value();
+            evas_object_move(eo, x, y);
          }
      }
 
@@ -296,10 +296,10 @@ public:
      {
        if (val->IsNumber())
          {
-           Evas_Coord x, y, width, height;
-           evas_object_geometry_get(eo, &x, &y, &width, &height);
-           y = val->ToInt32()->Value();
-           evas_object_move(eo, x, y);
+            Evas_Coord x, y, width, height;
+            evas_object_geometry_get(eo, &x, &y, &width, &height);
+            y = val->ToInt32()->Value();
+            evas_object_move(eo, x, y);
          }
      }
 
@@ -1106,9 +1106,9 @@ public:
 
              for (int i = 0; i < 3; i++)
                {
-                 v[i] = obj->Get(v8::String::New(name[i]));
-                 if (v[i]->IsString())
-                   str[i] = v[i]->ToString();
+                  v[i] = obj->Get(v8::String::New(name[i]));
+                  if (v[i]->IsString())
+                    str[i] = v[i]->ToString();
                }
              v8::String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
              elm_actionslider_labels_set(eo, *left, *middle, *right);
@@ -1397,8 +1397,8 @@ public:
      {
         if (value->IsString())
           {
-            v8::String::Utf8Value str(value);
-            elm_slider_unit_format_set(eo, *str);
+             v8::String::Utf8Value str(value);
+             elm_slider_unit_format_set(eo, *str);
           }
      }
 
