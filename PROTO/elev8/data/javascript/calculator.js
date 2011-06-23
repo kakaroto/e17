@@ -61,12 +61,28 @@ function evaluate() {
 	return operand(parseFloat(left), parseFloat(right));
 }
 
-function number_button(num) {
+function any_button() {
 	this.type = "button";
+	this.weight = { x : -1, y : -1 };
+}
+
+function number_button(num) {
 	this.label = num;
-	this.weight = { x : -1, y : -1 },
 	this.on_clicked = append_number;
-};
+}
+
+number_button.prototype = new any_button;
+
+function op_button(str, op) {
+	this.label = str;
+	this.on_clicked = function () {
+		push_entry();
+		set_entry("");
+		push(op);
+	};
+}
+
+op_button.prototype = new any_button;
 
 var calc = new elm.main({
 	type : "main",
@@ -94,16 +110,7 @@ var calc = new elm.main({
 						b7 : new number_button("7"),
 						b8 : new number_button("8"),
 						b9 : new number_button("9"),
-						divide : {
-							type : "button",
-							label : "/",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : function () {
-								push_entry();
-								set_entry("");
-								push(divide);
-							},
-						},
+						divide : new op_button("/", divide),
 					},
 				},
 				hbox2 : {
@@ -114,16 +121,7 @@ var calc = new elm.main({
 						b4 : new number_button("4"),
 						b5 : new number_button("5"),
 						b6 : new number_button("6"),
-						multiply : {
-							type : "button",
-							label : "*",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : function () {
-								push_entry();
-								set_entry("");
-								push(multiply);
-							},
-						},
+						multiply : new op_button("*", multiply),
 					},
 				},
 				hbox3 : {
@@ -134,16 +132,7 @@ var calc = new elm.main({
 						b1 : new number_button("1"),
 						b2 : new number_button("2"),
 						b3 : new number_button("3"),
-						minus : {
-							type : "button",
-							label : "-",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : function () {
-								push_entry();
-								set_entry("");
-								push(subtract);
-							},
-						},
+						subtract : new op_button("-", subtract),
 					},
 				},
 				hbox4 : {
@@ -152,12 +141,7 @@ var calc = new elm.main({
 					homogeneous : true,
 					elements : {
 						b0 : new number_button("0"),
-						bdot : {
-							type : "button",
-							label : ".",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : append_number,
-						},
+						bdot : new number_button("."),
 						equals : {
 							type : "button",
 							label : "=",
@@ -167,18 +151,9 @@ var calc = new elm.main({
 								set_entry("");
 								var answer = evaluate();
 								set_entry(answer);
-							}
-						},
-						plus : {
-							type : "button",
-							label : "+",
-							weight : { x : -1.0, y : -1.0 },
-							on_clicked : function () {
-								push_entry();
-								set_entry("");
-								push(add);
 							},
 						},
+						add : new op_button("+", add),
 					},
 				},
 			},
