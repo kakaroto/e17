@@ -1592,6 +1592,7 @@ CEvasObject::CPropHandler<CElmSlider>::list[] = {
   PROP_HANDLER(CElmSlider, end),
   PROP_HANDLER(CElmSlider, horizontal),
   PROP_HANDLER(CElmSlider, on_changed),
+  { NULL, NULL, NULL },
 };
 
 class CElmGenList : public CEvasObject {
