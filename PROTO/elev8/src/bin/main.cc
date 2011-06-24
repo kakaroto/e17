@@ -1917,6 +1917,16 @@ CEvasObject::CPropHandler<CElmCheck>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmClock : public CEvasObject {
+public:
+   CElmClock(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
+     {
+        eo = elm_clock_add(parent->top_widget_get());
+        construct(eo, obj);
+     }
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -1942,6 +1952,8 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
      eo = new CElmBackground(parent, obj);
    else if (!strcmp(*str, "check"))
      eo = new CElmCheck(parent, obj);
+   else if (!strcmp(*str, "clock"))
+     eo = new CElmClock(parent, obj);
    else if (!strcmp(*str, "entry"))
      eo = new CElmEntry(parent, obj);
    else if (!strcmp(*str, "flip"))
