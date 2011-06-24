@@ -434,6 +434,11 @@ public:
        return v8::Undefined();
      }
 
+   virtual v8::Handle<v8::Value> text_get() const
+     {
+       return label_get();
+     }
+
    virtual void label_set(v8::Handle<v8::Value> val)
      {
         if (val->IsString() || val->IsNumber())
@@ -441,6 +446,11 @@ public:
              v8::String::Utf8Value str(val);
              label_set(*str);
           }
+     }
+
+   virtual void text_set(v8::Handle<v8::Value> val)
+     {
+        label_set(val);
      }
 
    virtual void label_set(const char *str)
@@ -650,6 +660,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, height),
      PROP_HANDLER(CEvasObject, image),
      PROP_HANDLER(CEvasObject, label),
+     PROP_HANDLER(CEvasObject, text),
      PROP_HANDLER(CEvasObject, type),
      PROP_HANDLER(CEvasObject, resize),
      PROP_HANDLER(CEvasObject, align),
@@ -1687,7 +1698,6 @@ public:
         return CEvasObject::prop_get(prop_name);
      }
 
-   // FIXME: rename label to text (everywhere)
    virtual v8::Handle<v8::Value> label_get() const
      {
         return v8::String::New(elm_entry_entry_get(eo));
