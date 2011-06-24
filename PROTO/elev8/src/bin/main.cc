@@ -1082,6 +1082,8 @@ public:
 
 class CElmIcon : public CEvasObject {
 public:
+   static CPropHandler<CElmIcon> prop_handler;
+public:
    CElmIcon(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
@@ -1092,23 +1094,29 @@ public:
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
      {
         v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
-        ot->SetAccessor(v8::String::New("scale"), &eo_getter, &eo_setter);
+        prop_handler.fill_template(ot);
         return ot;
      }
 
    virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
      {
-        if (!strcmp(prop_name, "scale"))
-          scale_set(value);
-        else
-          return CEvasObject::prop_set(prop_name, value);
-        return true;
+        CPropHandler<CElmIcon>::prop_setter setter;
+
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
      }
 
    virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
      {
-        if (!strcmp(prop_name, "scale"))
-          return scale_get();
+        CPropHandler<CElmIcon>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
         return CEvasObject::prop_get(prop_name);
      }
 
@@ -1151,6 +1159,12 @@ public:
         else
           return v8::Null();
      }
+};
+
+template<> CEvasObject::CPropHandler<CElmIcon>::property_list
+CEvasObject::CPropHandler<CElmIcon>::list[] = {
+     PROP_HANDLER(CElmIcon, scale),
+     { NULL, NULL, NULL },
 };
 
 class CElmActionSlider : public CEvasObject {
