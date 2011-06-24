@@ -1829,6 +1829,94 @@ CEvasObject::CPropHandler<CElmEntry>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmCheck : public CEvasObject {
+protected:
+   static CPropHandler<CElmCheck> prop_handler;
+   v8::Persistent<v8::Value> the_icon;
+
+public:
+   CElmCheck(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
+     {
+        eo = elm_check_add(parent->top_widget_get());
+        construct(eo, obj);
+     }
+
+   virtual ~CElmCheck()
+     {
+        the_icon.Dispose();
+     }
+
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        prop_handler.fill_template(ot);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        CPropHandler<CElmCheck>::prop_setter setter;
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        CPropHandler<CElmCheck>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+   virtual void state_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsBoolean())
+          elm_check_state_set(eo, value->BooleanValue());
+     }
+
+   virtual v8::Handle<v8::Value> state_get() const
+     {
+        return v8::Boolean::New(elm_check_state_get(eo));
+     }
+
+   virtual v8::Handle<v8::Value> label_get() const
+     {
+        return v8::String::New(elm_check_label_get(eo));
+     }
+
+   virtual void label_set(const char *str)
+     {
+        elm_check_label_set(eo, str);
+     }
+
+   virtual v8::Handle<v8::Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(v8::Handle<v8::Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_check_icon_set(eo, icon->get());
+        the_icon = v8::Persistent<v8::Value>::New(icon->get_object());
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmCheck>::property_list
+CEvasObject::CPropHandler<CElmCheck>::list[] = {
+  PROP_HANDLER(CElmCheck, state),
+  PROP_HANDLER(CElmCheck, icon),
+  { NULL, NULL, NULL },
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -1852,6 +1940,8 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
      eo = new CElmButton(parent, obj);
    else if (!strcmp(*str, "background"))
      eo = new CElmBackground(parent, obj);
+   else if (!strcmp(*str, "check"))
+     eo = new CElmCheck(parent, obj);
    else if (!strcmp(*str, "entry"))
      eo = new CElmEntry(parent, obj);
    else if (!strcmp(*str, "flip"))
