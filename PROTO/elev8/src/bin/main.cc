@@ -1847,61 +1847,33 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
    // FIXME: make a list here
    CEvasObject *eo = NULL;
    if (!strcmp(*str, "actionslider"))
-      {
-         eo = new CElmActionSlider(parent, obj);
-      }
+     eo = new CElmActionSlider(parent, obj);
    else if (!strcmp(*str, "button"))
-      {
-         eo = new CElmButton(parent, obj);
-      }
+     eo = new CElmButton(parent, obj);
    else if (!strcmp(*str, "background"))
-      {
-         eo = new CElmBackground(parent, obj);
-      }
+     eo = new CElmBackground(parent, obj);
    else if (!strcmp(*str, "entry"))
-      {
-         eo = new CElmEntry(parent, obj);
-      }
+     eo = new CElmEntry(parent, obj);
    else if (!strcmp(*str, "flip"))
-      {
-         eo = new CElmFlip(parent, obj);
-      }
+     eo = new CElmFlip(parent, obj);
    else if (!strcmp(*str, "list"))
-      {
-         eo = new CElmList(parent, obj);
-      }
+     eo = new CElmList(parent, obj);
    else if (!strcmp(*str, "genlist"))
-      {
-         eo = new CElmGenList(parent, obj);
-      }
+     eo = new CElmGenList(parent, obj);
    else if (!strcmp(*str, "icon"))
-      {
-         eo = new CElmIcon(parent, obj);
-      }
+     eo = new CElmIcon(parent, obj);
    else if (!strcmp(*str, "label"))
-      {
-         eo = new CElmLabel(parent, obj);
-      }
+     eo = new CElmLabel(parent, obj);
    else if (!strcmp(*str, "radio"))
-      {
-         eo = new CElmRadio(parent, obj);
-      }
+     eo = new CElmRadio(parent, obj);
    else if (!strcmp(*str, "box"))
-      {
-         eo = new CElmBox(parent, obj);
-      }
+     eo = new CElmBox(parent, obj);
    else if (!strcmp(*str, "scroller"))
-      {
-         eo = new CElmScroller(parent, obj);
-      }
+     eo = new CElmScroller(parent, obj);
    else if (!strcmp(*str, "image"))
-      {
-         eo = new CEvasImage(parent, obj);
-      }
+     eo = new CEvasImage(parent, obj);
    else if (!strcmp(*str, "slider"))
-      {
-         eo = new CElmSlider(parent, obj);
-      }
+     eo = new CElmSlider(parent, obj);
 
    if (!eo)
       {
