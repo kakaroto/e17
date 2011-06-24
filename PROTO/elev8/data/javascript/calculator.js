@@ -7,6 +7,7 @@ var stack = new Array;
 
 /* clear the display when the next button is pressed? */
 var clear = 1;
+var number_string;
 
 function multiply(left, right) {
 	return left * right;
@@ -29,11 +30,12 @@ function push(val) {
 }
 
 function push_entry() {
-	push(calc.elements.vbox.elements.entry.label);
+	push(number_string);
 }
 
 function set_entry(val) {
-	calc.elements.vbox.elements.entry.label = val;
+	number_string = val;
+	calc.elements.vbox.elements.entry.label = "<align=right>" + number_string;
 }
 
 function append_entry(val) {
@@ -42,7 +44,7 @@ function append_entry(val) {
 	if (clear)
 		cur = "0";
 	else
-		cur = calc.elements.vbox.elements.entry.label;
+		cur = number_string;
 	clear = 0;
 
 	if (val != '.' || -1 == cur.indexOf('.')) {
@@ -51,7 +53,7 @@ function append_entry(val) {
 		else
 			cur += val;
 	}
-	calc.elements.vbox.elements.entry.label = cur;
+	set_entry(cur);
 }
 
 function append_number(b) {
@@ -110,9 +112,9 @@ var calc = new elm.main({
 			resize : true,
 			elements : {
 				entry : {
-					type : "label",
-					label : "0",
-					align : { x : 1, y : 0 },
+					type : "entry",
+					label : "<align=right>0",
+					align : { x : -1, y : 0 },
 				},
 				hbox1 : {
 					type : "box",
