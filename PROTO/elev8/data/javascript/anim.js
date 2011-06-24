@@ -19,9 +19,9 @@ function animator(arg, n, is_shadow) {
 	w = zz;
 	h = zz;
 
-	/* FIXME: get pointer position */
-	lx = 0;
-	ly = 0;
+	/* get pointer position */
+	lx = arg.pointer.x
+	ly = arg.pointer.y;
 	if (is_shadow) {
 		x -= ((lx - (x + w / 2)) / 4);
 		y -= ((ly - (y + h / 2)) / 4);

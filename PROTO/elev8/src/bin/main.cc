@@ -649,6 +649,21 @@ public:
      {
         return v8::Boolean::New(is_resize);
      }
+
+   virtual void pointer_set(v8::Handle<v8::Value> val)
+     {
+        // FIXME: ignore this, or move the pointer?
+     }
+
+   virtual v8::Handle<v8::Value> pointer_get(void) const
+     {
+        Evas_Coord x, y;
+        evas_pointer_canvas_xy_get(evas_object_evas_get(eo), &x, &y);
+        v8::Local<v8::Object> obj = v8::Object::New();
+        obj->Set(v8::String::New("x"), v8::Integer::New(x));
+        obj->Set(v8::String::New("y"), v8::Integer::New(y));
+        return obj;
+     }
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -668,6 +683,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, on_animate),
      PROP_HANDLER(CEvasObject, on_clicked),
      PROP_HANDLER(CEvasObject, scale),
+     PROP_HANDLER(CEvasObject, pointer),
      { NULL, NULL, NULL },
 };
 
