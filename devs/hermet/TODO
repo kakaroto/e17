@@ -17,3 +17,5 @@ pager - content size calc
 elm_transit - check the transit would use the ecore_animator functionalities.
 
 animator - remove it (on end of JULY) 
+
+map - check the uv set inconsistency for evas_object_image. 
