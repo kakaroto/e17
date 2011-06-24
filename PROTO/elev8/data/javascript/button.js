@@ -3,6 +3,11 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
+var logo_icon = {
+	type : "icon",
+	image : "data/images/logo_small.png",
+};
+
 var my_window = new elm.main({
 	type : "main",
 	label : "Button demo",
@@ -12,102 +17,67 @@ var my_window = new elm.main({
 		the_background : {
 			type : "background",
 			weight : EXPAND_BOTH,
-			image: "data/images/rock_01.jpg",
 			resize : true,
 		},
 		scroll : {
 			type : "scroller",
 			bounce : { x : false, y : true },
 			policy : { x : "off", y : "auto" },
+			weight : EXPAND_BOTH,
 			resize : true,
 			content : {
 				type : "box",
+				weight : EXPAND_BOTH,
 				elements : {
-					first : {
-						type : "label",
-						label : "<b>This is a label</b><br>It has two lines",
-					},
-					counter_button : {
+					icon_button : {
 						type : "button",
-						label : "Press me!",
+						label : "Icon sized to button",
 						weight : { x : -1.0, y : -1.0 },
-						on_clicked : function() {
-							if (this.clicked == 1)
-								this.n++;
-							else
-								this.n = 1;
-							this.clicked = 1;
-							my_window.elements.scroll.content.elements.counter_button.label = "Pressed me " + this.n + " times";
+						on_clicked : function(arg) {
+							print("clicked event on Button: 1");
 						},
+						on_unpressed : function(arg) {
+							print("unpressed event on Button: 1");
+						},
+						icon : logo_icon,
 					},
-					ok_button : {
+					icon_no_scale : {
 						type : "button",
-						label : "OK",
+						label : "Icon no scale",
 						weight : { x : -1.0, y : -1.0 },
-						on_clicked : function() {
-							if (my_window.elements.scroll.content.elements.ok_button.label == "OK")
-								my_window.elements.scroll.content.elements.ok_button.label = "not OK";
-							else
-								my_window.elements.scroll.content.elements.ok_button.label = "OK";
-
-						},
-						on_animate : function(me) {
-							print("animate!");
-							me.on_animate = null;
-						},
 					},
-					cancel_button : {
+					disabled : {
 						type : "button",
-						label : "cancel",
-						weight : EXPAND_BOTH,
-						on_clicked : function() {
-							print("clock!");
-						},
+						label : "Disabled Button",
+						disabled : true,
 					},
-					once_button : {
+					disabled_icon : {
 						type : "button",
-						label : "Once",
-						on_clicked : function(me) {
-							me.on_clicked = null;
-							print("clicked once button");
-						},
+						label : "Disabled Button",
+						disabled : true,
 					},
-					check_button : {
+					no_lanel : {
 						type : "button",
-						label : "test",
-						weight : { x : 0 , y : 0 },
-						align : { x : 1, y : 0 },
-						on_clicked : function(me) {
-							my_window.label = "hello world";
-							print("weight.x = " + me.weight.x + " weight.y = " + me.weight.y);
-						},
 					},
-					wider_button : {
+					label_only : {
 						type : "button",
-						label : "Wider",
-						align : { x : -1.0, y : -1.0 },
-						on_clicked : function(me) {
-							my_window.width += 50;
-						},
+						label : "Label Only",
 					},
-					narrower_button : {
+					icon_only : {
 						type : "button",
-						label : "Narrower",
-						align : { x : -1.0, y : -1.0 },
-						on_clicked : function(me) {
-							my_window.width -= 50;
-							print(my_window.width);
-						},
+						icon : logo_icon,
 					},
-					hidden_button : {
+					anchor_style : {
 						type : "button",
-						label : "no see me",
-						hidden : true,
-						align : { x : -1.0, y : -1.0 },
+						label : "Anchor style",
 					},
-					logo : {
-						type : "icon",
-						image : "data/images/logo_small.png",
+					icon_anchor_style : {
+						type : "button",
+						disabled : true,
+					},
+					icon_anchor_style_disabled : {
+						type : "button",
+						disabled : true,
 					}
 				},
 			},
@@ -115,6 +85,3 @@ var my_window = new elm.main({
 	},
 });
 
-print("weight.x = " + my_window.elements.scroll.content.elements.check_button.weight.x);
-print("scroller.policy.x = " + my_window.elements.scroll.policy.x);
-print("scroller.policy.y = " + my_window.elements.scroll.policy.y);

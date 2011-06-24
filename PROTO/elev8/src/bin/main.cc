@@ -766,6 +766,9 @@ public:
 CElmBasicWindow *main_win;
 
 class CElmButton : public CEvasObject {
+protected:
+   v8::Persistent<v8::Value> the_icon;
+   static CPropHandler<CElmButton> prop_handler;
 public:
    CElmButton(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
@@ -774,8 +777,38 @@ public:
         construct(eo, obj);
      }
 
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        prop_handler.fill_template(ot);
+        return ot;
+     }
+
    virtual ~CElmButton()
      {
+        the_icon.Dispose();
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        CPropHandler<CElmButton>::prop_setter setter;
+
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        CPropHandler<CElmButton>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
+        return CEvasObject::prop_get(prop_name);
      }
 
    virtual void label_set(const char *str)
@@ -787,6 +820,25 @@ public:
      {
        return v8::String::New(elm_button_label_get(eo));
      }
+
+   virtual v8::Handle<v8::Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(v8::Handle<v8::Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_button_icon_set(eo, icon->get());
+        the_icon = v8::Persistent<v8::Value>::New(icon->get_object());
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmButton>::property_list
+CEvasObject::CPropHandler<CElmButton>::list[] = {
+     PROP_HANDLER(CElmButton, icon),
+     { NULL, NULL, NULL },
 };
 
 class CElmBackground : public CEvasObject {
