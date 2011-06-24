@@ -56,9 +56,9 @@ var my_window = new elm.main({
 					},
 					disabled : {
 						type : "button",
-						disabled : true,
 						label : "Disabled Button",
 						icon : logo_icon,
+						disabled : true,
 					},
 					disabled_icon : {
 						type : "button",
@@ -75,15 +75,17 @@ var my_window = new elm.main({
 					},
 					anchor_style : {
 						type : "button",
+						style : "anchor",
 						label : "Anchor style",
 					},
 					icon_anchor_style : {
 						type : "button",
-						disabled : true,
+						style : "anchor",
 						icon : logo_icon,
 					},
 					icon_anchor_style_disabled : {
 						type : "button",
+						style : "anchor",
 						disabled : true,
 						icon : logo_icon,
 					},

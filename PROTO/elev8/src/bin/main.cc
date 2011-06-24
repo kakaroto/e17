@@ -13,6 +13,8 @@
 #include <fcntl.h>
 #include <assert.h>
 
+// FIXME: split CElmObject from CEvasObject
+
 /* CEvasObject is a virtual class, representing an evas object */
 class CEvasObject;
 CEvasObject *realize_one(CEvasObject *parent, v8::Handle<v8::Value> obj);
@@ -664,6 +666,20 @@ public:
         obj->Set(v8::String::New("y"), v8::Integer::New(y));
         return obj;
      }
+
+   virtual void style_set(v8::Handle<v8::Value> val)
+     {
+       if (val->IsString())
+         {
+            v8::String::Utf8Value str(val);
+            elm_object_style_set(eo, *str);
+         }
+     }
+
+   virtual v8::Handle<v8::Value> style_get(void) const
+     {
+        return v8::String::New(elm_object_style_get(eo));
+     }
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -684,6 +700,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, on_clicked),
      PROP_HANDLER(CEvasObject, scale),
      PROP_HANDLER(CEvasObject, pointer),
+     PROP_HANDLER(CEvasObject, style),
      { NULL, NULL, NULL },
 };
 
