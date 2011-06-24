@@ -8,6 +8,13 @@ var logo_icon = {
 	image : "data/images/logo_small.png",
 };
 
+var logo_icon_unscaled = {
+	type : "icon",
+	image : "data/images/logo_small.png",
+	scale_up : false,
+	scale_down : false,
+};
+
 var my_window = new elm.main({
 	type : "main",
 	label : "Button demo",
@@ -45,19 +52,18 @@ var my_window = new elm.main({
 						type : "button",
 						label : "Icon no scale",
 						weight : { x : -1.0, y : -1.0 },
+						icon : logo_icon_unscaled,
 					},
 					disabled : {
 						type : "button",
-						label : "Disabled Button",
 						disabled : true,
+						label : "Disabled Button",
+						icon : logo_icon,
 					},
 					disabled_icon : {
 						type : "button",
-						label : "Disabled Button",
+						icon : logo_icon,
 						disabled : true,
-					},
-					no_lanel : {
-						type : "button",
 					},
 					label_only : {
 						type : "button",
@@ -65,7 +71,7 @@ var my_window = new elm.main({
 					},
 					icon_only : {
 						type : "button",
-						icon : logo_icon,
+						icon : logo_icon_unscaled,
 					},
 					anchor_style : {
 						type : "button",
@@ -74,11 +80,13 @@ var my_window = new elm.main({
 					icon_anchor_style : {
 						type : "button",
 						disabled : true,
+						icon : logo_icon,
 					},
 					icon_anchor_style_disabled : {
 						type : "button",
 						disabled : true,
-					}
+						icon : logo_icon,
+					},
 				},
 			},
 		},

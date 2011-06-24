@@ -1120,23 +1120,38 @@ public:
         return CEvasObject::prop_get(prop_name);
      }
 
-   virtual void scale_set(v8::Handle<v8::Value> align)
+   virtual void scale_up_set(v8::Handle<v8::Value> val)
      {
-        bool x, y;
-        if (get_xy_from_object(align, x, y))
+        Eina_Bool up, down;
+        if (val->IsBoolean())
           {
-             elm_icon_scale_set(eo, x, y);
+             elm_icon_scale_get(eo, &up, &down);
+             elm_icon_scale_set(eo, val->BooleanValue(), down);
           }
      }
 
-   virtual v8::Handle<v8::Value> scale_get() const
+   virtual v8::Handle<v8::Value> scale_up_get() const
      {
-        Eina_Bool x, y;
-        elm_icon_scale_get(eo, &x, &y);
-        v8::Local<v8::Object> obj = v8::Object::New();
-        obj->Set(v8::String::New("x"), v8::Boolean::New(x));
-        obj->Set(v8::String::New("y"), v8::Boolean::New(y));
-        return obj;
+        Eina_Bool up, down;
+        elm_icon_scale_get(eo, &up, &down);
+        return v8::Boolean::New(up);
+     }
+
+   virtual void scale_down_set(v8::Handle<v8::Value> val)
+     {
+        Eina_Bool up, down;
+        if (val->IsBoolean())
+          {
+             elm_icon_scale_get(eo, &up, &down);
+             elm_icon_scale_set(eo, up, val->BooleanValue());
+          }
+     }
+
+   virtual v8::Handle<v8::Value> scale_down_get() const
+     {
+        Eina_Bool up, down;
+        elm_icon_scale_get(eo, &up, &down);
+        return v8::Boolean::New(down);
      }
 
    virtual void image_set(v8::Handle<v8::Value> val)
@@ -1163,7 +1178,8 @@ public:
 
 template<> CEvasObject::CPropHandler<CElmIcon>::property_list
 CEvasObject::CPropHandler<CElmIcon>::list[] = {
-     PROP_HANDLER(CElmIcon, scale),
+     PROP_HANDLER(CElmIcon, scale_up),
+     PROP_HANDLER(CElmIcon, scale_down),
      { NULL, NULL, NULL },
 };
 
