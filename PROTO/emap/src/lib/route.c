@@ -1,6 +1,8 @@
 
 #include "emap_private.h"
 
+int LOG_DOMAIN;
+
 EMap_Route *emap_route_new(EMap_Route_Type type)
 {
    EMap_Route *route = calloc(1, sizeof(EMap_Route));

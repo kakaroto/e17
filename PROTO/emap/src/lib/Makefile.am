@@ -22,6 +22,7 @@ include_HEADERS = EMap.h
 lib_LTLIBRARIES = libemap.la
 
 libemap_la_SOURCES  = \
+emap.c \
 route.c \
 route_node.c \
 route_gpx.c 
