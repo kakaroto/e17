@@ -194,7 +194,27 @@
    <li>libcurl dev headers (http download/fetch support in ecore)</li>
    <li>libgnutls dev headers (signed eet files, secure tcp connection support for ecore)</li>
    <li>libasound2 dev headers (alsa sound card support in E17 mixer module)</li>
+   <li>libudev dev headers (to build eeze for udev support)</li>
+   <li>mesa-common dev headers (OpenGL2.0 or OpenGL-ES2.0 support in evas)</li>
+   <li>libspectre dev headers (Postscript Loading support in evas_generic_loaders)</li>
+   <li>libpoppler dev headers (PDF loading support in evas_generic_loaders)</li>
+   <li>libraw dev headers (RAW loading support in evas_generic_loaders)</li>
+   <li>libgstreamer dev headers (Video file loading support in evas_generic_loaders)</li>
   </ul>
+ </p>
+ <p>
+  Enlightenment does lots of runtime support checks. If you want network
+  management support you will want to install the <b>connman</b> daemon
+  so you can connect to wireless and wired networks. You will need to
+  load the <b>Connection Manager</b> module. For Bluetooth support you
+  may want <b>bluez</b> installed and load the <b>Bluetooth Manager</b>
+  module. You may want <b>ophono</b> installed, and load the
+  <b>Mobile Modems Manager</b> to get support for wireless modems like
+  3G UMTS. You may want <b>hal</b> installed if you don't have modern udev
+  support on your system. Enlightenment will discover these services via
+  DBUS at runtime. Note that Enlightenment can run without DBUS, but
+  it will be severely limited in functionality and it is never tested in
+  this scenario.
  </p>
  <p>
   Also note that for many other libraries and applications you may
@@ -210,7 +230,7 @@
 set -e
 PREFIX="/usr/local"
 PROJECTS="\
-eina eet evas ecore embryo edje e_dbus efreet e"
+eina eet evas evas_generic_loaders ecore embryo edje e_dbus efreet eeze e"
 SITE="svn.enlightenment.org"
 SVN="http://$SITE/svn/e/trunk"
 OPT="--prefix=$PREFIX"
