@@ -73,6 +73,10 @@
                image.normal: "ilist_item_shadow.png"; \
                fill.smooth: 0; \
             } \
+            description { \
+               state: "default" 1.0; \
+               visible: 0; \
+            } \
          }
 
 #define GENLIST_PART_SWALLOW_PAD \

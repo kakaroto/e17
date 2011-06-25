@@ -18,6 +18,10 @@
                state: "default" 0.0; \
                color: DARKNESS_LIST_ROW 255; \
             } \
+            description { \
+               state: "default" 1.0; \
+               color: DARKNESS_LIST_ROW_ODD 255; \
+            } \
          }
 
 #define LIST_PART_BASE_ODD \
@@ -25,11 +29,11 @@
             name: "base"; \
             type: RECT; \
             mouse_events: 0; \
-            description { \
+             description { \
                state: "default" 0.0; \
-               color: DARKNESS_LIST_ROW_ODD 255; \
-            } \
-         }
+                color: DARKNESS_LIST_ROW_ODD 255; \
+             } \
+          }
 
 #define LIST_PART_BG(CLIP) \
          part { \
@@ -181,5 +185,23 @@
          action:  STATE_SET "default" 0.0; \
          TARGETS \
          transition: SINUSOIDAL 0.1; \
+      } \
+   }
+
+#define LIST_PROGRAMS_EVEN_ODD(TARGETS) \
+   programs { \
+      program { \
+         name:    "odd"; \
+         signal:  "elm,state,odd"; \
+         source:  "elm"; \
+         action:  STATE_SET "default" 1.0; \
+         TARGETS \
+      } \
+      program { \
+         name:    "even"; \
+         signal:  "elm,state,even"; \
+         source:  "elm"; \
+         action:  STATE_SET "default" 0.0; \
+         TARGETS \
       } \
    }

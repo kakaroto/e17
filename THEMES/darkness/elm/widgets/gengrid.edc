@@ -69,6 +69,10 @@
                target:  "fg1";
                target:  "elm.text";
        )
+       LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
+      )
    }
    group { name: "elm/gengrid/item/default_style/default";
        styles
@@ -171,6 +175,10 @@
              action: SIGNAL_EMIT "elm,action,focus" "elm";
           }
        }
+       LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
+      )
    }
 
    group { name: "elm/gengrid/item/up/default";

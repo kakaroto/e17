@@ -39,9 +39,12 @@
             target:  "fg1";
             target:  "elm.text";
       )
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
+      )
    }
    group { name: "elm/genlist/item/group_index/default";
-      alias: "elm/genlist/item_odd/group_index/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
@@ -198,118 +201,9 @@
             target:  "elm.title.2";
             target:  "elm.text";
       )
-   }
-   group { name: "elm/genlist/item_compress_odd/message/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.title.1 elm.title.2 elm.text";
-//      data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         part { name: "elm.title.1";
-            clip_to: "disclip";
-            type:           TEXT;
-            effect:         SOFT_SHADOW;
-            mouse_events:   0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               fixed: 0 1;
-//               min: 16 16;
-               rel1 {
-                  relative: 0.0  0.0;
-                  offset:   4 4;
-               }
-               rel2 {
-                  relative: 1.0  0.0;
-                  offset:   -5 4;
-               }
-               color: 255 255 255 255;
-               color3: DARKNESS_BLUE 32;
-               align: 0.0 0.0;
-               text {
-                  font: "DejaVu";
-                  size: 10;
-                  min: 0 1;
-//                  min: 1 1;
-                  align: 0.0 0.0;
-                  text_class: "Label";
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: 224 224 224 255;
-               color3: 0 0 0 64;
-            }
-         }
-         part { name: "elm.title.2";
-            clip_to: "disclip";
-            type:           TEXT;
-            effect:         SOFT_SHADOW;
-            mouse_events:   0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               fixed: 0 1;
-//               min: 16 16;
-               rel1 {
-                  to_y:     "elm.title.1";
-                  relative: 0.0  1.0;
-                  offset:   4 0;
-               }
-               rel2 {
-                  to_y:     "elm.title.1";
-                  relative: 1.0  1.0;
-                  offset:   -5 0;
-               }
-               color: 255 255 255 255;
-               color3: DARKNESS_BLUE 32;
-               align: 0.0 0.0;
-               text {
-                  font: "DejaVu";
-                  size: 10;
-                  min: 0 1;
-//                  min: 1 1;
-                  align: 0.0 0.0;
-                  text_class: "Label";
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: 224 224 224 255;
-               color3: 0 0 0 64;
-            }
-         }
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_y:     "elm.title.2";
-                  relative: 0.0  1.0;
-                  offset:   4 0;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -5 -5;
-               }
-               align: 0.0 0.0;
-         )
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.title.1";
-            target:  "elm.title.2";
-            target:  "elm.text";
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
       )
    }
    group { name: "elm/genlist/item_compress/default/default";
@@ -353,85 +247,9 @@
             target:  "fg1";
             target:  "elm.text";
       )
-   }
-   group { name: "elm/genlist/item_odd/default/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_SWALLOW_ICON_REL_PAD
-         GENLIST_PART_SWALLOW_END
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_x:     "elm.swallow.icon";
-                  relative: 1.0  0.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  to_x:     "elm.swallow.end";
-                  relative: 0.0  1.0;
-                  offset:   -1 -5;
-               }
-         )
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.text";
-      )
-   }
-   group { name: "elm/genlist/item_compress_odd/default/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_SWALLOW_ICON_REL_PAD
-         GENLIST_PART_SWALLOW_END
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_x:     "elm.swallow.icon";
-                  relative: 1.0  0.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  to_x:     "elm.swallow.end";
-                  relative: 0.0  1.0;
-                  offset:   -1 -5;
-               }
-         )
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.text";
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
       )
    }
 
@@ -479,6 +297,10 @@
       GENLIST_PROGRAMS("base",
             target:  "fg1";
             target:  "elm.text";
+      )
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
       )
       GENLIST_PROGRAMS_TREE
       GENLIST_PROGRAMS_RTL
@@ -528,97 +350,9 @@
             target:  "fg1";
             target:  "elm.text";
       )
-      GENLIST_PROGRAMS_TREE
-      GENLIST_PROGRAMS_RTL
-   }
-   group { name: "elm/genlist/tree_odd/default/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-         image: "icon_arrow_left.png" COMP;
-         image: "icon_arrow_right.png" COMP;
-         image: "icon_arrow_down.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_ARROW
-         GENLIST_PART_SWALLOW_ICON_REL_ARROW
-         GENLIST_PART_SWALLOW_END
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_x:     "elm.swallow.icon";
-                  relative: 1.0  0.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  to_x:     "elm.swallow.end";
-                  relative: 0.0  1.0;
-                  offset:   -1 -5;
-               }
-         )
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.text";
-      )
-      GENLIST_PROGRAMS_TREE
-      GENLIST_PROGRAMS_RTL
-   }
-   group { name: "elm/genlist/tree_compress_odd/default/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-         image: "icon_arrow_left.png" COMP;
-         image: "icon_arrow_right.png" COMP;
-         image: "icon_arrow_down.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_ARROW
-         GENLIST_PART_SWALLOW_ICON_REL_ARROW
-         GENLIST_PART_SWALLOW_END
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_x:     "elm.swallow.icon";
-                  relative: 1.0  0.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  to_x:     "elm.swallow.end";
-                  relative: 0.0  1.0;
-                  offset:   -1 -5;
-               }
-         )
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.text";
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
       )
       GENLIST_PROGRAMS_TREE
       GENLIST_PROGRAMS_RTL
@@ -649,47 +383,6 @@
            }
            GENLIST_PART_BASE_SHADOW
            GENLIST_PART_BASE_IMAGE("ilist_1.png")
-           GENLIST_PART_FG
-           GENLIST_PART_SWALLOW_PAD
-           GENLIST_PART_SWALLOW_ICON_REL_PAD
-           GENLIST_PART_SWALLOW_END
-           GENLIST_PART_TEXT_GENLIST(
-                   rel1 {
-                       to_x: "elm.swallow.icon";
-                       to_y: "base";
-                       relative: 1.0  0.5;
-                       offset:   0 4;
-                   }
-                   rel2 {
-                       to_x: "elm.swallow.end";
-                       to_y: "base";
-                       relative: 0.0  0.5;
-                       offset:   -1 -5;
-                   }
-           )
-           FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-           GENLIST_PART_DISCLIP("base")
-       }
-       GENLIST_PROGRAMS("base",
-               target:  "fg1";
-               target:  "elm.text";
-       )
-   }
-   group { name: "elm/genlist/item_odd/default_style/default";
-       data.item: "stacking" "below";
-       data.item: "selectraise" "on";
-       data.item: "labels" "elm.text";
-       data.item: "icons" "elm.swallow.icon elm.swallow.end";
-       data.item: "treesize" "20";
-       images {
-           image: "slider_button.png" COMP;
-           image: "bt_sm_shine.png" COMP;
-           image: "menu_item_highlight.png" COMP;
-           image: "ilist_2.png" COMP;
-       }
-       parts {
-           LIST_PART_EVENT
-           GENLIST_PART_BASE_IMAGE("ilist_2.png")
            GENLIST_PART_FG
            GENLIST_PART_SWALLOW_PAD
            GENLIST_PART_SWALLOW_ICON_REL_PAD
@@ -774,61 +467,6 @@
        GENLIST_PROGRAMS_TREE
        GENLIST_PROGRAMS_RTL
    }
-   group { name: "elm/genlist/tree_odd/default_style/default";
-       data.item: "stacking" "below";
-       data.item: "selectraise" "on";
-       data.item: "labels" "elm.text";
-       data.item: "icons" "elm.swallow.icon elm.swallow.end";
-       data.item: "treesize" "20";
-       images {
-           image: "slider_button.png" COMP;
-           image: "bt_sm_shine.png" COMP;
-           image: "menu_item_highlight.png" COMP;
-           image: "ilist_2.png" COMP;
-           image: "icon_arrow_right.png" COMP;
-           image: "icon_arrow_left.png" COMP;
-           image: "icon_arrow_down.png" COMP;
-       }
-       parts {
-           part {
-               name:           "event";
-               type:           RECT;
-               repeat_events: 1;
-               description {
-                   state: "default" 0.0;
-                   color: 0 0 0 0;
-               }
-           }
-           GENLIST_PART_BASE_IMAGE("ilist_2.png")
-           GENLIST_PART_FG
-           GENLIST_PART_SWALLOW_PAD
-           GENLIST_PART_ARROW
-           GENLIST_PART_SWALLOW_ICON_REL_ARROW
-           GENLIST_PART_SWALLOW_END
-           GENLIST_PART_TEXT_GENLIST(
-                   rel1 {
-                       to_x:     "elm.swallow.icon";
-                       to_y: "base";
-                       relative: 1.0  0.5;
-                       offset:   0 4;
-                   }
-                   rel2 {
-                       to_x:     "elm.swallow.end";
-                       to_y: "base";
-                       relative: 0.0  0.5;
-                       offset:   -1 -5;
-                   }
-           )
-           FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-           GENLIST_PART_DISCLIP("base")
-       }
-       GENLIST_PROGRAMS("base",
-               target:  "fg1";
-               target:  "elm.text";
-       )
-       GENLIST_PROGRAMS_TREE
-       GENLIST_PROGRAMS_RTL
-   }
 
 
    group { name: "elm/genlist/item/double_label/default";
@@ -874,6 +512,10 @@
             target:  "elm.text";
             target:  "elm.text.sub";
       )
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
+      )
    }
    group { name: "elm/genlist/item_compress/double_label/default";
       data.item: "stacking" "above";
@@ -918,89 +560,9 @@
             target:  "elm.text";
             target:  "elm.text.sub";
       )
-   }
-   group { name: "elm/genlist/item_odd/double_label/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_SWALLOW_ICON_REL_PAD
-         GENLIST_PART_SWALLOW_END
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_x:     "elm.swallow.icon";
-                  relative: 1.0  0.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  to_x:     "elm.swallow.end";
-                  relative: 0.0  0.5;
-                  offset:   -1 -5;
-               }
-         )
-         GENLIST_PART_TEXT_SUB
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.text";
-            target:  "elm.text.sub";
-      )
-   }
-   group { name: "elm/genlist/item_compress_odd/double_label/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_SWALLOW_ICON_REL_PAD
-         GENLIST_PART_SWALLOW_END
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_x:     "elm.swallow.icon";
-                  relative: 1.0  0.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  to_x:     "elm.swallow.end";
-                  relative: 0.0  0.5;
-                  offset:   -1 -5;
-               }
-         )
-         GENLIST_PART_TEXT_SUB
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.text";
-            target:  "elm.text.sub";
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
       )
    }
 
@@ -1050,6 +612,10 @@
             target:  "fg1";
             target:  "elm.text";
             target:  "elm.text.sub";
+      )
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
       )
       GENLIST_PROGRAMS_TREE
       GENLIST_PROGRAMS_RTL
@@ -1101,53 +667,9 @@
             target:  "elm.text";
             target:  "elm.text.sub";
       )
-      GENLIST_PROGRAMS_TREE
-      GENLIST_PROGRAMS_RTL
-   }
-   group { name: "elm/genlist/tree_odd/double_label/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-         image: "icon_arrow_right.png" COMP;
-         image: "icon_arrow_left.png" COMP;
-         image: "icon_arrow_down.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_ARROW
-         GENLIST_PART_SWALLOW_ICON_REL_ARROW
-         GENLIST_PART_SWALLOW_END
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_x:     "elm.swallow.icon";
-                  relative: 1.0  0.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  to_x:     "elm.swallow.end";
-                  relative: 0.0  0.5;
-                  offset:   -1 -5;
-               }
-         )
-         GENLIST_PART_TEXT_SUB
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.text";
-            target:  "elm.text.sub";
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
       )
       GENLIST_PROGRAMS_TREE
       GENLIST_PROGRAMS_RTL
@@ -1192,43 +714,9 @@
             target:  "fg1";
             target:  "elm.text";
       )
-   }
-   group { name: "elm/genlist/item_odd/icon_top_text_bottom/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_SWALLOW_ICON_REL_PAD
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_y:     "elm.swallow.icon";
-                  relative: 0.0  1.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -5 -5;
-               }
-         )
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.text";
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
       )
    }
 
@@ -1275,98 +763,9 @@
             target:  "fg1";
             target:  "elm.text";
       )
-      GENLIST_PROGRAMS_TREE
-      GENLIST_PROGRAMS_RTL
-   }
-   group { name: "elm/genlist/tree_odd/icon_top_text_bottom/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "bt_sm_shine.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-         image: "icon_arrow_right.png" COMP;
-         image: "icon_arrow_left.png" COMP;
-         image: "icon_arrow_down.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         LIST_PART_BASE_ODD
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_ARROW
-         GENLIST_PART_SWALLOW_ICON_REL_ARROW
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_y:     "elm.swallow.icon";
-                  relative: 0.0  1.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -5 -5;
-               }
-         )
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
-         GENLIST_PART_DISCLIP("base")
-      }
-      GENLIST_PROGRAMS("base",
-            target:  "fg1";
-            target:  "elm.text";
-      )
-      GENLIST_PROGRAMS_TREE
-      GENLIST_PROGRAMS_RTL
-   }
-   group { name: "elm/genlist/tree_compress_odd/double_label/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
-      data.item: "treesize" "20";
-//      data.item: "states" "";
-      images {
-         image: "slider_button.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-         image: "icon_arrow_right.png" COMP;
-         image: "icon_arrow_left.png" COMP;
-         image: "icon_arrow_down.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         GENLIST_PART_BASE_IMAGE("ilist_2.png")
-         LIST_PART_BG(clip_to: "disclip";)
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_ARROW
-         GENLIST_PART_SWALLOW_ICON_REL_ARROW
-         GENLIST_PART_SWALLOW_END
-         GENLIST_PART_TEXT(
-               rel1 {
-                  to_x:     "elm.swallow.icon";
-                  relative: 1.0  0.0;
-                  offset:   0 4;
-               }
-               rel2 {
-                  to_x:     "elm.swallow.end";
-                  relative: 0.0  0.5;
-                  offset:   -1 -5;
-               }
-         )
-         GENLIST_PART_TEXT_SUB
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
-         GENLIST_PART_DISCLIP("bg")
-      }
-      GENLIST_PROGRAMS("bg",
-            target:  "bg";
-            target:  "fg1";
-            target:  "elm.text";
-            target:  "elm.text.sub";
+      LIST_PROGRAMS_EVEN_ODD(
+            target: "base";
+            target: "base_sh";
       )
       GENLIST_PROGRAMS_TREE
       GENLIST_PROGRAMS_RTL
@@ -1387,66 +786,6 @@
          LIST_PART_EVENT
          GENLIST_PART_BASE_SHADOW
          GENLIST_PART_BASE_IMAGE("ilist_1.png")
-         LIST_PART_BG(clip_to: "disclip";)
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         GENLIST_PART_TEXT_TITLE(
-            relative: 0.0  0.0;
-            offset:   4 4;
-         )
-         part { name: "elm.text.album-artist";
-            clip_to: "disclip";
-            type:           TEXT;
-            mouse_events:   0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               rel1 {
-                  relative: 0.0  0.5;
-                  offset:   4 4;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -1 -5;
-               }
-               color: 0 0 0 128;
-               color3: 0 0 0 0;
-               text {
-                  font: "DejaVu";
-                  size: 8;
-                  min: 0 1;
-                  align: 0.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: 128 128 128 255;
-               color3: 0 0 0 32;
-            }
-         }
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
-         GENLIST_PART_DISCLIP("bg")
-      }
-      GENLIST_PROGRAMS("bg",
-            target:  "bg";
-            target:  "fg1";
-            target:  "elm.text.title";
-            target:  "elm.text.album-artist";
-      )
-   }
-   group { name: "elm/genlist/item_compress_odd/media/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text.title elm.text.album-artist";
-      data.item: "treesize" "20";
-      images {
-         image: "slider_button.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         GENLIST_PART_BASE_IMAGE("ilist_2.png")
          LIST_PART_BG(clip_to: "disclip";)
          GENLIST_PART_FG
          GENLIST_PART_SWALLOW_PAD
@@ -1636,145 +975,6 @@
       }
       GENLIST_PROGRAMS_DOT
    }
-   group { name: "elm/genlist/item_compress_odd/media-album/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text.title elm.text.trackno elm.text.length";
-      data.item: "states" "elm.state.trackno";
-      data.item: "treesize" "20";
-      images {
-         image: "slider_button.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-      }
-      script {
-         public dot_visible;
-      }
-      parts {
-         LIST_PART_EVENT
-         GENLIST_PART_BASE_IMAGE("ilist_2.png")
-         LIST_PART_BG(clip_to: "disclip";)
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         part {
-            name: "elm.text.trackno";
-            type: TEXT;
-            scale: 1;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               color: 255 255 255 255;
-               align: 0.0 0.0;
-               fixed: 1 0;
-               rel1 {
-                  to_y: "elm.text.title";
-                  relative: 0.0 0.0;
-                  offset: 5 0;
-               }
-               rel2 {
-                  to_y: "elm.text.title";
-                  relative: 0.0 1.0;
-                  offset: 20 0;
-               }
-               color: 255 255 255 255;
-               color3: 0 0 0 0;
-               text {
-                  text_class: "Label";
-                  min: 1 1;
-                  align: 1.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: 224 224 224 255;
-               color3: 0 0 0 64;
-            }
-         }
-         part {
-            name: "dot";
-            type: TEXT;
-            scale: 1;
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               color: 255 255 255 255;
-               visible: 0;
-               fixed: 1 1;
-               align: 0.0 0.0;
-               rel1 {
-                  to_x: "elm.text.trackno";
-                  to_y: "elm.text.title";
-                  relative: 1.0 0.0;
-                  offset: 1 0;
-               }
-               rel2 {
-                  to_x: "elm.text.trackno";
-                  to_y: "elm.text.title";
-                  relative: 1.0 1.0;
-                  offset: 1 0;
-
-               }
-               color: 255 255 255 255;
-               color3: 0 0 0 0;
-               text {
-                  text_class: "Label";
-                  min: 1 1;
-                  align: 0.0 0.5;
-                  text: ".";
-               }
-            }
-            description {
-               state: "visible" 0.0;
-               inherit: "default" 0.0;
-               visible: 1;
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: 224 224 224 255;
-               color3: 0 0 0 64;
-               visible: 1;
-            }
-         }
-         GENLIST_PART_TEXT_TITLE(
-            to_x: "dot";
-            relative: 1.0  0.0;
-            offset:   4 4;
-         )
-         part { name: "elm.text.length";
-            clip_to: "disclip";
-            type:           TEXT;
-            mouse_events:   0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               rel1 {
-                  relative: 0.0  0.5;
-                  offset:   4 4;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -1 -5;
-               }
-               color: 0 0 0 128;
-               color3: 0 0 0 0;
-               text {
-                  font: "DejaVu";
-                  size: 8;
-                  min: 0 1;
-                  align: 0.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: 128 128 128 255;
-               color3: 0 0 0 32;
-            }
-         }
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
-         GENLIST_PART_DISCLIP("bg")
-      }
-      GENLIST_PROGRAMS_DOT
-   }
 
    group { name: "elm/genlist/item_compress/media-preview/default";
       data.item: "stacking" "above";
@@ -1858,88 +1058,5 @@
             target:  "bg";
             target:  "fg1";
             target:  "elm.text.title";
-      )
-   }
-   group { name: "elm/genlist/item_compress_odd/media-preview/default";
-      data.item: "stacking" "below";
-      data.item: "selectraise" "on";
-      data.item: "labels" "elm.text.title elm.text.artist";
-      data.item: "icons" "elm.swallow.preview";
-      data.item: "treesize" "20";
-      images {
-         image: "slider_button.png" COMP;
-         image: "menu_item_highlight.png" COMP;
-         image: "ilist_2.png" COMP;
-      }
-      parts {
-         LIST_PART_EVENT
-         GENLIST_PART_BASE_IMAGE("ilist_2.png")
-         LIST_PART_BG(clip_to: "disclip";)
-         GENLIST_PART_FG
-         GENLIST_PART_SWALLOW_PAD
-         part { name: "elm.swallow.preview";
-            clip_to: "disclip";
-            type: SWALLOW;
-            description { state: "default" 0.0;
-               fixed: 1 0;
-               align: 0.0 0.5;
-               min: 68 68;
-               max: 68 68;
-               rel1 {
-                  to_x: "elm.swallow.pad";
-                  relative: 1.0  0.0;
-                  offset:   -1    4;
-               }
-               rel2 {
-                  to_x: "elm.swallow.pad";
-                  relative: 1.0  1.0;
-                  offset:   -1   -5;
-               }
-            }
-         }
-         GENLIST_PART_TEXT_TITLE(
-            to_x:     "elm.swallow.preview";
-            relative: 1.0  0.0;
-            offset:   4 4;
-         )
-         part { name: "elm.text.artist";
-            clip_to: "disclip";
-            type:           TEXT;
-            mouse_events:   0;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               rel1 {
-                  to_x:     "elm.swallow.preview";
-                  relative: 1.0  0.5;
-                  offset:   4 4;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -1 -5;
-               }
-               color: 0 0 0 128;
-               color3: 0 0 0 0;
-               text {
-                  font: "DejaVu";
-                  size: 8;
-                  min: 0 1;
-                  align: 0.0 0.5;
-               }
-            }
-            description { state: "selected" 0.0;
-               inherit: "default" 0.0;
-               color: 128 128 128 255;
-               color3: 0 0 0 32;
-            }
-         }
-         FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
-         GENLIST_PART_DISCLIP("bg")
-      }
-      GENLIST_PROGRAMS("bg",
-            target:  "bg";
-            target:  "fg1";
-            target:  "elm.text.title";
-            target:  "elm.text.artist";
       )
    }
