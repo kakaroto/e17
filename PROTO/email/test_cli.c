@@ -1,5 +1,4 @@
 #include "Email.h"
-#include <Ecore.h>
 
 #ifndef __UNUSED__
 # define __UNUSED__ __attribute__((unused))
@@ -8,8 +7,15 @@
 char *getpass_x(const char *prompt);
 
 static void
-mail_stat(Email *e, unsigned int num, size_t size)
+mail_quit(Email *e __UNUSED__)
 {
+   ecore_main_loop_quit();
+}
+
+static void
+mail_stat(Email *e, unsigned int num __UNUSED__, size_t size __UNUSED__)
+{
+   email_quit(e, (Ecore_Cb)mail_quit);
 }
 
 static Eina_Bool

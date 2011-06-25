@@ -32,6 +32,7 @@ typedef enum
 typedef enum
 {
    EMAIL_OP_STAT = 1,
+   EMAIL_OP_QUIT,
 } Email_Op;
 
 struct Email
@@ -49,7 +50,7 @@ struct Email
    Eina_List *certs;
 
    Eina_List *ops;
-   Eina_List *stat_cbs;
+   Eina_List *cbs;
 
    struct
    {
@@ -75,6 +76,7 @@ email_write(Ecore_Con_Server *svr, const void *data, size_t size)
 }
 
 void email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev);
+Eina_Bool email_quit_pop(Email *e, Ecore_Cb cb);
 void email_fake_free(void *d, void *e);
 
 #endif

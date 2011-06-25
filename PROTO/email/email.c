@@ -38,7 +38,7 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
      }
 
    if (!e->ops) return ECORE_CALLBACK_RENEW;
-   
+
    switch ((uintptr_t)e->ops->data)
      {
       case EMAIL_OP_STAT:
@@ -47,8 +47,8 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
          int num;
          size_t size;
 
-         cb = e->stat_cbs->data;
-         e->stat_cbs = eina_list_remove_list(e->stat_cbs, e->stat_cbs);
+         cb = e->cbs->data;
+         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
          e->ops = eina_list_remove_list(e->ops, e->ops);
          if ((!email_op_ok(ev->data, ev->size)) ||
              (sscanf(recv, "+OK %u %zu", &num, &size) != 2))
@@ -57,7 +57,23 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
               cb(e, 0, 0);
               return ECORE_CALLBACK_RENEW;
            }
+         INF("STAT returned %u messages (%zu octets)", num, size);
          cb(e, num, size);
+         break;
+      }
+      case EMAIL_OP_QUIT:
+      {
+         Ecore_Cb cb;
+
+         cb = e->cbs->data;
+         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
+         e->ops = eina_list_remove_list(e->ops, e->ops);
+         if (!email_op_ok(ev->data, ev->size))
+           ERR("Error with QUIT");
+         else
+           INF("QUIT");
+         cb(e);
+         break;
       }
       default:
         break;
@@ -120,6 +136,13 @@ email_new(const char *username, const char *password, void *data)
    e->password = strdup(password);
    e->data = data;
    return e;
+}
+
+Eina_Bool
+email_quit(Email *e, Ecore_Cb cb)
+{
+   if (e->pop3) return email_quit_pop(e, cb);
+   return EINA_FALSE;
 }
 
 Eina_Bool

@@ -36,7 +36,7 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
                {
                   const char *start;
 
-                  start = (char*)memrchr(end, '<', end - (char*)ev->data);
+                  start = (char*)memrchr(ev->data + 3, '<', end - (char*)ev->data);
                   if (start)
                     {
                        e->pop_features.apop = EINA_TRUE;
@@ -56,7 +56,9 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
       case EMAIL_STATE_USER:
         if (!ev)
           {
-             unsigned char *md5, md5buf[32];
+             unsigned char digest[16], md5buf[33];
+             char hexchars[17] = "0123456789abcdef";
+             unsigned int x, y;
 
              if (!e->pop_features.apop)
                {
@@ -69,10 +71,16 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
              e->state++;
              eina_binbuf_append_length(e->pop_features.apop_str, e->password, strlen(e->password));
 
-             md5 = md5_buffer(eina_binbuf_string_get(e->pop_features.apop_str), eina_binbuf_length_get(e->pop_features.apop_str), &md5buf);
-             size = sizeof(char) * (sizeof("APOP ") - 1 + sizeof("\r\n") - 1 + strlen(e->username)) + sizeof(md5buf) + 1;
+             md5_buffer(eina_binbuf_string_get(e->pop_features.apop_str), eina_binbuf_length_get(e->pop_features.apop_str), digest);
+             for (x = y = 0; x < sizeof(md5buf); x++, y++)
+               {
+                  md5buf[x++] = hexchars[y >> 4];
+                  md5buf[x] = hexchars[y & 15];
+               }
+             md5buf[32] = 0;
+             size = sizeof(char) * (sizeof("APOP ") - 1 + sizeof("\r\n") - 1 + strlen(e->username)) + sizeof(md5buf);
              buf = alloca(size);
-             snprintf(buf, size, "APOP %s %s\r\n", e->username, md5);
+             snprintf(buf, size, "APOP %s %s\r\n", e->username, md5buf);
              email_write(e->svr, buf, size - 1);
              return;
           }
@@ -101,4 +109,16 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
       default:
         break;
      }
+}
+
+Eina_Bool
+email_quit_pop(Email *e, Ecore_Cb cb)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(e->state != EMAIL_STATE_CONNECTED, EINA_FALSE);
+
+   e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_QUIT);
+   e->cbs = eina_list_append(e->cbs, cb);
+   email_write(e->svr, "QUIT\r\n", 6);
+   return EINA_TRUE;
 }
