@@ -32,6 +32,7 @@ typedef enum
 typedef enum
 {
    EMAIL_OP_STAT = 1,
+   EMAIL_OP_LIST,
    EMAIL_OP_QUIT,
 } Email_Op;
 
@@ -75,6 +76,8 @@ email_write(Ecore_Con_Server *svr, const void *data, size_t size)
    ecore_con_server_send(svr, data, size);
 }
 
+void email_pop3_stat_read(Email *e, const char *recv, size_t size);
+void email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev);
 void email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev);
 Eina_Bool email_quit_pop(Email *e, Ecore_Cb cb);
 void email_fake_free(void *d, void *e);

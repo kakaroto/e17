@@ -13,9 +13,20 @@ mail_quit(Email *e __UNUSED__)
 }
 
 static void
+mail_list(Email *e, Eina_List *list)
+{
+   Email_List_Item *it;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(list, l, it)
+     printf("#%lu, %zu octets\n", it->id, it->size);
+   email_quit(e, (Ecore_Cb)mail_quit);
+}
+
+static void
 mail_stat(Email *e, unsigned int num __UNUSED__, size_t size __UNUSED__)
 {
-   email_quit(e, (Ecore_Cb)mail_quit);
+   email_list(e, mail_list);
 }
 
 static Eina_Bool

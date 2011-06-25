@@ -42,25 +42,11 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
    switch ((uintptr_t)e->ops->data)
      {
       case EMAIL_OP_STAT:
-      {
-         Email_Stat_Cb cb;
-         int num;
-         size_t size;
-
-         cb = e->cbs->data;
-         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
-         e->ops = eina_list_remove_list(e->ops, e->ops);
-         if ((!email_op_ok(ev->data, ev->size)) ||
-             (sscanf(recv, "+OK %u %zu", &num, &size) != 2))
-           {
-              ERR("Error with STAT");
-              cb(e, 0, 0);
-              return ECORE_CALLBACK_RENEW;
-           }
-         INF("STAT returned %u messages (%zu octets)", num, size);
-         cb(e, num, size);
-         break;
-      }
+        email_pop3_stat_read(e, recv, ev->size);
+        break;
+      case EMAIL_OP_LIST:
+        email_pop3_list_read(e, ev);
+        break;
       case EMAIL_OP_QUIT:
       {
          Ecore_Cb cb;
