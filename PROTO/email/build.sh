@@ -8,7 +8,7 @@ CFLAGS="$(pkg-config --static --cflags ${DEPS[@]} ecore-con)"
 #CFLAGS+=" -I/usr/include/sasl"
 echo "DEPENDENCY CFLAGS: $CFLAGS"
 
-LIBS="$(pkg-config --static --libs ${DEPS[@]} ecore-con elementary)"
+LIBS="$(pkg-config --static --libs ${DEPS[@]} ecore-con)"
 if (echo "$LIBS" | grep gnutls &> /dev/null) ; then
 	LIBS+=" $(pkg-config --static --libs gnutls)"
 fi
