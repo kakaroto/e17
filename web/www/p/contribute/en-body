@@ -184,14 +184,17 @@
  </p>
  <p>
   Some extra optional packages for support of bonus features that you
-  might want installed also are:
+  might want installed also are (there are even more optionally
+  supported libraries than these, but these are the main/recommended set):
  </p>
  <p>
   <ul>
    <li>libtiff dev headers (tiff loading support in evas)</li>
    <li>librsvg dev headers (svg loading support in evas)</li>
-   <li>libungif dev headers (gif loading support in evas)</li>
-   <li>libcurl dev headers (http download/fetch support in ecore)</li>
+   <li>libgif dev headers (gif loading support in evas)</li>
+   <li>libungif dev headers (gif loading support in evas <em>*1</em>)</li>
+   <li>libcurl dev headers (http download/fetch support in ecore <em>*2</em>)</li>
+   <li>libc-ares dev headers (async DNS lookup support in ecore)</li>
    <li>libgnutls dev headers (signed eet files, secure tcp connection support for ecore)</li>
    <li>libasound2 dev headers (alsa sound card support in E17 mixer module)</li>
    <li>libudev dev headers (to build eeze for udev support)</li>
@@ -201,6 +204,14 @@
    <li>libraw dev headers (RAW loading support in evas_generic_loaders)</li>
    <li>libgstreamer dev headers (Video file loading support in evas_generic_loaders)</li>
   </ul>
+ </p>
+ <p>
+  <em>*1. Due to a patent issue in GIF compression, libungif was
+  created to work around this, but the patent has since expired so it is
+  not needed anymore.</em><br>
+  <em>*2. Please ensure your system libcurl is compiled with c-ares
+  support to avoid blocking DNS lookups when doing http
+  transactions.</em><br>
  </p>
  <p>
   Enlightenment does lots of runtime support checks. If you want network
