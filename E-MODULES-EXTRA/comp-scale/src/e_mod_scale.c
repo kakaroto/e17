@@ -128,10 +128,10 @@ _scale_place_windows(double scale)
 
    EINA_LIST_FOREACH(items, l, it)
      {
-	it->cur_w = (double)it->bd->w * scale + it->w * (1.0 - scale) - 0.5;
-	it->cur_h = (double)it->bd->h * scale + it->h * (1.0 - scale) - 0.5;
-	it->cur_x = it->bd_x  * scale + it->x * (1.0 - scale) + 0.5;
-	it->cur_y = it->bd_y  * scale + it->y * (1.0 - scale) + 0.5;
+	it->cur_x = it->bd_x * scale + it->x * (1.0 - scale);
+	it->cur_y = it->bd_y * scale + it->y * (1.0 - scale);
+	it->cur_w = (double)(it->bd_x + it->bd->w) * scale + (it->x + it->w) * (1.0 - scale) - it->cur_x;
+	it->cur_h = (double)(it->bd_y + it->bd->h) * scale + (it->y + it->h) * (1.0 - scale) - it->cur_y;
 
 	evas_object_move(it->o, it->cur_x, it->cur_y);
 	evas_object_resize(it->o, it->cur_w, it->cur_h);
@@ -170,7 +170,8 @@ _scale_redraw(void *data)
    Eina_List *l;
    Item *it;
    double adv, in, duration;
-
+   Eina_Bool finish = EINA_FALSE;
+   
    if (show_all_desks)
      duration = scale_conf->desks_duration;
    else
@@ -178,7 +179,12 @@ _scale_redraw(void *data)
 
    in = adv = (ecore_loop_time_get() - start_time) / duration;
 
-   if (scale_state)
+   if (in >= 1.0)
+     {
+	in = scale_state ? 0.0 : 1.0;
+	finish = EINA_TRUE;
+     }
+   else if (scale_state)
      {
 	in = log(14) * in;
 	in = 1.0 / exp(in*in);
@@ -189,9 +195,6 @@ _scale_redraw(void *data)
 	in = log(14) * (1.0 - in);
 	in = 1.0 / exp(in*in);
      }
-
-   if (in > 1.0) in = 1.0;
-   if (in < 0.0) in = 0.0;
 
    _scale_place_windows(in);
    
@@ -262,8 +265,7 @@ _scale_redraw(void *data)
 
    e_manager_comp_evas_update(e_manager_current_get());
 
-   if (((scale_state)  && (adv >= 1.0)) ||
-       ((!scale_state) && (adv <= 0.0)))
+   if (finish)
      {
 	if (!scale_state)
 	  _scale_finish();

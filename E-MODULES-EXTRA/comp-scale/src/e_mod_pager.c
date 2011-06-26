@@ -79,26 +79,27 @@ static Evas_Object *zone_clip = NULL;
 static void
 _pager_place_desks(double scale)
 {
-   Evas_Object *o;
    int x, y;
    Eina_List *l = desks;
-
    int a = (1.0 - scale) * 255.0;
 
    for (y = 0; y < zone->desk_y_count; y++)
      {
 	for (x = 0; x < zone->desk_x_count; x++)
 	  {
-	     o = eina_list_data_get(l);
+	     double x1 = min_x + (x - current_desk->x) * zone->w;
+	     double y1 = min_y + (y - current_desk->y) * zone->h;
+	     double x2 = min_x + x * desk_w;
+	     double y2 = min_y + y * desk_h;
+	     double cur_x = (scale * x1) + (1.0 - scale) * x2;
+	     double cur_y = (scale * y1) + (1.0 - scale) * y2;
+	
+	     Evas_Object *o = eina_list_data_get(l);
 
-	     evas_object_move(o,
-			      (scale * (double)(min_x + (x - current_desk->x) * zone->w)) +
-			      (1.0 - scale) * (double)(min_x + x * desk_w),
-			      (scale * (double)(min_y + (y - current_desk->y) * zone->h)) +
-			      (1.0 - scale) * (double)(min_y + y * desk_h));
+	     evas_object_move(o, cur_x , cur_y);
 	     evas_object_resize(o,
-				(scale * (double)zone->w) + (1.0 - scale) * (double)(desk_w - OFFSET),
-				(scale * (double)zone->h) + (1.0 - scale) * (double)(desk_h - OFFSET));
+				(scale * (zone->w)) + (1.0 - scale) * desk_w - OFFSET,
+				(scale * (zone->h)) + (1.0 - scale) * desk_h - OFFSET);
 
 	     evas_object_color_set(o, a, a, a, a);
 
@@ -115,10 +116,10 @@ _pager_place_windows(double scale)
 
    EINA_LIST_FOREACH(items, l, it)
      {
-	it->cur_w = (double)it->bd->w * scale + it->w * (1.0 - scale);
-	it->cur_h = (double)it->bd->h * scale + it->h * (1.0 - scale);
-	it->cur_x = it->bd_x  * scale + it->x * (1.0 - scale);
-	it->cur_y = it->bd_y  * scale + it->y * (1.0 - scale);
+	it->cur_x = it->bd_x * scale + it->x * (1.0 - scale);
+	it->cur_y = it->bd_y * scale + it->y * (1.0 - scale);
+	it->cur_w = (double)(it->bd_x + it->bd->w) * scale + (it->x + it->w) * (1.0 - scale) - it->cur_x;
+	it->cur_h = (double)(it->bd_y + it->bd->h) * scale + (it->y + it->h) * (1.0 - scale) - it->cur_y;
 
 	evas_object_move(it->o, it->cur_x, it->cur_y);
 	evas_object_resize(it->o, it->cur_w, it->cur_h);
@@ -128,24 +129,26 @@ _pager_place_windows(double scale)
 static Eina_Bool
 _pager_redraw(void *data)
 {
-   double in, adv;
+   double in;
+   Eina_Bool finish = EINA_FALSE;
+   
+   in = (ecore_loop_time_get() - start_time) / scale_conf->pager_duration;
 
-   in = adv = (ecore_loop_time_get() - start_time) / scale_conf->pager_duration;
-
-   if (scale_state)
+   if (in >= 1.0)
+     {
+	in = scale_state ? 0.0 : 1.0;
+	finish = EINA_TRUE;
+     }
+   else if (scale_state)
      {
 	in = log(14) * in;
 	in = 1.0 / exp(in*in);
      }
    else
      {
-	adv = 1.0 - adv;
 	in = log(14) * (1.0 - in);
 	in = 1.0 / exp(in*in);
      }
-
-   if (in > 1.0) in = 1.0;
-   if (in < 0.0) in = 0.0;
 
    _pager_place_desks(in);
    _pager_place_windows(in);
@@ -161,7 +164,7 @@ _pager_redraw(void *data)
 
 	     if ((it->desk != current_desk) &&
 		(it->desk != previous_desk))
-	       {
+	       {1
 		  /* double ax = it->cur_x - it->x;
 		   * double ay = it->cur_y - it->y;
 		   * double bx = it->bd_x  - it->x;
@@ -195,8 +198,7 @@ _pager_redraw(void *data)
 
    e_manager_comp_evas_update(e_manager_current_get());
 
-   if (((scale_state)  && (adv >= 1.0)) ||
-       ((!scale_state) && (adv <= 0.0)))
+   if (finish)
      {
 	if (!scale_state)
 	  _pager_finish();
