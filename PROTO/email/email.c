@@ -184,7 +184,7 @@ email_free(Email *e)
 {
    char *str;
    Email_List_Item *it;
-   
+
    if (!e) return;
 
    eina_stringshare_del(e->username);
@@ -276,7 +276,7 @@ email_op_cancel(Email *e, unsigned int op_number)
 {
    Eina_List *l, *ids, *op_l;
    uintptr_t *op;
-   
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(op_number > eina_list_count(e->ops), EINA_FALSE);
 
