@@ -7,8 +7,8 @@ email_stat(Email *e, Email_Stat_Cb cb)
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->state != EMAIL_STATE_CONNECTED, EINA_FALSE);
 
    e->cbs = eina_list_append(e->cbs, cb);
+   if (!e->ops) email_write(e, "STAT\r\n", 6);
    e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_STAT);
-   email_write(e->svr, "STAT\r\n", 6);
    return EINA_TRUE;
 }
 
@@ -19,8 +19,8 @@ email_list(Email *e, Email_List_Cb cb)
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->state != EMAIL_STATE_CONNECTED, EINA_FALSE);
 
    e->cbs = eina_list_append(e->cbs, cb);
+   if (!e->ops) email_write(e, "LIST\r\n", 6);
    e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_LIST);
-   email_write(e->svr, "LIST\r\n", 6);
    return EINA_TRUE;
 }
 
@@ -49,19 +49,26 @@ void
 email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev)
 {
    Email_List_Cb cb;
-   Eina_List *list = NULL;
+   Eina_List *next, *list = NULL;
    Email_List_Item *it;
    const char *n;
    size_t size;
 
-   cb = e->cbs->data;
-   e->cbs = eina_list_remove_list(e->cbs, e->cbs);
-   e->ops = eina_list_remove_list(e->ops, e->ops);
-   if (!email_op_ok(ev->data, ev->size))
+   if ((!e->buf) && (!email_op_ok(ev->data, ev->size)))
      {
         ERR("Error with LIST");
+        cb = e->cbs->data;
+        e->cbs = eina_list_remove_list(e->cbs, e->cbs);
+        e->ops = eina_list_remove_list(e->ops, e->ops);
         cb(e, NULL);
         return;
+     }
+   next = e->ev ? e->ev : list;
+   if (e->buf)
+     {
+        eina_binbuf_append_length(e->buf, ev->data, ev->size);
+        ev->data = (unsigned char*)eina_binbuf_string_get(e->buf);
+        ev->size = eina_binbuf_length_get(e->buf);
      }
    for (n = (char*)memchr(ev->data + 3, '\n', ev->size - 3), size = ev->size - (n - (char*)ev->data);
         n && (size > 1);
@@ -76,8 +83,24 @@ email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev)
          INF("Message %lu: %zu octets", it->id, it->size);
          list = eina_list_append(list, it);
       }
-   INF("LIST returned %u messages", eina_list_count(list));
-   cb(e, list);
-   EINA_LIST_FREE(list, it)
-     free(it);
+   if (!strncmp(n - 2, "\r\n.\r\n", 5))
+     {
+        cb = e->cbs->data;
+        e->cbs = eina_list_remove_list(e->cbs, e->cbs);
+        e->ops = eina_list_remove_list(e->ops, e->ops);
+        INF("LIST returned %u messages", eina_list_count(list));
+        cb(e, list);
+        EINA_LIST_FREE(list, it)
+          free(it);
+        if (e->buf)
+          {
+             eina_binbuf_free(e->buf);
+             e->buf = NULL;
+          }
+     }
+   else if (!e->buf)
+     {
+        e->buf = eina_binbuf_new();
+        eina_binbuf_append_length(e->buf, n, ev->size - (n - (char*)ev->data));
+     }
 }

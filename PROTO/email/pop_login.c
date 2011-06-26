@@ -47,7 +47,7 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
           }
         if (e->secure && (!e->flags))
           {
-             email_write(e->svr, "STLS\r\n", sizeof("STLS\r\n") - 1);
+             email_write(e, "STLS\r\n", sizeof("STLS\r\n") - 1);
              e->state++;
              return;
           }
@@ -65,7 +65,7 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
                   size = sizeof(char) * (sizeof("USER ") - 1 + sizeof("\r\n") - 1 + strlen(e->username)) + 1;
                   buf = alloca(size);
                   snprintf(buf, size, "USER %s\r\n", e->username);
-                  email_write(e->svr, buf, size - 1);
+                  email_write(e, buf, size - 1);
                   return;
                }
              e->state++;
@@ -81,7 +81,7 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
              size = sizeof(char) * (sizeof("APOP ") - 1 + sizeof("\r\n") - 1 + strlen(e->username)) + sizeof(md5buf);
              buf = alloca(size);
              snprintf(buf, size, "APOP %s %s\r\n", e->username, md5buf);
-             email_write(e->svr, buf, size - 1);
+             email_write(e, buf, size - 1);
              return;
           }
         if (!email_op_ok(ev->data, ev->size))
@@ -117,8 +117,8 @@ email_quit_pop(Email *e, Ecore_Cb cb)
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->state != EMAIL_STATE_CONNECTED, EINA_FALSE);
 
+   if (!e->ops) email_write(e, "QUIT\r\n", 6);
    e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_QUIT);
    e->cbs = eina_list_append(e->cbs, cb);
-   email_write(e->svr, "QUIT\r\n", 6);
    return EINA_TRUE;
 }

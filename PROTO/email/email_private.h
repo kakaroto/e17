@@ -20,6 +20,10 @@ extern int email_log_dom;
 #define EMAIL_POP3_PORT 110
 #define EMAIL_POP3S_PORT 995
 
+#define EMAIL_POP3_LIST "LIST\r\n"
+#define EMAIL_POP3_STAT "STAT\r\n"
+#define EMAIL_POP3_QUIT "QUIT\r\n"
+
 typedef enum
 {
    EMAIL_STATE_INIT,
@@ -52,6 +56,7 @@ struct Email
 
    Eina_List *ops;
    Eina_List *cbs;
+   void *ev;
 
    struct
    {
@@ -70,10 +75,10 @@ email_op_ok(unsigned char *data, int size)
 }
 
 static inline void
-email_write(Ecore_Con_Server *svr, const void *data, size_t size)
+email_write(Email *e, const void *data, size_t size)
 {
    DBG("Sending:\n%s", (char*)data);
-   ecore_con_server_send(svr, data, size);
+   ecore_con_server_send(e->svr, data, size);
 }
 
 void email_pop3_stat_read(Email *e, const char *recv, size_t size);

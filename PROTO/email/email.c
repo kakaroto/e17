@@ -5,6 +5,26 @@ static int email_init_count = 0;
 int email_log_dom = -1;
 int EMAIL_EVENT_CONNECTED = 0;
 
+static void
+next_pop(Email *e)
+{
+   if (e->buf || (!e->ops)) return;
+   switch ((uintptr_t)e->ops->data)
+     {
+      case EMAIL_OP_STAT:
+        email_write(e, EMAIL_POP3_STAT, sizeof(EMAIL_POP3_STAT) - 1);
+        break;
+      case EMAIL_OP_LIST:
+        email_write(e, EMAIL_POP3_LIST, sizeof(EMAIL_POP3_LIST) - 1);
+        break;
+      case EMAIL_OP_QUIT:
+        email_write(e, EMAIL_POP3_QUIT, sizeof(EMAIL_POP3_QUIT) - 1);
+        break;
+      default:
+        break;
+     }
+}
+
 static Eina_Bool
 upgrade_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Upgrade *ev)
 {
@@ -59,11 +79,13 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
          else
            INF("QUIT");
          cb(e);
+         ecore_con_server_del(e->svr);
          break;
       }
       default:
         break;
      }
+   next_pop(e);
    return ECORE_CALLBACK_RENEW;
 }
 
