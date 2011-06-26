@@ -8,6 +8,7 @@
 #include <Ecore.h>
 #include <Ecore_Con.h>
 #include "Email.h"
+#include <inttypes.h>
 
 #define DBG(...)            EINA_LOG_DOM_DBG(email_log_dom, __VA_ARGS__)
 #define INF(...)            EINA_LOG_DOM_INFO(email_log_dom, __VA_ARGS__)
@@ -22,6 +23,9 @@ extern int email_log_dom;
 
 #define EMAIL_POP3_LIST "LIST\r\n"
 #define EMAIL_POP3_STAT "STAT\r\n"
+#define EMAIL_POP3_RSET "RSET\r\n"
+#define EMAIL_POP3_DELE "DELE %"PRIu32"\r\n"
+#define EMAIL_POP3_RETR "RETR %"PRIu32"\r\n"
 #define EMAIL_POP3_QUIT "QUIT\r\n"
 
 typedef enum
@@ -37,6 +41,9 @@ typedef enum
 {
    EMAIL_OP_STAT = 1,
    EMAIL_OP_LIST,
+   EMAIL_OP_RSET,
+   EMAIL_OP_DELE,
+   EMAIL_OP_RETR,
    EMAIL_OP_QUIT,
 } Email_Op;
 
@@ -54,7 +61,9 @@ struct Email
    void *data;
    Eina_List *certs;
 
+   Email_Op current;
    Eina_List *ops;
+   Eina_List *op_ids;
    Eina_List *cbs;
    void *ev;
 
@@ -81,8 +90,12 @@ email_write(Email *e, const void *data, size_t size)
    ecore_con_server_send(e->svr, data, size);
 }
 
-void email_pop3_stat_read(Email *e, const char *recv, size_t size);
-void email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev);
+/* return EINA_TRUE if e->ops should be popped */
+Eina_Bool email_pop3_stat_read(Email *e, const char *recv, size_t size);
+Eina_Bool email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev);
+Eina_Bool email_pop3_retr_read(Email *e, Ecore_Con_Event_Server_Data *ev);
+
+
 void email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev);
 Eina_Bool email_quit_pop(Email *e, Ecore_Cb cb);
 void email_fake_free(void *d, void *e);

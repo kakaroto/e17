@@ -29,14 +29,14 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
           }
         if (ev->size > 20)
           {
-             const char *end;
+             const unsigned char *end;
 
-             end = (char*)memrchr(ev->data + 3, '>', ev->size - 3);
+             end = memrchr(ev->data + 3, '>', ev->size - 3);
              if (end)
                {
-                  const char *start;
+                  const unsigned char *start;
 
-                  start = (char*)memrchr(ev->data + 3, '<', end - (char*)ev->data);
+                  start = memrchr(ev->data + 3, '<', end - (unsigned char*)ev->data);
                   if (start)
                     {
                        e->pop_features.apop = EINA_TRUE;
@@ -69,9 +69,9 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
                   return;
                }
              e->state++;
-             eina_binbuf_append_length(e->pop_features.apop_str, e->password, strlen(e->password));
+             eina_binbuf_append_length(e->pop_features.apop_str, (unsigned char*)e->password, strlen(e->password));
 
-             md5_buffer(eina_binbuf_string_get(e->pop_features.apop_str), eina_binbuf_length_get(e->pop_features.apop_str), digest);
+             md5_buffer((char*)eina_binbuf_string_get(e->pop_features.apop_str), eina_binbuf_length_get(e->pop_features.apop_str), digest);
              for (x = y = 0; x < sizeof(md5buf); x++, y++)
                {
                   md5buf[x++] = hexchars[y >> 4];
@@ -93,6 +93,7 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
         size = sizeof(char) * (sizeof("PASS ") - 1 + sizeof("\r\n") - 1 + strlen(e->password)) + 1;
         buf = alloca(size);
         snprintf(buf, size, "PASS %s\r\n", e->password);
+        DBG("Sending password");
         ecore_con_server_send(e->svr, buf, size - 1);
         e->state++;
         return;
@@ -117,8 +118,13 @@ email_quit_pop(Email *e, Ecore_Cb cb)
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->state != EMAIL_STATE_CONNECTED, EINA_FALSE);
 
-   if (!e->ops) email_write(e, "QUIT\r\n", 6);
-   e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_QUIT);
+   if (!e->current)
+     {
+        e->current = EMAIL_OP_QUIT;
+        email_write(e, "QUIT\r\n", 6);
+     }
+   else
+     e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_QUIT);
    e->cbs = eina_list_append(e->cbs, cb);
    return EINA_TRUE;
 }
