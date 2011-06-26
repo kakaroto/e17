@@ -110,7 +110,7 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
               if (e->current == EMAIL_OP_DELE) INF("DELE successful");
               else INF("QUIT");
            }
-         cb(e);
+         if (cb) cb(e);
          if (e->current == EMAIL_OP_QUIT) ecore_con_server_del(e->svr);
          break;
       }

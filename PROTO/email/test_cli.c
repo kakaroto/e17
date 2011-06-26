@@ -6,6 +6,8 @@
 
 char *getpass_x(const char *prompt);
 
+static int count = 0;
+
 static void
 mail_quit(Email *e __UNUSED__)
 {
@@ -18,7 +20,11 @@ mail_retr(Email *e, Eina_Binbuf *buf)
    printf("Received message (%zu bytes): \n%*s\n",
      eina_binbuf_length_get(buf), (int)eina_binbuf_length_get(buf),
      (char*)eina_binbuf_string_get(buf));
-   email_quit(e, (Ecore_Cb)mail_quit);
+   if (--count == 0)
+     {
+        email_rset(e, NULL);
+        email_quit(e, (Ecore_Cb)mail_quit);
+     }
 }
 
 static void
@@ -31,6 +37,7 @@ mail_list(Email *e, Eina_List *list)
      {
         printf("#%u, %zu octets\n", it->id, it->size);
         email_retrieve(e, it->id, mail_retr);
+        count++;
      }
 }
 

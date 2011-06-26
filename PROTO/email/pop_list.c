@@ -108,11 +108,11 @@ email_pop3_stat_read(Email *e, const char *recv, size_t size)
        (sscanf(recv, "+OK %u %zu", &num, &len) != 2))
      {
         ERR("Error with STAT");
-        cb(e, 0, 0);
+        if (cb) cb(e, 0, 0);
         return EINA_TRUE;
      }
    INF("STAT returned %u messages (%zu octets)", num, len);
-   cb(e, num, len);
+   if (cb) cb(e, num, len);
    return EINA_TRUE;
 }
 
@@ -132,7 +132,7 @@ email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev)
         ERR("Error with LIST");
         cb = e->cbs->data;
         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
-        cb(e, NULL);
+        if (cb) cb(e, NULL);
         return EINA_TRUE;
      }
    next = e->ev ? e->ev : list;
@@ -165,7 +165,7 @@ email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev)
         cb = e->cbs->data;
         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
         INF("LIST returned %u messages", eina_list_count(list));
-        cb(e, list);
+        if (cb) cb(e, list);
         EINA_LIST_FREE(list, it)
           free(it);
         if (e->buf)
