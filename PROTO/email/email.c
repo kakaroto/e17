@@ -135,6 +135,7 @@ disc(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
      }
    INF("Disconnected");
    e->svr = NULL;
+   if (e->deleted) email_free(e);
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -178,6 +179,46 @@ email_new(const char *username, const char *password, void *data)
    return e;
 }
 
+void
+email_free(Email *e)
+{
+   char *str;
+   Email_List_Item *it;
+   
+   if (!e) return;
+
+   eina_stringshare_del(e->username);
+   free(e->password);
+   if (e->svr)
+     {
+        ecore_con_server_del(e->svr);
+        e->deleted = EINA_TRUE;
+        return;
+     }
+   eina_stringshare_del(e->addr);
+   if (e->buf) eina_binbuf_free(e->buf);
+   EINA_LIST_FREE(e->certs, str)
+     free(str);
+   eina_list_free(e->ops);
+   eina_list_free(e->op_ids);
+   eina_list_free(e->cbs);
+   switch (e->current)
+     {
+      case EMAIL_OP_LIST:
+        EINA_LIST_FREE(e->ev, it)
+          free(it);
+      default:
+        break;
+     }
+   if (e->pop3 && e->pop_features.apop_str)
+     eina_binbuf_free(e->pop_features.apop_str);
+   ecore_event_handler_del(e->h_data);
+   ecore_event_handler_del(e->h_del);
+   ecore_event_handler_del(e->h_error);
+   ecore_event_handler_del(e->h_upgrade);
+   free(e);
+}
+
 Eina_Bool
 email_quit(Email *e, Ecore_Cb cb)
 {
@@ -195,10 +236,10 @@ email_connect_pop3(Email *e, Eina_Bool secure, const char *addr)
    e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY | e->flags, addr, e->secure ? EMAIL_POP3S_PORT : EMAIL_POP3_PORT, e);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->svr, EINA_FALSE);
    if (e->secure) ecore_con_ssl_server_verify_basic(e->svr);
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)disc, NULL);
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)data_pop, e);
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ERROR, (Ecore_Event_Handler_Cb)error_pop, NULL);
-   ecore_event_handler_add(ECORE_CON_EVENT_SERVER_UPGRADE, (Ecore_Event_Handler_Cb)upgrade_pop, e);
+   e->h_del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)disc, NULL);
+   e->h_data = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, (Ecore_Event_Handler_Cb)data_pop, e);
+   e->h_error = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ERROR, (Ecore_Event_Handler_Cb)error_pop, NULL);
+   e->h_upgrade = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_UPGRADE, (Ecore_Event_Handler_Cb)upgrade_pop, e);
    return EINA_TRUE;
 }
 
@@ -221,4 +262,38 @@ email_data_get(Email *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
    return e->data;
+}
+
+const Eina_List *
+email_queue_get(Email *e)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
+   return e->ops;
+}
+
+Eina_Bool
+email_op_cancel(Email *e, unsigned int op_number)
+{
+   Eina_List *l, *ids, *op_l;
+   uintptr_t *op;
+   
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(op_number > eina_list_count(e->ops), EINA_FALSE);
+
+   op_l = eina_list_nth_list(e->ops, op_number - 1);
+   if (((uintptr_t)op_l->data != EMAIL_OP_DELE) && ((uintptr_t)op_l->data != EMAIL_OP_RETR))
+     /* no op id to remove, so this is easy */
+     goto out;
+   ids = e->op_ids;
+   EINA_LIST_FOREACH(e->ops, l, op)
+     {
+        if (l == op_l) break;
+        if (((uintptr_t)op == EMAIL_OP_DELE) || ((uintptr_t)op == EMAIL_OP_RETR))
+          ids = ids->next;
+     }
+   e->op_ids = eina_list_remove_list(e->op_ids, l);
+out:
+   e->ops = eina_list_remove_list(e->ops, op_l);
+   e->cbs = eina_list_remove_list(e->cbs, eina_list_nth_list(e->cbs, op_number - 1));
+   return EINA_TRUE;
 }

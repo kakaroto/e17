@@ -67,6 +67,8 @@ struct Email
    Eina_List *cbs;
    void *ev;
 
+   Ecore_Event_Handler *h_data, *h_del, *h_error, *h_upgrade;
+
    struct
    {
       Eina_Binbuf *apop_str;
@@ -75,6 +77,7 @@ struct Email
    Eina_Bool pop3 : 1;
    Eina_Bool imap : 1;
    Eina_Bool secure : 1;
+   Eina_Bool deleted : 1;
 };
 
 static inline Eina_Bool
