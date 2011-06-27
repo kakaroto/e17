@@ -215,7 +215,7 @@
                   relative: 0.0  1.0; \
                   offset:   -1 -5; \
                } \
-               color: 0 0 0 128; \
+               color: 255 255 255 255; \
                color3: DARKNESS_BLUE 32; \
                text { \
                   font: "DejaVu"; \
