@@ -164,7 +164,7 @@ _pager_redraw(void *data)
 
 	     if ((it->desk != current_desk) &&
 		(it->desk != previous_desk))
-	       {1
+	       {
 		  /* double ax = it->cur_x - it->x;
 		   * double ay = it->cur_y - it->y;
 		   * double bx = it->bd_x  - it->x;
