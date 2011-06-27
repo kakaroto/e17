@@ -215,8 +215,8 @@
                   relative: 0.0  1.0; \
                   offset:   -1 -5; \
                } \
-               color: 255 255 255 255; \
-               color3: DARKNESS_BLUE 32; \
+               color: 128 128 128 255; \
+               color3: 0 0 0 32; \
                text { \
                   font: "DejaVu"; \
                   size: 8; \
@@ -228,8 +228,8 @@
             description { \
                state: "selected" 0.0; \
                inherit: "default" 0.0; \
-               color: 128 128 128 255; \
-               color3: 0 0 0 32; \
+               color: 255 255 255 255; \
+               color3: DARKNESS_BLUE 32; \
             } \
          }
 
