@@ -1927,6 +1927,163 @@ public:
      }
 };
 
+class CElmProgressBar : public CEvasObject {
+protected:
+   static CPropHandler<CElmProgressBar> prop_handler;
+   v8::Persistent<v8::Value> the_icon;
+
+   static v8::Handle<v8::Value> do_pulse(const v8::Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmProgressBar *progress = static_cast<CElmProgressBar *>(self);
+	if (args[0]->IsBoolean())
+          progress->pulse(args[0]->BooleanValue());
+        return v8::Undefined();
+     }
+
+public:
+   CElmProgressBar(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
+     {
+        eo = elm_progressbar_add(parent->top_widget_get());
+        construct(eo, obj);
+        get_object()->Set(v8::String::New("pulse"), v8::FunctionTemplate::New(do_pulse)->GetFunction());
+     }
+
+   virtual ~CElmProgressBar()
+     {
+        the_icon.Dispose();
+     }
+
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        prop_handler.fill_template(ot);
+        return ot;
+     }
+
+   virtual void pulse(bool on)
+     {
+        elm_progressbar_pulse(eo, on);
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        CPropHandler<CElmProgressBar>::prop_setter setter;
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        CPropHandler<CElmProgressBar>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+   virtual void label_set(const char *str)
+     {
+        elm_progressbar_label_set(eo, str);
+     }
+
+   virtual v8::Handle<v8::Value> label_get() const
+     {
+        return v8::String::New(elm_progressbar_label_get(eo));
+     }
+
+   virtual v8::Handle<v8::Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(v8::Handle<v8::Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_progressbar_icon_set(eo, icon->get());
+        the_icon = v8::Persistent<v8::Value>::New(icon->get_object());
+     }
+
+   virtual v8::Handle<v8::Value> inverted_get() const
+     {
+        return v8::Boolean::New(elm_progressbar_inverted_get(eo));
+     }
+
+   virtual void inverted_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsBoolean())
+          elm_progressbar_inverted_set(eo, value->BooleanValue());
+     }
+
+   virtual v8::Handle<v8::Value> horizontal_get() const
+     {
+        return v8::Boolean::New(elm_progressbar_horizontal_get(eo));
+     }
+
+   virtual void horizontal_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsBoolean())
+          elm_progressbar_horizontal_set(eo, value->BooleanValue());
+     }
+
+   virtual v8::Handle<v8::Value> units_get() const
+     {
+        return v8::String::New(elm_progressbar_unit_format_get(eo));
+     }
+
+   virtual void units_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsString())
+          {
+             v8::String::Utf8Value str(value);
+             elm_progressbar_unit_format_set(eo, *str);
+          }
+     }
+
+   virtual v8::Handle<v8::Value> span_get() const
+     {
+        return v8::Integer::New(elm_progressbar_span_size_get(eo));
+     }
+
+   virtual void span_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsInt32())
+          {
+             int span = value->Int32Value();
+             elm_progressbar_span_size_set(eo, span);
+          }
+     }
+
+   virtual v8::Handle<v8::Value> pulser_get() const
+     {
+        return v8::Boolean::New(elm_progressbar_pulse_get(eo));
+     }
+
+   virtual void pulser_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsBoolean())
+          elm_progressbar_pulse_set(eo, value->BooleanValue());
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmProgressBar>::property_list
+CEvasObject::CPropHandler<CElmProgressBar>::list[] = {
+  PROP_HANDLER(CElmProgressBar, icon),
+  PROP_HANDLER(CElmProgressBar, inverted),
+  PROP_HANDLER(CElmProgressBar, horizontal),
+  PROP_HANDLER(CElmProgressBar, units),
+  PROP_HANDLER(CElmProgressBar, span),
+  PROP_HANDLER(CElmProgressBar, pulser),
+  { NULL, NULL, NULL },
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -1970,6 +2127,8 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
      eo = new CElmRadio(parent, obj);
    else if (!strcmp(*str, "box"))
      eo = new CElmBox(parent, obj);
+   else if (!strcmp(*str, "progressbar"))
+     eo = new CElmProgressBar(parent, obj);
    else if (!strcmp(*str, "scroller"))
      eo = new CElmScroller(parent, obj);
    else if (!strcmp(*str, "image"))
