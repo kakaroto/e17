@@ -17,7 +17,7 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
              return;
           }
         ecore_con_ssl_server_upgrade(e->svr, ECORE_CON_USE_MIXED);
-        ecore_con_ssl_server_verify(e->svr);
+        ecore_con_ssl_server_verify_basic(e->svr);
         e->flags = ECORE_CON_USE_MIXED;
         return;
       case EMAIL_STATE_INIT:
@@ -39,9 +39,9 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
                   start = memrchr(ev->data + 3, '<', end - (unsigned char*)ev->data);
                   if (start)
                     {
-                       e->pop_features.apop = EINA_TRUE;
-                       e->pop_features.apop_str = eina_binbuf_new();
-                       eina_binbuf_append_length(e->pop_features.apop_str, start, end - start + 1);
+                       e->features.pop_features.apop = EINA_TRUE;
+                       e->features.pop_features.apop_str = eina_binbuf_new();
+                       eina_binbuf_append_length(e->features.pop_features.apop_str, start, end - start + 1);
                     }
                }
           }
@@ -60,7 +60,7 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
              char hexchars[17] = "0123456789abcdef";
              unsigned int x, y;
 
-             if (!e->pop_features.apop)
+             if (!e->features.pop_features.apop)
                {
                   size = sizeof(char) * (sizeof("USER ") - 1 + sizeof("\r\n") - 1 + strlen(e->username)) + 1;
                   buf = alloca(size);
@@ -69,9 +69,9 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
                   return;
                }
              e->state++;
-             eina_binbuf_append_length(e->pop_features.apop_str, (unsigned char*)e->password, strlen(e->password));
+             eina_binbuf_append_length(e->features.pop_features.apop_str, (unsigned char*)e->password, strlen(e->password));
 
-             md5_buffer((char*)eina_binbuf_string_get(e->pop_features.apop_str), eina_binbuf_length_get(e->pop_features.apop_str), digest);
+             md5_buffer((char*)eina_binbuf_string_get(e->features.pop_features.apop_str), eina_binbuf_length_get(e->features.pop_features.apop_str), digest);
              for (x = y = 0; x < sizeof(md5buf); x++, y++)
                {
                   md5buf[x++] = hexchars[y >> 4];

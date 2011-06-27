@@ -1,2 +1,2 @@
 rm -f *.{o,a}
-rm -f email
+rm -f test_pop3 test_smtp

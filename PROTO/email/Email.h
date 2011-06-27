@@ -16,6 +16,7 @@ typedef struct
 } Email_List_Item;
 
 extern int EMAIL_EVENT_CONNECTED;
+extern int EMAIL_EVENT_DISCONNECTED;
 
 int email_init(void);
 Email *email_new(const char *username, const char *password, void *data);
@@ -23,9 +24,13 @@ void email_free(Email *e);
 void email_data_set(Email *e, void *data);
 void *email_data_get(Email *e);
 void email_cert_add(Email *e, const char *file);
+
 const Eina_List *email_queue_get(Email *e);
 Eina_Bool email_op_cancel(Email *e, unsigned int op_number);
+
 Eina_Bool email_connect_pop3(Email *e, Eina_Bool secure, const char *addr);
+Eina_Bool email_connect_smtp(Email *e, Eina_Bool secure, const char *addr, const char *from_domain);
+
 Eina_Bool email_quit(Email *e, Ecore_Cb cb);
 Eina_Bool email_stat(Email *e, Email_Stat_Cb cb);
 Eina_Bool email_list(Email *e, Email_List_Cb cb);

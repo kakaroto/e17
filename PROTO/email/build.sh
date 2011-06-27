@@ -19,8 +19,10 @@ echo
 SOURCES=(*.c)
 
 for x in ${SOURCES[@]};do
+	[[ "${x/test_}" != "$x" ]] && continue
 	echo "gcc -c $x -o ${x/.c/.o} $CFLAGS $CF || exit 1"
 	gcc -c $x -o ${x/.c/.o} $CFLAGS $CF || exit 1
 done
 
-gcc *.o -o email -L/usr/lib -lc $LIBS
+gcc test_pop3.c *.o -o test_pop3 $CFLAGS $CF -L/usr/lib -lc $LIBS
+gcc test_smtp.c *.o -o test_smtp $CFLAGS $CF -L/usr/lib -lc $LIBS
