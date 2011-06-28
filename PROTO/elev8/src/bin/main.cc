@@ -129,6 +129,8 @@ protected:
         eo = _eo;
         assert(eo != NULL);
 
+        evas_object_data_set(eo, "v8obj", this);
+
         v8::Handle<v8::Object> out = get_object();
 
         /* copy properties, one by one */
@@ -593,11 +595,8 @@ public:
      }
 
    /* returns a list of children in an object */
-   v8::Handle<v8::Object> realize_objects(v8::Handle<v8::Value> val)
+   v8::Handle<v8::Object> realize_objects(v8::Handle<v8::Value> val, v8::Handle<v8::Object> &out)
      {
-        /* add an list of children */
-        v8::Local<v8::Object> out = v8::Object::New();
-
         if (!val->IsObject())
           {
              fprintf(stderr, "not an object!\n");
@@ -743,9 +742,15 @@ public:
      {
         eo = elm_win_add(parent ? parent->get() : NULL, "main", ELM_WIN_BASIC);
         construct(eo, obj);
-        v8::Handle<v8::Object> elements;
-        elements = realize_objects(obj->Get(v8::String::New("elements")));
+
+        /*
+         * Create elements and attach to parent so children can see siblings
+         * that have already been created.  Useful to find radio button groups.
+         */
+        v8::Handle<v8::Object> elements = v8::Object::New();
         get_object()->Set(v8::String::New("elements"), elements);
+        realize_objects(obj->Get(v8::String::New("elements")), elements);
+
         evas_object_focus_set(eo, 1);
         evas_object_smart_callback_add(eo, "delete,request", &on_delete, NULL);
      }
@@ -926,9 +931,14 @@ public:
      {
         eo = elm_box_add(parent->top_widget_get());
         construct(eo, obj);
-        v8::Handle<v8::Object> elements;
-        elements = realize_objects(obj->Get(v8::String::New("elements")));
+
+        /*
+         * Create elements and attach to parent so children can see siblings
+         * that have already been created.  Useful to find radio button groups.
+         */
+        v8::Handle<v8::Object> elements = v8::Object::New();
         get_object()->Set(v8::String::New("elements"), elements);
+        realize_objects(obj->Get(v8::String::New("elements")), elements);
      }
 
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
