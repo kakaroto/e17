@@ -12,7 +12,7 @@
 
 #define ZOOM_STEP 0.2
 
-typedef struct _Ephoto_single_Browser Ephoto_Single_Browser;
+typedef struct _Ephoto_Single_Browser Ephoto_Single_Browser;
 typedef struct _Ephoto_Viewer Ephoto_Viewer;
 
 struct _Ephoto_Single_Browser

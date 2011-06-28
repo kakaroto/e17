@@ -240,7 +240,7 @@ ephoto_window_add(const char *path)
         ephoto_single_browser_path_pending_set(ephoto->single_browser, path);
 
         elm_pager_content_promote(ephoto->pager, ephoto->single_browser);
-        ephoto->state = EPHOTO_STATE_single;
+        ephoto->state = EPHOTO_STATE_SINGLE;
      }
 
    /* TODO restore size from last run as well? */
