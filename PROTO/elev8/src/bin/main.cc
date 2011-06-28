@@ -865,7 +865,7 @@ CEvasObject::CPropHandler<CElmButton>::list[] = {
 
 class CElmBackground : public CEvasObject {
 public:
-   CElmBackground(CEvasObject *parent, v8::Local<v8::Object> obj) :
+   explicit CElmBackground(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
         eo = elm_bg_add(parent->top_widget_get());
@@ -898,6 +898,10 @@ public:
 };
 
 class CElmRadio : public CEvasObject {
+protected:
+   static CPropHandler<CElmRadio> prop_handler;
+   v8::Persistent<v8::Value> the_icon;
+
 public:
    CElmRadio(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
@@ -906,14 +910,63 @@ public:
         construct(eo, obj);
      }
 
+   virtual ~CElmRadio()
+     {
+        the_icon.Dispose();
+     }
+
+   virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+     {
+        v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+        prop_handler.fill_template(ot);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+     {
+        CPropHandler<CElmRadio>::prop_setter setter;
+
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
+     }
+
+   virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+     {
+        CPropHandler<CElmRadio>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
+        return CEvasObject::prop_get(prop_name);
+     }
+
    virtual void label_set(const char *str)
      {
         elm_radio_label_set(eo, str);
      }
 
-   virtual ~CElmRadio()
+   virtual v8::Handle<v8::Value> icon_get() const
      {
+        return the_icon;
      }
+
+   virtual void icon_set(v8::Handle<v8::Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_radio_icon_set(eo, icon->get());
+        the_icon = v8::Persistent<v8::Value>::New(icon->get_object());
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmRadio>::property_list
+CEvasObject::CPropHandler<CElmRadio>::list[] = {
+  PROP_HANDLER(CElmRadio, icon),
+  { NULL, NULL, NULL },
 };
 
 class CElmBox : public CEvasObject {
