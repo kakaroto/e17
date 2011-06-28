@@ -256,8 +256,6 @@ _todo_items_process(void *data)
    if ((tb->ls) && (eina_list_count(tb->todo_items) < TODO_ITEM_MIN_BATCH))
      return EINA_TRUE;
 
-   _up_item_add_if_required(tb);
-
    tb->animator.todo_items = NULL;
 
    EINA_LIST_FREE(tb->todo_items, entry)
@@ -436,6 +434,7 @@ _ephoto_thumb_populate_start(void *data, int type __UNUSED__, void *event __UNUS
    _grid_items_free(tb);
    elm_gengrid_clear(tb->grid);
    elm_fileselector_entry_path_set(tb->fsel, tb->ephoto->config->directory);
+   _up_item_add_if_required(tb);
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -451,8 +450,6 @@ _ephoto_thumb_populate_end(void *data, int type __UNUSED__, void *event __UNUSED
         free(tb);
         return ECORE_CALLBACK_PASS_ON;
      }
-
-   if (!tb->animator.todo_items) _up_item_add_if_required(tb);
 
    return ECORE_CALLBACK_PASS_ON;
 }
