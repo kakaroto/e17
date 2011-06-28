@@ -795,11 +795,29 @@ _ephoto_single_entry_create(void *data, int type __UNUSED__, void *event __UNUSE
    return ECORE_CALLBACK_PASS_ON;
 }
 
+static Evas_Object *
+_button_add(Evas_Object *box, const char *image)
+{
+   Evas_Object *but, *ic;
+
+   but = elm_button_add(box);
+
+   ic = elm_icon_add(but);
+   elm_icon_file_set(ic, image, NULL);
+
+   elm_button_icon_set(but, ic);
+   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(box, but);
+   evas_object_show(but);
+
+   return but;
+}
+
 Evas_Object *
 ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
 {
    Evas_Object *box = elm_box_add(parent);
-   Evas_Object *but, *ic, *sep;
+   Evas_Object *but, *sep;
    Ephoto_Single_Browser *sb;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(box, NULL);
@@ -823,64 +841,24 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_show(sb->bar);
    elm_box_pack_end(sb->main, sb->bar);
 
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/back_grid.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/back_grid.png");
    evas_object_smart_callback_add(but, "clicked", _back, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
    sep = elm_separator_add(sb->bar);
    elm_box_pack_end(sb->bar, sep);
    evas_object_show(sep);
    
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/zoom-in.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/zoom-in.png");
    evas_object_smart_callback_add(but, "clicked", _zoom_in_cb, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/zoom-out.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/zoom-out.png");
    evas_object_smart_callback_add(but, "clicked", _zoom_out_cb, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/zoom-fit.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/zoom-fit.png");
    evas_object_smart_callback_add(but, "clicked", _zoom_fit_cb, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/zoom-original.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/zoom-original.png");
    evas_object_smart_callback_add(but, "clicked", _zoom_1_cb, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
    sep = elm_separator_add(sb->bar);
    elm_box_pack_end(sb->bar, sep);
@@ -895,64 +873,24 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    elm_box_pack_end(sb->bar, sep);
    evas_object_show(sep);
 
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/first.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/first.png");
    evas_object_smart_callback_add(but, "clicked", _go_first, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/back.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/back.png");
    evas_object_smart_callback_add(but, "clicked", _go_prev, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/forward.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/forward.png");
    evas_object_smart_callback_add(but, "clicked", _go_next, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/last.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/last.png");
    evas_object_smart_callback_add(but, "clicked", _go_last, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
    sep = elm_separator_add(sb->bar);
    elm_box_pack_end(sb->bar, sep);
    evas_object_show(sep);
 
-   but = elm_button_add(sb->bar);
-
-   ic = elm_icon_add(but);
-   elm_icon_file_set(ic, PACKAGE_DATA_DIR "/images/slideshow.png", NULL);
-
-   elm_button_icon_set(but, ic);
-   evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   but = _button_add(sb->bar, PACKAGE_DATA_DIR "/images/slideshow.png");
    evas_object_smart_callback_add(but, "clicked", _slideshow, sb);
-   elm_box_pack_end(sb->bar, but);
-   evas_object_show(but);
 
    sb->handlers = eina_list_append
       (sb->handlers, ecore_event_handler_add
