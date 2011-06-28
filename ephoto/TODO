@@ -8,15 +8,11 @@ ________/ /__/      /__/ /__/ /_______/    /_/    /_______/
 
 TODO-
 ===Thumb Browser============
-Add the ability to see some more info. A bar at the bottom?
+Add a way to view more info
 ============================
-===Flow Browser=============
-Looks cool for now, but will need some sort of functionality.
-============================
-===Single/Edit Image Mode===
+===Single Image Mode========
 Rotate Images.
 Flip Images.
-Zoom Images.
 -Possibly Grayscale, Sepia, etc..?
 -Possibly HSV, Brightness, Contrast, RGB, etc..?
 -Magnifier and color chooser
