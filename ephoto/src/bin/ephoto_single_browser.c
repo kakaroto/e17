@@ -102,6 +102,9 @@ _viewer_add(Evas_Object *parent, const char *path)
         evas_object_size_hint_align_set(v->image, 0.5, 0.5);
         evas_object_size_hint_min_set(v->image, w, h);
         evas_object_size_hint_max_set(v->image, w, h);
+        elm_scroller_content_set(v->scroller, v->image);
+        evas_object_show(v->scroller);
+        evas_object_show(v->image);
      }
    evas_object_size_hint_weight_set(obj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(obj, EVAS_HINT_FILL, EVAS_HINT_FILL);
