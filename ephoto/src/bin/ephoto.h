@@ -24,7 +24,6 @@
 
 #define THEME_FILE PACKAGE_DATA_DIR"/themes/default/ephoto.edj"
 
-/*Typedefs*/
 typedef struct _Ephoto_Config Ephoto_Config;
 typedef struct _Ephoto Ephoto;
 typedef struct _Ephoto_Entry Ephoto_Entry;
@@ -33,50 +32,48 @@ typedef struct _Ephoto_Event_Entry_Create Ephoto_Event_Entry_Create;
 typedef enum _Ephoto_State Ephoto_State;
 typedef enum _Ephoto_Orient Ephoto_Orient;
 
-/*Main Gui Functions/Callbacks*/
 Evas_Object *ephoto_window_add(const char *path);
 void         ephoto_title_set(Ephoto *ephoto, const char *title);
 void         ephoto_thumb_size_set(Ephoto *ephoto, int size);
 Evas_Object *ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path);
 void         ephoto_thumb_path_set(Evas_Object *o, const char *path);
-Evas_Object *ephoto_list_icon_add(Ephoto *ephoto, Evas_Object *parent, const char *standard);
 void         ephoto_directory_set(Ephoto *ephoto, const char *path);
-void         ephoto_promote_list_browser(Ephoto *ephoto);
-void         ephoto_promote_thumb_browser(Ephoto *ephoto);
-void         ephoto_promote_single_browser(Ephoto *ephoto, Ephoto_Entry *e);
 
-/*Get the exif orientation of a JPEG*/
 Ephoto_Orient ephoto_file_orient_get(const char *path);
 
-/*Config Functions/Callbacks*/
 Eina_Bool    ephoto_config_init(Ephoto *em);
 void         ephoto_config_save(Ephoto *em, Eina_Bool instant);
 void         ephoto_config_free(Ephoto *em);
 
-/*List Browser*/
-Evas_Object *ephoto_list_browser_add(Ephoto *ephoto, Evas_Object *parent);
-void         ephoto_list_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
-
-/*Thumb Browser*/
-Evas_Object *ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent);
-void         ephoto_thumb_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
-
-/*Single Browser*/
 Evas_Object *ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent);
 void         ephoto_single_browser_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
 void         ephoto_single_browser_path_pending_set(Evas_Object *obj, const char *path);
+ /* smart callbacks called:
+  * "back" - the user want to go back to the previous screen.
+  */
 
-/*Ephoto View*/
+Evas_Object *ephoto_slideshow_add(Ephoto *ephoto, Evas_Object *parent);
+void         ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry);
+ /* smart callbacks called:
+  * "back" - the user want to go back to the previous screen.
+  */
+
+Evas_Object *ephoto_directory_thumb_add(Evas_Object *parent, Ephoto_Entry *e);
+
+Evas_Object *ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent);
+
+/* smart callbacks called:
+ * "selected" - an item in the thumb browser is selected. The selected Ephoto_Entry is passed as event_info argument.
+ */
+
 enum _Ephoto_State
 {
-  EPHOTO_STATE_LIST,
   EPHOTO_STATE_THUMB,
   EPHOTO_STATE_SINGLE,
   EPHOTO_STATE_SLIDESHOW
 };
 
-/*Ephoto Orientation*/
-enum _Ephoto_Orient
+enum _Ephoto_Orient /* matches with exif orientation tag */
 {
   EPHOTO_ORIENT_0 = 1,
   EPHOTO_ORIENT_FLIP_HORIZ = 2,
@@ -88,40 +85,41 @@ enum _Ephoto_Orient
   EPHOTO_ORIENT_270 = 8
 };
 
-/*Ephoto Config*/
+/* TODO: split into window & global config, allow multi window
+ *
+ * This also requires single instance, as 2 instances changing the
+ * same configuration will lead to problems.
+ *
+ * Single instance is better done as DBus, using FDO standard methods.
+ */
 struct _Ephoto_Config
 {
    int config_version;
-   int autohide_toolbar;
-   int best_fit_images;
+   const char *editor;
+   double slideshow_timeout;
+   const char *slideshow_transition;
+
+   /* these should be per-window */
    int thumb_size;
    int thumb_gen_size;
-   double slideshow_timeout;
    const char *directory;
-   const char *slideshow_transition;
+
 };
 
-/*Ephoto Main*/
 struct _Ephoto
 {
    Evas_Object *win;
    Evas_Object *bg;
-   Evas_Object *overlay;
-   Evas_Object *layout;
-   Evas_Object *edje;
    Evas_Object *pager;
-   Evas_Object *help_but;
 
-   Evas_Object *list_browser;
    Evas_Object *thumb_browser;
    Evas_Object *single_browser;
    Evas_Object *slideshow;
 
    Eina_List *entries;
-   Eina_List *thumbs;
-   Eina_List *dirs;
+   Eina_List *thumbs; /* live thumbs that need to be regenerated on changes */
 
-   int thumb_gen_size;
+   int thumb_gen_size; /* pending value for thumb_regen */
    struct {
       Ecore_Timer *thumb_regen;
    } timer;
@@ -137,16 +135,18 @@ struct _Ephoto
    Ephoto_Config *config;
 };
 
-/*Ephoto Entry*/
 struct _Ephoto_Entry
 {
    const char *path;
-   const char *basename;
+   const char *basename; /* pointer inside path */
    const char *label;
    Ephoto *ephoto;
    Elm_Gengrid_Item *item;
-   Elm_Genlist_Item *list_item;
    Eina_List *free_listeners;
+   Eina_List *dir_files; /* if dir, here contain files with preview */
+   Eina_Bool dir_files_checked : 1;
+   Eina_Bool is_dir : 1;
+   Eina_Bool is_up : 1;
 };
 
 struct _Ephoto_Event_Entry_Create
@@ -154,24 +154,21 @@ struct _Ephoto_Event_Entry_Create
    Ephoto_Entry *entry;
 };
 
-/*Ephoto Entry Functions/Callbacks*/
 Ephoto_Entry *ephoto_entry_new(Ephoto *ephoto, const char *path, const char *label);
 void          ephoto_entry_free(Ephoto_Entry *entry);
 void          ephoto_entry_free_listener_add(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data);
 void          ephoto_entry_free_listener_del(Ephoto_Entry *entry, void (*cb)(void *data, const Ephoto_Entry *entry), const void *data);
 void          ephoto_entries_free(Ephoto *ephoto);
 
-/*Ephoto Logging*/
 extern int __log_domain;
 #define DBG(...) EINA_LOG_DOM_DBG(__log_domain, __VA_ARGS__)
 #define INF(...) EINA_LOG_DOM_INFO(__log_domain, __VA_ARGS__)
 #define ERR(...) EINA_LOG_DOM_ERR(__log_domain, __VA_ARGS__)
 
-/*Checks to determine if a file is an image*/
 static inline Eina_Bool
 _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
 {
-   const char *bname, *ext;
+   const char /* *type, */ *bname, *ext;
 
    bname = info->path + info->name_start;
    if (bname[0] == '.') return EINA_FALSE;
@@ -185,23 +182,17 @@ _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
         ext++;
         if ((strcasecmp(ext, "jpg") == 0) ||
             (strcasecmp(ext, "jpeg") == 0) ||
-            (strcasecmp(ext, "png") == 0) ||
-            (strcasecmp(ext, "svg") == 0) ||
-            (strcasecmp(ext, "svgz") == 0) ||
-            (strcasecmp(ext, "bmp") == 0) ||
-            (strcasecmp(ext, "dib") == 0) ||
-            (strcasecmp(ext, "tiff") == 0) ||
-            (strcasecmp(ext, "tif") == 0) ||
-	    (strcasecmp(ext, "psd") == 0))
+            (strcasecmp(ext, "png") == 0))
           return EINA_TRUE;
      }
 
    return EINA_FALSE;
+   /* seems that this does not play nice with threads */
+   //if (!(type = efreet_mime_type_get(info->path))) return EINA_FALSE;
+   //return strncmp(type, "image/", sizeof("image/") - 1) == 0;
 }
 
-/*Ephoto Event Handlers*/
-extern int EPHOTO_EVENT_ENTRY_CREATE_DIR;
-extern int EPHOTO_EVENT_ENTRY_CREATE_THUMB;
+extern int EPHOTO_EVENT_ENTRY_CREATE;
 extern int EPHOTO_EVENT_POPULATE_START;
 extern int EPHOTO_EVENT_POPULATE_END;
 extern int EPHOTO_EVENT_POPULATE_ERROR;

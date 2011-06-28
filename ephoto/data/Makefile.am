@@ -1,2 +1,2 @@
 MAINTAINERCLEANFILES = Makefile.in Makefile
-SUBDIRS = themes desktop
+SUBDIRS = desktop images themes

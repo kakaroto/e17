@@ -1,6 +1,6 @@
 #include "ephoto.h"
 
-#define CONFIG_VERSION 6
+#define CONFIG_VERSION 5
 
 static int _ephoto_config_load(Ephoto *ephoto);
 static Eina_Bool _ephoto_on_config_save(void *data);
@@ -13,42 +13,52 @@ ephoto_config_init(Ephoto *ephoto)
 {
    Eet_Data_Descriptor_Class eddc;
 
-   if (!eet_eina_stream_data_descriptor_class_set
-        (&eddc, sizeof (eddc), "Ephoto_Config", sizeof(Ephoto_Config)))
+   if (!eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), "Ephoto_Config", sizeof(Ephoto_Config)))
      {
         ERR("Unable to create the config data descriptor!");
         return EINA_FALSE;
      }
 
    if (!edd) edd = eet_data_descriptor_stream_new(&eddc);
-   EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd, Ephoto_Config, "config_version", config_version, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd, Ephoto_Config, "autohide_toolbar", autohide_toolbar, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd, Ephoto_Config, "best_fit_images", best_fit_images, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd, Ephoto_Config, "thumb_gen_size", thumb_gen_size, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd, Ephoto_Config, "thumb_size", thumb_size, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd, Ephoto_Config, "slideshow_timeout", slideshow_timeout, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd, Ephoto_Config, "directory", directory, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC
-     (edd, Ephoto_Config, "slideshow_transition", slideshow_transition, EET_T_STRING);
+#undef T
+#undef D
+#define T Ephoto_Config
+#define D edd
+#define C_VAL(edd, type, member, dtype) EET_DATA_DESCRIPTOR_ADD_BASIC(edd, type, #member, member, dtype)
+   C_VAL(D, T, config_version, EET_T_INT);
+   C_VAL(D, T, thumb_size, EET_T_INT);
+   C_VAL(D, T, thumb_gen_size, EET_T_INT);
+   C_VAL(D, T, directory, EET_T_STRING);
+   C_VAL(D, T, slideshow_timeout, EET_T_DOUBLE);
+   C_VAL(D, T, slideshow_transition, EET_T_STRING);
+   C_VAL(D, T, editor, EET_T_STRING);
+
    switch (_ephoto_config_load(ephoto))
      {
       case 0:
          /* Start a new config */
          ephoto->config->config_version = CONFIG_VERSION;
-         ephoto->config->autohide_toolbar = 0;
-         ephoto->config->best_fit_images = 0;
-         ephoto->config->thumb_gen_size = 256;
          ephoto->config->thumb_size = 256;
          ephoto->config->thumb_gen_size = 256;
          ephoto->config->slideshow_timeout = 4.0;
          ephoto->config->slideshow_transition = eina_stringshare_add("fade");
+         ephoto->config->editor = eina_stringshare_add("gimp %s");
+         break;
+
+      case -1:
+         /* Incremental additions */
+         if (ephoto->config->config_version < 2)
+           {
+              ephoto->config->slideshow_timeout = 4.0;
+              ephoto->config->slideshow_transition = eina_stringshare_add("fade");
+           }
+         if (ephoto->config->config_version < 3)
+           ephoto->config->editor = eina_stringshare_add("gimp %s");
+
+         if (ephoto->config->config_version < 5)
+           ephoto->config->thumb_gen_size = 256;
+
+         ephoto->config->config_version = CONFIG_VERSION;
          break;
 
       default:
@@ -102,25 +112,16 @@ _ephoto_config_load(Ephoto *ephoto)
    ephoto->config = eet_data_read(ef, edd, "config");
    eet_close(ef);
 
-   if (!ephoto->config)
-     {
-        DBG("Warning! No configuration found! Writing a new"
-            "default configuration!\n");
-        return 0;
-     }
-   else if (ephoto->config->config_version > CONFIG_VERSION)
+   if (ephoto->config->config_version > CONFIG_VERSION)
      {
         ephoto_config_free(ephoto);
         ephoto->config = calloc(1, sizeof(Ephoto_Config));
         return 0;
      }
 
-   else if (ephoto->config->config_version < CONFIG_VERSION)
-     {
-        ephoto_config_free(ephoto);
-        ephoto->config = calloc(1, sizeof(Ephoto_Config));
-        return 0;
-     }
+   if (ephoto->config->config_version < CONFIG_VERSION)
+     return -1;
+
    return 1;
 }
 

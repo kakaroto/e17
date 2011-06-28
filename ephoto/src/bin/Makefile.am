@@ -17,9 +17,10 @@ _sources = \
 	ephoto.c \
 	ephoto_main.c \
 	ephoto_config.c \
-        ephoto_list_browser.c \
+        ephoto_directory_thumb.c \
         ephoto_thumb_browser.c \
-        ephoto_single_browser.c
+        ephoto_single_browser.c \
+        ephoto_slideshow.c
 
 
 _libs =	@ELEMENTARY_LIBS@ @EFREET_MIME_LIBS@ @EIO_LIBS@ @EXIF_LIBS@ @EET_LIBS@
