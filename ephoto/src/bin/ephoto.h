@@ -182,7 +182,10 @@ _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
         ext++;
         if ((strcasecmp(ext, "jpg") == 0) ||
             (strcasecmp(ext, "jpeg") == 0) ||
-            (strcasecmp(ext, "png") == 0))
+            (strcasecmp(ext, "png") == 0) ||
+            (strcasecmp(ext, "gif") == 0) ||
+            (strcasecmp(ext, "tif") == 0) ||
+            (strcasecmp(ext, "svg") == 0))
           return EINA_TRUE;
      }
 

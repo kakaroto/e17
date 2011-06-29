@@ -15,7 +15,7 @@ struct _Ephoto_Thumb_Browser
    Ephoto *ephoto;
    Evas_Object *main;
    Evas_Object *bar;
-   Evas_Object *fsel;
+   Evas_Object *entry;
    Evas_Object *grid;
    Eio_File *ls;
    Eina_List *todo_items;
@@ -283,7 +283,7 @@ static void
 _changed_dir_text(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
-   const char *path = elm_scrolled_entry_entry_get(tb->fsel);
+   const char *path = elm_scrolled_entry_entry_get(tb->entry);
    if (ecore_file_is_dir(path))
      ephoto_directory_set(tb->ephoto, path);
 }
@@ -424,7 +424,7 @@ _ephoto_thumb_populate_start(void *data, int type __UNUSED__, void *event __UNUS
    _todo_items_free(tb);
    _grid_items_free(tb);
    elm_gengrid_clear(tb->grid);
-   elm_scrolled_entry_entry_set(tb->fsel, tb->ephoto->config->directory);
+   elm_scrolled_entry_entry_set(tb->entry, tb->ephoto->config->directory);
    _up_item_add_if_required(tb);
 
    return ECORE_CALLBACK_PASS_ON;
@@ -524,16 +524,16 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    but = _button_add(tb->bar, PACKAGE_DATA_DIR "/images/slideshow.png");
    evas_object_smart_callback_add(but, "clicked", _slideshow, tb);
 
-   tb->fsel = elm_scrolled_entry_add(tb->bar);
-   EINA_SAFETY_ON_NULL_GOTO(tb->fsel, error);
-   evas_object_size_hint_weight_set(tb->fsel, EVAS_HINT_EXPAND, 0.0);
-   evas_object_size_hint_align_set(tb->fsel, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_scrolled_entry_single_line_set(tb->fsel, EINA_TRUE);
-   elm_scrolled_entry_scrollbar_policy_set(tb->fsel, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   tb->entry = elm_scrolled_entry_add(tb->bar);
+   EINA_SAFETY_ON_NULL_GOTO(tb->entry, error);
+   evas_object_size_hint_weight_set(tb->entry, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(tb->entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_scrolled_entry_single_line_set(tb->entry, EINA_TRUE);
+   elm_scrolled_entry_scrollbar_policy_set(tb->entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    evas_object_smart_callback_add
-     (tb->fsel, "activated", _changed_dir_text, tb);
-   evas_object_show(tb->fsel);
-   elm_box_pack_end(tb->bar, tb->fsel);
+     (tb->entry, "activated", _changed_dir_text, tb);
+   evas_object_show(tb->entry);
+   elm_box_pack_end(tb->bar, tb->entry);
 
    but = _button_add(tb->bar, PACKAGE_DATA_DIR "/images/zoom-in.png");
    evas_object_smart_callback_add(but, "clicked", _zoom_in, tb);

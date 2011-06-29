@@ -20,7 +20,7 @@ struct _Ephoto_Single_Browser
    Ephoto *ephoto;
    Evas_Object *main;
    Evas_Object *bar;
-   Evas_Object *label;
+   Evas_Object *sentry;
    Evas_Object *viewer;
    const char *pending_path;
    Ephoto_Entry *entry;
@@ -477,7 +477,7 @@ _ephoto_single_browser_recalc(Ephoto_Single_Browser *sb)
         evas_object_show(sb->viewer);
         evas_object_event_callback_add
           (sb->viewer, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, sb);
-        elm_label_label_set(sb->label, bname);
+        elm_scrolled_entry_entry_set(sb->sentry, bname);
         ephoto_title_set(sb->ephoto, bname);
         sb->orient = ephoto_file_orient_get(sb->entry->path);
         _orient_apply(sb);
@@ -694,6 +694,11 @@ _back(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 }
 
 static void
+_changed_file_text(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+}
+
+static void
 _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Single_Browser *sb = data;
@@ -866,10 +871,16 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    elm_box_pack_end(sb->bar, sep);
    evas_object_show(sep);
 
-   sb->label = elm_label_add(sb->bar);
-   evas_object_size_hint_align_set(sb->label, 0.5, 0.5);
-   elm_box_pack_end(sb->bar, sb->label);
-   evas_object_show(sb->label);
+   sb->sentry = elm_scrolled_entry_add(sb->bar);
+   evas_object_size_hint_weight_set(sb->sentry, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_align_set(sb->sentry, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_scrolled_entry_single_line_set(sb->sentry, EINA_TRUE);
+   elm_scrolled_entry_scrollbar_policy_set(sb->sentry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_object_disabled_set(sb->sentry, EINA_TRUE);
+   evas_object_smart_callback_add
+     (sb->sentry, "activated", _changed_file_text, sb);
+   elm_box_pack_end(sb->bar, sb->sentry);
+   evas_object_show(sb->sentry);
 
    sep = elm_separator_add(sb->bar);
    elm_box_pack_end(sb->bar, sep);
