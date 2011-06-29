@@ -280,19 +280,10 @@ _ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
 }
 
 static void
-_changed_dir(void *data, Evas_Object *o __UNUSED__, void *event_info)
-{
-   Ephoto_Thumb_Browser *tb = data;
-   const char *path = event_info;
-   if (!path) return;
-   ephoto_directory_set(tb->ephoto, path);
-}
-
-static void
 _changed_dir_text(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
-   const char *path = elm_fileselector_entry_path_get(tb->fsel);
+   const char *path = elm_scrolled_entry_entry_get(tb->fsel);
    if (ecore_file_is_dir(path))
      ephoto_directory_set(tb->ephoto, path);
 }
@@ -433,7 +424,7 @@ _ephoto_thumb_populate_start(void *data, int type __UNUSED__, void *event __UNUS
    _todo_items_free(tb);
    _grid_items_free(tb);
    elm_gengrid_clear(tb->grid);
-   elm_fileselector_entry_path_set(tb->fsel, tb->ephoto->config->directory);
+   elm_scrolled_entry_entry_set(tb->fsel, tb->ephoto->config->directory);
    _up_item_add_if_required(tb);
 
    return ECORE_CALLBACK_PASS_ON;
@@ -531,14 +522,12 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    but = _button_add(tb->bar, PACKAGE_DATA_DIR "/images/slideshow.png");
    evas_object_smart_callback_add(but, "clicked", _slideshow, tb);
 
-   tb->fsel = elm_fileselector_entry_add(tb->bar);
+   tb->fsel = elm_scrolled_entry_add(tb->bar);
    EINA_SAFETY_ON_NULL_GOTO(tb->fsel, error);
    evas_object_size_hint_weight_set(tb->fsel, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(tb->fsel, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_fileselector_entry_button_label_set(tb->fsel, "Choose...");
-   elm_fileselector_entry_folder_only_set(tb->fsel, EINA_TRUE);
-   evas_object_smart_callback_add
-     (tb->fsel, "file,chosen", _changed_dir, tb);
+   elm_scrolled_entry_single_line_set(tb->fsel, EINA_TRUE);
+   elm_scrolled_entry_scrollbar_policy_set(tb->fsel, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    evas_object_smart_callback_add
      (tb->fsel, "activated", _changed_dir_text, tb);
    evas_object_show(tb->fsel);
