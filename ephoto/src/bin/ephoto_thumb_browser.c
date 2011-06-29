@@ -476,6 +476,8 @@ _button_add(Evas_Object *box, const char *image)
 
    ic = elm_icon_add(but);
    elm_icon_file_set(ic, image, NULL);
+   evas_object_size_hint_min_set(ic, 16, 16);
+   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
 
    elm_button_icon_set(but, ic);
    evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
