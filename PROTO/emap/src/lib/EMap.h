@@ -10,6 +10,12 @@
 
 #include <Eina.h>
 
+// TODO: watchwolf, please fix this. this is temporary code for fixing elm build error.
+#define EMAP_LON_MAX 180.0
+#define EMAP_LON_MIN -180.0
+#define EMAP_LAT_MAX 90.0
+#define EMAP_LAT_MIN -90.0
+
 typedef enum emap_route_type EMap_Route_Type;
 typedef struct emap_route EMap_Route;
 typedef struct emap_route_node EMap_Route_Node;
