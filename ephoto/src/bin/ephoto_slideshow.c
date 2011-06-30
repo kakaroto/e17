@@ -147,8 +147,8 @@ _slideshow_item_get(void *data, Evas_Object *obj)
         ext++;
         if ((strcasecmp(ext, "edj") == 0))
           {
-             if (edje_file_group_exists(entry->path, "e,desktop,background"))
-               group = "e,desktop,background";
+             if (edje_file_group_exists(entry->path, "e/desktop/background"))
+               group = "e/desktop/background";
              else
                {
                   Eina_List *g = edje_file_collection_list(entry->path);

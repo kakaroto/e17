@@ -485,8 +485,8 @@ ephoto_thumb_path_set(Evas_Object *o, const char *path)
           format = ETHUMB_THUMB_JPEG; /* faster! */
         else if ((strcasecmp(ext, "edj") == 0))
           {
-             if (edje_file_group_exists(path, "e,desktop,background"))
-               group = "e,desktop,background";
+             if (edje_file_group_exists(path, "e/desktop/background"))
+               group = "e/desktop/background";
              else
                {
                   Eina_List *g = edje_file_collection_list(path);

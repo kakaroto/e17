@@ -99,8 +99,8 @@ _viewer_add(Evas_Object *parent, const char *path)
              ext++;
              if ((strcasecmp(ext, "edj") == 0))
                {
-                  if (edje_file_group_exists(path, "e,desktop,background"))
-                    group = "e,desktop,background";
+                  if (edje_file_group_exists(path, "e/desktop/background"))
+                    group = "e/desktop/background";
                   else
                     {
                        Eina_List *g = edje_file_collection_list(path);
