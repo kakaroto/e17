@@ -112,7 +112,7 @@ _ephoto_config_load(Ephoto *ephoto)
    ephoto->config = eet_data_read(ef, edd, "config");
    eet_close(ef);
 
-   if (ephoto->config->config_version > CONFIG_VERSION)
+   if (!ephoto->config || ephoto->config->config_version > CONFIG_VERSION)
      {
         ephoto_config_free(ephoto);
         ephoto->config = calloc(1, sizeof(Ephoto_Config));
