@@ -8,7 +8,8 @@ export CC="ccache gcc"
 export MAKEFLAGS="make -j6"
 alias make='make -j6'
 
-export BUILD_BASIC="eina eet evas ecore embryo edje e_dbus efreet expedite e ethumb elementary"
+export BUILD_ELM_DEPENDS="PROTO/emap eio"
+export BUILD_BASIC="eina eet evas ecore embryo edje e_dbus efreet expedite e ethumb "$BUILD_ELM_DEPENDS" elementary"
 export BUILD_PYTHON_BINDINGS="BINDINGS/python/python-evas BINDINGS/python/python-elementary BINDINGS/python/python-ecore BINDINGS/python/python-edje BINDINGS/python/python-emotion"
 export BUILD_C_BINDINGS="BINDINGS/cxx/eflxx BINDINGS/cxx/einaxx BINDINGS/cxx/evasxx BINDINGS/cxx/ecorexx BINDINGS/cxx/elementaryxx"
 export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
