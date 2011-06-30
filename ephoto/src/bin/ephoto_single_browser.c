@@ -92,13 +92,30 @@ _viewer_add(Evas_Object *parent, const char *path)
    else
      {
         Evas_Coord w, h;
+        const char *group = NULL;
+        const char *ext = strrchr(path, '.');
+        if (ext)
+          {
+             ext++;
+             if ((strcasecmp(ext, "edj") == 0))
+               {
+                  if (edje_file_group_exists(path, "e,desktop,background"))
+                    group = "e,desktop,background";
+                  else
+                    {
+                       Eina_List *g = edje_file_collection_list(path);
+                       group = eina_list_data_get(g);
+                       edje_file_collection_list_free(g);
+                    }
+               }
+           }
         obj = v->scroller = elm_scroller_add(parent);
         EINA_SAFETY_ON_NULL_GOTO(obj, error);
-        v->image = evas_object_image_filled_add(evas_object_evas_get(parent));
-        evas_object_image_file_set(v->image, path, NULL);
+        v->image = elm_image_add(parent);
+        elm_image_file_set(v->image, path, group);
         err = evas_object_image_load_error_get(v->image);
         if (err != EVAS_LOAD_ERROR_NONE) goto load_error;
-        evas_object_image_size_get(v->image, &w, &h);
+        elm_image_object_size_get(v->image, &w, &h);
         evas_object_size_hint_align_set(v->image, 0.5, 0.5);
         evas_object_size_hint_min_set(v->image, w, h);
         evas_object_size_hint_max_set(v->image, w, h);
@@ -128,7 +145,7 @@ _viewer_zoom_apply(Ephoto_Viewer *v, double zoom)
    else
      {
         Evas_Coord w, h;
-        evas_object_image_size_get(v->image, &w, &h);
+        elm_image_object_size_get(v->image, &w, &h);
         w *= zoom;
         h *= zoom;
         evas_object_size_hint_min_set(v->image, w, h);
@@ -150,7 +167,7 @@ _viewer_zoom_fit_apply(Ephoto_Viewer *v)
    else
      {
         evas_object_geometry_get(v->scroller, NULL, NULL, &cw, &ch);
-        evas_object_image_size_get(v->image, &iw, &ih);
+        elm_image_object_size_get(v->image, &iw, &ih);
      }
 
    if ((cw <= 0) || (ch <= 0)) return; /* object still not resized */

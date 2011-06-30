@@ -185,7 +185,8 @@ _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
             (strcasecmp(ext, "png") == 0) ||
             (strcasecmp(ext, "gif") == 0) ||
             (strcasecmp(ext, "tif") == 0) ||
-            (strcasecmp(ext, "svg") == 0))
+            (strcasecmp(ext, "svg") == 0) ||
+            (strcasecmp(ext, "edj") == 0))
           return EINA_TRUE;
      }
 

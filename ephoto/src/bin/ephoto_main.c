@@ -401,8 +401,11 @@ _thumb_gen_size_changed_timer_cb(void *data)
      {
         Ethumb_Thumb_Format format;
         format = (long)evas_object_data_get(o, "ephoto_format");
-        ethumb_client_format_set(client, format);
-        elm_thumb_reload(o);
+        if (format)
+          {
+             ethumb_client_format_set(client, format);
+             elm_thumb_reload(o);
+          }
      }
 
  end:
@@ -441,10 +444,24 @@ Evas_Object *
 ephoto_thumb_add(Ephoto *ephoto, Evas_Object *parent, const char *path)
 {
    Evas_Object *o;
-
    EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
 
-   o = elm_thumb_add(parent);
+   if (path)
+     {
+        const char *ext = strrchr(path, '.');
+        if (ext)
+          {
+             ext++;
+             if ((strcasecmp(ext, "edj") == 0))
+               o = elm_icon_add(parent);
+             else
+               o = elm_thumb_add(parent);
+          }
+        else
+          o = elm_thumb_add(parent);
+     }
+   else
+     o = elm_thumb_add(parent);
    if (!o) return NULL;
 
    if (path) ephoto_thumb_path_set(o, path);
@@ -458,6 +475,7 @@ void
 ephoto_thumb_path_set(Evas_Object *o, const char *path)
 {
    Ethumb_Thumb_Format format = ETHUMB_THUMB_FDO;
+   const char *group = NULL;
    const char *ext = strrchr(path, '.');
    if (ext)
      {
@@ -465,11 +483,24 @@ ephoto_thumb_path_set(Evas_Object *o, const char *path)
         if ((strcasecmp(ext, "jpg") == 0) ||
             (strcasecmp(ext, "jpeg") == 0))
           format = ETHUMB_THUMB_JPEG; /* faster! */
+        else if ((strcasecmp(ext, "edj") == 0))
+          {
+             if (edje_file_group_exists(path, "e,desktop,background"))
+               group = "e,desktop,background";
+             else
+               {
+                  Eina_List *g = edje_file_collection_list(path);
+                  group = eina_list_data_get(g);
+                  edje_file_collection_list_free(g);
+               }
+             elm_icon_file_set(o, path, group);
+             evas_object_data_set(o, "ephoto_format", NULL);
+             return;
+          }
      }
-
    ethumb_client_format_set(elm_thumb_ethumb_client_get(), format);
    evas_object_data_set(o, "ephoto_format", (void*)(long)format);
-   elm_thumb_file_set(o, path, NULL);
+   elm_thumb_file_set(o, path, group);
 }
 
 Ephoto_Entry *
