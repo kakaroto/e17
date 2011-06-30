@@ -140,9 +140,25 @@ _slideshow_item_get(void *data, Evas_Object *obj)
    Ephoto_Entry *entry = data;
    /* TODO use viewer from ephoto_single_browser.c */
    /* TODO consider using exif rotation, see ephoto_single_browser.c */
-   Evas_Object *image = elm_photo_add(obj);
-   elm_photo_file_set(image, entry->path);
-   elm_photo_fill_inside_set(image, EINA_TRUE);
+   const char *group = NULL;
+   const char *ext = strrchr(entry->path, '.');
+   if (ext)
+     {
+        ext++;
+        if ((strcasecmp(ext, "edj") == 0))
+          {
+             if (edje_file_group_exists(entry->path, "e,desktop,background"))
+               group = "e,desktop,background";
+             else
+               {
+                  Eina_List *g = edje_file_collection_list(entry->path);
+                  group = eina_list_data_get(g);
+                  edje_file_collection_list_free(g);
+               }
+           }
+      }
+   Evas_Object *image = elm_image_add(obj);
+   elm_image_file_set(image, entry->path, group);
    elm_object_style_set(image, "shadow");
 
    evas_object_data_set
