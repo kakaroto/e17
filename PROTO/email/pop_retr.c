@@ -29,7 +29,7 @@ email_pop3_retr_read(Email *e, Ecore_Con_Event_Server_Data *ev)
         if (size && (data[0] == '\n')) data++, size--;
      }
    if (ev->size < 12) goto append; /* this is probably an error in the making */
-   if (strncmp((char*)data + size - 5, "\r\n.\r\n", 5)) goto append;
+   if (memcmp(data + size - 5, "\r\n.\r\n", 5)) goto append;
 
    if (!e->buf)
      {

@@ -105,13 +105,13 @@ email_login_smtp(Email *e, Ecore_Con_Event_Server_Data *ev)
         return;
       case EMAIL_STATE_INIT:
         if (ev->size < 10) goto error;
-        if (!strncmp((char*)ev->data, "421", 3))
+        if (!memcmp(ev->data, "421", 3))
           {
              INF("Server rejected connection");
              ecore_con_server_del(e->svr);
              return;
           }
-        if (strncmp((char*)ev->data, "220", 3)) goto error;
+        if (memcmp((char*)ev->data, "220", 3)) goto error;
         /* TODO: strncmp memchr(hostname, '.', len)+1 features.domain for MitM attacks? */
         /* 220 heaven.af.mil ESMTP\r\n */
         p = memchr(ev->data + 4, ' ', ev->size - 4);
@@ -134,7 +134,7 @@ email_login_smtp(Email *e, Ecore_Con_Event_Server_Data *ev)
         return;
       case EMAIL_STATE_USER:
         if (ev->size < 3) goto error;
-        if (strncmp((char*)ev->data, "250", 3))
+        if (memcmp(ev->data, "250", 3))
           {
              features_detect_smtp(e, ev->data, ev->size);
              if (e->features.smtp_features.plain)
@@ -151,7 +151,7 @@ email_login_smtp(Email *e, Ecore_Con_Event_Server_Data *ev)
                   ecore_con_server_send(e->svr, buf, size - 1);
                }
           }
-        else if (strncmp((char*)ev->data, "235", 3))
+        else if (memcmp(ev->data, "235", 3))
           {
              e->state = EMAIL_STATE_CONNECTED;
              INF("SMTP server connected");

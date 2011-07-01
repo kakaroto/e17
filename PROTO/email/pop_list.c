@@ -160,7 +160,7 @@ email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev)
          INF("Message %u: %zu octets", it->id, it->size);
          list = eina_list_append(list, it);
       }
-   if (!strncmp(n - 2, "\r\n.\r\n", 5))
+   if (!memcmp(n - 2, "\r\n.\r\n", 5))
      {
         cb = e->cbs->data;
         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
