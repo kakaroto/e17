@@ -15,7 +15,24 @@ var logo_icon_unscaled = {
 	scale_down : false,
 };
 
+var bars = new Array(4);
 var bouncers = new Array(3);
+var start_time;
+
+function set_animator(on) {
+	start_time = elm.loop_time();
+	for (var i = 0; i < bars.length; i++) {
+		if (on) {
+			bars[i].on_animate = function(what) {
+				t = (elm.loop_time() - start_time);
+				what.value = t/10.0;
+			};
+		}
+		else {
+			bars[i].on_animate = null;
+		}
+	}
+}
 
 function bouncing(on) {
 	for (var i = 0; i < bouncers.length; i++) {
@@ -113,6 +130,7 @@ var my_window = new elm.main({
 							label : "Start",
 							on_clicked : function() {
 								bouncing(true);
+								set_animator(true);
 							},
 						},
 						stop : {
@@ -120,6 +138,7 @@ var my_window = new elm.main({
 							label : "Stop",
 							on_clicked : function() {
 								bouncing(false);
+								set_animator(false);
 							},
 						},
 					},
@@ -129,7 +148,14 @@ var my_window = new elm.main({
 	},
 });
 
-bouncers[0] = my_window.elements.the_box.elements.infinite_bounce;
-bouncers[1] = my_window.elements.the_box.elements.hbox.elements.vert_infinite;
-bouncers[2] = my_window.elements.the_box.elements.wheel;
+var el = my_window.elements.the_box.elements;
+
+bars[0] = el.progress_plain;
+bars[1] = el.icon_progress;
+bars[2] = el.hbox.elements.vertical_pb;
+bars[3] = el.hbox.elements.vert_icon;
+
+bouncers[0] = el.infinite_bounce;
+bouncers[1] = el.hbox.elements.vert_infinite;
+bouncers[2] = el.wheel;
 

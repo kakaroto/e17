@@ -2038,7 +2038,8 @@ public:
 
    virtual v8::Handle<v8::Value> label_get() const
      {
-        return v8::String::New(elm_progressbar_label_get(eo));
+        const char *label = elm_progressbar_label_get(eo);
+        return v8::String::New(label ? label : "");
      }
 
    virtual v8::Handle<v8::Value> icon_get() const
@@ -2114,6 +2115,17 @@ public:
         if (value->IsBoolean())
           elm_progressbar_pulse_set(eo, value->BooleanValue());
      }
+
+   virtual v8::Handle<v8::Value> value_get() const
+     {
+        return v8::Number::New(elm_progressbar_value_get(eo));
+     }
+
+   virtual void value_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsNumber())
+          elm_progressbar_value_set(eo, value->NumberValue());
+     }
 };
 
 template<> CEvasObject::CPropHandler<CElmProgressBar>::property_list
@@ -2124,6 +2136,7 @@ CEvasObject::CPropHandler<CElmProgressBar>::list[] = {
   PROP_HANDLER(CElmProgressBar, units),
   PROP_HANDLER(CElmProgressBar, span),
   PROP_HANDLER(CElmProgressBar, pulser),
+  PROP_HANDLER(CElmProgressBar, value),
   { NULL, NULL, NULL },
 };
 
