@@ -833,16 +833,6 @@ public:
         return CEvasObject::prop_get(prop_name);
      }
 
-   virtual void label_set(const char *str)
-     {
-        elm_button_label_set(eo, str);
-     }
-
-   virtual v8::Handle<v8::Value> label_get() const
-     {
-       return v8::String::New(elm_button_label_get(eo));
-     }
-
    virtual v8::Handle<v8::Value> icon_get() const
      {
         return the_icon;
