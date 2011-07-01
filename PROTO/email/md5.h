@@ -89,7 +89,7 @@ typedef u_int32_t md5_uint32;
 
 
 /* Structure to save state of computation between the single steps.  */
-struct md5_ctx
+typedef struct md5_ctx
 {
   md5_uint32 A;
   md5_uint32 B;
@@ -99,7 +99,7 @@ struct md5_ctx
   md5_uint32 total[2];
   md5_uint32 buflen;
   char buffer[128] __attribute__ ((__aligned__ (__alignof__ (md5_uint32))));
-};
+} md5_ctx;
 
 /*
  * The following three functions are build up the low level used in

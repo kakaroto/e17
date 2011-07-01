@@ -56,28 +56,24 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
       case EMAIL_STATE_USER:
         if (!ev)
           {
-             unsigned char digest[16], md5buf[33];
-             char hexchars[17] = "0123456789abcdef";
-             unsigned int x, y;
+             unsigned char digest[16];
+             char md5buf[33];
 
              if (!e->features.pop_features.apop)
                {
+                  INF("Beginning AUTH PLAIN");
                   size = sizeof(char) * (sizeof("USER ") - 1 + sizeof("\r\n") - 1 + strlen(e->username)) + 1;
                   buf = alloca(size);
                   snprintf(buf, size, "USER %s\r\n", e->username);
                   email_write(e, buf, size - 1);
                   return;
                }
+             INF("Beginning AUTH APOP");
              e->state++;
              eina_binbuf_append_length(e->features.pop_features.apop_str, (unsigned char*)e->password, strlen(e->password));
 
              md5_buffer((char*)eina_binbuf_string_get(e->features.pop_features.apop_str), eina_binbuf_length_get(e->features.pop_features.apop_str), digest);
-             for (x = y = 0; x < sizeof(md5buf); x++, y++)
-               {
-                  md5buf[x++] = hexchars[y >> 4];
-                  md5buf[x] = hexchars[y & 15];
-               }
-             md5buf[32] = 0;
+             email_md5_digest_to_str(digest, md5buf);
              size = sizeof(char) * (sizeof("APOP ") - 1 + sizeof("\r\n") - 1 + strlen(e->username)) + sizeof(md5buf);
              buf = alloca(size);
              snprintf(buf, size, "APOP %s %s\r\n", e->username, md5buf);

@@ -131,5 +131,8 @@ void email_login_smtp(Email *e, Ecore_Con_Event_Server_Data *ev);
 Eina_Bool email_quit_pop(Email *e, Ecore_Cb cb);
 
 void email_fake_free(void *d, void *e);
-char *email_base64_encode(const char *string, double len);
+char *email_base64_encode(const char *string, double len, int *);
+char *email_base64_decode(const char *string, int len, int *);
+void email_md5_digest_to_str(unsigned char *digest, char *ret);
+void email_md5_hmac_encode(unsigned char *digest, const char *string, size_t size, const char *key, size_t ksize);
 #endif

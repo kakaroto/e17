@@ -7,6 +7,7 @@ sasl_plain_init(Email *e)
 {
    Eina_Binbuf *buf;
    char *ret;
+   int size;
 
    buf = eina_binbuf_new();
 
@@ -14,7 +15,7 @@ sasl_plain_init(Email *e)
    eina_binbuf_append_length(buf, (unsigned char*)e->username, eina_stringshare_strlen(e->username));
    eina_binbuf_append_char(buf, 0);
    eina_binbuf_append_length(buf, (unsigned char*)e->password, strlen(e->password));
-   ret = email_base64_encode((char*)eina_binbuf_string_get(buf), eina_binbuf_length_get(buf));
+   ret = email_base64_encode((char*)eina_binbuf_string_get(buf), eina_binbuf_length_get(buf), &size);
    eina_binbuf_free(buf);
    return ret;
 }
@@ -134,15 +135,20 @@ email_login_smtp(Email *e, Ecore_Con_Event_Server_Data *ev)
         return;
       case EMAIL_STATE_USER:
         if (ev->size < 3) goto error;
-        if (memcmp(ev->data, "250", 3))
+        if (!memcmp(ev->data, "250", 3))
           {
              features_detect_smtp(e, ev->data, ev->size);
-             if (e->features.smtp_features.plain)
+             if (e->features.smtp_features.cram)
+               {
+                  DBG("Beginning AUTH CRAM-MD5");
+                  email_write(e, "AUTH CRAM-MD5\r\n", sizeof("AUTH CRAM-MD5\r\n") - 1);
+               }
+             else if (e->features.smtp_features.plain)
                {
                   char *plain;
 
                   plain = sasl_plain_init(e);
-                  DBG("Sending credentials");
+                  DBG("Beginning AUTH PLAIN");
 
                   size = sizeof(char) * (sizeof("AUTH PLAIN \r\n") + strlen(plain));
                   buf = alloca(size);
@@ -150,8 +156,72 @@ email_login_smtp(Email *e, Ecore_Con_Event_Server_Data *ev)
                   free(plain);
                   ecore_con_server_send(e->svr, buf, size - 1);
                }
+             else if (e->features.smtp_features.login)
+               {
+                  INF("Beginning AUTH LOGIN");
+                  email_write(e, "AUTH LOGIN\r\n", sizeof("AUTH LOGIN\r\n") - 1);
+               }
           }
-        else if (memcmp(ev->data, "235", 3))
+        else if (!memcmp(ev->data, "235", 3))
+          {
+             e->state = EMAIL_STATE_CONNECTED;
+             INF("SMTP server connected");
+             ecore_event_add(EMAIL_EVENT_CONNECTED, e, (Ecore_End_Cb)email_fake_free, NULL);
+          }
+        else if (!memcmp(ev->data, "334", 3))
+          {
+             if (e->features.smtp_features.cram)
+               {
+                  char *b64, md5sum[33];
+                  unsigned char digest[16];
+                  int bsize;
+                  Eina_Strbuf *buf;
+
+                  b64 = email_base64_decode(ev->data + 4, ev->size - 6, &bsize);
+                  email_md5_hmac_encode(digest, b64, bsize, e->password, strlen(e->password));
+                  free(b64);
+                  email_md5_digest_to_str(digest, md5sum);
+                  buf = eina_strbuf_new();
+                  eina_strbuf_append_printf(buf, "%s %s", e->username, md5sum);
+                  b64 = email_base64_encode(eina_strbuf_string_get(buf), eina_strbuf_length_get(buf), &bsize);
+                  eina_strbuf_free(buf);
+                  ecore_con_server_send(e->svr, b64, bsize);
+                  ecore_con_server_send(e->svr, "\r\n", 2);
+                  free(b64);
+               }
+             else if (e->features.smtp_features.login)
+               {
+                  /* continuation of AUTH LOGIN */
+                  char *b64;
+                  int bsize;
+
+                  DBG("Continuing with AUTH LOGIN");
+                  b64 = email_base64_encode(e->username, strlen(e->username), &bsize);
+                  ecore_con_server_send(e->svr, b64, bsize);
+                  ecore_con_server_send(e->svr, "\r\n", 2);
+                  free(b64);
+                  e->state++;
+               }
+             else goto error;
+          }
+          
+        else goto error;
+        break;
+      case EMAIL_STATE_PASS:
+        if (!memcmp(ev->data, "334", 3))
+          {
+             /* continuation of AUTH LOGIN */
+             char *b64;
+             int bsize;
+
+             DBG("Continuing with AUTH LOGIN");
+             b64 = email_base64_encode(e->password, strlen(e->password), &bsize);
+             ecore_con_server_send(e->svr, b64, bsize);
+             ecore_con_server_send(e->svr, "\r\n", 2);
+             free(b64);
+             e->state++;
+          }
+        else if (!memcmp(ev->data, "235", 3))
           {
              e->state = EMAIL_STATE_CONNECTED;
              INF("SMTP server connected");
