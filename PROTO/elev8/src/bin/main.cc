@@ -435,7 +435,7 @@ public:
 
    virtual v8::Handle<v8::Value> label_get() const
      {
-       return v8::Undefined();
+       return v8::String::New(elm_object_text_get(eo));
      }
 
    virtual v8::Handle<v8::Value> text_get() const
@@ -459,7 +459,7 @@ public:
 
    virtual void label_set(const char *str)
      {
-        fprintf(stderr, "setting label on non-button\n");
+        elm_object_text_set(eo, str);
      }
 
    virtual v8::Handle<v8::Value> disabled_get() const
@@ -1105,16 +1105,6 @@ public:
    virtual v8::Handle<v8::Value> wrap_get() const
      {
         return v8::Integer::New(elm_label_line_wrap_get(eo));
-     }
-
-   virtual void label_set(const char *str)
-     {
-        elm_label_label_set(eo, str);
-     }
-
-   virtual v8::Handle<v8::Value> label_get() const
-     {
-        return v8::String::New(elm_label_label_get(eo));
      }
 };
 
