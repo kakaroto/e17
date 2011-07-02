@@ -11,6 +11,7 @@ static Eina_Bool _open_log();
 //static Eina_Bool _close_log();
 static void _remove_lock();
 static void _signal_cb();
+static void _signal_log();
 static Eina_Bool _elsa_client_del(void *data, int type, void *event);
 
 static unsigned char _testing = 0;
@@ -24,6 +25,14 @@ _signal_cb(int sig)
    elsa_session_shutdown();
    elsa_xserver_shutdown();
    exit(1);
+}
+
+static void
+_signal_log(int sig)
+{
+   fprintf(stderr, PACKAGE": signal %d received reopen the log file\n", sig);
+   elsa_close_log();
+   _open_log();
 }
 
 static Eina_Bool
@@ -267,6 +276,7 @@ main (int argc, char ** argv)
    signal(SIGHUP, _signal_cb);
    signal(SIGPIPE, _signal_cb);
    signal(SIGALRM, _signal_cb);
+   signal(SIGUSR2, _signal_log);
    elsa_session_init(elsa_config->command.xauth_file);
    pid = elsa_xserver_init(elsa_main, dname);
    if (elsa_config->autologin && !elsa_user)
