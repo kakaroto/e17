@@ -122,7 +122,7 @@ static void
 _elsa_server_init_desktops()
 {
    char buf[PATH_MAX];
-   Eina_List *dirs;
+   Eina_List *dirs, *l;
    const char *path;
 
    efreet_init();
@@ -133,11 +133,10 @@ _elsa_server_init_desktops()
    snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
    _elsa_server_scan_desktops(buf);
    dirs = efreet_data_dirs_get();
-   EINA_LIST_FREE(dirs, path)
+   EINA_LIST_FOREACH(dirs, l, path)
      {
         snprintf(buf, sizeof(buf), "%s/xsessions", path);
         _elsa_server_scan_desktops(buf);
-        eina_stringshare_del(path);
      }
    efreet_shutdown();
 }
