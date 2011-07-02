@@ -18,4 +18,11 @@ elm_transit - check the transit would use the ecore_animator functionalities.
 
 animator - remove it (on end of JULY) 
 
-map - check the uv set inconsistency for evas_object_image. 
+evas_map - check the uv set inconsistency for evas_object_image.
+
+evas_line - width 
+
+evas_line - does not shown on glbackend. 
+
+elm_transit - added warning messages in incorrect usage. 
+
