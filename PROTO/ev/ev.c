@@ -172,7 +172,7 @@ load_stuff(int argc, char **argv, Evas_Object *list)
 int
 main(int argc, char *argv[])
 {
-   Evas_Object *listwin, *win, *box, *obj;
+   Evas_Object *listwin, *win, *bg, *box;
    int num_wins, nw;
    Ecore_X_Window zw, zwr, *roots;
 
@@ -195,6 +195,12 @@ main(int argc, char *argv[])
 
    win = elm_win_add(NULL, NULL, ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
+
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(win, bg);
+   evas_object_show(bg);
+
    img = elm_image_add(win);
    evas_object_size_hint_weight_set(img, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(img, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -221,10 +227,10 @@ main(int argc, char *argv[])
    listwin = elm_win_add(NULL, "ev", ELM_WIN_BASIC);
    elm_win_autodel_set(listwin, EINA_TRUE);
 
-   obj = elm_bg_add(listwin);
-   evas_object_size_hint_weight_set(obj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(listwin, obj);
-   evas_object_show(obj);
+   bg = elm_bg_add(listwin);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(listwin, bg);
+   evas_object_show(bg);
 
    box = elm_box_add(listwin);
    evas_object_size_hint_weight_set(box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
