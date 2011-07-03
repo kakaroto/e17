@@ -45,7 +45,7 @@ static void
 _key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key_Down *key)
 {
    Elm_Genlist_Item *it;
- 	 DBG("%p: %s", obj, key->keyname);
+   DBG("%p: %s", obj, key->keyname);
    if (!strcmp(key->keyname, "space"))
      {
         it = elm_genlist_selected_item_get(list);
@@ -217,8 +217,6 @@ main(int argc, char *argv[])
           }
         free(roots);
      }
-
-
 
    listwin = elm_win_add(NULL, "ev", ELM_WIN_BASIC);
    elm_win_autodel_set(listwin, EINA_TRUE);
