@@ -254,7 +254,8 @@ main(int argc, char *argv[])
 
    evas_object_resize(listwin, 450, 350);
 
-   ecore_main_loop_begin();
+   elm_run();
+   elm_shutdown();
 
    return 0;
 }
