@@ -186,6 +186,11 @@ main(int argc, char *argv[])
    ecore_app_args_set(argc, (const char**)argv);
 
    _ev_log_dom = eina_log_domain_register("ev", EINA_COLOR_HIGH EINA_COLOR_CYAN);
+   if (argc == 1)
+     {
+        ERR("Usage: %s filename filename directory fileglob*", argv[0]);
+        exit(1);
+     }
    //eina_log_domain_level_set("ev", EINA_LOG_LEVEL_DBG);
 
    win = elm_win_add(NULL, NULL, ELM_WIN_BASIC);
