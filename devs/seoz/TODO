@@ -9,7 +9,7 @@
 	- Check elm_genlist_item_sorted_insert() API with group index, expandable list and etc.
 
 * Elementary
-	- Elementary : Changed edje_object to elm_layout.
+	- Elementary : Changed edje_object to elm_layout. (not for genlist, gengrid)
 	- Add performance test application.
 	- Check elm_main.c
 	- Check EXAMPLES/elementary.
@@ -17,8 +17,11 @@
 * Edje
 	- Add an API to reset all parts to default state.
 
-* Elev8
+* PROTO/elev8
 	- Add libv8-dev check routine. 
+
+* PROTO/ev
+	- Breat it down!
 
 * MARKETTING
 	- Refine cebit2011 presentation and move this to MARKETTING.
