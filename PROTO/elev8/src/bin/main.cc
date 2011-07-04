@@ -41,6 +41,9 @@ protected:
    /* the on_clicked function */
    v8::Persistent<v8::Value> on_clicked_val;
 
+   /* function to call when a key is pressed */
+   v8::Persistent<v8::Value> on_keydown_val;
+
    /* the animator function and its hook into ecore */
    v8::Persistent<v8::Value> on_animate_val;
    Ecore_Animator *current_animator;
@@ -279,6 +282,7 @@ public:
         the_template.Dispose();
         on_animate_val.Dispose();
         on_clicked_val.Dispose();
+        on_keydown_val.Dispose();
         eo = NULL;
      }
 
@@ -409,6 +413,41 @@ public:
      }
 
    virtual v8::Handle<v8::Value> on_clicked_get(void) const
+     {
+        return on_animate_val;
+     }
+
+   virtual void on_keydown(Evas_Event_Key_Down *info)
+     {
+        v8::Handle<v8::Object> obj = get_object();
+        v8::HandleScope handle_scope;
+        v8::Handle<v8::Value> val = on_keydown_val;
+        // FIXME: pass event_info to the callback
+        // FIXME: turn the pieces below into a do_callback method
+        assert(val->IsFunction());
+        v8::Handle<v8::Function> fn(v8::Function::Cast(*val));
+        v8::Handle<v8::Value> args[1] = { obj };
+        fn->Call(fn, 1, args);
+     }
+
+   static void eo_on_keydown(void *data, Evas *e, Evas_Object *obj, void *event_info)
+     {
+        CEvasObject *self = static_cast<CEvasObject*>(data);
+
+        self->on_keydown(static_cast<Evas_Event_Key_Down*>(event_info));
+     }
+
+   virtual void on_keydown_set(v8::Handle<v8::Value> val)
+     {
+        on_keydown_val.Dispose();
+        on_keydown_val = v8::Persistent<v8::Value>::New(val);
+        if (val->IsFunction())
+          evas_object_event_callback_add(eo, EVAS_CALLBACK_KEY_DOWN, &eo_on_keydown, this);
+        else
+          evas_object_event_callback_del(eo, EVAS_CALLBACK_KEY_DOWN, &eo_on_keydown);
+     }
+
+   virtual v8::Handle<v8::Value> on_keydown_get(void) const
      {
         return on_animate_val;
      }
@@ -697,6 +736,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, weight),
      PROP_HANDLER(CEvasObject, on_animate),
      PROP_HANDLER(CEvasObject, on_clicked),
+     PROP_HANDLER(CEvasObject, on_keydown),
      PROP_HANDLER(CEvasObject, scale),
      PROP_HANDLER(CEvasObject, pointer),
      PROP_HANDLER(CEvasObject, style),
