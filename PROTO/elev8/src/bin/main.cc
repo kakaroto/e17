@@ -1587,16 +1587,6 @@ public:
         return v8::String::New(elm_slider_indicator_format_get(eo));
      }
 
-   virtual void label_set(const char *str)
-     {
-        elm_slider_label_set(eo, str);
-     }
-
-   virtual v8::Handle<v8::Value> label_get() const
-     {
-        return v8::String::New(elm_slider_label_get(eo));
-     }
-
    virtual v8::Handle<v8::Value> span_get() const
      {
         return v8::Integer::New(elm_slider_span_size_get(eo));
