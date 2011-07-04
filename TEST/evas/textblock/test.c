@@ -193,8 +193,9 @@ main(int argc, char *argv[])
      }
    else if (!strcmp(type, "elm"))
      {
-        tb = elm_scrolled_entry_add(win);
-        elm_scrolled_entry_line_wrap_set(tb, wrap);
+        tb = elm_entry_add(win);
+        elm_entry_scrollable_set(tb, EINA_TRUE);
+        elm_entry_line_wrap_set(tb, wrap);
      }
 
    evas_object_size_hint_weight_set(tb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -226,7 +227,7 @@ main(int argc, char *argv[])
           }
         else if (!strcmp(type, "elm"))
           {
-             elm_scrolled_entry_entry_set(tb, buf);
+             elm_entry_entry_set(tb, buf);
              elm_object_focus(win);
           }
         free(buf);
