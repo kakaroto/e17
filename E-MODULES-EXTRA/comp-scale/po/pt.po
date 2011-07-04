@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: comp-scale\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2011-03-22 12:00-0700\n"
-"PO-Revision-Date: 2011-03-22 19:05-0000\n"
+"POT-Creation-Date: 2011-06-23 10:00-0700\n"
+"PO-Revision-Date: 2011-07-04 18:53-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,81 +19,86 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 "X-Generator: Lokalize 1.1\n"
 
-#: ../src/e_mod_config.c:54
+#: ../src/e_mod_config.c:56
 msgid "Scale Windows Module"
 msgstr "Módulo de escala das janelas"
 
-#: ../src/e_mod_config.c:113
+#: ../src/e_mod_config.c:117
 msgid "Current Desktop"
 msgstr "Área de trabalho atual"
 
-#: ../src/e_mod_config.c:114
-#: ../src/e_mod_config.c:144
+#: ../src/e_mod_config.c:118
+#: ../src/e_mod_config.c:151
 msgid "Minimum space between windows"
 msgstr "O espaço mínimo entre as janelas"
 
-#: ../src/e_mod_config.c:116
-#: ../src/e_mod_config.c:146
+#: ../src/e_mod_config.c:120
+#: ../src/e_mod_config.c:153
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: ../src/e_mod_config.c:120
-#: ../src/e_mod_config.c:150
+#: ../src/e_mod_config.c:124
+#: ../src/e_mod_config.c:157
 msgid "Scale duration"
 msgstr "Duração"
 
-#: ../src/e_mod_config.c:122
-#: ../src/e_mod_config.c:152
-#: ../src/e_mod_config.c:188
+#: ../src/e_mod_config.c:126
+#: ../src/e_mod_config.c:159
+#: ../src/e_mod_config.c:198
 #, c-format
 msgid "%1.2f"
 msgstr "%1.2f"
 
-#: ../src/e_mod_config.c:127
-#: ../src/e_mod_config.c:156
+#: ../src/e_mod_config.c:131
+#: ../src/e_mod_config.c:163
 msgid "Slotted Layout"
 msgstr "Disposição em ranhuras"
 
-#: ../src/e_mod_config.c:129
-#: ../src/e_mod_config.c:158
+#: ../src/e_mod_config.c:133
+#: ../src/e_mod_config.c:165
 msgid "Natural Layout"
 msgstr "Disposição normal"
 
-#: ../src/e_mod_config.c:133
-#: ../src/e_mod_config.c:160
+#: ../src/e_mod_config.c:137
+#: ../src/e_mod_config.c:167
 msgid "Grow more!"
 msgstr "Ampliar!"
 
-#: ../src/e_mod_config.c:136
-#: ../src/e_mod_config.c:163
+#: ../src/e_mod_config.c:140
+#: ../src/e_mod_config.c:170
 msgid "Keep it tight!"
 msgstr "Ajustar!"
 
 #: ../src/e_mod_config.c:143
+#: ../src/e_mod_config.c:176
+msgid "Show iconified windows"
+msgstr "Mostrar janelas minimizadas"
+
+#: ../src/e_mod_config.c:150
 msgid "Show All Desktops"
 msgstr "Mostrar todas as áreas de trabalho"
 
-#: ../src/e_mod_config.c:166
-#: ../src/e_mod_config.c:191
+#: ../src/e_mod_config.c:173
+#: ../src/e_mod_config.c:201
 msgid "Fade in windows"
 msgstr "Janelas aparecem gradualmente"
 
-#: ../src/e_mod_config.c:173
-#: ../src/e_mod_config.c:194
+#: ../src/e_mod_config.c:183
+#: ../src/e_mod_config.c:204
 msgid "Fade out shelves and popups"
 msgstr "Painéis e alertas desaparecem gradualmente"
 
-#: ../src/e_mod_config.c:176
-#: ../src/e_mod_config.c:197
+#: ../src/e_mod_config.c:186
+#: ../src/e_mod_config.c:207
 msgid "Darken desktop"
 msgstr "Área de trabalho mais escura"
 
-#: ../src/e_mod_config.c:184
+#: ../src/e_mod_config.c:194
 msgid "Pager Settings"
 msgstr "Definições do paginador"
 
-#: ../src/e_mod_config.c:186
+#: ../src/e_mod_config.c:196
 msgid "Zoom duration"
 msgstr "Duração da ampliação"
 
@@ -104,96 +110,96 @@ msgstr "Aspeto"
 msgid "Composite Scale Windows"
 msgstr "Escala de janelas compostas"
 
-#: ../src/e_mod_main.c:218
-#: ../src/e_mod_main.c:243
+#: ../src/e_mod_main.c:220
 #: ../src/e_mod_main.c:245
 #: ../src/e_mod_main.c:247
 #: ../src/e_mod_main.c:249
 #: ../src/e_mod_main.c:251
 #: ../src/e_mod_main.c:253
 #: ../src/e_mod_main.c:255
-#: ../src/e_mod_main.c:311
-#: ../src/e_mod_main.c:312
+#: ../src/e_mod_main.c:257
 #: ../src/e_mod_main.c:313
 #: ../src/e_mod_main.c:314
 #: ../src/e_mod_main.c:315
+#: ../src/e_mod_main.c:316
+#: ../src/e_mod_main.c:317
 msgid "Scale Windows"
 msgstr "Ajustar janelas"
 
-#: ../src/e_mod_main.c:245
-#: ../src/e_mod_main.c:312
+#: ../src/e_mod_main.c:247
+#: ../src/e_mod_main.c:314
 msgid "Scale Windows (All Desktops)"
 msgstr "Ajustar janelas (todas as áreas de trabalho)"
 
-#: ../src/e_mod_main.c:247
-#: ../src/e_mod_main.c:313
+#: ../src/e_mod_main.c:249
+#: ../src/e_mod_main.c:315
 msgid "Scale Windows (By Class)"
 msgstr "Ajustar janelas (por classe)"
 
-#: ../src/e_mod_main.c:249
-#: ../src/e_mod_main.c:260
-#: ../src/e_mod_main.c:314
-#: ../src/e_mod_main.c:318
+#: ../src/e_mod_main.c:251
+#: ../src/e_mod_main.c:262
+#: ../src/e_mod_main.c:316
+#: ../src/e_mod_main.c:320
 msgid "Select Next"
 msgstr "Selecionar seguinte"
 
-#: ../src/e_mod_main.c:251
-#: ../src/e_mod_main.c:262
-#: ../src/e_mod_main.c:315
-#: ../src/e_mod_main.c:319
+#: ../src/e_mod_main.c:253
+#: ../src/e_mod_main.c:264
+#: ../src/e_mod_main.c:317
+#: ../src/e_mod_main.c:321
 msgid "Select Previous"
 msgstr "Selecionar anterior"
 
-#: ../src/e_mod_main.c:253
+#: ../src/e_mod_main.c:255
 msgid "Select Next (All)"
 msgstr "Selecionar seguinte (tudo)"
 
-#: ../src/e_mod_main.c:255
+#: ../src/e_mod_main.c:257
 msgid "Select Previous (All)"
 msgstr "Selecionar anterior (tudo)"
 
-#: ../src/e_mod_main.c:258
 #: ../src/e_mod_main.c:260
 #: ../src/e_mod_main.c:262
 #: ../src/e_mod_main.c:264
 #: ../src/e_mod_main.c:266
 #: ../src/e_mod_main.c:268
 #: ../src/e_mod_main.c:270
-#: ../src/e_mod_main.c:317
-#: ../src/e_mod_main.c:318
+#: ../src/e_mod_main.c:272
 #: ../src/e_mod_main.c:319
 #: ../src/e_mod_main.c:320
 #: ../src/e_mod_main.c:321
 #: ../src/e_mod_main.c:322
 #: ../src/e_mod_main.c:323
+#: ../src/e_mod_main.c:324
+#: ../src/e_mod_main.c:325
 msgid "Scale Pager"
 msgstr "Escala do paginador"
 
-#: ../src/e_mod_main.c:264
-#: ../src/e_mod_main.c:320
+#: ../src/e_mod_main.c:266
+#: ../src/e_mod_main.c:322
 msgid "Select Left"
 msgstr "Selecionar à esquerda"
 
-#: ../src/e_mod_main.c:266
-#: ../src/e_mod_main.c:321
+#: ../src/e_mod_main.c:268
+#: ../src/e_mod_main.c:323
 msgid "Select Right"
 msgstr "Selecionar à direita"
 
-#: ../src/e_mod_main.c:268
-#: ../src/e_mod_main.c:322
+#: ../src/e_mod_main.c:270
+#: ../src/e_mod_main.c:324
 msgid "Select Up"
 msgstr "Selecionar acima"
 
-#: ../src/e_mod_main.c:270
-#: ../src/e_mod_main.c:323
+#: ../src/e_mod_main.c:272
+#: ../src/e_mod_main.c:325
 msgid "Select Down"
 msgstr "Selecionar abaixo"
 
-#: ../src/e_mod_main.c:395
+#: ../src/e_mod_main.c:397
 msgid "Scale"
 msgstr "Escala"
 
-#: ../src/e_mod_main.c:524
+#: ../src/e_mod_main.c:526
 msgid "Settings"
 msgstr "Definições"
 
