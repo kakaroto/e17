@@ -76,4 +76,7 @@ var my_window = new elm.main({
 		bubble2 : new bubble(1),
 		bubble3 : new bubble(2),
 	},
+	on_keydown : function () {
+		elm.exit();
+	},
 });
