@@ -20,10 +20,10 @@
 
 #include "Azy.h"
 #include "azy_private.h"
+#include <errno.h>
 
 #include "pugixml.hpp"
 #include <iterator>
-#define PUGIXML_NO_EXCEPTIONS
 
 using namespace pugi;
 
@@ -85,7 +85,6 @@ azy_value_deserialize_xml(xml_node node)
 {
    const char *name;
 
-   if (!node) return NULL;
    if (node.empty()) return NULL;
 
    name = node.name();
@@ -98,7 +97,13 @@ azy_value_deserialize_xml(xml_node node)
           return NULL;
 
         if (!strcmp(name + 1, "oolean"))
-          return azy_value_bool_new(strtol(node.child_value(), NULL, 10));
+          {
+             int x;
+
+             x = strtol(node.child_value(), NULL, 10);
+             if ((x != 0) && (x != 1)) return NULL;
+             return azy_value_bool_new(x);
+          }
         if (!strcmp(name + 1, "ase64"))
           return azy_value_base64_new(node.child_value());
 
@@ -107,7 +112,14 @@ azy_value_deserialize_xml(xml_node node)
           return NULL;
       
         if ((!strcmp(name + 1, "nt")) || (!strcmp(name + 1, "4")))
-          return azy_value_int_new(strtol(node.child_value(), NULL, 10));
+          {
+             int x;
+
+             errno = 0;
+             x = strtol(node.child_value(), NULL, 10);
+             if (errno) return NULL;
+             return azy_value_int_new(x);
+          }
 
       case 's':
         if (!strcmp(name + 1, "tring"))
@@ -158,7 +170,14 @@ azy_value_deserialize_xml(xml_node node)
           return NULL;
           
         if (!strcmp(name + 1, "ouble"))
-          return azy_value_double_new(strtod(node.child_value(), NULL));
+          {
+             double x;
+
+             errno = 0;
+             x = strtod(node.child_value(), NULL);
+             if (errno) return NULL;
+             return azy_value_double_new(x);
+          }
         if (!strcmp(name + 1, "ateTime.iso8601"))
           return azy_value_time_new(node.child_value());
 
@@ -212,7 +231,6 @@ static void
 azy_value_serialize_xml(xml_node   node,
                         Azy_Value *val)
 {
-   EINA_SAFETY_ON_NULL_RETURN(node);
    EINA_SAFETY_ON_TRUE_RETURN(node.empty());
    EINA_SAFETY_ON_NULL_RETURN(val);
 
@@ -472,7 +490,9 @@ azy_content_deserialize_response_xml(Azy_Content *content,
         f = f.parent(); /* <value> */
         if (std::distance(f.begin(), f.end()) != 1) /* some paddlins here too */
           return EINA_FALSE;
+        errno = 0;
         c = strtol(fc.first().node().child_value(), NULL, 10);
+        if (errno) c = -1;
         if (!fs.empty()) s = fs.first().node().child_value();
 
         if (s)

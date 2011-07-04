@@ -1,8 +1,6 @@
 handle http 1.1 connection header correctly (close, upgrade, etc)
 use eet_node and add eetrpc using eet 1.5
 
-optimize http parsing
 optimize by converting a large number of lists to arrays/inlists
 
 add azy_file_ namespace for loading files ?
-more work on azy_server_module_ namespace, use eina_module to simplify module file loading with dlopen
