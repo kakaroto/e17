@@ -1081,7 +1081,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 					elm_slider_label_set(auto_update_timeout, _("Every: "));
 				else
 					elm_slider_label_set(auto_update_timeout, "");
-				elm_slider_indicator_format_function_set(auto_update_timeout, indicator_format_func);
+				elm_slider_indicator_format_function_set(auto_update_timeout, indicator_format_func, NULL);
 				evas_object_smart_callback_add(auto_update_timeout, "delay,changed", on_update_timeout_changed, NULL);
 				elm_table_pack(update_table, auto_update_timeout, 1, 0, 1, 1);
 				evas_object_show(auto_update_timeout);
