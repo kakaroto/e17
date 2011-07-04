@@ -1110,10 +1110,10 @@ public class Slideshow : Elm.Object
 
 //=======================================================================
 [CCode (cname = "Evas_Object", free_function = "evas_object_del")]
-public class FileSelector : Elm.Object
+public class Fileselector : Elm.Object
 {
     [CCode (cname = "elm_fileselector_add")]
-    public FileSelector( Elm.Object? parent );
+    public Fileselector( Elm.Object? parent );
 
     public void is_save_set( bool is_save );
     public bool is_save_get();
@@ -1124,7 +1124,7 @@ public class FileSelector : Elm.Object
     public void expandable_set( bool expand );
     public void path_set( string path );
     public string path_get();
-    public string selected_get();
+    public unowned string selected_get();
 }
 
 
