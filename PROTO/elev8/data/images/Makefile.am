@@ -1,8 +1,13 @@
 AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
-filesdir = $(datadir)/elev8/images
+filesdir = $(datadir)/elev8/data/images
 files_DATA = \
-pt.png
+	bubble.png \
+	bubble_sh.png \
+	logo_small.png \
+	pt.png \
+	rock_01.jpg \
+	sky_01.jpg
 
 EXTRA_DIST = $(files_DATA)

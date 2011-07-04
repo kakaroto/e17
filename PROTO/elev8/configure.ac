@@ -116,6 +116,7 @@ src/bin/Makefile
 data/Makefile
 data/images/Makefile
 data/desktop/Makefile
+data/javascript/Makefile
 ])
 
 #####################################################################
