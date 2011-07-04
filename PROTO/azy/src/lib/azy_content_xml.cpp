@@ -110,7 +110,7 @@ azy_value_deserialize_xml(xml_node node)
       case 'i':
         if (std::distance(node.begin(), node.end()) != 1)
           return NULL;
-      
+
         if ((!strcmp(name + 1, "nt")) || (!strcmp(name + 1, "4")))
           {
              int x;
@@ -168,7 +168,7 @@ azy_value_deserialize_xml(xml_node node)
       case 'd':
         if (std::distance(node.begin(), node.end()) != 1)
           return NULL;
-          
+
         if (!strcmp(name + 1, "ouble"))
           {
              double x;
@@ -184,7 +184,7 @@ azy_value_deserialize_xml(xml_node node)
       case 'a':
         if (std::distance(node.begin(), node.end()) != 1)
           return NULL;
-          
+
         if (!strcmp(name + 1, "rray"))
           {
              Azy_Value *v;
@@ -370,7 +370,7 @@ azy_content_deserialize_request_xml(Azy_Content *content,
 
    if ((num != 2) && (num != 1)) /* not params/methodName */
      return EINA_FALSE;
-   
+
    name = nquery.evaluate_node_set(doc);
    if (name.empty())
      {
@@ -380,7 +380,7 @@ azy_content_deserialize_request_xml(Azy_Content *content,
 
    if (!name.first().node().first_child().first_child().empty()) /* that's an error */
      return EINA_FALSE;
-    
+
    mn = name.first().node().child_value();
    if ((!mn) || (!mn[0])) return EINA_FALSE;
    content->method = eina_stringshare_add(mn);
@@ -399,7 +399,7 @@ azy_content_deserialize_request_xml(Azy_Content *content,
           return EINA_FALSE;
         if (std::distance(v.begin(), v.end()) != 1) /* that's also a paddlin */
           return EINA_FALSE;
-        
+
         for (xpath_node_set::const_iterator it = params.begin(); it != params.end(); ++it)
           {
              xpath_node n;
@@ -446,7 +446,7 @@ azy_content_deserialize_response_xml(Azy_Content *content,
 
    if (std::distance(doc.first_child().begin(), doc.first_child().end()) != 1) /* more than params/fault */
      return EINA_FALSE;
-     
+
    params = pquery.evaluate_node_set(doc);
    if (params.empty())
      {
@@ -464,7 +464,7 @@ azy_content_deserialize_response_xml(Azy_Content *content,
         f = f.first_child(); /* <struct> */
         if (f.empty() || (std::distance(f.begin(), f.end()) != 2)) /* yet another paddlin */
           return EINA_FALSE;
-          
+
         fc = fcquery.evaluate_node_set(doc);
         if (fc.empty())
           {
@@ -477,7 +477,7 @@ azy_content_deserialize_response_xml(Azy_Content *content,
         f = f.parent(); /* <value> */
         if (std::distance(f.begin(), f.end()) != 1) /* some paddlins here too */
           return EINA_FALSE;
-          
+
         fs = fsquery.evaluate_node_set(doc);
         if (fs.empty())
           {
@@ -535,7 +535,7 @@ azy_content_deserialize_rss_xml(Azy_Content *content,
    Azy_Rss *rss;
    static xpath_query cquery("/rss/channel");
    static xpath_query iquery("/rss/channel/image/url");
-   
+
    if (!doc.load_buffer(const_cast<char *>(buf), len))
      {
         azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
@@ -580,7 +580,7 @@ azy_content_deserialize_rss_xml(Azy_Content *content,
 
              i = azy_rss_item_new();
              if (!i) goto error;
-             
+
              for (xml_node::iterator x = n.begin(); x != n.end(); ++x)
                {
                   xml_node nn;
