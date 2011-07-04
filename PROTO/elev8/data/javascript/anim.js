@@ -40,7 +40,7 @@ function glyph() {
 }
 
 function bubble(n) {
-	this.image = "data/images/bubble.png";
+	this.image = elm.datadir + "data/images/bubble.png";
 	this.on_animate = function (arg) {
 		animator(arg, n, false);
 	}
@@ -49,7 +49,7 @@ function bubble(n) {
 bubble.prototype = new glyph();
 
 function shadow(n) {
-	this.image = "data/images/bubble_sh.png";
+	this.image = elm.datadir + "data/images/bubble_sh.png";
 	this.on_animate = function (arg) {
 		animator(arg, n, true);
 	}
@@ -66,7 +66,7 @@ var my_window = new elm.main({
 		the_background : {
 			type : "background",
 			weight : EXPAND_BOTH,
-			image : "data/images/rock_01.jpg",
+			image : elm.datadir + "data/images/rock_01.jpg",
 			resize : true,
 		},
 		shadow1 : new shadow(0),

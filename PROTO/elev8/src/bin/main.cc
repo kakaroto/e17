@@ -2378,6 +2378,22 @@ elm_exit(const v8::Arguments& args)
    return v8::Undefined();
 }
 
+v8::Persistent<v8::Value> the_datadir;
+
+v8::Handle<v8::Value>
+datadir_getter(v8::Local<v8::String> property, const v8::AccessorInfo& info)
+{
+   return the_datadir;
+}
+
+void
+datadir_setter(v8::Local<v8::String> property, v8::Local<v8::Value> value,
+               const v8::AccessorInfo& info)
+{
+   the_datadir.Dispose();
+   the_datadir = v8::Persistent<v8::Value>::New(value);
+}
+
 void
 elev8_run(const char *script)
 {
@@ -2392,6 +2408,10 @@ elev8_run(const char *script)
    elm->Set(v8::String::New("main"), v8::FunctionTemplate::New(elm_main_window));
    elm->Set(v8::String::New("loop_time"), v8::FunctionTemplate::New(elm_loop_time));
    elm->Set(v8::String::New("exit"), v8::FunctionTemplate::New(elm_exit));
+   elm->SetAccessor(v8::String::New("datadir"), &datadir_getter, &datadir_setter);
+
+   /* setup data directory */
+   the_datadir = v8::Persistent<v8::String>::New(v8::String::New(PACKAGE_DATA_DIR "/" ));
 
    /* setup V8 */
    v8::Persistent<v8::Context> context = v8::Context::New(NULL, global);
@@ -2401,6 +2421,7 @@ elev8_run(const char *script)
    elm_run();
 
    context.Dispose();
+   the_datadir.Dispose();
 }
 
 static void

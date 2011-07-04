@@ -9,7 +9,7 @@ var win = new elm.main({
 	elements : {
 		the_background : {
 			type : "background",
-			image : "data/images/rock_01.jpg",
+			image : elm.datadir + "data/images/rock_01.jpg",
 			resize : true,
 			weight : EXPAND_BOTH,
 		},

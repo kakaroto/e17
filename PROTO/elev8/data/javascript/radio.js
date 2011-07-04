@@ -5,12 +5,12 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var logo_icon = {
 	type : "icon",
-	image : "data/images/logo_small.png",
+	image : elm.datadir + "data/images/logo_small.png",
 };
 
 var logo_icon_unscaled = {
 	type : "icon",
-	image : "data/images/logo_small.png",
+	image : elm.datadir + "data/images/logo_small.png",
 	scale_up : false,
 	scale_down : false,
 };

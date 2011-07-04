@@ -8,7 +8,7 @@ var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 
 var logo_icon = {
 	type : "icon",
-	image : "data/images/logo_small.png",
+	image : elm.datadir + "data/images/logo_small.png",
 };
 
 var win = new elm.main({

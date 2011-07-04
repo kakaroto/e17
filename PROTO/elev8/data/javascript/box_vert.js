@@ -18,19 +18,19 @@ var my_window = new elm.main({
 			elements : {
 				logo_top : {
 					type : "icon",
-					image : "data/images/logo_small.png",
+					image : elm.datadir + "data/images/logo_small.png",
 					scale : { x : false, y : false },
 					align : { x : 0.5, y : 0.5 },
 				},
 				logo_middle : {
 					type : "icon",
-					image : "data/images/logo_small.png",
+					image : elm.datadir + "data/images/logo_small.png",
 					scale : { x : false, y : false },
 					align : { x : 0.0, y : 0.5 },
 				},
 				logo_bottom : {
 					type : "icon",
-					image : "data/images/logo_small.png",
+					image : elm.datadir + "data/images/logo_small.png",
 					scale : { x : false, y : false },
 					align : { x : 1.0, y : 0.5 },
 				},
