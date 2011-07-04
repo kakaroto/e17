@@ -1,13 +1,18 @@
-things I am/will be working on:
-___URGENT___ (pre 1.0 hopefully?)
-*fix function pointer typedefs in ecrustify
+things I am/will be working on, the order of which is irrelevant:
+
+__PENDING__ (currently active projects)
 *eeze integration into efm
+*esskyuehl 1.0 release
+*eetrpc implementation in azy
+*pulseaudio mixer support in e
+
+___URGENT___ (things that I should be doing but probably am not)
+*fix function pointer typedefs in ecrustify
 *fix battery fuzzy mode for when plugged in
 *update battery fuzzy mode to do rolling averages
 
 
 ___SOON___ (whenever I feel like it)
-**ecore xcb updates
 **exchange integration with e17 and azy
 **edje physics
 
