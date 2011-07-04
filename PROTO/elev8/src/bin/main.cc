@@ -974,11 +974,6 @@ public:
         return CEvasObject::prop_get(prop_name);
      }
 
-   virtual void label_set(const char *str)
-     {
-        elm_radio_label_set(eo, str);
-     }
-
    virtual v8::Handle<v8::Value> icon_get() const
      {
         return the_icon;
@@ -1325,16 +1320,6 @@ public:
      }
 
    /* there's 1 indicator label and 3 position labels */
-   virtual void label_set(const char *str)
-     {
-        elm_actionslider_indicator_label_set(eo, str);
-     }
-
-   virtual v8::Handle<v8::Value> label_get(v8::Handle<v8::Value> val) const
-     {
-        return v8::String::New(elm_actionslider_indicator_label_get(eo));
-     }
-
    virtual void labels_set(v8::Handle<v8::Value> val)
      {
         if (val->IsObject())
@@ -1959,16 +1944,6 @@ public:
         return v8::Boolean::New(elm_check_state_get(eo));
      }
 
-   virtual v8::Handle<v8::Value> label_get() const
-     {
-        return v8::String::New(elm_check_label_get(eo));
-     }
-
-   virtual void label_set(const char *str)
-     {
-        elm_check_label_set(eo, str);
-     }
-
    virtual v8::Handle<v8::Value> icon_get() const
      {
         return the_icon;
@@ -2059,17 +2034,6 @@ public:
         if (getter)
           return (this->*getter)();
         return CEvasObject::prop_get(prop_name);
-     }
-
-   virtual void label_set(const char *str)
-     {
-        elm_progressbar_label_set(eo, str);
-     }
-
-   virtual v8::Handle<v8::Value> label_get() const
-     {
-        const char *label = elm_progressbar_label_get(eo);
-        return v8::String::New(label ? label : "");
      }
 
    virtual v8::Handle<v8::Value> icon_get() const
