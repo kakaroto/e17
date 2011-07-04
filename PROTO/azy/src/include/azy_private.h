@@ -203,6 +203,7 @@ typedef struct Azy_Server_Client
    AZY_MAGIC;
    Ecore_Event_Handler *del;
    Ecore_Event_Handler *data;
+   Ecore_Event_Handler *upgrade;
 
    Azy_Net             *net;
    Azy_Net             *current;
@@ -277,6 +278,7 @@ struct Azy_Client
    Ecore_Event_Handler *add;
    Ecore_Event_Handler *del;
    Ecore_Event_Handler *recv;
+   Ecore_Event_Handler *upgrade;
 
    Eina_List           *conns;
    Eina_Hash           *callbacks;
@@ -357,6 +359,9 @@ Eina_Bool _azy_client_handler_del(Azy_Client                 *client,
 Eina_Bool _azy_client_handler_data(Azy_Client_Handler_Data     *handler_data,
                                    int                          type,
                                    Ecore_Con_Event_Server_Data *ev);
+Eina_Bool _azy_client_handler_upgrade(Azy_Client_Handler_Data        *hd,
+                                      int                             type,
+                                      Ecore_Con_Event_Server_Upgrade *ev);
 
 Eina_Bool azy_server_client_handler_add(Azy_Server                 *server,
                                         int                         type,

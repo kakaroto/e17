@@ -663,7 +663,13 @@ azy_net_header_create(Azy_Net *net)
       default:
         eina_strbuf_append_printf(header, "HTTP/1.%i %d %s\r\n",
                                   net->http.version, net->http.res.http_code, net->http.res.http_msg);
+        if ((net->http.res.http_code == 426) || (net->http.res.http_code == 101))
+          {
+             azy_net_header_set(net, "upgrade", "TLS/1.0, HTTP/1.1");
+             azy_net_header_set(net, "connection", "Upgrade");
+          }
      }
+
 
    if (net->http.headers)
      eina_hash_foreach(net->http.headers, (Eina_Hash_Foreach)azy_net_header_hash_, header);
@@ -789,6 +795,9 @@ azy_net_http_msg_get(int code)
 
       case 417:
         return eina_stringshare_add("Expectation Failed");
+
+      case 426:
+        return eina_stringshare_add("Upgrade Required");
 
       case 500:
         return eina_stringshare_add("Internal Server Error");

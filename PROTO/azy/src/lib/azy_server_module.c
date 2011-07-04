@@ -711,6 +711,30 @@ error:
 }
 
 /**
+ * @brief Upgrade a client's connection to SSL/TLS
+ *
+ * This function begins the SSL handshake process on connected client represented by @p module.
+ * An AZY_SERVER_CLIENT_UPGRADE event will be emitted on success, and EINA_FALSE will be
+ * returned immediately on failure.
+ * @param module The client object (NOT #NULL)
+ * @return #EINA_TRUE if successful, or #EINA_FALSE on failure
+ */
+Eina_Bool
+azy_server_module_upgrade(Azy_Server_Module *module)
+{
+   DBG("(module=%p)", module);
+
+   if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
+     {
+        AZY_MAGIC_FAIL(module, AZY_MAGIC_SERVER_MODULE);
+        return EINA_FALSE;
+     }
+   if (module->client->dead) return EINA_FALSE;
+
+   return ecore_con_client_upgrade(module->client->net->conn, ECORE_CON_USE_MIXED);
+}
+
+/**
  * @brief Return the state of an #Azy_Server_Module object
  * The return value of this function represents the connection state of the associated client.
  * @param module The module (NOT #NULL)

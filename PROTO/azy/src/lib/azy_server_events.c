@@ -25,6 +25,7 @@
 #include "azy_private.h"
 
 EAPI int AZY_SERVER_CLIENT_ADD;
+EAPI int AZY_SERVER_CLIENT_UPGRADE;
 EAPI int AZY_SERVER_CLIENT_DEL;
 
 #if 0
@@ -95,7 +96,9 @@ static Eina_Bool _azy_server_client_handler_del(Azy_Server_Client          *clie
 static Eina_Bool _azy_server_client_handler_data(Azy_Server_Client           *client,
                                                  int                          type,
                                                  Ecore_Con_Event_Client_Data *ev);
-
+static Eina_Bool _azy_server_client_handler_upgrade(Azy_Server_Client           *cl,
+                                                    int type                    __UNUSED__,
+                                                    Ecore_Con_Event_Client_Upgrade *ev);
 static void _azy_server_client_free(Azy_Server_Client *client);
 
 static Eina_Bool
@@ -457,6 +460,7 @@ _azy_server_client_new(Azy_Server       *server,
 
    client->del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, (Ecore_Event_Handler_Cb)_azy_server_client_handler_del, client);
    client->data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, (Ecore_Event_Handler_Cb)_azy_server_client_handler_data, client);
+   client->upgrade = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_UPGRADE, (Ecore_Event_Handler_Cb)_azy_server_client_handler_upgrade, client);
 
    server->clients++;
    ecore_event_add(AZY_SERVER_CLIENT_ADD, server, _azy_event_handler_fake_free, NULL);
@@ -502,6 +506,8 @@ _azy_server_client_free(Azy_Server_Client *client)
         ecore_event_handler_data_set(client->del, NULL);
         ecore_event_handler_del(client->del);
      }
+   if (client->upgrade)
+     ecore_event_handler_del(client->upgrade);
 
    client->server->clients--;
    ecore_event_add(AZY_SERVER_CLIENT_DEL, client->server, _azy_event_handler_fake_free, NULL);
@@ -1095,6 +1101,22 @@ _azy_server_client_handler_del(Azy_Server_Client          *client,
    _azy_server_client_free(client);
 
    return ECORE_CALLBACK_CANCEL;
+}
+
+static Eina_Bool
+_azy_server_client_handler_upgrade(Azy_Server_Client           *cl,
+                                   int type                    __UNUSED__,
+                                   Ecore_Con_Event_Client_Upgrade *ev)
+{
+   DBG("(cl=%p, cl->client=%p)", cl, ecore_con_server_data_get(ecore_con_client_server_get(ev->client)));
+   if (cl != ecore_con_server_data_get(ecore_con_client_server_get(ev->client)))
+     {
+        DBG("Ignoring callback due to pointer mismatch");
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   ecore_event_add(AZY_SERVER_CLIENT_UPGRADE, cl, _azy_event_handler_fake_free, NULL);
+   return ECORE_CALLBACK_RENEW;
 }
 
 Eina_Bool

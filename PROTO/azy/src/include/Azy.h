@@ -55,6 +55,7 @@
  */
 extern int AZY_CLIENT_DISCONNECTED; /**< Event emitted upon client disconnecting, sends #Azy_Client object */
 extern int AZY_CLIENT_CONNECTED; /**< Event emitted upon client connecting, sends #Azy_Client object */
+extern int AZY_CLIENT_UPGRADE; /**< Event emitted upon client successfully upgrading to TLS, sends #Azy_Client object */
 extern int AZY_CLIENT_RETURN; /**< Event emitted upon client method returning if
                                    no callback was set, sends #Azy_Content */
 extern int AZY_CLIENT_RESULT; /**< Event emitted upon client method returning if
@@ -64,6 +65,7 @@ extern int AZY_CLIENT_ERROR; /**< Event emitted upon client method encountering
 
 extern int AZY_SERVER_CLIENT_ADD; /**< Event emitted upon client connecting to server,
                                        sends #Azy_Server object */
+extern int AZY_SERVER_CLIENT_UPGRADE; /**< Event emitted upon client successfully upgrading to TLS, sends #Azy_Server_Module object */
 extern int AZY_SERVER_CLIENT_DEL; /**< Event emitted upon client disconnecting from server,
                                        sends #Azy_Server object */
 /**@}*/
@@ -365,6 +367,7 @@ extern "C" {
    EAPI Eina_Bool azy_server_module_session_set(Azy_Server_Module *module,
                                                 const char *sessid);
    EAPI const char *azy_server_module_session_get(Azy_Server_Module *module);
+   EAPI Eina_Bool   azy_server_module_upgrade(Azy_Server_Module *module);
 
    /* net */
    EAPI Azy_Net    *azy_net_new(void *conn);
@@ -549,6 +552,7 @@ extern "C" {
                                           void               *data);
    EAPI Eina_Bool          azy_client_redirect(Azy_Client *cli);
    EAPI Azy_Client_Call_Id azy_client_current(Azy_Client *cli);
+   EAPI Eina_Bool          azy_server_module_upgrade(Azy_Server_Module *module);
 
    /* RSS */
    EAPI Azy_Rss      *azy_rss_new(void);

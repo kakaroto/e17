@@ -1,4 +1,3 @@
-handle http 1.1 connection header correctly (close, upgrade, etc)
 use eet_node and add eetrpc using eet 1.5
 
 optimize by converting a large number of lists to arrays/inlists

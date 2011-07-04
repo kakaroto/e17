@@ -28,6 +28,7 @@ static Azy_Client_Call_Id azy_client_send_id__ = 0;
 
 EAPI int AZY_CLIENT_DISCONNECTED;
 EAPI int AZY_CLIENT_CONNECTED;
+EAPI int AZY_CLIENT_UPGRADE;
 EAPI int AZY_CLIENT_RETURN;
 EAPI int AZY_CLIENT_RESULT;
 EAPI int AZY_CLIENT_ERROR;
@@ -55,6 +56,8 @@ azy_client_new(void)
 
    client->add = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, (Ecore_Event_Handler_Cb)_azy_client_handler_add, client);
    client->del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)_azy_client_handler_del, client);
+   client->upgrade = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_UPGRADE,
+                                             (Ecore_Event_Handler_Cb)_azy_client_handler_upgrade, client);
 
    AZY_MAGIC_SET(client, AZY_MAGIC_CLIENT);
    return client;
@@ -233,6 +236,30 @@ azy_client_port_set(Azy_Client *client,
 
    client->port = port;
    return EINA_TRUE;
+}
+
+/**
+ * @brief Upgrade a client's connection to SSL/TLS
+ *
+ * This function begins the SSL handshake process on connected client @p client.
+ * An AZY_CLIENT_UPGRADE event will be emitted on success, and EINA_FALSE will be
+ * returned immediately on failure.
+ * @param client The client object (NOT #NULL)
+ * @return #EINA_TRUE if successful, or #EINA_FALSE on failure
+ */
+Eina_Bool
+azy_client_upgrade(Azy_Client *client)
+{
+   DBG("(client=%p)", client);
+
+   if (!AZY_MAGIC_CHECK(client, AZY_MAGIC_CLIENT))
+     {
+        AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
+        return EINA_FALSE;
+     }
+   if (!client->connected) return EINA_FALSE;
+
+   return ecore_con_server_upgrade(client->net->conn, ECORE_CON_USE_MIXED);
 }
 
 /**
@@ -816,6 +843,8 @@ azy_client_free(Azy_Client *client)
      ecore_event_handler_del(client->add);
    if (client->del)
      ecore_event_handler_del(client->del);
+   if (client->upgrade)
+     ecore_event_handler_del(client->upgrade);
    if (client->callbacks)
      eina_hash_free(client->callbacks);
    if (client->free_callbacks)

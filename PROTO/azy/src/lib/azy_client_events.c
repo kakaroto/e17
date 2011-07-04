@@ -90,6 +90,32 @@ _azy_client_handler_data_free(Azy_Client_Handler_Data *hd)
    free(hd);
 }
 
+Eina_Bool
+_azy_client_handler_upgrade(Azy_Client_Handler_Data     *hd,
+                            int                          type,
+                            Ecore_Con_Event_Server_Upgrade *ev)
+{
+   if (!AZY_MAGIC_CHECK(hd, AZY_MAGIC_CLIENT_DATA_HANDLER))
+     return ECORE_CALLBACK_RENEW;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(hd->client, ECORE_CALLBACK_RENEW);
+
+   if (!hd->client->net)
+     {
+        INFO("Removing probably dead client %p", hd->client);
+        _azy_client_handler_data_free(hd);
+        return ECORE_CALLBACK_RENEW;
+     }
+   if (hd->client != (Azy_Client *)ecore_con_server_data_get(ev->server))
+     {
+        DBG("Ignoring callback due to pointer mismatch");
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   ecore_event_add(AZY_CLIENT_UPGRADE, hd->client, _azy_event_handler_fake_free, NULL);
+   return ECORE_CALLBACK_RENEW;
+}
+
 /* FIXME: code dupication */
 static Eina_Bool
 _azy_client_handler_get(Azy_Client_Handler_Data *hd)
@@ -358,7 +384,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
 
    if (!hd->client->net)
      {
-        INFO("Removing probably dead client %p", client);
+        INFO("Removing probably dead client %p", hd->client);
         _azy_client_handler_data_free(hd);
         return ECORE_CALLBACK_RENEW;
      }
