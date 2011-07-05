@@ -1,10 +1,8 @@
 1. Focus movement by arrow keys
-	- Consider about the corrcet senario when focus is in elm_scroller
+   - Consider about the corrcet senario when focus is in elm_scroller
 
-2. elm_widget
-	- Fix focus bugs
-
-3. edje_entry
-    - Add "preediting" feature
+2. elm_widget focus
+   - Check elm_widget_focus_set func (currently not working well)
+   - Add elm_widget_child_focusable_set func
 	
-4. make ecrustify-edc.cfg
+3. Finding proper auto indent for .edc(lua)
