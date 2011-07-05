@@ -1,0 +1,585 @@
+externals {
+   external: "elm";
+}
+
+images {
+   image: "triangle.png" COMP;
+   image: "triangle_hi.png" COMP;
+   image: "background.jpg" LOSSY 80;
+}
+
+collections {
+   group {
+      name: emage/arrow;
+
+      parts {
+         part {
+            type: IMAGE;
+            name: arrow;
+            mouse_events: 1;
+            description {
+               state: default 0.0;
+               image.normal: "triangle.png";
+            }
+         }
+         part {
+            type: IMAGE;
+            name: arrow-highligth;
+            mouse_events: 0;
+            description {
+               rel1.to: arrow;
+               rel2.to: arrow;
+               image.normal: "triangle_hi.png";
+               color: 0 0 0 0;
+            }
+            description {
+               state: hightlight 0.0;
+               inherit: default 0.0;
+               color: 255 255 255 255;
+            }
+         }
+      }
+
+      programs {
+         program {
+            name: click;
+            source: arrow;
+            signal: "mouse,clicked,1";
+
+            action: STATE_SET hightlight 0.0;
+            target: arrow-highligth;
+            transition: SINUSOIDAL 1.0;
+
+            after: back/normal;
+         }
+         program {
+            name: back/normal;
+
+            action: STATE_SET default 0.0;
+            target: arrow-highligth;
+            transition: LINEAR 1.0;
+         }
+      }
+   }
+   group {
+      name: emage/title/shortcut;
+
+      max: 200 24;
+      parts {
+         part {
+            type: RECT;
+            name: background;
+            mouse_events: 0;
+            description {
+               state: default 0.0;
+               rel1 {
+                  to: shortcut;
+                  offset: -2 -2;
+               }
+               rel2 {
+                  to: arrow;
+                  offset: 2 2;
+               }
+               color: 0 0 0 200;
+            }
+         }
+         part {
+            type: TEXT;
+            name: shortcut;
+            mouse_events: 0;
+            effect: SOFT_SHADOW;
+            description {
+               state: default 0.0;
+               align: 0.0 0.0;
+               text {
+                  text: "Shortcut";
+                  font: "Sans:style=Bold";
+                  size: 16;
+                  min: 0 1;
+                  max: 0 1;
+                  align: 0.2 0.5;
+               }
+               fixed: 1 1;
+               color: 255 180 0 255;
+               color2: 0 0 0 255;
+            }
+         }
+         part {
+            type: GROUP;
+            repeat_events: 1;
+            mouse_events: 1;
+            source: emage/arrow;
+            name: arrow;
+            description {
+               state: default 0.0;
+               min: 16 16;
+               max: 16 16;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -24 0;
+               }
+               rel2.to_y: shortcut;
+               map {
+                  on: 1;
+                  rotation {
+                     y: 180.0;
+                  }
+               }
+            }
+            description {
+               state: rotation 0.0;
+               inherit: default 0.0;
+               map {
+                  rotation {
+                     z: 90;
+                  }
+               }
+            }
+         }
+      }
+
+      programs {
+         program {
+            name: "slide/in";
+            source: "arrow:arrow";
+            signal: "mouse,clicked,1";
+            action: STATE_SET rotation 0.0;
+            target: arrow;
+            filter: arrow default;
+            transition: LINEAR 2.0;
+         }
+         program {
+            name: "slide/out";
+            source: "arrow:arrow";
+            signal: "mouse,clicked,1";
+            action: STATE_SET default 0.0;
+            target: arrow;
+            filter: arrow rotation;
+            transition: LINEAR 2.0;
+         }
+      }
+   }
+   group {
+      name: "elm/layout/application/content";
+
+      parts {
+         part {
+            name: background;
+            mouse_events: 0;
+            description {
+               state: default 0.0;
+               image.normal: "background.jpg";
+               fill.size.relative: 0 0;
+               fill.size.offset: 486 440;
+            }
+         }
+         part {
+            type: RECT;
+            name: border;
+            mouse_events: 0;
+            description {
+               state: default 0.0;
+               min: 16 0;
+               max: 16 -1.0;
+               align: 0 0;
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 16 0;
+               }
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            type: EXTERNAL;
+            name: grid;
+            repeat_events: 1;
+            mouse_events: 1;
+            source: "elm/gengrid";
+            description {
+               state: default 0.0;
+               min: 64 64;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 18 4;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -4 -4;
+               }
+               color: 255 255 255 64;
+            }
+         }
+         part {
+            type: RECT;
+            name: left;
+            mouse_events: 0;
+            description {
+               state: default 0.0;
+               min: 92 48;
+               max: 200 -1.0;
+               align: 0 0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.2 1.0;
+               color: 0 0 0 128;
+            }
+            description {
+               state: rotation 0.0;
+               rel2 {
+                  to: border;
+               }
+               color: 0 0 0 128;
+            }
+         }
+         part {
+            type: RECT;
+            name: limit;
+            description {
+               state: default 0.0;
+               max: 2 -1.0;
+               align: 1.0 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.to_x: left;
+               color: 0 0 0 200;
+            }
+         }
+         part {
+            type: RECT;
+            name: "shortcut/color_clip";
+            description {
+               rel1 {
+                  to: border;
+                  relative: 1.0 0.0;
+               }
+               rel2.to: left;
+               color: 255 255 255 255;
+            }
+            description {
+               state: rotation 0.0;
+               inherit: default 0.0;
+            }
+            description {
+               state: rotation 1.0;
+               inherit: default 0.0;
+               color: 255 255 255 0;
+            }
+         }
+         part {
+            /* type: RECT; */
+            type: EXTERNAL;
+            name: shortcut;
+            clip_to: "shortcut/color_clip";
+            source: "elm/genlist";
+            repeat_events: 1;
+            description {
+               align: 0.5 0.0;
+               min: 64 32;
+               rel1 {
+                  to_x: border;
+                  to_y: title;
+                  relative: 1.0 1.0;
+                  offset: 6 6;
+               }
+               rel2 {
+                  to_x: left;
+                  relative: 1.0 1.0;
+                  offset: -5 -5;
+               }
+            }
+            description {
+               state: rotation 0.0;
+               inherit: default 0.0;
+               min: 0 0;
+               rel1 {
+                  to: border;
+                  relative: 1.0 0.0;
+                  offset: 16 32;
+               }
+               rel2 {
+                  to: limit;
+                  relative: 1.0 1.0;
+                  offset: -8 0;
+               }
+            }
+            description {
+               state: rotation 1.0;
+               inherit: default 0.0;
+               min: 0 0;
+               rel1 {
+                  to: border;
+                  relative: 1.0 0.0;
+                  offset: 16 32;
+               }
+               rel2 {
+                  to: limit;
+                  relative: 1.0 1.0;
+                  offset: -8 0;
+               }
+            }
+         }
+         part {
+            type: GROUP;
+            name: title;
+            repeat_events: 1;
+            source: emage/title/shortcut;
+            description {
+               state: default 0.0;
+               rel2.to_x: left;
+               align: 0 0;
+            }
+            description {
+               state: rotation 0.0;
+               inherit: default 0.0;
+               map {
+                  on: 1;
+               }
+            }
+            description {
+               state: rotation 1.0;
+               rel1 {
+                  offset: -55 0;
+               }
+               rel2 {
+                  to_x: border;
+                  offset: 45 0;
+               }
+               map {
+                  on: 1;
+                  rotation {
+                     z: -90;
+                  }
+               }
+            }
+         }
+         part {
+            type: TEXT;
+            name: path;
+            mouse_events: 0;
+            effect: SOFT_SHADOW;
+            description {
+               align: 0.5 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.0;
+               text {
+                  text: "";
+                  font: "Sans";
+                  size: 16;
+                  min: 0 1;
+                  max: 0 1;
+               }
+               fixed: 1 1;
+               color: 255 255 255 255;
+               color3: 0 0 0 128;
+            }
+         }
+         part {
+            type: RECT;
+            name: "show/clipper";
+            mouse_events: 0;
+
+            description {
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 2.0 1.0;
+               color: 255 255 255 0;
+            }
+            description {
+               state: show 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+               color: 255 255 255 255;
+            }
+         }
+         part {
+            type: RECT;
+            name: "show/background";
+            mouse_events: 1;
+            clip_to: "show/clipper";
+
+            description {
+               rel1.to: "show/clipper";
+               rel2.to: "show/clipper";
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            type: SWALLOW;
+            name: "show/content";
+            repeat_events: 1;
+            mouse_events: 1;
+            clip_to: "show/clipper";
+
+            description {
+               rel1.to: "show/clipper";
+               rel2.to: "show/clipper";
+            }
+         }
+      }
+      programs {
+         program {
+            source: "code";
+            signal: "show,content";
+            /* filter: "show/clipper" default; */
+            action: STATE_SET show 0.0;
+            target: "show/clipper";
+            transition: ACCELERATE 0.2;
+         }
+         program {
+            source: "code";
+            signal: "hide,content";
+            /* filter: "show/clipper" show; */
+            action: STATE_SET default 0.0;
+            target: "show/clipper";
+            transition: DECELERATE 0.2;
+         }
+         program {
+            name: slide;
+            source: "title:arrow:arrow";
+            signal: "mouse,clicked,1";
+            filter: title default;
+            action: STATE_SET rotation 0.0;
+            target: title;
+            target: shortcut;
+            target: shortcut/color_clip;
+            after: rotate;
+         }
+         program {
+            name: rotate;
+            action: STATE_SET rotation 1.0;
+            target: title;
+            target: left;
+            target: shortcut;
+            target: shortcut/color_clip;
+            transition: LINEAR 2.0;
+         }
+         program {
+            name: "slide/out";
+            source: "title:arrow:arrow";
+            signal: "mouse,clicked,1";
+            filter: title rotation;
+
+            after: "rotate/out/1";
+            after: "rotate/out/2";
+         }
+         program {
+            name: "rotate/out/1";
+            action: STATE_SET rotation 0.0;
+            target: title;
+            target: shortcut;
+            target: shortcut/color_clip;
+            transition: LINEAR 2.0;
+         }
+         program {
+            name: "rotate/out/2";
+            action: STATE_SET default 0.0;
+            target: left;
+            transition: LINEAR 2.0;
+            after: "rotate/out/done";
+         }
+         program {
+            name: "rotate/out/done";
+            action: STATE_SET default 0.0;
+            target: title;
+            target: shortcut;
+            target: shortcut/color_clip;
+         }
+      }
+   }
+
+   group {
+      name: "elm/gengrid/item/emage-thumb/default";
+      alias: "elm/gengrid/item/emage-folder/default";
+      alias: "elm/gengrid/item/emage-emotion/default";
+      alias: "elm/gengrid/item/emage-image/default";
+
+      data {
+         item: "icons" "emage.swallow.icon";
+         item: "labels" "emage.text";
+      }
+      parts {
+         part {
+            type: SWALLOW;
+            name: "emage.swallow.icon";
+            mouse_events: 0;
+            repeat_events: 0;
+            description {
+               aspect_preference: BOTH;
+               aspect: 1 1;
+               rel1.offset: 2 2;
+               rel2.offset: -1 -1;
+            }
+         }
+         part {
+            type: RECT;
+            name: "emage.clip";
+            mouse_events: 0;
+            description {
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 2 -15;
+               }
+               rel2 {
+                  offset: -1 0;
+               }
+               color: 255 255 255 255;
+            }
+         }
+         part {
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            name: "emage.text";
+            mouse_events: 0;
+            scale: 1;
+            clip_to: emage.clip;
+            description {
+               color: 255 255 255 255;
+               color3: 0 0 0 128;
+               align: 0.0 0.0;;
+               rel1.relative: 0.0 1.0;
+               rel1.offset: 2 -15;
+               rel2.offset: -1 0;
+               text {
+                  font: "Sans";
+                  size: 10;
+                  min: 1 1;
+                  /* align: 0.0 0.0; */
+               }
+            }
+            description {
+               state: default 1.0;
+               inherit: default 0.0;
+               /* text.align: 1.0 0.0; */
+               align: 1.0 0.0;
+            }
+         }
+         part {
+            type: RECT;
+            mouse_events: 1;
+
+            description {
+               color: 255 255 255 0;
+            }
+         }
+      }
+      programs {
+         program {
+            name: right;
+            signal: "show";
+            source: "";
+
+            action: STATE_SET default 1.0;
+            transition: SINUSOIDAL 4.0;
+            target: emage.text;
+
+            after: left;
+         }
+         program {
+            name: left;
+
+            action: STATE_SET default 0.0;
+            transition: SINUSOIDAL 4.0;
+            target: emage.text;
+
+            after: right;
+         }
+      }
+   }
+}
