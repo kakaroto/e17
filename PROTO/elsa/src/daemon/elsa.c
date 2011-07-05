@@ -309,7 +309,7 @@ main (int argc, char ** argv)
         putenv(buf);
         _elsa_wait();
      }
-   _remove_lock();
+   //_remove_lock(); // elsa_config is already freed here
    return 0;
 }
 
