@@ -35,3 +35,4 @@ fi
 if [ -z "$NOCONFIGURE" ]; then
 	./configure -C "$@"
 fi
+
