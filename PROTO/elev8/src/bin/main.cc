@@ -1325,18 +1325,18 @@ public:
         if (val->IsObject())
           {
              v8::Local<v8::Object> obj = val->ToObject();
-             v8::Local<v8::Value> v[3];
-             v8::Local<v8::String> str[3];
+             v8::Local<v8::Value> val;
              const char *name[3] = { "left", "center", "right" };
 
              for (int i = 0; i < 3; i++)
                {
-                  v[i] = obj->Get(v8::String::New(name[i]));
-                  if (v[i]->IsString())
-                    str[i] = v[i]->ToString();
+                  val = obj->Get(v8::String::New(name[i]));
+                  if (val->IsString())
+                    {
+                       v8::String::Utf8Value str(val->ToString());
+                       elm_object_text_part_set(eo, name[i], *str);
+                    }
                }
-             v8::String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
-             elm_actionslider_labels_set(eo, *left, *middle, *right);
           }
      }
 
