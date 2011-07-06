@@ -60,6 +60,7 @@ PKG_CHECK_MODULES([EMAGE],
     ecore >= 1.0.0
     eet >= 1.2.2
     edje >= 1.0.0
+    efreet >= 1.0.0
     ecore-file >= 1.0.0
     elementary >= 0.5.1
     eio >= 0.1.0
