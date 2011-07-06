@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Emage
+GenericName=Files Browser
+GenericName[fr]=Navigateur de fichiers
+Comment=Fast and light file browser.
+Comment[fr]=Gérez vos albums photo
+Exec=emage
+Icon=emage.png
+Type=Application
+Terminal=false
+Encoding=UTF-8
+Categories=Application;System Tools;
