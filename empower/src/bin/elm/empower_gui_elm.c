@@ -28,6 +28,7 @@ void setup_window()
   elm_win_autodel_set(win, 1);
   elm_win_alpha_set(win,1);
   elm_win_fullscreen_set(win, 1);
+  elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_ON);
   evas_object_event_callback_add(win, EVAS_CALLBACK_SHOW, win_show, win);
   if(evas_object_key_grab(win, "Escape", 0, 0, 1))
     evas_object_event_callback_add(win, EVAS_CALLBACK_KEY_DOWN, key_down_cb, NULL);
@@ -70,7 +71,7 @@ void setup_window()
     evas_object_size_hint_align_set(scrollerframe2, -1.0, 0.0);
     elm_object_style_set(scrollerframe2, "pad_small");
     elm_frame_content_set(scrollerframe2, exec);
-    
+
     execscroller = elm_scroller_add(win);
     evas_object_size_hint_weight_set(execscroller, 1.0, 1.0);
     evas_object_size_hint_align_set(execscroller, -1.0, 1.0);
