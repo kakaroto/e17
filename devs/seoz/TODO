@@ -9,6 +9,7 @@
 	- Check elm_genlist_item_sorted_insert() API with group index, expandable list and etc.
 
 * Elementary
+	- Add elm_object_bounce_set/get() APIs.
 	- Elementary : Changed edje_object to elm_layout. (not for genlist, gengrid)
 	- Add performance test application.
 	- Check elm_main.c
