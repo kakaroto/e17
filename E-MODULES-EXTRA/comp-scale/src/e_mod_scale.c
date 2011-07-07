@@ -51,6 +51,8 @@ struct _Item
 
   int mouse_down;
   int moved;
+
+  double delay;
 };
 
 struct _Slot
@@ -121,13 +123,17 @@ static Evas_Object *zone_clip = NULL;
 E_Border *bd_move = NULL;
 
 static void
-_scale_place_windows(double scale)
+_scale_place_windows(double s)
 {
    Eina_List *l;
    Item *it;
 
    EINA_LIST_FOREACH(items, l, it)
      {
+	double scale = s * (1.0 + it->delay);
+	if (scale > 1.0) scale = 1.0;
+	if (scale < 0.0) scale = 0.0;
+			   
 	it->cur_x = it->bd_x * scale + it->x * (1.0 - scale);
 	it->cur_y = it->bd_y * scale + it->y * (1.0 - scale);
 	it->cur_w = (double)(it->bd_x + it->bd->w) * scale + (it->x + it->w) * (1.0 - scale) - it->cur_x;
@@ -208,17 +214,7 @@ _scale_redraw(void *data)
 	       continue;
 	     
 	     if ((it->bd->desk != current_desk) && (selected_item != it))
-	       {
-		  /* double ax = it->cur_x - it->x;
-		   * double ay = it->cur_y - it->y;
-		   * double bx = it->bd_x  - it->x;
-		   * double by = it->bd_y  - it->y;
-		   * 
-		   * a = (1.0 - (ax*ax + ay*ay) / (bx*bx + by*by)) * 255.0; */
-
-		  a = 255.0 * adv;
-		  
-	       }
+	       a = 255.0 * sqrt(adv);
 
 	     evas_object_color_set(it->o, a, a, a, a);
 	  }
@@ -295,6 +291,9 @@ _scale_out(int mode)
    double duration, now = ecore_loop_time_get();
    Item *ot, *it = selected_item;
    Eina_List *l;
+
+   if (!scale_state) return;
+
    if (mode == 0)
      {
 	selected_item = NULL;
@@ -1028,6 +1027,21 @@ _scale_cb_key_up(void *data, int type, void *event)
    return ECORE_CALLBACK_PASS_ON;
 }
 
+static int
+_cb_sort_dist(const void *d1, const void *d2)
+{
+   const Item *it1 = d1;
+   const Item *it2 = d2;
+
+   double dx1 = ((it1->x + it1->w/2.0) - (double)(it1->bd_x + it1->bd->w/2));
+   double dy1 = ((it1->y + it1->h/2.0) - (double)(it1->bd_y + it1->bd->h/2));
+
+   double dx2 = ((it2->x + it2->w/2.0) - (double)(it2->bd_x + it2->bd->w/2));
+   double dy2 = ((it2->y + it2->h/2.0) - (double)(it2->bd_y + it2->bd->h/2));
+
+   return (sqrt(dx1*dx1 + dy1*dy1) > sqrt(dx2*dx2 + dy2*dy2)) ? -1 : 1;
+}
+
 static Eina_Bool
 _scale_run(E_Manager *man)
 {
@@ -1196,20 +1210,31 @@ _scale_run(E_Manager *man)
 	     it->x = (it->x - min_x) + use_x + ((use_w - use_x) - (max_x - min_x))/2.0;
 	     it->y = (it->y - min_y) + use_y + ((use_h - use_y) - (max_y - min_y))/2.0;
 
-	     if (it->dx > 0) it->bd_x =  zone->w + it->bd->x/4;
-	     if (it->dy > 0) it->bd_y =  zone->h + it->bd->y/4;
-	     if (it->dx < 0) it->bd_x = -zone->w + (zone->w - it->bd->w) + it->bd->x/4;
-	     if (it->dy < 0) it->bd_y = -zone->h + (zone->h - it->bd->h) + it->bd->y/4;
+	     if (it->dx > 0) it->bd_x =  zone->w;
+	     if (it->dy > 0) it->bd_y =  zone->h;
+	     if (it->dx < 0) it->bd_x = -zone->w + (zone->w - it->bd->w);
+	     if (it->dy < 0) it->bd_y = -zone->h + (zone->h - it->bd->h);
 	  }
      }
 
+   double min = 9999.0;
+   
    EINA_LIST_FOREACH(items, l, it)
      {
+	double dx = ((it->x + it->w/2.0) - (double)(it->bd_x + it->bd->w/2));
+	double dy = ((it->y + it->h/2.0) - (double)(it->bd_y + it->bd->h/2));
+
 	it->x += zone->x;
 	it->y += zone->y;
 	it->bd_x += zone->x;
 	it->bd_y += zone->y;
+
+	it->delay = sqrt(dx*dx + dy*dy) / 1000.0;
+	if (it->delay < min) min = it->delay;
      }
+
+   EINA_LIST_FOREACH(items, l, it)
+     it->delay -= min;
 
    DBG("time: %f\n", ecore_loop_time_get() - start_time);
 
@@ -1244,6 +1269,8 @@ _scale_run(E_Manager *man)
      selected_item = it;
    else
      selected_item = eina_list_data_get(items);
+
+   items = eina_list_sort(items, eina_list_count(items), _cb_sort_dist);
 
    EINA_LIST_FOREACH(items, l, it)
      {
@@ -1417,7 +1444,8 @@ scale_run(E_Manager *man, const char *params, int _init_method)
 
    if (scale_state)
      {
-	_scale_switch(opt);
+	if (init_method == GO_KEY)
+	  _scale_switch(opt);
      }
    else
      {
