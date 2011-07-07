@@ -86,10 +86,10 @@ _elsa_gui_login_cancel_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, co
    Evas_Object *o;
 
    o = ELSA_GUI_GET(_gui->edj, "hostname");
-   elm_scrolled_entry_entry_set(o, "");
+   elm_entry_entry_set(o, "");
    elm_object_focus(o);
    o = ELSA_GUI_GET(_gui->edj, "password");
-   elm_scrolled_entry_entry_set(o, "");
+   elm_entry_entry_set(o, "");
    edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
                            "elsa.auth.disable", "");
 }
@@ -134,7 +134,7 @@ _elsa_gui_xsessions_clicked_cb(void *data, Evas_Object *obj, void *event_info __
    Evas_Object *icon;
 
    _gui->selected_session = data;
-   elm_hoversel_label_set(obj, _gui->selected_session->name);
+   elm_object_text_set(obj, _gui->selected_session->name);
    icon = elm_icon_add(_gui->win);
    elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
    elm_hoversel_icon_set(obj, icon);
@@ -191,7 +191,7 @@ _elsa_gui_sessions_populate()
 
      }
    if (!_gui->selected_session) _gui->selected_session = _gui->xsessions->data;
-   elm_hoversel_label_set(o, _gui->selected_session->name);
+   elm_object_text_set(o, _gui->selected_session->name);
    icon = elm_icon_add(_gui->win);
    elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
    elm_hoversel_icon_set(o, icon);
@@ -289,7 +289,7 @@ elsa_gui_user_get()
 {
    Evas_Object *o;
    o = ELSA_GUI_GET(_gui->edj, "hostname");
-   if (o) return elm_entry_markup_to_utf8(elm_scrolled_entry_entry_get(o));
+   if (o) return elm_entry_markup_to_utf8(elm_entry_entry_get(o));
    return NULL;
 }
 
@@ -298,7 +298,7 @@ elsa_gui_password_get()
 {
    Evas_Object *o;
    o = ELSA_GUI_GET(_gui->edj, "password");
-   if (o) return elm_entry_markup_to_utf8(elm_scrolled_entry_entry_get(o));
+   if (o) return elm_entry_markup_to_utf8(elm_entry_entry_get(o));
    return NULL;
 }
 
@@ -308,7 +308,7 @@ elsa_gui_auth_error()
    Evas_Object *o;
 
    o = ELSA_GUI_GET(_gui->edj, "password");
-   elm_scrolled_entry_entry_set(o, "");
+   elm_entry_entry_set(o, "");
    edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
                            "elsa.auth.error", "");
 }
