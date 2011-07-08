@@ -188,7 +188,7 @@ main(int argc, char *argv[])
    _ev_log_dom = eina_log_domain_register("ev", EINA_COLOR_HIGH EINA_COLOR_CYAN);
    if (argc == 1)
      {
-        ERR("Usage: %s filename filename directory fileglob*", argv[0]);
+        printf("Usage: %s filename filename directory fileglob*\n", argv[0]);
         exit(1);
      }
    //eina_log_domain_level_set("ev", EINA_LOG_LEVEL_DBG);
