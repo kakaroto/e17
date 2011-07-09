@@ -65,6 +65,7 @@ void setup_window()
     evas_object_name_set(exec, "exec");
     elm_entry_editable_set(exec, 1);
     elm_entry_single_line_set(exec, 1);
+    elm_object_focus(exec);
 
     scrollerframe2 = elm_frame_add(win);
     evas_object_size_hint_weight_set(scrollerframe2, 1.0, 0.0);
@@ -157,6 +158,8 @@ void setup_window()
     evas_object_show(entry);
     evas_object_show(pass_frame2);
     evas_object_show(pass_frame);
+    if(mode != SUDOPROG)
+      elm_object_focus(entry);
   }
 
   startup = 0;
