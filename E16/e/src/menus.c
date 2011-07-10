@@ -54,6 +54,7 @@ static struct {
    EWin               *context_ewin;
    EObj               *cover_win;
    char                just_shown;
+   char                cover_bpress;
 } Mode_menus;
 
 struct _menustyle {
@@ -1045,6 +1046,7 @@ MenuShowMasker(Menu * m __UNUSED__)
 	Mode_menus.cover_win = eo;
      }
 
+   Mode_menus.cover_bpress = 0;
    EobjMap(eo, 0);
 }
 
@@ -1809,10 +1811,15 @@ MenuMaskerHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 #if DEBUG_MENU_EVENTS
    Eprintf("MenuMaskerHandleEvents %d\n", ev->type);
 #endif
+
    switch (ev->type)
      {
      case ButtonRelease:
-	MenusHide();
+	if (Mode_menus.cover_bpress)
+	   MenusHide();
+	break;
+     case ButtonPress:
+	Mode_menus.cover_bpress = 1;
 	break;
      }
 }
