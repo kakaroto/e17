@@ -746,6 +746,11 @@ EwinStick(EWin * ewin)
    SnapshotEwinUpdate(ewin, SNAP_USE_STICKY);
 }
 
+#define SHADE_LEFT	0	/* __LEFT */
+#define SHADE_RIGHT	1	/* __RIGHT */
+#define SHADE_UP	2	/* __UP/__TOP */
+#define SHADE_DOWN	3	/* __DOWN/__BOTTOM */
+
 void
 EwinInstantShade(EWin * ewin, int force)
 {
@@ -771,21 +776,21 @@ EwinInstantShade(EWin * ewin, int force)
    switch (ewin->border->shadedir)
      {
      default:
-     case 0:
+     case SHADE_LEFT:
 	att.win_gravity = EastGravity;
 	w = minw;
 	break;
-     case 1:
+     case SHADE_RIGHT:
 	att.win_gravity = WestGravity;
 	if (!force)
 	   x = x + w - minw;
 	w = minw;
 	break;
-     case 2:
+     case SHADE_UP:
 	att.win_gravity = SouthGravity;
 	h = minh;
 	break;
-     case 3:
+     case SHADE_DOWN:
 	att.win_gravity = SouthGravity;
 	if (!force)
 	   y = y + h - minh;
@@ -818,12 +823,12 @@ EwinInstantUnShade(EWin * ewin)
      {
      default:
 	break;
-     case 1:
+     case SHADE_RIGHT:
 	w = ewin->client.w + ewin->border->border.left +
 	   ewin->border->border.right;
 	x = x + EoGetW(ewin) - w;
 	break;
-     case 3:
+     case SHADE_DOWN:
 	h = ewin->client.h + ewin->border->border.top +
 	   ewin->border->border.bottom;
 	y = y + EoGetH(ewin) - h;
@@ -886,13 +891,13 @@ _EwinShadeStart(_ewin_shade_data * esd)
    switch (ewin->border->shadedir)
      {
      default:
-     case 0:
+     case SHADE_LEFT:
 	att.win_gravity = EastGravity;
 	esd->a = esd->start.w;
 	esd->b = minw;
 	esd->final.w = esd->b;
 	break;
-     case 1:
+     case SHADE_RIGHT:
 	att.win_gravity = WestGravity;
 	esd->a = esd->start.w;
 	esd->b = minw;
@@ -900,13 +905,13 @@ _EwinShadeStart(_ewin_shade_data * esd)
 	esd->final.x = esd->c - esd->b;
 	esd->final.w = esd->b;
 	break;
-     case 2:
+     case SHADE_UP:
 	att.win_gravity = SouthGravity;
 	esd->a = esd->start.h;
 	esd->b = minh;
 	esd->final.h = esd->b;
 	break;
-     case 3:
+     case SHADE_DOWN:
 	att.win_gravity = SouthGravity;
 	esd->a = esd->start.h;
 	esd->b = minh;
@@ -975,7 +980,7 @@ _EwinShadeRun(void *data)
    switch (ewin->border->shadedir)
      {
      default:
-     case 0:
+     case SHADE_LEFT:
 	w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
 	if (w < 1)
 	   w = 1;
@@ -985,7 +990,7 @@ _EwinShadeRun(void *data)
 	cow = ww;
 	shx = ww - ewin->client.w;
 	break;
-     case 1:
+     case SHADE_RIGHT:
 	w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
 	if (w < 1)
 	   w = 1;
@@ -995,7 +1000,7 @@ _EwinShadeRun(void *data)
 	   ww = 1;
 	cow = ww;
 	break;
-     case 2:
+     case SHADE_UP:
 	h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
 	if (h < 1)
 	   h = 1;
@@ -1005,7 +1010,7 @@ _EwinShadeRun(void *data)
 	coh = hh;
 	shy = hh - ewin->client.h;
 	break;
-     case 3:
+     case SHADE_DOWN:
 	h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
 	if (h < 1)
 	   h = 1;
@@ -1093,7 +1098,7 @@ _EwinUnshadeStart(_ewin_shade_data * esd)
    switch (ewin->border->shadedir)
      {
      default:
-     case 0:
+     case SHADE_LEFT:
 	att.win_gravity = EastGravity;
 	esd->a = ewin->border->border.left + ewin->border->border.right;
 	esd->b = ewin->client.w + esd->a;
@@ -1102,7 +1107,7 @@ _EwinUnshadeStart(_ewin_shade_data * esd)
 	cow = 1;
 	clx = -ewin->client.w;
 	break;
-     case 1:
+     case SHADE_RIGHT:
 	att.win_gravity = WestGravity;
 	esd->a = ewin->border->border.left + ewin->border->border.right;
 	esd->b = ewin->client.w + esd->a;
@@ -1111,7 +1116,7 @@ _EwinUnshadeStart(_ewin_shade_data * esd)
 	esd->final.w = esd->b;
 	cow = 1;
 	break;
-     case 2:
+     case SHADE_UP:
 	att.win_gravity = SouthGravity;
 	esd->a = ewin->border->border.top + ewin->border->border.bottom;
 	esd->b = ewin->client.h + esd->a;
@@ -1120,7 +1125,7 @@ _EwinUnshadeStart(_ewin_shade_data * esd)
 	coh = 1;
 	cly = 1 - ewin->client.h;
 	break;
-     case 3:
+     case SHADE_DOWN:
 	att.win_gravity = SouthGravity;
 	esd->a = ewin->border->border.top + ewin->border->border.bottom;
 	esd->b = ewin->client.h + esd->a;
@@ -1206,7 +1211,7 @@ _EwinUnshadeRun(void *data)
    switch (ewin->border->shadedir)
      {
      default:
-     case 0:
+     case SHADE_LEFT:
 	w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
 	ww = w - esd->a;
 	if (ww <= 0)
@@ -1214,7 +1219,7 @@ _EwinUnshadeRun(void *data)
 	cow = ww;
 	shx = ww - ewin->client.w;
 	break;
-     case 1:
+     case SHADE_RIGHT:
 	w = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
 	x = esd->c - w;
 	ww = w - esd->a;
@@ -1222,7 +1227,7 @@ _EwinUnshadeRun(void *data)
 	   ww = 1;
 	cow = ww;
 	break;
-     case 2:
+     case SHADE_UP:
 	h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
 	hh = h - esd->a;
 	if (hh <= 0)
@@ -1230,7 +1235,7 @@ _EwinUnshadeRun(void *data)
 	coh = hh;
 	shy = hh - ewin->client.h;
 	break;
-     case 3:
+     case SHADE_DOWN:
 	h = ((esd->a * (1024 - k)) + (esd->b * k)) >> 10;
 	y = esd->c - h;
 	hh = h - esd->a;
