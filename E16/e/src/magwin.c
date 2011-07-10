@@ -117,7 +117,7 @@ MagwinRedraw(MagWindow * mw, int paint)
    int                 px, py;
    int                 qx, qy;
    int                 out;
-   unsigned int        pixel;
+   unsigned int        len;
 
    ww = mw->ewin->client.w;
    wh = mw->ewin->client.h;
@@ -173,15 +173,13 @@ MagwinRedraw(MagWindow * mw, int paint)
    EQueryPointer(EwinGetClientWin(mw->ewin), &px, &py, NULL, NULL);
    out = px < 0 || px >= mw->ewin->client.w ||
       py < 0 || py >= mw->ewin->client.h;
-   /* If inside grab pixel before drawing in window */
-   pixel = (out) ? 0 : MagwinGetPixel(EwinGetClientXwin(mw->ewin), px, py);
 
    /* Show magnified area coordinates */
-   Esnprintf(buf, sizeof(buf), "x%.2f: %d,%d %dx%d", scale, sx, sy, sw, sh);
-   MagwinDrawText(mw, 10, 10, buf);
+   len = Esnprintf(buf, sizeof(buf), "x%.2f: %d,%d %dx%d",
+		   scale, sx, sy, sw, sh);
 
    if (out)
-      return;
+      goto done;
 
    /* Show info about pixel at cursor (if in magnifier) */
    qx = (int)(px / scale);
@@ -190,8 +188,11 @@ MagwinRedraw(MagWindow * mw, int paint)
       qx = WinGetW(VROOT) - 1;
    if (qy > WinGetH(VROOT) - 1)
       qy = WinGetH(VROOT) - 1;
-   Esnprintf(buf, sizeof(buf), "%d,%d: pixel=%#08x", sx + qx, sy + qy, pixel);
-   MagwinDrawText(mw, 10, 20, buf);
+   Esnprintf(buf + len, sizeof(buf) - len, "\n%d,%d: pixel=%#08x",
+	     sx + qx, sy + qy,
+	     MagwinGetPixel(EwinGetClientXwin(mw->ewin), px, py));
+ done:
+   MagwinDrawText(mw, 10, 10, buf);
 }
 
 static int
