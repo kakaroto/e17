@@ -1139,8 +1139,6 @@ _EwinUnshadeStart(_ewin_shade_data * esd)
    EWindowSync(EwinGetClientWin(ewin));	/* Gravity - recache */
    EMoveResizeWindow(EwinGetClientWin(ewin), clx, cly,
 		     ewin->client.w, ewin->client.h);
-   EMapWindow(EwinGetClientWin(ewin));
-   EMapWindow(ewin->win_container);
 }
 
 static void
