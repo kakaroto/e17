@@ -31,6 +31,8 @@ typedef struct {
    int                 resize;
    int                 geominfo;
    int                 maximize;
+   int                 maximize_speed;
+   char                maximize_animate;
    char                dragbar_nocover;
    char                enable_smart_max_hv;
    char                avoid_server_grab;
@@ -55,6 +57,8 @@ CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    Conf.movres.enable_sync_request = dd->sync_request;
    Conf.movres.dragbar_nocover = dd->dragbar_nocover;
    Conf.movres.enable_smart_max_hv = dd->enable_smart_max_hv;
+   Conf.movres.maximize_speed = dd->maximize_speed;
+   Conf.movres.maximize_animate = dd->maximize_animate;
 
    autosave();
 }
@@ -78,6 +82,8 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    dd->sync_request = Conf.movres.enable_sync_request;
    dd->dragbar_nocover = Conf.movres.dragbar_nocover;
    dd->enable_smart_max_hv = Conf.movres.enable_smart_max_hv;
+   dd->maximize_speed = Conf.movres.maximize_speed;
+   dd->maximize_animate = Conf.movres.maximize_animate;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
@@ -236,6 +242,22 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable smart maximization"));
    DialogItemCheckButtonSetPtr(di, &dd->enable_smart_max_hv);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Animate window maximization"));
+   DialogItemCheckButtonSetPtr(di, &dd->maximize_animate);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 1024, 512);
+   DialogItemSetText(di, _("Maximization animation speed:"));
+
+   di = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 0, 20000);
+   DialogItemSliderSetUnits(di, 500);
+   DialogItemSliderSetJump(di, 1000);
+   DialogItemSliderSetValPtr(di, &dd->maximize_speed);
 }
 
 const DialogDef     DlgMoveResize = {

@@ -827,22 +827,22 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
    if (!hor && !ver)
      {
 	/* Restore regular state */
-	EwinMoveResize(ewin, ewin->save_max.x, ewin->save_max.y,
-		       ewin->save_max.w, ewin->save_max.h);
+	EwinSlideSizeTo(ewin, ewin->save_max.x, ewin->save_max.y,
+			ewin->save_max.w, ewin->save_max.h);
 	goto done;
      }
    if (old_ver == ver && old_hor && !hor)
      {
 	/* Turn off horizontal maxsize */
-	EwinMoveResize(ewin, ewin->save_max.x, EoGetY(ewin),
-		       ewin->save_max.w, ewin->client.h);
+	EwinSlideSizeTo(ewin, ewin->save_max.x, EoGetY(ewin),
+			ewin->save_max.w, ewin->client.h);
 	goto done;
      }
    if (old_hor == hor && old_ver && !ver)
      {
 	/* Turn off vertical maxsize */
-	EwinMoveResize(ewin, EoGetX(ewin), ewin->save_max.y,
-		       ewin->client.w, ewin->save_max.h);
+	EwinSlideSizeTo(ewin, EoGetX(ewin), ewin->save_max.y,
+			ewin->client.w, ewin->save_max.h);
 	goto done;
      }
 
@@ -967,7 +967,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
    if (h < 10)
       h = 10;
 
-   EwinMoveResize(ewin, x, y, w, h);
+   EwinSlideSizeTo(ewin, x, y, w, h);
  done:
    ewin->state.maximizing = 0;
    HintsSetWindowState(ewin);

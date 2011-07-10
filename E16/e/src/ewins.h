@@ -397,6 +397,8 @@ void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
 void                EwinMove(EWin * ewin, int x, int y);
 void                EwinResize(EWin * ewin, int w, int h);
 void                EwinMoveResize(EWin * ewin, int x, int y, int w, int h);
+void                EwinSlideSizeTo(EWin * ewin, int tx, int ty,
+				    int tw, int th);
 void                EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w,
 					      int h, int grav);
 void                EwinMoveToDesktop(EWin * ewin, Desk * d);

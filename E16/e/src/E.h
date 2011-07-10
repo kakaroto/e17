@@ -223,6 +223,8 @@ typedef struct {
       char                enable_sync_request;
       char                dragbar_nocover;
       char                enable_smart_max_hv;
+      char                maximize_animate;
+      int                 maximize_speed;
    } movres;
    struct {
       int                 movres;
