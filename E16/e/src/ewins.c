@@ -76,14 +76,6 @@ EwinGetClientXwin(const EWin * ewin)
    return (win) ? WinGetXwin(win) : None;
 }
 
-Window
-EwinGetContainerXwin(const EWin * ewin)
-{
-   Win                 win = EwinGetContainerWin(ewin);
-
-   return (win) ? WinGetXwin(win) : None;
-}
-
 static EWin        *
 EwinCreate(int type)
 {

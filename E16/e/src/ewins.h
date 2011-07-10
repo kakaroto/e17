@@ -296,6 +296,7 @@ struct _ewin {
 
 #define EwinGetClientWin(ewin)		((ewin)->client.win)
 #define EwinGetContainerWin(ewin)	((ewin)->win_container)
+#define EwinGetContainerXwin(ewin)	WinGetXwin(EwinGetContainerWin(ewin))
 
 #define EwinGetIcccmName(ewin)          EoGetName(ewin)
 #define EwinGetIcccmCName(ewin)         EoGetCName(ewin)
@@ -337,7 +338,6 @@ void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 #define EWIN_CHANGE_ATTENTION   (1<<6)
 
 Window              EwinGetClientXwin(const EWin * ewin);
-Window              EwinGetContainerXwin(const EWin * ewin);
 
 void                EwinShapeSet(EWin * ewin);
 void                EwinRaise(EWin * ewin);
