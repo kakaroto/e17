@@ -754,7 +754,6 @@ EwinStick(EWin * ewin)
 void
 EwinInstantShade(EWin * ewin, int force)
 {
-   XSetWindowAttributes att;
    int                 x, y, w, h;
    int                 minw, minh;
 
@@ -777,28 +776,23 @@ EwinInstantShade(EWin * ewin, int force)
      {
      default:
      case SHADE_LEFT:
-	att.win_gravity = EastGravity;
 	w = minw;
 	break;
      case SHADE_RIGHT:
-	att.win_gravity = WestGravity;
 	if (!force)
 	   x = x + w - minw;
 	w = minw;
 	break;
      case SHADE_UP:
-	att.win_gravity = SouthGravity;
 	h = minh;
 	break;
      case SHADE_DOWN:
-	att.win_gravity = SouthGravity;
 	if (!force)
 	   y = y + h - minh;
 	h = minh;
 	break;
      }
 
-   EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
    ewin->state.shaded = 2;
    EoMoveResize(ewin, x, y, w, h);
    EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
