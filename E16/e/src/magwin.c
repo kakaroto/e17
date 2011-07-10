@@ -487,8 +487,8 @@ MagwinCreate(const char *title, int width, int height)
    win = VROOT;
    w = width;
    h = height;
-   x = ((win->w - w) / 2);
-   y = ((win->h - h) / 2);
+   x = (win->w - w) / 2;
+   y = (win->h - h) / 2;
 
    win = ECreateClientWindow(VROOT, x, y, w, h);
 
