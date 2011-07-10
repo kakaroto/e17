@@ -1239,7 +1239,7 @@ EShapeShow(const char *txt, Window xwin, XRectangle * pr, int nr)
 }
 #endif
 
-void
+int
 EShapeUpdate(Win win)
 {
    if (win->rects)
@@ -1284,6 +1284,7 @@ EShapeUpdate(Win win)
 #if DEBUG_SHAPE_OPS
    EShapeShow("EShapeUpdate", win->xwin, win->rects, win->num_rect);
 #endif
+   return win->num_rect != 0;
 }
 
 static void

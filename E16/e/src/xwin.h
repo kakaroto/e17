@@ -208,7 +208,7 @@ Pixmap              ECreatePixmap(Win win, unsigned int width,
 				  unsigned int height, unsigned int depth);
 void                EFreePixmap(Pixmap pixmap);
 
-void                EShapeUpdate(Win win);
+int                 EShapeUpdate(Win win);
 void                EShapeSetMask(Win win, int x, int y, Pixmap mask);
 void                EShapeUnionMask(Win win, int x, int y, Pixmap mask);
 void                EShapeSetMaskTiled(Win win, int x, int y, Pixmap mask,
