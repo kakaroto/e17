@@ -3,9 +3,10 @@ IRC Nick:     onefang
 Name:         David Walter Seikel
 Location:     Brisbane, Australia
 E-Mail:       -onefang@gmail.com
-WWW:          http://matrix-rad.net/
-Managing:     emu module, ecore_desktop, #get-e FAQ bot, Witch Finder General
-Contributing: e, ecore_exe, .cvsignore monkey, e_modules, e_utils/e17genmenu, enlightenment.org FAQs, get-e.org web site, edevelop.org
+WWW:          http://onefang.net/
+Managing:     #get-e FAQ bot, Witch Finder General
+Contributing: e, ecore_exe
 Group:        Core, Modules
 Platform:     Ubuntu (Linux)
 GeoData:      -27.5 153.02
+
