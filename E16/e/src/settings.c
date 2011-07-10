@@ -32,6 +32,7 @@ typedef struct {
    int                 geominfo;
    int                 maximize;
    char                dragbar_nocover;
+   char                enable_smart_max_hv;
    char                avoid_server_grab;
    char                update_while_moving;
    char                sync_request;
@@ -53,6 +54,7 @@ CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    Conf.movres.update_while_moving = dd->update_while_moving;
    Conf.movres.enable_sync_request = dd->sync_request;
    Conf.movres.dragbar_nocover = dd->dragbar_nocover;
+   Conf.movres.enable_smart_max_hv = dd->enable_smart_max_hv;
 
    autosave();
 }
@@ -75,6 +77,7 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    dd->update_while_moving = Conf.movres.update_while_moving;
    dd->sync_request = Conf.movres.enable_sync_request;
    dd->dragbar_nocover = Conf.movres.dragbar_nocover;
+   dd->enable_smart_max_hv = Conf.movres.enable_smart_max_hv;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
@@ -228,6 +231,11 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Do not cover dragbar"));
    DialogItemCheckButtonSetPtr(di, &dd->dragbar_nocover);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Enable smart maximization"));
+   DialogItemCheckButtonSetPtr(di, &dd->enable_smart_max_hv);
 }
 
 const DialogDef     DlgMoveResize = {

@@ -365,7 +365,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 	     lst = EwinListGetForDesk(&num, EoGetDesk(ewin));
 	  }
 
-	if (ver && hor && !old_ver && !old_hor)
+	if (type == MAX_CONSERVATIVE && ver && hor &&
+	    ( /*(!old_hor && !old_ver) || */ Conf.movres.enable_smart_max_hv))
 	  {
 	     _get_span_xy(ewin, type, lst, num, &x1, &x2, &y1, &y2);
 	     x = x1;
