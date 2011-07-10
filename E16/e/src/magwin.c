@@ -79,9 +79,6 @@ MagwinDrawText(MagWindow * mw, int x, int y, const char *txt)
    TextClass          *tc;
    int                 cw, ch;
 
-   if (mw->disable_text)
-      return;
-
    tc = TextclassFind("COORDS", 1);
    if (!tc)
       return;
@@ -168,6 +165,9 @@ MagwinRedraw(MagWindow * mw, int paint)
 		  EwinGetClientXwin(mw->ewin), sx, sy, sw, sh,
 		  0, 0, dw, dh, (mw->filter) ? EIMAGE_ANTI_ALIAS : 0);
      }
+
+   if (mw->disable_text)
+      return;
 
    /* Check if pointer is in magnifier window */
    EQueryPointer(EwinGetClientWin(mw->ewin), &px, &py, NULL, NULL);
