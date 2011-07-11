@@ -260,6 +260,7 @@ main (int argc, char ** argv)
         if (quit)
           {
              unsetenv("ELSA_QUIT");
+             _remove_lock();
              elsa_config_shutdown();
              exit(1);
           }
