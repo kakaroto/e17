@@ -42,34 +42,6 @@ _close(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UN
 }
 
 static void
-_key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key_Down *key)
-{
-   Elm_Genlist_Item *it;
-   DBG("%p: %s", obj, key->keyname);
-   if (!strcmp(key->keyname, "space"))
-     {
-        it = elm_genlist_selected_item_get(list);
-        DBG("current: %p", it);
-        it = elm_genlist_item_next_get(it);
-        if (!it) it = elm_genlist_first_item_get(list);
-        DBG("next: %p", it);
-        elm_image_file_set(img, elm_genlist_item_data_get(it), NULL);
-        elm_genlist_item_selected_set(it, EINA_TRUE);
-        elm_genlist_item_bring_in(it);
-     }
-   else if ((!strcmp(key->keyname, "Return")) || (!strcmp(key->keyname, "KP_Enter")))
-     {
-        if (obj == elm_object_parent_widget_get(img)) return;
-        it = elm_genlist_selected_item_get(list);
-        if (!it) return;
-        elm_image_file_set(img, elm_genlist_item_data_get(it), NULL);
-        elm_genlist_item_bring_in(it);
-     }
-   else if (key->keyname[0] == 'q')
-     ecore_main_loop_quit();
-}
-
-static void
 _del(void *data, Evas_Object *obj __UNUSED__)
 {
    eina_stringshare_del(data);
@@ -88,7 +60,10 @@ _resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *einfo
    if (obj)
      evas_object_geometry_get(obj, NULL, NULL, &x, &y);
    else
-     elm_image_object_size_get(img, &x, &y);
+     {
+        elm_image_object_size_get(img, &x, &y);
+        DBG("Native size: %i %i", x, y);
+     }
    if ((x >= root_x) || (y >= root_y))
      {
         double dx, dy;
@@ -129,6 +104,34 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
    _resize(NULL, NULL, NULL, NULL);
    win = elm_object_parent_widget_get(img);
    elm_win_title_set(win, file);
+}
+
+static void
+_key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key_Down *key)
+{
+   Elm_Genlist_Item *it;
+   DBG("%p: %s", obj, key->keyname);
+   if (!strcmp(key->keyname, "space"))
+     {
+        it = elm_genlist_selected_item_get(list);
+        DBG("current: %p", it);
+        it = elm_genlist_item_next_get(it);
+        if (!it) it = elm_genlist_first_item_get(list);
+        DBG("next: %p", it);
+        elm_genlist_item_selected_set(it, EINA_TRUE);
+        elm_genlist_item_bring_in(it);
+        _pick(NULL, NULL, it);
+     }
+   else if ((!strcmp(key->keyname, "Return")) || (!strcmp(key->keyname, "KP_Enter")))
+     {
+        if (obj == elm_object_parent_widget_get(img)) return;
+        it = elm_genlist_selected_item_get(list);
+        if (!it) return;
+        elm_genlist_item_bring_in(it);
+        _pick(NULL, NULL, it);
+     }
+   else if (key->keyname[0] == 'q')
+     ecore_main_loop_quit();
 }
 
 static void
