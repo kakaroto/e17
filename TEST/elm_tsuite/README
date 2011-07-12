@@ -1,0 +1,63 @@
+elm_tsuite guide
+------------
+elm_tsuite.sh is a tool to run and test Elementary applications.
+This script is using pixel-comparison of your application screenshot
+to detect any changes in your application window.
+
+Do not use this to test any animation or any other time-critical application.
+
+The elm_tsuite.sh utilizes shot-elm-engine, which supports only single window application.
+
+
+Prerequisites
+------------
+1. You need to install "ImageMagick" in order to do a complete comparison.
+
+2. In order to run elm_tsuite.sh you need to prepare a file containing list
+   of applications to run.
+   The file format is as follows:
+   TestName Delay Executable Name Parameters for executable (if any)
+
+   TestName - A name with NO spaces.
+              Later, elm_tsuite will produce screenshot file named TestName*
+
+   Delay - floating point value of delay before making screenshot.
+           0.5 represents half-a-second
+
+   Executable name - your application exe.
+                     Again, no spaces allowed.
+
+   Parameters - Optional parameters to be sent to your executable.
+
+Example of test-file line:
+ToggleTest 0.2 elementary_test "Toggle"
+
+The above would run a test named "ToggleTest".
+Screenshot will be taken 0.2 seconds after starting your application.
+The executable name is: elementary_test
+And executable parameter is: "Toggle"
+
+Testfile may contain comments. A comment is a line starting with a '#'.
+
+You may look at example of this file at "elementary.txt"
+
+
+There are two modes to run elm_tsuite.sh
+------------------------------------
+1. Init mode
+   Use this to produce screenshot of your application to be used for comparison.
+   This mode does not run a comparison.
+   It would just produce a TestName.original.* screenshot file
+   To do this just run elm_tsuite as follows:
+   ./elm_tsuite.sh TestFile.txt o
+
+2. Comparison mode
+   To compare current screenshot of your application with an original screenshot.
+   Just do:
+   ./elm_tsuite.sh TestFile.txt
+
+The way to work with elm_tsuite.sh is to produce "original" files with init-mode.
+Then compare the current screenshot of your application using comparison-mode.
+
+When done running comparison-mode you get an output of how many test failed.
+You may review the result by checking the TestName.comp* files produced.
