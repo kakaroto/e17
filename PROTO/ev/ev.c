@@ -82,19 +82,13 @@ _label(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 }
 
 static void
-_pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
+_resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *einfo __UNUSED__)
 {
-   const char *file, *f, *p;
-   Evas_Object *win;
-   int x, y;
-
-   DBG("pick");
-   elm_image_file_get(img, &f, &p);
-   file = elm_genlist_item_data_get(ev);
-   if (f && (!strcmp(file, f))) return;
-
-   elm_image_file_set(img, file, NULL);
-   elm_image_object_size_get(img, &x, &y);
+   Evas_Coord x, y;
+   if (obj)
+     evas_object_geometry_get(obj, NULL, NULL, &x, &y);
+   else
+     elm_image_object_size_get(img, &x, &y);
    if ((x >= root_x) || (y >= root_y))
      {
         double dx, dy;
@@ -117,9 +111,24 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
         evas_object_resize(img, x, y);
         evas_object_resize(elm_object_parent_widget_get(img), x, y);
      }
+   INF("x=%i, y=%i", x, y);
+}
+
+static void
+_pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
+{
+   const char *file, *f, *p;
+   Evas_Object *win;
+
+   DBG("pick");
+   elm_image_file_get(img, &f, &p);
+   file = elm_genlist_item_data_get(ev);
+   if (f && (!strcmp(file, f))) return;
+
+   elm_image_file_set(img, file, NULL);
+   _resize(NULL, NULL, NULL, NULL);
    win = elm_object_parent_widget_get(img);
    elm_win_title_set(win, file);
-   INF("x=%i, y=%i", x, y);
 }
 
 static void
@@ -244,6 +253,7 @@ main(int argc, char *argv[])
    evas_object_show(list);
    evas_object_smart_callback_add(list, "clicked,double", (Evas_Smart_Cb)_pick, NULL);
    evas_object_event_callback_add(win, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)_key, NULL);
+   evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, (Evas_Object_Event_Cb)_resize, NULL);
    evas_object_event_callback_add(list, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)_key, NULL);
    evas_object_smart_callback_add(img, "clicked", (Evas_Smart_Cb)_show, listwin);
    evas_object_smart_callback_add(win, "delete,request", _close, NULL);
