@@ -1,0 +1,45 @@
+How to setup a git-svn clone after cloning from e.git
+
+This guide is useful if you have SVN commit rights, but want
+to use a git tree to develop your code.
+
+The resulting git tree can be used to "git svn dcommit" code
+to the SVN tree.
+
+A git tree contains the entire history of E development.
+
+Please remember that Enlightenment development is done in SVN,
+so changes should be pushed to SVN when they build and more or
+less work, daily if possible.
+
+1) Clone enlightenment git (slow, but much faster than git svn clone):
+
+   git clone git://git.enlightenment.org/git/e.git
+   cd e
+
+2) Add the following lines to the end of .git/config (replaing your username):
+
+   [svn-remote "svn"]
+           url = svn+ssh://mike_m@svn.enlightenment.org/var/svn/e/trunk
+           fetch = :refs/remotes/git-svn
+
+3) Add .git/svn/.metadata, with the following content:
+
+   ; This file is used internally by git-svn
+   ; You should not have to edit it
+   [svn-remote "svn"]
+           reposRoot = svn+ssh://mike_m@svn.enlightenment.org/var/svn/e
+           uuid = 7cbeb6ba-43b4-40fd-8cce-4c39aea84d33
+
+4) Update to one before the current revision:
+
+   git rev-parse origin/master^ > .git/refs/remotes/git-svn 
+
+5) Rebuild the git-svn index (should be quick):
+
+   git svn fetch
+   git svn rebase
+
+To update, use "git svn rebase".
+To commit, use "git svn dcommit".
+
