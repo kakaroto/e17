@@ -1,5 +1,4 @@
 #include "e_mod_main.h"
-#include <X11/extensions/shape.h>
 
 #define WINDOW_HEIGHT   250
 #define TEXT_DIST       45
@@ -487,9 +486,7 @@ ngi_input_extents_calc(Ng *ng)
 
    if (ngi_config->use_composite)
      {
-	XShapeCombineRectangles((Display *)ecore_x_display_get(),
-				win->input, ShapeInput, 0, 0,
-				&win->rect, 1, ShapeSet, Unsorted);
+	ecore_x_window_shape_input_rectangles_set(win->input, &win->rect, 1); 
      }
    else
      {
@@ -501,10 +498,11 @@ ngi_input_extents_calc(Ng *ng)
 
    EINA_LIST_FOREACH (ng->boxes, l, box)
      {
+	int w = box->w;
+	
 	if (!box->drop_handler)
 	  continue;
 
-	int w = box->w;
 	if (w < 10) w = 10;
 
 	switch (ng->cfg->orient)
@@ -1502,7 +1500,7 @@ _ngi_redraw(Ng *ng)
       EINA_LIST_FOREACH (box->items, l, it)
 	{
 	   double size;
-
+	   
 	   if (it->scale == 0.0)
 	     continue;
 	   
@@ -1521,13 +1519,12 @@ _ngi_redraw(Ng *ng)
 
 	   if (pos2 > ng->pos)
 	     {
-		/* pos2 += 0.5; */
 		size = (int)(pos2 - (pos - 0.5));
 		pos += 0.5;
 	     }
 	   else
 	     size = (int)(pos2 - pos);
-
+	   
 	   switch (cfg->orient)
 	     {
 	      case E_GADCON_ORIENT_BOTTOM:
@@ -1565,7 +1562,8 @@ _ngi_redraw(Ng *ng)
 void
 ngi_bar_lock(Ng *ng, int show)
 {
-
+   if (!ng) return;
+   
    if (show)
      {
 	ng->show_bar++;
@@ -1667,6 +1665,9 @@ static void
 _ngi_win_autohide_check(Ng *ng, E_Desk *desk)
 {
    int hide;
+
+   if (desk->zone != ng->zone)
+     return;
    
    if (ng->cfg->stacking == below_fullscreen)
      {

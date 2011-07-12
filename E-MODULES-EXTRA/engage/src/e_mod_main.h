@@ -118,7 +118,7 @@ struct _Ngi_Win
   Ng             *ng;
   E_Popup        *popup;
   Ecore_X_Window  input;
-  XRectangle      rect;
+  Ecore_X_Rectangle rect;
   E_Win          *fake_iwin;
   E_Object       *drop_win;
 };
