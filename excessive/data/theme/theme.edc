@@ -10,7 +10,7 @@ images {
 
 collections {
    group {
-      name: emage/arrow;
+      name: excessive/arrow;
 
       parts {
          part {
@@ -62,7 +62,7 @@ collections {
       }
    }
    group {
-      name: emage/title/shortcut;
+      name: excessive/title/shortcut;
 
       max: 200 24;
       parts {
@@ -108,7 +108,7 @@ collections {
             type: GROUP;
             repeat_events: 1;
             mouse_events: 1;
-            source: emage/arrow;
+            source: excessive/arrow;
             name: arrow;
             description {
                state: default 0.0;
@@ -320,7 +320,7 @@ collections {
             type: GROUP;
             name: title;
             repeat_events: 1;
-            source: emage/title/shortcut;
+            source: excessive/title/shortcut;
             description {
                state: default 0.0;
                rel2.to_x: left;
@@ -485,19 +485,19 @@ collections {
    }
 
    group {
-      name: "elm/gengrid/item/emage-thumb/default";
-      alias: "elm/gengrid/item/emage-folder/default";
-      alias: "elm/gengrid/item/emage-emotion/default";
-      alias: "elm/gengrid/item/emage-image/default";
+      name: "elm/gengrid/item/excessive-thumb/default";
+      alias: "elm/gengrid/item/excessive-folder/default";
+      alias: "elm/gengrid/item/excessive-emotion/default";
+      alias: "elm/gengrid/item/excessive-image/default";
 
       data {
-         item: "icons" "emage.swallow.icon";
-         item: "labels" "emage.text";
+         item: "icons" "excessive.swallow.icon";
+         item: "labels" "excessive.text";
       }
       parts {
          part {
             type: SWALLOW;
-            name: "emage.swallow.icon";
+            name: "excessive.swallow.icon";
             mouse_events: 0;
             repeat_events: 0;
             description {
@@ -509,7 +509,7 @@ collections {
          }
          part {
             type: RECT;
-            name: "emage.clip";
+            name: "excessive.clip";
             mouse_events: 0;
             description {
                rel1 {
@@ -525,10 +525,10 @@ collections {
          part {
             type: TEXT;
             effect: SOFT_SHADOW;
-            name: "emage.text";
+            name: "excessive.text";
             mouse_events: 0;
             scale: 1;
-            clip_to: emage.clip;
+            clip_to: excessive.clip;
             description {
                color: 255 255 255 255;
                color3: 0 0 0 128;
@@ -567,7 +567,7 @@ collections {
 
             action: STATE_SET default 1.0;
             transition: SINUSOIDAL 4.0;
-            target: emage.text;
+            target: excessive.text;
 
             after: left;
          }
@@ -576,7 +576,7 @@ collections {
 
             action: STATE_SET default 0.0;
             transition: SINUSOIDAL 4.0;
-            target: emage.text;
+            target: excessive.text;
 
             after: right;
          }

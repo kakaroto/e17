@@ -2,7 +2,7 @@
 # include "config.h"
 #endif
 
-#include "emage_private.h"
+#include "excessive_private.h"
 
 #ifndef ELM_LIB_QUICKLAUNCH
 
@@ -48,10 +48,10 @@ elm_main(int argc, char **argv)
      ECORE_GETOPT_VALUE_NONE
    };
 
-   _log_domain = eina_log_domain_register("Emage", NULL);
+   _log_domain = eina_log_domain_register("Excessive", NULL);
    if (_log_domain < 0)
      {
-        EINA_LOG_CRIT("could not create log domain 'Emage'.");
+        EINA_LOG_CRIT("could not create log domain 'Excessive'.");
         return -1;
      }
 
@@ -64,7 +64,7 @@ elm_main(int argc, char **argv)
 
    if (quit_option) return 0;
 
-   emage_browse_init();
+   excessive_browse_init();
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
    elm_theme_extension_add(NULL, PACKAGE_DATA_DIR "/themes/theme.edj");
@@ -107,8 +107,8 @@ elm_main(int argc, char **argv)
    edje = elm_layout_edje_get(layout);
    grid = edje_object_part_external_object_get(edje, "grid");
 
-   evas_object_data_set(grid, "emage/layout", layout);
-   evas_object_data_set(layout, "emage/win", window);
+   evas_object_data_set(grid, "excessive/layout", layout);
+   evas_object_data_set(layout, "excessive/win", window);
 
    evas_object_size_hint_align_set(grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -116,27 +116,27 @@ elm_main(int argc, char **argv)
    elm_gengrid_align_set(grid, 0.5, 0.5);
    elm_gengrid_item_size_set(grid, 128, 128);
 
-   emage_browse_load(layout);
+   excessive_browse_load(layout);
 
    list = edje_object_part_external_object_get(edje, "shortcut");
 
-   emage_shortcut_init(list, grid);
+   excessive_shortcut_init(list, grid);
 
    if (argc < args + 1)
      {
        getcwd(path, PATH_MAX);
 
-       emage_browse_directory(grid, path);
+       excessive_browse_directory(grid, path);
      }
    else
      {
-       emage_browse_directory(grid, argv[args]);
+       excessive_browse_directory(grid, argv[args]);
      }
 
    elm_run();
 
-   emage_shortcut_shutdown();
-   emage_browse_shutdown();
+   excessive_shortcut_shutdown();
+   excessive_browse_shutdown();
 
    return 0;
 }

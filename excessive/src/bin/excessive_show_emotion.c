@@ -4,18 +4,18 @@
 
 #include <Emotion.h>
 
-#include "emage_private.h"
+#include "excessive_private.h"
 
 static char *
-_emage_emotion_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_excessive_emotion_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   Emage_File_Info *info = data;
+   Excessive_File_Info *info = data;
 
    return strdup(info->info.path + info->info.name_start);
 }
 
 static void
-_emage_emotion_edje_mouve_in(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_excessive_emotion_edje_mouve_in(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Evas_Object *ic = data;
 
@@ -24,7 +24,7 @@ _emage_emotion_edje_mouve_in(void *data, Evas_Object *obj __UNUSED__, const char
 }
 
 static void
-_emage_emotion_edje_mouve_out(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
+_excessive_emotion_edje_mouve_out(void *data, Evas_Object *obj __UNUSED__, const char *emission __UNUSED__, const char *source __UNUSED__)
 {
    Evas_Object *ic = data;
 
@@ -33,9 +33,9 @@ _emage_emotion_edje_mouve_out(void *data, Evas_Object *obj __UNUSED__, const cha
 }
 
 static Evas_Object *
-_emage_emotion_item_object_get(void *data, Evas_Object *obj, const char *part __UNUSED__)
+_excessive_emotion_item_object_get(void *data, Evas_Object *obj, const char *part __UNUSED__)
 {
-   Emage_File_Info *info = data;
+   Excessive_File_Info *info = data;
    Evas_Object *ic;
 
    ic = elm_video_add(obj);
@@ -43,50 +43,50 @@ _emage_emotion_item_object_get(void *data, Evas_Object *obj, const char *part __
    if (crazy_option) elm_video_play(ic);
    elm_video_audio_mute_set(ic, EINA_TRUE);
 
-   edje_object_signal_callback_add((Evas_Object *) elm_gengrid_item_object_get(info->item), "mouse,in", "*", _emage_emotion_edje_mouve_in, ic);
-   edje_object_signal_callback_add((Evas_Object *) elm_gengrid_item_object_get(info->item), "mouse,out", "*", _emage_emotion_edje_mouve_out, ic);
+   edje_object_signal_callback_add((Evas_Object *) elm_gengrid_item_object_get(info->item), "mouse,in", "*", _excessive_emotion_edje_mouve_in, ic);
+   edje_object_signal_callback_add((Evas_Object *) elm_gengrid_item_object_get(info->item), "mouse,out", "*", _excessive_emotion_edje_mouve_out, ic);
 
    return ic;
 }
 
 static void
-_emage_emotion_item_object_del(void *data, Evas_Object *obj __UNUSED__)
+_excessive_emotion_item_object_del(void *data, Evas_Object *obj __UNUSED__)
 {
    /* FIXME: implement a cache of object */
    free(data);
 }
 
 static Eina_Bool
-_emage_is_video(Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
+_excessive_is_video(Eio_File *handler __UNUSED__, const Eina_File_Direct_Info *info)
 {
    return emotion_object_extension_may_play_get(info->path + info->name_start);
 }
 
 static Evas_Object *
-_emage_emotion_display_object(Evas_Object *parent)
+_excessive_emotion_display_object(Evas_Object *parent)
 {
    Evas_Object *result;
 
    result = elm_video_add(parent);
-   evas_object_data_set(result, "emage/parent", parent);
+   evas_object_data_set(result, "excessive/parent", parent);
    elm_video_remember_position_set(result, EINA_TRUE);
    return result;
 }
 
 static void
-_emage_emotion_display_clear(Evas_Object *display)
+_excessive_emotion_display_clear(Evas_Object *display)
 {
    elm_video_file_set(display, NULL);
 }
 
-static Emage_File_Object *
-_emage_emotion_file_insert(Evas_Object *display __UNUSED__, const Emage_File_Info *info)
+static Excessive_File_Object *
+_excessive_emotion_file_insert(Evas_Object *display __UNUSED__, const Excessive_File_Info *info)
 {
-   return (Emage_File_Object *) info;
+   return (Excessive_File_Object *) info;
 }
 
 static void
-_emage_emotion_file_del(Evas_Object *display __UNUSED__, Emage_File_Object *object __UNUSED__)
+_excessive_emotion_file_del(Evas_Object *display __UNUSED__, Excessive_File_Object *object __UNUSED__)
 {
 }
 
@@ -114,26 +114,26 @@ static void
 _stop(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Evas_Object *display = data;
-   Evas_Object *layout = evas_object_data_get(display, "emage/parent");
+   Evas_Object *layout = evas_object_data_get(display, "excessive/parent");
 
    elm_video_stop(display);
    elm_video_file_set(display, NULL);
-   evas_object_del(evas_object_data_get(layout, "emage/notify"));
-   evas_object_data_set(layout, "emage/notify", NULL);
+   evas_object_del(evas_object_data_get(layout, "excessive/notify"));
+   evas_object_data_set(layout, "excessive/notify", NULL);
    edje_object_signal_emit(elm_layout_edje_get(layout), "hide,content", "code");
 }
 
 static void
-_emage_emotion_action(Evas_Object *display, Emage_File_Object *object)
+_excessive_emotion_action(Evas_Object *display, Excessive_File_Object *object)
 {
-   Emage_File_Info *info = (Emage_File_Info *) object;
+   Excessive_File_Info *info = (Excessive_File_Info *) object;
    Evas_Object *layout;
    Evas_Object *notify;
    Evas_Object *player;
 
-   layout = evas_object_data_get(display, "emage/parent");
+   layout = evas_object_data_get(display, "excessive/parent");
 
-   if (evas_object_data_get(layout, "emage/notify")) return ;
+   if (evas_object_data_get(layout, "excessive/notify")) return ;
 
    elm_video_file_set(display, info->info.path);
    elm_video_play(display);
@@ -141,7 +141,7 @@ _emage_emotion_action(Evas_Object *display, Emage_File_Object *object)
    notify = elm_notify_add(layout);
    elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_BOTTOM);
    elm_notify_timeout_set(notify, 3.0);
-   evas_object_data_set(layout, "emage/notify", notify);
+   evas_object_data_set(layout, "excessive/notify", notify);
 
    player = elm_player_add(layout);
    elm_player_video_set(player, display);
@@ -158,36 +158,36 @@ _emage_emotion_action(Evas_Object *display, Emage_File_Object *object)
    evas_object_show(notify);
 }
 
-static const Elm_Gengrid_Item_Class _emage_emotion_class = {
-  "emage-emotion",
+static const Elm_Gengrid_Item_Class _excessive_emotion_class = {
+  "excessive-emotion",
   {
-    _emage_emotion_item_label_get,
-    _emage_emotion_item_object_get,
+    _excessive_emotion_item_label_get,
+    _excessive_emotion_item_object_get,
     NULL,
-    _emage_emotion_item_object_del,
+    _excessive_emotion_item_object_del,
   }
 };
 
-static const Emage_Mapping _emage_emotion_mapping = {
-  "video", &_emage_emotion_class,
+static const Excessive_Mapping _excessive_emotion_mapping = {
+  "video", &_excessive_emotion_class,
   {
-    _emage_is_video,
-    _emage_emotion_display_object,
-    _emage_emotion_display_clear,
-    _emage_emotion_file_insert,
-    _emage_emotion_file_del,
-    _emage_emotion_action
+    _excessive_is_video,
+    _excessive_emotion_display_object,
+    _excessive_emotion_display_clear,
+    _excessive_emotion_file_insert,
+    _excessive_emotion_file_del,
+    _excessive_emotion_action
   }
 };
 
 Eina_Bool
-emage_show_emotion_init(void)
+excessive_show_emotion_init(void)
 {
-  return emage_browse_register(&_emage_emotion_mapping);
+  return excessive_browse_register(&_excessive_emotion_mapping);
 }
 
 Eina_Bool
-emage_show_emotion_shutdown(void)
+excessive_show_emotion_shutdown(void)
 {
   return EINA_TRUE;
 }

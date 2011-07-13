@@ -6,7 +6,7 @@ m4_define([v_min], [1])
 m4_define([v_mic], [0])
 m4_define([v_ver], [v_maj.v_min.v_mic])
 
-AC_INIT([emage], [v_ver])
+AC_INIT([excessive], [v_ver])
 AC_PREREQ([2.52])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -16,17 +16,17 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-m4_ifdef([AM_GNU_GETTEXT_VERSION], [
-AM_GNU_GETTEXT_VERSION([0.12.1])
-])
+#m4_ifdef([AM_GNU_GETTEXT_VERSION], [
+#AM_GNU_GETTEXT_VERSION([0.12.1])
+#])
 
-m4_ifdef([AM_GNU_GETTEXT], [
-AM_GNU_GETTEXT([external])
-po_makefile_in=po/Makefile.in
-AM_CONDITIONAL([HAVE_PO], [true])
-],[
-AM_CONDITIONAL([HAVE_PO], [false])
-])
+#m4_ifdef([AM_GNU_GETTEXT], [
+#AM_GNU_GETTEXT([external])
+#po_makefile_in=po/Makefile.in
+#AM_CONDITIONAL([HAVE_PO], [true])
+#],[
+#AM_CONDITIONAL([HAVE_PO], [false])
+#])
 
 AC_SUBST(LTLIBINTL)
 
@@ -53,7 +53,7 @@ PKG_PROG_PKG_CONFIG
 
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
-PKG_CHECK_MODULES([EMAGE],
+PKG_CHECK_MODULES([EXCESSIVE],
    [
     eina >= 1.0.0
     evas >= 1.0.0
@@ -78,6 +78,7 @@ AC_C___ATTRIBUTE__
 
 AC_CONFIG_FILES([
 Makefile
+excessive.desktop
 src/Makefile
 src/bin/Makefile
 data/Makefile

@@ -14,7 +14,7 @@ depcomp \
 install-sh \
 ltmain.sh  \
 missing  \
-eet_docs.tar.gz \
+excessive_docs.tar.gz \
 m4/libtool.m4 \
 m4/lt~obsolete.m4 \
 m4/ltoptions.m4 \
@@ -28,8 +28,8 @@ COPYING-PLAIN \
 autogen.sh \
 README
 
-ICON = emage.png emage-16x16.png emage-32x32.png emage-64x64.png emage-128x128.png
-DESKTOP = emage.desktop
+ICON = excessive.png excessive-16x16.png excessive-32x32.png excessive-64x64.png excessive-128x128.png
+DESKTOP = excessive.desktop
 
 icondir = $(datadir)/pixmaps
 icon_DATA = $(ICON)

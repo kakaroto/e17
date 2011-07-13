@@ -2,10 +2,10 @@
 # include "config.h"
 #endif
 
-#include "emage_private.h"
+#include "excessive_private.h"
 
-typedef struct _Emage_Shortcut Emage_Shortcut;
-struct _Emage_Shortcut
+typedef struct _Excessive_Shortcut Excessive_Shortcut;
+struct _Excessive_Shortcut
 {
    Evas_Object *list;
    Efreet_Desktop *ef;
@@ -14,13 +14,13 @@ struct _Emage_Shortcut
 };
 
 static char *
-_emage_shortcut_favorite_label_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_excessive_shortcut_favorite_label_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    return strdup("Favorites");
 }
 
 static Evas_Object *
-_emage_shortcut_favorite_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part __UNUSED__)
+_excessive_shortcut_favorite_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part __UNUSED__)
 {
    Evas_Object *ic = elm_icon_add(obj);
 
@@ -31,8 +31,8 @@ _emage_shortcut_favorite_icon_get(void *data __UNUSED__, Evas_Object *obj, const
 static Elm_Genlist_Item_Class itc_favorite_group = {
   "group_index",
   {
-    _emage_shortcut_favorite_label_get,
-    _emage_shortcut_favorite_icon_get,
+    _excessive_shortcut_favorite_label_get,
+    _excessive_shortcut_favorite_icon_get,
     NULL,
     NULL,
     NULL
@@ -41,17 +41,17 @@ static Elm_Genlist_Item_Class itc_favorite_group = {
 };
 
 static char *
-_emage_shortcut_desktop_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_excessive_shortcut_desktop_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   Emage_Shortcut *es = data;
+   Excessive_Shortcut *es = data;
 
    return strdup(es->ef->name);
 }
 
 static Evas_Object *
-_emage_shortcut_desktop_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part __UNUSED__)
+_excessive_shortcut_desktop_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part __UNUSED__)
 {
-   Emage_Shortcut *es = data;
+   Excessive_Shortcut *es = data;
    Evas_Object *ic = elm_icon_add(obj);
 
    elm_icon_standard_set(ic, es->ef->icon);
@@ -59,23 +59,23 @@ _emage_shortcut_desktop_icon_get(void *data __UNUSED__, Evas_Object *obj, const 
 }
 
 static void
-_emage_shortcut_desktop_select(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+_excessive_shortcut_desktop_select(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Elm_Genlist_Item *item = event_info;
-   Emage_Shortcut *es;
+   Excessive_Shortcut *es;
    Evas_Object *grid = data;
 
    es = elm_genlist_item_data_get(item);
    elm_genlist_item_selected_set(item, EINA_FALSE);
    if (!es) return ;
-   emage_browse_directory(grid, es->target);
+   excessive_browse_directory(grid, es->target);
 }
 
 static Elm_Genlist_Item_Class itc_desktop_group = {
   "default",
   {
-    _emage_shortcut_desktop_label_get,
-    _emage_shortcut_desktop_icon_get,
+    _excessive_shortcut_desktop_label_get,
+    _excessive_shortcut_desktop_icon_get,
     NULL,
     NULL,
     NULL
@@ -84,7 +84,7 @@ static Elm_Genlist_Item_Class itc_desktop_group = {
 };
 
 static void
-_emage_shortcut_cleanup(Emage_Shortcut *es)
+_excessive_shortcut_cleanup(Excessive_Shortcut *es)
 {
    efreet_desktop_free(es->ef);
    free(es->target);
@@ -94,16 +94,16 @@ _emage_shortcut_cleanup(Emage_Shortcut *es)
 static void
 _desktop_stat_ok(void *data, Eio_File *handler __UNUSED__, const struct stat *st)
 {
-   Emage_Shortcut *es = data;
+   Excessive_Shortcut *es = data;
    Elm_Genlist_Item *egi;
 
    if (!eio_file_is_dir(st))
      {
-        _emage_shortcut_cleanup(es);
+        _excessive_shortcut_cleanup(es);
         return ;
      }
 
-   egi = evas_object_data_get(es->list, "emage/favorites");
+   egi = evas_object_data_get(es->list, "excessive/favorites");
 
    elm_genlist_item_append(es->list, &itc_desktop_group, es, egi, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 }
@@ -111,7 +111,7 @@ _desktop_stat_ok(void *data, Eio_File *handler __UNUSED__, const struct stat *st
 static void
 _desktop_stat_error(void *data, Eio_File *handler __UNUSED__, int error __UNUSED__)
 {
-   _emage_shortcut_cleanup(data);
+   _excessive_shortcut_cleanup(data);
 }
 
 static Eina_Bool
@@ -171,7 +171,7 @@ _desktop_flatten_env(const char *file)
 static void
 _desktop_main_cb(void *data, Eio_File *handler __UNUSED__, const char *file)
 {
-   Emage_Shortcut *es;
+   Excessive_Shortcut *es;
    Efreet_Desktop *ef;
    char *replace;
 
@@ -189,7 +189,7 @@ _desktop_main_cb(void *data, Eio_File *handler __UNUSED__, const char *file)
 
    replace = _desktop_flatten_env(ef->url + 5);
 
-   es = malloc(sizeof (Emage_Shortcut));
+   es = malloc(sizeof (Excessive_Shortcut));
    if (!es) goto nomem;
 
    es->ef = ef;
@@ -217,7 +217,7 @@ _desktop_error_cb(void *data __UNUSED__, Eio_File *handler __UNUSED__, int error
 }
 
 Eina_Bool
-emage_shortcut_init(Evas_Object *list, Evas_Object *grid)
+excessive_shortcut_init(Evas_Object *list, Evas_Object *grid)
 {
    Elm_Genlist_Item *egi;
 
@@ -225,9 +225,9 @@ emage_shortcut_init(Evas_Object *list, Evas_Object *grid)
 
    egi = elm_genlist_item_append(list, &itc_favorite_group, NULL, NULL,
                                  ELM_GENLIST_ITEM_GROUP, NULL, NULL);
-   evas_object_data_set(list, "emage/favorites", egi);
+   evas_object_data_set(list, "excessive/favorites", egi);
 
-   evas_object_smart_callback_add(list, "selected", _emage_shortcut_desktop_select, grid);
+   evas_object_smart_callback_add(list, "selected", _excessive_shortcut_desktop_select, grid);
 
    eio_file_ls("/home/cedric/.e/e/fileman/favorites/",
                _desktop_filter_cb,
@@ -240,7 +240,7 @@ emage_shortcut_init(Evas_Object *list, Evas_Object *grid)
 }
 
 Eina_Bool
-emage_shortcut_shutdown(void)
+excessive_shortcut_shutdown(void)
 {
    return EINA_TRUE;
 }
