@@ -1,5 +1,10 @@
 elm_tsuite guide
 ------------
+elm_tsuite.sh is aimed for developers that want to make sure they don't
+break something when they change it, and also for a testing server.
+Its intended to run along with all the other unit/regression tests.
+This will help to spot the problematic commits.
+
 elm_tsuite.sh is a tool to run and test Elementary applications.
 This script is using pixel-comparison of your application screenshot
 to detect any changes in your application window.
