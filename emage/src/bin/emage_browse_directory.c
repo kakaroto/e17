@@ -26,7 +26,7 @@ _emage_file_info_cmp(const void *a, const void *b)
           return 1;
      }
 
-   return strcasecmp(fa->info.path, fb->info.path);
+   return strcoll(fa->info.path, fb->info.path);
 }
 
 static void
