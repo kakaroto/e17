@@ -25,5 +25,3 @@ evas_line - width
 evas_line - does not shown on glbackend. 
 
 elm_ctxpopup - add effects
-
-elm_ctxpopup - adjust arrow size 
