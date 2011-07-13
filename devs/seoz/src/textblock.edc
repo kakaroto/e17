@@ -1,0 +1,37 @@
+collections {
+
+styles {
+   style { name: "textblock_style";
+      base: "font=Sans font_size=30 color=#ffffff text_class=label";
+      tag:  "br" "\n";
+      tag:  "ps" "ps";
+      tag:  "tab" "\t";
+   }
+}
+
+   group { name: "main";
+      parts {
+         part { name: "base";
+            type: RECT;
+            description { state: "default" 0.0;
+               min: 350 350;
+               color: 200 0 0 200;
+            }
+         }
+         part { name: "text";
+            type: TEXTBLOCK;
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               text {
+                  style: "textblock_style";
+                  min: 0 1;
+                  align: 0.0 0.5;
+                  text: "this is a test string";
+               }
+               rel1.to: "base";
+               rel2.to: "base";
+            }
+         }
+      }
+   }
+}
