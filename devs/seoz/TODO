@@ -1,4 +1,5 @@
 * Genlist
+	[High] Fix Genlist edc for odd/even things.
 	[High] Fix "Genlist 4" and "Label" in elementary_test.
 	[High] Enhance elm_genlist_height_for_width_mode_set() API.
 	[High] Revise Sohyun's genlist-entry patch.
