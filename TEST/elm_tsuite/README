@@ -54,7 +54,7 @@ There are two modes to run elm_tsuite.sh
    This mode does not run a comparison.
    It would just produce a TestName.original.* screenshot file
    To do this just run elm_tsuite as follows:
-   ./elm_tsuite.sh TestFile.txt o
+   ./elm_tsuite.sh TestFile.txt --init
 
 2. Comparison mode
    To compare current screenshot of your application with an original screenshot.

@@ -127,6 +127,7 @@ DEBUG echo "$0" STARTED `date +'%Y-%m-%d-%H-%M-%S'`
 DEBUG echo PARAMETERS:
 
 filename="$1"
+init_only="$2"
 # Test if found input-file
 if [ -e "$filename" ]
 then
@@ -135,6 +136,16 @@ else
    echo "$filename - No input file, exit"
    exit -1
 fi
+
+if [ $# -gt 1  ]
+then
+   if [ $init_only != "--init"  ]
+   then
+      echo "Invalid parameter <$init_only>, exit"
+      exit -3
+   fi
+fi
+
 which compare > /dev/null
 comp_unavail=$?
 DEBUG echo "comp_unavail = \"$comp_unavail\""
