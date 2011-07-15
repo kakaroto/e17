@@ -27,3 +27,5 @@ evas_line - does not shown on glbackend.
 elm_ctxpopup - add effects
 
 elm_transit - check the pass events set when chain transits. 
+
+elm_layout - theme_hook 
