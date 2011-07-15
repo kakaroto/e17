@@ -132,7 +132,7 @@ protected:
         eo = _eo;
         assert(eo != NULL);
 
-        evas_object_data_set(eo, "v8obj", this);
+        evas_object_data_set(eo, "cppobj", this);
 
         v8::Handle<v8::Object> out = get_object();
 
@@ -159,6 +159,21 @@ protected:
 
    virtual void add_child(CEvasObject *child)
      {
+     }
+
+   CEvasObject *get_parent() const
+     {
+        CEvasObject *parent = NULL;
+        Evas_Object *win;
+
+        win = elm_object_parent_widget_get(eo);
+        if (win)
+          {
+             void *data = evas_object_data_get(win, "cppobj");
+             if (data)
+               parent = reinterpret_cast<CEvasObject*>(data);
+          }
+        return parent;
      }
 
    void object_set_eo(v8::Handle<v8::Object> obj, CEvasObject *eo)
@@ -242,6 +257,12 @@ public:
         return eo;
      }
 
+   virtual CEvasObject *get_child(v8::Handle<v8::Value> name)
+     {
+        fprintf(stderr, "get_child undefined\n");
+        return NULL;
+     }
+
    /*
     * set a property
     * return true if successful, false if not
@@ -268,6 +289,12 @@ public:
         return v8::Undefined();
      }
 
+
+   // FIXME: could add to the parent here... raster to figure out
+   Evas_Object *top_widget_get() const
+     {
+        return elm_object_top_widget_get(eo);
+     }
 
    virtual ~CEvasObject()
      {
@@ -925,6 +952,7 @@ class CElmRadio : public CEvasObject {
 protected:
    static CPropHandler<CElmRadio> prop_handler;
    v8::Persistent<v8::Value> the_icon;
+   v8::Persistent<v8::Value> the_group;
 
 public:
    CElmRadio(CEvasObject *parent, v8::Local<v8::Object> obj) :
@@ -937,6 +965,7 @@ public:
    virtual ~CElmRadio()
      {
         the_icon.Dispose();
+        the_group.Dispose();
      }
 
    virtual v8::Handle<v8::ObjectTemplate> get_template(void)
@@ -980,11 +1009,37 @@ public:
         elm_radio_icon_set(eo, icon->get());
         the_icon = v8::Persistent<v8::Value>::New(icon->get_object());
      }
+
+   virtual v8::Handle<v8::Value> group_get() const
+     {
+        return the_group;
+     }
+
+   virtual void group_set(v8::Handle<v8::Value> value)
+     {
+        the_group = v8::Persistent<v8::Value>::New(value);
+
+        CEvasObject *parent = get_parent();
+        if (parent)
+          {
+             CEvasObject *group = parent->get_child(value);
+             if (group)
+               {
+                  if (dynamic_cast<CElmRadio*>(group))
+                    elm_radio_group_add(eo, group->get());
+                  else
+                    fprintf(stderr, "%p not a radio button!\n", group);
+               }
+             else
+               fprintf(stderr, "child %s not found!\n", *v8::String::Utf8Value(value->ToString()));
+          }
+     }
 };
 
 template<> CEvasObject::CPropHandler<CElmRadio>::property_list
 CEvasObject::CPropHandler<CElmRadio>::list[] = {
   PROP_HANDLER(CElmRadio, icon),
+  PROP_HANDLER(CElmRadio, group),
   { NULL, NULL, NULL },
 };
 
@@ -993,6 +1048,30 @@ protected:
    virtual void add_child(CEvasObject *child)
      {
         elm_box_pack_end(eo, child->get());
+     }
+
+   virtual CEvasObject *get_child(v8::Handle<v8::Value> name)
+     {
+        CEvasObject *ret = NULL;
+
+        v8::Handle<v8::Object> obj = get_object();
+        v8::Local<v8::Value> elements_val = obj->Get(v8::String::New("elements"));
+
+        if (!elements_val->IsObject())
+          {
+             fprintf(stderr, "elements not an object\n");
+             return ret;
+          }
+
+        v8::Local<v8::Object> elements = elements_val->ToObject();
+        v8::Local<v8::Value> val = elements->Get(name);
+
+        if (val->IsObject())
+          ret = eo_from_info(val->ToObject());
+        else
+          fprintf(stderr, "value %s not an object\n", *v8::String::Utf8Value(val->ToString()));
+
+        return ret;
      }
 
    static CPropHandler<CElmBox> prop_handler;

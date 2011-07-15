@@ -29,14 +29,13 @@ var my_window = new elm.main({
 			weight : EXPAND_BOTH,
 			resize : true,
 			elements : {
-				scaled_icon_radio : {
+				rdg : {
 					type : "radio",
 					label : "Icon sized to radio",
 					weight : EXPAND_BOTH,
 					align : { x : 1.0, y : 0.5 },
 					icon : logo_icon,
 					value : 0,
-					new_group : true,
 				},
 				unscaled_radio_icon : {
 					type : "radio",
@@ -45,28 +44,33 @@ var my_window = new elm.main({
 					align : { x : 1.0, y : 0.5 },
 					icon : logo_icon_unscaled,
 					value : 1,
+					group : "rdg",
 				},
 				label_only_radio : {
 					type : "radio",
 					label : "Label Only",
 					value : 2,
+					group : "rdg",
 				},
 				disabled_radio : {
 					type : "radio",
 					label : "Disabled",
 					disabled : true,
 					value : 3,
+					group : "rdg",
 				},
 				icon_radio : {
 					type : "radio",
 					icon : logo_icon_unscaled,
 					value : 4,
+					group : "rdg",
 				},
 				disabled_icon_radio : {
 					type : "radio",
 					disabled : true,
 					icon : logo_icon_unscaled,
 					value : 5,
+					group : "rdg",
 				},
 			},
 		},
