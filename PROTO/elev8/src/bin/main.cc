@@ -1034,12 +1034,24 @@ public:
                fprintf(stderr, "child %s not found!\n", *v8::String::Utf8Value(value->ToString()));
           }
      }
+
+   virtual v8::Handle<v8::Value> value_get() const
+     {
+        return v8::Integer::New(elm_radio_state_value_get(eo));
+     }
+
+   virtual void value_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsNumber())
+          elm_radio_state_value_set(eo, value->Int32Value());
+     }
 };
 
 template<> CEvasObject::CPropHandler<CElmRadio>::property_list
 CEvasObject::CPropHandler<CElmRadio>::list[] = {
   PROP_HANDLER(CElmRadio, icon),
   PROP_HANDLER(CElmRadio, group),
+  PROP_HANDLER(CElmRadio, value),
   { NULL, NULL, NULL },
 };
 
