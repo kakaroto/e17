@@ -269,12 +269,6 @@ public:
      }
 
 
-   // FIXME: could add to the parent here... raster to figure out
-   Evas_Object *top_widget_get() const
-     {
-        return elm_object_top_widget_get(eo);
-     }
-
    virtual ~CEvasObject()
      {
         evas_object_unref(eo);
@@ -835,7 +829,7 @@ public:
    CElmButton(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_button_add(parent->top_widget_get());
+        eo = elm_button_add(parent->get());
         construct(eo, obj);
      }
 
@@ -898,7 +892,7 @@ public:
    explicit CElmBackground(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_bg_add(parent->top_widget_get());
+        eo = elm_bg_add(parent->get());
         construct(eo, obj);
      }
 
@@ -936,7 +930,7 @@ public:
    CElmRadio(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_radio_add(parent->top_widget_get());
+        eo = elm_radio_add(parent->get());
         construct(eo, obj);
      }
 
@@ -1007,7 +1001,7 @@ public:
    CElmBox(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_box_add(parent->top_widget_get());
+        eo = elm_box_add(parent->get());
         construct(eo, obj);
 
         /*
@@ -1088,7 +1082,7 @@ public:
    CElmLabel(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_label_add(parent->top_widget_get());
+        eo = elm_label_add(parent->get());
         construct(eo, obj);
      }
 
@@ -1161,7 +1155,7 @@ public:
      {
         CEvasObject *front, *back;
 
-        eo = elm_flip_add(parent->top_widget_get());
+        eo = elm_flip_add(parent->get());
         construct(eo, obj);
 
         /* realize front and back */
@@ -1182,7 +1176,7 @@ public:
    CElmIcon(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_icon_add(parent->top_widget_get());
+        eo = elm_icon_add(parent->get());
         construct(eo, obj);
      }
 
@@ -1286,7 +1280,7 @@ public:
    CElmActionSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_actionslider_add(parent->top_widget_get());
+        eo = elm_actionslider_add(parent->get());
         construct(eo, obj);
      }
 
@@ -1410,7 +1404,7 @@ public:
        CEvasObject()
      {
         CEvasObject *content;
-        eo = elm_scroller_add(parent->top_widget_get());
+        eo = elm_scroller_add(parent->get());
         construct(eo, obj);
         content = realize_one(this, obj->Get(v8::String::New("content")));
         if (!content)
@@ -1545,7 +1539,7 @@ public:
    CElmSlider(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_slider_add(parent->top_widget_get());
+        eo = elm_slider_add(parent->get());
         construct(eo, obj);
      }
 
@@ -1785,7 +1779,7 @@ public:
    CElmGenList(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_genlist_add(parent->top_widget_get());
+        eo = elm_genlist_add(parent->get());
         construct(eo, obj);
      }
 };
@@ -1796,7 +1790,7 @@ public:
    CElmList(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_list_add(parent->top_widget_get());
+        eo = elm_list_add(parent->get());
         construct(eo, obj);
         items_set(obj->Get(v8::String::New("items")));
      }
@@ -1846,7 +1840,7 @@ public:
    CElmEntry(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_entry_add(parent->top_widget_get());
+        eo = elm_entry_add(parent->get());
         construct(eo, obj);
      }
 
@@ -1896,7 +1890,7 @@ public:
    CElmCheck(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_check_add(parent->top_widget_get());
+        eo = elm_check_add(parent->get());
         construct(eo, obj);
      }
 
@@ -1970,7 +1964,7 @@ public:
    CElmClock(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_clock_add(parent->top_widget_get());
+        eo = elm_clock_add(parent->get());
         construct(eo, obj);
      }
 };
@@ -1993,7 +1987,7 @@ public:
    CElmProgressBar(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
      {
-        eo = elm_progressbar_add(parent->top_widget_get());
+        eo = elm_progressbar_add(parent->get());
         construct(eo, obj);
         get_object()->Set(v8::String::New("pulse"), v8::FunctionTemplate::New(do_pulse)->GetFunction());
      }
