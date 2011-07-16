@@ -11,6 +11,8 @@
  <flag name="xdg">Enable integration with <pkg>dev-libs/efreet</pkg> for cross-desktop standards (freedesktop.org).</flag>
  <flag name="weather">Enable integration with <pkg>net-libs/libeweather</pkg> to provide weather widget.</flag>
  <flag name="thumbnails">Enable integration with <pkg>media-libs/ethumb</pkg> to generate and show thumbnails automatically.</flag>
+ <flag name="video">Enable integration with <pkg>media-libs/emotion</pkg> to play media files.</flag>
+ <flag name="quicklaunch">Enable building of quicklaunch functionality and related tests.</flag>
 </use>
 <longdescription>
 Elementary is a widget set. It is a new-style of widget set much more
