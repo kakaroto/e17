@@ -1476,7 +1476,12 @@ EwinOpActivate(EWin * ewin, int source, int raise)
    unshade = ewin->state.shaded /* && !ewin->state.iconified */ ;
 
    if (!ewin->state.animated && !ewin->state.iconified)
-      DeskGotoByEwin(ewin);
+     {
+	DeskGotoByEwin(ewin);
+	/* If somehow lost outside desktop, move it to center */
+	if (!EwinIsOnDesktop(ewin))
+	   ArrangeEwinCentered(ewin);
+     }
    if (raise)
       EwinOpRaise(ewin, source);
    if (ewin->state.iconified)
