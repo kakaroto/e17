@@ -368,6 +368,7 @@ void                EwinBorderGetSize(const EWin * ewin, int *bl, int *br,
 				      int *bt, int *bb);
 void                EwinBorderUpdateState(EWin * ewin);
 int                 EwinIsOnScreen(const EWin * ewin);
+int                 EwinIsOnDesktop(const EWin * ewin);
 void                EwinRememberPositionSet(EWin * ewin);
 void                EwinRememberPositionGet(EWin * ewin, Desk * dsk,
 					    int *px, int *py);

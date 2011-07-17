@@ -1669,6 +1669,33 @@ EwinIsOnScreen(const EWin * ewin)
    return 1;
 }
 
+int
+EwinIsOnDesktop(const EWin * ewin)
+{
+   int                 xd, yd, wd, hd;
+
+   wd = WinGetW(VROOT);
+   hd = WinGetH(VROOT);
+   if (EoIsSticky(ewin))
+     {
+	xd = yd = 0;
+     }
+   else
+     {
+	int                 ax, ay;
+
+	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
+	xd = -ax * wd;
+	yd = -ay * hd;
+	wd *= Conf.desks.areas_nx;
+	hd *= Conf.desks.areas_ny;
+     }
+
+   return
+      EoGetX(ewin) + EoGetW(ewin) - 8 >= xd && EoGetX(ewin) + 8 <= xd + wd &&
+      EoGetY(ewin) + EoGetH(ewin) - 8 >= yd && EoGetY(ewin) + 8 <= yd + hd;
+}
+
 /*
  * Save current position in absolute viewport coordinates
  */
