@@ -177,7 +177,7 @@ sub MakeMenu {
 # Process a .desktop file
 sub ProcessFile {
 	local $f = shift;
-	local $Name, $Exec, $Icon, $Cats, $Type, $File;
+	local $Name, $Exec, $Icon, $Cats, $Type, $Ndis, $File;
 	local $c;
 
 	if (! -f "$f")  {
@@ -188,7 +188,7 @@ sub ProcessFile {
 	# Global ref no
 	$N++;
 
-	$Name = $Exec = $Icon = "";
+	$Name = $Exec = $Icon = $Ndis = "";
 	$Nam1 = $Nam2 = $Nam3 = "";
 	$Cats = shift;
 	$Type = shift;
@@ -227,6 +227,8 @@ sub ProcessFile {
 				$Name = "";
 				last;
 			}
+		} elsif (/^NoDisplay=(.*)$/) {
+			$Ndis = $1;
 		}
 		if ($Nam1 || $Nam2 || $Nam3) {
 			if    ($Nam1) { $Name = $Nam1; }
@@ -239,9 +241,9 @@ sub ProcessFile {
 	close FI;
 
 	$Cats =~ s/ +$//;
-	if (!$Name || !$Exec || !$Cats) {
-		printf("Skipped: %-24s %-24s %-20s %-20s %s\n",
-			$f, $Name, $Exec, $Icon, $Cats) if $dbg ge 1;
+	if ($Ndis eq "true" || !$Name || !$Exec || !$Cats) {
+		printf("Skipped: %-24s %-4s %-24s %-20s %-20s %s\n",
+			$f, $Name, $Ndis, $Exec, $Icon, $Cats) if $dbg ge 1;
 		return;
 	}
 
