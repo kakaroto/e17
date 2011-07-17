@@ -84,9 +84,7 @@ $DoIconv = `which iconv`;
 @MainMenu = (
 	"t:User Menus",
 	"m:User Application List:user_apps.menu",
-	"m:GNOME:menus_GNOME/index.menu",
-	"m:KDE:menus_KDE/index.menu",
-	"m:Other:menus_Other/index.menu",
+	"m:Applications:menus_apps/index.menu",
 	"m:Epplets:epplets.menu",
 	"c:Restart:exit restart",
 	"c:Log Out:exit logout"
@@ -404,7 +402,7 @@ sub MakeAppsMenu {
 
 	# Sort the apps into categories
 	foreach $k (sort(keys(%Name))) {
-		next if ($Type{$k} ne $type);
+#		next if ($Type{$k} ne $type);
 		$c = $Cats{$k};
 		$c =~ s/;.*$//;
 #		$menus{$c} = $k;
@@ -477,9 +475,7 @@ MkDir("$EdirMenus");
 MakeMenu("file.menu", \@MainMenu);
 MakeMenu("user_apps.menu", \@UserAppsMenu);
 MakeEppsMenu("epplets.menu");
-MakeAppsMenu("GNOME");
-MakeAppsMenu("KDE");
-MakeAppsMenu("Other");
+MakeAppsMenu("apps");
 
 CloseMessageWindows();
 system("eesh -e 'menus reload'");
