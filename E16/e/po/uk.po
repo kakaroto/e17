@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-06-19 16:30+0200\n"
+"POT-Creation-Date: 2011-07-11 09:11+0200\n"
 "PO-Revision-Date: 2010-01-25 00:46+0000\n"
 "Last-Translator: Sergiy Gavrylov <sergiovana@bigmir.net>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -430,7 +430,7 @@ msgstr "Закрити"
 msgid "Create New Iconbox"
 msgstr "Створити новий Iconbox"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2115
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2122
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Розмір піктограми: %2d"
@@ -519,8 +519,8 @@ msgstr "Вимкнено"
 msgid "Whirl"
 msgstr ""
 
-#: src/container.c:1689 src/settings.c:112 src/settings.c:117
-#: src/settings.c:392
+#: src/container.c:1689 src/settings.c:121 src/settings.c:126
+#: src/settings.c:422
 msgid "Box"
 msgstr "Контейнер"
 
@@ -1237,7 +1237,7 @@ msgstr ""
 "Будь ласка, розберіться в ситуації і переконайтеся, що\n"
 "утиліта встановлена правильно.\n"
 
-#: src/magwin.c:539
+#: src/magwin.c:540
 msgid "Magnifier"
 msgstr "Лупа"
 
@@ -1279,27 +1279,27 @@ msgstr "Згорнути цю групу"
 msgid "Group %i"
 msgstr "Група %i"
 
-#: src/menus.c:2138
+#: src/menus.c:2145
 msgid "Animated display of menus"
 msgstr "Анімоване відображення меню"
 
-#: src/menus.c:2143
+#: src/menus.c:2150
 msgid "Always pop up menus on screen"
 msgstr "Зринаючі меню завжди на екрані"
 
-#: src/menus.c:2148
+#: src/menus.c:2155
 msgid "Warp pointer after moving menus"
 msgstr "Рух вказівника після переміщення меню"
 
-#: src/menus.c:2165
+#: src/menus.c:2172
 msgid "Menus"
 msgstr "Меню"
 
-#: src/menus.c:2166
+#: src/menus.c:2173
 msgid "Menu Settings"
 msgstr "Налаштування меню"
 
-#: src/menus.c:2169
+#: src/menus.c:2176
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1340,7 +1340,8 @@ msgstr "Діалоги Е:"
 msgid "Tooltips:"
 msgstr "Підказки:"
 
-#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:382
+#: src/mod-trans.c:172 src/settings.c:101 src/settings.c:106
+#: src/settings.c:412
 msgid "Opaque"
 msgstr "Непрозорість"
 
@@ -1566,87 +1567,99 @@ msgstr ""
 "Діалог налаштування\n"
 "сеансу Enlightenment"
 
-#: src/settings.c:84
+#: src/settings.c:93
 msgid "Move Methods:"
 msgstr "Методи переміщення:"
 
-#: src/settings.c:89
+#: src/settings.c:98
 msgid "Resize Methods:"
 msgstr "Методи зміни розміру:"
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:387
+#: src/settings.c:111 src/settings.c:116 src/settings.c:417
 msgid "Technical"
 msgstr "Технічний"
 
-#: src/settings.c:123 src/settings.c:128 src/settings.c:398
+#: src/settings.c:132 src/settings.c:137 src/settings.c:428
 msgid "Shaded"
 msgstr "Затінений"
 
-#: src/settings.c:133 src/settings.c:138 src/settings.c:403
+#: src/settings.c:142 src/settings.c:147 src/settings.c:433
 msgid "Semi-Solid"
 msgstr "Напівсуцільний"
 
-#: src/settings.c:143
+#: src/settings.c:152
 msgid "Translucent"
 msgstr "Напівпрозорий"
 
-#: src/settings.c:155
+#: src/settings.c:164
 msgid "Avoid server grab"
 msgstr "Уникати захоплення сервером"
 
-#: src/settings.c:165
+#: src/settings.c:174
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "Переміщення/зміна геометрії та позиції вікна:"
 
-#: src/settings.c:169
+#: src/settings.c:178
 msgid "Window Center (O/T/B Methods)"
 msgstr "Центр вікна (різні методи)"
 
-#: src/settings.c:175
+#: src/settings.c:184
 msgid "Always Screen corner"
 msgstr "Завжди в куті екрана"
 
-#: src/settings.c:181
+#: src/settings.c:190
 msgid "Don't show"
 msgstr "Не показувати"
 
-#: src/settings.c:193
+#: src/settings.c:202
 msgid "Default Resize Policy:"
 msgstr "Типова політика зміни розміру:"
 
-#: src/settings.c:197
+#: src/settings.c:206
 msgid "Conservative"
 msgstr "Традиційна"
 
-#: src/settings.c:203
+#: src/settings.c:212
 msgid "Available"
 msgstr "Доступна"
 
-#: src/settings.c:209
+#: src/settings.c:218
 msgid "Absolute"
 msgstr "Абсолютна"
 
-#: src/settings.c:219
+#: src/settings.c:228
 msgid "Update window while moving"
 msgstr "Оновлювати вікно під час переміщення"
 
-#: src/settings.c:224
+#: src/settings.c:233
 msgid "Synchronize move/resize with application"
 msgstr "Синхронізація переміщення/зміни розміру з програмою"
 
-#: src/settings.c:229
+#: src/settings.c:238
 msgid "Do not cover dragbar"
 msgstr "Не перекривати панель переміщення"
 
-#: src/settings.c:235
+#: src/settings.c:243
+msgid "Enable smart maximization"
+msgstr ""
+
+#: src/settings.c:248
+msgid "Animate window maximization"
+msgstr ""
+
+#: src/settings.c:254
+msgid "Maximization animation speed:"
+msgstr ""
+
+#: src/settings.c:265
 msgid "Move/Resize"
 msgstr "Переміщення/зміна розміру"
 
-#: src/settings.c:236
+#: src/settings.c:266
 msgid "Move & Resize Settings"
 msgstr "Параметри переміщення/зміни розміру"
 
-#: src/settings.c:239
+#: src/settings.c:269
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog"
@@ -1654,83 +1667,83 @@ msgstr ""
 "Діалог налаштування методів\n"
 "переміщення/зміни розміру Enlightenment"
 
-#: src/settings.c:341
+#: src/settings.c:371
 msgid "Dialog windows appear together with their owner"
 msgstr "Діалог з'являється разом зі своїм власником"
 
-#: src/settings.c:346
+#: src/settings.c:376
 msgid "Switch to desktop where dialog appears"
 msgstr "Переходити на стільницю, на якій з'являється діалог"
 
-#: src/settings.c:354
+#: src/settings.c:384
 msgid "Place windows manually"
 msgstr "Розташовувати вікна вручну"
 
-#: src/settings.c:359
+#: src/settings.c:389
 msgid "Place windows under mouse"
 msgstr "Розташовувати вікна під вказівником"
 
-#: src/settings.c:364
+#: src/settings.c:394
 msgid "Center windows when desk is full"
 msgstr "Розташовувати вікна в центрі. якщо стіл заповнений"
 
-#: src/settings.c:369
+#: src/settings.c:399
 msgid "Slide windows in when they appear"
 msgstr "Ковзання вікон всередину під час їх появи"
 
-#: src/settings.c:374
+#: src/settings.c:404
 msgid "Slide windows around when cleaning up"
 msgstr "Ковзання вікон навколо під час очищення"
 
-#: src/settings.c:379
+#: src/settings.c:409
 msgid "Slide Method:"
 msgstr "Метод ковзання:"
 
-#: src/settings.c:414
+#: src/settings.c:444
 msgid "Appear Slide speed:"
 msgstr "Швидкість ковзання проявлення:"
 
-#: src/settings.c:425
+#: src/settings.c:455
 msgid "Cleanup Slide speed:"
 msgstr "Очищення швидкості ковзання:"
 
-#: src/settings.c:438
+#: src/settings.c:468
 msgid "Animate shading and unshading of windows"
 msgstr "Анімувати згортання та розгортання вікон"
 
-#: src/settings.c:444
+#: src/settings.c:474
 msgid "Window Shading speed:"
 msgstr "Швидкість згортання вікна:"
 
-#: src/settings.c:457
+#: src/settings.c:487
 msgid "Ignore struts/panels for placing normal windows"
 msgstr ""
 
-#: src/settings.c:462
+#: src/settings.c:492
 msgid "Ignore struts/panels when windows are fullscreen"
 msgstr ""
 
-#: src/settings.c:467
+#: src/settings.c:497
 msgid "Ignore struts/panels when maximizing windows"
 msgstr ""
 
-#: src/settings.c:472
+#: src/settings.c:502
 msgid "Raise fullscreen windows"
 msgstr "Піднімати повноекранні вікна"
 
-#: src/settings.c:480
+#: src/settings.c:510
 msgid "Place windows on another head when full"
 msgstr "Розміщати вікна на іншу стільницю, якщо ця заповнена"
 
-#: src/settings.c:488
+#: src/settings.c:518
 msgid "Placement"
 msgstr "Розміщення"
 
-#: src/settings.c:489
+#: src/settings.c:519
 msgid "Window Placement Settings"
 msgstr "Параметри розміщення вікон"
 
-#: src/settings.c:492
+#: src/settings.c:522
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
@@ -1738,35 +1751,35 @@ msgstr ""
 "Діалог налаштування розміщення\n"
 "вікон Enlightenment"
 
-#: src/settings.c:542
+#: src/settings.c:572
 msgid "Enable Dialog Headers"
 msgstr "Ввімкнути заголовки діалогів"
 
-#: src/settings.c:548
+#: src/settings.c:578
 msgid "Enable Button Images"
 msgstr "Ввімкнути зображення на кнопках"
 
-#: src/settings.c:557
+#: src/settings.c:587
 msgid "Enable sliding startup windows"
 msgstr "Ввімкнути ковзання вікон під час старту"
 
-#: src/settings.c:565
+#: src/settings.c:595
 msgid "Use saveunders to reduce window exposures"
 msgstr "Use saveunders to reduce window exposures"
 
-#: src/settings.c:574
+#: src/settings.c:604
 msgid "Magwin zoom resolution"
 msgstr ""
 
-#: src/settings.c:586 config/strings.c:136 config/strings.c:152
+#: src/settings.c:616 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "Різне"
 
-#: src/settings.c:587
+#: src/settings.c:617
 msgid "Miscellaneous Settings"
 msgstr "Параметри різного"
 
-#: src/settings.c:590
+#: src/settings.c:620
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
@@ -1774,55 +1787,55 @@ msgstr ""
 "Діалог налаштування\n"
 "різного в Enlightenment"
 
-#: src/settings.c:634
+#: src/settings.c:664
 msgid "Enable Composite"
 msgstr "Ввімкнути композит"
 
-#: src/settings.c:642
+#: src/settings.c:672
 msgid "Enable Fading"
 msgstr "Ввімкнути згасання"
 
-#: src/settings.c:648
+#: src/settings.c:678
 msgid "Fading Speed:"
 msgstr "Швидкість згасання:"
 
-#: src/settings.c:661
+#: src/settings.c:691
 msgid "Shadows Off"
 msgstr "Вимкнути тіні"
 
-#: src/settings.c:667
+#: src/settings.c:697
 msgid "Shadows Sharp"
 msgstr "Різкі тіні"
 
-#: src/settings.c:673
+#: src/settings.c:703
 msgid "Shadows Sharp2"
 msgstr "Різкі тіні 2"
 
-#: src/settings.c:679
+#: src/settings.c:709
 msgid "Shadows Blurred"
 msgstr "Розмиті тіні"
 
-#: src/settings.c:690
+#: src/settings.c:720
 msgid "Default focused window opacity:"
 msgstr "Прозорість типового активного вікна:"
 
-#: src/settings.c:701
+#: src/settings.c:731
 msgid "Default unfocused window opacity:"
 msgstr "Прозорість типового неактивного вікна:"
 
-#: src/settings.c:712
+#: src/settings.c:742
 msgid "Default pop-up window opacity:"
 msgstr "Прозорість типового зринаючого вікна:"
 
-#: src/settings.c:723
+#: src/settings.c:753
 msgid "Composite"
 msgstr "Композит"
 
-#: src/settings.c:724
+#: src/settings.c:754
 msgid "Composite Settings"
 msgstr "Налаштування композиту"
 
-#: src/settings.c:727
+#: src/settings.c:757
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
@@ -1830,7 +1843,7 @@ msgstr ""
 "Діалог налаштування\n"
 "композиту Enlightenment"
 
-#: src/settings.c:812
+#: src/settings.c:842
 msgid "Enlightenment Settings"
 msgstr "Налаштування Enlightenment"
 

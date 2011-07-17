@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-06-19 16:30+0200\n"
+"POT-Creation-Date: 2011-07-11 09:11+0200\n"
 "PO-Revision-Date: 2010-05-09 01:20+0000\n"
 "Last-Translator: luojie-dune <Unknown>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -416,7 +416,7 @@ msgstr "关闭"
 msgid "Create New Iconbox"
 msgstr "创建新图标架"
 
-#: src/container.c:1507 src/container.c:1583 src/menus.c:2115
+#: src/container.c:1507 src/container.c:1583 src/menus.c:2122
 #, c-format
 msgid "Icon size: %2d"
 msgstr "图标尺寸：%2d"
@@ -505,8 +505,8 @@ msgstr "关闭"
 msgid "Whirl"
 msgstr "回旋"
 
-#: src/container.c:1689 src/settings.c:112 src/settings.c:117
-#: src/settings.c:392
+#: src/container.c:1689 src/settings.c:121 src/settings.c:126
+#: src/settings.c:422
 msgid "Box"
 msgstr "盒子"
 
@@ -1162,7 +1162,7 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:539
+#: src/magwin.c:540
 msgid "Magnifier"
 msgstr "放大镜"
 
@@ -1204,27 +1204,27 @@ msgstr "图标化该组"
 msgid "Group %i"
 msgstr "组 %i"
 
-#: src/menus.c:2138
+#: src/menus.c:2145
 msgid "Animated display of menus"
 msgstr "动画显示菜单"
 
-#: src/menus.c:2143
+#: src/menus.c:2150
 msgid "Always pop up menus on screen"
 msgstr "总是在屏幕上弹出菜单"
 
-#: src/menus.c:2148
+#: src/menus.c:2155
 msgid "Warp pointer after moving menus"
 msgstr "移动菜单后折返光标位置"
 
-#: src/menus.c:2165
+#: src/menus.c:2172
 msgid "Menus"
 msgstr "菜单"
 
-#: src/menus.c:2166
+#: src/menus.c:2173
 msgid "Menu Settings"
 msgstr "菜单设置"
 
-#: src/menus.c:2169
+#: src/menus.c:2176
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog"
@@ -1265,7 +1265,8 @@ msgstr "E 对话框："
 msgid "Tooltips:"
 msgstr "工具条提示："
 
-#: src/mod-trans.c:172 src/settings.c:92 src/settings.c:97 src/settings.c:382
+#: src/mod-trans.c:172 src/settings.c:101 src/settings.c:106
+#: src/settings.c:412
 msgid "Opaque"
 msgstr "不透明度"
 
@@ -1490,87 +1491,100 @@ msgstr ""
 "Enlightenment 会话\n"
 "设置对话框"
 
-#: src/settings.c:84
+#: src/settings.c:93
 msgid "Move Methods:"
 msgstr "移动方式："
 
-#: src/settings.c:89
+#: src/settings.c:98
 msgid "Resize Methods:"
 msgstr "尺寸调整方式："
 
-#: src/settings.c:102 src/settings.c:107 src/settings.c:387
+#: src/settings.c:111 src/settings.c:116 src/settings.c:417
 msgid "Technical"
 msgstr "技巧"
 
-#: src/settings.c:123 src/settings.c:128 src/settings.c:398
+#: src/settings.c:132 src/settings.c:137 src/settings.c:428
 msgid "Shaded"
 msgstr "卷起"
 
-#: src/settings.c:133 src/settings.c:138 src/settings.c:403
+#: src/settings.c:142 src/settings.c:147 src/settings.c:433
 msgid "Semi-Solid"
 msgstr "半固定"
 
-#: src/settings.c:143
+#: src/settings.c:152
 msgid "Translucent"
 msgstr "半透明"
 
-#: src/settings.c:155
+#: src/settings.c:164
 msgid "Avoid server grab"
 msgstr "避免服务器获取"
 
-#: src/settings.c:165
+#: src/settings.c:174
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "移动和尺寸调整的信息位置："
 
-#: src/settings.c:169
+#: src/settings.c:178
 msgid "Window Center (O/T/B Methods)"
 msgstr "窗口中心 (O/T/B 方式)"
 
-#: src/settings.c:175
+#: src/settings.c:184
 msgid "Always Screen corner"
 msgstr "屏幕角落"
 
-#: src/settings.c:181
+#: src/settings.c:190
 msgid "Don't show"
 msgstr "不显示"
 
-#: src/settings.c:193
+#: src/settings.c:202
 msgid "Default Resize Policy:"
 msgstr "默认的尺寸调整策略："
 
-#: src/settings.c:197
+#: src/settings.c:206
 msgid "Conservative"
 msgstr "尝试"
 
-#: src/settings.c:203
+#: src/settings.c:212
 msgid "Available"
 msgstr "可用"
 
-#: src/settings.c:209
+#: src/settings.c:218
 msgid "Absolute"
 msgstr "全部"
 
-#: src/settings.c:219
+#: src/settings.c:228
 msgid "Update window while moving"
 msgstr "移动时更新窗口"
 
-#: src/settings.c:224
+#: src/settings.c:233
 msgid "Synchronize move/resize with application"
 msgstr "与应用程序同步移动/调整尺寸"
 
-#: src/settings.c:229
+#: src/settings.c:238
 msgid "Do not cover dragbar"
 msgstr "不覆盖拖动栏"
 
-#: src/settings.c:235
+#: src/settings.c:243
+msgid "Enable smart maximization"
+msgstr ""
+
+#: src/settings.c:248
+msgid "Animate window maximization"
+msgstr ""
+
+#: src/settings.c:254
+#, fuzzy
+msgid "Maximization animation speed:"
+msgstr "动画速度："
+
+#: src/settings.c:265
 msgid "Move/Resize"
 msgstr "移动&调整尺寸"
 
-#: src/settings.c:236
+#: src/settings.c:266
 msgid "Move & Resize Settings"
 msgstr "移动和尺寸设置"
 
-#: src/settings.c:239
+#: src/settings.c:269
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog"
@@ -1578,83 +1592,83 @@ msgstr ""
 "Enlightenment 移动和尺寸调整\n"
 "方式设置对话框"
 
-#: src/settings.c:341
+#: src/settings.c:371
 msgid "Dialog windows appear together with their owner"
 msgstr "对话框窗口和拥有者一起显现"
 
-#: src/settings.c:346
+#: src/settings.c:376
 msgid "Switch to desktop where dialog appears"
 msgstr "对话框出现时切换至桌面"
 
-#: src/settings.c:354
+#: src/settings.c:384
 msgid "Place windows manually"
 msgstr "手动放置窗口"
 
-#: src/settings.c:359
+#: src/settings.c:389
 msgid "Place windows under mouse"
 msgstr "将窗口放置于鼠标下"
 
-#: src/settings.c:364
+#: src/settings.c:394
 msgid "Center windows when desk is full"
 msgstr "桌面满的时候居中窗口"
 
-#: src/settings.c:369
+#: src/settings.c:399
 msgid "Slide windows in when they appear"
 msgstr "窗口显现使用滑动方式"
 
-#: src/settings.c:374
+#: src/settings.c:404
 msgid "Slide windows around when cleaning up"
 msgstr "清理窗口时使用滑动方式"
 
-#: src/settings.c:379
+#: src/settings.c:409
 msgid "Slide Method:"
 msgstr "滑动方式："
 
-#: src/settings.c:414
+#: src/settings.c:444
 msgid "Appear Slide speed:"
 msgstr "滑动速度："
 
-#: src/settings.c:425
+#: src/settings.c:455
 msgid "Cleanup Slide speed:"
 msgstr "清理速度："
 
-#: src/settings.c:438
+#: src/settings.c:468
 msgid "Animate shading and unshading of windows"
 msgstr "窗口卷起动画"
 
-#: src/settings.c:444
+#: src/settings.c:474
 msgid "Window Shading speed:"
 msgstr "窗口卷起速度："
 
-#: src/settings.c:457
+#: src/settings.c:487
 msgid "Ignore struts/panels for placing normal windows"
 msgstr ""
 
-#: src/settings.c:462
+#: src/settings.c:492
 msgid "Ignore struts/panels when windows are fullscreen"
 msgstr ""
 
-#: src/settings.c:467
+#: src/settings.c:497
 msgid "Ignore struts/panels when maximizing windows"
 msgstr ""
 
-#: src/settings.c:472
+#: src/settings.c:502
 msgid "Raise fullscreen windows"
 msgstr "提升全屏窗口"
 
-#: src/settings.c:480
+#: src/settings.c:510
 msgid "Place windows on another head when full"
 msgstr "满的时候把窗口放另一头"
 
-#: src/settings.c:488
+#: src/settings.c:518
 msgid "Placement"
 msgstr "放置"
 
-#: src/settings.c:489
+#: src/settings.c:519
 msgid "Window Placement Settings"
 msgstr "窗口放置设置"
 
-#: src/settings.c:492
+#: src/settings.c:522
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog"
@@ -1662,35 +1676,35 @@ msgstr ""
 "Enlightenment 窗口放置\n"
 "设置对话框"
 
-#: src/settings.c:542
+#: src/settings.c:572
 msgid "Enable Dialog Headers"
 msgstr "开启对话框顶部信息"
 
-#: src/settings.c:548
+#: src/settings.c:578
 msgid "Enable Button Images"
 msgstr "启用按钮图像"
 
-#: src/settings.c:557
+#: src/settings.c:587
 msgid "Enable sliding startup windows"
 msgstr "窗口启动使用滑动方式"
 
-#: src/settings.c:565
+#: src/settings.c:595
 msgid "Use saveunders to reduce window exposures"
 msgstr ""
 
-#: src/settings.c:574
+#: src/settings.c:604
 msgid "Magwin zoom resolution"
 msgstr ""
 
-#: src/settings.c:586 config/strings.c:136 config/strings.c:152
+#: src/settings.c:616 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
 msgstr "杂项"
 
-#: src/settings.c:587
+#: src/settings.c:617
 msgid "Miscellaneous Settings"
 msgstr "杂项设置"
 
-#: src/settings.c:590
+#: src/settings.c:620
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog"
@@ -1698,55 +1712,55 @@ msgstr ""
 "Enlightenment 杂项\n"
 "设置对话框"
 
-#: src/settings.c:634
+#: src/settings.c:664
 msgid "Enable Composite"
 msgstr "启用Composite"
 
-#: src/settings.c:642
+#: src/settings.c:672
 msgid "Enable Fading"
 msgstr "启用淡入淡出"
 
-#: src/settings.c:648
+#: src/settings.c:678
 msgid "Fading Speed:"
 msgstr "淡入淡出速度："
 
-#: src/settings.c:661
+#: src/settings.c:691
 msgid "Shadows Off"
 msgstr "关闭阴影"
 
-#: src/settings.c:667
+#: src/settings.c:697
 msgid "Shadows Sharp"
 msgstr "阴影锐化—暗"
 
-#: src/settings.c:673
+#: src/settings.c:703
 msgid "Shadows Sharp2"
 msgstr "阴影锐化—明"
 
-#: src/settings.c:679
+#: src/settings.c:709
 msgid "Shadows Blurred"
 msgstr "阴影模糊"
 
-#: src/settings.c:690
+#: src/settings.c:720
 msgid "Default focused window opacity:"
 msgstr "默认的聚焦窗口透明度："
 
-#: src/settings.c:701
+#: src/settings.c:731
 msgid "Default unfocused window opacity:"
 msgstr "默认未聚焦窗口透明度："
 
-#: src/settings.c:712
+#: src/settings.c:742
 msgid "Default pop-up window opacity:"
 msgstr "默认的弹出窗口透明度："
 
-#: src/settings.c:723
+#: src/settings.c:753
 msgid "Composite"
 msgstr "Composite"
 
-#: src/settings.c:724
+#: src/settings.c:754
 msgid "Composite Settings"
 msgstr "Composite设置"
 
-#: src/settings.c:727
+#: src/settings.c:757
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog"
@@ -1754,7 +1768,7 @@ msgstr ""
 "Enlightenment的Composite\n"
 "设置对话框"
 
-#: src/settings.c:812
+#: src/settings.c:842
 msgid "Enlightenment Settings"
 msgstr "Enlightenment 设置"
 
