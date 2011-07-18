@@ -40,7 +40,7 @@ function bouncing(on) {
 	}
 }
 
-var my_window = new elm.main({
+var my_window = new elm.window({
 	type : "main",
 	label : "Progressbar",
 	elements : {

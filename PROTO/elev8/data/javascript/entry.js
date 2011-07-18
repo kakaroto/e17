@@ -33,7 +33,7 @@ var entry_text =
             "<item absize=96x128 vsize=full href=file://data/images/sky_01.jpg></item>" +
             " ... end.";
 
-var my_window = new elm.main({
+var my_window = new elm.window({
 	type : "main",
 	label : "Entry",
 	width : 320,

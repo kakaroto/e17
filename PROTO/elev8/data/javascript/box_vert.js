@@ -3,7 +3,7 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
-var my_window = new elm.main({
+var my_window = new elm.window({
 	label : "Vertical Box example",
 	elements : {
 		the_background : {

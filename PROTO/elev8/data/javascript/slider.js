@@ -11,7 +11,7 @@ var logo_icon = {
 	image : elm.datadir + "data/images/logo_small.png",
 };
 
-var win = new elm.main({
+var win = new elm.window({
 	label : "Slider",
 	elements : {
 		the_background : {

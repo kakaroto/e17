@@ -98,7 +98,7 @@ function op_button(str, op) {
 
 op_button.prototype = new any_button;
 
-var calc = new elm.main({
+var calc = new elm.window({
 	type : "main",
 	label : "Calculator demo",
 	elements : {

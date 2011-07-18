@@ -6,7 +6,7 @@
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 
-var win = new elm.main({
+var win = new elm.window({
 	label : "list",
 	width : 320,
 	height : 300,

@@ -15,7 +15,7 @@ var logo_icon_unscaled = {
 	scale_down : false,
 };
 
-var my_window = new elm.main({
+var my_window = new elm.window({
 	type : "main",
 	label : "Radios demo",
 	elements : {

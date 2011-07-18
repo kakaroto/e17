@@ -2454,7 +2454,7 @@ elev8_run(const char *script)
    v8::Handle<v8::ObjectTemplate> elm = v8::ObjectTemplate::New();
    global->Set(v8::String::New("elm"), elm);
 
-   elm->Set(v8::String::New("main"), v8::FunctionTemplate::New(elm_main_window));
+   elm->Set(v8::String::New("window"), v8::FunctionTemplate::New(elm_main_window));
    elm->Set(v8::String::New("loop_time"), v8::FunctionTemplate::New(elm_loop_time));
    elm->Set(v8::String::New("exit"), v8::FunctionTemplate::New(elm_exit));
    elm->SetAccessor(v8::String::New("datadir"), &datadir_getter, &datadir_setter);

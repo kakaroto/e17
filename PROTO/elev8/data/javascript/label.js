@@ -1,4 +1,4 @@
-var my_window = new elm.main({
+var my_window = new elm.window({
 	label : "Label example",
 	width : 320,
 	height : 200,
