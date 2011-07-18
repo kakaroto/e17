@@ -3,7 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 filesdir = $(datadir)/elev8/data/javascript
 
-files_DATA = \
+files_SCRIPTS = \
 	actionslider.js \
 	anim.js \
 	box_horiz.js \
@@ -21,4 +21,4 @@ files_DATA = \
 	progressbar.js \
 	slider.js
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_SCRIPTS)
