@@ -2219,6 +2219,104 @@ CEvasObject::CPropHandler<CElmProgressBar>::list[] = {
   { NULL, NULL, NULL },
 };
 
+
+class CElmPhoto : public CEvasObject {
+protected:
+  static CPropHandler<CElmPhoto> prop_handler;
+
+public:
+  CElmPhoto(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject()
+    {
+       eo = elm_photo_add(parent->top_widget_get());
+       construct(eo, obj);
+    }
+
+  virtual ~CElmPhoto()
+    {
+    }
+
+  virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+    {
+       v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+       prop_handler.fill_template(ot);
+       return ot;
+    }
+
+  virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+    {
+       CPropHandler<CElmPhoto>::prop_setter setter;
+       setter = prop_handler.get_setter(prop_name);
+       if (setter)
+         {
+            (this->*setter)(value);
+            return true;
+         }
+       return CEvasObject::prop_set(prop_name, value);
+    }
+
+  virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+    {
+       CPropHandler<CElmPhoto>::prop_getter getter;
+       getter = prop_handler.get_getter(prop_name);
+       if (getter)
+         return (this->*getter)();
+       return CEvasObject::prop_get(prop_name);
+    }
+
+  virtual v8::Handle<v8::Value> image_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void image_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsString())
+         {
+             v8::String::Utf8Value str(val);
+
+             if (0 > access(*str, R_OK))
+               fprintf(stderr, "warning: can't read image file %s\n", *str);
+
+             Eina_Bool retval = elm_photo_file_set(eo, *str);
+             if (retval == EINA_FALSE)
+               fprintf(stderr, "Unable to set the image\n");
+         }
+    }
+
+  virtual v8::Handle<v8::Value> size_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void size_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsNumber())
+         {
+            int size = val->ToInt32()->Value();
+            elm_photo_size_set(eo, size);
+         }
+    }
+
+  virtual v8::Handle<v8::Value> fill_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void fill_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsBoolean())
+         elm_photo_fill_inside_set(eo, val->BooleanValue());
+    }
+};
+
+template<> CEvasObject::CPropHandler<CElmPhoto>::property_list
+CEvasObject::CPropHandler<CElmPhoto>::list[] = {
+  PROP_HANDLER(CElmPhoto, size),
+  PROP_HANDLER(CElmPhoto, fill),
+  { NULL, NULL, NULL },
+};
+
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -2270,12 +2368,14 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
      eo = new CEvasImage(parent, obj);
    else if (!strcmp(*str, "slider"))
      eo = new CElmSlider(parent, obj);
+   else if (!strcmp(*str, "photo"))
+     eo = new CElmPhoto(parent,obj);
 
    if (!eo)
-      {
-         fprintf(stderr, "Bad object type %s\n", *str);
-         return eo;
-      }
+     {
+        fprintf(stderr, "Bad object type %s\n", *str);
+        return eo;
+     }
 
    return eo;
 }
