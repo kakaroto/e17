@@ -2281,15 +2281,6 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 }
 
 v8::Handle<v8::Value>
-Realize(const v8::Arguments& args)
-{
-   if (args.Length() != 1)
-     return v8::ThrowException(v8::String::New("Bad parameters"));
-   realize_one(main_win, args[0]);
-   return v8::Undefined();
-}
-
-v8::Handle<v8::Value>
 Print(const v8::Arguments& args)
 {
    for (int i = 0; i < args.Length(); i++)
@@ -2449,7 +2440,6 @@ elev8_run(const char *script)
    v8::HandleScope handle_scope;
    v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New();
 
-   global->Set(v8::String::New("realize"), v8::FunctionTemplate::New(Realize));
    global->Set(v8::String::New("print"), v8::FunctionTemplate::New(Print));
    v8::Handle<v8::ObjectTemplate> elm = v8::ObjectTemplate::New();
    global->Set(v8::String::New("elm"), elm);
