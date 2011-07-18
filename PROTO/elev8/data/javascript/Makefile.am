@@ -18,6 +18,7 @@ files_SCRIPTS = \
 	label.js \
 	list.js \
 	radio.js \
+	photo.js \
 	progressbar.js \
 	slider.js
 
