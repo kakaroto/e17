@@ -2316,6 +2316,123 @@ CEvasObject::CPropHandler<CElmPhoto>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmSpinner : public CEvasObject {
+protected:
+  static CPropHandler<CElmSpinner> prop_handler;
+
+public:
+  CElmSpinner(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject()
+    {
+       eo = elm_spinner_add(parent->top_widget_get());
+       construct(eo, obj);
+    }
+
+  virtual ~CElmSpinner()
+    {
+    }
+
+  virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+    {
+       v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+       prop_handler.fill_template(ot);
+       return ot;
+    }
+
+  virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+    {
+       CPropHandler<CElmSpinner>::prop_setter setter;
+       setter = prop_handler.get_setter(prop_name);
+       if (setter)
+         {
+            (this->*setter)(value);
+            return true;
+         }
+       return CEvasObject::prop_set(prop_name, value);
+    }
+
+  virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+    {
+       CPropHandler<CElmSpinner>::prop_getter getter;
+       getter = prop_handler.get_getter(prop_name);
+       if (getter)
+         return (this->*getter)();
+       return CEvasObject::prop_get(prop_name);
+    }
+
+  virtual v8::Handle<v8::Value> label_format_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void label_format_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsString())
+         {
+             v8::String::Utf8Value str(val);
+
+             elm_spinner_label_format_set(eo, *str);
+         }
+    }
+
+  virtual v8::Handle<v8::Value> step_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void step_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsNumber())
+         {
+            int size = val->ToNumber()->Value();
+            elm_spinner_step_set(eo, size);
+         }
+    }
+
+   virtual v8::Handle<v8::Value> min_get() const
+     {
+        double min, max;
+        elm_spinner_min_max_get(eo, &min, &max);
+        return v8::Number::New(min);
+     }
+
+   virtual void min_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsNumber())
+          {
+             double min, max;
+             elm_spinner_min_max_get(eo, &min, &max);
+             min = value->NumberValue();
+             elm_spinner_min_max_set(eo, min, max);
+          }
+     }
+
+   virtual v8::Handle<v8::Value> max_get() const
+     {
+        double min, max;
+        elm_spinner_min_max_get(eo, &min, &max);
+        return v8::Number::New(max);
+     }
+
+   virtual void max_set(v8::Handle<v8::Value> value)
+     {
+        if (value->IsNumber())
+          {
+             double min, max;
+             elm_spinner_min_max_get(eo, &min, &max);
+             max = value->NumberValue();
+             elm_spinner_min_max_set(eo, min, max);
+          }
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmSpinner>::property_list
+CEvasObject::CPropHandler<CElmSpinner>::list[] = {
+  PROP_HANDLER(CElmSpinner, label_format),
+  PROP_HANDLER(CElmSpinner, step),
+  PROP_HANDLER(CElmSpinner, min),
+  PROP_HANDLER(CElmSpinner, max),
+  { NULL, NULL, NULL },
+};
 
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
@@ -2370,6 +2487,8 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
      eo = new CElmSlider(parent, obj);
    else if (!strcmp(*str, "photo"))
      eo = new CElmPhoto(parent,obj);
+   else if (!strcmp(*str, "spinner"))
+     eo = new CElmSpinner(parent,obj);
 
    if (!eo)
      {

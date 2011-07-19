@@ -20,6 +20,7 @@ files_SCRIPTS = \
 	radio.js \
 	photo.js \
 	progressbar.js \
-	slider.js
+	slider.js \
+	spinner.js
 
 EXTRA_DIST = $(files_SCRIPTS)
