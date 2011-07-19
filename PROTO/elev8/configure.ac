@@ -43,6 +43,8 @@ AC_C_CONST
 AC_C___ATTRIBUTE__
 AC_FUNC_ALLOCA
 
+EFL_COMPILER_FLAG([-Wall])
+
 AC_LIBTOOL_WIN32_DLL
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
@@ -77,12 +79,6 @@ case "$host_os" in
 esac
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
-
-AC_SUBST(EXTRACXXFLAGS,"")
-if test "x${GCC}" = "xyes"
-then
-	EXTRACXXFLAGS="-Wall"
-fi
 
 PKG_PROG_PKG_CONFIG
 
