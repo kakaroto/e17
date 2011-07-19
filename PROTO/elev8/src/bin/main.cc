@@ -2581,6 +2581,100 @@ CEvasObject::CPropHandler<CElmPane>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmBubble : public CEvasObject {
+protected:
+  static CPropHandler<CElmBubble> prop_handler;
+
+public:
+  CElmBubble(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject()
+    {
+       eo = elm_bubble_add(parent->top_widget_get());
+       construct(eo, obj);
+       CEvasObject *content;
+       content = realize_one(this, obj->Get(v8::String::New("content")));
+       if ( content )
+         {
+            elm_bubble_content_set(eo, content->get());
+	 }
+    }
+
+  virtual ~CElmBubble()
+    {
+    }
+
+  virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+    {
+       v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+       prop_handler.fill_template(ot);
+       return ot;
+    }
+
+  virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+    {
+       CPropHandler<CElmBubble>::prop_setter setter;
+       setter = prop_handler.get_setter(prop_name);
+       if (setter)
+         {
+            (this->*setter)(value);
+            return true;
+         }
+       return CEvasObject::prop_set(prop_name, value);
+    }
+
+  virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+    {
+       CPropHandler<CElmBubble>::prop_getter getter;
+       getter = prop_handler.get_getter(prop_name);
+       if (getter)
+         return (this->*getter)();
+       return CEvasObject::prop_get(prop_name);
+    }
+
+  virtual v8::Handle<v8::Value> text_part_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void text_part_set(v8::Handle<v8::Value> val)
+    {
+       if (!val->IsObject())
+	 {
+            fprintf(stderr, "%s: value is not an object!\n", __FUNCTION__);
+            return;
+	 }
+       v8::Local<v8::Object> obj = val->ToObject();
+       v8::Local<v8::Value> it = obj->Get(v8::String::New("item"));
+       v8::Local<v8::Value> lbl = obj->Get(v8::String::New("label"));
+       v8::String::Utf8Value item(it);
+       v8::String::Utf8Value label(lbl);
+       printf("Item = %s Label = %s\n", *item, *label);
+       elm_object_text_part_set(eo, *item,*label);
+    }
+
+
+  virtual v8::Handle<v8::Value> corner_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void corner_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsString())
+         {
+            v8::String::Utf8Value str(val);
+            elm_bubble_corner_set(eo, *str);
+         }
+    }
+
+};
+
+template<> CEvasObject::CPropHandler<CElmBubble>::property_list
+CEvasObject::CPropHandler<CElmBubble>::list[] = {
+  PROP_HANDLER(CElmBubble, text_part),
+  PROP_HANDLER(CElmBubble, corner),
+  { NULL, NULL, NULL },
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -2638,6 +2732,8 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
      eo = new CElmSpinner(parent,obj);
    else if (!strcmp(*str, "pane"))
      eo = new CElmPane(parent,obj);
+   else if (!strcmp(*str, "bubble"))
+     eo = new CElmBubble(parent,obj);
 
    if (!eo)
      {
