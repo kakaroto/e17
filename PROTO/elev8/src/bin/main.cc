@@ -1911,8 +1911,8 @@ public:
              if (!item->IsObject())
                {
                   // FIXME: permit adding strings here?
-                 fprintf(stderr, "list item is not an object\n");
-                 continue;
+                  fprintf(stderr, "list item is not an object\n");
+                  continue;
                }
              v8::Local<v8::Value> label = item->ToObject()->Get(v8::String::New("label"));
 
@@ -2272,14 +2272,14 @@ public:
     {
        if (val->IsString())
          {
-             v8::String::Utf8Value str(val);
+            v8::String::Utf8Value str(val);
 
-             if (0 > access(*str, R_OK))
-               fprintf(stderr, "warning: can't read image file %s\n", *str);
+            if (0 > access(*str, R_OK))
+              fprintf(stderr, "warning: can't read image file %s\n", *str);
 
-             Eina_Bool retval = elm_photo_file_set(eo, *str);
-             if (retval == EINA_FALSE)
-               fprintf(stderr, "Unable to set the image\n");
+            Eina_Bool retval = elm_photo_file_set(eo, *str);
+            if (retval == EINA_FALSE)
+              fprintf(stderr, "Unable to set the image\n");
          }
     }
 
@@ -2368,9 +2368,9 @@ public:
     {
        if (val->IsString())
          {
-             v8::String::Utf8Value str(val);
+            v8::String::Utf8Value str(val);
 
-             elm_spinner_label_format_set(eo, *str);
+            elm_spinner_label_format_set(eo, *str);
          }
     }
 
@@ -2505,13 +2505,13 @@ public:
        construct(eo, obj);
        CEvasObject *left, *right;
        left = realize_one(this, obj->Get(v8::String::New("content_left")));
-       if ( left )
+       if (left)
          {
             elm_panes_content_left_set(eo, left->get());
 	 }
 
        right = realize_one(this, obj->Get(v8::String::New("content_right")));
-       if ( right )
+       if (right)
 	 {
             elm_panes_content_right_set(eo, right->get());
 	 }
