@@ -8,6 +8,7 @@ files_SCRIPTS = \
 	anim.js \
 	box_horiz.js \
 	box_vert.js \
+	bubble.js \
 	button.js \
 	calculator.js \
 	check.js \
@@ -18,6 +19,7 @@ files_SCRIPTS = \
 	label.js \
 	list.js \
 	radio.js \
+	panes.js \
 	photo.js \
 	progressbar.js \
 	slider.js \
