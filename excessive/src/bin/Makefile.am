@@ -17,3 +17,4 @@ excessive_shortcut.c
 
 excessive_LDADD = @EXCESSIVE_LIBS@ @LTLIBINTL@
 
+EXTRA_DIST=excessive_private.h

@@ -26,7 +26,12 @@ AUTHORS \
 COPYING \
 COPYING-PLAIN \
 autogen.sh \
-README
+README \
+excessive.png \
+excessive-16x16.png \
+excessive-32x32.png \
+excessive-64x64.png \
+excessive-128x128.png
 
 ICON = excessive.png excessive-16x16.png excessive-32x32.png excessive-64x64.png excessive-128x128.png
 DESKTOP = excessive.desktop
