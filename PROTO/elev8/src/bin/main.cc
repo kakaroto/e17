@@ -2423,6 +2423,62 @@ public:
              elm_spinner_min_max_set(eo, min, max);
           }
      }
+  virtual v8::Handle<v8::Value> style_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void style_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsString())
+         {
+            v8::String::Utf8Value str(val);
+            elm_object_style_set(eo, *str);
+         }
+    }
+
+  virtual v8::Handle<v8::Value> editable_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void editable_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsBoolean())
+         {
+            elm_spinner_editable_set(eo, val->BooleanValue());
+         }
+    }
+
+  virtual v8::Handle<v8::Value> disabled_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void disabled_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsBoolean())
+         {
+            elm_object_disabled_set(eo, val->BooleanValue());
+         }
+    }
+
+  virtual v8::Handle<v8::Value> special_value_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void special_value_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsObject())
+         {
+             v8::Local<v8::Value> value = val->ToObject()->Get(v8::String::New("value"));
+             v8::Local<v8::Value> label = val->ToObject()->Get(v8::String::New("label"));
+             v8::String::Utf8Value str(label);
+             int int_value = value->ToInt32()->Value();
+             elm_spinner_special_value_add(eo, int_value, *str);
+         }
+    }
 };
 
 template<> CEvasObject::CPropHandler<CElmSpinner>::property_list
@@ -2431,6 +2487,10 @@ CEvasObject::CPropHandler<CElmSpinner>::list[] = {
   PROP_HANDLER(CElmSpinner, step),
   PROP_HANDLER(CElmSpinner, min),
   PROP_HANDLER(CElmSpinner, max),
+  PROP_HANDLER(CElmSpinner, style),
+  PROP_HANDLER(CElmSpinner, disabled),
+  PROP_HANDLER(CElmSpinner, editable),
+  PROP_HANDLER(CElmSpinner, special_value),
   { NULL, NULL, NULL },
 };
 
