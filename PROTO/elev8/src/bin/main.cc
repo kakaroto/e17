@@ -2921,7 +2921,7 @@ elev8_run(const char *script)
    v8::Context::Scope context_scope(context);
    run_script(script);
 
-   elm_run();
+   ecore_main_loop_begin();
 
    context.Dispose();
    the_datadir.Dispose();
