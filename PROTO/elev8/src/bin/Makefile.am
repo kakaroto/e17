@@ -12,6 +12,7 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = elev8
 
 elev8_SOURCES = \
-main.cc main.h
+	elm.cc \
+	main.cc main.h
 
 elev8_LDADD = @ELEV8_LIBS@ @V8_LIBS@
