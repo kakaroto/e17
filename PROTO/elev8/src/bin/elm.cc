@@ -2052,13 +2052,129 @@ CEvasObject::CPropHandler<CElmCheck>::list[] = {
 };
 
 class CElmClock : public CEvasObject {
+protected:
+  static CPropHandler<CElmClock> prop_handler;
+
 public:
-   CElmClock(CEvasObject *parent, v8::Local<v8::Object> obj) :
+  CElmClock(CEvasObject *parent, v8::Local<v8::Object> obj) :
        CEvasObject()
-     {
-        eo = elm_clock_add(parent->get());
-        construct(eo, obj);
-     }
+    {
+       eo = elm_clock_add(parent->top_widget_get());
+       construct(eo, obj);
+    }
+
+  virtual ~CElmClock()
+    {
+    }
+
+  virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+    {
+       v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+       prop_handler.fill_template(ot);
+       return ot;
+    }
+
+  virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+    {
+       CPropHandler<CElmClock>::prop_setter setter;
+       setter = prop_handler.get_setter(prop_name);
+       if (setter)
+         {
+            (this->*setter)(value);
+            return true;
+         }
+       return CEvasObject::prop_set(prop_name, value);
+    }
+
+  virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+    {
+       CPropHandler<CElmClock>::prop_getter getter;
+       getter = prop_handler.get_getter(prop_name);
+       if (getter)
+         return (this->*getter)();
+       return CEvasObject::prop_get(prop_name);
+    }
+
+  virtual v8::Handle<v8::Value> show_am_pm_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void show_am_pm_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsNumber())
+	 {
+            int value = val->ToNumber()->Value();
+            elm_clock_show_am_pm_set(eo, value);
+	 }
+    }
+
+  virtual v8::Handle<v8::Value> show_seconds_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void show_seconds_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsNumber())
+	 {
+            int value = val->ToNumber()->Value();
+            elm_clock_show_seconds_set(eo, value);
+	 }
+    }
+
+  virtual v8::Handle<v8::Value> time_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void time_set(v8::Handle<v8::Value> val)
+    {
+       if (!val->IsObject())
+	 {
+            fprintf(stderr, "%s: value is not an object!\n", __FUNCTION__);
+            return;
+	 }
+       v8::Local<v8::Object> obj = val->ToObject();
+       v8::Local<v8::Value> hh = obj->Get(v8::String::New("hh"));
+       v8::Local<v8::Value> mm = obj->Get(v8::String::New("mm"));
+       v8::Local<v8::Value> ss = obj->Get(v8::String::New("ss"));
+
+       if (hh.IsEmpty() && mm.IsEmpty() && ss.IsEmpty())
+         {
+            fprintf(stderr, "Provide all three values:\n");
+            return;
+	 }
+
+       int hour = hh->ToNumber()->Value();
+       int minute = mm->ToNumber()->Value();
+       int second = ss->ToNumber()->Value();
+
+       elm_clock_time_set(eo, hour, minute, second);
+    }
+
+  virtual v8::Handle<v8::Value> edit_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void edit_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsNumber())
+         {
+            int value = val->ToNumber()->Value();
+            elm_clock_edit_set(eo, value);
+         }
+    }
+};
+
+template<> CEvasObject::CPropHandler<CElmClock>::property_list
+CEvasObject::CPropHandler<CElmClock>::list[] = {
+  PROP_HANDLER(CElmClock, edit),
+  PROP_HANDLER(CElmClock, time),
+  PROP_HANDLER(CElmClock, show_seconds),
+  PROP_HANDLER(CElmClock, show_am_pm),
+  { NULL, NULL, NULL },
 };
 
 class CElmProgressBar : public CEvasObject {
