@@ -2792,6 +2792,87 @@ CEvasObject::CPropHandler<CElmBubble>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmSegment : public CEvasObject {
+protected:
+  static CPropHandler<CElmSegment> prop_handler;
+
+public:
+   CElmSegment(CEvasObject *parent, v8::Local<v8::Object> obj) :
+       CEvasObject()
+     {
+        eo = elm_segment_control_add(parent->get());
+        construct(eo, obj);
+        items_set(obj->Get(v8::String::New("items")));
+     }
+
+   v8::Handle<v8::Object> items_set(v8::Handle<v8::Value> val)
+     {
+        /* add an list of children */
+        v8::Local<v8::Object> out = v8::Object::New();
+
+        if (!val->IsObject())
+          {
+             fprintf(stderr, "not an object!\n");
+             return out;
+          }
+
+        v8::Local<v8::Object> in = val->ToObject();
+        v8::Local<v8::Array> props = in->GetPropertyNames();
+
+        /* iterate through elements and instantiate them */
+        for (unsigned int i = 0; i < props->Length(); i++)
+          {
+
+             v8::Local<v8::Value> x = props->Get(v8::Integer::New(i));
+             v8::String::Utf8Value val(x);
+
+             v8::Local<v8::Value> item = in->Get(x->ToString());
+             if (!item->IsObject())
+               {
+                  // FIXME: permit adding strings here?
+                  fprintf(stderr, "list item is not an object\n");
+                  continue;
+               }
+             v8::Local<v8::Value> label = item->ToObject()->Get(v8::String::New("label"));
+
+             v8::String::Utf8Value str(label);
+             elm_segment_control_item_add(eo, NULL, *str);
+          }
+
+        return out;
+     }
+
+   virtual ~CElmSegment()
+     {
+     }
+
+  virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+    {
+       CPropHandler<CElmSegment>::prop_setter setter;
+       setter = prop_handler.get_setter(prop_name);
+       if (setter)
+         {
+            (this->*setter)(value);
+            return true;
+         }
+       return CEvasObject::prop_set(prop_name, value);
+    }
+
+  virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+    {
+       CPropHandler<CElmSegment>::prop_getter getter;
+       getter = prop_handler.get_getter(prop_name);
+       if (getter)
+         return (this->*getter)();
+       return CEvasObject::prop_get(prop_name);
+    }
+};
+
+template<> CEvasObject::CPropHandler<CElmSegment>::property_list
+CEvasObject::CPropHandler<CElmSegment>::list[] = {
+  { NULL, NULL, NULL },
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -2839,6 +2920,8 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
      eo = new CElmProgressBar(parent, obj);
    else if (!strcmp(*str, "scroller"))
      eo = new CElmScroller(parent, obj);
+   else if (!strcmp(*str, "segment"))
+     eo = new CElmSegment(parent, obj);
    else if (!strcmp(*str, "image"))
      eo = new CEvasImage(parent, obj);
    else if (!strcmp(*str, "slider"))
