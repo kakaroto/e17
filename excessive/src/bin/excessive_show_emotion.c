@@ -41,6 +41,7 @@ _excessive_emotion_item_object_get(void *data, Evas_Object *obj, const char *par
    ic = elm_video_add(obj);
    elm_video_file_set(ic, info->info.path);
    if (crazy_option) elm_video_play(ic);
+   else elm_video_pause(ic);
    elm_video_audio_mute_set(ic, EINA_TRUE);
 
    edje_object_signal_callback_add((Evas_Object *) elm_gengrid_item_object_get(info->item), "mouse,in", "*", _excessive_emotion_edje_mouve_in, ic);
@@ -77,6 +78,7 @@ static void
 _excessive_emotion_display_clear(Evas_Object *display)
 {
    elm_video_file_set(display, NULL);
+   elm_video_pause(display);
 }
 
 static Excessive_File_Object *
@@ -118,6 +120,7 @@ _stop(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 
    elm_video_stop(display);
    elm_video_file_set(display, NULL);
+   elm_video_pause(display);
    evas_object_del(evas_object_data_get(layout, "excessive/notify"));
    evas_object_data_set(layout, "excessive/notify", NULL);
    edje_object_signal_emit(elm_layout_edje_get(layout), "hide,content", "code");
