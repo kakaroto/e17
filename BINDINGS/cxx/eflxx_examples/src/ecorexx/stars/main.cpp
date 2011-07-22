@@ -4,6 +4,7 @@
 #include <sigc++/sigc++.h>
 #include <iostream>
 #include <list>
+#include <memory>
 
 using namespace Eflxx;
 using namespace std;
@@ -19,7 +20,7 @@ Starfield starfield;
 
 int width = 0;
 
-void advance( )
+bool advance (Ecorexx::Timer &timer)
 {
   for (StarfieldIterator it = starfield.begin(); it != starfield.end(); ++it )
   {
@@ -29,12 +30,14 @@ void advance( )
     Rect g = line->getGeometry();
     line->setGeometry( Rect ((g.x()+speed ) % width, g.y(), 1, 0) );
   }
+
+  return true;
 }
 
 int main( int argc, const char **argv )
 {
-  Ecorexx::Application* app = new Ecorexx::Application( argc, argv, "Ecore Stars Test" );
-  Ecorexx::EvasWindowSoftwareX11* mw = new Ecorexx::EvasWindowSoftwareX11( Size (WIDTH, HEIGHT) );
+  auto_ptr <Ecorexx::Application> app (new Ecorexx::Application( argc, argv, "Ecore Stars Test" ));
+  auto_ptr <Ecorexx::EvasWindowSoftwareX11> mw (new Ecorexx::EvasWindowSoftwareX11( Size (WIDTH, HEIGHT) ));
   Evasxx::Canvas &evas = mw->getCanvas();
 
   Rect bg = evas.getGeometry();
@@ -57,15 +60,18 @@ int main( int argc, const char **argv )
     starfield.push_back( new Star( line, speed ) );
   }
 
-  ( new Ecorexx::Timer( 0.08 ) )->timeout.connect( sigc::ptr_fun( ::advance ) );
+  sigc::slot <bool, Ecorexx::Timer&> timerSlot = sigc::ptr_fun (&::advance);
+
+  Ecorexx::Timer *timer = Ecorexx::Timer::factory (0.08, timerSlot);
+  
+//  ( new Ecorexx::Timer( 0.08 ) )->timeout.connect( sigc::ptr_fun( ::advance ) );
 
   mw->show ();
 
   /* Enter the application main loop */
   app->exec();
 
-  /* Delete the application */
-  delete app;
+  timer->destroy ();
 
   return 0;
 }

@@ -17,7 +17,7 @@ typedef struct _MyProgressbar
 
 static MyProgressbar _test_progressbar;
 
-static void _my_progressbar_value_set ()
+bool _my_progressbar_value_set (Ecorexx::Timer &timer)
 {
   double progress;
 
@@ -40,9 +40,10 @@ static void _my_progressbar_value_set ()
   if (progress > 1.0)
   {
     _test_progressbar.run = false;
-    //timer->del ();
-    // FIXME: new design offern no timers pointer!
+    return false; // don't run again and delete timer
   }
+
+  return true;
 }
 
 static void my_progressbar_test_start (Evasxx::Object &obj, void *event_info)
@@ -53,8 +54,10 @@ static void my_progressbar_test_start (Evasxx::Object &obj, void *event_info)
 
   if (!_test_progressbar.run)
   {
-    _test_progressbar.timer = new Ecorexx::Timer (0.1);
-    _test_progressbar.timer->timeout.connect (sigc::ptr_fun (&_my_progressbar_value_set));
+    sigc::slot <bool, Ecorexx::Timer&> timerSlot = sigc::ptr_fun (&_my_progressbar_value_set);
+
+    _test_progressbar.timer = Ecorexx::Timer::factory (0.1, timerSlot);
+
     _test_progressbar.run = true;
   }
 }
@@ -67,7 +70,7 @@ static void _test_stop ()
 
   if (_test_progressbar.run)
   {
-     _test_progressbar.timer->del ();
+     _test_progressbar.timer->destroy ();
      _test_progressbar.run = false;
   }
 }

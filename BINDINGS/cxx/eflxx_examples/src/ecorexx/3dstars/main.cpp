@@ -78,13 +78,15 @@ typedef list<Star*> Starfield;
 typedef list<Star*>::iterator StarfieldIterator;
 Starfield starfield;
 
-void advance()
+bool advance (Ecorexx::Timer &timer)
 {
   for (StarfieldIterator it = starfield.begin(); it != starfield.end(); ++it )
   {
     Star* star = *it;
     star->advance( speed, rotation );
   }
+
+  return true;
 }
 
 int main( int argc, const char **argv )
@@ -108,16 +110,18 @@ int main( int argc, const char **argv )
     // better use CountedPtr or delete it at the end
     starfield.push_back( new Star( evas ) );
   }
+  
+  sigc::slot <bool, Ecorexx::Timer&> timerSlot = sigc::ptr_fun (&::advance);
 
-  // FIXME: Memory leak, but ok for this example
-  // better use CountedPtr or delete it at the end
-  (new Ecorexx::Timer( 0.05 ) )->timeout.connect( sigc::ptr_fun( ::advance ) );
+  Ecorexx::Timer *timer = Ecorexx::Timer::factory (0.05, timerSlot);
 
   mw->show();
 
   /* Enter the application main loop */
   app->exec();
 
+  timer->destroy ();
+  
   return 0;
 }
 

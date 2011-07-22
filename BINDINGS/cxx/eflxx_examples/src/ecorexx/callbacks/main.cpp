@@ -56,10 +56,17 @@ public:
       balls[i]->show();
     }
 
-    ecoreTimer = new Ecorexx::Timer( 1.0 / 25 );
-    ecoreTimer->timeout.connect( sigc::mem_fun( this, &TimerApp::timerEvent ) );
+
+    sigc::slot <bool, Ecorexx::Timer&> timerSlot = sigc::mem_fun (*this, &TimerApp::timerEvent);
+
+    ecoreTimer = Ecorexx::Timer::factory (1.0 / 25, timerSlot);
 
     mw->show();
+  }
+
+  ~TimerApp ()
+  {
+    ecoreTimer->destroy ();
   }
 
   Evasxx::Image* image, *shadow, *logo;
@@ -76,7 +83,7 @@ public:
   double yaddfactor;
   Ecorexx::Timer* ecoreTimer;
 
-  void timerEvent()
+  bool timerEvent(Ecorexx::Timer &timer)
   {
 
     logo->setColor( Color (255, 255, 255, alpha) );
@@ -100,6 +107,8 @@ public:
       xaddfactor = -2 + (4.0*rand()/(RAND_MAX));
       yaddfactor = -2 + (4.0*rand()/(RAND_MAX));
     }
+
+    return true;
   }
 
 };
