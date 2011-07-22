@@ -9,60 +9,67 @@
 
 namespace Ecorexx {
 
-Timer::Timer( double seconds, bool singleshot )
-    :_ss( singleshot )
+Timer::Timer (double seconds, sigc::slot<bool, Timer&> task, bool loop) :
+  mETimer (NULL),
+  mTask (task)  
 {
-  Dout( dc::notice, "Timer::Timer() - current frequency is " << seconds );
-  _et = ecore_timer_add( seconds, &Timer::__dispatcher, this );
-  
-  // TODO: find out why to use this function and the difference between ecore_time_get() and ecore_loop_time_get()
-  //ecore_timer_loop_add (double in, int (*func) (void *data), const void *data);
+  if (!loop)
+  {
+    mETimer = ecore_timer_add (seconds, Timer::dispatcherFunc, this);
+  }
+  else
+  {
+    mETimer = ecore_timer_loop_add (seconds, Timer::dispatcherFunc, this);
+  }
+}
+
+Timer *Timer::factory (double seconds, sigc::slot<bool, Timer&> task, bool loop)
+{
+  return new Timer (seconds, task, loop);
 }
 
 Timer::~Timer()
 {
-  ecore_timer_del( _et );
 }
 
-/*Timer* Timer::singleShot( double seconds, const Timer::Slot& slot )
+void Timer::destroy ()
 {
-  Timer* ecoretimer = new Timer( seconds, true );
-  ecoretimer->timeout.connect( slot );
-}*/
+  assert (ecore_timer_del (mETimer));
 
-void Timer::del ()
-{
-  assert (ecore_timer_del (_et));
+  // !!!ATTENTION!!!
+  // suicide for a C++ object is dangerous, but allowed
+  // the simple rule is that no member functions or member variables are allowed to access after this point!
+  delete (this);
 }
 
 void Timer::setInterval (double seconds)
 {
-  ecore_timer_interval_set (_et, seconds);
+  ecore_timer_interval_set (mETimer, seconds);
 }
   
 double Timer::getInterval ()
 {
-  return ecore_timer_interval_get (_et);
+  return ecore_timer_interval_get (mETimer);
 }
 
 void Timer::freeze ()
 {
-  ecore_timer_freeze (_et);
+  ecore_timer_freeze (mETimer);
 }
 
 void Timer::thaw ()
 {
-  ecore_timer_thaw (_et);
+  ecore_timer_thaw (mETimer);
 }
 
 void Timer::delay (double add)
 {
-  ecore_timer_delay (_et, add);
+  ecore_timer_delay (mETimer, add);
 }
 
 double Timer::getPending ()
 {
-  return ecore_timer_pending_get (_et);
+  return ecore_timer_pending_get (mETimer);
 }
 
 double Timer::getPrecision ()
@@ -75,21 +82,27 @@ void Timer::setPrecision (double precision)
   ecore_timer_precision_set (precision);
 }
 
-/*void Timer::tick()
+void Timer::dump ()
 {
-  Dout( dc::notice, "Timer[ " << this << " ]::tick()" );
-}*/
+  ecore_timer_dump ();
+}
 
-Eina_Bool Timer::__dispatcher( void* data )
+Eina_Bool Timer::dispatcherFunc (void *data)
 {
-  Timer* object = reinterpret_cast<Timer*>( data );
-  assert( object );
-  object->timeout.emit( );
-  //object->tick();
-  /*bool singleshot = object->_ss;
-  if ( singleshot ) delete object;
-  return singleshot? 0:1;*/
-  return ECORE_CALLBACK_RENEW;
+  Timer* eTimer = static_cast <Timer*>( data );
+  assert (eTimer);
+
+  bool ret = eTimer->mTask (*eTimer);
+
+  if (!ret)
+  {
+    // do a suicide as the delete operator isn't public available
+    // the reason is that the C design below is a suicide design :-(
+    delete eTimer;
+    return false;
+  }
+  
+  return ret;
 }
 
 } // end namespace Ecorexx

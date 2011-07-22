@@ -9,23 +9,12 @@
 
 namespace Ecorexx {
 
-// TODO: maybe change signal architecture back to callback architecture. Think about it!
-  
 class Timer
 {
-  typedef sigc::signal <void> Signal;
-  typedef sigc::signal <void> Loop;
-  //typedef sigc::slot1  <void, void> Slot;
-
 public:
-  Timer( double seconds, bool singleshot = false );
-  virtual ~Timer();
+  static Timer *factory (double seconds, sigc::slot<bool, Timer&> task, bool loop = false);
 
-  //virtual void tick();
-
-//  static Timer* singleShot( double seconds, const Timer::Slot& ); // TODO: CountedPtr
-  
-  void del ();
+  void destroy ();
   
   void setInterval (double interval);
   
@@ -43,16 +32,18 @@ public:
     
   static void setPrecision (double precision);
 
-  
-public: /* signals */
-  Timer::Signal timeout;
-  Timer::Loop loop;
-  
-private:
-  Ecore_Timer* _et;
-  bool _ss;
+  static void dump ();
 
-  static Eina_Bool __dispatcher( void* data );
+private:
+  Ecore_Timer *mETimer;
+  sigc::slot<bool, Timer&> mTask;
+
+  static Eina_Bool dispatcherFunc (void *data);
+
+  Timer (); // allow no construction
+  Timer (const Timer&); // forbid copy constructor
+  Timer (double seconds, sigc::slot<bool, Timer&> task, bool loop);  // private construction -> use factory ()
+  virtual ~Timer (); // forbid direct delete -> use destroy()
 };
 
 } // end namespace Ecorexx
