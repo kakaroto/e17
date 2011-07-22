@@ -26,15 +26,16 @@ DEPEND="${RDEPEND}"
 
 src_configure() {
 	export MY_ECONF="
-	  $(use_enable dbus edbus)
-	  $(use_enable xdg efreet)
-	  $(use_enable weather eweather)
-	  $(use_enable fbcon ecore-fb)
-	  $(use_enable sdl ecore-sdl)
-	  $(use_enable X ecore-x)
-	  $(use_enable thumbnails ethumb)
-	  $(use_enable video emotion)
-	  $(use_enable quicklaunch quick-launch)
+	$(use_enable dbus edbus)
+	$(use_enable xdg efreet)
+	$(use_enable weather eweather)
+	$(use_enable fbcon ecore-fb)
+	$(use_enable sdl ecore-sdl)
+	$(use_enable X ecore-x)
+	$(use_enable thumbnails ethumb)
+	$(use_enable video emotion)
+	$(use_enable quicklaunch quick-launch)
+	--disable-build-examples
 	"
 	enlightenment_src_configure
 }
