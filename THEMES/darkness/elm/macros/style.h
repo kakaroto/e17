@@ -10,7 +10,7 @@ style { \
    tag: "/center" "- \n"; \
    tag: "right" "+ align=right"; \
    tag: "/right" "- \n"; \
-   tag: "link" "+ color=#0000FF underline=on underline_color=#0000FF"; \
+   tag: "link" "+ color=#8888AA underline=on underline_color=#8888AA"; \
    tag: "em" "+ font=DejaVu-Oblique"; \
    tag: "b" "+ font="fb; \
    tag: "i" "+ font="fi; \
