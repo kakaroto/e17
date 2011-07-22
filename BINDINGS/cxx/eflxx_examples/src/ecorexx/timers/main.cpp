@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <memory>
 
 using namespace std;
 using namespace Eflxx;
@@ -114,8 +115,8 @@ public:
 
 int main( int argc, const char **argv )
 {
-  TimerApp* app = new TimerApp( argc, argv );
+  auto_ptr <TimerApp> app (new TimerApp( argc, argv ));
   app->exec();
-  delete app;
+
   return 0;
 }
