@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 
 SUBDIRS = src data
 
-EXTRA_DIST = e_modules-elfe.spec.in 
+EXTRA_DIST = e_modules-elfe.spec
 
 
 
