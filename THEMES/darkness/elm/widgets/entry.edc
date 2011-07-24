@@ -55,6 +55,60 @@
       }
    }
 
+   group { name: "elm/entry/base-mixedwrap/default";
+      parts {
+         part { name: "elm.text";
+            type: TEXTBLOCK;
+            mouse_events: 1;
+            scale: 1;
+            entry_mode: EDITABLE;
+            select_mode: EXPLICIT;
+            multiline: 1;
+            source: "elm/entry/selection/default"; // selection under
+//          source2: "X"; // selection over
+//          source3: "X"; // cursor under
+            source4: "elm/entry/cursor/default"; // cursorover
+            source5: "elm/entry/anchor/default"; // anchor under
+//          source6: "X"; // anchor over
+            description { state: "default" 0.0;
+               fixed: 1 0;
+               text {
+                  style: "Label-mixed";
+                  min: 0 1;
+                  align: 0.0 0.0;
+               }
+            }
+            description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+               text {
+                  style: "Label_disabled-mixed";
+                  min: 0 1;
+               }
+            }
+         }
+      }
+      programs {
+         program { name: "focus";
+            signal: "load";
+            source: "";
+            action: FOCUS_SET;
+            target: "elm.text";
+         }
+         program { name: "disable";
+            signal: "elm,state,disabled";
+            source: "elm";
+            action: STATE_SET "disabled" 0.0;
+            target: "elm.text";
+         }
+         program { name: "enable";
+            signal: "elm,state,enabled";
+            source: "elm";
+            action: STATE_SET "default" 0.0;
+            target: "elm.text";
+         }
+      }
+   }
+
    group { name: "elm/entry/base-charwrap/default";
       parts {
          part { name: "elm.text";
@@ -73,14 +127,14 @@
             description { state: "default" 0.0;
                fixed: 1 0;
                text {
-                  style: "Label";
+                  style: "Label-char";
                   min: 0 1;
                }
             }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
                text {
-                  style: "Label";
+                  style: "Label_disabled-char";
                   min: 0 1;
                }
             }
@@ -122,14 +176,14 @@
             source5: "elm/entry/anchor/default"; // anchor under
             description { state: "default" 0.0;
                text {
-                  style: "Label";
+                  style: "Label-nowrap";
                   min: 1 1;
                }
             }
             description { state: "disabled" 0.0;
                inherit: "default" 0.0;
                text {
-                  style: "Label";
+                  style: "Label_disabled-nowrap";
                   min: 0 1;
                }
             }
