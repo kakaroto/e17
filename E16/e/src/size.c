@@ -711,7 +711,8 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
 				 ld++;
 			      }
 			    new_w = 1 - ld + rd;
-			    trim = new_w - new_h * ewin->icccm.aspect_min;
+			    trim =
+			       new_w - (int)(new_h * ewin->icccm.aspect_min);
 			 }
 		       while (trim > 0);
 		       Dprintf("ld now %d, rd now %d\n", ld, rd);
@@ -733,7 +734,8 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
 				 td++;
 			      }
 			    new_h = 1 - td + bd;
-			    trim = new_h - new_w / ewin->icccm.aspect_min;
+			    trim =
+			       new_h - (int)(new_w / ewin->icccm.aspect_min);
 			 }
 		       while (trim > 0);
 		       Dprintf("ld now %d, rd now %d\n", ld, rd);
@@ -811,7 +813,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
    /* Figure out target state */
    if (hor && ver)
      {
-	hor = ver = (old_hor && old_ver) ? 0 : 1;
+	hor = ver = ((old_hor && old_ver) ? 0 : 1);
      }
    else
      {

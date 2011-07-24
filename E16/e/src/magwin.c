@@ -410,8 +410,8 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 		break;
 
 	     scale = pow(2., (double)(mw->scale) / Conf.magwin.zoom_res);
-	     mw->cx = mw->stroke_cx - dx / scale;
-	     mw->cy = mw->stroke_cy - dy / scale;
+	     mw->cx = mw->stroke_cx - (int)(dx / scale);
+	     mw->cy = mw->stroke_cy - (int)(dy / scale);
 	     mw->update = 1;
 	  }
 	else if (mw->grabbing)

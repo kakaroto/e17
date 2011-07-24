@@ -748,7 +748,6 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	ewin->props.ignorearrange = on;
 	goto ewin_update_snap_flags;
-	break;
 
      case EWIN_OP_NEVER_USE_AREA:
 	on = ewin->props.never_use_area;
