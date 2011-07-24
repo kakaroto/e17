@@ -472,6 +472,8 @@ FocusToEWin(EWin * ewin, int why)
    switch (why)
      {
      case FOCUS_EWIN_NEW:
+	if (!Conf.focus.all_new_windows_get_focus)
+	   return;
 	if (!FocusEwinValid(ewin, 0, 0, 0))
 	   break;
 	focus_pending_new = ewin;
