@@ -499,6 +499,8 @@ image: "icons/icon_shelf_top_desk.png" COMP;
 image: "icons/icon_efm_dnd_copy.png" COMP;
 image: "icons/icon_efm_dnd_ask.png" COMP;
 image: "icons/icon_efm_dnd_move.png" COMP;
+image: "icons/icon_efm_vol_mounted.png" COMP;
+image: "icons/icon_efm_vol_unmounted.png" COMP;
 
 image: "icons/button-back.png" COMP;
 image: "icons/button-forward.png" COMP;

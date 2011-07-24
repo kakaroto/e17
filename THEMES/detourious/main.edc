@@ -7,7 +7,6 @@
 #include "macros/about_buttons.edc"
 #include "macros/border_menu_buttons.edc"
 #include "macros/efm_nav.edc"
-#include "macros/fileman_list.edc"
 #include "macros/init-bg.edc"
 #include "macros/sys.edc"
 
@@ -38,6 +37,16 @@
 #define COLOR_LIST_HEADER    103 135 183 255
 
 #include "text.edc"
+
+#define EVENT_RECT								\
+	part {										\
+		name: "event";							\
+		type: RECT;								\
+		description {							\
+			state: "default" 0.0;				\
+			color: 0 0 0 0;						\
+		}										\
+	}											\
 
 data {
 	item: "theme/name" 		"detourious";

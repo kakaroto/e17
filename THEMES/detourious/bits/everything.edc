@@ -1311,24 +1311,14 @@ group {
 			name: "thumb_show_delayed";
 			signal: "e,action,thumb,show_delayed";
 			source: "e";
-			action: STATE_SET "default" 0.0;
+			action: STATE_SET "visible" 0.0;
 			target: "base";
-			transition: DECELERATE 0.1;
-			after: "thumb_show2";
 		}
 		program {
 			name: "thumb_show";
 			signal: "e,action,thumb,show";
 			source: "e";
-			action: STATE_SET "default" 0.0;
-			/* transition: DECELERATE 0.02; */
-			target: "base";
-			after: "thumb_show2";
-		}
-		program {
-			name: "thumb_show2";
 			action: STATE_SET "visible" 0.0;
-			/* transition: ACCELERATE 0.05; */
 			target: "base";
 		}
 	}
@@ -1695,14 +1685,12 @@ group {
 			source: "e";
 			action: STATE_SET "visible" 0.0;
 			target: "base";
-			transition: ACCELERATE 0.02;
 		}
 		program {
 			name: "thumb_show";
 			signal: "e,action,thumb,show";
 			source: "e";
 			action: STATE_SET "visible" 0.0;
-			transition: ACCELERATE 0.0;
 			target: "base";
 		}
 		program {
