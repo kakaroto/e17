@@ -2919,6 +2919,125 @@ CEvasObject::CPropHandler<CElmSegment>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmMenu : public CEvasObject {
+protected:
+  static CPropHandler<CElmMenu> prop_handler;
+
+public:
+  CElmMenu(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject()
+    {
+       eo = elm_menu_add(parent->top_widget_get());
+       construct(eo, obj);
+       items_set(obj->Get(v8::String::New("items")), NULL);
+    }
+
+  virtual ~CElmMenu()
+    {
+    }
+
+  Elm_Menu_Item * items_set(v8::Handle<v8::Value> val, Elm_Menu_Item *parent)
+    {
+       /* add a list of children */
+       v8::Local<v8::Object> out = v8::Object::New();
+
+       if (!val->IsObject())
+         {
+            fprintf(stderr, "not an object!\n");
+            return NULL;
+         }
+
+       v8::Local<v8::Object> in = val->ToObject();
+       v8::Local<v8::Array> props = in->GetPropertyNames();
+       Elm_Menu_Item *child = NULL;
+
+       /* iterate through elements and instantiate them */
+       for (unsigned int i = 0; i < props->Length(); i++)
+         {
+            v8::Local<v8::Value> x = props->Get(v8::Integer::New(i));
+            v8::String::Utf8Value val(x);
+
+            v8::Local<v8::Value> item = in->Get(x->ToString());
+            if (!item->IsObject())
+              {
+                 fprintf(stderr, "List item is not an object!\n");
+                 continue;
+              }
+
+            v8::Local<v8::Value> val1 = item->ToObject()->Get(v8::String::New("label"));
+            v8::Local<v8::Value> val2 = item->ToObject()->Get(v8::String::New("icon"));
+
+            if (!val1->IsString() && !val2->IsString())
+              {
+                 fprintf(stderr, "Empty menu item?\n");
+                 continue;
+              }
+
+            v8::String::Utf8Value label(val1->ToString());
+            v8::String::Utf8Value icon(val2->ToString());
+
+            child = elm_menu_item_add(eo, parent, *icon, *label, NULL, NULL);
+
+            v8::Local<v8::Value> val4 = item->ToObject()->Get(v8::String::New("items"));
+            if (val4->IsObject())
+              items_set(val4, child);
+         }
+       return child;
+    }
+
+  virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+    {
+       v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+       prop_handler.fill_template(ot);
+       return ot;
+    }
+
+  virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+    {
+       CPropHandler<CElmMenu>::prop_setter setter;
+       setter = prop_handler.get_setter(prop_name);
+       if (setter)
+         {
+            (this->*setter)(value);
+            return true;
+         }
+       return CEvasObject::prop_set(prop_name, value);
+    }
+
+  virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+    {
+       CPropHandler<CElmMenu>::prop_getter getter;
+       getter = prop_handler.get_getter(prop_name);
+       if (getter)
+         return (this->*getter)();
+       return CEvasObject::prop_get(prop_name);
+    }
+
+  virtual v8::Handle<v8::Value> move_get() const
+    {
+       return v8::Undefined();
+    }
+
+  virtual void move_set(v8::Handle<v8::Value> val)
+    {
+        if (!val->IsObject())
+          return;
+        v8::Local<v8::Object> obj = val->ToObject();
+        v8::Local<v8::Value> x = obj->Get(v8::String::New("x"));
+        v8::Local<v8::Value> y = obj->Get(v8::String::New("y"));
+        if (!x->IsNumber() || !y->IsNumber())
+          return;
+        Evas_Coord x_out = x->NumberValue();
+        Evas_Coord y_out = y->NumberValue();
+	elm_menu_move (eo, x_out, y_out);
+    }
+};
+
+template<> CEvasObject::CPropHandler<CElmMenu>::property_list
+CEvasObject::CPropHandler<CElmMenu>::list[] = {
+  PROP_HANDLER(CElmMenu, move),
+  { NULL, NULL, NULL },
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -2980,6 +3099,8 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
      eo = new CElmPane(parent,obj);
    else if (!strcmp(*str, "bubble"))
      eo = new CElmBubble(parent,obj);
+   else if (!strcmp(*str, "menu"))
+     eo = new CElmMenu(parent,obj);
 
    if (!eo)
      {

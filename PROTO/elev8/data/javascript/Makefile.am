@@ -18,6 +18,7 @@ files_SCRIPTS = \
 	genlist.js \
 	label.js \
 	list.js \
+	menu.js \
 	radio.js \
 	panes.js \
 	photo.js \
