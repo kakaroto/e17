@@ -1,0 +1,58 @@
+# ChangeLog for x11-wm/enlightenment
+# Copyright 1999-2011 Gentoo Foundation; Distributed under the GPL v2
+# $Header: $
+
+  10 Jan 2011; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  enlightenment-9999.ebuild:
+  Make hal and udev optional, but reqire one of them as the configure script
+  does
+
+  05 Jan 2011; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  enlightenment-9999.ebuild:
+  Require udev USE flag for e_dbus
+
+  19 Dec 2010; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  enlightenment-0.16.999.55225.ebuild, enlightenment-9999.ebuild:
+  Require eina with USE=mempool-chained enabled
+
+*enlightenment-0.16.999.55225 (19 Dec 2010)
+
+  19 Dec 2010; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  -enlightenment-0.16.999.52995.ebuild, +enlightenment-0.16.999.55225.ebuild:
+  Add latest snapshot, drop old one
+
+*enlightenment-0.16.999.52995 (06 Oct 2010)
+
+  06 Oct 2010; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  -enlightenment-0.16.999.49898.ebuild,
+  +enlightenment-0.16.999.52995.ebuild:
+  Bump enlightenment snapshot
+
+  02 Sep 2010; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  enlightenment-9999.ebuild, +files/quickstart.diff:
+  Add quickstart patch from efl overlay, default enable all modules
+
+  30 Aug 2010; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  enlightenment-9999.ebuild, +files/gentoo-sysactions.conf:
+  Update live ebuild, based on the suggested version of vapier on
+  enlightenment alias
+
+  06 Feb 2010; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  enlightenment-9999.ebuild:
+  Exchange automagic has been fixed, dont disable theme support with
+  exchange USE flag
+
+  20 Dec 2009; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  +enlightenment-0.16.999.063.ebuild, enlightenment-9999.ebuild:
+  Version bump for enlightenment snapshot
+
+  26 Apr 2009; evadim <evadim@evadim.ru> enlightenment-9999:
+  add excahge to dep's, fix headers
+
+  22 Dec 2008; Thomas Sachau (Tommy[D]) <tommy@gentoo.org>
+  enlightenment-0.16.999.050.ebuild, enlightenment-9999.ebuild:
+  Slotting enlightenment
+
+  30 Nov 2008; Mike Frysinger <vapier@gentoo.org>
+  +enlightenment-0.16.999.050.ebuild:
+  Version bump.

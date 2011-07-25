@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+    <maintainer>
+	 <email>enlightenment@gentoo.org</email>
+    </maintainer>
+
+    <use>
+	<flag name='exchange'>
+	  Add support for <pkg>app-misc/exchange</pkg> - the enlightened way to exchange stuffs!
+	</flag>
+	<flag name='udev'>
+	  Use sys-fs/udev to determine available devices
+	</flag>
+	<flag name='ukit'>
+	  Use upower/udisks to automount devices
+	</flag>
+    </use>
+</pkgmetadata>
