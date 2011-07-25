@@ -2097,7 +2097,8 @@ public:
 
   virtual v8::Handle<v8::Value> show_am_pm_get() const
     {
-       return v8::Undefined();
+       Eina_Bool show_am_pm = elm_clock_show_am_pm_get(eo);
+       return v8::Boolean::New(show_am_pm);
     }
 
   virtual void show_am_pm_set(v8::Handle<v8::Value> val)
@@ -2111,7 +2112,8 @@ public:
 
   virtual v8::Handle<v8::Value> show_seconds_get() const
     {
-       return v8::Undefined();
+       Eina_Bool show_seconds = elm_clock_show_seconds_get(eo);
+       return v8::Boolean::New(show_seconds);
     }
 
   virtual void show_seconds_set(v8::Handle<v8::Value> val)
@@ -2123,46 +2125,88 @@ public:
 	 }
     }
 
-  virtual v8::Handle<v8::Value> time_get() const
+  virtual v8::Handle<v8::Value> hour_get() const
     {
-       return v8::Undefined();
+       int hour = 0;
+       elm_clock_time_get(eo, &hour, NULL, NULL);
+       return v8::Number::New(hour);
     }
 
-  virtual void time_set(v8::Handle<v8::Value> val)
+  virtual v8::Handle<v8::Value> minute_get() const
     {
-       if (!val->IsObject())
-	 {
-            fprintf(stderr, "%s: value is not an object!\n", __FUNCTION__);
-            return;
-	 }
-       v8::Local<v8::Object> obj = val->ToObject();
-       v8::Local<v8::Value> hh = obj->Get(v8::String::New("hh"));
-       v8::Local<v8::Value> mm = obj->Get(v8::String::New("mm"));
-       v8::Local<v8::Value> ss = obj->Get(v8::String::New("ss"));
+       int minute = 0;
+       elm_clock_time_get(eo, NULL, &minute, NULL);
+       return v8::Number::New(minute);
+    }
 
-       if (hh.IsEmpty() && mm.IsEmpty() && ss.IsEmpty())
+  virtual v8::Handle<v8::Value> second_get() const
+    {
+       int second = 0;
+       elm_clock_time_get(eo, NULL, NULL, &second);
+       return v8::Number::New(second);
+    }
+
+  virtual void hour_set(v8::Handle<v8::Value> val)
+    {
+       if (!val->IsNumber())
          {
-            fprintf(stderr, "Provide all three values:\n");
+            fprintf(stderr, "%s: value is not a Number!\n", __FUNCTION__);
             return;
-	 }
+         }
+       int hour = 0;
+       int minute = 0;
+       int second = 0;
+       // use either this or the class getters (involves conversion from Value to int)
+       elm_clock_time_get(eo, &hour, &minute, &second);
 
-       int hour = hh->ToNumber()->Value();
-       int minute = mm->ToNumber()->Value();
-       int second = ss->ToNumber()->Value();
+       v8::Local<v8::Object> obj = val->ToObject();
+       hour = val->ToNumber()->Value();
+       elm_clock_time_set(eo, hour , minute, second);
+    }
 
-       elm_clock_time_set(eo, hour, minute, second);
+  virtual void minute_set(v8::Handle<v8::Value> val)
+    {
+       if (!val->IsNumber())
+         {
+            fprintf(stderr, "%s: value is not a Number!\n", __FUNCTION__);
+            return;
+         }
+       int hour = 0;
+       int minute = 0;
+       int second = 0;
+       elm_clock_time_get(eo, &hour, &minute, &second);
+       v8::Local<v8::Object> obj = val->ToObject();
+       minute = val->ToNumber()->Value();
+       elm_clock_time_set(eo, hour , minute, second);
+    }
+
+  virtual void second_set(v8::Handle<v8::Value> val)
+    {
+       if (!val->IsNumber())
+         {
+            fprintf(stderr, "%s: value is not a Number!\n", __FUNCTION__);
+            return;
+         }
+       int hour = 0;
+       int minute = 0;
+       int second = 0;
+       elm_clock_time_get(eo, &hour, &minute, &second);
+       v8::Local<v8::Object> obj = val->ToObject();
+       second = val->ToNumber()->Value();
+       elm_clock_time_set(eo, hour , minute, second);
     }
 
   virtual v8::Handle<v8::Value> edit_get() const
     {
-       return v8::Undefined();
+       Eina_Bool editable = elm_clock_edit_get(eo);
+       return v8::Boolean::New(editable);
     }
 
   virtual void edit_set(v8::Handle<v8::Value> val)
     {
-       if (val->IsNumber())
+       if (val->IsBoolean())
          {
-            int value = val->ToNumber()->Value();
+            Eina_Bool value = val->ToBoolean()->Value();
             elm_clock_edit_set(eo, value);
          }
     }
@@ -2171,7 +2215,9 @@ public:
 template<> CEvasObject::CPropHandler<CElmClock>::property_list
 CEvasObject::CPropHandler<CElmClock>::list[] = {
   PROP_HANDLER(CElmClock, edit),
-  PROP_HANDLER(CElmClock, time),
+  PROP_HANDLER(CElmClock, hour),
+  PROP_HANDLER(CElmClock, minute),
+  PROP_HANDLER(CElmClock, second),
   PROP_HANDLER(CElmClock, show_seconds),
   PROP_HANDLER(CElmClock, show_am_pm),
   { NULL, NULL, NULL },

@@ -2,9 +2,10 @@
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
-var EDIT_HOUR = 2;
-var EDIT_MINUTE = 8;
-var EDIT_SECOND = 32;
+
+var EDIT_HOUR = 2; //constants required by elementary - why should I expose this?
+var EDIT_MINUTE = 8; // constants required by elementary - why should I expose this?
+var EDIT_SECOND = 32; // constants required by elementary - why should I expose this?
 
 var my_window = new elm.window({
 	type : "main",
@@ -28,8 +29,10 @@ var my_window = new elm.window({
 					type : "clock",
 					show_am_pm : 1,
 					show_seconds : 1,
-					time : { hh : 23, mm : 45, ss : 34 },
-					edit : 0,
+					hour : 23,
+					minute : 45,
+					second : 34,
+					edit : true,
 					digit_edit : EDIT_HOUR | EDIT_MINUTE | EDIT_SECOND,
 					on_clicked : function(arg) {
 						print("Edit button clicked\n");
