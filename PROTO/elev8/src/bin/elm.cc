@@ -3042,6 +3042,164 @@ CEvasObject::CPropHandler<CElmMenu>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmColorSelector : public CEvasObject {
+protected:
+  static CPropHandler<CElmColorSelector> prop_handler;
+   /* the on_clicked function */
+   v8::Persistent<v8::Value> on_changed_val;
+
+public:
+  CElmColorSelector(CEvasObject *parent, v8::Local<v8::Object> obj) : CEvasObject()
+    {
+       eo = elm_colorselector_add(parent->top_widget_get());
+       construct(eo, obj);
+    }
+
+  virtual ~CElmColorSelector()
+    {
+    }
+
+  virtual v8::Handle<v8::ObjectTemplate> get_template(void)
+    {
+       v8::Handle<v8::ObjectTemplate> ot = CEvasObject::get_template();
+       prop_handler.fill_template(ot);
+       return ot;
+    }
+
+  virtual bool prop_set(const char *prop_name, v8::Handle<v8::Value> value)
+    {
+       CPropHandler<CElmColorSelector>::prop_setter setter;
+       setter = prop_handler.get_setter(prop_name);
+       if (setter)
+         {
+            (this->*setter)(value);
+            return true;
+         }
+       return CEvasObject::prop_set(prop_name, value);
+    }
+
+  virtual v8::Handle<v8::Value> prop_get(const char *prop_name) const
+    {
+       CPropHandler<CElmColorSelector>::prop_getter getter;
+       getter = prop_handler.get_getter(prop_name);
+       if (getter)
+         return (this->*getter)();
+       return CEvasObject::prop_get(prop_name);
+    }
+
+  virtual v8::Handle<v8::Value> red_get() const
+    {
+       int r, g, b, a;
+       elm_colorselector_color_get(eo, &r, &g, &b, &a);
+       return v8::Number::New(r);
+    }
+
+  virtual void red_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsNumber())
+         {
+            int r, g, b, a;
+            elm_colorselector_color_get(eo, &r, &g, &b, &a);
+	    r = val->ToNumber()->Value();
+            elm_colorselector_color_set(eo, r, g, b, a);
+         }
+    }
+
+  virtual v8::Handle<v8::Value> green_get() const
+    {
+       int r, g, b, a;
+       elm_colorselector_color_get(eo, &r, &g, &b, &a);
+       return v8::Number::New(g);
+    }
+
+  virtual void green_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsNumber())
+         {
+            int r, g, b, a;
+            elm_colorselector_color_get(eo, &r, &g, &b, &a);
+            g = val->ToNumber()->Value();
+            elm_colorselector_color_set(eo, r, g, b, a);
+         }
+    }
+  virtual v8::Handle<v8::Value> blue_get() const
+    {
+       int r, g, b, a;
+       elm_colorselector_color_get(eo, &r, &g, &b, &a);
+       return v8::Number::New(b);
+    }
+
+  virtual void blue_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsNumber())
+         {
+            int r, g, b, a;
+            elm_colorselector_color_get(eo, &r, &g, &b, &a);
+	    b = val->ToNumber()->Value();
+            elm_colorselector_color_set(eo, r, g, b, a);
+         }
+    }
+  virtual v8::Handle<v8::Value> alpha_get() const
+    {
+       int r, g, b, a;
+       elm_colorselector_color_get(eo, &r, &g, &b, &a);
+       return v8::Number::New(a);
+    }
+
+  virtual void alpha_set(v8::Handle<v8::Value> val)
+    {
+       if (val->IsNumber())
+         {
+            int r, g, b, a;
+            elm_colorselector_color_get(eo, &r, &g, &b, &a);
+	    a = val->ToNumber()->Value();
+            elm_colorselector_color_set(eo, r, g, b, a);
+         }
+    }
+   virtual void on_changed(void *event_info)
+     {
+        v8::Handle<v8::Object> obj = get_object();
+        v8::HandleScope handle_scope;
+        v8::Handle<v8::Value> val = on_changed_val;
+        assert(val->IsFunction());
+        v8::Handle<v8::Function> fn(v8::Function::Cast(*val));
+        v8::Handle<v8::Value> args[1] = { obj };
+        fn->Call(fn, 1, args);
+     }
+
+   static void eo_on_changed(void *data, Evas_Object *eo, void *event_info)
+     {
+        CElmColorSelector *changed = static_cast<CElmColorSelector*>(data);
+        changed->on_changed(event_info);
+     }
+
+   virtual void on_changed_set(v8::Handle<v8::Value> val)
+     {
+        on_changed_val.Dispose();
+        on_changed_val = v8::Persistent<v8::Value>::New(val);
+        if (val->IsFunction())
+          evas_object_smart_callback_add(eo, "changed", &eo_on_changed, this);
+        else
+          evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
+     }
+
+   virtual v8::Handle<v8::Value> on_changed_get(void) const
+     {
+        return on_changed_val;
+     }
+
+};
+
+template<> CEvasObject::CPropHandler<CElmColorSelector>::property_list
+CEvasObject::CPropHandler<CElmColorSelector>::list[] = {
+  PROP_HANDLER(CElmColorSelector, red),
+  PROP_HANDLER(CElmColorSelector, green),
+  PROP_HANDLER(CElmColorSelector, blue),
+  PROP_HANDLER(CElmColorSelector, alpha),
+  PROP_HANDLER(CElmColorSelector, on_changed),
+  { NULL, NULL, NULL },
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
 {
@@ -3105,6 +3263,8 @@ realize_one(CEvasObject *parent, v8::Handle<v8::Value> object_val)
      eo = new CElmBubble(parent,obj);
    else if (!strcmp(*str, "menu"))
      eo = new CElmMenu(parent,obj);
+   else if (!strcmp(*str, "colorselector"))
+     eo = new CElmColorSelector(parent,obj);
 
    if (!eo)
      {
