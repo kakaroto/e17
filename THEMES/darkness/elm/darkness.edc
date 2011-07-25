@@ -8,6 +8,7 @@
 #include "macros/list.h"
 #include "macros/button.h"
 #include "macros/menu.h"
+#include "macros/panel.h"
 #include "macros/pager.h"
 #include "macros/scroller.h"
 #include "macros/style.h"
