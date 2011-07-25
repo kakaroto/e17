@@ -2977,6 +2977,10 @@ public:
 
             child = elm_menu_item_add(eo, parent, *icon, *label, NULL, NULL);
 
+            v8::Local<v8::Value> val3 = item->ToObject()->Get(v8::String::New("disabled"));
+            if (val3->IsBoolean())
+              elm_menu_item_disabled_set(child, val3->ToBoolean()->Value());
+
             v8::Local<v8::Value> val4 = item->ToObject()->Get(v8::String::New("items"));
             if (val4->IsObject())
               items_set(val4, child);
