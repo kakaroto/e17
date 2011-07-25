@@ -52,7 +52,7 @@ collections {
          part { name: "fill_confine";
             type: RECT;
             description { state: "default" 0.0;
-               color: 255 0 0 120;
+               color: 255 0 0 0;
                rel1.to: "fill";
                rel2.to: "fill";
             }
