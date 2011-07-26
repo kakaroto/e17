@@ -23,7 +23,7 @@ DBusMessage * e_notify_marshal_get_capabilities_return(DBusMessage *method_call,
 void * e_notify_unmarshal_get_capabilities_return(DBusMessage *msg, DBusError *err);
 void   e_notify_free_get_capabilities_return(void *data);
 DBusMessage * e_notify_marshal_get_server_information();
-DBusMessage * e_notify_marshal_get_server_information_return(DBusMessage *method_call, const char *name, const char *vendor, const char *version);
+DBusMessage * e_notify_marshal_get_server_information_return(DBusMessage *method_call, const char *name, const char *vendor, const char *version, const char *spec_version);
 void * e_notify_unmarshal_get_server_information_return(DBusMessage *msg, DBusError *err);
 void   e_notify_free_get_server_information_return(void *data);
 DBusMessage * e_notify_marshal_close_notification(dbus_uint32_t id);

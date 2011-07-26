@@ -76,6 +76,7 @@ struct E_Notification_Return_Get_Server_Information
   const char *name;
   const char *vendor;
   const char *version;
+  const char *spec_version;
 };
 
 /* signals */

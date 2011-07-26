@@ -178,11 +178,11 @@ e_notify_marshal_get_server_information()
 }
 
 DBusMessage *
-e_notify_marshal_get_server_information_return(DBusMessage *method_call, const char *name, const char *vendor, const char *version)
+e_notify_marshal_get_server_information_return(DBusMessage *method_call, const char *name, const char *vendor, const char *version, const char *spec_version)
 {
   DBusMessage *msg;
   msg = dbus_message_new_method_return(method_call);
-  dbus_message_append_args(msg, DBUS_TYPE_STRING, &name, DBUS_TYPE_STRING, &vendor, DBUS_TYPE_STRING, &version, DBUS_TYPE_INVALID);
+  dbus_message_append_args(msg, DBUS_TYPE_STRING, &name, DBUS_TYPE_STRING, &vendor, DBUS_TYPE_STRING, &version, DBUS_TYPE_STRING, &spec_version, DBUS_TYPE_INVALID);
   return msg;
 }
 
@@ -190,21 +190,37 @@ void *
 e_notify_unmarshal_get_server_information_return(DBusMessage *msg, DBusError *err)
 {
   E_Notification_Return_Get_Server_Information *info;
-  if (!dbus_message_has_signature(msg, "sss")) return NULL;
-
-  info = calloc(1, sizeof(E_Notification_Return_Get_Server_Information));
-  dbus_message_get_args(msg, err,
-    DBUS_TYPE_STRING, &(info->name),
-    DBUS_TYPE_STRING, &(info->vendor),
-    DBUS_TYPE_STRING, &(info->version),
-    DBUS_TYPE_INVALID
-  );
+  if (dbus_message_has_signature(msg, "ssss"))
+  {
+    info = calloc(1, sizeof(E_Notification_Return_Get_Server_Information));
+    dbus_message_get_args(msg, err,
+      DBUS_TYPE_STRING, &(info->name),
+      DBUS_TYPE_STRING, &(info->vendor),
+      DBUS_TYPE_STRING, &(info->version),
+      DBUS_TYPE_STRING, &(info->spec_version),
+      DBUS_TYPE_INVALID
+    );
+  } 
+  else if (dbus_message_has_signature(msg,"sss")) 
+  {
+    // stay combatible with servers <= 0.9 spec
+    info = calloc(1, sizeof(E_Notification_Return_Get_Server_Information));
+    dbus_message_get_args(msg, err,
+      DBUS_TYPE_STRING, &(info->name),
+      DBUS_TYPE_STRING, &(info->vendor),
+      DBUS_TYPE_STRING, &(info->version),
+      DBUS_TYPE_INVALID
+    );
+  }
+  else 
+  {
+    return NULL;
+  }
   if (dbus_error_is_set(err))
   {
     free(info);
     return NULL;
   }
-
   return info;
 }
 

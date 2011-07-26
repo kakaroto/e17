@@ -68,7 +68,7 @@ method_get_server_information(E_DBus_Object *obj, DBusMessage *message)
 
   daemon = e_dbus_object_data_get(obj);
 
-  return e_notify_marshal_get_server_information_return(message, daemon->name, daemon->vendor, E_NOTIFICATION_DAEMON_VERSION);
+  return e_notify_marshal_get_server_information_return(message, daemon->name, daemon->vendor, E_NOTIFICATION_DAEMON_VERSION, E_NOTIFICATION_DAEMON_SUPPORTS_SPEC_VERSION);
 }
 
 
@@ -126,7 +126,7 @@ e_notification_daemon_add(const char *name, const char *vendor)
   e_dbus_interface_method_add(daemon->iface, "GetCapabilities", "", "as", method_get_capabilities);
   e_dbus_interface_method_add(daemon->iface, "Notify", "susssasa{sv}i", "u", method_notify);
   e_dbus_interface_method_add(daemon->iface, "CloseNotification", "u", "u", method_close_notification);
-  e_dbus_interface_method_add(daemon->iface, "GetServerInformation", "", "sss", method_get_server_information);
+  e_dbus_interface_method_add(daemon->iface, "GetServerInformation", "", "ssss", method_get_server_information);
 
   return daemon;
 }
