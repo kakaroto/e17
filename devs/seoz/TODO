@@ -9,6 +9,9 @@
 	- Fix reorder bug when the window edge is going out of the screen.
 	- Check elm_genlist_item_sorted_insert() API with group index, expandable list and etc.
 
+* Gengrid
+	- Fix gengrid with a large image. It covers the entire item. - discomfitor.
+
 * Elementary
 	- Add elm_object_bounce_set/get() APIs.
 	- Elementary : Changed edje_object to elm_layout. (not for genlist, gengrid)
