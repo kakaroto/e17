@@ -16,3 +16,7 @@
         can't run to process edbus dispatches. Move this to an idle
         enterer that wil be run.
 
+2011-07-26  Libor Zoubek <lzoubek@jezzovo.net>
+
+        * Add support for notification protocol 1.2 into e_dbus by
+        adding spec version string support.
