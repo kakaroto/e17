@@ -185,8 +185,7 @@ int
 main(int argc, char *argv[])
 {
    Evas_Object *listwin, *win, *bg, *box;
-   int num_wins, nw;
-   Ecore_X_Window zw, zwr, *roots;
+   Ecore_X_Window zw;
 
    itc.item_style     = "default";
    itc.func.label_get = _label;
@@ -220,21 +219,10 @@ main(int argc, char *argv[])
    evas_object_show(win);
 
    zw = elm_win_xwindow_get(win);
-   zwr = ecore_x_window_root_get(zw);
-   roots = ecore_x_window_root_list(&num_wins);
-   if ((!roots) || (num_wins <= 0))
-     ERR("Could not determine screen size; autoscaling disabled");
+   if (zw)
+     ecore_x_randr_screen_current_size_get(ecore_x_window_root_get(zw), &root_x, &root_y, NULL, NULL);
    else
-     {
-        for (nw = 0; nw < num_wins; nw++)
-          {
-             if (roots[nw] != zwr) continue;
-
-             ecore_x_window_size_get(zwr, &root_x, &root_y);
-             break;
-          }
-        free(roots);
-     }
+     ERR("Could not determine screen size; autoscaling disabled");
 
    listwin = elm_win_add(NULL, "ev", ELM_WIN_BASIC);
    elm_win_autodel_set(listwin, EINA_TRUE);
