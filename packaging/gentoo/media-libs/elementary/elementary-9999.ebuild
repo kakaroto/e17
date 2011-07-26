@@ -27,6 +27,7 @@ DEPEND="${RDEPEND}"
 src_configure() {
 	export MY_ECONF="
 	$(use_enable dbus edbus)
+	$(use_enable doc)
 	$(use_enable xdg efreet)
 	$(use_enable weather eweather)
 	$(use_enable fbcon ecore-fb)
