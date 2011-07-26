@@ -231,7 +231,7 @@ _em_print_help(void)
 	  "\t\t\t\t(Shorthand: -g)\n"
 	  "\t--quality NUM\t\tImage quality of screenshot (in percentage)\n"
 	  "\t--region\t\tSelect a specific screen region\n"
-	  "\t--window\t\tSelect a specifc window to grab\n"
+	  "\t--window\t\tSelect a specific window to grab\n"
 	  "\t--version\t\tPrint the version.\n"
 	  );
 
