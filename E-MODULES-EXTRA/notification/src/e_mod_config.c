@@ -5,6 +5,7 @@ struct _E_Config_Dialog_Data
    int show_low;
    int show_normal;
    int show_critical;
+   int force_timeout;
    double timeout;
    int corner;
 };
@@ -66,6 +67,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->show_critical = notification_cfg->show_critical;
    cfdata->timeout       = notification_cfg->timeout;
    cfdata->corner        = notification_cfg->corner;
+   cfdata->force_timeout = notification_cfg->force_timeout;
 }
 
 static Evas_Object *
@@ -88,7 +90,9 @@ _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, D_("Default Timeout"), 0);
-   ow = e_widget_slider_add(evas, 1, 0, D_("%.1f seconds"), 0.0, 6.0, 0.1, 0, 
+   ow = e_widget_check_add(evas, D_("Force timeout for all notifications"), &(cfdata->force_timeout));
+   e_widget_framelist_object_append(of,ow);
+   ow = e_widget_slider_add(evas, 1, 0, D_("%.1f seconds"), 0.0, 15.0, 0.1, 0, 
                             &(cfdata->timeout), NULL, 200);
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -134,6 +138,7 @@ _basic_apply(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata)
    notification_cfg->show_critical = cfdata->show_critical;
    notification_cfg->timeout       = cfdata->timeout;
    notification_cfg->corner        = cfdata->corner;
+   notification_cfg->force_timeout = cfdata->force_timeout;
 
    e_modapi_save(notification_mod);
    return 1;

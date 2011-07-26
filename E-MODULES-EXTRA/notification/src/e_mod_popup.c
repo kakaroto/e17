@@ -93,7 +93,7 @@ notification_popup_notify(E_Notification *n,
 
    timeout = e_notification_timeout_get(popup->notif);
 
-   if (timeout < 0)
+   if (timeout < 0 || notification_cfg->force_timeout)
      timeout = notification_cfg->timeout;
    else
      timeout = (double)timeout / 1000.0;

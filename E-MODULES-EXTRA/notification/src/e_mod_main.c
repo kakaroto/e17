@@ -327,6 +327,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, show_critical, INT);
    E_CONFIG_VAL(D, T, corner, INT);
    E_CONFIG_VAL(D, T, timeout, FLOAT);
+   E_CONFIG_VAL(D, T, force_timeout, INT);
    E_CONFIG_LIST(D, T, items, conf_item_edd);
 
    notification_cfg = e_config_domain_load("module.notification", conf_edd);
@@ -473,6 +474,7 @@ _notification_cfg_new(void)
    cfg->show_normal   = 1;
    cfg->show_critical = 1;
    cfg->timeout       = 5.0;
+   cfg->force_timeout = 0;
    cfg->corner        = CORNER_TR;
 
    return cfg;

@@ -51,6 +51,7 @@ struct _Config
   int show_low;
   int show_normal;
   int show_critical;
+  int force_timeout;
   float timeout;
   Popup_Corner corner;
 
