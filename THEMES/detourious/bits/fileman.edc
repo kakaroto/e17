@@ -309,7 +309,8 @@
 		action: STATE_SET "visible" 0.0;					\
 		target: "icon_box";									\
 		target: "icon_box_bg";								\
-		after: "thumb_gen2";								\
+		/* after: "thumb_gen2"; */							\
+		after: "thumb_gen6";								\
 	}														\
 	program {												\
 		name: "thumb_gen-";									\
@@ -318,7 +319,8 @@
 		action: STATE_SET "default" 0.0;					\
 		target: "icon_box";									\
 		target: "icon_box_bg";								\
-		after: "thumb_gen2";								\
+		target: "icon";										\
+		/*after: "thumb_gen2";*/							\
 	}														\
 	program {												\
 		name: "thumb_gen2";									\
@@ -350,6 +352,7 @@
 		action: STATE_SET "default" 0.0;					\
 		target: "icon";										\
 	}														\
+
 
 #define FILEMAN_VOL_PROGS									\
 	program {												\
@@ -1210,8 +1213,32 @@ group {
 }
 
 group {
+	name: "e/fileman/desktop/scrollframe";
+	parts{
+		part {
+			name: "e.swallow.content";
+			type: SWALLOW;
+
+			description {
+				state: "default" 0.0;
+
+				rel1 {
+					relative: 0.0 0.0;
+					offset: 50 50;
+				}
+
+				rel2 {
+					relative: 1.0 1.0;
+					offset: 50 50;
+				}
+			}
+		}
+	}
+}
+
+group {
 	name: "e/fileman/default/scrollframe";
-	/* alias: "e/fileman/desktop/scrollframe"; */
+
 
 	parts {
 		part {
@@ -1296,7 +1323,7 @@ group {
 
 			description {
 				state: "default" 0.0;
-				color: 231 231 232 255;
+				color: 211 211 212 255;
 				rel1 {
 					to: "sb_vbar";
 				}
@@ -1315,7 +1342,7 @@ group {
 
 			description {
 				state: "default" 0.0;
-				color: 200 200 200 255;
+				color: 180 180 180 255;
 				rel1 {
 					to: "sb_vbar";
 				}

@@ -526,6 +526,7 @@ group {
 
 group {
     name: "e/widgets/border/glass/border";
+	alias: "e/widgets/border/internal_fileman/border";
 
 	BORDER_DATA;
 
