@@ -10,6 +10,7 @@ fonts {
    font: "VeraBd.ttf" "Edje-Vera-Bold";
 }
 
+#if 0
 spectra {
   spectrum {
     name: "black_to_trans";
@@ -23,7 +24,7 @@ spectra {
 	color: 255 249 231 127 1;
      }
 }
-
+#endif
 
 collections {
 #include "default_background.edc"

@@ -9524,6 +9524,7 @@ group
 		    }
 	       }
 	  }
+#if 0
 	part 
 	  {
 	     name: "grad";
@@ -9540,6 +9541,7 @@ group
 		  gradient.rel2.offset: -1 0;
 	       }
 	  }
+#endif
      }
 }
 

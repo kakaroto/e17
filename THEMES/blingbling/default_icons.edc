@@ -1757,6 +1757,7 @@ group {
    name: "e/icons/enlightenment/gradient_h";
    max:  24 24;
    parts {
+#if 0
       part {
 	 name:          "bg";
          type: GRADIENT;
@@ -1779,6 +1780,7 @@ group {
             }
 	 }
       }
+#endif
       part {
 	 name:          "screen";
 	 mouse_events:  0;
@@ -1799,6 +1801,7 @@ group {
    name: "e/icons/enlightenment/gradient_v";
    max:  24 24;
    parts {
+#if 0
       part {
 	 name:          "bg";
          type: GRADIENT;
@@ -1817,6 +1820,7 @@ group {
             }
 	 }
       }
+#endif
       part {
 	 name:          "screen";
 	 mouse_events:  0;
@@ -1837,6 +1841,7 @@ group {
    name: "e/icons/enlightenment/gradient_du";
    max:  24 24;
    parts {
+#if 0
       part {
 	 name:          "bg";
          type: GRADIENT;
@@ -1859,6 +1864,7 @@ group {
             }
 	 }
       }
+#endif
       part {
 	 name:          "screen";
 	 mouse_events:  0;
@@ -1879,6 +1885,7 @@ group {
    name: "e/icons/enlightenment/gradient_dd";
    max:  24 24;
    parts {
+#if 0
       part {
 	 name:          "bg";
          type: GRADIENT;
@@ -1901,6 +1908,7 @@ group {
             }
 	 }
       }
+#endif
       part {
 	 name:          "screen";
 	 mouse_events:  0;
@@ -1921,6 +1929,7 @@ group {
    name: "e/icons/enlightenment/gradient_rad";
    max:  24 24;
    parts {
+#if 0
       part {
 	 name:          "bg";
          type: GRADIENT;
@@ -1943,6 +1952,7 @@ group {
             }
 	 }
       }
+#endif
       part {
 	 name:          "screen";
 	 mouse_events:  0;
@@ -1980,6 +1990,7 @@ group {
             color: 255 255 255 255;
 	 }
       }
+#if 0
       part {
 	 name:          "bg";
          type: GRADIENT;
@@ -2002,6 +2013,7 @@ group {
             }
 	 }
       }
+#endif
       part {
 	 name:          "screen";
 	 mouse_events:  0;
