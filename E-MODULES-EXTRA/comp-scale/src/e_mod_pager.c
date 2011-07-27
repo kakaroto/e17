@@ -69,6 +69,7 @@ static Item *background = NULL;
 static Item *selected_item = NULL;
 static E_Desk *previous_desk = NULL;
 static E_Desk *current_desk = NULL;
+static E_Desk *initial_desk = NULL;
 static int min_x, min_y, max_x, max_y;
 static double desk_w, desk_h;
 static double zoom = 0.0;
@@ -87,8 +88,8 @@ _pager_place_desks(double scale)
      {
 	for (x = 0; x < zone->desk_x_count; x++)
 	  {
-	     double x1 = (x - current_desk->x) * zone->w;
-	     double y1 = (y - current_desk->y) * zone->h;
+	     double x1 = (x - initial_desk->x) * zone->w;
+	     double y1 = (y - initial_desk->y) * zone->h;
 	     double x2 = min_x + x * desk_w;
 	     double y2 = min_y + y * desk_h;
 	     double cur_x = (scale * x1) + (1.0 - scale) * x2;
@@ -233,6 +234,7 @@ _pager_out()
 	it->bd_y = it->bd->y + (it->desk->y - current_desk->y) * zone->h;
      }
 
+   initial_desk = current_desk;
    scale_state = EINA_FALSE;
 }
 
@@ -999,7 +1001,7 @@ _pager_run(E_Manager *man)
    if (!zone)
      return EINA_FALSE;
 
-   current_desk = e_desk_current_get(zone);
+   initial_desk = current_desk = e_desk_current_get(zone);
    if (!current_desk)
      return EINA_FALSE;
 
