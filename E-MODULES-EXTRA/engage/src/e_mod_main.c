@@ -1524,26 +1524,28 @@ _ngi_redraw(Ng *ng)
 	     }
 	   else
 	     size = (int)(pos2 - pos);
-	   
+
+	   int off = edge_offset + (1.0 - it->scale) * (ng->size)/2.0;
+
 	   switch (cfg->orient)
 	     {
 	      case E_GADCON_ORIENT_BOTTOM:
 		 bx = pos;
-		 by = h + hide_step - (edge_offset + size);
+		 by = h + hide_step - (off + size);
 		 break;
 
 	      case E_GADCON_ORIENT_TOP:
 		 bx = pos;
-		 by = edge_offset - hide_step;
+		 by = off - hide_step;
 		 break;
 
 	      case E_GADCON_ORIENT_LEFT:
-		 bx = edge_offset - hide_step;
+		 bx = off - hide_step;
 		 by = pos;
 		 break;
 
 	      case E_GADCON_ORIENT_RIGHT:
-		 bx = w + hide_step - (edge_offset + size);
+		 bx = w + hide_step - (off + size);
 		 by = pos;
 		 break;
 	     }

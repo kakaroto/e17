@@ -1,6 +1,6 @@
-#define BG_OFFSET 20
+#define BG_OFFSET 12
 #define HOVER_EFFECT 0
-#define RELECTION 0
+#define TRANSLUCENT 1
 
 images
 {
@@ -11,6 +11,7 @@ images
 	image:"itask_im4.png" COMP;
 	image:"itask_im5.png" COMP;
 	image:"itask_im6.png" COMP;
+	image:"bg.png" COMP;
 }
 
 collections{
@@ -24,13 +25,13 @@ collections{
 
 		data {
 			/* space between icons */
-			item: "icon_spacing"    "1";
+			item: "icon_spacing"    "3";
 
 			/* space between boxes */
-			item: "separator_width" "6";
+			item: "separator_width" "12";
 
 			/* space between screen edge and icons */
-			item: "edge_offset"    "6";
+			item: "edge_offset"    "5";
 
 			/* clip separator to background group
 			 * change opacity with background transparency */
@@ -54,129 +55,11 @@ collections{
 			}
 		}
 	}
-
-#if REFLECTION
-	group {
-		name: "e/modules/engage/frame_bottom";
-
-		data {
-			item: "icon_spacing"    "2";
-			item: "separator_width" "15";
-			item: "edge_offset"     "15";
-			item: "clip_separator"  "1";
-			item: "bg_offset"       "0";
-
-			/* clip reflection at bottom edge */
-			item: "reflection_offset" "1";
-		}
-		parts {
-			part {
-				name: "frame";
-				type: RECT;
-				mouse_events: 0;
-
-				description {
-					state: "default" 0.0;
-					visible: 0;
-				}
-			}
-		}
-
-	}
-
 	group {
 		name: "e/modules/engage/bg_bottom";
-		parts {
-
-			part {
-				name: "bg";
-				mouse_events: 0;
-
-				description {
-					state: "default" 0.0;
-					rel1.relative: 0.0 1.0;
-					rel1.offset: -40 -40;
-					rel2.offset: 40 -1;
-					color: 255 255 255 255;
-					image {
-						normal: "itask_im6.png";
-						border: 36 36 7 2;
-					}
-				}
-			}
-		}
-	}
-#else
-	group {
-		name: "e/modules/engage/bg_bottom";
-		parts {
-			part {
-				name: "bg";
-				mouse_events: 0;
-
-				description {
-					state: "default" 0.0;
-
-					rel1.offset: (-BG_OFFSET) -10;
-					rel2.offset: (-1 + BG_OFFSET) -1;
-
-					image {
-						normal: "itask_im0.png";
-						border: 18 18 20 0;
-					}
-
-				}
-			}
-		}
-	}
-#endif
-
-	group {
-		name: "e/modules/engage/bg_top";
-		parts {
-			part {
-				name: "bg";
-				mouse_events: 0;
-
-				description {
-					state: "default" 0.0;
-
-					rel1.offset: (-BG_OFFSET) 0;
-					rel2.offset: (-1 + BG_OFFSET) (-1 + BG_OFFSET);
-
-					image {
-						normal: "itask_im1.png";
-						border: 18 18 0 28;
-					}
-
-				}
-			}
-		}
-	}
-	group {
-		name: "e/modules/engage/bg_left";
-		parts {
-			part {
-				name: "bg";
-				mouse_events: 0;
-
-				description {
-					state: "default" 0.0;
-
-					rel1.offset: 0 (-BG_OFFSET);
-					rel2.offset: (-1 + BG_OFFSET) (-1 + BG_OFFSET);
-
-					image {
-						normal: "itask_im2.png";
-						border: 0 20 32 18;
-					}
-				}
-			}
-		}
-	}
-
-	group {
-		name: "e/modules/engage/bg_right";
+		alias: "e/modules/engage/bg_top";
+		alias: "e/modules/engage/bg_left";
+		alias: "e/modules/engage/bg_right";
 		parts {
 			part {
 				name: "bg";
@@ -186,29 +69,25 @@ collections{
 					state: "default" 0.0;
 
 					rel1.offset: (-BG_OFFSET) (-BG_OFFSET);
-					rel2.offset: -1  (-1 + BG_OFFSET);
+					rel2.offset: (-1 + BG_OFFSET) (-1 + BG_OFFSET);
 
 					image {
-						normal: "itask_im3.png";
-						border: 20 0 32 18;
+						normal: "bg.png";
+						border: 6 6 6 6;
 					}
+
 				}
 			}
 		}
 	}
-
 
 	/* the vertical and horizontal separator image. it can be a rectangle
 	 * as it is in this example.
 	 */
 
-#if REFLECTION
 	group {
 		name: "e/modules/engage/separator_bottom";
-	}
-#else
-	group {
-		name: "e/modules/engage/separator_bottom";
+		alias: "e/modules/engage/separator_top";
 
 		parts {
 			part {
@@ -218,35 +97,12 @@ collections{
 
 				description {
 					state: "default" 0.0;
-					color: 182 182 182 255;
-					max: 1 999;
+					color: 182 182 182 200;
+					max: 2 999;
 					align: 0.5 0.0;
 
-					rel1.offset: 0 -5;
-					rel2.offset: 0 2;
-				}
-			}
-		}
-	}
-#endif
-
-	group {
-		name: "e/modules/engage/separator_top";
-
-		parts {
-			part {
-				name: "separator";
-				type: RECT;
-				mouse_events: 0;
-
-				description {
-					state: "default" 0.0;
-					color: 182 182 182 255;
-					max: 1 999;
-					align: 0.5 0.0;
-
-					rel1.offset: 0 0;
-					rel2.offset: 0 2;
+					rel1.offset: 0 -8;
+					rel2.offset: 0 7;
 				}
 			}
 		}
@@ -265,11 +121,11 @@ collections{
 				description {
 					state: "default" 0.0;
 					color: 182 182 182 255;
-					max: 999 1;
+					max: 999 2;
 					align: 0.0 0.5;
 
-					rel1.offset: -4 0;
-					rel2.offset: 3 0;
+					rel1.offset: -8 0;
+					rel2.offset: 7 0;
 				}
 			}
 		}
