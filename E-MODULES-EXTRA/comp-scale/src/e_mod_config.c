@@ -205,7 +205,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 			   &(cfdata->pager_fade_popups));
    e_widget_framelist_object_append(of, ow);
    ow = e_widget_check_add(evas, D_("Darken desktop"),
-			   &(cfdata->fade_desktop));
+			   &(cfdata->pager_fade_desktop));
    e_widget_framelist_object_append (of, ow);
    e_widget_table_object_append(ot, of, 0, 0, 1, 1, 1, 1, 1, 0);
 
