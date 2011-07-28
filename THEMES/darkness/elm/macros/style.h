@@ -3,6 +3,7 @@ style { \
    name: style_class; \
    base: "font="fn" font_size="size" text_class="style_class" align=left wrap=word "normal_style; \
    tag: "br" "\n"; \
+   tag: "ps" "ps"; \
    tag: "tab" "\t"; \
    tag: "left" "+ align=left"; \
    tag: "/left" "-\n"; \
@@ -25,6 +26,7 @@ style { \
    name: style_class"-mixed"; \
    base: "font="fn" font_size="size" text_class="style_class" align=left wrap=mixed "normal_style; \
    tag: "br" "\n"; \
+   tag: "ps" "ps"; \
    tag: "tab" "\t"; \
    tag: "left" "+ align=left"; \
    tag: "/left" "-\n"; \
@@ -47,6 +49,7 @@ style { \
    name: style_class"-char"; \
    base: "font="fn" font_size="size" text_class="style_class" align=left wrap=char "normal_style; \
    tag: "br" "\n"; \
+   tag: "ps" "ps"; \
    tag: "tab" "\t"; \
    tag: "left" "+ align=left"; \
    tag: "/left" "-\n"; \
@@ -69,6 +72,7 @@ style { \
    name: style_class"-nowrap"; \
    base: "font="fn" font_size="size" text_class="style_class" align=left wrap=none "normal_style; \
    tag: "br" "\n"; \
+   tag: "ps" "ps"; \
    tag: "tab" "\t"; \
    tag: "left" "+ align=left"; \
    tag: "/left" "-\n"; \
