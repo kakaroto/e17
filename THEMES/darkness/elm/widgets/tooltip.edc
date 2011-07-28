@@ -474,6 +474,10 @@
        }
    }
    group { name: "elm/tooltip/base/transparent";
+      data {
+          item: "pad_x" "10";
+          item: "pad_y" "10";
+      }
       parts {
          part { name: "elm.swallow.content";
             type: SWALLOW;
