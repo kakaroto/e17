@@ -5,19 +5,31 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Everything-places\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-18 09:23+0200\n"
-"PO-Revision-Date: 2010-05-18 20:10+0200\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-07-28 02:00-0700\n"
+"PO-Revision-Date: 2011-07-28 11:27+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:49
+#: ../src/e_mod_main.c:138
+msgid "Home"
+msgstr "Home"
+
+#: ../src/e_mod_main.c:141
 msgid "Wallpaper"
 msgstr "Sfondo"
 
-#: src/e_mod_main.c:95
+#: ../src/e_mod_main.c:272 ../src/e_mod_main.c:283
 msgid "Places"
 msgstr "Risorse"
+
+#: ../src/e_mod_main.c:294
+msgid "Mount Drive"
+msgstr "Monta unità"
+
+#: ../src/e_mod_main.c:299
+msgid "Unmount Drive"
+msgstr "Smonta unità"

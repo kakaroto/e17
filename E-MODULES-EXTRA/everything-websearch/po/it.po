@@ -5,146 +5,147 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Everything-mpris\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-30 21:21+0200\n"
-"PO-Revision-Date: 2010-05-18 19:59+0200\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-07-28 02:00-0700\n"
+"PO-Revision-Date: 2011-07-28 11:45+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:579 src/e_mod_main.c:1203 src/e_mod_main.c:1344
+#: ../src/e_mod_main.c:587 ../src/e_mod_main.c:1254 ../src/e_mod_main.c:1398
 msgid "Translate"
 msgstr "Traduci"
 
-#: src/e_mod_main.c:719
+#: ../src/e_mod_main.c:736
 msgid "Abort download"
 msgstr "Termina download"
 
-#: src/e_mod_main.c:764
+#: ../src/e_mod_main.c:781
 #, c-format
 msgid "Got %d kbytes of"
 msgstr "Ottenuti %d kbytes di"
 
-#: src/e_mod_main.c:778
+#: ../src/e_mod_main.c:795
 msgid "Enqueue in Playlist"
 msgstr "Accoda alla playlist"
 
-#: src/e_mod_main.c:782
+#: ../src/e_mod_main.c:799
 msgid "Enqueue"
 msgstr "Accoda"
 
-#: src/e_mod_main.c:785
+#: ../src/e_mod_main.c:802
 msgid "Play File"
 msgstr "Esegui file"
 
-#: src/e_mod_main.c:789
+#: ../src/e_mod_main.c:806
 msgid "Play"
 msgstr "Esegui"
 
-#: src/e_mod_main.c:819
+#: ../src/e_mod_main.c:836
 msgid "Finished download"
 msgstr "Download completato"
 
-#: src/e_mod_main.c:901
+#: ../src/e_mod_main.c:922
 msgid "Start download"
 msgstr "Inizia download"
 
-#: src/e_mod_main.c:985
+#: ../src/e_mod_main.c:1004
 msgid "Enqueue files for download"
 msgstr "Accoda file per il download"
 
-#: src/e_mod_main.c:1002 src/e_mod_main.c:1198 src/e_mod_main.c:1350
+#: ../src/e_mod_main.c:1021 ../src/e_mod_main.c:1249 ../src/e_mod_main.c:1404
 msgid "Youtube"
 msgstr "Youtube"
 
-#: src/e_mod_main.c:1038 src/e_mod_main.c:1042 src/e_mod_main.c:1069
-#: src/e_mod_main.c:1104 src/e_mod_main.c:1239
+#. ecore_con_url_http_post_send(ud->dd->con_url, post);
+#: ../src/e_mod_main.c:1062 ../src/e_mod_main.c:1067 ../src/e_mod_main.c:1094
+#: ../src/e_mod_main.c:1155 ../src/e_mod_main.c:1293
 msgid "Upload Image"
 msgstr "Invia immagine"
 
-#: src/e_mod_main.c:1038
+#: ../src/e_mod_main.c:1062
 msgid "Link copied to clipboard"
 msgstr "Link copiato negli appunti"
 
-#: src/e_mod_main.c:1042
+#: ../src/e_mod_main.c:1067
 msgid "Something went wrong :("
 msgstr "Qualcosa è andato storto :("
 
-#: src/e_mod_main.c:1067
+#: ../src/e_mod_main.c:1092
 #, c-format
 msgid "Completed %1.1f%% of %s"
 msgstr "Completati %1.1f%% di %s"
 
-#: src/e_mod_main.c:1188
+#: ../src/e_mod_main.c:1239
 msgid "Google"
 msgstr "Google"
 
-#: src/e_mod_main.c:1193
+#: ../src/e_mod_main.c:1244
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: src/e_mod_main.c:1215
+#: ../src/e_mod_main.c:1267
 msgid "Google for it"
 msgstr "Cerca con Google"
 
-#: src/e_mod_main.c:1218
+#: ../src/e_mod_main.c:1270
 msgid "Wikipedia Page"
 msgstr "Pagina su Wikipedia"
 
-#: src/e_mod_main.c:1221
+#: ../src/e_mod_main.c:1273
 msgid "Feeling Lucky"
 msgstr "Mi sento fortunato"
 
-#: src/e_mod_main.c:1224
+#: ../src/e_mod_main.c:1276
 msgid "Watch on Youtube"
 msgstr "Guarda su Youtube"
 
-#: src/e_mod_main.c:1227
+#: ../src/e_mod_main.c:1280
 msgid "Download as Audio"
 msgstr "Scarica come audio"
 
-#: src/e_mod_main.c:1230
+#: ../src/e_mod_main.c:1283
 msgid "Play Video"
 msgstr "Esegui video"
 
-#: src/e_mod_main.c:1233
+#: ../src/e_mod_main.c:1286
 msgid "Download and enqueue"
 msgstr "Scarica e accoda"
 
-#: src/e_mod_main.c:1236
+#: ../src/e_mod_main.c:1289
 msgid "Download and play"
 msgstr "Scarica ed esegui"
 
-#: src/e_mod_main.c:1317 src/e_mod_main.c:1489 src/e_mod_main.c:1509
+#: ../src/e_mod_main.c:1371 ../src/e_mod_main.c:1543 ../src/e_mod_main.c:1563
 msgid "Everything Websearch"
 msgstr "Websearch di Everything"
 
-#: src/e_mod_main.c:1331
+#: ../src/e_mod_main.c:1385
 msgid "General"
 msgstr "Generale"
 
-#: src/e_mod_main.c:1334
+#: ../src/e_mod_main.c:1388
 msgid "Browser"
 msgstr "Browser"
 
-#: src/e_mod_main.c:1339
+#: ../src/e_mod_main.c:1393
 msgid "Language"
 msgstr "Lingua"
 
-#: src/e_mod_main.c:1353
+#: ../src/e_mod_main.c:1407
 msgid "Video player"
 msgstr "Player video"
 
-#: src/e_mod_main.c:1358
+#: ../src/e_mod_main.c:1412
 msgid "Download directory"
 msgstr "Directory di download"
 
-#: src/e_mod_main.c:1363
+#: ../src/e_mod_main.c:1417
 msgid "Download requires mplayer and mp3lame"
 msgstr "Il download richiede mplayer e mp3lame"
 
-#: src/e_mod_main.c:1486
-msgid "Extensions"
-msgstr "Estensioni"
+#: ../src/e_mod_main.c:1540
+msgid "Launcher"
+msgstr "Lanciatore"

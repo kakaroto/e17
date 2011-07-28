@@ -5,28 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eOOorg\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-07-07 10:43+0400\n"
-"PO-Revision-Date: 2010-07-07 18:00+0200\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-07-28 02:00-0700\n"
+"PO-Revision-Date: 2011-07-28 11:25+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:44 src/e_mod_main.c:83 src/e_mod_main.c:306
+#. create our config dialog
+#: ../src/e_mod_config.c:44 ../src/e_mod_main.c:306
 msgid "OpenOffice.org Quickstart"
 msgstr "Avvio veloce OpenOffice.org"
 
-#: src/e_mod_config.c:84
+#: ../src/e_mod_config.c:84
 msgid "General"
 msgstr "Generale"
 
-#: src/e_mod_config.c:86
+#: ../src/e_mod_config.c:86
 msgid "Use Switch 1"
 msgstr "Usa switch 1"
 
-#: src/e_mod_main.c:114
+#: ../src/e_mod_main.c:114
 msgid ""
 "eOOorg Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -36,17 +37,17 @@ msgid ""
 "set of defaults will fix<br>that by adding it in. You can re-configure "
 "things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
-"I dati di configurazione del modulo eOOorg avevano bisogno di essere<br>"
-"aggiornati. La vostra vecchia configurazione è stata cancellata ed è<br>"
-"stato inizializzato un nuovo set di impostazioni predefinite. Questo<br>"
-"avverrà regolarmente durante lo sviluppo, quindi non riportate bug.<br>"
-"Questo significa semplicemente che il modulo ha bisogno di nuovi<br>"
-"dati predefiniti di configurazione per funzionalità mancanti nella<br>"
-"vecchia configurazione. Questo nuovo set sistemerà le cose aggiungendo<br>"
-"quei dati. Potete riconfigurare le cose a vostro piacimento. Ci<br>"
-"scusiamo per l'inconveniente."
+"I dati di configurazione del modulo eOOorg avevano bisogno di "
+"essere<br>aggiornati. La vostra vecchia configurazione è stata cancellata ed "
+"è<br>stato inizializzato un nuovo set di impostazioni predefinite. "
+"Questo<br>avverrà regolarmente durante lo sviluppo, quindi non riportate bug."
+"<br>Questo significa semplicemente che il modulo ha bisogno di nuovi<br>dati "
+"predefiniti di configurazione per funzionalità mancanti nella<br>vecchia "
+"configurazione. Questo nuovo set sistemerà le cose aggiungendo<br>quei dati. "
+"Potete riconfigurare le cose a vostro piacimento. Ci<br>scusiamo per "
+"l'inconveniente."
 
-#: src/e_mod_main.c:134
+#: ../src/e_mod_main.c:134
 msgid ""
 "Your eOOorg Module configuration is NEWER than the module version. This is "
 "very<br>strange. This should not happen unless you downgraded<br>the module "
@@ -54,18 +55,17 @@ msgid ""
 "module was running. This is bad and<br>as a precaution your configuration "
 "has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
-"La vostra configurazione del modulo eOOorg è più NUOVA della<br>"
-"versione del modulo. Questo è molto strano. Non dovrebbe succedere a meno<br>"
-"che siate passati ad una vecchia versione del modulo Skeleton o avete<br>"
-"copiato la configurazione di un sistema su cui gira una versione<br>"
-"più nuova del modulo. A scopo precauzionale la vostra<br>"
-"configurazione è stata adesso ripristinata ai valori predefiniti.<br>"
-"Ci scusiamo per l'inconveniente."
+"La vostra configurazione del modulo eOOorg è più NUOVA della<br>versione del "
+"modulo. Questo è molto strano. Non dovrebbe succedere a meno<br>che siate "
+"passati ad una vecchia versione del modulo Skeleton o avete<br>copiato la "
+"configurazione di un sistema su cui gira una versione<br>più nuova del "
+"modulo. A scopo precauzionale la vostra<br>configurazione è stata adesso "
+"ripristinata ai valori predefiniti.<br>Ci scusiamo per l'inconveniente."
 
-#: src/e_mod_main.c:391
+#: ../src/e_mod_main.c:391
 msgid "OpenOffice.org Quickstart Configuration Updated"
 msgstr "Configurazione avvio veloce OpenOffice.org aggiornata"
 
-#: src/e_mod_main.c:449
-msgid "Configuration"
-msgstr "Configurazione"
+#: ../src/e_mod_main.c:448
+msgid "Settings"
+msgstr "Impostazioni"

@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notifications\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-09-26 05:00-0700\n"
-"PO-Revision-Date: 2010-12-05 11:46+0000\n"
-"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"POT-Creation-Date: 2011-07-26 02:01-0700\n"
+"PO-Revision-Date: 2011-07-27 22:34-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,8 +20,8 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 "X-Generator: Lokalize 1.1\n"
 
-#: ../src/e_mod_box.c:677
-#: ../src/e_mod_box.c:824
+#: ../src/e_mod_box.c:666
+#: ../src/e_mod_box.c:810
 msgid "Settings"
 msgstr "Definições"
 
@@ -69,51 +70,55 @@ msgstr "Extensões"
 msgid "Notification"
 msgstr "Notificação"
 
-#: ../src/e_mod_main.c:335
+#: ../src/e_mod_main.c:336
 msgid "Notification Module"
 msgstr "Módulo de notificações"
 
-#: ../src/e_mod_main.c:363
+#: ../src/e_mod_main.c:364
 msgid "Error During DBus Init!"
 msgstr "Erro ao iniciar DBus!"
 
-#: ../src/e_mod_main.c:364
+#: ../src/e_mod_main.c:365
 msgid "Error during DBus init! Please check if dbus is correctly installed and running."
 msgstr "Erro ao iniciar DBus! Verifique se o DBus está bem instalado e em execução."
 
-#: ../src/e_mod_config.c:37
+#: ../src/e_mod_config.c:38
 msgid "Notification Settings"
 msgstr "Definições das notificações"
 
-#: ../src/e_mod_config.c:79
+#: ../src/e_mod_config.c:81
 #: ../src/e_mod_config_item.c:91
 msgid "Urgency"
 msgstr "Urgência"
 
-#: ../src/e_mod_config.c:80
+#: ../src/e_mod_config.c:82
 msgid "Levels of urgency to popup : "
 msgstr "Níveis para o alerta de urgência: "
 
-#: ../src/e_mod_config.c:82
+#: ../src/e_mod_config.c:84
 #: ../src/e_mod_config_item.c:94
 msgid "low"
 msgstr "baixo"
 
-#: ../src/e_mod_config.c:84
+#: ../src/e_mod_config.c:86
 #: ../src/e_mod_config_item.c:96
 msgid "normal"
 msgstr "normal"
 
-#: ../src/e_mod_config.c:86
+#: ../src/e_mod_config.c:88
 #: ../src/e_mod_config_item.c:98
 msgid "critical"
 msgstr "crítico"
 
-#: ../src/e_mod_config.c:90
+#: ../src/e_mod_config.c:92
 msgid "Default Timeout"
 msgstr "Expiração por omissão"
 
-#: ../src/e_mod_config.c:91
+#: ../src/e_mod_config.c:93
+msgid "Force timeout for all notifications"
+msgstr "Tempo limite para as notificações"
+
+#: ../src/e_mod_config.c:95
 #, c-format
 msgid "%.1f seconds"
 msgstr "%.1f segundos"
@@ -127,7 +132,7 @@ msgstr "%.1f segundos"
 #. *                          NULL, &(cfdata->placement.y), 200);
 #. * e_widget_framelist_object_append(of, ow);
 #. * e_widget_list_object_append(o, of, 1, 1, 0.5);
-#: ../src/e_mod_config.c:106
+#: ../src/e_mod_config.c:110
 msgid "Popup Corner"
 msgstr "Alerta no canto"
 
@@ -154,5 +159,4 @@ msgstr "Focar a janela de origem ao clicar "
 #: ../src/e_mod_config_item.c:92
 msgid "Levels of urgency to store : "
 msgstr "Níveis de urgência a guardar: "
-
 
