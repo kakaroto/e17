@@ -16,16 +16,27 @@ elm_transit - check the transit would use the ecore_animator functionalities.
 
 animator - remove it (on end of JULY) 
 
-evas_map - check the uv set inconsistency for evas_object_image.
-
 evas_line - width 
 
 evas_line - does not shown on glbackend. 
 
 elm_ctxpopup - add effects
 
-elm_layout - theme_hook
-
 elm_naviframe - mirror mode 
 
-elm_naviframe - elm_object_item_label_set ... 
+elm_naviframe - elm_object_item_label_set ...
+
+evas_map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
+
+ecore_animator - consider them each instance use the each timeline options.  
+elm_object_item - consider to apply. 
+
+elm_object - apply all widgets to use elm_object_content_set/get/unset 
+
+
+
+
+
+
+
+
