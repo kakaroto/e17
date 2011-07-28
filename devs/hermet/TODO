@@ -24,19 +24,10 @@ elm_ctxpopup - add effects
 
 elm_naviframe - mirror mode 
 
-elm_naviframe - elm_object_item_label_set ...
-
 evas_map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
 
 ecore_animator - consider them each instance use the each timeline options.  
 elm_object_item - consider to apply. 
 
 elm_object - apply all widgets to use elm_object_content_set/get/unset 
-
-
-
-
-
-
-
 
