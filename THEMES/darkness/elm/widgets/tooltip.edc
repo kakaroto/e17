@@ -477,6 +477,7 @@
       data {
           item: "pad_x" "10";
           item: "pad_y" "10";
+          item: "transparent" "enabled";
       }
       parts {
          part { name: "elm.swallow.content";
