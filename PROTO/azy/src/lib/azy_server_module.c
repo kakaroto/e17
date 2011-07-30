@@ -731,7 +731,7 @@ azy_server_module_upgrade(Azy_Server_Module *module)
      }
    if (module->client->dead) return EINA_FALSE;
 
-   return ecore_con_client_upgrade(module->client->net->conn, ECORE_CON_USE_MIXED);
+   return ecore_con_ssl_client_upgrade(module->client->net->conn, ECORE_CON_USE_MIXED);
 }
 
 /**

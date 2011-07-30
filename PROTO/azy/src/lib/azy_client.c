@@ -259,7 +259,7 @@ azy_client_upgrade(Azy_Client *client)
      }
    if (!client->connected) return EINA_FALSE;
 
-   return ecore_con_server_upgrade(client->net->conn, ECORE_CON_USE_MIXED);
+   return ecore_con_ssl_server_upgrade(client->net->conn, ECORE_CON_USE_MIXED);
 }
 
 /**
