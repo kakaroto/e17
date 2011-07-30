@@ -83,6 +83,9 @@ Azy_Module Test1
     * module must be included here
     */
    <%
+#ifdef HAVE_CONFIG_H
+    #include <config.h>
+#endif
     #include <stdio.h>
     #include <string.h>
     #include <inttypes.h>
@@ -476,6 +479,9 @@ Azy_Module Test1
 Azy_Module Test2
 {
    <%
+#ifdef HAVE_CONFIG_H
+    #include <config.h>
+#endif
 #include <stdio.h>
 #include <string.h>
    %>
@@ -534,7 +540,15 @@ Azy_Module Test2
 Azy_Module SQL
 {
    <%
+#ifdef HAVE_CONFIG_H
+    #include <config.h>
+#endif
+#ifdef HAVE_MYSQL_MYSQL_H
      #include <mysql/mysql.h>
+#endif
+#ifdef HAVE_MYSQL_H
+     #include <mysql.h>
+#endif
    %>
 
    __init__

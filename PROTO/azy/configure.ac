@@ -92,6 +92,7 @@ if test "x$want_mysql" != "xno" ; then
    AC_PATH_PROG([mysql_config], [mysql_config])
    if test "x$mysql_config" != "x";then
       AC_CHECK_HEADERS([mysql/mysql.h])
+      AC_CHECK_HEADERS([mysql.h])
       MYSQL_CFLAGS="$($mysql_config --cflags)"                                                                 
       MYSQL_LIBS="$($mysql_config --libs_r)"
       AC_DEFINE_UNQUOTED(HAVE_MYSQL, 1, "enable some mysql code in tests")
