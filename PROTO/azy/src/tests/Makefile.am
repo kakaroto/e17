@@ -1,4 +1,4 @@
-BSUBDIRS = unit identi.ca rss
+SUBDIRS = unit identi.ca rss
 
 TYPES_S = \
   $(top_builddir)/src/tests/type1_Common.c \
