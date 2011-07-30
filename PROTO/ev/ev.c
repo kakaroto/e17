@@ -100,6 +100,11 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
    file = elm_genlist_item_data_get(ev);
    if (f && (!strcmp(file, f))) return;
 
+   if (!evas_object_image_extension_can_load_get(file))
+     {
+        ERR("Image loader for %s not detected", file);
+        return;
+     }
    elm_image_file_set(img, file, NULL);
    _resize(NULL, NULL, NULL, NULL);
    win = elm_object_parent_widget_get(img);
