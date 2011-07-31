@@ -1,5 +1,5 @@
-m4_define([pkg_version],  [1.0.8])
-m4_define([pkg_revision], [001])
+m4_define([pkg_version],  [1.0.9])
+#m4_define([pkg_revision], [001])
 m4_define([pkg_version],  m4_ifdef([pkg_revision], [pkg_version.pkg_revision], [pkg_version]))
 m4_define([rpm_revision], m4_ifdef([pkg_revision], ["0.%(date '+%y%m%d')"], [1]))
 
