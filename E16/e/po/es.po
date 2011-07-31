@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-07-11 09:11+0200\n"
+"POT-Creation-Date: 2011-07-31 16:05+0200\n"
 "PO-Revision-Date: 2010-04-23 21:20+0000\n"
 "Last-Translator: Fernando Muñoz <munozferna@gmail.com>\n"
 "Language-Team: \n"
@@ -503,7 +503,7 @@ msgstr "Ambos extremos"
 msgid "End"
 msgstr "Extremo"
 
-#: src/container.c:1657 src/focus.c:985
+#: src/container.c:1657 src/focus.c:987
 msgid "None"
 msgstr "Ninguna"
 
@@ -748,119 +748,119 @@ msgstr ""
 "\n"
 "Saliendo...\n"
 
-#: src/focus.c:826
+#: src/focus.c:828
 msgid "Focus follows pointer"
 msgstr "El enfoque sigue al puntero del ratón"
 
-#: src/focus.c:832
+#: src/focus.c:834
 msgid "Focus follows pointer sloppily"
 msgstr "El enfoque sigue al puntero del ratón lentamente"
 
-#: src/focus.c:838
+#: src/focus.c:840
 msgid "Focus follows mouse clicks"
 msgstr "El enfoque sigue los clicks del ratón"
 
-#: src/focus.c:848
+#: src/focus.c:850
 msgid "Clicking in a window always raises it"
 msgstr "Pulsar en una ventana siempre la eleva"
 
-#: src/focus.c:856
+#: src/focus.c:858
 msgid "All new windows first get the focus"
 msgstr "Todas las ventanas nuevas reciben el enfoque primero"
 
-#: src/focus.c:863
+#: src/focus.c:865
 msgid "New windows get the focus if their window group is focused"
 msgstr ""
 
-#: src/focus.c:868
+#: src/focus.c:870
 msgid "Only new dialog windows get the focus"
 msgstr "Solo nuevas ventanas de diálogo reciben enfoque"
 
-#: src/focus.c:875
+#: src/focus.c:877
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Solo nuevas ventanas de diálogo cuyo padre tiene el enfoque reciben enfoque"
 
-#: src/focus.c:880
+#: src/focus.c:882
 msgid "Raise windows while switching focus"
 msgstr "Elevar ventanas al cambiar el foco"
 
-#: src/focus.c:886
+#: src/focus.c:888
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Enviar el puntero a la ventana mientras se cambia el foco"
 
-#: src/focus.c:892
+#: src/focus.c:894
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Siempre enviar el puntero a la ventana durante el cambio de foco"
 
-#: src/focus.c:900
+#: src/focus.c:902
 msgid "Raise windows automatically"
 msgstr "Elevar Ventanas Automáticamente"
 
-#: src/focus.c:906
+#: src/focus.c:908
 msgid "Autoraise delay:"
 msgstr "Retardo al elevar ventanas:"
 
-#: src/focus.c:919
+#: src/focus.c:921
 msgid "Display and use focus list"
 msgstr "Mostrar y usar Lista de Enfoque"
 
-#: src/focus.c:924
+#: src/focus.c:926
 msgid "Include sticky windows in focus list"
 msgstr "Incluir ventanas pegajosas en la lista de enfoques"
 
-#: src/focus.c:929
+#: src/focus.c:931
 msgid "Include shaded windows in focus list"
 msgstr "Incluir ventanas sombreadas en la lista de enfoque"
 
-#: src/focus.c:934
+#: src/focus.c:936
 msgid "Include iconified windows in focus list"
 msgstr "Incluir ventanas iconificadas en la lista de enfoque"
 
-#: src/focus.c:939
+#: src/focus.c:941
 msgid "Include windows on other desks in focus list"
 msgstr "Incluir las ventanas de otros escritorios en la lista de foco"
 
-#: src/focus.c:944
+#: src/focus.c:946
 msgid "Focus windows while switching"
 msgstr "Enfocar ventana mientras cambiamos"
 
-#: src/focus.c:949
+#: src/focus.c:951
 #, fuzzy
 msgid "Outline windows while switching"
 msgstr "Enfocar ventana mientras cambiamos"
 
-#: src/focus.c:954
+#: src/focus.c:956
 msgid "Raise windows after focus switch"
 msgstr "Elevar ventana DESPUÉS de cambio de enfoque"
 
-#: src/focus.c:959
+#: src/focus.c:961
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Enviar el puntero del ratón a la ventana DESPUÉS del cambio de enfoque"
 
-#: src/focus.c:969
+#: src/focus.c:971
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Política al mostrar la Focuslist de la imagen (si una operación falla "
 "intentar siguiente):"
 
-#: src/focus.c:973
+#: src/focus.c:975
 msgid "First E Icon, then App Icon"
 msgstr "Primero Icono E, luego Icono App"
 
-#: src/focus.c:979
+#: src/focus.c:981
 msgid "First App Icon, then E Icon"
 msgstr "Primero Icono App, luego Icono E"
 
-#: src/focus.c:993
+#: src/focus.c:995
 msgid "Focus"
 msgstr "Foco"
 
-#: src/focus.c:994
+#: src/focus.c:996
 msgid "Focus Settings"
 msgstr "Configurar enfoque"
 
-#: src/focus.c:997
+#: src/focus.c:999
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog"
@@ -1140,28 +1140,28 @@ msgstr "Opciones del Portaíconos"
 msgid "Iconbox Settings"
 msgstr "Configurar Portaíconos"
 
-#: src/ipc.c:195 src/ipc.c:1471 src/ipc.c:1478 src/theme.c:379
+#: src/ipc.c:195 src/ipc.c:1470 src/ipc.c:1477 src/theme.c:379
 msgid "Message"
 msgstr "Mensaje"
 
-#: src/ipc.c:1471 src/ipc.c:1478
+#: src/ipc.c:1470 src/ipc.c:1477
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 se construyó sin soporte para %s"
 
-#: src/ipc.c:1472
+#: src/ipc.c:1471
 msgid "composite"
 msgstr "composición"
 
-#: src/ipc.c:1479
+#: src/ipc.c:1478
 msgid "sound"
 msgstr "sonido"
 
-#: src/ipc.c:1822
+#: src/ipc.c:1821
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Ayuda de los Comandos IPC de Enlightenment\n"
 
-#: src/ipc.c:1826
+#: src/ipc.c:1825
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1171,19 +1171,19 @@ msgstr ""
 "Use \"Ayuda <comando>\" para obtener descripciones individuales\n"
 "\n"
 
-#: src/ipc.c:1828 src/ipc.c:1848 src/ipc.c:1860
+#: src/ipc.c:1827 src/ipc.c:1847 src/ipc.c:1859
 msgid "Commands currently available:\n"
 msgstr "Comandos disponibles:\n"
 
-#: src/ipc.c:1846
+#: src/ipc.c:1845
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Use \"help full\" para descripciones totales de cada comando\n"
 
-#: src/ipc.c:1847
+#: src/ipc.c:1846
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Use \"Ayuda <comando>\" para obtener una descripción individual\n"
 
-#: src/ipc.c:1849 src/ipc.c:1861
+#: src/ipc.c:1848 src/ipc.c:1860
 msgid "         <command>     : <description>\n"
 msgstr "         <comando>   : <descripción>\n"
 
