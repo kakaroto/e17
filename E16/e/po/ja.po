@@ -11,14 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-07-31 16:05+0200\n"
-"PO-Revision-Date: 2011-04-29 22:59+0900\n"
+"POT-Creation-Date: 2011-08-02 19:27+0900\n"
+"PO-Revision-Date: 2011-08-02 19:42+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 
 #: src/about.c:35
 #, c-format
@@ -1677,16 +1677,15 @@ msgstr "ドラッグバーを隠さない"
 
 #: src/settings.c:243
 msgid "Enable smart maximization"
-msgstr ""
+msgstr "賢く最大化する"
 
 #: src/settings.c:248
 msgid "Animate window maximization"
-msgstr ""
+msgstr "アニメ化して最大化する"
 
 #: src/settings.c:254
-#, fuzzy
 msgid "Maximization animation speed:"
-msgstr "アニメーション速度"
+msgstr "最大化のアニメーション速度"
 
 #
 #: src/settings.c:265
@@ -1811,7 +1810,7 @@ msgstr "セーブアンダー機能を使いウィンドウ再描画時の処理
 
 #: src/settings.c:604
 msgid "Magwin zoom resolution"
-msgstr ""
+msgstr "拡大ツールのズーム解像度"
 
 #: src/settings.c:616 config/strings.c:136 config/strings.c:152
 msgid "Miscellaneous"
