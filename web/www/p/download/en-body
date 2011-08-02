@@ -234,7 +234,7 @@
     <p>There are a few different ways to get Enlightenment depending on your
     requirements.</p>
 
-    <p>The latest version of DR16 is 1.0.8, released on April 25th, 2011.
+    <p>The latest version of DR16 is 1.0.9, released on August 1st, 2011.
     Packages for the current, and previous, releases of DR16, core
     themes, epplets, e16menuedit, e16keyedit, and imlib2 can be found on the
     <a href="http://sourceforge.net/project/showfiles.php?group_id=2">SourceForge
@@ -256,21 +256,21 @@
             <tr>
                 <td>Enlightenment Source Code TAR.GZ</td>
                 <td>
-                    <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.8.tar.gz?download">e16-1.0.8.tar.gz</a>
+                    <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.9.tar.gz?download">e16-1.0.9.tar.gz</a>
                 </td>
                 <td>&nbsp;</td>
             </tr>
             <tr class="odd">
                 <td>Source Package RPM</td>
                 <td>
-                    <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.8-1.fc14.src.rpm?download">e16-1.0.8-1.fc14.src.rpm</a>
+                    <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.9-1.fc14.src.rpm?download">e16-1.0.9-1.fc14.src.rpm</a>
                 </td>
                 <td>&nbsp;</td>
             </tr>
             <tr>
                 <td>Linux ix86 Binary RPM</td>
                 <td>
-                    <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.8-1.fc14.i686.rpm?download">e16-1.0.8-1.fc14.i686.rpm</a>
+                    <a href="http://prdownloads.sourceforge.net/enlightenment/e16-1.0.9-1.fc14.i686.rpm?download">e16-1.0.9-1.fc14.i686.rpm</a>
                 </td>
                 <td>&nbsp;</td>
             </tr>
