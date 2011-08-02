@@ -53,7 +53,7 @@ class DemoApplication : EflVala.Application
 
         button = new Elm.Button( win );
         button.smart_callback_add( "clicked", on_button_press );
-        button.label_set( "This is a button" );
+        button.text_set( "This is a button" );
         button.show();
         box.pack_end( button );
     }

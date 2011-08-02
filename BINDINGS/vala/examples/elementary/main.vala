@@ -24,7 +24,7 @@ Elm.Button[] buttons;
 public void add_test( T.Abstract t, int index )
 {
     buttons[index] = new Elm.Button( win );
-    buttons[index].label_set( t.name() );
+    buttons[index].text_set( t.name() );
     buttons[index].smart_callback_add( "clicked", t.run );
     buttons[index].show();
     buttons[index].size_hint_align_set( 0.5, 0.5 );

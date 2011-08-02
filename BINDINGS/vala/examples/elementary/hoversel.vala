@@ -40,7 +40,7 @@ public class T.Hoversel : T.Abstract
 
         hoversel = new Elm.Hoversel( win );
         hoversel.hover_parent_set( win );
-        hoversel.label_set( "Labels without any Item" );
+        hoversel.text_set( "Labels without any Item" );
 
         hoversel.item_add( "Label without Item 1", null, Elm.IconType.NONE, null );
         hoversel.item_add( "Label without Item 2", null, Elm.IconType.NONE, null );

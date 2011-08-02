@@ -14,7 +14,7 @@ public class MainViewState : EflVala.ViewState
         box.show();
 
         button = new Elm.Button(win);
-        button.label_set("Configuration");
+        button.text_set("Configuration");
         button.smart_callback_add("clicked", this.on_configuration);
         box.pack_end(button);
         button.show();
@@ -53,7 +53,7 @@ public class ConfigurationViewState : EflVala.ViewState
         box.show();
 
         button = new Elm.Button(win);
-        button.label_set("Main");
+        button.text_set("Main");
         button.smart_callback_add("clicked", this.on_main);
         box.pack_end(button);
         button.show();

@@ -127,6 +127,9 @@ public abstract class Object : Evas.Object
     public void scroll_hold_pop();
     public void scroll_freeze_push();
     public void scroll_freeze_pop();
+    
+    public unowned string text_get();
+    public void text_set( string label );
 
     public bool widget_check();
     public Elm.Object parent_widget_get();
@@ -310,8 +313,6 @@ public class Button : Elm.Object
     [CCode (cname = "elm_button_add")]
     public Button( Elm.Object? parent );
 
-    public void label_set( string label );
-    public unowned string label_get();
     public void icon_set( Elm.Object icon );
     public Elm.Object icon_get();
     public void autorepeat_set( bool autorepeat );
@@ -358,8 +359,6 @@ public class Label : Elm.Object
     [CCode (cname = "elm_label_add")]
     public Label( Elm.Object? parent );
 
-    public void label_set( string label );
-    public unowned string label_get();
     public void line_wrap_set( bool wrap );
     public bool line_wrap_get();
     public void wrap_width_set( Evas.Coord w );
@@ -374,8 +373,6 @@ public class Toggle : Elm.Object
     [CCode (cname = "elm_toggle_add")]
     public Toggle( Elm.Object? parent );
 
-    public void label_set( string label );
-    public unowned string label_get();
     public void icon_set( Elm.Object icon );
     public Elm.Object icon_get();
     public void states_labels_set( string onlabel, string offlabel );
@@ -392,8 +389,6 @@ public class Frame : Elm.Object
     [CCode (cname = "elm_frame_add")]
     public Frame( Elm.Object? parent );
 
-    public void label_set( string label );
-    public unowned string label_get();
     public void content_set( Elm.Object content );
 }
 
@@ -655,7 +650,6 @@ public class Anchorblock : Elm.Object
     [CCode (cname = "elm_anchorblock_add")]
     public Anchorblock( Elm.Object? parent );
 
-    public void text_set( string text );
     public void hover_parent_set( Elm.Object parent );
     public void hover_style_set( string style );
     public void hover_end();
@@ -699,8 +693,6 @@ public class Hoversel : Elm.Object
 
     public void horizontal_set( bool horizontal );
     public void hover_parent_set( Elm.Object parent );
-    public void label_set( string label );
-    public unowned string label_get();
     public void icon_set( Elm.Object icon );
     public Elm.Object icon_get();
     public void hover_begin();
