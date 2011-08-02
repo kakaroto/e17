@@ -196,7 +196,7 @@
             } \
          }
 
-#define GENLIST_PART_TEXT_SUB \
+#define GENLIST_PART_TEXT_SUB(CLASS) \
          part { \
             name: "elm.text.sub"; \
             clip_to: "disclip"; \
@@ -222,7 +222,7 @@
                   size: 8; \
                   min: 1 1; \
                   align: 0.0 0.5; \
-                  text_class: "Label"; \
+                  text_class: CLASS; \
                } \
             } \
             description { \
@@ -245,6 +245,7 @@
                state: "default" 0.0; \
                rel1 { \
                   REL \
+                  offset: 4 4; \
                } \
                rel2 { \
                   relative: 1.0  0.5; \
@@ -253,7 +254,7 @@
                color: 255 255 255 255; \
                color3: 0 0 0 0; \
                text { \
-                  text_class: "Label"; \
+                  text_class: "Label-char"; \
                   min: 0 1; \
                   align: 0.0 0.5; \
                } \

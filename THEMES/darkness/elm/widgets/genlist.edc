@@ -133,7 +133,7 @@
                   min: 0 1;
 //                  min: 1 1;
                   align: 0.0 0.0;
-                  text_class: "Label";
+                  text_class: "Label-char";
                }
             }
             description { state: "selected" 0.0;
@@ -171,7 +171,7 @@
                   min: 0 1;
 //                  min: 1 1;
                   align: 0.0 0.0;
-                  text_class: "Label";
+                  text_class: "Label-char";
                }
             }
             description { state: "selected" 0.0;
@@ -191,6 +191,7 @@
                   offset:   -5 -5;
                }
                align: 0.0 0.0;
+               text.text_class: "Label-char";
          )
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
@@ -239,6 +240,7 @@
                   relative: 0.0  1.0;
                   offset:   -1 -5;
                }
+               text.text_class: "Label-char";
          )
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
@@ -342,6 +344,7 @@
                   relative: 0.0  1.0;
                   offset:   -1 -5;
                }
+               text.text_class: "Label-char";
          )
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
@@ -503,7 +506,7 @@
                   offset:   -1 -5;
                }
          )
-         GENLIST_PART_TEXT_SUB
+         GENLIST_PART_TEXT_SUB("Label")
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
       }
@@ -550,8 +553,9 @@
                   relative: 0.0  0.5;
                   offset:   -1 -5;
                }
+               text.text_class: "Label-char";
          )
-         GENLIST_PART_TEXT_SUB
+         GENLIST_PART_TEXT_SUB("Label-char")
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
       }
@@ -604,7 +608,7 @@
                   offset:   -1 -5;
                }
          )
-         GENLIST_PART_TEXT_SUB
+         GENLIST_PART_TEXT_SUB("Label")
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
       }
@@ -657,8 +661,9 @@
                   relative: 0.0  0.5;
                   offset:   -1 -5;
                }
+               text.text_class: "Label-char";
          )
-         GENLIST_PART_TEXT_SUB
+         GENLIST_PART_TEXT_SUB("Label-char")
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
       }
@@ -791,7 +796,6 @@
          GENLIST_PART_SWALLOW_PAD
          GENLIST_PART_TEXT_TITLE(
             relative: 0.0  0.0;
-            offset:   4 4;
          )
          part { name: "elm.text.album-artist";
             clip_to: "disclip";
@@ -815,6 +819,7 @@
                   size: 8;
                   min: 0 1;
                   align: 0.0 0.5;
+                  text_class: "Label-char";
                }
             }
             description { state: "selected" 0.0;
@@ -879,7 +884,7 @@
                color: 255 255 255 255;
                color3: 0 0 0 0;
                text {
-                  text_class: "Label";
+                  text_class: "Label-char";
                   min: 1 1;
                   align: 1.0 0.5;
                }
@@ -917,7 +922,7 @@
                color: 255 255 255 255;
                color3: 0 0 0 0;
                text {
-                  text_class: "Label";
+                  text_class: "Label-char";
                   min: 1 1;
                   align: 0.0 0.5;
                   text: ".";
@@ -938,7 +943,6 @@
          GENLIST_PART_TEXT_TITLE(
             to_x: "dot";
             relative: 0.0  0.0;
-            offset:   4 4;
          )
          part { name: "elm.text.length";
             clip_to: "disclip";
@@ -962,6 +966,7 @@
                   size: 8;
                   min: 0 1;
                   align: 0.0 0.5;
+                  text_class: "Label-char";
                }
             }
             description { state: "selected" 0.0;
@@ -1018,7 +1023,6 @@
          GENLIST_PART_TEXT_TITLE(
             to_x:     "elm.swallow.preview";
             relative: 1.0  0.0;
-            offset:   4 4;
          )
          part { name: "elm.text.artist";
             clip_to: "disclip";
@@ -1043,6 +1047,7 @@
                   size: 8;
                   min: 0 1;
                   align: 0.0 0.5;
+                  text_class: "Label-char";
                }
             }
             description { state: "selected" 0.0;
