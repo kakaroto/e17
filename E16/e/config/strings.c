@@ -156,6 +156,7 @@ const char         *txt[] = {
    _("Toggle Never Focus"),
    _("Toggle Click to Focus"),
    _("Toggle Never Use Area"),
+   _("Toggle Ignore Arrange"),
    _("Toggle Button Grabs"),
    _("Toggle Autoshade"),
 /* winops_opacity.menu */
