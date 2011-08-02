@@ -1,5 +1,8 @@
 #!/bin/sh
 
+rm -rf autom4te.cache
+rm -f aclocal.m4 ltmain.sh
+
 DIRNAME=`basename $PWD`
 if test "x$DIRNAME" = "xelementary-skel"; then
     echo "Do not run autogen.sh from inside elementary-skel"
