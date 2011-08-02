@@ -196,7 +196,7 @@
             } \
          }
 
-#define GENLIST_PART_TEXT_SUB(CLASS) \
+#define GENLIST_PART_TEXT_SUB(MIN, CLASS) \
          part { \
             name: "elm.text.sub"; \
             clip_to: "disclip"; \
@@ -220,8 +220,8 @@
                text { \
                   font: "DejaVu"; \
                   size: 8; \
-                  min: 1 1; \
                   align: 0.0 0.5; \
+                  min: MIN 1; \
                   text_class: CLASS; \
                } \
             } \

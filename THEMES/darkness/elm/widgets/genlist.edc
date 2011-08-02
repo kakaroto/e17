@@ -506,7 +506,7 @@
                   offset:   -1 -5;
                }
          )
-         GENLIST_PART_TEXT_SUB("Label")
+         GENLIST_PART_TEXT_SUB(1, "Label")
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
       }
@@ -555,7 +555,7 @@
                }
                text.text_class: "Label-char";
          )
-         GENLIST_PART_TEXT_SUB("Label-char")
+         GENLIST_PART_TEXT_SUB(0, "Label-char")
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
       }
@@ -608,7 +608,7 @@
                   offset:   -1 -5;
                }
          )
-         GENLIST_PART_TEXT_SUB("Label")
+         GENLIST_PART_TEXT_SUB(1, "Label")
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
       }
@@ -663,7 +663,7 @@
                }
                text.text_class: "Label-char";
          )
-         GENLIST_PART_TEXT_SUB("Label-char")
+         GENLIST_PART_TEXT_SUB(0, "Label-char")
          FOCUS_GLOW(0.0, 0.0, 0, 0, "base", 1.0, 1.0, 3, -1, "base")
          GENLIST_PART_DISCLIP("base")
       }
