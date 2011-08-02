@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-07-31 16:05+0200\n"
+"POT-Creation-Date: 2011-08-02 17:31+0200\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: sda00 <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -1949,7 +1949,7 @@ msgstr "Положение"
 msgid "Border style"
 msgstr "Стиль рамки"
 
-#: src/snaps.c:827 config/strings.c:174
+#: src/snaps.c:827 config/strings.c:175
 msgid "Size"
 msgstr "Размер"
 
@@ -1973,7 +1973,7 @@ msgstr "Уровень"
 msgid "Window List Skip"
 msgstr "Не включать в список запущенных приложений"
 
-#: src/snaps.c:858 config/strings.c:135 config/strings.c:162
+#: src/snaps.c:858 config/strings.c:135 config/strings.c:163
 msgid "Opacity"
 msgstr "Непрозрачность"
 
@@ -2439,7 +2439,7 @@ msgstr "Показать лупу"
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:88 config/strings.c:188
+#: config/strings.c:88 config/strings.c:189
 msgid "User Menus"
 msgstr "Меню Пользователя"
 
@@ -2463,11 +2463,11 @@ msgstr "Enlightenment %s"
 msgid "About this theme"
 msgstr "О теме"
 
-#: config/strings.c:96 config/strings.c:118 config/strings.c:192
+#: config/strings.c:96 config/strings.c:118 config/strings.c:193
 msgid "Restart"
 msgstr "Рестарт Е"
 
-#: config/strings.c:97 config/strings.c:119 config/strings.c:193
+#: config/strings.c:97 config/strings.c:119 config/strings.c:194
 msgid "Log Out"
 msgstr "Завершить текущую сессию"
 
@@ -2600,110 +2600,115 @@ msgid "Toggle Never Use Area"
 msgstr "Включить \"никогда не ходить на Зону\""
 
 #: config/strings.c:159
+#, fuzzy
+msgid "Toggle Ignore Arrange"
+msgstr "Включить \"никогда не ходить на Зону\""
+
+#: config/strings.c:160
 msgid "Toggle Button Grabs"
 msgstr "Переключатель перехвата сигнала от кнопок"
 
-#: config/strings.c:160
+#: config/strings.c:161
 msgid "Toggle Autoshade"
 msgstr "Включить тени"
 
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Default"
 msgstr "Настройки по умолчанию"
 
-#: config/strings.c:164
+#: config/strings.c:165
 msgid "20%"
 msgstr "20%"
 
-#: config/strings.c:165
+#: config/strings.c:166
 msgid "40%"
 msgstr "40%"
 
-#: config/strings.c:166
+#: config/strings.c:167
 msgid "60%"
 msgstr "60%"
 
-#: config/strings.c:167
+#: config/strings.c:168
 msgid "80%"
 msgstr "80%"
 
-#: config/strings.c:168
+#: config/strings.c:169
 msgid "100%"
 msgstr "100%"
 
-#: config/strings.c:169
+#: config/strings.c:170
 msgid "Focused opacity 100%"
 msgstr "Непрозрачность фокусированного активного окна 100%"
 
-#: config/strings.c:170
+#: config/strings.c:171
 msgid "Focused opacity follows unfocused"
 msgstr "Фокус по нажатию кнопки мыши"
 
-#: config/strings.c:171
+#: config/strings.c:172
 msgid "Toggle Fading"
 msgstr "Разрешить переход через край"
 
-#: config/strings.c:172
+#: config/strings.c:173
 msgid "Toggle Shadows"
 msgstr "Включить тени"
 
-#: config/strings.c:175
+#: config/strings.c:176
 msgid "Max Size Toggle"
 msgstr "Разворачивать на полную"
 
-#: config/strings.c:176
+#: config/strings.c:177
 msgid "Available Max Size Toggle"
 msgstr "Разворачивать на всё доступное пространство"
 
-#: config/strings.c:177
+#: config/strings.c:178
 msgid "Absolute Max Size Toggle"
 msgstr "Конкретно разворачивать на полную"
 
-#: config/strings.c:178
+#: config/strings.c:179
 msgid "Span Xinerama Screens"
 msgstr "Управление Экранами Xinerama"
 
-#: config/strings.c:179
+#: config/strings.c:180
 msgid "Max Height Toggle"
 msgstr "Включить на максимальную высоту"
 
-#: config/strings.c:180
+#: config/strings.c:181
 msgid "Available Max Height Toggle"
 msgstr "Включить на доступную максимальную высоту"
 
-#: config/strings.c:181
+#: config/strings.c:182
 msgid "Absolute Max Height Toggle"
 msgstr "Включить на абсолютную максимальную высоту"
 
-#: config/strings.c:182
+#: config/strings.c:183
 msgid "Max Width Toggle"
 msgstr "Включить на максимальную ширину"
 
-#: config/strings.c:183
+#: config/strings.c:184
 msgid "Available Max Width Toggle"
 msgstr "Включить на доступную максимальную ширину"
 
-#: config/strings.c:184
+#: config/strings.c:185
 msgid "Absolute Max Width Toggle"
 msgstr "Включить на абсолютную максимальную ширину"
 
-#: config/strings.c:185
+#: config/strings.c:186
 msgid "Fullscreen/Normal"
 msgstr "Во весь экран / Норма"
 
-#: config/strings.c:186
+#: config/strings.c:187
 msgid "Zoom/Unzoom"
 msgstr "Увеличить/Сбросить увеличение"
 
-#: config/strings.c:189
+#: config/strings.c:190
 msgid "User Application List"
 msgstr "Список приложений Пользователя"
 
-#: config/strings.c:190
+#: config/strings.c:191
 msgid "Other"
 msgstr "Прочее"
 
-#: config/strings.c:191
+#: config/strings.c:192
 msgid "Epplets"
 msgstr "Модули (эпплеты)"
 

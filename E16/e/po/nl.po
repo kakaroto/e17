@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-07-31 16:05+0200\n"
+"POT-Creation-Date: 2011-08-02 17:31+0200\n"
 "PO-Revision-Date: 2009-11-09 14:39+0000\n"
 "Last-Translator: Yentl <y.v.t@scarlet.be>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -1946,7 +1946,7 @@ msgstr "Locatie"
 msgid "Border style"
 msgstr "Rand stijl"
 
-#: src/snaps.c:827 config/strings.c:174
+#: src/snaps.c:827 config/strings.c:175
 msgid "Size"
 msgstr "Grootte"
 
@@ -1970,7 +1970,7 @@ msgstr "Laag van het venster"
 msgid "Window List Skip"
 msgstr "Vensterlijst Overslaan"
 
-#: src/snaps.c:858 config/strings.c:135 config/strings.c:162
+#: src/snaps.c:858 config/strings.c:135 config/strings.c:163
 msgid "Opacity"
 msgstr "Ondoorzichtigheid"
 
@@ -2437,7 +2437,7 @@ msgstr "Vergrootglas Weergeven"
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:88 config/strings.c:188
+#: config/strings.c:88 config/strings.c:189
 msgid "User Menus"
 msgstr "Gebruiker Menu's"
 
@@ -2461,11 +2461,11 @@ msgstr "Over Enlightenment"
 msgid "About this theme"
 msgstr "Over dit thema"
 
-#: config/strings.c:96 config/strings.c:118 config/strings.c:192
+#: config/strings.c:96 config/strings.c:118 config/strings.c:193
 msgid "Restart"
 msgstr "Herstarten"
 
-#: config/strings.c:97 config/strings.c:119 config/strings.c:193
+#: config/strings.c:97 config/strings.c:119 config/strings.c:194
 msgid "Log Out"
 msgstr "Afmelden"
 
@@ -2598,110 +2598,115 @@ msgid "Toggle Never Use Area"
 msgstr "Wissel tussen Gebied nooit gebruiken"
 
 #: config/strings.c:159
+#, fuzzy
+msgid "Toggle Ignore Arrange"
+msgstr "Wissel tussen Gebied nooit gebruiken"
+
+#: config/strings.c:160
 msgid "Toggle Button Grabs"
 msgstr "Wissel tussen Knop Grepen"
 
-#: config/strings.c:160
+#: config/strings.c:161
 msgid "Toggle Autoshade"
 msgstr "Wissel tussen Autoschaduw"
 
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Default"
 msgstr "Standaard"
 
-#: config/strings.c:164
+#: config/strings.c:165
 msgid "20%"
 msgstr "20%"
 
-#: config/strings.c:165
+#: config/strings.c:166
 msgid "40%"
 msgstr "40%"
 
-#: config/strings.c:166
+#: config/strings.c:167
 msgid "60%"
 msgstr "60%"
 
-#: config/strings.c:167
+#: config/strings.c:168
 msgid "80%"
 msgstr "80%"
 
-#: config/strings.c:168
+#: config/strings.c:169
 msgid "100%"
 msgstr "100%"
 
-#: config/strings.c:169
+#: config/strings.c:170
 msgid "Focused opacity 100%"
 msgstr "Focus opaciteit 100%"
 
-#: config/strings.c:170
+#: config/strings.c:171
 msgid "Focused opacity follows unfocused"
 msgstr "Focus opaciteit volgt ongefocust"
 
-#: config/strings.c:171
+#: config/strings.c:172
 msgid "Toggle Fading"
 msgstr "Wissel tussen Fading"
 
-#: config/strings.c:172
+#: config/strings.c:173
 msgid "Toggle Shadows"
 msgstr "Wissel tussen Schaduws"
 
-#: config/strings.c:175
+#: config/strings.c:176
 msgid "Max Size Toggle"
 msgstr "Wissel tussen maximale grootte"
 
-#: config/strings.c:176
+#: config/strings.c:177
 msgid "Available Max Size Toggle"
 msgstr "Wissel tussen Beschikbare maximale grootte"
 
-#: config/strings.c:177
+#: config/strings.c:178
 msgid "Absolute Max Size Toggle"
 msgstr "Wissel tussen Absolute maximale grootte"
 
-#: config/strings.c:178
+#: config/strings.c:179
 msgid "Span Xinerama Screens"
 msgstr "Overlap Xinerama Schermen"
 
-#: config/strings.c:179
+#: config/strings.c:180
 msgid "Max Height Toggle"
 msgstr "Maximale Hoogte instellen"
 
-#: config/strings.c:180
+#: config/strings.c:181
 msgid "Available Max Height Toggle"
 msgstr "Beschikbare Maximale hoogte instellen"
 
-#: config/strings.c:181
+#: config/strings.c:182
 msgid "Absolute Max Height Toggle"
 msgstr "Absolute Maximale hoogte instellen"
 
-#: config/strings.c:182
+#: config/strings.c:183
 msgid "Max Width Toggle"
 msgstr "Maximale breedte instellen"
 
-#: config/strings.c:183
+#: config/strings.c:184
 msgid "Available Max Width Toggle"
 msgstr "Beschikbare Maximale Breedte instellen"
 
-#: config/strings.c:184
+#: config/strings.c:185
 msgid "Absolute Max Width Toggle"
 msgstr "Absolute Maximale Breedte instellen"
 
-#: config/strings.c:185
+#: config/strings.c:186
 msgid "Fullscreen/Normal"
 msgstr "Volledig Scherm/Normaal"
 
-#: config/strings.c:186
+#: config/strings.c:187
 msgid "Zoom/Unzoom"
 msgstr "Inzoomen/Uitzoomen"
 
-#: config/strings.c:189
+#: config/strings.c:190
 msgid "User Application List"
 msgstr "Gebruiker Applicatielijst"
 
-#: config/strings.c:190
+#: config/strings.c:191
 msgid "Other"
 msgstr "Andere"
 
-#: config/strings.c:191
+#: config/strings.c:192
 msgid "Epplets"
 msgstr "Epplets"
 

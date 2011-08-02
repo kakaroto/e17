@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-07-31 16:05+0200\n"
+"POT-Creation-Date: 2011-08-02 17:31+0200\n"
 "PO-Revision-Date: 2011-07-28 11:58+0200\n"
 "Last-Translator: Massimo Maiurana <Unknown>\n"
 "Language-Team: none\n"
@@ -1944,7 +1944,7 @@ msgstr "Ubicazione"
 msgid "Border style"
 msgstr "Stile di bordo"
 
-#: src/snaps.c:827 config/strings.c:174
+#: src/snaps.c:827 config/strings.c:175
 msgid "Size"
 msgstr "Dimensione"
 
@@ -1968,7 +1968,7 @@ msgstr "Livello"
 msgid "Window List Skip"
 msgstr "Salta lista finestre"
 
-#: src/snaps.c:858 config/strings.c:135 config/strings.c:162
+#: src/snaps.c:858 config/strings.c:135 config/strings.c:163
 msgid "Opacity"
 msgstr "Opacitá"
 
@@ -2435,7 +2435,7 @@ msgstr "Mostra ingranditore"
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:88 config/strings.c:188
+#: config/strings.c:88 config/strings.c:189
 msgid "User Menus"
 msgstr "Menú utente"
 
@@ -2459,11 +2459,11 @@ msgstr "A proposito di Enlightenment"
 msgid "About this theme"
 msgstr "A proposito di questo tema"
 
-#: config/strings.c:96 config/strings.c:118 config/strings.c:192
+#: config/strings.c:96 config/strings.c:118 config/strings.c:193
 msgid "Restart"
 msgstr "Riavvia"
 
-#: config/strings.c:97 config/strings.c:119 config/strings.c:193
+#: config/strings.c:97 config/strings.c:119 config/strings.c:194
 msgid "Log Out"
 msgstr "Esci"
 
@@ -2596,109 +2596,114 @@ msgid "Toggle Never Use Area"
 msgstr "Attiva/disattiva \"Non usare mai area\""
 
 #: config/strings.c:159
+#, fuzzy
+msgid "Toggle Ignore Arrange"
+msgstr "Attiva/disattiva \"Non usare mai area\""
+
+#: config/strings.c:160
 msgid "Toggle Button Grabs"
 msgstr "Attiva/disattiva \"Prese bottoni\""
 
-#: config/strings.c:160
+#: config/strings.c:161
 msgid "Toggle Autoshade"
 msgstr "Attiva/disattiva contrazione automatica"
 
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Default"
 msgstr "Predefinito"
 
-#: config/strings.c:164
+#: config/strings.c:165
 msgid "20%"
 msgstr "20%"
 
-#: config/strings.c:165
+#: config/strings.c:166
 msgid "40%"
 msgstr "40%"
 
-#: config/strings.c:166
+#: config/strings.c:167
 msgid "60%"
 msgstr "60%"
 
-#: config/strings.c:167
+#: config/strings.c:168
 msgid "80%"
 msgstr "80%"
 
-#: config/strings.c:168
+#: config/strings.c:169
 msgid "100%"
 msgstr "100%"
 
-#: config/strings.c:169
+#: config/strings.c:170
 msgid "Focused opacity 100%"
 msgstr "Opacitá \"a fuoco\" 100%"
 
-#: config/strings.c:170
+#: config/strings.c:171
 msgid "Focused opacity follows unfocused"
 msgstr "Opacitá \"a fuoco\" segue \"fuori fuoco\""
 
-#: config/strings.c:171
+#: config/strings.c:172
 msgid "Toggle Fading"
 msgstr "Attiva/disattiva dissolvenza"
 
-#: config/strings.c:172
+#: config/strings.c:173
 msgid "Toggle Shadows"
 msgstr "Attiva/disattiva ombreggiatura"
 
-#: config/strings.c:175
+#: config/strings.c:176
 msgid "Max Size Toggle"
 msgstr "Attiva/disattiva dimensione massima"
 
-#: config/strings.c:176
+#: config/strings.c:177
 msgid "Available Max Size Toggle"
 msgstr "Attiva/disattiva dimensione massima disponibile"
 
-#: config/strings.c:177
+#: config/strings.c:178
 msgid "Absolute Max Size Toggle"
 msgstr "Attiva/disattiva dimensione massima assoluta"
 
-#: config/strings.c:178
+#: config/strings.c:179
 msgid "Span Xinerama Screens"
 msgstr "Estendi schermi Xinerama"
 
-#: config/strings.c:179
+#: config/strings.c:180
 msgid "Max Height Toggle"
 msgstr "Attiva/disattiva altezza massima"
 
-#: config/strings.c:180
+#: config/strings.c:181
 msgid "Available Max Height Toggle"
 msgstr "Attiva/disattiva altezza massima disponibile"
 
-#: config/strings.c:181
+#: config/strings.c:182
 msgid "Absolute Max Height Toggle"
 msgstr "Attiva/disattiva altezza massima assoluta"
 
-#: config/strings.c:182
+#: config/strings.c:183
 msgid "Max Width Toggle"
 msgstr "Attiva/disattiva larghezza massima"
 
-#: config/strings.c:183
+#: config/strings.c:184
 msgid "Available Max Width Toggle"
 msgstr "Attiva/disattiva larghezza massima disponibile"
 
-#: config/strings.c:184
+#: config/strings.c:185
 msgid "Absolute Max Width Toggle"
 msgstr "Attiva/disattiva larghezza massima assoluta"
 
-#: config/strings.c:185
+#: config/strings.c:186
 msgid "Fullscreen/Normal"
 msgstr "Tutto schermo/Normale"
 
-#: config/strings.c:186
+#: config/strings.c:187
 msgid "Zoom/Unzoom"
 msgstr "Ingrandisci/Rimpicciolisci"
 
-#: config/strings.c:189
+#: config/strings.c:190
 msgid "User Application List"
 msgstr "Lista applicazioni utente"
 
-#: config/strings.c:190
+#: config/strings.c:191
 msgid "Other"
 msgstr "Altro"
 
-#: config/strings.c:191
+#: config/strings.c:192
 msgid "Epplets"
 msgstr "Epplet"

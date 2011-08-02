@@ -11,14 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-08-02 19:27+0900\n"
+"POT-Creation-Date: 2011-08-02 17:31+0200\n"
 "PO-Revision-Date: 2011-08-02 19:42+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 
 #: src/about.c:35
 #, c-format
@@ -1988,7 +1988,7 @@ msgstr "位置"
 msgid "Border style"
 msgstr "ボーダースタイル"
 
-#: src/snaps.c:827 config/strings.c:174
+#: src/snaps.c:827 config/strings.c:175
 msgid "Size"
 msgstr "サイズ"
 
@@ -2012,7 +2012,7 @@ msgstr "ウィンドウの上下関係"
 msgid "Window List Skip"
 msgstr "ウィンドウリストのスキップ"
 
-#: src/snaps.c:858 config/strings.c:135 config/strings.c:162
+#: src/snaps.c:858 config/strings.c:135 config/strings.c:163
 msgid "Opacity"
 msgstr "不透明度"
 
@@ -2510,7 +2510,7 @@ msgstr "拡大ツールを表示する"
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:88 config/strings.c:188
+#: config/strings.c:88 config/strings.c:189
 msgid "User Menus"
 msgstr "ユーザーメニュー"
 
@@ -2536,12 +2536,12 @@ msgstr "Enlightenment について"
 msgid "About this theme"
 msgstr "このテーマについて"
 
-#: config/strings.c:96 config/strings.c:118 config/strings.c:192
+#: config/strings.c:96 config/strings.c:118 config/strings.c:193
 msgid "Restart"
 msgstr "再起動"
 
 #
-#: config/strings.c:97 config/strings.c:119 config/strings.c:193
+#: config/strings.c:97 config/strings.c:119 config/strings.c:194
 msgid "Log Out"
 msgstr "ログアウト"
 
@@ -2682,113 +2682,118 @@ msgstr "クリックでフォーカス／解除"
 msgid "Toggle Never Use Area"
 msgstr "エリアを使わない／使う"
 
-#
 #: config/strings.c:159
+#, fuzzy
+msgid "Toggle Ignore Arrange"
+msgstr "エリアを使わない／使う"
+
+#
+#: config/strings.c:160
 msgid "Toggle Button Grabs"
 msgstr "ボタンのグラブ／解除"
 
-#: config/strings.c:160
+#: config/strings.c:161
 msgid "Toggle Autoshade"
 msgstr "自動シェーディング切替え"
 
 #
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Default"
 msgstr "既定値"
 
-#: config/strings.c:164
+#: config/strings.c:165
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:165
+#: config/strings.c:166
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:166
+#: config/strings.c:167
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:167
+#: config/strings.c:168
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:168
+#: config/strings.c:169
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:169
+#: config/strings.c:170
 msgid "Focused opacity 100%"
 msgstr "フォーカスがあれば100％不透明にする"
 
-#: config/strings.c:170
+#: config/strings.c:171
 msgid "Focused opacity follows unfocused"
 msgstr "常にフォーカスが無いときの不透明度を適用する"
 
-#: config/strings.c:171
+#: config/strings.c:172
 msgid "Toggle Fading"
 msgstr "フェーディングを切り替える"
 
-#: config/strings.c:172
+#: config/strings.c:173
 msgid "Toggle Shadows"
 msgstr "シャドー切替え"
 
-#: config/strings.c:175
+#: config/strings.c:176
 msgid "Max Size Toggle"
 msgstr "最大サイズ切替え"
 
-#: config/strings.c:176
+#: config/strings.c:177
 msgid "Available Max Size Toggle"
 msgstr "利用可能な最大サイズで切替え"
 
-#: config/strings.c:177
+#: config/strings.c:178
 msgid "Absolute Max Size Toggle"
 msgstr "絶対最大サイズで切替え"
 
-#: config/strings.c:178
+#: config/strings.c:179
 msgid "Span Xinerama Screens"
 msgstr "Xineramaスクリーン拡張"
 
-#: config/strings.c:179
+#: config/strings.c:180
 msgid "Max Height Toggle"
 msgstr "最大高切替え"
 
-#: config/strings.c:180
+#: config/strings.c:181
 msgid "Available Max Height Toggle"
 msgstr "利用可能な最大高で切替え"
 
-#: config/strings.c:181
+#: config/strings.c:182
 msgid "Absolute Max Height Toggle"
 msgstr "絶対最大高で切替え"
 
-#: config/strings.c:182
+#: config/strings.c:183
 msgid "Max Width Toggle"
 msgstr "最大幅切替え"
 
-#: config/strings.c:183
+#: config/strings.c:184
 msgid "Available Max Width Toggle"
 msgstr "利用可能な最大幅で切替え"
 
-#: config/strings.c:184
+#: config/strings.c:185
 msgid "Absolute Max Width Toggle"
 msgstr "絶対最大幅で切替え"
 
-#: config/strings.c:185
+#: config/strings.c:186
 msgid "Fullscreen/Normal"
 msgstr "全画面／通常"
 
-#: config/strings.c:186
+#: config/strings.c:187
 msgid "Zoom/Unzoom"
 msgstr "拡大／縮小"
 
-#: config/strings.c:189
+#: config/strings.c:190
 msgid "User Application List"
 msgstr "ユーザーアプリケーション"
 
-#: config/strings.c:190
+#: config/strings.c:191
 msgid "Other"
 msgstr "その他"
 
-#: config/strings.c:191
+#: config/strings.c:192
 msgid "Epplets"
 msgstr ""
 
