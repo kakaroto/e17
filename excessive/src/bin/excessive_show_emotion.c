@@ -34,6 +34,12 @@ _excessive_emotion_edje_mouve_out(void *data, Evas_Object *obj __UNUSED__, const
    elm_video_audio_mute_set(ic, EINA_TRUE);
 }
 
+static void
+_death_video(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *ic, void *evas_object __UNUSED__)
+{
+   all_video = eina_list_remove_list(all_video, evas_object_data_get(ic, "excessive/list"));
+}
+
 static Evas_Object *
 _excessive_emotion_item_object_get(void *data, Evas_Object *obj, const char *part __UNUSED__)
 {
@@ -48,9 +54,9 @@ _excessive_emotion_item_object_get(void *data, Evas_Object *obj, const char *par
 
    edje_object_signal_callback_add((Evas_Object *) elm_gengrid_item_object_get(info->item), "mouse,in", "*", _excessive_emotion_edje_mouve_in, ic);
    edje_object_signal_callback_add((Evas_Object *) elm_gengrid_item_object_get(info->item), "mouse,out", "*", _excessive_emotion_edje_mouve_out, ic);
+   evas_object_event_callback_add(ic, EVAS_CALLBACK_DEL, _death_video, NULL);
 
    all_video = eina_list_prepend(all_video, ic);
-
    evas_object_data_set(ic, "excessive/list", all_video);
 
    return ic;
@@ -60,8 +66,6 @@ static void
 _excessive_emotion_item_object_del(void *data, Evas_Object *obj)
 {
    /* FIXME: implement a cache of object */
-   all_video = eina_list_remove_list(all_video, evas_object_data_get(obj, "excessive/list"));
-
    free(data);
 }
 
