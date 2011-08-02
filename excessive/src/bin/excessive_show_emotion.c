@@ -6,6 +6,8 @@
 
 #include "excessive_private.h"
 
+static Eina_List *all_video = NULL;
+
 static char *
 _excessive_emotion_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
@@ -47,13 +49,19 @@ _excessive_emotion_item_object_get(void *data, Evas_Object *obj, const char *par
    edje_object_signal_callback_add((Evas_Object *) elm_gengrid_item_object_get(info->item), "mouse,in", "*", _excessive_emotion_edje_mouve_in, ic);
    edje_object_signal_callback_add((Evas_Object *) elm_gengrid_item_object_get(info->item), "mouse,out", "*", _excessive_emotion_edje_mouve_out, ic);
 
+   all_video = eina_list_prepend(all_video, ic);
+
+   evas_object_data_set(ic, "excessive/list", all_video);
+
    return ic;
 }
 
 static void
-_excessive_emotion_item_object_del(void *data, Evas_Object *obj __UNUSED__)
+_excessive_emotion_item_object_del(void *data, Evas_Object *obj)
 {
    /* FIXME: implement a cache of object */
+   all_video = eina_list_remove_list(all_video, evas_object_data_get(obj, "excessive/list"));
+
    free(data);
 }
 
@@ -124,6 +132,15 @@ _stop(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    evas_object_del(evas_object_data_get(layout, "excessive/notify"));
    evas_object_data_set(layout, "excessive/notify", NULL);
    edje_object_signal_emit(elm_layout_edje_get(layout), "hide,content", "code");
+
+   if (crazy_option)
+     {
+        Evas_Object *thumb;
+        Eina_List *l;
+
+        EINA_LIST_FOREACH(all_video, l, thumb)
+          elm_video_play(thumb);
+     }
 }
 
 static void
@@ -133,10 +150,15 @@ _excessive_emotion_action(Evas_Object *display, Excessive_File_Object *object)
    Evas_Object *layout;
    Evas_Object *notify;
    Evas_Object *player;
+   Evas_Object *thumb;
+   Eina_List *l;
 
    layout = evas_object_data_get(display, "excessive/parent");
 
    if (evas_object_data_get(layout, "excessive/notify")) return ;
+
+   EINA_LIST_FOREACH(all_video, l, thumb)
+     elm_video_pause(thumb);
 
    elm_video_file_set(display, info->info.path);
    elm_video_play(display);
