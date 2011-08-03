@@ -9,8 +9,9 @@ export MAKEFLAGS="make -j6"
 alias make='make -j6'
 
 export BUILD_E_DEPENDS="eeze"
-export BUILD_ELM_DEPENDS="PROTO/emap eio emotion"
-export BUILD_BASIC="eina eet evas ecore embryo edje e_dbus efreet expedite "$BUILD_E_DEPENDS" e ethumb "$BUILD_ELM_DEPENDS" elementary"
+export BUILD_ETHUMB_DEPENDS="PROTO/epdf emotion"
+export BUILD_ELM_DEPENDS="PROTO/emap eio"
+export BUILD_BASIC="eina eet evas ecore embryo edje e_dbus efreet expedite "$BUILD_E_DEPENDS" e "$BUILD_ETHUMB_DEPENDS" ethumb "$BUILD_ELM_DEPENDS" elementary"
 export BUILD_PYTHON_BINDINGS="BINDINGS/python/python-evas BINDINGS/python/python-elementary BINDINGS/python/python-ecore BINDINGS/python/python-edje BINDINGS/python/python-emotion"
 export BUILD_C_BINDINGS="BINDINGS/cxx/eflxx BINDINGS/cxx/einaxx BINDINGS/cxx/evasxx BINDINGS/cxx/ecorexx BINDINGS/cxx/elementaryxx"
 export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
