@@ -120,8 +120,6 @@ libraries is on the right.
   <td>
    <?php blinkurl("i/logo-s.png", "EVIL", "http://docs.enlightenment.org/auto/evil"); ?>
   </td>
- <tr>
- </tr>
   <td>
    <?php blinkurl("i/logo-s.png", "EMOTION", "http://docs.enlightenment.org/auto/emotion"); ?>
   </td>
