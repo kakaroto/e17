@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Espionnage
+GenericName=Webcam testing application
+GenericName[fr]=Application de test de la Webcam
+Comment=A light webcam test application
+Comment[fr]=Une application legere pour tester votre Webcam
+Exec=@prefix@/bin/espionnage
+Icon=espionnage.png
+Type=Application
+Terminal=false
+Encoding=UTF-8
+Categories=Application;Graphics;
