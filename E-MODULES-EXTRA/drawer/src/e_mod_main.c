@@ -1522,12 +1522,11 @@ _drawer_thumbnail_swallow(Evas_Object *thumbnail, Evas_Object *swallow)
 }
 
 static void
-_drawer_thumb_process(Drawer_Thumb_Data *td)
+_drawer_thimb_exist_cb(Ethumb_Client *client, Ethumb_Exists *thread, Eina_Bool exists, void *data)
 {
-   if (!ethumb_client_file_set(ethumb_client, td->file, NULL))
-     return _drawer_thumb_data_free(td);
+   Drawer_Thumb_Data *td = data;
 
-   if (ethumb_client_thumb_exists(ethumb_client))
+   if (exists)
      {
         const char *thumb_path;
 
@@ -1537,6 +1536,15 @@ _drawer_thumb_process(Drawer_Thumb_Data *td)
      }
    else if (ethumb_client_generate(ethumb_client, _drawer_thumb_generate_cb, td, _drawer_thumb_data_free) == -1)
      _drawer_thumb_data_free(td);
+}
+
+static void
+_drawer_thumb_process(Drawer_Thumb_Data *td)
+{
+   if (!ethumb_client_file_set(ethumb_client, td->file, NULL))
+     return _drawer_thumb_data_free(td);
+
+   ethumb_client_thumb_exists(ethumb_client, _drawer_thimb_exist_cb, td);
 }
 
 static void
@@ -1985,7 +1993,10 @@ _smart_init(void)
 	       NULL,            /* Calculate */
 	       NULL,            /* Member add */
 	       NULL,            /* Member del */
-	       NULL             /* Data */
+	       NULL,
+               NULL,
+               NULL,
+               NULL             /* Data */
 	  };
         smart = evas_smart_class_new(&sc);
      }
