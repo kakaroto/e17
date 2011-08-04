@@ -4,6 +4,8 @@
 
 #include "espionnage_private.h"
 
+// #define DEBUG_LUMA 1
+
 #ifndef ELM_LIB_QUICKLAUNCH
 
 static const Ecore_Getopt options = {
@@ -23,12 +25,14 @@ static const Ecore_Getopt options = {
   }
 };
 
-static Eina_List *faces = NULL;
 static Evas_Object *video = NULL;
+#ifdef DEBUG_LUMA
 static Evas_Object *im = NULL;
+#endif
 int _log_domain = -1;
 
 #ifdef HAVE_FACE
+static Eina_List *faces = NULL;
 static int frame_max = 1;
 static int frame_count = 0;
 static Eina_List *face_threads = NULL;
@@ -129,6 +133,7 @@ _espionnage_end_face(void *data, Ecore_Thread *thread)
    Evas_Object *face;
    Evas_Coord ox, oy, ow, oh;
 
+#ifdef DEBUG_LUMA
    {
       char *tmp;
       char *tmp_cp;
@@ -156,6 +161,7 @@ _espionnage_end_face(void *data, Ecore_Thread *thread)
       evas_object_image_data_set(im, tmp);
       evas_object_image_data_update_add(im, 0, 0, f->w, f->h);
    }
+#endif
 
    EINA_LIST_FREE(faces, face)
      evas_object_del(face);
@@ -421,10 +427,12 @@ elm_main(int argc, char **argv)
      }
 #endif
 
+#ifdef DEBUG_LUMA
    im = evas_object_image_add(evas_object_evas_get(window));
    evas_object_resize(im, 200, 200);
    evas_object_image_fill_set(im, 0, 0, 200, 200);
    evas_object_show(im);
+#endif
 
    elm_run();
 

@@ -96,7 +96,7 @@ echo "--------------------------------------------------------"
 echo "$PACKAGE $VERSION"
 echo "--------------------------------------------------------"
 echo
-echo "  edje_cc..................: ${edje_cc}"
+echo "  Face detection...........: ${have_libface}"
 echo
 echo "  Installation.............: make install (as root if needed, with 'su' or 'sudo')"
 echo "  prefix...................: $prefix"
