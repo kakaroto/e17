@@ -67,9 +67,14 @@ PKG_CHECK_MODULES([ESPIONNAGE],
 ## http://libface.sourceforge.net
 have_libface="no"
 PKG_CHECK_MODULES([FACE], [libface], [have_libface="yes"], [have_libface="no"])
+PKG_CHECK_MODULES([FACE2], [libface >= 0.2], [have_libface2="yes"], [have_libface2="no"])
 
 if test "x${have_libface}" = "xyes"; then
    AC_DEFINE(HAVE_FACE, 1, [Define to 1 if libface is available])
+fi
+
+if test "x${have_libface2}" = "xyes"; then
+   AC_DEFINE(HAVE_FACE2, 1, [Define to 1 if libface >= 0.2 is available])
 fi
 
 ### Checks for compiler characteristics
