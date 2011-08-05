@@ -11,11 +11,19 @@
 
 #include "espionnage_private.h"
 
+static void
+_face_free_cb(void *data)
+{
+   libface::LibFace* libFace = static_cast<libface::LibFace *> (data);
+
+   delete libFace;
+}
+
 Eina_List *
-face_search(char *data, int width, int height, int stride)
+face_search(Ecore_Thread *thread, char *data, int width, int height, int stride)
 {
 #ifdef HAVE_FACE
-   libface::LibFace* libFace = new libface::LibFace(libface::DETECT, ".");
+   libface::LibFace* libFace = NULL;
 #ifdef HAVE_FACE2
    std::vector<libface::Face*> *result;
 #else
@@ -23,6 +31,13 @@ face_search(char *data, int width, int height, int stride)
 #endif
    unsigned int i;
    Eina_List *back = NULL;
+
+   libFace = static_cast<libface::LibFace*> (ecore_thread_local_data_find(thread, "libface"));
+   if (!libFace)
+     {
+        libFace = new libface::LibFace(libface::DETECT, ".");
+        ecore_thread_local_data_add(thread, "libface", libFace, _face_free_cb, 1);
+     }
 
    result = libFace->detectFaces(data, width, height, stride, IPL_DEPTH_8U, 1, 0);
 #ifdef HAVE_FACE2

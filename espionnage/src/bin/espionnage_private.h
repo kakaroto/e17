@@ -3,6 +3,7 @@
 
 #include <Eina.h>
 #include <Evas.h>
+#include <Ecore.h>
 #include <Emotion.h>
 #include <Elementary.h>
 
@@ -20,7 +21,7 @@ extern "C" {
 
   extern int _log_domain;
 
-  Eina_List *face_search(char *data, int width, int height, int stride);
+  Eina_List *face_search(Ecore_Thread *thread, char *data, int width, int height, int stride);
 #ifdef __cplusplus
 };
 #endif

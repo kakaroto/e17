@@ -42,8 +42,21 @@ static int _0722[256];
 #endif
 
 static void
-_espionnage_hoversel_selected(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_espionnage_hoversel_selected(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
+   const Emotion_Webcam *webcam;
+   const Eina_List *webcams;
+   const Eina_List *l;
+
+   webcams = emotion_webcams_get();
+
+   EINA_LIST_FOREACH(webcams, l, webcam)
+     if (data == emotion_webcam_device_get(webcam))
+       {
+          elm_object_text_set(obj, emotion_webcam_name_get(webcam));
+          break ;
+       }
+
    elm_video_uri_set(video, data);
    elm_video_play(video);
 }
@@ -108,7 +121,7 @@ _espionnage_heavy_face(void *data, Ecore_Thread *thread __UNUSED__)
 {
    Async_Face *f = data;
 
-   f->rects = face_search(f->data, f->w, f->h, f->w);
+   f->rects = face_search(thread, f->data, f->w, f->h, f->w);
 }
 
 static void
