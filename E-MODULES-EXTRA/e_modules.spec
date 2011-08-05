@@ -10,7 +10,7 @@ Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.or
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildRequires: ecore-devel, evas-devel, esmart-devel
+BuildRequires: ecore-devel, evas-devel
 BuildRequires: edje-devel, eet-devel, enlightenment-devel >= 0.16.999
 Requires: enlightenment >= 0.16.999
 Requires: e_modules-snow, e_modules-flame, e_modules-monitor, e_modules-weather

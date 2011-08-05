@@ -1,9 +1,10 @@
 %define module_name execwatch
+%{!?_rel:%{expand:%%global _rel 0.enl%{?dist}}}
 
 Summary: %{module_name} module for the Enlightenment window manager
 Name: e_modules-%{module_name}
 Version: @VERSION@
-Release: 0.%(date '+%Y%m%d')
+Release: %{_rel}
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
@@ -11,7 +12,7 @@ Source: ftp://ftp.enlightenment.org/pub/enlightenment/%{module_name}-%{version}.
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-BuildRequires: ecore-devel, evas-devel, esmart-devel, edje-bin
+BuildRequires: ecore-devel, evas-devel, edje-bin
 BuildRequires: edje-devel, eet-devel, enlightenment-devel >= 0.16.999
 Requires: enlightenment >= 0.16.999
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
@@ -42,9 +43,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files -f %{module_name}.lang
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog COPYING* INSTALL NEWS README
-%if "%{module_name}" == "emu"
-%{_bindir}/%{module_name}*
-%endif
 %{_libdir}/enlightenment/modules/%{module_name}*
 
 %changelog
