@@ -1,8 +1,6 @@
 1. Focus movement by arrow keys
-   - Consider about the corrcet senario when focus is in elm_scroller
+   - Do this for elm_entry at first.
+   - Check all widgets.
 
 2. elm_widget focus
    - Check elm_widget_focus_set func (currently not working well)
-   - Add elm_widget_child_focusable_set func
-	
-3. Finding proper auto indent for .edc(lua)
