@@ -32,7 +32,7 @@ face_search(char *data, int width, int height, int stride)
 #endif
      {
 #ifdef HAVE_FACE2
-        libface::Face *face = result.at(i);
+        libface::Face *face = result->at(i);
 #else
         libface::Face *face = &result.at(i);
 #endif
