@@ -14,7 +14,7 @@ pager - content size calc
 
 elm_transit - check the transit would use the ecore_animator functionalities.
 
-animator - remove it (on end of JULY) 
+animator - remove it (on end of AUGUST) 
 
 evas_line - width 
 
@@ -30,4 +30,3 @@ ecore_animator - consider them each instance use the each timeline options.
 elm_object_item - consider to apply. 
 
 elm_object - apply all widgets to use elm_object_content_set/get/unset 
-
