@@ -140,10 +140,10 @@
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> </b><em>
-     1.0.1</em></p><p>
+     1.0.2</em></p><p>
      Device abstraction library. </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD EEZE", 
-     "http://download.enlightenment.org/releases/eeze-1.0.1.tar.gz"
+     "http://download.enlightenment.org/releases/eeze-1.0.2.tar.gz"
    );?></p></div>
    <?php frame2();?>
   </td>
