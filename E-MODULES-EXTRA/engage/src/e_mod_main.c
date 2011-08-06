@@ -191,7 +191,6 @@ ngi_new(Config_Item *cfg)
    evas_object_show(ng->o_icons);
 
    evas_object_clip_set(ng->o_bg, ng->bg_clip);
-   evas_object_show(ng->bg_clip);
 
    if (cfg->show_label)
      evas_object_show(ng->o_label);
