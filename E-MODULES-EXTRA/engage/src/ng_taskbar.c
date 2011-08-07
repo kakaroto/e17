@@ -440,14 +440,13 @@ _item_new(Ngi_Box *box, E_Border *bd)
 		      ll_it->class == it->class &&
 		      l_it->class != it->class)
 		    break;
+
+		  ll_it = l_it;
 	       }
 	     else
 	       {
 		  if (l_it->class && l_it->class == it->class)
 		    break;
-
-		  ll_it = l_it;
-		  l_it = NULL;
 	       }
 	  }
      }
@@ -455,7 +454,7 @@ _item_new(Ngi_Box *box, E_Border *bd)
    if (l_it)
      {
         if (box->cfg->taskbar_append_right)
-           box->items = eina_list_append_relative(box->items, it, l_it);
+           box->items = eina_list_append_relative(box->items, it, ll_it);
         else
            box->items = eina_list_prepend_relative(box->items, it, l_it);
      }
