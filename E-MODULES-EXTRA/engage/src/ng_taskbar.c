@@ -437,8 +437,8 @@ _item_new(Ngi_Box *box, E_Border *bd)
 	     if (box->cfg->taskbar_append_right)
 	       {
 		  if (ll_it && l_it->class && ll_it->class &&
-		      ll_it->class == it->class &&
-		      l_it->class != it->class)
+		      (ll_it->class == it->class) &&
+		      (l_it->class != it->class))
 		    break;
 
 		  ll_it = l_it;
@@ -451,19 +451,19 @@ _item_new(Ngi_Box *box, E_Border *bd)
 	  }
      }
 
-   if (l_it)
+   if (box->cfg->taskbar_append_right)
      {
-        if (box->cfg->taskbar_append_right)
-           box->items = eina_list_append_relative(box->items, it, ll_it);
-        else
-           box->items = eina_list_prepend_relative(box->items, it, l_it);
+	if (ll_it)
+	  box->items = eina_list_append_relative(box->items, it, ll_it);
+	else
+	  box->items = eina_list_append(box->items, it);
      }
    else
      {
-        if (box->cfg->taskbar_append_right)
-           box->items = eina_list_append(box->items, it);
-        else
-           box->items = eina_list_prepend(box->items, it);
+	if (l_it)
+	  box->items = eina_list_prepend_relative(box->items, it, l_it);
+	else
+	  box->items = eina_list_prepend(box->items, it);
      }
 
    if ((box->cfg->taskbar_show_desktop) &&
