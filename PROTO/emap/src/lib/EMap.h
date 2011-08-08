@@ -16,15 +16,13 @@
 #define EMAP_LAT_MAX 90.0
 #define EMAP_LAT_MIN -90.0
 
-typedef enum emap_route_type EMap_Route_Type;
 typedef struct emap_route EMap_Route;
 typedef struct emap_route_node EMap_Route_Node;
 
-
-enum emap_route_type
+typedef enum emap_route_type
 {
    EMAP_TRACK_TYPE_GPX
-};
+} EMap_Route_Type;
 
 EAPI int               emap_init();
 EAPI int               emap_shutdown();
