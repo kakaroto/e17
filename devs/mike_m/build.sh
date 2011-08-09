@@ -6,7 +6,7 @@
 #		libjpeg62-dev libfreetype6-dev libx11-dev subversion git \
 #		libglib2.0-dev libxext-dev libxcursor-dev libudev-dev \
 #		libcurl4-gnutls-dev libc-ares-dev liblua5.1-0-dev libpng12-dev \
-#		libtiff4-dev
+#		libtiff4-dev libfontconfig1-dev libxcb-shape0-dev
 #
 # Evas fails to build on x86-64 due to this bug.
 # https://bugs.launchpad.net/ubuntu/+source/libgcrypt11/+bug/751142
@@ -47,13 +47,13 @@ do
 		flags="--enable-gl-x11"
 		;;
 	ecore)
-		flags="--enable-g-main-loop"
+		flags="--enable-g-main-loop --enable-thread-safety"
 		;;
 	*)
 		flags=""
 		;;
 	esac
-	[ $no_autogen = 1 ] || (cd "$e" && ./autogen.sh "$flags") || exit 1
+	[ $no_autogen = 1 ] || (cd "$e" && rm -f config.cache && ./autogen.sh $flags) || exit 1
 	(cd "$e" && make "$MAKEFLAGS" && sudo make install && sudo ldconfig) || exit 1
 	echo
 	echo "Built $e"
