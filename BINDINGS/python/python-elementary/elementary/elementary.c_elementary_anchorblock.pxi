@@ -85,27 +85,6 @@ cdef class AnchorBlock(Object):
         return self._callback_del_full("anchor,clicked", _anchorblock_conv,
                                        func)
 
-    def text_set(self, text):
-        """
-        Set the text markup of the anchorblock
-
-        This sets the text of the anchorblock to be the text given as @p text. This
-        text is in markup format with \<a href=XXX\> beginning an achor with the
-        string link of 'XXX', and \</\> or \</a\> ending the link. Other markup can
-        be used dependign on the style support.
-
-        @param: B{text} The text to set, or None to clear
-        """
-        elm_anchorblock_text_set(self.obj, text)
-
-    def text_get(self):
-        """
-        Get the text markup of the anchorblock
-
-        @return: The current markup text
-        """
-        return elm_anchorblock_text_get(self.obj)
-
     def hover_parent_set(self, c_evas.Object parent):
         """
         Set the parent of the hover popup

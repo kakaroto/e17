@@ -619,7 +619,14 @@ cdef class Genlist(Object):
         elm_genlist_multi_select_set(self.obj, bool(multi))
 
     def horizontal_mode_set(self, Elm_List_Mode mode):
-        elm_genlist_horizontal_mode_set(self.obj, mode)
+        _METHOD_DEPRECATED(self, "horizontal_set")
+        elm_genlist_horizontal_set(self.obj, mode)
+
+    def horizontal_set(self, Elm_List_Mode mode):
+        elm_genlist_horizontal_set(self.obj, mode)
+
+    def horizontal_get(self):
+        return elm_genlist_horizontal_get(self.obj)
 
     def always_select_mode_set(self, always_select):
         elm_genlist_always_select_mode_set(self.obj, bool(always_select))

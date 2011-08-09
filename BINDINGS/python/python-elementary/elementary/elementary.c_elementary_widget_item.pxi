@@ -16,10 +16,11 @@
 # along with python-elementary.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-cdef c_evas.Evas_Object *_tooltip_item_content_create(void *data, c_evas.Evas_Object *o, void *it) with gil:
-   cdef Object ret, obj
+cdef c_evas.Evas_Object *_tooltip_item_content_create(void *data, c_evas.Evas_Object *o, evas.c_evas.Evas_Object *t, void *it) with gil:
+   cdef Object ret, obj, tooltip
 
    obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+   tooltip = evas.c_evas._Object_from_instance(<long> t)
    (func, item, args, kargs) = <object>data
    ret = func(obj, item, *args, **kargs)
    if not ret:

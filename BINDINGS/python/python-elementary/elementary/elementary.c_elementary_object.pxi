@@ -34,12 +34,13 @@ cdef void _object_callback(void *data,
         except Exception, e:
             traceback.print_exc()
 
-cdef c_evas.Evas_Object *_tooltip_content_create(void *data, c_evas.Evas_Object *o) with gil:
-    cdef Object ret, obj
+cdef c_evas.Evas_Object *_tooltip_content_create(void *data, c_evas.Evas_Object *o, c_evas.Evas_Object *t) with gil:
+    cdef Object ret, obj, tooltip
 
     obj = <Object>c_evas.evas_object_data_get(o, "python-evas")
+    tooltip = evas.c_evas._Object_from_instance(<long> t)
     (func, args, kargs) = <object>data
-    ret = func(obj, *args, **kargs)
+    ret = func(obj, tooltip *args, **kargs)
     if not ret:
         return NULL
     return ret.obj
@@ -117,11 +118,13 @@ cdef class Object(evas.c_evas.Object):
         return elm_object_disabled_get(self.obj)
 
     def focus(self):
-        elm_object_focus(self.obj)
+        _METHOD_DEPRECATED(self, "focus_set")
+        elm_object_focus_set(self.obj, 1)
 
     def unfocus(self):
-        elm_object_unfocus(self.obj)
-        
+        _METHOD_DEPRECATED(self, "focus_set")
+        elm_object_focus_set(self.obj, 0)
+
     def focus_get(self):
         elm_object_focus_get(self.obj)
 
@@ -200,11 +203,12 @@ cdef class Object(evas.c_evas.Object):
         @param: B{func} Function to be create tooltip content, called when
                 need show tooltip.
 
-        Setup the tooltip to object. The object can have only one tooltip,
-        so any previews tooltip data is removed. @func(with @{args,kargs}) will
-        be called every time that need show the tooltip and it should return a
-        valid Evas_Object. This object is then managed fully by tooltip system
-        and is deleted when the tooltip is gone.
+        Setup the tooltip to object. The object can have only one
+        tooltip, so any previews tooltip data is removed. func(owner,
+        tooltip, args, kargs) will be called every time that need
+        show the tooltip and it should return a valid
+        Evas_Object. This object is then managed fully by tooltip
+        system and is deleted when the tooltip is gone.
         """
         if not callable(func):
             raise TypeError("func must be callable")
@@ -297,6 +301,55 @@ cdef class Object(evas.c_evas.Object):
         """ Get the engine only usage for this object.
         """
         return elm_object_cursor_engine_only_get(self.obj)
+
+    def text_set(self, text):
+        """Sets the main text for this object.
+
+        @parm: B{text} any text to set as the main textual part of this object.
+        @see: L{text_get()} and L{text_part_set()}
+        """
+        elm_object_text_set(self.obj, text)
+
+    def text_get(self):
+        """Gets the main text for this object.
+
+        @return: the main text or None if nothing was set.
+        @see: L{text_set()} and L{text_part_get()}
+        """
+        cdef const_char_ptr l
+        l = elm_object_text_get(self.obj)
+        if l == NULL:
+            return None
+        return l
+
+    property text:
+        def __get__(self):
+            return self.text_get()
+
+        def __set__(self, value):
+            self.text_set(value)
+
+    def text_part_set(self, part, text):
+        """Sets the text of a given part of this object.
+
+        @parm: B{part} part name to set the text.
+        @parm: B{text} text to set.
+        @see: L{text_set()} and L{text_part_get()}
+        """
+        elm_object_text_part_set(self.obj, part, text)
+
+    def text_part_get(self, part):
+        """Gets the text of a given part of this object.
+
+        @parm: B{part} part name to get the text.
+        @return: the text of a part or None if nothing was set.
+        @see: L{text_get()} and L{text_part_set()}
+        """
+        cdef const_char_ptr l
+        l = elm_object_text_part_get(self.obj, part)
+        if l == NULL:
+            return None
+        return l
 
     def _callback_add_full(self, char *event, event_conv, func, *args, **kargs):
         """Add a callback for the smart event specified by event.

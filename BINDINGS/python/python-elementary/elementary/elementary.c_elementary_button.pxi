@@ -28,14 +28,12 @@ cdef class Button(Object):
         self._callback_del("clicked", func)
 
     def label_set(self, label):
-        elm_button_label_set(self.obj, label)
+        _METHOD_DEPRECATED(self, "text_set")
+        self.text_set(label)
 
     def label_get(self):
-        cdef const_char_ptr l
-        l = elm_button_label_get(self.obj)
-        if l == NULL:
-            return None
-        return l
+        _METHOD_DEPRECATED(self, "text_get")
+        return self.text_get()
 
     property label:
         def __get__(self):

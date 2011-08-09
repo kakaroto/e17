@@ -21,20 +21,13 @@ cdef class Label(Object):
         Object.__init__(self, parent.evas)
         self._set_obj(elm_label_add(parent.obj))
 
+    def label_set(self, label):
+        _METHOD_DEPRECATED(self, "text_set")
+        self.text_set(label)
+
     def label_get(self):
-        """Returns the label string set.
-
-        @rtype: str
-        """
-        cdef const_char_ptr l
-        l = elm_label_label_get(self.obj)
-        if l == NULL:
-            return None
-        return l
-
-    def label_set(self, char *label):
-        """Set the label string"""
-        elm_label_label_set(self.obj, label)
+        _METHOD_DEPRECATED(self, "text_get")
+        return self.text_get()
 
     property label:
         def __get__(self):

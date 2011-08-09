@@ -22,7 +22,12 @@ cdef class Progressbar(Object):
         self._set_obj(elm_progressbar_add(parent.obj))
 
     def label_set(self, label):
-        elm_progressbar_label_set(self.obj, label)
+        _METHOD_DEPRECATED(self, "text_set")
+        self.text_set(label)
+
+    def label_get(self):
+        _METHOD_DEPRECATED(self, "text_get")
+        return self.text_get()
 
     def icon_set(self, c_evas.Object icon):
         elm_progressbar_icon_set(self.obj, icon.obj)

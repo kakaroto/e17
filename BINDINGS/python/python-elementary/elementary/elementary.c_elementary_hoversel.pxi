@@ -118,14 +118,12 @@ cdef class Hoversel(Object):
         elm_hoversel_hover_parent_set(self.obj, parent.obj)
 
     def label_set(self, label):
-        elm_hoversel_label_set(self.obj, label)
+        _METHOD_DEPRECATED(self, "text_set")
+        self.text_set(label)
 
     def label_get(self):
-        cdef const_char_ptr l
-        l = elm_hoversel_label_get(self.obj)
-        if l == NULL:
-            return None
-        return l
+        _METHOD_DEPRECATED(self, "text_get")
+        return self.text_get()
 
     property label:
         def __get__(self):

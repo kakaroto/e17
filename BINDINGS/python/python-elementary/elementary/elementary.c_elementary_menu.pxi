@@ -82,12 +82,20 @@ cdef class MenuItem:
         def __set__(self, value):
             self.label_set(value)
 
+    def icon_name_set(self, icon):
+        elm_menu_item_object_icon_name_set(self.obj, icon)
+
+    property icon_name_set:
+        def __set__(self, icon):
+            self.icon_name_set(icon)
+
     def icon_set(self, icon):
-        elm_menu_item_icon_set(self.obj, icon)
+        _METHOD_DEPRECATED(self, "icon_name_set")
+        self.icon_name_set(icon)
 
     property icon:
         def __set__(self, icon):
-            elm_menu_item_icon_set(self.obj, icon)
+            self.icon_set(icon)
 
     def disabled_set(self, disabled):
         elm_menu_item_disabled_set(self.obj, disabled)

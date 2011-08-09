@@ -52,10 +52,12 @@ cdef class Layout(Object):
             return self.edje_get()
 
     def text_set(self, part, text):
-        elm_layout_text_set(self.obj, part, text)
+        _METHOD_DEPRECATED(self, "text_part_set")
+        self.text_part_set(part, text)
 
     def text_get(self, part):
-        return elm_layout_text_get(self.obj, part)
+        _METHOD_DEPRECATED(self, "text_part_get")
+        return self.text_part_get(part)
 
     def icon_set(self, c_evas.Object icon):
         elm_layout_icon_set(self.obj, icon.obj if icon else NULL)

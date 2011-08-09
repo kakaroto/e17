@@ -23,10 +23,30 @@ from cpython cimport PyObject, Py_INCREF, Py_DECREF
 from cpython cimport PyMem_Malloc, PyMem_Free
 from cpython cimport bool
 import traceback
+import logging
+
+logger = logging.getLogger("elementary")
 
 cdef int PY_REFCOUNT(object o):
     cdef PyObject *obj = <PyObject *>o
     return obj.ob_refcnt
+
+cdef _METHOD_DEPRECATED(self, replacement=None, message=None):
+    stack = traceback.extract_stack()
+    caller = stack[-1]
+    caller_module, caller_line, caller_name, caller_code = caller
+    if caller_code:
+        msg = "%s:%s %s (class %s) is deprecated." % \
+            (caller_module, caller_line, caller_code, self.__class__.__name__)
+    else:
+        msg = "%s:%s %s.%s() is deprecated." % \
+            (caller_module, caller_line, self.__class__.__name__, caller_name)
+    if replacement:
+        msg += " Use %s() instead." % (replacement,)
+    if message:
+        msg += " " + message
+    logging.warn(msg)
+
 
 def init():
     cdef int argc, i, arg_len

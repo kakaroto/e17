@@ -22,7 +22,12 @@ cdef class Frame(Object):
         self._set_obj(elm_frame_add(parent.obj))
 
     def label_set(self, label):
-        elm_frame_label_set(self.obj, label)
+        _METHOD_DEPRECATED(self, "text_set")
+        self.text_set(label)
+
+    def label_get(self):
+        _METHOD_DEPRECATED(self, "text_get")
+        return self.text_get()
 
     def content_set(self, c_evas.Object content):
         elm_frame_content_set(self.obj, content.obj)

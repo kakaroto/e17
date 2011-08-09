@@ -82,19 +82,6 @@ cdef class AnchorView(Object):
     def callback_clicked_del(self, func):
         return self._callback_del_full("anchor,clicked", _anchorview_conv, func)
 
-    def text_set(self, text):
-        """
-        Set the text markup of the anchorview
-
-        This sets the text of the anchorview to be the text given as @p text. This
-        text is in markup format with \<a href=XXX\> beginning an achor with the
-        string link of 'XXX', and \</\> or \</a\> ending the link. Other markup can
-        be used dependign on the style support.
-
-        @param: B{text} The text to set, or None to clear
-        """
-        elm_anchorview_text_set(self.obj, text)
-
     def bounce_set(self, h, v):
         elm_anchorview_bounce_set(self.obj, h, v)
 

@@ -22,14 +22,12 @@ cdef class Bubble(Object):
         self._set_obj(elm_bubble_add(parent.obj))
 
     def label_set(self, label):
-        elm_bubble_label_set(self.obj, label)
+        _METHOD_DEPRECATED(self, "text_set")
+        self.text_set(label)
 
     def label_get(self):
-        cdef const_char_ptr l
-        l = elm_bubble_label_get(self.obj)
-        if l == NULL:
-            return None
-        return l
+        _METHOD_DEPRECATED(self, "text_get")
+        return self.text_get()
 
     property label:
         def __get__(self):
@@ -39,7 +37,8 @@ cdef class Bubble(Object):
             self.label_set(value)
 
     def info_set(self, info):
-        elm_bubble_info_set(self.obj, info)
+        _METHOD_DEPRECATED(self, "text_part_set", "use 'info' as part name")
+        self.text_part_set("info", info)
 
     def content_set(self, c_evas.Object content):
         elm_bubble_content_set(self.obj, content.obj)

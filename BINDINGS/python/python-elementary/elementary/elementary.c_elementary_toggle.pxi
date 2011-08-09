@@ -38,7 +38,12 @@ cdef class Toggle(Object):
         self._callback_del("changed", func)
 
     def label_set(self, label):
-        elm_toggle_label_set(self.obj, label)
+        _METHOD_DEPRECATED(self, "text_set")
+        self.text_set(label)
+
+    def label_get(self):
+        _METHOD_DEPRECATED(self, "text_get")
+        return self.text_get()
 
     def icon_set(self, c_evas.Object icon):
         elm_toggle_icon_set(self.obj, icon.obj)
