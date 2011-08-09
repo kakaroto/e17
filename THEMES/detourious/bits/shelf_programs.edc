@@ -1,0 +1,99 @@
+program {
+	name: "top";
+	signal: "e,state,orientation,top";
+	source: "e";
+	action: STATE_SET "default" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}
+
+program {
+	name: "bottom";
+	signal: "e,state,orientation,bottom";
+	source: "e";
+	action: STATE_SET "bottom" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}
+
+program {
+	name: "left";
+	signal: "e,state,orientation,left";
+	source: "e";
+	action: STATE_SET "left" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}
+
+program {
+	name: "right";
+	signal: "e,state,orientation,right";
+	source: "e";
+	action: STATE_SET "right" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}
+
+program {
+	name: "bottom_left";
+	signal: "e,state,orientation,bottom_left";
+	source: "e";
+	action: STATE_SET "bottom_left" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}
+
+program {
+	name: "bottom_right";
+	signal: "e,state,orientation,bottom_right";
+	source: "e";
+	action: STATE_SET "bottom_right" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}
+
+program {
+	name: "left_top";
+	signal: "e,state,orientation,left_top";
+	source: "e";
+	action: STATE_SET "left_top" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}
+
+program {
+	name: "left_bottom";
+	signal: "e,state,orientation,left_bottom";
+	source: "e";
+	action: STATE_SET "left_bottom" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}
+
+program {
+	name: "right_top";
+	signal: "e,state,orientation,right_top";
+	source: "e";
+	action: STATE_SET "right_top" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}
+
+program {
+	name: "right_bottom";
+	signal: "e,state,orientation,right_bottom";
+	source: "e";
+	action: STATE_SET "right_bottom" 0.0;
+	target: "base";
+	target: "swallow.clip";
+	target: "e.swallow.content";
+}

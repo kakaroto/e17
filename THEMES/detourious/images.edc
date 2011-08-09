@@ -91,7 +91,7 @@ image: "images/itask_im1.png" COMP; /* top orientation */
 image: "images/itask_im2.png" COMP; /* left orientation */
 image: "images/itask_im3.png" COMP; /* right orientation */
 image: "images/itask_im4.png" COMP; /* label overlay */
-image: "images/itask_im5.png" COMP; /* label overlay decoration */
+
 
 //~ gadman
 image: "images/gadman_im0.png" COMP; /* background */
@@ -128,6 +128,7 @@ image: "images/shelf_def_im0.png" COMP; /* regular orientation */
 image: "images/shelf_def_im1.png" COMP; /* left orientation */
 image: "images/shelf_def_im2.png" COMP; /* right orientation */
 image: "images/shelf_def_im3.png" COMP; /* inset */
+image: "images/shelf_def_im4.png" COMP; /* label overlay decoration */
 
 //~ busy cursor
 image: "images/cursor_im0.png" COMP; /* 00 */
@@ -231,6 +232,8 @@ image: "images/efmnav_bt7.png" COMP;	/* forward button symbol */
 image: "images/efmnav_bt8.png" COMP;	/* up button symbol */
 image: "images/efmnav_bt9.png" COMP;	/* refresh button symbol */
 image: "images/efmnav_bt10.png" COMP;	/* favorites button symbol */
+image: "images/efmnav_bt11.png" COMP;	/* pathbar button */
+image: "images/efmnav_bt12.png" COMP;	/* pathbar button */
 
 //~ slider
 image: "images/slider_im0.png" COMP; /* horizontal slider */

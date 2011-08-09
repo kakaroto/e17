@@ -435,95 +435,7 @@ group {
 	}
 
 	programs {
-		program {
-			name: "top";
-			signal: "e,state,orientation,top";
-			source: "e";
-			action: STATE_SET "default" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "bottom";
-			signal: "e,state,orientation,bottom";
-			source: "e";
-			action: STATE_SET "bottom" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "left";
-			signal: "e,state,orientation,left";
-			source: "e";
-			action: STATE_SET "left" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "right";
-			signal: "e,state,orientation,right";
-			source: "e";
-			action: STATE_SET "right" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "bottom_left";
-			signal: "e,state,orientation,bottom_left";
-			source: "e";
-			action: STATE_SET "bottom_left" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "bottom_right";
-			signal: "e,state,orientation,bottom_right";
-			source: "e";
-			action: STATE_SET "bottom_right" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "left_top";
-			signal: "e,state,orientation,left_top";
-			source: "e";
-			action: STATE_SET "left_top" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "left_bottom";
-			signal: "e,state,orientation,left_bottom";
-			source: "e";
-			action: STATE_SET "left_bottom" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
-
-		program {
-	 		name: "right_top";
-	 		signal: "e,state,orientation,right_top";
-			source: "e";
-			action: STATE_SET "right_top" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "right_bottom";
-			signal: "e,state,orientation,right_bottom";
-			source: "e";
-			action: STATE_SET "right_bottom" 0.0;
-			target: "base";
-			target: "e.swallow.content";
-		}
+#include "shelf_programs.edc"
 	}
 }
 
@@ -1050,107 +962,8 @@ group {
 			}
 		}
 	}
-
-	programs {
-		program {
-			name: "top";
-			signal: "e,state,orientation,top";
-			source: "e";
-			action: STATE_SET "default" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "bottom";
-			signal: "e,state,orientation,bottom";
-			source: "e";
-			action: STATE_SET "bottom" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "left";
-			signal: "e,state,orientation,left";
-			source: "e";
-			action: STATE_SET "left" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "right";
-			signal: "e,state,orientation,right";
-			source: "e";
-			action: STATE_SET "right" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "bottom_left";
-			signal: "e,state,orientation,bottom_left";
-			source: "e";
-			action: STATE_SET "bottom_left" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "bottom_right";
-			signal: "e,state,orientation,bottom_right";
-			source: "e";
-			action: STATE_SET "bottom_right" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
-
-		program {
-	 		name: "left_top";
-			signal: "e,state,orientation,left_top";
-			source: "e";
-			action: STATE_SET "left_top" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
-
-		program {
-	 		name: "left_bottom";
-	 		signal: "e,state,orientation,left_bottom";
-	 		source: "e";
-	 		action: STATE_SET "left_bottom" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "right_top";
-			signal: "e,state,orientation,right_top";
-			source: "e";
-			action: STATE_SET "right_top" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
-
-		program {
-			name: "right_bottom";
-			signal: "e,state,orientation,right_bottom";
-			source: "e";
-			action: STATE_SET "right_bottom" 0.0;
-			target: "base";
-			target: "swallow.clip";
-			target: "e.swallow.content";
-		}
+	programs {		
+#include "shelf_programs.edc"
 	}
 }
 
@@ -1176,8 +989,58 @@ group {
 }
 
 group {
-	name: "e/shelf/invisible/inset";
+	name: "e/shelf/translucent/base";
+	
+	data {
+		item: "shaped" "1";
+		item: "2" "9";
+		// item: "instant_delay" "60.0";
+	}
 
+	parts {
+		part {
+			name: "base";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0; //~ top
+
+				color: 255 255 255 200;
+
+				image {
+					normal: "images/shelf_def_im4.png";
+					border: 6 6 6 6;
+				}
+
+				/* rel2.offset: -1 8;
+				 * 
+				 * fill {
+				 * 	origin {
+				 * 		offset: 0 -6;
+				 * 	}
+				 * 
+				 * 	size {
+				 * 		offset: 0 6;
+				 * 	}
+				 * } */
+			}
+		}
+		
+		part {
+			name: "e.swallow.content";
+			type: SWALLOW;
+
+			description {
+				state: "default" 0.0;
+			}
+		}
+	}
+}
+
+group {
+	name: "e/shelf/translucent/inset";
+	
 	parts {
 		part {
 			name: "background";
@@ -1234,6 +1097,79 @@ group {
 	}
 }
 
+group {
+	name: "e/shelf/invisible/inset";
+	
+	parts {
+		part {
+			name: "background";
+			type: IMAGE;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0; //~ top
+
+				color: 255 255 255 200;
+
+				image {
+					normal: "images/shelf_def_im4.png";
+					border: 6 6 6 6;
+				}
+				rel1 { 
+					relative: 0.0 0.0; 
+					offset: 3 3; 
+				}
+
+				rel2 {
+					relative: 1.0 1.0; 
+					offset: -4 -4; 
+				}
+			}
+		}
+
+		part {
+			name: "items_clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+
+				rel1 { 
+					to: "background"; 
+					relative: 0.0 0.0; 
+					offset: 6 6; 
+				}
+
+				rel2 { 
+					to: "background"; 
+					relative: 1.0 1.0; 
+					offset: -7 -7; 
+				}
+			}
+		}
+
+
+		part {
+			name: "e.swallow.content";
+			type: SWALLOW;
+			clip_to: "items_clip";
+
+			description {
+				state: "default" 0.0;
+
+				rel1 { 
+					to: "items_clip"; 
+				}
+
+				rel2 {
+					to: "items_clip"; 
+				}
+			}
+		}
+	}
+}
 
 group {
 	name: "e/shelf/invisible/plain";
