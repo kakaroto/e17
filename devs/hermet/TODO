@@ -29,4 +29,6 @@ evas_map - check the uv set inconsistency for evas_object_image. (pending to EVA
 ecore_animator - consider them each instance use the each timeline options.  
 elm_object_item - consider to apply. 
 
-elm_object - apply all widgets to use elm_object_content_set/get/unset 
+elm_object - apply all widgets to use elm_object_content_set/get/unset
+
+check the image smooth effect in gl backend 
