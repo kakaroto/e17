@@ -1,0 +1,48 @@
+externals {
+    external: "eenvaders";
+}
+
+collections {
+    group {
+        name: "e/desktop/background";
+
+        script {
+            public clock_cb(unused) {
+                emit("eenvaders:refresh", "☃");
+                timer(30, "clock_cb", 1);
+            }
+        }
+
+        parts {
+            part {
+                name: "bg";
+                type: RECT;
+                description {
+                    state: "default" 0.0;
+                    color: 0 43 54 255;
+                }
+            }
+            part {
+                name: "eenvaders";
+                type: EXTERNAL;
+                source: "eenvaders";
+
+                description {
+                    state: "default" 0.0;
+                }
+            }
+        }
+
+        // Get everything started at load
+        programs {
+            program {
+                name: "init";
+                signal: "load";
+                source: "";
+                script {
+                    clock_cb(0);
+                }
+            }
+        }
+    }
+}
