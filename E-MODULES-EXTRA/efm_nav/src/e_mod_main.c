@@ -164,14 +164,16 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 				  EVAS_CALLBACK_MOUSE_DOWN,
 				  _cb_mouse_down, inst);
 
-   evas_object_event_callback_add(inst->gcc->gadcon->o_container,
-				  EVAS_CALLBACK_RESIZE,
-				  _cb_resize, inst);
-
-   evas_object_geometry_get(inst->gcc->gadcon->o_container, 0, 0, &w, &h);
-   e_gadcon_client_min_size_set(inst->gcc, w, h);
-   e_gadcon_client_aspect_set(inst->gcc, w, h);
-
+   if (!inst->gcc->resizable)
+     {	
+	evas_object_geometry_get(inst->gcc->gadcon->o_container, 0, 0, &w, &h);
+	e_gadcon_client_min_size_set(inst->gcc, w, h);
+	e_gadcon_client_aspect_set(inst->gcc, w, h);
+	evas_object_event_callback_add(inst->gcc->gadcon->o_container,
+				       EVAS_CALLBACK_RESIZE,
+				       _cb_resize, inst);
+     }
+   
    edje_object_signal_emit(inst->o_base, "e,state,back,disabled", "e");
    edje_object_signal_emit(inst->o_base, "e,state,forward,disabled", "e");
    edje_object_message_signal_process(inst->o_base);
