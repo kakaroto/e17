@@ -11,6 +11,7 @@ struct _Plugin
   Eina_List *contacts;
   const char *input;
   Eina_Bool active : 1;
+  Eet_File *images;
 };
 
 struct _Contact
@@ -49,26 +50,19 @@ _item_free(Evry_Item *it)
    E_FREE(c);
 }
 
-static Evas_Object *
-_icon_get(Evry_Item *it, Evas *e)
-{
-   Evas_Object *o = NULL;
-
-   if (!o)
-     {
-	o = edje_object_add(e);
-	edje_object_file_set(o, theme_file, "contact_icon");
-     }
-
-   return o;
-}
-
 static Evry_Plugin *
 _inst_new(Evry_Plugin *plugin, const Evry_Item *it)
 {
    Plugin *p;
+   char buf[4096];
 
    EVRY_PLUGIN_INSTANCE(p, plugin);
+
+   eet_init();
+   snprintf(buf, sizeof(buf), "%s/.config/shotgun/shotgun.eet", e_user_homedir_get());
+   /* snprintf(buf, sizeof(buf), "/home/jeff/.config/shotgun/shotgun.eet"); */
+   p->images = eet_open(buf, EET_FILE_MODE_READ);
+   if (!p->images) ERR("Could not open image cache file!");
 
    return EVRY_PLUGIN(p);
 }
@@ -85,6 +79,9 @@ _inst_free(Evry_Plugin *plugin)
 
    EINA_LIST_FREE(p->contacts, it)
      _item_free(it);
+
+   if (p->images) eet_close(p->images);
+   eet_shutdown();
 
    E_FREE(p);
 }
@@ -110,11 +107,50 @@ _dbus_cb_chat_reply(void *data, DBusMessage *reply, DBusError *error)
      return;
 }
 
+static Evas_Object *
+_icon_get(Evry_Item *it, Evas *e)
+{
+   Evas_Object *o = NULL;
+
+   GET_CONTACT(c, it);
+   GET_PLUGIN(p, it->plugin);
+
+   if (c->icon)
+     {
+	size_t size;
+	unsigned char *img;
+
+	img = eet_read(p->images, c->icon, (int*)&size);
+	if (img)
+	  {
+	     o = evas_object_image_filled_add(e);
+	     evas_object_size_hint_aspect_set(o, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
+	     evas_object_image_memfile_set(o, img, size, NULL, NULL);
+
+	     if (evas_object_image_load_error_get(o) != EVAS_LOAD_ERROR_NONE)
+	       {
+		  evas_object_del(o);
+		  o = NULL;
+	       }
+	     free(img);
+	  }
+	if (!o) ERR("icon load error");
+     }
+
+   if (!o)
+     {
+	o = edje_object_add(e);
+	edje_object_file_set(o, theme_file, "contact_icon");
+     }
+
+   return o;
+}
+
 static void
 _dbus_cb_icon_get(void *data, DBusMessage *reply, DBusError *error)
 {
    DBusMessageIter item, array;
-   char *id;
+   char *icon;
 
    GET_CONTACT(c, data);
    GET_PLUGIN(p, c->base.plugin);
@@ -126,13 +162,14 @@ _dbus_cb_icon_get(void *data, DBusMessage *reply, DBusError *error)
      return;
 
    dbus_message_get_args(reply, error,
-			 DBUS_TYPE_STRING, &(c->icon),
+			 DBUS_TYPE_STRING, &(icon),
 			 DBUS_TYPE_INVALID);
+   if (icon)
+     {
 
-   if (c->icon)
-     evry->item_changed(EVRY_ITEM(c), 1, 0);
-
-   printf("got icon %s\n", c->icon);
+	c->icon = eina_stringshare_add(icon);
+	evry->item_changed(EVRY_ITEM(c), 1, 0);
+     }
 }
 
 static void
