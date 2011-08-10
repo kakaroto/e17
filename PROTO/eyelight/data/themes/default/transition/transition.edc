@@ -59,7 +59,6 @@
             target: "horizontal_current_next";              \
             target: "horizontal_current_next_end";          \
             target: "horizontal_next_next";                 \
-            target: "horizontal_current_next_end";          \
             target: "vertical_current_next";                \
             target: "vertical_next_next_end";               \
             target: "vertical_previous_previous";           \
