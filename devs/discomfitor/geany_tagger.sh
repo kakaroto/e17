@@ -24,7 +24,7 @@ grab_headers(){
 	echo -e "***Finding more headers from: ${new[@]}\n"
 	for h in ${new[@]};do
 		echo -e "\t***Grabbing headers from $h"
-		new=($(sed -n 's/#include ["<]\(.*\)[">]/\1/p' $h|awk '{print $1}'))
+		new=($(sed -n 's/^#include ["<]\(.*\)[">]/\1/p' "$h"|awk '{print $1}'))
 		[[ -z "${new[@]}" ]] && return
 		#remove c99 headers
 		for x in ${stdheaders[@]};do
