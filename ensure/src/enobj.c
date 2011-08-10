@@ -13,7 +13,7 @@
 #include "ensure.h"
 #include "enasn.h"
 
-static Eina_Bool enobj_hash_del_cb(const Eina_Hash *hash, const void *key, void *data, void *ensure);
+//static Eina_Bool enobj_hash_del_cb(const Eina_Hash *hash, const void *key, void *data, void *ensure);
 static Eina_Bool enobj_prepare_object(const Eina_Hash *hash, const void *key, void *obj, void *ensurev);
 
 /*
@@ -154,7 +154,7 @@ enobj_free(void *enobjv){
 	free(enobj);
 }
 
-
+#if 0
 static Eina_Bool
 enobj_hash_del_cb(const Eina_Hash *hash ensure_unused,
 		const void *key ensure_unused, void *enobjv,
@@ -162,3 +162,4 @@ enobj_hash_del_cb(const Eina_Hash *hash ensure_unused,
 	enobj_free(enobjv);
 	return true;
 }
+#endif

@@ -81,7 +81,7 @@ view_set_config(void *ensurev, Evas_Object *button, void *event_info ensure_unus
 	if (ensure->current_view == ENVIEW_CONFIG) return;
 	ensure->current_view = ENVIEW_CONFIG;
 
-	elm_hoversel_label_set(ensure->viewselect, "Config");
+	elm_object_text_set(ensure->viewselect, "Config");
 
 	elm_genlist_clear(ensure->view);
 

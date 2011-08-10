@@ -33,7 +33,7 @@ results_add(struct ensure *ensure, struct result *res){
 	ensure->cur = res;
 	elm_hoversel_item_add(ensure->reportselect, res->title?:buf, NULL, 0,
 			select_results, res);
-	elm_hoversel_label_set(ensure->reportselect, res->title?:buf);
+	elm_object_text_set(ensure->reportselect, res->title?:buf);
 
 	return 0;
 }

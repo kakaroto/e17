@@ -56,7 +56,7 @@ errors_view_set(void *ensurev, Evas_Object *button,
 	if (ensure->current_view == ENVIEW_ERROR) return;
 	ensure->current_view = ENVIEW_ERROR;
 
-	elm_hoversel_label_set(ensure->viewselect, "Errors");
+	elm_object_text_set(ensure->viewselect, "Errors");
 
 	errors_update(ensure);
 
@@ -73,7 +73,7 @@ errors_update(struct ensure *ensure){
 	if (!ensure) return;
 
 	elm_genlist_clear(ensure->view);
-	elm_hoversel_label_set(ensure->viewselect, "Errors");
+	elm_object_text_set(ensure->viewselect, "Errors");
 
 	if (!ensure->cur) return;
 
@@ -112,10 +112,10 @@ enobj_label_get(void *data, Evas_Object *obj ensure_unused,
 	char buf[200];
 
 	if (enobj->name){
-		snprintf(buf,sizeof(buf), "%s (%lx) - %s",
+		snprintf(buf,sizeof(buf), "%s (%"PRIuPTR") - %s",
 				enobj->name, enobj->id, enobj->type);
 	} else {
-		snprintf(buf,sizeof(buf), "%lx - %s",
+		snprintf(buf,sizeof(buf), "%"PRIuPTR" - %s",
 				enobj->id,enobj->type);
 	}
 	return strdup(buf);

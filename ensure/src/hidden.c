@@ -50,7 +50,7 @@ view_set_hidden(void *ensurev, Evas_Object *button, void *event_info){
 	if (ensure->current_view == ENVIEW_HIDDEN) return;
 	ensure->current_view = ENVIEW_HIDDEN;
 
-	elm_hoversel_label_set(ensure->viewselect, "Hidden");
+	elm_object_text_set(ensure->viewselect, "Hidden");
 	elm_genlist_clear(ensure->view);
 
 	evas_object_data_set(ensure->view, "ensure", ensure);
@@ -97,13 +97,13 @@ hidden_object_remove(struct ensure *ensure, uintptr_t o){
  */
 bool
 hidden_get(struct ensure *ensure, uintptr_t obj){
-	uintptr_t hiddenobj;
+	uintptr_t *hiddenobj;
 	Eina_List *l;
 
 	if (!ensure || !ensure->hidden || !obj) return false;
 
 	EINA_LIST_FOREACH(ensure->hidden, l, hiddenobj){
-		if (hiddenobj == obj)
+		if ((uintptr_t)hiddenobj == obj)
 			return true;
 	}
 	return false;

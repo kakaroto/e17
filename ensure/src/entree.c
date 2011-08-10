@@ -77,7 +77,7 @@ view_set_tree(void *ensurev, Evas_Object *button ensure_unused,
 	if (ensure->current_view == ENVIEW_OBJECT_TREE) return;
 	ensure->current_view = ENVIEW_OBJECT_TREE;
 
-	elm_hoversel_label_set(ensure->viewselect, "Object Tree");
+	elm_object_text_set(ensure->viewselect, "Object Tree");
 
 	tree_update(ensure);
 

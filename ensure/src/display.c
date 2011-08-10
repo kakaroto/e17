@@ -45,14 +45,14 @@ display_buttons_add(Evas_Object *obj, struct enobj *enobj){
 	elm_box_horizontal_set(box, true);
 
 	bt = elm_button_add(obj);
-	elm_button_label_set(bt, "View");
+	elm_object_text_set(bt, "View");
 	elm_button_autorepeat_set(bt, false);
 	evas_object_show(bt);
 	evas_object_smart_callback_add(bt, "clicked", display_enobj_cb, enobj);
 	elm_box_pack_end(box, bt);
 
 	bt = elm_button_add(obj);
-	elm_button_label_set(bt, "Highlight");
+	elm_object_text_set(bt, "Highlight");
 	elm_button_autorepeat_set(bt, false);
 	evas_object_show(bt);
 	evas_object_smart_callback_add(bt, "clicked",display_show_object,enobj);
@@ -186,7 +186,7 @@ display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 	}
 
 	tgl = elm_toggle_add(win);
-	elm_toggle_label_set(tgl, "Bug Checking:");
+	elm_object_text_set(tgl, "Bug Checking:");
 	elm_toggle_states_labels_set(tgl, "Checked", "Ignored");
 	elm_toggle_state_set(tgl, !hidden_get(ensure, enobj->id));
 	evas_object_show(tgl);
@@ -196,7 +196,7 @@ display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 	pos ++;
 
 	but = elm_button_add(win);
-	elm_button_label_set(but, "Display On Canvas");
+	elm_object_text_set(but, "Display On Canvas");
 	elm_table_pack(tbl, but, 2, pos, 1,1);
 	evas_object_show(but);
 	evas_object_smart_callback_add(but, "clicked",
@@ -220,7 +220,7 @@ add_heading(Evas_Object *win, Evas_Object *tbl, int *pos, const char *label){
 	snprintf(b,len + 50, "<font size=+2><b>%s</b></font>",label);
 
 	l = elm_label_add(win);
-	elm_label_label_set(l,b);
+	elm_object_text_set(l,b);
 	elm_table_pack(tbl, l, 0, *pos, 3, 1);
 	evas_object_show(l);
 
@@ -241,14 +241,14 @@ add_text(Evas_Object *win, Evas_Object *tbl, int *pos, const char *label,
 	snprintf(b,len + 8, "<b>%s</b>",label);
 
 	l = elm_label_add(win);
-	elm_label_label_set(l,b);
+	elm_object_text_set(l,b);
 	elm_table_pack(tbl, l, 0, *pos, 1, 1);
 	evas_object_show(l);
 
 	free(b);
 
 	l = elm_label_add(win);
-	elm_label_label_set(l,value);
+	elm_object_text_set(l,value);
 	elm_table_pack(tbl, l, 1, *pos, 1, 1);
 	evas_object_show(l);
 
@@ -269,7 +269,7 @@ add_id(struct ensure *ensure, Evas_Object *win, Evas_Object *tbl, int *pos, cons
 		enobj = enobj_get(ensure, id);
 
 		but = elm_button_add(win);
-		elm_button_label_set(but, "View");
+		elm_object_text_set(but, "View");
 		elm_table_pack(tbl, but, 2, *pos, 1,1);
 		evas_object_show(but);
 		evas_object_smart_callback_add(but, "clicked",

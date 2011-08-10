@@ -32,7 +32,7 @@ object_check(struct ensure *en, struct enobj *obj, void *data ensure_unused){
 	} else if (clipp != parent){
 		ensure_bug(obj, assurance.severity, "Clip and member differ",
 				"Object's clip member of difference smart "
-				"Obj: %llx  Clip: %llx",parent->id,clip->id);
+				"Obj: %"PRIuPTR"  Clip: %"PRIuPTR"",parent->id,clip->id);
 		return 1;
 	}
 

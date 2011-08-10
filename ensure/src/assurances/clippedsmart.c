@@ -25,7 +25,7 @@ object_check(struct ensure *en, struct enobj *obj, void *data ensure_unused){
 	if (!obj->parent || obj->parent != clip->parent){
 		ensure_bug(obj, assurance.severity, assurance.summary,
 				"Objects' clip different parent to object"
-				"Obj: %llx  Clip: %llx",obj->parent,clip->parent);
+				"Obj: %"PRIuPTR"  Clip: %"PRIuPTR"",obj->parent,clip->parent);
 		return 1;
 	}
 

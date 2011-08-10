@@ -13,7 +13,7 @@ struct assurance {
 };
 
 struct bug {
-	uint32_t type;
+	const char *type;
 	enum ensure_severity severity;
 	char *desc;
 };

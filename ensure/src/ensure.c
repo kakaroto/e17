@@ -155,7 +155,7 @@ window_add(struct ensure *ensure, char **args){
 	elm_box_pack_end(bx, viewbx);
 
 	lbl = elm_label_add(win);
-	elm_label_label_set(lbl, "View:");
+	elm_object_text_set(lbl, "View:");
 	evas_object_size_hint_align_set(lbl, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_size_hint_weight_set(lbl, EVAS_HINT_EXPAND,EVAS_HINT_EXPAND);
 	evas_object_show(lbl);
@@ -164,7 +164,7 @@ window_add(struct ensure *ensure, char **args){
 	/* Select which view */
 	view = elm_hoversel_add(win);
 	ensure->viewselect = view;
-	elm_hoversel_label_set(view, "View");
+	elm_object_text_set(view, "View");
 	for (i = 0 ; i < N_VIEWS ; i ++){
 		elm_hoversel_item_add(view, views[i].label, NULL, 0,
 				views[i].cb, ensure);
@@ -182,7 +182,7 @@ window_add(struct ensure *ensure, char **args){
 	elm_box_pack_end(bx, viewbx);
 
 	lbl = elm_label_add(win);
-	elm_label_label_set(lbl, "View:");
+	elm_object_text_set(lbl, "View:");
 	evas_object_size_hint_align_set(lbl, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_size_hint_weight_set(lbl, EVAS_HINT_EXPAND,EVAS_HINT_EXPAND);
 	evas_object_show(lbl);
@@ -190,7 +190,7 @@ window_add(struct ensure *ensure, char **args){
 
 	report = elm_hoversel_add(win);
 	ensure->reportselect = report;
-	elm_hoversel_label_set(report, "(No report)");
+	elm_object_text_set(report, "(No report)");
 	evas_object_size_hint_weight_set(report, EVAS_HINT_EXPAND, 0);
 	evas_object_show(report);
 	elm_box_pack_end(viewbx, report);
@@ -220,7 +220,7 @@ window_add(struct ensure *ensure, char **args){
         evas_object_size_hint_align_set(ctrls, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
 	run = elm_button_add(ctrls);
-	elm_button_label_set(run, "Run");
+	elm_object_text_set(run, "Run");
 	elm_button_autorepeat_set(run, false);
 	elm_box_pack_end(ctrls,run);
 	evas_object_show(run);
@@ -228,7 +228,7 @@ window_add(struct ensure *ensure, char **args){
 	runbutton = run;
 
 	check = elm_button_add(ctrls);
-	elm_button_label_set(check, "Check");
+	elm_object_text_set(check, "Check");
 	elm_button_autorepeat_set(check, false);
 	elm_object_disabled_set(check, true);
 	elm_box_pack_end(ctrls,check);
@@ -237,7 +237,7 @@ window_add(struct ensure *ensure, char **args){
 	checkbutton = check;
 
 	save = elm_button_add(ctrls);
-	elm_button_label_set(save, "Save");
+	elm_object_text_set(save, "Save");
 	elm_button_autorepeat_set(save, false);
 	elm_object_disabled_set(save, true);
 	elm_box_pack_end(ctrls,save);
@@ -246,7 +246,7 @@ window_add(struct ensure *ensure, char **args){
 	savebutton = save;
 
 	load = elm_button_add(ctrls);
-	elm_button_label_set(load, "Load");
+	elm_object_text_set(load, "Load");
 	elm_button_autorepeat_set(load, false);
 	elm_box_pack_end(ctrls,load);
 	evas_object_show(load);
