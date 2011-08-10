@@ -1,5 +1,4 @@
 images {
-	image: "module_icon.png" COMP;
 	image: "contact_icon.png" COMP;
 }
 
@@ -14,7 +13,9 @@ collections {
 				type: IMAGE;
 				description {
 					state: "default" 0.0;
-					image.normal: "module_icon.png";
+					aspect: 1.0 1.0;
+					aspect_preference: BOTH;
+					image.normal: "contact_icon.png";
 				}
 			}
 		}
@@ -29,6 +30,8 @@ collections {
 				type: IMAGE;
 				description {
 					state: "default" 0.0;
+					aspect: 1.0 1.0;
+					aspect_preference: BOTH;
 					image.normal: "contact_icon.png";
 				}
 			}
