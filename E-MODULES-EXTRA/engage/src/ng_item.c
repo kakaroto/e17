@@ -121,11 +121,17 @@ ngi_item_remove(Ngi_Item *it)
    ngi_animate(ng);
 }
 
-EAPI void
+void
 ngi_item_free(Ngi_Item *it)
 {
    Ng *ng = it->box->ng;
-   
+
+   if (it == ng->item_active)
+     ng->item_active = NULL;
+
+   if (it == ng->item_drag)
+     ng->item_drag = NULL;
+
    if (eina_list_data_find(ng->items_remove, it))
      ng->items_remove = eina_list_remove(ng->items_remove, it);
 
