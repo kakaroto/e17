@@ -1,27 +1,37 @@
-images 
-{
-   image: "module_icon.png" COMP;
+images {
+	image: "module_icon.png" COMP;
+	image: "contact_icon.png" COMP;
 }
 
-collections 
-{
-   group 
-     {
-	name: "icon";
-	max: 24 24;
-	parts 
-	  {
-	     part 
-	       {
-		  name: "image";
-		  mouse_events: 0;
-		  type: IMAGE;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       image.normal: "module_icon.png";
-		    }
-	       }
-	  }
-     }
+collections {
+	group {
+		name: "icon";
+		max: 24 24;
+		parts {
+			part {
+				name: "image";
+				mouse_events: 0;
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					image.normal: "module_icon.png";
+				}
+			}
+		}
+	}
+	group {
+		name: "contact_icon";
+		max: 128 128;
+		parts {
+			part {
+				name: "image";
+				mouse_events: 0;
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					image.normal: "contact_icon.png";
+				}
+			}
+		}
+	}   
 }
