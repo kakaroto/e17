@@ -37,8 +37,34 @@ do
 	shift
 done
 
+if [ -d .git ]
+then
+	tsdir=.git/ebuildtimestamps/
+	mkdir -p "$tsdir"
+fi
+
 for e in eina eet evas ecore eeze embryo edje e_dbus efreet elementary e PROTO/libeweather
 do
+	if [ ! -d "$e" ]
+	then
+		echo "$e directory missing?"
+		exit 1
+	fi
+
+	tsfile="`echo $e | sed -e 's/\//_/g'`"
+
+	if [ -d "$tsdir" ]
+	then
+		old_sha=`cat "$tsdir/$tsfile" 2> /dev/null`
+		new_sha=`git ls-tree -d HEAD ecore | cut -f1 | cut -f3 -d\ `
+
+		if [ "x$new_sha" = "x$old_sha" ]
+		then
+			echo "Skipping build of $e"
+			continue
+		fi
+	fi
+
 	echo
 	echo "Building $e"
 	echo
@@ -58,4 +84,8 @@ do
 	echo
 	echo "Built $e"
 	echo
+	if [ -d "$tsdir" ]
+	then
+		echo "$new_sha" > "$tsdir/$tsfile"
+	fi
 done
