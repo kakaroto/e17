@@ -280,31 +280,21 @@ _pager_finish()
    EINA_LIST_FREE(items, it)
      _pager_win_del(it);
 
+   EINA_LIST_FREE(popups, it)
+     _pager_win_del(it);
+
    EINA_LIST_FREE(desks, o)
      {
 	oo = edje_object_part_swallow_get(o, "e.swallow.desk"); 
 	if (oo) evas_object_del(oo);
-	
 	evas_object_del(o);
      }
    
-   EINA_LIST_FREE(popups, it)
-     _pager_win_del(it);
-
    if (background)
      {
 	evas_object_del(background->o);
 	_pager_win_del(background);
      }
-
-   {
-      Eina_List *l;
-      E_Manager_Comp_Source *src;
-      E_Manager *man = zone->container->manager;
-
-      EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
-	e_manager_comp_src_hidden_set(man, src, EINA_FALSE);
-   }
 
    EINA_LIST_FREE(handlers, handler)
      ecore_event_handler_del(handler);
@@ -583,15 +573,13 @@ _pager_win_del(Item *it)
 	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_MOVE,
 				       _pager_win_cb_mouse_move);
 
+
+	if ((it->bd->desk != current_desk) && (!it->bd->sticky))
+	  e_border_hide(it->bd, 2);
+
 	e_manager_comp_src_hidden_set(it->man,
 				      (E_Manager_Comp_Source *)it->cw,
 				      EINA_FALSE);
-
-	if ((it->bd->desk != current_desk) && (!it->bd->sticky))
-	  {
-	     e_border_hide(it->bd, 2);
-	     evas_object_hide(it->cw->shobj);
-	  }
 
 	evas_object_del(it->o_win);
 	evas_object_del(it->o);
@@ -613,7 +601,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    E_Comp_Win *cw = (void*)src;
    Evas_Object *o;
 
-   if (!e_manager_comp_src_image_get(man, src))
+   if (!cw->obj)
      return NULL;
 
    if (!cw->bd)
@@ -626,6 +614,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 	     it = E_NEW(Item, 1);
 	     it->man = man;
 	     it->o_win = o;
+	     it->cw = cw;
 	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 					    _pager_win_cb_delorig, it);
 	     background = it;
@@ -642,6 +631,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 	     it = E_NEW(Item, 1);
 	     it->man = man;
 	     it->o_win = o;
+	     it->cw = cw;
 	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 					    _pager_win_cb_delorig, it);
 
@@ -1065,8 +1055,8 @@ _pager_run(E_Manager *man)
 
    if (background)
      {
-	Evas_Object *o, *oo;
-	int x, y;
+	Evas_Object *o, *oo, *proxy = NULL;
+	int x, y, smooth;
 	
 	for (y = 0; y < zone->desk_y_count; y++)
 	  {
@@ -1091,8 +1081,20 @@ _pager_run(E_Manager *man)
 		  if (edje_object_part_exists(o, "e.swallow.desk"))
 		    {
 		       oo = evas_object_image_filled_add(e);
-		       evas_object_image_source_set(oo, background->o_win);
-		       /* evas_object_image_source_set(oo, zone->bg_object); */
+
+		       if (!proxy)
+			 {
+			    evas_object_image_source_set(oo, background->cw->obj);
+			    smooth = evas_object_image_smooth_scale_get(background->cw->obj);
+			    proxy = oo;
+			 }
+		       else
+			 {
+			    evas_object_image_source_set(oo, proxy);
+			 }
+		  
+		       evas_object_image_smooth_scale_set(oo, smooth);
+
 		       evas_object_show(oo);
 		       edje_object_part_swallow(o, "e.swallow.desk", oo); 
 		    }
