@@ -16,8 +16,8 @@ struct _Plugin
 struct _View
 {
   Evry_View base;
-  Evas_Object *o_text;
   Plugin *plugin;
+  Eina_List *items;
 };
 
 static Evry_Plugin *_plugin;
@@ -68,37 +68,78 @@ _view_clear(Evry_View *view)
 static int
 _view_update(Evry_View *view)
 {
-   int mw, mh;
-   Eina_List *l;
+   int h, w;
+   Eina_List *l, *ll, *lll;
    Message *msg;
    Eina_Strbuf *buf;
-
+   Evas_Object *o, *oo;
+   
    GET_VIEW(v, view);
 
-   buf = eina_strbuf_new();
+   EINA_LIST_FREE(v->items, o)
+     {
+   	e_box_unpack(o); 
+   	evas_object_del(o); 
+     }
 
+   evas_object_geometry_get(view->o_list, NULL, NULL, &w, NULL);
+
+   e_box_freeze(view->o_list);
+
+   EINA_LIST_FOREACH(messages, l, msg)
+     {
+	if (msg->contact == v->plugin->contact)
+	  {
+	     while (v->items && (o = eina_list_data_get(v->items)) &&
+		    (msg != evas_object_data_get(o, "message")))
+	       {
+		  e_box_unpack(o); 
+		  evas_object_del(o);
+		  v->items = eina_list_remove_list(v->items, v->items);		       
+	       }
+	     break;
+	  }
+     }
+
+   ll = v->items;
+   
    EINA_LIST_FOREACH(messages, l, msg)
      {
 	if (msg->contact != v->plugin->contact)
 	  continue;
 
-	eina_strbuf_append(buf, "<hilight>");
+	o = eina_list_data_get(ll);
+	ll = eina_list_next(ll);
+	
+	if (msg == evas_object_data_get(o, "message"))
+	  continue;
+	
+	o = edje_object_add(evas_object_evas_get(view->o_list));
+	
+	if (!e_theme_edje_object_set(o, "base/theme/modules/everything-shotgun",
+				     "e/modules/everything-shotgun/text_box"))
+	  edje_object_file_set(o, theme_file, "e/modules/everything-shotgun/text_box");
+
 	if (msg->self)
-	  eina_strbuf_append(buf, _("Me"));
+	  edje_object_part_text_set(o, "e.text.title", _("Me"));
 	else
-	  eina_strbuf_append(buf, msg->contact);
-	eina_strbuf_append(buf, "</hilight><br>");
-	eina_strbuf_append(buf, msg->msg);
-	eina_strbuf_append(buf, "<br><br>");
+	  edje_object_part_text_set(o, "e.text.title", msg->contact);
+
+	edje_object_part_text_set(o, "e.text.message", msg->msg);
+	
+	edje_object_size_min_restricted_calc(o, NULL, &h, w, 10);
+	
+	e_box_pack_end(view->o_list, o); 
+
+	e_box_pack_options_set(o, 1, 1, 1, 0, 0.5, 0.5, 0, h, 999, 999);
+
+	evas_object_show(o);
+
+	evas_object_data_set(o, "message", msg); 
+	v->items = eina_list_append(v->items, o); 
      }
 
-   const char *text = eina_strbuf_string_get(buf);
-
-   edje_object_part_text_set(v->o_text, "e.textblock.text", text);
-   edje_object_size_min_calc(v->o_text, &mw, &mh);
-   e_box_pack_options_set(v->o_text, 1, 1, 1, 0, 0.0, 0.0, mw, mh, mw, mh);
-
-   eina_strbuf_free(buf);
+   e_box_thaw(view->o_list);
 
    return 1;
 }
@@ -109,21 +150,16 @@ _view_create(Evry_View *view, const Evry_State *s, const Evas_Object *swallow)
    Evas_Object *o;
 
    GET_VIEW(v, view);
-
+   int w, h;
+   
    o = e_box_add(evas_object_evas_get(swallow));
+   evas_object_geometry_get(swallow, NULL, NULL, &w, &h);
+   evas_object_resize(o, w, h); 
+
    e_box_orientation_set(o, 0);
    e_box_align_set(o, 0.5, 0.0);
+   e_box_homogenous_set(o, 0); 
    view->o_list = o;
-   e_box_freeze(view->o_list);
-   o = edje_object_add(evas_object_evas_get(swallow));
-   e_theme_edje_object_set(o, "base/theme/widgets",
-			   "e/modules/everything/textblock");
-
-   e_box_pack_start(view->o_list, o);
-   e_box_thaw(view->o_list);
-
-   evas_object_show(o);
-   v->o_text = o;
 
    return view;
 }
@@ -131,12 +167,20 @@ _view_create(Evry_View *view, const Evry_State *s, const Evas_Object *swallow)
 static void
 _view_destroy(Evry_View *view)
 {
+   Evas_Object *o;
+   
    printf("view destroy\n");
 
    GET_VIEW(v, view);
 
+   EINA_LIST_FREE(v->items, o)
+     {
+	e_box_unpack(o); 
+	evas_object_del(o); 
+     }
+
    evas_object_del(view->o_list);
-   evas_object_del(v->o_text);
+   /* evas_object_del(v->o_text); */
 
 }
 

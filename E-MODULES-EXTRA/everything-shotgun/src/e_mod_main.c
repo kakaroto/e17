@@ -42,6 +42,9 @@ _item_free(Evry_Item *it)
    IF_RELEASE(c->id);
    IF_RELEASE(c->icon);
 
+   if (c->o_icon)
+     evas_object_del(c->o_icon);
+   
    E_FREE(c);
 }
 
@@ -55,7 +58,6 @@ _inst_new(Evry_Plugin *plugin, const Evry_Item *it)
 
    eet_init();
    snprintf(buf, sizeof(buf), "%s/.config/shotgun/shotgun.eet", e_user_homedir_get());
-   /* snprintf(buf, sizeof(buf), "/home/jeff/.config/shotgun/shotgun.eet"); */
    p->images = eet_open(buf, EET_FILE_MODE_READ);
    if (!p->images) ERR("Could not open image cache file!");
 
@@ -105,7 +107,7 @@ static Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
    Evas_Object *o = NULL;
-
+   
    GET_CONTACT(c, it);
    GET_PLUGIN(p, it->plugin);
 
@@ -125,18 +127,17 @@ _icon_get(Evry_Item *it, Evas *e)
 	       {
 		  evas_object_del(o);
 		  o = NULL;
+		  IF_RELEASE(c->icon);
 	       }
 	     free(img);
 	  }
-	if (!o) ERR("icon load error");
      }
 
-   if (!o)
+   if(!o)
      {
 	o = edje_object_add(e);
 	edje_object_file_set(o, theme_file, "contact_icon");
      }
-
    return o;
 }
 
@@ -160,7 +161,6 @@ _dbus_cb_icon_get(void *data, DBusMessage *reply, DBusError *error)
 			 DBUS_TYPE_INVALID);
    if (icon)
      {
-
 	c->icon = eina_stringshare_add(icon);
 	evry->item_changed(EVRY_ITEM(c), 1, 0);
      }
@@ -328,7 +328,7 @@ _add_message(int self, const char *contact, const char *message)
    m->self = self;
    messages = eina_list_append(messages, m);
 
-   if (eina_list_count(messages) > 100)
+   if (eina_list_count(messages) > MAX_HISTORY)
      {
 	m = eina_list_data_get(messages);
 	messages = eina_list_remove_list(messages, messages);

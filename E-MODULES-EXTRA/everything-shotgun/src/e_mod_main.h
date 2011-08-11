@@ -25,7 +25,7 @@ struct _Contact
 
   const char *id;
   const char *icon;
-  Eina_Bool *has_icon;
+  Evas_Object *o_icon;
 };
 
 struct _Message
@@ -50,6 +50,8 @@ extern Evry_Type SHOTGUN_CONTACT;
 extern Evry_Type SHOTGUN_MESSAGE;
 extern Eina_List *messages;
 extern int SHOTGUN_EVENT_MESSAGE_ADD;
+
+#define MAX_HISTORY 100
 
 #define CONTACT(_it)((Contact *)_it)
 #define GET_CONTACT(_c, _it) Contact *_c = (Contact *)_it
