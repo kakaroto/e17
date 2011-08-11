@@ -16,6 +16,8 @@ const Evry_API *evry = NULL;
 Evry_Type SHOTGUN_CONTACT;
 Evry_Type SHOTGUN_MESSAGE;
 Eina_List *messages = NULL;
+char *theme_file = NULL;
+int SHOTGUN_EVENT_MESSAGE_ADD;
 
 static Evry_Module *evry_module = NULL;
 static Eina_List *plugins = NULL;
@@ -26,9 +28,11 @@ static const char DBUS_SHOTGUN_LIST[]     = "org.shotgun.list";
 static const char DBUS_SHOTGUN_CONTACT[]  = "org.shotgun.contact";
 static const char DBUS_SHOTGUN_CORE[]     = "org.shotgun.core";
 static const char DBUS_SHOTGUN_PATH[]     = "/org/shotgun/remote";
-static char *theme_file = NULL;
 static E_DBus_Signal_Handler *_dbus_signal_new_msg = NULL;
 static E_DBus_Signal_Handler *_dbus_signal_new_msg_self = NULL;
+
+static void _add_message(int self, const char *contact, const char *message);
+
 
 static void
 _item_free(Evry_Item *it)
@@ -297,19 +301,16 @@ _action_chat(Evry_Action *act)
 
    dbus_message_unref(msg);
 
-   return EVRY_ACTION_FINISHED;
+   _add_message(1, c->id, message);
+
+   return EVRY_ACTION_CLEAR;
 }
 
 static void
-_add_message(int self, DBusMessage *msg)
+_add_message(int self, const char *contact, const char *message)
 {
    Message *m;
-   char *contact, *message, *s;
-   
-   dbus_message_get_args(msg, NULL,
-			 DBUS_TYPE_STRING, &(contact),
-			 DBUS_TYPE_STRING, &(message),
-			 DBUS_TYPE_INVALID);
+   char *s;
 
    if (!contact || !message)
      return;
@@ -323,7 +324,7 @@ _add_message(int self, DBusMessage *msg)
    m->msg = eina_stringshare_add(message);
 
    printf("%d got %s from %s\n", self, message, m->contact);
-   
+
    m->self = self;
    messages = eina_list_append(messages, m);
 
@@ -335,18 +336,32 @@ _add_message(int self, DBusMessage *msg)
 	eina_stringshare_del(m->msg);
 	E_FREE(m);
      }
+
+   ecore_event_add(SHOTGUN_EVENT_MESSAGE_ADD, NULL, NULL, NULL);
 }
 
 static void
 _dbus_cb_signal_new_msg(void *data, DBusMessage *msg)
 {
-   _add_message(0, msg); 
+   char *contact, *message;
+
+   dbus_message_get_args(msg, NULL,
+			 DBUS_TYPE_STRING, &(contact),
+			 DBUS_TYPE_STRING, &(message),
+			 DBUS_TYPE_INVALID);
+   _add_message(0, contact, message);
 }
 
 static void
 _dbus_cb_signal_new_msg_self(void *data, DBusMessage *msg)
 {
-   _add_message(1, msg); 
+   char *contact, *message;
+
+   dbus_message_get_args(msg, NULL,
+			 DBUS_TYPE_STRING, &(contact),
+			 DBUS_TYPE_STRING, &(message),
+			 DBUS_TYPE_INVALID);
+   _add_message(1, contact, message);
 }
 
 static int
@@ -369,6 +384,8 @@ _plugins_init(const Evry_API *_api)
 	return EINA_FALSE;
      }
 
+   SHOTGUN_EVENT_MESSAGE_ADD = ecore_event_type_new();
+
    SHOTGUN_CONTACT = evry->type_register("SHOTGUN_CONTACT");
    SHOTGUN_MESSAGE = evry->type_register("SHOTGUN_MESSAGE");
 
@@ -379,20 +396,20 @@ _plugins_init(const Evry_API *_api)
    evry->plugin_register(plugin, EVRY_PLUGIN_SUBJECT, 1);
 
    plugins = eina_list_append(plugins, plugin);
-   
-   act = EVRY_ACTION_NEW(N_("Write Message"), SHOTGUN_CONTACT, SHOTGUN_MESSAGE, "go-next",
-			 _action_chat, NULL);
+
+   act = EVRY_ACTION_NEW(N_("Write Message"), SHOTGUN_CONTACT, SHOTGUN_MESSAGE,
+			 "go-next", _action_chat, NULL);
    evry->action_register(act, 0);
 
    actions = eina_list_append(actions, act);
 
    _dbus_signal_new_msg = e_dbus_signal_handler_add
-     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE, "new_msg",
-      _dbus_cb_signal_new_msg, NULL);
+     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
+      "new_msg", _dbus_cb_signal_new_msg, NULL);
 
    _dbus_signal_new_msg_self = e_dbus_signal_handler_add
-     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE, "new_msg_self",
-      _dbus_cb_signal_new_msg_self, NULL);
+     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
+      "new_msg_self", _dbus_cb_signal_new_msg_self, NULL);
 
    evry_plug_msg_init();
 
@@ -404,6 +421,7 @@ _plugins_shutdown(void)
 {
    Plugin *p;
    Evry_Action *act;
+   Message *m;
 
    if (!evry_module->active) return;
 
@@ -413,15 +431,22 @@ _plugins_shutdown(void)
 	e_dbus_signal_handler_del(conn, _dbus_signal_new_msg);
 	e_dbus_signal_handler_del(conn, _dbus_signal_new_msg_self);
      }
-   
+
    EINA_LIST_FREE(plugins, p)
      EVRY_PLUGIN_FREE(p);
-   
+
    EINA_LIST_FREE(actions, act)
      EVRY_ACTION_FREE(act);
 
    evry_plug_msg_shutdown();
-     
+
+   EINA_LIST_FREE(messages, m)
+     {
+	eina_stringshare_del(m->contact);
+	eina_stringshare_del(m->msg);
+	E_FREE(m);
+     }
+
    evry_module->active = EINA_FALSE;
 }
 

@@ -45,10 +45,11 @@ void      evry_plug_msg_shutdown(void);
 Eina_Bool evry_plug_msg_init(void);
 
 extern const Evry_API *evry;
-
+extern char *theme_file;
 extern Evry_Type SHOTGUN_CONTACT;
 extern Evry_Type SHOTGUN_MESSAGE;
 extern Eina_List *messages;
+extern int SHOTGUN_EVENT_MESSAGE_ADD;
 
 #define CONTACT(_it)((Contact *)_it)
 #define GET_CONTACT(_c, _it) Contact *_c = (Contact *)_it

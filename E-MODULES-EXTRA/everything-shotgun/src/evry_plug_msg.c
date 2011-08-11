@@ -8,6 +8,7 @@ typedef struct _View View;
 struct _Plugin
 {
   Evry_Plugin base;
+  Ecore_Event_Handler *handle_msg;
 
   const char *contact;
 };
@@ -62,7 +63,6 @@ _cb_key_down(Evry_View *v, const Ecore_Event_Key *ev)
 static void
 _view_clear(Evry_View *view)
 {
-   printf("view clear\n");
 }
 
 static int
@@ -76,7 +76,6 @@ _view_update(Evry_View *view)
    GET_VIEW(v, view);
 
    buf = eina_strbuf_new();
-   printf("view update\n");
 
    EINA_LIST_FOREACH(messages, l, msg)
      {
@@ -84,7 +83,10 @@ _view_update(Evry_View *view)
 	  continue;
 
 	eina_strbuf_append(buf, "<hilight>");
-	eina_strbuf_append(buf, msg->contact);
+	if (msg->self)
+	  eina_strbuf_append(buf, _("Me"));
+	else
+	  eina_strbuf_append(buf, msg->contact);
 	eina_strbuf_append(buf, "</hilight><br>");
 	eina_strbuf_append(buf, msg->msg);
 	eina_strbuf_append(buf, "<br><br>");
@@ -94,7 +96,7 @@ _view_update(Evry_View *view)
 
    edje_object_part_text_set(v->o_text, "e.textblock.text", text);
    edje_object_size_min_calc(v->o_text, &mw, &mh);
-   e_box_pack_options_set(v->o_text, 1, 1, 1, 1, 0.5, 0.5, mw, mh + 200, mw, mh + 200);
+   e_box_pack_options_set(v->o_text, 1, 1, 1, 0, 0.0, 0.0, mw, mh, mw, mh);
 
    eina_strbuf_free(buf);
 
@@ -108,11 +110,9 @@ _view_create(Evry_View *view, const Evry_State *s, const Evas_Object *swallow)
 
    GET_VIEW(v, view);
 
-   printf("view create\n");
-
    o = e_box_add(evas_object_evas_get(swallow));
    e_box_orientation_set(o, 0);
-   e_box_align_set(o, 0.5, 1.0);
+   e_box_align_set(o, 0.5, 0.0);
    view->o_list = o;
    e_box_freeze(view->o_list);
    o = edje_object_add(evas_object_evas_get(swallow));
@@ -140,33 +140,51 @@ _view_destroy(Evry_View *view)
 
 }
 
+static Evas_Object *
+_icon_get(Evry_Item *it, Evas *e)
+{
+   Evas_Object *o;
+
+   o = edje_object_add(e);
+   edje_object_file_set(o, theme_file, "contact_icon");
+
+   return o;
+}
+
 static int
 _fetch(Evry_Plugin *plugin, const char *input)
 {
    Evry_Item *it;
-
+   const char *text = input;;
+   
    GET_PLUGIN(p, plugin);
 
-   if (input)
+   if (!text) text = "";
+   
+   if (!p->base.items)
      {
-	if (!p->base.items)
-	  {
-	     it = evry->item_new(NULL, EVRY_PLUGIN(p), input, NULL, NULL);
-	     it->fuzzy_match = 999;
-	     EVRY_PLUGIN_ITEM_APPEND(p, it);
-	  }
-	else
-	  {
-	     it = p->base.items->data;
-	     EVRY_ITEM_LABEL_SET(it, input);
-	     evry->item_changed(it, 0, 0);
-	  }
-	return 1;
+	it = evry->item_new(NULL, EVRY_PLUGIN(p), text, _icon_get, NULL);
+	it->fuzzy_match = 999;
+	EVRY_PLUGIN_ITEM_APPEND(p, it);
+     }
+   else
+     {
+	it = eina_list_data_get(p->base.items);
+	EVRY_ITEM_LABEL_SET(it, text);
+	/* evry->item_changed(it, 0, 0); */
      }
 
-   EVRY_PLUGIN_ITEMS_FREE(p);
-
    return 1;
+}
+
+static Eina_Bool
+_cb_message_add(void *data, int type __UNUSED__, void *event __UNUSED__)
+{
+   Evry_View *v = data;
+
+   if (v) v->update(v);
+
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Evry_Plugin *
@@ -177,8 +195,6 @@ _inst_new(Evry_Plugin *plugin, const Evry_Item *it)
 
    GET_ACTION(act, it);
    GET_CONTACT(c, act->it1.item);
-
-   printf(">>> %s\n", c->id);
 
    EVRY_PLUGIN_INSTANCE(p, plugin);
 
@@ -196,6 +212,9 @@ _inst_new(Evry_Plugin *plugin, const Evry_Item *it)
 
    p->contact = eina_stringshare_ref(c->id);
 
+   p->handle_msg = ecore_event_handler_add(SHOTGUN_EVENT_MESSAGE_ADD,
+					   _cb_message_add, view);
+
    return EVRY_PLUGIN(p);
 }
 
@@ -208,6 +227,8 @@ _inst_free(Evry_Plugin *plugin)
 
    eina_stringshare_del(p->contact);
 
+   ecore_event_handler_del(p->handle_msg);
+   
    E_FREE(plugin->view);
    E_FREE(p);
 }
@@ -230,6 +251,3 @@ evry_plug_msg_shutdown(void)
 {
    EVRY_PLUGIN_FREE(_plugin);
 }
-
-
-
