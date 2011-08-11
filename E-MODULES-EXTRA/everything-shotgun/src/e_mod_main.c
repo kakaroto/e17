@@ -45,7 +45,10 @@ _item_free(Evry_Item *it)
 
    if (c->o_icon)
      evas_object_del(c->o_icon);
-   
+
+   if (c->pnd_info)
+     dbus_pending_call_cancel(c->pnd_info);
+
    E_FREE(c);
 }
 
@@ -68,19 +71,18 @@ _inst_new(Evry_Plugin *plugin, const Evry_Item *it)
 static void
 _inst_free(Evry_Plugin *plugin)
 {
-   Evry_Item *it;
+   Contact *c;
 
    GET_PLUGIN(p, plugin);
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
    IF_RELEASE(p->input);
-   EINA_LIST_FREE(p->contacts, it)
-     _item_free(it);
-
-   /* XXX cancel dbus call!*/
-   EINA_LIST_FREE(p->fetching, it)
-     _item_free(it);
-
+   EINA_LIST_FREE(p->contacts, c)
+     EVRY_ITEM_FREE(c);
+   
+   EINA_LIST_FREE(p->fetching, c)
+     EVRY_ITEM_FREE(c);
+	
    if (p->images) eet_close(p->images);
    eet_shutdown();
 
@@ -157,6 +159,8 @@ _dbus_cb_info_get(void *data, DBusMessage *reply, DBusError *error)
    GET_CONTACT(c, data);
    GET_PLUGIN(p, c->base.plugin);
 
+   c->pnd_info = NULL;
+   
    if (!p->active)
      return;
 
@@ -183,10 +187,12 @@ _dbus_cb_info_get(void *data, DBusMessage *reply, DBusError *error)
 
    eina_list_move(&p->contacts, &p->fetching, c);
    
-   EVRY_PLUGIN_ITEMS_CLEAR(p);
-   EVRY_PLUGIN_ITEMS_ADD(p, p->contacts, p->input, 1, 0);
-
-   EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
+   if (!p->fetching)
+     {
+	EVRY_PLUGIN_ITEMS_CLEAR(p);
+	EVRY_PLUGIN_ITEMS_ADD(p, p->contacts, p->input, 1, 0);
+	EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
+     }
 }
 
 static void
@@ -213,7 +219,7 @@ _item_new(Plugin *p, char *id)
 			    DBUS_TYPE_STRING,&(c->id),
 			    DBUS_TYPE_INVALID);
 
-   e_dbus_message_send(conn, msg, _dbus_cb_info_get, -1, c);
+   c->pnd_info = e_dbus_message_send(conn, msg, _dbus_cb_info_get, -1, c);
 
    dbus_message_unref(msg);
 }
@@ -414,13 +420,11 @@ _plugins_init(const Evry_API *_api)
 			    _inst_new, _inst_free, _fetch, NULL);
 
    evry->plugin_register(plugin, EVRY_PLUGIN_SUBJECT, 1);
-
    plugins = eina_list_append(plugins, plugin);
 
    act = EVRY_ACTION_NEW(N_("Write Message"), SHOTGUN_CONTACT, SHOTGUN_MESSAGE,
 			 "go-next", _action_chat, NULL);
    evry->action_register(act, 0);
-
    actions = eina_list_append(actions, act);
 
    _dbus_signal_new_msg = e_dbus_signal_handler_add
