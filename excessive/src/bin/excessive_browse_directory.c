@@ -11,6 +11,8 @@
 static Eina_Array *_excessive_mappings = NULL;
 static Evas_Object **_excessive_objects = NULL;
 
+static Eina_Bool _excessive_add_up(void *data);
+
 static int
 _excessive_file_info_cmp(const void *a, const void *b)
 {
@@ -96,6 +98,8 @@ _excessive_eio_done_cb(void *data, Eio_File *handler)
 {
    Evas_Object *grid = data;
 
+   _excessive_add_up(grid);
+
    evas_object_data_set(grid, "excessive/eio", NULL);
    elm_gengrid_item_show(evas_object_data_get(grid, "excessive/up_item"));
 }
@@ -104,6 +108,8 @@ static void
 _excessive_eio_error_cb(void *data, Eio_File *handler, int error)
 {
    Evas_Object *grid = data;
+
+   _excessive_add_up(grid);
 
    if (evas_object_data_get(grid, "excessive/eio") == handler)
      evas_object_data_set(grid, "excessive/eio", NULL);
@@ -238,15 +244,6 @@ excessive_browse_directory(Evas_Object *grid, const char *path)
 	    info->subdir = EINA_TRUE;
 
 	    evas_object_data_set(grid, "excessive/up", info);
-
-	    if (!evas_object_data_get(grid, "excessive/up_timer"))
-	      evas_object_data_set(grid, "excessive/up_timer", ecore_idler_add(_excessive_add_up, grid));
-	  }
-	else
-	  {
-             if (evas_object_data_get(grid, "excessive/up_timer"))
-               ecore_idler_del(evas_object_data_get(grid, "excessive/up_timer"));
-             evas_object_data_set(grid, "excessive/up_timer", NULL);
 	  }
      }
 
