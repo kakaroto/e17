@@ -2,6 +2,13 @@ images {
 	image: "contact_icon.png" COMP;
 }
 
+styles{
+	style {
+		name: "message_text";
+		base: "font=sans font_size=10 color=#fff wrap=mixed";
+	}
+}
+
 collections {
 	group {
 		name: "icon";
@@ -37,33 +44,43 @@ collections {
 			}
 		}
 	}
-	
-	group {
-		name: "e/modules/everything-shotgun/text_box";
-		
-		styles{
-			style {
-				name: "message_text";
-				base: "font=sans font_size=11 align=center color=#fff wrap=mixed  wrap=mixed style=soft_shadow shadow_color=#eee1";
-			}
-		}
 
+	group {
+		name: "e/modules/everything-shotgun/text_box_me";
+		alias: "e/modules/everything-shotgun/text_box_you";
 		parts{
+			part {
+				name: "separator";
+				mouse_events: 0;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					max: 999 1;
+					rel1 {
+						relative: 0.0 1.0;
+						offset: -10 -1;
+					}
+					rel2 {
+						offset: 10 -1;
+					}
+					color: 0 0 0 20;
+				}
+			}
 			part {
 				name: "bg";
 				type: RECT;
 				mouse_events: 0;
 				description {
 					state: "default" 0.0;
-					color: 0 0 0 40;
+					color: 0 0 0 0;
 					rel1 {
 
 						relative: 0.0 0.0;
-						offset: 2 2;
+						offset: 0 1;
 					}
 					rel2 {
 						relative: 1.0 1.0;
-						offset: -3 -1;
+						offset: -1 -1;
 					}
 				}
 			}
@@ -79,7 +96,7 @@ collections {
 					rel1 {
 						to_y: "bg";
 						relative: 0.0 0.0;
-						offset: 5 5;
+						offset: 10 5;
 					}
 					rel2 {
 						relative: 1.0 0.0;
@@ -88,7 +105,7 @@ collections {
 					text {
 						font: "sans";
 						align: 0.0 0.5;
-						size: 10;
+						size: 9;
 						min: 0 1;
 						/* max: 0 1; */
 						text: "blub";
@@ -107,18 +124,16 @@ collections {
 					rel1 {
 						to_y: "e.text.title";
 						relative: 0.0 1.0;
-						offset: 30 4;
+						offset: 40 4;
 					}
 					rel2 {
 						to_y: "bg";
 						relative: 1.0 1.0;
-						offset: -31 -15;
+						offset: -41 -15;
 					}
 					text {
 						style: "message_text";
 						align: 0.5 0.0;
-						font: "sans";
-						size: 10;
 						min: 0 1;
 						text: "";
 					}

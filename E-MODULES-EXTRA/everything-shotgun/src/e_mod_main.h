@@ -32,6 +32,7 @@ struct _Message
 {
   const char *contact;
   const char *msg;
+  double time;
   int self;
 };
 

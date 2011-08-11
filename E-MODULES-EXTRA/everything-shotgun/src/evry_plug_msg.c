@@ -10,7 +10,7 @@ struct _Plugin
   Evry_Plugin base;
   Ecore_Event_Handler *handle_msg;
 
-  const char *contact;
+  Contact *contact;
 };
 
 struct _View
@@ -72,10 +72,11 @@ _view_update(Evry_View *view)
    Eina_List *l, *ll, *lll;
    Message *msg;
    Eina_Strbuf *buf;
-   Evas_Object *o, *oo;
+   Evas_Object *o, *o_icon;
    
    GET_VIEW(v, view);
-
+   GET_CONTACT(c, v->plugin->contact);
+   
    EINA_LIST_FREE(v->items, o)
      {
    	e_box_unpack(o); 
@@ -88,7 +89,7 @@ _view_update(Evry_View *view)
 
    EINA_LIST_FOREACH(messages, l, msg)
      {
-	if (msg->contact == v->plugin->contact)
+	if (msg->contact == c->id)
 	  {
 	     while (v->items && (o = eina_list_data_get(v->items)) &&
 		    (msg != evas_object_data_get(o, "message")))
@@ -105,7 +106,7 @@ _view_update(Evry_View *view)
    
    EINA_LIST_FOREACH(messages, l, msg)
      {
-	if (msg->contact != v->plugin->contact)
+	if (msg->contact != c->id)
 	  continue;
 
 	o = eina_list_data_get(ll);
@@ -116,31 +117,48 @@ _view_update(Evry_View *view)
 	
 	o = edje_object_add(evas_object_evas_get(view->o_list));
 	
-	if (!e_theme_edje_object_set(o, "base/theme/modules/everything-shotgun",
-				     "e/modules/everything-shotgun/text_box"))
-	  edje_object_file_set(o, theme_file, "e/modules/everything-shotgun/text_box");
-
 	if (msg->self)
-	  edje_object_part_text_set(o, "e.text.title", _("Me"));
+	  {
+	     if (!e_theme_edje_object_set(o, "base/theme/modules/everything-shotgun",
+					  "e/modules/everything-shotgun/text_box_me"))
+	       edje_object_file_set(o, theme_file, "e/modules/everything-shotgun/text_box_me");
+     
+	     edje_object_part_text_set(o, "e.text.title", _("Me"));
+	  }	
 	else
-	  edje_object_part_text_set(o, "e.text.title", msg->contact);
-
+	  {
+	     if (!e_theme_edje_object_set(o, "base/theme/modules/everything-shotgun",
+					  "e/modules/everything-shotgun/text_box_you"))
+	       edje_object_file_set(o, theme_file, "e/modules/everything-shotgun/text_box_you");
+     
+	     edje_object_part_text_set(o, "e.text.title", c->base.label);
+	  }
+	
 	edje_object_part_text_set(o, "e.text.message", msg->msg);
 	
 	edje_object_size_min_restricted_calc(o, NULL, &h, w, 10);
 	
-	e_box_pack_end(view->o_list, o); 
+	e_box_pack_start(view->o_list, o); 
 
-	e_box_pack_options_set(o, 1, 1, 1, 0, 0.5, 0.5, 0, h, 999, 999);
+	e_box_pack_options_set(o, 1, 1, 1, 0, 0.5, 1.0, 0, h, 999, 999);
 
 	evas_object_show(o);
 
+	evas_object_data_set(o, "icon", o_icon);
+	
 	evas_object_data_set(o, "message", msg); 
 	v->items = eina_list_append(v->items, o); 
      }
-
+   
    e_box_thaw(view->o_list);
 
+   e_box_size_min_get(view->o_list, NULL, &w); 
+   evas_object_geometry_get(view->o_list, NULL, NULL, NULL, &h);
+   if (w < h)
+     e_box_align_set(view->o_list, 0.5, 0.0);
+   else
+     e_box_align_set(view->o_list, 0.5, 1.0);
+   
    return 1;
 }
 
@@ -169,8 +187,6 @@ _view_destroy(Evry_View *view)
 {
    Evas_Object *o;
    
-   printf("view destroy\n");
-
    GET_VIEW(v, view);
 
    EINA_LIST_FREE(v->items, o)
@@ -180,8 +196,6 @@ _view_destroy(Evry_View *view)
      }
 
    evas_object_del(view->o_list);
-   /* evas_object_del(v->o_text); */
-
 }
 
 static Evas_Object *
@@ -254,7 +268,8 @@ _inst_new(Evry_Plugin *plugin, const Evry_Item *it)
    view->plugin = p;
    p->base.view = EVRY_VIEW(view);
 
-   p->contact = eina_stringshare_ref(c->id);
+   EVRY_ITEM_REF(c);
+   p->contact = c;
 
    p->handle_msg = ecore_event_handler_add(SHOTGUN_EVENT_MESSAGE_ADD,
 					   _cb_message_add, view);
@@ -269,7 +284,7 @@ _inst_free(Evry_Plugin *plugin)
 
    EVRY_PLUGIN_ITEMS_FREE(p);
 
-   eina_stringshare_del(p->contact);
+   EVRY_ITEM_FREE(p->contact);
 
    ecore_event_handler_del(p->handle_msg);
    

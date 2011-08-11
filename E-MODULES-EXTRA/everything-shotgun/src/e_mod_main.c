@@ -7,6 +7,7 @@ struct _Plugin
 {
   Evry_Plugin base;
   Eina_List *contacts;
+  Eina_List *fetching;
   const char *input;
   Eina_Bool active : 1;
   Eet_File *images;
@@ -76,6 +77,10 @@ _inst_free(Evry_Plugin *plugin)
    EINA_LIST_FREE(p->contacts, it)
      _item_free(it);
 
+   /* XXX cancel dbus call!*/
+   EINA_LIST_FREE(p->fetching, it)
+     _item_free(it);
+
    if (p->images) eet_close(p->images);
    eet_shutdown();
 
@@ -142,11 +147,13 @@ _icon_get(Evry_Item *it, Evas *e)
 }
 
 static void
-_dbus_cb_icon_get(void *data, DBusMessage *reply, DBusError *error)
+_dbus_cb_info_get(void *data, DBusMessage *reply, DBusError *error)
 {
    DBusMessageIter item, array;
-   char *icon;
-
+   char *icon, *name;
+   unsigned int status;
+   int priority;
+   
    GET_CONTACT(c, data);
    GET_PLUGIN(p, c->base.plugin);
 
@@ -157,13 +164,29 @@ _dbus_cb_icon_get(void *data, DBusMessage *reply, DBusError *error)
      return;
 
    dbus_message_get_args(reply, error,
+			 DBUS_TYPE_STRING, &(name),
 			 DBUS_TYPE_STRING, &(icon),
+			 DBUS_TYPE_UINT32, &(status),
+			 DBUS_TYPE_INT32,  &(priority),
 			 DBUS_TYPE_INVALID);
-   if (icon)
+
+   if (name)
      {
-	c->icon = eina_stringshare_add(icon);
-	evry->item_changed(EVRY_ITEM(c), 1, 0);
+	c->base.label = eina_stringshare_add(name);
+	c->base.detail = eina_stringshare_ref(c->id);
      }
+   else
+     c->base.label = eina_stringshare_add(c->id);
+   
+   if (icon)
+     c->icon = eina_stringshare_add(icon);
+
+   eina_list_move(&p->contacts, &p->fetching, c);
+   
+   EVRY_PLUGIN_ITEMS_CLEAR(p);
+   EVRY_PLUGIN_ITEMS_ADD(p, p->contacts, p->input, 1, 0);
+
+   EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
 }
 
 static void
@@ -172,15 +195,15 @@ _item_new(Plugin *p, char *id)
    Contact *c;
    DBusMessage *msg;
 
-   c = EVRY_ITEM_NEW(Contact, p, id, _icon_get, _item_free);
+   c = EVRY_ITEM_NEW(Contact, p, NULL, _icon_get, _item_free);
    c->id = eina_stringshare_add(id);
 
-   p->contacts = eina_list_append(p->contacts, c);
+   p->fetching = eina_list_append(p->fetching, c);
 
    if (!(msg = dbus_message_new_method_call(DBUS_SHOTGUN_BUS_NAME,
 					    DBUS_SHOTGUN_PATH,
 					    DBUS_SHOTGUN_CONTACT,
-					    "icon")))
+					    "info")))
      {
 	DBG("dbus!\n");
 	return;
@@ -190,7 +213,7 @@ _item_new(Plugin *p, char *id)
 			    DBUS_TYPE_STRING,&(c->id),
 			    DBUS_TYPE_INVALID);
 
-   e_dbus_message_send(conn, msg, _dbus_cb_icon_get, -1, c);
+   e_dbus_message_send(conn, msg, _dbus_cb_info_get, -1, c);
 
    dbus_message_unref(msg);
 }
@@ -224,11 +247,6 @@ _dbus_cb_list_get(void *data, DBusMessage *reply, DBusError *error)
 	     dbus_message_iter_next(&item);
 	  }
      }
-
-   EVRY_PLUGIN_ITEMS_CLEAR(p);
-   EVRY_PLUGIN_ITEMS_ADD(p, p->contacts, p->input, 0, 0);
-
-   EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
 }
 
 static int
@@ -326,6 +344,8 @@ _add_message(int self, const char *contact, const char *message)
    printf("%d got %s from %s\n", self, message, m->contact);
 
    m->self = self;
+   m->time = ecore_time_get();
+   
    messages = eina_list_append(messages, m);
 
    if (eina_list_count(messages) > MAX_HISTORY)
