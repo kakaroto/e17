@@ -1,9 +1,7 @@
 #include "e.h"
 #include "e_mod_main.h"
-#include "evry_api.h"
 
 typedef struct _Plugin Plugin;
-typedef struct _Contact Contact;
 
 struct _Plugin
 {
@@ -14,30 +12,23 @@ struct _Plugin
   Eet_File *images;
 };
 
-struct _Contact
-{
-  Evry_Item base;
+const Evry_API *evry = NULL;
+Evry_Type SHOTGUN_CONTACT;
+Evry_Type SHOTGUN_MESSAGE;
+Eina_List *messages = NULL;
 
-  const char *id;
-  const char *icon;
-  Eina_Bool *has_icon;
-};
-
-static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
 static Eina_List *plugins = NULL;
 static Eina_List *actions = NULL;
 static E_DBus_Connection *conn = NULL;
 static const char DBUS_SHOTGUN_BUS_NAME[] = "org.shotgun";
-static const char DBUS_SHOTGUN_LIST[] = "org.shotgun.list";
-static const char DBUS_SHOTGUN_CONTACT[] = "org.shotgun.contact";
-static const char DBUS_SHOTGUN_PATH[] = "/org/shotgun/remote";
+static const char DBUS_SHOTGUN_LIST[]     = "org.shotgun.list";
+static const char DBUS_SHOTGUN_CONTACT[]  = "org.shotgun.contact";
+static const char DBUS_SHOTGUN_CORE[]     = "org.shotgun.core";
+static const char DBUS_SHOTGUN_PATH[]     = "/org/shotgun/remote";
 static char *theme_file = NULL;
-
-static Evry_Type SHOTGUN_CONTACT;
-
-#define CONTACT(_it)((Contact *)_it)
-#define GET_CONTACT(_c, _it) Contact *_c = (Contact *)_it
+static E_DBus_Signal_Handler *_dbus_signal_new_msg = NULL;
+static E_DBus_Signal_Handler *_dbus_signal_new_msg_self = NULL;
 
 static void
 _item_free(Evry_Item *it)
@@ -76,7 +67,6 @@ _inst_free(Evry_Plugin *plugin)
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
    IF_RELEASE(p->input);
-
    EINA_LIST_FREE(p->contacts, it)
      _item_free(it);
 
@@ -310,6 +300,55 @@ _action_chat(Evry_Action *act)
    return EVRY_ACTION_FINISHED;
 }
 
+static void
+_add_message(int self, DBusMessage *msg)
+{
+   Message *m;
+   char *contact, *message, *s;
+   
+   dbus_message_get_args(msg, NULL,
+			 DBUS_TYPE_STRING, &(contact),
+			 DBUS_TYPE_STRING, &(message),
+			 DBUS_TYPE_INVALID);
+
+   if (!contact || !message)
+     return;
+
+   m = E_NEW(Message, 1);
+   if ((s = strchr(contact, '/')))
+     m->contact = eina_stringshare_add_length(contact, s - contact);
+   else
+     m->contact = eina_stringshare_add(contact);
+
+   m->msg = eina_stringshare_add(message);
+
+   printf("%d got %s from %s\n", self, message, m->contact);
+   
+   m->self = self;
+   messages = eina_list_append(messages, m);
+
+   if (eina_list_count(messages) > 100)
+     {
+	m = eina_list_data_get(messages);
+	messages = eina_list_remove_list(messages, messages);
+	eina_stringshare_del(m->contact);
+	eina_stringshare_del(m->msg);
+	E_FREE(m);
+     }
+}
+
+static void
+_dbus_cb_signal_new_msg(void *data, DBusMessage *msg)
+{
+   _add_message(0, msg); 
+}
+
+static void
+_dbus_cb_signal_new_msg_self(void *data, DBusMessage *msg)
+{
+   _add_message(1, msg); 
+}
+
 static int
 _plugins_init(const Evry_API *_api)
 {
@@ -331,6 +370,7 @@ _plugins_init(const Evry_API *_api)
      }
 
    SHOTGUN_CONTACT = evry->type_register("SHOTGUN_CONTACT");
+   SHOTGUN_MESSAGE = evry->type_register("SHOTGUN_MESSAGE");
 
    plugin = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Shotgun"), "folder",
 			    SHOTGUN_CONTACT,
@@ -339,12 +379,22 @@ _plugins_init(const Evry_API *_api)
    evry->plugin_register(plugin, EVRY_PLUGIN_SUBJECT, 1);
 
    plugins = eina_list_append(plugins, plugin);
-
-   act = EVRY_ACTION_NEW(N_("Write Message"), SHOTGUN_CONTACT, EVRY_TYPE_TEXT, "go-next",
+   
+   act = EVRY_ACTION_NEW(N_("Write Message"), SHOTGUN_CONTACT, SHOTGUN_MESSAGE, "go-next",
 			 _action_chat, NULL);
    evry->action_register(act, 0);
 
    actions = eina_list_append(actions, act);
+
+   _dbus_signal_new_msg = e_dbus_signal_handler_add
+     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE, "new_msg",
+      _dbus_cb_signal_new_msg, NULL);
+
+   _dbus_signal_new_msg_self = e_dbus_signal_handler_add
+     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE, "new_msg_self",
+      _dbus_cb_signal_new_msg_self, NULL);
+
+   evry_plug_msg_init();
 
    return EINA_TRUE;
 }
@@ -358,19 +408,26 @@ _plugins_shutdown(void)
    if (!evry_module->active) return;
 
    if (conn)
-     e_dbus_connection_close(conn);
-
+     {
+	e_dbus_connection_close(conn);
+	e_dbus_signal_handler_del(conn, _dbus_signal_new_msg);
+	e_dbus_signal_handler_del(conn, _dbus_signal_new_msg_self);
+     }
+   
    EINA_LIST_FREE(plugins, p)
      EVRY_PLUGIN_FREE(p);
-
+   
    EINA_LIST_FREE(actions, act)
      EVRY_ACTION_FREE(act);
 
+   evry_plug_msg_shutdown();
+     
    evry_module->active = EINA_FALSE;
 }
 
 
 /***************************************************************************/
+
 
 /* module setup */
 EAPI E_Module_Api e_modapi =
@@ -414,4 +471,6 @@ e_modapi_save(E_Module *m)
 {
    return 1;
 }
+
+
 

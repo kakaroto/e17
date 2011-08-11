@@ -14,10 +14,43 @@
 #endif
 #define N_(str) (str)
 
+#include "evry_api.h"
+
+typedef struct _Contact Contact;
+typedef struct _Message Message;
+
+struct _Contact
+{
+  Evry_Item base;
+
+  const char *id;
+  const char *icon;
+  Eina_Bool *has_icon;
+};
+
+struct _Message
+{
+  const char *contact;
+  const char *msg;
+  int self;
+};
+
 EAPI extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init     (E_Module *m);
 EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
+
+void      evry_plug_msg_shutdown(void);
+Eina_Bool evry_plug_msg_init(void);
+
+extern const Evry_API *evry;
+
+extern Evry_Type SHOTGUN_CONTACT;
+extern Evry_Type SHOTGUN_MESSAGE;
+extern Eina_List *messages;
+
+#define CONTACT(_it)((Contact *)_it)
+#define GET_CONTACT(_c, _it) Contact *_c = (Contact *)_it
 
 #endif
