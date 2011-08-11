@@ -147,6 +147,7 @@ collections {
     #include "bits/everything.edc"
     #include "bits/comp.edc"
     #include "bits/notification.edc"
+    #include "bits/evry-shotgun.edc"
 	//    #include "bits/engage.edc"		/* engage module */
 }
 

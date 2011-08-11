@@ -155,5 +155,10 @@ styles {
 		tag:  "img" ""; /* images not supported */
 		tag:  "a" ""; /* links not supported */
 	}
+	style {
+		name: "message_text";
+		base: "font="FONT" font_size=10 color=#fff wrap=mixed";
+	}
+
   
 }
