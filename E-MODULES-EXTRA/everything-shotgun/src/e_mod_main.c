@@ -412,13 +412,13 @@ _plugins_init(const Evry_API *_api)
    SHOTGUN_CONTACT = evry->type_register("SHOTGUN_CONTACT");
    SHOTGUN_MESSAGE = evry->type_register("SHOTGUN_MESSAGE");
 
-   plugin = EVRY_PLUGIN_BASE_NEW("Shotgun", "folder", SHOTGUN_CONTACT,
+   plugin = EVRY_PLUGIN_BASE("Shotgun", "folder", SHOTGUN_CONTACT,
 			    _inst_new, _inst_free, _fetch);
 
    evry->plugin_register(plugin, EVRY_PLUGIN_SUBJECT, 1);
-   plugins = eina_list_append(plugins, plugin);
+   plugins = eina_list_append(plugins, plugin); 
 
-   act = EVRY_ACTION_NEW(N_("Write Message"), SHOTGUN_CONTACT, SHOTGUN_MESSAGE,
+   act = EVRY_ACTION_NEW("Write Message", SHOTGUN_CONTACT, SHOTGUN_MESSAGE,
 			 "go-next", _action_chat, NULL);
    evry->action_register(act, 0);
    actions = eina_list_append(actions, act);

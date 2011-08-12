@@ -26,8 +26,8 @@
 typedef struct _Plugin Plugin;
 typedef struct _Track Track;
 
-#undef DBG
-#define DBG(...) ERR(__VA_ARGS__)
+/* #undef DBG
+ * #define DBG(...) ERR(__VA_ARGS__) */
 
 struct _Plugin
 {
@@ -1412,63 +1412,63 @@ _plugins_init(const Evry_API *_api)
    p->actions = eina_list_append(p->actions, act);			\
    EVRY_ITEM_DATA_INT_SET(act, _meth);
 
-   ACTION_NEW(N_("Play Track"), ACT_PLAY_TRACK,
+   ACTION_NEW("Play Track", ACT_PLAY_TRACK,
 	      MPRIS_TRACK, 0,
 	      "media-playback-start",
 	      _mpris_play_track, _mpris_check_item);
 
-   ACTION_NEW(N_("Play"), ACT_PLAY,
+   ACTION_NEW("Play", ACT_PLAY,
 		   MPRIS_TRACK, 0, "media-playback-start",
 		   _mpris_player_action, _mpris_check_item);
 
-   ACTION_NEW(N_("Pause"), ACT_PAUSE,
+   ACTION_NEW("Pause", ACT_PAUSE,
 		   MPRIS_TRACK, 0, "media-playback-pause",
 		   _mpris_player_action, _mpris_check_item);
 
-   ACTION_NEW(N_("Stop"), ACT_STOP,
+   ACTION_NEW("Stop", ACT_STOP,
 		   MPRIS_TRACK, 0, "media-playback-stop",
 		   _mpris_player_action, _mpris_check_item);
 
-   ACTION_NEW(N_("Forward"), ACT_FORWARD,
+   ACTION_NEW("Forward", ACT_FORWARD,
 	      MPRIS_TRACK, 0, "media-seek-forward",
 	      _mpris_player_position, _mpris_check_item);
 
-   ACTION_NEW(N_("Rewind"), ACT_REWIND,
+   ACTION_NEW("Rewind", ACT_REWIND,
 	      MPRIS_TRACK, 0, "media-seek-backward",
 	      _mpris_player_position, _mpris_check_item);
 
-   ACTION_NEW(N_("Remove Track"), ACT_REMOVE_TRACK,
+   ACTION_NEW("Remove Track", ACT_REMOVE_TRACK,
 	      MPRIS_TRACK, 0, "list-remove",
 	      _mpris_tracklist_remove_track, _mpris_check_item);
    act->it1.accept_list = EINA_TRUE;
 
-   ACTION_NEW(N_("Clear Playlist"), ACT_CLEAR,
+   ACTION_NEW("Clear Playlist", ACT_CLEAR,
 		   MPRIS_TRACK, 0, "list-remove",
 		   _mpris_tracklist_action_clear, _mpris_check_item);
 
-   ACTION_NEW(N_("Play File"), ACT_PLAY_FILE,
+   ACTION_NEW("Play File", ACT_PLAY_FILE,
 	      EVRY_TYPE_FILE, 0, "media-playback-start",
 	      _mpris_play_file, _mpris_check_file);
    act->remember_context = EINA_TRUE;
 
-   ACTION_NEW(N_("Add Files..."), ACT_ADD_FILE,
+   ACTION_NEW("Add Files...", ACT_ADD_FILE,
 		   MPRIS_TRACK, EVRY_TYPE_FILE, "list-add",
 		   _mpris_add_files, NULL);
 
-   ACTION_NEW(N_("Enqueue in Playlist"), ACT_ADD_FILE,
+   ACTION_NEW("Enqueue in Playlist", ACT_ADD_FILE,
 	      EVRY_TYPE_FILE, 0, "list-add",
 	      _mpris_enqueue_files, _mpris_check_files);
    act->remember_context = EINA_TRUE;
 
-   ACTION_NEW(N_("Add Music..."), ACT_ADD_FILE,
+   ACTION_NEW("Add Music...", ACT_ADD_FILE,
 		   MPRIS_TRACK, TRACKER_MUSIC, "list-add",
 		   _mpris_add_files, _mpris_check_add_music);
 
-   ACTION_NEW(N_("Remove Duplicates"), 0,
+   ACTION_NEW("Remove Duplicates", 0,
 		   MPRIS_TRACK, 0, "list-remove",
 		   _mpris_remove_dups, NULL);
 
-   ACTION_NEW(N_("Remove Missing Files"), 0,
+   ACTION_NEW("Remove Missing Files", 0,
 		   MPRIS_TRACK, 0, "list-remove",
 		   _mpris_remove_missing, NULL);
 

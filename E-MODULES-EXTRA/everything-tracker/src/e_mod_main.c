@@ -940,7 +940,7 @@ _plugins_init(const Evry_API *_api)
      p1->query = _query;						\
      if (evry->plugin_register(p, _plug_type, _prio++)) {		\
 	p->config->min_query = 4;					\
-	p->config->top_level = 0; }					\
+	p->config->top_level = 1; }					\
      plugins = eina_list_append(plugins, p); }
 
 

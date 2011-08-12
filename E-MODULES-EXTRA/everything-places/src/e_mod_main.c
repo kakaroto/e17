@@ -286,12 +286,12 @@ _plugins_init(const Evry_API *api)
 	 * p->config->min_query = 3; */
      }
 
-   act_mount = EVRY_ACTION_NEW(N_("Mount Drive"), EVRY_TYPE_FILE, 0,
+   act_mount = EVRY_ACTION_NEW("Mount Drive", EVRY_TYPE_FILE, 0,
 			       "drive-harddisk", _act_mount, _check_mount);
    EVRY_ITEM_DATA_INT_SET(act_mount, ACT_MOUNT);
    evry->action_register(act_mount, 1);
 
-   act_umount = EVRY_ACTION_NEW(N_("Unmount Drive"), EVRY_TYPE_FILE, 0,
+   act_umount = EVRY_ACTION_NEW("Unmount Drive", EVRY_TYPE_FILE, 0,
    				"hdd_unmount", _act_mount, _check_mount);
    act_mount->remember_context = EINA_TRUE;
    EVRY_ITEM_DATA_INT_SET(act_umount, ACT_UNMOUNT);

@@ -622,13 +622,13 @@ _plugins_init(const Evry_API *_api)
    
    evry->plugin_register(plugin_base, EVRY_PLUGIN_SUBJECT, 1);
 
-   act = EVRY_ACTION_NEW(N_("Chat"), PIDGIN_CONTACT, 0, "go-next",
+   act = EVRY_ACTION_NEW("Chat", PIDGIN_CONTACT, 0, "go-next",
 			 _action_chat, NULL);
 
-   act2 = EVRY_ACTION_NEW(N_("Send File"), PIDGIN_CONTACT, EVRY_TYPE_FILE, NULL,
+   act2 = EVRY_ACTION_NEW("Send File", PIDGIN_CONTACT, EVRY_TYPE_FILE, NULL,
 			  _action_send, NULL);
 
-   act3 = EVRY_ACTION_NEW(N_("Write Message"), PIDGIN_CONTACT, EVRY_TYPE_TEXT, "go-next",
+   act3 = EVRY_ACTION_NEW("Write Message", PIDGIN_CONTACT, EVRY_TYPE_TEXT, "go-next",
 			  _action_chat, NULL);
 
    evry->action_register(act, 0);

@@ -148,7 +148,7 @@ _plugins_init(const Evry_API *api)
    if (!evry->api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
 
-   _act1 = EVRY_ACTION_NEW(_("Set as Wallpaper"),
+   _act1 = EVRY_ACTION_NEW("Set as Wallpaper",
 			   EVRY_TYPE_FILE, 0,
 			   _module_icon,
 			   NULL, _check);
@@ -158,7 +158,7 @@ _plugins_init(const Evry_API *api)
 
    evry->action_register(_act1, 2);
 
-   _act2 = EVRY_ACTION_NEW(_("Set as Wallpaper"),
+   _act2 = EVRY_ACTION_NEW("Set as Wallpaper",
 			   EVRY_TYPE_FILE, 0,
 			   _module_icon,
 			   _act_wallpaper, _check_wallpaper);

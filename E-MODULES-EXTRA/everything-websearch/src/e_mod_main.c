@@ -1261,33 +1261,33 @@ _plugins_init(const Evry_API *_api)
    evry->action_register(act, 1);				       	\
    actions = eina_list_append(actions, act);				\
 
-   ACTION_NEW(N_("Google for it"), EVRY_TYPE_TEXT, "google",
+   ACTION_NEW("Google for it", EVRY_TYPE_TEXT, "google",
 	      _action, NULL, ACT_GOOGLE);
 
-   ACTION_NEW(N_("Wikipedia Page"), EVRY_TYPE_TEXT, "wikipedia",
+   ACTION_NEW("Wikipedia Page", EVRY_TYPE_TEXT, "wikipedia",
 	      _action, NULL, ACT_WIKIPEDIA);
 
-   ACTION_NEW(N_("Feeling Lucky"), EVRY_TYPE_TEXT, "feeling-lucky",
+   ACTION_NEW("Feeling Lucky", EVRY_TYPE_TEXT, "feeling-lucky",
 	      _action, NULL, ACT_FEELING_LUCKY);
 
-   ACTION_NEW(N_("Watch on Youtube"), WEBLINK, "youtube",
+   ACTION_NEW("Watch on Youtube", WEBLINK, "youtube",
 	      _action, _youtube_dl_check, ACT_YOUTUBE);
 
 #if 0
-   ACTION_NEW(N_("Download as Audio"), WEBLINK, "youtube",
+   ACTION_NEW("Download as Audio", WEBLINK, "youtube",
 	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL);
 
-   ACTION_NEW(N_("Play Video"), WEBLINK, "youtube",
+   ACTION_NEW("Play Video", WEBLINK, "youtube",
 	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_PLAY);
 
-   ACTION_NEW(N_("Download and enqueue"), WEBLINK, "youtube",
+   ACTION_NEW("Download and enqueue", WEBLINK, "youtube",
 	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_ENQ);
 
-   ACTION_NEW(N_("Download and play"), WEBLINK, "youtube",
+   ACTION_NEW("Download and play", WEBLINK, "youtube",
 	      _youtube_dl_action, _youtube_dl_check, YOUTUBE_DL_PLAY);
 #endif
 
-   ACTION_NEW(N_("Upload Image"), EVRY_TYPE_FILE, "image",
+   ACTION_NEW("Upload Image", EVRY_TYPE_FILE, "image",
 	      _action_upload, _action_upload_check, ACT_UPLOAD_IMGUR);
    act->remember_context = EINA_TRUE;
 
