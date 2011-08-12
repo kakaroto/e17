@@ -241,8 +241,8 @@ elsa_session_login(const char *session)
    struct passwd *pwd;
    const char *cmd;
    char buf[PATH_MAX];
-   DBusError error;
 #ifdef HAVE_CONSOLEKIT
+   DBusError error;
    int ck_status;
 #endif
 
@@ -403,7 +403,7 @@ _elsa_session_scan_desktops_file(const char *path)
    Eina_List *commands;
    Eina_List *l;
    Elsa_Xsession *xsession;
-   char *command;
+   char *command = NULL;
 
    desktop = efreet_desktop_get(path);
    if (!desktop) return;
