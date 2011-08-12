@@ -12,12 +12,12 @@
 #include <Efreet.h>
 
 
+#ifdef HAVE_CONSOLEKIT
 #include <ck-connector.h>
 #include <dbus/dbus.h>
 
 #include "elsa.h"
 
-#ifdef HAVE_CONSOLEKIT
 static CkConnector *_elsa_ck;
 #endif
 
