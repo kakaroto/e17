@@ -1,2 +1,2 @@
 debian/tmp/usr/lib/libelementary*.so.*
-debian/tmp/usr/lib/edje/modules/elm/linux-gnu-i486-1.0.0/module.so
+debian/tmp/usr/lib/edje/modules/elm/*/module.so
