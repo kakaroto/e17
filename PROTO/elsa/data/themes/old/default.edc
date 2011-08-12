@@ -453,7 +453,6 @@ collections {
             transition: LINEAR 0.5;
             target: "box_hostname";
             target: "box_password";
-            target: "password";
             after: "init";
             after: "show_cancel";
             after: "hide_valid";
@@ -465,7 +464,6 @@ collections {
             transition: LINEAR 0.5;
             target: "box_hostname";
             target: "box_password";
-            target: "password";
             after: "init";
             after: "hide_cancel";
             after: "hide_valid";
