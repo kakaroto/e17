@@ -10,13 +10,13 @@
 #include <sys/wait.h>
 #include <Ecore_File.h>
 #include <Efreet.h>
+#include "elsa.h"
 
 
 #ifdef HAVE_CONSOLEKIT
 #include <ck-connector.h>
 #include <dbus/dbus.h>
 
-#include "elsa.h"
 
 static CkConnector *_elsa_ck;
 #endif
