@@ -500,13 +500,14 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
             raise ValueError("Unknown event %r" % e)
 
         i = -1
+        f = None
         for i, (f, a, k) in enumerate(lst):
             if func == f:
                 break
-        else:
-            raise ValueError("Callback %s was not registered with event %r" %
-                             (func, e))
 
+        if f != func:
+            raise ValueError("Callback %s was not registered with event %r" %
+                             (func, event))
         lst.pop(i)
         if lst:
             return
