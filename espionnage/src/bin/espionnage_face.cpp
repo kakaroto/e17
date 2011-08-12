@@ -11,6 +11,7 @@
 
 #include "espionnage_private.h"
 
+#ifdef HAVE_FACE
 static void
 _face_free_cb(void *data)
 {
@@ -18,6 +19,7 @@ _face_free_cb(void *data)
 
    delete libFace;
 }
+#endif
 
 Eina_List *
 face_search(Ecore_Thread *thread, char *data, int width, int height, int stride)
