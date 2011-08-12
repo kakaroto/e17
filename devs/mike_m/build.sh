@@ -10,7 +10,7 @@ deplist="autotools-dev automake autopoint libtool zlib1g-dev
 	libxrender-dev libgif-dev libglu1-mesa-dev mesa-common-dev
 	libxpm-dev librsvg2-dev libfribidi-dev libpixman-1-dev
 	libxcb-shm0-dev libxcb-image0-dev libxss-dev libxp-dev
-	libxtst-dev graphviz"
+	libxtst-dev graphviz libasound2-dev libpam0g-dev"
 
 #
 # Evas fails to build on x86-64 due to this bug.
@@ -52,12 +52,21 @@ do_build_and_install()
 do_build_deb()
 {
 	local e
+	local pkgdir
 
 	e="$1"
 	echo "Building debian package for $e"
 	rm -rf "$e"/debian
 	mkdir "$e/debian"
-	cp -aR "packaging/debian/main/$e"/* "$e/debian/"
+	case "$e" in
+	PROTO/libeweather)
+		pkgdir="extras/libeweather"
+		;;
+	*)
+		pkgdir="main/$e"
+		;;
+	esac
+	cp -aR "packaging/debian/$pkgdir"/* "$e/debian/"
 	(cd "$e" && dpkg-buildpackage -sa -rfakeroot)
 }
 
