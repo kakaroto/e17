@@ -8,17 +8,34 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <Ecore_File.h>
+#include <Efreet.h>
+
+
+#include <ck-connector.h>
+#include <dbus/dbus.h>
 
 #include "elsa.h"
 
+#ifdef HAVE_CONSOLEKIT
+static CkConnector *_elsa_ck;
+#endif
 
-char *_mcookie;
-char **env;
-char *_login = NULL;
-unsigned char _logged = 0;
+static char *_mcookie;
+static char **env;
+static char *_login = NULL;
+static unsigned char _logged = 0;
+//static Eina_List *_user_list = NULL;
 static pid_t _session_pid;
+static Eina_List *_xsessions = NULL;
 static int _elsa_session_userid_set(struct passwd *pwd);
+
 static void _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie);
+
+static void _elsa_session_scan_desktops_file(const char *path);
+static void _elsa_session_scan_desktops(const char *dir);
+static void _elsa_session_init_desktops();
+static const char *_elsa_session_find_command(const char *path, const char *session);
 
 long
 elsa_session_seed_get()
@@ -112,8 +129,9 @@ _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
    pid = fork();
    if (pid == 0)
      {
-        elsa_close_log();
-//        fprintf(stderr, PACKAGE": Session Run\n");
+
+        //elsa_close_log();
+        fprintf(stderr, PACKAGE": Session Run\n");
 //d        elsa_close_log();
         env = elsa_pam_env_list_get();
         elsa_pam_end();
@@ -175,8 +193,6 @@ elsa_session_pid_get()
 void
 elsa_session_init(const char *file)
 {
-   /* this is the mit cookie */
-
    uint16_t word;
    uint8_t hi, lo;
    int i;
@@ -203,6 +219,7 @@ elsa_session_init(const char *file)
    //fprintf(stderr, PACKAGE": cookie %s \n", _mcookie);
    _elsa_session_cookie_add(_mcookie, ":0",
                             elsa_config->command.xauth_path, file);
+   _elsa_session_init_desktops();
 }
 
 void
@@ -218,12 +235,17 @@ elsa_session_authenticate(const char *login, const char *passwd)
 }
 
 Eina_Bool
-elsa_session_login(const char *command)
+elsa_session_login(const char *session)
 {
 #ifdef HAVE_PAM
    struct passwd *pwd;
+   const char *cmd;
    char buf[PATH_MAX];
-   if (!command) return ECORE_CALLBACK_CANCEL;
+   DBusError error;
+#ifdef HAVE_CONSOLEKIT
+   int ck_status;
+#endif
+
    if (!elsa_pam_open_session())
      {
         pwd = getpwnam(elsa_pam_item_get(ELSA_PAM_ITEM_USER));
@@ -236,12 +258,77 @@ elsa_session_login(const char *command)
              fprintf(stderr, "Elsa: couldn't open session\n");
              exit(1);
           }
+#ifdef HAVE_CONSOLEKIT
+        dbus_error_init(&error);
+        _elsa_ck = ck_connector_new();
+        if (!_elsa_ck)
+          {
+             ck_status = ck_connector_open_session_for_user(
+                _elsa_ck,
+                pwd->pw_uid,
+                pwd->pw_shell,
+                ":0",
+                &error);
+                /*
+                _elsa_ck, &error,
+                "unix-user", &pwd->pw_uid,
+                "x11-display-device", ":0",
+                "x11-display", ":0",
+                "is_local", 1,
+                NULL);*/
+             if (!ck_status)
+               {
+                  if (dbus_error_is_set(&error))
+                    {
+                       fprintf(stderr, "Can't open ConsoleKit session. %s\n",
+                               error.message);
+                       dbus_error_free(&error);
+                    }
+                  else
+                    {
+                       fprintf(stderr, "Can't open ConsoleKit session. Like OOM\n");
+                    }
+                  ck_connector_unref(_elsa_ck);
+               }
+
+             setenv("XDG_SESSION_COOKIE",
+                    ck_connector_get_cookie(_elsa_ck),
+                    1);
+          }
+        else
+          fprintf(stderr, "Erreur consolekit\n");
+#endif
+        elsa_history_push(pwd->pw_name, session);
         _login = strdup(pwd->pw_name);
-        fprintf(stderr, PACKAGE": launching %s for user %s\n", command, _login);
-        _elsa_session_run(pwd, command, buf);
+        cmd = _elsa_session_find_command(pwd->pw_dir, session);
+        fprintf(stderr, PACKAGE": launching %s for user %s\n", cmd, _login);
+        _elsa_session_run(pwd, cmd, buf);
      }
 #endif
    return ECORE_CALLBACK_CANCEL;
+}
+
+static const char *
+_elsa_session_find_command(const char *path, const char *session)
+{
+   Eina_List *l;
+   Elsa_Xsession *xsession;
+   char buf[PATH_MAX];
+   if (session)
+     {
+        EINA_LIST_FOREACH(_xsessions, l, xsession)
+          {
+             if (!strcmp(xsession->name, session))
+               {
+                  if (xsession->command)
+                    return xsession->command;
+               }
+          }
+     }
+   snprintf(buf, sizeof(buf), "%s/%s", path, ".Xsession");
+   if (ecore_file_can_exec(buf))
+     return eina_stringshare_add(buf);
+   return (elsa_config->command.session_login);
 }
 
 char *
@@ -254,5 +341,93 @@ int
 elsa_session_logged_get()
 {
    return !!_logged;
+}
+
+Eina_List *
+elsa_session_list_get()
+{
+   return _xsessions;
+}
+
+static void
+_elsa_session_init_desktops()
+{
+   char buf[PATH_MAX];
+   Eina_List *dirs;
+   const char *path;
+   Elsa_Xsession *xsession;
+   Eina_List *l;
+
+   xsession = calloc(1, sizeof(Elsa_Xsession));
+   xsession->name = eina_stringshare_add("System");
+   xsession->icon = eina_stringshare_add("elsa/system");
+   _xsessions = eina_list_append(_xsessions, xsession);
+
+   efreet_init();
+   efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
+   /* Maybee need to scan other directories ?
+    * _elsa_server_scan_desktops("/etc/share/xsessions");
+    */
+   snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
+   _elsa_session_scan_desktops(buf);
+   dirs = efreet_data_dirs_get();
+   EINA_LIST_FOREACH(dirs, l, path)
+     {
+        snprintf(buf, sizeof(buf), "%s/xsessions", path);
+        _elsa_session_scan_desktops(buf);
+     }
+   efreet_shutdown();
+}
+
+static void
+_elsa_session_scan_desktops(const char *dir)
+{
+   Eina_List *files;
+   char *filename;
+   char path[PATH_MAX];
+
+   fprintf(stderr, PACKAGE": scanning directory %s\n", dir);
+   files = ecore_file_ls(dir);
+   EINA_LIST_FREE(files, filename)
+     {
+        snprintf(path, sizeof(path), "%s/%s", dir, filename);
+        _elsa_session_scan_desktops_file(path);
+        free(filename);
+     }
+}
+
+static void
+_elsa_session_scan_desktops_file(const char *path)
+{
+   Efreet_Desktop *desktop;
+   Eina_List *commands;
+   Eina_List *l;
+   Elsa_Xsession *xsession;
+   char *command;
+
+   desktop = efreet_desktop_get(path);
+   if (!desktop) return;
+   EINA_LIST_FOREACH(_xsessions, l, xsession)
+     {
+        if (!strcmp(xsession->name, desktop->name))
+          {
+             efreet_desktop_free(desktop);
+             return;
+          }
+     }
+
+   commands = efreet_desktop_command_local_get(desktop, NULL);
+   if (commands)
+     command = eina_list_data_get(commands);
+   if (command && desktop->name)
+     {
+        xsession= calloc(1, sizeof(Elsa_Xsession));
+        xsession->command = eina_stringshare_add(command);
+        xsession->name = eina_stringshare_add(desktop->name);
+        if (desktop->icon) xsession->icon = eina_stringshare_add(desktop->icon);
+        _xsessions = eina_list_append(_xsessions, xsession);
+        fprintf(stderr, PACKAGE": client find sessions %s\n", desktop->name);
+     }
+   efreet_desktop_free(desktop);
 }
 

@@ -29,14 +29,11 @@ struct _Elsa_Config
    const char *lockfile;
    const char *logfile;
    const char *theme;
-   char *last_session;
 };
+
+void elsa_config_init();
+void elsa_config_shutdown();
 
 Elsa_Config *elsa_config;
 
-void elsa_config_init();
-void elsa_config_last_session_set(const char *name);
-void elsa_config_shutdown();
-
- /** @} */
 #endif /* ELSA_CONFIG_H_ */

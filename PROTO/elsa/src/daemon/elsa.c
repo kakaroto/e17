@@ -8,13 +8,14 @@
 
 
 static Eina_Bool _open_log();
-//static Eina_Bool _close_log();
+static int _elsa_main(const char *dname);
 static void _remove_lock();
 static void _signal_cb();
 static void _signal_log();
 static Eina_Bool _elsa_client_del(void *data, int type, void *event);
 
-static unsigned char _testing = 0;
+static Eina_Bool _testing = 0;
+static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_elsa_client = NULL;
 
 
@@ -22,9 +23,13 @@ static void
 _signal_cb(int sig)
 {
    fprintf(stderr, PACKAGE": signal %d received\n", sig);
+   //FIXME  if I don't have main loop at this time ?
+   ecore_main_loop_quit();
+   /*
    elsa_session_shutdown();
    elsa_xserver_shutdown();
    exit(1);
+   */
 }
 
 static void
@@ -136,10 +141,9 @@ _elsa_wait()
    fprintf(stderr, PACKAGE": HUM HUM HUM ...\n\n\n");
 }
 
-int
-elsa_main()
+static int
+_elsa_main(const char *dname)
 {
-   printf("My loosing elsa_main env %s\n", getenv("ELSA_XPID"));
    if (!elsa_config->autologin)
      {
         char buf[PATH_MAX];
@@ -147,8 +151,8 @@ elsa_main()
                                 _elsa_client_del, NULL);
         fprintf(stderr, PACKAGE": Run client\n");
         snprintf(buf, sizeof(buf),
-                 PACKAGE_BIN_DIR"/elsa_client -d :0.0 -t %s",
-                 elsa_config->theme);
+                 PACKAGE_BIN_DIR"/elsa_client -d %s -t %s",
+                 dname, elsa_config->theme);
         _elsa_client = ecore_exe_run(buf, NULL);
      }
    else
@@ -181,6 +185,7 @@ static const Ecore_Getopt options =
    {
       ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "Don't daemonize."),
       ECORE_GETOPT_STORE_TRUE('t', "test", "run in test mode."),
+      ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run in test mode and use Xephyr."),
       ECORE_GETOPT_HELP ('h', "help"),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('R', "copyright"),
@@ -203,6 +208,7 @@ main (int argc, char ** argv)
      {
         ECORE_GETOPT_VALUE_BOOL(nodaemon),
         ECORE_GETOPT_VALUE_BOOL(_testing),
+        ECORE_GETOPT_VALUE_BOOL(_xephyr),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
@@ -219,14 +225,17 @@ main (int argc, char ** argv)
 
    if (quit_option)
      return 0;
+
    if(getuid() != 0 && !_testing)
      {
         fprintf(stderr, "Only root can run this program\n");
         return 1;
      }
+
    if (_testing)
      nodaemon = EINA_TRUE;
 
+   eet_init();
    elsa_config_init();
    if (!_testing && !_get_lock())
      {
@@ -238,15 +247,23 @@ main (int argc, char ** argv)
         if (daemon(0, 1) == -1)
           {
              fprintf(stderr, PACKAGE": Error on daemonize !");
-             exit(1);
+             quit_option = EINA_TRUE;
           }
         _update_lock();
      }
 
    if (!_open_log())
-      exit(1);
+     {
+        fprintf(stderr, PACKAGE": Can't open log file !!!!\n");
+        quit_option = EINA_TRUE;
+     }
 
-   fprintf(stderr, "\n\n"PACKAGE": Welcome\n");
+   if (quit_option)
+     {
+        elsa_config_shutdown();
+        exit(1);
+     }
+
    elsa_pam_init(PACKAGE, dname, elsa_user);
    elsa_user = getenv("ELSA_USER");
    if (elsa_user)
@@ -255,18 +272,18 @@ main (int argc, char ** argv)
         elsa_session_end(elsa_user);
         sleep(2);
         elsa_xserver_end();
-        unsetenv("ELSA_USER");
         quit = getenv("ELSA_QUIT");
         if (quit)
           {
              unsetenv("ELSA_QUIT");
              _remove_lock();
              elsa_config_shutdown();
-             exit(1);
+             exit(0);
           }
         sleep(3);
         elsa_pam_init(PACKAGE, dname, NULL);
      }
+   fprintf(stderr, "\n"PACKAGE": Welcome\n");
    ecore_init();
    /* Initialise event handler */
 
@@ -278,8 +295,9 @@ main (int argc, char ** argv)
    signal(SIGPIPE, _signal_cb);
    signal(SIGALRM, _signal_cb);
    signal(SIGUSR2, _signal_log);
+
    elsa_session_init(elsa_config->command.xauth_file);
-   pid = elsa_xserver_init(elsa_main, dname);
+   pid = elsa_xserver_init(_elsa_main, dname);
    if (elsa_config->autologin && !elsa_user)
      {
         xcb_connection_t *disp = NULL;
@@ -292,25 +310,27 @@ main (int argc, char ** argv)
      }
    else
      {
+        elsa_history_init();
+        //FIXME
+        snprintf(buf, sizeof(buf), "ELSA_XPID=%d", pid);
+        putenv(buf);
         elsa_server_init();
-        printf("My loosing env %s\n", getenv("ELSA_XPID"));
+        ecore_main_loop_iterate();
         ecore_main_loop_begin();
         elsa_server_shutdown();
+        elsa_history_shutdown();
      }
    elsa_xserver_shutdown();
    elsa_pam_shutdown();
    ecore_shutdown();
    elsa_close_log();
    elsa_config_shutdown();
+   eet_shutdown();
    if (elsa_session_logged_get())
-     {
-        /* FIXME I lose my env :( */
-        printf("Env xserver %s\n", getenv("ELSA_XPID"));
-        snprintf(buf, sizeof(buf), "ELSA_XPID=%d", pid);
-        putenv(buf);
-        _elsa_wait();
-     }
-   //_remove_lock(); // elsa_config is already freed here
+     _elsa_wait();
+   elsa_xserver_end();
+   kill(pid, SIGTERM);
+   elsa_session_shutdown();
    return 0;
 }
 

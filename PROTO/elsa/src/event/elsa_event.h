@@ -6,7 +6,10 @@ typedef enum Elsa_Event_Type_
    ELSA_EVENT_UNKNOWN,
    ELSA_EVENT_AUTH,
    ELSA_EVENT_STATUS,
-   ELSA_EVENT_XSESSIONS
+   ELSA_EVENT_XSESSIONS,
+   ELSA_EVENT_USERS,
+   ELSA_EVENT_ACTIONS,
+   ELSA_EVENT_ACTION
 } Elsa_Event_Type;
 
 typedef struct Elsa_Xsession_
@@ -34,6 +37,35 @@ typedef struct Elsa_Status_Event_
    const char *login;
 } Elsa_Status_Event;
 
+typedef struct Elsa_Action_Event_
+{
+   int action;
+} Elsa_Action_Event;
+
+typedef struct Elsa_User_
+{
+   const char *login;
+   const char *image;
+   const char *lsess;
+} Elsa_User;
+
+
+typedef struct Elsa_Users_Event_
+{
+   Eina_List *users;
+} Elsa_Users_Event;
+
+typedef struct Elsa_Action_
+{
+   int id;
+   const char *label;
+} Elsa_Action;
+
+typedef struct Elsa_Actions_Event_
+{
+   Eina_List *actions;
+} Elsa_Actions_Event;
+
 typedef struct Elsa_Event_
 {
    Elsa_Event_Type type;
@@ -42,6 +74,9 @@ typedef struct Elsa_Event_
         Elsa_Xsessions_Event xsessions;
         Elsa_Auth_Event auth;
         Elsa_Status_Event status;
+        Elsa_Users_Event users;
+        Elsa_Actions_Event actions;
+        Elsa_Action_Event action;
      } event;
 } Elsa_Event;
 

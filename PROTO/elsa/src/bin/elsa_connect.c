@@ -1,7 +1,5 @@
 #include <Ecore_Con.h>
 #include "elsa_client.h"
-#include "elsa_gui.h"
-#include "../event/elsa_event.h"
 
 Ecore_Con_Server *_elsa_connect;
 Eina_List *_handlers;
@@ -43,15 +41,21 @@ _elsa_connect_data(void *data __UNUSED__, int type __UNUSED__, void *event)
    eev = elsa_event_decode(ev->data, ev->size);
    if (eev)
      {
-        if (eev->type == ELSA_EVENT_XSESSIONS)
-          elsa_gui_xsession_set(eev->event.xsessions.xsessions);
-        else if (eev->type == ELSA_EVENT_STATUS)
+        if (eev->type == ELSA_EVENT_STATUS)
           {
              if (eev->event.status.granted)
                elsa_gui_auth_valid();
              else
                elsa_gui_auth_error();
           }
+        else if (eev->type == ELSA_EVENT_XSESSIONS)
+          elsa_gui_xsession_set(eev->event.xsessions.xsessions);
+        else if (eev->type == ELSA_EVENT_USERS)
+          elsa_gui_users_set(eev->event.users.users);
+        else if (eev->type == ELSA_EVENT_ACTIONS)
+          elsa_gui_actions_set(eev->event.actions.actions);
+        else
+          fprintf(stderr, PACKAGE": unknow signal\n");
      }
    return ECORE_CALLBACK_RENEW;
 }
@@ -68,7 +72,19 @@ elsa_connect_auth_send(const char *login, const char *password, const char *sess
    eev.event.auth.session = session;
    eev.type = ELSA_EVENT_AUTH;
    data = elsa_event_encode(&eev, &size);
+   ecore_con_server_send(_elsa_connect, data, size);
+}
 
+void
+elsa_connect_action_send(int id)
+{
+   Elsa_Event eev;
+   void *data;
+   int size;
+
+   eev.event.action.action = id;
+   eev.type = ELSA_EVENT_ACTION;
+   data = elsa_event_encode(&eev, &size);
    ecore_con_server_send(_elsa_connect, data, size);
 }
 

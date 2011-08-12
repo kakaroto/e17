@@ -96,7 +96,7 @@ static Eina_Bool
 _xserver_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
    _env_set(_xserver->dname);
-   _xserver->start();
+   _xserver->start(_xserver->dname);
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -114,6 +114,7 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
    pid = _xserver_start();
    snprintf(buf, sizeof(buf), "ELSA_XPID=%d", pid);
    putenv(buf);
+   printf("need my pid here %s\n", getenv("ELSA_XPID"));
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,
                                             NULL);
@@ -123,6 +124,7 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
 void
 elsa_xserver_end()
 {
+   printf("ending xserver\n");
    unsetenv("ELSA_XPID");
 }
 

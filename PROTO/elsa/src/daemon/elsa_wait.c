@@ -12,7 +12,6 @@ static void kill_wait();
 
 
 static pid_t _x_pid = 0;
-static int _restart = 1;
 
 static void
 _elsa_wait_action(int sig, siginfo_t * si __UNUSED__, void *data __UNUSED__)
@@ -67,7 +66,6 @@ main (int argc __UNUSED__, char **argv __UNUSED__)
           {
              putenv("ELSA_QUIT=1");
           }
-        if (_restart)
         execlp("elsa", "elsa", "--nodaemon", NULL);
      }
    return -1;

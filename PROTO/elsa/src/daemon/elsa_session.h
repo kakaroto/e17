@@ -12,5 +12,6 @@ pid_t elsa_session_pid_get();
 long  elsa_session_seed_get();
 char *elsa_session_login_get();
 int elsa_session_logged_get();
+Eina_List *elsa_session_list_get();
 
 #endif /* ELSA_SESSION_H_ */

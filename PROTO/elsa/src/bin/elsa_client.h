@@ -11,6 +11,9 @@
 
 #include "elsa_gui.h"
 #include "elsa_connect.h"
+#include "elsa_client.h"
+#include "elsa_gui.h"
+#include "../event/elsa_event.h"
 
 int elsa_client_main();
 

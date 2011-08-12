@@ -1,9 +1,7 @@
 #include "elsa.h"
 #include <sys/stat.h>
-#include <Ecore_File.h>
 
 #define ELSA_CONFIG_KEY "config"
-#define ELSA_SESSION_KEY "session"
 
 static void _defaults_set(Elsa_Config *config);
 static void _users_get();
@@ -45,14 +43,16 @@ _users_get()
 
    if (!ecore_file_is_dir("/var/cache/"PACKAGE))
      ecore_file_mkdir("/var/cache/"PACKAGE);
-   ef = eet_open("/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE, EET_FILE_MODE_READ_WRITE);
+   ef = eet_open("/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE,
+                 EET_FILE_MODE_READ_WRITE);
    if (!ef)
      ef = eet_open("/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE,
                    EET_FILE_MODE_WRITE);
    f = fopen(SYSTEM_CONFIG_DIR"/elsa.conf", "rb");
    if (!f)
      {
-        fprintf(stderr, PACKAGE": Could not open "SYSTEM_CONFIG_DIR"/elsa.conf\n");
+        fprintf(stderr,
+                PACKAGE": Could not open "SYSTEM_CONFIG_DIR"/elsa.conf\n");
         return;
      }
 
@@ -102,7 +102,6 @@ _cache_get(Eet_Data_Descriptor *edd)
         _defaults_set(config);
      }
 
-   config->last_session = eet_read(file, ELSA_SESSION_KEY, NULL);
    eet_close(file);
 
    return config;
@@ -111,8 +110,6 @@ _cache_get(Eet_Data_Descriptor *edd)
 static void
 _config_free(Elsa_Config *config)
 {
-   const char *session_end;
-   if (config->last_session) free(config->last_session);
    eina_stringshare_del(config->session_path);
    eina_stringshare_del(config->command.xinit_path);
    eina_stringshare_del(config->command.xinit_args);
@@ -121,7 +118,6 @@ _config_free(Elsa_Config *config)
    eina_stringshare_del(config->command.session_start);
    eina_stringshare_del(config->command.session_login);
    eina_stringshare_del(config->command.session_stop);
-   session_end = config->command.session_stop;
    eina_stringshare_del(config->command.shutdown);
    eina_stringshare_del(config->command.reboot);
    eina_stringshare_del(config->command.suspend);
@@ -141,7 +137,6 @@ elsa_config_init()
    struct stat conf;
 
 
-   eet_init();
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elsa_Config);
    edd = eet_data_descriptor_stream_new(&eddc);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "session_path", session_path, EET_T_STRING);
@@ -153,8 +148,8 @@ elsa_config_init()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "session_login", command.session_login, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "session_stop", command.session_stop, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "shutdown", command.shutdown, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "reboot", command.shutdown, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "suspend", command.shutdown, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "reboot", command.reboot, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "suspend", command.suspend, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "daemonize", daemonize, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "numlock", numlock, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Config, "xsessions", xsessions, EET_T_UCHAR);
@@ -179,30 +174,10 @@ elsa_config_init()
    elsa_config = _cache_get(edd);
 }
 
-void
-elsa_config_last_session_set(const char *session)
-{
-   Eet_File *ef;
-   char buf[1024];
-
-   ef = eet_open("/var/cache/"PACKAGE"/"ELSA_CONFIG_FILE,
-                 EET_FILE_MODE_READ_WRITE);
-   if (!ef)
-     return;
-
-   snprintf(buf, sizeof(buf), "%s", session);
-   if (!eet_write(ef, ELSA_SESSION_KEY, buf, strlen(session), 1))
-     fprintf(stderr, PACKAGE": Error on updating last session login\n");
-   eet_close(ef);
-   if (elsa_config->last_session)
-     free(elsa_config->last_session);
-   elsa_config->last_session = strdup(session);
-}
 
 void
 elsa_config_shutdown()
 {
    _config_free(elsa_config);
-   eet_shutdown();
 }
 

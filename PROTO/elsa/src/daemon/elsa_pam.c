@@ -226,8 +226,8 @@ elsa_pam_init(const char *service, const char *display, const char *user) {
    if (status != 0) goto pam_error;
    status = elsa_pam_item_set(ELSA_PAM_ITEM_RUSER, _get_running_username());
    if (status != 0) goto pam_error;
-   status = elsa_pam_item_set(ELSA_PAM_ITEM_RHOST, "localhost");
-   if (status != 0) goto pam_error;
+//   status = elsa_pam_item_set(ELSA_PAM_ITEM_RHOST, "localhost");
+//   if (status != 0) goto pam_error;
    return 0;
 
 pam_error:

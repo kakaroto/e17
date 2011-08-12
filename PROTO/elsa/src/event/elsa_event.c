@@ -5,6 +5,9 @@
 #define ELSA_EVENT_AUTH_NAME "ElsaEventAuth"
 #define ELSA_EVENT_XSESSIONS_NAME "ElsaEventSession"
 #define ELSA_EVENT_STATUS_NAME "ElsaEventStatus"
+#define ELSA_EVENT_USERS_NAME "ElsaEventUsers"
+#define ELSA_EVENT_ACTIONS_NAME "ElsaEventActions"
+#define ELSA_EVENT_ACTION_NAME "ElsaEventAction"
 
 static Eina_Bool _elsa_event_type_set(const char *type, void *data, Eina_Bool unknow);
 static const char *_elsa_event_type_get(const void *data, Eina_Bool *unknow);
@@ -25,8 +28,15 @@ _elsa_event_type_set(const char *type, void *data, Eina_Bool unknow)
      *ev = ELSA_EVENT_STATUS;
    else if (!strcmp(type, ELSA_EVENT_XSESSIONS_NAME))
      *ev = ELSA_EVENT_XSESSIONS;
+   else if (!strcmp(type, ELSA_EVENT_USERS_NAME))
+     *ev = ELSA_EVENT_USERS;
+   else if (!strcmp(type, ELSA_EVENT_ACTIONS_NAME))
+     *ev = ELSA_EVENT_ACTIONS;
+   else if (!strcmp(type, ELSA_EVENT_ACTION_NAME))
+     *ev = ELSA_EVENT_ACTION;
    else
      {
+        printf("error on type set\n");
         *ev = ELSA_EVENT_UNKNOWN;
         return EINA_FALSE;
      }
@@ -43,8 +53,17 @@ _elsa_event_type_get(const void *data, Eina_Bool *unknow)
      return ELSA_EVENT_STATUS_NAME;
    else if (*ev == ELSA_EVENT_XSESSIONS)
      return ELSA_EVENT_XSESSIONS_NAME;
+   else if (*ev == ELSA_EVENT_USERS)
+     return ELSA_EVENT_USERS_NAME;
+   else if (*ev == ELSA_EVENT_ACTIONS)
+     return ELSA_EVENT_ACTIONS_NAME;
+   else if (*ev == ELSA_EVENT_ACTION)
+     return ELSA_EVENT_ACTION_NAME;
    if (*unknow)
-     *unknow = EINA_TRUE;
+     {
+        printf("error on type get\n");
+        *unknow = EINA_TRUE;
+     }
    return NULL;
 }
 
@@ -101,6 +120,54 @@ _elsa_event_status_dd()
 }
 
 static Eet_Data_Descriptor *
+_elsa_event_users_dd()
+{
+   Eet_Data_Descriptor *edd, *eddl;
+   Eet_Data_Descriptor_Class eddc, eddcl;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elsa_User);
+   edd = eet_data_descriptor_stream_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_User, "login",
+                                 login, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_User, "image",
+                                 image, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_User, "lsess",
+                                 lsess, EET_T_STRING);
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddcl, Elsa_Users_Event);
+   eddl = eet_data_descriptor_stream_new(&eddcl);
+   EET_DATA_DESCRIPTOR_ADD_LIST(eddl, Elsa_Users_Event, "users", users, edd);
+   return eddl;
+}
+
+static Eet_Data_Descriptor *
+_elsa_event_actions_dd()
+{
+   Eet_Data_Descriptor *edd, *eddl;
+   Eet_Data_Descriptor_Class eddc, eddcl;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elsa_Action);
+   edd = eet_data_descriptor_stream_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Action, "label",
+                                 label, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Action, "id",
+                                 id, EET_T_INT);
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddcl, Elsa_Actions_Event);
+   eddl = eet_data_descriptor_stream_new(&eddcl);
+   EET_DATA_DESCRIPTOR_ADD_LIST(eddl, Elsa_Actions_Event, "actions", actions, edd);
+   return eddl;
+}
+
+static Eet_Data_Descriptor *
+_elsa_event_action_dd()
+{
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elsa_Status_Event);
+   edd = eet_data_descriptor_stream_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Action_Event, "action",
+                                 action, EET_T_INT);
+   return edd;
+}
+
+static Eet_Data_Descriptor *
 _elsa_event_new()
 {
    Eet_Data_Descriptor_Class eddc;
@@ -118,6 +185,9 @@ _elsa_event_new()
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_XSESSIONS_NAME, _elsa_event_xsessions_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_AUTH_NAME, _elsa_event_auth_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_STATUS_NAME, _elsa_event_status_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_USERS_NAME, _elsa_event_users_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_ACTIONS_NAME, _elsa_event_actions_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ELSA_EVENT_ACTION_NAME, _elsa_event_action_dd());
 
    EET_DATA_DESCRIPTOR_ADD_UNION(edd, Elsa_Event, "event", event, type, unified);
    return edd;

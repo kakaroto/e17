@@ -27,7 +27,11 @@ elsa_pam.c         \
 ../event/elsa_event.h \
 elsa_server.h     \
 elsa_server.c     \
-elsa.h             \
+elsa_history.h    \
+elsa_history.c    \
+elsa_action.h     \
+elsa_action.c     \
+elsa.h            \
 elsa.c
 
 elsa_LDFLAGS =
