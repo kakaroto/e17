@@ -83,7 +83,6 @@ struct _Track
   DBusPendingCall *pnd;
 };
 
-static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
 
 static Plugin *_plug;
@@ -1371,7 +1370,7 @@ _cb_plugin_selected(void *data, int type, void *event)
 }
 
 static int
-_plugins_init(const Evry_API *_api)
+_plugins_init(void)
 {
    Evry_Action *act;
    Evry_Plugin *p;
@@ -1379,8 +1378,6 @@ _plugins_init(const Evry_API *_api)
 
    if (evry_module->active)
      return EINA_TRUE;
-
-   evry = _api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
@@ -1549,7 +1546,7 @@ e_modapi_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/e-module.edj", e_module_dir_get(m));
    theme_file = strdup(buf);
 
-   EVRY_MODULE_NEW(evry_module, evry, _plugins_init, _plugins_shutdown);
+   EVRY_MODULE_NEW(evry_module, _plugins_init, _plugins_shutdown);
 
    e_module_delayed_set(m, 1);
 

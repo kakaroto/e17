@@ -26,6 +26,7 @@ struct _Contact
   const char *id;
   const char *icon;
   Evas_Object *o_icon;
+  DBusPendingCall *pnd_info;
 };
 
 struct _Message
@@ -45,7 +46,6 @@ EAPI int   e_modapi_save     (E_Module *m);
 void      evry_plug_msg_shutdown(void);
 Eina_Bool evry_plug_msg_init(void);
 
-extern const Evry_API *evry;
 extern char *theme_file;
 extern Evry_Type SHOTGUN_CONTACT;
 extern Evry_Type SHOTGUN_MESSAGE;

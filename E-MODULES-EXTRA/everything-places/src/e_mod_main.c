@@ -18,7 +18,6 @@ struct _Plugin
   Eina_List *files;
 };
 
-static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
 static Eina_List *_plugins = NULL;
 static const char _module_icon[] = "find";
@@ -254,14 +253,12 @@ _act_mount(Evry_Action *act)
 }
 
 static int
-_plugins_init(const Evry_API *api)
+_plugins_init(void)
 {
    Evry_Plugin *p;
 
    if (evry_module->active)
      return EINA_TRUE;
-
-   evry = api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
@@ -342,7 +339,7 @@ e_modapi_init(E_Module *m)
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-   EVRY_MODULE_NEW(evry_module, evry, _plugins_init, _plugins_shutdown);
+   EVRY_MODULE_NEW(evry_module, _plugins_init, _plugins_shutdown);
 
    e_module_delayed_set(m, 1);
 

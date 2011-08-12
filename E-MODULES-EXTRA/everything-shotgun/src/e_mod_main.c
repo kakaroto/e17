@@ -13,7 +13,6 @@ struct _Plugin
   Eet_File *images;
 };
 
-const Evry_API *evry = NULL;
 Evry_Type SHOTGUN_CONTACT;
 Evry_Type SHOTGUN_MESSAGE;
 Eina_List *messages = NULL;
@@ -77,12 +76,13 @@ _inst_free(Evry_Plugin *plugin)
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
    IF_RELEASE(p->input);
+
    EINA_LIST_FREE(p->contacts, c)
      EVRY_ITEM_FREE(c);
-   
+
    EINA_LIST_FREE(p->fetching, c)
      EVRY_ITEM_FREE(c);
-	
+
    if (p->images) eet_close(p->images);
    eet_shutdown();
 
@@ -114,7 +114,7 @@ static Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
    Evas_Object *o = NULL;
-   
+
    GET_CONTACT(c, it);
    GET_PLUGIN(p, it->plugin);
 
@@ -155,12 +155,12 @@ _dbus_cb_info_get(void *data, DBusMessage *reply, DBusError *error)
    char *icon, *name;
    unsigned int status;
    int priority;
-   
+
    GET_CONTACT(c, data);
    GET_PLUGIN(p, c->base.plugin);
 
    c->pnd_info = NULL;
-   
+
    if (!p->active)
      return;
 
@@ -181,12 +181,12 @@ _dbus_cb_info_get(void *data, DBusMessage *reply, DBusError *error)
      }
    else
      c->base.label = eina_stringshare_add(c->id);
-   
+
    if (icon)
      c->icon = eina_stringshare_add(icon);
 
    eina_list_move(&p->contacts, &p->fetching, c);
-   
+
    if (!p->fetching)
      {
 	EVRY_PLUGIN_ITEMS_CLEAR(p);
@@ -351,7 +351,7 @@ _add_message(int self, const char *contact, const char *message)
 
    m->self = self;
    m->time = ecore_time_get();
-   
+
    messages = eina_list_append(messages, m);
 
    if (eina_list_count(messages) > MAX_HISTORY)
@@ -391,15 +391,13 @@ _dbus_cb_signal_new_msg_self(void *data, DBusMessage *msg)
 }
 
 static int
-_plugins_init(const Evry_API *_api)
+_plugins_init(void)
 {
    Evry_Plugin *plugin;
    Evry_Action *act;
 
    if (evry_module->active)
      return EINA_TRUE;
-
-   evry = _api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
@@ -498,7 +496,7 @@ e_modapi_init(E_Module *m)
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
-   EVRY_MODULE_NEW(evry_module, evry, _plugins_init, _plugins_shutdown);
+   EVRY_MODULE_NEW(evry_module, _plugins_init, _plugins_shutdown);
 
    e_module_delayed_set(m, 1);
 

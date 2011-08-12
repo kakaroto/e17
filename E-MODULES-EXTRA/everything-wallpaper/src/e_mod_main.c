@@ -26,7 +26,6 @@ struct _Import
 static void _import_edj_gen(Import *import);
 static Eina_Bool _import_cb_edje_cc_exit(void *data, int type, void *event);
 
-static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
 
 static Import *import = NULL;
@@ -141,12 +140,10 @@ _fetch(Evry_Action *act)
 }
 
 static int
-_plugins_init(const Evry_API *api)
+_plugins_init(void)
 {
    if (evry_module->active)
      return EINA_TRUE;
-
-   evry = api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
@@ -409,7 +406,7 @@ EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, PACKAGE };
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-   EVRY_MODULE_NEW(evry_module, evry, _plugins_init, _plugins_shutdown);
+   EVRY_MODULE_NEW(evry_module, _plugins_init, _plugins_shutdown);
    
    e_module_delayed_set(m, 1);
 
