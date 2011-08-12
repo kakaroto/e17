@@ -1,4 +1,4 @@
-AC_INIT([elsa], [0.0.3], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([elsa], [0.0.4], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
