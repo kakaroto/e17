@@ -28,7 +28,6 @@ override_dh_auto_configure:
 	--enable-fontconfig \
 	--enable-fribidi \
 	--enable-software-xlib \
-	--enable-software-xcb \
 	--enable-static-software-generic \
 	--enable-buffer \
 	--enable-gl-x11 \
