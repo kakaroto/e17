@@ -836,35 +836,35 @@ group {
 			target: "e.text.plugin";
 			target: "icon_clip";            
 		}
-		/* program {
-		 *     name: "update";
-		 *     signal: "e,signal,update";
-		 *     source: "e";
-		 *     action: STATE_SET "faded" 0.0;
-		 *     transition: DECELERATE 0.1;
-		 *     target: "icon_clip";
-		 *     after: "show_icon";
-		 * }
-		 * program {
-		 *     name: "show_icon";
-		 *     action: STATE_SET "default" 0.0;
-		 *     transition: ACCELERATE 0.3;
-		 *     target: "icon_clip";
-		 * }
-		 * program {
-		 *     name: "thumb_show";
-		 *     signal: "e,action,thumb,show";
-		 *     source: "e";
-		 *     action: STATE_SET "faded" 0.0;
-		 *     target: "icon_clip";
-		 *     after: "thumb_show2";
-		 * }
-		 * program {
-		 *     name: "thumb_show2";
-		 *     action: STATE_SET "default" 0.0;
-		 *     transition: SINUSOIDAL 0.2;
-		 *     target: "icon_clip";
-		 * } */
+		program {
+		    name: "update";
+		    signal: "e,signal,update";
+		    source: "e";
+		    action: STATE_SET "faded" 0.0;
+		    transition: DECELERATE 0.1;
+		    target: "icon_clip";
+		    after: "show_icon";
+		}
+		program {
+		    name: "show_icon";
+		    action: STATE_SET "default" 0.0;
+		    transition: ACCELERATE 0.3;
+		    target: "icon_clip";
+		}
+		program {
+		    name: "thumb_show";
+		    signal: "e,action,thumb,show";
+		    source: "e";
+		    action: STATE_SET "faded" 0.0;
+		    target: "icon_clip";
+		    after: "thumb_show2";
+		}
+		program {
+		    name: "thumb_show2";
+		    action: STATE_SET "default" 0.0;
+		    transition: SINUSOIDAL 0.2;
+		    target: "icon_clip";
+		}
 	}
 }
 
@@ -1447,7 +1447,7 @@ group {
 			type: RECT;
 			description {
 				state: "default" 0.0;
-				color: 255 255 255 0;
+				color: 255 255 255 255;
 				rel1 {
 					relative: 0.0 0.0;
 					offset: 0   1;
@@ -1457,12 +1457,6 @@ group {
 					offset: -5  -3;
 				}
 			}
-			description {
-				state: "visible" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-				color: 255 255 255 255;
-			}
 		}
 		part {
 			name: "clip";
@@ -1471,7 +1465,7 @@ group {
 			clip_to: "base";
 			description {
 				state: "default" 0.0;
-				color: 225 225 225 255;
+				color: 225 225 225 0;
 				rel1 {
 					to: "base";
 					relative: 0.0 0.0;
@@ -1482,6 +1476,12 @@ group {
 					relative: 0.0 1.0;
 					offset: 40   -1;
 				}
+			}
+			description {
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
 			}
 		}
 		part {
@@ -1685,14 +1685,14 @@ group {
 			signal: "e,action,thumb,show_delayed";
 			source: "e";
 			action: STATE_SET "visible" 0.0;
-			target: "base";
+			target: "clip";
 		}
 		program {
 			name: "thumb_show";
 			signal: "e,action,thumb,show";
 			source: "e";
 			action: STATE_SET "visible" 0.0;
-			target: "base";
+			target: "clip";
 		}
 		program {
 			name: "detail_show";
