@@ -905,9 +905,6 @@ _plugins_init(const Evry_API *_api)
 {
    Evry_Plugin *p;
 
-   if (evry_module->active)
-     return EINA_TRUE;
-
    evry = _api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
@@ -992,8 +989,6 @@ _plugins_shutdown(void)
 {
    Plugin *p;
 
-   if (!evry_module->active) return;
-
    if (conn)
      {
        e_dbus_signal_handler_del(conn, cb_name_owner_changed);
@@ -1008,8 +1003,6 @@ _plugins_shutdown(void)
 
    EINA_LIST_FREE(plugins, p)
      EVRY_PLUGIN_FREE(p);
-
-   evry_module->active = EINA_FALSE;
 }
 
 /***************************************************************************/

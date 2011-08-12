@@ -26,6 +26,7 @@ struct _Contact
   const char *id;
   const char *icon;
   Evas_Object *o_icon;
+  DBusPendingCall *pnd_info;
 };
 
 struct _Message

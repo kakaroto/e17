@@ -1206,9 +1206,6 @@ _plugins_init(const Evry_API *_api)
    Evry_Plugin *p;
    Evry_Action *act;
 
-   if (evry_module->active)
-     return EINA_TRUE;
-
    evry = _api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
@@ -1317,8 +1314,6 @@ _plugins_shutdown(void)
    Evry_Action *act;
    Ecore_Event_Handler *h;
 
-   if (!evry_module->active) return;
-
    EINA_LIST_FREE(plugins, p)
      EVRY_PLUGIN_FREE(p);
 
@@ -1327,8 +1322,6 @@ _plugins_shutdown(void)
 
    EINA_LIST_FREE(handlers, h)
      ecore_event_handler_del(h);
-
-   evry_module->active = EINA_FALSE;
 }
 
 /***************************************************************************/

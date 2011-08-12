@@ -143,9 +143,6 @@ _fetch(Evry_Action *act)
 static int
 _plugins_init(const Evry_API *api)
 {
-   if (evry_module->active)
-     return EINA_TRUE;
-
    evry = api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
@@ -174,12 +171,8 @@ _plugins_init(const Evry_API *api)
 static void
 _plugins_shutdown(void)
 {
-   if (!evry_module->active) return;
-
    EVRY_ACTION_FREE(_act1);
    EVRY_ACTION_FREE(_act2);
-
-   evry_module->active = EINA_FALSE;
 }
 
 /* taken from e_int_config_wallpaper_import.c */

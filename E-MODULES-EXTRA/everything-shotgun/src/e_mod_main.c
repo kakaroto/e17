@@ -396,9 +396,6 @@ _plugins_init(const Evry_API *_api)
    Evry_Plugin *plugin;
    Evry_Action *act;
 
-   if (evry_module->active)
-     return EINA_TRUE;
-
    evry = _api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
@@ -447,8 +444,6 @@ _plugins_shutdown(void)
    Evry_Action *act;
    Message *m;
 
-   if (!evry_module->active) return;
-
    if (conn)
      {
 	e_dbus_connection_close(conn);
@@ -470,8 +465,6 @@ _plugins_shutdown(void)
 	eina_stringshare_del(m->msg);
 	E_FREE(m);
      }
-
-   evry_module->active = EINA_FALSE;
 }
 
 

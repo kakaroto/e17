@@ -383,9 +383,6 @@ _finish(Evry_Plugin *plugin)
 static int
 _plugins_init(const Evry_API *_api)
 {
-   if (evry_module->active)
-     return EINA_TRUE;
-
    evry = _api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
@@ -416,11 +413,7 @@ _plugins_init(const Evry_API *_api)
 static void
 _plugins_shutdown(void)
 {
-   if (!evry_module->active) return;
-
    EVRY_PLUGIN_FREE(_plug);
-
-   evry_module->active = EINA_FALSE;
 }
 
 /***************************************************************************/

@@ -1358,9 +1358,6 @@ _plugins_init(const Evry_API *_api)
    Evry_Plugin *p;
    int prio = 15;
 
-   if (evry_module->active)
-     return EINA_TRUE;
-
    evry = _api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
@@ -1487,8 +1484,6 @@ _plugins_shutdown(void)
    Evry_Action *act;
    char *player;
 
-   if (!evry_module->active) return;
-
    GET_EVRY_PLUGIN(p, _plug);
    EINA_LIST_FREE(p->actions, act)
      EVRY_ACTION_FREE(act);
@@ -1509,8 +1504,6 @@ _plugins_shutdown(void)
 
    EINA_LIST_FREE(players, player)
      eina_stringshare_del(player);
-
-   evry_module->active = EINA_FALSE;
 }
 
 /***************************************************************************/
