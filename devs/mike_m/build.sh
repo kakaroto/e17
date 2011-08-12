@@ -12,6 +12,7 @@ deplist="autotools-dev automake autopoint libtool zlib1g-dev
 	libxcb-shm0-dev libxcb-image0-dev libxss-dev libxp-dev
 	libxtst-dev graphviz libasound2-dev libpam0g-dev"
 
+defpkgs="eina eet evas ecore eeze embryo edje e_dbus efreet elementary e PROTO/libeweather"
 #
 # Evas fails to build on x86-64 due to this bug.
 # https://bugs.launchpad.net/ubuntu/+source/libgcrypt11/+bug/751142
@@ -21,7 +22,7 @@ deplist="autotools-dev automake autopoint libtool zlib1g-dev
 
 # fail on errors
 set -e
-set -x
+#set -x
 
 do_build_and_install()
 {
@@ -67,7 +68,7 @@ do_build_deb()
 		;;
 	esac
 	cp -aR "packaging/debian/$pkgdir"/* "$e/debian/"
-	(cd "$e" && dpkg-buildpackage -sa -rfakeroot)
+	(cd "$e" && dpkg-buildpackage -sa -rfakeroot -uc -us $MAKEFLAGS)
 }
 
 do_install_deb()
@@ -93,6 +94,36 @@ do_install_deb()
 do_install_dependencies()
 {
 	sudo apt-get -y install $deplist
+}
+
+usage()
+{
+local scriptname
+scriptname="`basename $0`"
+cat <<EOF
+Usage:
+$scriptname [--debian] [--up] [--deps] [--help] [--force] [pkgs]
+
+$scriptname builds and installs binaries from the E SVN.
+It is written to be run from an SVN checkout or git svn clone.
+When used from git svn, it can rebuild only packages that
+have changed in git since the last rebuild.
+
+Options:
+
+  --deps    Install build dependencies (Ubuntu 11.04 only)
+  --debian  Build and install debian packages
+  --up      Update mode (avoid running autoconf & configure)
+  --force   Rebuild everything, ignoring git trees
+  --help    Show this message
+
+Modules built by default are:
+$defpkgs
+
+The default mode of build is simple build and install.
+
+EOF
+exit 0
 }
 
 # some EFL libraries don't build with warnings by default...
@@ -123,7 +154,10 @@ do
 	--deps)
 		install_deps=1
 		;;
-	-f|--force)
+	--help)
+		usage
+		;;
+	--force)
 		force=1
 		;;
 	-*)
@@ -147,7 +181,7 @@ fi
 
 if [ ! "$what" ]
 then
-	what="eina eet evas ecore eeze embryo edje e_dbus efreet elementary e PROTO/libeweather"
+	what="$defpkgs"
 fi
 
 for e in $what
