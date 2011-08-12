@@ -295,9 +295,9 @@ _inst_free(Evry_Plugin *plugin)
 Eina_Bool
 evry_plug_msg_init(void)
 {
-   _plugin = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Shotgun Message"), "folder",
+   _plugin = EVRY_PLUGIN_BASE("Shotgun Message", "folder",
 			   SHOTGUN_MESSAGE,
-			   _inst_new, _inst_free, _fetch, NULL);
+			   _inst_new, _inst_free, _fetch);
 
    evry->plugin_register(_plugin, EVRY_PLUGIN_OBJECT, 1);
    _plugin->config->aggregate = EINA_FALSE;

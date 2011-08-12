@@ -36,12 +36,15 @@ static const Evry_API *evry = NULL;
 /* module to be registered in evry */
 static Evry_Module *evry_module = NULL;
 
+static Eina_List *plugins = NULL;
+static Eina_List *actions = NULL;
+
 /* cast Evry_Item to Item.
  * - likewise GET_PLUGIN is defined in evry_api.h
  * - EVRY_ITEM casts Item to Evry_Item
  * - EVRY_PLUGIN casts Plugin to Evry_Plugin
  */
-#define GET_ITEM(_it, _item) Item *_it = (Item*)_item;
+#define GET_MY_ITEM(_it, _item) Item *_it = (Item*)_item;
 #define ITEM(_item) (Item*)_item;
 
 static void
@@ -52,12 +55,18 @@ _cb_item_free(Evry_Item *item)
    E_FREE(it);
 }
 
-static void
-_cb_icon_get(Evry_Item *item)
+static Evas_Object *
+_cb_icon_get(Evry_Item *item, Evas *e)
 {
-   GET_ITEM(it, item);
+   Evas_Object *o;
+   
+   GET_MY_ITEM(it, item);
 
-   E_FREE(it);
+   o = e_icon_add(e); 
+   e_icon_preload_set(o, 1);
+   /* e_icon_file_set(o, FILE);  */
+   
+   return o;
 }
 
 static Item *
@@ -92,7 +101,6 @@ _cb_plugin_free(Evry_Plugin *plugin)
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
 
-
    E_FREE(p);
 }
 
@@ -123,6 +131,8 @@ _cb_plugin_fetch(Evry_Plugin *plugin, const char *input)
 static int
 _cb_module_init(const Evry_API *_api)
 {
+   Evry_Plugin *plugin;
+   
    evry = _api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
@@ -133,15 +143,10 @@ _cb_module_init(const Evry_API *_api)
     * queried with _cb_plugin_fetch and freed with _cb_plugin_free
     * when evry cleans up the state to which the plugin instance
     * belongs */
-   _plug = EVRY_PLUGIN_NEW(Evry_Plugin,
-			   N_("SKELETON Plugin"),
-			   "fdo_icon_name",
-			   EVRY_TYPE_TEXT,
-			   _cb_plugin_new,
-			   _cb_plugin_free,
-			   _cb_plugin_fetch, NULL);
+   plugin = EVRY_PLUGIN_BASE("SKELETON Plugin", "fdo_icon_name", EVRY_TYPE_TEXT,
+			     _cb_plugin_new, _cb_plugin_free, _cb_plugin_fetch);
 
-   if (evry->plugin_register(_plug, EVRY_PLUGIN_SUBJECT, 100))
+   if (evry->plugin_register(plugin, EVRY_PLUGIN_SUBJECT, 100))
      {
 	/* if evry->plugin register returns 1 the plugin was
 	   registered the first time and you can set some initial defaults */
@@ -153,14 +158,22 @@ _cb_module_init(const Evry_API *_api)
 	 * pc->trigger_only = EINA_TRUE;
 	 * pc->min_query = 4; */
      }
-
+   plugins = eina_list_append(plugins, plugin);
+   
    return EINA_TRUE;
 }
 
 static void
 _cb_module_shutdown(void)
 {
-   EVRY_PLUGIN_FREE(_plug);
+   Evry_Plugin *plugin;
+   Evry_Action *act;
+   
+   EINA_LIST_FREE(plugins, plugin)
+     EVRY_PLUGIN_FREE(plugin);
+
+   EINA_LIST_FREE(actions, act)
+     EVRY_ACTION_FREE(act);
 }
 
 /***************************************************************************/

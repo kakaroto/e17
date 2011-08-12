@@ -617,9 +617,9 @@ _plugins_init(const Evry_API *_api)
 
    buddy_icon_default = eina_stringshare_add("emblem-people");
 
-   plugin_base = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Pidgin"), NULL,
-			  PIDGIN_CONTACT,
-			  _begin, _cleanup, _fetch, NULL);
+   plugin_base = EVRY_PLUGIN_BASE("Pidgin", NULL, PIDGIN_CONTACT,
+				  _begin, _cleanup, _fetch);
+   
    evry->plugin_register(plugin_base, EVRY_PLUGIN_SUBJECT, 1);
 
    act = EVRY_ACTION_NEW(N_("Chat"), PIDGIN_CONTACT, 0, "go-next",

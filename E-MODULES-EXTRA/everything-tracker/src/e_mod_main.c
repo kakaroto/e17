@@ -944,10 +944,10 @@ _plugins_init(const Evry_API *_api)
      plugins = eina_list_append(plugins, p); }
 
 
-   FILE_PLUGIN_NEW(N_("Tracker"), EVRY_PLUGIN_SUBJECT, "find", EVRY_TYPE_FILE,
+   FILE_PLUGIN_NEW("Tracker", EVRY_PLUGIN_SUBJECT, "find", EVRY_TYPE_FILE,
 		   _begin, _finish, _fetch, query_files);
 
-   FILE_PLUGIN_NEW(N_("Tracker"), EVRY_PLUGIN_OBJECT, "find", EVRY_TYPE_FILE,
+   FILE_PLUGIN_NEW("Tracker", EVRY_PLUGIN_OBJECT, "find", EVRY_TYPE_FILE,
 		   _begin, _finish, _fetch, query_files);
 
 
@@ -963,19 +963,19 @@ _plugins_init(const Evry_API *_api)
 	 p->config->min_query = _min_query; }				\
       plugins = eina_list_append(plugins, p); }
 
-   QUERY_PLUGIN_NEW(N_("Albums"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
+   QUERY_PLUGIN_NEW("Albums", EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
 		    _begin, _finish, _fetch, query_albums, 4);
 
-   QUERY_PLUGIN_NEW(N_("Artist"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
+   QUERY_PLUGIN_NEW("Artist", EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
 		    _begin, _finish, _fetch, query_artists, 4);
 
-   QUERY_PLUGIN_NEW(N_("Most Listened"), EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
+   QUERY_PLUGIN_NEW("Most Listened", EVRY_PLUGIN_OBJECT, "emblem-sound", TRACKER_MUSIC,
 		    _begin, _finish, _fetch, query_most_played, 0);
 
-   QUERY_PLUGIN_NEW(N_("Albums"), EVRY_PLUGIN_SUBJECT, "emblem-sound", TRACKER_MUSIC,
+   QUERY_PLUGIN_NEW("Albums", EVRY_PLUGIN_SUBJECT, "emblem-sound", TRACKER_MUSIC,
 		    _begin, _finish, _fetch, query_albums, 4);
 
-   QUERY_PLUGIN_NEW(N_("Artist"), EVRY_PLUGIN_SUBJECT, "emblem-sound", TRACKER_MUSIC,
+   QUERY_PLUGIN_NEW("Artist", EVRY_PLUGIN_SUBJECT, "emblem-sound", TRACKER_MUSIC,
 		    _begin, _finish, _fetch, query_artists, 4);
 
    /* QUERY_PLUGIN_NEW(N_("Most Listened"), EVRY_PLUGIN_SUBJECT, "emblem-sound", TRACKER_MUSIC,

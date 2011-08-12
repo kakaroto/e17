@@ -1379,8 +1379,8 @@ _plugins_init(const Evry_API *_api)
    FILE_LIST     = evry->type_register("FILE_LIST");
 
 
-   p = EVRY_PLUGIN_NEW(Plugin, N_("Playlist"), "emblem-sound", MPRIS_TRACK,
-		       _begin, _finish, _fetch, NULL);
+   p = EVRY_PLUGIN_BASE("Playlist", "emblem-sound", MPRIS_TRACK,
+		       _begin, _finish, _fetch);
    p->history     = EINA_FALSE;
    p->async_fetch = EINA_TRUE;
    p->cb_key_down = &_cb_key_down;

@@ -1233,22 +1233,22 @@ _plugins_init(const Evry_API *_api)
 	 pc->trigger_only = EINA_TRUE;					\
 	 pc->trigger = eina_stringshare_add(_trigger); }}		\
 
-   PLUGIN_NEW(N_("Google"), EVRY_TYPE_TEXT, "google",
+   PLUGIN_NEW("Google", EVRY_TYPE_TEXT, "google",
 	      _begin, _finish, _fetch, &_complete,
 	      _request_goolge, _google_data_cb,
 	      NULL, _trigger_google);
 
-   PLUGIN_NEW(N_("Wikipedia"), EVRY_TYPE_TEXT, "wikipedia",
+   PLUGIN_NEW("Wikipedia", EVRY_TYPE_TEXT, "wikipedia",
 	      _begin, _finish, _fetch, &_complete,
 	      _request_wiki, _wikipedia_data_cb,
 	      NULL, _trigger_wiki);
 
-   PLUGIN_NEW(N_("Youtube"), WEBLINK, "youtube",
+   PLUGIN_NEW("Youtube", WEBLINK, "youtube",
 	      _begin, _finish, _fetch, &_complete,
 	      _request_youtube, _youtube_data_cb,
 	      "gdata.youtube.com", _trigger_youtube);
 
-   PLUGIN_NEW(N_("Translate"), EVRY_TYPE_TEXT, "text-html",
+   PLUGIN_NEW("Translate", EVRY_TYPE_TEXT, "text-html",
 	      _begin, _finish, _fetch, NULL,
 	      _request_gtranslate, _gtranslate_data_cb,
 	      "ajax.googleapis.com", _trigger_gtranslate);

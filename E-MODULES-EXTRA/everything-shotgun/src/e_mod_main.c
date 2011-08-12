@@ -412,9 +412,8 @@ _plugins_init(const Evry_API *_api)
    SHOTGUN_CONTACT = evry->type_register("SHOTGUN_CONTACT");
    SHOTGUN_MESSAGE = evry->type_register("SHOTGUN_MESSAGE");
 
-   plugin = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Shotgun"), "folder",
-			    SHOTGUN_CONTACT,
-			    _inst_new, _inst_free, _fetch, NULL);
+   plugin = EVRY_PLUGIN_BASE_NEW("Shotgun", "folder", SHOTGUN_CONTACT,
+			    _inst_new, _inst_free, _fetch);
 
    evry->plugin_register(plugin, EVRY_PLUGIN_SUBJECT, 1);
    plugins = eina_list_append(plugins, plugin);

@@ -388,10 +388,8 @@ _plugins_init(const Evry_API *_api)
    if (!evry->api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
 
-   _plug = EVRY_PLUGIN_NEW(Evry_Plugin, N_("Spell Checker"),
-		       _module_icon,
-		       EVRY_TYPE_TEXT,
-		       _begin, _finish, _fetch, NULL);
+   _plug = EVRY_PLUGIN_BASE("Spell Checker", _module_icon, EVRY_TYPE_TEXT,
+			    _begin, _finish, _fetch);
    _plug->config_path = _config_path;
    _plug->history     = EINA_FALSE;
    _plug->async_fetch = EINA_TRUE;
