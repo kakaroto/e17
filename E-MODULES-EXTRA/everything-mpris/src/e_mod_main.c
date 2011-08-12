@@ -26,8 +26,8 @@
 typedef struct _Plugin Plugin;
 typedef struct _Track Track;
 
-/* #undef DBG
- * #define DBG(...) ERR(__VA_ARGS__) */
+#undef DBG
+#define DBG(...) ERR(__VA_ARGS__)
 
 struct _Plugin
 {
@@ -185,7 +185,7 @@ _dbus_cb_current_track(void *data, DBusMessage *reply, DBusError *error)
    int num;
 
    p->pnd_curtrack = NULL;
-   
+
    if (!_dbus_check_msg(reply, error))
      return;
 
@@ -215,31 +215,26 @@ _update_list(Plugin *p)
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
 
-   /* remove 'empty' item */
-   if ((p->tracks && p->tracks->next) &&
-       (p->tracks->data == p->empty))
-     p->tracks = eina_list_remove(p->tracks, p->empty);
-
    l = p->tracks;
    p->tracks = NULL;
 
    /* merge old and new list, keep old when possible */
    EINA_LIST_FREE(p->fetch, t)
      {
-	t2 = (l ? l->data : NULL);
+	t2 = eina_list_data_get(l);
 
 	if (!EVRY_ITEM(t)->id)
 	  {
 	     EVRY_ITEM_FREE(t);
 	     continue;
 	  }
-
 	if (t2 && (t->id == t2->id) && (EVRY_ITEM(t)->id == EVRY_ITEM(t2)->id))
 	  {
+	     /* nr in playlist and file locatation are the same */
 	     EVRY_ITEM_FREE(t);
 	     p->tracks = eina_list_append(p->tracks, t2);
 	  }
-	else /*** new track ***/
+	else /* new track */
 	  {
 	     if (t2) EVRY_ITEM_FREE(t2);
 	     p->tracks = eina_list_append(p->tracks, t);
@@ -247,7 +242,7 @@ _update_list(Plugin *p)
 	     GET_ITEM(it, t);
 	     GET_FILE(file, t);
 
-	     /* TODO fix xmms2 mpris bridge / audacious */
+	     /* fix xmms2 mpris bridge / audacious */
 	     tmp = evry->util_url_unescape(it->id, 0);
 	     if (!strncmp(tmp, "file://", 7))
 	       file->path = eina_stringshare_add(tmp + 7);
@@ -255,7 +250,7 @@ _update_list(Plugin *p)
 	       file->path = eina_stringshare_add(tmp);
 	     free(tmp);
 
-	     /*** set label ***/
+	     /* set label */
 	     if (t->artist && t->title)
 	       {
 		  snprintf(buf, sizeof(buf), "%s - %s", t->artist, t->title);
@@ -287,10 +282,8 @@ _update_list(Plugin *p)
      EVRY_ITEM_FREE(t);
 
    EINA_LIST_FOREACH(p->tracks, l, t)
-     {
-	if ((!p->input || evry->fuzzy_match(EVRY_ITEM(t)->label, p->input)))
-	  EVRY_PLUGIN_ITEM_APPEND(p, t);
-     }
+     if ((!p->input) ||(evry->fuzzy_match(EVRY_ITEM(t)->label, p->input)))
+       EVRY_PLUGIN_ITEM_APPEND(p, t);
 
    if (!p->pnd_curtrack)
      p->pnd_curtrack = _dbus_send_msg("/TrackList", "GetCurrentTrack",
@@ -311,6 +304,8 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
    t->pnd = NULL;
 
    p->fetch_tracks--;
+
+   printf("_cb_tracklist_metadata %d\n", p->fetch_tracks);
 
    if (!_dbus_check_msg(reply, error))
      {
@@ -386,20 +381,11 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
    return;
 
  error:
-   if (!p->fetch_tracks)
-     {
-	EVRY_PLUGIN_ITEMS_CLEAR(p);
-
-	EINA_LIST_FREE(p->tracks, t)
-	  EVRY_ITEM_FREE(t);
-
-	p->tracks = p->fetch;
-
-	EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
-     }
-
    p->fetch = eina_list_remove(p->fetch, t);
    EVRY_ITEM_FREE(t);
+
+   if (!p->fetch_tracks)
+     _update_list(p);
 
    return;
 }
@@ -469,22 +455,14 @@ _update_timer(void *data)
 static void
 _mpris_get_metadata(Plugin *p, Eina_Bool delay)
 {
-
    Track *t;
    Eina_List *l, *ll;
 
    DBG("tracklist changed %d, %d", p->tracklist_cnt, p->fetch_tracks);
    p->fetch_tracks = p->tracklist_cnt;
-   p->fetch = NULL;
 
-   EINA_LIST_FOREACH_SAFE(p->tracks, l, ll, t)
-     {
-	if (t->pnd)
-	  {
-	     p->tracks = eina_list_remove_list(p->tracks, l);
-	     EVRY_ITEM_FREE(t);
-	  }
-     }
+   EINA_LIST_FREE(p->fetch, t)
+     EVRY_ITEM_FREE(t);
 
    if (p->fetch_tracks)
      {
@@ -495,7 +473,7 @@ _mpris_get_metadata(Plugin *p, Eina_Bool delay)
 	  ecore_timer_del(p->update_timer);
 
 	if (delay)
-	  p->update_timer = ecore_timer_add(0.3, _update_timer, p);
+	  p->update_timer = ecore_timer_add(0.2, _update_timer, p);
 	else
 	  _update_timer(p);
      }
@@ -519,7 +497,7 @@ _dbus_cb_tracklist_length(void *data, DBusMessage *reply, DBusError *error)
    Plugin *p = data;
 
    p->pnd_tracklist = NULL;
-   
+
    if (!_dbus_check_msg(reply, error)) return;
 
    dbus_message_get_args(reply, error,
@@ -542,7 +520,6 @@ _set_status(Plugin *p, DBusMessage *msg)
 	ERR("no dbus struct");
 	return;
      }
-
    dbus_message_iter_recurse(&iter, &array);
    dbus_message_iter_get_basic(&array, &(p->status.playing));
    dbus_message_iter_next(&array);
@@ -563,7 +540,7 @@ _dbus_cb_get_status(void *data, DBusMessage *reply, DBusError *error)
    GET_PLUGIN(p, data);
 
    p->pnd_status = NULL;
-   
+
    if (!_dbus_check_msg(reply, error)) return;
 
    _set_status(data, reply);
@@ -593,7 +570,8 @@ _dbus_cb_track_change(void *data, DBusMessage *msg)
    if (p->pnd_curtrack)
      dbus_pending_call_cancel(p->pnd_curtrack);
 
-   p->pnd_curtrack = _dbus_send_msg("/TrackList", "GetCurrentTrack", _dbus_cb_current_track, p);
+   p->pnd_curtrack = _dbus_send_msg("/TrackList", "GetCurrentTrack",
+				    _dbus_cb_current_track, p);
 }
 
 static void
@@ -612,7 +590,8 @@ _dbus_cb_status_change(void *data, DBusMessage *msg)
    else if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32)
      {
 	/* XXX audacious.. seems to be fixed upstream, remove later */
-	p->pnd_status = _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
+	p->pnd_status = _dbus_send_msg("/Player", "GetStatus",
+				       _dbus_cb_get_status, p);
      }
 }
 
@@ -625,9 +604,11 @@ _begin(Evry_Plugin *plugin, const Evry_Item *item __UNUSED__)
 
    EVRY_PLUGIN_INSTANCE(p, plugin);
 
-   p->pnd_tracklist = _dbus_send_msg("/TrackList", "GetLength", _dbus_cb_tracklist_length, p);
+   p->pnd_tracklist = _dbus_send_msg("/TrackList", "GetLength",
+				     _dbus_cb_tracklist_length, p);
 
-   p->pnd_status = _dbus_send_msg("/Player", "GetStatus", _dbus_cb_get_status, p);
+   p->pnd_status = _dbus_send_msg("/Player", "GetStatus",
+				  _dbus_cb_get_status, p);
 
    p->cb_tracklist_change = e_dbus_signal_handler_add
      (conn, bus_name, "/TrackList", mpris_interface, "TrackListChange",
@@ -1413,7 +1394,7 @@ _plugins_init(const Evry_API *_api)
    if (evry->plugin_register(p, EVRY_PLUGIN_SUBJECT, 0))
      {
 	Plugin_Config *pc = p->config;
-	pc->view_mode = VIEW_MODE_LIST;
+	pc->view_mode = VIEW_MODE_DETAIL;
 	pc->aggregate = EINA_FALSE;
 	pc->top_level = EINA_FALSE;
 	pc->trigger = eina_stringshare_add("l ");
