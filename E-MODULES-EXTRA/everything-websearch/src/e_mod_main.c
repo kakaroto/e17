@@ -130,6 +130,7 @@ struct _Json_Data
   int is_val;
 };
 
+static const Evry_API *evry = NULL;
 static Evry_Module *evry_module = NULL;
 
 static Module_Config *_conf;
@@ -1200,13 +1201,15 @@ _complete(Evry_Plugin *p, const Evry_Item *item, char **input)
 }
 
 static int
-_plugins_init(void)
+_plugins_init(const Evry_API *_api)
 {
    Evry_Plugin *p;
    Evry_Action *act;
 
    if (evry_module->active)
      return EINA_TRUE;
+
+   evry = _api;
 
    if (!evry->api_version_check(EVRY_API_VERSION))
      return EINA_FALSE;
@@ -1605,7 +1608,7 @@ e_modapi_init(E_Module *m)
    if (!ecore_file_exists(buf))
      ecore_file_mkdir(buf);
 
-   EVRY_MODULE_NEW(evry_module, _plugins_init, _plugins_shutdown);
+   EVRY_MODULE_NEW(evry_module, evry, _plugins_init, _plugins_shutdown);
    
    e_module_delayed_set(m, 1);
 

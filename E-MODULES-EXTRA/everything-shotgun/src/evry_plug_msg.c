@@ -154,7 +154,6 @@ _view_update(Evry_View *view)
 
    e_box_size_min_get(view->o_list, NULL, &w); 
    evas_object_geometry_get(view->o_list, NULL, NULL, NULL, &h);
-
    if (w < h)
      e_box_align_set(view->o_list, 0.5, 0.0);
    else
@@ -197,8 +196,6 @@ _view_destroy(Evry_View *view)
      }
 
    evas_object_del(view->o_list);
-
-   E_FREE(v);
 }
 
 static Evas_Object *
@@ -290,9 +287,8 @@ _inst_free(Evry_Plugin *plugin)
    EVRY_ITEM_FREE(p->contact);
 
    ecore_event_handler_del(p->handle_msg);
-
-   /* View will be destroyed when state finishes*/
-   /* E_FREE(plugin->view); */
+   
+   E_FREE(plugin->view);
    E_FREE(p);
 }
 
