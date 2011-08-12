@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Link
+Name=Everything SKEL
+Icon=accessories-dictionary
+Comment=Example Plugin for Everything
+X-Enlightenment-ModuleType=launcher

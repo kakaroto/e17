@@ -1,23 +1,17 @@
-images 
-{
+images {
    image: "module_icon.png" COMP;
 }
 
-collections 
-{
-   group 
-     {
+collections {
+   group {
 	name: "icon";
 	max: 24 24;
-	parts 
-	  {
-	     part 
-	       {
+	parts {
+	     part {
 		  name: "image";
 		  mouse_events: 0;
 		  type: IMAGE;
-		  description 
-		    {
+		  description {
 		       state: "default" 0.0;
 		       image.normal: "module_icon.png";
 		    }

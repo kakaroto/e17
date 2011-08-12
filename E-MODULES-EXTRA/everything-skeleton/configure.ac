@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(evry-skel, 0.0.1, hannes.janetzek@gmail.com)
+AC_INIT(everything-SKEL, 0.0.1, hannes.janetzek@gmail.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
@@ -24,18 +24,8 @@ define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
-m4_ifdef([AM_GNU_GETTEXT_VERSION], [
-AM_GNU_GETTEXT_VERSION([0.14])
-])
-
-m4_ifdef([AM_GNU_GETTEXT], [
 AM_GNU_GETTEXT([external])
-po_makefile_in=po/Makefile.in
-AM_CONDITIONAL([HAVE_PO], [true])
-],[
-AM_CONDITIONAL([HAVE_PO], [false])
-])
-AC_SUBST(LTLIBINTL)
+AM_GNU_GETTEXT_VERSION(0.14)
 
 PKG_CHECK_MODULES(E, [enlightenment])
 PKG_CHECK_MODULES(EVRY, [everything])
@@ -69,8 +59,8 @@ AC_ARG_ENABLE(homedir-install,
 AC_OUTPUT([
 Makefile
 src/Makefile
+po/Makefile.in
 module.desktop
 e_module.spec
-$po_makefile_in
 ], [
 ])

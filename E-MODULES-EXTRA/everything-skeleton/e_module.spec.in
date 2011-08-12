@@ -1,4 +1,4 @@
-%define module_name evry-tracker
+%define module_name evry-SKEL
 
 Summary: %{module_name} module for the Enlightenment window manager
 Name: e_modules-%{module_name}
