@@ -1,0 +1,604 @@
+// LICENSE NOTE:
+// This file (and only this one) is licenses under public-domain. The reason
+// is that this is meant to serve as a template for making your own themes and
+// Elementary's LGPL license is not intended to follow. The images used do come
+// under LGPL, but this file specifically for the structure of your theme is
+// public-domain. This means you can take, use, re-license and otherwise
+// have zero restrictions on using this file as a base for your theme.
+
+externals.external: "elm";
+
+#define COLOR_LIST_BG        253 253 253 255
+#define COLOR_LIST_BG_ODD    240 245 250 255
+#define COLOR_LIST_BG_ACTIVE 138 171 225 255
+#define COLOR_LIST_HEADER    103 135 183 255
+#define COLOR_FADE      0 0 0 0
+
+
+#define USE_BOLD_FONT 1
+
+#if USE_BOLD_FONT 
+#define FONT "SwitzeraDemi"
+#define FONT_BOLD "SwitzeraBold"
+#define FONT_ITALIC "SwitzeraDemiItalic"
+#else
+#define FONT "Switzera"
+#define FONT_BOLD "SwitzeraDemi"
+#define FONT_ITALIC "SwitzeraItalic"
+#endif
+
+#define TEXT_COLOR								\
+	color: 60 60 60 255;						\
+color3: 255 255 255 128;
+
+#define TEXT_COLOR_WHITE			   			\
+	color: 255 255 255 255;			   		    \
+color3: 7 7 7 64;
+
+#define TEXT_COLOR_DISABLED						\
+	color: 60 60 60 128;						\
+color3: 255 255 255 128;						\
+color_class: "text_disabled";
+
+fonts {
+	font: "fonts/SwitzeraADF-Regular.otf"  "Switzera";
+	font: "fonts/SwitzeraADF-DemiBold.otf" "SwitzeraDemi";
+	font: "fonts/SwitzeraADFBold.otf"      "SwitzeraBold";
+	font: "fonts/SwitzeraADF-Italic.otf"   "SwitzeraItalic";
+	font: "fonts/SwitzeraADF-DemiBoldItalic.otf"   "SwitzeraDemiItalic";
+}
+
+images {
+	image: "images/button_im0.png" COMP; /* base */
+	image: "images/button_im1.png" COMP; /* enabled */
+	image: "images/button_im2.png" COMP; /* disabled */
+	image: "images/button_im3.png" COMP; /* focus */
+	image: "images/button_im4.png" COMP; /* top shadow */
+	image: "images/button_im5.png" COMP; /* shadow overlay */
+	image: "images/button_im7.png" COMP; /* shadow overlay */
+
+	image: "images/dialog_im0.png" COMP; /* background */
+
+	image: "images/scrollframe_im0.png" COMP; /* bg */
+	/* image: "images/scrollframe_im1.png" COMP; /\* inset *\/
+	 * image: "images/scrollframe_im2.png" COMP; /\* focus *\/ */
+	image: "images/scrollframe_over.png" COMP; /* over */
+
+	image: "images/entry_im0.png" COMP; /* base */
+	image: "images/menubar.png" COMP; /* base */
+
+
+	image: "images/frame_im0.png" COMP; /* frame border */
+
+	//~ scrollbar, scrollframe: arrows
+	image: "images/scrollbar_im6.png" COMP; /* left arrow */
+	image: "images/scrollbar_im7.png" COMP; /* right arrow */
+	image: "images/scrollbar_im8.png" COMP; /* top arrow */
+	image: "images/scrollbar_im9.png" COMP; /* bottom arrow */
+
+	image: "images/menu_im0.png" COMP; /* background */
+	image: "images/menu_im2.png" COMP; /* hilite */
+	image: "images/menu_im3.png" COMP; /* inactive arrow */
+	image: "images/menu_im4.png" COMP; /* active arrow */
+	image: "images/menu_im5.png" COMP; /* left arrow */
+
+	image: "images/comp-sh1.png" COMP; /* left arrow */
+}
+styles {
+	style { name: "textblock_style";
+		base: "font="FONT" font_size=9 color=#000 text_class=label";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "hilight" "+ font_weight=Bold";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "tab" "\t";
+	}
+	style { name: "textblock_style2";
+		base: "font="FONT_BOLD" font_size=9 align=center color=#fff wrap=word text_class=label";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "hilight" "+ color=#ffff";
+		tag:  "b" "+ color=#ffff";
+		tag:  "tab" "\t";
+	}
+	style { name: "entry_textblock_style";
+		base: "font="FONT" font_size=9 color=#000 wrap=word text_class=entry";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+		tag:  "em" "+ font_style=Oblique";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+		tag:  "hilight" "+ font_weight=Bold";
+	}
+	style { name: "entry_textblock_disabled_style";
+		base: "font="FONT" font_size=9 color=#00000080 wrap=word text_class=entry";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+		tag:  "em" "+ font_style=Oblique";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+		tag:  "hilight" "+ font_weight=Bold";
+	}
+	style { name: "entry_textblock_style_mixedwrap";
+		base: "font="FONT" font_size=9 color=#000 wrap=mixed text_class=entry";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+		tag:  "em" "+ font_style=Oblique";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+		tag:  "hilight" "+ font_weight=Bold";
+	}
+	style { name: "entry_textblock_disabled_style_mixedwrap";
+		base: "font="FONT" font_size=9 color=#00000080 wrap=char text_class=entry";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+		tag:  "em" "+ font_style=Oblique";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+		tag:  "hilight" "+ font_weight=Bold";
+	}
+	style { name: "entry_textblock_style_charwrap";
+		base: "font="FONT" font_size=9 color=#000 wrap=char text_class=entry";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+		tag:  "em" "+ font_style=Oblique";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+		tag:  "hilight" "+ font_weight=Bold";
+	}
+	style { name: "entry_textblock_disabled_style_charwrap";
+		base: "font="FONT" font_size=9 color=#00000080 wrap=char text_class=entry";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+		tag:  "em" "+ font_style=Oblique";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+		tag:  "hilight" "+ font_weight=Bold";
+	}
+	style { name: "entry_single_textblock_style";
+		base: "font="FONT" font_size=9 color=#000 wrap=none text_class=entry";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+		tag:  "em" "+ font_style=Oblique";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+		tag:  "hilight" "+ font_weight=Bold";
+	}
+	style { name: "entry_single_textblock_disabled_style";
+		base: "font="FONT" font_size=9 color=#00000080 wrap=none text_class=entry";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+		tag:  "em" "+ font_style=Oblique";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+		tag:  "hilight" "+ font_weight=Bold";
+	}
+      style { name: "tooltip_style";
+         base: "font="FONT" font_size=8 color=#666 wrap=word";
+         tag:  "br" "\n";
+         tag:  "hilight" "+ font_weight=Bold";
+         tag:  "b" "+ font_weight=Bold";
+         tag:  "tab" "\t";
+      }
+		style { name: "genlist_textblock_style";
+			base: "font="FONT" font_size=9 color=#000 wrap=char text_class=list_item";
+			tag:  "br" "\n";
+			tag:  "ps" "ps";
+			tag:  "tab" "\t";
+		}
+		style { name: "genlist_textblock_style2";
+			base: "font="FONT" font_size=9 color=#fff wrap=char text_class=list_item";
+			tag:  "br" "\n";
+			tag:  "ps" "ps";
+			tag:  "tab" "\t";
+		}
+
+}
+   
+#define TEXT_DOT								\
+	text {										\
+		font: FONT;								\
+		size: 9;								\
+		min: 1 1;								\
+		align: 0.0 0.5;							\
+		text: ".";								\
+	}											\
+
+
+#define TEXT_NORMAL(_text_class, _align, _min)	\
+	text {										\
+		text: "";								\
+		font: FONT;								\
+		size: 9;								\
+		min: _min;								\
+		align: _align;							\
+		text_class: _text_class;				\
+	}
+
+#define TEXT_NORMAL2(_text_class, _align, _min, _max)	\
+	text {										\
+		text: "";								\
+		font: FONT;								\
+		size: 9;								\
+		min: _min;								\
+		max: _max;								\
+		align: _align;							\
+		text_class: _text_class;				\
+	}
+
+#define TEXT_BOLD(_text_class, _align, _min)	\
+	text {										\
+		text: "";								\
+		font: FONT_BOLD;								\
+		size: 9;								\
+		min: _min;								\
+		align: _align;							\
+		text_class: _text_class;				\
+	}
+
+#define TEXT_BOLD2(_text_class, _align, _min, _max)	\
+	text {										\
+		text: "";								\
+		font: FONT_BOLD;								\
+		size: 9;								\
+		min: _min;								\
+		max: _max;								\
+		align: _align;							\
+		text_class: _text_class;				\
+	}
+
+#define TEXT_SMALL(_text_class, _align, _min)	\
+	text {										\
+		text: "";								\
+		font: FONT;								\
+		size: 8;								\
+		min: _min;								\
+		align: _align;							\
+		text_class: _text_class;				\
+	}
+
+
+#define TEXT_BUTTON(_text_class, _label, _align, _min)	\
+	text {												\
+		text: _label;									\
+		font: FONT_BOLD;								\
+		size: 9;										\
+		min: _min;										\
+		align: _align;									\
+		text_class: _text_class;						\
+	}
+
+#define TEXT_LARGE(_text_class, _align, _min)	\
+	text {										\
+		text: "";								\
+		font: FONT;								\
+		size: 10;								\
+		min: _min;								\
+		align: _align;							\
+		text_class: _text_class;				\
+	}
+
+#define BUTTON_BASE									\
+	part {											\
+		name: "base";								\
+		type: IMAGE;								\
+		mouse_events: 0;							\
+		description {								\
+			state: "default" 0.0;					\
+			min: 30 26;								\
+			image.normal: "images/button_im0.png";	\
+			image.border: 7 7 7 7;					\
+			rel1 {									\
+				offset: 3 4;						\
+			}										\
+													\
+			rel2 {									\
+				offset: -4 -5;						\
+			}										\
+		}											\
+	}
+
+#define BACKGROUND_OVERLAY						\
+	part { name: "base";						\
+		type: RECT;								\
+		mouse_events: 1;						\
+		description { state: "default" 0.0;		\
+			color: 0 0 0 0;						\
+		}										\
+		description { state: "visible" 0.0;		\
+			inherit: "default" 1.0;				\
+			color: COLOR_FADE;					\
+		}										\
+	}											\
+
+
+collections {
+	group { name: "elm/focus_highlight/top/default";
+		images {
+			image: "emo-unhappy.png" COMP;
+		}
+
+		data {
+			item: "animate" "on";
+		}
+
+		script {
+			public s_x, s_y, s_w, s_h; /* source */
+			public difx, dify, difw, difh;
+			public rot_dir;
+
+			public animator1(val, Float:pos) {
+				new x, y, w, h, dx, dy, dw, dh, Float:rot;
+
+				dx = round(float_mul(float(get_int(difx)), pos));
+				x = get_int(s_x) + dx;
+				dy = round(float_mul(float(get_int(dify)), pos));
+				y = get_int(s_y) + dy;
+				dw = round(float_mul(float(get_int(difw)), pos));
+				w = get_int(s_w) + dw;
+				dy = round(float_mul(float(get_int(difh)), pos));
+				h = get_int(s_h) + dh;
+
+				update_offset(x, y, w, h);
+
+				rot = 360.0 * pos * float(get_int(rot_dir));
+				set_state_val(PART:"shine", STATE_MAP_ROT_Z, rot);
+
+				if (pos >= 1.0) {
+					emit("elm,action,focus,anim,end", "");
+					set_state(PART:"shine", "default", 0.0);
+				}
+			}
+
+			public update_offset(x, y, w, h) {
+				new x1, y1, x2, y2;
+				x1 = x + w - 15;
+				y1 = y - 15;
+				x2 = x + w + 14;
+				y2 = y + 14;
+				set_state_val(PART:"shine", STATE_REL1_OFFSET, x1, y1);
+				set_state_val(PART:"shine", STATE_REL2_OFFSET, x2, y2);
+			}
+
+			public message(Msg_Type:type, id, ...) {
+				if ((type == MSG_INT_SET) && (id == 1)) {
+					new x1, y1, w1, h1;
+					new x2, y2, w2, h2;
+					new px1, px2, py1, py2;
+					new rd;
+
+					x1 = getarg(2);
+					y1 = getarg(3);
+					w1 = getarg(4);
+					h1 = getarg(5);
+					x2 = getarg(6);
+					y2 = getarg(7);
+					w2 = getarg(8);
+					h2 = getarg(9);
+
+					set_int(s_x, x1);
+					set_int(s_y, y1);
+					set_int(s_w, w1);
+					set_int(s_h, h1);
+					set_int(difx, x2 - x1);
+					set_int(dify, y2 - y1);
+					set_int(difw, w2 - w1);
+					set_int(difh, h2 - h1);
+
+					px1 = x1 + w1;
+					px2 = x2 + w2;
+					py1 = y1 + h1;
+					py2 = y2 + h2;
+					if (px2 > px1) {
+						rd = 1;
+					} else if (px1 > px2) {
+						rd = -1;
+					} else {
+						if (py2 > py1) {
+							rd = 1;
+						} else {
+							rd = -1;
+						}
+					}
+					set_int(rot_dir, rd);
+
+					custom_state(PART:"shine", "default", 0.0);
+					set_state_val(PART:"shine", STATE_REL1, 0.0, 0.0);
+					set_state_val(PART:"shine", STATE_REL2, 0.0, 0.0);
+					set_state_val(PART:"shine", STATE_MAP_ON, 1);
+					set_state_val(PART:"shine", STATE_MAP_ROT_Z, 0.0);
+					update_offset(x1, y1, w1, h1);
+					set_state(PART:"shine", "custom", 0.0);
+
+					anim(0.2, "animator1", 1);
+				}
+			}
+		}
+
+		parts {
+			part { name: "base";
+				type: RECT;
+				repeat_events: 1;
+				description { state: "default" 0.0;
+					rel1.relative: 0.0 0.0;
+					rel2.relative: 1.0 1.0;
+					visible: 0;
+				}
+			}
+			part { name: "shine";
+				type: IMAGE;
+				mouse_events: 1;
+				repeat_events: 1;
+				ignore_flags: ON_HOLD;
+				description { state: "default" 0.0;
+					image {
+						normal: "emo-unhappy.png";
+					}
+					rel1.to: "base";
+					rel1.relative: 1.0 0.0;
+					rel1.offset: -15 -15;
+					rel2.to: "base";
+					rel2.relative: 1.0 0.0;
+					rel2.offset: 14 14;
+				}
+				description { state: "disabled" 0.0;
+					inherit:  "default" 0.0;
+					color: 0 0 0 0;
+				}
+			}
+
+			program { name: "show";
+				signal: "elm,action,focus,show";
+				source: "elm";
+				action: ACTION_STOP;
+				target: "hide";
+				target: "hide_start";
+				target: "hide_end";
+				after: "show_start";
+			}
+			program { name: "show_start";
+				action:  STATE_SET "default" 0.0;
+				transition: LINEAR 0.2;
+				target: "shine";
+				after: "show_end";
+			}
+			program { name: "show_end";
+				action: SIGNAL_EMIT "elm,action,focus,show,end" "";
+			}
+			program { name: "hide";
+				signal: "elm,action,focus,hide";
+				source: "elm";
+				action: ACTION_STOP;
+				target: "show";
+				target: "show_start";
+				target: "show_end";
+				after: "hide_start";
+			}
+			program { name: "hide_start";
+				action:  STATE_SET "disabled" 0.0;
+				transition: LINEAR 0.2;
+				target: "shine";
+				after: "hide_end";
+			}
+			program { name: "hide_end";
+				action: SIGNAL_EMIT "elm,action,focus,hide,end" "";
+			}
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	group { name: "elm/focus_highlight/bottom/default";
+		parts {
+			part { name: "shine";
+				type: RECT;
+				mouse_events: 1;
+				repeat_events: 1;
+				ignore_flags: ON_HOLD;
+				description { state: "default" 0.0;
+					color: 0 255 0 50;
+					rel1.offset: 0 0;
+					rel2.offset: 0 0;
+				}
+				description { state: "disabled" 0.0;
+					inherit:  "default" 0.0;
+					color: 0 0 0 0;
+				}
+			}
+
+			program { name: "show";
+				signal: "elm,action,focus,show";
+				source: "elm";
+				action: ACTION_STOP;
+				target: "hide";
+				target: "hide_start";
+				target: "hide_end";
+				after: "show_start";
+			}
+			program { name: "show_start";
+				action:  STATE_SET "default" 0.0;
+				transition: LINEAR 0.2;
+				target: "shine";
+				after: "show_end";
+			}
+			program { name: "show_end";
+				action: SIGNAL_EMIT "elm,action,focus,show,end" "";
+			}
+			program { name: "hide";
+				signal: "elm,action,focus,hide";
+				source: "elm";
+				action: ACTION_STOP;
+				target: "show";
+				target: "show_start";
+				target: "show_end";
+				after: "hide_start";
+			}
+			program { name: "hide_start";
+				action:  STATE_SET "disabled" 0.0;
+				transition: LINEAR 0.2;
+				target: "shine";
+				after: "hide_end";
+			}
+			program { name: "hide_end";
+				action: SIGNAL_EMIT "elm,action,focus,hide,end" "";
+			}
+		}
+	}
+
+
+#include "widgets/bg.edc"
+#include "widgets/scroller.edc"
+#include "widgets/label.edc"
+#include "widgets/button.edc"
+#include "widgets/toggle.edc"
+#include "widgets/clock.edc"
+#include "widgets/menu.edc"
+#include "widgets/frame.edc"
+#include "widgets/tooltip.edc"
+#include "widgets/hover.edc"
+#include "widgets/ctxpopup.edc"
+#include "widgets/entry.edc"
+#include "widgets/bubble.edc"
+#include "widgets/photo.edc"
+#include "widgets/thumb.edc"
+#include "widgets/icon.edc"
+#include "widgets/toolbar.edc"
+#include "widgets/notify.edc"
+#include "widgets/slideshow.edc"
+#include "widgets/win.edc"
+#include "widgets/list.edc"
+#include "widgets/slider.edc"
+#include "widgets/actionslider.edc"
+#include "widgets/genlist.edc"
+#include "widgets/check.edc"
+#include "widgets/radio.edc"
+#include "widgets/pager.edc"
+#include "widgets/progressbar.edc"
+#include "widgets/separator.edc"
+#include "widgets/spinner.edc"
+#include "widgets/index.edc"
+#include "widgets/gengrid.edc"
+#include "widgets/photocam.edc"
+#include "widgets/map.edc"
+#include "widgets/panes.edc"
+#include "widgets/panel.edc"
+#include "widgets/conformant.edc"
+#include "widgets/calendar.edc"
+#include "widgets/colorselector.edc"
+#include "widgets/flipselector.edc"
+#include "widgets/diskselector.edc"
+#include "widgets/fileselector.edc"
+#include "widgets/layout.edc"
+#include "widgets/segment_control.edc"
+#include "widgets/player.edc"
+#include "widgets/video.edc"
+#include "widgets/naviframe.edc"
+
+}
