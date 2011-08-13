@@ -396,15 +396,18 @@ cdef class Object(evas.c_evas.Object):
         try:
             lst = self._elmcallbacks[event]
         except KeyError, e:
-            raise ValueError("Unknown event %r" % e)
+            raise ValueError("Unknown event %r" % event)
 
         i = -1
+        ec = None
+        f = None
         for i, (ec, f, a, k) in enumerate(lst):
             if event_conv == ec and func == f:
                 break
-        else:
+
+        if f != func or ec != event_conv:
             raise ValueError("Callback %s was not registered with event %r" %
-                             (func, e))
+                             (func, event))
 
         lst.pop(i)
         if lst:
