@@ -497,7 +497,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         try:
             lst = self._smart_callbacks[event]
         except KeyError, e:
-            raise ValueError("Unknown event %r" % e)
+            raise ValueError("Unknown event %r" % event)
 
         i = -1
         f = None
