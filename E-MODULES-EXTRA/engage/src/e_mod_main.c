@@ -70,7 +70,7 @@ ngi_new(Config_Item *cfg)
    ng->state = unzoomed;
    ng->hide_state = show;
    ng->hide = EINA_TRUE;
-   
+
    ng->clip = evas_object_rectangle_add(ng->evas);
    evas_object_color_set(ng->clip, 255, 255, 255, 255);
 
@@ -177,7 +177,7 @@ ngi_new(Config_Item *cfg)
    HANDLE(E_EVENT_BORDER_ADD,      _ngi_win_cb_border_event);
    HANDLE(E_EVENT_BORDER_REMOVE,   _ngi_win_cb_border_event);
 #undef HANDLE
-   
+
    if (ng->cfg->autohide == AUTOHIDE_FULLSCREEN)
      {
 	ng->hide = e_desk_current_get(ng->zone)->fullscreen_borders;
@@ -189,13 +189,13 @@ ngi_new(Config_Item *cfg)
    else if (ng->cfg->stacking == below_fullscreen)
      {
 	int fullscreen = e_desk_current_get(ng->zone)->fullscreen_borders;
-	
+
 	if (fullscreen)
 	  e_popup_hide(ng->win->popup);
 	else
 	  e_popup_show(ng->win->popup);
      }
-   
+
    if (ng->cfg->autohide && ng->hide)
      {
 	ng->hide = EINA_TRUE;
@@ -421,7 +421,7 @@ ngi_input_extents_calc(Ng *ng)
 
    if (ngi_config->use_composite)
      {
-	ecore_x_window_shape_input_rectangles_set(win->input, &win->rect, 1); 
+	ecore_x_window_shape_input_rectangles_set(win->input, &win->rect, 1);
      }
    else
      {
@@ -434,7 +434,7 @@ ngi_input_extents_calc(Ng *ng)
    EINA_LIST_FOREACH (ng->boxes, l, box)
      {
 	int w = box->w;
-	
+
 	if (!box->drop_handler)
 	  continue;
 
@@ -795,7 +795,7 @@ ngi_item_at_position_get(Ng *ng)
 	  {
 	     if (it->delete_me)
 	       continue;
-	     
+
 	     if (it->scale == 0.0)
 	       continue;
 
@@ -942,7 +942,7 @@ static void
 _ngi_zoom_in(Ng *ng)
 {
    double z;
-   
+
    if (ng->state != zooming)
      {
 	double now = ecore_time_get();
@@ -951,11 +951,11 @@ _ngi_zoom_in(Ng *ng)
 	  ng->start_zoom = now - (ng->cfg->zoom_duration - (now - ng->start_zoom));
 	else
 	  ng->start_zoom = now;
-	
+
 	ng->state = zooming;
      }
 
-   z = _ngi_anim_advance_in(ng->start_zoom, ng->cfg->zoom_duration); 
+   z = _ngi_anim_advance_in(ng->start_zoom, ng->cfg->zoom_duration);
    ng->zoom = 1.0 + (ng->cfg->zoomfactor - 1.0) * z;
 
    if (z == 1.0)
@@ -969,7 +969,7 @@ static void
 _ngi_zoom_out(Ng *ng)
 {
    double z;
-   
+
    if (ng->state != unzooming)
      {
 	double now = ecore_time_get();
@@ -978,11 +978,11 @@ _ngi_zoom_out(Ng *ng)
 	  ng->start_zoom = now - (ng->cfg->zoom_duration - (now - ng->start_zoom));
 	else
 	  ng->start_zoom = now;
-	
+
 	ng->state = unzooming;
      }
 
-   z = _ngi_anim_advance_out(ng->start_zoom, ng->cfg->zoom_duration); 
+   z = _ngi_anim_advance_out(ng->start_zoom, ng->cfg->zoom_duration);
    ng->zoom = 1.0 + (ng->cfg->zoomfactor - 1.0) * z;
 
    if (z == 0.0)
@@ -1184,11 +1184,11 @@ ngi_reposition(Ng *ng)
 
 	if ((end > 0) || (size <= 0))
 	  break;
-	
+
 	/* shrink bar when it becomes larger than screen height/width  */
 	ng->size = size = size - 1;
      }
-   
+
    cnt = 0;
    pos = ng->start;
 
@@ -1272,7 +1272,7 @@ _ngi_redraw(Ng *ng)
    Ngi_Item *it;
    Ngi_Box *box;
    Eina_List *l, *ll;
-   
+
    double pos, pos2;
    int end1, end2, size_spacing, hide_step;
    int bw, bh, bx, by;
@@ -1287,7 +1287,7 @@ _ngi_redraw(Ng *ng)
 
    int w = ng->win->popup->w;
    int h = ng->win->popup->h;
-   
+
    if (cfg->autohide)
      hide_step = ng->hide_step;
    else
@@ -1389,14 +1389,15 @@ _ngi_redraw(Ng *ng)
          evas_object_hide(box->separator);
 
       pos = 0;
-      
+
       EINA_LIST_FOREACH (box->items, l, it)
 	{
 	   double size;
-	   
+	   int off;
+
 	   if (it->scale == 0.0)
 	     continue;
-	   
+
 	   if (pos == 0)
 	     {
 		_ngi_zoom_function(ng, it->pos - ng->pos,  &pos);
@@ -1410,15 +1411,9 @@ _ngi_redraw(Ng *ng)
 	   _ngi_zoom_function(ng, it->pos + (ng->size * it->scale) - ng->pos, &pos2);
 	   pos2 = (double)it->pos + ((double)ng->size * it->scale) + pos2;
 
-	   if (pos2 > ng->pos)
-	     {
-		size = (int)(pos2 - (pos - 0.5));
-		pos += 0.5;
-	     }
-	   else
-	     size = (int)(pos2 - pos);
+	   size = (int)pos2 - (int)pos;
 
-	   int off = edge_offset + (1.0 - it->scale) * (ng->size)/2.0;
+	   off = edge_offset + (1.0 - it->scale) * (ng->size)/2.0;
 
 	   switch (cfg->orient)
 	     {
@@ -1450,7 +1445,7 @@ _ngi_redraw(Ng *ng)
 	   evas_object_resize(it->over, size, size);
 	}
    }
-     
+
    ng->changed = 0;
 }
 
@@ -1458,7 +1453,7 @@ void
 ngi_bar_lock(Ng *ng, int show)
 {
    if (!ng) return;
-   
+
    if (show)
      {
 	ng->show_bar++;
@@ -1494,10 +1489,10 @@ _ngi_win_border_intersects(Ng *ng)
    E_Border *bd;
    E_Desk *desk;
    int x, y, w, h, size;
-   
+
    desk = e_desk_current_get(ng->zone);
    size = ng->size + ng->opt.bg_offset + ng->opt.edge_offset;
-   
+
    switch (ng->cfg->orient)
      {
       case E_GADCON_ORIENT_BOTTOM:
@@ -1531,7 +1526,7 @@ _ngi_win_border_intersects(Ng *ng)
 
    x += ng->zone->x + ng->win->popup->x;
    y += ng->zone->y + ng->win->popup->y;
-     
+
    EINA_LIST_FOREACH(e_border_client_list(), l, bd)
      {
 	if (bd->delete_requested)
@@ -1563,7 +1558,7 @@ _ngi_win_autohide_check(Ng *ng, E_Desk *desk)
 
    if (desk->zone != ng->zone)
      return;
-   
+
    if (ng->cfg->stacking == below_fullscreen)
      {
 	hide = desk->fullscreen_borders;
@@ -1586,7 +1581,7 @@ _ngi_win_autohide_check(Ng *ng, E_Desk *desk)
    else if (ng->cfg->autohide == AUTOHIDE_OVERLAP)
      {
 	hide = _ngi_win_border_intersects(ng);
-	
+
 	if (ng->hide != hide)
 	  ngi_animate(ng);
 
@@ -1611,12 +1606,12 @@ _ngi_win_cb_border_event(void *data, int type, void *event)
    E_Event_Border_Property *ev = event;
    Ng *ng = data;
    E_Desk *desk;
-   
+
    desk = e_desk_current_get(ng->zone);
 
    if ((ev->border->desk == desk) || (ev->border->sticky))
      _ngi_win_autohide_check(ng, desk);
-     
+
    return EINA_TRUE;
 }
 
@@ -1635,7 +1630,7 @@ _ngi_init_timer_cb(void *data)
      ngi_config->use_composite = EINA_TRUE;
 
    /* ngi_config->use_composite = ecore_x_screen_is_composited(0); */
-   
+
    EINA_LIST_FOREACH (ngi_config->items, l, ci)
      ngi_new(ci);
 
@@ -1737,7 +1732,7 @@ ngi_bar_config_new(int container_num, int zone_num)
    cfg_box->taskbar_append_right = 0;
    cfg_box->taskbar_group_apps = 1;
    cfg->boxes = eina_list_append(cfg->boxes, cfg_box);
-	
+
    snprintf(buf, sizeof(buf), "%s/.e/e/applications/bar/%s",
 	    e_user_homedir_get(), app_dir);
 
@@ -1857,7 +1852,7 @@ e_modapi_init(E_Module *m)
    e_module_delayed_set(m, 1);
 
    ecore_idler_add(_ngi_init_timer_cb, NULL);
-   
+
    /* _ngi_init_timer_cb(NULL); */
 
    /* maug = e_int_menus_menu_augmentation_add
