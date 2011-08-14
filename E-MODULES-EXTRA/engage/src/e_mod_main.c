@@ -527,8 +527,6 @@ ngi_win_position_calc(Ngi_Win *win)
 
    evas_object_move(ng->bg_clip, 0, 0);
    evas_object_resize(ng->bg_clip, win->popup->w, win->popup->h);
-
-   _ngi_proxy_geometry_calc(ng);
 }
 
 static Eina_Bool
@@ -1060,8 +1058,6 @@ _ngi_autohide(Ng *ng, int hide)
 	  {
 	     ng->hide_state = show;
 	     ng->hide_step = 0;
-
-	     _ngi_proxy_geometry_calc(ng);
 	     ngi_input_extents_calc(ng);
 	     return 0;
 	  }
