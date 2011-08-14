@@ -5,36 +5,6 @@ group {
     //max: 299 341;
 
     parts {
-        /* part {
-         * 	name: "bg_border";
-         * 	type: RECT;
-         * 	mouse_events: 0;
-         * 
-         * 	description {
-         * 		state: "default" 0.0;
-         * 		color: 104 108 111 255;
-         * 	}
-         * } */
-
-        /* MENU_GRADIENT */
-
-        /* part {
-         * 	name: "bg_overlay";
-         * 	type: IMAGE;
-         * 	mouse_events: 0;
-         * 
-         * 	description {
-         * 		state: "default" 0.0;
-         * 		rel1.offset: 0 0;
-         * 		rel2.offset: -1 -1;
-         * 
-         * 		image {
-         * 			normal: "images/menu_im0.png";
-         * 			border: 2 2 2 2;
-         * 			middle: 1;
-         * 		}
-         * 	}
-         * } */
         part {
             name: "dialog_bg";
             type: IMAGE;
