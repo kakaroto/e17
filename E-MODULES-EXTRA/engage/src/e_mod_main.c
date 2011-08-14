@@ -42,47 +42,6 @@ Config *ngi_config = NULL;
 
 E_Int_Menu_Augmentation *maug = NULL;
 
-static Evas_Smart *_e_smart = NULL;
-
-static void
-_ngi_bar_add(Evas_Object *obj){}
-
-static void
-_ngi_bar_del(Evas_Object *obj){}
-
-static void
-_ngi_bar_clip_set(Evas_Object *obj, Evas_Object * clip){}
-
-static void
-_ngi_bar_clip_unset(Evas_Object *obj){}
-
-static void
-_ngi_bar_color_set(Evas_Object *obj, int r, int g, int b, int a){}
-
-
-static Evas_Object *
-_ngi_bar_smart_add(Evas *evas)
-{
-   if (!_e_smart)
-   {
-      static Evas_Smart_Class sc = EVAS_SMART_CLASS_INIT_NAME_VERSION("ngi_bar");
-      if (!sc.add)
-	{
-	   sc.add = _ngi_bar_add;
-	   sc.del = _ngi_bar_del;
-	   sc.move = NULL;
-	   sc.resize = NULL;
-	   sc.show = NULL;
-	   sc.hide = NULL;
-	   sc.color_set = _ngi_bar_color_set;
-	   sc.clip_set = _ngi_bar_clip_set;
-	   sc.clip_unset = _ngi_bar_clip_unset;
-	}
-      _e_smart = evas_smart_class_new(&sc);
-   }
-
-   return evas_object_smart_add(evas, _e_smart);
-}
 
 Ng *
 ngi_new(Config_Item *cfg)
@@ -121,9 +80,6 @@ ngi_new(Config_Item *cfg)
 
    ng->o_bg    = edje_object_add(ng->evas);
    ng->o_frame = edje_object_add(ng->evas);
-
-   ng->o_icons = _ngi_bar_smart_add(ng->evas);
-
    ng->o_label = edje_object_add(ng->evas);
 
    switch(cfg->orient)
@@ -132,16 +88,6 @@ ngi_new(Config_Item *cfg)
 	 ngi_object_theme_set(ng->o_bg,	  "e/modules/engage/bg_bottom");
 	 ngi_object_theme_set(ng->o_frame,"e/modules/engage/frame_bottom");
 	 ngi_object_theme_set(ng->o_label,"e/modules/engage/label_bottom");
-
-	 ng->o_proxy = evas_object_image_add(ng->evas);
-	 evas_object_image_source_set(ng->o_proxy, ng->o_icons);
-
-	 evas_object_map_enable_set(ng->o_proxy, 1);
-	 evas_object_show(ng->o_proxy);
-	 evas_object_show(ng->clip); 
-	 evas_object_clip_set(ng->o_proxy, ng->clip); 
-	 alpha = cfg->rflxn_alpha;
-	 evas_object_color_set(ng->o_proxy, alpha, alpha, alpha, alpha);
 	 break;
 
       case E_GADCON_ORIENT_TOP:
@@ -188,7 +134,6 @@ ngi_new(Config_Item *cfg)
 
    evas_object_show(ng->o_frame);
    evas_object_show(ng->o_bg);
-   evas_object_show(ng->o_icons);
 
    evas_object_clip_set(ng->o_bg, ng->bg_clip);
 
@@ -308,12 +253,6 @@ ngi_free(Ng *ng)
 
    if (ng->bg_clip)
      evas_object_del(ng->bg_clip);
-
-   if (ng->o_icons)
-     evas_object_del(ng->o_icons);
-
-   if (ng->o_proxy)
-     evas_object_del(ng->o_proxy);
 
    if (ng->win)
       _ngi_win_free(ng->win);
@@ -540,40 +479,6 @@ ngi_input_extents_calc(Ng *ng)
 	  }
      }
 }
-
-static void
-_ngi_proxy_geometry_calc(Ng *ng)
-{
-   int w = ng->win->popup->w;
-   int h = ng->win->popup->h;
-
-   evas_object_move(ng->o_icons, 0, h  + ng->hide_step - ng->size - ng->opt.edge_offset);
-   evas_object_resize(ng->o_icons, w, ng->cfg->size);
-
-   if (ng->o_proxy)
-     {
-	evas_object_image_fill_set(ng->o_proxy, 0, 0, w, ng->opt.edge_offset);
-
-	evas_object_move(ng->o_proxy, 0, h + ng->hide_step - ng->opt.edge_offset -
-			 ng->opt.reflection_offset);
-
-	evas_object_resize(ng->o_proxy, w, ng->size);//ng->opt.edge_offset);
-
-	Evas_Map *m = evas_map_new(4);
-	evas_map_util_points_populate_from_object(m, ng->o_proxy);
-
-	evas_map_point_image_uv_set(m, 0, 0, 1);
-	evas_map_point_image_uv_set(m, 1, 1, 1);
-	evas_map_point_image_uv_set(m, 2, 1, 0);
-	evas_map_point_image_uv_set(m, 3, 0, 0);
-
-	/* evas_map_util_3d_perspective(m, w/2, h/2, 1, 1000); */
-
-	evas_object_map_set(ng->o_proxy, m);
-	evas_map_free(m);
-     }
-}
-
 
 void
 ngi_win_position_calc(Ngi_Win *win)
@@ -1397,10 +1302,6 @@ _ngi_redraw(Ng *ng)
 
    size_spacing = ng->size + edge_offset;
 
-
-   if (ng->o_proxy && ((ng->hide_state == hiding) || (ng->hide_state == showing)))
-     _ngi_proxy_geometry_calc(ng);
-
    if (cfg->show_background)
      {
         _ngi_zoom_function(ng, ng->start - ng->pos, &disp);
@@ -1914,10 +1815,6 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, mouse_over_anim, INT);
    E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, lock_deskswitch, INT);
    E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, ecomorph_features, INT);
-   E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, rflxn_alpha, INT);
-   E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, rflxn_foc, FLOAT);
-   E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, rflxn_dist, FLOAT);
-   E_CONFIG_VAL(ngi_conf_item_edd, Config_Item, rflxn_rot, FLOAT);
    E_CONFIG_LIST(ngi_conf_item_edd, Config_Item, boxes, ngi_conf_box_edd);
 
    ngi_conf_edd = E_CONFIG_DD_NEW("Ngi_Config", Config);

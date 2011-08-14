@@ -250,7 +250,35 @@ _cb_drop_end(void *data, const char *type, void *event_info)
         E_Border *bd = (E_Border *)ev->data;
         app = bd->desktop;
 
-        if (!app)
+	if (bd->internal)
+	  {
+	     char *class = bd->client.icccm.class;
+
+	     if ((class) && (!strncmp(class, "e_fwin::", 8)) &&
+		 (ecore_file_exists(class+8)))
+	       {
+		  const char *file = class+8;
+		  char buf[PATH_MAX];
+
+		  if (!app)
+		    {
+		       app = e_desktop_border_create(bd);
+		       
+		       if (app->name) free(app->name);
+		       app->name = strdup(ecore_file_file_get(file)); 
+		       if (app->icon) free(app->icon);
+		       app->icon = strdup("folder");
+		       if (app->comment)free(app->comment);
+		       app->comment = strdup(D_("Open folder with EFM"));
+		       if (app->exec) free(app->exec);
+		       snprintf(buf, PATH_MAX, "enlightenment_remote -efm-open-dir %s", file);
+		       app->exec = strdup(buf);
+
+		       efreet_desktop_save(app);
+		    }
+	       }
+	  }
+        else if (!app)
           {
              app = e_desktop_border_create(bd);
              efreet_desktop_save(app);

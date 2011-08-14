@@ -428,43 +428,34 @@ _item_new(Ngi_Box *box, E_Border *bd)
    _item_set_icon(it);
    _item_set_label(it);
 
-   if (box->cfg->taskbar_group_apps && (bd->client.icccm.class && bd->client.icccm.class[0]))
+   if ((box->cfg->taskbar_group_apps) &&
+       (bd->client.icccm.class && bd->client.icccm.class[0]))
      {
 	it->class = eina_stringshare_add(bd->client.icccm.class);
 
-	EINA_LIST_FOREACH (box->items, l, l_it)
+	EINA_LIST_FOREACH(box->items, l, l_it)
 	  {
-	     if (box->cfg->taskbar_append_right)
+	     if (!l_it->class)
 	       {
-		  if (ll_it && l_it->class && ll_it->class &&
-		      (ll_it->class == it->class) &&
-		      (l_it->class != it->class))
-		    break;
-
+		  continue;
+	       }
+	     else if (l_it->class == it->class)
+	       {
 		  ll_it = l_it;
 	       }
-	     else
+	     else if ((ll_it) && (l_it->class != it->class))
 	       {
-		  if (l_it->class && l_it->class == it->class)
-		    break;
+		  break;
 	       }
 	  }
      }
 
-   if (box->cfg->taskbar_append_right)
-     {
-	if (ll_it)
-	  box->items = eina_list_append_relative(box->items, it, ll_it);
-	else
-	  box->items = eina_list_append(box->items, it);
-     }
+   if (ll_it)
+     box->items = eina_list_append_relative(box->items, it, ll_it);
+   else if (box->cfg->taskbar_append_right)
+     box->items = eina_list_append(box->items, it);
    else
-     {
-	if (l_it)
-	  box->items = eina_list_prepend_relative(box->items, it, l_it);
-	else
-	  box->items = eina_list_prepend(box->items, it);
-     }
+     box->items = eina_list_prepend(box->items, it);
 
    if ((box->cfg->taskbar_show_desktop) &&
        (bd->desk != e_desk_current_get(box->ng->zone)) &&

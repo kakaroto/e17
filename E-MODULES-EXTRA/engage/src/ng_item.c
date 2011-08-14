@@ -58,8 +58,6 @@ ngi_item_init_defaults(Ngi_Item *it)
 
    evas_object_layer_set(it->over, 9999);
    evas_object_show(it->over);
-
-   evas_object_smart_member_add(it->obj, ng->o_icons);
    evas_object_show(it->obj);
 }
 

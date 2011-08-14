@@ -77,11 +77,6 @@ struct _Config_Item
   int            lock_deskswitch;
   int            ecomorph_features;
 
-  int            rflxn_alpha;
-  float          rflxn_foc;
-  float          rflxn_dist;
-  float          rflxn_rot;
-
   Eina_List     *boxes;
 
   E_Config_Dialog *config_dialog;
@@ -136,8 +131,6 @@ struct _Ng
   E_Zone          *zone;
 
   Evas_Object     *o_bg;
-  Evas_Object     *o_proxy;
-  Evas_Object     *o_icons;
   Evas_Object     *o_frame;
   Evas_Object     *o_label;
 
