@@ -73,12 +73,12 @@ void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 	
 			/* Frame (with message) */
 			frame = elm_frame_add(gui.win);
-				elm_frame_label_set(frame, chunk->memory);
+				elm_object_text_set(frame, chunk->memory);
 				res = asprintf(&buf, "%d: %s", curl_res, error_buf);
 				if(res != -1) {
 					label = elm_label_add(gui.win);
 						elm_label_line_wrap_set(label, TRUE);
-						elm_label_label_set(label, buf);
+						elm_object_text_set(label, buf);
 						elm_frame_content_set(frame, label);
 					evas_object_show(label);
 				}
@@ -89,7 +89,7 @@ void show_curl_error(CURLcode curl_res, MemoryStruct * chunk) {
 			/* close button */
 			button = elm_button_add(gui.win);
 				evas_object_smart_callback_add(button, "clicked", error_win_del, NULL);
-				elm_button_label_set(button, _("Close"));
+				elm_object_text_set(button, _("Close"));
 				elm_box_pack_end(box, button);
 			evas_object_show(button);
 

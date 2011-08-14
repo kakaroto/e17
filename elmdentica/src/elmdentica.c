@@ -472,9 +472,9 @@ void user_update_win(void *data) {
 		elm_entry_entry_set(w, desc);
 		w = evas_object_name_find(e, "user_action");
 		if(!ud->au->user->following && !ud->au->user->protected)
-			elm_button_label_set(w, _("Follow"));
+			elm_object_text_set(w, _("Follow"));
 		else
-			elm_button_label_set(w, _("Stop following"));
+			elm_object_text_set(w, _("Stop following"));
 	}
 
 	network_busy_set(EINA_FALSE);
@@ -619,9 +619,9 @@ void user_show(void *data) {
 				evas_object_size_hint_align_set(button, 0.5, 0);
 
 				if(!ud->au->user->following && !ud->au->user->protected)
-					elm_button_label_set(button, _("Follow"));
+					elm_object_text_set(button, _("Follow"));
 				else
-					elm_button_label_set(button, _("Stop following"));
+					elm_object_text_set(button, _("Stop following"));
 
 				evas_object_smart_callback_add(button, "clicked", on_user_follow_toggle, ud);
 				elm_table_pack(table, button, 1, 1, 1, 1);
@@ -632,7 +632,7 @@ void user_show(void *data) {
 						evas_object_size_hint_weight_set(label, 1, 1);
 						evas_object_size_hint_align_set(label, -1, -1);
 						elm_label_line_wrap_set(label, EINA_TRUE);
-						elm_label_label_set(label, ud->au->user->description);
+						elm_object_text_set(label, ud->au->user->description);
 					evas_object_show(label);
 					elm_table_pack(table, label, 0, 2, 2, 1);
 			}
@@ -671,13 +671,13 @@ static void on_group_update_win(void *data) {
 
 	if(gd->group->member) {
 		snprintf(m, PATH_MAX, _("You are a member of group %s along with %d other people.<br>«%s»"), gd->group->fullname, gd->group->member_count -1, gd->group->description);
-		elm_button_label_set(group_action, _("Leave"));
+		elm_object_text_set(group_action, _("Leave"));
 	} else {
 		snprintf(m, PATH_MAX, _("You are not a member of group %s but %d people are.<br>«%s»"), gd->group->fullname, gd->group->member_count, gd->group->description);
-		elm_button_label_set(group_action, _("Join"));
+		elm_object_text_set(group_action, _("Join"));
 	}
 	group_desc = evas_object_name_find(e, "group_desc");
-	elm_label_label_set(group_desc, m);
+	elm_object_text_set(group_desc, m);
 
 	elm_object_disabled_set(group_action, EINA_FALSE);
 	network_busy_set(EINA_FALSE);
@@ -726,7 +726,7 @@ static void group_show(void *data) {
 				evas_object_name_set(frame, "group");
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, 0);
-				elm_frame_label_set(frame, gd->group->fullname);
+				elm_object_text_set(frame, gd->group->fullname);
 
 			box2 = elm_box_add(gd->win);
 				evas_object_size_hint_weight_set(box2, 1, 1);
@@ -759,7 +759,7 @@ static void group_show(void *data) {
 					evas_object_size_hint_align_set(label, -1, -1);
 					elm_label_line_wrap_set(label, EINA_TRUE);
 
-					elm_label_label_set(label, m);
+					elm_object_text_set(label, m);
 					elm_box_pack_end(box2, label);
 				evas_object_show(label);
 
@@ -782,9 +782,9 @@ static void group_show(void *data) {
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
 					if(gd->group->member)
-						elm_button_label_set(button, _("Leave"));
+						elm_object_text_set(button, _("Leave"));
 					else
-						elm_button_label_set(button, _("Join"));
+						elm_object_text_set(button, _("Join"));
 					evas_object_smart_callback_add(button, "clicked", on_group_membership_toggle, gd);
 					elm_box_pack_end(box2, button);
 				evas_object_show(button);
@@ -833,12 +833,12 @@ static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
 		elm_hover_target_set(url_win, gui.status_detail_links);
 		
 		frame = elm_frame_add(gui.win);
-			elm_frame_label_set(frame, url);
+			elm_object_text_set(frame, url);
 
 			button = elm_button_add(gui.win);
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, 0.5, 0.5);
-				elm_button_label_set(button, _("Check it out!"));
+				elm_object_text_set(button, _("Check it out!"));
 				evas_object_smart_callback_add(button, "clicked", on_open_url, url_win);
 				elm_frame_content_set(frame, button);
 			evas_object_show(button);
@@ -1096,21 +1096,21 @@ static void on_attachment_dl_complete(void *data, const char *file, int status) 
         char* base = strrchr(file, '/');
         char *tmp = NULL;
         (void)asprintf(&tmp, _("Finished %s"), base + 1);
-        elm_frame_label_set(frame, tmp);
+        elm_object_text_set(frame, tmp);
 
 
         evas_object_del(o);
         Evas_Object *ok_button = elm_button_add(gui.win);
             evas_object_size_hint_weight_set(ok_button, EVAS_HINT_EXPAND, 0);
             evas_object_size_hint_align_set(ok_button, EVAS_HINT_FILL, 0);
-            elm_button_label_set(ok_button, _("Ok"));
+            elm_object_text_set(ok_button, _("Ok"));
             evas_object_smart_callback_add(ok_button, "clicked", ed_del_object_event, gui.download_win);
             elm_table_pack(table, ok_button, 0, 2, 1, 1);
             evas_object_show(ok_button);
         Evas_Object *open_button = elm_button_add(gui.win);
             evas_object_size_hint_weight_set(open_button, EVAS_HINT_EXPAND, 0);
             evas_object_size_hint_align_set(open_button, EVAS_HINT_FILL, 0);
-            elm_button_label_set(open_button, _("Open"));
+            elm_object_text_set(open_button, _("Open"));
             evas_object_smart_callback_add(open_button, "clicked", ed_open_file, strdup(file));
             elm_table_pack(table, open_button, 1, 2, 1, 1);
             evas_object_show(open_button);
@@ -1157,7 +1157,7 @@ static void ed_save_attachment(void* data, Evas_Object *obj, void *event_info) {
                         evas_object_size_hint_align_set(url_frame, EVAS_HINT_FILL, EVAS_HINT_FILL);
                         char * tmp = strrchr(url, '/');
                         i = asprintf(&tmp, _("downloading %s"), tmp + 1);
-                        elm_frame_label_set(url_frame, tmp);
+                        elm_object_text_set(url_frame, tmp);
                         evas_object_name_set(url_frame, "download_frame");
                         evas_object_show(url_frame);
                     Evas_Object *progress = elm_progressbar_add(gui.win);
@@ -1172,7 +1172,7 @@ static void ed_save_attachment(void* data, Evas_Object *obj, void *event_info) {
                         evas_object_size_hint_weight_set(cancel_button, EVAS_HINT_EXPAND, 0);
                         evas_object_size_hint_align_set(cancel_button, EVAS_HINT_FILL, 0);
                         
-                        elm_button_label_set(cancel_button, _("Cancel"));
+                        elm_object_text_set(cancel_button, _("Cancel"));
                         evas_object_smart_callback_add(cancel_button, "clicked", on_cancel_download, gui.current_download);
                         evas_object_name_set(cancel_button, "cancel_button");
                         elm_table_pack(table, cancel_button, 1, 2, 1, 2);
@@ -1391,7 +1391,7 @@ static void ed_status_status_action(void *data, Evas_Object *obj, void *event_in
 		button = elm_button_add(gui.win);
 			evas_object_size_hint_weight_set(button, 1, 1);
 			evas_object_size_hint_align_set(button, 0.5, 1);
-			elm_button_label_set(button, _("Close"));
+			elm_object_text_set(button, _("Close"));
 			evas_object_smart_callback_add(button, "clicked", on_close_status_status_action, NULL);
 			elm_box_pack_end(box, button);
 		evas_object_show(button);
@@ -1427,7 +1427,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 				button = elm_button_add(gui.win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					elm_button_label_set(button, _("Reply"));
+					elm_object_text_set(button, _("Reply"));
 					evas_object_smart_callback_add(button, "clicked", on_reply, event_info);
 					elm_table_pack(table, button, 0, 0, 1, 1);
 				evas_object_show(button);
@@ -1436,7 +1436,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 				button = elm_button_add(gui.win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					elm_button_label_set(button, _("Repeat"));
+					elm_object_text_set(button, _("Repeat"));
 					evas_object_smart_callback_add(button, "clicked", on_repeat, event_info);
 					elm_table_pack(table, button, 1, 0, 1, 1);
 				evas_object_show(button);
@@ -1445,7 +1445,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 				button = elm_button_add(gui.win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					elm_button_label_set(button, _("DM"));
+					elm_object_text_set(button, _("DM"));
 					evas_object_smart_callback_add(button, "clicked", on_dm, event_info);
 					elm_table_pack(table, button, 2, 0, 1, 1);
 				evas_object_show(button);
@@ -1455,9 +1455,9 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
 					if(as->status->favorited)
-						elm_button_label_set(button, _("Unmark favorite"));
+						elm_object_text_set(button, _("Unmark favorite"));
 					else
-						elm_button_label_set(button, _("Mark favorite"));
+						elm_object_text_set(button, _("Mark favorite"));
 					evas_object_smart_callback_add(button, "clicked", on_mark_favorite, event_info);
 					elm_table_pack(table, button, 0, 1, 3, 1);
 				evas_object_show(button);
@@ -1467,7 +1467,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 					button = elm_button_add(gui.win);
 						evas_object_size_hint_weight_set(button, 1, 1);
 						evas_object_size_hint_align_set(button, -1, 0);
-						elm_button_label_set(button, _("View related"));
+						elm_object_text_set(button, _("View related"));
 						evas_object_smart_callback_add(button, "clicked", on_view_related, event_info);
 						elm_table_pack(table, button, 0, 2, 3, 1);
 					evas_object_show(button);
@@ -1476,7 +1476,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 				button = elm_button_add(gui.win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					elm_button_label_set(button, _("Status details"));
+					elm_object_text_set(button, _("Status details"));
 					evas_object_smart_callback_add(button, "clicked", ed_status_status_action, event_info);
 					elm_table_pack(table, button, 0, 3, 3, 1);
 				evas_object_show(button);
@@ -1484,7 +1484,7 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 				button = elm_button_add(gui.win);
 					evas_object_size_hint_weight_set(button, 1, 1);
 					evas_object_size_hint_align_set(button, -1, 0);
-					elm_button_label_set(button, _("Recycle status"));
+					elm_object_text_set(button, _("Recycle status"));
 					evas_object_smart_callback_add(button, "clicked", ed_status_recycle_text, event_info);
 					elm_table_pack(table, button, 0, 4, 3, 1);
 				evas_object_show(button);
@@ -1602,9 +1602,9 @@ void show_error(StatusesList * statuses) {
 	
 		/* First frame (with message) */
 		frame1 = elm_frame_add(box);
-			elm_frame_label_set(frame1, statuses->hash_request);
+			elm_object_text_set(frame1, statuses->hash_request);
 			label = elm_label_add(frame1);
-				elm_label_label_set(label, statuses->hash_error);
+				elm_object_text_set(label, statuses->hash_error);
 				elm_frame_content_set(frame1, label);
 			evas_object_show(label);
 		elm_box_pack_end(box, frame1);
@@ -1614,7 +1614,7 @@ void show_error(StatusesList * statuses) {
 		frame2 = elm_frame_add(box);
 			button = elm_button_add(frame2);
 				evas_object_smart_callback_add(button, "clicked", error_win_del, NULL);
-				elm_button_label_set(button, _("Close"));
+				elm_object_text_set(button, _("Close"));
 				elm_frame_content_set(frame2, button);
 			evas_object_show(button);
 		elm_box_pack_end(box, frame2);
@@ -1866,7 +1866,7 @@ static void on_post_dm(void *data, Evas_Object *obj, void *event_info) {
 		elm_object_style_set(inwin, "minimal_vertical");
 
 		frame = elm_frame_add(gui.win);
-			elm_frame_label_set(frame, _("Send a DM to..."));
+			elm_object_text_set(frame, _("Send a DM to..."));
 			box = elm_box_add(gui.win);
 				entry = elm_entry_add(gui.win);
 					evas_object_name_set(entry, "dm_entry");
@@ -1878,13 +1878,13 @@ static void on_post_dm(void *data, Evas_Object *obj, void *event_info) {
 					elm_box_homogeneous_set(buttons, EINA_TRUE);
 
 					button = elm_button_add(gui.win);
-						elm_button_label_set(button, _("OK"));
+						elm_object_text_set(button, _("OK"));
 						evas_object_smart_callback_add(button, "clicked", on_post_dm_set, inwin);
 						elm_box_pack_end(buttons, button);
 					evas_object_show(button);
 
 					button = elm_button_add(gui.win);
-						elm_button_label_set(button, _("Cancel"));
+						elm_object_text_set(button, _("Cancel"));
 						evas_object_smart_callback_add(button, "clicked", on_post_dm_cancel, inwin);
 						elm_box_pack_end(buttons, button);
 					evas_object_show(button);
@@ -1945,7 +1945,7 @@ static void on_entry_changed(void *data, Evas_Object *entry, void *event_info) {
 	} else
 		res = asprintf(&count_str, " % dc | ", i);
 	if(res != -1) {
-		elm_label_label_set(count, count_str);
+		elm_object_text_set(count, count_str);
 		free(count_str);
 	}
 	free(entry_text);
@@ -2105,7 +2105,7 @@ EAPI int elm_main(int argc, char **argv)
 			evas_object_size_hint_align_set(box2, -1, 1);
 
 			count = elm_label_add(gui.win);
-				elm_label_label_set(count, " 140c | ");
+				elm_object_text_set(count, " 140c | ");
 				evas_object_size_hint_weight_set(count, 0, 1);
 				evas_object_size_hint_align_set(count, 0, 0);
 			evas_object_show(count);
@@ -2140,7 +2140,7 @@ EAPI int elm_main(int argc, char **argv)
 			gui.post = elm_button_add(gui.win);
 				evas_object_size_hint_weight_set(gui.post, 1, 1);
 				evas_object_size_hint_align_set(gui.post, -1, 0);
-				elm_button_label_set(gui.post, _("Send"));
+				elm_object_text_set(gui.post, _("Send"));
 				elm_button_icon_set(gui.post, icon);
 				evas_object_smart_callback_add(gui.post, "clicked", on_post, NULL);
 				elm_box_pack_end(box2, gui.post);
@@ -2153,7 +2153,7 @@ EAPI int elm_main(int argc, char **argv)
 			bt = elm_button_add(gui.win);
 				evas_object_size_hint_weight_set(bt, 1, 1);
 				evas_object_size_hint_align_set(bt, -1, 0);
-				elm_button_label_set(bt, _("DM"));
+				elm_object_text_set(bt, _("DM"));
 				elm_button_icon_set(bt, icon);
 				evas_object_smart_callback_add(bt, "clicked", on_post_dm, NULL);
 				elm_box_pack_end(box2, bt);
@@ -2166,7 +2166,7 @@ EAPI int elm_main(int argc, char **argv)
 			bt = elm_button_add(gui.win);
 				evas_object_size_hint_weight_set(bt, 1, 1);
 				evas_object_size_hint_align_set(bt, -1, 0);
-				elm_button_label_set(bt, _("Hide"));
+				elm_object_text_set(bt, _("Hide"));
 				elm_button_icon_set(bt, icon);
 				evas_object_smart_callback_add(bt, "clicked", on_post_hide, NULL);
 				elm_box_pack_end(box2, bt);

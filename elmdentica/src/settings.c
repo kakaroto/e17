@@ -171,9 +171,9 @@ void on_update_timeout_changed(void* data, Evas_Object *obj, void *event_info) {
 	ecore_timer_thaw(settings->update_timer);
 
 	if(val)
-		elm_slider_label_set(obj, _("Every: "));
+		elm_object_text_set(obj, _("Every: "));
 	else
-		elm_slider_label_set(obj, "");
+		elm_object_text_set(obj, "");
 }
 
 static const char* indicator_format_func(double val) {
@@ -368,7 +368,7 @@ void on_account_type_chosen(void *data, Evas_Object *obj, void *event_info) {
 	Evas_Object *type_hoversel = (Evas_Object*)data;
 	switch(current_account_type) {
 		case ACCOUNT_TYPE_STATUSNET:
-		default: { elm_hoversel_label_set(type_hoversel, "StatusNet"); break; }
+		default: { elm_object_text_set(type_hoversel, "StatusNet"); break; }
 	}
 }
 
@@ -393,7 +393,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 			frame = elm_frame_add(user_data_dialog);
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, 0);
-				elm_frame_label_set(frame, _("Screen name"));
+				elm_object_text_set(frame, _("Screen name"));
 
 				screen_name_entry = elm_entry_add(user_data_dialog);
 					evas_object_name_set(screen_name_entry, "screen_name_entry");
@@ -408,7 +408,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 			frame = elm_frame_add(user_data_dialog);
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, 0);
-				elm_frame_label_set(frame, _("Password"));
+				elm_object_text_set(frame, _("Password"));
 
 				password_entry = elm_entry_add(user_data_dialog);
 					evas_object_name_set(password_entry, "password_entry");
@@ -427,12 +427,12 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 				switch(account_type) {
 					case ACCOUNT_TYPE_STATUSNET: { 
 						current_account_type=ACCOUNT_TYPE_STATUSNET;
-						elm_hoversel_label_set(type_entry, "StatusNet");
+						elm_object_text_set(type_entry, "StatusNet");
 						break;
 					}
 					default:	{
 						current_account_type=ACCOUNT_TYPE_STATUSNET;
-						elm_hoversel_label_set(type_entry, _("Type"));
+						elm_object_text_set(type_entry, _("Type"));
 						break;
 					}
 				}
@@ -463,7 +463,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 			frame = elm_frame_add(user_data_dialog);
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, 0);
-				elm_frame_label_set(frame, _("Domain"));
+				elm_object_text_set(frame, _("Domain"));
 
 				domain_entry = elm_entry_add(user_data_dialog);
 					evas_object_name_set(domain_entry, "domain_entry");
@@ -478,7 +478,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 			frame = elm_frame_add(user_data_dialog);
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, 0);
-				elm_frame_label_set(frame, _("Base URL"));
+				elm_object_text_set(frame, _("Base URL"));
 
 				base_url_entry = elm_entry_add(user_data_dialog);
 					evas_object_name_set(base_url_entry, "base_url_entry");
@@ -493,7 +493,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 			receive_entry = elm_check_add(user_data_dialog);
 				evas_object_size_hint_weight_set(receive_entry, 1, 1);
 				evas_object_size_hint_align_set(receive_entry, -1, 0);
-				elm_check_label_set(receive_entry, _("Receive?"));
+				elm_object_text_set(receive_entry, _("Receive?"));
 				if(receive)
 					elm_check_state_set(receive_entry, TRUE);
 				else
@@ -505,7 +505,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 			send_entry = elm_check_add(user_data_dialog);
 				evas_object_size_hint_weight_set(send_entry, 1, 1);
 				evas_object_size_hint_align_set(send_entry, -1, 0);
-				elm_check_label_set(send_entry, _("Send?"));
+				elm_object_text_set(send_entry, _("Send?"));
 				if(send)
 					elm_check_state_set(send_entry, TRUE);
 				else
@@ -531,7 +531,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 			evas_object_size_hint_weight_set(button, 1, 1);
 			evas_object_size_hint_align_set(button, -1, 0);
 
-			elm_button_label_set(button, _("OK"));
+			elm_object_text_set(button, _("OK"));
 			evas_object_smart_callback_add(button, "clicked", on_user_data_ok, account_list);
 			elm_box_pack_end(button_list, button);
 		evas_object_show(button);
@@ -539,7 +539,7 @@ Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *passw
 		button = elm_button_add(user_data_dialog);
 			evas_object_size_hint_weight_set(button, 1, 1);
 			evas_object_size_hint_align_set(button, -1, 0);
-			elm_button_label_set(button, _("Cancel"));
+			elm_object_text_set(button, _("Cancel"));
 			evas_object_smart_callback_add(button, "clicked", user_data_dialog_win_del, NULL);
 			elm_box_pack_end(button_list, button);
 		evas_object_show(button);
@@ -708,7 +708,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 		frame = elm_frame_add(settings_win);
 			evas_object_size_hint_weight_set(frame, 1, 1);
 			evas_object_size_hint_align_set(frame, -1, -1);
-			elm_frame_label_set(frame, _("Accounts..."));
+			elm_object_text_set(frame, _("Accounts..."));
 
 			list = elm_list_add(settings_win);
 				evas_object_name_set(list, "accounts_list");
@@ -743,7 +743,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 
 			button = elm_button_add(settings_win);
 				elm_button_icon_set(button, icon);
-				elm_button_label_set(button, _("Add"));
+				elm_object_text_set(button, _("Add"));
 				evas_object_smart_callback_add(button, "clicked", on_account_add, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, -1, 0);
@@ -756,7 +756,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 
 			button = elm_button_add(settings_win);
 				elm_button_icon_set(button, icon);
-				elm_button_label_set(button, _("Edit"));
+				elm_object_text_set(button, _("Edit"));
 				evas_object_smart_callback_add(button, "clicked", on_account_edit, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, -1, 0);
@@ -770,7 +770,7 @@ void on_settings_accounts(void *data, Evas_Object *toolbar, void *event_info) {
 
 			button = elm_button_add(settings_win);
 				elm_button_icon_set(button, icon);
-				elm_button_label_set(button, _("Delete"));
+				elm_object_text_set(button, _("Delete"));
 				evas_object_smart_callback_add(button, "clicked", on_account_delete, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, -1, 0);
@@ -797,11 +797,11 @@ static int cache_posts_count(void *user_data, int argc, char **argv, char **azCo
 
 	count = atoi(argv[0]);
 	if(count == 0)
-		elm_label_label_set(label, _("No posts<br>in cache."));
+		elm_object_text_set(label, _("No posts<br>in cache."));
 	else {
 		res = asprintf(&label_str, _("Currently remembering<br>%d posts."), count);
 		if(res != -1) {
-			elm_label_label_set(label, label_str);
+			elm_object_text_set(label, label_str);
 			free(label_str);
 		}
 	}
@@ -820,7 +820,7 @@ void cache_posts_forget(void *data, Evas_Object *obj, void *event_info) {
 		sqlite3_free(db_err);
         }
 
-	elm_label_label_set(label, _("No posts<br>in cache."));
+	elm_object_text_set(label, _("No posts<br>in cache."));
 }
 
 
@@ -835,11 +835,11 @@ static int cache_messages_count(void *user_data, int argc, char **argv, char **a
 
 	count = atoi(argv[0]);
 	if(count == 0)
-		elm_label_label_set(label, _("No messages<br>in cache."));
+		elm_object_text_set(label, _("No messages<br>in cache."));
 	else {
 		res = asprintf(&label_str, _("Currently remembering<br>%d messages."), count);
 		if(res != -1) {
-			elm_label_label_set(label, label_str);
+			elm_object_text_set(label, label_str);
 			free(label_str);
 		}
 	}
@@ -858,7 +858,7 @@ void cache_messages_forget(void *data, Evas_Object *obj, void *event_info) {
 		sqlite3_free(db_err);
         }
 
-	elm_label_label_set(label, _("No messages<br>in cache."));
+	elm_object_text_set(label, _("No messages<br>in cache."));
 }
 
 void cache_messages_max_set(Evas_Object *label) {
@@ -867,7 +867,7 @@ void cache_messages_max_set(Evas_Object *label) {
 
 	res = asprintf(&count, " %3d  ", settings->max_messages);
 	if(res != -1) {
-		elm_label_label_set(label, count);
+		elm_object_text_set(label, count);
 		free(count);
 
 	}
@@ -906,7 +906,7 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 		button = elm_button_add(settings_win);
 			evas_object_size_hint_weight_set(button, 1, 1);
 			evas_object_size_hint_align_set(button, -1, 0.5);
-			elm_button_label_set(button, "Forget all");
+			elm_object_text_set(button, "Forget all");
 			evas_object_smart_callback_add(button, "clicked", cache_messages_forget, label);
 			evas_object_show(button);
 		elm_table_pack(cache_editor, button, 1, 0, 1, 1);
@@ -926,7 +926,7 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 		button = elm_button_add(settings_win);
 			evas_object_size_hint_weight_set(button, 1, 1);
 			evas_object_size_hint_align_set(button, -1, 0.5);
-			elm_button_label_set(button, "Forget all");
+			elm_object_text_set(button, "Forget all");
 			evas_object_smart_callback_add(button, "clicked", cache_posts_forget, label);
 			evas_object_show(button);
 		elm_table_pack(cache_editor, button, 1, 1, 1, 1);
@@ -936,7 +936,7 @@ void on_settings_cache(void *data, Evas_Object *toolbar, void *event_info) {
 			evas_object_size_hint_align_set(slider, -1, 0.5);
 			elm_slider_horizontal_set(slider, EINA_TRUE);
 
-			elm_slider_label_set(slider, _("Displayed messages"));
+			elm_object_text_set(slider, _("Displayed messages"));
 
 			elm_slider_unit_format_set(slider, "%0.f");
 			elm_slider_min_max_set(slider, 0.0, 1000.0);
@@ -960,7 +960,7 @@ static void settings_choose_browser(void *data, Evas_Object *hoversel, void *eve
 
 	settings->browser_name = strdup(browserNames[b]);
 	settings->browser_cmd = strdup(browser_cmnds[b]);
-	elm_hoversel_label_set(hoversel, settings->browser_name);
+	elm_object_text_set(hoversel, settings->browser_name);
 }
 
 Evas_Object *settings_browser_hoversel(void) {
@@ -1001,11 +1001,11 @@ Evas_Object *settings_browser_hoversel(void) {
 
 		if(have_browser) {
 			if(settings->browser >= 0 && settings->browser <= browsersIndex)
-				elm_hoversel_label_set(hoversel, browserNames[settings->browser]);
+				elm_object_text_set(hoversel, browserNames[settings->browser]);
 			else
-				elm_hoversel_label_set(hoversel, _("Please choose a browser"));
+				elm_object_text_set(hoversel, _("Please choose a browser"));
 		} else
-			elm_hoversel_label_set(hoversel, _("No supported browser available"));
+			elm_object_text_set(hoversel, _("No supported browser available"));
 
 	evas_object_show(hoversel);
 
@@ -1042,7 +1042,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		evas_object_size_hint_align_set(options_editor, -1, 0);
 
 		frame = elm_frame_add(settings_area);
-			elm_frame_label_set(frame, _("Preferred browser..."));
+			elm_object_text_set(frame, _("Preferred browser..."));
 			hoversel = settings_browser_hoversel();
 			elm_hoversel_hover_parent_set(hoversel, settings_area);
 			elm_frame_content_set(frame, hoversel);
@@ -1050,7 +1050,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		evas_object_show(frame);
 		
 		frame = elm_frame_add(settings_area);
-			elm_frame_label_set(frame, _("Online mode..."));
+			elm_object_text_set(frame, _("Online mode..."));
 			toggle = elm_toggle_add(settings_area);
 			elm_toggle_states_labels_set(toggle, _("Online"), _("Offline"));
 			elm_toggle_state_set(toggle, settings->online);
@@ -1060,7 +1060,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		evas_object_show(frame);
 		
 		frame = elm_frame_add(settings_area);
-			elm_frame_label_set(frame, _("Timestamps..."));
+			elm_object_text_set(frame, _("Timestamps..."));
 			toggle = elm_toggle_add(settings_area);
 			elm_toggle_states_labels_set(toggle, _("Relative"), _("Absolute"));
 			elm_toggle_state_set(toggle, settings->rel_timestamps);
@@ -1070,7 +1070,7 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 		evas_object_show(frame);
 
 		frame = elm_frame_add(settings_area);
-			elm_frame_label_set(frame, _("Auto updates"));
+			elm_object_text_set(frame, _("Auto updates"));
 			update_table = elm_table_add(settings_area);
 
 			auto_update_timeout = elm_slider_add(settings_area);
@@ -1078,9 +1078,9 @@ void on_settings_options(void *data, Evas_Object *toolbar, void *event_info) {
 				elm_slider_value_set(auto_update_timeout, settings->update_interval_val);
 				elm_slider_unit_format_set(auto_update_timeout, timeout_names(settings->update_interval_val, EINA_TRUE));
 				if(settings->update_interval_val)
-					elm_slider_label_set(auto_update_timeout, _("Every: "));
+					elm_object_text_set(auto_update_timeout, _("Every: "));
 				else
-					elm_slider_label_set(auto_update_timeout, "");
+					elm_object_text_set(auto_update_timeout, "");
 				elm_slider_indicator_format_function_set(auto_update_timeout, indicator_format_func, NULL);
 				evas_object_smart_callback_add(auto_update_timeout, "delay,changed", on_update_timeout_changed, NULL);
 				elm_table_pack(update_table, auto_update_timeout, 1, 0, 1, 1);
@@ -1239,7 +1239,7 @@ Evas_Object * gag_edit_widgets(char *pattern) {
 			frame = elm_frame_add(settings_win);
 				evas_object_size_hint_weight_set(frame, 1, 1);
 				evas_object_size_hint_align_set(frame, -1, 1);
-				elm_frame_label_set(frame, _("Pattern..."));
+				elm_object_text_set(frame, _("Pattern..."));
 				entry = elm_entry_add(settings_win);
 					evas_object_size_hint_weight_set(entry, 1, 1);
 					evas_object_size_hint_align_set(entry, -1, 1);
@@ -1259,7 +1259,7 @@ Evas_Object * gag_edit_widgets(char *pattern) {
 				elm_box_horizontal_set(buttons, EINA_TRUE);
 
 				button = elm_button_add(settings_win);
-					elm_button_label_set(button, _("OK"));
+					elm_object_text_set(button, _("OK"));
 					if(!pattern)
 						evas_object_smart_callback_add(button, "clicked", on_gag_pattern_add, inwin);
 					else
@@ -1268,7 +1268,7 @@ Evas_Object * gag_edit_widgets(char *pattern) {
 				evas_object_show(button);
 
 				button = elm_button_add(settings_win);
-					elm_button_label_set(button, _("Cancel"));
+					elm_object_text_set(button, _("Cancel"));
 					evas_object_smart_callback_add(button, "clicked", on_gag_pattern_cancel, inwin);
 					elm_box_pack_end(buttons, button);
 				evas_object_show(button);
@@ -1341,7 +1341,7 @@ void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
 		frame = elm_frame_add(settings_win);
 			evas_object_size_hint_weight_set(frame, 1, 1);
 			evas_object_size_hint_align_set(frame, -1, -1);
-			elm_frame_label_set(frame, _("Gag patterns..."));
+			elm_object_text_set(frame, _("Gag patterns..."));
 
 			list = elm_list_add(settings_win);
 				evas_object_name_set(list, "gag_list");
@@ -1375,7 +1375,7 @@ void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
 
 			button = elm_button_add(settings_win);
 				elm_button_icon_set(button, icon);
-				elm_button_label_set(button, _("Add"));
+				elm_object_text_set(button, _("Add"));
 				evas_object_smart_callback_add(button, "clicked", on_gag_add, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, -1, 0);
@@ -1388,7 +1388,7 @@ void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
 
 			button = elm_button_add(settings_win);
 				elm_button_icon_set(button, icon);
-				elm_button_label_set(button, _("Edit"));
+				elm_object_text_set(button, _("Edit"));
 				evas_object_smart_callback_add(button, "clicked", on_gag_edit, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, -1, 0);
@@ -1401,7 +1401,7 @@ void on_settings_gag(void *data, Evas_Object *toolbar, void *event_info) {
 
 			button = elm_button_add(settings_win);
 				elm_button_icon_set(button, icon);
-				elm_button_label_set(button, _("Delete"));
+				elm_object_text_set(button, _("Delete"));
 				evas_object_smart_callback_add(button, "clicked", on_gag_delete, list);
 				evas_object_size_hint_weight_set(button, 1, 1);
 				evas_object_size_hint_align_set(button, -1, 0);
