@@ -313,7 +313,7 @@ main (int argc, char ** argv)
         elsa_history_init();
         //FIXME
         snprintf(buf, sizeof(buf), "ELSA_XPID=%d", pid);
-        putenv(buf);
+        putenv(strdup(buf));
         elsa_server_init();
         ecore_main_loop_iterate();
         ecore_main_loop_begin();

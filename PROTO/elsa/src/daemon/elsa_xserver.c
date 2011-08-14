@@ -25,7 +25,7 @@ _env_set(const char *dname)
 {
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "DISPLAY=%s", dname);
-   putenv(buf);
+   putenv(strdup(buf));
 }
 
 static int
@@ -113,7 +113,7 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
    _xserver->start = start;
    pid = _xserver_start();
    snprintf(buf, sizeof(buf), "ELSA_XPID=%d", pid);
-   putenv(buf);
+   putenv(strdup(buf));
    printf("need my pid here %s\n", getenv("ELSA_XPID"));
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,

@@ -215,7 +215,7 @@ elsa_session_init(const char *file)
      }
    remove(file);
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s", file);
-   putenv(buf);
+   putenv(strdup(buf));
    //fprintf(stderr, PACKAGE": cookie %s \n", _mcookie);
    _elsa_session_cookie_add(_mcookie, ":0",
                             elsa_config->command.xauth_path, file);
