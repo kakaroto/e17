@@ -28,7 +28,7 @@ collections{
 			item: "icon_spacing"    "3";
 
 			/* space between boxes */
-			item: "separator_width" "12";
+			item: "separator_width" "24";
 
 			/* space between screen edge and icons */
 			item: "edge_offset"    "5";
@@ -84,52 +84,30 @@ collections{
 	/* the vertical and horizontal separator image. it can be a rectangle
 	 * as it is in this example.
 	 */
-
-	group {
-		name: "e/modules/engage/separator_bottom";
-		alias: "e/modules/engage/separator_top";
-
-		parts {
-			part {
-				name: "separator";
-				type: RECT;
-				mouse_events: 0;
-
-				description {
-					state: "default" 0.0;
-					color: 182 182 182 200;
-					max: 2 999;
-					align: 0.5 0.0;
-
-					rel1.offset: 0 -8;
-					rel2.offset: 0 7;
-				}
-			}
-		}
+#define SEPARATOR(NAME, MAX, ALIGN, OFF1, OFF2)	\
+	group {										\
+		name: NAME;								\
+		parts {									\
+			part {								\
+				name: "separator";				\
+				type: RECT;						\
+				mouse_events: 0;				\
+				description {					\
+					state: "default" 0.0;		\
+					color: 255 255 255 200;		\
+					max: MAX;					\
+					align: ALIGN;				\
+					rel1.offset: OFF1;			\
+					rel2.offset: OFF2;			\
+				}								\
+			}									\
+		}										\
 	}
 
-	group {
-		name: "e/modules/engage/separator_left";
-		alias: "e/modules/engage/separator_right";
-
-		parts {
-			part {
-				name: "separator";
-				type: RECT;
-				mouse_events: 0;
-
-				description {
-					state: "default" 0.0;
-					color: 182 182 182 255;
-					max: 999 2;
-					align: 0.0 0.5;
-
-					rel1.offset: -8 0;
-					rel2.offset: 7 0;
-				}
-			}
-		}
-	}
+	SEPARATOR("e/modules/engage/separator_bottom", 2 999, 0.5 0.0, 0 -8, -1 -1);
+	SEPARATOR("e/modules/engage/separator_top",    2 999, 0.5 0.0, 0 0,  -1  7);
+	SEPARATOR("e/modules/engage/separator_left",   999 2, 0.0 0.5, 0 0,   7 -1);
+	SEPARATOR("e/modules/engage/separator_right",  999 2, 0.0 0.5, -8 0, -1 -1);
 
 	group {
 		name: "e/modules/engage/label_bottom";

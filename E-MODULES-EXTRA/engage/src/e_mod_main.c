@@ -124,9 +124,6 @@ ngi_new(Config_Item *cfg)
    data = edje_object_data_get(ng->o_frame, "bg_offset");
    if (data) ng->opt.bg_offset = atoi(data);
 
-   data = edje_object_data_get(ng->o_frame, "reflection_offset");
-   if (data) ng->opt.reflection_offset = atoi(data);
-
    data = edje_object_data_get(ng->o_frame, "keep_overlay_pos");
    if (data) ng->opt.keep_overlay_pos = atof(data);
 
