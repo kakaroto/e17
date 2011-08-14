@@ -500,7 +500,7 @@ _ephoto_single_browser_recalc(Ephoto_Single_Browser *sb)
         _orient_apply(sb);
      }
 
-   elm_object_focus(sb->main);
+   elm_object_focus_set(sb->main, EINA_TRUE);
 }
 
 static void

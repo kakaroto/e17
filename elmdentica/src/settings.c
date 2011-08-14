@@ -600,7 +600,7 @@ static int account_edit(void *data, int argc, char **argv, char **azColName) {
 			elm_win_inwin_content_set(user_data_dialog, box);
 			evas_object_show(box);
 			evas_object_show(user_data_dialog);
-			elm_object_focus(screen_name_entry);
+			elm_object_focus_set(screen_name_entry, EINA_TRUE);
 		} else
 			evas_object_del(user_data_dialog);
 	}
@@ -638,7 +638,7 @@ void on_account_add(void *data, Evas_Object *obj, void *event_info) {
 			elm_win_inwin_content_set(user_data_dialog, box);
 			evas_object_show(box);
 			evas_object_show(user_data_dialog);
-			elm_object_focus(screen_name_entry);
+			elm_object_focus_set(screen_name_entry, EINA_TRUE);
 		} else
 			evas_object_del(user_data_dialog);
 	}

@@ -76,7 +76,7 @@ bool Object::getDisabled ()
 
 void Object::focus ()
 {
-  elm_object_focus (o); 
+  elm_object_focus_set (o, EINA_TRUE);
 }
 
 bool Object::checkWidget ()

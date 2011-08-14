@@ -727,7 +727,7 @@ text_entry_toggle(Viewer *v, Eina_Bool show)
         elm_entry_entry_set(v->gui.entry, text);
         edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,entry,show", "v");
         evas_object_focus_set(v->gui.entry, 1);
-        elm_object_focus(v->gui.entry);
+        elm_object_focus_set(v->gui.entry, EINA_TRUE);
         v->entry_visible = 1;
 
         edje_edit_string_free(state);
