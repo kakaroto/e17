@@ -4,6 +4,6 @@ Cloak:          developer/discomfitor
 Name:		Mike Blumenkrantz
 Location:	CT, USA
 E-Mail:		mike@zentific.com
-Managing:	eeze, e_ukit, esskyuehl, azy, ecore_con, ecore_con_ssl, ecore_con_ares
-Contributing:	e_dbus, gentoo ebuilds, e device backends
+Managing:	eeze, e_ukit, esskyuehl, azy, ecore_con, ecore_con_ssl, ecore_con_ares, darkness, shotgun, email, efm backend
+Contributing:	e_dbus, gentoo ebuilds, e device backends, elm
 Platform:	Gentoo (Linux)
