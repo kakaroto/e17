@@ -757,3 +757,96 @@ group { name: "elm/gengrid/item/ephoto-up/default";
 	}
 }
 
+
+group {
+	name: "elm/gengrid/item/excessive-thumb/default";
+	alias: "elm/gengrid/item/excessive-folder/default";
+	alias: "elm/gengrid/item/excessive-emotion/default";
+	alias: "elm/gengrid/item/excessive-image/default";
+
+	data {
+		item: "icons" "excessive.swallow.icon";
+		item: "labels" "excessive.text";
+	}
+	parts {
+		part {
+            type: SWALLOW;
+            name: "excessive.swallow.icon";
+            mouse_events: 0;
+            repeat_events: 0;
+            description {
+				aspect_preference: BOTH;
+				aspect: 1 1;
+				rel1.offset: 10 10;
+				rel2.offset: -11 -11;
+            }
+		}
+		part {
+            type: RECT;
+            name: "excessive.clip";
+            mouse_events: 0;
+            description {
+				rel1 {
+					relative: 0.0 1.0;
+					offset: 2 -15;
+				}
+				rel2 {
+					offset: -1 0;
+				}
+				color: 255 255 255 255;
+            }
+		}
+		part {
+            type: TEXT;
+            effect: SHADOW;
+            name: "excessive.text";
+            mouse_events: 0;
+            scale: 1;
+            clip_to: excessive.clip;
+            description {
+				align: 0.0 0.0;;
+				rel1.relative: 0.0 1.0;
+				rel1.offset: 2 -15;
+				rel2.offset: -1 0;
+				TEXT_COLOR;
+				TEXT_NORMAL("", 0.5 0.5, 1 1);
+            }
+            description {
+				state: default 1.0;
+				inherit: default 0.0;
+				/* text.align: 1.0 0.0; */
+				align: 1.0 0.0;
+            }
+		}
+		part {
+            type: RECT;
+            mouse_events: 1;
+
+            description {
+				color: 255 255 255 0;
+            }
+		}
+	}
+	programs {
+		program {
+            name: right;
+            signal: "show";
+            source: "";
+
+            action: STATE_SET default 1.0;
+            transition: SINUSOIDAL 4.0;
+            target: excessive.text;
+
+            after: left;
+		}
+		program {
+            name: left;
+
+            action: STATE_SET default 0.0;
+            transition: SINUSOIDAL 4.0;
+            target: excessive.text;
+
+            after: right;
+		}
+	}
+}
