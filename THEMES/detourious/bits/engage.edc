@@ -472,7 +472,222 @@ group {
 	alias: "e/modules/engage/icon_top";
 	alias: "e/modules/engage/icon_left";
 	alias: "e/modules/engage/icon_right";
-	alias: "e/modules/engage/icon_bottom";
+	min: 32 32;
+	max: 128 128;
+
+	parts {
+		part {
+			name: "clip";
+			type: RECT;
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 128;
+			}
+			description {
+				state: "visible" 0.0;
+				color: 255 255 255 255;
+			}
+		}
+		part {
+			name: "focus_clip";
+			type: RECT;
+			clip_to: "clip";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+
+			description {
+				state: "focused" 0.0;
+				color: 200 200 255 255;
+			}
+		}
+		part {
+			name: "iconic_clip";
+			type: RECT;
+			clip_to: "focus_clip";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+
+			description {
+				state: "iconic" 0.0;
+				color: 200 200 200 255;
+			}
+		}
+
+		part {
+			name: "urgent_clip";
+			type: RECT;
+			clip_to: "iconic_clip";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+			description {
+				state: "urgent" 0.0;
+				color: 255 180 180 255;
+			}
+		}
+
+		part {
+			name: "input_clip";
+			type: RECT;
+			clip_to: "urgent_clip";
+			mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+			description {
+				state: "mouse_down" 0.0;
+				color: 200 200 200 255;
+			}
+		}
+		
+		part {
+			name: "e.swallow.content";
+			type: SWALLOW;
+			clip_to: "input_clip";
+			description {
+				state: "default" 0.0;
+				aspect: 1.0 1.0;
+				aspect_preference: BOTH;
+			}
+		}
+		part {
+			name: "bottom_clip";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 100;
+				rel2.offset: -1 15;
+			}			
+		}
+	}
+
+	programs {
+		program {
+			name: "go_show";
+			signal: "e,state,item,show";
+			source: "e";
+			action: STATE_SET "visible" 0.0;
+			transition: SINUSOIDAL 0.2;
+			target: "clip";
+		}
+
+		program {
+			name: "go_hide";
+			signal: "e,state,item,hide";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: SINUSOIDAL 0.3;
+			target: "clip";
+		}
+
+		/* when minimizing an application */
+		program {
+			name: "go_iconic1";
+			signal: "e,state,taskbar,iconic,on";
+			source: "e";
+			action: STATE_SET "iconic" 0.0;
+			transition: LINEAR 0.3;
+			target: "iconic_clip";
+		}
+		program {
+			name: "go_iconic0";
+			signal: "e,state,taskbar,iconic,off";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.3;
+			target: "iconic_clip";
+		}
+
+		/* when an application got focus */
+		program {
+			name: "go_focused1";
+			signal: "e,state,taskbar,focus,on";
+			source: "e";
+			action: STATE_SET "focused" 0.0;
+			transition: SINUSOIDAL 0.3;
+			target: "focus_clip";
+		}
+
+		program {
+			name: "go_focused0";
+			signal: "e,state,taskbar,focus,off";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: SINUSOIDAL 0.3;
+			target: "focus_clip";
+		}
+
+		/* application is sending urgent signal  */
+		program {
+			name: "go_urgent1";
+			signal: "e,state,taskbar,urgent,on";
+			source: "e";
+			action: STATE_SET "urgent" 0.0;
+			transition: LINEAR 1.0;
+			target: "urgent_clip";
+			after: "go_urgent2";
+		}
+
+		program {
+			name: "go_urgent2";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 1.0;
+			target: "urgent_clip";
+			after: "go_urgent1";
+		}
+
+		program {
+			name: "go_urgent0";
+			signal: "e,state,taskbar,urgent,off";
+			source: "e";
+			action: ACTION_STOP;
+			target: "go_urgent1";
+			target: "go_urgent0";
+			after: "go_urgent_end";
+		}
+
+		program {
+			name: "go_urgent_end";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.2;
+			target: "urgent_clip";
+		}
+
+
+		program {
+			name: "go_mouse_down";
+			signal: "e,state,mouse_down";
+			source: "e";
+			action: STATE_SET "mouse_down" 0.0;
+			transition: LINEAR 0.2;
+			target: "input_clip";
+			after: "go_mouse_down2";
+		}
+		program {
+			name: "go_mouse_down2";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.3;
+			target: "input_clip";
+		}
+	}
+}
+group {
+	name: "e/modules/engage/icon_bottom";
 
 	min: 32 32;
 	max: 128 128;
@@ -596,7 +811,7 @@ group {
 				}
 				
 				map.on: 1;
-				map.rotation.y: 180;
+				map.rotation.x: 180;
 				
 			}
 		}
