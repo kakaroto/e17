@@ -1,527 +1,648 @@
-group { name: "e/comp/everything";
-   parts {
-      part { name: "clipper";
-         type: RECT;
-         mouse_events: 0;
-         clip_to: "clipper2";
-         description { state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            rel1 {
-               relative: -1.0  -1.0;
-               offset: -9999 -9999;
+/* exactly the same of default.edc, with larger shadow (comp-sh1.png)
+ * and without bt_glow.
+ */
+   group { name: "e/comp/default";
+      images {
+         image: "images/comp/comp-sh1.png" COMP;
+         /* image: "images/comp/bt_glow.png" COMP; */
+      }
+      parts {
+         part { name: "focus-clipper";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color_class: "comp_focus-out_color";
+               rel1 {
+                  relative: -1.0  -1.0;
+                  offset: -9999 -9999;
+               }
+               rel2 {
+                  relative: 2.0   2.0;
+                  offset: 9999  9999;
+               }
             }
-            rel2 {
-               relative: 2.0   2.0;
-               offset: 9999  9999;
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "";
+               color: 255 255 255 255;
             }
          }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
+         part { name: "clipper";
+            type: RECT;
+            mouse_events: 0;
+            clip_to: "focus-clipper";
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1 {
+                  relative: -1.0  -1.0;
+                  offset: -9999 -9999;
+               }
+               rel2 {
+                  relative: 2.0   2.0;
+                  offset: 9999  9999;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
          }
-         description { state: "big" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 0;
+         part { name: "shadow";
+            mouse_events: 0;
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               image {
+                  normal: "images/comp/comp-sh1.png";
+                  border: 35 35 35 35;
+                  middle: 0;
+               }
+               fill.smooth: 0;
+               rel1 {
+                  to: "e.swallow.content";
+                  relative: 0.0  0.0;
+                  offset: -35  -35;
+               }
+               rel2 {
+                  to: "e.swallow.content";
+                  relative: 1.0  1.0;
+                  offset: 34   34;
+               }
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "shower";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 0.05  0.05;
+                  offset: 0    0;
+               }
+               rel2 {
+                  relative: 0.95  0.95;
+                  offset: -1   -1;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 0.0  0.0;
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+               }
+            }
+         }
+         part { name: "e.swallow.content";
+            type: SWALLOW;
+            clip_to: "clipper";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "shower";
+               }
+               rel2 {
+                  to: "shower";
+               }
+            }
+            description { state: "focus1" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: -10 -10;
+               rel2.offset: 9   9;
+            }
+            description { state: "focus2" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: 4   4;
+               rel2.offset: -5  -5;
+            }
+            description { state: "focus3" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: -3  -3;
+               rel2.offset: 2   2;
+            }
+            description { state: "focus4" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: 1   1;
+               rel2.offset: -2  -2;
+            }
+         }
+         /* part { name: "glow"; */
+         /*    mouse_events: 0; */
+         /*    description { state: "default" 0.0; */
+         /*       visible: 0; */
+         /*       rel1.to: "e.swallow.content"; */
+         /*       rel1.offset: -3 -3; */
+         /*       rel2.to: "e.swallow.content"; */
+         /*       rel2.offset: 2  2; */
+         /*       color: 255 255 255 0; */
+         /*       image { */
+         /*          normal: "images/comp/bt_glow.png"; */
+         /*          border: 8 8 8 8; */
+         /*          middle: 0; */
+         /*       } */
+         /*       fill.smooth: 0; */
+         /*    } */
+         /*    description { state: "active" 0.0; */
+         /*       inherit: "default" 0.0; */
+         /*       visible: 1; */
+         /*       color: 255 255 255 255; */
+         /*    } */
+         /*    description { state: "faded" 0.0; */
+         /*       inherit: "default" 0.0; */
+         /*       visible: 1; */
+         /*       color: 255 255 255 0; */
+         /*       rel1.offset: -23 -22; */
+         /*       rel2.offset: 22  22; */
+         /*    } */
+         /* } */
+      }
+      programs {
+         program { name: "shadow-on";
+            signal: "e,state,shadow,on";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            target: "shadow";
+         }
+         program { name: "shadow-off";
+            signal: "e,state,shadow,off";
+            source: "e";
+            action: STATE_SET "hidden" 0.0;
+            target: "shadow";
+         }
+         program { name: "show1";
+            signal: "e,state,visible,on";
+            source: "e";
+            action: STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.15;
+            target: "clipper";
+            target: "shower";
+            after: "show2";
+         }
+         program { name: "show2";
+            action: SIGNAL_EMIT "e,action,show,done" "e";
+         }
+         program { name: "hide1";
+            signal: "e,state,visible,off";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.30;
+            target: "clipper";
+            target: "shower";
+            after: "hide2";
+         }
+         program { name: "hide2";
+            action: SIGNAL_EMIT "e,action,hide,done" "e";
+         }
+         program { name: "focus";
+            signal: "e,state,focus,on";
+            source: "e";
+            action: STATE_SET "focused" 0.0;
+            transition: SINUSOIDAL 0.2;
+            target: "focus-clipper";
+         }
+         program { name: "unfocus";
+            signal: "e,state,focus,off";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            transition: SINUSOIDAL 0.5;
+            target: "focus-clipper";
+         }
+         program { name: "focus1";
+            signal: "e,state,focus,on";
+            source: "e";
+            action: STATE_SET "focus1" 0.0;
+            transition: SINUSOIDAL 0.1;
+            target: "e.swallow.content";
+            after: "focus2";
+         }
+         program { name: "focus2";
+            action: STATE_SET "focus2" 0.0;
+            transition: SINUSOIDAL 0.1;
+            target: "e.swallow.content";
+            after: "focus3";
+         }
+         program { name: "focus3";
+            action: STATE_SET "focus3" 0.0;
+            transition: SINUSOIDAL 0.1;
+            target: "e.swallow.content";
+            after: "focus4";
+         }
+         program { name: "focus4";
+            action: STATE_SET "focus4" 0.0;
+            transition: SINUSOIDAL 0.1;
+            target: "e.swallow.content";
+            after: "focus5";
+         }
+         program { name: "focus5";
+            action: STATE_SET "default" 0.0;
+            transition: SINUSOIDAL 0.1;
+            target: "e.swallow.content";
+         }
+         /* program { name: "urgent-on"; */
+         /*    signal: "e,state,urgent,on"; */
+         /*    source: "e"; */
+         /*    action: STATE_SET "active" 0.0; */
+         /*    target: "glow"; */
+         /*    after: "urgent2"; */
+         /* } */
+         /* program { name: "urgent2"; */
+         /*    action: STATE_SET "faded" 0.0; */
+         /*    transition: DECELERATE 0.5; */
+         /*    target: "glow"; */
+         /*    after: "urgent-on"; */
+         /* } */
+         /* program { name: "urgent-off"; */
+         /*    signal: "e,state,urgent,off"; */
+         /*    source: "e"; */
+         /*    action: STATE_SET "default" 0.0; */
+         /*    target: "glow"; */
+         /* } */
+      }
+   }
+//----
+   group { name: "e/comp/none";
+      parts {
+         part { name: "e.swallow.content";
+            type: SWALLOW;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+            }
          }
       }
-      part { name: "clipper2";
-         type: RECT;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            color: 255 255 255 255;
-            rel1.to: "clipper";
-            rel2.to: "clipper";
+      programs {
+         program { name: "show1";
+            signal: "e,state,visible,on";
+            source: "e";
+            action: SIGNAL_EMIT "e,action,show,done" "e";
          }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-         }
-         description { state: "big" 0.0;
-            inherit: "default" 0.0;
-            color: 255 255 255 0;
-         }
-      }
-      part { name: "shadow";
-         mouse_events: 0;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            image {
-               normal: "images/comp/comp-sh1.png";
-               border: 18 18 18 18;
-               middle: 0;
-            }
-            fill.smooth: 0;
-            rel1 {
-               to: "e.swallow.content";
-               relative: 0.0  0.0;
-               offset: -16  -14;
-            }
-            rel2 {
-               to: "e.swallow.content";
-               relative: 1.0  1.0;
-               offset: 15   17;
-            }
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-      }
-      part { name: "shower";
-         type: RECT;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            visible: 0;
-            rel1 {
-               relative: 0.05  0.05;
-               offset: 0    0;
-            }
-            rel2 {
-               relative: 0.95  0.95;
-               offset: -1   -1;
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            rel1 {
-               relative: 0.0  0.0;
-            }
-            rel2 {
-               relative: 1.0  1.0;
-            }
-         }
-         description { state: "big" 0.0;
-            inherit: "default" 0.0;
-            rel1 {
-               relative: -0.3  -0.3;
-            }
-            rel2 {
-               relative: 1.3  1.3;
-            }
-         }
-      }
-      part { name: "e.swallow.content";
-         type: SWALLOW;
-         clip_to: "clipper";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1 {
-               to: "shower";
-            }
-            rel2 {
-               to: "shower";
-            }
+         program { name: "hide1";
+            signal: "e,state,visible,off";
+            source: "e";
+            action: SIGNAL_EMIT "e,action,hide,done" "e";
          }
       }
    }
-   programs {
-      program { name: "shadow-on";
-         signal: "e,state,shadow,on";
-         source: "e";
-         action: STATE_SET "default" 0.0;
-         target: "shadow";
+//----
+   group { name: "e/comp/still";
+      images {
+         image: "images/comp/comp-sh1.png" COMP;
       }
-      program { name: "shadow-off";
-         signal: "e,state,shadow,off";
-         source: "e";
-         action: STATE_SET "hidden" 0.0;
-         target: "shadow";
-      }
-      program { name: "show1";
-         signal: "e,state,visible,on";
-         source: "e";
-         action: STATE_SET "visible" 0.0;
-         transition: DECELERATE 0.05;
-         target: "clipper";
-         target: "clipper2";
-         target: "shower";
-         after: "show2";
-      }
-      program { name: "show2";
-         action: SIGNAL_EMIT "e,action,show,done" "e";
-      }
-      program { name: "hide1";
-         signal: "e,state,visible,off";
-         source: "e";
-         action: STATE_SET "big" 0.0;
-         transition: ACCELERATE 0.25;
-         target: "clipper";
-         target: "clipper2";
-         target: "shower";
-         after: "hide2";
-      }
-      program { name: "hide2";
-         action: STATE_SET "default" 0.0;
-         target: "clipper";
-         target: "clipper2";
-         target: "shower";
-         after: "hide3";
-      }
-      program { name: "hide3";
-         action: SIGNAL_EMIT "e,action,hide,done" "e";
-      }
-   }
-}
-
-group { name: "e/comp/default";
-   parts {
-
-      part { name: "clipper";
-         type: RECT;
-         mouse_events: 0;
-         /* clip_to: "focus-clipper"; */
-         description { state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 100;
-            rel1 {
-               relative: -1.0  -1.0;
-               /* offset: -9999 -9999; */
+      parts {
+         part { name: "shadow";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               image {
+                  normal: "images/comp/comp-sh1.png";
+                  border: 35 35 35 35;
+                  middle: 0;
+               }
+               fill.smooth: 0;
+               rel1 {
+                  to: "e.swallow.content";
+                  relative: 0.0  0.0;
+                  offset: -35  -35;
+               }
+               rel2 {
+                  to: "e.swallow.content";
+                  relative: 1.0  1.0;
+                  offset: 34   34;
+               }
             }
-            rel2 {
-               relative: 2.0   2.0;
-               /* offset: 9999  9999; */
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
             }
          }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
+         part { name: "focus-clipper";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color_class: "comp_focus-out_color";
+               rel1 {
+                  relative: -1.0  -1.0;
+                  offset: -9999 -9999;
+               }
+               rel2 {
+                  relative: 2.0   2.0;
+                  offset: 9999  9999;
+               }
+            }
+            description { state: "focused" 0.0;
+               inherit: "default" 0.0;
+               color_class: "";
+               color: 255 255 255 255;
+            }
+         }
+         part { name: "e.swallow.content";
+            type: SWALLOW;
+            mouse_events: 0;
+            clip_to: "focus-clipper";
+            description { state: "default" 0.0;
+            }
          }
       }
-      part { name: "shadow";
-         mouse_events: 0;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            image {
-               normal: "images/comp/comp-sh1.png";
-               border: 18 18 18 18;
-               middle: 0;
-            }
-            fill {
-               smooth: 0;
-            }
-            rel1 {
-               to: "e.swallow.content";
-               relative: 0.0  0.0;
-               offset: -16  -14;
-            }
-            rel2 {
-               to: "e.swallow.content";
-               relative: 1.0  1.0;
-               offset: 15   17;
-            }
+      programs {
+         program { name: "shadow-on";
+            signal: "e,state,shadow,on";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            target: "shadow";
          }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
+         program { name: "shadow-off";
+            signal: "e,state,shadow,off";
+            source: "e";
+            action: STATE_SET "hidden" 0.0;
+            target: "shadow";
          }
-      }
-      /* part { name: "focus-clipper";
-       *     type: RECT;
-       *     mouse_events: 0;
-       *     description { state: "default" 0.0;
-       *              color_class: "comp_focus-out_color";
-       *              rel1 {
-       *                      relative: -1.0  -1.0;
-       *                      offset: -9999 -9999;
-       *              }
-       *              rel2 {
-       *                      relative: 2.0   2.0;
-       *                      offset: 9999  9999;
-       *              }
-       *     }
-       *     description { state: "focused" 0.0;
-       *              inherit: "default" 0.0;
-       *              color_class: "";
-       *              color: 255 255 255 255;
-       *     }
-       * } */
-      part { name: "e.swallow.content";
-         type: SWALLOW;
-         mouse_events: 0;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
+         program { name: "show1";
+            signal: "e,state,visible,on";
+            source: "e";
+            action: SIGNAL_EMIT "e,action,show,done" "e";
+         }
+         program { name: "hide1";
+            signal: "e,state,visible,off";
+            source: "e";
+            action: SIGNAL_EMIT "e,action,hide,done" "e";
+         }
+         program { name: "focus";
+            signal: "e,state,focus,on";
+            source: "e";
+            action: STATE_SET "focused" 0.0;
+            transition: SINUSOIDAL 0.2;
+            target: "focus-clipper";
+         }
+         program { name: "unfocus";
+            signal: "e,state,focus,off";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            transition: SINUSOIDAL 0.5;
+            target: "focus-clipper";
          }
       }
    }
-   programs {
-      program { name: "shadow-on";
-         signal: "e,state,shadow,on";
-         source: "e";
-         action: STATE_SET "default" 0.0;
-         target: "shadow";
+//----
+   group { name: "e/comp/popup";
+      images {
+         image: "images/comp/comp-sh1.png" COMP;
       }
-      program { name: "shadow-off";
-         signal: "e,state,shadow,off";
-         source: "e";
-         action: STATE_SET "hidden" 0.0;
-         target: "shadow";
-      }
-      program { name: "show1";
-         signal: "e,state,visible,on";
-         source: "e";
-         action: STATE_SET "visible" 0.0;
-         target: "clipper";
-         transition: LINEAR 0.15;
-         after: "show2";
-      }
-      program { name: "show2";
-         action: SIGNAL_EMIT "e,action,show,done" "e";
-      }
-
-      program { name: "hide1";
-         signal: "e,state,visible,off";
-         source: "e";
-         action: STATE_SET "default" 0.0;
-         target: "clipper";
-         transition: LINEAR 0.15;
-         after: "hide2";
-      }
-      program { name: "hide2";
-         action: SIGNAL_EMIT "e,action,hide,done" "e";
-      }
-      /* program { name: "focus";
-       *     signal: "e,state,focus,on";
-       *     source: "e";
-       *     action: STATE_SET "focused" 0.0;
-       *     transition: SINUSOIDAL 0.2;
-       *     target: "focus-clipper";
-       * }
-       * program { name: "unfocus";
-       *     signal: "e,state,focus,off";
-       *     source: "e";
-       *     action: STATE_SET "default" 0.0;
-       *     transition: SINUSOIDAL 0.5;
-       *     target: "focus-clipper";
-       * } */
-   }
-}
-
-group {
-   name: "e/comp/menu";
-   parts {
-      part { name: "clipper";
-         type: RECT;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            rel1 {
-               relative: -1.0  -1.0;
-               /* offset: -9999 -9999; */
+      parts {
+         part { name: "clipper";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1 {
+                  relative: -1.0  -1.0;
+                  offset: -9999 -9999;
+               }
+               rel2 {
+                  relative: 2.0   2.0;
+                  offset: 9999  9999;
+               }
             }
-            rel2 {
-               relative: 2.0   2.0;
-               /* offset: 9999  9999; */
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
             }
          }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
+         part { name: "shadow";
+            mouse_events: 0;
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               image {
+                  normal: "images/comp/comp-sh1.png";
+                  border: 35 35 35 35;
+                  middle: 0;
+               }
+               fill.smooth: 0;
+               rel1 {
+                  to: "e.swallow.content";
+                  relative: 0.0  0.0;
+                  offset: -35  -35;
+               }
+               rel2 {
+                  to: "e.swallow.content";
+                  relative: 1.0  1.0;
+                  offset: 34   34;
+               }
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "shower";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 0.05  0.05;
+                  offset: 0    0;
+               }
+               rel2 {
+                  relative: 0.95  0.95;
+                  offset: -1   -1;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 0.0  0.0;
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+               }
+            }
+         }
+         part { name: "e.swallow.content";
+            type: SWALLOW;
+            clip_to: "clipper";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "shower";
+               }
+               rel2 {
+                  to: "shower";
+               }
+            }
          }
       }
-      part { name: "shadow";
-         mouse_events: 0;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            image {
-               normal: "images/comp/comp-sh1.png";
-               border: 18 18 18 18;
-               middle: 0;
-            }
-            fill.smooth: 0;
-            rel1 {
-               to: "e.swallow.content";
-               relative: 0.0  0.0;
-               offset: -16  -14;
-            }
-            rel2 {
-               to: "e.swallow.content";
-               relative: 1.0  1.0;
-               offset: 15   17;
-            }
+      programs {
+         program { name: "shadow-on";
+            signal: "e,state,shadow,on";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            target: "shadow";
          }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
+         program { name: "shadow-off";
+            signal: "e,state,shadow,off";
+            source: "e";
+            action: STATE_SET "hidden" 0.0;
+            target: "shadow";
          }
-      }
-      /* part { name: "shower";
-       *     type: RECT;
-       *     mouse_events: 0;
-       *     description { state: "default" 0.0;
-       *              visible: 0;
-       *              rel1 {
-       *                      relative: 0.05  0.0;
-       *                      offset: 0    0;
-       *              }
-       *              rel2 {
-       *                      relative: 0.95  0.85;
-       *                      offset: -1   -1;
-       *              }
-       *     }
-       *     description { state: "visible" 0.0;
-       *              inherit: "default" 0.0;
-       *              rel1 {
-       *                      relative: 0.0  0.0;
-       *              }
-       *              rel2 {
-       *                      relative: 1.0  1.0;
-       *              }
-       *     }
-       * } */
-      part { name: "e.swallow.content";
-         type: SWALLOW;
-         clip_to: "clipper";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            /* rel1 {
-             *      to: "shower";
-             * }
-             * rel2 {
-             *      to: "shower";
-             * } */
+         program { name: "show1";
+            signal: "e,state,visible,on";
+            source: "e";
+            action: STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.15;
+            target: "clipper";
+            target: "shower";
+            after: "show2";
+         }
+         program { name: "show2";
+            action: SIGNAL_EMIT "e,action,show,done" "e";
+         }
+         program { name: "hide1";
+            signal: "e,state,visible,off";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.30;
+            target: "clipper";
+            target: "shower";
+            after: "hide2";
+         }
+         program { name: "hide2";
+            action: SIGNAL_EMIT "e,action,hide,done" "e";
          }
       }
    }
-   programs {
-      program { name: "shadow-on";
-         signal: "e,state,shadow,on";
-         source: "e";
-         action: STATE_SET "default" 0.0;
-         target: "shadow";
+//----
+   group { name: "e/comp/menu";
+      images {
+         image: "images/comp/comp-sh1.png" COMP;
       }
-      program { name: "shadow-off";
-         signal: "e,state,shadow,off";
-         source: "e";
-         action: STATE_SET "hidden" 0.0;
-         target: "shadow";
+      parts {
+         part { name: "clipper";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               color: 255 255 255 0;
+               rel1 {
+                  relative: -1.0  -1.0;
+                  offset: -9999 -9999;
+               }
+               rel2 {
+                  relative: 2.0   2.0;
+                  offset: 9999  9999;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
+         part { name: "shadow";
+            mouse_events: 0;
+            clip_to: "clipper";
+            description { state: "default" 0.0;
+               image {
+                  normal: "images/comp/comp-sh1.png";
+                  border: 35 35 35 35;
+                  middle: 0;
+               }
+               fill.smooth: 0;
+               rel1 {
+                  to: "e.swallow.content";
+                  relative: 0.0  0.0;
+                  offset: -35  -35;
+               }
+               rel2 {
+                  to: "e.swallow.content";
+                  relative: 1.0  1.0;
+                  offset: 34   34;
+               }
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "shower";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               visible: 0;
+               rel1 {
+                  relative: 0.1  0.0;
+                  offset: 0    0;
+               }
+               rel2 {
+                  relative: 0.9  0.8;
+                  offset: -1   -1;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  relative: 0.0  0.0;
+               }
+               rel2 {
+                  relative: 1.0  1.0;
+               }
+            }
+         }
+         part { name: "e.swallow.content";
+            type: SWALLOW;
+            clip_to: "clipper";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "shower";
+               }
+               rel2 {
+                  to: "shower";
+               }
+            }
+         }
       }
-      program { name: "show1";
-         signal: "e,state,visible,on";
-         source: "e";
-         action: STATE_SET "visible" 0.0;
-         transition: DECELERATE 0.15;
-         target: "clipper";
-         /* target: "shower"; */
-         after: "show2";
-      }
-      program { name: "show2";
-         action: SIGNAL_EMIT "e,action,show,done" "e";
-      }
-      program { name: "hide1";
-         signal: "e,state,visible,off";
-         source: "e";
-         action: STATE_SET "default" 0.0;
-         transition: DECELERATE 0.15;
-         target: "clipper";
-         /* target: "shower"; */
-         after: "hide2";
-      }
-      program { name: "hide2";
-         action: SIGNAL_EMIT "e,action,hide,done" "e";
+      programs {
+         program { name: "shadow-on";
+            signal: "e,state,shadow,on";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            target: "shadow";
+         }
+         program { name: "shadow-off";
+            signal: "e,state,shadow,off";
+            source: "e";
+            action: STATE_SET "hidden" 0.0;
+            target: "shadow";
+         }
+         program { name: "show1";
+            signal: "e,state,visible,on";
+            source: "e";
+            action: STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.15;
+            target: "clipper";
+            target: "shower";
+            after: "show2";
+         }
+         program { name: "show2";
+            action: SIGNAL_EMIT "e,action,show,done" "e";
+         }
+         program { name: "hide1";
+            signal: "e,state,visible,off";
+            source: "e";
+            action: STATE_SET "default" 0.0;
+            transition: DECELERATE 0.30;
+            target: "clipper";
+            target: "shower";
+            after: "hide2";
+         }
+         program { name: "hide2";
+            action: SIGNAL_EMIT "e,action,hide,done" "e";
+         }
       }
    }
-}
-
-group { name: "e/comp/still";
-   alias: "e/comp/popup";
-   parts {
-
-      part { name: "clipper";
-         type: RECT;
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 100;
-            rel1 {
-               /* relative: -1.0  -1.0; */
-               offset: -20 -20;
-            }
-            rel2 {
-               /* relative: 2.0   2.0; */
-               offset: 20  20;
-            }
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-         }
-      }
-      part { name: "shadow";
-         mouse_events: 0;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-            image {
-               normal: "images/comp/comp-sh1.png";
-               border: 18 18 18 18;
-               middle: 0;
-            }
-            fill {
-               smooth: 0;
-            }
-            rel1 {
-               to: "e.swallow.content";
-               relative: 0.0  0.0;
-               offset: -16  -14;
-            }
-            rel2 {
-               to: "e.swallow.content";
-               relative: 1.0  1.0;
-               offset: 15   17;
-            }
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-         }
-      }
-      part { name: "e.swallow.content";
-         type: SWALLOW;
-         mouse_events: 0;
-         clip_to: "clipper";
-         description { state: "default" 0.0;
-         }
-      }
-   }
-   programs {
-      program { name: "shadow-on";
-         signal: "e,state,shadow,on";
-         source: "e";
-         action: STATE_SET "default" 0.0;
-         target: "shadow";
-      }
-      program { name: "shadow-off";
-         signal: "e,state,shadow,off";
-         source: "e";
-         action: STATE_SET "hidden" 0.0;
-         target: "shadow";
-      }
-      program { name: "show1";
-         signal: "e,state,visible,on";
-         source: "e";
-         action: STATE_SET "visible" 0.0;
-         target: "clipper";
-         transition: LINEAR 0.1;
-         after: "show2";
-      }
-      program { name: "show2";
-         action: SIGNAL_EMIT "e,action,show,done" "e";
-      }
-
-      program { name: "hide1";
-         signal: "e,state,visible,off";
-         source: "e";
-         action: STATE_SET "default" 0.0;
-         target: "clipper";
-         transition: LINEAR 0.1;
-         after: "hide2";
-      }
-      program { name: "hide2";
-         action: SIGNAL_EMIT "e,action,hide,done" "e";
-      }
-   }
-}
