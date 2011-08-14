@@ -356,3 +356,150 @@ group {
    }
 }
 
+ 
+group { name: "e/modules/clock/digital";
+	min: 56 16;
+
+	script {
+		public do_seconds, do_24h, tick_timer;
+
+		public clock_cb(val) {
+			new year, month, day, yearday, weekday, hour, minute;
+			new Float:second;
+			new v, dosec, do24h, tim;
+			new buf[32], bhour[3], bminute[3], bsecond[4], bampm[3];
+
+			date(year, month, day, yearday, weekday, hour, minute, second);
+
+			dosec = get_int(do_seconds);
+			do24h = get_int(do_24h);
+
+			if (do24h) {
+				strcat(bampm, "");
+				if (hour < 10)
+					snprintf(bhour, sizeof(bhour), "0%d", hour);
+				else
+					snprintf(bhour, sizeof(bhour), "%d", hour);
+
+			} else {
+				v = hour % 12;
+
+				if (hour >= 12)
+					strcat(bampm, "pm");
+				else
+					strcat(bampm, "am");
+
+				if (v == 0)
+					v = 12;
+
+				snprintf(bhour, sizeof(bhour), "%d", v);
+			}
+
+			if (minute < 10)
+				snprintf(bminute, sizeof(bminute), "0%d", minute);
+			else
+				snprintf(bminute, sizeof(bminute), "%d", minute);
+
+			if (dosec) {
+				v = round(second);
+				if (v < 10)
+					snprintf(bsecond, sizeof(bsecond), ":0%d", v);
+				else
+					snprintf(bsecond, sizeof(bsecond), ":%d", v);
+			} else
+				strcat(bsecond, "");
+
+			snprintf(buf, sizeof(buf), "%s:%s%s%s",
+			         bhour, bminute, bsecond, bampm);
+			set_text(PART:"time", buf);
+
+			if (dosec) {
+				v = round(second);
+				tim = timer(1.0 - (second - v), "clock_cb", 1);
+			} else {
+				tim = timer(60.0 - (second), "clock_cb", 1);
+			}
+			set_int(tick_timer, tim);
+		}
+
+		public restart_clock() {
+			new tim;
+			tim = get_int(tick_timer);
+			if (tim) {
+				cancel_timer(tim);
+				set_int(tick_timer, 0);
+			}
+			clock_cb(0);
+		}
+	}
+
+	parts {
+		part { name: "time";
+			type: TEXT;
+			effect: SOFT_SHADOW;
+			description { state: "default" 0.0;
+				color: 255 255 255 255;
+				color3: DARKNESS_BLUE 170;
+				text {
+					text_class: "module_large";
+					font: "DejaVu-Bold";
+					size: 14;
+					fit: 1 1;
+					min: 1 1;
+					size_range: 9 72;
+					text: "--:--";
+				}
+			}
+		}
+
+		part { name: "event";
+			type: RECT;
+			mouse_events: 1;
+			description { state: "default" 0.0;
+				color: 0 0 0 0;
+			}
+		}
+	}
+
+	programs {
+		program { name: "init";
+			signal: "load";
+			source: "";
+			script {
+				clock_cb(0);
+			}
+		}
+		program { name: "secon";
+			signal: "e,state,seconds,on";
+			source: "e";
+			script {
+				set_int(do_seconds, 1);
+				restart_clock();
+			}
+		}
+		program { name: "secoff";
+			signal: "e,state,seconds,off";
+			source: "e";
+			script {
+				set_int(do_seconds, 0);
+				restart_clock();
+			}
+		}
+		program { name: "24h";
+			signal: "e,state,24h,on";
+			source: "e";
+			script {
+				set_int(do_24h, 1);
+				restart_clock();
+			}
+		}
+		program { name: "12h";
+			signal: "e,state,24h,off";
+			source: "e";
+			script {
+				set_int(do_24h, 0);
+				restart_clock();
+			}
+		}
+	}
+   }
