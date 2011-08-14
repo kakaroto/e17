@@ -58,7 +58,6 @@ group {
             description {
                 state: "default" 0.0;
                 min: 299 341;
-
                 rel1 { 
                     /* to: "gradient";  */
                     relative: 0.0 0.0; 
@@ -81,6 +80,7 @@ group {
             description {
                 state: "default" 0.0;
                 min: 299 30;
+				fixed: 1 1;
                 color: 255 0 0 0;
 
                 rel1 { 

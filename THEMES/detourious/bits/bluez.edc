@@ -97,6 +97,7 @@ group { name: "e/modules/bluez/tip";
          description { state: "default" 0.0;
             TEXT_COLOR
             align: 0.0 0.5;
+			fixed: 1 1;
             rel1 {
                relative: 0.0 0.0;
                offset: 10 0;
