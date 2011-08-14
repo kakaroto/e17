@@ -147,5 +147,6 @@ collections {
     #include "bits/notification.edc"
     #include "bits/evry-shotgun.edc"
     #include "bits/engage.edc"		/* engage module */
+    #include "bits/bluez.edc" /* bluez module */
 }
 
