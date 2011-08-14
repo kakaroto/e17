@@ -3,11 +3,6 @@ group { name: "elm/pager/base/default";
    // other options
    //      data.item: "onhide" "lower";
    //      data.item: "onshow" "lower";
-   images {
-      image: "frame_1.png" COMP;
-      image: "frame_2.png" COMP;
-      image: "dia_grad.png" COMP;
-   }
    parts {
       part { name: "clip";
          type: RECT;
@@ -32,64 +27,30 @@ group { name: "elm/pager/base/default";
             visible: 0;
          }
       }
-      part { name: "base0";
-         mouse_events:  0;
-         clip_to: "clip";
-         description { state: "default" 0.0;
-            image.normal: "dia_grad.png";
-            rel1.to: "over";
-            rel2.to: "over";
-            fill {
-               smooth: 0;
-               size {
-                  relative: 0.0 1.0;
-                  offset: 64 0;
-               }
-            }
-         }
-      }
-      part { name: "base";
-         mouse_events:  0;
-         clip_to: "clip";
-         description { state: "default" 0.0;
-            image {
-               normal: "frame_2.png";
-               border: 5 5 32 26;
-               middle: 0;
-            }
-            fill.smooth : 0;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: -1.0 0.0;
-            rel2.relative: 0.0 1.0;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-         }
-      }
-      part { name: "over";
-         mouse_events:  0;
-         clip_to: "clip";
-         description { state:    "default" 0.0;
-            rel1 {
-               to: "base";
-               offset: 4 4;
-            }
-            rel2 {
-               to: "base";
-               offset: -5 -5;
-            }
-            image {
-               normal: "frame_1.png";
-               border: 2 2 28 22;
-               middle: 0;
-            }
-            fill.smooth : 0;
-         }
-      }
+	  part {
+		  name: "base";
+		  mouse_events: 0;
+
+		  description {
+			  state: "default" 0.0;
+			  rel1.offset: 0 -1;
+			  rel2.offset: -1 0;
+			  rel2.relative: 1.0 1.0;
+                
+			  image.normal: "images/frame_im0.png";
+			  image.border: 9 8 8 8;
+		  }
+		  description { state: "hidden" 0.0;
+			  inherit: "default" 0.0;
+			  rel1.relative: -1.0 0.0;
+			  rel2.relative: 0.0 1.0;
+		  }
+		  description { state: "visible" 0.0;
+			  inherit: "default" 0.0;
+			  rel1.relative: 0.0 0.0;
+			  rel2.relative: 1.0 1.0;
+		  }
+	  }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          clip_to: "clip";
@@ -169,11 +130,6 @@ group { name: "elm/pager/base/default";
 }
 
 group { name: "elm/pager/base/slide";
-   images {
-      image: "frame_1.png" COMP;
-      image: "frame_2.png" COMP;
-      image: "dia_grad.png" COMP;
-   }
    parts {
       part { name: "clip";
          type: RECT;
@@ -203,69 +159,35 @@ group { name: "elm/pager/base/slide";
             visible: 0;
          }
       }
-      part { name: "base0";
-         mouse_events:  0;
-         clip_to: "clip";
-         description { state: "default" 0.0;
-            image.normal: "dia_grad.png";
-            rel1.to: "over";
-            rel2.to: "over";
-            fill {
-               smooth: 0;
-               size {
-                  relative: 0.0 1.0;
-                  offset: 64 0;
-               }
-            }
-         }
-      }
-      part { name: "base";
-         mouse_events:  0;
-         clip_to: "clip";
-         description { state: "default" 0.0;
-            image {
-               normal: "frame_2.png";
-               border: 5 5 32 26;
-               middle: 0;
-            }
-            fill.smooth : 0;
-         }
-         description { state: "hidden" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: -1.0 0.0;
-            rel2.relative: 0.0 1.0;
-         }
-         description { state: "hidden2" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: 1.0 0.0;
-            rel2.relative: 2.0 1.0;
-         }
-         description { state: "visible" 0.0;
-            inherit: "default" 0.0;
-            rel1.relative: 0.0 0.0;
-            rel2.relative: 1.0 1.0;
-         }
-      }
-      part { name: "over";
-         mouse_events:  0;
-         clip_to: "clip";
-         description { state:    "default" 0.0;
-            rel1 {
-               to: "base";
-               offset: 4 4;
-            }
-            rel2 {
-               to: "base";
-               offset: -5 -5;
-            }
-            image {
-               normal: "frame_1.png";
-               border: 2 2 28 22;
-               middle: 0;
-            }
-            fill.smooth : 0;
-         }
-      }
+	  part {
+		  name: "base";
+		  mouse_events: 0;
+
+		  description {
+			  state: "default" 0.0;
+			  rel1.offset: 0 -1;
+			  rel2.offset: -1 0;
+			  rel2.relative: 1.0 1.0;
+                
+			  image.normal: "images/frame_im0.png";
+			  image.border: 9 8 8 8;
+		  }
+		  description { state: "hidden" 0.0;
+			  inherit: "default" 0.0;
+			  rel1.relative: -1.0 0.0;
+			  rel2.relative: 0.0 1.0;
+		  }
+		  description { state: "hidden2" 0.0;
+			  inherit: "default" 0.0;
+			  rel1.relative: 1.0 0.0;
+			  rel2.relative: 2.0 1.0;
+		  }
+		  description { state: "visible" 0.0;
+			  inherit: "default" 0.0;
+			  rel1.relative: 0.0 0.0;
+			  rel2.relative: 1.0 1.0;
+		  }
+	  }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          clip_to: "clip";
@@ -487,11 +409,6 @@ group { name: "elm/pager/base/fade";
    // other options
    //      data.item: "onhide" "lower";
    //      data.item: "onshow" "lower";
-   images {
-      image: "frame_1.png" COMP;
-      image: "frame_2.png" COMP;
-      image: "dia_grad.png" COMP;
-   }
    parts {
       part { name: "clip_base";
          type: RECT;
@@ -539,54 +456,20 @@ group { name: "elm/pager/base/fade";
             visible: 0;
          }
       }
-      part { name: "base0";
-         mouse_events:  0;
-         clip_to: "clip_base";
-         description { state: "default" 0.0;
-            image.normal: "dia_grad.png";
-            rel1.to: "over";
-            rel2.to: "over";
-            fill {
-               smooth: 0;
-               size {
-                  relative: 0.0 1.0;
-                  offset: 64 0;
-               }
-            }
-         }
-      }
-      part { name: "base";
-         mouse_events:  0;
-         clip_to: "clip_base";
-         description { state: "default" 0.0;
-            image {
-               normal: "frame_2.png";
-               border: 5 5 32 26;
-               middle: 0;
-            }
-            fill.smooth : 0;
-         }
-      }
-      part { name: "over";
-         mouse_events:  0;
-         clip_to: "clip";
-         description { state:    "default" 0.0;
-            rel1 {
-               to: "base";
-               offset: 4 4;
-            }
-            rel2 {
-               to: "base";
-               offset: -5 -5;
-            }
-            image {
-               normal: "frame_1.png";
-               border: 2 2 28 22;
-               middle: 0;
-            }
-            fill.smooth : 0;
-         }
-      }
+	  part {
+		  name: "base";
+		  mouse_events: 0;
+		  clip_to: "clip_base";
+		  description {
+			  state: "default" 0.0;
+			  rel1.offset: 0 -1;
+			  rel2.offset: -1 0;
+			  rel2.relative: 1.0 1.0;
+                
+			  image.normal: "images/frame_im0.png";
+			  image.border: 9 8 8 8;
+		  }
+	  }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          clip_to: "clip";
@@ -669,11 +552,6 @@ group { name: "elm/pager/base/fade_translucide";
    // other options
    //      data.item: "onhide" "lower";
    //      data.item: "onshow" "lower";
-   images {
-      image: "frame_1.png" COMP;
-      image: "frame_2.png" COMP;
-      image: "dia_grad.png" COMP;
-   }
    parts {
       part { name: "clip_base";
          type: RECT;
@@ -721,54 +599,20 @@ group { name: "elm/pager/base/fade_translucide";
             visible: 0;
          }
       }
-      part { name: "base0";
-         mouse_events:  0;
-         clip_to: "clip_base";
-         description { state: "default" 0.0;
-            image.normal: "dia_grad.png";
-            rel1.to: "over";
-            rel2.to: "over";
-            fill {
-               smooth: 0;
-               size {
-                  relative: 0.0 1.0;
-                  offset: 64 0;
-               }
-            }
-         }
-      }
-      part { name: "base";
-         mouse_events:  0;
-         clip_to: "clip_base";
-         description { state: "default" 0.0;
-            image {
-               normal: "frame_2.png";
-               border: 5 5 32 26;
-               middle: 0;
-            }
-            fill.smooth : 0;
-         }
-      }
-      part { name: "over";
-         mouse_events:  0;
-         clip_to: "clip";
-         description { state:    "default" 0.0;
-            rel1 {
-               to: "base";
-               offset: 4 4;
-            }
-            rel2 {
-               to: "base";
-               offset: -5 -5;
-            }
-            image {
-               normal: "frame_1.png";
-               border: 2 2 28 22;
-               middle: 0;
-            }
-            fill.smooth : 0;
-         }
-      }
+	  part {
+		  name: "base";
+		  mouse_events: 0;
+		  clip_to: "clip_base";
+		  description {
+			  state: "default" 0.0;
+			  rel1.offset: 0 -1;
+			  rel2.offset: -1 0;
+			  rel2.relative: 1.0 1.0;
+                
+			  image.normal: "images/frame_im0.png";
+			  image.border: 9 8 8 8;
+		  }
+	  }
       part { name: "elm.swallow.content";
          type: SWALLOW;
          clip_to: "clip";

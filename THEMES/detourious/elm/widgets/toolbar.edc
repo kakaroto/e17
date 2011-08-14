@@ -221,11 +221,11 @@ group { name: "elm/toolbar/item/default";
 				color3: 0 0 0 0;
 				rel1 {
 					relative: 0.0 0.0;
-					offset:   10 -1;
+					offset:   5 -1;
 				}
 				rel2 {
 					relative: 1.0 1.0;
-					offset:   -11 -6;
+					offset:   -6 -6;
 				}
 				TEXT_BUTTON("toolbar_item", "ARGH", 0.5 0.5, 1 1);
 				text.max: 0 1;

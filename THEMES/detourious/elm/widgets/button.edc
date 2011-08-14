@@ -89,7 +89,7 @@ group { name: "elm/button/base/default";
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
-				visible: 0;
+				color: 255 255 255 128;
 			}
 		}
 
@@ -104,21 +104,22 @@ group { name: "elm/button/base/default";
 				min: 44 24;
 				color: 255 255 255 0;
 				image.normal: "images/button_im4.png";
-				image.border: 6 6 13 0;
+				image.border: 6 6 13 6;
 
 				rel1 { 
 					to: "button_clip"; 
 				}
 
 				rel2 { 
-					to: "button_clip"; 
+					to: "button_clip";
+					offset: -1 -2;
 				}
 			}
 
 			description {
 				state: "clicked" 0.0;
 				inherit: "default" 0.0;
-				color: 255 255 255 255;
+				color: 255 255 255 200;
 			}
 
 			description {

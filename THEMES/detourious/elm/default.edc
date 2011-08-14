@@ -49,6 +49,12 @@ fonts {
 }
 
 images {
+	image: "thumb_shadow.png" COMP;
+	image: "icon_folder.png" COMP;
+	
+	image: "ephoto/directory-512.png" COMP;
+	image: "ephoto/directory-up-512.png" COMP;
+	
 	image: "images/button_im0.png" COMP; /* base */
 	image: "images/button_im1.png" COMP; /* enabled */
 	image: "images/button_im2.png" COMP; /* disabled */
@@ -181,25 +187,42 @@ styles {
 		tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
 		tag:  "hilight" "+ font_weight=Bold";
 	}
-      style { name: "tooltip_style";
-         base: "font="FONT" font_size=8 color=#666 wrap=word";
-         tag:  "br" "\n";
-         tag:  "hilight" "+ font_weight=Bold";
-         tag:  "b" "+ font_weight=Bold";
-         tag:  "tab" "\t";
-      }
-		style { name: "genlist_textblock_style";
-			base: "font="FONT" font_size=9 color=#000 wrap=char text_class=list_item";
-			tag:  "br" "\n";
-			tag:  "ps" "ps";
-			tag:  "tab" "\t";
-		}
-		style { name: "genlist_textblock_style2";
-			base: "font="FONT" font_size=9 color=#fff wrap=char text_class=list_item";
-			tag:  "br" "\n";
-			tag:  "ps" "ps";
-			tag:  "tab" "\t";
-		}
+	style { name: "tooltip_style";
+		base: "font="FONT" font_size=8 color=#666 wrap=word";
+		tag:  "br" "\n";
+		tag:  "hilight" "+ font_weight=Bold";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "tab" "\t";
+	}
+	style { name: "genlist_textblock_style";
+		base: "font="FONT" font_size=9 color=#000 wrap=char text_class=list_item";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+	}
+	style { name: "genlist_textblock_style2";
+		base: "font="FONT" font_size=9 color=#fff wrap=char text_class=list_item";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "tab" "\t";
+	}
+	style { name: "gengrid_style";
+		base: "font="FONT" font_size=9 align=left valign=0.5 color=#000 text_class=grid_item";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "hilight" "+ font_weight=Bold";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "tab" "\t";
+	}
+	style { name: "gengrid_selected_style";
+		base: "font="FONT" font_size=9 align=left valign=0.5 color=#fff text_class=grid_item";
+		tag:  "br" "\n";
+		tag:  "ps" "ps";
+		tag:  "hilight" "+ font_weight=Bold";
+		tag:  "b" "+ font_weight=Bold";
+		tag:  "tab" "\t";
+	}
+
 
 }
    
