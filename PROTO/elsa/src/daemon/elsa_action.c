@@ -128,13 +128,33 @@ _elsa_action_exe_event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *
 
 /////* grub2 action *//////
 #ifdef HAVE_GRUB2
+static char *
+_elsa_memstr(char *data, char *look, size_t length)
+{
+   char *tmp;
+
+   do
+     {
+        tmp = memchr(data, *look, length);
+        if (!tmp) return NULL;
+
+        if (strncmp(tmp + 1, look + 1, length - 1) == 0)
+          return tmp;
+
+        length = tmp - data;
+        data = tmp;
+     }
+   while (length > 0);
+
+   return NULL;
+}
 
 static void
 _elsa_action_grub2(void *data)
 {
    int i;
    char buf[PATH_MAX];
-   i = data;
+   i = (int) data;
 
    snprintf(buf, sizeof(buf),
             "grub-reboot %d && %s", i, elsa_config->command.reboot);
@@ -145,51 +165,98 @@ _elsa_action_grub2(void *data)
 static void
 _elsa_action_grub2_get(void)
 {
-   FILE *f;
+   Eina_File *f;
    unsigned char grub2_ok;
-   char buf[1000];
-   char action[200];
    int menuentry = 0;
-   char *p, *s;
+   char *data;
+   char *r, *r2;
+   char *s;
+   int i;
 
-   f = fopen(GRUB2_FILE, "r");
-   while ((p = fgets(buf, sizeof(buf), f)))
+   fprintf(stderr, PACKAGE": trying to open "GRUB2_FILE"\n");
+   f = eina_file_open(GRUB2_FILE, EINA_FALSE);
+   if (!f) return ;
+
+   data = eina_file_map_all(f, EINA_FILE_SEQUENTIAL);
+   if (!data) goto on_error;
+
+   s = data;
+   r2 = NULL;
+   for (i = eina_file_size_get(f); i > 0; --i, s++)
      {
-        if (*p == '#')
-          continue;
+        int size;
+
+        /* working line by line */
+        r = memchr(s, '\n', i);
+        if (!r)
+          {
+             r = s + i;
+             i = 0;
+          }
+        size = r - s;
+
+        if (*s == '#')
+          goto end_line;
+
+        /* look if the word is in this line */
+        if (!grub2_ok)
+          r2 = _elsa_memstr(s, "default=\"", size);
+        else
+          r2 = _elsa_memstr(s, "menuentry", size);
+
+        /* still some lines to read */
+        if (!r2) goto end_line;
+
         if (!grub2_ok)
           {
-             if ((p = strstr(p, "default=\"")))
+             char *tmp;
+             if (!strncmp(r2 + 9, "$saved", size))
                {
-                  if (strstr(p + 9, "$saved"))
-                    {
-                       grub2_ok = 1;
-                       printf("ok\n");
-                    }
+                  grub2_ok = 1;
+                  fprintf(stderr, "GRUB2 save mode found\n");
                }
-             continue;
           }
         else
           {
-             if ((s = strstr(buf, "menuentry")))
-               {
-                  s += 10;
-                  while(s && *s != '\'') ++s;
-                  ++s;
-                  p = s;
-                  while(*p != '\'') ++p;
-                  *p = '\0';
-                  snprintf(action, sizeof(action),
-                           "Reboot on %s", s);
-                  _elsa_actions =
-                     eina_list_append(
-                        _elsa_actions,
-                        _elsa_action_add(action,
-                                         _elsa_action_grub2, menuentry++));
-               }
+             char *action;
+             char *local;
+             char *tmp;
+
+             r2 += 10;
+             size -= 10;
+
+             tmp = memchr(r2, '\'', size);
+             if (!tmp) goto end_line;
+
+             size -= tmp - r2 + 1;
+             r2 = tmp + 1;
+             tmp = memchr(r2, '\'', size);
+             if (!tmp) goto end_line;
+
+             local = alloca(tmp - r2 + 1);
+             memcpy(local, r2, tmp - r2);
+             local[tmp - r2] = '\0';
+
+             action = malloc((tmp - r2 + 1 + 11) * sizeof (char));
+             if (!action) goto end_line;
+
+             sprintf(action, "Reboot on %s", local);
+             fprintf(stderr, PACKAGE": GRUB2 '%s'\n", action);
+
+             _elsa_actions = eina_list_append(_elsa_actions,
+                                              _elsa_action_add(action,
+                                                               _elsa_action_grub2,
+                                                               (void*)(menuentry++)));
           }
+
+     end_line:
+        i -= size;
+        s = r;
      }
-   fclose(f);
+
+   eina_file_map_free(f, data);
+ on_error:
+   eina_file_close(f);
 }
 
 #endif

@@ -54,10 +54,11 @@ _elsa_session_cookie_add(const char *mcookie, const char *display,
 {
     char buf[PATH_MAX];
     FILE *cmd;
+
     if (!xauth_cmd || !auth_file) return 1;
     snprintf(buf, sizeof(buf), "%s -f %s -q", xauth_cmd, auth_file);
-    fprintf(stderr, PACKAGE": write auth %s\n", buf);
-    cmd = popen(strdup(buf), "w");
+    fprintf(stderr, PACKAGE": write auth '%s'\n", buf);
+    cmd = popen(buf, "w");
     if (!cmd) return 1;
     fprintf(cmd, "remove %s\n", display);
     fprintf(cmd, "add %s . %s\n", display, mcookie);
@@ -189,6 +190,7 @@ elsa_session_pid_get()
    return _session_pid;
 }
 
+static const char *dig = "0123456789abcdef";
 
 void
 elsa_session_init(const char *file)
@@ -198,10 +200,11 @@ elsa_session_init(const char *file)
    int i;
    char buf[PATH_MAX];
 
-   _mcookie = calloc(32, sizeof(char));
+   fprintf(stderr, PACKAGE": Session init '%s'\n", file);
+
+   _mcookie = calloc(33, sizeof(char));
    _mcookie[0] = 'a';
 
-   const char *dig = "0123456789abcdef";
    srand(elsa_session_seed_get());
    for (i=0; i<32; i+=4)
      {
