@@ -401,11 +401,11 @@ group {
     alias: "e/widgets/border/urgent/border";
     alias: "e/widgets/border/wm_app/border";
     alias: "e/widgets/border/dialog/border";
-
+	alias: "e/widgets/border/internal_fileman/border";
 	BORDER_DATA;
 
     parts {
-		BORDER_SHADOW(40);
+		/* BORDER_SHADOW(60); */
 		BORDER_COLOR("images/window-border-color.png", 6 6 23 2, 25 25);
 		BORDER_IMAGE("images/window-border.png", 6 6 23 2, 25 25);
 
@@ -442,7 +442,7 @@ group {
 	BORDER_DATA;
 
 	parts {
-		BORDER_SHADOW(40);
+		/* BORDER_SHADOW(60); */
 		BORDER_COLOR("images/window-border-color.png", 6 6 23 2, 25 25);
 		BORDER_IMAGE("images/window-border.png", 6 6 23 2, 25 25);
 		BORDER_CLIENT(LEFT, RIGHT, TOP, BOTTOM);
@@ -526,7 +526,6 @@ group {
 
 group {
     name: "e/widgets/border/glass/border";
-	alias: "e/widgets/border/internal_fileman/border";
 
 	BORDER_DATA;
 
