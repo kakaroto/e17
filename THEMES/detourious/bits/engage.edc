@@ -565,15 +565,6 @@ group {
 				aspect_preference: BOTH;
 			}
 		}
-		part {
-			name: "bottom_clip";
-			type: RECT;
-			description {
-				state: "default" 0.0;
-				color: 255 255 255 100;
-				rel2.offset: -1 15;
-			}			
-		}
 	}
 
 	programs {
