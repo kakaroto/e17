@@ -55,8 +55,7 @@ data {
 	item: "theme/license"	"BSD Artistic License";
 }
 
-fonts 
-{
+fonts {
 	font: "fonts/SwitzeraADF-Regular.otf"  "Switzera";
 	font: "fonts/SwitzeraADF-DemiBold.otf" "SwitzeraDemi";
 	font: "fonts/SwitzeraADFBold.otf"      "SwitzeraBold";
@@ -64,8 +63,7 @@ fonts
 	font: "fonts/SwitzeraADF-DemiBoldItalic.otf"   "SwitzeraDemiItalic";
 }
 
-color_classes
-{
+color_classes {
 	color_class {
 		name: "border_frame";
 		color: 205 205 205 255;
@@ -148,6 +146,6 @@ collections {
     #include "bits/comp.edc"
     #include "bits/notification.edc"
     #include "bits/evry-shotgun.edc"
-	//    #include "bits/engage.edc"		/* engage module */
+    #include "bits/engage.edc"		/* engage module */
 }
 

@@ -22,9 +22,6 @@ group {
 		/* extra space between icons and bg (required for auto hide) */
 		item: "bg_offset" "10";
 
-		/* clip reflection at bottom edge */
-		item: "reflection_offset" "0";
-
 		/* clip separator to background group
 		 * change opacity with background transparency */
 		item: "clip_separator"  "1";
@@ -32,7 +29,6 @@ group {
 		/* seconds to keep icon overlay position when item is clicked
 		   used for launch animation */
 		item: "keep_overlay_pos" "0.5";
-
 	}
 
 	parts {
@@ -59,8 +55,6 @@ group {
 		item: "bg_offset"       "0";
 		item: "clip_separator"  "1";
 		item: "keep_overlay_pos" "0.5";
-		item: "reflection_offset" "4";
-		
 	}
 	parts {
 		part {
@@ -97,6 +91,14 @@ group {
 					border: 26 26 10 4;
 				}
 			}
+		}
+		part {
+			name: "e.swallow.proxy";
+			type: SWALLOW;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+			}			
 		}
 	}
 }
@@ -554,7 +556,7 @@ group {
 				color: 200 200 200 255;
 			}
 		}
-
+		
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -563,6 +565,39 @@ group {
 				state: "default" 0.0;
 				aspect: 1.0 1.0;
 				aspect_preference: BOTH;
+			}
+		}
+		part {
+			name: "bottom_clip";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 100;
+				rel2.offset: -1 15;
+			}			
+		}
+
+		part {
+			name: "proxy";
+			type: PROXY;
+			clip_to: "bottom_clip";
+			
+			description {
+				state: "default" 0.0;
+				source: "e.swallow.content";
+				
+				rel1{
+					to: "e.swallow.content";
+					relative: 0.0 1.0;
+				}
+				rel2{
+					to: "e.swallow.content";
+					relative: 1.0 2.0;
+				}
+				
+				map.on: 1;
+				map.rotation.y: 180;
+				
 			}
 		}
 	}

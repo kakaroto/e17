@@ -46,6 +46,7 @@ image: "images/button_im3.png" COMP; /* focus */
 image: "images/button_im4.png" COMP; /* top shadow */
 image: "images/button_im5.png" COMP; /* shadow overlay */
 image: "images/button_im6.png" COMP; /* shadow overlay */
+image: "images/button_im7.png" COMP; /* bottom hilight */
 //~ frame
 image: "images/frame_im0.png" COMP; /* frame border */
 
@@ -91,6 +92,7 @@ image: "images/itask_im1.png" COMP; /* top orientation */
 image: "images/itask_im2.png" COMP; /* left orientation */
 image: "images/itask_im3.png" COMP; /* right orientation */
 image: "images/itask_im4.png" COMP; /* label overlay */
+image: "images/itask_im5.png" COMP; /* label overlay */
 
 
 //~ gadman

@@ -503,8 +503,6 @@ group {
 	parts {
 		part {
 			name: "item_hilight";
-			type: IMAGE;
-
 			description {
 				state: "default" 0.0;
 				max: 9999 26;
@@ -521,12 +519,7 @@ group {
 					relative: 1.0 1.0; 
 					offset: 1 0; 
 				}
-
-				fill {
-					smooth: 1;
-				}
 			} 
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;

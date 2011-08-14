@@ -74,8 +74,6 @@ group {
 
 			description {
 				state: "default" 0.0;
-				color: 60 60 60 255;
-
 				rel1 { 
 					to_x: "e.swallow.icon"; 
 					relative: 1.0 0.0; 
@@ -85,7 +83,7 @@ group {
 				rel2 { 
 					offset: -6 -3; 
 				}
-
+				TEXT_COLOR;
 				TEXT_NORMAL("ilist_item", 0.0 0.5, 1 1);
 			}
 
@@ -174,8 +172,6 @@ group {
 
 			description {
 				state: "default" 0.0;
-				color: 60 60 60 255;
-
 				rel1 { 
 					to_x: "e.swallow.icon"; 
 					relative: 1.0 0.0; 
@@ -185,6 +181,7 @@ group {
 				rel2 { 
 					offset: -6 -3; 
 				}
+				TEXT_COLOR;
 				TEXT_NORMAL("ilist_item", 0.0 0.5, 1 1);
 			}
 

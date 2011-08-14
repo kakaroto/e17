@@ -25,10 +25,6 @@ group {
                     normal: "images/scrollframe_im0.png";
                     border: 7 7 7 7;
                 }
-
-                fill {
-                    smooth: 0;
-                }
             }
         }
 
@@ -95,10 +91,7 @@ group {
                 image {
                     normal: "images/scrollframe/over.png";
                     border: 5 5 5 6;
-                }
-
-                fill {
-                    smooth: 0;
+					middle: 0;
                 }
             }
         }
