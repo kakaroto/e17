@@ -12,10 +12,12 @@ externals.external: "elm";
 #define COLOR_LIST_BG_ODD    240 245 250 255
 #define COLOR_LIST_BG_ACTIVE 138 171 225 255
 #define COLOR_LIST_HEADER    103 135 183 255
-#define COLOR_FADE      0 0 0 0
-
+#define COLOR_FADE           0   0   0   0
+#define COLOR_SELECTED       138 171 225 200
+#define COLOR_SELECTED_FADE  138 171 225 100
 
 #define USE_BOLD_FONT 1
+#define PAGER_SHOW_FRAME 0
 
 #if USE_BOLD_FONT 
 #define FONT "SwitzeraDemi"
@@ -87,6 +89,30 @@ images {
 	image: "images/menu_im3.png" COMP; /* inactive arrow */
 	image: "images/menu_im4.png" COMP; /* active arrow */
 	image: "images/menu_im5.png" COMP; /* left arrow */
+
+	image: "images/runner_im0.png" COMP; 	/* slider bg horizontal */
+	image: "images/runner_im1.png" COMP; 	/* slider bg vertical */
+	image: "images/runner_im2.png" COMP; 	/* slider indicator horizontal */
+	image: "images/runner_im3.png" COMP; 	/* slider indicator vertical */
+
+	image: "images/slider_im0.png" COMP; /* horizontal slider */
+	image: "images/slider_im1.png" COMP; /* horizontal slider shadow */
+	image: "images/slider_im2.png" COMP; /* vertical slider */
+	image: "images/slider_im3.png" COMP; /* vertical slider shadow */
+
+	//~ check widget
+	image: "images/check_bt0.png" COMP; /* base */
+	image: "images/check_bt1.png" COMP; /* unchecked */
+	image: "images/check_bt2.png" COMP; /* checked */
+	image: "images/check_bt3.png" COMP; /* focus */
+	image: "images/check_bt4.png" COMP; /* shadow */
+
+	//~ radio widget
+	image: "images/radio_bt0.png" COMP; /* base */
+	image: "images/radio_bt1.png" COMP; /* toggle off */
+	image: "images/radio_bt2.png" COMP; /* toggle on */
+	image: "images/radio_bt3.png" COMP; /* focus */
+	image: "images/radio_bt4.png" COMP; /* shadow */
 
 	image: "images/comp-sh1.png" COMP; /* left arrow */
 }

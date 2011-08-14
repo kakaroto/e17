@@ -33,6 +33,7 @@ group { name: "elm/pager/base/default";
 
 		  description {
 			  state: "default" 0.0;
+			  visible: PAGER_SHOW_FRAME;
 			  rel1.offset: 0 -1;
 			  rel2.offset: -1 0;
 			  rel2.relative: 1.0 1.0;
@@ -165,6 +166,7 @@ group { name: "elm/pager/base/slide";
 
 		  description {
 			  state: "default" 0.0;
+			  visible: PAGER_SHOW_FRAME;
 			  rel1.offset: 0 -1;
 			  rel2.offset: -1 0;
 			  rel2.relative: 1.0 1.0;
@@ -462,6 +464,7 @@ group { name: "elm/pager/base/fade";
 		  clip_to: "clip_base";
 		  description {
 			  state: "default" 0.0;
+			  visible: PAGER_SHOW_FRAME;
 			  rel1.offset: 0 -1;
 			  rel2.offset: -1 0;
 			  rel2.relative: 1.0 1.0;
@@ -605,6 +608,7 @@ group { name: "elm/pager/base/fade_translucide";
 		  clip_to: "clip_base";
 		  description {
 			  state: "default" 0.0;
+			  visible: PAGER_SHOW_FRAME;
 			  rel1.offset: 0 -1;
 			  rel2.offset: -1 0;
 			  rel2.relative: 1.0 1.0;
@@ -788,11 +792,11 @@ group { name: "elm/pager/base/fade_invisible";
 
 group { name: "elm/pager/base/flip";
    data.item: "onshow" "raise";
-   images {
-      image: "frame_1.png" COMP;
-      image: "frame_2.png" COMP;
-      image: "dia_grad.png" COMP;
-   }
+   /* images {
+    *    image: "frame_1.png" COMP;
+    *    image: "frame_2.png" COMP;
+    *    image: "dia_grad.png" COMP;
+    * } */
    parts {
       part { name: "elm.swallow.content";
          type: SWALLOW;
