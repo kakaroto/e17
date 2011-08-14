@@ -234,6 +234,7 @@ group {
 			name: "e.swallow.icon";
 			type: SWALLOW;
 			clip_to: "disabled_button";
+			mouse_events: 0;
 			description { /* whether or not there is an icon?? */
 				state: "default" 0.0;
 				align: 0.0 0.5;
