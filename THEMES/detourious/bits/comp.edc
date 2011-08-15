@@ -2,10 +2,6 @@
  * and without bt_glow.
  */
 group { name: "e/comp/wobble";
-	images {
-		image: "images/comp/comp-sh1.png" COMP;
-		/* image: "images/comp/bt_glow.png" COMP; */
-	}
 	parts {
 		part { name: "focus-clipper";
             type: RECT;
@@ -291,9 +287,6 @@ group { name: "e/comp/none";
 //----
 group { name: "e/comp/default";
 	alias: "e/comp/still";
-	images {
-		image: "images/comp/comp-sh1.png" COMP;
-	}
 	parts {
 		part { name: "shadow";
             mouse_events: 0;
@@ -389,9 +382,6 @@ group { name: "e/comp/default";
 }
 //----
 group { name: "e/comp/popup";
-	images {
-		image: "images/comp/comp-sh1.png" COMP;
-	}
 	parts {
 		part { name: "clipper";
             type: RECT;
@@ -519,9 +509,6 @@ group { name: "e/comp/popup";
 }
 //----
 group { name: "e/comp/menu";
-	images {
-		image: "images/comp/comp-sh1.png" COMP;
-	}
 	parts {
 		part { name: "clipper";
             type: RECT;
@@ -644,6 +631,361 @@ group { name: "e/comp/menu";
 		}
 		program { name: "hide2";
             action: SIGNAL_EMIT "e,action,hide,done" "e";
+		}
+	}
+}
+group { name: "e/comp/everything";
+	parts {
+		part { name: "clipper";
+			type: RECT;
+			mouse_events: 0;
+			clip_to: "clipper2";
+			description { state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 0;
+				rel1 {
+					relative: -1.0  -1.0;
+					offset: -9999 -9999;
+				}
+				rel2 {
+					relative: 2.0   2.0;
+					offset: 9999  9999;
+				}
+			}
+			description { state: "visible" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				color: 255 255 255 255;
+			}
+			description { state: "big" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+		}
+		part { name: "clipper2";
+			type: RECT;
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				color: 255 255 255 255;
+				rel1.to: "clipper";
+				rel2.to: "clipper";
+			}
+			description { state: "visible" 0.0;
+				inherit: "default" 0.0;
+			}
+			description { state: "big" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 0;
+			}
+		}
+		part { name: "shadow";
+			mouse_events: 0;
+			clip_to: "clipper";
+			description { state: "default" 0.0;
+				image {
+					normal: "images/comp/comp-sh1.png";
+					border: 35 35 35 35;
+					middle: 0;
+				}
+				fill.smooth: 0;
+				rel1 {
+					to: "e.swallow.content";
+					relative: 0.0  0.0;
+					offset: -35  -35;
+				}
+				rel2 {
+					to: "e.swallow.content";
+					relative: 1.0  1.0;
+					offset: 34   34;
+				}
+			}
+			description { state: "hidden" 0.0;
+				inherit: "default" 0.0;
+				visible: 0;
+			}
+		}
+		part { name: "shower";
+			type: RECT;
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					relative: 0.05  0.05;
+					offset: 0    0;
+				}
+				rel2 {
+					relative: 0.95  0.95;
+					offset: -1   -1;
+				}
+			}
+			description { state: "visible" 0.0;
+				inherit: "default" 0.0;
+				rel1 {
+					relative: 0.0  0.0;
+				}
+				rel2 {
+					relative: 1.0  1.0;
+				}
+			}
+			description { state: "big" 0.0;
+				inherit: "default" 0.0;
+				rel1 {
+					relative: -0.3  -0.3;
+				}
+				rel2 {
+					relative: 1.3  1.3;
+				}
+			}
+		}
+		part { name: "e.swallow.content";
+			type: SWALLOW;
+			clip_to: "clipper";
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				rel1 {
+					to: "shower";
+				}
+				rel2 {
+					to: "shower";
+				}
+			}
+		}
+	}
+	programs {
+		program { name: "shadow-on";
+			signal: "e,state,shadow,on";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			target: "shadow";
+		}
+		program { name: "shadow-off";
+			signal: "e,state,shadow,off";
+			source: "e";
+			action: STATE_SET "hidden" 0.0;
+			target: "shadow";
+		}
+		program { name: "show1";
+			signal: "e,state,visible,on";
+			source: "e";
+			action: STATE_SET "visible" 0.0;
+			transition: DECELERATE 0.05;
+			target: "clipper";
+			target: "clipper2";
+			target: "shower";
+			after: "show2";
+		}
+		program { name: "show2";
+			action: SIGNAL_EMIT "e,action,show,done" "e";
+		}
+		program { name: "hide1";
+			signal: "e,state,visible,off";
+			source: "e";
+			action: STATE_SET "big" 0.0;
+			transition: ACCELERATE 0.25;
+			target: "clipper";
+			target: "clipper2";
+			target: "shower";
+			after: "hide2";
+		}
+		program { name: "hide2";
+			action: STATE_SET "default" 0.0;
+			target: "clipper";
+			target: "clipper2";
+			target: "shower";
+			after: "hide3";         
+		}
+		program { name: "hide3";
+			action: SIGNAL_EMIT "e,action,hide,done" "e";
+		}
+	}
+}
+
+/* comp-scale has to recreate to border shadow as we cant get it from comp */
+group {
+	name: "modules/scale/win";
+
+	parts {
+		part { name: "clipper";
+			type: RECT;
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				color: 255 255 255 255;
+				rel1 {
+					relative:  -1.0  -1.0;
+					offset:   -9999 -9999;
+				}
+				rel2 {
+					relative:  2.0   2.0;
+					offset:    9999  9999;
+				}
+			}
+			description { state: "faded" 0.0;
+				inherit: "default" 0.0;
+				color: 200 200 200 235;
+			}
+		}
+		part { name: "shadow";
+			mouse_events: 0;
+			clip_to: "clipper";
+			description { state: "default" 0.0;
+				image {
+					normal: "images/comp/comp-sh1.png";
+					border: 35 35 35 35;
+					middle: 0;
+				}
+				fill {
+					smooth: 0;
+				}
+				rel1 {
+					to: "e.swallow.win";
+					relative: 0.0  0.0;
+					offset:   -35  -35;
+				}
+				rel2 {
+					to: "e.swallow.win";
+					relative: 1.0  1.0;
+					offset:    34   34;
+				}
+			}
+		}
+
+		part {
+			name: "e.swallow.win";
+			type: SWALLOW;
+			clip_to: "clipper";
+			/* mouse_events: 0; */
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+		}
+
+		part {
+			name: "text.clipper";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				rel1 {
+					to: "e.swallow.win";
+					offset: 10 0;
+				}
+				rel2 {
+					to: "e.swallow.win";
+					offset: -10 -1;
+				}
+				color: 255 255 255 0;
+				visible: 0;
+			}
+			description {
+				state: "show" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+				visible: 0;
+			}
+		}
+			
+		part {
+			name: "text_bg";
+			mouse_events: 0;
+			clip_to: "text.clipper";
+			description {
+				state: "default" 0.0;
+				min: 60 22;
+				max: 9999 22;
+				color: 255 255 255 192;
+				rel1 {
+					to: "e.text.label";
+					relative: 0.0 0.0;
+					offset: -10 0;
+				}
+				rel2 {
+					to: "e.text.label";
+					relative: 1.0 1.0;
+					offset: 10 -1;
+				}
+				image {
+					normal: "images/itask_im4.png";
+					border: 5 5 5 5;
+				}				
+			}
+		}
+		part {
+			name: "e.text.label";
+			type: TEXT;
+			mouse_events: 0;
+			clip_to: "text.clipper";
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				rel1 {
+					to: "e.swallow.win";
+					offset: 25 0;
+				}
+				rel2 {
+					to: "e.swallow.win";
+					offset: -25 -1;
+				}
+				text {
+					font: "Sans:style=Bold";
+					size: 7;
+					align: 0.5 0.5;
+					elipsis: 1.0;
+					/* min: 0 1; */
+					max: 1 0;
+					text: "";
+					text_class: "border_title_active";
+				}
+			}
+		}
+	}
+	programs {
+		program {
+			name: "mouse_in";
+			signal: "mouse,in";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: SINUSOIDAL 0.4;
+			target: "clipper";
+		}
+		program {
+			name: "mouse_out";
+			signal: "mouse,out";
+			source: "e";
+			action: STATE_SET "faded" 0.0;
+			transition: SINUSOIDAL 0.4;
+			target: "clipper";
+		}
+		program {
+			name: "mouse_in2";
+			signal: "mouse,in";
+			source: "e";
+			action: STATE_SET "show" 0.0;
+			transition: SINUSOIDAL 0.5;
+			target: "text.clipper";
+		}
+		program {
+			name: "mouse_out2";
+			signal: "mouse,out";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: SINUSOIDAL 0.5;
+			target: "text.clipper";
+		}
+		program {
+			name: "hide";
+			signal: "hide";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: SINUSOIDAL 0.2;
+			target: "clipper";
+		}
+		program {
+			name: "show";
+			signal: "show";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: SINUSOIDAL 0.2;
+			target: "text.clipper";
 		}
 	}
 }
