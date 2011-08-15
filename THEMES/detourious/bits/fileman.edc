@@ -308,7 +308,8 @@
 		source: "e";										\
 		action: STATE_SET "visible" 0.0;					\
 		target: "icon_box";									\
-		target: "icon_box_bg";								\
+		/* target: "icon_box_bg"; */						\
+		target: "icon_box_shadow";							\
 		/* after: "thumb_gen2"; */							\
 		after: "thumb_gen6";								\
 	}														\
@@ -316,9 +317,10 @@
 		name: "thumb_gen-";									\
 		signal: "e,action,thumb,gen,alpha";					\
 		source: "e";										\
-		action: STATE_SET "default" 0.0;					\
+		action: STATE_SET "visible" 0.0;					\
 		target: "icon_box";									\
 		target: "icon_box_bg";								\
+		target: "icon_box_shadow";							\
 		target: "icon";										\
 		/*after: "thumb_gen2";*/							\
 	}														\
