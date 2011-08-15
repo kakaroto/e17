@@ -823,31 +823,26 @@ ngi_item_activate(Ng *ng)
 	return;
      }
 
-   if ((it = ngi_item_at_position_get(ng)) && (it != ng->item_active))
+   if ((it = ngi_item_at_position_get(ng)))
      {
-        ngi_item_mouse_out(ng->item_active);
-        ngi_item_mouse_in(it);
-        ng->item_active = it;
+	if (it != ng->item_active)
+	  {
+
+	     ngi_item_mouse_out(ng->item_active);
+	     ngi_item_mouse_in(it);
+	     ng->item_active = it;
+	     _ngi_label_pos_set(ng);
+	     evas_object_show(ng->o_label);
+	     edje_object_signal_emit(ng->o_label, "e,state,label,show", "e");
+	     edje_object_part_text_set(ng->o_label, "e.text.label", it->label);
+	  }
      }
-   else if (!it)
+   else
      {
         ngi_item_mouse_out(ng->item_active);
         ng->item_active = NULL;
-     }
-
-   if ((!ng->cfg->show_label) ||
-       (!ng->item_active) ||
-       (!ng->item_active->label))
-     {
 	evas_object_hide(ng->o_label);
-	return;
      }
-
-   _ngi_label_pos_set(ng);
-
-   evas_object_show(ng->o_label);
-   edje_object_signal_emit(ng->o_label, "e,state,label,show", "e");
-   edje_object_part_text_set(ng->o_label, "e.text.label", ng->item_active->label);
 }
 
 /**************************************************************************/
@@ -1293,6 +1288,15 @@ _ngi_label_pos_set(Ng *ng)
 	 evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
 			  (off - ng->hide_step));
 	 break;
+      case E_GADCON_ORIENT_RIGHT:
+	 evas_object_move(ng->o_label, (h + ng->hide_step) - off,
+			  ng->item_active->pos + ng->size/2);
+	 break;
+
+      case E_GADCON_ORIENT_LEFT:
+	 evas_object_move(ng->o_label, (off - ng->hide_step),
+			  ng->item_active->pos + ng->size/2);
+	 break;
      }
 }
 
@@ -1372,7 +1376,7 @@ _ngi_redraw(Ng *ng)
    {
       if (cnt++ > 0)
         {
-           pos = _ngi_zoom_function(ng, box->pos - ng->pos, box->pos);
+           pos = _ngi_zoom_function(ng, ng->pos, box->pos);
 
            switch (cfg->orient)
              {

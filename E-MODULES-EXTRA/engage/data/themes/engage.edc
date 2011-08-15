@@ -109,150 +109,135 @@ collections{
 	SEPARATOR("e/modules/engage/separator_left",   999 2, 0.0 0.5, 0 0,   7 -1);
 	SEPARATOR("e/modules/engage/separator_right",  999 2, 0.0 0.5, -8 0, -1 -1);
 
-	group {
-		name: "e/modules/engage/label_bottom";
-
-		parts {
-			part {
-				name: "label";
-				type: IMAGE;
-				mouse_events: 0;
-				clip_to: "label.clip";
-
-				description {
-					state: "default" 0.0;
-					align: 0.5 0.5;
-					color: 0 0 0 148;
-					max: 999 26;
-
-					rel1 {
-						to: "e.text.label";
-						offset: -8 -2;
-					}
-
-					rel2 {
-						to: "e.text.label";
-						offset: 4 -1;
-					}
-
-					image {
-						normal: "itask_im4.png";
-						border: 5 5 5 5;
-					}
-				}
-			}
-
-			part {
-				name: "label_decoration";
-				type: IMAGE;
-				mouse_events: 0;
-				clip_to: "label.clip";
-
-				description {
-					state: "default" 0.0;
-					align: 0.5 1.0;
-					color: 255 0 0 148;
-					min: 11 6;
-					max: 11 6;
-					fixed: 1 1;
-
-					rel1 {
-						to: "label";
-						offset: 0 0;
-					}
-
-					rel2 {
-						to: "label";
-						offset: -1 4;
-					}
-
-					image {
-						normal: "itask_im5.png";
-					}
-				}
-			}
-
-			part {
-				name: "e.text.label";
-				type: TEXT;
-				effect: SHADOW;
-				mouse_events: 0;
-				clip_to: "label.clip";
-				scale: 1;
-
-				description {
-					state: "default" 0.0;
-					align: 0.5 0.5;
-					color: 255 255 255 255;
-					color3: 0 0 0 0;
-
-					rel1.offset: 0 2;
-					rel2.offset: -1 -1;
-
-					text {
-						text: "";
-						font: "Sans:style=Bold";
-						size: 11;
-						min: 1 1;
-						align: 0.5 0.5;
-						text_class: "module_large";
-					}
-				}
-			}
-
-			part {
-				name: "label.clip";
-				type: RECT;
-				mouse_events: 0;
-
-				description {
-					state: "default" 0.0;
-					align: 0.5 0.5;
-					color: 255 255 255 0;
-					min: 0 33;
-
-					rel1 {
-						to: "e.text.label";
-						offset: -12 -4;
-					}
-
-					rel2 {
-						to: "e.text.label";
-						offset: 11 -1;
-					}
-
-				}
-
-				description {
-					state: "visible" 0.0;
-					inherit: "default" 0.0;
-					color: 255 255 255 255;
-				}
-			}
-		}
-
-		programs {
-			program {
-				name: "go_label_show";
-				signal: "e,state,label,show";
-				source: "e";
-				action: STATE_SET "visible" 0.0;
-				transition: DECELERATE 0.5;
-				target: "label.clip";
-			}
-
-			program {
-				name: "go_label_hide";
-				signal: "e,state,label,hide";
-				source: "e";
-				action: STATE_SET "default" 0.0;
-				transition: ACCELERATE 0.25;
-				target: "label.clip";
-			}
-		}
+#define LABEL(NAME, DECOR, ALIGN)					\
+	group {											\
+		name: "e/modules/engage/label_"NAME"";		\
+		parts {										\
+			part {									\
+				name: "label";						\
+				type: IMAGE;						\
+				mouse_events: 0;					\
+				clip_to: "label.clip";				\
+				description {						\
+					state: "default" 0.0;			\
+					align: 0.5 0.5;					\
+					color: 0 0 0 148;				\
+					max: 999 26;					\
+					rel1 {							\
+						to: "e.text.label";			\
+						offset: -8 -2;				\
+					}								\
+					rel2 {							\
+						to: "e.text.label";			\
+						offset: 4 -1;				\
+					}								\
+					image {							\
+						normal: "itask_im4.png";	\
+						border: 5 5 5 5;			\
+					}								\
+				}									\
+			}										\
+			part {									\
+				name: "label_decoration";			\
+				type: IMAGE;						\
+				mouse_events: 0;					\
+				clip_to: "label.clip";				\
+				description {						\
+					state: "default" 0.0;			\
+					align: 0.5 1.0;					\
+					color: 255 0 0 148;				\
+					min: 11 6;						\
+					max: 11 6;						\
+					fixed: 1 1;						\
+					visible: DECOR;					\
+					rel1 {							\
+						to: "label";				\
+						offset: 0 0;				\
+					}								\
+					rel2 {							\
+						to: "label";				\
+						offset: -1 4;				\
+					}								\
+					image {							\
+						normal: "itask_im5.png";	\
+					}								\
+				}									\
+			}										\
+			part {									\
+				name: "e.text.label";				\
+				type: TEXT;							\
+				effect: SHADOW;						\
+				mouse_events: 0;					\
+				clip_to: "label.clip";				\
+				scale: 1;							\
+				description {						\
+					state: "default" 0.0;			\
+					align: ALIGN;					\
+					color: 255 255 255 255;			\
+					color3: 0 0 0 0;				\
+					rel1.offset: 0 2;				\
+					rel2.offset: -1 -1;				\
+					text {							\
+						text: "";					\
+						font: "Sans:style=Bold";	\
+						size: 11;					\
+						min: 1 1;					\
+						align: 0.5 0.5;				\
+						text_class: "module_large";	\
+					}								\
+				}									\
+			}										\
+			part {									\
+				name: "label.clip";					\
+				type: RECT;							\
+				mouse_events: 0;					\
+				description {						\
+					state: "default" 0.0;			\
+					align: 0.5 0.5;					\
+					color: 255 255 255 0;			\
+					min: 0 33;						\
+					rel1 {							\
+						to: "e.text.label";			\
+						offset: -12 -4;				\
+					}								\
+					rel2 {							\
+						to: "e.text.label";			\
+						offset: 11 -1;				\
+					}								\
+				}									\
+				description {						\
+					state: "visible" 0.0;			\
+					inherit: "default" 0.0;			\
+					color: 255 255 255 255;			\
+				}									\
+			}										\
+		}											\
+		programs {									\
+			program {								\
+				name: "go_label_show";				\
+				signal: "e,state,label,show";		\
+				source: "e";						\
+				action: STATE_SET "visible" 0.0;	\
+				transition: DECELERATE 0.5;			\
+				target: "label.clip";				\
+			}										\
+			program {								\
+				name: "go_label_hide";				\
+				signal: "e,state,label,hide";		\
+				source: "e";						\
+				action: STATE_SET "default" 0.0;	\
+				transition: ACCELERATE 0.25;		\
+				target: "label.clip";				\
+			}										\
+		}											\
 	}
 
-	group {
+	LABEL("bottom", 1, 0.5 1.0);
+	LABEL("top",    0, 0.5 0.0);
+	LABEL("left",   0, 0.0 0.5);
+	LABEL("right",  0, 1.0 0.5);
+	
+	/*	group {
 		name: "e/modules/engage/label_top";
 		parts {
 			part {
@@ -362,7 +347,7 @@ collections{
 			}
 		}
 	}
-
+	*/
 	/* TODO needs to be supported in code */
 	/* group {
 	 * 	name: "e/modules/engage/label_left";
