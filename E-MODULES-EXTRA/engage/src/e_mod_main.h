@@ -140,7 +140,7 @@ struct _Ng
   unsigned char    changed : 1;
 
   int              pos;  /* mouse position    */
-  int              size; /* current icon size */
+  double           size; /* current icon size */
 
   enum { unzoomed, zooming, zoomed, unzooming } state;
   enum { hidden, hiding, showing, show } hide_state;

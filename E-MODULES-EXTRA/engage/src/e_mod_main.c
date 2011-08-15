@@ -24,12 +24,12 @@ static void           _ngi_zoom_in(Ng *ng);
 static void           _ngi_zoom_out(Ng *ng);
 static void           _ngi_item_appear(Ng *ng, Ngi_Item *it);
 static void           _ngi_item_disappear(Ng *ng, Ngi_Item *it);
-static void           _ngi_zoom_function(Ng *ng, double d, double *disp);
+static double         _ngi_zoom_function(Ng *ng, double to, double pos);
 static Eina_Bool      _ngi_animator(void *data);
 static void           _ngi_redraw(Ng *ng);
 static int            _ngi_autohide(Ng *ng, int hide);
 static Eina_Bool      _ngi_win_border_intersects(Ng *ng);
-
+static void           _ngi_label_pos_set(Ng *ng);
 
 static int initialized = 0;
 
@@ -843,19 +843,7 @@ ngi_item_activate(Ng *ng)
 	return;
      }
 
-   switch (ng->cfg->orient)
-     {
-      case E_GADCON_ORIENT_BOTTOM:
-	 evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
-			  (ng->win->popup->h + ng->hide_step) -
-			  ((double)ng->size * ng->zoom + TEXT_DIST));
-	 break;
-
-      case E_GADCON_ORIENT_TOP:
-	 evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
-			  ((double)ng->size * ng->zoom + TEXT_DIST) - ng->hide_step);
-	 break;
-     }
+   _ngi_label_pos_set(ng);
 
    evas_object_show(ng->o_label);
    edje_object_signal_emit(ng->o_label, "e,state,label,show", "e");
@@ -1146,14 +1134,14 @@ void
 ngi_reposition(Ng *ng)
 {
    Ngi_Box *box;
-   double pos, distance, range, disp;
+   double pos;
    Eina_List *l, *ll;
    Ngi_Item *it;
    int size = ng->size;
    int cnt = 0, end;
    int width = ng->horizontal ? ng->win->popup->w : ng->win->popup->h;
 
-   while (1)
+   for (;;)
      {
 	ng->w = 0;
 
@@ -1174,15 +1162,11 @@ ngi_reposition(Ng *ng)
 
 	ng->start = (width - ng->w) / 2;
 
-	distance = ng->start - SIDE_OFFSET - width/2;
+	/* distance = ng->start - SIDE_OFFSET - width/2; */
 
-	range = ng->cfg->zoom_range * ng->size;
+	end = _ngi_zoom_function(ng, width/2, ng->start - SIDE_OFFSET);
 
-	disp = erf(distance / range) * range * (ng->cfg->zoomfactor - 1.0);
-
-	end = ng->start - SIDE_OFFSET + disp;
-
-	if ((end > 0) || (size <= 0))
+	if ((end > 0) || (size <= 16))
 	  break;
 
 	/* shrink bar when it becomes larger than screen height/width  */
@@ -1258,12 +1242,58 @@ ngi_reposition(Ng *ng)
 }
 
 
-static void
-_ngi_zoom_function(Ng *ng, double d, double *disp)
+static double
+_ngi_zoom_function(Ng *ng, double to, double pos)
 {
-   float range = ng->cfg->zoom_range * ng->size;
+   double range = ng->cfg->zoom_range * ng->size/2.0;
+   double d = pos - to;
 
-   *disp = erf(d / range) * range * (ng->zoom - 1.0);
+   if (ng->zoom <= 1.0)
+     {
+	return pos;
+     }
+
+   if ((d > 0) && (d >= range))
+     {
+	return pos + range * (ng->zoom - 1.0);
+     }
+   else if (d <= -range)
+     {
+	return pos + -range * (ng->zoom - 1.0);
+     }
+   else
+     {
+	/* erf(distance / range) * range * (ng->cfg->zoomfactor - 1.0); */
+
+	return pos + sin(M_PI/2.0 * d/range) * range * (ng->zoom - 1.0);
+     }
+
+   return pos;
+}
+
+static void
+_ngi_label_pos_set(Ng *ng)
+{
+   int off, h;
+
+   if (!ng->item_active)
+     return;
+
+   off = (ng->size * ng->zoom) + ng->opt.edge_offset + TEXT_DIST;
+   h = ng->win->popup->h;
+
+   switch (ng->cfg->orient)
+     {
+      case E_GADCON_ORIENT_BOTTOM:
+	 evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
+			  (h + ng->hide_step) - off);
+	 break;
+
+      case E_GADCON_ORIENT_TOP:
+	 evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
+			  (off - ng->hide_step));
+	 break;
+     }
 }
 
 static void
@@ -1283,7 +1313,7 @@ _ngi_redraw(Ng *ng)
    int separator_width = ng->opt.separator_width;
 
    int cnt = 0;
-   double disp = 0.0;
+   /* double disp = 0.0; */
 
    int w = ng->win->popup->w;
    int h = ng->win->popup->h;
@@ -1295,13 +1325,12 @@ _ngi_redraw(Ng *ng)
 
    size_spacing = ng->size + edge_offset;
 
+   _ngi_label_pos_set(ng);
+
    if (cfg->show_background)
      {
-        _ngi_zoom_function(ng, ng->start - ng->pos, &disp);
-        end1 = ng->start + disp;
-
-        _ngi_zoom_function(ng, ng->start + ng->w - ng->pos, &disp);
-        end2 = ng->start + ng->w + disp;
+        end1 = _ngi_zoom_function(ng, ng->pos, ng->start);
+        end2 = _ngi_zoom_function(ng, ng->pos, ng->start + ng->w);
 
         switch (cfg->orient)
           {
@@ -1339,28 +1368,11 @@ _ngi_redraw(Ng *ng)
 	evas_object_resize(ng->o_frame, bw, bh);
      }
 
-   if (ng->item_active /* && ng->state != unzoomed */)
-     {
-        switch (cfg->orient)
-          {
-           case E_GADCON_ORIENT_BOTTOM:
-              evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
-			       (h + hide_step) - ((double)ng->size * ng->zoom + TEXT_DIST));
-              break;
-
-           case E_GADCON_ORIENT_TOP:
-              evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
-			       ((double)ng->size * ng->zoom + TEXT_DIST) - hide_step);
-              break;
-          }
-     }
-
    EINA_LIST_FOREACH (ng->boxes, ll, box)
    {
       if (cnt++ > 0)
         {
-           _ngi_zoom_function(ng, box->pos - ng->pos, &disp);
-           pos = (box->pos + disp);
+           pos = _ngi_zoom_function(ng, box->pos - ng->pos, box->pos);
 
            switch (cfg->orient)
              {
@@ -1388,7 +1400,7 @@ _ngi_redraw(Ng *ng)
       else
          evas_object_hide(box->separator);
 
-      pos = 0;
+      pos2 = 0;
 
       EINA_LIST_FOREACH (box->items, l, it)
 	{
@@ -1398,18 +1410,12 @@ _ngi_redraw(Ng *ng)
 	   if (it->scale == 0.0)
 	     continue;
 
-	   if (pos == 0)
-	     {
-		_ngi_zoom_function(ng, it->pos - ng->pos,  &pos);
-		pos = (double)it->pos + pos;
-	     }
+	   if (pos2 == 0)
+	     pos = _ngi_zoom_function(ng, ng->pos, it->pos);
 	   else
-	     {
-	   	pos = pos2 + (double)ng->opt.item_spacing;
-	     }
+	     pos = pos2 + (double)ng->opt.item_spacing;
 
-	   _ngi_zoom_function(ng, it->pos + (ng->size * it->scale) - ng->pos, &pos2);
-	   pos2 = (double)it->pos + ((double)ng->size * it->scale) + pos2;
+	   pos2 = _ngi_zoom_function(ng, ng->pos, it->pos + (ng->size * it->scale));
 
 	   size = (int)pos2 - (int)pos;
 
