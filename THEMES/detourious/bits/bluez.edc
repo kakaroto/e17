@@ -127,7 +127,7 @@ group { name: "e/modules/bluez/tip";
 				rel2 {
 					to_y: "e.text.name";
 					relative: 1.0 1.0;
-					offset: 10 -1;
+					offset: -11 -1;
 				}
 				text {
 					font: FONT;
