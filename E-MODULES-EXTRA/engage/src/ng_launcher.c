@@ -104,10 +104,15 @@ _box_fill(Ngi_Box *box)
 static Eina_Bool
 _cb_icons_update(void *data, int type, void *event)
 {
-   Ngi_Box *box = (Ngi_Box *)data;
+   Efreet_Event_Cache_Update *ev = event;
+   Ngi_Box *box = data;
    Eina_List *l;
    Ngi_Item_Launcher *it;
-   printf(">>>>>>>> icons update %s\n", e_config->icon_theme);
+
+   if (!ev->changed)
+     return ECORE_CALLBACK_PASS_ON;
+   
+   /* printf(">>>>>>>> icons update %s\n", e_config->icon_theme); */
 
    EINA_LIST_FOREACH(box->items, l, it)
      _item_fill(it); 
