@@ -29,8 +29,13 @@ static const char DBUS_SHOTGUN_LIST[]     = "org.shotgun.list";
 static const char DBUS_SHOTGUN_CONTACT[]  = "org.shotgun.contact";
 static const char DBUS_SHOTGUN_CORE[]     = "org.shotgun.core";
 static const char DBUS_SHOTGUN_PATH[]     = "/org/shotgun/remote";
+static const char FDO_BUS_NAME[]	  = "org.freedesktop.DBus";
+static const char FDO_INTERFACE[]	  = "org.freedesktop.DBus";
+static const char FDO_PATH[]		  = "/org/freedesktop/DBus";
+
 static E_DBus_Signal_Handler *_dbus_signal_new_msg = NULL;
 static E_DBus_Signal_Handler *_dbus_signal_new_msg_self = NULL;
+static E_DBus_Signal_Handler *_dbus_signal_name_owner_changed = NULL;
 
 static void _add_message(int self, const char *contact, const char *message);
 
@@ -390,6 +395,50 @@ _dbus_cb_signal_new_msg_self(void *data, DBusMessage *msg)
    _add_message(1, contact, message);
 }
 
+static void
+_signal_handler_add(void)
+{
+   if (_dbus_signal_new_msg)
+     e_dbus_signal_handler_del(conn, _dbus_signal_new_msg);
+
+   if (_dbus_signal_new_msg_self)
+     e_dbus_signal_handler_del(conn, _dbus_signal_new_msg_self);
+
+   _dbus_signal_new_msg = e_dbus_signal_handler_add
+     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
+      "new_msg", _dbus_cb_signal_new_msg, NULL);
+
+   _dbus_signal_new_msg_self = e_dbus_signal_handler_add
+     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
+      "new_msg_self", _dbus_cb_signal_new_msg_self, NULL);
+}
+
+
+static void
+_dbus_cb_signal_name_owner_changed(void *data, DBusMessage *msg)
+{
+   DBusError err;
+   const char *tmp;
+   const char *name, *from, *to;
+
+   if (!conn) return;
+
+   dbus_error_init(&err);
+   if (!dbus_message_get_args(msg, &err,
+			      DBUS_TYPE_STRING, &name,
+			      DBUS_TYPE_STRING, &from,
+			      DBUS_TYPE_STRING, &to,
+			      DBUS_TYPE_INVALID))
+     {
+	dbus_error_free(&err);
+	return;
+     }
+   printf("NameOwnerChanged: %s:%s:%s\n", name, from, to);
+
+   if (strncmp(name, DBUS_SHOTGUN_BUS_NAME, 11) == 0)
+     _signal_handler_add();
+}
+
 static int
 _plugins_init(const Evry_API *_api)
 {
@@ -423,14 +472,12 @@ _plugins_init(const Evry_API *_api)
    evry->action_register(act, 0);
    actions = eina_list_append(actions, act);
 
-   _dbus_signal_new_msg = e_dbus_signal_handler_add
-     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
-      "new_msg", _dbus_cb_signal_new_msg, NULL);
+   _dbus_signal_name_owner_changed = e_dbus_signal_handler_add
+     (conn, FDO_BUS_NAME, FDO_PATH, FDO_INTERFACE, "NameOwnerChanged",
+      _dbus_cb_signal_name_owner_changed, NULL);
 
-   _dbus_signal_new_msg_self = e_dbus_signal_handler_add
-     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
-      "new_msg_self", _dbus_cb_signal_new_msg_self, NULL);
-
+   _signal_handler_add();
+   
    evry_plug_msg_init();
 
    return EINA_TRUE;
@@ -448,6 +495,7 @@ _plugins_shutdown(void)
 	e_dbus_connection_close(conn);
 	e_dbus_signal_handler_del(conn, _dbus_signal_new_msg);
 	e_dbus_signal_handler_del(conn, _dbus_signal_new_msg_self);
+	e_dbus_signal_handler_del(conn, _dbus_signal_name_owner_changed);
      }
 
    EINA_LIST_FREE(plugins, p)
