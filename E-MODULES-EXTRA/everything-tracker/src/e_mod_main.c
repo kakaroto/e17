@@ -762,7 +762,7 @@ _icon_get(Evry_Item *item, Evas *e)
        if (CHECK_SUBTYPE(item, FILE_LIST))
 	  {
 	     if (!item->label || !item->detail)
-	       return evry->icon_theme_get("folder", e);
+	       return NULL;
 
 	     char *suma, *sumb, *a;
 	     int i;
@@ -798,17 +798,6 @@ _icon_get(Evry_Item *item, Evas *e)
 		  e_icon_file_set(o, thumb_buf);
 		  if (o) return o;
 	       }
-	     else
-	       return evry->icon_theme_get("folder", e);
-	  }
-	else
-	  {
-	     GET_FILE(it, item);
-
-	     if (item->browseable)
-	       return evry->icon_theme_get("folder", e);
-	     else
-	       return evry->icon_mime_get(it->mime, e);
 	  }
      }
 
