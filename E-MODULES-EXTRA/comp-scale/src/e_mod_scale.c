@@ -728,8 +728,10 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    if (e_mod_border_ignore(cw->bd))
      {
 	char *class;
+	if (!cw->bd->visible)
+	  return NULL;
 	
-	/* fade keyboard and home, ignore other */
+	  /* fade keyboard and home, ignore other */
 	if (!(class = cw->bd->client.icccm.class) ||
 	    (strcmp(class, "Virtual-Keyboard") &&
 	     strcmp(class, "Illume-Home")))
@@ -745,11 +747,11 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->cw = cw;
    e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
       
-   /* it->o_win = e_manager_comp_src_image_mirror_add(man, src); */
-   it->o_win = evas_object_image_filled_add(e);
-   o = e_manager_comp_src_image_get(man, src);
-   evas_object_image_source_set(it->o_win, o);
-   evas_object_image_smooth_scale_set(it->o_win, evas_object_image_smooth_scale_get(o));
+   it->o_win = e_manager_comp_src_image_mirror_add(man, src);
+   /* it->o_win = evas_object_image_filled_add(e);
+    * o = e_manager_comp_src_image_get(man, src);
+    * evas_object_image_source_set(it->o_win, o);
+    * evas_object_image_smooth_scale_set(it->o_win, evas_object_image_smooth_scale_get(o)); */
 
    evas_object_show(it->o_win);
    it->o = edje_object_add(e);
@@ -1163,6 +1165,12 @@ _scale_run(E_Manager *man)
    min_y = use_y;
    max_x = use_w;
    max_y = use_h;
+
+   /* EINA_LIST_FOREACH(items, l, it)
+    * printf(">> %dx%d %d:%d - %s\n",
+    * 	  (int)it->w, (int)it->h,
+    * 	  (int)it->x, (int)it->y,
+    * 	  e_border_name_get(it->bd)); */
 
    if ((scale_conf->grow && !show_all_desks) ||
        (scale_conf->desks_grow && show_all_desks))
@@ -1997,7 +2005,7 @@ _scale_place_slotted()
 {
    Eina_List *l, *ll, *slots = NULL;
    Slot *slot, *slot2;
-   Item *it;
+   Item *it, *it2;
    int rows, cols, cnt, x, y, w, h, start;
    int fast = 0;
    int cont = 0, i = 0;
@@ -2043,6 +2051,16 @@ _scale_place_slotted()
    	if (it->y < min_y) min_y = it->y;
    	if (it->x + it->w > max_x) max_x = it->x + it->w;
    	if (it->y + it->h > max_y) max_y = it->y + it->h;
+
+	EINA_LIST_FOREACH(l->next, ll, it2)
+	  {
+	     if ((it->x + it->w/2 == it2->x + it2->w/2) &&
+		 (it->y + it->h/2 == it2->y + it2->h/2))
+	       {
+		  it2->x += 1;
+		  it2->y += 1;
+	       }
+	  }
      }
 
    w = (max_x - min_x) / cols;
