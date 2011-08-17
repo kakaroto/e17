@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Enna
+GenericName=Media Center
+Comment=EFL Multimedia Center
+Icon=enna
+TryExec=enna
+Exec=enna
+Terminal=false
+Categories=X-ENLIGHTENMENT;AudioVideo;Player;
+StartupWMClass=enna

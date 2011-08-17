@@ -1,0 +1,3732 @@
+group {
+   name: "elm/scroller/base/default";
+   alias: "elm/list/base/default";
+   alias: "elm/genlist/base/default";
+   alias: "elm/carousel/base/default";
+   alias: "elm/gengrid/base/default";
+   images {
+      image: "scroll_bg_v.png" COMP;
+      image: "scroll_bg_h.png" COMP;
+      image: "scroll_v.png" COMP;
+      image: "scroll_h.png" COMP;
+   }
+   data {
+      item: "focus_highlight" "on";
+   }
+
+   script {
+      public sbvis_v, sbvis_h, sbalways_v, sbalways_h, sbvis_timer;
+      public timer0(val) {
+         new v;
+         v = get_int(sbvis_v);
+         if (v) {
+            v = get_int(sbalways_v);
+            if (!v) {
+               emit("do-hide-vbar", "");
+               set_int(sbvis_v, 0);
+            }
+         }
+         v = get_int(sbvis_h);
+         if (v) {
+            v = get_int(sbalways_h);
+            if (!v) {
+               emit("do-hide-hbar", "");
+               set_int(sbvis_h, 0);
+            }
+         }
+         set_int(sbvis_timer, 0);
+         return 0;
+      }
+   }
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+      part { name: "elm.swallow.content";
+         clip_to: "clipper";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+         }
+      }
+
+      part { name: "sb_vbar_clip_master";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+         }
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "sb_vbar_clip";
+         clip_to: "sb_vbar_clip_master";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            color: 255 255 255 128;
+         }
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "sb_vbar";
+
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            visible: 0;
+            min: 1 22;
+            max: 1 9999;
+            align: 1.0 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset:   0 2;
+               to_y:     "elm.swallow.content";
+               to_x:     "elm.swallow.content";
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset:   -1 -1;
+               to_y:     "sb_hbar";
+               to_x:     "elm.swallow.content";
+            }
+            color: 0 0 0 128;
+         }
+      }
+      part { name: "elm.dragable.vbar";
+         clip_to: "sb_vbar_clip";
+         mouse_events: 0;
+         dragable {
+            x: 0 0 0;
+            y: 1 1 0;
+            confine: "sb_vbar";
+         }
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 18 22;
+            max: 18 99999;
+            rel1 {
+               relative: 0.5  0.5;
+               offset:   0    0;
+               to: "sb_vbar";
+            }
+            rel2 {
+               relative: 0.5  0.5;
+               offset:   0    0;
+               to: "sb_vbar";
+            }
+            image {
+               normal: "scroll_v.png";
+               border: 7 10 8 8;
+               //middle: SOLID;
+            }
+         }
+      }
+
+
+      part { name: "sb_hbar_clip_master";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+         }
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "sb_hbar_clip";
+         clip_to: "sb_hbar_clip_master";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+         }
+         description { state: "hidden" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "sb_hbar";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            visible: 0;
+            min: 17 10;
+            align: 0.0 1.0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset:   8 0;
+               to_x:     "elm.swallow.content";
+               to_y:     "elm.swallow.content";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset:   -7 -1;
+               to_x:     "sb_vbar";
+               to_y:     "elm.swallow.content";
+            }
+            image.normal: "scroll_bg_h.png";
+         }
+      }
+      part { name: "elm.dragable.hbar";
+         clip_to: "sb_hbar_clip";
+         mouse_events: 0;
+         dragable {
+            x: 1 1 0;
+            y: 0 0 0;
+            confine: "sb_hbar";
+         }
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            min: 27 10;
+            max: 99999 10;
+            rel1 {
+               relative: 0.5  0.5;
+               offset:   0    0;
+               to: "sb_hbar";
+            }
+            rel2 {
+               relative: 0.5  0.5;
+               offset:   0    0;
+               to: "sb_hbar";
+            }
+            image {
+               normal: "scroll_h.png";
+               border: 4 4 4 4;
+               //middle: SOLID;
+            }
+         }
+      }
+
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+            rel1.to: "clipper";
+            rel2.to: "clipper";
+            color: 0 0 0 0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 128 128 128 128;
+         }
+      }
+   }
+   programs {
+      program { name: "load";
+         signal: "load";
+         source: "";
+         script {
+            set_state(PART:"sb_hbar_clip", "hidden", 0.0);
+            set_state(PART:"sb_vbar_clip", "hidden", 0.0);
+            set_int(sbvis_h, 0);
+            set_int(sbvis_v, 0);
+            set_int(sbalways_v, 0);
+            set_int(sbalways_h, 0);
+            set_int(sbvis_timer, 0);
+         }
+      }
+
+      program { name: "vbar_show";
+         signal: "elm,action,show,vbar";
+         source: "elm";
+         action:  STATE_SET "default" 0.0;
+         target: "sb_vbar_clip_master";
+      }
+      program { name: "vbar_hide";
+         signal: "elm,action,hide,vbar";
+         source: "elm";
+         action:  STATE_SET "hidden" 0.0;
+         target: "sb_vbar_clip_master";
+      }
+      program { name: "vbar_show_always";
+         signal: "elm,action,show_always,vbar";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbvis_v);
+            v |= get_int(sbalways_v);
+            if (!v) {
+               set_int(sbalways_v, 1);
+               emit("do-show-vbar", "");
+               set_int(sbvis_v, 1);
+            }
+         }
+      }
+      program { name: "vbar_show_notalways";
+         signal: "elm,action,show_notalways,vbar";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbalways_v);
+            if (v) {
+               set_int(sbalways_v, 0);
+               v = get_int(sbvis_v);
+               if (!v) {
+                  emit("do-hide-vbar", "");
+                  set_int(sbvis_v, 0);
+               }
+            }
+         }
+      }
+      program { name: "sb_vbar_show";
+         signal: "do-show-vbar";
+         source: "";
+         action:  STATE_SET "default" 0.0;
+         transition: LINEAR 0.5;
+         target: "sb_vbar_clip";
+      }
+      program { name: "sb_vbar_hide";
+         signal: "do-hide-vbar";
+         source: "";
+         action:  STATE_SET "hidden" 0.0;
+         transition: LINEAR 0.5;
+         target: "sb_vbar_clip";
+      }
+
+      program { name: "hbar_show";
+         signal: "elm,action,show,hbar";
+         source: "elm";
+         action:  STATE_SET "default" 0.0;
+         target: "sb_hbar_clip_master";
+      }
+      program { name: "hbar_hide";
+         signal: "elm,action,hide,hbar";
+         source: "elm";
+         action:  STATE_SET "hidden" 0.0;
+         target: "sb_hbar_clip_master";
+      }
+      program { name: "hbar_show_always";
+         signal: "elm,action,show_always,hbar";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbvis_h);
+            v |= get_int(sbalways_h);
+            if (!v) {
+               set_int(sbalways_h, 1);
+               emit("do-show-hbar", "");
+               set_int(sbvis_h, 1);
+            }
+         }
+      }
+      program { name: "hbar_show_notalways";
+         signal: "elm,action,show_notalways,hbar";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbalways_h);
+            if (v) {
+               set_int(sbalways_h, 0);
+               v = get_int(sbvis_h);
+               if (!v) {
+                  emit("do-hide-hbar", "");
+                  set_int(sbvis_h, 0);
+               }
+            }
+         }
+      }
+      program { name: "sb_hbar_show";
+         signal: "do-show-hbar";
+         source: "";
+         action:  STATE_SET "default" 0.0;
+         transition: LINEAR 0.5;
+         target: "sb_hbar_clip";
+      }
+      program { name: "sb_hbar_hide";
+         signal: "do-hide-hbar";
+         source: "";
+         action:  STATE_SET "hidden" 0.0;
+         transition: LINEAR 0.5;
+         target: "sb_hbar_clip";
+      }
+
+      program { name: "scroll";
+         signal: "elm,action,scroll";
+         source: "elm";
+         script {
+            new v;
+            v = get_int(sbvis_v);
+            v |= get_int(sbalways_v);
+            if (!v) {
+               emit("do-show-vbar", "");
+               set_int(sbvis_v, 1);
+            }
+            v = get_int(sbvis_h);
+            v |= get_int(sbalways_h);
+            if (!v) {
+               emit("do-show-hbar", "");
+               set_int(sbvis_h, 1);
+            }
+            v = get_int(sbvis_timer);
+            if (v > 0) cancel_timer(v);
+            v = timer(1.0, "timer0", 0);
+            set_int(sbvis_timer, v);
+         }
+      }
+
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "disabler";
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "disabler";
+      }
+   }
+}
+
+
+
+group { name: "elm/genlist/item/default/default";
+   alias: "elm/genlist/item_odd/default/default";
+   alias: "elm/genlist/item_compress_odd/default/default";
+   data.item: "stacking" "above";
+   data.item: "selectraise" "on";
+   data.item: "labels" "elm.text";
+   data.item: "icons" "elm.swallow.icon elm.swallow.starred elm.swallow.end";
+   data.item: "treesize" "20";
+   //      data.item: "states" "";
+   images {
+      image: "list_bg.png" COMP;
+      image: "list_selected.png" COMP;
+   }
+   parts {
+
+      part {
+         name:           "event";
+         type:           RECT;
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+
+      part { name: "bg";
+ 
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 0 2;
+            max: 9999 2;
+            fixed: 1 1;
+            rel1.relative: 0 1;
+            rel2.relative: 1 1;
+            image.normal: "list_bg.png";
+         }
+      }
+
+      part { name: "selector";
+ 
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1.offset: 2 2;
+            image {
+               normal: "list_selected.png";
+               border: 4 4 4 4;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+
+
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 0.0 0.5;
+            rel1 {
+ 
+               relative: 0.0  0.0;
+               offset:   4    4;
+            }
+            rel2 {
+
+               relative: 0.0  1.0;
+               offset:   4   -4;
+            }
+         }
+      }
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 0.0 0.5;
+            rel1 {
+               to: "elm.swallow.pad";
+               relative: 1.0  0.0;
+               offset:   -1    4;
+            }
+            rel2 {
+               to: "elm.swallow.pad";
+               relative: 1.0  1.0;
+               offset:   -1   -5;
+            }
+         }
+      }
+      part { name: "elm.swallow.starred";
+         type: SWALLOW;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               to: "elm.swallow.end";
+               relative: 1.0  0.0;
+               offset:   -5    4;
+            }
+            rel2 {
+               to: "elm.swallow.end";
+               relative: 1.0  1.0;
+               offset:   -5   -5;
+            }
+         }
+      }
+      part { name: "elm.swallow.end";
+         type: SWALLOW;
+         mouse_events: 1;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0  0.0;
+               offset:   -5    4;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -5   -5;
+            }
+         }
+      }
+      part { name: "elm.text";
+         type:           TEXT;
+         effect:         SOFT_SHADOW;
+         mouse_events:   0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            //               min: 16 16;
+            fixed: 1 1;
+            rel1 {
+               to_x:     "elm.swallow.icon";
+               relative: 1.0  0.0;
+               offset:   8 4;
+            }
+            rel2 {
+               to_x:     "elm.swallow.end";
+               relative: 0.0  1.0;
+               offset:   -1 -5;
+            }
+            color: 172 179 191 255;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans";
+               size: 12;
+               min: 0 1;
+               align: 0.0 0.5;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 30;
+         }
+      }
+
+   }
+   programs {
+      // signal: elm,state,%s,active
+      //   a "check" item named %s went active
+      // signal: elm,state,%s,passive
+      //   a "check" item named %s went passive
+      // default is passive
+      program {
+         name:    "go_active";
+         signal:  "elm,state,selected";
+         source:  "elm";
+         action:  STATE_SET "selected" 0.0;
+         target:  "selector";
+         target:  "elm.text";
+      }
+      program {
+         name:    "go_passive";
+         signal:  "elm,state,unselected";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "selector";
+         target:  "elm.text";
+         transition: LINEAR 0.1;
+      }
+   }
+}
+
+
+
+////////////////////////////////////////////////////
+
+group { name: "elm/genlist/item/track/default";
+   alias: "elm/genlist/item_odd/track/default";
+   alias: "elm/genlist/item/film/default";
+   alias: "elm/genlist/item_odd/film/default";
+   data.item: "stacking" "above";
+   data.item: "selectraise" "on";
+   data.item: "labels" "elm.text.trackno elm.text.title elm.text.length elm.text.artist";
+   data.item: "icons" "elm.swallow.playing elm.swallow.starred elm.swallow.cover";
+   data.item: "treesize" "20";
+   //      data.item: "states" "";
+   images {
+      image: "sel_bg.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 0 2;
+            max: 9999 2;
+            rel1.relative: 0 1;
+            rel2.relative: 1 1;
+            fixed: 1 1;
+            image.normal: "list_bg.png";
+         }
+      }
+
+      part { name: "selector";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1.offset: 2 2;
+            image {
+               normal: "list_selected.png";
+               border: 4 4 4 4;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+
+
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   4    4;
+            }
+            rel2 {
+
+               relative: 0.0  1.0;
+               offset:   4   -4;
+            }
+         }
+      }
+
+      part { name: "elm.swallow.cover.bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 255;
+            min: 60 60;
+            max: 60 60;
+            fixed: 1 0;
+            align: 0 0.5;
+            rel1 {
+               relative: 0.0  0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               to: "elm.swallow.pad";
+               relative: 0.0  1.0;
+               offset: 0 0;
+            }
+         }
+      }
+      part { name: "elm.swallow.cover";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               to: "elm.swallow.cover.bg";
+
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               to: "elm.swallow.cover.bg";
+            }
+         }
+      }
+
+      part { name: "elm.text.trackno";
+         type: TEXT;
+         effect:         SOFT_SHADOW;
+         mouse_events:   0;
+         scale: 1;
+         description { state: "default" 0.0;
+            fixed: 1 1;
+            align: 0.0 0.5;
+            rel1 {
+               to_x: "elm.swallow.cover";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  0.0;
+               offset:   5    4;
+            }
+            rel2 {
+               to_x: "elm.swallow.cover";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  1.0;
+               offset:   5  -5;
+            }
+            color: 172 179 191 255;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans:style=Bold";
+               size: 20;
+               //min: 1 1;
+               text: "01";
+               min: 1 1;
+               align: 0.0 0.5;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 30;
+         }
+      }
+      part { name: "elm.text.length";
+         type: TEXT;
+         effect:         SOFT_SHADOW;
+         mouse_events:   0;
+           description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            rel1 {
+               relative: 1.0  0.0;
+               to_y:     "elm.swallow.cover";
+               offset:   -10    4;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               to_y:     "elm.swallow.cover";
+               offset:   -10   -5;
+            }
+            color: 172 179 191 255;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans";
+               size: 12;
+               min: 1 1;
+               align: 1.0 0.5;
+               text: "3:28";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 30;
+         }
+      }
+
+      part { name: "elm.swallow.starred";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            //fixed: 1 0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               to_x: "elm.text.length";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  0.0;
+               offset:   -5    4;
+            }
+            rel2 {
+               to_x: "elm.text.length";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  1.0;
+               offset:   -5   -5;
+            }
+         }
+      }
+      part { name: "elm.text.title";
+         type:           TEXT;
+         effect:         SOFT_SHADOW;
+         mouse_events:   0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to_x:     "elm.text.trackno";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  0.0;
+               offset:   8 4;
+            }
+            rel2 {
+               to_x:     "elm.swallow.starred";
+               to_y:     "elm.swallow.cover";
+               relative: 0.0  0.5;
+               offset:   -1 -5;
+            }
+            color: 172 179 191 255;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans:style=Bold";
+               size: 12;
+               min: 0 1;
+               align: 0.0 0.5;
+               text: "title";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 30;
+         }
+      }
+      part { name: "elm.text.artist";
+         type:           TEXT;
+         //effect:         SOFT_SHADOW;
+         mouse_events:   0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to_x:     "elm.text.trackno";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  0.5;
+               offset:   8 4;
+            }
+            rel2 {
+               to_x:     "elm.swallow.starred";
+               to_y:     "elm.swallow.cover";
+               relative: 0.0  1.0;
+               offset:   -1 -5;
+            }
+            color: 172 179 191 180;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans";
+               size: 11;
+               min: 0 1;
+               align: 0.0 0.5;
+               text: "artist-album";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 200;
+            color3: 0 0 0 30;
+         }
+      }
+      part {
+         name:           "event";
+         type:           RECT;
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      // signal: elm,state,%s,active
+      //   a "check" item named %s went active
+      // signal: elm,state,%s,passive
+      //   a "check" item named %s went passive
+      // default is passive
+      program {
+         name:    "go_active";
+         signal:  "elm,state,selected";
+         source:  "elm";
+         action:  STATE_SET "selected" 0.0;
+         target:  "selector";
+         target:  "elm.text.title";
+         target:  "elm.text.trackno";
+         target:  "elm.text.length";
+         transition: ACCELERATE 0.2;
+      }
+      program {
+         name:    "go_passive";
+         signal:  "elm,state,unselected";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "selector";
+         target:  "elm.text.title";
+         target:  "elm.text.trackno";
+         target:  "elm.text.length";
+         transition: DECELERATE 0.2;
+      }
+   }
+}
+
+
+group { name: "elm/genlist/item/film/default";
+   alias: "elm/genlist/item_odd/film/default";
+   data.item: "stacking" "above";
+   data.item: "selectraise" "on";
+   data.item: "labels" "elm.text.title elm.text.episode";
+   data.item: "icons" "elm.swallow.played elm.swallow.cover";
+
+   //   data.item: "labels" "elm.text.trackno elm.text.title elm.text.length elm.text.artist";
+   //   data.item: "icons" "elm.swallow.playing elm.swallow.starred elm.swallow.cover";
+
+   data.item: "treesize" "20";
+   //      data.item: "states" "";
+   images {
+      image: "sel_bg.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            min: 0 2;
+            max: 9999 2;
+            rel1.relative: 0 1;
+            rel2.relative: 1 1;
+            fixed: 1 1;
+            image.normal: "list_bg.png";
+         }
+      }
+
+      part { name: "selector";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1.offset: 2 2;
+            image {
+               normal: "list_selected.png";
+               border: 4 4 4 4;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+
+
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   4    4;
+            }
+            rel2 {
+
+               relative: 0.0  1.0;
+               offset:   4   -4;
+            }
+         }
+      }
+
+      part { name: "elm.swallow.cover.bg";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 255;
+            min: 60 60;
+            max: 60 60;
+            fixed: 1 0;
+            align: 0 0.5;
+            rel1 {
+               relative: 0.0  0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               to: "elm.swallow.pad";
+               relative: 0.0  1.0;
+               offset: 0 0;
+            }
+         }
+      }
+      part { name: "elm.swallow.cover";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               to: "elm.swallow.cover.bg";
+
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               to: "elm.swallow.cover.bg";
+            }
+         }
+      }
+
+      part { name: "elm.text.length";
+         type: TEXT;
+         effect:         SOFT_SHADOW;
+         mouse_events:   0;
+           description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            rel1 {
+               relative: 1.0  0.0;
+               to_y:     "elm.swallow.cover";
+               offset:   -10    4;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               to_y:     "elm.swallow.cover";
+               offset:   -10   -5;
+            }
+            color: 172 179 191 255;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans";
+               size: 12;
+               min: 1 1;
+               align: 1.0 0.5;
+               text: "3:28";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 30;
+         }
+      }
+
+      part { name: "elm.swallow.starred";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            //fixed: 1 0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               to_x: "elm.text.length";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  0.0;
+               offset:   -5    4;
+            }
+            rel2 {
+               to_x: "elm.text.length";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  1.0;
+               offset:   -5   -5;
+            }
+         }
+      }
+      part { name: "elm.text.title";
+         type:           TEXT;
+         effect:         SOFT_SHADOW;
+         mouse_events:   0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to_x:     "elm.swallow.cover";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  0.0;
+               offset:   8 4;
+            }
+            rel2 {
+               to_x:     "elm.swallow.starred";
+               to_y:     "elm.swallow.cover";
+               relative: 0.0  0.5;
+               offset:   -1 -5;
+            }
+            color: 172 179 191 255;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans:style=Bold";
+               size: 12;
+               min: 0 1;
+               align: 0.0 0.5;
+               text: "title";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 30;
+         }
+      }
+      part { name: "elm.text.episode";
+         type:           TEXT;
+         //effect:         SOFT_SHADOW;
+         mouse_events:   0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            fixed: 1 1;
+            rel1 {
+               to_x:     "elm.swallow.cover";
+               to_y:     "elm.swallow.cover";
+               relative: 1.0  0.5;
+               offset:   8 4;
+            }
+            rel2 {
+               to_x:     "elm.swallow.starred";
+               to_y:     "elm.swallow.cover";
+               relative: 0.0  1.0;
+               offset:   -1 -5;
+            }
+            color: 172 179 191 180;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans";
+               size: 12;
+               min: 0 1;
+               align: 0.0 0.5;
+               text: "artist-album";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 200;
+            color3: 0 0 0 30;
+         }
+      }
+      part {
+         name:           "event";
+         type:           RECT;
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      // signal: elm,state,%s,active
+      //   a "check" item named %s went active
+      // signal: elm,state,%s,passive
+      //   a "check" item named %s went passive
+      // default is passive
+      program {
+         name:    "go_active";
+         signal:  "elm,state,selected";
+         source:  "elm";
+         action:  STATE_SET "selected" 0.0;
+         target:  "selector";
+         target:  "elm.text.title";
+         target:  "elm.text.length";
+         transition: ACCELERATE 0.2;
+      }
+      program {
+         name:    "go_passive";
+         signal:  "elm,state,unselected";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "selector";
+         target:  "elm.text.title";
+         target:  "elm.text.length";
+         transition: DECELERATE 0.2;
+      }
+   }
+}
+
+
+////////////////////////////////////////////////////
+#if 0
+group { name: "elm/genlist/item/film/default";
+   data.item: "stacking" "above";
+   data.item: "selectraise" "on";
+   data.item: "labels" "elm.text.title elm.text.episode";
+   data.item: "icons" "elm.swallow.played elm.swallow.cover";
+   data.item: "treesize" "20";
+   //      data.item: "states" "";
+   images {
+      image: "sel_bg.png" COMP;
+   }
+   parts {   
+      part { name: "bg";
+ 
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+
+            image {
+               normal: "sel_bg.png";
+               border: 15 15 15 15;
+            }
+            image.middle: SOLID;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   4    4;
+            }
+            rel2 {
+
+               relative: 0.0  1.0;
+               offset:   4   -4;
+            }
+         }
+      }
+ 
+      part { name: "elm.swallow.cover";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 0 0;
+            align: 0.0 0.5;
+            //aspect: 1.0 1.0;
+            min: 60 120;
+            max: 60 120;
+               //aspect_preference: BOTH;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   -5    4;
+            }
+            rel2 {
+               relative: 0.0  1.0;
+               offset:   -5   -5;
+            }
+         }
+      }
+    
+      part { name: "elm.text.title";
+         type:           TEXT;
+         //         effect:         SHADOW;
+         mouse_events:   0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            //               min: 16 16;
+            fixed: 1 1;
+            rel1 {
+               relative: 1.0  0.0;
+               to_x: "elm.swallow.cover";
+               offset:   8 4;
+            }
+            rel2 {
+               relative: 0.0  1.0;
+               to: "elm.text.episode";
+               offset:   -1 -5;
+            }
+            color: 0 0 0 200;
+            //color3: 147 147 147 200;
+            text {
+               font: "Sans";
+               size: 10;
+               //min: 1 1;
+               min: 0 1;
+               align: 0.0 0.5;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            //color3: 0 0 0 64;
+         }
+      }
+
+      part { name: "elm.text.episode";
+          type: TEXT;
+           description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   -10    4;
+               to: "elm.swallow.played";
+            }
+            rel2 {
+               relative: 0.0  1.0;
+               offset:   -10   -5;
+               to: "elm.swallow.played";
+            }
+           color: 0 0 0 200;
+            //color3: 147 147 147 200;
+            text {
+               font: "Sans";
+               size: 10;
+               //min: 1 1;
+               min: 1 1;
+               align: 0.0 0.5;
+            }
+         }
+      }
+
+      part { name: "elm.swallow.played";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0  0.0;
+               offset:   -5    4;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -5   -5;
+            }
+         }
+      }
+      part {
+         name:           "event";
+         type:           RECT;
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      // signal: elm,state,%s,active
+      //   a "check" item named %s went active
+      // signal: elm,state,%s,passive
+      //   a "check" item named %s went passive
+      // default is passive
+      program {
+         name:    "go_active";
+         signal:  "elm,state,selected";
+         source:  "elm";
+         action:  STATE_SET "selected" 0.0;
+         target:  "bg";
+         target:  "elm.text.title";
+      }
+      program {
+         name:    "go_passive";
+         signal:  "elm,state,unselected";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "bg";
+         target:  "elm.text.title";
+         transition: LINEAR 0.1;
+      }
+   }
+}
+
+
+////////////////////////////////////////////////////
+
+group { name: "elm/genlist/item_odd/film/default";
+   data.item: "stacking" "above";
+   data.item: "selectraise" "on";
+   data.item: "labels" "elm.text.title elm.text.episode";
+   data.item: "icons" "elm.swallow.played";
+   data.item: "treesize" "20";
+   //      data.item: "states" "";
+   images {
+      image: "sel_bg.png" COMP;
+   }
+   parts {   
+      part { name: "bg";
+ 
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 1;
+            color: 0 0 0 100;
+            image {
+               normal: "sel_bg.png";
+               border: 15 15 15 15;
+            }
+            image.middle: SOLID;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.swallow.pad";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   4    4;
+            }
+            rel2 {
+
+               relative: 0.0  1.0;
+               offset:   4   -4;
+            }
+         }
+      }
+ 
+
+    
+      part { name: "elm.text.title";
+         type:           TEXT;
+         //         effect:         SHADOW;
+         mouse_events:   0;
+         scale: 1;
+         description {
+            state: "default" 0.0;
+            //               min: 16 16;
+            fixed: 1 1;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   8 4;
+            }
+            rel2 {
+               relative: 0.0  1.0;
+               to: "elm.text.episode";
+               offset:   -1 -5;
+            }
+            color: 0 0 0 200;
+            //color3: 147 147 147 200;
+            text {
+               font: "Sans";
+               size: 10;
+               //min: 1 1;
+               min: 0 1;
+               align: 0.0 0.5;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            //color3: 0 0 0 64;
+         }
+      }
+
+     part { name: "elm.text.episode";
+          type: TEXT;
+           description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   -10    4;
+               to: "elm.swallow.played";
+            }
+            rel2 {
+               relative: 0.0  1.0;
+               offset:   -10   -5;
+               to: "elm.swallow.played";
+            }
+           color: 0 0 0 200;
+            //color3: 147 147 147 200;
+            text {
+               font: "Sans";
+               size: 10;
+               //min: 1 1;
+               min: 1 1;
+               align: 0.0 0.5;
+            }
+         }
+      }
+
+      part { name: "elm.swallow.played";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 1.0 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            rel1 {
+               relative: 1.0  0.0;
+               offset:   -5    4;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -5   -5;
+            }
+         }
+      }
+      part {
+         name:           "event";
+         type:           RECT;
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      // signal: elm,state,%s,active
+      //   a "check" item named %s went active
+      // signal: elm,state,%s,passive
+      //   a "check" item named %s went passive
+      // default is passive
+      program {
+         name:    "go_active";
+         signal:  "elm,state,selected";
+         source:  "elm";
+         action:  STATE_SET "selected" 0.0;
+         target:  "bg";
+         target:  "elm.text.title";
+      }
+      program {
+         name:    "go_passive";
+         signal:  "elm,state,unselected";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "bg";
+         target:  "elm.text.title";
+         transition: LINEAR 0.1;
+      }
+   }
+}
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+group { name: "elm/win/inwin/enna";
+   images {
+      image: "inwin_bg.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         type: RECT;
+         mouse_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 1.0;
+            visible: 1;
+            color: 0 0 0 180;
+         }
+      }
+
+      part { name: "pop";
+         mouse_events: 1;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.content";
+            rel1.offset: -5 -5;
+            rel2.to: "elm.swallow.content";
+            rel2.offset: 4 4;
+            image {
+               normal: "inwin_bg.png";
+               border: 68 68 68 68;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.relative: 0.5 0.5;
+            rel1.offset: -359 -199;
+            rel2.relative: 0.5 0.5;
+            rel2.offset: 360 200;
+            
+         }
+      }
+   }
+   programs {
+      program { name: "show";
+         signal: "elm,action,show";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         transition: DECELERATE 0.5;
+         target: "base";
+      }
+      program { name: "hide";
+         signal: "elm,action,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: DECELERATE 0.5;
+         target: "base";
+      }
+   }
+}
+
+group { name: "elm/win/inwin/minimal";
+      parts {
+         part { name: "base";
+            type: RECT;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "pop";
+            type: RECT;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               rel1.to: "elm.swallow.content";
+               rel1.offset: -3 -3;
+               rel2.to: "elm.swallow.content";
+               rel2.offset: 3 3;
+               color: 40 45 52 255;
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               min: 420 500;
+
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 0.5 0.5;
+            }
+         }
+      }
+   }
+
+///////////////////////////////////////////////////////////////////////////////
+
+   styles {
+      style { name: "textblock_style";
+         base: "font=Sans font_size=12 color=#fff wrap=word";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "hilight" "+ font=Sans:style=Bold";
+         tag:  "b" "+ font=Sans:style=Bold";
+         tag:  "c" "+ align=center";
+         tag:  "tab" "\t";
+      }
+      style { name: "genlist_style";
+         base: "font=Sans font_size=12 color=#fff";
+         tag:  "br" "\n";
+         tag:  "ps" "ps";
+         tag:  "hilight" "+ font=Sans:style=Bold";
+         tag:  "b" "+ font=Sans:style=Bold";
+         tag:  "c" "+ align=center";
+         tag:  "tab" "\t";
+      }
+   }
+
+group { name: "elm/label/base/default";
+   data.item: "default_font_size" "12";
+   data.item: "min_font_size" "8";
+   data.item: "max_font_size" "60";
+  
+   parts {
+
+      part { name: "label.swallow.background";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            visible: 1;
+            rel1 { relative: 0 0; to: "elm.text"; }
+            rel2 { relative: 1 1; to: "elm.text"; }
+         }
+      }
+      part { name: "elm.text";
+         type: TEXTBLOCK;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            text {
+               style: "textblock_style";
+               min: 1 1;
+            }
+         }
+      }
+   }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+group { name: "elm/gengrid/item/default/default";
+   data.item: "labels" "elm.text";
+   data.item: "icons" "elm.swallow.icon elm.swallow.end";
+   images {
+
+   }
+   parts {
+      part {
+         name: "event";
+         type: RECT;
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "base";
+         mouse_events: 0;
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "bg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            image {
+               normal: "sel_bg.png";
+               border: 15 15 15 15;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+
+      part { name: "elm.swallow.icon";
+         clip_to: "disclip";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 0.5 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+             rel1 {
+                  relative: 0.0 0.0;
+                //offset: 18 20;
+               }
+               rel2 {
+                  to_y: "elm.text";
+                  relative: 1.0 0.0;
+                  //offset: -17 -1;
+               }
+         }
+      }
+      part { name: "elm.text";
+         type:           TEXT;
+         effect:         SHADOW;
+         mouse_events:   0;
+         scale: 1;
+          description {
+               state: "default" 0.0;
+               align: 0.5 1.0;
+               fixed: 0 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  //offset: 20 -18;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  //offset: -20 -20;
+               }
+               visible: 1;
+               color: 0 0 0 200;
+               color3: 200 200 200 200;
+
+               text {
+                  font: "Sans";
+                  size: 10;
+                  min: 0 1;
+                  align: 0.5 0.5;
+               }
+            }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 255;
+         }
+      }
+  
+     
+      part { name: "disclip";
+         type: RECT;
+         description { state: "default" 0.0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 64;
+         }
+      }
+   }
+   programs {
+      // signal: elm,state,%s,active
+      //   a "check" item named %s went active
+      // signal: elm,state,%s,passive
+      //   a "check" item named %s went passive
+      // default is passive
+       
+      program {
+         name:    "go_disabled";
+         signal:  "elm,state,disabled";
+         source:  "elm";
+         action:  STATE_SET "disabled" 0.0;
+         target:  "disclip";
+      }
+      program {
+         name:    "go_enabled";
+         signal:  "elm,state,enabled";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "disclip";
+      }
+      program {
+         name:    "go_active";
+         signal:  "elm,state,selected";
+         source:  "elm";
+         action:  STATE_SET "selected" 0.0;
+         target:  "bg";
+       
+         target:  "elm.text";
+      }
+      program {
+         name:    "go_passive";
+         signal:  "elm,state,unselected";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "bg";
+        
+         target:  "elm.text";
+         transition: LINEAR 0.1;
+      }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+group { name: "elm/gengrid/item/video/default";
+   data.item: "labels" "elm.text";
+   data.item: "icons" "elm.swallow.icon elm.swallow.end";
+   images {
+
+   }
+   parts {
+      part {
+         name: "event";
+         type: RECT;
+         repeat_events: 1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part {
+         name: "base";
+         mouse_events: 0;
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "bg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            image {
+               normal: "sel_bg.png";
+               border: 15 15 15 15;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 0;
+         }
+      }
+
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            align: 0.5 0.5;
+            aspect: 1.0 1.0;
+            aspect_preference: BOTH;
+             rel1 {
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to_y: "elm.text";
+                  relative: 1.0 0.0;
+               }
+         }
+      }
+      part { name: "elm.text";
+         type:           TEXT;
+         effect:         SHADOW;
+         mouse_events:   0;
+         scale: 1;
+          description {
+               state: "default" 0.0;
+               align: 0.5 1.0;
+               fixed: 0 1;
+               rel1 {
+                  relative: 0.0 1.0;
+                  //offset: 20 -18;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  //offset: -20 -20;
+               }
+               visible: 1;
+               color: 0 0 0 200;
+               color3: 200 200 200 200;
+
+               text {
+                  font: "Sans";
+                  size: 10;
+                  min: 0 1;
+                  align: 0.5 0.5;
+               }
+            }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 255;
+         }
+      }
+
+   }
+   programs {
+      program {
+         name:    "go_active";
+         signal:  "elm,state,selected";
+         source:  "elm";
+         action:  STATE_SET "selected" 0.0;
+         target:  "bg";
+       
+         target:  "elm.text";
+      }
+      program {
+         name:    "go_passive";
+         signal:  "elm,state,unselected";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "bg";
+        
+         target:  "elm.text";
+         transition: LINEAR 0.1;
+      }
+   }
+}
+
+
+ group { name: "elm/entry/base-single/default";
+      styles
+	{
+	   style { name: "entry_single_textblock_style";
+	      base: "font=Sans font_size=12 color=#FFF wrap=none";
+	      tag:  "br" "\n";
+              tag:  "ps" "ps";
+	      tag:  "tab" "\t";
+	      tag:  "em" "+ font=Sans:style=Oblique";
+	      tag:  "b" "+ font=Sans:style=Bold";
+	      tag:  "link" "+ color=#800 underline=on underline_color=#8008";
+	      tag:  "hilight" "+ font=Sans:style=Bold";
+	   }
+	   style { name: "entry_single_textblock_disabled_style";
+ 	      base: "font=Sans font_size=12 color=#00000080 wrap=none";
+	      tag:  "br" "\n";
+              tag:  "ps" "ps";
+	      tag:  "tab" "\t";
+	      tag:  "em" "+ font=Sans:style=Oblique";
+	      tag:  "b" "+ font=Sans:style=Bold";
+	      tag:  "link" "+ color=#00000080 underline=on underline_color=#00000080";
+	      tag:  "hilight" "+ font=Sans:style=Bold";
+	   }
+	}
+      parts {
+	 part { name: "elm.text";
+	    type: TEXTBLOCK;
+	    mouse_events: 1;
+	    scale: 1;
+	    entry_mode: EDITABLE;
+	    select_mode: EXPLICIT;
+	    multiline: 0;
+	    source: "elm/entry/selection/default"; // selection under
+	    source4: "elm/entry/cursor/default"; // cursorover
+	    source5: "elm/entry/anchor/default"; // anchor under
+	    description { state: "default" 0.0;
+	       text {
+		  style: "entry_single_textblock_style";
+		  min: 1 1;
+                  max: 0 1;
+	       }
+	    }
+	    description { state: "disabled" 0.0;
+               inherit: "default" 0.0;
+	       text {
+		  style: "entry_single_textblock_disabled_style";
+	       }
+	    }
+	 }
+      }
+      programs {
+	 program { name: "focus";
+            signal: "load";
+	    source: "";
+	    action: FOCUS_SET;
+	    target: "elm.text";
+	 }
+	 program { name: "disable";
+	    signal: "elm,state,disabled";
+	    source: "elm";
+	    action: STATE_SET "disabled" 0.0;
+	    target: "elm.text";
+	 }
+	 program { name: "enable";
+	    signal: "elm,state,enabled";
+	    source: "elm";
+	    action: STATE_SET "default" 0.0;
+	    target: "elm.text";
+	 }
+      }
+   }
+
+ group { name: "elm/entry/selection/default";
+      parts {
+         part { name: "bg";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       color: 128 128 128 128;
+	    }
+	 }
+      }
+   }
+
+group { name: "elm/entry/cursor/default";
+      images {
+	 image: "cur_box.png" COMP;
+	 image: "cur_hi.png" COMP;
+	 image: "cur_shad.png" COMP;
+	 image: "cur_shine.png" COMP;
+	 image: "cur_glow.png" COMP;
+      }
+      parts {
+         part { name: "clip2";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "clip";
+	       rel2.to: "clip";
+               visible: 0;
+	    }
+	    description { state: "focused" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	    }
+	 }
+         part { name: "clip";
+	    type: RECT;
+	    mouse_events: 0;
+            clip_to: "clip2";
+	    description { state: "default" 0.0;
+	       rel1.offset: -10 0;
+	       rel2.offset: 9 9;
+	    }
+	    description { state: "hidden" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 0;
+	    }
+	 }
+         part { name: "bg";
+	    mouse_events: 0;
+	    clip_to: "clip";
+	    description { state: "default" 0.0;
+	       rel1.to: "base";
+	       rel1.offset: -2 0;
+	       rel2.to: "base";
+	       rel2.offset: 1 1;
+	       image.border: 2 2 2 2;
+	       image.normal: "cur_shad.png";
+	    }
+	 }
+         part { name: "base";
+	    mouse_events: 0;
+	    scale: 1;
+	    clip_to: "clip";
+	    description { state: "default" 0.0;
+	       min: 2 2;
+	       align: 0.5 1.0;
+	       rel1.relative: 0.0 1.0;
+	       rel1.offset: 0 -1;
+	       rel2.relative: 1.0 1.0;
+	       rel2.offset: -1 -1;
+	       image.normal: "cur_box.png";
+	    }
+	 }
+         part { name: "hi";
+	    mouse_events: 0;
+	    clip_to: "clip";
+	    description { state: "default" 0.0;
+	       rel1.to: "base";
+	       rel2.to: "base";
+	       rel2.relative: 1.0 0.5;
+	       image.normal: "cur_hi.png";
+	    }
+	 }
+         part { name: "shine";
+	    mouse_events: 0;
+	    clip_to: "clip";
+            clip_to: "clip2";
+	    description { state: "default" 0.0;
+	       rel1.to: "base";
+	       rel2.to: "base";
+	       rel2.relative: 1.0 0.75;
+	       image.border: 2 2 1 0;
+	       image.normal: "cur_shine.png";
+	       fill.smooth: 0;
+	    }
+	 }
+         part { name: "glow";
+	    mouse_events: 0;
+            clip_to: "clip2";
+	    description { state: "default" 0.0;
+	       rel1.to: "base";
+	       rel1.relative: 0.0 -2.0;
+	       rel1.offset: -2 0;
+	       rel2.to: "base";
+	       rel2.relative: 1.0 0.0;
+	       rel2.offset: 1 1;
+	       image.border: 2 2 0 4;
+	       image.normal: "cur_glow.png";
+	       fill.smooth: 0;
+	    }
+	    description { state: "hidden" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 0;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "show";
+            signal: "show";
+	    source: "";
+            action: STATE_SET "hidden" 0.0;
+	    in: 1.0 0.0;
+	    transition: DECELERATE 2.0;
+	    target: "glow";
+	    after: "show2";
+	 }
+	 program { name: "show2";
+            action: STATE_SET "hidden" 0.0;
+	    in: 0.2 0.0;
+	    target: "clip";
+	    after: "show3";
+	 }
+	 program { name: "show3";
+            action: STATE_SET "default" 0.0;
+	    in: 0.5 0.0;
+	    target: "clip";
+	    after: "show4";
+	 }
+	 program { name: "show4";
+            action: STATE_SET "default" 0.0;
+	    in: 0.5 0.0;
+	    transition: DECELERATE 0.5;
+	    target: "glow";
+	    after: "show";
+	 }
+	 program { name: "focused";
+	    signal: "elm,action,focus";
+	    source: "elm";
+            action: STATE_SET "focused" 0.0;
+	    target: "clip2";
+	 }
+	 program { name: "unfocused";
+	    signal: "elm,action,unfocus";
+	    source: "elm";
+            action: STATE_SET "default" 0.0;
+	    target: "clip2";
+	 }
+      }
+   }
+
+///////////////////////////////////////////////////////////////////////////////
+group { name: "elm/button/base/mediaplayer";
+   alias: elm/button/base/view_list2;
+
+   images {
+      image: "sel_bg.png" COMP;
+   }
+   parts {
+      part { name: "disclip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+
+      part { name: "bg";
+         clip_to: "disclip";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            image {
+               normal: "sel_bg.png";
+               border: 14 14 14 14;
+            }
+            image.middle: SOLID;
+            color: 255 255 255 255;
+         }
+      }
+
+
+      part { name: "button_image";
+         type: RECT;
+         mouse_events: 1;
+         description {
+            color: 255 255 255 0;
+            state: "default" 0.0;
+            visible: 1;
+         }
+         description {
+            state: "clicked" 0.0;
+            inherit: "default" 0.0;
+         }
+      }
+
+      part { name: "elm.swallow.content";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+               fixed: 1 0;
+	       visible: 1;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	    }
+
+	 }
+ 
+       part {	  name: "over1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel2.relative: 1.0 0.5;
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	    }
+	 }
+	 part { name: "over2";
+	    mouse_events: 1;
+	    repeat_events: 1;
+            ignore_flags: ON_HOLD;
+	    description { state: "default" 0.0;
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       visible: 0;
+	    }
+	 }
+         part { name: "over3";
+            mouse_events: 1;
+            repeat_events: 1;
+            description { state: "default" 0.0;
+               color: 255 255 255 0;
+	       fill.smooth : 0;
+            }
+            description { state: "clicked" 0.0;
+               inherit:  "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+            }
+         }
+
+     
+      /* part { name: "shine_white"; */
+      /*    clip_to: "disclip"; */
+      /*    mouse_events: 0; */
+      /*    description { state: "default" 0.0; */
+      /*       color: 255 255 255 200; */
+      /*       rel1.to: "bg"; */
+      /*       rel2.to: "bg"; */
+      /*       image { */
+      /*          normal: "sel_shine_white.png"; */
+      /*          border: 12 12 6 6; */
+      /*       } */
+      /*    } */
+      /* } */
+      /* part { name: "shine_black"; */
+      /*    clip_to: "disclip"; */
+      /*    mouse_events: 0; */
+      /*    description { state: "default" 0.0; */
+      /*       color: 255 255 255 200; */
+      /*       rel1.to: "bg"; */
+      /*       rel2.to: "bg"; */
+      /*       image { */
+      /*          normal: "sel_shine_black.png"; */
+      /*          border: 12 12 6 6; */
+      /*       } */
+      /*    } */
+      /* } */
+      /* part { name: "hilight"; */
+      /*    clip_to: "disclip"; */
+      /*    mouse_events: 0; */
+      /*    description { state: "default" 0.0; */
+      /*       color: 255 255 255 80; */
+      /*       rel1.to: "bg"; */
+      /*       rel2.to: "bg"; */
+      /*       image { */
+      /*          normal: "sel_hilight.png"; */
+      /*          border: 12 12 6 6; */
+      /*       } */
+      /*    } */
+      /* } */
+ 	 part { name: "disabler";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 0;
+	       visible: 0;
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	    }
+	 }
+   }
+   programs {
+      program {
+         name:   "button_click2";
+         signal: "mouse,down,1";
+         source: "over3";
+         action: STATE_SET "clicked" 0.0;
+         target: "over3";
+      }
+      program {
+         name:   "button_unclick2";
+         signal: "mouse,up,1";
+         source: "over3";
+         action: STATE_SET "default" 0.0;
+         transition: DECELERATE 0.5;
+         target: "over3";
+      }
+      program {
+         name:   "button_unclick3";
+         signal: "mouse,up,1";
+         source: "over3";
+         action: SIGNAL_EMIT "elm,action,click" "";
+      }
+      program {
+         name:   "button_mouse_in";
+         signal: "mouse,in";
+         source: "over3";
+         action:  STATE_SET "disabled" 0.0;
+         target:  "disclip";
+      }
+      program {
+         name:   "button_mouse_out";
+         signal: "mouse,out";
+         source: "over3";
+         action:  STATE_SET "default" 0.0;
+         transition: DECELERATE 0.5;
+         target:  "disclip";
+      }
+      program {
+         name:    "go_disabled";
+         signal:  "elm,state,disabled";
+         source:  "elm";
+         action:  STATE_SET "disabled" 0.0;
+         transition: DECELERATE 0.5;
+         target:  "disclip";
+      }
+      program {
+         name:    "go_enabled";
+         signal:  "elm,state,enabled";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "disclip";
+      }
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "elm/progressbar/horizontal/default";
+      images {
+         image: "sel_bg.png" COMP;
+         image: "progressbar_bg.png" COMP;
+      }
+      parts {
+         part { name: "elm.background.progressbar";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+         part { name: "elm.swallow.bar";
+            mouse_events: 0;
+            type: SWALLOW;
+            description {
+               min: 48 28;
+               max: 99999 28;
+               state: "default" 0.0;
+               rel1 {
+                  to_x: "elm.text";
+                  to_y: "elm.background.progressbar";
+                  relative: 1.0 0.0;
+               }
+               rel2 {
+                  to: "elm.background.progressbar";
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               visible: 0;
+               align: 0.0 0.5;
+               rel1 {
+                  offset: 4 0;
+                  to_y: "elm.background.progressbar";
+               }
+               rel2 {
+                  offset: 3 -1;
+                  relative: 0.0 1.0;
+                  to_y: "elm.background.progressbar";
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               aspect: 1.0 1.0;
+               aspect_preference: VERTICAL;
+               rel2.offset: 4 -1;
+            }
+         }
+         part { name: "elm.text";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            description { state: "default" 0.0;
+               visible: 0;
+               fixed: 1 1;
+               align: 0.0 0.5;
+               rel1.to_x: "elm.swallow.content";
+               rel1.relative: 1.0 0.0;
+               rel1.offset: -1 4;
+               rel2.to_x: "elm.swallow.content";
+               rel2.relative: 1.0 1.0;
+               rel2.offset: -1 -5;
+               color: 255 255 255 200;
+               text {
+                  font: "Sans";
+                  size: 12;
+                  min: 0 0;
+                  align: 0.0 0.5;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+               text.min: 1 1;
+               rel1.offset: 0 4;
+               rel2.offset: 0 -5;
+            }
+         }
+
+         part { name: "background";
+            mouse_events: 0;
+            clip_to: "elm.background.progressbar";
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "elm.swallow.bar";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "elm.swallow.bar";
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+               image {
+                  normal: "progressbar_bg.png";
+                  border: 15 15 15 15;
+               }
+            }
+         }
+
+         part { name: "elm.text.status";
+            type: TEXT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 1;
+               rel1 {
+                  to: "background";
+                  relative: 0.5 0.5;
+               }
+               rel2 {
+                  to: "background";
+                  relative: 0.5 0.5;
+               }
+               text {
+                  font: "Sans";
+                  size: 12;
+                  min: 1 1;
+                  align: 0.5 0.5;
+               }
+               color: 0 0 0 200;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+               text.min: 0 0;
+            }
+         }
+
+         part { name: "elm.progress.progressbar";
+            mouse_events: 0;
+            clip_to: "elm.background.progressbar";
+            description {
+               state: "default" 0.0;
+               min: 14 28;
+               fixed: 1 1;
+               rel1 {
+                  to: "elm.swallow.bar";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to_y: "elm.swallow.bar";
+                  to_x: "elm.cur.progressbar";
+                  offset: -1 -1;
+               }
+               image {
+                  normal: "sel_bg.png";
+                  border: 15 15 15 15;
+               }
+            }
+            description {
+               state: "invert" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  to_y: "elm.swallow.bar";
+                  to_x: "elm.cur.progressbar";
+               }
+               rel2 {
+                  to: "elm.swallow.bar";
+                  relative: 1.0 1.0;
+               }
+            }
+            description {
+               state: "state_begin" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  to: "elm.swallow.bar";
+                  relative: 0.0 0.0;
+               }
+               rel2 {
+                  to: "elm.swallow.bar";
+                  relative: 0.1 1.0;
+               }
+            }
+            description {
+               state: "state_end" 0.0;
+               inherit: "default" 0.0;
+               rel1 {
+                  to: "elm.swallow.bar";
+                  relative: 0.9 0.0;
+               }
+               rel2 {
+                  to: "elm.swallow.bar";
+                  relative: 1.0 1.0;
+               }
+            }
+         }
+         part { name: "text-bar";
+            type: TEXT;
+            mouse_events: 0;
+            clip_to: "progress-rect";
+            scale: 1;
+            description { state: "default" 0.0;
+               align: 0.0 0.0;
+               fixed: 1 1;
+               visible: 1;
+               rel1.to: "elm.text.status";
+               rel1.offset: -1 -1;
+               rel2.to: "elm.text.status";
+               text {
+                  text_source: "elm.text.status";
+                  font: "Sans";
+                  size: 12;
+                  min: 1 1;
+                  align: 0.5 0.5;
+               }
+               color: 255 255 255 200;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+               text.min: 0 0;
+            }
+         }
+
+      
+
+         part { name: "elm.cur.progressbar";
+            mouse_events: 0;
+            dragable {
+               confine: "background";
+               x: 1 1 1;
+               y: 0 0 0;
+            }
+            description { state: "default" 0.0;
+               min: 14 28;
+               fixed: 1 1;
+               visible: 0;
+               rel1 {
+                  to: "background";
+                  relative: 0 0;
+               }
+               rel2.to: "background";
+           }
+         }
+         part { name: "progress-rect";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1.to: "elm.progress.progressbar";
+               rel2.to: "elm.progress.progressbar";
+            }
+         }
+      }
+      programs {
+         program { name: "label_show";
+            signal: "elm,state,text,visible";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "elm.text";
+         }
+         program { name: "label_hide";
+            signal: "elm,state,text,hidden";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "elm.text";
+         }
+         program { name: "icon_show";
+            signal: "elm,state,icon,visible";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "elm.swallow.content";
+         }
+         program { name: "icon_hide";
+            signal: "elm,state,icon,hidden";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "elm.swallow.content";
+         }
+         program { name: "units_show";
+            signal: "elm,state,units,visible";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "text-bar";
+            target: "elm.text.status";
+         }
+         program { name: "units_hide";
+            signal: "elm,state,units,hidden";
+            source: "elm";
+            action:  STATE_SET "hidden" 0.0;
+            target: "text-bar";
+            target: "elm.text.status";
+         }
+         program { name: "slide_to_end";
+            action:  STATE_SET "state_end" 0.0;
+            transition: LINEAR 0.5;
+            target: "elm.progress.progressbar";
+            after: "slide_to_begin";
+         }
+         program { name: "slide_to_begin";
+            signal: "elm,state,slide,begin";
+            action: STATE_SET "state_begin" 0.0;
+            target: "elm.progress.progressbar";
+            transition: LINEAR 0.5;
+            after: "slide_to_end";
+         }
+         program { name: "start_pulse";
+            signal: "elm,state,pulse,start";
+            source: "elm";
+            after: "slide_to_end";
+         }
+         program { name: "stop_pulse";
+            signal: "elm,state,pulse,stop";
+            source: "elm";
+            action: ACTION_STOP;
+            target: "slide_to_begin";
+            target: "slide_to_end";
+            target: "start_pulse";
+            after: "state_pulse";
+         }
+         program { name: "state_pulse";
+            signal: "elm,state,pulse";
+            source: "elm";
+            action: STATE_SET "state_begin" 0.0;
+            target: "elm.progress.progressbar";
+            after: "units_hide";
+         }
+         program { name: "state_fraction";
+            signal: "elm,state,fraction";
+            source: "elm";
+            action: ACTION_STOP;
+            target: "slide_to_begin";
+            target: "slide_to_end";
+            target: "start_pulse";
+            action: STATE_SET "default" 0.0;
+            target: "elm.progress.progressbar";
+         }
+         program { name: "set_invert_on";
+            signal: "elm,state,inverted,on";
+            source: "elm";
+            action:  STATE_SET "invert" 0.0;
+            target: "elm.progress.progressbar";
+         }
+         program { name: "set_invert_off";
+            signal: "elm,state,inverted,off";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "elm.progress.progressbar";
+         }
+      }
+   }
+
+  group { name: "elm/pager/base/slide_invisible";
+      parts {
+         part { name: "clip";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "base";
+                  offset: -9999 -9999;
+            }
+               rel2 {
+                  to: "base";
+                  offset: 9999 9999;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description { state: "hidden2" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "base";
+            type: RECT;
+            mouse_events:  0;
+            clip_to: "clip";
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+            description { state: "hidden" 0.0;
+               color: 0 0 0 0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 2.0 1.0;
+            }
+            description { state: "hidden2" 0.0;
+               color: 0 0 0 0;
+               rel1.relative: -1.0 0.0;
+               rel2.relative: 0.0 1.0;
+            }
+            description { state: "visible" 0.0;
+               color: 0 0 0 0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            clip_to: "clip";
+            description { state: "default" 0.0;
+               rel1.to: "base";
+               rel2.to: "base";
+            }
+         }
+      }
+      programs {
+         program { name: "push_start";
+            signal: "elm,action,push";
+            source: "elm";
+            action:  STATE_SET "hidden" 0.0;
+            target: "base";
+            target: "clip";
+            after: "show_start2";
+         }
+         program { name: "show_start";
+            signal: "elm,action,show";
+            source: "elm";
+            action:  STATE_SET "hidden" 0.0;
+            target: "base";
+            target: "clip";
+            after: "show_start2";
+         }
+         program { name: "show_start2";
+            action:  STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.5;
+            target: "base";
+            target: "clip";
+            after: "show_end";
+         }
+         program { name: "show_end";
+            action: SIGNAL_EMIT "elm,action,show,finished" "";
+         }
+         program { name: "pop_start";
+            signal: "elm,action,pop";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "base";
+            target: "clip";
+            after: "pop_start2";
+         }
+         program { name: "pop_start2";
+            action:  STATE_SET "hidden2" 0.0;
+            transition: DECELERATE 0.5;
+            target: "base";
+            target: "clip";
+            after: "hide_end";
+         }
+         program { name: "hide_start";
+            signal: "elm,action,hide";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "base";
+            target: "clip";
+            after: "hide_start2";
+         }
+         program { name: "hide_start2";
+            action:  STATE_SET "hidden" 0.0;
+            transition: DECELERATE 0.5;
+            target: "base";
+            target: "clip";
+            after: "hide_end";
+         }
+         program { name: "hide_end";
+            action: SIGNAL_EMIT "elm,action,hide,finished" "";
+         }
+         program { name: "reset";
+            signal: "elm,action,reset";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "base";
+            target: "clip";
+         }
+      }
+   }
+
+
+group { name: "elm/pager/base/slide_invisible_back";
+      parts {
+         part { name: "clip";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "base";
+                  offset: -9999 -9999;
+            }
+               rel2 {
+                  to: "base";
+                  offset: 9999 9999;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+            }
+            description { state: "hidden2" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+            description { state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+         part { name: "base";
+            type: RECT;
+            mouse_events:  0;
+            clip_to: "clip";
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+            description { state: "hidden2" 0.0;
+               color: 0 0 0 0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 2.0 1.0;
+            }
+            description { state: "hidden" 0.0;
+               color: 0 0 0 0;
+               rel1.relative: -1.0 0.0;
+               rel2.relative: 0.0 1.0;
+            }
+            description { state: "visible" 0.0;
+               color: 0 0 0 0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            clip_to: "clip";
+            description { state: "default" 0.0;
+               rel1.to: "base";
+               rel2.to: "base";
+            }
+         }
+      }
+      programs {
+         program { name: "push_start";
+            signal: "elm,action,push";
+            source: "elm";
+            action:  STATE_SET "hidden" 0.0;
+            target: "base";
+            target: "clip";
+            after: "show_start2";
+         }
+         program { name: "show_start";
+            signal: "elm,action,show";
+            source: "elm";
+            action:  STATE_SET "hidden" 0.0;
+            target: "base";
+            target: "clip";
+            after: "show_start2";
+         }
+         program { name: "show_start2";
+            action:  STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.5;
+            target: "base";
+            target: "clip";
+            after: "show_end";
+         }
+         program { name: "show_end";
+            action: SIGNAL_EMIT "elm,action,show,finished" "";
+         }
+         program { name: "pop_start";
+            signal: "elm,action,pop";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "base";
+            target: "clip";
+            after: "pop_start2";
+         }
+         program { name: "pop_start2";
+            action:  STATE_SET "hidden2" 0.0;
+            transition: DECELERATE 0.5;
+            target: "base";
+            target: "clip";
+            after: "hide_end";
+         }
+         program { name: "hide_start";
+            signal: "elm,action,hide";
+            source: "elm";
+            action:  STATE_SET "visible" 0.0;
+            target: "base";
+            target: "clip";
+            after: "hide_start2";
+         }
+         program { name: "hide_start2";
+            action:  STATE_SET "hidden" 0.0;
+            transition: DECELERATE 0.5;
+            target: "base";
+            target: "clip";
+            after: "hide_end";
+         }
+         program { name: "hide_end";
+            action: SIGNAL_EMIT "elm,action,hide,finished" "";
+         }
+         program { name: "reset";
+            signal: "elm,action,reset";
+            source: "elm";
+            action:  STATE_SET "default" 0.0;
+            target: "base";
+            target: "clip";
+         }
+      }
+   }
+
+group { name: "elm/check/base/default";
+   images {
+      image: "check_on.png" COMP;
+      image: "check_off.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1.offset: 1 1;
+            rel2.relative: 0.0 1.0;
+            rel2.offset: 1 -2;
+            align: 0.0 0.5;
+            min: 57 36;
+            max: 57 36;
+            aspect: 1.0 1.0;
+            aspect_preference: VERTICAL;
+            image {
+               normal: "check_off.png";
+               //border: 5 5 5 5;
+               //middle: 0;
+            }
+            //fill.smooth : 0;
+         }
+      }
+      part { name: "check";
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            rel1 {
+               to: "bg";
+               offset: 1 1;
+            }
+            rel2 {
+               to: "bg";
+               offset: -2 -2;
+            }
+            visible: 0;
+            color: 255 255 255 255;
+            image.normal: "check_on.png";
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+            color: 128 128 128 128;
+         }
+         description { state: "disabled_visible" 0.0;
+            inherit: "default" 0.0;
+            color: 128 128 128 128;
+            visible: 1;
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            fixed: 1 0;
+            visible: 0;
+            align: 0.0 0.5;
+            rel1.to_x: "bg";
+            rel1.relative: 1.0 0.0;
+            rel1.offset: 1 1;
+            rel2.to_x: "bg";
+            rel2.offset: 1 -2;
+            rel2.relative: 1.0 1.0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            fixed: 1 0;
+            visible: 1;
+            aspect: 1.0 1.0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 128 128 128 128;
+         }
+         description { state: "disabled_visible" 0.0;
+            inherit: "default" 0.0;
+            color: 128 128 128 128;
+            fixed: 1 0;
+            visible: 1;
+            aspect: 1.0 1.0;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         mouse_events: 0;
+         scale: 1;
+         description { state: "default" 0.0;
+            visible: 0;
+            rel1.to_x: "elm.swallow.content";
+            rel1.relative: 1.0 0.0;
+            rel1.offset: 1 1;
+            rel2.relative: 1.0 1.0;
+            rel2.offset: -2 -2;
+            color: 0 0 0 255;
+            text {
+               font: "Sans,Edje-Vera";
+               size: 10;
+               min: 0 1;
+               align: -1.0 0.5;
+            }
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            text.min: 1 1;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+         }
+         description { state: "disabled_visible" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+            visible: 1;
+            text.min: 1 1;
+         }
+      }
+      part { name: "events";
+         type: RECT;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "disabler";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program { name: "click";
+         signal: "mouse,up,1";
+         source: "events";
+         action: SIGNAL_EMIT "elm,action,check,toggle" "";
+      }
+      program { name: "check_on";
+         signal: "elm,state,check,on";
+         source: "elm";
+         action:  STATE_SET "visible" 0.0;
+         target: "check";
+      }
+      program { name: "check_off";
+         signal: "elm,state,check,off";
+         source: "elm";
+         action:  STATE_SET "default" 0.0;
+         target: "check";
+      }
+      program { name: "text_show";
+         signal: "elm,state,text,visible";
+         source: "elm";
+         action:  STATE_SET "visible" 0.0;
+         target: "elm.text";
+      }
+      program { name: "text_hide";
+         signal: "elm,state,text,hidden";
+         source: "elm";
+         action:  STATE_SET "default" 0.0;
+         target: "elm.text";
+      }
+      program { name: "icon_show";
+         signal: "elm,state,icon,visible";
+         source: "elm";
+         action:  STATE_SET "visible" 0.0;
+         target: "elm.swallow.content";
+      }
+      program { name: "icon_hide";
+         signal: "elm,state,icon,hidden";
+         source: "elm";
+         action:  STATE_SET "default" 0.0;
+         target: "elm.swallow.content";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "disabler";
+         after: "disable_text";
+      }
+      program { name: "disable_text";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "visible"))
+            set_state(PART:"elm.text", "disabled_visible", 0.0);
+            else
+            set_state(PART:"elm.text", "disabled", 0.0);
+
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "visible"))
+            set_state(PART:"elm.swallow.content", "disabled_visible", 0.0);
+            else
+            set_state(PART:"elm.swallow.content", "disabled", 0.0);
+
+            get_state(PART:"check", st, 30, vl);
+            if (!strcmp(st, "visible"))
+            set_state(PART:"check", "disabled_visible", 0.0);
+            else
+            set_state(PART:"check", "disabled", 0.0);
+         }
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "disabler";
+         after: "enable_text";
+      }
+      program { name: "enable_text";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "disabled_visible"))
+            set_state(PART:"elm.text", "visible", 0.0);
+            else
+            set_state(PART:"elm.text", "default", 0.0);
+
+            get_state(PART:"elm.swallow.content", st, 30, vl);
+            if (!strcmp(st, "visible"))
+            set_state(PART:"elm.swallow.content", "visible", 0.0);
+            else
+            set_state(PART:"elm.swallow.content", "default", 0.0);
+
+            get_state(PART:"check", st, 30, vl);
+            if (!strcmp(st, "visible"))
+            set_state(PART:"check", "visible", 0.0);
+            else
+            set_state(PART:"check", "default", 0.0);
+         }
+      }
+   }
+}
+
+group { name: "elm/toolbar/base/default";
+   parts {
+      part { name: "base";
+         type: RECT;
+         mouse_events: 1;
+         description { 
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            visible: 1;
+         }
+      }
+      part { name: "clipper";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "base";
+            }
+            rel2 {
+               to: "base";
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         clip_to: "clipper";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1.to: "clipper";
+            rel2.to: "clipper";
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         mouse_events: 1;
+         repeat_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      /* program { name: "sb_hbar_show"; */
+      /*    signal: "elm,action,show,hbar"; */
+      /*    source: "elm"; */
+      /*    action:  STATE_SET "default" 0.0; */
+      /*    transition: LINEAR 0.5; */
+      /*    target: "left_arrow"; */
+      /*    target: "right_arrow"; */
+      /* } */
+      /* program { name: "sb_hbar_hide"; */
+      /*    signal: "elm,action,hide,hbar"; */
+      /*    source: "elm"; */
+      /*    action:  STATE_SET "hidden" 0.0; */
+      /*    target: "left_arrow"; */
+      /*    target: "right_arrow"; */
+      /*    transition: LINEAR 0.5; */
+      /* } */
+   }
+}
+group { name: "elm/toolbar/item/default";
+   images {
+      image: "list_selected.png" COMP;
+   }
+   data.item: "transition_animation_on" "1";
+   parts {
+      part { name: "label2";
+         type: TEXT;
+         mouse_events:  0;
+         scale: 1;
+         clip_to: "elm.text.clipper";
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            rel1.to: "elm.text";
+            rel2.to: "elm.text";
+            color: 172 179 191 255;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans";
+               text_source: "elm.text";
+               size: 8;
+               min: 1 1;
+               align: 0.5 1.0;
+               text_class: "toolbar_item";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+         }
+         description { state: "disabled_visible" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+            visible: 1;
+            text.min: 1 1;
+         }
+      }
+      part { name: "label2_new";
+         type: TEXT;
+         mouse_events:  0;
+         scale: 1;
+         clip_to: "elm.text_new.clipper";
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            rel1.to: "elm.text_new";
+            rel2.to: "elm.text_new";
+            color: 0 0 0 255;
+            text {
+               font: "Sans";
+               text_source: "elm.text_new";
+               size: 8;
+               min: 1 1;
+               align: 0.5 1.0;
+               text_class: "toolbar_item";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+         }
+         description { state: "disabled_visible" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+            visible: 1;
+            text.min: 1 1;
+         }
+      }
+      part { name: "bg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            image {
+               normal: "list_selected.png";
+               border: 3 3 3 3;
+            }
+            //image.middle: SOLID;
+            fill.smooth: 0;
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "elm.swallow.icon";
+         type: SWALLOW;
+         clip_to: "elm.icon.clipper";
+         description { state: "default" 0.0;
+            //align: 0.5 0;
+            fixed: 0 0;
+            aspect: 1 1;
+            aspect_preference: BOTH;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               to_y: "elm.text";
+               relative: 1.0 0.4;
+               offset: -1 -1;
+            }
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "elm.swallow.icon_new";
+         type: SWALLOW;
+         clip_to: "elm.icon_new.clipper";
+         description { state: "default" 0.0;
+            align: 0.5 0;
+            fixed: 0 0;
+            aspect: 1 1;
+            aspect_preference: BOTH;
+            rel1 {
+               relative: 0.0 0.0;
+               //offset: 2 2;
+            }
+            rel2 {
+               to_y: "elm.text_new";
+               relative: 1.0 0.0;
+               //offset: -3 -1;
+            }
+            color: 0 0 0 0;
+         }
+      }
+      part { name: "elm.text";
+         type: TEXT;
+         effect: SOFT_SHADOW;
+         mouse_events:  0;
+         scale: 1;
+         clip_to: "elm.text.clipper";
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 1.0;
+               //offset:   0 -1;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               //offset:   -1 -1;
+            }
+            visible: 0;
+            color: 224 224 224 255;
+            color3: 0 0 0 32;
+            text {
+               font: "Sans";
+               size: 8;
+               min: 1 1;
+               align: 0.5 1.0;
+               text_class: "toolbar_item";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            text.min: 1 1;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+         }
+         description { state: "disabled_visible" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+            visible: 1;
+            text.min: 1 1;
+         }
+      }
+      part { name: "elm.text_new";
+         type: TEXT;
+         effect: SOFT_SHADOW;
+         mouse_events:  0;
+         clip_to: "elm.text_new.clipper";
+         scale: 1;
+         description { state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 0 1;
+            rel1 {
+               relative: 0.0 1.0;
+               offset:   0 -1;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset:   -1 -1;
+            }
+            visible: 0;
+            color: 172 179 191 255;
+            color3: 0 0 0 30;
+            text {
+               font: "Sans";
+               size: 8;
+               min: 0 1;
+               align: 0.5 1.0;
+               text_class: "toolbar_item";
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            text.min: 1 1;
+         }
+         description { state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+         }
+         description { state: "disabled_visible" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+            color3: 0 0 0 0;
+            visible: 1;
+            text.min: 1 1;
+         }
+      }
+      part { name: "elm.text.clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "animation" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "elm.text_new.clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+         description { state: "animation" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "elm.icon.clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 255;
+         }
+         description { state: "animation" 0.0;
+            color: 255 255 255 0;
+         }
+      }
+      part { name: "elm.icon_new.clipper";
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 255 255 255 0;
+         }
+         description { state: "animation" 0.0;
+            color: 255 255 255 255;
+         }
+      }
+      part { name: "event";
+         type: RECT;
+         mouse_events: 1;
+         ignore_flags: ON_HOLD;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+      }
+   }
+   programs {
+      program { name: "go_active";
+         signal:  "elm,state,selected";
+         source:  "elm";
+         action:  STATE_SET "selected" 0.0;
+         target:  "bg";
+         target:  "elm.text";
+         target:  "label2";
+         target:  "elm.text_new";
+         target:  "label2_new";
+         transition: LINEAR 0.2;
+      }
+      program { name: "go_passive";
+         signal:  "elm,state,unselected";
+         source:  "elm";
+         action:  STATE_SET "default" 0.0;
+         target:  "bg";
+         target:  "elm.text";
+         target:  "label2";
+         target:  "elm.text_new";
+         target:  "label2_new";
+         transition: LINEAR 0.1;
+      }
+      program { name: "go";
+         signal:  "mouse,up,1";
+         source:  "event";
+         action:  SIGNAL_EMIT "elm,action,click" "elm";
+      }
+      program { name: "mouse,in";
+         signal:  "mouse,in";
+         source:  "event";
+         action:  SIGNAL_EMIT "elm,mouse,in" "elm";
+      }
+      program { name: "mouse,out";
+         signal:  "mouse,out";
+         source:  "event";
+         action:  SIGNAL_EMIT "elm,mouse,out" "elm";
+      }
+      program { name: "disable";
+         signal: "elm,state,disabled";
+         source: "elm";
+         action: STATE_SET "disabled" 0.0;
+         target: "label2";
+         target: "label2_new";
+         target: "bg";
+         after: "disable_text";
+      }
+      program { name: "disable_text";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "visible"))
+            {
+               set_state(PART:"elm.text", "disabled_visible", 0.0);
+               set_state(PART:"elm.text_new", "disabled_visible", 0.0);
+            }
+            else
+            {
+               set_state(PART:"elm.text", "disabled", 0.0);
+               set_state(PART:"elm.text_new", "disabled", 0.0);
+            }
+         }
+      }
+      program { name: "enable";
+         signal: "elm,state,enabled";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "label2";
+         target: "label2_new";
+         target: "bg";
+         after: "enable_text";
+      }
+      program { name: "enable_text";
+         script {
+            new st[31];
+            new Float:vl;
+            get_state(PART:"elm.text", st, 30, vl);
+            if (!strcmp(st, "disabled_visible"))
+            {
+               set_state(PART:"elm.text", "visible", 0.0);
+               set_state(PART:"elm.text_new", "visible", 0.0);
+            }
+            else
+            {
+               set_state(PART:"elm.text", "default", 0.0);
+               set_state(PART:"elm.text_new", "default", 0.0);
+            }
+         }
+      }
+      program { name: "label_set,animation,forward";
+         signal: "elm,state,label_set,forward";
+         source: "elm";
+         after: "label_set,animation";
+      }
+      program { name: "label_set,animation,backward";
+         signal: "elm,state,label_set,backward";
+         source: "elm";
+         after: "label_set,animation";
+      }
+      program { name: "label_set,animation";
+         signal: "elm,state,label_set";
+         source: "elm";
+         action: STATE_SET "animation" 0.0;
+         target: "elm.text.clipper";
+         target: "elm.text_new.clipper";
+         transition: LINEAR 0.2;
+         after: "label_set,animation,done";
+      }
+      program { name: "label_set,animation,done";
+         action: SIGNAL_EMIT "elm,state,label_set,done" "elm";
+      }
+      program { name: "label,reset";
+         signal: "elm,state,label,reset";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.text.clipper";
+         target: "elm.text_new.clipper";
+      }
+      program { name: "icon_set,animation,forward";
+         signal: "elm,state,icon_set,forward";
+         source: "elm";
+         after: "icon_set,animation";
+      }
+      program { name: "icon_set,animation,backward";
+         signal: "elm,state,icon_set,backward";
+         source: "elm";
+         after: "icon_set,animation";
+      }
+      program { name: "icon_set,animation";
+         signal: "elm,state,icon_set";
+         source: "elm";
+         action: STATE_SET "animation" 0.0;
+         target: "elm.icon.clipper";
+         target: "elm.icon_new.clipper";
+         transition: LINEAR 0.2;
+         after: "icon_set,animation,done";
+      }
+      program { name: "icon_set,animation,done";
+         action: SIGNAL_EMIT "elm,state,icon_set,done" "elm";
+      }
+      program { name: "icon,reset";
+         signal: "elm,state,icon,reset";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         target: "elm.icon.clipper";
+         target: "elm.icon_new.clipper";
+      }
+   }
+}
+

@@ -1,0 +1,131 @@
+[enna]
+#none,event,info,warning,error,critical
+verbosity=warning
+# default: log to console
+#log_file=/var/log/enna.log
+
+#0,1
+fullscreen=0
+
+idle_timeout=0
+
+#/home/user/theme.edj for specific file or just 'default' if theme is
+#located at /usr/share/enna/theme/default.edj
+theme=default
+
+#software_x11,xrender_x11,opengl_x11,software_x11_16
+engine=software_x11
+
+music_ext=3gp,aac,ape,apl,flac,m4a,mac,mka,mp2,mp3,mp4,mpc,ogg,ra,wav,wma
+video_ext=asf,avi,divx,dvr-ms,evo,flc,fli,flv,m1v,m2v,m4p,m4v,mkv,mov,mp4,mp4v,mpe,mpeg,mpg,ogm,qt,rm,rmvb,swf,ts,vdr,vob,vro,wmv,y4m
+photo_ext=jpg,jpeg,png,gif,tif,tiff,xpm
+
+[mediaplayer]
+# Values by default are 'auto' video_out, 'auto' audio_out and 'warning'
+# verbosity.
+# MPlayer is used for all streams except for DVD/DVDNAV and DVB where
+# xine is used if available. The parameters type, dvd_type and tv_type
+# can be used to overwrite this behaviour.
+
+#mplayer,xine
+#type=
+#dvd_type=
+#tv_type=
+
+#auto,vdpau,x11,xv,gl,fb
+#video_out=
+
+#auto,alsa,oss
+#audio_out=
+
+#verbose,info,warning,error,critical,none
+#verbosity=
+
+#auto,top,middle,bottom
+sub_align=auto
+
+#auto (value set to 100 for bottom),M..N where M and N are integer
+sub_pos=auto
+
+#auto (value set to 5) ,M..N where M and N are integer
+sub_scale=auto
+
+#auto,yes,no
+sub_visibility=auto
+
+#no,soft,hard
+framedrop=no
+
+[localfiles]
+display_home=true
+path_music=file:///path/to/Music,Music,icon/favorite
+path_music=file:///path/to/server/Medias/Music,Server,icon/dev/nfs
+path_video=file:///path/to/Videos,Videos,icon/favoritep
+ath_video=file:///path/to/server/Medias/Videos,Server,icon/dev/nfs
+path_photo=file:///path/to/Photos,Photos,icon/favorite
+path_photo=file:///path/to/server/Medias/Photos,Server,icon/dev/nfs
+
+[netstreams]
+stream_video=http://mafreebox.freebox.fr/freeboxtv/playlist.m3u,FreeboxTV,icon/freeboxtv
+
+[tv]
+# Default: 'vdr:/' (autodetect local VDR)
+# Local VDR: 'vdr://tmp/vdr-xine/stream#demux:mpeg_pes
+# Remote VDR: 'netvdr://192.168.1.1:18701
+#vdr_uri=
+
+# Default: 2001
+#svdrp_port=
+
+# Default: 30
+#svdrp_timeout=
+
+#verbose,info,warning,error,critical,none
+#svdrp_verbosity=
+
+# Don't exit if a timer will fire before this value (in minutes)
+# Default: 15
+#timer_quit_threshold=
+
+[weather]
+city=New York
+unit=C
+hemisphere=N
+
+[media_db]
+path=file:///path/to/Music
+path=file:///path/to/server/Medias/Music
+verbosity=warning
+parser_number=2
+grabber_number=4
+commit_interval=128
+# <=0 for infinite
+scan_loop=-1
+# time [sec] for sleeping between loops
+scan_sleep=900
+# delay [sec] before the scanning begins
+scan_delay=4
+# 0: normal, -20: higher, 19 lower
+scan_priority=19
+decrapifier=1
+
+# blacklisted keywords for the file titles
+# Normal keywords must use small letters, but it is possible to use
+# patterns for special keywords with numbers. So, the keyword is case
+# sensitive.
+#  NUM : for a number
+#  SE  : for a season
+#  EP  : for an episode
+# With SE and EP, the values are saved in the database.
+# Examples: sSEeEP, NUMxNUM
+#
+# If decrapifier=0, the keywords are ignored and the filenames are not
+# considered for the titles.
+#
+# Only alphabetical and numerical letters can be used in the keywords.
+blacklist_keywords=0tv,1080p,2hd,720p,ac3,booya,caph,crimson,ctu,dimension,divx,dot,dsr,dvdrip,dvdscr,e7,etach,fov,fqm,hdq,hdtv,lol,mainevent,notv,orenji,pdtv,proper,pushercrew,repack,reseed,screencam,screener,sys,vtv,x264,xor,xvid,cdNUM,CDNUM,SExEP,sSEeEP,SSEEEP
+
+[podcast]
+#stream=name,stream url
+stream=example,http://example.com/podcast.xml
+

@@ -1,0 +1,66 @@
+Enna maintainers
+================
+
+Below is a list of the people maintaining different parts of the Enna code.
+
+Project Leader
+==============
+
+Nicolas Aguirre
+  final design decisions
+
+Core
+====
+
+  Activity:                               Nicolas Aguirre
+  Browsers and Lists:                     Nicolas Aguirre
+  Configuration:                          Nicolas Aguirre
+  Media Player:                           Mathieu Schroeter
+  Modules/Plugins:                        Nicolas Aguirre
+  Metadata:                               Mathieu Schroeter
+  Theme:                                  Nicolas Aguirre
+  Utilities:                              Benjamin Zores
+  VFS:                                    Nicolas Aguirre
+  Weather API:                            Benjamin Zores
+  Widgets:                                Nicolas Aguirre
+
+Modules
+=======
+
+  Activity:
+    Bookstore:                            Benjamin Zores
+    Configuration:                        Benjamin Zores
+    Games:                                Davide Cavalca
+    Music:                                Nicolas Aguirre
+    Photo:                                Nicolas Aguirre
+    TV:                                   Davide Cavalca
+    Video:                                Benjamin Zores
+    Weather:                              Benjamin Zores
+
+  Browser:
+    CDDA:                                 Benjamin Zores
+    DVD:                                  Nicolas Aguirre
+    Local Files:                          Nicolas Aguirre
+    Net Streams:                          Benjamin Zores
+    Podcasts:                             Benjamin Zores
+    ShoutCAST:                            Benjamin Zores
+    UPnP:                                 Benjamin Zores
+    Valhalla:                             Mathieu Schroeter
+
+  Input:
+    Keyboard:                             Nicolas Aguirre
+    LIRC:                                 Nicolas Aguirre
+    Wiimote:                              Oliver Schinagl
+
+  Volume:
+    HAL:                                  Benjamin Zores
+    mtab:                                 Benjamin Zores
+    UDEV:                                 Benjamin Zores
+
+Localizations
+=============
+
+  French:                                 Benjamin Zores
+  German:                                 Matthias Hölzer
+  Italian:                                Davide Cavalca
+

@@ -1,0 +1,32 @@
+XXXX-XX-XX Release A.B.C
+
+  - Dependancies:
+	* Rely on new libplayer and libvalhalla APIs (2.0.x).
+	* Drop Efreet dependancy.
+
+  - Browsers:
+	* Complete SHOUTcast browser plugin.
+	* Complete UPnP/DLNA browser plugin.
+	* Massive rework of valhalla browser
+	  (now for both music and video activities).
+
+  - Volumes:
+	* Add libUDEV-based volume autodetection plugin.
+
+  - Configuration:
+	* Add an .ini-style configuration files parser/dumper.
+	* Support for first-time run with no configuration file.
+	* Saves configuration back at shutdown.
+	* Use XDG specification for dotfiles and data.
+
+  - Weather:
+	* Support for multiple cities.
+	* Automatically guess current location from GeoIP localization.
+	* Allow to choose temperature unit (Celcius/Fahrenheit).
+
+  - Miscellaneous:
+	* Allow specifying which grabber to use.
+
+2009-12-31 Release 0.4.0
+
+	* initial project release.
