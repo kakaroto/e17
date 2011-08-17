@@ -265,6 +265,15 @@ group { name: "e/modules/clock/digital";
 			}
 			clock_cb(0);
 		}
+
+		public eval_show_date() {
+			new x, y, w, h;
+			get_geometry(PART:"event", x, y, w, h);
+			if (h >= 32)
+				emit("today,show", "");
+			else
+				emit("today,hide", "");
+		}
 	}
 
 	parts {
@@ -283,6 +292,45 @@ group { name: "e/modules/clock/digital";
 					text: "--:--";
 				}
 			}
+			description { state: "show-date" 0.0;
+				inherit: "default" 0.0;
+				rel2 {
+					relative: 1.0 0.0;
+					to: "e.text.today";
+				}
+			}
+		}
+		part { name: "e.text.today";
+			type: TEXT;
+			effect: SHADOW;
+			description { state: "default" 0.0;
+				TEXT_COLOR
+				align: 0.5 1.0;
+				min: 0 8;
+				max: 9999 30;
+				rel1 {
+					relative: 0.0 0.9;
+				}
+				rel2 {
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				text {
+					text_class: "clock";
+					font: FONT;
+					size: 9;
+					fit: 0 1;
+					min: 1 1;
+					size_range: 8 12;
+					align: 0.5 1.0;
+					text: "Tod, 12/30/2011";
+				}
+				visible: 0;
+			}
+			description { state: "show-date" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
 		}
 
 		part { name: "event";
@@ -300,8 +348,31 @@ group { name: "e/modules/clock/digital";
 			source: "";
 			script {
 				clock_cb(0);
+				eval_show_date();
 			}
 		}
+		program { name: "resize";
+			signal: "resize";
+			source: "";
+			script {
+				eval_show_date();
+			}
+		}
+		program { name: "today,show";
+			signal: "today,show";
+			source: "";
+			action: STATE_SET "show-date" 0.0;
+			target: "time";
+			target: "e.text.today";
+		}
+		program { name: "today,hide";
+			signal: "today,hide";
+			source: "";
+			action: STATE_SET "default" 0.0;
+			target: "time";
+			target: "e.text.today";
+		}
+
 		program { name: "secon";
 			signal: "e,state,seconds,on";
 			source: "e";
@@ -336,3 +407,410 @@ group { name: "e/modules/clock/digital";
 		}
 	}
    }
+
+	group { name: "e/modules/clock/calendar/dayname";
+		parts {
+			part {
+				name: "e.text.label";
+				type: TEXT;
+				effect: SHADOW;
+				mouse_events: 0;
+				description { state: "default" 0.0;
+					TEXT_COLOR_DISABLED
+					align: 0.5 0.5;
+					rel1.offset: 3 3;
+					rel2.offset: -3 -3;
+					text {
+						text: "XXX";
+						font: FONT;
+						align: 0.5 0.5;
+						size: 8;
+						min: 1 1;
+						text_class: "module_small";
+					}
+				}
+			}
+		}
+	}
+
+	group { name: "e/modules/clock/calendar/day";
+		parts {
+			part { name: "weekend"; type: RECT;
+				mouse_events: 0;
+				description { state: "default" 0.0;
+					color: 0 0 0 0;
+				}
+				description { state: "weekend" 0.0;
+					inherit: "default" 0.0;
+					color: 0 0 0 32;
+				}
+			}
+			part { name: "day"; type: IMAGE;
+				mouse_events: 0;
+				description { state: "default" 0.0;
+					color: 255 255 255 0;
+					image {
+						normal: "images/check_bt3.png";
+						border: 5 5 5 5;
+					}
+				}
+				description { state: "today" 0.0;
+					inherit: "default" 0.0;
+					color: 255 255 255 255;
+				}
+			}
+			part { name: "e.text.label";
+				type: TEXT;
+				effect: SHADOW;
+				mouse_events: 0;
+				description { state: "default" 0.0;
+					align: 0.5 0.5;
+					TEXT_COLOR
+					color3: 0 0 0 0;
+					rel1.offset: 4 4;
+					rel2.offset: -4 -4;
+					text {
+						text: "88";
+						font: FONT;
+						align: 0.5 0.5;
+						size: 9;
+						min: 1 1;
+						text_class: "module_small";
+					}
+				}
+				description { state: "today" 0.0;
+					inherit: "default" 0.0;
+					text.font: FONT_BOLD;
+					TEXT_COLOR
+				}
+				description { state: "hidden" 0.0;
+					inherit: "default" 0.0;
+					TEXT_COLOR_DISABLED
+					color3: 0 0 0 0;
+				}
+			}
+		}
+		programs {
+			program { name: "weekend";
+				signal: "e,state,weekend";
+				source: "e";
+				action: STATE_SET "weekend" 0.0;
+				target: "weekend";
+			}
+			program { name: "weekday";
+				signal: "e,state,weekday";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				target: "weekend";
+			}
+			program { name: "hidden";
+				signal: "e,state,hidden";
+				source: "e";
+				action: STATE_SET "hidden" 0.0;
+				target: "e.text.label";
+			}
+			program { name: "visible";
+				signal: "e,state,visible";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				target: "e.text.label";
+			}
+			program { name: "today";
+				signal: "e,state,today";
+				source: "e";
+				action: STATE_SET "today" 0.0;
+				target: "day";
+				target: "e.text.label";
+			}
+			program { name: "someday";
+				signal: "e,state,someday";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				target: "day";
+			}
+		}
+	}
+
+	group { name: "e/modules/clock/calendar";
+		parts {
+			part { name: "e.text.month";
+				type: TEXT;
+				mouse_events: 1;
+				description { state: "default" 0.0;
+					color: 139 139 139 255; // same as scrollbar_im6.png
+					fixed: 0 1;
+					align: 0.0 0.5;
+					rel1 {
+						to_x: "prev";
+						relative: 1.0 0.0;
+						offset: 0 10;
+					}
+					rel2 {
+						relative: 1.0 0.0;
+						offset: -1 10;
+					}
+					text {
+						font: FONT_BOLD;
+						align: 0.0 0.5;
+						size: 14;
+						min: 0 1;
+						text_class: "module_normal";
+					}
+				}
+			}
+			part { name: "e.text.year";
+				type: TEXT;
+				mouse_events: 0;
+				description { state: "default" 0.0;
+					color: 139 139 139 255; // same as scrollbar_im7.png
+					fixed: 0 1;
+					align: 1.0 0.5;
+					rel1 {
+						relative: 0.0 0.0;
+						offset: 0 10;
+					}
+					rel2 {
+						to_x: "next";
+						relative: 0.0 0.0;
+						offset: -1 10;
+					}
+					text {
+						font: FONT_BOLD;
+						align: 1.0 0.5;
+						size: 14;
+						min: 0 1;
+						text_class: "module_normal";
+					}
+				}
+			}
+			part { name: "previm";
+				mouse_events: 0;
+				description { state: "default" 0.0;
+					rel1 {
+						to: "prev";
+						offset: 0 -2;
+					}
+					rel2 {
+						to: "prev";
+						offset: -1 -3;
+					}
+					image.normal: "images/scrollbar_im6.png";
+					min: 13 17;
+					max: 13 17;
+				}
+				description { state: "pressed" 0.0;
+					inherit: "default" 0.0;
+					rel1.offset: 0 -1;
+					rel2.offset: -1 -2;
+				}
+			}
+			part { name: "prev";
+				type: RECT;
+				description { state: "default" 0.0;
+					align: 0.0 0.5;
+					color: 0 0 0 0;
+					aspect: 1.0 1.0;
+					aspect_preference: VERTICAL;
+					rel1 {
+						to_y: "e.text.month";
+						relative: 0.0 0.0;
+					}
+					rel2 {
+						to_y: "e.text.month";
+						relative: 0.0 1.0;
+					}
+				}
+				program { name: "prev_down";
+					signal: "mouse,down,1";
+					source: "prev";
+					action: STATE_SET "pressed" 0.0;
+					target: "previm";
+				}
+				program { name: "prev_up";
+					signal: "mouse,up,1";
+					source: "prev";
+					action: STATE_SET "default" 0.0;
+					target: "previm";
+				}
+				program { name: "prev_clicked";
+					signal: "mouse,clicked,1";
+					source: "prev";
+					action: SIGNAL_EMIT "e,action,prev" "";
+				}
+			}
+			part { name: "nextim";
+				mouse_events: 0;
+				description { state: "default" 0.0;
+					rel1 {
+						to: "next";
+						offset: 0 -2;
+					}
+					rel2 {
+						to: "next";
+						offset: -1 -3;
+					}
+					image.normal: "images/scrollbar_im7.png";
+					min: 13 17;
+					max: 13 17;
+				}
+				description { state: "pressed" 0.0;
+					inherit: "default" 0.0;
+					rel1.offset: 0 -1;
+					rel2.offset: -1 -2;
+				}
+			}
+			part { name: "next";
+				type: RECT;
+				description { state: "default" 0.0;
+					align: 1.0 0.5;
+					color: 0 0 0 0;
+					aspect: 1.0 1.0;
+					aspect_preference: VERTICAL;
+					rel1.to_y: "e.text.month";
+					rel1.relative: 1.0 0.0;
+					rel2.to_y: "e.text.month";
+					rel2.relative: 1.0 1.0;
+				}
+				program { name: "next_down";
+					signal: "mouse,down,1";
+					source: "next";
+					action: STATE_SET "pressed" 0.0;
+					target: "nextim";
+				}
+				program { name: "next_up";
+					signal: "mouse,up,1";
+					source: "next";
+					action: STATE_SET "default" 0.0;
+					target: "nextim";
+				}
+				program { name: "next_clicked";
+					signal: "mouse,clicked,1";
+					source: "next";
+					action: SIGNAL_EMIT "e,action,next" "";
+				}
+			}
+			part { name: "e.table.daynames"; type: TABLE;
+				description { state: "default" 0.0;
+					fixed: 0 1;
+					align: 0.5 0.0;
+					rel1.to_y: "e.text.month";
+					rel1.relative: 0.0 1.0;
+					rel1.offset: 2 2;
+					rel2.to_y: "e.text.month";
+					rel2.relative: 1.0 1.0;
+					rel2.offset: -3 2;
+					step: 7 1;
+					table {
+						homogeneous: TABLE;
+						padding: 0 0;
+						align: 0.5 0.5;
+						min: 1 1;
+					}
+				}
+				table { items {
+#define DAYNAME(x)													\
+						item {											\
+							position: x 0;								\
+							span: 1 1;									\
+							source: "e/modules/clock/calendar/dayname"; \
+							weight: 1.0 1.0;							\
+							align: -1.0 -1.0;							\
+						}
+						DAYNAME(0);
+						DAYNAME(1);
+						DAYNAME(2);
+						DAYNAME(3);
+						DAYNAME(4);
+						DAYNAME(5);
+						DAYNAME(6);
+					} }
+			}
+#undef DAYNAME
+			part { name: "e.table.days"; type: TABLE;
+				description { state: "default" 0.0;
+					rel1.to_y: "e.table.daynames";
+					rel1.relative: 0.0 1.0;
+					rel1.offset: 2 2;
+					rel2.offset: -3 -3;
+					step: 7 5;
+					table {
+						homogeneous: TABLE;
+						padding: 0 0;
+						align: 0.5 0.5;
+						min: 1 1;
+					}
+				}
+				table { items {
+#define DAY(x, y)												\
+						item {										\
+							position: x y;							\
+							span: 1 1;								\
+							source: "e/modules/clock/calendar/day"; \
+							weight: 1.0 1.0;						\
+							align: -1.0 -1.0;						\
+						}
+						DAY(0, 0);
+						DAY(1, 0);
+						DAY(2, 0);
+						DAY(3, 0);
+						DAY(4, 0);
+						DAY(5, 0);
+						DAY(6, 0);
+
+						DAY(0, 1);
+						DAY(1, 1);
+						DAY(2, 1);
+						DAY(3, 1);
+						DAY(4, 1);
+						DAY(5, 1);
+						DAY(6, 1);
+
+						DAY(0, 2);
+						DAY(1, 2);
+						DAY(2, 2);
+						DAY(3, 2);
+						DAY(4, 2);
+						DAY(5, 2);
+						DAY(6, 2);
+
+						DAY(0, 3);
+						DAY(1, 3);
+						DAY(2, 3);
+						DAY(3, 3);
+						DAY(4, 3);
+						DAY(5, 3);
+						DAY(6, 3);
+
+						DAY(0, 4);
+						DAY(1, 4);
+						DAY(2, 4);
+						DAY(3, 4);
+						DAY(4, 4);
+						DAY(5, 4);
+						DAY(6, 4);
+
+						DAY(0, 5);
+						DAY(1, 5);
+						DAY(2, 5);
+						DAY(3, 5);
+						DAY(4, 5);
+						DAY(5, 5);
+						DAY(6, 5);
+					} }
+			}
+		}
+		programs {
+			program {
+				name: "mw_next";
+				source: "*";
+				signal: "mouse,wheel,0,-1";
+				action: SIGNAL_EMIT "e,action,prev" "";
+			}
+			program {
+				name: "mw_right";
+				source: "*";
+				signal: "mouse,wheel,0,1";
+				action: SIGNAL_EMIT "e,action,next" "";
+			}
+		}
+	}
