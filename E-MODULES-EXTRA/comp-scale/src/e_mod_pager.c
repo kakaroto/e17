@@ -60,9 +60,13 @@ static Eina_List *items = NULL;
 static Eina_List *desks = NULL;
 static Eina_List *popups = NULL;
 
+#define SCALE_STATE_OUT  0
+#define SCALE_STATE_IN   1
+#define SCALE_STATE_HOLD 2
+  
 static Eina_List *handlers = NULL;
 static Ecore_Animator *scale_animator = NULL;
-static Eina_Bool scale_state = EINA_FALSE;
+static int scale_state = SCALE_STATE_OUT;
 static double start_time;
 static E_Zone *zone = NULL;
 static Item *background = NULL;
@@ -136,12 +140,26 @@ _pager_redraw(void *data)
    Eina_List *l;
    Item *it;
 
+   if (scale_state == SCALE_STATE_HOLD)
+     {
+	e_manager_comp_evas_update(e_manager_current_get());
+	return ECORE_CALLBACK_RENEW;
+     }
+
    in = (ecore_loop_time_get() - start_time) / scale_conf->pager_duration;
 
    if (in >= 1.0)
      {
-	in = scale_state ? 0.0 : 1.0;
-	finish = EINA_TRUE;
+	if (scale_state == SCALE_STATE_IN)
+	  {
+	     in = 0.0;
+	     scale_state = SCALE_STATE_HOLD;
+	  }
+	else
+	  {
+	     in = 1.0;
+	     finish = EINA_TRUE;     
+	  }
      }
    else if (scale_state)
      {
@@ -185,14 +203,12 @@ _pager_redraw(void *data)
    	evas_object_color_set(background->o, 0, 0, 0, a);
      }
 
-   e_manager_comp_evas_update(e_manager_current_get());
+   /* e_manager_comp_evas_update(e_manager_current_get()); */
 
    if (finish)
      {
-	if (!scale_state)
-	  _pager_finish();
-
 	scale_animator = NULL;
+	_pager_finish();
 	return ECORE_CALLBACK_CANCEL;
      }
    
@@ -203,7 +219,7 @@ static void
 _pager_in()
 {
    start_time = ecore_loop_time_get();
-   scale_state = EINA_TRUE;
+   scale_state = SCALE_STATE_IN;
 
    if (!scale_animator)
      scale_animator = ecore_animator_add(_pager_redraw, NULL);
@@ -235,7 +251,7 @@ _pager_out()
      }
 
    initial_desk = current_desk;
-   scale_state = EINA_FALSE;
+   scale_state = SCALE_STATE_OUT;
 }
 
 static void
@@ -348,7 +364,7 @@ _pager_win_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
    Item *it = data;
    Evas_Event_Mouse_Down *ev = event_info;
 
-   if (!scale_state)
+   if (scale_state == SCALE_STATE_OUT)
      return;
 
    if ((ev->button == 2) || (ev->flags & EVAS_BUTTON_DOUBLE_CLICK))
@@ -402,7 +418,7 @@ _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    it->mouse_down = EINA_FALSE;
 
-   if (!scale_state)
+   if (scale_state == SCALE_STATE_OUT)
      return;
 
    if (!it->moved)
@@ -504,7 +520,7 @@ _pager_win_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!mouse_activated)
      return;
 
-   if (!scale_state)
+   if (scale_state == SCALE_STATE_OUT)
      return;
 
    mouse_activated = 0;
@@ -556,7 +572,13 @@ _pager_win_del(Item *it)
    evas_object_event_callback_del(it->o_win, EVAS_CALLBACK_DEL,
 				  _pager_win_cb_delorig);
 
-   if (it->bd)
+   if (it->bd && !it->o)
+     {
+	e_manager_comp_src_hidden_set(it->man,
+				      (E_Manager_Comp_Source *)it->cw,
+				      EINA_FALSE);
+     }   
+   else if (it->bd)
      {
 	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_IN,
 				       _pager_win_cb_mouse_in);
@@ -647,12 +669,6 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    if (cw->bd->iconic)
      return NULL;
 
-   if (cw->bd->client.qtopia.soft_menu)
-     return NULL;
-
-   if (cw->bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DOCK)
-     return NULL;
-
    it = E_NEW(Item, 1);
    it->bd = cw->bd;
    it->desk = it->bd->desk;
@@ -662,7 +678,11 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 
    e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
 
-   /* it->o_win = e_manager_comp_src_image_mirror_add(man, src); */
+   items = eina_list_append(items, it);
+
+   if (e_mod_border_ignore(it->bd))
+     return NULL;
+   
    it->o_win = evas_object_image_filled_add(e);
    o = e_manager_comp_src_image_get(man, src);
    evas_object_image_source_set(it->o_win, o);
@@ -677,7 +697,8 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    evas_object_stack_above(it->o, it->o_win);
    evas_object_show(it->o);
    edje_object_part_swallow(it->o, "e.swallow.win", it->o_win);
-
+   evas_object_clip_set(it->o, zone_clip);
+   
    evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 				  _pager_win_cb_delorig, it);
 
@@ -718,8 +739,6 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    it->w = (double)it->bd->w / zoom - OFFSET*2.0;
    it->h = (double)it->bd->h / zoom - OFFSET*2.0;
 
-   items = eina_list_append(items, it);
-
    edje_object_part_text_set(it->o, "e.text.label", e_border_name_get(it->bd));
    edje_object_signal_emit(it->o, "show", "e");
 
@@ -745,7 +764,7 @@ _pager_cb_mouse_move(void *data, int type, void *event)
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
 
-   if (!scale_state)
+   if (scale_state == SCALE_STATE_OUT)
      return ECORE_CALLBACK_PASS_ON;
 
    if (mouse_x < 0)
@@ -773,7 +792,7 @@ _pager_cb_mouse_up(void *data, int type, void *event)
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
 
-   if (!scale_state)
+   if (scale_state == SCALE_STATE_OUT)
      return ECORE_CALLBACK_PASS_ON;
 
    evas_event_feed_mouse_up((Evas *)data, ev->buttons,
@@ -793,7 +812,7 @@ _pager_cb_mouse_down(void *data, int type, void *event)
    if (ev->window != input_win)
      return ECORE_CALLBACK_PASS_ON;
 
-   if (!scale_state)
+   if (scale_state == SCALE_STATE_OUT)
      return ECORE_CALLBACK_PASS_ON;
 
    EINA_LIST_FOREACH(items, l, it)
@@ -961,7 +980,7 @@ _pager_cb_key_up(void *data, int type, void *event)
   if (ev->window != input_win)
     return ECORE_CALLBACK_PASS_ON;
 
-  if (!scale_state)
+  if (scale_state == SCALE_STATE_OUT)
     return ECORE_CALLBACK_PASS_ON;
 
   if (!e_mod_hold_modifier_check(event))
@@ -1047,11 +1066,7 @@ _pager_run(E_Manager *man)
    evas_object_show(zone_clip);
 
    EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
-     {
-	Item *it = _pager_win_new(e, man, src);
-	if (it)
-	  evas_object_clip_set(it->o, zone_clip);
-     }
+     _pager_win_new(e, man, src);
 
    if (background)
      {
@@ -1139,11 +1154,7 @@ pager_run(E_Manager *man, const char *params, int init_method)
 {
    Eina_Bool ret = EINA_FALSE;
 
-   if (scale_state)
-     {
-	_pager_switch(params+8);
-     }
-   else if (!scale_state)
+   if (scale_state == SCALE_STATE_OUT)
      {
 	if (input_win)
 	  return ret;
@@ -1164,7 +1175,11 @@ pager_run(E_Manager *man, const char *params, int init_method)
 	    _pager_in();
 	  }
      }
-
+   else
+     {
+	_pager_switch(params+8);
+     }
+   
    return ret;
 }
 

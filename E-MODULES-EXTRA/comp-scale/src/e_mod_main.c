@@ -67,6 +67,36 @@ e_mod_hold_modifier_check(Ecore_Event_Key *ev)
    return EINA_TRUE;
 }
 
+Eina_Bool
+e_mod_border_ignore(E_Border *bd)
+{
+   /* ignore some borders */
+   if (bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DOCK)
+     return EINA_TRUE;
+   if (bd->client.vkbd.vkbd)
+     return EINA_TRUE;
+   if (bd->client.qtopia.soft_menu)
+     return EINA_TRUE;
+   if (bd->client.icccm.class)
+     {
+	if (!strncmp(bd->client.icccm.class, "Illume-", 7))
+	  return EINA_TRUE;
+
+	if (!strcmp(bd->client.icccm.class, "Virtual-Keyboard"))
+	  return EINA_TRUE;	  
+     }
+   if (bd->client.icccm.name)
+     {
+	/* legacy code from illume 1 */
+	if (((!strcmp(bd->client.icccm.name, "multitap-pad"))) && 
+	    (bd->client.netwm.state.skip_taskbar) && 
+	    (bd->client.netwm.state.skip_pager))
+	  return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
 
 static void
 _e_mod_action(const char *params, int modifiers, int method)
@@ -511,11 +541,7 @@ _scale_gc_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 
    if (ev->button == 1)
      {
-	_e_mod_action_cb(NULL, NULL);
-     }
-   else if (ev->button == 2)
-     {
-	_e_mod_action_cb(NULL, "show_all_desks");
+	_e_mod_action_cb(NULL, "go_scale_class:*");
      }
    else if ((ev->button == 3) && (!inst->menu))
      {

@@ -152,6 +152,7 @@ EAPI int e_modapi_save(E_Module *m);
 E_Config_Dialog *e_int_config_scale_module(E_Container *con, const char *params);
 
 Eina_Bool e_mod_hold_modifier_check(Ecore_Event_Key *ev);
+Eina_Bool e_mod_border_ignore(E_Border *bd);
 
 Eina_Bool scale_run(E_Manager *man, const char *params, int init_method);
 Eina_Bool pager_run(E_Manager *man, const char *params, int init_method);

@@ -676,24 +676,23 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    Item *it;
    E_Comp_Win *cw = (void*)src;
    Evas_Object *o;
+
    
    if (!e_manager_comp_src_image_get(man, src))
      return NULL;
 
    if (!cw->bd)
      {
-	if (cw->win == zone->container->bg_win)
+	if ((cw->win == zone->container->bg_win) &&
+	    (scale_conf->fade_desktop))
 	  {
-	     if (scale_conf->fade_desktop)
-	       {
-		  it = E_NEW(Item, 1);
-		  it->man = man;
-		  it->o_win = e_manager_comp_src_shadow_get(man, src);
-		  evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
-		  				 _scale_win_cb_delorig, it);
-		  background = it;
-		  return it;
-	       }
+	     it = E_NEW(Item, 1);
+	     it->man = man;
+	     it->o_win = e_manager_comp_src_shadow_get(man, src);
+	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
+					    _scale_win_cb_delorig, it);
+	     background = it;
+	     return it;
 	  }
 	else if (scale_conf->fade_popups)
 	  {
@@ -717,12 +716,6 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    if ((!show_all_desks) && (cw->bd->desk != desk))
      return NULL;
 
-   if (cw->bd->client.qtopia.soft_menu)
-     return NULL;
-
-   if (cw->bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DOCK)
-     return NULL;
-
    if (cw->bd->iconic)
      {
 	if (!show_iconified)
@@ -732,6 +725,17 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	  return NULL;
      }
 
+   if (e_mod_border_ignore(cw->bd))
+     {
+	char *class;
+	
+	/* fade keyboard and home, ignore other */
+	if (!(class = cw->bd->client.icccm.class) ||
+	    (strcmp(class, "Virtual-Keyboard") &&
+	     strcmp(class, "Illume-Home")))
+	  return NULL;
+     }
+       
    it = E_NEW(Item, 1);
    it->scale = 1.0;
 
@@ -739,8 +743,8 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->bd = cw->bd;
    it->man = man;
    it->cw = cw;
-
    e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
+      
    /* it->o_win = e_manager_comp_src_image_mirror_add(man, src); */
    it->o_win = evas_object_image_filled_add(e);
    o = e_manager_comp_src_image_get(man, src);
@@ -798,22 +802,20 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	evas_object_color_set(it->o, 0, 0, 0, 0);
 	it->was_hidden = EINA_TRUE;
      }
-   
-   if (match_class) 
+
+   if ((e_mod_border_ignore(it->bd)) ||
+       ((match_class) && (!e_util_glob_match(cw->bd->client.icccm.class, match_class))))
      {
-	if (!e_util_glob_match(cw->bd->client.icccm.class, match_class))
-	  {
-	     items_fade = eina_list_append(items_fade, it);
+	items_fade = eina_list_append(items_fade, it);
 
-	     if (it->bd->desk != desk)
-	       evas_object_color_set(it->o, 0, 0, 0, 0);
+	if (it->bd->desk != desk)
+	  evas_object_color_set(it->o, 0, 0, 0, 0);
 
-	     evas_object_move(it->o, it->bd->x, it->bd->y);
-	     evas_object_resize(it->o, it->cw->pw, it->cw->ph);
-	     evas_object_pass_events_set(it->o, 1);
+	evas_object_move(it->o, it->bd->x, it->bd->y);
+	evas_object_resize(it->o, it->cw->pw, it->cw->ph);
+	evas_object_pass_events_set(it->o, 1);
 
-	     return it;
-	  }
+	return it;
      }
 
    evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN,
@@ -832,7 +834,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    				  _scale_win_cb_mouse_move, it);
 
    items = eina_list_append(items, it);
-
+   
    return it;
 }
 
