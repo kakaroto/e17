@@ -18,14 +18,14 @@ EDJE_CC_FLAGS = -id images \
 
 .SILENT :
 
-all: version clean build install
+all: version clean detour-elm.edj
 
 clean:
 	@echo
 	@echo "Checking..."
 	if [ -e $(OUT) ]; then $(RM) $(OUT); fi
 
-build: main.edc
+detour-elm.edj: main.edc
 	@echo "Running make..."
 	$(COMPILE) $(SRC) -o $(OUT)
 
