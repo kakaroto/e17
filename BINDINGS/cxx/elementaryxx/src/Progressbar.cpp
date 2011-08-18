@@ -24,7 +24,7 @@ Progressbar *Progressbar::factory (Evasxx::Object &parent)
 
 void Progressbar::setLabel (const std::string &label)
 {
-  elm_progressbar_label_set (o, label.c_str ());
+  elm_object_text_set (o, label.c_str ());
 }
 
 void Progressbar::setIcon (Evasxx::Object &icon)

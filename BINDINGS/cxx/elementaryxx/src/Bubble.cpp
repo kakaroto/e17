@@ -24,7 +24,7 @@ Bubble *Bubble::factory (Evasxx::Object &parent)
 
 void Bubble::setLabel (const std::string &label)
 {
-  elm_bubble_label_set (o, label.c_str ());
+  elm_object_text_set (o, label.c_str ());
 }
 
 void Bubble::setInfo (const std::string &info)

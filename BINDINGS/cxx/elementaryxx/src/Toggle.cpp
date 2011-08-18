@@ -24,7 +24,7 @@ Toggle *Toggle::factory (Evasxx::Object &parent)
 
 void Toggle::setLabel (const std::string &label)
 {
-  elm_toggle_label_set (o, label.c_str ());
+  elm_object_text_set (o, label.c_str ());
 }
 
 void Toggle::setIcon (Evasxx::Object &icon)

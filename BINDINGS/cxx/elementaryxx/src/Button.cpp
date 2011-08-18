@@ -24,7 +24,7 @@ Button *Button::factory (Evasxx::Object &parent)
 
 void Button::setLabel (const std::string &label)
 {
-  elm_button_label_set (o, label.c_str ());
+  elm_object_text_set (o, label.c_str ());
 }
 
 void Button::setIcon (const Evasxx::Object &icon)

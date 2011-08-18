@@ -24,12 +24,12 @@ Label *Label::factory (Evasxx::Object &parent)
 
 void Label::setLabel (const std::string &label)
 {
-  elm_label_label_set (o, label.c_str ());
+  elm_object_text_set (o, label.c_str ());
 }
 
 const std::string Label::getLabel () const
 {
-  return elm_label_label_get (o);
+  return elm_object_text_get (o);
 }
 
 void Label::setLineWrap (Elm_Wrap_Type wrap)

@@ -24,7 +24,7 @@ Slider *Slider::factory (Evasxx::Object &parent)
 
 void Slider::setLabel (const std::string &label)
 {
-  elm_slider_label_set (o, label.c_str ());
+  elm_object_text_set (o, label.c_str ());
 }
 
 void Slider::setIcon (const Evasxx::Object &icon)

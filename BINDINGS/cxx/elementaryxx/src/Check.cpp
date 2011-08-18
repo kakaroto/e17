@@ -24,7 +24,7 @@ Check *Check::factory (Evasxx::Object &parent)
 
 void Check::setLabel (const std::string &label)
 {
-  elm_check_label_set (o, label.c_str ());
+  elm_object_text_set (o, label.c_str ());
 }
 
 void Check::setIcon (const Evasxx::Object &icon)

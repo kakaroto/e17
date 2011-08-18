@@ -24,7 +24,7 @@ Frame *Frame::factory (Evasxx::Object &parent)
 
 void Frame::setLabel (const std::string &label)
 {
-  elm_frame_label_set (o, label.c_str ());
+  elm_object_text_set (o, label.c_str ());
 }
 
 void Frame::setContent (const Evasxx::Object &content)
