@@ -13,7 +13,8 @@
 #define VERSION_STRING 0.0.1
 #define LABEL_THEME_NAME "dtrs"
 
-#define BUILD_FOR_COMPOSITE 1
+#define BUILD_COMPOSITE 1
+#define BUILD_ILLUME 0
 
 #define USE_BOLD_FONT 1
 
@@ -148,5 +149,6 @@ collections {
     #include "bits/evry-shotgun.edc"
     #include "bits/engage.edc"		/* engage module */
     #include "bits/bluez.edc" /* bluez module */
+    #include "bits/illume.edc" /* bluez module */
 }
 

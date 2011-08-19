@@ -513,7 +513,7 @@ group {
     }
 }
 
-#if BUILD_FOR_COMPOSITE
+#if BUILD_COMPOSITE
 #undef TOP
 #undef LEFT
 #undef RIGHT

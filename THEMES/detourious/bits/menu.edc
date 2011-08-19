@@ -67,7 +67,7 @@ group {
 			description {
 				state: "default" 0.0;
 				image.normal: "images/dialog_im0.png";
-/* #if BUILD_FOR_COMPOSITE == 0 */
+/* #if BUILD_COMPOSITE == 0 */
 				rel1.offset: 1 1;
 				rel2.offset: -2  -2;
 /* #endif */
