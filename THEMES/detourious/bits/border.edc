@@ -378,7 +378,7 @@
 	}
 
 
-#if BUILD_FOR_COMPOSITE
+#if BUILD_COMPOSITE
 #define BORDER_DATA								\
 	data {										\
 		item: "argb" "1";						\
