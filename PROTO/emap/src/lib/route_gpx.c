@@ -53,7 +53,6 @@ static void _parse(EMap_Route *route)
          buf = malloc(sz);
          if (buf)
          {
-            int n = fread(buf, 1, sz, f);
             eina_simple_xml_parse(buf, sz, EINA_TRUE, _parser_cb, route);
 
             free(buf);

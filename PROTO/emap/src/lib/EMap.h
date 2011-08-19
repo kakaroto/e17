@@ -9,6 +9,8 @@
 #define EMAP_H_
 
 #include <Eina.h>
+#include <Ecore.h>
+#include <Ecore_File.h>
 
 // TODO: watchwolf, please fix this. this is temporary code for fixing elm build error.
 #define EMAP_LON_MAX 180.0

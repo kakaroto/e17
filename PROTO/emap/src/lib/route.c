@@ -57,7 +57,7 @@ void emap_route_node_add(EMap_Route *route, EMap_Route_Node *node)
 
 Eina_List *emap_route_nodes_get(EMap_Route *route)
 {
-   if(!route) return ;
+   if(!route) return NULL;
 
    return route->nodes;
 }
