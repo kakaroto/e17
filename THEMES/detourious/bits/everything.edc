@@ -1358,7 +1358,7 @@ group {
 #else
 				TEXT_COLOR;
 #endif
-				TEXT_NORMAL("label_normal", 0.5 1.0, 0 1);
+				TEXT_NORMAL("label_normal", 0.5 0.5, 0 1);
 			}
 			description {
 				state: "selected" 0.0;
