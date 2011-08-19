@@ -263,7 +263,7 @@ elfe_allapps_add(Evas_Object *parent)
    elm_box_horizontal_set(allapps->selector, EINA_TRUE);
 
    bt = elm_button_add(allapps->selector);
-   elm_button_label_set(bt, "Apps");
+   elm_object_text_set(bt, "Apps");
    ic = elm_icon_add(bt);
    elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/applications");
    evas_object_show(ic);
@@ -278,7 +278,7 @@ elfe_allapps_add(Evas_Object *parent)
    elm_box_pack_end(allapps->selector, sep);
 
    bt = elm_button_add(allapps->selector);
-   elm_button_label_set(bt, "Widgets");
+   elm_object_text_set(bt, "Widgets");
    ic = elm_icon_add(bt);
    elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/widgets");
    evas_object_show(ic);
@@ -293,7 +293,7 @@ elfe_allapps_add(Evas_Object *parent)
    elm_box_pack_end(allapps->selector, sep);
 
    bt = elm_button_add(allapps->selector);
-   elm_button_label_set(bt, "Config");
+   elm_object_text_set(bt, "Config");
    ic = elm_icon_add(bt);
    elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/configuration");
    evas_object_show(ic);

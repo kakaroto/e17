@@ -294,7 +294,7 @@ create_signals_box(Viewer *v)
 
    v->gui.sig_signal = o = elm_hoversel_add(bx);
    elm_hoversel_hover_parent_set(o, v->gui.win);
-   elm_hoversel_label_set(o, "Signals");
+   elm_object_text_set(o, "Signals");
    elm_box_pack_start(bx, o);
    evas_object_show(o);
 
@@ -627,7 +627,7 @@ create_toggles_win(Viewer *v)
    evas_object_show(bx);
 
    o = elm_toggle_add(bx);
-   elm_toggle_label_set(o, "Show parts list");
+   elm_object_text_set(o, "Show parts list");
    elm_toggle_state_set(o, v->config->show_parts);
    elm_box_pack_end(bx, o);
    evas_object_smart_callback_add(o, "changed",
@@ -635,7 +635,7 @@ create_toggles_win(Viewer *v)
    evas_object_show(o);
 
    o = elm_toggle_add(bx);
-   elm_toggle_label_set(o, "Show text entry");
+   elm_object_text_set(o, "Show text entry");
    elm_toggle_state_set(o, v->config->show_entry);
    elm_box_pack_end(bx, o);
    evas_object_smart_callback_add(o, "changed",
@@ -643,7 +643,7 @@ create_toggles_win(Viewer *v)
    evas_object_show(o);
 
    o = elm_toggle_add(bx);
-   elm_toggle_label_set(o, "Show signals log");
+   elm_object_text_set(o, "Show signals log");
    elm_toggle_state_set(o, v->config->show_signals);
    elm_box_pack_end(bx, o);
    evas_object_smart_callback_add(o, "changed",
@@ -701,7 +701,7 @@ hoversel_clear(Viewer *v)
         elm_hoversel_item_del(data->it);
      }
 
-   elm_hoversel_label_set(v->gui.sig_signal, "Signals");
+   elm_object_text_set(v->gui.sig_signal, "Signals");
 }
 
 static void
@@ -1059,7 +1059,7 @@ on_hover_signal_select(void *data, Evas_Object *obj, void *event_info)
 {
    Hoversel_Item_Data *dat = data;
 
-   elm_hoversel_label_set(dat->grp->v->gui.sig_signal, dat->label);
+   elm_object_text_set(dat->grp->v->gui.sig_signal, dat->label);
    edje_object_signal_emit(dat->grp->obj, dat->signal, dat->source);
 }
 
