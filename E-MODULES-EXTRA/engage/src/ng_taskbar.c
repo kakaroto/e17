@@ -509,68 +509,50 @@ _border_icon_add(E_Border *bd, Evas *evas)
 
    if (bd->internal)
      {
-        o = edje_object_add(evas);
         if (!bd->internal_icon)
-          e_util_edje_icon_set(o, "enlightenment");
-        else
-          {
-             if (!bd->internal_icon_key)
-               {
-                  char *ext;
+	  {
+	     o = e_icon_add(evas);
+	     e_util_icon_theme_set(o, "enlightenment");
+	  }
+        else if (!bd->internal_icon_key)
+	  {
+	     char *ext;
+	     ext = strrchr(bd->internal_icon, '.');
+	     if ((ext) && ((!strcmp(ext, ".edj"))))
+	       {
+		  o = edje_object_add(evas);
+		  if (!edje_object_file_set(o, bd->internal_icon, "icon"))
+		    e_util_icon_theme_set(o, "enlightenment");
+	       }
+	     else if (ext)
+	       {
+		  o = e_icon_add(evas);
+		  e_icon_file_set(o, bd->internal_icon);
+	       }
+	     else
+	       {
+		  o = e_icon_add(evas);
+		  e_icon_scale_size_set(o, 128);
+		  if (!e_util_icon_theme_set(o, bd->internal_icon))
+		    e_util_icon_theme_set(o, "enlightenment");
+	       }
+	  }
+	else
+	  {
+	     o = edje_object_add(evas);
+	     edje_object_file_set(o, bd->internal_icon, bd->internal_icon_key);
+	  }
 
-                  ext = strrchr(bd->internal_icon, '.');
-                  if ((ext) && ((!strcmp(ext, ".edj"))))
-                    {
-                       if (!edje_object_file_set(o, bd->internal_icon, "icon"))
-                         e_util_edje_icon_set(o, "enlightenment");
-                    }
-                  else if (ext)
-                    {
-                       evas_object_del(o);
-                       o = e_icon_add(evas);
-                       e_icon_file_set(o, bd->internal_icon);
-                    }
-                  else
-                    {
-                       evas_object_del(o);
-                       o = e_icon_add(evas);
-		       e_icon_scale_size_set(o, 128); 
-                       if (!e_util_icon_theme_set(o, bd->internal_icon))
-                         e_util_icon_theme_set(o, "enlightenment");
-                    }
-               }
-             else
-               {
-                  edje_object_file_set(o, bd->internal_icon,
-                                       bd->internal_icon_key);
-               }
-          }
-        return o;
+	return o;
      }
-   if ((bd->client.netwm.icons) &&
-       ((e_config->use_app_icon) ||
-        (bd->remember && (bd->remember->prop.icon_preference == E_ICON_PREF_NETWM))))
+
+   if (bd->client.netwm.icons)
      {
-        int i, size, tmp, found = 0;
-        o = e_icon_add(evas);
+	if (e_config->use_app_icon)
+	  goto _use_netwm_icon;
 
-        size = bd->client.netwm.icons[0].width;
-
-        for (i = 1; i < bd->client.netwm.num_icons; i++)
-          {
-             if ((tmp = bd->client.netwm.icons[i].width) > size)
-               {
-                  size = tmp;
-                  found = i;
-               }
-          }
-
-        e_icon_data_set(o, bd->client.netwm.icons[found].data,
-                        bd->client.netwm.icons[found].width,
-                        bd->client.netwm.icons[found].height);
-        e_icon_alpha_set(o, 1);
-
-        return o;
+	if (bd->remember && (bd->remember->prop.icon_preference == E_ICON_PREF_NETWM))
+	  goto _use_netwm_icon;
      }
 
    if (bd->desktop)
@@ -579,6 +561,7 @@ _border_icon_add(E_Border *bd, Evas *evas)
 	if (o) return o;
      }
 
+ _use_netwm_icon:
    if (bd->client.netwm.icons)
      {
         int i, size, tmp, found = 0;
@@ -606,7 +589,7 @@ _border_icon_add(E_Border *bd, Evas *evas)
    if (o) return o;
 
    o = edje_object_add(evas);
-   e_util_edje_icon_set(o, "enlightenment/unknown");
+   e_util_icon_theme_set(o, "unknown");
 
    return o;
 }
