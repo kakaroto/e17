@@ -63,76 +63,52 @@ static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Itask *it;
-   Evas_Object *o;
    E_Gadcon_Client *gcc;
-   Instance *inst;
 
-   inst = E_NEW(Instance, 1);
-
-   inst->ci = itask_config_item_get(id);
-   // TODO prefix all options with 'option_', better add substruct
    it = _itask_new(gc->evas, gc->zone);
-   it->show_label = inst->ci->show_label;
-   it->show_zone = inst->ci->show_zone;
-   it->show_desk = inst->ci->show_desk;
-   it->icon_label = inst->ci->icon_label;
-   it->skip_always_below_windows = inst->ci->skip_always_below_windows;
-   it->skip_dialogs = inst->ci->skip_dialogs;
-   it->swap_on_focus = inst->ci->swap_on_focus;
-   it->option_iconify_focused = inst->ci->iconify_focused;
-   it->option_ibox_style = inst->ci->ibox_style;
-   it->max_items = inst->ci->max_items;
-   it->always_group = inst->ci->always_group;
-   it->menu_all_window = inst->ci->menu_all_window;
-   it->hide_menu_button = inst->ci->hide_menu_button;
-   it->inst = inst;
-   inst->itask = it;
-
-   o = it->o_box;
-   gcc = e_gadcon_client_new(gc, name, id, style, o);
-   gcc->data = inst;
-
-   inst->gcc = gcc;
-   inst->o_itask = o;
-
-   itask_config->instances = eina_list_append(itask_config->instances, inst);
-
-   it->item_height = 32; // TODO make this selectable between mix max size that the theme provides
+   it->ci = itask_config_item_get(id);
+   it->ci->it = it;
+   it->item_height = 32;
    it->item_width = 114;
    it->num_items = 0;
-   if(!it->hide_menu_button){
-      itask_menu_button(it);
-   }
+
+   gcc = e_gadcon_client_new(gc, name, id, style, it->o_box);
+   gcc->data = it;
+   it->gcc = gcc;
+
+   itask_config->instances = eina_list_append(itask_config->instances, it);
+
+   if (!it->ci->hide_menu_button)
+     itask_menu_button(it);
+
    itask_resize_handle(it);
 
    _itask_fill(it);
+
    return gcc;
 }
 
 static void
 _gc_shutdown(E_Gadcon_Client *gcc)
 {
-   Instance *inst;
+   Itask *it;
 
-   inst = gcc->data;
-   itask_config->instances = eina_list_remove(itask_config->instances, inst);
-   _itask_free(inst->itask);
-   free(inst);
+   it = gcc->data;
+   itask_config->instances = eina_list_remove(itask_config->instances, it);
+   _itask_free(it);
 }
 
 static void
 _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 {
-   Instance *inst;
    Evas_Coord w, h;
-   int button_size;
-   Itask_Item *ic;
 
-   inst = gcc->data;
-   Itask *it = inst->itask;
+   Itask *it = gcc->data;
 
-   evas_object_geometry_get(it->inst->gcc->gadcon->o_container,
-			    NULL, NULL,&it->itask_width, &it->itask_height);
+   evas_object_geometry_get(it->gcc->gadcon->o_container,
+			    NULL, NULL,
+			    &it->itask_width,
+			    &it->itask_height);
 
    if (it->itask_height < 10)
      it->itask_height = 10;
@@ -148,15 +124,15 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
 	 //if (!e_box_orientation_get(it->o_box))
-	 _itask_orient_set(inst->itask, 1);
+	 _itask_orient_set(it, 1);
 
 	 int width;
-	 if(it->option_ibox_style)
+	 if (it->ci->ibox_style)
 	   width = it->itask_height;
 	 else
 	   width = it->item_width;
 
-	 if(it->items_bar)
+	 if (it->items_bar)
 	   w = (eina_list_count(it->items_bar) * width) + it->itask_height;
 	 else
 	   w = it->itask_height;
@@ -175,11 +151,11 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_LB:
       case E_GADCON_ORIENT_CORNER_RB:
 	 //if (e_box_orientation_get(it->o_box))
-	 _itask_orient_set(inst->itask, 0);
+	 _itask_orient_set(it, 0);
 
-	 if(it->items_bar)
+	 if (it->items_bar)
 	   {
-	      if(it->option_ibox_style)
+	      if (it->ci->ibox_style)
 		h = (eina_list_count(it->items_bar) * it->itask_width) + it->itask_width;
 	      else
 		h = (eina_list_count(it->items_bar) * it->item_height) + it->item_height;
@@ -187,7 +163,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 	 else
 	   h = it->item_height;
 
-	 if(it->option_ibox_style)
+	 if (it->ci->ibox_style)
 	   w = it->itask_width;
 	 else
 	   w = it->item_width;
@@ -199,7 +175,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       default:
 	 break;
      }
-   if (eina_list_count(inst->itask->items) < 1)
+   if (eina_list_count(it->items) < 1)
      e_gadcon_client_aspect_set(gcc, 16, 16);
 }
 
@@ -256,6 +232,7 @@ _itask_free(Itask *it)
 {
    _itask_empty(it);
    evas_object_del(it->o_box);
+
    if (it->o_button)
      evas_object_del(it->o_button);
 
@@ -269,12 +246,14 @@ _itask_fill(Itask *it)
 {
    E_Border *bd;
    E_Border_List *bl;
-   bl = e_container_border_list_first(it->zone->container);
    Itask_Item *ic;
-   while(bd = e_container_border_list_next(bl))
+
+   bl = e_container_border_list_first(it->zone->container);
+
+   while ((bd = e_container_border_list_next(bl)))
      {
 	ic = itask_item_new(it, bd);
-	if(ic) itask_item_realize(ic);
+	if (ic) itask_item_realize(ic);
      }
    e_container_border_list_free(bl);
 
@@ -304,17 +283,15 @@ _itask_orient_set(Itask *it, int horizontal)
 void
 itask_update_gc_orient(Itask *it)
 {
-   _gc_orient(it->inst->gcc, it->inst->gcc->gadcon->orient);
+   _gc_orient(it->gcc, it->gcc->gadcon->orient);
 }
 
 void
 itask_resize_handle(Itask *it)
 {
-   Eina_List *l;
-   Itask_Item *ic;
    Evas_Coord w, h, bw;
 
-   evas_object_geometry_get(it->inst->gcc->gadcon->o_container,
+   evas_object_geometry_get(it->gcc->gadcon->o_container,
 			    NULL, NULL,&w, &h);
 
    if (e_box_orientation_get(it->o_box))
@@ -329,7 +306,7 @@ itask_resize_handle(Itask *it)
 
    e_box_freeze(it->o_box);
 
-   if(it->option_ibox_style)
+   if (it->ci->ibox_style)
      {
 	e_box_pack_options_set(it->o_button,
 			       1, 1, /* fill */
@@ -356,32 +333,24 @@ itask_resize_handle(Itask *it)
 Eina_List *
 itask_zone_find(E_Zone *zone)
 {
-   Eina_List *itask = NULL;
+   Eina_List *itasks = NULL;
    Eina_List *l;
+   Itask *it;
 
-   for (l = itask_config->instances; l; l = l->next)
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	Instance *inst;
-	Config_Item *ci;
-
-	inst = l->data;
-	ci = inst->ci;
-	if (!ci)
-	  continue;
-
-	if ((ci->show_zone == 0 )
-            || ((ci->show_zone != 0) && (inst->itask->zone == zone)))
-	  itask = eina_list_append(itask, inst->itask);
+	if (it->zone == zone)
+	  itasks = eina_list_append(itasks, it);
 
      }
-   return itask;
+   return itasks;
 }
 
 static Eina_Bool
 _itask_cb_event_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev;
-   Eina_List *l, *ll, *lll, *itask, *l_items = NULL;
+   Eina_List *l, *ll, *itask, *l_items = NULL;
    Itask *it;
    Itask_Item *ic, *ic2;
 
@@ -393,73 +362,64 @@ _itask_cb_event_desk_show(void *data, int type, void *event)
 
    EINA_LIST_FREE(itask, it)
      {
-	/* If we're 'this desktop only' then we need to refill when the desk changes */
-	if(it->show_zone == 2)
+	int i = 0;
+
+	if (!it->ci->show_desk)
+	  continue;
+
+	_itask_empty(it);
+	_itask_fill(it);
+
+	EINA_LIST_FOREACH(it->items_menu, l, ic)
 	  {
-	     _itask_empty(it);
-	     _itask_fill(it);
+	     if (ic->border->desk == ev->desk)
+	       {
+		  items_on_desk_in_menu++;
+		  l_items = eina_list_append(l_items, ic);
+	       }
 	  }
 
-	if(it->show_desk)
+	if (items_on_desk_in_menu == 0)
+	  continue;
+
+	EINA_LIST_FOREACH(it->items_bar, l, ic)
 	  {
-	     EINA_LIST_FOREACH(it->items_menu, ll, ic)
+	     items++;
+	     if (ic->border->desk == ev->desk)
 	       {
-		  if(ic->border->desk == ev->desk)
-		    {
-		       items_on_desk_in_menu++;
-		       l_items = eina_list_append(l_items, ic);
-		    }
-	       }
-	     if(items_on_desk_in_menu == 0) continue;
-
-	     EINA_LIST_FOREACH(it->items_bar, ll, ic)
-	       {
-		  items++;
-		  if(ic->border->desk == ev->desk)
-		    {
-		       items_on_desk_in_bar++;
-		       ic->last_time = ecore_time_get();
-		    }
-	       }
-	     if(items == items_on_desk_in_bar)
-	       {
-		  while (l_items)
-		    {
-		       ic = l_items->data;
-		       ic->last_time = ecore_time_get();
-		       l_items = eina_list_remove_list(l_items, l_items);
-		    }
-		  continue;
-	       }
-
-	     int i;
-	     for(i = 0; items - items_on_desk_in_bar >= i  && i < items_on_desk_in_menu ; i++)
-	       {
-		  ic = l_items->data;
-		  for(lll = l_items->next; lll ; lll = lll->next)
-		    {
-		       ic2 = lll->data;
-		       if(ic->last_time < ic2->last_time)
-			 {
-			    ic = ic2;
-			 }
-		    }
-
-		  itask_item_swap_to_bar(ic);
-		  itask_item_swap_oldest_from_bar(it);
-		  l_items = eina_list_remove(l_items, ic);
-	       }
-	     while (l_items)
-	       {
-		  ic = l_items->data;
+		  items_on_desk_in_bar++;
 		  ic->last_time = ecore_time_get();
-		  l_items = eina_list_remove_list(l_items, l_items);
 	       }
-	     itask_resize_handle(it);
 	  }
+	if (items == items_on_desk_in_bar)
+	  {
+	     EINA_LIST_FREE(l_items, ic)
+	       ic->last_time = ecore_time_get();
+
+	     continue;
+	  }
+
+	EINA_LIST_FREE(l_items, ic)
+	  {
+	     if ((items - items_on_desk_in_bar >= i) &&
+		 (i < items_on_desk_in_menu)) i++;
+	     else break;
+
+	     EINA_LIST_FOREACH(l_items, ll, ic2)
+	       if (ic->last_time < ic2->last_time)
+		 ic = ic2;
+
+	     itask_item_swap_to_bar(ic);
+	     itask_item_swap_oldest_from_bar(it);
+	  }
+
+	EINA_LIST_FREE(l_items, ic)
+	  ic->last_time = ecore_time_get();
+
+	itask_resize_handle(it);
      }
 
-   return EINA_TRUE;
+return EINA_TRUE;
 }
 
 Config_Item *
@@ -473,11 +433,11 @@ itask_config_item_get(const char *id)
      {
 	int  num = 0;
 
-	/* Create id */
 	if (itask_config->items)
 	  {
 	     const char *p;
-	     ci = eina_list_last (itask_config->items)->data;
+	     ci = eina_list_data_get(eina_list_last(itask_config->items));
+
 	     p = strrchr (ci->id, '.');
 	     if (p) num = atoi (p + 1) + 1;
 	  }
@@ -486,20 +446,20 @@ itask_config_item_get(const char *id)
      }
    else
      {
-	for (l = itask_config->items; l; l = l->next)
+	EINA_LIST_FOREACH(itask_config->items, l, ci)
 	  {
-	     ci = l->data;
 	     if (!ci->id)
 	       continue;
+
 	     if (!strcmp (ci->id, id))
 	       return ci;
 	  }
      }
+
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
    ci->show_label = 0;
-   ci->show_zone = 1;
-   ci->show_desk = 1;
+   ci->show_desk = 0;
    ci->icon_label = 0;
    ci->skip_always_below_windows = 0;
    ci->skip_dialogs = 0;
@@ -511,6 +471,7 @@ itask_config_item_get(const char *id)
    ci->menu_all_window = 1;
    ci->hide_menu_button = 0;
    itask_config->items = eina_list_append(itask_config->items, ci);
+
    return ci;
 }
 
@@ -518,31 +479,16 @@ void
 itask_config_update(Config_Item *ci)
 {
    Eina_List *l;
-   Instance *inst;
    Itask *it;
 
-   for (l = itask_config->instances; l; l = l->next)
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	inst = l->data;
-        if(inst->ci == ci){
-	   it = inst->itask;
-	   it->show_label = ci->show_label;
-	   it->show_zone = ci->show_zone;
-	   it->show_desk = ci->show_desk;
-	   it->icon_label = ci->icon_label;
-	   it->skip_always_below_windows = ci->skip_always_below_windows;
-	   it->skip_dialogs = ci->skip_dialogs;
-	   it->swap_on_focus = ci->swap_on_focus;
-	   it->option_iconify_focused = ci->iconify_focused;
-	   it->option_ibox_style = ci->ibox_style;
-	   it->max_items = ci->max_items;
-	   it->always_group = ci->always_group;
-	   it->menu_all_window = ci->menu_all_window;
-	   it->hide_menu_button = ci->hide_menu_button;
-	   _itask_empty(it);
-	   _itask_fill(it);
-	   return;
-	}
+        if (it->ci != ci)
+	  continue;
+
+	_itask_empty(it);
+	_itask_fill(it);
+	return;
      }
 }
 
@@ -570,7 +516,6 @@ e_modapi_init(E_Module *m)
 #define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, show_label, INT);
-   E_CONFIG_VAL(D, T, show_zone, INT);
    E_CONFIG_VAL(D, T, show_desk, INT);
    E_CONFIG_VAL(D, T, icon_label, INT);
    E_CONFIG_VAL(D, T, skip_always_below_windows, INT);
@@ -591,28 +536,7 @@ e_modapi_init(E_Module *m)
 
    itask_config = e_config_domain_load("module.itask", conf_edd);
    if (!itask_config)
-     {
-	Config_Item *ci;
-
-	itask_config = E_NEW(Config, 1);
-
-	ci = E_NEW(Config_Item, 1);
-	ci->id = eina_stringshare_add("0");
-	ci->show_label = 0;
-	ci->show_zone = 1;
-	ci->show_desk = 1;
-	ci->icon_label = 0;
-	ci->skip_always_below_windows = 0;
-	ci->skip_dialogs = 0;
-	ci->swap_on_focus = 1;
-	ci->iconify_focused = 1;
-	ci->ibox_style = 0;
-	ci->max_items = 7;
-	ci->always_group = 0;
-	ci->menu_all_window = 1;
-	ci->hide_menu_button = 0;
-	itask_config->items = eina_list_append(itask_config->items, ci);
-     }
+     itask_config = E_NEW(Config, 1);
 
    itask_config->module = m;
 
@@ -632,26 +556,19 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
+   Config_Item *ci;
+   Ecore_Event_Handler *h;
 
    e_gadcon_provider_unregister(&_gadcon_class);
 
-   while (itask_config->handlers)
+   EINA_LIST_FREE(itask_config->handlers, h)
+     ecore_event_handler_del(h);
+
+   EINA_LIST_FREE(itask_config->items, ci)
      {
-	ecore_event_handler_del(itask_config->handlers->data);
-	itask_config->handlers = eina_list_remove_list(itask_config->handlers, itask_config->handlers);
-     }
+	if (ci->cfd) e_object_del(E_OBJECT(ci->cfd));
 
-   while (itask_config->config_dialog)
-     e_object_del(E_OBJECT(itask_config->config_dialog->data));
-
-   while (itask_config->items)
-     {
-	Config_Item *ci;
-
-	ci = itask_config->items->data;
-	itask_config->items = eina_list_remove_list(itask_config->items, itask_config->items);
-	if (ci->id)
-	  eina_stringshare_del(ci->id);
+	eina_stringshare_del(ci->id);
 	free(ci);
      }
 

@@ -10,7 +10,6 @@ static Eina_Bool  _itask_items_cb_event_border_property(void *data, int type, vo
 static Eina_Bool  _itask_items_cb_event_border_zone_set(void *data, int type, void *event);
 static Eina_Bool  _itask_items_cb_event_border_focus_in(void *data, int type, void *event);
 static Eina_Bool  _itask_items_cb_event_border_focus_out(void *data, int type, void *event);
-static Eina_Bool  _itask_items_cb_event_border_stack(void *data, int type, void *event);
 static Itask_Item *_itask_items_find_item(Itask *it, E_Border *bd);
 static Itask_Item *_itask_items_find_item_in_menu(Itask *it, E_Border *bd);
 static Itask_Item *_itask_items_find_item_in_bar(Itask *it, E_Border *bd);
@@ -37,8 +36,6 @@ itask_items_init(Config *itask_config)
 					     (E_EVENT_BORDER_FOCUS_IN, _itask_items_cb_event_border_focus_in, NULL));
    itask_config->handlers = eina_list_append(itask_config->handlers, ecore_event_handler_add
 					     (E_EVENT_BORDER_FOCUS_OUT, _itask_items_cb_event_border_focus_out, NULL));
-   itask_config->handlers = eina_list_append(itask_config->handlers, ecore_event_handler_add
-					     (E_EVENT_BORDER_STACK, _itask_items_cb_event_border_stack, NULL));
 }
 
 static Itask_Item *
@@ -92,7 +89,7 @@ _itask_items_cb_event_border_add(void *data, int type, void *event)
    EINA_LIST_FREE(itask, it)
      {
 	ic = itask_item_new(it, bd);
-	if(ic) itask_item_realize(ic);
+	if (ic) itask_item_realize(ic);
      }
 
    return EINA_TRUE;
@@ -101,7 +98,6 @@ _itask_items_cb_event_border_add(void *data, int type, void *event)
 static Eina_Bool
 _itask_items_cb_event_border_remove(void *data, int type, void *event)
 {
-   //printf("_itask_items_cb_event_border_remove\n");
    E_Event_Border_Remove *ev;
    Itask *it;
    Itask_Item *ic;
@@ -113,8 +109,7 @@ _itask_items_cb_event_border_remove(void *data, int type, void *event)
    EINA_LIST_FREE(itask, it)
      {
 	ic = _itask_items_find_item(it, ev->border);
-	if (!ic)
-	  return;
+	if (!ic) return EINA_FALSE;
 
 	itask_item_remove(ic);
 	itask_item_swap_youngest_from_menu(it);
@@ -200,8 +195,7 @@ _itask_items_cb_event_border_property(void *data, int type, void *event)
    E_Border *bd;
    Itask *it;
    Itask_Item *ic;
-   Eina_List *l, *itask;
-   char *label;
+   Eina_List *itask;
 
    ev = event;
    bd = ev->border;
@@ -210,10 +204,10 @@ _itask_items_cb_event_border_property(void *data, int type, void *event)
    EINA_LIST_FREE(itask, it)
      {
 	ic = _itask_items_find_item_in_bar(it, bd);
-	if(ic)
+	if (ic)
 	  {
 	     int remove= 0;
-	     if(!itask_item_add_check(it, bd))
+	     if (!itask_item_add_check(it, bd))
 	       remove = 1;
 
 	     //ic = _itask_items_find_item(it, bd);
@@ -234,7 +228,7 @@ _itask_items_cb_event_border_property(void *data, int type, void *event)
 		  itask_update_gc_orient(it);
 		  continue;
 	       }
-	     else /* if(ic && !remove)*/
+	     else /* if (ic && !remove)*/
 	       {
 		  // some other stuff to update ?
 		  itask_item_set_label(ic);
@@ -253,7 +247,7 @@ _itask_items_cb_event_border_focus_in(void *data, int type, void *event)
    Itask *it;
    Itask_Item *ic;
    E_Border* bd;
-   Eina_List *ll, *itask;
+   Eina_List *itask;
 
    ev = event;
    bd = ev->border;
@@ -264,11 +258,11 @@ _itask_items_cb_event_border_focus_in(void *data, int type, void *event)
 	ic = _itask_items_find_item_in_bar(it, ev->border);
 	if (ic)
 	  {
-	     if(it->swap_on_focus) // this should probably happen always
+	     if (it->ci->swap_on_focus) // this should probably happen always
 	       ic->last_time = ecore_time_get();
 	     itask_icon_signal_emit(ic, "focused", "");
 	  }
-	if(it->swap_on_focus)
+	if (it->ci->swap_on_focus)
 	  {
 	     ic = _itask_items_find_item_in_menu(it, ev->border);
 	     if (ic)
@@ -294,7 +288,7 @@ _itask_items_cb_event_border_focus_out(void *data, int type, void *event)
    E_Event_Border_Focus_Out *ev;
    Itask *it;
    Itask_Item *ic;
-   Eina_List *l, *itask;
+   Eina_List *itask;
 
    ev = event;
    itask = itask_zone_find(ev->border->zone);
@@ -315,30 +309,22 @@ _itask_items_cb_event_border_zone_set(void *data, int type, void *event)
    E_Event_Border_Zone_Set *ev;
    Itask *it;
    Itask_Item *ic;
-   Eina_List *l, *itask;
+   Eina_List *l;
    E_Border *bd;
 
    ev = event;
    bd = ev->border;
 
-   /* delete from current zone itask, add to new one */
-   for (l = itask_config->instances; l; l = l->next)
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	if(!l->data){
-	   continue;
-	}
-
-	it = ((Instance *) l->data)->itask;
-	if(!it){
-	   continue;
-	}
-	if (it->show_zone != 0)
+	if (it->zone == ev->zone)
 	  {
-	     if(it->zone == ev->zone && (ic = itask_item_new(it, bd)))
-	       {
-		  if(ic) itask_item_realize(ic);
-	       }
-	     if(it->zone != ev->zone && (ic = _itask_items_find_item(it, ev->border)))
+	     if ((ic = itask_item_new(it, bd)))
+	       itask_item_realize(ic);
+	  }
+	else
+	  {
+	     if ((ic = _itask_items_find_item(it, ev->border)))
 	       {
 		  itask_item_remove(ic);
 		  itask_item_swap_youngest_from_menu(it);
@@ -348,30 +334,3 @@ _itask_items_cb_event_border_zone_set(void *data, int type, void *event)
 
    return EINA_TRUE;
 }
-
-static Eina_Bool
-_itask_items_cb_event_border_stack(void *data, int type, void *event)
-{
-   E_Event_Border_Stack *ev;
-   Itask *it;
-   Itask_Item *ic;
-   Eina_List *itask;
-
-   ev = event;
-   itask = itask_zone_find(ev->border->zone);
-
-   // TODO do this only on stack above event
-   EINA_LIST_FREE(itask, it)
-     {
-	ic = _itask_items_find_item_in_menu(it, ev->border);
-	if (!ic) continue;
-
-	itask_item_swap_to_bar(ic);
-	itask_item_swap_oldest_from_bar(it);
-	itask_resize_handle(it);
-	itask_icon_signal_emit(ic, "focused", "");
-     }
-
-   return EINA_TRUE;
-}
-
