@@ -189,7 +189,7 @@ group {
 }
 
 group { name: "e/modules/clock/digital";
-	min: 56 16;
+	min: 38 16;
 
 	script {
 		public do_seconds, do_24h, tick_timer;
