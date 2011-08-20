@@ -1154,8 +1154,7 @@ group {
 group {
 	name: "e/modules/everything/thumbview/item/thumb";
 #if BUILD_ILLUME
-	min: 148 140;
-	/* min: 128 128; */
+	min: 128 128;
 #endif
 	parts {
 		part {
@@ -1271,10 +1270,6 @@ group {
 				state: "default" 0.0;
 				aspect: 1.0 1.0;
 				aspect_preference: BOTH;
-#if BUILD_ILLUME
-				min: 128 128;
-				max: 128 128;
-#endif
 				rel1 {
 					to: "base";
 				}
