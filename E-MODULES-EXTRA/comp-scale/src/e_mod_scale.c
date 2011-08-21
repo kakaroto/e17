@@ -675,8 +675,6 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 {
    Item *it;
    E_Comp_Win *cw = (void*)src;
-   Evas_Object *o;
-
    
    if (!e_manager_comp_src_image_get(man, src))
      return NULL;
@@ -766,9 +764,6 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 				  _scale_win_cb_delorig, it);
    
-   if (!it->bd->visible)
-     e_border_show(it->bd);
-
    if (it->bd->shaded)
      {
 	/* int tmp = e_config->border_shade_animate;
@@ -819,6 +814,9 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 
 	return it;
      }
+
+   if (!it->bd->visible)
+     e_border_show(it->bd);
 
    evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN,
 				  _scale_win_cb_mouse_in, it);

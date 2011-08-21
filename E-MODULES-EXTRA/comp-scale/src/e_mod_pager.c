@@ -596,8 +596,8 @@ _pager_win_del(Item *it)
 				       _pager_win_cb_mouse_move);
 
 
-	/* if ((it->bd->desk != current_desk) && (!it->bd->sticky))
-	 *   e_border_hide(it->bd, 2); */
+	if ((it->bd->desk != current_desk) && (!it->bd->sticky))
+	  e_border_hide(it->bd, 2);
 
 	e_manager_comp_src_hidden_set(it->man,
 				      (E_Manager_Comp_Source *)it->cw,
@@ -733,8 +733,8 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    it->cur_w = it->bd->w;
    it->cur_h = it->bd->h;
 
-   /* if (it->desk != current_desk)
-    *   e_border_show(it->bd); */
+   if (it->desk != current_desk)
+     e_border_show(it->bd);
 
    _pager_win_final_position_set(it);
 
