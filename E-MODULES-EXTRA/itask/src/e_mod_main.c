@@ -25,6 +25,14 @@ static const E_Gadcon_Client_Class _gadcon_class =
     E_GADCON_CLIENT_STYLE_PLAIN
   };
 
+static Eina_Bool
+_cb_timer(void *data)
+{
+   itask_reload(data);
+   
+   return ECORE_CALLBACK_CANCEL;
+}
+
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
@@ -40,8 +48,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    it->item_width = 200;
    it->horizontal = EINA_TRUE;
    e_box_homogenous_set(it->o_box, 0);
-   /* e_box_orientation_set(it->o_box, 1);
-    * e_box_align_set(it->o_box, 0.5, 0.0); */
 
    gcc = e_gadcon_client_new(gc, name, id, style, it->o_box);
    gcc->data = it;
@@ -49,10 +55,10 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    itask_config->instances = eina_list_append(itask_config->instances, it);
 
-   /* if (!it->ci->hide_menu_button) */
    itask_menu_button(it);
 
-   itask_reload(it);
+   ecore_timer_add(0.5, _cb_timer, it);
+   /* itask_reload(it); */
 
    return gcc;
 }
@@ -67,9 +73,6 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
    while (it->items)
      itask_item_free(it->items->data);
-
-   /* if (it->o_button)
-    *   evas_object_del(it->o_button); */
 
    itask_menu_remove(it);
 
@@ -175,10 +178,10 @@ _get_max(Itask *it)
 
    EINA_LIST_FOREACH(it->gcc->gadcon->clients, l, gcc)
      {
-	if (gcc->o_base)
-	  evas_object_geometry_get(gcc->o_base, &x, &y, NULL, NULL);
-	else if (gcc->o_frame)
+	if (gcc->o_frame)
 	  evas_object_geometry_get(gcc->o_frame, &x, &y, NULL, NULL);
+	else if (gcc->o_base)
+	  evas_object_geometry_get(gcc->o_base, &x, &y, NULL, NULL);
 
 	if ((xx < x) && (x < mx))
 	  mx = x;
@@ -237,7 +240,7 @@ _cb_itask_update(void *data)
    if (cnt == 0)
      {
 	e_gadcon_client_size_request(it->gcc, 16, 16);
-   	/* e_gadcon_client_aspect_set(it->gcc, 16, 16); */
+   	e_gadcon_client_aspect_set(it->gcc, 16, 16);
      }
    else if (it->horizontal)
        {
@@ -250,7 +253,7 @@ _cb_itask_update(void *data)
 	  if (w > max) w = max;
 
 	  e_gadcon_client_size_request(it->gcc, w, bh);
-	  /* e_gadcon_client_aspect_set(it->gcc, w, h);  */
+	  e_gadcon_client_aspect_set(it->gcc, w, bh);
        }
      else
        {
@@ -262,11 +265,9 @@ _cb_itask_update(void *data)
 	  max = _get_max(it);
 	  if (h > max) h = max;
 
-	  /* e_gadcon_client_aspect_set(it->gcc, w, h);  */
 	  e_gadcon_client_size_request(it->gcc, bw, h);
+	  e_gadcon_client_aspect_set(it->gcc, bw, h);
        }
-
-   /* _gc_orient(it->gcc, it->gcc->gadcon->orient); */
 
    return ECORE_CALLBACK_CANCEL;
 }
