@@ -19,13 +19,13 @@
 #define USE_BOLD_FONT 1
 
 #if USE_BOLD_FONT 
-#define FONT "SwitzeraDemi"
-#define FONT_BOLD "SwitzeraBold"
-#define FONT_ITALIC "SwitzeraDemiItalic"
+#define FONT "Switzera:style=semibold"
+#define FONT_BOLD "Switzera:style=bold"
+#define FONT_ITALIC "Switzera:style=semibold italic"
 #else
 #define FONT "Switzera"
-#define FONT_BOLD "SwitzeraDemi"
-#define FONT_ITALIC "SwitzeraItalic"
+#define FONT_BOLD "Switzera:style=semibold"
+#define FONT_ITALIC "Switzera:style=italic"
 #endif
 
 	//Mouse pointer options
@@ -54,14 +54,6 @@ data {
 	item: "theme/version"	"0.8.0";
 	item: "theme/author"	"Alberto Castro, Hannes Janetzek, et al.";
 	item: "theme/license"	"BSD Artistic License";
-}
-
-fonts {
-	font: "fonts/SwitzeraADF-Regular.otf"  "Switzera";
-	font: "fonts/SwitzeraADF-DemiBold.otf" "SwitzeraDemi";
-	font: "fonts/SwitzeraADFBold.otf"      "SwitzeraBold";
-	font: "fonts/SwitzeraADF-Italic.otf"   "SwitzeraItalic";
-	font: "fonts/SwitzeraADF-DemiBoldItalic.otf"   "SwitzeraDemiItalic";
 }
 
 color_classes {

@@ -20,13 +20,13 @@ externals.external: "elm";
 #define PAGER_SHOW_FRAME 0
 
 #if USE_BOLD_FONT 
-#define FONT "SwitzeraDemi"
-#define FONT_BOLD "SwitzeraBold"
-#define FONT_ITALIC "SwitzeraDemiItalic"
+#define FONT "Switzera:style=semibold"
+#define FONT_BOLD "Switzera:style=bold"
+#define FONT_ITALIC "Switzera:style=semibold italic"
 #else
 #define FONT "Switzera"
-#define FONT_BOLD "SwitzeraDemi"
-#define FONT_ITALIC "SwitzeraItalic"
+#define FONT_BOLD "Switzera:style=semibold"
+#define FONT_ITALIC "Switzera:style=italic"
 #endif
 
 #define TEXT_COLOR								\
@@ -41,14 +41,6 @@ color3: 7 7 7 64;
 	color: 60 60 60 128;						\
 color3: 255 255 255 128;						\
 color_class: "text_disabled";
-
-fonts {
-	font: "fonts/SwitzeraADF-Regular.otf"  "Switzera";
-	font: "fonts/SwitzeraADF-DemiBold.otf" "SwitzeraDemi";
-	font: "fonts/SwitzeraADFBold.otf"      "SwitzeraBold";
-	font: "fonts/SwitzeraADF-Italic.otf"   "SwitzeraItalic";
-	font: "fonts/SwitzeraADF-DemiBoldItalic.otf"   "SwitzeraDemiItalic";
-}
 
 images {
 	image: "thumb_shadow.png" COMP;
