@@ -161,6 +161,7 @@ _itask_item_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
 	ic->drag.y = ev->output.y;
 	ic->drag.start = 1;
 	ic->drag.dnd = 0;
+	ic->time_press = ecore_loop_time_get();
      }
    else if (ev->button == 3)
      {
@@ -234,13 +235,20 @@ _itask_item_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ev = event_info;
    ic = data;
 
+   ic->drag.start = 0;
+   
    if ((ev->button == 1) && (!ic->drag.dnd))
      {
+	if (ic->time_press + 0.3 < ecore_loop_time_get())
+	  return;
+	
 	current_desk = e_desk_current_get(ic->border->zone);
-
+       
 	if ((ic->itask->ci->iconify_focused) &&
 	    (ic->border == e_border_focused_get()))
-	  e_border_iconify(ic->border);
+	  {	     
+	     e_border_iconify(ic->border);
+	  }
 	else
    	  {
 	     if ((e_desk_current_get(ic->border->zone) != ic->border->desk) &&
@@ -258,7 +266,6 @@ _itask_item_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	     e_border_focus_set(ic->border, 1, 1);
    	  }
      }
-   ic->drag.start = 0;
 }
 
 static void

@@ -14,8 +14,6 @@ module_la_SOURCES = e_mod_main.c \
 		    itask_border_menu.h \
 		    itask_item.c \
 		    itask_item.h \
-		    itask_items.c \
-		    itask_items.h \
 		    itask_menu.c \
 		    itask_menu.h
 

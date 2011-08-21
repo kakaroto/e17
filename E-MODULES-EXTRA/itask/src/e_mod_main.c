@@ -15,6 +15,8 @@ static const char *_gc_id_new (E_Gadcon_Client_Class *client_class);
 static Evas_Object *_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
 static Config_Item *itask_config_item_get(const char *id);
+static Eina_Bool  _itask_cb_border_event(void *data, int type, void *event);
+static Eina_Bool  _itask_cb_desk_show(void *data, int type, void *event);
 
 static const E_Gadcon_Client_Class _gadcon_class =
   {
@@ -57,6 +59,30 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    itask_menu_button(it);
 
+
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_ADD, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_REMOVE, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_ICONIFY, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_UNICONIFY, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_ICON_CHANGE, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_PROPERTY, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_ZONE_SET, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_FOCUS_IN, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_FOCUS_OUT, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_DESK_SET, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_DESK_SHOW, _itask_cb_desk_show, it));
+
    ecore_timer_add(0.5, _cb_timer, it);
    /* itask_reload(it); */
 
@@ -67,9 +93,12 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc)
 {
    Itask *it;
+   Ecore_Event_Handler *h;
 
    it = gcc->data;
-   itask_config->instances = eina_list_remove(itask_config->instances, it);
+
+   EINA_LIST_FREE(it->handlers, h)
+     ecore_event_handler_del(h);
 
    while (it->items)
      itask_item_free(it->items->data);
@@ -81,6 +110,8 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (it->idler)
      ecore_idle_enterer_del(it->idler);
 
+   itask_config->instances = eina_list_remove(itask_config->instances, it);
+   
    free(it);
 }
 
@@ -160,6 +191,96 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 
 
 /***************************************************************************/
+
+static Eina_Bool
+_itask_cb_border_event(void *data, int type, void *event)
+{
+   E_Event_Border_Add *ev;
+   Itask *it;
+   Itask_Item *ic;
+   
+   ev = event;
+   it = data;
+
+   ic = itask_item_find(it, ev->border);
+   
+   if (type == E_EVENT_BORDER_ADD)
+     {
+	itask_item_new(it, ev->border);
+     }
+   else if (type == E_EVENT_BORDER_REMOVE)
+     {
+	if (ic) itask_item_free(ic);
+     }
+   else if (type == E_EVENT_BORDER_FOCUS_IN)
+     {
+	if (ic) itask_icon_signal_emit(ic, "focused", "");
+     }
+   else if (type == E_EVENT_BORDER_FOCUS_OUT)
+     {
+	if (ic) itask_icon_signal_emit(ic, "unfocused", "");
+     }
+   else if (type == E_EVENT_BORDER_ICONIFY)
+     {
+	if (ic) itask_icon_signal_emit(ic, "iconify", "");
+     }
+   else if (type == E_EVENT_BORDER_UNICONIFY)
+     {
+	if (ic) itask_icon_signal_emit(ic, "uniconify", "");
+     }
+   else if (type == E_EVENT_BORDER_ICON_CHANGE)
+     {
+	if (ic) itask_item_set_icon(ic);
+     }
+   else if (type == E_EVENT_BORDER_DESK_SET)
+     {
+	if (it->ci->show_desk)
+	  {
+	     if (!ic)
+	       itask_item_new(it, ev->border);
+	     else if (!itask_item_add_check(it, ev->border))
+	       itask_item_free(ic);   
+	  }
+     }
+   else if (type == E_EVENT_BORDER_PROPERTY)
+     {
+	if (!ic)
+	  itask_item_new(it, ev->border);
+	else if (!itask_item_add_check(it, ev->border))
+	  itask_item_free(ic);
+	else
+	  itask_item_set_label(ic);
+     }
+   else if (type == E_EVENT_BORDER_ZONE_SET)
+     {
+	E_Event_Border_Zone_Set *ev = event;
+	
+	if (it->zone == ev->zone)
+	  itask_item_new(it, ev->border);
+	else if (ic)
+	  itask_item_free(ic);
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_itask_cb_desk_show(void *data, int type, void *event)
+{
+   E_Event_Desk_Show *ev;
+   Itask *it;
+
+   ev = event;
+   it = data;
+   
+   if (ev->desk->zone != it->zone)
+     return ECORE_CALLBACK_PASS_ON;
+
+   if (it->ci->show_desk)
+     itask_reload(it);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
 
 static int
 _get_max(Itask *it)
@@ -409,8 +530,7 @@ e_modapi_init(E_Module *m)
 
    snprintf(buf, sizeof(buf), "%s/itask.edj", e_module_dir_get(itask_config->module));
    itask_theme_path = strdup(buf);
-
-   itask_items_init(itask_config);
+   
    return m;
 }
 
@@ -418,12 +538,8 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
    Config_Item *ci;
-   Ecore_Event_Handler *h;
 
    e_gadcon_provider_unregister(&_gadcon_class);
-
-   EINA_LIST_FREE(itask_config->handlers, h)
-     ecore_event_handler_del(h);
 
    EINA_LIST_FREE(itask_config->items, ci)
      {

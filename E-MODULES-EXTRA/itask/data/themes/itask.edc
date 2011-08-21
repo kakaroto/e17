@@ -1,282 +1,282 @@
 images
 {
-    image: "icon.png" COMP;
-    image: "button.png" COMP; 
+   image: "icon.png" COMP;
+   image: "button.png" COMP; 
 }
 
 collections {
 
-  group {
-  name: "modules/itask/item";
-  min: 114 16;
-  max: 114 128; 
+   group {
+      name: "modules/itask/item";
+      min: 114 16;
+      max: 114 128; 
    
-    data {
-    item: "raise_on_hilight" "0"; 
-    }
-   
-    parts {
-      part {
-      name: "icon_clip";
-      type: RECT;
-      mouse_events: 0;
-        description {
-        state:    "default" 0.0;
-        color: 255 255 255 255;
-        }
-        description {
-        state:    "faded" 0.0;
-        color: 255 255 255 64;
-        } 
-        description {
-        state:    "iconic" 0.0;
-        color: 255 255 255 100;
-        }
+      data {
+         item: "raise_on_hilight" "0"; 
       }
+   
+      parts {
+	 part {
+            name: "icon_clip";
+            type: RECT;
+            mouse_events: 0;
+	    description {
+               state:    "default" 0.0;
+               color: 255 255 255 255;
+	    }
+	    description {
+               state:    "faded" 0.0;
+               color: 255 255 255 64;
+	    } 
+	    description {
+               state:    "iconic" 0.0;
+               color: 255 255 255 100;
+	    }
+	 }
   
-      part {
-      name: "button_clip";
-      type:  RECT;
-      mouse_events:  0;
-        description {
-        state:    "default" 0.0;
-        color: 230 230 230 255;
-        }
-        description {
-        state:    "active" 0.0;
-        color: 255 255 255 210;
-        } 
-      }
+	 part {
+            name: "button_clip";
+            type:  RECT;
+            mouse_events:  0;
+	    description {
+               state:    "default" 0.0;
+               color: 230 230 230 255;
+	    }
+	    description {
+               state:    "active" 0.0;
+               color: 255 255 255 210;
+	    } 
+	 }
 
-      part {
-      name: "button";
-      clip_to: "button_clip";
-        description {
-        state: "default" 0.0;
+	 part {
+            name: "button";
+            clip_to: "button_clip";
+	    description {
+               state: "default" 0.0;
 
-        rel1.offset: 2 3;
-        rel2.offset: -1 -1;
-        image.normal: "button.png";
-        image.border: 4 4 4 4;
-          fill {
-          smooth: 1;
-          }
-        } 
-        description {
-        state: "active" 0.0;
-        min: 20 20;
-        max: 80 48; 
-        rel1.offset: 2 3;
-        rel2.offset: -1 -1;
-        image.normal: "button.png";
-        image.border: 4 4 1 2;
-          fill {
-          smooth: 1;
-          }
-        } 
-      }
+               rel1.offset: 2 3;
+               rel2.offset: -1 -1;
+               image.normal: "button.png";
+               image.border: 4 4 4 4;
+	       fill {
+                  smooth: 1;
+	       }
+	    } 
+	    description {
+               state: "active" 0.0;
+               min: 20 20;
+               max: 80 48; 
+               rel1.offset: 2 3;
+               rel2.offset: -1 -1;
+               image.normal: "button.png";
+               image.border: 4 4 1 2;
+	       fill {
+                  smooth: 1;
+	       }
+	    } 
+	 }
 
-      part {
-      name: "icon";
-      type:  SWALLOW;
-      mouse_events:  0;
-      clip_to:       "icon_clip";
-        description {
-        state:    "default" 0.0;
-        aspect: 1.0 1.0;
-        aspect_preference: BOTH;
-          rel1 {
-          relative: 0.0  0.0;
-          offset:   4   5;
-          }
-          rel2 {
-          relative: 0.3  1.0;
-          offset:   2   -4;
-          }
-        }
-        description {
-        state:    "active" 0.0;
-        inherit:  "default" 0.0;
-          rel1 {
-          relative: 0.0  0.0;
-          offset:   -2   -2;
-          }
-          rel2 {
-          relative: 1.0  1.0;
-          offset:   2   -2;
-          }
-        }
-      } 
+	 part {
+            name: "icon";
+            type:  SWALLOW;
+            mouse_events:  0;
+            clip_to:       "icon_clip";
+	    description {
+               state:    "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+	       rel1 {
+                  relative: 0.0  0.0;
+                  offset:   4   5;
+	       }
+	       rel2 {
+                  relative: 0.3  1.0;
+                  offset:   2   -4;
+	       }
+	    }
+	    description {
+               state:    "active" 0.0;
+               inherit:  "default" 0.0;
+	       rel1 {
+                  relative: 0.0  0.0;
+                  offset:   -2   -2;
+	       }
+	       rel2 {
+                  relative: 1.0  1.0;
+                  offset:   2   -2;
+	       }
+	    }
+	 } 
 	 
-      part {      
-      name: "label";
-      type: TEXT;
-      effect: SHADOW;       
-      mouse_events: 0;
-        description {
-        state: "default" 0.0;
+	 part {      
+            name: "label";
+            type: TEXT;
+            effect: SHADOW;       
+            mouse_events: 0;
+	    description {
+               state: "default" 0.0;
 
-        max: 75 20;
-          rel1 {
-          to_x: "icon"; 
-          relative: 1.0  0.0;
-          offset:   4    6;
-          }
-          rel2 {
-          relative: 1.0  1.0;
-          offset:   -1    0;
-          }
-        color: 7 7 7 255;
-        color3: 170 168 169 255;
-          text {
-          text: "Icon Name";
-          font: "Sans";
-          size: 10;
-          min:  1 1;
-          align: 0.0 0.5;
-          text_class: "module_normal";
-          }
-        }
+               max: 75 20;
+	       rel1 {
+                  to_x: "icon"; 
+                  relative: 1.0  0.0;
+                  offset:   4    6;
+	       }
+	       rel2 {
+                  relative: 1.0  1.0;
+                  offset:   -1    0;
+	       }
+               color: 7 7 7 255;
+               color3: 170 168 169 255;
+	       text {
+                  text: "Icon Name";
+                  font: "Sans";
+                  size: 10;
+                  min:  1 1;
+                  align: 0.0 0.5;
+                  text_class: "module_normal";
+	       }
+	    }
+	 }
+
+	 part {
+            name: "over";
+            type: RECT;
+            repeat_events: 0;
+	    description {
+               state:    "default" 0.0;
+               color: 0 0 0 0;
+	    }
+	 }
       }
 
-      part {
-      name: "over";
-      type: RECT;
-      repeat_events: 0;
-        description {
-        state:    "default" 0.0;
-        color: 0 0 0 0;
-        }
+      programs {
+	 program {
+            name:    "go_iconic";
+            signal:  "iconify";
+            source:  "";
+            action:  STATE_SET "iconic" 0.0;
+            transition: LINEAR 0.5;
+            target:  "icon_clip";
+	 }
+	 program {
+            name:    "go_uniconic";
+            signal:  "uniconify";
+            source:  "";
+            action:  STATE_SET "default" 0.0;
+            transition: LINEAR 0.5;
+            target:  "icon_clip";
+	 }
+	 program {
+            name:    "go_focused";
+            signal:  "focused";
+            source:  "";
+            action:  STATE_SET "active" 0.0;
+            transition: LINEAR 0.2;
+            target:  "button_clip";
+	 }
+	 program {
+            name:    "go_unfocused";
+            signal:  "unfocused";
+            source:  "";
+            action:  STATE_SET "default" 0.0;
+            transition: LINEAR 0.2;
+            target:  "button_clip";
+	 }
       }
-    }
-
-    programs {
-      program {
-      name:    "go_iconic";
-      signal:  "iconify";
-      source:  "";
-      action:  STATE_SET "iconic" 0.0;
-      transition: LINEAR 0.5;
-      target:  "icon_clip";
-      }
-      program {
-      name:    "go_uniconic";
-      signal:  "uniconify";
-      source:  "";
-      action:  STATE_SET "default" 0.0;
-      transition: LINEAR 0.5;
-      target:  "icon_clip";
-      }
-      program {
-      name:    "go_focused";
-      signal:  "focused";
-      source:  "";
-      action:  STATE_SET "active" 0.0;
-      transition: LINEAR 0.2;
-      target:  "button_clip";
-      }
-      program {
-      name:    "go_unfocused";
-      signal:  "unfocused";
-      source:  "";
-      action:  STATE_SET "default" 0.0;
-      transition: LINEAR 0.2;
-      target:  "button_clip";
-      }
-    }
-  }
+   }
 
 
 
-  group {
-  name: "modules/itask/icon";
-  min: 32 32;
-  max: 128 128; 
+   group {
+      name: "modules/itask/icon";
+      min: 32 32;
+      max: 128 128; 
    
-    data {
-    item: "raise_on_hilight" "0"; 
-    }
-   
-    parts {
-      part {
-      name: "icon_clip";
-      type: RECT;
-      mouse_events: 0;
-        description {
-        state:    "default" 0.0;
-        color: 255 255 255 255;
-        }
-        description {
-        state:    "faded" 0.0;
-        color: 255 255 255 64;
-        } 
-        description {
-        state:    "iconic" 0.0;
-        color: 255 255 255 100;
-        }
+      data {
+         item: "raise_on_hilight" "0"; 
       }
+   
+      parts {
+	 part {
+            name: "icon_clip";
+            type: RECT;
+            mouse_events: 0;
+	    description {
+               state:    "default" 0.0;
+               color: 255 255 255 255;
+	    }
+	    description {
+               state:    "faded" 0.0;
+               color: 255 255 255 64;
+	    } 
+	    description {
+               state:    "iconic" 0.0;
+               color: 255 255 255 100;
+	    }
+	 }
   
-      part {
-      name: "icon";
-      type:  SWALLOW;
-      mouse_events:  0;
-      clip_to:       "icon_clip";
-        description {
-        state:    "default" 0.0;
-        aspect: 1.0 1.0;
-        aspect_preference: BOTH;
-          rel1 {
-          relative: 0.0  0.0;
-          offset:   2   2;
-          }
-          rel2 {
-          relative: 1.0  1.0;
-          offset:   -1   -1;
-          }
-        }
-        description {
-        state:    "active" 0.0;
-        inherit:  "default" 0.0;
-          rel1 {
-          relative: 0.0  0.0;
-          offset:   -2   -2;
-          }
-          rel2 {
-          relative: 1.0  1.0;
-          offset:   2   -2;
-          }
-        }
-      } 
+	 part {
+            name: "icon";
+            type:  SWALLOW;
+            mouse_events:  0;
+            clip_to:       "icon_clip";
+	    description {
+               state:    "default" 0.0;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+	       rel1 {
+                  relative: 0.0  0.0;
+                  offset:   2   2;
+	       }
+	       rel2 {
+                  relative: 1.0  1.0;
+                  offset:   -1   -1;
+	       }
+	    }
+	    description {
+               state:    "active" 0.0;
+               inherit:  "default" 0.0;
+	       rel1 {
+                  relative: 0.0  0.0;
+                  offset:   -2   -2;
+	       }
+	       rel2 {
+                  relative: 1.0  1.0;
+                  offset:   2   -2;
+	       }
+	    }
+	 } 
 	 
 
-      part {
-      name: "over";
-      type: RECT;
-      repeat_events: 0;
-        description {
-        state:    "default" 0.0;
-        color: 0 0 0 0;
-        }
+	 part {
+            name: "over";
+            type: RECT;
+            repeat_events: 0;
+	    description {
+               state:    "default" 0.0;
+               color: 0 0 0 0;
+	    }
+	 }
       }
-    }
 
-    programs {
-      program {
-      name:    "go_iconic";
-      signal:  "iconify";
-      source:  "";
-      action:  STATE_SET "iconic" 0.0;
-      transition: LINEAR 0.5;
-      target:  "icon_clip";
+      programs {
+	 program {
+            name:    "go_iconic";
+            signal:  "iconify";
+            source:  "";
+            action:  STATE_SET "iconic" 0.0;
+            transition: LINEAR 0.5;
+            target:  "icon_clip";
+	 }
+	 program {
+            name:    "go_uniconic";
+            signal:  "uniconify";
+            source:  "";
+            action:  STATE_SET "default" 0.0;
+            transition: LINEAR 0.5;
+            target:  "icon_clip";
+	 }
       }
-      program {
-      name:    "go_uniconic";
-      signal:  "uniconify";
-      source:  "";
-      action:  STATE_SET "default" 0.0;
-      transition: LINEAR 0.5;
-      target:  "icon_clip";
-      }
-    }
-  }
+   }
 }

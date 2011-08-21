@@ -21,7 +21,6 @@ struct _Config
   E_Module        *module;
   Eina_List       *instances;
   E_Menu          *menu;
-  Eina_List       *handlers;
   Eina_List       *items;
 };
 
@@ -48,13 +47,14 @@ struct _Config_Item
 struct _Itask
 {
   E_Gadcon_Client *gcc;
-  Config_Item	   *ci;
-  Evas_Object    *o_box;
-  Evas_Object    *o_button;
-  Eina_List      *items;
-  E_Zone         *zone;
-  E_Popup        *item_label_popup;
-  Itask_Item     *menubutton;
+  Config_Item	  *ci;
+  Eina_List       *handlers;
+  Evas_Object     *o_box;
+  Evas_Object     *o_button;
+  Eina_List       *items;
+  E_Zone          *zone;
+  E_Popup         *item_label_popup;
+  Itask_Item      *menubutton;
   Ecore_Idle_Enterer *idler;
   
   int item_width;
@@ -86,6 +86,8 @@ struct _Itask_Item
     int            x, y;
     int            dx, dy;
   } drag;
+
+  double time_press;
 };
 
 
