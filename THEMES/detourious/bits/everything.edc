@@ -224,8 +224,14 @@ group {
 				map.smooth: 0;
 			}
 			description {
+				state: "transition" 0.7;
+				inherit: "transition" 0.0;
+				visible: 0;
+			}
+			description {
 				state: "transition" 1.0;
 				inherit: "transition" 0.0;
+				visible: 0;
 			}
 			description {
 				state: "default" 1.0;
@@ -246,16 +252,22 @@ group {
 			}
 			description {
 				state: "transition" 0.0;
-				visible: 1;
 				rel1.to: "list_clip";
 				rel2.to: "list_clip";
 				map.on: 1;
 				map.perspective: "blub2";
 				map.smooth: 0;
+				visible: 0;
+			}
+			description {
+				state: "transition" 0.3;
+				inherit: "transition" 0.0;
+				visible: 1;
 			}
 			description {
 				state: "transition" 1.0;
 				inherit: "transition" 0.0;
+				visible: 1;
 			}
 			description {
 				state: "default" 1.0;
@@ -455,6 +467,8 @@ group {
 			name: "slide_left2";
 			action: STATE_SET "transition" 1.0;
 			transition: TRANSITION;
+			target: "e.swallow.list";
+			target: "e.swallow.list2";
 			target: "blub";
 			target: "blub2";
 			after: "slide_left3";
@@ -462,11 +476,8 @@ group {
 		program {
 			name: "slide_left3";
 			action: STATE_SET "default" 1.0;
-			/* transition: LINEAR 0.1; */
 			target: "e.swallow.list";
 			target: "e.swallow.list2";
-			/* target: "blub";
-			 * target: "blub2"; */
 			after: "left_end";
 		}
 		program { name: "left_end";
@@ -487,6 +498,8 @@ group {
 			name: "slide_right2";
 			action: STATE_SET "transition" 0.0;
 			transition: TRANSITION;
+			target: "e.swallow.list";
+			target: "e.swallow.list2";
 			target: "blub";
 			target: "blub2";
 			after: "slide_right3";
@@ -494,11 +507,8 @@ group {
 		program {
 			name: "slide_right3";
 			action: STATE_SET "default" 0.0;
-			/* transition: LINEAR 0.1; */
 			target: "e.swallow.list";
 			target: "e.swallow.list2";
-			/* target: "blub";
-			 * target: "blub2"; */
 			after: "right_end";
 		}
 		program { name: "right_end";
