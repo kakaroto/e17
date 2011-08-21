@@ -182,10 +182,10 @@ _itask_menu_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
      }
    else if (ev->button == 1)
      {
-	if(it->ci->menu_all_window)
-	  m = itask_menu_items_menu(it->items);
-	else
-	  m = itask_menu_items_menu(it->items_menu);
+	/* if(it->ci->menu_all_window) */
+	m = itask_menu_items_menu(it->items);
+	/* else
+	 *   m = itask_menu_items_menu(it->items_menu); */
      }
    if (m)
      {

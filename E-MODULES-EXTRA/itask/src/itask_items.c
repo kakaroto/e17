@@ -10,9 +10,7 @@ static Eina_Bool  _itask_items_cb_event_border_property(void *data, int type, vo
 static Eina_Bool  _itask_items_cb_event_border_zone_set(void *data, int type, void *event);
 static Eina_Bool  _itask_items_cb_event_border_focus_in(void *data, int type, void *event);
 static Eina_Bool  _itask_items_cb_event_border_focus_out(void *data, int type, void *event);
-static Itask_Item *_itask_items_find_item(Itask *it, E_Border *bd);
-static Itask_Item *_itask_items_find_item_in_menu(Itask *it, E_Border *bd);
-static Itask_Item *_itask_items_find_item_in_bar(Itask *it, E_Border *bd);
+static Eina_Bool  _itask_items_cb_event_desk_show(void *data, int type, void *event);
 
 void
 itask_items_init(Config *itask_config)
@@ -36,42 +34,8 @@ itask_items_init(Config *itask_config)
 					     (E_EVENT_BORDER_FOCUS_IN, _itask_items_cb_event_border_focus_in, NULL));
    itask_config->handlers = eina_list_append(itask_config->handlers, ecore_event_handler_add
 					     (E_EVENT_BORDER_FOCUS_OUT, _itask_items_cb_event_border_focus_out, NULL));
-}
-
-static Itask_Item *
-_itask_items_find_item(Itask *it, E_Border *bd)
-{
-   Eina_List *l;
-   Itask_Item *ic;
-
-   EINA_LIST_FOREACH(it->items, l, ic)
-     if (ic->border == bd) return ic;
-
-   return NULL;
-}
-
-static Itask_Item *
-_itask_items_find_item_in_menu(Itask *it, E_Border *bd)
-{
-   Eina_List *l;
-   Itask_Item *ic;
-
-   EINA_LIST_FOREACH(it->items_menu, l, ic)
-     if (ic->border == bd) return ic;
-
-   return NULL;
-}
-
-static Itask_Item *
-_itask_items_find_item_in_bar(Itask *it, E_Border *bd)
-{
-   Eina_List *l;
-   Itask_Item *ic;
-
-   EINA_LIST_FOREACH(it->items_bar, l, ic)
-     if (ic->border == bd) return ic;
-
-   return NULL;
+   itask_config->handlers = eina_list_append(itask_config->handlers, ecore_event_handler_add
+					     (E_EVENT_DESK_SHOW, _itask_items_cb_event_desk_show, NULL));
 }
 
 static Eina_Bool
@@ -80,19 +44,17 @@ _itask_items_cb_event_border_add(void *data, int type, void *event)
    E_Event_Border_Add *ev;
    E_Border *bd;
    Itask *it;
-   Eina_List *itask;
-   Itask_Item *ic;
+   Eina_List *l;
 
    ev = event;
    bd = ev->border;
-   itask = itask_zone_find(bd->zone);
-   EINA_LIST_FREE(itask, it)
+
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	ic = itask_item_new(it, bd);
-	if (ic) itask_item_realize(ic);
+	itask_item_new(it, bd);
      }
 
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
@@ -101,23 +63,20 @@ _itask_items_cb_event_border_remove(void *data, int type, void *event)
    E_Event_Border_Remove *ev;
    Itask *it;
    Itask_Item *ic;
-   Eina_List *itask;
+   Eina_List *l, *ll;
 
    ev = event;
-   itask = itask_zone_find(ev->border->zone);
 
-   EINA_LIST_FREE(itask, it)
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	ic = _itask_items_find_item(it, ev->border);
-	if (!ic) return EINA_FALSE;
-
-	itask_item_remove(ic);
-	itask_item_swap_youngest_from_menu(it);
-
-	itask_update_gc_orient(it);
+	EINA_LIST_FOREACH(it->items, ll, ic)
+	  {
+	     if (ic->border == ev->border)
+	       itask_item_free(ic);
+	  }
      }
 
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
@@ -126,21 +85,20 @@ _itask_items_cb_event_border_uniconify(void *data, int type, void *event)
    E_Event_Border_Iconify *ev;
    Itask *it;
    Itask_Item *ic;
-   Eina_List *itask;
+   Eina_List *l, *ll;
 
    ev = event;
-   itask = itask_zone_find(ev->border->zone);
 
-   EINA_LIST_FREE(itask, it)
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	ic = _itask_items_find_item_in_bar(it, ev->border);
-	if (!ic)
-	  continue;
-	itask_icon_signal_emit(ic, "uniconify", "");
-	//ic->last_time = ecore_time_get();
+	EINA_LIST_FOREACH(it->items, ll, ic)
+	  {
+	     if (ic->border == ev->border)
+	       itask_icon_signal_emit(ic, "uniconify", "");
+	  }
      }
 
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
@@ -149,20 +107,20 @@ _itask_items_cb_event_border_iconify(void *data, int type, void *event)
    E_Event_Border_Uniconify *ev;
    Itask *it;
    Itask_Item *ic;
-   Eina_List *itask;
+   Eina_List *l, *ll;
 
    ev = event;
-   itask = itask_zone_find(ev->border->zone);
 
-   EINA_LIST_FREE(itask, it)
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	ic = _itask_items_find_item_in_bar(it, ev->border);
-	if (!ic)
-	  continue;
-	itask_icon_signal_emit(ic, "iconify", "");
+	EINA_LIST_FOREACH(it->items, ll, ic)
+	  {
+	     if (ic->border == ev->border)
+	       itask_icon_signal_emit(ic, "iconify", "");
+	  }
      }
 
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
@@ -171,115 +129,42 @@ _itask_items_cb_event_border_icon_change(void *data, int type, void *event)
    E_Event_Border_Icon_Change *ev;
    Itask *it;
    Itask_Item *ic;
-   Eina_List *itask;
+   Eina_List *l, *ll;
 
    ev = event;
-   itask = itask_zone_find(ev->border->zone);
 
-   EINA_LIST_FREE(itask, it)
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	ic = _itask_items_find_item_in_bar(it, ev->border);
-	if (!ic)
-	  continue;
-	itask_item_del_icon(ic);
-	itask_item_set_icon(ic);
-     }
-
-   return EINA_TRUE;
-}
-
-static Eina_Bool
-_itask_items_cb_event_border_property(void *data, int type, void *event)
-{
-   E_Event_Border_Property *ev;
-   E_Border *bd;
-   Itask *it;
-   Itask_Item *ic;
-   Eina_List *itask;
-
-   ev = event;
-   bd = ev->border;
-   itask = itask_zone_find(bd->zone);
-
-   EINA_LIST_FREE(itask, it)
-     {
-	ic = _itask_items_find_item_in_bar(it, bd);
-	if (ic)
+	EINA_LIST_FOREACH(it->items, ll, ic)
 	  {
-	     int remove= 0;
-	     if (!itask_item_add_check(it, bd))
-	       remove = 1;
-
-	     //ic = _itask_items_find_item(it, bd);
-	     if (!ic && !remove)
-	       {
-		  itask_item_new(it, bd);
-		  continue;
-	       }
-	     else if (!ic && remove)
-	       {
-		  continue;
-	       }
-	     else if (ic && remove)
-	       {
-		  it->items = eina_list_remove(it->items, ic);
-		  itask_item_remove(ic);
-		  // itask_resize_handle(it);
-		  itask_update_gc_orient(it);
-		  continue;
-	       }
-	     else /* if (ic && !remove)*/
-	       {
-		  // some other stuff to update ?
-		  itask_item_set_label(ic);
-	       }
+	     if (ic->border == ev->border)
+	       itask_item_set_icon(ic);
 	  }
      }
 
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
 _itask_items_cb_event_border_focus_in(void *data, int type, void *event)
 {
-   //	printf("_itask_items_cb_event_border_focus\n");
    E_Event_Border_Focus_In *ev;
    Itask *it;
    Itask_Item *ic;
-   E_Border* bd;
-   Eina_List *itask;
+   Eina_List *l, *ll;
 
    ev = event;
-   bd = ev->border;
-   itask = itask_zone_find(bd->zone);
 
-   EINA_LIST_FREE(itask, it)
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	ic = _itask_items_find_item_in_bar(it, ev->border);
-	if (ic)
+	EINA_LIST_FOREACH(it->items, ll, ic)
 	  {
-	     if (it->ci->swap_on_focus) // this should probably happen always
-	       ic->last_time = ecore_time_get();
-	     itask_icon_signal_emit(ic, "focused", "");
-	  }
-	if (it->ci->swap_on_focus)
-	  {
-	     ic = _itask_items_find_item_in_menu(it, ev->border);
-	     if (ic)
-	       {
-
-		  itask_item_swap_to_bar(ic);
-		  itask_item_swap_oldest_from_bar(it);
-
-		  itask_resize_handle(it);
-		  itask_update_gc_orient(it);
-
-		  itask_icon_signal_emit(ic, "focused", "");
-	       }
+	     if (ic->border == ev->border)
+	       itask_icon_signal_emit(ic, "focused", "");
 	  }
      }
 
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
@@ -288,19 +173,53 @@ _itask_items_cb_event_border_focus_out(void *data, int type, void *event)
    E_Event_Border_Focus_Out *ev;
    Itask *it;
    Itask_Item *ic;
-   Eina_List *itask;
+   Eina_List *l, *ll;
 
    ev = event;
-   itask = itask_zone_find(ev->border->zone);
 
-   EINA_LIST_FREE(itask, it)
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
-	ic = _itask_items_find_item_in_bar(it, ev->border);
-	if (ic)
-	  itask_icon_signal_emit(ic, "unfocused", "");
+	EINA_LIST_FOREACH(it->items, ll, ic)
+	  {
+	     if (ic->border == ev->border)
+	       itask_icon_signal_emit(ic, "unfocused", "");
+	  }
      }
 
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_itask_items_cb_event_border_property(void *data, int type, void *event)
+{
+   E_Event_Border_Property *ev;
+   Itask *it;
+   Itask_Item *ic;
+   Eina_List *l, *ll;
+
+   ev = event;
+
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
+     {
+	EINA_LIST_FOREACH(it->items, ll, ic)
+	  if (ic->border == ev->border)
+	    break;
+
+	if (!ic)
+	  {
+	     itask_item_new(it, ev->border);
+	  }
+	else if (!itask_item_add_check(it, ev->border))
+	  {
+	     itask_item_free(ic);
+	  }
+	else
+	  {
+	     itask_item_set_label(ic);
+	  }
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
@@ -309,28 +228,47 @@ _itask_items_cb_event_border_zone_set(void *data, int type, void *event)
    E_Event_Border_Zone_Set *ev;
    Itask *it;
    Itask_Item *ic;
-   Eina_List *l;
-   E_Border *bd;
+   Eina_List *l, *ll;
 
    ev = event;
-   bd = ev->border;
 
    EINA_LIST_FOREACH(itask_config->instances, l, it)
      {
 	if (it->zone == ev->zone)
 	  {
-	     if ((ic = itask_item_new(it, bd)))
-	       itask_item_realize(ic);
+	     itask_item_new(it, ev->border);
 	  }
 	else
 	  {
-	     if ((ic = _itask_items_find_item(it, ev->border)))
-	       {
-		  itask_item_remove(ic);
-		  itask_item_swap_youngest_from_menu(it);
-	       }
+	     EINA_LIST_FOREACH(it->items, ll, ic)
+	       if (ic->border == ev->border)
+		 break;
+
+	     if (ic)
+	       itask_item_free(ic);
 	  }
      }
 
-   return EINA_TRUE;
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_itask_items_cb_event_desk_show(void *data, int type, void *event)
+{
+   E_Event_Desk_Show *ev;
+   Eina_List *l;
+   Itask *it;
+
+   ev = event;
+
+   EINA_LIST_FOREACH(itask_config->instances, l, it)
+     {
+	if (ev->desk->zone != it->zone)
+	  continue;
+
+	if (it->ci->show_desk)
+	  itask_reload(it);
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
 }
