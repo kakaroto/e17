@@ -189,10 +189,8 @@ group {
 }
 
 group { name: "e/modules/clock/digital";
-	min: 38 16;
-
 	script {
-		public do_seconds, do_24h, tick_timer;
+		public do_seconds, do_24h, tick_timer, horizontal;
 
 		public clock_cb(val) {
 			new year, month, day, yearday, weekday, hour, minute;
@@ -269,34 +267,55 @@ group { name: "e/modules/clock/digital";
 		public eval_show_date() {
 			new x, y, w, h;
 			get_geometry(PART:"event", x, y, w, h);
-			if (h >= 32)
-				emit("today,show", "");
+			if ((h >= 32) && ((horizontal) || (w > 90)))
+				run_program(PROGRAM:"today,show");
 			else
-				emit("today,hide", "");
+				run_program(PROGRAM:"today,hide");
 		}
 	}
 
 	parts {
-		part { name: "time";
-			type: TEXT;
-			effect: SHADOW;
+		part { name: "time-area";
+			type: RECT;
 			description { state: "default" 0.0;
-				TEXT_COLOR
-				text {
-					text_class: "clock";
-					font: FONT;
-					size: 14;
-					fit: 1 1;
-					min: 1 1;
-					size_range: 9 72;
-					text: "--:--";
-				}
+				color: 0 0 0 0;
 			}
 			description { state: "show-date" 0.0;
 				inherit: "default" 0.0;
 				rel2 {
 					relative: 1.0 0.0;
 					to: "e.text.today";
+				}
+			}
+		}
+		part { name: "time";
+			type: TEXT;
+			effect: SHADOW;
+			description { state: "default" 0.0;
+				TEXT_COLOR
+				rel1.to: "time-area";
+				rel2.to: "time-area";
+				text {
+					text_class: "clock";
+					font: FONT;
+					size: 14;
+					fit: 1 1;
+					size_range: 9 72;
+					text: "--:--";
+				}
+			}
+			description { state: "horizontal" 0.0;
+				inherit: "default" 0.0;
+				text {
+					fit: 0 1;
+					min: 1 0;
+				}
+			}
+			description { state: "vertical" 0.0;
+				inherit: "default" 0.0;
+				text {
+					fit: 1 0;
+					min: 0 1;
 				}
 			}
 		}
@@ -320,7 +339,7 @@ group { name: "e/modules/clock/digital";
 					font: FONT;
 					size: 9;
 					fit: 0 1;
-					min: 1 1;
+					min: 1 0;
 					size_range: 8 12;
 					align: 0.5 1.0;
 					text: "Tod, 12/30/2011";
@@ -362,14 +381,14 @@ group { name: "e/modules/clock/digital";
 			signal: "today,show";
 			source: "";
 			action: STATE_SET "show-date" 0.0;
-			target: "time";
+			target: "time-area";
 			target: "e.text.today";
 		}
 		program { name: "today,hide";
 			signal: "today,hide";
 			source: "";
 			action: STATE_SET "default" 0.0;
-			target: "time";
+			target: "time-area";
 			target: "e.text.today";
 		}
 
@@ -403,6 +422,32 @@ group { name: "e/modules/clock/digital";
 			script {
 				set_int(do_24h, 0);
 				restart_clock();
+			}
+		}
+		program { name: "horizontal";
+			signal: "e,state,horizontal";
+			source: "e";
+			action: STATE_SET "horizontal" 0.0;
+			target: "time";
+			after: "horizontal-eval";
+		}
+		program { name: "horizontal-eval";
+			script {
+				set_int(horizontal, 1);
+				eval_show_date();
+			}
+		}
+		program { name: "vertical";
+			signal: "e,state,vertical";
+			source: "e";
+			action: STATE_SET "vertical" 0.0;
+			target: "time";
+			after: "vertical-eval";
+		}
+		program { name: "vertical-eval";
+			script {
+				set_int(horizontal, 0);
+				eval_show_date();
 			}
 		}
 	}
