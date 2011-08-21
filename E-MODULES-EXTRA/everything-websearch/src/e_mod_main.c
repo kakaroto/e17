@@ -643,7 +643,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
    else
      EVRY_PLUGIN_ITEMS_FREE(p);
 
-   return !!(p->base.items);
+   return EVRY_PLUGIN_HAS_ITEMS(p);
 }
 
 /***************************************************************************/

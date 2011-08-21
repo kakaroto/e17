@@ -305,8 +305,6 @@ _dbus_cb_tracklist_metadata(void *data, DBusMessage *reply, DBusError *error)
 
    p->fetch_tracks--;
 
-   printf("_cb_tracklist_metadata %d\n", p->fetch_tracks);
-
    if (!_dbus_check_msg(reply, error))
      {
 	ERR("dbus garbage!");

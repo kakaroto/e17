@@ -132,8 +132,7 @@ _cb_plugin_fetch(Evry_Plugin *plugin, const char *input)
    /* or to add all items which evry_item->label matches input use this */
    // EVRY_PLUGIN_ITEMS_ADD(p, p->items, input, filter_detail = 0, set_usage = 0)
 
-   /* return 1 when plugin provides items */
-   return EINA_TRUE;
+   return EVRY_PLUGIN_HAS_ITEMS(p);
 }
 
 static int

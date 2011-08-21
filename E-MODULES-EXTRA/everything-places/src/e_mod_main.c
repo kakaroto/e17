@@ -177,7 +177,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
    if (len >= plugin->config->min_query)
      EVRY_PLUGIN_ITEMS_ADD(p, p->files, input, 0, 0);
 
-   return !!(p->base.items);
+   return EVRY_PLUGIN_HAS_ITEMS(p);
 }
 
 static int

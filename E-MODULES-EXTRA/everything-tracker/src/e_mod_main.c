@@ -689,7 +689,7 @@ _fetch(Evry_Plugin *plugin, const char *input)
 	 evry->item_free(it);
      }
 
-   return !!(p->base.items);
+   return EVRY_PLUGIN_HAS_ITEMS(p);
 }
 
 static void
