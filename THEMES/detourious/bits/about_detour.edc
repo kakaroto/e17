@@ -3,42 +3,34 @@ group {
 	name: "e/theme/about";
 	min: 299 341;
 	max: 299 341;
-
 	data {
 		item: "borderless" "1";
 	}
-
 	parts {
 		part {
 			name: "base";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					relative: 1.0 1.0; 
 					offset: -1 -1; 
 				}
-		
 				image {
 					normal: "images/dialog_im2.png";
 					border: 3 3 3 3;
 				}
 			}
 		}
-
 		part {
 			name: "base_rect";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 299 341;
@@ -47,20 +39,16 @@ group {
 				color: 0 0 0 0;
 			}
 		}
-
 		part {
 			name: "item";
 			type: SWALLOW;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 { 
 					to: "base"; 
 					relative: 0.0 0.0; 
 					offset: 10 10; 
 				}
-
 				rel2 { 
 					to: "button.area"; 
 					relative: 1.0 0.0; 
@@ -68,25 +56,21 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "button.area";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 200 32;
 				max: 200 32;
 				fixed: 1 1;
 				color: 255 255 255 255;
-
 				rel1 { 
 					to: "base_rect"; 
 					relative: 0.0 1.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "base_rect"; 
 					relative: 1.0 1.0; 
@@ -94,13 +78,11 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "button_base";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "button.area";
-
 			description {
 				state: "default" 0.0;
 				min: 98 28;
@@ -109,35 +91,29 @@ group {
 				image.normal: "images/button_im0.png";
 				image.border: 7 7 7 7;
 				color: 255 255 255 178;
-
 				rel1 { 
 					to: "button.area"; 
 					relative: 0.5 0.5; 
 				}
-
 				rel2 { 
 					to: "button.area"; 
 					relative: 0.5 0.5; 
 				}
 			}
 		}
-
 		part {
 			name: "button_clip";
 			type: RECT;
 			mouse_events: 0;
 			clip_to: "button.area";
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-
 				rel1 { 
 					to: "button_base"; 
 					relative: 0.0 0.0; 
 					offset: 3 1; 
 				}
-
 				rel2 { 
 					to: "button_base"; 
 					relative: 1.0 1.0; 
@@ -145,24 +121,20 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "button";
 			type: IMAGE;
 			mouse_events: 1;
 			clip_to: "button_clip";
-
 			description {
 				state: "default" 0.0;
 				image.normal: "images/button_im1.png";
 				image.border: 7 7 7 7;
-
 				rel1 { 
 					to: "button_clip"; 
 					relative: 0.0 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "button_clip"; 
 					relative: 1.0 1.0; 
@@ -170,222 +142,186 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "shadow";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "button_clip";
-
 			description {
 				state: "default" 0.0;
 				min: 86 26;
 				image.normal: "images/button_im4.png";
 				image.border: 6 6 0 6;
 				color: 255 255 255 0;
-
 				rel1 { 
 					to: "button_clip"; 
 					offset: 0 -1;
 				}
-
 				rel2 { 
 					to: "button_clip"; 
 				}
 			}
-
 			description {
 				state: "clicked" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 255;
 			}
 		}
-
 		part {
 			name: "text";
 			type: TEXT;
-			effect: SHADOW;
+			effect: TEXT_EFFECT_BOLD;
 			mouse_events: 0;
 			clip_to: "button.area";
-
 			description {
 				state: "default" 0.0;
-				TEXT_COLOR;
-				
 				rel1 { 
 					to: "button_clip";
 					offset: 0 2;
 				}
-
 				rel2 { 
 					to: "button_clip";
 				}
-
-				TEXT_BUTTON("button", "Close", 0.5 0.5, 1 1);
+				TEXT_COLOR_BOLD;
+				TEXT_BOLD("button", 0.5 0.5, 1 1);
+				text.text: "Close";
 			}
-
 			description {
 				state: "clicked" 0.0;
 				inherit: "default" 0.0;
-				color: 60 60 60 229;
-				color3: 170 168 169 64;
+				TEXT_COLOR_DISABLED;
 			}
 		}
-
 		part {
 			name: "shadow_overlay";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "button_clip";
-
 			description {
 				state: "default" 0.0;
 				min: 86 26;
 				image.normal: "images/button_im5.png";
 				image.border: 6 6 6 13;
 				color: 255 255 255 0;
-
 				rel1 { 
 					to: "button_clip"; 
 				}
-
 				rel2 { 
 					to: "button_clip"; 
 				}
 			}
-
 			description {
 				state: "clicked" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 255;
 			}
 		}
-
 		part {
 			name: "logo";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 84 83;
 				max: 84 83;
 				fixed: 1 1;
 				align: 0.5 0.5;
-
 				rel1 { 
 					relative: 0.5 0.0; 
 					offset: 0 120; 
 				}
-			
 				rel2 { 
 					relative: 0.5 0.0; 
 					offset: 0 0; 
 				}
-
 				image {
 					normal: "images/logo_im0.png";
 				}
 			}
 		}
-
 		part {
 			name: "project_name";
 			type: TEXT;
-			effect: SHADOW;
+			effect: TEXT_EFFECT_BOLD;
 			mouse_events: 0;
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
-				TEXT_COLOR;
 				fixed: 1 1;
-
 				rel1 { 
 					to: "logo";
 					relative: 0.5 1.0; 
 					offset: 0 0; 
 				}
-	
 				rel2 { 
 					to: "logo"; 
 					relative: 0.5 1.0; 
 					offset: -1 32; 
 				}
-				TEXT_TITLE("label_title", LABEL_THEME_NAME, 0.5 0.5, 1 1);
+				TEXT_COLOR_BOLD;
+				TEXT_BOLD("label_title", 0.5 0.5, 1 1);
+				text.text: LABEL_THEME_NAME;
 			}
 		}
-
 		part {
 			name: "project_version";
 			type: TEXT;
-			effect: NONE;
+			effect: TEXT_EFFECT;
 			mouse_events: 0;
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
-				TEXT_COLOR;
 				fixed: 1 1;
-
 				rel1 { 
 					to: "project_name"; 
 					relative: 0.5 1.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "project_name"; 
 					relative: 0.5 1.0; 
 					offset: -1 -1; 
 				}
-				TEXT_TITLE("label_title", "Version "VERSION_STRING"", 0.5 0.5, 1 1);
+				TEXT_COLOR;
+				TEXT_NORMAL("label_title", 0.5 0.5, 1 1);
+				text.text: "Version "VERSION_STRING"";				
 			}
 		}
-
 		part {
 			name: "about_edj_entry";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 { 
 					to_y: "project_version"; 
 					to_x: "base"; 
 					relative: 0.0 1.0; 
 					offset: 4 2; 
 				}
-
 				rel2 { 
 					to: "base"; 
 					relative: 1.0 1.0; 
 					offset: -5 -45; 
 				}
-
 				image {
 					normal: "images/entry_im0.png";
 					border: 6 6 8 7;
 				}
 			}
 		}
-
 		part {
 			name: "entry_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-
 				rel1 { 
 					to: "about_edj_entry"; 
 					relative: 0.0 0.0; 
 					offset: 7 5; 
 				}
-	
 				rel2 { 
 					to: "about_edj_entry"; 
 					relative: 1.0 1.0; 
@@ -393,26 +329,21 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "edj_text";
 			type: TEXTBLOCK;
 			mouse_events: 0;
 			clip_to: "entry_clip";
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 { 
 					to: "entry_clip"; 
 					offset: 2 0; 
 				}
-
 				rel2 { 
 					to: "entry_clip"; 
 				}
-
 				text {
 					style: "about_detour";
 					text: "detourious is developed by Hannes Janetzek [<lighter>jeffdameth</lighter>], based on detour by Alberto Castro [<lighter>boykot tokyo</lighter>] et al.<\n><\n>detourious is licensed under the BSD Artistic License.<br><br>Enjoy! <-><subliminal>Tricks of the Guild. [2003-2009]</subliminal>";
@@ -420,9 +351,7 @@ group {
 			}
 		}
 	}
-
 	programs {
 		about_dialog_buttons();
 	}
 }
-

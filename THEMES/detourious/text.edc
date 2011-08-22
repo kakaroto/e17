@@ -1,15 +1,47 @@
+#define TEXT_EFFECT PLAIN
+#define TEXT_EFFECT_BOLD SHADOW
+
+#if USE_SYSTEM_FONT
+#define FONT "Sans"
+#define FONT_BOLD "Sans:style=semibold"
+#define FONT_ITALIC "Sans:style=italic"
+#else
+#if USE_BOLD_FONT 
+#define FONT "Switzera:style=semibold"
+#define FONT_BOLD "Switzera:style=bold"
+#define FONT_ITALIC "Switzera:style=semibold italic"
+#else
+#define FONT "Switzera"
+#define FONT_BOLD "Switzera:style=semibold"
+#define FONT_ITALIC "Switzera:style=italic"
+#endif
+#endif
+
 #define TEXT_COLOR								\
-	color: 40 40 40 255;						\
-    color3: 255 255 255 128;
+	color:  20 20 20 255;						\
+    color3: 170 168 169 100;
+
+#define TEXT_COLOR_BOLD							\
+	color: 50 50 50 255;						\
+    color3:  255 255 255 128;
 
 #define TEXT_COLOR_WHITE			   			\
 	color: 255 255 255 255;			   		    \
-    color3: 7 7 7 64;
+    color3:  255 255 255 60;
+
+//color3:  40 60 100 60;
 
 #define TEXT_COLOR_DISABLED						\
-	color: 60 60 60 128;						\
-    color3: 255 255 255 128;					\
+	color: 128 128 128 255;						\
+    color3: 170 168 169 0;						\
     color_class: "text_disabled";
+
+// color: 60 60 60 128;
+// color3: 255 255 255 128;
+
+#define TEXT_COLOR_CLICKED						\
+	color: 60 60 60 229;						\
+    color3: 170 168 169 64;
 
 #define TEXT_NORMAL(_text_class, _align, _min)	\
 	text {										\
@@ -25,7 +57,7 @@
 	text {										\
 		text: "";								\
 		font: FONT;								\
-		size: 10;								\
+		size: 9;								\
 		min: _min;								\
 		align: _align;							\
 		text_class: _text_class;				\
@@ -45,27 +77,26 @@
 	text {										\
 		text: "";								\
 		font: FONT_BOLD;						\
-		size: 9;								\
+		size: 8;								\
 		min: _min;								\
 		align: _align;							\
 		text_class: _text_class;				\
 	}
 
-#define TEXT_BUTTON(_text_class, _label, _align, _min)	\
-	text {												\
-		text: _label;									\
-		font: FONT_BOLD;								\
-		size: 9;										\
-		min: _min;										\
-		align: _align;									\
-		text_class: _text_class;						\
+#define TEXT_BOLD(_text_class, _align, _min)	\
+	text {										\
+		font: FONT_BOLD;						\
+		size: 8;								\
+		min: _min;								\
+		align: _align;							\
+		text_class: _text_class;				\
 	}
 
 #define TEXT_TITLE(_text_class, _label, _align, _min)	\
 	text {												\
 		text: _label;									\
 		font: FONT_BOLD;								\
-		size: 9;										\
+		size: 8;										\
 		min: _min;										\
 		align: _align;									\
 		text_class: _text_class;						\
@@ -125,6 +156,22 @@ styles {
 		tag:  "/title" "- \n \n";
 	}
 	style {
+		name: "notification_style";
+		base: "font="FONT" font_size=8 align=left color=#ccccccff wrap=word ellipsis=1.0";
+		tag:  "subject"  "+ font_size=8";
+		tag:  "body"  "+ font_size=8";
+		tag:  "br" "\n";
+		tag:  "b" "+ font="FONT_BOLD"";
+		tag:  "i" "+ font="FONT_ITALIC"";
+		tag:  "u" "+ underline=on";
+		tag:  "img" ""; /* images not supported */
+		tag:  "a" ""; /* links not supported */
+	}
+	style {
+		name: "message_text";
+		base: "font="FONT" font_size=10 color=#fff wrap=mixed";
+	}
+	style {
 		name: "about_enlightenment";
 		base: "font="FONT" font_size=9 color=#2C2C2C wrap=word text_class=tb_plain";
 		tag: "hilight" "+ font="FONT_BOLD" text_class=tb_light"; 
@@ -142,23 +189,5 @@ styles {
 		tag: "underline" "+ underline=on underline_color=#3c3c3c60 font_size=10 color=#3c3c3c60";
 		tag: "lighter" "+ color=#07070780";
 		tag:  "br" "\n"; 
-	}
-	style {
-		name: "notification_style";
-		base: "font="FONT" font_size=8 align=left color=#ccccccff wrap=word ellipsis=1.0";
-		tag:  "subject"  "+ font_size=8";
-		tag:  "body"  "+ font_size=8";
-		tag:  "br" "\n";
-		tag:  "b" "+ font="FONT_BOLD"";
-		tag:  "i" "+ font="FONT_ITALIC"";
-		tag:  "u" "+ underline=on";
-		tag:  "img" ""; /* images not supported */
-		tag:  "a" ""; /* links not supported */
-	}
-	style {
-		name: "message_text";
-		base: "font="FONT" font_size=10 color=#fff wrap=mixed";
-	}
-
-  
+	}  
 }

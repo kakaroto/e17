@@ -70,7 +70,7 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
-			effect: SHADOW;
+			effect: TEXT_EFFECT_BOLD;
 			scale: 1;
 			clip_to: "input_base";
 			description {
@@ -86,7 +86,7 @@ group {
 					relative: 0.0 0.5;
 					offset: 10  0;
 				}
-				TEXT_COLOR;
+				TEXT_COLOR_BOLD;
 				TEXT_LARGE("everything_typebuf", 0.0 0.5, 1 1);
 			}
 		}
@@ -841,7 +841,7 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
-			effect: SHADOW;
+			effect: TEXT_EFFECT_BOLD;
 			mouse_events: 0;
 			clip_to: "clip";
 			scale: 1;
@@ -856,14 +856,12 @@ group {
 				rel2.relative:  1.0 1.0;
 				rel1.offset:   6 0;
 				rel2.offset:   -6 -1;
-				color: 60 60 60 255;
-				color3: 240 240 240 128;
+				TEXT_COLOR_BOLD;
 				TEXT_LARGE("everything_selector", 0.0 0.5, 0 1);
 			}
 			description {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				color: 20 20 20 255;
 			}
 		}
 		part {
@@ -881,15 +879,12 @@ group {
 				rel2.relative:  1.0 0.0;
 				rel1.offset: 6 6;
 				rel2.offset: -6 -1;
-				color: 80 80 80 255;
-				color3: 240 240 240 128;
+				TEXT_COLOR_BOLD;
 				TEXT_SMALL("label_small", 0.0 0.0, 0 1);
 			}
 			description {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				color: 40 40 40 255;
-				color3: 240 240 240 128;
 			}
 		}
 		part {
@@ -1039,7 +1034,7 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
-			effect: SHADOW;
+			effect: TEXT_EFFECT;
 			mouse_events: 0;
 			clip_to: "clip";
 			scale: 1;
@@ -1352,7 +1347,7 @@ group {
 			clip_to: "base";
 
 #if (BUILD_ILLUME == 0)
-			effect: SHADOW;
+			effect: TEXT_EFFECT_BOLD;
 #endif
 			mouse_events: 0;
 			scale: 1;
@@ -1701,8 +1696,8 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
+			effect: TEXT_EFFECT;
 			clip_to: "base";
-			effect: SHADOW;
 			mouse_events: 0;
 			scale: 1;
 			description {

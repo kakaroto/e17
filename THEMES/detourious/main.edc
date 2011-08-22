@@ -9,56 +9,25 @@
 #include "macros/efm_nav.edc"
 #include "macros/init-bg.edc"
 #include "macros/sys.edc"
+#include "text.edc"
+#include "parts.edc"
 
 #define VERSION_STRING 0.0.1
 #define LABEL_THEME_NAME "dtrs"
 
 #define BUILD_COMPOSITE 1
-#define BUILD_ILLUME 0
+#define BUILD_ILLUME 1
 
-#define USE_BOLD_FONT 1
+#define USE_SYSTEM_FONT 1
+#define USE_BOLD_FONT 0
 
-#if USE_BOLD_FONT 
-#define FONT "Switzera:style=semibold"
-#define FONT_BOLD "Switzera:style=bold"
-#define FONT_ITALIC "Switzera:style=semibold italic"
-#else
-#define FONT "Switzera"
-#define FONT_BOLD "Switzera:style=semibold"
-#define FONT_ITALIC "Switzera:style=italic"
-#endif
-
-	//Mouse pointer options
-#define ANIMATED_CURSOR 1			/* Mouse pointer will pulsate when inactive */
-#define ALTERNATE_CURSOR 0			/* Alternate (black) mouse pointer */
+#define ANIMATED_CURSOR 1	/* Mouse pointer will pulsate when inactive */
+#define ALTERNATE_CURSOR 0	/* Alternate (black) mouse pointer */
 
 #define COLOR_LIST_BG        253 253 253 255
 #define COLOR_LIST_BG_ODD    240 245 250 255
 #define COLOR_LIST_BG_ACTIVE 138 171 225 255
 #define COLOR_LIST_HEADER    103 135 183 255
-
-#include "text.edc"
-
-#define EVENT_RECT								\
-	part {										\
-		name: "event";							\
-		type: RECT;								\
-		description {							\
-			state: "default" 0.0;				\
-			color: 0 0 0 0;						\
-		}										\
-	}											\
-
-#define FILL(ORIGIN, SIZE)						\
-	fill {										\
-		origin {								\
-			offset: ORIGIN;						\
-		}										\
-		size {									\
-			offset: SIZE;						\
-		}										\
-	}
-
 
 data {
 	item: "theme/name" 		"detourious";
@@ -121,7 +90,7 @@ collections {
 	#include "bits/ibar.edc" 		/* ibar & ibox group */
 	#include "bits/icons.edc" 		/* icons definitions */
 	#include "bits/ilist.edc"		/* icon list */
-	//#include "bits/init.edc"		/* init screen */
+	#include "bits/init.edc"		/* init screen */
 	#include "bits/label.edc"		/* label definiton group */
 	#include "bits/fileman.edc" 		/* file manager groups */
 	#include "bits/menu.edc" 		/* menu and context menu groups */

@@ -6,13 +6,12 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
+			effect: TEXT_EFFECT;
 			mouse_events: 0;
 			scale: 1;
 
 			description {
 				state: "default" 0.0;
-				color: 60 60 60 255;
-
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 2 4; 
@@ -22,6 +21,7 @@ group {
 					relative: 1.0 1.0; 
 					offset: -3 -5; 
 				}
+				TEXT_COLOR;
 				TEXT_NORMAL("label", 0.0 0.5, 1 1);
 			}
 		}

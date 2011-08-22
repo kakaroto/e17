@@ -1,31 +1,25 @@
 
 group {
 	name: "e/widgets/exebuf/main";
-
 	parts {
 		part {
 			name: "bg_border";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 104 108 111 255;
 			}
 		}
-
                 MENU_GRADIENT
-
 		part {
 			name: "bg_overlay";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				rel1.offset: 1 1;
 				rel2.offset: -2 -2;
-
 				image {
 					normal: "images/menu_im0.png";
 					border: 2 2 2 2;
@@ -33,49 +27,40 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "application_list_entry";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 { 
 					to_y: "e.swallow.eap_list"; 
 					relative: 0.0 0.0; 
 					offset: 4 -5; 
 				}
-		
 				rel2 { 
 					to_y: "e.swallow.eap_list"; 
 					relative: 1.0 1.0; 
 					offset: -5 5;
 				}
-
 				image {
 					normal: "images/entry_im0.png";
 					border: 6 6 8 7;
 				}
 			}
 		}
-
 		part {
 			name: "e.swallow.eap_list";
 			type: SWALLOW;
 			clip_to: "application_list_clip";
-	
 			description {
 				state: "default" 0.0;
 				min: 32 64;
 				align: 0.5 0.0;
-		
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 16 10; 
 				}
-
 				rel2 { 
 					to_y: "e.text.label"; 
 					relative: 1.0 0.0; 
@@ -83,117 +68,95 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "application_list_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-
 				rel1 { 
 					to_y: "e.swallow.eap_list"; 
 				}
-		
 				rel2 { 
 					to_y: "e.swallow.eap_list"; 
 				}
 			}
 		}
-
 		part {
 			name: "separator";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				max: 608 12;
-
 				rel1 { 
 					to_y: "e.swallow.exe_list"; 
 					relative: 0.0 1.0; 
 					offset: 1 -16; 
 				}
-
 				rel2 { 
 					relative: 1.0 1.0; 
 					offset: -2 0; 
 				}
-
 				image {
 					normal: "images/dialog_im1.png";
 					border: 0 0 3 0;
 				}
 			}
 		}
-
 		part {
 			name: "exe_list_entry";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 { 
 					to_y: "e.swallow.exe_list"; 
 					relative: 0.0 0.0; 
 					offset: 4 -6; 
 				}
-
 				rel2 { 
 					to_y: "e.swallow.exe_list"; 
 					relative: 1.0 1.0; 
 					offset: -5 4; 
 				}
-
 				image {
 					normal: "images/entry_im0.png";
 					border: 6 6 8 7;
 				}
 			}
 		}
-
 		part {
 			name: "e.swallow.exe_list";
 			type: SWALLOW;
 			clip_to: "exe_list_clip";
-
 			description {
 				state: "default" 0.0;
 				min: 32 64;
 				align: 0.5 1.0;
-
 				rel1 { 
 					to_y: "e.text.label"; 
 					relative: 0.0 1.0; 
 					offset: 16 28; 
 				}
-
 				rel2 { 
 					relative: 1.0 1.0; 
 					offset: -17 -24; 
 				}
 			}
 		}
-
 		part {
 			name: "exe_list_clip";
 			type: RECT;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-
 				rel1 { 
 					to_y: "e.swallow.exe_list"; 
 					relative: 0.0 0.0; 
 					offset: 12 0; 
 				}
-
 				rel2 { 
 					to_y: "e.swallow.exe_list"; 
 					relative: 1.0 1.0; 
@@ -202,30 +165,25 @@ group {
 			}
 		}
 
-
 		part {
 			name: "e.text.label";
 			type: TEXT;
 			scale: 1;
-	
 			description {
 				state: "default" 0.0;
 				align: 0.0 1.0;
 				fixed: 1 1; /* ?? */
 				color: 7 7 7 255;
-
 				rel1 { 
 					to_x: "e.swallow.icons"; 
 					relative: 1.0 0.5; 
 					offset: 20 0; 
 				}
-
 				rel2 { 
 					to_x: "e.swallow.icons"; 
 					relative: 1.0 0.5; 
 					offset: 20 0; 
 				}
-
 				text {
 					text: "COMMAND";
 					font: "Sans:style=Bold";
@@ -236,12 +194,10 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "cursor";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 1 14;
@@ -249,20 +205,17 @@ group {
 				fixed: 1 1;
 				align: 0.0 1.0;
 				color: 7 7 7 0;
-
 				rel1 { 
 					to: "e.text.label"; 
 					relative: 1.0 0.0; 
 					offset: 2 0; 
 				}
-
 				rel2 {
 					to: "e.text.label"; 
 					relative: 1.0 1.0; 
 					offset: 0 -2; 
 				}
 			}
-
 			description {
 				state: "faded" 0.0;
 				inherit: "default" 0.0;
@@ -270,72 +223,60 @@ group {
 			}
 		}
 
-
 		part {      
 			name: "icon";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 45 45;
 				max: 45 45;
 				fixed: 1 1;
-
 				rel1 { 
 					to: "e.swallow.icons"; 
 					relative: 0.0 0.0; 
 					offset: -8 0; 
 				}
-
 				rel2 { 
 					to: "e.swallow.icons"; 
 					relative: 1.0 1.0; 
 					offset: 7 0; 
 				}
-
 				image {
 					normal: "images/scrollframe_im0.png";
 					border: 7 7 7 7;
 				}
 			}
 		}
-
 		part {      
 			name: "icon_inset";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 44 45;
 				max: 44 45;
 				fixed: 1 1;
-
 				rel1 { 
 					to: "icon"; 
 					relative: 0.0 0.0; 
 					offset: 2 1;
 				}
-
 				rel2 { 
 					to: "icon"; 
 					relative: 1.0 1.0; 
 					offset: -2 -2; 
 				}
-
 				image {
 					normal: "images/scrollframe_im1.png";
 					border: 5 5 5 6;
 				}
 			}
 		}
-
 		part {      
 			name: "icon_overlay";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 48 47;
@@ -343,13 +284,11 @@ group {
 				fixed: 1 1;
 				image.normal: "images/scrollframe_im2.png";
 				image.border: 7 7 7 7; 
-
 				rel1 { 
 					to: "icon"; 
 					relative: 0.0 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "icon"; 
 					relative: 1.0 1.0; 
@@ -357,23 +296,19 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "e.swallow.icons";
 			type: SWALLOW;
-	
 			description {
 				state: "default" 0.0;
 				aspect: 1.0 1.0;
 				aspect_preference: VERTICAL;
 				align: 0.0 0.5;
-		
 				rel1 { 
 					to_y: "e.text.label"; 
 					relative: 0.0 0.0; 
 					offset: 16 -6; 
 				}
-
 				rel2 { 
 					to_y: "e.text.label"; 
 					relative: 1.0 1.0; 
@@ -381,37 +316,31 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "decoration";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 15 11;
 				max: 15 11;
 				fixed: 1 1;
-	
 				rel1 { 
 					to: "gradient"; 
 					relative: 0.5 1.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "gradient"; 
 					relative: 0.5 1.0; 
 					offset: 0 -14; 
 				}
-	
 				image {
 					normal: "images/decoration_im1.png";
 				}
 			}
 		}
 	}
-
 	programs {
 		program {
 			name: "blink1";
@@ -421,7 +350,6 @@ group {
 			target: "cursor";
 			after: "blink2";
 		}
-
 		program {
 			name: "blink2";
 			action: STATE_SET "default" 0.0;
@@ -432,16 +360,13 @@ group {
 		}
 	}
 }
-
 group {
 	name: "e/widgets/exebuf/item";
-
 	parts {
 		part {
 			name: "entry_title";
 			type: IMAGE;
 			mouse_events: 0;
-	
 			description {
 				state: "default" 0.0;
 				max: 9999 26;
@@ -449,19 +374,16 @@ group {
 				visible: 0;
 				image.normal: "images/exebuf_im0.png";
 				image.border: 4 4 5 5;
-
 				rel1 { 
 					to_x: "e.swallow.icons"; 
 					relative: 0.0 0.0; 
 					offset: -4 -1; 
 				}
-
 				rel2 { 
 					relative: 1.0 1.0; 
 					offset: 3 -1; 
 				}
 			}
-
 			description {
 				state: "active" 0.0;
 				inherit: "default" 0.0;
@@ -469,29 +391,24 @@ group {
 				visible: 1;
 			}
 		}
-
 		part {
 			name: "e.text.title";
 			type: TEXT;
 			effect: NONE;
 			mouse_events: 0;
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
 				color: 60 60 60 255;
-	
 				rel1 {
 					to_x: "e.swallow.icons"; 
 					relative: 1.0 0.0; 
 					offset: 9 7; 
 				}
-
 				rel2 { 
 					relative: 1.0 1.0; 
 					offset: -8 -8; 
 				}
-
 				text {
 					text: "";
 					font: "Sans";
@@ -501,12 +418,10 @@ group {
 					text_class: "menu_item";
 				}
 			}
-
 			description {
 				state: "active" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 255;
-
 				text {
 					text: "";
 					font: "Sans:style=Bold";
@@ -517,47 +432,39 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "e.swallow.icons";
 			type: SWALLOW;
-
 			description {
 				state: "default" 0.0;
 				min: 24 24;
 				max: 24 24;
 				fixed: 1 1;
 				align: 0.0 0.5;
-		
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 0 -1; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: -1 -1; 
 				}
 			}
 		}
-
 		part {
 			name: "e.event.exebuf.item";
 			type: RECT;
 			mouse_events: 1;
-
 			description {
 				state: "default" 0.0;
 				min: 14 14;
 				color: 0 0 0 0;
 				visible: 1;
-
 				rel1 { 
 					to_x: "e.swallow.icons"; 
 					relative: 1.0 0.0; 
 					offset: 1 -1; 
 				}
-
 				rel2 { 
 					relative: 1.0 1.0; 
 					offset: -1 -1; 
@@ -565,7 +472,6 @@ group {
 			}
 		}
 	}
-
 	programs {
 		program {
 			name: "active";
@@ -575,7 +481,6 @@ group {
 			target: "e.text.title";
 			target: "entry_title";
 		}
-
 		program {
 			name: "passive";
 			signal: "e,state,unselected";
@@ -586,4 +491,3 @@ group {
 		}
 	}
 }
-

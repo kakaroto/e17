@@ -912,6 +912,7 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
+			effect: TEXT_EFFECT_BOLD;
 			mouse_events: 0;
 			clip_to: "text.clipper";
 			description {
@@ -925,15 +926,12 @@ group {
 					to: "e.swallow.win";
 					offset: -25 -1;
 				}
+				TEXT_COLOR_WHITE;
+				TEXT_BOLD("border_title_active", 0.5 0.5, 1 0);
+				
 				text {
-					font: "Sans:style=Bold";
-					size: 7;
-					align: 0.5 0.5;
 					elipsis: 1.0;
-					/* min: 0 1; */
 					max: 1 0;
-					text: "";
-					text_class: "border_title_active";
 				}
 			}
 		}

@@ -11,7 +11,6 @@
 		transition: DECELERATE 0.5;				\
 		target: "base";							\
 	}
-
 # ifdef TEXT
 #  undef TEXT
 # endif
@@ -23,55 +22,46 @@
 		action: STATE_SET STATE 0.0;			\
 		target: "e.text.label";					\
 	}
-
 group {
 	name: "e/widgets/ilist";
 	data.item: "stacking" "above";
 	data.item: "selectraise" "on";
-
 	parts {
 		part {
 			name: "base";
 			type: RECT;
-	
 			description {
 				state: "default" 0.0;
 				color: COLOR_LIST_BG;
 			}
-
 			description {
 				state: "active" 0.0;
 				color: COLOR_LIST_BG_ACTIVE;
 			}
 		}
-
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
-
 			description {
 				state: "default" 0.0;
 				align: 0.0 0.5;
 				aspect: 1 1;
 				aspect_preference: VERTICAL;
-
 				rel1 { 
 					offset: 8 5; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: 5 -6; 
 				}
 			}
 		}
-
 		part {
 			name: "e.text.label";
 			type: TEXT;
+			effect: TEXT_EFFECT;
 			mouse_events: 0;
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
 				rel1 { 
@@ -79,18 +69,16 @@ group {
 					relative: 1.0 0.0; 
 					offset: 5 5; 
 				}
-
 				rel2 { 
 					offset: -6 -3; 
 				}
 				TEXT_COLOR;
 				TEXT_NORMAL("ilist_item", 0.0 0.5, 1 1);
 			}
-
 			description {
 				state: "active" 0.0;
 				inherit: "default" 0.0;
-				color: 255 255 255 255;
+				TEXT_COLOR_WHITE;
 			}
 		}
 		part {
@@ -111,9 +99,7 @@ group {
 				}
 		    }
 		}
-
 	}
-
 	programs {
 		LIST("active_list", "e,state,selected", "active");
 		LIST("unactive_list", "e,state,unselected", "default");
@@ -121,55 +107,46 @@ group {
 		TEXT("unactive_text", "e,state,unselected", "default");
 	}
 }
-
 group {
 	name: "e/widgets/ilist_odd";
 	data.item: "stacking" "below";
 	data.item: "selectraise" "on";
-
 	parts {
 		part {
 			name: "base";
 			type: RECT;
-
 			description {
 				state: "default" 0.0;
 				color: COLOR_LIST_BG_ODD;
 			}
-
 			description {
 				state: "active" 0.0;
 				color: COLOR_LIST_BG_ACTIVE;
 			}
 		}
-
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
-
 			description {
 				state: "default" 0.0;
 				align: 0.0 0.5;
 				aspect: 1 1;
 				aspect_preference: VERTICAL;
-
 				rel1 { 
 					offset: 8 5; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: 5 -6; 
 				}
 			}
 		}
-
 		part {
 			name: "e.text.label";
 			type: TEXT;
+			effect: TEXT_EFFECT;
 			mouse_events: 0;
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
 				rel1 { 
@@ -177,18 +154,16 @@ group {
 					relative: 1.0 0.0; 
 					offset: 5 5; 
 				}
-
 				rel2 { 
 					offset: -6 -3; 
 				}
 				TEXT_COLOR;
 				TEXT_NORMAL("ilist_item", 0.0 0.5, 1 1);
 			}
-
 			description {
 				state: "active" 0.0;
 				inherit: "default" 0.0;
-				color: 255 255 255 255;
+				TEXT_COLOR_WHITE;
 			}
 		}
 		part {
@@ -210,7 +185,6 @@ group {
 		    }
 		}
 	}
-
 	programs {
 		LIST("active_list", "e,state,selected", "active");
 		LIST("unactive_list", "e,state,unselected", "default");
@@ -218,74 +192,61 @@ group {
 		TEXT("unactive_text", "e,state,unselected", "default");
 	}
 }
-
 group {
 	name: "e/widgets/ilist_header";
 	alias: "e/widgets/ilist_header_odd";
 	data.item: "stacking" "above";
 	data.item: "selectraise" "on";
-
 	parts {
 		part {
 			name: "base";
 			type: RECT;
 			mouse_events: 0;
-	
 			description {
 				state: "default" 0.0;
 				color: COLOR_LIST_HEADER;
 			}
 		}
-
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
-
 			description {
 				state: "default" 0.0;
 				align: 0.0 0.5;
 				aspect: 1 1;
 				aspect_preference: VERTICAL;
-
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 2 4; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: 4 -3; 
 				}
 			}
 		}
-
 		part {
 			name: "e.text.label";
 			type: TEXT;
 			mouse_events: 0;
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-
 				rel1 { 
 					to_x: "e.swallow.icon"; 
 					relative: 1.0 0.0; 
 					offset: 0 4; 
 				}
-
 				rel2 { 
 					offset: -6 -3; 
 				}
 				TEXT_HEADER("ilist_header", 0.0 0.5, 1 1);
 			}
 		}
-
 		part {
 			name: "event";
 			type: RECT;
-
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 0;
@@ -294,10 +255,8 @@ group {
 		}
 	}
 }
-
 group {
     name: "e/widgets/ilist/toggle_end";
-
     parts {
 		part {
             name: "bg";

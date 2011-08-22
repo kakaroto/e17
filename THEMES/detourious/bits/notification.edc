@@ -1,5 +1,5 @@
 /* Guidelines for a notification theme.
- *
+
  * Groups needed :
  *  - modules/notification/logo : Logo for the module and it must contain at least one part named image.
  *  - modules/notification/main : Main theme for the popup
@@ -15,11 +15,9 @@
  *  - notification,close : Close the popup
  *  - notification,find  : Find the source application of the event
  */
-
 group {
 	name: "modules/notification/main/alpha";
 	alias: "modules/notification/main";
-
 	data {
         item: "app_icon_max" "48 48";
         item: "shaped" "1";
@@ -45,7 +43,6 @@ group {
 				visible: 0;
             }
 		}
-
 		part {
             name: "clipper";
             type: RECT;
@@ -63,7 +60,6 @@ group {
 				}
             }
 		}
-
 		part {
             name: "base";
             type: IMAGE;
@@ -78,7 +74,6 @@ group {
 				}
             }
 		}
-
 		part {
             name: "notification.text.title";
             type: TEXT;
@@ -106,7 +101,6 @@ group {
 				TEXT_NORMAL("menu_title", 0.0 0.0, 0 1);
 			}
 		}
-
 		/* Close Button */
 		part {
             name: "notification.close_btn";
@@ -119,7 +113,6 @@ group {
 					relative: 1.0 0.0;
 					offset: -24 5;
 				}
-
 				rel2 {
 					relative: 1.0 0.0;
 					offset:  -6 20;
@@ -132,7 +125,6 @@ group {
 				visible: 1;
             }
 		}
-
 		part {
             name: "clipper_app_icon";
             type: RECT;
@@ -157,7 +149,6 @@ group {
 				visible: 0;
             }
 		}
-
 		part {
             name: "notification.swallow.app_icon";
             type: SWALLOW;
@@ -180,7 +171,6 @@ group {
 				}
             }
 		}
-
 		/* Message text */
 		part {
             name: "notification.textblock.message";
@@ -193,7 +183,6 @@ group {
 				min: 180 0;
 				max: 180 150;
 				rel1 {
-
 					to_x: "notification.swallow.app_icon";
 					to_y: "notification.text.title";
 					relative: 1.0 1.0;
@@ -243,7 +232,6 @@ group {
             target: "clipper_app_icon";
             target: "base";
 		}
-
 		program {
             name: "notification,del";
             signal: "notification,del";
@@ -252,7 +240,6 @@ group {
             transition: ACCELERATE 0.4;
             target: "clipper_app_icon";
 		}
-
 		program {
             name: "close";
             signal: "mouse,down,1";
@@ -271,7 +258,6 @@ group {
             action: STATE_SET "default" 0.0;
             target: "notification.close_btn";
 		}
-
 		program {
             name: "find";
             signal: "mouse,down,1";

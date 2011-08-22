@@ -78,95 +78,78 @@
 		transition: DECELERATE 0.25;				\
 		target: "hover_clip";						\
 	}
-
 group {
 	name: "e/widgets/radio";
-
 	parts {
 		part {
 			name: "base";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 20 18;
 				max: 20 18;
 				fixed: 1 1;
 				align: 0.0 0.5;
-
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 2 2; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: 2 -3; 
 				}
-
 				image {
 					normal: "images/radio_bt0.png";
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 128;
 			}
 		}
-
 		part {
 			name: "hover_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
 			}
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
 				color: 109 152 222 255;
 			}
 		}
-
 		part {
 			name: "focus_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 0;
 			}
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 255;
 			}
 		}
-
 		part {
 			name: "focus";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "focus_clip";
-
 			description {
 				state: "default" 0.0;
 				image.normal: "images/radio_bt3.png";
-
 				rel1 { 
 					to: "toggle.on";
 					relative: 0.0 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "toggle.on";
 					relative: 1.0 1.0; 
@@ -174,78 +157,65 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "shadow";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 192;
 				image.normal: "images/radio_bt4.png";
-
 				rel1 { 
 					to: "toggle.on";
 					relative: 0.0 0.0; 
 					offset: 0 1; 
 				}
-
 				rel2 { 
 					to: "toggle.on";
 					relative: 1.0 1.0; 
 					offset: -1 -1; 
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
 			}
 		}
-
 		part {
 			name: "toggle.off";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "hover_clip";
-
 			description {
 				state: "default" 0.0;
 				min: 20 18;
 				max: 20 18;
 				fixed: 1 1;
 				align: 0.0 0.5;
-
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 2 2; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: 2 -3; 
 				}
-
 				image {
 					normal: "images/radio_bt1.png";
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 128;
 			}
 		}
-
 		part {
 			name: "toggle.on";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "hover_clip";
-
 			description {
 				state: "default" 0.0;
 				min: 20 18;
@@ -253,70 +223,58 @@ group {
 				fixed: 1 1;
 				align: 0.0 0.5;
 				visible: 0;
-
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 2 2; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: 2 -3; 
 				}
-
 				image {
 					normal: "images/radio_bt2.png";
 				}
 			}
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
 				visible: 1;
 			}
 		}
-
 		part {
 			name: "e.text.label";
 			type: TEXT;
+			effect: TEXT_EFFECT;
 			mouse_events: 0;
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
 				min: 17 17;
-				TEXT_COLOR;
-
 				rel1 {
 					to_x: "toggle.on";
 					relative: 1.0 0.0;
 					offset: 5 2;
 				}
-
 				rel2 {
 					relative: 1.0 1.0;
 					offset: -5 -2;
 				}
-
+				TEXT_COLOR;
 				TEXT_NORMAL("radio_button", 0.0 0.5, 1 1);
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				TEXT_COLOR_DISABLED;
 			}
 		}
-
 		part {
 			name: "event";
 			type: RECT;
-
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 0;
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
@@ -324,101 +282,83 @@ group {
 			}
 		}
 	}
-
 	programs {
 		RADIO();
 	}
 }
-
 group {
 	name: "e/widgets/radio_icon";
-
 	parts {
 		part {
 			name: "base";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 20 18;
 				max: 20 18;
 				fixed: 1 1;
 				align: 0.0 0.5;
-
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 8 2; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: 8 -3; 
 				}
-
 				image {
 					normal: "images/radio_bt0.png";
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 128;
 			}
 		}
-
 		part {
 			name: "hover_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
 			}
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
 				color: 109 152 222 255;
 			}
 		}
-
 		part {
 			name: "focus_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 0;
 			}
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 255;
 			}
 		}
-
 		part {
 			name: "focus";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "focus_clip";
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
 				image.normal: "images/radio_bt3.png";
-
 				rel1 { 
 					to: "toggle.on";
 					relative: 0.0 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "toggle.on";
 					relative: 1.0 1.0; 
@@ -426,78 +366,65 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "shadow";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 128;
 				image.normal: "images/radio_bt4.png";
-
 				rel1 { 
 					to: "toggle.on";
 					relative: 0.0 0.0; 
 					offset: 0 1; 
 				}
-
 				rel2 { 
 					to: "toggle.on";
 					relative: 1.0 1.0; 
 					offset: -1 -1; 
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 0;
 			}
 		}
-
 		part {
 			name: "toggle.off";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "hover_clip";
-
 			description {
 				state: "default" 0.0;
 				min: 20 18;
 				max: 20 18;
 				fixed: 1 1;
 				align: 0.0 0.5;
-
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 8 2; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: 8 -3; 
 				}
-
 				image {
 					normal: "images/radio_bt1.png";
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 128;
 			}
 		}
-
 		part {
 			name: "toggle.on";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "hover_clip";
-
 			description {
 				state: "default" 0.0;
 				min: 20 18;
@@ -505,80 +432,65 @@ group {
 				fixed: 1 1;
 				align: 0.0 0.5;
 				visible: 0;
-
 				rel1 { 
 					relative: 0.0 0.0; 
 					offset: 8 2; 
 				}
-
 				rel2 { 
 					relative: 0.0 1.0; 
 					offset: 8 -3; 
 				}
-
 				image {
 					normal: "images/radio_bt2.png";
 				}
 			}
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
 				visible: 1;
 			}
 		}
-
 		part {
 			name: "icon_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-
 				rel1 { 
 					to: "e.swallow.icon";
 				}
-
 				rel2 { 
 					to: "e.swallow.icon"; 
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 128;
 			}
 		}
-
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
 			mouse_events: 0;
 			clip_to: "icon_clip";
-
 			description {
 				state: "default" 0.0;
 				min: 16 16;
-
 				rel1 { 
 					to_x: "toggle.on"; 
 					relative: 1.0 0.0; 
 					offset: 3 2; 
 				}
-
 				rel2 { 
 					relative: 1.0 1.0; 
 					offset: -1 -2; 
 				}
 			}
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
-
 				rel2 {
 					to_y: "e.text.label";
 					relative: 1.0 0.0;
@@ -586,68 +498,57 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "label_clip";
 			type: RECT;
 			mouse_events: 0;
-	
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
 				visible: 0;
 			}
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
 				visible: 1;
 			}
 		}
-
 		part {
 			name: "e.text.label";
 			type: TEXT;
+			effect: TEXT_EFFECT;
 			mouse_events: 0;
 			clip_to: "label_clip";
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
 				min: 16 16;
 				color_class: "radio_text"; 
-				TEXT_COLOR;
-				
 				rel1 { 
 					to_x: "toggle.on"; 
 					relative: 1.0 0.5; 
 					offset: 2 1; 
 				}
-
 				rel2 { 
 					relative: 1.0 1.0; 
 					offset: -2 -2; 
 				}
-
+				TEXT_COLOR;
 				TEXT_NORMAL("radio_button", 0.0 0.5, 1 1);
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				TEXT_COLOR_DISABLED;
 			}
 		}
-
 		part {
 			name: "event";
 			type: RECT;
-
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 0;
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
@@ -655,7 +556,6 @@ group {
 			}
 		}
 	}
-
 	programs {
 		program {
 			name: "focused";
@@ -665,7 +565,6 @@ group {
 			transition: DECELERATE 0.5;
 			target: "focus_clip";
 		}
-
 		program {
 			name: "unfocused";
 			signal: "e,state,unfocused";
@@ -674,7 +573,6 @@ group {
 			transition: DECELERATE 0.5;
 			target: "focus_clip";
 		}
-
 		program {
 			name: "on";
 			signal: "e,state,on";
@@ -682,7 +580,6 @@ group {
 			action: STATE_SET "visible" 0.0;
 			target: "toggle.on";
 		}
-
 		program {
 			name: "off";
 			signal: "e,state,off";
@@ -690,7 +587,6 @@ group {
 			action: STATE_SET "default" 0.0;
 			target: "toggle.on";
 		}
-
 		program {
 			name: "label_on";
 			signal: "e,state,labeled";
@@ -699,7 +595,6 @@ group {
 			target: "e.swallow.icon";
 			target: "label_clip";
 		}
-
 		program {
 			name: "toggle";
 			signal: "mouse,down,1";
@@ -707,7 +602,6 @@ group {
 			action: SIGNAL_EMIT "e,action,toggle" "";
 			after: "mouse_out";
 		}
-
 		program {
 			name: "enable";
 			signal: "e,state,enabled";
@@ -720,7 +614,6 @@ group {
 			target: "icon_clip";
 			target: "e.text.label";
 		}
-
 		program {
 			name: "disable";
 			signal: "e,state,disabled";
@@ -733,7 +626,6 @@ group {
 			target: "icon_clip";
 			target: "e.text.label";
 		}
-
 		program {
 			name: "mouse_in";
 			signal: "mouse,in";
@@ -742,7 +634,6 @@ group {
 			transition: DECELERATE 0.25;
 			target: "hover_clip";
 		}
-
 		program {
 			name: "mouse_out";
 			signal: "mouse,out";
@@ -753,4 +644,3 @@ group {
 		}
 	}
 }
-

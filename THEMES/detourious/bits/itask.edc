@@ -134,7 +134,7 @@ group {
 		part {
             name: "e.text.label";
             type: TEXT;
-            effect: SHADOW;
+            effect: TEXT_EFFECT_BOLD;
             mouse_events: 0;
             scale: 1;
             description {
@@ -152,12 +152,12 @@ group {
 				}
 				color_class: "button_text";
 				TEXT_COLOR;
-				TEXT_BUTTON("button", "", 0.5 0.5, 0 1);
+				TEXT_BOLD("button", 0.5 0.5, 0 1);
 			}
             description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
-				color_class: "button_text_disabled";
+				TEXT_COLOR_DISABLED;
             }
             description {
 				state: "icon" 0.0;

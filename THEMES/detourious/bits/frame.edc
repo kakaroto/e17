@@ -1,13 +1,11 @@
 
 group {
     name: "e/widgets/frame";
-
     parts {
         part {
             name: "frame";
             type: RECT;
             mouse_events: 0;
-
             description {
                 state: "default" 0.0;
                 rel1.offset: 0 2;
@@ -18,68 +16,54 @@ group {
         part {
             name: "border";
             mouse_events: 0;
-
             description {
                 state: "default" 0.0;
                 rel1.offset: 0 -1;
                 rel2.offset: -1 0;
                 rel2.relative: 1.0 1.0;
-                
                 image.normal: "images/frame_im0.png";
                 image.border: 9 8 8 8;
 			}
         }
-
         part {
             name: "e.swallow.content";
             type: SWALLOW;
-
             description {
                 state: "default" 0.0;
-
-                rel1 { 
+                rel1 {
                     to: "frame";
                     to_y: "e.text.label";
                     relative: 0.0 0.0;
                     offset: 10 14;
                 }
-
-                rel2 { 
+                rel2 {
                     to: "frame";
-                    relative: 1.0 1.0; 
-                    offset: -9 -8; 
+                    relative: 1.0 1.0;
+                    offset: -9 -8;
                 }
             }
         }
-
         part {
             name: "e.text.label";
             type: TEXT;
             effect: SHADOW;
             mouse_events: 0;
             scale: 1;
-
             description {
                 state: "default" 0.0;
                 align: 0.0 0.0;
                 fixed: 0 1;
-                color: 60 60 60 255;
-                color3: 255 255 255 128;
-
-                rel1 { 
+                rel1 {
                     relative: 0.0 0.0;
-                    offset: 16 10; 
+                    offset: 16 10;
                 }
-
-                rel2 { 
-                    relative: 1.0 0.0; 
-                    offset: -1 -1; 
+                rel2 {
+                    relative: 1.0 0.0;
+                    offset: -1 -1;
                 }
-
+				TEXT_COLOR_BOLD;
 				TEXT_HEADER("frame", 0.0 0.0, 1 1);
-				/* max: 1 1;				 */
             }
         }
     }
 }
-

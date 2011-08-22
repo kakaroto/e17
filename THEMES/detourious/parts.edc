@@ -1,0 +1,19 @@
+#define EVENT_RECT								\
+	part {										\
+		name: "event";							\
+		type: RECT;								\
+		description {							\
+			state: "default" 0.0;				\
+			color: 0 0 0 0;						\
+		}										\
+	}											\
+
+#define FILL(ORIGIN, SIZE)						\
+	fill {										\
+		origin {								\
+			offset: ORIGIN;						\
+		}										\
+		size {									\
+			offset: SIZE;						\
+		}										\
+	}

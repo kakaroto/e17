@@ -289,7 +289,7 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
-			effect: SHADOW;
+			effect: TEXT_EFFECT_BOLD;
 			mouse_events: 0;
 			clip_to: "label.clip";
 			scale: 1;
@@ -297,11 +297,11 @@ group {
 			description {
 				state: "default" 0.0;
 				align: 0.5 0.5;
-				color: 255 255 255 255;
-				color3: 0 0 0 0;
 
 				rel1.offset: 0 2;
 				rel2.offset: -1 -1;
+
+				TEXT_COLOR_WHITE;
 				TEXT_LARGE("module_large", 0.5 0.5, 1 1);
 			}
 		}
@@ -393,7 +393,7 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
-			effect: SHADOW;
+			effect: TEXT_EFFECT_BOLD;
 			mouse_events: 0;
 			clip_to: "label.clip";
 			scale: 1;
@@ -406,6 +406,7 @@ group {
 
 				rel1.offset: 0 2;
 				rel2.offset: -1 -1;
+				TEXT_COLOR_WHITE;
 				TEXT_LARGE("module_large", 0.5 0.5, 1 1);
 			}
 		}

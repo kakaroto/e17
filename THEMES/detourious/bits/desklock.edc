@@ -2,31 +2,25 @@
 group  {
 	name: "e/desklock/background";
 	//~ max: 1920 1200;
-
 	parts { 
 		part {
 			name: "background";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 255;
 			}
 		}
-
 		part {
 			name: "wallpaper";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-
 				image {
 					normal: "images/wallpaper_pat0.png";
 				}
-
 				fill {
 					size {
 						relative: 0 0;
@@ -35,56 +29,49 @@ group  {
 				}
 			}
 		}
-
 		part { 
 			name: "e.swallow.login_box";
 			type: SWALLOW;
-
-			description { 
+			description {
 				state: "default" 0.0;
+				rel1.relative: 0.5 0.5;
+				rel1.offset: -240 0;
+				rel2.relative: 0.5 0.5;
 			}
 		}
 	}
 }
-
 group {
 	name: "e/desklock/login_box";
-
 	parts {
 		part { 
 			name: "base";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description { 
 				state: "default" 0.0; 
-
 				rel1 { 
 					to: "icon"; 
 					relative: 0.0 0.0; 
 					offset: -14 -13; 
 				}
-
 				rel2 { 
 					to_x: "dot"; 
 					to_y: "icon"; 
 					relative: 1.0 1.0; 
 					offset: 16 10; 
 				}
-
 				image {
 					normal: "images/desklock_im0.png"; 
 					border: 17 17 17 17;
 				}
 			}
 		}
-
 		part  {
 			name: "icon";
 			/* type: IMAGE; */
 			type: RECT;
 			mouse_events: 0;
-		
 			description {
 				state: "default" 0.0;
 				min: 48 48;
@@ -96,99 +83,82 @@ group {
 				 * } */
 			}
 		}
-
 		part {
 			name: "separator";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 245 12;
 				max: 245 12;
-
 				rel1 { 
 					to: "entry"; 
 					relative: 0.0 1.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "entry"; 
 					relative: 1.0 1.0; 
 					offset: -1 0; 
 				}
-
 				image {
 					normal: "images/dialog_im1.png";
 					border: 0 0 4 0;
 				}
-
 				fill {
 					smooth: 0;
 				}
 			}
 		}
-
 		part {
 			name: "entry";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				/* setting this part to a fixed size is not a very good idea */
 				min: 251 21;
 				max: 251 21;
 				fixed: 1 1;
-
 				rel1 { 
 					to: "icon"; 
 					relative: 3.25 0.0; 
 					offset: 60 10; 
 				}
-
 				rel2 { 
 					to: "icon"; 
 					relative: 3.25 1.0; 
 					offset: -18 -1; 
 				}
-
 				image {
 					normal: "images/entry_im0.png";
 					border: 6 6 8 7;
 				}
 			}
 		}
-
 		part {
 			name: "e.text.title";
 			type: TEXT;
-			effect: SHADOW;
+			effect: TEXT_EFFECT_BOLD;
 			mouse_events: 0;
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
 				fixed: 0 1;
 				align: 0.0 0.5;
-				color: 60 60 60 255;
-				color3: 170 168 169 128;
-
 				rel1 { 
 					to: "icon"; 
 					relative: 1.0 0.0; 
 					offset: 6 8; 
 				}
-
 				rel2 { 
 					to: "icon"; 
 					relative: 1.0 0.3; 
 					offset: 0 0; 
 				}
-
+				TEXT_COLOR_BOLD;
 				text {
-					text: "Please enter your unlock password";
+					/* text: "Please enter your unlock password"; */
 					font: "Sans:style=Bold,DejaVuSans-Bold";
 					size: 10;
 					align: 0.0 0.5;
@@ -197,22 +167,18 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "entry_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-
 				rel1 { 
 					to: "entry"; 
 					relative: 0.0 0.0; 
 					offset: 6 0; 
 				}
-		
 				rel2 { 
 					to: "entry"; 
 					relative: 1.0 1.0; 
@@ -220,96 +186,82 @@ group {
 				}
 			}
 		}
-
 		part {
 			name: "e.text.password";
 			type: TEXT;
+			effect: TEXT_EFFECT;
 			mouse_events: 0;
 			clip_to: "entry_clip";
 			scale: 1;
-
 			description {
 				state: "default" 0.0;
-				color: 7 7 7 255;
 				fixed: 0 1;
 				align: 0.0 0.5;
-		  
 				rel1 { 
 					to: "entry_clip"; 
 					relative: 0.0 0.0; 	
 					offset: 0 2; 
 				}
-
 				rel2 { 
 					to: "entry_clip"; 
 					relative: 0.0 1.0; 
 					offset: 0 0; 
 				}
+				TEXT_COLOR;
 				TEXT_NORMAL("entry", 0.0 0.5, 1 1);
 			}
 		}
-
 		part {
 			name: "cursor";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 1 9;
 				max: 1 9;
 				fixed: 1 1;
-
 				rel1 { 
 					to: "e.text.password"; 
 					relative: 1.0 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "e.text.password"; 
 					relative: 1.0 0.9; 
 					offset: 0 -1; 
 				}
 			}
-
 			description {
 				state: "default" 0.1;
 				inherit: "default" 0.0;
 				color: 60 60 60 255;
 			}
 		}
-
 		part {
 			name: "dot";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 11 11;
 				max: 11 11;
 				fixed: 1 1;
-
 				rel1 { 
 					to: "entry"; 
 					relative: 1.0 0.5; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "entry"; 
 					relative: 1.0 0.5; 
 					offset: 18 0; 
 				}
-
 				image {
 					normal: "images/decoration_im0.png";
 				}
 			}
 		}
 	}
-
 	programs {
 		program {
 			name: "cursor.blink";
@@ -320,7 +272,6 @@ group {
 			target: "cursor";
 			after: "cursor.unblink";
 		}
-
 		program {
 			name: "cursor.unblink";
 			signal: "";
@@ -332,4 +283,3 @@ group {
 		}
 	}
 }
-
