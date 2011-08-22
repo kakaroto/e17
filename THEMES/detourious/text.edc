@@ -1,5 +1,5 @@
 #define TEXT_COLOR								\
-	color: 60 60 60 255;						\
+	color: 40 40 40 255;						\
     color3: 255 255 255 128;
 
 #define TEXT_COLOR_WHITE			   			\

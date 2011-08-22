@@ -49,6 +49,17 @@
 		}										\
 	}											\
 
+#define FILL(ORIGIN, SIZE)						\
+	fill {										\
+		origin {								\
+			offset: ORIGIN;						\
+		}										\
+		size {									\
+			offset: SIZE;						\
+		}										\
+	}
+
+
 data {
 	item: "theme/name" 		"detourious";
 	item: "theme/version"	"0.8.0";
@@ -140,7 +151,9 @@ collections {
     #include "bits/notification.edc"
     #include "bits/evry-shotgun.edc"
     #include "bits/engage.edc"		/* engage module */
-    #include "bits/bluez.edc" /* bluez module */
-    #include "bits/illume.edc" /* bluez module */
+    #include "bits/bluez.edc"       /* bluez module */
+    #include "bits/illume.edc"
+    #include "bits/illume_kbd.edc"
+    #include "bits/itask.edc"
 }
 

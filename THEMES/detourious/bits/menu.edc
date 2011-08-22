@@ -210,7 +210,7 @@ group {
 
 				rel2 { 
 					relative: 0.0 0.0; 
-					offset: 2 0; 
+					offset: 5 0; 
 				} 
 
 				rel2 { 
@@ -340,10 +340,6 @@ group {
 					to: "check";
 					relative: 1.0 1.0; 
 					offset: -2 -2; 
-				}
-
-				fill {
-					smooth: 1;
 				}
 			} 
 		}
@@ -577,7 +573,7 @@ group {
 
 				rel2 { 
 					relative: 1.0 1.0; 
-					offset: -6 -3; 
+					offset: -10 -3; 
 				}
 
 				TEXT_NORMAL("menu_item", 0.0 0.0, 1 1);

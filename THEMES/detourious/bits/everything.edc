@@ -533,12 +533,12 @@ group {
 #endif
 	parts {
 		part {
-			name: "bg";
+			name: "frame";
 			mouse_events: 0;;
 			type: RECT;
 			description {
 				state: "default" 0.0;
-				color: 0 0 0 100;
+				color: 40 40 40 128;
 			}
 		}
 
@@ -551,9 +551,10 @@ group {
 				color: 170 170 170 255;
 				rel2.relative: 1.0 0.0;
 				rel1.offset:  1 1;
-				rel2.offset: -1 48;
+				rel2.offset: -2 48;
 			}
 		}
+		
 		part {
 			name: "list";
 			source: "e/modules/everything/list";
@@ -572,6 +573,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "separator";
 			mouse_events: 0;
@@ -715,7 +717,7 @@ group {
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
-				color: 85 85 85 128;
+				color: 255 255 255 128;
 				image {
 					normal: "images/menu_im0.png";
 					border: 1 1 1 1;

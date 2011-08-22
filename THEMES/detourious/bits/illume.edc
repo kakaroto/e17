@@ -127,18 +127,10 @@
 */
 /////////////////////////////////////////////////////////////////////////////
 /*** MOD: ILLUME-KBD-TOGGLE ***/
-/*
+
 group {
 	name: "e/modules/illume_kbd_toggle/main";
-	images.image: "illume-kbd.png" COMP;
-	images.image: "illume-kbd-on.png" COMP;
-	images {
-		image: "bt_base1.png" COMP;
-		image: "bt_base2.png" COMP;
-		image: "bt_hilight.png" COMP;
-		image: "bt_shine.png" COMP;
-		image: "bt_glow.png" COMP;
-	}
+	images.image: "images/illume/keyboard.png" COMP;
 	min: 16 16;
 	max: 128 128;
 	parts {
@@ -151,39 +143,22 @@ group {
 				fixed: 1 1;
 				align: 0.5 0.5;
 				min: 32 16;
+				rel1.offset: 0 0;
+				rel2.offset: 1 -1;
 				image {
-					normal: "bt_base2.png";
-					border: 7 7 7 7;
+					normal: "images/shelf_def_im0.png";
+					border: 4 4 3 3;
 				}
+				FILL(0 -6,0 6);
+
 			}
 			description {
-				state: "clicked" 0.0;
+				state: "on" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "bt_base1.png";
-			}
-			program {
-				name: "button_down";
-				signal: "mouse,down,1";
-				source: "button_image";
-				action: STATE_SET "clicked" 0.0;
-				target: "button_image";
-				target: "over3";
-			}
-			program {
-				name: "button_up";
-				signal: "mouse,up,1";
-				source: "button_image";
-				action: STATE_SET "default" 0.0;
-				target: "button_image";
-				target: "over3";
-			}
-			program {
-				name: "enable";
-				signal: "mouse,clicked,1";
-				source: "button_image";
-				action: SIGNAL_EMIT "e,action,vkbd,enable" "";
+				color: 225 225 225 255;
 			}
 		}
+
 		part {
 			name: "icon";
 			mouse_events: 0;
@@ -191,7 +166,7 @@ group {
 				state: "default" 0.0;
 				aspect: 1.0 1.0;
 				aspect_preference: BOTH;
-				image.normal: "illume-kbd.png";
+				image.normal: "images/illume/keyboard.png";
 				rel1 {
 					to: "button_image";
 					relative: 0.0  0.0;
@@ -205,21 +180,7 @@ group {
 			}
 			description { state: "on" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "illume-kbd-on.png";
-			}
-			program { name: "state_on";
-				signal: "e,state,vkbd,on";
-				source: "e";
-				action: STATE_SET "on" 0.0;
-				target: "icon";
-				target: "on";
-			}
-			program { name: "state_off";
-				signal: "e,state,vkbd,off";
-				source: "e";
-				action: STATE_SET "default" 0.0;
-				target: "icon";
-				target: "on";
+				color: 225 225 225 255;
 			}
 		}
 		part { name: "on";
@@ -235,79 +196,47 @@ group {
 				inherit: "default" 0.0;
 				visible: 1;
 			}
-			program { name: "disable";
-				signal: "mouse,clicked,1";
-				source: "on";
-				action: SIGNAL_EMIT "e,action,vkbd,disable" "";
-			}
 		}
-		part {
-			name: "over1";
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				rel1.to: "button_image";
-				rel2.to: "button_image";
-				rel2.relative: 1.0 0.5;
-				image {
-					normal: "bt_hilight.png";
-					border: 7 7 7 0;
-				}
-			}
+	}
+	programs {
+		program { name: "state_on";
+			signal: "e,state,vkbd,on";
+			source: "e";
+			action: STATE_SET "on" 0.0;
+			target: "button_image";
+			target: "icon";
+			target: "on";
 		}
-		part {
-			name: "over2";
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				rel1.to: "button_image";
-				rel2.to: "button_image";
-				image {
-					normal: "bt_shine.png";
-					border: 7 7 7 7;
-				}
-			}
+		program { name: "state_off";
+			signal: "e,state,vkbd,off";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			target: "button_image";
+			target: "icon";
+			target: "on";
 		}
-		part {
-			name: "over3";
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				rel1.to: "button_image";
-				rel2.to: "button_image";
-				visible: 0;
-				color: 255 255 255 0;
-				image {
-					normal: "bt_glow.png";
-					border: 12 12 12 12;
-				}
-				fill.smooth : 0;
-			}
-			description {
-				state: "clicked" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-				color: 255 255 255 255;
-			}
+		program { name: "disable";
+			signal: "mouse,clicked,1";
+			source: "on";
+			action: SIGNAL_EMIT "e,action,vkbd,disable" "";
+		}
+		program {
+			name: "enable";
+			signal: "mouse,clicked,1";
+			source: "button_image";
+			action: SIGNAL_EMIT "e,action,vkbd,enable" "";
 		}
 	}
 }
-*/
+
 /////////////////////////////////////////////////////////////////////////////
 /*** MOD: ILLUME-MODE-TOGGLE ***/
-/*
+
 group {
 	name: "e/modules/illume_mode_toggle/main";
-	images.image: "illume-mode-single.png" COMP;
-	images.image: "illume-mode-dual-left.png" COMP;
-	images.image: "illume-mode-dual-top.png" COMP;
-	images {
-		image: "bt_base1.png" COMP;
-		image: "bt_base2.png" COMP;
-		image: "bt_hilight.png" COMP;
-		image: "bt_shine.png" COMP;
-		image: "bt_glow.png" COMP;
-	}
+	images.image: "images/illume/illume-mode-single.png" COMP;
+	images.image: "images/illume/illume-mode-dual-left.png" COMP;
+	images.image: "images/illume/illume-mode-dual-top.png" COMP;
 	min: 16 16;
 	max: 128 128;
 	parts {
@@ -320,31 +249,18 @@ group {
 				fixed: 1 1;
 				align: 0.5 0.5;
 				min: 32 16;
+				rel1.offset: 0 0;
+				rel2.offset: 1 -1;
 				image {
-					normal: "bt_base2.png";
-					border: 7 7 7 7;
+					normal: "images/shelf_def_im0.png";
+					border: 4 4 3 3;
 				}
+				FILL(0 -6,0 6);
 			}
 			description {
 				state: "clicked" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "bt_base1.png";
-			}
-			program {
-				name: "button_down";
-				signal: "mouse,down,1";
-				source: "button_image";
-				action: STATE_SET "clicked" 0.0;
-				target: "button_image";
-				target: "over3";
-			}
-			program {
-				name: "button_up";
-				signal: "mouse,up,1";
-				source: "button_image";
-				action: STATE_SET "default" 0.0;
-				target: "button_image";
-				target: "over3";
+				color: 225 225 225 255;
 			}
 			program {
 				name: "enable";
@@ -360,7 +276,7 @@ group {
 				state: "default" 0.0;
 				aspect: 1.0 1.0;
 				aspect_preference: BOTH;
-				image.normal: "illume-mode-single.png";
+				image.normal: "images/illume/illume-mode-single.png";
 				rel1 {
 					to: "button_image";
 					relative: 0.0  0.0;
@@ -374,11 +290,11 @@ group {
 			}
 			description { state: "dual_left" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "illume-mode-dual-left.png";
+				image.normal: "images/illume/illume-mode-dual-left.png";
 			}
 			description { state: "dual_top" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "illume-mode-dual-top.png";
+				image.normal: "images/illume/illume-mode-dual-top.png";
 			}
 			program { name: "state_single";
 				signal: "e,mode,single";
@@ -452,64 +368,27 @@ group {
 			}
 		}
 		part {
-			name: "over1";
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				rel1.to: "button_image";
-				rel2.to: "button_image";
-				rel2.relative: 1.0 0.5;
-				image {
-					normal: "bt_hilight.png";
-					border: 7 7 7 0;
-				}
-			}
-		}
-		part {
-			name: "over2";
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				rel1.to: "button_image";
-				rel2.to: "button_image";
-				image {
-					normal: "bt_shine.png";
-					border: 7 7 7 7;
-				}
-			}
-		}
-		part {
 			name: "over3";
 			mouse_events: 0;
+			type: RECT;
 			description {
 				state: "default" 0.0;
 				rel1.to: "button_image";
 				rel2.to: "button_image";
 				visible: 0;
-				color: 255 255 255 0;
-				image {
-					normal: "bt_glow.png";
-					border: 12 12 12 12;
-				}
-				fill.smooth : 0;
+				color: 0 0 0 0;
 			}
 			description {
 				state: "clicked" 0.0;
 				inherit: "default" 0.0;
 				visible: 1;
-				color: 255 255 255 255;
 			}
 		}
 	}
 }
-*/
+
 
 group {
-	/* images {
-	 * 	image: "shelf_alt_bg.png" COMP;
-	 * 	image: "shelf_alt_over.png" COMP;
-	 * 	image: "shelf_alt_shine.png" COMP;
-	 * } */
 	name: "modules/illume-softkey/window";
 	parts {
 		part {
@@ -523,7 +402,7 @@ group {
 					normal: "images/shelf_def_im0.png";
 					border: 4 4 3 3;
 				}
-				fill.smooth: 0;
+				FILL(0 0, 0 6);
 			}
 		}
 
@@ -644,7 +523,16 @@ group {
 					normal: "images/shelf_def_im0.png";
 					border: 4 4 3 3;
 				}
-				fill.smooth: 0;
+				FILL(0 -6, 0 6);
+				rel1.offset: -1 0;
+				rel2.offset: 1 -1;
+				
+				/* image {
+				 * 
+				 * 	normal: "images/shelf_def_im0.png";
+				 * 	border: 4 4 3 3;
+				 * }
+				 * fill.smooth: 0; */
 			}
 		}
 		part {

@@ -4,7 +4,6 @@ program {
 	source: "e";
 	action: STATE_SET "default" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
 
@@ -14,7 +13,6 @@ program {
 	source: "e";
 	action: STATE_SET "bottom" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
 
@@ -24,7 +22,6 @@ program {
 	source: "e";
 	action: STATE_SET "left" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
 
@@ -34,7 +31,6 @@ program {
 	source: "e";
 	action: STATE_SET "right" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
 
@@ -44,7 +40,6 @@ program {
 	source: "e";
 	action: STATE_SET "bottom_left" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
 
@@ -54,7 +49,6 @@ program {
 	source: "e";
 	action: STATE_SET "bottom_right" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
 
@@ -64,7 +58,6 @@ program {
 	source: "e";
 	action: STATE_SET "left_top" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
 
@@ -74,7 +67,6 @@ program {
 	source: "e";
 	action: STATE_SET "left_bottom" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
 
@@ -84,7 +76,6 @@ program {
 	source: "e";
 	action: STATE_SET "right_top" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
 
@@ -94,6 +85,5 @@ program {
 	source: "e";
 	action: STATE_SET "right_bottom" 0.0;
 	target: "base";
-	target: "swallow.clip";
 	target: "e.swallow.content";
 }
