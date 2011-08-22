@@ -2,18 +2,15 @@
 group {
 	name: "e/widgets/entry";
 	min: 26 26;
-
 	parts {
 		part {
 			name: "entry";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 22 24;
 				max: 9999 24;
-
 				image {
 					normal: "images/entry_im0.png";
 					border: 6 6 8 7;
@@ -25,12 +22,10 @@ group {
 			name: "focus_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 0;
 			}
-
 			description {
 				state: "focused" 0.0;
 				inherit: "default" 0.0;
@@ -42,18 +37,15 @@ group {
 			name: "focus";
 			mouse_events: 0;
 			clip_to: "focus_clip";
-
 			description {
 				state: "default" 0.0;
 				image.normal: "images/button_im3.png";
 				image.border: 7 7 7 7;
-
 				rel1 { 
 					to: "entry"; 
 					relative: 0.0 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "entry"; 
 					relative: 1.0 1.0; 
@@ -65,17 +57,14 @@ group {
 		part {
 			name: "e.swallow.text";
 			type: SWALLOW;
-
 			description {
 				state: "default" 0.0;
 				fixed: 1 1;
-
 				rel1 { 
 					to: "entry"; 
 					relative: 0.0 0.0; 
 					offset: 6 8; 
 				}
-
 				rel2 { 
 					to: "entry"; 
 					relative: 1.0 1.0; 
@@ -84,7 +73,6 @@ group {
 			}
 		}
 	}
-
 	programs {
 		# ifdef FOCUS
 		#  undef FOCUS
@@ -101,58 +89,47 @@ group {
 		FOCUS("focus_out", "e,state,unfocused", "default")
 		}
 	}
-
 group {
 	name: "e/widgets/entry/text";
-
 	parts {
 		part {
 			name: "e.text.text";
 			type: TEXT;
 			effect: TEXT_EFFECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 7 7 7 255;
-
 				TEXT_NORMAL("entry", 0.0 0.0, 1 1);
 			}
 		}
 	}
 }
-
 group {
 	name: "e/widgets/entry/cursor";
 	min: 1 0;
-
 	parts {
 		part {
 			name: "cursor";
 			type: RECT;
-
 			description {
 				state: "default" 0.0;
 				color: 60 60 60 255;
 				visible: 0;
 			}
-
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
 				visible: 1;
-
 				rel1 { 
 					offset: 0 2; 
 				}
-		
 				rel2 { 
 					offset: -1 -5; 
 				}
 			}
 		}
 	}
-
 	programs {
 		program {
 			name: "on_cursor_show";
@@ -165,27 +142,23 @@ group {
 			target: "cursor_hide_timer";
 			after: "cursor_show";
 		}
-
 		program {
 			name: "cursor_show";
 			action: STATE_SET "visible" 0.0;
 			target: "cursor";
 			after: "cursor_show_timer";
 		}
-
 		program {
 			name: "cursor_hide";
 			action: STATE_SET "default" 0.0;
 			target: "cursor";
 			after: "cursor_hide_timer";
 		}
-
 		program {
 			name: "cursor_show_timer";
 			in: 1.0 0.0;
 			after: "cursor_hide";
 		}
-
 		program {
 			name: "cursor_hide_timer";
 			in: 0.25 0.0;
@@ -193,27 +166,21 @@ group {
 		}
 	}
 }
-
 group {
 	name: "e/widgets/entry/selection";
-
 	data {
 		item: "on_foreground" "1";
 	}
-
 	parts {
 		part {
 			name: "selection";
 			type: RECT;
-
 			description {
 				state: "default" 0.0;
 				color: 138 171 225 128;
-
 				rel1 { 
 					offset: 0 1; 
 				}
-
 				rel2 { 
 					offset: 0 -3; 
 				}
@@ -221,4 +188,3 @@ group {
 		}
 	}
 }
-

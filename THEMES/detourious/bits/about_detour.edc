@@ -7,6 +7,7 @@ group {
 		item: "borderless" "1";
 	}
 	parts {
+
 		part {
 			name: "base";
 			type: IMAGE;
@@ -27,6 +28,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "base_rect";
 			type: RECT;
@@ -39,6 +41,7 @@ group {
 				color: 0 0 0 0;
 			}
 		}
+
 		part {
 			name: "item";
 			type: SWALLOW;
@@ -56,6 +59,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button.area";
 			type: RECT;
@@ -78,6 +82,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button_base";
 			type: IMAGE;
@@ -101,6 +106,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button_clip";
 			type: RECT;
@@ -121,6 +127,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button";
 			type: IMAGE;
@@ -142,6 +149,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -167,6 +175,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "text";
 			type: TEXT;
@@ -192,6 +201,7 @@ group {
 				TEXT_COLOR_DISABLED;
 			}
 		}
+
 		part {
 			name: "shadow_overlay";
 			type: IMAGE;
@@ -216,6 +226,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "logo";
 			type: IMAGE;
@@ -239,6 +250,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "project_name";
 			type: TEXT;
@@ -263,6 +275,7 @@ group {
 				text.text: LABEL_THEME_NAME;
 			}
 		}
+
 		part {
 			name: "project_version";
 			type: TEXT;
@@ -287,6 +300,7 @@ group {
 				text.text: "Version "VERSION_STRING"";				
 			}
 		}
+
 		part {
 			name: "about_edj_entry";
 			type: IMAGE;
@@ -310,6 +324,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "entry_clip";
 			type: RECT;
@@ -329,6 +344,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "edj_text";
 			type: TEXTBLOCK;

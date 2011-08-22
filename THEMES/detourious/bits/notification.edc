@@ -23,6 +23,7 @@ group {
         item: "shaped" "1";
 	}
 	parts {
+
 		part {
             name: "clipper_base";
             type: RECT;
@@ -43,6 +44,7 @@ group {
 				visible: 0;
             }
 		}
+
 		part {
             name: "clipper";
             type: RECT;
@@ -60,6 +62,7 @@ group {
 				}
             }
 		}
+
 		part {
             name: "base";
             type: IMAGE;
@@ -74,6 +77,7 @@ group {
 				}
             }
 		}
+
 		part {
             name: "notification.text.title";
             type: TEXT;
@@ -102,6 +106,7 @@ group {
 			}
 		}
 		/* Close Button */
+
 		part {
             name: "notification.close_btn";
             clip_to: "clipper";
@@ -125,6 +130,7 @@ group {
 				visible: 1;
             }
 		}
+
 		part {
             name: "clipper_app_icon";
             type: RECT;
@@ -149,6 +155,7 @@ group {
 				visible: 0;
             }
 		}
+
 		part {
             name: "notification.swallow.app_icon";
             type: SWALLOW;
@@ -172,6 +179,7 @@ group {
             }
 		}
 		/* Message text */
+
 		part {
             name: "notification.textblock.message";
             type: TEXTBLOCK;

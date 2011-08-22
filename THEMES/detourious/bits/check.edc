@@ -93,6 +93,7 @@ group {
 	 * check_bt4.png [shadow]
 	 */
 	parts {
+
 		part {
 			/*
 			 * The base has two STATE(s). Enabled which is the default description.
@@ -136,6 +137,7 @@ group {
 		}
 
 		/* FIXME: Document this clip */
+
 		part {
 			name: "hover_clip";
 			type: RECT;
@@ -157,6 +159,7 @@ group {
 		 * to it, will not be visible. The only way for the object to be visible
 		 * is for the clip to change to the "visible" state.
 		 */
+
 		part {
 			name: "focus_clip";
 			/* this clip is a rectangle 
@@ -180,10 +183,12 @@ group {
 		/*
 		 * "focus" image will behaviour according to the "focus_clip" STATE(s) changes.
 		 */
+
 		part {
 			name: "focus";
 			type: IMAGE;
 			mouse_events: 0;
+
 			clip_to: "focus_clip"; /* clip this part to "focus_clip" */
 			description {
 				state: "default" 0.0;
@@ -201,9 +206,11 @@ group {
 			}
 		}
 		/*
+
 		 * The "shadow" part can be considered a [cosmetic]. Its only purpose is to
 		 * give a (raised) look to the widget.
 		 */
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -234,6 +241,7 @@ group {
 		 * the switch off state image.
 		 * check button image in off state
 		 */
+
 		part {
 			name: "unchecked";
 			type: IMAGE;
@@ -272,6 +280,7 @@ group {
 		 * the switch on image state
 		 * not visible by default, only when the widget is checked
 		 */
+
 		part {
 			name: "checked";
 			type: IMAGE;
@@ -311,6 +320,7 @@ group {
 		 * font_effects: none
 		 * font_size: 11px 
 		 */
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -339,6 +349,7 @@ group {
 			}
 		}
 		/* mouse_events signal catcher */
+
 		part {
 			name: "event";
 			type: RECT;
@@ -360,6 +371,7 @@ group {
 group {
 	name: "e/widgets/check_icon";
 	parts {
+
 		part {
 			name: "base";
 			type: IMAGE;
@@ -390,6 +402,7 @@ group {
 			}
 		}
 		/* FIXME: Document this clip */
+
 		part {
 			name: "hover_clip";
 			type: RECT;
@@ -411,6 +424,7 @@ group {
 		 * to it, will not be visible. The only way for the object to be visible
 		 * is for the clip to change to the "visible" state.
 		 */
+
 		part {
 			name: "focus_clip";
 			/* this clip is a rectangle 
@@ -434,10 +448,12 @@ group {
 		/*
 		 * "focus" image will behaviour according to the "focus_clip" STATE(s) changes.
 		 */
+
 		part {
 			name: "focus";
 			type: IMAGE;
 			mouse_events: 0;
+
 			clip_to: "focus_clip"; /* clip this part to "focus_clip" */
 			description {
 				state: "default" 0.0;
@@ -455,9 +471,11 @@ group {
 			}
 		}
 		/*
+
 		 * The "shadow" part can be considered a [cosmetic]. Its only purpose is to
 		 * give a (raised) look to the widget.
 		 */
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -488,6 +506,7 @@ group {
 		 * the switch off state image.
 		 * check button image in off state
 		 */
+
 		part {
 			name: "unchecked";
 			type: IMAGE;
@@ -526,6 +545,7 @@ group {
 		 * the switch on image state
 		 * not visible by default, only when the widget is checked
 		 */
+
 		part {
 			name: "checked";
 			type: IMAGE;
@@ -556,6 +576,7 @@ group {
 				visible: 1; /* image becomes visible */
 			}
 		}
+
 		part {
 			name: "icon_clip";
 			type: RECT;
@@ -577,6 +598,7 @@ group {
 				color: 255 255 255 128;
 			}
 		}
+
 		part {
 			name:  "e.swallow.icon";
 			type: SWALLOW;
@@ -609,6 +631,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -635,6 +658,7 @@ group {
 				TEXT_COLOR_DISABLED;
 			}
 		}
+
 		part {
 			name: "event";
 			type: RECT;

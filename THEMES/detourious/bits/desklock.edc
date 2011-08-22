@@ -3,6 +3,7 @@ group  {
 	name: "e/desklock/background";
 	//~ max: 1920 1200;
 	parts { 
+
 		part {
 			name: "background";
 			type: RECT;
@@ -12,6 +13,7 @@ group  {
 				color: 0 0 0 255;
 			}
 		}
+
 		part {
 			name: "wallpaper";
 			type: IMAGE;
@@ -29,6 +31,7 @@ group  {
 				}
 			}
 		}
+
 		part { 
 			name: "e.swallow.login_box";
 			type: SWALLOW;
@@ -44,6 +47,7 @@ group  {
 group {
 	name: "e/desklock/login_box";
 	parts {
+
 		part { 
 			name: "base";
 			type: IMAGE;
@@ -67,6 +71,7 @@ group {
 				}
 			}
 		}
+
 		part  {
 			name: "icon";
 			/* type: IMAGE; */
@@ -83,6 +88,7 @@ group {
 				 * } */
 			}
 		}
+
 		part {
 			name: "separator";
 			type: IMAGE;
@@ -110,12 +116,14 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "entry";
 			type: IMAGE;
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
+
 				/* setting this part to a fixed size is not a very good idea */
 				min: 251 21;
 				max: 251 21;
@@ -136,6 +144,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.text.title";
 			type: TEXT;
@@ -167,6 +176,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "entry_clip";
 			type: RECT;
@@ -186,6 +196,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.text.password";
 			type: TEXT;
@@ -211,6 +222,7 @@ group {
 				TEXT_NORMAL("entry", 0.0 0.5, 1 1);
 			}
 		}
+
 		part {
 			name: "cursor";
 			type: RECT;
@@ -237,6 +249,7 @@ group {
 				color: 60 60 60 255;
 			}
 		}
+
 		part {
 			name: "dot";
 			type: IMAGE;

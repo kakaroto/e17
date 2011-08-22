@@ -81,6 +81,7 @@
 group {
 	name: "e/widgets/radio";
 	parts {
+
 		part {
 			name: "base";
 			type: IMAGE;
@@ -109,6 +110,7 @@ group {
 				color: 255 255 255 128;
 			}
 		}
+
 		part {
 			name: "hover_clip";
 			type: RECT;
@@ -123,6 +125,7 @@ group {
 				color: 109 152 222 255;
 			}
 		}
+
 		part {
 			name: "focus_clip";
 			type: RECT;
@@ -137,6 +140,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "focus";
 			type: IMAGE;
@@ -157,6 +161,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -182,6 +187,7 @@ group {
 				color: 255 255 255 0;
 			}
 		}
+
 		part {
 			name: "toggle.off";
 			type: IMAGE;
@@ -211,6 +217,7 @@ group {
 				color: 255 255 255 128;
 			}
 		}
+
 		part {
 			name: "toggle.on";
 			type: IMAGE;
@@ -241,6 +248,7 @@ group {
 				visible: 1;
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -268,6 +276,7 @@ group {
 				TEXT_COLOR_DISABLED;
 			}
 		}
+
 		part {
 			name: "event";
 			type: RECT;
@@ -289,6 +298,7 @@ group {
 group {
 	name: "e/widgets/radio_icon";
 	parts {
+
 		part {
 			name: "base";
 			type: IMAGE;
@@ -317,6 +327,7 @@ group {
 				color: 255 255 255 128;
 			}
 		}
+
 		part {
 			name: "hover_clip";
 			type: RECT;
@@ -331,6 +342,7 @@ group {
 				color: 109 152 222 255;
 			}
 		}
+
 		part {
 			name: "focus_clip";
 			type: RECT;
@@ -345,6 +357,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "focus";
 			type: IMAGE;
@@ -366,6 +379,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -391,6 +405,7 @@ group {
 				color: 255 255 255 0;
 			}
 		}
+
 		part {
 			name: "toggle.off";
 			type: IMAGE;
@@ -420,6 +435,7 @@ group {
 				color: 255 255 255 128;
 			}
 		}
+
 		part {
 			name: "toggle.on";
 			type: IMAGE;
@@ -450,6 +466,7 @@ group {
 				visible: 1;
 			}
 		}
+
 		part {
 			name: "icon_clip";
 			type: RECT;
@@ -470,6 +487,7 @@ group {
 				color: 255 255 255 128;
 			}
 		}
+
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
@@ -498,6 +516,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "label_clip";
 			type: RECT;
@@ -513,6 +532,7 @@ group {
 				visible: 1;
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -542,6 +562,7 @@ group {
 				TEXT_COLOR_DISABLED;
 			}
 		}
+
 		part {
 			name: "event";
 			type: RECT;

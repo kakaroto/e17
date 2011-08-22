@@ -15,6 +15,7 @@ group { name: "e/modules/kbd/base/default";
 	}
 	//      data.item: "shaped" "1";
 	parts {
+
 		part { name: "base";
 			description { state: "default" 0.0;
 				rel1 {
@@ -32,6 +33,7 @@ group { name: "e/modules/kbd/base/default";
 				}
 			}
 		}
+
 		part { name: "compose_bg";
 			description { state: "default" 0.0;
 				image.normal: "images/illume/k_wtgr.png";
@@ -46,6 +48,7 @@ group { name: "e/modules/kbd/base/default";
 				}
 			}
 		}
+
 		part { name: "e.text.label";
 			type: TEXT;
 			effect: TEXT_EFFECT;
@@ -65,6 +68,7 @@ group { name: "e/modules/kbd/base/default";
 				TEXT_NORMAL("", 0.5 0.5, 0 1);
 			}
 		}
+
 		part { name: "e.swallow.label";
 			type: SWALLOW;
 			description { state: "default" 0.0;
@@ -75,6 +79,7 @@ group { name: "e/modules/kbd/base/default";
 				align: 0.5 0.0;
 			}
 		}
+
 		part { name: "compose_sh";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -94,6 +99,7 @@ group { name: "e/modules/kbd/base/default";
 				fill.smooth: 0;
 			}
 		}
+
 		part { name: "tl_tab";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -105,6 +111,7 @@ group { name: "e/modules/kbd/base/default";
 				rel2.offset: 13 -1;
 			}
 		}
+
 		part { name: "rt_tab";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -116,6 +123,7 @@ group { name: "e/modules/kbd/base/default";
 				rel2.to: "lnext";
 			}
 		}
+
 		part { name: "lprev";
 			type: RECT;
 			description { state: "default" 0.0;
@@ -130,6 +138,7 @@ group { name: "e/modules/kbd/base/default";
 				}
 			}
 		}
+
 		part { name: "lnext";
 			type: RECT;
 			description { state: "default" 0.0;
@@ -149,6 +158,7 @@ group { name: "e/modules/kbd/base/default";
 			}
 		}
 	 
+
 		part { name: "tl_tabh";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -160,6 +170,7 @@ group { name: "e/modules/kbd/base/default";
 				rel2.offset: -2 15;
 			}
 		}
+
 		part { name: "tr_tabh";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -172,6 +183,7 @@ group { name: "e/modules/kbd/base/default";
 				rel2.offset: -1 15;
 			}
 		}
+
 		part { name: "t_h";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -190,6 +202,7 @@ group { name: "e/modules/kbd/base/default";
 			}
 		}
 		// dict/selection selector
+
 		part { name: "lprev2";
 			mouse_events: 0;
 			scale: 1;
@@ -206,6 +219,7 @@ group { name: "e/modules/kbd/base/default";
 		}
 	 
 		// layout selector icon/config	
+
 		part { name: "button_image";
 			type: IMAGE;
 			mouse_events: 0;
@@ -225,6 +239,7 @@ group { name: "e/modules/kbd/base/default";
 				fill.smooth: 0;
 			}
 		}
+
 		part { name: "e.swallow.layout";
 			type: SWALLOW;
 			mouse_events: 0;
@@ -233,6 +248,7 @@ group { name: "e/modules/kbd/base/default";
 				rel2.to: "button_image";
 			}
 		}
+
 		part { name: "over";
 			type: IMAGE;
 			mouse_events: 0;
@@ -245,6 +261,7 @@ group { name: "e/modules/kbd/base/default";
 				fill.smooth: 0;
 			}
 		}
+
 		part { name: "e.swallow.content";
 			type: SWALLOW;
 			description { state: "default" 0.0;
@@ -296,6 +313,7 @@ group { name: "e/modules/kbd/match/word";
 		image: "images/illume/bt_dis_hilight.png" COMP;
 	}
 	parts {
+
 		part { name: "button_image";
 			mouse_events: 1;
 			description { state: "default" 0.0;
@@ -314,6 +332,7 @@ group { name: "e/modules/kbd/match/word";
 				image.normal: "images/illume/bt_base2.png";
 			}
 		}
+
 		part { name: "e.text.label";
 			type: TEXT;
 			effect: TEXT_EFFECT;
@@ -340,6 +359,7 @@ group { name: "e/modules/kbd/match/word";
 				color3: 0 0 0 64;
 			}
 		}
+
 		part { name: "over1";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -360,6 +380,7 @@ group { name: "e/modules/kbd/match/word";
 				}
 			}
 		}
+
 		part { name: "over2";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -376,6 +397,7 @@ group { name: "e/modules/kbd/match/word";
 				visible: 0;
 			}
 		}
+
 		part { name: "over3";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -439,6 +461,7 @@ group { name: "e/modules/kbd/key/default";
 		image: "images/illume/bt_shine.png" COMP;
 	}
 	parts {
+
 		part { name: "button_base";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -450,6 +473,7 @@ group { name: "e/modules/kbd/key/default";
 				image.border: 7 7 7 7;
 			}
 		}
+
 
 		part { name: "button_image";
 			mouse_events: 0;
@@ -467,6 +491,7 @@ group { name: "e/modules/kbd/key/default";
 				visible: 1;
 			}
 		}
+
 		part { name: "content_clip";
 			type: RECT;
 			description { state: "default" 0.0;
@@ -479,6 +504,7 @@ group { name: "e/modules/kbd/key/default";
 				color: 255 255 255 255;
 			}
 		}
+
 		part { name: "content_clip2";
 			type: RECT;
 			description { state: "default" 0.0;
@@ -487,6 +513,7 @@ group { name: "e/modules/kbd/key/default";
 				rel2.to: "button_image";
 			}
 		}
+
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -515,6 +542,7 @@ group { name: "e/modules/kbd/key/default";
 				}
 			}
 		}
+
 		part { name: "e.text.label";
 			type: TEXT;
 			effect: TEXT_EFFECT;
@@ -534,6 +562,7 @@ group { name: "e/modules/kbd/key/default";
 				}
 			}
 		}
+
 		part { name: "over2";
 			mouse_events: 1;
 			type: RECT;
@@ -589,6 +618,7 @@ group { name: "e/modules/kbd/zoomkey/default";
 		image: "images/illume/bt_shine.png" COMP;
 	}
 	parts {
+
 		part { name: "button_image";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -610,6 +640,7 @@ group { name: "e/modules/kbd/zoomkey/default";
 				}
 			}
 		}
+
 		part { name: "content_clip";
 			type: RECT;
 			description { state: "default" 0.0;
@@ -622,6 +653,7 @@ group { name: "e/modules/kbd/zoomkey/default";
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -649,6 +681,7 @@ group { name: "e/modules/kbd/zoomkey/default";
 				}
 			}
 		}
+
 		part { name: "e.text.label";
 			type: TEXT;
 			clip_to: "content_clip";
@@ -671,6 +704,7 @@ group { name: "e/modules/kbd/zoomkey/default";
 				}
 			}
 		}
+
 		part { name: "over1";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -684,6 +718,7 @@ group { name: "e/modules/kbd/zoomkey/default";
 				fill.smooth: 0;
 			}
 		}
+
 		part { name: "over2";
 			mouse_events: 1;
 			description { state: "default" 0.0;
@@ -742,6 +777,7 @@ group { name: "e/modules/kbd/zoom/default";
 		image: "images/illume/inset_sunk.png" COMP;
 	}
 	parts {
+
 		part {	  name: "base";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -750,6 +786,7 @@ group { name: "e/modules/kbd/zoom/default";
 				fill.smooth: 0;
 			}
 		}
+
 		part { name: "clip";
 			type: RECT;
 			mouse_events: 0;
@@ -760,6 +797,7 @@ group { name: "e/modules/kbd/zoom/default";
 				rel2.offset: -2 -2;
 			}
 		}
+
 		part { name: "e.swallow.content";
 			clip_to: "clip";
 			type: SWALLOW;
@@ -771,6 +809,7 @@ group { name: "e/modules/kbd/zoom/default";
 				rel2.offset: -5 -5;
 			}
 		}
+
 		part { name: "border";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -793,6 +832,7 @@ group { name: "e/modules/kbd/match/default";
 		image: "images/illume/base_bg.png" COMP;
 	}
 	parts {
+
 		part {	  name: "base";
 			mouse_events: 0;
 			description { state: "default" 0.0;
@@ -801,6 +841,7 @@ group { name: "e/modules/kbd/match/default";
 				fill.smooth: 0;
 			}
 		}
+
 		part { name: "e.swallow.content";
 			type: SWALLOW;
 			description { state: "default" 0.0;

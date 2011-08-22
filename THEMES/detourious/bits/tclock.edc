@@ -2,6 +2,7 @@
 group {
 	name: "modules/tclock/main";
 	parts {
+
 		part {
 			name: "base";
 			type: RECT;
@@ -11,6 +12,7 @@ group {
 				color: 0 0 0 0;
 			}
 		}
+
 		part {
 			name: "background";
 			type: RECT;
@@ -27,6 +29,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "tclock_time";
 			type: TEXT;
@@ -61,6 +64,7 @@ group {
 				visible: 1;
 			}		  
 		}
+
 		part {
 			name: "tclock_date";
 			type: TEXT;
@@ -133,6 +137,7 @@ group {
 		item: "shaped" "1";
 	}
 	parts {
+
 		part {
 			name: "background";
 			type: IMAGE;
@@ -150,6 +155,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.text.tip";
 			type: TEXT;

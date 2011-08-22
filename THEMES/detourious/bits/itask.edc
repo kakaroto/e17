@@ -2,6 +2,7 @@ group {
 	name: "e/modules/itask/button";
 	parts {
 #if (BUILD_ILLUME == 1)
+
 		part {
             name: "button_image";
             mouse_events: 1;
@@ -26,6 +27,7 @@ group {
             }
 		}
 #else
+
 		part {
             name: "button_image";
             mouse_events: 1;
@@ -51,6 +53,7 @@ group {
             }
 		}
 #endif
+
 		part {
             name: "urgent_clip";
             type: RECT;
@@ -64,6 +67,7 @@ group {
 				color: 255 100 100 255;
             }
 		}
+
 		part {
             name: "icon_clip";
             type: RECT;
@@ -77,6 +81,7 @@ group {
 				color: 255 255 255 100;
             }
 		}
+
 		part {
             name: "e.swallow.icon";
             type: SWALLOW;
@@ -131,6 +136,7 @@ group {
 				}
             }
 		}
+
 		part {
             name: "e.text.label";
             type: TEXT;
@@ -165,6 +171,7 @@ group {
 				visible: 0;
             }
 		}
+
 		part {
             name: "over3";
 			type: RECT;

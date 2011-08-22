@@ -3,6 +3,7 @@
 group {
 	name: "e/modules/pager/popup";
 	parts {
+
 		part {
 			name: "bg_border";
 			type: RECT;
@@ -13,6 +14,7 @@ group {
 			}
 		}
 		MENU_GRADIENT;
+
 		part {
 			name: "overlay";
 			type: IMAGE;
@@ -28,6 +30,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "e.text.label";
 			type: TEXT;
@@ -50,6 +53,7 @@ group {
 				TEXT_LARGE("module_large", 0.5 0.0, 1 1);
 			}
 		}
+
 		part { 
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -66,6 +70,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "decoration";
 			type: IMAGE;
@@ -101,6 +106,7 @@ group {
 		public drag;
 	}
 	parts {
+
 		part {
 			name: "gradient";
 			mouse_events: 1;
@@ -118,6 +124,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "pattern";
 			type: IMAGE;
@@ -143,6 +150,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -157,6 +165,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "transitions_clip";
 			type: RECT;
@@ -182,6 +191,7 @@ group {
 				color: 255 255 255 64;
 			}
 		}
+
 		part {
 			name: "overlay_clip";
 			type: RECT;
@@ -195,6 +205,7 @@ group {
 				rel2.offset: -4 -3;
 			}
 		}
+
 		part {
 			name: "overlay_left";
 			type: IMAGE;
@@ -230,6 +241,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "overlay_right";
 			type: IMAGE;
@@ -265,6 +277,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "background";
 			type: IMAGE;
@@ -283,6 +296,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "focus";
 			type: IMAGE;
@@ -315,6 +329,7 @@ group {
 				}
 			}
 		}
+
 		part {
             name: "event";
             type: RECT;
@@ -333,7 +348,8 @@ group {
             }
 		}
 /*
-		part { 
+
+  part { 
 			name: "e.text.label";
 			type: TEXT;
 			effect: SHADOW;
@@ -481,6 +497,7 @@ group {
 group {
 	name: "e/modules/pager/window";
 	parts {
+
 		part {
 			name: "pager_window";
 			type: IMAGE;
@@ -508,6 +525,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "overlay";
 			type: IMAGE;
@@ -547,6 +565,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;

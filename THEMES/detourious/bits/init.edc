@@ -496,6 +496,7 @@ group {
 				 * } */
 			}
 		}
+
 		part {
 			name: "e/icons/enlightenment/run";
 			type: RECT;
@@ -521,6 +522,7 @@ group {
 				 * } */
 			}
 		}
+
 		part {
 			name: "black";
 			type: RECT;

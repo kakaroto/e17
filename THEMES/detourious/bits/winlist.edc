@@ -5,6 +5,7 @@ group {
 	 	item: "shaped" "1";
 	} 
 	parts {
+
 	  	part {
 			name: "bg_border";
 			type: RECT;
@@ -15,6 +16,7 @@ group {
 			}
 		}
 		MENU_GRADIENT;
+
 		part {
 			name: "bg_overlay";
 			type: IMAGE;
@@ -30,6 +32,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "list";
 			type: IMAGE;
@@ -53,6 +56,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "list_inset";
 			type: IMAGE;
@@ -75,6 +79,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "list_overlay";
 			type: IMAGE;
@@ -95,6 +100,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "list_clip";
 			type: RECT;
@@ -114,6 +120,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.list";
 			type: SWALLOW;
@@ -132,6 +139,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "separator";
 			type: IMAGE;
@@ -154,6 +162,7 @@ group {
 				}
 			}
 		}
+
 		part {   
 			name: "title_overlay";
 			type: IMAGE;
@@ -179,6 +188,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -231,6 +241,7 @@ group {
 group {
 	name: "e/widgets/winlist/item";
 	parts {
+
 		part {
 			name: "title_bar";
 			type: IMAGE;
@@ -260,6 +271,7 @@ group {
 				visible: 1;
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -288,6 +300,7 @@ group {
 				TEXT_NORMAL("winlist_title", 0.0 0.5, 0 0);
 			}
 		}
+
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
@@ -308,6 +321,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "type";
 			type: IMAGE;
@@ -357,6 +371,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.event.winlist.item";
 			type: SWALLOW;

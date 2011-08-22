@@ -5,6 +5,7 @@ group {
 		item: "borderless" "1";
 	}
 	parts {
+
 		part {
 			name: "base";
 			type: IMAGE;
@@ -25,6 +26,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "e.swallow.main";
 			type: SWALLOW;
@@ -36,6 +38,7 @@ group {
 				rel2.offset: -13 12;
 			}
 		}
+
 		part { 
 			name: "e.swallow.secondary";
 			type: SWALLOW;
@@ -50,6 +53,7 @@ group {
 				rel2.offset: -1 -13;
 			}
 		}
+
 		part { 
 			name: "e.swallow.extra";
 			type: SWALLOW;
@@ -63,6 +67,7 @@ group {
 				rel2.offset: -13 -3;
 			}
 		}
+
 		part {
 			name: "button.area";
 			type: RECT;
@@ -85,6 +90,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button_base";
 			type: IMAGE;
@@ -108,6 +114,7 @@ group {
 				}	
 			}
 		}
+
 		part {
 			name: "button_clip";
 			type: RECT;
@@ -128,6 +135,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button";
 			type: IMAGE;
@@ -149,6 +157,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -178,6 +187,7 @@ group {
 				visible: 0;
 			}
 		}
+
 		part {
 			name: "text";
 			type: TEXT;
@@ -204,6 +214,7 @@ group {
 				TEXT_COLOR_CLICKED;
 			}
 		}
+
 		part {
 			name: "shadow_overlay";
 			type: IMAGE;
@@ -241,6 +252,7 @@ group {
 group { 
 	name: "e/widgets/syscon/item/button";
 	parts {
+
 		part {
 			name: "button_base";
 			type: IMAGE;
@@ -253,6 +265,7 @@ group {
 				color: 255 255 255 178;	
 			}
 		}
+
 		part {
 			name: "focus_clip";
 			type: RECT;
@@ -275,6 +288,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "focus";
 			mouse_events: 0;
@@ -291,6 +305,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button_clip";
 			type: RECT;
@@ -310,6 +325,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button";
 			type: IMAGE;
@@ -338,6 +354,7 @@ group {
 				image.border: 11 11 10 10;
 			}
 		}
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -366,6 +383,7 @@ group {
 				visible: 0;
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -399,6 +417,7 @@ group {
 				TEXT_COLOR_DISABLED;
 			}
 		}
+
 		part {
 			name: "shadow_overlay";
 			type: IMAGE;
@@ -428,6 +447,7 @@ group {
 				visible: 0;
 			}
 		}
+
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
@@ -450,6 +470,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "event";
 			type: RECT;
@@ -458,6 +479,7 @@ group {
 				color: 0 0 0 0;
 			}
 		}
+
 		part { 
 			name: "disabler";
 			type: RECT;

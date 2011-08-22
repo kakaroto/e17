@@ -27,6 +27,7 @@ group {
 	data.item: "stacking" "above";
 	data.item: "selectraise" "on";
 	parts {
+
 		part {
 			name: "base";
 			type: RECT;
@@ -39,6 +40,7 @@ group {
 				color: COLOR_LIST_BG_ACTIVE;
 			}
 		}
+
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
@@ -56,6 +58,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -81,6 +84,7 @@ group {
 				TEXT_COLOR_WHITE;
 			}
 		}
+
 		part {
 		    name: "e.swallow.end";
 		    type: SWALLOW;
@@ -112,6 +116,7 @@ group {
 	data.item: "stacking" "below";
 	data.item: "selectraise" "on";
 	parts {
+
 		part {
 			name: "base";
 			type: RECT;
@@ -124,6 +129,7 @@ group {
 				color: COLOR_LIST_BG_ACTIVE;
 			}
 		}
+
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
@@ -141,6 +147,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -166,6 +173,7 @@ group {
 				TEXT_COLOR_WHITE;
 			}
 		}
+
 		part {
 		    name: "e.swallow.end";
 		    type: SWALLOW;
@@ -198,6 +206,7 @@ group {
 	data.item: "stacking" "above";
 	data.item: "selectraise" "on";
 	parts {
+
 		part {
 			name: "base";
 			type: RECT;
@@ -207,6 +216,7 @@ group {
 				color: COLOR_LIST_HEADER;
 			}
 		}
+
 		part {
 			name: "e.swallow.icon";
 			type: SWALLOW;
@@ -225,6 +235,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -244,6 +255,7 @@ group {
 				TEXT_HEADER("ilist_header", 0.0 0.5, 1 1);
 			}
 		}
+
 		part {
 			name: "event";
 			type: RECT;
@@ -258,6 +270,7 @@ group {
 group {
     name: "e/widgets/ilist/toggle_end";
     parts {
+
 		part {
             name: "bg";
             type: IMAGE;
@@ -278,6 +291,7 @@ group {
 				image.normal: "images/radio_bt0.png";
             }
 		}
+
 		part {
             name: "icon";
             type: IMAGE;

@@ -35,6 +35,7 @@
 group {
 	name: "e/widgets/menu/default/background";
 	parts {
+
 		part {
 			name: "bg";
 			mouse_events: 0;;
@@ -44,6 +45,7 @@ group {
 				color: 235 235 235 255;
 			}
 		}
+
 		part {
 			name: "bg_border";
 			mouse_events: 0;
@@ -57,6 +59,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "gradient";
 			description {
@@ -68,6 +71,7 @@ group {
 				/* #endif */
 			}
 		}
+
 		part {
 			name: "gradient2";
 			type: RECT;
@@ -78,6 +82,7 @@ group {
 				color: 255 255 255 90;
 			}
 		}
+
 		part {
 			name: "e.text.title";
 			type: TEXT;
@@ -119,6 +124,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -140,6 +146,7 @@ group {
 group {
 	name: "e/widgets/menu/default/submenu";
 	parts {
+
 		part {
 			name: "menu_arrow";
 			type: IMAGE;
@@ -186,6 +193,7 @@ group {
 group {
 	name: "e/widgets/menu/default/separator";
 	parts {
+
 		part {
 			name: "separator";
 			type: IMAGE;
@@ -213,6 +221,7 @@ group {
 group {
 	name: "e/widgets/menu/default/check";
 	parts {
+
 		part {
 			name: "base";
 			type: IMAGE;
@@ -244,6 +253,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -264,6 +274,7 @@ group {
 				}
 			} 
 		}
+
 		part {
 			name: "check";
 			type: IMAGE;
@@ -301,6 +312,7 @@ group {
 group {
 	name: "e/widgets/menu/default/radio";
 	parts {
+
 		part {
 			name: "base";
 			type: IMAGE;
@@ -328,6 +340,7 @@ group {
 				color: 255 255 255 128;
 			}
 		}
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -351,6 +364,7 @@ group {
 				}
 			} 
 		}
+
 		part {
 			name: "radio";
 			type: IMAGE;
@@ -389,6 +403,7 @@ group {
 	name: "e/widgets/menu/default/item_bg";
 	alias: "e/widgets/menu/default/submenu_bg";
 	parts {
+
 		part {
 			name: "item_hilight";
 			description {
@@ -411,6 +426,7 @@ group {
 				visible: 1;
 			}
 		}
+
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -435,6 +451,7 @@ group {
 group {
 	name: "e/widgets/menu/default/label";
 	parts {
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -470,6 +487,7 @@ group {
 group {
 	name: "e/widgets/menu/default/icon";
 	parts {
+
 		part {
 			name: "clip";
 			type: RECT;
@@ -483,6 +501,7 @@ group {
 				color: 255 255 255 128;
 			}
 		}
+
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;

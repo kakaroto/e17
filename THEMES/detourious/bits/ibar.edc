@@ -9,6 +9,7 @@ group {
 		public urgent;
 	}
 	parts {
+
 		part {
 			name: "item_clip";
 			type: RECT;
@@ -22,6 +23,7 @@ group {
 				color: 255 255 255 164;
 			}
 		}
+
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -50,6 +52,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "over";
 			type: RECT;
@@ -175,6 +178,7 @@ group {
 		public urgent;
 	}
 	parts {
+
 		part {
 			name: "base";
 			type: RECT;
@@ -184,6 +188,7 @@ group {
 				color: 0 0 0 0;
 			}
 		}
+
 		part {
 			name: "background";
 			type: RECT;
@@ -237,6 +242,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -251,6 +257,7 @@ group {
 				}
 			}
 		}
+
 		part {      
 			name: "label";
 			type: IMAGE;  
@@ -277,6 +284,7 @@ group {
 				}
 			}
 		}
+
 		part {      
 			name: "e.text.label";
 			type: TEXT;
@@ -299,6 +307,7 @@ group {
 				TEXT_NORMAL("module_normal", 0.5 0.5, 1 1);
 			}
 		}
+
 		part {      
 			name: "label.clip";
 			type: RECT;                 
@@ -496,6 +505,7 @@ group {
 	name: "e/modules/ibar/drop";
 	alias: "e/modules/ibox/drop";
 	parts {
+
 		part {
 			name: "bg";
 			type: IMAGE;
@@ -519,6 +529,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "arrow";
 			type: IMAGE;
@@ -543,6 +554,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "drop_clip";
 			type: RECT;

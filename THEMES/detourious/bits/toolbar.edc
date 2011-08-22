@@ -3,7 +3,6 @@
 
 group {
     name: "e/widgets/toolbar";
-
     parts {
         part {
             name: "base";
@@ -15,6 +14,7 @@ group {
                 image.border: 7 7 7 7;
             }
         }
+
         part {
             name: "button";
             type: IMAGE;
@@ -37,6 +37,7 @@ group {
                 }
             }
         }
+
         part {
             name: "clipper";
             type: RECT;
@@ -55,6 +56,7 @@ group {
                 }
             }
         }
+
         part {
             name: "e.swallow.content";
             clip_to: "clipper";
@@ -75,6 +77,7 @@ group {
 				}
             }
         }
+
         part {
             name: "left_arrow";
             mouse_events: 1;
@@ -93,6 +96,7 @@ group {
 				visible: 1;
             }
         }
+
         part {
             name: "right_arrow";
             mouse_events: 1;
@@ -111,6 +115,7 @@ group {
 				visible: 1;
             }
         }
+
 		part {
 			name: "left_separator";
 			type: RECT;
@@ -134,6 +139,7 @@ group {
 				visible: 1;
             }
 		}
+
 		part {
 			name: "right_separator";
 			type: RECT;
@@ -157,6 +163,7 @@ group {
 				visible: 1;
             }
 		}
+
         part {
             name: "over";
             type: IMAGE;
@@ -179,6 +186,7 @@ group {
                 }
             }
         }
+
         part {
             name: "e.dragable.hbar";
             mouse_events: 0;
@@ -194,6 +202,7 @@ group {
                 rel2.to: "base";
             }
         }
+
         part {
             name: "event";
             type: RECT;
@@ -242,6 +251,7 @@ group {
 }
 group {
     name: "e/widgets/toolbar/item";
+
     parts {
         part {
             name: "bg";
@@ -266,6 +276,7 @@ group {
                 color: 255 255 255 200;
             }
         }
+
         part {
             name: "bg2";
 			type: RECT;
@@ -282,6 +293,7 @@ group {
                 visible: 1;
             }
         }
+
 		part {
 			name: "separator";
 			type: RECT;
@@ -297,6 +309,7 @@ group {
                 }
 			}
 		}
+
 		part {
 			name: "separator2";
 			type: RECT;
@@ -312,6 +325,7 @@ group {
                 }
 			}
 		}
+
         part {
             name: "e.swallow.icon";
             type: SWALLOW;
@@ -329,6 +343,7 @@ group {
                 }
             }
         }
+
         part {
             name: "e.text.label";
             type: TEXT;
@@ -356,6 +371,7 @@ group {
                 inherit: "default" 0.0;
             }
         }
+
         part {
             name: "event";
             type: RECT;

@@ -7,6 +7,7 @@ group {
 		item: "borderless" "1";
 	}
 	parts {
+
 		part {
 			name: "base";
 			type: IMAGE;
@@ -27,6 +28,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "about_enlightenment_clip";
 			type: RECT;
@@ -49,6 +51,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part { 
 			name: "logo_clip";
 			type: RECT;
@@ -71,6 +74,7 @@ group {
 				color: 255 255 255 0;
 			}
 		}
+
 		part { 
 			name: "logo";
 			type: IMAGE;
@@ -94,6 +98,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "e.text.title";
 			type: TEXT;
@@ -119,6 +124,7 @@ group {
 				TEXT_HEADER("label_title", 0.0 0.0, 1 1);
 			}
 		}
+
 		part { 
 			name: "e.text.version";
 			type: TEXT;
@@ -143,6 +149,7 @@ group {
 				TEXT_NORMAL("label_normal", 1.0 0.5, 1 1);
 			}
 		}
+
 		part { 
 			name: "small_logo";
 			type: IMAGE;
@@ -166,6 +173,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "about_entry";
 			type: IMAGE;
@@ -189,6 +197,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "authors_entry";
 			type: IMAGE;
@@ -213,6 +222,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "about_clip";
 			type: RECT;
@@ -233,6 +243,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "authors_clip";
 			type: RECT;
@@ -253,6 +264,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "e.textblock.about";
 			type: TEXTBLOCK;
@@ -294,6 +306,7 @@ group {
 				}
 			}
 		}
+
 		part { 
 			name: "e.textblock.authors";
 			type: TEXTBLOCK;
@@ -335,6 +348,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button.area";
 			type: RECT;
@@ -357,6 +371,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button_base";
 			type: IMAGE;
@@ -380,6 +395,7 @@ group {
 				}	
 			}
 		}
+
 		part {
 			name: "button_clip";
 			type: RECT;
@@ -400,6 +416,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "button";
 			type: IMAGE;
@@ -421,6 +438,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "shadow";
 			type: IMAGE;
@@ -445,6 +463,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "text";
 			type: TEXT;
@@ -470,6 +489,7 @@ group {
 				TEXT_COLOR_CLICKED;				
 			}
 		}
+
 		part {
 			name: "shadow_overlay";
 			type: IMAGE;

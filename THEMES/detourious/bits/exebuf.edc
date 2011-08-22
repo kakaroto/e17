@@ -2,6 +2,7 @@
 group {
 	name: "e/widgets/exebuf/main";
 	parts {
+
 		part {
 			name: "bg_border";
 			type: RECT;
@@ -11,7 +12,8 @@ group {
 				color: 104 108 111 255;
 			}
 		}
-                MENU_GRADIENT
+		MENU_GRADIENT;
+		
 		part {
 			name: "bg_overlay";
 			type: IMAGE;
@@ -27,6 +29,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "application_list_entry";
 			type: IMAGE;
@@ -49,6 +52,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.eap_list";
 			type: SWALLOW;
@@ -68,6 +72,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "application_list_clip";
 			type: RECT;
@@ -83,6 +88,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "separator";
 			type: IMAGE;
@@ -105,6 +111,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "exe_list_entry";
 			type: IMAGE;
@@ -127,6 +134,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.exe_list";
 			type: SWALLOW;
@@ -146,6 +154,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "exe_list_clip";
 			type: RECT;
@@ -164,6 +173,7 @@ group {
 				}
 			}
 		}
+
 
 		part {
 			name: "e.text.label";
@@ -194,6 +204,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "cursor";
 			type: RECT;
@@ -223,6 +234,7 @@ group {
 			}
 		}
 
+
 		part {      
 			name: "icon";
 			type: IMAGE;
@@ -248,6 +260,7 @@ group {
 				}
 			}
 		}
+
 		part {      
 			name: "icon_inset";
 			type: IMAGE;
@@ -273,6 +286,7 @@ group {
 				}
 			}
 		}
+
 		part {      
 			name: "icon_overlay";
 			type: IMAGE;
@@ -296,6 +310,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.icons";
 			type: SWALLOW;
@@ -316,6 +331,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "decoration";
 			type: IMAGE;
@@ -363,6 +379,7 @@ group {
 group {
 	name: "e/widgets/exebuf/item";
 	parts {
+
 		part {
 			name: "entry_title";
 			type: IMAGE;
@@ -391,6 +408,7 @@ group {
 				visible: 1;
 			}
 		}
+
 		part {
 			name: "e.text.title";
 			type: TEXT;
@@ -432,6 +450,8 @@ group {
 				}
 			}
 		}
+
+
 		part {
 			name: "e.swallow.icons";
 			type: SWALLOW;
@@ -451,6 +471,8 @@ group {
 				}
 			}
 		}
+
+
 		part {
 			name: "e.event.exebuf.item";
 			type: RECT;

@@ -7,6 +7,7 @@
 group {
 	name: "e/modules/everything/list";
 	parts {
+
 		part {
 			name: "list_frame";
 			type: RECT;
@@ -15,6 +16,7 @@ group {
 				visible: 0;
 			}
 		}
+
 		part {
 			name: "base";
 			type: RECT;
@@ -30,6 +32,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "input_base";
 			type: RECT;
@@ -39,6 +42,7 @@ group {
 				rel2.offset: -1 23;
 			}
 		}
+
 		part {
 			name: "input_bg";
 			clip_to: "input_base";
@@ -52,6 +56,7 @@ group {
 				image.normal: "images/menubar.png";
 			}
 		}
+
 		/* part {
 		 * 	name: "input_bg_hilight";
 		 * 	mouse_events: 0;
@@ -66,6 +71,7 @@ group {
 		 * 		rel2.offset: -1 -1;
 		 * 	}
 		 * } */
+
 
 		part {
 			name: "e.text.label";
@@ -90,6 +96,7 @@ group {
 				TEXT_LARGE("everything_typebuf", 0.0 0.5, 1 1);
 			}
 		}
+
 		part {
 			name: "cursor";
 			mouse_events: 0;
@@ -119,6 +126,7 @@ group {
 				color: 255 255 255 50;
 			}
 		}
+
 		part {
 			name: "list_clip";
 			type: RECT;
@@ -139,6 +147,7 @@ group {
 			}
 		}
 #if (BUILD_ILLUME == 0) || (BUILD_COMPOSITE == 0)
+
 		part {
 			name: "list_bg";
 			clip_to: "base";
@@ -152,6 +161,7 @@ group {
 		}
 #endif
 		/* #ifdef BUILD_ILLUME */
+
 		part {
             name: "blub";
             type: RECT;
@@ -177,6 +187,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "blub2";
 			type: RECT;
@@ -202,6 +213,7 @@ group {
 				}
 			}
 		}
+
 
 		part {
 			name: "e.swallow.list";
@@ -239,6 +251,7 @@ group {
 				visible: 0;
 			}
 		}
+
 		part {
 			name: "e.swallow.list2";
 			type: SWALLOW;
@@ -276,6 +289,7 @@ group {
 			}
 		}
 #if (BUILD_ILLUME == 0) || (BUILD_COMPOSITE == 0)
+
 		part {
 			name: "list_top_shadow";
 			mouse_events: 0;
@@ -290,6 +304,7 @@ group {
 				rel2.offset: -1 -1;
 			}
 		}
+
 		part {
 			name: "list_top_shadow2";
 			mouse_events: 0;
@@ -305,6 +320,7 @@ group {
 			}
 		}
 #endif
+
 		part {
 			name: "list_bottom_shadow";
 			mouse_events: 0;
@@ -319,6 +335,7 @@ group {
 				image.normal: "images/bevel_evry_fade.png";
 			}
 		}
+
 		part {
 			name: "bar_base";
 			type: RECT;
@@ -339,6 +356,7 @@ group {
 				color: 235 235 235 255;
 			}
 		}
+
 		part {
 			name: "bar_clip";
 			type: RECT;
@@ -360,6 +378,7 @@ group {
 				color: 255 255 255 0;
 			}
 		}
+
 		part {
 			name: "bar_bg";
 			clip_to: "base";
@@ -373,6 +392,7 @@ group {
 				color: 0 0 0 50;
 			}
 		}
+
 		part {
 			name: "bar_bg2";
 			mouse_events: 0;
@@ -386,6 +406,7 @@ group {
 				rel2.offset: -1 0;
 			}
 		}
+
 		part {
 			name: "bar_bg_shadow";
 			mouse_events: 0;
@@ -399,6 +420,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.bar";
 			clip_to: "bar_clip";
@@ -532,6 +554,7 @@ group {
 	}
 #endif
 	parts {
+
 		part {
 			name: "frame";
 			mouse_events: 0;;
@@ -541,6 +564,7 @@ group {
 				color: 40 40 40 128;
 			}
 		}
+
 
 		part {
 			name: "win";
@@ -555,6 +579,7 @@ group {
 			}
 		}
 		
+
 		part {
 			name: "list";
 			source: "e/modules/everything/list";
@@ -574,6 +599,7 @@ group {
 			}
 		}
 
+
 		part {
 			name: "separator";
 			mouse_events: 0;
@@ -588,6 +614,7 @@ group {
 				rel2.offset: -1 -2;
 			}
 		}
+
 		part {
 			name: "separator2";
 			mouse_events: 0;
@@ -601,6 +628,7 @@ group {
 				rel1.offset: 0 -1;
 			}
 		}
+
 		part {
 			name: "selector_frame";
 			type: RECT;
@@ -610,6 +638,7 @@ group {
 				rel2.to: "win";
 			}
 		}
+
 		part {
 			name: "subject_selector";
 			type: GROUP;
@@ -630,6 +659,7 @@ group {
 				rel2.relative: 0.0 1.0;
 			}
 		}
+
 		part {
 			name: "action_selector";
 			type: GROUP;
@@ -650,6 +680,7 @@ group {
 				rel2.relative: 0.5 1.0;
 			}
 		}
+
 		part {
 			name: "object_selector";
 			type: GROUP;
@@ -671,6 +702,7 @@ group {
 				rel2.relative: 1.0 1.0;
 			}
 		}
+
 		/* part {
 		 *     name: "selector_over2";
 		 *     mouse_events: 0;
@@ -684,6 +716,7 @@ group {
 		 *         }
 		 *     }
 		 * } */
+
 		part {
 			name: "selector_over1";
 			mouse_events: 0;
@@ -697,6 +730,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "top";
 			mouse_events: 0;
@@ -712,6 +746,7 @@ group {
 				rel2.offset: -1 0;
 			}
 		}
+
 		part {
 			name: "bg_frame";
 			mouse_events: 0;
@@ -752,6 +787,7 @@ group {
 group {
 	name: "e/modules/everything/selector_item";
 	parts {
+
 		part {
 			name: "clip";
 			type: RECT;
@@ -760,6 +796,7 @@ group {
 				state: "default" 0.0;
 			}
 		}
+
 		part {
 			name: "bg";
 			mouse_events: 0;
@@ -774,6 +811,7 @@ group {
 				color: 205 205 205 50;
 			}
 		}
+
 		part {
 			name: "separator";
 			mouse_events: 0;
@@ -791,6 +829,7 @@ group {
 				color: 0 0 0 65;
 			}
 		}
+
 		part {
 			name: "icon_clip";
 			type: RECT;
@@ -810,6 +849,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "e.swallow.icons";
 			type: SWALLOW;
@@ -824,6 +864,7 @@ group {
 				rel2.to: "icon_clip";
 			}
 		}
+
 		part {
 			name: "e.swallow.thumb";
 			type: SWALLOW;
@@ -838,6 +879,7 @@ group {
 				rel2.to: "icon_clip";
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -864,6 +906,7 @@ group {
 				inherit: "default" 0.0;
 			}
 		}
+
 		part {
 			name: "e.text.plugin";
 			type: TEXT;
@@ -887,6 +930,7 @@ group {
 				inherit: "default" 0.0;
 			}
 		}
+
 		part {
 			name: "over";
 			mouse_events: 0;
@@ -905,6 +949,7 @@ group {
 				/* visible: 1; */
 			}
 		}
+
 
 		part {
 			name: "event";
@@ -976,6 +1021,7 @@ group {
 	name: "e/modules/everything/tab_item";
 	min: 50 10;
 	parts {
+
 		part {
 			name: "clip";
 			type: RECT;
@@ -986,6 +1032,7 @@ group {
 				rel2.relative: 0.95 1.0;
 			}
 		}
+
 		part {
 			name: "bg";
 			mouse_events: 0;
@@ -1000,6 +1047,7 @@ group {
 				color: 215 215 215 255;
 			}
 		}
+
 		part {
 			name: "bg2";
 			mouse_events: 0;
@@ -1014,6 +1062,7 @@ group {
 				image.normal: "images/bevel_under.png";
 			}
 		}
+
 		part {
 			name: "separator";
 			mouse_events: 0;
@@ -1030,6 +1079,7 @@ group {
 				color: 0 0 0 75;
 			}
 		}
+
 
 		part {
 			name: "e.text.label";
@@ -1058,6 +1108,7 @@ group {
 				color: 60 60 60 255;
 			}
 		}
+
 		part {
 			name: "event";
 			type: RECT;
@@ -1096,6 +1147,7 @@ group {
 	name: "e/modules/everything/tab_item/back";
 	min: 50 10;
 	parts {
+
 		part {
 			name: "clip";
 			mouse_events: 0;
@@ -1105,6 +1157,7 @@ group {
 				rel2.relative: 0.95 1.0;
 			}
 		}
+
 		part {
 			name: "bg";
 			mouse_events: 0;
@@ -1119,6 +1172,7 @@ group {
 				color: 215 215 215 255;
 			}
 		}
+
 		part {
 			name: "arrow";
 			mouse_events: 0;
@@ -1129,6 +1183,7 @@ group {
 				image.normal: "icons/button-back.png";
 			}
 		}
+
 
 		part {
 			name: "event";
@@ -1167,6 +1222,7 @@ group {
 	min: 128 128;
 #endif
 	parts {
+
 		part {
 			name: "base";
 			mouse_events: 0;
@@ -1184,6 +1240,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 
 		part {
 			name: "base_anim";
@@ -1209,6 +1266,7 @@ group {
 				rel2.relative: 1.1  1.1;
 			}
 		}
+
 
 		part {
 			name: "bg";
@@ -1238,6 +1296,7 @@ group {
 				color: 255 255 255 230;
 			}
 		}
+
 		part {
 			name: "bg_mark";
 			mouse_events: 0;
@@ -1260,6 +1319,7 @@ group {
 				color: 255 255 255 60;
 			}
 		}
+
 		part {
 			name: "clip";
 			mouse_events: 0;
@@ -1271,6 +1331,7 @@ group {
 				rel2.to: "base";
 			}
 		}
+
 		part {
 			name: "e.swallow.icon";
 			clip_to: "clip";
@@ -1291,6 +1352,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.swallow.thumb";
 			clip_to: "clip";
@@ -1311,6 +1373,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "arrow";
 			mouse_events: 0;
@@ -1341,6 +1404,7 @@ group {
 				visible: 1;
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -1370,6 +1434,7 @@ group {
 				inherit: "default" 0.0;
 			}
 		}
+
 		part {
 			name: "event";
 			type: RECT;
@@ -1479,6 +1544,7 @@ group {
 group {
 	name: "e/modules/everything/thumbview/item/list";
 	parts {
+
 		part {
 			name: "separator";
 			mouse_events: 0;
@@ -1496,6 +1562,7 @@ group {
 				color: 0 0 0 20;
 			}
 		}
+
 		part {
 			name: "bg";
 			mouse_events: 0;
@@ -1518,6 +1585,7 @@ group {
 				visible: 1;
 			}
 		}
+
 		part {
 			name: "bg1";
 			mouse_events: 0;
@@ -1534,6 +1602,7 @@ group {
 				color: 255 255 255 190;
 			}
 		}
+
 		part {
 			name: "bg2";
 			mouse_events: 0;
@@ -1550,6 +1619,7 @@ group {
 				color: 255 255 255 30;
 			}
 		}
+
 
 		/* part {
 		 *    name: "outline";
@@ -1570,6 +1640,7 @@ group {
 		 *       color: 0 0 0 220;
 		 *    }
 		 * } */
+
 		part {
 			name: "bg_mark";
 			mouse_events: 0;
@@ -1593,6 +1664,7 @@ group {
 				color: 255 255 255 60;
 			}
 		}
+
 		part {
 			name: "base";
 			mouse_events: 0;
@@ -1610,6 +1682,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "clip";
 			mouse_events: 0;
@@ -1636,6 +1709,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "e.swallow.icon";
 			clip_to: "clip";
@@ -1647,6 +1721,7 @@ group {
 				rel2.to: "clip";
 			}
 		}
+
 		part {
 			name: "e.swallow.thumb";
 			clip_to: "clip";
@@ -1659,6 +1734,7 @@ group {
 				rel2.to: "clip";
 			}
 		}
+
 		part {
 			name: "arrow";
 			mouse_events: 0;
@@ -1693,6 +1769,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.text.label";
 			type: TEXT;
@@ -1725,6 +1802,7 @@ group {
 				color3: 40 40 40 68;
 			}
 		}
+
 		part {
 			name: "e.text.detail";
 			type: TEXT;
@@ -1755,6 +1833,7 @@ group {
 				color: 60 60 60 255;
 			}
 		}
+
 		part {
 			name: "spacer";
 			type: RECT;
@@ -1773,6 +1852,7 @@ group {
 				rel2.to: "e.text.detail";
 			}
 		}
+
 		part {
 			name: "event";
 			type: RECT;
@@ -1867,6 +1947,7 @@ group {
 group {
 	name: "e/modules/everything/thumbview/main/window";
 	parts {
+
 		part {
 			name: "clip";
 			type: RECT;
@@ -1880,6 +1961,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "e.swallow.list";
 			type: SWALLOW;
@@ -1896,6 +1978,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "left_arrow";
 			mouse_events: 0;
@@ -1918,6 +2001,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "right_arrow";
 			mouse_events: 0;
@@ -1940,6 +2024,7 @@ group {
 				color: 255 255 255 255;
 			}
 		}
+
 		part {
 			name: "event";
 			repeat_events: 1;
@@ -2011,6 +2096,7 @@ group {
 	 *    image: "sb_runnerv.png" COMP;
 	 * } */
 	parts {
+
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
@@ -2024,6 +2110,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "sb_vbar";
 			type: RECT;
@@ -2056,6 +2143,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "sb_vbar_base";
 			type: RECT;
@@ -2076,6 +2164,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "sb_vbar_runner";
 			clip_to: "sb_vbar";
@@ -2095,6 +2184,7 @@ group {
 				 * fill.smooth: 0; */
 			}
 		}
+
 		part {
 			name: "sb_vbar_p1";
 			type: RECT;
@@ -2113,6 +2203,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "sb_vbar_p2";
 			type: RECT;
@@ -2131,6 +2222,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "e.dragable.vbar";
 			clip_to: "sb_vbar";
@@ -2167,6 +2259,7 @@ group {
 				/* image.normal: "bt_sm_base1.png"; */
 			}
 		}
+
 		/* part {
 		 *     name: "sb_vbar_over1";
 		 *     clip_to: "sb_vbar";
@@ -2184,6 +2277,7 @@ group {
 		 *         color: 180 180 180 10;
 		 *     }
 		 * } */
+
 		part {
 			name: "sb_vbar_a1";
 			type: RECT;
@@ -2208,6 +2302,7 @@ group {
 				}
 			}
 		}
+
 		part {
 			name: "sb_vbar_a2";
 			type: RECT;
@@ -2296,6 +2391,7 @@ group {
 group {
 	name: "e/modules/everything/textblock";
 	parts {
+
 		part {
 			name: "e.textblock.text";
 			type: TEXTBLOCK;

@@ -1,24 +1,20 @@
 
 group {
 	name: "e/widgets/deskpreview/desk";
-
 	parts {
+
 		part {
 			name: "background";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 { 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					offset: -5 -3; 
 				}
-
 				image {
 					normal: "images/deskpreview_im0.png";
 					border: 4 4 7 5;
@@ -30,16 +26,13 @@ group {
 			name: "border";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 60 60 60 255;
-
 				rel1 { 
 					to: "background"; 
 					offset: 4 5; 
 				}
-
 				rel2 { 
 					to: "background"; 
 					offset: -5 -6; 
@@ -51,16 +44,13 @@ group {
 			name: "clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-
 				rel1 { 
 					to: "background"; 
 					offset: 5 6; 
 				}
-		
 				rel2 { 
 					to: "background"; 
 					offset: -6 -7; 
@@ -72,15 +62,12 @@ group {
 			name: "e.swallow.content";
 			type: SWALLOW;
 			clip_to: "clip";
-
 			description {
 				state: "default" 0.0;
-
 				rel1 { 
 					to: "background"; 
 					offset: 5 6; 
 				}
-
 				rel2 { 
 					to: "background"; 
 					offset: -6 -7; 
@@ -91,7 +78,6 @@ group {
 		part {
 			name: "e.event.menu";
 			type: RECT;
-	
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 0;
@@ -99,4 +85,3 @@ group {
 		}
 	}
 }
-

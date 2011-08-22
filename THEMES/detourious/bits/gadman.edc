@@ -1,29 +1,25 @@
 
 group {
 	name: "e/gadman/control";
-
 	parts {
+
 		part {
 			name: "hclip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
 				visible: 1;
-
 				rel1 {
 					relative: 0.0 0.0;
 					offset: -80 -80;
 				}
-
 				rel2 {
 					relative: 1.0 1.0;
 					offset: 79 79;
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
@@ -35,23 +31,19 @@ group {
 			name: "vclip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
 				visible: 1;
-
 				rel1 {
 					relative: 0.0 0.0;
 					offset: -80 -80;
 				}
-
 				rel2 {
 					relative: 1.0 1.0;
 					offset: 79 79;
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
@@ -63,21 +55,17 @@ group {
 			name: "overlay_window";
 			type: IMAGE;
 			mouse_events: 1;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 221;
-
 				rel1 {
 					relative: 0.0 0.0;
 					offset: -2 -2;
 				}
-
 				rel2 {
 					relative: 1.0 1.0;
 					offset: 1 2;
 				}
-
 				image {
 					normal: "images/gadman_im0.png";
 					border: 16 16 16 16;
@@ -89,21 +77,17 @@ group {
 			name: "overlay";
 			type: IMAGE;
 			mouse_events: 1;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 221;
-
 				rel1 {
 					relative: 0.0 0.0;
 					offset: -2 -2;
 				}
-
 				rel2 {
 					relative: 1.0 1.0;
 					offset: 1 2;
 				}
-
 				image {
 					normal: "images/gadman_im1.png";
 					border: 12 12 12 12;
@@ -115,31 +99,27 @@ group {
 			name: "indicator";
 			type: IMAGE;
 			mouse_events: 1;
-
 			description {
 				state: "default" 0.0;
 				max: 27 27;
 				aspect: 1.0 1.0;
 				aspect_preference: BOTH;
 				color: 255 255 255 192;
-
 				image {
 					normal: "images/gadman_im2.png";
 				}
 			}
-
 			description {
 				state: "disabled" 0.0;
 				inherit: "default" 0.0;
 				visible: 0;
 			}
 		}
-  
+
 		part {
 			name: "left_arrow"; 
 			type: IMAGE;
 			clip_to: "hclip";
-	
 			description {
 				state: "default" 0.0;
 				min: 22 22;
@@ -147,22 +127,18 @@ group {
 				fixed: 1 1;
 				color: 255 255 255 255;
 				align: 1.0 0.5;
-
 				rel1 {
 					relative: 0.0 0.0;
 					offset: -1 0;
 				}
-
 				rel2 {
 					relative: 0.0 1.0;
 					offset: -1 -1;
 				}
-
 				image {
 					normal: "images/gadman_im5.png";
 				}
 			}
-
 			description {
 				state: "down" 0.0;
 				inherit: "default" 0.0;
@@ -174,7 +150,6 @@ group {
 			name: "right_arrow"; 
 			type: IMAGE;
 			clip_to: "hclip";
-	
 			description {
 				state: "default" 0.0;
 				min: 22 22;
@@ -182,22 +157,18 @@ group {
 				fixed: 1 1;
 				color: 255 255 255 255;
 				align: 0.0 0.5;
-
 				rel1 {
 					relative: 1.0 0.0;
 					offset: 0 0;
 				}
-
 				rel2 {
 					relative: 1.0 1.0;
 					offset: 0 -1;
 				}
-
 				image {
 					normal: "images/gadman_im6.png";
 				}
 			}
-
 			description {
 				state: "down" 0.0;
 				inherit: "default" 0.0;
@@ -209,7 +180,6 @@ group {
 			name: "top_arrow"; 
 			type: IMAGE;
 			clip_to: "vclip";
-
 			description {
 				state: "default" 0.0;
 				min: 22 22;
@@ -217,22 +187,18 @@ group {
 				fixed: 1 1;
 				color: 255 255 255 255;
 				align: 0.5 1.0;
-
 				rel1 {
 					relative: 0.0 0.0;
 					offset: 0 -1;
 				}
-
 				rel2 {
 					relative: 1.0  0.0;
 					offset: -1 -1;
 				}
-
 				image {
 					normal: "images/gadman_im3.png";
 				}
 			}
-
 			description {
 				state: "down" 0.0;
 				inherit: "default" 0.0;
@@ -244,7 +210,6 @@ group {
 			name: "bottom_arrow"; 
 			type: IMAGE;
 			clip_to: "vclip";
-
 			description {
 				state: "default" 0.0;
 				min: 22 22;
@@ -252,31 +217,25 @@ group {
 				fixed: 1 1;
 				color: 255 255 255 255;
 				align: 0.5 0.0;
-
 				rel1 {
 					relative: 0.0 1.0;
 					offset: 0 0;
 				}
-
 				rel2 {
 					relative: 1.0 1.0;
 					offset: -1 0;
 				}
-
 				image {
 					normal: "images/gadman_im4.png";
 				}
 			}
-
 			description {
 				state: "down" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 128;
 			}
 		}
-
 	}
-
 	programs {
 		program {
 			name: "hsize_on";
@@ -285,7 +244,6 @@ group {
 			action: STATE_SET "default" 0.0;
 			target: "hclip";
 		}
-
 		program {
 			name: "hsize_off";
 			signal: "e,state,hsize,off";
@@ -293,7 +251,6 @@ group {
 			action: STATE_SET "disabled" 0.0;
 			target: "hclip";
 		}
-
 		program {
 			name: "vsize_on";
 			signal: "e,state,vsize,on";
@@ -301,7 +258,6 @@ group {
 			action: STATE_SET "default" 0.0;
 			target: "vclip";
 		}
-
 		program {
 			name: "vsize_off";
 			signal: "e,state,vsize,off";
@@ -309,7 +265,6 @@ group {
 			action: STATE_SET "disabled" 0.0;
 			target: "vclip";
 		}
-
 		program {
 			name: "move_on";
 			signal: "e,state,move,on";
@@ -317,7 +272,6 @@ group {
 			action: STATE_SET "default" 0.0;
 			target: "indicator";
 		}
-
 		program {
 			name: "move_off";
 			signal: "e,state,move,off";
@@ -325,54 +279,46 @@ group {
 			action: STATE_SET "disabled" 0.0;
 			target: "indicator";
 		}
-
 /*
 		program {
 			name: "api_move_on";
 			signal: "e,state,move,on";
 			source: "e";
 		}
-
 		program {
 			name: "api_move_off";
 			signal: "e,state,move,off";
 			source: "e";
 		}
-
 		program {
 			name: "api_active";
 			signal: "e,state,focused";
 			source: "e";
 		}
-
 		program {
 			name: "api_inactive";
 			signal: "e,state,unfocused";
 			source: "e";
 		}
 */   
-
 		program {
 			name: "move_down";
 			signal: "mouse,down,1";
 			source: "overlay";
 			action: SIGNAL_EMIT "e,action,move,start" "";
 		}
-
 		program {
 			name: "move_up";
 			signal: "mouse,up,1";
 			source: "overlay";
 			action: SIGNAL_EMIT "e,action,move,stop" "";
 		}
-
 		program {
 			name: "gadman_move";
 			signal: "mouse,move";
 			source: "overlay";
 			action: SIGNAL_EMIT "e,action,move,go" "";
 		}
-     
 		program {
 			name: "left_arrow_down";
 			signal: "mouse,down,1";
@@ -380,7 +326,6 @@ group {
 			action: STATE_SET "down" 0.0;
 			target: "left_arrow";
 		}
-
 		program {
 			name: "left_arrow_up";
 			signal: "mouse,up,1";
@@ -388,28 +333,24 @@ group {
 			action: STATE_SET "default" 0.0;
 			target: "left_arrow";
 		}
-
 		program {
 			name: "left_arrow_resize_start";
 			signal: "mouse,down,1";
 			source: "left_arrow";
 			action: SIGNAL_EMIT "e,action,resize,left,start" "";
 		}
-
 		program {
 			name: "left_arrow_resize_stop";
 			signal: "mouse,up,1";
 			source: "left_arrow";
 			action: SIGNAL_EMIT "e,action,resize,left,stop" "";
 		}
-
 		program {
 			name: "left_arrow_move";
 			signal: "mouse,move";
 			source: "left_arrow";
 			action: SIGNAL_EMIT "e,action,resize,left,go" "";
 		}
-
 		program {
 			name: "right_arrow_down";
 			signal: "mouse,down,1";
@@ -417,7 +358,6 @@ group {
 			action: STATE_SET "down" 0.0;
 			target: "right_arrow";
 		}
-
 		program {
 			name: "right_arrow_up";
 			signal: "mouse,up,1";
@@ -425,28 +365,24 @@ group {
 			action: STATE_SET "default" 0.0;
 			target: "right_arrow";
 		}
-
 		program {
 			name: "right_arrow_resize_start";
 			signal: "mouse,down,1";
 			source: "right_arrow";
 			action: SIGNAL_EMIT "e,action,resize,right,start" "";
 		}
-
 		program {
 			name: "right_arrow_resize_stop";
 			signal: "mouse,up,1";
 			source: "right_arrow";
 			action: SIGNAL_EMIT "e,action,resize,right,stop" "";
 		}
-
 		program {
 			name: "right_arrow_move";
 			signal: "mouse,move";
 			source: "right_arrow";
 			action: SIGNAL_EMIT "e,action,resize,right,go" "";
 		}
-   
 		program {
 			 name: "top_arrow_down";
 			 signal: "mouse,down,1";
@@ -454,7 +390,6 @@ group {
 			 action: STATE_SET "down" 0.0;
 			 target: "top_arrow";
 		}
-
 		program {
 			name: "top_arrow_up";
 			signal: "mouse,up,1";
@@ -462,28 +397,24 @@ group {
 			action: STATE_SET "default" 0.0;
 			target: "top_arrow";
 		}
-
 		program {
 			name: "top_arrow_resize_start";
 			signal: "mouse,down,1";
 			source: "top_arrow";
 			action: SIGNAL_EMIT "e,action,resize,up,start" "";
 		}
-
 		program {
 			name: "top_arrow_resize_stop";
 			signal: "mouse,up,1";
 			source: "top_arrow";
 			action: SIGNAL_EMIT "e,action,resize,up,stop" "";
 		}
-
 		program {
 			name: "top_arrow_move";
 			signal: "mouse,move";
 			source: "top_arrow";
 			action: SIGNAL_EMIT "e,action,resize,up,go" "";
 		}
-
 		program {
 			name: "bottom_arrow_down";
 			signal: "mouse,down,1";
@@ -491,7 +422,6 @@ group {
 			action: STATE_SET "down" 0.0;
 			target: "bottom_arrow";
 		}
-
 		program {
 			name: "bottom_arrow_up";
 			signal: "mouse,up,1";
@@ -499,42 +429,36 @@ group {
 			action: STATE_SET "default" 0.0;
 			target: "bottom_arrow";
 		}
-
 		program {
 			name: "bottom_arrow_resize_start";
 			signal: "mouse,down,1";
 			source: "bottom_arrow";
 			action: SIGNAL_EMIT "e,action,resize,down,start" "";
 		}
-
 		program {
 			name: "bottom_arrow_resize_stop";
 			signal: "mouse,up,1";
 			source: "bottom_arrow";
 			action: SIGNAL_EMIT "e,action,resize,down,stop" "";
 		}
-
 		program {
 			name: "bottom_arrow_move";
 			signal: "mouse,move";
 			source: "bottom_arrow";
 			action: SIGNAL_EMIT "e,action,resize,down,go" "";
 		}
-
 		program {
 			name: "move_indicator_down";
 			signal: "mouse,down,1";
 			source: "indicator";
 			action: SIGNAL_EMIT "e,action,move,start" "";
 		}
-
 		program {
 			name: "move_indicatator_up";
 			signal: "mouse,up,1";
 			source: "indicator";
 			action: SIGNAL_EMIT "e,action,move,stop" "";
 		}
-
 		program {
 			name: "gadman_indicator_move";
 			signal: "mouse,move";
@@ -543,7 +467,6 @@ group {
 		}
  	}
 }
-
 group {
 	name: "e/gadman/popup";
         images.image: "images/menu_im1.png" COMP;
@@ -553,25 +476,21 @@ group {
 			name: "bg_border";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 104 108 111 255;
 			}
 		}
+		MENU_GRADIENT;		
 
-                MENU_GRADIENT
-		
 		part {
 			name: "bg_overlay";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				rel1.offset: 1 1;
 				rel2.offset: -2 -2;
-
 				image {
 					normal: "images/menu_im0.png";
 					border: 2 2 2 2;
@@ -583,7 +502,6 @@ group {
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
-
 			description {
 				state: "default" 0.0;
 				/* align: 0.5 0.5; */
@@ -593,36 +511,29 @@ group {
 		}
 	}
 }
-
 group {
 	name: "e/gadman/full_bg";
-
 	parts {
 		part{
 			name: "bg";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 0;
 			}
-
 			description {
 				state: "visible" 0.0;
 				color: 0 0 0 148;
 			}
 		}
-
 		part{
 			name: "custom_bg";
 			type: RECT;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 0;
 			}
-
 			description {
 				state: "visible" 0.0;
 				color: 255 255 255 128;
@@ -633,7 +544,6 @@ group {
 			name: "e.swallow.bg";
 			type: SWALLOW;
 			clip_to: "custom_bg";
-
 			description {
 				state: "default" 0.0;
 			}
@@ -644,14 +554,12 @@ group {
 			type: RECT;
 			mouse_events: 1;
 			repeat_events: 1;
-
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 0;
 			}
 		}
 	}
-
 	programs {
 		program {
 			name: "show";
@@ -661,7 +569,6 @@ group {
 			/* transition: LINEAR 0.4; */
 			target: "bg";
 		}
-
 		program {
 			name: "show_now";
 			signal: "e,state,visibility,show,now";
@@ -670,7 +577,6 @@ group {
 			/* transition: LINEAR 0.4; */
 			target: "bg";
 		}
-
 		program {
 			name: "hide";
 			signal: "e,state,visibility,hide";
@@ -680,7 +586,6 @@ group {
 			target: "bg";
 			after: "hide_stop";
 		}
-
 		program {
 			name: "hide_now";
 			signal: "e,state,visibility,hide,now";
@@ -690,7 +595,6 @@ group {
 			target: "bg";
 			after: "hide_stop";
 		}
-
 		program {
 			name: "show_custom";
 			signal: "e,state,visibility,show,custom";
@@ -699,7 +603,6 @@ group {
 			transition: LINEAR 0.2; /* 0.4 */
 			target: "custom_bg";
 		}
-
 		program {
 			name: "show_custom_now";
 			signal: "e,state,visibility,show,custom,now";
@@ -708,7 +611,6 @@ group {
 			transition: LINEAR 0.0;
 			target: "custom_bg";
 		}
-
 		program {
 			name: "hide_custom";
 			signal: "e,state,visibility,hide,custom";
@@ -718,7 +620,6 @@ group {
 			target: "custom_bg";
 			after: "hide_stop";
 		}
-
 		program {
 			name: "hide_custom_now";
 			signal: "e,state,visibility,hide,custom,now";
@@ -728,34 +629,29 @@ group {
 			target: "custom_bg";
 			after: "hide_stop";
 		}
-
 		program { 
 			name: "hide_stop";
 			action: SIGNAL_EMIT "e,action,hide,stop" "";
 		}
 	}
 }
-
 group {
 	name: "e/gadman/frame";
-
 	parts {
+
 		part {
 			name: "background";
 			type: IMAGE;
 			mouse_events: 0;
 			clip_to: "bg_clip";
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 128;
-
 				image {
 					normal: "images/entry_im0.png";
 					border: 6 6 6 6;
 				}
 			}
-
 			description {
 				state: "hidden" 0.0;
 				inherit: "default" 0.0;
@@ -767,21 +663,17 @@ group {
 			name: "bg_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
 			}
-
 			description {
 				state: "plain" 0.0;
 				inherit: "default" 0.0;
 				color: 255 255 255 255;
-
 				rel1 {
 					relative: 0.0 0.0;
 				}
-
 				rel2 {
 					relative: 0.0 0.0;
 				}
@@ -792,12 +684,10 @@ group {
 			name: "items_clip";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
 			}
-
 			description {
 				state: "hidden" 0.0;
 				inherit: "default" 0.0;
@@ -809,19 +699,16 @@ group {
 			name: "e.swallow.content";
 			type: SWALLOW;
 			clip_to: "items_clip";
-
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
 			}
-
 			description {
 				state: "hidden" 0.0;
 				color: 255 255 255 0;
 			}
 		}
 	}
-
 	programs {
 		program {
 			name: "show";
@@ -833,7 +720,6 @@ group {
 			target: "background";
 			target: "e.swallow.content";
 		}
-
 		program {
 			name: "show_now";
 			signal: "e,state,visibility,show,now";
@@ -844,7 +730,6 @@ group {
 			target: "background";
 			target: "e.swallow.content";
 		}
-
 		program {
 			name: "hide";
 			signal: "e,state,visibility,hide";
@@ -854,7 +739,6 @@ group {
 			target: "background";
 			target: "e.swallow.content";
 		}
-
 		program {
 			name: "hide_now";
 			signal: "e,state,visibility,hide,now";
@@ -864,7 +748,6 @@ group {
 			target: "background";
 			target: "e.swallow.content";
 		}
-
 		program {
 			name: "inset";
 			signal: "e,state,visibility,inset";
@@ -872,7 +755,6 @@ group {
 			action: STATE_SET "default" 0.0;
 			target: "bg_clip";
 		}
-
 		program {
 			name: "plain";
 			signal: "e,state,visibility,plain";
@@ -882,4 +764,3 @@ group {
 		}
 	}
 }
-

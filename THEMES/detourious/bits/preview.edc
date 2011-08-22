@@ -7,20 +7,16 @@ group {
 			name: "background";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 {
 					to: "e.swallow.content";
 					offset: -3 -3;
 				}
-
 				rel2 {
 					to: "e.swallow.content";
 					offset: 2 2;
 				}
-
 				image {
 		 		      normal: "images/scrollframe_im0.png";
 		 		      border: 7 7 7 7;
@@ -32,14 +28,11 @@ group {
 			name: "clipper";
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-	
 				rel1 {
 					to: "e.swallow.content";
 				}
-
 				rel2 {
 					to: "e.swallow.content";
 				}
@@ -50,15 +43,12 @@ group {
 			name: "e.swallow.content";
 			type: SWALLOW;
 			clip_to: "clipper";
-
 			description {
 				state: "default" 0.0;
-		
 
 				rel1 {
 					offset: 6 6;
 				}
-
 				rel2 {
 					offset: -5 -5;
 				}
@@ -69,20 +59,16 @@ group {
 			name: "overlay";
 			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 {
 					to: "background";
 					offset: 2 1;
 				}
-
 				rel2 {
 					to: "background";
 					offset: -3 -2;
 				}
-
 				image {
 					normal: "images/scrollframe/over.png";
 					border: 5 5 5 6;
@@ -92,4 +78,3 @@ group {
 		}
 	}
 }
-
