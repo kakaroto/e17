@@ -501,7 +501,6 @@ group {
 			name: "item_hilight";
 			description {
 				state: "default" 0.0;
-				max: 9999 26;
 				image.normal: "images/menu_im2.png";
 				image.border: 5 5 5 5;
 				visible: 0;
