@@ -131,13 +131,9 @@ _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
    if (pid == 0)
      {
 
-        //elsa_close_log();
         fprintf(stderr, PACKAGE": Session Run\n");
-//d        elsa_close_log();
         env = elsa_pam_env_list_get();
         elsa_pam_end();
-//        for (tmp = env; *tmp; ++tmp)
-//          fprintf(stderr, "%s: env %s\n", PACKAGE, *tmp);
         snprintf(buf, sizeof(buf),
                  "%s %s ",
                  elsa_config->command.session_start,
@@ -256,11 +252,6 @@ elsa_session_login(const char *session)
         _logged = EINA_TRUE;
         if (!pwd) return ECORE_CALLBACK_CANCEL;
         snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
-        if (!_elsa_session_begin(pwd, buf))
-          {
-             fprintf(stderr, "Elsa: couldn't open session\n");
-             exit(1);
-          }
 #ifdef HAVE_CONSOLEKIT
         dbus_error_init(&error);
         _elsa_ck = ck_connector_new();
@@ -301,6 +292,11 @@ elsa_session_login(const char *session)
         else
           fprintf(stderr, "Erreur consolekit\n");
 #endif
+        if (!_elsa_session_begin(pwd, buf))
+          {
+             fprintf(stderr, "Elsa: couldn't open session\n");
+             exit(1);
+          }
         elsa_history_push(pwd->pw_name, session);
         _login = strdup(pwd->pw_name);
         cmd = _elsa_session_find_command(pwd->pw_dir, session);

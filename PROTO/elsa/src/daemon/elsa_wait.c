@@ -19,7 +19,7 @@ _elsa_wait_action(int sig, siginfo_t * si __UNUSED__, void *data __UNUSED__)
     kill_wait();
     if (sig != SIGCHLD)
       {
-         putenv("ELSA_QUIT=1");
+         putenv(strdup("ELSA_QUIT=1"));
       }
 }
 

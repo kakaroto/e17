@@ -18,13 +18,12 @@ static Eina_Bool _history_update = EINA_FALSE;
 void
 elsa_history_init()
 {
+   fprintf(stderr, PACKAGE": history init\n");
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc, eddcl;
-   printf("xpid1 %s\n", getenv("ELSA_XPID"));
    // TODO add idler to load history and thread stuff
 
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Elsa_Login);
-   printf("xpid2 %s\n", getenv("ELSA_XPID"));
    edd = eet_data_descriptor_stream_new(&eddc);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Login, "login", login, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Elsa_Login, "session", session, EET_T_STRING);
@@ -35,7 +34,6 @@ elsa_history_init()
 
    _elsa_history_read();
    _elsa_user_init();
-   elsa_action_init();
 }
 
 Eina_List *elsa_history_get()
@@ -46,8 +44,8 @@ Eina_List *elsa_history_get()
 void
 elsa_history_shutdown()
 {
+   fprintf(stderr, PACKAGE": history shutdown\n");
    _elsa_history_write();
-   elsa_action_shutdown();
    _elsa_user_shutdown();
 }
 
@@ -55,8 +53,6 @@ static void
 _elsa_history_read()
 {
    Eet_File *ef;
-   Eina_List *l;
-   Elsa_Login *el;
 
    ef = eet_open("/var/cache/"PACKAGE"/"ELSA_HISTORY_FILE,
                  EET_FILE_MODE_READ_WRITE);
@@ -65,9 +61,6 @@ _elsa_history_read()
         fprintf(stderr, PACKAGE": Error on reading last session login\n");
         _elsa_history = calloc(1, sizeof(Elsa_History));
      }
-   EINA_LIST_FOREACH(_elsa_history->history, l, el)
-      printf("I read last session %s - %s\n", el->login, el->session);
-
    eet_close(ef);
 }
 

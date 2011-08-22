@@ -95,6 +95,7 @@ xserver_error:
 static Eina_Bool
 _xserver_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
+   fprintf(stderr, PACKAGE": xserver started\n");
    _env_set(_xserver->dname);
    _xserver->start(_xserver->dname);
    return ECORE_CALLBACK_PASS_ON;
@@ -108,13 +109,13 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
    sigset_t newset;
    sigemptyset(&newset);
 
+   fprintf(stderr, PACKAGE": xserver init\n");
    _xserver = calloc(1, sizeof(Elsa_Xserver));
    _xserver->dname = eina_stringshare_add(dname);
    _xserver->start = start;
    pid = _xserver_start();
    snprintf(buf, sizeof(buf), "ELSA_XPID=%d", pid);
    putenv(strdup(buf));
-   printf("need my pid here %s\n", getenv("ELSA_XPID"));
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,
                                             NULL);
@@ -124,7 +125,7 @@ elsa_xserver_init(Elsa_X_Cb start, const char *dname)
 void
 elsa_xserver_end()
 {
-   printf("ending xserver\n");
+   fprintf(stderr, PACKAGE": xserver end\n");
    unsetenv("ELSA_XPID");
 }
 

@@ -256,5 +256,4 @@ _elsa_action_grub2_get(void)
  on_error:
    eina_file_close(f);
 }
-
 #endif

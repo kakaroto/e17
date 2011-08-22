@@ -310,15 +310,14 @@ main (int argc, char ** argv)
      }
    else
      {
+        elsa_action_init();
         elsa_history_init();
-        //FIXME
-        snprintf(buf, sizeof(buf), "ELSA_XPID=%d", pid);
-        putenv(strdup(buf));
         elsa_server_init();
         ecore_main_loop_iterate();
         ecore_main_loop_begin();
         elsa_server_shutdown();
         elsa_history_shutdown();
+        elsa_action_shutdown();
      }
    elsa_xserver_shutdown();
    elsa_pam_shutdown();

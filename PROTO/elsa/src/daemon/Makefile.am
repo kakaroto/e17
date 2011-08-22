@@ -9,6 +9,10 @@ AM_CPPFLAGS = \
 -DPACKAGE_BIN_DIR=\"$(libdir)/$(PACKAGE)\" \
 @ELSA_CFLAGS@
 
+if HAVE_CONSOLEKIT
+AM_CPPFLAGS += @ELSA_CK_CFLAGS@
+endif
+
 sbin_PROGRAMS = elsa
 
 internal_bindir=$(libdir)/elsa
@@ -36,6 +40,10 @@ elsa.c
 
 elsa_LDFLAGS =
 elsa_LDADD = @ELSA_LIBS@ -lpam -lrt
+
+if HAVE_CONSOLEKIT
+elsa_LDADD += @ELSA_CK_LIBS@
+endif
 
 elsa_wait_SOURCES = \
 elsa_wait.c
