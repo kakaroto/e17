@@ -16,7 +16,7 @@
 #define LABEL_THEME_NAME "dtrs"
 
 #define BUILD_COMPOSITE 1
-#define BUILD_ILLUME 1
+#define BUILD_ILLUME 0
 
 #define USE_SYSTEM_FONT 1
 #define USE_BOLD_FONT 0

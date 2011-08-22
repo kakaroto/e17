@@ -157,7 +157,7 @@ group {
 					to: "button_image";
 				}
 				color_class: "button_text";
-				TEXT_COLOR;
+				TEXT_COLOR_BOLD;
 				TEXT_BOLD("button", 0.5 0.5, 0 1);
 			}
             description {
