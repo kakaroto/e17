@@ -922,7 +922,7 @@ group {
 				rel2.relative:  1.0 0.0;
 				rel1.offset: 6 6;
 				rel2.offset: -6 -1;
-				TEXT_COLOR_BOLD;
+				TEXT_COLOR;
 				TEXT_SMALL("label_small", 0.0 0.0, 0 1);
 			}
 			description {

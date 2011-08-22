@@ -1,9 +1,10 @@
-#define TEXT_EFFECT PLAIN
+#define TEXT_EFFECT SHADOW
 #define TEXT_EFFECT_BOLD SHADOW
+/* FIXME add EFFECT_ON_WHITE, inset effect wil not be seen and eats cpu */
 
 #if USE_SYSTEM_FONT
 #define FONT "Sans"
-#define FONT_BOLD "Sans:style=semibold"
+#define FONT_BOLD "Sans:style=demibold"
 #define FONT_ITALIC "Sans:style=italic"
 #else
 #if USE_BOLD_FONT 
@@ -19,15 +20,15 @@
 
 #define TEXT_COLOR								\
 	color:  20 20 20 255;						\
-    color3: 170 168 169 100;
+    color3:  235 235 235 200;
 
 #define TEXT_COLOR_BOLD							\
-	color: 50 50 50 255;						\
-    color3:  255 255 255 128;
+	color: 60 60 60 255;						\
+    color3:  235 235 235 220;
 
 #define TEXT_COLOR_WHITE			   			\
 	color: 255 255 255 255;			   		    \
-    color3:  255 255 255 60;
+    color3: 17 16 16 100;
 
 //color3:  40 60 100 60;
 
@@ -56,7 +57,7 @@
 #define TEXT_LARGE(_text_class, _align, _min)	\
 	text {										\
 		text: "";								\
-		font: FONT;								\
+		font: FONT_BOLD;						\
 		size: 9;								\
 		min: _min;								\
 		align: _align;							\
