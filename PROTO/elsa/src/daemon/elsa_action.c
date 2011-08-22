@@ -128,33 +128,12 @@ _elsa_action_exe_event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *
 
 /////* grub2 action *//////
 #ifdef HAVE_GRUB2
-static char *
-_elsa_memstr(char *data, char *look, size_t length)
-{
-   char *tmp;
-
-   do
-     {
-        tmp = memchr(data, *look, length);
-        if (!tmp) return NULL;
-
-        if (strncmp(tmp + 1, look + 1, length - 1) == 0)
-          return tmp;
-
-        length = tmp - data;
-        data = tmp;
-     }
-   while (length > 0);
-
-   return NULL;
-}
-
 static void
 _elsa_action_grub2(void *data)
 {
-   int i;
+   intptr_t i = 0;
    char buf[PATH_MAX];
-   i = (int) data;
+   i = (intptr_t)data;
 
    snprintf(buf, sizeof(buf),
             "grub-reboot %d && %s", i, elsa_config->command.reboot);
@@ -162,23 +141,45 @@ _elsa_action_grub2(void *data)
 
 }
 
+static char *
+_elsa_memstr(char *data, size_t length, char *look, unsigned int size)
+{
+   char *tmp;
+
+   while (length >= size)
+     {
+        tmp = memchr(data, *look, length);
+        if (!tmp) return NULL;
+
+        if (strncmp(tmp + 1, look + 1, size - 1) == 0)
+          return tmp;
+        length = tmp - data;
+        data = tmp;
+     }
+
+   return NULL;
+}
+
+
 static void
 _elsa_action_grub2_get(void)
 {
    Eina_File *f;
-   unsigned char grub2_ok;
-   int menuentry = 0;
+   unsigned char grub2_ok = 0;
+   intptr_t menuentry = 0;
    char *data;
    char *r, *r2;
    char *s;
    int i;
 
-   fprintf(stderr, PACKAGE": trying to open "GRUB2_FILE"\n");
+   fprintf(stderr, PACKAGE": trying to open "GRUB2_FILE);
    f = eina_file_open(GRUB2_FILE, EINA_FALSE);
    if (!f) return ;
+   fprintf(stderr, " o");
 
    data = eina_file_map_all(f, EINA_FILE_SEQUENTIAL);
    if (!data) goto on_error;
+   fprintf(stderr, "k\n");
 
    s = data;
    r2 = NULL;
@@ -200,21 +201,17 @@ _elsa_action_grub2_get(void)
 
         /* look if the word is in this line */
         if (!grub2_ok)
-          r2 = _elsa_memstr(s, "default=\"", size);
+          r2 = _elsa_memstr(s, size, "default=\"${saved_entry}\"", 24);
         else
-          r2 = _elsa_memstr(s, "menuentry", size);
+          r2 = _elsa_memstr(s, size, "menuentry", 9);
 
         /* still some lines to read */
         if (!r2) goto end_line;
 
         if (!grub2_ok)
           {
-             char *tmp;
-             if (!strncmp(r2 + 9, "$saved", size))
-               {
-                  grub2_ok = 1;
-                  fprintf(stderr, "GRUB2 save mode found\n");
-               }
+             grub2_ok = 1;
+             fprintf(stderr, PACKAGE": GRUB2 save mode found \n");
           }
         else
           {
@@ -242,11 +239,12 @@ _elsa_action_grub2_get(void)
 
              sprintf(action, "Reboot on %s", local);
              fprintf(stderr, PACKAGE": GRUB2 '%s'\n", action);
+             _elsa_actions =
+                eina_list_append(_elsa_actions,
+                                 _elsa_action_add(action,
+                                                  _elsa_action_grub2,
+                                                  (void*)(menuentry++)));
 
-             _elsa_actions = eina_list_append(_elsa_actions,
-                                              _elsa_action_add(action,
-                                                               _elsa_action_grub2,
-                                                               (void*)(menuentry++)));
           }
 
      end_line:
