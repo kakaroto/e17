@@ -14,9 +14,11 @@ itask_menu_button(Itask *it)
 {
    it->o_button = edje_object_add(evas_object_evas_get(it->o_box));
    evas_object_event_callback_add(it->o_button, EVAS_CALLBACK_MOUSE_DOWN, _itask_menu_cb_mouse_down, it);
-   if (!e_theme_edje_object_set(it->o_button, "base/theme/modules/itask", "modules/itask/item"))
-     edje_object_file_set(it->o_button, itask_theme_path, "modules/itask/item");
+   if (!e_theme_edje_object_set(it->o_button, "base/theme/modules/itask", "e/modules/itask/button"))
+     edje_object_file_set(it->o_button, itask_theme_path, "e/modules/itask/button");
 
+   edje_object_signal_emit(it->o_button, "e,state,icon", "e");
+   
    edje_object_part_text_set(it->o_button, "label", "");
    evas_object_show(it->o_button);
    e_box_pack_start(it->o_box, it->o_button);

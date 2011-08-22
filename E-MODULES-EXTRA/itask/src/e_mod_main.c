@@ -81,6 +81,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
 				   (E_EVENT_BORDER_DESK_SET, _itask_cb_border_event, it));
    it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
+				   (E_EVENT_BORDER_URGENT_CHANGE, _itask_cb_border_event, it));
+   it->handlers = eina_list_append(it->handlers, ecore_event_handler_add
 				   (E_EVENT_DESK_SHOW, _itask_cb_desk_show, it));
 
    ecore_timer_add(0.5, _cb_timer, it);
@@ -214,23 +216,33 @@ _itask_cb_border_event(void *data, int type, void *event)
      }
    else if (type == E_EVENT_BORDER_FOCUS_IN)
      {
-	if (ic) itask_icon_signal_emit(ic, "focused", "");
+	if (ic) itask_icon_signal_emit(ic, "focused");
      }
    else if (type == E_EVENT_BORDER_FOCUS_OUT)
      {
-	if (ic) itask_icon_signal_emit(ic, "unfocused", "");
+	if (ic) itask_icon_signal_emit(ic, "unfocused");
      }
    else if (type == E_EVENT_BORDER_ICONIFY)
      {
-	if (ic) itask_icon_signal_emit(ic, "iconify", "");
+	if (ic) itask_icon_signal_emit(ic, "iconify");
      }
    else if (type == E_EVENT_BORDER_UNICONIFY)
      {
-	if (ic) itask_icon_signal_emit(ic, "uniconify", "");
+	if (ic) itask_icon_signal_emit(ic, "uniconify");
      }
    else if (type == E_EVENT_BORDER_ICON_CHANGE)
      {
 	if (ic) itask_item_set_icon(ic);
+     }
+   else if (type == E_EVENT_BORDER_URGENT_CHANGE)
+     {
+	if (ic)
+	  {
+	     if (ev->border->client.icccm.urgent)
+	       itask_icon_signal_emit(ic, "urgent");
+	     else
+	       itask_icon_signal_emit(ic, "unurgent");
+	  }
      }
    else if (type == E_EVENT_BORDER_DESK_SET)
      {
@@ -326,6 +338,8 @@ _cb_itask_update(void *data)
 
    it->idler = NULL;
 
+   cnt = eina_list_count(it->items);
+
    e_box_freeze(it->o_box);
 
    EINA_LIST_FOREACH(it->items, l, ic)
@@ -356,39 +370,37 @@ _cb_itask_update(void *data)
 
    e_box_thaw(it->o_box);
 
-   cnt = eina_list_count(it->items);
-
    if (cnt == 0)
      {
 	e_gadcon_client_size_request(it->gcc, 16, 16);
    	e_gadcon_client_aspect_set(it->gcc, 16, 16);
      }
    else if (it->horizontal)
-       {
-	  if (it->ci->ibox_style)
-	    w = cnt * bh + bh;
-	  else
-	    w = cnt * it->item_width + bh;
+     {
+	if (it->ci->ibox_style)
+	  w = cnt * bh + bh;
+	else
+	  w = cnt * it->item_width + bh;
 
-	  max = _get_max(it);
-	  if (w > max) w = max;
+	max = _get_max(it);
+	if (w > max) w = max;
 
-	  e_gadcon_client_size_request(it->gcc, w, bh);
-	  e_gadcon_client_aspect_set(it->gcc, w, bh);
-       }
-     else
-       {
-	  if (it->ci->ibox_style)
-	    h = cnt * bw + bw;
-	  else
-	    h = cnt * it->item_height + bw;
+	e_gadcon_client_size_request(it->gcc, w, bh);
+	e_gadcon_client_aspect_set(it->gcc, w, bh);
+     }
+   else
+     {
+	if (it->ci->ibox_style)
+	  h = cnt * bw + bw;
+	else
+	  h = cnt * it->item_height + bw;
 
-	  max = _get_max(it);
-	  if (h > max) h = max;
+	max = _get_max(it);
+	if (h > max) h = max;
 
-	  e_gadcon_client_size_request(it->gcc, bw, h);
-	  e_gadcon_client_aspect_set(it->gcc, bw, h);
-       }
+	e_gadcon_client_size_request(it->gcc, bw, h);
+	e_gadcon_client_aspect_set(it->gcc, bw, h);
+     }
 
    return ECORE_CALLBACK_CANCEL;
 }

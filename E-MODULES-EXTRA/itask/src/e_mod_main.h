@@ -106,7 +106,7 @@ void itask_items_init(Config *itask_config);
 void itask_items_shutdown();
 
 void  itask_item_new(Itask *it, E_Border *bd);
-void  itask_icon_signal_emit(Itask_Item *ic, char *sig, char *src);
+void  itask_icon_signal_emit(Itask_Item *ic, char *sig);
 void  itask_item_set_icon(Itask_Item *ic);
 void  itask_item_set_label(Itask_Item *ic);
 void  itask_item_free(Itask_Item *ic);

@@ -1,8 +1,6 @@
 #include "e.h"
 #include "e_mod_main.h"
 
-static void _itask_item_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _itask_item_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _itask_item_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _itask_item_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _itask_item_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -30,22 +28,17 @@ itask_item_new(Itask *it, E_Border *bd)
 
    ic->o_holder = edje_object_add(evas_object_evas_get(it->o_box));
 
-   if (it->ci->ibox_style)
-     {
-	if (!e_theme_edje_object_set(ic->o_holder, "base/theme/modules/itask", "modules/itask/icon"))
-	  edje_object_file_set(ic->o_holder, itask_theme_path, "modules/itask/icon");
-     }
-   else
-     {
-	if (!e_theme_edje_object_set(ic->o_holder, "base/theme/modules/itask", "modules/itask/item"))
-	  edje_object_file_set(ic->o_holder, itask_theme_path, "modules/itask/item");
-     }
+   if (!e_theme_edje_object_set(ic->o_holder, "base/theme/modules/itask", "e/modules/itask/button"))
+     edje_object_file_set(ic->o_holder, itask_theme_path, "e/modules/itask/button");
 
+   if (it->ci->ibox_style)
+     edje_object_signal_emit(ic->o_holder, "e,state,icon", "e");
+   else
+     edje_object_signal_emit(ic->o_holder, "e,state,combo", "e");
+   
    itask_item_set_icon(ic);
    itask_item_set_label(ic);
 
-   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_IN,   _itask_item_cb_mouse_in,  ic);
-   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_OUT,  _itask_item_cb_mouse_out, ic);
    evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_DOWN, _itask_item_cb_mouse_down, ic);
    evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_UP,   _itask_item_cb_mouse_up, ic);
    evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_MOVE, _itask_item_cb_mouse_move, ic);
@@ -76,14 +69,14 @@ itask_item_set_icon(Itask_Item *ic)
    if (ic->o_icon) evas_object_del(ic->o_icon);
 
    ic->o_icon = e_border_icon_add(ic->border, evas_object_evas_get(ic->itask->o_box));
-   edje_object_part_swallow(ic->o_holder, "icon", ic->o_icon);
+   edje_object_part_swallow(ic->o_holder, "e.swallow.icon", ic->o_icon);
    evas_object_pass_events_set(ic->o_icon, 1);
    evas_object_show(ic->o_icon);
 
    if (ic->border->iconic)
-     itask_icon_signal_emit(ic, "iconify", "");
+     itask_icon_signal_emit(ic, "iconify");
    if (ic->border->focused)
-     itask_icon_signal_emit(ic, "focused", "");
+     itask_icon_signal_emit(ic, "focused");
 
 }
 
@@ -97,16 +90,16 @@ itask_item_set_label(Itask_Item *ic)
    if ((!title) || (!title[0]))
      title  = D_("No name!!");
 
-   edje_object_part_text_set(ic->o_holder, "label", title);
+   edje_object_part_text_set(ic->o_holder, "e.text.label", title);
 }
 
 void
-itask_icon_signal_emit(Itask_Item *ic, char *sig, char *src)
+itask_icon_signal_emit(Itask_Item *ic, char *sig)
 {
    if (ic->o_holder)
-     edje_object_signal_emit(ic->o_holder, sig, src);
+     edje_object_signal_emit(ic->o_holder, sig, "e");
    if (ic->o_icon)
-     edje_object_signal_emit(ic->o_icon, sig, src);
+     edje_object_signal_emit(ic->o_icon, sig, "e");
 }
 
 static void
@@ -114,33 +107,6 @@ _itask_item_cb_menu_post(void *data, E_Menu *m)
 {
    if (!m) return;
    e_object_del(E_OBJECT(m));
-}
-
-static void
-_itask_item_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   Evas_Event_Mouse_In *ev;
-   Itask_Item *ic;
-   ev = event_info;
-   ic = data;
-
-   itask_icon_signal_emit(ic, "active", "");
-   if (ic->itask->ci->show_label)
-     itask_icon_signal_emit(ic, "label_active", "");
-}
-
-static void
-_itask_item_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   Evas_Event_Mouse_Out *ev;
-   Itask_Item *ic;
-
-   ev = event_info;
-   ic = data;
-
-   itask_icon_signal_emit(ic, "passive", "");
-   if (ic->itask->ci->show_label)
-     itask_icon_signal_emit(ic, "label_passive", "");
 }
 
 static void
