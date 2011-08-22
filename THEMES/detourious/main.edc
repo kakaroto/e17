@@ -8,8 +8,12 @@
 
 #define BUILD_COMPOSITE 1
 
+#ifndef BUILD_ILLUME
 #define BUILD_ILLUME 0
+#endif
+#ifndef USE_BOLD_FONT
 #define USE_BOLD_FONT 0     /* bold font scales better on high dpi displays */
+#endif
 
 #define ANIMATED_CURSOR 1	/* Mouse pointer will pulsate when inactive */
 #define ALTERNATE_CURSOR 0	/* Alternate (black) mouse pointer */

@@ -9,3 +9,6 @@ detourious.edj:
 install: detourious.edj
 	rm -f ~/.e/e/themes/detourious.edj
 	cp detourious.edj ~/.e/e/themes
+
+illume:
+	edje_cc -DBUILD_ILLUME=1 -DBUILD_COMPOSITE=1 -id . -fd . main.edc -o dtrs-illume.edj
