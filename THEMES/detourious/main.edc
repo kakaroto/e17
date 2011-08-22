@@ -3,23 +3,13 @@
  * by cored.org et al (see AUTHORS).
  */
 
-#include "macros/gradient.edc"
-#include "macros/about_buttons.edc"
-#include "macros/border_menu_buttons.edc"
-#include "macros/efm_nav.edc"
-#include "macros/init-bg.edc"
-#include "macros/sys.edc"
-#include "text.edc"
-#include "parts.edc"
-
 #define VERSION_STRING 0.0.1
 #define LABEL_THEME_NAME "dtrs"
 
 #define BUILD_COMPOSITE 1
-#define BUILD_ILLUME 0
+#define BUILD_ILLUME 1
 
-#define USE_SYSTEM_FONT 1
-#define USE_BOLD_FONT 0
+#define USE_BOLD_FONT 1     /* bold font scales better on high dpi displays */
 
 #define ANIMATED_CURSOR 1	/* Mouse pointer will pulsate when inactive */
 #define ALTERNATE_CURSOR 0	/* Alternate (black) mouse pointer */
@@ -58,71 +48,81 @@ color_classes {
 }
 
 images {
-	#include "images.edc" 			/* Includes both icons and regular images */
+#include "images.edc" 			/* Includes both icons and regular images */
 }
 
 collections {
-	#include "bits/about_detour.edc"	/* about this edje */
-	#include "bits/about_e.edc"		/* about enlightenment */
-	#include "bits/background.edc" 		/* background group */
+#include "macros/gradient.edc"
+#include "macros/about_buttons.edc"
+#include "macros/border_menu_buttons.edc"
+#include "macros/efm_nav.edc"
+#include "macros/init-bg.edc"
+#include "macros/sys.edc"
+#include "text.edc"
+#include "parts.edc"
+
+
+#include "bits/about_detour.edc"	/* about this edje */
+#include "bits/about_e.edc"		/* about enlightenment */
+#include "bits/background.edc" 		/* background group */
 	//~ #include "bits/battery.edc"		/* battery module */
-	#include "bits/border.edc"		/* border group */
-	#include "bits/button.edc"		/* button widget group */
-	#include "bits/check.edc"		/* check widget group */
-	#include "bits/clock.edc"		/* clock module */
-	#include "bits/color_well.edc"		/* color well */
-	#include "bits/configure.edc"		/* configure group */
+#include "bits/border.edc"		/* border group */
+#include "bits/button.edc"		/* button widget group */
+#include "bits/check.edc"		/* check widget group */
+#include "bits/clock.edc"		/* clock module */
+#include "bits/color_well.edc"		/* color well */
+#include "bits/configure.edc"		/* configure group */
 	//~ #include "bits/configure_toolbar.edc"	/* configuration toolbar */
 	//~ #include "bits/connman.edc"		/* connection manager module*/
 	//~ #include "bits/cpufreq.edc"		/* cpu frequency module */
-	#include "bits/cslider.edc"		/* cslider group */
-	#include "bits/desklock.edc"		/* desklock group */
-	#include "bits/deskpreview.edc"		/* deskpreview */
-	#include "bits/dialog.edc"		/* dialog group */
-	#include "bits/efm_nav.edc"		/* extra: efm navigation module */
-	#include "bits/efm_toolbar.edc"		/* efm toolbar */
-   	#include "bits/efm_pathbar.edc"		/* efm pathbar */
-	#include "bits/entry.edc"		/* entry group */
-	#include "bits/exebuf.edc"		/* executable buffer popup */
-	#include "bits/font_preview.edc"	/* hidden */
-	#include "bits/gadman.edc"		/* gadget manager */
-	#include "bits/frame.edc"		/* frame widget group */
-	#include "bits/ibar.edc" 		/* ibar & ibox group */
-	#include "bits/icons.edc" 		/* icons definitions */
-	#include "bits/ilist.edc"		/* icon list */
-	#include "bits/init.edc"		/* init screen */
-	#include "bits/label.edc"		/* label definiton group */
-	#include "bits/fileman.edc" 		/* file manager groups */
-	#include "bits/menu.edc" 		/* menu and context menu groups */
+#include "bits/cslider.edc"		/* cslider group */
+#include "bits/desklock.edc"		/* desklock group */
+#include "bits/deskpreview.edc"		/* deskpreview */
+#include "bits/dialog.edc"		/* dialog group */
+#include "bits/efm_nav.edc"		/* extra: efm navigation module */
+#include "bits/efm_toolbar.edc"		/* efm toolbar */
+#include "bits/efm_pathbar.edc"		/* efm pathbar */
+#include "bits/entry.edc"		/* entry group */
+#include "bits/exebuf.edc"		/* executable buffer popup */
+#include "bits/font_preview.edc"	/* hidden */
+#include "bits/gadman.edc"		/* gadget manager */
+#include "bits/frame.edc"		/* frame widget group */
+#include "bits/ibar.edc" 		/* ibar & ibox group */
+#include "bits/icons.edc" 		/* icons definitions */
+#include "bits/ilist.edc"		/* icon list */
+#include "bits/init.edc"		/* init screen */
+#include "bits/label.edc"		/* label definiton group */
+#include "bits/fileman.edc" 		/* file manager groups */
+#include "bits/menu.edc" 		/* menu and context menu groups */
 	//~ include "bits/mixer.png"		/* mixer module group */
-	#include "bits/move_resize_info.edc" 		/* move window information group */
-	#include "bits/pager.edc"		/* pager */
-	#include "bits/pointer.edc"		/* mouse pointer group */
-	#include "bits/preview.edc"		/* preview */
-	#include "bits/radio.edc"		/* radio widget group */
-	#include "bits/scrollframe.edc"		/* scrollframe groups */
-	#include "bits/shelf.edc"		/* shelf groups */
-	#include "bits/slider.edc"		/* slider group */
+#include "bits/move_resize_info.edc" 		/* move window information group */
+#include "bits/pager.edc"		/* pager */
+#include "bits/pointer.edc"		/* mouse pointer group */
+#include "bits/preview.edc"		/* preview */
+#include "bits/radio.edc"		/* radio widget group */
+#include "bits/scrollframe.edc"		/* scrollframe groups */
+#include "bits/shelf.edc"		/* shelf groups */
+#include "bits/slider.edc"		/* slider group */
 	//~ #include "bits/slidesel.edc"	/* slidesel */
-	#include "bits/spectrum.edc"		/* spectrum */
-	#include "bits/start.edc"		/* start menu module */
-	#include "bits/sys.edc"			/* system actions */
-	#include "bits/syscon.edc"		/* system connection group */
-	#include "bits/tclock.edc"		/* extra: tclock module */
+#include "bits/spectrum.edc"		/* spectrum */
+#include "bits/start.edc"		/* start menu module */
+#include "bits/sys.edc"			/* system actions */
+#include "bits/syscon.edc"		/* system connection group */
+#include "bits/tclock.edc"		/* extra: tclock module */
 	//~ #include "bits/temperature.edc"	/* temperature module */
-	#include "bits/textblock.edc"		/* textblock definitions group */
+#include "bits/textblock.edc"		/* textblock definitions group */
 	//~ #include "bits/tlist.edc"		/* tlist groups (deprecated) */
-	#include "bits/transitions.edc"		/* desktop wallpaper transitions */
-	#include "bits/winlist.edc"		/* window list (alt+tab) */
-	#include "bits/toolbar.edc"
-    #include "bits/everything.edc"
-    #include "bits/comp.edc"
-    #include "bits/notification.edc"
-    #include "bits/evry-shotgun.edc"
-    #include "bits/engage.edc"		/* engage module */
-    #include "bits/bluez.edc"       /* bluez module */
-    #include "bits/illume.edc"
-    #include "bits/illume_kbd.edc"
-    #include "bits/itask.edc"
+#include "bits/transitions.edc"		/* desktop wallpaper transitions */
+#include "bits/winlist.edc"		/* window list (alt+tab) */
+#include "bits/toolbar.edc"
+#include "bits/everything.edc"
+#include "bits/comp.edc"
+#include "bits/notification.edc"
+#include "bits/evry-shotgun.edc"
+#include "bits/engage.edc"		/* engage module */
+#include "bits/bluez.edc"       /* bluez module */
+#include "bits/illume.edc"
+#include "bits/illume_kbd.edc"
+#include "bits/itask.edc"
 }
 

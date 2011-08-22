@@ -2,25 +2,31 @@
 #define TEXT_EFFECT_BOLD SHADOW
 /* FIXME add EFFECT_ON_WHITE, inset effect wil not be seen and eats cpu */
 
-#if USE_SYSTEM_FONT
-#define FONT "Sans"
-#define FONT_BOLD "Sans:style=demibold"
-#define FONT_ITALIC "Sans:style=italic"
-#else
-#if USE_BOLD_FONT 
-#define FONT "Switzera:style=semibold"
-#define FONT_BOLD "Switzera:style=bold"
-#define FONT_ITALIC "Switzera:style=semibold italic"
-#else
-#define FONT "Switzera"
-#define FONT_BOLD "Switzera:style=semibold"
-#define FONT_ITALIC "Switzera:style=italic"
-#endif
-#endif
 
+#if USE_BOLD_FONT 
+#define FONT "Sans:style=bold"
+#define FONT_BOLD "Sans:style=bold"
+#define FONT_ITALIC "Sans:style=bold,italic"
+#define TEXT_SIZE 8
+#define TEXT_SIZE_BOLD 8
+#define TEXT_SIZE_LARGE 8
+#define TEXT_SIZE_SMALL 7
+#define TEXT_COLOR								\
+	color:  60 60 60 255;						\
+    color3:  235 235 235 200;
+#else
+#define FONT "Sans"
+#define FONT_BOLD "Sans:style=bold"
+#define FONT_ITALIC "Sans:style=italic"
+#define TEXT_SIZE 9
+#define TEXT_SIZE_BOLD 8
+#define TEXT_SIZE_LARGE 9
+#define TEXT_SIZE_SMALL 8
 #define TEXT_COLOR								\
 	color:  20 20 20 255;						\
     color3:  235 235 235 200;
+#endif
+
 
 #define TEXT_COLOR_BOLD							\
 	color: 60 60 60 255;						\
@@ -48,7 +54,7 @@
 	text {										\
 		text: "";								\
 		font: FONT;								\
-		size: 9;								\
+		size: TEXT_SIZE;						\
 		min: _min;								\
 		align: _align;							\
 		text_class: _text_class;				\
@@ -58,7 +64,7 @@
 	text {										\
 		text: "";								\
 		font: FONT_BOLD;						\
-		size: 9;								\
+		size: TEXT_SIZE_LARGE;					\
 		min: _min;								\
 		align: _align;							\
 		text_class: _text_class;				\
@@ -68,7 +74,7 @@
 	text {										\
 		text: "";								\
 		font: FONT;								\
-		size: 8;								\
+		size: TEXT_SIZE_SMALL;					\
 		min: _min;								\
 		align: _align;							\
 		text_class: _text_class;				\
@@ -78,7 +84,7 @@
 	text {										\
 		text: "";								\
 		font: FONT_BOLD;						\
-		size: 8;								\
+		size: TEXT_SIZE_BOLD;					\
 		min: _min;								\
 		align: _align;							\
 		text_class: _text_class;				\
@@ -87,27 +93,26 @@
 #define TEXT_BOLD(_text_class, _align, _min)	\
 	text {										\
 		font: FONT_BOLD;						\
-		size: 8;								\
+		size: TEXT_SIZE_BOLD;					\
 		min: _min;								\
 		align: _align;							\
 		text_class: _text_class;				\
 	}
 
-#define TEXT_TITLE(_text_class, _label, _align, _min)	\
-	text {												\
-		text: _label;									\
-		font: FONT_BOLD;								\
-		size: 8;										\
-		min: _min;										\
-		align: _align;									\
-		text_class: _text_class;						\
+#define TEXT_TITLE(_text_class, _align, _min)	\
+	text {										\
+		font: FONT_BOLD;						\
+		size: TEXT_SIZE_BOLD;					\
+		min: _min;								\
+		align: _align;							\
+		text_class: _text_class;				\
 	}
 
 
 styles {
 	style {
 		name: "textblock";
-		base: "font="FONT" font_size=9 align=left color=#070707";
+		base: "font="FONT" font_size="FONT_SIZE" align=left color=#070707";
 		tag:  "hilight" "+ font="FONT_BOLD" color=#3c3c3c";
 		tag:  "b" "+ font="FONT_BOLD"";
 		tag:  "br" "\n";
@@ -115,42 +120,42 @@ styles {
 	}
     style {
 		name: "dialog";
-		base: "font="FONT" font_size=9 align=center color=#070707 wrap=word text_class=tb_plain";
+		base: "font="FONT" font_size="FONT_SIZE" align=center color=#070707 wrap=word text_class=tb_plain";
 		tag:  "hilight" "+ font="FONT_BOLD" font_size=9 color=#252525 style=shadow shadow_color=#ffffff90 text_class=tb_light"; 
 		tag:  "br" "\n";
 	}
 	style {
 		name: "sys_style";
-		base: "font="FONT_BOLD" font_size=10 align=center color=#3c3c3c wrap=word text_class=tb_large";
+		base: "font="FONT_BOLD" font_size="TEXT_SIZE_BOLD" align=center color=#3c3c3c wrap=word text_class=tb_large";
 		tag: "hilight" "+ font="FONT_BOLD" color=#8aabe1 style=soft_shadow shadow_color=#07070730 text_class=tb_large_light";
 		tag: "br" "\n";
 	}
 #if 0
 	style {
 		name: "icon_textblock";
-		base: "font="FONT":style=Bold font_size=9 align=center color=#070707 elipsis=1.0";
+		base: "font="FONT":style=Bold font_size="TEXT_SIZE_BOLD" align=center color=#070707 elipsis=1.0";
 		tag:  "br" "\n";
 	}
 #endif
 	style {
 		name: "fileman_icon_name";
-		base: "font="FONT" font_size=9 text_class=fileman_icon align=center color=#fff wrap=mixed ellipsis=1.0";
+		base: "font="FONT" font_size="TEXT_SIZE" text_class=fileman_icon align=center color=#fff wrap=mixed ellipsis=1.0";
 	}
 	style {
 		name: "fileman_icon_name_full";
-		base: "font="FONT" font_size=9 text_class=fileman_icon align=center color=#fff wrap=mixed";
+		base: "font="FONT" font_size="TEXT_SIZE" text_class=fileman_icon align=center color=#fff wrap=mixed";
 	}
 	style {
 		name: "fileman_desktop_icon_name";
-		base: "font="FONT_BOLD" font_size=10 text_class=desktop_icon align=center color=#fff wrap=mixed ellipsis=1.0 style=soft_shadow shadow_color=#0002";
+		base: "font="FONT_BOLD" font_size="TEXT_SIZE_LARGE" text_class=desktop_icon align=center color=#fff wrap=mixed ellipsis=1.0 style=soft_shadow shadow_color=#0002";
 	}
 	style {
 		name: "fileman_desktop_icon_name_full";
-		base: "font="FONT_BOLD" font_size=10 text_class=desktop_icon align=center color=#fff wrap=mixed style=soft_shadow shadow_color=#0002";
+		base: "font="FONT_BOLD" font_size="TEXT_SIZE_LARGE" text_class=desktop_icon align=center color=#fff wrap=mixed style=soft_shadow shadow_color=#0002";
 	}
 	style {
 		name: "everything_textblock_style";
-		base: "font="FONT" font_size=9 align=left color=#070707";
+		base: "font="FONT" font_size="TEXT_SIZE" align=left color=#070707";
 		tag:  "hilight" "+ font="FONT_BOLD" font_size=10 color=#3C3C3C";
 		tag:  "b" "+ font="FONT_BOLD" font_size=9";
 		tag:  "br" "\n";
@@ -158,9 +163,9 @@ styles {
 	}
 	style {
 		name: "notification_style";
-		base: "font="FONT" font_size=8 align=left color=#ccccccff wrap=word ellipsis=1.0";
-		tag:  "subject"  "+ font_size=8";
-		tag:  "body"  "+ font_size=8";
+		base: "font="FONT" font_size="TEXT_SIZE" align=left color=#ccccccff wrap=word ellipsis=1.0";
+		tag:  "subject"  "+ font_size="TEXT_SIZE_SMALL"";
+		tag:  "body"  "+ font_size="TEXT_SIZE_SMALL"";
 		tag:  "br" "\n";
 		tag:  "b" "+ font="FONT_BOLD"";
 		tag:  "i" "+ font="FONT_ITALIC"";
@@ -170,11 +175,11 @@ styles {
 	}
 	style {
 		name: "message_text";
-		base: "font="FONT" font_size=10 color=#fff wrap=mixed";
+		base: "font="FONT" font_size="TEXT_SIZE_LARGE" color=#fff wrap=mixed";
 	}
 	style {
 		name: "about_enlightenment";
-		base: "font="FONT" font_size=9 color=#2C2C2C wrap=word text_class=tb_plain";
+		base: "font="FONT" font_size="TEXT_SIZE" color=#2C2C2C wrap=word text_class=tb_plain";
 		tag: "hilight" "+ font="FONT_BOLD" text_class=tb_light"; 
 		tag: "title" "+ font="FONT_BOLD" font_size=11 text_class=tb_big";
 		tag:  "br" "\n"; 
@@ -182,8 +187,8 @@ styles {
 	}
 	style {
 		name: "about_detour";
-		base: "font="FONT" font_size=10 color=#2C2C2Cff wrap=word";
-		tag: "-" "+ font_size=10";
+		base: "font="FONT" font_size="TEXT_SIZE_LARGE" color=#2C2C2Cff wrap=word";
+		tag: "-" "+ font_size="TEXT_SIZE_LARGE"";
 		tag: "bold" "+ font="FONT_BOLD"";
 		tag: "center" "+ align=middle";
 		tag: "subliminal" "+ color=#07070710";
