@@ -1293,7 +1293,11 @@ group {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
 				visible: 1;
-				color: 255 255 255 230;
+#if (BUILD_ILLUME == 1) && (BUILD_COMPOSITE == 1)
+				color: 255 255 255 200;
+#else
+				color: 255 255 255 255;
+#endif
 			}
 		}
 
@@ -1410,9 +1414,9 @@ group {
 			type: TEXT;
 			clip_to: "base";
 
-#if (BUILD_ILLUME == 0)
-			effect: TEXT_EFFECT_BOLD;
-#endif
+/* #if (BUILD_ILLUME == 0)
+ * 			effect: TEXT_EFFECT_BOLD;
+ * #endif */
 			mouse_events: 0;
 			scale: 1;
 			description {
@@ -1420,6 +1424,8 @@ group {
 				align: 0.5 1.0;
 				rel1.to: "base";
 				rel2.to: "base";
+				rel1.offset: 2 0;
+				rel2.offset: -3 -1;
 				rel1.relative: 0.0 1.0;
 
 #if (BUILD_ILLUME == 1) && (BUILD_COMPOSITE == 1)
@@ -1427,11 +1433,12 @@ group {
 #else
 				TEXT_COLOR;
 #endif
-				TEXT_NORMAL("label_normal", 0.5 0.5, 0 1);
+				TEXT_SMALL("label_normal", 0.5 0.5, 0 1);
 			}
 			description {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
+				TEXT_COLOR_WHITE;
 			}
 		}
 
@@ -1773,14 +1780,12 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
-			effect: TEXT_EFFECT;
+			/* effect: TEXT_EFFECT; */
 			clip_to: "base";
 			mouse_events: 0;
 			scale: 1;
 			description {
 				state: "default" 0.0;
-				color: 40 40 40 255;
-				color3: 240 240 240 128;
 				rel1 {
 					to_x: "clip";
 					to_y: "base";
@@ -1793,13 +1798,13 @@ group {
 					to_x: "arrow";
 					to_y: "spacer";
 				}
+				TEXT_COLOR;
 				TEXT_NORMAL("label_normal", 0.0 0.0, 0 1);
 			}
 			description {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				color: 20 20 20 255;
-				color3: 40 40 40 68;
+				TEXT_COLOR_WHITE;
 			}
 		}
 
@@ -1812,7 +1817,6 @@ group {
 			description {
 				state: "default" 0.0;
 				visible: 1;
-				color: 80 80 80 255;
 				rel1 {
 					to_x: "clip";
 					to_y: "base";
@@ -1825,12 +1829,13 @@ group {
 					to_y: "base";
 					to_x: "arrow";
 				}
+				TEXT_COLOR;
 				TEXT_SMALL("label_small", 0.0 0.0, 0 1);
 			}
 			description {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				color: 60 60 60 255;
+				TEXT_COLOR_WHITE;
 			}
 		}
 
