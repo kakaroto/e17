@@ -201,6 +201,7 @@ static void
 _espionnage_face_new(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 {
    Evas_Object *img;
+   char *free_pixels = NULL;
    char *img_data;
    char *img8;
    char *img8_cp;
@@ -218,10 +219,20 @@ _espionnage_face_new(void *data __UNUSED__, Evas_Object *obj, void *event_info _
 
    img = emotion_object_image_get(obj);
 
-   evas_object_image_colorspace_set(img, EVAS_COLORSPACE_ARGB8888);
-   img_data = evas_object_image_data_get(img, 0);
    evas_object_image_size_get(img, &w, &h);
-   stride = evas_object_image_stride_get(img);
+
+   if (evas_object_image_colorspace_get(img) != EVAS_COLORSPACE_ARGB8888)
+     {
+        img_data = evas_object_image_data_convert(img, EVAS_COLORSPACE_ARGB8888);
+	if (!img_data) abort();
+        free_pixels = img_data;
+        stride = w * sizeof (unsigned int);
+     }
+   else
+     {
+        img_data = evas_object_image_data_get(img, 0);
+        stride = evas_object_image_stride_get(img);
+     }
 
    img8 = malloc(sizeof (char) * w * h);
    if (!img8) return ;
@@ -262,6 +273,8 @@ _espionnage_face_new(void *data __UNUSED__, Evas_Object *obj, void *event_info _
                                                                   _espionnage_end_face,
                                                                   _espionnage_cancel_face,
                                                                   f));
+
+   free(free_pixels);
 }
 
 static void
