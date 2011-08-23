@@ -475,7 +475,7 @@ my @elm_list = qw(
   elm_list_item_icon_set
   elm_list_item_end_get
   elm_list_item_end_set
-  elm_list_item_base_get
+  elm_list_item_object_get
   elm_list_item_label_get
   elm_list_item_label_set
   elm_list_item_prev
@@ -1153,7 +1153,7 @@ may change in future releases.
     elm_list_go
     elm_list_horizontal_mode_set
     elm_list_item_append
-    elm_list_item_base_get
+    elm_list_item_object_get
     elm_list_item_data_get
     elm_list_item_del
     elm_list_item_end_get

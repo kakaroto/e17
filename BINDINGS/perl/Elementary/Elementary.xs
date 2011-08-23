@@ -1185,7 +1185,7 @@ void
 elm_list_item_end_set(Elm_List_Item *item, Evas_Object *end)
 
 Evas_Object *
-elm_list_item_base_get(const Elm_List_Item *item)
+elm_list_item_object_get(const Elm_List_Item *item)
 
 const char *
 elm_list_item_label_get(const Elm_List_Item *item)

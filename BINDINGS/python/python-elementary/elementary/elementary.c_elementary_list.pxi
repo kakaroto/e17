@@ -260,7 +260,7 @@ cdef class ListItem(WidgetItem):
         cdef c_evas.Evas_Object *obj
         cdef void *data
 
-        obj = elm_list_item_base_get(self.item)
+        obj = elm_list_item_object_get(self.item)
         if obj == NULL:
             return None
         return evas.c_evas._Object_from_instance(<long>obj)

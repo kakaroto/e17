@@ -55,7 +55,7 @@ private:
    EAPI const void  *elm_list_item_data_get(const Elm_List_Item *item);
    EAPI Evas_Object *elm_list_item_icon_get(const Elm_List_Item *item);
    EAPI Evas_Object *elm_list_item_end_get(const Elm_List_Item *item);
-   EAPI Evas_Object *elm_list_item_base_get(const Elm_List_Item *item);
+   EAPI Evas_Object *elm_list_item_object_get(const Elm_List_Item *item);
    EAPI const char  *elm_list_item_label_get(const Elm_List_Item *item);
    EAPI Elm_List_Item *elm_list_item_prev(const Elm_List_Item *it);
    EAPI Elm_List_Item *elm_list_item_next(const Elm_List_Item *it);
