@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-08-02 17:31+0200\n"
+"POT-Creation-Date: 2011-08-24 22:39+0200\n"
 "PO-Revision-Date: 2011-07-28 11:58+0200\n"
 "Last-Translator: Massimo Maiurana <Unknown>\n"
 "Language-Team: none\n"
@@ -499,7 +499,7 @@ msgstr "Entrambe estremitá"
 msgid "End"
 msgstr "Fine"
 
-#: src/container.c:1657 src/focus.c:987
+#: src/container.c:1657 src/focus.c:988
 msgid "None"
 msgstr "Nessuno"
 
@@ -744,117 +744,117 @@ msgstr ""
 "\n"
 "In uscita...\n"
 
-#: src/focus.c:828
+#: src/focus.c:829
 msgid "Focus follows pointer"
 msgstr "Il fuoco segue il puntatore"
 
-#: src/focus.c:834
+#: src/focus.c:835
 msgid "Focus follows pointer sloppily"
 msgstr "Il fuoco segue le finestre sotto il puntatore"
 
-#: src/focus.c:840
+#: src/focus.c:841
 msgid "Focus follows mouse clicks"
 msgstr "Il fuoco segue i clic del mouse"
 
-#: src/focus.c:850
+#: src/focus.c:851
 msgid "Clicking in a window always raises it"
 msgstr "Un clic sulla finestra la eleva sempre"
 
-#: src/focus.c:858
+#: src/focus.c:859
 msgid "All new windows first get the focus"
 msgstr "Tutte le finestre nuove prendono il fuoco"
 
-#: src/focus.c:865
+#: src/focus.c:866
 msgid "New windows get the focus if their window group is focused"
 msgstr "Le nuove finestre prendono il fuoco se il loro gruppo lo ha"
 
-#: src/focus.c:870
+#: src/focus.c:871
 msgid "Only new dialog windows get the focus"
 msgstr "Solo le finestre di dialogo prendono il fuoco"
 
-#: src/focus.c:877
+#: src/focus.c:878
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Solo le finestre di dialogo prendono il fuoco se il genitore lo ha"
 
-#: src/focus.c:882
+#: src/focus.c:883
 msgid "Raise windows while switching focus"
 msgstr "Eleva finestre mentre cambia il fuoco"
 
-#: src/focus.c:888
+#: src/focus.c:889
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Invia puntatore alla finestra mentre cambia il fuoco"
 
-#: src/focus.c:894
+#: src/focus.c:895
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Invia sempre puntatore alla finestra al cambio di fuoco"
 
-#: src/focus.c:902
+#: src/focus.c:903
 msgid "Raise windows automatically"
 msgstr "Eleva finestre automaticamente"
 
-#: src/focus.c:908
+#: src/focus.c:909
 msgid "Autoraise delay:"
 msgstr "Ritardo elevazione automatica:"
 
-#: src/focus.c:921
+#: src/focus.c:922
 msgid "Display and use focus list"
 msgstr "Mostra e usa la lista del fuoco"
 
-#: src/focus.c:926
+#: src/focus.c:927
 msgid "Include sticky windows in focus list"
 msgstr "Includi finestre appiccicate nella lista del fuoco"
 
-#: src/focus.c:931
+#: src/focus.c:932
 msgid "Include shaded windows in focus list"
 msgstr "Includi finestre contratte nella lista del fuoco"
 
-#: src/focus.c:936
+#: src/focus.c:937
 msgid "Include iconified windows in focus list"
 msgstr "Includi finestre iconificate nella lista del fuoco"
 
-#: src/focus.c:941
+#: src/focus.c:942
 msgid "Include windows on other desks in focus list"
 msgstr "Includi finestre di altri desktop nella lista del fuoco"
 
-#: src/focus.c:946
+#: src/focus.c:947
 msgid "Focus windows while switching"
 msgstr "Dai fuoco alle finestre mentre cambi"
 
-#: src/focus.c:951
+#: src/focus.c:952
 msgid "Outline windows while switching"
 msgstr "Traccia contorno delle finestre mentre cambi"
 
-#: src/focus.c:956
+#: src/focus.c:957
 msgid "Raise windows after focus switch"
 msgstr "Eleva finestre dopo il cambio del fuoco"
 
-#: src/focus.c:961
+#: src/focus.c:962
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Invia puntatore alla finestra dopo il cambio del fuoco"
 
-#: src/focus.c:971
+#: src/focus.c:972
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Regole visualizzazione immagine lista fuoco (se una fallisce passa alla "
 "seguente):"
 
-#: src/focus.c:975
+#: src/focus.c:976
 msgid "First E Icon, then App Icon"
 msgstr "Prima icona di E, poi icona della app."
 
-#: src/focus.c:981
+#: src/focus.c:982
 msgid "First App Icon, then E Icon"
 msgstr "Prima icona della app., poi icona di E"
 
-#: src/focus.c:995
+#: src/focus.c:996
 msgid "Focus"
 msgstr "Fuoco"
 
-#: src/focus.c:996
+#: src/focus.c:997
 msgid "Focus Settings"
 msgstr "Impostazioni del fuoco"
 
-#: src/focus.c:999
+#: src/focus.c:1000
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog"
@@ -2701,9 +2701,13 @@ msgid "User Application List"
 msgstr "Lista applicazioni utente"
 
 #: config/strings.c:191
-msgid "Other"
-msgstr "Altro"
+#, fuzzy
+msgid "Applications"
+msgstr "Lista applicazioni utente"
 
 #: config/strings.c:192
 msgid "Epplets"
 msgstr "Epplet"
+
+#~ msgid "Other"
+#~ msgstr "Altro"
