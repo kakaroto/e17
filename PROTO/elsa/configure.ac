@@ -111,6 +111,9 @@ if test "x${enable_consolekit}" = "xyes" ; then
 fi
 
 AM_CONDITIONAL(HAVE_CONSOLEKIT, [test "x${enable_consolekit}" = "xyes"])
+if test "x${enable_consolekit}" = "xyes" ; then
+   AC_DEFINE([HAVE_CONSOLEKIT], [1], [Set to 1 if consolekit is enabled.])
+fi
 
 # Pam
 if test "x${enable_pam}" = "xyes" ; then

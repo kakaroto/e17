@@ -18,6 +18,10 @@ sbin_PROGRAMS = elsa
 internal_bindir=$(libdir)/elsa
 internal_bin_PROGRAMS = elsa_wait
 
+if HAVE_CONSOLEKIT
+internal_bin_PROGRAMS += elsa_ck_launch
+endif
+
 elsa_SOURCES =     \
 elsa_config.h      \
 elsa_config.c      \
@@ -41,12 +45,17 @@ elsa.c
 elsa_LDFLAGS =
 elsa_LDADD = @ELSA_LIBS@ -lpam -lrt
 
-if HAVE_CONSOLEKIT
-elsa_LDADD += @ELSA_CK_LIBS@
-endif
-
 elsa_wait_SOURCES = \
 elsa_wait.c
 
 elsa_wait_LDFLAGS =
 elsa_wait_LDADD =
+
+if HAVE_CONSOLEKIT
+elsa_ck_launch_SOURCES = \
+elsa_ck_launch.c
+
+elsa_ck_launch_LDFLAGS =
+elsa_ck_launch_LDADD = @ELSA_CK_LIBS@
+endif
+

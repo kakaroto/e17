@@ -12,15 +12,6 @@
 #include <Efreet.h>
 #include "elsa.h"
 
-
-#ifdef HAVE_CONSOLEKIT
-#include <ck-connector.h>
-#include <dbus/dbus.h>
-
-
-static CkConnector *_elsa_ck;
-#endif
-
 static char *_mcookie;
 static char **env;
 static char *_login = NULL;
@@ -151,8 +142,13 @@ _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 //        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
         snprintf(buf, sizeof(buf), "%s/.elsa_session.log", pwd->pw_dir);
         remove(buf);
+#ifdef HAVE_CONSOLEKIT
+        snprintf(buf, sizeof(buf), PACKAGE_BIN_DIR"/elsa_ck_launch %s > %s/.elsa_session.log 2>&1",
+                 cmd, pwd->pw_dir);
+#else
         snprintf(buf, sizeof(buf), "%s > %s/.elsa_session.log 2>&1",
                  cmd, pwd->pw_dir);
+#endif
         execle(pwd->pw_shell, pwd->pw_shell, "-c", buf, NULL, env);
         fprintf(stderr, PACKAGE": The Xsessions are not launched :(\n");
      }
@@ -240,10 +236,6 @@ elsa_session_login(const char *session)
    struct passwd *pwd;
    const char *cmd;
    char buf[PATH_MAX];
-#ifdef HAVE_CONSOLEKIT
-   DBusError error;
-   int ck_status;
-#endif
 
    if (!elsa_pam_open_session())
      {
@@ -252,46 +244,6 @@ elsa_session_login(const char *session)
         _logged = EINA_TRUE;
         if (!pwd) return ECORE_CALLBACK_CANCEL;
         snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
-#ifdef HAVE_CONSOLEKIT
-        dbus_error_init(&error);
-        _elsa_ck = ck_connector_new();
-        if (!_elsa_ck)
-          {
-             ck_status = ck_connector_open_session_for_user(
-                _elsa_ck,
-                pwd->pw_uid,
-                pwd->pw_shell,
-                ":0",
-                &error);
-                /*
-                _elsa_ck, &error,
-                "unix-user", &pwd->pw_uid,
-                "x11-display-device", ":0",
-                "x11-display", ":0",
-                "is_local", 1,
-                NULL);*/
-             if (!ck_status)
-               {
-                  if (dbus_error_is_set(&error))
-                    {
-                       fprintf(stderr, "Can't open ConsoleKit session. %s\n",
-                               error.message);
-                       dbus_error_free(&error);
-                    }
-                  else
-                    {
-                       fprintf(stderr, "Can't open ConsoleKit session. Like OOM\n");
-                    }
-                  ck_connector_unref(_elsa_ck);
-               }
-
-             setenv("XDG_SESSION_COOKIE",
-                    ck_connector_get_cookie(_elsa_ck),
-                    1);
-          }
-        else
-          fprintf(stderr, "Erreur consolekit\n");
-#endif
         if (!_elsa_session_begin(pwd, buf))
           {
              fprintf(stderr, "Elsa: couldn't open session\n");
