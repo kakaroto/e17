@@ -380,8 +380,11 @@ EwinDestroy(EWin * ewin)
 
    EwinUnmap1(ewin);
 
-   if (ewin->state.state == EWIN_STATE_MAPPED)
-      EwinUnmap2(ewin);
+   if (EoIsMapped(ewin))
+     {
+	EoUnmap(ewin);
+	EwinUnmap2(ewin);
+     }
 
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinDestroy %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
