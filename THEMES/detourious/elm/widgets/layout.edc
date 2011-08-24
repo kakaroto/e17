@@ -149,7 +149,7 @@ group { name: "elm/layout/application/toolbar-content-back";
 
       part { name: "elm.text.title";
          type: TEXT;
-         effect: SOFT_SHADOW;
+         effect: SHADOW;
          scale: 1;
          description { state: "default" 0.0;
             rel1 { to_y: "elm.external.toolbar";
@@ -162,8 +162,9 @@ group { name: "elm/layout/application/toolbar-content-back";
                relative: 0.0 1.0;
                offset: -3 -1;
             }
+            TEXT_COLOR
             text {
-               font: "Sans:style=Bold";
+               font: FONT_BOLD;
                size: 12;
             }
          }
@@ -322,7 +323,7 @@ group { name: "elm/layout/application/toolbar-content-back-next";
       }
       part { name: "elm.text.title";
          type: TEXT;
-         effect: SOFT_SHADOW;
+         effect: SHADOW;
          scale: 1;
          clip_to: "title_clipper";
          description { state: "default" 0.0;
@@ -336,8 +337,9 @@ group { name: "elm/layout/application/toolbar-content-back-next";
                relative: 0.0 1.0;
                offset: -3 -1;
             }
+            TEXT_COLOR
             text {
-               font: "Sans:style=Bold";
+               font: FONT_BOLD;
                size: 12;
             }
          }
@@ -454,7 +456,7 @@ group { name: "elm/layout/application/content-back";
 
       part { name: "elm.text.title";
          type: TEXT;
-         effect: SOFT_SHADOW;
+         effect: SHADOW;
          scale: 1;
          description { state: "default" 0.0;
             rel1 {
@@ -467,8 +469,9 @@ group { name: "elm/layout/application/content-back";
                relative: 0.0 1.0;
                offset: -3 -1;
             }
+            TEXT_COLOR
             text {
-               font: "Sans:style=Bold";
+               font: FONT_BOLD;
                size: 12;
             }
          }
@@ -615,7 +618,7 @@ group { name: "elm/layout/application/content-back-next";
       }
       part { name: "elm.text.title";
          type: TEXT;
-         effect: SOFT_SHADOW;
+         effect: SHADOW;
          scale: 1;
          clip_to: "title_clipper";
          description { state: "default" 0.0;
@@ -629,8 +632,9 @@ group { name: "elm/layout/application/content-back-next";
                relative: 0.0 1.0;
                offset: -3 -1;
             }
+            TEXT_COLOR
             text {
-               font: "Sans:style=Bold";
+               font: FONT_BOLD;
                size: 12;
             }
          }
@@ -772,7 +776,7 @@ group { name: "elm/layout/application/titlebar";
       }
       part { name: "elm.text";
          type: TEXT;
-         effect: SOFT_SHADOW;
+         effect: SHADOW;
          mouse_events: 0;
          scale: 1;
          description { state: "default" 0.0;
@@ -787,8 +791,9 @@ group { name: "elm/layout/application/titlebar";
                to_y: "base";
                relative: 0.0 1.0;
             }
+            TEXT_COLOR;
             text {
-               font: "Sans";
+               font: FONT_BOLD;
                size: 12;
                min: 0 0;
                align: 0.5 0.5;
@@ -824,4 +829,3 @@ group { name: "elm/layout/application/titlebar";
       }
    }
 }
-
