@@ -101,7 +101,7 @@ group {
 					relative: 1.0 0.0;
 					offset: -20 15;
 				}
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 				TEXT_NORMAL("menu_title", 0.0 0.0, 0 1);
 			}
 		}

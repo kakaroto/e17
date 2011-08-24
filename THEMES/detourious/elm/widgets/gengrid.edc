@@ -64,7 +64,7 @@
 		}											\
 		description { state: "selected" 0.0;		\
 			inherit: "default" 0.0;					\
-			TEXT_COLOR_WHITE;						\
+			TEXT_COLOR_SELECTED;						\
 		}											\
 	}
 

@@ -224,7 +224,7 @@ group { name: "elm/genlist/item/default/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -459,7 +459,7 @@ group { name: "elm/genlist/item/group_index/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -547,7 +547,7 @@ group { name: "elm/genlist/item_compress/message/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.title.2";
@@ -574,7 +574,7 @@ group { name: "elm/genlist/item_compress/message/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text";
@@ -765,7 +765,7 @@ group { name: "elm/genlist/item_compress/default/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -956,7 +956,7 @@ group { name: "elm/genlist/tree/default/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -1199,7 +1199,7 @@ group { name: "elm/genlist/tree_compress/default/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -2108,7 +2108,7 @@ group { name: "elm/genlist/item/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.sub";
@@ -2134,7 +2134,7 @@ group { name: "elm/genlist/item/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -2277,7 +2277,7 @@ group { name: "elm/genlist/item_compress/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.sub";
@@ -2303,7 +2303,7 @@ group { name: "elm/genlist/item_compress/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -2444,7 +2444,7 @@ group { name: "elm/genlist/item_odd/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.sub";
@@ -2612,7 +2612,7 @@ group { name: "elm/genlist/item_compress_odd/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.sub";
@@ -2810,7 +2810,7 @@ group { name: "elm/genlist/tree/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.sub";
@@ -3027,7 +3027,7 @@ group { name: "elm/genlist/tree_compress/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.sub";
@@ -3243,7 +3243,7 @@ group { name: "elm/genlist/tree_odd/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.sub";
@@ -3413,7 +3413,7 @@ group { name: "elm/genlist/item/icon_top_text_bottom/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -3533,7 +3533,7 @@ group { name: "elm/genlist/item_odd/icon_top_text_bottom/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -3681,7 +3681,7 @@ group { name: "elm/genlist/tree/icon_top_text_bottom/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -3848,7 +3848,7 @@ group { name: "elm/genlist/tree_odd/icon_top_text_bottom/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "disclip";
@@ -4038,7 +4038,7 @@ group { name: "elm/genlist/tree_compress_odd/double_label/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.sub";
@@ -4185,7 +4185,7 @@ group { name: "elm/genlist/item_compress/media/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.album-artist";
@@ -4309,7 +4309,7 @@ group { name: "elm/genlist/item_compress_odd/media/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.album-artist";
@@ -4444,7 +4444,7 @@ group { name: "elm/genlist/item_compress/media-album/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part {
@@ -4481,7 +4481,7 @@ group { name: "elm/genlist/item_compress/media-album/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 				visible: 1;
 			}
 		}
@@ -4516,7 +4516,7 @@ group { name: "elm/genlist/item_compress/media-album/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.length";
@@ -4668,7 +4668,7 @@ group { name: "elm/genlist/item_compress_odd/media-album/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part {
@@ -4705,7 +4705,7 @@ group { name: "elm/genlist/item_compress_odd/media-album/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 				visible: 1;
 			}
 		}
@@ -4740,7 +4740,7 @@ group { name: "elm/genlist/item_compress_odd/media-album/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.length";
@@ -4906,7 +4906,7 @@ group { name: "elm/genlist/item_compress/media-preview/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.artist";
@@ -5055,7 +5055,7 @@ group { name: "elm/genlist/item_compress_odd/media-preview/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 		part { name: "elm.text.artist";

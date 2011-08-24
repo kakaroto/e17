@@ -22,7 +22,7 @@
 		description { state: "selected" 0.0;			\
 			inherit: "default" 0.0;						\
 			inherit: "visible" 0.0;						\
-			TEXT_COLOR_WHITE;							\
+			TEXT_COLOR_SELECTED;							\
 		}												\
 		description { state: "disabled" 0.0;			\
 			inherit: "default" 0.0;						\
@@ -374,7 +374,7 @@ group { name: "elm/menu/item_with_submenu/default";
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
 				inherit: "visible" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 			description { state: "disabled" 0.0;
 				inherit: "default" 0.0;

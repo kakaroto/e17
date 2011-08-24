@@ -302,7 +302,7 @@ group {
 				rel1.offset: 0 2;
 				rel2.offset: -1 -1;
 
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 				TEXT_LARGE("module_large", 0.5 0.5, 1 1);
 			}
 		}
@@ -407,7 +407,7 @@ group {
 
 				rel1.offset: 0 2;
 				rel2.offset: -1 -1;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 				TEXT_LARGE("module_large", 0.5 0.5, 1 1);
 			}
 		}

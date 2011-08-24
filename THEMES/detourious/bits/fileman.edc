@@ -404,7 +404,7 @@
 		description {									\
 			state: "selected" 0.0;						\
 			inherit: "default" 0.0;						\
-		    TEXT_COLOR_WHITE;							\
+		    TEXT_COLOR_SELECTED;							\
 		}												\
 	}
 
@@ -870,7 +870,7 @@ group {
 					relative: 1.0 1.0;
 					offset: -5 -55;
 				}
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 				TEXT_LARGE("fileman_typebuf", 0.0 0.5, 0 0);
 				/* elipsis: 0.5; */
 			}
@@ -959,7 +959,7 @@ group {
 					relative: 1.0 0.5;
 					offset: -9 -1;
 				}
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 				TEXT_NORMAL("fileman_notice", 1.0 1.0, 1 1);
 			}
 		}

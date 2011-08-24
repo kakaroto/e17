@@ -33,7 +33,7 @@ externals.external: "elm";
 	color: 60 60 60 255;						\
 color3: 255 255 255 128;
 
-#define TEXT_COLOR_WHITE			   			\
+#define TEXT_COLOR_SELECTED			   			\
 	color: 255 255 255 255;			   		    \
 color3: 7 7 7 64;
 

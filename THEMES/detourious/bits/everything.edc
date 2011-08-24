@@ -1439,7 +1439,7 @@ group {
 				rel1.relative: 0.0 1.0;
 
 #if (BUILD_ILLUME == 1) && (BUILD_COMPOSITE == 1)
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 #else
 				TEXT_COLOR;
 #endif
@@ -1448,7 +1448,7 @@ group {
 			description {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 
@@ -1814,7 +1814,7 @@ group {
 			description {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 
@@ -1845,7 +1845,7 @@ group {
 			description {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 		}
 

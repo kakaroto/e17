@@ -185,7 +185,7 @@ group { name: "elm/toolbar/item/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 			description { state: "visible" 0.0;
 				inherit: "default" 0.0;
@@ -228,7 +228,7 @@ group { name: "elm/toolbar/item/default";
 			}
 			description { state: "selected" 0.0;
 				inherit: "default" 0.0;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 			}
 			description { state: "visible" 0.0;
 				inherit: "default" 0.0;

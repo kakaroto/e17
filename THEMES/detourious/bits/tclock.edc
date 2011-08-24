@@ -169,7 +169,7 @@ group {
 				align: 0.5 0.5;
 				rel1.offset: 6 6;
 				rel2.offset: -5 -5;
-				TEXT_COLOR_WHITE;
+				TEXT_COLOR_SELECTED;
 				TEXT_NORMAL("module_normal", 0.5 0.5, 1 1);
 			}
 		}
