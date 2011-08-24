@@ -234,9 +234,7 @@ libclouseau_item_add(Evas_Object *o, Evas_Object *gl, Tree_Item *parent)
 static void
 _load_list(Evas_Object *gl)
 {
-   Eina_List *os, *ot;
-   Evas_Object *o;
-   Eina_List *ees,*l;
+   Eina_List *ees, *eeitr;
    Ecore_Evas *ee, *this_ee;
 
    elm_list_clear(prop_list);
@@ -248,14 +246,18 @@ _load_list(Evas_Object *gl)
    this_ee = ecore_evas_ecore_evas_get(
          evas_object_evas_get(elm_object_top_widget_get(gl)));
 
-   EINA_LIST_FOREACH(ees, l, ee)
+   EINA_LIST_FOREACH(ees, eeitr, ee)
      {
-        if (this_ee == ee)
-           continue;
+        Eina_List *objs, *objitr;
+        Evas_Object *obj;
         Tree_Item *treeit;
 
         Evas *e;
         int w, h;
+
+        if (this_ee == ee)
+           continue;
+
         e = ecore_evas_get(ee);
         evas_output_size_get(e, &w, &h);
 
@@ -264,11 +266,12 @@ _load_list(Evas_Object *gl)
 
         tree = eina_list_append(tree, treeit);
 
-        os = evas_objects_in_rectangle_get(e, SHRT_MIN, SHRT_MIN,
+        objs = evas_objects_in_rectangle_get(e, SHRT_MIN, SHRT_MIN,
               USHRT_MAX, USHRT_MAX, EINA_TRUE, EINA_TRUE);
-        EINA_LIST_FOREACH(os, ot, o){
-             libclouseau_item_add(o, gl, treeit);
-        }
+        EINA_LIST_FOREACH(objs, objitr, obj)
+          {
+             libclouseau_item_add(obj, gl, treeit);
+          }
 
         /* Insert the base ee items */
           {
