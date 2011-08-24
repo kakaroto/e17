@@ -2,14 +2,20 @@
 
 
 #if (COLORS == 0)
-
 color_class {
-	name: "border_frame";
-	color: 205 205 205 255;
+	name: "label_text";
+	color: 20 20 20 255;
+	color3: 255 255 255 128;					
 }
 color_class {
-	name: "border_frame_active";
-	color: 215 215 215 255;
+	name: "menu_item";
+	color: 20 20 20 255;						
+	color3: 255 255 255 128;					
+}
+color_class {
+	name: "button_text";
+	color: 60 60 60 255;
+	color3: 255 255 255 128;					
 }
 color_class {
 	name: "border_title";
@@ -21,25 +27,23 @@ color_class {
 	color: 80 80 80 255;						
 	color3: 255 255 255 128;					
 }
-/* color_class {
- * 	name: "label_text";
- * 	color: 255 255 255 255;						
- * 	color3: 255 255 255 128;					
- * } */
 color_class {
-	name: "menu_item";
-	color: 20 20 20 255;						
-	color3: 255 255 255 128;					
+	name: "ilist_item";
+	color: 0 0 0 255;
+	color3: 0 0 0 0;
 }
 color_class {
-	name: "label_text";
-	color: 20 20 20 255;
-	color3: 255 255 255 128;					
+	name: "ilist_item_odd";
+	color: 0 0 0 255;
+	color3: 0 0 0 0;
 }
 color_class {
-	name: "button_text";
-	color: 60 60 60 255;
-	color3: 255 255 255 128;					
+	name: "border_frame";
+	color: 205 205 205 255;
+}
+color_class {
+	name: "border_frame_active";
+	color: 215 215 215 255;
 }
 #else
 color_class {
