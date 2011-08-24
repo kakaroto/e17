@@ -112,7 +112,7 @@
 styles {
 	style {
 		name: "textblock";
-		base: "font="FONT" font_size="FONT_SIZE" align=left color=#070707";
+		base: "font="FONT" font_size="TEXT_SIZE" align=left color=#070707";
 		tag:  "hilight" "+ font="FONT_BOLD" color=#3c3c3c";
 		tag:  "b" "+ font="FONT_BOLD"";
 		tag:  "br" "\n";
@@ -120,14 +120,14 @@ styles {
 	}
     style {
 		name: "dialog";
-		base: "font="FONT" font_size="FONT_SIZE" align=center color=#070707 wrap=word text_class=tb_plain";
-		tag:  "hilight" "+ font="FONT_BOLD" font_size=9 color=#252525 style=shadow shadow_color=#ffffff90 text_class=tb_light"; 
+		base: "font="FONT" font_size="TEXT_SIZE" align=center color=#070707 wrap=word text_class=tb_plain";
+		tag:  "hilight" "+ font="FONT_BOLD" font_size="TEXT_SIZE_BOLD" color=#252525 style=shadow shadow_color=#ffffff90 text_class=tb_light";
 		tag:  "br" "\n";
 	}
 	style {
 		name: "sys_style";
 		base: "font="FONT_BOLD" font_size="TEXT_SIZE_BOLD" align=center color=#3c3c3c wrap=word text_class=tb_large";
-		tag: "hilight" "+ font="FONT_BOLD" color=#8aabe1 style=soft_shadow shadow_color=#07070730 text_class=tb_large_light";
+		tag:  "hilight" "+ font="FONT_BOLD" font_size="TEXT_SIZE_BOLD" color=#252525 style=shadow shadow_color=#ffffff90 text_class=tb_light";
 		tag: "br" "\n";
 	}
 #if 0
@@ -156,8 +156,8 @@ styles {
 	style {
 		name: "everything_textblock_style";
 		base: "font="FONT" font_size="TEXT_SIZE" align=left color=#070707";
-		tag:  "hilight" "+ font="FONT_BOLD" font_size=10 color=#3C3C3C";
-		tag:  "b" "+ font="FONT_BOLD" font_size=9";
+		tag:  "hilight" "+ font="FONT_BOLD" font_size="TEXT_SIZE_LARGE" color=#3C3C3C";
+		tag:  "b" "+ font="FONT_BOLD" font_size="TEXT_SIZE_BOLD;
 		tag:  "br" "\n";
 		tag:  "/title" "- \n \n";
 	}
@@ -180,8 +180,8 @@ styles {
 	style {
 		name: "about_enlightenment";
 		base: "font="FONT" font_size="TEXT_SIZE" color=#2C2C2C wrap=word text_class=tb_plain";
-		tag: "hilight" "+ font="FONT_BOLD" text_class=tb_light"; 
-		tag: "title" "+ font="FONT_BOLD" font_size=11 text_class=tb_big";
+		tag:  "hilight" "+ font="FONT_BOLD" font_size="TEXT_SIZE_BOLD" color=#252525 style=shadow shadow_color=#ffffff90 text_class=tb_light";
+		tag: "title" "+ font="FONT_BOLD" font_size="TEXT_SIZE_LARGE" text_class=tb_big";
 		tag:  "br" "\n"; 
 		tag:  "/title" "- \n \n";
 	}
@@ -192,7 +192,7 @@ styles {
 		tag: "bold" "+ font="FONT_BOLD"";
 		tag: "center" "+ align=middle";
 		tag: "subliminal" "+ color=#07070710";
-		tag: "underline" "+ underline=on underline_color=#3c3c3c60 font_size=10 color=#3c3c3c60";
+		tag: "underline" "+ underline=on underline_color=#3c3c3c font_size="FONT_SIZE_LARGE" color=#3c3c3c";
 		tag: "lighter" "+ color=#07070780";
 		tag:  "br" "\n"; 
 	}  
