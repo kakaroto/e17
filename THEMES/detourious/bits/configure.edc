@@ -11,8 +11,20 @@ group {
                 state: "default" 0.0;
                 image.normal: "images/dialog_im0.png";
                 image.border: 0 0 3 1;
+				color_class: "dialog_base";
             }
         }
+
+		part {
+            name: "dialog_bg2";
+            type: RECT;
+            mouse_events: 0;
+
+			description {
+				state: "default" 0.0;
+				color: 0 0 0 20;
+			}
+		}
 
         part {
             name: "e.swallow.content";

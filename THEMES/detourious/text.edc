@@ -12,8 +12,8 @@
 #define TEXT_SIZE_LARGE 8
 #define TEXT_SIZE_SMALL 7
 #define TEXT_COLOR								\
-	color:  60 60 60 255;						\
-    color3:  235 235 235 200;
+    color_class: "label_text";					\
+    color3: 255 255 255 255;
 #else
 #define FONT "Sans"
 #define FONT_BOLD "Sans:style=bold"
@@ -23,14 +23,14 @@
 #define TEXT_SIZE_LARGE 9
 #define TEXT_SIZE_SMALL 8
 #define TEXT_COLOR								\
-	color:  20 20 20 255;						\
-    color3:  235 235 235 200;
+    color_class: "label_text";					\
+    color3: 255 255 255 255;
 #endif
 
 
 #define TEXT_COLOR_BOLD							\
-	color: 60 60 60 255;						\
-    color3:  235 235 235 220;
+    color3:  255 255 255 220;					\
+    color_class: "button_text";
 
 #define TEXT_COLOR_WHITE			   			\
 	color: 255 255 255 255;			   		    \
@@ -41,7 +41,7 @@
 #define TEXT_COLOR_DISABLED						\
 	color: 128 128 128 255;						\
     color3: 170 168 169 0;						\
-    color_class: "text_disabled";
+    color_class: "label_text_disabled";
 
 // color: 60 60 60 128;
 // color3: 255 255 255 128;

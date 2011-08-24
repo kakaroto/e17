@@ -146,7 +146,7 @@ group {
 					relative: 0.5 1.0; 
 					offset: -1 10; 
 				}
-				TEXT_NORMAL("label_normal", 1.0 0.5, 1 1);
+				TEXT_NORMAL(0, 1.0 0.5, 1 1);
 			}
 		}
 

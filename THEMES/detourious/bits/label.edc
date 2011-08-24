@@ -22,7 +22,7 @@ group {
 					offset: -3 -5; 
 				}
 				TEXT_COLOR;
-				TEXT_NORMAL("label", 0.0 0.5, 1 1);
+				TEXT_NORMAL(0, 0.0 0.5, 1 1);
 			}
 		}
 	}

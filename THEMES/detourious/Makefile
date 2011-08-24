@@ -11,4 +11,4 @@ install: detourious.edj
 	cp detourious.edj ~/.e/e/themes
 
 illume:
-	edje_cc -DBUILD_ILLUME=1 -DBUILD_COMPOSITE=1 -id . -fd . main.edc -o dtrs-illume.edj
+	edje_cc -DBUILD_ILLUME=1 -DUSE_BOLD_FONT=1 -id . -fd . main.edc -o dtrs-illume.edj

@@ -25,6 +25,7 @@ group {
                 rel2.relative: 1.0 1.0;
                 image.normal: "images/frame_im0.png";
                 image.border: 9 8 8 8;
+				color_class: "dialog_base";
 			}
         }
 

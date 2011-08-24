@@ -15,6 +15,7 @@ group {
 					normal: "images/entry_im0.png";
 					border: 6 6 8 7;
 				}
+				color_class: "dialog_base";
 			}
 		}
 

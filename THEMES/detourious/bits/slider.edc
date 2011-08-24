@@ -66,12 +66,14 @@ group {
 					normal: "images/entry_im0.png";
 					border: 6 6 8 7;
 				}
+				color_class: "dialog_base";
 			}
 			description {
 				state: "active" 0.0;
-				min: 40 24;
+				inherit: "default" 0.0;
 				/* align: 0.0 1.0;  */
 				fixed: 1 0;
+				visible: 1;
 				rel1 {
 					to: "e.text.label";
 					relative: 0.0  0.0;
@@ -81,10 +83,6 @@ group {
 					to: "e.text.label";
 					relative: 1.0 1.0;
 					offset: 9 1;
-				}
-				image {
-					normal: "images/entry_im0.png";
-					border: 6 6 8 7;
 				}
 			}
 		}
@@ -491,10 +489,11 @@ group {
 					normal: "images/entry_im0.png";
 					border: 6 6 8 7;
 				}
+				color_class: "dialog_base";
 			}
 			description {
 				state: "active" 0.0;
-				min: 30 24;
+				inherit: "default" 0.0;
 				max: 9999 24;
 				visible: 1;
 				rel1 {
@@ -506,10 +505,6 @@ group {
 					to: "e.text.label";
 					relative: 1.0 1.0;
 					offset: 3 3;
-				}
-				image {
-					normal: "images/entry_im0.png";
-					border: 6 6 8 7;
 				}
 			}
 		}

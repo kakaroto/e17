@@ -1,0 +1,141 @@
+
+
+
+#if (COLORS == 0)
+
+color_class {
+	name: "border_frame";
+	color: 205 205 205 255;
+}
+color_class {
+	name: "border_frame_active";
+	color: 215 215 215 255;
+}
+color_class {
+	name: "border_title";
+	color: 80 80 80 128;
+	color3: 255 255 255 128;
+}
+color_class {
+	name: "border_title_active";
+	color: 80 80 80 255;						
+	color3: 255 255 255 128;					
+}
+/* color_class {
+ * 	name: "label_text";
+ * 	color: 255 255 255 255;						
+ * 	color3: 255 255 255 128;					
+ * } */
+color_class {
+	name: "menu_item";
+	color: 20 20 20 255;						
+	color3: 255 255 255 128;					
+}
+color_class {
+	name: "label_text";
+	color: 20 20 20 255;
+	color3: 255 255 255 128;					
+}
+color_class {
+	name: "button_text";
+	color: 60 60 60 255;
+	color3: 255 255 255 128;					
+}
+#else
+color_class {
+	name: "comp_focus-out_color";
+	color: 253 253 253 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "border_frame_active";
+	color: 26 26 26 255;
+	color3: 255 255 255 255;
+}
+color_class {
+	name: "border_title";
+	color: 187 187 187 255;
+	color3: 255 255 255 0;
+}
+color_class {
+	name: "border_frame";
+	color: 119 119 119 255;
+	color3: 255 255 255 255;
+}
+color_class {
+	name: "border_title_active";
+	color: 224 224 224 255;
+	color3: 255 255 255 0;
+}
+color_class {
+	name: "ilist_item_header_base";
+	color: 171 171 171 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "ilist_item_base";
+	color: 218 218 218 243;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "ilist_item_odd_base";
+	color: 213 213 213 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "ilist_item";
+	color: 0 0 0 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "ilist_item_odd";
+	color: 0 0 0 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "frame_base";
+	color: 156 156 156 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "scrollframe_base";
+	color: 234 234 234 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "menu_item_active";
+	color: 255 255 255 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "dialog_base";
+	color: 140 140 140 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "button_text";
+	color: 20 20 20 255;
+	color3: 228 228 228 97;
+}
+color_class {
+	name: "menu_item";
+	color: 0 0 0 255;
+	color3: 255 255 255 43;
+}
+color_class {
+	name: "label_text";
+	color: 10 10 10 255;
+	color3: 255 255 255 87;
+}
+color_class {
+	name: "fileman_base";
+	color: 244 244 244 255;
+	color3: 0 0 0 0;
+}
+color_class {
+	name: "menu_base";
+	color: 114 114 114 228;
+	color3: 0 0 0 0;
+}
+
+#endif

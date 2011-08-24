@@ -23,6 +23,8 @@
 #define COLOR_LIST_BG_ACTIVE 138 171 225 255
 #define COLOR_LIST_HEADER    103 135 183 255
 
+#define COLORS 1 /* 0: default, 1: darker */
+
 data {
 	item: "theme/name" 		"detourious";
 	item: "theme/version"	"0.8.0";
@@ -31,24 +33,7 @@ data {
 }
 
 color_classes {
-	color_class {
-		name: "border_frame";
-		color: 205 205 205 255;
-	}
-	color_class {
-		name: "border_frame_active";
-		color: 215 215 215 255;
-	}
-	color_class {
-		name: "border_title";
-		color: 80 80 80 128;
-		color3: 255 255 255 128;
-	}
-	color_class {
-		name: "border_title_active";
-		color: 80 80 80 255;						
-		color3: 255 255 255 128;					
-	}
+#include "colors.edc"
 }
 
 images {

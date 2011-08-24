@@ -1,49 +1,41 @@
 
 group {
     name: "e/widgets/scrollframe";
-
     parts {
 
         part {
             name: "background";
             type: IMAGE;
             mouse_events: 0;
-
             description {
                 state: "default" 0.0;
-
                 rel1 {
                     to: "overlay";
 					offset: -1 0;
                 }
-
                 rel2 {
                     to: "overlay";
 					offset: 0 0;
                 }
-
                 image {
                     normal: "images/scrollframe_im0.png";
                     border: 7 7 7 7;
                 }
+				color_class: "scrollframe_base";
             }
         }
-
         /* scrollframe main */
 
         part {
             name: "item_clip";
             type: RECT;
             mouse_events: 0;
-
             description {
                 state: "default" 0.0;
-
                 rel1 {
                     to: "e.swallow.content";
                     offset: 1 1;
                 }
-
                 rel2 {
                     to: "e.swallow.content";
                     offset: -2 -2;
@@ -56,15 +48,12 @@ group {
             name: "e.swallow.content";
             type: SWALLOW;
             clip_to: "item_clip";
-
             description {
                 state: "default" 0.0;
-
                 rel1 {
                     to: "overlay";
                     offset: 0 1;
                 }
-
                 rel2 {
                     to: "overlay";
                     offset: -1 -2;
@@ -77,29 +66,25 @@ group {
             name: "overlay";
             type: IMAGE;
             mouse_events: 0;
-
             description {
                 state: "default" 0.0;
-
                 rel1 {
                     offset: 2 2;
                 }
-
                 rel2 {
                     offset: -1 0;
 					to_x: "sb_vbar";
 					to_y: "sb_hbar";
 					relative: 0.0 0.0;
                 }
-
                 image {
                     normal: "images/scrollframe/over.png";
                     border: 5 5 5 6;
 					middle: 0;
                 }
+				color_class: "dialog_base";
             }
         }
-
         /* vertical scrollframe */
 
         part {
@@ -107,13 +92,11 @@ group {
             name: "sb_vbar";
             type: RECT;
             mouse_events: 0;
-
             description {
                 state: "default" 0.0;
                 min: 17 15;
                 align: 1.0 0.0;
                 color: 255 255 255 255;
-
                 rel1 {
                     relative: 1.0 0.0;
                     offset: -19 -1;
@@ -124,17 +107,14 @@ group {
                     to_y: "sb_hbar";
                 }
             }
-
             description {
                 state: "hidden" 0.0;
                 max: 0 99999;
                 visible: 0;
-
                 rel1 {
                     relative: 1.0 0.0;
                     offset: -7 1;
                 }
-
                 rel2 {
                     relative: 1.0 0.0;
                     offset: -1 -1;
@@ -149,7 +129,6 @@ group {
             type: RECT;
             mouse_events: 0;
 
-
             description {
                 state: "default" 0.0;
                 color: 255 255 255 255;
@@ -159,7 +138,6 @@ group {
                     relative: 0.0 0.0;
                     offset: 0 3;
                 }
-
                 rel2 {
 					to: "sb_vbar";
                     relative: 1.0 1.0;
@@ -174,26 +152,23 @@ group {
             type: IMAGE;
             mouse_events: 0;
             clip_to: "sb_vbar";
-
             description {
                 state: "default" 0.0;
                 max: 16 99999;
                 min: 16 44;
 				fixed: 1 0;
-
                 rel1 {
                     to: "scrollbar_vbar_base";
 					offset: 1 0;
                 }
-
                 rel2 {
                     to: "scrollbar_vbar_base";
                 }
-
                 image {
                     normal: "images/scrollframe/trough_v.png";
                     border: 8 8 7 8;
                 }
+				color_class: "dialog_base";
             }
         }
 
@@ -203,26 +178,22 @@ group {
             type: RECT;
             mouse_events: 0;
             clip_to: "sb_vbar";
-
             description {
                 state: "default" 0.0;
                 min: 14 55;
                 max: 14 9999;
                 color: 255 255 255 255;
-
                 rel1 {
                     to: "scrollbar_vbar_base";
                     relative: 0.0 0.0;
                     offset: 0 0;
                 }
-
                 rel2 {
                     to: "scrollbar_vbar_base";
                     relative: 1.0 1.0;
                     offset: 0 -1;
                 }
             }
-
             description {
                 state: "clicked" 0.0;
                 inherit: "default" 0.0;
@@ -236,41 +207,33 @@ group {
             type: IMAGE;
             mouse_events: 1;
             clip_to: "e.dragable.vbar.clip";
-
             dragable {
                 x: 0 0 0;
                 y: 1 1 0;
                 confine: "e.dragable.vbar.clip";
             }
-
             description {
                 state: "default" 0.0;
                 min: 14 55;
                 max: 14 9999;
 				fixed: 1 1;
-
                 rel1 {
                     to: "scrollbar_vbar_base";
                     relative: 0.5 0.5;
                     offset: 0 0;
                 }
-
                 rel2 {
                     to: "scrollbar_vbar_base";
                     relative: 0.5 0.5;
                     offset: 0 0;
                 }
-
                 image {
                     normal: "images/scrollframe-bar_im2.png";
                     border: 6 6 6 6;
                 }
-
-                fill {
-                    smooth: 0;
-                }
+                fill.smooth: 0;
+				color_class: "dialog_base";
             }
-
             description {
                 state: "clicked" 0.0;
                 inherit: "default" 0.0;
@@ -283,52 +246,44 @@ group {
             type: IMAGE;
             mouse_events: 0;
             clip_to: "e.dragable.vbar.clip";
-
             description {
                 state: "default" 0.0;
                 min: 7 11;
                 max: 7 11;
                 fixed: 1 1;
-
                 rel1 {
                     to: "e.dragable.vbar";
                     offset: 0 8;
                 }
-
                 rel2 {
                     to: "e.dragable.vbar";
                     offset: 0 -8;
                 }
-
                 image {
                     normal: "images/scrollframe-bar_im3.png";
                     border: 2 2 2 2;
                 }
+				color_class: "dialog_base";
             }
-
             description {
                 state: "clicked" 0.0;
                 inherit: "default" 0.0;
                 color: 215 215 215 255;
             }
         }
-
         /* horizontal scrollframe */
 
         part {
             name: "sb_hbar";
             type: RECT;
             mouse_events: 0;
-
 			description {
                 state: "default" 0.0;
                 visible: 0;
-
                 rel1 {
                     relative: 0.0 1.0;
                     offset: 0 -3;
                 }
-
                 rel2 {
                     to_x: "sb_vbar";
                     relative: 0.0 1.0;
@@ -342,12 +297,10 @@ group {
 				fixed: 0 1;
                 align: 0.0 1.0;
                 color: 255 255 255 255;
-
                 rel1 {
                     relative: 0.0 1.0;
                     offset: 0 -16;
                 }
-
                 rel2 {
                     to_x: "sb_vbar";
                     relative: 0.0 1.0;
@@ -362,17 +315,14 @@ group {
             type: RECT;
             mouse_events: 1;
             clip_to: "sb_hbar";
-
             description {
                 state: "default" 0.0;
                 color: 0 0 0 0;
-
                 rel1 {
                     to: "sb_hbar";
                     relative: 0.0 0.0;
                     offset: 1 0;
                 }
-
                 rel2 {
                     to: "sb_hbar";
                     relative: 1.0 1.0;
@@ -387,26 +337,23 @@ group {
             type: IMAGE;
             mouse_events: 0;
             clip_to: "sb_hbar";
-
             description {
                 state: "default" 0.0;
                 min: 55 16;
                 max: 99999 16;
 				fixed: 0 1;
-
                 rel1 {
                     to: "sb_hbar_base";
 					offset: 0 1;
                 }
-
                 rel2 {
                     to: "sb_hbar_base";
                 }
-
                 image {
                     normal: "images/scrollframe/trough_v.png";
                     border: 8 7 8 8;
                 }
+				color_class: "dialog_base";
             }
         }
 
@@ -416,27 +363,23 @@ group {
             type: RECT;
             mouse_events: 0;
             clip_to: "sb_hbar";
-
             description {
                 state: "default" 0.0;
                 min: 55 14;
                 max: 9999 14;
                 fixed: 1 1;
                 color: 255 255 255 250;
-
                 rel1 {
                     to: "sb_hbar_base";
                     relative: 0.0 0.0;
                     offset: 0 0;
                 }
-
                 rel2 {
                     to: "sb_hbar_base";
                     relative: 1.0 1.0;
                     offset: -1 0;
                 }
             }
-
             description {
                 state: "clicked" 0.0;
                 inherit: "default" 0.0;
@@ -450,39 +393,31 @@ group {
             type: IMAGE;
             mouse_events: 1;
             clip_to: "e.dragable.hbar.clip";
-
             dragable {
                 x: 1 1 0;
                 y: 0 0 0;
                 confine: "e.dragable.hbar.clip";
             }
-
             description {
                 state: "default" 0.0;
                 min: 36 14;
                 max: 9999 14;
                 fixed: 1 1;
-
                 rel1 {
                     to: "sb_hbar_base";
                     relative: 0.5 0.5;
                 }
-
                 rel2 {
                     to: "sb_hbar_base";
                     relative: 0.5 0.5;
                 }
-
                 image {
                     normal: "images/scrollframe-bar_im0.png";
                     border: 6 6 6 6;
                 }
-
-                fill {
-                    smooth: 0;
-                }
+                fill.smooth: 0;
+				color_class: "dialog_base";
             }
-
             description {
                 state: "clicked" 0.0;
                 inherit: "default" 0.0;
@@ -496,29 +431,26 @@ group {
             mouse_events: 0;
             clip_to: "sb_hbar";
             clip_to: "e.dragable.hbar.clip";
-
             description {
                 state: "default" 0.0;
                 min: 11 7;
                 max: 11 7;
                 fixed: 1 1;
-
                 rel1 {
                     to: "e.dragable.hbar";
                     offset: 8 0;
                 }
-
                 rel2 {
                     to: "e.dragable.hbar";
                     offset: -8 0;
                 }
-
                 image {
                     normal: "images/scrollframe-bar_im1.png";
                     border: 2 2 2 2;
                 }
+				
+				color_class: "dialog_base";
             }
-
             description {
                 state: "clicked" 0.0;
                 inherit: "default" 0.0;
@@ -531,14 +463,12 @@ group {
             name: "focus_clip";
             mouse_events: 0;
             type: RECT;
-
             description {
                 state: "default" 0.0;
                 color: 255 255 255 0;
                 rel1.offset: -1 3;
                 rel2.offset: -2 -3;
             }
-
             description {
                 state: "focused" 0.0;
                 inherit: "default" 0.0;
@@ -551,21 +481,18 @@ group {
             name: "focus";
             mouse_events: 0;
             clip_to: "focus_clip";
-
             description {
                 state: "default" 0.0;
                 rel1.offset: -1 3;
                 rel2.offset: -2 -3;
                 image.normal: "images/scrollframe_im2.png";
                 image.border: 7 7 7 7;
-
                 fill {
                     smooth: 0;
                 }
             }
         }
     }
-
     /* vertical programs */
     programs {
         program {
@@ -575,7 +502,6 @@ group {
             action: STATE_SET "default" 0.0;
             target: "sb_vbar";
         }
-
         program {
             name: "scrollframe_vbar_rect_hide";
             signal: "e,action,hide,vbar";
@@ -583,7 +509,6 @@ group {
             action: STATE_SET "hidden" 0.0;
             target: "sb_vbar";
         }
-
         program {
             name: "sb_vbar_a1_down2";
             signal: "mouse,down,1";
@@ -591,7 +516,6 @@ group {
             action: DRAG_VAL_STEP 0.0 -1.0;
             target: "e.dragable.vbar";
         }
-
         program {
             name: "sb_vbar_a2_down2";
             signal: "mouse,down,1";
@@ -599,7 +523,6 @@ group {
             action: DRAG_VAL_STEP 0.0 1.0;
             target: "e.dragable.vbar";
         }
-
         program {
             name: "sb_vbar_p1_down";
             signal: "mouse,down,1";
@@ -607,7 +530,6 @@ group {
             action: DRAG_VAL_PAGE 0.0 -1.0;
             target: "e.dragable.vbar";
         }
-
         program {
             name: "sb_vbar_p2_down";
             signal: "mouse,down,1";
@@ -615,7 +537,6 @@ group {
             action: DRAG_VAL_PAGE 0.0 1.0;
             target: "e.dragable.vbar";
         }
-
         program {
             name: "sb_vbar_down";
             signal: "mouse,down,1";
@@ -624,7 +545,6 @@ group {
             transition: DECELERATE 0.15;
             target: "e.dragable.vbar.clip";
         }
-
         program {
             name: "sb_vbar_up";
             signal: "mouse,up,1";
@@ -633,7 +553,6 @@ group {
             transition: DECELERATE 0.5;
             target: "e.dragable.vbar.clip";
         }
-
         /* horizontal programs */
         program {
             name: "sb_hbar_show";
@@ -649,7 +568,6 @@ group {
             action: STATE_SET "default" 0.0;
             target: "sb_hbar";
         }
-
         program {
             name: "sb_hbar_a1_down2";
             signal: "mouse,down,1";
@@ -657,7 +575,6 @@ group {
             action: DRAG_VAL_STEP -1.0 0.0;
             target: "e.dragable.hbar";
         }
-
         program {
             name: "sb_hbar_a2_down2";
             signal: "mouse,down,1";
@@ -665,7 +582,6 @@ group {
             action: DRAG_VAL_STEP 1.0 0.0;
             target: "e.dragable.hbar";
         }
-
         program {
             name: "sb_hbar_p1_down";
             signal: "mouse,down,1";
@@ -673,7 +589,6 @@ group {
             action: DRAG_VAL_PAGE -1.0 0.0;
             target: "e.dragable.hbar";
         }
-
         program {
             name: "sb_hbar_p2_down";
             signal: "mouse,down,1";
@@ -681,7 +596,6 @@ group {
             action: DRAG_VAL_PAGE 1.0 0.0;
             target: "e.dragable.hbar";
         }
-
         program {
             name: "sb_hbar_down";
             signal: "mouse,down,1";
@@ -690,7 +604,6 @@ group {
             transition: DECELERATE 0.15;
             target: "e.dragable.hbar.clip";
         }
-
         program {
             name: "sb_hbar_up";
             signal: "mouse,up,1";
@@ -699,7 +612,6 @@ group {
             transition: DECELERATE 0.5;
             target: "e.dragable.hbar.clip";
         }
-
         /*
           program {
           name: "sb_hbar_in";
@@ -709,7 +621,6 @@ group {
           target: "e.dragable.hbar";
           target: "hbar_stipple";
           }
-
           program {
           name: "sb_hbar_out";
           signal: "mouse,out";
@@ -718,7 +629,6 @@ group {
           target: "e.dragable.hbar";
           target: "hbar_stipple";
           }
-
           program {
           name: "sb_hbar_a1_down";
           signal: "mouse,down,1";
@@ -727,7 +637,6 @@ group {
           transition: DECELERATE 0.15;
           target: "arrow_a1";
           }
-
           program {
           name: "sb_hbar_a1_up";
           signal: "mouse,up,1";
@@ -736,7 +645,6 @@ group {
           transition: DECELERATE 0.5;
           target: "arrow_a1";
           }
-
           program {
           name: "sb_hbar_a2_down";
           signal: "mouse,down,1";
@@ -745,7 +653,6 @@ group {
           transition: DECELERATE 0.15;
           target: "arrow_a2";
           }
-
           program {
           name: "sb_hbar_a2_up";
           signal: "mouse,up,1";
@@ -755,7 +662,6 @@ group {
           target: "arrow_a2";
           }
         */
-
 		/* # ifdef FOCUS
 		 * #  undef FOCUS
 		 * # endif
@@ -772,4 +678,3 @@ group {
 		 * 		FOCUS("focus_out", "e,state,unfocused", "default"); */
 	}
 }
-

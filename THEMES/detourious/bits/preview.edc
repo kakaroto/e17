@@ -21,6 +21,7 @@ group {
 		 		      normal: "images/scrollframe_im0.png";
 		 		      border: 7 7 7 7;
 				}
+				color_class: "dialog_base";
 			}
 		}
 

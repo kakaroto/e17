@@ -12,8 +12,9 @@ group {
                 color: 255 255 255 200;
                 image.normal: "images/button_im0.png";
                 image.border: 7 7 7 7;
+				color_class: "dialog_base";
             }
-        }
+		}
 
         part {
             name: "button";
@@ -305,7 +306,7 @@ group {
                 }
                 rel2 {
                     relative: 0.0 1.0;
-                    offset:  0 1;
+                    offset:  0 -2;
                 }
 			}
 		}
@@ -321,7 +322,7 @@ group {
                 }
                 rel2 {
                     relative: 1.0 1.0;
-                    offset:  0 1;
+                    offset:  0 -2;
                 }
 			}
 		}
@@ -353,7 +354,7 @@ group {
             description {
                 state: "default" 0.0;
                 fixed: 0 1;
-				color_class: "button_text";
+				/* color_class: "button_text"; */
 				align: 0.5 1.0;
                 rel1 {
                     relative: 0.0 1.0;

@@ -120,6 +120,7 @@ group {
 				image {
 					normal: "images/check_bt0.png"; /* base */
 				}
+				color_class: "dialog_base";
 			}
 			/*
 			 * Check widget = disabled

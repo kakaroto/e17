@@ -58,6 +58,7 @@ group {
 					border: 7 7 7 7;
 					middle: 0;
 				}
+				color_class: "dialog_base";
 			}
 		}
 

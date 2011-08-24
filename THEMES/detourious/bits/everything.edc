@@ -1,7 +1,7 @@
 #if (BUILD_ILLUME == 1) && (BUILD_COMPOSITE == 1)
 #define TRANSITION ACCELERATE 0.4
 #else
-#define TRANSITION ACCELERATE 0.25
+#define TRANSITION ACCELERATE 0.35
 #endif
 
 group {
@@ -54,6 +54,7 @@ group {
 				rel2.to: "input_base";
 
 				image.normal: "images/menubar.png";
+				color_class: "dialog_base";
 			}
 		}
 
@@ -157,6 +158,7 @@ group {
 				rel1.to: "list_clip";
 				rel2.to: "list_clip";
 				color: 245 245 245 255;
+				color_class: "scrollframe_base";
 			}
 		}
 #endif
@@ -333,6 +335,7 @@ group {
 				rel2.to: "list_clip";
 
 				image.normal: "images/bevel_evry_fade.png";
+				color_class: "dialog_base";
 			}
 		}
 
@@ -354,6 +357,7 @@ group {
 					offset: -1 -1;
 				}
 				color: 235 235 235 255;
+				color_class: "dialog_base";
 			}
 		}
 
@@ -576,6 +580,7 @@ group {
 				rel2.relative: 1.0 0.0;
 				rel1.offset:  1 1;
 				rel2.offset: -2 48;
+				color_class: "dialog_base";
 			}
 		}
 		
@@ -626,6 +631,7 @@ group {
 				rel2.to: "win";
 				rel1.relative: 0.0 1.0;
 				rel1.offset: 0 -1;
+				color_class: "dialog_base";
 			}
 		}
 
@@ -758,6 +764,7 @@ group {
 					border: 1 1 1 1;
 					middle: 0;
 				}
+				color_class: "dialog_base";
 			}
 		}
 	}
@@ -804,6 +811,7 @@ group {
 			description {
 				state: "default" 0.0;
 				color: 190 190 190 0;
+				color_class: "dialog_base";
 			}
 			description {
 				state: "selected" 0.0;
@@ -1040,6 +1048,7 @@ group {
 			description {
 				state: "default" 0.0;
 				color: 160 160 160 0;
+				color_class: "dialog_base";
 			}
 			description {
 				state: "selected" 0.0;
@@ -1098,14 +1107,15 @@ group {
 				rel1.offset:   5 3;
 				rel2.offset:   -6 -1;
 
-				color: 80 80 80 255;
-				color3: 240 240 240 128;
-				TEXT_NORMAL("label_normal", 0.5 0.5, 0 1);
+				/* color: 80 80 80 255;
+				 * color3: 240 240 240 128; */
+				color: 60 60 60 255;
+				TEXT_NORMAL(0, 0.5 0.5, 0 1);
+				TEXT_COLOR;
 			}
 			description {
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				color: 60 60 60 255;
 			}
 		}
 
@@ -1799,7 +1809,7 @@ group {
 					to_y: "spacer";
 				}
 				TEXT_COLOR;
-				TEXT_NORMAL("label_normal", 0.0 0.0, 0 1);
+				TEXT_NORMAL(0, 0.0 0.0, 0 1);
 			}
 			description {
 				state: "selected" 0.0;

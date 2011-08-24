@@ -168,55 +168,56 @@
 	}
 
 #define BORDER_BUTTONS(NAME, EVENT, SIZE, REL1, OFF1, REL2, OFF2, IMG)	\
-	part {												\
-		name: NAME"_bg";								\
-		type: IMAGE;									\
-		mouse_events: 0;								\
-		description {									\
-			state: "default" 0.0;						\
-			rel1.to: NAME;								\
-			rel2.to: NAME;								\
-			image {										\
-				normal: "images/window-border_bt0.png";	\
-			}											\
-		}												\
-	}													\
-	part {												\
-		name: NAME;										\
-		type: IMAGE;									\
-		mouse_events: 1;								\
-		description {									\
-			state: "default" 0.0;						\
-			min: SIZE;									\
-			max: SIZE;									\
-			rel1 {										\
-				relative: REL1;							\
-				offset: OFF1;							\
-			}											\
-			rel2 {										\
-				relative: REL2;							\
-				offset: OFF2;							\
-			}											\
-			image {										\
-				normal: IMG;							\
-			}											\
-		}												\
-		description {									\
-			state: "clicked" 0.0;						\
-			inherit: "default" 0.0;						\
-			color: 215 215 215 255;						\
-		}												\
-	}													\
-	part {												\
-		name: EVENT;									\
-		type: RECT;										\
-		repeat_events: 1;								\
-		description {									\
-			state: "default" 0.0;						\
-			color: 0 0 0 0;								\
-			rel1.to: NAME;								\
-			rel2.to: NAME;								\
-		}												\
+	part {																\
+		name: NAME"_bg";												\
+		type: IMAGE;													\
+		mouse_events: 0;												\
+		description {													\
+			state: "default" 0.0;										\
+			rel1.to: NAME;												\
+			rel2.to: NAME;												\
+			image {														\
+				normal: "images/window-border_bt0.png";					\
+			}															\
+			color_class: "border_frame";								\
+		}																\
+	}																	\
+	part {																\
+		name: NAME;														\
+		type: IMAGE;													\
+		mouse_events: 1;												\
+		description {													\
+			state: "default" 0.0;										\
+			min: SIZE;													\
+			max: SIZE;													\
+			rel1 {														\
+				relative: REL1;											\
+				offset: OFF1;											\
+			}															\
+			rel2 {														\
+				relative: REL2;											\
+				offset: OFF2;											\
+			}															\
+			image {														\
+				normal: IMG;											\
+			}															\
+		}																\
+		description {													\
+			state: "clicked" 0.0;										\
+			inherit: "default" 0.0;										\
+			color: 215 215 215 255;										\
+		}																\
+	}																	\
+	part {																\
+		name: EVENT;													\
+		type: RECT;														\
+		repeat_events: 1;												\
+		description {													\
+			state: "default" 0.0;										\
+			color: 0 0 0 0;												\
+			rel1.to: NAME;												\
+			rel2.to: NAME;												\
+		}																\
 	}
 
 
@@ -273,19 +274,20 @@
 	BORDER_EVENT_MAP("e.event.resize.br", 1.0 1.0, -6   -6,       1.0 1.0, -1    -1);	\
 	BORDER_EVENT_MAP("e.event.resize.b",  0.0 1.0, 5     BOTTOM,  1.0 1.0, -6    -1);	\
 
-#define BORDER_IMAGE(IMG, _BORDER, SIZE)				\
-	part {												\
-		name: "border";									\
-		description {									\
-			state: "default" 0.0;						\
-			min: SIZE;									\
-			image {										\
-				normal: IMG;							\
-				border: _BORDER;						\
-				middle: 0;								\
-			}											\
-		}												\
-	}													\
+#define BORDER_IMAGE(IMG, _BORDER, SIZE)		\
+	part {										\
+		name: "border";							\
+		description {							\
+			state: "default" 0.0;				\
+			min: SIZE;							\
+			image {								\
+				normal: IMG;					\
+				border: _BORDER;				\
+				middle: 0;						\
+			}									\
+			color_class: "border_frame";		\
+		}										\
+	}											\
 
 #define BORDER_COLOR(IMG, _BORDER, SIZE)				\
 	part {												\

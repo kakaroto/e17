@@ -103,6 +103,7 @@ group {
 				image {
 					normal: "images/radio_bt0.png";
 				}
+				color_class: "dialog_base";
 			}
 			description {
 				state: "disabled" 0.0;
@@ -543,7 +544,7 @@ group {
 			description {
 				state: "default" 0.0;
 				min: 16 16;
-				color_class: "radio_text"; 
+				/* color_class: "radio_text";  */
 				rel1 { 
 					to_x: "toggle.on"; 
 					relative: 1.0 0.5; 

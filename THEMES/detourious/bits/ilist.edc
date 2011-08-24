@@ -34,10 +34,12 @@ group {
 			description {
 				state: "default" 0.0;
 				color: COLOR_LIST_BG;
+				color_class: "ilist_item_base";
 			}
 			description {
 				state: "active" 0.0;
 				color: COLOR_LIST_BG_ACTIVE;
+				color_class: "menu_item_active";
 			}
 		}
 
@@ -77,11 +79,13 @@ group {
 				}
 				TEXT_COLOR;
 				TEXT_NORMAL("ilist_item", 0.0 0.5, 1 1);
+				color_class: "ilist_item";
 			}
 			description {
 				state: "active" 0.0;
 				inherit: "default" 0.0;
 				TEXT_COLOR_WHITE;
+				color_class: "ilist_item_selected";
 			}
 		}
 
@@ -123,10 +127,12 @@ group {
 			description {
 				state: "default" 0.0;
 				color: COLOR_LIST_BG_ODD;
+				color_class: "ilist_item_odd_base";
 			}
 			description {
 				state: "active" 0.0;
 				color: COLOR_LIST_BG_ACTIVE;
+				color_class: "menu_item_active";
 			}
 		}
 
@@ -166,11 +172,13 @@ group {
 				}
 				TEXT_COLOR;
 				TEXT_NORMAL("ilist_item", 0.0 0.5, 1 1);
+				color_class: "ilist_item_odd";
 			}
 			description {
 				state: "active" 0.0;
 				inherit: "default" 0.0;
 				TEXT_COLOR_WHITE;
+				color_class: "ilist_item_selected";
 			}
 		}
 

@@ -18,6 +18,7 @@ group {
 				rel2 { 
 					offset: -4 -5; 
 				}
+				color_class: "dialog_base";
 			}
 			description {
 				state: "disabled" 0.0;
@@ -262,7 +263,7 @@ group {
 			clip_to: "disabled_button";
 			description {
 				state: "default" 0.0;
-				color_class: "button_text";
+				/* color_class: "button_text"; */
 				rel1 {
 					to_x: "e.swallow.icon";
 					to_y: "base";
