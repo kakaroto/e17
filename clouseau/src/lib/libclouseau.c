@@ -319,7 +319,7 @@ libclouseau_init(void)
    elm_box_pack_end(bx, panes);
    evas_object_show(panes);
 
-   /* The list main */
+   /* The main list */
      {
         Evas_Object *gl;
 
