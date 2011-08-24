@@ -239,6 +239,7 @@ _load_list(Evas_Object *gl)
    Eina_List *ees,*l;
    Ecore_Evas *ee, *this_ee;
 
+   elm_list_clear(prop_list);
    elm_genlist_clear(gl);
    _item_tree_free();
 
