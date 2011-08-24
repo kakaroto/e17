@@ -18,9 +18,7 @@ _elsa_wait_action(int sig, siginfo_t * si __UNUSED__, void *data __UNUSED__)
 {
     kill_wait();
     if (sig != SIGCHLD)
-      {
-         putenv(strdup("ELSA_QUIT=1"));
-      }
+      setenv("ELSA_QUIT", "1", 1);
 }
 
 static void
@@ -34,11 +32,12 @@ main (int argc __UNUSED__, char **argv __UNUSED__)
 {
    int status = 0;
    char *pid;
+   struct sigaction action;
+
    pid_t rpid;
    pid = getenv("ELSA_XPID");
    if (!pid) return -1;
    _x_pid = atoi(pid);
-   struct sigaction action;
 
    action.sa_sigaction = _elsa_wait_action;
    action.sa_flags = SA_RESTART | SA_SIGINFO;
@@ -63,9 +62,7 @@ main (int argc __UNUSED__, char **argv __UNUSED__)
    if (_x_pid == rpid)
      {
         if (WIFEXITED(status) && WEXITSTATUS(status))
-          {
-             putenv("ELSA_QUIT=1");
-          }
+          setenv("ELSA_QUIT", "1", 1);
         execlp("elsa", "elsa", "--nodaemon", NULL);
      }
    return -1;

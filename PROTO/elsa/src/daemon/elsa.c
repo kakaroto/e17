@@ -203,7 +203,6 @@ main (int argc, char ** argv)
    char *elsa_user = NULL;
    unsigned char nodaemon = 0;
    unsigned char quit_option = 0;
-   char buf[1024];
    Ecore_Getopt_Value values[] =
      {
         ECORE_GETOPT_VALUE_BOOL(nodaemon),
@@ -298,6 +297,7 @@ main (int argc, char ** argv)
 
    elsa_session_init(elsa_config->command.xauth_file);
    pid = elsa_xserver_init(_elsa_main, dname);
+
    if (elsa_config->autologin && !elsa_user)
      {
         xcb_connection_t *disp = NULL;
@@ -322,14 +322,17 @@ main (int argc, char ** argv)
    elsa_xserver_shutdown();
    elsa_pam_shutdown();
    ecore_shutdown();
-   elsa_close_log();
    elsa_config_shutdown();
    eet_shutdown();
    if (elsa_session_logged_get())
-     _elsa_wait();
-   elsa_xserver_end();
+     {
+        elsa_close_log();
+        _elsa_wait();
+     }
    kill(pid, SIGTERM);
+   elsa_xserver_end();
    elsa_session_shutdown();
+   elsa_close_log();
    return 0;
 }
 
