@@ -188,7 +188,7 @@ const char         *txt[] = {
 
    _("User Menus"),
    _("User Application List"),
-   _("Other"),
+   _("Applications"),
    _("Epplets"),
    _("Restart"),
    _("Log Out"),

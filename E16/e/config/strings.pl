@@ -71,7 +71,7 @@ sub x() {
 @sl = (
   "User Menus",
   "User Application List",
-  "Other",
+  "Applications",
   "Epplets",
   "Restart",
   "Log Out"

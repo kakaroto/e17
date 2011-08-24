@@ -472,7 +472,14 @@ foreach $d (split(':', $AppDirs)) {
 MkDir("$EdirMenus");
 
 # Make the menus
-MakeMenu("file.menu", \@MainMenu);
+# If file.menu exists replace old GNOME/KDE/Other menus with combined one
+$f = "$EdirMenus/file.menu";
+if (-f $f) {
+	$cmd = 'print unless (/menus_(GNOME|KDE|Other)/); print "\"Applications\" NULL menu \"menus_apps/index.menu\"\n" if (/menus_Other/);';
+	system("perl -ni -e '$cmd' $f");
+} else {
+	MakeMenu("file.menu", \@MainMenu);
+}
 MakeMenu("user_apps.menu", \@UserAppsMenu);
 MakeEppsMenu("epplets.menu");
 MakeAppsMenu("apps");
