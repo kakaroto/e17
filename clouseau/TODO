@@ -1,0 +1,9 @@
+* Make it an elm module (or setting an env var without a module?) so I'll be able to remotely connect to elm apps.
+* Split UI and actual program code (better to do the previous bullet first on the bullet above).
+* Add "grab screenshot" button.
+* Add a clipping range rectangle.
+* Add special per object info, for example edje part names?
+
+* Things to show per-object
+  * clipping info.
+  * callback list?
