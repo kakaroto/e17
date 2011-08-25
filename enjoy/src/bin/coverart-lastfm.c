@@ -155,20 +155,16 @@ _remove_disc_info(char *info)
 
     for (i = 0; disc_number_regexes[i].str; i++)
       {
-         if (disc_number_regexes[i].exp)
+         regmatch_t matches[32];
+         int j;
+
+         if (!disc_number_regexes[i].exp) continue;
+         if (regexec(disc_number_regexes[i].exp, info, 32, matches, 0)) continue;
+
+         for (j = 0; j < 32; j++)
            {
-             regmatch_t matches[32];
-             if (!regexec(disc_number_regexes[i].exp, info, 32, matches, 0))
-               {
-                  int j;
-                  for (j = 0; j < 32; j++)
-                    {
-                      if (matches[j].rm_so < 0 || matches[j].rm_eo < 0)
-                        break;
-                      memset(info + matches[j].rm_so, ' ',
-                             matches[j].rm_eo - matches[j].rm_so);
-                    }
-               }
+             if (matches[j].rm_so < 0 || matches[j].rm_eo < 0) break;
+             memset(info + matches[j].rm_so, ' ', matches[j].rm_eo - matches[j].rm_so);
            }
       }
 }
