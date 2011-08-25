@@ -397,7 +397,11 @@ lastfm_cover_download(char *url,
          ERR("could not obtain local path for url %s", url);
          return EINA_FALSE;
       }
-    if (ecore_file_exists(dest)) return EINA_TRUE;
+    if (ecore_file_exists(dest))
+      {
+         free(dest);
+         return EINA_TRUE;
+      }
     
     lcdd->data = data;
     lcdd->local_file = dest;
