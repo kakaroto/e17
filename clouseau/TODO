@@ -1,11 +1,10 @@
 * Make it an elm module (or setting an env var without a module?) so I'll be able to remotely connect to elm apps.
-* Split UI and actual program code (better to do the previous bullet first on the bullet above).
+* Split UI and actual program code (better to do the previous bullet first).
 * Add "grab screenshot" button.
 * Add a clipping range rectangle.
 * Add special per object info, for example edje part names?
 * When items are coloured, show the exact colour using a rect?
 * Handle map/proxy
-* Add an option to filter out invisible/clippers
 * add a way to filter object with some regexp on the name and also finding a specific object according to name.
 
 * Things to show per-object

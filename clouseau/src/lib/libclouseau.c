@@ -17,6 +17,9 @@
 
 #include "config.h"
 
+#include "libclouseau.h"
+#include "ui/obj_information.h"
+
 #ifdef HAVE___ATTRIBUTE__
 # define __UNUSED__ __attribute__((unused))
 #else
@@ -26,22 +29,10 @@
 static Elm_Genlist_Item_Class itc, itc_ee;
 static Eina_Bool _lib_init = EINA_FALSE;
 static Eina_List *tree = NULL;
-static Evas_Object *prop_list;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 
 static void libclouseau_highlight(Evas_Object *addr);
 static Eina_Bool libclouseau_highlight_fade(void *rv);
-
-typedef struct _Tree_Item Tree_Item;
-struct _Tree_Item
-{
-   Tree_Item *parent;
-   Eina_List *children;
-   union {
-        Ecore_Evas *ee;
-        Evas_Object *obj;
-   } data;
-};
 
 static void
 _item_tree_item_free(Tree_Item *parent)
@@ -173,91 +164,17 @@ static void
 _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
       void *event_info)
 {
-   elm_list_clear(prop_list);
-
+   clouseau_obj_information_list_clear();
    /* If not an object, return. */
    if (!elm_genlist_item_parent_get(event_info))
       return;
 
    Tree_Item *treeit = elm_genlist_item_data_get(event_info);
+
    Evas_Object *obj = treeit->data.obj;
    libclouseau_highlight(obj);
-   /* Populate properties list */
-     {
-        char buf[1024];
-        Eina_Bool visibility;
-        Evas_Coord x, y, w, h;
-        double dx, dy;
 
-        visibility = evas_object_visible_get(obj);
-        snprintf(buf, sizeof(buf), "Visibility: %d", (int) visibility);
-        elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-
-        if (evas_object_name_get(obj))
-          {
-             snprintf(buf, sizeof(buf), "Name: %s",
-                   evas_object_name_get(obj));
-             elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-          }
-
-        snprintf(buf, sizeof(buf), "Layer: %hd",
-              evas_object_layer_get(obj));
-        elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-
-        evas_object_geometry_get(obj, &x, &y, &w, &h);
-        snprintf(buf, sizeof(buf), "Position: %d %d", x, y);
-        elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-        snprintf(buf, sizeof(buf), "Size: %d %d", w, h);
-        elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-
-#if 0
-        if (evas_object_clip_get(obj))
-          {
-             evas_object_geometry_get(
-                   evas_object_clip_get(obj), &x, &y, &w, &h);
-             snprintf(buf, sizeof(buf), "Clipper position: %d %d", x, y);
-             elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-             snprintf(buf, sizeof(buf), "Clipper size: %d %d", w, h);
-             elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-          }
-#endif
-
-        evas_object_size_hint_min_get(obj, &w, &h);
-        snprintf(buf, sizeof(buf), "Min size: %d %d", w, h);
-        elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-
-        evas_object_size_hint_max_get(obj, &w, &h);
-        snprintf(buf, sizeof(buf), "Max size: %d %d", w, h);
-        elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-
-        evas_object_size_hint_request_get(obj, &w, &h);
-        snprintf(buf, sizeof(buf), "Request size: %d %d", w, h);
-        elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-
-        evas_object_size_hint_align_get(obj, &dx, &dy);
-        snprintf(buf, sizeof(buf), "Align: %.6lg %.6lg", dx, dy);
-        elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-
-        evas_object_size_hint_weight_get(obj, &dx, &dy);
-        snprintf(buf, sizeof(buf), "Weight: %.6lg %.6lg", dx, dy);
-        elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-
-        /* Handle color */
-          {
-             int r, g, b, a;
-             evas_object_color_get(obj, &r, &g, &b, &a);
-             snprintf(buf, sizeof(buf), "Color: %d %d %d %d", r, g, b, a);
-             elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-          }
-
-        if (evas_object_clipees_get(obj))
-          {
-             snprintf(buf, sizeof(buf), "Has clipees");
-             elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
-          }
-
-        elm_list_go(prop_list);
-     }
+   clouseau_obj_information_list_populate(treeit);
 }
 
 static void
@@ -328,7 +245,7 @@ _load_list(Evas_Object *gl)
    Eina_List *ees, *eeitr;
    Ecore_Evas *ee, *this_ee;
 
-   elm_list_clear(prop_list);
+   clouseau_obj_information_list_clear();
    elm_genlist_clear(gl);
    _item_tree_free();
 
@@ -491,7 +408,8 @@ libclouseau_init(void)
 
    /* Properties list */
      {
-        prop_list = elm_list_add(panes);
+        Evas_Object *prop_list = NULL;
+        prop_list = clouseau_obj_information_list_add(panes);
         evas_object_size_hint_align_set(prop_list, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(prop_list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 

@@ -8,12 +8,16 @@ AM_CPPFLAGS = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 @EFL_CFLAGS@
 
-EXTRA_DIST =
+EXTRA_DIST = \
+	     libclouseau.h \
+	     ui/obj_information.h
 
 pkgdir = $(libdir)/clouseau
 pkg_LTLIBRARIES = libclouseau.la
 
-libclouseau_la_SOURCES = libclouseau.c
+libclouseau_la_SOURCES = \
+			 libclouseau.c \
+			 ui/obj_information.c
 
 libclouseau_la_LDFLAGS = -module -avoid-version -rdynamic
 libclouseau_la_DEPENDENCIES = $(top_builddir)/config.h
