@@ -24,7 +24,6 @@ static void
 gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Elm_Genlist_Item *it = event_info;
-   Evas_Object *gl = elm_genlist_item_genlist_get(it);
    Inf_Tree_Item *parent = elm_genlist_item_data_get(it);
    Inf_Tree_Item *tit;
    Eina_List *itr;
@@ -60,7 +59,8 @@ gl_con_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 }
 
 static Evas_Object *
-item_icon_get(void *data, Evas_Object *parent, const char *part)
+item_icon_get(void *data __UNUSED__, Evas_Object *parent __UNUSED__,
+      const char *part __UNUSED__)
 {
    return NULL;
 }
@@ -104,6 +104,7 @@ _item_tree_item_free(Inf_Tree_Item *parent)
         _item_tree_item_free(treeit);
      }
 
+   eina_stringshare_del(parent->string);
    free(parent);
 }
 
@@ -130,7 +131,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
    Evas_Object *obj = treeit->data.obj;
    Inf_Tree_Item *main_tit;
 
-   /* Populate properties list */
+   /* Populate evas properties list */
    main_tit = calloc(1, sizeof(*main_tit));
    main_tit->string = eina_stringshare_add("Evas");
    information_tree = eina_list_append(information_tree, main_tit);
