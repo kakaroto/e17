@@ -100,6 +100,9 @@ typedef struct _Enna_Localfiles_Priv
    Enna_Browser *browser;
    Eio_Monitor *monitor;
    Eina_List *monitor_handlers;
+   Evas_Object *dialog;
+   Enna_File *file_dialog;
+   const char *new_path;
 } Enna_Localfiles_Priv;
 
 static localfiles_cfg_t localfiles_cfg;
@@ -425,13 +428,329 @@ _file_filter_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info
    /*     return EINA_FALSE; */
 }
 
+
+static Eina_Bool
+_dir_filter_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
+{
+   return EINA_TRUE;
+}
+
+static void
+_dir_progress_cb(void *data, Eio_File *handler, const Eio_Progress *info)
+{
+}
+
+static void
+_delete_done_cb(void *data, Eio_File *handler)
+{
+   Enna_Localfiles_Priv *priv = data;
+
+   printf("Delete done %p\n", priv);
+
+   enna_browser_file_del(priv->browser, priv->file_dialog);
+   enna_file_free(priv->file_dialog);
+}
+
+static void
+_rename_done_cb(void *data, Eio_File *handler)
+{
+   Enna_Localfiles_Priv *priv = data;
+   const char *new_path = priv->new_path;
+   const char *new_uri;
+   const char *new_mrl;
+
+   printf("Update done %p\n", priv);
+
+
+   new_uri = eina_stringshare_printf("%s/%s", ecore_file_dir_get(priv->file_dialog->uri), 
+                                     ecore_file_file_get(new_path));
+
+   new_mrl = eina_stringshare_printf("%s/%s", ecore_file_dir_get(priv->file_dialog->mrl), 
+                                      ecore_file_file_get(new_path));
+
+   printf("new uri : %s\n", new_uri);
+   printf("new mrl : %s\n", new_mrl);
+
+   priv->file_dialog->name = eina_stringshare_add(ecore_file_dir_get(new_path));
+   priv->file_dialog->uri = new_uri;
+   priv->file_dialog->label = eina_stringshare_add(ecore_file_file_get(new_path));
+   priv->file_dialog->mrl = new_mrl;
+
+   enna_browser_file_update(priv->browser, priv->file_dialog);
+   eina_stringshare_del(new_path);
+   priv->new_path = NULL;
+}
+
+static void
+_error_cb(void *data, Eio_File *handler, int error)
+{
+}
+
+static void
+_dialog_delete_ok_clicked_cb(void *data, Evas_Object *btn, void *ev)
+{
+   Enna_Localfiles_Priv *priv = data;
+   Enna_File *file = evas_object_data_get(priv->dialog, "file");
+
+   if (priv->file_dialog)
+     enna_file_free(priv->file_dialog);
+   priv->file_dialog = enna_file_ref(file);
+
+
+   if (file->type == ENNA_FILE_DIRECTORY)
+     {
+        eio_dir_unlink(file->mrl,
+                       _dir_filter_cb,
+                       _dir_progress_cb,
+                       _delete_done_cb,
+                       _error_cb,
+                       priv);
+     }
+   else if (file->type == ENNA_FILE_FILE)
+     {
+        eio_file_unlink(file->mrl,
+                        _delete_done_cb,
+                        _error_cb,
+                        priv);
+     }
+
+   evas_object_del(priv->dialog);
+}
+
+static void
+_dialog_rename_ok_clicked_cb(void *data, Evas_Object *btn, void *ev)
+{
+   Enna_Localfiles_Priv *priv = data;
+   Enna_File *file;
+   Evas_Object *entry;
+   const char *new_name;
+   const char *new_path;
+
+
+   file = evas_object_data_get(priv->dialog, "file");
+   printf("file : %p\n", file);
+   entry = evas_object_data_get(priv->dialog, "entry");
+   new_name = elm_object_text_get(entry);
+   new_path = eina_stringshare_printf("%s/%s", ecore_file_dir_get(file->mrl),
+                                        new_name);
+
+   priv->new_path = new_path;
+   printf("Old Path : %s - New Path %s\n", file->mrl, new_path);
+
+
+   if (priv->file_dialog)
+     enna_file_free(priv->file_dialog);
+   priv->file_dialog = enna_file_ref(file);
+
+   if (file->type == ENNA_FILE_DIRECTORY)
+     {
+        eio_dir_move(file->mrl,
+                     new_path,
+                       _dir_filter_cb,
+                       _dir_progress_cb,
+                       _rename_done_cb,
+                       _error_cb,
+                       priv);
+     }
+   else if (file->type == ENNA_FILE_FILE)
+     {
+        eio_file_move(file->mrl,
+                      new_path,
+                      _dir_progress_cb,
+                      _rename_done_cb,
+                      _error_cb,
+                        priv);
+     }
+
+   evas_object_del(priv->dialog);
+}
+
+static void
+_dialog_cancel_clicked_cb(void *data, Evas_Object *obj, void *ev)
+{
+   Enna_Localfiles_Priv *priv = data;
+
+   evas_object_del(priv->dialog);
+}
+
+
+
+static void
+_action_rename_cb(void *data, Enna_File *file)
+{
+   Evas_Object *win;
+   Evas_Object *bg;
+   Evas_Object *fr;
+   Evas_Object *en;
+   Evas_Object *lb;
+   Evas_Object *bx;
+   Evas_Object *btn_bx;
+   Evas_Object *btn_ok;
+   Evas_Object *btn_cancel;
+   Enna_Localfiles_Priv *priv = data;
+
+   win = elm_win_add(enna->win, NULL, ELM_WIN_DIALOG_BASIC);
+   elm_win_title_set(win, "Rename");
+   elm_win_autodel_set(win, EINA_TRUE);
+   evas_object_data_set(win, "file", file);
+
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(win, bg);
+   evas_object_show(bg);
+   evas_object_size_hint_min_set(bg, 400, 64);
+
+   fr = elm_frame_add(win);
+   elm_object_style_set(fr, "pad_medium");
+   evas_object_show(fr);
+   elm_win_resize_object_add(win, fr);
+
+   bx = elm_box_add(win);
+   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bx, -1, -1);
+   evas_object_show(bx);
+   elm_frame_content_set(fr, bx);
+   elm_box_padding_set(bx, 4, 4);
+
+   lb = elm_label_add(win);
+   elm_object_text_set(lb, "Enter new name");
+   evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(lb, 0.5, -1);
+   evas_object_show(lb);
+   elm_box_pack_end(bx, lb);
+
+   en = elm_entry_add(win);
+   elm_entry_single_line_set(en, EINA_TRUE);
+   evas_object_size_hint_weight_set(en, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(en, -1, -1);
+   elm_object_text_set(en, file->label);
+   elm_box_pack_end(bx, en);
+   evas_object_show(en);
+   evas_object_data_set(win, "entry", en);
+
+   btn_bx = elm_box_add(win);
+   elm_box_horizontal_set(btn_bx, EINA_TRUE);
+   evas_object_size_hint_weight_set(btn_bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn_bx, EVAS_HINT_FILL, 0.5);
+   evas_object_show(btn_bx);
+   elm_box_padding_set(btn_bx, 8, 2);
+
+   btn_ok = elm_button_add(win);
+   elm_object_text_set(btn_ok, "Rename");
+   evas_object_show(btn_ok);
+   evas_object_size_hint_weight_set(btn_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn_ok, EVAS_HINT_FILL, 0.5);
+   evas_object_smart_callback_add(btn_ok, "clicked",
+                                  _dialog_rename_ok_clicked_cb, priv);
+   elm_box_pack_end(btn_bx, btn_ok);
+
+   btn_cancel = elm_button_add(win);
+   elm_object_text_set(btn_cancel, "Cancel");
+   evas_object_show(btn_cancel);
+   evas_object_size_hint_weight_set(btn_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(btn_cancel, "clicked",
+                                  _dialog_cancel_clicked_cb, priv);
+   elm_box_pack_end(btn_bx, btn_cancel);
+
+   elm_box_pack_end(bx, btn_bx);
+
+   evas_object_show(win);
+   priv->dialog = win;
+}
+
+static void
+_action_delete_cb(void *data, Enna_File *file)
+{
+   Evas_Object *win;
+   Evas_Object *bg;
+   Evas_Object *fr;
+   Evas_Object *lb;
+   Evas_Object *bx;
+   Evas_Object *btn_bx;
+   Evas_Object *btn_ok;
+   Evas_Object *btn_cancel;
+   Enna_Localfiles_Priv *priv = data;
+   const char *label;
+
+   printf("Action delete\n");
+
+   ENNA_OBJECT_DEL(priv->dialog);
+
+   win = elm_win_add(enna->win, NULL, ELM_WIN_DIALOG_BASIC);
+   elm_win_title_set(win, "Delete files");
+   elm_win_autodel_set(win, EINA_TRUE);
+   evas_object_data_set(win, "file", file);
+
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(win, bg);
+   evas_object_show(bg);
+   evas_object_size_hint_min_set(bg, 400, 64);
+
+   fr = elm_frame_add(win);
+   elm_object_style_set(fr, "pad_medium");
+   evas_object_show(fr);
+   elm_win_resize_object_add(win, fr);
+
+   bx = elm_box_add(win);
+   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bx, -1, -1);
+   evas_object_show(bx);
+   elm_frame_content_set(fr, bx);
+   elm_box_padding_set(bx, 4, 4);
+
+   lb = elm_label_add(win);
+   elm_label_line_wrap_set(lb, ELM_WRAP_MIXED);
+   elm_label_wrap_width_set(lb, 400);
+   label = eina_stringshare_printf("Are you sure to delete <b>%s</b> ?", file->label);
+   elm_object_text_set(lb, label);
+   eina_stringshare_del(label);
+   evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(lb, 0.5, -1);
+   evas_object_show(lb);
+   elm_box_pack_end(bx, lb);
+
+   btn_bx = elm_box_add(win);
+   elm_box_horizontal_set(btn_bx, EINA_TRUE);
+   evas_object_size_hint_weight_set(btn_bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn_bx, EVAS_HINT_FILL, 0.5);
+   evas_object_show(btn_bx);
+   elm_box_padding_set(btn_bx, 8, 2);
+
+   btn_ok = elm_button_add(win);
+   elm_object_text_set(btn_ok, "Delete");
+   evas_object_show(btn_ok);
+   evas_object_size_hint_weight_set(btn_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn_ok, EVAS_HINT_FILL, 0.5);
+   elm_box_pack_end(btn_bx, btn_ok);
+   evas_object_smart_callback_add(btn_ok, "clicked",
+                                  _dialog_delete_ok_clicked_cb, priv);
+
+   btn_cancel = elm_button_add(win);
+   elm_object_text_set(btn_cancel, "Cancel");
+   evas_object_show(btn_cancel);
+   evas_object_size_hint_weight_set(btn_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(btn_bx, btn_cancel);
+   evas_object_smart_callback_add(btn_cancel, "clicked",
+                                  _dialog_cancel_clicked_cb, priv);
+
+   elm_box_pack_end(bx, btn_bx);
+
+   evas_object_resize(win, 400, 128);
+
+   evas_object_show(win);
+   priv->dialog = win;
+}
+
 static void
 _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
 {
    Enna_Localfiles_Priv *priv = data;
    Enna_File *f;
    const char *buf;
-
+   Enna_File_Action *action;
 
    if (priv->relative_path)
      buf = eina_stringshare_printf("/%s/%s%s", priv->root, priv->relative_path, info->path + info->name_start);
@@ -450,6 +769,7 @@ _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
           {
              const char *mime;
              const char *icon;
+
              mime = efreet_mime_type_get(info->path);
              icon = efreet_mime_type_icon_get(mime, getenv("E_ICON_THEME"), 48);
              if (!icon)
@@ -457,6 +777,7 @@ _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
              f = enna_file_file_add(info->path + info->name_start, buf,
                                     info->path, info->path + info->name_start,
                                     icon);
+
           }
         else if (priv->caps == ENNA_CAPS_MUSIC)
           f = enna_file_track_add(info->path + info->name_start, buf,
@@ -473,6 +794,18 @@ _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
                                  "icon/music");
 
      }
+
+   action = enna_file_action_new(f, "copy", "Copy", "edit-copy", NULL, NULL);
+   enna_file_action_add(f, action);
+   action = enna_file_action_new(f, "move", "Move", "folder-move", NULL, NULL);
+   enna_file_action_add(f, action);
+   action = enna_file_action_new(f, "rename", "Rename", "gtk-edit", _action_rename_cb, priv);
+   enna_file_action_add(f, action);
+   action = enna_file_action_new(f, "delete", "Delete", "edit-delete", _action_delete_cb, priv);
+   enna_file_action_add(f, action);
+   action = enna_file_action_new(f, "details", "Details", "view-list-details", NULL, NULL);
+   enna_file_action_add(f, action);
+
    eina_stringshare_del(buf);
    enna_browser_file_add(priv->browser, f);
 }
@@ -590,7 +923,7 @@ _get_children(void *priv, Eina_List *tokens, Enna_Browser *browser, ENNA_VFS_CAP
                   p->root = eina_stringshare_printf("/%s/localfiles/%s",
                                                     pmod->name, root->name);
 
-                  p->monitor = eio_monitor_stringshared_add(eina_stringshare_add(path->buf));
+                  p->monitor = eio_monitor_add(path->buf);
                   printf("Add monitor to %s\n", path->buf);
 
                   handler = ecore_event_handler_add(EIO_MONITOR_FILE_CREATED,

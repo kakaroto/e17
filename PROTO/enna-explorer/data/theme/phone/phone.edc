@@ -19,38 +19,10 @@ collections
             type: RECT;
             description {
                state: "default" 0.0;
-               //image.normal: "bg.png";
-               color: 40 45 52 255;
+               //color: 40 45 52 255;
+               color: 217 217 217 255;
             }
          }
-
-         /* MainMenu */
-         part { name: "mainmenu.clip";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: 255 255 255 255;
-               visible: 1;
-               rel1.relative: 0 1;
-               rel1.offset: 0 -47;
-               rel2.relative: 1 1;
-
-            }
-         }
-
-         part {
-            type: SWALLOW;
-            name: "enna.menu.swallow";
-            clip_to: "mainmenu.clip";
-            description { state: "default" 0.0;
-               color: 255 255 255 255;
-               visible: 1;
-               rel1.to: "mainmenu.clip";
-               rel2.to: "mainmenu.clip";
-            }
-
-         }
-
-         /* Mediaplayer Zone */
 
          /* content */
          part { name: "enna.content.swallow";
@@ -59,196 +31,53 @@ collections
                rel1.relative: 0 0;
                rel2.relative: 1.0 1.0;
             }
-         }
-
-
-         part {
-            name: "infos.clip";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-               color: 255 255 255 0;
-               visible: 0;
-            }
-            description {
-               state: "visible" 0.0;
-               color: 255 255 255 255;
-               visible: 1;
-            }
-
-         }
-
-
-
-         part {
-            name: "mainmenu.bg";
-            description {
-               state: "default" 0.0;
-               rel1.relative: 0.0 1.0;
-               rel1.offset: -1 -47;
-               rel2.relative: 1.0 1.0;
-               image.normal: "mainmenu_bg.png";
-            }
-         }
-
-
-         part {
-            name: "enna.mainmenu.swallow";
-            clip_to: "mainmenu.clip";
-            type: SWALLOW;
-            description {
-               state: "default" 0.0;
-               rel1.relative: 0 0;
-               rel1.to: "mainmenu.clip";
-               rel2.relative: 1 1;
-               rel2.to: "mainmenu.clip";
-               fixed: 1 1;
-            }
-         }
-
-         part {
-            name: "enna.renderer.swallow";
-            type: SWALLOW;
-            description {
-               state: "default" 0.0;
-               rel1.relative: 0.5 0;
-               rel1.to: "mainmenu.bg";
-               rel2.relative: 0.5 1;
-               rel2.to: "mainmenu.bg";
-            }
-         }
-         part {
-            name: "enna.fullscreen.swallow";
-            type: SWALLOW;
-            mouse_events: 1;
-            description {
-               state: "default" 0.0;
-               visible: 1;
-               color: 255 255 255 255;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 0.3;
-            }
-         }
-
-      }
-      programs {
-         program { name: "mainmenu,show";
-            signal: "mainmenu,show";
-            source: "enna";
-            action: STATE_SET "visible" 0.0;
-            transition: ACCELERATE 0.5;
-            target: "mainmenu.clip";
-         }
-
+         } 
 
       }
    }
 
-
-
-   /* Confirmation Dialog */
-   group {
-      name: "enna/confirmation/layout";
-      parts {
-         part {
-            name: "enna.icon.swallow";
-            type: SWALLOW;
-            mouse_events:  0;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 1;
-               align: 0.5 0.5;
-               aspect: 1 1;
-               aspect_preference: BOTH;
-               rel1.relative: 0.0 0.0;
-               rel2.relative: 1.0 0.33;
-            }
-         }
-         part {
-            name: "enna.label.swallow";
-            type: SWALLOW;
-            mouse_events:  0;
-            scale: 1;
-            description { state: "default" 0.0;
-               visible: 1;
-               align: 0.5 0.5;
-               rel1.relative: 0.0 0.33;
-               rel2.relative: 1.0 0.66;
-            }
-         }
-         part {
-            name: "enna.bt_ok.swallow";
-            mouse_events: 1;
-            type: SWALLOW;
-            description{
-               state: "default" 0.0;
-               rel1.relative: 0.0 0.66;
-               rel2.relative: 0.5 1.0;
-            }
-         }
-         part {
-            name: "enna.bt_cancel.swallow";
-            mouse_events: 1;
-            type: SWALLOW;
-            description{
-               state: "default" 0.0;
-               rel1.relative: 0.5 0.66;
-               rel2.relative: 1.0 1.0;
-            }
-         }
-      }
-   }
-
+   
    group {
       name: "activity/explorer";
       images {
          image: "browser_bg.png" COMP;
       }
       parts {
-         part {
-            name: "module.clip";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-               color: 0 0 0 0;
-               rel1.relative: 0 0;
-               rel2.relative: 1 1.0;
-               rel2.offset: 0 -64;
-               visible: 0;
-            }
-            description {
-               state: "show" 0.0;
-               color : 255 255 255 255;
-               rel2.relative: 1 1.0;
-               rel2.offset: 0 -64;
-               visible: 1;
-            }
-         }
 
          part {
-            name: "content.clip";
-            type: RECT;
-            clip_to: "module.clip";
+            name: "menu.bg";
             description {
                state: "default" 0.0;
-               color: 255 255 255 0;
-               rel1.to: module.clip;
-               rel2.to: module.clip;
+               rel1.relative: 0.0 1.0;
                rel2.relative: 1.0 1.0;
-               visible: 0;
+               rel2.offset: 0 46;
+               image.normal: "mainmenu_bg.png";
             }
             description {
                state: "show" 0.0;
                inherit: "default" 0.0;
-               color: 255 255 255 255;
-               visible: 1;
+               rel1.relative: 0.0 1.0;
+               rel1.offset: 0 -46;
+               rel2.relative: 1.0 1.0;
+
             }
          }
+
+
+         part {
+            name: "enna.menu.swallow";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1.to: "menu.bg";
+               rel2.to: "menu.bg";
+            }
+         }
+
          /* file browser */
          part {
             name: "title_bg";
             type: RECT;
-            clip_to: "content.clip";
             description {
                state: "default" 0.0;
                rel1.to: "title";
@@ -260,13 +89,10 @@ collections
             name: "title";
             type: TEXT;
             mouse_events: 0;
-            clip_to: "content.clip";
             scale: 1.0;
             description {
                state: "default" 0.0;
-               rel1.to: "content.clip";
                rel1.relative: 0 0;
-               rel2.to: "content.clip";
                rel2.relative: 1 0;
                align: 0.5 0.0;
                fixed: 1 1;
@@ -278,69 +104,51 @@ collections
                }
             }
          }
-         part {
-            name: "selector.swallow";
-            type: SWALLOW;
-            mouse_events: 1;
-            clip_to: "content.clip";
-            description {
-               state: "default" 0.0;
-               align: 0.5 0;
-               rel1.to_y: "title";
-               rel1.relative: 0 1.0;
-               rel2.to_y: "title";
-               rel2.relative: 1 1.0;
-               fixed: 1 1;
-            }
-         }
+         /* part { */
+         /*    name: "selector.swallow"; */
+         /*    type: SWALLOW; */
+         /*    mouse_events: 1; */
+         /*    clip_to: "content.clip"; */
+         /*    description { */
+         /*       state: "default" 0.0; */
+         /*       align: 0.5 0; */
+         /*       rel1.to_y: "title"; */
+         /*       rel1.relative: 0 1.0; */
+         /*       rel2.to_y: "title"; */
+         /*       rel2.relative: 1 1.0; */
+         /*       fixed: 1 1; */
+         /*    } */
+         /* } */
          part {
             name: "browser.swallow";
             type: SWALLOW;
             mouse_events : 1;
-            clip_to: "content.clip";
             description {
                state: "default" 0.0;
-               rel1.to_y: "selector.swallow";
+               rel1.to_y: "title";
                rel1.relative: 0 1.0;
-               rel2.to: "content.clip";
+               rel2.to_y: "menu.bg";
+               rel2.relative: 1.0 0.0;
             }
          }
 
       }
       programs {
          program {
-            name: "module,show";
-            signal: "module,show";
+            name: "menu,show";
+            signal: "menu,show";
             source:  "enna";
             action:  STATE_SET "show" 0.0;
             transition: SINUSOIDAL 0.5;
-            target: "module.clip";
-
+            target: "menu.bg";
          }
          program {
-            name: "module,hide";
-            signal: "module,hide";
+            name: "menu,hide";
+            signal: "menu,hide";
             source:  "enna";
             action:  STATE_SET "default" 0.0;
             transition: SINUSOIDAL 0.5;
-            target: "module.clip";
-
-         }
-         program {
-            name: "content,show";
-            signal: "content,show";
-            source:  "enna";
-            action:  STATE_SET "show" 0.0;
-            transition: SINUSOIDAL 0.5;
-            target: "content.clip";
-         }
-         program {
-            name: "content,hide";
-            signal: "content,hide";
-            source:  "enna";
-            action:  STATE_SET "default" 0.0;
-            transition: SINUSOIDAL 0.5;
-            target: "content.clip";
+            target: "menu.bg";
          }
       }
    }
@@ -356,7 +164,7 @@ collections
       parts
       {
          part {
-            name: "mainmenu.bg";
+            name: "menu.bg";
             description {
                state: "default" 0.0;
 

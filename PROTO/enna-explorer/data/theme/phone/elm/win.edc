@@ -1,0 +1,93 @@
+group { name: "elm/win/inwin/enna";
+   images {
+      image: "inwin_bg.png" COMP;
+   }
+   parts {
+      part { name: "base";
+         type: RECT;
+         mouse_events: 1;
+         description { state: "default" 0.0;
+            color: 0 0 0 0;
+         }
+         description { state: "visible" 0.0;
+            inherit: "default" 1.0;
+            visible: 1;
+            color: 0 0 0 180;
+         }
+      }
+
+      part { name: "pop";
+         mouse_events: 1;
+         description { state: "default" 0.0;
+            rel1.to: "elm.swallow.content";
+            rel1.offset: -5 -5;
+            rel2.to: "elm.swallow.content";
+            rel2.offset: 4 4;
+            image {
+               normal: "inwin_bg.png";
+               border: 68 68 68 68;
+            }
+         }
+      }
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+            rel1.relative: 0.5 0.5;
+            rel1.offset: -359 -199;
+            rel2.relative: 0.5 0.5;
+            rel2.offset: 360 200;
+
+         }
+      }
+   }
+   programs {
+      program { name: "show";
+         signal: "elm,action,show";
+         source: "elm";
+         action: STATE_SET "visible" 0.0;
+         transition: DECELERATE 0.5;
+         target: "base";
+      }
+      program { name: "hide";
+         signal: "elm,action,hide";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: DECELERATE 0.5;
+         target: "base";
+      }
+   }
+}
+
+group { name: "elm/win/inwin/minimal";
+      parts {
+         part { name: "base";
+            type: RECT;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+         part { name: "pop";
+            type: RECT;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               rel1.to: "elm.swallow.content";
+               rel1.offset: -3 -3;
+               rel2.to: "elm.swallow.content";
+               rel2.offset: 3 3;
+               color: 40 45 52 255;
+            }
+         }
+         part { name: "elm.swallow.content";
+            type: SWALLOW;
+            mouse_events: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               min: 420 500;
+
+               rel1.relative: 0.5 0.5;
+               rel2.relative: 0.5 0.5;
+            }
+         }
+      }
+   }

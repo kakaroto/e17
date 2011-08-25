@@ -34,6 +34,7 @@ typedef struct _List_Item List_Item;
 
 struct _List_Item
 {
+   Smart_Data *sd;
    Enna_File *file;
    void (*func_activated) (void *data);
    void *data;
@@ -45,8 +46,28 @@ struct _Smart_Data
 {
    Evas_Object *obj;
    Eina_List *items;
+   Eina_List *checked;
 };
 
+static Elm_Object_Item *
+_item_new(Evas_Object *ctxpopup, const char * label, const char *icon)
+{
+   Evas_Object *ic = elm_icon_add(ctxpopup);
+   elm_icon_standard_set(ic, icon);
+   elm_icon_scale_set(ic, EINA_FALSE, EINA_FALSE);
+   return elm_ctxpopup_item_append(ctxpopup, label, ic, NULL, NULL);
+}
+
+static void
+_item_longpress_cb(void *data, Evas_Object *o __UNUSED__, void *event_info)
+{
+   Smart_Data *sd = data;
+   List_Item *li;
+
+   li = (List_Item*)elm_genlist_item_data_get(event_info);
+
+   evas_object_smart_callback_call(sd->obj, "longpress", li->file);
+}
 
 static void
 _item_activate(Elm_Genlist_Item *item)
@@ -108,7 +129,21 @@ static void
 _list_item_default_check_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
    List_Item *li = data;
+   Smart_Data *sd = li->sd;
+
    li->checked = elm_check_state_get(obj);
+   if (li->checked)
+     {
+       sd->checked = eina_list_append(sd->checked, li);
+     }
+   else
+       sd->checked = eina_list_remove(sd->checked, li);
+
+   if (eina_list_count(sd->checked))
+     evas_object_smart_callback_call(sd->obj, "checked", NULL);
+   else
+     evas_object_smart_callback_call(sd->obj, "unchecked", NULL);
+
 }
 
 static Evas_Object *
@@ -438,7 +473,7 @@ enna_list_add(Evas_Object *parent)
    obj = elm_genlist_add(parent);
    evas_object_size_hint_weight_set(obj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_genlist_horizontal_set(obj, ELM_LIST_COMPRESS);
-   elm_genlist_multi_select_set(obj, EINA_FALSE);
+   evas_object_smart_callback_add(obj, "longpressed", _item_longpress_cb, sd);
    evas_object_show(obj);
    sd->obj = obj;
    evas_object_data_set(obj, "sd", sd);
@@ -477,6 +512,7 @@ enna_list_file_append(Evas_Object *obj, Enna_File *file,
    it->func_activated = func_activated;
    it->data = data;
    it->file = enna_file_ref(file);
+   it->sd = sd;
 
    if (file->type == ENNA_FILE_TRACK)
      {
@@ -660,10 +696,14 @@ enna_list_clear(Evas_Object *obj)
    List_Item *item;
    Eina_List *l, *l_next;
 
+   eina_list_free(sd->checked);
+
    EINA_LIST_FOREACH_SAFE(sd->items, l, l_next, item)
      {
         _item_remove(obj, item);
      }
+   
+
    elm_genlist_clear(obj);
 }
 

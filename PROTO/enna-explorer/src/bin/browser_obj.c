@@ -19,12 +19,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include <Elementary.h>
+#include <Eio.h>
 
 #include "vfs.h"
 #include "view_list.h"
 #include "enna_config.h"
 #include "browser.h"
 #include "browser_obj.h"
+
 
 typedef struct _Smart_Data Smart_Data;
 typedef struct _Activated_Cb_Data Activated_Cb_Data;
@@ -41,6 +43,8 @@ struct _Smart_Data
    Evas_Object *o_layout;
    Evas_Object *o_pager;
    Evas_Object *o_view;
+   Evas_Object *o_popup;
+   Evas_Object *o_dialog;
    Enna_Browser_View_Type view_type;
    Ecore_Timer *hilight_timer;
    Enna_Browser *browser;
@@ -72,6 +76,7 @@ struct _Smart_Data
 
 static void _browse_back(Smart_Data *sd);
 static void _browse(Smart_Data *sd, Enna_File *file, Eina_Bool back);
+static void _del_cb(void *data, Enna_File *file);
 
 static Eina_Bool
 _view_delay_hilight_cb(void *data)
@@ -96,6 +101,49 @@ _view_hilight_cb (void *data, Evas_Object *obj __UNUSED__, void *event_info __UN
    sd->hilight_timer = ecore_timer_add(0.4, _view_delay_hilight_cb, sd);
 }
 
+static void
+_view_checked_cb (void *data, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Smart_Data *sd = data;
+   printf("browser obj Checked\n");
+   evas_object_smart_callback_call (sd->o_layout, "checked", event_info);
+}
+
+static void
+_view_unchecked_cb (void *data, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Smart_Data *sd = data;
+   printf("browser obj unChecked\n");
+   evas_object_smart_callback_call (sd->o_layout, "unchecked", event_info);
+}
+
+
+
+static void
+_view_longpressed_cb (void *data, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Enna_File *file = event_info;
+   Smart_Data *sd = data;
+
+
+   evas_object_smart_callback_call (sd->o_layout, "longpress", file);
+
+   /* ENNA_OBJECT_DEL(sd->o_popup); */
+
+   /* sd->o_popup = elm_ctxpopup_add(sd->o_layout); */
+   /* evas_object_data_set(sd->o_popup, "file", file); */
+   /* evas_object_data_set(sd->o_popup, "sd", sd); */
+
+   /* _item_new(sd->o_popup, "Copy", "edit-copy", _item_copy_cb, sd); */
+   /* _item_new(sd->o_popup, "Move", "folder-move", _item_move_cb, sd); */
+   /* _item_new(sd->o_popup, "Rename", "gtk-edit", _item_rename_cb, sd); */
+   /* _item_new(sd->o_popup, "Delete", "edit-delete", _item_delete_cb, sd); */
+   /* _item_new(sd->o_popup, "Details", "view-list-details", _item_details_cb, sd); */
+
+   /* evas_pointer_canvas_xy_get(evas_object_evas_get(sd->o_layout), &x, &y); */
+   /* evas_object_move(sd->o_popup, x, y); */
+   /* evas_object_show(sd->o_popup); */
+}
 
 static Evas_Object *
 _browser_view_list_add(Smart_Data *sd)
@@ -108,6 +156,9 @@ _browser_view_list_add(Smart_Data *sd)
 
    elm_pager_content_push(sd->o_pager, view);
    evas_object_smart_callback_add(view, "hilight", _view_hilight_cb, sd);
+   evas_object_smart_callback_add(view, "checked", _view_checked_cb, sd);
+   evas_object_smart_callback_add(view, "unchecked", _view_unchecked_cb, sd);
+   evas_object_smart_callback_add(view, "longpress", _view_longpressed_cb, sd);
    /* View */
    edje_object_signal_emit(view, "list,right,now", "enna");
    return view;
@@ -213,8 +264,10 @@ _add_header(Smart_Data *sd, Enna_File *file)
    o_ic = elm_icon_add(sd->o_layout);
    elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/arrow_left");
    elm_button_icon_set(o_back_btn, o_ic);
+   evas_object_size_hint_min_set(o_ic, 32, 32);
    evas_object_show(o_ic);
-   elm_object_style_set(o_back_btn, "mediaplayer");
+
+   //elm_object_style_set(o_back_btn, "mediaplayer");
    evas_object_smart_callback_add(o_back_btn, "clicked", _back_btn_clicked_cb, sd);
 
    evas_object_size_hint_align_set(o_back_btn, EVAS_HINT_FILL, EVAS_HINT_FILL);

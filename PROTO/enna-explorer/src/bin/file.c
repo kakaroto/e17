@@ -71,6 +71,7 @@ enna_file_dup(Enna_File *file)
    f->mrl = eina_stringshare_add(file->mrl);
    f->meta_class = file->meta_class;
    f->meta_data = file->meta_data;
+   f->actions = file->actions;
    f->callbacks = eina_list_clone(file->callbacks);
 
    EINA_LIST_FOREACH(file->callbacks, l, cb)
@@ -134,6 +135,47 @@ enna_file_meta_add(Enna_File *f, Enna_File_Meta_Class *meta_class, void *data)
 
    f->meta_class = meta_class;
    f->meta_data = data;
+}
+
+
+Enna_File_Action *
+enna_file_action_new(Enna_File *file, const char *name, const char *label, const char *icon, void (*run)(void *priv, Enna_File *file), void *priv)
+{
+    Enna_File_Action *action;
+
+    action = calloc(1, sizeof(Enna_File_Action));
+    action->name = eina_stringshare_add(name);
+    action->label = eina_stringshare_add(label);
+    action->icon = eina_stringshare_add(icon);
+    action->run = run;
+    action->priv = priv;
+    action->file = file;
+
+    return action;
+}
+
+void
+enna_file_action_add(Enna_File *f, Enna_File_Action *action)
+{
+    if (!f || !action)
+        return;
+
+    f->actions = eina_list_append(f->actions, action);
+}
+
+Eina_List *
+enna_file_actions_get(Enna_File *f)
+{
+   return f->actions;
+}
+void
+enna_file_action_run(Enna_File_Action *action)
+{
+   if (!action)
+     return;
+
+   action->run(action->priv, action->file);
+
 }
 
 const char *
