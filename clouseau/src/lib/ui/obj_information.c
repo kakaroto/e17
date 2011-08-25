@@ -8,35 +8,34 @@ struct _Inf_Tree_Item
    const char *string;
 };
 
+static Eina_List *information_tree = NULL;
 static Evas_Object *prop_list = NULL;
 static Elm_Genlist_Item_Class itc;
 
 static void
 _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
-      void *event_info)
+      void *event_info __UNUSED__)
 {
+   /* Currently do nothing */
+   return;
 }
 
 static void
 gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
-#if 0
    Elm_Genlist_Item *it = event_info;
    Evas_Object *gl = elm_genlist_item_genlist_get(it);
-   Tree_Item *parent = elm_genlist_item_data_get(it);
-   Tree_Item *treeit;
+   Inf_Tree_Item *parent = elm_genlist_item_data_get(it);
+   Inf_Tree_Item *tit;
    Eina_List *itr;
 
-   EINA_LIST_FOREACH(parent->children, itr, treeit)
+   EINA_LIST_FOREACH(parent->children, itr, tit)
      {
-        Elm_Genlist_Item_Flags iflag = (treeit->children) ?
+        Elm_Genlist_Item_Flags iflag = (tit->children) ?
            ELM_GENLIST_ITEM_SUBITEMS : ELM_GENLIST_ITEM_NONE;
-        tit = calloc(1, sizeof(*tit));
-        tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        elm_genlist_item_append(prop_list, &itc, tit, it,
+              iflag, _gl_selected, NULL);
      }
-#endif
 }
 
 static void
@@ -95,17 +94,47 @@ clouseau_obj_information_list_add(Evas_Object *parent)
    return prop_list;
 }
 
+static void
+_item_tree_item_free(Inf_Tree_Item *parent)
+{
+   Inf_Tree_Item *treeit;
+
+   EINA_LIST_FREE(parent->children, treeit)
+     {
+        _item_tree_item_free(treeit);
+     }
+
+   free(parent);
+}
+
+static void
+_item_tree_free(void)
+{
+   Inf_Tree_Item *treeit;
+
+   EINA_LIST_FREE(information_tree, treeit)
+     {
+        _item_tree_item_free(treeit);
+     }
+}
+
+
 void
 clouseau_obj_information_list_populate(Tree_Item *treeit)
 {
-   elm_genlist_clear(prop_list);
+   clouseau_obj_information_list_clear();
 
    if (!treeit->parent)
       return;
 
    Evas_Object *obj = treeit->data.obj;
+   Inf_Tree_Item *main_tit;
 
    /* Populate properties list */
+   main_tit = calloc(1, sizeof(*main_tit));
+   main_tit->string = eina_stringshare_add("Evas");
+   information_tree = eina_list_append(information_tree, main_tit);
+
      {
         Inf_Tree_Item *tit;
         char buf[1024];
@@ -117,8 +146,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         snprintf(buf, sizeof(buf), "Visibility: %d", (int) visibility);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        main_tit->children = eina_list_append(main_tit->children, tit);
 
         if (evas_object_name_get(obj))
           {
@@ -126,28 +154,24 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
                    evas_object_name_get(obj));
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
-             elm_genlist_item_append(prop_list, &itc, tit, NULL,
-                   ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+             main_tit->children = eina_list_append(main_tit->children, tit);
           }
 
         snprintf(buf, sizeof(buf), "Layer: %hd",
               evas_object_layer_get(obj));
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        main_tit->children = eina_list_append(main_tit->children, tit);
 
         evas_object_geometry_get(obj, &x, &y, &w, &h);
         snprintf(buf, sizeof(buf), "Position: %d %d", x, y);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        main_tit->children = eina_list_append(main_tit->children, tit);
         snprintf(buf, sizeof(buf), "Size: %d %d", w, h);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        main_tit->children = eina_list_append(main_tit->children, tit);
 
 #if 0
         if (evas_object_clip_get(obj))
@@ -157,13 +181,11 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
              snprintf(buf, sizeof(buf), "Clipper position: %d %d", x, y);
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
-             elm_genlist_item_append(prop_list, &itc, tit, NULL,
-                   ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+             main_tit->children = eina_list_append(main_tit->children, tit);
              snprintf(buf, sizeof(buf), "Clipper size: %d %d", w, h);
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
-             elm_genlist_item_append(prop_list, &itc, tit, NULL,
-                   ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+             main_tit->children = eina_list_append(main_tit->children, tit);
           }
 #endif
 
@@ -171,36 +193,31 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         snprintf(buf, sizeof(buf), "Min size: %d %d", w, h);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        main_tit->children = eina_list_append(main_tit->children, tit);
 
         evas_object_size_hint_max_get(obj, &w, &h);
         snprintf(buf, sizeof(buf), "Max size: %d %d", w, h);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        main_tit->children = eina_list_append(main_tit->children, tit);
 
         evas_object_size_hint_request_get(obj, &w, &h);
         snprintf(buf, sizeof(buf), "Request size: %d %d", w, h);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        main_tit->children = eina_list_append(main_tit->children, tit);
 
         evas_object_size_hint_align_get(obj, &dx, &dy);
         snprintf(buf, sizeof(buf), "Align: %.6lg %.6lg", dx, dy);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        main_tit->children = eina_list_append(main_tit->children, tit);
 
         evas_object_size_hint_weight_get(obj, &dx, &dy);
         snprintf(buf, sizeof(buf), "Weight: %.6lg %.6lg", dx, dy);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
-        elm_genlist_item_append(prop_list, &itc, tit, NULL,
-              ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+        main_tit->children = eina_list_append(main_tit->children, tit);
 
         /* Handle color */
           {
@@ -209,8 +226,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
              snprintf(buf, sizeof(buf), "Color: %d %d %d %d", r, g, b, a);
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
-             elm_genlist_item_append(prop_list, &itc, tit, NULL,
-                   ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+             main_tit->children = eina_list_append(main_tit->children, tit);
           }
 
         if (evas_object_clipees_get(obj))
@@ -218,8 +234,22 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
              snprintf(buf, sizeof(buf), "Has clipees");
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
-             elm_genlist_item_append(prop_list, &itc, tit, NULL,
-                   ELM_GENLIST_ITEM_NONE, _gl_selected, NULL);
+             main_tit->children = eina_list_append(main_tit->children, tit);
+          }
+     }
+
+   /* Actually populate the genlist */
+     {
+        Eina_List *itr;
+        Inf_Tree_Item *tit;
+
+        EINA_LIST_FOREACH(information_tree, itr, tit)
+          {
+             Elm_Genlist_Item *git;
+             git = elm_genlist_item_append(prop_list, &itc, tit, NULL,
+                   ELM_GENLIST_ITEM_SUBITEMS, _gl_selected, NULL);
+             /* Start with all the base item expanded */
+             elm_genlist_item_expanded_set(git, EINA_TRUE);
           }
      }
 }
@@ -227,5 +257,6 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
 void
 clouseau_obj_information_list_clear()
 {
+   _item_tree_free();
    elm_genlist_clear(prop_list);
 }
