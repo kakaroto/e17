@@ -120,13 +120,39 @@ collections
             type: SWALLOW;
             description {
                state: "default" 0.0;
-               visible: 1;
-               rel1 { relative: 0.0 0.0;
+               visible: 0;
+
+               
+               rel1 { relative: 0.0 1.0;
                }
-               rel2 { relative: 1.0 1.0;
+               rel2 { relative: 1.0 2.0;
                }
             }
+            description {
+               state: "show" 0.0;
+               visible: 1;
+               
+            }
          }
+      }
+      programs {
+         program {
+            name: "desktop,show";
+            signal: "elfe,desktop,show";
+            source: "elfe";
+            action: STATE_SET "show" 0.0;
+            target: "elfe.swallow.desktop";
+            transition: "DECELERATE" 0.5;
+         }
+         program {
+            name: "desktop,hide";
+            signal: "elfe,desktop,hide";
+            source: "elfe";
+            action: STATE_SET "default" 0.0;
+            target: "elfe.swallow.desktop";
+            transition: "ACCELERATE" 0.5;
+         }
+
       }
    }
    group {
@@ -826,6 +852,207 @@ collections
          }
       }
    }
+
+   group {
+      name: "elfe/winlist/layout";
+      parts {
+         part {
+            name: "clip";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               visible: 0;
+            }
+            description {
+               state: "visible" 0.0;
+               color: 255 255 255 255;
+               visible: 1;
+            }
+         }
+         part {
+            name: "bg";
+            clip_to: "clip";
+            type: RECT;
+            description {
+               state: "default" 0.0; 
+               color: 0 0 0 0;
+            }
+         }
+         part {
+            name: "elfe.swallow.windows";
+            type: SWALLOW;
+            clip_to: "clip";
+            description {
+               state: "default" 0.0;
+            }
+         }
+         part {
+            name: "event";
+            type: RECT;
+            clip_to: "clip";
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.3;
+            }
+         }
+         part {
+            name: "event2";
+            type: RECT;
+            clip_to: "clip";
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+               rel1.relative: 0.0 0.7;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+      }
+      programs {
+         program {
+            name: "winlist,show";
+            signal: "elfe,winlist,show";
+            source: "*";
+            action: STATE_SET "visible" 0.0;
+            transition: ACCELERATE 0.5;
+            target: "clip";
+         }
+         program {
+            name: "winlist,hide";
+            signal: "elfe,winlist,hide";
+            source: "*";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.5;
+            target: "clip";
+         }
+         program {
+            name:   "event_click";
+            signal: "mouse,clicked,1";
+            source: "event";
+            action: SIGNAL_EMIT "elfe,action,click" "";
+         }
+         program {
+            name:   "event2_click";
+            signal: "mouse,clicked,1";
+            source: "event2";
+            action: SIGNAL_EMIT "elfe,action,click" "";
+         }
+      }
+   }
+
+   group {
+      name: "elfe/winlist/window";
+      parts {
+         images {
+            image: "app_text_bg.png" COMP;
+            image: "thumbnail_bg.png" COMP;
+         }
+
+         part {
+            name: "clip";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 255;
+            }
+            description {
+               state: "active" 0.0;
+               color: 255 255 255 100;
+            }
+         }
+
+         part {
+            name: "text.bg";
+            clip_to: "clip";
+            description {
+               rel1.to: "elfe.text.label";
+               rel1.offset: -2 -1;
+               rel2.to: "elfe.text.label";
+               rel2.offset: 1 -1;
+               image.normal: "app_text_bg.png";
+               image.border: 4 4 4 4;
+            }
+         }
+         part {
+            name: "elfe.text.label";
+            type: TEXT;
+            effect: SHADOW;
+            //type: RECT;
+            clip_to: "clip";
+            scale: 1;
+            description {
+               min: 10 10;
+               state: "default" 0.0;
+               rel1.relative: 0 1;
+               rel1.offset: 0 16;
+               rel1.to_y: "content.bg";
+               rel2.relative: 1 1;
+               rel2.to_y: "content.bg";
+               rel2.offset: 0 16;
+               fixed: 1 1;
+               color3: 0 0 0 200;
+               color: 220 220 220 200;
+               align: 0.5 1;
+               text {
+                  font: "Sans";
+                  size: 10;
+                  min: 0 1;
+                  max: 1 1;
+                  text: "Mozilla Firefox";
+               }
+            }
+         }
+         part {
+            name: "content.bg";
+            type: IMAGE;
+            clip_to: "clip";
+            description {
+               state: "default" 0.0;
+               rel1.to: "elfe.swallow.content";
+               rel1.offset: -5 -7;
+               rel2.to: "elfe.swallow.content";
+               rel2.offset: 4 6;
+               image.normal: "thumbnail_bg.png";
+               image.border: 10 10 10 10;
+
+            }
+         }
+         part {
+            name: "elfe.swallow.content";
+            type: SWALLOW;
+            clip_to: "clip";
+            description {
+               state: "default" 0.0;
+            }
+            program {
+               name:   "bt_click";
+               signal: "mouse,clicked,1";
+               source: "elfe.swallow.content";
+               action: SIGNAL_EMIT "elfe,action,click" "";
+            }
+            program {
+               name: "bt_down";
+               signal: "mouse,down,1";
+               source: "elfe.swallow.content";
+               action: STATE_SET "active" 0.0;
+               transition: ACCELERATE 0.5;
+               target: "clip";
+            }
+            program {
+               name: "bt_up";
+               signal: "mouse,up,1";
+               source: "elfe.swallow.content";
+               action: STATE_SET "default" 0.0;
+               transition: ACCELERATE 0.5;
+               target: "clip";
+            }
+         }
+
+      }
+   }
+
 
    ICON_SET("application-default-icon", "icon/application-default");
    ICON("icon_application.png", "icon/applications");

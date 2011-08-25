@@ -1,4 +1,6 @@
 #include <e.h>
+#include <Elementary.h>
+
 #include "main.h"
 #include "elfe_config.h"
 #include "allapps.h"
@@ -10,23 +12,10 @@
 #define ELFE_HOME_WIN_TYPE 0xE0b0102f
 
 /* local structures */
-typedef struct _Elfe_Home_Win Elfe_Home_Win;
 typedef struct _Elfe_Home_Exec Elfe_Home_Exec;
 
-struct _Elfe_Home_Win
-{
-   E_Object e_obj_inherit;
-
-   E_Win *win;
-   Evas_Object *o_bg;
-   Evas_Object *layout;
-   Evas_Object *desktop;
-
-   E_Zone *zone;
-
-};
-
-static Elfe_Home_Win *hwin;
+Elfe_Home_Win *hwin;
+Elm_Theme *elfe_theme;
 
 /* local function prototypes */
 static void _elfe_home_win_new(E_Zone *zone);
@@ -53,7 +42,7 @@ e_modapi_init(E_Module *m)
 
    if (!elfe_home_config_init(m)) return NULL;
 
-   e_winilist_init();
+   elfe_winlist_init();
 
    hdls =
      eina_list_append(hdls,
@@ -91,7 +80,7 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
    Ecore_Event_Handler *hdl;
    Elfe_Home_Win *hwin;
 
-   e_winilist_shutdown();
+   elfe_winlist_shutdown();
 
    EINA_LIST_FREE(hwins, hwin)
      e_object_del(E_OBJECT(hwin));
@@ -123,7 +112,7 @@ _elfe_home_win_new(E_Zone *zone)
    E_Desk *desk;
    char buf[PATH_MAX];
    const char *bgfile;
-   Elm_Theme *theme;
+
    Evas_Object *o_edje;
    const char *file;
 
@@ -184,10 +173,10 @@ _elfe_home_win_new(E_Zone *zone)
      }
    o_edje = elm_layout_edje_get(hwin->layout);
 
-   theme = elm_theme_new();
+   elfe_theme = elm_theme_new();
    /* Use specific module theme as elm theme overlay */
-   elm_theme_overlay_add(theme, buf);
-   elm_object_theme_set(hwin->layout, theme);
+   elm_theme_overlay_add(elfe_theme, buf);
+   elm_object_theme_set(hwin->layout, elfe_theme);
 
    hwin->desktop = elfe_desktop_add(hwin->layout, hwin->zone);
    elm_layout_content_set(hwin->layout, "elfe.swallow.desktop", hwin->desktop);
@@ -200,6 +189,8 @@ _elfe_home_win_new(E_Zone *zone)
    e_border_zone_set(hwin->win->border, zone);
    if (hwin->win->evas_win)
      e_drop_xdnd_register_set(hwin->win->evas_win, EINA_TRUE);
+
+   elfe_home_winlist_show(EINA_TRUE);
 
    hwins = eina_list_append(hwins, hwin);
 }
@@ -248,4 +239,16 @@ _elfe_home_cb_bg_change(void *data __UNUSED__, int type, void *event __UNUSED__)
      }
 
    return ECORE_CALLBACK_PASS_ON;
+}
+
+void
+elfe_home_winlist_show(Eina_Bool show)
+{
+    Evas_Object *o_edje;
+
+    o_edje = elm_layout_edje_get(hwin->layout);
+    if (show)
+        edje_object_signal_emit(o_edje, "elfe,desktop,show", "elfe");
+    else
+        edje_object_signal_emit(o_edje, "elfe,desktop,hide", "elfe");
 }

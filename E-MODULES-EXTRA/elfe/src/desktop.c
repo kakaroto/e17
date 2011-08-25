@@ -7,10 +7,7 @@
 #include "utils.h"
 #include "dock.h"
 #include "allapps.h"
-
-#define ELFE_DESKTOP_NUM 5
-#define ELFE_DESKTOP_PADDING_W 10
-#define ELFE_DESKTOP_PADDING_H 10
+#include "main.h"
 
 typedef struct _Elfe_Desktop Elfe_Desktop;
 
