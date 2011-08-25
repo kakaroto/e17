@@ -205,7 +205,7 @@ libclouseau_item_add(Evas_Object *o, Evas_Object *gl, Tree_Item *parent)
 
    treeit = calloc(1, sizeof(*treeit));
    treeit->ptr = o;
-   treeit->parent = parent;
+   treeit->is_obj = EINA_TRUE;
    if (elm_widget_is(o))
      {
         snprintf(buf, sizeof(buf), "%p %s: %s", o, evas_object_type_get(o),

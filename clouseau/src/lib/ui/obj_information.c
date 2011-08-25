@@ -252,7 +252,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
 {
    clouseau_obj_information_list_clear();
 
-   if (!treeit->parent)
+   if (!treeit->is_obj)
       return;
 
    Inf_Tree_Item *main_tit;

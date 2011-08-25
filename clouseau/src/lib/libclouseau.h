@@ -19,10 +19,10 @@
 typedef struct _Tree_Item Tree_Item;
 struct _Tree_Item
 {
-   Tree_Item *parent;
    Eina_List *children;
    const char *name;
    void *ptr;
+   Eina_Bool is_obj : 1;
    Eina_Bool is_clipper : 1;
    Eina_Bool is_visible : 1;
 };
