@@ -227,6 +227,12 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
+        evas_object_size_hint_request_get(obj, &w, &h);
+        snprintf(buf, sizeof(buf), "Aspect: %d %d", w, h);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
         /* Handle color */
           {
              int r, g, b, a;
