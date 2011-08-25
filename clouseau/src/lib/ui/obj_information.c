@@ -174,6 +174,13 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
+        snprintf(buf, sizeof(buf), "Scale: %.6lg",
+              evas_object_scale_get(obj));
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+
 #if 0
         if (evas_object_clip_get(obj))
           {
@@ -233,6 +240,163 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         if (evas_object_clipees_get(obj))
           {
              snprintf(buf, sizeof(buf), "Has clipees");
+             tit = calloc(1, sizeof(*tit));
+             tit->string = eina_stringshare_add(buf);
+             main_tit->children = eina_list_append(main_tit->children, tit);
+          }
+     }
+
+   if (!strcmp("elm_widget", evas_object_type_get(obj)))
+     {
+        Inf_Tree_Item *tit;
+        char buf[1024];
+
+        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit->string = eina_stringshare_add("Elementary");
+        information_tree = eina_list_append(information_tree, main_tit);
+
+        snprintf(buf, sizeof(buf), "Wid-Type: %s", elm_widget_type_get(obj));
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+#if 0
+        /* Extract actual data from theme? */
+        snprintf(buf, sizeof(buf), "Theme: %s", elm_widget_theme_get(obj));
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+#endif
+
+        snprintf(buf, sizeof(buf), "Style: %s", elm_widget_style_get(obj));
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        snprintf(buf, sizeof(buf), "Scale: %.6lg",
+              elm_widget_scale_get(obj));
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        snprintf(buf, sizeof(buf), "Disabled: %d",
+              elm_widget_disabled_get(obj));
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        snprintf(buf, sizeof(buf), "Mirrored: %d",
+              elm_widget_mirrored_get(obj));
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        snprintf(buf, sizeof(buf), "Automatic mirroring: %d",
+              elm_widget_mirrored_automatic_get(obj));
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+     }
+   else if (!strcmp("text", evas_object_type_get(obj)))
+     {
+        Inf_Tree_Item *tit;
+        char buf[1024];
+        const char *font;
+        int size;
+
+        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit->string = eina_stringshare_add("Text");
+        information_tree = eina_list_append(information_tree, main_tit);
+
+        evas_object_text_font_get(obj, &font, &size);
+        snprintf(buf, sizeof(buf), "Font: %s", font);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        snprintf(buf, sizeof(buf), "Size: %d", size);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        font = evas_object_text_font_source_get(obj);
+        if (font)
+          {
+             snprintf(buf, sizeof(buf), "Source: %s", font);
+             tit = calloc(1, sizeof(*tit));
+             tit->string = eina_stringshare_add(buf);
+             main_tit->children = eina_list_append(main_tit->children, tit);
+          }
+     }
+   else if (!strcmp("image", evas_object_type_get(obj)))
+     {
+        Inf_Tree_Item *tit;
+        char buf[1024];
+        const char *file, *key;
+
+        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit->string = eina_stringshare_add("Image");
+        information_tree = eina_list_append(information_tree, main_tit);
+
+        evas_object_image_file_get(obj, &file, &key);
+
+        snprintf(buf, sizeof(buf), "File name: %s", file);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        if (key)
+          {
+             snprintf(buf, sizeof(buf), "File key: %s", key);
+             tit = calloc(1, sizeof(*tit));
+             tit->string = eina_stringshare_add(buf);
+             main_tit->children = eina_list_append(main_tit->children, tit);
+          }
+
+        if (evas_object_image_source_get(obj))
+          {
+             snprintf(buf, sizeof(buf), "Source: %p",
+                   evas_object_image_source_get(obj));
+             tit = calloc(1, sizeof(*tit));
+             tit->string = eina_stringshare_add(buf);
+             main_tit->children = eina_list_append(main_tit->children, tit);
+          }
+
+        if (evas_object_image_load_error_get(obj) != EVAS_LOAD_ERROR_NONE)
+          {
+             snprintf(buf, sizeof(buf), "Load error: %s",
+                   evas_load_error_str(evas_object_image_load_error_get(obj)));
+             tit = calloc(1, sizeof(*tit));
+             tit->string = eina_stringshare_add(buf);
+             main_tit->children = eina_list_append(main_tit->children, tit);
+          }
+     }
+   else if (!strcmp("edje", evas_object_type_get(obj)))
+     {
+        Inf_Tree_Item *tit;
+        char buf[1024];
+        const char *file, *group;
+
+        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit->string = eina_stringshare_add("Edje");
+        information_tree = eina_list_append(information_tree, main_tit);
+
+        edje_object_file_get(obj, &file, &group);
+
+        snprintf(buf, sizeof(buf), "File: %s", file);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        snprintf(buf, sizeof(buf), "Group: %s", group);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        if (edje_object_load_error_get(obj) != EDJE_LOAD_ERROR_NONE)
+          {
+             snprintf(buf, sizeof(buf), "Load error: %s",
+                   edje_load_error_str(edje_object_load_error_get(obj)));
              tit = calloc(1, sizeof(*tit));
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
