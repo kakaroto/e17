@@ -63,14 +63,19 @@ _cb_item_free(Evry_Item *item)
 static Evas_Object *
 _cb_icon_get(Evry_Item *item, Evas *e)
 {
-   Evas_Object *o;
+   Evas_Object *o = NULL;
 
    GET_MY_ITEM(it, item);
 
-   o = e_icon_add(e);
-   e_icon_preload_set(o, 1);
-   /* e_icon_file_set(o, FILE);  */
+   /* return an icon object */
+   // o = e_icon_add(e);
+   // e_icon_preload_set(o, 1);
+   // e_icon_file_set(o, FILE);
 
+   /* or set */
+   // item->icon = eina_stringshare_add("/full/path/to/icon");
+   // item->icon = eina_stringshare_add("fdo-icon-name");
+   
    return o;
 }
 
@@ -82,7 +87,7 @@ _item_add(Plugin *p, const char *label)
    /* create a new Evry_Item of type 'Item' */
    it = EVRY_ITEM_NEW(Item, p, label, _cb_icon_get, _cb_item_free);
 
-   /* append item to plugins' list */
+   /* append item to plugins' internal list */
    p->items = eina_list_append(p->items, it);
 
    return it;
@@ -104,9 +109,14 @@ _cb_plugin_new(Evry_Plugin *plugin, const Evry_Item *it __UNUSED__)
 static void
 _cb_plugin_free(Evry_Plugin *plugin)
 {
+   Item *it;
+   
    GET_PLUGIN(p, plugin);
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
+
+   EINA_LIST_FREE(p->items, it)
+     EVRY_ITEM_FREE(it);
 
    E_FREE(p);
 }
@@ -216,8 +226,6 @@ _cb_module_shutdown(void)
 
 /***************************************************************************/
 
-/* e17 module stuff */
-
 EAPI E_Module_Api e_modapi =
 {
    E_MODULE_API_VERSION,
@@ -227,6 +235,7 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
+   /* register module with everything */
    EVRY_MODULE_NEW(evry_module, evry, _cb_module_init, _cb_module_shutdown);
 
    e_module_delayed_set(m, 1);
