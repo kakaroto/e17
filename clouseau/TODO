@@ -6,6 +6,7 @@
 * When items are coloured, show the exact colour using a rect?
 * Handle map/proxy
 * Add an option to filter out invisible/clippers
+* add a way to filter object with some regexp on the name and also finding a specific object according to name.
 
 * Things to show per-object
   * clipping info.

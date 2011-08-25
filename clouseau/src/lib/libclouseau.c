@@ -192,6 +192,13 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
         snprintf(buf, sizeof(buf), "Visibility: %d", (int) visibility);
         elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
 
+        if (evas_object_name_get(obj))
+          {
+             snprintf(buf, sizeof(buf), "Name: %s",
+                   evas_object_name_get(obj));
+             elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
+          }
+
         snprintf(buf, sizeof(buf), "Layer: %hd",
               evas_object_layer_get(obj));
         elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
