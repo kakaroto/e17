@@ -328,7 +328,7 @@ _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title
 
    page->list = elm_genlist_add(obj_list);
    elm_genlist_bounce_set(page->list, EINA_FALSE, EINA_TRUE);
-   elm_genlist_horizontal_mode_set(page->list, ELM_LIST_COMPRESS);
+   elm_genlist_horizontal_set(page->list, ELM_LIST_COMPRESS);
    elm_genlist_compress_mode_set(page->list, EINA_TRUE);
 
    s = edje_object_data_get(page->edje_list, "homogeneous");
