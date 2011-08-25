@@ -49,7 +49,7 @@ group { name: "elm/index/base/vertical/default";
       }
       part { name: "button_image";
          mouse_events: 1;
-         clip_to: "clip";
+         clip_to: "clip2";
          description { state: "default" 0.0;
             rel1 {
                to: "elm.text.body";
@@ -71,7 +71,7 @@ group { name: "elm/index/base/vertical/default";
          effect: SOFT_SHADOW;
          mouse_events: 0;
          scale: 1;
-         clip_to: "clip";
+         clip_to: "clip2";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
@@ -95,7 +95,7 @@ group { name: "elm/index/base/vertical/default";
          effect: SOFT_SHADOW;
          mouse_events: 0;
          scale: 1;
-         clip_to: "clip";
+         clip_to: "clip2";
          description { state: "default" 0.0;
             align: 1.0 0.5;
             fixed: 1 1;
@@ -118,7 +118,7 @@ group { name: "elm/index/base/vertical/default";
       }
       part {        name: "over1";
          mouse_events: 0;
-         clip_to: "clip";
+         clip_to: "clip2";
          description { state: "default" 0.0;
             rel1 {
                to: "button_image";
@@ -137,7 +137,7 @@ group { name: "elm/index/base/vertical/default";
          mouse_events: 1;
          repeat_events: 1;
          ignore_flags: ON_HOLD;
-         clip_to: "clip";
+         clip_to: "clip2";
          description { state: "default" 0.0;
             rel1 {
                to: "button_image";
@@ -204,6 +204,20 @@ group { name: "elm/index/base/vertical/default";
          action: STATE_SET "default" 0.0;
          transition: DECELERATE 0.5;
          target: "clip";
+      }
+      program { name: "active2";
+         signal: "elm,indicator,state,active";
+         source: "elm";
+         action: STATE_SET "active" 0.0;
+         transition: DECELERATE 0.5;
+         target: "clip2";
+      }
+      program { name: "inactive2";
+         signal: "elm,indicator,state,inactive";
+         source: "elm";
+         action: STATE_SET "default" 0.0;
+         transition: DECELERATE 0.5;
+         target: "clip2";
       }
    }
 }
