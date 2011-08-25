@@ -128,7 +128,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
    if (!treeit->parent)
       return;
 
-   Evas_Object *obj = treeit->data.obj;
+   Evas_Object *obj = treeit->ptr;
    Inf_Tree_Item *main_tit;
 
    /* Populate evas properties list */

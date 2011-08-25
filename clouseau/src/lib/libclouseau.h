@@ -21,9 +21,9 @@ struct _Tree_Item
 {
    Tree_Item *parent;
    Eina_List *children;
-   union {
-        Ecore_Evas *ee;
-        Evas_Object *obj;
-   } data;
+   const char *name;
+   void *ptr;
+   Eina_Bool is_clipper : 1;
+   Eina_Bool is_visible : 1;
 };
 #endif

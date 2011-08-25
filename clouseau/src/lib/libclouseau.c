@@ -33,6 +33,7 @@ _item_tree_item_free(Tree_Item *parent)
         _item_tree_item_free(treeit);
      }
 
+   eina_stringshare_del(parent->name);
    free(parent);
 }
 
@@ -53,11 +54,9 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
    Tree_Item *treeit = data;
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        Evas_Object *obj;
         char buf[PATH_MAX];
 
-        obj = treeit->data.obj;
-        if (evas_object_clipees_get(obj) && !evas_object_visible_get(obj))
+        if (treeit->is_clipper && !treeit->is_visible)
           {
              Evas_Object *ic;
              Evas_Object *bx = elm_box_add(parent);
@@ -91,7 +90,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
              return bx;
 
           }
-        else if (evas_object_clipees_get(obj))
+        else if (treeit->is_clipper)
           {
              Evas_Object *ic;
              ic = elm_icon_add(parent);
@@ -102,7 +101,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
                    1, 1);
              return ic;
           }
-        else if (!evas_object_visible_get(obj))
+        else if (!treeit->is_visible)
           {
              Evas_Object *ic;
              ic = elm_icon_add(parent);
@@ -123,19 +122,7 @@ item_label_get(void *data, Evas_Object *obj __UNUSED__,
       const char *part __UNUSED__)
 {
    Tree_Item *treeit = data;
-   char buf[256];
-   if (elm_widget_is(treeit->data.obj))
-     {
-        snprintf(buf, sizeof(buf), "%p %s: %s", treeit->data.obj,
-              evas_object_type_get(treeit->data.obj),
-              elm_widget_type_get(treeit->data.obj));
-     }
-   else
-     {
-        snprintf(buf, sizeof(buf), "%p %s", treeit->data.obj,
-              evas_object_type_get(treeit->data.obj));
-     }
-   return strdup(buf);
+   return strdup(treeit->name);
 }
 
 static char *
@@ -144,8 +131,7 @@ item_ee_label_get(void *data, Evas_Object *obj __UNUSED__,
 {
    Tree_Item *treeit = data;
    char buf[256];
-   snprintf(buf, sizeof(buf), "%p %s", treeit->data.ee,
-         ecore_evas_title_get(treeit->data.ee));
+   snprintf(buf, sizeof(buf), "%p %s", treeit->ptr, treeit->name);
    return strdup(buf);
 }
 
@@ -160,7 +146,7 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
 
    Tree_Item *treeit = elm_genlist_item_data_get(event_info);
 
-   Evas_Object *obj = treeit->data.obj;
+   Evas_Object *obj = treeit->ptr;
    libclouseau_highlight(obj);
 
    clouseau_obj_information_list_populate(treeit);
@@ -177,9 +163,8 @@ gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 
    EINA_LIST_FOREACH(parent->children, itr, treeit)
      {
-        if ((!list_show_hidden && !evas_object_visible_get(treeit->data.obj)) ||
-              (!list_show_clippers &&
-               evas_object_clipees_get(treeit->data.obj)))
+        if ((!list_show_hidden && !treeit->is_visible) ||
+              (!list_show_clippers && treeit->is_clipper))
            continue;
 
         Elm_Genlist_Item_Flags iflag = (treeit->children) ?
@@ -216,10 +201,24 @@ libclouseau_item_add(Evas_Object *o, Evas_Object *gl, Tree_Item *parent)
    Eina_List *children, *tmp;
    Evas_Object *child;
    Tree_Item *treeit;
+   char buf[1024];
 
    treeit = calloc(1, sizeof(*treeit));
-   treeit->data.obj = o;
+   treeit->ptr = o;
    treeit->parent = parent;
+   if (elm_widget_is(o))
+     {
+        snprintf(buf, sizeof(buf), "%p %s: %s", o, evas_object_type_get(o),
+              elm_widget_type_get(o));
+     }
+   else
+     {
+        snprintf(buf, sizeof(buf), "%p %s", o, evas_object_type_get(o));
+     }
+   treeit->name = eina_stringshare_add(buf);
+   treeit->is_clipper = !!evas_object_clipees_get(o);
+   treeit->is_visible = evas_object_visible_get(o);
+
    parent->children = eina_list_append(parent->children, treeit);
 
    children = evas_object_smart_members_get(o);
@@ -259,7 +258,8 @@ _load_list(Evas_Object *gl)
         evas_output_size_get(e, &w, &h);
 
         treeit = calloc(1, sizeof(*treeit));
-        treeit->data.ee = ee;
+        treeit->name = eina_stringshare_add(ecore_evas_title_get(ee));
+        treeit->ptr = ee;
 
         tree = eina_list_append(tree, treeit);
 
