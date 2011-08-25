@@ -118,7 +118,7 @@ enlil_edd_init(void)
 }
 
 Eina_Bool
-enlil_eed_shutdown(void)
+enlil_edd_shutdown(void)
 {
 #define DF(Name)                                        \
    eet_data_descriptor_free(Name);                      \
