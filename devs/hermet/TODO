@@ -14,13 +14,9 @@ pager - content size calc
 
 elm_transit - check the transit would use the ecore_animator functionalities.
 
-animator - remove it (on end of AUGUST) 
-
 evas_line - width 
 
 evas_line - does not shown on glbackend. 
-
-elm_ctxpopup - add effects
 
 elm_naviframe - mirror mode 
 
@@ -31,4 +27,6 @@ elm_object_item - consider to apply.
 
 elm_object - apply all widgets to use elm_object_content_set/get/unset
 
-check the image smooth effect in gl backend 
+evas - check the image smooth effect in gl backend
+
+ctxpopup - hide effect
