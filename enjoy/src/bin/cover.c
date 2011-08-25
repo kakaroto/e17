@@ -132,7 +132,6 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
         char dir[PATH_MAX];
         size_t dir_len = 0, i;
         Eina_Iterator *files;
-        const Eina_List *l;
         const Eina_File_Direct_Info *fi;
 
         memcpy(dir, song->path, song->len.path + 1);
@@ -255,10 +254,15 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    Album_Cover *cover;
    Evas *e, *sub_e;
    Evas_Object *o, *img, *icon;
-   int file_name_len = strlen(large_cover->path) + 1;
    char file[PATH_MAX];
-   char *tmp, *cache_dir;
-   int printed, cache_dir_len;
+   char *cache_dir;
+
+   if ((size > large_cover->w) || (size > large_cover->h))
+     {
+        icon = _cover_empty_add(parent, size);
+        elm_icon_file_set(icon, large_cover->path, NULL);
+        return icon;
+     }
 
    cache_dir = enjoy_cache_dir_get();
    if (!cache_dir)
@@ -266,26 +270,10 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
         ERR("Could not get cache dir");
         return NULL;
      }
-   cache_dir_len = strlen(cache_dir);
 
-   if (!strncmp(large_cover->path, cache_dir, cache_dir_len))
-     {
-        memcpy(file, large_cover->path, file_name_len);
-        tmp = strrchr(file, '/');
-        if (!tmp) return NULL;
-     }
-   else
-     {
-        tmp = strrchr(large_cover->path, '/');
-        if (!tmp) return NULL;
-        memcpy(file, cache_dir, cache_dir_len);
-        memcpy(file + cache_dir_len, tmp, strlen(tmp) + 1);
-     }
-   printed = snprintf(tmp + 1, 16, "_%d", size);
-   if (printed < 0)
+   if (snprintf(file, sizeof(file), "%s/album_%lld_cover_art_%dpx.jpg",
+                cache_dir, album->id, size) < 0)
      return NULL;
-   else
-     tmp[printed + 1] = '_';
 
    ee = ecore_evas_buffer_new(1, 1);
    if (!ee) return NULL;
@@ -325,14 +313,14 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    if (!evas_object_image_save(o, file, NULL, "quality=90"))
      goto error;
 
-   cover = malloc(sizeof(*cover) + file_name_len);
+   cover = malloc(sizeof(*cover) + strlen(file) + 1);
    if (!cover)
      goto error;
 
    cover->w = cover->h = size;
    cover->path_len = strlen(file);
    cover->origin = large_cover->origin;
-   memcpy(cover->path, file, cover->path_len);
+   strcpy(cover->path, file);
 
    album->covers = eina_inlist_append(album->covers, EINA_INLIST_GET(cover));
    db_album_covers_update(db, album);
