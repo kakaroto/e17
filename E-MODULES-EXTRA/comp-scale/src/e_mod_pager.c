@@ -101,7 +101,7 @@ _pager_place_desks(double scale)
 
 	     Evas_Object *o = eina_list_data_get(l);
 
-	     evas_object_move(o, zone->x + cur_x , zone->y + cur_y);
+	     evas_object_move(o, cur_x, cur_y);
 	     evas_object_resize(o,
 				(scale * (zone->w)) + (1.0 - scale) * desk_w - OFFSET,
 				(scale * (zone->h)) + (1.0 - scale) * desk_h - OFFSET);
