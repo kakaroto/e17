@@ -22,6 +22,6 @@ libenlil_la_SOURCES = 	\
 installed_headersdir = $(includedir)/enlil-$(VMAJ)
 installed_headers_DATA = Enlil.h
 libenlil_la_LIBADD = @ENLIL_LIBS@
-libenlil_la_LDFLAGS = -no-undefined -version-info @version_info@
+libenlil_la_LDFLAGS = -no-undefined -version-info @version_info@ @release_info@
 
 
