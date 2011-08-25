@@ -305,11 +305,15 @@ _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title
    page->od_to_list_item = NULL;
    page->layout = obj;
 
-   if (!elm_layout_file_set(obj_list, PACKAGE_DATA_DIR "/default.edj", cls->layout))
+   if (!elm_layout_theme_set(obj_list, "layout", "enjoy", cls->layout))
      {
-        CRITICAL("no theme for '%s' at %s",
-                 cls->layout, PACKAGE_DATA_DIR "/default.edj");
-        goto error;
+        if (!elm_layout_file_set(obj_list,
+                                 PACKAGE_DATA_DIR "/default.edj", cls->layout))
+          {
+             CRITICAL("no theme for '%s' at %s",
+                      cls->layout, PACKAGE_DATA_DIR "/default.edj");
+             goto error;
+          }
      }
 
    if (!elm_layout_theme_set
