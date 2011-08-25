@@ -793,9 +793,10 @@ win_new(App *app)
    w->action.pause = elm_toolbar_item_state_add
       (w->action.play, "media-playback-pause", "Pause", _win_action_pause, w);
    w->action.nowplaying = _toolbar_item_add
-      (w, "multimedia-player", "Now Playing", 120, _win_mode_nowplaying);
+      (w, "multimedia-player", "Playing", 120, _win_mode_nowplaying);
    w->action.playlist = elm_toolbar_item_state_add
-      (w->action.nowplaying, "txt", "Library", _win_mode_list, w);
+      (w->action.nowplaying, "system-file-manager", "Library",
+       _win_mode_list, w);
 
    elm_toolbar_item_disabled_set(w->action.prev, EINA_TRUE);
    elm_toolbar_item_disabled_set(w->action.next, EINA_TRUE);
