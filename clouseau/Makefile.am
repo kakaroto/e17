@@ -5,6 +5,6 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 EXTRA_DIST = README AUTHORS COPYING
 
-SUBDIRS = src
+SUBDIRS = src data
 
 ACLOCAL_AMFLAGS = -I m4

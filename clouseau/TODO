@@ -3,6 +3,9 @@
 * Add "grab screenshot" button.
 * Add a clipping range rectangle.
 * Add special per object info, for example edje part names?
+* When items are coloured, show the exact colour using a rect?
+* Handle map/proxy
+* Add an option to filter out invisible/clippers
 
 * Things to show per-object
   * clipping info.

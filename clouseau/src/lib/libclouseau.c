@@ -66,6 +66,77 @@ _item_tree_free(void)
      }
 }
 
+static Evas_Object *
+item_icon_get(void *data, Evas_Object *parent, const char *part)
+{
+   Tree_Item *treeit = data;
+   if (!strcmp(part, "elm.swallow.icon"))
+     {
+        Evas_Object *obj;
+        char buf[PATH_MAX];
+
+        obj = treeit->data.obj;
+        if (evas_object_clipees_get(obj) && !evas_object_visible_get(obj))
+          {
+             Evas_Object *ic;
+             Evas_Object *bx = elm_box_add(parent);
+             evas_object_size_hint_aspect_set(bx, EVAS_ASPECT_CONTROL_VERTICAL,
+                   1, 1);
+
+             ic = elm_icon_add(bx);
+             snprintf(buf, sizeof(buf), "%s/images/clipper.png",
+                   PACKAGE_DATA_DIR);
+             elm_icon_file_set(ic, buf, NULL);
+             evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
+                   1, 1);
+             evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
+                   EVAS_HINT_EXPAND);
+             evas_object_size_hint_align_set(ic, EVAS_HINT_FILL,
+                   EVAS_HINT_FILL);
+             elm_box_pack_end(bx, ic);
+
+             ic = elm_icon_add(bx);
+             snprintf(buf, sizeof(buf), "%s/images/hidden.png",
+                   PACKAGE_DATA_DIR);
+             elm_icon_file_set(ic, buf, NULL);
+             evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
+                   1, 1);
+             evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
+                   EVAS_HINT_EXPAND);
+             evas_object_size_hint_align_set(ic, EVAS_HINT_FILL,
+                   EVAS_HINT_FILL);
+             elm_box_pack_end(bx, ic);
+
+             return bx;
+
+          }
+        else if (evas_object_clipees_get(obj))
+          {
+             Evas_Object *ic;
+             ic = elm_icon_add(parent);
+             snprintf(buf, sizeof(buf), "%s/images/clipper.png",
+                   PACKAGE_DATA_DIR);
+             elm_icon_file_set(ic, buf, NULL);
+             evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
+                   1, 1);
+             return ic;
+          }
+        else if (!evas_object_visible_get(obj))
+          {
+             Evas_Object *ic;
+             ic = elm_icon_add(parent);
+             snprintf(buf, sizeof(buf), "%s/images/hidden.png",
+                   PACKAGE_DATA_DIR);
+             elm_icon_file_set(ic, buf, NULL);
+             evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL,
+                   1, 1);
+             return ic;
+          }
+     }
+
+   return NULL;
+}
+
 static char *
 item_label_get(void *data, Evas_Object *obj __UNUSED__,
       const char *part __UNUSED__)
@@ -349,7 +420,7 @@ libclouseau_init(void)
 
         itc.item_style = "default";
         itc.func.label_get = item_label_get;
-        itc.func.icon_get = NULL;
+        itc.func.icon_get = item_icon_get;
         itc.func.state_get = NULL;
         itc.func.del = NULL;
 
