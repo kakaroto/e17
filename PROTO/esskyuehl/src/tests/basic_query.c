@@ -21,7 +21,6 @@
 
 #include <Esskyuehl.h>
 #include <Ecore.h>
-#include <inttypes.h>
 
 static void
 print_results(Esql_Res *res)
@@ -41,7 +40,7 @@ print_results(Esql_Res *res)
              switch (c->type)
                {
                 case ESQL_CELL_TYPE_TIMESTAMP:
-                   printf("ESQL_CELL_TYPE_TIMESTAMP --- Value: %"PRIuMAX"\n", (uintmax_t)mktime(&c->value.tm));
+                   printf("ESQL_CELL_TYPE_TIMESTAMP --- Value: timestamp\n");
                    break;
                 case ESQL_CELL_TYPE_TIME:
                    printf("ESQL_CELL_TYPE_TIME --- Value: timeval\n");
@@ -78,15 +77,25 @@ print_results(Esql_Res *res)
      }
 }
 
-static Eina_Bool
-result_(void *data __UNUSED__, int type, Esql_Res *res)
+static void
+callback_(Esql_Res *res, char *data)
 {
-   static int x;
+   printf("%i rows returned to callback!\n", esql_res_rows_count(res)); /**< could do more here, but it's a simple example so we just print the number of rows */
+   printf("data stored: '%s'\n", data);
+   printf("Query string: '%s'\n", esql_res_query_get(res));
+   print_results(res);
+   free(data);
+   ecore_main_loop_quit();
+}
+
+static Eina_Bool
+result_(void *data __UNUSED__, int type __UNUSED__, Esql_Res *res)
+{
    printf("%i rows returned!\n", esql_res_rows_count(res)); /**< could do more here, but it's a simple example so we just print the number of rows */
    printf("data stored: '%s'\n", (char*)esql_res_data_get(res));
    printf("Query string: '%s'\n", esql_res_query_get(res));
    free(esql_res_data_get(res));
-   if (esql_res_rows_count(res)) print_results(res);
+   print_results(res);
    ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
@@ -94,11 +103,9 @@ result_(void *data __UNUSED__, int type, Esql_Res *res)
 static Eina_Bool
 error_(void *data __UNUSED__, int type __UNUSED__, Esql *e)
 {
-   static int x;
-   fprintf(stderr, "ERROR: %s\n", esql_error_get(e)); /**< print error condition */
+   fprintf(stderr, "%s\n", esql_error_get(e)); /**< print error condition */
    printf("Query string: '%s'\n", esql_current_query_get(e));
-   if (++x == 4) ecore_main_loop_quit();
-   else esql_query(e, strdup("test data"), "select salt, hash from users where uid='0'");
+   ecore_main_loop_quit();
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -108,19 +115,39 @@ connect_(void *data __UNUSED__, int type __UNUSED__, Esql *e)
    Esql_Query_Id id;
 
    printf("Connected!\n");
-   id = esql_query_args(e, strdup("test data"), "SELECT * FROM diskconfig RIGHT JOIN disks ON disks.id=diskconfig.disk WHERE disks.uuid='%s' AND diskconfig.revision= (SELECT revision FROM diskconfig RIGHT JOIN disks ON diskconfig.disk=disks.id WHERE disks.uuid='%s' ORDER BY diskconfig.timestamp DESC LIMIT 1) ORDER BY diskconfig.timestamp DESC", "641174ae-a1c9-7526-7a7b-4968ab5eb28a", "641174ae-a1c9-7526-7a7b-4968ab5eb28a");
+   id = esql_query_args(e, strdup("test data"), "SELECT * FROM %s", "jobs");
    if (!id) /**< queue up a simple query */
      {
         fprintf(stderr, "Could not create query!\n");
         ecore_main_loop_quit();
      }
+   else if (id % 2)
+     esql_query_callback_set(id, (Esql_Query_Cb)callback_);
    return ECORE_CALLBACK_RENEW;
 }
+
+static void
+connect_cb(Esql *e, void *data __UNUSED__)
+{
+   Esql_Query_Id id;
+
+   printf("Connected using callback!\n");
+   id = esql_query(e, strdup("test data"), "SELECT * FROM `diskconfig` WHERE disk='21' LIMIT 1");
+   if (!id) /**< queue up a simple query */
+     {
+        fprintf(stderr, "Could not create query!\n");
+        ecore_main_loop_quit();
+     }
+   if (id % 2)
+     esql_query_callback_set(id, (Esql_Query_Cb)callback_);
+}
+
 
 int
 main(void)
 {
    Esql *e;
+   Eina_Counter *c;
 
    esql_init();
 
@@ -129,12 +156,40 @@ main(void)
    ecore_event_handler_add(ESQL_EVENT_RESULT, (Ecore_Event_Handler_Cb)result_, NULL);
    ecore_event_handler_add(ESQL_EVENT_ERROR, (Ecore_Event_Handler_Cb)error_, NULL);
 
-   e = esql_new(ESQL_TYPE_MYSQL);
+   e = esql_new(ESQL_TYPE_POSTGRESQL); /**< new object for postgresql */
+   c = eina_counter_new("esql");
+   eina_counter_start(c);
+   esql_database_set(e, "zentific"); /**< use database named zentific on connect */
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_POSTGRESQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
+   ecore_main_loop_begin();
+   esql_disconnect(e); /**< disconnect */
+   eina_counter_stop(c, 0);
+
+   eina_counter_start(c);
+   esql_connect_callback_set(e, connect_cb, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_POSTGRESQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
+   ecore_main_loop_begin();
+   esql_disconnect(e); /**< disconnect */
+   eina_counter_stop(c, 1);
+
+   eina_counter_start(c);
+   esql_connect_callback_set(e, NULL, NULL);
+   esql_type_set(e, ESQL_TYPE_MYSQL); /**< now switch to mysql! */
    esql_database_set(e, "zentific"); /**< use database named zentific on connect */
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_MYSQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
    ecore_main_loop_begin();
    esql_disconnect(e);
+   eina_counter_stop(c, 2);
 
+   eina_counter_start(c);
+   esql_connect_callback_set(e, connect_cb, NULL);
+   esql_database_set(e, "zentific"); /**< use database named zentific on connect */
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_MYSQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
+   ecore_main_loop_begin();
+   esql_disconnect(e);
+   eina_counter_stop(c, 3);
+
+   printf("Times:\n%s\n", eina_counter_dump(c)); /**< this leaks, who cares */
    esql_free(e);
    esql_shutdown();
    return 0;
