@@ -1,3 +1,39 @@
+ORDERING
+--------
+Consider the following order to implement this todo:
+
+ 1. create eet to persist data (used by lib/manager, preferences, resume...)
+   - versioned
+   - provide defaults
+ 2. Save/Resume state between runs (simple data);
+   - window geometry
+   - volume
+   - repeat and shuffle states
+ 3. Single instance with dbus:
+   - just get a name
+ 4. Create preferences infrastructure:
+   - new elm_layout style (in Elementary) for preferences
+   - choose media backend (xine, gstreamer)
+ 5. Create library manager preferences:
+   - add/remove directories (or at least choose folder)
+   - rescan, stop-scan. with progress feedback
+   - option to choose rescan schedule
+   - remove command line scan
+ 6. Refactor some features into plugins
+   - no need for elm_module at the beginning, just isolated code
+   - define ecore_events and plugin interface
+   - mpris
+   - fso
+   - coverart-lastfm
+   - cover art local fs lookup
+ 7. Modular plugins (elm_module)
+   - dynamically loaded
+   - versioned
+   - selection saved in eet
+   - gui to select enabled plugins
+ 8. Save/Resume between runs (list, nowplaying and navigation)
+
+
 Library (from "Preferences")
 ----------------------------
  * manager:
