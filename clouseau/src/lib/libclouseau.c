@@ -27,6 +27,7 @@ static Elm_Genlist_Item_Class itc, itc_ee;
 static Eina_Bool _lib_init = EINA_FALSE;
 static Eina_List *tree = NULL;
 static Evas_Object *prop_list;
+static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
 
 static void libclouseau_highlight(Evas_Object *addr);
 static Eina_Bool libclouseau_highlight_fade(void *rv);
@@ -270,6 +271,11 @@ gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 
    EINA_LIST_FOREACH(parent->children, itr, treeit)
      {
+        if ((!list_show_hidden && !evas_object_visible_get(treeit->data.obj)) ||
+              (!list_show_clippers &&
+               evas_object_clipees_get(treeit->data.obj)))
+           continue;
+
         Elm_Genlist_Item_Flags iflag = (treeit->children) ?
            ELM_GENLIST_ITEM_SUBITEMS : ELM_GENLIST_ITEM_NONE;
         elm_genlist_item_append(gl, &itc, treeit, it, iflag,
@@ -369,6 +375,22 @@ _load_list(Evas_Object *gl)
 }
 
 static void
+_show_clippers_check_changed(void *data, Evas_Object *obj,
+      void *event_info __UNUSED__)
+{
+   list_show_clippers = elm_check_state_get(obj);
+   _load_list(data);
+}
+
+static void
+_show_hidden_check_changed(void *data, Evas_Object *obj,
+      void *event_info __UNUSED__)
+{
+   list_show_hidden = elm_check_state_get(obj);
+   _load_list(data);
+}
+
+static void
 _bt_clicked(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
    elm_object_text_set(obj, "Reload");
@@ -378,7 +400,8 @@ _bt_clicked(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 void
 libclouseau_init(void)
 {
-   Evas_Object *win, *bg, *panes, *bx, *bt;
+   Evas_Object *win, *bg, *panes, *bx, *bt, *show_hidden_check,
+               *show_clippers_check;
 
    win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
    elm_win_autodel_set(win, EINA_TRUE);
@@ -395,11 +418,35 @@ libclouseau_init(void)
    elm_win_resize_object_add(win, bx);
    evas_object_show(bx);
 
-   bt = elm_button_add(win);
-   evas_object_size_hint_align_set(bt, 0.0, 0.5);
-   elm_object_text_set(bt, "Load");
-   elm_box_pack_end(bx, bt);
-   evas_object_show(bt);
+   /* Control buttons */
+     {
+        Evas_Object *hbx;
+
+        hbx = elm_box_add(bx);
+        evas_object_size_hint_align_set(hbx, 0.0, 0.5);
+        elm_box_horizontal_set(hbx, EINA_TRUE);
+        elm_box_pack_end(bx, hbx);
+        elm_box_padding_set(hbx, 10, 0);
+        evas_object_show(hbx);
+
+        bt = elm_button_add(hbx);
+        evas_object_size_hint_align_set(bt, 0.0, 0.5);
+        elm_object_text_set(bt, "Load");
+        elm_box_pack_end(hbx, bt);
+        evas_object_show(bt);
+
+        show_hidden_check = elm_check_add(hbx);
+        elm_object_text_set(show_hidden_check, "Show Hidden");
+        elm_check_state_set(show_hidden_check, list_show_hidden);
+        elm_box_pack_end(hbx, show_hidden_check);
+        evas_object_show(show_hidden_check);
+
+        show_clippers_check = elm_check_add(hbx);
+        elm_object_text_set(show_clippers_check, "Show Clippers");
+        elm_check_state_set(show_clippers_check, list_show_clippers);
+        elm_box_pack_end(hbx, show_clippers_check);
+        evas_object_show(show_clippers_check);
+     }
 
    panes = elm_panes_add(win);
    evas_object_size_hint_weight_set(panes, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -418,6 +465,10 @@ libclouseau_init(void)
         evas_object_show(gl);
 
         evas_object_smart_callback_add(bt, "clicked", _bt_clicked, gl);
+        evas_object_smart_callback_add(show_hidden_check, "changed",
+              _show_hidden_check_changed, gl);
+        evas_object_smart_callback_add(show_clippers_check, "changed",
+              _show_clippers_check_changed, gl);
 
         itc_ee.item_style = "default";
         itc_ee.func.label_get = item_ee_label_get;
