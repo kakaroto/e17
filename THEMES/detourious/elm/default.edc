@@ -29,6 +29,9 @@ externals.external: "elm";
 #define FONT_ITALIC "Switzera:style=italic"
 #endif
 
+#define TEXT_EFFECT SHADOW
+#define TEXT_EFFECT_BOLD SHADOW
+
 #define TEXT_COLOR								\
 	color: 60 60 60 255;						\
 color3: 255 255 255 128;
@@ -41,6 +44,15 @@ color3: 7 7 7 64;
 	color: 60 60 60 128;						\
 color3: 255 255 255 128;						\
 color_class: "text_disabled";
+
+#define TEXT_COLOR_UNIMPORTANT											\
+	color: 120 120 120 255;											\
+	color3: 255 255 255 128;
+
+#define TEXT_COLOR_UNIMPORTANT_SELECTED								\
+	color: 230 230 230 255;											\
+	color3: 7 7 7 64;
+
 
 images {
 	image: "thumb_shadow.png" COMP;
