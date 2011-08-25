@@ -11,3 +11,5 @@
 * Things to show per-object
   * clipping info.
   * callback list?
+
+* EET uses malloc, not stringshare, change stringshare -> strdup
