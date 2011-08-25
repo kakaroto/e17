@@ -220,8 +220,8 @@ extern Eet_Data_Descriptor *enlil_edd_loaded_library;
 
 extern const char *_enlil_library_config;
 
-Eina_Bool _enlil_edd_init(void);
-Eina_Bool _enlil_edd_shutdown(void);
+Eina_Bool enlil_edd_init(void);
+Eina_Bool enlil_edd_shutdown(void);
 
 Enlil_Libraries *_enlil_libraries_new(void);
 void _enlil_libraries_free(Enlil_Libraries *free);

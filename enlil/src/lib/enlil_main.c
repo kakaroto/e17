@@ -61,7 +61,7 @@ enlil_init(void)
    ENLIL_PHOTO_DEL= ecore_event_type_new();
    ENLIL_LIBRARY_LOADED = ecore_event_type_new();
 
-   _enlil_edd_init();
+   enlil_edd_init();
 
    _enlil_library_config = eina_stringshare_add(efreet_config_home_get());
 
@@ -89,7 +89,7 @@ enlil_shutdown(void)
 
    eet_close(_enlil_config);
 
-   _enlil_edd_shutdown();
+   enlil_edd_shutdown();
 
    eio_init();
    efreet_shutdown();
