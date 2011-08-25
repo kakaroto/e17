@@ -15,16 +15,8 @@
 #define ELM_INTERNAL_API_ARGESFSDFEFC
 #include <elm_widget.h>
 
-#include "config.h"
-
 #include "libclouseau.h"
 #include "ui/obj_information.h"
-
-#ifdef HAVE___ATTRIBUTE__
-# define __UNUSED__ __attribute__((unused))
-#else
-# define __UNUSED__
-#endif
 
 static Elm_Genlist_Item_Class itc, itc_ee;
 static Eina_Bool _lib_init = EINA_FALSE;

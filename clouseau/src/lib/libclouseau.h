@@ -5,6 +5,14 @@
 #include <Ecore_Evas.h>
 #include <Elementary.h>
 
+#include "config.h"
+
+#ifdef HAVE___ATTRIBUTE__
+# define __UNUSED__ __attribute__((unused))
+#else
+# define __UNUSED__
+#endif
+
 typedef struct _Tree_Item Tree_Item;
 struct _Tree_Item
 {
