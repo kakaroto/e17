@@ -16,15 +16,22 @@
  * along with MySAC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdarg.h>
 #include <ctype.h>
+#ifdef HAVE_MYSQL_H
+#include <mysql.h>
+#include <my_global.h>
+#else
 #include <mysql/mysql.h>
 #include <mysql/my_global.h>
-
+#endif
 #include "mysac_decode_field.h"
 #include "mysac_encode_values.h"
 #include "mysac_decode_row.h"

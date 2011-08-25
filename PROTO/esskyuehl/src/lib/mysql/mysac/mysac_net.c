@@ -16,6 +16,9 @@
  * along with MySAC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
@@ -28,7 +31,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#ifdef HAVE_MYSQL_H
+#include <errmsg.h>
+#else
 #include <mysql/errmsg.h>
+#endif
 
 #include "mysac.h"
 

@@ -77,7 +77,7 @@ if test "x$mysql_config" != "x";then
       cppflags="$CPPFLAGS"
       CFLAGS="$MYSQL_CFLAGS"
       CPPFLAGS="$CFLAGS"
-      AC_CHECK_HEADERS([mysql.h])
+      AC_CHECK_HEADERS([mysql/mysql.h mysql.h])
       CFLAGS="$cflags"
       CPPFLAGS="$cppflags"
       AC_MSG_RESULT([yes])

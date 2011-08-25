@@ -18,8 +18,16 @@
 
 /* the order of theses headers and defines
  * is important */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+#ifdef HAVE_MYSQL_H
+#include <mysql.h>
+#include <my_global.h>
+#else
+#include <mysql/mysql.h>
 #include <mysql/my_global.h>
-#include <mysql/m_string.h> /* memcpy_fixed */
+#endif
 #undef _ISOC99_SOURCE
 #define _ISOC99_SOURCE
 #include <stdlib.h>
