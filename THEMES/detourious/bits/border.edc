@@ -1,22 +1,30 @@
 
-#define BORDER_DEFAULT_PROGRAMS()				\
+#define BORDER_PROGRAMS()						\
 	program {									\
 		name: "active";							\
 		signal: "e,state,focused";				\
 		source: "e";							\
 		action: STATE_SET "focused" 0.0;		\
-		transition: DECELERATE 0.5;				\
+		transition: ACCELERATE 0.2;				\
 		target: "e.text.title";					\
+		target: "border";						\
 		target: "border_color";					\
+		target: "button-close_bg";				\
+		target: "button-max_bg";				\
+		target: "button-min_bg";				\
 	}											\
 	program {									\
 		name: "inactive";						\
 		signal: "e,state,unfocused";			\
 		source: "e";							\
 		action: STATE_SET "default" 0.0;		\
-		transition: DECELERATE 0.5;				\
+		transition: DECELERATE 0.2;				\
 		target: "e.text.title";					\
+		target: "border";						\
 		target: "border_color";					\
+		target: "button-close_bg";				\
+		target: "button-max_bg";				\
+		target: "button-min_bg";				\
 	}											\
 	program {									\
 		name: "close_click";					\
@@ -179,7 +187,10 @@
 			image {														\
 				normal: "images/window-border_bt0.png";					\
 			}															\
-			color_class: "border_frame";								\
+		}																\
+		description {													\
+			state: "focused" 0.0;										\
+			inherit: "default" 0.0;										\
 		}																\
 	}																	\
 	part {																\
@@ -274,9 +285,28 @@
 	BORDER_EVENT_MAP("e.event.resize.br", 1.0 1.0, -6   -6,       1.0 1.0, -1    -1);	\
 	BORDER_EVENT_MAP("e.event.resize.b",  0.0 1.0, 5     BOTTOM,  1.0 1.0, -6    -1);	\
 
-#define BORDER_IMAGE(IMG, _BORDER, SIZE)		\
+#define BORDER_IMAGE(IMG, _BORDER, SIZE)			\
+	part {											\
+		name: "border";								\
+		description {								\
+			state: "default" 0.0;					\
+			min: SIZE;								\
+			image {									\
+				normal: IMG;						\
+				border: _BORDER;					\
+				middle: 0;							\
+			}										\
+			color_class: "border_frame_hilight";	\
+		}											\
+		description {								\
+			state: "focused" 0.0;					\
+			inherit: "default" 0.0;					\
+		}											\
+	}												\
+
+#define BORDER_COLOR(IMG, _BORDER, SIZE)		\
 	part {										\
-		name: "border";							\
+		name: "border_color";					\
 		description {							\
 			state: "default" 0.0;				\
 			min: SIZE;							\
@@ -287,27 +317,12 @@
 			}									\
 			color_class: "border_frame";		\
 		}										\
+		description {							\
+			state: "focused" 0.0;				\
+			inherit: "default" 0.0;				\
+			color_class: "border_frame_active";	\
+		}										\
 	}											\
-
-#define BORDER_COLOR(IMG, _BORDER, SIZE)				\
-	part {												\
-		name: "border_color";							\
-		description {									\
-			state: "default" 0.0;						\
-			min: SIZE;									\
-			color_class: "border_frame";				\
-			image {										\
-				normal: IMG;							\
-				border: _BORDER;						\
-				middle: 0;								\
-			}											\
-		}												\
-		description {									\
-			state: "focused" 0.0;						\
-			inherit: "default" 0.0;						\
-			color_class: "border_frame_active";			\
-		}												\
-	}													\
 
 #define BORDER_SHADOW(ALPHA)							\
 	part {												\
@@ -432,7 +447,7 @@ group {
     }
 
     programs {
-        BORDER_DEFAULT_PROGRAMS();
+        BORDER_PROGRAMS();
     }
 }
 
@@ -511,7 +526,7 @@ group {
     }
 
     programs {
-        BORDER_DEFAULT_PROGRAMS();
+        BORDER_PROGRAMS();
     }
 }
 
@@ -565,7 +580,7 @@ group {
     }
 
     programs {
-        BORDER_DEFAULT_PROGRAMS();
+        BORDER_PROGRAMS();
     }
 }
 #endif
