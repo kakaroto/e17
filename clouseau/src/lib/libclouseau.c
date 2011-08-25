@@ -74,9 +74,9 @@ item_label_get(void *data, Evas_Object *obj __UNUSED__,
    char buf[256];
    if (elm_widget_is(treeit->data.obj))
      {
-        snprintf(buf, sizeof(buf), "%p %s (%s)", treeit->data.obj,
-              elm_widget_type_get(treeit->data.obj),
-              evas_object_type_get(treeit->data.obj));
+        snprintf(buf, sizeof(buf), "%p %s: %s", treeit->data.obj,
+              evas_object_type_get(treeit->data.obj),
+              elm_widget_type_get(treeit->data.obj));
      }
    else
      {
@@ -170,6 +170,13 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
              snprintf(buf, sizeof(buf), "Color: %d %d %d %d", r, g, b, a);
              elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
           }
+
+        if (evas_object_clipees_get(obj))
+          {
+             snprintf(buf, sizeof(buf), "Has clipees");
+             elm_list_item_append(prop_list, buf, NULL, NULL, NULL, NULL);
+          }
+
         elm_list_go(prop_list);
      }
 }
