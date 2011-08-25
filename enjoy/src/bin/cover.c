@@ -238,7 +238,7 @@ static Evas_Object *
 _cover_without_image_add(Evas_Object *parent, unsigned short size)
 {
    Evas_Object *cover = _cover_empty_add(parent, size);
-   if ((!elm_icon_standard_set(cover, "no-cover")) &&
+   if ((!elm_icon_standard_set(cover, "no-cover")) ||
        (!elm_icon_standard_set(cover, "media-optical")))
      {
         evas_object_del(cover);
@@ -339,7 +339,7 @@ Evas_Object *
 cover_allsongs_fetch(Evas_Object *parent, unsigned short size)
 {
    Evas_Object *cover = _cover_empty_add(parent, size);
-   if ((!elm_icon_standard_set(cover, "all-songs")) &&
+   if ((!elm_icon_standard_set(cover, "all-songs")) ||
        (!elm_icon_standard_set(cover, "media-optical")))
      {
         evas_object_del(cover);
