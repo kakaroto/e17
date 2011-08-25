@@ -1109,7 +1109,14 @@ db_albums_get(DB *db)
    it->base.stmt_name = "albums_get";
    it->base.stmt = _db_stmt_compile
      (db, it->base.stmt_name,
-      "SELECT id, artist_id, name FROM audio_albums ORDER BY UPPER(name)");
+      "SELECT audio_albums.id, audio_albums.artist_id, audio_albums.name "
+      "FROM audio_albums, files, audios "
+      "WHERE "
+      " audios.id = files.id AND "
+      " audios.album_id = audio_albums.id AND "
+      " files.dtime = 0 "
+      "GROUP BY audio_albums.id "
+      "ORDER BY UPPER(name)");
    if (!it->base.stmt)
      {
         free(it);
