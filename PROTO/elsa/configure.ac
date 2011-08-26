@@ -47,7 +47,7 @@ AC_MSG_RESULT([${enable_pam}])
 
 # Grub2
 AC_ARG_ENABLE([grub2],
-   [AC_HELP_STRING([--enable-gru2b], [disable grub2 support. @<:@default=disabled@:>@])],
+   [AC_HELP_STRING([--enable-gru2b], [enable grub2 support. @<:@default=disabled@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        enable_grub2="yes"
@@ -65,7 +65,7 @@ fi
 
 # consolekit
 AC_ARG_ENABLE([consolekit],
-   [AC_HELP_STRING([--enable-consolekit], [disable consolekit support. @<:@default=disnabled@:>@])],
+   [AC_HELP_STRING([--disable-consolekit], [disable consolekit support. @<:@default=enabled@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        enable_consolekit="yes"
@@ -73,7 +73,7 @@ AC_ARG_ENABLE([consolekit],
        enable_consolekit="no"
     fi
    ],
-   [enable_consolekit="no"])
+   [enable_consolekit="yes"])
 AC_MSG_CHECKING([whether to support consolekit login])
 AC_MSG_RESULT([${enable_consolekit}])
 

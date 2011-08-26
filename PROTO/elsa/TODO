@@ -1,3 +1,4 @@
++++shutdown from the session could restart elsa
 ++Make a very simple theme, to make a new theme easily
 ++Catch more Pam error on login (too many wrong password ...)
 ++theme for cursor
@@ -8,5 +9,3 @@
 Add code to don't use pam login (Nowadays, important?)
 Study possibility to use it with wayland so we can have transition when switching from one terminal to another.
 
-BUG REPORTED
--communication between dbus and X failed
