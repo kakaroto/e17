@@ -1,0 +1,8 @@
+elsa for Debian
+---------------
+
+Debian package based on SVN trunk of elsa.
+
+The modifications made to the configuration file is not preserved during configure.
+
+ -- Daniel Dehennin <daniel.dehennin@baby-gnu.org>, Sat, 25 Jun 2011 14:23:44 +0200

@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: elsa@packages.debian.org\n"
+"POT-Creation-Date: 2011-06-25 18:06+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Description
+#: ../elsa.templates:1001
+msgid "Default display manager:"
+msgstr ""
+
+#. Type: select
+#. Description
+#: ../elsa.templates:1001
+msgid ""
+"A display manager is a program that provides graphical login capabilities "
+"for the X Window System."
+msgstr ""
+
+#. Type: select
+#. Description
+#: ../elsa.templates:1001
+msgid ""
+"Only one display manager can manage a given X server, but multiple display "
+"manager packages are installed. Please select which display manager should "
+"run by default."
+msgstr ""
+
+#. Type: select
+#. Description
+#: ../elsa.templates:1001
+msgid ""
+"Multiple display managers can run simultaneously if they are configured to "
+"manage different servers; to achieve this, configure the display managers "
+"accordingly, edit each of their init scripts in /etc/init.d, and disable the "
+"check for a default display manager."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../elsa.templates:2001
+msgid "Enable autologin a user at X startup?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../elsa.templates:2001
+msgid "When true, a user is automatically logged in when X starts."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../elsa.templates:3001
+msgid "Name of the auto logged user:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../elsa.templates:3001
+msgid "A simple test is done to avoid login of user with uid less than 1000."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../elsa.templates:4001
+msgid "Enable numlock?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../elsa.templates:4001
+msgid ""
+"If you are on a laptop, enabling numlock can be painful with the integrated "
+"keyboard."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../elsa.templates:4001
+msgid "You can choose to disable it completely."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../elsa.templates:5001
+msgid "Path to export for the session:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../elsa.templates:5001
+msgid ""
+"You can configure the default paths exported in the user session at login "
+"time."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../elsa.templates:6001
+msgid "Use session_login command instead of xdg desktop?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../elsa.templates:6001
+msgid "If false, use the xdg desktop and determine the command to use."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../elsa.templates:6001
+msgid ""
+"If true, use the session_login command configured in elsa.conf to exec "
+"xinitrc by default."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../elsa.templates:7001
+msgid "X server arguments:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../elsa.templates:7001
+msgid "Enter the list of arguments to pass to X server."
+msgstr ""

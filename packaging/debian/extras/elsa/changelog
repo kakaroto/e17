@@ -1,0 +1,11 @@
+elsa (0.0.4~r62756-1) unstable; urgency=low
+
+  * update packaging to the new version
+
+ -- Michaël Bouchaud <michael@substantiel.fr>  Fri, 26 Aug 2011 11:08:16 +0200
+
+elsa (0.0.3~r59138-1) unstable; urgency=low
+
+  * Initial release, no ITP for now.
+
+ -- Daniel Dehennin <daniel.dehennin@baby-gnu.org>  Sat, 04 Jun 2011 18:42:58 +0200

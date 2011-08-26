@@ -1,0 +1,27 @@
+Source: elsa
+Section: x11
+Priority: extra
+Maintainer: Michael Bouchaud <yoz@efl.so>
+Build-Depends: cdbs, debhelper (>= 7.0.50~), po-debconf (>= 1.0), libpam0g-dev, libck-connector-dev, libefreet-dev (>= 1.0.0), libeina-dev (>= 1.0.0), libeet-dev (>= 1.4.0), libeet-bin (>= 1.4.0), libecore-dev (>= 1.0.0), libedje-dev (>= 1.0.0), libelementary-dev (>= 0.7.0)
+Standards-Version: 3.9.2
+Homepage: http://www.enlightenment.org/
+#Vcs-Git: http://zion.baby-gnu.org/~nebu/archives/elsa.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/elsa.git;a=summary
+
+Package: elsa
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: x-display-manager
+Description: X display manager based on EFL
+ Elsa is a light and simple graphical login manager for X11. It's
+ completely configurable through EDJE themes and option file.
+
+Package: elsa-dbg
+Architecture: any
+Section: debug
+Depends: elsa (= ${binary:Version}), ${misc:Depends}
+Description: Debugging symbols for elsa X display manager
+ Elsa is a light and simple graphical login manager for X11. It's
+ completely configurable through EDJE themes and option file.
+ .
+ This package contains the debugging symbols for elsa.

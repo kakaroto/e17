@@ -1,0 +1,13 @@
+/var/log/elsa.log {
+    weekly
+    rotate 52
+    compress
+    delaycompress
+    notifempty
+    missingok
+    postrotate
+        if [ -r /var/run/elsa.pid ]; then \
+            kill -s USR2 $(cat /var/run/elsa.pid); \
+        fi
+    endscript
+}

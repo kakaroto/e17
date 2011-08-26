@@ -1,0 +1,57 @@
+Template: shared/default-x-display-manager
+Type: select
+Choices: ${choices}
+_Description: Default display manager:
+ A display manager is a program that provides graphical login
+ capabilities for the X Window System.
+ .
+ Only one display manager can manage a given X server, but multiple
+ display manager packages are installed. Please select which display
+ manager should run by default.
+ .
+ Multiple display managers can run simultaneously if they are
+ configured to manage different servers; to achieve this, configure
+ the display managers accordingly, edit each of their init scripts in
+ /etc/init.d, and disable the check for a default display manager.
+
+Template: elsa/autologin
+Type: boolean
+Default: false
+_Description: Enable autologin a user at X startup?
+ When true, a user is automatically logged in when X starts.
+
+Template: elsa/autologin-user
+Type: string
+_Description: Name of the auto logged user:
+ A simple test is done to avoid login of user with uid less than 1000.
+
+Template: elsa/numlock
+Type: boolean
+Default: true
+_Description: Enable numlock?
+ If you are on a laptop, enabling numlock can be painful with the
+ integrated keyboard.
+ .
+ You can choose to disable it completely. 
+
+Template: elsa/session-path
+Type: string
+Default: /bin:/usr/bin:/usr/local/bin
+_Description: Path to export for the session:
+ You can configure the default paths exported in the user session at
+ login time.
+
+Template: elsa/use-session-login
+Type: boolean
+Default: false
+_Description: Use session_login command instead of xdg desktop?
+ If false, use the xdg desktop and determine the command to use.
+ .
+ If true, use the session_login command configured in elsa.conf to
+ exec xinitrc by default.
+
+Template: elsa/xorg-args
+Type: string
+Default: -nolisten tcp -br vt7
+_Description: X server arguments:
+ Enter the list of arguments to pass to X server.
