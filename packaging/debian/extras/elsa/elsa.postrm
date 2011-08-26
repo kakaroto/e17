@@ -19,6 +19,7 @@ set -e
 # the debian-policy package
 
 CONFFILE=/etc/elsa.conf
+PAMFILE=/etc/pam.d/elsa
 
 case "$1" in
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
@@ -26,6 +27,7 @@ case "$1" in
 
     purge)
 	rm -f "$CONFFILE"
+	rm -f "$PAMFILE"
     ;;
 
     *)

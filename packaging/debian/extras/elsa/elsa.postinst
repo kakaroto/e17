@@ -71,7 +71,7 @@ configure_default_dm () {
     fi
 }
 
-# create a default configuration file if nothing exists yet
+# create a pam file if nothing exists yet
 create_pam() {
     if [ ! -e "$PAMFILE" ]
     then
