@@ -173,13 +173,9 @@ _win_play_eval(Win *w)
 
    w->play.position = emotion_object_position_get(w->emotion);
    w->play.length = emotion_object_play_length_get(w->emotion);
-   
+
    if ((w->song) && (w->song->length != (int)w->play.length))
-     {
-        db_song_length_set(w->db, w->song, w->play.length);
-// why do this? item doesnt have any new fields in the item.       
-//        list_song_updated(w->list);
-     }
+      db_song_length_set(w->db, w->song, w->play.length);
 
    mf = alloca(sizeof(Edje_Message_Float_Set) + sizeof(double));
    mf->count = 2;
@@ -517,7 +513,7 @@ _win_edje_msg(void *data, Evas_Object *o __UNUSED__, Edje_Message_Type type, int
      }
 }
 
-void 
+void
 enjoy_control_next(void)
 {
    Win *w = &_win;

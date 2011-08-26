@@ -190,11 +190,6 @@ elm_main(int argc, char **argv)
    cover_init();
    elm_run();
 
-// don't del win - autodel is set. choose. either use autodel and then set win
-// handle to NULL in callback sou dont del it here, or set up del req callback
-// that exits mainloop and comes to here. for now - disable this.
-//   evas_object_del(app.win);
-
  end:
    EINA_LIST_FREE(app.add_dirs, s) free(s);
    EINA_LIST_FREE(app.del_dirs, s) free(s);
