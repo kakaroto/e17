@@ -211,6 +211,9 @@ e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data)
 {
   E_DBus_Object *obj;
 
+  EINA_SAFETY_ON_NULL_RETURN_VAL(conn, NULL);
+  EINA_SAFETY_ON_NULL_RETURN_VAL(object_path, NULL);
+
   obj = calloc(1, sizeof(E_DBus_Object));
   if (!obj) return NULL;
 
@@ -290,6 +293,9 @@ e_dbus_object_property_set_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Set
 EAPI void
 e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface)
 {
+  EINA_SAFETY_ON_NULL_RETURN(obj);
+  EINA_SAFETY_ON_NULL_RETURN(iface);
+
   e_dbus_interface_ref(iface);
   obj->interfaces = eina_list_append(obj->interfaces, iface);
   obj->introspection_dirty = 1;
