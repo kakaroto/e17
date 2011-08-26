@@ -35,12 +35,39 @@ extern int _log_domain;
 #define MSG_LOOP     5
 #define MSG_SHUFFLE  6
 
+typedef enum {
+   ENJOY_EVENT_PLAYER_CAPS_CHANGE,
+   ENJOY_EVENT_PLAYER_STATUS_CHANGE,
+   ENJOY_EVENT_PLAYER_TRACK_CHANGE,
+   ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE
+} Event_ID;
+
+typedef enum {
+  CAN_GO_NEXT = 1 << 0,
+  CAN_GO_PREV = 1 << 1,
+  CAN_PAUSE = 1 << 2,
+  CAN_PLAY = 1 << 3,
+  CAN_SEEK = 1 << 4,
+  CAN_PROVIDE_METADATA = 1 << 5,
+  CAN_HAS_TRACKLIST = 1 << 6
+} Capabilities;
+
 struct _App
 {
    Eina_List   *add_dirs;
    Eina_List   *del_dirs;
    char         configdir[PATH_MAX];
    Evas_Object *win;
+   struct {
+      struct {
+         int caps_change;
+         int status_change;
+         int track_change;
+      } player;
+      struct {
+         int tracklist_change;
+      } tracklist;
+   } event_id;
 };
 
 
@@ -68,6 +95,10 @@ void       enjoy_quit(void);
 void       enjoy_repeat_set(Eina_Bool repeat);
 void       enjoy_status_get(int *playback, int *shuffle, int *repeat, int *endless);
 void       enjoy_volume_set(int32_t volume);
+
+
+int        enjoy_event_id_get(Event_ID eid);
+void	   no_free();
 
 Libmgr      *libmgr_new(const char *dbpath);
 Eina_Bool    libmgr_scanpath_add(Libmgr *mgr, const char *path);

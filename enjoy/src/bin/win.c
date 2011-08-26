@@ -1,5 +1,4 @@
 #include "private.h"
-#include "mpris.h"
 #include <Emotion.h>
 
 typedef struct Win
@@ -142,7 +141,9 @@ _win_toolbar_eval(Win *w)
         elm_toolbar_item_disabled_set(w->action.nowplaying, EINA_TRUE);
      }
 
-   mpris_signal_player_caps_change(enjoy_caps_get());
+   int *caps = malloc(sizeof(*caps));
+   *caps = enjoy_caps_get();
+   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
 }
 
 static void
@@ -150,8 +151,15 @@ _win_play_pause_toggle(Win *w)
 {
    int playback, shuffle, repeat, endless;
    enjoy_status_get(&playback, &shuffle, &repeat, &endless);
-   mpris_signal_player_status_change(playback, shuffle, repeat, endless);
-   mpris_signal_player_caps_change(enjoy_caps_get());
+   int *status = malloc(sizeof(*status) * 4);
+   status[0] = playback;
+   status[1] = shuffle;
+   status[2] = repeat;
+   status[3] = endless;
+   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_STATUS_CHANGE), status, NULL, NULL);
+   int *caps = malloc(sizeof(*caps));
+   *caps = enjoy_caps_get();
+   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
 
    if (w->play.playing)
       elm_toolbar_item_state_set(w->action.play, w->action.pause);
@@ -183,7 +191,9 @@ _win_play_eval(Win *w)
    w->play.playing_last = !w->play.playing;
    _win_play_pause_toggle(w);
 
-   mpris_signal_player_caps_change(enjoy_caps_get());
+   int *caps = malloc(sizeof(*caps));
+   *caps = enjoy_caps_get();
+   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
 }
 
 static Eina_Bool
@@ -270,8 +280,10 @@ end:
    _win_play_eval(w);
    _win_toolbar_eval(w);
 
-   mpris_signal_player_caps_change(enjoy_caps_get());
-   mpris_signal_player_track_change(s);
+   int *caps = malloc(sizeof(*caps));
+   *caps = enjoy_caps_get();
+   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
+   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), s, no_free, NULL);
 }
 
 static void
@@ -359,7 +371,9 @@ _win_action_play(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNU
    _win_play_pause_toggle(w);
    _win_play_eval(w);
 
-   mpris_signal_player_caps_change(enjoy_caps_get());
+   int *caps = malloc(sizeof(*caps));
+   *caps = enjoy_caps_get();
+   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
 }
 
 static void
@@ -372,7 +386,9 @@ _win_action_pause(void *data, Evas_Object *obj __UNUSED__, void *event_info __UN
    _win_play_pause_toggle(w);
    _win_play_eval(w);
 
-   mpris_signal_player_caps_change(enjoy_caps_get());
+   int *caps = malloc(sizeof(*caps));
+   *caps = enjoy_caps_get();
+   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
 }
 
 static void

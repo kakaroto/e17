@@ -12,6 +12,12 @@ typedef struct _MPRIS_Signal MPRIS_Signal;
 #define PLAYER_NAME "/Player"
 
 
+static void _mpris_signal_player_caps_change(int caps);
+static void _mpris_signal_player_status_change(int playback, int shuffle, int repeat, int endless);
+static void _mpris_signal_player_track_change(Song *song);
+static void _mpris_signal_tracklist_tracklist_change(int size);
+
+static void _mpris_signal_emit(const char *root, const char *signal_name, int arg_type, void *arg_value);
 static void _mpris_signals_add(const char *root, const MPRIS_Signal *signals);
 static void _mpris_methods_add(const char *root, const MPRIS_Method *methods);
 static void _mpris_append_dict_entry(DBusMessageIter *dict_iter, const char *key,
@@ -133,6 +139,39 @@ static const MPRIS_Method mpris_tracklist_methods[] = {
 };
 
 
+static Ecore_Event_Handler *_event_handler_caps_change,
+      *_event_handler_status_change,
+      *_event_handler_track_change,
+      *_event_handler_tracklist_change;
+
+static Eina_Bool
+_cb_player_caps_change(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   _mpris_signal_player_caps_change(*(int *)event);
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_cb_player_status_change(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   int *new_status = event;
+   _mpris_signal_player_status_change(new_status[0], new_status[1], new_status[2], new_status[3]);
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_cb_player_track_change(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   _mpris_signal_player_track_change((Song *)event);
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_cb_player_tracklist_change(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+   _mpris_signal_tracklist_tracklist_change(*(int *)event);
+   return ECORE_CALLBACK_PASS_ON;
+}
 
 void
 mpris_init(void)
@@ -142,12 +181,20 @@ mpris_init(void)
    conn = e_dbus_bus_get(DBUS_BUS_SESSION);
    if (conn)
      e_dbus_request_name(conn, APPLICATION_NAME, 0, _cb_dbus_request_name, NULL);
+   _event_handler_caps_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), _cb_player_caps_change, NULL);
+   _event_handler_status_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_STATUS_CHANGE), _cb_player_status_change, NULL);
+   _event_handler_track_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), _cb_player_track_change, NULL);
+   _event_handler_tracklist_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE), _cb_player_tracklist_change, NULL);
 }
 
 void
 mpris_shutdown(void)
 {
    if (!conn) return;
+   ecore_event_handler_del(_event_handler_caps_change);
+   ecore_event_handler_del(_event_handler_status_change);
+   ecore_event_handler_del(_event_handler_track_change);
+   ecore_event_handler_del(_event_handler_tracklist_change);
    eina_hash_free(interface_list);
    e_dbus_shutdown();
    conn = NULL;
@@ -323,7 +370,7 @@ _mpris_message_fill_song_metadata(DBusMessage *msg, Song *song)
 }
 
 void
-mpris_signal_player_caps_change(int caps)
+_mpris_signal_player_caps_change(int caps)
 {
    static int old_caps = 0;
    if (caps != old_caps)
@@ -333,8 +380,8 @@ mpris_signal_player_caps_change(int caps)
      }
 }
 
-void
-mpris_signal_player_status_change(int playback, int shuffle, int repeat, int endless)
+static void
+_mpris_signal_player_status_change(int playback, int shuffle, int repeat, int endless)
 {
    DBusMessage *sig;
    DBusMessageIter iter, siter;
@@ -360,8 +407,8 @@ mpris_signal_player_status_change(int playback, int shuffle, int repeat, int end
    dbus_message_unref(sig);
 }
 
-void
-mpris_signal_player_track_change(Song *song)
+static void
+_mpris_signal_player_track_change(Song *song)
 {
    static Song *old_song = NULL;
    if (old_song != song)
@@ -375,8 +422,8 @@ mpris_signal_player_track_change(Song *song)
      }
 }
 
-void
-mpris_signal_tracklist_tracklist_change(int size)
+static void
+_mpris_signal_tracklist_tracklist_change(int size)
 {
    _mpris_signal_emit(TRACKLIST_NAME, "TrackListChange", DBUS_TYPE_INT32, &size);
 }

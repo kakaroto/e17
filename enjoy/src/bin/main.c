@@ -85,6 +85,34 @@ enjoy_cache_dir_get(void)
    return cache;
 }
 
+void
+no_free()
+{
+}
+
+int
+enjoy_event_id_get(Event_ID event_id)
+{
+   switch (event_id)
+     {
+       case ENJOY_EVENT_PLAYER_CAPS_CHANGE: return app.event_id.player.caps_change;
+       case ENJOY_EVENT_PLAYER_STATUS_CHANGE: return app.event_id.player.status_change;
+       case ENJOY_EVENT_PLAYER_TRACK_CHANGE: return app.event_id.player.track_change;
+       case ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE: return app.event_id.tracklist.tracklist_change;
+     }
+   return -1;
+}
+
+static void
+enjoy_event_id_init()
+{
+   ecore_init();
+   app.event_id.player.caps_change = ecore_event_type_new();
+   app.event_id.player.status_change = ecore_event_type_new();
+   app.event_id.player.track_change = ecore_event_type_new();
+   app.event_id.tracklist.tracklist_change = ecore_event_type_new();
+}
+
 EAPI int
 elm_main(int argc, char **argv)
 {
@@ -156,7 +184,8 @@ elm_main(int argc, char **argv)
    fso_init();
    fso_request_resource("CPU");	
 #endif
-   
+
+   enjoy_event_id_init();
    mpris_init();
    cover_init();
    elm_run();
