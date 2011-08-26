@@ -155,7 +155,7 @@ mpris_shutdown(void)
 }
 
 static void
-_cb_dbus_request_name(void *data __UNUSED__, DBusMessage *msg __UNUSED__, DBusError *err)
+_cb_dbus_request_name(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 {
    DBusError new_err;
    dbus_uint32_t msgtype;
