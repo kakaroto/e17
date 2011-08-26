@@ -31,6 +31,7 @@ set -e
 
 DAEMON=/usr/sbin/elsa
 CONFFILE=/etc/elsa.conf
+PAMFILE=/etc/pam.d/elsa
 DEFAULT_DISPLAY_MANAGER_FILE=/etc/X11/default-display-manager
 
 configure_default_dm () {
@@ -68,6 +69,31 @@ configure_default_dm () {
     if [ -e "$DEFAULT_DISPLAY_MANAGER_FILE.dpkg-tmp" ]; then
         rm "$DEFAULT_DISPLAY_MANAGER_FILE.dpkg-tmp"
     fi
+}
+
+# create a default configuration file if nothing exists yet
+create_pam() {
+    if [ ! -e "$PAMFILE" ]
+    then
+        cat > "$PAMFILE" << EOM
+/* $PAMFILE */
+#%PAM-1.0
+auth    requisite       pam_nologin.so
+auth    required        pam_env.so readenv=1
+auth    required        pam_env.so readenv=1 envfile=/etc/default/locale
+@include common-auth
+auth    optional        pam_gnome_keyring.so
+@include common-account
+session required        pam_limits.so
+@include common-session
+session optional        pam_gnome_keyring.so auto_start
+@include common-password
+
+}
+EOM
+    fi
+    # we're done
+    return 0
 }
 
 # create a default configuration file if nothing exists yet
@@ -215,6 +241,7 @@ fi
 case "$1" in
     configure)
         configure_default_dm
+        create_pam
         create_config
         update_config elsa/autologin autologin
         update_config elsa/autologin-user userlogin
