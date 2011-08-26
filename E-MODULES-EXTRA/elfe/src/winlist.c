@@ -300,11 +300,11 @@ _transit_win_anim_del_cb(void *data, Elm_Transit *transit)
 
    elm_layout_content_set(it->layout, "elfe.swallow.content", it->win);
    if (it->bd->client.netwm.name)
-     elm_layout_text_set(it->layout, "elfe.text.label",
-                         it->bd->client.netwm.name);
+     elm_object_text_part_set(it->layout, "elfe.text.label",
+                              it->bd->client.netwm.name);
    else if (it->bd->client.icccm.title)
-     elm_layout_text_set(it->layout, "elfe.text.label",
-                         it->bd->client.icccm.title);
+     elm_object_text_part_set(it->layout, "elfe.text.label",
+                              it->bd->client.icccm.title);
 }
 
 static void
@@ -496,7 +496,7 @@ _elfe_action(const char *params, int modifiers, int method)
 	bx = elm_box_add(sc);
 	evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
-	elm_box_homogenous_set(bx, EINA_TRUE);
+	elm_box_homogeneous_set(bx, EINA_TRUE);
 	elm_box_horizontal_set(bx, EINA_TRUE);
 	evas_object_show(bx);
 

@@ -252,7 +252,7 @@ elfe_dock_add(Evas_Object *parent)
 				       NULL, NULL);
 
    dock->table = elm_table_add(parent);
-   elm_table_homogenous_set(dock->table, EINA_TRUE);
+   elm_table_homogeneous_set(dock->table, EINA_TRUE);
 
    _populate_dock(dock);
 

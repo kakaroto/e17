@@ -387,11 +387,11 @@ elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
    bx = elm_box_add(desk->sc);
    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_homogenous_set(bx, EINA_TRUE);
+   elm_box_homogeneous_set(bx, EINA_TRUE);
    elm_box_horizontal_set(bx, EINA_TRUE);
 
    desk->selector = elm_box_add(desk->layout);
-   elm_box_homogenous_set(desk->selector, EINA_TRUE);
+   elm_box_homogeneous_set(desk->selector, EINA_TRUE);
    elm_box_horizontal_set(desk->selector, EINA_TRUE);
    evas_object_show(desk->selector);
 
