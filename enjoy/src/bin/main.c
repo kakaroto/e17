@@ -182,7 +182,6 @@ elm_main(int argc, char **argv)
    
 #ifdef _HAVE_FSO_
    fso_init();
-   fso_request_resource("CPU");	
 #endif
 
    enjoy_event_id_init();
@@ -201,7 +200,6 @@ elm_main(int argc, char **argv)
    cover_shutdown();
 
 #ifdef _HAVE_FSO_
-   fso_release_resource("CPU");
    fso_shutdown();
 #endif
 

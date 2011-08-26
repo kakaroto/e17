@@ -13,7 +13,7 @@ E_DBus_Connection *sysconn = NULL;
 
 /* callbacks */
 
-void
+static void
 fso_request_reource_cb(void *data, DBusMessage *replymsg, DBusError *error)
 {
    DBG("Request sent to fsousaged to enable resource.");
@@ -22,7 +22,7 @@ fso_request_reource_cb(void *data, DBusMessage *replymsg, DBusError *error)
       ERR("Error requesting FSO resource: %s - %s\n", error->name, error->message);
 }
 
-void
+static void
 fso_release_reource_cb(void *data, DBusMessage *replymsg, DBusError *error)
 {
    DBG("Request sent to fsousaged to disable resource.");
@@ -40,18 +40,20 @@ fso_init(void)
    if (sysconn) return;
    e_dbus_init();
    sysconn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
+   fso_request_resource("CPU");
 }
 
 void
 fso_shutdown(void)
 {
    if (!sysconn) return;
+   fso_release_resource("CPU");
    e_dbus_shutdown();
    sysconn = NULL;
 }
 
 
-void
+static void
 fso_request_resource(const char *resource)
 {
    DBusMessage *msg;
@@ -67,7 +69,7 @@ fso_request_resource(const char *resource)
 }
 
 
-void
+static void
 fso_release_resource(const char *resource)
 {
    DBusMessage *msg;
