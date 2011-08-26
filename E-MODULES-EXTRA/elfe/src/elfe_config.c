@@ -1,5 +1,6 @@
 #include <e.h>
 #include <Eina.h>
+#include <Elementary.h>
 
 #include "main.h"
 #include "elfe_config.h"
