@@ -1477,10 +1477,10 @@ EwinOpActivate(EWin * ewin, int source, int raise)
 
    if (!ewin->state.animated && !ewin->state.iconified)
      {
-	DeskGotoByEwin(ewin);
 	/* If somehow lost outside desktop, move it to center */
 	if (!EwinIsOnDesktop(ewin))
 	   ArrangeEwinCentered(ewin);
+	DeskGotoByEwin(ewin);
      }
    if (raise)
       EwinOpRaise(ewin, source);
