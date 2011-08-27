@@ -365,6 +365,7 @@ _DialogEwinInit(EWin * ewin)
    ewin->props.focus_when_mapped = 1;
    ewin->props.ignorearrange = 1;
 
+   EoSetSticky(ewin, 1);
    EoSetLayer(ewin, 10);
 }
 
@@ -428,10 +429,6 @@ DialogShowArranged(Dialog * d, int center)
    ewin = FindEwinByDialog(d);
    if (ewin)
      {
-#if 0				/* Make dialogs sticky? */
-	if (EoGetDesk(ewin) != DesksGetCurrent())
-	   EwinMoveToDesktop(ewin, DesksGetCurrent());
-#endif
 	EwinRaise(ewin);
 	EwinShow(ewin);
 	return;
