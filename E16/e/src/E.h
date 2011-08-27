@@ -496,6 +496,7 @@ void                DialogOKstr(const char *title, const char *txt);
 #define MR_SHADED       3
 #define MR_SEMI_SOLID   4
 #define MR_TRANSLUCENT  5
+#define MR_TECH_OPAQUE  6
 
 int                 MoveResizeModeValidateMove(int md);
 int                 MoveResizeModeValidateResize(int md);

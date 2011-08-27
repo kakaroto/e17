@@ -118,6 +118,16 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonGroupSetVal(di, MR_TECHNICAL);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("TechOpaque"));
+   DialogItemRadioButtonSetFirst(di, radio1);
+   DialogItemRadioButtonGroupSetVal(di, MR_TECH_OPAQUE);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("TechOpaque"));
+   DialogItemRadioButtonSetFirst(di, radio2);
+   DialogItemRadioButtonGroupSetVal(di, MR_TECH_OPAQUE);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, MR_BOX);
@@ -419,6 +429,11 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonGroupSetVal(di, MR_TECHNICAL);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("TechOpaque"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, MR_TECH_OPAQUE);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetText(di, _("Box"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, MR_BOX);
@@ -435,8 +450,6 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonGroupSetVal(di, MR_SEMI_SOLID);
    DialogItemRadioButtonGroupSetValPtr(radio, &dd->slide_mode);
 #endif /* ENABLE_OLDMOVRES */
-
-   DialogAddItem(table, DITEM_NONE);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);

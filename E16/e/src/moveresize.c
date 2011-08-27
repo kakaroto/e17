@@ -56,7 +56,7 @@ _NeedServerGrab(int mode)
 {
    if (mode == MR_OPAQUE)
       return 0;
-   if (mode <= MR_BOX)
+   if ((mode <= MR_BOX) || (mode == MR_TECH_OPAQUE))
       return !Conf.movres.avoid_server_grab;
    return 1;
 }
@@ -127,7 +127,7 @@ MoveResizeMoveStart(EWin * ewin, int kbd, int constrained, int nogroup)
      {
 	EwinShapeSet(gwins[i]);
 	EwinOpFloatAt(gwins[i], OPSRC_USER, EoGetX(gwins[i]), EoGetY(gwins[i]));
-	if (Mode_mr.mode == MR_OPAQUE)
+	if ((Mode_mr.mode == MR_OPAQUE) || (Mode_mr.mode == MR_TECH_OPAQUE))
 	  {
 	     ewin->state.moving = 1;
 	     EwinUpdateOpacity(gwins[i]);
@@ -189,7 +189,7 @@ _MoveResizeMoveEnd(EWin * ewin)
 	   EwinOpUnfloatAt(ewin, OPSRC_USER, d2,
 			   ewin->shape_x - (EoGetX(d2) - EoGetX(d1)),
 			   ewin->shape_y - (EoGetY(d2) - EoGetY(d1)));
-	if (Mode_mr.mode == MR_OPAQUE)
+	if ((Mode_mr.mode == MR_OPAQUE) || (Mode_mr.mode == MR_TECH_OPAQUE))
 	  {
 	     ewin->state.moving = 0;
 	     EwinUpdateOpacity(ewin);
@@ -328,7 +328,7 @@ MoveResizeResizeStart(EWin * ewin, int kbd, int hv)
 	/* Run idlers (stacking, border updates, ...) before drawing lines */
 	IdlersRun();
      }
-   if (Mode_mr.mode == MR_OPAQUE)
+   if ((Mode_mr.mode == MR_OPAQUE) || (Mode_mr.mode == MR_TECH_OPAQUE))
      {
 	ewin->state.resizing = 1;
 	EwinUpdateOpacity(ewin);
@@ -465,7 +465,7 @@ _MoveResizeResizeEnd(EWin * ewin)
    DrawEwinShape(ewin, Conf.movres.mode_resize, ewin->shape_x, ewin->shape_y,
 		 ewin->shape_w, ewin->shape_h, 2, 0);
 
-   if (Mode_mr.mode == MR_OPAQUE)
+   if ((Mode_mr.mode == MR_OPAQUE) || (Mode_mr.mode == MR_TECH_OPAQUE))
      {
 	ewin->state.resizing = 0;
 	EwinUpdateOpacity(ewin);

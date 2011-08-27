@@ -86,7 +86,7 @@ ShapewinCreate(int md)
 			   ShapeInput, 0, 0, NULL, 0, ShapeSet, Unsorted);
 #endif
 
-   if (md == MR_TECHNICAL)
+   if ((md == MR_TECHNICAL) || (md == MR_TECH_OPAQUE))
      {
 	sw->mask =
 	   ECreatePixmap(EoGetWin(sw), WinGetW(VROOT), WinGetH(VROOT), 1);
@@ -111,7 +111,7 @@ ShapewinShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
    w2 = w + bl + br;
    h2 = h + bt + bb;
 
-   if (md == MR_TECHNICAL)
+   if ((md == MR_TECHNICAL) || (md == MR_TECH_OPAQUE))
      {
 	XSetForeground(disp, sw->gc, 0);
 	XFillRectangle(disp, sw->mask, sw->gc,

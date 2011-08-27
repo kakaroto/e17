@@ -208,12 +208,9 @@ CfgStrlistIndex(const char *const *list, const char *str)
    return -1;
 }
 
-static const char  *const MovResCfgMoveModes[] = {
-   "opaque", "lined", "box", "shaded", "semi-solid", "translucent", NULL
-};
-
-static const char  *const MovResCfgResizeModes[] = {
-   "opaque", "lined", "box", "shaded", "semi-solid", NULL
+static const char  *const MovResCfgMoveResizeModeNames[] = {
+   "opaque", "lined", "box", "shaded", "semi-solid", "translucent", "techop",
+   NULL
 };
 
 static const char  *const MovResCfgInfoModes[] = {
@@ -243,11 +240,11 @@ IPC_MoveResize(const char *params)
 	     Conf.movres.mode_move =
 		MoveResizeModeValidateMove(Conf.movres.mode_move);
 	     IpcPrintf("Move mode: %s\n",
-		       MovResCfgMoveModes[Conf.movres.mode_move]);
+		       MovResCfgMoveResizeModeNames[Conf.movres.mode_move]);
 	     return;
 	  }
 
-	i = CfgStrlistIndex(MovResCfgMoveModes, param2);
+	i = CfgStrlistIndex(MovResCfgMoveResizeModeNames, param2);
 	if (i >= 0)
 	  {
 	     Conf.movres.mode_move = i;
@@ -265,11 +262,11 @@ IPC_MoveResize(const char *params)
 	     Conf.movres.mode_resize =
 		MoveResizeModeValidateResize(Conf.movres.mode_resize);
 	     IpcPrintf("Resize mode: %s\n",
-		       MovResCfgResizeModes[Conf.movres.mode_resize]);
+		       MovResCfgMoveResizeModeNames[Conf.movres.mode_resize]);
 	     return;
 	  }
 
-	i = CfgStrlistIndex(MovResCfgResizeModes, param2);
+	i = CfgStrlistIndex(MovResCfgMoveResizeModeNames, param2);
 	if (i >= 0)
 	  {
 	     Conf.movres.mode_resize = i;

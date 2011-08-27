@@ -31,11 +31,11 @@
 #if ENABLE_OLDMOVRES
 #define MR_ENABLE_STIPPLED         1	/* Enable shaded/semi-solid modes */
 #define MR_ENABLE_TRANSLUCENT      1	/* Enable translucent mode */
-#define MR_MODES_MOVE           0x3f	/* MR_OPAQUE through MR_TRANSLUCENT */
-#define MR_MODES_RESIZE         0x1f	/* MR_OPAQUE through MR_SEMI_SOLID  */
+#define MR_MODES_MOVE           0x7f	/* MR_OPAQUE through MR_TECH_OPAQUE */
+#define MR_MODES_RESIZE         0x5f	/* MR_OPAQUE through MR_SEMI_SOLID and MR_TECH_OPAQUE */
 #else
-#define MR_MODES_MOVE           0x07	/* MR_OPAQUE through MR_BOX */
-#define MR_MODES_RESIZE         0x07	/* MR_OPAQUE through MR_BOX */
+#define MR_MODES_MOVE           0x47	/* MR_OPAQUE through MR_BOX and MR_TECH_OPAQUE */
+#define MR_MODES_RESIZE         0x47	/* MR_OPAQUE through MR_BOX and MR_TECH_OPAQUE */
 #endif
 
 #if MR_ENABLE_STIPPLED
@@ -217,8 +217,11 @@ typedef void        (DrawFunc) (Drawable dr, GC gc, int a, int b, int c, int d,
 static DrawFunc    *const draw_functions[] = {
    do_draw_technical, do_draw_boxy,
 #if MR_ENABLE_STIPPLED
-   do_draw_shaded, do_draw_semi_solid
+   do_draw_shaded, do_draw_semi_solid,
+#else
+   NULL, NULL,
 #endif /* MR_ENABLE_STIPPLED */
+   NULL, do_draw_technical,
 };
 
 static void
@@ -404,12 +407,13 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	(ewin->state.shaded || (w == ewin->shape_w && h == ewin->shape_h))))
       return;
 
-   if (md == MR_OPAQUE)
+   if ((md == MR_OPAQUE) || (md == MR_TECH_OPAQUE))
      {
 	EwinOpMoveResize(ewin, OPSRC_USER, x, y, w, h);
 	EwinShapeSet(ewin);
 	CoordsShow(ewin);
-	goto done;
+	if (md == MR_OPAQUE)
+	   goto done;
      }
 
    if (firstlast == 0)
@@ -440,7 +444,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 
    EwinBorderGetSize(ewin, &psd->bl, &psd->br, &psd->bt, &psd->bb);
 
-   if (md <= MR_BOX && Conf.movres.avoid_server_grab)
+   if (((md <= MR_BOX) || (md == MR_TECH_OPAQUE)) &&
+       Conf.movres.avoid_server_grab)
      {
 	_ShapeDrawNograb_tech_box(psd, md, firstlast, x, y, w, h, seqno);
 	goto done;
@@ -449,6 +454,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
    switch (md)
      {
      case MR_TECHNICAL:
+     case MR_TECH_OPAQUE:
      case MR_BOX:
 #if MR_ENABLE_STIPPLED
      case MR_SHADED:
