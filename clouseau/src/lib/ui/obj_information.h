@@ -15,8 +15,8 @@ struct _Obj_Information
         double align_x, align_y;
         double weight_x, weight_y;
         int r, g, b, a;
-        Eina_Bool is_clipper : 1;
-        Eina_Bool is_visible : 1;
+        Eina_Bool is_clipper;
+        Eina_Bool is_visible;
    } evas_props;
 
    enum {
@@ -32,9 +32,9 @@ struct _Obj_Information
              const char *type;
              const char *style;
              double scale;
-             Eina_Bool is_disabled : 1;
-             Eina_Bool is_mirrored : 1;
-             Eina_Bool is_mirrored_automatic : 1;
+             Eina_Bool is_disabled;
+             Eina_Bool is_mirrored;
+             Eina_Bool is_mirrored_automatic;
         } elm;
         struct {
              const char *font;

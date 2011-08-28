@@ -274,7 +274,6 @@ _load_list(Evas_Object *gl)
                    glflag, NULL, NULL);
           }
      }
-
 }
 
 static void

@@ -22,8 +22,8 @@ struct _Tree_Item
    Eina_List *children;
    const char *name;
    void *ptr;
-   Eina_Bool is_obj : 1;
-   Eina_Bool is_clipper : 1;
-   Eina_Bool is_visible : 1;
+   Eina_Bool is_obj;
+   Eina_Bool is_clipper;
+   Eina_Bool is_visible;
 };
 #endif
