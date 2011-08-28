@@ -550,14 +550,19 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
      {
         Eina_List *itr;
         Inf_Tree_Item *tit;
+        Eina_Bool first_it = EINA_TRUE;
 
         EINA_LIST_FOREACH(information_tree, itr, tit)
           {
              Elm_Genlist_Item *git;
              git = elm_genlist_item_append(prop_list, &itc, tit, NULL,
                    ELM_GENLIST_ITEM_SUBITEMS, _gl_selected, NULL);
-             /* Start with all the base item expanded */
-             elm_genlist_item_expanded_set(git, EINA_TRUE);
+             if (first_it)
+               {
+                  /* Start with all the base item expanded */
+                  elm_genlist_item_expanded_set(git, EINA_TRUE);
+                  first_it = EINA_FALSE;
+               }
           }
      }
 
