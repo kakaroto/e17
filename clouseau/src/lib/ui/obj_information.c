@@ -159,6 +159,7 @@ _obj_information_get(Tree_Item *treeit)
    Evas_Object *obj = treeit->ptr;
    oinfo = calloc(1, sizeof(*oinfo));
 
+   oinfo->evas_props.pass_events = evas_object_pass_events_get(obj);
    oinfo->evas_props.has_focus = evas_object_focus_get(obj);
    oinfo->evas_props.is_visible = evas_object_visible_get(obj);
    oinfo->evas_props.name = eina_stringshare_add(evas_object_name_get(obj));
@@ -368,6 +369,12 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
 
         snprintf(buf, sizeof(buf), "Has focus: %d",
               (int) oinfo->evas_props.has_focus);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        snprintf(buf, sizeof(buf), "Pass events: %d",
+              (int) oinfo->evas_props.pass_events);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);

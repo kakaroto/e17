@@ -14,3 +14,4 @@
 
 * EET uses malloc, not stringshare, change stringshare -> strdup
 * Fix has_focus.
+* Hook on feed events or something and let us see who gets what?

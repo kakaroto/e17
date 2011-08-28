@@ -15,6 +15,7 @@ struct _Obj_Information
         double align_x, align_y;
         double weight_x, weight_y;
         int r, g, b, a;
+        Eina_Bool pass_events;
         Eina_Bool has_focus;
         Eina_Bool is_clipper;
         Eina_Bool is_visible;
