@@ -5,31 +5,25 @@ group {
 	parts {
 		part {
 			name: "trough_left";
-			type: IMAGE;
 			mouse_events: 0;
-	
 			description {
 				state: "default" 0.0;
 				min: 8 16;
 				max: 8 16;
 				fixed: 1 1;
-	
 				rel1 {
 					relative: 0.0 0.5;
 					offset: 3 -8;
 				}
-
 				rel2 {
 					relative: 0.0 0.5;
 					offset: 11 8;
 				}
-
 				image {
 					normal: "images/cslider_im1.png";
 					border: 6 0 7 7;
 				}
 			}
-
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
@@ -39,31 +33,25 @@ group {
 
 		part {
 			name: "trough_right";
-			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				min: 8 16;
 				max: 8 16;
 				fixed: 1 1;
-
 				rel1 {
 					relative: 1.0 0.5;
 					offset: -13 -8;
 				}
-
 				rel2 {
 					relative: 1.0 0.5;
 					offset: -5 8;
 				}
-
 				image {
 					normal: "images/cslider_im2.png";
 					border: 0 6 7 7;
 				}
 			}
-
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
@@ -74,16 +62,13 @@ group {
 		part {
 			name: "e.swallow.content";
 			type: SWALLOW;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 {
 					to: "trough";
 					relative: 0.0 0.0;
 					offset: 0 5;
 				}
-
 				rel2 {
 					to: "trough";
 					relative: 1.0 1.0;
@@ -91,17 +76,14 @@ group {
 				}
 			}
 
-
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
-
 				rel1 {
 					to: "background";
 					relative: 0.0 0.0;
 					offset: 1 2;
 				}
-
 				rel2 {
 					to: "background";
 					relative: 1.0 1.0;
@@ -112,30 +94,24 @@ group {
 
 		part {
 			name: "trough";
-			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
-
 				rel1 {
 					to: "trough_left";
 					relative: 1.0 0.0;
 					offset: 0 0;
 				}
-
 				rel2 {
 					to: "trough_right";
 					relative: 0.0 1.0;
 					offset: -1 -1;
 				}
-
 				image {
 					normal: "images/cslider_im0.png";
 					border: 1 1 2 2;
 				}
 			}
-
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
@@ -145,31 +121,25 @@ group {
 
 		part {
 			name: "background";
-			type: IMAGE;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				visible: 0;
-
 				image {
 					normal: "images/spectrum_im0.png";
 					border: 7 7 7 7;
 					middle: 0;
 				}
 			}
-
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
 				min: 14 50;
 				max: 14 9999;
 				visible: 1;
-
 				rel1 {
 					offset: 0 2;
 				}
-
 				rel2 {
 					offset: -1 -3;
 				}
@@ -180,36 +150,31 @@ group {
 			name: "confine"; /* overlap */
 			type: RECT;
 			mouse_events: 0;
-
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 0;
 				visible: 0;
-
+				fixed: 1 1;
 				rel1 {
 					to: "e.swallow.content";
 					relative: 0.0 0.0;
 					offset: -5 10;
 				}
-
 				rel2 {
 					to: "e.swallow.content";
 					relative: 1.0 1.0;
 					offset: 4 -1;
 				}
 			}
-
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
 				visible: 0;
-
 				rel1 { 
 					to: "e.swallow.content"; 
 					relative: 0.5 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "e.swallow.content"; 
 					relative: 0.5 1.0; 
@@ -220,43 +185,35 @@ group {
 
 		part {
 			name: "e.dragable.cursor";
-			type: IMAGE;
-
 			dragable {
 				x: 1 1 0;
 				y: -1 1 0;
 				confine: "confine";
 			}
-
 			description {
 				state: "default" 0.0;
 				min: 11 9;
 				max: 11 9;
 				fixed: 1 1;
-
 				rel1 { 
 					to: "e.swallow.content"; 
 					relative: 0.5 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "e.swallow.content"; 
 					relative: 0.5 1.0; 
 					offset: -1 -1; 
 				}
-
 				image {
 					normal: "images/spectrum_im2.png";
 				}
 			}
-	
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
 				min: 9 1;
 				max: 9 1;
-
 				image {
 					normal: "images/spectrum_im3.png";
 				}
@@ -265,32 +222,26 @@ group {
 
 		part {
 			name: "vert.dragable.cursor.part1";
-			type: IMAGE;
-
 			description {
 				state: "default" 0.0;
 				min: 9 5;
 				max: 9 5;
 				fixed: 1 1;
 				visible: 0;
-
 				rel1 { 
 					to: "e.dragable.cursor"; 
 					relative: 0.0 0.0; 
 					offset: 0 -5; 
 				}
-
 				rel2 { 
 					to: "e.dragable.cursor"; 
 					relative: 1.0 0.0; 
 					offset: -1 -1; 
 				}
-
 				image {
 					normal: "images/spectrum_im5.png";
 				}
 			}
-
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
@@ -300,32 +251,26 @@ group {
 
 		part {
 			name: "vert.dragable.cursor.part2";
-			type: IMAGE;
-
 			description {
 				state: "default" 0.0;
 				min: 9 5;
 				max: 9 5;
 				fixed: 1 1;
 				visible: 0;
-
 				rel1 { 
 					to: "e.dragable.cursor"; 
 					relative: 0.0 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "e.dragable.cursor"; 
 					relative: 1.0 0.0; 
 					offset: -1 7; 
 				}
-
 				image {
 					normal: "images/spectrum_im6.png";
 				}
 			}
-
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
@@ -335,32 +280,26 @@ group {
 
 		part {
 			name: "opposite.e.dragable.cursor.top";
-			type: IMAGE;
-
 			description {
 				state: "default" 0.0;
 				min: 9 5;
 				max: 9 5;
 				fixed: 1 1;
 				visible: 0;
-
 				rel1 { 
 					to: "opposite.e.dragable.cursor.middle"; 
 					relative: 0.0 0.0; 
 					offset: 0 -5; 
 				}
-
 				rel2 { 
 					to: "opposite.e.dragable.cursor.middle"; 
 					relative: 1.0 0.0; 
 					offset: -1 -1; 
 				}
-
 				image {
 					normal: "images/spectrum_im7.png";
 				}
 			}
-
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
@@ -370,33 +309,27 @@ group {
 
 		part {
 			name: "opposite.e.dragable.cursor.middle";
-			type: IMAGE;
-
 			description {
 				state: "default" 0.0;
 				min: 9 1;
 				max: 9 1;
 				fixed: 1 1;
 				visible: 0;
-
 				rel1 { 
 					to: "e.dragable.cursor"; 
 					relative: 1.0 0.0; 
 					offset: 0 1; 
 				}
-
 				rel2 { 
 					to: "e.dragable.cursor"; 
 					relative: 1.0 0.0; 
 					offset: 8 -1; 
 				}
 
-
 				image {
 					normal: "images/spectrum_im8.png";
 				}
 			}
-	
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
@@ -406,33 +339,27 @@ group {
 
 		part {
 			name: "opposite.e.dragable.cursor.bottom";
-			type: IMAGE;
-
 			description {
 				state: "default" 0.0;
 				min: 9 5;
 				max: 9 5;
 				fixed: 1 1;
 				visible: 0;
-
 				rel1 { 
 					to: "opposite.e.dragable.cursor.middle"; 
 					relative: 0.0 0.0; 
 					offset: 0 0; 
 				}
-
 				rel2 { 
 					to: "opposite.e.dragable.cursor.middle"; 
 					relative: 1.0 0.0; 
 					offset: -1 7; 
 				}
 
-
 				image {
 					normal: "images/spectrum_im9.png";
 				}
 			}
-	
 			description {
 				state: "vertical" 0.0;
 				inherit: "default" 0.0;
@@ -440,7 +367,6 @@ group {
 			}
 		}
 	}
-
 	programs {
 		program {
 			name: "go_vertical";
@@ -462,4 +388,3 @@ group {
 		} 
 	}
 }
-
