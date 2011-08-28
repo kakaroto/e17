@@ -23,8 +23,9 @@
 #define COLOR_LIST_BG_ACTIVE 138 171 225 255
 #define COLOR_LIST_HEADER    103 135 183 255
 
+#ifndef COLORS
 #define COLORS 0 /* 0: default, 1: darker */
-
+#endif
 data {
 	item: "theme/name" 		"detourious";
 	item: "theme/version"	"0.8.0";

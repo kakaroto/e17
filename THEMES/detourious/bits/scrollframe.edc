@@ -254,7 +254,7 @@ group {
                     normal: "images/scrollframe-bar_im3.png";
                     border: 2 2 2 2;
                 }
-				color_class: "dialog_base";
+				/* color_class: "dialog_base"; */
             }
             description {
                 state: "clicked" 0.0;
@@ -434,7 +434,7 @@ group {
                     normal: "images/scrollframe-bar_im1.png";
                     border: 2 2 2 2;
                 }				
-				color_class: "dialog_base";
+				/* color_class: "dialog_base"; */
             }
             description {
                 state: "clicked" 0.0;
