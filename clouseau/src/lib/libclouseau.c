@@ -15,7 +15,7 @@
 #include "libclouseau.h"
 #include "ui/obj_information.h"
 
-static Elm_Genlist_Item_Class itc, itc_ee;
+static Elm_Genlist_Item_Class itc;
 static Eina_Bool _lib_init = EINA_FALSE;
 static Eina_List *tree = NULL;
 static Eina_Bool list_show_clippers = EINA_TRUE, list_show_hidden = EINA_TRUE;
@@ -52,6 +52,10 @@ static Evas_Object *
 item_icon_get(void *data, Evas_Object *parent, const char *part)
 {
    Tree_Item *treeit = data;
+
+   if (!treeit->is_obj)
+      return NULL;
+
    if (!strcmp(part, "elm.swallow.icon"))
      {
         char buf[PATH_MAX];
@@ -119,14 +123,6 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
 
 static char *
 item_label_get(void *data, Evas_Object *obj __UNUSED__,
-      const char *part __UNUSED__)
-{
-   Tree_Item *treeit = data;
-   return strdup(treeit->name);
-}
-
-static char *
-item_ee_label_get(void *data, Evas_Object *obj __UNUSED__,
       const char *part __UNUSED__)
 {
    Tree_Item *treeit = data;
@@ -208,12 +204,12 @@ libclouseau_item_add(Evas_Object *o, Evas_Object *gl, Tree_Item *parent)
    treeit->is_obj = EINA_TRUE;
    if (elm_widget_is(o))
      {
-        snprintf(buf, sizeof(buf), "%p %s: %s", o, evas_object_type_get(o),
+        snprintf(buf, sizeof(buf), "%s: %s", evas_object_type_get(o),
               elm_widget_type_get(o));
      }
    else
      {
-        snprintf(buf, sizeof(buf), "%p %s", o, evas_object_type_get(o));
+        snprintf(buf, sizeof(buf), "%s", evas_object_type_get(o));
      }
    treeit->name = eina_stringshare_add(buf);
    treeit->is_clipper = !!evas_object_clipees_get(o);
@@ -274,10 +270,11 @@ _load_list(Evas_Object *gl)
           {
              Elm_Genlist_Item_Flags glflag = (treeit->children) ?
                 ELM_GENLIST_ITEM_SUBITEMS : ELM_GENLIST_ITEM_NONE;
-             elm_genlist_item_append(gl, &itc_ee, treeit, NULL,
+             elm_genlist_item_append(gl, &itc, treeit, NULL,
                    glflag, NULL, NULL);
           }
      }
+
 }
 
 static void
@@ -375,12 +372,6 @@ libclouseau_init(void)
               _show_hidden_check_changed, gl);
         evas_object_smart_callback_add(show_clippers_check, "changed",
               _show_clippers_check_changed, gl);
-
-        itc_ee.item_style = "default";
-        itc_ee.func.label_get = item_ee_label_get;
-        itc_ee.func.icon_get = NULL;
-        itc_ee.func.state_get = NULL;
-        itc_ee.func.del = NULL;
 
         itc.item_style = "default";
         itc.func.label_get = item_label_get;
