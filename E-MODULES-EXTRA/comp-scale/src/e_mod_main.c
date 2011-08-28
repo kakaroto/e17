@@ -71,6 +71,8 @@ Eina_Bool
 e_mod_border_ignore(E_Border *bd)
 {
    /* ignore some borders */
+   if (bd->client.netwm.state.skip_pager)
+     return EINA_TRUE;
    if (bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DOCK)
      return EINA_TRUE;
    if (bd->client.vkbd.vkbd)
