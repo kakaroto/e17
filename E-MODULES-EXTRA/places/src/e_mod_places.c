@@ -1,11 +1,20 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include <e.h>
 #include <E_DBus.h>
-#include <E_Hal.h>
+#ifdef HAVE_HAL_MOUNT
+# include <E_Hal.h>
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+# include <E_Ukit.h>
+#endif
 #include <sys/statvfs.h>
 #include <errno.h>
-#include "config.h"
 #include "e_mod_main.h"
 #include "e_mod_places.h"
+
+static unsigned char fm_mode = 0; /* 0 = hal, 1 = udisks */
 
 /* Local Function Prototypes */
 static Eina_Bool _places_poller(void *data);
@@ -24,7 +33,7 @@ void _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission,
 void _places_custom_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 
-// Hal callbacks
+// dbus callbacks
 void _places_mount_cb(void *user_data, void *method_return, DBusError *error);
 void _places_unmount_cb(void *user_data, void *method_return, DBusError *error);
 void _places_eject_cb(void *user_data, void *method_return, DBusError *error);
@@ -38,10 +47,65 @@ void _places_storage_properties_cb(void *data, void *reply_data, DBusError *erro
 
 /* Local Variables */
 static E_DBus_Connection *conn;
-static E_DBus_Signal_Handler *sh_added, *sh_removed;
+#ifdef HAVE_HAL_MOUNT
+static E_DBus_Signal_Handler *hal_sh_added, *hal_sh_removed;
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+static E_DBus_Signal_Handler *udisks_sh_added, *udisks_sh_removed;
+#endif
+
 static Ecore_Timer *poller;
 static char theme_file[PATH_MAX];
 Eina_List *volumes;
+
+#ifdef HAVE_UDISKS_MOUNT
+static void
+udisks_test(void *data __UNUSED__, DBusMessage *msg __UNUSED__, DBusError *error)
+{
+   if (error && dbus_error_is_set(error))
+     {
+        dbus_error_free(error);
+        return;
+     }
+   fm_mode = 1;
+   udisks_sh_added = e_dbus_signal_handler_add(conn, E_UDISKS_BUS,
+                             E_UDISKS_PATH,
+                             E_UDISKS_BUS,
+                             "DeviceAdded", (E_DBus_Signal_Cb)_places_device_add_cb, NULL);
+   udisks_sh_removed = e_dbus_signal_handler_add(conn, E_UDISKS_BUS,
+                             E_UDISKS_PATH,
+                             E_UDISKS_BUS,
+                             "DeviceRemoved", (E_DBus_Signal_Cb)_places_device_rem_cb, NULL);
+   e_udisks_get_all_devices(conn, (E_DBus_Callback_Func)_places_volume_all_cb, NULL);
+
+}
+#endif
+
+#ifdef HAVE_HAL_MOUNT
+static void
+hal_test(void *data __UNUSED__, DBusMessage *msg __UNUSED__, DBusError *error)
+{
+   if (error && dbus_error_is_set(error))
+     {
+        dbus_error_free(error);
+        return;
+     }
+   fm_mode = 0;
+   hal_sh_added = e_dbus_signal_handler_add(conn, E_HAL_SENDER,
+                                        E_HAL_MANAGER_PATH,
+                                        E_HAL_MANAGER_INTERFACE,
+                                        "DeviceAdded",
+                                        _places_device_add_cb, NULL);
+   hal_sh_removed = e_dbus_signal_handler_add(conn, E_HAL_SENDER,
+                                          E_HAL_MANAGER_PATH,
+                                          E_HAL_MANAGER_INTERFACE,
+                                          "DeviceRemoved",
+                                          _places_device_rem_cb, NULL);
+
+   e_hal_manager_find_device_by_capability(conn, "volume",
+                                           _places_volume_all_cb, NULL);
+}
+#endif
 
 /* Implementation */
 void
@@ -58,21 +122,12 @@ places_init(void)
       printf("Error connecting to system bus. Is it running?\n");
       return;
    }
-
-   sh_added = e_dbus_signal_handler_add(conn, "org.freedesktop.Hal",
-                                        "/org/freedesktop/Hal/Manager",
-                                        "org.freedesktop.Hal.Manager",
-                                        "DeviceAdded",
-                                        _places_device_add_cb, NULL);
-   sh_removed = e_dbus_signal_handler_add(conn, "org.freedesktop.Hal",
-                                          "/org/freedesktop/Hal/Manager",
-                                          "org.freedesktop.Hal.Manager",
-                                          "DeviceRemoved",
-                                          _places_device_rem_cb, NULL);
-
-   e_hal_manager_find_device_by_capability(conn, "volume",
-                                           _places_volume_all_cb, NULL);
-
+#ifdef HAVE_HAL_MOUNT
+   e_dbus_get_name_owner(conn, E_HAL_SENDER, hal_test, NULL);
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   e_dbus_get_name_owner(conn, E_UDISKS_BUS, udisks_test, NULL);
+#endif
    poller = ecore_timer_add(3.0, _places_poller, NULL);
 }
 
@@ -83,8 +138,14 @@ places_shutdown(void)
 
    if (conn)
      {
-        e_dbus_signal_handler_del(conn, sh_added);
-        e_dbus_signal_handler_del(conn, sh_removed);
+#ifdef HAVE_HAL_MOUNT
+        e_dbus_signal_handler_del(conn, hal_sh_added);
+        e_dbus_signal_handler_del(conn, hal_sh_removed);
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+        e_dbus_signal_handler_del(conn, udisks_sh_added);
+        e_dbus_signal_handler_del(conn, udisks_sh_removed);
+#endif
      }
 
    while (volumes)
@@ -567,12 +628,31 @@ _places_volume_add(const char *udi)
      v->force_open = 1;
 
    volumes = eina_list_append(volumes, v);
-   e_hal_device_get_all_properties(conn, v->udi, _places_volume_properties_cb, v);
+#ifdef HAVE_HAL_MOUNT
+   if (!fm_mode)
+     {
+        e_hal_device_get_all_properties(conn, v->udi, _places_volume_properties_cb, v);
 
-   v->sh_prop = e_dbus_signal_handler_add(conn, "org.freedesktop.Hal", v->udi,
-                                          "org.freedesktop.Hal.Device",
-                                          "PropertyModified",
-                                          _places_volume_prop_modified_cb, v);
+        v->sh_prop = e_dbus_signal_handler_add(conn, E_HAL_SENDER, v->udi,
+                                               E_HAL_DEVICE_INTERFACE,
+                                               "PropertyModified",
+                                               _places_volume_prop_modified_cb, v);
+     }
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   if (fm_mode == 1)
+     {
+        e_udisks_get_all_properties(conn, v->udi, _places_volume_properties_cb, v);
+
+        v->sh_prop = e_dbus_signal_handler_add(conn,
+                                               E_UDISKS_BUS,
+                                               udi,
+                                               E_UDISKS_INTERFACE,
+                                               "Changed",
+                                               (E_DBus_Signal_Cb)_places_volume_prop_modified_cb, v);
+     }
+#endif
+
 }
 
 static void
@@ -581,6 +661,7 @@ _places_volume_del(Volume *v)
    e_dbus_signal_handler_del(conn, v->sh_prop);
    volumes = eina_list_remove(volumes, v);
    if (v->udi)         eina_stringshare_del(v->udi);
+   if (v->uuid)         eina_stringshare_del(v->uuid);
    if (v->label)       eina_stringshare_del(v->label);
    if (v->icon)        eina_stringshare_del(v->icon);
    if (v->mount_point) eina_stringshare_del(v->mount_point);
@@ -739,8 +820,15 @@ _places_mount_volume(Volume *vol)
         snprintf(buf, sizeof(buf), "uid=%i", (int)getuid());
         opt = eina_list_append(opt, buf);
      }
-   e_hal_device_volume_mount(conn, vol->udi, vol->mount_point, vol->fstype,
-                             opt, _places_mount_cb, vol);
+#ifdef HAVE_HAL_MOUNT
+   if (!fm_mode)
+     e_hal_device_volume_mount(conn, vol->udi, vol->mount_point, vol->fstype,
+                               opt, _places_mount_cb, vol);
+#endif
+#ifdef HAVE_HAL_MOUNT
+   if (fm_mode == 1)
+     e_udisks_volume_mount(conn, vol->udi, vol->fstype, NULL);
+#endif
    vol->to_mount = 0;
    eina_list_free(opt);
 }
@@ -777,9 +865,27 @@ _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, con
    Volume *vol = data;
 
    if (vol->mounted)
-     e_hal_device_volume_unmount(conn, vol->udi, NULL, _places_unmount_cb, vol);
+     {
+#ifdef HAVE_HAL_MOUNT
+        if (!fm_mode)
+          e_hal_device_volume_unmount(conn, vol->udi, NULL, _places_unmount_cb, vol);
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+        if (fm_mode == 1)
+          e_udisks_volume_unmount(conn, vol->udi, NULL);
+#endif
+     }
    else
-     e_hal_device_volume_eject(conn, vol->udi, NULL, _places_eject_cb, vol);
+     {
+#ifdef HAVE_HAL_MOUNT
+        if (!fm_mode)
+          e_hal_device_volume_eject(conn, vol->udi, NULL, _places_eject_cb, vol);
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+        if (fm_mode == 1)
+          e_udisks_volume_eject(conn, vol->udi, NULL);
+#endif
+     }
 
 }
 
@@ -855,8 +961,16 @@ _places_device_add_cb(void *data, DBusMessage *msg)
    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
 
    //printf("PLACES DBUS CB UDI:%s\n", udi);
-   e_hal_device_query_capability(conn, udi, "volume", _places_volume_cb,
-                                 (void*)eina_stringshare_add(udi));
+#ifdef HAVE_HAL_MOUNT
+   if (!fm_mode)
+     e_hal_device_query_capability(conn, udi, "volume", _places_volume_cb,
+                                   (void*)eina_stringshare_add(udi));
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   if (fm_mode == 1)
+     e_udisks_get_property(conn, udi, "IdUsage",
+                         (E_DBus_Callback_Func)_places_volume_cb, (void*)eina_stringshare_add(udi));
+#endif
 }
 
 /* Dbus CB - Generic device removed */
@@ -887,29 +1001,55 @@ _places_volume_prop_modified_cb(void *data, DBusMessage *msg)
 {
    Volume *v = data;
    //~ printf("properties\n");
-   e_hal_device_get_all_properties(conn, v->udi, _places_volume_properties_cb, v);
+#ifdef HAVE_HAL_MOUNT
+   if (!fm_mode)
+     e_hal_device_get_all_properties(conn, v->udi, _places_volume_properties_cb, v);
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   if (fm_mode == 1)
+     e_udisks_get_all_properties(conn, v->udi, _places_volume_properties_cb, v);
+#endif
 }
 
 /* Dbus CB - Reply of all device of type "volume" */
 void
 _places_volume_all_cb(void *user_data, void *reply_data, DBusError *error)
 {
-   E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
+#ifdef HAVE_HAL_MOUNT
+   E_Hal_Manager_Find_Device_By_Capability_Return *hal_ret = reply_data;
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   E_Ukit_String_List_Return *udisks_ret = reply_data;
+#endif
    Eina_List *l;
    char *udi;
 
-   if (!ret || !ret->strings) return;
+      if (dbus_error_is_set(error))
+        {
+           // XXX handle...
+           dbus_error_free(error);
+           return;
+        }
 
-   if (dbus_error_is_set(error))
+   switch (fm_mode)
      {
-        // XXX handle...
-        dbus_error_free(error);
-        return;
+#ifdef HAVE_HAL_MOUNT
+      case 0:
+        if (!hal_ret || !hal_ret->strings) return;
+        EINA_LIST_FOREACH(hal_ret->strings, l, udi)
+          _places_volume_add(udi);
+        break;
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+      case 1:
+        if (!udisks_ret || !udisks_ret->strings) return;
+        EINA_LIST_FOREACH(udisks_ret->strings, l, udi)
+          _places_volume_add(udi);
+        break;
+#endif
+      default:
+        break;
      }
-
-   EINA_LIST_FOREACH(ret->strings, l, udi)
-     _places_volume_add(udi);
-
    //TODO free ret??
 }
 
@@ -919,14 +1059,24 @@ _places_volume_cb(void *user_data, void *reply_data, DBusError *error)
 {
    Volume *v;
    char *udi = user_data;
-   E_Hal_Device_Query_Capability_Return *ret = reply_data;
+#ifdef HAVE_HAL_MOUNT
+   E_Hal_Device_Query_Capability_Return *hal_ret = reply_data;
 
-   if (ret && ret->boolean)
+   if ((!fm_mode) && hal_ret && hal_ret->boolean)
      {
         //~ printf("PLACES DBUS CB UDI:%s\n", udi);
         _places_volume_add(udi);
      }
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   E_Ukit_Property *udisks_ret = reply_data;
 
+   if ((fm_mode == 1) && udisks_ret && udisks_ret->val.s && udisks_ret->val.s[0])
+     {
+        //~ printf("PLACES DBUS CB UDI:%s\n", udi);
+        _places_volume_add(udi);
+     }
+#endif
    eina_stringshare_del(udi);
 }
 
@@ -935,52 +1085,117 @@ void
 _places_volume_properties_cb(void *data, void *reply_data, DBusError *error)
 {
    Volume *v = data;
-   E_Hal_Device_Get_All_Properties_Return *reply = reply_data;
+#ifdef HAVE_HAL_MOUNT
+   E_Hal_Device_Get_All_Properties_Return *hal_ret = reply_data;
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   E_Ukit_Properties *udisks_ret = reply_data;
+#endif
    int err = 0;
    const char *str = NULL;
 
    if (!v) return;
 
-   /* skip volumes with volume.ignore set */
-   if (e_hal_property_bool_get(reply, "volume.ignore", &err) || err)
-     return;
-
-   /* skip volumes that aren't filesystems */
-   str = e_hal_property_string_get(reply, "volume.fsusage", &err);
-   if (err || !str || strcmp(str, "filesystem"))
-     return;
-   //~ v->uuid = e_hal_property_string_get(ret, "volume.uuid", &err);
-  //~ if (err) goto error;
-
-   str = e_hal_property_string_get(reply, "volume.label", &err);
-   if (!err) v->label = eina_stringshare_add(str);
-
-   v->mounted = e_hal_property_bool_get(reply, "volume.is_mounted", &err);
-
-   str = e_hal_property_string_get(reply, "volume.mount_point", &err);
-   if (!err) v->mount_point = eina_stringshare_add(str);
-
-   str = e_hal_property_string_get(reply, "volume.fstype", &err);
-   if (!err) v->fstype = eina_stringshare_add(str);
-
-   v->size = e_hal_property_uint64_get(reply, "volume.size", &err);
-
-  //~ v->partition = e_hal_property_bool_get(ret, "volume.is_partition", &err);
-  //~ if (err) goto error;
-
-  //~ if (v->partition)
-  //~ {
-    //~ v->partition_label = e_hal_property_string_get(ret, "volume.partition.label", &err);
-    //~ if (err) goto error;
-  //~ }
-
-   str = e_hal_property_string_get(reply, "info.parent", &err);
-   if (!err && str)
+#ifdef HAVE_HAL_MOUNT
+   if (!fm_mode)
      {
-        e_hal_device_get_all_properties(conn, str,
-                                        _places_storage_properties_cb, v);
-     }
+        /* skip volumes with volume.ignore set */
+        if (e_hal_property_bool_get(hal_ret, "volume.ignore", &err) || err)
+          return;
 
+        /* skip volumes that aren't filesystems */
+        str = e_hal_property_string_get(hal_ret, "volume.fsusage", &err);
+        if (err || !str || strcmp(str, "filesystem"))
+          return;
+        //~ v->uuid = e_hal_property_string_get(hal_ret, "volume.uuid", &err);
+       //~ if (err) goto error;
+
+        str = e_hal_property_string_get(hal_ret, "volume.label", &err);
+        if (!err) v->label = eina_stringshare_add(str);
+
+        v->mounted = e_hal_property_bool_get(hal_ret, "volume.is_mounted", &err);
+
+        str = e_hal_property_string_get(hal_ret, "volume.mount_point", &err);
+        if (!err) v->mount_point = eina_stringshare_add(str);
+
+        str = e_hal_property_string_get(hal_ret, "volume.fstype", &err);
+        if (!err) v->fstype = eina_stringshare_add(str);
+
+        v->size = e_hal_property_uint64_get(hal_ret, "volume.size", &err);
+
+       //~ v->partition = e_hal_property_bool_get(hal_ret, "volume.is_partition", &err);
+       //~ if (err) goto error;
+
+       //~ if (v->partition)
+       //~ {
+         //~ v->partition_label = e_hal_property_string_get(hal_ret, "volume.partition.label", &err);
+         //~ if (err) goto error;
+       //~ }
+
+        str = e_hal_property_string_get(hal_ret, "info.parent", &err);
+        if (!err && str)
+          {
+             e_hal_device_get_all_properties(conn, str,
+                                             _places_storage_properties_cb, v);
+          }
+     }
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   if (fm_mode == 1)
+     {
+        /* skip volumes with volume.ignore set */
+        if (e_ukit_property_bool_get(udisks_ret, "DeviceIsMediaChangeDetectionInhibited", &err) || err)
+          return;
+
+        /* skip volumes that aren't filesystems */
+        str = e_ukit_property_string_get(udisks_ret, "IdUsage", &err);
+        if (err || !str) return;
+        if (strcmp(str, "filesystem"))
+          {
+             if (strcmp(str, "crypto"))
+               v->encrypted = e_ukit_property_bool_get(udisks_ret, "DeviceIsLuks", &err);
+
+             if (!v->encrypted) return;
+          }
+        str = NULL;
+
+        v->uuid = e_ukit_property_string_get(udisks_ret, "IdUuid", &err);
+        if (err) return;
+        v->uuid = eina_stringshare_add(v->uuid);
+
+        v->label = e_ukit_property_string_get(udisks_ret, "IdLabel", &err);
+        if (!v->label) v->label = e_ukit_property_string_get(udisks_ret, "DeviceFile", &err); /* avoid having blank labels */
+        if (!v->label) v->label = v->uuid; /* last resort */
+        v->label = eina_stringshare_add(v->label);
+
+        if (!v->encrypted)
+          {
+             const Eina_List *l;   
+
+             l = e_ukit_property_strlist_get(udisks_ret, "DeviceMountPaths", &err);
+             if (err) return;
+             if (l) v->mount_point = eina_stringshare_add(l->data);
+
+             v->fstype = e_ukit_property_string_get(udisks_ret, "IdType", &err);
+             v->fstype = eina_stringshare_add(v->fstype);
+
+             v->size = e_ukit_property_uint64_get(udisks_ret, "DeviceSize", &err);
+
+             v->mounted = e_ukit_property_bool_get(udisks_ret, "DeviceIsMounted", &err);
+             if (err) return;
+          }
+        else
+          v->unlocked = e_ukit_property_bool_get(udisks_ret, "DeviceIsLuksCleartext", &err);
+
+        str = e_ukit_property_string_get(udisks_ret, "PartitionSlave", &err);
+          
+        if (!err && str)
+          {
+                  e_udisks_get_all_properties(conn, str,
+                                             _places_storage_properties_cb, v);
+          }
+     }
+#endif
    //_places_print_volume(v);
 
    return;
@@ -991,7 +1206,12 @@ void
 _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
 {
    Volume *v = data;
-   E_Hal_Properties *ret = reply_data;
+#ifdef HAVE_HAL_MOUNT
+   E_Hal_Properties *hal_ret = reply_data;
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   E_Ukit_Properties *udisks_ret = reply_data;
+#endif
    int err = 0;
    const char *str;
 
@@ -1001,49 +1221,91 @@ _places_storage_properties_cb(void *data, void *reply_data, DBusError *error)
         dbus_error_free(error);
         return;
      }
+#ifdef HAVE_HAL_MOUNT
+   if (!fm_mode)
+     {
+        str = e_hal_property_string_get(hal_ret, "storage.bus", &err);
+        if (!err) v->bus = eina_stringshare_add(str);
 
-   str = e_hal_property_string_get(ret, "storage.bus", &err);
-   if (!err) v->bus = eina_stringshare_add(str);
+        str = e_hal_property_string_get(hal_ret, "storage.drive_type", &err);
+        if (!err) v->drive_type = eina_stringshare_add(str);
 
-   str = e_hal_property_string_get(ret, "storage.drive_type", &err);
-   if (!err) v->drive_type = eina_stringshare_add(str);
+        str = e_hal_property_string_get(hal_ret, "storage.model", &err);
+        if (!err) v->model = eina_stringshare_add(str);
 
-   str = e_hal_property_string_get(ret, "storage.model", &err);
-   if (!err) v->model = eina_stringshare_add(str);
+        str = e_hal_property_string_get(hal_ret, "storage.vendor", &err);
+        if (!err) v->vendor = eina_stringshare_add(str);
 
-   str = e_hal_property_string_get(ret, "storage.vendor", &err);
-   if (!err) v->vendor = eina_stringshare_add(str);
+        str = e_hal_property_string_get(hal_ret, "storage.serial", &err);
+        if (!err) v->serial = eina_stringshare_add(str);
 
-   str = e_hal_property_string_get(ret, "storage.serial", &err);
-   if (!err) v->serial = eina_stringshare_add(str);
+        v->removable = e_hal_property_bool_get(hal_ret, "storage.removable", &err);
+        v->requires_eject = e_hal_property_bool_get(hal_ret, "storage.requires_eject", &err);
 
-   v->removable = e_hal_property_bool_get(ret, "storage.removable", &err);
-   v->requires_eject = e_hal_property_bool_get(ret, "storage.requires_eject", &err);
-
-  //~ // if (s->removable)
-   //~ {
-      //~ s->media_available = e_hal_property_bool_get(ret, "storage.removable.media_available", &err);
-      //~ s->media_size = e_hal_property_uint64_get(ret, "storage.removable.media_size", &err);
-   //~ }
+       //~ // if (s->removable)
+        //~ {
+           //~ s->media_available = e_hal_property_bool_get(hal_ret, "storage.removable.media_available", &err);
+           //~ s->media_size = e_hal_property_uint64_get(hal_ret, "storage.removable.media_size", &err);
+        //~ }
 
 
-   //~ s->hotpluggable = e_hal_property_bool_get(ret, "storage.hotpluggable", &err);
-   //~ s->media_check_enabled = e_hal_property_bool_get(ret, "storage.media_check_enabled", &err);
+        //~ s->hotpluggable = e_hal_property_bool_get(hal_ret, "storage.hotpluggable", &err);
+        //~ s->media_check_enabled = e_hal_property_bool_get(hal_ret, "storage.media_check_enabled", &err);
 
-   //~ s->icon.drive = e_hal_property_string_get(ret, "storage.icon.drive", &err);
-   //~ s->icon.volume = e_hal_property_string_get(ret, "storage.icon.volume", &err);
+        //~ s->icon.drive = e_hal_property_string_get(hal_ret, "storage.icon.drive", &err);
+        //~ s->icon.volume = e_hal_property_string_get(hal_ret, "storage.icon.volume", &err);
+     }
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+   if (fm_mode == 1)
+     {
+        str = e_ukit_property_string_get(udisks_ret, "DriveConnectionInterface", &err);
+        if (!err) v->bus = eina_stringshare_add(str);
 
+        {
+           const Eina_List *l;
+
+           l = e_ukit_property_strlist_get(udisks_ret, "DriveMediaCompatibility", &err);
+           if (err) return;
+           if (l) v->drive_type = eina_stringshare_add(l->data);
+        }
+
+        str = e_ukit_property_string_get(udisks_ret, "DriveModel", &err);
+        if (!err) v->model = eina_stringshare_add(str);
+
+        str = e_ukit_property_string_get(udisks_ret, "DriveVendor", &err);
+        if (!err) v->vendor = eina_stringshare_add(str);
+
+        str = e_ukit_property_string_get(udisks_ret, "DriveSerial", &err);
+        if (!err) v->serial = eina_stringshare_add(str);
+
+        v->removable = e_ukit_property_bool_get(udisks_ret, "DeviceIsRemovable", &err);
+        v->requires_eject = e_ukit_property_bool_get(udisks_ret, "DriveIsMediaEjectable", &err);
+     }
+#endif
    //~ _places_print_volume(v);  //Use this for debug
    v->valid = 1;
 
    if (v->to_mount && !v->mounted)
      {
-        Eina_Bool enabled;
+        Eina_Bool enabled = EINA_FALSE;
 
-        enabled = e_hal_property_bool_get(ret, "storage.automount_enabled_hint",
-                                          &err);
-        if (err)
-          enabled = 1; /* assume no property it is enabled */
+#ifdef HAVE_HAL_MOUNT
+        if (!fm_mode)
+          {
+             enabled = e_hal_property_bool_get(hal_ret, "storage.automount_enabled_hint", &err);
+             if (err) enabled = 1; /* assume no property it is enabled */
+          }
+#endif
+#ifdef HAVE_UDISKS_MOUNT
+        const char *str;
+
+        if (fm_mode == 1)
+          {
+             str = e_ukit_property_string_get(udisks_ret, "DeviceAutomountHint", &err);
+             if (str && (!strcmp(str, "always"))) enabled = EINA_TRUE;
+          }
+#endif
 
         if (enabled)
           _places_mount_volume(v);

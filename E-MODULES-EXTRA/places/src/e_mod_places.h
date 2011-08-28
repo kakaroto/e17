@@ -1,11 +1,19 @@
 #ifndef E_MOD_PLACES_H
 #define E_MOD_PLACES_H
 
+typedef enum
+{
+   MOUNT_OP_NONE,
+   MOUNT_OP_MOUNT,
+   MOUNT_OP_UMOUNT,
+   MOUNT_OP_EJECT
+} Mount_Op;
 
 typedef struct _Volume
 {
    const char *udi;
    const char *label;
+   const char *uuid;
    unsigned char mounted;
    const char *mount_point;
    const char *fstype;
@@ -18,6 +26,8 @@ typedef struct _Volume
    const char *serial;
    unsigned char removable;
    unsigned char requires_eject;
+   Eina_Bool unlocked;
+   Eina_Bool encrypted;
 
    E_DBus_Signal_Handler *sh_prop;
    unsigned char valid;
@@ -25,6 +35,7 @@ typedef struct _Volume
    unsigned char force_open;
    Evas_Object *obj;
    const char *icon;
+   Mount_Op op;
 
 }Volume;
 

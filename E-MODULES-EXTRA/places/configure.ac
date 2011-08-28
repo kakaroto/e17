@@ -11,6 +11,7 @@ AC_CANONICAL_HOST
 AC_ISC_POSIX
 
 AM_INIT_AUTOMAKE(1.8)
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
@@ -57,8 +58,53 @@ AC_SUBST(EDJE_CC)
 AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
-PKG_CHECK_MODULES(E_DBUS, edbus)
-PKG_CHECK_MODULES(E_HAL, ehal)
+dbus_mount="dbus-1, edbus >= 1.0.999"
+hal_mount="ehal >= 1.0.999"
+udisks_mount="eukit >= 1.0.999"
+AC_ARG_ENABLE([mount-hal],
+  AS_HELP_STRING([--enable-mount-hal],[enable hal mounting support @<:@default=enabled@:>@]),
+  [e_cv_want_mount_hal=$enableval],
+  AC_CACHE_VAL([e_cv_want_mount_hal], [e_cv_want_mount_hal=yes]))
+if test "x$e_cv_want_mount_hal" != "xno";then
+  PKG_CHECK_EXISTS([ehal >= 1.0.999],
+    [],[
+      hal_mount=
+      AC_MSG_NOTICE([HAL mounting disabled])
+    ])
+else
+  hal_mount=
+  AC_MSG_NOTICE([HAL mounting disabled])
+fi
+
+AC_ARG_ENABLE([mount-udisks],
+  AS_HELP_STRING([--enable-mount-udisks],[enable udisks mounting support @<:@default=enabled@:>@]),
+  [e_cv_want_mount_udisks=$enableval],
+  AC_CACHE_VAL([e_cv_want_mount_udisks], [e_cv_want_mount_udisks=yes]))
+if test "x$e_cv_want_mount_udisks" != "xno";then
+  PKG_CHECK_EXISTS([eukit >= 1.0.999],
+    [],[
+      udisks_mount=
+      AC_MSG_NOTICE([udisks mounting disabled])
+    ])
+else
+  udisks_mount=
+  AC_MSG_NOTICE([udisks mounting disabled])
+fi
+
+
+if test "x${e_cv_want_mount_udisks}" = "xno" && test "x${e_cv_want_mount_hal}" = "xno" ; then
+  DBUS_MOUNT_CONFIG=0
+  dbus_mount=
+  test "x${e_cv_want_mount_udisks}" = "xno" && udisks_mount=
+  test "x${e_cv_want_mount_hal}" = "xno" && hal_mount=
+fi
+
+AM_CONDITIONAL([HAVE_HAL_MOUNT], [test -n "$hal_mount"])
+AM_CONDITIONAL([HAVE_UDISKS_MOUNT], [test -n "$udisks_mount"])
+test -n "$hal_mount" && AC_DEFINE_UNQUOTED([HAVE_HAL_MOUNT], [1], [enable HAL mounting])
+test -n "$udisks_mount" && AC_DEFINE_UNQUOTED([HAVE_UDISKS_MOUNT], [1], [enable Udisks mounting])
+
+PKG_CHECK_MODULES(E_DBUS, [$dbus_mount $hal_mount $udisks_mount])
 
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
 AC_ARG_ENABLE(homedir-install,

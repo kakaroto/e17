@@ -1,7 +1,8 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include <e.h>
 #include <E_DBus.h>
-#include <E_Hal.h>
-#include "config.h"
 #include "e_mod_main.h"
 #include "e_mod_places.h"
 
@@ -369,7 +370,7 @@ _places_conf_free(void)
 static Eina_Bool
 _places_conf_timer(void *data)
 {
-   e_util_dialog_show("Places Configuration Updated", data);
+   e_util_dialog_show("Places Configuration Updated %s", (char*)data);
    return EINA_FALSE;
 }
 
