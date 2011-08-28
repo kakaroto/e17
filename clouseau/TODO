@@ -13,3 +13,4 @@
   * callback list?
 
 * EET uses malloc, not stringshare, change stringshare -> strdup
+* Fix has_focus.

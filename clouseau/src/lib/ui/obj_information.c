@@ -159,6 +159,7 @@ _obj_information_get(Tree_Item *treeit)
    Evas_Object *obj = treeit->ptr;
    oinfo = calloc(1, sizeof(*oinfo));
 
+   oinfo->evas_props.has_focus = evas_object_focus_get(obj);
    oinfo->evas_props.is_visible = evas_object_visible_get(obj);
    oinfo->evas_props.name = eina_stringshare_add(evas_object_name_get(obj));
    oinfo->evas_props.layer = evas_object_layer_get(obj);
@@ -192,6 +193,7 @@ _obj_information_get(Tree_Item *treeit)
         oinfo->extra_props.elm.style =
            eina_stringshare_add(elm_widget_style_get(obj));
         oinfo->extra_props.elm.scale = elm_widget_scale_get(obj);
+        oinfo->extra_props.elm.has_focus = elm_object_focus_get(obj);
         oinfo->extra_props.elm.is_disabled = elm_widget_disabled_get(obj);
         oinfo->extra_props.elm.is_mirrored = elm_widget_mirrored_get(obj);
         oinfo->extra_props.elm.is_mirrored_automatic =
@@ -364,6 +366,12 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
 
+        snprintf(buf, sizeof(buf), "Has focus: %d",
+              (int) oinfo->evas_props.has_focus);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
         if (oinfo->evas_props.is_clipper)
           {
              snprintf(buf, sizeof(buf), "Has clipees");
@@ -409,6 +417,12 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
 
         snprintf(buf, sizeof(buf), "Disabled: %d",
               oinfo->extra_props.elm.is_disabled);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
+
+        snprintf(buf, sizeof(buf), "Has focus: %d",
+              oinfo->extra_props.elm.has_focus);
         tit = calloc(1, sizeof(*tit));
         tit->string = eina_stringshare_add(buf);
         main_tit->children = eina_list_append(main_tit->children, tit);
