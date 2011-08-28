@@ -26,7 +26,7 @@ group  {
 				fill {
 					size {
 						relative: 0 0;
-						offset: 24 24;
+						offset: 240 240;
 					}
 				}
 			}

@@ -779,7 +779,7 @@ group {
 					smooth: 0;
 					size {
 						relative: 0 0;
-						offset: 35 35;
+						offset: 280 280;
 					}
 				}
 			}
@@ -1983,7 +1983,7 @@ group {
 					smooth: 0;
 					size {
 						relative: 0 0;
-						offset: 24 24;
+						offset: 240 240;
 					}
 				}
 			}

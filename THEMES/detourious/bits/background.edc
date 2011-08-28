@@ -55,10 +55,10 @@ group {
 					size {
 						relative: 0 0;
 						#if ALTERNATE == 0
-							offset: 24 24;
+							offset: 240 240;
 						#else
 						#if ALTERNATE == 1
-							offset: 10 10;
+							offset: 200 200;
 						#endif
 						#endif
 					}

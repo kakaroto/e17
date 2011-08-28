@@ -145,7 +145,7 @@ group {
 					smooth: 0;
 					size {
 						relative: 0 0;
-						offset: 4 4;
+						offset: 200 200;
 					}
 				}
 			}
