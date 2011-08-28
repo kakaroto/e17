@@ -24,7 +24,6 @@ group {
 				color_class: "scrollframe_base";
             }
         }
-        /* scrollframe main */
 
         part {
             name: "item_clip";
@@ -43,7 +42,6 @@ group {
             }
         }
 
-
         part {
             name: "e.swallow.content";
             type: SWALLOW;
@@ -60,7 +58,6 @@ group {
                 }
             }
         }
-
 
         part {
             name: "overlay";
@@ -85,7 +82,6 @@ group {
 				color_class: "dialog_base";
             }
         }
-        /* vertical scrollframe */
 
         part {
             /* rectangle for the runner */
@@ -123,7 +119,6 @@ group {
             }
         }
 
-
         part {
             name: "scrollbar_vbar_base";
             type: RECT;
@@ -145,7 +140,6 @@ group {
                 }
             }
         }
-
 
         part {
             name: "scrollbar_vbar_runner";
@@ -171,7 +165,6 @@ group {
 				color_class: "dialog_base";
             }
         }
-
 
         part {
             name: "e.dragable.vbar.clip";
@@ -200,7 +193,6 @@ group {
                 color: 235 235 235 255;
             }
         }
-
 
         part {
             name: "e.dragable.vbar";
@@ -232,14 +224,13 @@ group {
                     border: 6 6 6 6;
                 }
                 fill.smooth: 0;
-				color_class: "dialog_base";
+				/* color_class: "dialog_base"; */
             }
             description {
                 state: "clicked" 0.0;
                 inherit: "default" 0.0;
             }
         }
-
 
         part {
             name: "vbar_stipple";
@@ -271,8 +262,8 @@ group {
                 color: 215 215 215 255;
             }
         }
-        /* horizontal scrollframe */
 
+        /* horizontal scrollframe */
         part {
             name: "sb_hbar";
             type: RECT;
@@ -309,7 +300,6 @@ group {
             }
         }
 
-
         part {
             name: "sb_hbar_base";
             type: RECT;
@@ -330,7 +320,6 @@ group {
                 }
             }
         }
-
 
         part {
             name: "sb_hbar_runner";
@@ -356,7 +345,6 @@ group {
 				color_class: "dialog_base";
             }
         }
-
 
         part {
             name: "e.dragable.hbar.clip";
@@ -387,7 +375,6 @@ group {
             }
         }
 
-
         part {
             name: "e.dragable.hbar";
             type: IMAGE;
@@ -416,14 +403,13 @@ group {
                     border: 6 6 6 6;
                 }
                 fill.smooth: 0;
-				color_class: "dialog_base";
+				/* color_class: "dialog_base"; */
             }
             description {
                 state: "clicked" 0.0;
                 inherit: "default" 0.0;
             }
         }
-
 
         part {
             name: "hbar_stipple";
@@ -447,8 +433,7 @@ group {
                 image {
                     normal: "images/scrollframe-bar_im1.png";
                     border: 2 2 2 2;
-                }
-				
+                }				
 				color_class: "dialog_base";
             }
             description {
@@ -457,7 +442,6 @@ group {
                 color: 215 215 215 255;
             }
         }
-
 
         part {
             name: "focus_clip";
@@ -475,7 +459,6 @@ group {
                 color: 255 255 255 220;
             }
         }
-
 
         part {
             name: "focus";

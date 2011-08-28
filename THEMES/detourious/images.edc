@@ -151,6 +151,7 @@ image: "images/window-border.png" COMP;
 image: "images/window-border-color.png" COMP; 
 image: "images/window-border-glass.png" COMP;
 image: "images/window-border-square.png" COMP;
+image: "images/window-border-squarec.png" COMP;
 
 //~ border buttons
 image: "images/window-border_bt0.png" COMP; /* base */

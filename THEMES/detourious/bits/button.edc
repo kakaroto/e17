@@ -90,6 +90,7 @@ group {
 				rel2 { 
 					to: "button_clip"; 
 				}
+				/* color_class: "dialog_base"; */
 			}
 			description {
 				state: "clicked" 0.0;
