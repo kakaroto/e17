@@ -17,7 +17,6 @@
 typedef struct _App                     App;
 typedef struct _DB                      DB;
 typedef struct _Libmgr                  Libmgr;
-typedef struct _Song                    Song;
 typedef struct _NameID                  NameID;
 typedef struct _Album_Cover             Album_Cover;
 typedef struct _Album                   Album;
