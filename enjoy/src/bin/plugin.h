@@ -17,6 +17,10 @@ typedef enum {
    ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE
 } Enjoy_Event_ID;
 
+/*
+ * Capabilities and player status values conform to the MPRIS 1.0 standard:
+ * http://www.mpris.org/1.0/spec.html
+ */
 typedef enum {
   ENJOY_CAPABILITY_CAN_GO_NEXT = 1 << 0,
   ENJOY_CAPABILITY_CAN_GO_PREV = 1 << 1,
