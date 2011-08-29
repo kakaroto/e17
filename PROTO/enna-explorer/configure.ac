@@ -14,8 +14,6 @@ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])],[AC_SUBST([AM_DEFAULT_VERBOS
 LT_PREREQ([2.2])
 LT_INIT([win32-dll])
 
-AC_SUBST(LTLIBINTL)
-
 AC_CANONICAL_HOST
 
 
@@ -40,13 +38,6 @@ enna_requirements="
    elementary >= 0.7.0
    eio"
 
-case "$host_os" in
-   mingw*)
-      enna_requirements="${enna_requirements} evil"
-      AC_DEFINE(HAVE_EVIL, 1, [Set to 1 if evil package is installed])
-   ;;
-esac
-
 PKG_CHECK_MODULES([ENNA], [${enna_requirements}])
 
 
@@ -65,6 +56,7 @@ AC_C_CONST
 AC_PROG_CC_C_O
 AC_C___ATTRIBUTE__
 
+AC_USE_SYSTEM_EXTENSIONS
 AC_SYS_LARGEFILE
 
 EFL_COMPILER_FLAG([-Wall])

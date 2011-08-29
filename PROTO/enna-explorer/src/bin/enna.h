@@ -22,13 +22,13 @@
 #ifndef ENNA_H
 #define ENNA_H
 
-#define _GNU_SOURCE
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <Ecore_Evas.h>
 #include <Ecore.h>
 #include <Eina.h>
-
-#include "config.h"
 
 #ifndef PATH_MAX
 #define PATH_MAX 4096

@@ -32,10 +32,6 @@
 
 #include "enna.h"
 
-#ifdef HAVE_EVIL
-# include <Evil.h>
-#endif
-
 #include "enna_config.h"
 #include "utils.h"
 #include "vfs.h"
@@ -110,7 +106,11 @@ enna_util_user_home_get()
      return getenv("CWD")?strdup(getenv("CWD")):NULL;
    if (!home)
      {
+#ifdef _WIN32
+        return strdup("c:\\");
+#else
         return strdup("/");
+#endif
      }
    return home;
 }
