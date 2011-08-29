@@ -1,5 +1,9 @@
-#include "private.h"
-#include "mpris.h"
+#include <Eina.h>
+#include <E_DBus.h>
+#include <Ecore.h>
+
+#include "plugin.h"
+#include "song.h"
 
 typedef struct _MPRIS_Method MPRIS_Method;
 typedef struct _MPRIS_Signal MPRIS_Signal;
@@ -61,8 +65,12 @@ struct _MPRIS_Signal {
 };
 
 
-E_DBus_Connection *conn = NULL;
-Eina_Hash *interface_list = NULL;
+static E_DBus_Connection *conn = NULL;
+static Eina_Hash *interface_list = NULL;
+static Ecore_Event_Handler *event_handler_caps_change,
+      *event_handler_status_change,
+      *event_handler_track_change,
+      *event_handler_tracklist_change;
 
 
 static const char *object_list[] = { ROOT_NAME, TRACKLIST_NAME, PLAYER_NAME, NULL };
@@ -139,10 +147,6 @@ static const MPRIS_Method mpris_tracklist_methods[] = {
 };
 
 
-static Ecore_Event_Handler *_event_handler_caps_change,
-      *_event_handler_status_change,
-      *_event_handler_track_change,
-      *_event_handler_tracklist_change;
 
 static Eina_Bool
 _cb_player_caps_change(void *data __UNUSED__, int type __UNUSED__, void *event)
@@ -173,28 +177,29 @@ _cb_player_tracklist_change(void *data __UNUSED__, int type __UNUSED__, void *ev
    return ECORE_CALLBACK_PASS_ON;
 }
 
-void
+Eina_Bool
 mpris_init(void)
 {
-   if (conn) return;
+   if (conn) return EINA_FALSE;
    e_dbus_init();
    conn = e_dbus_bus_get(DBUS_BUS_SESSION);
    if (conn)
      e_dbus_request_name(conn, APPLICATION_NAME, 0, _cb_dbus_request_name, NULL);
-   _event_handler_caps_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), _cb_player_caps_change, NULL);
-   _event_handler_status_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_STATUS_CHANGE), _cb_player_status_change, NULL);
-   _event_handler_track_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), _cb_player_track_change, NULL);
-   _event_handler_tracklist_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE), _cb_player_tracklist_change, NULL);
+   event_handler_caps_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), _cb_player_caps_change, NULL);
+   event_handler_status_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_STATUS_CHANGE), _cb_player_status_change, NULL);
+   event_handler_track_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), _cb_player_track_change, NULL);
+   event_handler_tracklist_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE), _cb_player_tracklist_change, NULL);
+   return EINA_TRUE;
 }
 
 void
 mpris_shutdown(void)
 {
    if (!conn) return;
-   ecore_event_handler_del(_event_handler_caps_change);
-   ecore_event_handler_del(_event_handler_status_change);
-   ecore_event_handler_del(_event_handler_track_change);
-   ecore_event_handler_del(_event_handler_tracklist_change);
+   ecore_event_handler_del(event_handler_caps_change);
+   ecore_event_handler_del(event_handler_status_change);
+   ecore_event_handler_del(event_handler_track_change);
+   ecore_event_handler_del(event_handler_tracklist_change);
    eina_hash_free(interface_list);
    e_dbus_shutdown();
    conn = NULL;
@@ -635,3 +640,6 @@ _mpris_tracklist_shuffle_set(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
    enjoy_control_shuffle_set(param);
    return reply;
 }
+
+EINA_MODULE_INIT(mpris_init);
+EINA_MODULE_SHUTDOWN(mpris_shutdown);

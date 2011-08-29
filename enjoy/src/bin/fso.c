@@ -1,15 +1,13 @@
-#include "private.h"
-#include "fso.h"
-
-
-#ifdef _HAVE_FSO_
-
+#include <Eina.h>
+#include <E_DBus.h>
+#include "plugin.h"
+#include "log.h"
 
 #define FSO_OUSAGED_SERVICE "org.freesmartphone.ousaged"
 #define FSO_OUSAGED_OBJECT_PATH "/org/freesmartphone/Usage"
 #define FSO_OUSAGED_INTERFACE "org.freesmartphone.Usage"
 
-E_DBus_Connection *sysconn = NULL;
+static E_DBus_Connection *sysconn = NULL;
 
 /* callbacks */
 
@@ -34,25 +32,6 @@ fso_release_reource_cb(void *data, DBusMessage *replymsg, DBusError *error)
 
 /* methods */
 
-void
-fso_init(void)
-{
-   if (sysconn) return;
-   e_dbus_init();
-   sysconn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
-   fso_request_resource("CPU");
-}
-
-void
-fso_shutdown(void)
-{
-   if (!sysconn) return;
-   fso_release_resource("CPU");
-   e_dbus_shutdown();
-   sysconn = NULL;
-}
-
-
 static void
 fso_request_resource(const char *resource)
 {
@@ -62,8 +41,7 @@ fso_request_resource(const char *resource)
                FSO_OUSAGED_OBJECT_PATH,
                FSO_OUSAGED_INTERFACE,
                "RequestResource");
-   dbus_message_append_args (msg, DBUS_TYPE_STRING, &resource, DBUS_TYPE_INVALID);
-
+   dbus_message_append_args(msg, DBUS_TYPE_STRING, &resource, DBUS_TYPE_INVALID);
    e_dbus_message_send(sysconn, msg, fso_request_reource_cb, -1, NULL);
    dbus_message_unref(msg);	
 }
@@ -78,11 +56,29 @@ fso_release_resource(const char *resource)
                FSO_OUSAGED_OBJECT_PATH,
                FSO_OUSAGED_INTERFACE,
                "ReleaseResource");
-
-   dbus_message_append_args (msg, DBUS_TYPE_STRING, &resource, DBUS_TYPE_INVALID);
-		
+   dbus_message_append_args(msg, DBUS_TYPE_STRING, &resource, DBUS_TYPE_INVALID);
    e_dbus_message_send(sysconn, msg, fso_release_reource_cb, -1, NULL);
    dbus_message_unref(msg);	
 }
 
-#endif /* _HAVE_FSO_ */
+Eina_Bool
+fso_init(void)
+{
+   if (sysconn) return EINA_FALSE;
+   e_dbus_init();
+   sysconn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
+   fso_request_resource("CPU");
+   return EINA_TRUE;
+}
+
+void
+fso_shutdown(void)
+{
+   if (!sysconn) return;
+   fso_release_resource("CPU");
+   e_dbus_shutdown();
+   sysconn = NULL;
+}
+
+EINA_MODULE_INIT(fso_init);
+EINA_MODULE_SHUTDOWN(fso_shutdown);

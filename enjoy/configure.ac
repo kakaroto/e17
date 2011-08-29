@@ -111,22 +111,6 @@ fi
 
 AM_CONDITIONAL(BUILD_QUICKLAUNCH, test "x${want_quicklaunch}" = "xyes")
 
-AC_ARG_ENABLE([fso],
-   [AC_HELP_STRING([--enable-fso], [enable FSO support])],
-   [
-    if test "x${enableval}" = "xyes" ; then
-       enable_fso="yes"
-    else
-       enable_fso="no"
-    fi
-   ],
-   [enable_fso="no"])
-   
-if test "x$enable_fso" = "xyes" ; then
-	CFLAGS="$CFLAGS -D_HAVE_FSO_"
-	AC_SUBST(CFLAGS)
-fi
-
 AC_OUTPUT([
 Makefile
 enjoy.spec

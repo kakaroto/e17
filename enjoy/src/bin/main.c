@@ -5,14 +5,11 @@
 #ifndef ELM_LIB_QUICKLAUNCH
 
 #include "private.h"
-#include "mpris.h"
-#ifdef _HAVE_FSO_
-  #include "fso.h"	
-#endif
 
 #include <Ecore_Getopt.h>
 #include <Ecore_File.h>
 #include <stdlib.h>
+#include <string.h>
 #include "gettext.h"
 
 int _log_domain = -1;
@@ -91,7 +88,7 @@ no_free()
 }
 
 int
-enjoy_event_id_get(Event_ID event_id)
+enjoy_event_id_get(Enjoy_Event_ID event_id)
 {
    switch (event_id)
      {
@@ -111,6 +108,44 @@ enjoy_event_id_init()
    app.event_id.player.status_change = ecore_event_type_new();
    app.event_id.player.track_change = ecore_event_type_new();
    app.event_id.tracklist.tracklist_change = ecore_event_type_new();
+}
+
+static void
+enjoy_event_id_shutdown()
+{
+   ecore_shutdown();
+}
+
+static Eina_Bool
+enjoy_module_load_one(Eina_Module *module, void *data)
+{
+   const char *filename = eina_module_file_get(module);
+   const char *prefix = "libenjoyplugin";
+
+   if (!strstr(filename, prefix)) return EINA_FALSE;
+   if (!eina_module_load(module))
+     {
+        WRN("Couldn't load module %s.", filename);
+        return EINA_FALSE;
+     }
+
+   return EINA_TRUE;
+}
+
+static void
+enjoy_module_load()
+{
+   puts("loading modules from " LIBRARY_DIR);
+   app.modules = eina_module_list_get(NULL, LIBRARY_DIR, EINA_FALSE, enjoy_module_load_one, NULL);
+}
+
+static void
+enjoy_module_unload()
+{
+   while (eina_array_count_get(app.modules))
+      eina_module_unload(eina_array_pop(app.modules));
+   eina_array_free(app.modules);
+   app.modules = NULL;
 }
 
 EAPI int
@@ -179,14 +214,11 @@ elm_main(int argc, char **argv)
 
    app.win = win_new(&app);
    if (!app.win) goto end;
-   
-#ifdef _HAVE_FSO_
-   fso_init();
-#endif
 
-   enjoy_event_id_init();
-   mpris_init();
    cover_init();
+   enjoy_event_id_init();
+   enjoy_module_load();
+
    elm_run();
 
  end:
@@ -196,12 +228,9 @@ elm_main(int argc, char **argv)
    eina_log_domain_unregister(_log_domain);
    _log_domain = -1;
    elm_shutdown();
-   mpris_shutdown();
+   enjoy_module_unload();
+   enjoy_event_id_shutdown();
    cover_shutdown();
-
-#ifdef _HAVE_FSO_
-   fso_shutdown();
-#endif
 
    return r;
 }

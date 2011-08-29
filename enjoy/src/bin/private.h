@@ -5,6 +5,10 @@
 #include "config.h"
 #endif
 
+#include "log.h"
+#include "plugin.h"
+#include "song.h"
+
 #include <Elementary.h>
 #include <limits.h>
 
@@ -20,14 +24,6 @@ typedef struct _Album                   Album;
 typedef struct _NameID                  Artist;
 typedef struct _NameID                  Genre;
 
-extern int _log_domain;
-
-#define CRITICAL(...) EINA_LOG_DOM_CRIT(_log_domain, __VA_ARGS__)
-#define ERR(...)      EINA_LOG_DOM_ERR(_log_domain, __VA_ARGS__)
-#define WRN(...)      EINA_LOG_DOM_WARN(_log_domain, __VA_ARGS__)
-#define INF(...)      EINA_LOG_DOM_INFO(_log_domain, __VA_ARGS__)
-#define DBG(...)      EINA_LOG_DOM_DBG(_log_domain, __VA_ARGS__)
-
 #define MSG_VOLUME   1
 #define MSG_POSITION 2
 #define MSG_RATING   3
@@ -35,29 +31,13 @@ extern int _log_domain;
 #define MSG_LOOP     5
 #define MSG_SHUFFLE  6
 
-typedef enum {
-   ENJOY_EVENT_PLAYER_CAPS_CHANGE,
-   ENJOY_EVENT_PLAYER_STATUS_CHANGE,
-   ENJOY_EVENT_PLAYER_TRACK_CHANGE,
-   ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE
-} Event_ID;
-
-typedef enum {
-  CAN_GO_NEXT = 1 << 0,
-  CAN_GO_PREV = 1 << 1,
-  CAN_PAUSE = 1 << 2,
-  CAN_PLAY = 1 << 3,
-  CAN_SEEK = 1 << 4,
-  CAN_PROVIDE_METADATA = 1 << 5,
-  CAN_HAS_TRACKLIST = 1 << 6
-} Capabilities;
-
 struct _App
 {
    Eina_List   *add_dirs;
    Eina_List   *del_dirs;
    char         configdir[PATH_MAX];
    Evas_Object *win;
+   Eina_Array  *modules;
    struct {
       struct {
          int caps_change;
@@ -70,35 +50,7 @@ struct _App
    } event_id;
 };
 
-
 Evas_Object *win_new(App *app);
-
-char      *enjoy_cache_dir_get(void);
-Eina_Bool  enjoy_repeat_get(void);
-int32_t    enjoy_position_get(void);
-int32_t    enjoy_volume_get(void);
-int        enjoy_caps_get(void);
-int32_t    enjoy_playlist_current_position_get(void);
-Song      *enjoy_playlist_song_position_get(int32_t position);
-Song      *enjoy_song_current_get(void);
-Song      *enjoy_song_position_get(int32_t position);
-void       enjoy_control_loop_set(Eina_Bool param);
-void       enjoy_control_next(void);
-void       enjoy_control_pause(void);
-void       enjoy_control_play(void);
-void       enjoy_control_previous(void);
-void       enjoy_control_seek(uint64_t position);
-void       enjoy_control_shuffle_set(Eina_Bool param);
-void       enjoy_control_stop(void);
-void       enjoy_position_set(int32_t position);
-void       enjoy_quit(void);
-void       enjoy_repeat_set(Eina_Bool repeat);
-void       enjoy_status_get(int *playback, int *shuffle, int *repeat, int *endless);
-void       enjoy_volume_set(int32_t volume);
-
-
-int        enjoy_event_id_get(Event_ID eid);
-void	   no_free();
 
 Libmgr      *libmgr_new(const char *dbpath);
 Eina_Bool    libmgr_scanpath_add(Libmgr *mgr, const char *path);
@@ -155,36 +107,6 @@ DB        *db_open(const char *path);
 Eina_Bool  db_close(DB *db);
 
 Evas_Object *nowplaying_add(Evas_Object *parent);
-
-struct _Song
-{
-   const char *path;
-   const char *title;
-   const char *album;
-   const char *artist;
-   const char *genre;
-   int64_t id;
-   int64_t album_id;
-   int64_t artist_id;
-   int64_t genre_id;
-   int size; /* file size in bytes */
-   int trackno;
-   int rating;
-   int playcnt;
-   int length;
-   struct {
-      unsigned int path;
-      unsigned int title;
-      unsigned int album;
-      unsigned int artist;
-      unsigned int genre;
-   } len; /* strlen of string fields */
-   struct { /* not from db, for runtime use */
-      Eina_Bool fetched_album:1;
-      Eina_Bool fetched_artist:1;
-      Eina_Bool fetched_genre:1;
-   } flags;
-};
 
 typedef enum {
    ALBUM_COVER_ORIGIN_LOCAL,

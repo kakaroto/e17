@@ -513,28 +513,28 @@ _win_edje_msg(void *data, Evas_Object *o __UNUSED__, Edje_Message_Type type, int
      }
 }
 
-void
+EAPI void
 enjoy_control_next(void)
 {
    Win *w = &_win;
    _win_next(w, NULL, NULL);
 }
 
-void
+EAPI void
 enjoy_control_previous(void)
 {
    Win *w = &_win;
    _win_prev(w, NULL, NULL);
 }
 
-void
+EAPI void
 enjoy_control_pause(void)
 {
    Win *w = &_win;
    _win_action_pause(w, NULL, NULL);
 }
 
-void
+EAPI void
 enjoy_control_stop(void)
 {
    Win *w = &_win;
@@ -543,14 +543,14 @@ enjoy_control_stop(void)
    emotion_object_position_set(w->emotion, w->play.position);
 }
 
-void
+EAPI void
 enjoy_control_play(void)
 {
    Win *w = &_win;
    _win_action_play(w, NULL, NULL);
 }
 
-void
+EAPI void
 enjoy_control_seek(uint64_t position)
 {
    Win *w = &_win;
@@ -566,34 +566,34 @@ enjoy_control_seek(uint64_t position)
    emotion_object_position_set(w->emotion, w->play.position);
 }
 
-void
+EAPI void
 enjoy_quit(void)
 {
    ecore_main_loop_quit();
 }
 
-int
+EAPI int
 enjoy_caps_get(void)
 {
    Win *w = &_win;
    int caps = 0;
 
-   if (list_prev_exists(w->list)) caps |= CAN_GO_PREV;
-   if ((w->play.shuffle) || (list_next_exists(w->list))) caps |= CAN_GO_NEXT;
+   if (list_prev_exists(w->list)) caps |= ENJOY_CAPABILITY_CAN_GO_PREV;
+   if ((w->play.shuffle) || (list_next_exists(w->list))) caps |= ENJOY_CAPABILITY_CAN_GO_NEXT;
    if (w->song)
      {
-        caps |= CAN_PAUSE;
-        caps |= CAN_PLAY;
+        caps |= ENJOY_CAPABILITY_CAN_PAUSE;
+        caps |= ENJOY_CAPABILITY_CAN_PLAY;
         if (emotion_object_seekable_get(w->emotion))
-          caps |= CAN_SEEK;
-        caps |= CAN_PROVIDE_METADATA;
-        caps |= CAN_HAS_TRACKLIST;
+          caps |= ENJOY_CAPABILITY_CAN_SEEK;
+        caps |= ENJOY_CAPABILITY_CAN_PROVIDE_METADATA;
+        caps |= ENJOY_CAPABILITY_CAN_HAS_TRACKLIST;
      }
 
    return caps;
 }
 
-void
+EAPI void
 enjoy_status_get(int *playback, int *shuffle, int *repeat, int *endless)
 {
   Win *w = &_win;
@@ -612,21 +612,21 @@ enjoy_status_get(int *playback, int *shuffle, int *repeat, int *endless)
   if (endless) *endless = 0;
 }
 
-void
+EAPI void
 enjoy_repeat_set(Eina_Bool repeat)
 {
   Win *w = &_win;
   w->play.repeat = !!repeat;
 }
 
-Eina_Bool
+EAPI Eina_Bool
 enjoy_repeat_get(void)
 {
   Win *w = &_win;
   return w->play.repeat;
 }
 
-void
+EAPI void
 enjoy_position_set(int32_t position)
 {
    Win *w = &_win;
@@ -640,21 +640,21 @@ enjoy_position_set(int32_t position)
    emotion_object_position_set(w->emotion, w->play.position);
 }
 
-int32_t
+EAPI int32_t
 enjoy_position_get(void)
 {
    Win *w = &_win;
    return w->play.position * w->play.length;
 }
 
-int32_t
+EAPI int32_t
 enjoy_volume_get(void)
 {
    Win *w = &_win;
    return w->play.volume * 100;
 }
 
-void
+EAPI void
 enjoy_volume_set(int32_t volume)
 {
    Win *w = &_win;
@@ -662,21 +662,21 @@ enjoy_volume_set(int32_t volume)
    emotion_object_audio_volume_set(w->emotion, w->play.volume);
 }
 
-Song *
+EAPI Song *
 enjoy_song_current_get(void)
 {
    Win *w = &_win;
    return w->song;
 }
 
-Song *
+EAPI Song *
 enjoy_song_position_get(int32_t position)
 {
    Win *w = &_win;
    return db_song_get(w->db, position);
 }
 
-void
+EAPI void
 enjoy_control_loop_set(Eina_Bool param)
 {
    Win *w = &_win;
@@ -685,7 +685,7 @@ enjoy_control_loop_set(Eina_Bool param)
                             EDJE_MESSAGE_INT, MSG_LOOP, &param);
 }
 
-void
+EAPI void
 enjoy_control_shuffle_set(Eina_Bool param)
 {
    Win *w = &_win;
@@ -694,7 +694,7 @@ enjoy_control_shuffle_set(Eina_Bool param)
                             EDJE_MESSAGE_INT, MSG_SHUFFLE, &param);
 }
 
-int32_t
+EAPI int32_t
 enjoy_playlist_current_position_get(void)
 {
    Win *w = &_win;
@@ -702,7 +702,7 @@ enjoy_playlist_current_position_get(void)
    return list_song_selected_n_get(w->list);
 }
 
-Song *
+EAPI Song *
 enjoy_playlist_song_position_get(int32_t position)
 {
    Win *w = &_win;
