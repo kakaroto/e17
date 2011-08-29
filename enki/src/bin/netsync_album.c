@@ -582,7 +582,7 @@ _photos_notinnetsync_cb(void *data, Evas_Object *obj, void *event_info)
       Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
       if (photo_data && photo_data->netsync.state == PHOTO_NETSYNC_NOTINNETSYNC)
       {
-         upload_add(enlil_data->ul, photo);
+         /* upload_add(enlil_data->ul, photo); */
       }
    }
 
