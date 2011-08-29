@@ -8,6 +8,7 @@
 #include <Eina.h>
 
 typedef struct _Song Song;
+typedef struct _Enjoy_Player_Status Enjoy_Player_Status;
 
 typedef enum {
    ENJOY_EVENT_PLAYER_CAPS_CHANGE,
@@ -25,6 +26,13 @@ typedef enum {
   ENJOY_CAPABILITY_CAN_PROVIDE_METADATA = 1 << 5,
   ENJOY_CAPABILITY_CAN_HAS_TRACKLIST = 1 << 6
 } Enjoy_Capabilities;
+
+struct _Enjoy_Player_Status {
+  Eina_Bool playback;
+  Eina_Bool shuffle;
+  Eina_Bool repeat;
+  Eina_Bool endless;
+};
 
 EAPI char      *enjoy_cache_dir_get(void);
 EAPI Eina_Bool  enjoy_repeat_get(void);
@@ -47,7 +55,7 @@ EAPI void       enjoy_control_stop(void);
 EAPI void       enjoy_position_set(int32_t position);
 EAPI void       enjoy_quit(void);
 EAPI void       enjoy_repeat_set(Eina_Bool repeat);
-EAPI void       enjoy_status_get(int *playback, int *shuffle, int *repeat, int *endless);
+EAPI Enjoy_Player_Status *enjoy_status_get(void);
 EAPI void       enjoy_volume_set(int32_t volume);
 EAPI void	no_free();
 

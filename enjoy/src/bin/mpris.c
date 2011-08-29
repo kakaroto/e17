@@ -158,8 +158,8 @@ _cb_player_caps_change(void *data __UNUSED__, int type __UNUSED__, void *event)
 static Eina_Bool
 _cb_player_status_change(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
-   int *new_status = event;
-   _mpris_signal_player_status_change(new_status[0], new_status[1], new_status[2], new_status[3]);
+   const Enjoy_Player_Status *status = event;
+   _mpris_signal_player_status_change(status->playback, status->shuffle, status->repeat, status->endless);
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -464,11 +464,11 @@ _mpris_player_stop(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 static DBusMessage *
 _mpris_player_play(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
-   int playback;
-   enjoy_status_get(&playback, NULL, NULL, NULL);
-   if (!playback)
+   Enjoy_Player_Status *status = enjoy_status_get();
+   if (!status->playback)
      enjoy_position_set(0);
    enjoy_control_play();
+   free(status);
    return dbus_message_new_method_return(msg);
 }
 
@@ -561,17 +561,17 @@ _mpris_player_status_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
    DBusMessage *reply = dbus_message_new_method_return(msg);
    DBusMessageIter iter, siter;
-   int playback, shuffle, repeat, endless;
-
-   enjoy_status_get(&playback, &shuffle, &repeat, &endless);
+   Enjoy_Player_Status *status = enjoy_status_get();
 
    dbus_message_iter_init_append(reply, &iter);
    dbus_message_iter_open_container(&iter, DBUS_TYPE_STRUCT, NULL, &siter);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &playback);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &shuffle);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &repeat);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &endless);
+   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &(status->playback));
+   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &(status->shuffle));
+   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &(status->repeat));
+   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &(status->endless));
    dbus_message_iter_close_container(&iter, &siter);
+
+   free(status);
    return reply;
 }
 

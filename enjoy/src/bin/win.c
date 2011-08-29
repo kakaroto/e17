@@ -149,15 +149,9 @@ _win_toolbar_eval(Win *w)
 static void
 _win_play_pause_toggle(Win *w)
 {
-   int playback, shuffle, repeat, endless;
-   enjoy_status_get(&playback, &shuffle, &repeat, &endless);
-   int *status = malloc(sizeof(*status) * 4);
-   status[0] = playback;
-   status[1] = shuffle;
-   status[2] = repeat;
-   status[3] = endless;
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_STATUS_CHANGE), status, NULL, NULL);
    int *caps = malloc(sizeof(*caps));
+
+   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_STATUS_CHANGE), enjoy_status_get(), NULL, NULL);
    *caps = enjoy_caps_get();
    ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
 
@@ -593,23 +587,25 @@ enjoy_caps_get(void)
    return caps;
 }
 
-EAPI void
-enjoy_status_get(int *playback, int *shuffle, int *repeat, int *endless)
+EAPI Enjoy_Player_Status*
+enjoy_status_get()
 {
   Win *w = &_win;
-  if (playback)
-    {
-      if (w->play.playing)
-        *playback = 0;
-      else if (w->play.position == 0.0)
-        *playback = 2;
-      else
-        *playback = 1;
-    }
+  Enjoy_Player_Status *status = calloc(1, sizeof(*status));
+  if (!status) return NULL;
 
-  if (shuffle) *shuffle = !!w->play.shuffle;
-  if (repeat) *repeat = !!w->play.repeat;
-  if (endless) *endless = 0;
+  if (w->play.playing)
+    status->playback = 0;
+  else if (w->play.position == 0.0)
+    status->playback = 2;
+  else
+    status->playback = 1;
+
+  status->shuffle = !!w->play.shuffle;
+  status->repeat = !!w->play.repeat;
+  status->endless = 0;
+
+  return status;
 }
 
 EAPI void
