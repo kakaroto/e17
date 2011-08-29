@@ -86,6 +86,9 @@ e_mod_border_ignore(E_Border *bd)
 
 	if (!strcmp(bd->client.icccm.class, "Virtual-Keyboard"))
 	  return EINA_TRUE;	  
+
+	if (!strcmp(bd->client.icccm.class, "everything-window"))
+	  return EINA_TRUE;	  
      }
    if (bd->client.icccm.name)
      {
@@ -243,6 +246,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, pager_fade_windows, UCHAR);
    E_CONFIG_VAL(D, T, pager_fade_popups, UCHAR);
    E_CONFIG_VAL(D, T, pager_fade_desktop, UCHAR);
+   E_CONFIG_VAL(D, T, pager_keep_shelves, UCHAR);
 
    E_CONFIG_LIST(D, T, conf_items, conf_item_edd);
 

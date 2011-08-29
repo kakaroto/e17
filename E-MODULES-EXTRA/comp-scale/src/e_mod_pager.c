@@ -76,6 +76,7 @@ static E_Desk *current_desk = NULL;
 static E_Desk *initial_desk = NULL;
 static int min_x, min_y, max_x, max_y;
 static double desk_w, desk_h;
+static double zone_w, zone_h, zone_x, zone_y;
 static double zoom = 0.0;
 static int mouse_activated = 0;
 static int mouse_x, mouse_y;
@@ -92,8 +93,8 @@ _pager_place_desks(double scale)
      {
 	for (x = 0; x < zone->desk_x_count; x++)
 	  {
-	     double x1 = (x - initial_desk->x) * zone->w;
-	     double y1 = (y - initial_desk->y) * zone->h;
+	     double x1 = (x - initial_desk->x) * zone_w;
+	     double y1 = (y - initial_desk->y) * zone_h;
 	     double x2 = min_x + x * desk_w;
 	     double y2 = min_y + y * desk_h;
 	     double cur_x = (scale * x1) + (1.0 - scale) * x2;
@@ -126,6 +127,7 @@ _pager_place_windows(double scale)
 
    EINA_LIST_FOREACH(items, l, it)
      {
+	if (!it->o) continue;
 	it->cur_x = it->bd_x * scale + it->x * (1.0 - scale);
 	it->cur_y = it->bd_y * scale + it->y * (1.0 - scale);
 	it->cur_w = (double)(it->bd_x + it->bd->w) * scale + (it->x + it->w) * (1.0 - scale) - it->cur_x;
@@ -185,6 +187,8 @@ _pager_redraw(void *data)
 	  {
 	     double a = 255.0;
 
+	     if (!it->o) continue;
+	     
 	     if ((it->desk != current_desk) && (it->desk != previous_desk))
 	       a = 255.0 * (1.0 - in);
 
@@ -192,14 +196,20 @@ _pager_redraw(void *data)
 	  }
      }
 
+   double a = 255.0 * in;
+   
    if (scale_conf->pager_fade_popups)
      {
-	double a = 255.0 * in;
-
 	EINA_LIST_FOREACH(popups, l, it)
 	  evas_object_color_set(it->o_win, a, a, a, a);
      }
 
+   EINA_LIST_FOREACH(items, l, it)
+     {
+	if (it->o) continue;
+	evas_object_color_set(it->o_win, a, a, a, a);
+     }
+   
    if (scale_conf->pager_fade_desktop && background)
      {
    	double a = (1.0 - in) * 155.0;
@@ -251,8 +261,8 @@ _pager_out()
      {
 	edje_object_signal_emit(it->o, "hide", "e");
 	/* edje_object_signal_emit(it->o, "mouse,in", "e"); */
-	it->bd_x = it->bd->x + (it->desk->x - current_desk->x) * zone->w;
-	it->bd_y = it->bd->y + (it->desk->y - current_desk->y) * zone->h;
+	it->bd_x = it->bd->x + (it->desk->x - current_desk->x) * zone_w;
+	it->bd_y = it->bd->y + (it->desk->y - current_desk->y) * zone_h;
      }
 
    initial_desk = current_desk;
@@ -304,6 +314,7 @@ _pager_finish()
      {
 	oo = edje_object_part_swallow_get(o, "e.swallow.desk");
 	if (oo) evas_object_del(oo);
+
 	evas_object_del(o);
      }
 
@@ -338,8 +349,8 @@ _pager_finish()
 static E_Desk *
 _pager_desk_at_xy_get(double x, double y)
 {
-   x = ((x * zoom) - (min_x * zoom)) / (double)zone->w;
-   y = ((y * zoom) - (min_y * zoom)) / (double)zone->h;
+   x = ((x * zoom) - (min_x * zoom)) / (double)zone_w;
+   y = ((y * zoom) - (min_y * zoom)) / (double)zone_h;
    if (x > zone->desk_x_count - 1) x = zone->desk_x_count - 1;
    if (y > zone->desk_y_count - 1) y = zone->desk_y_count - 1;
 
@@ -408,8 +419,8 @@ _pager_win_final_position_set(Item *it)
    it->x += min_x + 1.0; /* XXX get offset from desk theme */
    it->y += min_y + 1.0;
    /* move window to relative position on desk */
-   it->x += (double)(it->bd->x - zone->x) * (1.0 / zoom);
-   it->y += (double)(it->bd->y - zone->y) * (1.0 / zoom);
+   it->x += (double)(it->bd->x - zone_x) * (1.0 / zoom);
+   it->y += (double)(it->bd->y - zone_y) * (1.0 / zoom);
 }
 
 static void
@@ -430,10 +441,10 @@ _pager_win_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!it->moved)
      return;
 
-   if (x + it->bd->w > zone->x + zone->w) x = zone->x + zone->w - it->bd->w;
-   if (y + it->bd->h > zone->y + zone->h) y = zone->y + zone->h - it->bd->h;
-   if (x < zone->x) x = zone->x;
-   if (y < zone->y) y = zone->y;
+   if (x + it->bd->w > zone_x + zone_w) x = zone_x + zone_w - it->bd->w;
+   if (y + it->bd->h > zone_y + zone_h) y = zone_y + zone_h - it->bd->h;
+   if (x < zone->x) x = zone_x;
+   if (y < zone->y) y = zone_y;
 
    e_border_move(it->bd, x, y);
 
@@ -488,13 +499,13 @@ _pager_win_cb_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info
 	it->bd_x = ((it->x * zoom) - min_x * zoom);
 	it->bd_y = ((it->y * zoom) - min_y * zoom);
 
-	x = (int)(it->bd_x) % zone->w;
-	y = (int)(it->bd_y) % zone->h;
+	x = (int)(it->bd_x) % (int)zone_w;
+	y = (int)(it->bd_y) % (int)zone_h;
 
 	if ((desk2 = _pager_desk_at_xy_get(it->x, it->y)))
 	  {
-	     x += (desk2->x - desk->x) * zone->w + zone->x;
-	     y += (desk2->y - desk->y) * zone->h + zone->y;
+	     x += (desk2->x - desk->x) * zone_w + zone_x;
+	     y += (desk2->y - desk->y) * zone_h + zone_y;
 	  }
 
 	if (current_desk != desk)
@@ -686,16 +697,20 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 
    items = eina_list_append(items, it);
 
-   if (e_mod_border_ignore(it->bd))
+   evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
+				  _pager_win_cb_delorig, it);
+
+   if ((it->bd->client.netwm.state.skip_pager) || (e_mod_border_ignore(it->bd)))
      return NULL;
 
-   it->o_win = e_manager_comp_src_image_mirror_add(man, src);
+   /* it->o_win = e_manager_comp_src_image_mirror_add(man, src); */
 
-   /* it->o_win = evas_object_image_filled_add(e);
-    * o = e_manager_comp_src_image_get(man, src);
-    * evas_object_image_source_set(it->o_win, o);
-    * evas_object_image_smooth_scale_set(it->o_win, evas_object_image_smooth_scale_get(o)); */
-
+   it->o_win = evas_object_image_filled_add(e);
+   o = e_manager_comp_src_image_get(man, src);
+   evas_object_image_source_set(it->o_win, o);
+   evas_object_image_smooth_scale_set(it->o_win, evas_object_image_smooth_scale_get(o));
+   evas_object_show(o);
+   
    it->o = edje_object_add(e);
    if (!e_theme_edje_object_set(it->o, "base/theme/modules/scale",
 				"modules/scale/win"))
@@ -706,9 +721,6 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    evas_object_show(it->o);
    edje_object_part_swallow(it->o, "e.swallow.win", it->o_win);
    evas_object_clip_set(it->o, zone_clip);
-
-   evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
-				  _pager_win_cb_delorig, it);
 
    evas_object_event_callback_add(it->o, EVAS_CALLBACK_MOUSE_IN,
 				  _pager_win_cb_mouse_in, it);
@@ -728,8 +740,8 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    it->dx = it->desk->x - current_desk->x;
    it->dy = it->desk->y - current_desk->y;
 
-   it->x = it->bd->x + it->dx * zone->w;
-   it->y = it->bd->y + it->dy * zone->h;
+   it->x = it->bd->x + it->dx * zone_w;
+   it->y = it->bd->y + it->dy * zone_h;
 
    it->bd_x = it->x;
    it->bd_y = it->y;
@@ -1042,19 +1054,15 @@ _pager_run(E_Manager *man)
    h = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_DOWN,
 			       _pager_cb_mouse_down, e);
    handlers = eina_list_append(handlers, h);
-
    h = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_UP,
 			       _pager_cb_mouse_up, e);
    handlers = eina_list_append(handlers, h);
-
    h = ecore_event_handler_add(ECORE_EVENT_MOUSE_MOVE,
 			       _pager_cb_mouse_move, e);
    handlers = eina_list_append(handlers, h);
-
    h = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
 			       _pager_cb_key_down, e);
    handlers = eina_list_append(handlers, h);
-
    h = ecore_event_handler_add(ECORE_EVENT_KEY_UP,
 			       _pager_cb_key_up, e);
    handlers = eina_list_append(handlers, h);
@@ -1063,18 +1071,33 @@ _pager_run(E_Manager *man)
    if (zoom < zone->desk_y_count)
      zoom = zone->desk_y_count;
 
-   desk_w = (zone->w / zoom);
-   desk_h = (zone->h / zoom);
-
-   min_x = OFFSET + zone->x + (zoom - zone->desk_x_count) * desk_w / 2.0;
-   min_y = OFFSET + zone->y + (zoom - zone->desk_y_count) * desk_h / 2.0;
+   if (scale_conf->pager_keep_shelves)
+     {
+	zone_w = zone->useful_geometry.w;
+	zone_h = zone->useful_geometry.h;
+	zone_x = zone->x + zone->useful_geometry.x;
+	zone_y = zone->y + zone->useful_geometry.y;
+     }
+   else
+     {
+	zone_w = zone->w;
+	zone_h = zone->h;
+	zone_x = zone->x;
+	zone_y = zone->y;
+     }
+   
+   desk_w = (zone_w / zoom);
+   desk_h = (zone_h / zoom);
+   
+   min_x = OFFSET + zone_x + (zoom - zone->desk_x_count) * desk_w / 2.0;
+   min_y = OFFSET + zone_y + (zoom - zone->desk_y_count) * desk_h / 2.0;
 
    max_x = min_x + (zone->desk_x_count * desk_w);
    max_y = min_y + (zone->desk_y_count * desk_h);
 
    zone_clip = evas_object_rectangle_add(e);
-   evas_object_move(zone_clip, zone->x, zone->y);
-   evas_object_resize(zone_clip, zone->w, zone->h);
+   evas_object_move(zone_clip, zone_x, zone_y);
+   evas_object_resize(zone_clip, zone_w, zone_h);
    evas_object_show(zone_clip);
 
    EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)

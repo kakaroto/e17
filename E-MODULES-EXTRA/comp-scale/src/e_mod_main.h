@@ -61,6 +61,7 @@ struct _Config
   unsigned char pager_fade_windows;
   unsigned char pager_fade_popups;
   unsigned char pager_fade_desktop;
+  unsigned char pager_keep_shelves;
 };
 
 struct _Config_Item

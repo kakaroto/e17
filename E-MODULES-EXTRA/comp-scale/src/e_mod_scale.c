@@ -725,14 +725,16 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 
    if (e_mod_border_ignore(cw->bd))
      {
-	char *class;
+	const char *class;
+	
 	if (!cw->bd->visible)
 	  return NULL;
-	
-	  /* fade keyboard and home, ignore other */
+	/* fade keyboard and home, ignore other */
+
 	if (!(class = cw->bd->client.icccm.class) ||
 	    (strcmp(class, "Virtual-Keyboard") &&
-	     strcmp(class, "Illume-Home")))
+	     strcmp(class, "Illume-Home") &&
+	     strcmp(class, "everything-window")))
 	  return NULL;
      }
        

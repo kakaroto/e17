@@ -16,7 +16,7 @@ struct _E_Config_Dialog_Data
   int		desks_grow;
   int		desks_tight;
   int		desks_show_iconic;
-
+  
   int		fade_popups;
   int		fade_desktop;
   int		fade_windows;
@@ -25,6 +25,7 @@ struct _E_Config_Dialog_Data
   int		pager_fade_popups;
   int		pager_fade_desktop;
   int		pager_fade_windows;
+  int		pager_keep_shelves;
 };
 
 
@@ -100,6 +101,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->pager_fade_popups  = scale_conf->pager_fade_popups;
    cfdata->pager_fade_desktop = scale_conf->pager_fade_desktop;
    cfdata->pager_fade_windows = scale_conf->pager_fade_windows;
+   cfdata->pager_keep_shelves = !scale_conf->pager_keep_shelves;
 }
 
 static Evas_Object *
@@ -198,6 +200,9 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    ow = e_widget_slider_add (evas, 1, 0, D_("%1.2f"), 0.01, 3.0, 0.01, 0,
 			     &(cfdata->pager_duration), NULL,100);
    e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("Overlap Shelves"),
+			   &(cfdata->pager_keep_shelves));
+   e_widget_framelist_object_append(of, ow);
    ow = e_widget_check_add(evas, D_("Fade in windows"),
 			   &(cfdata->pager_fade_windows));
    e_widget_framelist_object_append(of, ow);
@@ -239,6 +244,7 @@ _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    scale_conf->pager_fade_popups  = cfdata->pager_fade_popups;
    scale_conf->pager_fade_windows = cfdata->pager_fade_windows;
    scale_conf->pager_fade_desktop = cfdata->pager_fade_desktop;
+   scale_conf->pager_keep_shelves = !cfdata->pager_keep_shelves;
 
    e_config_save_queue();
    return 1;
