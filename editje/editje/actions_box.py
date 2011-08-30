@@ -33,7 +33,7 @@ class ActionsBox(elementary.Box):
         btn = elementary.Button(self)
         #btn.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         #btn.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-        btn.label_set(label)
+        btn.text_set(label)
 
         if func_cb:
             btn.callback_clicked_add(func_cb, data)

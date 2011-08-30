@@ -479,7 +479,7 @@ class PartDetails(EditjeDetails):
         bx.show()
 
         lb = Label(self)
-        lb.label_set(message)
+        lb.text_set(message)
         bx.pack_end(lb)
         lb.show()
 

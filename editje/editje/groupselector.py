@@ -128,12 +128,12 @@ class NameEntry(elementary.Box):
         self._entry_bx.show()
 
         entry_lb = elementary.Label(parent)
-        entry_lb.label_set("Name: ")
+        entry_lb.text_set("Name: ")
         entry_lb.show()
         self._entry_bx.pack_end(entry_lb)
 
         self._status_lb = elementary.Label(parent)
-        self._status_lb.label_set("")
+        self._status_lb.text_set("")
         self._status_lb.show()
 
         scroller = elementary.Scroller(parent)
@@ -174,7 +174,7 @@ class NameEntry(elementary.Box):
     entry = property(fset=_entry_set, fget=_entry_get)
 
     def _status_label_set(self, value):
-        self._status_lb.label_set(value)
+        self._status_lb.text_set(value)
 
     def _status_label_get(self):
         status_label = self._status_lb.label_get()

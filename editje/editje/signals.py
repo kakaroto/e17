@@ -111,7 +111,7 @@ class SignalsList(CList):
         for s in self._selected.iterkeys():
             item = self._items[s]
             if item.label_get() == old_name:
-                item.label_set(new_name)
+                item.text_set(new_name)
                 self._selected[new_name] = self._selected[old_name]
                 self._items[new_name] = self._items[old_name]
                 del self._selected[old_name]
@@ -563,7 +563,7 @@ class SignalDetails(EditjeDetails):
         bx.show()
 
         lb = Label(self)
-        lb.label_set(message)
+        lb.text_set(message)
         bx.pack_end(lb)
         lb.show()
 

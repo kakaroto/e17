@@ -272,7 +272,7 @@ class Editje(elementary.Window, OpenFileManager):
             nt.repeat_events_set(True)
 
             lb = elementary.Label(nt)
-            lb.label_set("Save Error " + str(err))
+            lb.text_set("Save Error " + str(err))
             nt.content_set(lb)
             lb.show()
 
@@ -806,7 +806,7 @@ class Editje(elementary.Window, OpenFileManager):
         self._modes_selector.tooltip_text_set("Change between the edition"
                                               " modes:<br>"
                                               "Parts, Animations and Signals")
-        self._modes_selector.label_set("Mode")
+        self._modes_selector.text_set("Mode")
         self._modes_selector.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._modes_selector.size_hint_align_set(
             evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
@@ -930,7 +930,7 @@ class Editje(elementary.Window, OpenFileManager):
 
         self._context_restore(self.mode)
 
-        self._modes_selector.label_set("Mode: " + self.mode)
+        self._modes_selector.text_set("Mode: " + self.mode)
 
         theme_file, group, edje_type = item.icon_get()
         ico = elementary.Icon(self)
@@ -1248,7 +1248,7 @@ class Editje(elementary.Window, OpenFileManager):
         bx.show()
 
         lb = elementary.Label(self)
-        lb.label_set(message)
+        lb.text_set(message)
         bx.pack_end(lb)
         lb.show()
 

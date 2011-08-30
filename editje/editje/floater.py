@@ -128,7 +128,7 @@ class Floater(Layout):
     def action_add(self, label, func_cb, data=None):
         btn = Button(self._parent)
         self._action_btns.append(btn)
-        btn.label_set(label)
+        btn.text_set(label)
         btn.callback_clicked_add(self._action_btn_clicked)
         btn.size_hint_weight_set(1.0, 1.0)
         btn.size_hint_align_set(-1.0, -1.0)
@@ -177,7 +177,7 @@ class Floater(Layout):
 class WizardAction(Button):
     def __init__(self, parent, label, func, key=None, data=None):
         Button.__init__(self, parent)
-        self.label_set(label)
+        self.text_set(label)
         self.callback_clicked_add(self.__action_btn_clicked)
         self.size_hint_weight_set(evas.EVAS_HINT_EXPAND,
                                   evas.EVAS_HINT_EXPAND)
@@ -351,7 +351,7 @@ class Wizard(InnerWindow):
         bx.show()
 
         lb = Label(self)
-        lb.label_set(message)
+        lb.text_set(message)
         bx.pack_end(lb)
         lb.show()
 

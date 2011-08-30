@@ -150,7 +150,7 @@ class OpenFile(elementary.Window):
         bx.show()
 
         lb = elementary.Label(self)
-        lb.label_set(message)
+        lb.text_set(message)
         bx.pack_end(lb)
         lb.show()
 
@@ -167,7 +167,7 @@ class OpenFile(elementary.Window):
         if isinstance(err, IOError) and err.errno == errno.EEXIST:
             self._notification.title = "Swap file already exists"
             lb = elementary.Label(self._notification)
-            lb.label_set(
+            lb.text_set(
                 "Another program may be editing the same file<br>" +
                 "or a previous edition session for this file crashed.")
             self._notification.pack_end(lb)
@@ -178,7 +178,7 @@ class OpenFile(elementary.Window):
         elif isinstance(err, swapfile.CompileError):
             self._notification.title = "Compiler Error"
             lb = elementary.Label(self._notification)
-            lb.label_set(str(err.message).replace('\n', '<br>'))
+            lb.text_set(str(err.message).replace('\n', '<br>'))
             self._notification.pack_end(lb)
             lb.show()
             self._notification.action_add("Ok", self._notify_abort)

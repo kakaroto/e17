@@ -73,7 +73,7 @@ if __name__ == "__main__":
     pop.action_add('WWW', None)
 
     lb = elementary.Label(pop)
-    lb.label_set("XXXXXXXXXXXXXX<br>XXXXXXXXXXX<br>XXXXXXXXXXXXXX<br>")
+    lb.text_set("XXXXXXXXXXXXXX<br>XXXXXXXXXXX<br>XXXXXXXXXXXXXX<br>")
     lb.show()
     pop.pack_end(lb)
 

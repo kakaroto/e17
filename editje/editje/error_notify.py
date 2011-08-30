@@ -49,7 +49,7 @@ class ErrorNotify(elementary.Notify):
 
     def _title_set(self, title):
         self._title_value = title
-        self._title.label_set("<b>" + title + "</b>")
+        self._title.text_set("<b>" + title + "</b>")
 
     def _title_get(self):
         return self._title_value
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     nt.action_add('WWW', None)
 
     lb = elementary.Label(nt)
-    lb.label_set("XXXXXXXXXXXXXX<br>XXXXXXXXXXX<br>XXXXXXXXXXXXXX<br>")
+    lb.text_set("XXXXXXXXXXXXXX<br>XXXXXXXXXXX<br>XXXXXXXXXXXXXX<br>")
     lb.show()
     nt.pack_end(lb)
 

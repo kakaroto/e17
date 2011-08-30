@@ -35,7 +35,7 @@ class WidgetCombo(Widget):
     def _internal_value_set(self, value):
         for it in self.items:
             if value == it.label_get():
-                self.obj.label_set(value)
+                self.obj.text_set(value)
                 break
 
     def _internal_value_get(self):
@@ -55,7 +55,7 @@ class WidgetCombo(Widget):
     def _hover_item_selected_cb(self, obj, it, item, *args, **kwargs):
         if self.obj.label_get() == item:
             return
-        self.obj.label_set(item)
+        self.obj.text_set(item)
         self._callback_call("changed")
 
     def tooltip_set(self, label):

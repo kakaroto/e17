@@ -244,7 +244,7 @@ class AnimationsPartsList(PartsList):
                 self, elementary.ELM_NOTIFY_ORIENT_CENTER)
             self._notification.title = "Part Removal"
             lb = elementary.Label(self._notification)
-            lb.label_set("Are you sure you want to remove<br>"
+            lb.text_set("Are you sure you want to remove<br>"
                          "this part from the animation?")
             lb.show()
             self._notification.pack_end(lb)
@@ -356,7 +356,7 @@ class NewAnimationWizard(Wizard):
         self._anim_name_entry.show()
 
         lbl = elementary.Label(self)
-        lbl.label_set("Select the parts to use in the animation."
+        lbl.text_set("Select the parts to use in the animation."
                       " An empty selection will use all parts.")
         self.content_add("default", lbl)
         lbl.show()

@@ -80,7 +80,7 @@ class PartsList(CList):
         for s in self._selected.iterkeys():
             item = self._items[s]
             if item.label_get() == data[0]:
-                item.label_set(data[1])
+                item.text_set(data[1])
                 self._selected[data[1]] = self._selected[data[0]]
                 self._items[data[1]] = self._items[data[0]]
                 del self._selected[data[0]]
@@ -616,7 +616,7 @@ class PartSetup(elementary.Box):
 
     def __reference_init(self):
         fr = elementary.Frame(self)
-        fr.label_set("Reference")
+        fr.text_set("Reference")
         fr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         fr.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self.pack_end(fr)
@@ -632,7 +632,7 @@ class PartSetup(elementary.Box):
         rdg.state_value_set(0)
         rdg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         rdg.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
-        rdg.label_set("Group")
+        rdg.text_set("Group")
         fbx.pack_end(rdg)
         rdg.show()
         self.__reference = rdg
@@ -648,7 +648,7 @@ class PartSetup(elementary.Box):
         rd.state_value_set(1)
         rd.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         rd.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
-        rd.label_set("Part")
+        rd.text_set("Part")
         rd.group_add(rdg)
         rd.disabled_set(True)
         fbx2.pack_end(rd)
@@ -656,7 +656,7 @@ class PartSetup(elementary.Box):
 
     def __position_init(self):
         fr = elementary.Frame(self)
-        fr.label_set("Position")
+        fr.text_set("Position")
         fr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         fr.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
         self.pack_end(fr)
@@ -773,7 +773,7 @@ class PartSetup(elementary.Box):
 
     def __size_init(self):
         fr = elementary.Frame(self)
-        fr.label_set("Size")
+        fr.text_set("Size")
         fr.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         fr.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self.pack_end(fr)
@@ -789,7 +789,7 @@ class PartSetup(elementary.Box):
         rdg.state_value_set(0)
         rdg.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         rdg.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
-        rdg.label_set("Fill reference")
+        rdg.text_set("Fill reference")
         fbx.pack_end(rdg)
         rdg.show()
         self.__size = rdg
@@ -805,7 +805,7 @@ class PartSetup(elementary.Box):
         rd.state_value_set(1)
         rd.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
         rd.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
-        rd.label_set("Fixed size:")
+        rd.text_set("Fixed size:")
         rd.group_add(rdg)
         rd.disabled_set(True)
         fbx2.pack_end(rd)

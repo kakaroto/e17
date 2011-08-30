@@ -38,17 +38,17 @@ class About(Wizard):
         self.content_add("default", ico)
 
         name = elementary.Label(self)
-        name.label_set("<b>Editje " + str(sysconfig.VERSION) + "</b>")
+        name.text_set("<b>Editje " + str(sysconfig.VERSION) + "</b>")
         name.show()
         self.content_add("default", name)
 
         name = elementary.Label(self)
-        name.label_set("Copyright (C) 2009-2010")
+        name.text_set("Copyright (C) 2009-2010")
         name.show()
         self.content_add("default", name)
 
         name = elementary.Label(self)
-        name.label_set("Samsung Electronics.")
+        name.text_set("Samsung Electronics.")
         name.show()
         self.content_add("default", name)
 
@@ -68,7 +68,7 @@ class About(Wizard):
         self.content_add("default", sc)
 
         copyright = elementary.Label(self)
-        copyright.label_set(
+        copyright.text_set(
 "Editje is free software: you can redistribute it and/or modify it <br>"
 "under the terms of the GNU Lesser General Public License as       <br>"
 "published by the Free Software Foundation, either version 3 of the<br>"

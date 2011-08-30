@@ -57,9 +57,9 @@ class WidgetButtonList(FloaterListOpener, WidgetButton):
             return
 
         if self._value:
-            self.obj.label_set(self._value)
+            self.obj.text_set(self._value)
         else:
-            self.obj.label_set("< None >")
+            self.obj.text_set("< None >")
 
     def _floater_list_items_update(self):
         items_list = []

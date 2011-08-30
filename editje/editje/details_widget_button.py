@@ -35,7 +35,7 @@ class WidgetButton(Widget):
 
     def _internal_value_set(self, value):
         self._value = value or ""
-        self.obj.label_set(self._value)
+        self.obj.text_set(self._value)
 
     def _internal_value_get(self):
         return self._value

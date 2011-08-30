@@ -65,7 +65,7 @@ class FileSelector(Manager, elementary.Table):
         self._nav_home = elementary.Button(self)
         self._nav_home.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._nav_home.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-        self._nav_home.label_set("Home")
+        self._nav_home.text_set("Home")
         ic = elementary.Icon(self)
         ic.standard_set("home")
         ic.scale_set(0, 0)
@@ -84,7 +84,7 @@ class FileSelector(Manager, elementary.Table):
         self._nav_up = elementary.Button(self)
         self._nav_up.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._nav_up.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-        self._nav_up.label_set("Up")
+        self._nav_up.text_set("Up")
         ic = elementary.Icon(self)
         ic.standard_set("arrow_up")
         ic.scale_set(0, 0)
@@ -204,7 +204,7 @@ class FileSelector(Manager, elementary.Table):
         self._hidden.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self._hidden.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         self._hidden.state_set(False)
-        self._hidden.label_set("Show hidden files")
+        self._hidden.text_set("Show hidden files")
         self._hidden.callback_changed_add(self._update)
         bx.pack_end(self._hidden)
         self._hidden.show()
@@ -212,7 +212,7 @@ class FileSelector(Manager, elementary.Table):
         self._filter = elementary.Check(self)
         self._filter.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
         self._filter.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
-        self._filter.label_set("Filter extensions")
+        self._filter.text_set("Filter extensions")
         self._filter.state_set(False)
         self._filter.callback_changed_add(self._update)
         bx.pack_end(self._filter)
@@ -376,7 +376,7 @@ class FileSelector(Manager, elementary.Table):
         btn = elementary.Button(self)
         btn.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
         btn.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
-        btn.label_set(label)
+        btn.text_set(label)
 
         if func_cb:
             btn.callback_clicked_add(func_cb)
@@ -409,7 +409,7 @@ class FileSelector(Manager, elementary.Table):
         self._notification.orient_set(elementary.ELM_NOTIFY_ORIENT_BOTTOM)
 
         lb = elementary.Label(self)
-        lb.label_set(message)
+        lb.text_set(message)
         self._notification.content_set(lb)
         lb.show()
 

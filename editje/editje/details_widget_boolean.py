@@ -44,6 +44,6 @@ class WidgetBoolean(WidgetButton):
 
     def _update(self):
         if self.value:
-            self.obj.label_set(self._label_true)
+            self.obj.text_set(self._label_true)
         else:
-            self.obj.label_set(self._label_false)
+            self.obj.text_set(self._label_false)

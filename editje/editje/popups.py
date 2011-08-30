@@ -61,16 +61,16 @@ class ConfirmPopUp(PopUp):
         PopUp.__init__(self, parent, group or "editje/confirm")
         self.style_set("minimal")
 
-        self.label_set("header.title", "Overwrite existing file ?")
+        self.text_set("header.title", "Overwrite existing file ?")
 
         self._set_controls()
 
     def set_message(self, message):
-        self.label_set("filename", message)
+        self.text_set("filename", message)
 
     def action_add(self, label, func_cb, data=None):
         btn = Button(self)
-        btn.label_set(label)
+        btn.text_set(label)
         btn.data["clicked"] = (func_cb, data)
         btn.callback_clicked_add(self._action_btn_clicked)
         btn.size_hint_min_set(100, 30)
