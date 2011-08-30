@@ -130,7 +130,7 @@ def _open_err_cb(e, filepath=None, group=None, slave_mode=None, in_port=None):
         pop.title = "Editje - Swap file already exists"
 
         lb = elementary.Label(pop)
-        lb.label_set(
+        lb.text_set(
                 "Swap file to " + filepath + " already exists.<br>" +
                 "Another program may be editing the same file<br>" +
                 "or an edition session for this file crashed.")
@@ -151,7 +151,7 @@ def _open_err_cb(e, filepath=None, group=None, slave_mode=None, in_port=None):
         pop.title = "Editje - Compiler Error"
 
         lb = elementary.Label(pop)
-        lb.label_set("Compile Error: " + filepath + "<br>" + e.message)
+        lb.text_set("Compile Error: " + filepath + "<br>" + e.message)
         pop.pack_end(lb)
         lb.show()
 
@@ -163,7 +163,7 @@ def _open_err_cb(e, filepath=None, group=None, slave_mode=None, in_port=None):
         pop.title = "Editje - File Error"
 
         lb = elementary.Label(pop)
-        lb.label_set("Error with file: " + filepath + "<br>" + str(e))
+        lb.text_set("Error with file: " + filepath + "<br>" + str(e))
         pop.pack_end(lb)
         lb.show()
 
