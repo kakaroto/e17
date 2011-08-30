@@ -220,6 +220,8 @@ Eina_Bool
 excessive_shortcut_init(Evas_Object *list, Evas_Object *grid)
 {
    Elm_Genlist_Item *egi;
+   const char *home = "/root/";
+   char buffer[PATH_MAX];
 
    if (!list) return EINA_FALSE;
 
@@ -229,7 +231,12 @@ excessive_shortcut_init(Evas_Object *list, Evas_Object *grid)
 
    evas_object_smart_callback_add(list, "selected", _excessive_shortcut_desktop_select, grid);
 
-   eio_file_ls("/home/cedric/.e/e/fileman/favorites/",
+   if (getenv("HOME"))
+     home = getenv("HOME");
+
+   snprintf(buffer, PATH_MAX - 1, "%s/.e/e/fileman/favorites/", home);
+
+   eio_file_ls(buffer,
                _desktop_filter_cb,
                _desktop_main_cb,
                _desktop_end_cb,
