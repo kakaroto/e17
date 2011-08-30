@@ -1,6 +1,7 @@
 images
 {
-	image: "module_icon.png" COMP;
+	image: "scale.png" COMP;
+	image: "pager.png" COMP;
    	image: "sh.png" COMP;
 	image: "label.png" COMP;
 }
@@ -19,7 +20,7 @@ collections
 					state: "default" 0.0;
 					aspect: 1.0 1.0;
 					aspect_preference: BOTH;
-					image.normal: "module_icon.png";
+					image.normal: "scale.png";
 				}
 			}
 		}
@@ -38,7 +39,7 @@ collections
 					aspect_preference: BOTH;
 					rel1.offset: 2 2;
 					rel2.offset: -3 -3;
-					image.normal: "module_icon.png";
+					image.normal: "scale.png";
 				}
 				description {
 					state: "bigger" 0.0;
@@ -58,6 +59,7 @@ collections
 			}
 		}
 		programs {
+#if 0
 			program {
 				name: "mouse_in";
 				signal: "mouse,in";
@@ -74,6 +76,61 @@ collections
 				transition: LINEAR 0.2;
 				target: "icon";
 			}
+#endif
+		}
+	}
+	group {
+		name: "modules/pager/main";
+		max: 128 128;
+		parts {
+			part {
+				name: "icon";
+				mouse_events: 0;
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					aspect: 1.0 1.0;
+					aspect_preference: BOTH;
+					rel1.offset: 2 2;
+					rel2.offset: -3 -3;
+					image.normal: "pager.png";
+				}
+				description {
+					state: "bigger" 0.0;
+					inherit: "default" 0.0;
+					rel1.offset: -2 -2;
+					rel2.offset: 3 3;
+				}
+			}
+			part {
+				name: "event";
+				mouse_events: 1;
+				type: RECT;
+				description {
+					state: "default" 0.0;
+					color: 255 255 255 0;
+				}
+			}
+		}
+		programs {
+#if 0
+			program {
+				name: "mouse_in";
+				signal: "mouse,in";
+				source: "event";
+				action: STATE_SET "bigger" 0.0;
+				transition: LINEAR 0.1;
+				target: "icon";
+			}
+			program {
+				name: "mouse_out";
+				signal: "mouse,out";
+				source: "event";
+				action: STATE_SET "default" 0.0;
+				transition: LINEAR 0.2;
+				target: "icon";
+			}
+#endif
 		}
 	}
 
@@ -408,7 +465,7 @@ collections
 				type: RECT;
 				description {
 					state: "default" 0.0;
-				visible: 0;
+					visible: 0;
 					color: 255 255 255 180;
 					rel1 {
 						relative: 0.0 0.0;
