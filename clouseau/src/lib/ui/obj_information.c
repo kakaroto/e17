@@ -164,7 +164,7 @@ _obj_information_get(Tree_Item *treeit)
    oinfo->evas_props.is_visible = evas_object_visible_get(obj);
    oinfo->evas_props.name = eina_stringshare_add(evas_object_name_get(obj));
    oinfo->evas_props.layer = evas_object_layer_get(obj);
-   evas_object_geometry_get(obj, &oinfo->evas_props.w, &oinfo->evas_props.y,
+   evas_object_geometry_get(obj, &oinfo->evas_props.x, &oinfo->evas_props.y,
          &oinfo->evas_props.w, &oinfo->evas_props.h);
    oinfo->evas_props.scale = evas_object_scale_get(obj);
 
