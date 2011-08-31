@@ -19,16 +19,20 @@ _enna_shortcut_favorite_label_get(void *data __UNUSED__, Evas_Object *obj __UNUS
 }
 
 static Evas_Object *
-_enna_shortcut_favorite_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part __UNUSED__)
+_enna_shortcut_favorite_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part)
 {
-   Evas_Object *ic = elm_icon_add(obj);
+   /* if (!strcmp(part, "elm.swallow.icon")) */
+   /*   { */
+   /*      Evas_Object *ic = elm_icon_add(obj); */
+   /*      elm_icon_standard_set(ic, "emblem-favorite"); */
+   /*      return ic; */
+   /*   } */
 
-   elm_icon_standard_set(ic, "favorites");
-   return ic;
+   return NULL;
 }
 
 static Elm_Genlist_Item_Class itc_favorite_group = {
-  "group_index",
+  "default",
   {
     _enna_shortcut_favorite_label_get,
     _enna_shortcut_favorite_icon_get,
@@ -44,10 +48,12 @@ _enna_shortcut_desktop_label_get(void *data, Evas_Object *obj __UNUSED__, const 
 {
    Enna_Shortcut *es = data;
 
-   if (es->ef)
+   if (es && es->ef)
      return strdup(es->ef->name);
-   else
+   else if (es)
      return strdup(ecore_file_file_get(es->target));
+   else
+     return strdup("Test");
 }
 
 static Evas_Object *
@@ -56,10 +62,10 @@ _enna_shortcut_desktop_icon_get(void *data __UNUSED__, Evas_Object *obj, const c
    Enna_Shortcut *es = data;
    Evas_Object *ic = elm_icon_add(obj);
    elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
-   if (es->ef)
+   if (es && es->ef)
      elm_icon_standard_set(ic, es->ef->icon);
    else
-     elm_icon_standard_set(ic, "directory");
+     elm_icon_standard_set(ic, "emblem-favorite");
    return ic;
 }
 
@@ -248,7 +254,18 @@ enna_shortcut_add(Evas_Object *parent)
    list = elm_genlist_add(parent);
 
    egi = elm_genlist_item_append(list, &itc_favorite_group, NULL, NULL,
-                                 ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+                                 ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
+
+   elm_genlist_item_append(list, &itc_desktop_group, NULL, egi, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   elm_genlist_item_append(list, &itc_desktop_group, NULL, egi, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   elm_genlist_item_append(list, &itc_desktop_group, NULL, egi, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+
+   egi = elm_genlist_item_append(list, &itc_favorite_group, NULL, NULL,
+                                 ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
+   egi = elm_genlist_item_append(list, &itc_favorite_group, NULL, NULL,
+                                 ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
+   egi = elm_genlist_item_append(list, &itc_favorite_group, NULL, NULL,
+                                 ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
    evas_object_data_set(list, "enna/favorites", egi);
 
    //evas_object_smart_callback_add(list, "selected", _enna_shortcut_desktop_select, grid);
