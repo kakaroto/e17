@@ -277,7 +277,6 @@ e_modapi_init(E_Module *m)
      {
 	if (!e_util_module_config_check(D_("Scale Windows"),
 					scale_conf->version,
-					MOD_CONFIG_FILE_EPOCH,
 					MOD_CONFIG_FILE_VERSION))
 	  _scale_conf_free();
      }

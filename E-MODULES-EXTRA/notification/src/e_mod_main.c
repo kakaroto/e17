@@ -332,9 +332,9 @@ e_modapi_init(E_Module *m)
 
    notification_cfg = e_config_domain_load("module.notification", conf_edd);
    if (notification_cfg &&
-       !(e_util_module_config_check
-	 (D_("Notification Module"), notification_cfg->version,
-	  MOD_CFG_FILE_EPOCH, MOD_CFG_FILE_VERSION)))
+       !(e_util_module_config_check(D_("Notification Module"),
+				    notification_cfg->version,
+				    MOD_CFG_FILE_VERSION)))
      {
        _notification_cfg_free(notification_cfg);
      }

@@ -1552,9 +1552,9 @@ _conf_init(E_Module *m)
 #undef D
    _conf = e_config_domain_load(_config_domain, _conf_edd);
 
-   if (_conf && !e_util_module_config_check
-       (_("Everything Websearch"), _conf->version,
-	MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
+   if (_conf && !e_util_module_config_check(_("Everything Websearch"),
+					    _conf->version,
+					    MOD_CONFIG_FILE_VERSION))
      {
 	_conf_free();
      }
