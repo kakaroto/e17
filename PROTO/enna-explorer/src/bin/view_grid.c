@@ -113,7 +113,7 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
              icon = efreet_mime_type_icon_get(mime, getenv("E_ICON_THEME"), 96);
              if (!icon)
                icon = efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 96);
-             if (strstr(mime, "image/"))
+             if (mime && strstr(mime, "image/"))
                elm_icon_thumb_set(ic, gi->file->mrl, NULL);
              else
                elm_icon_file_set(ic, icon, NULL);
