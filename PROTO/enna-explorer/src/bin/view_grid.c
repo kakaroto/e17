@@ -89,48 +89,7 @@ _grid_item_default_check_changed(void *data, Evas_Object *obj, void *event_info 
 static Evas_Object *
 _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
 {
-#if 0
-   Grid_Item *gi = data;
 
-   if (!gi)
-     return NULL;
-
-   if (!strcmp(part, "elm.swallow.icon"))
-     {
-	Evas_Object *ic;
-
-	if (!gi->file)
-	  return NULL;
-
-	if (ENNA_FILE_IS_BROWSABLE(gi->file))
-	  {
-	     ic = elm_icon_add(obj);
-	     if (gi->file->icon && gi->file->icon[0] == '/')
-	       elm_icon_file_set(ic, gi->file->icon, NULL);
-	     else if (gi->file->icon)
-	       elm_icon_file_set(ic, enna_config_theme_get(), gi->file->icon);
-	     else
-	       return NULL;
-
-	     //evas_object_size_hint_max_set(ic, 92, 92);
-	     //evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
-	     evas_object_show(ic);
-	     return ic;
-	  }
-	else
-	  {
-	     ic = elm_thumb_add(obj);
-	     printf("file set : %s\n", gi->file->mrl + 7);
-
-	     elm_thumb_file_set(ic, gi->file->mrl + 7, NULL);
-	     evas_object_show(ic);
-
-	     return ic;
-	  }
-     }
-
-   return NULL;
-#endif
    Grid_Item *gi = (Grid_Item*) data;
 
    if (!gi) return NULL;
@@ -140,16 +99,23 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
         Evas_Object *ic;
 
         ic = elm_icon_add(obj);
-        elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
-        if (gi->file->icon && gi->file->icon[0] == '/')
-          elm_icon_standard_set(ic, gi->file->icon);
-        else if (gi->file->icon)
-          elm_icon_file_set(ic, enna_config_theme_get(), gi->file->icon);
-        else
-          return NULL;
 
-        printf("mrl : %s\n", gi->file->mrl);
-        elm_icon_thumb_set(ic, gi->file->mrl, NULL);
+        if (ENNA_FILE_IS_BROWSABLE(gi->file))
+          {
+             elm_icon_file_set(ic, enna_config_theme_get(), gi->file->icon);
+          }
+        else
+          {
+             const char *mime;
+             const char *icon;
+
+             mime = efreet_mime_type_get(gi->file->mrl);
+             icon = efreet_mime_type_icon_get(mime, getenv("E_ICON_THEME"), 96);
+             if (!icon)
+               icon = efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 96);
+             elm_icon_file_set(ic, icon, NULL);
+             elm_icon_thumb_set(ic, gi->file->mrl, NULL);
+          }
 
         evas_object_size_hint_min_set(ic, 96, 96);
         evas_object_show(ic);
@@ -214,7 +180,7 @@ _del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event
    Grid_Item *gi;
    if (!sd)
      return;
-   printf("gengrid clear\n");
+
    elm_gengrid_clear(sd->o_grid);
 
    EINA_LIST_FREE(sd->items, gi)

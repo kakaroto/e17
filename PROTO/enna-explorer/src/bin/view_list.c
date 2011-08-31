@@ -155,18 +155,31 @@ _list_item_default_icon_get(void *data, Evas_Object *obj, const char *part)
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
-        Evas_Object *ic;
+         Evas_Object *ic;
 
-        ic = elm_icon_add(obj);
-        if (li->file->icon && li->file->icon[0] == '/')
-          elm_icon_file_set(ic, li->file->icon, NULL);
-        else if (li->file->icon)
-          elm_icon_file_set(ic, enna_config_theme_get(), li->file->icon);
-        else
-          return NULL;
-        evas_object_size_hint_min_set(ic, 32, 32);
-        evas_object_show(ic);
-        return ic;
+         ic = elm_icon_add(obj);
+
+         if (ENNA_FILE_IS_BROWSABLE(li->file))
+             {
+                 elm_icon_file_set(ic, enna_config_theme_get(), li->file->icon);
+             }
+         else
+             {
+                 const char *mime;
+                 const char *icon;
+
+                 mime = efreet_mime_type_get(li->file->mrl);
+                 icon = efreet_mime_type_icon_get(mime, getenv("E_ICON_THEME"), 48);
+                 if (!icon)
+                     icon = efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 48);
+                 elm_icon_file_set(ic, icon, NULL);
+                 /* Don't generate thumb in list, it's too small */
+                 /* elm_icon_thumb_set(ic, li->file->mrl, NULL); */
+             }
+
+         evas_object_size_hint_min_set(ic, 32, 32);
+         evas_object_show(ic);
+         return ic;
      }
    else if (!strcmp(part, "elm.swallow.end"))
      {

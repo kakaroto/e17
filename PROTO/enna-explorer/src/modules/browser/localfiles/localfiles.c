@@ -766,19 +766,10 @@ _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
    else
      {
         if (priv->caps == ENNA_CAPS_ALL)
-          {
-             const char *mime;
-             const char *icon;
+          f = enna_file_file_add(info->path + info->name_start, buf,
+                                 info->path, info->path + info->name_start,
+                                 "icon/file");
 
-             mime = efreet_mime_type_get(info->path);
-             icon = efreet_mime_type_icon_get(mime, getenv("E_ICON_THEME"), 48);
-             if (!icon)
-               icon = efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 48);
-             f = enna_file_file_add(info->path + info->name_start, buf,
-                                    info->path, info->path + info->name_start,
-                                    icon);
-
-          }
         else if (priv->caps == ENNA_CAPS_MUSIC)
           f = enna_file_track_add(info->path + info->name_start, buf,
                                   info->path, info->path + info->name_start,
