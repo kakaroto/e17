@@ -97,11 +97,15 @@ static int _enna_init(int argc, char **argv)
    elm_init(argc, argv);
    elm_need_efreet();
    elm_need_ethumb();
-   if (!_create_gui())
-     return 0;
 
    /* Load available modules */
    enna_module_load_all();
+
+   if (!_create_gui())
+     return 0;
+
+   // create explorer
+   enna_explorer_init();
 
    /* Dinamically init activities */
    EINA_LIST_FOREACH(enna_activities_get(), l, a)
@@ -142,8 +146,6 @@ static int _create_gui(void)
    evas_object_size_hint_weight_set(enna->layout, 1.0, 1.0);
    evas_object_show(enna->layout);
 
-   // create explorer
-   enna_explorer_init();
 
    // show all
    evas_object_resize(enna->win, app_w, app_h);
