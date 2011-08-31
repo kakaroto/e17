@@ -213,42 +213,44 @@ static int e_dbus_handler_deletions = 0;
 EAPI void
 e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
 {
-  char match[DBUS_MAXIMUM_MATCH_RULE_LENGTH];
-  int len, sender_len, path_len, interface_len, member_len;
+   char match[DBUS_MAXIMUM_MATCH_RULE_LENGTH];
+   int len, sender_len, path_len, interface_len, member_len;
+
+   if (!sh) return ;
 
    if (sh->get_name_owner_pending)
      {
         dbus_pending_call_cancel(sh->get_name_owner_pending);
         sh->get_name_owner_pending = NULL;
      }
-  sh->delete_me = 1;
-  if (e_dbus_idler_active)
-  {
-    e_dbus_handler_deletions = 1;
-    return;
-  }
+   sh->delete_me = 1;
+   if (e_dbus_idler_active)
+     {
+        e_dbus_handler_deletions = 1;
+        return;
+     }
 
-  strcpy(match, "type='signal'");
-  len = sizeof("type='signal'") - 1;
+   strcpy(match, "type='signal'");
+   len = sizeof("type='signal'") - 1;
 
 #define ADD_MATCH_PIECE(PIECE)						\
-  do {									\
-     PIECE ## _len = sh->PIECE ? strlen(sh->PIECE) : 0;			\
-     if (!_match_append(match, sizeof(match), &len, #PIECE, sizeof(#PIECE) - 1, sh->PIECE, PIECE ## _len)) \
-       return;								\
-  } while (0)
+   do {									\
+      PIECE ## _len = sh->PIECE ? strlen(sh->PIECE) : 0;                \
+      if (!_match_append(match, sizeof(match), &len, #PIECE, sizeof(#PIECE) - 1, sh->PIECE, PIECE ## _len)) \
+        return;								\
+   } while (0)
 
-  ADD_MATCH_PIECE(sender);
-  ADD_MATCH_PIECE(path);
-  ADD_MATCH_PIECE(interface);
-  ADD_MATCH_PIECE(member);
+   ADD_MATCH_PIECE(sender);
+   ADD_MATCH_PIECE(path);
+   ADD_MATCH_PIECE(interface);
+   ADD_MATCH_PIECE(member);
 #undef ADD_MATCH_PIECE
 
-  dbus_bus_remove_match(conn->conn, match, NULL);
+   dbus_bus_remove_match(conn->conn, match, NULL);
 
-  if (!conn->signal_handlers) return;
-  conn->signal_handlers = eina_list_remove(conn->signal_handlers, sh);
-  e_dbus_signal_handler_free(sh);
+   if (!conn->signal_handlers) return;
+   conn->signal_handlers = eina_list_remove(conn->signal_handlers, sh);
+   e_dbus_signal_handler_free(sh);
 }
 
 static void
