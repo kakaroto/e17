@@ -23,6 +23,7 @@
 
 #include "vfs.h"
 #include "view_list.h"
+#include "view_grid.h"
 #include "enna_config.h"
 #include "browser.h"
 #include "browser_obj.h"
@@ -165,6 +166,26 @@ _browser_view_list_add(Smart_Data *sd)
 }
 
 
+static Evas_Object *
+_browser_view_grid_add(Smart_Data *sd)
+{
+   Evas_Object *view;
+
+   if (!sd) return NULL;
+
+   view = enna_grid_add(sd->o_layout);
+
+   elm_pager_content_push(sd->o_pager, view);
+   evas_object_smart_callback_add(view, "hilight", _view_hilight_cb, sd);
+   evas_object_smart_callback_add(view, "checked", _view_checked_cb, sd);
+   evas_object_smart_callback_add(view, "unchecked", _view_unchecked_cb, sd);
+   evas_object_smart_callback_add(view, "longpress", _view_longpressed_cb, sd);
+   /* View */
+   edje_object_signal_emit(view, "list,right,now", "enna");
+   return view;
+}
+
+
 
 static void
 _change_view(Smart_Data *sd, Enna_Browser_View_Type view_type)
@@ -183,6 +204,18 @@ _change_view(Smart_Data *sd, Enna_Browser_View_Type view_type)
          sd->view_funcs.view_files_get           = enna_list_files_get;
          sd->view_funcs.view_jump_ascii          = enna_list_jump_ascii;
          sd->view_funcs.view_selected_files_get  = enna_list_selected_files_get;
+         break;
+      case ENNA_BROWSER_VIEW_GRID:
+         sd->view_funcs.view_add                 = _browser_view_grid_add;
+         sd->view_funcs.view_append              = enna_grid_file_append;
+         sd->view_funcs.view_remove              = enna_grid_file_remove;
+         sd->view_funcs.view_update              = enna_grid_file_update;
+         sd->view_funcs.view_selected_data_get   = enna_grid_selected_data_get;
+         sd->view_funcs.view_jump_label          = enna_grid_jump_label;
+         sd->view_funcs.view_select_nth          = enna_grid_select_nth;
+         sd->view_funcs.view_files_get           = enna_grid_files_get;
+         sd->view_funcs.view_jump_ascii          = enna_grid_jump_ascii;
+         sd->view_funcs.view_selected_files_get  = enna_grid_selected_files_get;
          break;
       default:
          break;
@@ -444,3 +477,5 @@ enna_browser_obj_add(Evas_Object *parent, const char *style)
 
    return sd->o_layout;
 }
+
+

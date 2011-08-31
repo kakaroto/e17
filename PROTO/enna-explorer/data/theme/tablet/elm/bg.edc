@@ -1,0 +1,28 @@
+group { name: "elm/bg/base/default";
+
+   parts {
+      part { name: "base";
+         mouse_events:  0;
+         type: RECT;
+         description { state: "default" 0.0;
+            color: 217 217 217 255;
+         }
+      }
+      part { name: "elm.swallow.rectangle";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
+      }
+      part { name: "elm.swallow.background";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
+      }
+
+      part { name: "elm.swallow.content";
+         type: SWALLOW;
+         description { state: "default" 0.0;
+         }
+      }
+   }
+}

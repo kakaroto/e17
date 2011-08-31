@@ -1,4 +1,3 @@
-
 /*
  * GeeXboX Enna Media Center.
  * Copyright (C) 2005-2010 The Enna Project
@@ -20,21 +19,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef BROWSER_OBJ_H
-#define BROWSER_OBJ_H
+#ifndef GRID_H
+#define GRID_H
 
-#include <Elementary.h>
+#include "enna.h"
+#include "vfs.h"
 
-typedef enum _Enna_Browser_View_Type
-  {
-    ENNA_BROWSER_VIEW_LIST,
-    ENNA_BROWSER_VIEW_GRID,
-  }Enna_Browser_View_Type;
+Evas_Object *enna_grid_add (Evas_Object *parent);
+void enna_grid_file_append(Evas_Object *obj, Enna_File *file,
+                           void (*func_activated) (void *data), void *data);
+void enna_grid_file_remove(Evas_Object *obj, Enna_File *file);
+void enna_grid_file_update(Evas_Object *obj, Enna_File *file);
+void enna_grid_select_nth(Evas_Object *obj, int nth);
+Eina_List* enna_grid_files_get(Evas_Object* obj);
+int enna_grid_selected_get(Evas_Object *obj);
+void * enna_grid_selected_data_get(Evas_Object *obj);
+int enna_grid_jump_label(Evas_Object *obj, const char *label);
+void enna_grid_jump_ascii(Evas_Object *obj, char k);
+void enna_grid_clear(Evas_Object *obj);
+Eina_List *enna_grid_selected_files_get(Evas_Object *obj);
 
-Evas_Object *enna_browser_obj_add(Evas_Object *parent, const char *style);
-void enna_browser_obj_root_set(Evas_Object *obj, const char *uri);
-void enna_browser_obj_view_type_set(Evas_Object *obj, Enna_Browser_View_Type view_type);
-Eina_List *enna_browser_obj_files_get(Evas_Object *obj);
-Eina_List *enna_browser_obj_selected_files_get(Evas_Object *obj);
+#endif /* GRID_H */
 
-#endif /* BROWSER_OBJ_H */

@@ -95,6 +95,8 @@ static int _enna_init(int argc, char **argv)
    ENNA_EVENT_BROWSER_CHANGED = ecore_event_type_new();
 
    elm_init(argc, argv);
+   elm_need_efreet();
+   elm_need_ethumb();
    if (!_create_gui())
      return 0;
 

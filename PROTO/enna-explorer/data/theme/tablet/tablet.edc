@@ -1,0 +1,322 @@
+collections
+{
+#include "icons.edc"
+#include "elm/elm.edc"
+
+   group { name: "enna/main/layout";
+      images {
+         image: "bg.png" COMP;
+         image: "bg_tile.png" COMP;
+         image: "menu_bg.png" COMP;
+         image: "up.png" COMP;
+         image: "back.png" COMP;
+         image: "mainmenu_bg.png" COMP;
+         image: "music_bg.png" COMP;
+      }
+      parts {
+         /* background  */
+         part {
+            description {
+               state: "default" 0.0;
+               image.normal: "bg.png";
+               fill.size.relative: 0 0;
+               fill.size.offset: 250 250;
+            }
+         }
+
+         /* content */
+         part { name: "enna.content.swallow";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 1.0;
+            }
+         }
+
+      }
+   }
+
+
+   group {
+      name: "activity/explorer";
+      data.item: "view" "grid";
+      images {
+         image: "browser_bg.png" COMP;
+         image: "panel_bg.png" COMP;
+      }
+      parts {
+
+         part {
+            name: "menu.bg";
+            description {
+               state: "default" 0.0;
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 1.0;
+               rel2.offset: 0 46;
+               image.normal: "mainmenu_bg.png";
+            }
+            description {
+               state: "show" 0.0;
+               inherit: "default" 0.0;
+               rel1.relative: 0.0 1.0;
+               rel1.offset: 0 -46;
+               rel2.relative: 1.0 1.0;
+
+            }
+         }
+
+
+         part {
+            name: "enna.menu.swallow";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1.to: "menu.bg";
+               rel2.to: "menu.bg";
+            }
+         }
+
+         /* file browser */
+         part {
+            name: "title_bg";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1.to: "title";
+               rel2.to: "title";
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "title";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1.0;
+            description {
+               state: "default" 0.0;
+               rel1.relative: 0 0;
+               rel2.relative: 1 0;
+               align: 0.5 0.0;
+               fixed: 1 1;
+               text {
+                  font: "Sans";
+                  text: "Title";
+                  size: 12;
+                  min: 1 1;
+               }
+            }
+         }
+
+
+         part {
+            name: "panel_bg";
+            mouse_events: 0;
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1.to: "panel.swallow";
+               rel2.to: "panel.swallow";
+               color: 0 0 0 128;
+            }
+         }
+         part {
+            name: "panel.swallow";
+            type: SWALLOW;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               rel1.to_y: "title";
+               rel1.relative: 0.0 1.0;
+               rel2.to_y: "menu.bg";
+               rel2.relative: 0.25 1.0;
+               fixed: 1 1;
+            }
+         }
+         part {
+            name: "panel_fg";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1.to: "panel.swallow";
+               rel2.to: "panel.swallow";
+               image.normal: "panel_bg.png";
+               image.border: 0 20 0 0;
+            }
+         }
+         part {
+            name: "browser.swallow";
+            type: SWALLOW;
+            mouse_events : 1;
+            description {
+               state: "default" 0.0;
+               rel1.to_y: "title";
+               rel1.relative: 0.25 1.0;
+               rel2.to_y: "menu.bg";
+               rel2.relative: 1.0 0.0;
+            }
+         }
+
+      }
+      programs {
+         program {
+            name: "menu,show";
+            signal: "menu,show";
+            source:  "enna";
+            action:  STATE_SET "show" 0.0;
+            transition: SINUSOIDAL 0.5;
+            target: "menu.bg";
+         }
+         program {
+            name: "menu,hide";
+            signal: "menu,hide";
+            source:  "enna";
+            action:  STATE_SET "default" 0.0;
+            transition: SINUSOIDAL 0.5;
+            target: "menu.bg";
+         }
+      }
+   }
+
+
+   group
+   {
+      name: "enna/browser";
+      images {
+         image: "header_bg.png" COMP;
+         image: "header_fg.png" COMP;
+      }
+      parts
+      {
+         part {
+            name: "menu.bg";
+            description {
+               state: "default" 0.0;
+
+               rel1.to: "enna.swallow.header";
+               rel2.to: "enna.swallow.header";
+
+               image.normal: "mainmenu_bg.png";
+            }
+         }
+         part {
+            name: "enna.swallow.header";
+            type: SWALLOW;
+            description {
+               min: 0 48;
+               max: 9999 48;
+               fixed: 0 1;
+               state: "default" 0.0;
+               align: 0 0;
+            }
+         }
+         part {
+            name: "enna.swallow.content";
+            type: SWALLOW;
+            description {
+               state: "default" 0.0;
+               rel1.to_y: "enna.swallow.header";
+               rel1.relative: 0 1.0;
+            }
+         }
+
+      }
+   }
+
+   group
+   {
+      name: "enna/browser/header";
+      images
+      {
+         image: "icon_search.png" COMP;
+         image: "search_bg.png" COMP;
+      }
+      parts
+      {
+         part {
+            name: "enna.swallow.back";
+            type: SWALLOW ;
+            description {
+               state: "default" 0.0;
+               align: 0 0.5;
+               rel1.relative: 0 0.5;
+               rel1.offset: 0 0;
+               rel2.relative: 0 0.5;
+               rel2.offset: 0 0;
+               fixed: 1 1;
+            }
+         }
+         part {
+            name: "enna.swallow.icon";
+            type: SWALLOW;
+            description {
+               min: 24 24;
+               max: 24 24;
+               state: "default" 0.0;
+               rel1.relative: 1 0.5;
+               rel1.offset: 8 -2;
+               rel1.to: "enna.swallow.back";
+               rel2.relative: 1 0.5;
+               rel2.offset: 8 -2;
+               rel2.to: "enna.swallow.back";
+               fixed: 1 1;
+               align: 0 0.5;
+            }
+         }
+         part {
+            name: "enna.text.current";
+            type: TEXT ;
+            scale: 1;
+            description {
+               state: "default" 0.0;
+               rel1.relative: 1 0.5;
+               rel1.offset: 8 1;
+               rel1.to: "enna.swallow.icon";
+               rel2.relative: 1.0 0.5;
+               rel2.offset: 0 1;
+               fixed: 1 1;
+               color: 255 255 255 200;
+               color3: 0 0 0 64;
+               text {
+                  font:     "Sans";
+                  size:     10;
+                  min:      0 1;
+                  align:    0 0.5;
+               }
+            }
+         }
+      }
+   }
+
+
+   group {
+      name: "enna/slideshow";
+      parts {
+         /* Black Background */
+         part { name: "bg";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 0 0 0 255;
+            }
+         }
+         part {
+            name: "enna.content.swallow";
+            mouse_events: 1;
+            type: SWALLOW;
+            description{
+               state: "default" 0.0;
+            }
+         }
+         part {
+            name: "event";
+            mouse_events: 1;
+            repeat_events: 1;
+            type: RECT;
+            description{
+               state: "default" 0.0;
+               color: 0 0 0 0;
+            }
+         }
+      }
+   }

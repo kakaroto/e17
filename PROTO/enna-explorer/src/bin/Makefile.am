@@ -13,6 +13,7 @@ enna_SOURCES = \
 enna.c\
 enna_config.c\
 explorer.c\
+shortcut.c\
 utils.c\
 buffer.c\
 mainmenu.c\
@@ -23,7 +24,8 @@ volumes.c\
 file.c\
 browser.c\
 browser_obj.c\
-view_list.c
+view_list.c\
+view_grid.c
 
 enna_LDADD = @ENNA_LIBS@
 enna_LDFLAGS = -rdynamic

@@ -34,6 +34,7 @@
 #include "volumes.h"
 #include "module.h"
 #include "browser.h"
+#include "shortcut.h"
 
 #define ENNA_MODULE_NAME "explorer"
 
@@ -183,6 +184,7 @@ _browser_selected_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *e
 static void
 _create_menu()
 {
+   const char *view_type;
    /* Set default state */
    mod->state = BROWSER_VIEW;
 
@@ -190,7 +192,14 @@ _create_menu()
    ENNA_OBJECT_DEL(mod->o_browser);
 
    mod->o_browser = enna_browser_obj_add(mod->o_layout, NULL);
-   enna_browser_obj_view_type_set(mod->o_browser, ENNA_BROWSER_VIEW_LIST);
+
+   view_type = elm_layout_data_get(mod->o_layout, "view");
+
+   if (view_type && !strcmp(view_type, "grid"))
+     enna_browser_obj_view_type_set(mod->o_browser, ENNA_BROWSER_VIEW_GRID);
+   else
+     enna_browser_obj_view_type_set(mod->o_browser, ENNA_BROWSER_VIEW_LIST);
+
    enna_browser_obj_root_set(mod->o_browser, "/explorer");
 
    evas_object_smart_callback_add(mod->o_browser, "selected",
@@ -383,6 +392,7 @@ static void
 _create_gui()
 {
    Evas_Object *tb;
+   Evas_Object *shortcut;
 
    /* Set default state */
    mod->state = BROWSER_VIEW;
@@ -406,6 +416,11 @@ _create_gui()
    /* elm_toolbar_item_append(tb, "edit-delete", "Delete", _toolbar_delete_cb, NULL); */
    elm_layout_content_set(mod->o_layout, "enna.menu.swallow", tb);
    _create_menu();
+
+   shortcut = enna_shortcut_add(mod->o_layout);
+   evas_object_show(shortcut);
+   elm_layout_content_set(mod->o_layout, "panel.swallow", shortcut);
+
 }
 
 

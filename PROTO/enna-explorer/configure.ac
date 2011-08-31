@@ -213,6 +213,7 @@ data/Makefile
 data/other/Makefile
 data/theme/Makefile
 data/theme/phone/Makefile
+data/theme/tablet/Makefile
 ])
 
 AC_OUTPUT

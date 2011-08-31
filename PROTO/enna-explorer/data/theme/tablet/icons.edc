@@ -1,0 +1,68 @@
+
+#define ICON(icon_file, icon_name)            \
+images {                                            \
+   image: icon_file COMP;                           \
+}                                                   \
+group {                                             \
+   name: icon_name;                                 \
+    parts {                                         \
+        part { name: "icon";                        \
+            description { state: "default" 0.0;     \
+            image.normal: icon_file;                \
+            }                                       \
+        }                                           \
+    }                                               \
+}    
+
+
+#define ICON_SET(icon_file, icon_name)                              \
+images {                                                            \
+    set {                                                           \
+        name: icon_file;                                            \
+        image {                                                     \
+            image: icon_file"_512.png" LOSSY 90;                    \
+            size: 257 257 512 512;                                  \
+        }                                                           \
+        image {                                                     \
+            image: icon_file"_256.png" COMP;                        \
+            size: 129 129 256 256;                                  \
+        }                                                           \
+        image {                                                     \
+            image: icon_file"_128.png" COMP;                        \
+            size: 65 65 128 128;                                    \
+        }                                                           \
+        image {                                                     \
+            image: icon_file"_64.png" COMP;                         \
+            size: 31 31 64 64;                                      \
+        }                                                           \
+        image {                                                     \
+            image: icon_file"_32.png" COMP;                         \
+            size: 17 17 32 32;                                      \
+        }                                                           \
+        image {                                                     \
+            image: icon_file"_16.png" COMP;                         \
+            size: 0 0 16 16;                                        \
+        }                                                           \
+    }                                                               \
+}                                                                   \
+group {                                                             \
+name: icon_name;                                                    \
+    parts {                                                         \
+        part { name: "icon";                                        \
+            description { state: "default" 0.0;                     \
+            image.normal: icon_file;                                \
+            }                                                       \
+        }                                                           \
+    }                                                               \
+}                                                                   \
+
+ICON("arrow_right.png",                   "icon/arrow_right");
+ICON("arrow_left.png",                    "icon/arrow_left");
+
+ICON_SET("directory",                     "icon/directory");
+ICON_SET("home",                          "icon/home");
+ICON_SET("harddisk",                      "icon/hd");
+ICON_SET("harddisk",                      "icon/dev/hdd");
+
+ICON_SET("network_directory", "icon/dev/nfs");
+
