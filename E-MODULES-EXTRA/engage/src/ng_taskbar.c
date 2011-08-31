@@ -431,7 +431,7 @@ _item_new(Ngi_Box *box, E_Border *bd)
    if ((box->cfg->taskbar_group_apps) &&
        (bd->client.icccm.class && bd->client.icccm.class[0]))
      {
-	it->class = eina_stringshare_add(bd->client.icccm.class);
+	it->class = eina_stringshare_ref(bd->client.icccm.class);
 
 	EINA_LIST_FOREACH(box->items, l, l_it)
 	  {

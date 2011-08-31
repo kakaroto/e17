@@ -47,7 +47,11 @@ ngi_launcher_new(Ng *ng, Config_Box *cfg)
 
    h = ecore_event_handler_add(E_EVENT_CONFIG_ICON_THEME, _cb_icons_update, box);
    if (h) box->handlers = eina_list_append(box->handlers, h);
-
+   h = ecore_event_handler_add(EFREET_EVENT_ICON_CACHE_UPDATE, _cb_icons_update, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+   h = ecore_event_handler_add(EFREET_EVENT_DESKTOP_CACHE_UPDATE, _cb_icons_update, box);
+   if (h) box->handlers = eina_list_append(box->handlers, h);
+   
    if (!cfg->launcher_app_dir || strlen(cfg->launcher_app_dir) == 0)
      return;
 
@@ -95,7 +99,7 @@ _box_fill(Ngi_Box *box)
 
    ngi_freeze(box->ng);
 
-   EINA_LIST_FOREACH( box->apps->desktops, l, desktop)
+   EINA_LIST_FOREACH(box->apps->desktops, l, desktop)
      _item_new(box, desktop, 1, NULL);
 
    ngi_thaw(box->ng);
@@ -107,7 +111,6 @@ _cb_icons_update(void *data, int type, void *event)
    Ngi_Box *box = (Ngi_Box *)data;
    Eina_List *l;
    Ngi_Item_Launcher *it;
-   printf(">>>>>>>> icons update %s\n", e_config->icon_theme);
 
    EINA_LIST_FOREACH(box->items, l, it)
      _item_fill(it); 
@@ -252,7 +255,7 @@ _cb_drop_end(void *data, const char *type, void *event_info)
 
 	if (bd->internal)
 	  {
-	     char *class = bd->client.icccm.class;
+	     const char *class = bd->client.icccm.class;
 
 	     if ((class) && (!strncmp(class, "e_fwin::", 8)) &&
 		 (ecore_file_exists(class+8)))

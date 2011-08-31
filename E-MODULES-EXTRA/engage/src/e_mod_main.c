@@ -1240,7 +1240,7 @@ ngi_reposition(Ng *ng)
 static double
 _ngi_zoom_function(Ng *ng, double to, double pos)
 {
-   double range = ng->cfg->zoom_range * ng->size/2.0;
+   double range = ng->cfg->zoom_range * ng->size;
    double d = pos - to;
 
    if (ng->zoom <= 1.0)
@@ -1248,7 +1248,7 @@ _ngi_zoom_function(Ng *ng, double to, double pos)
 	return pos;
      }
 
-   if ((d > 0) && (d >= range))
+   if (d >= range)
      {
 	return pos + range * (ng->zoom - 1.0);
      }
@@ -1821,9 +1821,9 @@ e_modapi_init(E_Module *m)
 
    ngi_config = (Config *)e_config_domain_load("module.engage", ngi_conf_edd);
 
-   if (ngi_config && !e_util_module_config_check
-       (D_("Engage"), ngi_config->version,
-	MOD_CONFIG_FILE_EPOCH, MOD_CONFIG_FILE_VERSION))
+   if (ngi_config && !e_util_module_config_check(D_("Engage"),
+						 ngi_config->version,
+						 MOD_CONFIG_FILE_VERSION))
      _ngi_config_free();
 
    if (!ngi_config)
