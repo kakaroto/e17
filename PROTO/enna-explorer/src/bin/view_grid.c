@@ -98,11 +98,11 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
      {
         Evas_Object *ic;
 
-        ic = elm_icon_add(obj);
-
         if (ENNA_FILE_IS_BROWSABLE(gi->file))
           {
-             elm_icon_file_set(ic, enna_config_theme_get(), gi->file->icon);
+              ic = elm_icon_add(obj);
+              elm_icon_file_set(ic, enna_config_theme_get(), gi->file->icon);
+              evas_object_size_hint_min_set(ic, 96, 96);
           }
         else
           {
@@ -114,12 +114,25 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
              if (!icon)
                icon = efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 96);
              if (mime && strstr(mime, "image/"))
-               elm_icon_thumb_set(ic, gi->file->mrl, NULL);
+               {
+                  ic = elm_photo_add(obj);
+                  evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
+                                                   EVAS_HINT_EXPAND);
+                  evas_object_size_hint_align_set(ic, EVAS_HINT_FILL,
+                                                  EVAS_HINT_FILL);
+                  evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_BOTH, 4, 3);
+
+                  elm_photo_size_set(ic, 114);
+                  elm_photo_thumb_set(ic, gi->file->mrl, NULL);
+               }
              else
-               elm_icon_file_set(ic, icon, NULL);
+               {
+                  ic = elm_icon_add(obj);
+                  elm_icon_file_set(ic, icon, NULL);
+                  evas_object_size_hint_min_set(ic, 96, 96);
+               }
           }
 
-        evas_object_size_hint_min_set(ic, 96, 96);
         evas_object_show(ic);
         return ic;
      }
@@ -200,47 +213,48 @@ _resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *ev
    Smart_Data *sd = data;
 
    evas_object_geometry_get(sd->o_grid, NULL, NULL, NULL, &h);
-   elm_gengrid_item_size_set(sd->o_grid, 128, 128);
+   elm_gengrid_item_size_set(sd->o_grid, 168, 168);
 }
 
 static void
-_item_activate(Elm_Gengrid_Item *item)
+_item_longpress_cb(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
-   Grid_Item *li;
+   Smart_Data *sd = data;
+   Grid_Item *gi;
 
-   li = (Grid_Item*)elm_gengrid_item_data_get(item);
-   if (li->func_activated)
-     li->func_activated(li->data);
-}
+   gi = (Grid_Item*)elm_gengrid_item_data_get(event_info);
 
-static void
-_item_selected(void *data, Evas_Object *obj, void *event_info __UNUSED__)
-{
-   Grid_Item *li = data;
-
-   evas_object_smart_callback_call(obj, "hilight", li->data);
+   evas_object_smart_callback_call(sd->o_grid, "longpress", gi->file);
 }
 
 static void
 _item_click_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Elm_Gengrid_Item *item = data;
    Evas_Event_Mouse_Up *ev = event_info;
+   Grid_Item *gi = elm_gengrid_item_data_get(data);
 
-   /* Don't activate when user is scrolling list */
-   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+   /* Right click */
+   if (ev->button != 3)
      return;
-   _item_activate(item);
+
+   evas_object_smart_callback_call(gi->sd->o_grid, "longpress", gi->file);
 }
 
 static void
-_item_realized_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+_item_realized_cb(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
-   Elm_Gengrid_Item *item = event_info;
-   Evas_Object *o_item;
+   Evas_Object *o_item = elm_gengrid_item_object_get(event_info);
+   evas_object_event_callback_add(o_item, EVAS_CALLBACK_MOUSE_UP,_item_click_cb, event_info);
+}
 
-   o_item = (Evas_Object*)elm_gengrid_item_object_get(item);
-   evas_object_event_callback_add(o_item, EVAS_CALLBACK_MOUSE_UP,_item_click_cb, item);
+static void
+_item_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Grid_Item *li;
+
+   li = (Grid_Item*)elm_gengrid_item_data_get(event_info);
+   if (li->func_activated)
+     li->func_activated(li->data);
 }
 
 /* externally accessible functions */
@@ -260,6 +274,7 @@ enna_grid_add(Evas_Object * parent)
 
    evas_object_data_set(sd->o_grid, "sd", sd);
    evas_object_smart_callback_add(sd->o_grid, "realized", _item_realized_cb, sd);
+   evas_object_smart_callback_add(sd->o_grid, "longpressed", _item_longpress_cb, sd);
    evas_object_event_callback_add(sd->o_grid, EVAS_CALLBACK_DEL, _del_cb, sd);
    evas_object_event_callback_add(sd->o_grid, EVAS_CALLBACK_RESIZE, _resize_cb, sd);
 

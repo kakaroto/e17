@@ -47,7 +47,6 @@ group { name: "elm/gengrid/item/default/default";
             fixed: 1 0;
             align: 0.5 0.5;
             aspect: 1.0 1.0;
-            min: 96 96;
             aspect_preference: BOTH;
              rel1 {
                   relative: 0.0 0.0;
@@ -215,8 +214,8 @@ group { name: "elm/gengrid/item/video/default";
          description { state: "default" 0.0;
             fixed: 1 0;
             align: 0.5 0.5;
-            aspect: 1.0 1.0;
-            aspect_preference: BOTH;
+            /* aspect: 1.0 1.0; */
+            /* aspect_preference: BOTH; */
              rel1 {
                   relative: 0.0 0.0;
                }

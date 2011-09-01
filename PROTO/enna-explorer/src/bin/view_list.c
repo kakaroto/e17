@@ -49,15 +49,6 @@ struct _Smart_Data
    Eina_List *checked;
 };
 
-static Elm_Object_Item *
-_item_new(Evas_Object *ctxpopup, const char * label, const char *icon)
-{
-   Evas_Object *ic = elm_icon_add(ctxpopup);
-   elm_icon_standard_set(ic, icon);
-   elm_icon_scale_set(ic, EINA_FALSE, EINA_FALSE);
-   return elm_ctxpopup_item_append(ctxpopup, label, ic, NULL, NULL);
-}
-
 static void
 _item_longpress_cb(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
@@ -69,20 +60,15 @@ _item_longpress_cb(void *data, Evas_Object *o __UNUSED__, void *event_info)
    evas_object_smart_callback_call(sd->obj, "longpress", li->file);
 }
 
+
 static void
-_item_activate(Elm_Genlist_Item *item)
+_item_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    List_Item *li;
 
-   li = (List_Item*)elm_genlist_item_data_get(item);
+   li = elm_genlist_item_data_get(event_info);
    if (li->func_activated)
      li->func_activated(li->data);
-}
-
-static void
-_item_selected(void *data, Evas_Object *obj, void *event_info)
-{
-   _item_activate(event_info);
 }
 
 

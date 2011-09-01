@@ -15,7 +15,7 @@ struct _Enna_Shortcut
 static char *
 _enna_shortcut_favorite_label_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   return strdup("Favorites");
+   return strdup("FAVORITES");
 }
 
 static Evas_Object *
@@ -32,7 +32,7 @@ _enna_shortcut_favorite_icon_get(void *data __UNUSED__, Evas_Object *obj, const 
 }
 
 static Elm_Genlist_Item_Class itc_favorite_group = {
-  "default",
+  "panel",
   {
     _enna_shortcut_favorite_label_get,
     _enna_shortcut_favorite_icon_get,
@@ -85,7 +85,7 @@ _enna_shortcut_desktop_select(void *data, Evas_Object *obj __UNUSED__, void *eve
 #endif
 
 static Elm_Genlist_Item_Class itc_desktop_group = {
-  "default",
+  "panel",
   {
     _enna_shortcut_desktop_label_get,
     _enna_shortcut_desktop_icon_get,

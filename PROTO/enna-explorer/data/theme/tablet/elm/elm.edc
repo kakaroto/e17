@@ -11,7 +11,7 @@
 #include "ctxpopup.edc"
 #include "entry.edc"
 //#include "bubble.edc"
-//#include "photo.edc"
+#include "photo.edc"
 //#include "thumb.edc"
 //#include "icon.edc"
 #include "toolbar.edc"

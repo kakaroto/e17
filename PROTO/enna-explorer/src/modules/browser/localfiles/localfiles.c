@@ -98,8 +98,8 @@ typedef struct _Enna_Localfiles_Priv
    const char *root;
    const char *relative_path;
    Enna_Browser *browser;
-   Eio_Monitor *monitor;
-   Eina_List *monitor_handlers;
+   /* Eio_Monitor *monitor; */
+   /* Eina_List *monitor_handlers; */
    Evas_Object *dialog;
    Enna_File *file_dialog;
    const char *new_path;
@@ -914,24 +914,24 @@ _get_children(void *priv, Eina_List *tokens, Enna_Browser *browser, ENNA_VFS_CAP
                   p->root = eina_stringshare_printf("/%s/localfiles/%s",
                                                     pmod->name, root->name);
 
-                  p->monitor = eio_monitor_add(path->buf);
-                  printf("Add monitor to %s\n", path->buf);
+                  /* p->monitor = eio_monitor_add(path->buf); */
+                  /* printf("Add monitor to %s\n", path->buf); */
 
-                  handler = ecore_event_handler_add(EIO_MONITOR_FILE_CREATED,
-                                                    _eio_event_cb, p);
-                  p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler);
-                  handler = ecore_event_handler_add(EIO_MONITOR_FILE_DELETED,
-                                                    _eio_event_cb, p);
-                  p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler);
-                  handler = ecore_event_handler_add(EIO_MONITOR_DIRECTORY_CREATED,
-                                                    _eio_event_cb, p);
-                  p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler);
-                  handler = ecore_event_handler_add(EIO_MONITOR_DIRECTORY_DELETED,
-                                                    _eio_event_cb, p);
-                  p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler);
-                  handler = ecore_event_handler_add(EIO_MONITOR_ERROR,
-                                                    _eio_event_cb, p);
-                  p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler);
+                  /* handler = ecore_event_handler_add(EIO_MONITOR_FILE_CREATED, */
+                  /*                                   _eio_event_cb, p); */
+                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
+                  /* handler = ecore_event_handler_add(EIO_MONITOR_FILE_DELETED, */
+                  /*                                   _eio_event_cb, p); */
+                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
+                  /* handler = ecore_event_handler_add(EIO_MONITOR_DIRECTORY_CREATED, */
+                  /*                                   _eio_event_cb, p); */
+                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
+                  /* handler = ecore_event_handler_add(EIO_MONITOR_DIRECTORY_DELETED, */
+                  /*                                   _eio_event_cb, p); */
+                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
+                  /* handler = ecore_event_handler_add(EIO_MONITOR_ERROR, */
+                  /*                                   _eio_event_cb, p); */
+                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
 
                   p->file = eio_file_direct_ls(path->buf,
                                                _file_filter_cb,
@@ -955,13 +955,13 @@ _del(void *priv)
    if (p->file)
      eio_file_cancel(p->file);
 
-   EINA_LIST_FREE(p->monitor_handlers, handler)
-     {
-        ecore_event_handler_del(handler);
-     }
+   /* EINA_LIST_FREE(p->monitor_handlers, handler) */
+   /*   { */
+   /*      ecore_event_handler_del(handler); */
+   /*   } */
 
-   if (p->monitor)
-     eio_monitor_del(p->monitor);
+   /* if (p->monitor) */
+   /*   eio_monitor_del(p->monitor); */
 
    eina_stringshare_del(p->root);
    eina_stringshare_del(p->relative_path);

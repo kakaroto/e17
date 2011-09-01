@@ -125,10 +125,12 @@ collections
             mouse_events: 1;
             description {
                state: "default" 0.0;
+               max: 192 99999;
                rel1.to_y: "title";
                rel1.relative: 0.0 1.0;
                rel2.to_y: "menu.bg";
                rel2.relative: 0.25 1.0;
+               align: 0 0.5;
                fixed: 1 1;
             }
          }
@@ -150,7 +152,8 @@ collections
             description {
                state: "default" 0.0;
                rel1.to_y: "title";
-               rel1.relative: 0.25 1.0;
+               rel1.to_x: "panel.swallow";
+               rel1.relative: 1.0 0.0;
                rel2.to_y: "menu.bg";
                rel2.relative: 1.0 0.0;
             }

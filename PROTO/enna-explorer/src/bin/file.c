@@ -171,7 +171,7 @@ enna_file_actions_get(Enna_File *f)
 void
 enna_file_action_run(Enna_File_Action *action)
 {
-   if (!action)
+   if (!action || !action->run)
      return;
 
    action->run(action->priv, action->file);
