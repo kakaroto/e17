@@ -28,7 +28,7 @@ static Eina_List *hwins = NULL;
 static Eina_List *hdls = NULL;
 
 /* public functions */
-EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "Illume Home" };
+EAPI E_Module_Api e_modapi = { E_MODULE_API_VERSION, "Elfe" };
 
 EAPI void *
 e_modapi_init(E_Module *m)
