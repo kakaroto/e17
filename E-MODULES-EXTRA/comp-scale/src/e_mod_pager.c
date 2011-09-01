@@ -1090,9 +1090,12 @@ _pager_run(E_Manager *man)
 
    if (scale_conf->pager_keep_shelves)
      {
-	e_zone_useful_geometry_get(zone, &zone_x, &zone_y, &zone_w, &zone_h); 
-	zone_x += zone->x;
-	zone_y += zone->y;
+	int x, y, w, h;
+	e_zone_useful_geometry_get(zone, &x, &y, &w, &h);
+	zone_w = w;
+	zone_h = h;
+	zone_x = zone->x + x;
+	zone_y = zone->y + y;
      }
    else
      {
