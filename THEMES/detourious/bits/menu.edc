@@ -425,6 +425,7 @@ group {
 					relative: 1.0 1.0; 
 					offset: 1 0; 
 				}
+				color_class: "focus";
 			} 
 			description {
 				state: "visible" 0.0;

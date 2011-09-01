@@ -193,12 +193,9 @@ group {
 				state: "default" 0.0;
 				image.normal: "images/button_im3.png";
 				image.border: 7 7 7 7;
-				rel1 { 
-					to: "focus_clip"; 
-				}
-				rel2 { 
-					to: "focus_clip"; 
-				}
+				rel1.to: "focus_clip"; 
+				rel2.to: "focus_clip"; 
+				color_class: "focus";
 			}
 		}
 

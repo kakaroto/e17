@@ -3,6 +3,21 @@
 
 #if (COLORS == 0)
 color_class {
+	name: "focus";
+	/* blue intense */
+	//color:   22 107 246 255;
+	/* blue light */
+	//color:   135 169 224 255;
+	/* green */
+	//color:   135 169 38 255;
+	/* red */
+	//color: 169 47 38 255;
+
+	color: 113 151 213 255;
+	
+	color3: 255 255 255 128;					
+}
+color_class {
 	name: "label_text";
 	color: 20 20 20 255;
 	color3: 255 255 255 128;					
@@ -46,6 +61,14 @@ color_class {
 	color: 215 215 215 255;
 }
 #else
+color_class {
+	name: "focus";
+	/* color:   22 107 246 255; */
+	color:   135 169 224 255;
+	/* color:   58 246 22 255; */
+	/* color:   135 169 38 255; */
+	color3: 255 255 255 128;					
+}
 color_class {
 	name: "comp_focus-out_color";
 	color: 253 253 253 255;

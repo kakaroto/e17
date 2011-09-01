@@ -1,10 +1,39 @@
 
 group {
 	name: "e/widgets/winlist/main";
+#ifdef BUILD_COMPOSITE
 	data {
-	 	item: "shaped" "1";
-	} 
+		item: "shaped" "1";
+	}	
+#endif
 	parts {
+
+#ifdef BUILD_COMPOSITE
+		part {
+			name: "bg_border";
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				image {
+					normal: "images/popup_round.png";
+					border: 18 18 18 21;
+				}
+			}
+		}
+
+		part {
+			name: "base";
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+				rel1.offset: 18 10;
+				rel2.offset: -19 -22;
+			}
+		}
+
+#else
 
 	  	part {
 			name: "bg_border";
@@ -34,21 +63,58 @@ group {
 		}
 
 		part {
+			name: "base";
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				visible: 0;
+			}
+		}
+
+#endif
+		part {
+			name: "e.text.label";
+			type: TEXT;
+			effect: TEXT_EFFECT_BOLD;
+			mouse_events: 0;
+			scale: 1;
+			description {
+				state: "default" 0.0;
+				fixed: 1 1;
+				align: 0.5 0.0;
+				rel1 {
+					to: "base";
+					relative: 0.0 0.0;
+					offset: 8 10;
+				}
+				rel2 {
+					to: "base";
+					relative: 1.0 0.0;
+					offset: -9 -1;
+				}
+				TEXT_COLOR_BOLD;
+				TEXT_LARGE("winlist_title", 0.5 0.0, 0 1);
+				text.elipsis: 0.0;
+			}
+		}
+
+		part {
 			name: "list";
 			type: IMAGE;
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 180;
-				rel1 { 
-					to_y: "e.swallow.list"; 
-					relative: 0.0 0.0; 
-					offset: 7 -7; 
+				rel1 {
+					to_y: "e.text.label";
+					to_x: "base";
+					relative: 0.0 1.0;
+					offset: 4 2;
 				}
-				rel2 { 
-					to_y: "e.swallow.list";
-					relative: 1.0 1.0;	
-					offset: -8 4;
+				rel2 {
+					to: "base";
+					offset: -5 -13;
 				}
 				image {
 					normal: "images/scrollframe_im0.png";
@@ -81,42 +147,19 @@ group {
 		}
 
 		part {
-			name: "list_overlay";
-			type: IMAGE;
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				image.normal: "images/scrollframe_im2.png";
-				image.border: 7 7 7 7;
-				rel1 { 
-					to: "list"; 
-					relative: 0.0 0.0; 
-					offset: -1 -1; 
-				}
-				rel2 { 
-					to: "list"; 
-					relative: 1.0 1.0; 
-					offset: 0 -1; 
-				}
-			}
-		}
-
-		part {
 			name: "list_clip";
 			type: RECT;
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-				rel1 { 
-					to_y: "e.swallow.list"; 
-					relative: 0.0 0.0; 
-					offset: 5 -4; 
+				rel1 {
+					to: "list"; 
+					offset: 1 1; 
 				}
-				rel2 { 
-					to_y: "e.swallow.list"; 
-					relative: 1.0 1.0; 
-					offset: -6 0; 
+				rel2 {
+					to: "list"; 
+					offset: -2 -2; 
 				}
 			}
 		}
@@ -127,109 +170,34 @@ group {
 			clip_to: "list_clip";
 			description {
 				state: "default" 0.0;
-				rel1 { 
-					//to_y: "e.text.title"; 
-					relative: 0.0 0.0; 
-					offset: 16 12; 
-				} 
+				rel1 {
+					to: "list"; 
+					offset: 8 5; 
+				}
 				rel2 {
-					to_y: "e.text.label"; 
-					relative: 1.0 0.0; 
-					offset: -17 -17; 
+					to: "list"; 
+					offset: -9 -7; 
 				}
-			}
-		}
-
-		part {
-			name: "separator";
-			type: IMAGE;
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				max: 600 12;
-				rel1 { 
-					relative: 0.0 1.0; 
-					offset: 0 -16; 
-					to_y: "e.text.label"; 
-				}
-				rel2 { 
-					relative: 1.0 1.0; 
-					offset: 0 0; 
-				}
-				image {
-					normal: "images/dialog_im1.png";
-					border: 0 0 4 0;
-				}
-			}
-		}
-
-		part {   
-			name: "title_overlay";
-			type: IMAGE;
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				min: 10 24;
-				max: 9999 24;
-				align: 0.5 1.0;
-				rel1 { 
-					to_x: "e.text.label"; 
-					relative: 0.0 0.0; 
-					offset: -11 -2;
-				}
-				rel2 { 
-					to_y: "e.text.label"; 
-					relative: 1.0 1.0; 
-					offset: -4 2; 
-				}
-				image {
-					normal: "images/entry_im0.png";
-					border: 6 6 8 7;
-				}
-			}
-		}
-
-		part {
-			name: "e.text.label";
-			type: TEXT;
-			effect: TEXT_EFFECT_BOLD;
-			mouse_events: 0;
-			scale: 1;
-			description {
-				state: "default" 0.0;
-				align: 0.5 1.0;
-				fixed: 0 1;
-				rel1 { 
-					relative: 0.0 1.0; 
-					offset: 14 -20; 
-				}
-				rel2 { 
-					relative: 1.0 1.0; 
-					offset: -15 -20; 
-				}
-				TEXT_COLOR_BOLD;
-				TEXT_LARGE("winlist_title", 0.5 0.5, 0 1);
 			}
 		}
 
 		part {
 			name: "decoration";
-			type: IMAGE;
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
 				min: 15 11;
 				max: 15 11;
 				fixed: 1 1;
-				rel1 { 
-					to: "gradient"; 
-					relative: 0.5 1.0; 
-					offset: 0 0; 
+				align: 0.5 1.0;
+				rel1 {
+					to: "base";
+					relative: 0.0 1.0;
+					offset: 0 5;
 				}
-				rel2 { 
-					to: "gradient"; 
-					relative: 0.5 1.0; 
-					offset: 0 -14; 
+				rel2 {
+					to: "base";
+					offset: -1 -2;
 				}
 				image {
 					normal: "images/decoration_im1.png";
@@ -248,7 +216,7 @@ group {
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
-				max: 9999 24;
+				/* max: 9999 32; */
 				color: 255 255 255 0;
 				image.normal: "images/exebuf_im0.png";
 				image.border: 4 4 5 5;
@@ -315,9 +283,8 @@ group {
 					offset: 0 0; 
 				}
 				rel2 { 
-					to_x: "e.text.label"; 
 					relative: 0.0 1.0; 
-					offset: -1 -1; 
+					offset: -1 -2; 
 				}
 			}
 		}
@@ -329,7 +296,7 @@ group {
 			description {
 				state: "default" 0.0;
 				min: 24 24;
-				max: 24 24;
+				/* max: 24 24; */
 				fixed: 1 1;
 				rel1 { 
 					relative: 1.0 0.0;
@@ -338,7 +305,7 @@ group {
 				rel2 { 
 					to_y: "title_bar"; 
 					relative: 1.0 1.0; 
-					offset: -24 -1; 
+					offset: -24 -3; 
 				}
 				image {
 					normal: "images/pager_im7.png";

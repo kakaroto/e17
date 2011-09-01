@@ -87,7 +87,7 @@ group {
 				rel2.offset: 34 -1;
 
 				image {
-					normal: "images/itask_im0.png";
+					normal: "images/engage_im0.png";
 					border: 26 26 10 4;
 				}
 				color_class: "shelf_base";

@@ -123,7 +123,7 @@ group {
 			description {
 				state: "visible" 0.0;
 				inherit: "default" 0.0;
-				color: 109 152 222 255;
+				color_class: "focus";
 			}
 		}
 
@@ -160,6 +160,7 @@ group {
 					relative: 1.0 1.0; 
 					offset: -1 -1; 
 				}
+				color_class: "focus";
 			}
 		}
 

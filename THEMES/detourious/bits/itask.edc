@@ -8,14 +8,11 @@ group {
             mouse_events: 1;
             description {
 				state: "default" 0.0;
-				min: 32 16;
-				rel2.offset: 1 0;
 				image {
 					normal: "images/shelf_def_im0.png";
 					border: 4 4 3 3;
 				}
-				FILL(0 -6,0 6);
-				color: 255 255 255 128;
+				color: 255 255 255 40;
             }
             description {
 				state: "clicked" 0.0;

@@ -3,6 +3,8 @@
  * Contains list of all used images: images list first, icons second.
  */
 
+image: "images/popup_round.png" COMP;
+
 image: "images/comp/comp-sh1.png" COMP;
 image: "images/comp/bt_glow.png" COMP;
 
@@ -65,7 +67,7 @@ image: "images/dialog_im2.png" COMP; /* about detour dialog bg */
 
 //~ entry
 image: "images/entry_im0.png" COMP; /* base */
-image: "images/entry_im1.png" COMP; /* focus */
+/* image: "images/entry_im1.png" COMP; /\* focus *\/ */
 
 //~ deskpreview
 image: "images/deskpreview_im0.png" COMP; /* background */
@@ -94,6 +96,7 @@ image: "images/itask_im3.png" COMP; /* right orientation */
 image: "images/itask_im4.png" COMP; /* label overlay */
 image: "images/itask_im5.png" COMP; /* label overlay */
 
+image: "images/engage_im0.png" COMP; /* bottom orientation */
 
 //~ gadman
 image: "images/gadman_im0.png" COMP; /* background */
@@ -195,7 +198,7 @@ image: "images/pager_im4.png" COMP; /* icon minimized: used by winlist */
 image: "images/pager_im5.png" COMP; /* icon shaded: used by winlist */
 image: "images/pager_im6.png" COMP; /* overlay_bg */
 image: "images/pager_im7.png" COMP; /* icon: unselected window */
-image: "images/pager_im8.png" COMP; /* focused */
+/* image: "images/pager_im8.png" COMP; /\* focused *\/ */
 
 //~ about_detour
 image: "images/logo_im0.png" COMP; /* wireframe design */
@@ -207,7 +210,7 @@ image: "images/desklock_im0.png" COMP; /* dialog */
 //~ scrollframe
 image: "images/scrollframe_im0.png" COMP; /* bg */
 image: "images/scrollframe_im1.png" COMP; /* inset */
-image: "images/scrollframe_im2.png" COMP; /* focus */
+/* image: "images/scrollframe_im2.png" COMP; /\* focus *\/ */
 
 //~ transitions
 image: "images/transition_im0.png" COMP; /* transitional wipe */
@@ -464,6 +467,8 @@ image: "images/screen_im0.png" COMP;
  * Contains list of all used icons. 
  */
 
+image: "icons/everything.png" COMP;
+
 //~ fill and stretch options (screen)
 image: "icons/wallscreen_im0.png" COMP; /* gradient box */
 image: "icons/wallscreen_im1.png" COMP; /* stretch */
@@ -512,6 +517,7 @@ image: "icons/button-back.png" COMP;
 image: "icons/button-forward.png" COMP;
 image: "icons/button-down.png" COMP;
 image: "icons/button-up.png" COMP;
+
 
 image: "actions/empty.png" COMP;
 image: "actions/object-move.png" COMP;

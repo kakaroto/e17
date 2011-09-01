@@ -287,29 +287,29 @@ group {
 			}
 		}
 
-		part {      
-			name: "icon_overlay";
-			type: IMAGE;
-			mouse_events: 0;
-			description {
-				state: "default" 0.0;
-				min: 48 47;
-				max: 48 47;
-				fixed: 1 1;
-				image.normal: "images/scrollframe_im2.png";
-				image.border: 7 7 7 7; 
-				rel1 { 
-					to: "icon"; 
-					relative: 0.0 0.0; 
-					offset: 0 0; 
-				}
-				rel2 { 
-					to: "icon"; 
-					relative: 1.0 1.0; 
-					offset: 0 -1; 
-				}
-			}
-		}
+		/* part {      
+		 * 	name: "icon_overlay";
+		 * 	type: IMAGE;
+		 * 	mouse_events: 0;
+		 * 	description {
+		 * 		state: "default" 0.0;
+		 * 		min: 48 47;
+		 * 		max: 48 47;
+		 * 		fixed: 1 1;
+		 * 		image.normal: "images/scrollframe_im2.png";
+		 * 		image.border: 7 7 7 7; 
+		 * 		rel1 { 
+		 * 			to: "icon"; 
+		 * 			relative: 0.0 0.0; 
+		 * 			offset: 0 0; 
+		 * 		}
+		 * 		rel2 { 
+		 * 			to: "icon"; 
+		 * 			relative: 1.0 1.0; 
+		 * 			offset: 0 -1; 
+		 * 		}
+		 * 	}
+		 * } */
 
 		part {
 			name: "e.swallow.icons";

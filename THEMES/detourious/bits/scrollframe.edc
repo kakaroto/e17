@@ -443,38 +443,38 @@ group {
             }
         }
 
-        part {
-            name: "focus_clip";
-            mouse_events: 0;
-            type: RECT;
-            description {
-                state: "default" 0.0;
-                color: 255 255 255 0;
-                rel1.offset: -1 3;
-                rel2.offset: -2 -3;
-            }
-            description {
-                state: "focused" 0.0;
-                inherit: "default" 0.0;
-                color: 255 255 255 220;
-            }
-        }
+        /* part {
+         *     name: "focus_clip";
+         *     mouse_events: 0;
+         *     type: RECT;
+         *     description {
+         *         state: "default" 0.0;
+         *         color: 255 255 255 0;
+         *         rel1.offset: -1 3;
+         *         rel2.offset: -2 -3;
+         *     }
+         *     description {
+         *         state: "focused" 0.0;
+         *         inherit: "default" 0.0;
+         *         color: 255 255 255 220;
+         *     }
+         * } */
 
-        part {
-            name: "focus";
-            mouse_events: 0;
-            clip_to: "focus_clip";
-            description {
-                state: "default" 0.0;
-                rel1.offset: -1 3;
-                rel2.offset: -2 -3;
-                image.normal: "images/scrollframe_im2.png";
-                image.border: 7 7 7 7;
-                fill {
-                    smooth: 0;
-                }
-            }
-        }
+        /* part {
+         *     name: "focus";
+         *     mouse_events: 0;
+         *     clip_to: "focus_clip";
+         *     description {
+         *         state: "default" 0.0;
+         *         rel1.offset: -1 3;
+         *         rel2.offset: -2 -3;
+         *         image.normal: "images/scrollframe_im2.png";
+         *         image.border: 7 7 7 7;
+         *         fill {
+         *             smooth: 0;
+         *         }
+         *     }
+         * } */
     }
     /* vertical programs */
     programs {

@@ -29,17 +29,26 @@ group {
 	parts {
 
 		part {
-			name: "base";
+			name: "color";
 			type: RECT;
 			description {
 				state: "default" 0.0;
-				color: COLOR_LIST_BG;
-				color_class: "ilist_item_base";
+				color_class: "focus";
+			}
+		}
+
+		part {
+			name: "base";
+			type: RECT;
+			clip_to: "color";
+			description {
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				/* color_class: "ilist_item_base"; */
 			}
 			description {
 				state: "active" 0.0;
-				color: COLOR_LIST_BG_ACTIVE;
-				color_class: "menu_item_active";
+				color: 255 255 255 255;
 			}
 		}
 
@@ -122,17 +131,30 @@ group {
 	parts {
 
 		part {
-			name: "base";
+			name: "color";
 			type: RECT;
 			description {
 				state: "default" 0.0;
-				color: COLOR_LIST_BG_ODD;
-				color_class: "ilist_item_odd_base";
+				color_class: "focus";
+			}
+		}
+
+		part {
+			name: "base";
+			type: RECT;
+			clip_to: "color";
+
+			description {
+				state: "default" 0.0;
+				/* color: COLOR_LIST_BG_ODD;
+				 * color_class: "ilist_item_odd_base"; */
+				color: 255 255 255 20;
 			}
 			description {
 				state: "active" 0.0;
-				color: COLOR_LIST_BG_ACTIVE;
-				color_class: "menu_item_active";
+				/* color: COLOR_LIST_BG_ACTIVE;
+				 * color_class: "menu_item_active"; */
+				color: 255 255 255 255;
 			}
 		}
 
@@ -214,14 +236,24 @@ group {
 	data.item: "stacking" "above";
 	data.item: "selectraise" "on";
 	parts {
+		part {
+			name: "color";
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				color_class: "focus";
+			}
+		}
 
 		part {
 			name: "base";
 			type: RECT;
 			mouse_events: 0;
+			clip_to: "color";
 			description {
 				state: "default" 0.0;
-				color: COLOR_LIST_HEADER;
+				/* color: COLOR_LIST_HEADER; */
+				color: 180 180 180 255;
 			}
 		}
 

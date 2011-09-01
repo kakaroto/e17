@@ -149,19 +149,17 @@ group {
 				fixed: 1 1;
 				align: 0.5 0.5;
 				min: 32 16;
-				rel1.offset: 0 0;
-				rel2.offset: 1 -1;
+				/* rel1.offset: 0 0;
+				 * rel2.offset: 1 -1; */
 				image {
 					normal: "images/shelf_def_im0.png";
 					border: 4 4 3 3;
 				}
-				FILL(0 -6,0 6);
-
+				color: 225 225 225 40;
 			}
 			description {
 				state: "on" 0.0;
 				inherit: "default" 0.0;
-				color: 225 225 225 255;
 			}
 		}
 
@@ -196,7 +194,7 @@ group {
 			mouse_events: 1;
 			description { state: "default" 0.0;
 				visible: 0;
-				color: 0 0 0 0;
+				color: 0 0 0 40;
 				rel1.to: "button_image";
 				rel2.to: "button_image";
 			}
@@ -258,18 +256,17 @@ group {
 				fixed: 1 1;
 				align: 0.5 0.5;
 				min: 32 16;
-				rel1.offset: 0 0;
-				rel2.offset: 1 -1;
+				/* rel1.offset: 0 0;
+				 * rel2.offset: 1 -1; */
 				image {
 					normal: "images/shelf_def_im0.png";
 					border: 4 4 3 3;
 				}
-				FILL(0 -6,0 6);
+				color: 225 225 225 40;
 			}
 			description {
 				state: "clicked" 0.0;
 				inherit: "default" 0.0;
-				color: 225 225 225 255;
 			}
 			program {
 				name: "enable";
@@ -389,7 +386,7 @@ group {
 				rel1.to: "button_image";
 				rel2.to: "button_image";
 				visible: 0;
-				color: 0 0 0 0;
+				color: 0 0 0 40;
 			}
 			description {
 				state: "clicked" 0.0;
