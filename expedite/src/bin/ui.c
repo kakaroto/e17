@@ -269,7 +269,7 @@ _ui_all(void)
 	key_func("Escape");
      }
    for (i = 1; 
-        (i < ((sizeof(weights) / sizeof(double)) - 1)) &&
+        (i < (1 + t_count)) &&
         (weights[i] > 0.0);
         i++)
      avgw += weights[i];
