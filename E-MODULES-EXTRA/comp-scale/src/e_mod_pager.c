@@ -113,9 +113,6 @@ _pager_place_desks(double scale)
 	     if (scale_conf->pager_fade_desktop)
 	       evas_object_color_set(o, a, a, a, a);
 
-	     /* o = edje_object_part_swallow_get(o, "e.swallow.desk");
-	      * if (o) evas_object_image_fill_set(o, -zone->x, -zone->y, w, h);  */
-
 	     l = eina_list_next(l);
 	  }
      }
@@ -1031,13 +1028,15 @@ _pager_cb_key_up(void *data, int type, void *event)
 static Eina_Bool
 _pager_run(E_Manager *man)
 {
-   Eina_List *l;
+   Evas *e;
    E_Manager_Comp_Source *src;
    Ecore_Event_Handler *h;
-   Evas *e;
+   const char *file, *group;
+   Eina_List *l;
    int x, y;
    Item *it;
-    
+
+   
    mouse_activated = 0;
    mouse_x = -1;
    mouse_y = -1;
@@ -1121,7 +1120,9 @@ _pager_run(E_Manager *man)
 
    EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
      _pager_win_new(e, man, src);
-
+   
+   edje_object_file_get(zone->bg_object, &file, &group);
+   
    for (y = 0; y < zone->desk_y_count; y++)
      {
 	for (x = 0; x < zone->desk_x_count; x++)
@@ -1144,12 +1145,14 @@ _pager_run(E_Manager *man)
 
 	     if (edje_object_part_exists(o, "e.swallow.desk"))
 	       {
-	     	  oo = evas_object_image_filled_add(e);
-	     	  evas_object_image_source_set(oo, bg_proxy);
-	     
-	     	  evas_object_image_smooth_scale_set(oo, smooth);
-	     
-	     	  evas_object_show(oo);
+		  oo = edje_object_add(e); 
+		  edje_object_file_set(oo, file, group);
+		  evas_object_resize(oo, zone->w, zone->h);
+
+	     	  /* oo = evas_object_image_filled_add(e);
+	     	   * evas_object_image_source_set(oo, bg_proxy);
+	     	   * evas_object_image_smooth_scale_set(oo, smooth); */
+
 	     	  edje_object_part_swallow(o, "e.swallow.desk", oo);
 	       }
 	  }
