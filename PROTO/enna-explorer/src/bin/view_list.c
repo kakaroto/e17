@@ -471,7 +471,7 @@ enna_list_add(Evas_Object *parent)
    sd = calloc(1, sizeof(Smart_Data));
    obj = elm_genlist_add(parent);
    evas_object_size_hint_weight_set(obj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_genlist_horizontal_set(obj, ELM_LIST_COMPRESS);
+   elm_genlist_horizontal_mode_set(obj, ELM_LIST_COMPRESS);
    evas_object_smart_callback_add(obj, "longpressed", _item_longpress_cb, sd);
    evas_object_show(obj);
    sd->obj = obj;

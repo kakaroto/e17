@@ -79,6 +79,7 @@ enna_config.h \
 enna.h \
 explorer.h \
 file.h \
+gettext.h \
 mainmenu.h \
 module.h \
 shortcut.h \
