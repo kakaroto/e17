@@ -88,4 +88,5 @@ view_list.h\
 url_utils.h\
 logs.h\
 gettext.h\
-ini_parser.h
+ini_parser.h\
+gettext.h

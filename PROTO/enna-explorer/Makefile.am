@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src data
+SUBDIRS = po src data
 
 MAINTAINERCLEANFILES = Makefile.in
 
-EXTRA_DIST = enna.cfg.sample MAINTAINERS $(ennadoc_DATA)
+EXTRA_DIST = config.rpath  enna.cfg.sample MAINTAINERS $(ennadoc_DATA)
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:
@@ -13,3 +13,5 @@ dist-hook:
 			cp -p $$specfile $(distdir); \
 		fi \
 	done
+
+ACLOCAL_AMFLAGS = -I m4

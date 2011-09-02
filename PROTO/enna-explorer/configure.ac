@@ -17,6 +17,9 @@ LT_INIT([win32-dll])
 
 AC_CANONICAL_HOST
 
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.18.1])
+CFLAGS="$CFLAGS -DLOCALEDIR=\"\\\"$datadir/locale\\\"\""
 
 ### Checks for programs
 
@@ -198,7 +201,7 @@ if test "x$want_theme_phone" = "xyes"; then
   AC_DEFINE(BUILD_THEME_PHONE, 1, [Phone Theme])
 fi
 
-AC_CONFIG_FILES([
+AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 src/Makefile
 src/bin/Makefile
