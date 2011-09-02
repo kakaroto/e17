@@ -1,7 +1,7 @@
 #include <Elementary.h>
 #include <Eio.h>
 #include "enna.h"
-
+#include "gettext.h"
 
 typedef struct _Enna_Shortcut Enna_Shortcut;
 
@@ -160,15 +160,15 @@ _bookmark_icon_get(void *data, Evas_Object *obj, const char *part)
    elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
    printf("label : %s\n", label);
    elm_icon_smooth_set(ic, EINA_FALSE);
-   if (!strcmp(label, "Musique"))
+   if (!strcmp(label, _("Music")))
      elm_icon_standard_set(ic, "folder-music");
-   else if (!strcmp(label, "Videos"))
+   else if (!strcmp(label, _("Videos")))
      elm_icon_standard_set(ic, "folder-videos");
-   else if (!strcmp(label, "Images"))
+   else if (!strcmp(label, _("Images")))
      elm_icon_standard_set(ic, "folder_pictures");
-   else if (!strcmp(label, "Téléchargements"))
+   else if (!strcmp(label, _("Downloads")))
      elm_icon_standard_set(ic, "folder-downloads");
-   else if (!strcmp(label, "Documents"))
+   else if (!strcmp(label, _("Documents")))
      elm_icon_standard_set(ic, "folder-documents");
    else
      elm_icon_standard_set(ic, "inode-directory");

@@ -34,6 +34,8 @@
 #define PATH_MAX 4096
 #endif
 
+#define _(String)  gettext(String)
+#define N_(String) gettext_noop(String)
 #define ENNA_TOSTRING(s) #s
 #define ENNA_STRINGIFY(s) ENNA_TOSTRING(s)
 #define ARRAY_NB_ELEMENTS(array) (sizeof (array) / sizeof (array[0]))

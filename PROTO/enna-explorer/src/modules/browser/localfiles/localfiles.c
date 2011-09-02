@@ -26,6 +26,7 @@
 #include <Ecore_File.h>
 #include <Eio.h>
 
+
 #include "enna.h"
 #include "enna_config.h"
 #include "module.h"
@@ -33,6 +34,8 @@
 #include "volumes.h"
 #include "utils.h"
 #include "buffer.h"
+
+#include "gettext.h"
 
 #define ENNA_MODULE_NAME "localfiles"
 
@@ -590,7 +593,7 @@ _action_rename_cb(void *data, Enna_File *file)
    Enna_Localfiles_Priv *priv = data;
 
    win = elm_win_add(enna->win, NULL, ELM_WIN_DIALOG_BASIC);
-   elm_win_title_set(win, "Rename");
+   elm_win_title_set(win, _("Rename"));
    elm_win_autodel_set(win, EINA_TRUE);
    evas_object_data_set(win, "file", file);
 
@@ -613,7 +616,7 @@ _action_rename_cb(void *data, Enna_File *file)
    elm_box_padding_set(bx, 4, 4);
 
    lb = elm_label_add(win);
-   elm_object_text_set(lb, "Enter new name");
+   elm_object_text_set(lb, _("Enter new name"));
    evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(lb, 0.5, -1);
    evas_object_show(lb);
@@ -636,7 +639,7 @@ _action_rename_cb(void *data, Enna_File *file)
    elm_box_padding_set(btn_bx, 8, 2);
 
    btn_ok = elm_button_add(win);
-   elm_object_text_set(btn_ok, "Rename");
+   elm_object_text_set(btn_ok, _("Rename"));
    evas_object_show(btn_ok);
    evas_object_size_hint_weight_set(btn_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn_ok, EVAS_HINT_FILL, 0.5);
@@ -645,7 +648,7 @@ _action_rename_cb(void *data, Enna_File *file)
    elm_box_pack_end(btn_bx, btn_ok);
 
    btn_cancel = elm_button_add(win);
-   elm_object_text_set(btn_cancel, "Cancel");
+   elm_object_text_set(btn_cancel, _("Cancel"));
    evas_object_show(btn_cancel);
    evas_object_size_hint_weight_set(btn_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -678,7 +681,7 @@ _action_delete_cb(void *data, Enna_File *file)
    ENNA_OBJECT_DEL(priv->dialog);
 
    win = elm_win_add(enna->win, NULL, ELM_WIN_DIALOG_BASIC);
-   elm_win_title_set(win, "Delete files");
+   elm_win_title_set(win, _("Delete files"));
    elm_win_autodel_set(win, EINA_TRUE);
    evas_object_data_set(win, "file", file);
 
@@ -703,7 +706,7 @@ _action_delete_cb(void *data, Enna_File *file)
    lb = elm_label_add(win);
    elm_label_line_wrap_set(lb, ELM_WRAP_MIXED);
    elm_label_wrap_width_set(lb, 400);
-   label = eina_stringshare_printf("Are you sure to delete <b>%s</b> ?", file->label);
+   label = eina_stringshare_printf(_("Are you sure to delete <b>%s</b> ?"), file->label);
    elm_object_text_set(lb, label);
    eina_stringshare_del(label);
    evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -719,7 +722,7 @@ _action_delete_cb(void *data, Enna_File *file)
    elm_box_padding_set(btn_bx, 8, 2);
 
    btn_ok = elm_button_add(win);
-   elm_object_text_set(btn_ok, "Delete");
+   elm_object_text_set(btn_ok, _("Delete"));
    evas_object_show(btn_ok);
    evas_object_size_hint_weight_set(btn_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn_ok, EVAS_HINT_FILL, 0.5);
@@ -728,7 +731,7 @@ _action_delete_cb(void *data, Enna_File *file)
                                   _dialog_delete_ok_clicked_cb, priv);
 
    btn_cancel = elm_button_add(win);
-   elm_object_text_set(btn_cancel, "Cancel");
+   elm_object_text_set(btn_cancel, _("Cancel"));
    evas_object_show(btn_cancel);
    evas_object_size_hint_weight_set(btn_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(btn_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);

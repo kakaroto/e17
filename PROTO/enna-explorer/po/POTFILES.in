@@ -1,2 +1,3 @@
 # List of source files which contain translatable strings.
 src/bin/shortcut.c
+src/modules/browser/localfiles/localfiles.c
