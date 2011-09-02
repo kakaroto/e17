@@ -1,0 +1,15 @@
+en@boldquot.gmo
+en@boldquot.insert-header
+en@boldquot.po
+enna.pot
+en@quot.gmo
+en@quot.insert-header
+en@quot.po
+fr.gmo
+Makefile
+Makefile.in
+POTFILES
+remove-potcdate.sed
+Rules-quot
+stamp-po
+.svnignore
