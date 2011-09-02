@@ -71,22 +71,19 @@ endif
 ##########################################################################
 
 EXTRA_DIST= \
-enna.h\
-enna_config.h\
-utils.h\
-buffer.h\
-metadata.h\
-mainmenu.h\
-module.h\
-vfs.h\
-volumes.h\
-activity.h\
-file.h\
-browser.h\
-browser_obj.h\
-view_list.h\
-url_utils.h\
-logs.h\
-gettext.h\
-ini_parser.h\
-gettext.h
+activity.h \
+browser.h \
+browser_obj.h \
+buffer.h \
+enna_config.h \
+enna.h \
+explorer.h \
+file.h \
+mainmenu.h \
+module.h \
+shortcut.h \
+utils.h \
+vfs.h \
+view_grid.h \
+view_list.h \
+volumes.h

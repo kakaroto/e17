@@ -202,6 +202,7 @@ if test "x$want_theme_phone" = "xyes"; then
 fi
 
 AC_CONFIG_FILES([ po/Makefile.in
+enna-explorer.spec
 Makefile
 src/Makefile
 src/bin/Makefile
