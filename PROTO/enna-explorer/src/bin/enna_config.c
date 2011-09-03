@@ -91,9 +91,9 @@ enna_config_theme_file_get(const char *s)
      snprintf(tmp, sizeof(tmp), "%s", s);
 
    if (!ecore_file_exists(tmp))
-     snprintf(tmp, sizeof(tmp), PACKAGE_DATA_DIR "/enna/theme/%s.edj", s);
+     snprintf(tmp, sizeof(tmp), PACKAGE_DATA_DIR "/enna-explorer/theme/%s.edj", s);
    if (!ecore_file_exists(tmp))
-     snprintf(tmp, sizeof(tmp), "%s", PACKAGE_DATA_DIR "/enna/theme/default.edj");
+     snprintf(tmp, sizeof(tmp), "%s", PACKAGE_DATA_DIR "/enna-explorer/theme/default.edj");
 
    if (ecore_file_exists(tmp))
      return strdup(tmp);
