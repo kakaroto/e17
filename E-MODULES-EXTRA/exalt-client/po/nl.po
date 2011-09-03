@@ -1,0 +1,300 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Exalt-client\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-09-02 15:01-0700\n"
+"PO-Revision-Date: 2011-09-03 15:34+0100\n"
+"Last-Translator: Heimen Stoffels <vistausss@gmail.com>\n"
+"Language-Team:  <vistausss@gmail.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: NL\n"
+"X-Poedit-Country: Nederland\n"
+
+#. create new config dialog
+#: ../src/e_mod_config.c:41
+msgid "Exalt Configuration"
+msgstr "Exalt-instellingen"
+
+#: ../src/e_mod_config.c:84
+msgid "General"
+msgstr "Algemeen"
+
+#: ../src/e_mod_config.c:89
+msgid "Basic mode"
+msgstr "Basismodus"
+
+#: ../src/e_mod_config.c:91
+msgid "Advanced mode"
+msgstr "Gevanceerde modus"
+
+#: ../src/e_mod_config.c:97
+msgid "Wireless network"
+msgstr "Draadloos netwerk"
+
+#: ../src/e_mod_config.c:99
+msgid "Save the configuration of each wireless network"
+msgstr "Sla de instellingen op van ieder draadloos netwerk"
+
+#: ../src/e_mod_config.c:104
+msgid "Notifications"
+msgstr "Meldingen"
+
+#: ../src/e_mod_config.c:106
+msgid "Enable the notifications"
+msgstr "Activeer de meldingen"
+
+#: ../src/e_mod_main.c:232
+msgid "Exalt Warning"
+msgstr "Exalt-waarschuwing"
+
+#: ../src/e_mod_main.c:235
+msgid "Warning"
+msgstr "Waarschuwing"
+
+#: ../src/e_mod_main.c:236
+msgid "NetworkManager has been detected on your computer."
+msgstr "NetworkManager is gevonden op uw computer."
+
+#: ../src/e_mod_main.c:238
+msgid "Exalt can't work properly if networkManager is running, please stop NetworkManager or Exalt."
+msgstr "Exalt kan niet goed werken zolang NetworkManager draait. Stop alstublieft NetworkMananger of Exalt."
+
+#: ../src/e_mod_main.c:241
+msgid "Ok"
+msgstr "OK"
+
+#: ../src/e_mod_main.c:368
+msgid "exalt"
+msgstr "exalt"
+
+#: ../src/e_mod_main.c:453
+msgid "exalt Configuration Updated"
+msgstr "exalt-instellgen geupdate"
+
+#: ../src/e_mod_main.c:520
+msgid "Settings"
+msgstr "Instellingen"
+
+#: ../src/popup.c:43
+msgid "DNS configuration"
+msgstr "DNS-instellingen"
+
+#: ../src/popup.c:47
+msgid "Network configuration"
+msgstr "Netwerk-instellingen"
+
+#: ../src/popup.c:53
+msgid "Modem dialer"
+msgstr "Modem-dialer"
+
+#: ../src/popup.c:57
+msgid "Mobile Phone (3G)"
+msgstr "Mobiele telefoon (3G)"
+
+#: ../src/popup.c:231
+msgid "No IP Address"
+msgstr "Geen IP-adres"
+
+#: ../src/popup.c:236
+#: ../src/wired_dialog.c:42
+msgid "Wired interface"
+msgstr "Bedrade interface"
+
+#: ../src/popup.c:239
+msgid "Wireless interface"
+msgstr "Draadloze interface"
+
+#: ../src/wired_dialog.c:36
+msgid "Wired Configuration Settings"
+msgstr "Bedrade configuratie-instellingen"
+
+#: ../src/wired_dialog.c:51
+#: ../src/network_dialog.c:54
+#: ../src/wireless_dialog.c:36
+msgid "Activate"
+msgstr "Activeer"
+
+#: ../src/wired_dialog.c:54
+#: ../src/network_dialog.c:57
+#: ../src/wireless_dialog.c:39
+msgid "Deactivate"
+msgstr "Deactiveer"
+
+#: ../src/wired_dialog.c:58
+#: ../src/network_dialog.c:61
+msgid "DHCP (Dynamic host configuration protocol)"
+msgstr "DHCP (Dynamic host configuration protocol)"
+
+#: ../src/wired_dialog.c:63
+#: ../src/network_dialog.c:66
+msgid "Static"
+msgstr "Statisch"
+
+#: ../src/wired_dialog.c:68
+#: ../src/network_dialog.c:71
+msgid "IP address: "
+msgstr "IP-adres:"
+
+#: ../src/wired_dialog.c:73
+#: ../src/network_dialog.c:76
+msgid "Netmask address: "
+msgstr "Netwerk-adres:"
+
+#: ../src/wired_dialog.c:78
+#: ../src/network_dialog.c:81
+msgid "Gateway address: "
+msgstr "Gateway-adres:"
+
+#: ../src/wired_dialog.c:83
+#: ../src/network_dialog.c:86
+msgid "Command: "
+msgstr "Commando:"
+
+#.
+#.
+#: ../src/wired_dialog.c:96
+#: ../src/network_dialog.c:98
+#: ../src/network_dialog.c:677
+#: ../src/network_dialog.c:723
+#: ../src/network_dialog.c:771
+#: ../src/wireless_dialog.c:52
+msgid "OK"
+msgstr "OK"
+
+#: ../src/wired_dialog.c:97
+#: ../src/network_dialog.c:99
+msgid "Apply"
+msgstr "Toepassen"
+
+#: ../src/wired_dialog.c:98
+#: ../src/network_dialog.c:100
+#: ../src/network_dialog.c:678
+#: ../src/network_dialog.c:724
+#: ../src/network_dialog.c:772
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: ../src/network_dialog.c:17
+msgid "Wireless Configuration Settings"
+msgstr "Draadloze configuratie-instellingen"
+
+#: ../src/network_dialog.c:25
+msgid "Network information"
+msgstr "Netwerkinformatie"
+
+#: ../src/network_dialog.c:27
+msgid "Essid: "
+msgstr "Essid:"
+
+#: ../src/network_dialog.c:32
+msgid "Address: "
+msgstr "Adres:"
+
+#: ../src/network_dialog.c:37
+msgid "Quality: "
+msgstr "Kwaliteit:"
+
+#. IFACE frame
+#: ../src/network_dialog.c:45
+msgid "Wireless interface configuration"
+msgstr "Draadloze interface-instellingen"
+
+#: ../src/network_dialog.c:91
+msgid "Add to favorites: "
+msgstr ":Voeg toe aan favorieten:"
+
+#: ../src/network_dialog.c:203
+msgid "WEP information"
+msgstr "WEP-informatie"
+
+#: ../src/network_dialog.c:205
+msgid "Description: "
+msgstr "Beschrijving:"
+
+#: ../src/network_dialog.c:207
+msgid "WEP"
+msgstr "WEP"
+
+#: ../src/network_dialog.c:225
+msgid "Hexadecimal Key"
+msgstr "Hexadecimale sleutel"
+
+#: ../src/network_dialog.c:229
+msgid "ASCII Key"
+msgstr "ASCII-sleutel"
+
+#: ../src/network_dialog.c:235
+#: ../src/network_dialog.c:313
+msgid "Password: "
+msgstr "Wachtwoord:"
+
+#: ../src/network_dialog.c:258
+msgid "WPA information"
+msgstr "WPA-informatie:"
+
+#: ../src/network_dialog.c:324
+msgid "CA certificate: "
+msgstr "CA-certificaat:"
+
+#: ../src/network_dialog.c:336
+msgid "Client certificate: "
+msgstr "Client-certificaat:"
+
+#: ../src/network_dialog.c:349
+msgid "Private key: "
+msgstr "Privé-sleutel:"
+
+#: ../src/network_dialog.c:666
+msgid "Select the company certificate"
+msgstr "Selecteer het bedrijfscertificaat"
+
+#: ../src/network_dialog.c:712
+#: ../src/network_dialog.c:760
+msgid "Select the client certificate"
+msgstr "Selecteer het client-certificaat"
+
+#: ../src/dns_dialog.c:20
+msgid "DNS (Domain Name Server) Settings"
+msgstr "DNS (Domain Name Server)-instellingen"
+
+#: ../src/dns_dialog.c:25
+msgid "DNS (Domain Name Server) configuration"
+msgstr "DNS (Domain Name Server) configuratie"
+
+#.
+#. buttons
+#: ../src/dns_dialog.c:45
+msgid "Add"
+msgstr "Voeg toe"
+
+#: ../src/dns_dialog.c:47
+msgid "Replace"
+msgstr "Vervang"
+
+#: ../src/dns_dialog.c:49
+msgid "Delete"
+msgstr "Verwijder"
+
+#: ../src/dns_dialog.c:59
+msgid "Close"
+msgstr "Sluit"
+
+#: ../src/wireless_dialog.c:21
+msgid "Wireless Interface Settings"
+msgstr "Draadloze interface-instellingen"
+
+#: ../src/wireless_dialog.c:27
+msgid "wireless interface"
+msgstr "draadloze interface"
+
+#: ../src/wireless_dialog.c:42
+msgid "Create a new network"
+msgstr "Creeër een nieuw netwerk"
+

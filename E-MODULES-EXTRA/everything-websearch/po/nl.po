@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: everything-websearch\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-09-03 06:01-0700\n"
+"PO-Revision-Date: 2011-09-03 16:05+0100\n"
+"Last-Translator: Heimen Stoffels <vistausss@gmail.com>\n"
+"Language-Team:  <vistausss@gmail.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: NL\n"
+"X-Poedit-Country: Nederland\n"
+
+#: ../src/e_mod_main.c:587
+#: ../src/e_mod_main.c:1391
+msgid "Translate"
+msgstr "Vertaal"
+
+#: ../src/e_mod_main.c:736
+msgid "Abort download"
+msgstr "Breek download af"
+
+#: ../src/e_mod_main.c:781
+#, c-format
+msgid "Got %d kbytes of"
+msgstr "Heeft %d kbytes van"
+
+#: ../src/e_mod_main.c:795
+msgid "Enqueue in Playlist"
+msgstr "Veranker in afspeellijst"
+
+#: ../src/e_mod_main.c:799
+msgid "Enqueue"
+msgstr "Veranker"
+
+#: ../src/e_mod_main.c:802
+msgid "Play File"
+msgstr "Speel bestand af"
+
+#: ../src/e_mod_main.c:806
+msgid "Play"
+msgstr "Afspelen"
+
+#: ../src/e_mod_main.c:836
+msgid "Finished download"
+msgstr "Download afgerond"
+
+#: ../src/e_mod_main.c:922
+msgid "Start download"
+msgstr "Start download"
+
+#: ../src/e_mod_main.c:1004
+msgid "Enqueue files for download"
+msgstr "Veranker bestanden voor download"
+
+#: ../src/e_mod_main.c:1021
+#: ../src/e_mod_main.c:1397
+msgid "Youtube"
+msgstr "Youtube"
+
+#. ecore_con_url_http_post_send(ud->dd->con_url, post);
+#: ../src/e_mod_main.c:1062
+#: ../src/e_mod_main.c:1067
+#: ../src/e_mod_main.c:1094
+#: ../src/e_mod_main.c:1155
+msgid "Upload Image"
+msgstr "Upload afbeelding"
+
+#: ../src/e_mod_main.c:1062
+msgid "Link copied to clipboard"
+msgstr "Link gekopieerd naar klembord"
+
+#: ../src/e_mod_main.c:1067
+msgid "Something went wrong :("
+msgstr "Er ging iets mis :("
+
+#: ../src/e_mod_main.c:1092
+#, c-format
+msgid "Completed %1.1f%% of %s"
+msgstr "Voltooid %1.1f%% van %s"
+
+#: ../src/e_mod_main.c:1364
+#: ../src/e_mod_main.c:1536
+#: ../src/e_mod_main.c:1555
+msgid "Everything Websearch"
+msgstr "Alles Webzoeken"
+
+#: ../src/e_mod_main.c:1378
+msgid "General"
+msgstr "Algemeen"
+
+#: ../src/e_mod_main.c:1381
+msgid "Browser"
+msgstr "Browser"
+
+#: ../src/e_mod_main.c:1386
+msgid "Language"
+msgstr "Taal"
+
+#: ../src/e_mod_main.c:1400
+msgid "Video player"
+msgstr "Videospeler"
+
+#: ../src/e_mod_main.c:1405
+msgid "Download directory"
+msgstr "Download-map"
+
+#: ../src/e_mod_main.c:1410
+msgid "Download requires mplayer and mp3lame"
+msgstr "Download vereist mplayer en mp3lame"
+
+#: ../src/e_mod_main.c:1533
+msgid "Launcher"
+msgstr "Starter"
+

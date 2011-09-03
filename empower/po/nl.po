@@ -1,0 +1,83 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: empower\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e/\n"
+"POT-Creation-Date: 2011-09-03 06:00-0700\n"
+"PO-Revision-Date: 2011-09-03 15:52+0100\n"
+"Last-Translator: Heimen Stoffels <vistausss@gmail.com>\n"
+"Language-Team:  <vistausss@gmail.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: NL\n"
+"X-Poedit-Country: Nederland\n"
+
+#: ../src/bin/elm/empower.c:9
+#: ../src/bin/ewl/empower.c:9
+#, c-format
+msgid "Failed to create regular expression\n"
+msgstr "Fout bij het aanmaken van een reguliere expressie\n"
+
+#: ../src/bin/elm/empower.c:64
+#: ../src/bin/ewl/empower.c:63
+#, c-format
+msgid "Unable to init ecore\n"
+msgstr "Niet in staat om ecore te initialiseren\n"
+
+#: ../src/bin/elm/empower.c:72
+#: ../src/bin/ewl/empower.c:77
+#, c-format
+msgid "-=Usage=-\n"
+msgstr "-=Gebruik=-\n"
+
+#: ../src/bin/elm/empower.c:73
+#, c-format
+msgid "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [ELEMENTARY OPTIONS]\n"
+msgstr "    Sudo:  empower [SUDOOPTIES] [PROGRAMMA] [PROGRAMMAOPTIES] [ELEMENTARYOPTIES]\n"
+
+#: ../src/bin/elm/empower.c:74
+#, c-format
+msgid "    AskPass:  empower-askpass [ELEMENTARY OPTIONS] or empower -p [ELEMENTARY OPTIONS]\n"
+msgstr "    AskPass:  empower-askpass [ELEMENTARYOPTIES] of empower -p [ELEMENTARYOPTIES]\n"
+
+#: ../src/bin/elm/empower_gui_elm.c:96
+#: ../src/bin/ewl/empower_gui_ewl.c:53
+#: ../src/bin/ewl/empower_gui_ewl.c:55
+#: ../src/bin/ewl/empower_gui_ewl.c:57
+#: ../src/bin/ewl/empower_gui_ewl.c:59
+msgid "Execute"
+msgstr "Voer uit"
+
+#: ../src/bin/elm/empower_gui_elm.c:146
+#: ../src/bin/ewl/empower_gui_ewl.c:70
+#: ../src/bin/ewl/empower_gui_ewl.c:72
+#: ../src/bin/ewl/empower_gui_ewl.c:74
+#: ../src/bin/ewl/empower_gui_ewl.c:76
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: ../src/bin/elm/empower_cb_elm.c:19
+#, c-format
+msgid "Unable to grab keyboard, exiting...\n"
+msgstr "Niet in staat om toetsenbord te vangen, bezig met afsluiten...\n"
+
+#: ../src/bin/ewl/empower.c:69
+#, c-format
+msgid "Unable to init ewl\n"
+msgstr "Niet in staat om ewl te initialiseren\n"
+
+#: ../src/bin/ewl/empower.c:78
+#, c-format
+msgid "    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [EWL OPTIONS]\n"
+msgstr "    Sudo:  empower [SUDOOPTIES] [PROGRAMMA] [PROGRAMMAOPTIES] [EWLOPTIES]\n"
+
+#: ../src/bin/ewl/empower.c:79
+#, c-format
+msgid "    AskPass:  empower-askpass [EWL OPTIONS] or empower -p [EWL OPTIONS]\n"
+msgstr "    AskPass:  empower-askpass [EWLOPTIES] of empower -p [EWLOPTIES]\n"
+

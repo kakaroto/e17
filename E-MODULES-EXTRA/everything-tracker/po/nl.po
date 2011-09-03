@@ -1,0 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: everything-tracker\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-08-12 10:00-0700\n"
+"PO-Revision-Date: 2011-09-03 16:02+0100\n"
+"Last-Translator: Heimen Stoffels <vistausss@gmail.com>\n"
+"Language-Team:  <vistausss@gmail.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: NL\n"
+"X-Poedit-Country: Nederland\n"
+
+#: ../src/e_mod_main.c:947
+#: ../src/e_mod_main.c:950
+msgid "Tracker"
+msgstr "Tracker"
+
+#: ../src/e_mod_main.c:966
+#: ../src/e_mod_main.c:975
+msgid "Albums"
+msgstr "Albums"
+
+#: ../src/e_mod_main.c:969
+#: ../src/e_mod_main.c:978
+msgid "Artist"
+msgstr "Artiest"
+
+#: ../src/e_mod_main.c:972
+msgid "Most Listened"
+msgstr "Meest beluisterd"
+

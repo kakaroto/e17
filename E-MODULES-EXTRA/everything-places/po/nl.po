@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: taskbar\n"
+"Project-Id-Version: everything-places\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-09-03 06:01-0700\n"
-"PO-Revision-Date: 2011-09-03 16:11+0100\n"
+"PO-Revision-Date: 2011-09-03 16:01+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@gmail.com>\n"
 "Language-Team:  <vistausss@gmail.com>\n"
 "Language: \n"
@@ -17,24 +17,11 @@ msgstr ""
 "X-Poedit-Language: NL\n"
 "X-Poedit-Country: Nederland\n"
 
-#: ../src/e_mod_config.c:30
-msgid "Taskbar Configuration"
-msgstr "Taakbalk-instellingen"
+#: ../src/e_mod_main.c:138
+msgid "Home"
+msgstr "Persoonlijke map"
 
-#: ../src/e_mod_config.c:71
-msgid "Display"
-msgstr "Weergave"
-
-#: ../src/e_mod_config.c:72
-msgid "Show windows from all desktops"
-msgstr "Toon vensters van alle bureaubladen"
-
-#: ../src/e_mod_main.c:291
-#: ../src/e_mod_main.c:661
-msgid "Taskbar"
-msgstr "Taakbalk"
-
-#: ../src/e_mod_main.c:654
-msgid "Settings"
-msgstr "Instellingen"
+#: ../src/e_mod_main.c:141
+msgid "Wallpaper"
+msgstr "Achtergrond"
 
