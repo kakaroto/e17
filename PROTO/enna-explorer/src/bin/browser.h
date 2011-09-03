@@ -40,6 +40,5 @@ Enna_File *enna_browser_get_file(const char *uri);
 const char *enna_browser_uri_get(Enna_Browser *b);
 Eina_List *enna_browser_files_get(Enna_Browser *b);
 Eina_List *enna_browser_selected_files_get(Enna_Browser *b);
-int enna_browser_level_get(Enna_Browser *b);
 void enna_browser_filter(Enna_Browser *b, const char *filter);
 #endif /* BROWSER_H */

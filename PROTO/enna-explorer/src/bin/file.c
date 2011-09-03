@@ -22,6 +22,7 @@
 #include "file.h"
 #include "enna.h"
 #include "utils.h"
+#include "vfs.h"
 
 typedef struct _Enna_File_Callback Enna_File_Callback;
 struct _Enna_File_Callback
@@ -95,6 +96,26 @@ enna_file_ref(Enna_File *file)
    file->refcount++;
 
    return file;
+}
+
+Enna_File *
+enna_file_from_uri_new(const char *uri)
+{
+   Enna_Vfs_Class *vfs = NULL, *tmp = NULL;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(enna_vfs_get(ENNA_CAPS_ALL), l, tmp)
+     {
+        if (!strcmp(tmp->name, "localfiles"))
+          {
+             vfs = tmp;
+             break;
+          }
+     }
+  if (!vfs)
+    return NULL;
+
+  return vfs->func.file_get(uri);
 }
 
 void
@@ -320,3 +341,4 @@ enna_file_meta_callback_call(Enna_File *file)
         cb->func(cb->func_data, file);
      }
 }
+

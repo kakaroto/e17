@@ -126,24 +126,7 @@ _view_longpressed_cb (void *data, Evas_Object *obj __UNUSED__, void *event_info)
    Enna_File *file = event_info;
    Smart_Data *sd = data;
 
-
    evas_object_smart_callback_call (sd->o_layout, "longpress", file);
-
-   /* ENNA_OBJECT_DEL(sd->o_popup); */
-
-   /* sd->o_popup = elm_ctxpopup_add(sd->o_layout); */
-   /* evas_object_data_set(sd->o_popup, "file", file); */
-   /* evas_object_data_set(sd->o_popup, "sd", sd); */
-
-   /* _item_new(sd->o_popup, "Copy", "edit-copy", _item_copy_cb, sd); */
-   /* _item_new(sd->o_popup, "Move", "folder-move", _item_move_cb, sd); */
-   /* _item_new(sd->o_popup, "Rename", "gtk-edit", _item_rename_cb, sd); */
-   /* _item_new(sd->o_popup, "Delete", "edit-delete", _item_delete_cb, sd); */
-   /* _item_new(sd->o_popup, "Details", "view-list-details", _item_details_cb, sd); */
-
-   /* evas_pointer_canvas_xy_get(evas_object_evas_get(sd->o_layout), &x, &y); */
-   /* evas_object_move(sd->o_popup, x, y); */
-   /* evas_object_show(sd->o_popup); */
 }
 
 static Evas_Object *
@@ -300,7 +283,6 @@ _add_header(Smart_Data *sd, Enna_File *file)
    evas_object_size_hint_min_set(o_ic, 32, 32);
    evas_object_show(o_ic);
 
-   //elm_object_style_set(o_back_btn, "mediaplayer");
    evas_object_smart_callback_add(o_back_btn, "clicked", _back_btn_clicked_cb, sd);
 
    evas_object_size_hint_align_set(o_back_btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -373,20 +355,11 @@ _browse_back(Smart_Data *sd)
    Enna_File *cur;
    Enna_File *prev;
 
-   cur = (Enna_File*)eina_list_nth(sd->visited,
-                                   eina_list_count(sd->visited) - 1);
-   if (!cur || cur->uri == sd->root_uri)
-     evas_object_smart_callback_call (sd->o_layout, "root", NULL);
-
-   sd->visited = eina_list_remove(sd->visited, cur);
-   prev = (Enna_File*)eina_list_nth(sd->visited,
-                                    eina_list_count(sd->visited) - 1);
-   if (!prev)
-     {
-        prev = enna_file_menu_add("main_menu", sd->root_uri, "Main Menu", "icon/home");
-     }
-
-   _browse(sd, prev, EINA_TRUE);
+   prev = enna_file_from_uri_new(ecore_file_dir_get(sd->file->uri));
+   if (prev)
+       _browse(sd, prev, EINA_TRUE);
+   else
+       evas_object_smart_callback_call (sd->o_layout, "root", NULL);
 
 }
 
@@ -429,7 +402,6 @@ enna_browser_obj_root_set(Evas_Object *obj, const char *uri)
      enna_file_free(sd->root);
    sd->root_uri = eina_stringshare_add(uri);
    sd->root = enna_file_menu_add("main_menu", uri, "Main Menu", "icon/home");
-   _browse(sd, sd->root, EINA_FALSE);
 }
 
 void
@@ -438,8 +410,7 @@ enna_browser_obj_uri_set(Evas_Object *obj, const char *uri)
    Smart_Data *sd = evas_object_data_get(obj, "sd");
    Enna_File *f;
 
-   f = enna_file_menu_add("main_menu", uri, "Main Menu", "icon/home");
-
+   f =  enna_file_from_uri_new(uri);
    _browse(sd, f, EINA_FALSE);
 }
 

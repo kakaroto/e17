@@ -123,8 +123,8 @@ static int _enna_init(int argc, char **argv)
 
    enna->start_path = app_path;
    // create explorer
-   enna_explorer_init();
    enna_localfiles_init();
+   enna_explorer_init();
    /* Dinamically init activities */
    EINA_LIST_FOREACH(enna_activities_get(), l, a)
      enna_activity_init(a->name);

@@ -46,9 +46,10 @@ struct _Enna_Vfs_Class
    const char *icon;
    struct
    {
-      void *(* add)(Eina_List *tokens, Enna_Browser *browser, ENNA_VFS_CAPS caps);
-      void  (* get_children)(void *priv, Eina_List *tokens, Enna_Browser *browser, ENNA_VFS_CAPS caps);
+      void *(* add)(const char *uri, Enna_Browser *browser, ENNA_VFS_CAPS caps);
+      void  (* get_children)(void *priv, const char *uri, Enna_Browser *browser, ENNA_VFS_CAPS caps);
       void  (* del)(void *priv);
+      Enna_File *(*file_get)(const char *uri);
    } func;
    void *cookie;
 
