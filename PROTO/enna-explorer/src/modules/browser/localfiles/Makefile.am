@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in
 MODULE = localfiles
 
 # data files for the module
-filesdir = $(libdir)/enna/modules/
+filesdir = $(libdir)/enna-explorer/modules/
 
 # the module .so file
 INCLUDES = \
@@ -18,7 +18,7 @@ INCLUDES = \
 
 if BUILD_BROWSER_LOCALFILES
 
-pkgdir = $(libdir)/enna/modules
+pkgdir = $(libdir)/enna-explorer/modules
 
 pkg_LTLIBRARIES = browser_localfiles.la
 
@@ -29,6 +29,6 @@ browser_localfiles_la_LDFLAGS = -module -avoid-version
 browser_localfiles_la_DEPENDENCIES = $(top_builddir)/config.h
 
 uninstall:
-	rm -rf $(DESTDIR)$(libdir)/enna/modules/browser_$(MODULE).*
+	rm -rf $(DESTDIR)$(libdir)/enna-explorer/modules/browser_$(MODULE).*
 
 endif

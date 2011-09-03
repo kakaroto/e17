@@ -7,9 +7,9 @@ AM_CPPFLAGS = \
 -DLOCALEDIR=\"$(datadir)/locale\" \
 @ENNA_CFLAGS@
 
-bin_PROGRAMS = enna
+bin_PROGRAMS = enna-explorer
 
-enna_SOURCES = \
+enna_explorer_SOURCES = \
 enna.c\
 enna_config.c\
 explorer.c\
@@ -27,8 +27,8 @@ browser_obj.c\
 view_list.c\
 view_grid.c
 
-enna_LDADD = @ENNA_LIBS@
-enna_LDFLAGS = -rdynamic
+enna_explorer_LDADD = @ENNA_LIBS@
+enna_explorer_LDFLAGS = -rdynamic
 
 
 ##########################################################################
@@ -41,27 +41,27 @@ include ../modules/browser/upnp/config.mak
 include ../modules/volume/mtab/config.mak
 
 if BUILD_ACTIVITY_EXPLORER
-enna_SOURCES += $(SRCS_ACTIVITY_EXPLORER)
+enna_explorer_SOURCES += $(SRCS_ACTIVITY_EXPLORER)
 endif
 
 if BUILD_BROWSER_LOCALFILES
-enna_SOURCES += $(SRCS_BROWSER_LOCALFILES)
+enna_explorer_SOURCES += $(SRCS_BROWSER_LOCALFILES)
 endif
 
 if BUILD_BROWSER_UPNP
-enna_SOURCES += $(SRCS_BROWSER_UPNP)
+enna_explorer_SOURCES += $(SRCS_BROWSER_UPNP)
 AM_CPPFLAGS += @GUPNP_CFLAGS@
-enna_LDADD += @GUPNP_LIBS@
+enna_explorer_LDADD += @GUPNP_LIBS@
 endif
 
 if BUILD_MODULE_VOLUME_MTAB
-enna_SOURCES += $(top_srcdir)/src/modules/volume/mtab/mtab.c
+enna_explorer_SOURCES += $(top_srcdir)/src/modules/volume/mtab/mtab.c
 endif
 
 if BUILD_MODULE_VOLUME_UDEV
-enna_SOURCES += $(top_srcdir)/src/modules/volume/udev/udev.c
+enna_explorer_SOURCES += $(top_srcdir)/src/modules/volume/udev/udev.c
 AM_CPPFLAGS += @enna_module_volume_udev_cflags@
-enna_LDADD += @enna_module_volume_udev_libs@
+enna_explorer_LDADD += @enna_module_volume_udev_libs@
 endif
 
 endif

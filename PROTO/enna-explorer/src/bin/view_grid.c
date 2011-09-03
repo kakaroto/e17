@@ -123,7 +123,7 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
                   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_BOTH, 4, 3);
 
                   elm_photo_size_set(ic, 114);
-                  elm_photo_thumb_set(ic, gi->file->mrl, NULL);
+                  // elm_photo_thumb_set(ic, gi->file->mrl, NULL);
                }
              else
                {

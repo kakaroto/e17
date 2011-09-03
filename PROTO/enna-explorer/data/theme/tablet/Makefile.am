@@ -14,12 +14,14 @@ tablet_DATA = tablet.edj
 FONTS =
 
 EDC = \
-tablet.edc 
+icons.edc \
+tablet.edc \
+elm/*.edc
 
 IMGS = \
-images/bg.png \
-images/bg_tile.png \
-images/menu_bg.png
+elm/*.png \
+images/*.png \
+images/icons/*.png
 
 EXTRA_DIST = \
 	$(FONTS) \

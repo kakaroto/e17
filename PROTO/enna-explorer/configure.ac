@@ -1,7 +1,7 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT([enna],[0.0.1],[http://enna.geexbox.org])
+AC_INIT([enna-explorer],[0.0.1],[http://enna.geexbox.org])
 AC_PREREQ([2.61])
 
 AC_CONFIG_SRCDIR([configure.ac])

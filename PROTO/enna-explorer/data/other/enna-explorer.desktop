@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Enna Explorer
+GenericName=File Explorer
+Comment=EFL File Explorer
+Icon=enna-explorer
+TryExec=enna-explorer
+Exec=enna-explorer
+Terminal=false
+Categories=X-ENLIGHTENMENT;AudioVideo;Player;
+StartupWMClass=enna-explorer
