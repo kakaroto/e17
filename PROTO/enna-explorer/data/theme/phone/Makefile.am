@@ -14,12 +14,14 @@ phone_DATA = phone.edj
 FONTS =
 
 EDC = \
-phone.edc 
+icons.edc \
+phone.edc \
+elm/*.edc
 
 IMGS = \
-images/bg.png \
-images/bg_tile.png \
-images/menu_bg.png
+images/*.png \
+images/icons/*.png \
+elm/*.png
 
 EXTRA_DIST = \
 	$(FONTS) \
