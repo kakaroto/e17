@@ -219,19 +219,28 @@ __class_init(const char *name, Class_Private_Data **priv,
           eina_list_append(data->config->root_directories, root);
      }
 
-   if (localfiles_cfg.home)
-     {
-        // add home directory entry
-        root = ENNA_NEW(Root_Directories, 1);
-        snprintf(buf, sizeof(buf), "file://%s", enna_util_user_home_get());
-        root->name = eina_stringshare_add("Home");
-        root->uri = strdup(buf);
-        root->label = strdup("Home");
-        root->icon = strdup("icon/home");
+   // add home directory entry
+   root = ENNA_NEW(Root_Directories, 1);
+   snprintf(buf, sizeof(buf), "file://%s", enna_util_user_home_get());
+   root->name = eina_stringshare_add("Home");
+   root->uri = strdup(buf);
+   root->label = strdup("Home");
+   root->icon = strdup("icon/home");
 
-        data->config->root_directories =
-          eina_list_append(data->config->root_directories, root);
-     }
+   data->config->root_directories =
+       eina_list_append(data->config->root_directories, root);
+
+   // add Root (/) directory entry
+   root = ENNA_NEW(Root_Directories, 1);
+   snprintf(buf, sizeof(buf), "file:///");
+   root->name = eina_stringshare_add("Root");
+   root->uri = strdup(buf);
+   root->label = strdup("Root");
+   root->icon = strdup("icon/root");
+
+   data->config->root_directories =
+       eina_list_append(data->config->root_directories, root);
+
 
    /* add localfiles to the list of volumes listener */
    data->vl = enna_volumes_listener_add("localfiles", _add_volumes_cb,
@@ -916,6 +925,7 @@ _get_children(void *priv, Eina_List *tokens, Enna_Browser *browser, ENNA_VFS_CAP
                   p->relative_path = eina_stringshare_add(relative_path->buf);
                   p->root = eina_stringshare_printf("/%s/localfiles/%s",
                                                     pmod->name, root->name);
+                  printf("ROOT : %s\n", p->root);
 
                   /* p->monitor = eio_monitor_add(path->buf); */
                   /* printf("Add monitor to %s\n", path->buf); */

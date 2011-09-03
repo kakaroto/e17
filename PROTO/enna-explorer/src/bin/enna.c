@@ -42,15 +42,33 @@
 #define EDJE_GROUP_MAIN_LAYOUT "enna/main/layout"
 #define EDJE_PART_MAINMENU_SWALLOW "enna.mainmenu.swallow"
 
+static const Ecore_Getopt options = {
+  PACKAGE_NAME,
+  "%prog [options] [directory]",
+  PACKAGE_VERSION "Revision:" ENNA_STRINGIFY(VREV),
+  "(C) 2011 aguirre.nicolas@gmail.com",
+  "GPLv2",
+  "Enna Explorer",
+  EINA_TRUE,
+  {
+    ECORE_GETOPT_STORE_STR('t', "theme", "Specify the theme to be used"),
+    ECORE_GETOPT_STORE_STR('g', "geometry", "Specify window geometry (--geometry 1280x720)"),
+    ECORE_GETOPT_HELP('h', "help"),
+    ECORE_GETOPT_SENTINEL
+  }
+};
 
 /* Global Variable Enna *enna*/
 Enna *enna;
 
 static const char *app_theme = "phone";
+static const char *app_geometry = NULL;
+static Eina_Bool app_exit = EINA_FALSE;
 static unsigned int app_w = 480;
 static unsigned int app_h = 800;
 static unsigned int app_x_off = 0;
 static unsigned int app_y_off = 0;
+static const char *app_path = NULL;
 
 /* Functions */
 static int _create_gui(void);
@@ -104,6 +122,8 @@ static int _enna_init(int argc, char **argv)
    if (!_create_gui())
      return 0;
 
+
+   enna->start_path = app_path;
    // create explorer
    enna_explorer_init();
 
@@ -202,98 +222,50 @@ exit_signal(void *data __UNUSED__, int type __UNUSED__, void *e)
    return 1;
 }
 
-
-static void usage(char *binname)
-{
-   printf("Enna Explorer\n");
-   printf(" Usage: %s [options ...]\n", binname);
-   printf(" Available options:\n");
-   printf("  -c, (--config):  Specify configuration file to be used.\n");
-   printf("  -h, (--help):    Display this help.\n");
-   printf("  -t, (--theme):   Specify theme name to be used.\n");
-   printf("  -g, (--geometry):Specify window geometry. (geometry=1280x720)\n");
-   printf("  -g, (--geometry):Specify window geometry and offset. (geometry=1280x720:10:20)\n");
-   printf("\n");
-   printf("  -V, (--version): Display Enna version number.\n");
-   exit(EXIT_SUCCESS);
-}
-
-static void version(void)
-{
-   printf(PACKAGE_STRING"\n");
-   exit(EXIT_SUCCESS);
-}
-
-static int parse_command_line(int argc, char **argv)
-{
-   int c, index;
-   char short_options[] = "Vhfc:t:b:g:p:";
-   struct option long_options [] =
-     {
-       { "help",          no_argument,       0, 'h' },
-       { "version",       no_argument,       0, 'V' },
-       { "fs",            no_argument,       0, 'f' },
-       { "config",        required_argument, 0, 'c' },
-       { "theme",         required_argument, 0, 't' },
-       { "geometry",      required_argument, 0, 'g' },
-       { 0,               0,                 0,  0  }
-     };
-
-   /* command line argument processing */
-   while (1)
-     {
-        c = getopt_long(argc, argv, short_options, long_options, &index);
-
-        if (c == EOF)
-          break;
-
-        switch (c)
-          {
-           case 0:
-              /* opt = long_options[index].name; */
-              break;
-
-           case '?':
-           case 'h':
-              usage(argv[0]);
-              return -1;
-
-           case 'V':
-              version();
-              break;
-
-           case 't':
-              app_theme = strdup(optarg);
-              break;
-
-           case 'g':
-              _opt_geometry_parse(optarg, &app_w, &app_h, &app_x_off, &app_y_off);
-              break;
-
-           default:
-              usage(argv[0]);
-              return -1;
-          }
-     }
-
-   return 0;
-}
-
 int main(int argc, char **argv)
 {
    int res = EXIT_FAILURE;
+   int args;
+   char path[PATH_MAX];
+
+   Ecore_Getopt_Value values[] = {
+     ECORE_GETOPT_VALUE_STR(app_theme),
+     ECORE_GETOPT_VALUE_STR(app_geometry),
+     ECORE_GETOPT_VALUE_BOOL(app_exit),
+     ECORE_GETOPT_VALUE_NONE
+   };
 
    init_locale();
-
-   if (parse_command_line(argc, argv) < 0)
-     return EXIT_SUCCESS;
-
    eina_init();
-   enna_util_init();
+
+
+   args = ecore_getopt_parse(&options, values, argc, argv);
+
+   if (args < 0)
+     return -1;
+
+   if (app_exit)
+       return 0;
+
+
+   if (app_geometry)
+       _opt_geometry_parse(app_geometry, &app_w, &app_h, &app_x_off, &app_y_off);
+
+   if (argc < args + 1)
+     {
+        getcwd(path, PATH_MAX);
+        app_path = eina_stringshare_add(path);
+     }
+   else
+     {
+        app_path = eina_stringshare_add(argv[args]);
+     }
 
    enna = calloc(1, sizeof(Enna));
 
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_signal, enna);
+
+   enna_util_init();
 
    if (!_enna_init(argc, argv))
      goto out;

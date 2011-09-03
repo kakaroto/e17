@@ -108,6 +108,7 @@ struct _Enna
    Evas_Object *o_background;/**< Background object, it handles key down. */
    Evas_Object *layout; /**< Main elementary layout widget. */
    Evas_Object *o_content; /** Edje Object to swallow content */
+   const char *start_path;
 };
 
 extern Enna *enna;

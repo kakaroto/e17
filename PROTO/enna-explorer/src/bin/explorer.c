@@ -185,6 +185,7 @@ static void
 _create_menu()
 {
    const char *view_type;
+   const char *start;
    /* Set default state */
    mod->state = BROWSER_VIEW;
 
@@ -200,7 +201,11 @@ _create_menu()
    else
      enna_browser_obj_view_type_set(mod->o_browser, ENNA_BROWSER_VIEW_LIST);
 
-   enna_browser_obj_root_set(mod->o_browser, "/explorer");
+   enna_browser_obj_root_set(mod->o_browser, "/explorer/localfiles/");
+   start = eina_stringshare_printf("/explorer/localfiles/Root/%s", enna->start_path);
+   printf("start %s\n", start);
+   enna_browser_obj_uri_set(mod->o_browser, start);
+   eina_stringshare_del(start);
 
    evas_object_smart_callback_add(mod->o_browser, "selected",
                                   _browser_selected_cb, NULL);

@@ -432,6 +432,18 @@ enna_browser_obj_root_set(Evas_Object *obj, const char *uri)
    _browse(sd, sd->root, EINA_FALSE);
 }
 
+void
+enna_browser_obj_uri_set(Evas_Object *obj, const char *uri)
+{
+   Smart_Data *sd = evas_object_data_get(obj, "sd");
+   Enna_File *f;
+
+   f = enna_file_menu_add("main_menu", uri, "Main Menu", "icon/home");
+
+   _browse(sd, f, EINA_FALSE);
+}
+
+
 static void
 _browser_del_cb(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {

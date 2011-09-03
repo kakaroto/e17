@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enna 0.0.1\n"
 "Report-Msgid-Bugs-To: http://enna.geexbox.org\n"
-"POT-Creation-Date: 2011-09-03 09:26+0100\n"
+"POT-Creation-Date: 2011-09-03 14:19+0200\n"
 "PO-Revision-Date: 2011-09-02 19:49+0100\n"
 "Last-Translator: Nicolas Aguirre <aguirre.nicolas@gmail.com>\n"
 "Language-Team: French\n"
@@ -37,29 +37,29 @@ msgstr "Téléchargement"
 msgid "Documents"
 msgstr "Documents"
 
-#: src/modules/browser/localfiles/localfiles.c:596
-#: src/modules/browser/localfiles/localfiles.c:642
+#: src/modules/browser/localfiles/localfiles.c:594
+#: src/modules/browser/localfiles/localfiles.c:640
 msgid "Rename"
 msgstr "Renommer"
 
-#: src/modules/browser/localfiles/localfiles.c:619
+#: src/modules/browser/localfiles/localfiles.c:617
 msgid "Enter new name"
 msgstr "Entrer le nouveau nom"
 
-#: src/modules/browser/localfiles/localfiles.c:651
-#: src/modules/browser/localfiles/localfiles.c:734
+#: src/modules/browser/localfiles/localfiles.c:649
+#: src/modules/browser/localfiles/localfiles.c:732
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/modules/browser/localfiles/localfiles.c:684
+#: src/modules/browser/localfiles/localfiles.c:682
 msgid "Delete files"
 msgstr "Supression des fichiers"
 
-#: src/modules/browser/localfiles/localfiles.c:709
+#: src/modules/browser/localfiles/localfiles.c:707
 #, c-format
 msgid "Are you sure to delete <b>%s</b> ?"
 msgstr "Etes vous sur de vouloir supprimer <b>%s</b> ?"
 
-#: src/modules/browser/localfiles/localfiles.c:725
+#: src/modules/browser/localfiles/localfiles.c:723
 msgid "Delete"
 msgstr "Supprimer"
