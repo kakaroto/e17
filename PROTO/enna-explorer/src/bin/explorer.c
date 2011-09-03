@@ -110,7 +110,7 @@ _popup_item_clicked_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void 
 }
 
 
-static Elm_Ctxpopup_Item *
+static Elm_Object_Item *
 _item_new(Evas_Object *ctxpopup, const char * label, const char *icon,
           void (*func)(void *data, Evas_Object *obj, void *event_info),
           void *data)
