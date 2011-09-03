@@ -14,7 +14,6 @@ depcomp
 enna-*.tar.bz2
 enna-*.tar.gz
 enna-explorer.spec
-enna-explorer.spec.in
 install-sh
 libtool
 ltmain.sh
