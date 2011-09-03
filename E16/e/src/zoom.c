@@ -197,7 +197,7 @@ ZoomInit(void)
       zoom_can = 1;
 }
 
-#else
+#else /* USE_ZOOM_XF86VM */
 
 static int
 SetMode(XRRScreenResources * xsr, RRCrtc crtc, RRMode mode, Rotation rot)
@@ -371,14 +371,29 @@ ZoomInit(void)
    zoom_can = 1;
 }
 
-#endif
+#endif /* USE_ZOOM_XF86VM */
 
+static int          zw, zh;
+
+static void
+_ZoomEwinRestore(EWin * ewin)
+{
+   EwinBorderSetTo(ewin, ewin->normal_border);
+   ewin->state.zoomed = 0;
+   EwinMoveResize(ewin, ewin->save_fs.x, ewin->save_fs.y,
+		  ewin->client.w, ewin->client.h);
+}
+
+/* outstanding BUG: zooming on shaped windows leaves stuff exposed beneath them..... */
 void
 Zoom(EWin * ewin, int on)
 {
-   int                 dw, dh;
-
    if (Mode.wm.window)
+      return;
+
+   if (!ewin)
+      ewin = zoom_last_ewin;
+   if (!ewin)
       return;
 
    if (zoom_can == 0)
@@ -392,19 +407,18 @@ Zoom(EWin * ewin, int on)
      {
 	/* Unzoom */
 
-	if (ewin && ewin != zoom_last_ewin)
-	   return;
-	ewin = zoom_last_ewin;
-	if (!ewin)
+	if (ewin != zoom_last_ewin)
 	   return;
 
-	zoom_last_ewin = NULL;
-
+	_ZoomEwinRestore(ewin);
 	SwitchRes(0, 0, 0, 0, 0, NULL, NULL);
-	EwinBorderSetTo(ewin, ewin->normal_border);
-	ewin->state.zoomed = 0;
-	EwinMoveResize(ewin, ewin->save_fs.x, ewin->save_fs.y,
-		       ewin->client.w, ewin->client.h);
+	zw = zh = 0;
+	zoom_last_ewin = NULL;
+     }
+   else if (ewin == zoom_last_ewin)
+     {
+	/* Already zoomed */
+	return;
      }
    else
      {
@@ -413,21 +427,44 @@ Zoom(EWin * ewin, int on)
 	if (ewin->state.fullscreen)
 	   return;
 
-	on = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h, &dw, &dh);
+	if (!zoom_last_ewin)	/* first zoom */
+	  {
+	     on = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h, &zw, &zh);
+	  }
+	else			/* we are zoomed in on another window already.... */
+	  {
+	     _ZoomEwinRestore(zoom_last_ewin);
+	     if ((ewin->client.w <= zw) && (ewin->client.h <= zh) &&
+		 ((ewin->client.w >= zw / 2) || (ewin->client.h >= zh / 2)))
+	       {
+		  /* YAY no need to change resolution :-D */
+	       }
+	     else
+	       {
+		  /* SwitchRes only tracks the LAST mode, so we have to switch back to
+		   * the original mode before switching to new target mode
+		   * so that we can restore the original vid mode when we zoom
+		   * out of the last window ;( */
+		  SwitchRes(0, 0, 0, 0, 0, NULL, NULL);
+		  on = SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h,
+				 &zw, &zh);
+	       }
+	  }
+
 	Dprintf("%s: SwitchRes=%d - client size %dx%d -> screen %dx%d\n",
-		__func__, on, ewin->client.w, ewin->client.h, dw, dh);
+		__func__, on, ewin->client.w, ewin->client.h, zw, zh);
 	if (!on)
 	   return;
 
-	zoom_last_ewin = ewin;
 	ewin->save_fs.x = EoGetX(ewin);
 	ewin->save_fs.y = EoGetY(ewin);
 	EwinRaise(ewin);
 	EwinBorderSetTo(ewin, BorderCreateFiller(ewin->client.w,
-						 ewin->client.h, dw, dh));
+						 ewin->client.h, zw, zh));
 	EwinMoveResize(ewin, 0, 0, ewin->client.w, ewin->client.h);
 	ewin->state.zoomed = 1;
 	FocusToEWin(ewin, FOCUS_SET);
+	zoom_last_ewin = ewin;
      }
 
    EwinWarpTo(ewin, 1);
@@ -437,11 +474,13 @@ Zoom(EWin * ewin, int on)
 }
 
 void
-ReZoom(EWin * ewin)
+ReZoom(EWin * ewin __UNUSED__)
 {
+#if 0				/* Move/resize is disabled while zoomed */
    if (zoom_last_ewin && ewin == zoom_last_ewin)
      {
 	Zoom(ewin, 0);
 	Zoom(ewin, 1);
      }
+#endif
 }
