@@ -393,6 +393,15 @@ _toolbar_create_folder_cb(void *data, Evas_Object *obj, void *event_info __UNUSE
 }
 
 static void
+_shortcut_selected_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
+{
+    const char *file;
+    printf("shortcut selected : %s\n", event_info);
+    file = eina_stringshare_printf("file://%s", (char*)event_info);
+    enna_browser_obj_uri_set(mod->o_browser, file);
+}
+
+static void
 _create_gui()
 {
    Evas_Object *tb;
@@ -424,6 +433,8 @@ _create_gui()
    shortcut = enna_shortcut_add(mod->o_layout);
    evas_object_show(shortcut);
    elm_layout_content_set(mod->o_layout, "panel.swallow", shortcut);
+   evas_object_smart_callback_add(shortcut, "shortcut,selected",
+                                  _shortcut_selected_cb, NULL);
 
 }
 

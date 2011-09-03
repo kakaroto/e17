@@ -340,6 +340,15 @@ _desktop_error_cb(void *data __UNUSED__, Eio_File *handler __UNUSED__, int error
 {
 }
 
+static void
+_bookmark_selected_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+{
+   const char *file = data;
+   printf("Selected : %s\n", file);
+   evas_object_smart_callback_call(obj, "shortcut,selected", file);
+}
+
+
 Evas_Object *
 enna_shortcut_add(Evas_Object *parent)
 {
@@ -365,7 +374,7 @@ enna_shortcut_add(Evas_Object *parent)
    gtk_bookmarks = _enna_shortcut_parse_gtk_bookmarks();
    EINA_LIST_FREE(gtk_bookmarks, file)
      {
-        elm_genlist_item_append(list, &itc_bookmark, file, egi, ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        elm_genlist_item_append(list, &itc_bookmark, file, egi, ELM_GENLIST_ITEM_NONE, _bookmark_selected_cb, file);
      }
 
    evas_object_data_set(list, "enna/favorites", egi);
