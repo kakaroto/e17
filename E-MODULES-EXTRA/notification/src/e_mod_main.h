@@ -160,6 +160,5 @@ E_Config_Dialog *e_int_config_notification_module(E_Container *con,
 extern E_Module *notification_mod;
 extern Config   *notification_cfg;
 extern const E_Gadcon_Client_Class _gc_class;
-extern int uuid;
 
 #endif

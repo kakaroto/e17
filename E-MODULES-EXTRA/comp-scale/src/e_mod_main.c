@@ -184,7 +184,6 @@ struct _Instance
   Config_Item *conf_item;
 };
 
-static int uuid = 0;
 static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -590,25 +589,11 @@ _scale_conf_free(void)
 
 static Config_Item *
 _scale_conf_item_get(const char *id)
-{
-   Eina_List *l = NULL;
-   Config_Item *ci = NULL;
-   char buf[128];
+{;
+   Config_Item *ci;
 
-   if (!id)
-     {
-        snprintf(buf, sizeof(buf), "%s.%d", _gc_class_scale.name, ++uuid);
-        id = buf;
-     }
-   else
-     {
-        uuid++;
-        for (l = scale_conf->conf_items; l; l = l->next)
-          {
-             if (!(ci = l->data)) continue;
-             if ((ci->id) && (!strcmp(ci->id, id))) return ci;
-          }
-     }
+   GADCON_CLIENT_CONFIG_GET(Config_Item, scale_conf->conf_items, _gc_class_scale, id);
+
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
    ci->switch2 = 0;

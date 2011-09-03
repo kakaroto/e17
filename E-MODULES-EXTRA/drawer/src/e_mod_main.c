@@ -128,7 +128,6 @@ static void _smart_show(Evas_Object *obj);
 static void _smart_hide(Evas_Object *obj);
 
 /* Local Variables */
-static int uuid = 0;
 static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -1438,29 +1437,10 @@ _drawer_conf_timer(void *data)
 static Config_Item *
 _drawer_conf_item_get(const char *id) 
 {
-   Eina_List *l = NULL;
-   Config_Item *ci = NULL;
-   char buf[128];
+   Config_Item *ci;
 
-   if (!id) 
-     {
-	Instance *inst;
+   GADCON_CLIENT_CONFIG_GET(Config_Item, drawer_conf->conf_items, _drawer_gc_class, id);
 
-        /* Nothing passed, create a new id */
-        snprintf(buf, sizeof(buf), "%s.%d", _drawer_gc_class.name, ++uuid);
-	/* Check whether the newly generated id is taken */
-	EINA_LIST_FOREACH(instances, l, inst)
-	  {
-	     if ((inst) && (inst->conf_item->id) && (!strcmp(inst->conf_item->id, buf)))
-	       return _drawer_conf_item_get(NULL);
-	  }
-        id = buf;
-     }
-   else 
-     {
-	EINA_LIST_FOREACH(drawer_conf->conf_items, l, ci)
-	   if ((ci->id) && (!strcmp(ci->id, id))) return ci;
-     }
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
 

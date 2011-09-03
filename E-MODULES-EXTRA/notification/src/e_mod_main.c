@@ -24,7 +24,6 @@ static void    _notification_cfg_free  (Config *cfg);
 /* Global variables */
 E_Module *notification_mod = NULL;
 Config   *notification_cfg = NULL;
-int       uuid             = 0;
 
 static E_Config_DD  *conf_edd      = NULL;
 static E_Config_DD  *conf_item_edd = NULL;
@@ -342,16 +341,6 @@ e_modapi_init(E_Module *m)
    if (!notification_cfg) 
      {
 	notification_cfg = _notification_cfg_new();
-     }
-   else if (eina_list_count(notification_cfg->items) > 0)
-     {
-	Config_Item *ci;
-	const char *p;
-
-	/* Init uuid */
-	ci = eina_list_last(notification_cfg->items)->data;
-	p = strrchr(ci->id, '.');
-	if (p) uuid = atoi(p + 1);
      }
 
    /* set up the notification daemon */

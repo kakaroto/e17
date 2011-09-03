@@ -17,7 +17,6 @@ static void _exalt_cb_menu_post(void *data, E_Menu *menu);
 static void _exalt_cb_menu_configure(void *data, E_Menu *mn, E_Menu_Item *mi);
 
 /* Local Variables */
-static int uuid = 0;
 static Eina_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -459,24 +458,10 @@ _exalt_conf_timer(void *data)
     static Config_Item *
 _exalt_conf_item_get(const char *id)
 {
-    Eina_List *l = NULL;
-    Config_Item *ci = NULL;
-    char buf[128];
+    Config_Item *ci;
 
-    if (!id)
-    {
-        /* nothing passed, return a new id */
-        snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, ++uuid);
-        id = buf;
-    }
-    else
-    {
-        for (l = exalt_conf->conf_items; l; l = l->next)
-        {
-            if (!(ci = l->data)) continue;
-            if ((ci->id) && (!strcmp(ci->id, id))) return ci;
-        }
-    }
+    GADCON_CLIENT_CONFIG_GET(Config_Item, exalt_conf->conf_items, _gc_class, id);
+
     ci = E_NEW(Config_Item, 1);
     ci->id = eina_stringshare_add(id);
     ci->mode = 0;

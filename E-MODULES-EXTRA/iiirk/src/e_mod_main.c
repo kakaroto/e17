@@ -129,8 +129,6 @@ static Config_Item *_iiirk_config_item_get(const char *id);
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
 
-static int uuid = 0;
-
 Config *iiirk_config = NULL;
 
 static E_Gadcon_Client *
@@ -1366,25 +1364,10 @@ _iiirk_cb_event_desk_show(void *data, int type, void *event)
 static Config_Item *
 _iiirk_config_item_get(const char *id)
 {
-   Eina_List *l;
    Config_Item *ci;
-   char buf[128];
 
-   if (!id)
-     {
-	snprintf(buf, sizeof(buf), "%s.%d", _gadcon_class.name, ++uuid);
-	id = buf;
-     }
-   else
-     {
-	/* Find old config */
-	for (l = iiirk_config->items; l; l = l->next)
-	  {
-	     ci = l->data;
-	     if ((ci->id) && (!strcmp(ci->id, id)))
-	       return ci;
-	  }
-     }
+   GADCON_CLIENT_CONFIG_GET(Config_Item, iiirk_config->items, _gadcon_class, id);
+
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
    ci->hide_window = 1;
@@ -1499,16 +1482,6 @@ e_modapi_init(E_Module *m)
 	ci->show_desk = 0;
 	ci->icon_label = 0;
 	iiirk_config->items = eina_list_append(iiirk_config->items, ci);
-     }
-   else
-     {
-	Config_Item *ci;
-	const char *p;
-
-	/* Init uuid */
-	ci = eina_list_last(iiirk_config->items)->data;
-	p = strrchr(ci->id, '.');
-	if (p) uuid = atoi(p + 1);
      }
 
    iiirk_config->module = m;
