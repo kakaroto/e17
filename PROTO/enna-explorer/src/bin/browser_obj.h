@@ -33,6 +33,7 @@ typedef enum _Enna_Browser_View_Type
 
 Evas_Object *enna_browser_obj_add(Evas_Object *parent, const char *style);
 void enna_browser_obj_root_set(Evas_Object *obj, const char *uri);
+void enna_browser_obj_uri_set(Evas_Object *obj, const char *uri);
 void enna_browser_obj_view_type_set(Evas_Object *obj, Enna_Browser_View_Type view_type);
 Eina_List *enna_browser_obj_files_get(Evas_Object *obj);
 Eina_List *enna_browser_obj_selected_files_get(Evas_Object *obj);

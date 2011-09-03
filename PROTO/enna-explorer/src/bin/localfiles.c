@@ -29,15 +29,12 @@
 
 #include "enna.h"
 #include "enna_config.h"
-#include "module.h"
 #include "vfs.h"
 #include "volumes.h"
 #include "utils.h"
 #include "buffer.h"
 
 #include "gettext.h"
-
-#define ENNA_MODULE_NAME "localfiles"
 
 typedef struct _Root_Directories
 {
@@ -64,19 +61,8 @@ typedef struct _Class_Private_Data
 typedef struct _Enna_Module_LocalFiles
 {
    Evas *e;
-   Enna_Module *em;
-#ifdef BUILD_ACTIVITY_EXPLORER
    Class_Private_Data *all;
-#endif
-#ifdef BUILD_ACTIVITY_MUSIC
-   Class_Private_Data *music;
-#endif
-#ifdef BUILD_ACTIVITY_VIDEO
-   Class_Private_Data *video;
-#endif
-#ifdef BUILD_ACTIVITY_PHOTO
-   Class_Private_Data *photo;
-#endif
+
 } Enna_Module_LocalFiles;
 
 typedef struct localfiles_path_s {
@@ -841,24 +827,7 @@ _get_children(void *priv, Eina_List *tokens, Enna_Browser *browser, ENNA_VFS_CAP
    switch(caps)
      {
       case  ENNA_CAPS_ALL:
-#ifdef BUILD_ACTIVITY_EXPLORER
          pmod = mod->all;
-#endif
-         break;
-      case  ENNA_CAPS_MUSIC:
-#ifdef BUILD_ACTIVITY_MUSIC
-         pmod = mod->music;
-#endif
-         break;
-      case ENNA_CAPS_VIDEO:
-#ifdef BUILD_ACTIVITY_VIDEO
-         pmod = mod->video;
-#endif
-         break;
-      case ENNA_CAPS_PHOTO:
-#ifdef BUILD_ACTIVITY_PHOTO
-         pmod = mod->photo;
-#endif
          break;
       default:
          break;
@@ -997,84 +966,28 @@ static Enna_Vfs_Class class = {
 
 /* Module interface */
 
-#ifdef USE_STATIC_MODULES
-#undef MOD_PREFIX
-#define MOD_PREFIX enna_mod_browser_localfiles
-#endif /* USE_STATIC_MODULES */
-
-static void
-module_init(Enna_Module *em)
+void
+enna_localfiles_init(void)
 {
    int flags = 0;
 
-   if (!em)
-     return;
-
-   efreet_mime_init();
-   eio_init();
    mod = calloc(1, sizeof(Enna_Module_LocalFiles));
-   mod->em = em;
-   em->mod = mod;
 
-
-#ifdef BUILD_ACTIVITY_EXPLORER
    flags |= ENNA_CAPS_ALL;
    __class_init("explorer", &mod->all, ENNA_CAPS_ALL, "path_all");
-#endif
-#ifdef BUILD_ACTIVITY_MUSIC
-   flags |= ENNA_CAPS_MUSIC;
-   __class_init("music", &mod->music, ENNA_CAPS_MUSIC, "path_music");
-#endif
-#ifdef BUILD_ACTIVITY_VIDEO
-   flags |= ENNA_CAPS_VIDEO;
-   __class_init("video", &mod->video, ENNA_CAPS_VIDEO, "path_video");
-#endif
-#ifdef BUILD_ACTIVITY_PHOTO
-   flags |= ENNA_CAPS_PHOTO;
-   __class_init("photo", &mod->photo, ENNA_CAPS_PHOTO, "path_photo");
-#endif
+
    enna_vfs_register(&class, flags);
 }
 
-static void
-module_shutdown(Enna_Module *em)
+void
+enna_localfiles_shutdown(void)
 {
-   Enna_Module_LocalFiles *mod;
 
-   mod = em->mod;
-#ifdef BUILD_ACTIVITY_EXPLORER
    enna_volumes_listener_del(mod->all->vl);
    free(mod->all);
-#endif
-#ifdef BUILD_ACTIVITY_MUSIC
-   enna_volumes_listener_del(mod->music->vl);
-   free(mod->music);
-#endif
-#ifdef BUILD_ACTIVITY_VIDEO
-   enna_volumes_listener_del(mod->video->vl);
-   free(mod->video);
-#endif
-#ifdef BUILD_ACTIVITY_PHOTO
-   enna_volumes_listener_del(mod->photo->vl);
-   free(mod->photo);
-#endif
+
    ENNA_FREE(mod);
 
    efreet_mime_shutdown();
    eio_shutdown();
 }
-
-Enna_Module_Api ENNA_MODULE_API =
-  {
-    ENNA_MODULE_VERSION,
-    "browser_localfiles",
-    "Browse local files",
-    "icon/hd",
-    "Browse files in your local file systems",
-    "bla bla bla<br><b>bla bla bla</b><br><br>bla.",
-    {
-      module_init,
-      module_shutdown
-    }
-  };
-

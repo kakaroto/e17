@@ -28,9 +28,6 @@
 static Eina_List *_enna_modules = NULL;   /** List of Enna_Modules* */
 static Eina_Array *_plugins_array = NULL; /** Array of Eina_Modules* (or api* in static mode)*/
 
-#ifdef BUILD_BROWSER_LOCALFILES
-extern Enna_Module_Api enna_mod_browser_localfiles_api;
-#endif
 #ifdef BUILD_BROWSER_UPNP
 extern Enna_Module_Api enna_mod_browser_upnp_api;
 #endif
@@ -70,11 +67,8 @@ enna_module_init(void)
 #ifdef USE_STATIC_MODULES
 
    /* Populate the array of available plugins statically */
-   _plugins_array = eina_array_new(20);
+   _plugins_array = eina_array_new(8);
 
-#ifdef BUILD_BROWSER_LOCALFILES
-   eina_array_push(_plugins_array, &enna_mod_browser_localfiles_api);
-#endif
 #ifdef BUILD_BROWSER_UPNP
    eina_array_push(_plugins_array, &enna_mod_browser_upnp_api);
 #endif

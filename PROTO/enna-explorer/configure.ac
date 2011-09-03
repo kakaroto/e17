@@ -100,90 +100,6 @@ AC_ARG_ENABLE(theme,
 )
 AM_CONDITIONAL([ENNA_BUILD_THEME], test "x${build_theme}" = "xyes")
 
-
-####################
-# Activity Modules #
-####################
-# Explorer
-want_activity_explorer="yes"
-AC_MSG_CHECKING(whether explorer activity module is to be built)
-AC_ARG_ENABLE(activity-explorer,
-  AS_HELP_STRING([--enable-activity-explorer],[Enable Explorer Activity Module]),
-  [ want_activity_explorer=$enableval ]
-)
-AC_MSG_RESULT($want_activity_explorer)
-AM_CONDITIONAL(BUILD_ACTIVITY_EXPLORER, test "x$want_activity_explorer" = "xyes")
-if test "x$want_activity_explorer" = "xyes"; then
-  AC_DEFINE(BUILD_ACTIVITY_EXPLORER, 1, [Explorer Activity])
-fi
-
-# Music
-want_activity_music="no"
-AC_MSG_CHECKING(whether music activity module is to be built)
-AC_ARG_ENABLE(activity-music,
-  AS_HELP_STRING([--enable-activity-music],[Enable Music Activity Module]),
-  [ want_activity_music=$enableval ]
-)
-AC_MSG_RESULT($want_activity_music)
-AM_CONDITIONAL(BUILD_ACTIVITY_MUSIC, test "x$want_activity_music" = "xyes")
-if test "x$want_activity_music" = "xyes"; then
-  AC_DEFINE(BUILD_ACTIVITY_MUSIC, 1, [Music Activity])
-fi
-
-###################
-# Browser Modules #
-###################
-# Local Files
-want_browser_localfiles="yes"
-AC_MSG_CHECKING(whether localfiles browser module is to be built)
-AC_ARG_ENABLE(browser-localfiles,
-  AS_HELP_STRING([--enable-browser-localfiles],[Enable Local Files Browser Module]),
-  [ want_browser_localfiles=$enableval ]
-)
-AC_MSG_RESULT($want_browser_localfiles)
-AM_CONDITIONAL(BUILD_BROWSER_LOCALFILES, test "x$want_browser_localfiles" = "xyes")
-if test "x$want_browser_localfiles" = "xyes"; then
-  AC_DEFINE(BUILD_BROWSER_LOCALFILES, 1, [Localfiles Browser])
-fi
-
-# UPnP/DLNA
-want_browser_upnp="auto"
-have_browser_upnp="no"
-AC_MSG_CHECKING(whether UPnP/DLNA browser is to be built)
-AC_ARG_ENABLE(browser-upnp,
-  AS_HELP_STRING([--enable-browser-upnp],[Enable UPnP/DLNA Browser Module]),
-  [ want_browser_upnp=$enableval ]
-)
-AC_MSG_RESULT($want_browser_upnp)
-if test "x$want_browser_upnp" = "xyes" -o "x$want_browser_upnp" = "xauto"; then
-  PKG_CHECK_MODULES(
-    [GUPNP],
-    [gssdp-1.0 >= 0.7.0 gupnp-1.0 >= 0.13.1 gupnp-av-1.0 >= 0.5.2],
-    [
-      AC_DEFINE(BUILD_BROWSER_UPNP, 1, [UPnP/DLNA Browser Module])
-      have_browser_upnp="yes"
-    ],
-    [
-      if test "x$want_browser_upnp" = "xyes" -a "x$use_strict" = "xyes" ; then
-        AC_MSG_ERROR([gupnp-1.0 not found (strict dependencies checking)])
-      fi
-    ]
-  )
-fi
-AM_CONDITIONAL(BUILD_BROWSER_UPNP, test "x$have_browser_upnp" = "xyes")
-
-##################
-# Volume Modules #
-##################
-
-# mtab
-want_volume_mtab="yes"
-ENNA_CHECK_MODULE([volume-mtab], [${want_volume_mtab}], [mtab Volume])
-
-# Udev
-want_volume_udev="auto"
-ENNA_CHECK_MODULE([volume-udev], [${want_volume_udev}], [Udev Volume])
-
 ##########
 # THEMES #
 ##########
@@ -206,13 +122,6 @@ enna-explorer.spec
 Makefile
 src/Makefile
 src/bin/Makefile
-src/modules/Makefile
-src/modules/browser/Makefile
-src/modules/browser/localfiles/Makefile
-src/modules/browser/upnp/Makefile
-src/modules/volume/Makefile
-src/modules/volume/mtab/Makefile
-src/modules/volume/udev/Makefile
 data/Makefile
 data/other/Makefile
 data/theme/Makefile
@@ -235,23 +144,7 @@ fi
 eval echo "\  Theme............................ : $exec_prefix/share/enna/theme"
 echo
 echo "Build theme........................ : $build_theme"
-echo "Static Modules..................... : $use_static_modules"
 echo "NLS................................ : $USE_NLS"
-echo
-echo "Supported Activity Modules:"
-echo
-echo "  Explorer......................... : $want_activity_explorer"
-echo "  Music............................ : $want_activity_music"
-echo
-echo "Supported Browser Modules:"
-echo
-echo "  Local files...................... : $want_browser_localfiles"
-echo "  UPnP/DLNA........................ : $have_browser_upnp"
-echo
-echo "Supported Volume Modules:"
-echo
-echo "  mtab............................. : $have_enna_module_volume_mtab"
-echo "  Udev............................. : $have_enna_module_volume_udev"
 echo
 echo "Suppported Themes:"
 echo

@@ -38,6 +38,7 @@
 #include "volumes.h"
 #include "explorer.h"
 #include "activity.h"
+#include "localfiles.h"
 
 #define EDJE_GROUP_MAIN_LAYOUT "enna/main/layout"
 #define EDJE_PART_MAINMENU_SWALLOW "enna.mainmenu.swallow"
@@ -99,8 +100,6 @@ static int _enna_init(int argc, char **argv)
 
    enna_config_init();
 
-   enna_module_init();
-
    if (app_theme)
      {
         ENNA_FREE(enna_config->theme);
@@ -115,9 +114,8 @@ static int _enna_init(int argc, char **argv)
    elm_init(argc, argv);
    elm_need_efreet();
    elm_need_ethumb();
-
-   /* Load available modules */
-   enna_module_load_all();
+   efreet_mime_init();
+   eio_init();
 
    if (!_create_gui())
      return 0;
@@ -126,7 +124,7 @@ static int _enna_init(int argc, char **argv)
    enna->start_path = app_path;
    // create explorer
    enna_explorer_init();
-
+   enna_localfiles_init();
    /* Dinamically init activities */
    EINA_LIST_FOREACH(enna_activities_get(), l, a)
      enna_activity_init(a->name);
@@ -180,7 +178,6 @@ static int _create_gui(void)
 static void _enna_shutdown(void)
 {
    enna_activity_del_all();
-   enna_module_shutdown();
 
    evas_object_del(enna->o_background);
    evas_object_del(enna->o_content);
