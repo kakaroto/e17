@@ -20,14 +20,10 @@ Consider the following order to implement this todo:
    - option to choose rescan schedule
    - remove command line scan
  6. Refactor some features into plugins
-   - no need for elm_module at the beginning, just isolated code
    - define ecore_events and plugin interface
-   - mpris
-   - fso
    - coverart-lastfm
    - cover art local fs lookup
  7. Modular plugins (elm_module)
-   - dynamically loaded
    - versioned
    - selection saved in eet
    - gui to select enabled plugins
@@ -79,16 +75,11 @@ Must cover the following cases:
 
 Work to cover the above cases:
 
- * create plugin loading infrastructure using eina_module;
  * create ecore_events to notify listeners plugins.
   - database contents changed;
-  - list contents changed;
-  - current music changed;
   - rating changed;
   - progress/position changed (manually);
   - volume changed;
-  - repeat changed;
-  - shuffle changed;
  * query plugins for available settings:
   - give a context path with settings area. like "/", "/library/", "/$plugin/"
   - allow plugins to specify priority (list positioning)?
