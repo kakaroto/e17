@@ -258,15 +258,23 @@ list_next_go(Evas_Object *obj)
 }
 
 int32_t
-list_song_selected_n_get(Evas_Object *obj)
+list_song_selected_n_get(const Evas_Object *obj)
 {
    LIST_GET_OR_RETURN(list, obj, 0);
    if (list->page.songs) return page_songs_selected_n_get(list->page.songs);
    return 0;
 }
 
+int32_t
+list_song_count(const Evas_Object *obj)
+{
+   LIST_GET_OR_RETURN(list, obj, 0);
+   if (list->page.songs) return page_songs_count(list->page.songs);
+   return 0;
+}
+
 Song *
-list_song_nth_get(Evas_Object *obj, int32_t n)
+list_song_nth_get(const Evas_Object *obj, int32_t n)
 {
    LIST_GET_OR_RETURN(list, obj, NULL);
    if (list->page.songs) return page_songs_nth_get(list->page.songs, n);

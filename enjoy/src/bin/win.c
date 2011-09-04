@@ -141,19 +141,14 @@ _win_toolbar_eval(Win *w)
         elm_toolbar_item_disabled_set(w->action.nowplaying, EINA_TRUE);
      }
 
-   int *caps = malloc(sizeof(*caps));
-   *caps = enjoy_caps_get();
-   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
 }
 
 static void
 _win_play_pause_toggle(Win *w)
 {
-   int *caps = malloc(sizeof(*caps));
-
-   ecore_event_add(ENJOY_EVENT_PLAYER_STATUS_CHANGE, enjoy_status_get(), NULL, NULL);
-   *caps = enjoy_caps_get();
-   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_STATUS_CHANGE, NULL, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
 
    if (w->play.playing)
       elm_toolbar_item_state_set(w->action.play, w->action.pause);
@@ -181,9 +176,7 @@ _win_play_eval(Win *w)
    w->play.playing_last = !w->play.playing;
    _win_play_pause_toggle(w);
 
-   int *caps = malloc(sizeof(*caps));
-   *caps = enjoy_caps_get();
-   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
 }
 
 static Eina_Bool
@@ -270,10 +263,8 @@ end:
    _win_play_eval(w);
    _win_toolbar_eval(w);
 
-   int *caps = malloc(sizeof(*caps));
-   *caps = enjoy_caps_get();
-   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
-   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, s, no_free, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, NULL, NULL, NULL);
 }
 
 static void
@@ -361,9 +352,7 @@ _win_action_play(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNU
    _win_play_pause_toggle(w);
    _win_play_eval(w);
 
-   int *caps = malloc(sizeof(*caps));
-   *caps = enjoy_caps_get();
-   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
 }
 
 static void
@@ -376,9 +365,7 @@ _win_action_pause(void *data, Evas_Object *obj __UNUSED__, void *event_info __UN
    _win_play_pause_toggle(w);
    _win_play_eval(w);
 
-   int *caps = malloc(sizeof(*caps));
-   *caps = enjoy_caps_get();
-   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
 }
 
 static void
@@ -566,44 +553,46 @@ enjoy_quit(void)
    ecore_main_loop_quit();
 }
 
-EAPI int
-enjoy_caps_get(void)
+EAPI Enjoy_Player_Caps
+enjoy_player_caps_get(void)
 {
    Win *w = &_win;
-   int caps = 0;
+   Enjoy_Player_Caps caps;
 
-   if (list_prev_exists(w->list)) caps |= ENJOY_CAPABILITY_CAN_GO_PREV;
-   if ((w->play.shuffle) || (list_next_exists(w->list))) caps |= ENJOY_CAPABILITY_CAN_GO_NEXT;
+   memset(&caps, 0, sizeof(caps));
+
+   caps.can_go_prev = !!list_prev_exists(w->list);
+   caps.can_go_next = !!((w->play.shuffle) || (list_next_exists(w->list)));
    if (w->song)
      {
-        caps |= ENJOY_CAPABILITY_CAN_PAUSE;
-        caps |= ENJOY_CAPABILITY_CAN_PLAY;
-        if (emotion_object_seekable_get(w->emotion))
-          caps |= ENJOY_CAPABILITY_CAN_SEEK;
-        caps |= ENJOY_CAPABILITY_CAN_PROVIDE_METADATA;
-        caps |= ENJOY_CAPABILITY_CAN_HAS_TRACKLIST;
+        caps.can_pause = EINA_TRUE;
+        caps.can_play = EINA_TRUE;
+        caps.can_seek = emotion_object_seekable_get(w->emotion);
+        caps.can_provide_metadata = EINA_TRUE;
+        caps.has_tracklist = EINA_TRUE;
      }
 
    return caps;
 }
 
-EAPI Enjoy_Player_Status*
-enjoy_status_get()
+EAPI Enjoy_Player_Status
+enjoy_player_status_get(void)
 {
   Win *w = &_win;
-  Enjoy_Player_Status *status = calloc(1, sizeof(*status));
-  if (!status) return NULL;
+  Enjoy_Player_Status status;
+
+  memset(&status, 0, sizeof(status));
 
   if (w->play.playing)
-    status->playback = 0;
+    status.playback = ENJOY_PLAYBACK_PLAYING;
   else if (w->play.position == 0.0)
-    status->playback = 2;
+    status.playback = ENJOY_PLAYBACK_STOPPED;
   else
-    status->playback = 1;
+    status.playback = ENJOY_PLAYBACK_PAUSED;
 
-  status->shuffle = !!w->play.shuffle;
-  status->repeat = !!w->play.repeat;
-  status->endless = 0;
+  status.shuffle = !!w->play.shuffle;
+  status.repeat = !!w->play.repeat;
+  status.endless = EINA_FALSE;
 
   return status;
 }
@@ -658,14 +647,14 @@ enjoy_volume_set(int32_t volume)
    emotion_object_audio_volume_set(w->emotion, w->play.volume);
 }
 
-EAPI Song *
+EAPI const Song *
 enjoy_song_current_get(void)
 {
    Win *w = &_win;
    return w->song;
 }
 
-EAPI Song *
+EAPI const Song *
 enjoy_song_position_get(int32_t position)
 {
    Win *w = &_win;
@@ -676,18 +665,23 @@ EAPI void
 enjoy_control_loop_set(Eina_Bool param)
 {
    Win *w = &_win;
-   param = !!param;
+   int val = !!param;
+   w->play.repeat = !!param;
    edje_object_message_send(elm_layout_edje_get(w->nowplaying),
-                            EDJE_MESSAGE_INT, MSG_LOOP, &param);
+                            EDJE_MESSAGE_INT, MSG_LOOP, &val);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
 }
 
 EAPI void
 enjoy_control_shuffle_set(Eina_Bool param)
 {
    Win *w = &_win;
-   param = !!param;
+   int val = !!param;
+   w->play.shuffle = !!param;
    edje_object_message_send(elm_layout_edje_get(w->nowplaying),
-                            EDJE_MESSAGE_INT, MSG_SHUFFLE, &param);
+                            EDJE_MESSAGE_INT, MSG_SHUFFLE, &val);
+   if (val) list_shuffle_reset(w->list);
+   _win_toolbar_eval(w);
 }
 
 EAPI int32_t
@@ -698,7 +692,15 @@ enjoy_playlist_current_position_get(void)
    return list_song_selected_n_get(w->list);
 }
 
-EAPI Song *
+EAPI int32_t
+enjoy_playlist_count(void)
+{
+   Win *w = &_win;
+   if (!w->list) return 0;
+   return list_song_count(w->list);
+}
+
+EAPI const Song *
 enjoy_playlist_song_position_get(int32_t position)
 {
    Win *w = &_win;

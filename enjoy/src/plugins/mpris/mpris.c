@@ -33,6 +33,21 @@ static int _mpris_log_domain = -1;
 #define DBG(...)      EINA_LOG_DOM_DBG(_mpris_log_domain, __VA_ARGS__)
 
 
+/*
+ * Capabilities and player status values conform to the MPRIS 1.0 standard:
+ * http://www.mpris.org/1.0/spec.html
+ */
+typedef enum {
+  MPRIS_CAPABILITY_CAN_GO_NEXT = 1 << 0,
+  MPRIS_CAPABILITY_CAN_GO_PREV = 1 << 1,
+  MPRIS_CAPABILITY_CAN_PAUSE = 1 << 2,
+  MPRIS_CAPABILITY_CAN_PLAY = 1 << 3,
+  MPRIS_CAPABILITY_CAN_SEEK = 1 << 4,
+  MPRIS_CAPABILITY_CAN_PROVIDE_METADATA = 1 << 5,
+  MPRIS_CAPABILITY_HAS_TRACKLIST = 1 << 6
+} Mpris_Capabilities;
+
+
 #define APPLICATION_NAME "org.mpris.enjoy"
 #define PLAYER_INTERFACE_NAME "org.freedesktop.MediaPlayer"
 #define ROOT_NAME "/Root" /* should really be "/", but this doesn't work correctly :( */
@@ -42,14 +57,14 @@ static int _mpris_log_domain = -1;
 
 static void _mpris_signal_player_caps_change(int caps);
 static void _mpris_signal_player_status_change(int playback, int shuffle, int repeat, int endless);
-static void _mpris_signal_player_track_change(Song *song);
+static void _mpris_signal_player_track_change(const Song *song);
 static void _mpris_signal_tracklist_tracklist_change(int size);
 
 static void _mpris_signal_emit(const char *root, const char *signal_name, int arg_type, void *arg_value);
 static void _mpris_signals_add(const char *root, const MPRIS_Signal *signals);
 static void _mpris_methods_add(const char *root, const MPRIS_Method *methods);
 static void _mpris_append_dict_entry(DBusMessageIter *dict_iter, const char *key,
-                                     int value_type, void *value);
+                                     int value_type, const void *value);
 static void _mpris_signal_emit(const char *root, const char *signal_name, int arg_type,
                                void *arg_value);
 static DBusMessage *_mpris_player_next(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
@@ -68,9 +83,10 @@ static DBusMessage *_mpris_player_repeat_set(E_DBus_Object *obj __UNUSED__, DBus
 static DBusMessage *_mpris_player_status_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 static DBusMessage *_mpris_player_position_set(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 static DBusMessage *_mpris_player_position_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
-static DBusMessage *_mpris_song_metadata_reply(DBusMessage *msg, Song *song);
+static DBusMessage *_mpris_song_metadata_reply(DBusMessage *msg, const Song *song);
 static DBusMessage *_mpris_player_metadata_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 static DBusMessage *_mpris_tracklist_current_track_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
+static DBusMessage *_mpris_tracklist_count(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 static DBusMessage *_mpris_tracklist_metadata_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 static DBusMessage *_mpris_tracklist_shuffle_set(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);
 
@@ -158,7 +174,7 @@ static const MPRIS_Method mpris_tracklist_methods[] = {
   /* Returns the position of the current URI in the track list */
   { "GetCurrentTrack", "",    "i",     _mpris_tracklist_current_track_get },
   /* Returns the number of elements in the track list */
-  { "GetLength",       "",    "i",     NULL },
+  { "GetLength",       "",    "i",     _mpris_tracklist_count },
   /* Appends an URI to the track list */
   { "AddTrack",        "sb",  "i",     NULL },
   /* Removes an URL from the track list */
@@ -170,34 +186,49 @@ static const MPRIS_Method mpris_tracklist_methods[] = {
   { NULL,              NULL,  NULL,    NULL }
 };
 
-
+static int
+_caps_to_mpris_bits(const Enjoy_Player_Caps caps)
+{
+   int bits = 0;
+   if (caps.can_go_next) bits |= MPRIS_CAPABILITY_CAN_GO_NEXT;
+   if (caps.can_go_prev) bits |= MPRIS_CAPABILITY_CAN_GO_PREV;
+   if (caps.can_pause) bits |= MPRIS_CAPABILITY_CAN_PAUSE;
+   if (caps.can_play) bits |= MPRIS_CAPABILITY_CAN_PLAY;
+   if (caps.can_seek) bits |= MPRIS_CAPABILITY_CAN_SEEK;
+   if (caps.can_provide_metadata) bits |= MPRIS_CAPABILITY_CAN_PROVIDE_METADATA;
+   if (caps.has_tracklist) bits |= MPRIS_CAPABILITY_HAS_TRACKLIST;
+   return bits;
+}
 
 static Eina_Bool
-_cb_player_caps_change(void *data __UNUSED__, int type __UNUSED__, void *event)
+_cb_player_caps_change(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
-   _mpris_signal_player_caps_change(*(int *)event);
+   Enjoy_Player_Caps caps = enjoy_player_caps_get();
+   int bits = _caps_to_mpris_bits(caps);
+   _mpris_signal_player_caps_change(bits);
    return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
-_cb_player_status_change(void *data __UNUSED__, int type __UNUSED__, void *event)
+_cb_player_status_change(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
-   const Enjoy_Player_Status *status = event;
-   _mpris_signal_player_status_change(status->playback, status->shuffle, status->repeat, status->endless);
+   Enjoy_Player_Status status = enjoy_player_status_get();
+   _mpris_signal_player_status_change
+     (status.playback, status.shuffle, status.repeat, status.endless);
    return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
-_cb_player_track_change(void *data __UNUSED__, int type __UNUSED__, void *event)
+_cb_player_track_change(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
-   _mpris_signal_player_track_change((Song *)event);
+   _mpris_signal_player_track_change(enjoy_song_current_get());
    return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
-_cb_player_tracklist_change(void *data __UNUSED__, int type __UNUSED__, void *event)
+_cb_player_tracklist_change(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
-   _mpris_signal_tracklist_tracklist_change(*(int *)event);
+   _mpris_signal_tracklist_tracklist_change(enjoy_playlist_count());
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -320,7 +351,7 @@ _mpris_methods_add(const char *root, const MPRIS_Method *methods)
 
 static void
 _mpris_append_dict_entry(DBusMessageIter *dict_iter, const char *key,
-                         int value_type, void *value)
+                         int value_type, const void *value)
 {
    DBusMessageIter entry_iter, value_iter;
    const char *signature;
@@ -376,7 +407,7 @@ _mpris_signal_emit(const char *root, const char *signal_name, int arg_type, void
 }
 
 static void
-_mpris_message_fill_song_metadata(DBusMessage *msg, Song *song)
+_mpris_message_fill_song_metadata(DBusMessage *msg, const Song *song)
 {
    DBusMessageIter iter, dict;
 
@@ -444,19 +475,19 @@ _mpris_signal_player_status_change(int playback, int shuffle, int repeat, int en
    if (!sig) return;
    dbus_message_iter_init_append(sig, &iter);
    dbus_message_iter_open_container(&iter, DBUS_TYPE_STRUCT, NULL, &siter);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &playback);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &shuffle);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &repeat);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &endless);
+   dbus_message_iter_append_basic(&siter, DBUS_TYPE_INT32, &playback);
+   dbus_message_iter_append_basic(&siter, DBUS_TYPE_INT32, &shuffle);
+   dbus_message_iter_append_basic(&siter, DBUS_TYPE_INT32, &repeat);
+   dbus_message_iter_append_basic(&siter, DBUS_TYPE_INT32, &endless);
    dbus_message_iter_close_container(&iter, &siter);
    e_dbus_message_send(conn, sig, NULL, -1, NULL);
    dbus_message_unref(sig);
 }
 
 static void
-_mpris_signal_player_track_change(Song *song)
+_mpris_signal_player_track_change(const Song *song)
 {
-   static Song *old_song = NULL;
+   static const void *old_song = NULL;
    if (old_song != song)
      {
         DBusMessage *sig = dbus_message_new_signal(PLAYER_NAME, PLAYER_INTERFACE_NAME, "TrackChange");
@@ -505,11 +536,10 @@ _mpris_player_stop(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 static DBusMessage *
 _mpris_player_play(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
-   Enjoy_Player_Status *status = enjoy_status_get();
-   if (!status->playback)
+   Enjoy_Player_Status status = enjoy_player_status_get();
+   if (!status.playback)
      enjoy_position_set(0);
    enjoy_control_play();
-   free(status);
    return dbus_message_new_method_return(msg);
 }
 
@@ -547,8 +577,16 @@ _mpris_root_version(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
    DBusMessageIter iter, siter;
    dbus_message_iter_init_append(reply, &iter);
    dbus_message_iter_open_container(&iter, DBUS_TYPE_STRUCT, NULL, &siter);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT16, (int[]) { 1 });
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT16, (int[]) { 0 });
+
+#define APPEND_UINT16(val)                                              \
+   do {                                                                 \
+      unsigned short _tmp_val = val;                                    \
+      dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT16, &_tmp_val); \
+   } while (0)
+   APPEND_UINT16(1);
+   APPEND_UINT16(0);
+#undef APPEND_UINT16
+
    dbus_message_iter_close_container(&iter, &siter);
    return reply;
 }
@@ -558,8 +596,9 @@ _mpris_player_caps_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
    DBusMessage *reply = dbus_message_new_method_return(msg);
    DBusMessageIter iter;
+   int bits = _caps_to_mpris_bits(enjoy_player_caps_get());
    dbus_message_iter_init_append(reply, &iter);
-   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, (int[]) { enjoy_caps_get() });
+   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &bits);
    return reply;
 }
 
@@ -583,8 +622,9 @@ _mpris_player_volume_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
    DBusMessage *reply = dbus_message_new_method_return(msg);
    DBusMessageIter iter;
+   int vol = enjoy_volume_get();
    dbus_message_iter_init_append(reply, &iter);
-   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, (int[]) { enjoy_volume_get() });
+   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &vol);
    return reply;
 }
 
@@ -592,8 +632,8 @@ static DBusMessage *
 _mpris_player_repeat_set(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
    dbus_bool_t repeat;
-   dbus_message_get_args(msg, NULL, DBUS_TYPE_UINT32, &repeat, DBUS_TYPE_INVALID);
-   enjoy_repeat_set(repeat);
+   dbus_message_get_args(msg, NULL, DBUS_TYPE_BOOLEAN, &repeat, DBUS_TYPE_INVALID);
+   enjoy_control_loop_set(repeat);
    return dbus_message_new_method_return(msg);
 }
 
@@ -602,17 +642,23 @@ _mpris_player_status_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
    DBusMessage *reply = dbus_message_new_method_return(msg);
    DBusMessageIter iter, siter;
-   Enjoy_Player_Status *status = enjoy_status_get();
+   Enjoy_Player_Status status = enjoy_player_status_get();
 
    dbus_message_iter_init_append(reply, &iter);
    dbus_message_iter_open_container(&iter, DBUS_TYPE_STRUCT, NULL, &siter);
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &(status->playback));
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &(status->shuffle));
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &(status->repeat));
-   dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT32, &(status->endless));
-   dbus_message_iter_close_container(&iter, &siter);
 
-   free(status);
+#define APPEND_INT(member)                                              \
+   do {                                                                 \
+      int _tmp_val = status.member;                                     \
+      dbus_message_iter_append_basic(&siter, DBUS_TYPE_INT32, &(_tmp_val)); \
+   } while (0)
+   APPEND_INT(playback);
+   APPEND_INT(shuffle);
+   APPEND_INT(repeat);
+   APPEND_INT(endless);
+#undef APPEND_INT
+
+   dbus_message_iter_close_container(&iter, &siter);
    return reply;
 }
 
@@ -630,13 +676,14 @@ _mpris_player_position_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
    DBusMessage *reply = dbus_message_new_method_return(msg);
    DBusMessageIter iter;
+   int pos = enjoy_position_get();
    dbus_message_iter_init_append(reply, &iter);
-   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, (int[]) { enjoy_position_get() });
+   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &pos);
    return reply;
 }
 
 static DBusMessage *
-_mpris_song_metadata_reply(DBusMessage *msg, Song *song)
+_mpris_song_metadata_reply(DBusMessage *msg, const Song *song)
 {
    DBusMessage *reply = dbus_message_new_method_return(msg);
    _mpris_message_fill_song_metadata(reply, song);
@@ -646,8 +693,7 @@ _mpris_song_metadata_reply(DBusMessage *msg, Song *song)
 static DBusMessage *
 _mpris_player_metadata_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
-   Song *song = enjoy_song_current_get();
-   return _mpris_song_metadata_reply(msg, song);
+   return _mpris_song_metadata_reply(msg, enjoy_song_current_get());
 }
 
 static DBusMessage *
@@ -655,8 +701,20 @@ _mpris_tracklist_current_track_get(E_DBus_Object *obj __UNUSED__, DBusMessage *m
 {
    DBusMessage *reply = dbus_message_new_method_return(msg);
    DBusMessageIter iter;
+   int pos = enjoy_playlist_current_position_get();
    dbus_message_iter_init_append(reply, &iter);
-   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, (int[]) { enjoy_playlist_current_position_get() });
+   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &pos);
+   return reply;
+}
+
+static DBusMessage *
+_mpris_tracklist_count(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+   DBusMessage *reply = dbus_message_new_method_return(msg);
+   DBusMessageIter iter;
+   int count = enjoy_playlist_count();
+   dbus_message_iter_init_append(reply, &iter);
+   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &count);
    return reply;
 }
 
@@ -664,7 +722,7 @@ static DBusMessage *
 _mpris_tracklist_metadata_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
    DBusMessage *reply;
-   Song *song;
+   const Song *song;
    dbus_int32_t position;
    dbus_message_get_args(msg, NULL, DBUS_TYPE_INT32, &position, DBUS_TYPE_INVALID);
    song = enjoy_playlist_song_position_get(position);

@@ -82,11 +82,6 @@ enjoy_cache_dir_get(void)
    return cache;
 }
 
-void
-no_free()
-{
-}
-
 EAPI int ENJOY_EVENT_PLAYER_CAPS_CHANGE = -1;
 EAPI int ENJOY_EVENT_PLAYER_STATUS_CHANGE = -1;
 EAPI int ENJOY_EVENT_PLAYER_TRACK_CHANGE = -1;

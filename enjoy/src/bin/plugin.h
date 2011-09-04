@@ -9,31 +9,40 @@
 
 typedef struct _Song Song;
 typedef struct _Enjoy_Player_Status Enjoy_Player_Status;
+typedef struct _Enjoy_Player_Caps Enjoy_Player_Caps;
 
+/**
+ * Capabilities changed. Use enjoy_player_caps_get() for value.
+ */
 EAPI extern int ENJOY_EVENT_PLAYER_CAPS_CHANGE;
+/**
+ * Status changed. Use enjoy_player_status_get() for value.
+ */
 EAPI extern int ENJOY_EVENT_PLAYER_STATUS_CHANGE;
 EAPI extern int ENJOY_EVENT_PLAYER_TRACK_CHANGE;
 EAPI extern int ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE;
 
-/*
- * Capabilities and player status values conform to the MPRIS 1.0 standard:
- * http://www.mpris.org/1.0/spec.html
- */
+struct _Enjoy_Player_Caps {
+   Eina_Bool can_go_next:1;
+   Eina_Bool can_go_prev:1;
+   Eina_Bool can_pause:1;
+   Eina_Bool can_play:1;
+   Eina_Bool can_seek:1;
+   Eina_Bool can_provide_metadata:1;
+   Eina_Bool has_tracklist:1;
+};
+
 typedef enum {
-  ENJOY_CAPABILITY_CAN_GO_NEXT = 1 << 0,
-  ENJOY_CAPABILITY_CAN_GO_PREV = 1 << 1,
-  ENJOY_CAPABILITY_CAN_PAUSE = 1 << 2,
-  ENJOY_CAPABILITY_CAN_PLAY = 1 << 3,
-  ENJOY_CAPABILITY_CAN_SEEK = 1 << 4,
-  ENJOY_CAPABILITY_CAN_PROVIDE_METADATA = 1 << 5,
-  ENJOY_CAPABILITY_CAN_HAS_TRACKLIST = 1 << 6
-} Enjoy_Capabilities;
+  ENJOY_PLAYBACK_PLAYING = 0,
+  ENJOY_PLAYBACK_PAUSED,
+  ENJOY_PLAYBACK_STOPPED
+} Enjoy_Playback_Status;
 
 struct _Enjoy_Player_Status {
-  Eina_Bool playback;
-  Eina_Bool shuffle;
-  Eina_Bool repeat;
-  Eina_Bool endless;
+   Enjoy_Playback_Status playback;
+   Eina_Bool shuffle:1;
+   Eina_Bool repeat:1;
+   Eina_Bool endless:1;
 };
 
 EAPI char      *enjoy_cache_dir_get(void);
@@ -41,10 +50,10 @@ EAPI Eina_Bool  enjoy_repeat_get(void);
 EAPI int32_t    enjoy_playlist_current_position_get(void);
 EAPI int32_t    enjoy_position_get(void);
 EAPI int32_t    enjoy_volume_get(void);
-EAPI int        enjoy_caps_get(void);
-EAPI Song      *enjoy_playlist_song_position_get(int32_t position);
-EAPI Song      *enjoy_song_current_get(void);
-EAPI Song      *enjoy_song_position_get(int32_t position);
+EAPI int32_t    enjoy_playlist_count(void);
+EAPI const Song*enjoy_playlist_song_position_get(int32_t position);
+EAPI const Song*enjoy_song_current_get(void);
+EAPI const Song*enjoy_song_position_get(int32_t position);
 EAPI void       enjoy_control_loop_set(Eina_Bool param);
 EAPI void       enjoy_control_next(void);
 EAPI void       enjoy_control_pause(void);
@@ -56,8 +65,9 @@ EAPI void       enjoy_control_stop(void);
 EAPI void       enjoy_position_set(int32_t position);
 EAPI void       enjoy_quit(void);
 EAPI void       enjoy_repeat_set(Eina_Bool repeat);
-EAPI Enjoy_Player_Status *enjoy_status_get(void);
 EAPI void       enjoy_volume_set(int32_t volume);
-EAPI void	no_free();
+
+EAPI Enjoy_Player_Caps enjoy_player_caps_get(void);
+EAPI Enjoy_Player_Status enjoy_player_status_get(void);
 
 #endif /* __PLUGIN_H__ */

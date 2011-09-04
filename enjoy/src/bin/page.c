@@ -580,9 +580,7 @@ _song_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 static void
 _page_songs_after_populate(Page *page)
 {
-   ecore_event_add
-     (ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE,
-      &page->num_elements, no_free, NULL);
+   ecore_event_add(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE, NULL, NULL, NULL);
 }
 
 static Evas_Object *
@@ -746,12 +744,11 @@ page_songs_next_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
-   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, song, no_free, NULL);
    return song;
 }
 
 int32_t
-page_songs_selected_n_get(Evas_Object *obj)
+page_songs_selected_n_get(const Evas_Object *obj)
 {
    PAGE_SONGS_GET_OR_RETURN(page, obj, 0);
    Elm_Genlist_Item *it;
@@ -762,8 +759,15 @@ page_songs_selected_n_get(Evas_Object *obj)
    return (it) ? n : 0;
 }
 
+int32_t
+page_songs_count(const Evas_Object *obj)
+{
+   PAGE_SONGS_GET_OR_RETURN(page, obj, 0);
+   return page->num_elements;
+}
+
 Song *
-page_songs_nth_get(Evas_Object *obj, int32_t n)
+page_songs_nth_get(const Evas_Object *obj, int32_t n)
 {
    PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
    Elm_Genlist_Item *it = page->first;
@@ -843,7 +847,6 @@ page_songs_shuffle_prev_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
-   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, song, no_free, NULL);
    return song;
 }
 
@@ -871,7 +874,6 @@ page_songs_shuffle_next_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
-   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, song, no_free, NULL);
    return song;
 }
 
@@ -898,7 +900,6 @@ page_songs_prev_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
-   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, song, no_free, NULL);
    return song;
 }
 

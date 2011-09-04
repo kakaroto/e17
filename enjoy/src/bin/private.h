@@ -71,8 +71,9 @@ Song        *list_prev_go(Evas_Object *list);
 DB          *list_db_get(const Evas_Object *obj);
 void         list_freeze(Evas_Object *obj);
 void         list_thaw(Evas_Object *obj);
-Song        *list_song_nth_get(Evas_Object *obj, int32_t n);
-int32_t      list_song_selected_n_get(Evas_Object *obj);
+Song        *list_song_nth_get(const Evas_Object *obj, int32_t n);
+int32_t      list_song_selected_n_get(const Evas_Object *obj);
+int32_t      list_song_count(const Evas_Object *obj);
 
 const char  *page_title_get(const Evas_Object *obj);
 void         page_songs_exists_changed(Evas_Object *obj, Eina_Bool exists);
@@ -92,8 +93,9 @@ Song        *page_songs_shuffle_prev_go(Evas_Object *obj);
 void         page_songs_shuffle_reset(Evas_Object *obj);
 Eina_Bool    page_songs_prev_exists(const Evas_Object *obj);
 Song        *page_songs_prev_go(Evas_Object *obj);
-Song        *page_songs_nth_get(Evas_Object *obj, int32_t n);
-int32_t      page_songs_selected_n_get(Evas_Object *obj);
+Song        *page_songs_nth_get(const Evas_Object *obj, int32_t n);
+int32_t      page_songs_selected_n_get(const Evas_Object *obj);
+int32_t      page_songs_count(const Evas_Object *obj);
 
 Evas_Object *cover_allsongs_fetch(Evas_Object *parent, unsigned short size);
 Evas_Object *cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size, void (*cb)(void *data), void *data);
