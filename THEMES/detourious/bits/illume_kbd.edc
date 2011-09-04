@@ -1,4 +1,4 @@
-#ifdef ILLUME_KBG_TERMINAL_ONLY
+#ifdef ILLUME_KBD_TERMINAL_ONLY
 group { name: "e/modules/kbd/base/default";
 	images {
 		image: "images/illume/k_tabhm.png" COMP;
