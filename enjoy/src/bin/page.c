@@ -580,7 +580,9 @@ _song_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 static void
 _page_songs_after_populate(Page *page)
 {
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE), &page->num_elements, no_free, NULL);
+   ecore_event_add
+     (ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE,
+      &page->num_elements, no_free, NULL);
 }
 
 static Evas_Object *
@@ -744,7 +746,7 @@ page_songs_next_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), song, no_free, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, song, no_free, NULL);
    return song;
 }
 
@@ -841,7 +843,7 @@ page_songs_shuffle_prev_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), song, no_free, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, song, no_free, NULL);
    return song;
 }
 
@@ -869,7 +871,7 @@ page_songs_shuffle_next_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), song, no_free, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, song, no_free, NULL);
    return song;
 }
 
@@ -896,7 +898,7 @@ page_songs_prev_go(Evas_Object *obj)
    page->selected = it;
    elm_genlist_item_selected_set(it, EINA_TRUE);
    elm_genlist_item_bring_in(it);
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), song, no_free, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, song, no_free, NULL);
    return song;
 }
 

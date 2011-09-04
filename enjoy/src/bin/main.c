@@ -17,9 +17,9 @@ static App app;
 
 static const Ecore_Getopt options = {
   PACKAGE_NAME,
-  "%prog [options] [url]",
+  "%prog [options]",
   PACKAGE_VERSION "Revision:" stringify(VREV),
-  "(C) 2010 ProFUSION embedded systems",
+  "(C) 2010-2011 ProFUSION embedded systems",
   "LGPL-3",
   "Music player for mobiles and desktops.",
   EINA_TRUE,
@@ -87,33 +87,18 @@ no_free()
 {
 }
 
-int
-enjoy_event_id_get(Enjoy_Event_ID event_id)
-{
-   switch (event_id)
-     {
-       case ENJOY_EVENT_PLAYER_CAPS_CHANGE: return app.event_id.player.caps_change;
-       case ENJOY_EVENT_PLAYER_STATUS_CHANGE: return app.event_id.player.status_change;
-       case ENJOY_EVENT_PLAYER_TRACK_CHANGE: return app.event_id.player.track_change;
-       case ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE: return app.event_id.tracklist.tracklist_change;
-     }
-   return -1;
-}
+EAPI int ENJOY_EVENT_PLAYER_CAPS_CHANGE = -1;
+EAPI int ENJOY_EVENT_PLAYER_STATUS_CHANGE = -1;
+EAPI int ENJOY_EVENT_PLAYER_TRACK_CHANGE = -1;
+EAPI int ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE = -1;
 
 static void
-enjoy_event_id_init()
+enjoy_event_id_init(void)
 {
-   ecore_init();
-   app.event_id.player.caps_change = ecore_event_type_new();
-   app.event_id.player.status_change = ecore_event_type_new();
-   app.event_id.player.track_change = ecore_event_type_new();
-   app.event_id.tracklist.tracklist_change = ecore_event_type_new();
-}
-
-static void
-enjoy_event_id_shutdown()
-{
-   ecore_shutdown();
+   ENJOY_EVENT_PLAYER_CAPS_CHANGE = ecore_event_type_new();
+   ENJOY_EVENT_PLAYER_STATUS_CHANGE = ecore_event_type_new();
+   ENJOY_EVENT_PLAYER_TRACK_CHANGE = ecore_event_type_new();
+   ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE = ecore_event_type_new();
 }
 
 static void
@@ -248,7 +233,6 @@ elm_main(int argc, char **argv)
    _log_domain = -1;
    elm_shutdown();
    enjoy_module_unload();
-   enjoy_event_id_shutdown();
    cover_shutdown();
 
    return r;

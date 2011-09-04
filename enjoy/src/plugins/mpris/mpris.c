@@ -220,10 +220,10 @@ mpris_init(void)
    conn = e_dbus_bus_get(DBUS_BUS_SESSION);
    if (conn)
      e_dbus_request_name(conn, APPLICATION_NAME, 0, _cb_dbus_request_name, NULL);
-   event_handler_caps_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), _cb_player_caps_change, NULL);
-   event_handler_status_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_STATUS_CHANGE), _cb_player_status_change, NULL);
-   event_handler_track_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), _cb_player_track_change, NULL);
-   event_handler_tracklist_change = ecore_event_handler_add(enjoy_event_id_get(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE), _cb_player_tracklist_change, NULL);
+   event_handler_caps_change = ecore_event_handler_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, _cb_player_caps_change, NULL);
+   event_handler_status_change = ecore_event_handler_add(ENJOY_EVENT_PLAYER_STATUS_CHANGE, _cb_player_status_change, NULL);
+   event_handler_track_change = ecore_event_handler_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, _cb_player_track_change, NULL);
+   event_handler_tracklist_change = ecore_event_handler_add(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE, _cb_player_tracklist_change, NULL);
    return EINA_TRUE;
 }
 

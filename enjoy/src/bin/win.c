@@ -143,7 +143,7 @@ _win_toolbar_eval(Win *w)
 
    int *caps = malloc(sizeof(*caps));
    *caps = enjoy_caps_get();
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
 }
 
 static void
@@ -151,9 +151,9 @@ _win_play_pause_toggle(Win *w)
 {
    int *caps = malloc(sizeof(*caps));
 
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_STATUS_CHANGE), enjoy_status_get(), NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_STATUS_CHANGE, enjoy_status_get(), NULL, NULL);
    *caps = enjoy_caps_get();
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
 
    if (w->play.playing)
       elm_toolbar_item_state_set(w->action.play, w->action.pause);
@@ -183,7 +183,7 @@ _win_play_eval(Win *w)
 
    int *caps = malloc(sizeof(*caps));
    *caps = enjoy_caps_get();
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
 }
 
 static Eina_Bool
@@ -272,8 +272,8 @@ end:
 
    int *caps = malloc(sizeof(*caps));
    *caps = enjoy_caps_get();
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_TRACK_CHANGE), s, no_free, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, s, no_free, NULL);
 }
 
 static void
@@ -363,7 +363,7 @@ _win_action_play(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNU
 
    int *caps = malloc(sizeof(*caps));
    *caps = enjoy_caps_get();
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
 }
 
 static void
@@ -378,7 +378,7 @@ _win_action_pause(void *data, Evas_Object *obj __UNUSED__, void *event_info __UN
 
    int *caps = malloc(sizeof(*caps));
    *caps = enjoy_caps_get();
-   ecore_event_add(enjoy_event_id_get(ENJOY_EVENT_PLAYER_CAPS_CHANGE), caps, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, caps, NULL, NULL);
 }
 
 static void

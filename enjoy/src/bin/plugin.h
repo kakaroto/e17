@@ -10,12 +10,10 @@
 typedef struct _Song Song;
 typedef struct _Enjoy_Player_Status Enjoy_Player_Status;
 
-typedef enum {
-   ENJOY_EVENT_PLAYER_CAPS_CHANGE,
-   ENJOY_EVENT_PLAYER_STATUS_CHANGE,
-   ENJOY_EVENT_PLAYER_TRACK_CHANGE,
-   ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE
-} Enjoy_Event_ID;
+EAPI extern int ENJOY_EVENT_PLAYER_CAPS_CHANGE;
+EAPI extern int ENJOY_EVENT_PLAYER_STATUS_CHANGE;
+EAPI extern int ENJOY_EVENT_PLAYER_TRACK_CHANGE;
+EAPI extern int ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE;
 
 /*
  * Capabilities and player status values conform to the MPRIS 1.0 standard:
@@ -44,7 +42,6 @@ EAPI int32_t    enjoy_playlist_current_position_get(void);
 EAPI int32_t    enjoy_position_get(void);
 EAPI int32_t    enjoy_volume_get(void);
 EAPI int        enjoy_caps_get(void);
-EAPI int        enjoy_event_id_get(Enjoy_Event_ID eid);
 EAPI Song      *enjoy_playlist_song_position_get(int32_t position);
 EAPI Song      *enjoy_song_current_get(void);
 EAPI Song      *enjoy_song_position_get(int32_t position);
