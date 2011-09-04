@@ -1,0 +1,18 @@
+#define ICON(icon_file, icon_name)            \
+images {                                            \
+   image: icon_file COMP;                           \
+}                                                   \
+group {                                             \
+   name: icon_name;                                 \
+    parts {                                         \
+        part { name: "icon";                        \
+            description { state: "default" 0.0;     \
+            image.normal: icon_file;                \
+            }                                       \
+        }                                           \
+    }                                               \
+}    
+
+ICON("e-logo.png",	"icon/e_logo");
+ICON("e-logo-dark.png",	"icon/e_logo_dark");
+ICON("e-logo-grad.png",	"icon/e_logo_grad");

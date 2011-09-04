@@ -1,0 +1,102 @@
+#define ICON(group_name, icon_name)						\
+	group {	name: group_name;						\
+		images {							\
+			image: "e-logo-dark.png" COMP;				\
+			image: "e-logo-grad.png" COMP;				\
+			image: "e-logo.png" COMP;				\
+		}								\
+		parts {								\
+			part {	name: icon_name;				\
+				type: IMAGE;					\
+				mouse_events: 1;				\
+				description {	state: "default" 0.0;		\
+					aspect: 1.0 1.0;			\
+					aspect_preference: BOTH;		\
+					align: 0.5, 0.5;			\
+					image.normal: "e-logo-dark.png";	\
+				}						\
+				description {	state: "mouse_in" 0.0;		\
+					aspect: 1.0 1.0;			\
+					aspect_preference: BOTH;		\
+					align: 0.5, 0.5;			\
+					image.normal: "e-logo-grad.png";	\
+				}						\
+				description {	state: "mouse_out" 0.0;		\
+					aspect: 1.0 1.0;			\
+					aspect_preference: BOTH;		\
+					align: 0.5, 0.5;			\
+					image.normal: "e-logo.png";		\
+				}						\
+			}							\
+		}								\
+		programs {							\
+			program { name: "go_mouse_in";				\
+				signal: "mouse,enter,1";			\
+				source: icon_name;				\
+				action: STATE_SET "mouse_in" 0.0;		\
+				transition: LINEAR 1.0;				\
+				target: icon_name;				\
+			}							\
+			program { name: "go_mouse_clicked";			\
+				signal: "mouse,clicked,1";			\
+				source: icon_name;				\
+				action: STATE_SET "mouse_in" 0.0;		\
+				transition: LINEAR 1.0;				\
+				target: icon_name;				\
+			}							\
+			program { name: "go_mouse_out";				\
+				signal: "mouse,exit,1";				\
+				source: icon_name;				\
+				action: STATE_SET "mouse_out" 0.0;		\
+				transition: LINEAR 1.0;				\
+				target: icon_name;				\
+			}							\
+		}								\
+	}									\
+
+
+collections {
+
+	ICON("top_left", "top_left");
+	ICON("top", "top");
+	ICON("top_right", "top_right");
+	ICON("left", "left");
+	ICON("center", "center");
+	ICON("right", "right");
+	ICON("bottom_left", "bottom_left");
+	ICON("bottom", "bottom");
+	ICON("bottom_right", "bottom_right");
+
+	group {	name: "e_lock/table/default";
+		parts {
+			part {	name: "background";
+				type: RECT;
+				description {	state: "default" 0.0;
+						color: 150 150 150 255;
+				}
+			}
+
+			part {	name: "table";
+				type: TABLE;
+				clip_to: "background";
+				visible: 1;
+				description {	state: "default" 0.0;
+					fixed: 1 1;
+				}
+				table {
+					items {
+						item { align: -1 -1; type: GROUP; source: "top_left";     position: 0 0; }
+						item { align: -1 -1; type: GROUP; source: "top";          position: 1 0; }
+						item { align: -1 -1; type: GROUP; source: "top_right";    position: 2 0; }
+						item { align: -1 -1; type: GROUP; source: "left";         position: 0 1; }
+						item { align: -1 -1; type: GROUP; source: "center";       position: 1 1; }
+						item { align: -1 -1; type: GROUP; source: "right";        position: 2 1; }
+						item { align: -1 -1; type: GROUP; source: "bottom_left";  position: 0 2; }
+						item { align: -1 -1; type: GROUP; source: "bottom";       position: 1 2; }
+						item { align: -1 -1; type: GROUP; source: "bottom_right"; position: 2 2; }
+					}
+				}
+			}
+		}
+	}
+}
