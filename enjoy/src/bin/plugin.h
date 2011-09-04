@@ -49,6 +49,18 @@ EAPI extern int ENJOY_EVENT_PLAYER_TRACK_CHANGE;
  * enjoy_playlist_current_position_get() for new values.
  */
 EAPI extern int ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE;
+/**
+ * Song rating changed (song will be handled as event information)
+ */
+EAPI extern int ENJOY_EVENT_RATING_CHANGE;
+/**
+ * Volume (level or mute) changed. Use enjoy_volume_get() or enjoy_mute_get().
+ */
+EAPI extern int ENJOY_EVENT_VOLUME_CHANGE;
+/**
+ * Position changed manually. Use enjoy_position_get() for value.
+ */
+EAPI extern int ENJOY_EVENT_POSITION_CHANGE;
 
 struct _Enjoy_Player_Caps {
    Eina_Bool can_go_next:1;
@@ -81,6 +93,7 @@ EAPI char      *enjoy_cache_dir_get(void);
 EAPI Eina_Bool  enjoy_repeat_get(void);
 EAPI int32_t    enjoy_position_get(void);
 EAPI int32_t    enjoy_volume_get(void);
+EAPI Eina_Bool  enjoy_mute_get(void);
 EAPI int32_t    enjoy_playlist_count(void);
 EAPI int32_t    enjoy_playlist_current_position_get(void);
 EAPI const Song*enjoy_playlist_song_position_get(int32_t position);
@@ -97,6 +110,7 @@ EAPI void       enjoy_control_stop(void);
 EAPI void       enjoy_position_set(int32_t position);
 EAPI void       enjoy_repeat_set(Eina_Bool repeat);
 EAPI void       enjoy_volume_set(int32_t volume);
+EAPI void       enjoy_mute_set(Eina_Bool mute);
 
 EAPI Enjoy_Player_Caps enjoy_player_caps_get(void);
 EAPI Enjoy_Player_Status enjoy_player_status_get(void);

@@ -434,6 +434,18 @@ _edje_signal_debug(void *data __UNUSED__, Evas_Object *o __UNUSED__, const char 
 #endif
 
 static void
+_win_event_song_done(void *data __UNUSED__, void *song)
+{
+   db_song_free(song);
+}
+
+static void
+_win_event_song(int event, Song *song)
+{
+   ecore_event_add(event, db_song_copy(song), _win_event_song_done, NULL);
+}
+
+static void
 _win_edje_msg(void *data, Evas_Object *o __UNUSED__, Edje_Message_Type type, int id, void *msg)
 {
    Win *w = data;
@@ -451,6 +463,7 @@ _win_edje_msg(void *data, Evas_Object *o __UNUSED__, Edje_Message_Type type, int
               emotion_object_audio_volume_set(w->emotion, w->play.volume);
               w->play.mute = EINA_FALSE;
               emotion_object_audio_mute_set(w->emotion, w->play.mute);
+              ecore_event_add(ENJOY_EVENT_VOLUME_CHANGE, NULL, NULL, NULL);
            }
         break;
 
@@ -467,6 +480,7 @@ _win_edje_msg(void *data, Evas_Object *o __UNUSED__, Edje_Message_Type type, int
                  emotion_object_audio_volume_set(w->emotion, 0);
               else
                  emotion_object_audio_volume_set(w->emotion, w->play.volume);
+              ecore_event_add(ENJOY_EVENT_VOLUME_CHANGE, NULL, NULL, NULL);
            }
         break;
 
@@ -479,6 +493,7 @@ _win_edje_msg(void *data, Evas_Object *o __UNUSED__, Edje_Message_Type type, int
               Edje_Message_Float *m = msg;
               w->play.position = m->val;
               emotion_object_position_set(w->emotion, w->play.position);
+              ecore_event_add(ENJOY_EVENT_POSITION_CHANGE, NULL, NULL, NULL);
            }
         break;
 
@@ -492,7 +507,10 @@ _win_edje_msg(void *data, Evas_Object *o __UNUSED__, Edje_Message_Type type, int
               if (!w->song)
                 ERR("setting rating without song?");
               else
-                db_song_rating_set(w->db, w->song, m->val);
+                {
+                   db_song_rating_set(w->db, w->song, m->val);
+                   _win_event_song(ENJOY_EVENT_RATING_CHANGE, w->song);
+                }
            }
         break;
 
@@ -552,6 +570,7 @@ enjoy_control_seek(uint64_t position)
 
    w->play.position = seek_to;
    emotion_object_position_set(w->emotion, w->play.position);
+   ecore_event_add(ENJOY_EVENT_POSITION_CHANGE, NULL, NULL, NULL);
 }
 
 EAPI Enjoy_Player_Caps
@@ -624,6 +643,7 @@ enjoy_position_set(int32_t position)
      w->play.position = 1.0;
 
    emotion_object_position_set(w->emotion, w->play.position);
+   ecore_event_add(ENJOY_EVENT_POSITION_CHANGE, NULL, NULL, NULL);
 }
 
 EAPI int32_t
@@ -640,12 +660,40 @@ enjoy_volume_get(void)
    return w->play.volume * 100;
 }
 
+EAPI Eina_Bool
+enjoy_mute_get(void)
+{
+   Win *w = &_win;
+   return w->play.mute;
+}
+
 EAPI void
 enjoy_volume_set(int32_t volume)
 {
    Win *w = &_win;
    w->play.volume = (double)volume / 100.0;
    emotion_object_audio_volume_set(w->emotion, w->play.volume);
+   w->play.mute = EINA_FALSE;
+   emotion_object_audio_mute_set(w->emotion, w->play.mute);
+   ecore_event_add(ENJOY_EVENT_VOLUME_CHANGE, NULL, NULL, NULL);
+   edje_object_message_send(elm_layout_edje_get(w->nowplaying),
+                            EDJE_MESSAGE_FLOAT, MSG_VOLUME, &(w->play.volume));
+}
+
+EAPI void
+enjoy_mute_set(Eina_Bool mute)
+{
+   Win *w = &_win;
+   int val = !!mute;
+   w->play.mute = !!mute;
+   emotion_object_audio_mute_set(w->emotion, w->play.mute);
+   if (w->play.mute)
+     emotion_object_audio_volume_set(w->emotion, 0);
+   else
+     emotion_object_audio_volume_set(w->emotion, w->play.volume);
+   ecore_event_add(ENJOY_EVENT_VOLUME_CHANGE, NULL, NULL, NULL);
+   edje_object_message_send(elm_layout_edje_get(w->nowplaying),
+                            EDJE_MESSAGE_INT, MSG_MUTE, &val);
 }
 
 EAPI const Song *

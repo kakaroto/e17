@@ -76,9 +76,6 @@ Work to cover the above cases:
 
  * create ecore_events to notify listeners plugins.
   - database contents changed;
-  - rating changed;
-  - progress/position changed (manually);
-  - volume changed;
  * query plugins for available settings:
   - give a context path with settings area. like "/", "/library/", "/$plugin/"
   - allow plugins to specify priority (list positioning)?

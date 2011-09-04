@@ -256,6 +256,9 @@ EAPI int ENJOY_EVENT_PLAYER_CAPS_CHANGE = -1;
 EAPI int ENJOY_EVENT_PLAYER_STATUS_CHANGE = -1;
 EAPI int ENJOY_EVENT_PLAYER_TRACK_CHANGE = -1;
 EAPI int ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE = -1;
+EAPI int ENJOY_EVENT_RATING_CHANGE = -1;
+EAPI int ENJOY_EVENT_VOLUME_CHANGE = -1;
+EAPI int ENJOY_EVENT_POSITION_CHANGE = -1;
 
 static void
 enjoy_event_id_init(void)
@@ -266,6 +269,9 @@ enjoy_event_id_init(void)
    ENJOY_EVENT_PLAYER_STATUS_CHANGE = ecore_event_type_new();
    ENJOY_EVENT_PLAYER_TRACK_CHANGE = ecore_event_type_new();
    ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE = ecore_event_type_new();
+   ENJOY_EVENT_RATING_CHANGE = ecore_event_type_new();
+   ENJOY_EVENT_VOLUME_CHANGE = ecore_event_type_new();
+   ENJOY_EVENT_POSITION_CHANGE = ecore_event_type_new();
 }
 
 static void
