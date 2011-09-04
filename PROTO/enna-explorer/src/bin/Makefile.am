@@ -20,6 +20,7 @@ explorer.c\
 file.c\
 localfiles.c \
 mainmenu.c\
+module.c\
 mtab.c\
 shortcut.c\
 udev.c\
@@ -44,6 +45,7 @@ file.h\
 gettext.h \
 localfiles.h \
 mainmenu.h\
+module.h \
 shortcut.h\
 utils.h\
 vfs.h\
