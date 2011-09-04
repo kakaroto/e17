@@ -599,6 +599,8 @@ group { \
                text_source:   "e.text.title"; \
                source:        "e.text.title"; \
                min:           0 1; \
+               font:          "DejaVu-Bold"; \
+               size:          12; \
                text_class:    "title_bar"; \
                font:          "DejaVu-Bold"; \
                size:          11; \
@@ -1258,6 +1260,7 @@ group { \
 
 group {
    name: "e/widgets/border/default/border";
+   data { item: "argb" "1"; item: "shaped" "1"; }
    parts {
       UPPER_BORDER_PARTS(3.3, "whole", "t3")
       LOWER_BORDER_PARTS
@@ -1287,6 +1290,7 @@ group {
 
 group {
    name: "e/widgets/border/noresize/border";
+   data { item: "argb" "1"; item: "shaped" "1"; }
    parts {
       UPPER_BORDER_PARTS(3.3, "whole", "t3")
       LOWER_BORDER_PARTS
@@ -1313,6 +1317,7 @@ group {
 
 group {
    name: "e/widgets/border/alternate/border";
+   data { item: "argb" "1"; item: "shaped" "1"; }
    parts {
       UPPER_BORDER_PARTS(1.0, "e.event.minimize", "t1");
       LOWER_BORDER_PARTS
@@ -1342,6 +1347,7 @@ group {
 
 group {
    name: "e/widgets/border/shaped/border";
+   data { item: "argb" "1"; item: "shaped" "1"; }
    parts {
       part {
          name:          "e.event.resize.br";
@@ -1482,6 +1488,7 @@ group {
 
 group {
    name: "e/widgets/border/dialog/border";
+   data { item: "argb" "1"; item: "shaped" "1"; }
    parts {
       UPPER_BORDER_PARTS(1.13,"whole","t3")
       LOWER_BORDER_PARTS
@@ -1503,6 +1510,7 @@ group {
 
 group {
    name: "e/widgets/border/noresize_dialog/border";
+   data { item: "argb" "1"; item: "shaped" "1"; }
    parts {
       UPPER_BORDER_PARTS(1.13,"whole","t3")
       LOWER_BORDER_PARTS
@@ -1523,6 +1531,7 @@ group {
 
 group {
    name: "e/widgets/border/buttonless/border";
+   data { item: "argb" "1"; item: "shaped" "1"; }
    parts {
       UPPER_BORDER_PARTS(1.1, "whole", "t3")
       LOWER_BORDER_PARTS
@@ -1541,6 +1550,7 @@ group {
 
 group {
    name: "e/widgets/border/pixel/border";
+   data { item: "argb" "1"; item: "shaped" "1"; }
    parts {
       part {
          name:           "pixel1";
