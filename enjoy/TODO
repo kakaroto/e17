@@ -24,7 +24,6 @@ Consider the following order to implement this todo:
    - coverart-lastfm
    - cover art local fs lookup
  7. Modular plugins (elm_module)
-   - versioned
    - selection saved in eet
    - gui to select enabled plugins
  8. Save/Resume between runs (list, nowplaying and navigation)

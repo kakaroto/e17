@@ -246,6 +246,14 @@ mpris_init(void)
           }
      }
 
+   if (!ENJOY_ABI_CHECK())
+     {
+        ERR("ABI versions differ: enjoy=%u, mpris=%u",
+            enjoy_abi_version(), ENJOY_ABI_VERSION);
+        eina_log_domain_unregister(_mpris_log_domain);
+        _mpris_log_domain = -1;
+     }
+
    if (conn) return EINA_TRUE;
    e_dbus_init();
    conn = e_dbus_bus_get(DBUS_BUS_SESSION);

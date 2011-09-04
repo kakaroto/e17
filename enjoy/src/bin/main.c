@@ -38,6 +38,12 @@ static const Ecore_Getopt options = {
   }
 };
 
+uint32_t
+enjoy_abi_version(void)
+{
+   return ENJOY_ABI_VERSION;
+}
+
 char *
 enjoy_cache_dir_get(void)
 {

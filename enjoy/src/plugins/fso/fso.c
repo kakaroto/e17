@@ -91,6 +91,14 @@ fso_init(void)
           }
      }
 
+   if (!ENJOY_ABI_CHECK())
+     {
+        ERR("ABI versions differ: enjoy=%u, fso=%u",
+            enjoy_abi_version(), ENJOY_ABI_VERSION);
+        eina_log_domain_unregister(_fso_log_domain);
+        _fso_log_domain = -1;
+     }
+
    if (sysconn) return EINA_TRUE;
 
    e_dbus_init();

@@ -45,6 +45,13 @@ struct _Enjoy_Player_Status {
    Eina_Bool endless:1;
 };
 
+/**
+ * When you're loaded use ENJOY_ABI_CHECK() to see if you're okay or not.
+ */
+#define ENJOY_ABI_VERSION (1U)
+EAPI uint32_t   enjoy_abi_version(void) EINA_CONST;
+#define ENJOY_ABI_CHECK() (ENJOY_ABI_VERSION == enjoy_abi_version())
+
 EAPI char      *enjoy_cache_dir_get(void);
 EAPI Eina_Bool  enjoy_repeat_get(void);
 EAPI int32_t    enjoy_playlist_current_position_get(void);
