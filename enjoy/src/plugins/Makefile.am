@@ -1,0 +1,10 @@
+MAINTAINERCLEANFILES = Makefile.in
+SUBDIRS =
+
+if USE_MODULE_FSO
+SUBDIRS += fso
+endif
+
+if USE_MODULE_MPRIS
+SUBDIRS += mpris
+endif

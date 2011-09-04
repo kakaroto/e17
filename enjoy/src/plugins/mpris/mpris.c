@@ -8,6 +8,30 @@
 typedef struct _MPRIS_Method MPRIS_Method;
 typedef struct _MPRIS_Signal MPRIS_Signal;
 
+static int _mpris_log_domain = -1;
+
+#ifdef CRITICAL
+#undef CRITICAL
+#endif
+#ifdef ERR
+#undef ERR
+#endif
+#ifdef WRN
+#undef WRN
+#endif
+#ifdef INF
+#undef INF
+#endif
+#ifdef DBG
+#undef DBG
+#endif
+
+#define CRITICAL(...) EINA_LOG_DOM_CRIT(_mpris_log_domain, __VA_ARGS__)
+#define ERR(...)      EINA_LOG_DOM_ERR(_mpris_log_domain, __VA_ARGS__)
+#define WRN(...)      EINA_LOG_DOM_WARN(_mpris_log_domain, __VA_ARGS__)
+#define INF(...)      EINA_LOG_DOM_INFO(_mpris_log_domain, __VA_ARGS__)
+#define DBG(...)      EINA_LOG_DOM_DBG(_mpris_log_domain, __VA_ARGS__)
+
 
 #define APPLICATION_NAME "org.mpris.enjoy"
 #define PLAYER_INTERFACE_NAME "org.freedesktop.MediaPlayer"
@@ -177,10 +201,21 @@ _cb_player_tracklist_change(void *data __UNUSED__, int type __UNUSED__, void *ev
    return ECORE_CALLBACK_PASS_ON;
 }
 
-Eina_Bool
+static Eina_Bool
 mpris_init(void)
 {
-   if (conn) return EINA_FALSE;
+   if (_mpris_log_domain < 0)
+     {
+        _mpris_log_domain = eina_log_domain_register
+          ("enjoy-mpris", EINA_COLOR_LIGHTCYAN);
+        if (_mpris_log_domain < 0)
+          {
+             EINA_LOG_CRIT("Could not register log domain 'enjoy-mpris'");
+             return EINA_FALSE;
+          }
+     }
+
+   if (conn) return EINA_TRUE;
    e_dbus_init();
    conn = e_dbus_bus_get(DBUS_BUS_SESSION);
    if (conn)
@@ -204,6 +239,12 @@ mpris_shutdown(void)
    e_dbus_shutdown();
    conn = NULL;
    interface_list = NULL;
+
+   if (_mpris_log_domain >= 0)
+     {
+        eina_log_domain_unregister(_mpris_log_domain);
+        _mpris_log_domain = -1;
+     }
 }
 
 static void

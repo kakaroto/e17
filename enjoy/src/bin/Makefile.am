@@ -4,7 +4,7 @@ INCLUDES = \
 -I$(top_srcdir) \
 -I$(top_srcdir)/src/bin \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
--DLIBRARY_DIR=\"$(libdir)\" \
+-DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DGETTEXT_PACKAGE=\"$(PACKAGE)\" \
 -DLOCALEDIR=\"$(localedir)\" \
 @ELEMENTARY_CFLAGS@ \
@@ -43,8 +43,3 @@ endif
 
 noinst_HEADERS = gettext.h private.h coverart-lastfm.h
 EXTRA_DIST = gettext.h private.h coverart-lastfm.h
-
-lib_LTLIBRARIES = libenjoypluginfso.la libenjoypluginmpris.la
-
-libenjoypluginfso_la_SOURCES = fso.c
-libenjoypluginmpris_la_SOURCES = mpris.c

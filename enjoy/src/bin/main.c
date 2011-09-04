@@ -116,31 +116,50 @@ enjoy_event_id_shutdown()
    ecore_shutdown();
 }
 
-static Eina_Bool
-enjoy_module_load_one(Eina_Module *module, void *data)
+static void
+enjoy_module_load(void)
 {
-   const char *filename = eina_module_file_get(module);
-   const char *prefix = "libenjoyplugin";
+   char *path;
 
-   if (!strstr(filename, prefix)) return EINA_FALSE;
-   if (!eina_module_load(module))
+   DBG("Loading modules from '%s'", PACKAGE_LIB_DIR "/enjoy/");
+   app.modules = eina_module_list_get
+     (NULL, PACKAGE_LIB_DIR "/enjoy/", 0, NULL, NULL);
+
+   path = eina_module_environment_path_get("HOME", "/.enjoy/");
+   if (path)
      {
-        WRN("Couldn't load module %s.", filename);
-        return EINA_FALSE;
+        DBG("Loading modules from '%s'", path);
+        app.modules = eina_module_list_get(app.modules, path, 0, NULL, NULL);
+        free(path);
      }
 
-   return EINA_TRUE;
+   path = eina_module_environment_path_get("ENJOY_LIB_DIR", "/enjoy/");
+   if (path)
+     {
+        DBG("Loading modules from '%s'", path);
+        app.modules = eina_module_list_get(app.modules, path, 0, NULL, NULL);
+        free(path);
+     }
+
+   path = eina_module_environment_path_get("ENJOY_MODULES_DIR", NULL);
+   if (path)
+     {
+        DBG("Loading modules from '%s'", path);
+        app.modules = eina_module_list_get(app.modules, path, 0, NULL, NULL);
+        free(path);
+     }
+
+   if (!app.modules)
+     {
+        INF("No module found!");
+        return;
+     }
+
+   eina_module_list_load(app.modules);
 }
 
 static void
-enjoy_module_load()
-{
-   puts("loading modules from " LIBRARY_DIR);
-   app.modules = eina_module_list_get(NULL, LIBRARY_DIR, EINA_FALSE, enjoy_module_load_one, NULL);
-}
-
-static void
-enjoy_module_unload()
+enjoy_module_unload(void)
 {
    while (eina_array_count_get(app.modules))
       eina_module_unload(eina_array_pop(app.modules));

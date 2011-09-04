@@ -29,6 +29,7 @@ AC_ISC_POSIX
 
 AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(config.h)
+_XTERM_COLORS
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])
@@ -59,7 +60,7 @@ AC_SUBST(ALL_LINGUAS)
 AM_GNU_GETTEXT_VERSION([0.12.1])
 AM_GNU_GETTEXT([external])
 
-PKG_CHECK_MODULES([EDBUS], [edbus])
+PKG_CHECK_MODULES([EDBUS], [edbus ecore])
 PKG_CHECK_MODULES([ELEMENTARY], [elementary ecore-file eina evas ecore ecore-evas edje ecore-con])
 PKG_CHECK_MODULES([EMOTION], [emotion])
 PKG_CHECK_MODULES([LMS], [lightmediascanner])
@@ -111,11 +112,17 @@ fi
 
 AM_CONDITIONAL(BUILD_QUICKLAUNCH, test "x${want_quicklaunch}" = "xyes")
 
+AC_ENJOY_OPTIONAL_MODULE([FSO], false)
+AC_ENJOY_OPTIONAL_MODULE([MPRIS], true)
+
 AC_OUTPUT([
 Makefile
 enjoy.spec
 src/Makefile
 src/bin/Makefile
+src/plugins/Makefile
+src/plugins/fso/Makefile
+src/plugins/mpris/Makefile
 data/Makefile
 data/desktop/Makefile
 data/themes/Makefile
@@ -145,6 +152,24 @@ cat << EOF_QL
 
 EOF_QL
 fi
+
+txt_strip() {
+        echo "[$]@" | sed -e 's/^[[ \t]]*\([[^ \t]]*\)[[ \t]]*$/\1/g'
+}
+MODS=""
+for mod in $OPTIONAL_MODULES; do
+        MODS="$MODS ${COLOR_HGREEN}+$mod${COLOR_END}"
+done
+MODS=$(txt_strip $MODS)
+
+UNUSED_MODS=""
+for mod in $UNUSED_OPTIONAL_MODULES; do
+        UNUSED_MODS="$UNUSED_MODS ${COLOR_HRED}-$mod${COLOR_END}"
+done
+UNUSED_MODS=$(txt_strip $UNUSED_MODS)
+
+echo
+echo -e "Modules: $MODS $UNUSED_MODS"
 
 cat << EOF2
 
