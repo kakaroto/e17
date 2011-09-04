@@ -363,15 +363,12 @@ _winlist_del(Elfe_Winlist *winlist)
         ecore_event_handler_del(h);
      }
 
+   e_grabinput_release(winlist->input_win, winlist->input_win);
    ecore_x_window_free(winlist->input_win);
    winlist->input_win = 0;
    evas_object_del(winlist->layout);
    evas_object_del(winlist->rect);
    elfe_home_winlist_show(EINA_TRUE);
-   e_grabinput_release(winlist->input_win, winlist->input_win);
-   ecore_x_window_free(winlist->input_win);
-
-
    free(winlist);
 }
 
@@ -385,9 +382,10 @@ static void
 _window_mouse_clicked_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Elfe_Winlist_Item *it = data;
-   e_border_show(it->bd);
-   e_border_uniconify(it->bd);
-   e_border_focus_set_with_pointer(it->bd);
+
+   ecore_x_netwm_client_active_request(0, it->bd->client.win,
+                                       1, 0);
+
    e_manager_comp_src_hidden_set(it->man, it->src, EINA_FALSE);
    _winlist_del(it->winlist);
 }
