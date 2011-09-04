@@ -37,16 +37,6 @@ struct _App
    char         configdir[PATH_MAX];
    Evas_Object *win;
    Eina_Array  *modules;
-   struct {
-      struct {
-         int caps_change;
-         int status_change;
-         int track_change;
-      } player;
-      struct {
-         int tracklist_change;
-      } tracklist;
-   } event_id;
 };
 
 Evas_Object *win_new(App *app);
