@@ -244,7 +244,8 @@ mpris_enable(Enjoy_Plugin *p __UNUSED__)
               _cb_player_tracklist_change, NULL);
 #undef EV_HANDLER
 
-   e_dbus_request_name(conn, APPLICATION_NAME, 0, _cb_dbus_request_name, NULL);
+   e_dbus_request_name(conn, APPLICATION_NAME, DBUS_NAME_FLAG_DO_NOT_QUEUE,
+                       _cb_dbus_request_name, NULL);
    return EINA_TRUE;
 }
 
@@ -337,10 +338,11 @@ _cb_dbus_request_name(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 {
    DBusError new_err;
    dbus_uint32_t msgtype;
-  
+   int i;
+
    if (dbus_error_is_set(err))
      {
-        dbus_error_free(err);
+        ERR("Could not get DBus name: %s", err->message);
         return;
      }
 
@@ -355,33 +357,32 @@ _cb_dbus_request_name(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
         e_dbus_object_free(bus_obj);
         bus_obj = NULL;
      }
-  
+
    dbus_error_init(&new_err);
-   dbus_message_get_args(msg, &new_err, DBUS_TYPE_UINT32, &msgtype, DBUS_TYPE_INVALID);
-  
-   if (msgtype == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER ||
-       msgtype == DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER)
+   dbus_message_get_args
+     (msg, &new_err, DBUS_TYPE_UINT32, &msgtype, DBUS_TYPE_INVALID);
+   if (msgtype != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
      {
-        int i;
-
-        interface_list = eina_hash_string_small_new((Eina_Free_Cb)e_dbus_interface_unref);
-       
-        for (i = 0; object_list[i]; i++)
-          {
-             bus_obj = e_dbus_object_add(conn, object_list[i], NULL);
-             E_DBus_Interface *interface = e_dbus_interface_new(PLAYER_INTERFACE_NAME);
-             e_dbus_object_interface_attach(bus_obj, interface);
-            
-             eina_hash_add(interface_list, object_list[i], interface);
-          }
-
-        _mpris_signals_add(PLAYER_NAME, mpris_player_signals);
-        _mpris_signals_add(TRACKLIST_NAME, mpris_tracklist_signals);
-
-        _mpris_methods_add(ROOT_NAME, mpris_root_methods);
-        _mpris_methods_add(PLAYER_NAME, mpris_player_methods);
-        _mpris_methods_add(TRACKLIST_NAME, mpris_tracklist_methods);
+        ERR("Could not get the DBus name: reply=%d", msgtype);
+        return;
      }
+
+   interface_list = eina_hash_string_small_new
+     ((Eina_Free_Cb)e_dbus_interface_unref);
+   for (i = 0; object_list[i]; i++)
+     {
+        bus_obj = e_dbus_object_add(conn, object_list[i], NULL);
+        E_DBus_Interface *iface = e_dbus_interface_new(PLAYER_INTERFACE_NAME);
+        e_dbus_object_interface_attach(bus_obj, iface);
+        eina_hash_add(interface_list, object_list[i], iface);
+     }
+
+   _mpris_signals_add(PLAYER_NAME, mpris_player_signals);
+   _mpris_signals_add(TRACKLIST_NAME, mpris_tracklist_signals);
+
+   _mpris_methods_add(ROOT_NAME, mpris_root_methods);
+   _mpris_methods_add(PLAYER_NAME, mpris_player_methods);
+   _mpris_methods_add(TRACKLIST_NAME, mpris_tracklist_methods);
 }
 
 static void

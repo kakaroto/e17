@@ -319,6 +319,7 @@ enjoy_module_load(void)
 static void
 enjoy_module_unload(void)
 {
+   if (!app.modules) return;
    while (eina_array_count_get(app.modules))
       eina_module_unload(eina_array_pop(app.modules));
    eina_array_free(app.modules);
@@ -370,12 +371,52 @@ _cb_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
    Enjoy_Plugin *p;
 
+   app.win = win_new(&app);
+   if (!app.win)
+     {
+        ERR("Could not create main window");
+        enjoy_quit();
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   cover_init();
+   enjoy_module_load();
+
    enjoy_plugins_walk();
    EINA_INLIST_FOREACH(plugins_registry, p)
      enjoy_plugin_enable(p);
    enjoy_plugins_unwalk();
 
    return ECORE_CALLBACK_PASS_ON;
+}
+
+static DBusMessage *
+_cb_dbus_quit(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+   enjoy_quit();
+   return dbus_message_new_method_return(msg);
+}
+
+static DBusMessage *
+_cb_dbus_version(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+   DBusMessage *reply = dbus_message_new_method_return(msg);
+   DBusMessageIter iter, siter;
+   dbus_message_iter_init_append(reply, &iter);
+   dbus_message_iter_open_container(&iter, DBUS_TYPE_STRUCT, NULL, &siter);
+
+#define APPEND_UINT16(val)                                              \
+   do {                                                                 \
+      unsigned short _tmp_val = val;                                    \
+      dbus_message_iter_append_basic(&siter, DBUS_TYPE_UINT16, &_tmp_val); \
+   } while (0)
+   APPEND_UINT16(VMAJ);
+   APPEND_UINT16(VMIN);
+   APPEND_UINT16(VMIC);
+#undef APPEND_UINT16
+
+   dbus_message_iter_close_container(&iter, &siter);
+   return reply;
 }
 
 EAPI int
@@ -395,6 +436,8 @@ elm_main(int argc, char **argv)
       ECORE_GETOPT_VALUE_BOOL(quit_option),
       ECORE_GETOPT_VALUE_NONE
    };
+
+   memset(&app, 0, sizeof(app));
 
 #if ENABLE_NLS
    setlocale(LC_ALL, "");
@@ -442,28 +485,31 @@ elm_main(int argc, char **argv)
         goto end;
      }
 
-   app.win = win_new(&app);
-   if (!app.win) goto end;
-
-   cover_init();
    enjoy_event_id_init();
    ecore_event_handler_add(ENJOY_EVENT_STARTED, _cb_started, NULL);
 
-   enjoy_module_load();
+   /* will call ENJOY_EVENT_STARTED whenever it's ready */
+   if (!enjoy_dbus_init())
+     {
+        ERR("Could not start Enjoy's DBus subsystem");
+        r = -1;
+        goto end;
+     }
 
-   /* will run after other events run, in the main loop */
-   ecore_event_add(ENJOY_EVENT_STARTED, NULL, NULL, NULL);
    elm_run();
 
  end:
    EINA_LIST_FREE(app.add_dirs, s) free(s);
    EINA_LIST_FREE(app.del_dirs, s) free(s);
 
+   enjoy_module_unload();
+   cover_shutdown();
+
+   enjoy_dbus_shutdown();
+
    eina_log_domain_unregister(_log_domain);
    _log_domain = -1;
    elm_shutdown();
-   enjoy_module_unload();
-   cover_shutdown();
 
    return r;
 }

@@ -43,6 +43,9 @@ VMIC=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $3);}'`
 SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
 m4_ifdef([v_rev], , [m4_define([v_rev], [0])])
+AC_DEFINE_UNQUOTED(VMAJ, [v_maj], [Major version])
+AC_DEFINE_UNQUOTED(VMIN, [v_min], [Minor version])
+AC_DEFINE_UNQUOTED(VMIC, [v_mic], [Micro version])
 AC_DEFINE_UNQUOTED(VREV, [v_rev], [Revison])
 AC_SUBST(VMAJ)
 AC_SUBST(version_info)

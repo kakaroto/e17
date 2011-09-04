@@ -9,24 +9,22 @@ Consider the following order to implement this todo:
    - window geometry
    - volume
    - repeat and shuffle states
- 3. Single instance with dbus:
-   - just get a name
- 4. Create preferences infrastructure:
+ 3. Create preferences infrastructure:
    - new elm_layout style (in Elementary) for preferences
    - choose media backend (xine, gstreamer)
- 5. Create library manager preferences:
+ 4. Create library manager preferences:
    - add/remove directories (or at least choose folder)
    - rescan, stop-scan. with progress feedback
    - option to choose rescan schedule
    - remove command line scan
- 6. Refactor some features into plugins
+ 5. Refactor some features into plugins
    - define ecore_events and plugin interface
    - coverart-lastfm
    - cover art local fs lookup
- 7. Modular plugins (elm_module)
+ 6. Modular plugins (elm_module)
    - selection saved in eet
    - gui to select enabled plugins
- 8. Save/Resume between runs (list, nowplaying and navigation)
+ 7. Save/Resume between runs (list, nowplaying and navigation)
 
 
 Library (from "Preferences")
@@ -90,8 +88,6 @@ Work to cover the above cases:
 
 More
 ----
- * Single instance using dbus (otherwise configuration will be screwed with
-   multiple processes writing it);
  * Save/Resume state between runs (start from the same place as last time);
   - window geometry
   - volume

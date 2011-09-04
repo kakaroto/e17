@@ -181,5 +181,7 @@ void           db_nameid_free(NameID *nameid);
 Eina_Bool      enjoy_plugin_enable(Enjoy_Plugin *p);
 Eina_Bool      enjoy_plugin_disable(Enjoy_Plugin *p);
 
+Eina_Bool      enjoy_dbus_init(void);
+void           enjoy_dbus_shutdown(void);
 
 #endif

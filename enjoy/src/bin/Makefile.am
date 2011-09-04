@@ -20,7 +20,7 @@ endif
 
 enjoy_LDADD = @ELEMENTARY_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@ @EDBUS_LIBS@
 enjoy_CFLAGS = -rdynamic
-enjoy_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c coverart-lastfm.c
+enjoy_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c coverart-lastfm.c dbus.c
 
 if BUILD_QUICKLAUNCH
 ############################################################################

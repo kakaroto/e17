@@ -26,6 +26,7 @@ struct _LastFM_Cover_Request {
 };
 
 static char *_local_cache_dir = NULL;
+static Eina_Bool _lastfm_inited = EINA_FALSE;
 
 /*
  * This API Key belongs to leandro@profusion.mobi -- do not use it for commercial
@@ -281,6 +282,9 @@ lastfm_cover_init(void)
 {
     int i;
 
+    if (_lastfm_inited) return;
+    _lastfm_inited = EINA_TRUE;
+
     ecore_init();
     ecore_file_init();
     ecore_con_url_init();
@@ -320,6 +324,7 @@ lastfm_cover_shutdown(void)
 {
     int i;
 
+    if (!_lastfm_inited) return;
     for (i = 0; disc_number_regexes[i].str; i++)
       {
          regfree(disc_number_regexes[i].exp);
