@@ -600,6 +600,8 @@ group { \
                source:        "e.text.title"; \
                min:           0 1; \
                text_class:    "title_bar"; \
+               font:          "DejaVu-Bold"; \
+               size:          11; \
             } \
          } \
       } \
