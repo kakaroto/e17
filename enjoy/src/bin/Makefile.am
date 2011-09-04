@@ -41,5 +41,5 @@ enjoy_ql_CFLAGS = -DELM_LIB_QUICKLAUNCH=1
 enjoy_ql_LDFLAGS =
 endif
 
-noinst_HEADERS = gettext.h private.h coverart-lastfm.h
-EXTRA_DIST = gettext.h private.h coverart-lastfm.h
+noinst_HEADERS = gettext.h private.h coverart-lastfm.h log.h plugin.h song.h
+EXTRA_DIST = gettext.h private.h coverart-lastfm.h log.h plugin.h song.h

@@ -47,8 +47,9 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_bindir}/enjoy*
 %{_datadir}/applications/enjoy.desktop
 %{_datadir}/enjoy/default.edj
-%{_datadir}/pixmaps/enjoy.png
+%{_datadir}/icons/enjoy.png
 %{_libdir}/enjoy_ql.*
+%{_libdir}/enjoy/mpris.*
 #%{_datadir}/locale/*
 
 %changelog
