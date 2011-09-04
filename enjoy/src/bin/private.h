@@ -178,4 +178,8 @@ void           db_nameid_free(NameID *nameid);
 #define        db_artist_free(v) db_nameid_free(v)
 #define        db_genre_free(v)  db_nameid_free(v)
 
+Eina_Bool      enjoy_plugin_enable(Enjoy_Plugin *p);
+Eina_Bool      enjoy_plugin_disable(Enjoy_Plugin *p);
+
+
 #endif

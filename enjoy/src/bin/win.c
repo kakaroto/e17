@@ -302,6 +302,13 @@ _win_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_
 }
 
 static void
+_win_del_request(void *data __UNUSED__, Evas_Object *o, void *event_info __UNUSED__)
+{
+   evas_object_hide(o);
+   enjoy_quit();
+}
+
+static void
 _win_prev(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Win *w = data;
@@ -547,12 +554,6 @@ enjoy_control_seek(uint64_t position)
    emotion_object_position_set(w->emotion, w->play.position);
 }
 
-EAPI void
-enjoy_quit(void)
-{
-   ecore_main_loop_quit();
-}
-
 EAPI Enjoy_Player_Caps
 enjoy_player_caps_get(void)
 {
@@ -742,8 +743,9 @@ win_new(App *app)
    elm_win_resize_object_add(w->win, w->bg);
    evas_object_show(w->bg);
 
-   elm_win_autodel_set(w->win, 1); // TODO
-   elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
+   elm_win_autodel_set(w->win, EINA_FALSE);
+   evas_object_smart_callback_add
+     (w->win, "delete,request", _win_del_request, w);
 
    snprintf(path, sizeof(path), "%s/media.db", app->configdir);
    w->db_path = eina_stringshare_add(path);

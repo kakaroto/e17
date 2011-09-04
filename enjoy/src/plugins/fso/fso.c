@@ -1,5 +1,6 @@
 #include <Eina.h>
 #include <E_DBus.h>
+#include <Ecore.h>
 #include "plugin.h"
 
 static int _fso_log_domain = -1;
@@ -30,52 +31,129 @@ static int _fso_log_domain = -1;
 #define FSO_OUSAGED_OBJECT_PATH "/org/freesmartphone/Usage"
 #define FSO_OUSAGED_INTERFACE "org.freesmartphone.Usage"
 
-static E_DBus_Connection *sysconn = NULL;
+static E_DBus_Connection *conn = NULL;
 
-/* callbacks */
+typedef struct _FSO_Cb_Data
+{
+   void (*func)(void *data, Eina_Bool error);
+   void *data;
+} FSO_Cb_Data;
 
 static void
-fso_request_reource_cb(void *data, DBusMessage *replymsg, DBusError *error)
+fso_request_resource_cb(void *data, DBusMessage *replymsg __UNUSED__, DBusError *error)
 {
+   FSO_Cb_Data *d = data;
+   Eina_Bool e = EINA_FALSE;
+
    DBG("Request sent to fsousaged to enable resource.");
 
    if (error && dbus_error_is_set(error))
-     ERR("Error requesting FSO resource: %s - %s", error->name, error->message);
+     {
+        ERR("Error requesting FSO resource: %s - %s",
+            error->name, error->message);
+        e = EINA_TRUE;
+     }
+
+   if ((d) && (d->func))
+     d->func(d->data, e);
+   free(d);
 }
 
 static void
-fso_release_reource_cb(void *data, DBusMessage *replymsg, DBusError *error)
+fso_release_resource_cb(void *data, DBusMessage *replymsg __UNUSED__, DBusError *error)
 {
+   FSO_Cb_Data *d = data;
+   Eina_Bool e = EINA_FALSE;
+
    DBG("Request sent to fsousaged to disable resource.");
 
    if (error && dbus_error_is_set(error))
-      ERR("Error releasing FSO resource: %s - %s", error->name, error->message);
+     {
+        ERR("Error releasing FSO resource: %s - %s",
+            error->name, error->message);
+        e = EINA_TRUE;
+     }
+
+   if ((d) && (d->func))
+     d->func(d->data, e);
+   free(d);
 }
 
 static void
-fso_request_resource(const char *resource)
+fso_request_resource(const char *resource, void (*func)(void *data, Eina_Bool error), const void *data)
 {
+   FSO_Cb_Data *d = NULL;
    DBusMessage *msg = dbus_message_new_method_call
      (FSO_OUSAGED_SERVICE, FSO_OUSAGED_OBJECT_PATH, FSO_OUSAGED_INTERFACE,
       "RequestResource");
    dbus_message_append_args
      (msg, DBUS_TYPE_STRING, &resource, DBUS_TYPE_INVALID);
-   e_dbus_message_send(sysconn, msg, fso_request_reource_cb, -1, NULL);
+
+   if (func)
+     {
+        d = malloc(sizeof(FSO_Cb_Data));
+        if (d)
+          {
+             d->func = func;
+             d->data = (void *)data;
+          }
+     }
+
+   e_dbus_message_send(conn, msg, fso_request_resource_cb, -1, d);
    dbus_message_unref(msg);
 }
 
 
 static void
-fso_release_resource(const char *resource)
+fso_release_resource(const char *resource, void (*func)(void *data, Eina_Bool error), const void *data)
 {
+   FSO_Cb_Data *d = NULL;
    DBusMessage *msg = dbus_message_new_method_call
      (FSO_OUSAGED_SERVICE, FSO_OUSAGED_OBJECT_PATH, FSO_OUSAGED_INTERFACE,
       "ReleaseResource");
    dbus_message_append_args
      (msg, DBUS_TYPE_STRING, &resource, DBUS_TYPE_INVALID);
-   e_dbus_message_send(sysconn, msg, fso_release_reource_cb, -1, NULL);
+
+   if (func)
+     {
+        d = malloc(sizeof(FSO_Cb_Data));
+        if (d)
+          {
+             d->func = func;
+             d->data = (void *)data;
+          }
+     }
+
+   e_dbus_message_send(conn, msg, fso_release_resource_cb, -1, d);
    dbus_message_unref(msg);
 }
+
+static Eina_Bool
+fso_enable(Enjoy_Plugin *p __UNUSED__)
+{
+   fso_request_resource("CPU", NULL, NULL);
+   return EINA_TRUE;
+}
+
+static void
+_cb_fso_release_resource_done(void *data __UNUSED__, Eina_Bool error __UNUSED__)
+{
+   enjoy_quit_thaw();
+}
+
+static Eina_Bool
+fso_disable(Enjoy_Plugin *p __UNUSED__)
+{
+   enjoy_quit_freeze();
+   fso_release_resource("CPU", _cb_fso_release_resource_done, NULL);
+   return EINA_TRUE;
+}
+
+static const Enjoy_Plugin_Api api = {
+  ENJOY_PLUGIN_API_VERSION,
+  fso_enable,
+  fso_disable
+};
 
 static Eina_Bool
 fso_init(void)
@@ -95,26 +173,36 @@ fso_init(void)
      {
         ERR("ABI versions differ: enjoy=%u, fso=%u",
             enjoy_abi_version(), ENJOY_ABI_VERSION);
-        eina_log_domain_unregister(_fso_log_domain);
-        _fso_log_domain = -1;
+        goto error;
      }
 
-   if (sysconn) return EINA_TRUE;
+   if (conn) return EINA_TRUE;
 
    e_dbus_init();
-   sysconn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
-   fso_request_resource("CPU");
+   conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
+   if (!conn)
+     {
+        ERR("Could not get DBus session bus");
+        goto error;
+     }
+
+   enjoy_plugin_register("sys/fso", &api, ENJOY_PLUGIN_PRIORITY_NORMAL);
 
    return EINA_TRUE;
+
+ error:
+   eina_log_domain_unregister(_fso_log_domain);
+   _fso_log_domain = -1;
+   return EINA_FALSE;
 }
 
 static void
 fso_shutdown(void)
 {
-   if (!sysconn) return;
-   fso_release_resource("CPU");
+   if (!conn) return;
+
    e_dbus_shutdown();
-   sysconn = NULL;
+   conn = NULL;
    if (_fso_log_domain >= 0)
      {
         eina_log_domain_unregister(_fso_log_domain);

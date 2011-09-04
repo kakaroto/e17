@@ -38,13 +38,175 @@ static const Ecore_Getopt options = {
   }
 };
 
-uint32_t
+struct _Enjoy_Plugin {
+   EINA_INLIST;
+   const char *name;
+   const Enjoy_Plugin_Api *api;
+   int priority;
+   Eina_Bool deleted:1;
+   Eina_Bool enabled:1;
+};
+static int plugins_walking = 0;
+static int plugins_deleted = 0;
+static Eina_Inlist *plugins_registry = NULL;
+
+static int
+_plugin_priority_cmp(const void *pa, const void *pb)
+{
+   const Enjoy_Plugin *a = pa;
+   const Enjoy_Plugin *b = pb;
+   int r = a->priority - b->priority;
+   if (r) return r;
+   return strcmp(a->name, b->name);
+}
+
+EAPI Enjoy_Plugin *
+enjoy_plugin_register(const char *name, const Enjoy_Plugin_Api *api, int priority)
+{
+   Enjoy_Plugin *p;
+   if (!name)
+     {
+        ERR("Missing plugin name");
+        return NULL;
+     }
+   if (!api)
+     {
+        ERR("Missing plugin api");
+        return NULL;
+     }
+   if (api->version != ENJOY_PLUGIN_API_VERSION)
+     {
+        ERR("Invalid Enjoy_Plugin_Api version: plugin=%u, enjoy=%u",
+            api->version, ENJOY_PLUGIN_API_VERSION);
+        return NULL;
+     }
+   if (!api->enable)
+     {
+        ERR("%s: api->enable == NULL", name);
+        return NULL;
+     }
+   if (!api->disable)
+     {
+        ERR("%s: api->disable == NULL", name);
+        return NULL;
+     }
+
+   p = calloc(1, sizeof(Enjoy_Plugin));
+   if (!p)
+     {
+        ERR("Could not allocate plugin structure");
+        return NULL;
+     }
+
+   p->name = eina_stringshare_add(name);
+   p->api = api;
+   p->priority = priority;
+
+   plugins_registry = eina_inlist_sorted_insert
+     (plugins_registry, EINA_INLIST_GET(p), _plugin_priority_cmp);
+
+   DBG("plugin %s registered %p", name, p);
+   return p;
+}
+
+void
+enjoy_plugins_walk(void)
+{
+   plugins_walking++;
+}
+
+void
+enjoy_plugins_unwalk(void)
+{
+   Eina_Inlist *l;
+
+   plugins_walking--;
+   if (plugins_walking > 0) return;
+   plugins_walking = 0;
+
+   DBG("delete pending %d plugins", plugins_deleted);
+   for (l = plugins_registry; l != NULL && plugins_deleted > 0;)
+     {
+        Enjoy_Plugin *p = EINA_INLIST_CONTAINER_GET(l, Enjoy_Plugin);
+
+        l = l->next;
+        if (!p->deleted) continue;
+
+        DBG("deleted pending %s", p->name);
+        plugins_registry = eina_inlist_remove
+          (plugins_registry, EINA_INLIST_GET(p));
+        eina_stringshare_del(p->name);
+        free(p);
+        plugins_deleted--;
+     }
+}
+
+EAPI void
+enjoy_plugin_unregister(Enjoy_Plugin *p)
+{
+   if (!p)
+     {
+        ERR("No plugin given");
+        return;
+     }
+   if (p->deleted) return;
+   p->deleted = EINA_TRUE;
+
+   if (p->enabled) enjoy_plugin_disable(p);
+
+   DBG("plugin %s unregistered %p", p->name, p);
+   if (plugins_walking > 0)
+     {
+        plugins_deleted++;
+        return;
+     }
+
+   plugins_registry = eina_inlist_remove(plugins_registry, EINA_INLIST_GET(p));
+   eina_stringshare_del(p->name);
+   free(p);
+}
+
+Eina_Bool
+enjoy_plugin_enable(Enjoy_Plugin *p)
+{
+   Eina_Bool r;
+   if (!p)
+     {
+        ERR("No plugin given");
+        return EINA_FALSE;
+     }
+   if (p->enabled) return EINA_TRUE;
+   DBG("Enable plugin '%s'", p->name);
+   r = p->api->enable(p);
+   if (!r) ERR("Failed to enable plugin '%s'", p->name);
+   else p->enabled = EINA_TRUE;
+   return r;
+}
+
+Eina_Bool
+enjoy_plugin_disable(Enjoy_Plugin *p)
+{
+   Eina_Bool r;
+   if (!p)
+     {
+        ERR("No plugin given");
+        return EINA_FALSE;
+     }
+   if (!p->enabled) return EINA_TRUE;
+   DBG("Disable plugin '%s'", p->name);
+   r = p->api->disable(p);
+   if (!r) ERR("Failed to disable plugin '%s'", p->name);
+   p->enabled = EINA_FALSE;
+   return r;
+}
+
+EAPI uint32_t
 enjoy_abi_version(void)
 {
    return ENJOY_ABI_VERSION;
 }
 
-char *
+EAPI char *
 enjoy_cache_dir_get(void)
 {
    static char *cache = NULL;
@@ -88,6 +250,8 @@ enjoy_cache_dir_get(void)
    return cache;
 }
 
+EAPI int ENJOY_EVENT_STARTED = -1;
+EAPI int ENJOY_EVENT_QUIT = -1;
 EAPI int ENJOY_EVENT_PLAYER_CAPS_CHANGE = -1;
 EAPI int ENJOY_EVENT_PLAYER_STATUS_CHANGE = -1;
 EAPI int ENJOY_EVENT_PLAYER_TRACK_CHANGE = -1;
@@ -96,6 +260,8 @@ EAPI int ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE = -1;
 static void
 enjoy_event_id_init(void)
 {
+   ENJOY_EVENT_STARTED = ecore_event_type_new();
+   ENJOY_EVENT_QUIT = ecore_event_type_new();
    ENJOY_EVENT_PLAYER_CAPS_CHANGE = ecore_event_type_new();
    ENJOY_EVENT_PLAYER_STATUS_CHANGE = ecore_event_type_new();
    ENJOY_EVENT_PLAYER_TRACK_CHANGE = ecore_event_type_new();
@@ -151,6 +317,59 @@ enjoy_module_unload(void)
       eina_module_unload(eina_array_pop(app.modules));
    eina_array_free(app.modules);
    app.modules = NULL;
+}
+
+static int _quit_count = 0;
+
+static void
+_enjoy_event_quit_done(void *a __UNUSED__, void *b __UNUSED__)
+{
+   if (_quit_count > 0) return;
+   ecore_main_loop_quit();
+}
+
+EAPI void
+enjoy_quit(void)
+{
+   static Eina_Bool _called = EINA_FALSE;
+   Enjoy_Plugin *p;
+
+   if (_called) return;
+   _called = EINA_TRUE;
+
+   enjoy_plugins_walk();
+   EINA_INLIST_FOREACH(plugins_registry, p)
+     enjoy_plugin_disable(p);
+   enjoy_plugins_unwalk();
+
+   ecore_event_add(ENJOY_EVENT_QUIT, NULL, _enjoy_event_quit_done, NULL);
+}
+
+EAPI void
+enjoy_quit_freeze(void)
+{
+   _quit_count++;
+}
+
+EAPI void
+enjoy_quit_thaw(void)
+{
+   _quit_count--;
+   if (_quit_count > 0) return;
+   ecore_main_loop_quit();
+}
+
+static Eina_Bool
+_cb_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+{
+   Enjoy_Plugin *p;
+
+   enjoy_plugins_walk();
+   EINA_INLIST_FOREACH(plugins_registry, p)
+     enjoy_plugin_enable(p);
+   enjoy_plugins_unwalk();
+
+   return ECORE_CALLBACK_PASS_ON;
 }
 
 EAPI int
@@ -222,8 +441,12 @@ elm_main(int argc, char **argv)
 
    cover_init();
    enjoy_event_id_init();
+   ecore_event_handler_add(ENJOY_EVENT_STARTED, _cb_started, NULL);
+
    enjoy_module_load();
 
+   /* will run after other events run, in the main loop */
+   ecore_event_add(ENJOY_EVENT_STARTED, NULL, NULL, NULL);
    elm_run();
 
  end:

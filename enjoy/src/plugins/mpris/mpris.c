@@ -106,11 +106,9 @@ struct _MPRIS_Signal {
 
 
 static E_DBus_Connection *conn = NULL;
+static E_DBus_Object *bus_obj = NULL;
 static Eina_Hash *interface_list = NULL;
-static Ecore_Event_Handler *event_handler_caps_change,
-      *event_handler_status_change,
-      *event_handler_track_change,
-      *event_handler_tracklist_change;
+static Eina_List *ev_handlers = NULL;
 
 
 static const char *object_list[] = { ROOT_NAME, TRACKLIST_NAME, PLAYER_NAME, NULL };
@@ -233,6 +231,52 @@ _cb_player_tracklist_change(void *data __UNUSED__, int type __UNUSED__, void *ev
 }
 
 static Eina_Bool
+mpris_enable(Enjoy_Plugin *p __UNUSED__)
+{
+#define EV_HANDLER(ev, func, data)              \
+   ev_handlers = eina_list_append               \
+     (ev_handlers, ecore_event_handler_add(ev, func, data))
+
+   EV_HANDLER(ENJOY_EVENT_PLAYER_CAPS_CHANGE, _cb_player_caps_change, NULL);
+   EV_HANDLER(ENJOY_EVENT_PLAYER_STATUS_CHANGE, _cb_player_status_change, NULL);
+   EV_HANDLER(ENJOY_EVENT_PLAYER_TRACK_CHANGE, _cb_player_track_change, NULL);
+   EV_HANDLER(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE,
+              _cb_player_tracklist_change, NULL);
+#undef EV_HANDLER
+
+   e_dbus_request_name(conn, APPLICATION_NAME, 0, _cb_dbus_request_name, NULL);
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+mpris_disable(Enjoy_Plugin *p __UNUSED__)
+{
+   Ecore_Event_Handler *eh;
+
+   if (interface_list)
+     {
+        eina_hash_free(interface_list);
+        interface_list = NULL;
+     }
+   if (bus_obj)
+     {
+        e_dbus_object_free(bus_obj);
+        bus_obj = NULL;
+     }
+
+   EINA_LIST_FREE(ev_handlers, eh)
+     ecore_event_handler_del(eh);
+
+   return EINA_TRUE;
+}
+
+static const Enjoy_Plugin_Api api = {
+  ENJOY_PLUGIN_API_VERSION,
+  mpris_enable,
+  mpris_disable
+};
+
+static Eina_Bool
 mpris_init(void)
 {
    if (_mpris_log_domain < 0)
@@ -250,34 +294,36 @@ mpris_init(void)
      {
         ERR("ABI versions differ: enjoy=%u, mpris=%u",
             enjoy_abi_version(), ENJOY_ABI_VERSION);
-        eina_log_domain_unregister(_mpris_log_domain);
-        _mpris_log_domain = -1;
+        goto error;
      }
 
    if (conn) return EINA_TRUE;
+
    e_dbus_init();
    conn = e_dbus_bus_get(DBUS_BUS_SESSION);
-   if (conn)
-     e_dbus_request_name(conn, APPLICATION_NAME, 0, _cb_dbus_request_name, NULL);
-   event_handler_caps_change = ecore_event_handler_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, _cb_player_caps_change, NULL);
-   event_handler_status_change = ecore_event_handler_add(ENJOY_EVENT_PLAYER_STATUS_CHANGE, _cb_player_status_change, NULL);
-   event_handler_track_change = ecore_event_handler_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, _cb_player_track_change, NULL);
-   event_handler_tracklist_change = ecore_event_handler_add(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE, _cb_player_tracklist_change, NULL);
+   if (!conn)
+     {
+        ERR("Could not get DBus session bus");
+        goto error;
+     }
+
+   enjoy_plugin_register("listener/mpris", &api, ENJOY_PLUGIN_PRIORITY_HIGH);
+
    return EINA_TRUE;
+
+ error:
+   eina_log_domain_unregister(_mpris_log_domain);
+   _mpris_log_domain = -1;
+   return EINA_FALSE;
 }
 
 void
 mpris_shutdown(void)
 {
    if (!conn) return;
-   ecore_event_handler_del(event_handler_caps_change);
-   ecore_event_handler_del(event_handler_status_change);
-   ecore_event_handler_del(event_handler_track_change);
-   ecore_event_handler_del(event_handler_tracklist_change);
-   eina_hash_free(interface_list);
+
    e_dbus_shutdown();
    conn = NULL;
-   interface_list = NULL;
 
    if (_mpris_log_domain >= 0)
      {
@@ -297,6 +343,18 @@ _cb_dbus_request_name(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
         dbus_error_free(err);
         return;
      }
+
+   if (interface_list)
+     {
+        eina_hash_free(interface_list);
+        interface_list = NULL;
+     }
+
+   if (bus_obj)
+     {
+        e_dbus_object_free(bus_obj);
+        bus_obj = NULL;
+     }
   
    dbus_error_init(&new_err);
    dbus_message_get_args(msg, &new_err, DBUS_TYPE_UINT32, &msgtype, DBUS_TYPE_INVALID);
@@ -310,9 +368,9 @@ _cb_dbus_request_name(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
        
         for (i = 0; object_list[i]; i++)
           {
-             E_DBus_Object *object = e_dbus_object_add(conn, object_list[i], NULL);
+             bus_obj = e_dbus_object_add(conn, object_list[i], NULL);
              E_DBus_Interface *interface = e_dbus_interface_new(PLAYER_INTERFACE_NAME);
-             e_dbus_object_interface_attach(object, interface);
+             e_dbus_object_interface_attach(bus_obj, interface);
             
              eina_hash_add(interface_list, object_list[i], interface);
           }
