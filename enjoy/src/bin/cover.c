@@ -1,123 +1,8 @@
 #include "private.h"
-#include "coverart-lastfm.h"
 
-struct LastFM_Completed_Data {
-    int ref_count;
-    Album *album;
-    Evas *evas;
-    DB *db;
-    struct {
-       void (*cb)(void *);
-       void *data;
-    } success;
-};
-
-static void
-_cover_album_lastfm_download_finished_cb(void *data, char *local_path, Eina_Bool success)
-{
-    struct LastFM_Completed_Data *completed_data = data;
-    Evas_Object *img;
-    Album_Cover *cover;
-    Evas_Load_Error err;
-    int w, h;
-
-    if (!success) goto download_failed;
-    img = evas_object_image_add(completed_data->evas);
-    evas_object_image_file_set(img, local_path, NULL);
-    err = evas_object_image_load_error_get(img);
-    if (err != EVAS_LOAD_ERROR_NONE)
-      {
-         ERR("could not open image %s: %s",
-             local_path, evas_load_error_str(err));
-         goto end;
-      }
-    evas_object_image_size_get(img, &w, &h);
-    if ((w == 0) || (h == 0))
-      {
-         ERR("could not get image size %s", local_path);
-         goto end;
-      }
-    cover = malloc(sizeof(*cover) + strlen(local_path) + 1);
-    if (!cover)
-      {
-         ERR("could not allocate memory");
-         goto end;
-      }
-
-    cover->w = w;
-    cover->h = h;
-    cover->origin = ALBUM_COVER_ORIGIN_LASTFM;
-    strcpy(cover->path, local_path);
-
-    completed_data->album->covers = eina_inlist_append
-      (completed_data->album->covers, EINA_INLIST_GET(cover));
-    db_album_covers_update(completed_data->db, completed_data->album);
-    if (completed_data->success.cb)
-      completed_data->success.cb(completed_data->success.data);
-end:
-    if (img) evas_object_del(img);
-download_failed:
-    if (completed_data->ref_count-- <= 0) free(completed_data);
-}
-
-static void
-_cover_album_lastfm_request_finished_cb(void *data, Eina_Hash *urls)
-{
-    struct LastFM_Completed_Data *completed_data = data;
-    Eina_Iterator *iter = eina_hash_iterator_tuple_new(urls);
-    Eina_Hash_Tuple *tuple;
-    if (!iter) return;
-    int max_size = -1;
-    char *url = NULL;
-
-    EINA_ITERATOR_FOREACH(iter, tuple)
-    {
-       int size = *((int *)tuple->data);
-       if (size > max_size)
-         {
-           max_size = size;
-           url = (char *)tuple->key;
-         }
-    }
-
-    if (max_size > 0 && url)
-      {
-         Eina_Bool success;
-
-         completed_data->ref_count++;
-         success = lastfm_cover_download(url,
-                                         _cover_album_lastfm_download_finished_cb,
-                                         completed_data);
-         if (!success) ERR("could not download cover from %s", url);
-      }
-
-    eina_iterator_free(iter);
-    lastfm_response_free(urls);
-}
-
-static void
-_cover_album_lastfm_find(Evas *evas, DB *db, Album *album, void (*cb)(void *), void *data)
-{
-   struct LastFM_Completed_Data *completed_data;
-
-   if ((album->len.artist + album->len.name) == 0) return;
-
-   completed_data = calloc(1, sizeof(*completed_data));
-   if (!completed_data) return;
-   completed_data->album = album;
-   completed_data->evas = evas;
-   completed_data->db = db;
-   completed_data->success.cb = cb;
-   completed_data->success.data = data;
-   completed_data->ref_count = 1;
-
-   lastfm_cover_search_request(album->artist, album->name,
-                               _cover_album_lastfm_request_finished_cb,
-                               completed_data);
-}
-
-static Eina_Bool
-_cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data), void *data)
+#if 0 /* disabled, it will go back at configuration/preferences later */
+Eina_Bool
+cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data), void *data)
 {
    Evas_Object *img = evas_object_image_add(evas);
    Eina_Iterator *it = db_album_songs_get(db, album->id);
@@ -215,15 +100,7 @@ _cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data)
    db_album_covers_update(db, album);
    return success;
 }
-
-static void
-_cover_album_find(Evas *evas, DB *db, Album *album, void (*cb)(void *), void *data)
-{
-   if (!_cover_album_local_find(evas, db, album, cb, data))
-     _cover_album_lastfm_find(evas, db, album, cb, data);
-
-   album->flags.fetched_covers = !!eina_inlist_count(album->covers);
-}
+#endif
 
 static Evas_Object *
 _cover_empty_add(Evas_Object *parent, unsigned short size)
@@ -235,9 +112,8 @@ _cover_empty_add(Evas_Object *parent, unsigned short size)
 }
 
 static Evas_Object *
-_cover_without_image_add(Evas_Object *parent, unsigned short size)
+_cover_without_image_set(Evas_Object *cover)
 {
-   Evas_Object *cover = _cover_empty_add(parent, size);
    if ((!elm_icon_standard_set(cover, "no-cover")) ||
        (!elm_icon_standard_set(cover, "media-optical")))
      {
@@ -247,6 +123,14 @@ _cover_without_image_add(Evas_Object *parent, unsigned short size)
    return cover;
 }
 
+static Evas_Object *
+_cover_without_image_add(Evas_Object *parent, unsigned short size)
+{
+   Evas_Object *cover = _cover_empty_add(parent, size);
+   return _cover_without_image_set(cover);
+}
+
+/* TODO: do this from configure dialog as well */
 static Evas_Object *
 _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Cover *large_cover, int size)
 {
@@ -272,32 +156,45 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
      }
 
    if (snprintf(file, sizeof(file), "%s/album_%lld_cover_art_%dpx.jpg",
-                cache_dir, album->id, size) < 0)
-     return NULL;
+                cache_dir, (long long int)album->id, size) < 0)
+     {
+        ERR("Path name is too big: album=%lld, size=%d, cache_dir=%s",
+            (long long int)album->id, size, cache_dir);
+        return NULL;
+     }
 
    ee = ecore_evas_buffer_new(1, 1);
-   if (!ee) return NULL;
+   if (!ee)
+     {
+        ERR("Could not create ecore_evas_buffer");
+        return NULL;
+     }
    e = ecore_evas_get(ee);
-   if (!e) goto error;
-
-   evas_image_cache_set(e, 0);
-   evas_font_cache_set(e, 0);
-
    o = ecore_evas_object_image_new(ee);
-   if (!o) goto error;
-   sub_ee = evas_object_data_get(o, "Ecore_Evas");
+   if (!o)
+     {
+        ERR("Could not create sub-ecore evas bridged with an image");
+        goto error;
+     }
+
+   sub_ee = ecore_evas_object_ecore_evas_get(o);
    sub_e = ecore_evas_get(sub_ee);
-
-   evas_image_cache_set(sub_e, 0);
-   evas_font_cache_set(sub_e, 0);
-
    img = evas_object_image_add(sub_e);
-   if (!img) goto error;
+   if (!img)
+     {
+        ERR("Could not create inner evas image object");
+        goto error;
+     }
 
    evas_object_image_load_size_set(img, size, size);
    evas_object_image_file_set(img, large_cover->path, NULL);
    if (evas_object_image_load_error_get(img) != EVAS_LOAD_ERROR_NONE)
-     goto error;
+     {
+        ERR("Could not load inner image '%s': %s",
+            large_cover->path,
+            evas_load_error_str(evas_object_image_load_error_get(img)));
+        goto error;
+     }
 
    evas_object_move(img, 0, 0);
    evas_object_resize(img, size, size);
@@ -308,10 +205,13 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    ecore_evas_resize(sub_ee, size, size);
 
    evas_damage_rectangle_add(sub_e, 0, 0, size, size);
-   evas_render(sub_e);
+   ecore_evas_manual_render(sub_ee);
 
    if (!evas_object_image_save(o, file, NULL, "quality=90"))
-     goto error;
+     {
+        ERR("Could not save image '%s'", file);
+        goto error;
+     }
 
    cover = malloc(sizeof(*cover) + strlen(file) + 1);
    if (!cover)
@@ -320,7 +220,10 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    cover->w = cover->h = size;
    cover->path_len = strlen(file);
    cover->origin = large_cover->origin;
-   strcpy(cover->path, file);
+   memcpy(cover->path, file, cover->path_len + 1);
+
+   INF("Created resized cover album=%lld, size=%d, original=%d: %s",
+       (long long int)album->id, size, large_cover->w, cover->path);
 
    album->covers = eina_inlist_append(album->covers, EINA_INLIST_GET(cover));
    db_album_covers_update(db, album);
@@ -330,6 +233,7 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
 
    ecore_evas_free(ee);
    return icon;
+
 error:
    ecore_evas_free(ee);
    return NULL;
@@ -354,25 +258,27 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
 {
    Evas_Object *cover;
    unsigned int min_error = (unsigned int)-1;
-   const Album_Cover *itr, *best_match;
-   unsigned int fetches = 0;
+   Album_Cover *itr, *best_match, *larger;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(album, NULL);
 
    if (!album->flags.fetched_covers) db_album_covers_fetch(db, album);
 
- fetch_local:
-   fetches++;
-   best_match = NULL;
-   if (!album->covers)
-     _cover_album_find(evas_object_evas_get(parent), db, album, cb_success, data);
+   cover = _cover_empty_add(parent, size);
 
+ retry:
+   best_match = NULL;
+   larger = NULL;
    EINA_INLIST_FOREACH(album->covers, itr)
      {
         unsigned int cur_error;
         unsigned short cur_size = (itr->w > itr->h) ? itr->w : itr->h;
 
-        if (cur_size > size) cur_error = cur_size - size;
+        if (cur_size > size)
+          {
+             larger = itr;
+             cur_error = cur_size - size;
+          }
         else cur_error = size - cur_size;
 
         if (min_error > cur_error)
@@ -383,43 +289,38 @@ cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size
           }
      }
 
-   if (!best_match) return _cover_without_image_add(parent, size);
-   if (min_error > 0)
+   if ((min_error > 0) && (larger))
      {
-        const Album_Cover *larger_size = NULL;
-        unsigned short max_size = 0;
-        EINA_INLIST_FOREACH(album->covers, itr)
+        Evas_Object *resized = _cover_with_exact_size
+          (parent, db, album, larger, size);
+        INF("created exact album=%lld cover size=%d from size=%d: %p",
+            (long long int)album->id, size, larger->w, resized);
+        if (resized)
           {
-             unsigned short cur_size = (itr->w > itr->h) ? itr->w : itr->h;
-             if (cur_size > max_size)
-               {
-                  max_size = cur_size;
-                  larger_size = itr;
-               }
-          }
-        if (larger_size)
-          {
-             Evas_Object *resized;
-             resized = _cover_with_exact_size(parent, db, album,
-                                              larger_size, size);
-             if (resized) return resized;
+             evas_object_del(cover);
+             return resized;
           }
      }
 
-   cover = _cover_empty_add(parent, size);
+   if (!best_match) return _cover_without_image_set(cover);
+
    if (!elm_icon_file_set(cover, best_match->path, NULL))
      {
-        while (album->covers)
-          {
-             void *n = album->covers;
-             album->covers = eina_inlist_remove(album->covers, album->covers);
-             free(n);
-          }
+        album->covers = eina_inlist_remove
+          (album->covers, EINA_INLIST_GET(best_match));
+
+        INF("Removed bogus cover '%s'", best_match->path);
+        free(best_match);
+        best_match = NULL;
+
         db_album_covers_update(db, album);
-        evas_object_del(cover);
-        if (fetches < 2) goto fetch_local;
-        else return _cover_without_image_add(parent, size);
+        if (album->covers) goto retry;
+        else return _cover_without_image_set(cover);
      }
+
+   DBG("best match album=%lld, size=%dx%d (requested=%d, error=%d): %s",
+       (long long int)album->id,
+       best_match->w, best_match->h, size, min_error, best_match->path);
 
    return cover;
 }
@@ -433,16 +334,4 @@ cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned 
    cover = cover_album_fetch(parent, db, album, size, cb_success, data);
    db_album_free(album);
    return cover;
-}
-
-void
-cover_init(void)
-{
-   lastfm_cover_init();
-}
-
-void
-cover_shutdown(void)
-{
-   lastfm_cover_shutdown();
 }

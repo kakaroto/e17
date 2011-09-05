@@ -90,8 +90,6 @@ int32_t      page_songs_count(const Evas_Object *obj);
 Evas_Object *cover_allsongs_fetch(Evas_Object *parent, unsigned short size);
 Evas_Object *cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size, void (*cb)(void *data), void *data);
 Evas_Object *cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned short size, void (*cb)(void *data), void *data);
-void         cover_init(void);
-void         cover_shutdown(void);
 
 
 DB        *db_open(const char *path);

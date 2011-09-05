@@ -20,7 +20,7 @@ endif
 
 enjoy_LDADD = @ELEMENTARY_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@ @EDBUS_LIBS@
 enjoy_CFLAGS = -rdynamic
-enjoy_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c coverart-lastfm.c dbus.c
+enjoy_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c dbus.c
 
 if BUILD_QUICKLAUNCH
 ############################################################################
@@ -31,7 +31,7 @@ if BUILD_QUICKLAUNCH
 ############################################################################
 enjoy_qldir = $(quicklauncher_libdir)
 enjoy_ql_LTLIBRARIES = enjoy_ql.la
-enjoy_ql_la_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c coverart-lastfm.c
+enjoy_ql_la_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c
 enjoy_ql_la_LIBADD = @ELEMENTARY_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@ @EDBUS_LIBS@
 enjoy_ql_la_CFLAGS =
 enjoy_ql_la_LDFLAGS = -module -avoid-version -no-undefined
@@ -41,5 +41,5 @@ enjoy_ql_CFLAGS = -DELM_LIB_QUICKLAUNCH=1
 enjoy_ql_LDFLAGS =
 endif
 
-noinst_HEADERS = gettext.h private.h coverart-lastfm.h log.h plugin.h song.h
-EXTRA_DIST = gettext.h private.h coverart-lastfm.h log.h plugin.h song.h
+noinst_HEADERS = gettext.h private.h log.h plugin.h song.h
+EXTRA_DIST = gettext.h private.h log.h plugin.h song.h

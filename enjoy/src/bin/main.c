@@ -379,7 +379,6 @@ _cb_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
         return ECORE_CALLBACK_PASS_ON;
      }
 
-   cover_init();
    enjoy_module_load();
 
    enjoy_plugins_walk();
@@ -503,8 +502,6 @@ elm_main(int argc, char **argv)
    EINA_LIST_FREE(app.del_dirs, s) free(s);
 
    enjoy_module_unload();
-   cover_shutdown();
-
    enjoy_dbus_shutdown();
 
    eina_log_domain_unregister(_log_domain);
