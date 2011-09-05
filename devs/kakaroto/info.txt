@@ -1,0 +1,10 @@
+Login:        kakaroto
+IRC Nick:     KaKaRoTo
+Name:         Youness Alaoui
+Location:     Montreal, France
+E-Mail:       kakaroto@kakaroto.homelinux.net
+WWW:          http://kakaroto.homelinux.net
+Managing:     escape
+Contributing: ecore, evas
+Platform:     Fedora
+GeoData:      45.539797-73.698671
