@@ -573,7 +573,7 @@ IconboxEvent(Container * ct, XEvent * ev)
 	if (!ewin)
 	   break;
 
-	name = EwinGetIconName(ewin);
+	name = EwinGetTitle(ewin);
 	if (name)
 	   TooltipShow(tt, name, NULL, Mode.events.cx, Mode.events.cy);
 	break;

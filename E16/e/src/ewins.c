@@ -1604,6 +1604,7 @@ EwinGetTitle(const EWin * ewin)
    return (name && name[0]) ? name : NULL;
 }
 
+#if 0				/* Unused */
 const char         *
 EwinGetIconName(const EWin * ewin)
 {
@@ -1621,6 +1622,7 @@ EwinGetIconName(const EWin * ewin)
  done:
    return (name && strlen(name)) ? name : NULL;
 }
+#endif
 
 const char         *
 EwinBorderGetName(const EWin * ewin)

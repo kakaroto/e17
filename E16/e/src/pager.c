@@ -1105,7 +1105,7 @@ PagerShowTt(EWin * ewin)
    static EWin        *tt_ewin = NULL;
    ToolTip            *tt;
 
-   Dprintf("PagerShowTt %s\n", (ewin) ? EwinGetIconName(ewin) : NULL);
+   Dprintf("PagerShowTt %s\n", (ewin) ? EwinGetTitle(ewin) : NULL);
 
    if (!Conf_pagers.title || (ewin == tt_ewin))
       return;
@@ -1117,7 +1117,7 @@ PagerShowTt(EWin * ewin)
    if (tt)
      {
 	if (ewin)
-	   TooltipShow(tt, EwinGetIconName(ewin), NULL, Mode.events.cx,
+	   TooltipShow(tt, EwinGetTitle(ewin), NULL, Mode.events.cx,
 		       Mode.events.cy);
 	else
 	   TooltipHide(tt);
