@@ -1464,15 +1464,10 @@ gen_server_impl(Azy_Server_Module *s)
    EL(0, "#include <Azy.h>");
    EL(0, "#include \"%s%sCommon.h\"", name, sep);
    EL(0, "#include \"%s%sCommon_Azy.h\"", name, sep);
+   EL(0, "#include \"%s%s%s.azy_server.h\"", name, sep, s->name);
    NL;
 
    EL(0, "static Azy_Server_Module_Def *module_def = NULL;");
-   NL;
-   EL(0, "typedef struct %s%s%s_Module", name, sep, s->name);
-   EL(0, "{");
-   /* FIXME: does this need to be output at all if there is no attrs stub? */
-   EL(0, "%s", s->stub_attrs ? s->stub_attrs : "");
-   EL(0, "} %s%s%s_Module;", name, sep, s->name);
    NL;
    NL;
 /* ************************STUBS************************* */
