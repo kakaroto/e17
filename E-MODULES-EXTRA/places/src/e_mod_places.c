@@ -139,12 +139,12 @@ places_shutdown(void)
    if (conn)
      {
 #ifdef HAVE_HAL_MOUNT
-        e_dbus_signal_handler_del(conn, hal_sh_added);
-        e_dbus_signal_handler_del(conn, hal_sh_removed);
+        if (hal_sh_added) e_dbus_signal_handler_del(conn, hal_sh_added);
+        if (hal_sh_removed) e_dbus_signal_handler_del(conn, hal_sh_removed);
 #endif
 #ifdef HAVE_UDISKS_MOUNT
-        e_dbus_signal_handler_del(conn, udisks_sh_added);
-        e_dbus_signal_handler_del(conn, udisks_sh_removed);
+        if (udisks_sh_added) e_dbus_signal_handler_del(conn, udisks_sh_added);
+        if (udisks_sh_removed) e_dbus_signal_handler_del(conn, udisks_sh_removed);
 #endif
      }
 
