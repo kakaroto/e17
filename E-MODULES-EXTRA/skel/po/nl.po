@@ -5,70 +5,53 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-25 17:14+0800\n"
-"PO-Revision-Date: 2009-07-16 17:55+0000\n"
-"Last-Translator: Yentl <y.v.t@scarlet.be>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-09-04 07:02-0700\n"
+"PO-Revision-Date: 2011-09-04 16:33+0100\n"
+"Last-Translator: Heimen Stoffels <vistausss@gmail.com>\n"
 "Language-Team: Dutch <nl@li.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. create new config dialog
-#: ../src/e_mod_config.c:39
+#. create our config dialog
+#: ../src/e_mod_config.c:44
 msgid "Skeleton Module"
 msgstr "Skelet Module"
 
-#: ../src/e_mod_config.c:79
+#: ../src/e_mod_config.c:84
 msgid "General"
 msgstr "Algemeen"
 
-#: ../src/e_mod_config.c:81
+#: ../src/e_mod_config.c:86
 msgid "Use Switch 1"
-msgstr "Gebruik Wissel 1"
+msgstr "Gebruik omzetter 1"
 
-#: ../src/e_mod_main.c:107
-msgid ""
-"Skeleton Module Configuration data needed upgrading. Your old "
-"configuration<br> has been wiped and a new set of defaults initialized. "
-"This<br>will happen regularly during development, so don't report a<br>bug. "
-"This simply means the module needs new configuration<br>data by default for "
-"usable functionality that your old<br>configuration simply lacks. This new "
-"set of defaults will fix<br>that by adding it in. You can re-configure "
-"things now to your<br>liking. Sorry for the inconvenience.<br>"
-msgstr ""
-"Skelet Module Configuratie data moest geüpdate worden. Jouw oude "
-"configuratie <br>is gewist en is nu naar standaardwaarden teruggezet. Dit "
-"<br>zal regelmatig gebeuren tijdens de ontwikkelingsperiode, dus meld dit "
-"niet als een <br>bug. Dit betekent enkel dat de module standaard nieuwe "
-"configuratie data nodig heeft<br>opdat het bruikbare functionaliteit zou "
-"bieden, welke de oude configuratie gewoon niet heeft. Deze nieuwe set van "
-"standaardwaarden<br>zal deze waarden toevoegen. Je kan dingen nu terug "
-"instellen naar wens.<br>Sorry voor het ongemak.<br>"
+#. add right-side item
+#: ../src/e_mod_main.c:81
+msgid "Skel"
+msgstr "Skel"
 
-#: ../src/e_mod_main.c:127
-msgid ""
-"Your Skeleton Module configuration is NEWER than the module version. This is "
-"very<br>strange. This should not happen unless you downgraded<br>the module "
-"or copied the configuration from a place where<br>a newer version of the "
-"module was running. This is bad and<br>as a precaution your configuration "
-"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
-msgstr ""
-"Jouw Skelet Module Configuratie is NIEUWER dan de versie van de module. Dit "
-"is erg<br>raar. Dit zou niet mogen gebeuren tenzij je de module hebt "
-"gedowngrade<br>of een configuratiebestand gekopiëerd hebt van een plaats "
-"waar een nieuwere versie aanwezig was. Dit is erg en<br>uit voorzorg is jouw "
-"configuratiebestand hersteld naar<br>standaardwaarden. Sorry voor het "
-"ongemak.<br>"
+#: ../src/e_mod_main.c:112
+msgid "Skeleton Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr "Skel-data had een upgrade nodig. Uw oude instellingen zijn<br>gewist en een nieuwe set van standaarden is geïnitialiseerd. Dit<br>zal regelmatig gebeuren tijdens de ontwikkeling, dus rapporteer geen<br>bug. Dit betekent simpelweg dat Skel nieuwe instellingen-data<br>als standaard nodig heeft voor bruikbare functionaliteit die uw oude<br>simpelweg niet heeft. Deze nieuwe set van standaarden zal dit oplossen<br>door het toe te voegen. U kunt uw dingen nu her-instellen naar uw<br>wensen. Excuses voor de overlast.<br>"
 
-#: ../src/e_mod_main.c:294
+#: ../src/e_mod_main.c:132
+msgid "Your Skeleton Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr "Uw instellingen zijn NIEUWER dan Skel-module. Dit is heel erg<br>vreemd. Dit zou niet moeten gebeuren tenzij u de Skel-module<br>hebt gedowngrade of uw instellingen gekopieerd heeft van een plaats waar<br>een nieuwere versie van de Skel-module aan het draaien was. Dit is slecht en<br>uit voorzorg zijn uw instellingen nu teruggezet naar de<br>standaarden. Excuses voor het ongemak.<br>"
+
+#: ../src/e_mod_main.c:299
 msgid "Skeleton"
 msgstr "Skelet"
 
-#: ../src/e_mod_main.c:377
+#: ../src/e_mod_main.c:384
 msgid "Skeleton Configuration Updated"
-msgstr "Skelet Configuratie Geüpdate"
+msgstr "Skelet-configuratie geüpdate"
 
-#: ../src/e_mod_main.c:434
-msgid "Configuration"
-msgstr "Configuratie"
+#: ../src/e_mod_main.c:426
+msgid "Settings"
+msgstr "Instellingen"
+
+#~ msgid "Configuration"
+#~ msgstr "Configuratie"

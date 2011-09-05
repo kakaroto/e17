@@ -6,149 +6,158 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-11-05 16:07+0800\n"
-"PO-Revision-Date: 2009-11-12 17:24+0000\n"
-"Last-Translator: Elco <Unknown>\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-09-04 07:02-0700\n"
+"PO-Revision-Date: 2011-09-04 16:06+0100\n"
+"Last-Translator: Heimen Stoffels <vistausss@gmail.com>\n"
 "Language-Team: Dutch <nl@li.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2009-11-13 11:33+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../src/e_mod_main.c:237
+#: ../src/e_mod_main.c:232
 msgid "IIirk"
 msgstr "IIirk"
 
-#: ../src/e_mod_main.c:369 ../src/e_mod_main.c:786
-msgid "Configuration"
+#: ../src/e_mod_main.c:361
+#: ../src/e_mod_main.c:773
+msgid "Settings"
 msgstr "Instellingen"
 
-#: ../src/e_mod_main.c:1559
+#: ../src/e_mod_main.c:1515
 msgid "Applications"
-msgstr "Toepassingen"
+msgstr "Programma's"
 
-#: ../src/e_mod_main.c:1561 ../src/e_int_config_iiirk.c:52
-#: ../src/e_int_config_iiirk.c:67
+#: ../src/e_mod_main.c:1517
+#: ../src/e_int_config_iiirk.c:49
+#: ../src/e_int_config_iiirk.c:64
 msgid "IIirk Applications"
-msgstr "IIirk Toepassingen"
+msgstr "IIirk-programma's"
 
-#: ../src/e_mod_main.c:1563
+#: ../src/e_mod_main.c:1519
 msgid "Internal"
 msgstr "Intern"
 
-#: ../src/e_mod_main.c:1564
+#: ../src/e_mod_main.c:1520
 msgid "IIirk Other"
-msgstr ""
+msgstr "Liirk anderen"
 
-#: ../src/e_mod_config.c:58
-msgid "Iiirk Configuration"
-msgstr "Iiirk Instellingen"
+#: ../src/e_mod_config.c:55
+msgid "Iiirk Settings"
+msgstr "Iiirk-instellingen"
 
-#: ../src/e_mod_config.c:110
+#: ../src/e_mod_config.c:107
 msgid "Selected Iiirk Source"
-msgstr ""
+msgstr "Geselecteerde liirk-bron"
 
-#: ../src/e_mod_config.c:118 ../src/e_int_config_iiirk.c:157
+#: ../src/e_mod_config.c:115
+#: ../src/e_int_config_iiirk.c:159
 msgid "Add"
 msgstr "Toevoegen"
 
-#: ../src/e_mod_config.c:120 ../src/e_int_config_iiirk.c:183
+#: ../src/e_mod_config.c:117
+#: ../src/e_int_config_iiirk.c:185
 msgid "Delete"
 msgstr "Verwijderen"
 
-#: ../src/e_mod_config.c:122
+#: ../src/e_mod_config.c:119
 msgid "Configure"
 msgstr "Instellen"
 
-#: ../src/e_mod_config.c:131
+#: ../src/e_mod_config.c:128
 msgid "General Settings"
 msgstr "Algemene instellingen"
 
-#: ../src/e_mod_config.c:132
+#: ../src/e_mod_config.c:129
 msgid "Hide window from any list when iconified"
-msgstr ""
+msgstr "Verberg venster van elke lijst wanneer geiconiseerd"
+
+#: ../src/e_mod_config.c:131
+msgid "Show Icon Label"
+msgstr "Toon pictrogram-label"
 
 #: ../src/e_mod_config.c:134
-msgid "Show Icon Label"
-msgstr ""
-
-#: ../src/e_mod_config.c:137
 msgid "Display Name"
-msgstr ""
+msgstr "Weergavenaam"
 
-#: ../src/e_mod_config.c:139
+#: ../src/e_mod_config.c:136
 msgid "Display Title"
-msgstr "Toon Titel"
+msgstr "Toon titel"
 
-#: ../src/e_mod_config.c:141
+#: ../src/e_mod_config.c:138
 msgid "Display Class"
-msgstr "Toon Klasse"
+msgstr "Toon klasse"
 
-#: ../src/e_mod_config.c:143
+#: ../src/e_mod_config.c:140
 msgid "Display Icon Name"
-msgstr ""
+msgstr "Toon pictogramnaam"
 
-#: ../src/e_mod_config.c:145
+#: ../src/e_mod_config.c:142
 msgid "Display Border Caption"
-msgstr ""
+msgstr "Toon randtekst"
 
-#: ../src/e_mod_config.c:150
+#: ../src/e_mod_config.c:147
 msgid "Screen"
-msgstr "Beeld"
+msgstr "Scherm"
 
-#: ../src/e_mod_config.c:170
+#: ../src/e_mod_config.c:167
 msgid "Show windows from all screens"
 msgstr "Toon vensters van alle schermen"
 
-#: ../src/e_mod_config.c:175
+#: ../src/e_mod_config.c:172
 msgid "Show windows from current screen"
-msgstr "Toon vensters van het huidige scherm"
+msgstr "Toon vensters van huidig scherm"
 
-#: ../src/e_mod_config.c:181
+#: ../src/e_mod_config.c:178
 msgid "Desktop"
 msgstr "Bureaublad"
 
-#: ../src/e_mod_config.c:184
+#: ../src/e_mod_config.c:181
 msgid "Show windows from all desktops"
 msgstr "Toon vensters van alle schermen"
 
-#: ../src/e_mod_config.c:189
+#: ../src/e_mod_config.c:186
 msgid "Show windows from active desktop"
 msgstr "Toon vensters van het actieve scherm"
 
-#: ../src/e_mod_config.c:228
+#: ../src/e_mod_config.c:225
 msgid "Create new IIirk source"
-msgstr ""
+msgstr "Creeër nieuwe liirk-bron"
 
-#: ../src/e_mod_config.c:229
+#: ../src/e_mod_config.c:226
 msgid "Enter a name for this new source:"
-msgstr ""
+msgstr "Voer een naam in voor deze nieuwe bron:"
 
-#: ../src/e_mod_config.c:244
+#: ../src/e_mod_config.c:241
 #, c-format
-msgid ""
-"You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
-"iiirk source?"
-msgstr ""
+msgid "You requested to delete \"%s\".<br><br>Are you sure you want to delete this iiirk source?"
+msgstr "U heeft gevraagd om \"%s\" te verwijderen.<br><br>Weet u zeker dat u deze iiirk-bron wilt verwijderen?"
 
-#: ../src/e_mod_config.c:248
+#: ../src/e_mod_config.c:245
 msgid "Are you sure you want to delete this iiirk source?"
-msgstr ""
+msgstr "Weet u zeker dat u deze iiirk-bron wilt verwijderen?"
 
-#: ../src/e_int_config_iiirk.c:150
+#: ../src/e_int_config_iiirk.c:152
 msgid "All Applications"
-msgstr "Alle toepassingen"
+msgstr "Alle programma's"
 
-#: ../src/e_int_config_iiirk.c:164
+#: ../src/e_int_config_iiirk.c:166
 msgid "Selected Applications"
-msgstr "Geselecteerde Toepassingen"
+msgstr "Geselecteerde programma's"
 
-#: ../src/e_int_config_iiirk.c:172
+#: ../src/e_int_config_iiirk.c:174
 msgid "Up"
 msgstr "Omhoog"
 
-#: ../src/e_int_config_iiirk.c:177
+#: ../src/e_int_config_iiirk.c:179
 msgid "Down"
 msgstr "Omlaag"
+
+#~ msgid "Configuration"
+#~ msgstr "Instellingen"
+
+#~ msgid "Iiirk Configuration"
+#~ msgstr "Iiirk Instellingen"
