@@ -130,7 +130,12 @@ _cover_without_image_add(Evas_Object *parent, unsigned short size)
    return _cover_without_image_set(cover);
 }
 
-/* TODO: do this from configure dialog as well */
+/* TODO: do this from configure dialog as well
+ *
+ * it blocks the UI process too heavily, bad for scrolls... need to
+ * move to a daemon, or use ethumb_client to do it (with custom
+ * prefix, or leave it as a thumbnail)
+ */
 static Evas_Object *
 _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Cover *large_cover, int size)
 {
@@ -155,11 +160,11 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
         return NULL;
      }
 
-   if (snprintf(file, sizeof(file), "%s/album_%lld_cover_art_%dpx.jpg",
-                cache_dir, (long long int)album->id, size) < 0)
+   if (snprintf(file, sizeof(file), "%s/covers/%d/album_%lld.jpg",
+                cache_dir, size, (long long int)album->id) < 0)
      {
-        ERR("Path name is too big: album=%lld, size=%d, cache_dir=%s",
-            (long long int)album->id, size, cache_dir);
+        ERR("Path name is too big: %s/covers/%d/album_%lld.jpg",
+            cache_dir, size, (long long int)album->id);
         return NULL;
      }
 
@@ -206,6 +211,10 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
 
    evas_damage_rectangle_add(sub_e, 0, 0, size, size);
    ecore_evas_manual_render(sub_ee);
+
+   cache_dir = ecore_file_dir_get(file);
+   ecore_file_mkpath(cache_dir);
+   free(cache_dir);
 
    if (!evas_object_image_save(o, file, NULL, "quality=90"))
      {
