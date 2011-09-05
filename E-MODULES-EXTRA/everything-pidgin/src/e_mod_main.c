@@ -398,8 +398,6 @@ _update_list(int async)
 	EVRY_PLUGIN_ITEMS_ADD(plug, buddyEveryItems, _input, 0, 0);
      }
 
-   EVRY_PLUGIN_ITEMS_SORT(plug, evry->items_sort_func);
-
    if (async)
      EVRY_PLUGIN_UPDATE(plug, EVRY_UPDATE_ADD);
 }
