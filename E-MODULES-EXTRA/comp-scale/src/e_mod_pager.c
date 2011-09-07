@@ -70,7 +70,6 @@ static int scale_state = SCALE_STATE_OUT;
 static double start_time;
 static E_Zone *zone = NULL;
 static Evas_Object *bg_over = NULL;
-static Evas_Object *bg_proxy = NULL;
 static Item *selected_item = NULL;
 static E_Desk *previous_desk = NULL;
 static E_Desk *current_desk = NULL;
@@ -145,7 +144,7 @@ _pager_redraw(void *data)
    Eina_List *l;
    Item *it;
 
-   
+
    if (scale_state == SCALE_STATE_HOLD)
      {
 	e_manager_comp_evas_update(e_manager_current_get());
@@ -188,7 +187,7 @@ _pager_redraw(void *data)
 	     double a = 255.0;
 
 	     if (!it->o) continue;
-	     
+
 	     if ((it->desk != current_desk) && (it->desk != previous_desk))
 	       a = 255.0 * (1.0 - in);
 
@@ -197,7 +196,7 @@ _pager_redraw(void *data)
      }
 
    double a = 255.0 * in;
-   
+
    if (scale_conf->pager_fade_popups)
      {
 	EINA_LIST_FOREACH(popups, l, it)
@@ -209,7 +208,7 @@ _pager_redraw(void *data)
 	if (it->o) continue;
 	evas_object_color_set(it->o_win, a, a, a, a);
      }
-   
+
    if (scale_conf->pager_fade_desktop)
      {
    	double a = (1.0 - in) * 155.0;
@@ -311,11 +310,15 @@ _pager_finish()
    EINA_LIST_FREE(desks, o)
      {
 	oo = edje_object_part_swallow_get(o, "e.swallow.desk");
-	if (oo) evas_object_del(oo);
+	if (oo)
+	  {
+	     /* printf("del %p\n", oo); */
+	     evas_object_del(oo);
+	  }
 
 	evas_object_del(o);
      }
-   
+
    EINA_LIST_FREE(handlers, handler)
      ecore_event_handler_del(handler);
 
@@ -328,12 +331,10 @@ _pager_finish()
 
    scale_animator = NULL;
    evas_object_del(bg_over);
-   evas_object_del(bg_proxy);
    evas_object_del(zone_clip);
-   bg_proxy = NULL;
    bg_over = NULL;
    zone_clip = NULL;
-   
+
    e_msg_handler_del(msg_handler);
    msg_handler = NULL;
    zone = NULL;
@@ -645,11 +646,9 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
      {
 	o = e_manager_comp_src_shadow_get(man, src);
 	if (!o) return NULL;
-	
+
 	if (cw->win == zone->container->bg_win)
 	  {
-	     const char *file, *group;
-
 	     smooth = evas_object_image_smooth_scale_get(cw->obj);
 
 	     o = evas_object_rectangle_add(e);
@@ -658,20 +657,12 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 	     evas_object_show(o);
 	     bg_over = o;
 
-	     edje_object_file_get(zone->bg_object, &file, &group);
-	     o = edje_object_add(e); 
-	     edje_object_file_set(o, file, group);
-	     evas_object_resize(o, zone->w, zone->h);
-	     evas_object_show(o);
-	     bg_proxy = o;
-
 	     evas_object_stack_above(bg_over, cw->shobj);
-	     evas_object_lower(bg_proxy);
 
 	     if (scale_conf->pager_fade_desktop)
 	       evas_object_color_set(bg_over, 0, 0, 0, 0);
 	     else
-	       evas_object_color_set(bg_over, 0, 0, 0, 200);
+	       evas_object_color_set(bg_over, 0, 0, 0, 255);
 
 	     return NULL;
 	  }
@@ -726,7 +717,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    o = e_manager_comp_src_image_get(man, src);
    evas_object_image_source_set(it->o_win, o);
    evas_object_show(o);
-   
+
    it->o = edje_object_add(e);
    if (!e_theme_edje_object_set(it->o, "base/theme/modules/scale",
 				"modules/scale/win"))
@@ -1036,7 +1027,7 @@ _pager_run(E_Manager *man)
    int x, y;
    Item *it;
 
-   
+
    mouse_activated = 0;
    mouse_x = -1;
    mouse_y = -1;
@@ -1103,10 +1094,10 @@ _pager_run(E_Manager *man)
 	zone_x = zone->x;
 	zone_y = zone->y;
      }
-   
+
    desk_w = (zone_w / zoom);
    desk_h = (zone_h / zoom);
-   
+
    min_x = OFFSET + zone_x + (zoom - zone->desk_x_count) * desk_w / 2.0;
    min_y = OFFSET + zone_y + (zoom - zone->desk_y_count) * desk_h / 2.0;
 
@@ -1120,15 +1111,15 @@ _pager_run(E_Manager *man)
 
    EINA_LIST_FOREACH((Eina_List *)e_manager_comp_src_list(man), l, src)
      _pager_win_new(e, man, src);
-   
+
    edje_object_file_get(zone->bg_object, &file, &group);
-   
+
    for (y = 0; y < zone->desk_y_count; y++)
      {
 	for (x = 0; x < zone->desk_x_count; x++)
 	  {
 	     Evas_Object *o, *oo;
-	     
+
 	     o = edje_object_add(e);
 
 	     if (!e_theme_edje_object_set(o, "base/theme/modules/scale", "modules/scale/desk"))
@@ -1145,24 +1136,27 @@ _pager_run(E_Manager *man)
 
 	     if (edje_object_part_exists(o, "e.swallow.desk"))
 	       {
-		  oo = edje_object_add(e); 
+		  oo = edje_object_add(e);
 		  edje_object_file_set(oo, file, group);
 		  evas_object_resize(oo, zone->w, zone->h);
+		  edje_extern_object_max_size_set(oo, 65536, 65536);
+		  edje_extern_object_min_size_set(oo, 0, 0);
 
 	     	  /* oo = evas_object_image_filled_add(e);
 	     	   * evas_object_image_source_set(oo, bg_proxy);
 	     	   * evas_object_image_smooth_scale_set(oo, smooth); */
 
+		  /* printf("add %p\n", oo); */
 	     	  edje_object_part_swallow(o, "e.swallow.desk", oo);
 	       }
 	  }
      }
-   
+
    _pager_place_desks(1.0);
    _pager_place_windows(1.0);
 
    EINA_LIST_FOREACH(items, l, it)
-     {	     
+     {
 	evas_object_image_smooth_scale_set(it->o_win, smooth);
 
 	if ((scale_conf->pager_fade_windows) && (it->bd->desk != current_desk))
