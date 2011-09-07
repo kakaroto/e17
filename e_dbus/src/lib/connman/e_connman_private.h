@@ -96,7 +96,7 @@ _dbus_callback_check_and_init(DBusMessage *msg, DBusMessageIter *itr, DBusError 
 {
    if (!msg)
      {
-        if (err)
+        if (err && (err->name[0] != 'C'))
            ERR("an error was reported by server: "
                "name=\"%s\", message=\"%s\"",
                err->name, err->message);
