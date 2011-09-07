@@ -24,7 +24,10 @@
 #include "level.h"
 #include "level_editor.h"
 #include "level_chooser.h"
+
+#ifdef HAVE_ECORE_X
 #include <Ecore_X.h>
+#endif
 
 int _drawin_log_domain = -1;
 
@@ -311,11 +314,13 @@ int main(int argc, char **argv)
         if (is_fullscreen)
                 ecore_evas_fullscreen_set(application->ee, EINA_TRUE);
 
+#ifdef HAVE_ECORE_X
         if (!has_cursor && !strcmp(ecore_evas_engine_name_get(application->ee), "software_x11"))
         {
                 Ecore_X_Window ewin = ecore_evas_software_x11_window_get(application->ee);
                 ecore_x_window_cursor_show(ewin, 0);
         }
+#endif
 
         ecore_evas_show(application->ee);
 
