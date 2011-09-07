@@ -45,13 +45,7 @@
 			}							\
 			program { name: "go_mouse_in";				\
 				signal: "mouse,in";				\
-				source: icon_name;				\
-				action: STATE_SET "mouse_in" 0.0;		\
-				transition: LINEAR 1.0;				\
-				target: icon_name;				\
-			}							\
-			program { name: "go_mouse_clicked";			\
-				signal: "mouse,clicked,1";			\
+				filter: "pattern" "mouse_down";			\
 				source: icon_name;				\
 				action: STATE_SET "mouse_in" 0.0;		\
 				transition: LINEAR 1.0;				\
@@ -112,6 +106,36 @@ collections {
 						item { align: -1 -1; type: GROUP; source: "bottom_right"; position: 2 2; }
 					}
 				}
+			}
+
+			part {	name: "pattern";
+				type: RECT;
+				mouse_events: 1;
+				repeat_events: 1;
+				//pointer_mode: AUTOGRAB;
+				description {	state: "default" 0.0;
+					color: 0 0 0 0;
+					rel1 {
+						to: "table";
+						relative: 0 0;
+					}
+					rel2 {
+						to: "table";
+						relative: 1 1;
+					}
+				}
+				description {	state: "mouse_down" 0.0;
+					inherit: "default" 0.0;
+				}
+			}
+		}
+		programs {
+			program { name: "go_mouse_down";
+				signal: "mouse,down,1";
+				source: "pattern";
+				action: STATE_SET "mouse_down" 0.0;
+				transition: LINEAR 1.0;
+				target: "pattern";
 			}
 		}
 	}
