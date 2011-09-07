@@ -98,7 +98,7 @@ group { name: "e/comp/wobble";
 		part { name: "e.swallow.content";
             type: SWALLOW;
             clip_to: "clipper";
-            mouse_events: 0;
+            mouse_events: 1;
             description { state: "default" 0.0;
 				rel1 {
 					to: "shower";
@@ -266,7 +266,7 @@ group { name: "e/comp/none";
 	parts {
 		part { name: "e.swallow.content";
             type: SWALLOW;
-            mouse_events: 0;
+            mouse_events: 1;
             description { state: "default" 0.0;
             }
 		}
@@ -335,7 +335,7 @@ group { name: "e/comp/default";
 		}
 		part { name: "e.swallow.content";
             type: SWALLOW;
-            mouse_events: 0;
+            mouse_events: 1;
             clip_to: "focus-clipper";
             description { state: "default" 0.0;
             }
@@ -457,7 +457,7 @@ group { name: "e/comp/popup";
 		part { name: "e.swallow.content";
             type: SWALLOW;
             clip_to: "clipper";
-            mouse_events: 0;
+            mouse_events: 1;
             description { state: "default" 0.0;
 				rel1 {
 					to: "shower";
@@ -584,7 +584,7 @@ group { name: "e/comp/menu";
 		part { name: "e.swallow.content";
             type: SWALLOW;
             clip_to: "clipper";
-            mouse_events: 0;
+            mouse_events: 1;
             description { state: "default" 0.0;
 				rel1 {
 					to: "shower";
@@ -740,7 +740,7 @@ group { name: "e/comp/everything";
 		part { name: "e.swallow.content";
 			type: SWALLOW;
 			clip_to: "clipper";
-			mouse_events: 0;
+			mouse_events: 1;
 			description { state: "default" 0.0;
 				rel1 {
 					to: "shower";
@@ -821,7 +821,7 @@ group {
 			}
 			description { state: "faded" 0.0;
 				inherit: "default" 0.0;
-				color: 200 200 200 235;
+				color: 200 200 200 200;
 			}
 		}
 		part { name: "shadow";
@@ -853,9 +853,15 @@ group {
 			name: "e.swallow.win";
 			type: SWALLOW;
 			clip_to: "clipper";
-			/* mouse_events: 0; */
+			mouse_events: 1;
 			description {
 				state: "default" 0.0;
+				color: 255 255 255 255;
+				rel1.offset: 5 5;
+				rel2.offset: -6 -6;
+			}
+			description {
+				state: "show" 0.0;
 				color: 255 255 255 255;
 			}
 		}
@@ -958,16 +964,18 @@ group {
 			signal: "mouse,in";
 			source: "e";
 			action: STATE_SET "show" 0.0;
-			transition: SINUSOIDAL 0.5;
+			transition: SINUSOIDAL 0.2;
 			target: "text.clipper";
+			target: "e.swallow.win";
 		}
 		program {
 			name: "mouse_out2";
 			signal: "mouse,out";
 			source: "e";
 			action: STATE_SET "default" 0.0;
-			transition: SINUSOIDAL 0.5;
+			transition: DECELERATE 0.2;
 			target: "text.clipper";
+			target: "e.swallow.win";
 		}
 		program {
 			name: "hide";
