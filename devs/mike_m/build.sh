@@ -33,6 +33,9 @@ do_build_and_install()
 	echo "Building $e"
 	echo
 	case $e in
+	eina)
+		flags="--enable-debug-threads"
+		;;
 	evas)
 		flags="--enable-gl-x11"
 		;;
