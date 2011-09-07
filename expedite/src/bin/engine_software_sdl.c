@@ -49,11 +49,11 @@ engine_software_sdl_loop(void)
              break;
           case SDL_MOUSEBUTTONDOWN:
              evas_event_feed_mouse_move(evas, event.button.x, event.button.y, 0, NULL);
-             evas_event_feed_mouse_down(evas, event.button.state, EVAS_BUTTON_NONE, 0, NULL);
+             evas_event_feed_mouse_down(evas, event.button.button, EVAS_BUTTON_NONE, 0, NULL);
              break;
           case SDL_MOUSEBUTTONUP:
              evas_event_feed_mouse_move(evas, event.button.x, event.button.y, 0, NULL);
-             evas_event_feed_mouse_up(evas, event.button.state, EVAS_BUTTON_NONE, 0, NULL);
+             evas_event_feed_mouse_up(evas, event.button.button, EVAS_BUTTON_NONE, 0, NULL);
              break;
           case SDL_VIDEORESIZE:
              evas_output_viewport_set(evas, 0, 0,
