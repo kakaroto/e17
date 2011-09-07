@@ -43,6 +43,7 @@ group {
 		part {
 			name: "e.text.title";
 			type: TEXT;
+			scale: 1;
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
@@ -72,6 +73,7 @@ group {
 		part {
 			name: "e.text.message";
 			type: TEXTBLOCK;
+			scale: 1;
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;

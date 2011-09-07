@@ -198,9 +198,8 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
-			mouse_events: 0;
 			scale: 1;
-
+			mouse_events: 0;
 			description {
 				state: "default" 0.0;
 				/* fixed: 1 1; */

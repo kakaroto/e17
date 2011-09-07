@@ -376,9 +376,9 @@
 		name: "e.text.title";							\
 		type: TEXT;										\
 		effect: SHADOW;									\
+		scale: 1;										\
 		mouse_events: 0;								\
 		clip_to: "title.area.clip";						\
-		scale: 1;										\
 		description {									\
 			state: "default" 0.0;						\
 			rel1.to: "title.area.clip";					\

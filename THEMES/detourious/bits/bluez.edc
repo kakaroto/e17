@@ -93,6 +93,7 @@ group { name: "e/modules/bluez/tip";
 		part { name: "e.text.name";
 			type: TEXT;
 			effect: SHADOW;
+			scale: 1;
 			mouse_events: 0;
 			description { state: "default" 0.0;
 				TEXT_COLOR
@@ -116,6 +117,7 @@ group { name: "e/modules/bluez/tip";
 		}
 		part { name: "e.text.status";
 			type: TEXT;
+			scale: 1;
 			mouse_events: 0;
 			description { state: "default" 0.0;
 				TEXT_COLOR;

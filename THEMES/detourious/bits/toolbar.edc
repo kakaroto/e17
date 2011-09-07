@@ -349,8 +349,8 @@ group {
             name: "e.text.label";
             type: TEXT;
             effect: TEXT_EFFECT_BOLD;
-            mouse_events: 0;
             scale: 1;
+            mouse_events: 0;
             description {
                 state: "default" 0.0;
                 fixed: 0 1;

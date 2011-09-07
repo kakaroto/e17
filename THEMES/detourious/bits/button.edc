@@ -256,8 +256,8 @@ group {
 			name: "e.text.label";
 			type: TEXT;
 			effect: TEXT_EFFECT_BOLD;
-			mouse_events: 0;
 			scale: 1;
+			mouse_events: 0;
 			clip_to: "disabled_button";
 			description {
 				state: "default" 0.0;

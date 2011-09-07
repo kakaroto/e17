@@ -77,8 +77,8 @@ group {
 			name: "e.text.label";
 			type: TEXT;
 			effect: TEXT_EFFECT_BOLD;
-			mouse_events: 0;
 			scale: 1;
+			mouse_events: 0;
 			description {
 				state: "default" 0.0;
 				fixed: 1 1;
@@ -101,7 +101,6 @@ group {
 
 		part {
 			name: "list";
-			type: IMAGE;
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
@@ -125,7 +124,6 @@ group {
 
 		part {
 			name: "list_inset";
-			type: IMAGE;
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
@@ -159,7 +157,7 @@ group {
 				}
 				rel2 {
 					to: "list"; 
-					offset: -2 -2; 
+					offset: -2 -5; 
 				}
 			}
 		}
@@ -171,8 +169,10 @@ group {
 			description {
 				state: "default" 0.0;
 				rel1 {
-					to: "list"; 
-					offset: 8 5; 
+					to_x: "list";
+					to_y: "e.text.label"; 
+					relative: 0.0 1.0;
+					offset: 8 13; 
 				}
 				rel2 {
 					to: "list"; 
@@ -244,8 +244,8 @@ group {
 			name: "e.text.label";
 			type: TEXT;
 			effect: TEXT_EFFECT;
-			mouse_events: 0;
 			scale: 1;
+			mouse_events: 0;
 			description {
 				state: "default" 0.0;
 				rel1 { 

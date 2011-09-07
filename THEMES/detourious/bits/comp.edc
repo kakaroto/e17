@@ -919,6 +919,7 @@ group {
 			name: "e.text.label";
 			type: TEXT;
 			effect: TEXT_EFFECT_BOLD;
+			scale: 1;
 			mouse_events: 0;
 			clip_to: "text.clipper";
 			description {

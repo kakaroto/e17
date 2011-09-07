@@ -52,6 +52,7 @@ group {
 					relative: 1.0 1.0; 
 					offset: -1 -2; 
 				}
+				color_class: "focus";
 			}
 		}
 
@@ -97,6 +98,7 @@ group {
 			name: "e.text.text";
 			type: TEXT;
 			effect: TEXT_EFFECT;
+			scale: 1;
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;

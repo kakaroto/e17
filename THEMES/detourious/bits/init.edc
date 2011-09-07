@@ -102,9 +102,9 @@ group {
 			name: "e.text.title";
 			type: TEXT;
 			effect: SHADOW;
+			scale: 1;
 			mouse_events: 0;
 			clip_to: "text.area";
-			scale: 1;
 			description {
 				state: "default" 0.0;
 				color: 60 60 60 255;
@@ -133,9 +133,9 @@ group {
 			name: "e.text.version";
 			type: TEXT;
 			effect: SHADOW;
+			scale: 1;
 			mouse_events: 0;
 			clip_to: "text.area";
-			scale: 1;
 			description {
 				state: "default" 0.0;
 				color: 60 60 60 255;
@@ -164,9 +164,9 @@ group {
 			name: "e.text.status";
 			type: TEXT;
 			effect: SHADOW;
+			scale: 1;
 			mouse_events: 0;
 			clip_to: "text.area";
-			scale: 1;
 			description {
 				state: "default" 0.0;
 				color: 60 60 60 255;
@@ -371,9 +371,9 @@ group {
 			name: "e.text.disable_text";
 			type: TEXT;
 			effect: SHADOW;
+			scale: 1;
 			mouse_events: 0;
 			clip_to: "splash.clip";
-			scale: 1;
 			description {
 				state: "default" 0.0;
 				align: 0.0 0.5;

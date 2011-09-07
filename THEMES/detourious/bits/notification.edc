@@ -81,8 +81,8 @@ group {
 		part {
             name: "notification.text.title";
             type: TEXT;
-            mouse_events: 0;
             scale: 1;
+            mouse_events: 0;
             effect: SOFT_SHADOW;
             clip_to: "clipper";
             description {
@@ -183,6 +183,7 @@ group {
 		part {
             name: "notification.textblock.message";
             type: TEXTBLOCK;
+            scale: 1;
             mouse_events: 0;
             clip_to: "clipper";
             description {

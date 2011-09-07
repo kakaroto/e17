@@ -413,8 +413,8 @@ group {
 			name: "e.text.title";
 			type: TEXT;
 			effect: NONE;
-			mouse_events: 0;
 			scale: 1;
+			mouse_events: 0;
 			description {
 				state: "default" 0.0;
 				color: 60 60 60 255;

@@ -48,7 +48,7 @@ group {
 			description {
 				state: "left" 0.0;
 				inherit: "default" 0.0;
-				rel1.offset: 0 -1;
+				rel1.offset: 0 -2;
 				rel2.offset: -1 0;
 				image {
 					normal: "images/shelf_def_im1.png";
@@ -77,6 +77,8 @@ group {
 			description {
 				state: "right" 0.0;
 				inherit: "default" 0.0;
+				rel1.offset: 0 -2;
+				rel2.offset: -1 0;
 				image {
 					normal: "images/shelf_def_im2.png";
 					border: 2 3 3 2;

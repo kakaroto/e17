@@ -73,9 +73,9 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
+			scale: 1;
 			effect: TEXT_EFFECT;
 			mouse_events: 0;
-			scale: 1;
 			description {
 				state: "default" 0.0;
 				rel1 { 
@@ -179,9 +179,9 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
+			scale: 1;
 			effect: TEXT_EFFECT;
 			mouse_events: 0;
-			scale: 1;
 			description {
 				state: "default" 0.0;
 				rel1 { 
@@ -279,8 +279,8 @@ group {
 		part {
 			name: "e.text.label";
 			type: TEXT;
-			mouse_events: 0;
 			scale: 1;
+			mouse_events: 0;
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;

@@ -255,8 +255,8 @@ group {
 			name: "e.text.label";
 			type: TEXT;
 			effect: TEXT_EFFECT;
-			mouse_events: 0;
 			scale: 1;
+			mouse_events: 0;
 			description {
 				state: "default" 0.0;
 				min: 17 17;
@@ -539,9 +539,9 @@ group {
 			name: "e.text.label";
 			type: TEXT;
 			effect: TEXT_EFFECT;
+			scale: 1;
 			mouse_events: 0;
 			clip_to: "label_clip";
-			scale: 1;
 			description {
 				state: "default" 0.0;
 				min: 16 16;

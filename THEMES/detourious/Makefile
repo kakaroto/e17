@@ -17,5 +17,5 @@ dark:
 	edje_cc -DCOLORS=1 -id . -fd . main.edc -o dtrs-dark.edj
 
 illume-mine:
-	edje_cc -DILLUME_KBD_TERMINAL_ONLY=1 -DBUILD_ILLUME=1 -DUSE_BOLD_FONT=1 -id . -fd . main.edc -o dtrs-illume.edj
+	edje_cc -DILLUME_KBD_TERMINAL_ONLY=1 -DBUILD_ILLUME=1 -DUSE_BOLD_FONT=0 -id . -fd . main.edc -o dtrs-illume.edj
 
