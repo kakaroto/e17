@@ -12,26 +12,39 @@
 				description {	state: "default" 0.0;		\
 					aspect: 1.0 1.0;			\
 					aspect_preference: BOTH;		\
-					align: 0.5, 0.5;			\
+					align: 0.5 0.5;				\
 					image.normal: "e-logo-dark.png";	\
 				}						\
 				description {	state: "mouse_in" 0.0;		\
 					aspect: 1.0 1.0;			\
 					aspect_preference: BOTH;		\
-					align: 0.5, 0.5;			\
+					align: 0.5 0.5;				\
 					image.normal: "e-logo-grad.png";	\
 				}						\
-				description {	state: "mouse_out" 0.0;		\
+				description {	state: "mouse_down" 0.0;	\
 					aspect: 1.0 1.0;			\
 					aspect_preference: BOTH;		\
-					align: 0.5, 0.5;			\
+					align: 0.5 0.5;				\
+					image.normal: "e-logo.png";		\
+				}						\
+				description {	state: "mouse_up" 0.0;		\
+					aspect: 1.0 1.0;			\
+					aspect_preference: BOTH;		\
+					align: 0.5 0.5;				\
 					image.normal: "e-logo.png";		\
 				}						\
 			}							\
 		}								\
 		programs {							\
+			program { name: "go_mouse_down";			\
+				signal: "mouse,down,1";				\
+				source: icon_name;				\
+				action: STATE_SET "mouse_down" 0.0;		\
+				transition: LINEAR 1.0;				\
+				target: icon_name;				\
+			}							\
 			program { name: "go_mouse_in";				\
-				signal: "mouse,enter,1";			\
+				signal: "mouse,in";				\
 				source: icon_name;				\
 				action: STATE_SET "mouse_in" 0.0;		\
 				transition: LINEAR 1.0;				\
@@ -44,10 +57,10 @@
 				transition: LINEAR 1.0;				\
 				target: icon_name;				\
 			}							\
-			program { name: "go_mouse_out";				\
-				signal: "mouse,exit,1";				\
+			program { name: "go_mouse_up";				\
+				signal: "mouse,up,1";				\
 				source: icon_name;				\
-				action: STATE_SET "mouse_out" 0.0;		\
+				action: STATE_SET "mouse_up" 0.0;		\
 				transition: LINEAR 1.0;				\
 				target: icon_name;				\
 			}							\
@@ -79,20 +92,23 @@ collections {
 			part {	name: "table";
 				type: TABLE;
 				clip_to: "background";
-				visible: 1;
 				description {	state: "default" 0.0;
 					fixed: 1 1;
+					visible: 1;
+					table {
+						homogeneous: TABLE;
+					}
 				}
 				table {
 					items {
 						item { align: -1 -1; type: GROUP; source: "top_left";     position: 0 0; }
-						item { align: -1 -1; type: GROUP; source: "top";          position: 1 0; }
-						item { align: -1 -1; type: GROUP; source: "top_right";    position: 2 0; }
-						item { align: -1 -1; type: GROUP; source: "left";         position: 0 1; }
+						item { align: -1 -1; type: GROUP; source: "top";          position: 0 1; }
+						item { align: -1 -1; type: GROUP; source: "top_right";    position: 0 2; }
+						item { align: -1 -1; type: GROUP; source: "left";         position: 1 0; }
 						item { align: -1 -1; type: GROUP; source: "center";       position: 1 1; }
-						item { align: -1 -1; type: GROUP; source: "right";        position: 2 1; }
-						item { align: -1 -1; type: GROUP; source: "bottom_left";  position: 0 2; }
-						item { align: -1 -1; type: GROUP; source: "bottom";       position: 1 2; }
+						item { align: -1 -1; type: GROUP; source: "right";        position: 1 2; }
+						item { align: -1 -1; type: GROUP; source: "bottom_left";  position: 2 0; }
+						item { align: -1 -1; type: GROUP; source: "bottom";       position: 2 1; }
 						item { align: -1 -1; type: GROUP; source: "bottom_right"; position: 2 2; }
 					}
 				}
