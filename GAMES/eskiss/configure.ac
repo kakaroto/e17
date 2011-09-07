@@ -80,7 +80,7 @@ AM_PROG_CC_C_O
 AC_C_CONST
 AC_C_INLINE
 AC_PROG_CC_STDC
-
+EFL_CHECK_PATH_MAX
 
 ### Checks for linker characteristics
 
