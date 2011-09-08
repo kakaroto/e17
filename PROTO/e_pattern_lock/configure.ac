@@ -1,4 +1,4 @@
-AC_INIT([ElmDentica], [0.9.10], [rms@1407.org], [elmdentica])
+AC_INIT([e_pattern_lock], [0.1.0], [rms@1407.org], [e_pattern_lock])
 AC_CONFIG_SRCDIR(src/)
 AM_CONFIG_HEADER(config.h)
 AC_CONFIG_MACRO_DIR([m4])
@@ -45,8 +45,6 @@ AC_SUBST([APMDIR])
 
 AC_SUBST(VERSION)
 
-dnl EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
-
 dnl AC_ARG_WITH(dbusbindir,
 dnl            AC_HELP_STRING([--with-dbusbindir=[=DIR]],
 dnl                           [Use a different path to dbus tools]),,
@@ -61,5 +59,6 @@ Makefile
 data/Makefile
 data/theme/Makefile
 data/theme/default/Makefile
+po/Makefile.in
 src/Makefile
 ])
