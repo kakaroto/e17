@@ -1,4 +1,4 @@
-SUBDIRS = data src po
+SUBDIRS = po data src
 
 MAINTAINERCLEANFILES = \
         aclocal.m4 compile config.guess config.sub \
