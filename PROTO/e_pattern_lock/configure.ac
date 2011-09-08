@@ -45,7 +45,7 @@ AC_SUBST([APMDIR])
 
 AC_SUBST(VERSION)
 
-EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
+dnl EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
 dnl AC_ARG_WITH(dbusbindir,
 dnl            AC_HELP_STRING([--with-dbusbindir=[=DIR]],
@@ -59,7 +59,7 @@ AC_SUBST(DBUS_GLIB_BIN)
 AC_OUTPUT([
 Makefile
 data/Makefile
-data/themes/Makefile
-data/themes/default/Makefile
+data/theme/Makefile
+data/theme/default/Makefile
 src/Makefile
 ])

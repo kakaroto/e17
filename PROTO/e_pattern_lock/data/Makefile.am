@@ -1,1 +1,3 @@
 SUBDIRS = theme
+
+MAINTAINERCLEANFILES = Makefile.in

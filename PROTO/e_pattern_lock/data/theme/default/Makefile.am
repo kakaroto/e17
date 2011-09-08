@@ -11,7 +11,7 @@ files_DATA = default.edj
 EXTRA_DIST = \
 	default.edc	\
 	*.svg		\
-	*.png		\
+	*.png
 
 default.edj: Makefile $(EXTRA_DIST)
 	$(EDJE_CC) $(EDJE_FLAGS) \
