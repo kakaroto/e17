@@ -8,6 +8,8 @@ INCLUDES = \
 -DGETTEXT_PACKAGE=\"$(PACKAGE)\" \
 -DLOCALEDIR=\"$(localedir)\" \
 @ELEMENTARY_CFLAGS@ \
+@EFL_CFLAGS@ \
+@ECORE_CFLAGS@ \
 @EMOTION_CFLAGS@ \
 @LMS_CFLAGS@ \
 @SQLITE3_CFLAGS@ \
@@ -18,7 +20,7 @@ if BUILD_QUICKLAUNCH
 bin_PROGRAMS += enjoy_ql
 endif
 
-enjoy_LDADD = @ELEMENTARY_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@ @EDBUS_LIBS@
+enjoy_LDADD = @ELEMENTARY_LIBS@ @EFL_LIBS@ @ECORE_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@ @EDBUS_LIBS@
 enjoy_CFLAGS = -rdynamic
 enjoy_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c dbus.c
 
@@ -31,8 +33,8 @@ if BUILD_QUICKLAUNCH
 ############################################################################
 enjoy_qldir = $(quicklauncher_libdir)
 enjoy_ql_LTLIBRARIES = enjoy_ql.la
-enjoy_ql_la_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c
-enjoy_ql_la_LIBADD = @ELEMENTARY_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@ @EDBUS_LIBS@
+enjoy_ql_la_SOURCES = main.c win.c db.c list.c page.c cover.c nowplaying.c libmanager.c dbus.c
+enjoy_ql_la_LIBADD = @ELEMENTARY_LIBS@ @EFL_LIBS@ @ECORE_LIBS@ @EMOTION_LIBS@ @LMS_LIBS@ @SQLITE3_LIBS@ @EDBUS_LIBS@
 enjoy_ql_la_CFLAGS =
 enjoy_ql_la_LDFLAGS = -module -avoid-version -no-undefined
 enjoy_ql_SOURCES = main.c

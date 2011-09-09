@@ -7,11 +7,12 @@ INCLUDES = \
 -DLIBRARY_DIR=\"$(libdir)\" \
 -DGETTEXT_PACKAGE=\"$(PACKAGE)\" \
 -DLOCALEDIR=\"$(localedir)\" \
-@EDBUS_CFLAGS@
+@EDBUS_CFLAGS@ \
+@ECORE_CFLAGS@
 
 pkgdir = $(libdir)/enjoy
 pkg_LTLIBRARIES = mpris.la
 mpris_la_SOURCES = mpris.c
-mpris_la_LIBADD = @EDBUS_LIBS@
+mpris_la_LIBADD = @EDBUS_LIBS@ @ECORE_LIBS@
 mpris_la_LDFLAGS = -no-undefined -module -avoid-version
 mpris_la_LIBTOOLFLAGS = --tag=disable-static
