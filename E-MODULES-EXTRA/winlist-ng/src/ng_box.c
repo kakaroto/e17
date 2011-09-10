@@ -96,7 +96,10 @@ ngw_box_item_remove(Ngw_Box *box, Ngw_Item *it)
 void
 ngw_box_position_to_item(Ngw_Box *box, Ngw_Item  *item)
 {
-  box->pos = item->x; // - (box->icon_size + ITEM_SPACING)/2;
+   if (!box) return;
+   if (!item) return;
+   
+   box->pos = item->x; // - (box->icon_size + ITEM_SPACING)/2;
   _ngw_box_redraw(box);
 }
 
