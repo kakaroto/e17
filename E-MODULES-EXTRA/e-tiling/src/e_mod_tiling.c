@@ -245,6 +245,8 @@ _info_hash_update(const Eina_Hash *hash, const void *key,
     } else {
         tinfo->conf = NULL;
     }
+
+    return true;
 }
 
 void
@@ -327,6 +329,8 @@ end_special_input(void)
             E_FREE(_G.transition_overlay);
             _G.transition_overlay = NULL;
         }
+        break;
+      default:
         break;
     }
 
@@ -2227,8 +2231,6 @@ _e_mod_action_adjust_transitions(E_Object   *obj,
                                  const char *params)
 {
     E_Desk *desk;
-    E_Border *focused_bd;
-    Ecore_X_Window parent;
 
     desk = get_current_desk();
     if (!desk)
