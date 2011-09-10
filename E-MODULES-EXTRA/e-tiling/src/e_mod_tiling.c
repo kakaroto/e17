@@ -911,6 +911,13 @@ _add_border(E_Border *bd)
             col = nb_cols;
         }
     } else {
+
+        e_zone_useful_geometry_get(bd->zone,
+                                   &extra->expected.x,
+                                   &extra->expected.y,
+                                   &extra->expected.w,
+                                   &extra->expected.h);
+
         e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
         e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
         EINA_LIST_APPEND(_G.tinfo->columns[0], bd);
