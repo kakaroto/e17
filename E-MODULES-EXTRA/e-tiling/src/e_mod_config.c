@@ -50,6 +50,7 @@ _create_data(E_Config_Dialog *cfd)
     /* Because we save a lot of lines here by using memcpy,
      * the structs have to be ordered the same */
     memcpy(cfdata, tiling_g.config, sizeof(Config));
+    cfdata->config.keyhints = strdup(tiling_g.config->keyhints);
 
     /* Handle things which can't be easily memcpy'd */
     cfdata->config.vdesks = NULL;
@@ -78,9 +79,8 @@ static void
 _free_data(E_Config_Dialog      *cfd,
            E_Config_Dialog_Data *cfdata)
 {
-    struct _Config_vdesk *vd;
-
     eina_list_free(cfdata->config.vdesks);
+    free(cfdata->config.keyhints);
     free(cfdata);
 }
 
@@ -165,7 +165,7 @@ _basic_create_widgets(E_Config_Dialog      *cfd,
                       Evas                 *evas,
                       E_Config_Dialog_Data *cfdata)
 {
-    Evas_Object *o, *ob, *of, *osf;
+    Evas_Object *o, *ob, *oc, *of, *osf;
     E_Container *con = e_container_current_get(e_manager_current_get());
     E_Zone *zone;
 
@@ -179,6 +179,14 @@ _basic_create_widgets(E_Config_Dialog      *cfd,
     e_widget_framelist_object_append(of,
       e_widget_check_add(evas, D_("Show window titles"),
                          &cfdata->config.show_titles));
+    oc = e_widget_list_add(evas, false, true);
+    e_widget_list_object_append(oc,
+      e_widget_label_add(evas, D_("Key hints")), 1, 0, 0.5);
+    e_widget_list_object_append(oc,
+      e_widget_entry_add(evas, &cfdata->config.keyhints, NULL, NULL, NULL),
+      1, 1, 0.5);
+    e_widget_framelist_object_append(of, oc);
+
     LIST_ADD(o, of);
 
     /* Virtual desktop settings */
@@ -232,6 +240,27 @@ _basic_apply_data(E_Config_Dialog      *cfd,
 
     tiling_g.config->tile_dialogs = cfdata->config.tile_dialogs;
     tiling_g.config->show_titles = cfdata->config.show_titles;
+    if (strcmp(tiling_g.config->keyhints, cfdata->config.keyhints)) {
+        free(tiling_g.config->keyhints);
+        if (!cfdata->config.keyhints || !*cfdata->config.keyhints) {
+            tiling_g.config->keyhints = strdup(tiling_g.default_keyhints);
+        } else {
+            char *c = cfdata->config.keyhints;
+            int len = strlen(cfdata->config.keyhints);
+
+            /* Remove duplicates */
+            while (*c) {
+                char *f = c + 1;
+
+                while ((f = strchr(f, *c))) {
+                    *f = cfdata->config.keyhints[--len];
+                    cfdata->config.keyhints[len] = '\0';
+                }
+                c++;
+            }
+            tiling_g.config->keyhints = strdup(cfdata->config.keyhints);
+        }
+    }
 
     /* Check if the layout for one of the vdesks has changed */
     for (Eina_List *l = tiling_g.config->vdesks; l; l = l->next) {
@@ -271,7 +300,8 @@ _basic_apply_data(E_Config_Dialog      *cfd,
     EINA_LIST_FREE(tiling_g.config->vdesks, vd) {
         free(vd);
     }
-    memcpy(tiling_g.config, cfdata, sizeof(Config));
+
+    tiling_g.config->vdesks = cfdata->config.vdesks;
     cfdata->config.vdesks = NULL; /* we don't want this list to be freed */
 
     e_tiling_update_conf();

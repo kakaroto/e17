@@ -16,9 +16,10 @@ typedef struct _Tiling_Info Tiling_Info;
 
 struct tiling_g
 {
-   E_Module *module;
-   Config   *config;
-   int       log_domain;
+   E_Module   *module;
+   Config     *config;
+   int         log_domain;
+   const char *default_keyhints;
 };
 extern struct tiling_g tiling_g;
 
@@ -38,6 +39,7 @@ struct _Config
 {
     int            tile_dialogs;
     int            show_titles;
+    char          *keyhints;
     Eina_List     *vdesks;
 };
 

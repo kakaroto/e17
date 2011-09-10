@@ -6,7 +6,6 @@
 #define TILING_RESIZE_STEP 5
 #define TILING_POPUP_LAYER 101
 #define TILING_WRAP_SPEED 0.1
-static const char TILING_KEYS[] = "asdfghkl;'qwertyuiop[]\\zxcvbnm,./`1234567890-=";
 
 typedef enum {
     TILING_RESIZE,
@@ -42,21 +41,22 @@ typedef struct overlay_t {
 typedef struct transition_overlay_t {
     overlay_t overlay;
     int col;
+    char key[4];
     E_Border *bd;
-    char key[2];
 } transition_overlay_t;
 
 typedef struct Border_Extra {
     E_Border *border;
     geom_t expected, orig;
     overlay_t overlay;
-    char key[2];
+    char key[4];
 } Border_Extra;
 
 struct tiling_g tiling_g = {
     .module = NULL,
     .config = NULL,
     .log_domain = -1,
+    .default_keyhints = "asdfg;lkjh",
 };
 
 static void
@@ -65,13 +65,15 @@ _add_border(E_Border *bd);
 /* }}} */
 /* Globals {{{ */
 
-static struct
+static struct tiling_mod_main_g
 {
     char                  edj_path[PATH_MAX];
     E_Config_DD          *config_edd,
                          *vdesk_edd;
     E_Border_Hook        *hook;
     int                   currently_switching_desktop;
+    Ecore_X_Window        action_input_win;
+    Ecore_Event_Handler  *handler_key;
     Ecore_Event_Handler  *handler_hide,
                          *handler_desk_show,
                          *handler_desk_before_show,
@@ -79,11 +81,8 @@ static struct
                          *handler_desk_set;
 
     Tiling_Info          *tinfo;
-    /* This hash holds the Tiling_Info-pointers for each desktop */
     Eina_Hash            *info_hash;
-
     Eina_Hash            *border_extras;
-
     Eina_Hash            *overlays;
 
     E_Action             *act_togglefloat,
@@ -104,13 +103,12 @@ static struct
 
     overlay_t             move_overlays[MOVE_COUNT];
     transition_overlay_t *transition_overlay;
-    Ecore_X_Window        action_input_win;
-    Ecore_Event_Handler  *handler_key;
     Ecore_Timer          *action_timer;
     E_Border             *focused_bd;
     void (*action_cb)(E_Border *bd, Border_Extra *extra);
 
-    tiling_input_mode_t  input_mode;
+    tiling_input_mode_t   input_mode;
+    char                  keys[4];
 } tiling_mod_main_g = {
 #define _G tiling_mod_main_g
     .input_mode = INPUT_MODE_NONE,
@@ -215,6 +213,21 @@ get_window_count(void)
             break;
         res += eina_list_count(_G.tinfo->columns[i]);
     }
+    return res;
+}
+
+static int
+get_transition_count(void)
+{
+    int res = 0;
+
+    for (int i = 0; i < TILING_MAX_COLUMNS; i++) {
+        if (!_G.tinfo->columns[i])
+            break;
+        res += eina_list_count(_G.tinfo->columns[i]);
+    }
+    if (_G.tinfo->columns[0])
+        res--;
     return res;
 }
 
@@ -352,10 +365,30 @@ overlay_key_down(void *data,
         goto stop;
     if (strcmp(ev->key, "Escape") == 0)
         goto stop;
+    if (strcmp(ev->key, "Backspace") == 0) {
+        char *key = _G.keys;
 
-    extra = eina_hash_find(_G.overlays, ev->key);
-    if (extra) {
-        _G.action_cb(_G.focused_bd, extra);
+        while (*key)
+            key++;
+        *key = '\0';
+        return ECORE_CALLBACK_RENEW;
+    }
+
+    if (ev->key[0] && !ev->key[1] && strchr(tiling_g.config->keyhints,
+                                            ev->key[1])) {
+        char *key = _G.keys;
+
+        while (*key)
+            key++;
+        *key++ = ev->key[0];
+        *key = '\0';
+
+        extra = eina_hash_find(_G.overlays, _G.keys);
+        if (extra) {
+            _G.action_cb(_G.focused_bd, extra);
+        } else {
+            return ECORE_CALLBACK_RENEW;
+        }
     }
 
 stop:
@@ -375,10 +408,12 @@ _do_overlay(E_Border *focused_bd,
             void (*action_cb)(E_Border *, Border_Extra *),
             tiling_input_mode_t input_mode)
 {
-    int nb_win;
-    const char *keys = TILING_KEYS;
-    const char *c = keys;
     Ecore_X_Window parent;
+    int nb_win;
+    int hints_len;
+    int key_len;
+    int n = 0;
+    int nmax;
 
     end_special_input();
 
@@ -394,6 +429,18 @@ _do_overlay(E_Border *focused_bd,
 
     _G.overlays = eina_hash_string_small_new(_overlays_free_cb);
 
+    hints_len = strlen(tiling_g.config->keyhints);
+    key_len = 1;
+    nmax = hints_len;
+    if (hints_len < nb_win) {
+        key_len = 2;
+        nmax *= hints_len;
+        if (hints_len * hints_len < nb_win) {
+            key_len = 3;
+            nmax *= hints_len;
+        }
+    }
+
     for (int i = 0; i < TILING_MAX_COLUMNS; i++) {
         Eina_List *l;
         E_Border *bd;
@@ -401,7 +448,7 @@ _do_overlay(E_Border *focused_bd,
         if (!_G.tinfo->columns[i])
             break;
         EINA_LIST_FOREACH(_G.tinfo->columns[i], l, bd) {
-            if (bd != focused_bd && *c) {
+            if (bd != focused_bd && n < nmax) {
                 Border_Extra *extra;
                 Evas_Coord ew, eh;
 
@@ -422,9 +469,24 @@ _do_overlay(E_Border *focused_bd,
                                         "base/theme/borders",
                                         "e/widgets/border/default/resize");
 
-                extra->key[0] = *c;
-                extra->key[1] = '\0';
-                c++;
+                switch (key_len) {
+                  case 1:
+                    extra->key[0] = tiling_g.config->keyhints[n];
+                    extra->key[1] = '\0';
+                    break;
+                  case 2:
+                    extra->key[0] = tiling_g.config->keyhints[n / hints_len];
+                    extra->key[1] = tiling_g.config->keyhints[n % hints_len];
+                    extra->key[2] = '\0';
+                    break;
+                  case 3:
+                    extra->key[0] = tiling_g.config->keyhints[n / hints_len / hints_len];
+                    extra->key[0] = tiling_g.config->keyhints[n / hints_len];
+                    extra->key[1] = tiling_g.config->keyhints[n % hints_len];
+                    extra->key[2] = '\0';
+                    break;
+                }
+                n++;
 
                 eina_hash_add(_G.overlays, extra->key, extra);
                 edje_object_part_text_set(extra->overlay.obj,
@@ -468,6 +530,7 @@ _do_overlay(E_Border *focused_bd,
     _G.action_timer = ecore_timer_add(TILING_OVERLAY_TIMEOUT,
                                       _timeout_cb, NULL);
 
+    _G.keys[0] = '\0';
     _G.handler_key = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
                                              overlay_key_down, NULL);
 }
@@ -875,7 +938,8 @@ _add_border(E_Border *bd)
             }
             EINA_LIST_APPEND(_G.tinfo->columns[col], bd);
             _reorganize_column(col);
-            e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
+            if (bd->maximized)
+                e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
         } else {
             /* Add column */
             int nb_cols = get_column_count();
@@ -900,12 +964,12 @@ _add_border(E_Border *bd)
             extra->expected.y = y;
             extra->expected.w = width;
             extra->expected.h = h;
+            e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
             e_border_move_resize(bd,
                                  extra->expected.x,
                                  extra->expected.y,
                                  extra->expected.w,
                                  extra->expected.h);
-            e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
 
             EINA_LIST_APPEND(_G.tinfo->columns[nb_cols], bd);
             col = nb_cols;
@@ -2020,13 +2084,31 @@ _transition_overlay_key_down(void *data,
         }
         return ECORE_CALLBACK_RENEW;
     } else {
-        transition_overlay_t *trov = NULL;
+        if (strcmp(ev->key, "Backspace") == 0) {
+            char *key = _G.keys;
 
-        trov = eina_hash_find(_G.overlays, ev->key);
-        if (trov) {
+            while (*key)
+                key++;
+            *key = '\0';
+            return ECORE_CALLBACK_RENEW;
+        }
+        if (ev->key[0] && !ev->key[1] && strchr(tiling_g.config->keyhints,
+                                                ev->key[1])) {
+            transition_overlay_t *trov = NULL;
             E_Border *bd = trov->bd;
-            Border_Extra *extra;
+            Border_Extra *extra = NULL;
             Evas_Coord ew, eh;
+            char *key = _G.keys;
+
+            while (*key)
+                key++;
+            *key++ = ev->key[0];
+            *key = '\0';
+
+            trov = eina_hash_find(_G.overlays, _G.keys);
+            if (!trov) {
+                return ECORE_CALLBACK_RENEW;
+            }
 
             _G.transition_overlay = trov;
             eina_hash_free(_G.overlays);
@@ -2049,8 +2131,8 @@ _transition_overlay_key_down(void *data,
                     edje_object_add(trov->overlay.popup->evas);
             }
             _theme_edje_object_set(trov->overlay.obj,
-                bd? "modules/e-tiling/transition/horizontal":
-                    "modules/e-tiling/transition/vertical");
+                                   bd? "modules/e-tiling/transition/horizontal":
+                                   "modules/e-tiling/transition/vertical");
 
             edje_object_size_min_calc(trov->overlay.obj, &ew, &eh);
             e_popup_edje_bg_object_set(trov->overlay.popup,
@@ -2059,11 +2141,11 @@ _transition_overlay_key_down(void *data,
             if (bd) {
                 e_popup_move_resize(trov->overlay.popup,
                                     extra->expected.x + extra->expected.w/2
-                                            - ew/2
-                                            - trov->overlay.popup->zone->x,
+                                    - ew/2
+                                    - trov->overlay.popup->zone->x,
                                     extra->expected.y + extra->expected.h
-                                            - eh/2
-                                            - trov->overlay.popup->zone->y,
+                                    - eh/2
+                                    - trov->overlay.popup->zone->y,
                                     ew,
                                     eh);
             } else {
@@ -2089,21 +2171,35 @@ stop:
 static void
 _do_transition_overlay(void)
 {
-    int nb_win;
-    const char *keys = TILING_KEYS;
-    const char *c = keys;
+    int nb_transitions;
     Ecore_X_Window parent;
+    int hints_len;
+    int key_len;
+    int n = 0;
+    int nmax;
 
     end_special_input();
 
-    nb_win = get_window_count();
-    if (nb_win < 2) {
+    nb_transitions = get_transition_count();
+    if (nb_transitions < 1) {
         return;
     }
 
     _G.input_mode = INPUT_MODE_TRANSITION;
 
     _G.overlays = eina_hash_string_small_new(_transition_overlays_free_cb);
+    hints_len = strlen(tiling_g.config->keyhints);
+    key_len = 1;
+    nmax = hints_len;
+    if (hints_len < nb_transitions) {
+        key_len = 2;
+        nmax *= hints_len;
+        if (hints_len * hints_len < nb_transitions) {
+            key_len = 3;
+            nmax *= hints_len;
+        }
+    }
+
 
     for (int i = 0; i < TILING_MAX_COLUMNS; i++) {
         Eina_List *l;
@@ -2112,7 +2208,7 @@ _do_transition_overlay(void)
         if (!_G.tinfo->columns[i])
             break;
         EINA_LIST_FOREACH(_G.tinfo->columns[i], l, bd) {
-            if (l->next && *c) {
+            if (l->next && n < nmax) {
                 Border_Extra *extra;
                 Evas_Coord ew, eh;
                 transition_overlay_t *trov;
@@ -2135,11 +2231,26 @@ _do_transition_overlay(void)
                                         "base/theme/borders",
                                         "e/widgets/border/default/resize");
 
-                trov->key[0] = *c;
-                trov->key[1] = '\0';
+                switch (key_len) {
+                  case 1:
+                    trov->key[0] = tiling_g.config->keyhints[n];
+                    trov->key[1] = '\0';
+                    break;
+                  case 2:
+                    trov->key[0] = tiling_g.config->keyhints[n / hints_len];
+                    trov->key[1] = tiling_g.config->keyhints[n % hints_len];
+                    trov->key[2] = '\0';
+                    break;
+                  case 3:
+                    trov->key[0] = tiling_g.config->keyhints[n / hints_len / hints_len];
+                    trov->key[0] = tiling_g.config->keyhints[n / hints_len];
+                    trov->key[1] = tiling_g.config->keyhints[n % hints_len];
+                    trov->key[2] = '\0';
+                    break;
+                }
+                n++;
                 trov->col = i;
                 trov->bd = bd;
-                c++;
 
                 eina_hash_add(_G.overlays, trov->key, trov);
                 edje_object_part_text_set(trov->overlay.obj,
@@ -2165,7 +2276,7 @@ _do_transition_overlay(void)
                 e_popup_show(trov->overlay.popup);
             }
         }
-        if (i != TILING_MAX_COLUMNS && _G.tinfo->columns[i+1] && *c) {
+        if (i != TILING_MAX_COLUMNS && _G.tinfo->columns[i+1] && n < nmax) {
             Evas_Coord ew, eh;
             transition_overlay_t *trov;
 
@@ -2182,11 +2293,26 @@ _do_transition_overlay(void)
                                     "base/theme/borders",
                                     "e/widgets/border/default/resize");
 
-            trov->key[0] = *c;
-            trov->key[1] = '\0';
+            switch (key_len) {
+              case 1:
+                trov->key[0] = tiling_g.config->keyhints[n];
+                trov->key[1] = '\0';
+                break;
+              case 2:
+                trov->key[0] = tiling_g.config->keyhints[n / hints_len];
+                trov->key[1] = tiling_g.config->keyhints[n % hints_len];
+                trov->key[2] = '\0';
+                break;
+              case 3:
+                trov->key[0] = tiling_g.config->keyhints[n / hints_len / hints_len];
+                trov->key[0] = tiling_g.config->keyhints[n / hints_len];
+                trov->key[1] = tiling_g.config->keyhints[n % hints_len];
+                trov->key[2] = '\0';
+                break;
+            }
+            n++;
             trov->col = i;
             trov->bd = NULL;
-            c++;
 
             eina_hash_add(_G.overlays, trov->key, trov);
             edje_object_part_text_set(trov->overlay.obj,
@@ -2228,6 +2354,7 @@ _do_transition_overlay(void)
     _G.action_timer = ecore_timer_add(TILING_OVERLAY_TIMEOUT,
                                       _timeout_cb, NULL);
 
+    _G.keys[0] = '\0';
     _G.handler_key = ecore_event_handler_add(ECORE_EVENT_KEY_DOWN,
                                              _transition_overlay_key_down,
                                              NULL);
@@ -2658,6 +2785,7 @@ e_modapi_init(E_Module *m)
                                    struct _Config_vdesk);
     E_CONFIG_VAL(_G.config_edd, Config, tile_dialogs, INT);
     E_CONFIG_VAL(_G.config_edd, Config, show_titles, INT);
+    E_CONFIG_VAL(_G.config_edd, Config, keyhints, STR);
 
     E_CONFIG_LIST(_G.config_edd, Config, vdesks, _G.vdesk_edd);
     E_CONFIG_VAL(_G.vdesk_edd, struct _Config_vdesk, x, INT);
@@ -2671,6 +2799,10 @@ e_modapi_init(E_Module *m)
         tiling_g.config->tile_dialogs = 1;
         tiling_g.config->show_titles = 1;
     }
+    if (!tiling_g.config->keyhints)
+        tiling_g.config->keyhints = strdup(tiling_g.default_keyhints);
+    else
+        tiling_g.config->keyhints = strdup(tiling_g.config->keyhints);
 
     E_CONFIG_LIMIT(tiling_g.config->tile_dialogs, 0, 1);
     E_CONFIG_LIMIT(tiling_g.config->show_titles, 0, 1);
@@ -2733,6 +2865,7 @@ e_modapi_shutdown(E_Module *m)
 
     end_special_input();
 
+    free(tiling_g.config->keyhints);
     E_FREE(tiling_g.config);
     E_CONFIG_DD_FREE(_G.config_edd);
     E_CONFIG_DD_FREE(_G.vdesk_edd);
