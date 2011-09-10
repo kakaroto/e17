@@ -187,14 +187,19 @@ _win_play_eval_timer(void *data)
 }
 
 static void
-_win_nowplaying_update(Win *w)
+_win_nowplaying_update(Win *w, Song *previous)
 {
    Evas_Object *cover;
    int label_size;
    char *artist_title;
    const char *s1, *s2;
-   cover = cover_album_fetch_by_id(w->win, w->db,w->song->album_id, 480, NULL, NULL); // TODO: size!
-   elm_layout_content_set(w->nowplaying, "ejy.swallow.cover", cover);
+
+   if (previous && w->song && previous->album_id != w->song->album_id)
+     {
+        cover = cover_album_fetch_by_id(w->win, w->db, w->song->album_id,
+                                        480, NULL, NULL); // TODO: size!
+        elm_layout_content_set(w->nowplaying, "ejy.swallow.cover", cover);
+     }
 
    db_song_artist_fetch(w->db, w->song);
    s1 = w->song->title;
@@ -221,10 +226,12 @@ static void
 _win_song_set(Win *w, Song *s)
 {
    Edje_Message_Int mi;
+   Song *previous;
    char str[32];
 
    w->play.position = 0.0;
    w->play.length = 0.0;
+   previous = w->song;
    w->song = s;
    if (!s) goto end;
 
@@ -259,7 +266,7 @@ end:
      w->timer.play_eval = ecore_timer_loop_add
        (0.1, _win_play_eval_timer, w);
 
-   _win_nowplaying_update(w);
+   _win_nowplaying_update(w, previous);
    _win_play_eval(w);
    _win_toolbar_eval(w);
 
