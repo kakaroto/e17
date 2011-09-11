@@ -274,7 +274,7 @@ create_signals_box(Viewer *v)
 
    v->gui.sig_box = o = elm_box_add(v->gui.ly);
    elm_box_horizontal_set(o, 0);
-   elm_box_homogenous_set(o, 0);
+   elm_box_homogeneous_set(o, 0);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    elm_layout_content_set(v->gui.ly, "v.swallow.signals", o);
    evas_object_show(o);
@@ -287,7 +287,7 @@ create_signals_box(Viewer *v)
 
    bx = elm_box_add(v->gui.sig_box);
    elm_box_horizontal_set(bx, 1);
-   elm_box_homogenous_set(bx, 0);
+   elm_box_homogeneous_set(bx, 0);
    evas_object_size_hint_weight_set(bx, 0.0, 0.0);
    elm_box_pack_end(v->gui.sig_box, bx);
    evas_object_show(bx);

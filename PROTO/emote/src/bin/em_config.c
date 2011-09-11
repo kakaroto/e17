@@ -175,7 +175,7 @@ _em_config_win_create(Evas_Object *parent)
 
    bx = elm_box_add(_em_config_win);
    elm_box_horizontal_set(bx, EINA_FALSE);
-   elm_box_homogenous_set(bx, EINA_FALSE);
+   elm_box_homogeneous_set(bx, EINA_FALSE);
    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_win_resize_object_add(_em_config_win, bx);
@@ -195,19 +195,19 @@ _em_config_win_create(Evas_Object *parent)
 
    bbx = elm_box_add(_em_config_win);
    elm_box_horizontal_set(bbx, EINA_TRUE);
-   elm_box_homogenous_set(bbx, EINA_TRUE);
+   elm_box_homogeneous_set(bbx, EINA_TRUE);
    evas_object_size_hint_weight_set(bbx, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(bbx, EVAS_HINT_FILL, 0.5);
    elm_box_pack_end(bx, bbx);
    evas_object_show(bbx);
 
    o = elm_button_add(_em_config_win);
-   elm_button_label_set(o, _("Apply"));
+   elm_object_text_set(o, _("Apply"));
    elm_box_pack_end(bbx, o);
    evas_object_show(o);
 
    o = elm_button_add(_em_config_win);
-   elm_button_label_set(o, _("Close"));
+   elm_object_text_set(o, _("Close"));
    evas_object_smart_callback_add(o, "clicked", _em_config_cb_close, NULL);
    elm_box_pack_end(bbx, o);
    evas_object_show(o);

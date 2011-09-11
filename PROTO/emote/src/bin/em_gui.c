@@ -80,7 +80,7 @@ em_gui_init(void)
 
    /* create channel selector */
    gui->w_chansel = elm_toolbar_add(gui->w_win);
-   elm_toolbar_homogenous_set(gui->w_chansel, EINA_FALSE);
+   elm_toolbar_homogeneous_set(gui->w_chansel, EINA_FALSE);
    elm_toolbar_align_set(gui->w_chansel, 0.0);
    elm_toolbar_mode_shrink_set(gui->w_chansel, ELM_TOOLBAR_SHRINK_SCROLL);
    evas_object_size_hint_weight_set(gui->w_chansel, 0.0, 0.0);
@@ -194,7 +194,7 @@ _em_gui_channel_nick_update(const Eina_Hash *hash __UNUSED__, const void *key __
 
    snprintf(buf, sizeof(buf), "You are now known as %s", n);
    em_gui_message_add(c->server->name, c->name, NULL, buf);
-   elm_label_label_set(c->w_nick, n);
+   elm_object_text_set(c->w_nick, n);
 
    return EINA_TRUE;
 }
@@ -209,7 +209,7 @@ em_gui_nick_update(const char *server, const char *old, const char *new)
 
    if ((!old) || (!strcmp(old, s->nick)))
      {
-        elm_label_label_set(s->w_nick, new);
+        elm_object_text_set(s->w_nick, new);
         eina_hash_foreach(s->channels, _em_gui_channel_nick_update, new);
 
         if (s->nick) eina_stringshare_del(s->nick);
@@ -577,7 +577,7 @@ _em_gui_server_create(const char *server, Emote_Protocol *p)
 
    o = elm_box_add(gui->w_win);
    elm_box_horizontal_set(o, EINA_TRUE);
-//   elm_box_homogenous_set(o, EINA_FALSE);
+//   elm_box_homogeneous_set(o, EINA_FALSE);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(o);
@@ -626,7 +626,7 @@ _em_gui_channel_create(const char *server, const char *channel)
    /* create packing box */
    c->w_box = elm_box_add(gui->w_win);
    elm_box_horizontal_set(c->w_box, EINA_FALSE);
-   elm_box_homogenous_set(c->w_box, EINA_FALSE);
+   elm_box_homogeneous_set(c->w_box, EINA_FALSE);
    evas_object_size_hint_weight_set(c->w_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(c->w_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
 //   elm_win_resize_object_add(gui->w_win, c->w_box);
@@ -644,7 +644,7 @@ _em_gui_channel_create(const char *server, const char *channel)
    /* Create box to hold nick and entry */
    o = elm_box_add(gui->w_win);
    elm_box_horizontal_set(o, EINA_TRUE);
-   elm_box_homogenous_set(o, EINA_FALSE);
+   elm_box_homogeneous_set(o, EINA_FALSE);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, 0.0);
    elm_box_pack_end(c->w_box, o);
@@ -652,7 +652,7 @@ _em_gui_channel_create(const char *server, const char *channel)
 
    /* Create label for nick */
    c->w_nick = elm_label_add(gui->w_win);
-   elm_label_label_set(c->w_nick, c->server->nick);
+   elm_object_text_set(c->w_nick, c->server->nick);
    elm_label_line_wrap_set(c->w_nick, 0);
    evas_object_size_hint_weight_set(c->w_nick, 0.0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(c->w_nick, 0.0, EVAS_HINT_FILL);
