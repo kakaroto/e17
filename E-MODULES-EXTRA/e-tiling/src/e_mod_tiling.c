@@ -180,6 +180,7 @@ change_window_border(E_Border   *bd,
 {
     eina_stringshare_replace(&bd->bordername, bordername);
     bd->client.border.changed = true;
+    bd->changes.border = true;
     bd->changed = true;
 }
 
@@ -266,6 +267,47 @@ void
 e_tiling_update_conf(void)
 {
     eina_hash_foreach(_G.info_hash, _info_hash_update, NULL);
+}
+
+static void
+_e_border_move_resize(E_Border *bd,
+                      int       x,
+                      int       y,
+                      int       w,
+                      int       h)
+{
+    e_border_move_resize(bd, x, y, w, h);
+    bd->x = x;
+    bd->y = y;
+    bd->w = w;
+    bd->h = h;
+    bd->changes.pos = true;
+    bd->changes.size = true;
+    bd->changed = true;
+}
+
+static void
+_e_border_move(E_Border *bd,
+               int       x,
+               int       y)
+{
+    e_border_move(bd, x, y);
+    bd->x = x;
+    bd->y = y;
+    bd->changes.pos = true;
+    bd->changed = true;
+}
+
+static void
+_e_border_resize(E_Border *bd,
+                 int       w,
+                 int       h)
+{
+    e_border_resize(bd, w, h);
+    bd->w = w;
+    bd->h = h;
+    bd->changes.size = true;
+    bd->changed = true;
 }
 
 /* }}} */
@@ -580,11 +622,11 @@ _reorganize_column(int col)
             extra->expected.h = h + d;
             ch += extra->expected.h;
 
-            e_border_move_resize(bd,
-                                 extra->expected.x,
-                                 extra->expected.y,
-                                 extra->expected.w,
-                                 extra->expected.h);
+            _e_border_move_resize(bd,
+                                  extra->expected.x,
+                                  extra->expected.y,
+                                  extra->expected.w,
+                                  extra->expected.h);
         }
     } else {
         int y, h;
@@ -604,11 +646,11 @@ _reorganize_column(int col)
         extra->expected.w = _G.tinfo->w[col];
         extra->expected.h = h;
 
-        e_border_move_resize(bd,
-                             extra->expected.x,
-                             extra->expected.y,
-                             extra->expected.w,
-                             extra->expected.h);
+        _e_border_move_resize(bd,
+                              extra->expected.x,
+                              extra->expected.y,
+                              extra->expected.w,
+                              extra->expected.h);
 
         e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
     }
@@ -632,10 +674,11 @@ _move_resize_column(int col, int delta_x, int delta_w)
         extra->expected.x += delta_x;
         extra->expected.w += delta_w;
 
-        e_border_move_resize(bd, extra->expected.x,
-                                 extra->expected.y,
-                                 extra->expected.w,
-                                 extra->expected.h);
+        _e_border_move_resize(bd,
+                              extra->expected.x,
+                              extra->expected.y,
+                              extra->expected.w,
+                              extra->expected.h);
     }
 
     _G.tinfo->x[col] += delta_x;
@@ -662,10 +705,11 @@ _set_column_geometry(int col, int x, int w)
             e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
         }
 
-        e_border_move_resize(bd, extra->expected.x,
-                                 extra->expected.y,
-                                 extra->expected.w,
-                                 extra->expected.h);
+        _e_border_move_resize(bd,
+                              extra->expected.x,
+                              extra->expected.y,
+                              extra->expected.w,
+                              extra->expected.h);
     }
     _G.tinfo->x[col] = x;
     _G.tinfo->w[col] = w;
@@ -745,10 +789,11 @@ _remove_column(void)
                     ERR("No extra for %p", bd);
                     continue;
                 }
-                e_border_move_resize(bd, extra->orig.x,
-                                         extra->orig.y,
-                                         extra->orig.w,
-                                         extra->orig.h);
+                _e_border_move_resize(bd,
+                                      extra->orig.x,
+                                      extra->orig.y,
+                                      extra->orig.w,
+                                      extra->orig.h);
             }
             eina_list_free(_G.tinfo->columns[i]);
             _G.tinfo->columns[i] = NULL;
@@ -821,10 +866,11 @@ change_column_number(struct _Config_vdesk *newconf)
                     ERR("No extra for %p", bd);
                     continue;
                 }
-                e_border_move_resize(bd, extra->orig.x,
-                                         extra->orig.y,
-                                         extra->orig.w,
-                                         extra->orig.h);
+                _e_border_move_resize(bd,
+                                     extra->orig.x,
+                                     extra->orig.y,
+                                     extra->orig.w,
+                                     extra->orig.h);
                 if (!tiling_g.config->show_titles)
                     change_window_border(bd, "default");
             }
@@ -965,11 +1011,11 @@ _add_border(E_Border *bd)
             extra->expected.w = width;
             extra->expected.h = h;
             e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
-            e_border_move_resize(bd,
-                                 extra->expected.x,
-                                 extra->expected.y,
-                                 extra->expected.w,
-                                 extra->expected.h);
+            _e_border_move_resize(bd,
+                                  extra->expected.x,
+                                  extra->expected.y,
+                                  extra->expected.w,
+                                  extra->expected.h);
 
             EINA_LIST_APPEND(_G.tinfo->columns[nb_cols], bd);
             col = nb_cols;
@@ -1133,21 +1179,21 @@ _move_resize_border_in_column(E_Border *bd, Border_Extra *extra,
                 }
 
                 prevextra->expected.h -= delta;
-                e_border_resize(prevbd,
-                                prevextra->expected.w,
-                                prevextra->expected.h);
+                _e_border_resize(prevbd,
+                                 prevextra->expected.w,
+                                 prevextra->expected.h);
 
                 extra->expected.y -= delta;
                 extra->expected.h = bd->h;
 
-                e_border_move(bd,
-                              extra->expected.x,
-                              extra->expected.y);
+                _e_border_move(bd,
+                               extra->expected.x,
+                               extra->expected.y);
             } else {
                 /* You're not allowed to resize */
-                e_border_resize(bd,
-                                extra->expected.w,
-                                extra->expected.h);
+                _e_border_resize(bd,
+                                 extra->expected.w,
+                                 extra->expected.h);
             }
         } else {
             int delta = bd->h - extra->expected.h;
@@ -1166,27 +1212,27 @@ _move_resize_border_in_column(E_Border *bd, Border_Extra *extra,
 
             nextextra->expected.y += delta;
             nextextra->expected.h -= delta;
-            e_border_move_resize(nextbd,
-                                 nextextra->expected.x,
-                                 nextextra->expected.y,
-                                 nextextra->expected.w,
-                                 nextextra->expected.h);
+            _e_border_move_resize(nextbd,
+                                  nextextra->expected.x,
+                                  nextextra->expected.y,
+                                  nextextra->expected.w,
+                                  nextextra->expected.h);
 
             extra->expected.h += delta;
-            e_border_move_resize(bd,
-                                 extra->expected.x,
-                                 extra->expected.y,
-                                 extra->expected.w,
-                                 extra->expected.h);
+            _e_border_move_resize(bd,
+                                  extra->expected.x,
+                                  extra->expected.y,
+                                  extra->expected.w,
+                                  extra->expected.h);
         }
         break;
       case TILING_MOVE:
         if (!l->prev) {
             /* You're not allowed to move */
             bd->y = extra->expected.y;
-            e_border_move(bd,
-                          extra->expected.x,
-                          extra->expected.y);
+            _e_border_move(bd,
+                           extra->expected.x,
+                           extra->expected.y);
             DBG("trying to move %p, but !l->prev", bd);
         } else {
             int delta = bd->y - extra->expected.y;
@@ -1204,18 +1250,18 @@ _move_resize_border_in_column(E_Border *bd, Border_Extra *extra,
                 delta = prevextra->expected.h - min_height;
 
             prevextra->expected.h += delta;
-            e_border_resize(prevbd,
-                            prevextra->expected.w,
-                            prevextra->expected.h);
+            _e_border_resize(prevbd,
+                             prevextra->expected.w,
+                             prevextra->expected.h);
 
             extra->expected.y += delta;
             extra->expected.h -= delta;
 
-            e_border_move_resize(bd,
-                                 extra->expected.x,
-                                 extra->expected.y,
-                                 extra->expected.w,
-                                 extra->expected.h);
+            _e_border_move_resize(bd,
+                                  extra->expected.x,
+                                  extra->expected.y,
+                                  extra->expected.w,
+                                  extra->expected.h);
         }
         break;
       default:
@@ -1243,11 +1289,11 @@ toggle_floating(E_Border *bd)
 
         extra = eina_hash_find(_G.border_extras, &bd);
         if (extra) {
-            e_border_move_resize(bd,
-                                 extra->orig.x,
-                                 extra->orig.y,
-                                 extra->orig.w,
-                                 extra->orig.h);
+            _e_border_move_resize(bd,
+                                  extra->orig.x,
+                                  extra->orig.y,
+                                  extra->orig.w,
+                                  extra->orig.h);
             e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
         } else {
             e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
@@ -1325,16 +1371,16 @@ _action_swap(E_Border *bd_1,
     if (bd_2_maximized) {
         e_border_maximize(bd_1, bd_2_maximized);
     }
-    e_border_move_resize(bd_1,
-                         extra_1->expected.x,
-                         extra_1->expected.y,
-                         extra_1->expected.w,
-                         extra_1->expected.h);
-    e_border_move_resize(bd_2,
-                         extra_2->expected.x,
-                         extra_2->expected.y,
-                         extra_2->expected.w,
-                         extra_2->expected.h);
+    _e_border_move_resize(bd_1,
+                          extra_1->expected.x,
+                          extra_1->expected.y,
+                          extra_1->expected.w,
+                          extra_1->expected.h);
+    _e_border_move_resize(bd_2,
+                          extra_2->expected.x,
+                          extra_2->expected.y,
+                          extra_2->expected.w,
+                          extra_2->expected.h);
 }
 
 static void
@@ -1622,12 +1668,12 @@ _move_up(void)
     extra_1->expected.y = extra_2->expected.y;
     extra_2->expected.y += extra_1->expected.h;
 
-    e_border_move(bd_1,
-                  extra_1->expected.x,
-                  extra_1->expected.y);
-    e_border_move(bd_2,
-                  extra_2->expected.x,
-                  extra_2->expected.y);
+    _e_border_move(bd_1,
+                   extra_1->expected.x,
+                   extra_1->expected.y);
+    _e_border_move(bd_2,
+                   extra_2->expected.x,
+                   extra_2->expected.y);
 
     _check_moving_anims(bd_1, extra_1, col);
     ecore_x_pointer_warp(_G.tinfo->desk->zone->container->win,
@@ -1673,12 +1719,12 @@ _move_down(void)
     extra_2->expected.y = extra_1->expected.y;
     extra_1->expected.y += extra_2->expected.h;
 
-    e_border_move(bd_1,
-                  extra_1->expected.x,
-                  extra_1->expected.y);
-    e_border_move(bd_2,
-                  extra_2->expected.x,
-                  extra_2->expected.y);
+    _e_border_move(bd_1,
+                   extra_1->expected.x,
+                   extra_1->expected.y);
+    _e_border_move(bd_2,
+                   extra_2->expected.x,
+                   extra_2->expected.y);
 
     _check_moving_anims(bd_1, extra_1, col);
     ecore_x_pointer_warp(_G.tinfo->desk->zone->container->win,
@@ -1797,11 +1843,11 @@ _move_right(void)
         extra->expected.y = y;
         extra->expected.w = width;
         extra->expected.h = h;
-        e_border_move_resize(bd,
-                             extra->expected.x,
-                             extra->expected.y,
-                             extra->expected.w,
-                             extra->expected.h);
+        _e_border_move_resize(bd,
+                              extra->expected.x,
+                              extra->expected.y,
+                              extra->expected.w,
+                              extra->expected.h);
         e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
 
         if (nb_cols + 1 > _G.tinfo->conf->nb_cols) {
@@ -2002,18 +2048,18 @@ _transition_move(tiling_move_t direction)
 
         nextextra->expected.y += delta;
         nextextra->expected.h -= delta;
-        e_border_move_resize(nextbd,
-                             nextextra->expected.x,
-                             nextextra->expected.y,
-                             nextextra->expected.w,
-                             nextextra->expected.h);
+        _e_border_move_resize(nextbd,
+                              nextextra->expected.x,
+                              nextextra->expected.y,
+                              nextextra->expected.w,
+                              nextextra->expected.h);
 
         extra->expected.h += delta;
-        e_border_move_resize(bd,
-                             extra->expected.x,
-                             extra->expected.y,
-                             extra->expected.w,
-                             extra->expected.h);
+        _e_border_move_resize(bd,
+                              extra->expected.x,
+                              extra->expected.y,
+                              extra->expected.w,
+                              extra->expected.h);
 
         popup = _G.transition_overlay->overlay.popup;
         e_popup_move(popup, popup->x, popup->y + delta);
@@ -2537,21 +2583,21 @@ _e_module_tiling_cb_hook(void *data,
 
             if (col > 0 && bd->maximized & E_MAXIMIZE_HORIZONTAL) {
                  e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
-                 e_border_move_resize(bd,
-                                      extra->expected.x,
-                                      extra->expected.y,
-                                      extra->expected.w,
-                                      extra->expected.h);
+                 _e_border_move_resize(bd,
+                                       extra->expected.x,
+                                       extra->expected.y,
+                                       extra->expected.w,
+                                       extra->expected.h);
                  changed = true;
             }
             if (bd->maximized & E_MAXIMIZE_VERTICAL
             && eina_list_count(_G.tinfo->columns[col]) > 1) {
                  e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
-                 e_border_move_resize(bd,
-                                      extra->expected.x,
-                                      extra->expected.y,
-                                      extra->expected.w,
-                                      extra->expected.h);
+                 _e_border_move_resize(bd,
+                                       extra->expected.x,
+                                       extra->expected.y,
+                                       extra->expected.w,
+                                       extra->expected.h);
                  changed = true;
             }
             if (changed)
@@ -2559,8 +2605,11 @@ _e_module_tiling_cb_hook(void *data,
         }
 
         if (bd->changes.border && bd->changes.size) {
-            e_border_move_resize(bd, extra->expected.x, extra->expected.y,
-                                     extra->expected.w, extra->expected.h);
+            _e_border_move_resize(bd,
+                                  extra->expected.x,
+                                  extra->expected.y,
+                                  extra->expected.w,
+                                  extra->expected.h);
             return;
         }
 
@@ -2652,15 +2701,15 @@ _e_module_tiling_desk_set(void *data,
     if (!_G.tinfo->conf || !_G.tinfo->conf->nb_cols) {
         Border_Extra *extra;
 
+        e_border_unmaximize(ev->border, E_MAXIMIZE_BOTH);
         extra = eina_hash_find(_G.border_extras, &ev->border);
         if (extra) {
-            e_border_move_resize(ev->border,
-                                 extra->orig.x,
-                                 extra->orig.y,
-                                 extra->orig.w,
-                                 extra->orig.h);
+            _e_border_move_resize(ev->border,
+                                  extra->orig.x,
+                                  extra->orig.y,
+                                  extra->orig.w,
+                                  extra->orig.h);
         }
-        e_border_unmaximize(ev->border, E_MAXIMIZE_BOTH);
         if (!tiling_g.config->show_titles)
             change_window_border(ev->border, "default");
     } else {
@@ -2726,7 +2775,7 @@ e_modapi_init(E_Module *m)
     _G.border_extras = eina_hash_pointer_new(_clear_border_extras);
 
     /* Callback for new windows or changes */
-    _G.hook = e_border_hook_add(E_BORDER_HOOK_EVAL_POST_BORDER_ASSIGN,
+    _G.hook = e_border_hook_add(E_BORDER_HOOK_EVAL_PRE_BORDER_ASSIGN,
                                 _e_module_tiling_cb_hook, NULL);
     /* Callback for hiding windows */
     _G.handler_hide = ecore_event_handler_add(E_EVENT_BORDER_HIDE,
