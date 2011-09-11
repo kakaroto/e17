@@ -19,6 +19,9 @@
 	- Add performance test application.
 	- Check elm_main.c
 	- Check EXAMPLES/elementary.
+	- Tooltip 'Big Icon Tooltip', 'Insanely Big Icon Tooltip' - discomfitor.
+	- There is a bug with this pager where sometimes when you are using it, the widgets will all become unfocused and you cannot focus them again and then the pager is stuck open. - discomfitor.
+	- entry's select_all() function is broken or at least it is not working in that pager. - discomfitor.
 
 * Edje
 	- Add an API to reset all parts to default state.
