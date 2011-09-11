@@ -1,44 +1,50 @@
 # French translation for Engage.
 # This file is put in the public domain.
 # batden <batden@orange.fr>, 2010, 2011.
+# dazibao <dazibao@sfr.fr>, 2011.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Engage\n"
 "Report-Msgid-Bugs-To: hannes.janetzek@gmail.com\n"
-"POT-Creation-Date: 2011-04-04 19:00+0400\n"
-"PO-Revision-Date: 2011-04-04 20:52+0400\n"
-"Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: French <pourunmondesansgourou@gmail.com>\n"
+"POT-Creation-Date: 2011-09-04 16:46+0200\n"
+"PO-Revision-Date: 2011-09-11 15:36+0200\n"
+"Last-Translator: dazibao <dazibao@sfr.fr>\n"
+"Language-Team: French <sansgourou@gmail.com>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_main.c:1695 src/e_mod_main.c:1786 src/e_mod_main.c:1810
+#: src/e_mod_main.c:1666 src/e_mod_main.c:1824 src/e_mod_main.c:1851
 msgid "Engage"
 msgstr "Engage"
 
-#: src/ng_taskbar.c:684
+#: src/ng_taskbar.c:641
 msgid "No name!"
 msgstr "Pas de nom !"
 
-#: src/ng_launcher.c:529
+#: src/ng_launcher.c:275
+msgid "Open folder with EFM"
+msgstr "Ouvrir les dossiers avec EFM"
+
+#: src/ng_launcher.c:561
 msgid "Configure Bar"
 msgstr "Configurer la barre"
 
-#: src/ng_launcher.c:533
+#: src/ng_launcher.c:565
 msgid "Lock Dragging"
 msgstr "Verrouiller le glisser"
 
-#: src/ng_launcher.c:542
+#: src/ng_launcher.c:574
 msgid "Applications"
 msgstr "Applications"
 
-#: src/ng_launcher.c:546
+#: src/ng_launcher.c:578
 msgid "Edit Icon"
 msgstr "Éditer l'icone"
 
@@ -82,193 +88,188 @@ msgstr "Supprimer ce gadget"
 msgid "Description: Unavailable"
 msgstr "Description : non disponible"
 
-#: src/ng_config.c:101
+#: src/ng_config.c:98
 msgid "Engage Configuration"
 msgstr "Configuration de Engage"
 
-#: src/ng_config.c:171 src/ng_config.c:229
+#: src/ng_config.c:164 src/ng_config.c:225
 msgid "Appearance"
 msgstr "Aspect"
 
-#: src/ng_config.c:172
+#: src/ng_config.c:165
 msgid "Icon Size:"
 msgstr "Taille de l'icone :"
 
-#: src/ng_config.c:174
+#: src/ng_config.c:167
 #, c-format
 msgid "%1.0f px"
 msgstr "%1.0f px"
 
-#: src/ng_config.c:179
-msgid "Reflection Opacity:"
-msgstr "Opacité du reflet:"
-
 #: src/ng_config.c:181
-#, c-format
-msgid "%1.0f"
-msgstr "%1.0f"
-
-#: src/ng_config.c:188
 msgid "Background Opacity:"
 msgstr "Opacité du fond :"
 
-#: src/ng_config.c:190
+#: src/ng_config.c:183
 msgid "%1.0f \\%"
 msgstr "%1.0f \\%"
 
-#: src/ng_config.c:198
+#: src/ng_config.c:191
 msgid "Show Background Box"
 msgstr "Afficher le fond"
 
-#: src/ng_config.c:203
+#: src/ng_config.c:194
+msgid "Show Mouse-Over Animation"
+msgstr "Afficher l'animation au survol"
+
+#: src/ng_config.c:199
 msgid "Orientation"
 msgstr "Disposition"
 
-#: src/ng_config.c:205
+#: src/ng_config.c:201
 msgid "Bottom Edge"
 msgstr "Bord inférieur"
 
-#: src/ng_config.c:207
+#: src/ng_config.c:203
 msgid "Top Edge"
 msgstr "Bord supérieur"
 
-#: src/ng_config.c:209
+#: src/ng_config.c:205
 msgid "Left Edge"
 msgstr "Bord gauche"
 
-#: src/ng_config.c:211
+#: src/ng_config.c:207
 msgid "Right Edge"
 msgstr "Bord droit"
 
-#: src/ng_config.c:232 src/ng_config.c:251
+#: src/ng_config.c:228 src/ng_config.c:247
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/ng_config.c:233
+#: src/ng_config.c:229
 msgid "Factor:"
 msgstr "Facteur :"
 
-#: src/ng_config.c:239
+#: src/ng_config.c:235
 msgid "Range:"
 msgstr "Étendue :"
 
-#: src/ng_config.c:245
+#: src/ng_config.c:241
 msgid "Duration:"
 msgstr "Durée :"
 
-#: src/ng_config.c:254 src/ng_config.c:282
+#: src/ng_config.c:250 src/ng_config.c:278
 msgid "Bar Items"
 msgstr "Éléments de la barre"
 
-#: src/ng_config.c:262 src/ng_config.c:539 src/ng_config_instances.c:104
+#: src/ng_config.c:258 src/ng_config.c:538 src/ng_config_instances.c:104
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/ng_config.c:264 src/ng_config.c:541 src/ng_config_instances.c:106
+#: src/ng_config.c:260 src/ng_config.c:540 src/ng_config_instances.c:106
 msgid "Configure"
 msgstr "Configurer"
 
-#: src/ng_config.c:266
+#: src/ng_config.c:262
 msgid "Up"
 msgstr "Monter"
 
-#: src/ng_config.c:268
+#: src/ng_config.c:264
 msgid "Down"
 msgstr "Descendre"
 
-#: src/ng_config.c:273 src/ng_config.c:537 src/ng_config_instances.c:102
+#: src/ng_config.c:269 src/ng_config.c:536 src/ng_config_instances.c:102
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/ng_config.c:275
+#: src/ng_config.c:271
 msgid "Taskbar"
 msgstr "Barre des tâches"
 
-#: src/ng_config.c:277
+#: src/ng_config.c:273
 msgid "Launcher"
 msgstr "Lanceur"
 
-#: src/ng_config.c:279
+#: src/ng_config.c:275
 msgid "Gadcon"
 msgstr "Gadcon"
 
-#: src/ng_config.c:285 src/ng_config.c:301
+#: src/ng_config.c:281 src/ng_config.c:300
 msgid "Auto Hide"
 msgstr "Auto-masquage"
 
-#: src/ng_config.c:299
+#: src/ng_config.c:298
 msgid "Show Bar when Urgent"
 msgstr "Afficher la barre si événement urgent"
 
-#: src/ng_config.c:307
+#: src/ng_config.c:306
 msgid "Stacking"
 msgstr "Empilement"
 
-#: src/ng_config.c:309
+#: src/ng_config.c:308
 msgid "Above All"
 msgstr "Toujours au-dessus"
 
-#: src/ng_config.c:311
+#: src/ng_config.c:310
 msgid "Below Fullscreen"
 msgstr "Sous les fenêtres plein écran"
 
-#: src/ng_config.c:315 src/ng_config.c:322
+#: src/ng_config.c:314 src/ng_config.c:321
 msgid "Other"
 msgstr "Autres"
 
-#: src/ng_config.c:316
+#: src/ng_config.c:315
 msgid "Ecomorph Features"
 msgstr "Fonctionnalités à la Ecomorph"
 
-#: src/ng_config.c:318
+#: src/ng_config.c:317
 msgid "Show Icon Label"
 msgstr "Montrer l'étiquette de l'icone"
 
-#: src/ng_config.c:529
+#: src/ng_config.c:528
 msgid "Launcher Settings"
 msgstr "Paramétrage du lanceur"
 
-#: src/ng_config.c:549
+#: src/ng_config.c:548
 msgid "Taskbar Settings"
 msgstr "Paramétrage de la barre des tâches"
 
-#: src/ng_config.c:551
+#: src/ng_config.c:550
 msgid "Dont Show Dialogs"
 msgstr "Ne pas afficher les boîtes de dialogue"
 
-#: src/ng_config.c:554
+#: src/ng_config.c:553
 msgid "Advanced Window Menu"
 msgstr "Menu avancé de la fenêtre"
 
-#: src/ng_config.c:557
+#: src/ng_config.c:556
 msgid "Only Show Current Desk"
 msgstr "Afficher uniquement le bureau actuel"
 
-#: src/ng_config.c:560
+#: src/ng_config.c:559
 msgid "Group Applications by Window Class"
 msgstr "Grouper les applis par classe de fenêtre"
 
-#: src/ng_config.c:563
+#: src/ng_config.c:562
 msgid "Append new Applications on the right Side"
 msgstr "Ajouter les nouvelles applis par la droite"
 
-#: src/ng_config.c:569
+#: src/ng_config.c:568
 msgid "Iconified Applications"
 msgstr "Applications minimisées"
 
-#: src/ng_config.c:644 src/ng_config.c:684
+#: src/ng_config.c:643 src/ng_config.c:683
 msgid "Engage Bar Configuration"
 msgstr "Configuration de la barre"
 
-#: src/ng_config.c:789
+#: src/ng_config.c:788
 msgid "Create new source"
 msgstr "Créer une nouvelle source"
 
-#: src/ng_config.c:790
+#: src/ng_config.c:789
 msgid "Enter a name for this new Application Launcher:"
 msgstr "Entrer un nom pour ce nouveau lanceur :"
 
-#: src/ng_config.c:799
+#: src/ng_config.c:798
 #, c-format
 msgid ""
 "You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
@@ -277,7 +278,7 @@ msgstr ""
 "Vous avez demandé à supprimer « %s ».<br><br>Voulez-vous vraiment supprimer "
 "cette source ?"
 
-#: src/ng_config.c:803
+#: src/ng_config.c:802
 msgid "Are you sure you want to delete this source?"
 msgstr "Voulez-vous vraiment supprimer cette source ?"
 
@@ -289,7 +290,7 @@ msgstr "Instances de Engage"
 msgid "Bar"
 msgstr "Barre"
 
-#: src/ng_config_instances.c:338
+#: src/ng_config_instances.c:271
 #, c-format
 msgid ""
 "You requested to delete \"%s\".<br><br>Are you sure you want to delete this "
@@ -297,9 +298,15 @@ msgid ""
 msgstr ""
 "Vous avez demandé à supprimer « %s ».<br><br>Voulez-vous vraiment le faire ?"
 
-#: src/ng_config_instances.c:342
+#: src/ng_config_instances.c:275
 msgid "Are you sure you want to delete this Instance?"
 msgstr "Voulez-vous vraiment supprimer cette instance ?"
+
+#~ msgid "Reflection Opacity:"
+#~ msgstr "Opacité du reflet:"
+
+#~ msgid "%1.0f"
+#~ msgstr "%1.0f"
 
 #~ msgid "Itask NG"
 #~ msgstr "Itask NG"

@@ -1,66 +1,60 @@
-# French translation for Enna-Explorer.
+# Italian translation for Enna-Explorer.
 # This file is put in the public domain.
-# Nicolas Aguirre <aguirre.nicolas@gmail.com>, 2011.
-# dazibao <dazibao@sfr.fr>, 2011.
+# Massimo Maiurana <maiurana@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Enna-Explorer\n"
 "Report-Msgid-Bugs-To: http://enna.geexbox.org\n"
 "POT-Creation-Date: 2011-09-11 14:52+0200\n"
-"PO-Revision-Date: 2011-09-11 15:22+0200\n"
-"Last-Translator: dazibao <dazibao@sfr.fr>\n"
-"Language-Team: French <sansgourou@gmail.com>\n"
-"Language: fr\n"
+"PO-Revision-Date: 2011-09-11 21:44+0200\n"
+"Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
+"Language-Team: none\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n>1;\n"
-"X-Poedit-Language: French\n"
-"X-Poedit-Country: FRANCE\n"
-"X-Poedit-SourceCharset: utf-8\n"
 
 #: src/bin/shortcut.c:163
 msgid "Music"
-msgstr "Musique"
+msgstr "Musica"
 
 #: src/bin/shortcut.c:165
 msgid "Videos"
-msgstr "Vidéos"
+msgstr "Video"
 
 #: src/bin/shortcut.c:167
 msgid "Images"
-msgstr "Images"
+msgstr "Immagini"
 
 #: src/bin/shortcut.c:169
 msgid "Downloads"
-msgstr "Téléchargements"
+msgstr "Scaricamenti"
 
 #: src/bin/shortcut.c:171
 msgid "Documents"
-msgstr "Documents"
+msgstr "Documenti"
 
 #: src/bin/localfiles.c:591 src/bin/localfiles.c:637
 msgid "Rename"
-msgstr "Renommer"
+msgstr "Renomina"
 
 #: src/bin/localfiles.c:614
 msgid "Enter new name"
-msgstr "Saisir un nouveau nom"
+msgstr "Inserire nuovo nome"
 
 #: src/bin/localfiles.c:646 src/bin/localfiles.c:729
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "Annulla"
 
 #: src/bin/localfiles.c:679
 msgid "Delete files"
-msgstr "Supression des fichiers"
+msgstr "Elimina file"
 
 #: src/bin/localfiles.c:704
 #, c-format
 msgid "Are you sure to delete <b>%s</b> ?"
-msgstr "Voulez-vous vraiment supprimer <b>%s</b> ?"
+msgstr "Siete sicuri di voler eliminare <b>%s</b>?"
 
 #: src/bin/localfiles.c:720
 msgid "Delete"
-msgstr "Supprimer"
+msgstr "Elimina"
