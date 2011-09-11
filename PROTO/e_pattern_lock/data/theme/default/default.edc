@@ -1,11 +1,24 @@
-#define ICON(group_name, icon_name)						\
+#define ICON(group_name, icon_name, col, row)						\
 	group {	name: group_name;						\
+		data {								\
+			item: "col" col;					\
+			item: "row" row;					\
+		}								\
 		images {							\
 			image: "e-logo-dark.png" COMP;				\
 			image: "e-logo-grad.png" COMP;				\
 			image: "e-logo.png" COMP;				\
 		}								\
 		parts {								\
+			part {	name: "mstatus";				\
+				type: RECT;					\
+				description {	state: "default" 0.0;		\
+					visible: 0;				\
+				}						\
+				description {	state: "selected" 0.0;		\
+					inherit: "default" 0.0;			\
+				}						\
+			}							\
 			part {	name: icon_name;				\
 				type: IMAGE;					\
 				mouse_events: 1;				\
@@ -16,19 +29,7 @@
 					align: 0.5 0.5;				\
 					image.normal: "e-logo-dark.png";	\
 				}						\
-				description {	state: "mouse_in" 0.0;		\
-					aspect: 1.0 1.0;			\
-					aspect_preference: BOTH;		\
-					align: 0.5 0.5;				\
-					image.normal: "e-logo-grad.png";	\
-				}						\
-				description {	state: "mouse_down" 0.0;	\
-					aspect: 1.0 1.0;			\
-					aspect_preference: BOTH;		\
-					align: 0.5 0.5;				\
-					image.normal: "e-logo.png";		\
-				}						\
-				description {	state: "mouse_up" 0.0;		\
+				description {	state: "selected" 0.0;		\
 					aspect: 1.0 1.0;			\
 					aspect_preference: BOTH;		\
 					align: 0.5 0.5;				\
@@ -40,22 +41,33 @@
 			program { name: "go_mouse_down";			\
 				signal: "mouse,down,1";				\
 				source: icon_name;				\
-				action: STATE_SET "mouse_down" 0.0;		\
-				transition: LINEAR 1.0;				\
+				action: STATE_SET "selected" 0.0;		\
 				target: icon_name;				\
-			}							\
-			program { name: "go_mouse_in";				\
-				signal: "mouse,in";				\
-				source: icon_name;				\
-				action: STATE_SET "mouse_in" 0.0;		\
-				transition: LINEAR 1.0;				\
-				target: icon_name;				\
+				target: "mstatus";				\
 			}							\
 			program { name: "go_mouse_up";				\
 				signal: "mouse,up,1";				\
 				source: icon_name;				\
-				action: STATE_SET "mouse_up" 0.0;		\
-				transition: LINEAR 1.0;				\
+				action: STATE_SET "selected" 0.0;		\
+				target: icon_name;				\
+				target: "mstatus";				\
+			}							\
+			program { name: "go_mouse_in";				\
+				filter: "mstatus" "selected";			\
+				signal: "mouse,in";				\
+				action: STATE_SET "selected" 0.0;		\
+				target: icon_name;				\
+			}							\
+			program { name: "go_clicked";				\
+				signal: "mouse,clicked,1";			\
+				source: icon_name;				\
+				action: STATE_SET "selected" 0.5;		\
+				target: icon_name;				\
+				after: "go_normal";				\
+			}							\
+			program { name: "go_normal";				\
+				source: icon_name;				\
+				action: STATE_SET "default" 0.5;		\
 				target: icon_name;				\
 			}							\
 		}								\
@@ -64,15 +76,15 @@
 
 collections {
 
-	ICON("top_left", "top_left");
-	ICON("top", "top");
-	ICON("top_right", "top_right");
-	ICON("left", "left");
-	ICON("center", "center");
-	ICON("right", "right");
-	ICON("bottom_left", "bottom_left");
-	ICON("bottom", "bottom");
-	ICON("bottom_right", "bottom_right");
+	ICON("top_left", "top_left", "0", "0");
+	ICON("top", "top", "1", "0");
+	ICON("top_right", "top_right", "2", "0");
+	ICON("left", "left", "0", "1");
+	ICON("center", "center", "1", "1");
+	ICON("right", "right", "2", "1");
+	ICON("bottom_left", "bottom_left", "0", "2");
+	ICON("bottom", "bottom", "1", "2");
+	ICON("bottom_right", "bottom_right", "2", "2");
 
 	group {	name: "e_lock/table/default";
 		parts {
@@ -86,6 +98,8 @@ collections {
 			part {	name: "table";
 				type: TABLE;
 				clip_to: "background";
+				mouse_events: 1;
+				repeat_events: 1;
 				description {	state: "default" 0.0;
 					fixed: 1 1;
 					visible: 1;
@@ -96,13 +110,13 @@ collections {
 				table {
 					items {
 						item { align: -1 -1; type: GROUP; source: "top_left";     position: 0 0; }
-						item { align: -1 -1; type: GROUP; source: "top";          position: 0 1; }
-						item { align: -1 -1; type: GROUP; source: "top_right";    position: 0 2; }
-						item { align: -1 -1; type: GROUP; source: "left";         position: 1 0; }
+						item { align: -1 -1; type: GROUP; source: "top";          position: 1 0; }
+						item { align: -1 -1; type: GROUP; source: "top_right";    position: 2 0; }
+						item { align: -1 -1; type: GROUP; source: "left";         position: 0 1; }
 						item { align: -1 -1; type: GROUP; source: "center";       position: 1 1; }
-						item { align: -1 -1; type: GROUP; source: "right";        position: 1 2; }
-						item { align: -1 -1; type: GROUP; source: "bottom_left";  position: 2 0; }
-						item { align: -1 -1; type: GROUP; source: "bottom";       position: 2 1; }
+						item { align: -1 -1; type: GROUP; source: "right";        position: 2 1; }
+						item { align: -1 -1; type: GROUP; source: "bottom_left";  position: 0 2; }
+						item { align: -1 -1; type: GROUP; source: "bottom";       position: 1 2; }
 						item { align: -1 -1; type: GROUP; source: "bottom_right"; position: 2 2; }
 					}
 				}
