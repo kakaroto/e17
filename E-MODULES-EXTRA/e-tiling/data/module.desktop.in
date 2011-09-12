@@ -4,6 +4,6 @@ Name=E-Tiling
 Name[fr]=E-pavage
 Icon=e-module-e-tiling
 Comment=Positions/resizes your windows tilingly.
-Comment[fr]=Place/Redimensionne les fenêtres sans les superposer.
+Comment[fr]=Place/Redimensionne les fenÃªtres sans les superposer.
 Comment[it]=Posiziona/ridimensiona le finestre affiancandole.
 X-Enlightenment-ModuleType=core
