@@ -2141,7 +2141,7 @@ _transition_overlay_key_down(void *data,
         if (ev->key[0] && !ev->key[1] && strchr(tiling_g.config->keyhints,
                                                 ev->key[1])) {
             transition_overlay_t *trov = NULL;
-            E_Border *bd = trov->bd;
+            E_Border *bd = NULL;
             Border_Extra *extra = NULL;
             Evas_Coord ew, eh;
             char *key = _G.keys;
@@ -2155,6 +2155,7 @@ _transition_overlay_key_down(void *data,
             if (!trov) {
                 return ECORE_CALLBACK_RENEW;
             }
+            bd = trov->bd;
 
             _G.transition_overlay = trov;
             eina_hash_free(_G.overlays);
