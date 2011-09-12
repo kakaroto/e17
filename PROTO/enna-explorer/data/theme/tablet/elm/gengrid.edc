@@ -29,8 +29,8 @@ group { name: "elm/gengrid/item/default/default";
             visible: 0;
             color: 255 255 255 0;
             image {
-               normal: "sel_bg.png";
-               border: 15 15 15 15;
+               normal: "list_selected.png";
+               border: 4 4 4 4;
             }
          }
          description { state: "selected" 0.0;
@@ -198,8 +198,8 @@ group { name: "elm/gengrid/item/video/default";
             visible: 0;
             color: 255 255 255 0;
             image {
-               normal: "sel_bg.png";
-               border: 15 15 15 15;
+               normal: "list_bg.png";
+               border: 4 4 4 4;
             }
          }
          description { state: "selected" 0.0;

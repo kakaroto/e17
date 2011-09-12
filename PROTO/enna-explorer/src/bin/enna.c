@@ -30,15 +30,16 @@
 #include <Ecore.h>
 #include <Ecore_File.h>
 #include <Elementary.h>
+#include <Eio.h>
 
 #include "enna.h"
 #include "enna_config.h"
 #include "utils.h"
 #include "module.h"
-#include "volumes.h"
 #include "explorer.h"
 #include "activity.h"
 #include "localfiles.h"
+#include "udisks.h"
 
 #define EDJE_GROUP_MAIN_LAYOUT "enna/main/layout"
 #define EDJE_PART_MAINMENU_SWALLOW "enna.mainmenu.swallow"
@@ -108,14 +109,12 @@ static int _enna_init(int argc, char **argv)
    enna_config_load_theme();
 
 
-   /* Create ecore events (we should put here ALL the event_type_new) */
-   ENNA_EVENT_BROWSER_CHANGED = ecore_event_type_new();
-
    elm_init(argc, argv);
    elm_need_efreet();
    elm_need_ethumb();
    efreet_mime_init();
    eio_init();
+   enna_udisks_init();
 
    if (!_create_gui())
      return 0;

@@ -2,15 +2,27 @@
 #include <Eio.h>
 #include "enna.h"
 #include "gettext.h"
+#include "udisks.h"
 
 typedef struct _Enna_Shortcut Enna_Shortcut;
+typedef struct _Device_Item Device_Item;
 
 struct _Enna_Shortcut
 {
    Evas_Object *list;
    Efreet_Desktop *ef;
-
    char *target;
+};
+
+static Eina_List *_device_items = NULL;
+static Evas_Object *list;
+
+struct _Device_Item
+{
+   Evas_Object *list;
+   Elm_Genlist_Item *gi;
+   Enna_Volume *v;
+   const char *udi;
 };
 
 static Eina_List *
@@ -42,7 +54,7 @@ _enna_shortcut_parse_gtk_bookmarks(void)
                {
                   if (ecore_file_exists(uri->path))
                     {
-                        list = eina_list_append(list, eina_stringshare_add(uri->path));
+                       list = eina_list_append(list, eina_stringshare_add(uri->path));
                     }
                }
              if (uri) efreet_uri_free(uri);
@@ -54,6 +66,26 @@ _enna_shortcut_parse_gtk_bookmarks(void)
 }
 
 
+
+static Device_Item *
+_volume_find(const char *udi)
+{
+
+   Eina_List *l;
+   Device_Item *di;
+
+   if (!udi)  return NULL;
+
+   EINA_LIST_FOREACH(_device_items, l, di)
+     {
+        if (!di->v || !di->v->udi) continue;
+        if (!strcmp(udi, di->udi)) return di;
+     }
+
+   return NULL;
+
+}
+
 static char *
 _enna_shortcut_favorite_label_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
@@ -64,13 +96,6 @@ _enna_shortcut_favorite_label_get(void *data __UNUSED__, Evas_Object *obj __UNUS
 static Evas_Object *
 _enna_shortcut_favorite_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part)
 {
-   /* if (!strcmp(part, "elm.swallow.icon")) */
-   /*   { */
-   /*      Evas_Object *ic = elm_icon_add(obj); */
-   /*      elm_icon_standard_set(ic, "emblem-favorite"); */
-   /*      return ic; */
-   /*   } */
-
    return NULL;
 }
 
@@ -158,7 +183,6 @@ _bookmark_icon_get(void *data, Evas_Object *obj, const char *part)
 
    ic = elm_icon_add(obj);
    elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
-   printf("label : %s\n", label);
    elm_icon_smooth_set(ic, EINA_FALSE);
    if (!strcmp(label, _("Music")))
      elm_icon_standard_set(ic, "folder-music");
@@ -181,11 +205,80 @@ _bookmark_icon_get(void *data, Evas_Object *obj, const char *part)
 }
 
 
+static char *
+_bookmark_volume_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+{
+   Enna_Volume *volume = data;
+
+
+   return strdup(ecore_file_file_get(volume->label));
+}
+
+static void
+_volume_eject_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Enna_Volume *v = data;
+
+   if (v->storage && v->storage->requires_eject)
+     enna_udisks_volume_eject(v);
+   else
+     enna_udisks_volume_unmount(v);
+}
+
+
+static Evas_Object *
+_bookmark_volume_icon_get(void *data, Evas_Object *obj, const char *part)
+{
+   Enna_Volume *v = data;
+
+   if (v->mounted && !strcmp(part, "elm.swallow.end"))
+     {
+        Evas_Object *bt;
+        Evas_Object *ic;
+
+        bt = elm_button_add(obj);
+        ic = elm_icon_add(bt);
+        elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
+        elm_icon_standard_set(ic, "ejecter");
+        evas_object_size_hint_min_set(bt, 16, 16);
+        elm_object_style_set(bt, "anchor");
+        elm_button_icon_set(bt, ic);
+        evas_object_show(ic);
+        evas_object_show(bt);
+        evas_object_smart_callback_add(bt, "clicked", _volume_eject_clicked_cb, v);
+
+        return bt;
+     }
+   else if (!strcmp(part, "elm.swallow.icon"))
+     {
+        Evas_Object *ic;
+        ic = elm_icon_add(obj);
+        elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
+        elm_icon_standard_set(ic, "block-device");
+        evas_object_show(ic);
+        return ic;
+     }
+   return NULL;
+}
+
+
 static Elm_Genlist_Item_Class itc_bookmark = {
   "panel",
   {
     _bookmark_label_get,
     _bookmark_icon_get,
+    NULL,
+    NULL,
+    NULL
+  },
+  NULL
+};
+
+static Elm_Genlist_Item_Class itc_bookmark_volume = {
+  "panel",
+  {
+    _bookmark_volume_label_get,
+    _bookmark_volume_icon_get,
     NULL,
     NULL,
     NULL
@@ -228,9 +321,9 @@ _desktop_stat_error(void *data, Eio_File *handler __UNUSED__, int error __UNUSED
 static Eina_Bool
 _desktop_filter_cb(void *data __UNUSED__, Eio_File *handler __UNUSED__, const char *file)
 {
-   
 
-    return EINA_TRUE;
+
+   return EINA_TRUE;
 
    if (!strcmp(file + eina_stringshare_strlen(file) - 8, ".desktop"))
      return EINA_TRUE;
@@ -343,9 +436,126 @@ _desktop_error_cb(void *data __UNUSED__, Eio_File *handler __UNUSED__, int error
 static void
 _bookmark_selected_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
-   const char *file = data;
-   printf("Selected : %s\n", file);
+   char *file = data;
    evas_object_smart_callback_call(obj, "shortcut,selected", file);
+}
+
+static void
+_volume_selected_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+{
+   Enna_Volume *v = data;
+
+   if (!v->mounted)
+     enna_udisks_volume_mount(v);
+
+   else if (v->mount_point)
+     evas_object_smart_callback_call(obj, "shortcut,selected", v->mount_point);
+}
+
+static Eina_Bool
+_volume_added_cb(void *data, int type, void *event)
+{
+   Evas_Object *list = data;
+   Elm_Genlist_Item *egi, *gi;
+   Elm_Genlist_Item *it;
+   Enna_Volume *v = event;
+   Device_Item *di;
+
+   di = _volume_find(v->udi);
+   if (di)
+     {
+        elm_genlist_item_update(di->gi);
+        return ECORE_CALLBACK_DONE;
+     }
+
+
+   egi = evas_object_data_get(list, "devices/item");
+   gi = elm_genlist_item_append(list, &itc_bookmark_volume, v, egi, ELM_GENLIST_ITEM_NONE, _volume_selected_cb, v);
+
+   di = calloc(1, sizeof(Device_Item));
+   di->gi = gi;
+   di->v = v;
+   di->list = list;
+   di->udi = eina_stringshare_add(v->udi);
+   _device_items = eina_list_append(_device_items, di);
+
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_volume_removed_cb(void *data, int type, void *event)
+{
+   Device_Item *di;
+   const char *udi = event;
+
+   di = _volume_find(udi);
+
+   if(!di)
+     return ECORE_CALLBACK_DONE;
+
+   elm_genlist_item_del(di->gi);
+   _device_items = eina_list_remove(_device_items, di);
+   eina_stringshare_del(di->udi);
+   free(di);
+
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_storage_added_cb(void *data, int type, void *event)
+{
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_storage_removed_cb(void *data, int type, void *event)
+{
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_mount_done_cb(void *data, int type, void *event)
+{
+   const char *str = event;
+   Device_Item *di;
+
+   di = _volume_find(str);
+   elm_genlist_item_update(di->gi);
+   elm_genlist_item_selected_set(di->gi, EINA_FALSE);
+
+   if (di->v && di->v->mount_point)
+     evas_object_smart_callback_call(di->list, "shortcut,selected", di->v->mount_point);
+
+   return ECORE_CALLBACK_DONE;
+
+}
+
+static Eina_Bool
+_mount_error_cb(void *data, int type, void *event)
+{
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_unmount_done_cb(void *data, int type, void *event)
+{
+   const char *str = event;
+   Device_Item *di;
+
+   di = _volume_find(str);
+   elm_genlist_item_update(di->gi);
+   elm_genlist_item_selected_set(di->gi, EINA_FALSE);
+   if (di->v)
+     evas_object_smart_callback_call(di->list, "shortcut,selected", getenv("HOME"));
+
+   return ECORE_CALLBACK_DONE;
+
+}
+
+static Eina_Bool
+_unmount_error_cb(void *data, int type, void *event)
+{
+   return ECORE_CALLBACK_DONE;
 }
 
 
@@ -355,8 +565,9 @@ enna_shortcut_add(Evas_Object *parent)
    Elm_Genlist_Item *egi;
    const char *home = "/root/";
    char buffer[PATH_MAX];
-   Evas_Object *list;
+
    Eina_List *gtk_bookmarks;
+   Eina_List *volumes;
    const char *file;
 
    list = elm_genlist_add(parent);
@@ -364,6 +575,39 @@ enna_shortcut_add(Evas_Object *parent)
 
    egi = elm_genlist_item_append(list, &itc_favorite_group, "DEVICES", NULL,
                                  ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
+
+   evas_object_data_set(list, "devices/item", egi);
+   evas_object_data_set(list, "items", egi);
+
+   ecore_event_handler_add(ENNA_EVENT_VOLUMES_ADDED,
+                           _volume_added_cb,
+                           list);
+   ecore_event_handler_add(ENNA_EVENT_VOLUMES_REMOVED,
+                           _volume_removed_cb,
+                           list);
+   ecore_event_handler_add(ENNA_EVENT_STORAGE_ADDED,
+                           _storage_added_cb,
+                           list);
+   ecore_event_handler_add(ENNA_EVENT_STORAGE_REMOVED,
+                           _storage_removed_cb,
+                           list);
+
+   ecore_event_handler_add(ENNA_EVENT_OP_MOUNT_DONE,
+                           _mount_done_cb,
+                           list);
+
+   ecore_event_handler_add(ENNA_EVENT_OP_MOUNT_ERROR,
+                           _mount_error_cb,
+                           list);
+
+   ecore_event_handler_add(ENNA_EVENT_OP_UNMOUNT_DONE,
+                           _unmount_done_cb,
+                           list);
+
+   ecore_event_handler_add(ENNA_EVENT_OP_UNMOUNT_ERROR,
+                           _unmount_error_cb,
+                           list);
+
 
    egi = elm_genlist_item_append(list, &itc_favorite_group, "NETWORK", NULL,
                                  ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);

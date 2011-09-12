@@ -12,6 +12,7 @@ bin_PROGRAMS = enna-explorer
 enna_explorer_SOURCES = \
 activity.c\
 browser.c\
+browser_bar.c\
 browser_obj.c\
 buffer.c\
 enna.c\
@@ -20,15 +21,12 @@ explorer.c\
 file.c\
 localfiles.c \
 mainmenu.c\
-module.c\
-mtab.c\
 shortcut.c\
-udev.c\
+udisks.c\
 utils.c\
 vfs.c\
 view_list.c\
-view_grid.c\
-volumes.c
+view_grid.c
 
 enna_explorer_LDADD = @ENNA_LIBS@
 enna_explorer_LDFLAGS = -rdynamic
@@ -50,5 +48,4 @@ shortcut.h\
 utils.h\
 vfs.h\
 view_list.h\
-view_grid.h\
-volumes.h
+view_grid.h

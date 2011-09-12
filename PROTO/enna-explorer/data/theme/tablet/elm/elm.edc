@@ -41,7 +41,7 @@
 //#include "diskselector.edc"
 //#include "fileselector.edc"
 //#include "layout.edc"
-//#include "segment_control.edc"
+#include "segment_control.edc"
 //#include "player.edc"
 //#include "video.edc"
 //#include "naviframe.edc"

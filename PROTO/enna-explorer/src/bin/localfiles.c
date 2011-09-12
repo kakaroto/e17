@@ -30,7 +30,6 @@
 #include "enna.h"
 #include "enna_config.h"
 #include "vfs.h"
-#include "volumes.h"
 #include "utils.h"
 #include "buffer.h"
 
@@ -55,7 +54,6 @@ typedef struct _Class_Private_Data
    const char *uri;
    const char *prev_uri;
    Module_Config *config;
-   Enna_Volumes_Listener *vl;
 } Class_Private_Data;
 
 typedef struct _Enna_Module_LocalFiles
@@ -81,7 +79,6 @@ typedef struct localfiles_cfg_s {
 
 typedef struct _Enna_Localfiles_Priv
 {
-   Enna_Volumes_Listener *vl;
    Eio_File *file;
    ENNA_VFS_CAPS caps;
    const char *root;
@@ -97,47 +94,6 @@ typedef struct _Enna_Localfiles_Priv
 static localfiles_cfg_t localfiles_cfg;
 static Enna_Module_LocalFiles *mod;
 
-
-static void
-_add_volumes_cb(void *data, Enna_Volume *v)
-{
-   Class_Private_Data *priv = data;
-   Root_Directories *root;
-
-   if (!strstr(v->mount_point, "file://"))
-     return;
-
-   root = calloc(1, sizeof(Root_Directories));
-   root->name = eina_stringshare_add(v->label);
-
-   root->uri = strdup( v->mount_point);
-   root->label = strdup(v->label);
-   root->icon = strdup(enna_volumes_icon_from_type(v));
-   priv->config->root_directories =
-     eina_list_append(priv->config->root_directories, root);
-}
-
-static void
-_remove_volumes_cb(void *data, Enna_Volume *v)
-{
-   Class_Private_Data *priv = data;
-   Root_Directories *root;
-   Eina_List *l;
-
-   EINA_LIST_FOREACH(priv->config->root_directories, l, root)
-     {
-        if (!strcmp(root->label, v->label))
-          {
-             priv->config->root_directories =
-               eina_list_remove(priv->config->root_directories, root);
-             ENNA_FREE(root->uri);
-             ENNA_FREE(root->label);
-             ENNA_FREE(root->icon);
-             ENNA_FREE(root);
-          }
-     }
-}
-
 static void
 __class_init(const char *name, Class_Private_Data **priv,
              ENNA_VFS_CAPS caps, char *key)
@@ -147,7 +103,6 @@ __class_init(const char *name, Class_Private_Data **priv,
    char buf[PATH_MAX + 7];
    Eina_List *path_list;
    Eina_List *l;
-   Enna_Volume *v;
 
    data = calloc(1, sizeof(Class_Private_Data));
    *priv = data;
@@ -191,20 +146,6 @@ __class_init(const char *name, Class_Private_Data **priv,
           eina_list_append(data->config->root_directories, root);
      }
 
-   /* Add All detected volumes */
-   EINA_LIST_FOREACH(enna_volumes_get(), l, v)
-     {
-        root = calloc(1, sizeof(Root_Directories));
-        snprintf(buf, sizeof(buf), "file://%s", v->mount_point);
-        root->name = eina_stringshare_add(v->device_name);
-        root->uri = strdup(buf);
-        root->label = strdup(v->label);
-
-        root->icon = strdup(enna_volumes_icon_from_type(v));
-        data->config->root_directories =
-          eina_list_append(data->config->root_directories, root);
-     }
-
    // add home directory entry
    root = ENNA_NEW(Root_Directories, 1);
    snprintf(buf, sizeof(buf), "file://%s", enna_util_user_home_get());
@@ -227,43 +168,6 @@ __class_init(const char *name, Class_Private_Data **priv,
    data->config->root_directories =
        eina_list_append(data->config->root_directories, root);
 
-
-   /* add localfiles to the list of volumes listener */
-   data->vl = enna_volumes_listener_add("localfiles", _add_volumes_cb,
-                                        _remove_volumes_cb, data);
-}
-
-static void
-_add_child_volume_cb(void *data, Enna_Volume *v)
-{
-   Enna_Browser *b = data;
-   Enna_File *f;
-
-   Enna_Buffer *buf;
-
-   buf = enna_buffer_new();
-   enna_buffer_appendf(buf, "/%s/localfiles/%s", "music", v->label);
-   f = enna_file_menu_add(v->label, buf->buf,
-                          v->label, "icon/hd");
-   enna_buffer_free(buf);
-   enna_browser_file_add(b, f);
-}
-
-static void
-_remove_child_volume_cb(void *data, Enna_Volume *v)
-{
-   Enna_Browser *b = data;
-   Eina_List *files, *l;
-   Enna_File *file;
-
-   files = enna_browser_files_get(b);
-   EINA_LIST_FOREACH(files, l, file)
-     {
-        if (file->name == v->label)
-          {
-             enna_browser_file_del(b, file);
-          }
-     }
 }
 
 static void *
@@ -275,11 +179,7 @@ _add(const char *uri, Enna_Browser *browser, ENNA_VFS_CAPS caps)
    priv = calloc(1, sizeof(Enna_Localfiles_Priv));
    priv->caps = caps;
    priv->browser = browser;
-   /* if (eina_list_count(tokens) == 2 ) */
-   /*   { */
-   /*      priv->vl = enna_volumes_listener_add("localfiles_refresh", _add_child_volume_cb, */
-   /*                                           _remove_child_volume_cb, browser); */
-   /*   } */
+
    return priv;
 }
 
@@ -443,8 +343,6 @@ _delete_done_cb(void *data, Eio_File *handler)
 {
    Enna_Localfiles_Priv *priv = data;
 
-   printf("Delete done %p\n", priv);
-
    enna_browser_file_del(priv->browser, priv->file_dialog);
    enna_file_free(priv->file_dialog);
 }
@@ -457,17 +355,12 @@ _rename_done_cb(void *data, Eio_File *handler)
    const char *new_uri;
    const char *new_mrl;
 
-   printf("Update done %p\n", priv);
-
 
    new_uri = eina_stringshare_printf("%s/%s", ecore_file_dir_get(priv->file_dialog->uri), 
                                      ecore_file_file_get(new_path));
 
    new_mrl = eina_stringshare_printf("%s/%s", ecore_file_dir_get(priv->file_dialog->mrl), 
                                       ecore_file_file_get(new_path));
-
-   printf("new uri : %s\n", new_uri);
-   printf("new mrl : %s\n", new_mrl);
 
    priv->file_dialog->name = eina_stringshare_add(ecore_file_dir_get(new_path));
    priv->file_dialog->uri = new_uri;
@@ -526,15 +419,12 @@ _dialog_rename_ok_clicked_cb(void *data, Evas_Object *btn, void *ev)
 
 
    file = evas_object_data_get(priv->dialog, "file");
-   printf("file : %p\n", file);
    entry = evas_object_data_get(priv->dialog, "entry");
    new_name = elm_object_text_get(entry);
    new_path = eina_stringshare_printf("%s/%s", ecore_file_dir_get(file->mrl),
                                         new_name);
 
    priv->new_path = new_path;
-   printf("Old Path : %s - New Path %s\n", file->mrl, new_path);
-
 
    if (priv->file_dialog)
      enna_file_free(priv->file_dialog);
@@ -671,8 +561,6 @@ _action_delete_cb(void *data, Enna_File *file)
    Enna_Localfiles_Priv *priv = data;
    const char *label;
 
-   printf("Action delete\n");
-
    ENNA_OBJECT_DEL(priv->dialog);
 
    win = elm_win_add(enna->win, NULL, ELM_WIN_DIALOG_BASIC);
@@ -751,7 +639,7 @@ _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
    Enna_File_Action *action;
 
    buf = eina_stringshare_printf("file://%s", info->path);
-   printf("uri : %s\n", buf);
+
    if (info->type == EINA_FILE_DIR)
      {
         f = enna_file_directory_add(info->path + info->name_start, buf,
@@ -811,7 +699,6 @@ _file_error_cb(void *data, Eio_File *handler, int error)
 static Eina_Bool
 _eio_event_cb(void *data, int type __UNUSED__, void *event)
 {
-   printf("EIO event\n");
    return EINA_TRUE;
 }
 
@@ -833,88 +720,14 @@ _children_get(void *priv, const char *uri, Enna_Browser *browser, ENNA_VFS_CAPS 
    if (!pmod)
      return;
 
-   /* if (eina_list_count(tokens) == 2 ) */
-   /*   { */
-   /*      //DBG("Browse Root\n"); */
-   /*      for (l = pmod->config->root_directories; l; l = l->next) */
-   /*        { */
-   /*           Enna_File *f; */
-   /*           Root_Directories *root; */
-   /*           Enna_Buffer *buf; */
 
-   /*           root = l->data; */
+   p->file = eio_file_direct_ls(uri + 7,
+                                _file_filter_cb,
+                                _file_main_cb,
+                                _file_done_cb,
+                                _file_error_cb,
+                                p);
 
-   /*           buf = enna_buffer_new(); */
-   /*           enna_buffer_appendf(buf, "/%s/localfiles/%s", pmod->name, root->name); */
-   /*           f = enna_file_volume_add(root->name, buf->buf, */
-   /*                                    root->label, root->icon); */
-
-   /*           enna_file_meta_add(f, &root_meta_class, root); */
-   /*           enna_buffer_free(buf); */
-   /*           enna_browser_file_add(browser, f); */
-   /*           /\* add localfiles to the list of volumes listener *\/ */
-   /*        } */
-
-
-   /*   } */
-   /* else */
-     /* { */
-     /*    const char *root_name = eina_list_nth(tokens, 2); */
-     /*    Root_Directories *root = NULL; */
-
-     /*    EINA_LIST_FOREACH(pmod->config->root_directories, l, root) */
-     /*      { */
-     /*         if (!strcmp(root->name, root_name)) */
-     /*           { */
-
-                  /* Eina_List *l; */
-
-
-                  /* Enna_Buffer *path; */
-                  /* Enna_Buffer *relative_path; */
-                  /* char *tmp; */
-
-                  /* Eina_List *l_tmp; */
-                  /* Ecore_Event_Handler *handler; */
-
-                  /* path = enna_buffer_new(); */
-                  /* relative_path = enna_buffer_new(); */
-                  /* enna_buffer_appendf(path, "%s", uri + 7); */
-
-
-                  /* p->relative_path = eina_stringshare_add(relative_path->buf); */
-                  /* p->root = eina_stringshare_printf("%s", */
-                  /*                                    root->name); */
-                  /* printf("ROOT : %s\n", p->root); */
-
-                  /* p->monitor = eio_monitor_add(path->buf); */
-                  /* printf("Add monitor to %s\n", path->buf); */
-
-                  /* handler = ecore_event_handler_add(EIO_MONITOR_FILE_CREATED, */
-                  /*                                   _eio_event_cb, p); */
-                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
-                  /* handler = ecore_event_handler_add(EIO_MONITOR_FILE_DELETED, */
-                  /*                                   _eio_event_cb, p); */
-                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
-                  /* handler = ecore_event_handler_add(EIO_MONITOR_DIRECTORY_CREATED, */
-                  /*                                   _eio_event_cb, p); */
-                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
-                  /* handler = ecore_event_handler_add(EIO_MONITOR_DIRECTORY_DELETED, */
-                  /*                                   _eio_event_cb, p); */
-                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
-                  /* handler = ecore_event_handler_add(EIO_MONITOR_ERROR, */
-                  /*                                   _eio_event_cb, p); */
-                  /* p->monitor_handlers  = eina_list_append(p->monitor_handlers, handler); */
-
-                  p->file = eio_file_direct_ls(uri + 7,
-                                               _file_filter_cb,
-                                               _file_main_cb,
-                                               _file_done_cb,
-                                               _file_error_cb,
-                                               p);
-          /*      } */
-         /*  } */
-     /* } */
    return;
 }
 
@@ -923,8 +736,7 @@ _del(void *priv)
 {
    Enna_Localfiles_Priv *p = priv;
    Ecore_Event_Handler *handler;
-   if (p && p->vl)
-     enna_volumes_listener_del(p->vl);
+
    if (p->file)
      eio_file_cancel(p->file);
 
@@ -946,8 +758,6 @@ _file_get(const char *uri)
 {
    Enna_File *f;
    char *path;
-
-   printf("uri : %s\n", uri);
 
    if (strlen(uri) < 7)
      {
@@ -972,7 +782,6 @@ _file_get(const char *uri)
         if (!file || file[0] == '\0')
           {
              label = eina_stringshare_add("Root");
-             printf("Label : %s\n", label);
              f = enna_file_directory_add(label, "file:///",
                                          path, label,
                                          "icon/directory");
@@ -980,7 +789,6 @@ _file_get(const char *uri)
           }
         else
           {
-             printf("Label : %s\n", file);
              f = enna_file_directory_add(file, uri,
                                          path, file,
                                          "icon/directory");
@@ -1028,7 +836,6 @@ void
 enna_localfiles_shutdown(void)
 {
 
-   enna_volumes_listener_del(mod->all->vl);
    free(mod->all);
 
    ENNA_FREE(mod);

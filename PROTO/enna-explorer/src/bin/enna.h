@@ -113,7 +113,4 @@ struct _Enna
 
 extern Enna *enna;
 
-/* Events */
-int ENNA_EVENT_BROWSER_CHANGED; /** ev = const char * */
-
 #endif /* ENNA_H */

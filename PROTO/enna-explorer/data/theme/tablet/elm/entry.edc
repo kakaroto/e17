@@ -5,7 +5,7 @@ group { name: "elm/entry/base-single/default";
    styles
    {
       style { name: "entry_single_textblock_style";
-         base: "font=Sans font_size=12 color=#000 wrap=none text_class=entry";
+         base: "font=Sans font_size=10 color=#000 wrap=none text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -15,7 +15,7 @@ group { name: "elm/entry/base-single/default";
          tag:  "hilight" "+ font_weight=Bold";
       }
       style { name: "entry_single_textblock_disabled_style";
-         base: "font=Sans font_size=12 color=#00000080 wrap=none text_class=entry";
+         base: "font=Sans font_size=10 color=#00000080 wrap=none text_class=entry";
          tag:  "br" "\n";
          tag:  "ps" "ps";
          tag:  "tab" "\t";
@@ -32,7 +32,7 @@ group { name: "elm/entry/base-single/default";
          description {
             state: "default" 0.0;
             image.normal: "entry_bg.png";
-            image.border: 4 4 4 4;
+            image.border: 6 6 6 6;
          }
       }
       part { name: "elm.text";
@@ -42,12 +42,12 @@ group { name: "elm/entry/base-single/default";
          entry_mode: EDITABLE;
          select_mode: EXPLICIT;
          multiline: 0;
-         source: "elm/entry/selection/default"; // selection under
-         source4: "elm/entry/cursor/default"; // cursorover
-         source5: "elm/entry/anchor/default"; // anchor under
+         //source: "elm/entry/selection/default"; // selection under
+         //source4: "elm/entry/cursor/default"; // cursorover
+         //source5: "elm/entry/anchor/default"; // anchor under
          description { state: "default" 0.0;
-            rel1.offset: 8 4;
-            rel2.offset: -7 -3;
+            rel1.offset: 4 0;
+            rel2.offset: -3 0;
             text {
                style: "entry_single_textblock_style";
                min: 1 1;

@@ -7,7 +7,6 @@ collections
       images {
          image: "bg.png" COMP;
          image: "bg_tile.png" COMP;
-         image: "menu_bg.png" COMP;
          image: "up.png" COMP;
          image: "back.png" COMP;
          image: "mainmenu_bg.png" COMP;
@@ -54,6 +53,7 @@ collections
                rel2.relative: 1.0 1.0;
                rel2.offset: 0 46;
                image.normal: "mainmenu_bg.png";
+               image.border: 9 9 9 3;
             }
             description {
                state: "show" 0.0;
@@ -78,37 +78,6 @@ collections
 
          /* file browser */
          part {
-            name: "title_bg";
-            type: RECT;
-            description {
-               state: "default" 0.0;
-               rel1.to: "title";
-               rel2.to: "title";
-               color: 0 0 0 255;
-            }
-         }
-         part {
-            name: "title";
-            type: TEXT;
-            mouse_events: 0;
-            scale: 1.0;
-            description {
-               state: "default" 0.0;
-               rel1.relative: 0 0;
-               rel2.relative: 1 0;
-               align: 0.5 0.0;
-               fixed: 1 1;
-               text {
-                  font: "Sans";
-                  text: "Title";
-                  size: 12;
-                  min: 1 1;
-               }
-            }
-         }
-
-
-         part {
             name: "panel_bg";
             mouse_events: 0;
             type: RECT;
@@ -116,9 +85,10 @@ collections
                state: "default" 0.0;
                rel1.to: "panel.swallow";
                rel2.to: "panel.swallow";
-               color: 0 0 0 128;
+               color: 0 0 0 100;
             }
          }
+
          part {
             name: "panel.swallow";
             type: SWALLOW;
@@ -126,39 +96,50 @@ collections
             description {
                state: "default" 0.0;
                max: 192 99999;
-               rel1.to_y: "title";
-               rel1.relative: 0.0 1.0;
+               rel1.relative: 0.0 0.0;
                rel2.to_y: "menu.bg";
                rel2.relative: 0.25 1.0;
                align: 0 0.5;
                fixed: 1 1;
             }
          }
+
+
          part {
-            name: "panel_fg";
+            name: "browser_bg";
             mouse_events: 0;
+            type: RECT;
             description {
                state: "default" 0.0;
-               rel1.to: "panel.swallow";
-               rel2.to: "panel.swallow";
-               image.normal: "panel_bg.png";
-               image.border: 0 20 0 0;
+               rel1.to: "browser.swallow";
+               rel2.to: "browser.swallow";
+               color: 255 255 255 100;
             }
          }
+
          part {
             name: "browser.swallow";
             type: SWALLOW;
             mouse_events : 1;
             description {
                state: "default" 0.0;
-               rel1.to_y: "title";
                rel1.to_x: "panel.swallow";
                rel1.relative: 1.0 0.0;
                rel2.to_y: "menu.bg";
                rel2.relative: 1.0 0.0;
             }
          }
-
+         part {
+            name: "browser_fg";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1.to: "browser.swallow";
+               rel2.to: "browser.swallow";
+               image.normal: "panel_bg.png";
+               image.border: 20 0 0 0;
+            }
+         }
       }
       programs {
          program {
@@ -197,19 +178,22 @@ collections
 
                rel1.to: "enna.swallow.header";
                rel2.to: "enna.swallow.header";
-
+               rel2.offset: 0 2;
                image.normal: "mainmenu_bg.png";
+               image.border: 9 9 9 3;
             }
          }
          part {
             name: "enna.swallow.header";
             type: SWALLOW;
             description {
-               min: 0 48;
-               max: 9999 48;
+               //min: 0 48;
+               //max: 9999 48;
+               rel1.relative: 0 0;
+               rel2.relative: 1 0;
                fixed: 0 1;
                state: "default" 0.0;
-               align: 0 0;
+               align: 0.5 0;
             }
          }
          part {
@@ -217,7 +201,7 @@ collections
             type: SWALLOW;
             description {
                state: "default" 0.0;
-               rel1.to_y: "enna.swallow.header";
+               rel1.to_y: "menu.bg";
                rel1.relative: 0 1.0;
             }
          }
@@ -236,57 +220,59 @@ collections
       parts
       {
          part {
-            name: "enna.swallow.back";
+            name: "enna.swallow.content";
             type: SWALLOW ;
             description {
                state: "default" 0.0;
-               align: 0 0.5;
-               rel1.relative: 0 0.5;
-               rel1.offset: 0 0;
-               rel2.relative: 0 0.5;
-               rel2.offset: 0 0;
-               fixed: 1 1;
+               rel1.offset: 4 4;
+               rel2.offset: -5 -5;
+               /* align: 0 0.5; */
+               /* rel1.relative: 0 0.5; */
+               /* rel1.offset: 0 0; */
+               /* rel2.relative: 0 0.5; */
+               /* rel2.offset: 0 0; */
+               /* fixed: 1 1; */
             }
          }
-         part {
-            name: "enna.swallow.icon";
-            type: SWALLOW;
-            description {
-               min: 24 24;
-               max: 24 24;
-               state: "default" 0.0;
-               rel1.relative: 1 0.5;
-               rel1.offset: 8 -2;
-               rel1.to: "enna.swallow.back";
-               rel2.relative: 1 0.5;
-               rel2.offset: 8 -2;
-               rel2.to: "enna.swallow.back";
-               fixed: 1 1;
-               align: 0 0.5;
-            }
-         }
-         part {
-            name: "enna.text.current";
-            type: TEXT ;
-            scale: 1;
-            description {
-               state: "default" 0.0;
-               rel1.relative: 1 0.5;
-               rel1.offset: 8 1;
-               rel1.to: "enna.swallow.icon";
-               rel2.relative: 1.0 0.5;
-               rel2.offset: 0 1;
-               fixed: 1 1;
-               color: 255 255 255 200;
-               color3: 0 0 0 64;
-               text {
-                  font:     "Sans";
-                  size:     10;
-                  min:      0 1;
-                  align:    0 0.5;
-               }
-            }
-         }
+         /* part { */
+         /*    name: "enna.swallow.icon"; */
+         /*    type: SWALLOW; */
+         /*    description { */
+         /*       min: 24 24; */
+         /*       max: 24 24; */
+         /*       state: "default" 0.0; */
+         /*       rel1.relative: 1 0.5; */
+         /*       rel1.offset: 8 -2; */
+         /*       rel1.to: "enna.swallow.back"; */
+         /*       rel2.relative: 1 0.5; */
+         /*       rel2.offset: 8 -2; */
+         /*       rel2.to: "enna.swallow.back"; */
+         /*       fixed: 1 1; */
+         /*       align: 0 0.5; */
+         /*    } */
+         /* } */
+         /* part { */
+         /*    name: "enna.text.current"; */
+         /*    type: TEXT ; */
+         /*    scale: 1; */
+         /*    description { */
+         /*       state: "default" 0.0; */
+         /*       //rel1.relative: 1 0.5; */
+         /*       //rel1.offset: 8 1; */
+         /*       /\* rel1.to: "enna.swallow.icon"; *\/ */
+         /*       //rel2.relative: 1.0 0.5; */
+         /*       rel2.offset: 0 1; */
+         /*       fixed: 1 1; */
+         /*       color: 255 255 255 200; */
+         /*       color3: 0 0 0 64; */
+         /*       text { */
+         /*          font:     "Sans"; */
+         /*          size:     10; */
+         /*          min:      0 1; */
+         /*          align:    0 0.5; */
+         /*       } */
+         /*    } */
+         /* } */
       }
    }
 

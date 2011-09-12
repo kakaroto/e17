@@ -31,7 +31,6 @@
 #include "view_list.h"
 #include "browser.h"
 #include "browser_obj.h"
-#include "volumes.h"
 #include "module.h"
 #include "browser.h"
 #include "shortcut.h"

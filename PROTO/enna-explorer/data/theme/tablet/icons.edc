@@ -58,6 +58,12 @@ name: icon_name;                                                    \
 
 ICON("arrow_right.png",                   "icon/arrow_right");
 ICON("arrow_left.png",                    "icon/arrow_left");
+ICON("icon_grid.png",                     "icon/view_grid");
+ICON("icon_list.png",                     "icon/view_list");
+ICON("settings.png",                      "icon/settings");
+ICON("search.png",                        "icon/search");
+
+
 
 ICON_SET("directory",                     "icon/directory");
 ICON_SET("home",                          "icon/home");

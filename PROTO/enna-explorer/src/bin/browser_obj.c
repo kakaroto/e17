@@ -27,7 +27,7 @@
 #include "enna_config.h"
 #include "browser.h"
 #include "browser_obj.h"
-
+#include "browser_bar.h"
 
 typedef struct _Smart_Data Smart_Data;
 typedef struct _Activated_Cb_Data Activated_Cb_Data;
@@ -311,6 +311,46 @@ _add_header(Smart_Data *sd, Enna_File *file)
    sd->o_header = o_layout;
 }
 
+
+static void
+_view_mode_changed_cb(void *data, Evas_Object *obj, void *event_info)
+{
+    Smart_Data *sd = data;
+
+    printf("Mode change : %s\n", (char*)event_info);
+
+    if (!strcmp(event_info, "grid"))
+        _change_view(sd, ENNA_BROWSER_VIEW_GRID);
+    else
+        _change_view(sd, ENNA_BROWSER_VIEW_LIST);
+
+    _browse(sd, sd->file, EINA_FALSE);
+}
+
+static void
+_up_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+{
+    Smart_Data *sd = data;
+
+    _browse_back(sd);
+}
+
+static void
+_next_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+{
+    Smart_Data *sd = data;
+
+    _browse_back(sd);
+}
+
+static void
+_previous_clicked_cb(void *data, Evas_Object *obj, void *event_info)
+{
+    Smart_Data *sd = data;
+
+    _browse_back(sd);
+}
+
 static void
 _browse(Smart_Data *sd, Enna_File *file, Eina_Bool back)
 {
@@ -323,9 +363,11 @@ _browse(Smart_Data *sd, Enna_File *file, Eina_Bool back)
         return;
      }
 
-   enna_file_free(sd->file);
-   sd->file = enna_file_ref(file);
-   _add_header(sd, file);
+   if (file != sd->file)
+     {
+        enna_file_free(sd->file);
+        sd->file = enna_file_ref(file);
+     }
 
    if (file && !back)
      sd->visited = eina_list_append(sd->visited, enna_file_ref(file));
@@ -346,6 +388,7 @@ _browse(Smart_Data *sd, Enna_File *file, Eina_Bool back)
    sd->hilight_timer = NULL;
    sd->o_view = NULL;
 
+   enna_browser_bar_file_set(sd->o_header, sd->file);
    enna_browser_browse(sd->browser);
 }
 
@@ -448,6 +491,15 @@ enna_browser_obj_add(Evas_Object *parent, const char *style)
    evas_object_size_hint_weight_set(sd->o_layout, -1.0, -1.0);
    evas_object_size_hint_align_set(sd->o_layout, 1.0, 1.0);
    elm_layout_file_set(sd->o_layout, enna_config_theme_get(), "enna/browser");
+
+
+   sd->o_header = enna_browser_bar_add(sd->o_layout, sd->file);
+   evas_object_show(sd->o_header);
+   elm_layout_content_set(sd->o_layout, "enna.swallow.header", sd->o_header);
+   evas_object_smart_callback_add(sd->o_header, "mode,changed", _view_mode_changed_cb, sd);
+   evas_object_smart_callback_add(sd->o_header, "up,clicked", _up_clicked_cb, sd);
+   evas_object_smart_callback_add(sd->o_header, "next,clicked", _next_clicked_cb, sd);
+   evas_object_smart_callback_add(sd->o_header, "previous,clicked", _previous_clicked_cb, sd);
 
    sd->o_pager = elm_pager_add(sd->o_layout);
    evas_object_show(sd->o_pager);

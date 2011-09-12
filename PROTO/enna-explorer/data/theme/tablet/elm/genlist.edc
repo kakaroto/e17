@@ -295,10 +295,13 @@ group { name: "elm/genlist/item/panel/default";
          type: SWALLOW;
          mouse_events: 1;
          description { state: "default" 0.0;
+            min: 16 16;
+            max: 16 16;
             fixed: 1 0;
             align: 1.0 0.5;
             aspect: 1.0 1.0;
             aspect_preference: VERTICAL;
+            visible: 1;
             rel1 {
                relative: 1.0  0.0;
                offset:   -5    4;

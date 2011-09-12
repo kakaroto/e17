@@ -40,7 +40,8 @@ enna_requirements="
    efreet >= 1.0.0
    edje >= 1.0.0
    elementary >= 0.7.0
-   eio"
+   eio
+   eukit"
 
 PKG_CHECK_MODULES([ENNA], [${enna_requirements}])
 
