@@ -30,5 +30,3 @@ elm_object - apply all widgets to use elm_object_content_set/get/unset
 evas - check the image smooth effect in gl backend
 
 ctxpopup - hide effect
-
-embryo - print 
