@@ -13,14 +13,12 @@ CONFIGURE=1
 CLEAN_RULE="clean"
 FSELF="make_fself"
 
-alias ps3-configure='AR="powerpc64-ps3-elf-ar" CC="powerpc64-ps3-elf-gcc" RANLIB="powerpc64-ps3-elf-ranlib" CFLAGS="$DEBUG_CFLAGS -Wall -I$PSL1GHT/ppu/include -I$PS3DEV/portlibs/ppu/include $MINIMAL_TOC $MYCFLAGS" CXXFLAGS="-I$PSL1GHT/ppu/include -I$PS3DEV/portlibs/ppu/include"  LDFLAGS="-L$PSL1GHT/ppu/lib -L$PS3DEV/portlibs/ppu/lib" PKG_CONFIG_LIBDIR="$PSL1GHT/ppu/lib/pkgconfig" PKG_CONFIG_PATH="$PS3DEV/portlibs/ppu/lib/pkgconfig" ./configure   --prefix="$PS3DEV/portlibs/ppu"   --host=powerpc64-ps3-elf    --includedir="$PS3DEV/portlibs/ppu/include"   --libdir="$PS3DEV/portlibs/ppu/lib" '
+alias ps3-configure='AR="powerpc64-ps3-elf-ar" CC="powerpc64-ps3-elf-gcc" RANLIB="powerpc64-ps3-elf-ranlib" CFLAGS="$DEBUG_CFLAGS -Wall -I$PSL1GHT/ppu/include -I$PS3DEV/portlibs/ppu/include $MINIMAL_TOC $MYCFLAGS" CXXFLAGS="-I$PSL1GHT/ppu/include -I$PS3DEV/portlibs/ppu/include"  LDFLAGS="-L$PSL1GHT/ppu/lib -L$PS3DEV/portlibs/ppu/lib" PKG_CONFIG_LIBDIR="$PSL1GHT/ppu/lib/pkgconfig" PKG_CONFIG_PATH="$PS3DEV/portlibs/ppu/lib/pkgconfig"  PKG_CONFIG="pkg-config --static" ./configure   --prefix="$PS3DEV/portlibs/ppu"   --host=powerpc64-ps3-elf    --includedir="$PS3DEV/portlibs/ppu/include"   --libdir="$PS3DEV/portlibs/ppu/lib" '
 alias ps3-smi='sudo -E PATH=$PATH make install'
 
 if [ $ENABLE_FONTCONFIG == "1" ]; then
-    FONTCONFIG_LIBS="-lfontconfig -lexpat"
     FONTCONFIG_OPT="--enable-fontconfig"
 else
-    FONTCONFIG_LIBS=""
     FONTCONFIG_OPT=""
 fi
 
@@ -107,7 +105,7 @@ function ecore {
     cd ecore 
 
     if [ $CONFIGURE == "1" ]; then
-        LIBS="-lnet -lsysmodule" ps3-configure --disable-ecore-x --enable-ecore-sdl --enable-ecore-evas-software-sdl
+        ps3-configure --disable-ecore-x --enable-ecore-sdl --enable-ecore-evas-software-sdl
     fi
     make $CLEAN_RULE all && \
         ps3-smi && \
@@ -119,7 +117,7 @@ function expedite {
     cd expedite
 
     if [ $CONFIGURE == "1" ]; then
-        LIBS="$FONTCONFIG_LIBS -lescape -lgcm_sys -lrsx -lio -laudio -lsysutil -lm -lz -lfreetype -liberty -ljpeg -lpng -lnet -lsysmodule" ps3-configure
+        ps3-configure
     fi
     make  $CLEAN_RULE all && \
         cp src/bin/expedite expedite.elf && sprxlinker expedite.elf && \
@@ -138,7 +136,7 @@ function expedite {
 function embryo {
     cd embryo
     if [ $CONFIGURE == "1" ]; then
-        LIBS="-lnet -lsysmodule" ps3-configure
+        ps3-configure
     fi
     make $CLEAN_RULE all && \
         ps3-smi && \
@@ -161,7 +159,7 @@ function edje {
     cd edje
 
     if [ $CONFIGURE == "1" ]; then
-        LIBS="-lnet -lsysmodule" ps3-configure --disable-edje-player --disable-edje-inspector --disable-edje-external-inspector --disable-edje-cc --disable-edje-decc --disable-edje-recc
+        ps3-configure --disable-edje-player --disable-edje-inspector --disable-edje-external-inspector --disable-edje-cc --disable-edje-decc --disable-edje-recc
     fi
     make $CLEAN_RULE all && \
         ps3-smi && \
@@ -217,7 +215,7 @@ function eskiss {
     cd eskiss || cd GAMES/eskiss
 
     if [ $CONFIGURE == "1" ]; then
-        MYCFLAGS="-mminimal-toc" LIBS="$FONTCONFIG_LIBS -lescape -leina -levas -lchipmunk -lm -lz -ljpeg -lpng  -lSDL -lescape -lgcm_sys -lrsx -lio -laudio -lsysutil -lm -lz -lfreetype -liberty -ljpeg -lpng -lnet -lsysmodule -lecore_imf -lembryo -ledje -llua -lecore_imf_evas  -lecore_sdl -lecore_input -lecore_input_evas -lm" ps3-configure --datadir=$ESKISS_DATADIR
+        MYCFLAGS="-mminimal-toc" ps3-configure --datadir=$ESKISS_DATADIR
     fi
     make $CLEAN_RULE all EDJE_CC=edje_cc && \
         cp src/bin/eskiss eskiss.elf && sprxlinker eskiss.elf && \
