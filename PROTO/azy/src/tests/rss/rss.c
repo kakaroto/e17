@@ -27,6 +27,20 @@ ret_(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Content *content)
 }
 
 static Eina_Bool
+download_status(void *data __UNUSED__, int type __UNUSED__, Azy_Event_Download_Status *ev)
+{
+   int total = -1;
+
+   if (ev->net)
+     total = azy_net_message_length_get(ev->net);
+   if (total > 0)
+     printf("%zu bytes (%i total) transferred for id %u\n", ev->size, total, ev->id);
+   else
+     printf("%zu bytes transferred for id %u\n", ev->size, ev->id);
+   return ECORE_CALLBACK_RENEW;
+}
+
+static Eina_Bool
 disconnected(void *data __UNUSED__, int type __UNUSED__, Azy_Client *ev)
 {
    printf("%s:%s:%d\n", __FILE__, __PRETTY_FUNCTION__, __LINE__);
@@ -79,6 +93,7 @@ main(void)
    ecore_event_handler_add(AZY_CLIENT_CONNECTED, (Ecore_Event_Handler_Cb)connected, NULL);
    ecore_event_handler_add(AZY_CLIENT_RETURN, (Ecore_Event_Handler_Cb)ret_, NULL);
    ecore_event_handler_add(AZY_CLIENT_DISCONNECTED, (Ecore_Event_Handler_Cb)disconnected, NULL);
+   ecore_event_handler_add(AZY_EVENT_DOWNLOAD_STATUS, (Ecore_Event_Handler_Cb)download_status, NULL);
    ecore_main_loop_begin();
 
    azy_client_free(cli);

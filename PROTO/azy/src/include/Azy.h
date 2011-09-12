@@ -1,4 +1,4 @@
-/* Azy - Lazy Zentific RPC library
+/* Azy - Lazy RPC library
  * Copyright 2010, 2011 Mike Blumenkrantz <mike@zentific.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,10 +18,6 @@
 
 #ifndef AZY_H
 #define AZY_H
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 #include <Eina.h>
 #include <Ecore.h>
@@ -53,21 +49,23 @@
  * @brief Events that are emitted from the library
  * @{
  */
-extern int AZY_CLIENT_DISCONNECTED; /**< Event emitted upon client disconnecting, sends #Azy_Client object */
-extern int AZY_CLIENT_CONNECTED; /**< Event emitted upon client connecting, sends #Azy_Client object */
-extern int AZY_CLIENT_UPGRADE; /**< Event emitted upon client successfully upgrading to TLS, sends #Azy_Client object */
-extern int AZY_CLIENT_RETURN; /**< Event emitted upon client method returning if
+EAPI extern int AZY_CLIENT_DISCONNECTED; /**< Event emitted upon client disconnecting, sends #Azy_Client object */
+EAPI extern int AZY_CLIENT_CONNECTED; /**< Event emitted upon client connecting, sends #Azy_Client object */
+EAPI extern int AZY_CLIENT_UPGRADE; /**< Event emitted upon client successfully upgrading to TLS, sends #Azy_Client object */
+EAPI extern int AZY_CLIENT_RETURN; /**< Event emitted upon client method returning if
                                    no callback was set, sends #Azy_Content */
-extern int AZY_CLIENT_RESULT; /**< Event emitted upon client method returning if
+EAPI extern int AZY_CLIENT_RESULT; /**< Event emitted upon client method returning if
                                    a callback for the method has been set, sends #Eina_Error */
-extern int AZY_CLIENT_ERROR; /**< Event emitted upon client method encountering
+EAPI extern int AZY_CLIENT_ERROR; /**< Event emitted upon client method encountering
                                   an error, sends #Azy_Content containing error */
 
-extern int AZY_SERVER_CLIENT_ADD; /**< Event emitted upon client connecting to server,
+EAPI extern int AZY_SERVER_CLIENT_ADD; /**< Event emitted upon client connecting to server,
                                        sends #Azy_Server object */
-extern int AZY_SERVER_CLIENT_UPGRADE; /**< Event emitted upon client successfully upgrading to TLS, sends #Azy_Server_Module object */
-extern int AZY_SERVER_CLIENT_DEL; /**< Event emitted upon client disconnecting from server,
+EAPI extern int AZY_SERVER_CLIENT_UPGRADE; /**< Event emitted upon client successfully upgrading to TLS, sends #Azy_Server_Module object */
+EAPI extern int AZY_SERVER_CLIENT_DEL; /**< Event emitted upon client disconnecting from server,
                                        sends #Azy_Server object */
+
+EAPI extern int AZY_EVENT_DOWNLOAD_STATUS; /**< Event emitted when a GET request makes progress, sends #Azy_Event_Download_Status */
 /**@}*/
 /**
  * @defgroup Azy_Typedefs Azy types
@@ -138,6 +136,18 @@ typedef struct Azy_Content              Azy_Content;
  * which can be used to set callbacks for the transmission
  */
 typedef unsigned int                    Azy_Client_Call_Id;
+
+/**
+ * @typedef Azy_Event_Download_Status
+ * The event object for AZY_EVENT_DOWNLOAD_STATUS
+ */
+typedef struct Azy_Event_Download_Status
+{
+   Azy_Client_Call_Id id; /**< The id of the transfer */
+   size_t size; /**< The number of bytes transferred in the event */
+   Azy_Net *net; /**< The receiving net object */
+   Azy_Client *client; /**< The client making the transfer */
+} Azy_Event_Download_Status;
 
 /**
  * @typedef Azy_Server_Type

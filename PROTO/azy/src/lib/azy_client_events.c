@@ -92,7 +92,7 @@ _azy_client_handler_data_free(Azy_Client_Handler_Data *hd)
 
 Eina_Bool
 _azy_client_handler_upgrade(Azy_Client_Handler_Data     *hd,
-                            int                          type,
+                            int                          type __UNUSED__,
                             Ecore_Con_Event_Server_Upgrade *ev)
 {
    if (!AZY_MAGIC_CHECK(hd, AZY_MAGIC_CLIENT_DATA_HANDLER))
@@ -397,6 +397,20 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
    DBG("(client=%p, server->client=%p)", hd->client, (ev) ? ecore_con_server_data_get(ev->server) : NULL);
 
    client = hd->client;
+   if (hd->type == AZY_NET_TYPE_GET)
+     {
+        Azy_Event_Download_Status *dse;
+
+        dse = malloc(sizeof(Azy_Event_Download_Status));
+        if (dse)
+          {
+             dse->id = hd->id;
+             dse->size = ev->size;
+             dse->client = client;
+             dse->net = hd->recv;
+             ecore_event_add(AZY_EVENT_DOWNLOAD_STATUS, dse, NULL, NULL);
+          }
+     }
 
    if (!hd->recv)
      hd->recv = azy_net_new(hd->client->net->conn);

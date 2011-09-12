@@ -5,6 +5,10 @@
 #ifndef AZY_PRIV_H
 #define AZY_PRIV_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <Eina.h>
 #include <Ecore_Con.h>
 #include <Azy.h>
