@@ -22,35 +22,58 @@
 # include "config.h"
 #endif
 
+#include <limits.h>
 #include <stdlib.h>
 
 #include <locale.h>
 #include "gettext.h"
 #define _(string) gettext (string)
 
+#include "Eina.h"
+#include "Ecore_X.h"
 #include "Elementary.h"
 
 #include "e_pattern_lock.h"
 
+Eina_Strbuf *password=NULL;
+Eina_Bool mouse_down=EINA_FALSE;
+char *stored_password="0x0,0x1,1x1,1x2,2x2";
 
 void on_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 	Evas_Object *object = (Evas_Object*)data;
 	int col, row;
+	char buf[4];
+
+	if(password)
+		eina_strbuf_reset(password);
+	else
+		password = eina_strbuf_new();
 
 	col = atoi(edje_object_data_get(object, "col"));
 	row = atoi(edje_object_data_get(object, "row"));
 
+	snprintf(buf, 4, "%dx%d", col, row);
+	eina_strbuf_append(password, buf);
+	mouse_down=EINA_TRUE;
+
 	printf(_("Mouse down on %dx%d\n"), col, row);
+	printf(_("Password is '%s'\n"), eina_strbuf_string_get(password));
 	edje_object_signal_emit(obj, "go_selected", NULL);
 }
 
 void on_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 	Evas_Object *object = (Evas_Object*)data;
 	int col, row;
+	char buf[5];
 
 	col = atoi(edje_object_data_get(object, "col"));
 	row = atoi(edje_object_data_get(object, "row"));
 
+	if(mouse_down == EINA_TRUE) {
+		snprintf(buf, 5, ",%dx%d", col, row);
+		eina_strbuf_append(password, buf);
+		printf(_("Password is '%s'\n"), eina_strbuf_string_get(password));
+	}
 	printf(_("Mouse in on %dx%d\n"), col, row);
 }
 
@@ -60,7 +83,15 @@ void on_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 
 	col = atoi(edje_object_data_get(object, "col"));
 	row = atoi(edje_object_data_get(object, "row"));
+
+	mouse_down=EINA_FALSE;
+
 	printf(_("Mouse up on %dx%d\n"), col, row);
+	printf(_("Final password is '%s'\n"), eina_strbuf_string_get(password));
+	if(strcmp(stored_password, eina_strbuf_string_get(password)) == 0) {
+		printf("Passwords match!\n");
+		exit(0);
+	}
 }
 
 #define set_event_cbs(col, row, part) \
@@ -72,6 +103,7 @@ void on_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 
 EAPI int elm_main(int argc, char **argv) {
 	Evas_Object *win=NULL, *bg=NULL, *pattern=NULL, *edje=NULL, *object=NULL, *item=NULL;
+	Ecore_X_Window xwin;
 	char theme[PATH_MAX];
 
 	setlocale(LC_ALL, "");
@@ -83,6 +115,12 @@ EAPI int elm_main(int argc, char **argv) {
 	elm_win_maximized_set(win, EINA_TRUE); // change to full screen and above everything for lockscreen effect
 	evas_object_size_hint_min_set(win, 480, 480);
 	evas_object_size_hint_max_set(win, 640, 640);
+	elm_win_fullscreen_set(win, EINA_TRUE);
+	elm_win_sticky_set(win, EINA_TRUE);
+	elm_win_layer_set(win, INT_MAX);
+	xwin = elm_win_xwindow_get(win);
+	ecore_x_pointer_grab(xwin);
+	ecore_x_keyboard_grab(xwin);
 
 	bg = elm_bg_add(win);
 	evas_object_size_hint_weight_set(bg, 1.0, 1.0);
