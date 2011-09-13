@@ -6,7 +6,6 @@
 	- Enhance compress mode. Merge styles and call signals.
 	- Changed "moved" item class function to smart callback.
 	- Merge _item_move_after/before().
-	- Check why genlist 4 is broken.
 	- Fix reorder bug when the window edge is going out of the screen.
 	- Check elm_genlist_item_sorted_insert() API with group index, expandable list and etc.
 
