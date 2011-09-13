@@ -372,14 +372,20 @@ epdf_page_size_get (const Epdf_Page *page, int *width, int *height)
   int h = 0;
 
   if (page) {
+    PDFRectangle box;
+    GBool crop;
+
     rotate = page->page->getRotate ();
+    page->page->makeBox(72, 72, 0, false, false,
+			-1, -1, -1, -1, &box, &crop);
+
     if (rotate == 90 || rotate == 270) {
-      w = (int)page->page->getMediaHeight ();
-      h = (int)page->page->getMediaWidth ();
+      h = box.x2 - box.x1;
+      w = box.y2 - box.y1;
     }
     else {
-      w = (int)page->page->getMediaWidth ();
-      h = (int)page->page->getMediaHeight ();
+      w = box.x2 - box.x1;
+      h = box.y2 - box.y1;
     }
   }
 
