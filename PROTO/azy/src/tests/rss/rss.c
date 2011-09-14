@@ -8,7 +8,7 @@
 
 #include <Azy.h>
 
-static Eina_Error
+static Eina_Bool
 ret_(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Content *content)
 {
    Azy_Rss *ret;
@@ -16,14 +16,14 @@ ret_(Azy_Client *cli __UNUSED__, int type __UNUSED__, Azy_Content *content)
    if (azy_content_error_is_set(content))
      {
         printf("Error encountered: %s\n", azy_content_error_message_get(content));
-        return azy_content_error_code_get(content);
+        return ECORE_CALLBACK_RENEW;
      }
 
    ret = azy_content_return_get(content);
  //  printf("Success? %s!\n", ret ? "YES" : "NO");
 
    azy_rss_print("> ", 0, ret);
-   return AZY_ERROR_NONE;
+   return ECORE_CALLBACK_RENEW;
 }
 
 static Eina_Bool
