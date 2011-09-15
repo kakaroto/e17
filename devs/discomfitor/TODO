@@ -1,9 +1,9 @@
 things I am/will be working on, the order of which is irrelevant:
 
 __PENDING__ (currently active projects)
+*efl im client?
 *eeze integration into efm
 *esskyuehl 1.0 release
-*eetrpc implementation in azy
 *pulseaudio mixer support in e
 
 ___URGENT___ (things that I should be doing but probably am not)
@@ -22,4 +22,3 @@ efl guake+vte lib clones
 efl gmpc clone
 evry module for controlling vms (libvirt, xen, possibly vmware depending on legality?)
 efl bittorrent client
-efl im client?
