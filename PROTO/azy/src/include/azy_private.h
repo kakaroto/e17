@@ -9,6 +9,7 @@
 #include "config.h"
 #endif
 
+#include <time.h>
 #include <Eina.h>
 #include <Ecore_Con.h>
 #include <Azy.h>
@@ -128,25 +129,55 @@ struct Azy_Content
 
 struct Azy_Rss
 {
-               AZY_MAGIC;
+   AZY_MAGIC;
+   Eina_Bool atom : 1; /* true if item is Azy_Rss_Atom */
    const char *title;
-   const char *link;
    const char *img_url;
+
+   /* rss format only */
+   const char *link;
    const char *desc;
+
+   /* atom format only */
+   const char *id;
+   const char *subtitle;
+   const char *rights;
+   const char *logo;
+   const char *generator;
+   struct tm updated;
+   Eina_List *categories;
+   Eina_List *contributors;
+   Eina_List *authors;
+   Eina_List *atom_links;
 
    Eina_List  *items;
 };
 
 struct Azy_Rss_Item
 {
-               AZY_MAGIC;
+   AZY_MAGIC;
+   Eina_Bool atom : 1; /* true if item is Azy_Rss_Atom */
    const char *title;
+
+   /* rss format only */
    const char *link;
    const char *desc;
    const char *date;
    const char *guid;
    const char *comment_url;
    const char *author;
+
+   /* atom format only */
+   const char *rights;
+   const char *summary;
+   const char *id;
+   const char *icon;
+   struct tm updated;
+   struct tm published;
+   Eina_List *categories;
+   Eina_List *contributors;
+   Eina_List *authors;
+   Eina_List *atom_links;
 };
 
 struct Azy_Net
@@ -334,6 +365,10 @@ struct Azy_Server_Module_Method
    Azy_Server_Module_Content_Cb method;
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern void _azy_magic_fail(const void *d,
                             Azy_Magic   m,
                             Azy_Magic   req_m,
@@ -382,10 +417,11 @@ azy_content_deserialize_json(Azy_Content *content,
                              const char  *buf,
                              ssize_t      len);
 
+Azy_Rss      *azy_rss_new(void);
+Azy_Rss_Item *azy_rss_item_new(void);
+
+
 #ifdef HAVE_XML
-#ifdef __cplusplus
-extern "C" {
-#endif
 Eina_Bool azy_content_serialize_request_xml(Azy_Content *content);
 Eina_Bool azy_content_serialize_response_xml(Azy_Content *content);
 Eina_Bool azy_content_deserialize_request_xml(Azy_Content *content,
@@ -397,9 +433,9 @@ Eina_Bool azy_content_deserialize_response_xml(Azy_Content *content,
 Eina_Bool azy_content_deserialize_rss_xml(Azy_Content *content,
                                           const char  *buf,
                                           ssize_t      len);
-#ifdef __cplusplus
-}
-#endif
+Eina_Bool azy_content_deserialize_atom_xml(Azy_Content *content,
+                                           const char  *buf,
+                                           ssize_t      len);
 #endif
 Eina_Bool azy_content_serialize_request_json(Azy_Content *content);
 Eina_Bool azy_content_serialize_response_json(Azy_Content *content);
@@ -413,4 +449,7 @@ Eina_Bool azy_content_deserialize_response_json(Azy_Content *content,
 Eina_Bool azy_content_buffer_set_(Azy_Content   *content,
                                   unsigned char *buffer,
                                   int            length);
+#ifdef __cplusplus
+}
+#endif
 #endif

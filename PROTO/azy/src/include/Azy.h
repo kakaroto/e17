@@ -120,6 +120,29 @@ typedef struct Azy_Rss                  Azy_Rss;
  */
 typedef struct Azy_Rss_Item             Azy_Rss_Item;
 /**
+ * @typedef Azy_Rss_Link
+ * An object representing a link from an RSS feed
+ */
+typedef struct Azy_Rss_Link
+{
+   const char *title; /**< The title of the link */
+   const char *href; /**< The link URI */
+   const char *rel; /**< The relation type */
+   const char *type; /**< The content-type */
+   const char *hreflang; /**< The language of the URI */
+   size_t length; /**< The size of the URI */
+} Azy_Rss_Link;
+/**
+ * @typedef Azy_Rss_Contact
+ * An object representing a contact from an RSS feed
+ */
+typedef struct Azy_Rss_Contact
+{
+   const char *name; /**< Name of the contact */
+   const char *uri; /**< URI associated with the contact */
+   const char *email; /**< Email address of the contact */
+} Azy_Rss_Contact;
+/**
  * @typedef Azy_Value
  * A general struct which can hold any type of value
  */
@@ -222,7 +245,8 @@ typedef enum
    AZY_NET_TRANSPORT_JSON,
    AZY_NET_TRANSPORT_EET,
    AZY_NET_TRANSPORT_TEXT,
-   AZY_NET_TRANSPORT_HTML
+   AZY_NET_TRANSPORT_HTML,
+   AZY_NET_TRANSPORT_ATOM
 } Azy_Net_Transport;
 
 /**
@@ -565,15 +589,28 @@ extern "C" {
    EAPI Eina_Bool          azy_server_module_upgrade(Azy_Server_Module *module);
 
    /* RSS */
-   EAPI Azy_Rss      *azy_rss_new(void);
-   EAPI Azy_Rss_Item *azy_rss_item_new(void);
    EAPI void          azy_rss_free(Azy_Rss *rss);
+   EAPI void          azy_rss_link_free(Azy_Rss_Link *li);
+   EAPI void          azy_rss_contact_free(Azy_Rss_Contact *c);
    EAPI void          azy_rss_item_free(Azy_Rss_Item *item);
    EAPI Eina_List    *azy_rss_items_get(Azy_Rss *rss);
+   EAPI Eina_List    *azy_rss_authors_get(Azy_Rss *rss);
+   EAPI Eina_List    *azy_rss_contributors_get(Azy_Rss *rss);
+   EAPI Eina_List    *azy_rss_categories_get(Azy_Rss *rss);
+   EAPI Eina_List    *azy_rss_links_get(Azy_Rss *rss);
    EAPI const char   *azy_rss_title_get(Azy_Rss *rss);
    EAPI const char   *azy_rss_link_get(Azy_Rss *rss);
    EAPI const char   *azy_rss_img_url_get(Azy_Rss *rss);
    EAPI const char   *azy_rss_desc_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_rights_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_id_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_logo_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_generator_get(Azy_Rss *rss);
+   EAPI const char   *azy_rss_subtitle_get(Azy_Rss *rss);
+   EAPI Eina_List    *azy_rss_item_authors_get(Azy_Rss_Item *item);
+   EAPI Eina_List    *azy_rss_item_contributors_get(Azy_Rss_Item *item);
+   EAPI Eina_List    *azy_rss_item_categories_get(Azy_Rss_Item *item);
+   EAPI Eina_List    *azy_rss_item_links_get(Azy_Rss_Item *item);
    EAPI const char   *azy_rss_item_title_get(Azy_Rss_Item *item);
    EAPI const char   *azy_rss_item_link_get(Azy_Rss_Item *item);
    EAPI const char   *azy_rss_item_desc_get(Azy_Rss_Item *item);
@@ -581,9 +618,18 @@ extern "C" {
    EAPI const char   *azy_rss_item_guid_get(Azy_Rss_Item *item);
    EAPI const char   *azy_rss_item_comment_url_get(Azy_Rss_Item *item);
    EAPI const char   *azy_rss_item_author_get(Azy_Rss_Item *item);
+   EAPI const char   *azy_rss_item_rights_get(Azy_Rss_Item *rss);
+   EAPI const char   *azy_rss_item_summary_get(Azy_Rss_Item *rss);
+   EAPI const char   *azy_rss_item_id_get(Azy_Rss_Item *rss);
    EAPI void          azy_rss_print(const char *pre,
                                     int         indent,
                                     Azy_Rss    *rss);
+   EAPI void          azy_rss_link_print(const char *pre,
+                                         int         indent,
+                                         Azy_Rss_Link *li);
+   EAPI void          azy_rss_contact_print(const char *pre,
+                                            int         indent,
+                                            Azy_Rss_Contact *c);
    EAPI void azy_rss_item_print(const char   *pre,
                                 int           indent,
                                 Azy_Rss_Item *item);

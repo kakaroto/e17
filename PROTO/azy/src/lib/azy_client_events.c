@@ -149,9 +149,14 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
           }
         content->ret = ret;
      }
-   else if ((hd->recv->transport == AZY_NET_TRANSPORT_XML) && (!hd->callback)) /* assume rss */
+   else if (((hd->recv->transport == AZY_NET_TRANSPORT_XML) || (hd->recv->transport == AZY_NET_TRANSPORT_ATOM)) && (!hd->callback)) /* assume rss */
      {
-        if (!azy_content_deserialize_rss_xml(content, (const char *)hd->recv->buffer, hd->recv->size))
+        Eina_Bool success;
+        if (hd->recv->transport == AZY_NET_TRANSPORT_XML)
+          success = azy_content_deserialize_rss_xml(content, (const char *)hd->recv->buffer, hd->recv->size);
+        else
+          success = azy_content_deserialize_atom_xml(content, (const char *)hd->recv->buffer, hd->recv->size);
+        if (!success)
           {
              if (!azy_content_error_is_set(content))
                azy_content_error_faultmsg_set(content, AZY_CLIENT_ERROR_MARSHALIZER, "Call return parsing failed.");

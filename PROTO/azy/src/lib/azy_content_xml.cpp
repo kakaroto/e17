@@ -614,3 +614,262 @@ error:
    azy_rss_free(rss);
    return EINA_FALSE;
 }
+
+static Azy_Rss_Link *
+azy_content_deserialize_atom_xml_link(xml_node &node)
+{
+/*
+atomLink =
+   element atom:link {
+      atomCommonAttributes,
+      attribute href { atomUri },
+      attribute rel { atomNCName | atomUri }?,
+      attribute type { atomMediaType }?,
+      attribute hreflang { atomLanguageTag }?,
+      attribute title { text }?,
+      attribute length { text }?,
+      undefinedContent
+   }
+*/
+   Azy_Rss_Link *rl;
+
+   rl = (Azy_Rss_Link*)calloc(1, sizeof(Azy_Rss_Link));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(rl, NULL);
+   for (xml_attribute_iterator i = node.attributes_begin(); i != node.attributes_end(); ++i)
+     {
+        xml_attribute it;
+
+        it = *i;
+        
+#define SET(X) \
+        if (!strcmp(it.name(), #X)) \
+          rl->X = eina_stringshare_add(it.value())
+        SET(href);
+        else SET(rel);
+        else SET(type);
+        else SET(hreflang);
+        else SET(title);
+        else if (!strcmp(it.name(), "length"))
+          rl->length = it.as_uint();
+#undef SET
+     }
+   return rl;
+}
+
+static Azy_Rss_Contact *
+azy_content_deserialize_atom_xml_contact(xml_node &node)
+{
+/*
+atomPersonConstruct =
+   atomCommonAttributes,
+   (element atom:name { text }
+    & element atom:uri { atomUri }?
+    & element atom:email { atomEmailAddress }?
+    & extensionElement*)
+*/
+   Azy_Rss_Contact *c;
+
+   c = (Azy_Rss_Contact*)calloc(1, sizeof(Azy_Rss_Contact));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(c, NULL);
+   for (xml_node::iterator i = node.begin(); i != node.end(); ++i)
+     {
+        xml_node n;
+        const char *name;
+
+        n = *i;
+        name = n.name();
+
+#define SET(X) \
+        if ((!c->X) && (!strcmp(name, #X))) \
+          c->X = eina_stringshare_add(n.child_value())
+
+        SET(name);
+        else SET(uri);
+        else SET(email);
+#undef SET
+     }
+   return c;
+}
+
+static Azy_Rss_Item *
+azy_content_deserialize_atom_xml_entry(xml_node &node)
+{
+/*
+atomEntry =
+   element atom:entry {
+      atomCommonAttributes,
+      (atomAuthor*
+       & atomCategory*
+       & atomContent?
+       & atomContributor*
+       & atomId
+       & atomLink*
+       & atomPublished?
+       & atomRights?
+       & atomSource?
+       & atomSummary?
+       & atomTitle
+       & atomUpdated
+       & extensionElement*)
+   }
+*/
+   Azy_Rss_Item *it;
+
+   it = azy_rss_item_new();
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
+   it->atom = EINA_TRUE;
+   for (xml_node::iterator i = node.begin(); i != node.end(); ++i)
+     {
+        xml_node n;
+        const char *name;
+        Azy_Rss_Contact *c;
+
+        n = *i;
+        name = n.name();
+
+#define SET(X) \
+        if ((!it->X) && (!strcmp(name, #X))) \
+          it->X = eina_stringshare_add(n.child_value())
+
+        SET(title);
+        else SET(rights);
+        else SET(summary);
+        else SET(id);
+        else SET(icon);
+#undef SET
+        else if (!strcmp(name, "category"))
+          it->categories = eina_list_append(it->categories, eina_stringshare_add(n.attribute("term").value()));
+        else if (!strcmp(name, "contributor"))
+          {
+             c = azy_content_deserialize_atom_xml_contact(n);
+             if (c)
+               it->contributors = eina_list_append(it->contributors, c);
+          }
+        else if (!strcmp(name, "author"))
+          {
+             c = azy_content_deserialize_atom_xml_contact(n);
+             if (c)
+               it->authors = eina_list_append(it->authors, c);
+          }
+        else if (!strcmp(name, "link"))
+          {
+             Azy_Rss_Link *rl;
+
+             rl = azy_content_deserialize_atom_xml_link(n);
+             if (rl) it->atom_links = eina_list_append(it->atom_links, rl);
+          }
+        else if (!strcmp(name, "updated"))
+          strptime(n.child_value(), "%FT%TZ", &it->updated);
+        else if (!strcmp(name, "published"))
+          strptime(n.child_value(), "%FT%TZ", &it->published);
+
+     }
+   return it;
+}
+
+
+Eina_Bool
+azy_content_deserialize_atom_xml(Azy_Content *content,
+                                 const char  *buf,
+                                 ssize_t      len)
+{
+   xml_document doc;
+   xml_node node;
+   xml_attribute attr;
+   Azy_Rss *rss;
+
+   if (!doc.load_buffer(const_cast<char *>(buf), len))
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
+        return EINA_FALSE;
+     }
+
+   /* ensure this is actually atom format */
+   attr = doc.first_child().attribute("xmlns");
+   if (attr.empty() || strcmp(attr.value(), "http://www.w3.org/2005/Atom"))
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_FAULT);
+        return EINA_FALSE;
+     }
+   rss = azy_rss_new();
+   if (!rss)
+     {
+        azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_FAULT);
+        return EINA_FALSE;
+     }
+   rss->atom = EINA_TRUE;
+   for (xml_node::iterator it = doc.first_child().begin(); it != doc.first_child().end(); ++it)
+     {
+        xml_node n;
+        const char *name;
+        Azy_Rss_Contact *c;
+
+        n = *it;
+        name = n.name();
+/* http://tools.ietf.org/html/rfc4287
+atomFeed =
+   element atom:feed {
+      atomCommonAttributes,
+      (atomAuthor*
+       & atomCategory*
+       & atomContributor*
+       & atomGenerator?
+       & atomIcon?
+       & atomId
+       & atomLink*
+       & atomLogo?
+       & atomRights?
+       & atomSubtitle?
+       & atomTitle
+       & atomUpdated
+       & extensionElement*),
+      atomEntry*
+   }
+*/
+#define SET(X) \
+        if ((!rss->X) && (!strcmp(name, #X))) \
+          rss->X = eina_stringshare_add(n.child_value())
+
+        SET(title);
+        else SET(rights);
+        else SET(subtitle);
+        else SET(generator);
+        else SET(logo);
+        else SET(id);
+#undef SET
+        else if (!strcmp(name, "category"))
+          rss->categories = eina_list_append(rss->categories, eina_stringshare_add(n.attribute("term").value()));
+        else if (!strcmp(name, "contributor"))
+          {
+             c = azy_content_deserialize_atom_xml_contact(n);
+             if (c)
+               rss->contributors = eina_list_append(rss->contributors, c);
+          }
+        else if (!strcmp(name, "author"))
+          {
+             c = azy_content_deserialize_atom_xml_contact(n);
+             if (c)
+               rss->authors = eina_list_append(rss->authors, c);
+          }
+        else if (!strcmp(name, "link"))
+          {
+             Azy_Rss_Link *rl;
+
+             rl = azy_content_deserialize_atom_xml_link(n);
+             if (rl) rss->atom_links = eina_list_append(rss->atom_links, rl);
+          }
+        else if (!strcmp(name, "icon"))
+          rss->img_url = eina_stringshare_add(n.child_value());
+        else if (!strcmp(name, "updated"))
+          strptime(n.child_value(), "%FT%TZ", &rss->updated);
+        else if (!strcmp(name, "entry") && (!n.empty()))
+          {
+             Azy_Rss_Item *i;
+
+             i = azy_content_deserialize_atom_xml_entry(n);
+             if (i) rss->items = eina_list_append(rss->items, i);
+          }
+     }
+   content->ret = rss;
+   return EINA_TRUE;
+}
