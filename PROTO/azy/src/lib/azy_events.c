@@ -559,27 +559,35 @@ skip_header:
 Azy_Net_Transport
 azy_events_net_transport_get(const char *content_type)
 {
+   const char *c = NULL;;
    DBG("(content_type='%s')", content_type);
    if (!content_type)
      return AZY_NET_TRANSPORT_TEXT;
 
-   if (!strncmp(content_type, "text/xml", 8))
+   if (!strncmp(content_type, "text/", 5))
+     c = content_type + 5;
+   else if (!strncmp(content_type, "application/", 12))
+     c = content_type + 12;
+
+   if (!c) return AZY_NET_TRANSPORT_UNKNOWN;
+
+   if (!strncmp(c, "xml", 3))
      return AZY_NET_TRANSPORT_XML;
 
-   if (!strncmp(content_type, "application/xml", 15))
-     return AZY_NET_TRANSPORT_XML;
-
-   if (!strncmp(content_type, "application/json", 16))
+   if (!strncmp(c, "json", 4))
      return AZY_NET_TRANSPORT_JSON;
 
-   if (!strncmp(content_type, "application/eet", 16))
+   if (!strncmp(c, "eet", 3))
      return AZY_NET_TRANSPORT_EET;
 
-   if (!strncmp(content_type, "text/plain", 10))
+   if (!strncmp(c, "plain", 5))
      return AZY_NET_TRANSPORT_TEXT;
 
-   if (!strncmp(content_type, "text/html", 9))
+   if (!strncmp(c, "html", 4))
      return AZY_NET_TRANSPORT_HTML;
+
+   if (!strncmp(c, "atom+xml", 8))
+     return AZY_NET_TRANSPORT_ATOM;
 
    return AZY_NET_TRANSPORT_UNKNOWN;
 }
