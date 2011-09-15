@@ -55,6 +55,8 @@ void
 azy_rss_item_free(Azy_Rss_Item *item)
 {
    void *d;
+
+   if (!item) return;
    if (!AZY_MAGIC_CHECK(item, AZY_MAGIC_RSS_ITEM))
      {
         AZY_MAGIC_FAIL(item, AZY_MAGIC_RSS_ITEM);

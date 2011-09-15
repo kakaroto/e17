@@ -91,6 +91,7 @@ azy_rss_free(Azy_Rss *rss)
 {
    void *item;
 
+   if (!rss) return;
    if (!AZY_MAGIC_CHECK(rss, AZY_MAGIC_RSS))
      {
         AZY_MAGIC_FAIL(rss, AZY_MAGIC_RSS);
