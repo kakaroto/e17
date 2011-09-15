@@ -1,3 +1,11 @@
+2011-09-13 Rafael Antognolli <antognolli at profusion dot mobi>
+
+	Make epdf_page_size_get() return the correct page size.
+
+	* src/lib/poppler/epdf_poppler_page.cpp:
+	Return the page size using page->makeBox(), instead of
+	page->getMediaHeigh() and page->getMediaWidth().
+
 2011-02-04  Vincent Torri  <doursse at users dot sf dot net>
 
 	* configure.ac:
