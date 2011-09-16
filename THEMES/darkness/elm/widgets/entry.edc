@@ -257,7 +257,8 @@
                text {
                   style: "Label";
                   min: 1 1;
-                  max: 0 1;
+                  max: 0 0;
+	          align: 0.0 0.5;
                }
             }
             description { state: "disabled" 0.0;
