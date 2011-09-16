@@ -10,7 +10,8 @@ brush03.png \
 brush04.png \
 brush05.png \
 ball_01.png \
-goal_01.png
+goal_01.png \
+cursor.png
 
 backgrounddir = $(datadir)/eskiss/backgrounds
 background_DATA = \

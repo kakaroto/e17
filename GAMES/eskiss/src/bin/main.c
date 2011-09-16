@@ -321,6 +321,8 @@ int main(int argc, char **argv)
                 ecore_x_window_cursor_show(ewin, 0);
         }
 #endif
+        if (has_cursor)
+          ecore_evas_cursor_set(application->ee, PACKAGE_DATA_DIR "/brushes/cursor.png", 2000, 0, 32);
 
         ecore_evas_show(application->ee);
 
