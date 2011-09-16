@@ -1,0 +1,83 @@
+The EFL run on Playstation 3 !
+Youness Alaoui
+kakaroto@kakaroto.homelinux.net
+
+<p>
+Dear Enlightened people of the world,
+</p>
+
+<p>
+We are happy to announce that we have started working on a native port
+of the EFL for the Playstation 3 system.
+</p>
+
+<p>
+This port comes as great news for the ps3 homebrew community which has
+been strugling with a complete lack of tools for easily developing
+application. With PSL1GHT (The unofficial PS3 SDK) and a port of the
+SDL as pretty much the only available libraries for the PS3, not much
+could be done without a huge waste of time in order to reimplement all
+the basic things.
+</p>
+
+<p>
+The initial port of the EFL was done in just a couple of days, where
+eina, eet, evas, ecore, embryo and edje were made available and a port
+of expedite and eskiss were successfully running on the PS3.The port
+was made using the SDL engine for evas, and while it worked, the
+performance wasn't great.
+</p>
+
+<p>
+Work has continued since then and a new psl1ght engine was added to
+evas which makes use of PSL1GHT's capabilities for setting up the
+display. For now, it is still a work in progress and the rendering is
+still done in software, but we plan on making the engine fully
+hardware accelerated to take advantage of the powerful capabilities of
+the Playstation 3 console. The engine now has mouse and keyboard
+support as well as mouse emulation using the PS3 controller.
+</p>
+
+<p>
+Elementary, the EFL widget toolkit has also been partially ported and
+this means that all of the widgets that elementary provides can be
+used in applications, this should make development of any kind of
+homebrew application much easier, whether it be for an alternative PS
+Store, or for in game menus. Edje, the powerful layout engine, will
+also allow developers to write themeable applications, or games, with
+nice animations and all the eye candy they need.
+</p>
+
+<p>
+On a side note, this work also means that the EFL will soon have
+joystick support added into evas, ecore and ecore-input, and this will
+hopefully bring us tons of new EFL-based games and apps for the PC as
+well.
+</p>
+
+<p>
+A thank you goes to KaKaRoTo, zerkman and gzorin for their work in
+making this possible.
+</p>
+
+<p>
+And here is the mandatory video showing Expedite running a few tests on a PS3 :
+http://www.youtube.com/watch?v=f39YDDEQGyw
+</p>
+
+<p>
+As well as Eskiss running beautifully in full HD :
+http://www.youtube.com/watch?v=j2kuxyzY7IU
+</p>
+
+<p>
+We will keep you informed of any progress on this area, for now here
+is a quick TODO list for what's to come :
+<ul>
+<li>hardware accelerated rendering</li>
+<li>full joystick support</li>
+<li>support for the Move controller</li>
+<li>full support of Elementary and all of its widgets</li>
+<li>More apps and games ported</li>
+</ul>
+</p>
