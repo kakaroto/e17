@@ -454,6 +454,20 @@ group {
 group {
     name: "modules/efm_navigation/pathbar_button";
     parts {
+		
+		 part {
+			name: "clipper";
+			type: RECT;
+			mouse_events: 0;
+			description {
+			   state: "default" 0.0;
+			   color: 255 255 255 255;
+				max: 180 22;
+				rel1.offset: 12 2;
+				rel2.offset: -11 -1;
+			}
+		 }
+
 		part {
 			name: "button";
 			mouse_events: 1;
@@ -496,14 +510,16 @@ group {
 			type: TEXT;
 			mouse_events: 0;
 			scale: 1;
+			clip_to: "clipper";
 			description {
 				state: "default" 0.0;
+				align: 0.0 0.5;
 				/* fixed: 1 1; */
-				rel1.offset: 12 2;
-				rel2.offset: -11 -1;
-				max: 180 22;
+				rel1.to: "clipper";
+				rel2.to: "clipper";
 				color: 180 180 180 255;
-				TEXT_NORMAL("label_normal", 0.5 0.5, 1 1);
+				TEXT_NORMAL("label_normal", 0.0 0.5, 1 1);
+				text.elipsis: 0.0;
 			}
 			description {
 				state: "selected" 0.0;
