@@ -13,6 +13,7 @@ struct _Elfe_Home_Win
 
    E_Win *win;
    Evas_Object *o_bg;
+   Evas_Object *bg_scroller;
    Evas_Object *layout;
    Evas_Object *desktop;
 

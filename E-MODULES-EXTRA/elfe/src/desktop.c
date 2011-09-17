@@ -62,6 +62,17 @@ _scroller_scroll_anim_stop_cb(void *data , Evas_Object *obj __UNUSED__, void *ev
      }
 }
 
+static void
+_scroller_scroll_cb(void *data , Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Elfe_Desktop *desk = data;
+   Evas_Coord x, y, w, h;
+
+
+   elm_scroller_region_get(desk->sc, &x, &y, &w, &h);
+   evas_object_smart_callback_call(desk->layout, "scroll", &x);
+}
+
 static Eina_Bool
 _longpress_timer_cb(void *data)
 {
@@ -470,6 +481,7 @@ elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
    /* evas_object_size_hint_max_set(desk->dock, 9999, 80); */
 
    evas_object_smart_callback_add(desk->sc, "scroll,anim,stop", _scroller_scroll_anim_stop_cb, desk);
+   evas_object_smart_callback_add(desk->sc, "scroll", _scroller_scroll_cb, desk);
 
    evas_object_event_callback_add(desk->sc, EVAS_CALLBACK_MOUSE_MOVE, _scroller_mouse_move_cb, desk);
    evas_object_event_callback_add(desk->sc, EVAS_CALLBACK_MOUSE_UP, _scroller_mouse_up_cb, desk);

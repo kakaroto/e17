@@ -105,14 +105,11 @@ collections
       parts {
          /* background  */
          part {
-            type: IMAGE;
+            name: "elfe.swallow.background";
+            type: SWALLOW;
             mouse_events: 0;
             description {
                state: "default" 0.0;
-               visible: 0;
-               image {
-                  normal: "bg.png";
-               }
             }
          }
          part {
@@ -827,8 +824,10 @@ collections
 
    group {
       name: "elfe/dock/layout";
+      images {
+         image: "engage_im0.png" COMP;
+      }
       parts {
-
          part {
             name: "menu.background.bottom";
             mouse_events: 1;
@@ -837,6 +836,7 @@ collections
                state: "default" 0.0;
                image.normal: "mainmenu_bg_bottom.png";
                image.border: 0 0 2 0;
+               color: 255 255 255 200;
             }
          }
 
