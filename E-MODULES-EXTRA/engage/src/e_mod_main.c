@@ -273,13 +273,27 @@ static Ngi_Win *
 _ngi_win_new(Ng *ng)
 {
    Ngi_Win *win;
-
+   Evas *evas;
+   
    win = E_NEW(Ngi_Win, 1);
    if (!win) return NULL;
 
    win->ng = ng;
    win->popup = e_popup_new(ng->zone, 0, 0, 0, 0);
 
+   /* if ((evas = e_manager_comp_evas_get(ng->zone->container->manager)))
+    *   {
+    * 	e_canvas_del(win->popup->ecore_evas);
+    * 	ecore_evas_free(win->popup->ecore_evas); 
+    * 
+    * 	win->popup->ecore_evas = ecore_evas_e_comp_new(NULL, ng->zone->container->win,
+    * 						       ecore_evas_ecore_evas_get(evas),
+    * 						       0, 0, 1, 1);
+    * 	
+    * 	printf("USE COMP EVAS\n");
+    * 
+    *   }
+    * else */
    if (ngi_config->use_composite)
      {
 	ecore_evas_alpha_set(win->popup->ecore_evas, 1);
@@ -1635,11 +1649,22 @@ _ngi_init_timer_cb(void *data)
 {
    Eina_List *l;
    Config_Item *ci;
+   int have_comp = 0;
+   E_Module *em;
+   
+   // FIXME: major hack. checking in advance for comp. eventully comp
+   // will be rolled into e17 core and this won't be needed
+   EINA_LIST_FOREACH(e_config->modules, l, em)
+     {
+	if (!strcmp(em->name, "comp"))
+	  {
+	     have_comp = 1;
+	     break;
+	  }
+     }
 
-   if (e_config->use_composite || ecore_x_screen_is_composited(0))
+   if (have_comp || ecore_x_screen_is_composited(0))
      ngi_config->use_composite = EINA_TRUE;
-
-   /* ngi_config->use_composite = ecore_x_screen_is_composited(0); */
 
    EINA_LIST_FOREACH (ngi_config->items, l, ci)
      ngi_new(ci);
