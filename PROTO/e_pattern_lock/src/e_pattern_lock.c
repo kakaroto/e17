@@ -58,7 +58,6 @@ void on_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 
 	printf(_("Mouse down on %dx%d\n"), col, row);
 	printf(_("Password is '%s'\n"), eina_strbuf_string_get(password));
-	edje_object_signal_emit(obj, "go_selected", NULL);
 }
 
 void on_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info) {

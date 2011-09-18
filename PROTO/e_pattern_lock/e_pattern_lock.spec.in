@@ -1,0 +1,42 @@
+%define _missing_doc_files_terminate_build 0
+%{!?_rel:%{expand:%%global _rel 0.enl%{?dist}}}
+
+Summary: A pattern screen locker
+Name: @PACKAGE@
+Version: @VERSION@
+Release: %{_rel}
+License: GPLv3+
+Group: User Interface/X
+Source: %{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Rui Miguel Seabra <rms@1407.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+URL: http://www.enlightenment.org/
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+Requires: elementary
+BuildRequires: elementary-devel
+
+%description
+A pattern locker for touchscreen based environments.
+
+%prep
+%setup -q
+
+%build
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
+
+%install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING README
+%{_bindir}/e_pattern_lock
+%{_datadir}/e_pattern_lock/themes/default.edj
+%{_datadir}/locale/*
+
+%changelog
