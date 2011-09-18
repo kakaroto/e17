@@ -103,7 +103,7 @@ void on_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 
 EAPI int elm_main(int argc, char **argv) {
 	Evas_Object *win=NULL, *bg=NULL, *pattern=NULL, *edje=NULL, *object=NULL, *item=NULL;
-	Ecore_X_Window xwin;
+	Ecore_X_Window xwin, rootxwin;
 	char theme[PATH_MAX];
 
 	setlocale(LC_ALL, "");
@@ -117,10 +117,13 @@ EAPI int elm_main(int argc, char **argv) {
 	evas_object_size_hint_max_set(win, 640, 640);
 	elm_win_fullscreen_set(win, EINA_TRUE);
 	elm_win_sticky_set(win, EINA_TRUE);
+	elm_win_keyboard_mode_set(win, ELM_WIN_KEYBOARD_OFF);
 	elm_win_layer_set(win, INT_MAX);
+
 	xwin = elm_win_xwindow_get(win);
+	rootxwin = ecore_x_window_root_get(xwin);
 	ecore_x_pointer_grab(xwin);
-	ecore_x_keyboard_grab(xwin);
+	ecore_x_keyboard_grab(rootxwin);
 
 	bg = elm_bg_add(win);
 	evas_object_size_hint_weight_set(bg, 1.0, 1.0);
