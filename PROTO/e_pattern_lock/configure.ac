@@ -41,5 +41,6 @@ Makefile
 data/Makefile
 data/theme/Makefile
 data/theme/default/Makefile
+e_pattern_lock.spec
 src/Makefile
 ])

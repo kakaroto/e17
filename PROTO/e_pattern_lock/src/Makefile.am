@@ -15,5 +15,6 @@ bin_PROGRAMS = e_pattern_lock
 e_pattern_lock_SOURCES =	\
 	e_pattern_lock.c
 
-EXTRA_DIST=		\
-	e_pattern_lock.h
+EXTRA_DIST=			\
+	e_pattern_lock.h	\
+	gettext.h

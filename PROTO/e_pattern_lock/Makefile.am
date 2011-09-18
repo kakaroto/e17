@@ -14,5 +14,5 @@ MAINTAINERCLEANFILES = \
 
 ACLOCAL_AMFLAGS = -I m4
 
-#EXTRA_DIST =            \
-#        e_patter_lock.spec
+EXTRA_DIST =			\
+	e_pattern_lock.spec

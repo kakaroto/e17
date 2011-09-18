@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e_pattern_lock 0.1.0\n"
 "Report-Msgid-Bugs-To: rms@1407.org\n"
-"POT-Creation-Date: 2011-09-09 00:13+0100\n"
+"POT-Creation-Date: 2011-09-18 10:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_pattern_lock.c:34
+#: src/e_pattern_lock.c:59
 #, c-format
-msgid "Mouse down\n"
+msgid "Mouse down on %dx%d\n"
+msgstr ""
+
+#: src/e_pattern_lock.c:60 src/e_pattern_lock.c:75
+#, c-format
+msgid "Password is '%s'\n"
+msgstr ""
+
+#: src/e_pattern_lock.c:77
+#, c-format
+msgid "Mouse in on %dx%d\n"
+msgstr ""
+
+#: src/e_pattern_lock.c:89
+#, c-format
+msgid "Mouse up on %dx%d\n"
+msgstr ""
+
+#: src/e_pattern_lock.c:90
+#, c-format
+msgid "Final password is '%s'\n"
 msgstr ""
