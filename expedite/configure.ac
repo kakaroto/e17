@@ -110,6 +110,7 @@ AC_PROG_CC
 LT_PROG_RC
 
 
+
 ### Checks for libraries
 
 # Evil library for compilation on Windows
@@ -229,6 +230,8 @@ AC_SUBST(lt_enable_auto_import)
 
 
 ### Checks for library functions
+
+AC_CHECK_FUNCS([sync])
 
 
 AC_OUTPUT([

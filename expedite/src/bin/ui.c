@@ -611,7 +611,7 @@ _ui_setup(void)
 #undef UI
    _ui_menu_item_add("exit.png", "Exit", _ui_exit);
 
-#ifndef _WIN32
+#ifdef HAVE_SYNC
    /* make sure disk io isn't going to turn up unexpectedly */
    sync();
    sync();
