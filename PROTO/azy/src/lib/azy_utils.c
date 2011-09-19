@@ -24,7 +24,9 @@
 #include "Azy.h"
 
 #ifdef _WIN32
-# include <Rpcdce.h>
+# ifdef HAVE_RPCDCE_H
+#  include <Rpcdce.h>
+#endif
 #endif
 
 /* length of a uuid */
@@ -130,6 +132,7 @@ azy_uuid_new(void)
    const char *ret = NULL;
 
 #ifdef _WIN32
+# ifdef HAVE_RPCDCE_H
    UUID u;
    RPC_CSTR buf;
 
@@ -145,7 +148,10 @@ azy_uuid_new(void)
       default:
         break;
      }
-#else
+# endif
+#endif
+
+#ifdef __linux__
    char uuid[UUID_LEN + 1];
    FILE *f;
    if (!(f = fopen("/proc/sys/kernel/random/uuid", "r")))

@@ -130,6 +130,8 @@ if test "x$want_extern_rec" != "xno" ; then
 fi
 AM_CONDITIONAL([NEED_RE2C], [test -z $RE2C])
 
+
+AC_CHECK_HEADERS([Rpcdce.h])
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 # write output
 AC_CONFIG_FILES([
