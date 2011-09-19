@@ -23,6 +23,10 @@
 #include "cdecode.h"
 #include "Azy.h"
 
+#ifdef _WIN32
+# include <Rpcdce.h>
+#endif
+
 /* length of a uuid */
 #define UUID_LEN 36
 /**
@@ -123,11 +127,27 @@ azy_memstr(const unsigned char *big,
 const char *
 azy_uuid_new(void)
 {
-   char uuid[UUID_LEN + 1];
-   FILE *f;
    const char *ret = NULL;
 
-#ifndef _WIN32 /* FIXME: add windows code for this */
+#ifdef _WIN32
+   UUID u;
+   RPC_CSTR buf;
+
+   switch (UuidCreateSequential(&u))
+     {
+      case RPC_S_OK:
+      case RPC_S_UUID_LOCAL_ONLY:
+      case RPC_S_UUID_NO_ADDRESS:
+        if (UuidToString(&u, &buf)) return NULL;
+
+        ret = eina_stringshare_add(buf);
+        RpcStringFree(buf);
+      default:
+        break;
+     }
+#else
+   char uuid[UUID_LEN + 1];
+   FILE *f;
    if (!(f = fopen("/proc/sys/kernel/random/uuid", "r")))
      return NULL;
 
