@@ -23,6 +23,10 @@ define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
+m4_ifdef([AM_GNU_GETTEXT_VERSION], [
+AM_GNU_GETTEXT_VERSION([0.14])
+])
+
 PKG_CHECK_MODULES(ECORE_EVAS, [ecore-evas])
 PKG_CHECK_MODULES(ENLIGHTENMENT, [enlightenment])
 datadir_edj=$(pkg-config --variable=prefix enlightenment)/share/enlightenment/data/backgrounds
