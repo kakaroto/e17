@@ -5540,3 +5540,19 @@ Make EwinOpActivate() center "lost" windows.
 Fix pointer focus when a new window appears under the pointer.
 Cosmetics.
 Italian translation update (Massimo Maiurana).
+
+-------------------------------------------------------------------------------
+
+Tue Sep 20 21:04:45 CEST 2011
+
+--- 1.0.9.001 ---
+Update list of translatable strings in menus.
+Japanese translation update (Yasufumi Haga).
+Adjust file.menu when regenerating menus.
+Fix segv when new client is destroyed before being mapped.
+Don't focus window before client window MapNotify is seen.
+Make dialogs sticky.
+"Lost" window recovery tweak.
+Add new "technical/opaque" move/resize mode (Daniel Manjarres).
+Zoom improvements (Daniel Manjarres).
+Use WM_NAME in stead of WM_ICON_NAME in pager and iconbox.
