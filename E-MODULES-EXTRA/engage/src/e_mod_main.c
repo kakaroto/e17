@@ -1650,7 +1650,7 @@ _ngi_init_timer_cb(void *data)
    Eina_List *l;
    Config_Item *ci;
    int have_comp = 0;
-   E_Module *em;
+   E_Config_Module *em;
    
    // FIXME: major hack. checking in advance for comp. eventully comp
    // will be rolled into e17 core and this won't be needed
