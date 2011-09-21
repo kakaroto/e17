@@ -2,8 +2,26 @@
  * Copyright 2010, 2011 Mike Blumenkrantz <mike@zentific.com>
  */
 
-#include "tests.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include "Azy.h"
+
+#define ST(X) #X
+#define STR(X) ST(X)
+#define RUN_TEST(func) { \
+  printf("Running " EINA_COLOR_WHITE "%-70s\n" EINA_COLOR_RESET, __FILE__ ": " #func); \
+  if (!func()) failed = EINA_TRUE; \
+  printf("Done    " EINA_COLOR_WHITE "%-70s[%s]\n" EINA_COLOR_RESET, \
+         __FILE__ ": " #func, failed ? EINA_COLOR_RED "FAILED" EINA_COLOR_RESET : EINA_COLOR_GREEN "PASSED" EINA_COLOR_RESET); \
+         }
+
+#define TEST_ASSERT(cond) do { \
+  Eina_Bool result = (cond); \
+  print_result(result, __LINE__, #cond); \
+  if (!result) return EINA_FALSE;\
+} while (0)
+
 
 #define REQUEST(method, params) \
   "<methodCall><methodName>" method "</methodName><params>" params "</params></methodCall>\n"
@@ -16,11 +34,6 @@
 #define MEMBER(name, value) \
   "<member><name>" #name "</name>" value "</member>"
 
-EAPI Eina_Bool
-azy_content_deserialize_json(Azy_Content *content,
-                             const char *buf,
-                             ssize_t len);
-
 static void
 print_result(Eina_Bool result, int line, const char *cond)
 {
@@ -32,7 +45,7 @@ print_result(Eina_Bool result, int line, const char *cond)
 
 /* tests */
 static Eina_Bool
-constructCall(void)
+construct_call(void)
 {
    Azy_Content *content = azy_content_new("test.test");
    const char *method = azy_content_method_get(content);
@@ -44,7 +57,7 @@ constructCall(void)
 }
 
 static Eina_Bool
-constructCallNoMethod(void)
+construct_call_no_method(void)
 {
    Azy_Content *content = azy_content_new(NULL);
    const char *method = azy_content_method_get(content);
@@ -54,17 +67,7 @@ constructCallNoMethod(void)
 }
 
 static Eina_Bool
-responseUnserializeJson(void)
-{
-   Azy_Content *content = azy_content_new(NULL);
-   Eina_Bool rs = azy_content_deserialize_json(content, "[]", 2);
-   TEST_ASSERT(rs);
-   azy_content_free(content);
-   return EINA_TRUE;
-}
-
-static Eina_Bool
-requestUnserialize1(void)
+deserialize_request_1(void)
 {
    Azy_Content *content = azy_content_new(NULL);
    Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, "<->", 3);
@@ -75,7 +78,7 @@ requestUnserialize1(void)
 
 
 static Eina_Bool
-requestUnserialize2(void)
+deserialize_request_2(void)
 {
    Azy_Content *content = azy_content_new(NULL);
    Eina_Strbuf *str = eina_strbuf_new();
@@ -91,7 +94,7 @@ requestUnserialize2(void)
 }
 
 static Eina_Bool
-requestUnserialize3(void)
+deserialize_request_3(void)
 {
    Azy_Content *content = azy_content_new(NULL);
    Eina_Strbuf *str = eina_strbuf_new();
@@ -147,7 +150,7 @@ _assert_param_type(Azy_Content   *content,
 }
 
 static Eina_Bool
-requestUnserialize4(void)
+deserialize_request_4(void)
 {
    Azy_Content *content = azy_content_new(NULL);
    Eina_Strbuf *str = eina_strbuf_new();
@@ -188,7 +191,7 @@ requestUnserialize4(void)
 }
 
 static Eina_Bool
-requestUnserialize5(void)
+deserialize_request_5(void)
 {
    Azy_Content *content = azy_content_new(NULL);
    Eina_Strbuf *str = eina_strbuf_new();
@@ -221,7 +224,7 @@ requestUnserialize5(void)
 }
 
 static Eina_Bool
-responseUnserialize1(void)
+deserialize_response_1(void)
 {
    Azy_Content *content = azy_content_new(NULL);
    Eina_Strbuf *str = eina_strbuf_new();
@@ -252,7 +255,7 @@ responseUnserialize1(void)
 }
 
 static Eina_Bool
-responseUnserialize2(void)
+deserialize_response_2(void)
 {
    Azy_Content *content = azy_content_new(NULL);
    Eina_Strbuf *str = eina_strbuf_new();
@@ -287,16 +290,15 @@ main()
    eina_counter_start(c);
 
    int failed = EINA_FALSE;
-   RUN_TEST(constructCall);
-   RUN_TEST(constructCallNoMethod);
-   RUN_TEST(requestUnserialize1);
-   RUN_TEST(requestUnserialize2);
-   RUN_TEST(requestUnserialize3);
-   RUN_TEST(requestUnserialize4);
-   RUN_TEST(requestUnserialize5);
-   RUN_TEST(responseUnserialize1);
-   RUN_TEST(responseUnserialize2);
-   RUN_TEST(responseUnserializeJson);
+   RUN_TEST(construct_call);
+   RUN_TEST(construct_call_no_method);
+   RUN_TEST(deserialize_request_1);
+   RUN_TEST(deserialize_request_2);
+   RUN_TEST(deserialize_request_3);
+   RUN_TEST(deserialize_request_4);
+   RUN_TEST(deserialize_request_5);
+   RUN_TEST(deserialize_response_1);
+   RUN_TEST(deserialize_response_2);
    eina_counter_stop(c, 1);
    printf("%s", eina_counter_dump(c));
    eina_counter_free(c);
