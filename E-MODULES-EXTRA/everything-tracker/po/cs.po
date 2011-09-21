@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Everything-tracker\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 18:00+0100\n"
+"POT-Creation-Date: 2010-05-30 21:21+0200\n"
 "PO-Revision-Date: 2011-01-04 18:01+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: Czech <quaker66@gmail.com>\n"
@@ -14,20 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/e_mod_main.c:953
-#: ../src/e_mod_main.c:956
+#: src/e_mod_main.c:958 src/e_mod_main.c:961
 msgid "Tracker"
 msgstr "Tracker"
 
-#: ../src/e_mod_main.c:972
+#: src/e_mod_main.c:977
 msgid "Albums"
 msgstr "Alba"
 
-#: ../src/e_mod_main.c:975
+#: src/e_mod_main.c:980
 msgid "Artist"
 msgstr "Umělec"
 
-#: ../src/e_mod_main.c:978
+#: src/e_mod_main.c:983
 msgid "Most Listened"
 msgstr "Nejvíce poslouchané"
-
