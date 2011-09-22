@@ -8,6 +8,7 @@
 
 #include <Ecore_Getopt.h>
 #include <Ecore_File.h>
+#include <E_DBus.h>
 #include <stdlib.h>
 #include <string.h>
 #include "gettext.h"
