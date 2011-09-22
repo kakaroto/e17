@@ -1279,6 +1279,8 @@ toggle_floating(E_Border *bd)
         return;
 
     check_tinfo(bd->desk);
+    if (!_G.tinfo->config.nb_stacks)
+        return;
 
     if (EINA_LIST_IS_IN(_G.tinfo->floating_windows, bd)) {
         EINA_LIST_REMOVE(_G.tinfo->floating_windows, bd);
