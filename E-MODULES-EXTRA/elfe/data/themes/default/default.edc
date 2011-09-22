@@ -824,9 +824,6 @@ collections
 
    group {
       name: "elfe/dock/layout";
-      images {
-         image: "engage_im0.png" COMP;
-      }
       parts {
          part {
             name: "menu.background.bottom";
