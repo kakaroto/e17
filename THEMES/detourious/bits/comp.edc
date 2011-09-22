@@ -285,8 +285,7 @@ group { name: "e/comp/none";
 	}
 }
 //----
-group { name: "e/comp/default";
-	alias: "e/comp/still";
+group { name: "e/comp/still";
 	alias: "e/comp/menu";
 	parts {
 		part { name: "shadow";
@@ -382,7 +381,8 @@ group { name: "e/comp/default";
 	}
 }
 //----
-group { name: "e/comp/popup";
+group { name: "e/comp/default";
+	alias: "e/comp/popup";
 	parts {
 		part { name: "clipper";
             type: RECT;
