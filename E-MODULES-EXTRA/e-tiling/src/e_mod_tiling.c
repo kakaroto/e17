@@ -588,48 +588,88 @@ _reorganize_stack(int stack)
         return;
 
     if (_G.tinfo->stacks[stack]->next) {
-        int zx, zy, zw, zh, x, w, h, ch, i = 0, count;
+        int zx, zy, zw, zh, i = 0, count;
 
         e_zone_useful_geometry_get(_G.tinfo->desk->zone, &zx, &zy, &zw, &zh);
 
         count = eina_list_count(_G.tinfo->stacks[stack]);
 
-        x = _G.tinfo->pos[stack];
-        ch = 0;
-        w = _G.tinfo->size[stack];
-        h = zh / count;
+        if (_G.tinfo->conf->use_rows) {
+            int y, w, h, cw;
 
-        for (Eina_List *l = _G.tinfo->stacks[stack]; l; l = l->next, i++) {
-            E_Border *bd = l->data;
-            Border_Extra *extra;
-            int d = (i * 2 * zh) % count
-                - (2 * ch) % count;
+            y = _G.tinfo->pos[stack];
+            cw = 0;
+            w = zw / count;
+            h = _G.tinfo->size[stack];
 
-            extra = eina_hash_find(_G.border_extras, &bd);
-            if (!extra) {
-                ERR("No extra for %p", bd);
-                continue;
+            for (Eina_List *l = _G.tinfo->stacks[stack]; l; l = l->next, i++) {
+                E_Border *bd = l->data;
+                Border_Extra *extra;
+                int d = (i * 2 * zw) % count
+                    - (2 * cw) % count;
+
+                extra = eina_hash_find(_G.border_extras, &bd);
+                if (!extra) {
+                    ERR("No extra for %p", bd);
+                    continue;
+                }
+
+                if ((bd->maximized & E_MAXIMIZE_HORIZONTAL) && count != 1) {
+                    e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                }
+                /* let's use a bresenham here */
+
+                extra->expected.x = cw + zx;
+                extra->expected.y = y;
+                extra->expected.w = w + d;
+                extra->expected.h = h;
+                cw += extra->expected.w;
+
+                _e_border_move_resize(bd,
+                                      extra->expected.x,
+                                      extra->expected.y,
+                                      extra->expected.w,
+                                      extra->expected.h);
             }
+        } else {
+            int x, w, h, ch;
 
-            if ((bd->maximized & E_MAXIMIZE_VERTICAL) && count != 1) {
-                e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+            x = _G.tinfo->pos[stack];
+            ch = 0;
+            w = _G.tinfo->size[stack];
+            h = zh / count;
+
+            for (Eina_List *l = _G.tinfo->stacks[stack]; l; l = l->next, i++) {
+                E_Border *bd = l->data;
+                Border_Extra *extra;
+                int d = (i * 2 * zh) % count
+                    - (2 * ch) % count;
+
+                extra = eina_hash_find(_G.border_extras, &bd);
+                if (!extra) {
+                    ERR("No extra for %p", bd);
+                    continue;
+                }
+
+                if ((bd->maximized & E_MAXIMIZE_VERTICAL) && count != 1) {
+                    e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                }
+                /* let's use a bresenham here */
+
+                extra->expected.x = x;
+                extra->expected.y = ch + zy;
+                extra->expected.w = w;
+                extra->expected.h = h + d;
+                ch += extra->expected.h;
+
+                _e_border_move_resize(bd,
+                                      extra->expected.x,
+                                      extra->expected.y,
+                                      extra->expected.w,
+                                      extra->expected.h);
             }
-            /* let's use a bresenham here */
-
-            extra->expected.x = x;
-            extra->expected.y = ch + zy;
-            extra->expected.w = w;
-            extra->expected.h = h + d;
-            ch += extra->expected.h;
-
-            _e_border_move_resize(bd,
-                                  extra->expected.x,
-                                  extra->expected.y,
-                                  extra->expected.w,
-                                  extra->expected.h);
         }
     } else {
-        int y, h;
         Border_Extra *extra;
         E_Border *bd = _G.tinfo->stacks[stack]->data;
 
@@ -639,25 +679,48 @@ _reorganize_stack(int stack)
             return;
         }
 
-        e_zone_useful_geometry_get(_G.tinfo->desk->zone, NULL, &y, NULL, &h);
+        if (_G.tinfo->conf->use_rows) {
+            int x, w;
 
-        extra->expected.x = _G.tinfo->pos[stack];
-        extra->expected.y = y;
-        extra->expected.w = _G.tinfo->size[stack];
-        extra->expected.h = h;
+            e_zone_useful_geometry_get(_G.tinfo->desk->zone,
+                                       &x, NULL, &w, NULL);
 
-        _e_border_move_resize(bd,
-                              extra->expected.x,
-                              extra->expected.y,
-                              extra->expected.w,
-                              extra->expected.h);
+            extra->expected.x = x;
+            extra->expected.y = _G.tinfo->pos[stack];
+            extra->expected.w = w;
+            extra->expected.h = _G.tinfo->size[stack];
 
-        e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
+            _e_border_move_resize(bd,
+                                  extra->expected.x,
+                                  extra->expected.y,
+                                  extra->expected.w,
+                                  extra->expected.h);
+
+            e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_HORIZONTAL);
+        } else {
+            int y, h;
+
+            e_zone_useful_geometry_get(_G.tinfo->desk->zone,
+                                       NULL, &y, NULL, &h);
+
+            extra->expected.x = _G.tinfo->pos[stack];
+            extra->expected.y = y;
+            extra->expected.w = _G.tinfo->size[stack];
+            extra->expected.h = h;
+
+            _e_border_move_resize(bd,
+                                  extra->expected.x,
+                                  extra->expected.y,
+                                  extra->expected.w,
+                                  extra->expected.h);
+
+            e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
+        }
     }
 }
 
 static void
-_move_resize_stack(int stack, int delta_x, int delta_w)
+_move_resize_stack(int stack, int delta_pos, int delta_size)
 {
     Eina_List *list = _G.tinfo->stacks[stack];
 
@@ -671,8 +734,13 @@ _move_resize_stack(int stack, int delta_x, int delta_w)
             continue;
         }
 
-        extra->expected.x += delta_x;
-        extra->expected.w += delta_w;
+        if (_G.tinfo->conf->use_rows) {
+            extra->expected.y += delta_pos;
+            extra->expected.h += delta_size;
+        } else {
+            extra->expected.x += delta_pos;
+            extra->expected.w += delta_size;
+        }
 
         _e_border_move_resize(bd,
                               extra->expected.x,
@@ -681,8 +749,8 @@ _move_resize_stack(int stack, int delta_x, int delta_w)
                               extra->expected.h);
     }
 
-    _G.tinfo->pos[stack] += delta_x;
-    _G.tinfo->size[stack] += delta_w;
+    _G.tinfo->pos[stack] += delta_pos;
+    _G.tinfo->size[stack] += delta_size;
 }
 
 static void
@@ -698,11 +766,20 @@ _set_stack_geometry(int stack, int pos, int size)
             continue;
         }
 
-        extra->expected.x = pos;
-        extra->expected.w = size;
+        if (_G.tinfo->conf->use_rows) {
+            extra->expected.y = pos;
+            extra->expected.h = size;
 
-        if (bd->maximized & E_MAXIMIZE_VERTICAL) {
-            e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+            if (bd->maximized & E_MAXIMIZE_HORIZONTAL) {
+                e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+            }
+        } else {
+            extra->expected.x = pos;
+            extra->expected.w = size;
+
+            if (bd->maximized & E_MAXIMIZE_VERTICAL) {
+                e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+            }
         }
 
         _e_border_move_resize(bd,
@@ -736,20 +813,25 @@ _add_stack(void)
     &&  _G.tinfo->borders >= _G.tinfo->conf->nb_stacks)
     {
         int nb_stacks = _G.tinfo->conf->nb_stacks - 1;
-        int x, y, w, h;
-        int width = 0;
+        int pos, s;
         /* Add stack */
 
-        e_zone_useful_geometry_get(_G.tinfo->desk->zone, &x, &y, &w, &h);
+        if (_G.tinfo->conf->use_rows)
+            e_zone_useful_geometry_get(_G.tinfo->desk->zone,
+                                       NULL, &pos, NULL, &s);
+        else
+            e_zone_useful_geometry_get(_G.tinfo->desk->zone,
+                                       &pos, NULL, &s, NULL);
 
         for (int i = 0; i <= nb_stacks; i++) {
+            int size = 0;
 
-            width = w / (nb_stacks + 1 - i);
+            size = s / (nb_stacks + 1 - i);
 
-            _set_stack_geometry(i, x, width);
+            _set_stack_geometry(i, pos, size);
 
-            w -= width;
-            x += width;
+            s -= size;
+            pos += size;
         }
         for (int i = nb_stacks - 1; i >= 0; i--) {
             if (eina_list_count(_G.tinfo->stacks[i]) == 1) {
@@ -801,9 +883,8 @@ _remove_stack(void)
         e_place_zone_region_smart_cleanup(_G.tinfo->desk->zone);
     } else {
         int nb_stacks = _G.tinfo->conf->nb_stacks;
-        int x, y, w, h;
-        int width = 0;
         int stack = _G.tinfo->conf->nb_stacks;
+        int pos, s;
 
         if (_G.tinfo->stacks[stack]) {
             _G.tinfo->stacks[stack-1] = eina_list_merge(
@@ -811,21 +892,45 @@ _remove_stack(void)
             _reorganize_stack(stack-1);
         }
 
-        e_zone_useful_geometry_get(_G.tinfo->desk->zone, &x, &y, &w, &h);
+        if (_G.tinfo->conf->use_rows) {
+            e_zone_useful_geometry_get(_G.tinfo->desk->zone,
+                                       NULL, &pos, NULL, &s);
+        } else {
+            e_zone_useful_geometry_get(_G.tinfo->desk->zone,
+                                       &pos, NULL, &s, NULL);
+        }
         for (int i = 0; i < nb_stacks; i++) {
+            int size = 0;
 
-            width = w / (nb_stacks - i);
+            size = s / (nb_stacks - i);
 
-            _set_stack_geometry(i, x, width);
+            _set_stack_geometry(i, pos, size);
 
-            w -= width;
-            x += width;
+            s -= size;
+            pos += size;
         }
     }
 }
 
+static void
+toggle_rows_cols(void)
+{
+    Eina_List *wins = NULL;
+    E_Border *bd;
+
+    _G.tinfo->conf->use_rows = !_G.tinfo->conf->use_rows;
+    for (int i = 0; i < TILING_MAX_STACKS; i++) {
+        wins = eina_list_merge(wins, _G.tinfo->stacks[i]);
+        _G.tinfo->stacks[i] = NULL;
+    }
+
+    EINA_LIST_FREE(wins, bd) {
+        _add_border(bd);
+    }
+}
+
 void
-change_stack_number(struct _Config_vdesk *newconf)
+change_desk_conf(struct _Config_vdesk *newconf)
 {
     E_Manager *m;
     E_Container *c;
@@ -846,6 +951,12 @@ change_stack_number(struct _Config_vdesk *newconf)
     check_tinfo(d);
     if (_G.tinfo->conf) {
         old_nb_stacks = _G.tinfo->conf->nb_stacks;
+        if (_G.tinfo->conf->use_rows != newconf->use_rows) {
+            _G.tinfo->conf = newconf;
+            _G.tinfo->conf->use_rows = !_G.tinfo->conf->use_rows;
+            toggle_rows_cols();
+            return;
+        }
     } else {
         newconf->nb_stacks = 0;
     }
@@ -946,24 +1057,26 @@ _add_border(E_Border *bd)
         return;
     }
 
-    extra = E_NEW(Border_Extra, 1);
-    *extra = (Border_Extra) {
-        .border = bd,
-        .expected = {
-            .x = bd->x,
-            .y = bd->y,
-            .w = bd->w,
-            .h = bd->h,
-        },
-        .orig = {
-            .x = bd->x,
-            .y = bd->y,
-            .w = bd->w,
-            .h = bd->h,
-        },
-    };
-
-    eina_hash_direct_add(_G.border_extras, &extra->border, extra);
+    extra = eina_hash_find(_G.overlays, _G.keys);
+    if (!extra) {
+        extra = E_NEW(Border_Extra, 1);
+        *extra = (Border_Extra) {
+            .border = bd,
+                .expected = {
+                    .x = bd->x,
+                    .y = bd->y,
+                    .w = bd->w,
+                    .h = bd->h,
+                },
+                .orig = {
+                    .x = bd->x,
+                    .y = bd->y,
+                    .w = bd->w,
+                    .h = bd->h,
+                },
+        };
+        eina_hash_direct_add(_G.border_extras, &extra->border, extra);
+    }
 
     /* New Border! */
 
@@ -990,27 +1103,45 @@ _add_border(E_Border *bd)
             /* Add stack */
             int nb_stacks = get_stack_count();
             int x, y, w, h;
-            int width = 0;
+            int pos, s, size = 0;
 
             e_zone_useful_geometry_get(bd->zone, &x, &y, &w, &h);
 
-            for (int i = 0; i < nb_stacks; i++) {
-
-                width = w / (nb_stacks + 1 - i);
-
-                _set_stack_geometry(i, x, width);
-
-                w -= width;
-                x += width;
+            if (_G.tinfo->conf->use_rows) {
+                pos = y;
+                s = h;
+            } else {
+                pos = x;
+                s = w;
             }
 
-            _G.tinfo->pos[nb_stacks] = x;
-            _G.tinfo->size[nb_stacks] = width;
-            extra->expected.x = x;
-            extra->expected.y = y;
-            extra->expected.w = width;
-            extra->expected.h = h;
-            e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
+            for (int i = 0; i < nb_stacks; i++) {
+
+                size = s / (nb_stacks + 1 - i);
+
+                _set_stack_geometry(i, pos, size);
+
+                s -= size;
+                pos += size;
+            }
+
+            _G.tinfo->pos[nb_stacks] = pos;
+            _G.tinfo->size[nb_stacks] = size;
+            if (_G.tinfo->conf->use_rows) {
+                extra->expected.x = x;
+                extra->expected.y = pos;
+                extra->expected.w = w;
+                extra->expected.h = size;
+                e_border_maximize(bd, E_MAXIMIZE_EXPAND |
+                                      E_MAXIMIZE_HORIZONTAL);
+            } else {
+                extra->expected.x = pos;
+                extra->expected.y = y;
+                extra->expected.w = size;
+                extra->expected.h = h;
+                e_border_maximize(bd, E_MAXIMIZE_EXPAND |
+                                      E_MAXIMIZE_VERTICAL);
+            }
             _e_border_move_resize(bd,
                                   extra->expected.x,
                                   extra->expected.y,
@@ -1060,26 +1191,32 @@ _remove_border(E_Border *bd)
         _reorganize_stack(stack);
     } else {
         if (nb_stacks > _G.tinfo->borders) {
-            int x, y, w, h;
-            int width = 0;
+            int pos, s;
             /* Remove stack */
 
             nb_stacks--;
 
-            e_zone_useful_geometry_get(bd->zone, &x, &y, &w, &h);
 
             for (int i = stack; i < nb_stacks; i++) {
                 _G.tinfo->stacks[i] = _G.tinfo->stacks[i+1];
             }
             _G.tinfo->stacks[nb_stacks] = NULL;
+            if (_G.tinfo->conf->use_rows) {
+                e_zone_useful_geometry_get(bd->zone,
+                                           NULL, &pos, NULL, &s);
+            } else {
+                e_zone_useful_geometry_get(bd->zone,
+                                           &pos, NULL, &s, NULL);
+            }
             for (int i = 0; i < nb_stacks; i++) {
+                int size;
 
-                width = w / (nb_stacks - i);
+                size = s / (nb_stacks - i);
 
-                _set_stack_geometry(i, x, width);
+                _set_stack_geometry(i, pos, size);
 
-                w -= width;
-                x += width;
+                s -= size;
+                pos += size;
             }
         } else {
             for (int i = stack+1; i < nb_stacks; i++) {
@@ -1119,37 +1256,44 @@ _remove_border(E_Border *bd)
 
 static void
 _move_resize_border_stack(E_Border *bd, Border_Extra *extra,
-                           int stack, tiling_change_t change)
+                          int stack, tiling_change_t change)
 {
-    if (change == TILING_RESIZE) {
-        if (stack == TILING_MAX_STACKS || !_G.tinfo->stacks[stack + 1]) {
-            /* You're not allowed to resize */
-            bd->w = extra->expected.w;
-        } else {
-            int delta = bd->w - extra->expected.w;
-
-            if (delta + 1 > _G.tinfo->size[stack + 1])
-                delta = _G.tinfo->size[stack + 1] - 1;
-
-            _move_resize_stack(stack, 0, delta);
-            _move_resize_stack(stack + 1, delta, -delta);
-            extra->expected.w = bd->w;
-        }
-    } else {
-        if (stack == 0) {
-            /* You're not allowed to move */
-            bd->x = extra->expected.x;
-        } else {
-            int delta = bd->x - extra->expected.x;
-
-            if (delta + 1 > _G.tinfo->size[stack - 1])
-                delta = _G.tinfo->size[stack - 1] - 1;
-
-            _move_resize_stack(stack, delta, -delta);
-            _move_resize_stack(stack - 1, 0, delta);
-            extra->expected.x = bd->x;
-        }
+#define _MOVE_RESIZE_BORDER_STACK(_pos, _size)                               \
+    if (change == TILING_RESIZE) {                                           \
+        if (stack == TILING_MAX_STACKS || !_G.tinfo->stacks[stack + 1]) {    \
+            /* You're not allowed to resize */                               \
+            bd->_size = extra->expected._size;                               \
+        } else {                                                             \
+            int delta = bd->_size - extra->expected._size;                   \
+                                                                             \
+            if (delta + 1 > _G.tinfo->size[stack + 1])                       \
+                delta = _G.tinfo->size[stack + 1] - 1;                       \
+                                                                             \
+            _move_resize_stack(stack, 0, delta);                             \
+            _move_resize_stack(stack + 1, delta, -delta);                    \
+            extra->expected._size = bd->_size;                               \
+        }                                                                    \
+    } else {                                                                 \
+        if (stack == 0) {                                                    \
+            /* You're not allowed to move */                                 \
+            bd->_pos = extra->expected._pos;                                 \
+        } else {                                                             \
+            int delta = bd->_pos - extra->expected._pos;                     \
+                                                                             \
+            if (delta + 1 > _G.tinfo->size[stack - 1])                       \
+                delta = _G.tinfo->size[stack - 1] - 1;                       \
+                                                                             \
+            _move_resize_stack(stack, delta, -delta);                        \
+            _move_resize_stack(stack - 1, 0, delta);                         \
+            extra->expected._pos = bd->_pos;                                 \
+        }                                                                    \
     }
+    if (_G.tinfo->conf->use_rows) {
+        _MOVE_RESIZE_BORDER_STACK(y, h)
+    } else {
+        _MOVE_RESIZE_BORDER_STACK(x, w)
+    }
+#undef _MOVE_RESIZE_BORDER_STACK
 }
 
 static void
@@ -1168,7 +1312,6 @@ _move_resize_border_in_stack(E_Border *bd, Border_Extra *extra,
       case TILING_RESIZE:
         if (!l->next) {
             if (l->prev) {
-                int delta = bd->h - extra->expected.h;
                 E_Border *prevbd = l->prev->data;
                 Border_Extra *prevextra;
 
@@ -1178,14 +1321,25 @@ _move_resize_border_in_stack(E_Border *bd, Border_Extra *extra,
                     return;
                 }
 
-                prevextra->expected.h -= delta;
+                if (_G.tinfo->conf->use_rows) {
+                    int delta;
+
+                    delta = bd->w - extra->expected.w;
+                    prevextra->expected.w -= delta;
+                    extra->expected.x -= delta;
+                    extra->expected.w = bd->w;
+                } else {
+                    int delta;
+
+                    delta = bd->h - extra->expected.h;
+                    prevextra->expected.h -= delta;
+                    extra->expected.y -= delta;
+                    extra->expected.h = bd->h;
+                }
+
                 _e_border_resize(prevbd,
                                  prevextra->expected.w,
                                  prevextra->expected.h);
-
-                extra->expected.y -= delta;
-                extra->expected.h = bd->h;
-
                 _e_border_move(bd,
                                extra->expected.x,
                                extra->expected.y);
@@ -1196,10 +1350,8 @@ _move_resize_border_in_stack(E_Border *bd, Border_Extra *extra,
                                  extra->expected.h);
             }
         } else {
-            int delta = bd->h - extra->expected.h;
             E_Border *nextbd = l->next->data;
             Border_Extra *nextextra;
-            int min_height = MAX(nextbd->client.icccm.base_h, 1);
 
             nextextra = eina_hash_find(_G.border_extras, &nextbd);
             if (!nextextra) {
@@ -1207,18 +1359,37 @@ _move_resize_border_in_stack(E_Border *bd, Border_Extra *extra,
                 return;
             }
 
-            if (nextextra->expected.h - delta < min_height)
-                delta = nextextra->expected.h - min_height;
+            if (_G.tinfo->conf->use_rows) {
+                int min_width = MAX(nextbd->client.icccm.base_w, 1);
+                int delta;
 
-            nextextra->expected.y += delta;
-            nextextra->expected.h -= delta;
+                delta = bd->w - extra->expected.w;
+                if (nextextra->expected.w - delta < min_width)
+                    delta = nextextra->expected.w - min_width;
+
+                nextextra->expected.x += delta;
+                nextextra->expected.w -= delta;
+
+                extra->expected.w += delta;
+            } else {
+                int min_height = MAX(nextbd->client.icccm.base_h, 1);
+                int delta;
+
+                delta = bd->h - extra->expected.h;
+                if (nextextra->expected.h - delta < min_height)
+                    delta = nextextra->expected.h - min_height;
+
+                nextextra->expected.y += delta;
+                nextextra->expected.h -= delta;
+
+                extra->expected.h += delta;
+            }
+
             _e_border_move_resize(nextbd,
                                   nextextra->expected.x,
                                   nextextra->expected.y,
                                   nextextra->expected.w,
                                   nextextra->expected.h);
-
-            extra->expected.h += delta;
             _e_border_move_resize(bd,
                                   extra->expected.x,
                                   extra->expected.y,
@@ -1229,16 +1400,18 @@ _move_resize_border_in_stack(E_Border *bd, Border_Extra *extra,
       case TILING_MOVE:
         if (!l->prev) {
             /* You're not allowed to move */
-            bd->y = extra->expected.y;
+            if (_G.tinfo->conf->use_rows) {
+                bd->x = extra->expected.x;
+            } else {
+                bd->y = extra->expected.y;
+            }
             _e_border_move(bd,
                            extra->expected.x,
                            extra->expected.y);
             DBG("trying to move %p, but !l->prev", bd);
         } else {
-            int delta = bd->y - extra->expected.y;
             E_Border *prevbd = l->prev->data;
             Border_Extra *prevextra;
-            int min_height = MAX(prevbd->client.icccm.base_h, 1);
 
             prevextra = eina_hash_find(_G.border_extras, &prevbd);
             if (!prevextra) {
@@ -1246,17 +1419,33 @@ _move_resize_border_in_stack(E_Border *bd, Border_Extra *extra,
                 return;
             }
 
-            if (prevextra->expected.h - delta < min_height)
-                delta = prevextra->expected.h - min_height;
+            if (_G.tinfo->conf->use_rows) {
+                int delta = bd->x - extra->expected.x;
+                int min_width = MAX(prevbd->client.icccm.base_w, 1);
 
-            prevextra->expected.h += delta;
+                if (prevextra->expected.w - delta < min_width)
+                    delta = prevextra->expected.w - min_width;
+
+                prevextra->expected.w += delta;
+
+                extra->expected.x += delta;
+                extra->expected.w -= delta;
+            } else {
+                int delta = bd->y - extra->expected.y;
+                int min_height = MAX(prevbd->client.icccm.base_h, 1);
+
+                if (prevextra->expected.h - delta < min_height)
+                    delta = prevextra->expected.h - min_height;
+
+                prevextra->expected.h += delta;
+
+                extra->expected.y += delta;
+                extra->expected.h -= delta;
+            }
+
             _e_border_resize(prevbd,
                              prevextra->expected.w,
                              prevextra->expected.h);
-
-            extra->expected.y += delta;
-            extra->expected.h -= delta;
-
             _e_border_move_resize(bd,
                                   extra->expected.x,
                                   extra->expected.y,
@@ -1279,7 +1468,7 @@ toggle_floating(E_Border *bd)
         return;
 
     check_tinfo(bd->desk);
-    if (!_G.tinfo->config.nb_stacks)
+    if (!_G.tinfo->conf->nb_stacks)
         return;
 
     if (EINA_LIST_IS_IN(_G.tinfo->floating_windows, bd)) {
@@ -1413,7 +1602,7 @@ _e_mod_action_swap_cb(E_Object   *obj,
 /* Move {{{*/
 
 static void
-_check_moving_anims(E_Border *bd, Border_Extra *extra, int stack)
+_check_moving_anims(const E_Border *bd, const Border_Extra *extra, int stack)
 {
     Eina_List *l = NULL;
     overlay_t *overlay;
@@ -1437,7 +1626,8 @@ _check_moving_anims(E_Border *bd, Border_Extra *extra, int stack)
 
     /* move left */
     overlay = &_G.move_overlays[MOVE_LEFT];
-    if (stack > 0) {
+    if ((!_G.tinfo->conf->use_rows && stack > 0)
+    ||  (_G.tinfo->conf->use_rows && l->prev)) {
         if (overlay->popup) {
             Evas_Coord ew, eh;
 
@@ -1485,9 +1675,11 @@ _check_moving_anims(E_Border *bd, Border_Extra *extra, int stack)
 
     /* move right */
     overlay = &_G.move_overlays[MOVE_RIGHT];
-    if (stack != TILING_MAX_STACKS - 1
-    && ((stack == nb_stacks - 1 && _G.tinfo->stacks[stack]->next)
-        || (stack != nb_stacks - 1))) {
+    if ((_G.tinfo->conf->use_rows && l->next)
+    || (!_G.tinfo->conf->use_rows && (
+            stack != TILING_MAX_STACKS - 1
+            && ((stack == nb_stacks - 1 && _G.tinfo->stacks[stack]->next)
+                || (stack != nb_stacks - 1))))) {
         if (overlay->popup) {
             Evas_Coord ew, eh;
 
@@ -1535,7 +1727,8 @@ _check_moving_anims(E_Border *bd, Border_Extra *extra, int stack)
 
     /* move up */
     overlay = &_G.move_overlays[MOVE_UP];
-    if (l->prev) {
+    if ((!_G.tinfo->conf->use_rows && l->prev)
+    ||  (_G.tinfo->conf->use_rows && stack > 0)) {
         if (overlay->popup) {
             Evas_Coord ew, eh;
 
@@ -1582,7 +1775,11 @@ _check_moving_anims(E_Border *bd, Border_Extra *extra, int stack)
 
     /* move down */
     overlay = &_G.move_overlays[MOVE_DOWN];
-    if (l->next) {
+    if ((!_G.tinfo->conf->use_rows && l->next)
+    || (_G.tinfo->conf->use_rows && (
+            stack != TILING_MAX_STACKS - 1
+            && ((stack == nb_stacks - 1 && _G.tinfo->stacks[stack]->next)
+                || (stack != nb_stacks - 1))))) {
         if (overlay->popup) {
             Evas_Coord ew, eh;
 
@@ -1630,7 +1827,7 @@ _check_moving_anims(E_Border *bd, Border_Extra *extra, int stack)
 }
 
 static void
-_move_up(void)
+_move_up_cols(void)
 {
     E_Border *bd_1 = _G.focused_bd,
              *bd_2 = NULL;
@@ -1684,7 +1881,7 @@ _move_up(void)
 }
 
 static void
-_move_down(void)
+_move_down_cols(void)
 {
     E_Border *bd_1 = _G.focused_bd,
              *bd_2 = NULL;
@@ -1735,7 +1932,7 @@ _move_down(void)
 }
 
 static void
-_move_left(void)
+_move_left_cols(void)
 {
     E_Border *bd = _G.focused_bd;
     Border_Extra *extra;
@@ -1791,7 +1988,7 @@ _move_left(void)
 }
 
 static void
-_move_right(void)
+_move_right_cols(void)
 {
     E_Border *bd = _G.focused_bd;
     int stack;
@@ -1886,6 +2083,264 @@ _move_right(void)
                          extra->expected.y + extra->expected.h/2);
 }
 
+static void
+_move_left_rows(void)
+{
+    E_Border *bd_1 = _G.focused_bd,
+             *bd_2 = NULL;
+    Border_Extra *extra_1 = NULL,
+                 *extra_2 = NULL;
+    Eina_List *l_1 = NULL,
+              *l_2 = NULL;
+    int stack;
+
+    stack = get_stack(_G.focused_bd);
+    if (stack < 0)
+        return;
+
+    if (_G.tinfo->stacks[stack]->data == _G.focused_bd)
+        return;
+
+    l_1 = eina_list_data_find_list(_G.tinfo->stacks[stack], bd_1);
+    if (!l_1 || !l_1->prev)
+        return;
+    l_2 = l_1->prev;
+    bd_2 = l_2->data;
+
+    extra_1 = eina_hash_find(_G.border_extras, &bd_1);
+    if (!extra_1) {
+        ERR("No extra for %p", bd_1);
+        return;
+    }
+    extra_2 = eina_hash_find(_G.border_extras, &bd_2);
+    if (!extra_2) {
+        ERR("No extra for %p", bd_2);
+        return;
+    }
+
+    l_1->data = bd_2;
+    l_2->data = bd_1;
+
+    extra_1->expected.x = extra_2->expected.x;
+    extra_2->expected.x += extra_1->expected.w;
+
+    _e_border_move(bd_1,
+                   extra_1->expected.x,
+                   extra_1->expected.y);
+    _e_border_move(bd_2,
+                   extra_2->expected.x,
+                   extra_2->expected.y);
+
+    _check_moving_anims(bd_1, extra_1, stack);
+    ecore_x_pointer_warp(_G.tinfo->desk->zone->container->win,
+                         extra_1->expected.x + extra_1->expected.w/2,
+                         extra_1->expected.y + extra_1->expected.h/2);
+}
+
+static void
+_move_right_rows(void)
+{
+    E_Border *bd_1 = _G.focused_bd,
+             *bd_2 = NULL;
+    Border_Extra *extra_1 = NULL,
+                 *extra_2 = NULL;
+    Eina_List *l_1 = NULL,
+              *l_2 = NULL;
+    int stack;
+
+    stack = get_stack(_G.focused_bd);
+    if (stack < 0)
+        return;
+
+    l_1 = eina_list_data_find_list(_G.tinfo->stacks[stack], bd_1);
+    if (!l_1 || !l_1->next)
+        return;
+    l_2 = l_1->next;
+    bd_2 = l_2->data;
+
+    extra_1 = eina_hash_find(_G.border_extras, &bd_1);
+    if (!extra_1) {
+        ERR("No extra for %p", bd_1);
+        return;
+    }
+    extra_2 = eina_hash_find(_G.border_extras, &bd_2);
+    if (!extra_2) {
+        ERR("No extra for %p", bd_2);
+        return;
+    }
+
+    l_1->data = bd_2;
+    l_2->data = bd_1;
+
+    extra_2->expected.x = extra_1->expected.x;
+    extra_1->expected.x += extra_2->expected.w;
+
+    _e_border_move(bd_1,
+                   extra_1->expected.x,
+                   extra_1->expected.y);
+    _e_border_move(bd_2,
+                   extra_2->expected.x,
+                   extra_2->expected.y);
+
+    _check_moving_anims(bd_1, extra_1, stack);
+    ecore_x_pointer_warp(_G.tinfo->desk->zone->container->win,
+                         extra_1->expected.x + extra_1->expected.w/2,
+                         extra_1->expected.y + extra_1->expected.h/2);
+}
+
+static void
+_move_up_rows(void)
+{
+    E_Border *bd = _G.focused_bd;
+    Border_Extra *extra;
+    int stack;
+
+    stack = get_stack(_G.focused_bd);
+    if (stack <= 0)
+        return;
+
+
+    EINA_LIST_REMOVE(_G.tinfo->stacks[stack], bd);
+    EINA_LIST_APPEND(_G.tinfo->stacks[stack - 1], bd);
+
+    if (!_G.tinfo->stacks[stack]) {
+        int x, y, w, h;
+        int nb_stacks;
+
+        /* Remove stack */
+        nb_stacks = get_stack_count();
+
+        e_zone_useful_geometry_get(bd->zone, &x, &y, &w, &h);
+
+        for (int i = stack; i < nb_stacks; i++) {
+            _G.tinfo->stacks[i] = _G.tinfo->stacks[i+1];
+        }
+        _G.tinfo->stacks[nb_stacks] = NULL;
+        for (int i = 0; i < nb_stacks; i++) {
+            int height = 0;
+
+            height = h / (nb_stacks - i);
+
+            _set_stack_geometry(i, y, height);
+
+            h -= height;
+            y += height;
+        }
+        _reorganize_stack(stack - 1);
+    } else {
+        _reorganize_stack(stack);
+        _reorganize_stack(stack - 1);
+    }
+
+    extra = eina_hash_find(_G.border_extras, &bd);
+    if (!extra) {
+        ERR("No extra for %p", bd);
+        return;
+    }
+
+    _check_moving_anims(bd, extra, stack - 1);
+    ecore_x_pointer_warp(_G.tinfo->desk->zone->container->win,
+                         extra->expected.x + extra->expected.w/2,
+                         extra->expected.y + extra->expected.h/2);
+}
+
+static void
+_move_down_rows(void)
+{
+    E_Border *bd = _G.focused_bd;
+    int stack;
+    int nb_stacks;
+    Border_Extra *extra;
+
+    stack = get_stack(bd);
+    if (stack == TILING_MAX_STACKS - 1)
+        return;
+
+    nb_stacks = get_stack_count();
+    if (stack == nb_stacks - 1 && !_G.tinfo->stacks[stack]->next)
+        return;
+
+    extra = eina_hash_find(_G.border_extras, &bd);
+    if (!extra) {
+        ERR("No extra for %p", bd);
+        return;
+    }
+
+    EINA_LIST_REMOVE(_G.tinfo->stacks[stack], bd);
+    EINA_LIST_APPEND(_G.tinfo->stacks[stack + 1], bd);
+
+    if (_G.tinfo->stacks[stack] && _G.tinfo->stacks[stack + 1]->next) {
+        _reorganize_stack(stack);
+        _reorganize_stack(stack + 1);
+        _check_moving_anims(bd, extra, stack + 1);
+    } else
+    if (_G.tinfo->stacks[stack]) {
+        /* Add stack */
+        int x, y, w, h;
+        int height = 0;
+
+        _reorganize_stack(stack);
+
+        e_zone_useful_geometry_get(bd->zone, &x, &y, &w, &h);
+
+        for (int i = 0; i < nb_stacks; i++) {
+
+            height = h / (nb_stacks + 1 - i);
+
+            _set_stack_geometry(i, y, height);
+
+            h -= height;
+            y += height;
+        }
+
+        _G.tinfo->pos[nb_stacks] = y;
+        _G.tinfo->size[nb_stacks] = height;
+        extra->expected.x = x;
+        extra->expected.y = y;
+        extra->expected.w = w;
+        extra->expected.h = height;
+        _e_border_move_resize(bd,
+                              extra->expected.x,
+                              extra->expected.y,
+                              extra->expected.w,
+                              extra->expected.h);
+        e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_HORIZONTAL);
+
+        if (nb_stacks + 1 > _G.tinfo->conf->nb_stacks) {
+            _G.tinfo->conf->nb_stacks = nb_stacks + 1;
+            e_config_save_queue();
+        }
+        _check_moving_anims(bd, extra, stack + 1);
+    } else {
+        int x, y, w, h;
+
+        e_zone_useful_geometry_get(_G.tinfo->desk->zone, &x, &y, &w, &h);
+        for (int i = stack; i < nb_stacks; i++) {
+             _G.tinfo->stacks[i] = _G.tinfo->stacks[i + 1];
+        }
+        nb_stacks--;
+        for (int i = 0; i < nb_stacks; i++) {
+            int height;
+
+            height = h / (nb_stacks - i);
+
+            _set_stack_geometry(i, y, height);
+
+            h -= height;
+            y += height;
+        }
+        _G.tinfo->stacks[nb_stacks] = NULL;
+        _G.tinfo->pos[nb_stacks] = 0;
+        _G.tinfo->size[nb_stacks] = 0;
+        _reorganize_stack(stack);
+        _check_moving_anims(bd, extra, stack);
+    }
+
+    ecore_x_pointer_warp(_G.tinfo->desk->zone->container->win,
+                         extra->expected.x + extra->expected.w/2,
+                         extra->expected.y + extra->expected.h/2);
+}
+
 static Eina_Bool
 move_key_down(void *data,
               int type,
@@ -1903,22 +2358,34 @@ move_key_down(void *data,
     if ((strcmp(ev->key, "Up") == 0)
     ||  (strcmp(ev->key, "k") == 0))
     {
-        _move_up();
+        if (_G.tinfo->conf->use_rows)
+            _move_up_rows();
+        else
+            _move_up_cols();
         return ECORE_CALLBACK_PASS_ON;
     } else if ((strcmp(ev->key, "Down") == 0)
            ||  (strcmp(ev->key, "j") == 0))
     {
-        _move_down();
+        if (_G.tinfo->conf->use_rows)
+            _move_down_rows();
+        else
+            _move_down_cols();
         return ECORE_CALLBACK_PASS_ON;
     } else if ((strcmp(ev->key, "Left") == 0)
            ||  (strcmp(ev->key, "h") == 0))
     {
-        _move_left();
+        if (_G.tinfo->conf->use_rows)
+            _move_left_rows();
+        else
+            _move_left_cols();
         return ECORE_CALLBACK_PASS_ON;
     } else if ((strcmp(ev->key, "Right") == 0)
            ||  (strcmp(ev->key, "l") == 0))
     {
-        _move_right();
+        if (_G.tinfo->conf->use_rows)
+            _move_right_rows();
+        else
+            _move_right_cols();
         return ECORE_CALLBACK_PASS_ON;
     }
 
@@ -2002,7 +2469,7 @@ _transition_overlays_free_cb(void *data)
 }
 
 static void
-_transition_move(tiling_move_t direction)
+_transition_move_cols(tiling_move_t direction)
 {
     int delta = TILING_RESIZE_STEP;
     int stack;
@@ -2027,13 +2494,6 @@ _transition_move(tiling_move_t direction)
             return;
         }
 
-        if (direction == MOVE_UP) {
-            delta *= -1;
-        }
-
-        nextbd = l->next->data;
-        min_height = MAX(nextbd->client.icccm.base_h, 1);
-
         extra = eina_hash_find(_G.border_extras, &bd);
         if (!extra) {
             ERR("No extra for %p", bd);
@@ -2044,6 +2504,13 @@ _transition_move(tiling_move_t direction)
             ERR("No extra for %p", nextbd);
             return;
         }
+
+        if (direction == MOVE_UP) {
+            delta *= -1;
+        }
+
+        nextbd = l->next->data;
+        min_height = MAX(nextbd->client.icccm.base_h, 1);
 
         if (nextextra->expected.h - delta < min_height)
             delta = nextextra->expected.h - min_height;
@@ -2085,6 +2552,90 @@ _transition_move(tiling_move_t direction)
     }
 }
 
+static void
+_transition_move_rows(tiling_move_t direction)
+{
+    int delta = TILING_RESIZE_STEP;
+    int stack;
+    E_Popup *popup = NULL;
+
+    if (!_G.transition_overlay)
+        return;
+
+    stack = _G.transition_overlay->stack;
+
+    if (_G.transition_overlay->bd) {
+        Eina_List *l = NULL;
+        E_Border *bd = _G.transition_overlay->bd,
+                 *nextbd = NULL;
+        Border_Extra *extra = NULL,
+                     *nextextra = NULL;
+        int min_width = 0;
+
+        l = eina_list_data_find_list(_G.tinfo->stacks[stack], bd);
+        if (!l) {
+            ERR("unable to bd %p in stack %d", bd, stack);
+            return;
+        }
+
+        extra = eina_hash_find(_G.border_extras, &bd);
+        if (!extra) {
+            ERR("No extra for %p", bd);
+            return;
+        }
+        nextextra = eina_hash_find(_G.border_extras, &nextbd);
+        if (!nextextra) {
+            ERR("No extra for %p", nextbd);
+            return;
+        }
+
+        if (direction == MOVE_LEFT) {
+            delta *= -1;
+        }
+
+        nextbd = l->next->data;
+        min_width = MAX(nextbd->client.icccm.base_w, 1);
+
+        if (nextextra->expected.w - delta < min_width)
+            delta = nextextra->expected.w - min_width;
+
+        nextextra->expected.x += delta;
+        nextextra->expected.w -= delta;
+        _e_border_move_resize(nextbd,
+                              nextextra->expected.x,
+                              nextextra->expected.y,
+                              nextextra->expected.w,
+                              nextextra->expected.h);
+
+        extra->expected.w += delta;
+        _e_border_move_resize(bd,
+                              extra->expected.x,
+                              extra->expected.y,
+                              extra->expected.w,
+                              extra->expected.h);
+
+        popup = _G.transition_overlay->overlay.popup;
+        e_popup_move(popup, popup->x + delta, popup->y);
+    } else {
+
+        if (stack == TILING_MAX_STACKS || !_G.tinfo->stacks[stack + 1]) {
+            return;
+        }
+        if (direction == MOVE_UP) {
+            delta *= -1;
+        }
+
+        if (delta + 1 > _G.tinfo->size[stack + 1])
+            delta = _G.tinfo->size[stack + 1] - 1;
+
+        _move_resize_stack(stack, 0, delta);
+        _move_resize_stack(stack+1, delta, -delta);
+
+        popup = _G.transition_overlay->overlay.popup;
+        e_popup_move(popup, popup->x, popup->y + delta);
+    }
+}
+
 static Eina_Bool
 _transition_overlay_key_down(void *data,
                              int type,
@@ -2105,31 +2656,55 @@ _transition_overlay_key_down(void *data,
                       - ecore_timer_pending_get(_G.action_timer));
 
     if (_G.transition_overlay) {
-        if (_G.transition_overlay->bd) {
-            if ((strcmp(ev->key, "Up") == 0)
+        if ((strcmp(ev->key, "Up") == 0)
             ||  (strcmp(ev->key, "k") == 0))
-            {
-                _transition_move(MOVE_UP);
+        {
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_cols(MOVE_UP);
                 return ECORE_CALLBACK_PASS_ON;
-            } else if ((strcmp(ev->key, "Down") == 0)
-                   ||  (strcmp(ev->key, "j") == 0))
-            {
-                _transition_move(MOVE_DOWN);
+            } else
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_rows(MOVE_UP);
                 return ECORE_CALLBACK_PASS_ON;
             }
-        } else {
-            if ((strcmp(ev->key, "Left") == 0)
-            ||  (strcmp(ev->key, "h") == 0))
-            {
-                _transition_move(MOVE_LEFT);
+        } else
+        if ((strcmp(ev->key, "Down") == 0)
+        ||  (strcmp(ev->key, "j") == 0))
+        {
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_cols(MOVE_DOWN);
                 return ECORE_CALLBACK_PASS_ON;
-            } else if ((strcmp(ev->key, "Right") == 0)
-                   ||  (strcmp(ev->key, "l") == 0))
-            {
-                _transition_move(MOVE_RIGHT);
+            } else
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_rows(MOVE_DOWN);
+                return ECORE_CALLBACK_PASS_ON;
+            }
+        } else
+        if ((strcmp(ev->key, "Left") == 0)
+        ||  (strcmp(ev->key, "h") == 0))
+        {
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_cols(MOVE_LEFT);
+                return ECORE_CALLBACK_PASS_ON;
+            } else
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_rows(MOVE_LEFT);
+                return ECORE_CALLBACK_PASS_ON;
+            }
+        } else
+        if ((strcmp(ev->key, "Right") == 0)
+        ||  (strcmp(ev->key, "l") == 0))
+        {
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_cols(MOVE_RIGHT);
+                return ECORE_CALLBACK_PASS_ON;
+            } else
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_rows(MOVE_RIGHT);
                 return ECORE_CALLBACK_PASS_ON;
             }
         }
+
         return ECORE_CALLBACK_RENEW;
     } else {
         if (strcmp(ev->key, "Backspace") == 0) {
@@ -2584,24 +3159,46 @@ _e_module_tiling_cb_hook(void *data,
         if (bd->maximized) {
             bool changed = false;
 
-            if (stack > 0 && bd->maximized & E_MAXIMIZE_HORIZONTAL) {
-                 e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
-                 _e_border_move_resize(bd,
-                                       extra->expected.x,
-                                       extra->expected.y,
-                                       extra->expected.w,
-                                       extra->expected.h);
-                 changed = true;
-            }
-            if (bd->maximized & E_MAXIMIZE_VERTICAL
-            && eina_list_count(_G.tinfo->stacks[stack]) > 1) {
-                 e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
-                 _e_border_move_resize(bd,
-                                       extra->expected.x,
-                                       extra->expected.y,
-                                       extra->expected.w,
-                                       extra->expected.h);
-                 changed = true;
+            if (_G.tinfo->conf->use_rows) {
+                if (stack > 0 && bd->maximized & E_MAXIMIZE_VERTICAL) {
+                     e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                     _e_border_move_resize(bd,
+                                           extra->expected.x,
+                                           extra->expected.y,
+                                           extra->expected.w,
+                                           extra->expected.h);
+                     changed = true;
+                }
+                if (bd->maximized & E_MAXIMIZE_HORIZONTAL
+                && eina_list_count(_G.tinfo->stacks[stack]) > 1) {
+                     e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                     _e_border_move_resize(bd,
+                                           extra->expected.x,
+                                           extra->expected.y,
+                                           extra->expected.w,
+                                           extra->expected.h);
+                     changed = true;
+                }
+            } else {
+                if (stack > 0 && bd->maximized & E_MAXIMIZE_HORIZONTAL) {
+                     e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                     _e_border_move_resize(bd,
+                                           extra->expected.x,
+                                           extra->expected.y,
+                                           extra->expected.w,
+                                           extra->expected.h);
+                     changed = true;
+                }
+                if (bd->maximized & E_MAXIMIZE_VERTICAL
+                && eina_list_count(_G.tinfo->stacks[stack]) > 1) {
+                     e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                     _e_border_move_resize(bd,
+                                           extra->expected.x,
+                                           extra->expected.y,
+                                           extra->expected.w,
+                                           extra->expected.h);
+                     changed = true;
+                }
             }
             if (changed)
                 return;
@@ -2617,16 +3214,28 @@ _e_module_tiling_cb_hook(void *data,
         }
 
         if (abs(extra->expected.w - bd->w) >= bd->client.icccm.step_w) {
-            _move_resize_border_stack(bd, extra, stack, TILING_RESIZE);
+            if (_G.tinfo->conf->use_rows)
+                _move_resize_border_in_stack(bd, extra, stack, TILING_RESIZE);
+            else
+                _move_resize_border_stack(bd, extra, stack, TILING_RESIZE);
         }
         if (abs(extra->expected.h - bd->h) >= bd->client.icccm.step_h) {
-            _move_resize_border_in_stack(bd, extra, stack, TILING_RESIZE);
+            if (_G.tinfo->conf->use_rows)
+                _move_resize_border_stack(bd, extra, stack, TILING_RESIZE);
+            else
+                _move_resize_border_in_stack(bd, extra, stack, TILING_RESIZE);
         }
         if (extra->expected.x != bd->x) {
-            _move_resize_border_stack(bd, extra, stack, TILING_MOVE);
+            if (_G.tinfo->conf->use_rows)
+                _move_resize_border_in_stack(bd, extra, stack, TILING_MOVE);
+            else
+                _move_resize_border_stack(bd, extra, stack, TILING_MOVE);
         }
         if (extra->expected.y != bd->y) {
-            _move_resize_border_in_stack(bd, extra, stack, TILING_MOVE);
+            if (_G.tinfo->conf->use_rows)
+                _move_resize_border_stack(bd, extra, stack, TILING_MOVE);
+            else
+                _move_resize_border_in_stack(bd, extra, stack, TILING_MOVE);
         }
 
         if (_G.input_mode == INPUT_MODE_MOVING

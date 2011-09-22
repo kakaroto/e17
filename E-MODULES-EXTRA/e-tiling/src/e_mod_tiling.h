@@ -81,7 +81,7 @@ EAPI void *e_modapi_init(E_Module *m);
 EAPI int   e_modapi_shutdown(E_Module *m);
 EAPI int   e_modapi_save(E_Module *m);
 
-void change_stack_number(struct _Config_vdesk *newconf);
+void change_desk_conf(struct _Config_vdesk *newconf);
 
 void e_tiling_update_conf(void);
 
