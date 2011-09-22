@@ -2842,6 +2842,7 @@ e_modapi_init(E_Module *m)
     E_CONFIG_VAL(_G.vdesk_edd, struct _Config_vdesk, y, INT);
     E_CONFIG_VAL(_G.vdesk_edd, struct _Config_vdesk, zone_num, INT);
     E_CONFIG_VAL(_G.vdesk_edd, struct _Config_vdesk, nb_cols, INT);
+    E_CONFIG_VAL(_G.vdesk_edd, struct _Config_vdesk, use_rows, INT);
 
     tiling_g.config = e_config_domain_load("module.e-tiling", _G.config_edd);
     if (!tiling_g.config) {
@@ -2856,6 +2857,15 @@ e_modapi_init(E_Module *m)
 
     E_CONFIG_LIMIT(tiling_g.config->tile_dialogs, 0, 1);
     E_CONFIG_LIMIT(tiling_g.config->show_titles, 0, 1);
+
+    for (Eina_List *l = tiling_g.config->vdesks; l; l = l->next) {
+        struct _Config_vdesk *vd;
+
+        vd = l->data;
+
+        E_CONFIG_LIMIT(vd->nb_cols, 0, TILING_MAX_COLUMNS);
+        E_CONFIG_LIMIT(vd->use_rows, 0, 1);
+    }
 
     desk = get_current_desk();
     _G.tinfo = _initialize_tinfo(desk);

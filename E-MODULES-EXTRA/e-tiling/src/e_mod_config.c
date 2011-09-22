@@ -89,21 +89,17 @@ _fill_zone_config(E_Zone               *zone,
                   E_Config_Dialog_Data *cfdata)
 {
     Evas *evas = cfdata->evas;
-    Evas_Object *o;
-    int mw, mh;
 
     /* Clear old entries first */
     evas_object_del(cfdata->o_desklist);
 
     cfdata->o_desklist = e_widget_list_add(evas, 1, 0);
-    o = e_widget_scrollframe_object_get(cfdata->o_deskscroll);
-    e_scrollframe_child_set(o, cfdata->o_desklist);
-    e_widget_sub_object_add(cfdata->o_deskscroll, cfdata->o_desklist);
 
     for (int i = 0; i < zone->desk_y_count * zone->desk_x_count; i++) {
         E_Desk *desk = zone->desks[i];
         struct _Config_vdesk *vd;
-        Evas_Object *list, *slider;
+        Evas_Object *list, *slider, *radio;
+        E_Radio_Group *rg;
 
         if (!desk)
             continue;
@@ -120,26 +116,25 @@ _fill_zone_config(E_Zone               *zone,
                                                      vd);
         }
 
-        list = e_widget_list_add(evas, 0, 1);
+        list = e_widget_list_add(evas, false, true);
 
         LIST_ADD(list, e_widget_label_add(evas, desk->name));
-        slider = e_widget_slider_add(evas, 1, 0, D_("%1.0f columns"),
+        slider = e_widget_slider_add(evas, 1, 0, D_("%1.0f"),
                                      0.0, 8.0, 1.0, 0, NULL,
                                      &vd->nb_cols, 150);
         LIST_ADD(list, slider);
+
+        rg = e_widget_radio_group_new(&vd->use_rows);
+        radio = e_widget_radio_add(evas, D_("columns"), 0, rg);
+        LIST_ADD(list, radio);
+        radio = e_widget_radio_add(evas, D_("rows"), 1, rg);
+        LIST_ADD(list, radio);
 
         LIST_ADD(cfdata->o_desklist, list);
     }
 
     /* Get the correct sizes of desklist and scrollframe */
-    e_widget_size_min_get(cfdata->o_desklist, &mw, &mh);
-    evas_object_resize(cfdata->o_desklist, mw, mh);
-    /*FIXME: what are those values?? */
-    if (mh > 150)
-        mh = 150;
-    mw += 32;
-    mh += 32;
-    e_widget_size_min_set(cfdata->o_deskscroll, mw, mh);
+    LIST_ADD(cfdata->osf, cfdata->o_desklist);
 }
 
 static void
@@ -150,7 +145,7 @@ _cb_zone_change(void        *data,
     E_Config_Dialog_Data *cfdata = data;
     E_Zone *zone;
 
-    if (!cfdata)
+    if (!cfdata || !cfdata->o_zonelist)
         return;
 
     n = e_widget_ilist_selected_get(cfdata->o_zonelist);
@@ -165,7 +160,7 @@ _basic_create_widgets(E_Config_Dialog      *cfd,
                       Evas                 *evas,
                       E_Config_Dialog_Data *cfdata)
 {
-    Evas_Object *o, *ob, *oc, *of, *osf;
+    Evas_Object *o, *oc, *of;
     E_Container *con = e_container_current_get(e_manager_current_get());
     E_Zone *zone;
 
@@ -194,38 +189,31 @@ _basic_create_widgets(E_Config_Dialog      *cfd,
     e_widget_label_add(evas,
                        D_("Number of columns used to tile per desk"
                           " (0 → tiling disabled):"));
-    osf = e_widget_list_add(evas, 0, 1);
+    cfdata->osf = e_widget_list_add(evas, 0, 1);
 
     /* Zone list */
-    ob = e_widget_ilist_add(evas, 0, 0, NULL);
-    e_widget_ilist_multi_select_set(ob, 0);
-    e_widget_size_min_set(ob, 100, 100);
-    cfdata->o_zonelist = ob;
-    e_widget_on_change_hook_set(ob, _cb_zone_change, cfdata);
+    cfdata->o_zonelist = e_widget_ilist_add(evas, 0, 0, NULL);
+    e_widget_ilist_multi_select_set(cfdata->o_zonelist, false);
+    e_widget_size_min_set(cfdata->o_zonelist, 100, 100);
+    e_widget_on_change_hook_set(cfdata->o_zonelist, _cb_zone_change, cfdata);
     for (Eina_List *l = con->zones; l; l = l->next) {
         if (!(zone = l->data))
             continue;
-        e_widget_ilist_append(ob, NULL, zone->name, NULL, zone, NULL);
+        e_widget_ilist_append(cfdata->o_zonelist, NULL, zone->name, NULL, zone, NULL);
     }
-    e_widget_ilist_selected_set(ob, 0);
-    e_widget_ilist_go(ob);
-    e_widget_ilist_thaw(ob);
-    LIST_ADD(osf, ob);
+    e_widget_ilist_go(cfdata->o_zonelist);
+    e_widget_ilist_thaw(cfdata->o_zonelist);
 
+    LIST_ADD(cfdata->osf, cfdata->o_zonelist);
 
     /* List of individual tiling modes */
-    /* Order is important here: Firstly create the list, then add it to the
-     * scrollframe before any objects get added to the list */
-    cfdata->o_desklist = e_widget_list_add(evas, 1, 0);
-    cfdata->o_deskscroll = e_widget_scrollframe_simple_add(evas,
-                                                           cfdata->o_desklist);
     cfdata->evas = evas;
 
     _fill_zone_config(con->zones->data, cfdata);
 
-    LIST_ADD(osf, cfdata->o_deskscroll);
+    e_widget_ilist_selected_set(cfdata->o_zonelist, 0);
 
-    e_widget_framelist_object_append(of, osf);
+    e_widget_framelist_object_append(of, cfdata->osf);
 
     LIST_ADD(o, of);
 

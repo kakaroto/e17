@@ -33,6 +33,7 @@ struct _Config_vdesk
    int           x, y;
    unsigned int  zone_num;
    int           nb_cols;
+   int           use_rows;
 };
 
 struct _Config
@@ -67,8 +68,7 @@ struct _E_Config_Dialog_Data
    struct _Config config;
    Evas_Object *o_zonelist;
    Evas_Object *o_desklist;
-   Evas_Object *o_deskscroll;
-   Evas_Object *o_space_between;
+   Evas_Object *osf;
    Evas        *evas;
 };
 
