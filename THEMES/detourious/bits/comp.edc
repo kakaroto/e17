@@ -287,6 +287,7 @@ group { name: "e/comp/none";
 //----
 group { name: "e/comp/default";
 	alias: "e/comp/still";
+	alias: "e/comp/menu";
 	parts {
 		part { name: "shadow";
             mouse_events: 0;
@@ -508,7 +509,7 @@ group { name: "e/comp/popup";
 	}
 }
 //----
-group { name: "e/comp/menu";
+group { name: "e/comp/menu_zoom";
 	parts {
 		part { name: "clipper";
             type: RECT;
