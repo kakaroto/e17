@@ -26,13 +26,13 @@ extern struct tiling_g tiling_g;
 #define ERR(...) EINA_LOG_DOM_ERR(tiling_g.log_domain, __VA_ARGS__)
 #define DBG(...) EINA_LOG_DOM_DBG(tiling_g.log_domain, __VA_ARGS__)
 
-#define TILING_MAX_COLUMNS 8
+#define TILING_MAX_STACKS 8
 
 struct _Config_vdesk
 {
    int           x, y;
    unsigned int  zone_num;
-   int           nb_cols;
+   int           nb_stacks;
    int           use_rows;
 };
 
@@ -56,9 +56,9 @@ struct _Tiling_Info
     /* List of windows which were toggled floating */
     Eina_List *floating_windows;
 
-    Eina_List *columns[TILING_MAX_COLUMNS];
-    int              x[TILING_MAX_COLUMNS];
-    int              w[TILING_MAX_COLUMNS];
+    Eina_List *stacks[TILING_MAX_STACKS];
+    int        pos[TILING_MAX_STACKS];
+    int        size[TILING_MAX_STACKS];
 
     int borders;
 };
@@ -81,7 +81,7 @@ EAPI void *e_modapi_init(E_Module *m);
 EAPI int   e_modapi_shutdown(E_Module *m);
 EAPI int   e_modapi_save(E_Module *m);
 
-void change_column_number(struct _Config_vdesk *newconf);
+void change_stack_number(struct _Config_vdesk *newconf);
 
 void e_tiling_update_conf(void);
 

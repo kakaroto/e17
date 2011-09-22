@@ -30,7 +30,7 @@ get_vdesk(Eina_List *vdesks,
         if (!vd)
             continue;
 
-        if (0 < vd->nb_cols && vd->nb_cols <= TILING_MAX_COLUMNS
+        if (0 < vd->nb_stacks && vd->nb_stacks <= TILING_MAX_STACKS
         &&  vd->x == x && vd->y == y && vd->zone_num == zone_num)
             return vd;
     }
@@ -66,7 +66,7 @@ _create_data(E_Config_Dialog *cfd)
         newvd->x = vd->x;
         newvd->y = vd->y;
         newvd->zone_num = vd->zone_num;
-        newvd->nb_cols = vd->nb_cols;
+        newvd->nb_stacks = vd->nb_stacks;
 
         cfdata->config.vdesks = eina_list_append(cfdata->config.vdesks,
                                                  newvd);
@@ -110,7 +110,7 @@ _fill_zone_config(E_Zone               *zone,
             vd->x = desk->x;
             vd->y = desk->y;
             vd->zone_num = zone->num;
-            vd->nb_cols = 0;
+            vd->nb_stacks = 0;
 
             cfdata->config.vdesks = eina_list_append(cfdata->config.vdesks,
                                                      vd);
@@ -121,7 +121,7 @@ _fill_zone_config(E_Zone               *zone,
         LIST_ADD(list, e_widget_label_add(evas, desk->name));
         slider = e_widget_slider_add(evas, 1, 0, D_("%1.0f"),
                                      0.0, 8.0, 1.0, 0, NULL,
-                                     &vd->nb_cols, 150);
+                                     &vd->nb_stacks, 150);
         LIST_ADD(list, slider);
 
         rg = e_widget_radio_group_new(&vd->use_rows);
@@ -260,17 +260,18 @@ _basic_apply_data(E_Config_Dialog      *cfd,
             continue;
         if (!(newvd = get_vdesk(cfdata->config.vdesks,
                                 vd->x, vd->y, vd->zone_num))) {
-            change_column_number(vd);
+            change_stack_number(vd);
             continue;
         }
 
-        if (newvd->nb_cols != vd->nb_cols) {
+        if (newvd->nb_stacks != vd->nb_stacks) {
             DBG("number of columns for (%d, %d, %d) changed from %d to %d",
-                vd->x, vd->y, vd->zone_num, vd->nb_cols, newvd->nb_cols);
-            change_column_number(newvd);
+                vd->x, vd->y, vd->zone_num, vd->nb_stacks, newvd->nb_stacks);
+            change_stack_number(newvd);
             free(vd);
             l->data = NULL;
         }
+        /* TODO: use_rows */
     }
 
     for (Eina_List *l = cfdata->config.vdesks; l; l = l->next) {
@@ -280,9 +281,10 @@ _basic_apply_data(E_Config_Dialog      *cfd,
             continue;
         if (!get_vdesk(tiling_g.config->vdesks,
                        vd->x, vd->y, vd->zone_num)) {
-            change_column_number(vd);
+            change_stack_number(vd);
             continue;
         }
+        /* TODO: use_rows */
     }
 
     EINA_LIST_FREE(tiling_g.config->vdesks, vd) {
