@@ -141,7 +141,7 @@ desk_hash_key(E_Desk *desk)
    /* I think 64 chars should be enough for all localizations of "desk" */
     static char buffer[64];
 
-    if (!desk)
+    if ((!desk) || (!desk->name))
       return NULL;
     snprintf(buffer, 64, "%d%s", desk->zone->num, desk->name);
     return buffer;
