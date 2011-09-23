@@ -87,6 +87,7 @@ azy_net_free(Azy_Net *net)
      eina_stringshare_del(net->http.res.http_msg);
    free(net->buffer);
    memset(net, 0, sizeof(Azy_Net)); /* zero out data for security */
+   if (net->timer) ecore_timer_del(net->timer);
    free(net);
 }
 

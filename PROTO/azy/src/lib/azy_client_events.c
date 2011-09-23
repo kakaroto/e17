@@ -294,9 +294,11 @@ _azy_client_recv_timer(Azy_Client_Handler_Data *hd)
         INFO("Server at '%s' timed out!", azy_net_ip_get(hd->recv));
         ecore_con_server_del(hd->recv->conn);
         _azy_client_handler_data_free(hd);
+        hd->recv->timer = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
 
+   hd->recv->timer = NULL;
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -591,7 +593,7 @@ _azy_client_handler_del(Azy_Client                 *client,
      {
         hd = client->conns->data;
 
-        if (hd->recv && hd->recv->buffer && hd->recv->size)
+        if (hd->recv && hd->recv->buffer && hd->recv->size && (hd->recv->size == hd->recv->http.content_length))
           _azy_client_handler_call(client->conns->data);
         else
           {
