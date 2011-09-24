@@ -8,8 +8,8 @@ const Ecore_Getopt general_opts = {
   "shellementary",
   NULL,
   PACKAGE_VERSION,
-  "(C) 2009 - quaker <quaker66@gmail.com>",
-  "GPL v3 - GNU General Public License",
+  "Copyright (c) 2011 Shellementary developers",
+  "Licensed under the MIT license",
   "Zenity replacement written in Elementary.\n"
      "\n"
      "OPTIONS FOR ALL DIALOGS:\n"
@@ -50,8 +50,8 @@ const Ecore_Getopt entry_opts = {
   "shellementary",
   NULL,
   PACKAGE_VERSION,
-  "(C) 2009 - quaker <quaker66@gmail.com>",
-  "GPL v3 - GNU General Public License",
+  "Copyright (c) 2011 Shellementary developers",
+  "Licensed under the MIT license",
   "ENTRY DIALOG ARGUMENTS\n"
   " Arguments which can be used only with entry dialog.\n",
   0,
@@ -82,8 +82,8 @@ const Ecore_Getopt textinfo_opts = {
   "shellementary",
   NULL,
   PACKAGE_VERSION,
-  "(C) 2009 - quaker <quaker66@gmail.com>",
-  "GPL v3 - GNU General Public License",
+  "Copyright (c) 2011 Shellementary developers",
+  "Licensed under the MIT license",
   "TEXT INFO DIALOG ARGUMENTS\n"
   " Arguments which can be used only with text info dialog.\n",
   0,
@@ -115,8 +115,8 @@ const Ecore_Getopt clock_opts = {
   "shellementary",
   NULL,
   PACKAGE_VERSION,
-  "(C) 2009 - quaker <quaker66@gmail.com>",
-  "GPL v3 - GNU General Public License",
+  "Copyright (c) 2011 Shellementary developers",
+  "Licensed under the MIT license",
   "CLOCK DIALOG ARGUMENTS\n"
   " Arguments which can be used only with clock dialog.\n",
   0,
@@ -149,8 +149,8 @@ const Ecore_Getopt scale_opts = {
   "shellementary",
   NULL,
   PACKAGE_VERSION,
-  "(C) 2009 - quaker <quaker66@gmail.com>",
-  "GPL v3 - GNU General Public License",
+  "Copyright (c) 2011 Shellementary developers",
+  "Licensed under the MIT license",
   "SCALE DIALOG ARGUMENTS\n"
   " Arguments which can be used only with scale dialog.\n",
   0,

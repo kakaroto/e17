@@ -36,8 +36,8 @@ msgid "About Shellementary"
 msgstr "À propos de Shellementary"
 
 #: src/bin/shelm_about.c:34
-msgid "<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> and C programming language.<br><b>License:</> GNU General Public License v3"
-msgstr "<b>Affiche des boîtes de dialogue à partir de scripts shell</><br>Conçu comme alternative à Zenity, supporte les mêmes arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Basé sur la super boîte à outils Elementary par <b>raster</> et le langage de programmation C.<br><b>Licence :</> GNU General Public License v3"
+msgid "<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> and C programming language.<br><b>License:</> MIT"
+msgstr "<b>Affiche des boîtes de dialogue à partir de scripts shell</><br>Conçu comme alternative à Zenity, supporte les mêmes arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Basé sur la super boîte à outils Elementary par <b>raster</> et le langage de programmation C.<br><b>Licence :</> MIT"
 
 #: src/bin/shelm_about.c:43
 msgid "<b>Author:</> quaker (quaker66@gmail.com)<br><br><b>Credits:</><br><b>Carsten Haitzler (raster)</> for Enlightenment DR17, great Elementary toolkit and help with developenment<br><b>Christopher Michael (devilhorns)</> for help with developenment<br>"

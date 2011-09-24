@@ -1,2 +1,4 @@
-2010-01-01 quaker66 <quaker66@gmail.com>
-	* Initial non-developenment C version. Includes gettext, but help messages are not translated(yet)
+2011-09-24 Daniel "q66" Kolesa <quaker66@gmail.com>
+    * Relicensed under MIT and declared the project alive again; more changes to come!
+2010-01-01 Daniel "q66" Kolesa <quaker66@gmail.com>
+    * Initial non-developenment C version. Includes gettext, but help messages are not translated(yet)

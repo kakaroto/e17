@@ -31,7 +31,7 @@ shelm_about_dialog()
   elm_box_pack_end(box, label);
   evas_object_show(label);
 
-  sublabel = create_label(window, _("<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> and C programming language.<br><b>License:</> GNU General Public License v3"));
+  sublabel = create_label(window, _("<b>Display dialogs from shell scripts</><br>Written as a zenity replacement, supports the same arguments<br><b>http://svn.enlightenment.org/svn/e/trunk/PROTO/shellementary</><br>Based on great Elementary toolkit by <b>raster</> and C programming language.<br><b>License:</> MIT"));
   elm_box_pack_end(box, sublabel);
   evas_object_show(sublabel);
 
