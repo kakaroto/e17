@@ -10,8 +10,8 @@
 # define D_(string) (string)
 #endif
 
-#define MOD_CONFIG_FILE_EPOCH 0x0001
-#define MOD_CONFIG_FILE_GENERATION 0x008d
+#define MOD_CONFIG_FILE_EPOCH 0x0000
+#define MOD_CONFIG_FILE_GENERATION 0x0001
 #define MOD_CONFIG_FILE_VERSION \
    ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
 
@@ -22,11 +22,15 @@ typedef struct _Setting Setting;
 #define SETTING_TYPE_STRING	1
 #define SETTING_TYPE_COLOR	2
 
-struct _Config 
+struct _Config
 {
   int version;
+  int match_e17_theme;
+  int match_e17_icon_theme;
+  const char *gtk_theme;
+  const char *icon_theme;
   Eina_List *settings;
-  
+
   E_Module *module;
   E_Config_Dialog *cfd;
 };
@@ -52,6 +56,7 @@ EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
 
 E_Config_Dialog *e_int_config_xsettings_module(E_Container *con, const char *params);
+void xsettings_config_update(void);
 
 extern Config *xsettings_conf;
 

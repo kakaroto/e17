@@ -15,7 +15,7 @@ struct _Settings_Manger
 
   Ecore_X_Window selection;
   Ecore_Timer *timer_retry;
-
+  unsigned long serial;
   Ecore_X_Atom _atom_xsettings_screen;
 };
 
@@ -31,7 +31,7 @@ Config *xsettings_conf = NULL;
 
 static Ecore_X_Atom _atom_manager = 0;
 static Ecore_X_Atom _atom_xsettings = 0;
-static unsigned long serial = 0;
+
 static Eina_List *managers = NULL;
 static Eina_List *handlers = NULL;
 
@@ -57,7 +57,7 @@ _xsettings_selection_owner_set(Settings_Manager *sm)
    ret = (cur_selection == sm->selection);
    if (!ret)
      fprintf(stderr, "XSETTINGS: tried to set selection to %#x, but got %#x\n",
-             sm->selection, cur_selection);
+	     sm->selection, cur_selection);
 
    return ret;
 }
@@ -96,15 +96,15 @@ _xsettings_activate(Settings_Manager *sm)
 
    if (!_xsettings_selection_owner_set(sm))
      {
-        ecore_x_window_free(sm->selection);
-        sm->selection = 0;
-        return 0;
+	ecore_x_window_free(sm->selection);
+	sm->selection = 0;
+	return 0;
      }
 
    ecore_x_client_message32_send(e_manager_current_get()->root, _atom_manager,
-                                 ECORE_X_EVENT_MASK_WINDOW_CONFIGURE,
-                                 ecore_x_current_time_get(), atom,
-                                 sm->selection, 0, 0);
+				 ECORE_X_EVENT_MASK_WINDOW_CONFIGURE,
+				 ecore_x_current_time_get(), atom,
+				 sm->selection, 0, 0);
 
    _xsettings_set(sm);
 
@@ -123,7 +123,7 @@ _xsettings_activate_retry(void *data)
      fputs("XSETTINGS: activate success!\n", stderr);
    else
      fprintf(stderr, "XSETTINGS: activate failure! retrying in %0.1f seconds\n",
-             RETRY_TIMEOUT);
+	     RETRY_TIMEOUT);
 
    if (!ret)
      return ECORE_CALLBACK_RENEW;
@@ -142,27 +142,44 @@ _xsettings_retry(Settings_Manager *sm)
 
 #define OFFSET_ADD(n) ((n + 4 - 1) & (~(4 - 1)))
 
-static Setting *
-_xsettings_string_add(const char *name, const char *value)
+static void
+_xsettings_string_set(const char *name, const char *value)
 {
    Setting *s;
    Eina_List *l;
 
    if (!name) return;
-   
+
    name = eina_stringshare_add(name);
-   
+
    EINA_LIST_FOREACH(xsettings_conf->settings, l, s)
      {
 	if (s->type != SETTING_TYPE_STRING) continue;
 	if (s->name == name) break;
      }
-   
+
+   if (!value)
+     {
+	if (!s) return;
+
+	printf("remove %s\n", name);
+	eina_stringshare_del(name);
+	eina_stringshare_del(s->name);
+	eina_stringshare_del(s->s.value);
+
+	xsettings_conf->settings =
+	  eina_list_remove(xsettings_conf->settings, s);
+
+	E_FREE(s);
+	return;
+     }
+
    if (s)
      {
 	printf("update %s %s\n", name, value);
 	eina_stringshare_del(name);
-	eina_stringshare_replace(&s->s.value, value); 
+	eina_stringshare_replace(&s->s.value, value);
+	s->last_change = ecore_x_current_time_get();
      }
    else
      {
@@ -171,15 +188,15 @@ _xsettings_string_add(const char *name, const char *value)
 	s->type = SETTING_TYPE_STRING;
 	s->name = eina_stringshare_add(name);
 	s->s.value = eina_stringshare_add(value);
+	s->last_change = ecore_x_current_time_get();
 	xsettings_conf->settings =
 	  eina_list_append(xsettings_conf->settings, s);
      }
 
    /* type + pad + name-len + last-change-serial + str_len */
-   s->length = 12; 
+   s->length = 12;
    s->length += OFFSET_ADD(strlen(name));
    s->length += (value ? OFFSET_ADD(strlen(value)) : 0);
-   return s;
 }
 
 static unsigned char *
@@ -191,7 +208,7 @@ _xsettings_copy(unsigned char *buffer, Setting *s)
    buffer[0] = s->type;
    buffer[1] = 0;
    buffer += 2;
-   
+
    str_len = strlen(s->name);
    *(CARD16 *)(buffer) = str_len;
    buffer += 2;
@@ -209,30 +226,30 @@ _xsettings_copy(unsigned char *buffer, Setting *s)
    switch (s->type)
      {
       case SETTING_TYPE_INT:
-         *(CARD32 *)(buffer) = s->i.value;
-         buffer += 4;
-         break;
+	 *(CARD32 *)(buffer) = s->i.value;
+	 buffer += 4;
+	 break;
 
       case SETTING_TYPE_STRING:
-         str_len = strlen (s->s.value);
-         *(CARD32 *)(buffer) = str_len;
-         buffer += 4;
-	 
-         memcpy(buffer, s->s.value, str_len);
-         buffer += str_len;
+	 str_len = strlen (s->s.value);
+	 *(CARD32 *)(buffer) = str_len;
+	 buffer += 4;
+
+	 memcpy(buffer, s->s.value, str_len);
+	 buffer += str_len;
 
 	 len = OFFSET_ADD(str_len) - str_len;
-         memset(buffer, 0, len);
-         buffer += len;
-         break;
+	 memset(buffer, 0, len);
+	 buffer += len;
+	 break;
 
       case SETTING_TYPE_COLOR:
-         *(CARD16 *)(buffer) = s->c.red;
-         *(CARD16 *)(buffer + 2) = s->c.green;
-         *(CARD16 *)(buffer + 4) = s->c.blue;
-         *(CARD16 *)(buffer + 6) = s->c.alpha;
-         buffer += 8;
-         break;
+	 *(CARD16 *)(buffer) = s->c.red;
+	 *(CARD16 *)(buffer + 2) = s->c.green;
+	 *(CARD16 *)(buffer + 4) = s->c.blue;
+	 *(CARD16 *)(buffer + 6) = s->c.alpha;
+	 buffer += 8;
+	 break;
      }
 
    return buffer;
@@ -259,7 +276,7 @@ _xsettings_set(Settings_Manager *sm)
 #endif
 
    pos += 4;
-   *(CARD32*)pos = serial++;
+   *(CARD32*)pos = sm->serial++;
    pos += 4;
    *(CARD32*)pos = eina_list_count(xsettings_conf->settings);
    pos += 4;
@@ -268,9 +285,9 @@ _xsettings_set(Settings_Manager *sm)
      pos = _xsettings_copy(pos, s);
 
    ecore_x_window_prop_property_set(sm->selection,
-                                    _atom_xsettings,
-                                    _atom_xsettings,
-                                    8, data, len);
+				    _atom_xsettings,
+				    _atom_xsettings,
+				    8, data, len);
    free(data);
 }
 
@@ -279,9 +296,9 @@ _xsettings_update(void)
 {
    Settings_Manager *sm;
    Eina_List *l;
-   
+
    EINA_LIST_FOREACH(managers, l, sm)
-     if (sm->selection) _xsettings_set(sm); 
+     if (sm->selection) _xsettings_set(sm);
 }
 
 static Eina_Bool
@@ -289,11 +306,59 @@ _cb_icon_theme_change(void *data, int type __UNUSED__, void *event)
 {
    E_Event_Config_Icon_Theme *ev = event;
 
-   _xsettings_string_add("Net/IconThemeName", ev->icon_theme);   
+   if (xsettings_conf->match_e17_icon_theme)
+     {
+	_xsettings_string_set("Net/IconThemeName", ev->icon_theme);
+	_xsettings_update();
+     }
 
-   _xsettings_update();
-   
    return ECORE_CALLBACK_PASS_ON;
+}
+
+
+static void
+_xsettings_icon_theme_set(void)
+{
+   if (xsettings_conf->match_e17_icon_theme)
+     {
+	_xsettings_string_set("Net/IconThemeName", e_config->icon_theme);
+	return;
+     }
+   else if (xsettings_conf->icon_theme)
+     {
+	_xsettings_string_set("Net/IconThemeName", xsettings_conf->icon_theme);
+	return;
+     }
+
+   _xsettings_string_set("Net/IconThemeName", NULL);
+}
+
+static void
+_xsettings_theme_set(void)
+{
+   if (xsettings_conf->match_e17_theme)
+     {
+	E_Config_Theme *ct;
+
+	if ((ct = e_theme_config_get("theme")))
+	  {
+	     char *theme;
+
+	     if ((theme = edje_file_data_get(ct->file, "gtk-theme")))
+	       {
+		  printf("load gtk-theme: %s\n", theme);
+		  _xsettings_string_set("Net/ThemeName", theme);
+		  return;
+	       }
+	  }
+     }
+   else if (xsettings_conf->gtk_theme)
+     {
+	_xsettings_string_set("Net/ThemeName", xsettings_conf->gtk_theme);
+	return;
+     }
+
+   _xsettings_string_set("Net/ThemeName", NULL);
 }
 
 EAPI void *
@@ -309,10 +374,15 @@ e_modapi_init(E_Module *m)
 
    snprintf(buf, sizeof(buf), "%s/e-module-xsettings.edj", m->dir);
 
-   e_configure_registry_category_add("advanced", 80, "Advanced",
-                                     NULL, "preferences-advanced");
-   e_configure_registry_item_add("advanced/xsettings", 110, D_("Xsettings"),
-                                 NULL, buf, e_int_config_xsettings_module);
+   e_configure_registry_category_add("advanced", 80, D_("Advanced"),
+				     NULL, "preferences-advanced");
+   e_configure_registry_item_add("advanced/xsettings", 110, D_("XSettings"),
+				 NULL, buf, e_int_config_xsettings_module);
+
+   e_configure_registry_category_add("appearance", 10, D_("Look"),
+				     NULL, "preferences-look");
+   e_configure_registry_item_add("appearance/xsettings", 110, D_("XSettings"),
+				 NULL, buf, e_int_config_xsettings_module);
 #undef T
 #undef D
 #define T Setting
@@ -333,15 +403,19 @@ e_modapi_init(E_Module *m)
 #define D conf_edd
    D = E_CONFIG_DD_NEW("Config", T);
    E_CONFIG_VAL(D, T, version, INT);
+   E_CONFIG_VAL(D, T, match_e17_theme, INT);
+   E_CONFIG_VAL(D, T, match_e17_icon_theme, INT);
+   E_CONFIG_VAL(D, T, gtk_theme, STR);
+   E_CONFIG_VAL(D, T, icon_theme, STR);
    /* E_CONFIG_LIST(D, T, settings, setting_edd); */
 
    xsettings_conf = e_config_domain_load("module.xsettings", conf_edd);
    if (xsettings_conf)
      {
-        if (!e_util_module_config_check(D_("XSettings"),
-                                        xsettings_conf->version,
-                                        MOD_CONFIG_FILE_VERSION))
-          _xsettings_conf_free();
+	if (!e_util_module_config_check(D_("XSettings"),
+					xsettings_conf->version,
+					MOD_CONFIG_FILE_VERSION))
+	  _xsettings_conf_free();
      }
 
    if (!xsettings_conf)
@@ -352,36 +426,22 @@ e_modapi_init(E_Module *m)
    _atom_manager = ecore_x_atom_get("MANAGER");
    _atom_xsettings = ecore_x_atom_get("_XSETTINGS_SETTINGS");
 
-   /* _xsettings_string_add("Net/ThemeName", "Minty-Freshness"); */
-
-   E_Config_Theme *ct;
-      
-   if ((ct = e_theme_config_get("theme")))
-     {
-	char *theme;
-
-	if ((theme = edje_file_data_get(ct->file, "gtk-theme")))
-	  {
-	     printf("load gtk-theme: %s\n", theme);
-	     _xsettings_string_add("Net/ThemeName", theme);
-	  }
-     }
-   
-   _xsettings_string_add("Net/IconThemeName", e_config->icon_theme);
+   _xsettings_theme_set();
+   _xsettings_icon_theme_set();
 
    EINA_LIST_FOREACH(e_manager_list(), l, man)
      {
-        Settings_Manager *sm = E_NEW(Settings_Manager, 1);
-        sm->man = man;
+	Settings_Manager *sm = E_NEW(Settings_Manager, 1);
+	sm->man = man;
 
-        if (!_xsettings_activate(sm))
-          _xsettings_retry(sm);
+	if (!_xsettings_activate(sm))
+	  _xsettings_retry(sm);
 
-        managers = eina_list_append(managers, sm);
+	managers = eina_list_append(managers, sm);
      }
 
    handlers = eina_list_append(handlers, ecore_event_handler_add(E_EVENT_CONFIG_ICON_THEME,
-								 _cb_icon_theme_change, NULL));   
+								 _cb_icon_theme_change, NULL));
 
    e_module_delayed_set(m, 1);
 
@@ -393,22 +453,25 @@ e_modapi_shutdown(E_Module *m)
 {
    Settings_Manager *sm;
    Ecore_Event_Handler *h;
-   
+
    EINA_LIST_FREE(managers, sm)
      {
-        if (sm->timer_retry)
-          ecore_timer_del(sm->timer_retry);
+	if (sm->timer_retry)
+	  ecore_timer_del(sm->timer_retry);
 
-        _xsettings_deactivate(sm);
+	_xsettings_deactivate(sm);
 
-        E_FREE(sm);
+	E_FREE(sm);
      }
 
    EINA_LIST_FREE(handlers, h)
      ecore_event_handler_del(h);
-     
+
    e_configure_registry_item_del("advanced/xsettings");
    e_configure_registry_category_del("advanced");
+
+   e_configure_registry_item_del("appearance/xsettings");
+   e_configure_registry_category_del("appearance");
 
    if (xsettings_conf->cfd) e_object_del(E_OBJECT(xsettings_conf->cfd));
    xsettings_conf->cfd = NULL;
@@ -428,6 +491,14 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
+void
+xsettings_config_update(void)
+{
+   _xsettings_theme_set();
+   _xsettings_icon_theme_set();
+   _xsettings_update();
+}
+
 static void
 _xsettings_conf_new(void)
 {
@@ -437,11 +508,13 @@ _xsettings_conf_new(void)
 #define IFMODCFG(v) if ((xsettings_conf->version & 0xffff) < v) {
 #define IFMODCFGEND }
 
-   /* IFMODCFG(0x0001);
-    * IFMODCFGEND; */
+   IFMODCFG(0x0001);
+   xsettings_conf->match_e17_theme = 1;
+   xsettings_conf->match_e17_icon_theme = 1;
+   IFMODCFGEND;
 
    xsettings_conf->version = MOD_CONFIG_FILE_VERSION;
-   
+
    e_config_save_queue();
 }
 
@@ -452,9 +525,9 @@ _xsettings_conf_free(void)
 
    EINA_LIST_FREE(xsettings_conf->settings, s)
      {
-        if (s->name) eina_stringshare_del(s->name);
-        if (s->s.value) eina_stringshare_del(s->s.value);
-        E_FREE(s);
+	if (s->name) eina_stringshare_del(s->name);
+	if (s->s.value) eina_stringshare_del(s->s.value);
+	E_FREE(s);
      }
 
    E_FREE(xsettings_conf);
