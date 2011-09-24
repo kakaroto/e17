@@ -67,6 +67,7 @@ static void
 _fill_data(E_Config_Dialog_Data *cfdata)
 {
    cfdata->match_e17_theme = xsettings_conf->match_e17_theme;
+   cfdata->match_e17_icon_theme = xsettings_conf->match_e17_icon_theme;
 
    if (xsettings_conf->gtk_theme)
      cfdata->gtk_theme = strdup(xsettings_conf->gtk_theme);
@@ -96,7 +97,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
 
    ow = e_widget_check_add(evas, D_("Use Gtk icon theme matching e17"),
-			   &(cfdata->match_e17_theme));
+			   &(cfdata->match_e17_icon_theme));
    e_widget_framelist_object_append(of, ow);
 
    ow = e_widget_label_add(evas, D_("Use icon theme:"));

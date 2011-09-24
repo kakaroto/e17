@@ -23,7 +23,7 @@ EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "XSettings"};
 
 static void _xsettings_conf_new(void);
 static void _xsettings_conf_free(void);
-static void _xsettings_set(Settings_Manager *sm);
+static void _xsettings_apply(Settings_Manager *sm);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *setting_edd = NULL;
@@ -106,7 +106,7 @@ _xsettings_activate(Settings_Manager *sm)
 				 ecore_x_current_time_get(), atom,
 				 sm->selection, 0, 0);
 
-   _xsettings_set(sm);
+   _xsettings_apply(sm);
 
    return 1;
 }
@@ -256,7 +256,7 @@ _xsettings_copy(unsigned char *buffer, Setting *s)
 }
 
 static void
-_xsettings_set(Settings_Manager *sm)
+_xsettings_apply(Settings_Manager *sm)
 {
    unsigned char *data;
    unsigned char *pos;
@@ -298,7 +298,7 @@ _xsettings_update(void)
    Eina_List *l;
 
    EINA_LIST_FOREACH(managers, l, sm)
-     if (sm->selection) _xsettings_set(sm);
+     if (sm->selection) _xsettings_apply(sm);
 }
 
 static Eina_Bool
