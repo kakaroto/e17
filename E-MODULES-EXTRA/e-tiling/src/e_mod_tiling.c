@@ -169,6 +169,9 @@ is_floating_window(const E_Border *bd)
 static int
 is_untilable_dialog(const E_Border *bd)
 {
+   if (bd->client.icccm.min_h == bd->client.icccm.max_h
+   &&  bd->client.icccm.max_h > 0)
+       return true;
     return (!tiling_g.config->tile_dialogs
             && ((bd->client.icccm.transient_for != 0)
                 || (bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG)));
