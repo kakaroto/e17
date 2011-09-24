@@ -1,0 +1,4 @@
+XSettings Module:
+- Set GTK theme according to e theme (when theme includes 'gtk-theme' in its data section)
+- Set icon theme
+- more to come
