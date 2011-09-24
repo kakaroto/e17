@@ -1060,6 +1060,12 @@ _add_border(E_Border *bd)
         return;
     }
 
+    /* Stack tiled window below so that winlist doesn't mix up stacking */
+    if (bd->layer != 75) {
+         e_border_layer_set(bd, 75);
+         e_hints_window_stacking_set(bd, E_STACKING_BELOW);
+    }
+
     extra = eina_hash_find(_G.overlays, _G.keys);
     if (!extra) {
         extra = E_NEW(Border_Extra, 1);
@@ -1198,7 +1204,6 @@ _remove_border(E_Border *bd)
             /* Remove stack */
 
             nb_stacks--;
-
 
             for (int i = stack; i < nb_stacks; i++) {
                 _G.tinfo->stacks[i] = _G.tinfo->stacks[i+1];
@@ -1501,6 +1506,11 @@ toggle_floating(E_Border *bd)
         /* TODO: save maximized state */
         if (!tiling_g.config->show_titles)
             change_window_border(bd, "default");
+
+        if (bd->layer == 75) {
+             e_border_layer_set(bd, 100);
+             e_hints_window_stacking_set(bd, E_STACKING_NONE);
+        }
     }
 }
 
