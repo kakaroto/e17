@@ -33,6 +33,7 @@ data {
 	item: "theme/version"	"0.8.0";
 	item: "theme/author"	"Alberto Castro, Hannes Janetzek, et al.";
 	item: "theme/license"	"BSD Artistic License";
+	item: "gtk-theme"       "detourious";
 }
 
 color_classes {

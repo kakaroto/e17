@@ -19,6 +19,6 @@ illume-mine:
 	edje_cc -DILLUME_KBD_TERMINAL_ONLY=1 -DBUILD_ILLUME=1 -DUSE_BOLD_FONT=0 -id . -fd . main.edc -o dtrs-illume.edj
 
 
-install: detourious
+install: default
 	rm -f ~/.e/e/themes/detourious.edj
 	cp detourious.edj ~/.e/e/themes
