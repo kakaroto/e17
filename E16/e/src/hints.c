@@ -33,6 +33,9 @@
 #include "xwin.h"
 #include <X11/Xatom.h>
 
+static void         EHintsSetDeskInfo(void);
+static void         EHintsSetAreaInfo(void);
+
 #define N_ITEMS(x) (sizeof(x)/sizeof(x[0]))
 
 static const char  *const atoms_misc_names[] = {
@@ -175,6 +178,7 @@ HintsSetDesktopViewport(void)
    GNOME_SetCurrentArea();
 #endif
    EWMH_SetDesktopViewport();
+   EHintsSetAreaInfo();
 }
 
 void
@@ -474,14 +478,46 @@ EHintsGetInfo(EWin * ewin)
 	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
 }
 
-void
+static void
 EHintsSetDeskInfo(void)
 {
    int                 i, ax, ay, n_desks;
-   unsigned int       *c, desk_pos_info;
+   unsigned int        c[2], desk_pos_info;
 
    if (!DesksGetCurrent())	/* Quit if current desk isn't assigned yet */
       return;
+
+   n_desks = DesksGetNumber();
+   if (n_desks <= 0)
+      return;
+
+   desk_pos_info = 0;
+   for (i = 0; i < n_desks; i++)
+     {
+	Desk               *dsk = DeskGet(i);
+
+	DeskGetArea(dsk, &ax, &ay);
+	if (EoGetY(dsk) == 0 && EoGetX(dsk) == WinGetW(VROOT))
+	   desk_pos_info |= 1U << i;	/* Desk is "hidden" */
+     }
+
+   c[0] = DesksGetCurrentNum();
+   c[1] = Mode.wm.exiting ? 0 : desk_pos_info;
+   ecore_x_window_prop_card32_set(WinGetXwin(VROOT),
+				  E16_ATOM_INTERNAL_DESK_DATA, c, 2);
+
+   if (Mode.wm.exiting && Mode.root.ext_pmap_valid)
+     {
+	HintsSetRootInfo(VROOT, Mode.root.ext_pmap, 0);
+	ESetWindowBackgroundPixmap(VROOT, Mode.root.ext_pmap);
+     }
+}
+
+static void
+EHintsSetAreaInfo(void)
+{
+   int                 i, ax, ay, n_desks;
+   unsigned int       *c;
 
    n_desks = DesksGetNumber();
    if (n_desks <= 0)
@@ -491,7 +527,6 @@ EHintsSetDeskInfo(void)
    if (!c)
       return;
 
-   desk_pos_info = 0;
    for (i = 0; i < n_desks; i++)
      {
 	Desk               *dsk = DeskGet(i);
@@ -499,25 +534,12 @@ EHintsSetDeskInfo(void)
 	DeskGetArea(dsk, &ax, &ay);
 	c[(i * 2)] = ax;
 	c[(i * 2) + 1] = ay;
-	if (EoGetY(dsk) == 0 && EoGetX(dsk) == WinGetW(VROOT))
-	   desk_pos_info |= 1U << i;	/* Desk is "hidden" */
      }
 
    ecore_x_window_prop_card32_set(WinGetXwin(VROOT),
 				  E16_ATOM_INTERNAL_AREA_DATA, c, 2 * n_desks);
 
-   c[0] = DesksGetCurrentNum();
-   c[1] = Mode.wm.exiting ? 0 : desk_pos_info;
-   ecore_x_window_prop_card32_set(WinGetXwin(VROOT),
-				  E16_ATOM_INTERNAL_DESK_DATA, c, 2);
-
    Efree(c);
-
-   if (Mode.wm.exiting && Mode.root.ext_pmap_valid)
-     {
-	HintsSetRootInfo(VROOT, Mode.root.ext_pmap, 0);
-	ESetWindowBackgroundPixmap(VROOT, Mode.root.ext_pmap);
-     }
 }
 
 void
