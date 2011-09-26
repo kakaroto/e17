@@ -167,14 +167,21 @@ is_floating_window(const E_Border *bd)
 }
 
 static int
-is_untilable_dialog(const E_Border *bd)
+is_tilable(const E_Border *bd)
 {
-   if (bd->client.icccm.min_h == bd->client.icccm.max_h
-   &&  bd->client.icccm.max_h > 0)
-       return true;
-    return (!tiling_g.config->tile_dialogs
+    if (bd->client.icccm.min_h == bd->client.icccm.max_h
+    &&  bd->client.icccm.max_h > 0)
+        return false;
+
+    if (bd->client.icccm.gravity == ECORE_X_GRAVITY_STATIC)
+        return false;
+
+    if (!tiling_g.config->tile_dialogs
             && ((bd->client.icccm.transient_for != 0)
-                || (bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG)));
+                || (bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DIALOG)))
+        return false;
+
+    return true;
 }
 
 static void
@@ -1049,7 +1056,7 @@ _add_border(E_Border *bd)
     if (is_floating_window(bd)) {
         return;
     }
-    if (is_untilable_dialog(bd)) {
+    if (!is_tilable(bd)) {
         return;
     }
     if (bd->fullscreen) {
@@ -3104,7 +3111,7 @@ _e_module_tiling_cb_hook(void *data,
     if (is_floating_window(bd)) {
         return;
     }
-    if (is_untilable_dialog(bd)) {
+    if (!is_tilable(bd)) {
         return;
     }
     if (bd->fullscreen) {
