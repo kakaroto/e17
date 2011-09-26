@@ -243,7 +243,7 @@ fi
 
 if test "x${have_edbus_notify_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_NOTIFY_TEST],
-      [ecore >= 1.0.0 evas >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
       [have_edbus_notify_test="yes"],
       [have_edbus_notify_test="no"])
 fi
