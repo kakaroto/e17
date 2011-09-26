@@ -310,12 +310,12 @@ style "progressbar"
 	#border_shades	     = { .8, .7} # draw a gradient on the border.
 	border_colors	    = { @selected_bg_color, @selected_bg_color }
     
-	glazestyle	    = 1	    # 0 = flat, 1 = curved, 2 = concave, 3 = top-curved, 4 = beryl
-	glow_shade	    = 1.0   # sets glow amount for buttons or widgets
-	glowstyle	    = 0	    # 0 = top, 1 = bottom, 2 = top and bottom, 3 = center (vertical), 4 = center (horizontal) 
+	glazestyle	    = 0	    # 0 = flat, 1 = curved, 2 = concave, 3 = top-curved, 4 = beryl
+	# glow_shade	    = 0.0   # sets glow amount for buttons or widgets
+	# glowstyle	    = 0	    # 0 = top, 1 = bottom, 2 = top and bottom, 3 = center (vertical), 4 = center (horizontal) 
 	gradient_shades	    = {1.0,.9,.9,.8}
 	lightborder_shade   = 1.0   # sets lightborder amount for buttons or widgets
-	roundness	    = 5
+	roundness	    = 0
     }
 
     bg[NORMAL]	    = shade (1.08, @bg_color)
