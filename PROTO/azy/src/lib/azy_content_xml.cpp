@@ -345,7 +345,7 @@ azy_content_serialize_response_xml(Azy_Content *content)
 
 Eina_Bool
 azy_content_deserialize_request_xml(Azy_Content *content,
-                                    const char  *buf,
+                                    char        *buf,
                                     ssize_t      len)
 {
    xml_document doc;
@@ -357,7 +357,7 @@ azy_content_deserialize_request_xml(Azy_Content *content,
 
    if ((!content) || (!buf)) return EINA_FALSE; /* FIXME: ESNV? */
 
-   if (!doc.load_buffer(const_cast<char *>(buf), len))
+   if (!doc.load_buffer_inplace(buf, len))
      {
         azy_content_error_code_set(content, AZY_ERROR_REQUEST_XML_DOC);
         return EINA_FALSE;
@@ -424,7 +424,7 @@ azy_content_deserialize_request_xml(Azy_Content *content,
 
 Eina_Bool
 azy_content_deserialize_response_xml(Azy_Content *content,
-                                     const char  *buf,
+                                     char        *buf,
                                      ssize_t      len)
 {
    xml_document doc;
@@ -435,7 +435,7 @@ azy_content_deserialize_response_xml(Azy_Content *content,
 
    if ((!content) || (!buf)) return EINA_FALSE; /* FIXME: ESNV? */
 
-   if (!doc.load_buffer(const_cast<char *>(buf), len))
+   if (!doc.load_buffer_inplace(buf, len))
      {
         azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
         return EINA_FALSE;
@@ -527,7 +527,7 @@ azy_content_deserialize_response_xml(Azy_Content *content,
 
 Eina_Bool
 azy_content_deserialize_rss_xml(Azy_Content *content,
-                                const char  *buf,
+                                char        *buf,
                                 ssize_t      len)
 {
    xml_document doc;
@@ -536,7 +536,7 @@ azy_content_deserialize_rss_xml(Azy_Content *content,
    static xpath_query cquery("/rss/channel");
    static xpath_query iquery("/rss/channel/image/url");
 
-   if (!doc.load_buffer(const_cast<char *>(buf), len))
+   if (!doc.load_buffer_inplace(buf, len))
      {
         azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
         return EINA_FALSE;
@@ -770,7 +770,7 @@ atomEntry =
 
 Eina_Bool
 azy_content_deserialize_atom_xml(Azy_Content *content,
-                                 const char  *buf,
+                                 char        *buf,
                                  ssize_t      len)
 {
    xml_document doc;
@@ -778,7 +778,7 @@ azy_content_deserialize_atom_xml(Azy_Content *content,
    xml_attribute attr;
    Azy_Rss *rss;
 
-   if (!doc.load_buffer(const_cast<char *>(buf), len))
+   if (!doc.load_buffer_inplace(buf, len))
      {
         azy_content_error_code_set(content, AZY_ERROR_RESPONSE_XML_DOC);
         return EINA_FALSE;

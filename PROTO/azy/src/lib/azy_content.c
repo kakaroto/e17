@@ -238,7 +238,7 @@ azy_content_serialize_request(Azy_Content      *content,
 Eina_Bool
 azy_content_deserialize_request(Azy_Content      *content,
                                 Azy_Net_Transport type,
-                                const char       *buf,
+                                char             *buf,
                                 ssize_t           len)
 {
    if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))
@@ -317,7 +317,7 @@ azy_content_serialize_response(Azy_Content      *content,
 Eina_Bool
 azy_content_deserialize_response(Azy_Content      *content,
                                  Azy_Net_Transport type,
-                                 const char       *buf,
+                                 char             *buf,
                                  ssize_t           len)
 {
    if (!AZY_MAGIC_CHECK(content, AZY_MAGIC_CONTENT))

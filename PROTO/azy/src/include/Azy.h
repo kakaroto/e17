@@ -530,13 +530,13 @@ extern "C" {
                                                   Azy_Net_Transport type);
    EAPI Eina_Bool   azy_content_deserialize_request(Azy_Content      *content,
                                                     Azy_Net_Transport type,
-                                                    const char       *buf,
+                                                    char             *buf,
                                                     ssize_t           len);
    EAPI Eina_Bool azy_content_serialize_response(Azy_Content      *content,
                                                  Azy_Net_Transport type);
    EAPI Eina_Bool azy_content_deserialize_response(Azy_Content      *content,
                                                    Azy_Net_Transport type,
-                                                   const char       *buf,
+                                                   char             *buf,
                                                    ssize_t           len);
 
    /* client */
