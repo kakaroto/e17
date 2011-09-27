@@ -11,6 +11,7 @@
 
 * Gengrid
 	- Fix gengrid with a large image. It covers the entire item. - discomfitor.
+	- Fix gengrid paging bug when the align is not 0.0.
 
 * Elementary
 	- Add elm_object_bounce_set/get() APIs.
