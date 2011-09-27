@@ -350,6 +350,12 @@ elsa_gui_init(const char *theme)
    evas_object_resize(_gui->win, w, h);
 
    evas_object_show(_gui->win);
+   
+   /* tricky situation. we are not normally running with a wm and thus
+    * have to set focus to our window so things work right */
+   ecore_evas_focus_set
+      (ecore_evas_ecore_evas_get
+          (evas_object_evas_get(_gui->win)), 1);
 
    return 0;
 }
