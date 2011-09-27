@@ -61,6 +61,11 @@ color_class {
 	name: "border_frame_active";
 	color: 215 215 215 255;
 }
+color_class {
+	name: "menu_base";
+	color: 245 245 245 255;
+	color3: 0 0 0 0;
+}
 #else
 color_class {
 	name: "focus";
