@@ -448,7 +448,7 @@ SystrayInit(Container * ct)
    ct->wm_name = "Systray";
    ct->menu_title = _("Systray Options");
    ct->dlg_title = _("Systray Settings");
-   ct->iconsize = 24;
+   ct->iconsize = 16;
 }
 
 static void
