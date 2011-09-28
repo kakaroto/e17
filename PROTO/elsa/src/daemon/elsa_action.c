@@ -136,7 +136,7 @@ _elsa_action_grub2(void *data)
    i = (intptr_t)data;
 
    snprintf(buf, sizeof(buf),
-            "grub-reboot %d && %s", i, elsa_config->command.reboot);
+            "grub-reboot %ld && %s", i, elsa_config->command.reboot);
    _action_exe = ecore_exe_run(buf, NULL);
 
 }

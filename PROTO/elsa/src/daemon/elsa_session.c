@@ -164,7 +164,6 @@ elsa_session_end(const char *user)
    if (-1 == system(buf))
      fprintf(stderr, PACKAGE": Error on session stop command %s", buf);
    elsa_pam_close_session();
-   kill(getpid(), SIGTERM);
    elsa_pam_end();
    elsa_pam_shutdown();
 }

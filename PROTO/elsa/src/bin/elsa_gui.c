@@ -43,6 +43,7 @@ static Evas_Object *_elsa_gui_theme_get(Evas_Object *win, const char *group, con
 static void _elsa_gui_hostname_activated_cb(void *data, Evas_Object *obj, void *event_info);
 static void _elsa_gui_password_activated_cb(void *data, Evas_Object *obj, void *event_info);
 static void _elsa_gui_shutdown(void *data, Evas_Object *obj, void *event_info);
+static void _elsa_gui_focus(void *data, Evas_Object *obj, void *event_info);
 static void _elsa_gui_session_update(Elsa_Xsession *xsession);
 static void _elsa_gui_users_list_set(Evas_Object *obj, Eina_List *users);
 static void _elsa_gui_users_genlist_set(Evas_Object *obj, Eina_List *users);
@@ -124,6 +125,12 @@ _elsa_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *eve
 }
 
 static void
+_elsa_gui_focus(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   elm_object_focus_set(ELSA_GUI_GET(_gui->edj, "hostname"), EINA_TRUE);
+}
+
+static void
 _elsa_gui_login_cancel_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *sig __UNUSED__, const char *src __UNUSED__)
 {
    Evas_Object *o;
@@ -200,8 +207,12 @@ _elsa_gui_callback_add()
    Evas_Object *host, *pwd;
    Evas_Object *edj;
 
-   edj = elm_layout_edje_get(_gui->edj);
+   evas_object_smart_callback_add(_gui->win, "delete,request",
+                                  _elsa_gui_shutdown, NULL);
+   evas_object_smart_callback_add(_gui->win, "focus,in",
+                                  _elsa_gui_focus, NULL);
 
+   edj = elm_layout_edje_get(_gui->edj);
    host = ELSA_GUI_GET(_gui->edj, "hostname");
    pwd = ELSA_GUI_GET(_gui->edj, "password");
    evas_object_smart_callback_add(host, "activated",
@@ -216,7 +227,6 @@ _elsa_gui_callback_add()
                                    _elsa_gui_login_cb, NULL);
    elm_entry_single_line_set(host, EINA_TRUE);
    elm_entry_single_line_set(pwd, EINA_TRUE);
-   elm_object_focus_set(host, EINA_TRUE);
 }
 
 static void
@@ -318,8 +328,6 @@ elsa_gui_init(const char *theme)
    _gui->win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_fullscreen_set(_gui->win, EINA_TRUE);
    elm_win_title_set(_gui->win, PACKAGE);
-   evas_object_smart_callback_add(_gui->win, "delete,request",
-                                  _elsa_gui_shutdown, NULL);
 
    _gui->theme = eina_stringshare_add(theme);
    _gui->edj = _elsa_gui_theme_get(_gui->win, "elsa", theme);
@@ -350,7 +358,7 @@ elsa_gui_init(const char *theme)
    evas_object_resize(_gui->win, w, h);
 
    evas_object_show(_gui->win);
-   
+
    /* tricky situation. we are not normally running with a wm and thus
     * have to set focus to our window so things work right */
    ecore_evas_focus_set

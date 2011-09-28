@@ -172,6 +172,7 @@ elsa_config_init()
           }
      }
    elsa_config = _cache_get(edd);
+   eet_data_descriptor_free(edd);
 }
 
 

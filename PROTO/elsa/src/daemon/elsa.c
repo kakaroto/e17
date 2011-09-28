@@ -1,5 +1,6 @@
 #include "elsa.h"
 #include <sys/types.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include "Ecore_Getopt.h"
 #include <xcb/xcb.h>
@@ -19,12 +20,13 @@ static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_elsa_client = NULL;
 
 
+
 static void
 _signal_cb(int sig)
 {
    fprintf(stderr, PACKAGE": signal %d received\n", sig);
    //FIXME  if I don't have main loop at this time ?
-   ecore_main_loop_quit();
+   if (_elsa_client) ecore_exe_terminate(_elsa_client);
    /*
    elsa_session_shutdown();
    elsa_xserver_shutdown();
@@ -164,11 +166,13 @@ static Eina_Bool
 _elsa_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Exe_Event_Del *ev;
+
    ev = event;
    if (ev->exe != _elsa_client)
      return ECORE_CALLBACK_PASS_ON;
    ecore_main_loop_quit();
    _elsa_client = NULL;
+
    return ECORE_CALLBACK_DONE;
 }
 
@@ -249,6 +253,12 @@ main (int argc, char ** argv)
              quit_option = EINA_TRUE;
           }
         _update_lock();
+        int fd;
+        if ((fd = open("/dev/null", O_RDONLY)))
+          {
+             dup2(fd, 0);
+             close(fd);
+          }
      }
 
    if (!_open_log())

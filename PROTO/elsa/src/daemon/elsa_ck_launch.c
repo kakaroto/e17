@@ -15,6 +15,7 @@ main (int argc, char **argv)
    pid_t        pid;
    int          status;
 
+   fprintf(stderr, "elsa_ck: try to launch session with ck\n");
    ck = ck_connector_new();
    if (ck != NULL)
      {
@@ -32,10 +33,10 @@ main (int argc, char **argv)
                        ck_connector_get_cookie(ck), 1);
           }
         else
-          fprintf(stderr, "elsa_ck: error connecting to ConsoleKit");
+          fprintf(stderr, "elsa_ck: error connecting to ConsoleKit\n");
      }
    else
-     fprintf(stderr, "elsa_ck: can't set up connection to ConsoleKit");
+     fprintf(stderr, "elsa_ck: can't set up connection to ConsoleKit\n");
 
 
    if (argc > 1)
