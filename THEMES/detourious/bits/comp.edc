@@ -904,12 +904,6 @@ group {
 			description {
 				state: "default" 0.0;
 				color: 255 255 255 255;
-				rel1.offset: 5 5;
-				rel2.offset: -6 -6;
-			}
-			description {
-				state: "show" 0.0;
-				color: 255 255 255 255;
 			}
 		}
 
@@ -1014,7 +1008,6 @@ group {
 			action: STATE_SET "show" 0.0;
 			transition: SINUSOIDAL 0.2;
 			target: "text.clipper";
-			target: "e.swallow.win";
 		}
 		program {
 			name: "mouse_out2";
@@ -1023,7 +1016,6 @@ group {
 			action: STATE_SET "default" 0.0;
 			transition: DECELERATE 0.2;
 			target: "text.clipper";
-			target: "e.swallow.win";
 		}
 		program {
 			name: "hide";
