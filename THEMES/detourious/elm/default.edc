@@ -16,17 +16,35 @@ externals.external: "elm";
 #define COLOR_SELECTED       138 171 225 200
 #define COLOR_SELECTED_FADE  138 171 225 100
 
-#define USE_BOLD_FONT 1
+#define USE_BOLD_FONT 0
 #define PAGER_SHOW_FRAME 0
 
+/* #if USE_BOLD_FONT 
+ * #define FONT "Switzera:style=semibold"
+ * #define FONT_BOLD "Switzera:style=bold"
+ * #define FONT_ITALIC "Switzera:style=semibold italic"
+ * #else
+ * #define FONT "Switzera"
+ * #define FONT_BOLD "Switzera:style=semibold"
+ * #define FONT_ITALIC "Switzera:style=italic"
+ * #endif */
+
 #if USE_BOLD_FONT 
-#define FONT "Switzera:style=semibold"
-#define FONT_BOLD "Switzera:style=bold"
-#define FONT_ITALIC "Switzera:style=semibold italic"
+#define FONT "Sans:style=bold"
+#define FONT_BOLD "Sans:style=bold"
+#define FONT_ITALIC "Sans:style=bold,italic"
+#define TEXT_SIZE 8
+#define TEXT_SIZE_BOLD 8
+#define TEXT_SIZE_LARGE 8
+#define TEXT_SIZE_SMALL 7
 #else
-#define FONT "Switzera"
-#define FONT_BOLD "Switzera:style=semibold"
-#define FONT_ITALIC "Switzera:style=italic"
+#define FONT "Sans"
+#define FONT_BOLD "Sans:style=bold"
+#define FONT_ITALIC "Sans:style=italic"
+#define TEXT_SIZE 9
+#define TEXT_SIZE_BOLD 8
+#define TEXT_SIZE_LARGE 9
+#define TEXT_SIZE_SMALL 8
 #endif
 
 #define TEXT_EFFECT SHADOW
@@ -291,7 +309,7 @@ styles {
 	text {										\
 		text: "";								\
 		font: FONT_BOLD;								\
-		size: 9;								\
+		size: 8;								\
 		min: _min;								\
 		align: _align;							\
 		text_class: _text_class;				\
@@ -301,7 +319,7 @@ styles {
 	text {										\
 		text: "";								\
 		font: FONT_BOLD;								\
-		size: 9;								\
+		size: 8;								\
 		min: _min;								\
 		max: _max;								\
 		align: _align;							\
@@ -323,7 +341,7 @@ styles {
 	text {												\
 		text: _label;									\
 		font: FONT_BOLD;								\
-		size: 9;										\
+		size: 8;										\
 		min: _min;										\
 		align: _align;									\
 		text_class: _text_class;						\
