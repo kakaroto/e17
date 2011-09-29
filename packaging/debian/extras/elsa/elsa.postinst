@@ -89,7 +89,6 @@ session required        pam_limits.so
 session optional        pam_gnome_keyring.so auto_start
 @include common-password
 
-}
 EOM
     fi
     # we're done
