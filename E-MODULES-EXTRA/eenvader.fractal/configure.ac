@@ -24,15 +24,15 @@ define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
 m4_ifdef([AM_GNU_GETTEXT_VERSION], [
-AM_GNU_GETTEXT_VERSION([0.14])
+AM_GNU_GETTEXT_VERSION([0.17])
 ])
 
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES([EENVADER], [ecore-evas ecore evas eina])
-datadir_edj=$(pkg-config --variable=prefix enlightenment)/share/enlightenment/data/backgrounds
+PKG_CHECK_MODULES([EENVADER], [edje ecore-evas ecore evas eina])
+datadir_edj=$($PKG_CONFIG --variable=prefix enlightenment)/share/enlightenment/data/backgrounds
 
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
-vmaj=$(pkg-config --variable=vmaj edje)
+vmaj=$($PKG_CONFIG --variable=vmaj edje)
 MODULE_ARCH="$host_os-$host_cpu-$vmaj.0.0"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")

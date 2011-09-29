@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = -I. \
 	   -I$(top_srcdir) \
 	   -I$(includedir) \
-	   @EDJE_CFLAGS@
+	   @EENVADER_CFLAGS@
 
 
 pkgdir = $(datadir)/$(MODULE_ARCH)
@@ -11,7 +11,7 @@ module_la_SOURCES = \
 	eenvaders_evas_smart.c \
 	eenvaders_edje_external.c
 
-module_la_LIBADD = @EDJE_LIBS@
+module_la_LIBADD = @EENVADER_LIBS@
 module_la_LDFLAGS = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
@@ -21,7 +21,7 @@ eenvaders_SOURCES = \
 	eenvaders_evas_smart.c \
 	eenvaders.c
 eenvaders_CPPFLAGS = \
-	@EENVADER_CFLAGS@
+       @EENVADER_CFLAGS@
 eenvaders_LDADD = \
 	@EENVADER_LIBS@
 
