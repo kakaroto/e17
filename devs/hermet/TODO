@@ -23,10 +23,12 @@ elm_naviframe - mirror mode
 evas_map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
 
 ecore_animator - consider them each instance use the each timeline options.  
-elm_object_item - consider to apply. 
+elm_object_item - apply to all widgets. 
 
 elm_object - apply all widgets to use elm_object_content_set/get/unset
 
 evas - check the image smooth effect in gl backend
 
 ctxpopup - hide effect
+
+elm_pager - blocks mouseover events (ticket 876) 
