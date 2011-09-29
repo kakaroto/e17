@@ -70,7 +70,8 @@ static Eina_Bool
 deserialize_request_1(void)
 {
    Azy_Content *content = azy_content_new(NULL);
-   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, "<->", 3);
+   char buf[] = "<->";
+   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, buf, 3);
    TEST_ASSERT(!rs);
    azy_content_free(content);
    return EINA_TRUE;
@@ -81,14 +82,12 @@ static Eina_Bool
 deserialize_request_2(void)
 {
    Azy_Content *content = azy_content_new(NULL);
-   Eina_Strbuf *str = eina_strbuf_new();
-   eina_strbuf_append(str, REQUEST("",
+   char buf[] = REQUEST("",
                                    PARAM(VALUE(string, "s1"))
                                    PARAM(VALUE(string, "s2"))
-                                   ));
-   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
+                                   );
+   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, buf, sizeof(buf) - 1);
    TEST_ASSERT(!rs);
-   eina_strbuf_free(str);
    azy_content_free(content);
    return EINA_TRUE;
 }
@@ -97,14 +96,12 @@ static Eina_Bool
 deserialize_request_3(void)
 {
    Azy_Content *content = azy_content_new(NULL);
-   Eina_Strbuf *str = eina_strbuf_new();
-   eina_strbuf_append(str,
-                      REQUEST("test.test",
+   char buf[] = REQUEST("test.test",
                               PARAM(VALUE(string, ""))
                               PARAM(VALUE(string, "s2"))
-                              ));
+                              );
 
-   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
+   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, buf, sizeof(buf) - 1);
    TEST_ASSERT(rs);
 
    const char *method = azy_content_method_get(content);
@@ -133,7 +130,6 @@ deserialize_request_3(void)
    param_match = !strcmp(str_val, "s2");
    TEST_ASSERT(param_match);
    eina_stringshare_del(str_val);
-   eina_strbuf_free(str);
    azy_content_free(content);
    return EINA_TRUE;
 }
@@ -153,8 +149,7 @@ static Eina_Bool
 deserialize_request_4(void)
 {
    Azy_Content *content = azy_content_new(NULL);
-   Eina_Strbuf *str = eina_strbuf_new();
-   eina_strbuf_append(str, REQUEST("test.test",
+   char buf[] = REQUEST("test.test",
                                    PARAM(VALUE(int, "1"))
                                    PARAM(VALUE(int, "-1"))
                                    PARAM(VALUE(string, "some string"))
@@ -172,9 +167,8 @@ deserialize_request_4(void)
                                                MEMBER(m1, VALUE(string, "s1"))
                                                MEMBER(m2, VALUE(string, ""))
                                                ))
-                                   ));
-   //printf("%s\n", eina_strbuf_string_get(str));
-   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
+                                   );
+   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, buf, sizeof(buf) - 1);
 
    TEST_ASSERT(rs);
    TEST_ASSERT(_assert_param_type(content, 0, AZY_VALUE_INT));
@@ -185,7 +179,6 @@ deserialize_request_4(void)
    TEST_ASSERT(_assert_param_type(content, 5, AZY_VALUE_TIME));
    TEST_ASSERT(_assert_param_type(content, 7, AZY_VALUE_ARRAY));
    TEST_ASSERT(_assert_param_type(content, 8, AZY_VALUE_STRUCT));
-   eina_strbuf_free(str);
    azy_content_free(content);
    return EINA_TRUE;
 }
@@ -194,8 +187,7 @@ static Eina_Bool
 deserialize_request_5(void)
 {
    Azy_Content *content = azy_content_new(NULL);
-   Eina_Strbuf *str = eina_strbuf_new();
-   eina_strbuf_append(str, REQUEST("test.test",
+   char buf[] = REQUEST("test.test",
                                    PARAM(VALUE(int, "1"))
                                    PARAM(VALUE(int, "-1"))
                                    "<string>some string</string>\n" /* invalid! */
@@ -213,12 +205,10 @@ deserialize_request_5(void)
                                                MEMBER(m1, VALUE(string, "s1"))
                                                MEMBER(m2, VALUE(string, ""))
                                                ))
-                                   ));
-   //printf("%s\n", eina_strbuf_string_get(str));
-   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
+                                   );
+   Eina_Bool rs = azy_content_deserialize_request(content, AZY_NET_TRANSPORT_XML, buf, sizeof(buf) - 1);
 
    TEST_ASSERT(!rs);
-   eina_strbuf_free(str);
    azy_content_free(content);
    return EINA_TRUE;
 }
@@ -227,8 +217,7 @@ static Eina_Bool
 deserialize_response_1(void)
 {
    Azy_Content *content = azy_content_new(NULL);
-   Eina_Strbuf *str = eina_strbuf_new();
-   eina_strbuf_append(str, "<?xml version=\"1.0\"?>"
+   char buf[] = "<?xml version=\"1.0\"?>"
 "<methodResponse>"
 "   <fault>"
 "      <value>"
@@ -244,12 +233,11 @@ deserialize_response_1(void)
 "            </struct>"
 "         </value>"
 "      </fault>"
-"   </methodResponse>");
+"   </methodResponse>";
    //printf("%s\n", eina_strbuf_string_get(str));
-   Eina_Bool rs = azy_content_deserialize_response(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
+   Eina_Bool rs = azy_content_deserialize_response(content, AZY_NET_TRANSPORT_XML, buf, sizeof(buf) - 1);
 
    TEST_ASSERT(rs);
-   eina_strbuf_free(str);
    azy_content_free(content);
    return EINA_TRUE;
 }
@@ -258,8 +246,7 @@ static Eina_Bool
 deserialize_response_2(void)
 {
    Azy_Content *content = azy_content_new(NULL);
-   Eina_Strbuf *str = eina_strbuf_new();
-   eina_strbuf_append(str,
+   char buf[] = 
 "<?xml version=\"1.0\"?>"
 "<methodResponse>"
 "   <params>"
@@ -270,13 +257,11 @@ deserialize_response_2(void)
 "         <value><string>South Dakota</string></value>"
 "         </param>"
 "      </params>"
-"   </methodResponse>"
-);
+"   </methodResponse>";
    //printf("%s\n", eina_strbuf_string_get(str));
-   Eina_Bool rs = azy_content_deserialize_response(content, AZY_NET_TRANSPORT_XML, eina_strbuf_string_get(str), eina_strbuf_length_get(str));
+   Eina_Bool rs = azy_content_deserialize_response(content, AZY_NET_TRANSPORT_XML, buf, sizeof(buf) - 1);
 
    TEST_ASSERT(!rs);
-   eina_strbuf_free(str);
    azy_content_free(content);
    return EINA_TRUE;
 }
