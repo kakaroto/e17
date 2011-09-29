@@ -27,32 +27,15 @@ m4_ifdef([AM_GNU_GETTEXT_VERSION], [
 AM_GNU_GETTEXT_VERSION([0.14])
 ])
 
-PKG_CHECK_MODULES(EINA, [eina])
-PKG_CHECK_MODULES(EVAS, [evas])
-PKG_CHECK_MODULES(ECORE, [ecore])
-PKG_CHECK_MODULES(ECORE_EVAS, [ecore-evas])
-PKG_CHECK_MODULES(ENLIGHTENMENT, [enlightenment])
+PKG_PROG_PKG_CONFIG
+PKG_CHECK_MODULES([EENVADER], [ecore-evas ecore evas eina])
 datadir_edj=$(pkg-config --variable=prefix enlightenment)/share/enlightenment/data/backgrounds
 
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 vmaj=$(pkg-config --variable=vmaj edje)
 MODULE_ARCH="$host_os-$host_cpu-$vmaj.0.0"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
-
-# Find edje_cc
-AC_ARG_WITH(edje-cc,
-  AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
-  [
-    v=$withval;
-    EDJE_CC=$v
-  ],[
-    EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
-  ]
-)
-AC_SUBST(EDJE_CC)
-AC_MSG_CHECKING([Which edje_cc to use])
-AC_MSG_RESULT(${EDJE_CC})
 
 datadir=$(pkg-config --variable=modules edje)/${PACKAGE}
 AC_ARG_ENABLE(homedir-install,
