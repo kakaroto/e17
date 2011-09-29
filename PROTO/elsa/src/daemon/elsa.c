@@ -314,7 +314,7 @@ main (int argc, char ** argv)
         disp = xcb_connect(dname, NULL);
         ecore_main_loop_begin();
         elsa_pam_item_set(ELSA_PAM_ITEM_USER, elsa_config->userlogin);
-        elsa_session_login(elsa_config->command.session_login);
+        elsa_session_login(elsa_config->command.session_login, EINA_FALSE);
         sleep(30);
         xcb_disconnect(disp);
      }
@@ -323,7 +323,6 @@ main (int argc, char ** argv)
         elsa_action_init();
         elsa_history_init();
         elsa_server_init();
-        ecore_main_loop_iterate();
         ecore_main_loop_begin();
         elsa_server_shutdown();
         elsa_history_shutdown();

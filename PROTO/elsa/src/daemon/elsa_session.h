@@ -6,7 +6,7 @@ void elsa_session_init(const char *file);
 void elsa_session_end(const char *login);
 void elsa_session_shutdown();
 Eina_Bool elsa_session_authenticate(const char *login, const char *pwd);
-Eina_Bool elsa_session_login(const char *command);
+Eina_Bool elsa_session_login(const char *command, Eina_Bool push);
 void elsa_session_pid_set(pid_t pid);
 pid_t elsa_session_pid_get();
 long  elsa_session_seed_get();

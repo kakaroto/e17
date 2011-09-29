@@ -101,7 +101,7 @@ _elsa_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
         if (elsa_session_authenticate(eev->event.auth.login,
                                       eev->event.auth.password))
           {
-             elsa_session_login(eev->event.auth.session);
+             elsa_session_login(eev->event.auth.session, EINA_TRUE);
              neev.event.status.granted = EINA_TRUE;
           }
         else

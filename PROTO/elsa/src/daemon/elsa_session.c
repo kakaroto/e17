@@ -229,7 +229,7 @@ elsa_session_authenticate(const char *login, const char *passwd)
 }
 
 Eina_Bool
-elsa_session_login(const char *session)
+elsa_session_login(const char *session, Eina_Bool push)
 {
 #ifdef HAVE_PAM
    struct passwd *pwd;
@@ -248,7 +248,7 @@ elsa_session_login(const char *session)
              fprintf(stderr, "Elsa: couldn't open session\n");
              exit(1);
           }
-        elsa_history_push(pwd->pw_name, session);
+        if (push) elsa_history_push(pwd->pw_name, session);
         _login = strdup(pwd->pw_name);
         cmd = _elsa_session_find_command(pwd->pw_dir, session);
         fprintf(stderr, PACKAGE": launching %s for user %s\n", cmd, _login);

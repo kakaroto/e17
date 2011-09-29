@@ -6,7 +6,6 @@
 #include <ck-connector.h>
 #include <dbus/dbus.h>
 
-
 int
 main (int argc, char **argv)
 {
@@ -15,7 +14,6 @@ main (int argc, char **argv)
    pid_t        pid;
    int          status;
 
-   fprintf(stderr, "elsa_ck: try to launch session with ck\n");
    ck = ck_connector_new();
    if (ck != NULL)
      {
