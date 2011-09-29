@@ -2774,15 +2774,21 @@ _transition_overlay_key_down(void *data,
                 trov->overlay.obj =
                     edje_object_add(trov->overlay.popup->evas);
             }
-            _theme_edje_object_set(trov->overlay.obj,
-                                   bd? "modules/e-tiling/transition/horizontal":
-                                   "modules/e-tiling/transition/vertical");
+            if ((bd && !_G.tinfo->conf->use_rows)
+            ||  (!bd && _G.tinfo->conf->use_rows)) {
+                _theme_edje_object_set(trov->overlay.obj,
+                                       "modules/e-tiling/transition/horizontal");
+            } else {
+                _theme_edje_object_set(trov->overlay.obj,
+                                       "modules/e-tiling/transition/vertical");
+            }
 
             edje_object_size_min_calc(trov->overlay.obj, &ew, &eh);
             e_popup_edje_bg_object_set(trov->overlay.popup,
                                        trov->overlay.obj);
             evas_object_show(trov->overlay.obj);
-            if (bd) {
+            if ((bd && !_G.tinfo->conf->use_rows)
+            ||  (!bd && _G.tinfo->conf->use_rows)) {
                 e_popup_move_resize(trov->overlay.popup,
                                     extra->expected.x + extra->expected.w/2
                                     - ew/2
