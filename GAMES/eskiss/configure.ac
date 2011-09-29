@@ -54,7 +54,7 @@ EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
 # Eina library
 
-PKG_CHECK_MODULES(ESKISS, [edje ecore-evas ecore-file ecore evas eet eina])
+PKG_CHECK_MODULES(ESKISS, [edje ecore ecore-evas ecore-file ecore evas eet eina])
 PKG_CHECK_MODULES(ECORE_X, [ecore-x], [have_ecore_x="yes"], [have_ecore_x="no"])
 
 AM_CONDITIONAL(HAVE_ECORE_X, test "x$have_ecore_x" = "xyes")
