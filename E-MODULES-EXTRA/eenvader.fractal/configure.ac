@@ -27,6 +27,9 @@ m4_ifdef([AM_GNU_GETTEXT_VERSION], [
 AM_GNU_GETTEXT_VERSION([0.14])
 ])
 
+PKG_CHECK_MODULES(EINA, [eina])
+PKG_CHECK_MODULES(EVAS, [evas])
+PKG_CHECK_MODULES(ECORE, [ecore])
 PKG_CHECK_MODULES(ECORE_EVAS, [ecore-evas])
 PKG_CHECK_MODULES(ENLIGHTENMENT, [enlightenment])
 datadir_edj=$(pkg-config --variable=prefix enlightenment)/share/enlightenment/data/backgrounds

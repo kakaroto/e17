@@ -22,7 +22,11 @@ eenvaders_SOURCES = \
 	eenvaders.c
 eenvaders_CPPFLAGS = \
 	@ECORE_EVAS_CFLAGS@
-eenvaders_LDADD = @ECORE_EVAS_LIBS@
+eenvaders_LDADD = \
+	@EINA_LIBS@ \
+	@EVAS_LIBS@ \
+	@ECORE_LIBS@ \
+	@ECORE_EVAS_LIBS@
 
 clean-local:
 	rm -rf *~
