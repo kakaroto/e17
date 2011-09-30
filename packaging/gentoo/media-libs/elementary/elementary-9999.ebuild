@@ -10,7 +10,7 @@ DESCRIPTION="Basic widget set, based on EFL with focus mobile touch-screen devic
 HOMEPAGE="http://trac.enlightenment.org/e/wiki/Elementary"
 
 LICENSE="LGPL-2.1"
-IUSE="dbus fbcon opengl quicklaunch sdl thumbnails video weather X xcb xdg static-libs"
+IUSE="dbus fbcon opengl quicklaunch sdl thumbnails video weather webkit X xcb xdg static-libs"
 
 RDEPEND="
 	>=dev-libs/ecore-9999[evas,fbcon?,opengl?,sdl?,X?,xcb?]
@@ -21,6 +21,7 @@ RDEPEND="
 	weather? ( >=net-libs/libeweather-9999 )
 	thumbnails? ( >=media-libs/ethumb-9999[dbus?] )
 	video? ( >=media-libs/emotion-9999 )
+	webkit? ( >=net-libs/webkit-efl-0.1.96323 )
 	"
 DEPEND="${RDEPEND}"
 
@@ -36,6 +37,7 @@ src_configure() {
 	$(use_enable thumbnails ethumb)
 	$(use_enable video emotion)
 	$(use_enable quicklaunch quick-launch)
+	$(use_enable webkit web)
 	--disable-build-examples
 	"
 	enlightenment_src_configure
