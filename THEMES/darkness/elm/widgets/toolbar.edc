@@ -320,6 +320,21 @@
            }
            BUTTON_GLOW_PROGRAM("bg")
            BUTTON_GLOW_DOWN_PROGRAM("bg")
+           program { name: "selected_check";
+               signal:  "elm,state,selected";
+               source:  "elm";
+               script {
+                   new st[31], st2[31], st3[31];
+                   new Float:vl, Float:vl2, Float:vl3;
+                   get_state(PART:"label", st, 30, vl);
+                   get_state(PART:"bg_glow", st2, 30, vl2);
+                   get_state(PART:"bg_glow_down", st3, 30, vl3);
+                   if ((!strcmp(st, "selected")) && (strcmp(st2, "active") || strcmp(st3, "active")))
+                   {
+                      emit("mouse,down,1", "bg_events");
+                   }
+               }
+           }
            program { name: "disable_text";
                script {
                    new st[31];
