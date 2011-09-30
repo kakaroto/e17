@@ -7,6 +7,7 @@ set tabstop=4
 set shiftwidth=4
 set paste
 set ruler
+set is
 colorscheme evening
 
 " indent for e17  Ref:http://trac.enlightenment.org/e/wiki/ECoding
