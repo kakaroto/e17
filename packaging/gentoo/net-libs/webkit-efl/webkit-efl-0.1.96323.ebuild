@@ -45,7 +45,7 @@ DEPEND="${RDEPEND}
 "
 
 CMAKE_IN_SOURCE_BUILD="enable"
-S="${WORKDIR}/${PN}-svn-r${MY_PV}"
+S="${WORKDIR}/${PN}-svn-r${MY_PV}/Source"
 
 src_configure() {
 	[[ gcc-major-version == 4 ]] && [[ gcc-minor-version == 4 ]] && append-flags -fno-strict-aliasing
