@@ -921,8 +921,10 @@ azy_content_dump_string(const Azy_Content *content,
  * @brief Get the return value of a transmission
  *
  * This function gets the return value of a method call, and is only
- * functional for clients in return callbacks/events.
- * Note that the returned content is owned by @p content and should not
+ * functional for clients in return callbacks/events. The type of the
+ * return value can be determined by the transport type of the content's
+ * #Azy_Net object.
+ * @note the returned content is owned by @p content and should not
  * be manually freed.
  * @param content The content object (NOT #NULL)
  * @return The method response return value, or #NULL on failure
