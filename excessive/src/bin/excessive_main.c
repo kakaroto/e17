@@ -80,6 +80,7 @@ elm_main(int argc, char **argv)
      }
 
    /* FIXME: later remember last size */
+   elm_win_alpha_set(window, 1);
    evas_object_resize(window, 800, 600);
    elm_win_title_set(window, PACKAGE_STRING);
    elm_win_autodel_set(window, 1);

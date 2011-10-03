@@ -164,9 +164,6 @@ _excessive_emotion_action(Evas_Object *display, Excessive_File_Object *object)
    EINA_LIST_FOREACH(all_video, l, thumb)
      elm_video_pause(thumb);
 
-   elm_video_file_set(display, info->info.path);
-   elm_video_play(display);
-
    notify = elm_notify_add(layout);
    elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_BOTTOM);
    elm_notify_timeout_set(notify, 3.0);
@@ -176,6 +173,9 @@ _excessive_emotion_action(Evas_Object *display, Excessive_File_Object *object)
    elm_player_video_set(player, display);
    elm_notify_content_set(notify, player);
    evas_object_show(player);
+
+   elm_video_file_set(display, info->info.path);
+   elm_video_play(display);
 
    evas_object_event_callback_add(display, EVAS_CALLBACK_MOUSE_UP, _notify_show, notify);
    evas_object_event_callback_add(display, EVAS_CALLBACK_MOUSE_MOVE, _notify_show, notify);
