@@ -148,6 +148,10 @@ _obj_information_free(Obj_Information *oinfo)
 
         eina_stringshare_del(oinfo->extra_props.edje.load_err);
      }
+   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_TEXTBLOCK)
+     {
+        eina_stringshare_del(oinfo->extra_props.textblock.style);
+     }
 
    free(oinfo);
 }
@@ -242,6 +246,16 @@ _obj_information_get(Tree_Item *treeit)
              oinfo->extra_props.edje.load_err = eina_stringshare_add(
                    edje_load_error_str(edje_object_load_error_get(obj)));
           }
+     }
+   else if (!strcmp("textblock", evas_object_type_get(obj)))
+     {
+        const char *style;
+        const Evas_Textblock_Style *ts;
+        oinfo->obj_type = CLOUSEAU_OBJ_TYPE_TEXTBLOCK;
+
+        ts = evas_object_textblock_style_get(obj);
+        style = evas_textblock_style_get(ts);
+        oinfo->extra_props.textblock.style = eina_stringshare_add(style);
      }
    else
      {
@@ -544,6 +558,22 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
              tit->string = eina_stringshare_add(buf);
              main_tit->children = eina_list_append(main_tit->children, tit);
           }
+     }
+   else if (oinfo->obj_type == CLOUSEAU_OBJ_TYPE_TEXTBLOCK)
+     {
+        Inf_Tree_Item *tit;
+        char buf[1024];
+        const char *font;
+
+        main_tit = calloc(1, sizeof(*main_tit));
+        main_tit->string = eina_stringshare_add("Textblock");
+        information_tree = eina_list_append(information_tree, main_tit);
+
+        snprintf(buf, sizeof(buf), "Style: %s",
+              oinfo->extra_props.textblock.style);
+        tit = calloc(1, sizeof(*tit));
+        tit->string = eina_stringshare_add(buf);
+        main_tit->children = eina_list_append(main_tit->children, tit);
      }
 
    /* Actually populate the genlist */

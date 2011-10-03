@@ -27,6 +27,7 @@ struct _Obj_Information
         CLOUSEAU_OBJ_TYPE_TEXT,
         CLOUSEAU_OBJ_TYPE_IMAGE,
         CLOUSEAU_OBJ_TYPE_EDJE,
+        CLOUSEAU_OBJ_TYPE_TEXTBLOCK,
    } obj_type;
 
    union {
@@ -53,6 +54,9 @@ struct _Obj_Information
              const char *file, *group;
              const char *load_err;
         } edje;
+        struct {
+             const char *style;
+        } textblock;
    } extra_props;
 };
 
