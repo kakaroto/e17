@@ -39,7 +39,7 @@ externals.external: "elm";
 #define TEXT_SIZE_SMALL 7
 #else
 #define FONT "Sans"
-#define FONT_BOLD "Sans:style=bold"
+#define FONT_BOLD "Sans"
 #define FONT_ITALIC "Sans:style=italic"
 #define TEXT_SIZE 9
 #define TEXT_SIZE_BOLD 8
