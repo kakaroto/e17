@@ -8,8 +8,8 @@ deplist="autotools-dev automake autopoint libtool zlib1g-dev
 	libcurl4-gnutls-dev libc-ares-dev liblua5.1-0-dev libpng12-dev
 	libtiff4-dev libfontconfig1-dev libxcb-shape0-dev
 	libxrender-dev libgif-dev libglu1-mesa-dev mesa-common-dev
-	libxpm-dev librsvg2-dev libfribidi-dev libpixman-1-dev
-	libxcb-shm0-dev libxcb-image0-dev libxss-dev libxp-dev
+	librsvg2-dev libfribidi-dev libpixman-1-dev
+	libxss-dev libxp-dev
 	libxtst-dev graphviz libasound2-dev libpam0g-dev"
 
 defpkgs="eina eet evas ecore eeze embryo edje e_dbus efreet PROTO/libeweather elementary e"
