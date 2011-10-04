@@ -2,6 +2,8 @@
 # include "config.h"
 #endif
 
+#include <Emotion.h>
+
 #include "espionnage_private.h"
 
 // #define DEBUG_LUMA 1
@@ -362,6 +364,7 @@ elm_main(int argc, char **argv)
      }
 
    evas_object_resize(window, 800, 600);
+   elm_win_alpha_set(window, 1);
    elm_win_title_set(window, PACKAGE_STRING);
    elm_win_autodel_set(window, 1);
    evas_object_show(window);
@@ -378,6 +381,7 @@ elm_main(int argc, char **argv)
    evas_object_show(vbox);
 
    video = elm_video_add(window);
+   emotion_object_priority_set(elm_video_emotion_get(video), EINA_TRUE);
    elm_box_pack_end(vbox, video);
    evas_object_size_hint_align_set(video, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(video, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
