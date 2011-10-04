@@ -1,0 +1,7 @@
+08/12/03 aje:
+  Added the first theme for new edje support, man are things looking good ;)
+03/12/03 aje:
+  Moved backend to bison\flex generated code, not much faster, but easier for
+  what is to come!
+28/11/03 aje:
+  Backend shifted from bc pipes to native tree based computation

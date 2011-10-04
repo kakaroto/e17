@@ -1,0 +1,359 @@
+images {
+    image, "text_button.png" LOSSY 95;
+    image, "text_display.png" LOSSY 95;
+}
+collections {
+ group {
+   name, "Main";
+   min, 110 160;
+   max, 110 160;
+   parts {
+     part {
+       name, "bg";
+       type, RECT;
+       mouse_events, 0;
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 0 0;
+	 } rel2 {
+	   relative, 1.0 1.0;
+	   offset, 0 0;
+	 }
+	 color, 0 0 0 255;
+       }
+     }
+     part {
+       name, "answer_buf_clip";
+       type, RECT;
+       mouse_events, 0;
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 5 5;
+	 } rel2 {
+	   relative, 1.0 0.0;
+	   offset, -5 30;
+	 }
+	 color, 255 255 255 255;
+       }
+       description 
+       {
+         state, "hidden" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 5 5;
+	 } rel2 {
+	   relative, 1.0 0.0;
+	   offset, -5 30;
+	 }
+	 color, 255 255 255 0;
+       }
+     }
+     part {
+       name, "answer_buf_rect";
+       type, IMAGE;
+       mouse_events, 0;
+       clip_to, "answer_buf_clip";
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 0 0;
+	   to, "answer_buf_clip";
+	 } rel2 {
+	   relative, 1.0 1.0;
+	   offset, 0 0;
+	   to, "answer_buf_clip";
+	 }
+	 image
+	 {
+	     normal, "text_display.png";
+	     border, 8 8 8 8;
+	 }
+	 color, 255 255 255 255;
+       }
+     }
+     part {
+       name, "EquateAnswer";
+       type, TEXT;
+       mouse_events, 0;
+       effect, OUTLINE;
+       clip_to, "answer_buf_clip";
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 5 5;
+	   to, "answer_buf_clip";
+	 } rel2 {
+	   relative, 1.0 1.0;
+	   offset, -5 -2;
+	   to, "answer_buf_clip";
+	 }
+	 color, 0 0 0 255;
+	 color3, 192 192 192 255;
+	 text
+	 {
+	     text, "";
+	     font, "Vera";
+	     size, 14;
+	     fit, 0 0;
+	     align, 1.0 0.5;
+	 }
+       }
+     }
+     part { 
+	 name, "clipped_clear";
+	 type, RECT; 
+	 mouse_events, 0; 
+	 description { 
+	     state, "default" 0.0; 
+	     visible, 1; 
+	     rel1 { 
+		 relative, 0.0 1.0; 
+		 offset, 0 0; 
+		 to, "answer_buf_clip";
+	     } rel2 { 
+		 relative, 0.0 1.0; 
+		 offset, 24 24; 
+		 to, "answer_buf_clip";
+	     } 
+	     color, 255 255 255 255; 
+	 }
+	 description { 
+	     state, "clicked" 0.0; 
+	     visible, 1; 
+	     rel1 { 
+		 relative, 0.0 1.0; 
+		 offset, 0 0; 
+		 to, "answer_buf_clip";
+	     } rel2 { 
+		 relative, 0.0 1.0; 
+		 offset, 24 24; 
+		 to, "answer_buf_clip";
+	     } 
+	     color, 255 255 255 192; 
+	 }
+     }
+     part {
+       name, "clear_button_image";
+       type, IMAGE;
+       mouse_events, 1;
+       clip_to, "clipped_clear";
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 1.0;
+	   offset, 0 0;
+	   to, "answer_buf_clip";
+	 } rel2 {
+	   relative, 0.0 1.0;
+	   offset, 24 24;
+	   to, "answer_buf_clip";
+	 }
+	 image
+	 {
+	     normal, "text_button.png";
+	 }
+       }
+     }
+     part {
+       name, "clear_button_text";
+       type, TEXT;
+       mouse_events, 1;
+       effect, SOFT_SHADOW;
+       description 
+       {
+         state, "default" 0.0;
+	 visible, 1;
+	 rel1 {
+	   relative, 0.0 0.0;
+	   offset, 0 0;
+	   to, "clear_button_image";
+	 } rel2 {
+	   relative, 1.0 1.0;
+	   offset, 0 0;
+	   to, "clear_button_image";
+	 }
+	 color, 255 255 255 255;
+	 color3, 96 96 96 255;
+	 text
+	 {
+	     text, "c";
+	     font, "Vera";
+	     size, 14;
+	     fit, 0 0;
+	     align, 0.5 0.5;
+	 }
+       }
+       description {
+         state, "clicked" 0.0;
+         visible, 1;
+         rel1 {
+           relative, 0.0 0.0;
+           offset, 1 1;
+           to, "clear_button_image";
+         } rel2 {
+           relative, 1.0 1.0;
+           offset, 1 1;
+           to, "clear_button_image";
+         }
+         color, 255 255 255 255;
+         color3, 96 96 96 255;
+         text {
+           text, "c";
+           font, "Vera";
+           size, 14;
+           fit, 0 0;
+           align, 0.5 0.5;
+         }
+       }
+     }
+#define TEXT_ON(txtrel, txtpname, txtstr) \
+     part { name, txtpname; type, TEXT; mouse_events, 0; \
+	effect, SOFT_SHADOW; description { \
+	state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 0.0; offset, 0 0; to, txtrel; } \
+	rel2 { relative, 1.0 1.0; offset, 0 0; to, txtrel; } \
+	color, 255 255 255 255; color3, 96 96 96 255; \
+	text { text, txtstr; font, "Vera"; size, 14; \
+	fit, 0 0; align, 0.5 0.5; } } \
+        description { \
+        state, "clicked" 0.0; visible, 1; \
+        rel1 { relative, 0.0 0.0; offset, 1 1; to, txtrel; } \
+        rel2 { relative, 1.0 1.0; offset, 1 1; to, txtrel; } \
+        color, 255 255 255 255; color3, 96 96 96 255; \
+        text { text, txtstr; font, "Vera"; size, 14; \
+        fit, 0 0; align, 0.5 0.5; } } }
+
+#define RIGHT_OF(rel, clipname, pname, ptxtname, txt, bw, bh) \
+     part { name, clipname; type, RECT; mouse_events, 0; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 1.0 0.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 1.0 0.0; offset, bw bh; to, rel; } \
+	color, 255 255 255 255; } \
+     description { state, "clicked" 0.0; visible, 1; \
+	rel1 { relative, 1.0 0.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 1.0 0.0; offset, bw bh; to, rel; } \
+	color, 255 255 255 192; } } \
+     part { name, pname; type, IMAGE; mouse_events, 1; \
+     clip_to, clipname ; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 1.0 0.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 1.0 0.0; offset, bw bh; to, rel; } \
+	image { normal, "text_button.png"; border, 0 0 0 6; } \
+	} } \
+     TEXT_ON(pname, ptxtname, txt)
+#define SOUTH_OF(rel, clipname, pname, ptxtname, txt, bw, bh) \
+     part { name, clipname; type, RECT; mouse_events, 0; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 0.0 1.0; offset, bw bh; to, rel; } \
+	color, 255 255 255 255; } \
+     description { state, "clicked" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 0.0 1.0; offset, bw bh; to, rel; } \
+	color, 255 255 255 192; } } \
+     part { name, pname; type, IMAGE; mouse_events, 1; \
+     clip_to, clipname ; \
+     description { state, "default" 0.0; visible, 1; \
+	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
+	rel2 { relative, 0.0 1.0; offset, bw bh; to, rel; } \
+	image { normal, "text_button.png"; border, 0 2 0 0; } \
+	} } \
+     TEXT_ON(pname, ptxtname, txt)
+
+    RIGHT_OF("clear_button_image", "clipped_divide", "divide_button_image",
+    "divide_button_text", "/", 24, 24)
+    RIGHT_OF("divide_button_image", "clipped_times", "times_button_image",
+    "times_button_text", "*", 24, 24);
+    RIGHT_OF("times_button_image", "clipped_minus", "minus_button_image",
+    "minus_button_text", "-", 24, 24);
+    SOUTH_OF("clear_button_image", "clipped_seven", "seven_button_image",
+    "seven_button_text", "7", 24, 24);
+    RIGHT_OF("seven_button_image", "clipped_eight", "eight_button_image",
+    "eight_button_text", "8", 24, 24);
+    RIGHT_OF("eight_button_image", "clipped_nine", "nine_button_image",
+    "nine_button_text", "9", 24, 24);
+    RIGHT_OF("nine_button_image", "clipped_plus", "plus_button_image",
+    "plus_button_text", "+", 24, 48);
+    SOUTH_OF("seven_button_image", "clipped_four", "four_button_image",
+    "four_button_text", "4", 24, 24);
+    RIGHT_OF("four_button_image", "clipped_five", "five_button_image",
+    "five_button_text", "5", 24, 24);
+    RIGHT_OF("five_button_image", "clipped_six", "six_button_image",
+    "six_button_text", "6", 24, 24);
+    SOUTH_OF("four_button_image", "clipped_one", "one_button_image",
+    "one_button_text", "1", 24, 24);
+    RIGHT_OF("one_button_image", "clipped_two", "two_button_image",
+    "two_button_text", "2", 24, 24);
+    RIGHT_OF("two_button_image", "clipped_three", "three_button_image",
+    "three_button_text", "3", 24, 24);
+    SOUTH_OF("three_button_image", "clipped_decimal", "decimal_button_image",
+    "decimal_button_text", ".", 24, 24);
+    SOUTH_OF("one_button_image", "clipped_zero", "zero_button_image",
+    "zero_button_text", "0", 48, 24);
+    RIGHT_OF("three_button_image", "clipped_equals", "equals_button_image",
+    "equals_button_text", "=", 24, 48);
+   }
+   programs {
+#define BUTTON_CB(pname, bclip, bname, emits, cbin, cbout) \
+       program { name, pname; signal, "mouse,clicked,1"; source, bname; \
+       action, SIGNAL_EMIT emits "";  } \
+       program { name, cbout; signal, "mouse,down,1"; source, bname; \
+       action, STATE_SET "clicked" 0.0; target, bclip; \
+       transition, LINEAR 0.1; } \
+       program { name, cbin; signal, "mouse,up,1"; source, bname; \
+       action, STATE_SET "default" 0.0; target, bclip; \
+       transition, DECELERATE 0.2; }
+    BUTTON_CB("clear_clicked", "clear_button_text", \
+	"clear_button_image", "OP_CLR", "clearin", "clearout")
+    BUTTON_CB("divide_clicked", "divide_button_text", \
+	"divide_button_image", "OP_DIV", "dividein", "divideout")
+    BUTTON_CB("multiply_clicked", "times_button_text", \
+	"times_button_image", "OP_MUT", "multiplyin", "multiplyout")
+    BUTTON_CB("addition_clicked", "plus_button_text", \
+	"plus_button_image", "OP_ADD", "additionin", "additionout")
+    BUTTON_CB("subtraction_clicked", "minus_button_text", \
+	"minus_button_image", "OP_SUB", "minusin", "minusout")
+    BUTTON_CB("equals_clicked", "equals_button_text", \
+	"equals_button_image", "OP_EQU", "clippedin", "clippedout")
+    BUTTON_CB("decimal_clicked", "decimal_button_text", \
+	"decimal_button_image", "OP_DEC", "decimalin", "decimalout")
+    BUTTON_CB("zero_clicked", "zero_button_text", \
+	"zero_button_image", "NUM_0", "zeroin", "zerout")
+    BUTTON_CB("one_clicked", "one_button_text", \
+	"one_button_image", "NUM_1", "onein", "oneout")
+    BUTTON_CB("two_clicked", "two_button_text", \
+	"two_button_image", "NUM_2", "twoin", "twoout")
+    BUTTON_CB("three_clicked", "three_button_text", \
+	"three_button_image", "NUM_3", "threein", "threeout")
+    BUTTON_CB("four_clicked", "four_button_text", \
+	"four_button_image", "NUM_4", "fourin", "fourout")
+    BUTTON_CB("five_clicked", "five_button_text", \
+	"five_button_image", "NUM_5", "fivein", "fiveout")
+    BUTTON_CB("six_clicked", "six_button_text", \
+	"six_button_image", "NUM_6", "sixin", "sixout")
+    BUTTON_CB("seven_clicked", "seven_button_text", \
+	"seven_button_image", "NUM_7", "sevenin", "sevenout")
+    BUTTON_CB("eight_clicked", "eight_button_text", \
+	"eight_button_image", "NUM_8", "eightin", "eightout")
+    BUTTON_CB("nine_clicked", "nine_button_text", \
+	"nine_button_image", "NUM_9", "ninein", "nineout")
+   }
+ }
+}

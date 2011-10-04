@@ -1,0 +1,81 @@
+Equate Edje README
+
+Creating an equate edje theme is quite simple. You need
+to make a group 'Main' containing a part EquateAnswer 
+which will be the text object equate uses for its display.
+
+You should probably emit the following signals to get
+anything done.
+
+// MATH OPERATORS //
+Signal: 	OP_CLR
+Source: 	""
+Description:	 Clear the calculation buffer
+
+Signal:		OP_DIV
+Source:		""
+Description:	Insert a divide operator
+
+Signal:		OP_MUT
+Source:		""
+Description:	Insert a mutplication operator
+
+Signal:		OP_ADD
+Source:		""
+Description:	Insert an addition operator
+
+Signal:		OP_SUB
+Source:		""
+Description:	Insert a subtraction operator
+
+Signal:		OP_EQU
+Source:
+Description:	Return the result of the calculation
+
+Signal:		OP_DEC
+Source:		""
+Description:	Insert a decimal point
+
+
+// NUMBERS //
+Signal:		NUM_0
+Source:		""
+Description:	Insert a zero
+
+Signal:		NUM_1
+Source:		""
+Description:	Insert a number one
+
+Signal:		NUM_2
+Source:		""
+Description:	Insert a number two
+
+Signal:		NUM_3
+Source:		""
+Description:	Insert a number three
+
+Signal:		NUM_4
+Source:		""
+Description:	Insert a number four
+
+Signal:		NUM_5
+Source:		""
+Description:	Insert a number five
+
+Signal:		NUM_6
+Source:		""
+Description:	Insert a number six
+
+Signal:		NUM_7
+Source:		""
+Description:	Insert a number seven
+
+Signal:		NUM_8
+Source:		""
+Description:	Insert a number eight
+
+Signal:		NUM_9
+Source:		""
+Description:	Insert a number nine
+
+
