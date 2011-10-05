@@ -8,6 +8,9 @@ Evas_Object *ly;
 void
 equate_init_gui(Equate * equate, int argc, char **argv)
 {
+   char buf[1024];
+   char *pkgdatadir;
+
    if (inited == 1)
      return;
    if (equate)
@@ -19,8 +22,11 @@ equate_init_gui(Equate * equate, int argc, char **argv)
 
 
         ly = elm_layout_add(win);
-        elm_layout_file_set(ly, "/usr/share/equate/themes/equate.edj",
-                            "Main");
+        pkgdatadir = getenv("EQUATE_PKGDATA_DIR");
+        if (!pkgdatadir)
+          pkgdatadir = PACKAGE_PKGDATA_DIR;
+        snprintf(buf, sizeof(buf), "%s/themes/equate.edj", pkgdatadir);
+        elm_layout_file_set(ly, buf, "Main");
         evas_object_size_hint_weight_set(ly, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
         evas_object_size_hint_align_set(ly, EVAS_HINT_FILL, EVAS_HINT_FILL);
         elm_win_resize_object_add(win, ly);

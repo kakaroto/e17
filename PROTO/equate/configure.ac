@@ -1,94 +1,73 @@
 dnl Process this file with autoconf to produce a configure script.
 
-# get rid of that stupid cache mechanism
-rm -f config.cache
+### Version
 
-AC_INIT(configure.ac)
-AM_INIT_AUTOMAKE(equate, 0.0.4)
-AM_CONFIG_HEADER(config.h)
+m4_define([v_maj], [0])
+m4_define([v_min], [99])
+m4_define([v_mic], [0])
 
-AC_ISC_POSIX
+m4_define([evil_version], [v_maj.v_min.v_mic])
+
+AC_INIT([equate], [evil_version], [enlightenment-devel@lists.sourceforge.net])
+AC_PREREQ([2.60])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_HEADERS([config.h])
+
+AC_CANONICAL_HOST
+
+AM_INIT_AUTOMAKE([1.6 dist-bzip2])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
+
+### Checks for programs
+
 AC_PROG_CC
-AM_PROG_CC_STDC
+
+# pkg-config
+PKG_PROG_PKG_CONFIG
+
+
+### Checks for libraries
+
+PKG_CHECK_MODULES([EQUATE], [elementary edje ecore-evas ecore evas >= 1.0.0])
+
+
+### Checks for compiler characteristics
+
 AC_HEADER_STDC
-AC_C_CONST
-AM_ENABLE_SHARED
-AM_PROG_LIBTOOL
 
-AC_CHECK_FUNCS(fmemopen)
-AC_CHECK_FUNCS(open_memstream)
 
-if test "x${exec_prefix}" = "xNONE"; then
-  if test "x${prefix}" = "xNONE"; then
-    bindir="${ac_default_prefix}/bin";
-  else
-    bindir="${prefix}/bin";
-  fi
-else
-  if test "x${prefix}" = "xNONE"; then
-    bindir="${ac_default_prefix}/bin";
-  else
-    bindir="${prefix}/bin";
-  fi
-fi
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
-if test "x${exec_prefix}" = "xNONE"; then
-  if test "x${prefix}" = "xNONE"; then
-    libdir="${ac_default_prefix}/lib";
-  else
-    libdir="${prefix}/lib";
-  fi
-else
-  if test "x${prefix}" = "xNONE"; then
-    libdir="${ac_default_prefix}/lib";
-  else
-    libdir="${prefix}/lib";
-  fi
-fi
-
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
-fi
-
-dnl Set PACKAGE_BIN_DIR in config.h.
-if test "x${bindir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin")
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}")
-fi
-
-dnl Set PACKAGE_LIB_DIR in config.h.
-if test "x${libdir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib")
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}")
-fi
-
-dnl Set PACKAGE_SOURCE_DIR in config.h.
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
-
-PKG_CHECK_MODULES(EQUATE, [elementary])
-
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 data/Makefile
 data/images/Makefile
-],[
 ])
+
+AC_OUTPUT
+
+
+#####################################################################
+## Info
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE_NAME $PACKAGE_VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  OS...................: ${host_os}"
+echo
+echo "Compilation............: make (or gmake)"
+echo "  CPPFLAGS.............: $CPPFLAGS"
+echo "  CFLAGS...............: $CFLAGS"
+echo "  LDFLAGS..............: $LDFLAGS"
+echo
+echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
+echo "  prefix...............: $prefix"
+echo

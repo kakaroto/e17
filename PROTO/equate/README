@@ -2,3 +2,6 @@ Equate a calc based on EFL based on Equate 0.0.4 developped sometime ago by Andr
 
 Requirements: Elementary
 
+Environment Variables:
+
+EQUATE_PKGDATA_DIR: if set, it must be a directory containing "themes/equate.edj"
