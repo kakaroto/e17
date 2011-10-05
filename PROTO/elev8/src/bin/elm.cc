@@ -3331,7 +3331,7 @@ elm_v8_setup(Handle<ObjectTemplate> global)
    elm->Set(String::New("window"), FunctionTemplate::New(elm_main_window));
    elm->Set(String::New("loop_time"), FunctionTemplate::New(elm_loop_time));
    elm->Set(String::New("exit"), FunctionTemplate::New(elm_exit));
-   elm->SetAccessor(String::New("datadir"), &datadir_getter, &datadir_setter);
+   elm->SetAccessor(String::New("datadir"), datadir_getter, datadir_setter);
 
    /* setup data directory */
    the_datadir = Persistent<String>::New(String::New(PACKAGE_DATA_DIR "/" ));
