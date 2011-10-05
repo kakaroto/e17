@@ -1112,7 +1112,7 @@ public:
    CElmBox(CEvasObject *parent, Local<Object> obj) :
        CEvasObject()
      {
-        eo = elm_box_add(parent->get());
+        eo = elm_box_add(parent->top_widget_get());
         construct(eo, obj);
 
         /*
@@ -1287,7 +1287,7 @@ public:
    CElmIcon(CEvasObject *parent, Local<Object> obj) :
        CEvasObject()
      {
-        eo = elm_icon_add(parent->get());
+        eo = elm_icon_add(parent->top_widget_get());
         construct(eo, obj);
      }
 
@@ -1347,6 +1347,20 @@ public:
           }
      }
 
+   virtual Handle<Value> prescale_get() const
+     {
+        int prescale=elm_icon_prescale_get(eo);
+        return Integer::New(prescale);
+     }
+
+   virtual void prescale_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             elm_icon_prescale_set(eo, val->IntegerValue());
+          }
+     }
+
    virtual Handle<Value> scale_down_get() const
      {
         Eina_Bool up, down;
@@ -1380,6 +1394,7 @@ template<> CEvasObject::CPropHandler<CElmIcon>::property_list
 CEvasObject::CPropHandler<CElmIcon>::list[] = {
      PROP_HANDLER(CElmIcon, scale_up),
      PROP_HANDLER(CElmIcon, scale_down),
+     PROP_HANDLER(CElmIcon, prescale),
      { NULL, NULL, NULL },
 };
 
