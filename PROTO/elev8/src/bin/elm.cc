@@ -742,6 +742,22 @@ public:
      {
         return String::New(elm_object_style_get(eo));
      }
+
+   virtual void visible_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          {
+             if (val->BooleanValue())
+               evas_object_show(eo);
+             else
+               evas_object_hide(eo);
+          }
+     }
+
+   virtual Handle<Value> visible_get(void) const
+     {
+        return Boolean::New(evas_object_visible_get(eo));
+     }
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -764,6 +780,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, scale),
      PROP_HANDLER(CEvasObject, pointer),
      PROP_HANDLER(CEvasObject, style),
+     PROP_HANDLER(CEvasObject, visible),
      { NULL, NULL, NULL },
 };
 
