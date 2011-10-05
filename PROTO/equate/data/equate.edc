@@ -165,7 +165,7 @@ collections {
 
    BUTTON("four", "4", "NUM_4");
    BUTTON("five", "5", "NUM_5");
-   BUTTON("six", "6", "NUL_6");
+   BUTTON("six", "6", "NUM_6");
    //BUTTON("nine", "9", "OP_DIV");
    BUTTON("one", "1", "NUM_1");
    BUTTON("two", "2", "NUM_2");
