@@ -3604,7 +3604,7 @@ Handle<Value>
 elm_main_window(const Arguments& args)
 {
    if (args.Length() != 1)
-     return ThrowException(String::New("Bad parameters"));
+     return ThrowException(Exception::Error(String::New("Bad parameters")));
 
    if (!args[0]->IsObject())
      return Undefined();
