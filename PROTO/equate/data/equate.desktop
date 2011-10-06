@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Equate
+GenericName=Calculator
+Comment=EFL Calculator
+Icon=equate
+TryExec=equate
+Exec=equate
+Terminal=false
+Categories=X-ENLIGHTENMENT;Utility;
+StartupWMClass=equate

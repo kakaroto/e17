@@ -5,6 +5,7 @@
 void            equate_clear(void);
 int             equate_append(char *str);
 double          equate_eval(void);
+const char     *equate_string_get(void);
 
 /* Fonctions type.                                   */
 typedef double  (*func_t) (double);

@@ -18,7 +18,13 @@ all: $(EDCS)
 .edc.edj:
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
-EXTRA_DIST = $(EDCS)
+desktopdir = $(datadir)/applications
+desktop_DATA = equate.desktop
+
+icondir = $(datadir)/icons
+icon_DATA = equate.png
+
+EXTRA_DIST = $(EDCS) equate.png equate.desktop
 
 clean-local:
 	rm -f $(EDJS)

@@ -75,6 +75,7 @@
 #line 1 "calc.y"
 
 #include <math.h>               /* For math functions, cos(), sin(), etc. */
+#include "calc.h"
 #include "Equate.h"
 
 #define YYERROR_VERBOSE
