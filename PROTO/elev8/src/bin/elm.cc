@@ -960,6 +960,8 @@ CEvasObject::CPropHandler<CElmButton>::list[] = {
 };
 
 class CElmBackground : public CEvasObject {
+protected:
+   static CPropHandler<CElmBackground> prop_handler;
 public:
    explicit CElmBackground(CEvasObject *parent, Local<Object> obj) :
        CEvasObject()
@@ -970,6 +972,35 @@ public:
 
    virtual ~CElmBackground()
      {
+     }
+
+   virtual Handle<ObjectTemplate> get_template(void)
+     {
+        Handle<ObjectTemplate> ot = CEvasObject::get_template();
+        prop_handler.fill_template(ot);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, Handle<Value> value)
+     {
+        CPropHandler<CElmBackground>::prop_setter setter;
+
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
+     }
+
+   virtual Handle<Value> prop_get(const char *prop_name) const
+     {
+        CPropHandler<CElmBackground>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
+        return CEvasObject::prop_get(prop_name);
      }
 
    virtual void image_set(Handle<Value> val)
@@ -991,6 +1022,69 @@ public:
           return Null();
      }
 
+  virtual Handle<Value> red_get() const
+    {
+       int r, g, b;
+       elm_bg_color_get(eo, &r, &g, &b);
+       return Number::New(r);
+    }
+
+  virtual void red_set(Handle<Value> val)
+    {
+       fprintf(stderr, "Red Set\n");
+       if (val->IsNumber())
+         {
+            int r, g, b;
+            elm_bg_color_get(eo, &r, &g, &b);
+        r = val->ToNumber()->Value();
+            elm_bg_color_set(eo, r, g, b);
+         }
+    }
+
+  virtual Handle<Value> green_get() const
+    {
+       int r, g, b;
+       elm_bg_color_get(eo, &r, &g, &b);
+       return Number::New(g);
+    }
+
+  virtual void green_set(Handle<Value> val)
+    {
+       if (val->IsNumber())
+         {
+            int r, g, b;
+            elm_bg_color_get(eo, &r, &g, &b);
+            g = val->ToNumber()->Value();
+            elm_bg_color_set(eo, r, g, b);
+        fprintf(stderr, "Set green to %d\n", g);
+         }
+    }
+  virtual Handle<Value> blue_get() const
+    {
+       int r, g, b;
+       elm_bg_color_get(eo, &r, &g, &b);
+       return Number::New(b);
+    }
+
+  virtual void blue_set(Handle<Value> val)
+    {
+       if (val->IsNumber())
+         {
+            int r, g, b;
+            elm_bg_color_get(eo, &r, &g, &b);
+        b = val->ToNumber()->Value();
+            elm_bg_color_set(eo, r, g, b);
+         }
+    }
+
+};
+
+template<> CEvasObject::CPropHandler<CElmBackground>::property_list
+CEvasObject::CPropHandler<CElmBackground>::list[] = {
+  PROP_HANDLER(CElmBackground, red),
+  PROP_HANDLER(CElmBackground, green),
+  PROP_HANDLER(CElmBackground, blue),
+  { NULL, NULL, NULL },
 };
 
 class CElmRadio : public CEvasObject {
