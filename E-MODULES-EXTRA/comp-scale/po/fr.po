@@ -1,15 +1,16 @@
 # Comp-Scale module (e17), French translation.
 # This file is put in the public domain.
 # batden <batden@orange.fr>, 2011.
+# dazibao <dazibao@sfr.fr>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Comp-Scale module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-06-24 12:50+0400\n"
-"PO-Revision-Date: 2011-06-24 12:52+0400\n"
-"Last-Translator: batden <batden@orange.fr>\n"
-"Language-Team: Enlightenment French Team <pourunmondesansgourou@gmail.com>\n"
+"POT-Creation-Date: 2011-10-06 08:44+0200\n"
+"PO-Revision-Date: 2011-10-06 10:10+0200\n"
+"Last-Translator: dazibao <dazibao@sfr.fr>\n"
+"Language-Team: Enlightenment French Team <sansgourou@gmail.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -19,192 +20,160 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_config.c:56
+#: src/e_mod_config.c:57
 msgid "Scale Windows Module"
 msgstr "Module Comp-scale"
 
-#: src/e_mod_config.c:117
+#: src/e_mod_config.c:119
 msgid "Current Desktop"
 msgstr "Bureau actuel"
 
-#: src/e_mod_config.c:118
-#: src/e_mod_config.c:151
+#: src/e_mod_config.c:120 src/e_mod_config.c:153
 msgid "Minimum space between windows"
 msgstr "Espace minimum entre les fenêtres"
 
-#: src/e_mod_config.c:120
-#: src/e_mod_config.c:153
+#: src/e_mod_config.c:122 src/e_mod_config.c:155
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: src/e_mod_config.c:124
-#: src/e_mod_config.c:157
+#: src/e_mod_config.c:126 src/e_mod_config.c:159
 msgid "Scale duration"
 msgstr "Durée de la réduction"
 
-#: src/e_mod_config.c:126
-#: src/e_mod_config.c:159
-#: src/e_mod_config.c:198
+#: src/e_mod_config.c:128 src/e_mod_config.c:161 src/e_mod_config.c:200
 #, c-format
 msgid "%1.2f"
 msgstr "%1.2f"
 
-#: src/e_mod_config.c:131
-#: src/e_mod_config.c:163
+#: src/e_mod_config.c:133 src/e_mod_config.c:165
 msgid "Slotted Layout"
 msgstr "Disposition contrainte"
 
-#: src/e_mod_config.c:133
-#: src/e_mod_config.c:165
+#: src/e_mod_config.c:135 src/e_mod_config.c:167
 msgid "Natural Layout"
 msgstr "Disposition naturelle"
 
-#: src/e_mod_config.c:137
-#: src/e_mod_config.c:167
+#: src/e_mod_config.c:139 src/e_mod_config.c:169
 msgid "Grow more!"
 msgstr "Plus d'ampleur !"
 
-#: src/e_mod_config.c:140
-#: src/e_mod_config.c:170
+#: src/e_mod_config.c:142 src/e_mod_config.c:172
 msgid "Keep it tight!"
 msgstr "Bien resserré !"
 
-#: src/e_mod_config.c:143
-#: src/e_mod_config.c:176
+#: src/e_mod_config.c:145 src/e_mod_config.c:178
 msgid "Show iconified windows"
 msgstr "Afficher les fenêtres minimisées"
 
-#: src/e_mod_config.c:150
+#: src/e_mod_config.c:152
 msgid "Show All Desktops"
 msgstr "Afficher tous les bureaux"
 
-#: src/e_mod_config.c:173
-#: src/e_mod_config.c:201
+#: src/e_mod_config.c:175 src/e_mod_config.c:206
 msgid "Fade in windows"
 msgstr "Ouverture en fondu des fenêtres"
 
-#: src/e_mod_config.c:183
-#: src/e_mod_config.c:204
+#: src/e_mod_config.c:185 src/e_mod_config.c:209
 msgid "Fade out shelves and popups"
 msgstr "Fermeture en fondu des racks et pop-up"
 
-#: src/e_mod_config.c:186
-#: src/e_mod_config.c:207
+#: src/e_mod_config.c:188 src/e_mod_config.c:212
 msgid "Darken desktop"
 msgstr "Assombrir le bureau"
 
-#: src/e_mod_config.c:194
+#: src/e_mod_config.c:196
 msgid "Pager Settings"
 msgstr "Paramétrage du Pager"
 
-#: src/e_mod_config.c:196
+#: src/e_mod_config.c:198
 msgid "Zoom duration"
 msgstr "Durée du zoom"
 
-#: src/e_mod_main.c:173
+#: src/e_mod_config.c:203
+msgid "Overlap Shelves"
+msgstr "Masquer les racks"
+
+#: src/e_mod_main.c:229
 msgid "Look"
 msgstr "Aspect"
 
-#: src/e_mod_main.c:175
+#: src/e_mod_main.c:231
 msgid "Composite Scale Windows"
 msgstr "Réduction composite"
 
-#: src/e_mod_main.c:220
-#: src/e_mod_main.c:245
-#: src/e_mod_main.c:247
-#: src/e_mod_main.c:249
-#: src/e_mod_main.c:251
-#: src/e_mod_main.c:253
-#: src/e_mod_main.c:255
-#: src/e_mod_main.c:257
-#: src/e_mod_main.c:313
-#: src/e_mod_main.c:314
-#: src/e_mod_main.c:315
-#: src/e_mod_main.c:316
-#: src/e_mod_main.c:317
+#: src/e_mod_main.c:277 src/e_mod_main.c:303 src/e_mod_main.c:305
+#: src/e_mod_main.c:307 src/e_mod_main.c:309 src/e_mod_main.c:311
+#: src/e_mod_main.c:313 src/e_mod_main.c:315 src/e_mod_main.c:374
+#: src/e_mod_main.c:375 src/e_mod_main.c:376 src/e_mod_main.c:377
+#: src/e_mod_main.c:378 src/e_mod_main.c:503
 msgid "Scale Windows"
 msgstr "Réduction des fenêtres"
 
-#: src/e_mod_main.c:247
-#: src/e_mod_main.c:314
+#: src/e_mod_main.c:305 src/e_mod_main.c:375
 msgid "Scale Windows (All Desktops)"
 msgstr "Réduction des fenêtres (tous les bureaux)"
 
-#: src/e_mod_main.c:249
-#: src/e_mod_main.c:315
+#: src/e_mod_main.c:307 src/e_mod_main.c:376
 msgid "Scale Windows (By Class)"
 msgstr "Réduction des fenêtres (par classe)"
 
-#: src/e_mod_main.c:251
-#: src/e_mod_main.c:262
-#: src/e_mod_main.c:316
-#: src/e_mod_main.c:320
+#: src/e_mod_main.c:309 src/e_mod_main.c:320 src/e_mod_main.c:377
+#: src/e_mod_main.c:381
 msgid "Select Next"
 msgstr "Sélectionner le (la) suivant(e)"
 
-#: src/e_mod_main.c:253
-#: src/e_mod_main.c:264
-#: src/e_mod_main.c:317
-#: src/e_mod_main.c:321
+#: src/e_mod_main.c:311 src/e_mod_main.c:322 src/e_mod_main.c:378
+#: src/e_mod_main.c:382
 msgid "Select Previous"
 msgstr "Sélectionner le (la) précédent(e)"
 
-#: src/e_mod_main.c:255
+#: src/e_mod_main.c:313
 msgid "Select Next (All)"
 msgstr "Sélectionner toutes les suivantes"
 
-#: src/e_mod_main.c:257
+#: src/e_mod_main.c:315
 msgid "Select Previous (All)"
 msgstr "Sélectionner toutes les précédentes"
 
-#: src/e_mod_main.c:260
-#: src/e_mod_main.c:262
-#: src/e_mod_main.c:264
-#: src/e_mod_main.c:266
-#: src/e_mod_main.c:268
-#: src/e_mod_main.c:270
-#: src/e_mod_main.c:272
-#: src/e_mod_main.c:319
-#: src/e_mod_main.c:320
-#: src/e_mod_main.c:321
-#: src/e_mod_main.c:322
-#: src/e_mod_main.c:323
-#: src/e_mod_main.c:324
-#: src/e_mod_main.c:325
+#: src/e_mod_main.c:318 src/e_mod_main.c:320 src/e_mod_main.c:322
+#: src/e_mod_main.c:324 src/e_mod_main.c:326 src/e_mod_main.c:328
+#: src/e_mod_main.c:330 src/e_mod_main.c:380 src/e_mod_main.c:381
+#: src/e_mod_main.c:382 src/e_mod_main.c:383 src/e_mod_main.c:384
+#: src/e_mod_main.c:385 src/e_mod_main.c:386 src/e_mod_main.c:515
 msgid "Scale Pager"
 msgstr "Réduction du Pager"
 
-#: src/e_mod_main.c:266
-#: src/e_mod_main.c:322
+#: src/e_mod_main.c:324 src/e_mod_main.c:383
 msgid "Select Left"
 msgstr "Sélection vers la gauche"
 
-#: src/e_mod_main.c:268
-#: src/e_mod_main.c:323
+#: src/e_mod_main.c:326 src/e_mod_main.c:384
 msgid "Select Right"
 msgstr "Sélection vers la droite"
 
-#: src/e_mod_main.c:270
-#: src/e_mod_main.c:324
+#: src/e_mod_main.c:328 src/e_mod_main.c:385
 msgid "Select Up"
 msgstr "Sélection vers le haut"
 
-#: src/e_mod_main.c:272
-#: src/e_mod_main.c:325
+#: src/e_mod_main.c:330 src/e_mod_main.c:386
 msgid "Select Down"
 msgstr "Sélection vers le bas"
 
-#: src/e_mod_main.c:397
-msgid "Scale"
-msgstr "Comp-scale"
+#: src/e_mod_main.c:509
+msgid "Scale all Windows"
+msgstr "Réduire toutes les fenêtres"
 
-#: src/e_mod_main.c:526
+#: src/e_mod_main.c:614
 msgid "Settings"
 msgstr "Configuration"
 
+#~ msgid "Scale"
+#~ msgstr "Comp-scale"
+
 #~ msgid "General"
 #~ msgstr "Général"
+
 #~ msgid "Use Switch 1"
 #~ msgstr "Utiliser Switch 1"
 
@@ -247,8 +216,9 @@ msgstr "Configuration"
 #, fuzzy
 #~ msgid "Scale Windows Configuration Updated"
 #~ msgstr "Configuration de Squelette actualisée."
+
 #~ msgid "Skel"
 #~ msgstr "Skel"
+
 #~ msgid "Skeleton"
 #~ msgstr "Squelette"
-

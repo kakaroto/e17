@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Scale\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-06-24 13:46+0200\n"
-"PO-Revision-Date: 2011-06-24 13:47+0200\n"
+"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
+"POT-Creation-Date: 2011-10-06 09:00-0700\n"
+"PO-Revision-Date: 2011-10-06 18:04+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: Italiano\n"
 "MIME-Version: 1.0\n"
@@ -15,146 +15,151 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
 
-#: src/e_mod_config.c:56
+#: ../src/e_mod_config.c:57
 msgid "Scale Windows Module"
 msgstr "Modulo Scale"
 
-#: src/e_mod_config.c:117
+#: ../src/e_mod_config.c:119
 msgid "Current Desktop"
 msgstr "Desktop attuale"
 
-#: src/e_mod_config.c:118 src/e_mod_config.c:151
+#: ../src/e_mod_config.c:120 ../src/e_mod_config.c:153
 msgid "Minimum space between windows"
 msgstr "Spazio minimo tra le finestre"
 
-#: src/e_mod_config.c:120 src/e_mod_config.c:153
+#: ../src/e_mod_config.c:122 ../src/e_mod_config.c:155
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
 
-#: src/e_mod_config.c:124 src/e_mod_config.c:157
+#: ../src/e_mod_config.c:126 ../src/e_mod_config.c:159
 msgid "Scale duration"
 msgstr "Durata scalatura"
 
-#: src/e_mod_config.c:126 src/e_mod_config.c:159 src/e_mod_config.c:198
+#: ../src/e_mod_config.c:128 ../src/e_mod_config.c:161
+#: ../src/e_mod_config.c:200
 #, c-format
 msgid "%1.2f"
 msgstr "%1.2f"
 
-#: src/e_mod_config.c:131 src/e_mod_config.c:163
+#: ../src/e_mod_config.c:133 ../src/e_mod_config.c:165
 msgid "Slotted Layout"
 msgstr "Disposizione in griglia"
 
-#: src/e_mod_config.c:133 src/e_mod_config.c:165
+#: ../src/e_mod_config.c:135 ../src/e_mod_config.c:167
 msgid "Natural Layout"
 msgstr "Disposizione naturale"
 
-#: src/e_mod_config.c:137 src/e_mod_config.c:167
+#: ../src/e_mod_config.c:139 ../src/e_mod_config.c:169
 msgid "Grow more!"
 msgstr "Espandi"
 
-#: src/e_mod_config.c:140 src/e_mod_config.c:170
+#: ../src/e_mod_config.c:142 ../src/e_mod_config.c:172
 msgid "Keep it tight!"
 msgstr "Mantieni compatte"
 
-#: src/e_mod_config.c:143 src/e_mod_config.c:176
+#: ../src/e_mod_config.c:145 ../src/e_mod_config.c:178
 msgid "Show iconified windows"
 msgstr "Mostra finestre iconificate"
 
-#: src/e_mod_config.c:150
+#: ../src/e_mod_config.c:152
 msgid "Show All Desktops"
 msgstr "Mostra tutti i desktop"
 
-#: src/e_mod_config.c:173 src/e_mod_config.c:201
+#: ../src/e_mod_config.c:175 ../src/e_mod_config.c:206
 msgid "Fade in windows"
 msgstr "Apri finestre in dissolvenza"
 
-#: src/e_mod_config.c:183 src/e_mod_config.c:204
+#: ../src/e_mod_config.c:185 ../src/e_mod_config.c:209
 msgid "Fade out shelves and popups"
 msgstr "Chiudi mensole e popup in dissolvenza"
 
-#: src/e_mod_config.c:186 src/e_mod_config.c:207
+#: ../src/e_mod_config.c:188 ../src/e_mod_config.c:212
 msgid "Darken desktop"
 msgstr "Oscura desktop"
 
-#: src/e_mod_config.c:194
+#: ../src/e_mod_config.c:196
 msgid "Pager Settings"
 msgstr "Impostazioni del pager"
 
-#: src/e_mod_config.c:196
+#: ../src/e_mod_config.c:198
 msgid "Zoom duration"
 msgstr "Durata dello zoom"
 
-#: src/e_mod_main.c:173
+#: ../src/e_mod_config.c:203
+msgid "Overlap Shelves"
+msgstr "Sovrapponi alle mensole"
+
+#: ../src/e_mod_main.c:229
 msgid "Look"
 msgstr "Aspetto"
 
-#: src/e_mod_main.c:175
+#: ../src/e_mod_main.c:231
 msgid "Composite Scale Windows"
 msgstr "Composite - Scalatura finestre"
 
-#: src/e_mod_main.c:220 src/e_mod_main.c:245 src/e_mod_main.c:247
-#: src/e_mod_main.c:249 src/e_mod_main.c:251 src/e_mod_main.c:253
-#: src/e_mod_main.c:255 src/e_mod_main.c:257 src/e_mod_main.c:313
-#: src/e_mod_main.c:314 src/e_mod_main.c:315 src/e_mod_main.c:316
-#: src/e_mod_main.c:317
+#: ../src/e_mod_main.c:277 ../src/e_mod_main.c:303 ../src/e_mod_main.c:305
+#: ../src/e_mod_main.c:307 ../src/e_mod_main.c:309 ../src/e_mod_main.c:311
+#: ../src/e_mod_main.c:313 ../src/e_mod_main.c:315 ../src/e_mod_main.c:374
+#: ../src/e_mod_main.c:375 ../src/e_mod_main.c:376 ../src/e_mod_main.c:377
+#: ../src/e_mod_main.c:378 ../src/e_mod_main.c:503
 msgid "Scale Windows"
 msgstr "Scala finestre"
 
-#: src/e_mod_main.c:247 src/e_mod_main.c:314
+#: ../src/e_mod_main.c:305 ../src/e_mod_main.c:375
 msgid "Scale Windows (All Desktops)"
 msgstr "Scala finestre (tutti i desktop)"
 
-#: src/e_mod_main.c:249 src/e_mod_main.c:315
+#: ../src/e_mod_main.c:307 ../src/e_mod_main.c:376
 msgid "Scale Windows (By Class)"
 msgstr "Scala finestre (per classe)"
 
-#: src/e_mod_main.c:251 src/e_mod_main.c:262 src/e_mod_main.c:316
-#: src/e_mod_main.c:320
+#: ../src/e_mod_main.c:309 ../src/e_mod_main.c:320 ../src/e_mod_main.c:377
+#: ../src/e_mod_main.c:381
 msgid "Select Next"
 msgstr "Seleziona successiva"
 
-#: src/e_mod_main.c:253 src/e_mod_main.c:264 src/e_mod_main.c:317
-#: src/e_mod_main.c:321
+#: ../src/e_mod_main.c:311 ../src/e_mod_main.c:322 ../src/e_mod_main.c:378
+#: ../src/e_mod_main.c:382
 msgid "Select Previous"
 msgstr "Seleziona precedente"
 
-#: src/e_mod_main.c:255
+#: ../src/e_mod_main.c:313
 msgid "Select Next (All)"
 msgstr "Seleziona successiva (tutte)"
 
-#: src/e_mod_main.c:257
+#: ../src/e_mod_main.c:315
 msgid "Select Previous (All)"
 msgstr "Seleziona precedente (tutte)"
 
-#: src/e_mod_main.c:260 src/e_mod_main.c:262 src/e_mod_main.c:264
-#: src/e_mod_main.c:266 src/e_mod_main.c:268 src/e_mod_main.c:270
-#: src/e_mod_main.c:272 src/e_mod_main.c:319 src/e_mod_main.c:320
-#: src/e_mod_main.c:321 src/e_mod_main.c:322 src/e_mod_main.c:323
-#: src/e_mod_main.c:324 src/e_mod_main.c:325
+#: ../src/e_mod_main.c:318 ../src/e_mod_main.c:320 ../src/e_mod_main.c:322
+#: ../src/e_mod_main.c:324 ../src/e_mod_main.c:326 ../src/e_mod_main.c:328
+#: ../src/e_mod_main.c:330 ../src/e_mod_main.c:380 ../src/e_mod_main.c:381
+#: ../src/e_mod_main.c:382 ../src/e_mod_main.c:383 ../src/e_mod_main.c:384
+#: ../src/e_mod_main.c:385 ../src/e_mod_main.c:386 ../src/e_mod_main.c:515
 msgid "Scale Pager"
 msgstr "Scala pager"
 
-#: src/e_mod_main.c:266 src/e_mod_main.c:322
+#: ../src/e_mod_main.c:324 ../src/e_mod_main.c:383
 msgid "Select Left"
 msgstr "Seleziona a sinistra"
 
-#: src/e_mod_main.c:268 src/e_mod_main.c:323
+#: ../src/e_mod_main.c:326 ../src/e_mod_main.c:384
 msgid "Select Right"
 msgstr "Seleziona a destra"
 
-#: src/e_mod_main.c:270 src/e_mod_main.c:324
+#: ../src/e_mod_main.c:328 ../src/e_mod_main.c:385
 msgid "Select Up"
 msgstr "Seleziona sopra"
 
-#: src/e_mod_main.c:272 src/e_mod_main.c:325
+#: ../src/e_mod_main.c:330 ../src/e_mod_main.c:386
 msgid "Select Down"
 msgstr "Seleziona sotto"
 
-#: src/e_mod_main.c:397
-msgid "Scale"
-msgstr "Scale"
+#: ../src/e_mod_main.c:509
+msgid "Scale all Windows"
+msgstr "Scala tutte le finestre"
 
-#: src/e_mod_main.c:526
+#: ../src/e_mod_main.c:614
 msgid "Settings"
 msgstr "Impostazioni"
