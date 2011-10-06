@@ -493,7 +493,7 @@ public:
 
    virtual Handle<Value> on_keydown_get(void) const
      {
-        return on_animate_val;
+        return on_keydown_val;
      }
 
    virtual void on_animate(void)
