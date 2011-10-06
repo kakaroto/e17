@@ -901,7 +901,7 @@ public:
    CElmButton(CEvasObject *parent, Local<Object> obj) :
        CEvasObject()
      {
-        eo = elm_button_add(parent->get());
+        eo = elm_button_add(parent->top_widget_get());
         construct(eo, obj);
      }
 
@@ -1470,18 +1470,26 @@ public:
         if (val->IsObject())
           {
              Local<Object> obj = val->ToObject();
-             Local<Value> val;
+             Local<Value> v[3];
+             Local<String> str[3];
              const char *name[3] = { "left", "center", "right" };
 
              for (int i = 0; i < 3; i++)
                {
-                  val = obj->Get(String::New(name[i]));
-                  if (val->IsString())
-                    {
-                       String::Utf8Value str(val->ToString());
-                       elm_object_text_part_set(eo, name[i], *str);
-                    }
+                  v[i] = obj->Get(String::New(name[i]));
+                  if (v[i]->IsString())
+                    str[i] = v[i]->ToString();
                }
+             String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
+#ifndef OLD_APIS
+         elm_object_text_part_set(eo, name[0], *left);
+         elm_object_text_part_set(eo,name[1], *middle);
+         elm_object_text_part_set(eo,name[2], *right);
+#else
+             elm_actionslider_label_set(eo, ELM_ACTIONSLIDER_LABEL_LEFT, *left);
+             elm_actionslider_label_set(eo, ELM_ACTIONSLIDER_LABEL_CENTER, *middle);
+             elm_actionslider_label_set(eo, ELM_ACTIONSLIDER_LABEL_RIGHT, *right);
+#endif
           }
      }
 
@@ -1491,6 +1499,7 @@ public:
         return Undefined();
      }
 
+#ifndef OLD_APIS
    bool position_from_string(Handle<Value> val, Elm_Actionslider_Pos &pos)
      {
         if (!val->IsString())
@@ -1510,11 +1519,55 @@ public:
           }
         return true;
      }
+#else
+   bool position_from_string(Handle<Value> val, Elm_Actionslider_Magnet_Pos &pos)
+     {
+        if (!val->IsString())
+          return false;
+
+        String::Utf8Value str(val);
+        if (!strcmp(*str, "left"))
+          pos = ELM_ACTIONSLIDER_MAGNET_LEFT;
+        else if (!strcmp(*str, "center"))
+          pos = ELM_ACTIONSLIDER_MAGNET_CENTER;
+        else if (!strcmp(*str, "right"))
+          pos = ELM_ACTIONSLIDER_MAGNET_RIGHT;
+        else
+          {
+             fprintf(stderr, "Invalid actionslider magnet position: %s\n", *str);
+             return false;
+          }
+        return true;
+     }
+
+   bool position_from_string(Handle<Value> val, Elm_Actionslider_Indicator_Pos &pos)
+     {
+        if (!val->IsString())
+          return false;
+
+        String::Utf8Value str(val);
+        if (!strcmp(*str, "left"))
+          pos = ELM_ACTIONSLIDER_INDICATOR_LEFT;
+        else if (!strcmp(*str, "center"))
+          pos = ELM_ACTIONSLIDER_INDICATOR_CENTER;
+        else if (!strcmp(*str, "right"))
+          pos = ELM_ACTIONSLIDER_INDICATOR_RIGHT;
+        else
+          {
+             fprintf(stderr, "Invalid actionslider indicator position: %s\n", *str);
+             return false;
+          }
+        return true;
+     }
+#endif
 
    virtual void slider_set(Handle<Value> val)
      {
+#ifndef OLD_APIS
         Elm_Actionslider_Pos pos = ELM_ACTIONSLIDER_NONE;
-
+#else
+        Elm_Actionslider_Indicator_Pos pos = ELM_ACTIONSLIDER_INDICATOR_NONE;
+#endif
         if (position_from_string(val, pos))
           elm_actionslider_indicator_pos_set(eo, pos);
      }
@@ -1526,7 +1579,11 @@ public:
 
    virtual void magnet_set(Handle<Value> val)
      {
+#ifndef OLD_APIS
         Elm_Actionslider_Pos pos = ELM_ACTIONSLIDER_NONE;
+#else
+        Elm_Actionslider_Magnet_Pos pos = ELM_ACTIONSLIDER_MAGNET_NONE;
+#endif
 
         if (position_from_string(val, pos))
           elm_actionslider_magnet_pos_set(eo, pos);
