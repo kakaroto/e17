@@ -7,6 +7,49 @@
 static Evas_Object *win;
 static Evas_Object *ly;
 
+
+static const struct
+{
+    const char *keyname;
+    int op;
+} _keymap[] = {
+    {"KP_0",        NUM_0},
+    {"0",           NUM_0},
+    {"KP_1",        NUM_1},
+    {"1",           NUM_1},
+    {"KP_2",        NUM_2},
+    {"2",           NUM_2},
+    {"KP_3",        NUM_3},
+    {"3",           NUM_3},
+    {"KP_4",        NUM_4},
+    {"4",           NUM_4},
+    {"KP_5",        NUM_5},
+    {"5",           NUM_5},
+    {"KP_6",        NUM_6},
+    {"6",           NUM_6},
+    {"KP_7",        NUM_7},
+    {"7",           NUM_7},
+    {"KP_8",        NUM_8},
+    {"8",           NUM_8},
+    {"KP_9",        NUM_9},
+    {"9",           NUM_9},
+    {"KP_Divide",   OP_DIV},
+    {"KP_Multiply", OP_MUT},
+    {"KP_Subtract", OP_SUB},
+    {"KP_Add",      OP_ADD},
+    {"plus",        OP_ADD},
+    {"minus",       OP_SUB},
+    {"asterisk",    OP_MUT},
+    {"slash",       OP_DIV},
+    {"KP_Enter",    OP_EQU},
+    {"Return",      OP_EQU},
+    {"BackSpace",   OP_CLR},
+    {"period",      OP_DEC},
+    {"comma",       OP_DEC},
+    NULL
+};
+
+
 static void
 _signal_cb(void *data, Evas_Object * o, const char *emission, const
                char *source)
@@ -192,6 +235,25 @@ _edje_callbacks_define(Evas_Object * o)
    edje_object_signal_callback_add(o, "NUM_PI", "*", _signal_cb, (void *) NUM_PI);
 }
 
+static Eina_Bool
+_key_down_cb(void *data, int type, void *event)
+{
+    Ecore_Event_Key *ev = event;
+    int i;
+
+    printf("{\"%s\", },\n", ev->key);
+
+    for (i = 0; _keymap[i].keyname; i++)
+    {
+        if (!strcmp(_keymap[i].keyname, ev->key))
+        {
+            _signal_cb((void*)_keymap[i].op, elm_layout_edje_get(ly), NULL, NULL);
+        }
+    }
+     return EINA_TRUE;
+
+}
+
 static void
 _create_gui(void)
 {
@@ -209,6 +271,8 @@ _create_gui(void)
    evas_object_size_hint_align_set(ly, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_win_resize_object_add(win, ly);
    evas_object_show(ly);
+
+  ecore_event_handler_add (ECORE_EVENT_KEY_DOWN, _key_down_cb, NULL);
 
    evas_object_show(win);
    evas_object_resize(win, 240, 320);
