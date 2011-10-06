@@ -439,7 +439,7 @@ public:
 
    virtual Handle<Value> on_clicked_get(void) const
      {
-        return on_animate_val;
+        return on_clicked_val;
      }
 
    virtual void on_keydown(Evas_Event_Key_Down *info)
@@ -451,8 +451,8 @@ public:
         // FIXME: turn the pieces below into a do_callback method
         assert(val->IsFunction());
         Handle<Function> fn(Function::Cast(*val));
-        Handle<Value> args[1] = { obj };
-        fn->Call(fn, 1, args);
+        Handle<Value> args[2] = { obj, v8::String::New(info->keyname)};
+        fn->Call(fn, 2,args);
      }
 
    static void eo_on_keydown(void *data, Evas *e, Evas_Object *obj, void *event_info)
