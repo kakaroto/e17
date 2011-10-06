@@ -154,10 +154,11 @@ protected:
              init_property(out, name, value);
           }
 
-        /* show the object, maybe */
-        Local<Value> hidden = obj->Get(String::New("hidden"));
-        if (!hidden->IsTrue())
-          show();
+      Local<Value> val = obj->Get(String::New("visible"));
+      if ((val->IsTrue()) || (val->IsUndefined()))
+        show(true);
+      else
+        show(false);
      }
 
    virtual void add_child(CEvasObject *child)
@@ -652,9 +653,14 @@ public:
         return Undefined();
      }
 
-   virtual void show()
+   virtual void show(bool show)
      {
-        evas_object_show(eo);
+        if (show)
+          {
+             evas_object_show(eo);
+          }
+        else
+             evas_object_hide(eo);
      }
 
    /* returns a list of children in an object */
