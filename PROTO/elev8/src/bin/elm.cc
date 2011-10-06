@@ -394,12 +394,31 @@ public:
         Handle<Object> obj = get_object();
         HandleScope handle_scope;
         Handle<Value> val = on_clicked_val;
-        // FIXME: pass event_info to the callback
-        // FIXME: turn the pieces below into a do_callback method
-        assert(val->IsFunction());
-        Handle<Function> fn(Function::Cast(*val));
-        Handle<Value> args[1] = { obj };
-        fn->Call(fn, 1, args);
+
+        // also provide x and y positions where it was clicked
+        //
+        if (event_info!=NULL)
+          {
+             Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down *)event_info;
+             Handle<Number> ox = Number::New(ev->canvas.x);
+             Handle<Number> oy = Number::New(ev->canvas.y);
+             // FIXME: pass event_info to the callback
+             // FIXME: turn the pieces below into a do_callback method
+             Handle<Value> args[3] = { obj, ox, oy };
+             assert(val->IsFunction());
+             Handle<Function> fn(Function::Cast(*val));
+             fn->Call(fn, 3, args);
+          }
+        else
+          {
+             // FIXME: pass event_info to the callback
+             // FIXME: turn the pieces below into a do_callback method
+             Handle<Value> args[1] = { obj };
+             assert(val->IsFunction());
+             Handle<Function> fn(Function::Cast(*val));
+             fn->Call(fn, 1, args);
+          }
+
      }
 
    static void eo_on_click(void *data, Evas_Object *eo, void *event_info)
