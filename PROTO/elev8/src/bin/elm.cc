@@ -3555,6 +3555,148 @@ CEvasObject::CPropHandler<CElmCalendar>::list[] = {
      { NULL, NULL, NULL },
 };
 
+class CElmTable : public CEvasObject {
+protected:
+  static CPropHandler<CElmTable> prop_handler;
+   /* the on_clicked function */
+   Persistent<Value> on_changed_val;
+
+public:
+   CElmTable(CEvasObject *parent, Local<Object> obj) : CEvasObject()
+     {
+        eo = elm_table_add(parent->top_widget_get());
+        construct(eo, obj);
+        items_set(obj->Get(String::New("subobjects")));
+     }
+
+   virtual void items_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          {
+             fprintf(stderr, "not an object!\n");
+             return;
+          }
+
+        Local<Object> in = val->ToObject();
+        Local<Array> props = in->GetPropertyNames();
+
+        /* iterate through elements and instantiate them */
+        for (unsigned int i = 0; i < props->Length(); i++)
+          {
+             Local<Value> x = props->Get(Integer::New(i));
+             String::Utf8Value val(x);
+
+             Local<Value> item = in->Get(x->ToString());
+
+             new_item_set(item);
+          }
+     }
+
+   virtual void new_item_set(Handle<Value> item)
+     {
+        fprintf(stderr, "Add New Table SubObject\n");
+        CEvasObject *child = NULL;
+        if (!item->IsObject())
+          {
+             // FIXME: permit adding strings here?
+             fprintf(stderr, "list item is not an object\n");
+             return;
+          }
+        Local<Value> xpos = item->ToObject()->Get(String::New("x"));
+        Local<Value> ypos = item->ToObject()->Get(String::New("y"));
+        Local<Value> width = item->ToObject()->Get(String::New("w"));
+        Local<Value> height = item->ToObject()->Get(String::New("h"));
+        Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
+
+        if ( subobj->IsObject())
+          {
+             child = realize_one(this, subobj);
+             if(!child)
+                return;
+          }
+        else
+          {
+             return;
+          }
+
+        int x,y,w,h;
+
+        if (xpos->IsNumber())
+          {
+             x = xpos->IntegerValue();
+             fprintf(stderr, "X = %d\n", x);
+          }
+        if (ypos->IsNumber())
+          {
+             y = ypos->IntegerValue();
+             fprintf(stderr, "y = %d\n", y);
+          }
+        if (width->IsNumber())
+          {
+             w = width->IntegerValue();
+             fprintf(stderr, "W = %d\n", w);
+          }
+        if (height->IsNumber())
+          {
+             h = height->IntegerValue();
+             fprintf(stderr, "H = %d\n", h);
+          }
+
+        if ( ( x + y + w + h ) > 0 )
+          {
+             elm_table_pack (this->get(), child->get(), x, y, w, h);
+          }
+     }
+
+   virtual ~CElmTable()
+     {
+     }
+
+   virtual Handle<ObjectTemplate> get_template(void)
+     {
+        Handle<ObjectTemplate> ot = CEvasObject::get_template();
+        prop_handler.fill_template(ot);
+        return ot;
+     }
+
+   virtual bool prop_set(const char *prop_name, Handle<Value> value)
+     {
+        CPropHandler<CElmTable>::prop_setter setter;
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
+     }
+
+   virtual Handle<Value> prop_get(const char *prop_name) const
+     {
+        CPropHandler<CElmTable>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+    void homogeneous_set(Handle<Value> val)
+      {
+         if (val->IsBoolean())
+           elm_table_homogeneous_set(eo, val->BooleanValue());
+      }
+
+    virtual Handle<Value> homogeneous_get() const
+      {
+         return Boolean::New(elm_table_homogeneous_get(eo));
+      }
+};
+
+template<> CEvasObject::CPropHandler<CElmTable>::property_list
+CEvasObject::CPropHandler<CElmTable>::list[] = {
+  { NULL, NULL, NULL },
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, Handle<Value> object_val)
 {
@@ -3622,6 +3764,8 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
      eo = new CElmColorSelector(parent,obj);
    else if (!strcmp(*str, "calendar"))
      eo = new CElmCalendar(parent,obj);
+   else if (!strcmp(*str, "table"))
+     eo = new CElmTable(parent,obj);
 
    if (!eo)
      {
