@@ -3459,7 +3459,8 @@ CEvasObject::CPropHandler<CElmColorSelector>::list[] = {
 class CElmCalendar : public CEvasObject {
 protected:
   static CPropHandler<CElmCalendar> prop_handler;
-  Persistent<Value> on_changed_val;
+   /* the on_clicked function */
+   Persistent<Value> on_changed_val;
 
 public:
   CElmCalendar(CEvasObject *parent, Local<Object> obj) : CEvasObject()
@@ -3467,6 +3468,10 @@ public:
        eo = elm_calendar_add(parent->top_widget_get());
        construct(eo, obj);
        marks_set(obj->Get(String::New("marks")));
+    }
+
+  virtual ~CElmCalendar()
+    {
     }
 
    Handle<Object> marks_set(Handle<Value> val)
@@ -3524,6 +3529,7 @@ public:
              elm_calendar_marks_draw (eo);
              fprintf(stderr, "Showing marks %d %d %d\n", intRepeat, mark_time.tm_year, mark_time.tm_mon);
           }
+
         return out;
      }
 
@@ -4011,6 +4017,11 @@ elm_main_window(const Arguments& args)
    if (!main_win)
      return Undefined();
 
+   /*Elm_Theme *theme = elm_theme_new();
+   char *envtheme = getenv("ELM_THEME");
+   elm_theme_set(theme, envtheme);
+   elm_object_theme_set(main_win->get(), theme);*/
+
    return main_win->get_object();
 }
 
@@ -4028,6 +4039,8 @@ elm_exit(const Arguments& args)
 }
 
 Persistent<Value> the_datadir;
+Persistent<Value> the_tmpdir;
+Persistent<Value> the_theme;
 
 Handle<Value>
 datadir_getter(Local<String> property, const AccessorInfo& info)
@@ -4043,6 +4056,37 @@ datadir_setter(Local<String> property, Local<Value> value,
    the_datadir = Persistent<Value>::New(value);
 }
 
+Handle<Value>
+tmpdir_getter(Local<String> property, const AccessorInfo& info)
+{
+   return the_tmpdir;
+}
+
+void
+tmpdir_setter(Local<String> property, Local<Value> value,
+               const AccessorInfo& info)
+{
+   the_tmpdir.Dispose();
+   the_tmpdir = Persistent<Value>::New(value);
+}
+
+Handle<Value>
+theme_getter(Local<String> property, const AccessorInfo& info)
+{
+   return the_theme;
+}
+
+void
+theme_setter(Local<String> property, Local<Value> value,
+               const AccessorInfo& info)
+{
+   the_theme.Dispose();
+   setenv("ELM_THEME",  *String::Utf8Value(value->ToString()), 1);
+   fprintf(stderr, "Setting theme to %s\n", *String::Utf8Value(value->ToString()));
+
+   the_theme = Persistent<Value>::New(value);
+}
+
 void
 elm_v8_setup(Handle<ObjectTemplate> global)
 {
@@ -4053,13 +4097,18 @@ elm_v8_setup(Handle<ObjectTemplate> global)
    elm->Set(String::New("loop_time"), FunctionTemplate::New(elm_loop_time));
    elm->Set(String::New("exit"), FunctionTemplate::New(elm_exit));
    elm->SetAccessor(String::New("datadir"), datadir_getter, datadir_setter);
+   elm->SetAccessor(String::New("tmpdir"), tmpdir_getter, tmpdir_setter);
+   elm->SetAccessor(String::New("theme"), theme_getter, theme_setter);
 
    /* setup data directory */
    the_datadir = Persistent<String>::New(String::New(PACKAGE_DATA_DIR "/" ));
+   the_tmpdir = Persistent<String>::New(String::New(PACKAGE_TMP_DIR "/" ));
 }
 
 void
 elm_v8_shutdown(void)
 {
    the_datadir.Dispose();
+   the_tmpdir.Dispose();
+   the_theme.Dispose();
 }

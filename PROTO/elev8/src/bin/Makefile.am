@@ -7,6 +7,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/bin \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+-DPACKAGE_TMP_DIR=\"/tmp\" \
 @ELEV8_CFLAGS@
 
 bin_PROGRAMS = elev8
