@@ -38,17 +38,42 @@ var my_window = new elm.window({
 	label : "Entry",
 	width : 320,
 	height : 480,
+	weight : EXPAND_BOTH,
+	align : FILL_BOTH,
 	elements : {
 		the_background : {
 			type : "background",
 			weight : EXPAND_BOTH,
+			align : FILL_BOTH,
 			resize : true,
 		},
-		the_entry : {
-			type : "entry",
-			text : entry_text,
-			resize : true,
+		the_box : {
+			type : "box",
 			weight : EXPAND_BOTH,
+			align : FILL_BOTH,
+			resize : true,
+			elements : {
+				the_entry : {
+					type : "entry",
+					text : entry_text,
+					weight : EXPAND_BOTH,
+					align : FILL_BOTH,
+					line_wrap : 3,
+					editable : true,
+				},
+				the_pass : {
+					type : "entry",
+					text : "Password",
+					weight : EXPAND_BOTH,
+					editable : false,
+					password : true,
+				},
+				icon_no_scale : {
+					type : "button",
+					label : "Icon no scale",
+					weight : { x : -1.0, y : -1.0 },
+				},
+			},
 		},
 	},
 });

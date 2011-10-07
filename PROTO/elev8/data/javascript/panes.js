@@ -41,6 +41,7 @@ var my_window = new elm.window({
                         content_right : {
 				type : "pane",
 				weight : EXPAND_BOTH,
+				align : FILL_BOTH,
 				resize : true,
 				fill : true,
 				horizontal : true,

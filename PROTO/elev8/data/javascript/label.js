@@ -1,4 +1,4 @@
-#!/usr/bin/elev8
+#!/usr/local/bin/elev8
 
 var my_window = new elm.window({
 	label : "Label example",

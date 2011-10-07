@@ -141,6 +141,13 @@ var my_window = new elm.window({
 								set_animator(false);
 							},
 						},
+						exit : {
+							type : "button",
+							label : "Exit",
+							on_clicked : function() {
+								elm.exit();
+							},
+						}
 					},
 				},
 			},
