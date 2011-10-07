@@ -2166,20 +2166,56 @@ public:
           return (this->*getter)();
         return CEvasObject::prop_get(prop_name);
      }
-
-   virtual Handle<Value> label_get() const
+   virtual Handle<Value> password_get() const
      {
-        return String::New(elm_entry_entry_get(eo));
+        return Boolean::New(elm_entry_password_get(eo));
      }
 
-   virtual void label_set(const char *str)
+   virtual void password_set(Handle<Value> value)
      {
-        elm_entry_entry_set(eo, str);
+        if (value->IsBoolean())
+          elm_entry_password_set(eo, value->BooleanValue());
+     }
+   virtual Handle<Value> editable_get() const
+     {
+        return Boolean::New(elm_entry_editable_get(eo));
+     }
+
+   virtual void editable_set(Handle<Value> value)
+     {
+        if (value->IsBoolean())
+          elm_entry_editable_set(eo, value->BooleanValue());
+     }
+
+   virtual Handle<Value> line_wrap_get() const
+     {
+        return Integer::New(elm_entry_line_wrap_get(eo));
+     }
+
+   virtual void line_wrap_set(Handle<Value> value)
+     {
+        if (value->IsNumber())
+          elm_entry_line_wrap_set(eo, (Elm_Wrap_Type)value->Int32Value());
+     }
+
+   virtual Handle<Value> scrollable_get() const
+     {
+        return Boolean::New(elm_entry_scrollable_get(eo));
+     }
+
+   virtual void scrollable_set(Handle<Value> value)
+     {
+        if (value->IsBoolean())
+          elm_entry_scrollable_set(eo, value->BooleanValue());
      }
 };
 
 template<> CEvasObject::CPropHandler<CElmEntry>::property_list
 CEvasObject::CPropHandler<CElmEntry>::list[] = {
+  PROP_HANDLER(CElmEntry, password),
+  PROP_HANDLER(CElmEntry, editable),
+  PROP_HANDLER(CElmEntry, line_wrap),
+  PROP_HANDLER(CElmEntry, scrollable),
   { NULL, NULL, NULL },
 };
 
