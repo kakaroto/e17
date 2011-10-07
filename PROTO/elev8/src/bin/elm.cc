@@ -2926,13 +2926,13 @@ public:
        if (left)
          {
             elm_panes_content_left_set(eo, left->get());
-	 }
+         }
 
        right = realize_one(this, obj->Get(String::New("content_right")));
        if (right)
-	 {
+	     {
             elm_panes_content_right_set(eo, right->get());
-	 }
+	     }
     }
 
   virtual ~CElmPane()
@@ -2969,7 +2969,7 @@ public:
 
   virtual Handle<Value> horizontal_get() const
     {
-       return Undefined();
+       return Number::New(elm_panes_horizontal_get(eo));
     }
 
   virtual void horizontal_set(Handle<Value> val)
@@ -2982,7 +2982,7 @@ public:
 
    virtual void on_press_set(Handle<Value> val)
      {
-	on_clicked_set(val);
+        on_clicked_set(val);
      }
 
    virtual Handle<Value> on_press_get(void) const
