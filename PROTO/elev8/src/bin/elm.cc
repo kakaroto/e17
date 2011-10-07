@@ -3103,7 +3103,7 @@ public:
      {
         eo = elm_segment_control_add(parent->get());
         construct(eo, obj);
-        items_set(obj->Get(String::New("items")));
+        //items_set(obj->Get(String::New("items")));
      }
 
    Handle<Object> items_set(Handle<Value> val)
@@ -3116,6 +3116,7 @@ public:
              fprintf(stderr, "not an object!\n");
              return out;
           }
+        fprintf(stderr, "Val is an object\n");
 
         Local<Object> in = val->ToObject();
         Local<Array> props = in->GetPropertyNames();
@@ -3355,7 +3356,7 @@ public:
          {
             int r, g, b, a;
             elm_colorselector_color_get(eo, &r, &g, &b, &a);
-	    r = val->ToNumber()->Value();
+      	    r = val->ToNumber()->Value();
             elm_colorselector_color_set(eo, r, g, b, a);
          }
     }
@@ -3390,7 +3391,7 @@ public:
          {
             int r, g, b, a;
             elm_colorselector_color_get(eo, &r, &g, &b, &a);
-	    b = val->ToNumber()->Value();
+	        b = val->ToNumber()->Value();
             elm_colorselector_color_set(eo, r, g, b, a);
          }
     }
@@ -3407,7 +3408,7 @@ public:
          {
             int r, g, b, a;
             elm_colorselector_color_get(eo, &r, &g, &b, &a);
-	    a = val->ToNumber()->Value();
+	        a = val->ToNumber()->Value();
             elm_colorselector_color_set(eo, r, g, b, a);
          }
     }
