@@ -3013,7 +3013,7 @@ public:
        if ( content )
          {
             elm_bubble_content_set(eo, content->get());
-	 }
+	     }
     }
 
   virtual ~CElmBubble()
@@ -3072,7 +3072,7 @@ public:
 
   virtual Handle<Value> corner_get() const
     {
-       return Undefined();
+       return String::New(elm_bubble_corner_get(eo));
     }
 
   virtual void corner_set(Handle<Value> val)
