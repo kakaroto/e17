@@ -1706,7 +1706,7 @@ public:
        CEvasObject()
      {
         CEvasObject *content;
-        eo = elm_scroller_add(parent->get());
+        eo = elm_scroller_add(parent->top_widget_get());
         construct(eo, obj);
         content = realize_one(this, obj->Get(String::New("content")));
         if (!content)
