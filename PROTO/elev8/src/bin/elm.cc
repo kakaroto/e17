@@ -3300,7 +3300,7 @@ public:
          {
             int r, g, b, a;
             elm_colorselector_color_get(eo, &r, &g, &b, &a);
-      	    r = val->ToNumber()->Value();
+            r = val->ToNumber()->Value();
             elm_colorselector_color_set(eo, r, g, b, a);
          }
     }
@@ -3335,7 +3335,7 @@ public:
          {
             int r, g, b, a;
             elm_colorselector_color_get(eo, &r, &g, &b, &a);
-	        b = val->ToNumber()->Value();
+            b = val->ToNumber()->Value();
             elm_colorselector_color_set(eo, r, g, b, a);
          }
     }
@@ -3352,7 +3352,7 @@ public:
          {
             int r, g, b, a;
             elm_colorselector_color_get(eo, &r, &g, &b, &a);
-	        a = val->ToNumber()->Value();
+            a = val->ToNumber()->Value();
             elm_colorselector_color_set(eo, r, g, b, a);
          }
     }
