@@ -813,6 +813,8 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
 };
 
 class CEvasImage : public CEvasObject {
+protected:
+   static CPropHandler<CEvasImage> prop_handler;
 public:
    CEvasImage(CEvasObject *parent, Local<Object> obj) :
        CEvasObject()
@@ -822,7 +824,29 @@ public:
         construct(eo, obj);
      }
 
-   virtual void image_set(Handle<Value> val)
+   virtual bool prop_set(const char *prop_name, Handle<Value> value)
+     {
+        CPropHandler<CEvasImage>::prop_setter setter;
+
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
+     }
+
+   virtual Handle<Value> prop_get(const char *prop_name) const
+     {
+        CPropHandler<CEvasImage>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+   virtual void file_set(Handle<Value> val)
      {
        if (val->IsString())
          {
@@ -831,17 +855,64 @@ public:
                fprintf(stderr, "warning: can't read image file %s\n", *str);
             evas_object_image_file_set(eo, *str, NULL);
          }
+       evas_object_raise(eo);
      }
 
-   virtual Handle<Value> image_get(void) const
+   virtual Handle<Value> file_get(void) const
      {
-        const char *file = NULL, *key = NULL;
-        evas_object_image_file_get(eo, &file, &key);
-        if (file)
-          return String::New(file);
+        const char *f = NULL, *key = NULL;
+        evas_object_image_file_get(eo, &f, &key);
+        if (f)
+          return String::New(f);
         else
           return Null();
      }
+
+   virtual void width_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             Evas_Coord x, y, w, h;
+             evas_object_geometry_get(eo, &x, &y, &w, &h);
+             w = val->ToInt32()->Value();
+             evas_object_resize(eo, w, h);
+             printf("Resize Values = %d, %d\n", w, h);
+          }
+     }
+
+   virtual Handle<Value> width_get(void) const
+     {
+        Evas_Coord x, y, w, h;
+        evas_object_geometry_get(eo, &x, &y, &w, &h);
+        return Number::New(w);
+     }
+
+   virtual void height_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             Evas_Coord x, y, w, h;
+             evas_object_geometry_get(eo, &x, &y, &w, &h);
+             h = val->ToInt32()->Value();
+             evas_object_resize(eo, w, h);
+             printf("Resize Values = %d, %d\n", w, h);
+          }
+     }
+
+   virtual Handle<Value> height_get(void) const
+     {
+        Evas_Coord x, y, w, h;
+        evas_object_geometry_get(eo, &x, &y, &w, &h);
+        return Number::New(h);
+     }
+
+};
+
+template<> CEvasObject::CPropHandler<CEvasImage>::property_list
+CEvasObject::CPropHandler<CEvasImage>::list[] = {
+     PROP_HANDLER(CEvasImage, file),
+     PROP_HANDLER(CEvasImage, width),
+     PROP_HANDLER(CEvasImage, height),
 };
 
 class CElmBasicWindow : public CEvasObject {

@@ -40,7 +40,7 @@ function glyph() {
 }
 
 function bubble(n) {
-	this.image = elm.datadir + "data/images/bubble.png";
+	this.file = elm.datadir + "data/images/bubble.png";
 	this.on_animate = function (arg) {
 		animator(arg, n, false);
 	}
@@ -49,7 +49,7 @@ function bubble(n) {
 bubble.prototype = new glyph();
 
 function shadow(n) {
-	this.image = elm.datadir + "data/images/bubble_sh.png";
+	this.file = elm.datadir + "data/images/bubble_sh.png";
 	this.on_animate = function (arg) {
 		animator(arg, n, true);
 	}
