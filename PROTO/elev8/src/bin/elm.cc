@@ -211,8 +211,8 @@ protected:
 
    /* setup the property on construction */
    virtual void init_property(Handle<Object> out,
-			 Handle<Value> name,
-			 Handle<Value> value)
+                               Handle<Value> name,
+                               Handle<Value> value)
      {
         String::Utf8Value name_str(name);
 
@@ -466,6 +466,7 @@ public:
         Handle<Object> obj = get_object();
         HandleScope handle_scope;
         Handle<Value> val = on_keydown_val;
+        fprintf(stderr, "%s key pressed\n", info->keyname);
         // FIXME: pass event_info to the callback
         // FIXME: turn the pieces below into a do_callback method
         assert(val->IsFunction());
@@ -477,12 +478,14 @@ public:
    static void eo_on_keydown(void *data, Evas *e, Evas_Object *obj, void *event_info)
      {
         CEvasObject *self = static_cast<CEvasObject*>(data);
+        fprintf(stderr, "On keydown callback called\n");
 
         self->on_keydown(static_cast<Evas_Event_Key_Down*>(event_info));
      }
 
    virtual void on_keydown_set(Handle<Value> val)
      {
+        fprintf(stderr, "On keydown set %p\n", this);
         on_keydown_val.Dispose();
         on_keydown_val = Persistent<Value>::New(val);
         if (val->IsFunction())
@@ -1494,6 +1497,8 @@ public:
              String::Utf8Value str(val);
              if (0 > access(*str, R_OK))
                fprintf(stderr, "warning: can't read icon file %s\n", *str);
+
+         fprintf(stderr, "Icon File = %s\n", *str);
              elm_icon_file_set(eo, *str, NULL);
           }
      }
@@ -2350,10 +2355,10 @@ public:
   virtual void show_am_pm_set(Handle<Value> val)
     {
        if (val->IsNumber())
-	 {
+         {
             int value = val->ToNumber()->Value();
             elm_clock_show_am_pm_set(eo, value);
-	 }
+	     }
     }
 
   virtual Handle<Value> show_seconds_get() const
@@ -2365,10 +2370,10 @@ public:
   virtual void show_seconds_set(Handle<Value> val)
     {
        if (val->IsNumber())
-	 {
+	     {
             int value = val->ToNumber()->Value();
             elm_clock_show_seconds_set(eo, value);
-	 }
+	     }
     }
 
   virtual Handle<Value> hour_get() const
@@ -2478,7 +2483,7 @@ protected:
      {
         CEvasObject *self = eo_from_info(args.This());
         CElmProgressBar *progress = static_cast<CElmProgressBar *>(self);
-	if (args[0]->IsBoolean())
+	    if (args[0]->IsBoolean())
           progress->pulse(args[0]->BooleanValue());
         return Undefined();
      }
@@ -2674,6 +2679,7 @@ public:
 
   virtual Handle<Value> image_get() const
     {
+       //No getter available
        return Undefined();
     }
 
@@ -2694,6 +2700,7 @@ public:
 
   virtual Handle<Value> size_get() const
     {
+       //No getter available
        return Undefined();
     }
 
@@ -2708,6 +2715,7 @@ public:
 
   virtual Handle<Value> fill_get() const
     {
+       //No getter available
        return Undefined();
     }
 
