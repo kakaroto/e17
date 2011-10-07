@@ -2778,7 +2778,7 @@ public:
 
   virtual Handle<Value> label_format_get() const
     {
-       return Undefined();
+       return String::New(elm_spinner_label_format_get(eo));
     }
 
   virtual void label_format_set(Handle<Value> val)
@@ -2793,7 +2793,7 @@ public:
 
   virtual Handle<Value> step_get() const
     {
-       return Undefined();
+       return Number::New(elm_spinner_step_get(eo));
     }
 
   virtual void step_set(Handle<Value> val)
@@ -2842,7 +2842,7 @@ public:
      }
   virtual Handle<Value> style_get() const
     {
-       return Undefined();
+       return String::New(elm_object_style_get(eo));
     }
 
   virtual void style_set(Handle<Value> val)
@@ -2856,7 +2856,7 @@ public:
 
   virtual Handle<Value> editable_get() const
     {
-       return Undefined();
+       return Number::New(elm_spinner_editable_get(eo));
     }
 
   virtual void editable_set(Handle<Value> val)
@@ -2869,7 +2869,7 @@ public:
 
   virtual Handle<Value> disabled_get() const
     {
-       return Undefined();
+       return Boolean::New(elm_spinner_editable_get(eo));
     }
 
   virtual void disabled_set(Handle<Value> val)
@@ -2882,6 +2882,7 @@ public:
 
   virtual Handle<Value> special_value_get() const
     {
+       //No getter available
        return Undefined();
     }
 
