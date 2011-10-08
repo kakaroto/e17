@@ -4,8 +4,6 @@ elementary_test - seg-fault in alpha window with gl backend (glx - ctx problem)
 
 evas_direct3d - start hurry (vicent torri)
 
-pong game? - (discomfitor)
-
 evas_map - afterimage problem 
 
 evas_map - check rotation util inconsistency rotation
@@ -18,8 +16,6 @@ evas_line - width
 
 evas_line - does not shown on glbackend. 
 
-elm_naviframe - mirror mode 
-
 evas_map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
 
 ecore_animator - consider them each instance use the each timeline options.  
@@ -31,4 +27,6 @@ evas - check the image smooth effect in gl backend
 
 ctxpopup - hide effect
 
-elm_pager - blocks mouseover events (ticket 876) 
+elm_pager - blocks mouseover events (ticket 876)
+
+evas_object_events_freeze/thaw	
