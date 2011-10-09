@@ -5556,3 +5556,12 @@ Make dialogs sticky.
 Add new "technical/opaque" move/resize mode (Daniel Manjarres).
 Zoom improvements (Daniel Manjarres).
 Use WM_NAME in stead of WM_ICON_NAME in pager and iconbox.
+
+-------------------------------------------------------------------------------
+
+Sat Oct  8 09:32:29 CEST 2011
+
+--- 1.0.10 ---
+Change default systray icon size to 16.
+Update internal area hint when changing area.
+Italian translation update (Massimo Maiurana).
