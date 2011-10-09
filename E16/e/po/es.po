@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-09-20 21:20+0200\n"
+"POT-Creation-Date: 2011-10-08 10:29+0200\n"
 "PO-Revision-Date: 2010-04-23 21:20+0000\n"
 "Last-Translator: Fernando Muñoz <munozferna@gmail.com>\n"
 "Language-Team: \n"
@@ -1123,11 +1123,11 @@ msgstr ""
 "Es muy poco usual causar errores en el Bus en equipos que\n"
 "están en estado operacional.\n"
 
-#: src/hints.c:612
+#: src/hints.c:634
 msgid "Selection Error!"
 msgstr "Error de Selección!"
 
-#: src/hints.c:612
+#: src/hints.c:634
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "No se pudo adquirir la selección: %s"

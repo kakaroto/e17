@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-09-20 21:20+0200\n"
+"POT-Creation-Date: 2011-10-08 10:29+0200\n"
 "PO-Revision-Date: 2010-05-09 01:23+0000\n"
 "Last-Translator: Fatih Demir <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -1076,11 +1076,11 @@ msgstr ""
 "Çalýþan bir donatýmda yuvalama hatalarýnýn oluþmasý\n"
 "enderdir .\n"
 
-#: src/hints.c:612
+#: src/hints.c:634
 msgid "Selection Error!"
 msgstr ""
 
-#: src/hints.c:612
+#: src/hints.c:634
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""

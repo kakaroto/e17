@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-09-20 21:20+0200\n"
+"POT-Creation-Date: 2011-10-08 10:29+0200\n"
 "PO-Revision-Date: 2010-01-16 04:42+0000\n"
 "Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -1034,11 +1034,11 @@ msgid ""
 "hardware.\n"
 msgstr ""
 
-#: src/hints.c:612
+#: src/hints.c:634
 msgid "Selection Error!"
 msgstr "Greška Odabira!"
 
-#: src/hints.c:612
+#: src/hints.c:634
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "Nemoguće pribaviti odabir: %s"
