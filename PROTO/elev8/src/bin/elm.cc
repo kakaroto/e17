@@ -20,6 +20,37 @@ using namespace v8;
 
 /* CEvasObject is a virtual class, representing an evas object */
 class CEvasObject;
+
+class Item
+{
+   public:
+      Local<Value> on_clicked;
+      Handle<Value> label;
+      Handle<Value> icon;
+      bool disabled;
+};
+
+class ListItem : public Item
+{
+   public:
+      CEvasObject  *icon_left;
+      CEvasObject  *icon_right;
+      Elm_List_Item *li;
+      Handle<Value> end;
+      Handle<Value> tooltip;
+      ListItem *next;
+      ListItem *prev;
+};
+
+class MenuItem : public Item
+{
+   public:
+      Elm_Menu_Item *mi;
+      MenuItem *next;
+      MenuItem *prev;
+      MenuItem *parent;
+      MenuItem *child;
+};
 CEvasObject *realize_one(CEvasObject *parent, Handle<Value> obj);
 
 class CEvasObject {
@@ -2108,51 +2139,578 @@ public:
 
 class CElmList : public CEvasObject {
 protected:
+   Persistent<Value> items;
+   static CPropHandler<CElmList> prop_handler;
+   int length;
+   ListItem *head;
+   ListItem *tail;
+
+   const static int LABEL = 1;
+   const static int ICON = 2;
+   const static int END = 3;
+   const static int TOOLTIP = 4;
+   
 public:
    CElmList(CEvasObject *parent, Local<Object> obj) :
        CEvasObject()
      {
-        eo = elm_list_add(parent->get());
+        head = NULL;
+        tail = NULL;
+        length = 0;
+        eo = elm_list_add(parent->top_widget_get());
+
         construct(eo, obj);
         items_set(obj->Get(String::New("items")));
+
+        get_object()->Set(String::New("append"), FunctionTemplate::New(append)->GetFunction());
+
+        get_object()->Set(String::New("prepend"), FunctionTemplate::New(prepend)->GetFunction());
+        get_object()->Set(String::New("get_label"), FunctionTemplate::New(get_label)->GetFunction());
+        get_object()->Set(String::New("get_icon"), FunctionTemplate::New(get_icon)->GetFunction());
+        get_object()->Set(String::New("get_end"), FunctionTemplate::New(get_end)->GetFunction());
+        get_object()->Set(String::New("get_tooltip"), FunctionTemplate::New(get_tooltip)->GetFunction());
+        get_object()->Set(String::New("set_label"), FunctionTemplate::New(set_label)->GetFunction());
+        get_object()->Set(String::New("set_icon"), FunctionTemplate::New(set_icon)->GetFunction());
+        get_object()->Set(String::New("set_end"), FunctionTemplate::New(set_end)->GetFunction());
+        get_object()->Set(String::New("set_tooltip"), FunctionTemplate::New(set_tooltip)->GetFunction());
+        get_object()->Set(String::New("insert_after"), FunctionTemplate::New(insert_after)->GetFunction());
+        get_object()->Set(String::New("insert_before"), FunctionTemplate::New(insert_before)->GetFunction());
+        get_object()->Set(String::New("selected_item_get"), FunctionTemplate::New(selected_item_get)->GetFunction());
+        get_object()->Set(String::New("selected_item_set"), FunctionTemplate::New(selected_item_set)->GetFunction());
+        get_object()->Set(String::New("del"), FunctionTemplate::New(del)->GetFunction());
+        get_object()->Set(String::New("num_items"), FunctionTemplate::New(num_items)->GetFunction());
+        get_object()->Set(String::New("disabled"), FunctionTemplate::New(num_items)->GetFunction());
+
      }
 
-   Handle<Object> items_set(Handle<Value> val)
+   static Handle<Value> append(const Arguments& args)
      {
-        /* add an list of children */
-        Local<Object> out = Object::New();
+        CEvasObject *self = eo_from_info(args.This());
+        CElmList *list = static_cast<CElmList *>(self);
+        if (args[0]->IsObject())
+          {
+             list->new_item_set(-1, args[0]);
+          }
+        return Undefined();
+     }
+   static Handle<Value> prepend(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmList *list = static_cast<CElmList *>(self);
+        if (args[0]->IsObject())
+          {
+             list->new_item_set(0, args[0]);
+          }
+        return Undefined();
+     }
+   static Handle<Value> disabled(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmList *list = static_cast<CElmList *>(self);
+        if ((list->head) && (args[0]->IsNumber()) && args[1]->IsBoolean())
+          {
+              int val = args[0]->IntegerValue();
+              fprintf(stderr, "Trying to get %d from %d\n", val, list->length);
+              if (val<=list->length)
+                {
+                   ListItem *it = list->head;
+                   for (;val>0; val--)
+                     {
+                        String::Utf8Value val1(it->label);
+                        fprintf(stderr, "%p - checking pre : get %s\n", it, *val1 );
+                        it = (it->next);
+                     }
+                   elm_list_item_disabled_set(it->li, args[1]->BooleanValue());
+                }
+          }
+        return Undefined();
+     }
+   static Handle<Value> get_label(const Arguments& args)
+     {
+         return get_item(LABEL, args);
+     }
+   static Handle<Value> get_icon(const Arguments& args)
+     {
+         return get_item(ICON, args);
+     }
+   static Handle<Value> get_end(const Arguments& args)
+     {
+         return get_item(END, args);
+     }
+   static Handle<Value> get_tooltip(const Arguments& args)
+     {
+         return get_item(TOOLTIP, args);
+     }
+   static Handle<Value> get_item(int field, const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmList *list = static_cast<CElmList *>(self);
+        if ((list->head) && (args[0]->IsNumber()))
+          {
+              int val = args[0]->IntegerValue();
+              fprintf(stderr, "Trying to get %d from %d\n", val, list->length);
+              if (val<=list->length)
+                {
+                   ListItem *it = list->head;
 
+                   for (;val>0; val--)
+                     {
+                        String::Utf8Value val1(it->label);
+                        fprintf(stderr, "%p - checking pre : get %s\n", it, *val1 );
+                        it = it->next;
+                     }
+                   switch(field)
+                     {
+                        case LABEL:
+                           return it->label;
+                           break;
+                        case ICON:
+                           return it->icon;
+                           break;
+                        case END:
+                           return it->end;
+                           break;
+                        case TOOLTIP:
+                           return it->tooltip;
+                        default:
+                           return Undefined();
+                     }
+                }
+          }
+        return Undefined();
+     }
+
+   static Handle<Value> set_label(const Arguments& args)
+     {
+         return set_item(LABEL, args);
+     }
+   static Handle<Value> set_icon(const Arguments& args)
+     {
+         return set_item(ICON, args);
+     }
+   static Handle<Value> set_end(const Arguments& args)
+     {
+         return set_item(END, args);
+     }
+   static Handle<Value> set_tooltip(const Arguments& args)
+     {
+         return set_item(TOOLTIP, args);
+     }
+   static Handle<Value> set_item(int field, const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmList *list = static_cast<CElmList *>(self);
+        if ((list->head) && (args[0]->IsNumber()))
+          {
+             int val = args[0]->IntegerValue();
+             fprintf(stderr, "Trying to set %d from %d\n", val, list->length);
+             if (val<=list->length)
+               {
+                  ListItem *it = list->head;
+
+                  for (;val>0; val--)
+                    {
+                       String::Utf8Value val1(it->label);
+                       fprintf(stderr, "%p - checking pre : set %s\n", it, *val1 );
+                       it = (it->next);
+                    }
+                  fprintf(stderr, "Field  to set %d\n", field);
+                  switch(field)
+                    {
+                       case LABEL:
+                          if ( args[1]->IsString())
+                            {
+                               static_cast<Persistent<Value> >(it->label).Dispose();
+                               it->label = v8::Persistent<Value>::New(args[1]->ToString());
+                               String::Utf8Value str(it->label->ToString());
+                               fprintf(stderr, "Setting Label %s\n", *str);
+                               elm_list_item_label_set(it->li, *str);
+                           }
+                           break;
+                       case ICON:
+                          if ( args[1]->IsObject())
+                            {
+                               static_cast<Persistent<Value> >(it->icon).Dispose();
+                               it->icon = v8::Persistent<Value>::New(args[1]);
+                               it->icon_left = realize_one(list, it->icon);
+                               fprintf(stderr, "Adding Icon Object %p\n", it->icon_left->get());
+                               if (it->icon_left)
+                                 {
+                                    fprintf(stderr, "Icon Object %p\n", it->icon_left->get());
+                                    elm_icon_scale_set(it->icon_left->get(), 0, 0);
+                                    evas_object_size_hint_align_set(it->icon_left->get(), 0.0, 0.0);
+                                    elm_list_item_icon_set(it->li, it->icon_left->get());
+                                 }
+                            }
+                          break;
+                       case END:
+                          if ( args[1]->IsObject())
+                            {
+                               static_cast<Persistent<Value> >(it->end).Dispose();
+                               it->end = v8::Persistent<Value>::New(args[1]);
+                               it->icon_right = realize_one(list, it->end);
+
+                               if (it->icon_right)
+                                 {
+                                    fprintf(stderr, "End Object %p\n", it->icon_right->get());
+                                    elm_icon_scale_set(it->icon_right->get(), 0, 0);
+                                    evas_object_size_hint_align_set(it->icon_right->get(), 0.0, 0.0);
+                                    elm_list_item_end_set(it->li, it->icon_right->get());
+                                 }
+                            }
+                          break;
+                       case TOOLTIP:
+                          if (args[1]->IsString())
+                            {
+                               static_cast<Persistent<Value> >(it->tooltip).Dispose();
+                               it->tooltip = v8::Persistent<Value>::New(args[1]->ToString());
+                               String::Utf8Value str(it->tooltip->ToString());
+                               elm_list_item_tooltip_text_set(it->li, *str);
+                            }
+                          break;
+                       default:
+                          return Undefined();
+                    }
+                  elm_list_go(list->get());
+               }
+          }
+        return Undefined();
+     }
+   static Handle<Value> insert_after(const Arguments& args)
+     {
+        return Undefined();
+     }
+   static Handle<Value> insert_before(const Arguments& args)
+     {
+        return Undefined();
+     }
+   static Handle<Value> selected_item_get(const Arguments& args)
+     {
+        return Undefined();
+     }
+   static Handle<Value> selected_item_set(const Arguments& args)
+     {
+        return Undefined();
+     }
+   static Handle<Value> del(const Arguments& args)
+     {
+        printf("Who's calling me\n");
+        CEvasObject *self = eo_from_info(args.This());
+        CElmList *list = static_cast<CElmList *>(self);
+
+           
+        if ((list->head) && (args[0]->IsNumber()))
+          {
+             int val = args[0]->IntegerValue();
+             fprintf(stderr, "Trying to delete %p at %d\n", list->head, val);
+
+             if (val==-1) //delete last one
+               {
+                   val = list->length;
+               }
+
+             if (val<=list->length)
+               {
+                  ListItem *it = list->head;
+
+                  for (;val>0; val--)
+                    {
+                       String::Utf8Value val1(it->label);
+                       fprintf(stderr, "%p - checking pre : set %s\n", it, *val1 );
+                       it = (it->next);
+                    }
+                  fprintf(stderr, "delete %p \n", list->head);
+
+                  elm_list_item_del(it->li);
+                  elm_list_go(list->get());
+
+                  if(it && it == list->head)
+                    {
+                        list->head = it->next?it->next:NULL;
+                        if (list->head)
+                          {
+                             list->head->prev = NULL;
+                          }
+                        
+                    }
+                  fprintf(stderr, "%p - checking\n", it);
+                  if(it && it == list->tail)
+                    {
+                        list->tail = it->prev;
+                        if (list->tail)
+                          {
+                             list->tail->next = NULL;
+                          }
+                    }
+
+                  if (it->next && it->prev)
+                    {
+                       it->prev->next = it->next;
+                       it->next->prev = it->prev;
+                    }
+                  delete it;
+               }
+          }
+        return Undefined();
+     }
+   static Handle<Value> num_items(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmList *list = static_cast<CElmList *>(self);
+        return v8::Number::New(list->length);
+     }
+   
+   virtual Handle<ObjectTemplate> get_template(void)
+     {
+        Handle<ObjectTemplate> ot = CEvasObject::get_template();
+        prop_handler.fill_template(ot);
+        return ot;
+     }
+
+   static void eo_on_click(void *data, Evas_Object *eo, void *event_info)
+     {
+       if (data)
+         {
+            fprintf(stderr, "Received Pointer = %p\n", data);
+
+            ListItem *it = static_cast<ListItem *>(data);
+
+            if (*it->on_clicked != NULL)
+              {
+                 if (it->on_clicked->IsFunction())
+                   {
+                      Handle<Function> fn(Function::Cast(*(it->on_clicked)));
+                      fn->Call(fn, 0, NULL);
+                   }
+              }
+         }
+     }
+
+   virtual Handle<Value> items_get(void) const
+     {
+        fprintf(stderr, "Returning items\n");
+        return items;
+     }
+
+   virtual void items_set(Handle<Value> val)
+     {
         if (!val->IsObject())
           {
              fprintf(stderr, "not an object!\n");
-             return out;
+             return;
           }
 
         Local<Object> in = val->ToObject();
         Local<Array> props = in->GetPropertyNames();
 
-        /* iterate through elements and instantiate them */
-        for (unsigned int i = 0; i < props->Length(); i++)
-          {
+        fprintf(stderr, "Number of Items = %d\n", props->Length());
 
+        items.Dispose();
+        items = Persistent<Value>::New(val);
+
+        /* iterate through elements and instantiate them */
+        // there can be no elements in the list
+        for (int i = 0; i < props->Length(); i++)
+          {
              Local<Value> x = props->Get(Integer::New(i));
              String::Utf8Value val(x);
 
-             Local<Value> item = in->Get(x->ToString());
-             if (!item->IsObject())
-               {
-                  // FIXME: permit adding strings here?
-                  fprintf(stderr, "list item is not an object\n");
-                  continue;
-               }
-             Local<Value> label = item->ToObject()->Get(String::New("label"));
+             fprintf(stderr, "X Value - %s\n", *val);
 
-             String::Utf8Value str(label);
-             elm_list_item_append(eo, *str, NULL, NULL, NULL, NULL);
+             Local<Value> item = in->Get(x->ToString());
+
+             // -1 means end of list
+             ListItem *it = new_item_set(-1, item);
+
           }
 
-        return out;
      }
+
+   /*
+    * -1 = end of list
+    *  >=0 appropriate index
+    */
+
+   virtual ListItem * new_item_set(int pos, Handle<Value> item)
+     {
+        fprintf(stderr, "Add Set Called\n");
+
+        if (!item->IsObject())
+          {
+             // FIXME: permit adding strings here?
+             fprintf(stderr, "list item is not an object\n");
+             return NULL;
+          }
+
+        if (items==Null())
+          {
+             fprintf(stderr, "Please add atleast empty \"items\" to list\n");
+             return NULL;
+          }
+
+        ListItem *it = this->head;
+        if ((pos == 0) || (pos==-1)) //seperate insert and removal case
+          {
+             it = new ListItem();
+
+
+             it->label = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
+             it->icon = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
+             it->end = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("end")));
+             it->tooltip = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("tooltip")));
+
+             if ( !it->label->IsString() && !it->icon->IsObject()
+                      && !it->end->IsObject())
+               {
+
+                  fprintf(stderr, "Basic elements missing\n");
+                  delete it;
+                  return NULL;
+               }
+             if (this->head==NULL)
+               {
+                  this->head = it;
+                  fprintf(stderr, "Set Head %p\n", it);
+               }
+  
+             if (this->tail==NULL)
+               {
+                  this->tail = it;
+                  fprintf(stderr, "Set Tail\n");
+               }
+             String::Utf8Value val1(it->label);
+             fprintf(stderr, "%p - checking pre : set %s\n", it, *val1 );
+          }
+
+        if (-1 == pos)
+          {
+             // either a label with icon
+             it->li = elm_list_item_append(eo,NULL,NULL,NULL,&eo_on_click,(void*)it);
+             this->length++;
+             it->prev = this->tail;
+             this->tail->next = it;
+             this->tail = it;
+             it->next = NULL;
+             String::Utf8Value val(this->tail->label);
+             fprintf(stderr, "Appended : New Tail = %p\n", this->tail);
+          }
+        else if (0 == pos)
+          {
+             // either a label with icon
+             it->li = elm_list_item_prepend(eo,NULL,NULL,NULL,&eo_on_click,(void*)it);
+             this->length++;
+             this->head->prev = it;
+             it->next = this->head;
+             this->head = it;
+             it->prev = NULL;
+             String::Utf8Value val(this->tail->label);
+             fprintf(stderr, "Prepended : New Head = %p\n", this->head);
+          }
+        else
+          {
+             // get the Eina_List
+             const Eina_List *iter = elm_list_items_get (get());
+
+             for (;pos>0; pos--)
+               {
+                  it = it->next;
+                  iter = iter->next;
+                  String::Utf8Value val1(it->label);
+                  fprintf(stderr, "%p - checking pre : get %s\n", it, *val1 );
+               }
+             it->label = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
+             it->icon = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
+             it->end = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("end")));
+             it->tooltip = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("tooltip")));
+          }
+
+        if ( it->label->IsString())
+          {
+             String::Utf8Value str(it->label->ToString());
+             fprintf(stderr, "Setting Label %s\n", *str);
+             elm_list_item_label_set(it->li, *str);
+          }
+        if ( it->icon->IsObject())
+          {
+             it->icon_left = realize_one(this, it->icon);
+             fprintf(stderr, "Adding Icon Object %p\n", it->icon_left->get());
+             if (it->icon_left)
+               {
+                  fprintf(stderr, "Icon Object %p\n", it->icon_left->get());
+                  elm_icon_scale_set(it->icon_left->get(), 0, 0);
+                  evas_object_size_hint_align_set(it->icon_left->get(), 0.0, 0.0);
+                  elm_list_item_icon_set(it->li, it->icon_left->get());
+               }
+          }
+        if ( it->end->IsObject())
+          {
+             it->icon_right = realize_one(this, it->end);
+
+             if (it->icon_right)
+               {
+                  fprintf(stderr, "End Object %p\n", it->icon_right->get());
+                  elm_icon_scale_set(it->icon_right->get(), 0, 0);
+                  evas_object_size_hint_align_set(it->icon_right->get(), 0.0, 0.0);
+                  elm_list_item_end_set(it->li, it->icon_right->get());
+               }
+          }
+        if (it->tooltip->IsString())
+          {
+             String::Utf8Value str(it->tooltip->ToString());
+             elm_list_item_tooltip_text_set(it->li, *str);
+          }
+
+        if (item->ToObject()->Get(String::New("on_clicked"))->IsFunction())
+          {
+             it->on_clicked = Local<Value>::New(
+                       item->ToObject()->Get(String::New("on_clicked")));
+          }
+        elm_list_go(eo);
+        return it;
+     }
+
+   virtual bool prop_set(const char *prop_name, Handle<Value> value)
+     {
+        CPropHandler<CElmList>::prop_setter setter;
+        setter = prop_handler.get_setter(prop_name);
+        if (setter)
+          {
+             (this->*setter)(value);
+             return true;
+          }
+        return CEvasObject::prop_set(prop_name, value);
+     }
+
+   virtual Handle<Value> prop_get(const char *prop_name) const
+     {
+        CPropHandler<CElmList>::prop_getter getter;
+        getter = prop_handler.get_getter(prop_name);
+        if (getter)
+          return (this->*getter)();
+        return CEvasObject::prop_get(prop_name);
+     }
+
+   virtual Handle<Value> mode_get() const
+     {
+        double min, max;
+        int mode = elm_list_mode_get(eo);
+        return Number::New(min);
+     }
+
+   virtual void mode_set(Handle<Value> value)
+     {
+        if (value->IsNumber())
+          {
+             int mode = value->NumberValue();
+             elm_list_mode_set(eo, (Elm_List_Mode)mode);
+          }
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmList>::property_list
+CEvasObject::CPropHandler<CElmList>::list[] = {
+  PROP_HANDLER(CElmList, mode),
+  { NULL, NULL, NULL },
 };
 
 class CElmEntry : public CEvasObject {
@@ -3194,70 +3752,218 @@ class CElmMenu : public CEvasObject {
 protected:
   static CPropHandler<CElmMenu> prop_handler;
 
+  MenuItem *root;
+
 public:
-  CElmMenu(CEvasObject *parent, Local<Object> obj) : CEvasObject()
+  CElmMenu(CEvasObject *par, Local<Object> obj) : CEvasObject()
     {
-       eo = elm_menu_add(parent->top_widget_get());
+       eo = elm_menu_add(par->top_widget_get());
+       root = NULL;
        construct(eo, obj);
-       items_set(obj->Get(String::New("items")), NULL);
+       items_set(NULL, obj->Get(String::New("items")));
+       get_object()->Set(String::New("addchild"), FunctionTemplate::New(addchild)->GetFunction());
+
+       get_object()->Set(String::New("child"), FunctionTemplate::New(child)->GetFunction());
+       get_object()->Set(String::New("parent"), FunctionTemplate::New(parent)->GetFunction());
+       get_object()->Set(String::New("child_count"), FunctionTemplate::New(child_count)->GetFunction());
     }
 
   virtual ~CElmMenu()
     {
     }
+   static Handle<Value> addchild(const Arguments& args)
+     {
+        return Undefined();
+     }
 
-  Elm_Menu_Item * items_set(Handle<Value> val, Elm_Menu_Item *parent)
-    {
+   static Handle<Value> parent(const Arguments& args)
+     {
+        return Undefined();
+     }
+
+   static Handle<Value> child(const Arguments& args)
+     {
+        return Undefined();
+     }
+
+   static Handle<Value> child_count(const Arguments& args)
+     {
+        return Undefined();
+     }
+
+   static void eo_on_click(void *data, Evas_Object *eo, void *event_info)
+     {
+       if (data)
+         {
+            fprintf(stderr, "Received Pointer = %p\n", data);
+
+            Item *it = reinterpret_cast<Item *>(data);
+
+            if (*it->on_clicked != NULL)
+              {
+                 if (it->on_clicked->IsFunction())
+                   {
+                      Handle<Function> fn(Function::Cast(*(it->on_clicked)));
+                      fn->Call(fn, 0, NULL);
+                   }
+              }
+         }
+     }
+
+   void items_set(MenuItem *parent, Handle<Value> val)
+     {
        /* add a list of children */
-       Local<Object> out = Object::New();
-
        if (!val->IsObject())
          {
             fprintf(stderr, "not an object!\n");
-            return NULL;
+            return;
          }
 
        Local<Object> in = val->ToObject();
        Local<Array> props = in->GetPropertyNames();
-       Elm_Menu_Item *child = NULL;
-
        /* iterate through elements and instantiate them */
        for (unsigned int i = 0; i < props->Length(); i++)
          {
+
             Local<Value> x = props->Get(Integer::New(i));
             String::Utf8Value val(x);
 
             Local<Value> item = in->Get(x->ToString());
             if (!item->IsObject())
               {
-                 fprintf(stderr, "List item is not an object!\n");
+                 fprintf(stderr, "list item is not an object\n");
                  continue;
               }
 
-            Local<Value> val1 = item->ToObject()->Get(String::New("label"));
-            Local<Value> val2 = item->ToObject()->Get(String::New("icon"));
+            MenuItem *par = new_item_set(parent, item);
 
-            if (!val1->IsString() && !val2->IsString())
+            Local<Value> items_object = item->ToObject()->Get(String::New("items"));
+            if (items_object->IsObject())
               {
-                 fprintf(stderr, "Empty menu item?\n");
-                 continue;
+                 fprintf(stderr, "Recursing\n");
+                 items_set(par, items_object);
               }
-
-            String::Utf8Value label(val1->ToString());
-            String::Utf8Value icon(val2->ToString());
-
-            child = elm_menu_item_add(eo, parent, *icon, *label, NULL, NULL);
-
-            Local<Value> val3 = item->ToObject()->Get(String::New("disabled"));
-            if (val3->IsBoolean())
-              elm_menu_item_disabled_set(child, val3->ToBoolean()->Value());
-
-            Local<Value> val4 = item->ToObject()->Get(String::New("items"));
-            if (val4->IsObject())
-              items_set(val4, child);
          }
-       return child;
     }
+
+   virtual MenuItem * new_item_set(MenuItem *parent, Handle<Value> item)
+     {
+        fprintf(stderr, "Add Set Called\n");
+
+        if (!item->IsObject())
+          {
+             // FIXME: permit adding strings here?
+             fprintf(stderr, "list item is not an object\n");
+             return NULL;
+          }
+        Elm_Menu_Item *par = NULL;
+        if (parent!=NULL)
+          {
+             par = parent->mi;
+          }
+
+        Local<Value> sep_object = item->ToObject()->Get(String::New("seperator"));
+
+        if ( sep_object->IsBoolean() )
+          {
+             // FIXME add if seperator : true, what if false
+             if (sep_object->ToBoolean()->Value())
+               {
+                  elm_menu_item_separator_add(eo, par);
+               }
+             return parent;
+          }
+        else
+          {
+             MenuItem *it = NULL;
+
+             it = new MenuItem();
+             it->next = NULL;
+             it->prev = NULL;
+             it->child = NULL;
+             it->parent = NULL;
+             it->label = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
+             it->icon = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
+             it->on_clicked = Local<Value>::New(item->ToObject()->Get(String::New("on_clicked")));
+             it->parent = parent;
+
+
+             // either a label with icon
+             if ( !it->label->IsString() && !it->icon->IsString() ) 
+               {
+                  fprintf(stderr, "Not a label or seperator\n");
+                  delete it;
+                  return NULL;
+               }
+
+             String::Utf8Value label(it->label->ToString());
+             String::Utf8Value icon(it->icon->ToString());
+     
+             Evas_Smart_Cb cb;
+             void *data = NULL;
+
+             if ( it->on_clicked->IsFunction() )
+               {
+                  cb = &eo_on_click;
+                  data = reinterpret_cast<void *>(it);
+                  fprintf(stderr, "Persistent Object= %p sent = %p\n", it, data);
+               }
+
+             it->mi = elm_menu_item_add(eo, par, *icon, *label, cb, data);
+
+             //FIXME :: Refactor
+             if (this->root==NULL)
+               {
+                  this->root = it;
+                  fprintf(stderr, "Parent Set\n");
+               }
+             else
+               {
+                  if (parent)
+                    {
+                       it->parent = parent;
+                       if (parent->child==NULL)
+                         {
+                            parent->child = it;
+                            fprintf(stderr, "Setting first child\n");
+                         }
+                       else
+                         {
+                            MenuItem *ptr = parent->child;
+      
+                            while(ptr->next)
+                              {
+                                 ptr = ptr->next;
+                              }
+      
+                            fprintf(stderr, "Setting sibling\n");
+                            ptr->next = it;
+                            it->prev = ptr;
+                        }
+                     }
+                   else
+                     {
+                        MenuItem *ptr = this->root;
+                        fprintf(stderr, "Parent %p\n", ptr);
+                        while(ptr->next)
+                          {
+                             ptr = ptr->next;
+                          }
+                        ptr->next = it;
+                        it->prev = ptr;
+                        fprintf(stderr, "Setting top level sibling\n");
+                     }
+               }
+
+             Local<Value> disabled_object = item->ToObject()->Get(String::New("disabled"));
+
+             if ( disabled_object->IsBoolean() )
+               {
+                  elm_menu_item_disabled_set(it->mi, disabled_object->ToBoolean()->Value());
+               }
+             return it;
+          }
+     }
 
   virtual Handle<ObjectTemplate> get_template(void)
     {
