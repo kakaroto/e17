@@ -16,6 +16,7 @@ files_SCRIPTS = \
 	entry.js \
 	flip.js \
 	genlist.js \
+	http_test.js \
 	label.js \
 	list.js \
 	menu.js \
@@ -24,6 +25,7 @@ files_SCRIPTS = \
 	photo.js \
 	progressbar.js \
 	slider.js \
-	spinner.js
+	spinner.js \
+	http_menu.js
 
 EXTRA_DIST = $(files_SCRIPTS)
