@@ -6,6 +6,9 @@
  */
 
 #include <Elementary.h>
+#include <Eina.h>
+#include <Ecore.h>
+#include <Ecore_Con.h>
 #include <v8.h>
 
 #include <sys/mman.h>
@@ -14,24 +17,15 @@
 #include <fcntl.h>
 #include <assert.h>
 
+using namespace v8;
+
 /* FIXME */
-void elm_v8_setup(v8::Handle<v8::ObjectTemplate> global);
+void elm_v8_setup(Handle<ObjectTemplate> global);
+int xmlhttp_v8_setup(Handle<ObjectTemplate> global);
+void compile_and_run(Handle<String> source);
 
-v8::Handle<v8::Value>
-Print(const v8::Arguments& args)
-{
-   for (int i = 0; i < args.Length(); i++)
-     {
-        v8::HandleScope handle_scope;
-        v8::String::Utf8Value str(args[i]);
-        printf("%s%s", i ? " ":"", *str);
-     }
-   printf("\n");
-   fflush(stdout);
-   return v8::Undefined();
-}
 
-int shebang_length(char *p, int len)
+int shebang_length(const char *p, int len)
 {
    int i = 0;
 
@@ -45,10 +39,25 @@ int shebang_length(char *p, int len)
    return i;
 }
 
-v8::Local<v8::String>
+
+Handle<Value>
+Print(const Arguments& args)
+{
+   for (int i = 0; i < args.Length(); i++)
+     {
+        HandleScope handle_scope;
+        String::Utf8Value str(args[i]);
+        printf("%s%s", i ? " ":"", *str);
+     }
+   printf("\n");
+   fflush(stdout);
+   return Undefined();
+}
+
+Local<String>
 string_from_file(const char *filename)
 {
-   v8::Local<v8::String> ret;
+   Local<String> ret;
    int fd, len = 0;
    char *bad_ret = reinterpret_cast<char*>(MAP_FAILED);
    char *p = bad_ret;
@@ -68,7 +77,7 @@ string_from_file(const char *filename)
 
    n = shebang_length(p, len);
 
-   ret = v8::String::New(&p[n], len - n);
+   ret = String::New(&p[n], len - n);
 
 fail:
    if (p == bad_ret)
@@ -80,11 +89,24 @@ fail:
    return ret;
 }
 
-void
-boom(v8::TryCatch &try_catch)
+Local<String>
+string_from_buffer(const char *buffer, int len)
 {
-   v8::Handle<v8::Message> msg = try_catch.Message();
-   v8::String::Utf8Value error(try_catch.Exception());
+   Local<String> ret;
+   int n;
+
+   n = shebang_length(buffer, len);
+ 
+   ret = String::New(&buffer[n], len - n);
+
+   return ret;
+}
+
+void
+boom(TryCatch &try_catch)
+{
+   Handle<Message> msg = try_catch.Message();
+   String::Utf8Value error(try_catch.Exception());
 
    if (msg.IsEmpty())
      {
@@ -92,7 +114,7 @@ boom(v8::TryCatch &try_catch)
      }
    else
      {
-        v8::String::Utf8Value file(msg->GetScriptResourceName());
+        String::Utf8Value file(msg->GetScriptResourceName());
         int line = msg->GetLineNumber();
 
         fprintf(stderr, "%s:%d %s\n", *file, line, *error);
@@ -103,25 +125,37 @@ boom(v8::TryCatch &try_catch)
 void
 run_script(const char *filename)
 {
-   v8::HandleScope handle_scope;
-   v8::TryCatch try_catch;
+   HandleScope handle_scope;
 
-   /* load the script and run it */
-   v8::Handle<v8::String> origin = v8::String::New(filename);
-   v8::Handle<v8::String> source = string_from_file(filename);
-   if (source.IsEmpty())
+   if (filename == strstr(filename, "http"))
      {
-        fprintf(stderr, "Failed to read source %s\n", filename);
-        return;
+        fprintf(stderr, "Downloading elev8 Script\n");
      }
+   else
+     {
+        /* load the script and run it */
+        Handle<String> origin = String::New(filename);
+        Handle<String> source = string_from_file(filename);
+        if (source.IsEmpty())
+          {
+             fprintf(stderr, "Failed to read source %s\n", filename);
+             return;
+          }
+        compile_and_run(source);
+      }
+}
 
+void compile_and_run(Handle<String> source)
+{
+   
+   TryCatch try_catch;
    /* compile */
-   v8::Handle<v8::Script> script = v8::Script::Compile(source, origin);
+   Handle<Script> script = Script::Compile(source);
    if (try_catch.HasCaught())
      boom(try_catch);
 
    /* run */
-   v8::Handle<v8::Value> result = script->Run();
+   Handle<Value> result = script->Run();
    if (try_catch.HasCaught())
      boom(try_catch);
 }
@@ -129,16 +163,23 @@ run_script(const char *filename)
 void
 elev8_run(const char *script)
 {
-   v8::HandleScope handle_scope;
-   v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New();
+   HandleScope handle_scope;
+   Handle<ObjectTemplate> global = ObjectTemplate::New();
 
-   global->Set(v8::String::New("print"), v8::FunctionTemplate::New(Print));
+   global->Set(String::New("print"), FunctionTemplate::New(Print));
 
    elm_v8_setup(global);
+   int retval = xmlhttp_v8_setup(global);
+
+   if (retval!=0)
+     {
+        fprintf(stderr, "Cannot initialize ecore_con_url\n");
+	    //FIXME : Disable XMLHttpRequest support
+     }
 
    /* setup V8 */
-   v8::Persistent<v8::Context> context = v8::Context::New(NULL, global);
-   v8::Context::Scope context_scope(context);
+   Persistent<Context> context = Context::New(NULL, global);
+   Context::Scope context_scope(context);
    run_script(script);
 
    ecore_main_loop_begin();
@@ -158,15 +199,21 @@ main_help(const char *progname)
 int
 elm_main(int argc, char **argv)
 {
+   int i;
+
    if (argc < 2)
      {
         fprintf(stderr, "%s: Error: no input file specified.\n", argv[0]);
         main_help(argv[0]);
         exit(-1);
      }
-   v8::V8::SetFlagsFromCommandLine(&argc, argv, true);
+
+   for (i = 0; i<argc; i++)
+     printf("arg[%d] = %s\n", i, argv[i]);
+
+   V8::SetFlagsFromCommandLine(&argc, argv, true);
    elev8_run(argv[1]);
-   v8::V8::Dispose();
+   V8::Dispose();
 
    return 0;
 }

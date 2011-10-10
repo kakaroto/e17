@@ -50,7 +50,7 @@ var my_window = new elm.window({
 					},
 					icon_no_scale : {
 						type : "button",
-						label : "Fetch My Dilbert"
+						label : "Fetch My Dilbert",
 						weight : { x : -1.0, y : -1.0 },
 						icon : logo_icon_unscaled,
 						on_clicked : function() {
