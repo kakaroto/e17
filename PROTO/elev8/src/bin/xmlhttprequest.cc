@@ -279,6 +279,11 @@ ecore_con_open(const Arguments& args)
         String::Utf8Value url(args[1]->ToString());
         fprintf(stderr,"Making request to %s\n", *url);
         Ecore_Con_Url *url_con = ecore_con_url_new(*url);
+        if (url_con==NULL)
+          {
+             fprintf(stderr, "Cannot open connection to %s\n", *url);
+             return Undefined();
+          }
         reqObj->url_con = url_con;
 	ecore_con_url_data_set(reqObj->url_con, reinterpret_cast<void *>(reqObj));
      }
@@ -294,18 +299,25 @@ ecore_con_send(const Arguments& args)
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
    void* ptr = wrap->Value();
    XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
+   Eina_Bool sentStatus = EINA_FALSE;
 
    if (args[0]->IsString() && (reqObj->http_method == HTTP_POST))
      {
         String::Utf8Value body(args[0]->ToString());
-	ecore_con_url_post(reqObj->url_con, (void *)(*body), 
+	sentStatus = ecore_con_url_post(reqObj->url_con, (void *)(*body), 
 			   body.length(), "text/plain;charset=UTF-8");
 
      }
    else
      {
-        ecore_con_url_get(reqObj->url_con);
+        sentStatus = ecore_con_url_get(reqObj->url_con);
      }
+
+   if (!sentStatus)
+     {
+        fprintf(stderr, "Unable to send request\n");
+     }
+
    return Undefined();
 }
 
