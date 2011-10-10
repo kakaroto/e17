@@ -14,7 +14,7 @@ struct _Item
 {
   Evas_Object *o, *o_win;
   E_Border *bd;
-  E_Comp_Win *cw;
+  E_Manager_Comp_Source *cw;
   E_Manager *man;
   double scale;
 
@@ -638,19 +638,17 @@ _scale_win_del(Item *it)
 	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_UP,
 				       _scale_win_cb_mouse_up);
 
-	e_manager_comp_src_hidden_set(it->man,
-				      (E_Manager_Comp_Source *)it->cw,
-				      EINA_FALSE);
+	e_manager_comp_src_hidden_set(it->man, it->cw, EINA_FALSE);
 
 	if ((it->bd->desk != current_desk) && (!it->bd->sticky))
 	  {
 	     e_border_hide(it->bd, 2);
-	     evas_object_hide(it->cw->shobj);
+	     /* evas_object_hide(it->cw->shobj); */
 	  }
 	else if (it->was_hidden)
 	  {
 	     e_border_hide(it->bd, 1);
-	     evas_object_hide(it->cw->shobj);
+	     /* evas_object_hide(it->cw->shobj); */
 	  }
 	if (it->was_shaded)
 	  {
@@ -671,12 +669,11 @@ _scale_win_del(Item *it)
 }
 
 static Item *
-_scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk)
+_scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *cw, E_Desk *desk)
 {
    Item *it;
-   E_Comp_Win *cw = (void*)src;
    
-   if (!e_manager_comp_src_image_get(man, src))
+   if (!e_manager_comp_src_image_get(man, cw))
      return NULL;
 
    if (!cw->bd)
@@ -686,7 +683,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	  {
 	     it = E_NEW(Item, 1);
 	     it->man = man;
-	     it->o_win = e_manager_comp_src_shadow_get(man, src);
+	     it->o_win = e_manager_comp_src_shadow_get(man, cw);
 	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 					    _scale_win_cb_delorig, it);
 	     background = it;
@@ -699,7 +696,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 
 	     it = E_NEW(Item, 1);
 	     it->man = man;
-	     it->o_win = e_manager_comp_src_shadow_get(man, src);
+	     it->o_win = e_manager_comp_src_shadow_get(man, cw);
 	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 	     				    _scale_win_cb_delorig, it);
 	     popups = eina_list_append(popups, it);
@@ -745,9 +742,9 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
    it->bd = cw->bd;
    it->man = man;
    it->cw = cw;
-   e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
+   e_manager_comp_src_hidden_set(man, cw, EINA_TRUE);
       
-   it->o_win = e_manager_comp_src_image_mirror_add(man, src);
+   it->o_win = e_manager_comp_src_image_mirror_add(man, cw);
    /* it->o_win = evas_object_image_filled_add(e);
     * o = e_manager_comp_src_image_get(man, src);
     * evas_object_image_source_set(it->o_win, o);
@@ -811,7 +808,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk
 	  evas_object_color_set(it->o, 0, 0, 0, 0);
 
 	evas_object_move(it->o, it->bd->x, it->bd->y);
-	evas_object_resize(it->o, it->cw->pw, it->cw->ph);
+	evas_object_resize(it->o, it->bd->w, it->bd->h);
 	evas_object_pass_events_set(it->o, 1);
 
 	return it;

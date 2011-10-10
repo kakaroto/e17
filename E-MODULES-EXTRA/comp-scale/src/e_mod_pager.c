@@ -10,7 +10,8 @@ struct _Item
   Evas_Object *o, *o_win;
   E_Border *bd;
   E_Desk *desk;
-  E_Comp_Win *cw;
+  E_Manager_Comp_Source *cw;
+  /* E_Comp_Win *cw; */
   E_Manager *man;
 
   double x;
@@ -588,9 +589,7 @@ _pager_win_del(Item *it)
 
    if (it->bd && !it->o)
      {
-	e_manager_comp_src_hidden_set(it->man,
-				      (E_Manager_Comp_Source *)it->cw,
-				      EINA_FALSE);
+	e_manager_comp_src_hidden_set(it->man, it->cw, EINA_FALSE);
 
 	e_object_unref(E_OBJECT(it->bd));
      }
@@ -615,9 +614,7 @@ _pager_win_del(Item *it)
 	if ((it->bd->desk != current_desk) && (!it->bd->sticky))
 	  e_border_hide(it->bd, 2);
 
-	e_manager_comp_src_hidden_set(it->man,
-				      (E_Manager_Comp_Source *)it->cw,
-				      EINA_FALSE);
+	e_manager_comp_src_hidden_set(it->man, it->cw, EINA_FALSE);
 
 	evas_object_del(it->o_win);
 	evas_object_del(it->o);
@@ -633,23 +630,22 @@ _pager_win_del(Item *it)
 }
 
 static Item *
-_pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
+_pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *cw)
 {
    Item *it;
-   E_Comp_Win *cw = (void*)src;
-   Evas_Object *o;
+   Evas_Object *o, *sh_obj, *obj;
 
-   if (!cw->obj)
-     return NULL;
+   sh_obj = e_manager_comp_src_shadow_get(man, cw);
+   if (!sh_obj) return NULL;
+
+   obj = e_manager_comp_src_image_get(man, cw);
+   if (!obj) return NULL;
 
    if (!cw->bd)
      {
-	o = e_manager_comp_src_shadow_get(man, src);
-	if (!o) return NULL;
-
 	if (cw->win == zone->container->bg_win)
 	  {
-	     smooth = evas_object_image_smooth_scale_get(cw->obj);
+	     smooth = evas_object_image_smooth_scale_get(obj);
 
 	     o = evas_object_rectangle_add(e);
 	     evas_object_move(o, zone->x, zone->y);
@@ -657,7 +653,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 	     evas_object_show(o);
 	     bg_over = o;
 
-	     evas_object_stack_above(bg_over, cw->shobj);
+	     evas_object_stack_above(bg_over, sh_obj);
 
 	     if (scale_conf->pager_fade_desktop)
 	       evas_object_color_set(bg_over, 0, 0, 0, 0);
@@ -677,7 +673,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
 
 	     it = E_NEW(Item, 1);
 	     it->man = man;
-	     it->o_win = o;
+	     it->o_win = sh_obj;
 	     it->cw = cw;
 	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 					    _pager_win_cb_delorig, it);
@@ -701,7 +697,7 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    it->cw = cw;
    e_object_ref(E_OBJECT(it->bd));
 
-   e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
+   e_manager_comp_src_hidden_set(man, cw, EINA_TRUE);
 
    items = eina_list_append(items, it);
 
@@ -711,12 +707,11 @@ _pager_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src)
    if ((it->bd->client.netwm.state.skip_pager) || (e_mod_border_ignore(it->bd)))
      return NULL;
 
-   /* it->o_win = e_manager_comp_src_image_mirror_add(man, src); */
-
-   it->o_win = evas_object_image_filled_add(e);
-   o = e_manager_comp_src_image_get(man, src);
-   evas_object_image_source_set(it->o_win, o);
-   evas_object_show(o);
+   it->o_win = e_manager_comp_src_image_mirror_add(man, cw);
+   /* it->o_win = evas_object_image_filled_add(e);
+    * o = e_manager_comp_src_image_get(man, src);
+    * evas_object_image_source_set(it->o_win, o); */
+   /* evas_object_show(o); */
 
    it->o = edje_object_add(e);
    if (!e_theme_edje_object_set(it->o, "base/theme/modules/scale",
