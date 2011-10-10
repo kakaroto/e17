@@ -14,7 +14,7 @@ struct _Item
 {
   Evas_Object *o, *o_win;
   E_Border *bd;
-  E_Manager_Comp_Source *cw;
+  E_Manager_Comp_Source *src;
   E_Manager *man;
   double scale;
 
@@ -638,17 +638,17 @@ _scale_win_del(Item *it)
 	evas_object_event_callback_del(it->o, EVAS_CALLBACK_MOUSE_UP,
 				       _scale_win_cb_mouse_up);
 
-	e_manager_comp_src_hidden_set(it->man, it->cw, EINA_FALSE);
+	e_manager_comp_src_hidden_set(it->man, it->src, EINA_FALSE);
 
 	if ((it->bd->desk != current_desk) && (!it->bd->sticky))
 	  {
 	     e_border_hide(it->bd, 2);
-	     /* evas_object_hide(it->cw->shobj); */
+	     /* evas_object_hide(it->src->shobj); */
 	  }
 	else if (it->was_hidden)
 	  {
 	     e_border_hide(it->bd, 1);
-	     /* evas_object_hide(it->cw->shobj); */
+	     /* evas_object_hide(it->src->shobj); */
 	  }
 	if (it->was_shaded)
 	  {
@@ -669,21 +669,26 @@ _scale_win_del(Item *it)
 }
 
 static Item *
-_scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *cw, E_Desk *desk)
+_scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *src, E_Desk *desk)
 {
    Item *it;
+   E_Border *bd;
    
-   if (!e_manager_comp_src_image_get(man, cw))
+   if (!e_manager_comp_src_image_get(man, src))
      return NULL;
 
-   if (!cw->bd)
+   bd = e_manager_comp_src_border_get(man, src);
+
+   if (!bd)
      {
-	if ((cw->win == zone->container->bg_win) &&
+        Ecore_X_Window win = e_manager_comp_src_window_get(man, src);
+        
+	if ((win == zone->container->bg_win) &&
 	    (scale_conf->fade_desktop))
 	  {
 	     it = E_NEW(Item, 1);
 	     it->man = man;
-	     it->o_win = e_manager_comp_src_shadow_get(man, cw);
+	     it->o_win = e_manager_comp_src_shadow_get(man, src);
 	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 					    _scale_win_cb_delorig, it);
 	     background = it;
@@ -691,12 +696,14 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *cw, E_Desk *desk)
 	  }
 	else if (scale_conf->fade_popups)
 	  {
-	     if ((cw->pop) && (cw->pop->zone != zone))
+             E_Popup *pop = e_manager_comp_src_popup_get(man, src);
+
+	     if ((pop) && (pop->zone != zone))
 	       return NULL;
 
 	     it = E_NEW(Item, 1);
 	     it->man = man;
-	     it->o_win = e_manager_comp_src_shadow_get(man, cw);
+	     it->o_win = e_manager_comp_src_shadow_get(man, src);
 	     evas_object_event_callback_add(it->o_win, EVAS_CALLBACK_DEL,
 	     				    _scale_win_cb_delorig, it);
 	     popups = eina_list_append(popups, it);
@@ -705,30 +712,30 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *cw, E_Desk *desk)
 	return NULL;
      }
 
-   if (cw->bd->zone != desk->zone)
+   if (bd->zone != desk->zone)
      return NULL;
 
-   if ((!show_all_desks) && (cw->bd->desk != desk))
+   if ((!show_all_desks) && (bd->desk != desk))
      return NULL;
 
-   if (cw->bd->iconic)
+   if (bd->iconic)
      {
 	if (!show_iconified)
 	  return NULL;
 	
-	if ((match_class) && (!e_util_glob_match(cw->bd->client.icccm.class, match_class)))
+	if ((match_class) && (!e_util_glob_match(bd->client.icccm.class, match_class)))
 	  return NULL;
      }
 
-   if (e_mod_border_ignore(cw->bd))
+   if (e_mod_border_ignore(bd))
      {
 	const char *class;
 	
-	if (!cw->bd->visible)
+	if (!bd->visible)
 	  return NULL;
 	/* fade keyboard and home, ignore other */
 
-	if (!(class = cw->bd->client.icccm.class) ||
+	if (!(class = bd->client.icccm.class) ||
 	    (strcmp(class, "Virtual-Keyboard") &&
 	     strcmp(class, "Illume-Home") &&
 	     strcmp(class, "everything-window")))
@@ -738,13 +745,13 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *cw, E_Desk *desk)
    it = E_NEW(Item, 1);
    it->scale = 1.0;
 
-   e_object_ref(E_OBJECT(cw->bd));
-   it->bd = cw->bd;
+   e_object_ref(E_OBJECT(bd));
+   it->bd = bd;
    it->man = man;
-   it->cw = cw;
-   e_manager_comp_src_hidden_set(man, cw, EINA_TRUE);
+   it->src = src;
+   e_manager_comp_src_hidden_set(man, src, EINA_TRUE);
       
-   it->o_win = e_manager_comp_src_image_mirror_add(man, cw);
+   it->o_win = e_manager_comp_src_image_mirror_add(man, src);
    /* it->o_win = evas_object_image_filled_add(e);
     * o = e_manager_comp_src_image_get(man, src);
     * evas_object_image_source_set(it->o_win, o);
@@ -774,8 +781,8 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *cw, E_Desk *desk)
 	 * e_config->border_shade_animate = tmp; */
      }
 
-   it->dx = cw->bd->desk->x - desk->x;
-   it->dy = cw->bd->desk->y - desk->y;
+   it->dx = bd->desk->x - desk->x;
+   it->dy = bd->desk->y - desk->y;
 
    it->bd_x = (it->bd->x - zone->x);
    it->bd_y = (it->bd->y - zone->y);
@@ -800,7 +807,7 @@ _scale_win_new(Evas *e, E_Manager *man, E_Manager_Comp_Source *cw, E_Desk *desk)
      }
 
    if ((e_mod_border_ignore(it->bd)) ||
-       ((match_class) && (!e_util_glob_match(cw->bd->client.icccm.class, match_class))))
+       ((match_class) && (!e_util_glob_match(bd->client.icccm.class, match_class))))
      {
 	items_fade = eina_list_append(items_fade, it);
 
