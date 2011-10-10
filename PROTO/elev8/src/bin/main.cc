@@ -153,11 +153,7 @@ Eina_Bool file_data_callback(void *data, int type, void *event)
         elm_progressbar_value_set(dl_temp->pb, progress);
 
         eina_binbuf_append_length(dl_temp->temp_data, 
-#ifndef OLD_APIS
 			url_data->data, url_data->size);
-#else
-			(const char *)url_data->data, url_data->size);
-#endif
 	fprintf(stderr, "Appended %d data\n", url_data->size);
      }
    return EINA_FALSE;
@@ -171,13 +167,11 @@ _url_complete_cb(void *data, int type, void *event_info)
    Ecore_Con_Event_Url_Complete *url_complete = 
 	                     (Ecore_Con_Event_Url_Complete *)event_info;
 
-#ifndef OLD_APIS
    const char *url = ecore_con_url_url_get(url_complete->url_con);
    char buf[PATH_MAX];
    fprintf(stderr, "Completed %s - %d\n", url , url_complete->status);
    snprintf(buf, PATH_MAX, "<br>Completed %s - %d<br>", url , url_complete->status);
    elm_entry_entry_append(dl_temp->content, buf);
-#endif
 
 
    double progress;
