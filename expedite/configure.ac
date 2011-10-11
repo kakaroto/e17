@@ -34,10 +34,16 @@ EXPEDITE_CHECK_ENGINE([software-x11], [Software X11], "yes")
 
 if test "x${have_software_x11}" = "xyes" ; then
    have_software_xlib=`${PKG_CONFIG} --variable=Xlib evas-software-x11`
+   if test "x${have_software_xlib}" = "xstatic" ; then
+      have_software_xlib="yes"
+   fi
    if test "x${have_software_xlib}" = "xyes" ; then
       AC_DEFINE(HAVE_EVAS_SOFTWARE_XLIB, 1, [Evas Software Xlib Engine Support])
    fi
    have_software_xcb=`${PKG_CONFIG} --variable=XCB evas-software-x11`
+   if test "x${have_software_xcb}" = "xstatic" ; then
+      have_software_xcb="yes"
+   fi
    if test "x${have_software_xcb}" = "xyes" ; then
       AC_DEFINE(HAVE_EVAS_SOFTWARE_XCB, 1, [Evas Software XCB Engine Support])
    fi
