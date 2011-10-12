@@ -1,0 +1,62 @@
+#!/bin/bash
+# EFL style
+
+BLANKS="\
+	--blank-lines-after-declarations \
+	--blank-lines-after-procedures \
+	--blank-lines-before-block-comments \
+	--swallow-optional-blank-lines"
+
+COMMENTS=" \
+	--format-all-comments \
+	--format-first-column-comments \
+	--no-comment-delimiters-on-blank-lines \
+	--start-left-side-of-comments \
+	--line-comments-indentation0 \
+	--comment-indentation33 \
+	--declaration-comment-column33 \
+	--else-endif-column33"
+	
+STATEMENTS=" \
+	--braces-after-if-lines \
+	--cuddle-else \
+	--cuddle-do-while \
+	--case-indentation2 \
+	--case-brace-indentation2 \
+	--space-special-semicolon \
+	--no-space-after-function-call-names \
+	--space-after-cast \
+	--space-after-for \
+	--space-after-if \
+	--space-after-while \
+	--no-space-after-parentheses"
+
+DECLARATIONS=" \
+	--declaration-indentation1 \
+	--no-blank-lines-after-commas \
+	--dont-break-function-decl-args \
+	--dont-break-function-decl-args-end \
+	--procnames-start-lines \
+	--braces-on-struct-decl-line \
+	--braces-after-func-def-line"
+
+INDENTATION=" \
+	--indent-level3 \
+	--continuation-indentation4 \
+	--dont-line-up-parentheses \
+	--parameter-indentation2 \
+	--preprocessor-indentation1 \
+	--indent-label2"
+	
+BREAK_LONG_LINES=" \
+	--line-length80 \
+	--ignore-newlines \
+	--break-after-boolean-operator"
+
+
+# Fix indentation
+indent $BLANKS $COMMENTS $STATEMENTS $DECLARATIONS $INDENTATION $BREAK_LONG_LINES $1
+
+# Remove all trailing whitespaces
+sed 's/[ \t]*$//' -i $1
+
