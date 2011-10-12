@@ -5,11 +5,15 @@ elm.datadir=elm.datadir + "/data/images/";
 var small_icon = {
 	type : "icon",
 	prescale : 20,
+	scale_up : false,
 	image : elm.datadir + "logo_small.png",
 };
 var green = {
 	type : "icon",
-	prescale : 20,
+    hint_max : { w : 20, h : 20 },
+    hint_min : { w : 20, h : 20 },
+    width : 20,
+    height : 20,
 	image : elm.datadir + "green.png",
 };
 var yellow = {
@@ -28,14 +32,17 @@ var maroon = {
 };
 var violet = {
 	type : "icon",
-	prescale : 20,
+    hint_max : { w : 20, h : 20 },
+    hint_min : { w : 20, h : 20 },
+    width : 20,
+    height : 20,
 	image : elm.datadir + "violet.png",
 };
 
 var logo_icon = {
 	type : "icon",
 	prescale : 20,
-	image : elm.datadir + "/data/images/logo_small.png",
+	image : elm.datadir + "logo_small.png",
 };
 
 var logo_end = {
@@ -81,22 +88,30 @@ var examples = new Array(
 
 var list_items = new Array();
 
-for (i=0; i<examples.length; i++)
+var win;
+
+function init_list(arg)
 {
-    print("Checking : " + examples[i][0] + " " +  examples[i][1]);
-    list_items[i] = {
-            label : examples[i][0],
-            icon : small_icon,
-            end : logo_end,
-            tooltip : examples[i][1],
-            on_clicked : function (arg) {
-                print("List callback" + this.label);
-            },
-    };
+    for (i=0; i<examples.length; i++)
+    {
+        print("Checking : " + examples[i][0] + " " +  examples[i][1]);
+        list_items[i] = {
+                label : examples[i][0],
+                icon : violet,
+                end : green,
+                tooltip : examples[i][1],
+                on_clicked : function (arg) {
+                    print("List callback");
+                },
+        };
+        //win.elements.scroll.content.elements.the_list.append(list_items[i]);
+    }
+    return list_items;
 }
 
-var win = new elm.window({
-	label : "list",
+
+win = new elm.window({
+	label : "Elev8 Demo",
 	width : 320,
 	height : 480,
 	elements : {
@@ -105,13 +120,13 @@ var win = new elm.window({
 			resize : true,
 			weight : EXPAND_BOTH,
 		},
-		//scroll : {
-		//	type : "scroller",
-		//	bounce : { x : false, y : true },
-		//	policy : { x : "off", y : "auto" },
-		//	weight : EXPAND_BOTH,
-		//	resize : true,
-		content : {
+		scroll : {
+			type : "scroller",
+			bounce : { x : false, y : true },
+			policy : { x : "off", y : "auto" },
+			weight : EXPAND_BOTH,
+			resize : true,
+		    content : {
 				type : "box",
 				weight : EXPAND_BOTH,
 				align : FILL_BOTH,
@@ -121,7 +136,7 @@ var win = new elm.window({
                         resize : true,
                         weight : EXPAND_BOTH,
                         align : { x: -1, y: -1 },
-                        items : list_items,
+                        items : init_list(),
                     },
                     the_box : {
                         type : "box",
@@ -138,12 +153,14 @@ var win = new elm.window({
                             },
                             click : {
                                 type : "button",
-                                label : "Download and Run",
+                                label : "Run",
+                                on_clicked : init_list,
                             },
                         },
                     },
                 },
             },
-        //},
+        },
 	},
 });
+
