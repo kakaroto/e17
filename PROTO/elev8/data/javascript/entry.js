@@ -59,6 +59,7 @@ var my_window = new elm.window({
 					weight : EXPAND_BOTH,
 					align : FILL_BOTH,
 					line_wrap : 3,
+                    single_line : 1,
 					editable : true,
 				},
 				the_pass : {

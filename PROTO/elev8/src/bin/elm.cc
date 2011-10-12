@@ -853,7 +853,7 @@ public:
           return;
         width = w->Int32Value();
         height = h->Int32Value();
-        evas_object_size_hint_max_set (eo,  width, height);
+        evas_object_size_hint_max_set (eo, width, height);
      }
 
    virtual Handle<Value> hint_max_get(void) const
@@ -2836,6 +2836,17 @@ public:
         if (value->IsBoolean())
           elm_entry_scrollable_set(eo, value->BooleanValue());
      }
+
+   virtual Handle<Value> single_line_get() const
+     {
+        return Integer::New(elm_entry_single_line_get(eo));
+     }
+
+   virtual void single_line_set(Handle<Value> value)
+     {
+        if (value->IsNumber())
+          elm_entry_single_line_set(eo, (Elm_Wrap_Type)value->Int32Value());
+     }
 };
 
 template<> CEvasObject::CPropHandler<CElmEntry>::property_list
@@ -2844,6 +2855,7 @@ CEvasObject::CPropHandler<CElmEntry>::list[] = {
   PROP_HANDLER(CElmEntry, editable),
   PROP_HANDLER(CElmEntry, line_wrap),
   PROP_HANDLER(CElmEntry, scrollable),
+  PROP_HANDLER(CElmEntry, single_line),
   { NULL, NULL, NULL },
 };
 
