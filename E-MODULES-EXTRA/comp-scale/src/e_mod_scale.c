@@ -643,12 +643,12 @@ _scale_win_del(Item *it)
 	if ((it->bd->desk != current_desk) && (!it->bd->sticky))
 	  {
 	     e_border_hide(it->bd, 2);
-	     /* evas_object_hide(it->src->shobj); */
+             evas_object_hide(e_manager_comp_src_shadow_get(e_manager_current_get(), it->src));
 	  }
 	else if (it->was_hidden)
 	  {
 	     e_border_hide(it->bd, 1);
-	     /* evas_object_hide(it->src->shobj); */
+	     evas_object_hide(e_manager_comp_src_shadow_get(e_manager_current_get(), it->src));
 	  }
 	if (it->was_shaded)
 	  {
