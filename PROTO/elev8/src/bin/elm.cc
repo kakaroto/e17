@@ -817,6 +817,54 @@ public:
      {
         return Boolean::New(evas_object_visible_get(eo));
      }
+
+   virtual void hint_min_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          return ;
+        Evas_Coord width, height;
+        Local<Object> obj = val->ToObject();
+        Local<Value> w = obj->Get(String::New("x"));
+        Local<Value> h = obj->Get(String::New("y"));
+        if (!w->IsInt32() || !h->IsInt32())
+          return;
+        width = w->Int32Value();
+        height = h->Int32Value();
+        evas_object_size_hint_min_set (eo,  width, height);
+     }
+
+   virtual Handle<Value> hint_min_get(void) const
+     {
+        Evas_Coord w, h;
+        evas_object_size_hint_min_get (eo,  &w, &h);
+        Local<Object> obj = Object::New();
+        obj->Set(String::New("w"), Number::New(w));
+        obj->Set(String::New("h"), Number::New(h));
+        return obj;
+     }
+
+   virtual void hint_max_set(Handle<Value> val)
+     {
+        Evas_Coord width, height;
+        Local<Object> obj = val->ToObject();
+        Local<Value> w = obj->Get(String::New("x"));
+        Local<Value> h = obj->Get(String::New("y"));
+        if (!w->IsInt32() || !h->IsInt32())
+          return;
+        width = w->Int32Value();
+        height = h->Int32Value();
+        evas_object_size_hint_max_set (eo,  width, height);
+     }
+
+   virtual Handle<Value> hint_max_get(void) const
+     {
+        Evas_Coord w, h;
+        evas_object_size_hint_max_get (eo,  &w, &h);
+        Local<Object> obj = Object::New();
+        obj->Set(String::New("w"), Number::New(w));
+        obj->Set(String::New("h"), Number::New(h));
+        return obj;
+     }
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -840,6 +888,8 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, pointer),
      PROP_HANDLER(CEvasObject, style),
      PROP_HANDLER(CEvasObject, visible),
+     PROP_HANDLER(CEvasObject, hint_min),
+     PROP_HANDLER(CEvasObject, hint_max),
      { NULL, NULL, NULL },
 };
 
@@ -2616,7 +2666,7 @@ public:
                   it = it->next;
                   iter = iter->next;
                   String::Utf8Value val1(it->label);
-                  fprintf(stderr, "%p - checking pre : get %s\n", it, *val1 );
+                  fprintf(stderr, "%p %d pos checking pre : get %s\n", it, pos, *val1 );
                }
              it->label = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
              it->icon = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
