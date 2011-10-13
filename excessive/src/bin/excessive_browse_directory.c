@@ -25,8 +25,10 @@ _excessive_file_info_cmp(const void *a, const void *b)
    if (fa->info.type == EINA_FILE_DIR)
      {
         if (fb->info.type != EINA_FILE_DIR)
-          return 1;
+          return -1;
      }
+   else if (fb->info.type == EINA_FILE_DIR)
+     return 1;
 
    return strcoll(fa->info.path, fb->info.path);
 }
