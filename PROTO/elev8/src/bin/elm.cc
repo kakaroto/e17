@@ -7,6 +7,7 @@
 
 #include <Elementary.h>
 #include <v8.h>
+#include <list>
 
 #include <sys/mman.h>
 #include <sys/types.h>
@@ -28,18 +29,6 @@ class Item
       Handle<Value> label;
       Handle<Value> icon;
       bool disabled;
-};
-
-class ListItem : public Item
-{
-   public:
-      CEvasObject  *icon_left;
-      CEvasObject  *icon_right;
-      Elm_List_Item *li;
-      Handle<Value> end;
-      Handle<Value> tooltip;
-      ListItem *next;
-      ListItem *prev;
 };
 
 class MenuItem : public Item
@@ -2181,11 +2170,19 @@ public:
 
 class CElmList : public CEvasObject {
 protected:
+   class ListItem : public Item {
+   public:
+     CEvasObject  *icon_left;
+     CEvasObject  *icon_right;
+     Elm_List_Item *li;
+     Handle<Value> end;
+     Handle<Value> tooltip;
+   };
+
+protected:
    Persistent<Value> items;
    static CPropHandler<CElmList> prop_handler;
-   int length;
-   ListItem *head;
-   ListItem *tail;
+   std::list<ListItem*> list;
 
    const static int LABEL = 1;
    const static int ICON = 2;
@@ -2196,9 +2193,6 @@ public:
    CElmList(CEvasObject *parent, Local<Object> obj) :
        CEvasObject()
      {
-        head = NULL;
-        tail = NULL;
-        length = 0;
         eo = elm_list_add(parent->top_widget_get());
 
         construct(eo, obj);
@@ -2249,19 +2243,16 @@ public:
      {
         CEvasObject *self = eo_from_info(args.This());
         CElmList *list = static_cast<CElmList *>(self);
-        if ((list->head) && (args[0]->IsNumber()) && args[1]->IsBoolean())
+        if (!list->list.empty() && args[0]->IsNumber() && args[1]->IsBoolean())
           {
               int val = args[0]->IntegerValue();
 
-              if (val<=list->length)
+              if (val <= list->list.size())
                 {
-                   ListItem *it = list->head;
-                   for (;val>0; val--)
-                     {
-                        String::Utf8Value val1(it->label);
-                        it = (it->next);
-                     }
-                   elm_list_item_disabled_set(it->li, args[1]->BooleanValue());
+                   std::list<ListItem*>::iterator i = list->list.begin();
+                   for ( ; val>0; val--)
+                     i++;
+                   elm_list_item_disabled_set((*i)->li, args[1]->BooleanValue());
                 }
           }
         return Undefined();
@@ -2286,31 +2277,26 @@ public:
      {
         CEvasObject *self = eo_from_info(args.This());
         CElmList *list = static_cast<CElmList *>(self);
-        if ((list->head) && (args[0]->IsNumber()))
+        if (!list->list.empty() && args[0]->IsNumber())
           {
               int val = args[0]->IntegerValue();
-              if (val<=list->length)
+              if (val <= list->list.size())
                 {
-                   ListItem *it = list->head;
+                   std::list<ListItem*>::iterator i = list->list.begin();
 
                    for (;val>0; val--)
-                     {
-                        String::Utf8Value val1(it->label);
-                        it = it->next;
-                     }
+                     i++;
+
                    switch(field)
                      {
                         case LABEL:
-                           return it->label;
-                           break;
+                           return (*i)->label;
                         case ICON:
-                           return it->icon;
-                           break;
+                           return (*i)->icon;
                         case END:
-                           return it->end;
-                           break;
+                           return (*i)->end;
                         case TOOLTIP:
-                           return it->tooltip;
+                           return (*i)->tooltip;
                         default:
                            return Undefined();
                      }
@@ -2339,18 +2325,17 @@ public:
      {
         CEvasObject *self = eo_from_info(args.This());
         CElmList *list = static_cast<CElmList *>(self);
-        if ((list->head) && (args[0]->IsNumber()))
+        if (!list->list.empty() && args[0]->IsNumber())
           {
              int val = args[0]->IntegerValue();
-             if (val<=list->length)
+             if (val <= list->list.size())
                {
-                  ListItem *it = list->head;
+                  std::list<ListItem*>::iterator i = list->list.begin();
 
                   for (;val>0; val--)
-                    {
-                       String::Utf8Value val1(it->label);
-                       it = (it->next);
-                    }
+                    i++;
+                  ListItem *it = *i;
+
                   switch(field)
                     {
                        case LABEL:
@@ -2429,50 +2414,27 @@ public:
         CEvasObject *self = eo_from_info(args.This());
         CElmList *list = static_cast<CElmList *>(self);
 
-        if ((list->head) && (args[0]->IsNumber()))
+        if (!list->list.empty() && args[0]->IsNumber())
           {
              int val = args[0]->IntegerValue();
 
              if (val==-1) //delete last one
-               {
-                   val = list->length;
-               }
+               val = list->list.size();
 
-             if (val<=list->length)
+             if (val < list->list.size())
                {
-                  ListItem *it = list->head;
+                  std::list<ListItem*>::iterator i = list->list.begin();
 
                   for (;val>0; val--)
-                    {
-                       String::Utf8Value val1(it->label);
-                       it = (it->next);
-                    }
+                    i++;
+
+                  ListItem *it = *i;
 
                   elm_list_item_del(it->li);
                   elm_list_go(list->get());
 
-                  if(it && it == list->head)
-                    {
-                        list->head = it->next?it->next:NULL;
-                        if (list->head)
-                          {
-                             list->head->prev = NULL;
-                          }
-                    }
-                  if(it && it == list->tail)
-                    {
-                        list->tail = it->prev;
-                        if (list->tail)
-                          {
-                             list->tail->next = NULL;
-                          }
-                    }
+                  list->list.erase(i);
 
-                  if (it->next && it->prev)
-                    {
-                       it->prev->next = it->next;
-                       it->next->prev = it->prev;
-                    }
                   delete it;
                }
           }
@@ -2482,7 +2444,7 @@ public:
      {
         CEvasObject *self = eo_from_info(args.This());
         CElmList *list = static_cast<CElmList *>(self);
-        return v8::Number::New(list->length);
+        return v8::Number::New(list->list.size());
      }
 
    virtual Handle<ObjectTemplate> get_template(void)
@@ -2564,7 +2526,7 @@ public:
              return NULL;
           }
 
-        ListItem *it = this->head;
+        ListItem *it = list.front();
         if ((pos == 0) || (pos==-1)) //seperate insert and removal case
           {
              it = new ListItem();
@@ -2583,55 +2545,36 @@ public:
                   delete it;
                   return NULL;
                }
-             if (this->head==NULL)
-               {
-                  this->head = it;
-               }
-
-             if (this->tail==NULL)
-               {
-                  this->tail = it;
-               }
-             String::Utf8Value val1(it->label);
           }
 
         if (-1 == pos)
           {
              // either a label with icon
              it->li = elm_list_item_append(eo,NULL,NULL,NULL,&eo_on_click,(void*)it);
-             this->length++;
-             it->prev = this->tail;
-             this->tail->next = it;
-             this->tail = it;
-             it->next = NULL;
-             String::Utf8Value val(this->tail->label);
+             list.push_back(it);
           }
         else if (0 == pos)
           {
              // either a label with icon
              it->li = elm_list_item_prepend(eo,NULL,NULL,NULL,&eo_on_click,(void*)it);
-             this->length++;
-             this->head->prev = it;
-             it->next = this->head;
-             this->head = it;
-             it->prev = NULL;
-             String::Utf8Value val(this->tail->label);
+             list.push_front(it);
           }
         else
           {
              // get the Eina_List
              const Eina_List *iter = elm_list_items_get (get());
+             std::list<ListItem*>::iterator i = list.begin();
 
              for (;pos>0; pos--)
                {
-                  it = it->next;
+                  i++;
                   iter = iter->next;
-                  String::Utf8Value val1(it->label);
                }
              it->label = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
              it->icon = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
              it->end = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("end")));
              it->tooltip = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("tooltip")));
+             list.insert(i, it);
           }
 
         if ( it->label->IsString())
