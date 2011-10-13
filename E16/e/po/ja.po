@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2011-10-08 10:29+0200\n"
-"PO-Revision-Date: 2011-08-03 16:05+0900\n"
+"PO-Revision-Date: 2011-10-11 18:12+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "Language: ja\n"
@@ -1612,12 +1612,11 @@ msgstr "サイズ変更方式:"
 
 #: src/settings.c:111 src/settings.c:116 src/settings.c:427
 msgid "Technical"
-msgstr "テクニカル"
+msgstr "テクニカル（フレーム）"
 
 #: src/settings.c:121 src/settings.c:126 src/settings.c:432
-#, fuzzy
 msgid "TechOpaque"
-msgstr "不透明"
+msgstr "テクニカル（ウィンドウ）"
 
 #: src/settings.c:142 src/settings.c:147 src/settings.c:443
 msgid "Shaded"
@@ -2794,9 +2793,8 @@ msgid "User Application List"
 msgstr "ユーザーアプリケーション"
 
 #: config/strings.c:191
-#, fuzzy
 msgid "Applications"
-msgstr "ユーザーアプリケーション"
+msgstr "アプリケーション"
 
 #: config/strings.c:192
 msgid "Epplets"
