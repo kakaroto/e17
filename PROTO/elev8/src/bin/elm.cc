@@ -644,8 +644,8 @@ public:
      }
 
     bool get_xy_from_object(Handle<Value> val,
-			   Handle<Value> &x_val,
-			   Handle<Value> &y_val)
+                            Handle<Value> &x_val,
+                            Handle<Value> &y_val)
      {
         HandleScope handle_scope;
         if (!val->IsObject())
@@ -2191,7 +2191,7 @@ protected:
    const static int ICON = 2;
    const static int END = 3;
    const static int TOOLTIP = 4;
-   
+
 public:
    CElmList(CEvasObject *parent, Local<Object> obj) :
        CEvasObject()
@@ -2429,7 +2429,6 @@ public:
         CEvasObject *self = eo_from_info(args.This());
         CElmList *list = static_cast<CElmList *>(self);
 
-           
         if ((list->head) && (args[0]->IsNumber()))
           {
              int val = args[0]->IntegerValue();
@@ -2485,7 +2484,7 @@ public:
         CElmList *list = static_cast<CElmList *>(self);
         return v8::Number::New(list->length);
      }
-   
+
    virtual Handle<ObjectTemplate> get_template(void)
      {
         Handle<ObjectTemplate> ot = CEvasObject::get_template();
@@ -2588,7 +2587,7 @@ public:
                {
                   this->head = it;
                }
-  
+
              if (this->tail==NULL)
                {
                   this->tail = it;
@@ -2950,7 +2949,7 @@ public:
          {
             int value = val->ToNumber()->Value();
             elm_clock_show_am_pm_set(eo, value);
-	     }
+         }
     }
 
   virtual Handle<Value> show_seconds_get() const
@@ -2962,10 +2961,10 @@ public:
   virtual void show_seconds_set(Handle<Value> val)
     {
        if (val->IsNumber())
-	     {
+         {
             int value = val->ToNumber()->Value();
             elm_clock_show_seconds_set(eo, value);
-	     }
+         }
     }
 
   virtual Handle<Value> hour_get() const
@@ -3075,7 +3074,7 @@ protected:
      {
         CEvasObject *self = eo_from_info(args.This());
         CElmProgressBar *progress = static_cast<CElmProgressBar *>(self);
-	    if (args[0]->IsBoolean())
+        if (args[0]->IsBoolean())
           progress->pulse(args[0]->BooleanValue());
         return Undefined();
      }
@@ -3522,9 +3521,9 @@ public:
 
        right = realize_one(this, obj->Get(String::New("content_right")));
        if (right)
-	     {
+         {
             elm_panes_content_right_set(eo, right->get());
-	     }
+         }
     }
 
   virtual ~CElmPane()
@@ -3605,7 +3604,7 @@ public:
        if ( content )
          {
             elm_bubble_content_set(eo, content->get());
-	     }
+         }
     }
 
   virtual ~CElmBubble()
@@ -3648,10 +3647,10 @@ public:
   virtual void text_part_set(Handle<Value> val)
     {
        if (!val->IsObject())
-	 {
+         {
             fprintf(stderr, "%s: value is not an object!\n", __FUNCTION__);
             return;
-	 }
+         }
        Local<Object> obj = val->ToObject();
        Local<Value> it = obj->Get(String::New("item"));
        Local<Value> lbl = obj->Get(String::New("label"));
@@ -3901,7 +3900,7 @@ public:
 
 
              // either a label with icon
-             if ( !it->label->IsString() && !it->icon->IsString() ) 
+             if ( !it->label->IsString() && !it->icon->IsString() )
                {
                   fprintf(stderr, "Not a label or seperator\n");
                   delete it;
@@ -3910,7 +3909,7 @@ public:
 
              String::Utf8Value label(it->label->ToString());
              String::Utf8Value icon(it->icon->ToString());
-     
+
              Evas_Smart_Cb cb;
              void *data = NULL;
 
@@ -3939,12 +3938,12 @@ public:
                        else
                          {
                             MenuItem *ptr = parent->child;
-      
+
                             while(ptr->next)
                               {
                                  ptr = ptr->next;
                               }
-      
+
                             ptr->next = it;
                             it->prev = ptr;
                         }
@@ -4015,7 +4014,7 @@ public:
           return;
         Evas_Coord x_out = x->NumberValue();
         Evas_Coord y_out = y->NumberValue();
-	elm_menu_move (eo, x_out, y_out);
+        elm_menu_move (eo, x_out, y_out);
     }
 };
 
