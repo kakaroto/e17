@@ -497,7 +497,6 @@ public:
         Handle<Object> obj = get_object();
         HandleScope handle_scope;
         Handle<Value> val = on_keydown_val;
-        fprintf(stderr, "%s key pressed\n", info->keyname);
         // FIXME: pass event_info to the callback
         // FIXME: turn the pieces below into a do_callback method
         assert(val->IsFunction());
@@ -509,14 +508,12 @@ public:
    static void eo_on_keydown(void *data, Evas *e, Evas_Object *obj, void *event_info)
      {
         CEvasObject *self = static_cast<CEvasObject*>(data);
-        fprintf(stderr, "On keydown callback called\n");
 
         self->on_keydown(static_cast<Evas_Event_Key_Down*>(event_info));
      }
 
    virtual void on_keydown_set(Handle<Value> val)
      {
-        fprintf(stderr, "On keydown set %p\n", this);
         on_keydown_val.Dispose();
         on_keydown_val = Persistent<Value>::New(val);
         if (val->IsFunction())
@@ -957,7 +954,6 @@ public:
              evas_object_geometry_get(eo, &x, &y, &w, &h);
              w = val->ToInt32()->Value();
              evas_object_resize(eo, w, h);
-             printf("Resize Values = %d, %d\n", w, h);
           }
      }
 
@@ -976,7 +972,6 @@ public:
              evas_object_geometry_get(eo, &x, &y, &w, &h);
              h = val->ToInt32()->Value();
              evas_object_resize(eo, w, h);
-             printf("Resize Values = %d, %d\n", w, h);
           }
      }
 
@@ -1186,7 +1181,6 @@ public:
 
   virtual void red_set(Handle<Value> val)
     {
-       fprintf(stderr, "Red Set\n");
        if (val->IsNumber())
          {
             int r, g, b;
@@ -1211,7 +1205,6 @@ public:
             elm_bg_color_get(eo, &r, &g, &b);
             g = val->ToNumber()->Value();
             elm_bg_color_set(eo, r, g, b);
-        fprintf(stderr, "Set green to %d\n", g);
          }
     }
   virtual Handle<Value> blue_get() const
@@ -1650,7 +1643,6 @@ public:
              if (0 > access(*str, R_OK))
                fprintf(stderr, "warning: can't read icon file %s\n", *str);
 
-         fprintf(stderr, "Icon File = %s\n", *str);
              elm_icon_file_set(eo, *str, NULL);
           }
      }
@@ -2260,14 +2252,13 @@ public:
         if ((list->head) && (args[0]->IsNumber()) && args[1]->IsBoolean())
           {
               int val = args[0]->IntegerValue();
-              fprintf(stderr, "Trying to get %d from %d\n", val, list->length);
+
               if (val<=list->length)
                 {
                    ListItem *it = list->head;
                    for (;val>0; val--)
                      {
                         String::Utf8Value val1(it->label);
-                        fprintf(stderr, "%p - checking pre : get %s\n", it, *val1 );
                         it = (it->next);
                      }
                    elm_list_item_disabled_set(it->li, args[1]->BooleanValue());
@@ -2298,7 +2289,6 @@ public:
         if ((list->head) && (args[0]->IsNumber()))
           {
               int val = args[0]->IntegerValue();
-              fprintf(stderr, "Trying to get %d from %d\n", val, list->length);
               if (val<=list->length)
                 {
                    ListItem *it = list->head;
@@ -2306,7 +2296,6 @@ public:
                    for (;val>0; val--)
                      {
                         String::Utf8Value val1(it->label);
-                        fprintf(stderr, "%p - checking pre : get %s\n", it, *val1 );
                         it = it->next;
                      }
                    switch(field)
@@ -2353,7 +2342,6 @@ public:
         if ((list->head) && (args[0]->IsNumber()))
           {
              int val = args[0]->IntegerValue();
-             fprintf(stderr, "Trying to set %d from %d\n", val, list->length);
              if (val<=list->length)
                {
                   ListItem *it = list->head;
@@ -2361,10 +2349,8 @@ public:
                   for (;val>0; val--)
                     {
                        String::Utf8Value val1(it->label);
-                       fprintf(stderr, "%p - checking pre : set %s\n", it, *val1 );
                        it = (it->next);
                     }
-                  fprintf(stderr, "Field  to set %d\n", field);
                   switch(field)
                     {
                        case LABEL:
@@ -2373,7 +2359,6 @@ public:
                                static_cast<Persistent<Value> >(it->label).Dispose();
                                it->label = v8::Persistent<Value>::New(args[1]->ToString());
                                String::Utf8Value str(it->label->ToString());
-                               fprintf(stderr, "Setting Label %s\n", *str);
                                elm_list_item_label_set(it->li, *str);
                            }
                            break;
@@ -2383,10 +2368,8 @@ public:
                                static_cast<Persistent<Value> >(it->icon).Dispose();
                                it->icon = v8::Persistent<Value>::New(args[1]);
                                it->icon_left = realize_one(list, it->icon);
-                               fprintf(stderr, "Adding Icon Object %p\n", it->icon_left->get());
                                if (it->icon_left)
                                  {
-                                    fprintf(stderr, "Icon Object %p\n", it->icon_left->get());
                                     elm_icon_scale_set(it->icon_left->get(), 0, 0);
                                     evas_object_size_hint_align_set(it->icon_left->get(), 0.0, 0.0);
                                     elm_list_item_icon_set(it->li, it->icon_left->get());
@@ -2402,7 +2385,6 @@ public:
 
                                if (it->icon_right)
                                  {
-                                    fprintf(stderr, "End Object %p\n", it->icon_right->get());
                                     elm_icon_scale_set(it->icon_right->get(), 0, 0);
                                     evas_object_size_hint_align_set(it->icon_right->get(), 0.0, 0.0);
                                     elm_list_item_end_set(it->li, it->icon_right->get());
@@ -2444,7 +2426,6 @@ public:
      }
    static Handle<Value> del(const Arguments& args)
      {
-        printf("Who's calling me\n");
         CEvasObject *self = eo_from_info(args.This());
         CElmList *list = static_cast<CElmList *>(self);
 
@@ -2452,7 +2433,6 @@ public:
         if ((list->head) && (args[0]->IsNumber()))
           {
              int val = args[0]->IntegerValue();
-             fprintf(stderr, "Trying to delete %p at %d\n", list->head, val);
 
              if (val==-1) //delete last one
                {
@@ -2466,10 +2446,8 @@ public:
                   for (;val>0; val--)
                     {
                        String::Utf8Value val1(it->label);
-                       fprintf(stderr, "%p - checking pre : set %s\n", it, *val1 );
                        it = (it->next);
                     }
-                  fprintf(stderr, "delete %p \n", list->head);
 
                   elm_list_item_del(it->li);
                   elm_list_go(list->get());
@@ -2481,9 +2459,7 @@ public:
                           {
                              list->head->prev = NULL;
                           }
-                        
                     }
-                  fprintf(stderr, "%p - checking\n", it);
                   if(it && it == list->tail)
                     {
                         list->tail = it->prev;
@@ -2521,8 +2497,6 @@ public:
      {
        if (data)
          {
-            fprintf(stderr, "Received Pointer = %p\n", data);
-
             ListItem *it = static_cast<ListItem *>(data);
 
             if (*it->on_clicked != NULL)
@@ -2538,7 +2512,6 @@ public:
 
    virtual Handle<Value> items_get(void) const
      {
-        fprintf(stderr, "Returning items\n");
         return items;
      }
 
@@ -2553,8 +2526,6 @@ public:
         Local<Object> in = val->ToObject();
         Local<Array> props = in->GetPropertyNames();
 
-        fprintf(stderr, "Number of Items = %d\n", props->Length());
-
         items.Dispose();
         items = Persistent<Value>::New(val);
 
@@ -2564,8 +2535,6 @@ public:
           {
              Local<Value> x = props->Get(Integer::New(i));
              String::Utf8Value val(x);
-
-             fprintf(stderr, "X Value - %s\n", *val);
 
              Local<Value> item = in->Get(x->ToString());
 
@@ -2583,8 +2552,6 @@ public:
 
    virtual ListItem * new_item_set(int pos, Handle<Value> item)
      {
-        fprintf(stderr, "Add Set Called\n");
-
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
@@ -2620,16 +2587,13 @@ public:
              if (this->head==NULL)
                {
                   this->head = it;
-                  fprintf(stderr, "Set Head %p\n", it);
                }
   
              if (this->tail==NULL)
                {
                   this->tail = it;
-                  fprintf(stderr, "Set Tail\n");
                }
              String::Utf8Value val1(it->label);
-             fprintf(stderr, "%p - checking pre : set %s\n", it, *val1 );
           }
 
         if (-1 == pos)
@@ -2642,7 +2606,6 @@ public:
              this->tail = it;
              it->next = NULL;
              String::Utf8Value val(this->tail->label);
-             fprintf(stderr, "Appended : New Tail = %p\n", this->tail);
           }
         else if (0 == pos)
           {
@@ -2654,7 +2617,6 @@ public:
              this->head = it;
              it->prev = NULL;
              String::Utf8Value val(this->tail->label);
-             fprintf(stderr, "Prepended : New Head = %p\n", this->head);
           }
         else
           {
@@ -2666,7 +2628,6 @@ public:
                   it = it->next;
                   iter = iter->next;
                   String::Utf8Value val1(it->label);
-                  fprintf(stderr, "%p %d pos checking pre : get %s\n", it, pos, *val1 );
                }
              it->label = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
              it->icon = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
@@ -2677,16 +2638,13 @@ public:
         if ( it->label->IsString())
           {
              String::Utf8Value str(it->label->ToString());
-             fprintf(stderr, "Setting Label %s\n", *str);
              elm_list_item_label_set(it->li, *str);
           }
         if ( it->icon->IsObject())
           {
              it->icon_left = realize_one(this, it->icon);
-             fprintf(stderr, "Adding Icon Object %p\n", it->icon_left->get());
              if (it->icon_left)
                {
-                  fprintf(stderr, "Icon Object %p\n", it->icon_left->get());
                   elm_icon_scale_set(it->icon_left->get(), 0, 0);
                   evas_object_size_hint_align_set(it->icon_left->get(), 0.0, 0.0);
                   elm_list_item_icon_set(it->li, it->icon_left->get());
@@ -2698,7 +2656,6 @@ public:
 
              if (it->icon_right)
                {
-                  fprintf(stderr, "End Object %p\n", it->icon_right->get());
                   elm_icon_scale_set(it->icon_right->get(), 0, 0);
                   evas_object_size_hint_align_set(it->icon_right->get(), 0.0, 0.0);
                   elm_list_item_end_set(it->li, it->icon_right->get());
@@ -3700,7 +3657,6 @@ public:
        Local<Value> lbl = obj->Get(String::New("label"));
        String::Utf8Value item(it);
        String::Utf8Value label(lbl);
-       printf("Item = %s Label = %s\n", *item, *label);
        elm_object_text_part_set(eo, *item,*label);
     }
 
@@ -3751,7 +3707,6 @@ public:
              fprintf(stderr, "not an object!\n");
              return out;
           }
-        fprintf(stderr, "Val is an object\n");
 
         Local<Object> in = val->ToObject();
         Local<Array> props = in->GetPropertyNames();
@@ -3857,8 +3812,6 @@ public:
      {
        if (data)
          {
-            fprintf(stderr, "Received Pointer = %p\n", data);
-
             Item *it = reinterpret_cast<Item *>(data);
 
             if (*it->on_clicked != NULL)
@@ -3902,7 +3855,6 @@ public:
             Local<Value> items_object = item->ToObject()->Get(String::New("items"));
             if (items_object->IsObject())
               {
-                 fprintf(stderr, "Recursing\n");
                  items_set(par, items_object);
               }
          }
@@ -3910,8 +3862,6 @@ public:
 
    virtual MenuItem * new_item_set(MenuItem *parent, Handle<Value> item)
      {
-        fprintf(stderr, "Add Set Called\n");
-
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
@@ -3968,7 +3918,6 @@ public:
                {
                   cb = &eo_on_click;
                   data = reinterpret_cast<void *>(it);
-                  fprintf(stderr, "Persistent Object= %p sent = %p\n", it, data);
                }
 
              it->mi = elm_menu_item_add(eo, par, *icon, *label, cb, data);
@@ -3977,7 +3926,6 @@ public:
              if (this->root==NULL)
                {
                   this->root = it;
-                  fprintf(stderr, "Parent Set\n");
                }
              else
                {
@@ -3987,7 +3935,6 @@ public:
                        if (parent->child==NULL)
                          {
                             parent->child = it;
-                            fprintf(stderr, "Setting first child\n");
                          }
                        else
                          {
@@ -3998,7 +3945,6 @@ public:
                                  ptr = ptr->next;
                               }
       
-                            fprintf(stderr, "Setting sibling\n");
                             ptr->next = it;
                             it->prev = ptr;
                         }
@@ -4006,14 +3952,12 @@ public:
                    else
                      {
                         MenuItem *ptr = this->root;
-                        fprintf(stderr, "Parent %p\n", ptr);
                         while(ptr->next)
                           {
                              ptr = ptr->next;
                           }
                         ptr->next = it;
                         it->prev = ptr;
-                        fprintf(stderr, "Setting top level sibling\n");
                      }
                }
 
@@ -4310,7 +4254,6 @@ public:
 
              elm_calendar_mark_add(eo, *mark_type, &mark_time, intRepeat);
              elm_calendar_marks_draw (eo);
-             fprintf(stderr, "Showing marks %d %d %d\n", intRepeat, mark_time.tm_year, mark_time.tm_mon);
           }
 
         return out;
@@ -4368,7 +4311,6 @@ public:
         if (val->IsFunction())
           {
              evas_object_smart_callback_add(eo, "changed", &eo_on_changed, this);
-             fprintf(stderr, "Setting callback\n");
           }
         else
           evas_object_smart_callback_del(eo, "changed", &eo_on_changed);
@@ -4411,7 +4353,6 @@ public:
                     {
                        String::Utf8Value str(value);
                        weekdays[i] = strdup(*str);
-                       fprintf(stderr, "%s Day of Week = %s\n",fill, weekdays[i]);
                     }
                }
              elm_calendar_weekdays_names_set(eo,weekdays);
@@ -4432,7 +4373,6 @@ public:
              int year_min, year_max;
              elm_calendar_min_max_year_get(eo, &year_min, &year_max);
              year_min = val->ToNumber()->Value();
-             fprintf(stderr,"Setting min year = %d\n", year_min);
              elm_calendar_min_max_year_set(eo, year_min, year_max);
           }
      }
@@ -4451,7 +4391,6 @@ public:
              int year_min, year_max;
              elm_calendar_min_max_year_get(eo, &year_min, &year_max);
              year_max = val->ToNumber()->Value();
-             fprintf(stderr,"Setting max year = %d\n", year_max);
              elm_calendar_min_max_year_set(eo, year_min, year_max);
           }
      }
@@ -4486,7 +4425,6 @@ public:
              struct tm selected_time;
              elm_calendar_selected_time_get (eo,&selected_time);
              selected_time.tm_mday = val->ToNumber()->Value();
-             fprintf(stderr,"Setting day = %d\n", selected_time.tm_mday);
              elm_calendar_selected_time_set (eo,&selected_time);
           }
      }
@@ -4508,7 +4446,6 @@ public:
              //tm_mon is zero based - but hide that from user.
              //let them give a normal number
              selected_time.tm_mon = selected_time.tm_mon - 1;
-             fprintf(stderr,"Setting month = %d\n", selected_time.tm_mon);
              elm_calendar_selected_time_set (eo,&selected_time);
           }
      }
@@ -4526,9 +4463,7 @@ public:
           {
              struct tm selected_time;
              elm_calendar_selected_time_get (eo,&selected_time);
-             fprintf(stderr,"Setting year = %d\n", selected_time.tm_year);
              selected_time.tm_year = val->ToNumber()->Value();
-             fprintf(stderr,"Setting year = %d\n", selected_time.tm_year);
              //tm_year is years since 1900 - but hide that from user.
              //let them give a normal year
              selected_time.tm_year = selected_time.tm_year - 1900;
@@ -4546,7 +4481,6 @@ public:
         if ( val->IsNumber() )
           {
              double interval = val->ToNumber()->Value();
-             fprintf(stderr, "Set Interval = %f\n", interval);
              elm_calendar_interval_set(eo, interval);
           }
      }
@@ -4605,7 +4539,6 @@ public:
 
    virtual void new_item_set(Handle<Value> item)
      {
-        fprintf(stderr, "Add New Table SubObject\n");
         CEvasObject *child = NULL;
         if (!item->IsObject())
           {
@@ -4635,22 +4568,18 @@ public:
         if (xpos->IsNumber())
           {
              x = xpos->IntegerValue();
-             fprintf(stderr, "X = %d\n", x);
           }
         if (ypos->IsNumber())
           {
              y = ypos->IntegerValue();
-             fprintf(stderr, "y = %d\n", y);
           }
         if (width->IsNumber())
           {
              w = width->IntegerValue();
-             fprintf(stderr, "W = %d\n", w);
           }
         if (height->IsNumber())
           {
              h = height->IntegerValue();
-             fprintf(stderr, "H = %d\n", h);
           }
 
         if ( ( x + y + w + h ) > 0 )
@@ -4865,7 +4794,6 @@ theme_setter(Local<String> property, Local<Value> value,
 {
    the_theme.Dispose();
    setenv("ELM_THEME",  *String::Utf8Value(value->ToString()), 1);
-   fprintf(stderr, "Setting theme to %s\n", *String::Utf8Value(value->ToString()));
 
    the_theme = Persistent<Value>::New(value);
 }

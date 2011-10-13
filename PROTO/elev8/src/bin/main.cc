@@ -543,9 +543,6 @@ elm_main(int argc, char **argv)
         exit(-1);
      }
 
-   for (i = 0; i<argc; i++)
-     printf("arg[%d] = %s\n", i, argv[i]);
-
    V8::SetFlagsFromCommandLine(&argc, argv, true);
    elev8_run(argv[1]);
    V8::Dispose();
