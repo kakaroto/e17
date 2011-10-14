@@ -1,10 +1,8 @@
-Itask NG Module 
+Engage Module 
 
-This is the NG module for Enlightenment.
 
-It will hold all of your open applications for fast switching and
+Engage will hold all of your open applications for fast switching and
 is also an apllication launcher.
-
 
 There are three basic functionalities that you dont want to miss:
 1. If you click on an icon the corresponding  will be shown and
@@ -21,34 +19,4 @@ Installation:
 ./autogen.sh
 make 
 make install
-
-when having troubles: check the wiki on:
-http://code.google.com/p/itask-module/wiki/ItaskNG
-
-This module is based on ibox and on engages algorithms. though thats
-where it started. you'll not find much common code anymore
-
-
-_______ATTENTION______________________________________________
-
-you SHOULD have composite manager running like for example 
-bling (from e_modules) xcompmgr or kompmgr(kdebase).
-
-run enlightenment_remote -use-composite-set 1
-and then restart e to enable the use of composite
-
-you dont need it, just looks way cooler B-) otherwise you should 
- at least some kind of grey bg so that your friends dont see the 
-uggly pixel shaped borders
-______________________________________________________________
-
-
-
-Use middle click on the module to get to the configuration dialog.
-
-!!!!!!!!!!! CONFIGURATION: ADD A BAR:!!!!!!!!!!!!!!!!!!
-- enable the module in e's module configuration dialog	       
-- Goto E-menu->Configuration->Extensions->Itask NG->Add
-
-
 
