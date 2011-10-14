@@ -63,8 +63,29 @@ protected:
     * that can be get and set, then the methods to do the setting
     * and leave the rest up to this template.
     */
-   template<class X> class CPropHandler {
+   class CPropHandlerBase {
    public:
+     virtual bool set(CEvasObject *eo, const char *prop_name, Handle<Value> value) = 0;
+     virtual Handle<Value> get(const CEvasObject *eo, const char *prop_name) const = 0;
+     virtual void fill_template(Handle<ObjectTemplate> &ot) = 0;
+     virtual ~CPropHandlerBase()
+       {
+       }
+   };
+
+   /* property list for this class */
+   CPropHandlerBase *property_list_base;
+
+   template<class X> class CPropHandler : CPropHandlerBase {
+     /* base class property list, setup in constructor */
+     CPropHandlerBase *prev_list;
+   public:
+     explicit CPropHandler(CPropHandlerBase *&prev)
+       {
+         /* build linked list with base classes' properties */
+         prev_list = prev;
+         prev = this;
+       }
      typedef Handle<Value> (X::*prop_getter)(void) const;
      typedef void (X::*prop_setter)(Handle<Value> val);
 
@@ -80,51 +101,76 @@ protected:
      /*
       * the get method to get a property we know about
       */
-     prop_getter get_getter(const char *prop_name) const
+     virtual bool set(CEvasObject *eo, const char *prop_name, Handle<Value> value)
        {
+          X *self = static_cast<X*>(eo);
+
           for (property_list *prop = list; prop->name; prop++)
             {
                if (!strcmp(prop->name, prop_name))
                  {
-                    return prop->get;
+                    prop_setter set = prop->set;
+                    (self->*set)(value);
+                    return true;
                  }
             }
-          return NULL;
+
+          /* traverse into base classes */
+          if (!prev_list)
+            return false;
+          return prev_list->set(eo, prop_name, value);
        }
 
      /*
       * the get method to set a property we know about
       */
-     prop_setter get_setter(const char *prop_name)
+     virtual Handle<Value> get(const CEvasObject *eo, const char *prop_name) const
        {
+          const X *self = static_cast<const X*>(eo);
+
           for (property_list *prop = list; prop->name; prop++)
             {
                if (!strcmp(prop->name, prop_name))
                  {
-                    return prop->set;
+                    prop_getter get = prop->get;
+                    return (self->*get)();
                  }
             }
-          return NULL;
+          /* traverse into base classes */
+          if (!prev_list)
+            return Undefined();
+          return prev_list->get(eo, prop_name);
        }
 
      /*
       * Add an interceptor on a property on the given V8 object template
       */
-     void fill_template(Handle<ObjectTemplate> &ot)
+     virtual void fill_template(Handle<ObjectTemplate> &ot)
        {
           for (property_list *prop = list; prop->name; prop++)
             ot->SetAccessor(String::New(prop->name), &eo_getter, &eo_setter);
+          /* traverse into base classes */
+          if (!prev_list)
+            return;
+          return prev_list->fill_template(ot);
+       }
+
+     virtual ~CPropHandler()
+       {
        }
    };
 
 #define PROP_HANDLER(cls, foo) { #foo, &cls::foo##_get, &cls::foo##_set }
-   static CPropHandler<CEvasObject> prop_handler;
+   CPropHandler<CEvasObject> prop_handler;
 
 protected:
    explicit CEvasObject() :
        eo(NULL),
        current_animator(NULL),
-       is_resize(false)
+       is_resize(false),
+     /* the NULL below is the end of a linked list built up in prop_handler's constructor */
+       property_list_base(NULL),
+       prop_handler(property_list_base)
      {
      }
 
@@ -224,16 +270,6 @@ protected:
      }
 
 public:
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        /* FIXME: only need to create one template per object class */
-        the_template = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
-
-        prop_handler.fill_template(the_template);
-
-        return the_template;
-     }
-
    virtual Handle<Object> get_object(void)
      {
         if (the_object.IsEmpty())
@@ -275,24 +311,22 @@ public:
     */
    virtual bool prop_set(const char *prop_name, Handle<Value> value)
      {
-        CPropHandler<CEvasObject>::prop_setter setter;
-
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return false;
+        return property_list_base->set(this, prop_name, value);
      }
 
    virtual Handle<Value> prop_get(const char *prop_name) const
      {
-        CPropHandler<CEvasObject>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return Undefined();
+        return property_list_base->get(this, prop_name);
+     }
+
+   virtual Handle<ObjectTemplate> get_template(void)
+     {
+        /* FIXME: only need to create one template per object class */
+        the_template = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
+
+        property_list_base->fill_template(the_template);
+
+        return the_template;
      }
 
 
@@ -863,36 +897,15 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
 
 class CEvasImage : public CEvasObject {
 protected:
-   static CPropHandler<CEvasImage> prop_handler;
+   CPropHandler<CEvasImage> prop_handler;
 public:
    CEvasImage(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         Evas *evas = evas_object_evas_get(parent->get());
         eo = evas_object_image_filled_add(evas);
         construct(eo, obj);
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CEvasImage>::prop_setter setter;
-
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CEvasImage>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    virtual void file_set(Handle<Value> val)
@@ -1017,47 +1030,19 @@ CElmBasicWindow *main_win;
 class CElmButton : public CEvasObject {
 protected:
    Persistent<Value> the_icon;
-   static CPropHandler<CElmButton> prop_handler;
+   CPropHandler<CElmButton> prop_handler;
 public:
    CElmButton(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_button_add(parent->top_widget_get());
         construct(eo, obj);
      }
 
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
    virtual ~CElmButton()
      {
         the_icon.Dispose();
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmButton>::prop_setter setter;
-
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmButton>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    virtual Handle<Value> icon_get() const
@@ -1082,10 +1067,11 @@ CEvasObject::CPropHandler<CElmButton>::list[] = {
 
 class CElmBackground : public CEvasObject {
 protected:
-   static CPropHandler<CElmBackground> prop_handler;
+   CPropHandler<CElmBackground> prop_handler;
 public:
    explicit CElmBackground(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_bg_add(parent->get());
         construct(eo, obj);
@@ -1093,35 +1079,6 @@ public:
 
    virtual ~CElmBackground()
      {
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmBackground>::prop_setter setter;
-
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmBackground>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    virtual void image_set(Handle<Value> val)
@@ -1208,13 +1165,14 @@ CEvasObject::CPropHandler<CElmBackground>::list[] = {
 
 class CElmRadio : public CEvasObject {
 protected:
-   static CPropHandler<CElmRadio> prop_handler;
+   CPropHandler<CElmRadio> prop_handler;
    Persistent<Value> the_icon;
    Persistent<Value> the_group;
 
 public:
    CElmRadio(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_radio_add(parent->get());
         construct(eo, obj);
@@ -1224,35 +1182,6 @@ public:
      {
         the_icon.Dispose();
         the_group.Dispose();
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmRadio>::prop_setter setter;
-
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmRadio>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    virtual Handle<Value> icon_get() const
@@ -1344,11 +1273,12 @@ protected:
         return ret;
      }
 
-   static CPropHandler<CElmBox> prop_handler;
+   CPropHandler<CElmBox> prop_handler;
 
 public:
    CElmBox(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_box_add(parent->top_widget_get());
         construct(eo, obj);
@@ -1360,35 +1290,6 @@ public:
         Handle<Object> elements = Object::New();
         get_object()->Set(String::New("elements"), elements);
         realize_objects(obj->Get(String::New("elements")), elements);
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmBox>::prop_setter setter;
-
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmBox>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    void horizontal_set(Handle<Value> val)
@@ -1425,43 +1326,15 @@ CEvasObject::CPropHandler<CElmBox>::list[] = {
 
 class CElmLabel : public CEvasObject {
 protected:
-   static CPropHandler<CElmLabel> prop_handler;
+   CPropHandler<CElmLabel> prop_handler;
 
 public:
    CElmLabel(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_label_add(parent->get());
         construct(eo, obj);
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmLabel>::prop_setter setter;
-
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmLabel>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    virtual void wrap_set(Handle<Value> wrap)
@@ -1520,42 +1393,14 @@ public:
 
 class CElmIcon : public CEvasObject {
 public:
-   static CPropHandler<CElmIcon> prop_handler;
+   CPropHandler<CElmIcon> prop_handler;
 public:
    CElmIcon(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_icon_add(parent->top_widget_get());
         construct(eo, obj);
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmIcon>::prop_setter setter;
-
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmIcon>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    virtual void scale_up_set(Handle<Value> val)
@@ -1639,43 +1484,15 @@ CEvasObject::CPropHandler<CElmIcon>::list[] = {
 
 class CElmActionSlider : public CEvasObject {
 private:
-   static CPropHandler<CElmActionSlider> prop_handler;
+   CPropHandler<CElmActionSlider> prop_handler;
 
 public:
    CElmActionSlider(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_actionslider_add(parent->get());
         construct(eo, obj);
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmActionSlider>::prop_setter setter;
-
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmActionSlider>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    /* there's 1 indicator label and 3 position labels */
@@ -1763,11 +1580,12 @@ CEvasObject::CPropHandler<CElmActionSlider>::list[] = {
 
 class CElmScroller : public CEvasObject {
 private:
-   static CPropHandler<CElmScroller> prop_handler;
+   CPropHandler<CElmScroller> prop_handler;
 
 public:
    CElmScroller(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         CEvasObject *content;
         eo = elm_scroller_add(parent->top_widget_get());
@@ -1778,34 +1596,6 @@ public:
         // FIXME: filter the object list copied in construct for more efficiency
         get_object()->Set(String::New("content"), content->get_object());
         elm_scroller_content_set(eo, content->get());
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmScroller>::prop_setter setter;
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmScroller>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
     virtual void bounce_set(Handle<Value> val)
@@ -1899,11 +1689,12 @@ protected:
    Persistent<Value> the_icon;
    Persistent<Value> the_end_object;
    Persistent<Value> on_changed_val;
-   static CPropHandler<CElmSlider> prop_handler;
+   CPropHandler<CElmSlider> prop_handler;
 
 public:
    CElmSlider(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_slider_add(parent->get());
         construct(eo, obj);
@@ -1914,34 +1705,6 @@ public:
         the_icon.Dispose();
         the_end_object.Dispose();
         on_changed_val.Dispose();
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmSlider>::prop_setter setter;
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmSlider>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    virtual void units_set(Handle<Value> value)
@@ -2171,7 +1934,7 @@ protected:
 
 protected:
    Persistent<Value> items;
-   static CPropHandler<CElmList> prop_handler;
+   CPropHandler<CElmList> prop_handler;
    std::list<ListItem*> list;
 
    const static int LABEL = 1;
@@ -2181,7 +1944,8 @@ protected:
 
 public:
    CElmList(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_list_add(parent->top_widget_get());
 
@@ -2437,13 +2201,6 @@ public:
         return v8::Number::New(list->list.size());
      }
 
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
    static void eo_on_click(void *data, Evas_Object *eo, void *event_info)
      {
        if (data)
@@ -2608,27 +2365,6 @@ public:
         return it;
      }
 
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmList>::prop_setter setter;
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmList>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
-     }
-
    virtual Handle<Value> mode_get() const
      {
         double min, max;
@@ -2654,35 +2390,16 @@ CEvasObject::CPropHandler<CElmList>::list[] = {
 
 class CElmEntry : public CEvasObject {
 protected:
-   static CPropHandler<CElmEntry> prop_handler;
+   CPropHandler<CElmEntry> prop_handler;
 public:
    CElmEntry(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_entry_add(parent->get());
         construct(eo, obj);
      }
 
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmEntry>::prop_setter setter;
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmEntry>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
-     }
    virtual Handle<Value> password_get() const
      {
         return Boolean::New(elm_entry_password_get(eo));
@@ -2750,12 +2467,13 @@ CEvasObject::CPropHandler<CElmEntry>::list[] = {
 
 class CElmCheck : public CEvasObject {
 protected:
-   static CPropHandler<CElmCheck> prop_handler;
+   CPropHandler<CElmCheck> prop_handler;
    Persistent<Value> the_icon;
 
 public:
    CElmCheck(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_check_add(parent->get());
         construct(eo, obj);
@@ -2764,34 +2482,6 @@ public:
    virtual ~CElmCheck()
      {
         the_icon.Dispose();
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmCheck>::prop_setter setter;
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmCheck>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    virtual void state_set(Handle<Value> value)
@@ -2828,11 +2518,12 @@ CEvasObject::CPropHandler<CElmCheck>::list[] = {
 
 class CElmClock : public CEvasObject {
 protected:
-  static CPropHandler<CElmClock> prop_handler;
+  CPropHandler<CElmClock> prop_handler;
 
 public:
   CElmClock(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
     {
        eo = elm_clock_add(parent->top_widget_get());
        construct(eo, obj);
@@ -2840,34 +2531,6 @@ public:
 
   virtual ~CElmClock()
     {
-    }
-
-  virtual Handle<ObjectTemplate> get_template(void)
-    {
-       Handle<ObjectTemplate> ot = CEvasObject::get_template();
-       prop_handler.fill_template(ot);
-       return ot;
-    }
-
-  virtual bool prop_set(const char *prop_name, Handle<Value> value)
-    {
-       CPropHandler<CElmClock>::prop_setter setter;
-       setter = prop_handler.get_setter(prop_name);
-       if (setter)
-         {
-            (this->*setter)(value);
-            return true;
-         }
-       return CEvasObject::prop_set(prop_name, value);
-    }
-
-  virtual Handle<Value> prop_get(const char *prop_name) const
-    {
-       CPropHandler<CElmClock>::prop_getter getter;
-       getter = prop_handler.get_getter(prop_name);
-       if (getter)
-         return (this->*getter)();
-       return CEvasObject::prop_get(prop_name);
     }
 
   virtual Handle<Value> show_am_pm_get() const
@@ -3000,7 +2663,7 @@ CEvasObject::CPropHandler<CElmClock>::list[] = {
 
 class CElmProgressBar : public CEvasObject {
 protected:
-   static CPropHandler<CElmProgressBar> prop_handler;
+   CPropHandler<CElmProgressBar> prop_handler;
    Persistent<Value> the_icon;
 
    static Handle<Value> do_pulse(const Arguments& args)
@@ -3014,7 +2677,8 @@ protected:
 
 public:
    CElmProgressBar(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_progressbar_add(parent->get());
         construct(eo, obj);
@@ -3026,37 +2690,9 @@ public:
         the_icon.Dispose();
      }
 
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
    virtual void pulse(bool on)
      {
         elm_progressbar_pulse(eo, on);
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmProgressBar>::prop_setter setter;
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmProgressBar>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
    virtual Handle<Value> icon_get() const
@@ -3160,10 +2796,12 @@ CEvasObject::CPropHandler<CElmProgressBar>::list[] = {
 
 class CElmPhoto : public CEvasObject {
 protected:
-  static CPropHandler<CElmPhoto> prop_handler;
+  CPropHandler<CElmPhoto> prop_handler;
 
 public:
-  CElmPhoto(CEvasObject *parent, Local<Object> obj) : CEvasObject()
+  CElmPhoto(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
     {
        eo = elm_photo_add(parent->top_widget_get());
        construct(eo, obj);
@@ -3171,34 +2809,6 @@ public:
 
   virtual ~CElmPhoto()
     {
-    }
-
-  virtual Handle<ObjectTemplate> get_template(void)
-    {
-       Handle<ObjectTemplate> ot = CEvasObject::get_template();
-       prop_handler.fill_template(ot);
-       return ot;
-    }
-
-  virtual bool prop_set(const char *prop_name, Handle<Value> value)
-    {
-       CPropHandler<CElmPhoto>::prop_setter setter;
-       setter = prop_handler.get_setter(prop_name);
-       if (setter)
-         {
-            (this->*setter)(value);
-            return true;
-         }
-       return CEvasObject::prop_set(prop_name, value);
-    }
-
-  virtual Handle<Value> prop_get(const char *prop_name) const
-    {
-       CPropHandler<CElmPhoto>::prop_getter getter;
-       getter = prop_handler.get_getter(prop_name);
-       if (getter)
-         return (this->*getter)();
-       return CEvasObject::prop_get(prop_name);
     }
 
   virtual Handle<Value> image_get() const
@@ -3259,10 +2869,12 @@ CEvasObject::CPropHandler<CElmPhoto>::list[] = {
 
 class CElmSpinner : public CEvasObject {
 protected:
-  static CPropHandler<CElmSpinner> prop_handler;
+  CPropHandler<CElmSpinner> prop_handler;
 
 public:
-  CElmSpinner(CEvasObject *parent, Local<Object> obj) : CEvasObject()
+  CElmSpinner(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
     {
        eo = elm_spinner_add(parent->top_widget_get());
        construct(eo, obj);
@@ -3270,34 +2882,6 @@ public:
 
   virtual ~CElmSpinner()
     {
-    }
-
-  virtual Handle<ObjectTemplate> get_template(void)
-    {
-       Handle<ObjectTemplate> ot = CEvasObject::get_template();
-       prop_handler.fill_template(ot);
-       return ot;
-    }
-
-  virtual bool prop_set(const char *prop_name, Handle<Value> value)
-    {
-       CPropHandler<CElmSpinner>::prop_setter setter;
-       setter = prop_handler.get_setter(prop_name);
-       if (setter)
-         {
-            (this->*setter)(value);
-            return true;
-         }
-       return CEvasObject::prop_set(prop_name, value);
-    }
-
-  virtual Handle<Value> prop_get(const char *prop_name) const
-    {
-       CPropHandler<CElmSpinner>::prop_getter getter;
-       getter = prop_handler.get_getter(prop_name);
-       if (getter)
-         return (this->*getter)();
-       return CEvasObject::prop_get(prop_name);
     }
 
   virtual Handle<Value> label_format_get() const
@@ -3438,10 +3022,12 @@ CEvasObject::CPropHandler<CElmSpinner>::list[] = {
 
 class CElmPane : public CEvasObject {
 protected:
-  static CPropHandler<CElmPane> prop_handler;
+  CPropHandler<CElmPane> prop_handler;
 
 public:
-  CElmPane(CEvasObject *parent, Local<Object> obj) : CEvasObject()
+  CElmPane(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
     {
        eo = elm_panes_add(parent->top_widget_get());
        construct(eo, obj);
@@ -3461,34 +3047,6 @@ public:
 
   virtual ~CElmPane()
     {
-    }
-
-  virtual Handle<ObjectTemplate> get_template(void)
-    {
-       Handle<ObjectTemplate> ot = CEvasObject::get_template();
-       prop_handler.fill_template(ot);
-       return ot;
-    }
-
-  virtual bool prop_set(const char *prop_name, Handle<Value> value)
-    {
-       CPropHandler<CElmPane>::prop_setter setter;
-       setter = prop_handler.get_setter(prop_name);
-       if (setter)
-         {
-            (this->*setter)(value);
-            return true;
-         }
-       return CEvasObject::prop_set(prop_name, value);
-    }
-
-  virtual Handle<Value> prop_get(const char *prop_name) const
-    {
-       CPropHandler<CElmPane>::prop_getter getter;
-       getter = prop_handler.get_getter(prop_name);
-       if (getter)
-         return (this->*getter)();
-       return CEvasObject::prop_get(prop_name);
     }
 
   virtual Handle<Value> horizontal_get() const
@@ -3525,10 +3083,12 @@ CEvasObject::CPropHandler<CElmPane>::list[] = {
 
 class CElmBubble : public CEvasObject {
 protected:
-  static CPropHandler<CElmBubble> prop_handler;
+  CPropHandler<CElmBubble> prop_handler;
 
 public:
-  CElmBubble(CEvasObject *parent, Local<Object> obj) : CEvasObject()
+  CElmBubble(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
     {
        eo = elm_bubble_add(parent->top_widget_get());
        construct(eo, obj);
@@ -3542,34 +3102,6 @@ public:
 
   virtual ~CElmBubble()
     {
-    }
-
-  virtual Handle<ObjectTemplate> get_template(void)
-    {
-       Handle<ObjectTemplate> ot = CEvasObject::get_template();
-       prop_handler.fill_template(ot);
-       return ot;
-    }
-
-  virtual bool prop_set(const char *prop_name, Handle<Value> value)
-    {
-       CPropHandler<CElmBubble>::prop_setter setter;
-       setter = prop_handler.get_setter(prop_name);
-       if (setter)
-         {
-            (this->*setter)(value);
-            return true;
-         }
-       return CEvasObject::prop_set(prop_name, value);
-    }
-
-  virtual Handle<Value> prop_get(const char *prop_name) const
-    {
-       CPropHandler<CElmBubble>::prop_getter getter;
-       getter = prop_handler.get_getter(prop_name);
-       if (getter)
-         return (this->*getter)();
-       return CEvasObject::prop_get(prop_name);
     }
 
   virtual Handle<Value> text_part_get() const
@@ -3618,11 +3150,12 @@ CEvasObject::CPropHandler<CElmBubble>::list[] = {
 
 class CElmSegment : public CEvasObject {
 protected:
-  static CPropHandler<CElmSegment> prop_handler;
+  CPropHandler<CElmSegment> prop_handler;
 
 public:
    CElmSegment(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_segment_control_add(parent->get());
         construct(eo, obj);
@@ -3670,26 +3203,6 @@ public:
      {
      }
 
-  virtual bool prop_set(const char *prop_name, Handle<Value> value)
-    {
-       CPropHandler<CElmSegment>::prop_setter setter;
-       setter = prop_handler.get_setter(prop_name);
-       if (setter)
-         {
-            (this->*setter)(value);
-            return true;
-         }
-       return CEvasObject::prop_set(prop_name, value);
-    }
-
-  virtual Handle<Value> prop_get(const char *prop_name) const
-    {
-       CPropHandler<CElmSegment>::prop_getter getter;
-       getter = prop_handler.get_getter(prop_name);
-       if (getter)
-         return (this->*getter)();
-       return CEvasObject::prop_get(prop_name);
-    }
 };
 
 template<> CEvasObject::CPropHandler<CElmSegment>::property_list
@@ -3699,7 +3212,7 @@ CEvasObject::CPropHandler<CElmSegment>::list[] = {
 
 class CElmMenu : public CEvasObject {
 protected:
-  static CPropHandler<CElmMenu> prop_handler;
+  CPropHandler<CElmMenu> prop_handler;
 
   class Item {
   public:
@@ -3721,7 +3234,9 @@ protected:
   MenuItem *root;
 
 public:
-  CElmMenu(CEvasObject *par, Local<Object> obj) : CEvasObject()
+  CElmMenu(CEvasObject *par, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
     {
        eo = elm_menu_add(par->top_widget_get());
        root = NULL;
@@ -3920,34 +3435,6 @@ public:
           }
      }
 
-  virtual Handle<ObjectTemplate> get_template(void)
-    {
-       Handle<ObjectTemplate> ot = CEvasObject::get_template();
-       prop_handler.fill_template(ot);
-       return ot;
-    }
-
-  virtual bool prop_set(const char *prop_name, Handle<Value> value)
-    {
-       CPropHandler<CElmMenu>::prop_setter setter;
-       setter = prop_handler.get_setter(prop_name);
-       if (setter)
-         {
-            (this->*setter)(value);
-            return true;
-         }
-       return CEvasObject::prop_set(prop_name, value);
-    }
-
-  virtual Handle<Value> prop_get(const char *prop_name) const
-    {
-       CPropHandler<CElmMenu>::prop_getter getter;
-       getter = prop_handler.get_getter(prop_name);
-       if (getter)
-         return (this->*getter)();
-       return CEvasObject::prop_get(prop_name);
-    }
-
   virtual Handle<Value> move_get() const
     {
        return Undefined();
@@ -3976,12 +3463,14 @@ CEvasObject::CPropHandler<CElmMenu>::list[] = {
 
 class CElmColorSelector : public CEvasObject {
 protected:
-  static CPropHandler<CElmColorSelector> prop_handler;
+   CPropHandler<CElmColorSelector> prop_handler;
    /* the on_clicked function */
    Persistent<Value> on_changed_val;
 
 public:
-  CElmColorSelector(CEvasObject *parent, Local<Object> obj) : CEvasObject()
+  CElmColorSelector(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
     {
        eo = elm_colorselector_add(parent->top_widget_get());
        construct(eo, obj);
@@ -3989,34 +3478,6 @@ public:
 
   virtual ~CElmColorSelector()
     {
-    }
-
-  virtual Handle<ObjectTemplate> get_template(void)
-    {
-       Handle<ObjectTemplate> ot = CEvasObject::get_template();
-       prop_handler.fill_template(ot);
-       return ot;
-    }
-
-  virtual bool prop_set(const char *prop_name, Handle<Value> value)
-    {
-       CPropHandler<CElmColorSelector>::prop_setter setter;
-       setter = prop_handler.get_setter(prop_name);
-       if (setter)
-         {
-            (this->*setter)(value);
-            return true;
-         }
-       return CEvasObject::prop_set(prop_name, value);
-    }
-
-  virtual Handle<Value> prop_get(const char *prop_name) const
-    {
-       CPropHandler<CElmColorSelector>::prop_getter getter;
-       getter = prop_handler.get_getter(prop_name);
-       if (getter)
-         return (this->*getter)();
-       return CEvasObject::prop_get(prop_name);
     }
 
   virtual Handle<Value> red_get() const
@@ -4134,12 +3595,14 @@ CEvasObject::CPropHandler<CElmColorSelector>::list[] = {
 
 class CElmCalendar : public CEvasObject {
 protected:
-  static CPropHandler<CElmCalendar> prop_handler;
+   CPropHandler<CElmCalendar> prop_handler;
    /* the on_clicked function */
    Persistent<Value> on_changed_val;
 
 public:
-  CElmCalendar(CEvasObject *parent, Local<Object> obj) : CEvasObject()
+  CElmCalendar(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
     {
        eo = elm_calendar_add(parent->top_widget_get());
        construct(eo, obj);
@@ -4207,34 +3670,6 @@ public:
 
         return out;
      }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-  virtual bool prop_set(const char *prop_name, Handle<Value> value)
-    {
-       CPropHandler<CElmCalendar>::prop_setter setter;
-       setter = prop_handler.get_setter(prop_name);
-       if (setter)
-         {
-            (this->*setter)(value);
-            return true;
-         }
-       return CEvasObject::prop_set(prop_name, value);
-    }
-
-  virtual Handle<Value> prop_get(const char *prop_name) const
-    {
-       CPropHandler<CElmCalendar>::prop_getter getter;
-       getter = prop_handler.get_getter(prop_name);
-       if (getter)
-         return (this->*getter)();
-       return CEvasObject::prop_get(prop_name);
-    }
 
    virtual void on_changed(void *event_info)
      {
@@ -4451,12 +3886,14 @@ CEvasObject::CPropHandler<CElmCalendar>::list[] = {
 
 class CElmTable : public CEvasObject {
 protected:
-  static CPropHandler<CElmTable> prop_handler;
+   CPropHandler<CElmTable> prop_handler;
    /* the on_clicked function */
    Persistent<Value> on_changed_val;
 
 public:
-   CElmTable(CEvasObject *parent, Local<Object> obj) : CEvasObject()
+   CElmTable(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_table_add(parent->top_widget_get());
         construct(eo, obj);
@@ -4539,34 +3976,6 @@ public:
 
    virtual ~CElmTable()
      {
-     }
-
-   virtual Handle<ObjectTemplate> get_template(void)
-     {
-        Handle<ObjectTemplate> ot = CEvasObject::get_template();
-        prop_handler.fill_template(ot);
-        return ot;
-     }
-
-   virtual bool prop_set(const char *prop_name, Handle<Value> value)
-     {
-        CPropHandler<CElmTable>::prop_setter setter;
-        setter = prop_handler.get_setter(prop_name);
-        if (setter)
-          {
-             (this->*setter)(value);
-             return true;
-          }
-        return CEvasObject::prop_set(prop_name, value);
-     }
-
-   virtual Handle<Value> prop_get(const char *prop_name) const
-     {
-        CPropHandler<CElmTable>::prop_getter getter;
-        getter = prop_handler.get_getter(prop_name);
-        if (getter)
-          return (this->*getter)();
-        return CEvasObject::prop_get(prop_name);
      }
 
     void homogeneous_set(Handle<Value> val)
