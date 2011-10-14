@@ -22,24 +22,6 @@ using namespace v8;
 /* CEvasObject is a virtual class, representing an evas object */
 class CEvasObject;
 
-class Item
-{
-   public:
-      Local<Value> on_clicked;
-      Handle<Value> label;
-      Handle<Value> icon;
-      bool disabled;
-};
-
-class MenuItem : public Item
-{
-   public:
-      Elm_Menu_Item *mi;
-      MenuItem *next;
-      MenuItem *prev;
-      MenuItem *parent;
-      MenuItem *child;
-};
 CEvasObject *realize_one(CEvasObject *parent, Handle<Value> obj);
 
 class CEvasObject {
@@ -2170,6 +2152,14 @@ public:
 
 class CElmList : public CEvasObject {
 protected:
+   class Item {
+   public:
+     Local<Value> on_clicked;
+     Handle<Value> label;
+     Handle<Value> icon;
+     bool disabled;
+   };
+
    class ListItem : public Item {
    public:
      CEvasObject  *icon_left;
@@ -3710,6 +3700,23 @@ CEvasObject::CPropHandler<CElmSegment>::list[] = {
 class CElmMenu : public CEvasObject {
 protected:
   static CPropHandler<CElmMenu> prop_handler;
+
+  class Item {
+  public:
+    Local<Value> on_clicked;
+    Handle<Value> label;
+    Handle<Value> icon;
+    bool disabled;
+  };
+
+  class MenuItem : public Item {
+  public:
+    Elm_Menu_Item *mi;
+    MenuItem *next;
+    MenuItem *prev;
+    MenuItem *parent;
+    MenuItem *child;
+  };
 
   MenuItem *root;
 
