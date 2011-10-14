@@ -8,7 +8,7 @@
 #define D(args...)
 #endif
 
-#ifdef PRINT_LOTS_OF_DEBUG
+#if PRINT_LOTS_OF_DEBUG
 static void
 tls_log_func(int level, const char *str)
 {
@@ -63,7 +63,7 @@ _mail_imap_check_mail (void *data)
 
 	     if (ecore_con_ssl_available_get () && (ic->config->ssl))
 	       {
-#ifdef PRINT_LOTS_OF_DEBUG
+#if PRINT_LOTS_OF_DEBUG
                   if (ecore_con_ssl_available_get() == 1)
                     {
                        gnutls_global_set_log_level(9);
