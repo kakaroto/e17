@@ -173,7 +173,7 @@ static void
 _mail_mbox_check_mail_parser (Config_Box *cb)
 {
   FILE *f;
-  int header;
+  int header = 0;
   char buf[1024];
 
   if (!cb->new_path)
