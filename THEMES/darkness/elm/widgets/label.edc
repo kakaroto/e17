@@ -25,7 +25,7 @@
             clip_to: "label.text.clip";
             description { state: "default" 0.0;
                text {
-                  style: "Label";
+                  style: "Label-nowrap";
                   min: 0 1;
                }
             }
@@ -52,7 +52,7 @@
             scale: 1;
             description { state: "default" 0.0;
                text {
-                  style: "Label";
+                  style: "Label-nowrap";
                   min: 1 1;
                }
             }
@@ -145,7 +145,7 @@
             description { state: "default" 0.0;
                align: 0.0 0.0;
                text {
-                  style: "Label";
+                  style: "Label-nowrap";
                   min: 1 1;
                }
             }
@@ -267,7 +267,7 @@
             description { state: "default" 0.0;
                align: 0.0 0.0;
                text {
-                  style: "Label";
+                  style: "Label-nowrap";
                   min: 1 1;
                }
             }
@@ -400,7 +400,7 @@
             description { state: "default" 0.0;
                align: 0.0 0.0;
                text {
-                  style: "Label";
+                  style: "Label-nowrap";
                   min: 1 1;
                }
             }
