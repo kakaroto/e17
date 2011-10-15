@@ -32,13 +32,14 @@ STATEMENTS=" \
 	--no-space-after-parentheses"
 
 DECLARATIONS=" \
-	--declaration-indentation1 \
 	--no-blank-lines-after-commas \
 	--dont-break-function-decl-args \
 	--dont-break-function-decl-args-end \
 	--procnames-start-lines \
-	--braces-on-struct-decl-line \
+	--braces-after-struct-decl-line \
 	--braces-after-func-def-line"
+
+#	--declaration-indentation1
 
 INDENTATION=" \
 	--indent-level3 \
