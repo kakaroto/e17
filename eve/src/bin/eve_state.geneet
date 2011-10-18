@@ -12,7 +12,7 @@ Config {
       restore_state             : uchar;
       user_agent                : str default "eve";
       frame_flattening          : uchar;
-      text_only_zoom            : uchar;
+      text_zoom                 : int;
       minimum_font_size         : int;
       cookie_policy             : int;
       backing_store             : int;
