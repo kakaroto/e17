@@ -307,7 +307,8 @@ group {
 	       text_source:   "e.text.title";
 	       source:        "e.text.title";
 	       min:           0 1;
-	       text_class:    "title_bar";
+               size: 10;
+               text_class:    "title_bar";
 	    }
 	 }
       }
@@ -1587,7 +1588,8 @@ group {
 	       text_source:   "e.text.title";
 	       source:        "e.text.title";
 	       min:           0 1;
-	       text_class:    "title_bar";
+               size: 10;
+               text_class:    "title_bar";
 	    }
 	 }
       }
@@ -2630,7 +2632,8 @@ group {
 	       text_source:   "e.text.title";
 	       source:        "e.text.title";
 	       min:           0 1;
-	       text_class:    "title_bar";
+               size: 10;
+               text_class:    "title_bar";
 	    }
 	 }
       }
@@ -3828,7 +3831,8 @@ group {
 	       text_source:   "e.text.title";
 	       source:        "e.text.title";
 	       min:           0 1;
-	       text_class:    "title_bar";
+               size: 10;
+               text_class:    "title_bar";
 	    }
 	 }
       }
@@ -4977,7 +4981,8 @@ group {
 	       text_source:   "e.text.title";
 	       source:        "e.text.title";
 	       min:           0 1;
-	       text_class:    "title_bar";
+               size: 10;
+               text_class:    "title_bar";
 	    }
 	 }
       }

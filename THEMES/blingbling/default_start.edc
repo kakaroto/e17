@@ -267,7 +267,7 @@ group {
       }
       program {
 	 name:    "go_passive";
-	 action: STATE_SET "default" 0.0; \
+	 action: STATE_SET "default" 0.0;
 	 target: "p1";
 	 target: "p2";
 	 target: "p3";
