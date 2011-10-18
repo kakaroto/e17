@@ -193,7 +193,7 @@ _view_zoom_fits_hit(View_Smart_Data *sd, const Ewk_Hit_Test *hit_test)
    if (!hit_test)
       return 0.0;
 
-   old_zoom = ewk_frame_zoom_get(sd->base.main_frame);
+   old_zoom = ewk_frame_page_zoom_get(sd->base.main_frame);
 
    /* save some typing */
    x = hit_test->x;
@@ -327,7 +327,7 @@ static void
 _view_load_finished(void *data, Evas_Object *view, void *event_info __UNUSED__)
 {
    View_Smart_Data *sd = data;
-   float zoom = ewk_frame_zoom_get(sd->base.main_frame);
+   float zoom = ewk_frame_page_zoom_get(sd->base.main_frame);
    Evas_Coord x, y, w, h;
    ewk_frame_visible_content_geometry_get
       (sd->base.main_frame, EINA_TRUE, &x, &y, &w, &h);
@@ -375,7 +375,7 @@ _view_uri_changed(void *data, Evas_Object *view, void *event_info __UNUSED__)
 static void
 _view_pan_pre_render(View_Smart_Data *sd, Evas_Coord dx, Evas_Coord dy)
 {
-   float zoom = ewk_frame_zoom_get(sd->base.main_frame);
+   float zoom = ewk_frame_page_zoom_get(sd->base.main_frame);
    double weightx, weighty;
    Evas_Coord x, y, w, h, px, py, pw, ph;
    unsigned int vx, vy;
@@ -820,7 +820,7 @@ _view_zoom_start(View_Smart_Data *sd, const Evas_Event_Mouse_Down *ev)
    ewk_view_pre_render_cancel(sd->base.self);
 
    /* remember starting point so we have a reference */
-   sd->zoom.start.zoom = ewk_frame_zoom_get(frame);
+   sd->zoom.start.zoom = ewk_frame_page_zoom_get(frame);
    sd->zoom.start.x = ev->canvas.x;
    sd->zoom.start.y = ev->canvas.y;
    sd->zoom.start.timestamp = ecore_loop_time_get();
@@ -1583,7 +1583,7 @@ void view_zoom_reset(Evas_Object *view)
 void view_zoom_next_up(Evas_Object *view)
 {
    VIEW_SD_GET_OR_RETURN(view, sd);
-   float zoom = ewk_frame_zoom_get(sd->base.main_frame);
+   float zoom = ewk_frame_page_zoom_get(sd->base.main_frame);
    unsigned int idx = _view_zoom_closest_index_find(zoom);
    Evas_Coord w, h;
    if (sd->flags.animated_zoom || sd->animator.pan || sd->animator.zoom)
@@ -1610,7 +1610,7 @@ void view_zoom_next_up(Evas_Object *view)
 void view_zoom_next_down(Evas_Object *view)
 {
    VIEW_SD_GET_OR_RETURN(view, sd);
-   float zoom = ewk_frame_zoom_get(sd->base.main_frame);
+   float zoom = ewk_frame_page_zoom_get(sd->base.main_frame);
    unsigned int idx = _view_zoom_closest_index_find(zoom);
    Evas_Coord w, h;
    if (sd->flags.animated_zoom || sd->animator.pan || sd->animator.zoom)
