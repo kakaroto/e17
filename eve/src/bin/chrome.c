@@ -976,18 +976,18 @@ _chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
    _chrome_title_apply(chrome);
 
    text_url = edje_object_part_swallow_get(ed, "url-entry");
-   elm_scrolled_entry_entry_set(text_url, url ? url : "");
+   elm_entry_entry_set(text_url, url ? url : "");
    _is_favorite_check(chrome, url);
    _history_update(url, title ? title : url);
 
-   old_icon = elm_scrolled_entry_icon_unset(text_url);
+   old_icon = elm_entry_icon_unset(text_url);
 
    if (old_icon) evas_object_del(old_icon);
    if (url)
      {
         favicon = ewk_settings_icon_database_icon_object_add(url, canvas);
         if (favicon)
-           elm_scrolled_entry_icon_set(text_url, favicon);
+           elm_entry_icon_set(text_url, favicon);
      }
 
    edje_object_signal_emit(ed, ewk_view_back_possible(view) ? "button,back,enable" : "button,back,disable", "");
@@ -1284,7 +1284,7 @@ on_action_clear(void *data, Evas_Object *o __UNUSED__,
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
    Evas_Object *text_url = edje_object_part_swallow_get(ed, "url-entry");
-   elm_scrolled_entry_entry_set(text_url, "");
+   elm_entry_entry_set(text_url, "");
 }
 
 static void
@@ -1459,8 +1459,8 @@ cb_config_string_changed(void *data, Evas_Object *obj, void *event_info __UNUSED
 
    if ((conf_set = mmc->conf_set))
       {
-         conf_set(config, elm_scrolled_entry_entry_get(obj));
-         conf_updated(mmc, (void *)elm_scrolled_entry_entry_get(obj));
+         conf_set(config, elm_entry_entry_get(obj));
+         conf_updated(mmc, (void *)elm_entry_entry_get(obj));
       }
 }
 
@@ -2124,7 +2124,7 @@ on_action_load_page(void *data, Evas_Object *view, void *event_info __UNUSED__)
 {
    Evas_Object *ewk_view = data;
 
-   const char *entry_data = elm_scrolled_entry_entry_get(view);
+   const char *entry_data = elm_entry_entry_get(view);
    char *uri;
 
    if ((uri = uri_sanitize(entry_data)))
@@ -2537,9 +2537,9 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    if (url)
       ewk_view_uri_set(view, url);
 
-   Evas_Object *text_url = elm_scrolled_entry_add(ed);
+   Evas_Object *text_url = elm_entry_add(ed);
    elm_object_style_set(text_url, "ewebkit/url");
-   elm_scrolled_entry_single_line_set(text_url, EINA_TRUE);
+   elm_entry_single_line_set(text_url, EINA_TRUE);
    elm_layout_content_set(chrome, "url-entry", text_url);
 
    evas_object_smart_callback_add
@@ -2547,7 +2547,7 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
 
    Evas_Object *ic = elm_icon_add(ed);
    elm_icon_file_set(ic, PACKAGE_DATA_DIR "/default.edj", "clear-button");
-   elm_scrolled_entry_end_set(text_url, ic);
+   elm_entry_end_set(text_url, ic);
    evas_object_smart_callback_add(ic, "clicked", on_action_clear, chrome);
 
    Evas_Object *more_list = elm_genlist_add(ed);
