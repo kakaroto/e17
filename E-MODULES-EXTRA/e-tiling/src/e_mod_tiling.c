@@ -1063,7 +1063,7 @@ _add_border(E_Border *bd)
          return;
     }
 
-    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
 
@@ -1479,11 +1479,10 @@ _move_resize_border_in_stack(E_Border *bd, Border_Extra *extra,
 static void
 toggle_floating(E_Border *bd)
 {
-    if (!bd || !_G.tinfo)
+    if (!bd)
         return;
-
     check_tinfo(bd->desk);
-    if (!_G.tinfo->conf->nb_stacks)
+    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks)
         return;
 
     if (EINA_LIST_IS_IN(_G.tinfo->floating_windows, bd)) {
@@ -2438,7 +2437,7 @@ _e_mod_action_move_cb(E_Object   *obj,
 
     check_tinfo(desk);
 
-    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
 
@@ -3022,7 +3021,7 @@ _e_mod_action_adjust_transitions(E_Object   *obj,
 
     check_tinfo(desk);
 
-    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+    if (!_G.tinfo->conf || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
 
@@ -3084,7 +3083,7 @@ _e_mod_action_go_cb(E_Object   *obj,
 
     check_tinfo(desk);
 
-    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
 
@@ -3114,6 +3113,10 @@ _e_module_tiling_cb_hook(void *data,
 
     check_tinfo(bd->desk);
 
+    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+        return;
+    }
+
     if (is_floating_window(bd)) {
         return;
     }
@@ -3122,10 +3125,6 @@ _e_module_tiling_cb_hook(void *data,
     }
     if (bd->fullscreen) {
          return;
-    }
-
-    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
-        return;
     }
 
     stack = get_stack(bd);
@@ -3285,6 +3284,8 @@ _e_module_tiling_hide_hook(void *data,
         return EINA_TRUE;
 
     check_tinfo(bd->desk);
+    if (!_G.tinfo || !_G.tinfo->conf)
+        return EINA_TRUE;
 
     if (EINA_LIST_IS_IN(_G.tinfo->floating_windows, bd)) {
         EINA_LIST_REMOVE(_G.tinfo->floating_windows, bd);
@@ -3336,7 +3337,7 @@ _e_module_tiling_desk_set(void *data,
     _remove_border(ev->border);
 
     check_tinfo(ev->border->desk);
-    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         Border_Extra *extra;
 
         e_border_unmaximize(ev->border, E_MAXIMIZE_BOTH);
