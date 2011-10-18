@@ -861,7 +861,7 @@ on_view_mask_hidden(void *data, Evas_Object *o __UNUSED__,
     * manually here, so elm now has no clue what's up, so tell elm that its
     * toplevel widget for the chrome is to be unfocused so elm gives up
     * the focus and its idea of the world */
-   elm_object_unfocus(elm_object_top_widget_get(win->current_chrome));
+   elm_object_focus_set(elm_object_top_widget_get(win->current_chrome), EINA_FALSE);
    evas_object_focus_set(win->current_view, EINA_TRUE);
 }
 
