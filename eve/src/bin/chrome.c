@@ -261,13 +261,24 @@ static More_Menu_Item more_menu_config[] =
              .conf_get = config_frame_flattening_get,
              .conf_set = config_frame_flattening_set
            }}, NULL, ITEM_FLAG_NONE },
-         { ITEM_TYPE_CONFIG, "Text only zoom",
+         { ITEM_TYPE_CONFIG, "Text zoom",
            (More_Menu_Config[]) {{
-             .type = CONFIG_TYPE_CHECKBOX,
+             .type = CONFIG_TYPE_LIST_INT,
              .conf = EVE_CONFIG_TEXT_ONLY_ZOOM,
-             .conf_get = config_text_only_zoom_get,
-             .conf_set = config_text_only_zoom_set
-           }}, NULL, ITEM_FLAG_NONE },
+             .conf_get = config_text_zoom_get,
+             .conf_set = config_text_zoom_set,
+             .data = (More_Menu_Config_List_Int[]) {
+               { "10%", 10, EINA_FALSE },
+               { "25%", 25, EINA_FALSE },
+               { "50%", 50, EINA_FALSE },
+               { "75%", 75, EINA_FALSE },
+               { "100% (default)", 100, EINA_TRUE },
+               { "125%", 125, EINA_FALSE },
+               { "150%", 150, EINA_FALSE },
+               { "175%", 175, EINA_FALSE },
+               { "200%", 200, EINA_FALSE }
+             }
+           }}, NULL, ITEM_FLAG_ARROW | ITEM_FLAG_SELECTABLE },
          { ITEM_TYPE_CONFIG, "Minimum font size",
            (More_Menu_Config[]) {{
              .type = CONFIG_TYPE_LIST_INT,
@@ -1310,7 +1321,7 @@ chrome_config_apply(Evas_Object *chrome)
    ewk_view_setting_scripts_window_open_set(view, config_allow_popup_get(config));
    view_touch_interface_set(view, config_enable_touch_interface_get(config));
    window_mouse_enabled_set(win->win, config_enable_mouse_cursor_get(config));
-   ewk_view_zoom_text_only_set(view, config_text_only_zoom_get(config));
+   ewk_view_text_zoom_set(view, config_text_zoom_get(config));
    ewk_view_setting_enable_frame_flattening_set(view, config_frame_flattening_get(config));
    ewk_view_setting_font_minimum_size_set(view, config_minimum_font_size_get(config));
    ewk_cookies_policy_set(config_cookie_policy_get(config));
@@ -1371,7 +1382,7 @@ conf_updated(More_Menu_Config *mmc, void *new_value)
       }
     case EVE_CONFIG_TEXT_ONLY_ZOOM:
       {
-         SET_PREF_TO_ALL_VIEWS(ewk_view_zoom_text_only_set, *((int*)new_value));
+         SET_PREF_TO_ALL_VIEWS(ewk_view_text_zoom_set, *((int*)new_value));
          break;
       }
     case EVE_CONFIG_FRAME_FLATTENING:

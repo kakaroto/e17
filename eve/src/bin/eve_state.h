@@ -17,7 +17,7 @@ typedef struct _Session_Window Session_Window;
 typedef struct _Session Session;
 
 /* Config */
-Config *config_new(unsigned char allow_popup, unsigned char enable_auto_load_images, unsigned char enable_auto_shrink_images, unsigned char enable_javascript, unsigned char enable_mouse_cursor, unsigned char enable_plugins, unsigned char enable_private_mode, unsigned char enable_touch_interface, const char * home_page, const char * proxy, unsigned char restore_state, const char * user_agent, unsigned char frame_flattening, unsigned char text_only_zoom, int minimum_font_size, int cookie_policy, int backing_store);
+Config *config_new(unsigned char allow_popup, unsigned char enable_auto_load_images, unsigned char enable_auto_shrink_images, unsigned char enable_javascript, unsigned char enable_mouse_cursor, unsigned char enable_plugins, unsigned char enable_private_mode, unsigned char enable_touch_interface, const char * home_page, const char * proxy, unsigned char restore_state, const char * user_agent, unsigned char frame_flattening, int text_zoom, int minimum_font_size, int cookie_policy, int backing_store);
 void config_free(Config *config);
 
 void config_allow_popup_set(Config *config, unsigned char allow_popup);
@@ -46,8 +46,8 @@ void config_user_agent_set(Config *config, const char * user_agent);
 const char * config_user_agent_get(const Config *config);
 void config_frame_flattening_set(Config *config, unsigned char frame_flattening);
 unsigned char config_frame_flattening_get(const Config *config);
-void config_text_only_zoom_set(Config *config, unsigned char text_only_zoom);
-unsigned char config_text_only_zoom_get(const Config *config);
+void config_text_zoom_set(Config *config, int text_zoom);
+int config_text_zoom_get(const Config *config);
 void config_minimum_font_size_set(Config *config, int minimum_font_size);
 int config_minimum_font_size_get(const Config *config);
 void config_cookie_policy_set(Config *config, int cookie_policy);
