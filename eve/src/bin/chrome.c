@@ -1796,7 +1796,7 @@ more_menu_config_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu
    evas_object_show(bx_v);
 
    lb = elm_label_add(bx_v);
-   elm_label_label_set(lb, item->text);
+   elm_object_text_set(lb, item->text);
    elm_box_pack_end(bx_v, lb);
    evas_object_show(lb);
 
@@ -1815,7 +1815,7 @@ more_menu_config_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu
    evas_object_show(bx_h);
 
    bt_cancel = elm_button_add(bx_h);
-   elm_button_label_set(bt_cancel, "Cancel");
+   elm_object_text_set(bt_cancel, "Cancel");
    elm_box_pack_end(bx_h, bt_cancel);
    evas_object_size_hint_weight_set(bt_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bt_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1823,7 +1823,7 @@ more_menu_config_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu
    evas_object_show(bt_cancel);
 
    bt_ok = elm_button_add(bx_h);
-   elm_button_label_set(bt_ok, "OK");
+   elm_object_text_set(bt_ok, "OK");
    elm_box_pack_end(bx_h, bt_ok);
    evas_object_size_hint_weight_set(bt_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bt_ok, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -2307,7 +2307,7 @@ on_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__,
 
              label = elm_label_add(win->win);
              elm_object_style_set(label, "ewebkit");
-             elm_label_label_set(label, "F11 to exit fullscreen");
+             elm_object_text_set(label, "F11 to exit fullscreen");
              evas_object_show(label);
 
              notify = elm_notify_add(win->win);

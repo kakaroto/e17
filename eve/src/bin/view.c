@@ -1350,7 +1350,7 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
    evas_object_show(bx_v);
 
    lb = elm_label_add(bx_v);
-   elm_label_label_set(lb, message);
+   elm_object_text_set(lb, message);
    elm_box_pack_end(bx_v, lb);
    evas_object_show(lb);
 
@@ -1359,7 +1359,7 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
    if (type == DIALOG_ALERT)
      {
         dialog_data->bt_ok = elm_button_add(bx_v);
-        elm_button_label_set(dialog_data->bt_ok, "Close");
+        elm_object_text_set(dialog_data->bt_ok, "Close");
         elm_box_pack_end(bx_v, dialog_data->bt_ok);
         evas_object_size_hint_align_set(dialog_data->bt_ok, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_smart_callback_add(dialog_data->bt_ok, "clicked", _bt_close, dialog_data);
@@ -1385,7 +1385,7 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
              evas_object_show(bx_h);
 
              dialog_data->bt_cancel = elm_button_add(bx_h);
-             elm_button_label_set(dialog_data->bt_cancel, "Cancel");
+             elm_object_text_set(dialog_data->bt_cancel, "Cancel");
              elm_box_pack_end(bx_h, dialog_data->bt_cancel);
              evas_object_size_hint_weight_set(dialog_data->bt_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
              evas_object_size_hint_align_set(dialog_data->bt_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -1393,7 +1393,7 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
              evas_object_show(dialog_data->bt_cancel);
 
              dialog_data->bt_ok = elm_button_add(bx_h);
-             elm_button_label_set(dialog_data->bt_ok, "Ok");
+             elm_object_text_set(dialog_data->bt_ok, "Ok");
              elm_box_pack_end(bx_h, dialog_data->bt_ok);
              evas_object_size_hint_weight_set(dialog_data->bt_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
              evas_object_size_hint_align_set(dialog_data->bt_ok, EVAS_HINT_FILL, EVAS_HINT_FILL);
