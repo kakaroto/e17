@@ -7,5 +7,5 @@ Name: azy
 Description: A Lazy EFL RPC library
 Version: @VERSION@
 Libs: -L${libdir} -lazy
-Libs.private: @AZY_REQUIRES@
+Requires.private: @AZY_REQUIRES@
 Cflags: -I${includedir}/azy-@VMAJ@
