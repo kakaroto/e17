@@ -376,20 +376,19 @@ elm_main(int argc, char **argv)
 
    vbox = elm_box_add(window);
    elm_win_resize_object_add(window, vbox);
-   evas_object_size_hint_align_set(vbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_weight_set(vbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(vbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(vbox);
 
-   video = elm_video_add(window);
+   video = elm_video_add(vbox);
    emotion_object_priority_set(elm_video_emotion_get(video), EINA_TRUE);
    elm_box_pack_end(vbox, video);
-   evas_object_size_hint_align_set(video, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_min_set(video, 640, 480);
    evas_object_size_hint_weight_set(video, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(video);
 
-   hoversel = elm_hoversel_add(window);
+   hoversel = elm_hoversel_add(vbox);
    elm_box_pack_end(vbox, hoversel);
-   elm_hoversel_hover_parent_set(hoversel, window);
+   elm_hoversel_hover_parent_set(hoversel, vbox);
    evas_object_size_hint_align_set(hoversel, 0.5, 0.5);
    evas_object_size_hint_weight_set(hoversel, EVAS_HINT_EXPAND, 0);
    evas_object_show(hoversel);
@@ -413,7 +412,7 @@ elm_main(int argc, char **argv)
         elm_object_text_set(hoversel, "No webcam found !");
      }
 
-   check_invert = elm_check_add(window);
+   check_invert = elm_check_add(vbox);
    elm_box_pack_end(vbox, check_invert);
    evas_object_size_hint_align_set(check_invert, 0.5, 0.5);
    evas_object_size_hint_weight_set(check_invert, EVAS_HINT_EXPAND, 0);
@@ -423,14 +422,14 @@ elm_main(int argc, char **argv)
    evas_object_smart_callback_add(check_invert, "changed", _espionnage_invert_changed, NULL);
 
 #ifdef HAVE_FACE
-   hbox = elm_box_add(window);
+   hbox = elm_box_add(vbox);
    elm_box_pack_end(vbox, hbox);
    evas_object_size_hint_align_set(hbox, 0.5, 0.5);
-   evas_object_size_hint_weight_set(hbox, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_weight_set(hbox, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_box_horizontal_set(hbox, EINA_TRUE);
    evas_object_show(hbox);
 
-   check_face = elm_check_add(window);
+   check_face = elm_check_add(hbox);
    elm_box_pack_end(hbox, check_face);
    evas_object_size_hint_weight_set(check_face, EVAS_HINT_EXPAND, 0);
    elm_object_text_set(check_face, "Face tracking");
@@ -438,7 +437,7 @@ elm_main(int argc, char **argv)
 
    evas_object_smart_callback_add(check_face, "changed", _espionnage_face_changed, NULL);
 
-   spin_interval = elm_spinner_add(window);
+   spin_interval = elm_spinner_add(hbox);
    elm_box_pack_end(hbox, spin_interval);
    elm_spinner_label_format_set(spin_interval, "%.0f");
    elm_spinner_step_set(spin_interval, 1);
