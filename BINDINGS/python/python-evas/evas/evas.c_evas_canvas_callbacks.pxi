@@ -162,8 +162,8 @@ cdef void cb_canvas_canvas_object_focus_out(void *data, Evas *e, void *e_inf) wi
 
 
 cdef int evas_canvas_event_callbacks_len
-cdef Evas_Event_Cb evas_canvas_event_callbacks[31]
-evas_canvas_event_callbacks_len = 31
+cdef Evas_Event_Cb evas_canvas_event_callbacks[30]
+evas_canvas_event_callbacks_len = 30
 evas_canvas_event_callbacks[EVAS_CALLBACK_MOUSE_IN] = cb_canvas_mouse_in
 evas_canvas_event_callbacks[EVAS_CALLBACK_MOUSE_OUT] = cb_canvas_mouse_out
 evas_canvas_event_callbacks[EVAS_CALLBACK_MOUSE_DOWN] = cb_canvas_mouse_down
@@ -196,4 +196,3 @@ evas_canvas_event_callbacks[EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT] = cb_canvas_c
 
 ## I just made it compile again. It's someone else job to make this work in python-evas...
 #evas_canvas_event_callbacks[EVAS_CALLBACK_IMAGE_UNLOADED] = cb_canvas_image_unloaded
-#evas_canvas_event_callbacks[EVAS_CALLBACK_TOUCH] = cb_canvas_touch
