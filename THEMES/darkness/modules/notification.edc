@@ -32,6 +32,7 @@ group {
 /* Popup Theme */
 group {
    data {
+      item: "app_icon_max" "48 48";
       item: "shaped" "1";
    }
    name: "modules/notification/main";
@@ -106,6 +107,43 @@ group {
             visible: 1;
          }
       }
+         part {
+            name: "notification.text.title";
+            type: TEXT;
+            mouse_events: 0;
+            scale: 1;
+            effect: SOFT_SHADOW;
+            clip_to: "clipper";
+            description {
+               state: "default" 0.0;
+               fixed: 1 1;
+               visible: 1;
+               min: 250 0;
+               max: 250 9999;
+               align: 0.0 0.0;
+               rel1 {
+                  to_x: "notification.swallow.app_icon";
+	          relative: 1.0 0.0;
+                  offset: 4 5;
+               }
+               rel2 {
+                  relative: 1.0 0.0;
+                  offset: -20 15;
+               }
+               color: DARKNESS_TEXT 255;
+               color3: 0 0 0 64;
+               color_class: "menu_title_active";
+               text {
+                  /* text_source: "notification.text.title"; */
+                  font: "DejaVu-Bold";
+                  size: 14;
+                  align: 0.0 0.0;
+                  min: 0 1;
+                  text_class: "module_large";
+               }
+            }
+         }
+
       /* App Icon */
       part {
          name: "notification.swallow.app_icon";
