@@ -105,16 +105,19 @@ dnl Check for libv8 and v8.h by linking a bit of code using v8
 AC_LANG_PUSH(C++)
 AC_SUBST(V8_LIBS)
 AC_MSG_CHECKING([for libv8])
-saved_LDFLAGS="$LDFLAGS"
-LDFLAGS="$LDFLAGS -lv8"
+saved_LIBS="$LIBS"
+LIBS="$LIBS -lv8"
 AC_LINK_IFELSE(
 [AC_LANG_PROGRAM(
-[[#include <v8.h>]],
-[[v8::Persistent<v8::Number> n;]],
-[[n = v8::Persistent<v8::Number>::New(v8::Number::New(0));]],
-[[return 0;]],
+[[
+  #include <v8.h>
+  v8::Persistent<v8::Number> n;
+]],
+[[
+  n = v8::Persistent<v8::Number>::New(v8::Number::New(0));
+]],
 )],[V8_LIBS="-lv8"], AC_MSG_ERROR([elev8 requires libv8]))
-LDFLAGS="$saved_LDFLAGS"
+LIBS="$saved_LIBS"
 AC_MSG_RESULT([yes])
 AC_LANG_POP
 
