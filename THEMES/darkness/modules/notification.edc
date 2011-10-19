@@ -196,7 +196,7 @@ group {
 
             text {
                style: "notification_style";
-               min: 1 1;
+               min: 0 1;
             }
          }
       }
