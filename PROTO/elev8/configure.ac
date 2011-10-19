@@ -91,6 +91,7 @@ PKG_CHECK_MODULES([ELEV8],
     ecore-evas >= 1.0.999
     ecore-file >= 1.0.999
     ecore-imf >= 1.0.999
+    ecore-con >= 1.0.999
     edje >= 1.0.999
     edbus >= 1.0.999
     efreet >= 1.0.999
@@ -107,13 +108,12 @@ AC_MSG_CHECKING([for libv8])
 saved_LDFLAGS="$LDFLAGS"
 LDFLAGS="$LDFLAGS -lv8"
 AC_LINK_IFELSE(
-[#include <v8.h>
-v8::Persistent<v8::Number> n;
-int main(void)
-{
-	n = v8::Persistent<v8::Number>::New(v8::Number::New(0));
-	return 0;
-}], [V8_LIBS="-lv8"], AC_MSG_ERROR([elev8 requires libv8]))
+[AC_LANG_PROGRAM(
+[[#include <v8.h>]],
+[[v8::Persistent<v8::Number> n;]],
+[[n = v8::Persistent<v8::Number>::New(v8::Number::New(0));]],
+[[return 0;]],
+)],[V8_LIBS="-lv8"], AC_MSG_ERROR([elev8 requires libv8]))
 LDFLAGS="$saved_LDFLAGS"
 AC_MSG_RESULT([yes])
 AC_LANG_POP
