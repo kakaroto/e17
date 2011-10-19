@@ -4,8 +4,8 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: azy
-Description: A Lazy Zentific EFL RPC library
+Description: A Lazy EFL RPC library
 Version: @VERSION@
-Requires: @AZY_REQUIRES@
 Libs: -L${libdir} -lazy
+Libs.private: @AZY_REQUIRES@
 Cflags: -I${includedir}/azy-@VMAJ@
