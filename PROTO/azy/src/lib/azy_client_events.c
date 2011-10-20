@@ -534,7 +534,7 @@ _azy_client_handler_data(Azy_Client_Handler_Data     *hd,
           hd->recv->timer = ecore_timer_add(30, (Ecore_Task_Cb)_azy_client_recv_timer, hd->recv);
         else
           /* timer and full content length not received, reset timer */
-          ecore_timer_interval_set(hd->recv->timer, 30);
+          ecore_timer_delay(hd->recv->timer, 30.0 - ecore_timer_pending_get(hd->recv->timer));
      }
    else if (hd->recv->size && (hd->recv->http.content_length > 0))
      {
