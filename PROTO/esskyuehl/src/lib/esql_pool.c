@@ -151,6 +151,7 @@ esql_pool_disconnect(Esql_Pool *ep)
      if (e->connected) esql_disconnect(e);
    ep->connected = EINA_FALSE;
    ep->e_connected = 0;
+   ecore_event_add(ESQL_EVENT_DISCONNECT, ep, (Ecore_End_Cb)esql_fake_free, NULL);
 }
 
 Esql_Query_Id
@@ -176,6 +177,39 @@ esql_pool_query(Esql_Pool  *ep,
    e = esql_pool_idle_find_(ep);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
    return esql_query(e, data, query);
+}
+
+void
+esql_pool_connect_timeout_set(Esql_Pool *ep,
+                              double     timeout)
+{
+   Esql *e;
+
+   EINA_INLIST_FOREACH(ep->esqls, e)
+     {
+        e->timeout = timeout;
+        if (timeout > 0.0)
+          {
+             if (e->timeout_timer) ecore_timer_delay(e->timeout_timer, e->timeout - ecore_timer_pending_get(e->timeout_timer));
+             else e->timeout_timer = ecore_timer_add(timeout, (Ecore_Task_Cb)esql_timeout_cb, e);
+          }
+        else
+          {
+             ecore_timer_del(e->timeout_timer);
+             e->timeout_timer = NULL;
+             e->timeout = 0;
+          }
+     }
+}
+
+void
+esql_pool_reconnect_set(Esql_Pool *ep,
+                        Eina_Bool  enable)
+{
+   Esql *e;
+
+   EINA_INLIST_FOREACH(ep->esqls, e)
+     e->reconnect = enable;
 }
 
 /* API */

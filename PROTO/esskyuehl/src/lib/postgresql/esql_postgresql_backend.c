@@ -122,6 +122,7 @@ esql_postgresql_setup(Esql *e, const char *addr, const char *user, const char *p
 
    const char *db;
 
+   if (e->backend.conn_str && (!addr) && (!user) && (!passwd)) return; /* reconnect attempt */
    db = e->database ? e->database : user;
 
    port = strchr(addr, ':');

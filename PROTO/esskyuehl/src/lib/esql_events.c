@@ -35,13 +35,6 @@
   } while (0)
 
 static void
-esql_fake_free(void *data __UNUSED__,
-               Esql      *e)
-{
-   e->error = NULL;
-}
-
-static void
 esql_next(Esql *e)
 {
    Esql_Set_Cb cb;
@@ -176,6 +169,29 @@ out:
    esql_next(e);
 }
 
+static void
+esql_reconnect_handler(Esql *e)
+{
+   Esql *ev;
+   int ret, fd;
+
+   ev = e->pool_member ? (Esql *)e->pool_struct : e; /* use pool struct for events */
+   ret = e->backend.connect(e);
+   EINA_SAFETY_ON_NULL_GOTO(e->backend.db, error);
+   if (ret == ECORE_FD_ERROR)
+     {
+        ERR("Connection error: %s", e->backend.error_get(e));
+        goto error;
+     }
+   fd = e->backend.fd_get(e);
+   e->fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ | ECORE_FD_WRITE, (Ecore_Fd_Cb)esql_connect_handler, e, NULL, NULL);
+   ecore_main_fd_handler_active_set(e->fdh, ret);
+   e->current = ESQL_CONNECT_TYPE_INIT;
+   return;
+error:
+   ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+}
+
 Eina_Bool
 esql_connect_handler(Esql             *e,
                      Ecore_Fd_Handler *fdh)
@@ -183,6 +199,7 @@ esql_connect_handler(Esql             *e,
    Esql *ev;
 
    DBG("(e=%p, fdh=%p, qid=%lu)", e, fdh, e->cur_id);
+   if (e->timeout) ecore_timer_delay(e->timeout_timer, e->timeout - ecore_timer_pending_get(e->timeout_timer));
    ev = e->pool_member ? (Esql *)e->pool_struct : e; /* use pool struct for events */
 
    ecore_main_fd_handler_active_set(fdh, 0);
@@ -254,17 +271,32 @@ esql_connect_handler(Esql             *e,
              esql_next(e);
              return ECORE_CALLBACK_RENEW;
           }
+        if (ev->connect_cb)
+          ev->connect_cb(ev, ev->connect_cb_data);
         else
-          {
-             if (ev->connect_cb)
-               ev->connect_cb(ev, ev->connect_cb_data);
-             else
-               ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
-          }
+          ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
 
         e->fdh = NULL;
+        if (e->reconnect) esql_reconnect_handler(e);
+        else ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
         return ECORE_CALLBACK_CANCEL;
      }
    return ECORE_CALLBACK_RENEW;
 }
 
+Eina_Bool
+esql_timeout_cb(Esql *e)
+{
+   Esql *ev = e;
+
+   if (e->pool_member)
+     {
+        ev = (Esql*)e->pool_struct;
+        e->pool_struct->e_connected--;
+     }
+   e->timeout_timer = NULL;
+   esql_disconnect(e);
+   ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+   if (e->reconnect) esql_reconnect_handler(e);
+   return EINA_FALSE;
+}

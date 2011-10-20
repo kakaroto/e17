@@ -64,6 +64,9 @@ esql_mysac_disconnect(Esql *e)
 {
    MYSAC *m;
    char *buf;
+   const char *addr;
+   const char *login;
+   const char *password;
    size_t size;
 
    /* mysac is very complicated :/ */
@@ -71,6 +74,9 @@ esql_mysac_disconnect(Esql *e)
    if (m->fd >= 0) close(m->fd);
    buf = m->buf;
    size = m->bufsize;
+   addr = m->addr;
+   login = m->login;
+   password = m->password;
    /* avoid allocating new mem */
    memset(m, 0, sizeof(MYSAC));
    memset(buf, 0, size);
@@ -78,6 +84,7 @@ esql_mysac_disconnect(Esql *e)
    m->bufsize = size;
    m->free_it = 1;
    m->qst = MYSAC_START;
+   mysac_setup(m, addr, login, password, e->database, 0);
 }
 
 static int
@@ -107,7 +114,7 @@ esql_mysac_io(Esql *e)
 static void
 esql_mysac_setup(Esql *e, const char *addr, const char *user, const char *passwd)
 {
-   mysac_setup(e->backend.db, addr, user, passwd, e->database, 0);
+   mysac_setup(e->backend.db, eina_stringshare_add(addr), eina_stringshare_add(user), eina_stringshare_add(passwd), e->database, 0);
 }
 
 static void
@@ -287,6 +294,9 @@ esql_mysac_free(Esql *e)
 
    esql_mysac_disconnect(e);
    m = e->backend.db;
+   eina_stringshare_del(m->addr);
+   eina_stringshare_del(m->login);
+   eina_stringshare_del(m->password);
    free(m->buf);
    free(m);
 }

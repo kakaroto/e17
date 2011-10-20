@@ -76,7 +76,7 @@ esql_connect(Esql       *e,
  * @brief Disconnect from the currently connected server
  * This function calls all necessary functions to cleanly disconnect from the server
  * previously connected to by @p e.
- * @note Disconnecting is immediate.
+ * @note Disconnecting is immediate, but an ESQL_EVENT_DISCONNECT is still emitted.
  * @param e The #Esql object (NOT #NULL)
  */
 void
@@ -96,6 +96,7 @@ esql_disconnect(Esql *e)
    if (e->fdh) ecore_main_fd_handler_del(e->fdh);
    e->fdh = NULL;
    INFO("Disconnected");
+   ecore_event_add(ESQL_EVENT_DISCONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
 }
 
 /**
@@ -171,6 +172,87 @@ esql_database_get(Esql *e)
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
 
    return e->database;
+}
+
+/**
+ * @brief Set a timeout to disconnect after no activity
+ * @param e The #Esql object (NOT NULL)
+ * @param timeout The timeout in seconds
+ *
+ * Use this function to apply a timer policy to an Esql object and force disconnection
+ * after @p timeout seconds of inactivity.
+ * @note Setting a value <= 0 will disable this feature.
+ */
+void
+esql_connect_timeout_set(Esql  *e,
+                         double timeout)
+{
+   EINA_SAFETY_ON_NULL_RETURN(e);
+
+   e->timeout = timeout;
+   if (e->pool)
+     {
+        esql_pool_connect_timeout_set((Esql_Pool*)e, timeout);
+        return;
+     }
+   if (timeout > 0.0)
+     {
+        if (e->timeout_timer) ecore_timer_delay(e->timeout_timer, e->timeout - ecore_timer_pending_get(e->timeout_timer));
+        else e->timeout_timer = ecore_timer_add(timeout, (Ecore_Task_Cb)esql_timeout_cb, e);
+     }
+   else
+     {
+        ecore_timer_del(e->timeout_timer);
+        e->timeout_timer = NULL;
+        e->timeout = 0;
+     }
+}
+
+/**
+ * @brief Return the previously set timeout of an #Esql object
+ * @param e The #Esql object (NOT NULL)
+ * @return The timeout in seconds
+ *
+ * Use this function to return the inactivity timeout previously set with
+ * esql_connect_timeout_set().
+ */
+double
+esql_connect_timeout_get(Esql *e)
+{
+   EINA_SAFETY_ON_NULL_RETURN(e);
+   return e->timeout;
+}
+
+/**
+ * @brief Set automatic reconnect mode
+ * @param e The #Esql object (NOT NULL)
+ * @param enable If EINA_TRUE, this feature is enabled.
+ *
+ * This function enables autoreconnect mode, where a server connection will automatically
+ * re-establish itself if disconnection occurs for any reason.
+ * @note If a ESQL_EVENT_DISCONNECT event is received, reconnection failed. Additionally,
+ * calls to esql_disconnect() will override this feature.
+ */
+void
+esql_reconnect_set(Esql     *e,
+                   Eina_Bool enable)
+{
+   EINA_SAFETY_ON_NULL_RETURN(e);
+
+   e->reconnect = enable;
+   if (e->pool) esql_pool_reconnect_set((Esql_Pool*)e, enable);
+}
+
+/**
+ * @brief Return the reconnect mode
+ * @param e The #Esql object (NOT NULL)
+ * @return If EINA_TRUE, this feature is enabled
+ */
+Eina_Bool
+esql_reconnect_get(Esql *e)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
+   return e->reconnect;
 }
 
 /** @} */

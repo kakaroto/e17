@@ -77,7 +77,9 @@ typedef struct Esql_Pool
    void           *connect_cb_data;
    void           *data;
    char           *cur_query;
+   double          timeout;
    Esql_Query_Id   cur_id;
+   Eina_Bool       reconnect : 1;
    Eina_Bool       pool_member : 1;
    /* non-esql */
    int             size;
@@ -87,7 +89,7 @@ typedef struct Esql_Pool
 
 struct Esql
 {
-                   EINA_INLIST;
+   EINA_INLIST;
    const char     *error;
    Eina_Bool       pool : 1;
    Eina_Bool       connected : 1;
@@ -97,7 +99,9 @@ struct Esql
    void           *connect_cb_data;
    void           *data;
    char           *cur_query;
+   double          timeout;
    Esql_Query_Id   cur_id;
+   Eina_Bool       reconnect : 1;
    Eina_Bool       pool_member : 1;
 
    struct
@@ -125,6 +129,7 @@ struct Esql
 
    Ecore_Fd_Handler *fdh;
    Esql_Res         *res; /* current working result */
+   Ecore_Timer      *timeout_timer;
 
    Esql_Connect_Type current;
    double            query_start;
@@ -177,6 +182,14 @@ typedef struct Esql_Row_Iterator
    const Esql_Row *current;
 } Esql_Row_Iterator;
 
+static inline void
+esql_fake_free(void *data __UNUSED__,
+               Esql      *e)
+{
+   e->error = NULL;
+}
+
+
 void      esql_mysac_init(Esql *e);
 void      esql_postgresql_init(Esql *e);
 
@@ -193,7 +206,7 @@ char *esql_query_escape(Eina_Bool   backslashes,
                         va_list     args);
 char *esql_string_escape(Eina_Bool   backslashes,
                          const char *s);
-
+Eina_Bool esql_timeout_cb(Esql *e);
 
 Eina_Bool
 esql_pool_rebalance(Esql_Pool *ep, Esql *e);
@@ -219,6 +232,12 @@ esql_pool_database_set(Esql_Pool  *ep,
 Eina_Bool
 esql_pool_type_set(Esql_Pool *ep,
                    Esql_Type  type);
+void
+esql_pool_connect_timeout_set(Esql_Pool *ep,
+                              double     timeout);
+void
+esql_pool_reconnect_set(Esql_Pool *ep,
+                        Eina_Bool  enable);
 void
 esql_pool_free(Esql_Pool *ep);
 #endif

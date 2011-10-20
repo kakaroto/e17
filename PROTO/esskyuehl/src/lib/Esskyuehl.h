@@ -51,7 +51,8 @@
  * @{
  */
 extern int ESQL_EVENT_ERROR; /**< Event emitted on error, ev object is #Esql */
-extern int ESQL_EVENT_CONNECT; /**< Event emitted connection to db, ev object is #Esql */
+extern int ESQL_EVENT_CONNECT; /**< Event emitted on connection to db, ev object is #Esql */
+extern int ESQL_EVENT_DISCONNECT; /**< Event emitted on disconnection from db, ev object is #Esql */
 extern int ESQL_EVENT_RESULT; /**< Event emitted on query completion, ev object is #Esql_Res */
 /** @} */
 /**
@@ -152,7 +153,7 @@ typedef struct Esql_Cell
       const unsigned char *blob; /**< ESQL_CELL_TYPE_BLOB */
       struct tm            tm; /**< ESQL_CELL_TYPE_TIMESTAMP */
       struct timeval       tv; /**< ESQL_CELL_TYPE_TIME */
-      /** ESQL_CELL_TYPE_UNKNOWN == #NULL */
+      /** ESQL_CELL_TYPE_UNKNOWN == NULL */
    } value;
    size_t len; /**< only valid with ESQL_CELL_TYPE_BLOB and ESQL_CELL_TYPE_STRING */
 } Esql_Cell;
@@ -169,7 +170,7 @@ EAPI void         *esql_data_get(Esql *e);
 EAPI void          esql_data_set(Esql *e,
                                  void *data);
 EAPI Esql_Query_Id esql_current_query_id_get(Esql *e);
-EAPI const char        *esql_current_query_get(Esql *e);
+EAPI const char   *esql_current_query_get(Esql *e);
 EAPI const char   *esql_error_get(Esql *e);
 EAPI Eina_Bool     esql_type_set(Esql     *e,
                                  Esql_Type type);
@@ -188,6 +189,12 @@ EAPI void esql_connect_callback_set(Esql           *e,
 EAPI Eina_Bool   esql_database_set(Esql       *e,
                                    const char *database_name);
 EAPI const char *esql_database_get(Esql *e);
+EAPI void        esql_connect_timeout_set(Esql  *e,
+                                          double timeout);
+EAPI double      esql_connect_timeout_get(Esql *e);
+EAPI void        esql_reconnect_set(Esql     *e,
+                                    Eina_Bool enable);
+EAPI Eina_Bool   esql_reconnect_get(Esql *e);
 
 /* query */
 EAPI Esql_Query_Id esql_query(Esql       *e,
