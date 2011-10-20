@@ -93,8 +93,8 @@ esql_row_free(Esql_Row *r)
 
 /**
  * @brief Retrieve the object from which the query was made
- * @param res The result object (NOT #NULL)
- * @return The parent object (NEVER #NULL)
+ * @param res The result object (NOT NULL)
+ * @return The parent object (NEVER NULL)
  */
 Esql *
 esql_res_esql_get(Esql_Res *res)
@@ -108,9 +108,9 @@ esql_res_esql_get(Esql_Res *res)
 
 /**
  * @brief Retrieve the error string associated with a result set
- * This function will return #NULL in all cases where an error has not occurred.
- * @param res The result object (NOT #NULL)
- * @return The error string, #NULL if no error
+ * This function will return NULL in all cases where an error has not occurred.
+ * @param res The result object (NOT NULL)
+ * @return The error string, NULL if no error
  */
 const char *
 esql_res_error_get(Esql_Res *res)
@@ -122,7 +122,7 @@ esql_res_error_get(Esql_Res *res)
 
 /**
  * @brief Retrieve data pointer previously associated with esql_query or esql_query_args
- * @param res The result object (NOT #NULL)
+ * @param res The result object (NOT NULL)
  * @return The data pointer
  */
 void *
@@ -135,7 +135,7 @@ esql_res_data_get(Esql_Res *res)
 
 /**
  * @brief Return the #Esql_Query_Id of a result
- * @param res The result object (NOT #NULL)
+ * @param res The result object (NOT NULL)
  * @return The query id
  */
 Esql_Query_Id
@@ -148,7 +148,7 @@ esql_res_query_id_get(Esql_Res *res)
 
 /**
  * @brief Return the query string for the result
- * @param res The result object (NOT #NULL)
+ * @param res The result object (NOT NULL)
  * @return The query string (NOT stringshared)
  */
 const char *
@@ -161,7 +161,7 @@ esql_res_query_get(Esql_Res *res)
 /**
  * @brief Retrieve the number of rows selected by a SELECT statement
  * This function has no effect for INSERT/UPDATE/etc statements.
- * @param res The result object (NOT #NULL)
+ * @param res The result object (NOT NULL)
  * @return The number of rows, -1 on failure
  */
 int
@@ -175,7 +175,7 @@ esql_res_rows_count(Esql_Res *res)
 /**
  * @brief Retrieve the number of columns in a result set
  * This function has no effect for INSERT/UPDATE/etc statements.
- * @param res The result object (NOT #NULL)
+ * @param res The result object (NOT NULL)
  * @return The number of columns, -1 on failure
  */
 int
@@ -189,7 +189,7 @@ esql_res_cols_count(Esql_Res *res)
 /**
  * @brief Retrieve the number of rows affected by a non-SELECT statement
  * This function has no effect for SELECT statements.
- * @param res The result object (NOT #NULL)
+ * @param res The result object (NOT NULL)
  * @return The number of rows affected, -1 on failure
  */
 long long int
@@ -203,7 +203,7 @@ esql_res_rows_affected(Esql_Res *res)
 /**
  * @brief Retrieve the insert id for a query
  * This function has no effect for statements without an insert id.
- * @param res The result object (NOT #NULL)
+ * @param res The result object (NOT NULL)
  * @return The insert id, -1 on failure
  */
 long long int
@@ -218,8 +218,8 @@ esql_res_id(Esql_Res *res)
  * @brief Create a new iterator for the rows in a result set
  * This function is used to create an iterator for easily managing the rows in a result set.
  * @note This function has no effect for non-SELECT statements.
- * @param res The result object (NOT #NULL)
- * @return The iterator object, #NULL on failure
+ * @param res The result object (NOT NULL)
+ * @return The iterator object, NULL on failure
  */
 Eina_Iterator *
 esql_res_row_iterator_new(Esql_Res *res)
@@ -249,8 +249,8 @@ esql_res_row_iterator_new(Esql_Res *res)
  * @brief Retrieve the list of cells in a row
  * This returns the inlist for the #Esql_Cell objects in row @p r.
  * @note This function has no effect for non-SELECT statements.
- * @param r The row object (NOT #NULL)
- * @return The inlist, or #NULL on failure
+ * @param r The row object (NOT NULL)
+ * @return The inlist, or NULL on failure
  */
 Eina_Inlist *
 esql_row_cells_get(Esql_Row *r)
@@ -264,7 +264,7 @@ esql_row_cells_get(Esql_Row *r)
  * @brief Retrieve the number of cells in a row
  * This is equivalent to esql_res_cols_count.
  * @note This function has no effect for INSERT/UPDATE/etc statements.
- * @param r The row object (NOT #NULL)
+ * @param r The row object (NOT NULL)
  * @return The number of cells, -1 on failure
  */
 int
@@ -277,8 +277,8 @@ esql_row_cell_count(Esql_Row *r)
 
 /**
  * @brief Retrieve the parent object of a row
- * @param r The row object (NOT #NULL)
- * @return The parent object (NEVER #NULL)
+ * @param r The row object (NOT NULL)
+ * @return The parent object (NEVER NULL)
  */
 Esql_Res *
 esql_row_res_get(Esql_Row *r)

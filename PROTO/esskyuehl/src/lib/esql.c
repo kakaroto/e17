@@ -104,7 +104,7 @@ esql_shutdown(void)
  * @brief Create a new #Esql object
  * @param The database type to use
  * This function does nothing but allocate a generic Esskyuehl struct.
- * @return The new object, or #NULL on failure
+ * @return The new object, or NULL on failure
  */
 Esql *
 esql_new(Esql_Type type)
@@ -120,7 +120,7 @@ esql_new(Esql_Type type)
 
 /**
  * @brief Retrieve data previously associated with an object
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  * @return The data
  */
 void *
@@ -132,7 +132,7 @@ esql_data_get(Esql *e)
 
 /**
  * @brief Associate data with an #Esql object for later use
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  * @param data The data to associate
  */
 void
@@ -149,7 +149,7 @@ esql_data_set(Esql *e,
  * type specified by @p type.
  * @note If this function is called on an object multiple times, any connections associated
  * with the object will be immediately lost.
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  * @param type The type of database to use.
  * @return EINA_TRUE on success, else EINA_FALSE
  */
@@ -195,7 +195,7 @@ esql_type_set(Esql     *e,
 /**
  * @brief Return the database type of an #Esql object
  * @see esql_type_set
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  * @return The database type currently used by @p e
  */
 Esql_Type
@@ -208,7 +208,7 @@ esql_type_get(Esql *e)
 
 /**
  * @brief Return the #Esql_Query_Id of the current active query
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  * @return The query id, or 0 if no query is active
  * @note For obvious reasons, this cannot be used reliably with
  * connection pools unless a callback is set
@@ -223,7 +223,7 @@ esql_current_query_id_get(Esql *e)
 
 /**
  * @brief Return the query string for the current query
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  * @return The query string (NOT stringshared)
  * @note For obvious reasons, this cannot be used reliably with
  * connection pools unless a callback is set
@@ -238,9 +238,9 @@ esql_current_query_get(Esql *e)
 
 /**
  * @brief Retrieve the error string associated with an #Esql object
- * This function will return #NULL in all cases where an error has not occurred.
- * @param res The #Esql object (NOT #NULL)
- * @return The error string, #NULL if no error
+ * This function will return NULL in all cases where an error has not occurred.
+ * @param res The #Esql object (NOT NULL)
+ * @return The error string, NULL if no error
  */
 const char *
 esql_error_get(Esql *e)
@@ -254,7 +254,7 @@ esql_error_get(Esql *e)
  * @brief Free an #Esql object
  * This function frees an #Esql object, shutting down all
  * open connections and freeing all db-related data.
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  */
 void
 esql_free(Esql *e)

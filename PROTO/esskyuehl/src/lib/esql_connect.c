@@ -30,9 +30,9 @@
  * @brief Connect to an sql server
  * Use this function to connect to an sql server with @p e after
  * setting its type with esql_type_set.
- * @param e The object to connect with (NOT #NULL)
- * @param addr The address of the server (ie "127.0.0.1:3306") (NOT #NULL)
- * @param user The username to connect with (NOT #NULL)
+ * @param e The object to connect with (NOT NULL)
+ * @param addr The address of the server (ie "127.0.0.1:3306") (NOT NULL)
+ * @param user The username to connect with (NOT NULL)
  * @param passwd The password for @p user
  * @return EINA_TRUE if the connection could be started, else EINA_FALSE
  */
@@ -77,7 +77,7 @@ esql_connect(Esql       *e,
  * This function calls all necessary functions to cleanly disconnect from the server
  * previously connected to by @p e.
  * @note Disconnecting is immediate, but an ESQL_EVENT_DISCONNECT is still emitted.
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  */
 void
 esql_disconnect(Esql *e)
@@ -103,7 +103,7 @@ esql_disconnect(Esql *e)
  * @brief Set a connected callback for an #Esql object
  * Use this function to set a callback to override the ESQL_EVENT_CONNECTED event,
  * calling @p cb with @p data instead.
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  * @param cb The callback
  * @param data The data
  */
@@ -124,7 +124,7 @@ esql_connect_callback_set(Esql           *e,
  * @p database_name. After it is called, all subsequent queries should be assumed
  * to be directed at database specified by @p database_name.
  * @note This function should always be called before esql_connect to ensure portability.
- * @param e The #Esql object (NOT #NULL)
+ * @param e The #Esql object (NOT NULL)
  * @param database_name The database name
  * @return EINA_TRUE on successful queue of the action, else EINA_FALSE
  */
@@ -163,8 +163,8 @@ esql_database_set(Esql       *e,
 
 /**
  * @brief Return the currently active database name
- * @param e The #Esql object (NOT #NULL)
- * @return The stringshared database name, or #NULL on failure
+ * @param e The #Esql object (NOT NULL)
+ * @return The stringshared database name, or NULL on failure
  */
 const char *
 esql_database_get(Esql *e)

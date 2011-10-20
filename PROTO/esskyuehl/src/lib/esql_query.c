@@ -215,8 +215,8 @@ err:
 /**
  * @brief Make a basic query
  * Use this function to make a query which does not use printf-style arguments.
- * @param e The #Esql object to query with (NOT #NULL)
- * @param query The query SQL (NOT #NULL)
+ * @param e The #Esql object to query with (NOT NULL)
+ * @param query The query SQL (NOT NULL)
  * @param data Data to associate with the result
  * @return EINA_TRUE on successful queuing of the query, else 0
  */
@@ -266,7 +266,7 @@ esql_query(Esql       *e,
 /**
  * @brief Make a query using a format string and arguments
  * Use this function to make a query which uses printf-style arguments.
- * @param e The #Esql object to query with (NOT #NULL)
+ * @param e The #Esql object to query with (NOT NULL)
  * @param data Data to associate with the result
  * @param fmt The format string for the query
  * @return EINA_TRUE on successful queuing of the query, else 0
@@ -295,7 +295,7 @@ esql_query_args(Esql       *e,
 /**
  * @brief Make a query using a format string and a va_list
  * Use this function to make a query which uses printf-style arguments with a va_list.
- * @param e The #Esql object to query with (NOT #NULL)
+ * @param e The #Esql object to query with (NOT NULL)
  * @param data Data to associate with the result
  * @param fmt The format string for the query
  * @param args The arg list for @p fmt
@@ -360,7 +360,7 @@ esql_query_vargs(Esql       *e,
  * a query with @p id, overriding (disabling) the ESQL_EVENT_RESULT event
  * for that call.  If a previous callback was set for @p id, this will overwrite it.
  * @param id The query id (> 0)
- * @param callback The callback to use (NOT #NULL)
+ * @param callback The callback to use (NOT NULL)
  * @return #EINA_TRUE on success, or #EINA_FALSE on failure
  */
 Eina_Bool
