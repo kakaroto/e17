@@ -1,4 +1,5 @@
-   group { name: "elm/toggle/base/default";
+   group { name: "elm/check/base/toggle";
+      alias: "elm/toggle/base/default";
       images {
          image: "frame_label_over.png" COMP;
          image: "slider_button.png" COMP;
