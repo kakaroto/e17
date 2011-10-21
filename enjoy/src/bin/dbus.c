@@ -123,6 +123,7 @@ enjoy_dbus_init(void)
    e_dbus_request_name
      (conn, DBUS_NAME, DBUS_NAME_FLAG_DO_NOT_QUEUE,
       _cb_dbus_request_name, NULL);
+   return EINA_TRUE;
 }
 
 void
