@@ -319,16 +319,16 @@ group { name: "elm/check/base/toggle";
 					}
 				if (((get_int(is_rtl) == 1) && (dx <= 0.5)) ||
 					(get_int(is_rtl) == 0) && (dx > 0.5)) {
-					emit("elm,action,toggle,on", "");
+					emit("elm,action,check,on", "");
 				}
 				else {
-					emit("elm,action,toggle,off", "");
+					emit("elm,action,check,off", "");
 				}
 
 			}
 		}
 		program { name: "toggle_on";
-			signal: "elm,state,toggle,on";
+			signal: "elm,state,check,on";
 			source: "elm";
 			script {
 				new Float:drag;
@@ -342,7 +342,7 @@ group { name: "elm/check/base/toggle";
 			}
 		}
 		program { name: "toggle_off";
-			signal: "elm,state,toggle,off";
+			signal: "elm,state,check,off";
 			source: "elm";
 			script {
 				new Float:drag;
