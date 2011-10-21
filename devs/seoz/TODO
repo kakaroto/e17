@@ -4,7 +4,6 @@
 	[High] Enhance elm_genlist_height_for_width_mode_set() API.
 	[High] Revise Sohyun's genlist-entry patch.
 	- Enhance compress mode. Merge styles and call signals.
-	- Changed "moved" item class function to smart callback.
 	- Merge _item_move_after/before().
 	- Fix reorder bug when the window edge is going out of the screen.
 	- Check elm_genlist_item_sorted_insert() API with group index, expandable list and etc.
