@@ -132,7 +132,7 @@ AC_SUBST(BUILD_MUPDF_CJK_FONTS)
 AM_CONDITIONAL([BUILD_MUPDF_CJK_FONTS], [test "x${want_mupdf_cjk}" = "xyes"])
 AM_CONDITIONAL([BUILD_EPDF_MUPDF], [test "x${want_mupdf}" = "xyes"])
 
-PKG_CHECK_MODULES(EPDFBIN, [eina >= 1.0 evas >= 1.0 ecore-evas >= 1.0.0 ecore >= 1.0.0])
+PKG_CHECK_MODULES(EPDFBIN, [ecore-evas >= 1.0.0 ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0])
 
 # Ewl
 
