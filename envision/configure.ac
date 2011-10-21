@@ -41,11 +41,17 @@ AM_GNU_GETTEXT_VERSION([0.12.1])
 m4_ifdef([AM_GNU_GETTEXT], [
 AM_GNU_GETTEXT([external])
 po_makefile_in=po/Makefile.in
-AM_CONDITIONAL([HAVE_PO], [true])
+have_po="yes"
 ],[
-AM_CONDITIONAL([HAVE_PO], [false])
+have_po="no"
 ])
 AC_SUBST(LTLIBINTL)
+
+if test "x${POSUB}" = "x" ; then
+   have_po="no"
+fi
+
+AM_CONDITIONAL([HAVE_PO], [test "x${have_po}" = "xyes"])
 
 PKG_CHECK_MODULES([ELEMENTARY], [elementary epdf eina ecore evas edje])
 
