@@ -138,6 +138,7 @@ _elfe_home_win_new(E_Zone *zone)
    char buf[PATH_MAX];
    const char *bgfile;
    const char *file;
+   const char *args[] = {"elfe"};
    Evas_Object *rect;
    Evas_Coord w, h;
 
@@ -170,7 +171,7 @@ _elfe_home_win_new(E_Zone *zone)
 
 
    /* Specific ELM initialisation */
-   elm_init(0, NULL);
+   elm_init(1, args);
    elm_need_efreet();
 
    hwin->layout = elm_layout_add(rect);
