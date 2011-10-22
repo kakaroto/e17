@@ -454,6 +454,38 @@ _dialog_rename_ok_clicked_cb(void *data, Evas_Object *btn, void *ev)
 }
 
 static void
+_dialog_create_folder_ok_clicked_cb(void *data, Evas_Object *btn, void *ev)
+{
+   Enna_Localfiles_Priv *priv = data;
+   Enna_File *file;
+   Evas_Object *entry;
+   const char *new_name;
+   const char *new_path;
+   char uri[4096];
+
+   file = evas_object_data_get(priv->dialog, "file");
+   entry = evas_object_data_get(priv->dialog, "entry");
+   new_name = elm_object_text_get(entry);
+   new_path = eina_stringshare_printf("%s/%s", ecore_file_dir_get(file->mrl),
+                                        new_name);
+
+   if (ecore_file_mkdir(new_name))
+       {
+           Enna_File *f;
+           snprintf(uri, sizeof(uri), "file://%s", new_path);
+           printf(" uri : %s\n", uri);
+           f = enna_file_directory_add(new_name,
+                                       uri,
+                                       new_path,
+                                       new_name,
+                                       "icon/directory");
+           enna_browser_file_add(priv->browser, f);
+       }
+
+   evas_object_del(priv->dialog);
+}
+
+static void
 _dialog_cancel_clicked_cb(void *data, Evas_Object *obj, void *ev)
 {
    Enna_Localfiles_Priv *priv = data;
@@ -546,6 +578,91 @@ _action_rename_cb(void *data, Enna_File *file)
    evas_object_show(win);
    priv->dialog = win;
 }
+
+static void
+_action_create_folder_cb(void *data, Enna_File *file)
+{
+   Evas_Object *win;
+   Evas_Object *bg;
+   Evas_Object *fr;
+   Evas_Object *en;
+   Evas_Object *lb;
+   Evas_Object *bx;
+   Evas_Object *btn_bx;
+   Evas_Object *btn_ok;
+   Evas_Object *btn_cancel;
+   Enna_Localfiles_Priv *priv = data;
+
+   win = elm_win_add(enna->win, NULL, ELM_WIN_DIALOG_BASIC);
+   elm_win_title_set(win, _("Create New Folder"));
+   elm_win_autodel_set(win, EINA_TRUE);
+   evas_object_data_set(win, "file", file);
+
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   elm_win_resize_object_add(win, bg);
+   evas_object_show(bg);
+   evas_object_size_hint_min_set(bg, 400, 64);
+
+   fr = elm_frame_add(win);
+   elm_object_style_set(fr, "pad_medium");
+   evas_object_show(fr);
+   elm_win_resize_object_add(win, fr);
+
+   bx = elm_box_add(win);
+   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bx, -1, -1);
+   evas_object_show(bx);
+   elm_frame_content_set(fr, bx);
+   elm_box_padding_set(bx, 4, 4);
+
+   lb = elm_label_add(win);
+   elm_object_text_set(lb, _("Enter folder name"));
+   evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(lb, 0.5, -1);
+   evas_object_show(lb);
+   elm_box_pack_end(bx, lb);
+
+   en = elm_entry_add(win);
+   elm_entry_single_line_set(en, EINA_TRUE);
+   evas_object_size_hint_weight_set(en, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(en, -1, -1);
+   elm_object_text_set(en, "New Folder");
+   elm_box_pack_end(bx, en);
+   evas_object_show(en);
+   evas_object_data_set(win, "entry", en);
+
+   btn_bx = elm_box_add(win);
+   elm_box_horizontal_set(btn_bx, EINA_TRUE);
+   evas_object_size_hint_weight_set(btn_bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn_bx, EVAS_HINT_FILL, 0.5);
+   evas_object_show(btn_bx);
+   elm_box_padding_set(btn_bx, 8, 2);
+
+   btn_ok = elm_button_add(win);
+   elm_object_text_set(btn_ok, _("Create"));
+   evas_object_show(btn_ok);
+   evas_object_size_hint_weight_set(btn_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn_ok, EVAS_HINT_FILL, 0.5);
+   evas_object_smart_callback_add(btn_ok, "clicked",
+                                  _dialog_create_folder_ok_clicked_cb, priv);
+   elm_box_pack_end(btn_bx, btn_ok);
+
+   btn_cancel = elm_button_add(win);
+   elm_object_text_set(btn_cancel, _("Cancel"));
+   evas_object_show(btn_cancel);
+   evas_object_size_hint_weight_set(btn_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(btn_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(btn_cancel, "clicked",
+                                  _dialog_cancel_clicked_cb, priv);
+   elm_box_pack_end(btn_bx, btn_cancel);
+
+   elm_box_pack_end(bx, btn_bx);
+
+   evas_object_show(win);
+   priv->dialog = win;
+}
+
 
 static void
 _action_delete_cb(void *data, Enna_File *file)
@@ -678,6 +795,8 @@ _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
    action = enna_file_action_new(f, "delete", "Delete", "edit-delete", _action_delete_cb, priv);
    enna_file_action_add(f, action);
    action = enna_file_action_new(f, "details", "Details", "view-list-details", NULL, NULL);
+   enna_file_action_add(f, action);
+   action = enna_file_action_new(f, "create_folder", "Create new folder", "folder-new", _action_create_folder_cb, priv);
    enna_file_action_add(f, action);
 
    eina_stringshare_del(buf);

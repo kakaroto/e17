@@ -115,9 +115,10 @@ _item_new(Evas_Object *ctxpopup, const char * label, const char *icon,
           void *data)
 {
    Evas_Object *ic = elm_icon_add(ctxpopup);
-   elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_THEME_FDO);
+   elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
    elm_icon_standard_set(ic, icon);
-   elm_icon_scale_set(ic, EINA_FALSE, EINA_FALSE);
+   evas_object_size_hint_min_set(ic, 16, 16);
+   evas_object_size_hint_max_set(ic, 16, 16);
    return elm_ctxpopup_item_append(ctxpopup, label, ic, func, data);
 }
 

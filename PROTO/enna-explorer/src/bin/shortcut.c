@@ -239,8 +239,7 @@ _bookmark_volume_icon_get(void *data, Evas_Object *obj, const char *part)
         bt = elm_button_add(obj);
         ic = elm_icon_add(bt);
         elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
-        elm_icon_standard_set(ic, "ejecter");
-        evas_object_size_hint_min_set(bt, 16, 16);
+        elm_icon_standard_set(ic, "media-eject");
         elm_object_style_set(bt, "anchor");
         elm_button_icon_set(bt, ic);
         evas_object_show(ic);
