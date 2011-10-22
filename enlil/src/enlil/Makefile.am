@@ -31,8 +31,10 @@ pwg_session.azy_client.h \
 pwg_session.azy_server.c \
 pwg_session.azy_server.h
 
+if HAVE_AZY
 BUILT_SOURCES = $(PWG_SOURCES)
 CLEANFILES = $(PWG_SOURCES)
+endif
 
 libenlil_la_SOURCES  = \
 enlil.c \
@@ -55,8 +57,11 @@ exif/jpeg-marker.c \
 exif/exif-i18n.c \
 geocaching.c \
 net_sync.c \
-download.c \
-$(PWG_SOURCES)
+download.c
+
+if HAVE_AZY
+libenlil_la_SOURCES += $(PWG_SOURCES)
+endif
 
 $(PWG_SOURCES): ws_piwigo/services.azy
 	@echo  "  GEN    $@"
@@ -68,4 +73,8 @@ libenlil_la_CFLAGS =  @EFL_PTHREAD_CFLAGS@
 libenlil_la_LIBADD  = @ENLIL_LIBS@
 libenlil_la_LDFLAGS = -no-undefined -version-info @version_info@ @EFL_PTHREAD_LIBS@
 
-EXTRA_DIST = exif/ ws_piwigo/services.azy
+EXTRA_DIST = exif/
+
+if HAVE_AZY
+EXTRA_DIST += ws_piwigo/services.azy
+endif

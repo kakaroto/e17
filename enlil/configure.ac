@@ -96,6 +96,7 @@ PKG_CHECK_EXISTS([azy >= 0.0.1],
     AC_DEFINE_UNQUOTED(HAVE_AZY, [1], [have network synchronization (azy) support])
    ],
    [have_azy="no"])
+AM_CONDITIONAL([HAVE_AZY], [test "x${have_azy}" = "xyes"])
 
 PKG_CHECK_MODULES([ENLIL], [${requirements}])
 
