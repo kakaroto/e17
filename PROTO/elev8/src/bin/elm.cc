@@ -2278,7 +2278,6 @@ public:
           {
              it = new ListItem();
 
-
              it->label = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("label")));
              it->icon = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("icon")));
              it->end = v8::Persistent<Value>::New(item->ToObject()->Get(String::New("end")));
@@ -4233,6 +4232,229 @@ CEvasObject::CPropHandler<CElmToggle>::list[] = {
   PROP_HANDLER(CElmToggle, icon),
   PROP_HANDLER(CElmToggle, state),
   PROP_HANDLER(CElmToggle, on_changed),
+  { NULL, NULL, NULL },
+};
+
+
+class CElmHover : public CEvasObject {
+protected:
+   CPropHandler<CElmHover> prop_handler;
+
+   Persistent<Value> target;
+   Persistent<Value> parent;
+
+   /* the contents of Hover */
+   Persistent<Value> top;
+   Persistent<Value> top_left;
+   Persistent<Value> top_right;
+   Persistent<Value> bottom;
+   Persistent<Value> bottom_left;
+   Persistent<Value> bottom_right;
+   Persistent<Value> left;
+   Persistent<Value> right;
+   Persistent<Value> middle;
+
+public:
+   CElmHover(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
+     {
+        eo = elm_hover_add(parent->top_widget_get());
+        construct(eo, obj);
+     }
+
+   virtual void content_set(const char *swallow,Handle<Value> val)
+     {
+       if (val->IsObject())
+         {
+
+            CEvasObject *content = realize_one(this,val);
+
+            elm_hover_content_set(eo, swallow, content->get());
+
+            if (!strcmp(swallow, "top"))
+              {
+                 top.Dispose();
+                 top = Persistent<Value>::New(content->get_object());
+              }
+            if (!strcmp(swallow, "top_left"))
+              {
+                 top_left.Dispose();
+                 top_left = Persistent<Value>::New(content->get_object());
+              }
+            if (!strcmp(swallow, "top_right"))
+              {
+                 top_right.Dispose();
+                 top_right = Persistent<Value>::New(content->get_object());
+              }
+            if (!strcmp(swallow, "bottom"))
+              {
+                 bottom.Dispose();
+                 bottom = Persistent<Value>::New(content->get_object());
+              }
+            if (!strcmp(swallow, "bottom_left"))
+              {
+                 bottom_left.Dispose();
+                 bottom_left = Persistent<Value>::New(content->get_object());
+              }
+            if (!strcmp(swallow, "bottom_right"))
+              {
+                 bottom_right.Dispose();
+                 bottom_right = Persistent<Value>::New(content->get_object());
+              }
+            if (!strcmp(swallow, "left"))
+              {
+                 left.Dispose();
+                 left = Persistent<Value>::New(content->get_object());
+              }
+            if (!strcmp(swallow, "right"))
+              {
+                 right.Dispose();
+                 right = Persistent<Value>::New(content->get_object());
+              }
+            if (!strcmp(swallow, "middle"))
+              {
+                 middle.Dispose();
+                 middle = Persistent<Value>::New(content->get_object());
+              }
+         }
+     }
+
+   virtual Handle<Value> content_get(const char *swallow) const
+     {
+        if (!strcmp(swallow, "top"))
+          return top;
+        if (!strcmp(swallow, "top_left"))
+          return top_left;
+        if (!strcmp(swallow, "top_right"))
+          return top_right;
+        if (!strcmp(swallow, "bottom"))
+          return bottom;
+        if (!strcmp(swallow, "bottom_left"))
+          return bottom_left;
+        if (!strcmp(swallow, "bottom_right"))
+          return bottom_right;
+        if (!strcmp(swallow, "left"))
+          return left;
+        if (!strcmp(swallow, "right"))
+          return right;
+        if (!strcmp(swallow, "middle"))
+          return middle;
+
+        return Null();
+     }
+
+   void top_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          content_set("top", val);
+     }
+
+   virtual Handle<Value> top_get() const
+     {
+        return content_get("top");
+     }
+
+   void top_left_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          content_set("top_left", val);
+     }
+
+   virtual Handle<Value> top_left_get() const
+     {
+        return content_get("top_left");
+     }
+
+   void top_right_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          content_set("top_right", val);
+     }
+
+   virtual Handle<Value> top_right_get() const
+     {
+        return content_get("top_right");
+     }
+
+   void bottom_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          content_set("bottom", val);
+     }
+
+   virtual Handle<Value> bottom_get() const
+     {
+        return content_get("bottom");
+     }
+
+   void bottom_left_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          content_set("bottom_left", val);
+     }
+
+   virtual Handle<Value> bottom_left_get() const
+     {
+        return content_get("bottom_left");
+     }
+
+   void bottom_right_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          content_set("bottom_right", val);
+     }
+
+   virtual Handle<Value> bottom_right_get() const
+     {
+        return content_get("bottom_right");
+     }
+
+   void left_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          content_set("left", val);
+     }
+
+   virtual Handle<Value> left_get() const
+     {
+        return content_get("left");
+     }
+
+   void right_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          content_set("right", val);
+     }
+
+   virtual Handle<Value> right_get() const
+     {
+        return content_get("right");
+     }
+
+   void middle_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          content_set("middle", val);
+     }
+
+   virtual Handle<Value> middle_get() const
+     {
+        return content_get("middle");
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmHover>::property_list
+CEvasObject::CPropHandler<CElmHover>::list[] = {
+  PROP_HANDLER(CElmHover, top),
+  PROP_HANDLER(CElmHover, top_left),
+  PROP_HANDLER(CElmHover, top_right),
+  PROP_HANDLER(CElmHover, bottom),
+  PROP_HANDLER(CElmHover, bottom_left),
+  PROP_HANDLER(CElmHover, bottom_right),
+  PROP_HANDLER(CElmHover, left),
+  PROP_HANDLER(CElmHover, right),
+  PROP_HANDLER(CElmHover, middle),
   { NULL, NULL, NULL },
 };
 
