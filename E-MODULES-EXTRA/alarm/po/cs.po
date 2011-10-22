@@ -1,30 +1,31 @@
 # Czech translation.
 # This file is put in the public domain.
 # quaker66@gmail.com
+# Vít Pelčák <vit@pelcak.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Alarm\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 18:57+0100\n"
-"PO-Revision-Date: 2011-01-04 18:57+0100\n"
-"Last-Translator: quaker66 <quaker66@gmail.com>\n"
-"Language-Team: Czech <quaker66@gmail.com>\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
+"PO-Revision-Date: 2011-10-16 11:34+0200\n"
+"Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../src/e_mod_config.c:52
 msgid "Alarm Configuration"
-msgstr "Nastavení alarmu"
+msgstr "Nastavení upomínky"
 
-#: ../src/e_mod_config.c:152
-#: ../src/e_mod_main.c:185
+#: ../src/e_mod_config.c:152 ../src/e_mod_main.c:185
 msgid "Alarm"
-msgstr "Alarm"
+msgstr "Upomínka"
 
-#: ../src/e_mod_config.c:154
-#: ../src/e_mod_config_alarm.c:187
+#: ../src/e_mod_config.c:154 ../src/e_mod_config_alarm.c:187
 msgid "Active"
 msgstr "Aktivní"
 
@@ -38,7 +39,7 @@ msgstr "Smazat"
 
 #: ../src/e_mod_config.c:167
 msgid "Configure"
-msgstr "Konfigurovat"
+msgstr "Nastavit"
 
 #: ../src/e_mod_config.c:169
 msgid "Duplicate"
@@ -46,7 +47,7 @@ msgstr "Duplikovat"
 
 #: ../src/e_mod_config.c:223
 msgid "Alarm Options"
-msgstr "Volby alarmu"
+msgstr "Možnosti upomínky"
 
 #.
 #. ob = e_widget_label_add(evas, D_("Time format"));
@@ -59,16 +60,15 @@ msgstr "Volby alarmu"
 #.
 #: ../src/e_mod_config.c:235
 msgid "Show next alarm"
-msgstr "Zobrazit další alarm"
+msgstr "Zobrazit další upomínku"
 
 #: ../src/e_mod_config.c:241
 msgid "Alarms Defaults"
-msgstr "Výchozí alarmy"
+msgstr "Výchozí hodnoty upomínky"
 
-#: ../src/e_mod_config.c:243
-#: ../src/e_mod_config_alarm.c:401
+#: ../src/e_mod_config.c:243 ../src/e_mod_config_alarm.c:401
 msgid "Open popup"
-msgstr "Otevřít popup"
+msgstr "Otevřít vyskakovací okno"
 
 #: ../src/e_mod_config.c:246
 msgid "Run program"
@@ -76,11 +76,11 @@ msgstr "Spustit program"
 
 #: ../src/e_mod_config.c:253
 msgid "Auto-Remove alarms"
-msgstr "Automaticky smazat alarmy"
+msgstr "Automaticky mazat upomínky"
 
 #: ../src/e_mod_config_alarm.c:68
 msgid "Alarm Configuration : Setup an alarm"
-msgstr "Nastavení alarmu: Nastavit alarm"
+msgstr "Nastavení alarmu: Nastavit upomínku"
 
 #: ../src/e_mod_config_alarm.c:185
 msgid "Informations"
@@ -88,7 +88,7 @@ msgstr "Informace"
 
 #: ../src/e_mod_config_alarm.c:189
 msgid "Name"
-msgstr "Jméno"
+msgstr "Název"
 
 #: ../src/e_mod_config_alarm.c:194
 msgid "Description"
@@ -157,34 +157,56 @@ msgid "Tomorrow"
 msgstr "Zítra"
 
 #: ../src/e_mod_config_alarm.c:285
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>There is an error in the informations / schedule of your alarm"
-msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Máte chybu v informacích / rozvrhu vašeho alarmu"
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
+"in the informations / schedule of your alarm"
+msgstr ""
+"<hilight>Chyba, upomínka nebyla přidána!</hilight><br><br>Máte chybu v "
+"informacích / rozvrhu vaší upomínky"
 
 #: ../src/e_mod_config_alarm.c:290
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter a name for the alarm"
-msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Musíte zadat jméno."
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
+"a name for the alarm"
+msgstr ""
+"<hilight>Chyba, upomínka nebyla přidána!</hilight><br><br>Musíte zadat název "
+"upomínky"
 
 #: ../src/e_mod_config_alarm.c:295
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to select at least one day in the week"
-msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Musíte vybrat alespoň jeden den z týdnu"
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
+"select at least one day in the week"
+msgstr ""
+"<hilight>Chyba, upomínka nebyla přidána!</hilight><br><br>Musíte vybrat "
+"alespoň jeden den z týdnu"
 
 #: ../src/e_mod_config_alarm.c:300
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered for the alarm has incorrect syntax<br><br>You have to respect this format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the month on 2 numbers<br>DD is the day on 2 numbers<br>"
-msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Datum má špatnou syntaxi.<br><br>Musíte dodržovat tento formát :<br>   RRRR/MM/DD<br>RRRR je rok o čtyřech číslech.<br>MM měsíc o dvou číslech.<br>DD je den také o dvou číslech.<br>"
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
+"entered for the alarm has incorrect syntax<br><br>You have to respect this "
+"format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
+"month on 2 numbers<br>DD is the day on 2 numbers<br>"
+msgstr ""
+"<hilight>Chyba, upomínka nebyla přidána!</hilight><br><br>Datum má špatnou "
+"syntaxi.<br><br>Musíte dodržovat tento formát :<br>   RRRR/MM/DD<br>RRRR je "
+"rok o čtyřech číslech.<br>MM měsíc o dvou číslech.<br>DD je den také o dvou "
+"číslech.<br>"
 
 #: ../src/e_mod_config_alarm.c:310
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered is before now"
-msgstr "<hilight>Chyba, alarm nebyl přidán !</hilight><br><br>Datum je menší než je aktuální datum."
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
+"entered is before now"
+msgstr ""
+"<hilight>Chyba, upomínka nebyla přidána!</hilight><br><br>Datum je menší než "
+"je aktuální datum."
 
-#: ../src/e_mod_config_alarm.c:314
-#: ../src/e_mod_main.c:424
+#: ../src/e_mod_config_alarm.c:314 ../src/e_mod_main.c:424
 msgid "Alarm Module Error"
-msgstr "Chyba modulu Alarm"
+msgstr "Chyba modulu Upomínka"
 
-#: ../src/e_mod_config_alarm.c:351
-#: ../src/e_mod_config_alarm.c:439
+#: ../src/e_mod_config_alarm.c:351 ../src/e_mod_config_alarm.c:439
 msgid "Test this alarm"
-msgstr "Testovat"
+msgstr "Vyzkoušet tuto upomínku"
 
 #: ../src/e_mod_config_alarm.c:379
 msgid "Ring Options"
@@ -192,26 +214,22 @@ msgstr "Nastavení zvuku"
 
 #: ../src/e_mod_config_alarm.c:381
 msgid "Remove alarm"
-msgstr "Odstranit"
+msgstr "Odstranit upomínku"
 
-#: ../src/e_mod_config_alarm.c:388
-#: ../src/e_mod_config_alarm.c:408
+#: ../src/e_mod_config_alarm.c:388 ../src/e_mod_config_alarm.c:408
 msgid "No [default]"
 msgstr "Ne [výchozí]"
 
-#: ../src/e_mod_config_alarm.c:390
-#: ../src/e_mod_config_alarm.c:410
+#: ../src/e_mod_config_alarm.c:390 ../src/e_mod_config_alarm.c:410
 msgid "Yes"
 msgstr "Ano"
 
-#: ../src/e_mod_config_alarm.c:395
-#: ../src/e_mod_config_alarm.c:415
+#: ../src/e_mod_config_alarm.c:395 ../src/e_mod_config_alarm.c:415
 #: ../src/e_mod_config_alarm.c:426
 msgid "No"
 msgstr "Ano"
 
-#: ../src/e_mod_config_alarm.c:397
-#: ../src/e_mod_config_alarm.c:417
+#: ../src/e_mod_config_alarm.c:397 ../src/e_mod_config_alarm.c:417
 msgid "Yes [default]"
 msgstr "Ne [výchozí]"
 
@@ -228,16 +246,22 @@ msgid "Run this program"
 msgstr "Spustit tento program"
 
 #: ../src/e_mod_config_alarm.c:475
-msgid "<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE the alarms<br>via the 'Active' check button on the<br>main Alarm configuration panel."
-msgstr "<hilight>Test byl ÚSPĚŠNÝ !</hilight><br><br>Ale NEZAPOMEŇTE AKTIVOVAT alarmy<br>přes 'Aktivní' checkbox v<br>hlavním konfiguračním panelu alarmu."
+msgid ""
+"<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE "
+"the alarms<br>via the 'Active' check button on the<br>main Alarm "
+"configuration panel."
+msgstr ""
+"<hilight>Test byl ÚSPĚŠNÝ!</hilight><br><br>Ale NEZAPOMEŇTE AKTIVOVAT "
+"upomínky<br>přes 'Aktivní' zaškrtávací políčko<br>v hlavním nastavovacím "
+"panelu upomínky."
 
 #: ../src/e_mod_config_alarm.c:481
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
-msgstr "<hilight>Test byl ÚSPĚŠNÝ !</hilight>"
+msgstr "<hilight>Test byl ÚSPĚŠNÝ!</hilight>"
 
 #: ../src/e_mod_config_alarm.c:486
 msgid "<hilight>Alarm test FAILED !</hilight>"
-msgstr "<hilight>Test SELHAL !</hilight>"
+msgstr "<hilight>Test SELHAL!</hilight>"
 
 #: ../src/e_mod_config_alarm.c:488
 msgid "Alarm Module Test Report"
@@ -246,18 +270,19 @@ msgstr "Testovací report modulu"
 #: ../src/e_mod_main.c:396
 #, c-format
 msgid "<hilight>Alarm : %s</hilight><br><br>%s"
-msgstr "<hilight>Alarm : %s</hilight><br><br>%s"
+msgstr "<hilight>Upomínka : %s</hilight><br><br>%s"
 
 #: ../src/e_mod_main.c:399
 msgid "Alarm Module Popup"
-msgstr "Popup alarm modulu"
+msgstr "Vyskakovací okno modulu upomínky"
 
 #: ../src/e_mod_main.c:422
-msgid "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you specified"
-msgstr "<hilight>Chyba !</hilight><br><br>Nemůžu spustit zadaný program."
+msgid ""
+"<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
+"specified"
+msgstr "<hilight>Chyba !</hilight><br><br>Nelze spustit zadaný program"
 
-#: ../src/e_mod_main.c:656
-#: ../src/e_mod_main.c:835
+#: ../src/e_mod_main.c:656 ../src/e_mod_main.c:846
 #, c-format
 msgid "Snooze %s"
 msgstr "Dřímat %s"
@@ -280,38 +305,48 @@ msgstr "Ok"
 msgid "Close"
 msgstr "Zavřít"
 
-#: ../src/e_mod_main.c:843
+#: ../src/e_mod_main.c:821
+msgid "Add an alarm"
+msgstr "Přidat upomínku"
+
+#: ../src/e_mod_main.c:828
+msgid "Settings"
+msgstr "Nastavení"
+
+#: ../src/e_mod_main.c:854
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
 msgstr "Dřímat %.14s z %.2d:%.2d"
 
-#: ../src/e_mod_main.c:857
+#: ../src/e_mod_main.c:868
 msgid "Snooze (No alarm to delay)"
-msgstr "Dřímat (žádný alarm)"
+msgstr "Dřímat (žádná upomínka)"
 
-#: ../src/e_mod_main.c:865
-msgid "Add an alarm"
-msgstr "Přidat alarm"
-
-#: ../src/e_mod_main.c:872
-msgid "Settings"
-msgstr "Volby"
-
-#: ../src/e_mod_main.c:1053
+#: ../src/e_mod_main.c:1050
 #, c-format
-msgid "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your configuration of alarm module<br>has been upgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>Alarm modul : Konfigurace aktualizována</hilight><br><br>Vaše konfigurace<br>byla aktualizována.<br>Vaše nastavení bylo odebráno.<br>Omlouváme se za vzniklé potíže.<br><br>(%d -> %d)"
+msgid ""
+"<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
+"configuration of alarm module<br>has been upgraded<br>Your settings and "
+"alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+msgstr ""
+"<hilight>Modul upomínek : Nastavení bylo aktualizováni</hilight><br><br>Vaše "
+"nastavení modulu upomínky<br>bylo aktualizováno.<br>Vaše nastavení a "
+"upomínky byly odebrány.<br>Omlouváme se za vzniklé potíže.<br><br>(%d -> %d)"
 
-#: ../src/e_mod_main.c:1059
-#: ../src/e_mod_main.c:1073
+#: ../src/e_mod_main.c:1056 ../src/e_mod_main.c:1070
 msgid "Alarm Module version "
-msgstr "Verze modulu"
+msgstr "Verze modulu upomínky"
 
-#: ../src/e_mod_main.c:1067
+#: ../src/e_mod_main.c:1064
 #, c-format
-msgid "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your configuration of Alarm module<br>has been downgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>Alarm modul : Konfigurace degradována</hilight><br><br>Vaše konfigurace modulu<br>byla degradována.<br>Vaše nastavení a alarmy byly smazány.<br>Omlováme se za vzniklé potíže.<br><br>(%d ->%d)"
+msgid ""
+"<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "
+"configuration of Alarm module<br>has been downgraded<br>Your settings and "
+"alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+msgstr ""
+"<hilight>Modul upomínky : Nastavení bylo degradováno</hilight><br><br>Vaše "
+"nastavení modulu upomínky<br>bylo degradováno.<br>Vaše nastavení a upomínky "
+"byly smazány.<br>Omlouváme se za vzniklé potíže.<br><br>(%d ->%d)"
 
 #~ msgid "Configuration"
 #~ msgstr "Konfigurace"
-

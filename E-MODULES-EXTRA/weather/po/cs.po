@@ -1,18 +1,21 @@
 # Czech translation.
 # This file is put in the public domain.
 # quaker66@gmail.com
+# Vít Pelčák <vit@pelcak.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 18:59+0100\n"
-"PO-Revision-Date: 2011-01-04 18:59+0100\n"
-"Last-Translator: quaker66 <quaker66@gmail.com>\n"
-"Language-Team: Czech <quaker66@gmail.com>\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
+"PO-Revision-Date: 2011-10-15 12:41+0200\n"
+"Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../src/e_mod_config.c:36
 msgid "Weather Settings"
@@ -51,10 +54,9 @@ msgstr "Stupně Celsia"
 msgid "Farenheit"
 msgstr "Farenheita"
 
-#: ../src/e_mod_config.c:99
-#: ../src/e_mod_config.c:100
+#: ../src/e_mod_config.c:99 ../src/e_mod_config.c:100
 msgid "ICAO Code"
-msgstr "ICAO kód"
+msgstr "Kód ICAO"
 
 #: ../src/e_mod_config.c:105
 msgid "Get your ICAO code at:"
@@ -68,12 +70,12 @@ msgstr "http://www.weather.gov/tg/siteloc.shtml"
 msgid "Weather"
 msgstr "Počasí"
 
-#: ../src/e_mod_main.c:217
+#: ../src/e_mod_main.c:212
 msgid "Settings"
-msgstr "Volby"
+msgstr "Nastavení"
 
 #~ msgid "Weather Configuration"
 #~ msgstr "Nastavení modulu Weather"
+
 #~ msgid "Configuration"
 #~ msgstr "Konfigurace"
-

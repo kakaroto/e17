@@ -1,161 +1,147 @@
 # Czech translation.
 # This file is put in the public domain.
 # quaker66@gmail.com
+# Vít Pelčák <vit@pelcak.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Everything-websearch\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 18:24+0100\n"
-"PO-Revision-Date: 2011-01-04 18:28+0100\n"
-"Last-Translator: quaker66 <quaker66@gmail.com>\n"
-"Language-Team: Czech <quaker66@gmail.com>\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
+"PO-Revision-Date: 2011-10-09 13:52+0200\n"
+"Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/e_mod_main.c:587
-#: ../src/e_mod_main.c:1240
-#: ../src/e_mod_main.c:1382
+#: ../src/e_mod_main.c:587 ../src/e_mod_main.c:1391
 msgid "Translate"
 msgstr "Přeložit"
 
-#: ../src/e_mod_main.c:727
+#: ../src/e_mod_main.c:736
 msgid "Abort download"
 msgstr "Zrušit stahování"
 
-#: ../src/e_mod_main.c:772
+#: ../src/e_mod_main.c:781
 #, c-format
 msgid "Got %d kbytes of"
 msgstr "Staženo %d kilobajtů z"
 
-#: ../src/e_mod_main.c:786
+#: ../src/e_mod_main.c:795
 msgid "Enqueue in Playlist"
 msgstr "Zařadit do playlistu"
 
-#: ../src/e_mod_main.c:790
+#: ../src/e_mod_main.c:799
 msgid "Enqueue"
 msgstr "Zařadit do fronty"
 
-#: ../src/e_mod_main.c:793
+#: ../src/e_mod_main.c:802
 msgid "Play File"
 msgstr "Přehrát soubor"
 
-#: ../src/e_mod_main.c:797
+#: ../src/e_mod_main.c:806
 msgid "Play"
 msgstr "Přehrát"
 
-#: ../src/e_mod_main.c:827
+#: ../src/e_mod_main.c:836
 msgid "Finished download"
 msgstr "Stahování dokončeno"
 
-#: ../src/e_mod_main.c:909
+#: ../src/e_mod_main.c:922
 msgid "Start download"
 msgstr "Začít stahovat"
 
-#: ../src/e_mod_main.c:991
+#: ../src/e_mod_main.c:1004
 msgid "Enqueue files for download"
 msgstr "Zařadit soubory do fronty stahování"
 
-#: ../src/e_mod_main.c:1008
-#: ../src/e_mod_main.c:1235
-#: ../src/e_mod_main.c:1388
+#: ../src/e_mod_main.c:1021 ../src/e_mod_main.c:1397
 msgid "Youtube"
 msgstr "Youtube"
 
 #. ecore_con_url_http_post_send(ud->dd->con_url, post);
-#: ../src/e_mod_main.c:1049
-#: ../src/e_mod_main.c:1053
-#: ../src/e_mod_main.c:1080
-#: ../src/e_mod_main.c:1141
-#: ../src/e_mod_main.c:1277
+#: ../src/e_mod_main.c:1062 ../src/e_mod_main.c:1067 ../src/e_mod_main.c:1094
+#: ../src/e_mod_main.c:1155
 msgid "Upload Image"
 msgstr "Nahrát obrázek"
 
-#: ../src/e_mod_main.c:1049
+#: ../src/e_mod_main.c:1062
 msgid "Link copied to clipboard"
 msgstr "Odkaz zkopírován do schránky"
 
-#: ../src/e_mod_main.c:1053
+#: ../src/e_mod_main.c:1067
 msgid "Something went wrong :("
 msgstr "Něco není správně :("
 
-#: ../src/e_mod_main.c:1078
+#: ../src/e_mod_main.c:1092
 #, c-format
 msgid "Completed %1.1f%% of %s"
 msgstr "Dokončeno %1.1f%% z %s"
 
-#: ../src/e_mod_main.c:1225
-msgid "Google"
-msgstr "Google"
-
-#: ../src/e_mod_main.c:1230
-msgid "Wikipedia"
-msgstr "Wikipedie"
-
-#: ../src/e_mod_main.c:1253
-msgid "Google for it"
-msgstr "Vygooglovat"
-
-#: ../src/e_mod_main.c:1256
-msgid "Wikipedia Page"
-msgstr "Stránka Wikipedie"
-
-#: ../src/e_mod_main.c:1259
-msgid "Feeling Lucky"
-msgstr "Zkusit štěstí"
-
-#: ../src/e_mod_main.c:1262
-msgid "Watch on Youtube"
-msgstr "Podívat se na YouTube"
-
-#: ../src/e_mod_main.c:1265
-msgid "Download as Audio"
-msgstr "Stáhnout jako zvuk"
-
-#: ../src/e_mod_main.c:1268
-msgid "Play Video"
-msgstr "Přehrát video"
-
-#: ../src/e_mod_main.c:1271
-msgid "Download and enqueue"
-msgstr "Stáhnout a zařadit do fronty"
-
-#: ../src/e_mod_main.c:1274
-msgid "Download and play"
-msgstr "Stáhnout a přehrát"
-
-#: ../src/e_mod_main.c:1355
-#: ../src/e_mod_main.c:1527
-#: ../src/e_mod_main.c:1547
+#: ../src/e_mod_main.c:1364 ../src/e_mod_main.c:1536 ../src/e_mod_main.c:1555
 msgid "Everything Websearch"
 msgstr "Everything Webové hledání"
 
-#: ../src/e_mod_main.c:1369
+#: ../src/e_mod_main.c:1378
 msgid "General"
 msgstr "Obecné"
 
-#: ../src/e_mod_main.c:1372
+#: ../src/e_mod_main.c:1381
 msgid "Browser"
 msgstr "Prohlížeč"
 
-#: ../src/e_mod_main.c:1377
+#: ../src/e_mod_main.c:1386
 msgid "Language"
 msgstr "Jazyk"
 
-#: ../src/e_mod_main.c:1391
+#: ../src/e_mod_main.c:1400
 msgid "Video player"
 msgstr "Přehrávač videa"
 
-#: ../src/e_mod_main.c:1396
+#: ../src/e_mod_main.c:1405
 msgid "Download directory"
 msgstr "Adresář pro stahování"
 
-#: ../src/e_mod_main.c:1401
+#: ../src/e_mod_main.c:1410
 msgid "Download requires mplayer and mp3lame"
 msgstr "Stahování vyžaduje mplayer a mp3lame"
 
-#: ../src/e_mod_main.c:1524
-msgid "Extensions"
-msgstr "Rozšíření"
+#: ../src/e_mod_main.c:1533
+msgid "Launcher"
+msgstr ""
 
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "Wikipedia"
+#~ msgstr "Wikipedie"
+
+#~ msgid "Google for it"
+#~ msgstr "Vyhledat v Google"
+
+#~ msgid "Wikipedia Page"
+#~ msgstr "Stránka Wikipedie"
+
+#~ msgid "Feeling Lucky"
+#~ msgstr "Zkusit štěstí"
+
+#~ msgid "Watch on Youtube"
+#~ msgstr "Podívat se na YouTube"
+
+#~ msgid "Download as Audio"
+#~ msgstr "Stáhnout jako zvuk"
+
+#~ msgid "Play Video"
+#~ msgstr "Přehrát video"
+
+#~ msgid "Download and enqueue"
+#~ msgstr "Stáhnout a zařadit do fronty"
+
+#~ msgid "Download and play"
+#~ msgstr "Stáhnout a přehrát"
+
+#~ msgid "Extensions"
+#~ msgstr "Rozšíření"

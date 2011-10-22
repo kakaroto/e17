@@ -1,18 +1,21 @@
 # Czech translation.
 # This file is put in the public domain.
 # quaker66@gmail.com
+# Vít Pelčák <vit@pelcak.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Everything-wallpaper\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 17:55+0100\n"
-"PO-Revision-Date: 2011-01-04 17:56+0100\n"
-"Last-Translator: quaker66 <quaker66@gmail.com>\n"
-"Language-Team: Czech <quaker66@gmail.com>\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
+"PO-Revision-Date: 2011-10-09 13:51+0200\n"
+"Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../src/e_mod_main.c:134
 msgid "Stretch"
@@ -34,16 +37,14 @@ msgstr "V mezích"
 msgid "Fill"
 msgstr "Vyplnit"
 
-#: ../src/e_mod_main.c:154
-#: ../src/e_mod_main.c:164
-msgid "Set as Wallpaper"
-msgstr "Použít jako pozadí"
-
-#: ../src/e_mod_main.c:386
+#: ../src/e_mod_main.c:379
 msgid "Picture Import Error"
 msgstr "Chyba při importu obrázku"
 
-#: ../src/e_mod_main.c:387
-msgid "Enlightenment was unable to import the picture<br>due to conversion errors."
-msgstr "Enlightenment nemohl importovat obrázek kvůli<br>chybám při konverzi."
+#: ../src/e_mod_main.c:380
+msgid ""
+"Enlightenment was unable to import the picture<br>due to conversion errors."
+msgstr "Enlightenment nemohl importovat obrázek kvůli<br>chybám při převodu."
 
+#~ msgid "Set as Wallpaper"
+#~ msgstr "Použít jako tapetu"

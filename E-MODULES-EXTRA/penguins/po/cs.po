@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Penguins\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 18:03+0100\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
 "PO-Revision-Date: 2011-01-04 18:03+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: Czech <quaker66@gmail.com>\n"
@@ -22,8 +22,7 @@ msgstr "Nastavení populace"
 msgid "Number of penguins:"
 msgstr "Počet tučňáků:"
 
-#: ../src/e_mod_config.c:94
-#: ../src/e_mod_config.c:104
+#: ../src/e_mod_config.c:94 ../src/e_mod_config.c:104
 #, c-format
 msgid "%1.0f"
 msgstr "%1.0f"
@@ -56,4 +55,3 @@ msgstr "Tučňáci"
 
 #~ msgid "Appearance"
 #~ msgstr "Vzhled"
-

@@ -1,18 +1,21 @@
 # Czech translation.
 # This file is put in the public domain.
 # quaker66@gmail.com
+# Vít Pelčák <vit@pelcak.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Skeleton\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 18:09+0100\n"
-"PO-Revision-Date: 2011-01-04 18:10+0100\n"
-"Last-Translator: quaker66 <quaker66@gmail.com>\n"
-"Language-Team: Czech <quaker66@gmail.com>\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
+"PO-Revision-Date: 2011-10-15 12:45+0200\n"
+"Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #. create our config dialog
 #: ../src/e_mod_config.c:44
@@ -28,30 +31,53 @@ msgid "Use Switch 1"
 msgstr "Použít přepínač 1"
 
 #. add right-side item
-#: ../src/e_mod_main.c:82
+#: ../src/e_mod_main.c:81
 msgid "Skel"
 msgstr "Skel"
 
-#: ../src/e_mod_main.c:113
-msgid "Skeleton Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
-msgstr "Nastavení modulu Skeleton potřebovalo aktualizovat. Vaše staré nastavení<br>bylo vymazáno a nový set načten. Toto bude nastávat<br>pravidelně během vývoje, takže nehlaste bug.<br>Znamená to prostě, že modul potřeboval nové nastavení s volbami, které ve stávajícím<br>prostě chybí. Nové nastavení to spraví přidáním potřebných položek. Teď můžete modul nakonfigurovat<br>jak potřebujete. Omlouváme se za možné potíže.<br>"
+#: ../src/e_mod_main.c:112
+msgid ""
+"Skeleton Module Configuration data needed upgrading. Your old "
+"configuration<br> has been wiped and a new set of defaults initialized. "
+"This<br>will happen regularly during development, so don't report a<br>bug. "
+"This simply means the module needs new configuration<br>data by default for "
+"usable functionality that your old<br>configuration simply lacks. This new "
+"set of defaults will fix<br>that by adding it in. You can re-configure "
+"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr ""
+"Nastavení modulu Skeleton potřebovalo aktualizovat. Vaše staré "
+"nastavení<br>bylo vymazáno a nový set načten. Toto bude "
+"nastávat<br>pravidelně během vývoje, takže nehlaste bug.<br>Znamená to "
+"prostě, že modul potřeboval nové nastavení s volbami, které ve "
+"stávajícím<br>prostě chybí. Nové nastavení to spraví přidáním potřebných "
+"položek. Teď můžete modul nakonfigurovat<br>jak potřebujete. Omlouváme se za "
+"možné potíže.<br>"
 
-#: ../src/e_mod_main.c:133
-msgid "Your Skeleton Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
-msgstr "Nastavení Skeleton modulu je NOVĚJŠÍ než verze modulu. To je velice divné.<br>Nemělo by to nastávat, pokud jste nesnížili verzi vašeho modulu<br>nebo nenahráli konfiguraci z místa, kde běží novější<br>verze. Toto může způsobovat problémy a proto bylo nastavení<br>obnoveno na výchozí jako prevenční opatření. Omlouváme<br>se za možné potíže.<br>"
+#: ../src/e_mod_main.c:132
+msgid ""
+"Your Skeleton Module configuration is NEWER than the module version. This is "
+"very<br>strange. This should not happen unless you downgraded<br>the module "
+"or copied the configuration from a place where<br>a newer version of the "
+"module was running. This is bad and<br>as a precaution your configuration "
+"has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
+msgstr ""
+"Nastavení Skeleton modulu je NOVĚJŠÍ než verze modulu. To je velice divné."
+"<br>Nemělo by to nastávat, pokud jste nesnížili verzi vašeho modulu<br>nebo "
+"nenahráli konfiguraci z místa, kde běží novější<br>verze. Toto může "
+"způsobovat problémy a proto bylo nastavení<br>obnoveno na výchozí jako "
+"prevenční opatření. Omlouváme<br>se za možné potíže.<br>"
 
-#: ../src/e_mod_main.c:300
+#: ../src/e_mod_main.c:299
 msgid "Skeleton"
 msgstr "Skeleton"
 
-#: ../src/e_mod_main.c:385
+#: ../src/e_mod_main.c:384
 msgid "Skeleton Configuration Updated"
 msgstr "Skeleton - aktualizováno nastavení"
 
-#: ../src/e_mod_main.c:447
+#: ../src/e_mod_main.c:426
 msgid "Settings"
-msgstr "Volby"
+msgstr "Nastavení"
 
 #~ msgid "Configuration"
 #~ msgstr "Konfigurace"
-

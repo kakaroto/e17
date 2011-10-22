@@ -1,89 +1,75 @@
 # Czech translation.
 # This file is put in the public domain.
 # quaker66@gmail.com
+# Vít Pelčák <vit@pelcak.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Everything-mpris\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 15:59+0100\n"
-"PO-Revision-Date: 2011-01-04 16:25+0100\n"
-"Last-Translator: quaker66 <quaker66@gmail.com>\n"
-"Language-Team: Czech <quaker66@gmail.com>\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
+"PO-Revision-Date: 2011-10-09 13:50+0200\n"
+"Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/e_mod_main.c:276
+#: ../src/e_mod_main.c:271
 msgid "No Title"
 msgstr "Bez titulku"
 
-#: ../src/e_mod_main.c:491
-#: ../src/e_mod_main.c:644
+#: ../src/e_mod_main.c:467 ../src/e_mod_main.c:623
 msgid "Loading Playlist"
-msgstr "Načítám playlist"
+msgstr "Načítám seznam skladeb"
 
-#: ../src/e_mod_main.c:504
+#: ../src/e_mod_main.c:480
 msgid "Empty Playlist"
-msgstr "Prázdný playlist"
+msgstr "Prázdný seznam skladeb"
 
-#: ../src/e_mod_main.c:1404
-msgid "Playlist"
-msgstr "Playlist"
+#~ msgid "Playlist"
+#~ msgstr "Seznam skladeb"
 
-#: ../src/e_mod_main.c:1437
-msgid "Play Track"
-msgstr "Přehrát stopu"
+#~ msgid "Play Track"
+#~ msgstr "Přehrát skladbu"
 
-#: ../src/e_mod_main.c:1442
-msgid "Play"
-msgstr "Přehrát"
+#~ msgid "Play"
+#~ msgstr "Přehrát"
 
-#: ../src/e_mod_main.c:1446
-msgid "Pause"
-msgstr "Pauza"
+#~ msgid "Pause"
+#~ msgstr "Pozastavit"
 
-#: ../src/e_mod_main.c:1450
-msgid "Stop"
-msgstr "Stop"
+#~ msgid "Stop"
+#~ msgstr "Zastavit"
 
-#: ../src/e_mod_main.c:1454
-msgid "Forward"
-msgstr "Vpřed"
+#~ msgid "Forward"
+#~ msgstr "Vpřed"
 
-#: ../src/e_mod_main.c:1458
-msgid "Rewind"
-msgstr "Vzad"
+#~ msgid "Rewind"
+#~ msgstr "Vzad"
 
-#: ../src/e_mod_main.c:1462
-msgid "Remove Track"
-msgstr "Odstranit stopu"
+#~ msgid "Remove Track"
+#~ msgstr "Odstranit stopu"
 
-#: ../src/e_mod_main.c:1467
-msgid "Clear Playlist"
-msgstr "Vymazat playlist"
+#~ msgid "Clear Playlist"
+#~ msgstr "Smazat seznam skladeb"
 
-#: ../src/e_mod_main.c:1471
-msgid "Play File"
-msgstr "Přehrát soubor"
+#~ msgid "Play File"
+#~ msgstr "Přehrát soubor"
 
-#: ../src/e_mod_main.c:1476
-msgid "Add Files..."
-msgstr "Přidat soubory..."
+#~ msgid "Add Files..."
+#~ msgstr "Přidat soubory..."
 
-#: ../src/e_mod_main.c:1480
-msgid "Enqueue in Playlist"
-msgstr "Zařadit do playlistu"
+#~ msgid "Enqueue in Playlist"
+#~ msgstr "Zařadit do seznamu skladeb"
 
-#: ../src/e_mod_main.c:1485
-msgid "Add Music..."
-msgstr "Přidat hudbu..."
+#~ msgid "Add Music..."
+#~ msgstr "Přidat hudbu..."
 
-#: ../src/e_mod_main.c:1489
-msgid "Remove Duplicates"
-msgstr "Odstranit totožné"
+#~ msgid "Remove Duplicates"
+#~ msgstr "Odstranit duplikáty"
 
-#: ../src/e_mod_main.c:1493
-msgid "Remove Missing Files"
-msgstr "Odstranit chybějící soubory"
-
+#~ msgid "Remove Missing Files"
+#~ msgstr "Odstranit chybějící soubory"

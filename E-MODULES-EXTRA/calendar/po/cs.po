@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Calendar\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 18:53+0100\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
 "PO-Revision-Date: 2011-01-04 18:53+0100\n"
 "Last-Translator: quaker66 <quaker66@gmail.com>\n"
 "Language-Team: Czech <quaker66@gmail.com>\n"
@@ -15,25 +15,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/e_mod_main.c:600
+#: ../src/e_mod_main.c:598
 msgid "Sunday"
 msgstr "Neděle"
 
-#: ../src/e_mod_main.c:607
+#: ../src/e_mod_main.c:605
 msgid "Monday"
 msgstr "Pondělí"
 
-#: ../src/e_mod_main.c:616
+#: ../src/e_mod_main.c:612
 msgid "First Day of Week"
 msgstr "První den v týdnu"
 
-#: ../src/e_mod_main.c:699
-#: ../src/e_mod_main.c:716
+#: ../src/e_mod_main.c:697 ../src/e_mod_main.c:714
 msgid "Calendar"
 msgstr "Kalendář"
 
-#: ../src/e_mod_main.c:700
-#: ../src/e_mod_main.c:716
+#: ../src/e_mod_main.c:698 ../src/e_mod_main.c:714
 msgid "Monthview Popup (Show/Hide)"
 msgstr "Pop-up zobrazení měsíců (Zobrazit/Skrýt)"
-

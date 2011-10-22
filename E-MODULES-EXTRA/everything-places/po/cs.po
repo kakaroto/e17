@@ -1,37 +1,35 @@
 # Czech translation.
 # This file is put in the public domain.
 # quaker66@gmail.com
+# Vít Pelčák <vit@pelcak.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Everything-places\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 16:30+0100\n"
-"PO-Revision-Date: 2011-01-04 16:31+0100\n"
-"Last-Translator: quaker66 <quaker66@gmail.com>\n"
-"Language-Team: Czech <quaker66@gmail.com>\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
+"PO-Revision-Date: 2011-10-09 13:50+0200\n"
+"Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/e_mod_main.c:135
+#: ../src/e_mod_main.c:138
 msgid "Home"
 msgstr "Domovský adresář"
 
-#: ../src/e_mod_main.c:138
+#: ../src/e_mod_main.c:141
 msgid "Wallpaper"
-msgstr "Pozadí"
+msgstr "Tapeta"
 
-#: ../src/e_mod_main.c:269
-#: ../src/e_mod_main.c:280
-msgid "Places"
-msgstr "Místa"
+#~ msgid "Places"
+#~ msgstr "Místa"
 
-#: ../src/e_mod_main.c:291
-msgid "Mount Drive"
-msgstr "Připojit jednotku"
+#~ msgid "Mount Drive"
+#~ msgstr "Připojit disk"
 
-#: ../src/e_mod_main.c:296
-msgid "Unmount Drive"
-msgstr "Odpojit jednotku"
-
+#~ msgid "Unmount Drive"
+#~ msgstr "Odpojit disk"

@@ -1,21 +1,23 @@
 # Czech translation.
 # This file is put in the public domain.
 # quaker66@gmail.com
+# Vít Pelčák <vit@pelcak.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Uptime\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-01-04 16:16+0100\n"
-"PO-Revision-Date: 2011-01-04 16:16+0100\n"
-"Last-Translator: quaker66 <quaker66@gmail.com>\n"
-"Language-Team: Czech <quaker66@gmail.com>\n"
+"POT-Creation-Date: 2011-10-16 14:36+0200\n"
+"PO-Revision-Date: 2011-10-15 12:41+0200\n"
+"Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/e_mod_config.c:52
-#: ../src/e_mod_config.c:105
+#: ../src/e_mod_config.c:52 ../src/e_mod_config.c:105
 msgid "Uptime Settings"
 msgstr "Volby Uptime"
 
@@ -23,8 +25,7 @@ msgstr "Volby Uptime"
 msgid "Update Interval:"
 msgstr "Interval aktualizace:"
 
-#: ../src/e_mod_config.c:110
-#: ../src/e_mod_config.c:117
+#: ../src/e_mod_config.c:110 ../src/e_mod_config.c:117
 #, c-format
 msgid "%1.0f seconds"
 msgstr "%1.0f sekund"
@@ -37,27 +38,27 @@ msgstr "Interval kontroly:"
 msgid "Uptime"
 msgstr "Uptime"
 
-#: ../src/e_mod_main.c:210
+#: ../src/e_mod_main.c:205
 msgid "Settings"
-msgstr "Volby"
+msgstr "Nastavení"
 
-#: ../src/e_mod_main.c:552
+#: ../src/e_mod_main.c:550
 #, c-format
 msgid "up: %d days, %d:%02d:%02ld"
 msgstr "zapnuto: %d dnů, %d:%02d:%02ld"
 
-#: ../src/e_mod_main.c:559
+#: ../src/e_mod_main.c:557
 #, c-format
 msgid "la: %.2f %.2f %.2f"
 msgstr "průměrná zátěž: %.2f %.2f %.2f"
 
-#: ../src/e_mod_main.c:564
+#: ../src/e_mod_main.c:562
 #, c-format
 msgid "users: %d"
 msgstr "uživatelé: %d"
 
 #~ msgid "Uptime Configuration"
 #~ msgstr "Nastavení modulu Uptime"
+
 #~ msgid "Configuration"
 #~ msgstr "Konfigurace"
-
