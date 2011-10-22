@@ -16,9 +16,11 @@
 #include <fcntl.h>
 //
 
+#ifdef HAVE_AZY
 #include "pwg_images.azy_client.h"
 #include "pwg_session.azy_client.h"
 #include "pwg_categories.azy_client.h"
+#endif
 
 typedef enum Enlil_NetSync_Job_Type Enlil_NetSync_Job_Type;
 
@@ -259,6 +261,7 @@ _enlil_netsync_job_type_tostring(Enlil_NetSync_Job_Type type)
 void
 enlil_netsync_disconnect(void)
 {
+#ifdef HAVE_AZY
    Eina_List *l, *l2;
    Enlil_NetSync_Job *job;
 
@@ -275,22 +278,33 @@ enlil_netsync_disconnect(void)
    client = NULL;
    connected = EINA_FALSE;
    EINA_STRINGSHARE_DEL(cookie);
+#else
+   AZY_SUPPORT_ERR_MSG();
+#endif
 }
 
 void
 enlil_netsync_job_error_cb_set(Enlil_NetSync_Job_Error_Cb error_cb,
                                void                      *data)
 {
+#ifdef HAVE_AZY
    _job_error_cb = error_cb;
    _job_error_data = data;
+#else
+   AZY_SUPPORT_ERR_MSG();
+#endif
 }
 
 void
 enlil_netsync_login_failed_cb_set(Enlil_NetSync_Login_Failed_Cb login_failed_cb,
                                   void                         *data)
 {
+#ifdef HAVE_AZY
    _login_failed_cb = login_failed_cb;
    _login_failed_data = data;
+#else
+   AZY_SUPPORT_ERR_MSG();
+#endif
 }
 
 void
@@ -372,6 +386,8 @@ enlil_netsync_account_set(const char *_host,
      azy_client_free(client);
    client = NULL;
    connected = EINA_FALSE;
+#else
+   AZY_SUPPORT_ERR_MSG();
 #endif
 }
 
