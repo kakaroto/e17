@@ -1,1 +1,37 @@
+* Add "create new file" on long press, eventually based on templates
+* Add "open with" on long press
+* Add Window with program selection depending on mime type
+* Save prefered program and open file with it
+* Use eye by default for common mime types, if mime types is not handle by eye, ask user for program to use to open the file.
+* Copy/delete/move actions for multiple selections
+* Rect selector in desktop mode
+  - Find the current elm mode (desktop or touchscreen) and change behaviour depending on it
+* Optimize gengrid, it's slow as hell: Create a cache with the mime type detected on _add_icon gengrid callback
+* Add mime type detection in a thread. 
+  - Problem get icon from mime type is not threadsafe but mime_get is!
+  - Another solution, do not take mime type into accout, and display icons based on the file extension, faster.
+* Add details action on longpress
+* Details windows: 
+  - use inwin
+  - Common details information for files and directories(access rights, file size, file type, Creation/Modification Data)
+  - information about the program used to open this kind of files
+  - Common details information for drives (drive size, free space ....)
+* Use inwin for popup window instead window
+* Add "add to favorite" for folders in longpress menu
+* Add search panel: simple behaviour, search for substring in filename of all subdirectories of the current directory and display list of files found
+* Add images for browse information: Image wich takes all main area with "No documents found", "Empty directory"
+* Add FTP server to "share" a directory:
+    - On Long press on a directory Add "share" action, and activate FTP server with selected directory as ftp root.
+    - When FTP is active, display a panel with the name of the current wifi/wired network, the ip of the server and the user/dp to use to access the share remotely. 
+* Add Upnp browsing capabilities and action to play pictures/videos/music on a media renderer, enna-explorer must be seen a s a upnp controller and renderer
+    - Add "play on mediarenderer" action
+    - Add "Open locally" action 
+
+* Add eye: a program to display common mime types:
+    - Common core with a main area for the current document and controls to navigate between documents. Area for thumbnails
+    - eye take the filename selected, get the current directory, and display the thumbnails of documents
+     -Picture viewer module: Basic picture viewer for png, jpeg, tiff, gifs ...
+    - Document viewer module: Basic document viewer for pdf, text ....
+    - Video Viewer module: Basic video player
+    - Music viewer module: Basic music player
 
