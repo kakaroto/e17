@@ -1,24 +1,29 @@
 #include "e_mod_main.h"
 
-struct _E_Config_Dialog_Data 
+struct _E_Config_Dialog_Data
 {
-   int show_low;
-   int show_normal;
-   int show_critical;
-   int force_timeout;
+   int    show_low;
+   int    show_normal;
+   int    show_critical;
+   int    force_timeout;
    double timeout;
-   int corner;
+   int    corner;
 };
 
 /* local function protos */
-static void *_create_data(E_Config_Dialog *cfd);
-static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static void _fill_data(E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-static int _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void        *_create_data(E_Config_Dialog *cfd);
+static void         _free_data(E_Config_Dialog      *cfd,
+                               E_Config_Dialog_Data *cfdata);
+static void         _fill_data(E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create(E_Config_Dialog      *cfd,
+                                  Evas                 *evas,
+                                  E_Config_Dialog_Data *cfdata);
+static int _basic_apply(E_Config_Dialog      *cfd,
+                        E_Config_Dialog_Data *cfdata);
 
 E_Config_Dialog *
-e_int_config_notification_module(E_Container *con, const char *params __UNUSED__) 
+e_int_config_notification_module(E_Container *con,
+                                 const char  *params __UNUSED__)
 {
    E_Config_Dialog *cfd = NULL;
    E_Config_Dialog_View *v = NULL;
@@ -35,7 +40,7 @@ e_int_config_notification_module(E_Container *con, const char *params __UNUSED__
    v->basic.apply_cfdata = _basic_apply;
 
    snprintf(buf, sizeof(buf), "%s/e-module-notification.edj", notification_mod->dir);
-   cfd = e_config_dialog_new(con, D_("Notification Settings"), "Notification", 
+   cfd = e_config_dialog_new(con, D_("Notification Settings"), "Notification",
                              "extensions/notification", buf, 0, v, NULL);
    notification_cfg->cfd = cfd;
    return cfd;
@@ -43,7 +48,7 @@ e_int_config_notification_module(E_Container *con, const char *params __UNUSED__
 
 /* local functions */
 static void *
-_create_data(E_Config_Dialog *cfd __UNUSED__) 
+_create_data(E_Config_Dialog *cfd __UNUSED__)
 {
    E_Config_Dialog_Data *cfdata = NULL;
 
@@ -52,26 +57,29 @@ _create_data(E_Config_Dialog *cfd __UNUSED__)
    return cfdata;
 }
 
-static void 
-_free_data(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata) 
+static void
+_free_data(E_Config_Dialog      *cfd __UNUSED__,
+           E_Config_Dialog_Data *cfdata)
 {
    notification_cfg->cfd = NULL;
    E_FREE(cfdata);
 }
 
-static void 
-_fill_data(E_Config_Dialog_Data *cfdata) 
+static void
+_fill_data(E_Config_Dialog_Data *cfdata)
 {
-   cfdata->show_low      = notification_cfg->show_low;
-   cfdata->show_normal   = notification_cfg->show_normal;
+   cfdata->show_low = notification_cfg->show_low;
+   cfdata->show_normal = notification_cfg->show_normal;
    cfdata->show_critical = notification_cfg->show_critical;
-   cfdata->timeout       = notification_cfg->timeout;
-   cfdata->corner        = notification_cfg->corner;
+   cfdata->timeout = notification_cfg->timeout;
+   cfdata->corner = notification_cfg->corner;
    cfdata->force_timeout = notification_cfg->force_timeout;
 }
 
 static Evas_Object *
-_basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data *cfdata) 
+_basic_create(E_Config_Dialog      *cfd __UNUSED__,
+              Evas                 *evas,
+              E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o = NULL, *of = NULL, *ow = NULL;
    E_Radio_Group *rg;
@@ -91,18 +99,18 @@ _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data 
 
    of = e_widget_framelist_add(evas, D_("Default Timeout"), 0);
    ow = e_widget_check_add(evas, D_("Force timeout for all notifications"), &(cfdata->force_timeout));
-   e_widget_framelist_object_append(of,ow);
-   ow = e_widget_slider_add(evas, 1, 0, D_("%.1f seconds"), 0.0, 15.0, 0.1, 0, 
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_slider_add(evas, 1, 0, D_("%.1f seconds"), 0.0, 15.0, 0.1, 0,
                             &(cfdata->timeout), NULL, 200);
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    /* man = e_manager_current_get();
     * of = e_widget_framelist_add(evas, D_("Placement"), 0);
-    * ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f x"), 0.0, man->w, 1.0, 0, 
+    * ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f x"), 0.0, man->w, 1.0, 0,
     *                          NULL, &(cfdata->placement.x), 200);
     * e_widget_framelist_object_append(of, ow);
-    * ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f y"), 0.0, man->h, 1.0, 0, 
+    * ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f y"), 0.0, man->h, 1.0, 0,
     *                          NULL, &(cfdata->placement.y), 200);
     * e_widget_framelist_object_append(of, ow);
     * e_widget_list_object_append(o, of, 1, 1, 0.5); */
@@ -120,26 +128,28 @@ _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    /* of = e_widget_framelist_add(evas, D_("Gap"), 0);
-    * ow = e_widget_label_add(evas, D_("Size of the gap between two popups : "));
-    * e_widget_framelist_object_append(of, ow);
-    * ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f pixels"), 0.0, 50, 1.0, 0, 
-    *                          NULL, &(cfdata->gap), 200);
-    * e_widget_framelist_object_append(of, ow);
-    * e_widget_list_object_append(o, of, 1, 1, 0.5); */
+   * ow = e_widget_label_add(evas, D_("Size of the gap between two popups : "));
+   * e_widget_framelist_object_append(of, ow);
+   * ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f pixels"), 0.0, 50, 1.0, 0,
+   *                          NULL, &(cfdata->gap), 200);
+   * e_widget_framelist_object_append(of, ow);
+   * e_widget_list_object_append(o, of, 1, 1, 0.5); */
 
    return o;
 }
 
-static int 
-_basic_apply(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata) 
+static int
+_basic_apply(E_Config_Dialog      *cfd __UNUSED__,
+             E_Config_Dialog_Data *cfdata)
 {
-   notification_cfg->show_low      = cfdata->show_low;
-   notification_cfg->show_normal   = cfdata->show_normal;
+   notification_cfg->show_low = cfdata->show_low;
+   notification_cfg->show_normal = cfdata->show_normal;
    notification_cfg->show_critical = cfdata->show_critical;
-   notification_cfg->timeout       = cfdata->timeout;
-   notification_cfg->corner        = cfdata->corner;
+   notification_cfg->timeout = cfdata->timeout;
+   notification_cfg->corner = cfdata->corner;
    notification_cfg->force_timeout = cfdata->force_timeout;
 
    e_modapi_save(notification_mod);
    return 1;
 }
+
