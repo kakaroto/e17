@@ -19,6 +19,20 @@ No documentation for elm_icon_thumb_set
 
 elm_icon_no_scale_set rename to elm_icon_no_scale_unset, rather than _get.
 
+Can these be named better?
+
+Elm_Icon_Lookup_Order:
+ELM_ICON_LOOKUP_FDO_THEME, 
+ELM_ICON_LOOKUP_THEME_FDO, 
+ELM_ICON_LOOKUP_FDO, 
+ELM_ICON_LOOKUP_THEME 
+
+What is the difference between elm_icon_animated_set and elm_icon_animated_play_set?
+
+
+
+
+
 actionslider
 ------------
 
@@ -28,12 +42,13 @@ Can we replace indicator with slider ?
 
 anchorview/anchorblock
 ----------------------
-Can they be replaced with one widget, if a scroller is the only one that differentiates them."
+Can they be replaced with one widget, if a scroller is the only difference."
 
 elm_anchorblock_item_provider_append/prepend/remove – why do we need these API?
+What are the use cases / examples?
 
 background
 ----------
-no alpha setting for bg color?
 
 No reference link to Elm_Bg_Option for elm_bg.
+
