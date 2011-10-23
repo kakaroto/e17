@@ -30,9 +30,6 @@ ELM_ICON_LOOKUP_THEME
 What is the difference between elm_icon_animated_set and elm_icon_animated_play_set?
 
 
-
-
-
 actionslider
 ------------
 
@@ -51,4 +48,36 @@ background
 ----------
 
 No reference link to Elm_Bg_Option for elm_bg.
+
+ElmImage
+--------
+
+ELM_IMAGE_ROTATE_90_CCW, /rotate 90 degrees counter-clockwise (i.e. 270 degrees clockwise)
+*/  - Why not 90, 180, 270? (CCW, CW ?)
+
+ELM_IMAGE_FLIP_TRANSPOSE, ELM_IMAGE_FLIP_TRANSVERSE - With the X and Y axes being at the top or bottom / left or right ?
+
+elm_image_object_size_get - On error, neither w or h will be written. What will it be? Please set to something predictable (like -1).
+
+Confusing
+---------
+
+elm_image_no_scale_get - this one for elm_image object itself.
+elm_image_scale_get - this one is for the image file.
+
+it might be helpful to add an 'object' to elm_image_no_scale_get.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
