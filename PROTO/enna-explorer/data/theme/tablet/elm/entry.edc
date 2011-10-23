@@ -30,6 +30,7 @@ group { name: "elm/entry/base-single/default";
          name: "bg";
          mouse_events: 0;
          description {
+            min: 0 32;
             state: "default" 0.0;
             image.normal: "entry_bg.png";
             image.border: 6 6 6 6;
@@ -40,11 +41,11 @@ group { name: "elm/entry/base-single/default";
          mouse_events: 1;
          scale: 1;
          entry_mode: EDITABLE;
-         select_mode: EXPLICIT;
+         select_mode: DEFAULT;
          multiline: 0;
-         //source: "elm/entry/selection/default"; // selection under
-         //source4: "elm/entry/cursor/default"; // cursorover
-         //source5: "elm/entry/anchor/default"; // anchor under
+         source: "elm/entry/selection/default"; // selection under
+         source4: "elm/entry/cursor/default"; // cursorover
+         source5: "elm/entry/anchor/default"; // anchor under
          description { state: "default" 0.0;
             rel1.offset: 4 0;
             rel2.offset: -3 0;
@@ -81,6 +82,74 @@ group { name: "elm/entry/base-single/default";
          source: "elm";
          action: STATE_SET "default" 0.0;
          target: "elm.text";
+      }
+   }
+}
+
+group { name: "elm/entry/selection/default";
+   images{
+      image: "text_bg_yellow.png" COMP;
+   }
+   parts {
+      part { name: "bg";
+         type: IMAGE;
+         description {
+            state: "default" 0.0;
+            image.normal: "text_bg_yellow.png";
+            rel1.offset: -5 -3;
+            rel2.offset: 6 4;
+            image.border: 8 8 8 8;
+         }
+      }
+   }
+}
+
+group { name: "elm/entry/cursor/default";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         description {
+            state: "show" 0.0;
+            color: 0 0 0 255;
+            rel2.relative: 0 1;
+            rel2.offset: 0 -1;
+         }
+         description {
+            state: "hide" 0.0;
+            color: 0 0 0 20;
+            rel2.relative: 0 1;
+            rel2.offset: 0 -1;
+         }
+      }
+   }
+   programs {
+      program { name: "load";
+         signal: "load";
+         source: "";
+         action: STATE_SET "default" 0.0;
+         target: "bg";
+         transition: SINUSOIDAL 1.0;
+         after: "hide";
+      }
+      program { name: "hide";
+         signal: "load";
+         source: "";
+         action: STATE_SET "hide" 0.0;
+         target: "bg";
+         transition: SINUSOIDAL 1.0;
+         after: "load";
+      }
+   }
+}
+
+group { name: "elm/entry/anchor/default";
+   parts {
+      part { name: "bg";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            color: 128 0 0 64;
+         }
       }
    }
 }

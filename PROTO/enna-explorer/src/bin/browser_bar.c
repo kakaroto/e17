@@ -52,6 +52,16 @@ _view_mode_changed_cb(void *data, Evas_Object *obj, void *event_info)
       }
 }
 
+static void
+_entry_activated_cb(void *data, Evas_Object *obj, void *event_info)
+{
+    Evas_Object *o_layout = data;
+    char *text;
+
+    text = elm_object_text_get(obj);
+    evas_object_smart_callback_call(o_layout, "path,changed", text);
+}
+
 Evas_Object *
 enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
 {
@@ -75,26 +85,28 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    o_seg = elm_button_add(o_layout);
    o_ic = elm_icon_add(o_layout);
    evas_object_show(o_ic);
-   elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/arrow_left");
+   elm_icon_standard_set(o_ic, "go-up");
    elm_button_icon_set(o_seg, o_ic);
    elm_object_style_set(o_seg, "black");
    evas_object_show(o_seg);
    elm_box_pack_end(o_box, o_seg);
    evas_object_smart_callback_add(o_seg, "clicked", _up_clicked_cb, o_layout);
+   evas_object_size_hint_min_set(o_seg, 40, 40);
 
    o_seg = elm_segment_control_add(o_layout);
    o_ic = elm_icon_add(o_layout);
    evas_object_show(o_ic);
-   elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/arrow_left");
+   elm_icon_standard_set(o_ic, "go-previous");
    elm_segment_control_item_add(o_seg, o_ic, NULL);
    o_ic = elm_icon_add(o_layout);
    evas_object_show(o_ic);
-   elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/arrow_right");
+   elm_icon_standard_set(o_ic, "go-next");
    elm_segment_control_item_add(o_seg, o_ic, NULL);
    evas_object_show(o_seg);
    evas_object_smart_callback_add(o_seg, "changed", _browse_icons_changed_cb, o_layout);
    evas_object_data_set(o_layout, "browse", o_seg);
    elm_box_pack_end(o_box, o_seg);
+   evas_object_size_hint_min_set(o_seg, 80, 40);
 
    o_entry = elm_entry_add(o_layout);
    elm_entry_single_line_set(o_entry, EINA_TRUE);
@@ -104,6 +116,7 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    evas_object_show(o_entry);
    elm_box_pack_end(o_box, o_entry);
    evas_object_data_set(o_layout, "entry", o_entry);
+   evas_object_smart_callback_add(o_entry, "activated", _entry_activated_cb, o_layout);
 
    o_seg = elm_segment_control_add(o_layout);
    o_ic = elm_icon_add(o_layout);
@@ -118,6 +131,8 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    elm_box_pack_end(o_box, o_seg);
    evas_object_smart_callback_add(o_seg, "changed", _view_mode_changed_cb, o_layout);
    evas_object_data_set(o_layout, "mode", o_seg);
+   evas_object_size_hint_min_set(o_seg, 80, 40);
+
 
    o_seg = elm_button_add(o_layout);
    o_ic = elm_icon_add(o_layout);
@@ -127,7 +142,7 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    elm_object_style_set(o_seg, "black");
    evas_object_show(o_seg);
    elm_box_pack_end(o_box, o_seg);
-
+   evas_object_size_hint_min_set(o_seg, 40, 40);
 
    o_seg = elm_button_add(o_layout);
    o_ic = elm_icon_add(o_layout);
@@ -137,7 +152,7 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    elm_object_style_set(o_seg, "black");
    evas_object_show(o_seg);
    elm_box_pack_end(o_box, o_seg);
-
+   evas_object_size_hint_min_set(o_seg, 40, 40);
 
    elm_layout_content_set(o_layout, "enna.swallow.content", o_box);
 

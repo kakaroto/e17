@@ -244,6 +244,7 @@ _bookmark_volume_icon_get(void *data, Evas_Object *obj, const char *part)
         elm_button_icon_set(bt, ic);
         evas_object_show(ic);
         evas_object_show(bt);
+        evas_object_size_hint_min_set(bt, 24, 24);
         evas_object_smart_callback_add(bt, "clicked", _volume_eject_clicked_cb, v);
 
         return bt;

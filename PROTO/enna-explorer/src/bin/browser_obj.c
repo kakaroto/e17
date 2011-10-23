@@ -352,6 +352,30 @@ _previous_clicked_cb(void *data, Evas_Object *obj, void *event_info)
 }
 
 static void
+_path_changed_cb(void *data, Evas_Object *obj, void *event_info)
+{
+    Smart_Data *sd = data;
+    const char *path = event_info;
+    char uri[4096];
+    Enna_File *file;
+
+    if (!path)
+        return;
+
+    if (strlen(path) >= 2 && path[0] == '~')
+        snprintf(uri, sizeof(uri), "file://%s/%s", getenv("HOME"), path + 2);
+    else if (strlen(path) == 1 && path[0] == '~')
+        snprintf(uri, sizeof(uri), "file://%s/%s", getenv("HOME"), path + 1);
+    else
+        snprintf(uri, sizeof(uri), "file://%s", path);
+    file = enna_file_from_uri_new(uri);
+
+    if (file)
+       _browse(sd, file, EINA_TRUE);
+}
+
+
+static void
 _browse(Smart_Data *sd, Enna_File *file, Eina_Bool back)
 {
    if (!sd)
@@ -500,6 +524,7 @@ enna_browser_obj_add(Evas_Object *parent, const char *style)
    evas_object_smart_callback_add(sd->o_header, "up,clicked", _up_clicked_cb, sd);
    evas_object_smart_callback_add(sd->o_header, "next,clicked", _next_clicked_cb, sd);
    evas_object_smart_callback_add(sd->o_header, "previous,clicked", _previous_clicked_cb, sd);
+   evas_object_smart_callback_add(sd->o_header, "path,changed", _path_changed_cb, sd);
 
    sd->o_pager = elm_pager_add(sd->o_layout);
    evas_object_show(sd->o_pager);

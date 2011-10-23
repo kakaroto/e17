@@ -101,8 +101,9 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
         if (ENNA_FILE_IS_BROWSABLE(gi->file))
           {
               ic = elm_icon_add(obj);
-              elm_icon_file_set(ic, enna_config_theme_get(), gi->file->icon);
-              evas_object_size_hint_min_set(ic, 96, 96);
+              elm_icon_standard_set(ic, "inode-directory");
+              //elm_icon_file_set(ic, enna_config_theme_get(), gi->file->icon);
+              evas_object_size_hint_min_set(ic, 64, 64);
           }
         else
           {
@@ -110,9 +111,9 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
              const char *icon;
 
              mime = efreet_mime_type_get(gi->file->mrl);
-             icon = efreet_mime_type_icon_get(mime, getenv("E_ICON_THEME"), 96);
+             icon = efreet_mime_type_icon_get(mime, getenv("E_ICON_THEME"), 64);
              if (!icon)
-               icon = efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 96);
+               icon = efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 64);
              if (mime && strstr(mime, "image/"))
                {
                   ic = elm_photo_add(obj);
@@ -122,14 +123,14 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
                                                   EVAS_HINT_FILL);
                   evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_BOTH, 4, 3);
 
-                  elm_photo_size_set(ic, 114);
+                  elm_photo_size_set(ic, 64);
                   elm_photo_thumb_set(ic, gi->file->mrl, NULL);
                }
              else
                {
                   ic = elm_icon_add(obj);
                   elm_icon_file_set(ic, icon, NULL);
-                  evas_object_size_hint_min_set(ic, 96, 96);
+                  evas_object_size_hint_min_set(ic, 64, 64);
                }
           }
 
@@ -213,7 +214,7 @@ _resize_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *ev
    Smart_Data *sd = data;
 
    evas_object_geometry_get(sd->o_grid, NULL, NULL, NULL, &h);
-   elm_gengrid_item_size_set(sd->o_grid, 168, 168);
+   elm_gengrid_item_size_set(sd->o_grid, 128, 128);
 }
 
 static void

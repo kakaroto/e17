@@ -223,6 +223,9 @@ int main(int argc, char **argv)
    int res = EXIT_FAILURE;
    int args;
    char path[PATH_MAX];
+   Eina_List *l;
+   Eina_List *p;
+   const char *pname;
 
    Ecore_Getopt_Value values[] = {
      ECORE_GETOPT_VALUE_STR(app_theme),
@@ -265,6 +268,17 @@ int main(int argc, char **argv)
 
    if (!_enna_init(argc, argv))
      goto out;
+
+
+   pname = elm_profile_current_get();
+   printf("Current profile : %s\n", pname);
+   enna->profile = eina_stringshare_add(pname);
+   p = elm_profile_list_get();
+   printf("Profiles : \n");
+   EINA_LIST_FOREACH(p, l, pname)
+     {
+        printf("%s\n", pname);
+     }
 
    ecore_main_loop_begin();
 
