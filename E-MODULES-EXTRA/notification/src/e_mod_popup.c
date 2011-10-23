@@ -437,16 +437,10 @@ _notification_popup_refresh(Popup_Data *popup)
         h = h * height / v;
         w = w * width / v;
         evas_object_image_fill_set(popup->app_icon, 0, 0, w, h);
-        evas_object_resize(popup->app_icon, w, h);
-        edje_extern_object_min_size_set(popup->app_icon, w, h);
-        edje_extern_object_max_size_set(popup->app_icon, w, h);
      }
-   else
-     {
-        evas_object_resize(popup->app_icon, w, h);
-        edje_extern_object_min_size_set(popup->app_icon, w, h);
-        edje_extern_object_max_size_set(popup->app_icon, w, h);
-     }
+   evas_object_resize(popup->app_icon, w, h);
+   edje_extern_object_min_size_set(popup->app_icon, w, h);
+   edje_extern_object_max_size_set(popup->app_icon, w, h);
 
    edje_object_calc_force(popup->theme);
    edje_object_part_swallow(popup->theme, "notification.swallow.app_icon", popup->app_icon);
