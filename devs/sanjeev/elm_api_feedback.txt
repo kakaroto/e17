@@ -1,0 +1,39 @@
+QuickLaunch
+-----------
+Not enough documentation about quicklaunch.
+elm_quicklaunch_mode_set – use mode when multiple options are there. For Bool use quicklaunch_set/get
+
+elm_need_* API"
+---------------
+
+EAPI Eina_Bool    elm_need_efreet(void);
+EAPI Eina_Bool    elm_need_e_dbus(void);
+Is it not a compile time option?"
+
+elm_icon
+--------
+"elm_icon_memfile_set has optional format and edje key parameters.
+Why should we provide format if it is optional? What is the point?
+
+No documentation for elm_icon_thumb_set
+
+elm_icon_no_scale_set rename to elm_icon_no_scale_unset, rather than _get.
+
+actionslider
+------------
+
+No reference link to Elm_Actionslider_Pos in documentation.
+
+Can we replace indicator with slider ?
+
+anchorview/anchorblock
+----------------------
+Can they be replaced with one widget, if a scroller is the only one that differentiates them."
+
+elm_anchorblock_item_provider_append/prepend/remove – why do we need these API?
+
+background
+----------
+no alpha setting for bg color?
+
+No reference link to Elm_Bg_Option for elm_bg.
