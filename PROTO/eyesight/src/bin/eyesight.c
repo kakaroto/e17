@@ -43,10 +43,17 @@ static void _cb_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
       ecore_main_loop_quit();
       return;
     }
-  if (strcmp(ev->keyname, "Right") == 0) page_nbr++;
-  if (strcmp(ev->keyname, "Left") == 0) page_nbr--;
-  if (page_nbr < 0) page_nbr = 0;
-  if (page_nbr >= eyesight_object_page_count(obj)) page_nbr = eyesight_object_page_count(obj) - 1;
+
+  if (strcmp(ev->keyname, "Right") == 0)
+    {
+      if (page_nbr < ( eyesight_object_page_count(obj) - 1))
+        page_nbr++;
+    }
+  if (strcmp(ev->keyname, "Left") == 0)
+    {
+      if (page_nbr > 0)
+        page_nbr--;
+    }
   if (page_nbr != eyesight_object_page_get(obj))
     {
       eyesight_object_page_set(obj, page_nbr);
@@ -138,7 +145,7 @@ static void _display_toc(const Eina_List *items)
 
   indent += 2;
 
-  EINA_LIST_FOREACH(items, l, data)
+  EINA_LIST_FOREACH((Eina_List *)items, l, data)
     {
       Eyesight_Index_Item *item = (Eyesight_Index_Item *)data;
       int i;
@@ -203,9 +210,9 @@ int main(int argc, char *argv[])
   Eyesight_Backend eb;
   void *doc;
 
-  if (argc < 2)
+  if (argc < 1)
     {
-      printf("argc < 2\n");
+      printf("Usage: %s filename\n", argv[0]);
       return -1;
     }
 

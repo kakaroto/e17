@@ -46,9 +46,9 @@ _eyesight_document_property_get(fz_obj *info, char *prop)
 {
   fz_obj *obj;
 
-  obj = fz_dictgets(info, prop);
+  obj = fz_dict_gets(info, prop);
   if (obj)
-    return pdf_toutf8(obj);
+    return pdf_to_utf8(obj);
   else
     return NULL;
 }
@@ -83,16 +83,8 @@ _eyesight_document_date_get(fz_obj *info, char *prop)
       free(date);
       return fmt;
     }
-}
 
-static Eina_Bool
-_eyesight_document_permission(pdf_crypt *crypt, int perm)
-{
-  if (!crypt)
-    return EINA_TRUE;
-  if (crypt->p & perm)
-    return EINA_TRUE;
-  return EINA_FALSE;
+  return fmt;
 }
 
 static Eina_List *
@@ -114,10 +106,10 @@ _eyesight_index_fill(pdf_xref *xref,
       /* if title is NULL, we still continue */
       switch (outline->link->kind)
         {
-        case PDF_LGOTO:
+        case PDF_LINK_GOTO:
           item->action = EYESIGHT_LINK_ACTION_GOTO;
           break;
-        case PDF_LURI:
+        case PDF_LINK_URI:
           item->action = EYESIGHT_LINK_ACTION_URI;
           break;
         default:
@@ -127,8 +119,8 @@ _eyesight_index_fill(pdf_xref *xref,
         }
 
       /* FIXME: page outlines are allowed to have a /A key (action) which can be a URL */
-      if (outline->link && (outline->link->kind == PDF_LGOTO))
-        item->page = pdf_findpageobject(xref, outline->link->dest) - 1;
+      if (outline->link && (outline->link->kind == PDF_LINK_GOTO))
+        item->page = pdf_find_page_number(xref, outline->link->dest) - 1;
       /* FIXME: not implemented in mupdf yet */
       item->is_open = EINA_TRUE;
 
@@ -147,8 +139,6 @@ _eyesight_index_fill(pdf_xref *xref,
 static void
 _eyesight_index_unfill (Eina_List *items)
 {
-  Eyesight_Index_Item *item;
-
   if (!items)
     return;
 
@@ -171,11 +161,11 @@ _eyesight_index_unfill (Eina_List *items)
 }
 
 static Eyesight_Link_Action_Goto
-_eyesight_link_action_goto_fill(pdf_xref *xref, pdf_link *link)
+_eyesight_link_action_goto_fill(pdf_xref *xref, pdf_link *lnk)
 {
   Eyesight_Link_Action_Goto action_goto;
 
-  action_goto.page = pdf_findpageobject(xref, link->dest) - 1;
+  action_goto.page = pdf_find_page_number(xref, lnk->dest) - 1;
 
   /* FIXME: to complete */
 
@@ -183,19 +173,20 @@ _eyesight_link_action_goto_fill(pdf_xref *xref, pdf_link *link)
 }
 
 static Eyesight_Link_Action_Uri
-_eyesight_link_action_uri_fill(pdf_link *link)
+_eyesight_link_action_uri_fill(pdf_link *lnk)
 {
   Eyesight_Link_Action_Uri action_uri;
-action_uri.uri = NULL;
 
-  action_uri.uri = strdup(fz_tostrbuf(link->dest));
+  action_uri.uri = NULL;
+
+  action_uri.uri = strdup(fz_to_str_buf(lnk->dest));
   /* we don't need any check on the success of strdup() */
 
   return action_uri;
 }
 
 static Eyesight_Link_Action_Unknown
-_eyesight_link_action_unknown_fill(pdf_link *link)
+_eyesight_link_action_unknown_fill(pdf_link *lnk)
 {
   Eyesight_Link_Action_Unknown action_unknown;
 
@@ -208,14 +199,14 @@ static Eina_List *
 _eyesight_page_links_get(Eyesight_Backend_Pdf *ebp)
 {
   Eina_List *links_list = NULL;
-  pdf_link *link;
+  pdf_link *lnk;
 
   if (!ebp->page.page)
     return NULL;
 
   /* FIXME: mupdf should provide the number of links */
-  link = ebp->page.page->links;
-  while (link)
+  lnk = ebp->page.page->links;
+  while (lnk)
     {
       Eyesight_Link *link_item;
 
@@ -223,20 +214,20 @@ _eyesight_page_links_get(Eyesight_Backend_Pdf *ebp)
       if (!link_item)
         goto next_link;
 
-      switch (link->kind)
+      switch (lnk->kind)
         {
-        case PDF_LGOTO:
+        case PDF_LINK_GOTO:
           link_item->action = EYESIGHT_LINK_ACTION_GOTO;
-          link_item->dest.action_goto = _eyesight_link_action_goto_fill(ebp->doc.xref, link);
+          link_item->dest.action_goto = _eyesight_link_action_goto_fill(ebp->doc.xref, lnk);
           break;
-        case PDF_LURI:
+        case PDF_LINK_URI:
           link_item->action = EYESIGHT_LINK_ACTION_URI;
-          link_item->dest.action_uri = _eyesight_link_action_uri_fill(link);
+          link_item->dest.action_uri = _eyesight_link_action_uri_fill(lnk);
           break;
         default:
           /* this case should not be reached */
           link_item->action = EYESIGHT_LINK_ACTION_UNKNOWN;
-          link_item->dest.action_unknown = _eyesight_link_action_unknown_fill(link);
+          link_item->dest.action_unknown = _eyesight_link_action_unknown_fill(lnk);
           break;
         }
 
@@ -261,17 +252,17 @@ _eyesight_page_links_get(Eyesight_Backend_Pdf *ebp)
 /*           link_item->rect.h = (int)(x2 - x1); */
 /*           break; */
         default:
-          link_item->rect.x = round(link->rect.x0);
-          link_item->rect.y = round(ebp->page.height - link->rect.y1);
-          link_item->rect.w = round(link->rect.x1 - link->rect.x0);
-          link_item->rect.h = round(link->rect.y1 - link->rect.y0);
+          link_item->rect.x = round(lnk->rect.x0);
+          link_item->rect.y = round(ebp->page.height - lnk->rect.y1);
+          link_item->rect.w = round(lnk->rect.x1 - lnk->rect.x0);
+          link_item->rect.h = round(lnk->rect.y1 - lnk->rect.y0);
           break;
         }
 
       links_list = eina_list_prepend(links_list, link_item);
 
     next_link:
-      link = link->next;
+      lnk = lnk->next;
     }
 
   return links_list;
@@ -288,23 +279,23 @@ _eyesight_page_links_free(Eyesight_Backend_Pdf *ebp)
 
   EINA_LIST_FOREACH(ebp->page.links, l, data)
     {
-      Eyesight_Link *link = (Eyesight_Link *)data;
+      Eyesight_Link *lnk = (Eyesight_Link *)data;
 
-      switch (link->action)
+      switch (lnk->action)
         {
         case EYESIGHT_LINK_ACTION_GOTO:
           /* nothing */
           break;
         case EYESIGHT_LINK_ACTION_URI:
-          if (link->dest.action_uri.uri)
-            free(link->dest.action_uri.uri);
+          if (lnk->dest.action_uri.uri)
+            free(lnk->dest.action_uri.uri);
           break;
         case EYESIGHT_LINK_ACTION_UNKNOWN:
-          if (link->dest.action_unknown.action)
-            free(link->dest.action_unknown.action);
+          if (lnk->dest.action_unknown.action)
+            free(lnk->dest.action_unknown.action);
           break;
         }
-      free(link);
+      free(lnk);
     }
 }
 
@@ -324,7 +315,7 @@ em_init(Evas *evas, Evas_Object **obj, void **eyesight_backend)
   if (!ebp->obj)
     goto free_ebp;
 
-  ebp->doc.cache = fz_newglyphcache();
+  ebp->doc.cache = fz_new_glyph_cache();
   if (!ebp->doc.cache)
     {
       ERR("Could not create glyph cache");
@@ -353,7 +344,7 @@ em_shutdown(void *eb)
     return;
 
   ebp = (Eyesight_Backend_Pdf *)eb;
-  fz_freeglyphcache(ebp->doc.cache);
+  fz_free_glyph_cache(ebp->doc.cache);
   evas_object_del(ebp->obj);
   free(eb);
 }
@@ -390,8 +381,8 @@ em_file_open(void *eb, const char *filename)
       goto free_filename;
     }
 
-  file = fz_openfile(fd);
-  error = pdf_openxrefwithstream(&ebp->doc.xref, file, NULL);
+  file = fz_open_fd(fd);
+  error = pdf_open_xref_with_stream(&ebp->doc.xref, file, NULL);
   if (error)
     {
       ERR("PDF file %s illformed", filename);
@@ -400,7 +391,7 @@ em_file_open(void *eb, const char *filename)
 
   fz_close(file);
 
-  obj = fz_dictgets(ebp->doc.xref->trailer, "Info");
+  obj = fz_dict_gets(ebp->doc.xref->trailer, "Info");
   if (!obj)
     goto free_xref;
 
@@ -408,7 +399,7 @@ em_file_open(void *eb, const char *filename)
   if (!doc)
     goto free_xref;
 
-  error = pdf_loadpagetree(ebp->doc.xref);
+  error = pdf_load_page_tree(ebp->doc.xref);
   if (error)
     {
        ERR("Could not load page tree");
@@ -432,36 +423,36 @@ em_file_open(void *eb, const char *filename)
 /*   doc->layout = _eyesight_document_page_layout_get(ebp->doc.pdfdoc); */
 
 /*   doc->locked = (ebp->doc.pdfdoc->getErrorCode() == errEncrypted) ? EINA_TRUE : EINA_FALSE; */
-  doc->encrypted = pdf_needspassword(ebp->doc.xref);
+  doc->encrypted = pdf_needs_password(ebp->doc.xref);
 /*   doc->linearized = ebp->doc.pdfdoc->isLinearized(); */
-  doc->printable = _eyesight_document_permission(ebp->doc.xref->crypt, PDF_PERM_PRINT);
-  doc->changeable = _eyesight_document_permission(ebp->doc.xref->crypt, PDF_PERM_CHANGE);
-  doc->copyable = _eyesight_document_permission(ebp->doc.xref->crypt, PDF_PERM_COPY);
-  doc->notable = _eyesight_document_permission(ebp->doc.xref->crypt, PDF_PERM_NOTES);
+  doc->printable = pdf_has_permission(ebp->doc.xref, PDF_PERM_PRINT) ? EINA_TRUE : EINA_FALSE;
+  doc->changeable = pdf_has_permission(ebp->doc.xref, PDF_PERM_CHANGE) ? EINA_TRUE : EINA_FALSE;
+  doc->copyable = pdf_has_permission(ebp->doc.xref, PDF_PERM_COPY) ? EINA_TRUE : EINA_FALSE;
+  doc->notable = pdf_has_permission(ebp->doc.xref, PDF_PERM_NOTES) ? EINA_TRUE : EINA_FALSE;
   ebp->document = doc;
 
-  obj = pdf_getpageobject(ebp->doc.xref, 1);
-  error = pdf_loadpage(&ebp->page.page, ebp->doc.xref, obj);
+  error = pdf_load_page(&ebp->page.page, ebp->doc.xref, 0);
   if (error)
     {
        ERR("Could not retrieve first page from the document");
        goto free_xref;
     }
 
-  ebp->page.page->list = fz_newdisplaylist();
-  dev = fz_newlistdevice(ebp->page.page->list);
-  error = pdf_runpage(ebp->doc.xref, ebp->page.page, dev, fz_identity);
+  /* FIXME: cache dev */
+  ebp->page.display_list = fz_new_display_list();
+  dev = fz_new_list_device(ebp->page.display_list);
+  error = pdf_run_page(ebp->doc.xref, ebp->page.page, dev, fz_identity);
   if (error)
     {
       ERR("Could not draw page");
     }
-  fz_freedevice(dev);
+  fz_free_device(dev);
 
   zoom = resolution / 72.0f;
   ctm = fz_translate(0, -ebp->page.page->mediabox.y1);
   ctm = fz_concat(ctm, fz_scale(zoom, -zoom));
   ctm = fz_concat(ctm, fz_rotate(ebp->page.orientation + ebp->page.page->rotate));
-  bbox = fz_roundrect(fz_transformrect(ctm, ebp->page.page->mediabox));
+  bbox = fz_round_rect(fz_transform_rect(ctm, ebp->page.page->mediabox));
   ebp->page.width = bbox.x1 - bbox.x0;
   ebp->page.height = bbox.y1 - bbox.y0;
 
@@ -475,7 +466,7 @@ em_file_open(void *eb, const char *filename)
   return doc;
 
  free_xref:
-  pdf_freexref(ebp->doc.xref);
+  pdf_free_xref(ebp->doc.xref);
  close_fd:
   close(fd);
  free_filename:
@@ -499,7 +490,7 @@ em_file_close(void *eb)
 
   if (ebp->page.page)
     {
-      pdf_freepage(ebp->page.page);
+      pdf_free_page(ebp->page.page);
       ebp->page.page = NULL;
     }
 
@@ -520,7 +511,7 @@ em_file_close(void *eb)
     }
   if (ebp->doc.xref)
     {
-      pdf_freexref(ebp->doc.xref);
+      pdf_free_xref(ebp->doc.xref);
       ebp->doc.xref = NULL;
     }
   if (ebp->filename)
@@ -541,11 +532,11 @@ em_toc_get(void *eb)
 
   ebp = (Eyesight_Backend_Pdf *)eb;
 
-  outline = pdf_loadoutline(ebp->doc.xref);
+  outline = pdf_load_outline(ebp->doc.xref);
   if (outline)
     {
       ebp->doc.toc = _eyesight_index_fill (ebp->doc.xref, outline, NULL);
-      pdf_freeoutline(outline);
+      pdf_free_outline(outline);
     }
 
   return ebp->doc.toc;
@@ -561,7 +552,7 @@ em_page_count(void *eb)
 
   ebp = (Eyesight_Backend_Pdf *)eb;
 
-  return pdf_getpagecount(ebp->doc.xref);
+  return pdf_count_pages(ebp->doc.xref);
 }
 
 static void
@@ -569,7 +560,6 @@ em_page_set(void *eb, int page)
 {
   Eyesight_Backend_Pdf *ebp;
   pdf_page *p;
-  fz_obj *obj;
   fz_device *dev;
   fz_matrix ctm;
   fz_bbox bbox;
@@ -582,35 +572,34 @@ em_page_set(void *eb, int page)
 
   ebp = (Eyesight_Backend_Pdf *)eb;
 
-  obj = pdf_getpageobject(ebp->doc.xref, page + 1);
-  error = pdf_loadpage(&p, ebp->doc.xref, obj);
+  error = pdf_load_page(&p, ebp->doc.xref, page);
   if (error)
     {
       ERR("Could not retrieve page %d from the document", page);
       return;
     }
 
-  p->list = fz_newdisplaylist();
-  dev = fz_newlistdevice(p->list);
-  error = pdf_runpage(ebp->doc.xref, p, dev, fz_identity);
+  /* FIXME: cache list and dev */
+  dev = fz_new_list_device(ebp->page.display_list);
+  error = pdf_run_page(ebp->doc.xref, p, dev, fz_identity);
   if (error)
     {
       ERR("Could not retrieve page %d from the document", page);
-      pdf_freepage(p);
+      pdf_free_page(p);
       return;
     }
-  fz_freedevice(dev);
+  fz_free_device(dev);
 
   zoom = resolution / 72.0f;
   ctm = fz_translate(0, -ebp->page.page->mediabox.y1);
   ctm = fz_concat(ctm, fz_scale(zoom, -zoom));
   ctm = fz_concat(ctm, fz_rotate(ebp->page.orientation + ebp->page.page->rotate));
-  bbox = fz_roundrect(fz_transformrect(ctm, ebp->page.page->mediabox));
+  bbox = fz_round_rect(fz_transform_rect(ctm, ebp->page.page->mediabox));
   ebp->page.width = bbox.x1 - bbox.x0;
   ebp->page.height = bbox.y1 - bbox.y0;
 
   if (ebp->page.page)
-    pdf_freepage(ebp->page.page);
+    pdf_free_page(ebp->page.page);
 
   ebp->page.page = p;
   ebp->page.page_nbr = page;
@@ -716,6 +705,7 @@ em_page_render(void *eb)
   fz_matrix ctm;
   fz_bbox bbox;
   fz_device *dev;
+  fz_text_span *text;
   fz_pixmap *image;
   float resolution = 72.0f;
 
@@ -728,19 +718,22 @@ em_page_render(void *eb)
   ctm = fz_concat(ctm, fz_translate(0, -ebp->page.page->mediabox.y1));
   ctm = fz_concat(ctm, fz_scale(resolution / 72.0f, -resolution/72.0f));
   ctm = fz_concat(ctm, fz_rotate(ebp->page.orientation + ebp->page.page->rotate));
-  bbox = fz_roundrect(fz_transformrect(ctm, ebp->page.page->mediabox));
+  bbox = fz_round_rect(fz_transform_rect(ctm, ebp->page.page->mediabox));
 
-  ebp->page.page->text = fz_newtextspan();
-  dev = fz_newtextdevice(ebp->page.page->text);
-  fz_executedisplaylist(ebp->page.page->list, dev, ctm);
-  fz_freedevice(dev);
+  /* FIXME: cache text and dev */
+  text = fz_new_text_span();
+  dev = fz_new_text_device(text);
+  /* FIXME: last 2 parameters, ask if they are good */
+  fz_execute_display_list(ebp->page.display_list, dev, ctm, fz_infinite_bbox);
+  fz_free_device(dev);
+  fz_free_text_span(text);
 
   /* FIXME: use fz_newpixmapwithdata(fz_devicergb, bbox.x0, bbox.y0, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0, m) instead to avoid a memcpy */
-  image = fz_newpixmapwithrect(fz_devicergb, bbox);
-  fz_clearpixmap(image, 0xFF);
-  dev = fz_newdrawdevice(ebp->doc.cache, image);
-  fz_executedisplaylist(ebp->page.page->list, dev, ctm);
-  fz_freedevice(dev);
+  image = fz_new_pixmap_with_rect(fz_device_rgb, bbox);
+  fz_clear_pixmap_with_color(image, 0xFF);
+  dev = fz_new_draw_device(ebp->doc.cache, image);
+  fz_execute_display_list(ebp->page.display_list, dev, ctm, fz_infinite_bbox);
+  fz_free_device(dev);
 
   evas_object_image_size_set(ebp->obj, image->w, image->h);
   evas_object_image_fill_set(ebp->obj, 0, 0, image->w, image->h);
@@ -748,6 +741,7 @@ em_page_render(void *eb)
   if (!m)
     {
        ERR("Could not retrieve data from the Evas Object");
+       fz_drop_pixmap(image);
        return;
     }
 
@@ -755,6 +749,7 @@ em_page_render(void *eb)
   evas_object_image_data_set(ebp->obj, m);
   evas_object_image_data_update_add(ebp->obj, 0, 0, image->w, image->h);
   evas_object_resize(ebp->obj, image->w, image->h);
+  fz_drop_pixmap(image);
 }
 
 static char *

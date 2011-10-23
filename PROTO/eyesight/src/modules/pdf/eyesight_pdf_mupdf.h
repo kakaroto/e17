@@ -31,7 +31,7 @@ struct _Eyesight_Backend_Pdf
 
   /* Document */
   struct {
-    fz_glyphcache   *cache;
+    fz_glyph_cache  *cache;
     pdf_xref        *xref;
 /*     Dict            *dict; */
 /*     FontInfoScanner *scanner; */
@@ -47,6 +47,7 @@ struct _Eyesight_Backend_Pdf
     Eyesight_Orientation orientation;
     double               hscale;
     double               vscale;
+    fz_display_list     *display_list;
     Eina_List           *links;
   } page;
 };
