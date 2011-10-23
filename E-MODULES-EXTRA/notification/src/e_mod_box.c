@@ -522,7 +522,7 @@ _notification_box_icon_fill(Notification_Box_Icon *ic,
                                      "modules/notification/logo"))
           edje_object_file_set(dummy, buf, "modules/notification/logo");
         evas_object_resize(dummy, 80, 80);
-        app_icon = edje_object_part_object_get(dummy, "image");
+        app_icon = (Evas_Object*)edje_object_part_object_get(dummy, "image");
      }
    evas_object_image_size_get(app_icon, &w, &h);
 
