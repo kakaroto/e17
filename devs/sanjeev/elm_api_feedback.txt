@@ -67,7 +67,31 @@ elm_image_scale_get - this one is for the image file.
 
 it might be helpful to add an 'object' to elm_image_no_scale_get.
 
+ElmImage needs more description about size, aspect ratio, fill , prescale.
 
+Box
+---
+elm_box_clear  =  elm_box_unpack_all + evas_object_del
+elm_box_unpack_all = elm_box_children_get + elm_box_unpack
+
+Note : 
+To use elm_box_unpack() developer needs to maintain a reference or clue to the object.
+
+Seems like multiple API wrapped on top of one another.
+
+
+
+Looks like we are using matching function prototypes, that don't mean the same thing.
+
+elm_box_layout_transition and Evas_Object_Box_Layout.
+
+elm_box_layout_transition - This function can only be used with elm_box_layout_set()
+elm_box_layout_set(box, elm_box_layout_transition, t, elm_box_transition_free);
+elm_box_layout_set(Evas_Object *obj, Evas_Object_Box_Layout cb, const void *data, void (*free_data)(void *data))
+
+Creating an object that holds the function pointers and passing it as a *data to another function that takes a function pointer... 
+
+Does not look elegant. Should be a better way of doing this.
 
 
 
