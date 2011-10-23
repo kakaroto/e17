@@ -1283,19 +1283,18 @@ _ngi_zoom_function(Ng *ng, double to, double pos)
 static void
 _ngi_label_pos_set(Ng *ng)
 {
-   int off, h;
+   int off;
 
    if (!ng->item_active)
      return;
 
    off = (ng->size * ng->zoom) + ng->opt.edge_offset + TEXT_DIST;
-   h = ng->win->popup->h;
 
    switch (ng->cfg->orient)
      {
       case E_GADCON_ORIENT_BOTTOM:
 	 evas_object_move(ng->o_label, ng->item_active->pos + ng->size/2,
-			  (h + ng->hide_step) - off);
+			  (ng->win->popup->h + ng->hide_step) - off);
 	 break;
 
       case E_GADCON_ORIENT_TOP:
@@ -1303,7 +1302,7 @@ _ngi_label_pos_set(Ng *ng)
 			  (off - ng->hide_step));
 	 break;
       case E_GADCON_ORIENT_RIGHT:
-	 evas_object_move(ng->o_label, (h + ng->hide_step) - off,
+	 evas_object_move(ng->o_label, (ng->win->popup->w + ng->hide_step) - off,
 			  ng->item_active->pos + ng->size/2);
 	 break;
 
