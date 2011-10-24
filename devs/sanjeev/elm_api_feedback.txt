@@ -122,17 +122,9 @@ General
 Smart callbacks, smart API - needs more highlighting.
 Is it smart for the API users or developers? Why is it called smart?
 
+Scroller
+--------
+ELM_SCROLLER_POLICY_LAST - why is this required?
 
-
-
-
-
-
-
-
-
-
-
-
-
+elm_scroller_custom_widget_base_theme_set - 'custom' applies to theme.
 
