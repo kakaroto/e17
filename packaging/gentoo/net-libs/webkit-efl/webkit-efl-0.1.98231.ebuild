@@ -50,7 +50,7 @@ S="${WORKDIR}/${PN}-svn-r${MY_PV}/Source"
 src_configure() {
 	[[ gcc-major-version == 4 ]] && [[ gcc-minor-version == 4 ]] && append-flags -fno-strict-aliasing
 
-	mycmakeargs="-DPORT=Efl"
+	mycmakeargs="-DPORT=Efl -DENABLE_BLOB=ON -DENABLE_DATAGRID=ON -DENABLE_FULLSCREEN_API=ON -DENABLE_GEOLOCATION=ON -DENABLE_NOTIFICATIONS=ON -DENABLE_ORIENTATION_EVENTS=ON"
 	if ! use glib ; then
 		#could have done the whole cmake-utils_use_enable thing here but I'm lazy
 		mycmakeargs+=" -DNETWORK_BACKEND=curl -DENABLE_GLIB_SUPPORT=OFF"
