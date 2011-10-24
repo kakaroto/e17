@@ -35,7 +35,8 @@ group {
       item: "app_icon_max" "48 48";
       item: "shaped" "1";
    }
-   name: "modules/notification/main";
+   name: "modules/notification/main/alpha";
+   alias: "modules/notification/main";
    parts {
       /* Background */
       part {
@@ -112,37 +113,57 @@ group {
             type: TEXT;
             mouse_events: 0;
             scale: 1;
-            effect: SOFT_SHADOW;
             clip_to: "clipper";
             description {
                state: "default" 0.0;
-               fixed: 1 1;
                visible: 1;
-               min: 250 0;
-               max: 250 9999;
+               fixed: 1 1;
                align: 0.0 0.0;
                rel1 {
+                  to_y: "clipper";
                   to_x: "notification.swallow.app_icon";
 	          relative: 1.0 0.0;
                   offset: 4 5;
                }
                rel2 {
+                  to: "clipper";
                   relative: 1.0 0.0;
                   offset: -20 15;
                }
                color: DARKNESS_TEXT 255;
                color3: 0 0 0 64;
-               color_class: "menu_title_active";
                text {
                   /* text_source: "notification.text.title"; */
-                  font: "DejaVu-Bold";
-                  size: 14;
-                  align: 0.0 0.0;
                   min: 0 1;
-                  text_class: "module_large";
+                  size: 14;
+                  font: "DejaVu-Bold";
+                  style: "notification_style";
                }
             }
          }
+      part {
+         name: "notification.close_btn";
+         clip_to: "clipper";
+         description {
+            state: "default" 0.0;
+            min: 15 15;
+            max: 15 15;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: -24 5;
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset:  -6 20;
+            }
+            image.normal: "button_detail_close.png";
+         }
+         description {
+            state: "active" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
 
       /* App Icon */
       part {
@@ -185,11 +206,13 @@ group {
 
             rel1 { 
                to_x: "notification.swallow.app_icon";
+               to_y: "notification.text.title";
                relative: 1.0 0.0;
                offset: 15 10; 
             }
 
-            rel2 { 
+            rel2 {
+               to: "clipper";
                relative: 1.0 1.0;
                offset: -5 -10; 
             }
@@ -274,7 +297,7 @@ group {
 
       program {
          name: "find";
-         signal: "mouse,down,1";
+         signal: "mouse,down,3";
          source: "bg";
          action: SIGNAL_EMIT "notification,find" "theme";
       }
