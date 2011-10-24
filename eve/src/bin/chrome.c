@@ -41,14 +41,14 @@ static void on_more_item_click(void *data, Evas_Object *obj, void *event_info __
 static void on_more_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
 
 static char *tab_grid_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
-static Evas_Object *tab_grid_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static Evas_Object *tab_grid_content_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static Eina_Bool tab_grid_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static void tab_grid_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
 
 static char *more_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static char *page_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part);
 static char *list_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part);
-static Evas_Object *more_icon_get(void *data, Evas_Object *obj, const char *part);
+static Evas_Object *more_content_get(void *data, Evas_Object *obj, const char *part);
 static Eina_Bool more_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static void more_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
 
@@ -363,7 +363,7 @@ static More_Menu_Item more_menu_root[] =
 static const Elm_Gengrid_Item_Class gic_default = {
    .func = {
        .label_get = tab_grid_label_get,
-       .icon_get = tab_grid_icon_get,
+       .content_get = tab_grid_content_get,
        .state_get = tab_grid_state_get,
        .del = tab_grid_del
     }
@@ -372,7 +372,7 @@ static const Elm_Gengrid_Item_Class gic_default = {
 static const Elm_Genlist_Item_Class glic_default = {
    .func = {
        .label_get = more_label_get,
-       .icon_get = more_icon_get,
+       .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
     },
@@ -382,7 +382,7 @@ static const Elm_Genlist_Item_Class glic_default = {
 static const Elm_Genlist_Item_Class glic_config = {
    .func = {
        .label_get = more_label_get,
-       .icon_get = more_icon_get,
+       .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
     },
@@ -392,7 +392,7 @@ static const Elm_Genlist_Item_Class glic_config = {
 static const Elm_Genlist_Item_Class glic_config_selectable = {
    .func = {
        .label_get = more_label_get,
-       .icon_get = more_icon_get,
+       .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
     },
@@ -402,7 +402,7 @@ static const Elm_Genlist_Item_Class glic_config_selectable = {
 static const Elm_Genlist_Item_Class glic_separator = {
    .func = {
        .label_get = NULL,
-       .icon_get = NULL,
+       .content_get = NULL,
        .state_get = NULL,
        .del = more_del
     },
@@ -412,7 +412,7 @@ static const Elm_Genlist_Item_Class glic_separator = {
 static const Elm_Genlist_Item_Class glic_config_list = {
    .func = {
        .label_get = list_label_get,
-       .icon_get = more_icon_get,
+       .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
     },
@@ -422,7 +422,7 @@ static const Elm_Genlist_Item_Class glic_config_list = {
 static const Elm_Genlist_Item_Class glic_page = {
    .func = {
        .label_get = page_label_get,
-       .icon_get = more_icon_get,
+       .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
     },
@@ -1247,9 +1247,9 @@ on_tab_close(void *data, Evas_Object *o,
          Evas_Object *grid = evas_object_data_get(chrome, "tab-grid");
 
          if (!grid) continue;
-         for (item = elm_gengrid_first_item_get(grid);
+         for (item = elm_gen_first_item_get(grid);
               item;
-              item = elm_gengrid_item_next_get(item))
+              item = elm_gen_item_next_get(item))
             {
                if (elm_gengrid_item_data_get(item) == view)
                   {
@@ -1273,7 +1273,7 @@ on_tab_gengrid_item_realized(void *data, Evas_Object *o __UNUSED__, void *event_
    edje_object_signal_callback_add(item, "tab,close", "", on_tab_close, view);
 
    win->creating_tab = EINA_TRUE;
-   elm_gengrid_item_selected_set(event_info, view == win->current_view);
+   elm_gen_item_selected_set(event_info, view == win->current_view);
    win->creating_tab = EINA_FALSE;
 }
 
@@ -1433,8 +1433,8 @@ cb_config_bool_changed(void *data, Evas_Object *obj, void *event_info __UNUSED__
 
    if ((conf_set = mmc->conf_set))
       {
-         conf_set(config, elm_toggle_state_get(obj));
-         conf_updated(mmc, (int[]){ elm_toggle_state_get(obj) });
+         conf_set(config, elm_check_state_get(obj));
+         conf_updated(mmc, (int[]){ elm_check_state_get(obj) });
       }
 }
 
@@ -1473,11 +1473,13 @@ config_widget_get(Evas_Object *parent, More_Menu_Config *mmc)
    case CONFIG_TYPE_CHECKBOX:
       {
          Eina_Bool (*conf_get)(Config *);
-         Evas_Object *toggle = elm_toggle_add(parent);
+         Evas_Object *toggle = elm_check_add(parent);
 
          conf_get = mmc->conf_get;
          elm_object_style_set(toggle, "ewebkit");
-         elm_toggle_state_set(toggle, conf_get(config));
+         elm_object_text_part_set(toggle, "on", "ON");
+         elm_object_text_part_set(toggle, "off", "OFF");
+         elm_check_state_set(toggle, conf_get(config));
          evas_object_smart_callback_add(toggle, "changed", cb_config_bool_changed, mmc);
 
          return toggle;
@@ -1521,7 +1523,7 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
            win->list_history = eina_list_prepend(win->list_history, params->root);
      }
 
-   elm_genlist_clear(params->list);
+   elm_gen_clear(params->list);
    index = evas_object_data_get(params->list, "more-index");
    if (index)
       elm_index_item_clear(index);
@@ -1911,8 +1913,8 @@ on_more_item_click(void *data, Evas_Object *obj,
          if (conf->type == CONFIG_TYPE_CHECKBOX)
          {
              Evas_Object *end = edje_object_part_swallow_get(elm_genlist_item_object_get(event_info), "elm.swallow.end");
-             if (end) elm_toggle_state_set(end, !elm_toggle_state_get(end));
-             elm_genlist_item_selected_set(event_info, EINA_FALSE);
+             if (end) elm_check_state_set(end, !elm_check_state_get(end));
+             elm_gen_item_selected_set(event_info, EINA_FALSE);
              return;
          }
 
@@ -2051,7 +2053,7 @@ on_action_tab_show(void *data, Evas_Object *o __UNUSED__,
    Eina_List *itr;
    Evas_Object *itr_chrome;
 
-   elm_gengrid_clear(grid);
+   elm_gen_clear(grid);
 
    EINA_LIST_FOREACH(win->chromes, itr, itr_chrome)
    {
@@ -2335,7 +2337,7 @@ tab_grid_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __U
 }
 
 static Evas_Object *
-tab_grid_icon_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+tab_grid_content_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    if (data)
      {
@@ -2436,7 +2438,7 @@ list_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
 }
 
 static Evas_Object *
-more_icon_get(void *data, Evas_Object *obj, const char *part)
+more_content_get(void *data, Evas_Object *obj, const char *part)
 {
    if (!data)
       return NULL;
@@ -2555,7 +2557,7 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    evas_object_data_set(chrome, "more-list", more_list);
    elm_layout_content_set(chrome, "more-list-swallow", more_list);
    elm_object_style_set(more_list, "ewebkit");
-   elm_genlist_bounce_set(more_list, EINA_FALSE, EINA_FALSE);
+   elm_gen_bounce_set(more_list, EINA_FALSE, EINA_FALSE);
 
    Evas_Object *more_index = elm_index_add(ed);
    evas_object_data_set(more_list, "more-index", more_index);

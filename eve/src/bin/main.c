@@ -296,7 +296,7 @@ win_add(App *app, const char *url, Session_Window *session_window, Session_Item 
    evas_object_smart_callback_add
       (win->win, "delete,request", on_win_del_req, app);
 
-   evas_object_resize(win->win, 400, 400);
+   evas_object_resize(win->win, 1024, 768);
    evas_object_show(win->win);
 
    return win;
