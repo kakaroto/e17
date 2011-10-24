@@ -92,6 +92,37 @@ elm_box_layout_set(Evas_Object *obj, Evas_Object_Box_Layout cb, const void *data
 Creating an object that holds the function pointers and passing it as a *data to another function that takes a function pointer... 
 
 Does not look elegant. Should be a better way of doing this.
+How about individual API?
+
+Button
+------
+
+elm_button_icon_set/unset - deleting the previous icon object seems dangerous.
+What if same icon object is used elsewhere as well?
+Makes it easier for developer to commit mistakes.
+elev8 reuses icon object and resets them in some examples.
+If user created icon, it is his job to delete it.
+
+
+FileSelector
+------------
+elm_fileselector_button_path_set - return type could be int giving errno value.
+
+No API for showing/hiding hidden files.
+
+File Selector API and File Manager module provide different levels of functionality.
+Would be good to add some more functionality.
+
+File_Selector_Entry seems wrong name, it must be File_Selector_Label.
+Changing the entry doesn't really mean anything.
+
+General
+-------
+
+Smart callbacks, smart API - needs more highlighting.
+Is it smart for the API users or developers? Why is it called smart?
+
+
 
 
 
