@@ -176,7 +176,7 @@ cdef extern from "Elementary.h":
 
     ctypedef struct Elm_Genlist_Item_Class_Func:
         GenlistItemLabelGetFunc label_get
-        GenlistItemIconGetFunc icon_get
+        GenlistItemIconGetFunc content_get
         GenlistItemStateGetFunc state_get
         GenlistItemDelFunc del_ "del"
 
@@ -191,7 +191,7 @@ cdef extern from "Elementary.h":
 
     ctypedef struct Elm_Gengrid_Item_Class_Func:
         GengridItemLabelGetFunc label_get
-        GengridItemIconGetFunc icon_get
+        GengridItemIconGetFunc content_get
         GengridItemStateGetFunc state_get
         GengridItemDelFunc del_ "del"
 

@@ -45,12 +45,12 @@ cdef char *_py_elm_genlist_item_label_get(void *data, c_evas.Evas_Object *obj, c
     else:
         return NULL
 
-cdef c_evas.Evas_Object *_py_elm_genlist_item_icon_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
+cdef c_evas.Evas_Object *_py_elm_genlist_item_content_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
     cdef object prm = <object>data
     cdef c_evas.Object icon
     cdef GenlistItemClass itc = prm[0]
 
-    func = itc._icon_get_func
+    func = itc._content_get_func
     if func is None:
         return NULL
 
@@ -113,7 +113,7 @@ cdef class GenlistItemClass:
     This class should be created and handled to the Genlist itself.
 
     It may be subclassed, in this case the methods L{label_get()},
-    L{icon_get()}, L{state_get()} and L{delete()} will be used.
+    L{content_get()}, L{state_get()} and L{delete()} will be used.
 
     It may also be instantiated directly, given getters to override as
     constructor parameters.
@@ -122,25 +122,25 @@ cdef class GenlistItemClass:
     cdef Elm_Genlist_Item_Class obj
     cdef readonly object _item_style
     cdef readonly object _label_get_func
-    cdef readonly object _icon_get_func
+    cdef readonly object _content_get_func
     cdef readonly object _state_get_func
     cdef readonly object _del_func
 
     def __cinit__(self, *a, **ka):
         self._item_style = "default"
         self._label_get_func = None
-        self._icon_get_func = None
+        self._content_get_func = None
         self._state_get_func = None
         self._del_func = None
 
         self.obj.item_style = NULL
         self.obj.func.label_get = _py_elm_genlist_item_label_get
-        self.obj.func.icon_get = _py_elm_genlist_item_icon_get
+        self.obj.func.content_get = _py_elm_genlist_item_content_get
         self.obj.func.state_get = _py_elm_genlist_item_state_get
         self.obj.func.del_ = _py_elm_genlist_item_del
 
     def __init__(self, item_style=None, label_get_func=None,
-                 icon_get_func=None, state_get_func=None, del_func=None):
+                 content_get_func=None, state_get_func=None, del_func=None):
         """GenlistItemClass constructor.
 
         @parm: B{item_style} the string that defines the genlist item
@@ -155,8 +155,8 @@ cdef class GenlistItemClass:
 
                   C{func(obj, part, item_data) -> str}
 
-        @parm: B{icon_get_func} if provided will override the behavior
-               defined by L{icon_get()} in this class. Its purpose is
+        @parm: B{content_get_func} if provided will override the behavior
+               defined by L{content_get()} in this class. Its purpose is
                to return the icon object to be used (swalloed) by a
                given part and row. This function should have the
                signature:
@@ -192,12 +192,12 @@ cdef class GenlistItemClass:
         else:
             self._label_get_func = self.label_get
 
-        if icon_get_func and not callable(icon_get_func):
-            raise TypeError("icon_get_func is not callable!")
-        elif icon_get_func:
-            self._icon_get_func = icon_get_func
+        if content_get_func and not callable(content_get_func):
+            raise TypeError("content_get_func is not callable!")
+        elif content_get_func:
+            self._content_get_func = content_get_func
         else:
-            self._icon_get_func = self.icon_get
+            self._content_get_func = self.content_get
 
         if state_get_func and not callable(state_get_func):
             raise TypeError("state_get_func is not callable!")
@@ -219,18 +219,18 @@ cdef class GenlistItemClass:
         self.obj.item_style = self._item_style
 
     def __str__(self):
-        return ("%s(item_style=%r, label_get_func=%s, icon_get_func=%s, "
+        return ("%s(item_style=%r, label_get_func=%s, content_get_func=%s, "
                 "state_get_func=%s, del_func=%s)") % \
                (self.__class__.__name__,
                 self._item_style,
                 self._label_get_func,
-                self._icon_get_func,
+                self._content_get_func,
                 self._state_get_func,
                 self._del_func)
 
     def __repr__(self):
         return ("%s(%#x, refcount=%d, Elm_Genlist_Item_Class=%#x, "
-                "item_style=%r, label_get_func=%s, icon_get_func=%s, "
+                "item_style=%r, label_get_func=%s, content_get_func=%s, "
                 "state_get_func=%s, del_func=%s)") % \
                (self.__class__.__name__,
                 <unsigned long><void *>self,
@@ -238,7 +238,7 @@ cdef class GenlistItemClass:
                 <unsigned long>&self.obj,
                 self._item_style,
                 self._label_get_func,
-                self._icon_get_func,
+                self._content_get_func,
                 self._state_get_func,
                 self._del_func)
 
@@ -258,7 +258,7 @@ cdef class GenlistItemClass:
         """
         return None
 
-    def icon_get(self, c_evas.Object obj, char *part, item_data):
+    def content_get(self, c_evas.Object obj, char *part, item_data):
         """To be called by Genlist for each row to get its icon.
 
         @parm: B{obj:} the Genlist instance
