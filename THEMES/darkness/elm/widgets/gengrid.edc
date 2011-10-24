@@ -1,6 +1,6 @@
    group { name: "elm/gengrid/item/default/default";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       images {
          image: "slider_button.png" COMP;
          image: "menu_item_highlight.png" COMP;
@@ -95,7 +95,7 @@
            }
        }
        data.item: "labels" "elm.text";
-       data.item: "icons" "elm.swallow.icon elm.swallow.end";
+       data.item: "contents" "elm.swallow.icon elm.swallow.end";
        images {
            image: "slider_button.png" COMP;
            image: "menu_item_highlight.png" COMP;
@@ -247,7 +247,7 @@
 
    group { name: "elm/gengrid/item/album-preview/default";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon.1 elm.swallow.icon.2 elm.swallow.icon.3 elm.swallow.icon.4";
+      data.item: "contents" "elm.swallow.icon.1 elm.swallow.icon.2 elm.swallow.icon.3 elm.swallow.icon.4";
       data.item: "states" "have_files";
       images {
          image: "slider_button.png" COMP;
@@ -423,7 +423,7 @@
 
    group { name: "elm/gengrid/item/thumb/default";
        data {
-           item: "icons" "elm.swallow.icon";
+           item: "contents" "elm.swallow.icon";
            item: "labels" "elm.text";
        }
        images {

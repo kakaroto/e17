@@ -2,7 +2,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -90,7 +90,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -132,7 +132,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.title.1 elm.title.2 elm.text";
-//      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+//      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -251,7 +251,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -298,7 +298,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -349,7 +349,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -402,7 +402,7 @@
        data.item: "stacking" "above";
        data.item: "selectraise" "on";
        data.item: "labels" "elm.text";
-       data.item: "icons" "elm.swallow.icon elm.swallow.end";
+       data.item: "contents" "elm.swallow.icon elm.swallow.end";
        data.item: "treesize" "20";
        images {
            image: "slider_button.png" COMP;
@@ -453,7 +453,7 @@
        data.item: "stacking" "above";
        data.item: "selectraise" "on";
        data.item: "labels" "elm.text";
-       data.item: "icons" "elm.swallow.icon elm.swallow.end";
+       data.item: "contents" "elm.swallow.icon elm.swallow.end";
        data.item: "treesize" "20";
        images {
            image: "slider_button.png" COMP;
@@ -511,7 +511,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -558,7 +558,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -607,7 +607,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -660,7 +660,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -715,7 +715,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon";
+      data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -759,7 +759,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon";
+      data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
 //      data.item: "states" "";
       images {
@@ -1014,7 +1014,7 @@
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text.title elm.text.artist";
-      data.item: "icons" "elm.swallow.preview";
+      data.item: "contents" "elm.swallow.preview";
       data.item: "treesize" "20";
       images {
          image: "slider_button.png" COMP;
