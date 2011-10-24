@@ -4,7 +4,7 @@ collections {
       alias: "elm/genlist/item/default/fileselector/default";
       alias: "elm/genlist/item_odd/default/fileselector/default";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       parts {
           images.image: "list_item_selected_bg.png" COMP;
           part {
@@ -147,7 +147,7 @@ collections {
    group { name: "elm/genlist/item_compress/default/default";
       alias: "elm/genlist/item_compress_odd/default/default";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       parts {
           images.image: "list_item_selected_bg.png" COMP;
           part {
@@ -292,7 +292,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -612,7 +612,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -932,7 +932,7 @@ collections {
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -1227,7 +1227,7 @@ collections {
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -1540,7 +1540,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       images {
          image: "bt_sm_base1.png" COMP;
@@ -1812,7 +1812,7 @@ collections {
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       images {
          image: "bt_sm_base1.png" COMP;
@@ -2059,7 +2059,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       images {
          image: "bt_sm_base1.png" COMP;
@@ -2378,7 +2378,7 @@ collections {
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       images {
          image: "bt_sm_base1.png" COMP;
@@ -2672,7 +2672,7 @@ collections {
    group { name: "elm/genlist/item_compress/double_label/default";
       alias: "elm/genlist/item_compress_odd/double_label/default";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       parts {
          images.image: "list_item_selected_bg.png" COMP;
          part {
@@ -2841,7 +2841,7 @@ collections {
    group { name: "elm/genlist/item/double_label/default";
       alias: "elm/genlist/item_odd/double_label/default";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       parts {
          images.image: "list_item_selected_bg.png" COMP;
          part {
@@ -3011,7 +3011,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -3367,7 +3367,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -3723,7 +3723,7 @@ collections {
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -4055,7 +4055,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon";
+      data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -4310,7 +4310,7 @@ collections {
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon";
+      data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -4540,7 +4540,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon";
+      data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -4840,7 +4840,7 @@ collections {
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text";
-      data.item: "icons" "elm.swallow.icon";
+      data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -5117,7 +5117,7 @@ collections {
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
       data.item: "labels" "elm.text elm.text.sub";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
       images {
@@ -5787,7 +5787,7 @@ collections {
       alias: "elm/genlist/item_compress_odd/media-preview/default";
       data {
          item: "labels" "elm.text.album elm.text.artist";
-         item: "icons" "elm.swallow.preview";
+         item: "contents" "elm.swallow.preview";
          item: "icon_size" "68";
       }
       parts {
