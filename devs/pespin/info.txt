@@ -1,0 +1,12 @@
+Login:        pespin
+IRC Nick:     pespin
+Cloak:        developer/pespin
+Name:         Pau Espin Pedrol
+Location:     Barcelona, Spain
+E-Mail:       pespin.shar@gmail.com
+WWW:          http://blog.espeweb.net
+Managing:     -
+Contributing: eflvala enjoy
+Group:        Bindings, Applications
+Platform:     Archlinux (Linux), Openembedded/Openmoko (Linux)
+GeoData:      41.393874 41.393874
