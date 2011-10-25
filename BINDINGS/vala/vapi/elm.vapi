@@ -141,6 +141,29 @@ public abstract class Object : Evas.Object
 
 
 //=======================================================================
+[Compact]
+[CCode (cname = "Elm_Object_Item", free_function = "")]
+public abstract class ObjectItem
+{
+    Elm.Object object_get();
+    void content_part_set( string? part, Elm.Object content );
+    Elm.Object content_part_get( string? part );
+    void content_set( Elm.Object content );
+    Elm.Object content_get();
+    void content_part_unset( string? part );
+    void content_unset();
+    void text_part_set( string? part, string label );
+    void text_set( string label );
+    unowned string text_part_get( string? part );
+    unowned string text_get();
+    void access_info_set( string txt );
+    void data_set( void* data );
+    void* data_get();
+    void signal_emit( string? emission, string? source );
+}
+
+
+//=======================================================================
 [CCode (cprefix = "ELM_WIN_")]
 public enum WinType
 {
@@ -541,6 +564,8 @@ public class Entry : Elm.Object
     public void editable_set( bool editable );
     public void select_none();
     public void select_all();
+    public void scrollable_set( bool scrollable );
+    public bool scrollable_get();
 
     public bool cursor_next();
     public bool cursor_prev();
@@ -1471,6 +1496,38 @@ public class ScrolledEntry : Elm.Object
     public void selection_paste();
     public void context_menu_clear();
     public void context_menu_item_add( string label, string icon_file, IconType icon_type, Evas.Callback callback );
+}
+
+
+//=======================================================================
+[Compact]
+[CCode (cname = "Elm_Object_Item", free_function = "") /* Caution! Naviframe items are owned by the naviframe. */ ]
+public class NaviframeItem : Elm.ObjectItem
+{
+    public void pop_to();
+    public void promote();
+    public void style_set( string? item_style );
+    public unowned string style_get();
+    public void title_visible_set( bool visible );
+    public bool title_visible_get();
+}
+
+
+//=======================================================================
+[CCode (cname = "Evas_Object", free_function = "evas_object_del")]
+public class Naviframe : Elm.Object
+{
+    [CCode (cname = "elm_naviframe_add")]
+    public Naviframe( Elm.Object parent );
+
+    public Elm.NaviframeItem item_push( string title_label, owned Elm.Object?  prev_btn, owned Elm.Object? next_btn, Elm.Object content, string? item_style );
+    public Elm.NaviframeItem item_pop(); 
+    public void content_preserve_on_pop_set( bool preserve );
+    public bool content_preserve_on_pop_get();
+    public Elm.NaviframeItem top_item_get();
+    public Elm.NaviframeItem bottom_item_get();
+    public void prev_btn_auto_pushed_set( bool auto_pushed );
+    public bool prev_btn_auto_pushed_get();
 }
 
 } /* namespace Elm */
