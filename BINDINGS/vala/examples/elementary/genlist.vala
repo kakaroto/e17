@@ -26,7 +26,7 @@ public class T.Genlist : T.Abstract
     {
         itc.item_style = "default";
         itc.func.label_get = getLabel;
-        itc.func.icon_get = getIcon;
+        itc.func.content_get = getContent;
         itc.func.state_get = getState;
         itc.func.del = delItem;
     }
@@ -56,13 +56,13 @@ public class T.Genlist : T.Abstract
         debug( "label_get: %p", obj );
         return "This is list item #%d".printf( number );
     }
-    public static Elm.Object? getIcon( Elm.Object obj, string part )
+    public static Elm.Object? getContent( Elm.Object obj, string part )
     {
         return null;
         /* This leads to a SIGSEGV, something's still wrong wrt. those delegates */
         /*
         int number = (int)obj;
-        debug( "icon_get for item %d", number );
+        debug( "content_get for item %d", number );
         var icon = new Elm.Icon( list );
         icon.file_set( "/usr/share/icons/oxygen/128x128/apps/tux.png", null );
         return icon;

@@ -906,21 +906,21 @@ public enum GenlistItemFlags
     SUBITEMS,
 }
 
-[CCode (cname = "GenlistItemLabelGetFunc", has_target = false)]
+[CCode (cname = "Elm_Gen_Item_Label_Get_Cb", has_target = false)]
 public delegate string GenlistItemLabelGetFunc( Elm.Object obj, string part );
-[CCode (cname = "GenlistItemIconGetFunc", has_target = false)]
-public delegate Elm.Object? GenlistItemIconGetFunc( Elm.Object obj, string part );
-[CCode (cname = "GenlistItemStateGetFunc", has_target = false)]
+[CCode (cname = "Elm_Gen_Item_Content_Get_Cb", has_target = false)]
+public delegate Elm.Object? GenlistItemContentGetFunc( Elm.Object obj, string part );
+[CCode (cname = "Elm_Gen_Item_State_Get_Cb", has_target = false)]
 public delegate bool GenlistItemStateGetFunc( Elm.Object obj, string part );
-[CCode (cname = "GenlistItemDelFunc", has_target = false)]
+[CCode (cname = "Elm_Gen_Item_Del_Cb", has_target = false)]
 public delegate void GenlistItemDelFunc( Elm.Object obj );
 
 //=======================================================================
-[CCode (cname = "Elm_Genlist_Item_Class_Func", destroy_function = "")]
+[CCode (cname = "Elm_Gen_Item_Class_Func", destroy_function = "")]
 public struct GenlistItemClassFunc
 {
     public GenlistItemLabelGetFunc label_get;
-    public GenlistItemIconGetFunc icon_get;
+    public GenlistItemContentGetFunc content_get;
     public GenlistItemStateGetFunc state_get;
     public GenlistItemDelFunc del;
 }
