@@ -38,7 +38,7 @@ public class T.Genlist : T.Abstract
         debug( "created genlist %p", list );
         for ( int i = 1; i <= 1000; ++i )
         {
-            list.item_append( itc, (void*)i, null, Elm.GenlistItemFlags.NONE, onSelectedItem );
+            list.item_append( ref itc, (void*)i, null, Elm.GenlistItemFlags.NONE, onSelectedItem );
         }
         list.show();
         list.size_hint_weight_set( 1.0, 1.0 );

@@ -939,10 +939,10 @@ public class Genlist : Elm.Object
 {
     [CCode (cname = "elm_genlist_add")]
     public Genlist( Elm.Object? parent );
-    public unowned GenlistItem item_append( GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItemFlags flags, Evas.Callback callback );
-    public unowned GenlistItem item_prepend( GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItemFlags flags, Evas.Callback callback );
-    public unowned GenlistItem item_insert_before( GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItem before, GenlistItemFlags flags, Evas.Callback callback );
-    public unowned GenlistItem item_insert_after( GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItem after, GenlistItemFlags flags, Evas.Callback callback );
+    public unowned GenlistItem item_append( ref GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItemFlags flags, Evas.Callback callback );
+    public unowned GenlistItem item_prepend( ref GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItemFlags flags, Evas.Callback callback );
+    public unowned GenlistItem item_insert_before( ref GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItem before, GenlistItemFlags flags, Evas.Callback callback );
+    public unowned GenlistItem item_insert_after( ref GenlistItemClass itc, void *data, GenlistItem? parent, GenlistItem after, GenlistItemFlags flags, Evas.Callback callback );
 
     public void clear();
     public void multi_select_set( bool multi );
