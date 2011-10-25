@@ -1,3 +1,9 @@
+* Split eio backend in a dedicated daemon
+  - Handle copy/delete/move actions in the daemon
+  - Communicate with enna-explorer via IPC
+  - Queue of items per devices
+  - IPC Api to get the list of currently running actions
+  - Display runnings actions in enna-explorer, progress and rate
 * Add "create new file" on long press, eventually based on templates
 * Add "open with" on long press
 * Add Window with program selection depending on mime type
