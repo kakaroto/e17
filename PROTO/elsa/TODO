@@ -8,4 +8,5 @@
 +support Xephyr
 Add code to don't use pam login (Nowadays, important?)
 Study possibility to use it with wayland so we can have transition when switching from one terminal to another.
+white and black users list
 
