@@ -593,7 +593,8 @@ extern "C" {
    EAPI void          azy_rss_link_free(Azy_Rss_Link *li);
    EAPI void          azy_rss_contact_free(Azy_Rss_Contact *c);
    EAPI void          azy_rss_item_free(Azy_Rss_Item *item);
-   EAPI Eina_List    *azy_rss_items_get(Azy_Rss *rss);
+   EAPI const Eina_List *azy_rss_items_get(Azy_Rss *rss);
+   EAPI Eina_List    *azy_rss_items_steal(Azy_Rss *rss);
    EAPI Eina_List    *azy_rss_authors_get(Azy_Rss *rss);
    EAPI Eina_List    *azy_rss_contributors_get(Azy_Rss *rss);
    EAPI Eina_List    *azy_rss_categories_get(Azy_Rss *rss);

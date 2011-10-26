@@ -136,7 +136,7 @@ azy_rss_free(Azy_Rss *rss)
  * @param rss The #Azy_Rss (NOT #NULL)
  * @return An #Eina_List of #Azy_Rss_Item objects
  */
-Eina_List *
+const Eina_List *
 azy_rss_items_get(Azy_Rss *rss)
 {
    if (!AZY_MAGIC_CHECK(rss, AZY_MAGIC_RSS))
@@ -145,6 +145,28 @@ azy_rss_items_get(Azy_Rss *rss)
         return NULL;
      }
    return rss->items;
+}
+
+/**
+ * @brief Steal the list of items in an rss object
+ *
+ * This function returns a list of #Azy_Rss_Item objects belonging to @p rss,
+ * separating the list from @p rss. The list must then be manually freed.
+ * @param rss The #Azy_Rss (NOT #NULL)
+ * @return An #Eina_List of #Azy_Rss_Item objects
+ */
+Eina_List *
+azy_rss_items_steal(Azy_Rss *rss)
+{
+   Eina_List *ret;
+   if (!AZY_MAGIC_CHECK(rss, AZY_MAGIC_RSS))
+     {
+        AZY_MAGIC_FAIL(rss, AZY_MAGIC_RSS);
+        return NULL;
+     }
+   ret = rss->items;
+   rss->items = NULL;
+   return ret;
 }
 
 /**
