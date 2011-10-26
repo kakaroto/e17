@@ -1,0 +1,12 @@
+Login:        jypark 
+IRC Nick:     jypark_jiyoun
+Cloak:        developer/jypark 
+Name:         Jiyoun Park 
+Location:     Suwon, Korea 
+E-Mail:       jijibe99@gmail.com 
+WWW:          
+Managing:     evas, ecore 
+Contributing: evas, ecore, elementary 
+Group:        Libraries, Core 
+Platform:      
+GeoData:      37.261860 127.041092 
