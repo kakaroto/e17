@@ -24,6 +24,7 @@ edje_SOURCES = \
 .vala.stamp: $(edje_VALASOURCES)
 	$(VALAC) -C --vapidir $(top_srcdir)/vapi \
 	            --pkg edje \
+	            --pkg ecore-evas \
 	            --save-temps \
 	            --basedir $(top_srcdir) $<
 	touch $^

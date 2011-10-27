@@ -25,6 +25,7 @@ ecore_glib_SOURCES = \
 	$(VALAC) -C --vapidir $(top_srcdir)/vapi \
 	            --pkg evas \
 	            --pkg ecore \
+	            --pkg ecore-evas \
 	            --pkg glib-2.0 \
 	            --save-temps \
 	            --basedir $(top_srcdir) $<

@@ -1,6 +1,7 @@
 eina
 evas
 ecore
+ecore-evas
 edje
 elementary
 

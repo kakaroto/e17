@@ -25,6 +25,7 @@ ecore_SOURCES = \
 	$(VALAC) -C --vapidir $(top_srcdir)/vapi \
 	            --pkg evas \
 	            --pkg ecore \
+	            --pkg ecore-evas \
 	            --save-temps \
 	            --basedir $(top_srcdir) $<
 	touch $^
