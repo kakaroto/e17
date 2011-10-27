@@ -47,6 +47,7 @@ static void _em_band_hide(void);
 static void _em_band_resize(int w, int h);
 static void _em_grab_region_end(void);
 static void _em_do_app(void);
+static int _em_get_filecount(const char *filename);
 
 /* Global Variables */
 static Options *opts = NULL;
@@ -236,7 +237,7 @@ _em_print_help(void)
 	  );
 
    _em_free_options();
-   exit(EXIT_FAILURE);
+   exit(EXIT_SUCCESS);
 }
 
 static void 
@@ -262,13 +263,9 @@ _em_free_options(void)
 static void 
 _em_get_filename(void) 
 {
-   Eina_List *fl = NULL;
-   char *dir = NULL, *ext = NULL, *file = NULL;
-   const char *f;
    char buf[256];
    struct tm *loctime;
    time_t t;
-   int c = 0;
 
    /* get the current time in local format */
    t = time(NULL);
@@ -282,78 +279,55 @@ _em_get_filename(void)
 	if (ecore_file_is_dir(opts->filename)) 
 	  {
 	     strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%S.png", loctime);
-	     /* set the new filename */
 	     snprintf(buf, sizeof(buf), "%s/%s", opts->filename, strdup(buf));
-             eina_stringshare_replace(&opts->filename, buf);
-	     return;
 	  }
 	else 
 	  {
+             char *filename = NULL;
+             const char *file = NULL, *dir = NULL;
+             char *ext = NULL, *p = NULL;
+
+             filename = strdup(opts->filename);
+
+             dir = ecore_file_dir_get(filename);
+             file = ecore_file_file_get(filename);
+
+             if ((dir) && (file))
+               {
+                  if (!strcmp(dir, file)) dir = getenv("PWD");
+               }
+             else if (!dir) 
+               dir = getenv("PWD");
+
+             /* strip the extension for searches */
+             ext = strrchr(file, '.');
+             if (!ext) ext = strdup(".png");
+
+             /* strip any %N out of filename */
+             p = strrchr(file, '%');
+             if (p) *p = 0;
+
 	     /* filename was given, check for '%' signs to 
-	      * format based on strftime */
-	     if (strstr(opts->filename, "%")) 
+	      * format based on strftime or file count */
+	     if ((strstr(opts->filename, "%")) && 
+                 (!strstr(opts->filename, "%N")))
 	       strftime(buf, sizeof(buf), opts->filename, loctime);
-	     else 
-	       {
-		  /* no '%' signs, check for files existing in the directory */
-		  if (ecore_file_exists(opts->filename)) 
-		    {
-		       /* get the directory */
-		       dir = ecore_file_dir_get(opts->filename);
+             else if (strstr(opts->filename, "%N")) 
+               {
+                  int c = 0;
 
-		       /* get the filename */
-		       f = ecore_file_file_get(opts->filename);
+                  c = _em_get_filecount(filename);
 
-		       /* if these two match, then no dir was passed in,
-			* use current dir */
-		       if (!strcmp(dir, f)) dir = getenv("PWD");
-
-		       /* strip the extension for searches */
-		       ext = ecore_file_strip_ext(opts->filename);
-
-		       /* list files in this directory & count them */
-		       fl = ecore_file_ls(dir);
-		       EINA_LIST_FREE(fl, file)
-			 {
-			    /* skip "thumb" files in the count */
-			    if (strstr(file, "thumb")) continue;
-			    if (strstr(file, ext)) c++;
-			    free(file);
-			 }
-
-                       /* strip the extension from filename */
-                       file = ecore_file_strip_ext(opts->filename);
-
-                       /* get the actual extension */
-                       ext = strrchr(opts->filename, '.');
-                       if (!ext) ext = strdup(".png");
-
-		       if (c > 0) 
-			 {
-			    c++;
-			    /* assemble new filename */
-			    snprintf(buf, sizeof(buf), "%s%i%s", file, c, ext);
-			 }
-		       else 
-                         {
-			    /* assemble new filename */
-			    snprintf(buf, sizeof(buf), "%s%s", file, ext);
-                         }
-		    }
-                  else 
-                    {
-                       /* strip the extension from filename */
-                       file = ecore_file_strip_ext(opts->filename);
-
-                       ext = strrchr(opts->filename, '.');
-                       if (!ext) ext = strdup(".png");
-
-                       /* assemble new filename */
-                       snprintf(buf, sizeof(buf), "%s%s", file, ext);
-                    }
-	       }
+                  if (c > 0) 
+                    snprintf(buf, sizeof(buf), "%s/%s%i%s", dir, file, c, ext);
+                  else
+                    snprintf(buf, sizeof(buf), "%s/%s%s", dir, file, ext);
+               }
+             else
+               snprintf(buf, sizeof(buf), "%s/%s%s", dir, file, ext);
 	  }
      }
+
    /* set the new filename */
    eina_stringshare_replace(&opts->filename, buf);
 }
@@ -535,28 +509,26 @@ _em_do_thumb(const char *filename)
    evas_damage_rectangle_add(sub_evas, 0, 0, tw, th);
    evas_render(sub_evas);
 
+   /* check for user-supplied thumbnail filename */
+   if (!opts->thumb.filename) 
      {
-	/* check for user-supplied thumbnail filename */
-	if (!opts->thumb.filename) 
-	  {
-	     /* no thumbname filename supplied, create one */
-	     ext = ecore_file_strip_ext(opts->filename);
-	     snprintf(buf, sizeof(buf), "%s-thumb", ext);
+        /* no thumbname filename supplied, create one */
+        ext = ecore_file_strip_ext(opts->filename);
+        snprintf(buf, sizeof(buf), "%s-thumb", ext);
 
-	     /* check for extension */
-	     ext = strrchr(opts->filename, '.');
-	     if (ext) 
-	       snprintf(buf, sizeof(buf), "%s%s", strdup(buf), ext);
-	     else
-	       snprintf(buf, sizeof(buf), "%s.png", strdup(buf));
-	     opts->thumb.filename = eina_stringshare_add(buf);
-	  }
-
-	/* actually save the thumbnail */
-        snprintf(buf, sizeof(buf), "quality=%d compress=9", opts->quality);
-        if (!(evas_object_image_save(tmp, opts->thumb.filename, NULL, buf))) 
-          printf("Error saving thumbnail: %s\n", opts->thumb.filename);
+        /* check for extension */
+        ext = strrchr(opts->filename, '.');
+        if (ext) 
+          snprintf(buf, sizeof(buf), "%s%s", strdup(buf), ext);
+        else
+          snprintf(buf, sizeof(buf), "%s.png", strdup(buf));
+        opts->thumb.filename = eina_stringshare_add(buf);
      }
+
+   /* actually save the thumbnail */
+   snprintf(buf, sizeof(buf), "quality=%d compress=9", opts->quality);
+   if (!(evas_object_image_save(tmp, opts->thumb.filename, NULL, buf))) 
+     printf("Error saving thumbnail: %s\n", opts->thumb.filename);
 
    if (tmp) evas_object_del(tmp);
    if (img) evas_object_del(img);
@@ -907,4 +879,47 @@ _em_do_app(void)
    /* run the app */
    exe = ecore_exe_run(buf, NULL);
    if (exe) ecore_exe_free(exe);
+}
+
+static int 
+_em_get_filecount(const char *filename) 
+{
+   Eina_List *fl = NULL;
+   char *dir = NULL, *ext = NULL;
+   char *p = NULL, *f = NULL;
+   const char *file = NULL;
+   int c =  0;
+
+   /* grab dir and file */
+   dir = ecore_file_dir_get(filename);
+   file = ecore_file_file_get(filename);
+   if ((dir) && (file))
+     {
+        if (!strcmp(dir, file)) dir = getenv("PWD");
+     }
+   else if (!dir) 
+     dir = getenv("PWD");
+
+   /* strip the extension for searches */
+   ext = strrchr(file, '.');
+   if (!ext) ext = strdup(".png");
+
+   /* strip any %N out of filename */
+   p = strrchr(file, '%');
+   if (p) *p = 0;
+
+   fl = ecore_file_ls(dir);
+   EINA_LIST_FREE(fl, f) 
+     {
+        if (!strstr(f, ext)) continue;
+        if (strncmp(f, file, strlen(file)) >= 0) 
+          {
+             if (strstr(f, "thumb")) continue;
+             if (strstr(f, ext)) c++;
+          }
+
+        free(f);
+     }
+
+   return c;
 }
