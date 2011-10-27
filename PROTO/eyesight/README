@@ -3,18 +3,27 @@ Instructions for compilation:
 
 I) Needed libraries:
 
-Eina and Evas
+Eina and Evas (and Ecore and Ecore_Evas for the binary)
 
 II) Modules
 
-1) PDF renderer: download and install Poppler at http://poppler.freedesktop.org/
-   Do not forget to install Xpdf headers (pass --enable-xpdf-headers to ./configure)
+1) PDF renderer: MuPDF or Poppler.
 
-2) PS renderer: download and install libspectre at http://libspectre.freedesktop.org/wiki/
+ a) MuPDF library is provided (default renderer)
+ b) Or download and install Poppler: http://poppler.freedesktop.org/
+    Do not forget to install Xpdf headers (pass --enable-xpdf-headers
+    to Poppler's ./configure)
+
+2) PS renderer: download and install libspectre:
+   http://libspectre.freedesktop.org/wiki/
 
 3) Image / Comic Book renderer: Ecore_File needed.
+
+4) Text
 
 III) Binary test
 
 Press right and left arrow to navigate in the document (if more than one page)
 Press 'q' to quit
+
+EYESIGHT_DATA_DIR environment variable : directory where gradient.png is located

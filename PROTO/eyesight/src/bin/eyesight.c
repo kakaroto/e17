@@ -1,6 +1,6 @@
 /*
  * Eyesight - EFL-based document renderer
- * Copyright (C) 2010 Vincent Torri <vtorri at univ-evry dot fr>
+ * Copyright (C) 2010-2011 Vincent Torri <vtorri at univ-evry dot fr>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,13 +31,18 @@
 #include "Eyesight_Module_Ps.h"
 #include "Eyesight_Module_Txt.h"
 
+#include "eyesight_popup.h"
+
 static int page_nbr = 0;
 
 static void _cb_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+  Popup *p;
   Evas_Event_Key_Up *ev;
 
+  p = (Popup *)data;
   ev = (Evas_Event_Key_Up *)event_info;
+
   if (strcmp(ev->keyname, "q") == 0)
     {
       ecore_main_loop_quit();
@@ -46,18 +51,30 @@ static void _cb_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
   if (strcmp(ev->keyname, "Right") == 0)
     {
-      if (page_nbr < ( eyesight_object_page_count(obj) - 1))
+      if (page_nbr < (eyesight_object_page_count(obj) - 1))
         page_nbr++;
     }
+
   if (strcmp(ev->keyname, "Left") == 0)
     {
       if (page_nbr > 0)
         page_nbr--;
     }
+
   if (page_nbr != eyesight_object_page_get(obj))
     {
+      char buf[16];
+      double t0, t1;
+
       eyesight_object_page_set(obj, page_nbr);
+      t0 = ecore_time_get();
       eyesight_object_page_render(obj);
+      t1 = ecore_time_get();
+      printf("time (p=%d): %E\n", page_nbr, t1-t0);
+
+      snprintf(buf, 15, "%d/%d", page_nbr + 1, eyesight_object_page_count(obj));
+      popup_text_set(p, buf);
+      popup_timer_start(p);
     }
 }
 
@@ -209,6 +226,7 @@ int main(int argc, char *argv[])
   Eina_List *links = NULL;
   Eyesight_Backend eb;
   void *doc;
+  Popup *p;
 
   if (argc < 1)
     {
@@ -250,9 +268,9 @@ int main(int argc, char *argv[])
 
   evas = ecore_evas_get(ee);
 
-  /* beckground */
+  /* background */
   o = evas_object_rectangle_add(evas);
-  evas_object_color_set(o, 0, 0, 0, 255);
+  evas_object_color_set(o, 255, 255, 255, 255);
   evas_object_move(o, 0, 0);
   evas_object_show(o);
   bg = o;
@@ -341,7 +359,15 @@ int main(int argc, char *argv[])
   printf ("%d %d\n", w, h);
   evas_object_focus_set(o, EINA_TRUE);
   links = eyesight_object_page_links_get(o);
-  evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_UP, _cb_up, NULL);
+
+  p = popup_new(evas);
+  if (!popup_background_set(p, "gradient.png"))
+    {
+      popup_free(p);
+      p = NULL;
+    }
+
+  evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_UP, _cb_up, p);
   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, _cb_move, links);
   evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, _cb_mouse_up, links);
   evas_object_show (o);
@@ -356,6 +382,7 @@ int main(int argc, char *argv[])
 
   ecore_main_loop_begin();
 
+  popup_free(p);
   ecore_evas_shutdown();
 
   return 0;

@@ -5,10 +5,11 @@ General
 
 Modules
 
- * PDF backend: add mupdf support
+ * PDF backend: need checks
+ * XPS backend: MuPDF has an implementation
  * txt backend: improve a lot
  * dvi backend
- * rtf backend
+ * rtf backend: see ertf
  * djvu backend
  * epub
  * multipage TIFF

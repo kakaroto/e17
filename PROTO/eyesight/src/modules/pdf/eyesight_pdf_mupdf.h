@@ -1,6 +1,6 @@
 /*
  * Eyesight - EFL-based document renderer
- * Copyright (C) 2010 Vincent Torri <vtorri at univ-evry dot fr>
+ * Copyright (C) 2010-2011 Vincent Torri <vtorri at univ-evry dot fr>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

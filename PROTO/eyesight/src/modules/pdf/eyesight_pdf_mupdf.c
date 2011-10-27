@@ -1,6 +1,6 @@
 /*
  * Eyesight - EFL-based document renderer
- * Copyright (C) 2010 Vincent Torri <vtorri at univ-evry dot fr>
+ * Copyright (C) 2010-2011 Vincent Torri <vtorri at univ-evry dot fr>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -120,7 +120,7 @@ _eyesight_index_fill(pdf_xref *xref,
 
       /* FIXME: page outlines are allowed to have a /A key (action) which can be a URL */
       if (outline->link && (outline->link->kind == PDF_LINK_GOTO))
-        item->page = pdf_find_page_number(xref, outline->link->dest) - 1;
+        item->page = pdf_find_page_number(xref, outline->link->dest);
       /* FIXME: not implemented in mupdf yet */
       item->is_open = EINA_TRUE;
 
@@ -165,7 +165,7 @@ _eyesight_link_action_goto_fill(pdf_xref *xref, pdf_link *lnk)
 {
   Eyesight_Link_Action_Goto action_goto;
 
-  action_goto.page = pdf_find_page_number(xref, lnk->dest) - 1;
+  action_goto.page = pdf_find_page_number(xref, lnk->dest);
 
   /* FIXME: to complete */
 
@@ -580,6 +580,9 @@ em_page_set(void *eb, int page)
     }
 
   /* FIXME: cache list and dev */
+  if (ebp->page.display_list)
+    fz_free_display_list(ebp->page.display_list);
+  ebp->page.display_list = fz_new_display_list();
   dev = fz_new_list_device(ebp->page.display_list);
   error = pdf_run_page(ebp->doc.xref, p, dev, fz_identity);
   if (error)
@@ -614,6 +617,8 @@ em_page_get(void *eb)
 
   if (!eb)
     return 0;
+
+  ebp = (Eyesight_Backend_Pdf *)eb;
 
   return ebp->page.page_nbr;
 }
@@ -730,7 +735,7 @@ em_page_render(void *eb)
 
   /* FIXME: use fz_newpixmapwithdata(fz_devicergb, bbox.x0, bbox.y0, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0, m) instead to avoid a memcpy */
   image = fz_new_pixmap_with_rect(fz_device_rgb, bbox);
-  fz_clear_pixmap_with_color(image, 0xFF);
+  fz_clear_pixmap_with_color(image, 0xff);
   dev = fz_new_draw_device(ebp->doc.cache, image);
   fz_execute_display_list(ebp->page.display_list, dev, ctm, fz_infinite_bbox);
   fz_free_device(dev);

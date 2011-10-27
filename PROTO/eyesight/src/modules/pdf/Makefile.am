@@ -96,217 +96,217 @@ libfitz_la_CPPFLAGS = \
 libfitz_la_LIBADD = @MUPDF_LIBS@
 
 cmap_cns_files = \
-mupdf-0.9/cmaps/cns/Adobe-CNS1-0 \
-mupdf-0.9/cmaps/cns/Adobe-CNS1-1 \
-mupdf-0.9/cmaps/cns/Adobe-CNS1-2 \
-mupdf-0.9/cmaps/cns/Adobe-CNS1-3 \
-mupdf-0.9/cmaps/cns/Adobe-CNS1-4 \
-mupdf-0.9/cmaps/cns/Adobe-CNS1-5 \
-mupdf-0.9/cmaps/cns/Adobe-CNS1-6 \
-mupdf-0.9/cmaps/cns/Adobe-CNS1-UCS2 \
-mupdf-0.9/cmaps/cns/B5-H \
-mupdf-0.9/cmaps/cns/B5pc-H \
-mupdf-0.9/cmaps/cns/B5pc-V \
-mupdf-0.9/cmaps/cns/B5-V \
-mupdf-0.9/cmaps/cns/CNS1-H \
-mupdf-0.9/cmaps/cns/CNS1-V \
-mupdf-0.9/cmaps/cns/CNS2-H \
-mupdf-0.9/cmaps/cns/CNS2-V \
-mupdf-0.9/cmaps/cns/CNS-EUC-H \
-mupdf-0.9/cmaps/cns/CNS-EUC-V \
-mupdf-0.9/cmaps/cns/ETen-B5-H \
-mupdf-0.9/cmaps/cns/ETen-B5-V \
-mupdf-0.9/cmaps/cns/ETenms-B5-H \
-mupdf-0.9/cmaps/cns/ETenms-B5-V \
-mupdf-0.9/cmaps/cns/ETHK-B5-H \
-mupdf-0.9/cmaps/cns/ETHK-B5-V \
-mupdf-0.9/cmaps/cns/HKdla-B5-H \
-mupdf-0.9/cmaps/cns/HKdla-B5-V \
-mupdf-0.9/cmaps/cns/HKdlb-B5-H \
-mupdf-0.9/cmaps/cns/HKdlb-B5-V \
-mupdf-0.9/cmaps/cns/HKgccs-B5-H \
-mupdf-0.9/cmaps/cns/HKgccs-B5-V \
-mupdf-0.9/cmaps/cns/HKm314-B5-H \
-mupdf-0.9/cmaps/cns/HKm314-B5-V \
-mupdf-0.9/cmaps/cns/HKm471-B5-H \
-mupdf-0.9/cmaps/cns/HKm471-B5-V \
-mupdf-0.9/cmaps/cns/HKscs-B5-H \
-mupdf-0.9/cmaps/cns/HKscs-B5-V \
-mupdf-0.9/cmaps/cns/UniCNS-UCS2-H \
-mupdf-0.9/cmaps/cns/UniCNS-UCS2-V \
-mupdf-0.9/cmaps/cns/UniCNS-UTF16-H \
-mupdf-0.9/cmaps/cns/UniCNS-UTF16-V
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/Adobe-CNS1-0 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/Adobe-CNS1-1 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/Adobe-CNS1-2 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/Adobe-CNS1-3 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/Adobe-CNS1-4 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/Adobe-CNS1-5 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/Adobe-CNS1-6 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/Adobe-CNS1-UCS2 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/B5pc-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/B5pc-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/CNS1-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/CNS1-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/CNS2-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/CNS2-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/CNS-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/CNS-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/ETen-B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/ETen-B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/ETenms-B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/ETenms-B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/ETHK-B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/ETHK-B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKdla-B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKdla-B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKdlb-B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKdlb-B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKgccs-B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKgccs-B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKm314-B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKm314-B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKm471-B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKm471-B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKscs-B5-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/HKscs-B5-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/UniCNS-UCS2-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/UniCNS-UCS2-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/UniCNS-UTF16-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/cns/UniCNS-UTF16-V
 
 cmap_gb_files = \
-mupdf-0.9/cmaps/gb/Adobe-GB1-0 \
-mupdf-0.9/cmaps/gb/Adobe-GB1-1 \
-mupdf-0.9/cmaps/gb/Adobe-GB1-2 \
-mupdf-0.9/cmaps/gb/Adobe-GB1-3 \
-mupdf-0.9/cmaps/gb/Adobe-GB1-4 \
-mupdf-0.9/cmaps/gb/Adobe-GB1-5 \
-mupdf-0.9/cmaps/gb/Adobe-GB1-UCS2 \
-mupdf-0.9/cmaps/gb/GB-EUC-H \
-mupdf-0.9/cmaps/gb/GB-EUC-V \
-mupdf-0.9/cmaps/gb/GB-H \
-mupdf-0.9/cmaps/gb/GBK2K-H \
-mupdf-0.9/cmaps/gb/GBK2K-V \
-mupdf-0.9/cmaps/gb/GBK-EUC-H \
-mupdf-0.9/cmaps/gb/GBK-EUC-V \
-mupdf-0.9/cmaps/gb/GBKp-EUC-H \
-mupdf-0.9/cmaps/gb/GBKp-EUC-V \
-mupdf-0.9/cmaps/gb/GBpc-EUC-H \
-mupdf-0.9/cmaps/gb/GBpc-EUC-V \
-mupdf-0.9/cmaps/gb/GBT-EUC-H \
-mupdf-0.9/cmaps/gb/GBT-EUC-V \
-mupdf-0.9/cmaps/gb/GBT-H \
-mupdf-0.9/cmaps/gb/GBTpc-EUC-H \
-mupdf-0.9/cmaps/gb/GBTpc-EUC-V \
-mupdf-0.9/cmaps/gb/GBT-V \
-mupdf-0.9/cmaps/gb/GB-V \
-mupdf-0.9/cmaps/gb/UniGB-UCS2-H \
-mupdf-0.9/cmaps/gb/UniGB-UCS2-V \
-mupdf-0.9/cmaps/gb/UniGB-UTF16-H \
-mupdf-0.9/cmaps/gb/UniGB-UTF16-V
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/Adobe-GB1-0 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/Adobe-GB1-1 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/Adobe-GB1-2 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/Adobe-GB1-3 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/Adobe-GB1-4 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/Adobe-GB1-5 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/Adobe-GB1-UCS2 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GB-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GB-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GB-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBK2K-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBK2K-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBK-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBK-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBKp-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBKp-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBpc-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBpc-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBT-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBT-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBT-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBTpc-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBTpc-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GBT-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/GB-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/UniGB-UCS2-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/UniGB-UCS2-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/UniGB-UTF16-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/gb/UniGB-UTF16-V
 
 cmap_japan_files = \
-mupdf-0.9/cmaps/japan/78-EUC-H \
-mupdf-0.9/cmaps/japan/78-EUC-V \
-mupdf-0.9/cmaps/japan/78-H \
-mupdf-0.9/cmaps/japan/78ms-RKSJ-H \
-mupdf-0.9/cmaps/japan/78ms-RKSJ-V \
-mupdf-0.9/cmaps/japan/78-RKSJ-H \
-mupdf-0.9/cmaps/japan/78-RKSJ-V \
-mupdf-0.9/cmaps/japan/78-V \
-mupdf-0.9/cmaps/japan/83pv-RKSJ-H \
-mupdf-0.9/cmaps/japan/90msp-RKSJ-H \
-mupdf-0.9/cmaps/japan/90msp-RKSJ-V \
-mupdf-0.9/cmaps/japan/90ms-RKSJ-H \
-mupdf-0.9/cmaps/japan/90ms-RKSJ-V \
-mupdf-0.9/cmaps/japan/90pv-RKSJ-H \
-mupdf-0.9/cmaps/japan/90pv-RKSJ-V \
-mupdf-0.9/cmaps/japan/Add-H \
-mupdf-0.9/cmaps/japan/Add-RKSJ-H \
-mupdf-0.9/cmaps/japan/Add-RKSJ-V \
-mupdf-0.9/cmaps/japan/Add-V \
-mupdf-0.9/cmaps/japan/Adobe-Japan1-0 \
-mupdf-0.9/cmaps/japan/Adobe-Japan1-1 \
-mupdf-0.9/cmaps/japan/Adobe-Japan1-2 \
-mupdf-0.9/cmaps/japan/Adobe-Japan1-3 \
-mupdf-0.9/cmaps/japan/Adobe-Japan1-4 \
-mupdf-0.9/cmaps/japan/Adobe-Japan1-5 \
-mupdf-0.9/cmaps/japan/Adobe-Japan1-6 \
-mupdf-0.9/cmaps/japan/Adobe-Japan1-UCS2 \
-mupdf-0.9/cmaps/japan/Adobe-Japan2-0 \
-mupdf-0.9/cmaps/japan/EUC-H \
-mupdf-0.9/cmaps/japan/EUC-V \
-mupdf-0.9/cmaps/japan/Ext-H \
-mupdf-0.9/cmaps/japan/Ext-RKSJ-H \
-mupdf-0.9/cmaps/japan/Ext-RKSJ-V \
-mupdf-0.9/cmaps/japan/Ext-V \
-mupdf-0.9/cmaps/japan/H \
-mupdf-0.9/cmaps/japan/Hankaku \
-mupdf-0.9/cmaps/japan/Hiragana \
-mupdf-0.9/cmaps/japan/Hojo-EUC-H \
-mupdf-0.9/cmaps/japan/Hojo-EUC-V \
-mupdf-0.9/cmaps/japan/Hojo-H \
-mupdf-0.9/cmaps/japan/Hojo-V \
-mupdf-0.9/cmaps/japan/Katakana \
-mupdf-0.9/cmaps/japan/NWP-H \
-mupdf-0.9/cmaps/japan/NWP-V \
-mupdf-0.9/cmaps/japan/RKSJ-H \
-mupdf-0.9/cmaps/japan/RKSJ-V \
-mupdf-0.9/cmaps/japan/Roman \
-mupdf-0.9/cmaps/japan/UniHojo-UCS2-H \
-mupdf-0.9/cmaps/japan/UniHojo-UCS2-V \
-mupdf-0.9/cmaps/japan/UniHojo-UTF16-H \
-mupdf-0.9/cmaps/japan/UniHojo-UTF16-V \
-mupdf-0.9/cmaps/japan/UniJISPro-UCS2-HW-V \
-mupdf-0.9/cmaps/japan/UniJISPro-UCS2-V \
-mupdf-0.9/cmaps/japan/UniJIS-UCS2-H \
-mupdf-0.9/cmaps/japan/UniJIS-UCS2-HW-H \
-mupdf-0.9/cmaps/japan/UniJIS-UCS2-HW-V \
-mupdf-0.9/cmaps/japan/UniJIS-UCS2-V \
-mupdf-0.9/cmaps/japan/UniJIS-UTF16-H \
-mupdf-0.9/cmaps/japan/UniJIS-UTF16-V \
-mupdf-0.9/cmaps/japan/V \
-mupdf-0.9/cmaps/japan/WP-Symbol
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/78-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/78-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/78-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/78ms-RKSJ-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/78ms-RKSJ-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/78-RKSJ-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/78-RKSJ-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/78-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/83pv-RKSJ-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/90msp-RKSJ-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/90msp-RKSJ-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/90ms-RKSJ-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/90ms-RKSJ-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/90pv-RKSJ-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/90pv-RKSJ-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Add-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Add-RKSJ-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Add-RKSJ-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Add-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Adobe-Japan1-0 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Adobe-Japan1-1 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Adobe-Japan1-2 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Adobe-Japan1-3 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Adobe-Japan1-4 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Adobe-Japan1-5 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Adobe-Japan1-6 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Adobe-Japan1-UCS2 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Adobe-Japan2-0 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Ext-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Ext-RKSJ-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Ext-RKSJ-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Ext-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Hankaku \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Hiragana \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Hojo-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Hojo-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Hojo-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Hojo-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Katakana \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/NWP-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/NWP-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/RKSJ-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/RKSJ-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/Roman \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniHojo-UCS2-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniHojo-UCS2-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniHojo-UTF16-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniHojo-UTF16-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniJISPro-UCS2-HW-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniJISPro-UCS2-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniJIS-UCS2-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniJIS-UCS2-HW-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniJIS-UCS2-HW-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniJIS-UCS2-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniJIS-UTF16-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/UniJIS-UTF16-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/japan/WP-Symbol
 
 cmap_korea_files = \
-mupdf-0.9/cmaps/korea/Adobe-Korea1-0 \
-mupdf-0.9/cmaps/korea/Adobe-Korea1-1 \
-mupdf-0.9/cmaps/korea/Adobe-Korea1-2 \
-mupdf-0.9/cmaps/korea/Adobe-Korea1-UCS2 \
-mupdf-0.9/cmaps/korea/KSC-EUC-H \
-mupdf-0.9/cmaps/korea/KSC-EUC-V \
-mupdf-0.9/cmaps/korea/KSC-H \
-mupdf-0.9/cmaps/korea/KSC-Johab-H \
-mupdf-0.9/cmaps/korea/KSC-Johab-V \
-mupdf-0.9/cmaps/korea/KSCms-UHC-H \
-mupdf-0.9/cmaps/korea/KSCms-UHC-HW-H \
-mupdf-0.9/cmaps/korea/KSCms-UHC-HW-V \
-mupdf-0.9/cmaps/korea/KSCms-UHC-V \
-mupdf-0.9/cmaps/korea/KSCpc-EUC-H \
-mupdf-0.9/cmaps/korea/KSCpc-EUC-V \
-mupdf-0.9/cmaps/korea/KSC-V \
-mupdf-0.9/cmaps/korea/UniKS-UCS2-H \
-mupdf-0.9/cmaps/korea/UniKS-UCS2-V \
-mupdf-0.9/cmaps/korea/UniKS-UTF16-H \
-mupdf-0.9/cmaps/korea/UniKS-UTF16-V
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/Adobe-Korea1-0 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/Adobe-Korea1-1 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/Adobe-Korea1-2 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/Adobe-Korea1-UCS2 \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSC-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSC-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSC-Johab-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSC-Johab-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSCms-UHC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSCms-UHC-HW-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSCms-UHC-HW-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSCms-UHC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSCpc-EUC-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSCpc-EUC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/KSC-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/UniKS-UCS2-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/UniKS-UCS2-V \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/UniKS-UTF16-H \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/cmaps/korea/UniKS-UTF16-V
 
 generated:
 	@echo "  MKDIR  mupdf-0.9/generated/"
-	@$(MKDIR_P) mupdf-0.9/generated/
+	@$(MKDIR_P) $(top_builddir)/src/modules/pdf/mupdf-0.9/generated/
 
 cmap_cns.h: cmapdump generated $(cmap_cns_files)
 	@echo "  GEN    $@"
-	@./cmapdump mupdf-0.9/generated/$@ $(cmap_cns_files) > /dev/null 2>&1
+	@./cmapdump $(top_builddir)/src/modules/pdf/mupdf-0.9/generated/$@ $(cmap_cns_files) > /dev/null 2>&1
 
 cmap_gb.h: cmapdump generated $(cmap_gb_files)
 	@echo "  GEN    $@"
-	@./cmapdump mupdf-0.9/generated/$@ $(cmap_gb_files) > /dev/null 2>&1
+	@./cmapdump $(top_builddir)/src/modules/pdf/mupdf-0.9/generated/$@ $(cmap_gb_files) > /dev/null 2>&1
 
 cmap_japan.h: cmapdump generated $(cmap_japan_files)
 	@echo "  GEN    $@"
-	@./cmapdump mupdf-0.9/generated/$@ $(cmap_japan_files) > /dev/null 2>&1
+	@./cmapdump $(top_builddir)/src/modules/pdf/mupdf-0.9/generated/$@ $(cmap_japan_files) > /dev/null 2>&1
 
 cmap_korea.h: cmapdump generated $(cmap_korea_files)
 	@echo "  GEN    $@"
-	@./cmapdump mupdf-0.9/generated/$@ $(cmap_korea_files) > /dev/null 2>&1
+	@./cmapdump $(top_builddir)/src/modules/pdf/mupdf-0.9/generated/$@ $(cmap_korea_files) > /dev/null 2>&1
 
 font_base_files = \
-mupdf-0.9/fonts/Dingbats.cff \
-mupdf-0.9/fonts/NimbusMonL-Bold.cff \
-mupdf-0.9/fonts/NimbusMonL-BoldObli.cff \
-mupdf-0.9/fonts/NimbusMonL-Regu.cff \
-mupdf-0.9/fonts/NimbusMonL-ReguObli.cff \
-mupdf-0.9/fonts/NimbusRomNo9L-Medi.cff \
-mupdf-0.9/fonts/NimbusRomNo9L-MediItal.cff \
-mupdf-0.9/fonts/NimbusRomNo9L-Regu.cff \
-mupdf-0.9/fonts/NimbusRomNo9L-ReguItal.cff \
-mupdf-0.9/fonts/NimbusSanL-Bold.cff \
-mupdf-0.9/fonts/NimbusSanL-BoldItal.cff \
-mupdf-0.9/fonts/NimbusSanL-Regu.cff \
-mupdf-0.9/fonts/NimbusSanL-ReguItal.cff \
-mupdf-0.9/fonts/StandardSymL.cff
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/Dingbats.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusMonL-Bold.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusMonL-BoldObli.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusMonL-Regu.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusMonL-ReguObli.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusRomNo9L-Medi.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusRomNo9L-MediItal.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusRomNo9L-Regu.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusRomNo9L-ReguItal.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusSanL-Bold.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusSanL-BoldItal.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusSanL-Regu.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/NimbusSanL-ReguItal.cff \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/StandardSymL.cff
 
 font_droid_files = \
-mupdf-0.9/fonts/droid/DroidSans.ttf \
-mupdf-0.9/fonts/droid/DroidSansMono.ttf
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/droid/DroidSans.ttf \
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/droid/DroidSansMono.ttf
 
 font_cjk_files = \
-mupdf-0.9/fonts/droid/DroidSansFallback.ttf
+$(top_srcdir)/src/modules/pdf/mupdf-0.9/fonts/droid/DroidSansFallback.ttf
 
 font_base14.h: fontdump generated $(font_base_files)
 	@echo "  GEN    $@"
-	@./fontdump mupdf-0.9/generated/$@ $(font_base_files) > /dev/null 2>&1
+	@./fontdump $(top_builddir)/src/modules/pdf/mupdf-0.9/generated/$@ $(font_base_files) > /dev/null 2>&1
 
 font_droid.h: fontdump generated $(font_droid_files)
 	@echo "  GEN    $@"
-	@./fontdump mupdf-0.9/generated/$@ $(font_droid_files) > /dev/null 2>&1
+	@./fontdump $(top_builddir)/src/modules/pdf/mupdf-0.9/generated/$@ $(font_droid_files) > /dev/null 2>&1
 
 font_cjk.h: fontdump generated $(font_cjk_files)
 	@echo "  GEN    $@"
-	@./fontdump mupdf-0.9/generated/$@ $(font_cjk_files) > /dev/null 2>&1
+	@./fontdump $(top_builddir)/src/modules/pdf/mupdf-0.9/generated/$@ $(font_cjk_files) > /dev/null 2>&1
 
 libmupdf_la_SOURCES = \
 mupdf-0.9/pdf/pdf_annot.c \
