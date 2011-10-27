@@ -323,8 +323,13 @@ _em_get_filename(void)
                   else
                     snprintf(buf, sizeof(buf), "%s/%s%s", dir, file, ext);
                }
-             else
-               snprintf(buf, sizeof(buf), "%s/%s", dir, file);
+             else 
+               {
+                  if (!strrchr(file, '.'))
+                    snprintf(buf, sizeof(buf), "%s/%s.png", dir, file);
+                  else
+                    snprintf(buf, sizeof(buf), "%s/%s", dir, file);
+               }
 	  }
      }
 
