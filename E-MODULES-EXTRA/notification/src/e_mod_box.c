@@ -770,22 +770,21 @@ _notification_box_cb_icon_mouse_up(void        *data,
    ev = event_info;
    ic = data;
    b = ic->n_box;
-   if ((ev->button == 1))
+   if (ev->button != 1) return;
+
+   if (b->inst->ci->focus_window && ic->border)
      {
-        if (b->inst->ci->focus_window && ic->border)
-          {
-             e_border_uniconify(ic->border);
-             e_desk_show(ic->border->desk);
-             e_border_show(ic->border);
-             e_border_raise(ic->border);
-             e_border_focus_set(ic->border, 1, 1);
-          }
-        b->icons = eina_list_remove(b->icons, ic);
-        _notification_box_icon_free(ic);
-        _notification_box_empty_handle(b);
-        _notification_box_resize_handle(b);
-        _gc_orient(b->inst->gcc, b->inst->gcc->gadcon->orient);
+        e_border_uniconify(ic->border);
+        e_desk_show(ic->border->desk);
+        e_border_show(ic->border);
+        e_border_raise(ic->border);
+        e_border_focus_set(ic->border, 1, 1);
      }
+   b->icons = eina_list_remove(b->icons, ic);
+   _notification_box_icon_free(ic);
+   _notification_box_empty_handle(b);
+   _notification_box_resize_handle(b);
+   _gc_orient(b->inst->gcc, b->inst->gcc->gadcon->orient);
 }
 
 static void
