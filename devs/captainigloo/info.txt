@@ -1,10 +1,12 @@
 Login:        captainigloo
 IRC Nick:     captainigloo
+Cloak:        developer/captainigloo
 Name:         Nicolas Aguirre
 Location:     Toulouse, France
-E-Mail:       aguirre.nicolas@gmail.com
-WWW:          http://www.digital-corner.org
-Managing:     Enna
+E-Mail:       -aguirre.nicolas@gmail.com
+WWW:          http://dev.enlightenment.fr/~captainigloo/
+Managing:     enna-explorer, elfe
+Contributing: Elementary
 Group:	      Applications
-Platform:     Linux
+Platform:     Bodhilinux (Linux), MacOSX Lion
 GeoData:      43.598816 1.436257
