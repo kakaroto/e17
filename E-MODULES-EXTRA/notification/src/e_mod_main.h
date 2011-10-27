@@ -130,7 +130,7 @@ struct _Popup_Data
 };
 
 
-int  notification_popup_notify(E_Notification *n, unsigned int replaces_id, unsigned int id, const char *appname);
+int  notification_popup_notify(E_Notification *n, unsigned int replaces_id, const char *appname);
 void notification_popup_shutdown(void);
 void notification_popup_close(unsigned int id);
 

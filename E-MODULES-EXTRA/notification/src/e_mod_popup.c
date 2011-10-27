@@ -36,7 +36,6 @@ static int next_pos = 0;
 int
 notification_popup_notify(E_Notification *n,
                           unsigned int    replaces_id,
-                          unsigned int    id __UNUSED__,
                           const char     *appname)
 {
    double timeout;

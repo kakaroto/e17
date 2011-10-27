@@ -833,7 +833,6 @@ _notification_box_cb_icon_mouse_still_in(void *data)
    e_notification_hint_urgency_set(ic->notif, 4);
    ic->popup = notification_popup_notify(ic->notif,
                                          e_notification_id_get(ic->notif),
-                                         e_notification_id_get(ic->notif),
                                          e_notification_app_name_get(ic->notif));
    ecore_timer_del(ic->mouse_in_timer);
    ic->mouse_in_timer = NULL;

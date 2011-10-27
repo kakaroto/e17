@@ -187,13 +187,13 @@ _notification_notify(E_Notification *n)
         e_notification_id_set(n, replaces_id);
      }
 
-   popuped = notification_popup_notify(n, replaces_id, new_id, appname);
+   popuped = notification_popup_notify(n, replaces_id, appname);
    stacked = notification_box_notify(n, replaces_id, new_id);
 
    if (!popuped && !stacked)
      {
         e_notification_hint_urgency_set(n, 4);
-        notification_popup_notify(n, replaces_id, new_id, appname);
+        notification_popup_notify(n, replaces_id, appname);
      }
 
    return new_id;
