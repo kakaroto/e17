@@ -303,10 +303,6 @@ _em_get_filename(void)
              ext = strrchr(file, '.');
              if (!ext) ext = strdup(".png");
 
-             /* strip any %N out of filename */
-             p = strrchr(file, '%');
-             if (p) *p = 0;
-
 	     /* filename was given, check for '%' signs to 
 	      * format based on strftime or file count */
 	     if ((strstr(opts->filename, "%")) && 
@@ -316,6 +312,10 @@ _em_get_filename(void)
                {
                   int c = 0;
 
+                  /* strip any %N out of filename */
+                  p = strrchr(file, '%');
+                  if (p) *p = 0;
+
                   c = _em_get_filecount(filename);
 
                   if (c > 0) 
@@ -324,7 +324,7 @@ _em_get_filename(void)
                     snprintf(buf, sizeof(buf), "%s/%s%s", dir, file, ext);
                }
              else
-               snprintf(buf, sizeof(buf), "%s/%s%s", dir, file, ext);
+               snprintf(buf, sizeof(buf), "%s/%s", dir, file);
 	  }
      }
 
