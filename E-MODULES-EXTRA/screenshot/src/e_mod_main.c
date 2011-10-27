@@ -2,6 +2,7 @@
 #include <Ecore.h>
 #include <Ecore_File.h>
 #include <Ecore_X.h>
+#include <limits.h>
 #include "config.h"
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
@@ -74,7 +75,7 @@ EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Screenshot"};
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
-   char buf[4096];
+   char buf[PATH_MAX];
 
 #if HAVE_LOCALE_H
    setlocale(LC_ALL, "");
@@ -236,8 +237,8 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst = NULL;
 
    if (!(inst = gcc->data)) return;
-   if (inst->timer) ecore_timer_del(inst->timer);
    instances = eina_list_remove(instances, inst);
+   if (inst->timer) ecore_timer_del(inst->timer);
    if (inst->menu) 
      {
 	e_menu_post_deactivate_callback_set(inst->menu, NULL, NULL);
@@ -283,7 +284,8 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 {
    char buf[PATH_MAX];
 
-   snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, eina_list_count(instances));
+   snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, 
+            eina_list_count(instances));
    return strdup(buf);
 }
 
@@ -308,7 +310,7 @@ _cfg_timer(void *data)
 static void 
 _cfg_new(void) 
 {
-   char buf[4096];
+   char buf[PATH_MAX];
 
    ss_cfg = E_NEW(Config, 1);
    ss_cfg->version = (MOD_CONFIG_FILE_EPOCH << 16);
@@ -346,15 +348,16 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
    Instance *inst = NULL;
    Evas_Event_Mouse_Down *ev;
-   E_Menu *m, *mo;
-   E_Menu_Item *mi = NULL;
-   E_Zone *zone = NULL;
-   int x, y;
 
    if (!(inst = data)) return;
    ev = event_info;
    if ((ev->button == 3) && (!inst->menu)) 
      {
+        E_Menu *m = NULL, *mo = NULL;
+        E_Menu_Item *mi = NULL;
+        E_Zone *zone = NULL;
+        int x = 0, y = 0;
+
 	zone = e_util_zone_current_get(e_manager_current_get());
 
 	m = e_menu_new();
@@ -417,7 +420,19 @@ _cb_menu_post(void *data, E_Menu *menu)
 static void 
 _cb_menu_cfg(void *data, E_Menu *menu, E_Menu_Item *mi)
 {
+   Instance *inst = NULL;
    E_Container *con;
+
+   if (!(inst = data)) return;
+
+   /* kill/cancel any existing countdown timer */
+   if (inst->timer) 
+     {
+        ecore_timer_del(inst->timer);
+        inst->timer = NULL;
+        inst->counter = 0;
+        edje_object_part_text_set(inst->o_base, "e.text.counter", "");
+     }
 
    con = e_container_current_get(e_manager_current_get());
    e_int_config_screenshot_module(con, NULL);
@@ -485,7 +500,7 @@ static void
 _cb_dialog_ok(char *text, void *data) 
 {
    Instance *inst = NULL;
-   char buf[4096];
+   char buf[PATH_MAX];
    char *t = NULL;
 
    if (!(inst = data)) return;
@@ -525,8 +540,7 @@ static void
 _cb_do_shot(void) 
 {
    Ecore_Exe *exe;
-   char *tmp;
-   char buf[4096];
+   char *tmp, buf[PATH_MAX];
 
    tmp = strdup("");
    if (ss_cfg->use_bell) 
@@ -606,8 +620,7 @@ static void
 _cb_take_shot(E_Object *obj, const char *params) 
 {
    Ecore_Exe *exe;
-   char *tmp;
-   char buf[4096];
+   char *tmp, buf[PATH_MAX];
 
    tmp = strdup("");
    if (ss_cfg->delay > 0) 
