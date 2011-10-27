@@ -13,8 +13,8 @@ dist_vapi_DATA = \
   ecore.deps \
   edje.vapi \
   edje.deps \
-  elm.vapi \
-  elm.deps \
+  elementary.vapi \
+  elementary.deps \
   emotion.vapi \
   emotion.deps \
   $(NULL)

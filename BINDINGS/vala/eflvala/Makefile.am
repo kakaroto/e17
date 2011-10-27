@@ -11,7 +11,7 @@ VALAC_ARGS = \
 	--pkg evas \
 	--pkg ecore \
 	--pkg edje \
-	--pkg elm \
+	--pkg elementary \
 	--header eflvala.h \
 	--library eflvala-1.0 \
 	--save-temps \

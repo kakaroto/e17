@@ -18,7 +18,7 @@ VALAC_ARGS = \
 	--pkg evas \
 	--pkg ecore \
 	--pkg edje \
-	--pkg elm \
+	--pkg elementary \
 	--pkg glib-2.0
 
 #

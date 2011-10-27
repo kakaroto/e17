@@ -30,7 +30,7 @@ viewstates_SOURCES = \
 	            --pkg eina \
 	            --pkg evas \
 	            --pkg ecore \
-	            --pkg elm \
+	            --pkg elementary \
 	            --save-temps \
 	            --basedir $(top_srcdir) $^
 	touch $@
