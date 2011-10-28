@@ -1,0 +1,12 @@
+Login:        jaehwan 
+IRC Nick:     jaehwan
+Cloak:        developer/jaehwan
+Name:         Jaehwan Kim 
+Location:     Suwon, Korea 
+E-Mail:       jae.hwan.kim.neo@gmail.com, jae.hwan.kim@samsung.com
+WWW:          None
+Managing:     edje, elementary 
+Contributing: edje, elementary 
+Group:        Libraries, Core 
+Platform:     Ubuntu (Linux), Windows XP/7 
+GeoData:      37.257779, 127.053344
