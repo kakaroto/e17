@@ -247,7 +247,8 @@ static void
 _notification_box_evas_set(Notification_Box *b,
                            Evas             *evas)
 {
-   Eina_List *l, *new_icons = NULL;
+   Eina_List *new_icons = NULL;
+   Notification_Box_Icon *ic, *new_ic;
 
    evas_object_del(b->o_box);
    if (b->o_empty) evas_object_del(b->o_empty);
@@ -258,11 +259,8 @@ _notification_box_evas_set(Notification_Box *b,
    e_box_orientation_set(b->o_box, 1);
    e_box_align_set(b->o_box, 0.5, 0.5);
 
-   for (l = b->icons; l; l = l->next)
+   EINA_LIST_FREE(b->icons, ic)
      {
-        Notification_Box_Icon *ic, *new_ic;
-
-        ic = l->data;
         if (!ic) continue;
 
         new_ic = _notification_box_icon_new(b, ic->notif, ic->border, ic->n_id);
@@ -271,7 +269,6 @@ _notification_box_evas_set(Notification_Box *b,
 
         e_box_pack_end(b->o_box, new_ic->o_holder);
      }
-   eina_list_free(b->icons);
    b->icons = new_icons;
    _notification_box_empty_handle(b);
    _notification_box_resize_handle(b);
@@ -280,18 +277,15 @@ _notification_box_evas_set(Notification_Box *b,
 static void
 _notification_box_empty(Notification_Box *b)
 {
-   while (b->icons)
-     {
-        _notification_box_icon_free(b->icons->data);
-        b->icons = eina_list_remove_list(b->icons, b->icons);
-     }
+   Notification_Box_Icon *ic;
+   EINA_LIST_FREE(b->icons, ic)
+     _notification_box_icon_free(b->icons->data);
    _notification_box_empty_handle(b);
 }
 
 static void
 _notification_box_resize_handle(Notification_Box *b)
 {
-   Eina_List *l;
    Notification_Box_Icon *ic;
    Evas_Coord w, h;
 
@@ -301,11 +295,8 @@ _notification_box_resize_handle(Notification_Box *b)
    else
      h = w;
    e_box_freeze(b->o_box);
-   for (l = b->icons; l; l = l->next)
-     {
-        ic = l->data;
-        e_box_pack_options_set(ic->o_holder, 1, 1, 0, 0, 0.5, 0.5, w, h, w, h);
-     }
+   EINA_LIST_FREE(b->icons, ic)
+     e_box_pack_options_set(ic->o_holder, 1, 1, 0, 0, 0.5, 0.5, w, h, w, h);
    e_box_thaw(b->o_box);
 }
 
