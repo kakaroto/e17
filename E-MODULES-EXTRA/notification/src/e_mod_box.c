@@ -410,8 +410,7 @@ _notification_box_icon_empty(Notification_Box_Icon *ic)
 {
    if (ic->o_icon) evas_object_del(ic->o_icon);
    if (ic->o_icon2) evas_object_del(ic->o_icon2);
-   ic->o_icon = NULL;
-   ic->o_icon2 = NULL;
+   ic->o_icon2 = ic->o_icon = NULL;
 }
 
 static Notification_Box_Icon *
@@ -458,23 +457,24 @@ _notification_find_source_border(E_Notification *n)
 
    EINA_LIST_FOREACH(e_border_client_list(), l, bd)
      {
-        int compare_len;
+        size_t app, test;
 
-        if (!bd) continue;
+        if ((!bd) || ((!bd->client.icccm.name) && (!bd->client.icccm.class))) continue;
         /* We can't be sure that the app_name really match the application name.
          * Some plugin put their name instead. But this search gives some good
          * results.
          */
+        app = strlen(app_name);
         if (bd->client.icccm.name)
           {
-             compare_len = MIN_LEN(bd->client.icccm.name, app_name);
-             if (!strncasecmp(bd->client.icccm.name, app_name, compare_len))
+             test = eina_strlen_bounded(bd->client.icccm.name, app + 1);
+             if (!strncasecmp(bd->client.icccm.name, app_name, (app < test) ? app : test))
                return bd;
           }
         if (bd->client.icccm.class)
           {
-             compare_len = MIN_LEN(bd->client.icccm.class, app_name);
-             if (!strncasecmp(bd->client.icccm.class, app_name, compare_len))
+             test = eina_strlen_bounded(bd->client.icccm.class, app + 1);
+             if (!strncasecmp(bd->client.icccm.class, app_name, (app < test) ? app : test))
                return bd;
           }
      }

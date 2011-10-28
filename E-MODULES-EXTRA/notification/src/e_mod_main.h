@@ -20,9 +20,6 @@
 #define MOD_CFG_FILE_VERSION					\
   ((MOD_CFG_FILE_EPOCH << 16) | MOD_CFG_FILE_GENERATION)
 
-#undef  MIN_LEN
-#define MIN_LEN(str1, str2) strlen(str1) < strlen(str2) ? strlen(str1) : strlen(str2)
-
 #undef  MAX
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
