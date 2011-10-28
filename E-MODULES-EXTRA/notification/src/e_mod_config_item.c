@@ -96,13 +96,13 @@ _ci_basic_create_widgets(E_Config_Dialog      *cfd __UNUSED__,
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, D_("Urgency"), 0);
-   ob = e_widget_label_add(evas, D_("Levels of urgency to store : "));
+   ob = e_widget_label_add(evas, D_("Levels of urgency to store:"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, D_("low"), &(cfdata->store_low));
+   ob = e_widget_check_add(evas, D_("Low"), &(cfdata->store_low));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, D_("normal"), &(cfdata->store_normal));
+   ob = e_widget_check_add(evas, D_("Normal"), &(cfdata->store_normal));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, D_("critical"), &(cfdata->store_critical));
+   ob = e_widget_check_add(evas, D_("Critical"), &(cfdata->store_critical));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
