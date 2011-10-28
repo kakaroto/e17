@@ -161,12 +161,10 @@ _gc_id_del(E_Gadcon_Client_Class *client_class,
 
    notification_box_del(id);
    ci = notification_box_config_item_get(id);
-   if (ci)
-     {
-        if (ci->id) eina_stringshare_del(ci->id);
-        notification_cfg->items = eina_list_remove(notification_cfg->items, ci);
-        free(ci);
-     }
+   if (!ci) return;
+   eina_stringshare_del(ci->id);
+   notification_cfg->items = eina_list_remove(notification_cfg->items, ci);
+   free(ci);
 }
 
 static unsigned int

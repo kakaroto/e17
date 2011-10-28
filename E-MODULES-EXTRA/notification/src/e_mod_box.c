@@ -79,12 +79,9 @@ notification_box_shutdown(void)
 {
    Notification_Box *b;
 
-   while (notification_cfg->n_box)
+   EINA_LIST_FREE(notification_cfg->n_box, b)
      {
-        b = notification_cfg->n_box->data;
         if (b) _notification_box_free(b);
-        notification_cfg->n_box = eina_list_remove_list(notification_cfg->n_box,
-                                                        notification_cfg->n_box);
      }
 }
 
@@ -95,10 +92,8 @@ notification_box_del(const char *id)
    Notification_Box *b;
 
    /* Find old config */
-   for (l = notification_cfg->n_box; l; l = l->next)
+   EINA_LIST_FOREACH(notification_cfg->n_box, l, b)
      {
-        b = l->data;
-
         if (b->id && !strcmp(b->id, id))
           {
              _notification_box_free(b);
@@ -711,29 +706,27 @@ _notification_box_empty_handle(Notification_Box *b)
 {
    if (!b->icons)
      {
-        if (!b->o_empty)
-          {
-             Evas_Coord w, h;
+        Evas_Coord w, h;
+        if (b->o_empty) return;
 
-             b->o_empty = evas_object_rectangle_add(evas_object_evas_get(b->o_box));
-             evas_object_event_callback_add(b->o_empty, EVAS_CALLBACK_MOUSE_DOWN,
-                                            (Evas_Object_Event_Cb)_notification_box_cb_empty_mouse_down, b);
-             evas_object_color_set(b->o_empty, 0, 0, 0, 0);
-             evas_object_show(b->o_empty);
-             e_box_pack_end(b->o_box, b->o_empty);
-             evas_object_geometry_get(b->o_box, NULL, NULL, &w, &h);
-             if (e_box_orientation_get(b->o_box))
-               w = h;
-             else
-               h = w;
-             e_box_pack_options_set(b->o_empty,
-                                    1, 1, /* fill */
-                                    1, 1, /* expand */
-                                    0.5, 0.5, /* align */
-                                    w, h, /* min */
-                                    9999, 9999 /* max */
-                                    );
-          }
+        b->o_empty = evas_object_rectangle_add(evas_object_evas_get(b->o_box));
+        evas_object_event_callback_add(b->o_empty, EVAS_CALLBACK_MOUSE_DOWN,
+                                       (Evas_Object_Event_Cb)_notification_box_cb_empty_mouse_down, b);
+        evas_object_color_set(b->o_empty, 0, 0, 0, 0);
+        evas_object_show(b->o_empty);
+        e_box_pack_end(b->o_box, b->o_empty);
+        evas_object_geometry_get(b->o_box, NULL, NULL, &w, &h);
+        if (e_box_orientation_get(b->o_box))
+          w = h;
+        else
+          h = w;
+        e_box_pack_options_set(b->o_empty,
+                               1, 1, /* fill */
+                               1, 1, /* expand */
+                               0.5, 0.5, /* align */
+                               w, h, /* min */
+                               9999, 9999 /* max */
+                               );
      }
    else if (b->o_empty)
      {
