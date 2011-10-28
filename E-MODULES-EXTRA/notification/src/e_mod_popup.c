@@ -371,7 +371,7 @@ _notification_popup_refresh(Popup_Data *popup)
    /* Check if the app specify an icon either by a path or by a hint */
    if ((icon_path = e_notification_app_icon_get(popup->notif)) && *icon_path)
      {
-        if (!strncmp(icon_path, "file://", 7)) icon_path += 7;
+        if (!memcmp(icon_path, "file://", 7)) icon_path += 7;
         if (!ecore_file_exists(icon_path))
           {
              const char *new_path;
