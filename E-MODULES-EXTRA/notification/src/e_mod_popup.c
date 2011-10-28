@@ -29,9 +29,16 @@ static void _notification_theme_cb_find(void        *data,
                                         Evas_Object *obj,
                                         const char  *emission,
                                         const char  *source);
-static Eina_Bool _notification_timer_cb(void *data);
 
 static int next_pos = 0;
+
+static Eina_Bool
+_notification_timer_cb(Popup_Data *popup)
+{
+   _notification_popup_del(e_notification_id_get(popup->notif),
+                           E_NOTIFICATION_CLOSED_EXPIRED);
+   return EINA_FALSE;
+}
 
 int
 notification_popup_notify(E_Notification *n,
@@ -103,7 +110,7 @@ notification_popup_notify(E_Notification *n,
      timeout = (double)timeout / 1000.0;
 
    if (timeout > 0)
-     popup->timer = ecore_timer_add(timeout, _notification_timer_cb, popup);
+     popup->timer = ecore_timer_add(timeout, (Ecore_Task_Cb)_notification_timer_cb, popup);
 
    return 1;
 }
@@ -586,13 +593,3 @@ _notification_theme_cb_find(void        *data,
           }
      }
 }
-
-static Eina_Bool
-_notification_timer_cb(void *data)
-{
-   Popup_Data *popup = data;
-   _notification_popup_del(e_notification_id_get(popup->notif),
-                           E_NOTIFICATION_CLOSED_EXPIRED);
-   return EINA_FALSE;
-}
-
