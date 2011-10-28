@@ -87,13 +87,13 @@ _basic_create(E_Config_Dialog      *cfd __UNUSED__,
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Urgency"), 0);
-   ow = e_widget_label_add(evas, D_("Levels of urgency to popup : "));
+   ow = e_widget_label_add(evas, D_("Levels of urgency to popup:"));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_check_add(evas, D_("low"), &(cfdata->show_low));
+   ow = e_widget_check_add(evas, D_("Low"), &(cfdata->show_low));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_check_add(evas, D_("normal"), &(cfdata->show_normal));
+   ow = e_widget_check_add(evas, D_("Normal"), &(cfdata->show_normal));
    e_widget_framelist_object_append(of, ow);
-   ow = e_widget_check_add(evas, D_("critical"), &(cfdata->show_critical));
+   ow = e_widget_check_add(evas, D_("Critical"), &(cfdata->show_critical));
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
