@@ -19,11 +19,11 @@ e_notification_full_new(const char *app_name, unsigned int replaces_id, const ch
   n = e_notification_new();
   if (!n) return NULL;
 
-  if (app_name) n->app_name = strdup(app_name); 
+  n->app_name = eina_stringshare_add(app_name); 
   n->replaces_id = replaces_id;
-  if (app_icon) n->app_icon = strdup(app_icon); 
-  if (summary) n->summary = strdup(summary); 
-  if (body) n->body = strdup(body);
+  n->app_icon = eina_stringshare_add(app_icon); 
+  n->summary = eina_stringshare_add(summary); 
+  n->body = eina_stringshare_add(body);
   n->expire_timeout = expire_timeout;
 
 
@@ -58,16 +58,16 @@ e_notification_free(E_Notification *n)
 {
   if (!n) return;
 
-  if (n->app_name) free(n->app_name);
-  if (n->app_icon) free(n->app_icon);
-  if (n->summary) free(n->summary);
-  if (n->body) free(n->body);
+  eina_stringshare_del(n->app_name);
+  eina_stringshare_del(n->app_icon);
+  eina_stringshare_del(n->summary);
+  eina_stringshare_del(n->body);
 
   eina_list_free(n->actions);
 
-  if (n->hints.category) free(n->hints.category);
-  if (n->hints.desktop) free(n->hints.desktop);
-  if (n->hints.sound_file) free(n->hints.sound_file);
+  eina_stringshare_del(n->hints.category);
+  eina_stringshare_del(n->hints.desktop);
+  eina_stringshare_del(n->hints.sound_file);
   if (n->hints.image_data) e_notification_image_free(n->hints.image_data);
   if (n->hints.icon_data) e_notification_image_free(n->hints.icon_data);
   free(n);
@@ -83,29 +83,25 @@ e_notification_id_set(E_Notification *note, unsigned int id)
 EAPI void
 e_notification_app_name_set(E_Notification *note, const char *app_name)
 {
-  if (note->app_name) free(note->app_name);
-  if (app_name) note->app_name = strdup(app_name);
+  eina_stringshare_replace(&note->app_name, app_name);
 }
 
 EAPI void
 e_notification_app_icon_set(E_Notification *note, const char *app_icon)
 {
-  if (note->app_icon) free(note->app_icon);
-  if (app_icon) note->app_icon = strdup(app_icon);
+  eina_stringshare_replace(&note->app_icon, app_icon);
 }
 
 EAPI void
 e_notification_summary_set(E_Notification *note, const char *summary)
 {
-  if (note->summary) free(note->summary);
-  if (summary) note->summary = strdup(summary);
+  eina_stringshare_replace(&note->summary, summary);
 }
 
 EAPI void
 e_notification_body_set(E_Notification *note, const char *body)
 {
-  if (note->body) free(note->body);
-  if (body) note->body = strdup(body);
+  eina_stringshare_replace(&note->body, body);
 }
 
 EAPI void
@@ -211,8 +207,8 @@ e_notification_action_new(const char *id, const char *name)
 {
   E_Notification_Action *act;
   act = malloc(sizeof(E_Notification_Action));
-  act->id = strdup(id);
-  act->name = strdup(name);
+  act->id = eina_stringshare_add(id);
+  act->name = eina_stringshare_add(name);
   return act;
 }
 
@@ -230,24 +226,21 @@ e_notification_hint_urgency_set(E_Notification *n, char urgency)
 EAPI void 
 e_notification_hint_category_set(E_Notification *n, const char *category)
 {
-  if (n->hints.category) free(n->hints.category);
-  n->hints.category = strdup(category);
+  eina_stringshare_replace(&n->hints.category, category);
   n->hint_flags |= E_NOTIFICATION_HINT_CATEGORY;
 }
 
 EAPI void 
 e_notification_hint_desktop_set(E_Notification *n, const char *desktop)
 {
-  if (n->hints.desktop) free(n->hints.desktop);
-  n->hints.desktop = strdup(desktop);
+  eina_stringshare_replace(&n->hints.desktop, desktop);
   n->hint_flags |= E_NOTIFICATION_HINT_DESKTOP;
 }
 
 EAPI void 
 e_notification_hint_sound_file_set(E_Notification *n, const char *sound_file)
 {
-  if (n->hints.sound_file) free(n->hints.sound_file);
-  n->hints.sound_file = strdup(sound_file);
+  eina_stringshare_replace(&n->hints.sound_file, sound_file);
   n->hint_flags |= E_NOTIFICATION_HINT_SOUND_FILE;
 }
 

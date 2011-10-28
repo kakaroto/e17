@@ -61,11 +61,11 @@ struct E_Notification_Image
 struct E_Notification
 {
   int id;
-  char *app_name;
+  const char *app_name;
   unsigned int replaces_id;
-  char *app_icon;
-  char *summary;
-  char *body;
+  const char *app_icon;
+  const char *summary;
+  const char *body;
   int expire_timeout;
 
   Eina_List *actions;
@@ -73,9 +73,9 @@ struct E_Notification
   struct
   {
     char urgency;
-    char *category;
-    char *desktop;
-    char *sound_file;
+    const char *category;
+    const char *desktop;
+    const char *sound_file;
     char suppress_sound;
     int x, y;
     E_Notification_Image *image_data;
@@ -90,8 +90,8 @@ struct E_Notification
 
 struct E_Notification_Action 
 {
-  char *id;
-  char *name;
+  const char *id;
+  const char *name;
 };
 
 #endif

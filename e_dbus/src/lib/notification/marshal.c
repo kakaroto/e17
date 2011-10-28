@@ -113,7 +113,7 @@ e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter, DBusError *err __
   {
     const char *str;
     dbus_message_iter_get_basic(&arr, &str);
-    strings = eina_list_append(strings, strdup(str)); //XXX use eina_stringshare_instance?
+    strings = eina_list_append(strings, eina_stringshare_add(str)); //XXX use eina_stringshare_instance?
     dbus_message_iter_next(&arr);
   }
   return strings;
@@ -320,10 +320,10 @@ e_notify_marshal_notify(E_Notification *n)
   DBusMessageIter iter, sub;
   Eina_List *l;
 
-  if (!n->app_name) n->app_name = strdup("");
-  if (!n->app_icon) n->app_icon = strdup("");
-  if (!n->summary) n->summary = strdup("");
-  if (!n->body) n->body = strdup("");
+  if (!n->app_name) n->app_name = eina_stringshare_add("");
+  if (!n->app_icon) n->app_icon = eina_stringshare_add("");
+  if (!n->summary) n->summary = eina_stringshare_add("");
+  if (!n->body) n->body = eina_stringshare_add("");
 
   msg = e_notification_call_new("Notify");
   dbus_message_append_args(msg, 
