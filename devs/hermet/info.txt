@@ -4,7 +4,7 @@ Name:         ChunEon Park
 Location:     HwaSeong, Korea
 E-Mail:       hermet@hermet.pe.kr
 WWW:          http://www.hermet.pe.kr
-Managing: elementary
+Managing: elementary,
 Contributing: evas, ecore
 Group:        Core, Applications, Libraries
 Platform:     Ubuntu (Linux), Windows
