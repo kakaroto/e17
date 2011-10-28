@@ -190,19 +190,17 @@ notification_box_cb_obj_moveresize(void        *data,
 Eina_Bool
 notification_box_cb_border_remove(void *data __UNUSED__,
                                   int   type __UNUSED__,
-                                  void *event)
+                                  E_Event_Border_Remove *ev)
 {
-   E_Event_Border_Remove *ev;
    Notification_Box_Icon *ic;
    Eina_List *l;
+   Instance *inst;
 
-   ev = event;
-   for (l = notification_cfg->instances; l; l = l->next)
+   EINA_LIST_FOREACH(notification_cfg->instances, l, inst)
      {
-        Instance *inst;
         Notification_Box *b;
 
-        if (!(inst = l->data)) continue;
+        if (!inst) continue;
         b = inst->n_box;
 
         ic = _notification_box_icon_find(b, ev->border, 0);
@@ -213,7 +211,7 @@ notification_box_cb_border_remove(void *data __UNUSED__,
         _notification_box_resize_handle(b);
         _gc_orient(inst->gcc, inst->gcc->gadcon->orient);
      }
-   return 1;
+   return ECORE_CALLBACK_RENEW;
 }
 
 static Notification_Box *

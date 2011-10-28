@@ -118,15 +118,10 @@ notification_popup_notify(E_Notification *n,
 void
 notification_popup_shutdown(void)
 {
-   Eina_List *l, *next;
    Popup_Data *popup;
 
-   for (l = notification_cfg->popups; l && (popup = l->data); l = next)
-     {
-        next = l->next;
-        _notification_popdown(popup, E_NOTIFICATION_CLOSED_REQUESTED);
-        notification_cfg->popups = eina_list_remove_list(notification_cfg->popups, l);
-     }
+   EINA_LIST_FREE(notification_cfg->popups, popup)
+     _notification_popdown(popup, E_NOTIFICATION_CLOSED_REQUESTED);
 }
 
 void
@@ -479,9 +474,13 @@ _notification_popup_find(unsigned int id)
    Eina_List *l;
    Popup_Data *popup;
 
+   if (!id) return NULL;
+
    EINA_LIST_FOREACH(notification_cfg->popups, l, popup)
-     if (e_notification_id_get(popup->notif) == id)
-       return popup;
+     {
+        if (e_notification_id_get(popup->notif) == id)
+          return popup;
+     }
 
    return NULL;
 }

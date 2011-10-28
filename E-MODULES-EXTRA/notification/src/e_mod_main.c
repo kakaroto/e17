@@ -254,12 +254,10 @@ _notification_show_offline(Eina_Bool enabled)
 }
 
 static Eina_Bool
-_notification_cb_config_mode_changed(void *data,
+_notification_cb_config_mode_changed(Config *m_cfg,
                                      int   type __UNUSED__,
                                      void *event __UNUSED__)
 {
-   Config *m_cfg = data;
-
    if (m_cfg->last_config_mode.presentation != e_config->mode.presentation)
      {
         m_cfg->last_config_mode.presentation = e_config->mode.presentation;
@@ -276,10 +274,8 @@ _notification_cb_config_mode_changed(void *data,
 }
 
 static Eina_Bool
-_notification_cb_initial_mode_timer(void *data)
+_notification_cb_initial_mode_timer(Config *m_cfg)
 {
-   Config *m_cfg = data;
-
    if (e_config->mode.presentation)
      _notification_show_presentation(1);
    if (e_config->mode.offline)
@@ -372,15 +368,15 @@ e_modapi_init(E_Module *m)
    notification_cfg->last_config_mode.offline = e_config->mode.offline;
    notification_cfg->handlers = eina_list_append
        (notification_cfg->handlers, ecore_event_handler_add
-         (E_EVENT_CONFIG_MODE_CHANGED, _notification_cb_config_mode_changed,
+         (E_EVENT_CONFIG_MODE_CHANGED, (Ecore_Event_Handler_Cb)_notification_cb_config_mode_changed,
          notification_cfg));
    notification_cfg->initial_mode_timer = ecore_timer_add
-       (0.1, _notification_cb_initial_mode_timer, notification_cfg);
+       (0.1, (Ecore_Task_Cb)_notification_cb_initial_mode_timer, notification_cfg);
 
    /* set up the borders events callbacks */
    notification_cfg->handlers = eina_list_append
        (notification_cfg->handlers, ecore_event_handler_add
-         (E_EVENT_BORDER_REMOVE, notification_box_cb_border_remove, NULL));
+         (E_EVENT_BORDER_REMOVE, (Ecore_Event_Handler_Cb)notification_box_cb_border_remove, NULL));
 
    notification_mod = m;
    e_gadcon_provider_register(&_gc_class);
@@ -390,17 +386,16 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m __UNUSED__)
 {
+   Ecore_Event_Handler *h;
+   Config_Item *ci;
+
    e_gadcon_provider_unregister(&_gc_class);
 
    if (notification_cfg->initial_mode_timer)
      ecore_timer_del(notification_cfg->initial_mode_timer);
 
-   while (notification_cfg->handlers)
-     {
-        ecore_event_handler_del(notification_cfg->handlers->data);
-        notification_cfg->handlers = eina_list_remove_list(notification_cfg->handlers,
-                                                           notification_cfg->handlers);
-     }
+   EINA_LIST_FREE(notification_cfg->handlers, h)
+     ecore_event_handler_del(h);
 
    if (notification_cfg->cfd) e_object_del(E_OBJECT(notification_cfg->cfd));
    e_configure_registry_item_del("extensions/notification");
@@ -413,14 +408,9 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
         notification_cfg->menu = NULL;
      }
 
-   while (notification_cfg->items)
+   EINA_LIST_FREE(notification_cfg->items, ci)
      {
-        Config_Item *ci;
-
-        ci = notification_cfg->items->data;
-        notification_cfg->items = eina_list_remove_list(notification_cfg->items,
-                                                        notification_cfg->items);
-        if (ci->id) eina_stringshare_del(ci->id);
+        eina_stringshare_del(ci->id);
         free(ci);
      }
 
