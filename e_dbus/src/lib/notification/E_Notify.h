@@ -142,6 +142,8 @@ extern "C" {
 /* actions */
    EAPI void e_notification_action_add(E_Notification *n, const char *action_id, const char *action_name);
    EAPI Eina_List *e_notification_actions_get(E_Notification *n);
+   EAPI const char *e_notification_action_id_get(E_Notification_Action *a);
+   EAPI const char *e_notification_action_name_get(E_Notification_Action *a);
 
 /* hint mutators */
    EAPI void e_notification_hint_urgency_set(E_Notification *n, char urgency);

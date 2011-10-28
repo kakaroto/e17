@@ -212,6 +212,20 @@ e_notification_action_new(const char *id, const char *name)
   return act;
 }
 
+EAPI const char *
+e_notification_action_id_get(E_Notification_Action *a)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(a, NULL);
+   return a->id;
+}
+
+EAPI const char *
+e_notification_action_name_get(E_Notification_Action *a)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(a, NULL);
+   return a->name;
+}
+
 
 /********* hints *******/
 

@@ -20,3 +20,7 @@
 
         * Add support for notification protocol 1.2 into e_dbus by
         adding spec version string support.
+
+2011-10-27  Mike Blumenkrantz
+
+        * Added e_notification_action_id_get and e_notification_action_name_get
