@@ -175,22 +175,17 @@ _notification_notify(E_Notification *n)
    const char *appname = e_notification_app_name_get(n);
    unsigned int replaces_id = e_notification_replaces_id_get(n);
    unsigned int new_id;
-   int stacked, popuped;
+   int popuped;
 
-   if (!replaces_id)
-     {
-        new_id = notification_cfg->next_id++;
-        e_notification_id_set(n, new_id);
-     }
-   else
-     {
-        e_notification_id_set(n, replaces_id);
-     }
+   if (replaces_id) new_id = replaces_id;
+   else new_id = notification_cfg->next_id++;
+
+   e_notification_id_set(n, new_id);
 
    popuped = notification_popup_notify(n, replaces_id, appname);
-   stacked = notification_box_notify(n, replaces_id, new_id);
+   notification_box_notify(n, replaces_id, new_id);
 
-   if (!popuped && !stacked)
+   if (!popuped)
      {
         e_notification_hint_urgency_set(n, 4);
         notification_popup_notify(n, replaces_id, appname);

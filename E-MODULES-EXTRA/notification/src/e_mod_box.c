@@ -34,57 +34,22 @@ static E_Border *_notification_find_source_border(E_Notification *n);
 /* Notification box callbacks */
 static void _notification_box_cb_menu_post(void   *data,
                                            E_Menu *m);
-static void _notification_box_cb_empty_mouse_down(void        *data,
-                                                  Evas        *e,
-                                                  Evas_Object *obj,
-                                                  void        *event_info);
-static void _notification_box_cb_icon_move(void        *data,
-                                           Evas        *e,
-                                           Evas_Object *obj,
-                                           void        *event_info);
-static void _notification_box_cb_icon_resize(void        *data,
-                                             Evas        *e,
-                                             Evas_Object *obj,
-                                             void        *event_info);
-static void _notification_box_cb_icon_mouse_in(void        *data,
-                                               Evas        *e,
-                                               Evas_Object *obj,
-                                               void        *event_info);
-static void _notification_box_cb_icon_mouse_out(void        *data,
-                                                Evas        *e,
-                                                Evas_Object *obj,
-                                                void        *event_info);
-static void _notification_box_cb_icon_mouse_up(void        *data,
-                                               Evas        *e,
-                                               Evas_Object *obj,
-                                               void        *event_info);
-static void _notification_box_cb_icon_mouse_down(void        *data,
-                                                 Evas        *e,
-                                                 Evas_Object *obj,
-                                                 void        *event_info);
 
-static Eina_Bool _notification_box_cb_icon_mouse_still_in(void *data);
-static void      _notification_box_cb_menu_configuration(void        *data,
-                                                         E_Menu      *m,
-                                                         E_Menu_Item *mi);
-
-int
+void
 notification_box_notify(E_Notification *n,
                         unsigned int    replaces_id,
                         unsigned int    id)
 {
-   Eina_List *l, *n_box;
+   Eina_List *n_box;
    E_Border *bd;
+   Notification_Box *b;
+   Notification_Box_Icon *ic = NULL;
 
    bd = _notification_find_source_border(n);
 
    n_box = _notification_box_find(e_notification_hint_urgency_get(n));
-   for (l = n_box; l; l = l->next)
+   EINA_LIST_FREE(n_box, b)
      {
-        Notification_Box *b;
-        Notification_Box_Icon *ic = NULL;
-
-        b = l->data;
         if (bd || replaces_id)
           ic = _notification_box_icon_find(b, bd, replaces_id);
         if (ic)
@@ -107,9 +72,6 @@ notification_box_notify(E_Notification *n,
         _notification_box_resize_handle(b);
         _gc_orient(b->inst->gcc, b->inst->gcc->gadcon->orient);
      }
-   eina_list_free(n_box);
-
-   return 1;
 }
 
 void
@@ -371,105 +333,23 @@ _notification_box_resize_handle(Notification_Box *b)
    e_box_thaw(b->o_box);
 }
 
-static void
-_notification_box_empty_handle(Notification_Box *b)
-{
-   if (!b->icons)
-     {
-        if (!b->o_empty)
-          {
-             Evas_Coord w, h;
-
-             b->o_empty = evas_object_rectangle_add(evas_object_evas_get(b->o_box));
-             evas_object_event_callback_add(b->o_empty, EVAS_CALLBACK_MOUSE_DOWN,
-                                            _notification_box_cb_empty_mouse_down, b);
-             evas_object_color_set(b->o_empty, 0, 0, 0, 0);
-             evas_object_show(b->o_empty);
-             e_box_pack_end(b->o_box, b->o_empty);
-             evas_object_geometry_get(b->o_box, NULL, NULL, &w, &h);
-             if (e_box_orientation_get(b->o_box))
-               w = h;
-             else
-               h = w;
-             e_box_pack_options_set(b->o_empty,
-                                    1, 1, /* fill */
-                                    1, 1, /* expand */
-                                    0.5, 0.5, /* align */
-                                    w, h, /* min */
-                                    9999, 9999 /* max */
-                                    );
-          }
-     }
-   else if (b->o_empty)
-     {
-        evas_object_del(b->o_empty);
-        b->o_empty = NULL;
-     }
-}
-
 static Eina_List *
 _notification_box_find(E_Notification_Urgency urgency)
 {
-   Eina_List *n_box = NULL;
-   Eina_List *l;
+   Eina_List *l, *n_box = NULL;
+   Instance *inst;
 
-   for (l = notification_cfg->instances; l; l = l->next)
+   EINA_LIST_FOREACH(notification_cfg->instances, l, inst)
      {
-        Instance *inst;
-
-        inst = l->data;
-        if (urgency == E_NOTIFICATION_URGENCY_LOW && inst->ci->store_low)
-          n_box = eina_list_append(n_box, inst->n_box);
-        else if (urgency == E_NOTIFICATION_URGENCY_NORMAL && inst->ci->store_normal)
-          n_box = eina_list_append(n_box, inst->n_box);
-        else if (urgency == E_NOTIFICATION_URGENCY_CRITICAL && inst->ci->store_critical)
-          n_box = eina_list_append(n_box, inst->n_box);
+        if ((urgency == E_NOTIFICATION_URGENCY_LOW) && (!inst->ci->store_low))
+          continue;
+        if ((urgency == E_NOTIFICATION_URGENCY_NORMAL) && (!inst->ci->store_normal))
+          continue;
+        if ((urgency == E_NOTIFICATION_URGENCY_CRITICAL) && (!inst->ci->store_critical))
+          continue;
+        n_box = eina_list_append(n_box, inst->n_box);
      }
    return n_box;
-}
-
-static Notification_Box_Icon *
-_notification_box_icon_new(Notification_Box *b,
-                           E_Notification   *n,
-                           E_Border         *bd,
-                           unsigned int      id)
-{
-   Notification_Box_Icon *ic;
-
-   ic = E_NEW(Notification_Box_Icon, 1);
-   if (bd) e_object_ref(E_OBJECT(bd));
-   e_notification_ref(n);
-   ic->label = e_notification_app_name_get(n);
-   ic->n_box = b;
-   ic->n_id = id;
-   ic->border = bd;
-   ic->notif = n;
-   ic->o_holder = edje_object_add(evas_object_evas_get(b->o_box));
-   e_theme_edje_object_set(ic->o_holder, "base/theme/modules/ibox",
-                           "e/modules/ibox/icon");
-   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_IN,
-                                  _notification_box_cb_icon_mouse_in, ic);
-   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_OUT,
-                                  _notification_box_cb_icon_mouse_out, ic);
-   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_DOWN,
-                                  _notification_box_cb_icon_mouse_down, ic);
-   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_UP,
-                                  _notification_box_cb_icon_mouse_up, ic);
-   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOVE,
-                                  _notification_box_cb_icon_move, ic);
-   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_RESIZE,
-                                  _notification_box_cb_icon_resize, ic);
-   evas_object_show(ic->o_holder);
-
-   ic->o_holder2 = edje_object_add(evas_object_evas_get(b->o_box));
-   e_theme_edje_object_set(ic->o_holder2, "base/theme/modules/ibox",
-                           "e/modules/ibox/icon_overlay");
-   evas_object_layer_set(ic->o_holder2, 9999);
-   evas_object_pass_events_set(ic->o_holder2, 1);
-   evas_object_show(ic->o_holder2);
-
-   _notification_box_icon_fill(ic, n);
-   return ic;
 }
 
 static void
@@ -501,7 +381,7 @@ _notification_box_icon_fill(Notification_Box_Icon *ic,
 
    if ((icon_path = e_notification_app_icon_get(n)) && *icon_path)
      {
-        if (!strncmp(icon_path, "file://", 7)) icon_path += 7;
+        if (!memcmp(icon_path, "file://", 7)) icon_path += 7;
         app_icon = evas_object_image_add(evas_object_evas_get(ic->n_box->o_box));
         evas_object_image_load_scale_down_set(app_icon, 1);
         evas_object_image_load_size_set(app_icon, 80, 80);
@@ -573,13 +453,12 @@ _notification_box_icon_find(Notification_Box *b,
                             unsigned int      n_id)
 {
    Eina_List *l;
+   Notification_Box_Icon *ic;
 
-   for (l = b->icons; l; l = l->next)
+   EINA_LIST_FOREACH(b->icons, l, ic)
      {
-        Notification_Box_Icon *ic;
-
-        if (!(ic = l->data)) continue;
-        if (ic->border == bd || ic->n_id == n_id)
+        if (!ic) continue;
+        if ((ic->border == bd) || (ic->n_id == n_id))
           return ic;
      }
 
@@ -606,13 +485,13 @@ _notification_find_source_border(E_Notification *n)
 {
    const char *app_name;
    Eina_List *l;
+   E_Border *bd;
 
    if (!(app_name = e_notification_app_name_get(n))) return NULL;
 
-   for (l = e_border_client_list(); l; l = l->next)
+   EINA_LIST_FOREACH(e_border_client_list(), l, bd)
      {
         int compare_len;
-        E_Border *bd = l->data;
 
         if (!bd) continue;
         /* We can't be sure that the app_name really match the application name.
@@ -645,81 +524,98 @@ _notification_box_cb_menu_post(void   *data __UNUSED__,
 }
 
 static void
-_notification_box_cb_empty_mouse_down(void        *data,
-                                      Evas        *e __UNUSED__,
-                                      Evas_Object *obj __UNUSED__,
-                                      void        *event_info __UNUSED__)
+_notification_box_cb_menu_configuration(Notification_Box *b,
+                                        E_Menu      *m __UNUSED__,
+                                        E_Menu_Item *mi __UNUSED__)
 {
-   Evas_Event_Mouse_Down *ev;
-   Notification_Box *b;
+   Eina_List *l;
+   E_Config_Dialog *cfd;
 
-   ev = event_info;
-   b = data;
-   if (!notification_cfg->menu)
+   EINA_LIST_FOREACH(notification_cfg->config_dialog, l, cfd)
      {
-        E_Menu *m;
-        E_Menu_Item *mi;
-        int cx, cy, cw, ch;
-
-        m = e_menu_new();
-        mi = e_menu_item_new(m);
-        e_menu_item_label_set(mi, D_("Settings"));
-        e_util_menu_item_theme_icon_set(mi, "preferences-system");
-        e_menu_item_callback_set(mi, _notification_box_cb_menu_configuration, b);
-
-        m = e_gadcon_client_util_menu_items_append(b->inst->gcc, m, 0);
-        e_menu_post_deactivate_callback_set(m, _notification_box_cb_menu_post, NULL);
-        notification_cfg->menu = m;
-
-        e_gadcon_canvas_zone_geometry_get(b->inst->gcc->gadcon,
-                                          &cx, &cy, &cw, &ch);
-        e_menu_activate_mouse(m,
-                              e_util_zone_current_get(e_manager_current_get()),
-                              cx + ev->output.x, cy + ev->output.y, 1, 1,
-                              E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+        if (cfd->data == b->inst->ci) return;
      }
+   config_notification_box_module(b->inst->ci);
 }
 
 static void
-_notification_box_cb_icon_move(void        *data,
+_notification_box_cb_empty_mouse_down(Notification_Box *b,
+                                      Evas        *e __UNUSED__,
+                                      Evas_Object *obj __UNUSED__,
+                                      Evas_Event_Mouse_Down *ev)
+{
+   E_Menu *m;
+   E_Menu_Item *mi;
+   int cx, cy, cw, ch;
+
+   if (notification_cfg->menu) return;
+   m = e_menu_new();
+   mi = e_menu_item_new(m);
+   e_menu_item_label_set(mi, D_("Settings"));
+   e_util_menu_item_theme_icon_set(mi, "preferences-system");
+   e_menu_item_callback_set(mi, (E_Menu_Cb)_notification_box_cb_menu_configuration, b);
+
+   notification_cfg->menu = m = e_gadcon_client_util_menu_items_append(b->inst->gcc, m, 0);
+   e_menu_post_deactivate_callback_set(m, _notification_box_cb_menu_post, NULL);
+
+   e_gadcon_canvas_zone_geometry_get(b->inst->gcc->gadcon,
+                                     &cx, &cy, &cw, &ch);
+   e_menu_activate_mouse(m,
+                         e_util_zone_current_get(e_manager_current_get()),
+                         cx + ev->output.x, cy + ev->output.y, 1, 1,
+                         E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+}
+
+static void
+_notification_box_cb_icon_move(Notification_Box_Icon *ic,
                                Evas        *e __UNUSED__,
                                Evas_Object *obj __UNUSED__,
                                void        *event_info __UNUSED__)
 {
-   Notification_Box_Icon *ic;
    Evas_Coord x, y;
 
-   ic = data;
    evas_object_geometry_get(ic->o_holder, &x, &y, NULL, NULL);
    evas_object_move(ic->o_holder2, x, y);
    evas_object_raise(ic->o_holder2);
 }
 
 static void
-_notification_box_cb_icon_resize(void        *data,
+_notification_box_cb_icon_resize(Notification_Box_Icon *ic,
                                  Evas        *e __UNUSED__,
                                  Evas_Object *obj __UNUSED__,
                                  void        *event_info __UNUSED__)
 {
-   Notification_Box_Icon *ic;
    Evas_Coord w, h;
 
-   ic = data;
    evas_object_geometry_get(ic->o_holder, NULL, NULL, &w, &h);
    evas_object_resize(ic->o_holder2, w, h);
    evas_object_raise(ic->o_holder2);
 }
 
+
+static Eina_Bool
+_notification_box_cb_icon_mouse_still_in(Notification_Box_Icon *ic)
+{
+   e_notification_timeout_set(ic->notif, 0);
+   e_notification_hint_urgency_set(ic->notif, 4);
+   ic->popup = notification_popup_notify(ic->notif,
+                                         e_notification_id_get(ic->notif),
+                                         e_notification_app_name_get(ic->notif));
+   ecore_timer_del(ic->mouse_in_timer);
+   ic->mouse_in_timer = NULL;
+   return EINA_FALSE;
+}
+
+
 static void
-_notification_box_cb_icon_mouse_in(void        *data,
+_notification_box_cb_icon_mouse_in(Notification_Box_Icon *ic,
                                    Evas        *e __UNUSED__,
                                    Evas_Object *obj __UNUSED__,
                                    void        *event_info __UNUSED__)
 {
-   Notification_Box_Icon *ic;
    Config_Item *ci;
 
-   if (!(ic = data) || !ic->n_box || !ic->n_box->inst) return;
+   if ((!ic) || !ic->n_box || !ic->n_box->inst) return;
    if (!(ci = ic->n_box->inst->ci)) return;
 
    _notification_box_icon_signal_emit(ic, "e,state,focused", "e");
@@ -729,18 +625,15 @@ _notification_box_cb_icon_mouse_in(void        *data,
         _notification_box_icon_signal_emit(ic, "e,action,show,label", "e");
      }
    if (ci->show_popup && !ic->popup && !ic->mouse_in_timer)
-     ic->mouse_in_timer = ecore_timer_add(0.5, _notification_box_cb_icon_mouse_still_in, ic);
+     ic->mouse_in_timer = ecore_timer_add(0.5, (Ecore_Task_Cb)_notification_box_cb_icon_mouse_still_in, ic);
 }
 
 static void
-_notification_box_cb_icon_mouse_out(void        *data,
+_notification_box_cb_icon_mouse_out(Notification_Box_Icon *ic,
                                     Evas        *e __UNUSED__,
                                     Evas_Object *obj __UNUSED__,
                                     void        *event_info __UNUSED__)
 {
-   Notification_Box_Icon *ic;
-
-   ic = data;
    _notification_box_icon_signal_emit(ic, "e,state,unfocused", "e");
    if (ic->n_box->inst->ci->show_label)
      _notification_box_icon_signal_emit(ic, "e,action,hide,label", "e");
@@ -758,17 +651,13 @@ _notification_box_cb_icon_mouse_out(void        *data,
 }
 
 static void
-_notification_box_cb_icon_mouse_up(void        *data,
+_notification_box_cb_icon_mouse_up(Notification_Box_Icon *ic,
                                    Evas        *e __UNUSED__,
                                    Evas_Object *obj __UNUSED__,
-                                   void        *event_info)
+                                   Evas_Event_Mouse_Up *ev)
 {
-   Evas_Event_Mouse_Up *ev;
    Notification_Box *b;
-   Notification_Box_Icon *ic;
 
-   ev = event_info;
-   ic = data;
    b = ic->n_box;
    if (ev->button != 1) return;
 
@@ -788,78 +677,111 @@ _notification_box_cb_icon_mouse_up(void        *data,
 }
 
 static void
-_notification_box_cb_icon_mouse_down(void        *data,
+_notification_box_cb_icon_mouse_down(Notification_Box_Icon *ic,
                                      Evas        *e __UNUSED__,
                                      Evas_Object *obj __UNUSED__,
-                                     void        *event_info)
+                                     Evas_Event_Mouse_Down *ev)
 {
-   Evas_Event_Mouse_Down *ev;
-   Notification_Box_Icon *ic;
+   E_Menu *m;
+   E_Menu_Item *mi;
+   int cx, cy, cw, ch;
 
-   ev = event_info;
-   ic = data;
-   if ((ev->button == 3) && (!notification_cfg->menu))
-     {
-        E_Menu *m;
-        E_Menu_Item *mi;
-        int cx, cy, cw, ch;
+   if (notification_cfg->menu || (ev->button != 3)) return;
 
-        m = e_menu_new();
-        mi = e_menu_item_new(m);
-        e_menu_item_label_set(mi, D_("Settings"));
-        e_util_menu_item_theme_icon_set(mi, "preferences-system");
-        e_menu_item_callback_set(mi, _notification_box_cb_menu_configuration, ic->n_box);
+   m = e_menu_new();
+   mi = e_menu_item_new(m);
+   e_menu_item_label_set(mi, D_("Settings"));
+   e_util_menu_item_theme_icon_set(mi, "preferences-system");
+   e_menu_item_callback_set(mi, (E_Menu_Cb)_notification_box_cb_menu_configuration, ic->n_box);
 
-        m = e_gadcon_client_util_menu_items_append(ic->n_box->inst->gcc, m, 0);
-        e_menu_post_deactivate_callback_set(m, _notification_box_cb_menu_post, NULL);
-        notification_cfg->menu = m;
+   m = e_gadcon_client_util_menu_items_append(ic->n_box->inst->gcc, m, 0);
+   e_menu_post_deactivate_callback_set(m, _notification_box_cb_menu_post, NULL);
+   notification_cfg->menu = m;
 
-        e_gadcon_canvas_zone_geometry_get(ic->n_box->inst->gcc->gadcon,
-                                          &cx, &cy, &cw, &ch);
-        e_menu_activate_mouse(m,
-                              e_util_zone_current_get(e_manager_current_get()),
-                              cx + ev->output.x, cy + ev->output.y, 1, 1,
-                              E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-     }
-}
-
-static Eina_Bool
-_notification_box_cb_icon_mouse_still_in(void *data)
-{
-   Notification_Box_Icon *ic;
-
-   ic = data;
-   e_notification_timeout_set(ic->notif, 0);
-   e_notification_hint_urgency_set(ic->notif, 4);
-   ic->popup = notification_popup_notify(ic->notif,
-                                         e_notification_id_get(ic->notif),
-                                         e_notification_app_name_get(ic->notif));
-   ecore_timer_del(ic->mouse_in_timer);
-   ic->mouse_in_timer = NULL;
-   return EINA_FALSE;
+   e_gadcon_canvas_zone_geometry_get(ic->n_box->inst->gcc->gadcon,
+                                     &cx, &cy, &cw, &ch);
+   e_menu_activate_mouse(m,
+                         e_util_zone_current_get(e_manager_current_get()),
+                         cx + ev->output.x, cy + ev->output.y, 1, 1,
+                         E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
 }
 
 static void
-_notification_box_cb_menu_configuration(void        *data,
-                                        E_Menu      *m __UNUSED__,
-                                        E_Menu_Item *mi __UNUSED__)
+_notification_box_empty_handle(Notification_Box *b)
 {
-   Notification_Box *b;
-   int ok = 1;
-   Eina_List *l;
-
-   b = data;
-   for (l = notification_cfg->config_dialog; l; l = l->next)
+   if (!b->icons)
      {
-        E_Config_Dialog *cfd;
-
-        cfd = l->data;
-        if (cfd->data == b->inst->ci)
+        if (!b->o_empty)
           {
-             ok = 0;
-             break;
+             Evas_Coord w, h;
+
+             b->o_empty = evas_object_rectangle_add(evas_object_evas_get(b->o_box));
+             evas_object_event_callback_add(b->o_empty, EVAS_CALLBACK_MOUSE_DOWN,
+                                            (Evas_Object_Event_Cb)_notification_box_cb_empty_mouse_down, b);
+             evas_object_color_set(b->o_empty, 0, 0, 0, 0);
+             evas_object_show(b->o_empty);
+             e_box_pack_end(b->o_box, b->o_empty);
+             evas_object_geometry_get(b->o_box, NULL, NULL, &w, &h);
+             if (e_box_orientation_get(b->o_box))
+               w = h;
+             else
+               h = w;
+             e_box_pack_options_set(b->o_empty,
+                                    1, 1, /* fill */
+                                    1, 1, /* expand */
+                                    0.5, 0.5, /* align */
+                                    w, h, /* min */
+                                    9999, 9999 /* max */
+                                    );
           }
      }
-   if (ok) config_notification_box_module(b->inst->ci);
+   else if (b->o_empty)
+     {
+        evas_object_del(b->o_empty);
+        b->o_empty = NULL;
+     }
 }
 
+static Notification_Box_Icon *
+_notification_box_icon_new(Notification_Box *b,
+                           E_Notification   *n,
+                           E_Border         *bd,
+                           unsigned int      id)
+{
+   Notification_Box_Icon *ic;
+
+   ic = E_NEW(Notification_Box_Icon, 1);
+   if (bd) e_object_ref(E_OBJECT(bd));
+   e_notification_ref(n);
+   ic->label = e_notification_app_name_get(n);
+   ic->n_box = b;
+   ic->n_id = id;
+   ic->border = bd;
+   ic->notif = n;
+   ic->o_holder = edje_object_add(evas_object_evas_get(b->o_box));
+   e_theme_edje_object_set(ic->o_holder, "base/theme/modules/ibox",
+                           "e/modules/ibox/icon");
+   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_IN,
+                                  (Evas_Object_Event_Cb)_notification_box_cb_icon_mouse_in, ic);
+   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_OUT,
+                                  (Evas_Object_Event_Cb)_notification_box_cb_icon_mouse_out, ic);
+   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_DOWN,
+                                  (Evas_Object_Event_Cb)_notification_box_cb_icon_mouse_down, ic);
+   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOUSE_UP,
+                                  (Evas_Object_Event_Cb)_notification_box_cb_icon_mouse_up, ic);
+   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_MOVE,
+                                  (Evas_Object_Event_Cb)_notification_box_cb_icon_move, ic);
+   evas_object_event_callback_add(ic->o_holder, EVAS_CALLBACK_RESIZE,
+                                  (Evas_Object_Event_Cb)_notification_box_cb_icon_resize, ic);
+   evas_object_show(ic->o_holder);
+
+   ic->o_holder2 = edje_object_add(evas_object_evas_get(b->o_box));
+   e_theme_edje_object_set(ic->o_holder2, "base/theme/modules/ibox",
+                           "e/modules/ibox/icon_overlay");
+   evas_object_layer_set(ic->o_holder2, 9999);
+   evas_object_pass_events_set(ic->o_holder2, 1);
+   evas_object_show(ic->o_holder2);
+
+   _notification_box_icon_fill(ic, n);
+   return ic;
+}

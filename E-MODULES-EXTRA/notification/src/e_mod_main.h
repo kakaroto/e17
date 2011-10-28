@@ -134,7 +134,7 @@ int  notification_popup_notify(E_Notification *n, unsigned int replaces_id, cons
 void notification_popup_shutdown(void);
 void notification_popup_close(unsigned int id);
 
-int  notification_box_notify(E_Notification *n, unsigned int replaces_id, unsigned int id);
+void notification_box_notify(E_Notification *n, unsigned int replaces_id, unsigned int id);
 void notification_box_shutdown(void);
 void notification_box_del(const char *id);
 void notification_box_show(Notification_Box *b);
