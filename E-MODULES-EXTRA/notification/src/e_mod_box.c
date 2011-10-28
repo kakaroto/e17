@@ -94,7 +94,7 @@ notification_box_del(const char *id)
    /* Find old config */
    EINA_LIST_FOREACH(notification_cfg->n_box, l, b)
      {
-        if (b->id && !strcmp(b->id, id))
+        if (b->id == id)
           {
              _notification_box_free(b);
              notification_cfg->n_box = eina_list_remove(notification_cfg->n_box, b);
@@ -153,7 +153,7 @@ notification_box_get(const char *id,
      {
         b = l->data;
 
-        if (b->id && !strcmp(b->id, id))
+        if (b->id == id)
           {
              _notification_box_evas_set(b, evas);
              notification_box_show(b);
