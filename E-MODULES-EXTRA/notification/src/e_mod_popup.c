@@ -130,13 +130,15 @@ notification_popup_close(unsigned int id)
 static Popup_Data *
 _notification_popup_merge(E_Notification *n)
 {
-   Eina_List *l;
+   Eina_List *l, *l2;
+   Eina_List *i, *i2;
+   E_Notification_Action *a, *a2;
    Popup_Data *popup;
    const char *str1, *str2;
    const char *body_old;
    const char *body_new;
    char *body_final;
-   int body_old_len, body_new_len;
+   size_t len;
 
    str1 = e_notification_app_name_get(n);
    /* printf("merge %s\n", str1); */
@@ -152,8 +154,7 @@ _notification_popup_merge(E_Notification *n)
         if (!(str2 = e_notification_app_name_get(popup->notif)))
           continue;
 
-        if (!strcmp(str1, str2))
-          break;
+        if (str1 == str2) break;
      }
 
    if (!popup)
@@ -165,25 +166,28 @@ _notification_popup_merge(E_Notification *n)
    str1 = e_notification_summary_get(n);
    str2 = e_notification_summary_get(popup->notif);
 
-   /* if ((str1 && !str2) || (!str1 && str2)) */
-   if (!(!(str1) == !(str2)))
-     {
-        /* printf("1- summary doesn match, %s, %s\n", str1, str2); */
-         return NULL;
-     }
-
-   if (str1 && str2 && strcmp(str1, str2))
+   if (str1 && str2 && (str1 != str2))
      {
         /* printf("- summary doesn match, %s, %s\n", str1, str2); */
          return NULL;
      }
 
-   /* TODO if actions check if they are equal... */
-   if (!(e_notification_actions_get(popup->notif)) !=
-       (!(e_notification_actions_get(n))))
+   l = e_notification_actions_get(popup->notif);
+   l2 = e_notification_actions_get(n);
+   if ((!!l) + (!!l2) == 1)
      {
         /* printf("- actions dont match\n"); */
          return NULL;
+     }
+   for (i = l, i2 = l2; i && i2; i = i->next, i2 = i2->next)
+     {
+        if ((!!i) + (!!i2) == 1) return NULL;
+        a = i->data, a2 = i2->data;
+        if ((!!a) + (!!a2) == 1) return NULL;
+        if (e_notification_action_id_get(a) != e_notification_action_id_get(a2))
+          return NULL;
+        if (e_notification_action_name_get(a) != e_notification_action_name_get(a2))
+          return NULL;
      }
 
    /* TODO  p->n is not fallback alert..*/
@@ -192,10 +196,13 @@ _notification_popup_merge(E_Notification *n)
    body_old = e_notification_body_get(popup->notif);
    body_new = e_notification_body_get(n);
 
-   body_old_len = strlen(body_old);
-   body_new_len = strlen(body_new);
-   body_final = alloca(body_old_len + body_new_len + 5);
-   sprintf(body_final, "%s<br>%s", body_old, body_new);
+   len = strlen(body_old);
+   len += strlen(body_new);
+   if (len < 65536)
+     body_final = alloca(len + 5);
+   else
+     body_final = malloc(len + 5);
+   snprintf(body_final, len, "%s<ps>%s", body_old, body_new);
    /* printf("set body %s\n", body_final); */
 
    e_notification_body_set(n, body_final);
@@ -203,6 +210,7 @@ _notification_popup_merge(E_Notification *n)
    e_notification_unref(popup->notif);
    popup->notif = n;
    e_notification_ref(popup->notif);
+   if (len >= 65536) free(body_final);
 
    return popup;
 }
