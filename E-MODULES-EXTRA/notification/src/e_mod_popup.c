@@ -65,6 +65,7 @@ notification_popup_notify(E_Notification *n,
         break;
      }
 
+   if (notification_cfg->ignore_replacement) replaces_id = 0;
    if (replaces_id && (popup = _notification_popup_find(replaces_id)))
      {
         e_notification_ref(n);

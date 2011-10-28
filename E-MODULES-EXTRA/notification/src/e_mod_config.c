@@ -6,6 +6,7 @@ struct _E_Config_Dialog_Data
    int    show_normal;
    int    show_critical;
    int    force_timeout;
+   int    ignore_replacement;
    double timeout;
    int    corner;
 };
@@ -74,6 +75,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->timeout = notification_cfg->timeout;
    cfdata->corner = notification_cfg->corner;
    cfdata->force_timeout = notification_cfg->force_timeout;
+   cfdata->ignore_replacement = notification_cfg->ignore_replacement;
 }
 
 static Evas_Object *
@@ -87,7 +89,7 @@ _basic_create(E_Config_Dialog      *cfd __UNUSED__,
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Urgency"), 0);
-   ow = e_widget_label_add(evas, D_("Levels of urgency to popup:"));
+   ow = e_widget_label_add(evas, D_("Levels of urgency to display:"));
    e_widget_framelist_object_append(of, ow);
    ow = e_widget_check_add(evas, D_("Low"), &(cfdata->show_low));
    e_widget_framelist_object_append(of, ow);
@@ -134,6 +136,11 @@ _basic_create(E_Config_Dialog      *cfd __UNUSED__,
    *                          NULL, &(cfdata->gap), 200);
    * e_widget_framelist_object_append(of, ow);
    * e_widget_list_object_append(o, of, 1, 1, 0.5); */
+   of = e_widget_framelist_add(evas, D_("Miscellaneous"), 0);
+   ow = e_widget_check_add(evas, D_("Ignore replace ID"), &(cfdata->ignore_replacement));
+   e_widget_framelist_object_append(of, ow);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+
 
    return o;
 }
@@ -148,6 +155,7 @@ _basic_apply(E_Config_Dialog      *cfd __UNUSED__,
    notification_cfg->timeout = cfdata->timeout;
    notification_cfg->corner = cfdata->corner;
    notification_cfg->force_timeout = cfdata->force_timeout;
+   notification_cfg->ignore_replacement = cfdata->ignore_replacement;
 
    e_modapi_save(notification_mod);
    return 1;
