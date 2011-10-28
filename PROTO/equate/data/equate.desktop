@@ -2,7 +2,11 @@
 Type=Application
 Name=Equate
 GenericName=Calculator
+GenericName[fr]=Calculatrice
+GenericName[it]=Calcolatrice
 Comment=EFL Calculator
+Comment[fr]=Calculatrice utilisant les EFL.
+Comment[it]=Calcolatrice basata sulle EFL.
 Icon=equate
 TryExec=equate
 Exec=equate
