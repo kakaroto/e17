@@ -123,13 +123,13 @@ _gc_orient(E_Gadcon_Client *gcc,
 }
 
 static char *
-_gc_label(E_Gadcon_Client_Class *client_class)
+_gc_label(E_Gadcon_Client_Class *client_class __UNUSED__)
 {
    return D_("Notification Box");
 }
 
 static Evas_Object *
-_gc_icon(E_Gadcon_Client_Class *client_class,
+_gc_icon(E_Gadcon_Client_Class *client_class __UNUSED__,
          Evas                  *evas)
 {
    Evas_Object *o;
@@ -145,7 +145,7 @@ _gc_icon(E_Gadcon_Client_Class *client_class,
 }
 
 static const char *
-_gc_id_new(E_Gadcon_Client_Class *client_class)
+_gc_id_new(E_Gadcon_Client_Class *client_class __UNUSED__)
 {
    Config_Item *ci;
 
@@ -154,7 +154,7 @@ _gc_id_new(E_Gadcon_Client_Class *client_class)
 }
 
 static void
-_gc_id_del(E_Gadcon_Client_Class *client_class,
+_gc_id_del(E_Gadcon_Client_Class *client_class __UNUSED__,
            const char            *id)
 {
    Config_Item *ci;

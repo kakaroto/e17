@@ -43,7 +43,7 @@ _notification_timer_cb(Popup_Data *popup)
 int
 notification_popup_notify(E_Notification *n,
                           unsigned int    replaces_id,
-                          const char     *appname)
+                          const char     *appname __UNUSED__)
 {
    double timeout;
    Popup_Data *popup = NULL;
@@ -224,7 +224,6 @@ _notification_popup_new(E_Notification *n)
    E_Container *con;
    Popup_Data *popup;
    char buf[PATH_MAX];
-   int shaped;
 
    popup = E_NEW(Popup_Data, 1);
    if (!popup) return NULL;
@@ -272,7 +271,7 @@ static int
 _notification_popup_place(Popup_Data *popup,
                           int         pos)
 {
-   int x, y, w, h, dir = 0;
+   int w, h;
    E_Container *con;
 
    con = e_container_current_get(e_manager_current_get());
@@ -315,7 +314,7 @@ static void
 _notification_popups_place()
 {
    Popup_Data *popup;
-   Eina_List *l, *next;
+   Eina_List *l;
    int pos = 0;
 
    EINA_LIST_FOREACH(notification_cfg->popups, l, popup)
@@ -331,7 +330,6 @@ _notification_popup_refresh(Popup_Data *popup)
 {
    const char *icon_path;
    const char *app_icon_max;
-   char *msg;
    void *img;
    int w, h, width = 80, height = 80;
 

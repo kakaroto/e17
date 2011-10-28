@@ -85,7 +85,7 @@ _basic_create(E_Config_Dialog      *cfd __UNUSED__,
 {
    Evas_Object *o = NULL, *of = NULL, *ow = NULL;
    E_Radio_Group *rg;
-   E_Manager *man;
+//   E_Manager *man;
 
    o = e_widget_list_add(evas, 0, 0);
    of = e_widget_framelist_add(evas, D_("Urgency"), 0);
