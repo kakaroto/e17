@@ -16,20 +16,6 @@ static void        _notification_popdown(Popup_Data                  *popup,
 /* Util function protos */
 static void _notification_format_message(Popup_Data *popup);
 
-/* Callbacks */
-static void _notification_theme_cb_deleted(void        *data,
-                                           Evas_Object *obj,
-                                           const char  *emission,
-                                           const char  *source);
-static void _notification_theme_cb_close(void        *data,
-                                         Evas_Object *obj,
-                                         const char  *emission,
-                                         const char  *source);
-static void _notification_theme_cb_find(void        *data,
-                                        Evas_Object *obj,
-                                        const char  *emission,
-                                        const char  *source);
-
 static int next_pos = 0;
 
 static Eina_Bool
@@ -218,6 +204,60 @@ _notification_popup_merge(E_Notification *n)
    return popup;
 }
 
+
+static void
+_notification_theme_cb_deleted(Popup_Data *popup,
+                               Evas_Object *obj __UNUSED__,
+                               const char  *emission __UNUSED__,
+                               const char  *source __UNUSED__)
+{
+   _notification_popup_refresh(popup);
+   edje_object_signal_emit(popup->theme, "notification,new", "notification");
+}
+
+static void
+_notification_theme_cb_close(Popup_Data *popup,
+                             Evas_Object *obj __UNUSED__,
+                             const char  *emission __UNUSED__,
+                             const char  *source __UNUSED__)
+{
+   _notification_popup_del(e_notification_id_get(popup->notif),
+                           E_NOTIFICATION_CLOSED_DISMISSED);
+}
+
+static void
+_notification_theme_cb_find(Popup_Data *popup,
+                            Evas_Object *obj __UNUSED__,
+                            const char  *emission __UNUSED__,
+                            const char  *source __UNUSED__)
+{
+   Eina_List *l;
+   E_Border *bd;
+
+   if (!popup->app_name) return;
+
+   EINA_LIST_FOREACH(e_border_client_list(), l, bd)
+     {
+        size_t len, test;
+
+        len = strlen(popup->app_name);
+        test = eina_strlen_bounded(bd->client.icccm.name, len + 1);
+
+        /* We can't be sure that the app_name really match the application name.
+         * Some plugin put their name instead. But this search gives some good
+         * results.
+         */
+        if (strncasecmp(bd->client.icccm.name, popup->app_name, (test < len) ? test : len))
+          continue;
+
+        e_desk_show(bd->desk);
+        e_border_show(bd);
+        e_border_raise(bd);
+        e_border_focus_set_with_pointer(bd);
+        break;
+     }
+}
+
 static Popup_Data *
 _notification_popup_new(E_Notification *n)
 {
@@ -251,13 +291,13 @@ _notification_popup_new(E_Notification *n)
    evas_object_show(popup->theme);
    edje_object_signal_callback_add
      (popup->theme, "notification,deleted", "theme",
-     _notification_theme_cb_deleted, popup);
+     (Edje_Signal_Cb)_notification_theme_cb_deleted, popup);
    edje_object_signal_callback_add
      (popup->theme, "notification,close", "theme",
-     _notification_theme_cb_close, popup);
+     (Edje_Signal_Cb)_notification_theme_cb_close, popup);
    edje_object_signal_callback_add
      (popup->theme, "notification,find", "theme",
-     _notification_theme_cb_find, popup);
+     (Edje_Signal_Cb)_notification_theme_cb_find, popup);
 
    _notification_popup_refresh(popup);
    next_pos = _notification_popup_place(popup, next_pos);
@@ -532,61 +572,4 @@ _notification_format_message(Popup_Data *popup)
    const char *b = e_notification_body_get(popup->notif);
    edje_object_part_text_set(o, "notification.textblock.message", b);
    edje_object_part_text_set(o, "notification.text.title", title);
-}
-
-static void
-_notification_theme_cb_deleted(void        *data,
-                               Evas_Object *obj __UNUSED__,
-                               const char  *emission __UNUSED__,
-                               const char  *source __UNUSED__)
-{
-   Popup_Data *popup = data;
-   _notification_popup_refresh(popup);
-   edje_object_signal_emit(popup->theme, "notification,new", "notification");
-}
-
-static void
-_notification_theme_cb_close(void        *data,
-                             Evas_Object *obj __UNUSED__,
-                             const char  *emission __UNUSED__,
-                             const char  *source __UNUSED__)
-{
-   Popup_Data *popup = data;
-   _notification_popup_del(e_notification_id_get(popup->notif),
-                           E_NOTIFICATION_CLOSED_DISMISSED);
-}
-
-static void
-_notification_theme_cb_find(void        *data,
-                            Evas_Object *obj __UNUSED__,
-                            const char  *emission __UNUSED__,
-                            const char  *source __UNUSED__)
-{
-   Popup_Data *popup = data;
-   Eina_List *l;
-
-   if (!popup->app_name) return;
-
-   for (l = e_border_client_list(); l; l = l->next)
-     {
-        size_t compare_len;
-        E_Border *bd = l->data;
-
-        compare_len = strlen(popup->app_name);
-        if (strlen(bd->client.icccm.name) < compare_len)
-          compare_len = strlen(bd->client.icccm.name);
-
-        /* We can't be sure that the app_name really match the application name.
-         * Some plugin put their name instead. But this search gives some good
-         * results.
-         */
-        if (!strncasecmp(bd->client.icccm.name, popup->app_name, compare_len))
-          {
-             e_desk_show(bd->desk);
-             e_border_show(bd);
-             e_border_raise(bd);
-             e_border_focus_set_with_pointer(bd);
-             break;
-          }
-     }
 }

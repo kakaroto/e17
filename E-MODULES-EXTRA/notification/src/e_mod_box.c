@@ -130,10 +130,8 @@ notification_box_get(const char *id,
    Notification_Box *b;
 
    /* Find old config */
-   for (l = notification_cfg->n_box; l; l = l->next)
+   EINA_LIST_FOREACH(notification_cfg->n_box, l, b)
      {
-        b = l->data;
-
         if (b->id == id)
           {
              _notification_box_evas_set(b, evas);
