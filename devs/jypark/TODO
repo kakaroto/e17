@@ -1,0 +1,5 @@
+elm_win & ecore_evas - fix using current ecore size
+
+animation gif - does not run on glbackend.
+
+animation gif - scale down feature
