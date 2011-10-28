@@ -483,10 +483,10 @@ _notification_popup_del(unsigned int                 id,
                         E_Notification_Closed_Reason reason)
 {
    Popup_Data *popup;
-   Eina_List *l, *next;
+   Eina_List *l, *l2;
    int pos = 0;
 
-   EINA_LIST_FOREACH(notification_cfg->popups, l, popup)
+   EINA_LIST_FOREACH_SAFE(notification_cfg->popups, l, l2, popup)
      {
         if (e_notification_id_get(popup->notif) == id)
           {
