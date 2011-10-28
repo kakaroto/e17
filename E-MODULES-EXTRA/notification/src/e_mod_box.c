@@ -104,40 +104,21 @@ notification_box_del(const char *id)
 }
 
 void
-notification_box_show(Notification_Box *b)
+notification_box_visible_set(Notification_Box *b, Eina_Bool visible)
 {
    Eina_List *l;
+   Notification_Box_Icon *ic;
+   Ecore_Cb cb = (Ecore_Cb)(visible ? evas_object_show : evas_object_hide);
 
-   evas_object_show(b->o_box);
-   if (b->o_empty) evas_object_show(b->o_empty);
-   for (l = b->icons; l; l = l->next)
+   cb(b->o_box);
+   if (b->o_empty) cb(b->o_empty);
+   EINA_LIST_FOREACH(b->icons, l, ic)
      {
-        Notification_Box_Icon *ic;
-
-        if (!(ic = l->data)) continue;
-        evas_object_show(ic->o_holder);
-        evas_object_show(ic->o_holder2);
-        evas_object_show(ic->o_icon);
-        evas_object_show(ic->o_icon2);
-     }
-}
-
-void
-notification_box_hide(Notification_Box *b)
-{
-   Eina_List *l;
-
-   evas_object_hide(b->o_box);
-   if (b->o_empty) evas_object_hide(b->o_empty);
-   for (l = b->icons; l; l = l->next)
-     {
-        Notification_Box_Icon *ic;
-
-        if (!(ic = l->data)) continue;
-        evas_object_hide(ic->o_holder);
-        evas_object_hide(ic->o_holder2);
-        evas_object_hide(ic->o_icon);
-        evas_object_hide(ic->o_icon2);
+        if (!ic) continue;
+        cb(ic->o_holder);
+        cb(ic->o_holder2);
+        cb(ic->o_icon);
+        cb(ic->o_icon2);
      }
 }
 
@@ -156,7 +137,7 @@ notification_box_get(const char *id,
         if (b->id == id)
           {
              _notification_box_evas_set(b, evas);
-             notification_box_show(b);
+             notification_box_visible_set(b, EINA_TRUE);
              return b;
           }
      }

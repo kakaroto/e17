@@ -79,7 +79,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
 
    inst = gcc->data;
-   notification_box_hide(inst->n_box);
+   notification_box_visible_set(inst->n_box, EINA_FALSE);
    notification_cfg->instances = eina_list_remove(notification_cfg->instances, inst);
    free(inst);
 }
