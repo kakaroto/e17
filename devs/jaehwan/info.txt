@@ -5,7 +5,6 @@ Name:         Jaehwan Kim
 Location:     Suwon, Korea 
 E-Mail:       jae.hwan.kim.neo@gmail.com, jae.hwan.kim@samsung.com
 WWW:          None
-Managing:     edje, elementary 
 Contributing: edje, elementary 
 Group:        Libraries, Core 
 Platform:     Ubuntu (Linux), Windows XP/7 
