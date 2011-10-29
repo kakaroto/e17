@@ -33,7 +33,11 @@
 
 #include "eyesight_popup.h"
 
+#define SCALE_STEP 1.414213562
+
 static int page_nbr = 0;
+static double scale = 1.0;
+static Eina_Bool is_scaled = 0;
 
 static void _cb_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -61,6 +65,20 @@ static void _cb_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
         page_nbr--;
     }
 
+  if (strcmp(ev->keyname, "Up") == 0)
+    {
+      scale *= SCALE_STEP;
+      is_scaled = EINA_TRUE;
+      printf("scale: %f\n", scale);
+    }
+
+  if (strcmp(ev->keyname, "Down") == 0)
+    {
+      scale /= SCALE_STEP;
+      is_scaled = EINA_TRUE;
+      printf("scale: %f\n", scale);
+    }
+
   if (page_nbr != eyesight_object_page_get(obj))
     {
       char buf[16];
@@ -75,6 +93,12 @@ static void _cb_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
       snprintf(buf, 15, "%d/%d", page_nbr + 1, eyesight_object_page_count(obj));
       popup_text_set(p, buf);
       popup_timer_start(p);
+    }
+  else if (is_scaled)
+    {
+      eyesight_object_page_scale_set(obj, scale, scale);
+      eyesight_object_page_render(obj);
+      is_scaled = EINA_FALSE;
     }
 }
 

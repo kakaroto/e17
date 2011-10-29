@@ -31,7 +31,6 @@
 #include "eyesight_private.h"
 #include "eyesight_pdf_mupdf.h"
 
-
 #define DBG(...) EINA_LOG_DOM_DBG(_eyesight_pdf_log_domain, __VA_ARGS__)
 #define INF(...) EINA_LOG_DOM_INFO(_eyesight_pdf_log_domain, __VA_ARGS__)
 #define WRN(...) EINA_LOG_DOM_WARN(_eyesight_pdf_log_domain, __VA_ARGS__)
@@ -359,8 +358,6 @@ em_file_open(void *eb, const char *filename)
   fz_device *dev;
   fz_matrix ctm;
   fz_bbox bbox;
-  float zoom;
-  float resolution = 72.0f;
   fz_error error;
   int fd;
 
@@ -448,13 +445,14 @@ em_file_open(void *eb, const char *filename)
     }
   fz_free_device(dev);
 
-  zoom = resolution / 72.0f;
-  ctm = fz_translate(0, -ebp->page.page->mediabox.y1);
-  ctm = fz_concat(ctm, fz_scale(zoom, -zoom));
-  ctm = fz_concat(ctm, fz_rotate(ebp->page.orientation + ebp->page.page->rotate));
-  bbox = fz_round_rect(fz_transform_rect(ctm, ebp->page.page->mediabox));
+  bbox = fz_round_rect(fz_transform_rect(fz_identity, ebp->page.page->mediabox));
   ebp->page.width = bbox.x1 - bbox.x0;
   ebp->page.height = bbox.y1 - bbox.y0;
+  printf("mb y1 : %f\n", ebp->page.page->mediabox.y1);
+  printf("(%f,%f) (%f,%f)\n",
+         (double)ebp->page.width, (double)ebp->page.height,
+         ebp->page.page->mediabox.x1 - ebp->page.page->mediabox.x0,
+         ebp->page.page->mediabox.y1 - ebp->page.page->mediabox.y0);
 
   ebp->page.links = _eyesight_page_links_get(ebp);
 
@@ -563,8 +561,6 @@ em_page_set(void *eb, int page)
   fz_device *dev;
   fz_matrix ctm;
   fz_bbox bbox;
-  float zoom;
-  float resolution = 72.0f;
   fz_error error;
 
   if (!eb || (page < 0))
@@ -593,9 +589,8 @@ em_page_set(void *eb, int page)
     }
   fz_free_device(dev);
 
-  zoom = resolution / 72.0f;
   ctm = fz_translate(0, -ebp->page.page->mediabox.y1);
-  ctm = fz_concat(ctm, fz_scale(zoom, -zoom));
+  ctm = fz_concat(ctm, fz_scale(ebp->page.hscale, -ebp->page.vscale));
   ctm = fz_concat(ctm, fz_rotate(ebp->page.orientation + ebp->page.page->rotate));
   bbox = fz_round_rect(fz_transform_rect(ctm, ebp->page.page->mediabox));
   ebp->page.width = bbox.x1 - bbox.x0;
@@ -712,7 +707,8 @@ em_page_render(void *eb)
   fz_device *dev;
   fz_text_span *text;
   fz_pixmap *image;
-  float resolution = 72.0f;
+  int width;
+  int height;
 
   if (!eb)
     return;
@@ -721,27 +717,22 @@ em_page_render(void *eb)
 
   ctm = fz_identity;
   ctm = fz_concat(ctm, fz_translate(0, -ebp->page.page->mediabox.y1));
-  ctm = fz_concat(ctm, fz_scale(resolution / 72.0f, -resolution/72.0f));
+  ctm = fz_concat(ctm, fz_scale(ebp->page.hscale, -ebp->page.vscale));
   ctm = fz_concat(ctm, fz_rotate(ebp->page.orientation + ebp->page.page->rotate));
   bbox = fz_round_rect(fz_transform_rect(ctm, ebp->page.page->mediabox));
 
   /* FIXME: cache text and dev */
   text = fz_new_text_span();
   dev = fz_new_text_device(text);
-  /* FIXME: last 2 parameters, ask if they are good */
   fz_execute_display_list(ebp->page.display_list, dev, ctm, fz_infinite_bbox);
   fz_free_device(dev);
   fz_free_text_span(text);
 
-  /* FIXME: use fz_newpixmapwithdata(fz_devicergb, bbox.x0, bbox.y0, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0, m) instead to avoid a memcpy */
-  image = fz_new_pixmap_with_rect(fz_device_rgb, bbox);
-  fz_clear_pixmap_with_color(image, 0xff);
-  dev = fz_new_draw_device(ebp->doc.cache, image);
-  fz_execute_display_list(ebp->page.display_list, dev, ctm, fz_infinite_bbox);
-  fz_free_device(dev);
+  width = bbox.x1 - bbox.x0;
+  height = bbox.y1 - bbox.y0;
 
-  evas_object_image_size_set(ebp->obj, image->w, image->h);
-  evas_object_image_fill_set(ebp->obj, 0, 0, image->w, image->h);
+  evas_object_image_size_set(ebp->obj, width, height);
+  evas_object_image_fill_set(ebp->obj, 0, 0, width, height);
   m = (unsigned int *)evas_object_image_data_get(ebp->obj, 1);
   if (!m)
     {
@@ -750,7 +741,12 @@ em_page_render(void *eb)
        return;
     }
 
-  memcpy(m, image->samples, image->w * image->h * 4);
+  image = fz_new_pixmap_with_data(fz_device_rgb, width, height, (unsigned char *)m);
+  fz_clear_pixmap_with_color(image, 0xff);
+  dev = fz_new_draw_device(ebp->doc.cache, image);
+  fz_execute_display_list(ebp->page.display_list, dev, ctm, fz_infinite_bbox);
+  fz_free_device(dev);
+
   evas_object_image_data_set(ebp->obj, m);
   evas_object_image_data_update_add(ebp->obj, 0, 0, image->w, image->h);
   evas_object_resize(ebp->obj, image->w, image->h);
