@@ -298,7 +298,7 @@ _transit_win_anim_del_cb(void *data, Elm_Transit *transit)
 {
    Elfe_Winlist_Item *it = data;
 
-   elm_layout_content_set(it->layout, "elfe.swallow.content", it->win);
+   elm_object_content_part_set(it->layout, "elfe.swallow.content", it->win);
    if (it->bd->client.netwm.name)
      elm_object_text_part_set(it->layout, "elfe.text.label",
                               it->bd->client.netwm.name);
@@ -489,7 +489,7 @@ _elfe_action(const char *params, int modifiers, int method)
 	elm_scroller_policy_set(sc, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
 	elm_scroller_page_relative_set(sc, 1.0, 1.0);
 	evas_object_show(sc);
-        elm_layout_content_set(winlist->layout, "elfe.swallow.windows", sc);
+        elm_object_content_part_set(winlist->layout, "elfe.swallow.windows", sc);
 
 	bx = elm_box_add(sc);
 	evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -611,7 +611,7 @@ _elfe_action(const char *params, int modifiers, int method)
              evas_object_size_hint_aspect_set(item->placeholder,
                                               EVAS_ASPECT_CONTROL_BOTH,
                                               cw->bd->w/2, cw->bd->h/2);
-             elm_layout_content_set(layout, "elfe.swallow.content", item->placeholder);
+             elm_object_content_part_set(layout, "elfe.swallow.content", item->placeholder);
              elm_table_pack(tb, item->layout, 1, 1, 1, 1);
              evas_object_show(item->placeholder);
              evas_object_event_callback_add(item->placeholder, EVAS_CALLBACK_RESIZE, _item_layout_resize_cb, item);

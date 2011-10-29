@@ -333,7 +333,7 @@ _dock_allapps_clicked_cb(void *data , Evas_Object *obj __UNUSED__, void *event_i
 	     evas_object_smart_callback_add(desk->allapps, "gadget,longpressed", _gadget_longpressed_cb, desk);
 	     evas_object_smart_callback_add(desk->allapps, "item,selected", _allapps_item_selected_cb, desk);
 	     evas_object_show(desk->allapps);
-	     elm_layout_content_set(desk->layout, "elfe.swallow.allapps", desk->allapps);
+	     elm_object_content_part_set(desk->layout, "elfe.swallow.allapps", desk->allapps);
 	  }
 
 	o_edje = elm_layout_edje_get(desk->layout);
@@ -493,9 +493,9 @@ elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
 
    evas_object_data_set(desk->layout, "elfe_desktop", desk);
 
-   elm_layout_content_set(desk->layout, "elfe.swallow.content", desk->sc);
-   elm_layout_content_set(desk->layout, "elfe.swallow.selector", desk->selector);
-   elm_layout_content_set(desk->layout, "elfe.swallow.dock", desk->dock);
+   elm_object_content_part_set(desk->layout, "elfe.swallow.content", desk->sc);
+   elm_object_content_part_set(desk->layout, "elfe.swallow.selector", desk->selector);
+   elm_object_content_part_set(desk->layout, "elfe.swallow.dock", desk->dock);
 
    return desk->layout;
 

@@ -208,10 +208,10 @@ _elfe_home_win_new(E_Zone *zone)
 
    elm_scroller_content_set(hwin->bg_scroller, hwin->o_bg);
    evas_object_show(hwin->bg_scroller);
-   elm_layout_content_set(hwin->layout, "elfe.swallow.background", hwin->bg_scroller);
+   elm_object_content_part_set(hwin->layout, "elfe.swallow.background", hwin->bg_scroller);
 
    hwin->desktop = elfe_desktop_add(hwin->layout, hwin->zone);
-   elm_layout_content_set(hwin->layout, "elfe.swallow.desktop", hwin->desktop);
+   elm_object_content_part_set(hwin->layout, "elfe.swallow.desktop", hwin->desktop);
    evas_object_smart_callback_add(hwin->desktop, "scroll", _scroll_anim_cb, hwin);
 
 

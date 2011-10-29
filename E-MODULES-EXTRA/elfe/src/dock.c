@@ -261,7 +261,7 @@ elfe_dock_add(Evas_Object *parent)
    evas_object_show(dock->edje);
    evas_object_data_set(dock->edje, "dock", dock);
 
-   elm_layout_content_set(dock->edje, "elfe.swallow.content", dock->table);
+   elm_object_content_part_set(dock->edje, "elfe.swallow.content", dock->table);
 
    return dock->edje;
 }
