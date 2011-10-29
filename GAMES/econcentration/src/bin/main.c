@@ -289,7 +289,7 @@ _win_new(Game *game)
 
     win = elm_win_add(NULL, PACKAGE_NAME, ELM_WIN_BASIC);
     if (!win) return EINA_FALSE;
-    evas_object_smart_callback_add(win, "delete-request",
+    evas_object_smart_callback_add(win, "delete,request",
             _win_delete_request, game);
 
     bg = elm_bg_add(win);
