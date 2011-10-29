@@ -43,7 +43,7 @@ _play_timer_cb(void *data)
     char buf[16];
     game->play_time++;
     snprintf(buf, sizeof(buf), "%i s", game->play_time);
-    elm_label_label_set(game->time_lb, buf);
+    elm_object_text_set(game->time_lb, buf);
     return ECORE_CALLBACK_RENEW;
 }
 
@@ -82,7 +82,7 @@ _player_win(Game *game)
             "You spent %i seconds and<br>"
             "made %i attempts.",
             game->play_time, game->attempts);
-    elm_label_label_set(game->won_lb, buf);
+    elm_object_text_set(game->won_lb, buf);
 }
 
 static void
@@ -108,7 +108,7 @@ _fl_selected(void *data, Evas_Object *obj, void *event_info __UNUSED__)
     {
         game->attempts++;
         snprintf(buf, sizeof(buf), "%i", game->attempts);
-        elm_label_label_set(game->attempts_lb, buf);
+        elm_object_text_set(game->attempts_lb, buf);
         game->second_card = card;
         game->show_timer = ecore_timer_add(FLIP_HIDE, _hide_cards, game);
         return;
@@ -117,7 +117,7 @@ _fl_selected(void *data, Evas_Object *obj, void *event_info __UNUSED__)
     /* first and second cards match */
     game->found++;
     snprintf(buf, sizeof(buf), "%i", game->found);
-    elm_label_label_set(game->found_lb, buf);
+    elm_object_text_set(game->found_lb, buf);
     if (game->found == (game->total_size / 2))
         _player_win(game);
     game->first_card = NULL;
@@ -247,9 +247,9 @@ _start_game_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSE
     game->first_card = NULL;
     game->second_card = NULL;
 
-    elm_label_label_set(game->time_lb, "0 s");
-    elm_label_label_set(game->attempts_lb, "0");
-    elm_label_label_set(game->found_lb, "0");
+    elm_object_text_set(game->time_lb, "0 s");
+    elm_object_text_set(game->attempts_lb, "0");
+    elm_object_text_set(game->found_lb, "0");
 
     if (game->play_timer)
         ecore_timer_del(game->play_timer);
@@ -317,14 +317,14 @@ _win_new(Game *game)
     elm_box_pack_end(bx, bxctl);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, "New game");
+    elm_object_text_set(bt, "New game");
     evas_object_smart_callback_add(bt, "clicked", _start_game_cb, game);
     evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, 0);
     evas_object_show(bt);
     elm_box_pack_end(bxctl, bt);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, "Quit");
+    elm_object_text_set(bt, "Quit");
     evas_object_smart_callback_add(bt, "clicked", _win_delete_request, game);
     evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, 0);
     evas_object_show(bt);
@@ -333,7 +333,7 @@ _win_new(Game *game)
     fr = elm_frame_add(win);
     evas_object_size_hint_weight_set(fr, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set(fr, EVAS_HINT_FILL, EVAS_HINT_FILL);
-    elm_frame_label_set(fr, "Board size:");
+    elm_object_text_set(fr, "Board size:");
     elm_box_pack_end(bxctl, fr);
     evas_object_show(fr);
 
@@ -353,12 +353,12 @@ _win_new(Game *game)
     fr = elm_frame_add(win);
     evas_object_size_hint_weight_set(fr, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set(fr, EVAS_HINT_FILL, EVAS_HINT_FILL);
-    elm_frame_label_set(fr, "Time:");
+    elm_object_text_set(fr, "Time:");
     elm_box_pack_end(bxctl, fr);
     evas_object_show(fr);
 
     game->time_lb = lb = elm_label_add(win);
-    elm_label_label_set(lb, "0 s");
+    elm_object_text_set(lb, "0 s");
     evas_object_size_hint_weight_set(lb, 0.0, 0.0);
     evas_object_size_hint_align_set(lb, 1, 0.5);
     elm_frame_content_set(fr, lb);
@@ -367,12 +367,12 @@ _win_new(Game *game)
     fr = elm_frame_add(win);
     evas_object_size_hint_weight_set(fr, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set(fr, EVAS_HINT_FILL, EVAS_HINT_FILL);
-    elm_frame_label_set(fr, "Attempts:");
+    elm_object_text_set(fr, "Attempts:");
     elm_box_pack_end(bxctl, fr);
     evas_object_show(fr);
 
     game->attempts_lb = lb = elm_label_add(win);
-    elm_label_label_set(lb, "0");
+    elm_object_text_set(lb, "0");
     evas_object_size_hint_weight_set(lb, 0.0, 0.0);
     evas_object_size_hint_align_set(lb, 1, 0.5);
     elm_frame_content_set(fr, lb);
@@ -381,12 +381,12 @@ _win_new(Game *game)
     fr = elm_frame_add(win);
     evas_object_size_hint_weight_set(fr, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
     evas_object_size_hint_align_set(fr, EVAS_HINT_FILL, EVAS_HINT_FILL);
-    elm_frame_label_set(fr, "Found:");
+    elm_object_text_set(fr, "Found:");
     elm_box_pack_end(bxctl, fr);
     evas_object_show(fr);
 
     game->found_lb = lb = elm_label_add(win);
-    elm_label_label_set(lb, "0");
+    elm_object_text_set(lb, "0");
     evas_object_size_hint_weight_set(lb, 0.0, 0.0);
     evas_object_size_hint_align_set(lb, 1, 0.5);
     elm_frame_content_set(fr, lb);
@@ -406,7 +406,7 @@ _win_new(Game *game)
     elm_box_pack_end(bx, lb);
 
     bt = elm_button_add(win);
-    elm_button_label_set(bt, "Yay!");
+    elm_object_text_set(bt, "Yay!");
     evas_object_smart_callback_add(bt, "clicked", _won_ok, game);
     evas_object_size_hint_align_set(bt, 0.5, 0.5);
     evas_object_show(bt);
