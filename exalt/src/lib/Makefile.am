@@ -52,7 +52,7 @@ $(EXALTHEADERS)
 installed_headersdir = $(prefix)/include/exalt
 installed_headers_DATA = $(EXALTHEADERS)
 
-libexalt_la_LIBADD  = @EXALT_LIBS@
+libexalt_la_LIBADD  = @EXALT_LIBS@ -lm
 
 libexalt_la_DEPENDENCIES =
 
