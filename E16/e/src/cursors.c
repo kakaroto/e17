@@ -44,14 +44,13 @@ struct _ecursor {
 
 static Ecore_List  *cursor_list = NULL;
 
+#if USE_XRENDER
+/* Assuming we have XRenderCreateCursor (render >= 0.5) */
 static              Cursor
 ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
 		    int xh, int yh, unsigned int fg, unsigned int bg)
 {
    Cursor              curs;
-
-#if USE_XRENDER
-   /* Assuming we have XRenderCreateCursor (render >= 0.5) */
    Pixmap              pmap;
    XGCValues           gcv;
    GC                  gc;
@@ -81,7 +80,16 @@ ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
 
    XFreePixmap(disp, pmap);
    XRenderFreePicture(disp, pict);
+
+   return curs;
+}
 #else
+static              Cursor
+ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask,
+		    unsigned int w __UNUSED__, unsigned int h __UNUSED__,
+		    int xh, int yh, unsigned int fg, unsigned int bg)
+{
+   Cursor              curs;
    XColor              fgxc, bgxc;
 
    COLOR32_TO_RGB16(fg, fgxc.red, fgxc.green, fgxc.blue);
@@ -90,10 +98,10 @@ ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
    XAllocColor(disp, WinGetCmap(VROOT), &bgxc);
 
    curs = XCreatePixmapCursor(disp, cpmap, cmask, &fgxc, &bgxc, xh, yh);
-   w = h = 0;
-#endif
+
    return curs;
 }
+#endif
 
 static void
 ECursorCreate(const char *name, const char *image, int native_id,
