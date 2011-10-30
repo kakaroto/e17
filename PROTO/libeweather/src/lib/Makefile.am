@@ -29,7 +29,7 @@ plugins.c \
 eweather_smart.c
 
 libeweather_la_DEPENDENCIES = $(top_builddir)/config.h
-libeweather_la_LDFLAGS = @E_LIBS@
+libeweather_la_LDFLAGS = @E_LIBS@ -lm
 
 clean-local:
 	@rm -rf *.gcno
