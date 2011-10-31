@@ -4118,7 +4118,8 @@ public:
        CEvasObject(),
        prop_handler(property_list_base)
      {
-        eo = elm_toggle_add(parent->top_widget_get());
+        eo = elm_check_add(parent->top_widget_get());
+        elm_object_style_set(eo, "toggle");
         construct(eo, obj);
      }
 
@@ -4163,16 +4164,14 @@ public:
        if (val->IsString())
          {
             String::Utf8Value str(val);
-            const char *offlabel;
-            elm_toggle_states_labels_get(eo, NULL, &offlabel);
-            elm_toggle_states_labels_set(eo, *str, offlabel);
+            elm_object_text_part_set(eo, "on", *str);
          }
      }
 
    virtual Handle<Value> onlabel_get(void) const
      {
         const char *onlabel = NULL;
-        elm_toggle_states_labels_get(eo, &onlabel, NULL);
+        onlabel = elm_object_text_part_get(eo, "on");
         if (onlabel)
           return String::New(onlabel);
         else
@@ -4184,16 +4183,14 @@ public:
        if (val->IsString())
          {
             String::Utf8Value str(val);
-            const char *onlabel;
-            elm_toggle_states_labels_get(eo, &onlabel, NULL);
-            elm_toggle_states_labels_set(eo, onlabel, *str);
+            elm_object_text_part_set(eo, "off", *str);
          }
      }
 
    virtual Handle<Value> offlabel_get(void) const
      {
         const char *offlabel = NULL;
-        elm_toggle_states_labels_get(eo, NULL, &offlabel);
+        offlabel = elm_object_text_part_get(eo, "off");
         if (offlabel)
           return String::New(offlabel);
         else
@@ -4209,19 +4206,19 @@ public:
      {
         the_icon.Dispose();
         CEvasObject *icon = realize_one(this, value);
-        elm_toggle_icon_set(eo, icon->get());
+        elm_object_content_set(eo, icon->get());
         the_icon = Persistent<Value>::New(icon->get_object());
      }
 
     void state_set(Handle<Value> val)
       {
          if (val->IsBoolean())
-           elm_toggle_state_set(eo, val->BooleanValue());
+           elm_check_state_set(eo, val->BooleanValue());
       }
 
     virtual Handle<Value> state_get() const
       {
-         return Boolean::New(elm_toggle_state_get(eo));
+         return Boolean::New(elm_check_state_get(eo));
       }
 };
 
