@@ -97,6 +97,7 @@ How about individual API?
 Button
 ------
 
+IGNORE THIS COMMENT.
 elm_button_icon_set/unset - deleting the previous icon object seems dangerous.
 What if same icon object is used elsewhere as well?
 Makes it easier for developer to commit mistakes.
@@ -127,4 +128,14 @@ Scroller
 ELM_SCROLLER_POLICY_LAST - why is this required?
 
 elm_scroller_custom_widget_base_theme_set - 'custom' applies to theme.
+
+
+Label
+-----
+
+elm_label_ellipsis_set - shouldn't this be default behaviour ?
+
+Will scrolling text will get repeated ? 
+
+Why not have one API and an enum, that will either scroll or ellipsise?
 
