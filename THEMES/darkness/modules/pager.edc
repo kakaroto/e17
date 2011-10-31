@@ -297,18 +297,19 @@ group {
 	 }
       }
       part {
-	 name:          "e.swallow.content";
-	 type:          SWALLOW;
-	 clip_to:       "clip";
-         description {
-	    state:    "default" 0.0;
-	    rel1 {
-	       offset:   2    2;
-	    }
-	    rel2 {
-	       offset:   -3    -3;
-	    }
-	 }
+         name:          "e.swallow.content";
+         type:          SWALLOW;
+         clip_to:       "clip";
+                description {
+            state:    "default" 0.0;
+            rel1 {
+               offset:   2    2;
+            }
+            rel2 {
+               offset:   -3    -3;
+            }
+         }
+      }
       part {
             name: "e.text.label";
             type: TEXT;
@@ -333,7 +334,6 @@ group {
                color: 0 0 0 128;
             }
          }
-      }
    }
    programs {
       program {
