@@ -293,7 +293,9 @@ group { name: "e/modules/clock/digital";
 			effect: SHADOW;
 			scale: 1;
 			description { state: "default" 0.0;
-				TEXT_COLOR
+				//				TEXT_COLOR;
+				color: 0 0 0 198;
+				color3: 255 255 255 30;
 				rel1.to: "time-area";
 				rel2.to: "time-area";
 				text {
@@ -325,7 +327,9 @@ group { name: "e/modules/clock/digital";
 			effect: SHADOW;
 			scale: 1;
 			description { state: "default" 0.0;
-				TEXT_COLOR
+				//TEXT_COLOR
+				color: 0 0 0 198;
+				color3: 255 255 255 30;
 				align: 0.5 1.0;
 				min: 0 8;
 				max: 9999 30;
@@ -338,7 +342,7 @@ group { name: "e/modules/clock/digital";
 				}
 				text {
 					text_class: "clock";
-					font: FONT;
+					font: FONT_BOLD;
 					size: 9;
 					fit: 0 1;
 					min: 1 0;
