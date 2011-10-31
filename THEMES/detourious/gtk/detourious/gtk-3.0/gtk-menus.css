@@ -1,0 +1,134 @@
+/*********
+ * Menus *
+ *********/
+.menu {
+	-GtkMenu-internal-padding: 0;
+	padding: 0;
+	border-width: 0;
+	background-image: url("images/menu.png");
+	/* background-image: none;
+	 * background-color: @theme_base_color; */
+	/* border-color: @inactive_frame_color; */
+	color: @theme_fg_color;
+}
+
+/* menuitem */
+.menuitem {
+	padding: 3;
+	border-width: 1;
+	border-radius: 0;
+	text-shadow: 0 1 alpha (shade (@button_bg_color, 1.25), 0.4);
+	border-style: solid;
+	color: @theme_fg_color;
+	background-image: -gtk-gradient (linear, left top, left bottom,
+		from (shade (@menuitem_background_a, 1.0)),
+		to (shade (@menuitem_background_b, 1.0)));
+
+	-unico-bullet-color: @dark_fg_color;
+	-unico-border-gradient: -gtk-gradient (linear, left top, left bottom,
+		from (alpha (@theme_selected_bg_color, 0.0)),
+		to (alpha (@theme_selected_bg_color, 0.0)));
+	-unico-inner-stroke-style: none;
+}
+
+.menuitem:prelight,
+.menuitem *:prelight {
+	color: @selected_fg_color;
+	text-shadow: none;
+}
+
+.menuitem:insensitive,
+.menuitem *:insensitive {
+	color: mix (@theme_fg_color, @theme_bg_color, 0.5);
+	text-shadow: 0 1 shade (@bg_color, 1.1);
+}
+
+.menuitem.check:active,
+.menuitem.radio:active {
+	color: @theme_fg_color;
+	-unico-bullet-color: @theme_fg_color;
+}
+
+.menuitem.check:active:prelight,
+.menuitem.radio:active:prelight {
+	color: @selected_fg_color;
+	-unico-bullet-color: @selected_fg_color;
+}
+
+/* .menuitem.separator {
+ * 	/\* engine: unico; *\/
+ * 	/\* color: @selected_bg_color; *\/
+ * 	/\* background-color: @selected_fg_color; *\/
+ * 	padding: 0;
+ * 	-GtkSeparatorMenuItem-horizontal-padding: 100;
+ * 	-GtkWidget-separator-height: 3;
+ * 	-unico-border-gradient: none;
+ * 	-unico-inner-stroke-style: custom;
+ * 	-unico-inner-stroke-color: @link_color;
+ * } */
+
+/* menubar */
+.menubar {
+	padding: 1;
+	color: @theme_fg_color;
+	/* text-shadow: 0 1 alpha (shade (@button_bg_color, 1.25), 0.4); */
+	/* background-image: url("images/menubar.png");
+	 * -GtkWidget-window-dragging: true; */
+
+	/* background-repeat:repeat-x; */
+	background-image: url("images/menubar.png");
+	/* background-image: -gtk-gradient (linear,
+	 * 	left top,
+	 * 	left bottom,
+	 * 	from (@toolbar_gradient_base),
+	 * 	to (@toolbar_gradient_final));
+	 * -unico-border-gradient: -gtk-gradient (linear, left top, left bottom,
+	 * 	from (alpha (@theme_bg_color, 1.0)),
+	 * 	to (alpha (@toolbar_border, 1.0))); */
+	border-width: 0;
+	/* padding: 2;	 */
+	border-style: solid;
+	/* border-color: @theme_bg_color;
+	 * border-radius: 0; */
+
+}
+
+.menubar.menuitem {
+engine:unico;
+	padding: 1;
+	border-radius: 0;
+	border-width: 0;
+	color: @theme_fg_color;
+}
+
+.menubar.menuitem:prelight {
+engine:unico;
+	color: @selected_fg_color;
+	text-shadow: none;
+	background-image: -gtk-gradient (linear,
+				     left top, left bottom,
+				     from (alpha (@menuitem_background_a, 0.0)),
+				     to (alpha (@menuitem_background_b, 0.0)));
+	background-color: @theme_base_color;
+	border-width: 0;
+	border-color: @inactive_frame_color;
+	border-style: solid;
+	-unico-inner-stroke-style: none;
+	-unico-border-gradient: -gtk-gradient (linear, left top, left bottom,
+		from (alpha (@inactive_frame_color, 1.0)),
+		to (alpha (@inactive_frame_color, 1.0)));
+}
+
+/* .menubar.menuitem:prelight {
+ * 	color: @theme_fg_color;
+ * 	text-shadow: none;
+ * 	background-image: none;
+ * 	background-color: @theme_base_color;
+ * 	border-width: 1;
+ * 	border-color: @inactive_frame_color;
+ * 	border-style: solid;
+ * 	-unico-inner-stroke-style: none;
+ * 	-unico-border-gradient: -gtk-gradient (linear, left top, left bottom,
+ * 		from (alpha (@inactive_frame_color, 1.0)),
+ * 		to (alpha (@inactive_frame_color, 1.0)));
+ * } */
