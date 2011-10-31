@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Enna-Explorer\n"
-"Report-Msgid-Bugs-To: http://enna.geexbox.org\n"
-"POT-Creation-Date: 2011-09-11 14:52+0200\n"
-"PO-Revision-Date: 2011-09-12 15:49-0000\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2011-10-28 19:06+0200\n"
+"PO-Revision-Date: 2011-10-31 14:50-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -16,50 +16,63 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: Portugal\n"
 
-#: src/bin/shortcut.c:163
+#: src/bin/shortcut.c:187
 msgid "Music"
 msgstr "Música"
 
-#: src/bin/shortcut.c:165
+#: src/bin/shortcut.c:189
 msgid "Videos"
 msgstr "Vídeos"
 
-#: src/bin/shortcut.c:167
+#: src/bin/shortcut.c:191
 msgid "Images"
 msgstr "Imagens"
 
-#: src/bin/shortcut.c:169
+#: src/bin/shortcut.c:193
 msgid "Downloads"
 msgstr "Transferências"
 
-#: src/bin/shortcut.c:171
+#: src/bin/shortcut.c:195
 msgid "Documents"
 msgstr "Documentos"
 
-#: src/bin/localfiles.c:591
-#: src/bin/localfiles.c:637
+#: src/bin/localfiles.c:513
+#: src/bin/localfiles.c:559
 msgid "Rename"
 msgstr "Mudar nome"
 
-#: src/bin/localfiles.c:614
+#: src/bin/localfiles.c:536
 msgid "Enter new name"
 msgstr "Indique o novo nome"
 
-#: src/bin/localfiles.c:646
-#: src/bin/localfiles.c:729
+#: src/bin/localfiles.c:568
+#: src/bin/localfiles.c:652
+#: src/bin/localfiles.c:734
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/bin/localfiles.c:679
+#: src/bin/localfiles.c:597
+msgid "Create New Folder"
+msgstr "Criar nova pasta"
+
+#: src/bin/localfiles.c:620
+msgid "Enter folder name"
+msgstr "Indique o nome da pasta"
+
+#: src/bin/localfiles.c:643
+msgid "Create"
+msgstr "Criar"
+
+#: src/bin/localfiles.c:684
 msgid "Delete files"
 msgstr "Eliminar ficheiros"
 
-#: src/bin/localfiles.c:704
+#: src/bin/localfiles.c:709
 #, c-format
 msgid "Are you sure to delete <b>%s</b> ?"
 msgstr "Tem a certeza de que quer eliminar <b>%s</b> ?"
 
-#: src/bin/localfiles.c:720
+#: src/bin/localfiles.c:725
 msgid "Delete"
 msgstr "Eliminar"
 
