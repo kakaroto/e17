@@ -1,6 +1,6 @@
 
 #define BACKDROP_GRADIENT                                               \
-	part {																\
+part {									\
       name: "gradient";                                                 \
       type: IMAGE;                                                      \
       mouse_events: 0;                                                  \
@@ -11,8 +11,15 @@
          image {                                                        \
             normal: "images/backdrop_grad.png";                         \
          }                                                              \
+         fill {                                                         \
+            smooth: 0;                                                  \
+            size {                                                      \
+               relative: 0.0 1.0;                                       \
+               offset: 128 0;                                           \
+            }                                                           \
+         }                                                              \
       }                                                                 \
-   }                                                                    \
+   }
 
 
 #define ALTERNATE 1
