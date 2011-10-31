@@ -33,4 +33,8 @@ evas_object_events_freeze/thaw
 
 evas_map - map grid line problem
 
-evas_map - image does not updated when object image is changed on map-disabled state. 
+evas_map - image does not updated when object image is changed on map-disabled state.
+
+transit - testcase 1 image animation. check the events blockging.
+
+pass_events - need to review the code. it looks somewhat ineffecient code are there. 
