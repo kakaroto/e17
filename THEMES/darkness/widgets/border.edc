@@ -583,6 +583,7 @@ group { \
          name:           "title2"; \
          type:           TEXT; \
          mouse_events:   0; \
+         scale: 1; \
          description { \
             state: "default" 0.0; \
             align: 0.0 0.0; \
@@ -692,8 +693,10 @@ group { \
       } \
       part { \
          name:           "e.text.title"; \
+         scale: 1; \
          type:           TEXT; \
          effect:         SOFT_SHADOW; \
+         scale: 1; \
          mouse_events:   0; \
          description { \
             state: "default" 0.0; \

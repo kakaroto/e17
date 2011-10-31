@@ -87,6 +87,7 @@ group {
          name:           "e.text.label";
          type:           TEXT;
          mouse_events:   0;
+         scale: 1;
          clip_to: "clip";
          description {
             state:    "default" 0.0;
@@ -179,6 +180,7 @@ group {
          name: "e.dragable.slider";
          type: RECT;
          mouse_events: 1;
+         scale: 1;
          dragable {
             x: 0 0 0;
             y: 1 1 0;
@@ -204,6 +206,7 @@ group {
       part {
          name: "slider_img";
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
             min: 32 32;
@@ -501,6 +504,7 @@ group {
          name:           "e.text.label";
          type:           TEXT;
          mouse_events:   0;
+         scale: 1;
          clip_to: "clip";
          description {
             state:    "default" 0.0;
@@ -620,6 +624,7 @@ group {
          name: "slider_img";
          mouse_events: 0;
          clip_to: "clip";
+         scale: 1;
          description {
             state: "default" 0.0;
             min: 32 32;

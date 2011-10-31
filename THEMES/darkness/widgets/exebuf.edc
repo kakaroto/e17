@@ -225,6 +225,7 @@ group {
          name: "e.text.label";
          type: TEXT;
          effect: SHADOW;
+         scale: 1;
          description {
             state: "default" 0.0;
             color: 0 0 0 255;
@@ -455,6 +456,7 @@ group {
         name:           "title2";
         type:           TEXT;
         mouse_events:   0;
+        scale: 1;
         description {
            state: "default" 0.0;
            align: 1.0 0.0;
@@ -480,6 +482,7 @@ group {
          name:           "e.text.title";
          type:           TEXT;
          effect:         SHADOW;
+         scale: 1;
          mouse_events:   0;
          description {
             state: "default" 0.0;

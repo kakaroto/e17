@@ -131,6 +131,7 @@ group {
          name:          "e.text.label";
          type:          TEXT;
          effect:        SOFT_OUTLINE;
+         scale: 1;
          mouse_events:  0;
          description {
             state:    "default" 0.0;

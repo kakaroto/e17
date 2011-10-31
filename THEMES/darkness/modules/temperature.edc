@@ -68,6 +68,7 @@ group {
 	 type:           TEXT;
 	 effect:         SOFT_SHADOW;
 	 clip_to:        "fade_clip";
+         scale: 1;
 	 description {
 	    state: "default" 0.0;
 	    align: 1.0 0.0;

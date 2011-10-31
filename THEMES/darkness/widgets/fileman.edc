@@ -97,6 +97,7 @@ group {
          name: "sb_vbar";
          type: RECT;
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
             min: 16 16;
@@ -215,6 +216,7 @@ group {
          name: "e.dragable.vbar";
          clip_to: "sb_vbar";
          mouse_events: 1;
+         scale: 1;
          dragable {
             x: 0 0 0;
             y: 1 1 0;
@@ -330,6 +332,7 @@ group {
          name: "sb_hbar";
          type: RECT;
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
             min: 16 16;
@@ -447,6 +450,7 @@ group {
          name: "e.dragable.hbar";
          clip_to: "sb_hbar";
          mouse_events: 1;
+         scale: 1;
          dragable {
             x: 1 1 0;
             y: 0 0 0;
@@ -995,6 +999,7 @@ group {
          type:           TEXT;
          effect:         SHADOW;
          mouse_events:   0;
+         scale: 1;
          description {
             state: "default" 0.0;
             min:      16 16;
@@ -1331,6 +1336,7 @@ group {
          name:           "e.text.label";
          type:           TEXT;
          effect:         SHADOW;
+         scale: 1;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -1503,6 +1509,7 @@ group {
          type:          TEXT;
          effect:        OUTLINE_SOFT_SHADOW;
          mouse_events:  0;
+         scale: 1;
          description {
             state: "default" 0.0;
             align: 0.5 1.0;
@@ -1611,6 +1618,7 @@ group {
          type:          TEXT;
          effect:        OUTLINE_SOFT_SHADOW;
          mouse_events:  0;
+         scale: 1;
          description {
             state: "default" 0.0;
             align: 0.5 1.0;
@@ -1675,6 +1683,7 @@ group {
          type: TEXT;
          effect: SOFT_SHADOW;
          clip_to: "typebuf_clip";
+         scale: 1;
          mouse_events:  0;
          description {
             state: "default" 0.0;
@@ -1737,6 +1746,7 @@ group {
          effect: SOFT_SHADOW;
          clip_to: "busy_clip";
          mouse_events:  0;
+         scale: 1;
          description {
             state: "default" 0.0;
             align: 1.0 0.5;

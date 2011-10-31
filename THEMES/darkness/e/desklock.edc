@@ -52,6 +52,7 @@ group
             name: "e.text.title";
             type: TEXT;
             effect: SHADOW;
+            scale: 1;
             description {
                state: "default" 0.0;
                color: 0 0 0 255;
@@ -107,6 +108,7 @@ group
                name: "e.text.password";
                type: TEXT;
                effect: SHADOW;
+               scale: 1;
                clip_to: "passwd_entry_clip";
                description {
                   state: "default" 0.0;
