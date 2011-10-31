@@ -841,14 +841,21 @@ ngi_item_activate(Ng *ng)
      {
 	if (it != ng->item_active)
 	  {
-
 	     ngi_item_mouse_out(ng->item_active);
 	     ngi_item_mouse_in(it);
 	     ng->item_active = it;
 	     _ngi_label_pos_set(ng);
-	     evas_object_show(ng->o_label);
-	     edje_object_signal_emit(ng->o_label, "e,state,label,show", "e");
-	     edje_object_part_text_set(ng->o_label, "e.text.label", it->label);
+
+             if (it->label)
+               {                  
+                  evas_object_show(ng->o_label);
+                  edje_object_signal_emit(ng->o_label, "e,state,label,show", "e");
+                  edje_object_part_text_set(ng->o_label, "e.text.label", it->label);
+               }
+             else
+               {
+                  evas_object_hide(ng->o_label);
+               }
 	  }
      }
    else
