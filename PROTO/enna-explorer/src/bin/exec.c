@@ -64,6 +64,19 @@ _app_selected_cb(void *data, Evas_Object *obj, void *event)
                               _app_exec_cb, NULL);
 }
 
+static void
+_dialog_cancel_clicked_cb(void *data, Evas_Object *obj, void *ev)
+{
+   Evas_Object *win = data;
+   const char *mime = evas_object_data_get(win, "mime");
+
+   if (mime)
+     eina_stringshare_del(mime);
+
+   evas_object_del(win);
+}
+
+
 void _mime_selection_window_show(Enna_File *file)
 {
    const char *mime;
@@ -77,7 +90,6 @@ void _mime_selection_window_show(Enna_File *file)
    Evas_Object *en;
    Evas_Object *bx;
    Evas_Object *btn_bx;
-   Evas_Object *btn_ok;
    Evas_Object *btn_cancel;
 
 
@@ -129,13 +141,11 @@ void _mime_selection_window_show(Enna_File *file)
         if (!apps)
           apps = efreet_util_desktop_mime_list("text/plain");
      }
-
+   evas_object_data_set(win, "list", list);
    EINA_LIST_FOREACH(apps, l, desk)
      {
-        //Eina_List *files = NULL;
-        Evas_Object *ic;
+         Evas_Object *ic;
 
-        //files = eina_list_append(files, file->mrl);
         ic = elm_icon_add(win);
         evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_VERTICAL, 1, 1);
         evas_object_size_hint_min_set(ic, 24, 24);
@@ -144,8 +154,6 @@ void _mime_selection_window_show(Enna_File *file)
         evas_object_data_set(win, "file", file);
         evas_object_data_set(win, "mime", eina_stringshare_add(mime));
         elm_list_item_append(list, desk->orig_path, ic, NULL, _app_selected_cb, win);
-
-
      }
 
    elm_frame_content_set(fr, list);
@@ -176,22 +184,13 @@ void _mime_selection_window_show(Enna_File *file)
    evas_object_show(btn_bx);
    elm_box_padding_set(btn_bx, 8, 2);
 
-   btn_ok = elm_button_add(win);
-   elm_object_text_set(btn_ok, _("Open it"));
-   evas_object_show(btn_ok);
-   evas_object_size_hint_weight_set(btn_ok, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(btn_ok, 0.0, EVAS_HINT_FILL);
-   //evas_object_smart_callback_add(btn_ok, "clicked",
-   //                               _dialog_rename_ok_clicked_cb, priv);
-   elm_box_pack_end(btn_bx, btn_ok);
-
    btn_cancel = elm_button_add(win);
    elm_object_text_set(btn_cancel, _("Cancel"));
    evas_object_show(btn_cancel);
    evas_object_size_hint_weight_set(btn_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn_cancel, 1.0, EVAS_HINT_FILL);
-   //evas_object_smart_callback_add(btn_cancel, "clicked",
-   //                               _dialog_cancel_clicked_cb, priv);
+   evas_object_size_hint_align_set(btn_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_smart_callback_add(btn_cancel, "clicked",
+                                  _dialog_cancel_clicked_cb, win);
    elm_box_pack_end(btn_bx, btn_cancel);
 
    elm_box_pack_end(bx, btn_bx);
