@@ -59,8 +59,6 @@ struct _Tiling_Info
     Eina_List *stacks[TILING_MAX_STACKS];
     int        pos[TILING_MAX_STACKS];
     int        size[TILING_MAX_STACKS];
-
-    int borders;
 };
 
 struct _E_Config_Dialog_Data

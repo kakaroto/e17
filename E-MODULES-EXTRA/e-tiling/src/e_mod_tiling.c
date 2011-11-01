@@ -837,6 +837,8 @@ _set_stack_geometry(int stack, int pos, int size)
 static void
 _add_stack(void)
 {
+    int nb_borders;
+
     if (_G.tinfo->conf->nb_stacks == TILING_MAX_STACKS)
         return;
 
@@ -851,8 +853,9 @@ _add_stack(void)
                 _add_border(bd);
         }
     }
+    nb_borders = get_window_count();
     if (_G.tinfo->stacks[_G.tinfo->conf->nb_stacks - 2]
-    &&  _G.tinfo->borders >= _G.tinfo->conf->nb_stacks)
+    &&  nb_borders >= _G.tinfo->conf->nb_stacks)
     {
         int nb_stacks = _G.tinfo->conf->nb_stacks - 1;
         int pos, s;
@@ -1211,8 +1214,6 @@ _add_border(E_Border *bd)
                                    &_G.tinfo->size[0], NULL);
         stack = 0;
     }
-    _G.tinfo->borders++;
-
 }
 
 static void
@@ -1227,14 +1228,15 @@ _remove_border(E_Border *bd)
     if (stack < 0)
         return;
 
-    _G.tinfo->borders--;
     EINA_LIST_REMOVE(_G.tinfo->stacks[stack], bd);
     eina_hash_del(_G.border_extras, bd, NULL);
 
     if (_G.tinfo->stacks[stack]) {
         _reorganize_stack(stack);
     } else {
-        if (nb_stacks > _G.tinfo->borders) {
+        int nb_borders = get_window_count();
+
+        if (nb_stacks > nb_borders) {
             int pos, s;
             /* Remove stack */
 
