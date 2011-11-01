@@ -56,10 +56,10 @@ static void
 _entry_activated_cb(void *data, Evas_Object *obj, void *event_info)
 {
     Evas_Object *o_layout = data;
-    char *text;
+    const char *text;
 
     text = elm_object_text_get(obj);
-    evas_object_smart_callback_call(o_layout, "path,changed", text);
+    evas_object_smart_callback_call(o_layout, "path,changed", (char*)text);
 }
 
 Evas_Object *

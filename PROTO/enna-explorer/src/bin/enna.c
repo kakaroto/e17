@@ -21,7 +21,6 @@
 
 #include "config.h"
 
-#define _GNU_SOURCE
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
@@ -63,8 +62,8 @@ static const Ecore_Getopt options = {
 /* Global Variable Enna *enna*/
 Enna *enna;
 
-static const char *app_theme = "phone";
-static const char *app_geometry = NULL;
+static char *app_theme = "phone";
+static char *app_geometry = NULL;
 static Eina_Bool app_exit = EINA_FALSE;
 static unsigned int app_w = 480;
 static unsigned int app_h = 800;
@@ -252,7 +251,8 @@ int main(int argc, char **argv)
 
    if (argc < args + 1)
      {
-        getcwd(path, PATH_MAX);
+        const char *tmp;
+        tmp = getcwd(path, PATH_MAX);
         app_path = eina_stringshare_add(path);
      }
    else

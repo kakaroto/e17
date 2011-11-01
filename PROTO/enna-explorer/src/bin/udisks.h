@@ -110,7 +110,9 @@ extern int ENNA_EVENT_OP_EJECT_ERROR;
 
 void enna_udisks_init(void);
 void enna_udisks_volume_mount(Enna_Volume *v);
+void enna_udisks_volume_unmount(Enna_Volume *v);
 void enna_udisks_volume_eject(Enna_Volume *v);
+
 //void enna_udisks_shutdown(void);
 
 #endif /* UDISKS_H */

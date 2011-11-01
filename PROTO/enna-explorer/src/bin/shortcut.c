@@ -106,9 +106,7 @@ static Elm_Genlist_Item_Class itc_favorite_group = {
     _enna_shortcut_favorite_icon_get,
     NULL,
     NULL,
-    NULL
-  },
-  NULL
+  }
 };
 
 static char *
@@ -158,10 +156,8 @@ static Elm_Genlist_Item_Class itc_desktop_group = {
     _enna_shortcut_desktop_label_get,
     _enna_shortcut_desktop_icon_get,
     NULL,
-    NULL,
     NULL
-  },
-  NULL
+  }
 };
 
 static char *
@@ -268,10 +264,8 @@ static Elm_Genlist_Item_Class itc_bookmark = {
     _bookmark_label_get,
     _bookmark_icon_get,
     NULL,
-    NULL,
     NULL
-  },
-  NULL
+  }
 };
 
 static Elm_Genlist_Item_Class itc_bookmark_volume = {
@@ -280,10 +274,8 @@ static Elm_Genlist_Item_Class itc_bookmark_volume = {
     _bookmark_volume_label_get,
     _bookmark_volume_icon_get,
     NULL,
-    NULL,
     NULL
-  },
-  NULL
+  }
 };
 
 static void
@@ -449,7 +441,7 @@ _volume_selected_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
      enna_udisks_volume_mount(v);
 
    else if (v->mount_point)
-     evas_object_smart_callback_call(obj, "shortcut,selected", v->mount_point);
+       evas_object_smart_callback_call(obj, "shortcut,selected", (char*)v->mount_point);
 }
 
 static Eina_Bool
@@ -457,7 +449,6 @@ _volume_added_cb(void *data, int type, void *event)
 {
    Evas_Object *list = data;
    Elm_Genlist_Item *egi, *gi;
-   Elm_Genlist_Item *it;
    Enna_Volume *v = event;
    Device_Item *di;
 
@@ -521,10 +512,10 @@ _mount_done_cb(void *data, int type, void *event)
 
    di = _volume_find(str);
    elm_genlist_item_update(di->gi);
-   elm_genlist_item_selected_set(di->gi, EINA_FALSE);
+   elm_gen_item_selected_set(di->gi, EINA_FALSE);
 
    if (di->v && di->v->mount_point)
-     evas_object_smart_callback_call(di->list, "shortcut,selected", di->v->mount_point);
+       evas_object_smart_callback_call(di->list, "shortcut,selected", (char*)di->v->mount_point);
 
    return ECORE_CALLBACK_DONE;
 
@@ -544,7 +535,7 @@ _unmount_done_cb(void *data, int type, void *event)
 
    di = _volume_find(str);
    elm_genlist_item_update(di->gi);
-   elm_genlist_item_selected_set(di->gi, EINA_FALSE);
+   elm_gen_item_selected_set(di->gi, EINA_FALSE);
    if (di->v)
      evas_object_smart_callback_call(di->list, "shortcut,selected", getenv("HOME"));
 
@@ -567,7 +558,6 @@ enna_shortcut_add(Evas_Object *parent)
    char buffer[PATH_MAX];
 
    Eina_List *gtk_bookmarks;
-   Eina_List *volumes;
    const char *file;
 
    list = elm_genlist_add(parent);

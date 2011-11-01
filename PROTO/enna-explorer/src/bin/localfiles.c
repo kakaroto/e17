@@ -244,71 +244,65 @@ make_human_readable_str(unsigned long long val,
    return str;
 }
 
-static const char *
-_root_meta_get(void *data, Enna_File *file, const char *key)
-{
-   Root_Directories *root = data;
-   struct statfs st;
+/* static const char * */
+/* _root_meta_get(void *data, Enna_File *file, const char *key) */
+/* { */
+/*    Root_Directories *root = data; */
+/*    struct statfs st; */
 
-   if (!root)
-     return NULL;
+/*    if (!root) */
+/*      return NULL; */
 
-   if (!strcmp(key, ENNA_META_KEY_SIZE))
-     {
+/*    if (!strcmp(key, ENNA_META_KEY_SIZE)) */
+/*      { */
 
-        if (statfs(root->uri+7, &st) != 0)
-          {
-             return NULL;
-          }
+/*         if (statfs(root->uri+7, &st) != 0) */
+/*           { */
+/*              return NULL; */
+/*           } */
 
-        return
-          eina_stringshare_printf("%s",  make_human_readable_str(
-                                                                 st.f_blocks, st.f_bsize, 0));
-     }
-   else if (!strcmp(key, ENNA_META_KEY_USESPACE))
-     {
-        if (statfs(root->uri+7, &st) != 0)
-          {
-             return NULL;
-          }
-        return
-          eina_stringshare_printf("%s",make_human_readable_str(
-                                                               (st.f_blocks - st.f_bfree),
-                                                               st.f_bsize, 0));
-     }
-   else if (!strcmp(key, ENNA_META_KEY_FREESPACE))
-     {
-        if (statfs(root->uri+7, &st) != 0)
-          {
-             return NULL;
-          }
-        return
-          eina_stringshare_printf("%s", make_human_readable_str(st.f_bavail,
-                                                                st.f_bsize, 0));
-     }
-   else if (!strcmp(key, ENNA_META_KEY_PERCENT_USED))
-     {
-        unsigned long blocks_used;
-        unsigned blocks_percent_used;
+/*         return */
+/*           eina_stringshare_printf("%s",  make_human_readable_str( */
+/*                                                                  st.f_blocks, st.f_bsize, 0)); */
+/*      } */
+/*    else if (!strcmp(key, ENNA_META_KEY_USESPACE)) */
+/*      { */
+/*         if (statfs(root->uri+7, &st) != 0) */
+/*           { */
+/*              return NULL; */
+/*           } */
+/*         return */
+/*           eina_stringshare_printf("%s",make_human_readable_str( */
+/*                                                                (st.f_blocks - st.f_bfree), */
+/*                                                                st.f_bsize, 0)); */
+/*      } */
+/*    else if (!strcmp(key, ENNA_META_KEY_FREESPACE)) */
+/*      { */
+/*         if (statfs(root->uri+7, &st) != 0) */
+/*           { */
+/*              return NULL; */
+/*           } */
+/*         return */
+/*           eina_stringshare_printf("%s", make_human_readable_str(st.f_bavail, */
+/*                                                                 st.f_bsize, 0)); */
+/*      } */
+/*    else if (!strcmp(key, ENNA_META_KEY_PERCENT_USED)) */
+/*      { */
+/*         unsigned long blocks_used; */
+/*         unsigned blocks_percent_used; */
 
-        if (statfs(root->uri+7, &st) != 0)
-          {
-             return NULL;
-          }
-        blocks_used = st.f_blocks - st.f_bfree;
-        blocks_percent_used = (blocks_used * 100ULL + (blocks_used + st.f_bavail)/2) / (blocks_used + st.f_bavail);
-        return
-          eina_stringshare_printf("%d", blocks_percent_used);
-     }
+/*         if (statfs(root->uri+7, &st) != 0) */
+/*           { */
+/*              return NULL; */
+/*           } */
+/*         blocks_used = st.f_blocks - st.f_bfree; */
+/*         blocks_percent_used = (blocks_used * 100ULL + (blocks_used + st.f_bavail)/2) / (blocks_used + st.f_bavail); */
+/*         return */
+/*           eina_stringshare_printf("%d", blocks_percent_used); */
+/*      } */
 
-   return NULL;
-}
-
-static Enna_File_Meta_Class root_meta_class = {
-  _root_meta_get,
-  NULL,
-  NULL
-};
+/*    return NULL; */
+/* } */
 
 static Eina_Bool
 _file_filter_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
@@ -828,16 +822,15 @@ _file_error_cb(void *data, Eio_File *handler, int error)
 {
 }
 
-static Eina_Bool
-_eio_event_cb(void *data, int type __UNUSED__, void *event)
-{
-   return EINA_TRUE;
-}
+/* static Eina_Bool */
+/* _eio_event_cb(void *data, int type __UNUSED__, void *event) */
+/* { */
+/*    return EINA_TRUE; */
+/* } */
 
 static void
 _children_get(void *priv, const char *uri, Enna_Browser *browser, ENNA_VFS_CAPS caps)
 {
-   Eina_List *l;
    Class_Private_Data *pmod = NULL;
    Enna_Localfiles_Priv *p = priv;
    switch(caps)
@@ -867,7 +860,7 @@ static void
 _del(void *priv)
 {
    Enna_Localfiles_Priv *p = priv;
-   Ecore_Event_Handler *handler;
+   /* Ecore_Event_Handler *handler; */
 
    if (p->file)
      eio_file_cancel(p->file);

@@ -218,86 +218,85 @@ _create_menu()
    elm_layout_content_set(mod->o_layout, "browser.swallow", mod->o_browser);
 }
 
-static void
-_toolbar_create_folder_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
-{
-   Evas_Object *win;
-   Evas_Object *bg;
-   Evas_Object *fr;
-   Evas_Object *en;
-   Evas_Object *lb;
-   Evas_Object *bx;
-   Evas_Object *btn_bx;
-   Evas_Object *btn_ok;
-   Evas_Object *btn_cancel;
+/* static void */
+/* _toolbar_create_folder_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__) */
+/* { */
+/*    Evas_Object *win; */
+/*    Evas_Object *bg; */
+/*    Evas_Object *fr; */
+/*    Evas_Object *en; */
+/*    Evas_Object *lb; */
+/*    Evas_Object *bx; */
+/*    Evas_Object *btn_bx; */
+/*    Evas_Object *btn_ok; */
+/*    Evas_Object *btn_cancel; */
 
-   win = elm_win_add(enna->win, NULL, ELM_WIN_DIALOG_BASIC);
-   elm_win_title_set(win, "New Folder");
-   elm_win_autodel_set(win, EINA_TRUE);
+/*    win = elm_win_add(enna->win, NULL, ELM_WIN_DIALOG_BASIC); */
+/*    elm_win_title_set(win, "New Folder"); */
+/*    elm_win_autodel_set(win, EINA_TRUE); */
 
-   bg = elm_bg_add(win);
-   evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(win, bg);
-   evas_object_show(bg);
-   evas_object_size_hint_min_set(bg, 400, 64);
+/*    bg = elm_bg_add(win); */
+/*    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
+/*    elm_win_resize_object_add(win, bg); */
+/*    evas_object_show(bg); */
+/*    evas_object_size_hint_min_set(bg, 400, 64); */
 
-   fr = elm_frame_add(win);
-   elm_object_style_set(fr, "pad_medium");
-   evas_object_show(fr);
-   elm_win_resize_object_add(win, fr);
+/*    fr = elm_frame_add(win); */
+/*    elm_object_style_set(fr, "pad_medium"); */
+/*    evas_object_show(fr); */
+/*    elm_win_resize_object_add(win, fr); */
 
-   bx = elm_box_add(win);
-   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(bx, -1, -1);
-   evas_object_show(bx);
-   elm_frame_content_set(fr, bx);
-   elm_box_padding_set(bx, 4, 4);
+/*    bx = elm_box_add(win); */
+/*    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
+/*    evas_object_size_hint_align_set(bx, -1, -1); */
+/*    evas_object_show(bx); */
+/*    elm_frame_content_set(fr, bx); */
+/*    elm_box_padding_set(bx, 4, 4); */
 
-   lb = elm_label_add(win);
-   elm_object_text_set(lb, "Enter folder name");
-   evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(lb, 0.5, -1);
-   evas_object_show(lb);
-   elm_box_pack_end(bx, lb);
+/*    lb = elm_label_add(win); */
+/*    elm_object_text_set(lb, "Enter folder name"); */
+/*    evas_object_size_hint_weight_set(lb, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
+/*    evas_object_size_hint_align_set(lb, 0.5, -1); */
+/*    evas_object_show(lb); */
+/*    elm_box_pack_end(bx, lb); */
 
-   en = elm_entry_add(win);
-   elm_entry_single_line_set(en, EINA_TRUE);
-   evas_object_size_hint_weight_set(en, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(en, -1, -1);
-   elm_box_pack_end(bx, en);
-   evas_object_show(en);
+/*    en = elm_entry_add(win); */
+/*    elm_entry_single_line_set(en, EINA_TRUE); */
+/*    evas_object_size_hint_weight_set(en, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
+/*    evas_object_size_hint_align_set(en, -1, -1); */
+/*    elm_box_pack_end(bx, en); */
+/*    evas_object_show(en); */
 
-   btn_bx = elm_box_add(win);
-   elm_box_horizontal_set(btn_bx, EINA_TRUE);
-   evas_object_size_hint_weight_set(btn_bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn_bx, EVAS_HINT_FILL, 0.5);
-   evas_object_show(btn_bx);
-   elm_box_padding_set(btn_bx, 8, 2);
+/*    btn_bx = elm_box_add(win); */
+/*    elm_box_horizontal_set(btn_bx, EINA_TRUE); */
+/*    evas_object_size_hint_weight_set(btn_bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
+/*    evas_object_size_hint_align_set(btn_bx, EVAS_HINT_FILL, 0.5); */
+/*    evas_object_show(btn_bx); */
+/*    elm_box_padding_set(btn_bx, 8, 2); */
 
-   btn_ok = elm_button_add(win);
-   elm_object_text_set(btn_ok, "OK");
-   evas_object_show(btn_ok);
-   evas_object_size_hint_weight_set(btn_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn_ok, EVAS_HINT_FILL, 0.5);
-   elm_box_pack_end(btn_bx, btn_ok);
+/*    btn_ok = elm_button_add(win); */
+/*    elm_object_text_set(btn_ok, "OK"); */
+/*    evas_object_show(btn_ok); */
+/*    evas_object_size_hint_weight_set(btn_ok, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
+/*    evas_object_size_hint_align_set(btn_ok, EVAS_HINT_FILL, 0.5); */
+/*    elm_box_pack_end(btn_bx, btn_ok); */
 
-   btn_cancel = elm_button_add(win);
-   elm_object_text_set(btn_cancel, "Cancel");
-   evas_object_show(btn_cancel);
-   evas_object_size_hint_weight_set(btn_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(btn_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(btn_bx, btn_cancel);
+/*    btn_cancel = elm_button_add(win); */
+/*    elm_object_text_set(btn_cancel, "Cancel"); */
+/*    evas_object_show(btn_cancel); */
+/*    evas_object_size_hint_weight_set(btn_cancel, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
+/*    evas_object_size_hint_align_set(btn_cancel, EVAS_HINT_FILL, EVAS_HINT_FILL); */
+/*    elm_box_pack_end(btn_bx, btn_cancel); */
 
-   elm_box_pack_end(bx, btn_bx);
+/*    elm_box_pack_end(bx, btn_bx); */
 
-   evas_object_show(win);
-}
+/*    evas_object_show(win); */
+/* } */
 
 static void
 _shortcut_selected_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
     const char *file;
-    printf("shortcut selected : %s\n", event_info);
     file = eina_stringshare_printf("file://%s", (char*)event_info);
     enna_browser_obj_uri_set(mod->o_browser, file);
 }

@@ -200,7 +200,7 @@ _del_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event
    if (!sd)
      return;
 
-   elm_gengrid_clear(sd->o_grid);
+   elm_gen_clear(sd->o_grid);
 
    EINA_LIST_FREE(sd->items, gi)
      free(gi);
@@ -247,8 +247,8 @@ _item_click_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void
 static void
 _item_realized_cb(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
-   Evas_Object *o_item = elm_gengrid_item_object_get(event_info);
-   evas_object_event_callback_add(o_item, EVAS_CALLBACK_MOUSE_UP,_item_click_cb, event_info);
+   const Evas_Object *o_item = elm_gengrid_item_object_get(event_info);
+   evas_object_event_callback_add((Evas_Object*)o_item, EVAS_CALLBACK_MOUSE_UP,_item_click_cb, event_info);
 }
 
 static void
@@ -274,7 +274,7 @@ enna_grid_add(Evas_Object * parent)
    //elm_gengrid_horizontal_set(sd->o_grid, EINA_TRUE);
    elm_gengrid_multi_select_set(sd->o_grid, EINA_FALSE);
    elm_gengrid_align_set(sd->o_grid, 0, 0);
-   elm_gengrid_bounce_set(sd->o_grid, EINA_FALSE, EINA_TRUE);
+   elm_gen_bounce_set(sd->o_grid, EINA_FALSE, EINA_TRUE);
 
    evas_object_data_set(sd->o_grid, "sd", sd);
    evas_object_smart_callback_add(sd->o_grid, "realized", _item_realized_cb, sd);
@@ -291,7 +291,7 @@ enna_grid_clear(Evas_Object *obj)
    Smart_Data *sd = evas_object_data_get(obj, "sd");
    Grid_Item *item;
 
-   elm_gengrid_clear(obj);
+   elm_gen_clear(obj);
    EINA_LIST_FREE(sd->items, item)
      _item_remove(obj, item);
 }
@@ -434,7 +434,7 @@ enna_grid_selected_data_get(Evas_Object *obj)
 
    EINA_LIST_FOREACH(sd->items,l, gi)
      {
-        if ( elm_gengrid_item_selected_get (gi->item))
+        if ( elm_gen_item_selected_get (gi->item))
           {
              return gi->data;
           }

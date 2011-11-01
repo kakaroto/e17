@@ -252,64 +252,64 @@ _update_cb(void *data, Enna_File *file)
      sd->view_funcs.view_update(sd->o_view, file);
 }
 
-static void
-_back_btn_clicked_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
-{
-   Smart_Data *sd = data;
+/* static void */
+/* _back_btn_clicked_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__) */
+/* { */
+/*    Smart_Data *sd = data; */
 
-   if (!sd)
-     return;
+/*    if (!sd) */
+/*      return; */
 
-   _browse_back(sd);
-}
+/*    _browse_back(sd); */
+/* } */
 
-static void
-_add_header(Smart_Data *sd, Enna_File *file)
-{
-   Evas_Object *o_layout;
-   Evas_Object *o_edje;
-   Evas_Object *o_back_btn;
-   Evas_Object *o_ic;
+/* static void */
+/* _add_header(Smart_Data *sd, Enna_File *file) */
+/* { */
+/*    Evas_Object *o_layout; */
+/*    Evas_Object *o_edje; */
+/*    Evas_Object *o_back_btn; */
+/*    Evas_Object *o_ic; */
 
-   ENNA_OBJECT_DEL(sd->o_header);
+/*    ENNA_OBJECT_DEL(sd->o_header); */
 
-   o_layout = elm_layout_add(sd->o_layout);
-   elm_layout_file_set(o_layout, enna_config_theme_get(), "enna/browser/header");
+/*    o_layout = elm_layout_add(sd->o_layout); */
+/*    elm_layout_file_set(o_layout, enna_config_theme_get(), "enna/browser/header"); */
 
-   o_back_btn = elm_button_add(o_layout);
-   o_ic = elm_icon_add(sd->o_layout);
-   elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/arrow_left");
-   elm_button_icon_set(o_back_btn, o_ic);
-   evas_object_size_hint_min_set(o_ic, 32, 32);
-   evas_object_show(o_ic);
+/*    o_back_btn = elm_button_add(o_layout); */
+/*    o_ic = elm_icon_add(sd->o_layout); */
+/*    elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/arrow_left"); */
+/*    elm_button_icon_set(o_back_btn, o_ic); */
+/*    evas_object_size_hint_min_set(o_ic, 32, 32); */
+/*    evas_object_show(o_ic); */
 
-   evas_object_smart_callback_add(o_back_btn, "clicked", _back_btn_clicked_cb, sd);
+/*    evas_object_smart_callback_add(o_back_btn, "clicked", _back_btn_clicked_cb, sd); */
 
-   evas_object_size_hint_align_set(o_back_btn, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(o_back_btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+/*    evas_object_size_hint_align_set(o_back_btn, EVAS_HINT_FILL, EVAS_HINT_FILL); */
+/*    evas_object_size_hint_weight_set(o_back_btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
 
-   elm_layout_content_set(o_layout, "enna.swallow.back", o_back_btn);
+/*    elm_layout_content_set(o_layout, "enna.swallow.back", o_back_btn); */
 
-   o_ic = elm_icon_add(o_layout);
-   if (!file)
-     elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/home");
-   else
-     elm_icon_file_set(o_ic, enna_config_theme_get(), file->icon);
-   elm_layout_content_set(o_layout, "enna.swallow.icon", o_ic);
+/*    o_ic = elm_icon_add(o_layout); */
+/*    if (!file) */
+/*      elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/home"); */
+/*    else */
+/*      elm_icon_file_set(o_ic, enna_config_theme_get(), file->icon); */
+/*    elm_layout_content_set(o_layout, "enna.swallow.icon", o_ic); */
 
-   o_edje = elm_layout_edje_get(o_layout);
-   if (file)
-     edje_object_part_text_set(o_edje, "enna.text.current", file->label);
-   else
-     edje_object_part_text_set(o_edje, "enna.text.current", "Main Menu");
+/*    o_edje = elm_layout_edje_get(o_layout); */
+/*    if (file) */
+/*      edje_object_part_text_set(o_edje, "enna.text.current", file->label); */
+/*    else */
+/*      edje_object_part_text_set(o_edje, "enna.text.current", "Main Menu"); */
 
-   evas_object_size_hint_align_set(o_layout, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_size_hint_weight_set(o_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+/*    evas_object_size_hint_align_set(o_layout, EVAS_HINT_FILL, EVAS_HINT_FILL); */
+/*    evas_object_size_hint_weight_set(o_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
 
-   elm_layout_content_set(sd->o_layout, "enna.swallow.header", o_layout);
+/*    elm_layout_content_set(sd->o_layout, "enna.swallow.header", o_layout); */
 
-   sd->o_header = o_layout;
-}
+/*    sd->o_header = o_layout; */
+/* } */
 
 
 static void
@@ -419,7 +419,6 @@ _browse(Smart_Data *sd, Enna_File *file, Eina_Bool back)
 static void
 _browse_back(Smart_Data *sd)
 {
-   Enna_File *cur;
    Enna_File *prev;
 
    prev = enna_file_from_uri_new(ecore_file_dir_get(sd->file->uri));
