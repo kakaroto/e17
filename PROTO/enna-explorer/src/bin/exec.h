@@ -24,7 +24,7 @@
 
 #include "file.h"
 
-void enna_exec_init(void);
+int enna_exec_init(void);
 void enna_exec_shutdown(void);
 
 void enna_exec(Enna_File *f);

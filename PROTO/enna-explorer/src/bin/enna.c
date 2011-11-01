@@ -39,6 +39,7 @@
 #include "activity.h"
 #include "localfiles.h"
 #include "udisks.h"
+#include "exec.h"
 
 #define EDJE_GROUP_MAIN_LAYOUT "enna/main/layout"
 #define EDJE_PART_MAINMENU_SWALLOW "enna.mainmenu.swallow"
@@ -114,6 +115,7 @@ static int _enna_init(int argc, char **argv)
    efreet_mime_init();
    eio_init();
    enna_udisks_init();
+   enna_exec_init();
 
    if (!_create_gui())
      return 0;
@@ -182,6 +184,7 @@ static void _enna_shutdown(void)
 
    elm_shutdown();
    enna_util_shutdown();
+   enna_exec_shutdown();
    ENNA_FREE(enna);
 }
 

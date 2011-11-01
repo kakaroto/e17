@@ -101,6 +101,18 @@ enna_config_theme_file_get(const char *s)
      return NULL;
 }
 
+Enna_Config_DD *
+enna_config_descriptor_new(const char *name, int size)
+{
+   Eet_Data_Descriptor_Class eddc;
+
+   if (!eet_eina_stream_data_descriptor_class_set(&eddc, sizeof (eddc), name, size))
+     return NULL;
+
+   return (Enna_Config_DD *) eet_data_descriptor_stream_new(&eddc);
+}
+
+
 void
 enna_config_init(void)
 {
