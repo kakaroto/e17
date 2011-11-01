@@ -347,7 +347,7 @@ _win_new(Game *game)
     elm_spinner_special_value_add(sp, 3, "Big");
     evas_object_smart_callback_add(sp, "changed", _board_size_cb, game);
     evas_object_size_hint_align_set(sp, EVAS_HINT_FILL, 0);
-    elm_frame_content_set(fr, sp);
+    elm_object_content_set(fr, sp);
     evas_object_show(sp);
 
     fr = elm_frame_add(win);
@@ -361,7 +361,7 @@ _win_new(Game *game)
     elm_object_text_set(lb, "0 s");
     evas_object_size_hint_weight_set(lb, 0.0, 0.0);
     evas_object_size_hint_align_set(lb, 1, 0.5);
-    elm_frame_content_set(fr, lb);
+    elm_object_content_set(fr, lb);
     evas_object_show(lb);
 
     fr = elm_frame_add(win);
@@ -375,7 +375,7 @@ _win_new(Game *game)
     elm_object_text_set(lb, "0");
     evas_object_size_hint_weight_set(lb, 0.0, 0.0);
     evas_object_size_hint_align_set(lb, 1, 0.5);
-    elm_frame_content_set(fr, lb);
+    elm_object_content_set(fr, lb);
     evas_object_show(lb);
 
     fr = elm_frame_add(win);
@@ -389,7 +389,7 @@ _win_new(Game *game)
     elm_object_text_set(lb, "0");
     evas_object_size_hint_weight_set(lb, 0.0, 0.0);
     evas_object_size_hint_align_set(lb, 1, 0.5);
-    elm_frame_content_set(fr, lb);
+    elm_object_content_set(fr, lb);
     evas_object_show(lb);
 
     game->inwin = inwin = elm_win_inwin_add(win);
