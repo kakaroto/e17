@@ -70,11 +70,11 @@ enna_file_dup(Enna_File *file)
    f->name = eina_stringshare_add(file->name);
    f->uri = eina_stringshare_add(file->uri);
    f->mrl = eina_stringshare_add(file->mrl);
+   f->mime = eina_stringshare_add(file->mime);
    f->meta_class = file->meta_class;
    f->meta_data = file->meta_data;
    f->actions = file->actions;
    f->callbacks = eina_list_clone(file->callbacks);
-
    EINA_LIST_FOREACH(file->callbacks, l, cb)
      {
         cb_cp = calloc(1, sizeof(Enna_File_Callback));
@@ -139,6 +139,7 @@ enna_file_free(Enna_File *f)
    if (f->icon) eina_stringshare_del(f->icon);
    if (f->icon_file) eina_stringshare_del(f->icon_file);
    if (f->mrl) eina_stringshare_del(f->mrl);
+   if (f->mime) eina_stringshare_del(f->mime);
    if (f->meta_class && f->meta_class->meta_del)
      f->meta_class->meta_del(f->meta_data);
    if (f->callbacks)

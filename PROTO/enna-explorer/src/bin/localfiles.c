@@ -32,6 +32,7 @@
 #include "vfs.h"
 #include "utils.h"
 #include "buffer.h"
+#include "exec.h"
 
 #include "gettext.h"
 
@@ -748,6 +749,12 @@ _action_delete_cb(void *data, Enna_File *file)
 }
 
 static void
+_action_open_file_cb(void *data, Enna_File *file)
+{
+   enna_exec(file);
+}
+
+static void
 _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
 {
    Enna_Localfiles_Priv *priv = data;
@@ -768,7 +775,7 @@ _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
         if (priv->caps == ENNA_CAPS_ALL)
           f = enna_file_file_add(info->path + info->name_start, buf,
                                  info->path, info->path + info->name_start,
-                                 "icon/file");
+                                 NULL);
 
         else if (priv->caps == ENNA_CAPS_MUSIC)
           f = enna_file_track_add(info->path + info->name_start, buf,
@@ -786,6 +793,11 @@ _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
 
      }
 
+   if (!ENNA_FILE_IS_BROWSABLE(f))
+     {
+        action = enna_file_action_new(f, "open_file", "Open", "open-file", _action_open_file_cb, priv);
+        enna_file_action_add(f, action);
+     }
    action = enna_file_action_new(f, "copy", "Copy", "edit-copy", NULL, NULL);
    enna_file_action_add(f, action);
    action = enna_file_action_new(f, "move", "Move", "folder-move", NULL, NULL);
@@ -798,6 +810,7 @@ _file_main_cb(void *data, Eio_File *handler, const Eina_File_Direct_Info *info)
    enna_file_action_add(f, action);
    action = enna_file_action_new(f, "create_folder", "Create new folder", "folder-new", _action_create_folder_cb, priv);
    enna_file_action_add(f, action);
+
 
    eina_stringshare_del(buf);
    enna_browser_file_add(priv->browser, f);
@@ -916,7 +929,7 @@ _file_get(const char *uri)
    else
      f = enna_file_file_add(ecore_file_file_get(path), uri,
                             path, ecore_file_file_get(path),
-                            "icon/file");
+                            NULL);
    free(path);
    return f;
 }

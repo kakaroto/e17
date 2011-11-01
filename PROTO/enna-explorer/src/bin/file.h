@@ -64,6 +64,7 @@ struct _Enna_File
    const char *icon;
    const char *icon_file;
    const char *mrl;
+   const char *mime;
    Enna_File_Type type;
    Enna_File_Meta_Class *meta_class;
    void *meta_data;

@@ -107,14 +107,17 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
           }
         else
           {
-             const char *mime;
-             const char *icon;
+             if (!gi->file->mime)
+                 {
+                     gi->file->mime = eina_stringshare_add(efreet_mime_type_get(gi->file->mrl));
+                     printf("set mime %s\n", gi->file->mime);
+                 }
+             if (!gi->file->icon)
+                 gi->file->icon = eina_stringshare_add(efreet_mime_type_icon_get(gi->file->mime, getenv("E_ICON_THEME"), 64));
 
-             mime = efreet_mime_type_get(gi->file->mrl);
-             icon = efreet_mime_type_icon_get(mime, getenv("E_ICON_THEME"), 64);
-             if (!icon)
-               icon = efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 64);
-             if (mime && strstr(mime, "image/"))
+             if (!gi->file->icon)
+                 gi->file->icon = eina_stringshare_add(efreet_mime_type_icon_get("unknown", getenv("E_ICON_THEME"), 64));
+             if (gi->file->mime && strstr(gi->file->mime, "image/"))
                {
                   ic = elm_photo_add(obj);
                   evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND,
@@ -129,7 +132,7 @@ _grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
              else
                {
                   ic = elm_icon_add(obj);
-                  elm_icon_file_set(ic, icon, NULL);
+                  elm_icon_file_set(ic, gi->file->icon, NULL);
                   evas_object_size_hint_min_set(ic, 64, 64);
                }
           }

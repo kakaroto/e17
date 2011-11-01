@@ -50,6 +50,9 @@ struct _Enna_Vfs_Class
       void  (* get_children)(void *priv, const char *uri, Enna_Browser *browser, ENNA_VFS_CAPS caps);
       void  (* del)(void *priv);
       Enna_File *(*file_get)(const char *uri);
+      int   (*file_delete)(const char *uri);
+      int   (*file_copy)(const char *uri, const char *copy);
+      int   (*file_rename)(const char *uri, const char *rename);
    } func;
    void *cookie;
 

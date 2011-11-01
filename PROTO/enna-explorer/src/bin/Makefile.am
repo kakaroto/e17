@@ -17,6 +17,7 @@ browser_obj.c\
 buffer.c\
 enna.c\
 enna_config.c\
+exec.c\
 explorer.c\
 file.c\
 localfiles.c \
@@ -38,6 +39,7 @@ browser_obj.h\
 buffer.h \
 enna.h\
 enna_config.h\
+exec.h\
 explorer.h\
 file.h\
 gettext.h \
