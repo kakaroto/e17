@@ -80,7 +80,7 @@ engine_software_xlib_args(const char *engine, int width, int height)
         Atom state = XInternAtom(disp, "_NET_WM_STATE_FULLSCREEN", False);
         unsigned long data = state;
         XChangeProperty(disp, win, prop, XA_ATOM, 32, PropModeReplace, 
-                        &data, 1);
+                        (unsigned char*) &data, 1);
      }
 
    XStoreName(disp, win, "Expedite - Evas Test Suite");
