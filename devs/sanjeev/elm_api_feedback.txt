@@ -139,4 +139,8 @@ Will scrolling text get repeated ?
 
 Why not have one API and an enum, that will either scroll or ellipsise?
 
+Gengrid
+-------
+
+elm_gengrid_horizontal_set - bad name - should be elm_gengrid_expand_mode_set()
 
