@@ -326,6 +326,32 @@ _e_border_resize(E_Border *bd,
     bd->changed = true;
 }
 
+static void
+_restore_border(E_Border *bd)
+{
+    Border_Extra *extra;
+
+    extra = eina_hash_find(_G.border_extras, &bd);
+    if (!extra) {
+         ERR("No extra for %p", bd);
+         return;
+    }
+    _e_border_move_resize(bd,
+                          extra->orig.geom.x,
+                          extra->orig.geom.y,
+                          extra->orig.geom.w,
+                          extra->orig.geom.h);
+    e_border_layer_set(bd, extra->orig.layer);
+    e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
+    e_hints_window_stacking_set(bd, extra->orig.stacking);
+
+    /* To give the user a bit of feedback we restore the original border */
+    /* TODO: save the original border, don't just restore the default one*/
+    /* TODO: save maximized state */
+    if (!tiling_g.config->show_titles)
+        change_window_border(bd, "default");
+}
+
 /* }}} */
 /* Overlays {{{*/
 
@@ -880,23 +906,8 @@ _remove_stack(void)
         for (int i = 0; i < TILING_MAX_STACKS; i++) {
             for (Eina_List *l = _G.tinfo->stacks[i]; l; l = l->next) {
                 E_Border *bd = l->data;
-                Border_Extra *extra;
 
-                extra = eina_hash_find(_G.border_extras, &bd);
-                if (!extra) {
-                    ERR("No extra for %p", bd);
-                    continue;
-                }
-                _e_border_move_resize(bd,
-                                      extra->orig.geom.x,
-                                      extra->orig.geom.y,
-                                      extra->orig.geom.w,
-                                      extra->orig.geom.h);
-                e_border_layer_set(bd, extra->orig.layer);
-                e_hints_window_stacking_set(bd, extra->orig.stacking);
-                /* TODO: border */
-                if (!tiling_g.config->show_titles)
-                    change_window_border(bd, "default");
+                _restore_border(bd);
             }
             eina_list_free(_G.tinfo->stacks[i]);
             _G.tinfo->stacks[i] = NULL;
@@ -946,6 +957,7 @@ _toggle_rows_cols(void)
     }
 
     EINA_LIST_FREE(wins, bd) {
+        _restore_border(bd);
         _add_border(bd);
     }
 }
@@ -991,23 +1003,8 @@ change_desk_conf(struct _Config_vdesk *newconf)
         for (int i = 0; i < TILING_MAX_STACKS; i++) {
             for (Eina_List *l = _G.tinfo->stacks[i]; l; l = l->next) {
                 E_Border *bd = l->data;
-                Border_Extra *extra;
 
-                extra = eina_hash_find(_G.border_extras, &bd);
-                if (!extra) {
-                    ERR("No extra for %p", bd);
-                    continue;
-                }
-                _e_border_move_resize(bd,
-                                     extra->orig.geom.x,
-                                     extra->orig.geom.y,
-                                     extra->orig.geom.w,
-                                     extra->orig.geom.h);
-                e_border_layer_set(bd, extra->orig.layer);
-                e_hints_window_stacking_set(bd, extra->orig.stacking);
-                /* TODO: border */
-                if (!tiling_g.config->show_titles)
-                    change_window_border(bd, "default");
+                _restore_border(bd);
             }
             eina_list_free(_G.tinfo->stacks[i]);
             _G.tinfo->stacks[i] = NULL;
@@ -1521,30 +1518,9 @@ toggle_floating(E_Border *bd)
 
         _add_border(bd);
     } else {
-        Border_Extra *extra;
-
-        extra = eina_hash_find(_G.border_extras, &bd);
-        if (extra) {
-            _e_border_move_resize(bd,
-                                  extra->orig.geom.x,
-                                  extra->orig.geom.y,
-                                  extra->orig.geom.w,
-                                  extra->orig.geom.h);
-            e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
-            e_border_layer_set(bd, extra->orig.layer);
-            e_hints_window_stacking_set(bd, extra->orig.stacking);
-        } else {
-            e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
-        }
-        EINA_LIST_APPEND(_G.tinfo->floating_windows, bd);
 
         _remove_border(bd);
-
-        /* To give the user a bit of feedback we restore the original border */
-        /* TODO: save the original border, don't just restore the default one*/
-        /* TODO: save maximized state */
-        if (!tiling_g.config->show_titles)
-            change_window_border(bd, "default");
+        _restore_border(bd);
     }
 }
 
@@ -3368,21 +3344,7 @@ _e_module_tiling_desk_set(void *data,
 
     check_tinfo(ev->border->desk);
     if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
-        Border_Extra *extra;
-
-        e_border_unmaximize(ev->border, E_MAXIMIZE_BOTH);
-        extra = eina_hash_find(_G.border_extras, &ev->border);
-        if (extra) {
-            _e_border_move_resize(ev->border,
-                                  extra->orig.geom.x,
-                                  extra->orig.geom.y,
-                                  extra->orig.geom.w,
-                                  extra->orig.geom.h);
-             e_border_layer_set(ev->border, extra->orig.layer);
-             e_hints_window_stacking_set(ev->border, extra->orig.stacking);
-        }
-        if (!tiling_g.config->show_titles)
-            change_window_border(ev->border, "default");
+        _restore_border(ev->border);
     } else {
         if (get_stack(ev->border) < 0)
             _add_border(ev->border);
