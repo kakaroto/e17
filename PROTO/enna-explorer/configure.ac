@@ -29,6 +29,7 @@ AC_PROG_CC
 ### Checks for libraries
 
 enna_requirements="
+   edbus >= 1.0.0
    eina >= 1.0.0
    eet >= 1.4.0
    evas >= 1.0.0
@@ -38,6 +39,7 @@ enna_requirements="
    ecore-ipc >= 1.0.0
    ecore-con >= 1.0.0
    efreet >= 1.0.0
+   efreet-mime >= 1.0.0
    edje >= 1.0.0
    elementary >= 0.7.0
    eio

@@ -28,7 +28,7 @@ vfs.c\
 view_list.c\
 view_grid.c
 
-enna_explorer_LDADD = @ENNA_LIBS@
+enna_explorer_LDADD = @ENNA_LIBS@ -lm
 enna_explorer_LDFLAGS = -rdynamic
 
 EXTRA_DIST= \
