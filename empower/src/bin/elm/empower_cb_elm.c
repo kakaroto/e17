@@ -155,8 +155,8 @@ int sudo_done_cb(void *data, int type, void *event)
     if(exec && e && strlen(e))
     {
       elm_exit();
-      strncat(cmd, " ", 1024);
-      strncat(cmd, e, 1024);
+      strncat(cmd, " ", sizeof(cmd) - strlen(cmd) - 1);
+      strncat(cmd, e, sizeof(cmd) - strlen(cmd) - 1);
     }
     else
     {

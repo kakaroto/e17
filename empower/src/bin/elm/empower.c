@@ -39,8 +39,8 @@ void parse_options(int argc, char** argv)
     {
       if(mode == SUDO || mode == SUDOPROG)
       {
-        strncat(cmd, " ", 1024);
-        strncat(cmd, *argv, 1024);
+        strncat(cmd, " ", sizeof(cmd) - strlen(cmd) - 1);
+        strncat(cmd, *argv, sizeof(cmd) - strlen(cmd) - 1);
       }
     }
     
