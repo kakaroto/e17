@@ -62,11 +62,11 @@ static const Ecore_Getopt options = {
 /* Global Variable Enna *enna*/
 Enna *enna;
 
-static char *app_theme = "phone";
+static char *app_theme = "tablet";
 static char *app_geometry = NULL;
 static Eina_Bool app_exit = EINA_FALSE;
-static unsigned int app_w = 480;
-static unsigned int app_h = 800;
+static unsigned int app_w = 1024;
+static unsigned int app_h = 600;
 static unsigned int app_x_off = 0;
 static unsigned int app_y_off = 0;
 static const char *app_path = NULL;
