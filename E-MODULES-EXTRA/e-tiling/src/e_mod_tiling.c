@@ -93,6 +93,7 @@ static struct tiling_mod_main_g
     E_Action             *act_togglefloat,
                          *act_addstack,
                          *act_removestack,
+                         *act_tg_stack,
                          *act_swap,
                          *act_move,
                          *act_adjusttransitions,
@@ -933,7 +934,7 @@ _remove_stack(void)
 }
 
 static void
-toggle_rows_cols(void)
+_toggle_rows_cols(void)
 {
     Eina_List *wins = NULL;
     E_Border *bd;
@@ -974,7 +975,7 @@ change_desk_conf(struct _Config_vdesk *newconf)
         if (_G.tinfo->conf->use_rows != newconf->use_rows) {
             _G.tinfo->conf = newconf;
             _G.tinfo->conf->use_rows = !_G.tinfo->conf->use_rows;
-            toggle_rows_cols();
+            _toggle_rows_cols();
             return;
         }
     } else {
@@ -1053,6 +1054,22 @@ _e_mod_action_remove_stack_cb(E_Object   *obj,
 
     e_config_save_queue();
 }
+
+static void
+_e_mod_action_tg_stack_cb(E_Object   *obj,
+                          const char *params)
+{
+    E_Desk *desk = get_current_desk();
+
+    end_special_input();
+
+    check_tinfo(desk);
+
+    _toggle_rows_cols();
+
+    e_config_save_queue();
+}
+
 
 /* }}} */
 /* Reorganize windows {{{*/
@@ -3463,6 +3480,8 @@ e_modapi_init(E_Module *m)
                "Add a stack", "add_stack");
     ACTION_ADD(_G.act_removestack, _e_mod_action_remove_stack_cb,
                "Remove a stack", "remove_stack");
+    ACTION_ADD(_G.act_tg_stack, _e_mod_action_tg_stack_cb,
+               "Toggle between rows and columns", "tg_cols_rows");
     ACTION_ADD(_G.act_swap, _e_mod_action_swap_cb,
                "Swap a window with an other", "swap");
     ACTION_ADD(_G.act_move, _e_mod_action_move_cb,
@@ -3566,6 +3585,7 @@ e_modapi_shutdown(E_Module *m)
     ACTION_DEL(_G.act_togglefloat, "Toggle floating", "toggle_floating");
     ACTION_DEL(_G.act_addstack, "Add a stack", "add_stack");
     ACTION_DEL(_G.act_removestack, "Remove a stack", "remove_stack");
+    ACTION_DEL(_G.act_tg_stack, "Toggle between rows and columns", "tg_cols_rows");
     ACTION_DEL(_G.act_swap, "Swap a window with an other", "swap");
     ACTION_DEL(_G.act_move, "Move window", "move");
     ACTION_DEL(_G.act_adjusttransitions, "Adjust transitions",
