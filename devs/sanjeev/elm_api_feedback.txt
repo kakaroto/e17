@@ -145,6 +145,7 @@ Gengrid
 
 elm_gengrid_horizontal_set - bad name - should be elm_gengrid_expand_mode_set()
 
+elm_gengrid_item_tooltip_size_restrict_disable should be elm_gengrid_item_tooltip_size_restrict_disable_set
 
 Clock
 -----
@@ -157,14 +158,3 @@ How do I make a millisec clock, a counter or a timer ? How to extend clock?
 
 elm_clock_edit_get and elm_clock_digit_edit_get - why two sets of API?
 One should be sufficient - elm_clock_digit_edit_get.
-
-
-
-
-
-
-
-
-
-
-
