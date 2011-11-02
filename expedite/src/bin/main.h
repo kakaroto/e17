@@ -61,6 +61,9 @@
 #if HAVE_EVAS_DIRECTFB
 #include "engine_directfb.h"
 #endif
+#if HAVE_EVAS_OPENGL_COCOA
+#include "engine_gl_cocoa.h"
+#endif
 #if HAVE_EVAS_SOFTWARE_16_X11
 #include "engine_software_16_x11.h"
 #endif

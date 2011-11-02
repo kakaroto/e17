@@ -1171,6 +1171,9 @@ static const Expedite_Engine engines[] = {
 #if HAVE_EVAS_DIRECTFB
   { "directfb",engine_directfb_args, engine_directfb_loop, engine_directfb_shutdown },
 #endif
+#if HAVE_EVAS_OPENGL_COCOA
+  { "gl-cocoa", engine_gl_cocoa_args, engine_gl_cocoa_loop, engine_gl_cocoa_shutdown },
+#endif
 #if HAVE_EVAS_SOFTWARE_16_X11
   { "x11-16",engine_software_16_x11_args, engine_software_16_x11_loop, engine_software_16_x11_shutdown },
 #endif

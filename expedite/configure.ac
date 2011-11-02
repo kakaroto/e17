@@ -85,6 +85,10 @@ EXPEDITE_CHECK_ENGINE([fb], [Framebuffer], "yes")
 # DIRECTFB
 EXPEDITE_CHECK_ENGINE([directfb], [DirectFB], "yes")
 
+# GL Cocoa
+EXPEDITE_CHECK_ENGINE([opengl-cocoa], [OpenGL Cocoa], "yes", [gl_cocoa_libs="-framework Cocoa"])
+AC_SUBST(gl_cocoa_libs)
+
 # Software 16bit X11
 EXPEDITE_CHECK_ENGINE([software-16-x11], [Software 16 bits X11], "yes")
 
@@ -260,6 +264,7 @@ echo "    Software DirectDraw..........: ${have_software_ddraw}"
 echo "    Direct3D.....................: ${have_direct3d}"
 echo "    Software SDL.................: ${have_software_sdl}"
 echo "    Open GL SDL..................: ${have_opengl_sdl}"
+echo "    Open GL Cocoa................: ${have_opengl_cocoa}"
 echo "    FB...........................: ${have_fb}"
 echo "    DirectFB.....................: ${have_directfb}"
 echo "    Software X11 16 bits.........: ${have_software_16_x11}"
