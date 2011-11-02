@@ -89,6 +89,7 @@ elm_box_layout_transition - This function can only be used with elm_box_layout_s
 elm_box_layout_set(box, elm_box_layout_transition, t, elm_box_transition_free);
 elm_box_layout_set(Evas_Object *obj, Evas_Object_Box_Layout cb, const void *data, void (*free_data)(void *data))
 
+
 Creating an object that holds the function pointers and passing it as a *data to another function that takes a function pointer... 
 
 Does not look elegant. Should be a better way of doing this.
@@ -143,4 +144,27 @@ Gengrid
 -------
 
 elm_gengrid_horizontal_set - bad name - should be elm_gengrid_expand_mode_set()
+
+
+Clock
+-----
+
+Can't we have simpler logic than algarisms for implementing clocks?
+
+Click and hold to increase clock values. Works fine for touchscreen, but for PC, isn't scroll more intuitive than click and hold ?
+
+How do I make a millisec clock, a counter or a timer ? How to extend clock?
+
+elm_clock_edit_get and elm_clock_digit_edit_get - why two sets of API?
+One should be sufficient - elm_clock_digit_edit_get.
+
+
+
+
+
+
+
+
+
+
 
