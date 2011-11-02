@@ -31,6 +31,7 @@ protected:
    Evas_Object *eo;
    Persistent<ObjectTemplate> the_template;
    Persistent<Object> the_object;
+   Persistent<Value> the_icon;
 
    /*
     * Callbacks
@@ -867,6 +868,19 @@ public:
         obj->Set(String::New("h"), Number::New(h));
         return obj;
      }
+
+   virtual void icon_set(Handle<Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_object_content_part_set(eo, "icon", icon->get());
+        the_icon = Persistent<Value>::New(icon->get_object());
+     }
+
+   virtual Handle<Value> icon_get() const
+     {
+        return the_icon;
+     }
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -1029,7 +1043,6 @@ CElmBasicWindow *main_win;
 
 class CElmButton : public CEvasObject {
 protected:
-   Persistent<Value> the_icon;
    CPropHandler<CElmButton> prop_handler;
 public:
    CElmButton(CEvasObject *parent, Local<Object> obj) :
@@ -1042,20 +1055,6 @@ public:
 
    virtual ~CElmButton()
      {
-        the_icon.Dispose();
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
-        elm_button_icon_set(eo, icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
      }
 };
 
@@ -1166,7 +1165,6 @@ CEvasObject::CPropHandler<CElmBackground>::list[] = {
 class CElmRadio : public CEvasObject {
 protected:
    CPropHandler<CElmRadio> prop_handler;
-   Persistent<Value> the_icon;
    Persistent<Value> the_group;
 
 public:
@@ -1180,21 +1178,7 @@ public:
 
    virtual ~CElmRadio()
      {
-        the_icon.Dispose();
         the_group.Dispose();
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
-        elm_radio_icon_set(eo, icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
      }
 
    virtual Handle<Value> group_get() const
@@ -1686,7 +1670,6 @@ CEvasObject::CPropHandler<CElmScroller>::list[] = {
 
 class CElmSlider : public CEvasObject {
 protected:
-   Persistent<Value> the_icon;
    Persistent<Value> the_end_object;
    Persistent<Value> on_changed_val;
    CPropHandler<CElmSlider> prop_handler;
@@ -1702,7 +1685,6 @@ public:
 
    virtual ~CElmSlider()
      {
-        the_icon.Dispose();
         the_end_object.Dispose();
         on_changed_val.Dispose();
      }
@@ -1747,19 +1729,6 @@ public:
              int span = value->Int32Value();
              elm_slider_span_size_set(eo, span);
           }
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
-        elm_slider_icon_set(eo, icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
      }
 
    virtual Handle<Value> end_get() const
@@ -2467,7 +2436,6 @@ CEvasObject::CPropHandler<CElmEntry>::list[] = {
 class CElmCheck : public CEvasObject {
 protected:
    CPropHandler<CElmCheck> prop_handler;
-   Persistent<Value> the_icon;
 
 public:
    CElmCheck(CEvasObject *parent, Local<Object> obj) :
@@ -2480,7 +2448,6 @@ public:
 
    virtual ~CElmCheck()
      {
-        the_icon.Dispose();
      }
 
    virtual void state_set(Handle<Value> value)
@@ -2492,19 +2459,6 @@ public:
    virtual Handle<Value> state_get() const
      {
         return Boolean::New(elm_check_state_get(eo));
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
-        elm_check_icon_set(eo, icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
      }
 };
 
@@ -2663,7 +2617,6 @@ CEvasObject::CPropHandler<CElmClock>::list[] = {
 class CElmProgressBar : public CEvasObject {
 protected:
    CPropHandler<CElmProgressBar> prop_handler;
-   Persistent<Value> the_icon;
 
    static Handle<Value> do_pulse(const Arguments& args)
      {
@@ -2686,25 +2639,11 @@ public:
 
    virtual ~CElmProgressBar()
      {
-        the_icon.Dispose();
      }
 
    virtual void pulse(bool on)
      {
         elm_progressbar_pulse(eo, on);
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
-        elm_progressbar_icon_set(eo, icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
      }
 
    virtual Handle<Value> inverted_get() const
@@ -4111,7 +4050,6 @@ protected:
 
    /* the on_changed function */
    Persistent<Value> on_changed_val;
-   Persistent<Value> the_icon;
 
 public:
    CElmToggle(CEvasObject *parent, Local<Object> obj) :
@@ -4195,19 +4133,6 @@ public:
           return String::New(offlabel);
         else
           return Null();
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
-        elm_object_content_set(eo, icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
      }
 
     void state_set(Handle<Value> val)
