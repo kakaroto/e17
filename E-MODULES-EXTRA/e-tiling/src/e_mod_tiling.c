@@ -115,8 +115,7 @@ static struct tiling_mod_main_g
 
     tiling_input_mode_t   input_mode;
     char                  keys[4];
-} tiling_mod_main_g = {
-#define _G tiling_mod_main_g
+} _G = {
     .input_mode = INPUT_MODE_NONE,
 };
 
