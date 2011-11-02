@@ -17,11 +17,7 @@ evas_line - width
 evas_line - does not shown on glbackend. 
 
 evas_map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
-
-ecore_animator - consider them each instance use the each timeline options.  
 elm_object_item - apply to all widgets. 
-
-elm_object - apply all widgets to use elm_object_content_set/get/unset
 
 evas - check the image smooth effect in gl backend
 
@@ -29,12 +25,12 @@ ctxpopup - hide effect
 
 elm_pager - blocks mouseover events (ticket 876)
 
-evas_object_events_freeze/thaw
-
 evas_map - map grid line problem
 
 evas_map - image does not updated when object image is changed on map-disabled state.
 
-transit - testcase 1 image animation. check the events blockging.
+pass_events - need to review the code. it looks somewhat ineffecient code are there.
 
-pass_events - need to review the code. it looks somewhat ineffecient code are there. 
+freeze_events - apply for key events
+
+evas_object_content_set/get - apply to all app/lib in svn. 
