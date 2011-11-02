@@ -335,13 +335,13 @@ _restore_border(E_Border *bd)
          ERR("No extra for %p", bd);
          return;
     }
+    e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
     _e_border_move_resize(bd,
                           extra->orig.geom.x,
                           extra->orig.geom.y,
                           extra->orig.geom.w,
                           extra->orig.geom.h);
     e_border_layer_set(bd, extra->orig.layer);
-    e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
     e_hints_window_stacking_set(bd, extra->orig.stacking);
 
     /* To give the user a bit of feedback we restore the original border */
@@ -811,15 +811,21 @@ _set_stack_geometry(int stack, int pos, int size)
             extra->expected.y = pos;
             extra->expected.h = size;
 
-            if (bd->maximized & E_MAXIMIZE_HORIZONTAL) {
-                e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+            if (bd->maximized) {
+                if (l->next && (bd->maximized & E_MAXIMIZE_HORIZONTAL))
+                    e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                if (_G.tinfo->stacks[1] && (bd->maximized & E_MAXIMIZE_VERTICAL))
+                    e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
             }
         } else {
             extra->expected.x = pos;
             extra->expected.w = size;
 
-            if (bd->maximized & E_MAXIMIZE_VERTICAL) {
-                e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+            if (bd->maximized) {
+                if (l->next && (bd->maximized & E_MAXIMIZE_VERTICAL))
+                    e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                if (_G.tinfo->stacks[1] && (bd->maximized & E_MAXIMIZE_HORIZONTAL))
+                    e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
             }
         }
 
@@ -949,19 +955,51 @@ _remove_stack(void)
 static void
 _toggle_rows_cols(void)
 {
+#if 1
     Eina_List *wins = NULL;
     E_Border *bd;
 
     _G.tinfo->conf->use_rows = !_G.tinfo->conf->use_rows;
     for (int i = 0; i < TILING_MAX_STACKS; i++) {
-        wins = eina_list_merge(wins, _G.tinfo->stacks[i]);
+        EINA_LIST_FREE(_G.tinfo->stacks[i], bd) {
+            EINA_LIST_APPEND(wins, bd);
+            _restore_border(bd);
+        }
         _G.tinfo->stacks[i] = NULL;
+        _G.tinfo->pos[i] = 0;
+        _G.tinfo->size[i] = 0;
     }
 
     EINA_LIST_FREE(wins, bd) {
-        _restore_border(bd);
         _add_border(bd);
     }
+#else
+    int nb_stacks = _G.tinfo->conf->nb_stacks;
+    int pos, s;
+
+    _G.tinfo->conf->use_rows = !_G.tinfo->conf->use_rows;
+
+    if (_G.tinfo->conf->use_rows)
+        e_zone_useful_geometry_get(_G.tinfo->desk->zone,
+                                   NULL, &pos, NULL, &s);
+    else
+        e_zone_useful_geometry_get(_G.tinfo->desk->zone,
+                                   &pos, NULL, &s, NULL);
+
+    for (int i = 0; i <= nb_stacks; i++) {
+        int size = 0;
+
+        size = s / (nb_stacks - i);
+
+        _set_stack_geometry(i, pos, size);
+
+        s -= size;
+        pos += size;
+    }
+    for (int i = 0; i < nb_stacks; i++) {
+        _reorganize_stack(i);
+    }
+#endif
 }
 
 void
@@ -1096,7 +1134,7 @@ _add_border(E_Border *bd)
         return;
     }
 
-    extra = eina_hash_find(_G.overlays, _G.keys);
+    extra = eina_hash_find(_G.border_extras, &bd);
     if (!extra) {
         extra = E_NEW(Border_Extra, 1);
         *extra = (Border_Extra) {
@@ -1206,6 +1244,11 @@ _add_border(E_Border *bd)
                                    &extra->expected.h);
 
         e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
+        _e_border_move_resize(bd,
+                              extra->expected.x,
+                              extra->expected.y,
+                              extra->expected.w,
+                              extra->expected.h);
         e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
         EINA_LIST_APPEND(_G.tinfo->stacks[0], bd);
         e_zone_useful_geometry_get(bd->zone,
