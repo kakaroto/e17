@@ -155,7 +155,7 @@ curious.
             <?php foreach ( developers_inactive() as $login => $data ): ?>
                 <tr <?php tr_odd() ?>>
                 <td class="name">     <?php td(dev_data_contact($data)) ?></td>
-                <td class="manage">   <?php td(@$data['Managing'] . @$data['Contributing']) ?></td>
+                <td class="manage">   <?php td(@$data['Managing'] . ((!empty($data['Managing']) && !empty($data['Contributing'])) ? ", " : "") . @$data['Contributing']) ?></td>
                 <td class="irc">      <?php td(@$data['IRC Nick']) ?></td>
                 <td class="website">  <?php td(dev_data_www($data)) ?></td>
             </tr>
