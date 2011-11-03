@@ -28,6 +28,7 @@ _ephoto_thumb_browser_show(Ephoto *ephoto, Ephoto_Entry *entry)
    ephoto_slideshow_entry_set(ephoto->slideshow, NULL);
    elm_pager_content_promote(ephoto->pager, ephoto->thumb_browser);
    _ephoto_state_set(ephoto, EPHOTO_STATE_THUMB);
+   ephoto_title_set(ephoto, ephoto->config->directory); 
 
    if ((entry) && (entry->item)) elm_gengrid_item_bring_in(entry->item);
 }
