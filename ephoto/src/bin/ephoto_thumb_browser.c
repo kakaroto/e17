@@ -271,7 +271,7 @@ _ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
    Elm_Gengrid_Item *it = event_info;
    Ephoto_Entry *e = elm_gengrid_item_data_get(it);
 
-   elm_gengrid_item_selected_set(it, EINA_FALSE);
+   elm_gen_item_selected_set(it, EINA_FALSE);
 
    if (e->is_dir)
      ephoto_directory_set(tb->ephoto, e->path);
@@ -283,7 +283,7 @@ static void
 _changed_dir_text(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
-   const char *path = elm_scrolled_entry_entry_get(tb->entry);
+   const char *path = elm_entry_entry_get(tb->entry);
    if (ecore_file_is_dir(path))
      ephoto_directory_set(tb->ephoto, path);
 }
@@ -423,8 +423,8 @@ _ephoto_thumb_populate_start(void *data, int type __UNUSED__, void *event __UNUS
 
    _todo_items_free(tb);
    _grid_items_free(tb);
-   elm_gengrid_clear(tb->grid);
-   elm_scrolled_entry_entry_set(tb->entry, tb->ephoto->config->directory);
+   elm_gen_clear(tb->grid);
+   elm_entry_entry_set(tb->entry, tb->ephoto->config->directory);
    _up_item_add_if_required(tb);
 
    return ECORE_CALLBACK_PASS_ON;
@@ -479,7 +479,7 @@ _button_add(Evas_Object *box, const char *image)
    evas_object_size_hint_min_set(ic, 16, 16);
    evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
 
-   elm_button_icon_set(but, ic);
+   elm_object_content_set(but, ic);
    evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(box, but);
    evas_object_show(but);
@@ -524,12 +524,14 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    but = _button_add(tb->bar, PACKAGE_DATA_DIR "/images/slideshow.png");
    evas_object_smart_callback_add(but, "clicked", _slideshow, tb);
 
-   tb->entry = elm_scrolled_entry_add(tb->bar);
+   tb->entry = elm_entry_add(tb->bar);
    EINA_SAFETY_ON_NULL_GOTO(tb->entry, error);
    evas_object_size_hint_weight_set(tb->entry, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(tb->entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_scrolled_entry_single_line_set(tb->entry, EINA_TRUE);
-   elm_scrolled_entry_scrollbar_policy_set(tb->entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_entry_single_line_set(tb->entry, EINA_TRUE);
+   elm_entry_scrollable_set(tb->entry, EINA_TRUE);
+   elm_entry_scrollbar_policy_set(tb->entry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+
    evas_object_smart_callback_add
      (tb->entry, "activated", _changed_dir_text, tb);
    evas_object_show(tb->entry);
@@ -553,7 +555,7 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_size_hint_align_set(tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    elm_gengrid_align_set(tb->grid, 0.5, 0.5);
-   elm_gengrid_bounce_set(tb->grid, EINA_FALSE, EINA_TRUE);
+   elm_gen_bounce_set(tb->grid, EINA_FALSE, EINA_TRUE);
    evas_object_size_hint_align_set
      (tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set

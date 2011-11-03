@@ -119,7 +119,7 @@ _viewer_add(Evas_Object *parent, const char *path)
         evas_object_size_hint_align_set(v->image, 0.5, 0.5);
         evas_object_size_hint_min_set(v->image, w, h);
         evas_object_size_hint_max_set(v->image, w, h);
-        elm_scroller_content_set(v->scroller, v->image);
+        elm_object_content_set(v->scroller, v->image);
         evas_object_show(v->scroller);
         evas_object_show(v->image);
      }
@@ -494,7 +494,7 @@ _ephoto_single_browser_recalc(Ephoto_Single_Browser *sb)
         evas_object_show(sb->viewer);
         evas_object_event_callback_add
           (sb->viewer, EVAS_CALLBACK_MOUSE_WHEEL, _mouse_wheel, sb);
-        elm_scrolled_entry_entry_set(sb->sentry, bname);
+        elm_entry_entry_set(sb->sentry, bname);
         ephoto_title_set(sb->ephoto, bname);
         sb->orient = ephoto_file_orient_get(sb->entry->path);
         _orient_apply(sb);
@@ -829,7 +829,7 @@ _button_add(Evas_Object *box, const char *image)
    evas_object_size_hint_min_set(ic, 16, 16);
    evas_object_size_hint_aspect_set(ic, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
 
-   elm_button_icon_set(but, ic);
+   elm_object_content_set(but, ic);
    evas_object_size_hint_align_set(but, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(box, but);
    evas_object_show(but);
@@ -888,11 +888,12 @@ ephoto_single_browser_add(Ephoto *ephoto, Evas_Object *parent)
    elm_box_pack_end(sb->bar, sep);
    evas_object_show(sep);
 
-   sb->sentry = elm_scrolled_entry_add(sb->bar);
+   sb->sentry = elm_entry_add(sb->bar);
    evas_object_size_hint_weight_set(sb->sentry, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(sb->sentry, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_scrolled_entry_single_line_set(sb->sentry, EINA_TRUE);
-   elm_scrolled_entry_scrollbar_policy_set(sb->sentry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
+   elm_entry_single_line_set(sb->sentry, EINA_TRUE);
+   elm_entry_scrollable_set(sb->sentry, EINA_TRUE);
+   elm_entry_scrollbar_policy_set(sb->sentry, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
    elm_object_disabled_set(sb->sentry, EINA_TRUE);
    evas_object_smart_callback_add
      (sb->sentry, "activated", _changed_file_text, sb);
