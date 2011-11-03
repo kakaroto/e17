@@ -170,8 +170,8 @@ _excessive_emotion_action(Evas_Object *display, Excessive_File_Object *object)
    evas_object_data_set(layout, "excessive/notify", notify);
 
    player = elm_player_add(layout);
-   elm_player_video_set(player, display);
-   elm_notify_content_set(notify, player);
+   elm_object_content_set(player, display);
+   elm_object_content_set(notify, player);
    evas_object_show(player);
 
    elm_video_file_set(display, info->info.path);

@@ -113,7 +113,7 @@ elm_main(int argc, char **argv)
 
    evas_object_size_hint_align_set(grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   elm_gengrid_bounce_set(grid, EINA_FALSE, EINA_TRUE);
+   elm_gen_bounce_set(grid, EINA_FALSE, EINA_TRUE);
    elm_gengrid_align_set(grid, 0.5, 0.5);
    elm_gengrid_item_size_set(grid, 128, 128);
 

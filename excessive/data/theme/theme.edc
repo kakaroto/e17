@@ -491,7 +491,7 @@ collections {
       alias: "elm/gengrid/item/excessive-image/default";
 
       data {
-         item: "icons" "excessive.swallow.icon";
+         item: "contents" "excessive.swallow.icon";
          item: "labels" "excessive.text";
       }
       parts {

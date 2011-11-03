@@ -22,6 +22,7 @@ _excessive_folder_item_object_get(void *data, Evas_Object *obj, const char *part
    ic = elm_icon_add(obj);
    elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
    elm_icon_standard_set(ic, info->type->type);
+
    /* if (info->type->thumb) elm_icon_thumb_set(ic, info->info.path, NULL); */
 
    return ic;

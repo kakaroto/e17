@@ -232,8 +232,8 @@ _excessive_image_action(Evas_Object *display, Excessive_File_Object *object)
    Evas_Object *bt_stop;
    Evas_Object *bt_quit;
    Evas_Object *slideshow;
-   Eina_List *l;
-   char *transition;
+   const Eina_List *l;
+   const char *transition;
    char *layout_name;
 
    layout = evas_object_data_get(display, "excessive/parent");
@@ -250,7 +250,7 @@ _excessive_image_action(Evas_Object *display, Excessive_File_Object *object)
 
    bx = elm_box_add(layout);
    elm_box_horizontal_set(bx, EINA_TRUE);
-   elm_notify_content_set(notify, bx);
+   elm_object_content_set(notify, bx);
    evas_object_show(bx);
 
    evas_object_data_set(layout, "excessive/box", bx);
