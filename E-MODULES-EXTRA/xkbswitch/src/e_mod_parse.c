@@ -192,6 +192,11 @@ void parse_rules(const char *fname)
             }
         }
 
+        /* default values */
+        layout->used    = EINA_FALSE;
+        layout->model   = NULL;
+        layout->variant = NULL;
+
         /* No matter if we found variants or not, add and move forward. */
         layouts = eina_list_append(layouts, layout);
 
@@ -273,6 +278,69 @@ int _variant_sort_cb(const void *data1, const void *data2)
     if (!(l2 = data2)) return -1;
     if (!l2->name) return -1;
     return strcmp(l1->name, l2->name);
+}
+
+int _model_sort_byname_cb(const void *data1, const void *data2)
+{
+    const e_xkb_model *l1 = NULL;
+    const char *l2 = NULL;
+
+    if (!(l1 = data1)) return 1;
+    if (!l1->name) return 1;
+    if (!(l2 = data2)) return -1;
+    return strcmp(l1->name, l2);
+}
+
+int _variant_sort_byname_cb(const void *data1, const void *data2)
+{
+    const e_xkb_variant *l1 = NULL;
+    const char *l2 = NULL;
+
+    if (!(l1 = data1)) return 1;
+    if (!l1->name) return 1;
+    if (!(l2 = data2)) return -1;
+    return strcmp(l1->name, l2);
+}
+
+int _layout_sort_byname_cb(const void *data1, const void *data2)
+{
+    const e_xkb_layout *l1 = NULL;
+    const char *l2 = NULL;
+
+    if (!(l1 = data1)) return 1;
+    if (!l1->name) return 1;
+    if (!(l2 = data2)) return -1;
+    return strcmp(l1->name, l2);
+}
+
+int _model_sort_bylabel_cb(const void *data1, const void *data2)
+{
+    const e_xkb_model *l1 = NULL;
+    const char *l2 = NULL;
+    char buf[128];
+
+    if (!(l1 = data1)) return 1;
+    if (!l1->name) return 1;
+    if (!(l2 = data2)) return -1;
+
+    /* XXX This is nasty, see below */
+    snprintf(buf, sizeof(buf), "%s (%s)", l1->description, l1->vendor);
+    return strcmp(buf, l2);
+}
+
+int _variant_sort_bylabel_cb(const void *data1, const void *data2)
+{
+    const e_xkb_variant *l1 = NULL;
+    const char *l2 = NULL;
+    char buf[128];
+
+    if (!(l1 = data1)) return 1;
+    if (!l1->name) return 1;
+    if (!(l2 = data2)) return -1;
+
+    /* XXX This is nasty, see below */
+    snprintf(buf, sizeof(buf), "%s (%s)", l1->name, l1->description);
+    return strcmp(buf, l2);
 }
 
 int _layout_sort_bylabel_cb(const void *data1, const void *data2)
