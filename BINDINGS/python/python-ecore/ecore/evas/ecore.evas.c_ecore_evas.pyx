@@ -50,7 +50,7 @@ engine_id_mapping = {
     "software_ddraw": ECORE_EVAS_ENGINE_SOFTWARE_DDRAW,
     "direct3d": ECORE_EVAS_ENGINE_DIRECT3D,
     "opengl_glew": ECORE_EVAS_ENGINE_OPENGL_GLEW,
-    "cocoa": ECORE_EVAS_ENGINE_COCOA,
+    "cocoa": ECORE_EVAS_ENGINE_OPENGL_COCOA,
     "sdl": ECORE_EVAS_ENGINE_SOFTWARE_SDL,
     "directfb": ECORE_EVAS_ENGINE_DIRECTFB,
     "fb": ECORE_EVAS_ENGINE_SOFTWARE_FB,
