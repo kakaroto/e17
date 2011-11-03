@@ -2,7 +2,7 @@ Login:        fidencio
 IRC Nick:     fidencio
 Name:         Fabiano Fidêncio
 Location:     Campinas, Brazil
-E-Mail:       -fidencio@profusion.mobi
-Contributing: Elementary, Envision
+E-Mail:       -fabianoo@fidencio.org
+Contributing: Elementary, Python-efl
 Group:        Libraries
 Platform:     Arch (Linux)
