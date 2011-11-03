@@ -147,7 +147,10 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    cfdata->cfg->config_dialog = NULL;
-   if (cfdata->cfg->ng) ngi_bar_lock(cfdata->cfg->ng, 0);
+
+   if (cfdata->cfg->ng)
+     ngi_bar_lock(cfdata->cfg->ng, 0);
+
    free(cfdata);
 }
 
@@ -368,7 +371,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      }
    else
      {
-	ngi_bar_lock(ng, 0);
+        if (ci->autohide == AUTOHIDE_NORMAL)
+          ng->hide = EINA_TRUE;
 	ng->hide_step = 0;
 	ng->hide_state = show;
 	ngi_reposition(ng);
