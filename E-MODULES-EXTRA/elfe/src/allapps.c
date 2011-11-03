@@ -267,7 +267,7 @@ elfe_allapps_add(Evas_Object *parent)
    ic = elm_icon_add(bt);
    elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/applications");
    evas_object_show(ic);
-   elm_button_content_set(bt, ic);
+   elm_object_content_set(bt, ic);
    evas_object_show(bt);
    elm_box_pack_end(allapps->selector, bt);
    evas_object_smart_callback_add(bt, "clicked", _apps_clicked_cb, allapps);
@@ -282,7 +282,7 @@ elfe_allapps_add(Evas_Object *parent)
    ic = elm_icon_add(bt);
    elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/widgets");
    evas_object_show(ic);
-   elm_button_content_set(bt, ic);
+   elm_object_content_set(bt, ic);
    evas_object_show(bt);
    elm_box_pack_end(allapps->selector, bt);
    evas_object_smart_callback_add(bt, "clicked", _widgets_clicked_cb, allapps);
@@ -297,7 +297,7 @@ elfe_allapps_add(Evas_Object *parent)
    ic = elm_icon_add(bt);
    elm_icon_file_set(ic, elfe_home_cfg->theme, "icon/configuration");
    evas_object_show(ic);
-   elm_button_content_set(bt, ic);
+   elm_object_content_set(bt, ic);
    evas_object_show(bt);
    elm_box_pack_end(allapps->selector, bt);
    evas_object_smart_callback_add(bt, "clicked", _config_clicked_cb, allapps);

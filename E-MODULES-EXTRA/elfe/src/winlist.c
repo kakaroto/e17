@@ -619,7 +619,7 @@ _elfe_action(const char *params, int modifiers, int method)
 	  }
 
 	evas_object_show(bx);
-	elm_scroller_content_set(sc, bx);
+	elm_object_content_set(sc, bx);
      }
 }
 

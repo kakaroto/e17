@@ -206,7 +206,7 @@ _elfe_home_win_new(E_Zone *zone)
    evas_object_event_callback_add(hwin->o_bg, EVAS_CALLBACK_RESIZE,
 				  _cb_bg_resize, hwin);
 
-   elm_scroller_content_set(hwin->bg_scroller, hwin->o_bg);
+   elm_object_content_set(hwin->bg_scroller, hwin->o_bg);
    evas_object_show(hwin->bg_scroller);
    elm_object_content_part_set(hwin->layout, "elfe.swallow.background", hwin->bg_scroller);
 

@@ -472,7 +472,7 @@ elfe_desktop_add(Evas_Object *parent, E_Zone *zone)
 
      }
 
-   elm_scroller_content_set(desk->sc, bx);
+   elm_object_content_set(desk->sc, bx);
    evas_object_show(bx);
 
    desk->dock = elfe_dock_add(bx);
