@@ -531,7 +531,7 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
         dbus_message_iter_get_basic(&variant, &y);
         y_set = 1;
       }
-      else if (!strcmp(key, "image_data"))
+      else if ((!strcmp(key, "image_data")) || (!strcmp(key, "image-data")))
         {
           dbus_message_iter_recurse(&dict, &variant);
           n->hints.image_data = e_notify_unmarshal_hint_image(&variant);
