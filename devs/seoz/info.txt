@@ -5,6 +5,6 @@ Location:     Yongin, Korea
 E-Mail:       seojuyung2@gmail.com, juyung.seo@samsung.com
 WWW:          http://www.seoz.com
 Managing:     elementary
-Contributing: , e, ecore, BINDINGS and some others
+Contributing: e, ecore, BINDINGS and some others
 Platform:     Ubuntu (Linux), Mac OS X, Windows XP/7
 GeoData:      37.286 127.152
