@@ -76,6 +76,7 @@ struct E_Notification
     const char *category;
     const char *desktop;
     const char *sound_file;
+    const char *image_path;
     char suppress_sound;
     int x, y;
     E_Notification_Image *image_data;

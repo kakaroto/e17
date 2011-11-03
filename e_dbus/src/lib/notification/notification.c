@@ -228,13 +228,44 @@ e_notification_action_name_get(E_Notification_Action *a)
 
 
 /********* hints *******/
+EAPI void
+e_notification_hint_transient_set(E_Notification *n, Eina_Bool transient)
+{
+   if (transient)
+     n->hint_flags |= E_NOTIFICATION_HINT_TRANSIENT;
+   else
+     n->hint_flags ^= E_NOTIFICATION_HINT_TRANSIENT;
+}
 
+EAPI void
+e_notification_hint_resident_set(E_Notification *n, Eina_Bool resident)
+{
+   if (resident)
+     n->hint_flags |= E_NOTIFICATION_HINT_RESIDENT;
+   else
+     n->hint_flags ^= E_NOTIFICATION_HINT_RESIDENT;
+}
+
+EAPI void
+e_notification_hint_action_icons_set(E_Notification *n, Eina_Bool action_icons)
+{
+   if (action_icons)
+     n->hint_flags |= E_NOTIFICATION_HINT_ACTION_ICONS;
+   else
+     n->hint_flags ^= E_NOTIFICATION_HINT_ACTION_ICONS;
+}
 
 EAPI void 
 e_notification_hint_urgency_set(E_Notification *n, char urgency)
 {
   n->hints.urgency = urgency;
   n->hint_flags |= E_NOTIFICATION_HINT_URGENCY;
+}
+
+EAPI void 
+e_notification_hint_image_path_set(E_Notification *n, const char *path)
+{
+  eina_stringshare_replace(&n->hints.image_path, path);
 }
 
 EAPI void 
@@ -296,6 +327,12 @@ EAPI const char *
 e_notification_hint_desktop_get(E_Notification *n)
 {
   return n->hints.desktop;
+}
+
+EAPI const char *
+e_notification_hint_image_path_get(E_Notification *n)
+{
+  return n->hints.image_path;
 }
 
 EAPI const char *

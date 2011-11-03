@@ -54,6 +54,9 @@ enum E_Notification_Hint_Type
   E_NOTIFICATION_HINT_CATEGORY       = (1 << 1),
   E_NOTIFICATION_HINT_DESKTOP        = (1 << 2),
   E_NOTIFICATION_HINT_SOUND_FILE     = (1 << 3),
+  E_NOTIFICATION_HINT_TRANSIENT      = (1 << 4),
+  E_NOTIFICATION_HINT_RESIDENT       = (1 << 5),
+  E_NOTIFICATION_HINT_ACTION_ICONS   = (1 << 6),
   E_NOTIFICATION_HINT_SUPPRESS_SOUND = 0x10,
   E_NOTIFICATION_HINT_XY             = 0x20,
   E_NOTIFICATION_HINT_IMAGE_DATA     = 0x40
@@ -146,6 +149,10 @@ extern "C" {
    EAPI const char *e_notification_action_name_get(E_Notification_Action *a);
 
 /* hint mutators */
+   EAPI void e_notification_hint_transient_set(E_Notification *n, Eina_Bool transient);
+   EAPI void e_notification_hint_resident_set(E_Notification *n, Eina_Bool resident);
+   EAPI void e_notification_hint_action_icons_set(E_Notification *n, Eina_Bool action_icons);
+   EAPI void e_notification_hint_image_path_set(E_Notification *n, const char *path);
    EAPI void e_notification_hint_urgency_set(E_Notification *n, char urgency);
    EAPI void e_notification_hint_category_set(E_Notification *n, const char *category);
    EAPI void e_notification_hint_desktop_set(E_Notification *n, const char *desktop);
@@ -159,6 +166,7 @@ extern "C" {
    EAPI const char *e_notification_hint_category_get(E_Notification *n);
    EAPI const char *e_notification_hint_desktop_get(E_Notification *n);
    EAPI const char *e_notification_hint_sound_file_get(E_Notification *n);
+   EAPI const char *e_notification_hint_image_path_get(E_Notification *n);
    EAPI char  e_notification_hint_suppress_sound_get(E_Notification *n);
    EAPI int   e_notification_hint_xy_get(E_Notification *n, int *x, int *y);
    EAPI E_Notification_Image *e_notification_hint_image_data_get(E_Notification *n);

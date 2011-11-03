@@ -24,3 +24,7 @@
 2011-10-27  Mike Blumenkrantz
 
         * Added e_notification_action_id_get and e_notification_action_name_get
+
+2011-11-03  Mike Blumenkrantz
+
+        * Added more methods for manipulating notification hints

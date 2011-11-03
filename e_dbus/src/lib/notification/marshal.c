@@ -511,6 +511,11 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
           dbus_message_iter_get_basic(&variant, &s_val);
           e_notification_hint_desktop_set(n, s_val);
         }
+      else if ((!strcmp(key, "image_path")) || (!strcmp(key, "image-path")))
+        {
+          dbus_message_iter_get_basic(&variant, &s_val);
+          e_notification_hint_image_path_set(n, s_val);
+        }
       else if (!strcmp(key, "sound-file"))
         {
           dbus_message_iter_get_basic(&variant, &s_val);
@@ -520,6 +525,16 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
         {
           dbus_message_iter_get_basic(&variant, &b_val);
           e_notification_hint_suppress_sound_set(n, b_val);
+        }
+      else if (!strcmp(key, "transient"))
+        {
+          dbus_message_iter_get_basic(&variant, &b_val);
+          e_notification_hint_transient_set(n, b_val);
+        }
+      else if (!strcmp(key, "resident"))
+        {
+          dbus_message_iter_get_basic(&variant, &b_val);
+          e_notification_hint_resident_set(n, b_val);
         }
       else if (!strcmp(key, "x"))
       {
