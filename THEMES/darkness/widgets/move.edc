@@ -49,6 +49,7 @@ group {
          name: "e.text.label";
          type: TEXT;
          effect: SHADOW;
+         scale: 1;
          description {
             state: "default" 0.0;
             color: 0 0 0 255;

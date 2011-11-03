@@ -42,6 +42,7 @@ group {
             clip_to: "fade_clip";
             effect: SOFT_SHADOW;
             mouse_events: 1;
+            scale: 1;
             description {
                 state: "default" 0.0;
                 aspect: 1.0 1.0;
@@ -65,6 +66,7 @@ group {
             type: TEXT;
             clip_to: "fade_clip";
             effect: SOFT_SHADOW;
+            scale: 1;
             description {
                 state: "default" 0.0;
                 color: 255 255 255 0;
@@ -145,6 +147,7 @@ group {
             type: TEXT;
             clip_to: "fade_clip";
             effect: SOFT_SHADOW;
+            scale: 1;
             description {
                 state: "default" 0.0;
                 color: 255 255 255 0;

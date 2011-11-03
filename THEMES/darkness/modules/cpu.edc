@@ -24,6 +24,7 @@ group {
          type: TEXT;
          clip_to: "fade_clip";
          effect: SOFT_SHADOW;
+         scale: 1;
          description {
             state: "default" 0.0;
             aspect: 1.0 1.0;
@@ -53,6 +54,7 @@ group {
          effect:         SOFT_SHADOW;
          mouse_events: 1;
          clip_to: "fade_clip";
+         scale: 1;
          description {
             state: "default" 0.0;
             aspect: 1.0 1.0;
@@ -243,7 +245,7 @@ group {
             name: "num1";
             type: TEXT;
             effect: SOFT_SHADOW;
-
+            scale: 1;
             description {
                 state: "default" 0.0;
                 fixed: 1 1;
@@ -283,7 +285,7 @@ group {
             name: "num2";
             type: TEXT;
             effect: SOFT_SHADOW;
-
+            scale: 1;
             description {
                 state: "default" 0.0;
                 fixed: 1 1;
@@ -326,7 +328,7 @@ group {
             name: "num3";
             type: TEXT;
             effect: SOFT_SHADOW;
-
+            scale: 1;
             description {
                 state: "default" 0.0;
                 fixed: 1 1;
@@ -366,7 +368,7 @@ group {
             name: "num4";
             type: TEXT;
             effect: SOFT_SHADOW;
-
+            scale: 1;
             description {
                 state: "default" 0.0;
                 fixed: 1 1;

@@ -58,6 +58,7 @@ group {
 	    name:         "e.text.temp";
 	    type:         TEXT;
 	    effect:       SOFT_SHADOW;
+            scale:        1;
 	    mouse_events: 0;
 	    description {
 		state: "default" 0.0;
@@ -87,6 +88,7 @@ group {
 	    name:         "e.text.description";
 	    type:         TEXT;
 	    effect:       OUTLINE_SOFT_SHADOW;
+            scale:        1;
 	    mouse_events: 0;
 	    description {
 		state: "default" 0.0;

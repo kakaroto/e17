@@ -437,6 +437,7 @@ group { name: "e/modules/clock/digital";
 		part { name: "time";
 			type: TEXT;
 			effect: SOFT_SHADOW;
+                        scale: 1;
 			description { state: "default" 0.0;
 				color: 255 255 255 255;
 				color3: DARKNESS_BLUE 170;

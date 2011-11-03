@@ -132,6 +132,7 @@ group
 	      type: TEXT;
 	      clip_to: "fade_clip";
 	      effect: SOFT_SHADOW;
+              scale: 1;
 	      description 
 		{
 		   state: "default" 0.0;
@@ -171,6 +172,7 @@ group
 	      type: TEXT;
 	      clip_to: "fade_clip";
 	      effect: SOFT_SHADOW;
+              scale: 1;
 	      description 
 		{
 		   state: "default" 0.0;
@@ -336,6 +338,7 @@ group
 	 type: TEXT;
 	 effect: SOFT_SHADOW;
 	 mouse_events: 0;
+         scale: 1;
 	 description {
 	     state: "default" 0.0;
 	     fixed: 0 1;
@@ -361,6 +364,7 @@ group
 	 type: TEXT;
 	 effect: SOFT_SHADOW;
 	 mouse_events: 0;
+         scale: 1;
 	 description  {
 	     state: "default" 0.0;
 	     fixed: 1 1;
@@ -392,6 +396,7 @@ group
 	 type: TEXT;
 	 effect: SOFT_SHADOW;
 	 mouse_events: 0;
+         scale: 1;
 	 description {
 	     state: "default" 0.0;
 	     fixed: 1 1;
