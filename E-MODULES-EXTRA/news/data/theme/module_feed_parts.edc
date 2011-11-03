@@ -112,6 +112,7 @@ part
 	name: "name";
 	type: TEXT;
 	mouse_events: 0;
+        scale: 1;
         effect: OUTLINE_SOFT_SHADOW;
 	description
 	{
