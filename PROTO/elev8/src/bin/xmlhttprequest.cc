@@ -25,12 +25,8 @@ Eina_Bool data_callback(void *data, int type, void *event)
    if ( url_data->size > 0)
      {
         eina_binbuf_append_length(reqObj->data, 
-#ifndef OLD_APIS
 			url_data->data, url_data->size);
-#else
-			(const char *)url_data->data, url_data->size);
-#endif
-	fprintf(stderr, "Appended %d data\n", url_data->size);
+	    fprintf(stderr, "Appended %d data\n", url_data->size);
      }
    return EINA_FALSE;
 }
@@ -120,14 +116,9 @@ Eina_Bool completion_callback(void *data, int type, void *event)
              if (!func.IsEmpty())
                {
                   Handle<String> path = reqObj->responseText;
-#ifndef OLD_APIS
                   Handle<String> obj = String::New(ecore_con_url_url_get(reqObj->url_con));
                   Handle<Value> args[2] = { obj, path };
                   func->Call(func,2, args);
-#else
-                  Handle<Value> args[1] = { path };
-                  func->Call(func,1, args);
-#endif
                }
           }
      }
