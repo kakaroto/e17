@@ -129,7 +129,7 @@ curious.
                 <tr <?php tr_odd() ?>>
                 <td class="photo">    <?php echo dev_data_photo($data) ?></td>
                 <td class="name">     <?php td(dev_data_contact($data)) ?></td>
-                <td class="manage">   <?php td(@$data['Managing'] . ((isset($data['Managing']) && isset($data['Contributing'])) ? ", " : "") . @$data['Contributing']) ?></td>
+                <td class="manage">   <?php td(@$data['Managing'] . ((!empty($data['Managing']) && !empty($data['Contributing'])) ? ", " : "") . @$data['Contributing']) ?></td>
                 <td class="irc">      <?php td(dev_data_irc($data)) ?></td>
                 <td class="location"> <?php td(@$data['Location']) ?></td>
                 <td class="website">  <?php td(dev_data_www($data)) ?></td>
