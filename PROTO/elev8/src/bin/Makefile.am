@@ -15,6 +15,9 @@ bin_PROGRAMS = elev8
 elev8_SOURCES = \
 	elm.cc \
 	main.cc main.h \
-	xmlhttprequest.cc xmlhttprequest.h
+	xmlhttprequest.cc xmlhttprequest.h \
+	dbus_introspect.cc dbus_introspect.h \
+	dbus_library.cc dbus_library.h
+
 
 elev8_LDADD = @ELEV8_LIBS@ @V8_LIBS@

@@ -43,6 +43,7 @@ typedef struct
 /* FIXME */
 void elm_v8_setup(Handle<ObjectTemplate> global);
 int xmlhttp_v8_setup(Handle<ObjectTemplate> global);
+int dbus_v8_setup(Handle<ObjectTemplate> global);
 void start_download(void *ptr, Evas_Object *obj, void *data);
 void download_resource(downloader *dl_temp);
 void compile_and_run(Handle<String> source);
@@ -510,6 +511,14 @@ elev8_run(const char *script)
      {
         fprintf(stderr, "Cannot initialize ecore_con_url\n");
 	    //FIXME : Disable XMLHttpRequest support
+     }
+
+   retval = dbus_v8_setup(global);
+
+   if (retval!=0)
+     {
+        fprintf(stderr, "Cannot initialize e_dbus\n");
+	    //FIXME : Disable DBUS support
      }
 
    /* setup V8 */

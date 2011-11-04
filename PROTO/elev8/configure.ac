@@ -98,6 +98,9 @@ PKG_CHECK_MODULES([ELEV8],
     efreet-mime >= 1.0.999
     efreet-trash >= 1.0.999
     elementary >= 0.7.0
+    edbus >= 1.0.999
+    dbus-1
+    dbus-glib-1
    ]
 )
 
