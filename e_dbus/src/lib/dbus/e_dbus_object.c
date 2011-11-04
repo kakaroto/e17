@@ -661,3 +661,10 @@ _introspect_arg_append(Eina_Strbuf *buf, const char *type, const char *direction
   eina_strbuf_append(buf, "\"/>\n");
 }
 
+
+
+DBusConnection *e_dbus_conn_object_get(E_DBus_Connection *conn)
+{
+   if (conn!=NULL)
+     return conn->conn;
+}
