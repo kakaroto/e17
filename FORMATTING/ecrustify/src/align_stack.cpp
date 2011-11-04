@@ -193,6 +193,11 @@ void AlignStack::Add(chunk_t *start, int seqnum)
          {
             ali  = prev;
             prev = chunk_get_prev(ali);
+            if (chunk_is_star(prev))
+              {
+                 ali  = prev;
+                 prev = chunk_get_prev(ali);
+              }
          }
       }
       if (m_amp_style != SS_IGNORE)
