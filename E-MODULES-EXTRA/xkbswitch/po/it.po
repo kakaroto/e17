@@ -1,0 +1,103 @@
+# Italian translation for E17 xkbswitch module.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Xkbswitch\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2011-11-04 12:56+0100\n"
+"PO-Revision-Date: 2011-11-04 13:04+0100\n"
+"Last-Translator: Massimo Maiurana <maiurana@gmail.com>>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/e_mod_config.c:63
+msgid "XKB Switcher Module"
+msgstr "Modulo cambio tastiera"
+
+#: src/e_mod_config.c:156
+msgid "Add"
+msgstr "Aggiungi"
+
+#: src/e_mod_config.c:163
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: src/e_mod_config.c:174
+msgid "Available"
+msgstr "Disponibili"
+
+#: src/e_mod_config.c:191
+msgid "Up"
+msgstr "Su"
+
+#: src/e_mod_config.c:198
+msgid "Down"
+msgstr "Giù"
+
+#: src/e_mod_config.c:209
+msgid "Used"
+msgstr "In uso"
+
+#: src/e_mod_config.c:220
+msgid "Model"
+msgstr "Modello"
+
+#: src/e_mod_config.c:231
+msgid "Variant"
+msgstr "Variante"
+
+#: src/e_mod_main.c:75
+msgid "Input"
+msgstr "Input"
+
+#: src/e_mod_main.c:80 src/e_mod_main.c:300
+msgid "XKB Switcher"
+msgstr "XKBSwitcher"
+
+#: src/e_mod_main.c:112
+msgid ""
+"XKB Switcher Module Configuration data needed upgrading. Your old "
+"configuration<br> has been wiped and a new set of defaults initialized. "
+"This<br>will happen regularly during development, so don't report a<br>bug. "
+"This simply means the module needs new configuration<br>data by default for "
+"usable functionality that your old<br>configuration simply lacks. This new "
+"set of defaults will fix<br>that by adding it in. You can re-configure "
+"things now to your<br>liking. Sorry for the inconvenience.<br>"
+msgstr ""
+"I dati di configurazione del modulo XKBSwitcher avevano bisogno di "
+"essere<br>aggiornati. La vostra vecchia configurazione è stata cancellata ed "
+"è<br>stato inizializzato un nuovo set di impostazioni predefinite. "
+"Questo<br>avverrà regolarmente durante lo sviluppo, quindi non riportate bug."
+"<br>Questo significa semplicemente che il modulo ha bisogno di nuovi<br>dati "
+"predefiniti di configurazione per funzionalità mancanti nella<br>vecchia "
+"configurazione. Questo nuovo set sistemerà le cose aggiungendo<br>quei dati. "
+"Potete riconfigurare le cose a vostro piacimento. Ci<br>scusiamo per "
+"l'inconveniente."
+
+#: src/e_mod_main.c:133
+msgid ""
+"Your XKB Switcher Module configuration is NEWER than the module version. "
+"This is very<br>strange. This should not happen unless you downgraded<br>the "
+"module or copied the configuration from a place where<br>a newer version of "
+"the module was running. This is bad and<br>as a precaution your "
+"configuration has been now restored to<br>defaults. Sorry for the "
+"inconvenience.<br>"
+msgstr ""
+"La vostra configurazione del modulo XKBSwitcher è più NUOVA della<br>versione "
+"del modulo. Questo è molto strano. Non dovrebbe succedere a meno<br>che "
+"siate passati ad una vecchia versione del modulo Skeleton o avete<br>copiato "
+"la configurazione di un sistema su cui gira una versione<br>più nuova del "
+"modulo. A scopo precauzionale la vostra<br>configurazione è stata adesso "
+"ripristinata ai valori predefiniti.<br>Ci scusiamo per l'inconveniente."
+
+#: src/e_mod_main.c:377
+msgid "XKB Switcher Configuration Updated"
+msgstr "Configurazione di XKBSwitcher aggiornata"
+
+#: src/e_mod_main.c:403
+msgid "Settings"
+msgstr "Impostazioni"
