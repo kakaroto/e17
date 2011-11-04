@@ -200,14 +200,14 @@ group {
          clip_to: "clipper";
          description {
             state: "default" 0.0;
-            align: 0.0 0.5;
-            min:  260 80;
+            align: 0.0 0.0;
+            min:  260 40;
                    //	fixed: 1 1;
 
             rel1 { 
                to_x: "notification.swallow.app_icon";
                to_y: "notification.text.title";
-               relative: 1.0 0.0;
+               relative: 1.0 1.0;
                offset: 10 0; 
             }
 
