@@ -19,13 +19,13 @@
 #include "unc_ctype.h"
 
 
-static std::map<std::string, option_map_value>      option_name_map;
-static std::map<uncrustify_groups, group_map_value> group_map;
-static uncrustify_groups current_group;
+static map<string, option_map_value>      option_name_map;
+static map<ecrustify_groups, group_map_value> group_map;
+static ecrustify_groups current_group;
 
 
 static void unc_add_option(const char         *name,
-                           uncrustify_options id,
+                           ecrustify_options id,
                            argtype_e          type,
                            const char         *short_desc = NULL,
                            const char         *long_desc = NULL,
@@ -33,7 +33,7 @@ static void unc_add_option(const char         *name,
                            int                max_val = 16);
 
 
-void unc_begin_group(uncrustify_groups id, const char *short_desc,
+void unc_begin_group(ecrustify_groups id, const char *short_desc,
                      const char *long_desc)
 {
    current_group = id;
@@ -48,7 +48,7 @@ void unc_begin_group(uncrustify_groups id, const char *short_desc,
 }
 
 
-void unc_add_option(const char *name, uncrustify_options id, argtype_e type,
+void unc_add_option(const char *name, ecrustify_options id, argtype_e type,
                     const char *short_desc, const char *long_desc,
                     int min_val, int max_val)
 {
@@ -168,6 +168,17 @@ void register_options(void)
                   "The ASCII value of the string escape char, usually 92 (\\) or 94 (^). (Pawn)", "", 0, 255);
    unc_add_option("string_escape_char2", UO_string_escape_char2, AT_NUM,
                   "Alternate string escape char for Pawn. Only works right before the quote char.", "", 0, 255);
+   unc_add_option("tok_split_gte", UO_tok_split_gte, AT_BOOL,
+                  "Allow interpreting '>=' and '>>=' as part of a template in 'void f(list<list<B>>=val);'.\n"
+                  "If true (default), 'assert(x<0 && y>=3)' will be broken.\n"
+                  "Improvements to template detection may make this option obsolete.");
+
+   unc_add_option("utf8_bom", UO_utf8_bom, AT_IARF,
+                  "Control what to do with the UTF-8 BOM (recommed 'remove')");
+   unc_add_option("utf8_byte", UO_utf8_byte, AT_BOOL,
+                  "If the file contains bytes with values between 128 and 255, but is not UTF-8, then output as UTF-8");
+   unc_add_option("utf8_force", UO_utf8_force, AT_BOOL,
+                  "Force the output encoding to UTF-8");
 
    unc_begin_group(UG_space, "Spacing options");
    unc_add_option("sp_arith", UO_sp_arith, AT_IARF,
@@ -189,7 +200,7 @@ void register_options(void)
    unc_add_option("sp_pp_concat", UO_sp_pp_concat, AT_IARF,
                   "Add or remove space around preprocessor '##' concatenation operator. Default=Add");
    unc_add_option("sp_pp_stringify", UO_sp_pp_stringify, AT_IARF,
-                  "Add or remove space after preprocessor '#' stringify operator. Default=Add");
+                  "Add or remove space after preprocessor '#' stringify operator. Also affects the '#@' charizing operator. Default=Add");
    unc_add_option("sp_bool", UO_sp_bool, AT_IARF,
                   "Add or remove space around boolean operators '&&' and '||'");
    unc_add_option("sp_compare", UO_sp_compare, AT_IARF,
@@ -241,6 +252,8 @@ void register_options(void)
                   "Add or remove space between '<>' and '(' as found in 'new List<byte>();'");
    unc_add_option("sp_angle_word", UO_sp_angle_word, AT_IARF,
                   "Add or remove space between '<>' and a word as in 'List<byte> m;'");
+   unc_add_option("sp_angle_shift", UO_sp_angle_shift, AT_IARF,
+                  "Add or remove space between '>' and '>' in '>>' (template stuff C++/C# only). Default=Add");
    unc_add_option("sp_before_sparen", UO_sp_before_sparen, AT_IARF,
                   "Add or remove space before '(' of 'if', 'for', 'switch', and 'while'");
    unc_add_option("sp_inside_sparen", UO_sp_inside_sparen, AT_IARF,
@@ -274,11 +287,13 @@ void register_options(void)
    unc_add_option("sp_before_squares", UO_sp_before_squares, AT_IARF,
                   "Add or remove space before '[]'");
    unc_add_option("sp_inside_square", UO_sp_inside_square, AT_IARF,
-                  "Add or remove space inside '[' and ']'");
+                  "Add or remove space inside a non-empty '[' and ']'");
    unc_add_option("sp_after_comma", UO_sp_after_comma, AT_IARF,
                   "Add or remove space after ','");
    unc_add_option("sp_before_comma", UO_sp_before_comma, AT_IARF,
                   "Add or remove space before ','");
+   unc_add_option("sp_paren_comma", UO_sp_paren_comma, AT_IARF,
+                  "Add or remove space between an open paren and comma: '(,' vs '( ,'\n");
    unc_add_option("sp_before_ellipsis", UO_sp_before_ellipsis, AT_IARF,
                   "Add or remove space before the variadic '...' when preceded by a non-punctuator");
    unc_add_option("sp_after_class_colon", UO_sp_after_class_colon, AT_IARF,
@@ -326,6 +341,9 @@ void register_options(void)
                   "Add or remove space between ')' and '{' of function");
    unc_add_option("sp_func_call_paren", UO_sp_func_call_paren, AT_IARF,
                   "Add or remove space between function name and '(' on function calls");
+   unc_add_option("sp_func_call_paren_empty", UO_sp_func_call_paren_empty, AT_IARF,
+                  "Add or remove space between function name and '()' on function calls without parameters.\n"
+                  "If set to 'ignore' (the default), sp_func_call_paren is used.");
    unc_add_option("sp_func_call_user_paren", UO_sp_func_call_user_paren, AT_IARF,
                   "Add or remove space between the user function name and '(' on function calls\n"
                   "You need to set a keyword to be a user function, like this: 'set func_call_user _' in the config file.");
@@ -339,6 +357,15 @@ void register_options(void)
                   "Add or remove space between 'defined' and '(' in '#if defined (FOO)'");
    unc_add_option("sp_throw_paren", UO_sp_throw_paren, AT_IARF,
                   "Add or remove space between 'throw' and '(' in 'throw (something)'");
+   unc_add_option("sp_catch_paren", UO_sp_catch_paren, AT_IARF,
+                  "Add or remove space between 'catch' and '(' in 'catch (something) { }'\n"
+                  "If set to ignore, sp_before_sparen is used.");
+   unc_add_option("sp_version_paren", UO_sp_version_paren, AT_IARF,
+                  "Add or remove space between 'version' and '(' in 'version (something) { }' (D language)\n"
+                  "If set to ignore, sp_before_sparen is used.");
+   unc_add_option("sp_scope_paren", UO_sp_scope_paren, AT_IARF,
+                  "Add or remove space between 'scope' and '(' in 'scope (something) { }' (D language)\n"
+                  "If set to ignore, sp_before_sparen is used.");
    unc_add_option("sp_macro", UO_sp_macro, AT_IARF,
                   "Add or remove space between macro and value");
    unc_add_option("sp_macro_func", UO_sp_macro_func, AT_IARF,
@@ -438,6 +465,12 @@ void register_options(void)
                   "Control the space after the opening of a C++ comment '// A' vs '//A'");
    unc_add_option("sp_endif_cmt", UO_sp_endif_cmt, AT_IARF,
                   "Controls the spaces between #else or #endif and a trailing comment");
+   unc_add_option("sp_after_new", UO_sp_after_new, AT_IARF,
+                  "Controls the spaces after 'new', 'delete', and 'delete[]'");
+   unc_add_option("sp_before_tr_emb_cmt", UO_sp_before_tr_emb_cmt, AT_IARF,
+                  "Controls the spaces before a trailing or embedded comment");
+   unc_add_option("sp_num_before_tr_emb_cmt", UO_sp_num_before_tr_emb_cmt, AT_NUM,
+                  "Number of spaces before a trailing or embedded comment");
 
    unc_begin_group(UG_indent, "Indenting");
    unc_add_option("indent_columns", UO_indent_columns, AT_NUM,
@@ -445,7 +478,7 @@ void register_options(void)
                   "Usually 2, 3, 4, or 8.");
    unc_add_option("indent_continue", UO_indent_continue, AT_NUM,
                   "The continuation indent. If non-zero, this overrides the indent of '(' and '=' continuation indents.\n"
-                  "For FreeBSD, this is set to 4.");
+                  "For FreeBSD, this is set to 4. Negative value is absolute and not increased for each ( level");
    unc_add_option("indent_with_tabs", UO_indent_with_tabs, AT_NUM,
                   "How to use tabs when indenting code\n"
                   "0=spaces only\n"
@@ -486,6 +519,8 @@ void register_options(void)
                   "Whether the 'class' body is indented");
    unc_add_option("indent_class_colon", UO_indent_class_colon, AT_BOOL,
                   "Whether to indent the stuff after a leading class colon");
+   unc_add_option("indent_ctor_init", UO_indent_ctor_init, AT_NUM,
+                  "Additional indenting for constructor initializer list");
    unc_add_option("indent_else_if", UO_indent_else_if, AT_BOOL,
                   "False=treat 'else\\nif' as 'else if' for indenting purposes\n"
                   "True=indent the 'if' one level\n");
@@ -600,7 +635,8 @@ void register_options(void)
    unc_add_option("nl_after_square_assign", UO_nl_after_square_assign, AT_IARF,
                   "Add or remove newline after '= [' (D only). Will also affect the newline before the ']'");
    unc_add_option("nl_func_var_def_blk", UO_nl_func_var_def_blk, AT_NUM,
-                  "The number of blank lines after a block of variable definitions");
+                  "The number of blank lines after a block of variable definitions at the top of a function body.\n"
+                  "0=no change (default)");
    unc_add_option("nl_fcall_brace", UO_nl_fcall_brace, AT_IARF,
                   "Add or remove newline between a function call's ')' and '{', as in:\n"
                   "list_for_each(item, &list) { }");
@@ -659,6 +695,8 @@ void register_options(void)
                   "Add or remove newline between ')' and 'throw'");
    unc_add_option("nl_after_case", UO_nl_after_case, AT_BOOL,
                   "Whether to put a newline after 'case' statement");
+   unc_add_option("nl_case_colon_brace", UO_nl_case_colon_brace, AT_IARF,
+                  "Add or remove a newline between a case ':' and '{'. Overrides nl_after_case.");
    unc_add_option("nl_namespace_brace", UO_nl_namespace_brace, AT_IARF,
                   "Newline between namespace and {");
    unc_add_option("nl_template_class", UO_nl_template_class, AT_IARF,
@@ -679,18 +717,32 @@ void register_options(void)
                   "Add or remove newline between return type and function name in a prototype");
    unc_add_option("nl_func_paren", UO_nl_func_paren, AT_IARF,
                   "Add or remove newline between a function name and the opening '('");
+   unc_add_option("nl_func_def_paren", UO_nl_func_def_paren, AT_IARF,
+                  "Add or remove newline between a function name and the opening '(' in the definition");
    unc_add_option("nl_func_decl_start", UO_nl_func_decl_start, AT_IARF,
                   "Add or remove newline after '(' in a function declaration");
+   unc_add_option("nl_func_def_start", UO_nl_func_def_start, AT_IARF,
+                  "Add or remove newline after '(' in a function definition");
    unc_add_option("nl_func_decl_start_single", UO_nl_func_decl_start_single, AT_IARF,
-                  "Overrides nl_func_decl_start when there is only one paramter.");
+                  "Overrides nl_func_decl_start when there is only one parameter.");
+   unc_add_option("nl_func_def_start_single", UO_nl_func_def_start_single, AT_IARF,
+                  "Overrides nl_func_def_start when there is only one parameter.");
    unc_add_option("nl_func_decl_args", UO_nl_func_decl_args, AT_IARF,
                   "Add or remove newline after each ',' in a function declaration");
+   unc_add_option("nl_func_def_args", UO_nl_func_def_args, AT_IARF,
+                  "Add or remove newline after each ',' in a function definition");
    unc_add_option("nl_func_decl_end", UO_nl_func_decl_end, AT_IARF,
                   "Add or remove newline before the ')' in a function declaration");
+   unc_add_option("nl_func_def_end", UO_nl_func_def_end, AT_IARF,
+                  "Add or remove newline before the ')' in a function definition");
    unc_add_option("nl_func_decl_end_single", UO_nl_func_decl_end_single, AT_IARF,
-                  "Overrides nl_func_decl_end when there is only one paramter.");
+                  "Overrides nl_func_decl_end when there is only one parameter.");
+   unc_add_option("nl_func_def_end_single", UO_nl_func_def_end_single, AT_IARF,
+                  "Overrides nl_func_def_end when there is only one parameter.");
    unc_add_option("nl_func_decl_empty", UO_nl_func_decl_empty, AT_IARF,
                   "Add or remove newline between '()' in a function declaration.");
+   unc_add_option("nl_func_def_empty", UO_nl_func_def_empty, AT_IARF,
+                  "Add or remove newline between '()' in a function definition.");
    unc_add_option("nl_fdef_brace", UO_nl_fdef_brace, AT_IARF,
                   "Add or remove newline between function signature and '{'");
    unc_add_option("nl_after_return", UO_nl_after_return, AT_BOOL,
@@ -768,6 +820,8 @@ void register_options(void)
                   "The number of newlines after a function prototype, if not followed by another function prototype");
    unc_add_option("nl_after_func_body", UO_nl_after_func_body, AT_NUM,
                   "The number of newlines after '}' of a multi-line function body");
+   unc_add_option("nl_after_func_body_class", UO_nl_after_func_body_class, AT_NUM,
+                  "The number of newlines after '}' of a multi-line function body in a class declaration");
    unc_add_option("nl_after_func_body_one_liner", UO_nl_after_func_body_one_liner, AT_NUM,
                   "The number of newlines after '}' of a single line function body");
    unc_add_option("nl_before_block_comment", UO_nl_before_block_comment, AT_NUM,
@@ -781,6 +835,11 @@ void register_options(void)
                   "Doesn't apply if after a brace open or other CPP comments.");
    unc_add_option("nl_after_multiline_comment", UO_nl_after_multiline_comment, AT_BOOL,
                   "Whether to force a newline after a multi-line comment.");
+
+   unc_add_option("nl_after_struct", UO_nl_after_struct, AT_NUM,
+                  "The number of newlines after '}' or ';' of a struct/enum/union definition");
+   unc_add_option("nl_after_class", UO_nl_after_class, AT_NUM,
+                  "The number of newlines after '}' or ';' of a class definition");
 
    unc_add_option("nl_before_access_spec", UO_nl_before_access_spec, AT_NUM,
                   "The number of newlines before a 'private:', 'public:', 'protected:', 'signals:', or 'slots:' label.\n"
@@ -803,6 +862,8 @@ void register_options(void)
    unc_add_option("nl_between_get_set", UO_nl_between_get_set, AT_NUM,
                   "The number of newlines between the get/set/add/remove handlers in C#.\n"
                   "0 = No change.");
+   unc_add_option("nl_property_brace", UO_nl_property_brace, AT_IARF,
+                  "Add or remove newline between C# property and the '{'");
 
    unc_add_option("eat_blanks_after_open_brace", UO_eat_blanks_after_open_brace, AT_BOOL,
                   "Whether to remove blank lines after '{'");
@@ -943,6 +1004,8 @@ void register_options(void)
    unc_add_option("align_nl_cont", UO_align_nl_cont, AT_BOOL,
                   "Whether to align macros wrapped with a backslash and a newline.\n"
                   "This will not work right if the macro contains a multi-line comment.");
+   unc_add_option("align_pp_define_together", UO_align_pp_define_together, AT_BOOL,
+                  "# Align macro functions and variables together\n");
    unc_add_option("align_pp_define_gap", UO_align_pp_define_gap, AT_NUM,
                   "The minimum space between label and value of a preprocessor define");
    unc_add_option("align_pp_define_span", UO_align_pp_define_span, AT_NUM,
@@ -1004,10 +1067,13 @@ void register_options(void)
    unc_add_option("cmt_insert_class_header", UO_cmt_insert_class_header, AT_STRING,
                   "The filename that contains text to insert before a class if the class isn't preceded with a C/C++ comment.\n"
                   "Will substitute $(class) with the class name.");
+   unc_add_option("cmt_insert_oc_msg_header", UO_cmt_insert_oc_msg_header, AT_STRING,
+                  "The filename that contains text to insert before a Obj-C message specification if the method isn't preceeded with a C/C++ comment.\n"
+                  "Will substitute $(message) with the function name and $(javaparam) with the javadoc @param and @return stuff.");
    unc_add_option("cmt_insert_before_preproc", UO_cmt_insert_before_preproc, AT_BOOL,
                   "If a preprocessor is encountered when stepping backwards from a function name, then\n"
                   "this option decides whether the comment should be inserted.\n"
-                  "Affects cmt_insert_func_header and cmt_insert_class_header.");
+                  "Affects cmt_insert_oc_msg_header, cmt_insert_func_header and cmt_insert_class_header.");
 
    unc_begin_group(UG_codemodify, "Code modifying options (non-whitespace)");
    unc_add_option("mod_full_brace_do", UO_mod_full_brace_do, AT_IARF,
@@ -1043,10 +1109,10 @@ void register_options(void)
                   "the close brace, a comment will be added.");
    unc_add_option("mod_add_long_ifdef_endif_comment", UO_mod_add_long_ifdef_endif_comment, AT_NUM,
                   "If an #ifdef body exceeds the specified number of newlines and doesn't have a comment after\n"
-                  "the #else, a comment will be added.");
+                  "the #endif, a comment will be added.");
    unc_add_option("mod_add_long_ifdef_else_comment", UO_mod_add_long_ifdef_else_comment, AT_NUM,
                   "If an #ifdef or #else body exceeds the specified number of newlines and doesn't have a comment after\n"
-                  "the #endif, a comment will be added.");
+                  "the #else, a comment will be added.");
    unc_add_option("mod_sort_import", UO_mod_sort_import, AT_BOOL,
                   "If TRUE, will sort consecutive single-line 'import' statements [Java, D]");
    unc_add_option("mod_sort_using", UO_mod_sort_using, AT_BOOL,
@@ -1154,6 +1220,11 @@ static void convert_value(const option_map_value *entry, const char *val, op_val
 
    if (entry->type == AT_POS)
    {
+      if (strcasecmp(val, "JOIN") == 0)
+      {
+         dest->tp = TP_JOIN;
+         return;
+      }
       if (strcasecmp(val, "LEAD") == 0)
       {
          dest->tp = TP_LEAD;
@@ -1186,7 +1257,7 @@ static void convert_value(const option_map_value *entry, const char *val, op_val
       }
       if (strcasecmp(val, "IGNORE") != 0)
       {
-         LOG_FMT(LWARN, "%s:%d Expected IGNORE, LEAD, LEAD_BREAK, LEAD_FORCE, "
+         LOG_FMT(LWARN, "%s:%d Expected IGNORE, JOIN, LEAD, LEAD_BREAK, LEAD_FORCE, "
                  "TRAIL, TRAIL_BREAK, TRAIL_FORCE for %s, got %s\n",
                  cpd.filename, cpd.line_number, entry->name, val);
          cpd.error_count++;
@@ -1387,7 +1458,7 @@ int load_option_file(const char *filename)
       {
          for (idx = 1; idx < argc; idx++)
          {
-            add_keyword(args[idx], CT_TYPE, LANG_ALL);
+            add_keyword(args[idx], CT_TYPE);
          }
       }
       else if (strcasecmp(args[0], "define") == 0)
@@ -1396,15 +1467,15 @@ int load_option_file(const char *filename)
       }
       else if (strcasecmp(args[0], "macro-open") == 0)
       {
-         add_keyword(args[1], CT_MACRO_OPEN, LANG_ALL);
+         add_keyword(args[1], CT_MACRO_OPEN);
       }
       else if (strcasecmp(args[0], "macro-close") == 0)
       {
-         add_keyword(args[1], CT_MACRO_CLOSE, LANG_ALL);
+         add_keyword(args[1], CT_MACRO_CLOSE);
       }
       else if (strcasecmp(args[0], "macro-else") == 0)
       {
-         add_keyword(args[1], CT_MACRO_ELSE, LANG_ALL);
+         add_keyword(args[1], CT_MACRO_ELSE);
       }
       else if (strcasecmp(args[0], "set") == 0)
       {
@@ -1422,7 +1493,7 @@ int load_option_file(const char *filename)
                for (idx = 2; idx < argc; idx++)
                {
                   LOG_FMT(LNOTE, " '%s'", args[idx]);
-                  add_keyword(args[idx], id, LANG_ALL);
+                  add_keyword(args[idx], id);
                }
                LOG_FMT(LNOTE, "\n");
             }
@@ -1451,13 +1522,13 @@ int load_option_file(const char *filename)
 
 int save_option_file(FILE *pfile, bool withDoc)
 {
-   std::string val_string;
-   const char  *val_str;
-   int         val_len;
-   int         name_len;
-   int         idx;
+   string     val_string;
+   const char *val_str;
+   int        val_len;
+   int        name_len;
+   int        idx;
 
-   fprintf(pfile, "# Uncrustify %s\n", UNCRUSTIFY_VERSION);
+   fprintf(pfile, "# Uncrustify %s\n", ECRUSTIFY_VERSION);
 
    /* Print the options by group */
    for (group_map_it jt = group_map.begin(); jt != group_map.end(); jt++)
@@ -1563,47 +1634,10 @@ int save_option_file(FILE *pfile, bool withDoc)
    }
 
    /* Print custom keywords */
-   const chunk_tag_t *ct;
-   idx = 0;
-   while ((ct = get_custom_keyword_idx(idx)) != NULL)
-   {
-      if (ct->type == CT_TYPE)
-      {
-         fprintf(pfile, "type %*.s%s\n",
-                 cpd.max_option_name_len - 4, " ", ct->tag);
-      }
-      else if (ct->type == CT_MACRO_OPEN)
-      {
-         fprintf(pfile, "macro-open %*.s%s\n",
-                 cpd.max_option_name_len - 11, " ", ct->tag);
-      }
-      else if (ct->type == CT_MACRO_CLOSE)
-      {
-         fprintf(pfile, "macro-close %*.s%s\n",
-                 cpd.max_option_name_len - 12, " ", ct->tag);
-      }
-      else if (ct->type == CT_MACRO_ELSE)
-      {
-         fprintf(pfile, "macro-else %*.s%s\n",
-                 cpd.max_option_name_len - 11, " ", ct->tag);
-      }
-      else
-      {
-         const char *tn = get_token_name(ct->type);
-
-         fprintf(pfile, "set %s %*.s%s\n", tn,
-                 int(cpd.max_option_name_len - (4 + strlen(tn))), " ", ct->tag);
-      }
-   }
+   print_keywords(pfile);
 
    /* Print custom defines */
-   const define_tag_t *dt;
-   idx = 0;
-   while ((dt = get_define_idx(idx)) != NULL)
-   {
-      fprintf(pfile, "define %*.s%s \"%s\"\n",
-              cpd.max_option_name_len - 6, " ", dt->tag, dt->value);
-   }
+   print_defines(pfile);
 
    fclose(pfile);
    return(0);
@@ -1639,7 +1673,7 @@ void print_options(FILE *pfile, bool verbose)
    }
    max_width++;
 
-   fprintf(pfile, "# Uncrustify %s\n", UNCRUSTIFY_VERSION);
+   fprintf(pfile, "# Uncrustify %s\n", ECRUSTIFY_VERSION);
 
    /* Print the all out */
    for (group_map_it jt = group_map.begin(); jt != group_map.end(); jt++)
@@ -1691,6 +1725,7 @@ void set_option_defaults(void)
    cpd.settings[UO_indent_label].n         = 1;
    cpd.settings[UO_indent_access_spec].n   = 1;
    cpd.settings[UO_sp_before_comma].a      = AV_REMOVE;
+   cpd.settings[UO_sp_paren_comma].a       = AV_FORCE;
    cpd.settings[UO_string_escape_char].n   = '\\';
    cpd.settings[UO_sp_not].a               = AV_REMOVE;
    cpd.settings[UO_sp_inv].a               = AV_REMOVE;
@@ -1712,10 +1747,11 @@ void set_option_defaults(void)
    cpd.settings[UO_indent_align_assign].b  = true;
    cpd.settings[UO_sp_pp_concat].a         = AV_ADD;
    cpd.settings[UO_sp_pp_stringify].a      = AV_ADD;
+   cpd.settings[UO_sp_angle_shift].a       = AV_ADD;
 }
 
 
-std::string argtype_to_string(argtype_e argtype)
+string argtype_to_string(argtype_e argtype)
 {
    switch (argtype)
    {
@@ -1732,7 +1768,7 @@ std::string argtype_to_string(argtype_e argtype)
       return("auto/lf/crlf/cr");
 
    case AT_POS:
-      return("ignore/lead/lead_break/lead_force/trail/trail_break/trail_force");
+      return("ignore/join/lead/lead_break/lead_force/trail/trail_break/trail_force");
 
    case AT_STRING:
       return("string");
@@ -1744,7 +1780,7 @@ std::string argtype_to_string(argtype_e argtype)
 }
 
 
-std::string bool_to_string(bool val)
+string bool_to_string(bool val)
 {
    if (val)
    {
@@ -1757,7 +1793,7 @@ std::string bool_to_string(bool val)
 }
 
 
-std::string argval_to_string(argval_t argval)
+string argval_to_string(argval_t argval)
 {
    switch (argval)
    {
@@ -1780,7 +1816,7 @@ std::string argval_to_string(argval_t argval)
 }
 
 
-std::string number_to_string(int number)
+string number_to_string(int number)
 {
    char buffer[12]; // 11 + 1
 
@@ -1793,7 +1829,7 @@ std::string number_to_string(int number)
 }
 
 
-std::string lineends_to_string(lineends_e linends)
+string lineends_to_string(lineends_e linends)
 {
    switch (linends)
    {
@@ -1816,12 +1852,15 @@ std::string lineends_to_string(lineends_e linends)
 }
 
 
-std::string tokenpos_to_string(tokenpos_e tokenpos)
+string tokenpos_to_string(tokenpos_e tokenpos)
 {
    switch (tokenpos)
    {
    case TP_IGNORE:
       return("ignore");
+
+   case TP_JOIN:
+      return("join");
 
    case TP_LEAD:
       return("lead");
@@ -1848,7 +1887,7 @@ std::string tokenpos_to_string(tokenpos_e tokenpos)
 }
 
 
-std::string op_val_to_string(argtype_e argtype, op_val_t op_val)
+string op_val_to_string(argtype_e argtype, op_val_t op_val)
 {
    switch (argtype)
    {

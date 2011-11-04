@@ -5,7 +5,7 @@
  *
  *  - A '.unc-backup~' file that contains the original contents
  *  - A '.unc-backup-md5~' file that contains the MD5 over the last output
- *    that uncrustify generated
+ *    that ecrustify generated
  *
  * The logic goes like this:
  *  1. If there isn't a .backup-md5 or the md5 over the input file doesn't
@@ -16,7 +16,7 @@
  *  3. Calculate the md5 over the output file.
  *     Create the .backup-md5 file.
  *
- * This will let you run uncrustify multiple times over the same file without
+ * This will let you run ecrustify multiple times over the same file without
  * losing the original file.  If you edit the file, then a new backup is made.
  *
  * @author  Ben Gardner
@@ -34,7 +34,7 @@
 /**
  * Check the backup-md5 file and copy the input file to a backup if needed.
  */
-int backup_copy_file(const char *filename, const char *file_data, int file_len)
+int backup_copy_file(const char *filename, const vector<UINT8>& data)
 {
    char  newpath[1024];
    char  buffer[128];
@@ -44,7 +44,7 @@ int backup_copy_file(const char *filename, const char *file_data, int file_len)
 
    md5_str_in[0] = 0;
 
-   MD5::Calc(file_data, file_len, dig);
+   MD5::Calc(&data[0], data.size(), dig);
    snprintf(md5_str, sizeof(md5_str),
             "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n",
             dig[0], dig[1], dig[2], dig[3],
@@ -91,7 +91,7 @@ int backup_copy_file(const char *filename, const char *file_data, int file_len)
    thefile = fopen(newpath, "wb");
    if (thefile != NULL)
    {
-      int retval   = fwrite(file_data, file_len, 1, thefile);
+      int retval   = fwrite(&data[0], data.size(), 1, thefile);
       int my_errno = errno;
 
       fclose(thefile);

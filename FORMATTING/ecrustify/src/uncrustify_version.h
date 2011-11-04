@@ -1,14 +1,14 @@
 /**
  * @file uncrustify_version.h
- * Simply defines UNCRUSTIFY_VERSION.
+ * Simply defines ECRUSTIFY_VERSION.
  * I don't particularly like how autoconf and friends handle the version...
  *
  * @author  Ben Gardner
  * @license GPL v2+
  */
-#ifndef UNCRUSTIFY_VERSION_H_INCLUDED
-#define UNCRUSTIFY_VERSION_H_INCLUDED
+#ifndef ECRUSTIFY_VERSION_H_INCLUDED
+#define ECRUSTIFY_VERSION_H_INCLUDED
 
-#define UNCRUSTIFY_VERSION    "0.56"
+#define ECRUSTIFY_VERSION    "0.59"
 
-#endif /* UNCRUSTIFY_VERSION_H_INCLUDED */
+#endif /* ECRUSTIFY_VERSION_H_INCLUDED */

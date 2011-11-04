@@ -1,28 +1,32 @@
 /**
  * @file uncrustify_types.h
  *
- * Defines some types for the uncrustify program
+ * Defines some types for the ecrustify program
  *
  * @author  Ben Gardner
  * @license GPL v2+
  */
-#ifndef UNCRUSTIFY_TYPES_H_INCLUDED
-#define UNCRUSTIFY_TYPES_H_INCLUDED
+#ifndef ECRUSTIFY_TYPES_H_INCLUDED
+#define ECRUSTIFY_TYPES_H_INCLUDED
 
+#include <vector>
+#include <deque>
+using namespace std;
 
 #include "base_types.h"
 #include "options.h"
 #include "token_enum.h"    /* c_token_t */
 #include "log_levels.h"
 #include "logger.h"
+#include "unc_text.h"
 #include <cstdio>
 #include <assert.h>
 #ifdef HAVE_UTIME_H
 #include <utime.h>
 #endif
 
-#define UNCRUSTIFY_OFF_TEXT    " *INDENT-OFF*"
-#define UNCRUSTIFY_ON_TEXT     " *INDENT-ON*"
+#define ECRUSTIFY_OFF_TEXT    " *INDENT-OFF*"
+#define ECRUSTIFY_ON_TEXT     " *INDENT-ON*"
 
 /**
  * Brace stage enum used in brace_cleanup
@@ -40,6 +44,15 @@ enum brstage_e
    BS_ELSEIF,    /* expecting 'if' after 'else' */
    BS_WHILE,     /* expecting 'while' after 'do' */
    BS_CATCH,     /* expecting 'catch' or 'finally' after 'try' */
+};
+
+enum CharEncoding
+{
+   ENC_ASCII,     /* 0-127 */
+   ENC_BYTE,      /* 0-255, not UTF-8 */
+   ENC_UTF8,
+   ENC_UTF16_LE,
+   ENC_UTF16_BE,
 };
 
 struct chunk_t;
@@ -127,7 +140,6 @@ struct parse_frame
 #define PCF_PUNCTUATOR         PCF_BIT(32)
 #define PCF_INSERTED           PCF_BIT(33)  /* chunk was inserted from another file */
 #define PCF_LONG_BLOCK         PCF_BIT(34)  /* the block is 'long' by some measure */
-#define PCF_OWN_STR            PCF_BIT(35)  /* chunk owns the memory at str */
 
 #ifdef DEFINE_PCF_NAMES
 static const char *pcf_names[] =
@@ -167,7 +179,7 @@ static const char *pcf_names[] =
    "PUNCTUATOR",        // 32
    "INSERTED",          // 33
    "LONG_BLOCK",        // 34
-   "OWN_STR",           // 35
+   "#35",               // 35
    "#36",               // 36
    "#37",               // 37
    "#38",               // 38
@@ -194,6 +206,39 @@ struct align_ptr_t
 /** This is the main type of this program */
 struct chunk_t
 {
+   chunk_t()
+   {
+      reset();
+   }
+   void reset()
+   {
+      memset(&align, 0, sizeof(align));
+      next = 0;
+      prev = 0;
+      type = CT_NONE;
+      parent_type = CT_NONE;
+      orig_line = 0;
+      orig_col = 0;
+      orig_col_end = 0;
+      flags = 0;
+      column = 0;
+      column_indent = 0;
+      nl_count = 0;
+      level = 0;
+      brace_level = 0;
+      pp_level = 0;
+      after_tab = false;
+      str.clear();
+   }
+   int len()
+   {
+      return str.size();
+   }
+   const char *text()
+   {
+      return str.c_str();
+   }
+
    chunk_t     *next;
    chunk_t     *prev;
    align_ptr_t align;
@@ -211,8 +256,7 @@ struct chunk_t
    int         brace_level;      /* nest level in braces only */
    int         pp_level;         /* nest level in #if stuff */
    bool        after_tab;        /* whether this token was after a tab */
-   int         len;              /* # of bytes at str that make up the token */
-   const char  *str;             /* pointer to the token text */
+   unc_text    str;             /* pointer to the token text */
 };
 
 enum
@@ -248,27 +292,20 @@ enum pattern_class
    PATCLS_ELSE,     // Special case of PATCLS_BRACED for handling CT_IF
 };
 
-typedef struct
+struct chunk_tag_t
 {
    const char *tag;
    c_token_t  type;
    int        lang_flags;
-} chunk_tag_t;
+};
 
-typedef struct
+struct lookup_entry_t
 {
    char              ch;
    char              left_in_group;
    UINT16            next_idx;
    const chunk_tag_t *tag;
-} lookup_entry_t;
-
-typedef struct
-{
-   const char *tag;
-   const char *value;
-} define_tag_t;
-
+};
 
 struct align_t
 {
@@ -277,23 +314,12 @@ struct align_t
    int       len;    // of the token + space
 };
 
-typedef struct
-{
-   chunk_t *pc;
-   int     seqnum;
-} chunk_stack_entry_t;
-
-typedef struct chunk_stack
-{
-   chunk_stack_entry_t *cse;
-   int                 len;
-   int                 size;
-} chunk_stack_t;
-
 struct file_mem
 {
-   char           *data;
-   int            length;
+   vector<UINT8>  raw;
+   deque<int>     data;
+   bool           bom;
+   CharEncoding   enc;
 #ifdef HAVE_UTIME_H
    struct utimbuf utb;
 #endif
@@ -309,18 +335,23 @@ struct cp_data
    file_mem           file_hdr;   /* for cmt_insert_file_header */
    file_mem           file_ftr;   /* for cmt_insert_file_footer */
    file_mem           func_hdr;   /* for cmt_insert_func_header */
+   file_mem           oc_msg_hdr; /* for cmt_insert_oc_msg_header */
    file_mem           class_hdr;  /* for cmt_insert_class_header */
 
    int                lang_flags; // LANG_xxx
+   bool               lang_forced;
 
    bool               unc_off;
    UINT32             line_number;
    UINT16             column;  /* column for parsing */
    UINT16             spaces;  /* space count on output */
 
+   bool               frag;
+   UINT16             frag_cols;
+
    /* stuff to auto-detect line endings */
    UINT32             le_counts[LE_AUTO];
-   char               newline[5];
+   unc_text           newline;
 
    bool               consumed;
 
@@ -328,10 +359,12 @@ struct cp_data
    c_token_t          in_preproc;
    int                preproc_ncnl_count;
 
-   chunk_t            *bom;
+   bool               bom;
+   CharEncoding       enc;
 
    /* bumped up when a line is split or indented */
    int                changes;
+   int                pass_count;
 
    struct align_t     al[80];
    int                al_cnt;
@@ -348,4 +381,4 @@ struct cp_data
 
 extern struct cp_data cpd;
 
-#endif   /* UNCRUSTIFY_TYPES_H_INCLUDED */
+#endif   /* ECRUSTIFY_TYPES_H_INCLUDED */

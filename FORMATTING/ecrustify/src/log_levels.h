@@ -68,7 +68,7 @@ enum
    LTEMPL    = 54,    /* Template detection */
    LPARADD   = 55,    /* adding parens in if/while */
    LPARADD2  = 56,    /* adding parens in if/while - details */
-   LCMTNL    = 57,    /* newlines before comments */
+   LBLANKD   = 57,    /* blank line details */
    LTEMPFUNC = 58,    /* Template function detection */
    LSCANSEMI = 59,    /* scan semi colon removal */
    LDELSEMI  = 60,    /* Removing semicolons */
@@ -91,6 +91,10 @@ enum
    LFCNR     = 77,    /* function return type */
    LOCCLASS  = 78,    /* OC Class stuff */
    LOCMSG    = 79,    /* OC Message stuff */
+   LBLANK    = 80,    /* Blank Lines */
+   LOBJCWORD = 81,    /* Convert keyword to CT_WORD in certain circumstances */
+   LCHANGE   = 82,    /* something changed */
+   LCONTTEXT = 83,    /* comment cont_text set */
 };
 
 #endif   /* LOG_LEVELS_H_INCLUDED */

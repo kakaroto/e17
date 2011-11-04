@@ -35,6 +35,7 @@ static void remove_semicolon(chunk_t *pc)
  *  - after another semicolon where parent is not FOR
  *  - (D) after brace close whose parent is ENUM/STRUCT/UNION
  *  - after an open brace
+ *  - when not in a #DEFINE
  */
 void remove_extra_semicolons(void)
 {
@@ -47,11 +48,11 @@ void remove_extra_semicolons(void)
    {
       next = chunk_get_next_ncnl(pc);
 
-      if ((pc->type == CT_SEMICOLON) &&
+      if ((pc->type == CT_SEMICOLON) && !(pc->flags & PCF_IN_PREPROC) &&
           ((prev = chunk_get_prev_ncnl(pc)) != NULL))
       {
-         LOG_FMT(LSCANSEMI, "Semi on %d:%d, prev = '%.*s' [%s/%s]\n",
-                 pc->orig_line, pc->orig_col, prev->len, prev->str,
+         LOG_FMT(LSCANSEMI, "Semi on %d:%d, prev = '%s' [%s/%s]\n",
+                 pc->orig_line, pc->orig_col, prev->str.c_str(),
                  get_token_name(prev->type), get_token_name(prev->parent_type));
 
          if ((prev->type == CT_BRACE_CLOSE) &&

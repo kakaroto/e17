@@ -53,6 +53,7 @@ enum tokenpos_e
    TP_TRAIL       = 8,     /* at the end of a line or trailing if wrapped line */
    TP_TRAIL_BREAK = (TP_TRAIL | TP_BREAK),
    TP_TRAIL_FORCE = (TP_TRAIL | TP_FORCE),
+   TP_JOIN        = 16,    /* remove newlines on both sides */
 };
 
 union op_val_t
@@ -66,7 +67,7 @@ union op_val_t
 };
 
 /** Groups for options */
-enum uncrustify_groups
+enum ecrustify_groups
 {
    UG_general,
    UG_indent,
@@ -85,7 +86,7 @@ enum uncrustify_groups
 /**
  * Keep this grouped by functionality
  */
-enum uncrustify_options
+enum ecrustify_options
 {
    UO_newlines,                 // Set to AUTO, LF, CRLF, or CR
 
@@ -93,6 +94,11 @@ enum uncrustify_options
     * Basic Indenting stuff
     */
    //UO_indent,                   //TODO: 0=don't change indentation, 1=change indentation
+   UO_tok_split_gte,             // allow split of '>>=' in template detection
+
+   UO_utf8_byte,
+   UO_utf8_force,
+   UO_utf8_bom,
 
    UO_input_tab_size,           // tab size on input file: usually 8
    UO_output_tab_size,          // tab size for output: usually 8
@@ -157,6 +163,9 @@ enum uncrustify_options
    UO_indent_extern,
    UO_indent_class,                         // indent stuff inside class braces
    UO_indent_class_colon,                   // indent stuff after a class colon
+
+   UO_indent_ctor_init,                     // additional indenting for ctor initializer lists
+
    UO_indent_member,                        // indent lines broken at a member '.' or '->'
 
    UO_indent_sing_line_comments,            // indent single line ('//') comments on lines before code
@@ -205,6 +214,7 @@ enum uncrustify_options
    UO_sp_after_angle,           // space after  '<>', as in '<class T>'
    UO_sp_angle_paren,           // space between '<>' and '(' in "a = new List<byte>();"
    UO_sp_angle_word,            // space between '<>' and a word in "List<byte> a;"
+   UO_sp_angle_shift,           // '> >' vs '>>'
 
    UO_sp_before_square,         // space before single '['
    UO_sp_before_squares,        // space before '[]', as in 'byte []'
@@ -217,6 +227,7 @@ enum uncrustify_options
 
    UO_sp_after_comma,           // space after ','
    UO_sp_before_comma,          // space before ','
+   UO_sp_paren_comma,
 
    UO_sp_before_ellipsis,       // space before '...'
 
@@ -238,6 +249,7 @@ enum uncrustify_options
 
    UO_sp_func_def_paren,        // space between 'func' and '(' - "foo (" vs "foo("
    UO_sp_func_call_paren,       // space between 'func' and '(' - "foo (" vs "foo("
+   UO_sp_func_call_paren_empty,
    UO_sp_func_call_user_paren,
    UO_sp_func_proto_paren,      // space between 'func' and '(' - "foo (" vs "foo("
    UO_sp_func_class_paren,      // space between ctor/dtor and '('
@@ -245,6 +257,9 @@ enum uncrustify_options
    UO_sp_attribute_paren,       // space between '__attribute__' and '('
    UO_sp_defined_paren,
    UO_sp_throw_paren,
+   UO_sp_catch_paren,
+   UO_sp_version_paren,
+   UO_sp_scope_paren,
 
    UO_sp_type_func,             // space between return type and 'func'
    // a minimum of 1 is forced except for '*'
@@ -318,6 +333,9 @@ enum uncrustify_options
    UO_sp_range,
    UO_sp_cmt_cpp_start,
    UO_sp_endif_cmt,
+   UO_sp_after_new,
+   UO_sp_before_tr_emb_cmt,  // treatment of spaces before comments following code
+   UO_sp_num_before_tr_emb_cmt,  // number of spaces before comments following code
 
    /*
     * Line splitting options (for long lines)
@@ -362,6 +380,7 @@ enum uncrustify_options
    UO_align_var_struct_span,      // span for struct/union (0=don't align)
    UO_align_var_struct_thresh,    // threshold for struct/union, 0=no limit
    UO_align_var_struct_gap,       // gap for struct/union
+   UO_align_pp_define_together,   // align macro functions and variables together
    UO_align_pp_define_span,       // align bodies in #define statements
    //UO_align_pp_define_col_min,    //TODO: min column for a #define value
    //UO_align_pp_define_col_max,    //TODO: max column for a #define value
@@ -401,12 +420,19 @@ enum uncrustify_options
 
    UO_nl_fdef_brace,                 // "int foo() {" vs "int foo()\n{"
    UO_nl_func_paren,                 // newline between function and open paren
+   UO_nl_func_def_paren,
    UO_nl_func_decl_start,            // newline after the '(' in a function decl
+   UO_nl_func_def_start,             // newline after the '(' in a function def
    UO_nl_func_decl_start_single,
+   UO_nl_func_def_start_single,
    UO_nl_func_decl_args,             // newline after each ',' in a function decl
+   UO_nl_func_def_args,
    UO_nl_func_decl_end,              // newline before the ')' in a function decl
+   UO_nl_func_def_end,               // newline before the ')' in a function decl
    UO_nl_func_decl_end_single,
+   UO_nl_func_def_end_single,
    UO_nl_func_decl_empty,            // as above, but for empty parens '()'
+   UO_nl_func_def_empty,             // as above, but for empty parens '()'
    UO_nl_func_type_name,             // newline between return type and func name in def
    UO_nl_func_type_name_class,       // newline between return type and func name in class
    UO_nl_func_scope_name,
@@ -486,6 +512,7 @@ enum uncrustify_options
    UO_nl_getset_leave_one_liners,    // leave one-line get/set bodies
    UO_nl_func_leave_one_liners,      // leave one-line function def bodies
    UO_nl_if_leave_one_liners,
+   UO_nl_case_colon_brace,
 
    UO_nl_template_class,          // newline between '>' and class in "template <x> class"
 
@@ -512,11 +539,14 @@ enum uncrustify_options
    UO_nl_before_c_comment,
    UO_nl_after_multiline_comment,    // NL after multiline comment
    UO_nl_after_func_body,            // after the closing brace of a function body
+   UO_nl_after_func_body_class,
    UO_nl_after_func_body_one_liner,  // after the closing brace of a single line function body
    UO_nl_after_func_proto,           // after each prototype
    UO_nl_after_func_proto_group,     // after a block of prototypes
    //UO_nl_after_var_def_group,        // after a group of variable defs at top of proc
    //UO_nl_after_ifdef,                // after #if or #ifdef - but not if covers whole file
+   UO_nl_after_struct,
+   UO_nl_after_class,
    UO_nl_max,                        // maximum consecutive newlines (3 = 2 blank lines)
    UO_nl_before_access_spec,         // number of newlines before "private:", "public:" (0=no change)
    UO_nl_after_access_spec,          // number of newlines after "private:", "public:" (0=no change)
@@ -524,6 +554,7 @@ enum uncrustify_options
    UO_nl_after_try_catch_finally,
    UO_nl_between_get_set,
    UO_nl_around_cs_property,
+   UO_nl_property_brace,
 
    UO_eat_blanks_after_open_brace,   // remove blank lines after {
    UO_eat_blanks_before_close_brace, // remove blank lines before }
@@ -580,6 +611,7 @@ enum uncrustify_options
    UO_cmt_insert_file_footer,
    UO_cmt_insert_func_header,
    UO_cmt_insert_class_header,
+   UO_cmt_insert_oc_msg_header,
    UO_cmt_insert_before_preproc,
 
    UO_string_escape_char,       // the string escape char to use
@@ -591,16 +623,16 @@ enum uncrustify_options
 
 struct group_map_value
 {
-   uncrustify_groups             id;
-   const char                    *short_desc;
-   const char                    *long_desc;
-   std::list<uncrustify_options> options;
+   ecrustify_groups        id;
+   const char               *short_desc;
+   const char               *long_desc;
+   list<ecrustify_options> options;
 };
 
 struct option_map_value
 {
-   uncrustify_options id;
-   uncrustify_groups  group_id;
+   ecrustify_options id;
+   ecrustify_groups  group_id;
    argtype_e          type;
    int                min_val;
    int                max_val;
@@ -610,10 +642,10 @@ struct option_map_value
 };
 
 
-typedef std::map<std::string, option_map_value>::iterator        option_name_map_it;
-typedef std::map<uncrustify_groups, group_map_value>::iterator   group_map_it;
-typedef std::list<uncrustify_options>::iterator                  option_list_it;
-typedef std::list<uncrustify_options>::const_iterator            option_list_cit;
+typedef map<string, option_map_value>::iterator        option_name_map_it;
+typedef map<ecrustify_groups, group_map_value>::iterator   group_map_it;
+typedef list<ecrustify_options>::iterator                  option_list_it;
+typedef list<ecrustify_options>::const_iterator            option_list_cit;
 
 
 #endif   /* OPTIONS_H_INCLUDED */

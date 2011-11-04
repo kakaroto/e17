@@ -19,7 +19,6 @@
 typedef enum
 {
    CT_NONE,
-   CT_SOF,           /* Start of the file */
    CT_EOF,
    CT_UNKNOWN,
 
@@ -66,7 +65,7 @@ typedef enum
    CT_CONTINUE,
    CT_C_CAST,              /* C-style cast:   "(int)5.6" */
    CT_CPP_CAST,            /* C++-style cast: "int(5.6)" */
-   CT_D_CAST,              /* D-style cast:   "cast(type)" */
+   CT_D_CAST,              /* D-style cast:   "cast(type)" and "const(type)" */
    CT_TYPE_CAST,           /* static_cast<type>(exp) */
    CT_TYPENAME,            /* typename type */
    CT_TEMPLATE,            /* template<...> */
@@ -146,9 +145,12 @@ typedef enum
    CT_UNSAFE,
    CT_FINALLY,
    CT_IMPORT,
-   CT_SCOPE,
+   CT_D_SCOPE,
+   CT_D_SCOPE_IF,
    CT_LAZY,
    CT_D_MACRO,
+   CT_D_VERSION,        /* turns into CT_D_VERSION_IF if not followed by '=' */
+   CT_D_VERSION_IF,     /* version(x) { } */
 
    /* note for paren/brace/square pairs: close MUST be open + 1 */
    CT_PAREN_OPEN,
@@ -205,15 +207,16 @@ typedef enum
    CT_OC_IMPL,          /* ObjC: @implementation */
    CT_OC_INTF,          /* ObjC: @interface */
    CT_OC_PROTOCOL,      /* ObjC: @protocol or @protocol() */
+   CT_OC_PROTO_LIST,    /* ObjC: protocol list < > (parent token only) */
    CT_OC_PROPERTY,      /* ObjC: @property */
    CT_OC_CLASS,         /* ObjC: the name after @interface or @implementation */
    CT_OC_CLASS_EXT,     /* ObjC: a pair of empty parens after the class name in a @interface or @implementation */
    CT_OC_CATEGORY,      /* ObjC: the category name in parens after the class name in a @interface or @implementation */
    CT_OC_SCOPE,         /* ObjC: the '-' or '+' in '-(void) func: (int) i;' */
-   CT_OC_MSG,           /* ObjC: parent type to '[class func : param name: param];' stuff */
-   CT_OC_MSG_CLASS,     /* ObjC: 'class' in  '[class func : param name: param];' */
-   CT_OC_MSG_FUNC,      /* ObjC: 'func' in  '[class func : param name: param];' */
-   CT_OC_MSG_NAME,      /* ObjC: 'name' in  '[class func : param name: param];' */
+   CT_OC_MSG,           /* ObjC: parent type to '[', ']' and ';' in '[class func : param name: param];' */
+   CT_OC_MSG_CLASS,     /* ObjC: 'class' in  '[class func : param name: param];' (see also PCF_IN_OC_MSG) */
+   CT_OC_MSG_FUNC,      /* ObjC: 'func' in  '[class func : param name: param];' (see also PCF_IN_OC_MSG) */
+   CT_OC_MSG_NAME,      /* ObjC: 'name' in  '[class func : param name: param];' (see also PCF_IN_OC_MSG) */
    CT_OC_MSG_SPEC,      /* ObjC: msg spec '-(void) func: (int) i;' */
    CT_OC_MSG_DECL,      /* ObjC: msg decl '-(void) func: (int) i { }' */
    CT_OC_RTYPE,         /* ObjC: marks closing parens of the return type after scope */
@@ -268,7 +271,6 @@ typedef enum
    CT_AS,
    CT_IN,               /* "foreach (T c in x)" or "foo(in char c)" or "in { ..." */
    CT_BRACED,           /* simple braced items: try {} */
-   CT_VERSION,          /* turns into CT_IF if not followed by '=' */
    CT_THIS,             /* may turn into CT_PBRACED if followed by a '(' */
    CT_BASE,             /* C# thingy */
    CT_DEFAULT,          /* may be changed into CT_CASE */
@@ -288,6 +290,9 @@ typedef enum
    /* Vala stuff */
    CT_CONSTRUCT,        /* braced "construct { }" or qualifier "(construct int x)" */
    CT_LAMBDA,
+
+   /* Java */
+   CT_ASSERT,           /* assert EXP1 [ : EXP2 ] ; */
 } c_token_t;
 
 #endif   /* TOKEN_ENUM_H_INCLUDED */

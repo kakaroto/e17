@@ -9,11 +9,13 @@
 #define C_PARSE_PROTOTYPES_H_INCLUDED
 
 #include "uncrustify_types.h"
+#include "chunk_list.h"
 
 #include <string>
+#include <deque>
 
 /*
- *  uncrustify.cpp
+ *  ecrustify.cpp
  */
 
 const char *get_token_name(c_token_t token);
@@ -28,7 +30,7 @@ const char *get_file_extension(int& idx);
  * detect.cpp
  */
 
-void detect_options(const char *data, int data_len);
+void detect_options();
 
 
 /*
@@ -38,13 +40,14 @@ void detect_options(const char *data, int data_len);
 void output_text(FILE *pfile);
 void output_parsed(FILE *pfile);
 void output_options(FILE *pfile);
+void add_long_preprocessor_conditional_block_comment(void);
 
 
 /*
  *  options.cpp
  */
 
-void unc_begin_group(uncrustify_groups id, const char *short_desc, const char *long_desc = NULL);
+void unc_begin_group(ecrustify_groups id, const char *short_desc, const char *long_desc = NULL);
 void register_options(void);
 void set_option_defaults(void);
 int load_option_file(const char *filename);
@@ -54,13 +57,13 @@ const group_map_value *get_group_name(int ug);
 const option_map_value *get_option_name(int uo);
 void print_options(FILE *pfile, bool verbose);
 
-std::string argtype_to_string(argtype_e argtype);
-std::string bool_to_string(bool val);
-std::string argval_to_string(argval_t argval);
-std::string number_to_string(int number);
-std::string lineends_to_string(lineends_e linends);
-std::string tokenpos_to_string(tokenpos_e tokenpos);
-std::string op_val_to_string(argtype_e argtype, op_val_t op_val);
+string argtype_to_string(argtype_e argtype);
+string bool_to_string(bool val);
+string argval_to_string(argval_t argval);
+string number_to_string(int number);
+string lineends_to_string(lineends_e linends);
+string tokenpos_to_string(tokenpos_e tokenpos);
+string op_val_to_string(argtype_e argtype, op_val_t op_val);
 
 /*
  *  indent.cpp
@@ -95,7 +98,7 @@ void quick_align_again(void);
 
 void do_braces(void);
 void add_long_closebrace_comment(void);
-chunk_t *insert_comment_after(chunk_t *ref, c_token_t cmt_type, int cmt_len, const char *cmt_text);
+chunk_t *insert_comment_after(chunk_t *ref, c_token_t cmt_type, const unc_text& cmt_text);
 
 
 /*
@@ -119,7 +122,7 @@ void do_parens(void);
 void space_text(void);
 void space_text_balance_nested_parens(void);
 int space_col_align(chunk_t *first, chunk_t *second);
-bool space_needed(chunk_t *first, chunk_t *second);
+int space_needed(chunk_t *first, chunk_t *second);
 void space_add_after(chunk_t *pc, int count);
 
 
@@ -131,6 +134,8 @@ void fix_symbols(void);
 void combine_labels(void);
 void mark_comments(void);
 void make_type(chunk_t *pc);
+
+void flag_series(chunk_t *start, chunk_t *end, UINT64 flags, chunk_nav_t nav = CNAV_ALL);
 
 chunk_t *skip_template_next(chunk_t *ang_open);
 chunk_t *skip_template_prev(chunk_t *ang_close);
@@ -179,7 +184,7 @@ chunk_t *newline_add_between2(chunk_t *start, chunk_t *end,
  *  tokenize.cpp
  */
 
-void tokenize(const char *data, int data_len, chunk_t *ref);
+void tokenize(const deque<int>& data, chunk_t *ref);
 
 
 /*
@@ -201,10 +206,10 @@ void brace_cleanup(void);
  */
 
 int load_keyword_file(const char *filename);
-const chunk_tag_t *find_keyword(const char *word, int len);
-void add_keyword(const char *tag, c_token_t type, int lang_flags);
+c_token_t find_keyword_type(const char *word, int len);
+void add_keyword(const char *tag, c_token_t type);
 void output_types(FILE *pfile);
-const chunk_tag_t *get_custom_keyword_idx(int& idx);
+void print_keywords(FILE *pfile);
 void clear_keyword_file(void);
 pattern_class get_token_pattern_class(c_token_t tok);
 bool keywords_are_sorted(void);
@@ -215,12 +220,10 @@ bool keywords_are_sorted(void);
  */
 
 int load_define_file(const char *filename);
-const define_tag_t *find_define(const char *word, int len);
 void add_define(const char *tag, const char *value);
-const define_tag_t *get_define_idx(int& idx);
 void output_defines(FILE *pfile);
+void print_defines(FILE *pfile);
 void clear_defines(void);
-void add_long_preprocessor_conditional_block_comment(void);
 
 
 /*
@@ -262,6 +265,17 @@ chunk_t *pawn_add_vsemi_after(chunk_t *pc);
  * universalindentgui.cpp
  */
 void print_universal_indent_cfg(FILE *pfile);
+
+
+/*
+ * unicode.cpp
+ */
+void write_bom(FILE *pf, CharEncoding enc);
+void write_char(FILE *pf, int ch, CharEncoding enc);
+void write_string(FILE *pf, const deque<int>& text, CharEncoding enc);
+void write_string(FILE *pf, const char *ascii_text, CharEncoding enc);
+bool decode_unicode(const vector<UINT8>& in_data, deque<int>& out_data, CharEncoding& enc, bool& has_bom);
+void encode_utf8(int ch, vector<UINT8>& res);
 
 
 /*
@@ -312,6 +326,10 @@ int next_tab_column(int col)
 static_inline
 int align_tab_column(int col)
 {
+   if (col <= 0)
+   {
+      col = 1;
+   }
    if ((col % cpd.settings[UO_output_tab_size].n) != 1)
    {
       col = next_tab_column(col);

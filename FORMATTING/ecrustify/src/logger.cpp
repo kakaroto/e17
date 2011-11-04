@@ -19,6 +19,10 @@
 /** Private log structure */
 struct log_buf
 {
+   log_buf() : log_file(0), sev(0), in_log(0), buf_len(0), show_hdr(false)
+   {
+   }
+
    FILE       *log_file;
    log_sev_t  sev;
    int        in_log;
@@ -38,9 +42,8 @@ static struct log_buf g_log;
  */
 void log_init(FILE *log_file)
 {
-   memset(&g_log, 0, sizeof(g_log));
-
    /* set the top 3 severities */
+   logmask_set_all(g_log.mask, false);
    log_set_sev(0, true);
    log_set_sev(1, true);
    log_set_sev(2, true);
@@ -68,7 +71,7 @@ void log_show_sev(bool show)
  */
 bool log_sev_on(log_sev_t sev)
 {
-   return(logmask_test(&g_log.mask, sev));
+   return(logmask_test(g_log.mask, sev));
 }
 
 
@@ -80,7 +83,7 @@ bool log_sev_on(log_sev_t sev)
  */
 void log_set_sev(log_sev_t sev, bool value)
 {
-   logmask_set_sev(&g_log.mask, sev, value);
+   logmask_set_sev(g_log.mask, sev, value);
 }
 
 
@@ -89,12 +92,9 @@ void log_set_sev(log_sev_t sev, bool value)
  *
  * @param mask The mask to copy
  */
-void log_set_mask(const log_mask_t *mask)
+void log_set_mask(const log_mask_t& mask)
 {
-   if (mask != NULL)
-   {
-      memcpy(g_log.mask.bits, mask->bits, sizeof(g_log.mask.bits));
-   }
+   g_log.mask = mask;
 }
 
 
@@ -103,12 +103,9 @@ void log_set_mask(const log_mask_t *mask)
  *
  * @param mask Where to copy the mask
  */
-void log_get_mask(log_mask_t *mask)
+void log_get_mask(log_mask_t& mask)
 {
-   if (mask != NULL)
-   {
-      memcpy(mask->bits, g_log.mask.bits, sizeof(g_log.mask.bits));
-   }
+   mask = g_log.mask;
 }
 
 
@@ -119,8 +116,6 @@ void log_get_mask(log_mask_t *mask)
  */
 static void log_flush(bool force_nl)
 {
-   int dummy;  /* get the compiler to shut up */
-
    if (g_log.buf_len > 0)
    {
       if (force_nl && (g_log.buf[g_log.buf_len - 1] != '\n'))
@@ -128,7 +123,10 @@ static void log_flush(bool force_nl)
          g_log.buf[g_log.buf_len++] = '\n';
          g_log.buf[g_log.buf_len]   = 0;
       }
-      dummy = fwrite(g_log.buf, 1, g_log.buf_len, g_log.log_file);
+      if (fwrite(g_log.buf, g_log.buf_len, 1,g_log .log_file) != 1)
+      {
+         /* maybe we should log something to complain... =) */
+      }
 
       g_log.buf_len = 0;
    }

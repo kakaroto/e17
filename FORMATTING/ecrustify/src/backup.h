@@ -8,11 +8,11 @@
  *
  * 2. Call backup_copy_file() to create a backup of the input, if needed
  *
- * 3. Do the uncrustify magic and write the output file
+ * 3. Do the ecrustify magic and write the output file
  *
  * 4. Call backup_create_md5_file()
  *
- * This will let you run uncrustify multiple times over the same file without
+ * This will let you run ecrustify multiple times over the same file without
  * losing the original file.  If you edit the file, then a new backup is made.
  *
  * @author  Ben Gardner
@@ -38,7 +38,7 @@
  * @param file_len   The file length
  * @return           SUCCESS or FAILURE
  */
-int backup_copy_file(const char *filename, const char *file_data, int file_len);
+int backup_copy_file(const char *filename, const vector<UINT8>& data);
 
 
 /**
@@ -46,7 +46,7 @@ int backup_copy_file(const char *filename, const char *file_data, int file_len);
  * FILENAME+UNC_BACKUP_MD5_SUFFIX.*
  * This should be called after the file was written to disk.
  * We really don't care if it fails, as the MD5 just prevents us from backing
- * up a file that uncrustify created.
+ * up a file that ecrustify created.
  *
  * @param filename   The file that was written (full path)
  */

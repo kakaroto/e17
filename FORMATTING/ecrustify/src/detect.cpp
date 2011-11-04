@@ -48,7 +48,7 @@ void sp_votes::vote(chunk_t *first, chunk_t *second)
       return;
    }
 
-   int col_dif = second->column - (first->column + first->len);
+   int col_dif = second->column - (first->column + first->len());
    if (col_dif == 0)
    {
       m_remove++;
@@ -480,7 +480,7 @@ static void detect_space_options()
 /**
  * Call all the detect_xxxx() functions
  */
-void detect_options(const char *data, int data_len)
+void detect_options()
 {
    detect_space_options();
 }

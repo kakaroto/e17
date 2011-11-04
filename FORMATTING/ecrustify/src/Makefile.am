@@ -10,7 +10,7 @@ ecrustify_SOURCES = uncrustify.cpp chunk_list.cpp indent.cpp align.cpp combine.c
 		logmask.cpp logger.cpp ChunkStack.cpp braces.cpp brace_cleanup.cpp \
 		align_stack.cpp defines.cpp width.cpp lang_pawn.cpp md5.cpp \
 		backup.cpp parens.cpp universalindentgui.cpp semicolons.cpp \
-		sorting.cpp detect.cpp token_names.h
+		sorting.cpp detect.cpp unc_text.cpp unicode.cpp token_names.h
 
 ecrustify_CPPFLAGS = -I$(top_builddir)
 

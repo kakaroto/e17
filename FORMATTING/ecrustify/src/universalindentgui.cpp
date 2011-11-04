@@ -35,7 +35,7 @@ void print_universal_indent_cfg(FILE *pfile)
 
    fprintf(pfile,
            "cfgFileParameterEnding=cr\n"
-           "configFilename=uncrustify.cfg\n");
+           "configFilename=ecrustify.cfg\n");
 
 
    /* Add all the recognized file extensions */
@@ -51,7 +51,7 @@ void print_universal_indent_cfg(FILE *pfile)
 
    /* Add the rest of the constant file header */
    fprintf(pfile,
-           "indenterFileName=uncrustify\n"
+           "indenterFileName=ecrustify\n"
            "indenterName=Uncrustify (C, C++, C#, ObjectiveC, D, Java, Pawn, VALA)\n"
            "inputFileName=indentinput\n"
            "inputFileParameter=\"-f \"\n"
@@ -64,7 +64,7 @@ void print_universal_indent_cfg(FILE *pfile)
            "stringparaminquotes=false\n"
            "useCfgFileParameter=\"-c \"\n"
            "version=%s\n",
-           UNCRUSTIFY_VERSION);
+           ECRUSTIFY_VERSION);
 
    /* Now add each option */
    for (idx = 0; idx < UG_group_count; idx++)
@@ -230,8 +230,10 @@ void print_universal_indent_cfg(FILE *pfile)
                fprintf(pfile, "Choices=\"%s=ignore|%s=lead|%s=lead_break|%s=lead_force|%s=trail|%s=trail_break|%s=trail_force\"\n",
                        option->name, option->name, option->name, option->name,
                        option->name, option->name, option->name);
-               fprintf(pfile, "ChoicesReadable=\"Ignore %s|Lead %s|Trail %s\"\n",
-                       optionNameReadable, optionNameReadable, optionNameReadable);
+               fprintf(pfile, "ChoicesReadable=\"Ignore %s|Lead %s|Lead Break %s|Lead Force %s|Trail %s|Trail Break %s|Trail Force %s\"\n",
+                       optionNameReadable, optionNameReadable, optionNameReadable,
+                       optionNameReadable, optionNameReadable, optionNameReadable,
+                       optionNameReadable);
                fprintf(pfile, "ValueDefault=%d\n", cpd.settings[option->id].n);
                break;
 
@@ -239,7 +241,7 @@ void print_universal_indent_cfg(FILE *pfile)
                {
                   fprintf(pfile, "CallName=%s=\n", option->name);
                   fprintf(pfile, "EditorType=string\n");
-                  std::string val_string;
+                  string val_string;
                   const char  *val_str;
                   val_string = op_val_to_string(option->type, cpd.settings[option->id]);
                   val_str    = val_string.c_str();

@@ -225,7 +225,7 @@ void AlignStack::Add(chunk_t *start, int seqnum)
       gap     = 0;
       if (ref != ali)
       {
-         gap = ali->column - (ref->column + ref->len);
+         gap = ali->column - (ref->column + ref->len());
       }
       tmp = ali;
       if (chunk_is_str(tmp, "(", 1) && (tmp->parent_type == CT_TYPEDEF))
@@ -236,7 +236,7 @@ void AlignStack::Add(chunk_t *start, int seqnum)
           (chunk_is_addr(tmp) && (m_amp_style == SS_DANGLE)))
       {
          col_adj = start->column - ali->column;
-         gap     = start->column - (ref->column + ref->len);
+         gap     = start->column - (ref->column + ref->len());
       }
 
       /* See if this pushes out the max_col */
@@ -246,12 +246,12 @@ void AlignStack::Add(chunk_t *start, int seqnum)
          endcol += m_gap - gap;
       }
 
-      // LOG_FMT(LSYS, "[%p] line %d pc='%.*s' [%s] col:%d ali='%.*s' [%s] col:%d ref='%.*s' [%s] col:%d  col_adj=%d  endcol=%d, ss=%d as=%d, gap=%d\n",
+      // LOG_FMT(LSYS, "[%p] line %d pc='%s' [%s] col:%d ali='%s' [%s] col:%d ref='%s' [%s] col:%d  col_adj=%d  endcol=%d, ss=%d as=%d, gap=%d\n",
       //         this,
       //         start->orig_line,
-      //         start->len, start->str, get_token_name(start->type), start->column,
-      //         ali->len, ali->str, get_token_name(ali->type), ali->column,
-      //         ref->len, ref->str, get_token_name(ref->type), ref->column,
+      //         start->str.c_str(), get_token_name(start->type), start->column,
+      //         ali->str.c_str(), get_token_name(ali->type), ali->column,
+      //         ref->str.c_str(), get_token_name(ref->type), ref->column,
       //         col_adj, endcol, m_star_style, m_amp_style, gap);
 
       ali->align.col_adj = col_adj;
@@ -260,9 +260,9 @@ void AlignStack::Add(chunk_t *start, int seqnum)
       m_aligned.Push(ali, seqnum);
       m_last_added = 1;
 
-      LOG_FMT(LAS, "Add-[%.*s]: line %d, col %d, adj %d : ref=[%.*s] endcol=%d\n",
-              ali->len, ali->str, ali->orig_line, ali->column, ali->align.col_adj,
-              ref->len, ref->str, endcol);
+      LOG_FMT(LAS, "Add-[%s]: line %d, col %d, adj %d : ref=[%s] endcol=%d\n",
+              ali->str.c_str(), ali->orig_line, ali->column, ali->align.col_adj,
+              ref->str.c_str(), endcol);
 
       if (m_min_col > endcol)
       {
@@ -353,7 +353,7 @@ void AlignStack::Flush()
       int gap     = 0;
       if (pc != pc->align.ref)
       {
-         gap = pc->column - (pc->align.ref->column + pc->align.ref->len);
+         gap = pc->column - (pc->align.ref->column + pc->align.ref->len());
       }
       chunk_t *tmp = pc;
       if (chunk_is_str(tmp, "(", 1) && (tmp->parent_type == CT_TYPEDEF))
@@ -364,18 +364,18 @@ void AlignStack::Flush()
           (chunk_is_addr(tmp) && (m_amp_style == SS_DANGLE)))
       {
          col_adj = pc->align.start->column - pc->column;
-         gap     = pc->align.start->column - (pc->align.ref->column + pc->align.ref->len);
+         gap     = pc->align.start->column - (pc->align.ref->column + pc->align.ref->len());
       }
       if (m_right_align)
       {
          /* Adjust the width for signed numbers */
-         int start_len = pc->align.start->len;
+         int start_len = pc->align.start->len();
          if (pc->align.start->type == CT_NEG)
          {
             tmp = chunk_get_next(pc->align.start);
             if ((tmp != NULL) && (tmp->type == CT_NUMBER))
             {
-               start_len += tmp->len;
+               start_len += tmp->len();
             }
          }
          col_adj += start_len;
@@ -397,12 +397,7 @@ void AlignStack::Flush()
 
    if (cpd.settings[UO_align_on_tabstop].b && (m_aligned.Len() > 1))
    {
-      int rem = (m_max_col - 1) % cpd.settings[UO_output_tab_size].n;
-      if (rem != 0)
-      {
-         LOG_FMT(LAS, "%s: align_on_tabstop col=%d rem=%d", __func__, m_max_col, rem);
-         m_max_col += cpd.settings[UO_output_tab_size].n - rem;
-      }
+      m_max_col = align_tab_column(m_max_col);
    }
 
    for (idx = 0; idx < m_aligned.Len(); idx++)
@@ -416,14 +411,14 @@ void AlignStack::Flush()
          pc->align.right_align = m_right_align;
          pc->align.amp_style   = (int)m_amp_style;
          pc->align.star_style  = (int)m_star_style;
-         pc->align.gap         = m_gap;
       }
+      pc->align.gap  = m_gap;
       pc->align.next = m_aligned.GetChunk(idx + 1);
 
       /* Indent the token, taking col_adj into account */
       tmp_col = m_max_col - pc->align.col_adj;
-      LOG_FMT(LAS, "%s: line %d: '%.*s' to col %d (adj=%d)\n", __func__,
-              pc->orig_line, pc->len, pc->str, tmp_col, pc->align.col_adj);
+      LOG_FMT(LAS, "%s: line %d: '%s' to col %d (adj=%d)\n", __func__,
+              pc->orig_line, pc->str.c_str(), tmp_col, pc->align.col_adj);
       align_to_column(pc, tmp_col);
    }
 
