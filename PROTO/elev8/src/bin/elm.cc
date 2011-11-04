@@ -31,7 +31,6 @@ protected:
    Evas_Object *eo;
    Persistent<ObjectTemplate> the_template;
    Persistent<Object> the_object;
-   Persistent<Value> the_icon;
 
    /*
     * Callbacks
@@ -868,19 +867,6 @@ public:
         obj->Set(String::New("h"), Number::New(h));
         return obj;
      }
-
-   virtual void icon_set(Handle<Value> value)
-     {
-        the_icon.Dispose();
-        CEvasObject *icon = realize_one(this, value);
-        elm_object_content_part_set(eo, "icon", icon->get());
-        the_icon = Persistent<Value>::New(icon->get_object());
-     }
-
-   virtual Handle<Value> icon_get() const
-     {
-        return the_icon;
-     }
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -1043,6 +1029,7 @@ CElmBasicWindow *main_win;
 
 class CElmButton : public CEvasObject {
 protected:
+   Persistent<Value> the_icon;
    CPropHandler<CElmButton> prop_handler;
 public:
    CElmButton(CEvasObject *parent, Local<Object> obj) :
@@ -1055,6 +1042,20 @@ public:
 
    virtual ~CElmButton()
      {
+        the_icon.Dispose();
+     }
+
+   virtual Handle<Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(Handle<Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_object_content_set(eo, icon->get());
+        the_icon = Persistent<Value>::New(icon->get_object());
      }
 };
 
@@ -1165,6 +1166,7 @@ CEvasObject::CPropHandler<CElmBackground>::list[] = {
 class CElmRadio : public CEvasObject {
 protected:
    CPropHandler<CElmRadio> prop_handler;
+   Persistent<Value> the_icon;
    Persistent<Value> the_group;
 
 public:
@@ -1178,7 +1180,21 @@ public:
 
    virtual ~CElmRadio()
      {
+        the_icon.Dispose();
         the_group.Dispose();
+     }
+
+   virtual Handle<Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(Handle<Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_object_content_set(eo, icon->get());
+        the_icon = Persistent<Value>::New(icon->get_object());
      }
 
    virtual Handle<Value> group_get() const
@@ -1579,7 +1595,7 @@ public:
           fprintf(stderr, "scroller has no content\n");
         // FIXME: filter the object list copied in construct for more efficiency
         get_object()->Set(String::New("content"), content->get_object());
-        elm_scroller_content_set(eo, content->get());
+        elm_object_content_set(eo, content->get());
      }
 
     virtual void bounce_set(Handle<Value> val)
@@ -1670,6 +1686,7 @@ CEvasObject::CPropHandler<CElmScroller>::list[] = {
 
 class CElmSlider : public CEvasObject {
 protected:
+   Persistent<Value> the_icon;
    Persistent<Value> the_end_object;
    Persistent<Value> on_changed_val;
    CPropHandler<CElmSlider> prop_handler;
@@ -1685,6 +1702,7 @@ public:
 
    virtual ~CElmSlider()
      {
+        the_icon.Dispose();
         the_end_object.Dispose();
         on_changed_val.Dispose();
      }
@@ -1731,6 +1749,19 @@ public:
           }
      }
 
+   virtual Handle<Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(Handle<Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_object_content_set(eo, icon->get());
+        the_icon = Persistent<Value>::New(icon->get_object());
+     }
+
    virtual Handle<Value> end_get() const
      {
         return the_end_object;
@@ -1742,11 +1773,11 @@ public:
         CEvasObject *end_obj = realize_one(this, value);
         if (end_obj)
           {
-             elm_slider_end_set(eo, end_obj->get());
+             elm_object_content_part_set(eo, "elm.swallow.end", end_obj->get());
              the_end_object = Persistent<Value>::New(end_obj->get_object());
           }
         else
-             elm_slider_end_unset(eo);
+             elm_object_content_part_unset(eo, "elm.swallow.end");
      }
 
    virtual Handle<Value> value_get() const
@@ -2436,6 +2467,7 @@ CEvasObject::CPropHandler<CElmEntry>::list[] = {
 class CElmCheck : public CEvasObject {
 protected:
    CPropHandler<CElmCheck> prop_handler;
+   Persistent<Value> the_icon;
 
 public:
    CElmCheck(CEvasObject *parent, Local<Object> obj) :
@@ -2448,6 +2480,7 @@ public:
 
    virtual ~CElmCheck()
      {
+        the_icon.Dispose();
      }
 
    virtual void state_set(Handle<Value> value)
@@ -2459,6 +2492,19 @@ public:
    virtual Handle<Value> state_get() const
      {
         return Boolean::New(elm_check_state_get(eo));
+     }
+
+   virtual Handle<Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(Handle<Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_object_content_set(eo, icon->get());
+        the_icon = Persistent<Value>::New(icon->get_object());
      }
 };
 
@@ -2617,6 +2663,7 @@ CEvasObject::CPropHandler<CElmClock>::list[] = {
 class CElmProgressBar : public CEvasObject {
 protected:
    CPropHandler<CElmProgressBar> prop_handler;
+   Persistent<Value> the_icon;
 
    static Handle<Value> do_pulse(const Arguments& args)
      {
@@ -2639,11 +2686,25 @@ public:
 
    virtual ~CElmProgressBar()
      {
+        the_icon.Dispose();
      }
 
    virtual void pulse(bool on)
      {
         elm_progressbar_pulse(eo, on);
+     }
+
+   virtual Handle<Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(Handle<Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_object_content_set(eo, icon->get());
+        the_icon = Persistent<Value>::New(icon->get_object());
      }
 
    virtual Handle<Value> inverted_get() const
@@ -2973,13 +3034,13 @@ public:
        left = realize_one(this, obj->Get(String::New("content_left")));
        if (left)
          {
-            elm_panes_content_left_set(eo, left->get());
+            elm_object_content_part_set(eo, "elm.swallow.left", left->get());
          }
 
        right = realize_one(this, obj->Get(String::New("content_right")));
        if (right)
          {
-            elm_panes_content_right_set(eo, right->get());
+            elm_object_content_part_set(eo, "elm.swallow.right", right->get());
          }
     }
 
@@ -3034,7 +3095,7 @@ public:
        content = realize_one(this, obj->Get(String::New("content")));
        if ( content )
          {
-            elm_bubble_content_set(eo, content->get());
+            elm_object_content_set(eo, content->get());
          }
     }
 
@@ -4050,6 +4111,7 @@ protected:
 
    /* the on_changed function */
    Persistent<Value> on_changed_val;
+   Persistent<Value> the_icon;
 
 public:
    CElmToggle(CEvasObject *parent, Local<Object> obj) :
@@ -4133,6 +4195,19 @@ public:
           return String::New(offlabel);
         else
           return Null();
+     }
+
+   virtual Handle<Value> icon_get() const
+     {
+        return the_icon;
+     }
+
+   virtual void icon_set(Handle<Value> value)
+     {
+        the_icon.Dispose();
+        CEvasObject *icon = realize_one(this, value);
+        elm_object_content_set(eo, icon->get());
+        the_icon = Persistent<Value>::New(icon->get_object());
      }
 
     void state_set(Handle<Value> val)
