@@ -7,47 +7,44 @@
 #define E_MOD_PARSE_H
 
 #include <e.h>
-#include <libxml/xmlreader.h>
 
-typedef struct _e_xkb_model
+typedef struct _E_XKB_Model
 {
     const char *name;
     const char *description;
-    const char *vendor;
-} e_xkb_model;
+} E_XKB_Model;
 
-typedef struct _e_xkb_variant
+typedef struct _E_XKB_Variant
 {
     const char *name;
     const char *description;
-} e_xkb_variant;
+} E_XKB_Variant;
 
-typedef struct _e_xkb_layout
+typedef struct _E_XKB_Layout
 {
     const char *name;
     const char *description;
-    const char *short_descr;
 
     Eina_Bool used;
 
-    e_xkb_model   *model;
-    e_xkb_variant *variant;
+    E_XKB_Model   *model;
+    E_XKB_Variant *variant;
 
     Eina_List *variants;
-} e_xkb_layout;
+} E_XKB_Layout;
 
 void parse_rules(const char *fname);
 void clear_rules();
 
-int _layout_sort_cb         (const void *data1, const void *data2);
-int _model_sort_cb          (const void *data1, const void *data2);
-int _variant_sort_cb        (const void *data1, const void *data2);
-int _model_sort_byname_cb   (const void *data1, const void *data2);
-int _variant_sort_byname_cb (const void *data1, const void *data2);
-int _layout_sort_byname_cb  (const void *data1, const void *data2);
-int _model_sort_bylabel_cb  (const void *data1, const void *data2);
-int _variant_sort_bylabel_cb(const void *data1, const void *data2);
-int _layout_sort_bylabel_cb (const void *data1, const void *data2);
+int layout_sort_cb          (const void *data1, const void *data2);
+int model_sort_cb           (const void *data1, const void *data2);
+int variant_sort_cb         (const void *data1, const void *data2);
+int model_sort_by_name_cb   (const void *data1, const void *data2);
+int variant_sort_by_name_cb (const void *data1, const void *data2);
+int layout_sort_by_name_cb  (const void *data1, const void *data2);
+int model_sort_by_label_cb  (const void *data1, const void *data2);
+int variant_sort_by_label_cb(const void *data1, const void *data2);
+int layout_sort_by_label_cb (const void *data1, const void *data2);
 
 extern Eina_List *models;
 extern Eina_List *layouts;

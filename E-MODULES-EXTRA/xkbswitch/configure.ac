@@ -74,8 +74,6 @@ AC_CHECK_HEADERS(X11/extensions/XKBrules.h, ,
     #include <X11/XKBlib.h>
   ])
 
-PKG_CHECK_MODULES(XKBSWITCH, [libxml-2.0])
-
 AC_OUTPUT([
 Makefile
 src/Makefile

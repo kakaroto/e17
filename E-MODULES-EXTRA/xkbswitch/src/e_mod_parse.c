@@ -7,216 +7,130 @@
 
 #include "e_mod_parse.h"
 
-#define LOOP_TO(name, nt) \
-while (rv == 1) \
-{ \
-    rv = xmlTextReaderRead(rdr); \
-    if (xmlTextReaderNodeType(rdr) == nt) \
-    { \
-        node_retval nv = _parse_node(rdr); \
-        if (!strcmp(nv.n, name)) \
-        { \
-            rv = xmlTextReaderRead(rdr); \
-            break; \
-        } \
-    } \
-}
-
-#define NEXT_TO(name, catname) \
-while (rv == 1) \
-{ \
-    rv = xmlTextReaderRead(rdr); \
-    if (xmlTextReaderNodeType(rdr) == 1) \
-    { \
-        node_retval nv = _parse_node(rdr); \
-        if (!strcmp(nv.n, name)) break; \
-        if (!strcmp(nv.n, catname)) \
-        { \
-            m = 1; \
-            break; \
-        } \
-    } \
-}
-
-typedef struct _node_retval
-{
-    const char *n;
-    const char *v;
-} node_retval;
-
-node_retval _parse_node(xmlTextReaderPtr rdr);
-
 Eina_List *layouts = NULL;
 Eina_List *models  = NULL;
 
 void parse_rules(const char *fname)
 {
-    e_xkb_model *model = NULL;
-    e_xkb_layout *layout = NULL;
-    e_xkb_variant *variant = NULL;
+    E_XKB_Model *model = NULL;
+    E_XKB_Layout *layout = NULL;
+    E_XKB_Variant *variant = NULL;
 
-    xmlTextReaderPtr rdr;
-    int rv = 0, i = 0, m = 0;
-    char *tmp;
+    char buf[512];
 
-    rdr = xmlReaderForFile(fname, NULL, 0);
-    if (!rdr) return;
+    FILE *f = fopen(fname, "r");
+    if  (!f) return;
 
-    /* Get rid of useless beginning values */
-    rv = xmlTextReaderRead(rdr);
-    while (rv == 1)
+    /* move on to next line, the first one is useless */
+    fgets(buf, sizeof(buf), f);
+
+    /* read models here */
+    for (;;) if (fgets(buf, sizeof(buf), f))
     {
-        if (!strcmp(_parse_node(rdr).n, "modelList"))
-        {
-            /* When we're at modelList, skip the closing block */
-            rv = xmlTextReaderRead(rdr);
-            break;
-        }
-        rv = xmlTextReaderRead(rdr);
-    }
+        char *n = strchr(buf, '\n');
+        if   (n) *n = '\0';
 
-    /* Parse out models - we'll be at first 'model' */
-    rv = xmlTextReaderRead(rdr);
-    while (rv == 1 && !m)
-    {
-        model = E_NEW(e_xkb_model, 1);
+        /* means end of section */
+        if (!buf[0]) break;
 
-        /* This moves us at 'name' value */
-        LOOP_TO("name", 1)
-        /* Assign the name value */
-        model->name = _parse_node(rdr).v;
+        /* get rid of initial 2 spaces here */
+        char *p   = buf + 2;
+        char *tmp = strdup(p);
 
-        /* Move to 'description' */
-        LOOP_TO("description", 1)
-        /* Assign the description value */
-        model->description = _parse_node(rdr).v;
+        model = E_NEW(E_XKB_Model, 1);
+        model->name = eina_stringshare_add(strtok(tmp, " "));
 
-        /* Now the vendor */
-        LOOP_TO("vendor", 1)
-        model->vendor = _parse_node(rdr).v;
+        free(tmp);
 
-        /* Append the model into eina array */
+        p += strlen(model->name);
+        while (p[0] == ' ') ++p;
+
+        model->description = eina_stringshare_add(p);
+
         models = eina_list_append(models, model);
+    } else break;
 
-        /* Move to next 'model' */
-        NEXT_TO("model", "layout")
-    }
+    /* move on again */
+    fgets(buf, sizeof(buf), f);
 
-    /* Sort models */
-    models = eina_list_sort(models, eina_list_count(models), _model_sort_cb);
-
-    /* We're at first 'layout' here now */
-    m = 0;
-    while (rv == 1 && !m)
+    /* read layouts here */
+    for (;;) if (fgets(buf, sizeof(buf), f))
     {
-        layout = E_NEW(e_xkb_layout, 1);
+        char *n = strchr(buf, '\n');
+        if   (n) *n = '\0';
 
-        LOOP_TO("name", 1)
-        layout->name = _parse_node(rdr).v;
+        if (!buf[0]) break;
 
-        LOOP_TO("shortDescription", 1)
-        tmp = strdup(_parse_node(rdr).v);
-        eina_str_toupper(&tmp);
-        layout->short_descr = eina_stringshare_add(tmp);
-        E_FREE(tmp);
+        char *p   = buf + 2;
+        char *tmp = strdup(p);
 
-        LOOP_TO("description", 1)
-        layout->description = _parse_node(rdr).v;
+        layout = E_NEW(E_XKB_Layout, 1);
+        layout->name = eina_stringshare_add(strtok(tmp, " "));
 
-        /* We got name, short description and description.
-         * Now let's go on variants, which are more tricky.
-         */
+        free(tmp);
 
-        /* Append 'basic' variant for every layout */
-        variant = E_NEW(e_xkb_variant, 1);
+        p += strlen(layout->name);
+        while (p[0] == ' ') ++p;
+
+        variant = E_NEW(E_XKB_Variant, 1);
         variant->name = "basic";
         variant->description = "Default layout variant";
+
+        layout->description = eina_stringshare_add(p);
+        layout->used        = EINA_FALSE;
+        layout->model       = NULL;
+        layout->variant     = NULL;
+        layout->variants    = eina_list_append(layout->variants, variant);
+
+        layouts = eina_list_append(layouts, layout);
+    } else break;
+
+    fgets(buf, sizeof(buf), f);
+
+    /* read variants here */
+    for (;;) if (fgets(buf, sizeof(buf), f))
+    {
+        char *n = strchr(buf, '\n');
+        if   (n) *n = '\0';
+
+        if (!buf[0]) break;
+
+
+        char *p   = buf + 2;
+        char *tmp = strdup(p);
+
+        variant = E_NEW(E_XKB_Variant, 1);
+        variant->name = eina_stringshare_add(strtok(tmp, " "));
+
+        char   *tok = strtok(NULL, " ");
+        *strchr(tok, ':') = '\0';
+
+        layout =
+            eina_list_search_unsorted(layouts, layout_sort_by_name_cb, tok);
         layout->variants = eina_list_append(layout->variants, variant);
 
-        /* Loop at variantList */
-        LOOP_TO("variantList", 1)
+        p += strlen(variant->name);
+        while (p[0] == ' ') ++p;
+        p += strlen(tok);
+        p += 2;
 
-        /* Move forward; if we find layout there, means no variants.
-         * But if we find variant there, we can add them.
-         */
-        rv = xmlTextReaderRead(rdr);
+        free(tmp);
 
-        /* Parse and find out. */
-        node_retval nv = _parse_node(rdr);
-        if (!strcmp(nv.n, "variant"))
-        {
-            variant = E_NEW(e_xkb_variant, 1);
-
-            /* We got some variants (at least one), append the first one */
-            LOOP_TO("name", 1)
-            variant->name = _parse_node(rdr).v;
-
-            LOOP_TO("description", 1)
-            variant->description = _parse_node(rdr).v;
-
-            layout->variants = eina_list_append(layout->variants, variant);
-
-            /* Append more variants if present */
-            while (rv == 1)
-            {
-                /* Go to end of current variant */
-                LOOP_TO("variant", 15)
-
-                /* See if variant is after that. */
-                rv = xmlTextReaderRead(rdr);
-                nv = _parse_node(rdr);
-
-                if (!strcmp(nv.n, "variant"))
-                {
-                    variant = E_NEW(e_xkb_variant, 1);
-
-                    LOOP_TO("name", 1)
-                    variant->name = _parse_node(rdr).v;
-
-                    LOOP_TO("description", 1)
-                    variant->description = _parse_node(rdr).v;
-
-                    layout->variants = eina_list_append(layout->variants, variant);
-                }
-                else
-                {
-                        /* Sort variants */
-                        layout->variants =
-                            eina_list_sort(
-                                layout->variants,
-                                eina_list_count(layout->variants),
-                                _variant_sort_cb
-                            );
-                        break;
-                }
-            }
-        }
-
-        /* default values */
-        layout->used    = EINA_FALSE;
-        layout->model   = NULL;
-        layout->variant = NULL;
-
-        /* No matter if we found variants or not, add and move forward. */
-        layouts = eina_list_append(layouts, layout);
-
-        /* Move to next 'layout' */
-        NEXT_TO("layout", "optionList")
-    }
+        variant->description = eina_stringshare_add(p);
+    } else break;
 
     /* Sort layouts */
-    layouts = eina_list_sort(layouts, eina_list_count(layouts), _layout_sort_cb);
-
-    xmlFreeTextReader(rdr);
+    layouts =
+        eina_list_sort(layouts, eina_list_count(layouts), layout_sort_cb);
 }
 
 void clear_rules()
 {
-    e_xkb_variant *v = NULL;
-    e_xkb_layout *la = NULL;
-    e_xkb_model *m = NULL;
-    Eina_List *ll = NULL;
-    Eina_List *l = NULL;
+    E_XKB_Variant *v  = NULL;
+    E_XKB_Layout  *la = NULL;
+    E_XKB_Model   *m  = NULL;
+    Eina_List     *ll = NULL;
+    Eina_List     *l  = NULL;
 
     EINA_LIST_FOREACH(layouts, l, la)
     {
@@ -232,24 +146,9 @@ void clear_rules()
     eina_list_free(models);
 }
 
-node_retval _parse_node(xmlTextReaderPtr rdr)
+int layout_sort_cb(const void *data1, const void *data2)
 {
-    const xmlChar *n, *v;
-
-    n = xmlTextReaderConstName(rdr);
-    if (!n) n = BAD_CAST"--";
-
-    v = xmlTextReaderConstValue(rdr);
-
-    return (node_retval){
-        eina_stringshare_add(n),
-        eina_stringshare_add(v)
-    };
-}
-
-int _layout_sort_cb(const void *data1, const void *data2)
-{
-    const e_xkb_layout *l1 = NULL, *l2 = NULL;
+    const E_XKB_Layout *l1 = NULL, *l2 = NULL;
 
     if (!(l1 = data1)) return 1;
     if (!l1->name) return 1;
@@ -258,9 +157,9 @@ int _layout_sort_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2->name);
 }
 
-int _model_sort_cb(const void *data1, const void *data2)
+int model_sort_cb(const void *data1, const void *data2)
 {
-    const e_xkb_model *l1 = NULL, *l2 = NULL;
+    const E_XKB_Model *l1 = NULL, *l2 = NULL;
 
     if (!(l1 = data1)) return 1;
     if (!l1->name) return 1;
@@ -269,9 +168,9 @@ int _model_sort_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2->name);
 }
 
-int _variant_sort_cb(const void *data1, const void *data2)
+int variant_sort_cb(const void *data1, const void *data2)
 {
-    const e_xkb_variant *l1 = NULL, *l2 = NULL;
+    const E_XKB_Variant *l1 = NULL, *l2 = NULL;
 
     if (!(l1 = data1)) return 1;
     if (!l1->name) return 1;
@@ -280,9 +179,9 @@ int _variant_sort_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2->name);
 }
 
-int _model_sort_byname_cb(const void *data1, const void *data2)
+int model_sort_by_name_cb(const void *data1, const void *data2)
 {
-    const e_xkb_model *l1 = NULL;
+    const E_XKB_Model *l1 = NULL;
     const char *l2 = NULL;
 
     if (!(l1 = data1)) return 1;
@@ -291,9 +190,9 @@ int _model_sort_byname_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2);
 }
 
-int _variant_sort_byname_cb(const void *data1, const void *data2)
+int variant_sort_by_name_cb(const void *data1, const void *data2)
 {
-    const e_xkb_variant *l1 = NULL;
+    const E_XKB_Variant *l1 = NULL;
     const char *l2 = NULL;
 
     if (!(l1 = data1)) return 1;
@@ -302,9 +201,9 @@ int _variant_sort_byname_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2);
 }
 
-int _layout_sort_byname_cb(const void *data1, const void *data2)
+int layout_sort_by_name_cb(const void *data1, const void *data2)
 {
-    const e_xkb_layout *l1 = NULL;
+    const E_XKB_Layout *l1 = NULL;
     const char *l2 = NULL;
 
     if (!(l1 = data1)) return 1;
@@ -313,24 +212,21 @@ int _layout_sort_byname_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2);
 }
 
-int _model_sort_bylabel_cb(const void *data1, const void *data2)
+int model_sort_by_label_cb(const void *data1, const void *data2)
 {
-    const e_xkb_model *l1 = NULL;
+    const E_XKB_Model *l1 = NULL;
     const char *l2 = NULL;
-    char buf[128];
 
     if (!(l1 = data1)) return 1;
     if (!l1->name) return 1;
     if (!(l2 = data2)) return -1;
 
-    /* XXX This is nasty, see below */
-    snprintf(buf, sizeof(buf), "%s (%s)", l1->description, l1->vendor);
-    return strcmp(buf, l2);
+    return strcmp(l1->description, l2);
 }
 
-int _variant_sort_bylabel_cb(const void *data1, const void *data2)
+int variant_sort_by_label_cb(const void *data1, const void *data2)
 {
-    const e_xkb_variant *l1 = NULL;
+    const E_XKB_Variant *l1 = NULL;
     const char *l2 = NULL;
     char buf[128];
 
@@ -343,9 +239,9 @@ int _variant_sort_bylabel_cb(const void *data1, const void *data2)
     return strcmp(buf, l2);
 }
 
-int _layout_sort_bylabel_cb(const void *data1, const void *data2)
+int layout_sort_by_label_cb(const void *data1, const void *data2)
 {
-    const e_xkb_layout *l1 = NULL;
+    const E_XKB_Layout *l1 = NULL;
     const char *l2 = NULL;
     char buf[128];
 
@@ -357,6 +253,6 @@ int _layout_sort_bylabel_cb(const void *data1, const void *data2)
      * over the whole list. User-defined property for ilist item would
      * solve, but E widget system lacks this currently.
      */
-    snprintf(buf, sizeof(buf), "%s (%s)", l1->description, l1->short_descr);
+    snprintf(buf, sizeof(buf), "%s (%s)", l1->description, l1->name);
     return strcmp(buf, l2);
 }
