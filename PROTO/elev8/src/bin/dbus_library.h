@@ -15,6 +15,8 @@ class DBus {
    public:
       E_DBus_Connection *conn;
       v8::Persistent<v8::Object> obj;
+      v8::Persistent<v8::Value> introspectResult;
+
 };
 
 #endif

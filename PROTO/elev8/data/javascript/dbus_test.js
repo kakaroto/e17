@@ -5,7 +5,7 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var my_window = new elm.window({
 	type : "main",
-	label : "Menu Demo",
+	label : "D-Feet Demo",
 	width : 320,
 	height : 480,
 	align : FILL_BOTH,
@@ -21,13 +21,34 @@ var my_window = new elm.window({
 			weight : EXPAND_BOTH,
 			resize : true,
 			elements : {
-                icon_button : {
+				the_entry : {
+					type : "entry",
+					weight : EXPAND_BOTH,
+					align : FILL_BOTH,
+					line_wrap : 3,
+					editable : false,
+				},
+				the_bus : {
+					type : "entry",
+					text : "org.freedesktop.DBus",
+					weight : EXPAND_BOTH,
+					align : FILL_BOTH,
+					line_wrap : 3,
+                    singleline : 1,
+					editable : true,
+				},
+                the_button : {
                     type : "button",
-                    label : "Icon sized to button",
+                    label : "Get ConnMan State",
                     weight : { x : -1.0, y : -1.0 },
                     on_clicked : function() {
                         print("Button Clicked");
-                        var test = new dbus("Session");
+                        var test = new dbus("System");
+                        test.introspect("net.connman",
+                                        "/org/freedesktop/NetworkManager",
+                                        "org.freedesktop.NetworkManager",
+                                        "state"); 
+
                     },
                 },
             }
