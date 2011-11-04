@@ -435,6 +435,13 @@ EAPI void e_dbus_callback_free(E_DBus_Callback *callback);
    EAPI void *e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg, DBusError *err);
    EAPI void e_dbus_callback_return_free(E_DBus_Callback *callback, void *data);
 
+/**
+ * @brief Retrieve the DBusConnection pointer.
+ * @param conn pointer to the opaque E_DBus_Connection struct
+ * @since 1.1
+ */
+EAPI DBusConnection *e_dbus_connection_dbus_connection_get(E_DBus_Connection *conn);
+
 #ifdef __cplusplus
 }
 #endif

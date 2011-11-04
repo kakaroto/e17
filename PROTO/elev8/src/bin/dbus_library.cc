@@ -24,12 +24,14 @@ Handle<Value> dbus_msg_introspect(const Arguments &args)
         String::Utf8Value method(args[3]->ToString());
         fprintf(stderr, "%s-%s-%s-%s\n", *service, *path, *interface, *method);
 
-        DBusConnection *conn = e_dbus_conn_object_get(dbus->conn);
+        DBusConnection *conn;
         DBusError error;
         DBusMessage *message;
         DBusMessage *reply;
         int reply_timeout;
         int value;
+
+        conn = e_dbus_connection_dbus_connection_get(dbus->conn);
 
         dbus_error_init (&error);
 

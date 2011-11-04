@@ -28,3 +28,7 @@
 2011-11-03  Mike Blumenkrantz
 
         * Added more methods for manipulating notification hints
+
+2011-11-04 Sanjeev BA <iamsanjeev@gmail.com>
+
+        * Exported e_dbus_connection_dbus_connection_get()
