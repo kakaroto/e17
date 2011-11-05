@@ -53,5 +53,6 @@ libelementaryxx_la_SOURCES = \
 	localUtil.cpp \
 	localUtil.h \
 	Gen.cpp \
-	GenItem.cpp
+	GenItem.cpp \
+	GenListItem.cpp
 

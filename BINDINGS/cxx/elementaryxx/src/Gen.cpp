@@ -13,6 +13,10 @@ using namespace std;
 
 namespace Elmxx {
 
+Gen::Gen () {}
+
+Gen::~Gen () {}  
+  
 void Gen::clear ()
 {
   elm_gen_clear (o);

@@ -14,7 +14,6 @@ namespace Elmxx {
 class Gen;
 class GenDataModel;
 
-// TODO: currently this has many genlist functions inside. I'll fix this correct after the C API is finished!
 class GenItem
 {
 public:
@@ -23,37 +22,14 @@ public:
 
   virtual ~GenItem ();
   
-  void clearSubItems ();
   void setSelected (bool selected);
   bool getSelected () const;
-  void setExpanded (bool expanded);
-  bool getExpanded () const;
-  void setDisabled (bool disabled);
-  bool getDisabled () const;
-  void setDisplayOnly (bool displayOnly);
-  bool getDisplayOnly () const;
-  void show ();
-  void bringIn ();
-  void showTop ();
-  void bringInTop ();
-  void showMiddle ();
-  void bringInMiddle ();
-  void update ();
-  
-  const Evasxx::Object *getEvasObject ();
 
-  static GenItem *wrap (Elm_Genlist_Item &item, GenDataModel &model);
-
-  static GenItem *objectLink (const Elm_Genlist_Item *item);
-  
-private:
-  GenItem (Elm_Genlist_Item *item);
-
-  const void *getData ();
-  void setData (const void *data);
-  
+protected:
+  GenItem ();
   Elm_Gen_Item *mItem;
   GenDataModel *mDataModel;
+
 };
 
 } // end namespace Elmxx

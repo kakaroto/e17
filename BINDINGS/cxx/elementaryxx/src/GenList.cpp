@@ -4,6 +4,7 @@
 
 /* Project */
 #include "../include/elementaryxx/GenList.h"
+#include "../include/elementaryxx/GenListItem.h"
 #include "../include/elementaryxx/GenItem.h"
 #include "../include/elementaryxx/GenListColumnConstructor.h"
 #include "../include/elementaryxx/GenListColumnSelector.h"
@@ -195,7 +196,7 @@ GenItem *GenList::insertInternal (GenListColumnConstructor *construction, GenLis
       break;
   }
 
-  GenItem *item = GenItem::wrap (*gli, *mModel);
+  GenListItem *item = GenListItem::wrap (*gli, *mModel); // TODO: generic!!
   
   construction->mGenItem = item;
 
