@@ -256,4 +256,3 @@ e_notification_daemon_signal_action_invoked(E_Notification_Daemon *ndeamon, unsi
                        NULL, -1, NULL);
    dbus_message_unref(msg);
 }
-
