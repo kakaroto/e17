@@ -94,7 +94,7 @@ e_notify_marshal_string_list_as_array(DBusMessageIter *iter, Eina_List *strings)
 }
 
 Eina_List *
-e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter, DBusError *err__UNUSED__)
+e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter, DBusError *err __UNUSED__)
 {
    Eina_List *strings;
    char *sig;
@@ -374,7 +374,7 @@ e_notify_marshal_notify(E_Notification *n)
 }
 
 E_Notification *
-e_notify_unmarshal_notify(DBusMessage *msg, DBusError *err__UNUSED__)
+e_notify_unmarshal_notify(DBusMessage *msg, DBusError *err __UNUSED__)
 {
    E_Notification *n;
    const char *s_val;

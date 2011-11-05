@@ -20,7 +20,7 @@ static int e_notification_daemon_bus_init(E_Notification_Daemon *ndaemon);
 static int e_notification_daemon_object_init(E_Notification_Daemon *ndaemon);
 
 DBusMessage *
-method_get_capabilities(E_DBus_Object *obj__UNUSED__, DBusMessage *message)
+method_get_capabilities(E_DBus_Object *obj __UNUSED__, DBusMessage *message)
 {
    const char *capabilities[] = {
       "body",
