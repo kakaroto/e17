@@ -108,27 +108,27 @@ void GenList::glSelected (GenListColumnSelector &selection, const Evasxx::Object
 
 /* operations to add items */
 
-GenItem *GenList::append (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
 {
   insertInternal (construction, GenList::Append, parent, flags, selection);
 }
 
-GenItem *GenList::prepend (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::prepend (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
 {
   insertInternal (construction, GenList::Prepend, parent, flags, selection);
 }
 
-GenItem *GenList::insertBefore (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::insertBefore (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
 {
   insertInternal (construction, GenList::InsertBefore, parent, flags, selection);
 }
 
-GenItem *GenList::insertAfter (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::insertAfter (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
 {
   insertInternal (construction, GenList::InsertAfter, parent, flags, selection);
 }
 
-GenItem *GenList::insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
+GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
 {
   assert (mModel);
   
@@ -217,12 +217,12 @@ GenItem *GenList::insertInternal (GenListColumnConstructor *construction, GenLis
   return item;
 }
 
-void GenList::del (GenItem &item)
+void GenList::del (GenListItem &item)
 {
   elm_genlist_item_del (item.mItem);
 }
 
-GenItem *GenList::getItemSelected () const
+GenListItem *GenList::getItemSelected () const
 {
   Elm_Genlist_Item *item = elm_genlist_selected_item_get (o);
 
@@ -234,7 +234,7 @@ GenItem *GenList::getItemSelected () const
   return construction->mGenItem;
 }
 
-GenItem *GenList::getItemAtXY (const Eflxx::Point &pos, int &posret) const
+GenListItem *GenList::getItemAtXY (const Eflxx::Point &pos, int &posret) const
 {
   Elm_Genlist_Item *item = elm_genlist_at_xy_item_get (o, pos.x (), pos.y (), &posret);
 
@@ -246,7 +246,7 @@ GenItem *GenList::getItemAtXY (const Eflxx::Point &pos, int &posret) const
   return construction->mGenItem;
 }
 
-GenItem *GenList::getItemFirst () const
+GenListItem *GenList::getItemFirst () const
 {
   Elm_Genlist_Item *item = elm_genlist_first_item_get (o);
 
@@ -258,7 +258,7 @@ GenItem *GenList::getItemFirst () const
   return construction->mGenItem;
 }
 
-GenItem *GenList::getItemLast () const
+GenListItem *GenList::getItemLast () const
 {
   Elm_Genlist_Item *item = elm_genlist_last_item_get (o);
 

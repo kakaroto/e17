@@ -16,6 +16,7 @@ namespace Elmxx {
 
 /* forward declarations */
 class GenItem;
+class GenListItem;
 class GenListColumnConstructor;
 class GenListColumnSelector;
 
@@ -301,17 +302,17 @@ public:
    * @return A handle to the item added or NULL if not possible
    *
    */
-  GenItem *append (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
 
-  GenItem *prepend (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *prepend (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
 
-  GenItem *insertBefore (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *insertBefore (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
 
-  GenItem *insertAfter (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *insertAfter (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
 
-  void del (GenItem &item);
+  void del (GenListItem &item);
   
-  GenItem *getItemSelected () const;
+  GenListItem *getItemSelected () const;
 
   /*!
    * Get the item that is at the x, y canvas coords
@@ -333,11 +334,11 @@ public:
    * @return The item at the coordinates or NULL if none
    *
    */
-  GenItem *getItemAtXY (const Eflxx::Point &pos, int &posret) const;
+  GenListItem *getItemAtXY (const Eflxx::Point &pos, int &posret) const;
 
-  GenItem *getItemFirst () const;
+  GenListItem *getItemFirst () const;
 
-  GenItem *getItemLast () const;
+  GenListItem *getItemLast () const;
   
   // TODO: which type is event_info here instead of void*?
   sigc::signal <void, GenListColumnSelector&, const Evasxx::Object&, void*> signalSelect;
@@ -356,7 +357,7 @@ private:
     InsertBefore
   };
 
-  GenItem *insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenListItem *insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
   
   static void gl_sel (void *data, Evas_Object *obj, void *event_info);
 

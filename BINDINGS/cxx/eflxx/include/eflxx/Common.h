@@ -32,10 +32,12 @@ class Trackable : public sigc::trackable
         const char* _classname;
 };
 
+class Point;
 class Size
 {
     public:
         Size( Evas_Coord dx = 0, Evas_Coord dy = 0 ) : _dx(dx), _dy(dy) {};
+        //Size (Point p) : _dx (p.x ()), _dy (p.y ()) {};
         ~Size() {};
         void set( Evas_Coord dx, Evas_Coord dy ) { _dx = dx; _dy = dy; };
         void width( Evas_Coord width ) { _dx = width; }
@@ -51,6 +53,7 @@ class Point
 {
     public:
         Point( Evas_Coord x = 0, Evas_Coord y = 0 ) : _x(x), _y(y) {};
+        Point (Size s) : _x (s.width ()), _y (s.height ()) {};
         ~Point() {};
         void set( Evas_Coord x, Evas_Coord y ) { _x = x; _y = y; };
         void x( Evas_Coord x ) { _x = x; };

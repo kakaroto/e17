@@ -9,7 +9,7 @@ namespace Elmxx {
 /* forward declarations */
 class GenList;
 class GenDataModel;
-class GenItem;
+class GenListItem;
   
 class GenListColumnConstructor
 {
@@ -21,7 +21,7 @@ public:
   
 private:
   GenDataModel *mDataModel;
-  GenItem *mGenItem;
+  GenListItem *mGenItem;
 };
 
 } // end namespace Elmxx

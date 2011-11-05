@@ -41,6 +41,7 @@
 #include "GenListColumnSelector.h"
 #include "GenListColumnConstructor.h"
 #include "GenItem.h"
+#include "GenListItem.h"
 
 #endif // ELEMENTARYXX_H
 

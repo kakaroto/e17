@@ -21,23 +21,23 @@ private:
   int mItemNum;
 };
 
-class GenListDataModel1 : public GenListDataModel
+class GenDataModel1 : public GenDataModel
 {
 public:
-  GenListDataModel1 (const std::string &style) :
-    GenListDataModel (style) {}
+  GenDataModel1 (const std::string &style) :
+    GenDataModel (style) {}
 
-  ~GenListDataModel1 () {}
+  ~GenDataModel1 () {}
 
   std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
   {
     GenListColumnConstructor1 *construct1 = static_cast <GenListColumnConstructor1*> (construction);
-    cout << "GenListDataModel::getLabel" << endl;
+    cout << "GenDataModel::getLabel" << endl;
 
     return "Item " + toString <int> (construct1->getItemNum ());
   }
 
-  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  Elmxx::Object *getContent (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
   {
     Icon *ic = Icon::factory (obj);
     ic->setFile (searchPixmapFile ("elementaryxx/logo_small.png"));
@@ -65,8 +65,8 @@ private:
   int mItemNum;
 };
 
-static GenListDataModel1 model ("default");
-static GenListDataModel1 model2 ("default");
+static GenDataModel1 model ("default");
+static GenDataModel1 model2 ("default");
 
 /*
  * Hint: 'constructList1' isn't cleaned up at exit. Normal applications should do this.
@@ -577,23 +577,23 @@ private:
   TestItem *mTestItem;
 };
 
-class GenListDataModel3 : public GenListDataModel
+class GenDataModel3 : public GenDataModel
 {
 public:
-  GenListDataModel3 (const std::string &style) :
-    GenListDataModel (style) {}
+  GenDataModel3 (const std::string &style) :
+    GenDataModel (style) {}
 
-  ~GenListDataModel3 () {}
+  ~GenDataModel3 () {}
 
   std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
   {
     GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
-    cout << "GenListDataModel::getLabel" << endl;
+    cout << "GenDataModel::getLabel" << endl;
 
     return "Item mode " + toString <int> (construct1->getTestItem ()->mode);
   }
 
-  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  Elmxx::Object *getContent (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
   {
     GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
     int mode = construct1->getTestItem ()->mode;
@@ -647,7 +647,7 @@ void glSelected3 (GenListColumnSelector &selection, const Evasxx::Object &obj, v
   cout << "glSelected3 mode " << selection1->getTestItem ()->mode << endl;
 }
 
-static GenListDataModel3 model3 ("default");
+static GenDataModel3 model3 ("default");
 
 void test_genlist3(void *data, Evas_Object *obj, void *event_info)
 {
@@ -747,23 +747,23 @@ static void my_gl_item_check_changed (Evasxx::Object &obj, void *event_info, Tes
   printf("item %p onoff = %i\n", tit, tit->onoff);
 }
 
-class GenListDataModel4 : public GenListDataModel
+class GenDataModel4 : public GenDataModel
 {
 public:
-  GenListDataModel4 (const std::string &style) :
-    GenListDataModel (style) {}
+  GenDataModel4 (const std::string &style) :
+    GenDataModel (style) {}
 
-  ~GenListDataModel4 () {}
+  ~GenDataModel4 () {}
 
   std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
   {
     GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
-    cout << "GenListDataModel::getLabel" << endl;
+    cout << "GenDataModel::getLabel" << endl;
 
     return "Item mode " + toString <int> (construct1->getTestItem ()->mode);
   }
 
-  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  Elmxx::Object *getContent (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
   {
     GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
     TestItem *tit = construct1->getTestItem ();
@@ -799,7 +799,7 @@ public:
   }
 };
 
-static GenListDataModel4 model4 ("default");
+static GenDataModel4 model4 ("default");
 
 void test_genlist4 (void *data, Evas_Object *obj, void *event_info)
 {
@@ -930,13 +930,13 @@ static void item_longpress (Evasxx::Object &obj, void *event_info)
   cout << "longpress" << endl;
 }
 
-class GenListDataModel5 : public GenListDataModel
+class GenDataModel5 : public GenDataModel
 {
 public:
-  GenListDataModel5 (const std::string &style) :
-    GenListDataModel (style) {}
+  GenDataModel5 (const std::string &style) :
+    GenDataModel (style) {}
 
-  ~GenListDataModel5 () {}
+  ~GenDataModel5 () {}
 
   std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
   {
@@ -956,7 +956,7 @@ public:
     return buf;
   }
 
-  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  Elmxx::Object *getContent (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
   {
     GenListColumnConstructor3 *construct1 = static_cast <GenListColumnConstructor3*> (construction);
     TestItem *tit = construct1->getTestItem ();
@@ -995,7 +995,7 @@ public:
   }
 };
 
-static GenListDataModel5 model5 ("double_label");
+static GenDataModel5 model5 ("double_label");
 
 void test_genlist5 (void *data, Evas_Object *obj, void *event_info)
 {
@@ -1134,13 +1134,13 @@ static void gl4_con_req (Evasxx::Object &obj, void *event_info, GenList *gl)
    //elm_genlist_item_expanded_set(it, 0);
 }
 
-class GenListDataModel6 : public GenListDataModel
+class GenDataModel6 : public GenDataModel
 {
 public:
-  GenListDataModel6 (const std::string &style) :
-    GenListDataModel (style) {}
+  GenDataModel6 (const std::string &style) :
+    GenDataModel (style) {}
 
-  ~GenListDataModel6 () {}
+  ~GenDataModel6 () {}
 
   std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
   {
@@ -1149,7 +1149,7 @@ public:
     return "Item mode " + toString <int> (construct1->getItemNum ());
   }
 
-  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  Elmxx::Object *getContent (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
   {
     GenListColumnConstructor1 *construct1 = static_cast <GenListColumnConstructor1*> (construction);
 
@@ -1181,7 +1181,7 @@ public:
   }
 };
 
-static GenListDataModel6 model6 ("default");
+static GenDataModel6 model6 ("default");
 
 void test_genlist6(void *data, Evas_Object *obj, void *event_info)
 {

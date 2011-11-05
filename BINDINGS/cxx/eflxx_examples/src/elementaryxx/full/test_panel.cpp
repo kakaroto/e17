@@ -20,24 +20,24 @@ private:
   int mItemNum;
 };
 
-class GenListDataModel1 : public GenListDataModel
+class GenDataModel1 : public GenDataModel
 {
 public:
-  GenListDataModel1 (const std::string &style) :
-    GenListDataModel (style) {}
+  GenDataModel1 (const std::string &style) :
+    GenDataModel (style) {}
 
-  ~GenListDataModel1 () {}
+  ~GenDataModel1 () {}
 
   std::string getLabel (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) const
   {
     GenListColumnConstructor1 *construct1 = static_cast <GenListColumnConstructor1*> (construction);
-    cout << "GenListDataModel::getLabel" << endl;
+    cout << "GenDataModel::getLabel" << endl;
 
     //return strdup(ecore_file_file_get(data));
     return "Item " + toString <int> (construct1->getItemNum ());
   }
 
-  Elmxx::Object *getIcon (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
+  Elmxx::Object *getContent (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part)
   {
     Window *win = static_cast <Window*> (&obj);
     Icon *ic = Icon::factory (*win);
@@ -73,7 +73,7 @@ public:
   }
 };
 
-static GenListDataModel1 model ("default");
+static GenDataModel1 model ("default");
 
 void test_panel (void *data, Evas_Object *obj, void *event_info)
 {
