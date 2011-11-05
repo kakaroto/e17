@@ -47,10 +47,11 @@ libelementaryxx_la_SOURCES = \
 	Panel.cpp  \
 	Separator.cpp  \
 	GenList.cpp  \
-	GenListItem.cpp  \
-	GenListDataModel.cpp  \
+	GenDataModel.cpp  \
 	GenListColumnConstructor.cpp \
 	GenListColumnSelector.cpp \
 	localUtil.cpp \
-	localUtil.h
+	localUtil.h \
+	Gen.cpp \
+	GenItem.cpp
 

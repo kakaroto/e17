@@ -31,10 +31,11 @@ libelementaryxx_HEADERS = \
 	Panel.h \
 	Separator.h \
 	GenList.h \
-	GenListItem.h \
-	GenListDataModel.h \
+	GenDataModel.h \
 	GenListColumnConstructor.h \
-	GenListColumnSelector.h
+	GenListColumnSelector.h \
+	Gen.h \
+	GenItem.h
 
 libelementaryxxdir = \
 	$(pkgincludedir)

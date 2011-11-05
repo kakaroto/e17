@@ -1,5 +1,5 @@
 /* Project */
-#include "../include/elementaryxx/GenListDataModel.h"
+#include "../include/elementaryxx/GenDataModel.h"
 #include "../include/elementaryxx/Icon.h"
 #include "../include/elementaryxx/Window.h"
 #include "../include/elementaryxx/GenListColumnConstructor.h"
@@ -12,26 +12,26 @@ using namespace std;
 
 namespace Elmxx {
 
-GenListDataModel::GenListDataModel (const std::string &style) :
+GenDataModel::GenDataModel (const std::string &style) :
   mStyle (style)
 {
-  cout << "creating GenListDataModel with style = " << mStyle << endl;
+  cout << "creating GenDataModel with style = " << mStyle << endl;
   mGLIC.item_style     = mStyle.c_str ();
-  mGLIC.func.label_get = GenListDataModel::gl_label_get;
-  mGLIC.func.icon_get  = GenListDataModel::gl_icon_get;
-  mGLIC.func.state_get = GenListDataModel::gl_state_get;
-  mGLIC.func.del       = GenListDataModel::gl_del; 
+  mGLIC.func.label_get = GenDataModel::gl_label_get;
+  mGLIC.func.content_get  = GenDataModel::gl_content_get;
+  mGLIC.func.state_get = GenDataModel::gl_state_get;
+  mGLIC.func.del       = GenDataModel::gl_del; 
 }
 
 /* wrappers */
 
-char *GenListDataModel::gl_label_get (void *data, Evas_Object *obj, const char *part)
+char *GenDataModel::gl_label_get (void *data, Evas_Object *obj, const char *part)
 {
   cout << "gl_label_get" << endl;
 
   GenListColumnConstructor *construction = static_cast <GenListColumnConstructor*> (
                                            const_cast <void*> (data));
-  GenListDataModel *model = construction->mDataModel;
+  GenDataModel *model = construction->mDataModel;
   Evasxx::Object *objWrap = Evasxx::Object::objectLink (obj);
     
   const std::string label = model->getLabel (construction, *objWrap, part);
@@ -43,33 +43,33 @@ char *GenListDataModel::gl_label_get (void *data, Evas_Object *obj, const char *
   return (!label.empty ()) ? strdup (label.c_str ()) : NULL;
 }
 
-Evas_Object *GenListDataModel::gl_icon_get (void *data, Evas_Object *obj, const char *part)
+Evas_Object *GenDataModel::gl_content_get (void *data, Evas_Object *obj, const char *part)
 {
   GenListColumnConstructor *construction = static_cast <GenListColumnConstructor*> (
                                            const_cast <void*> (data));
-  GenListDataModel *model = construction->mDataModel;
+  GenDataModel *model = construction->mDataModel;
   Evasxx::Object *objWrap = Evasxx::Object::objectLink (obj);
   
-  Object *objxx = model->getIcon (construction, *objWrap, part);
+  Object *objxx = model->getContent (construction, *objWrap, part);
   
   return objxx ? objxx->obj () : NULL;
 }
 
-Eina_Bool GenListDataModel::gl_state_get (void *data, Evas_Object *obj, const char *part)
+Eina_Bool GenDataModel::gl_state_get (void *data, Evas_Object *obj, const char *part)
 {
   GenListColumnConstructor *construction = static_cast <GenListColumnConstructor*> (
                                            const_cast <void*> (data));
-  GenListDataModel *model = construction->mDataModel;
+  GenDataModel *model = construction->mDataModel;
   Evasxx::Object *objWrap = Evasxx::Object::objectLink (obj);
       
   return model->getState (construction, *objWrap, part);
 }
 
-void GenListDataModel::gl_del(void *data, Evas_Object *obj)
+void GenDataModel::gl_del(void *data, Evas_Object *obj)
 {
   GenListColumnConstructor *construction = static_cast <GenListColumnConstructor*> (
                                            const_cast <void*> (data));
-  GenListDataModel *model = construction->mDataModel;
+  GenDataModel *model = construction->mDataModel;
   Evasxx::Object *objWrap = Evasxx::Object::objectLink (obj);
   assert (model);
   assert (objWrap);

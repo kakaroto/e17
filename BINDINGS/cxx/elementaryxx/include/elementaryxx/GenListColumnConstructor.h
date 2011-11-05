@@ -8,20 +8,20 @@ namespace Elmxx {
 
 /* forward declarations */
 class GenList;
-class GenListDataModel;
-class GenListItem;
+class GenDataModel;
+class GenItem;
   
 class GenListColumnConstructor
 {
 public:
   friend class GenList;
-  friend class GenListDataModel;
+  friend class GenDataModel;
 
   GenListColumnConstructor ();
   
 private:
-  GenListDataModel *mDataModel;
-  GenListItem *mGenListItem;
+  GenDataModel *mDataModel;
+  GenItem *mGenItem;
 };
 
 } // end namespace Elmxx

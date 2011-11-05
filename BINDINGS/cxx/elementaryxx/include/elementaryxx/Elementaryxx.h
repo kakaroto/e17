@@ -35,11 +35,12 @@
 #include "Spinner.h"
 #include "Progressbar.h"
 #include "Panel.h"
+#include "Gen.h"
 #include "GenList.h"
-#include "GenListDataModel.h"
+#include "GenDataModel.h"
 #include "GenListColumnSelector.h"
 #include "GenListColumnConstructor.h"
-#include "GenListItem.h"
+#include "GenItem.h"
 
 #endif // ELEMENTARYXX_H
 

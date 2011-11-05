@@ -1,5 +1,5 @@
-#ifndef ELMXX_GEN_LIST_ITEM_H
-#define ELMXX_GEN_LIST_ITEM_H
+#ifndef ELMXX_GEN_ITEM_H
+#define ELMXX_GEN_ITEM_H
 
 /* EFL */
 #include <Elementary.h>
@@ -11,15 +11,16 @@
 namespace Elmxx {
 
 /* forward declarations */
-class GenList;
-class GenListDataModel;
+class Gen;
+class GenDataModel;
   
-class GenListItem
+class GenItem
 {
 public:
+  friend class Gen;
   friend class GenList;
 
-  virtual ~GenListItem ();
+  virtual ~GenItem ();
 
 #if 0
    /* Genlist Item operation */
@@ -48,20 +49,21 @@ public:
   
   const Evasxx::Object *getEvasObject ();
 
-  static GenListItem *wrap (Elm_Genlist_Item &item, GenListDataModel &model);
+  static GenItem *wrap (Elm_Genlist_Item &item, GenDataModel &model);
 
-  static GenListItem *objectLink (const Elm_Genlist_Item *item);
+  static GenItem *objectLink (const Elm_Genlist_Item *item);
   
 private:
-  GenListItem (Elm_Genlist_Item *item);
+  GenItem (Elm_Genlist_Item *item);
 
   const void *getData ();
   void setData (const void *data);
   
-  Elm_Genlist_Item *mItem;
-  GenListDataModel *mDataModel;
+  Elm_Gen_Item *mItem;
+  GenDataModel *mDataModel;
 };
 
 } // end namespace Elmxx
 
-#endif // ELMXX_GEN_LIST_ITEM_H
+#endif // ELMXX_GEN_ITEM_H
+

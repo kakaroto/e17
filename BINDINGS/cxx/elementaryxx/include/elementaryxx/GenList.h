@@ -9,15 +9,16 @@
 
 /* ELFxx */
 #include "Object.h"
-#include "GenListDataModel.h"
+#include "Gen.h"
+#include "GenDataModel.h"
 
 namespace Elmxx {
 
 /* forward declarations */
-class GenListItem;
+class GenItem;
 class GenListColumnConstructor;
 class GenListColumnSelector;
-  
+
 /*!
  * @defgroup Genlist Genlist
  *
@@ -254,37 +255,23 @@ class GenListColumnSelector;
  * have a specific style that overrides any theme the user or system sets up
  * you can use elm_theme_overlay_add() to add such a file.
  */
-class GenList : public Object
+class GenList : public Gen
 {
 public:  
   static GenList *factory (Evasxx::Object &parent);
-  
-  void clear ();
   
   void setMultiSelect (bool multi);
   
   bool getMultiSelect ();
   
-  void setHorizontalMode (Elm_List_Mode mode);
+  void setHorizontal (Elm_List_Mode mode);
   
-  Elm_List_Mode getHorizontalMode ();
-  
-  void setAlwaysSelectMode (bool alwaysSelect);
-  
-  bool getAlwaysSelectMode ();
-  
-  void setNoSelectMode (bool noSelect);
-  
-  bool getNoSelectMode ();
+  Elm_List_Mode getHorizontal ();
   
   void setCompressMode (bool compress);
   
   bool getCompressMode ();
-  
-  void setBounce (bool hBounce, bool vBounce);
-  
-  void getBounce (bool &hBounceOut, bool &vBounceOut);
-  
+   
   void setHomogeneous (bool homogeneous);
   
   bool getHomogeneous ();
@@ -293,7 +280,7 @@ public:
   
   int getBlockCound ();
 
-  void setDataModel (GenListDataModel &model);
+  void setDataModel (GenDataModel &model);
   
   /* operations to add items */
   
@@ -314,17 +301,17 @@ public:
    * @return A handle to the item added or NULL if not possible
    *
    */
-  GenListItem *append (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenItem *append (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
 
-  GenListItem *prepend (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenItem *prepend (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
 
-  GenListItem *insertBefore (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenItem *insertBefore (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
 
-  GenListItem *insertAfter (GenListColumnConstructor *construction, const GenListItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenItem *insertAfter (GenListColumnConstructor *construction, const GenItem *parent, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
 
-  void del (GenListItem &item);
+  void del (GenItem &item);
   
-  GenListItem *getItemSelected () const;
+  GenItem *getItemSelected () const;
 
   /*!
    * Get the item that is at the x, y canvas coords
@@ -346,11 +333,11 @@ public:
    * @return The item at the coordinates or NULL if none
    *
    */
-  GenListItem *getItemAtXY (const Eflxx::Point &pos, int &posret) const;
+  GenItem *getItemAtXY (const Eflxx::Point &pos, int &posret) const;
 
-  GenListItem *getItemFirst () const;
+  GenItem *getItemFirst () const;
 
-  GenListItem *getItemLast () const;
+  GenItem *getItemLast () const;
   
   // TODO: which type is event_info here instead of void*?
   sigc::signal <void, GenListColumnSelector&, const Evasxx::Object&, void*> signalSelect;
@@ -369,13 +356,13 @@ private:
     InsertBefore
   };
 
-  GenListItem *insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
+  GenItem *insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection);
   
   static void gl_sel (void *data, Evas_Object *obj, void *event_info);
 
   void glSelected (GenListColumnSelector &selection, const Evasxx::Object &eo, void *event_info);
   
-  GenListDataModel *mModel;
+  GenDataModel *mModel;
 
   std::list <GenListColumnSelector*> mInternalSelList;
   std::list <GenListColumnConstructor*> mInternalConstructList;

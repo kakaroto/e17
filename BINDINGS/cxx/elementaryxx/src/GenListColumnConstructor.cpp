@@ -6,7 +6,7 @@ using namespace std;
 namespace Elmxx {
 
 GenListColumnConstructor::GenListColumnConstructor () :
-  mGenListItem (NULL)
+  mGenItem (NULL)
 {
 
 }
