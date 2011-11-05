@@ -1249,6 +1249,8 @@ _add_border(E_Border *bd)
                 s = w;
             }
 
+            EINA_LIST_APPEND(_G.tinfo->stacks[nb_stacks], bd);
+
             for (int i = 0; i < nb_stacks; i++) {
 
                 size = s / (nb_stacks + 1 - i);
@@ -1282,7 +1284,6 @@ _add_border(E_Border *bd)
                                   extra->expected.w,
                                   extra->expected.h);
 
-            EINA_LIST_APPEND(_G.tinfo->stacks[nb_stacks], bd);
             stack = nb_stacks;
         }
     } else {
@@ -3340,7 +3341,8 @@ _e_module_tiling_cb_hook(void *data,
                 return;
         }
 
-        if (bd->changes.border && bd->changes.size) {
+        if ((bd->changes.border && bd->changes.size)
+            || bd->x <= 0 || bd->y <= 0) {
             _e_border_move_resize(bd,
                                   extra->expected.x,
                                   extra->expected.y,
@@ -3446,7 +3448,12 @@ _e_module_tiling_desk_set(void *data,
     end_special_input();
 
     check_tinfo(ev->desk);
-    _remove_border(ev->border);
+    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+        return EINA_TRUE;
+    }
+
+    if (get_stack(ev->border) >= 0)
+        _remove_border(ev->border);
 
     check_tinfo(ev->border->desk);
     if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
