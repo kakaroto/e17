@@ -1,85 +1,92 @@
 #!/bin/bash
 set -e
 
-function eina {
-    svn checkout http://svn.enlightenment.org/svn/e/trunk/eina
-}
-function eet {
-    svn checkout http://svn.enlightenment.org/svn/e/trunk/eet
-}
-function evas {
-    svn checkout http://svn.enlightenment.org/svn/e/trunk/evas 
-}
-function expedite {
-    svn checkout http://svn.enlightenment.org/svn/e/trunk/expedite 
-}
-function ecore {
-    svn checkout http://svn.enlightenment.org/svn/e/trunk/ecore 
-}
-function embryo {
-    svn checkout http://svn.enlightenment.org/svn/e/trunk/embryo 
-}
-function edje {
-    svn checkout http://svn.enlightenment.org/svn/e/trunk/edje 
-}
-function eskiss {
-    svn checkout http://svn.enlightenment.org/svn/e/trunk/GAMES/eskiss 
-}
-function elementary {
-    svn checkout http://svn.enlightenment.org/svn/e/trunk/elementary 
+function efl {
+    if test ! -d e17_src ; then
+        git clone git://github.com/kakaroto/e17.git e17_src
+        ln -s e17_src/PROTO/escape escape
+        ln -s e17_src/eina eina
+        ln -s e17_src/eet eet
+        ln -s e17_src/evas evas
+        ln -s e17_src/expedite expedite
+        ln -s e17_src/ecore ecore
+        ln -s e17_src/embryo embryo
+        ln -s e17_src/edje edje
+        ln -s e17_src/GAMES/eskiss eskiss
+        ln -s e17_src/elementary elementary
+        ln -s e17_src/devs/kakaroto/build_ps3efl.sh build_ps3efl.sh
+    fi
 }
 function expat {
-    wget -O expat-2.0.1.tar.gz http://sourceforge.net/projects/expat/files/expat/2.0.1/expat-2.0.1.tar.gz/download && \
-    tar -xzvf expat-2.0.1.tar.gz 
+    if test ! -d expat-2.0.1 ; then
+        wget -O expat-2.0.1.tar.gz http://sourceforge.net/projects/expat/files/expat/2.0.1/expat-2.0.1.tar.gz/download && \
+            tar -xzf expat-2.0.1.tar.gz 
+    fi
 }
 function fontconfig {
-    wget http://freedesktop.org/software/fontconfig/release/fontconfig-2.8.0.tar.gz  && \
-        tar -xzvf fontconfig-2.8.0.tar.gz 
+    if test ! -d expat-2.0.1 ; then
+        wget http://freedesktop.org/software/fontconfig/release/fontconfig-2.8.0.tar.gz  && \
+            tar -xzf fontconfig-2.8.0.tar.gz 
+    fi
 }
 function lua {
-    wget http://www.lua.org/ftp/lua-5.1.4.tar.gz && \
-        tar -xzvf lua-5.1.4.tar.gz 
+    if test ! -d lua-5.1.4 ; then
+        wget http://www.lua.org/ftp/lua-5.1.4.tar.gz && \
+            tar -xzf lua-5.1.4.tar.gz 
+    fi
+}
+function cares {
+    if test ! -d c-ares-1.7.4 ; then
+        wget -O c-ares-1.7.4.tar.gz http://c-ares.haxx.se/download/c-ares-1.7.4.tar.gz && \
+            tar -xzf c-ares-1.7.4.tar.gz 
+    fi
 }
 function chipmunk {
-    wget http://chipmunk-physics.net/release/Chipmunk-5.x/Chipmunk-5.3.5.tgz && \
-        tar -xzvf Chipmunk-5.3.5.tgz 
+    if test ! -d Chipmunk-5.3.5 ; then
+        wget http://chipmunk-physics.net/release/Chipmunk-5.x/Chipmunk-5.3.5.tgz && \
+            tar -xzf Chipmunk-5.3.5.tgz 
+    fi
 }
-function escape {
-    wget http://dl.dropbox.com/u/22642664/escape.tar.gz && \
-        tar -xzvf escape.tar.gz 
-}
-function efl_diffs {
-    wget http://dl.dropbox.com/u/22642664/efl_diffs.tar.gz  && \
-        tar -xzvf efl_diffs.tar.gz 
-}
-function efl_build {
-    wget http://dl.dropbox.com/u/22642664/efl_build && \
-        chmod +x efl_build
+
+function msg {
+    message=$1
+    len=$(expr length "$message")
+    halflen=$(expr \( 80 - \( $len + 6 \) \) / 2)
+    for ((i=0 ; i < 80; i++)); do
+        echo -ne "*"
+    done
+    echo ""
+    for ((i=0 ; i < $halflen; i++)); do
+        echo -ne "*"
+    done
+    echo -ne "   $message   "
+    if test "$(expr $len % 2)" == "1"; then
+        echo -ne " "
+    fi
+    for ((i=0 ; i < $halflen; i++)); do
+        echo -ne "*"
+    done
+    echo ""
+    for ((i=0 ; i < 80; i++)); do
+        echo -ne "*"
+    done
+    echo ""
 }
 
 function download {
     what=$1
-    echo -ne "Downloading $what : "
-    $what >& download_${what}.log || \
-        (echo "Error!" && \
-          (tail download_${what}.log || true) && \
-          echo -ne "\n\nSee download_${what}.log for details.\n" && \
-          exit 1)
-    echo "Done"
+    msg "Downloading $what"
+    $what || (msg "Error downloading $what!" && exit 1)
+    msg "Download of $what done!"
 }
 
-function patch_lib {
+function patch_dir {
     what=$1
-    echo -ne "Patching $what : "
-    pwd=$(pwd)
+    msg "Patching '$what'"
+    pwd=`pwd`
     cd $what && \
-        patch -p0 < ../efl_diffs/$what >& ../patching_${what}.log  || \
-        (echo "Error!" && \
-          cd $pwd && \
-          (tail patching_${what}.log || true) && \
-          echo -ne "\n\nSee patching_${what}.log for details.\n" && \
-          exit 1)
-    echo "Done"
+        patch -N -p0 < ../e17_src/devs/kakaroto/$what || true
+    msg "Patching of $what done!"
     cd $pwd
 }
 
@@ -99,29 +106,19 @@ function autogen_lib {
 }
 
 # Setup dirs
-download eina
-download eet
-download evas
-download expedite
-download ecore
-download embryo
-download edje
-download eskiss
-download elementary
+download efl
 download expat
 download fontconfig
+download cares
 download lua
 download chipmunk
-download escape
-download efl_diffs
-download efl_build
 
 # Patch
-for f in efl_diffs/*; do
-    patch_lib $(basename $f)
-done
+patch_dir c-ares-1.7.4
+patch_dir lua-5.1.4
 
 # Autogen
+autogen_lib escape
 autogen_lib eina
 autogen_lib eet
 autogen_lib evas
