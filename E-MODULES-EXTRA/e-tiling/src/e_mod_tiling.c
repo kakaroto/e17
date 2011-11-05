@@ -291,6 +291,7 @@ _e_border_move_resize(E_Border *bd,
                       int       w,
                       int       h)
 {
+    DBG("%p -> %dx%d+%d+%d", bd, w, h, x, y);
     e_border_move_resize(bd, x, y, w, h);
     bd->x = x;
     bd->y = y;
@@ -306,6 +307,7 @@ _e_border_move(E_Border *bd,
                int       x,
                int       y)
 {
+    DBG("%p -> +%d+%d", bd, x, y);
     e_border_move(bd, x, y);
     bd->x = x;
     bd->y = y;
@@ -318,11 +320,37 @@ _e_border_resize(E_Border *bd,
                  int       w,
                  int       h)
 {
+    DBG("%p -> %dx%d", bd, w, h);
     e_border_resize(bd, w, h);
     bd->w = w;
     bd->h = h;
     bd->changes.size = true;
     bd->changed = true;
+}
+
+static void
+_e_border_maximize(E_Border *bd, E_Maximize max)
+{
+    DBG("%p -> %s", bd,
+        (max & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_NONE ? "NONE" :
+        (max & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_VERTICAL ? "VERTICAL" :
+        (max & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_HORIZONTAL ? "HORIZONTAL" :
+        "BOTH");
+    DBG("new_client:%s, bd->maximized=%x",
+        bd->new_client? "true": "false",
+        bd->maximized);
+    e_border_maximize(bd, max);
+}
+
+static void
+_e_border_unmaximize(E_Border *bd, E_Maximize max)
+{
+    DBG("%p -> %s", bd,
+        (max & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_NONE ? "NONE" :
+        (max & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_VERTICAL ? "VERTICAL" :
+        (max & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_HORIZONTAL ? "HORIZONTAL" :
+        "BOTH");
+    e_border_unmaximize(bd, max);
 }
 
 static void
@@ -335,7 +363,7 @@ _restore_border(E_Border *bd)
          ERR("No extra for %p", bd);
          return;
     }
-    e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
+    _e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
     _e_border_move_resize(bd,
                           extra->orig.geom.x,
                           extra->orig.geom.y,
@@ -656,7 +684,7 @@ _reorganize_stack(int stack)
                 }
 
                 if ((bd->maximized & E_MAXIMIZE_HORIZONTAL) && count != 1) {
-                    e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                    _e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
                 }
                 /* let's use a bresenham here */
 
@@ -693,7 +721,7 @@ _reorganize_stack(int stack)
                 }
 
                 if ((bd->maximized & E_MAXIMIZE_VERTICAL) && count != 1) {
-                    e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                    _e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
                 }
                 /* let's use a bresenham here */
 
@@ -737,7 +765,7 @@ _reorganize_stack(int stack)
                                   extra->expected.w,
                                   extra->expected.h);
 
-            e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_HORIZONTAL);
+            _e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_HORIZONTAL);
         } else {
             int y, h;
 
@@ -755,7 +783,7 @@ _reorganize_stack(int stack)
                                   extra->expected.w,
                                   extra->expected.h);
 
-            e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
+            _e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
         }
     }
 }
@@ -806,6 +834,12 @@ _set_stack_geometry(int stack, int pos, int size)
             ERR("No extra for %p", bd);
             continue;
         }
+        DBG("expected: %dx%d+%d+%d (%p)",
+            extra->expected.w,
+            extra->expected.h,
+            extra->expected.x,
+            extra->expected.y,
+            bd);
 
         if (_G.tinfo->conf->use_rows) {
             extra->expected.y = pos;
@@ -813,9 +847,9 @@ _set_stack_geometry(int stack, int pos, int size)
 
             if (bd->maximized) {
                 if (l->next && (bd->maximized & E_MAXIMIZE_HORIZONTAL))
-                    e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                    _e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
                 if (_G.tinfo->stacks[1] && (bd->maximized & E_MAXIMIZE_VERTICAL))
-                    e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                    _e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
             }
         } else {
             extra->expected.x = pos;
@@ -823,9 +857,9 @@ _set_stack_geometry(int stack, int pos, int size)
 
             if (bd->maximized) {
                 if (l->next && (bd->maximized & E_MAXIMIZE_VERTICAL))
-                    e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                    _e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
                 if (_G.tinfo->stacks[1] && (bd->maximized & E_MAXIMIZE_HORIZONTAL))
-                    e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                    _e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
             }
         }
 
@@ -969,6 +1003,9 @@ _toggle_rows_cols(void)
         _G.tinfo->pos[i] = 0;
         _G.tinfo->size[i] = 0;
     }
+
+    DBG("reinsert (use_rows: %s)",
+        _G.tinfo->conf->use_rows ? "true":"false");
 
     EINA_LIST_FREE(wins, bd) {
         _add_border(bd);
@@ -1170,20 +1207,24 @@ _add_border(E_Border *bd)
     {
         change_window_border(bd, "pixel");
     }
+    DBG("adding %p", bd);
 
     if (_G.tinfo->stacks[0]) {
+        DBG("got stack 0");
         if (_G.tinfo->stacks[_G.tinfo->conf->nb_stacks - 1]) {
+            DBG("using last stack");
             stack = _G.tinfo->conf->nb_stacks - 1;
 
             if (!_G.tinfo->stacks[stack]->next) {
-                e_border_unmaximize(_G.tinfo->stacks[stack]->data,
+                _e_border_unmaximize(_G.tinfo->stacks[stack]->data,
                                     E_MAXIMIZE_BOTH);
             }
             EINA_LIST_APPEND(_G.tinfo->stacks[stack], bd);
             _reorganize_stack(stack);
             if (bd->maximized)
-                e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
+                _e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
         } else {
+            DBG("add stack");
             /* Add stack */
             int nb_stacks = get_stack_count();
             int x, y, w, h;
@@ -1216,14 +1257,14 @@ _add_border(E_Border *bd)
                 extra->expected.y = pos;
                 extra->expected.w = w;
                 extra->expected.h = size;
-                e_border_maximize(bd, E_MAXIMIZE_EXPAND |
+                _e_border_maximize(bd, E_MAXIMIZE_EXPAND |
                                       E_MAXIMIZE_HORIZONTAL);
             } else {
                 extra->expected.x = pos;
                 extra->expected.y = y;
                 extra->expected.w = size;
                 extra->expected.h = h;
-                e_border_maximize(bd, E_MAXIMIZE_EXPAND |
+                _e_border_maximize(bd, E_MAXIMIZE_EXPAND |
                                       E_MAXIMIZE_VERTICAL);
             }
             _e_border_move_resize(bd,
@@ -1236,26 +1277,33 @@ _add_border(E_Border *bd)
             stack = nb_stacks;
         }
     } else {
-
+        DBG("lonely window");
         e_zone_useful_geometry_get(bd->zone,
                                    &extra->expected.x,
                                    &extra->expected.y,
                                    &extra->expected.w,
                                    &extra->expected.h);
 
-        e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
+        if (bd->maximized & E_MAXIMIZE_BOTH)
+            _e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
         _e_border_move_resize(bd,
                               extra->expected.x,
                               extra->expected.y,
                               extra->expected.w,
                               extra->expected.h);
-        e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
+        _e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
         EINA_LIST_APPEND(_G.tinfo->stacks[0], bd);
         e_zone_useful_geometry_get(bd->zone,
                                    &_G.tinfo->pos[0], NULL,
                                    &_G.tinfo->size[0], NULL);
         stack = 0;
     }
+    DBG("expected: %dx%d+%d+%d (%p)",
+        extra->expected.w,
+        extra->expected.h,
+        extra->expected.x,
+        extra->expected.y,
+        bd);
 }
 
 static void
@@ -1562,7 +1610,6 @@ toggle_floating(E_Border *bd)
 
         _add_border(bd);
     } else {
-
         _remove_border(bd);
         _restore_border(bd);
     }
@@ -1621,13 +1668,13 @@ _action_swap(E_Border *bd_1,
 
     bd_2_maximized = bd_2->maximized;
     if (bd_2->maximized)
-        e_border_unmaximize(bd_2, E_MAXIMIZE_BOTH);
+        _e_border_unmaximize(bd_2, E_MAXIMIZE_BOTH);
     if (bd_1->maximized) {
-        e_border_unmaximize(bd_1, E_MAXIMIZE_BOTH);
-        e_border_maximize(bd_2, bd_1->maximized);
+        _e_border_unmaximize(bd_1, E_MAXIMIZE_BOTH);
+        _e_border_maximize(bd_2, bd_1->maximized);
     }
     if (bd_2_maximized) {
-        e_border_maximize(bd_1, bd_2_maximized);
+        _e_border_maximize(bd_1, bd_2_maximized);
     }
     _e_border_move_resize(bd_1,
                           extra_1->expected.x,
@@ -2114,7 +2161,7 @@ _move_right_cols(void)
                               extra->expected.y,
                               extra->expected.w,
                               extra->expected.h);
-        e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
+        _e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_VERTICAL);
 
         if (nb_stacks + 1 > _G.tinfo->conf->nb_stacks) {
             _G.tinfo->conf->nb_stacks = nb_stacks + 1;
@@ -2371,7 +2418,7 @@ _move_down_rows(void)
                               extra->expected.y,
                               extra->expected.w,
                               extra->expected.h);
-        e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_HORIZONTAL);
+        _e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_HORIZONTAL);
 
         if (nb_stacks + 1 > _G.tinfo->conf->nb_stacks) {
             _G.tinfo->conf->nb_stacks = nb_stacks + 1;
@@ -3183,12 +3230,17 @@ _e_module_tiling_cb_hook(void *data,
         return;
     }
 
-    DBG("Show: %p / '%s' / '%s', changes(size=%d, position=%d, border=%d)"
-        " g:%dx%d+%d+%d bdname:'%s' (stack:%d%c) maximized:%x fs:%d",
+    DBG("Show: %p / '%s' / '%s', (%d,%d), changes(size=%d, position=%d, border=%d)"
+        " g:%dx%d+%d+%d bdname:'%s' (stack:%d%c) maximized:%s fs:%s",
         bd, bd->client.icccm.title, bd->client.netwm.name,
+        bd->desk->x, bd->desk->y,
         bd->changes.size, bd->changes.pos, bd->changes.border,
         bd->w, bd->h, bd->x, bd->y, bd->bordername,
-        stack, _G.tinfo->conf->use_rows? 'r':'c', bd->maximized, bd->fullscreen);
+        stack, _G.tinfo->conf->use_rows? 'r':'c',
+        (bd->maximized & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_NONE ? "NONE" :
+        (bd->maximized & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_VERTICAL ? "VERTICAL" :
+        (bd->maximized & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_HORIZONTAL ? "HORIZONTAL" :
+        "BOTH", bd->fullscreen? "true": "false");
 
     if (stack < 0) {
         _add_border(bd);
@@ -3222,8 +3274,8 @@ _e_module_tiling_cb_hook(void *data,
                 extra->expected.h = bd->h;
             } else {
                 /* TODO: what if a window doesn't want to be maximized? */
-                e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
-                e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
+                _e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
+                _e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
             }
         }
         if (bd->x == extra->expected.x && bd->y == extra->expected.y
@@ -3236,7 +3288,7 @@ _e_module_tiling_cb_hook(void *data,
 
             if (_G.tinfo->conf->use_rows) {
                 if (stack > 0 && bd->maximized & E_MAXIMIZE_VERTICAL) {
-                     e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                     _e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
                      _e_border_move_resize(bd,
                                            extra->expected.x,
                                            extra->expected.y,
@@ -3246,7 +3298,7 @@ _e_module_tiling_cb_hook(void *data,
                 }
                 if (bd->maximized & E_MAXIMIZE_HORIZONTAL
                 && eina_list_count(_G.tinfo->stacks[stack]) > 1) {
-                     e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                     _e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
                      _e_border_move_resize(bd,
                                            extra->expected.x,
                                            extra->expected.y,
@@ -3256,7 +3308,7 @@ _e_module_tiling_cb_hook(void *data,
                 }
             } else {
                 if (stack > 0 && bd->maximized & E_MAXIMIZE_HORIZONTAL) {
-                     e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                     _e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
                      _e_border_move_resize(bd,
                                            extra->expected.x,
                                            extra->expected.y,
@@ -3266,7 +3318,7 @@ _e_module_tiling_cb_hook(void *data,
                 }
                 if (bd->maximized & E_MAXIMIZE_VERTICAL
                 && eina_list_count(_G.tinfo->stacks[stack]) > 1) {
-                     e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                     _e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
                      _e_border_move_resize(bd,
                                            extra->expected.x,
                                            extra->expected.y,
@@ -3378,8 +3430,9 @@ _e_module_tiling_desk_set(void *data,
 {
     E_Event_Border_Desk_Set *ev = event;
 
-    DBG("Desk set for %p: from %p to %p",
-        ev->border, ev->desk, ev->border->desk);
+    DBG("%p: from (%d,%d) to (%d,%d)", ev->border,
+        ev->desk->x, ev->desk->y,
+        ev->border->desk->x, ev->border->desk->y);
 
     end_special_input();
 
