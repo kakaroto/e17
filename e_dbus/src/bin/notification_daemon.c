@@ -117,13 +117,13 @@ daemon_note_history_find(Daemon_Data *d, int id)
 
 
 int
-cb_notify(E_Notification_Daemon *daemon, E_Notification *n)
+cb_notify(E_Notification_Daemon *ndaemon, E_Notification *n)
 {
   Daemon_Data *dd;
   unsigned int replaces_id;
   unsigned int new_id;
 
-  dd = e_notification_daemon_data_get(daemon);
+  dd = e_notification_daemon_data_get(ndaemon);
   replaces_id = e_notification_replaces_id_get(n);
   if (replaces_id) 
   {
@@ -139,11 +139,11 @@ cb_notify(E_Notification_Daemon *daemon, E_Notification *n)
 }
 
 void
-cb_close_notification(E_Notification_Daemon *daemon, unsigned int notification_id)
+cb_close_notification(E_Notification_Daemon *ndaemon, unsigned int notification_id)
 {
   Daemon_Data *dd;
   E_Notification *n;
-  dd = e_notification_daemon_data_get(daemon);
+  dd = e_notification_daemon_data_get(ndaemon);
   n = daemon_note_open_find(dd, notification_id);
   if (n)
     daemon_note_close(dd, n, E_NOTIFICATION_CLOSED_REQUESTED);
