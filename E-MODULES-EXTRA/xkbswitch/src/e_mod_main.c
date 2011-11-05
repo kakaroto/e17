@@ -82,10 +82,10 @@ EAPI void *e_modapi_init(E_Module *m)
     );
 
     /* Define EET Data Storage for the config file */
-    e_xkb_cfg_layout_edd = E_CONFIG_DD_NEW("e_xkb_cfg_layout", e_xkb_cfg_layout);
+    e_xkb_cfg_layout_edd = E_CONFIG_DD_NEW("E_XKB_Config_Layout", E_XKB_Config_Layout);
     #undef T
     #undef D
-    #define T e_xkb_cfg_layout
+    #define T E_XKB_Config_Layout
     #define D e_xkb_cfg_layout_edd
     E_CONFIG_VAL(D, T, name,    STR);
     E_CONFIG_VAL(D, T, model,   STR);
@@ -182,7 +182,7 @@ EAPI int e_modapi_shutdown(E_Module *m)
 
     while (e_xkb_cfg_inst->used_layouts)
     {
-        e_xkb_cfg_layout *cl = NULL;
+        E_XKB_Config_Layout *cl = NULL;
 
         cl = e_xkb_cfg_inst->used_layouts->data;
 
@@ -212,7 +212,7 @@ EAPI int e_modapi_shutdown(E_Module *m)
 
 EAPI int e_modapi_save(E_Module *m) 
 {
-   e_config_domain_save("module.xkbswitch", e_xkb_cfg_edd, e_xkb_cfg_inst);
+    e_config_domain_save("module.xkbswitch", e_xkb_cfg_edd, e_xkb_cfg_inst);
     return 1;
 }
 
@@ -353,7 +353,7 @@ static void _e_xkb_cfg_free(void)
 {
     while (e_xkb_cfg_inst->used_layouts)
     {
-        e_xkb_cfg_layout *cl = NULL;
+        E_XKB_Config_Layout *cl = NULL;
 
         cl = e_xkb_cfg_inst->used_layouts->data;
 

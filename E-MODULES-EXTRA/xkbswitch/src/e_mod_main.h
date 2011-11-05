@@ -38,12 +38,12 @@ typedef struct _e_xkb_cfg
 } e_xkb_cfg;
 
 /* used layout - these are saved in a list */
-typedef struct _e_xkb_cfg_layout
+typedef struct _E_XKB_Config_Layout
 {
     const char *name;
     const char *model;
     const char *variant;
-} e_xkb_cfg_layout;
+} E_XKB_Config_Layout;
 
 /* Prototypes */
 

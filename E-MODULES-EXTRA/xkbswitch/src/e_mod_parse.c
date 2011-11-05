@@ -1,16 +1,10 @@
-/*
- * This file parses the XML file with rules into a tree with which we can work.
- * It's supposed to serve as simple interface to layouts and variants.
- * 
- * Reader example on libxml2 page used for reference.
- */
-
 #include "e_mod_parse.h"
 
 Eina_List *layouts = NULL;
 Eina_List *models  = NULL;
 
-void parse_rules(const char *fname)
+void
+parse_rules(const char *fname)
 {
     E_XKB_Model *model = NULL;
     E_XKB_Layout *layout = NULL;
@@ -73,13 +67,13 @@ void parse_rules(const char *fname)
         while (p[0] == ' ') ++p;
 
         variant = E_NEW(E_XKB_Variant, 1);
-        variant->name = "basic";
-        variant->description = "Default layout variant";
+        variant->name = eina_stringshare_add("basic");
+        variant->description = eina_stringshare_add("Default layout variant");
 
         layout->description = eina_stringshare_add(p);
         layout->used        = EINA_FALSE;
         layout->model       = NULL;
-        layout->variant     = NULL;
+        layout->variant     = variant;
         layout->variants    = eina_list_append(layout->variants, variant);
 
         layouts = eina_list_append(layouts, layout);
@@ -119,12 +113,15 @@ void parse_rules(const char *fname)
         variant->description = eina_stringshare_add(p);
     } else break;
 
+    fclose(f);
+
     /* Sort layouts */
     layouts =
         eina_list_sort(layouts, eina_list_count(layouts), layout_sort_cb);
 }
 
-void clear_rules()
+void
+clear_rules()
 {
     E_XKB_Variant *v  = NULL;
     E_XKB_Layout  *la = NULL;
@@ -134,19 +131,33 @@ void clear_rules()
 
     EINA_LIST_FOREACH(layouts, l, la)
     {
+        if (la->name       ) eina_stringshare_del(la->name);
+        if (la->description) eina_stringshare_del(la->description);
+
         EINA_LIST_FOREACH(la->variants, ll, v)
+        {
+            if  (v->name       ) eina_stringshare_del(v->name);
+            if  (v->description) eina_stringshare_del(v->description);
             free(v);
+        }
         eina_list_free(la->variants);
+
         free(la);
     }
     eina_list_free(layouts);
 
     EINA_LIST_FOREACH(models, l, m)
+    {
+        if (m->name       ) eina_stringshare_del(m->name);
+        if (m->description) eina_stringshare_del(m->description);
+
         free(m);
+    }
     eina_list_free(models);
 }
 
-int layout_sort_cb(const void *data1, const void *data2)
+int
+layout_sort_cb(const void *data1, const void *data2)
 {
     const E_XKB_Layout *l1 = NULL, *l2 = NULL;
 
@@ -157,7 +168,8 @@ int layout_sort_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2->name);
 }
 
-int model_sort_cb(const void *data1, const void *data2)
+int
+model_sort_cb(const void *data1, const void *data2)
 {
     const E_XKB_Model *l1 = NULL, *l2 = NULL;
 
@@ -168,7 +180,8 @@ int model_sort_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2->name);
 }
 
-int variant_sort_cb(const void *data1, const void *data2)
+int
+variant_sort_cb(const void *data1, const void *data2)
 {
     const E_XKB_Variant *l1 = NULL, *l2 = NULL;
 
@@ -179,7 +192,8 @@ int variant_sort_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2->name);
 }
 
-int model_sort_by_name_cb(const void *data1, const void *data2)
+int
+model_sort_by_name_cb(const void *data1, const void *data2)
 {
     const E_XKB_Model *l1 = NULL;
     const char *l2 = NULL;
@@ -190,7 +204,8 @@ int model_sort_by_name_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2);
 }
 
-int variant_sort_by_name_cb(const void *data1, const void *data2)
+int
+variant_sort_by_name_cb(const void *data1, const void *data2)
 {
     const E_XKB_Variant *l1 = NULL;
     const char *l2 = NULL;
@@ -201,7 +216,8 @@ int variant_sort_by_name_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2);
 }
 
-int layout_sort_by_name_cb(const void *data1, const void *data2)
+int
+layout_sort_by_name_cb(const void *data1, const void *data2)
 {
     const E_XKB_Layout *l1 = NULL;
     const char *l2 = NULL;
@@ -212,7 +228,8 @@ int layout_sort_by_name_cb(const void *data1, const void *data2)
     return strcmp(l1->name, l2);
 }
 
-int model_sort_by_label_cb(const void *data1, const void *data2)
+int
+model_sort_by_label_cb(const void *data1, const void *data2)
 {
     const E_XKB_Model *l1 = NULL;
     const char *l2 = NULL;
@@ -224,7 +241,8 @@ int model_sort_by_label_cb(const void *data1, const void *data2)
     return strcmp(l1->description, l2);
 }
 
-int variant_sort_by_label_cb(const void *data1, const void *data2)
+int
+variant_sort_by_label_cb(const void *data1, const void *data2)
 {
     const E_XKB_Variant *l1 = NULL;
     const char *l2 = NULL;
@@ -239,7 +257,8 @@ int variant_sort_by_label_cb(const void *data1, const void *data2)
     return strcmp(buf, l2);
 }
 
-int layout_sort_by_label_cb(const void *data1, const void *data2)
+int
+layout_sort_by_label_cb(const void *data1, const void *data2)
 {
     const E_XKB_Layout *l1 = NULL;
     const char *l2 = NULL;
