@@ -3230,11 +3230,14 @@ _e_module_tiling_cb_hook(void *data,
     if (!is_tilable(bd)) {
         return;
     }
-    if (bd->fullscreen) {
-         return;
-    }
 
     stack = get_stack(bd);
+
+    if (stack >= 0 && bd->fullscreen) {
+        _remove_border(bd);
+        return;
+    }
+
     if (!bd->changes.size && !bd->changes.pos && !bd->changes.border
     && stack >= 0) {
         return;
