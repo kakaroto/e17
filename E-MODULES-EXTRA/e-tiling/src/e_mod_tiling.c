@@ -293,6 +293,8 @@ _e_border_move_resize(E_Border *bd,
 {
     DBG("%p -> %dx%d+%d+%d", bd, w, h, x, y);
     e_border_move_resize(bd, x, y, w, h);
+    //bd->changed = false;
+    /*
     bd->x = x;
     bd->y = y;
     bd->w = w;
@@ -300,6 +302,7 @@ _e_border_move_resize(E_Border *bd,
     bd->changes.pos = true;
     bd->changes.size = true;
     bd->changed = true;
+    */
 }
 
 static void
@@ -309,10 +312,13 @@ _e_border_move(E_Border *bd,
 {
     DBG("%p -> +%d+%d", bd, x, y);
     e_border_move(bd, x, y);
+    //bd->changed = false;
+    /*
     bd->x = x;
     bd->y = y;
     bd->changes.pos = true;
     bd->changed = true;
+    */
 }
 
 static void
@@ -322,10 +328,13 @@ _e_border_resize(E_Border *bd,
 {
     DBG("%p -> %dx%d", bd, w, h);
     e_border_resize(bd, w, h);
+    //bd->changed = false;
+    /*
     bd->w = w;
     bd->h = h;
     bd->changes.size = true;
     bd->changed = true;
+    */
 }
 
 static void
