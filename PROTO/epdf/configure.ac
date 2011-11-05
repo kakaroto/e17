@@ -123,8 +123,12 @@ if test "x${want_mupdf}" = "xyes" ; then
 else
    requirements_epdf="poppler ${requirements_epdf}"
    PKG_CHECK_MODULES(EPDF, [${requirements_epdf}])
+   PKG_CHECK_EXISTS([poppler >= 0.15.2], [have_poppler_0_15_2="yes"], [have_poppler_0_15_2="no"])
    POPPLER_VERSION=`${PKG_CONFIG} --modversion poppler`
    AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
+   if test "x${have_poppler_0_15_2}" = "xyes" ; then
+      AC_DEFINE([HAVE_POPPLER_0_15_2], [1], [Poppler >= 0.15.2.])
+   fi
    backend="poppler"
 fi
 
@@ -133,39 +137,6 @@ AM_CONDITIONAL([BUILD_MUPDF_CJK_FONTS], [test "x${want_mupdf_cjk}" = "xyes"])
 AM_CONDITIONAL([BUILD_EPDF_MUPDF], [test "x${want_mupdf}" = "xyes"])
 
 PKG_CHECK_MODULES(EPDFBIN, [ecore-evas >= 1.0.0 ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0])
-
-# Ewl
-
-have_ewl="no"
-AC_ARG_ENABLE([ewl],
-   [AC_HELP_STRING(
-       [--enable-ewl],
-       [enable ewl widget. [[default=enabled]]]
-    )
-   ],
-   [have_ewl=${enableval}],
-   [have_ewl="yes"]
-)
-AC_MSG_CHECKING(whether using Ewl)
-AC_MSG_RESULT(${have_ewl})
-
-if test "x${have_ewl}" = "xyes" ; then
-   PKG_CHECK_MODULES([EWL],
-      [ewl >= 0.5.3],
-      [
-       have_ewl="yes"
-       EWL_TEST_LIBS_DIR="`$PKG_CONFIG --variable=testsdir ewl`"
-       EWL_TEST_SOURCE_DIR="`$PKG_CONFIG --variable=testssrcdir ewl`"
-       AC_SUBST(EWL_TEST_LIBS_DIR)
-       AC_SUBST(EWL_TEST_SOURCE_DIR)
-      ],
-      [have_ewl="no"]
-   )
-else
-   have_ewl="no"
-fi
-
-AM_CONDITIONAL([BUILD_EPDF_EWL], [test "x${have_ewl}" = "xyes"])
 
 
 ### Checks for header files
@@ -220,15 +191,12 @@ AC_SUBST(requirements_epdf)
 AC_OUTPUT([
 Makefile
 epdf.pc
-epdf-ewl.pc
 doc/Makefile
 src/Makefile
 src/lib/Makefile
 src/lib/mupdf/Makefile
 src/lib/poppler/Makefile
 src/bin/Makefile
-src/plugins/Makefile
-src/plugins/ewl/Makefile
 ])
 
 #####################################################################
@@ -243,8 +211,6 @@ echo "Configuration Options Summary:"
 echo
 echo "  Backend..............: ${backend}"
 echo "  Documentation........: ${enable_doc}"
-echo
-echo "  Ewl widget...........: ${have_ewl}"
 echo
 echo "  Compilation..........: make"
 echo

@@ -84,16 +84,19 @@ epdf_postscript_print (const Epdf_Postscript *postscript)
 
   // FIXME: fix postscript title
   ps_dev = new PSOutputDev (postscript->filename,
+#ifdef HAVE_POPPLER_0_15_2
+                            postscript->pdfdoc,
+#endif
                             postscript->pdfdoc->getXRef(),
                             postscript->pdfdoc->getCatalog(),
-			    "PS title",
+                            "PS title",
                             postscript->first_page,
                             postscript->last_page,
                             psModePS,
                             (int)postscript->width,
                             (int)postscript->height,
-                            postscript->duplex,
-                            0, 0, 0, 0, 0);
+                            (GBool)postscript->duplex,
+                            0, 0, 0, 0, gFalse);
   if (!ps_dev)
     return;
 

@@ -1,3 +1,26 @@
+2011-11-05  Vincent Torri  <doursse at users dot sf dot net>
+
+	* Makefile.am:
+	minor cleanup of the maintainer-clean rule
+
+	* configure.ac:
+	* src/lib/poppler/epdf_poppler_postscript.cpp:
+	fix API use when poppler >= 0.15.2 is installed
+
+	* src/Makefile.am:
+	* src/lib/Makefile.am:
+	* src/bin/Makefile.am:
+	* src/plugins (deleted):
+	* src/plugins/ewl (deleted):
+	* src/plugins/ewl/ewl_pdf.c (deleted):
+	* src/plugins/ewl/Makefile.am (deleted):
+	* src/plugins/Makefile.am (deleted):
+	* src/lib/ewl_pdf.c (deleted):
+	* src/lib/ewl_pdf.h (deleted):
+	* src/bin/epdf_ewl_test.c (deleted):
+	* epdf-ewl.pc.in (deleted):
+	remove Ewl support
+
 2011-09-13 Rafael Antognolli <antognolli at profusion dot mobi>
 
 	Make epdf_page_size_get() return the correct page size.
