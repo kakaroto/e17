@@ -13,7 +13,8 @@ namespace Elmxx {
 /* forward declarations */
 class Gen;
 class GenDataModel;
-  
+
+// TODO: currently this has many genlist functions inside. I'll fix this correct after the C API is finished!
 class GenItem
 {
 public:
@@ -21,14 +22,6 @@ public:
   friend class GenList;
 
   virtual ~GenItem ();
-
-#if 0
-   /* Genlist Item operation */
-   EAPI Elm_Genlist_Item *elm_genlist_item_next_get(const Elm_Genlist_Item *item);
-   EAPI Elm_Genlist_Item *elm_genlist_item_prev_get(const Elm_Genlist_Item *item);
-   EAPI Evas_Object      *elm_genlist_item_genlist_get(const Elm_Genlist_Item *item);
-   EAPI Elm_Genlist_Item *elm_genlist_item_parent_get(const Elm_Genlist_Item *it);
-#endif
   
   void clearSubItems ();
   void setSelected (bool selected);
