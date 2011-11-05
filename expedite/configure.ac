@@ -76,6 +76,9 @@ AC_SUBST(d3d_libs)
 # Software SDL
 EXPEDITE_CHECK_ENGINE([software-sdl], [Software SDL], "yes")
 
+# PSL1GHT
+EXPEDITE_CHECK_ENGINE([psl1ght], [PSL1GHT], "yes")
+
 # GL SDL
 EXPEDITE_CHECK_ENGINE([opengl-sdl], [OpenGL SDL], "yes")
 
@@ -177,6 +180,9 @@ if test "x$have_software_sdl" = "xyes" -o "x$have_gl_sdl" = "xyes"; then
 fi
 AM_CONDITIONAL(BUILD_SDL, test "x$have_sdl" = "xyes")
 
+# PSL1GHT
+AM_CONDITIONAL(BUILD_PSL1GHT, test "x$have_psl1ght" = "xyes")
+
 # DirectFB
 
 if test "x$have_directfb" = "xyes"; then
@@ -267,6 +273,7 @@ echo "    Open GL SDL..................: ${have_opengl_sdl}"
 echo "    Open GL Cocoa................: ${have_opengl_cocoa}"
 echo "    FB...........................: ${have_fb}"
 echo "    DirectFB.....................: ${have_directfb}"
+echo "    PSL1GHT......................: ${have_psl1ght}"
 echo "    Software X11 16 bits.........: ${have_software_16_x11}"
 echo "    Software DirectDraw 16 bits..: ${have_software_16_ddraw}"
 echo "    Software WinCE 16 bits.......: ${have_software_16_wince}"

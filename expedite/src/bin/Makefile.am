@@ -197,6 +197,11 @@ expedite_SOURCES += \
 engine_gl_sdl.c engine_gl_sdl.h
 endif
 
+if BUILD_PSL1GHT
+expedite_SOURCES += \
+engine_psl1ght.c
+endif
+
 if BUILD_FB
 expedite_SOURCES += \
 engine_fb.c engine_fb.h
