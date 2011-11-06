@@ -6,7 +6,7 @@
 #include "e_notify_private.h"
 
 /* private functions */
-static Eina_List             *e_notification_action_list_new();
+static Eina_List             *e_notification_action_list_new(void);
 static E_Notification_Action *e_notification_action_new(const char *id,
                                                         const char *name);
 
@@ -31,7 +31,7 @@ e_notification_full_new(const char *app_name, unsigned int replaces_id, const ch
 }
 
 EAPI E_Notification *
-e_notification_new()
+e_notification_new(void)
 {
    E_Notification *n;
    n = calloc(1, sizeof(E_Notification));
@@ -192,7 +192,7 @@ e_notification_closed_get(E_Notification *note)
 /***** actions *****/
 
 static Eina_List *
-e_notification_action_list_new()
+e_notification_action_list_new(void)
 {
    Eina_List *alist;
 
@@ -365,7 +365,7 @@ e_notification_hint_icon_data_get(E_Notification *n)
 }
 
 EAPI E_Notification_Image *
-e_notification_image_new()
+e_notification_image_new(void)
 {
    E_Notification_Image *img;
 
