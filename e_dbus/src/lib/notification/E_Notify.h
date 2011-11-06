@@ -99,8 +99,8 @@ struct E_Notification_Event_Action_Invoked
 extern "C" {
 #endif
 
-   EAPI int e_notification_init();
-   EAPI int e_notification_shutdown();
+   EAPI int e_notification_init(void);
+   EAPI int e_notification_shutdown(void);
 
 /* client */
    EAPI void e_notification_send(E_Notification *n, E_DBus_Callback_Func func, void *data);
@@ -110,7 +110,7 @@ extern "C" {
 
 /* Notifications */
 
-   EAPI E_Notification *e_notification_new();
+   EAPI E_Notification *e_notification_new(void);
    EAPI void e_notification_ref(E_Notification *n);
    EAPI void e_notification_unref(E_Notification *n);
    EAPI void e_notification_free(E_Notification *n);
@@ -174,8 +174,9 @@ extern "C" {
    EAPI E_Notification_Image *e_notification_hint_icon_data_get(E_Notification *n);
 
 /* image hint */
-   EAPI E_Notification_Image *e_notification_image_new();
+   EAPI E_Notification_Image *e_notification_image_new(void);
    EAPI void e_notification_image_free(E_Notification_Image *img);
+   EAPI Eina_Bool e_notification_image_init(E_Notification_Image *img, Evas_Object *obj);
    EAPI Evas_Object *e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img);
 
 #ifdef __cplusplus

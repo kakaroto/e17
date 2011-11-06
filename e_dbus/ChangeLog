@@ -32,3 +32,7 @@
 2011-11-04 Sanjeev BA <iamsanjeev@gmail.com>
 
         * Exported e_dbus_connection_dbus_connection_get()
+
+2011-11-06  Mike Blumenkrantz
+
+        * Add e_notification_image_init for filling in values from an Evas_Object
