@@ -116,6 +116,18 @@ places_init(void)
    /* theme file (maybe check if found in the current theme) */
    snprintf(theme_file, PATH_MAX, "%s/e-module-places.edj", places_conf->module->dir);
 
+   if (!e_dbus_init())
+     {
+        printf("Impossible to setup dbus.\n");
+        return ;
+     }
+
+   if (!e_ukit_init())
+     {
+        printf("Impossible to setup ukit.\n");
+        return ;
+     }
+
    conn = e_dbus_bus_get(DBUS_BUS_SYSTEM);
    if (!conn)
    {
@@ -152,6 +164,9 @@ places_shutdown(void)
      _places_volume_del((Volume*)volumes->data);
 
    if (conn) e_dbus_connection_close(conn);
+
+   e_ukit_shutdown();
+   e_dbus_shutdown();
 }
 
 void
