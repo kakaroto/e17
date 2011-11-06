@@ -395,13 +395,14 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
    img->channels = 4;
    img->rowstride = evas_object_image_stride_get(obj);
    if (rgb) evas_object_image_data_set(obj, img->data);
+   img->free_data = EINA_FALSE;
    return EINA_TRUE;
 }
 
 EAPI void
 e_notification_image_free(E_Notification_Image *img)
 {
-   if (img->data) free(img->data);
+   if (img->data && img->free_data) free(img->data);
    if (img) free(img);
 }
 
