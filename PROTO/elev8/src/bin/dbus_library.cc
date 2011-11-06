@@ -24,7 +24,6 @@ Handle<Value> dbus_msg_introspect(const Arguments &args)
         String::Utf8Value method(args[3]->ToString());
         fprintf(stderr, "%s-%s-%s-%s\n", *service, *path, *interface, *method);
 
-        DBusConnection *conn = e_dbus_conn_object_get(dbus->conn);
         DBusError error;
         DBusMessage *message;
         DBusMessage *reply;
@@ -39,24 +38,9 @@ Handle<Value> dbus_msg_introspect(const Arguments &args)
 
         /* Call ListServices method */
         reply_timeout = -1;   /*don't timeout*/
-        reply = dbus_connection_send_with_reply_and_block (conn,
-                                                message, reply_timeout, 
-                                                &error);
-        if (dbus_error_is_set (&error))
-          {
-             fprintf (stderr, "Error: %s\n", error.message);
-             return Undefined();
-          }
 
-        /* Extract the data from the reply */
-        if (!dbus_message_get_args (reply, &error, 
-                                DBUS_TYPE_UINT32, &value,
-                                DBUS_TYPE_INVALID))
-          { 
-             fprintf (stderr, "Failed to complete %s call: %s\n", *method, error.message);
-             return Undefined();
-          }
-        dbus_message_unref (reply);
+        /* TODO : use e_dbus_introspect() */
+
         dbus_message_unref (message);
 
         /* Print the results */
