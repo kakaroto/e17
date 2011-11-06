@@ -577,7 +577,7 @@ e_notify_marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img)
    dbus_message_iter_append_basic(&sub, DBUS_TYPE_BOOLEAN, &(img->has_alpha));
    dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->bits_per_sample));
    dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->channels));
-   dbus_message_iter_open_container(&sub, DBUS_TYPE_ARRAY, NULL, &arr);
+   dbus_message_iter_open_container(&sub, DBUS_TYPE_ARRAY, "y", &arr);
    dbus_message_iter_append_fixed_array(&arr, DBUS_TYPE_BYTE, &(img->data), data_len);
    dbus_message_iter_close_container(&sub, &arr);
 }
