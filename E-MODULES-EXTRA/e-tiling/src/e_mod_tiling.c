@@ -2780,143 +2780,158 @@ _transition_overlay_key_down(void *data,
                       - ecore_timer_pending_get(_G.action_timer));
 
     if (_G.transition_overlay) {
-         DBG("ev->key='%s'; %p %d", ev->key,
-             _G.transition_overlay->bd, _G.tinfo->conf->use_rows);
-         if ((strcmp(ev->key, "Up") == 0)
-             ||  (strcmp(ev->key, "k") == 0))
-         {
-             if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
-                 _transition_move_cols(MOVE_UP);
-                 return ECORE_CALLBACK_PASS_ON;
-             } else
-             if (!_G.transition_overlay->bd && _G.tinfo->conf->use_rows) {
-                 _transition_move_rows(MOVE_UP);
-                 return ECORE_CALLBACK_PASS_ON;
-             }
-         } else
-         if ((strcmp(ev->key, "Down") == 0)
-         ||  (strcmp(ev->key, "j") == 0))
-         {
-             if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
-                 _transition_move_cols(MOVE_DOWN);
-                 return ECORE_CALLBACK_PASS_ON;
-             } else
-             if (!_G.transition_overlay->bd && _G.tinfo->conf->use_rows) {
-                 _transition_move_rows(MOVE_DOWN);
-                 return ECORE_CALLBACK_PASS_ON;
-             }
-         } else
-         if ((strcmp(ev->key, "Left") == 0)
-         ||  (strcmp(ev->key, "h") == 0))
-         {
-             if (!_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
-                 _transition_move_cols(MOVE_LEFT);
-                 return ECORE_CALLBACK_PASS_ON;
-             } else
-             if (_G.transition_overlay->bd && _G.tinfo->conf->use_rows) {
-                 _transition_move_rows(MOVE_LEFT);
-                 return ECORE_CALLBACK_PASS_ON;
-             }
-         } else
-         if ((strcmp(ev->key, "Right") == 0)
-         ||  (strcmp(ev->key, "l") == 0))
-         {
-             if (!_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
-                 _transition_move_cols(MOVE_RIGHT);
-                 return ECORE_CALLBACK_PASS_ON;
-             } else
-             if (_G.transition_overlay->bd && _G.tinfo->conf->use_rows) {
-                 _transition_move_rows(MOVE_RIGHT);
-                 return ECORE_CALLBACK_PASS_ON;
-             }
-         }
+        DBG("ev->key='%s'; %p %d", ev->key,
+            _G.transition_overlay->bd, _G.tinfo->conf->use_rows);
+        if ((strcmp(ev->key, "Up") == 0)
+            ||  (strcmp(ev->key, "k") == 0))
+        {
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_cols(MOVE_UP);
+                return ECORE_CALLBACK_PASS_ON;
+            } else
+            if (!_G.transition_overlay->bd && _G.tinfo->conf->use_rows) {
+                _transition_move_rows(MOVE_UP);
+                return ECORE_CALLBACK_PASS_ON;
+            }
+        } else
+        if ((strcmp(ev->key, "Down") == 0)
+        ||  (strcmp(ev->key, "j") == 0))
+        {
+            if (_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_cols(MOVE_DOWN);
+                return ECORE_CALLBACK_PASS_ON;
+            } else
+            if (!_G.transition_overlay->bd && _G.tinfo->conf->use_rows) {
+                _transition_move_rows(MOVE_DOWN);
+                return ECORE_CALLBACK_PASS_ON;
+            }
+        } else
+        if ((strcmp(ev->key, "Left") == 0)
+        ||  (strcmp(ev->key, "h") == 0))
+        {
+            if (!_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_cols(MOVE_LEFT);
+                return ECORE_CALLBACK_PASS_ON;
+            } else
+            if (_G.transition_overlay->bd && _G.tinfo->conf->use_rows) {
+                _transition_move_rows(MOVE_LEFT);
+                return ECORE_CALLBACK_PASS_ON;
+            }
+        } else
+        if ((strcmp(ev->key, "Right") == 0)
+        ||  (strcmp(ev->key, "l") == 0))
+        {
+            if (!_G.transition_overlay->bd && !_G.tinfo->conf->use_rows) {
+                _transition_move_cols(MOVE_RIGHT);
+                return ECORE_CALLBACK_PASS_ON;
+            } else
+            if (_G.transition_overlay->bd && _G.tinfo->conf->use_rows) {
+                _transition_move_rows(MOVE_RIGHT);
+                return ECORE_CALLBACK_PASS_ON;
+            }
+        }
 
-         return ECORE_CALLBACK_RENEW;
+        return ECORE_CALLBACK_RENEW;
     } else {
-         if (strcmp(ev->key, "Backspace") == 0) {
-             char *key = _G.keys;
+        if (strcmp(ev->key, "Backspace") == 0) {
+            char *key = _G.keys;
 
-             while (*key)
-                 key++;
-             *key = '\0';
-             return ECORE_CALLBACK_RENEW;
-         }
-         if (ev->key[0] && !ev->key[1] && strchr(tiling_g.config->keyhints,
-                                                 ev->key[1])) {
-             transition_overlay_t *trov = NULL;
-             E_Border *bd = NULL;
-             Border_Extra *extra = NULL;
-             Evas_Coord ew, eh;
-             char *key = _G.keys;
+            while (*key)
+                key++;
+            *key = '\0';
+            return ECORE_CALLBACK_RENEW;
+        }
+        if (ev->key[0] && !ev->key[1] && strchr(tiling_g.config->keyhints,
+                                                ev->key[1]))
+        {
+            transition_overlay_t *trov = NULL;
+            E_Border *bd = NULL;
+            Border_Extra *extra = NULL;
+            Evas_Coord ew, eh;
+            char *key = _G.keys;
 
-             while (*key)
-                 key++;
-             *key++ = ev->key[0];
-             *key = '\0';
+            while (*key)
+                key++;
+            *key++ = ev->key[0];
+            *key = '\0';
 
-             trov = eina_hash_find(_G.overlays, _G.keys);
-             if (!trov) {
-                 return ECORE_CALLBACK_RENEW;
-             }
-             bd = trov->bd;
+            trov = eina_hash_find(_G.overlays, _G.keys);
+            if (!trov) {
+                return ECORE_CALLBACK_RENEW;
+            }
+            bd = trov->bd;
 
-             _G.transition_overlay = trov;
-             eina_hash_free(_G.overlays);
-             _G.overlays = NULL;
+            _G.transition_overlay = trov;
+            eina_hash_free(_G.overlays);
+            _G.overlays = NULL;
 
-             if (bd) {
-                 extra = eina_hash_find(_G.border_extras, &bd);
-                 if (!extra) {
-                     ERR("No extra for %p", bd);
-                     goto stop;
-                 }
-             }
-             if (!trov->overlay.popup) {
-                 trov->overlay.popup = e_popup_new(_G.tinfo->desk->zone,
-                                                   0, 0, 1, 1);
-                 e_popup_layer_set(trov->overlay.popup, TILING_POPUP_LAYER);
-             }
-             if (!trov->overlay.obj) {
-                 trov->overlay.obj =
-                     edje_object_add(trov->overlay.popup->evas);
-             }
-             if ((bd && !_G.tinfo->conf->use_rows)
-             ||  (!bd && _G.tinfo->conf->use_rows)) {
-                 _theme_edje_object_set(trov->overlay.obj,
-                                        "modules/e-tiling/transition/horizontal");
-             } else {
-                 _theme_edje_object_set(trov->overlay.obj,
-                                        "modules/e-tiling/transition/vertical");
-             }
+            if (bd) {
+                extra = eina_hash_find(_G.border_extras, &bd);
+                if (!extra) {
+                    ERR("No extra for %p", bd);
+                    goto stop;
+                }
+            }
+            if (!trov->overlay.popup) {
+                trov->overlay.popup = e_popup_new(_G.tinfo->desk->zone,
+                                                  0, 0, 1, 1);
+                e_popup_layer_set(trov->overlay.popup, TILING_POPUP_LAYER);
+            }
+            if (!trov->overlay.obj) {
+                trov->overlay.obj =
+                    edje_object_add(trov->overlay.popup->evas);
+            }
+            if ((bd && !_G.tinfo->conf->use_rows)
+            ||  (!bd && _G.tinfo->conf->use_rows)) {
+                _theme_edje_object_set(trov->overlay.obj,
+                                       "modules/e-tiling/transition/horizontal");
+            } else {
+                _theme_edje_object_set(trov->overlay.obj,
+                                       "modules/e-tiling/transition/vertical");
+            }
 
-             edje_object_size_min_calc(trov->overlay.obj, &ew, &eh);
-             e_popup_edje_bg_object_set(trov->overlay.popup,
-                                        trov->overlay.obj);
-             evas_object_show(trov->overlay.obj);
-             if ((bd && !_G.tinfo->conf->use_rows)
-             ||  (!bd && _G.tinfo->conf->use_rows)) {
-                 e_popup_move_resize(trov->overlay.popup,
-                                     extra->expected.x + extra->expected.w/2
-                                     - ew/2
-                                     - trov->overlay.popup->zone->x,
-                                     extra->expected.y + extra->expected.h
-                                     - eh/2
-                                     - trov->overlay.popup->zone->y,
-                                     ew,
-                                     eh);
-             } else {
-                 e_popup_move_resize(trov->overlay.popup,
-                                     (_G.tinfo->pos[trov->stack]
-                                      + _G.tinfo->size[trov->stack]
-                                      - trov->overlay.popup->zone->x - ew/2),
-                                     (trov->overlay.popup->zone->h/2 - eh/2),
-                                     ew, eh);
-             }
-             evas_object_resize(trov->overlay.obj, ew, eh);
-             e_popup_show(trov->overlay.popup);
+            edje_object_size_min_calc(trov->overlay.obj, &ew, &eh);
+            e_popup_edje_bg_object_set(trov->overlay.popup,
+                                       trov->overlay.obj);
+            evas_object_show(trov->overlay.obj);
+            if (bd) {
+                if (_G.tinfo->conf->use_rows) {
+                    e_popup_move_resize(trov->overlay.popup,
+                        (extra->expected.x - trov->overlay.popup->zone->x +
+                            extra->expected.w - (ew / 2)),
+                        (extra->expected.y - trov->overlay.popup->zone->y +
+                            ((extra->expected.h - eh) / 2)),
+                        ew, eh);
+                } else {
+                    e_popup_move_resize(trov->overlay.popup,
+                        (extra->expected.x - trov->overlay.popup->zone->x +
+                            ((extra->expected.w - ew) / 2)),
+                        (extra->expected.y - trov->overlay.popup->zone->y +
+                            extra->expected.h - (eh / 2)),
+                        ew, eh);
+                }
+            } else {
+                if (_G.tinfo->conf->use_rows) {
+                    e_popup_move_resize(trov->overlay.popup,
+                                        (trov->overlay.popup->zone->w/2 - ew/2),
+                                        (_G.tinfo->pos[trov->stack]
+                                         + _G.tinfo->size[trov->stack]
+                                         - trov->overlay.popup->zone->y - eh/2),
+                                        ew, eh);
+                } else {
+                    e_popup_move_resize(trov->overlay.popup,
+                                        (_G.tinfo->pos[trov->stack]
+                                         + _G.tinfo->size[trov->stack]
+                                         - trov->overlay.popup->zone->x - ew/2),
+                                        (trov->overlay.popup->zone->h/2 - eh/2),
+                                        ew, eh);
+                }
+            }
+            evas_object_resize(trov->overlay.obj, ew, eh);
+            e_popup_show(trov->overlay.popup);
 
-             return ECORE_CALLBACK_RENEW;
-         }
+            return ECORE_CALLBACK_RENEW;
+        }
     }
 
 stop:
@@ -3022,12 +3037,21 @@ _do_transition_overlay(void)
                 evas_object_show(trov->overlay.obj);
                 e_popup_show(trov->overlay.popup);
 
-                e_popup_move_resize(trov->overlay.popup,
-                    (extra->expected.x - trov->overlay.popup->zone->x) +
-                        ((extra->expected.w - ew) / 2),
-                    (extra->expected.y - trov->overlay.popup->zone->y +
-                        extra->expected.h - (eh / 2)),
-                    ew, eh);
+                if (_G.tinfo->conf->use_rows) {
+                    e_popup_move_resize(trov->overlay.popup,
+                        (extra->expected.x - trov->overlay.popup->zone->x +
+                            extra->expected.w - (ew / 2)),
+                        (extra->expected.y - trov->overlay.popup->zone->y +
+                            ((extra->expected.h - eh) / 2)),
+                        ew, eh);
+                } else {
+                    e_popup_move_resize(trov->overlay.popup,
+                        (extra->expected.x - trov->overlay.popup->zone->x +
+                            ((extra->expected.w - ew) / 2)),
+                        (extra->expected.y - trov->overlay.popup->zone->y +
+                            extra->expected.h - (eh / 2)),
+                        ew, eh);
+                }
 
                 e_popup_show(trov->overlay.popup);
             }
@@ -3084,11 +3108,21 @@ _do_transition_overlay(void)
             evas_object_show(trov->overlay.obj);
             e_popup_show(trov->overlay.popup);
 
-            e_popup_move_resize(trov->overlay.popup,
-                                (_G.tinfo->pos[i] + _G.tinfo->size[i]
-                                  - trov->overlay.popup->zone->x - ew / 2),
-                                (trov->overlay.popup->zone->h / 2 - eh / 2),
-                                ew, eh);
+            if (_G.tinfo->conf->use_rows) {
+                e_popup_move_resize(trov->overlay.popup,
+                                    (trov->overlay.popup->zone->w/2 - ew/2),
+                                    (_G.tinfo->pos[trov->stack]
+                                     + _G.tinfo->size[trov->stack]
+                                     - trov->overlay.popup->zone->y - eh/2),
+                                    ew, eh);
+            } else {
+                e_popup_move_resize(trov->overlay.popup,
+                                    (_G.tinfo->pos[trov->stack]
+                                     + _G.tinfo->size[trov->stack]
+                                     - trov->overlay.popup->zone->x - ew/2),
+                                    (trov->overlay.popup->zone->h/2 - eh/2),
+                                    ew, eh);
+            }
 
             e_popup_show(trov->overlay.popup);
         }
