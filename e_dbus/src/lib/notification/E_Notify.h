@@ -170,6 +170,7 @@ extern "C" {
    EAPI char  e_notification_hint_suppress_sound_get(E_Notification *n);
    EAPI int   e_notification_hint_xy_get(E_Notification *n, int *x, int *y);
    EAPI E_Notification_Image *e_notification_hint_image_data_get(E_Notification *n);
+   /* icon_data is deprecated, we do not support setting it */
    EAPI E_Notification_Image *e_notification_hint_icon_data_get(E_Notification *n);
 
 /* image hint */
