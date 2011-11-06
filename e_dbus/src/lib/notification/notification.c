@@ -381,7 +381,7 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
    img->data = evas_object_image_data_get(obj, EINA_FALSE);
    if (!img->data) return EINA_FALSE;
-   evas_object_image_load_size_get(obj, &img->width, &img->height);
+   evas_object_image_size_get(obj, &img->width, &img->height);
    img->has_alpha = !!evas_object_image_alpha_get(obj);
    img->channels = img->has_alpha ? 4 : 3;
    img->rowstride = evas_object_image_stride_get(obj);
