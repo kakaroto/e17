@@ -391,11 +391,9 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
         img->width = img->height = 0;
         return EINA_FALSE;
      }
-   img->has_alpha = !!evas_object_image_alpha_get(obj);
-   img->channels = img->has_alpha ? 4 : 3;
+   img->has_alpha = 1;
+   img->channels = 4;
    img->rowstride = evas_object_image_stride_get(obj);
-   if (img->rowstride == 4 * img->width)
-     img->rowstride = img->channels * img->width;
    if (rgb) evas_object_image_data_set(obj, img->data);
    return EINA_TRUE;
 }
