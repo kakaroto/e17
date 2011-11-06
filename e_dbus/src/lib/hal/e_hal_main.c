@@ -1,4 +1,5 @@
 #include <E_Hal.h>
+#include <E_Ukit.h>
 #include "e_hal_private.h"
 
 int _e_dbus_hal_log_dom = -1;
@@ -26,8 +27,15 @@ e_hal_init(void)
       goto unregister_log_domain;
    }
 
+   if (!e_ukit_init()) {
+      ERR("Could not initialize E_UKit.");
+      goto shutdown_dbus;
+   }
+
    return _e_dbus_hal_init_count;
 
+ shutdown_dbus:
+   e_dbus_shutdown();
  unregister_log_domain:
    eina_log_domain_unregister(_e_dbus_hal_log_dom);
    _e_dbus_hal_log_dom = -1;
@@ -43,6 +51,7 @@ e_hal_shutdown(void)
    if (--_e_dbus_hal_init_count != 0)
      return _e_dbus_hal_init_count;
 
+   e_ukit_shutdown();
    e_dbus_shutdown();
 
    eina_log_domain_unregister(_e_dbus_hal_log_dom);

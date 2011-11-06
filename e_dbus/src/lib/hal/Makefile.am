@@ -2,6 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 -I $(top_srcdir)/src/lib/dbus \
+-I $(top_srcdir)/src/lib/ukit \
 @EDBUS_CFLAGS@
 
 lib_LTLIBRARIES = libehal.la
