@@ -1233,11 +1233,12 @@ _add_border(E_Border *bd)
             if (bd->maximized)
                 _e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
         } else {
-            DBG("add stack");
             /* Add stack */
             int nb_stacks = get_stack_count();
             int x, y, w, h;
             int pos, s, size = 0;
+
+            DBG("add stack");
 
             e_zone_useful_geometry_get(bd->zone, &x, &y, &w, &h);
 
