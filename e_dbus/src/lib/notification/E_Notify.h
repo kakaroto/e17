@@ -176,7 +176,7 @@ extern "C" {
 /* image hint */
    EAPI E_Notification_Image *e_notification_image_new(void);
    EAPI void e_notification_image_free(E_Notification_Image *img);
-   EAPI Eina_Bool e_notification_image_init(E_Notification_Image *img, Evas_Object *obj);
+   EAPI Eina_Bool e_notification_image_init(E_Notification_Image *img, Evas_Object *obj) EINA_WARN_UNUSED_RESULT;
    EAPI Evas_Object *e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img);
 
 #ifdef __cplusplus
