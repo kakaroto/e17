@@ -577,7 +577,7 @@ e_dbus_connection_ref(E_DBus_Connection *conn)
   conn->refcount++;
 }
 
-EAPI DBusConnection *
+DBusConnection *
 e_dbus_connection_dbus_connection_get(E_DBus_Connection *conn)
 {
   return conn->conn;

@@ -29,14 +29,11 @@
 
         * Added more methods for manipulating notification hints
 
-2011-11-04 Sanjeev BA <iamsanjeev@gmail.com>
+2011-11-06  Mike Blumenkrantz
 
-        * Exported e_dbus_connection_dbus_connection_get()
+        * Add e_notification_image_init for filling in values from an Evas_Object
 
 2011-11-06 Cedric Bail <cedric.bail@free.fr>
 
 	* E_Hal does use some function from E_Ukit, so init it as needed.
 
-2011-11-06  Mike Blumenkrantz
-
-        * Add e_notification_image_init for filling in values from an Evas_Object
