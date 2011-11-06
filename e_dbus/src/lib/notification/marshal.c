@@ -569,7 +569,7 @@ e_notify_marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img)
    DBusMessageIter sub, arr;
    int data_len = 0;
 
-   data_len = ((img->height - 1) * img->rowstride) + (img->width * ((img->channels * (img->bits_per_sample + 7)) / 8));
+   data_len = ((img->height - 1) * img->rowstride) + (img->width * (((img->channels * img->bits_per_sample) + 7) / 8));
    dbus_message_iter_open_container(iter, DBUS_TYPE_STRUCT, NULL, &sub);
    dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->width));
    dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->height));
