@@ -26,6 +26,7 @@ e_notification_full_new(const char *app_name, unsigned int replaces_id, const ch
    n->summary = eina_stringshare_add(summary);
    n->body = eina_stringshare_add(body);
    n->expire_timeout = expire_timeout;
+   n->hints.x = n->hints.y = -1;
 
    return n;
 }
