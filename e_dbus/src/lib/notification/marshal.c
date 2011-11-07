@@ -355,13 +355,11 @@ e_notify_marshal_notify(E_Notification *n)
    if (n->hints.desktop)
      e_notify_marshal_dict_string(&sub, "desktop_entry", n->hints.desktop);
    if (n->hints.image_data)
-     e_notify_marshal_dict_variant(&sub, "image_data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.image_data);
-   if (n->hints.icon_data)
-     e_notify_marshal_dict_variant(&sub, "icon_data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.icon_data);
+     e_notify_marshal_dict_variant(&sub, "image-data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.image_data);
    if (n->hints.sound_file)
-     e_notify_marshal_dict_string(&sub, "sound_file", n->hints.sound_file);
+     e_notify_marshal_dict_string(&sub, "sound-file", n->hints.sound_file);
    if (n->hints.suppress_sound) /* we only need to send this if its true */
-     e_notify_marshal_dict_byte(&sub, "suppress_sound", n->hints.suppress_sound);
+     e_notify_marshal_dict_byte(&sub, "suppress-sound", n->hints.suppress_sound);
    if (n->hints.x > -1 && n->hints.y > -1)
      {
         e_notify_marshal_dict_int(&sub, "x", n->hints.x);
