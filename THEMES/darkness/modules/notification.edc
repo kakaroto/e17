@@ -301,5 +301,12 @@ group {
          source: "bg";
          action: SIGNAL_EMIT "notification,find" "theme";
       }
+      program {
+         name: "close_find";
+         signal: "mouse,down,3";
+         source: "bg";
+         action: SIGNAL_EMIT "notification,close" "theme";
+         after: "find";
+      }
    }
 }
