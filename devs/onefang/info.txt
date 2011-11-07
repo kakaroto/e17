@@ -4,9 +4,8 @@ Name:         David Walter Seikel
 Location:     Brisbane, Australia
 E-Mail:       -onefang@gmail.com
 WWW:          http://onefang.net/
-Managing:     #get-e FAQ bot, Witch Finder General
-Contributing: e, ecore_exe
-Group:        Core, Modules
-Platform:     Ubuntu (Linux)
+Contributing: e, ecore_exe, edje
+Group:        Core, Libraries
+Platform:     Ubuntu (Linux), Aboriginal (Linux)
 GeoData:      -27.5 153.02
 
