@@ -6,6 +6,7 @@ styles {
       base: "font=DejaVu font_size=12 text_class=tb_plain align=left color=#ffffff style=shadow shadow_color=#263e5780 wrap=word";
       
       tag:  "br" "\n";
+      tag:  "ps" "ps";
       tag:  "subject"  "+ text_class=module_large font_size=14"; 
       tag:  "/subject" "- text_class=module_large font_size=14"; 
       tag:  "body"  "+ text_class=module_normal font_size=12"; 
