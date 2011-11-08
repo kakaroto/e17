@@ -378,21 +378,45 @@ e_notification_image_new(void)
 EAPI Eina_Bool
 e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
 {
+   unsigned char *imgdata;
+   
    EINA_SAFETY_ON_NULL_RETURN_VAL(img, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
-   img->data = evas_object_image_data_get(obj, EINA_FALSE);
-   if (!img->data) return EINA_FALSE;
-   evas_object_image_size_get(obj, &img->width, &img->height);
-   if ((!img->width) || (!img->height))
+   
+   evas_object_image_alpha_set(obj, img->has_alpha);
+   evas_object_image_size_set(obj, img->width, img->height);
+   
+   imgdata = evas_object_image_data_get(obj, EINA_TRUE);
+   if (!imgdata) return EINA_FALSE;
+   
+   if (img->bits_per_sample == 8)
      {
-        img->data = NULL;
-        img->width = img->height = 0;
-        return EINA_FALSE;
+        /* Although not specified.
+         * The data are very likely to come from a GdkPixbuf
+         * which align each row on a 4-bytes boundary when using RGB.
+         * And is RGBA otherwise. */
+        int x, y, *d;
+        unsigned char *s;
+        int rowstride;
+        
+        rowstride = evas_object_image_stride_get(obj);
+        for (y = 0; y < img->height; y++)
+          {
+             s = img->data + (y * img->rowstride);
+             d = (int *)(imgdata + (y * rowstride));
+
+             for (x = 0; x < img->width; x++, s += img->channels, d++)
+               {
+                  if (img->has_alpha)
+                    *d = (s[3] << 24) | (s[0] << 16) | (s[1] << 8) | (s[2]);
+                  else
+                    *d = (0xff << 24) | (s[0] << 16) | (s[1] << 8) | (s[2]);
+               }
+          }
      }
-   img->has_alpha = evas_object_image_alpha_get(obj);
-   img->channels = img->has_alpha ? 4 : 3;
-   img->rowstride = evas_object_image_stride_get(obj);
-   img->free_data = EINA_FALSE;
+   evas_object_image_data_update_add(obj, 0, 0, img->width, img->height);
+   evas_object_image_data_set(obj, imgdata);
+   
    return EINA_TRUE;
 }
 
@@ -406,53 +430,16 @@ e_notification_image_free(E_Notification_Image *img)
 EAPI Evas_Object *
 e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img)
 {
-   int *imgdata;
    Evas_Object *o = NULL;
 
-   if (!evas || !img) return NULL;
-
-   o = evas_object_image_add(evas);
+   if ((!evas) || (!img)) return NULL;
+   o = evas_object_image_filled_add(evas);
    evas_object_resize(o, img->width, img->height);
-   evas_object_image_alpha_set(o, img->has_alpha);
-   evas_object_image_size_set(o, img->width, img->height);
-   evas_object_image_fill_set(o, 0, 0, img->width, img->height);
-   imgdata = evas_object_image_data_get(o, 1);
-
-   if (img->bits_per_sample == 8)
+   if (!e_notification_image_init(img, o))
      {
-        /* Although not specified.
-         * The data are very likely to come from a GdkPixbuf
-         * which align each row on a 4-bytes boundary when using RGB.
-         * And is RGBA otherwise.
-         */
-        int x, y;
-        int32_t *dest;
-        unsigned char *src;
-        for (y = 0; y < img->height; y++)
-          {
-             src = img->data + y * img->rowstride;
-             dest = imgdata + y * img->width;
-
-             for (x = 0; x < img->width; x++, src += img->channels, dest++)
-               {
-                  if (img->has_alpha)
-                    {
-                       *dest = (*(src + 2) * *(src + 3) / 255);
-                       *dest += (*(src + 1) * *(src + 3) / 255) << 8;
-                       *dest += (*(src + 0) * *(src + 3) / 255) << 16;
-                       *dest += *(src + 3) << 24;
-                    }
-                  else
-                    {
-                       *dest = *(src + 2);
-                       *dest += *(src + 1) << 8;
-                       *dest += *(src + 0) << 16;
-                       *dest += 255 << 24;
-                    }
-               }
-          }
+        evas_object_del(o);
+        return NULL;
      }
-
    return o;
 }
 
