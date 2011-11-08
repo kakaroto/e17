@@ -32,8 +32,3 @@
 2011-11-06  Mike Blumenkrantz
 
         * Add e_notification_image_init for filling in values from an Evas_Object
-
-2011-11-06 Cedric Bail <cedric.bail@free.fr>
-
-	* E_Hal does use some function from E_Ukit, so init it as needed.
-
