@@ -71,6 +71,7 @@ styles
       base: "font=DejaVu style=glow color=#fff glow2_color=#38526DA0 glow_color=#263E57EA font_size=12 align=center wrap=word";
 
       tag:  "br" "\n";
+      tag:  "ps" "ps";
       tag:  "hilight" "+ font=DejaVu-Bold";
       tag:  "invisible" "+ font=DejaVu font_size=7 style=none color=#0002";
    }

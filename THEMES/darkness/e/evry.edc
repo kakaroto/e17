@@ -2067,6 +2067,7 @@
             tag:  "hilight" "+ font=DejaVu:style=Bold color=#0c0c0c";
             tag:  "b" "+ font=DejaVu:style=Bold font_size=9";
             tag:  "br" "\n";
+            tag:  "ps" "ps";
             tag:  "/title" "- \n \n";
          }
       }

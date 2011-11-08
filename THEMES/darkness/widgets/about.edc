@@ -5,6 +5,7 @@ styles
       base: "font=DejaVu font_size=10 text_class=tb_plain align=center color=#ffffffc8 style=shadow shadow_color=#263e5780 wrap=word";
       
       tag:  "br" "\n";
+      tag:  "ps" "ps";
       tag:  "hilight" "+ font=DejaVu-Bold text_class=tb_light style=glow color=#fff glow2_color=#38526DA0 glow_color=#263E57EA";
       tag:  "title" "+ font_size=12 font=DejaVu-Bold text_class=tb_big style=soft_shadow color=#fff shadow_color=#00000020";
       tag:  "/title" "- \n \n";

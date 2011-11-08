@@ -6,6 +6,7 @@ styles
       base: "font=DejaVu-Bold font_size=16 text_class=tb_large align=center color=#ffffffc8 style=soft_shadow shadow_color=#263e5780 wrap=word";
 
       tag:  "br" "\n";
+      tag:  "ps" "ps";
       tag:  "hilight" "+ font=DejaVu-Bold text_class=tb_large_light style=glow color=#fff glow2_color=#38526DA0 glow_color=#263E57EA";
    }
 }

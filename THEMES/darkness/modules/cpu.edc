@@ -4,6 +4,7 @@ styles {
       name: "cpu_style";
       base: "font=DejaVu-Bold font_size=10 text_class=module_large align=right color=#fff style=soft_shadow shadow_color=#91a9c3 wrap=word";
       tag:  "br" "\n";
+      tag:  "ps" "ps";
    }
 }
 
