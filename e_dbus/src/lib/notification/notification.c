@@ -378,6 +378,61 @@ e_notification_image_new(void)
 EAPI Eina_Bool
 e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
 {
+   int x, y, w = 0, h = 0;
+   unsigned char *d, *imgdata;
+   int rowstride;
+   int *s;
+   
+   EINA_SAFETY_ON_NULL_RETURN_VAL(img, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
+
+   evas_object_image_size_get(obj, &w, &h);
+   if ((w <= 0) || (h <= 0)) return EINA_FALSE;
+   imgdata = evas_object_image_data_get(obj, EINA_FALSE);
+   if (!imgdata) return EINA_FALSE;
+   
+   img->data = malloc(4 * w * h);
+   if (!img->data)
+     {
+        evas_object_image_data_set(obj, imgdata);
+        return EINA_FALSE;
+     }
+   img->channels = 4;
+   img->rowstride = 4 * w;
+   img->width = w;
+   img->height = h;
+   img->bits_per_sample = 8;
+   img->has_alpha = 1;
+   
+   rowstride = evas_object_image_stride_get(obj);
+   for (y = 0; y < img->height; y++)
+     {
+        s = (int *)(imgdata + (y * rowstride));
+        d = img->data + (y * img->rowstride);
+        
+        for (x = 0; x < img->width; x++, s++)
+          {
+             *d++ = (*s >> 16) & 0xff;
+             *d++ = (*s >> 8) & 0xff;
+             *d++ = (*s) & 0xff;
+             *d++ = (*s >> 24) & 0xff;
+          }
+     }
+   
+   evas_object_image_data_set(obj, imgdata);
+   return EINA_TRUE;
+}
+
+EAPI void
+e_notification_image_free(E_Notification_Image *img)
+{
+   if (img->data && img->free_data) free(img->data);
+   if (img) free(img);
+}
+
+static Eina_Bool
+_e_notification_image_evas_object_fill(E_Notification_Image *img, Evas_Object *obj)
+{
    unsigned char *imgdata;
    
    EINA_SAFETY_ON_NULL_RETURN_VAL(img, EINA_FALSE);
@@ -421,13 +476,6 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
    return EINA_TRUE;
 }
 
-EAPI void
-e_notification_image_free(E_Notification_Image *img)
-{
-   if (img->data && img->free_data) free(img->data);
-   if (img) free(img);
-}
-
 EAPI Evas_Object *
 e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img)
 {
@@ -436,7 +484,7 @@ e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img)
    if ((!evas) || (!img)) return NULL;
    o = evas_object_image_filled_add(evas);
    evas_object_resize(o, img->width, img->height);
-   if (!e_notification_image_init(img, o))
+   if (!_e_notification_image_evas_object_fill(img, o))
      {
         evas_object_del(o);
         return NULL;
