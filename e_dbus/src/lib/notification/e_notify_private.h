@@ -56,7 +56,6 @@ struct E_Notification_Image
   int   bits_per_sample;
   int   channels;
   unsigned char *data;
-  Eina_Bool free_data : 1;
 };
 
 struct E_Notification

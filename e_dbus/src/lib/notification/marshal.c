@@ -616,7 +616,6 @@ e_notify_unmarshal_hint_image(DBusMessageIter *iter)
    dbus_message_iter_get_fixed_array(&arr, &(byte_array), &array_len);
    img->data = malloc(array_len);
    memcpy(img->data, byte_array, array_len);
-   img->free_data = EINA_TRUE;
 
    return img;
 }

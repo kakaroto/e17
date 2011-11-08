@@ -403,7 +403,6 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
    img->height = h;
    img->bits_per_sample = 8;
    img->has_alpha = EINA_TRUE;
-   img->free_data = EINA_TRUE;
    
    rowstride = evas_object_image_stride_get(obj);
    for (y = 0; y < img->height; y++)
@@ -427,8 +426,9 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
 EAPI void
 e_notification_image_free(E_Notification_Image *img)
 {
-   if (img->data && img->free_data) free(img->data);
-   if (img) free(img);
+   if (!img) return;
+   free(img->data);
+   free(img);
 }
 
 static Eina_Bool
