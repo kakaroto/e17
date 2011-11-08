@@ -1,7 +1,0 @@
-Login:    emfox
-IRC Nick: emfox
-Name:     Emfox Zhou
-Location: Zhejiang, China
-E-Mail:   emfoxzhou@gmail.com
-WWW:      http://emfoxzhou.googlepages.com
-Managing: zh_CN translation, Debian packaging

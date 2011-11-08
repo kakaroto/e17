@@ -1,9 +1,0 @@
-Login:        kaethorn
-IRC Nick:     kaeth0rn
-Name:         Falko Schmidt
-Location:     Stuttgart, Germany
-E-Mail:       kaethorn@gmail.com
-WWW:          http://www.alphagemini.org
-Contributing: Debian packaging, ARM/pdaXrom porting and packaging
-Platform:     Linux, Solaris, DEC Alpha, SUN Sparc, Sharp Zaurus
-GeoData:      48.746176 9.100944

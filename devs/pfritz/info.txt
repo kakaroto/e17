@@ -1,9 +1,0 @@
-Login:    pfritz
-IRC Nick: pfritz
-Name:     Peter Wehrfritz
-Location: Nuremberg, Germany
-E-Mail:   peter.wehrfritz@web.de
-WWW:      
-Managing: EWL, Elitaire
-Platform: Xubuntu
-GeoData:  49.481 11.1027

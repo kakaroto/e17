@@ -1,6 +1,0 @@
-Login:        semernin
-IRC Nick:     aviator
-Name:         Sergey Pavlovich Semernin
-Location:     Belgorod, Russia
-E-Mail:       sergey.semernin@gmail.com
-Platform:     Debian GNU/Linux

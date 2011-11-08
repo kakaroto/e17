@@ -1,7 +1,0 @@
-Login:    xcomputerman
-IRC Nick: xcomp
-Name:     Ibukun Olumuyiwa
-Location: Houston, TX, USA
-E-Mail:   ibukun@computer.org
-WWW:      http://xcomputerman.com
-Managing: Entrance, code contributions (Ecore, E17)
