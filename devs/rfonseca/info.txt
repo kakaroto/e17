@@ -1,0 +1,8 @@
+Login:        rfonseca
+IRC Nick:     rfonseca
+Name:         Rafael Fonseca
+Location:     Campinas, Brazil
+E-Mail:       -rfonseca@profusion.mobi
+Contributing: Edje, Elementary
+Group:        Libraries
+Platform:     Arch (Linux)
