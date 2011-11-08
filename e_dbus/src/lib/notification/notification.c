@@ -402,7 +402,8 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
    img->width = w;
    img->height = h;
    img->bits_per_sample = 8;
-   img->has_alpha = 1;
+   img->has_alpha = EINA_TRUE;
+   img->free_data = EINA_TRUE;
    
    rowstride = evas_object_image_stride_get(obj);
    for (y = 0; y < img->height; y++)
