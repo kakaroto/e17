@@ -378,12 +378,9 @@ e_notification_image_new(void)
 EAPI Eina_Bool
 e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
 {
-   Eina_Bool rgb = EINA_TRUE;
    EINA_SAFETY_ON_NULL_RETURN_VAL(img, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
-   img->data = evas_object_image_data_convert(obj, EVAS_COLORSPACE_ARGB8888);
-   if (img->data) rgb = EINA_FALSE;
-   else img->data = evas_object_image_data_get(obj, EINA_FALSE);
+   img->data = evas_object_image_data_get(obj, EINA_FALSE);
    if (!img->data) return EINA_FALSE;
    evas_object_image_size_get(obj, &img->width, &img->height);
    if ((!img->width) || (!img->height))
@@ -392,10 +389,9 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
         img->width = img->height = 0;
         return EINA_FALSE;
      }
-   img->has_alpha = 1;
-   img->channels = 4;
+   img->has_alpha = evas_object_image_alpha_get(obj);
+   img->channels = img->has_alpha ? 4 : 3;
    img->rowstride = evas_object_image_stride_get(obj);
-   if (rgb) evas_object_image_data_set(obj, img->data);
    img->free_data = EINA_FALSE;
    return EINA_TRUE;
 }
