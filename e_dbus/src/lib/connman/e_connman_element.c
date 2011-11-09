@@ -178,27 +178,17 @@ e_connman_element_listener_del(E_Connman_Element *element, void (*cb)(void *data
 static void
 _e_connman_element_listeners_call_do(E_Connman_Element *element)
 {
-   E_Connman_Element_Listener *l, **shadow;
-   unsigned int i, count;
+   E_Connman_Element_Listener *l;
+   Eina_Inlist *x;
 
    /* NB: iterate on a copy in order to allow listeners to be deleted
     * from callbacks.  number of listeners should be small, so the
     * following should do fine.
     */
-   count = eina_inlist_count(element->_listeners);
-   if (count < 1)
-      goto end;
+   if (eina_inlist_count(element->_listeners) < 1) goto end;
 
-   shadow = alloca(sizeof(*shadow) * count);
-   if (!shadow)
-      goto end;
-
-   i = 0;
-   EINA_INLIST_FOREACH(element->_listeners, l)
-   shadow[i++] = l;
-
-   for (i = 0; i < count; i++)
-      shadow[i]->cb(shadow[i]->data, element);
+   EINA_INLIST_FOREACH_SAFE(element->_listeners, x, l)
+     l->cb(l->data, element);
 
 end:
    e_connman_element_event_add(E_CONNMAN_EVENT_ELEMENT_UPDATED, element);
