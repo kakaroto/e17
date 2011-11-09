@@ -379,14 +379,10 @@ _e_connman_element_array_free(E_Connman_Array *array, E_Connman_Array *new __UNU
       case DBUS_TYPE_UINT32:
          break;
 
+      case DBUS_TYPE_STRING:
       case DBUS_TYPE_OBJECT_PATH:
          EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-         eina_stringshare_del(item);
-         break;
-
-      case DBUS_TYPE_STRING:
-         EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-         eina_stringshare_del(item);
+            eina_stringshare_del(item);
          break;
 
       case DBUS_TYPE_DICT_ENTRY:
