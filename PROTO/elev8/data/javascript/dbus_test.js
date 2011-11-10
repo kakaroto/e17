@@ -33,9 +33,6 @@ var my_window = new elm.window({
 					text : "org.freedesktop.DBus",
 					weight : EXPAND_BOTH,
 					align : FILL_BOTH,
-					line_wrap : 3,
-                    singleline : 1,
-					editable : true,
 				},
                 the_button : {
                     type : "button",
@@ -44,11 +41,10 @@ var my_window = new elm.window({
                     on_clicked : function() {
                         print("Button Clicked");
                         var test = new dbus("System");
-                        test.introspect("net.connman",
-                                        "/org/freedesktop/NetworkManager",
-                                        "org.freedesktop.NetworkManager",
-                                        "state"); 
-
+                        test.on_introspect_result = function(args){
+                            my_window.elements.the_box.elements.the_bus.text = arguments[0];
+                        },
+                        test.introspect("org.freedesktop.NetworkManager", "/");
                     },
                 },
             }
