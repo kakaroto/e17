@@ -79,7 +79,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
 
 	        // make v8 string here
 		std::ofstream out(buf, std::ios::out | std::ios::binary);
-		fprintf(stderr, "IMAGEEEEEEEEE = %s\n", buf);
+		fprintf(stderr, "Image = %s\n", buf);
 		out.write((char *)eina_binbuf_string_get(reqObj->data), 
 				   eina_binbuf_length_get(reqObj->data));
 		out.close();
