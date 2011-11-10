@@ -1851,7 +1851,7 @@ e_connman_element_property_dict_get_stringshared(const E_Connman_Element *elemen
         }
    }
 
-   WRN("element %s (%p) has no property with name \"%s\".",
+   DBG("element %s (%p) has no property with name \"%s\".",
        element->path, element, dict_name);
    return EINA_FALSE;
 }
