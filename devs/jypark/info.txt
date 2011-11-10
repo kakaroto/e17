@@ -6,7 +6,7 @@ Location:     Suwon, Korea
 E-Mail:       jijibe99@gmail.com 
 WWW:          
 Managing:     evas, ecore 
-Contributing: evas, ecore, elementary 
+Contributing: elementary 
 Group:        Libraries, Core 
-Platform:      
+Platform:     Ubuntu (Linux) 
 GeoData:      37.261860 127.041092 
