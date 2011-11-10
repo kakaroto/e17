@@ -1,4 +1,3 @@
-#include <expat.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -135,7 +134,7 @@ static const char* GetAttribute(const char **attrs, const char *name) {
   return "";
 }
 
-static void expat_StartElementHandler(void *userData, 
+void expat_StartElementHandler(void *userData,
               const XML_Char *name, const XML_Char **attrs) {
   printf("Node: %s\n", name);
   Parser *parser = reinterpret_cast<Parser*>(userData);
@@ -195,7 +194,7 @@ static void expat_StartElementHandler(void *userData,
   }
 }
 
-static void expat_EndElementHandler(void *userData, 
+void expat_EndElementHandler(void *userData,
               const XML_Char *name ) {
   printf("Node: %s\n", name);
   Parser *parser = reinterpret_cast<Parser*>(userData);

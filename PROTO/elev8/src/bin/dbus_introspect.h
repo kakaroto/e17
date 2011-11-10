@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include <expat.h>
 
 namespace dbus_library {
 
@@ -54,6 +55,11 @@ void ParserRelease(Parser **pparer);
 Parser* ParseIntrospcect(const char *source, int size);
 
 BusInterface* ParserGetInterface(Parser *parser, const char *iface);
+
+void expat_StartElementHandler(void *userData,
+              const XML_Char *name, const XML_Char **attrs);
+
+void expat_EndElementHandler(void *userData, const XML_Char *name);
 
 }
 
