@@ -1,9 +1,71 @@
 #include "dbus_library.h"
+#include <expat.h>
+#include "dbus_introspect.h"
 
 using namespace v8;
+using namespace dbus_library;
 
 Handle<ObjectTemplate> dbusObj;
 
+void introspect_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+   char *value;
+   int size = 0;
+   DBus *dbus = (DBus *)data;
+   /* Extract the data from the reply */
+   if (!dbus_message_get_args(msg,error,DBUS_TYPE_STRING,&value, DBUS_TYPE_INVALID))
+     {
+        fprintf (stderr, "Failed to complete call\n");
+        return;
+     }
+
+   //the string from dbus_message_get_args is always null terminated
+   size = strlen(value);
+
+   /* Print the results */
+   fprintf (stderr, "Retrieved Value is %s\n", value);
+
+   XML_Parser expat;
+   Parser *parser = ParserNew();
+
+   expat = XML_ParserCreate(NULL);
+   XML_SetUserData(expat, parser);
+   XML_SetElementHandler(expat, 
+               expat_StartElementHandler,
+               expat_EndElementHandler);
+
+   if (!XML_Parse(expat, value, size, true))
+     {
+        enum XML_Error e;
+
+        e = XML_GetErrorCode (expat);
+        if (e == XML_ERROR_NO_MEMORY)
+          fprintf(stderr, "Not enough memory to parse XML document");
+        else
+          fprintf(stderr, "Error in D-BUS description XML, line %ld, column %ld: %s\n",
+                       XML_GetCurrentLineNumber (expat),
+                       XML_GetCurrentColumnNumber (expat),
+                       XML_ErrorString (e));
+     }
+   printf("success\n");
+
+   ParserPrint(parser);
+
+   ParserRelease(&parser);
+
+   if (dbus->introspect_result->IsFunction())
+     {
+        Local<Function> func = Function::Cast(*(dbus->introspect_result));
+        if (!func.IsEmpty())
+          {
+             fprintf (stderr, "Retrieved Value is %s\n", value);
+             Persistent<String> path = static_cast<Persistent<String> >(
+					                    String::New(value));
+             Handle<Value> args[1] = { path };
+             func->Call(func, 1, args);
+          }
+     }
+}
 
 Handle<Value> dbus_msg_introspect(const Arguments &args)
 {
@@ -15,37 +77,24 @@ Handle<Value> dbus_msg_introspect(const Arguments &args)
    void* ptr = wrap->Value();
    DBus *dbus = (DBus *)ptr;
 
-   if (args[0]->IsString() && args[1]->IsString() && 
-              args[2]->IsString() && args[3]->IsString() )
+   if (args[0]->IsString() && args[1]->IsString())
      {
         String::Utf8Value service(args[0]->ToString());
         String::Utf8Value path(args[1]->ToString());
-        String::Utf8Value interface(args[2]->ToString());
-        String::Utf8Value method(args[3]->ToString());
-        fprintf(stderr, "%s-%s-%s-%s\n", *service, *path, *interface, *method);
+        fprintf(stderr, "%s-%s\n", *service, *path);
 
-        DBusError error;
-        DBusMessage *message;
-        DBusMessage *reply;
-        int reply_timeout;
-        int value;
-
-        dbus_error_init (&error);
-
-        /* Construct the message */
-        message = dbus_message_new_method_call(
-                                           *service,*path,*interface,*method);
-
-        /* Call ListServices method */
-        reply_timeout = -1;   /*don't timeout*/
+        DBusPendingCall *pc;
 
         /* TODO : use e_dbus_introspect() */
+        pc = e_dbus_introspect(dbus->conn, *service, *path, introspect_cb, ptr);
 
-        dbus_message_unref (message);
-
-        /* Print the results */
-        fprintf (stderr, "Retrieved Value is %u\n", value);
+        if (!pc)
+          {
+             fprintf(stderr, "Cannot introspect the given DBUS\n");
+          }
+        fprintf(stderr, "Introspect called\n");
      }
+   return Undefined();
 }
 
 void introspect_result(Local<String> property,
@@ -54,12 +103,12 @@ void introspect_result(Local<String> property,
 {
    Local<Object> self = info.Holder();
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
-   void *ptr = wrap->Value();
+   void* ptr = wrap->Value();
    DBus *dbus = (DBus *)ptr;
-   
+
    String::Utf8Value prop_name(property);
-   dbus->introspectResult.Dispose();
-   dbus->introspectResult = Persistent<Value>::New(value);
+   dbus->introspect_result.Dispose();
+   dbus->introspect_result = Persistent<Value>::New(value);
 }
 
 Handle<Value> createDBusInstance(const Arguments& args)
@@ -105,7 +154,7 @@ Handle<Value> createDBusInstance(const Arguments& args)
    introspect->SetCallHandler(dbus_msg_introspect);
    dbusObj->Set(String::New("introspect"), introspect);
 
-   dbusObj->SetAccessor(String::New("onIntrospectResult"),NULL,
+   dbusObj->SetAccessor(String::New("on_introspect_result"),NULL,
                                     introspect_result,
                                     Null()
                              );
