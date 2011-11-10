@@ -578,7 +578,7 @@ public:
 
    virtual void label_set(const char *str)
      {
-        elm_object_text_set(eo, str);
+        elm_object_text_set(eo, elm_entry_utf8_to_markup(str));
      }
 
    virtual Handle<Value> disabled_get() const

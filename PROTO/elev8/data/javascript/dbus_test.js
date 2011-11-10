@@ -44,7 +44,7 @@ var my_window = new elm.window({
                         test.on_introspect_result = function(args){
                             my_window.elements.the_box.elements.the_bus.text = arguments[0];
                         },
-                        test.introspect("org.freedesktop.NetworkManager", "/");
+                        test.introspect("org.bluez", "/");
                     },
                 },
             }
