@@ -20,4 +20,4 @@ elev8_SOURCES = \
 	dbus_library.cc dbus_library.h
 
 
-elev8_LDADD = @ELEV8_LIBS@ @V8_LIBS@
+elev8_LDADD = @ELEV8_LIBS@ @V8_LIBS@ @EXPAT_LIBS@
