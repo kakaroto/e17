@@ -1198,7 +1198,7 @@ e_connman_service_ethernet_address_get(const E_Connman_Element *service, const c
 }
 
 /**
- * Get property "Ethernet.Gateway" value.
+ * Get property "Ethernet.MTU" value.
  *
  * If this property isn't found then @c EINA_FALSE is returned.
  * If @c EINA_FALSE is returned, then this call failed and parameter-returned
