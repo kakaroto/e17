@@ -1152,7 +1152,7 @@ e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *
  * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
- * The Ethernet configuration method. Possible values here "auto".
+ * The Ethernet configuration method. Possible values here "auto" and "manual".
  *
  * @param service path to get property.
  * @param method where to store the property value, must be a pointer
