@@ -124,6 +124,17 @@ LIBS="$saved_LIBS"
 AC_MSG_RESULT([yes])
 AC_LANG_POP
 
+# Checks for expat library
+HAVE_EXPAT=no
+AC_CHECK_LIB(expat, XML_ParserCreate, HAVE_EXPAT="yes")
+if test "x$HAVE_EXPAT" = xyes ; then
+EXPAT_LIBS="-lexpat"
+AC_SUBST(EXPAT_LIBS)
+AC_MSG_RESULT([Expat library is available.])
+else
+AC_MSG_ERROR([You need the eXpat xml parser] [http://expat.sourceforge.net/])
+fi
+
 EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
 AC_OUTPUT([
