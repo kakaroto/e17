@@ -1,3 +1,26 @@
+#define BUTTON_DISABLE_PART(NAME, BORDER) \
+      part { \
+         name:          NAME"_disabled"; \
+         type:          IMAGE; \
+         mouse_events:  1; \
+         description { \
+            state:    "default" 0.0; \
+            visible:  0; \
+            rel1.to: NAME; \
+            rel2.to: NAME; \
+            image { \
+               normal: "button_disabled.png"; \
+               border: BORDER; \
+            } \
+         } \
+         description { \
+            state:    "disabled" 0.0; \
+            inherit:  "default" 0.0; \
+            visible:  1; \
+         } \
+      }
+
+
 #define BUTTON_PART(NAME, EXTRA, BORDER) \
       part { \
          name: NAME; \
@@ -22,27 +45,7 @@
             visible: 0; \
          } \
       } \
-      part { \
-         name:          NAME"_disabled"; \
-         type:          IMAGE; \
-         mouse_events:  1; \
-         description { \
-            state:    "default" 0.0; \
-            visible:  0; \
-            rel1.to: NAME; \
-            rel2.to: NAME; \
-            image { \
-               normal: "button_disabled.png"; \
-               border: BORDER; \
-            } \
-         } \
-         description { \
-            state:    "disabled" 0.0; \
-            inherit:  "default" 0.0; \
-            visible:  1; \
-         } \
-      }
-
+      BUTTON_DISABLE_PART(NAME, BORDER)
 #define BUTTON_GLOW_PART(rect_part, alpha) \
    part { \
       name: rect_part"_glow"; \
