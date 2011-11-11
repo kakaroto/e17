@@ -23,6 +23,8 @@
  * @{
  */
 
+static Eina_Mempool *value_mempool = NULL;
+
 static Eina_Hash *string_values = NULL;
 static Eina_Hash *base64_values = NULL;
 static Eina_Hash *int_values = NULL;
@@ -38,7 +40,7 @@ azy_value_new_(void)
 {
    Azy_Value *v;
 
-   v = calloc(1, sizeof(Azy_Value));
+   v = eina_mempool_malloc(value_mempool, sizeof(Azy_Value));
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    EINA_REFCOUNT_INIT(v);
@@ -80,12 +82,28 @@ azy_value_list_multi_line_get_(Azy_Value *v)
 Eina_Bool
 azy_value_init(void)
 {
+   const char *type;
+
+   type = getenv("EINA_MEMPOOL");
+   if ((!type) || (!type[0])) type = "chained_mempool";
+   value_mempool = eina_mempool_add(type, "Azy_Value", NULL, sizeof(Azy_Value), 64);
+   if (!value_mempool)
+     {
+        if (!strcmp(type, "pass_through")) goto error;
+        value_mempool = eina_mempool_add("pass_through", "Azy_Value", NULL, sizeof(Azy_Value), 64);
+        if (!value_mempool) goto error;
+     }
+
    string_values = eina_hash_string_superfast_new(NULL);
    base64_values = eina_hash_string_superfast_new(NULL);
    time_values = eina_hash_string_superfast_new(NULL);
    int_values = eina_hash_int64_new(NULL);
    bool_values = eina_hash_int32_new(NULL);
+
    return EINA_TRUE;
+error:
+   EINA_LOG_CRIT("Unable to set up mempool!");
+   return EINA_FALSE;
 }
 
 void
@@ -174,7 +192,7 @@ azy_value_unref(Azy_Value *val)
           azy_value_unref(val->member_value);
         EINA_LIST_FREE(val->children, v)
           azy_value_unref(v);
-        free(val);
+        eina_mempool_free(value_mempool, val);
      }
 }
 

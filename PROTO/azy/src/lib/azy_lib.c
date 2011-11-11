@@ -156,8 +156,8 @@ azy_init(void)
    if (!ecore_init()) goto fail;
    if (!ecore_con_init()) goto ecore_fail;
 
+   if (!azy_value_init()) goto ecore_con_fail;
    azy_lib_register_errors_();
-   azy_value_init();
 
    AZY_CLIENT_DISCONNECTED = ecore_event_type_new();
    AZY_CLIENT_UPGRADE = ecore_event_type_new();
@@ -184,6 +184,8 @@ azy_init(void)
    eina_magic_string_set(AZY_MAGIC_CONTENT, "Azy_Content");
    return azy_init_count_;
 
+ecore_con_fail:
+   ecore_con_shutdown();
 ecore_fail:
    ecore_shutdown();
 fail:
