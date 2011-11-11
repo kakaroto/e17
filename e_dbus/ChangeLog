@@ -32,3 +32,7 @@
 2011-11-06  Mike Blumenkrantz
 
         * Add e_notification_image_init for filling in values from an Evas_Object
+
+2011-11-11  Carsten Haitzler (The Rasterman)
+
+        * Fix DSO linking to edbus to include libdbus linking and includes
