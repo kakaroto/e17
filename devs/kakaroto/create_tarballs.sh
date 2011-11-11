@@ -62,5 +62,6 @@ for lib in $EFL_LIBS ; do
     download $lib
     autogen_lib $what
     tarball $what
+    rm -rf $what
 done
 
