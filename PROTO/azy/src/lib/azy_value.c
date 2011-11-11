@@ -221,6 +221,7 @@ azy_value_string_new(const char *val)
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_STRING;
    v->str_val = eina_stringshare_add(val ? val : "");
+   eina_hash_add(string_values, v->str_val, v);
    return v;
 }
 
@@ -248,6 +249,7 @@ azy_value_int_new(int val)
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_INT;
    v->int_val = val;
+   eina_hash_add(int_values, &v->int_val, v);
    return v;
 }
 
@@ -277,6 +279,7 @@ azy_value_bool_new(Eina_Bool val)
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_BOOL;
    v->int_val = val;
+   eina_hash_add(bool_values, &v->int_val, v);
    return v;
 }
 
@@ -324,6 +327,7 @@ azy_value_time_new(const char *val)
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_TIME;
    v->str_val = eina_stringshare_add(val ? val : "");
+   eina_hash_add(time_values, v->str_val, v);
    return v;
 }
 
@@ -353,6 +357,7 @@ azy_value_base64_new(const char *base64)
    EINA_SAFETY_ON_NULL_RETURN_VAL(val, NULL);
    val->type = AZY_VALUE_BASE64;
    val->str_val = eina_stringshare_add(base64);
+   eina_hash_add(base64_values, val->str_val, val);
    return val;
 }
 
