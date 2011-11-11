@@ -290,9 +290,9 @@ struct Azy_Server_Module
 
 struct Azy_Value
 {
-                  AZY_MAGIC;
+   AZY_MAGIC;
+   EINA_REFCOUNT;
    Azy_Value_Type type;
-   int            ref;
 
    const char    *str_val;
    int            int_val;
@@ -373,6 +373,9 @@ extern void _azy_magic_fail(const void *d,
                             Azy_Magic   m,
                             Azy_Magic   req_m,
                             const char *fname);
+
+Eina_Bool azy_value_init(void);
+void azy_value_shutdown(void);
 
 Eina_Bool azy_value_multi_line_get_(Azy_Value *v,
                                     int        max_strlen);

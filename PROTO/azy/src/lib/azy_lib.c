@@ -157,6 +157,7 @@ azy_init(void)
    if (!ecore_con_init()) goto ecore_fail;
 
    azy_lib_register_errors_();
+   azy_value_init();
 
    AZY_CLIENT_DISCONNECTED = ecore_event_type_new();
    AZY_CLIENT_UPGRADE = ecore_event_type_new();
@@ -210,6 +211,7 @@ azy_shutdown(void)
    eina_log_domain_unregister(azy_log_dom);
    if (azy_rpc_log_dom != -1)
      eina_log_domain_unregister(azy_rpc_log_dom);
+   azy_value_shutdown();
    ecore_con_shutdown();
    ecore_shutdown();
    eina_shutdown();

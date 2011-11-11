@@ -23,6 +23,12 @@
  * @{
  */
 
+static Eina_Hash *string_values = NULL;
+static Eina_Hash *base64_values = NULL;
+static Eina_Hash *int_values = NULL;
+static Eina_Hash *bool_values = NULL;
+static Eina_Hash *time_values = NULL;
+
 static Azy_Value *azy_value_new_(void);
 static Eina_Bool  azy_value_list_multi_line_get_(Azy_Value *v);
 
@@ -35,7 +41,7 @@ azy_value_new_(void)
    v = calloc(1, sizeof(Azy_Value));
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
-   v->ref = 1;
+   EINA_REFCOUNT_INIT(v);
    AZY_MAGIC_SET(v, AZY_MAGIC_VALUE);
    return v;
 }
@@ -69,6 +75,28 @@ azy_value_list_multi_line_get_(Azy_Value *v)
      }
 
    return EINA_FALSE;
+}
+
+Eina_Bool
+azy_value_init(void)
+{
+   string_values = eina_hash_string_superfast_new(NULL);
+   base64_values = eina_hash_string_superfast_new(NULL);
+   time_values = eina_hash_string_superfast_new(NULL);
+   int_values = eina_hash_int64_new(NULL);
+   bool_values = eina_hash_int32_new(NULL);
+   return EINA_TRUE;
+}
+
+void
+azy_value_shutdown(void)
+{
+   eina_hash_free(string_values);
+   eina_hash_free(base64_values);
+   eina_hash_free(time_values);
+   eina_hash_free(int_values);
+   eina_hash_free(bool_values);
+   string_values = base64_values = int_values = time_values = bool_values = NULL;
 }
 
 /* returns EINA_TRUE if the line requires multiple lines to print */
@@ -112,7 +140,7 @@ azy_value_ref(Azy_Value *val)
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return NULL;
      }
-   val->ref++;
+   EINA_REFCOUNT_REF(val);
    return val;
 }
 
@@ -136,19 +164,18 @@ azy_value_unref(Azy_Value *val)
         return;
      }
 
-   --val->ref;
-   if (val->ref)
-     return;
+   EINA_REFCOUNT_UNREF(val)
+     {
+        AZY_MAGIC_SET(val, AZY_MAGIC_NONE);
 
-   AZY_MAGIC_SET(val, AZY_MAGIC_NONE);
-
-   if (val->str_val) eina_stringshare_del(val->str_val);
-   if (val->member_name) eina_stringshare_del(val->member_name);
-   if (val->member_value)
-     azy_value_unref(val->member_value);
-   EINA_LIST_FREE(val->children, v)
-     azy_value_unref(v);
-   free(val);
+        if (val->str_val) eina_stringshare_del(val->str_val);
+        if (val->member_name) eina_stringshare_del(val->member_name);
+        if (val->member_value)
+          azy_value_unref(val->member_value);
+        EINA_LIST_FREE(val->children, v)
+          azy_value_unref(v);
+        free(val);
+     }
 }
 
 /* base types */
@@ -164,6 +191,13 @@ Azy_Value *
 azy_value_string_new(const char *val)
 {
    Azy_Value *v;
+
+   v = eina_hash_find(string_values, val ? val : "");
+   if (v)
+     {
+        EINA_REFCOUNT_REF(v);
+        return v;
+     }
 
    v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
@@ -185,6 +219,13 @@ azy_value_int_new(int val)
 {
    Azy_Value *v;
 
+   v = eina_hash_find(int_values, &val);
+   if (v)
+     {
+        EINA_REFCOUNT_REF(v);
+        return v;
+     }
+
    v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_INT;
@@ -205,10 +246,19 @@ azy_value_bool_new(Eina_Bool val)
 {
    Azy_Value *v;
 
+   val = !!val;
+
+   v = eina_hash_find(bool_values, &val);
+   if (v)
+     {
+        EINA_REFCOUNT_REF(v);
+        return v;
+     }
+
    v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_BOOL;
-   v->int_val = !!val;
+   v->int_val = val;
    return v;
 }
 
@@ -245,6 +295,13 @@ azy_value_time_new(const char *val)
 {
    Azy_Value *v;
 
+   v = eina_hash_find(time_values, val ? val : "");
+   if (v)
+     {
+        EINA_REFCOUNT_REF(v);
+        return v;
+     }
+
    v = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
    v->type = AZY_VALUE_TIME;
@@ -266,6 +323,13 @@ azy_value_base64_new(const char *base64)
    Azy_Value *val;
 
    if (!base64) return NULL;
+
+   val = eina_hash_find(base64_values, base64);
+   if (val)
+     {
+        EINA_REFCOUNT_REF(val);
+        return val;
+     }
 
    val = azy_value_new_();
    EINA_SAFETY_ON_NULL_RETURN_VAL(val, NULL);
