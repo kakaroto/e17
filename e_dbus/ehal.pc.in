@@ -7,5 +7,5 @@ Name: ehal
 Description: Hal convenience library
 @pkgconfig_requires_private@: @requirement_ehal@
 Version: @VERSION@
-Libs: -L${libdir} -lehal
+Libs: -L${libdir} -lehal @edbus_link@
 Cflags: -I${includedir}/e_dbus-@VMAJ@
