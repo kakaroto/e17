@@ -33,4 +33,8 @@ pass_events - need to review the code. it looks somewhat ineffecient code are th
 
 freeze_events - apply for key events
 
-evas_object_content_set/get - apply to all app/lib in svn. 
+evas_object_item APIs - apply to all app/lib in svn.
+
+elm_transit - apply evas_map to move and resize effect.
+
+naviframe - need to block the style set while transiton is going on 
