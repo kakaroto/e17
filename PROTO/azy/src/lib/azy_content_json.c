@@ -15,14 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#include "azy_private.h"
 #include "cJSON.h"
 #include <math.h>
-#include "Azy.h"
-#include "azy_private.h"
 
 cJSON *
 azy_value_serialize_json(Azy_Value *val)

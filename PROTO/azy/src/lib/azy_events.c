@@ -15,15 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#include "azy_private.h"
 #include <ctype.h>
 #include <inttypes.h>
 #include <errno.h>
-#include "Azy.h"
-#include "azy_private.h"
 
 #define AZY_SKIP_BLANK(PTR)                \
   if (PTR && (len > 0) && isspace(*(PTR))) \

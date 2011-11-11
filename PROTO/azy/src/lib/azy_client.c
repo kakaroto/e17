@@ -15,14 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-#include <regex.h>
+#include "azy_private.h"
 #include <ctype.h>
 #include <inttypes.h>
-#include "Azy.h"
-#include "azy_private.h"
 
 static Azy_Client_Call_Id azy_client_send_id__ = 0;
 

@@ -15,12 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-#include <regex.h>
-
-#include "Azy.h"
 #include "azy_private.h"
 
 static void      _azy_client_handler_call_free(Azy_Client  *client,
