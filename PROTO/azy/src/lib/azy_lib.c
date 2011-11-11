@@ -146,7 +146,7 @@ azy_init(void)
 {
    if (++azy_init_count_ != 1)
      return azy_init_count_;
-   if (!eina_init()) return 0;
+   if (!eina_init()) goto big_fail;
    azy_log_dom = eina_log_domain_register("azy", EINA_COLOR_BLUE);
    if (azy_log_dom < 0)
      {
@@ -193,6 +193,8 @@ fail:
    azy_log_dom = -1;
 eina_fail:
    eina_shutdown();
+big_fail:
+   azy_init_count_ = 0;
    return 0;
 }
 
