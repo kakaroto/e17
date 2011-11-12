@@ -192,7 +192,7 @@ group {
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
-				min: 20 2;
+				min: 40 2;
 				max: 9999 2;
 				rel1 { 
 					relative: 0.0 0.0; 
@@ -204,7 +204,7 @@ group {
 				}
 				image {
 					normal: "images/menu_im1.png";
-					border: 2 2 1 1;
+					border: 20 20 1 1;
 				}
 				color_class: "menu_base";
 			}
