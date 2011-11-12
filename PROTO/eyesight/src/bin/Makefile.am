@@ -27,4 +27,4 @@ eyesight_LDADD = @EYESIGHT_BIN_LIBS@ $(top_builddir)/src/lib/libeyesight.la
 filesdir = $(datadir)/$(PACKAGE)
 files_DATA = gradient.png
 
-#EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = gradient.png
