@@ -1,8 +1,62 @@
 group { name: "e/modules/bluez/main";
 	images {
-		image: "images/bluetooth.png" COMP;
-		image: "images/bluetooth_error.png" COMP;
-		image: "images/bluetooth_visible.png" COMP;
+		set {
+			name: "bluetooth_on";
+			image {
+				image: "images/bluetooth_on-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/bluetooth_on-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/bluetooth_on-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/bluetooth_on-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+		set {
+			name: "bluetooth_off";
+			image {
+				image: "images/bluetooth_off-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/bluetooth_off-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/bluetooth_off-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/bluetooth_off-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+		set {
+			name: "bluetooth_visible";
+			image {
+				image: "images/bluetooth_visible-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/bluetooth_visible-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/bluetooth_visible-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/bluetooth_visible-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
 	}
 	parts {
 		part { name: "eventarea";
@@ -16,10 +70,14 @@ group { name: "e/modules/bluez/main";
 			type: IMAGE;
 			mouse_events: 0;
 			description { state: "default" 0.0;
-				min: 16 28;
-				max: 16 28;
-				image.normal: "images/bluetooth.png";
+				min: 16 16;
+				max: 256 256;
+				aspect: 1 1;
+				aspect_preference: BOTH;
+				image.normal: "images/bluetooth_on-128x128.png";
 				color_class: "shelf_secondary_icon";
+				rel1.offset: 2 2;
+				rel2.offset: -3 -3;
 			}
 			description { state: "powered" 0.0;
 				inherit: "default" 0.0;
@@ -29,18 +87,22 @@ group { name: "e/modules/bluez/main";
 			}
 			description { state: "no_service" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "images/bluetooth_error.png";
+				image.normal: "bluetooth_off";
 			}
 		}
 		part { name: "visible";
 			type: IMAGE;
 			mouse_events: 0;
 			description { state: "default" 0.0;
-				min: 33 19;
-				max: 33 19;
-				image.normal: "images/bluetooth_visible.png";
+				min: 16 16;
+				max: 256 256;
+				aspect: 1 1;
+				aspect_preference: BOTH;
+				image.normal: "images/bluetooth_visible-128x128.png";
 				visible: 0;
 				color_class: "shelf_secondary_icon";
+				rel1.offset: 5 5;
+				rel2.offset: -6 -6;
 			}
 			description { state: "powered" 0.0;
 				inherit: "default" 0.0;
