@@ -101,8 +101,8 @@ group { name: "e/modules/bluez/main";
 				image.normal: "images/bluetooth_visible-128x128.png";
 				visible: 0;
 				color_class: "shelf_secondary_icon";
-				rel1.offset: 5 5;
-				rel2.offset: -6 -6;
+				rel1.offset: 2 2;
+				rel2.offset: -3 -3;
 			}
 			description { state: "powered" 0.0;
 				inherit: "default" 0.0;
