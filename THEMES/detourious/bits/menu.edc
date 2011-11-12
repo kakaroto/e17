@@ -403,8 +403,11 @@ group {
 			name: "item_hilight";
 			description {
 				state: "default" 0.0;
-				image.normal: "images/menu_im2.png";
-				image.border: 5 5 5 5;
+				image {
+					normal: "images/menu_im2.png";
+					border: 5 5 5 5;
+					middle: SOLID;
+				}
 				visible: 0;
 				rel1 { 
 					relative: 0.0 0.0; 
