@@ -16,14 +16,46 @@
 # define _(string) (string)
 #endif
 
+typedef enum
+{
+  E_QUICK_ACCESS_ENTRY_RELATIVE = 0,
+  E_QUICK_ACCESS_ENTRY_ABSOLUTE,
+  E_QUICK_ACCESS_ENTRY_FULLSCREEN /* no animation (maybe fade in future) */
+} E_Quick_Access_Entry_Mode;
+
+typedef enum
+  {
+    E_QUICK_ACCESS_ENTRY_ORIENT_TOP = 0,
+    E_QUICK_ACCESS_ENTRY_ORIENT_BOTTOM,
+    E_QUICK_ACCESS_ENTRY_ORIENT_LEFT,
+    E_QUICK_ACCESS_ENTRY_ORIENT_RIGHT,
+    E_QUICK_ACCESS_ENTRY_ORIENT_CORNER_TL,
+    E_QUICK_ACCESS_ENTRY_ORIENT_CORNER_TR,
+    E_QUICK_ACCESS_ENTRY_ORIENT_CORNER_BL,
+    E_QUICK_ACCESS_ENTRY_ORIENT_CORNER_BR,
+    E_QUICK_ACCESS_ENTRY_ORIENT_CENTER /* no animation (maybe fade in future) */
+  } E_Quick_Access_Entry_Orient;
+
 typedef struct E_Quick_Access_Entry
 {
    const char *id; /* entry identifier (config, actions...), stringshared */
    const char *name; /* icccm name, stringshared */
    const char *class; /* icccm class, stringshared */
    const char *cmd; /* stringshared */
-   E_Border *border;
-   Ecore_Exe *exe;
+   struct {
+      double anim_duration; /* used when !mode.fullscreen && !orient.center */
+      unsigned char mode; /* E_Quick_Access_Entry_Mode */
+      unsigned char orient; /* E_Gadcon_Orient (that makes sense) */
+      struct {
+	 double w, h;
+      } relative;
+      struct {
+	 int w, h;
+      } absolute;
+   } conf;
+   E_Border *border; /* associated border, if any */
+   Ecore_Exe *exe; /* if executed cmd but still no border associated */
+   Ecore_Animator *anim; /* during animations to show/hide */
 } E_Quick_Access_Entry;
 
 

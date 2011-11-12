@@ -15,6 +15,8 @@ static Eina_List *_e_quick_access_event_handlers = NULL;
  *
  * @todo config (see e_mod_config.c)
  *
+ * @todo custom border based on E_Quick_Access_Entry_Mode/E_Gadcon_Orient
+ *
  * @todo show/hide effects:
  *        - fullscreen
  *        - centered
