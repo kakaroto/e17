@@ -1,0 +1,222 @@
+group { name: "e/modules/mixer/main";
+	images {
+		set {
+			name: "sound";
+			image {
+				image: "images/sound-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/sound-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/sound-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/sound-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+		set {
+			name: "sound_0";
+			image {
+				image: "images/sound_0-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/sound_0-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/sound_0-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/sound_0-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+		set {
+			name: "sound_33";
+			image {
+				image: "images/sound_33-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/sound_33-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/sound_33-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/sound_33-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+		set {
+			name: "sound_66";
+			image {
+				image: "images/sound_66-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/sound_66-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/sound_66-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/sound_66-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+		set {
+			name: "sound_99";
+			image {
+				image: "images/sound_99-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/sound_99-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/sound_99-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/sound_99-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+		set {
+			name: "sound_mute";
+			image {
+				image: "images/sound_mute-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/sound_mute-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/sound_mute-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/sound_mute-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+	}
+	script {
+		public message(Msg_Type:type, id, ...) {
+			if ((type == MSG_INT_SET) && (id == 0)) {
+				new mute, left, right, total;
+				mute = getarg(2);
+				left = getarg(3);
+				right = getarg(4);
+				total = left + right;
+
+				if (mute)
+					run_program(PROGRAM:"mute");
+				else
+					run_program(PROGRAM:"on");
+
+				if (total <= 0)
+					run_program(PROGRAM:"none");
+				else if (total < 70)
+					run_program(PROGRAM:"low");
+				else if (total < 150)
+					run_program(PROGRAM:"medium");
+				else
+					run_program(PROGRAM:"high");
+			}
+		}
+	}
+	parts {
+		part { name: "eventarea";
+			type: RECT;
+			mouse_events: 1;
+			description { state: "default" 0.0;
+				color: 0 0 0 0;
+			}
+		}
+		part { name: "speaker";
+			type: IMAGE;
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				min: 16 16;
+				max: 256 256;
+				aspect: 1 1;
+				aspect_preference: BOTH;
+				image.normal: "images/sound_mute-128x128.png";
+				color_class: "shelf_secondary_icon";
+				rel1.offset: 2 2;
+				rel2.offset: -3 -3;
+			}
+			description { state: "on" 0.0;
+				inherit: "default" 0.0;
+				image.normal: "images/sound-128x128.png";
+			}
+		}
+		part { name: "audio";
+			type: IMAGE;
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				min: 16 16;
+				max: 256 256;
+				aspect: 1 1;
+				aspect_preference: BOTH;
+				image.normal: "images/sound_0-128x128.png";
+				color_class: "shelf_secondary_icon";
+				rel1.offset: 2 2;
+				rel2.offset: -3 -3;
+			}
+			description { state: "low" 0.0;
+				inherit: "default" 0.0;
+				image.normal: "images/sound_33-128x128.png";
+			}
+			description { state: "medium" 0.0;
+				inherit: "default" 0.0;
+				image.normal: "images/sound_66-128x128.png";
+			}
+			description { state: "high" 0.0;
+				inherit: "default" 0.0;
+				image.normal: "images/sound_99-128x128.png";
+			}
+		}
+	}
+	programs {
+		program { name: "mute";
+			action: STATE_SET "default" 0.0;
+			target: "speaker";
+		}
+		program { name: "on";
+			action: STATE_SET "on" 0.0;
+			target: "speaker";
+		}
+		program { name: "none";
+			action: STATE_SET "default" 0.0;
+			target: "audio";
+		}
+		program { name: "low";
+			action: STATE_SET "low" 0.0;
+			target: "audio";
+		}
+		program { name: "medium";
+			action: STATE_SET "medium" 0.0;
+			target: "audio";
+		}
+		program { name: "high";
+			action: STATE_SET "high" 0.0;
+			target: "audio";
+		}
+	}
+}
