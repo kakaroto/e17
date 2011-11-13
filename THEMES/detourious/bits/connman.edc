@@ -840,7 +840,7 @@ group { name: "e/modules/connman/tip";
 				new Float:val;
 				strength = getarg(2);
 				if (strength >= 0) {
-					val = float(strength) / 140.0; ///////xxxx
+					val = float(strength) / 100.0;
 					snprintf(buf, sizeof(buf), "%d%%", strength);
 					set_text(PART:"strength_text", buf);
 					set_drag(PART:"strength_fill_knob", val, 0.0);
