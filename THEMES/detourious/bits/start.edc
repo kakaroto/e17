@@ -54,7 +54,7 @@ group {
 				state: "default" 0.0;
 				aspect: 1.0 1.0;
 				aspect_preference: BOTH;
-				image.normal: "images/e-128x128.png";
+				image.normal: "e";
 				rel1.offset: 2 2;
 				rel2.offset: -3 -3;
 			}
@@ -70,7 +70,7 @@ group {
 				color: 255 255 255 0;
 				aspect: 1.0 1.0;
 				aspect_preference: BOTH;
-				image.normal: "images/e_fill-128x128.png";
+				image.normal: "e_fill";
 				rel1.offset: 2 2;
 				rel2.offset: -3 -3;
 			}

@@ -156,14 +156,14 @@ group { name: "e/modules/mixer/main";
 				max: 256 256;
 				aspect: 1 1;
 				aspect_preference: BOTH;
-				image.normal: "images/sound_mute-128x128.png";
+				image.normal: "sound_mute";
 				color_class: "shelf_secondary_icon";
 				rel1.offset: 2 2;
 				rel2.offset: -3 -3;
 			}
 			description { state: "on" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "images/sound-128x128.png";
+				image.normal: "sound";
 			}
 		}
 		part { name: "audio";
@@ -174,22 +174,22 @@ group { name: "e/modules/mixer/main";
 				max: 256 256;
 				aspect: 1 1;
 				aspect_preference: BOTH;
-				image.normal: "images/sound_0-128x128.png";
+				image.normal: "sound_0";
 				color_class: "shelf_secondary_icon";
 				rel1.offset: 2 2;
 				rel2.offset: -3 -3;
 			}
 			description { state: "low" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "images/sound_33-128x128.png";
+				image.normal: "sound_33";
 			}
 			description { state: "medium" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "images/sound_66-128x128.png";
+				image.normal: "sound_66";
 			}
 			description { state: "high" 0.0;
 				inherit: "default" 0.0;
-				image.normal: "images/sound_99-128x128.png";
+				image.normal: "sound_99";
 			}
 		}
 	}
