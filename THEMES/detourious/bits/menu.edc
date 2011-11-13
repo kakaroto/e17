@@ -124,11 +124,11 @@ group {
 				rel1 {
 					to: "gradient"; 
 					relative: 0.0 0.0; 
-					offset: 3 2; 
+					offset: 6 6; 
 				}
 				rel2 { 
 					relative: 1.0 1.0; 
-					offset: -5 -5; 
+					offset: -7 -7; 
 				}
 			} 
 		}
@@ -196,11 +196,11 @@ group {
 				max: 9999 2;
 				rel1 { 
 					relative: 0.0 0.0; 
-					offset: -4 3; 
+					offset: -4 4;
 				}
 				rel2 { 
 					relative: 1.0 1.0; 
-					offset: 3 -3; 
+					offset: 3 -5;
 				}
 				image {
 					normal: "images/menu_im1.png";
@@ -434,11 +434,11 @@ group {
 				align: 0.0 0.0;
 				rel1 { 
 					relative: 0.0 0.0; 
-					offset: 2 2; 
+					offset: 2 3; 
 				}
 				rel2 { 
 					relative: 1.0 1.0; 
-					offset: -1 -2;
+					offset: -1 -4;
 				}
 			} 
 		}
