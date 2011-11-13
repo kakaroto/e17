@@ -151,6 +151,25 @@ images {
 			size: 129 129 256 256;
 		}
 	}
+	set {
+		name: "connman_lock";
+		image {
+			image: "images/connman_lock-24x24.png" COMP;
+			size: 0 0 24 24;
+		}
+		image {
+			image: "images/connman_lock-64x64.png" COMP;
+			size: 25 25 64 64;
+		}
+		image {
+			image: "images/connman_lock-128x128.png" COMP;
+			size: 65 65 128 128;
+		}
+		image {
+			image: "images/connman_lock-256x256.png" COMP;
+			size: 129 129 256 256;
+		}
+	}
 }
 
 group {
@@ -227,6 +246,63 @@ group {
 				name: "strength,bad";
 				action: STATE_SET "bad" 0.0;
 				target: "icon";
+			}
+		}
+
+		part {
+			name: "lock";
+			type: IMAGE;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				aspect: 1.0 1.0;
+				aspect_preference: BOTH;
+				image.normal: "connman_lock";
+				color: 255 255 255 0;
+				color_class: "focus";
+				visible: 1;
+			}
+			description {
+				state: "locked" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+				color_class: "focus";
+				visible: 1;
+			}
+		}
+		programs {
+			program { signal: "e,security,none";
+				source: "e";
+				action: STATE_SET "default" 0.0;
+				target: "lock";
+			}
+			program { signal: "e,security,wep";
+				source: "e";
+				after: "do-lock";
+			}
+			program { signal: "e,security,psk";
+				source: "e";
+				after: "do-lock";
+			}
+			program { signal: "e,security,ieee8021x";
+				source: "e";
+				after: "do-lock";
+			}
+			program { signal: "e,security,wps";
+				source: "e";
+				after: "do-lock";
+			}
+			program { signal: "e,security,wpa";
+				source: "e";
+				after: "do-lock";
+			}
+			program { signal: "e,security,rsn";
+				source: "e";
+				after: "do-lock";
+			}
+			program { name: "do-lock";
+				action: STATE_SET "locked" 0.0;
+				target: "lock";
 			}
 		}
 	}
