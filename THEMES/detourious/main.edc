@@ -58,7 +58,7 @@ collections {
 #include "bits/about_detour.edc"	/* about this edje */
 #include "bits/about_e.edc"		/* about enlightenment */
 #include "bits/background.edc" 		/* background group */
-	//~ #include "bits/battery.edc"		/* battery module */
+#include "bits/battery.edc"		/* battery module */
 #include "bits/border.edc"		/* border group */
 #include "bits/button.edc"		/* button widget group */
 #include "bits/check.edc"		/* check widget group */

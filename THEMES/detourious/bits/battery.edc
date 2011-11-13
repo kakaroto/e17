@@ -1,0 +1,360 @@
+group { name: "e/modules/battery/main";
+
+	images {
+		set {
+			name: "battery";
+			image {
+				image: "images/battery-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/battery-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/battery-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/battery-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+		set {
+			name: "battery_fill";
+			image {
+				image: "images/battery_fill-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/battery_fill-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/battery_fill-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/battery_fill-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+		set {
+			name: "battery_charging";
+			image {
+				image: "images/battery_charging-24x24.png" COMP;
+				size: 0 0 24 24;
+			}
+			image {
+				image: "images/battery_charging-64x64.png" COMP;
+				size: 25 25 64 64;
+			}
+			image {
+				image: "images/battery_charging-128x128.png" COMP;
+				size: 65 65 128 128;
+			}
+			image {
+				image: "images/battery_charging-256x256.png" COMP;
+				size: 129 129 256 256;
+			}
+		}
+	}
+
+	script {
+		public message(Msg_Type:type, id, ...) {
+			if ((type == MSG_FLOAT) && (id == 1)) {
+				new Float:val;
+				val = getfarg(2);
+				set_drag(PART:"fill_knob", val, 0.0);
+				if (val < 0.2)
+					set_state(PART:"clipper", "low", 0.0);
+				else
+					set_state(PART:"clipper", "default", 0.0);
+			}
+		}
+	}
+	parts {
+		part { name: "fade_clipper";
+			type: RECT;
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				color: 255 255 255 255;
+			}
+			description { state: "faded" 0.0;
+				color: 255 255 255 128;
+			}
+		}
+		part { name: "clipper";
+			type: RECT;
+			mouse_events: 0;
+			clip_to: "fade_clipper";
+			description { state: "default" 0.0;
+				color_class: "shelf_secondary_icon";
+			}
+			description { state: "low" 0.0;
+				color_class: "battery_low";
+			}
+		}
+		part { name: "fill";
+			type: IMAGE;
+			clip_to: "fill_clipper";
+			description { state: "default" 0.0;
+				min: 16 16;
+				max: 256 256;
+				aspect: 1 1;
+				aspect_preference: BOTH;
+				image.normal: "images/battery_fill-128x128.png";
+				color_class: "shelf_secondary_icon";
+				rel1.offset: 2 2;
+				rel2.offset: -3 -3;
+			}
+		}
+		part { name: "fill_confine";
+			type: RECT;
+			description { state: "default" 0.0;
+				color: 255 0 0 0;
+				rel1.to: "fill";
+				rel2.to: "fill";
+			}
+		}
+		part { name: "fill_knob";
+			type: RECT;
+			mouse_events: 0;
+			scale: 1;
+			dragable {
+				x: 1 1 0;
+				y: 0 0 0;
+				confine: "fill_confine";
+			}
+			description { state: "default" 0.0;
+				min: 0 0;
+				max: 0 0;
+			}
+		}
+		part { name: "fill_clipper";
+			type: RECT;
+			clip_to: "clipper";
+			description { state: "default" 0.0;
+				color: 255 255 255 255;
+				rel1.to: "fill_confine";
+				rel2.to_x: "fill_knob";
+				rel2.to_y: "fill_confine";
+			}
+		}
+		part { name: "battery";
+			type: IMAGE;
+			clip_to: "fade_clipper";
+			description { state: "default" 0.0;
+				min: 16 16;
+				max: 256 256;
+				aspect: 1 1;
+				aspect_preference: BOTH;
+				image.normal: "images/battery-128x128.png";
+				color_class: "shelf_secondary_icon";
+				rel1.offset: 2 2;
+				rel2.offset: -3 -3;
+			}
+		}
+		part { name: "charging";
+			type: IMAGE;
+			clip_to: "fade_clipper";
+			description { state: "default" 0.0;
+				min: 16 16;
+				max: 256 256;
+				aspect: 1 1;
+				aspect_preference: BOTH;
+				image.normal: "images/battery_charging-128x128.png";
+				rel1.offset: 2 2;
+				rel2.offset: -3 -3;
+				color: 255 255 255 0;
+				visible: 0;
+			}
+			description { state: "charging" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+				visible: 1;
+			}
+		}
+		part { name: "text-clipper";
+			type: RECT;
+			description { state: "default" 0.0;
+				color: 255 255 255 0;
+				visible: 0;
+			}
+			description { state: "visible" 0.0;
+				inherit: "default" 0.0;
+				color: 255 255 255 255;
+				visible: 1;
+			}
+		}
+		part { name: "e.text.reading";
+			type: TEXT;
+			mouse_events: 0;
+			scale: 1;
+			effect: TEXT_EFFECT;
+			clip_to: "text-clipper";
+			description { state: "default" 0.0;
+				TEXT_COLOR
+				text {
+					font: FONT;
+					size: 8;
+					min: 1 1;
+					align: 0.5 0.0;
+					text_class: "module_small";
+				}
+				align: 0.5 0.0;
+				rel1.offset: 2 2;
+				rel2 {
+					relative: 1.0 0.5;
+					offset: -3 -1;
+				}
+			}
+		}
+		part { name: "e.text.time";
+			type: TEXT;
+			mouse_events: 0;
+			scale: 1;
+			effect: TEXT_EFFECT;
+			clip_to: "text-clipper";
+			description { state: "default" 0.0;
+				TEXT_COLOR
+				text {
+					font: FONT;
+					size: 8;
+					min: 1 1;
+					align: 0.5 1.0;
+					text_class: "module_small";
+				}
+				align: 0.5 1.0;
+				rel1 {
+					relative: 0.0 0.5;
+					offset: 2 1;
+				}
+				rel2.offset: -3 -3;
+			}
+		}
+		part { name: "over";
+			type: RECT;
+			mouse_events: 1;
+			description { state: "default" 0.0;
+				color: 0 0 0 0;
+			}
+		}
+		programs {
+			program { name: "hover";
+				signal: "mouse,in";
+				source: "over";
+				action: STATE_SET "visible" 0.0;
+				transition: LINEAR 0.2;
+				in: 0.5 0.0;
+				target: "text-clipper";
+			}
+			program { name: "unhover";
+				signal: "mouse,out";
+				source: "over";
+				action: ACTION_STOP;
+				target: "hover";
+				after: "unhover2";
+			}
+			program { name: "unhover2";
+				action: STATE_SET "default" 0.0;
+				transition: LINEAR 0.5;
+				target: "text-clipper";
+			}
+		}
+	}
+	programs {
+		program { name: "charge";
+			signal: "e,state,charging";
+			source: "e";
+			action: STATE_SET "charging" 0.0;
+			transition: LINEAR 0.2;
+			target: "charging";
+		}
+		program { name: "discharge";
+			signal: "e,state,discharging";
+			source: "e";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.2;
+			target: "charging";
+		}
+		program { name: "unknown";
+			signal: "e,state,unknown";
+			source: "e";
+			action: STATE_SET "faded" 0.0;
+			target: "fade_clipper";
+		}
+	}
+}
+group { name: "e/modules/battery/popup";
+	min: 250 40;
+	parts {
+		part { name: "battery";
+			type: SWALLOW;
+			mouse_events: 1;
+			repeat_events: 1;
+			description { state: "default" 0.0;
+				min: 1 1;
+				max: 120 120;
+				aspect: 1.0 1.0;
+				aspect_preference: VERTICAL;
+				align: 0.0 0.5;
+				rel1.relative: 0.0 0.0;
+				rel2.relative: 1.0 1.0;
+				color: 255 255 255 255;
+			}
+		}
+
+		part { name: "e.text.title";
+			type: TEXT;
+			effect: SHADOW;
+			scale: 1;
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				TEXT_COLOR
+					align: 0.0 0.5;
+				fixed: 1 1;
+				rel1 {
+					to_x: "battery";
+					relative: 1.0 0.0;
+					offset: 10 0;
+				}
+				rel2 {
+					to_x: "battery";
+					relative: 1.0 1.0;
+					offset: 0 -1;
+				}
+				text {
+					font: FONT_BOLD;
+					size: 12;
+					min: 1 1;
+					align: 0.0 0.5;
+				}
+			}
+		}
+		part { name: "e.text.label";
+			type: TEXT;
+			scale: 1;
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				TEXT_COLOR;
+				rel1 {
+					to: "e.text.title";
+					relative: 1.0 0.0;
+					offset: 10 0;
+				}
+				rel2 {
+					to_y: "e.text.title";
+					relative: 1.0 1.0;
+					offset: -11 -1;
+				}
+				text {
+					font: FONT;
+					size: 10;
+					align: 0.0 0.5;
+					min: 1 1;
+				}
+			}
+		}
+	}
+}
