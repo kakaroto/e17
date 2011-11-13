@@ -1,6 +1,7 @@
 
 group { 
 	name: "e/modules/start/main";
+	alias: "e/icons/start-here";
 	max: 128 128;
 
 	images {
@@ -103,4 +104,3 @@ group {
 		}
 	}
 }
-
