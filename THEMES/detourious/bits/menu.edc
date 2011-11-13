@@ -411,11 +411,11 @@ group {
 				visible: 0;
 				rel1 { 
 					relative: 0.0 0.0; 
-					offset: -2 0; 
+					offset: -20 0;
 				}
 				rel2 { 
 					relative: 1.0 1.0; 
-					offset: 1 0; 
+					offset: 20 -1;
 				}
 				color_class: "focus";
 			} 
