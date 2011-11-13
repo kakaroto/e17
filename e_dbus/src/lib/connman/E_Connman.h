@@ -60,6 +60,13 @@ struct _E_Connman_Element
    int          _references;
 };
 
+typedef struct _E_Connman_Array E_Connman_Array;
+struct _E_Connman_Array
+{
+   int         type;
+   Eina_Array *array;
+};
+
 /* General Public API */
 EAPI unsigned int           e_connman_system_init(E_DBus_Connection *edbus_conn) EINA_ARG_NONNULL(1);
 EAPI unsigned int           e_connman_system_shutdown(void);
@@ -128,7 +135,7 @@ EAPI Eina_Bool              e_connman_service_error_get(const E_Connman_Element 
 EAPI Eina_Bool              e_connman_service_name_get(const E_Connman_Element *service, const char **name) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_type_get(const E_Connman_Element *service, const char **type) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_mode_get(const E_Connman_Element *service, const char **mode) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_security_get(const E_Connman_Element *service, const char **security) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_service_security_get(const E_Connman_Element *service, const E_Connman_Array **security) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 EAPI Eina_Bool              e_connman_service_passphrase_get(const E_Connman_Element *service, const char **passphrase) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_passphrase_set(E_Connman_Element *service, const char *passphrase, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;

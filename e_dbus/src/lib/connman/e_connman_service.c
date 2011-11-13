@@ -369,24 +369,24 @@ e_connman_service_mode_get(const E_Connman_Element *service, const char **mode)
  * values shall be considered invalid.
  *
  * If the service type is WiFi, then this property is
- * present and contains the security method or key
+ * present and contains the list of security method or key
  * management setting.
  *
- * Possible values are "none", "wep", "wpa" and "rsn".
+ * Possible values are "none", "wep", "wpa", "rsn", "psk", "ieee8021x" and "wps"
  *
  * This property might be only present for WiFi
  * services.
  *
  * @param service path to get property.
  * @param security where to store the property value, must be a pointer
- *        to string (const char **), it will not be allocated or
+ *        to E_Connman_Array, it will not be allocated or
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
 Eina_Bool
-e_connman_service_security_get(const E_Connman_Element *service, const char **security)
+e_connman_service_security_get(const E_Connman_Element *service, const E_Connman_Array **security)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(security, EINA_FALSE);

@@ -4,18 +4,11 @@
 
 static Eina_Hash *elements = NULL;
 
-typedef struct _E_Connman_Array                E_Connman_Array;
 typedef struct _E_Connman_Element_Pending      E_Connman_Element_Pending;
 typedef struct _E_Connman_Element_Call_Data    E_Connman_Element_Call_Data;
 typedef struct _E_Connman_Element_Property     E_Connman_Element_Property;
 typedef struct _E_Connman_Element_Listener     E_Connman_Element_Listener;
 typedef struct _E_Connman_Element_Dict_Entry   E_Connman_Element_Dict_Entry;
-
-struct _E_Connman_Array
-{
-   int         type;
-   Eina_Array *array;
-};
 
 struct _E_Connman_Element_Pending
 {
