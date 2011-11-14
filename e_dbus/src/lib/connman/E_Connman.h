@@ -147,15 +147,9 @@ EAPI Eina_Bool              e_connman_service_immutable_get(const E_Connman_Elem
 EAPI Eina_Bool              e_connman_service_auto_connect_get(const E_Connman_Element *service, Eina_Bool *auto_connect) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_auto_connect_set(E_Connman_Element *service, Eina_Bool auto_connect, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
-EAPI Eina_Bool              e_connman_service_setup_required_get(const E_Connman_Element *service, Eina_Bool *setup_required) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_passphrase_required_get(const E_Connman_Element *service, Eina_Bool *passphrase_required) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_login_required_get(const E_Connman_Element *service, Eina_Bool *login_required) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
-EAPI Eina_Bool              e_connman_service_apn_get(const E_Connman_Element *service, const char **apn) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_apn_set(E_Connman_Element *service, const char *apn, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-EAPI Eina_Bool              e_connman_service_mcc_get(const E_Connman_Element *service, const char **mcc) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_mnc_get(const E_Connman_Element *service, const char **mnc) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_roaming_get(const E_Connman_Element *service, Eina_Bool *roaming) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 EAPI Eina_Bool              e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char **method) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;

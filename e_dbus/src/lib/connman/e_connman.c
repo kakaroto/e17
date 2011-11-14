@@ -57,10 +57,6 @@ const char *e_connman_prop_login_required = NULL;
 const char *e_connman_prop_favorite = NULL;
 const char *e_connman_prop_immutable = NULL;
 const char *e_connman_prop_auto_connect = NULL;
-const char *e_connman_prop_setup_required = NULL;
-const char *e_connman_prop_apn = NULL;
-const char *e_connman_prop_mcc = NULL;
-const char *e_connman_prop_mnc = NULL;
 const char *e_connman_prop_roaming = NULL;
 const char *e_connman_prop_technology_default = NULL;
 const char *e_connman_prop_technologies_available = NULL;
@@ -307,10 +303,6 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    ADD_STRINGSHARE(e_connman_prop_favorite, "Favorite");
    ADD_STRINGSHARE(e_connman_prop_immutable, "Immutable");
    ADD_STRINGSHARE(e_connman_prop_auto_connect, "AutoConnect");
-   ADD_STRINGSHARE(e_connman_prop_setup_required, "SetupRequired");
-   ADD_STRINGSHARE(e_connman_prop_apn, "APN");
-   ADD_STRINGSHARE(e_connman_prop_mcc, "MCC");
-   ADD_STRINGSHARE(e_connman_prop_mnc, "MNC");
    ADD_STRINGSHARE(e_connman_prop_roaming, "Roaming");
    ADD_STRINGSHARE(e_connman_prop_technology_default, "DefaultTechnology");
    ADD_STRINGSHARE(e_connman_prop_technologies_available,
@@ -406,10 +398,6 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_favorite);
    _stringshare_del(&e_connman_prop_immutable);
    _stringshare_del(&e_connman_prop_auto_connect);
-   _stringshare_del(&e_connman_prop_setup_required);
-   _stringshare_del(&e_connman_prop_apn);
-   _stringshare_del(&e_connman_prop_mcc);
-   _stringshare_del(&e_connman_prop_mnc);
    _stringshare_del(&e_connman_prop_roaming);
    _stringshare_del(&e_connman_prop_technology_default);
    _stringshare_del(&e_connman_prop_technologies_available);

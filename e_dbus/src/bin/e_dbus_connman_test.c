@@ -1142,125 +1142,6 @@ _on_cmd_service_set_auto_connect(__UNUSED__ char *cmd, char *args)
 }
 
 static Eina_Bool
-_on_cmd_service_get_setup_required(__UNUSED__ char *cmd, char *args)
-{
-   const char *path;
-   Eina_Bool setup_required;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the service path\n", stderr);
-	return ECORE_CALLBACK_RENEW;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_service_get(path);
-   if (e_connman_service_setup_required_get(e, &setup_required))
-     printf(":::Service %s Setup Required = %hhu\n", path, setup_required);
-   else
-     fputs("ERROR: can't get service setup required\n", stderr);
-   return ECORE_CALLBACK_RENEW;
-}
-
-static Eina_Bool
-_on_cmd_service_get_apn(__UNUSED__ char *cmd, char *args)
-{
-   const char *apn, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the service path\n", stderr);
-	return ECORE_CALLBACK_RENEW;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_service_get(path);
-   if (e_connman_service_apn_get(e, &apn))
-     printf(":::Service %s APN = \"%s\"\n", path, apn);
-   else
-     fputs("ERROR: can't get service APN\n", stderr);
-   return ECORE_CALLBACK_RENEW;
-}
-
-static Eina_Bool
-_on_cmd_service_set_apn(__UNUSED__ char *cmd, char *args)
-{
-   char *apn, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the service path\n", stderr);
-	return ECORE_CALLBACK_RENEW;
-     }
-   path = args;
-   apn = _tok(args);
-
-   if (!apn)
-     {
-	fputs("ERROR: missing the apn value\n", stderr);
-	return ECORE_CALLBACK_RENEW;
-     }
-   _tok(apn);
-
-   e = e_connman_service_get(path);
-   if (e_connman_service_apn_set
-       (e, apn, _method_success_check, "service_set_apn"))
-     printf(":::Service %s APN set to \"%s\"\n", path, apn);
-   else
-     fputs("ERROR: can't set service APN\n", stderr);
-   return ECORE_CALLBACK_RENEW;
-}
-
-static Eina_Bool
-_on_cmd_service_get_mcc(__UNUSED__ char *cmd, char *args)
-{
-   const char *mcc, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the service path\n", stderr);
-	return ECORE_CALLBACK_RENEW;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_service_get(path);
-   if (e_connman_service_mcc_get(e, &mcc))
-     printf(":::Service %s MCC = \"%s\"\n", path, mcc);
-   else
-     fputs("ERROR: can't get service MCC\n", stderr);
-   return ECORE_CALLBACK_RENEW;
-}
-
-static Eina_Bool
-_on_cmd_service_get_mnc(__UNUSED__ char *cmd, char *args)
-{
-   const char *mnc, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the service path\n", stderr);
-	return ECORE_CALLBACK_RENEW;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_service_get(path);
-   if (e_connman_service_mnc_get(e, &mnc))
-     printf(":::Service %s MNC = \"%s\"\n", path, mnc);
-   else
-     fputs("ERROR: can't get service MNC\n", stderr);
-   return ECORE_CALLBACK_RENEW;
-}
-
-static Eina_Bool
 _on_cmd_service_get_roaming(__UNUSED__ char *cmd, char *args)
 {
    const char *path;
@@ -1717,11 +1598,6 @@ _on_input(__UNUSED__ void *data, Ecore_Fd_Handler *fd_handler)
      {"service_get_immutable", _on_cmd_service_get_immutable},
      {"service_get_auto_connect", _on_cmd_service_get_auto_connect},
      {"service_set_auto_connect", _on_cmd_service_set_auto_connect},
-     {"service_get_setup_required", _on_cmd_service_get_setup_required},
-     {"service_get_apn", _on_cmd_service_get_apn},
-     {"service_set_apn", _on_cmd_service_set_apn},
-     {"service_get_mcc", _on_cmd_service_get_mcc},
-     {"service_get_mnc", _on_cmd_service_get_mnc},
      {"service_get_roaming", _on_cmd_service_get_roaming},
      {"service_get_ipv4_method", _on_cmd_service_get_ipv4_method},
      {"service_get_ipv4_address", _on_cmd_service_get_ipv4_address},
