@@ -104,76 +104,76 @@ e_notification_daemon_shutdown(void)
 EAPI E_Notification_Daemon *
 e_notification_daemon_add(const char *name, const char *vendor)
 {
-   E_Notification_Daemon *ndeamon;
+   E_Notification_Daemon *ndaemon;
 
-   ndeamon = calloc(1, sizeof(E_Notification_Daemon));
-   if (ndeamon)
-     e_notification_daemon_bus_init(ndeamon);
+   ndaemon = calloc(1, sizeof(E_Notification_Daemon));
+   if (ndaemon)
+     e_notification_daemon_bus_init(ndaemon);
 
-   if (!ndeamon || !ndeamon->conn)
+   if (!ndaemon || !ndaemon->conn)
      {
-        if (ndeamon) free(ndeamon);
+        if (ndaemon) free(ndaemon);
         e_dbus_shutdown();
         return NULL;
      }
 
-   ndeamon->name = strdup(name);
-   ndeamon->vendor = strdup(vendor);
+   ndaemon->name = strdup(name);
+   ndaemon->vendor = strdup(vendor);
 
    e_dbus_interface_ref(daemon_iface);
-   ndeamon->iface = daemon_iface;
-   e_dbus_interface_method_add(ndeamon->iface, "GetCapabilities", "", "as", method_get_capabilities);
-   e_dbus_interface_method_add(ndeamon->iface, "Notify", "susssasa{sv}i", "u", method_notify);
-   e_dbus_interface_method_add(ndeamon->iface, "CloseNotification", "u", "u", method_close_notification);
-   e_dbus_interface_method_add(ndeamon->iface, "GetServerInformation", "", "ssss", method_get_server_information);
+   ndaemon->iface = daemon_iface;
+   e_dbus_interface_method_add(ndaemon->iface, "GetCapabilities", "", "as", method_get_capabilities);
+   e_dbus_interface_method_add(ndaemon->iface, "Notify", "susssasa{sv}i", "u", method_notify);
+   e_dbus_interface_method_add(ndaemon->iface, "CloseNotification", "u", "u", method_close_notification);
+   e_dbus_interface_method_add(ndaemon->iface, "GetServerInformation", "", "ssss", method_get_server_information);
 
-   return ndeamon;
+   return ndaemon;
 }
 
 EAPI void
-e_notification_daemon_free(E_Notification_Daemon *ndeamon)
+e_notification_daemon_free(E_Notification_Daemon *ndaemon)
 {
-   e_dbus_release_name(ndeamon->conn, E_NOTIFICATION_BUS_NAME, NULL, NULL);
-   if (ndeamon->obj)
+   e_dbus_release_name(ndaemon->conn, E_NOTIFICATION_BUS_NAME, NULL, NULL);
+   if (ndaemon->obj)
      {
-        e_dbus_object_interface_detach(ndeamon->obj, ndeamon->iface);
-        e_dbus_object_free(ndeamon->obj);
+        e_dbus_object_interface_detach(ndaemon->obj, ndaemon->iface);
+        e_dbus_object_free(ndaemon->obj);
      }
-   if (ndeamon->conn) e_dbus_connection_close(ndeamon->conn);
-   if (ndeamon->name) free(ndeamon->name);
-   if (ndeamon->vendor) free(ndeamon->vendor);
-   if (ndeamon->iface) e_dbus_interface_unref(ndeamon->iface);
-   free(ndeamon);
+   if (ndaemon->conn) e_dbus_connection_close(ndaemon->conn);
+   if (ndaemon->name) free(ndaemon->name);
+   if (ndaemon->vendor) free(ndaemon->vendor);
+   if (ndaemon->iface) e_dbus_interface_unref(ndaemon->iface);
+   free(ndaemon);
 }
 
 EAPI void
-e_notification_daemon_data_set(E_Notification_Daemon *ndeamon, void *data)
+e_notification_daemon_data_set(E_Notification_Daemon *ndaemon, void *data)
 {
-   ndeamon->data = data;
+   ndaemon->data = data;
 }
 
 EAPI void *
-e_notification_daemon_data_get(E_Notification_Daemon *ndeamon)
+e_notification_daemon_data_get(E_Notification_Daemon *ndaemon)
 {
-   return ndeamon->data;
+   return ndaemon->data;
 }
 
 EAPI void
-e_notification_daemon_callback_notify_set(E_Notification_Daemon *ndeamon, E_Notification_Daemon_Callback_Notify func)
+e_notification_daemon_callback_notify_set(E_Notification_Daemon *ndaemon, E_Notification_Daemon_Callback_Notify func)
 {
-   ndeamon->func.notify = func;
+   ndaemon->func.notify = func;
 }
 
 EAPI void
-e_notification_daemon_callback_close_notification_set(E_Notification_Daemon *ndeamon, E_Notification_Daemon_Callback_Close_Notification func)
+e_notification_daemon_callback_close_notification_set(E_Notification_Daemon *ndaemon, E_Notification_Daemon_Callback_Close_Notification func)
 {
-   ndeamon->func.close_notification = func;
+   ndaemon->func.close_notification = func;
 }
 
 static void
 cb_request_name(void *data, DBusMessage *msg, DBusError *err)
 {
-   E_Notification_Daemon *ndeamon = data;
+   E_Notification_Daemon *ndaemon = data;
    dbus_uint32_t ret;
    DBusError new_err;
 
@@ -200,11 +200,11 @@ cb_request_name(void *data, DBusMessage *msg, DBusError *err)
      {
       case DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER:
       case DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER:
-        e_notification_daemon_object_init(ndeamon);
+        e_notification_daemon_object_init(ndaemon);
         break;
 
       case DBUS_REQUEST_NAME_REPLY_IN_QUEUE:
-        //XXX mark ndeamon as queued?
+        //XXX mark ndaemon as queued?
         break;
 
       case DBUS_REQUEST_NAME_REPLY_EXISTS:
@@ -214,44 +214,44 @@ cb_request_name(void *data, DBusMessage *msg, DBusError *err)
 }
 
 static int
-e_notification_daemon_bus_init(E_Notification_Daemon *ndeamon)
+e_notification_daemon_bus_init(E_Notification_Daemon *ndaemon)
 {
-   ndeamon->conn = e_dbus_bus_get(DBUS_BUS_SESSION);
-   if (!ndeamon->conn) return 0;
+   ndaemon->conn = e_dbus_bus_get(DBUS_BUS_SESSION);
+   if (!ndaemon->conn) return 0;
 
    // this blocks... make it async, and handle failure, etc
-   e_dbus_request_name(ndeamon->conn, E_NOTIFICATION_BUS_NAME, DBUS_NAME_FLAG_REPLACE_EXISTING, cb_request_name, ndeamon);
+   e_dbus_request_name(ndaemon->conn, E_NOTIFICATION_BUS_NAME, DBUS_NAME_FLAG_REPLACE_EXISTING, cb_request_name, ndaemon);
 
    return 1;
 }
 
 static int
-e_notification_daemon_object_init(E_Notification_Daemon *ndeamon)
+e_notification_daemon_object_init(E_Notification_Daemon *ndaemon)
 {
-   if (!ndeamon || !ndeamon->conn) return 0;
-   ndeamon->obj = e_dbus_object_add(ndeamon->conn, E_NOTIFICATION_PATH, ndeamon);
-   if (!ndeamon->obj) return 0;
+   if (!ndaemon || !ndaemon->conn) return 0;
+   ndaemon->obj = e_dbus_object_add(ndaemon->conn, E_NOTIFICATION_PATH, ndaemon);
+   if (!ndaemon->obj) return 0;
 
-   e_dbus_object_interface_attach(ndeamon->obj, ndeamon->iface);
+   e_dbus_object_interface_attach(ndaemon->obj, ndaemon->iface);
 
    return 1;
 }
 
 EAPI void
-e_notification_daemon_signal_notification_closed(E_Notification_Daemon *ndeamon, unsigned int id, E_Notification_Closed_Reason reason)
+e_notification_daemon_signal_notification_closed(E_Notification_Daemon *ndaemon, unsigned int id, E_Notification_Closed_Reason reason)
 {
    DBusMessage *msg = e_notify_marshal_notification_closed_signal(id, reason);
-   e_dbus_message_send(ndeamon->conn,
+   e_dbus_message_send(ndaemon->conn,
                        msg,
                        NULL, -1, NULL);
    dbus_message_unref(msg);
 }
 
 EAPI void
-e_notification_daemon_signal_action_invoked(E_Notification_Daemon *ndeamon, unsigned int notification_id, const char *action_id)
+e_notification_daemon_signal_action_invoked(E_Notification_Daemon *ndaemon, unsigned int notification_id, const char *action_id)
 {
    DBusMessage *msg = e_notify_marshal_action_invoked_signal(notification_id, action_id);
-   e_dbus_message_send(ndeamon->conn,
+   e_dbus_message_send(ndaemon->conn,
                        msg,
                        NULL, -1, NULL);
    dbus_message_unref(msg);
