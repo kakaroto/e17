@@ -493,6 +493,37 @@ e_connman_service_passphrase_required_get(const E_Connman_Element *service, Eina
 }
 
 /**
+ * Get property "LoginRequired" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * Indicates that a manual configuration must be done to login the
+ * user, likely access an website using a browser.
+ *
+ * If a login has been set already or if no
+ * login is needed, then this property will
+ * be set to false.
+ *
+ * @param service path to get property.
+ * @param login_required where to store the property value, must be a
+ *        pointer to Eina_Bool (Eina_Bool *).
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ *
+ * @since 1.1.0
+ */
+Eina_Bool
+e_connman_service_login_required_get(const E_Connman_Element *service, Eina_Bool *login_required)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(login_required, EINA_FALSE);
+   return e_connman_element_property_get_stringshared
+             (service, e_connman_prop_login_required, NULL, login_required);
+}
+
+/**
  * Get property "Strength" value.
  *
  * If this property isn't found then @c EINA_FALSE is returned.
