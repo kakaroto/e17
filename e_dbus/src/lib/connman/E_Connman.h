@@ -174,6 +174,7 @@ EAPI Eina_Bool              e_connman_service_ethernet_interface_get(const E_Con
 EAPI Eina_Bool              e_connman_service_ethernet_address_get(const E_Connman_Element *service, const char **address) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_ethernet_mtu_get(const E_Connman_Element *service, unsigned short *mtu) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_ethernet_speed_get(const E_Connman_Element *service, unsigned short *speed) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_service_ethernet_duplex_get(const E_Connman_Element *service, const char **duplex) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /* Methods to configure IPv4 service */
 EAPI Eina_Bool              e_connman_service_ipv4_configure_dhcp(E_Connman_Element *service, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
@@ -185,8 +186,6 @@ EAPI E_Connman_Element *    e_connman_technology_get(const char *path) EINA_ARG_
 EAPI Eina_Bool              e_connman_technology_state_get(const E_Connman_Element *technology, const char **state) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_technology_name_get(const E_Connman_Element *technology, const char **state) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_technology_type_get(const E_Connman_Element *technology, const char **state) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-
-// TODO: ethernet_duplex_get (not in connman yet)
 
 /* Low-Level API:
  *

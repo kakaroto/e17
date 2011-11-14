@@ -1278,6 +1278,33 @@ e_connman_service_ethernet_address_get(const E_Connman_Element *service, const c
 }
 
 /**
+ * Get property "Ethernet.Duplex" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * Selected duplex settings of the line. Possible values are "half" and "full".
+ * This information might not always be available.
+ *
+ * @param service path to get property.
+ * @param duplex where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+Eina_Bool
+e_connman_service_ethernet_duplex_get(const E_Connman_Element *service, const char **duplex)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(duplex, EINA_FALSE);
+   return e_connman_element_property_dict_get_stringshared
+             (service, e_connman_prop_ethernet, e_connman_prop_duplex, NULL, duplex);
+}
+
+/**
  * Get property "Ethernet.MTU" value.
  *
  * If this property isn't found then @c EINA_FALSE is returned.
