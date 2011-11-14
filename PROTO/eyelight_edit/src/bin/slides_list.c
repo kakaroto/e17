@@ -68,7 +68,7 @@ Evas_Object *slides_list_new()
 
     itc_slides.item_style     = "icon_top_text_bottom";
     itc_slides.func.label_get = _slides_list_label_get;
-    itc_slides.func.icon_get  = _slides_list_icon_get;
+    itc_slides.func.content_get  = _slides_list_icon_get;
     itc_slides.func.state_get = _slides_list_state_get;
     itc_slides.func.del       = _slides_list_del;
     //
