@@ -50,7 +50,6 @@ const char *e_connman_prop_state = NULL;
 const char *e_connman_prop_strength = NULL;
 const char *e_connman_prop_type = NULL;
 const char *e_connman_prop_error = NULL;
-const char *e_connman_prop_mode = NULL;
 const char *e_connman_prop_security = NULL;
 const char *e_connman_prop_passphrase = NULL;
 const char *e_connman_prop_passphrase_required = NULL;
@@ -301,7 +300,6 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    ADD_STRINGSHARE(e_connman_prop_strength, "Strength");
    ADD_STRINGSHARE(e_connman_prop_type, "Type");
    ADD_STRINGSHARE(e_connman_prop_error, "Error");
-   ADD_STRINGSHARE(e_connman_prop_mode, "Mode");
    ADD_STRINGSHARE(e_connman_prop_security, "Security");
    ADD_STRINGSHARE(e_connman_prop_passphrase, "Passphrase");
    ADD_STRINGSHARE(e_connman_prop_passphrase_required, "PassphraseRequired");
@@ -401,7 +399,6 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_strength);
    _stringshare_del(&e_connman_prop_type);
    _stringshare_del(&e_connman_prop_error);
-   _stringshare_del(&e_connman_prop_mode);
    _stringshare_del(&e_connman_prop_security);
    _stringshare_del(&e_connman_prop_passphrase);
    _stringshare_del(&e_connman_prop_passphrase_required);

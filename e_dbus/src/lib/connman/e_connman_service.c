@@ -326,42 +326,6 @@ e_connman_service_type_get(const E_Connman_Element *service, const char **type)
 }
 
 /**
- * Get property "Mode" value.
- *
- * If this property isn't found then @c EINA_FALSE is returned.
- * If @c EINA_FALSE is returned, then this call failed and parameter-returned
- * values shall be considered invalid.
- *
- * If the service type is WiFi or Cellular, then this
- * property is present and contains the mode of the
- * network.
- *
- * For WiFi services the possible values are "managed"
- * and "adhoc". For Cellular services it describes the
- * network technology. Possible values are "gprs", "edge"
- * and "umts".
- *
- * This property might be only present for WiFi and
- * Cellular services.
- *
- * @param service path to get property.
- * @param mode where to store the property value, must be a pointer
- *        to string (const char **), it will not be allocated or
- *        copied and references will be valid until element changes,
- *        so copy it if you want to use it later.
- *
- * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
- */
-Eina_Bool
-e_connman_service_mode_get(const E_Connman_Element *service, const char **mode)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(mode, EINA_FALSE);
-   return e_connman_element_property_get_stringshared
-             (service, e_connman_prop_mode, NULL, mode);
-}
-
-/**
  * Get property "Security" value.
  *
  * If this property isn't found then @c EINA_FALSE is returned.

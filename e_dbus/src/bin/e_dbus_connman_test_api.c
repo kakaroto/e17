@@ -419,7 +419,6 @@ static const struct test_desc test_desc_service[] = {
   TEST_DESC_STRING_GET(e_connman_service_error_get, 1),
   TEST_DESC_STRING_GET(e_connman_service_name_get, 0),
   TEST_DESC_STRING_GET(e_connman_service_type_get, 0),
-  TEST_DESC_STRING_GET(e_connman_service_mode_get, 1),
   TEST_DESC_STRING_GET(e_connman_service_security_get, 1),
   TEST_DESC_STRING_GET(e_connman_service_passphrase_get, 1),
   //TEST_DESC_STRING_SET(e_connman_service_passphrase_set, 1),

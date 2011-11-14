@@ -61,7 +61,6 @@ extern const char *e_connman_prop_state;
 extern const char *e_connman_prop_strength;
 extern const char *e_connman_prop_type;
 extern const char *e_connman_prop_error;
-extern const char *e_connman_prop_mode;
 extern const char *e_connman_prop_security;
 extern const char *e_connman_prop_passphrase;
 extern const char *e_connman_prop_passphrase_required;

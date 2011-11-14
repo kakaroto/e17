@@ -905,28 +905,6 @@ _on_cmd_service_get_type(__UNUSED__ char *cmd, char *args)
 }
 
 static Eina_Bool
-_on_cmd_service_get_mode(__UNUSED__ char *cmd, char *args)
-{
-   const char *mode, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the service path\n", stderr);
-	return ECORE_CALLBACK_RENEW;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_service_get(path);
-   if (e_connman_service_mode_get(e, &mode))
-     printf(":::Service %s Mode = \"%s\"\n", path, mode);
-   else
-     fputs("ERROR: can't get service mode\n", stderr);
-   return ECORE_CALLBACK_RENEW;
-}
-
-static Eina_Bool
 _on_cmd_service_get_security(__UNUSED__ char *cmd, char *args)
 {
    const E_Connman_Array *security;
@@ -1730,7 +1708,6 @@ _on_input(__UNUSED__ void *data, Ecore_Fd_Handler *fd_handler)
      {"service_get_error", _on_cmd_service_get_error},
      {"service_get_name", _on_cmd_service_get_name},
      {"service_get_type", _on_cmd_service_get_type},
-     {"service_get_mode", _on_cmd_service_get_mode},
      {"service_get_security", _on_cmd_service_get_security},
      {"service_get_passphrase", _on_cmd_service_get_passphrase},
      {"service_set_passphrase", _on_cmd_service_set_passphrase},
