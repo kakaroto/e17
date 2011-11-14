@@ -961,7 +961,7 @@ create_main_win(App *app)
    evas_object_smart_callback_add(app->grid, "changed", grid_changed,
                                   app);
    gic.func.label_get = grid_label_get;
-   gic.func.icon_get = grid_icon_get;
+   gic.func.content_get = grid_icon_get;
    gic.func.del = grid_data_del;
 
    app->clipper = evas_object_rectangle_add(evas_object_evas_get(app->grid));
