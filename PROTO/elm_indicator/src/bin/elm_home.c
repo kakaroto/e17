@@ -99,7 +99,7 @@ elm_home_win_new(Ecore_X_Window zone)
 
    it_desk.item_style = "default";
    it_desk.func.label_get = _cb_gl_label_get;
-   it_desk.func.icon_get = _cb_gl_icon_get;
+   it_desk.func.content_get = _cb_gl_icon_get;
    it_desk.func.state_get = NULL;
    it_desk.func.del = _cb_gl_item_del;
 
