@@ -11,6 +11,7 @@
 #include <Eina.h>
 #include <Elementary.h>
 
+#include "config.h"
 #include "ensure.h"
 #include "hidden.h"
 #include "enobj.h"
@@ -18,12 +19,12 @@
 
 
 static void hidden_sel(void *objv, Evas_Object *gl, void *event);
-static char *hiddenclass_label_get(void *data, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused);
+static char *hiddenclass_label_get(void *data, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__);
 static Evas_Object *hiddenclass_icon_get(void *idv, Evas_Object *obj, const char *part);
 /*
-static Eina_Bool hiddenclass_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused);*/
+static Eina_Bool hiddenclass_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__);*/
 //static void hiddenclass_del(void *data, Evas_Object *obj);
 
 
@@ -32,7 +33,7 @@ static const Elm_Genlist_Item_Class hiddenclass = {
 	.func = {
 		.label_get = hiddenclass_label_get,
 	//	.state_get = hiddenclass_state_get,
-		.icon_get = hiddenclass_icon_get
+		.content_get = hiddenclass_icon_get
 	},
 };
 
@@ -42,7 +43,7 @@ static const Elm_Genlist_Item_Class hiddenclass = {
  * Set the view to hidden list
  */
 void
-view_set_hidden(void *ensurev, Evas_Object *button, void *event_info){
+view_set_hidden(void *ensurev, Evas_Object *button __UNUSED__, void *event_info __UNUSED__){
 	struct ensure *ensure = ensurev;
 	Eina_List *l;
 	Evas_Object *o;
@@ -51,7 +52,7 @@ view_set_hidden(void *ensurev, Evas_Object *button, void *event_info){
 	ensure->current_view = ENVIEW_HIDDEN;
 
 	elm_object_text_set(ensure->viewselect, "Hidden");
-	elm_genlist_clear(ensure->view);
+	elm_gen_clear(ensure->view);
 
 	evas_object_data_set(ensure->view, "ensure", ensure);
 
@@ -112,8 +113,8 @@ hidden_get(struct ensure *ensure, uintptr_t obj){
 
 
 static void
-hidden_sel(void *objv, Evas_Object *gl ensure_unused,
-		void *event ensure_unused){
+hidden_sel(void *objv, Evas_Object *gl __UNUSED__,
+		void *event __UNUSED__){
 	Evas_Object *o = objv;
 
 	printf("Selected hidden object %p\n",o);
@@ -122,8 +123,8 @@ hidden_sel(void *objv, Evas_Object *gl ensure_unused,
 
 
 static char *
-hiddenclass_label_get(void *hiddenobjv, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
+hiddenclass_label_get(void *hiddenobjv, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__){
 	Evas_Object *hiddenobj = hiddenobjv;
 	char buf[30];
 

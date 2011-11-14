@@ -12,6 +12,7 @@
 #include <Eina.h>
 #include <Elementary.h>
 
+#include "config.h"
 #include "ensure.h"
 #include "enobj.h"
 #include "enasn.h"
@@ -50,15 +51,15 @@ static void dochild(char **args, int fd, int commandfd);
 static int signal_init(void);
 static Eina_Bool signalfd_child(void *data, Ecore_Fd_Handler *fd_handler);
 
-void generic_contract(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event);
-void generic_exp_req(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event);
-void generic_expand(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event);
-void generic_con_req(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event);
+void generic_contract(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event);
+void generic_exp_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event);
+void generic_expand(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event);
+void generic_con_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event);
 
 
-void asn_del(void *data ensure_unused, Evas_Object *obj ensure_unused);
+void asn_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
 
-void asn_select_toggle(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused);
+void asn_select_toggle(void *data, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 
 static struct views {
 	const char *label;
@@ -125,7 +126,7 @@ ELM_MAIN()
 
 
 Evas_Object *
-window_add(struct ensure *ensure, char **args){
+window_add(struct ensure *ensure, char **args __UNUSED__){
         Evas_Object *win,*bg,*bx,*ctrls,*run,*check,*gl;
 	Evas_Object *viewbx, *view, *lbl, *report;
 	Evas_Object *save, *load;
@@ -199,7 +200,7 @@ window_add(struct ensure *ensure, char **args){
 	/* Add object list */
 	gl = elm_genlist_add(win);
 	ensure->view = gl;
-	elm_genlist_always_select_mode_set(gl, true);
+	elm_gen_always_select_mode_set(gl, true);
 	evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
 	evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	evas_object_show(gl);
@@ -264,23 +265,23 @@ window_add(struct ensure *ensure, char **args){
 
 
 void
-generic_contract(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event){
+generic_contract(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event){
 	Elm_Genlist_Item *it = event;
 	elm_genlist_item_subitems_clear(it);
 }
 void
-generic_exp_req(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event){
+generic_exp_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event){
 	Elm_Genlist_Item *it = event;
 	elm_genlist_item_expanded_set(it, 1);
 }
 void
-generic_con_req(void *data ensure_unused, Evas_Object *obj ensure_unused, void *event){
+generic_con_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event){
 	Elm_Genlist_Item *it = event;
 	elm_genlist_item_expanded_set(it, 0);
 }
 
 void
-generic_expand(void *data, Evas_Object *obj ensure_unused, void *itemv){
+generic_expand(void *data, Evas_Object *obj __UNUSED__, void *itemv){
 	struct ensure *ensure = data;
 	if (views[ensure->current_view].expand)
 		views[ensure->current_view].expand(ensure,itemv);
@@ -298,8 +299,8 @@ view_dirty_set(struct ensure *ensure){
 /** Handlers for the subitems in the assurance list */
 
 char *
-asn_label_get(void *data, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
+asn_label_get(void *data, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__){
 	struct asninfo *info;
 
 	info = data;
@@ -323,29 +324,29 @@ asn_icon_get(void *data, Evas_Object *obj, const char *part){
 	return NULL;
 }
 Eina_Bool
-asn_state_get(void *data, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
+asn_state_get(void *data, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__){
 	struct asninfo *ai;
 
 	ai = data;
 	return ai->enabled;
 }
 void
-asn_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
+asn_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__){
 	struct enwin *enwin = data;
 
 	enwin->genitem = NULL;
 }
 
 void
-asn_select(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
+asn_select(void *data, Evas_Object *obj __UNUSED__, void *event __UNUSED__){
 	struct asninfo *info = data;
 
 	info->enabled = !info->enabled;
 }
 
 void
-asn_select_toggle(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
+asn_select_toggle(void *data, Evas_Object *obj __UNUSED__, void *event __UNUSED__){
 	struct asninfo *ai = data;
 
 	ai->enabled = elm_check_state_get(obj);
@@ -374,14 +375,14 @@ signal_init(void){
 }
 
 static Eina_Bool
-signalfd_child(void *data ensure_unused, Ecore_Fd_Handler *fdh){
+signalfd_child(void *data __UNUSED__, Ecore_Fd_Handler *fdh){
 	int fd;
 	struct signalfd_siginfo siginfo;
 	printf("Child exited\n");
 
 	fd = ecore_main_fd_handler_fd_get(fdh);
 
-	read(fd, &siginfo, sizeof(struct signalfd_siginfo));
+	if (read(fd, &siginfo, sizeof(struct signalfd_siginfo)) != sizeof(struct signalfd_siginfo)) perror("read");
 
 	elm_object_disabled_set(runbutton, false);
 	elm_object_disabled_set(checkbutton, true);
@@ -399,8 +400,8 @@ signalfd_child(void *data ensure_unused, Ecore_Fd_Handler *fdh){
  * The user clicked the 'check' button: Start checking the application.
  */
 static void
-on_check(void *ensurev, Evas_Object *button ensure_unused,
-		void *event_info ensure_unused){
+on_check(void *ensurev, Evas_Object *button __UNUSED__,
+		void *event_info __UNUSED__){
 	struct ensure *ensure;
 	struct result *res;
 
@@ -415,7 +416,7 @@ on_check(void *ensurev, Evas_Object *button ensure_unused,
 	results_add(ensure, res);
 
 	printf("Sending check to %d\n",childid);
-	write(ensure->commandfd,"Check\n",6);
+	if (write(ensure->commandfd,"Check\n",6) != 6) perror("write");
 }
 
 
@@ -425,7 +426,7 @@ on_check(void *ensurev, Evas_Object *button ensure_unused,
  * The user clicked the 'run' button: Start running the application.
  */
 static void
-on_run(void *ensurev, Evas_Object *button ensure_unused, void *event_info ensure_unused){
+on_run(void *ensurev, Evas_Object *button __UNUSED__, void *event_info __UNUSED__){
 	pid_t pid;
 	int pipefd[2];
 	int sendpipefd[2];
@@ -512,13 +513,13 @@ ensure_assurance_add(struct assurance *enasn){
 
 
 static Eina_Bool
-check_obj(const Eina_Hash *hash ensure_unused, const void *key ensure_unused,
+check_obj(const Eina_Hash *hash __UNUSED__, const void *key __UNUSED__,
 		void *data, void *ensure){
 	struct enobj *enobj = data;
 	Eina_List *l;
 	struct asninfo *ai;
 	int i;
-	assert(enobj->magic == ENOBJMAGIC);
+	assert(enobj->magic == (int)ENOBJMAGIC);
 
 	if (hidden_get(ensure, enobj->id)) return 1;
 

@@ -19,6 +19,7 @@
 #include <Eina.h>
 #include <Elementary.h>
 
+#include "config.h"
 #include "ensure.h"
 #include "enobj.h"
 #include "display.h"
@@ -29,13 +30,13 @@ static Eina_Bool tree_add_toplevel(const Eina_Hash *hash, const void *key, void 
 
 /* Tree window callbacks */
 static char *tree_window_label_get(void *enwinv, Evas_Object *obj, const char *part);
-static void tree_window_select(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused);
+static void tree_window_select(void *data, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void tree_window_del(void *enwinv, Evas_Object *obj);
 
 
 /* Item callbacks */
 static char *tree_item_label_get(void *enwinv, Evas_Object *obj, const char *part);
-static void tree_item_select(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused);
+static void tree_item_select(void *data, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void tree_item_del(void *enwinv, Evas_Object *obj);
 static Evas_Object *tree_item_icon_get(void *enobjv, Evas_Object *obj,
 		const char *part);
@@ -52,7 +53,7 @@ static const Elm_Genlist_Item_Class treeitemclass = {
 	.item_style = "default",
 	.func = {
 		.label_get = tree_item_label_get,
-		.icon_get = tree_item_icon_get,
+		.content_get = tree_item_icon_get,
 		.del = tree_item_del,
 	}
 
@@ -70,8 +71,8 @@ static const Elm_Genlist_Item_Class treeitemclass = {
  * @param event_info The data from teh event change (ignored).
  */
 void
-view_set_tree(void *ensurev, Evas_Object *button ensure_unused,
-		void *event_info ensure_unused){
+view_set_tree(void *ensurev, Evas_Object *button __UNUSED__,
+		void *event_info __UNUSED__){
         struct ensure *ensure = ensurev;
 
 	if (ensure->current_view == ENVIEW_OBJECT_TREE) return;
@@ -92,7 +93,7 @@ tree_update(struct ensure *ensure){
 	struct enwin *enwin;
 	Eina_List *l;
 
-	elm_genlist_clear(ensure->view);
+	elm_gen_clear(ensure->view);
 	cur = ensure->cur;
 
 	EINA_LIST_FOREACH(cur->windows, l, enwin){
@@ -122,7 +123,7 @@ tree_expand_item(struct ensure *ensure, Elm_Genlist_Item *item){
 
 	enobj = elm_genlist_item_data_get(item);
 
-	assert(enobj->magic == ENOBJMAGIC);
+	assert(enobj->magic == (int)ENOBJMAGIC);
 	printf("Tree expand item %p %p\n",enobj->children, enobj->clippees);
 	EINA_LIST_FOREACH(enobj->children, l, child){
 		printf("Add %p",child);
@@ -136,7 +137,7 @@ tree_expand_item(struct ensure *ensure, Elm_Genlist_Item *item){
 
 
 static Eina_Bool
-tree_add_toplevel(const Eina_Hash *hash, const void *key, void *enobjv,
+tree_add_toplevel(const Eina_Hash *hash __UNUSED__, const void *key __UNUSED__, void *enobjv,
 		void *ensurev){
 	struct enobj *enobj;
 	struct ensure *ensure = ensurev;
@@ -145,7 +146,7 @@ tree_add_toplevel(const Eina_Hash *hash, const void *key, void *enobjv,
 	enobj = enobjv;
 	if (enobj->parent) return true;
 	assert(enobj->genitem == NULL);
-	assert(enobj->magic == ENOBJMAGIC);
+	assert(enobj->magic == (int)ENOBJMAGIC);
 
 	flags = ELM_GENLIST_ITEM_SUBITEMS;
 //	printf("Obj: %p Children: %p Clips: %p\n",enobj, enobj->children,
@@ -162,7 +163,7 @@ tree_add_toplevel(const Eina_Hash *hash, const void *key, void *enobjv,
  * Display the name of hte window
  */
 static char *
-tree_window_label_get(void *enwinv, Evas_Object *obj, const char *part){
+tree_window_label_get(void *enwinv, Evas_Object *obj __UNUSED__, const char *part __UNUSED__){
 	struct enwin *enwin = enwinv;
 	char buf[1000];
 
@@ -174,13 +175,13 @@ tree_window_label_get(void *enwinv, Evas_Object *obj, const char *part){
 }
 
 void
-tree_window_select(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
+tree_window_select(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__){
 
 
 }
 
 static void
-tree_window_del(void *enwinv, Evas_Object *obj){
+tree_window_del(void *enwinv, Evas_Object *obj __UNUSED__){
 	struct enwin *enwin = enwinv;
 
 	enwin->genitem = NULL;
@@ -191,7 +192,7 @@ tree_window_del(void *enwinv, Evas_Object *obj){
 
 
 static char *
-tree_item_label_get(void *enobjv, Evas_Object *obj, const char *part){
+tree_item_label_get(void *enobjv, Evas_Object *obj __UNUSED__, const char *part __UNUSED__){
 	char buf[200];
 	struct enobj *enobj = enobjv;
 
@@ -216,11 +217,11 @@ tree_item_icon_get(void *enobjv, Evas_Object *obj,
 	return NULL;
 }
 
-static void tree_item_select(void *data, Evas_Object *obj ensure_unused, void *event ensure_unused){
+static void tree_item_select(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__){
 
 }
 static void
-tree_item_del(void *enobjv, Evas_Object *obj){
+tree_item_del(void *enobjv, Evas_Object *obj __UNUSED__){
 	struct enobj *enobj;
 
 	enobj = enobjv;

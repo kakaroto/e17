@@ -9,6 +9,7 @@
 #include <Eina.h>
 #include <Elementary.h>
 
+#include "config.h"
 #include "ensure.h"
 #include "enasn.h"
 #include "enobj.h"
@@ -23,7 +24,7 @@ static const Elm_Genlist_Item_Class bugc = {
 	.item_style = "default",
 	.func = {
 		.label_get = bug_label_get,
-		.icon_get = bug_icon_get,
+		.content_get = bug_icon_get,
 		.state_get = bug_state_get,
 		.del = bug_del
 	}
@@ -127,11 +128,11 @@ ensure_bug(struct enobj *enobj, enum ensure_severity sev, const char *type,
 }
 
 void
-enasn_display_bugs(void *data ensure_unused, Evas_Object *obj ensure_unused,
+enasn_display_bugs(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
 		void *event){
 	Eina_List *l;
 	Elm_Genlist_Item *it = event;
-	Evas_Object *gl = elm_genlist_item_genlist_get(it);
+	Evas_Object *gl = elm_gen_item_widget_get(it);
 	struct bug *bug;
 	const struct enobj *enobj = elm_genlist_item_data_get(it);
 
@@ -146,23 +147,23 @@ enasn_display_bugs(void *data ensure_unused, Evas_Object *obj ensure_unused,
 
 
 static void
-bug_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
+bug_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__){
 
 }
 static char *
-bug_label_get(void *data, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
+bug_label_get(void *data, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__){
 	const struct bug *bug = data;
 	return strdup(bug->desc);
 }
 static Evas_Object *
-bug_icon_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
+bug_icon_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__){
 	/* FIXME: Severity icon would be good */
 	return NULL;
 }
 static Eina_Bool
-bug_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
+bug_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__){
 	return false;
 }

@@ -12,7 +12,7 @@ struct assurance assurance = {
 
 static int
 object_check(struct ensure *en, struct enobj *obj,
-		void *data ensure_unused){
+		void *data __UNUSED__){
 	struct enobj *clip;
 	assert(obj);
 

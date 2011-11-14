@@ -4,6 +4,7 @@
  */
 #include <stdbool.h>
 
+#include "config.h"
 #include "ensure.h"
 #include "results.h"
 
@@ -42,7 +43,7 @@ results_add(struct ensure *ensure, struct result *res){
  * Callback when a report is selected
  */
 static void
-select_results(void *resv, Evas_Object *obj, void *event){
+select_results(void *resv, Evas_Object *obj __UNUSED__, void *event __UNUSED__){
 	struct result *result = resv;
 	struct ensure *ensure;
 

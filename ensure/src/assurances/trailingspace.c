@@ -14,15 +14,15 @@ struct assurance assurance = {
 static const char *texttype;
 
 static void *
-init_test(struct ensure *en ensure_unused){
+init_test(struct ensure *en __UNUSED__){
 	if (!texttype)
 		texttype = eina_stringshare_add("text");
 	return NULL;
 }
 
 static int
-object_check(struct ensure *en ensure_unused, struct enobj *obj,
-		void *data ensure_unused){
+object_check(struct ensure *en __UNUSED__, struct enobj *obj,
+		void *data __UNUSED__){
 	const char *p;
 	assert(obj);
 

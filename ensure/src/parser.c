@@ -15,7 +15,7 @@
 #include <Eina.h>
 #include <Elementary.h>
 
-
+#include "config.h"
 #include "ensure.h"
 #include "enobj.h"
 #include "enasn.h"
@@ -74,7 +74,7 @@ child_data(void *data, Ecore_Fd_Handler *hdlr){
 
 	assert(hdlr);
 
-	assert(ensure->magic == ENSURE_MAGIC);
+	assert(ensure->magic == (int)ENSURE_MAGIC);
 
 	fd = ecore_main_fd_handler_fd_get(hdlr);
 	assert(fd >= 0);
@@ -138,7 +138,7 @@ parse_line(struct ensure *ensure, char *line){
 	static struct enwin *enwin = NULL;
 	struct enobj *obj;
 
-	assert(ensure->magic == ENSURE_MAGIC);
+	assert(ensure->magic == (int)ENSURE_MAGIC);
 
 	if (strncmp(line,"Object", 6) == 0){
 		obj = parse_object(ensure, line,NULL);
@@ -227,7 +227,7 @@ parse_objid(struct enobj *eno, const char *prefix, char **linep){
 }
 
 static int
-parse_name(struct enobj *eno, const char *prefix ensure_unused, char **linep){
+parse_name(struct enobj *eno, const char *prefix __UNUSED__, char **linep){
 	char *p,*start;
 
 	p = *linep;
@@ -289,7 +289,7 @@ parse_color(struct enobj *eno, const char *prefix, char **linep){
 	return 0;
 }
 static int
-parse_image(struct enobj *eno, const char *prefix ensure_unused, char **linep){
+parse_image(struct enobj *eno, const char *prefix __UNUSED__, char **linep){
 	char *p;
 	eno->data.image.file = parse_string(linep,true);
 	p = *linep;
@@ -301,14 +301,14 @@ parse_image(struct enobj *eno, const char *prefix ensure_unused, char **linep){
 }
 
 static int
-parse_image_err(struct enobj *eno, const char *prefix ensure_unused,
+parse_image_err(struct enobj *eno, const char *prefix __UNUSED__,
 		char **linep){
 	eno->data.image.err = parse_string(linep,true);
 	return 0;
 }
 
 static int
-parse_text(struct enobj *eno, const char *prefix ensure_unused, char **linep){
+parse_text(struct enobj *eno, const char *prefix __UNUSED__, char **linep){
 	char *p,*start;
 
 	p = *linep;
@@ -325,20 +325,20 @@ parse_text(struct enobj *eno, const char *prefix ensure_unused, char **linep){
 
 
 static int
-parse_font(struct enobj *eno, const char *prefix ensure_unused, char **linep){
+parse_font(struct enobj *eno, const char *prefix __UNUSED__, char **linep){
 	eno->data.text.font =  parse_string(linep, true);
 	eno->data.text.size = strtol(*linep,linep,10);
 	return 0;
 }
 static int
-parse_source(struct enobj *eno, const char *prefix ensure_unused, char **linep){
+parse_source(struct enobj *eno, const char *prefix __UNUSED__, char **linep){
 	eno->data.text.source = parse_string(linep,true);
 	return 0;
 }
 
 
 static int
-parse_edje(struct enobj *eno, const char *prefix ensure_unused, char **linep){
+parse_edje(struct enobj *eno, const char *prefix __UNUSED__, char **linep){
 	char *p;
 	eno->data.edje.file = parse_string(linep,true);
 	p = *linep;
@@ -350,7 +350,7 @@ parse_edje(struct enobj *eno, const char *prefix ensure_unused, char **linep){
 
 
 static int
-parse_edje_err(struct enobj *eno, const char *prefix, char **linep){
+parse_edje_err(struct enobj *eno, const char *prefix __UNUSED__, char **linep){
 	eno->data.edje.err = parse_string(linep,true);
 	return 0;
 }

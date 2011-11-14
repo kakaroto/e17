@@ -3,6 +3,7 @@
 
 #include <Elementary.h>
 
+#include "config.h"
 #include "ensure.h"
 #include "file.h"
 #include "parser.h"
@@ -24,7 +25,7 @@ static int file_load_do(struct ensure *ensure, const char *file);
  * Load a saved data set
  */
 void
-file_save(void *ensurev, Evas_Object *button, void *event_info){
+file_save(void *ensurev, Evas_Object *button __UNUSED__, void *event_info __UNUSED__){
 	struct ensure *ensure;
 	struct fileselector *fs;
 
@@ -48,7 +49,7 @@ file_save(void *ensurev, Evas_Object *button, void *event_info){
  * Load a specified data set
  */
 void
-file_load(void *ensurev, Evas_Object *button, void *event_info){
+file_load(void *ensurev, Evas_Object *button __UNUSED__, void *event_info __UNUSED__){
 	struct ensure *ensure;
 	struct fileselector *fs;
 
@@ -120,7 +121,7 @@ create_fileselector(struct ensure *ensure){
  * Someone clicked 'okay' (or cancel)
  */
 static void
-fs_done(void *ensurev, Evas_Object *obj, void *eventinfo){
+fs_done(void *ensurev, Evas_Object *obj __UNUSED__, void *eventinfo){
 	const char *path;
 	struct ensure *ensure = ensurev;
 	struct fileselector *fs;

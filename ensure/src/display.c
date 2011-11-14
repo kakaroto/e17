@@ -3,6 +3,7 @@
 
 #include <Elementary.h>
 
+#include "config.h"
 #include "display.h"
 #include "enobj.h"
 #include "ensure.h"
@@ -24,7 +25,7 @@ static const char *sev_string(enum ensure_severity sev);
 
 static void enobj_del(void *enobjv, Evas_Object *obj, void *event_info);
 static void display_hidden_object_toggle(void *enobjv, Evas_Object *obj,
-		void *event ensure_unused);
+		void *event __UNUSED__);
 static void display_show_object(void *enobjv, Evas_Object *obj, void *);
 
 /**
@@ -64,8 +65,8 @@ display_buttons_add(Evas_Object *obj, struct enobj *enobj){
 
 
 void
-display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
-		void *event ensure_unused){
+display_enobj_cb(void *enobjv, Evas_Object *obj __UNUSED__,
+		void *event __UNUSED__){
 	struct enobj *enobj = enobjv;
 	struct ensure *ensure;
 	Evas_Object *win,*bg,*tbl;
@@ -74,7 +75,7 @@ display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 	char buf[100];
 
 	assert(enobjv);
-	assert(enobj->magic == ENOBJMAGIC);
+	assert(enobj->magic == (int)ENOBJMAGIC);
 
 	ensure = enobj->ensure;
 
@@ -185,10 +186,11 @@ display_enobj_cb(void *enobjv, Evas_Object *obj ensure_unused,
 		}
 	}
 
-	tgl = elm_toggle_add(win);
+	tgl = elm_check_add(win);
 	elm_object_text_set(tgl, "Bug Checking:");
-	elm_toggle_states_labels_set(tgl, "Checked", "Ignored");
-	elm_toggle_state_set(tgl, !hidden_get(ensure, enobj->id));
+	elm_object_text_part_set(tgl, "on", "Checked");
+	elm_object_text_part_set(tgl, "off", "Ignored");
+	elm_check_state_set(tgl, !hidden_get(ensure, enobj->id));
 	evas_object_show(tgl);
 	elm_table_pack(tbl, tgl, 1, pos, 1, 1);
 	evas_object_smart_callback_add(tgl, "changed",
@@ -324,7 +326,7 @@ sev_string(enum ensure_severity sev){
  *
  */
 static void
-enobj_del(void *enobjv, Evas_Object *obj, void *event_info){
+enobj_del(void *enobjv, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__){
 	struct enobj *enobj = enobjv;
 	printf("Nulling a window\n");
 	enobj->win = NULL;
@@ -333,11 +335,11 @@ enobj_del(void *enobjv, Evas_Object *obj, void *event_info){
 
 static void
 display_hidden_object_toggle(void *enobjv, Evas_Object *obj,
-		void *event ensure_unused){
+		void *event __UNUSED__){
 	struct enobj *enobj = enobjv;
 	bool visible;
 
-	visible = !elm_toggle_state_get(obj);
+	visible = !elm_check_state_get(obj);
 	if (visible)
 		hidden_object_remove(enobj->ensure, enobj->id);
 	else
@@ -345,7 +347,7 @@ display_hidden_object_toggle(void *enobjv, Evas_Object *obj,
 }
 
 static void
-display_show_object(void *enobjv, Evas_Object *obj, void *event ensure_unused){
+display_show_object(void *enobjv, Evas_Object *obj __UNUSED__, void *event __UNUSED__){
 	struct enobj *enobj = enobjv;
 	struct ensure *ensure;
 	char buf[100];
@@ -358,6 +360,6 @@ display_show_object(void *enobjv, Evas_Object *obj, void *event ensure_unused){
 	n = snprintf(buf, sizeof(buf), "Display: %"PRIxPTR"\n",enobj->id);
 
 	printf("Sending %s\n",buf);
-	write(ensure->commandfd,buf,n);
+	if (write(ensure->commandfd,buf,n) != n) perror("write");
 	printf("Done\n");
 }

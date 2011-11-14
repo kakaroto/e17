@@ -8,18 +8,19 @@
 #include <Eina.h>
 #include <Elementary.h>
 
+#include "config.h"
 #include "ensure.h"
 #include "enobj.h"
 #include "errors.h"
 #include "display.h"
 
-static void enobj_select(void *data ensure_unused, Evas_Object *obj ensure_unused, void *itemv);
-static char * enobj_label_get(void *data, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused);
+static void enobj_select(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *itemv);
+static char * enobj_label_get(void *data, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__);
 static Evas_Object * enobj_icon_get(void *enobjv, Evas_Object *obj,
 		const char *part);
-static Eina_Bool enobj_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused, const char *part ensure_unused);
-static void enobj_del(void *data ensure_unused, Evas_Object *obj ensure_unused);
+static Eina_Bool enobj_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static void enobj_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
 
 static char *enwin_label_get(void *data, Evas_Object *obj, const char *part);
 static Eina_Bool enwin_state_get(void *data, Evas_Object *obj, const char *);
@@ -32,7 +33,7 @@ static const Elm_Genlist_Item_Class objc = {
 	.item_style = "default",
 	.func = {
 		.label_get = enobj_label_get,
-		.icon_get = enobj_icon_get,
+		.content_get = enobj_icon_get,
 		.state_get = enobj_state_get,
 		.del = enobj_del
 	}
@@ -49,8 +50,8 @@ static const Elm_Genlist_Item_Class windowclass = {
 
 
 void
-errors_view_set(void *ensurev, Evas_Object *button,
-		void *event_info ensure_unused){
+errors_view_set(void *ensurev, Evas_Object *button __UNUSED__,
+		void *event_info __UNUSED__){
 	struct ensure *ensure = ensurev;
 
 	if (ensure->current_view == ENVIEW_ERROR) return;
@@ -72,7 +73,7 @@ errors_update(struct ensure *ensure){
 
 	if (!ensure) return;
 
-	elm_genlist_clear(ensure->view);
+	elm_gen_clear(ensure->view);
 	elm_object_text_set(ensure->viewselect, "Errors");
 
 	if (!ensure->cur) return;
@@ -101,13 +102,13 @@ errors_update(struct ensure *ensure){
  * Tree view callbacks
  */
 static void
-enobj_select(void *data ensure_unused, Evas_Object *obj ensure_unused,
+enobj_select(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
 		void *itemv){
 	elm_genlist_item_expanded_set(itemv, true);
 }
 static char *
-enobj_label_get(void *data, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
+enobj_label_get(void *data, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__){
 	const struct enobj *enobj = data;
 	char buf[200];
 
@@ -128,14 +129,14 @@ enobj_icon_get(void *enobjv, Evas_Object *obj, const char *part){
 	return NULL;
 }
 static Eina_Bool
-enobj_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
+enobj_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__){
 	return false;
 }
 
 
 static void
-enobj_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
+enobj_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__){
 	struct enobj *enobj = data;
 
 	enobj->genitem = NULL;
@@ -143,8 +144,8 @@ enobj_del(void *data ensure_unused, Evas_Object *obj ensure_unused){
 
 
 static char *
-enwin_label_get(void *data, Evas_Object *obj ensure_unused,
-		const char *part ensure_unused){
+enwin_label_get(void *data, Evas_Object *obj __UNUSED__,
+		const char *part __UNUSED__){
 	const struct enwin *enwin;
 	const char *fmt = "Untitled Window '%p'";
 	char *buf;
@@ -166,17 +167,17 @@ enwin_label_get(void *data, Evas_Object *obj ensure_unused,
 	return buf;
 }
 static Eina_Bool
-enwin_state_get(void *data ensure_unused, Evas_Object *obj ensure_unused,
-		const char *state ensure_unused){
+enwin_state_get(void *data __UNUSED__ __UNUSED__, Evas_Object *obj __UNUSED__,
+		const char *state __UNUSED__){
 	return false;
 }
 static void
-enwin_select(void *data, Evas_Object *obj, void *event){
+enwin_select(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__){
 	/* FIXME: Do something or delete this */
 	printf("Select... ignoring\n");
 }
 static void
-enwin_del(void *enwinv, Evas_Object *obj){
+enwin_del(void *enwinv, Evas_Object *obj __UNUSED__){
 	struct enwin *enwin = enwinv;
 
 	enwin->genitem = NULL;

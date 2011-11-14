@@ -11,7 +11,7 @@
 #include <Evas.h>
 
 
-#define ensure_unused	__attribute__((unused))
+#define __UNUSED__	__attribute__((unused))
 
 /* The color of the highlight */
 enum {
@@ -25,7 +25,7 @@ enum {
 };
 
 static Eina_Bool libensure_dump(void);
-static Eina_Bool libensure_command_recv(void *data ensure_unused, Ecore_Fd_Handler *fdh);
+static Eina_Bool libensure_command_recv(void *data __UNUSED__, Ecore_Fd_Handler *fdh);
 static void libensure_highlight(uintptr_t addr);
 static Eina_Bool libensure_highlight_hide(void *rv);
 
@@ -72,14 +72,17 @@ libensure_init(void){
 }
 
 static Eina_Bool
-libensure_command_recv(void *data ensure_unused, Ecore_Fd_Handler *fdh){
+libensure_command_recv(void *data __UNUSED__, Ecore_Fd_Handler *fdh){
 	char buf[100];
 	char *save;
 	int fd;
 
 	fd = ecore_main_fd_handler_fd_get(fdh);
 
-	read(fd, buf, sizeof(buf));
+	if (read(fd, buf, sizeof(buf)) != sizeof(buf)){
+		perror("read");
+		return true;
+	}
 	strtok_r(buf, "\n\r", &save);
 
 	if (strncmp(buf, "Check", 5) == 0){

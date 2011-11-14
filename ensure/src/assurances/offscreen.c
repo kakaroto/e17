@@ -11,7 +11,7 @@ struct assurance assurance = {
 
 
 static int
-object_check(struct ensure *en, struct enobj *obj, void *data ensure_unused){
+object_check(struct ensure *en, struct enobj *obj, void *data __UNUSED__){
 	struct enwin *enwin;
 	assert(obj);
 

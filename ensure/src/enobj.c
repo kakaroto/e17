@@ -9,6 +9,7 @@
 #include <Elementary.h>
 #include <Eina.h>
 
+#include "config.h"
 #include "enobj.h"
 #include "ensure.h"
 #include "enasn.h"
@@ -30,7 +31,7 @@ enobj_clear(){
 int
 enobj_add(struct ensure *ensure, struct enobj *eno){
 
-	if (eno->magic != ENOBJMAGIC)
+	if (eno->magic != (int)ENOBJMAGIC)
 		eno->magic = ENOBJMAGIC;
 	eina_hash_add(ensure->cur->objdb, &eno->id, eno);
 
@@ -67,7 +68,7 @@ struct enobj *
 enobj_get(struct ensure *ensure, uintptr_t id){
 	struct enobj *obj;
 	obj = eina_hash_find(ensure->cur->objdb, &id);
-	assert(obj->magic == ENOBJMAGIC);
+	assert(obj->magic == (int)ENOBJMAGIC);
 	assert(id == obj->id);
 	return obj;
 }
@@ -87,7 +88,7 @@ enobj_prepare(struct ensure *ensure){
 
 
 static Eina_Bool
-enobj_prepare_object(const Eina_Hash *hash, const void *key, void *obj,
+enobj_prepare_object(const Eina_Hash *hash __UNUSED__, const void *key __UNUSED__, void *obj,
 		void *ensurev){
 	struct enobj *enobj = obj;
 	struct enobj *parent, *clip;
@@ -156,9 +157,9 @@ enobj_free(void *enobjv){
 
 #if 0
 static Eina_Bool
-enobj_hash_del_cb(const Eina_Hash *hash ensure_unused,
-		const void *key ensure_unused, void *enobjv,
-		void *ensure ensure_unused){
+enobj_hash_del_cb(const Eina_Hash *hash __UNUSED__,
+		const void *key __UNUSED__, void *enobjv,
+		void *ensure __UNUSED__){
 	enobj_free(enobjv);
 	return true;
 }

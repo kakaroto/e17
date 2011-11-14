@@ -26,7 +26,7 @@ static const char *texttype;
  * Other main use is to get the stringshare for various strings.
  */
 static void *
-init_test(struct ensure *en ensure_unused){
+init_test(struct ensure *en __UNUSED__){
 	if (!texttype)
 		texttype = eina_stringshare_add("text");
 	return NULL;
@@ -37,7 +37,7 @@ init_test(struct ensure *en ensure_unused){
  * Also can be used to add bugs built from some sort of local store.
  */
 static int
-fini_test(struct ensure *en ensure_unused, void *data ensure_unused){
+fini_test(struct ensure *en __UNUSED__, void *data __UNUSED__){
 	eina_stringshare_del(texttype);
 	texttype = NULL;
 	return 0;
@@ -47,8 +47,8 @@ fini_test(struct ensure *en ensure_unused, void *data ensure_unused){
  *  Main check function: Called once for each object
  **/
 static int
-object_check(struct ensure *en ensure_unused, struct enobj *obj,
-		void *data ensure_unused){
+object_check(struct ensure *en __UNUSED__, struct enobj *obj,
+		void *data __UNUSED__){
 	assert(obj);
 
 	/* Good idea to not test wrong object types */
