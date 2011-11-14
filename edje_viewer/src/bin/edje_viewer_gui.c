@@ -104,7 +104,7 @@ create_main_win(Viewer *v)
 
    v->gc = calloc(1, sizeof(Elm_Genlist_Item_Class));
    v->gc->item_style     = "default";
-   v->gc->func.icon_get  = gc_icon_get;
+   v->gc->func.content_get  = gc_icon_get;
    v->gc->func.label_get = gc_label_get;
    v->gc->func.del       = gc_del;
 
