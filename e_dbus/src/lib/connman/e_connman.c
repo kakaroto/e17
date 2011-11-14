@@ -63,6 +63,7 @@ const char *e_connman_prop_technologies_available = NULL;
 const char *e_connman_prop_technologies_enabled = NULL;
 const char *e_connman_prop_technologies_connected = NULL;
 const char *e_connman_prop_nameservers = NULL;
+const char *e_connman_prop_domains = NULL;
 
 int _e_dbus_connman_log_dom = -1;
 
@@ -312,6 +313,7 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    ADD_STRINGSHARE(e_connman_prop_technologies_connected,
                    "ConnectedTechnologies");
    ADD_STRINGSHARE(e_connman_prop_nameservers, "Nameservers");
+   ADD_STRINGSHARE(e_connman_prop_domains, "Domains");
 
 #undef ADD_STRINGSHARE
 
@@ -406,6 +408,7 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_technologies_enabled);
    _stringshare_del(&e_connman_prop_technologies_connected);
    _stringshare_del(&e_connman_prop_nameservers);
+   _stringshare_del(&e_connman_prop_domains);
 
    if (pending_get_name_owner)
      {

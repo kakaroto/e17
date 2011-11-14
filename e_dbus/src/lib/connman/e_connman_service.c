@@ -697,6 +697,38 @@ e_connman_service_nameservers_get(const E_Connman_Element *service, unsigned int
 }
 
 /**
+ * Get property "Domains" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ * The list of currently active domains for this service. If the server is
+ * not in READY or ONLINE state than this list will be empty.
+ *
+ * The list of currently used search domains.
+ *
+ * @param service path to get property.
+ * @param count return the number of elements in array.
+ * @param domains array with pointers to internal strings. These
+ *        strings are not copied in any way, and they are granted to
+ *        be eina_stringshare instances, so one can use
+ *        eina_stringshare_ref() if he wants to save memory and cpu to
+ *        get an extra reference. The array itself is allocated using
+ *        malloc() and should be freed after usage is done. This
+ *        pointer is just set if return is @c EINA_TRUE.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+Eina_Bool
+e_connman_service_domains_get(const E_Connman_Element *service, unsigned int *count, const char ***domains)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(domains, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   return e_connman_element_strings_array_get_stringshared
+             (service, e_connman_prop_domains, count, domains);
+}
+/**
  * Get property "IPv4.Method" value.
  *
  * If this property isn't found then @c EINA_FALSE is returned.
