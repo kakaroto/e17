@@ -169,6 +169,11 @@ EAPI Eina_Bool              e_connman_service_proxy_url_get(const E_Connman_Elem
 EAPI Eina_Bool              e_connman_service_proxy_servers_get(const E_Connman_Element *service, unsigned int *count, const char ***servers) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_proxy_excludes_get(const E_Connman_Element *service, unsigned int *count, const char ***excludes) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
+EAPI Eina_Bool              e_connman_service_proxy_configuration_method_get(const E_Connman_Element *service, const char **method) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_service_proxy_configuration_url_get(const E_Connman_Element *service, const char **url) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_service_proxy_configuration_servers_get(const E_Connman_Element *service, unsigned int *count, const char ***servers) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_service_proxy_configuration_excludes_get(const E_Connman_Element *service, unsigned int *count, const char ***excludes) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+
 EAPI Eina_Bool              e_connman_service_ethernet_method_get(const E_Connman_Element *service, const char **method) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_ethernet_interface_get(const E_Connman_Element *service, const char **iface) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_ethernet_address_get(const E_Connman_Element *service, const char **address) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
