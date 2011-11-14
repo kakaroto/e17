@@ -25,6 +25,7 @@ c_elementary_deps = \
 	elementary/elementary.c_elementary_clock.pxi \
 	elementary/elementary.c_elementary_entry.pxi \
 	elementary/elementary.c_elementary_fileselector.pxi \
+	elementary/elementary.c_elementary_fileselector_entry.pxi \
 	elementary/elementary.c_elementary_flip.pxi \
 	elementary/elementary.c_elementary_frame.pxi \
 	elementary/elementary.c_elementary_genlist.pxi \

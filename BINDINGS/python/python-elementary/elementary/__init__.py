@@ -20,7 +20,7 @@ from c_elementary import Object, Window, Background, Icon, \
     Box, Button, Scroller, Label, Toggle, Frame, Flip, Table, \
     Clock, Layout, Hover, Entry, AnchorView, AnchorBlock, Bubble, \
     Photo, Hoversel, Toolbar, ToolbarItem, List, ListItem, Slider, \
-    Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, Notify, \
+    Radio, Check, Pager, InnerWindow, Image, Spinner, Fileselector, FileselectorEntry, Notify, \
     Separator, Progressbar, Menu, MenuItem, MenuItemSeparator, Panel, \
     Genlist, GenlistItem, GenlistItemClass, WidgetItem, ScrolledEntry, \
     Gengrid, GengridItem, GengridItemClass, \
