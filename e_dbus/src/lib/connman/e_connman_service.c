@@ -1229,6 +1229,29 @@ e_connman_service_ethernet_interface_get(const E_Connman_Element *service, const
 }
 
 /**
+ * Get property "Ethernet.Speed" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * Selected speed of the line. This information might not always be available.
+ *
+ * @param service path to get property.
+ * @param speed where to store the property value.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+Eina_Bool
+e_connman_service_ethernet_speed_get(const E_Connman_Element *service, unsigned short *speed)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(speed, EINA_FALSE);
+   return e_connman_element_property_dict_get_stringshared
+             (service, e_connman_prop_ethernet, e_connman_prop_speed, NULL, speed);
+}
+
+/**
  * Get property "Ethernet.Address" value.
  *
  * If this property isn't found then @c EINA_FALSE is returned.

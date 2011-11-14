@@ -30,6 +30,7 @@ const char *e_connman_prop_ipv4 = NULL;
 const char *e_connman_prop_ipv4_configuration = NULL;
 const char *e_connman_prop_ethernet = NULL;
 const char *e_connman_prop_interface = NULL;
+const char *e_connman_prop_speed = NULL;
 const char *e_connman_prop_method = NULL;
 const char *e_connman_prop_address = NULL;
 const char *e_connman_prop_gateway = NULL;
@@ -279,6 +280,7 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    ADD_STRINGSHARE(e_connman_prop_ipv4_configuration, "IPv4.Configuration");
    ADD_STRINGSHARE(e_connman_prop_ethernet, "Ethernet");
    ADD_STRINGSHARE(e_connman_prop_interface, "Interface");
+   ADD_STRINGSHARE(e_connman_prop_speed, "Speed");
    ADD_STRINGSHARE(e_connman_prop_method, "Method");
    ADD_STRINGSHARE(e_connman_prop_address, "Address");
    ADD_STRINGSHARE(e_connman_prop_gateway, "Gateway");
@@ -377,6 +379,7 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_ipv4_configuration);
    _stringshare_del(&e_connman_prop_ethernet);
    _stringshare_del(&e_connman_prop_interface);
+   _stringshare_del(&e_connman_prop_speed);
    _stringshare_del(&e_connman_prop_method);
    _stringshare_del(&e_connman_prop_address);
    _stringshare_del(&e_connman_prop_gateway);
