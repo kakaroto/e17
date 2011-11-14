@@ -288,6 +288,13 @@ group {
 			action: STATE_SET "huge" 0.0;
 			target: "background";
 			transition: ACCELERATE 0.5;
+			after: "exec3";
+		}
+		program {
+			name: "exec3";
+			action: STATE_SET "default" 0.0;
+			target: "urgent-clipper";
+			target: "background";
 		}
 	}
 }
