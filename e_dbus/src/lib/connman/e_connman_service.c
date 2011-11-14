@@ -1062,13 +1062,13 @@ e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *
 }
 
 /**
- * Get property "Ethernet.Method" value.
+ * Get property "Proxy.Method" value.
  *
  * If this property isn't found then @c EINA_FALSE is returned.
  * If @c EINA_FALSE is returned, then this call failed and parameter-returned
  * values shall be considered invalid.
  *
- * The Ethernet configuration method. Possible values here "auto" and "manual".
+ * Possible values are "direct", "auto" and "manual".
  *
  * @param service path to get property.
  * @param method where to store the property value, must be a pointer
@@ -1079,12 +1079,107 @@ e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
 Eina_Bool
-e_connman_service_ethernet_method_get(const E_Connman_Element *service, const char **method)
+e_connman_service_proxy_method_get(const E_Connman_Element *service, const char **method)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(method, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
-             (service, e_connman_prop_ethernet, e_connman_prop_method, NULL, method);
+             (service, e_connman_prop_proxy, e_connman_prop_method, NULL, method);
+}
+
+/**
+ * Get property "Proxy.URL" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * Automatic proxy configuration URL. Used by "auto" method.
+ *
+ * @param service path to get property.
+ * @param url where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+Eina_Bool
+e_connman_service_proxy_url_get(const E_Connman_Element *service, const char **url)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(url, EINA_FALSE);
+   return e_connman_element_property_dict_get_stringshared
+             (service, e_connman_prop_proxy, e_connman_prop_url, NULL, url);
+}
+
+/**
+ * Get property "Proxy.Servers" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * List of proxy URIs. The URI without a protocol will be interpreted as the
+ * generic proxy URI. All others will target a specific protocol and only once.
+ * Example of generic proxy server entry would be like this:
+ * "server.example.com:911".
+ *
+ * Used when "manual" method is set.
+ *
+ * @param service path to get property.
+ * @param count return the number of elements in array.
+ * @param servers array with pointers to internal strings. These
+ *        strings are not copied in any way, and they are granted to
+ *        be eina_stringshare instances, so one can use
+ *        eina_stringshare_ref() if he wants to save memory and cpu to
+ *        get an extra reference. The array itself is allocated using
+ *        malloc() and should be freed after usage is done. This
+ *        pointer is just set if return is @c EINA_TRUE.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+Eina_Bool
+e_connman_service_proxy_servers_get(const E_Connman_Element *service, unsigned int *count, const char ***servers)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(servers, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   return e_connman_element_property_dict_strings_array_get_stringshared
+             (service, e_connman_prop_proxy, e_connman_prop_servers, count, servers);
+}
+
+/**
+ * Get property "Proxy.Excludes" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * List of hosts which can be accessed directly.
+ *
+ * Used when "manual" method is set.
+ *
+ * @param service path to get property.
+ * @param count return the number of elements in array.
+ * @param excludes array with pointers to internal strings. These
+ *        strings are not copied in any way, and they are granted to
+ *        be eina_stringshare instances, so one can use
+ *        eina_stringshare_ref() if he wants to save memory and cpu to
+ *        get an extra reference. The array itself is allocated using
+ *        malloc() and should be freed after usage is done. This
+ *        pointer is just set if return is @c EINA_TRUE.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+Eina_Bool
+e_connman_service_proxy_excludes_get(const E_Connman_Element *service, unsigned int *count, const char ***excludes)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(excludes, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   return e_connman_element_property_dict_strings_array_get_stringshared
+             (service, e_connman_prop_proxy, e_connman_prop_excludes, count, excludes);
 }
 
 /**
@@ -1111,6 +1206,32 @@ e_connman_service_ethernet_interface_get(const E_Connman_Element *service, const
    EINA_SAFETY_ON_NULL_RETURN_VAL(iface, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ethernet, e_connman_prop_interface, NULL, iface);
+}
+
+/**
+ * Get property "Ethernet.Method" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * The Ethernet configuration method. Possible values here "auto" and "manual".
+ *
+ * @param service path to get property.
+ * @param method where to store the property value, must be a pointer
+ *        to string (const char **), it will not be allocated or
+ *        copied and references will be valid until element changes,
+ *        so copy it if you want to use it later.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+Eina_Bool
+e_connman_service_ethernet_method_get(const E_Connman_Element *service, const char **method)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(method, EINA_FALSE);
+   return e_connman_element_property_dict_get_stringshared
+             (service, e_connman_prop_ethernet, e_connman_prop_method, NULL, method);
 }
 
 /**
