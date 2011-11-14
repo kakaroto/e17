@@ -1508,7 +1508,7 @@ void add_status(aStatus *as, void *data) {
 
 	itc1.item_style		= "elmdentica";
 	itc1.func.label_get	= ed_status_label_get;
-	itc1.func.icon_get	= ed_status_icon_get;
+	itc1.func.content_get	= ed_status_icon_get;
 	itc1.func.state_get	= ed_status_state_get;
 	itc1.func.del		= ed_status_del;
 
