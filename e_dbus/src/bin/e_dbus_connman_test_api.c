@@ -446,7 +446,6 @@ static const struct test_desc test_desc_service[] = {
   TEST_DESC_STRING_GET(e_connman_service_ethernet_method_get, 1),
   TEST_DESC_STRING_GET(e_connman_service_ethernet_address_get, 1),
   TEST_DESC_USHORT_GET(e_connman_service_ethernet_mtu_get, 1),
-  TEST_DESC_STRING_GET(e_connman_service_ethernet_netmask_get, 1),
   TEST_DESC_SENTINEL
 };
 

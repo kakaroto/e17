@@ -1619,29 +1619,6 @@ _on_cmd_service_get_ethernet_mtu(__UNUSED__ char *cmd, char *args)
 }
 
 static Eina_Bool
-_on_cmd_service_get_ethernet_netmask(__UNUSED__ char *cmd, char *args)
-{
-   const char *ethernet_netmask, *path;
-   E_Connman_Element *e;
-
-   if (!args)
-     {
-	fputs("ERROR: missing the service path\n", stderr);
-	return ECORE_CALLBACK_RENEW;
-     }
-   _tok(args);
-   path = args;
-
-   e = e_connman_service_get(path);
-   if (e_connman_service_ethernet_netmask_get(e, &ethernet_netmask))
-     printf(":::Service %s Ethernet Netmask = \"%s\"\n",
-	    path, ethernet_netmask);
-   else
-     fputs("ERROR: can't get service ethernet netmask\n", stderr);
-   return ECORE_CALLBACK_RENEW;
-}
-
-static Eina_Bool
 _on_cmd_technology_get_state(__UNUSED__ char *cmd, char *args)
 {
    const char *state, *path;
@@ -1782,7 +1759,6 @@ _on_input(__UNUSED__ void *data, Ecore_Fd_Handler *fd_handler)
      {"service_get_ethernet_method", _on_cmd_service_get_ethernet_method},
      {"service_get_ethernet_address", _on_cmd_service_get_ethernet_address},
      {"service_get_ethernet_mtu", _on_cmd_service_get_ethernet_mtu},
-     {"service_get_ethernet_netmask", _on_cmd_service_get_ethernet_netmask},
      {"technology_get_state", _on_cmd_technology_get_state},
      {"technology_get_type", _on_cmd_technology_get_type},
      {"technology_get_name", _on_cmd_technology_get_name},
