@@ -212,6 +212,8 @@ EAPI Eina_Bool              e_connman_element_property_dict_set_full(E_Connman_E
 EAPI Eina_Bool              e_connman_element_property_type_get_stringshared(const E_Connman_Element *element, const char *name, int *type) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_property_type_get(const E_Connman_Element *element, const char *name, int *type) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_property_dict_get_stringshared(const E_Connman_Element *element, const char *dict_name, const char *key_name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_element_property_dict_strings_array_get_stringshared(const E_Connman_Element *element, const char *dict_name, const char *key, unsigned int *count, const char ***strings) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT;
+
 EAPI Eina_Bool              e_connman_element_property_get_stringshared(const E_Connman_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_property_get(const E_Connman_Element *element, const char *name, int *type, void *value) EINA_ARG_NONNULL(1, 2, 4) EINA_WARN_UNUSED_RESULT;
 

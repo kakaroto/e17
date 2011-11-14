@@ -49,12 +49,13 @@ struct _E_Connman_Element_Dict_Entry
    const char *name;
    int         type;
    union {
-      Eina_Bool      boolean;
-      const char    *str;
-      unsigned short u16;
-      unsigned int   u32;
-      unsigned char  byte;
-      const char    *path;
+      Eina_Bool        boolean;
+      const char      *str;
+      unsigned short   u16;
+      unsigned int     u32;
+      unsigned char    byte;
+      const char      *path;
+      E_Connman_Array *array;
    } value;
 };
 
@@ -1837,6 +1838,10 @@ e_connman_element_property_dict_get_stringshared(const E_Connman_Element *elemen
             *(const char **)value = entry->value.path;
             return EINA_TRUE;
 
+         case DBUS_TYPE_ARRAY:
+            *(E_Connman_Array **)value = entry->value.array;
+            return EINA_TRUE;
+
          default:
             ERR("don't know how to get property %s, key %s type %c (%d)",
                 dict_name, key, entry->type, entry->type);
@@ -1847,6 +1852,69 @@ e_connman_element_property_dict_get_stringshared(const E_Connman_Element *elemen
    DBG("element %s (%p) has no property with name \"%s\".",
        element->path, element, dict_name);
    return EINA_FALSE;
+}
+
+Eina_Bool
+e_connman_element_property_dict_strings_array_get_stringshared(const E_Connman_Element *element, const char *dict_name, const char *key, unsigned int *count, const char ***strings)
+{
+   const char **ret, **p;
+   Eina_Array_Iterator iterator;
+   E_Connman_Array *array;
+   unsigned int i;
+   int type;
+   void *item;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dict_name, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(key, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(strings, EINA_FALSE);
+
+   *count = 0;
+   *strings = NULL;
+
+   if (!e_connman_element_property_dict_get_stringshared(element, dict_name,
+                                                         key, &type, &array))
+      return EINA_FALSE;
+
+   if (type != DBUS_TYPE_ARRAY)
+     {
+        ERR("property %s.%s is not an array!", dict_name, key);
+        return EINA_FALSE;
+     }
+
+   if ((!array) || (!array->array) || (array->type == DBUS_TYPE_INVALID))
+      return EINA_FALSE;
+
+   if (array->type != DBUS_TYPE_STRING)
+     {
+        ERR("property %s.%s is not an array of strings!", dict_name, key);
+        return EINA_FALSE;
+     }
+
+   *count = eina_array_count_get(array->array);
+   ret = malloc(*count * sizeof(char *));
+   if (!ret)
+     {
+        ERR("could not allocate return array of %d strings: %s",
+            *count, strerror(errno));
+        *count = 0;
+        return EINA_FALSE;
+     }
+
+   p = ret;
+
+   EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
+     {
+        if (!item)
+           continue;
+
+        *p = item;
+        p++;
+     }
+   *count = p - ret;
+   *strings = ret;
+   return EINA_TRUE;
 }
 
 /**
