@@ -1461,7 +1461,7 @@ void indent_text(void)
           (pc->type == CT_COMMENT_CPP))
       {
          frm.pse[frm.pse_tos].indent_tmp = frm.pse[frm.pse_tos].indent;
-         if (chunk_is_newline(pc) && (!chunk_is_comment(pc->prev)) && (prev->type == CT_BRACE_OPEN) && cpd.settings[UO_indent_brace_width].b)
+         if (chunk_is_newline(pc) && (!chunk_is_comment(pc->prev)) && prev && (prev->type == CT_BRACE_OPEN) && cpd.settings[UO_indent_brace_width].b)
          {
             frm.pse[frm.pse_tos].indent++;
             frm.pse[frm.pse_tos].indent_tab++;
