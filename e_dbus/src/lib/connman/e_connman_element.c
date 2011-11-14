@@ -1575,6 +1575,71 @@ e_connman_element_property_set_full(E_Connman_Element *element, const char *prop
 }
 
 /**
+ * Call method SetProperty(prop, value) at the given element on server, when
+ * value is an array.
+ *
+ * This is a server call, not local, so it may fail and in that case
+ * no property is updated locally. If the value was set the event
+ * E_CONNMAN_EVENT_ELEMENT_UPDATED will be added to main loop.
+ *
+ * @param element to call method on server.
+ * @param prop property name.
+ * @param type DBus type to use for value.
+ * @param value pointer to value, just like regular DBus, see
+ *        dbus_message_iter_append_basic().
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+Eina_Bool
+e_connman_element_property_array_set_full(E_Connman_Element *element, const char *prop, int type, const Eina_List *values, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   const char name[] = "SetProperty";
+   char type_sig[2] = { type, '\0'};
+   char array_sig[3] = { DBUS_TYPE_ARRAY, type, '\0' };
+   DBusMessage *msg;
+   DBusMessageIter itr, variant, array;
+   const Eina_List *l;
+   void *entry;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(prop, EINA_FALSE);
+
+   msg = dbus_message_new_method_call
+         (e_connman_system_bus_name_get(), element->path, element->interface, name);
+
+   if (!msg)
+      return EINA_FALSE;
+
+   dbus_message_iter_init_append(msg, &itr);
+   dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &prop);
+
+   dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, array_sig,
+                                    &variant);
+   dbus_message_iter_open_container(&variant, DBUS_TYPE_ARRAY, type_sig,
+                                    &array);
+
+   if (type == DBUS_TYPE_STRING || type == DBUS_TYPE_OBJECT_PATH)
+     {
+        EINA_LIST_FOREACH(values, l, entry)
+           dbus_message_iter_append_basic(&array, type, &entry);
+     }
+   else
+     {
+        EINA_LIST_FOREACH(values, l, entry)
+           dbus_message_iter_append_basic(&array, type, entry);
+     }
+
+   dbus_message_iter_close_container(&variant, &array);
+   dbus_message_iter_close_container(&itr, &variant);
+
+   return e_connman_element_message_send(element, name, NULL, msg,
+                                         &element->_pending.property_set,
+                                         cb, data);
+}
+
+/**
  * Call method SetProperty(prop, value) at the given element on server.
  *
  * This is the simple version and there is no check of server reply
