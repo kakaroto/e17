@@ -11,8 +11,19 @@
 /**
  * @defgroup EConnman_Group EConnman
  *
+ * Currently supporting upstream API version 0.75 and later.
+ *
+ * @note this API is subject to changed based on upstream connman changes,
+ *       then it is required to acknowledge this by defining:
+ *       @code
+ *       #define E_CONNMAN_I_KNOW_THIS_API_IS_SUBJECT_TO_CHANGE 1
+ *       @endcode
+ *
  * @{
  */
+#ifndef E_CONNMAN_I_KNOW_THIS_API_IS_SUBJECT_TO_CHANGE
+#error "E_Connman.h is an unstable API linked to upstream connman project"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,13 +69,6 @@ struct _E_Connman_Element
    } _idler;
    Eina_Inlist *_listeners;
    int          _references;
-};
-
-typedef struct _E_Connman_Array E_Connman_Array;
-struct _E_Connman_Array
-{
-   int         type;
-   Eina_Array *array;
 };
 
 /* General Public API */
@@ -134,7 +138,7 @@ EAPI Eina_Bool              e_connman_service_state_get(const E_Connman_Element 
 EAPI Eina_Bool              e_connman_service_error_get(const E_Connman_Element *service, const char **error) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_name_get(const E_Connman_Element *service, const char **name) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_type_get(const E_Connman_Element *service, const char **type) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_security_get(const E_Connman_Element *service, const E_Connman_Array **security) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_service_security_get(const E_Connman_Element *service, unsigned int *count, const char ***security) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 EAPI Eina_Bool              e_connman_service_passphrase_get(const E_Connman_Element *service, const char **passphrase) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_passphrase_set(E_Connman_Element *service, const char *passphrase, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
@@ -217,7 +221,7 @@ EAPI void                   e_connman_element_properties_list(const E_Connman_El
 
 EAPI Eina_Bool              e_connman_element_property_set(E_Connman_Element *element, const char *prop, int type, const void *value) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_property_set_full(E_Connman_Element *element, const char *prop, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_element_property_array_set_full(E_Connman_Element *element, const char *prop, int type, const Eina_List *values, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_element_property_array_set_full(E_Connman_Element *element, const char *prop, int type, unsigned int count, const void * const *values, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 EAPI Eina_Bool              e_connman_element_property_dict_set_full(E_Connman_Element *element, const char *prop, const char *key, int type, const void *value, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 

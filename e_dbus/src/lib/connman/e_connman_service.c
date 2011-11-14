@@ -342,20 +342,23 @@ e_connman_service_type_get(const E_Connman_Element *service, const char **type)
  * services.
  *
  * @param service path to get property.
+ * @param count where to return the number of elements in @a security
  * @param security where to store the property value, must be a pointer
- *        to E_Connman_Array, it will not be allocated or
+ *        to array of strings, it will not be allocated or
  *        copied and references will be valid until element changes,
  *        so copy it if you want to use it later.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
 Eina_Bool
-e_connman_service_security_get(const E_Connman_Element *service, const E_Connman_Array **security)
+e_connman_service_security_get(const E_Connman_Element *service, unsigned int *count, const char ***security)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(security, EINA_FALSE);
-   return e_connman_element_property_get_stringshared
-             (service, e_connman_prop_security, NULL, security);
+
+   return e_connman_element_strings_array_get_stringshared
+     (service, e_connman_prop_security, count, security);
 }
 
 /**
@@ -680,9 +683,9 @@ e_connman_service_roaming_get(const E_Connman_Element *service, Eina_Bool *roami
  *        strings are not copied in any way, and they are granted to
  *        be eina_stringshare instances, so one can use
  *        eina_stringshare_ref() if he wants to save memory and cpu to
- *        get an extra reference. The array itself is allocated using
- *        malloc() and should be freed after usage is done. This
- *        pointer is just set if return is @c EINA_TRUE.
+ *        get an extra reference. The array itself is also NOT
+ *        allocated or copied, do not modify it. This pointer is just
+ *        set if return is @c EINA_TRUE.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
@@ -714,9 +717,9 @@ e_connman_service_nameservers_get(const E_Connman_Element *service, unsigned int
  *        strings are not copied in any way, and they are granted to
  *        be eina_stringshare instances, so one can use
  *        eina_stringshare_ref() if he wants to save memory and cpu to
- *        get an extra reference. The array itself is allocated using
- *        malloc() and should be freed after usage is done. This
- *        pointer is just set if return is @c EINA_TRUE.
+ *        get an extra reference. The array itself is also NOT
+ *        allocated or copied, do not modify it. This pointer is just
+ *        set if return is @c EINA_TRUE.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
@@ -727,7 +730,8 @@ e_connman_service_nameservers_configuration_get(const E_Connman_Element *service
    EINA_SAFETY_ON_NULL_RETURN_VAL(nameservers, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
    return e_connman_element_strings_array_get_stringshared
-             (service, e_connman_prop_nameservers_configuration, count, nameservers);
+             (service, e_connman_prop_nameservers_configuration,
+              count, nameservers);
 }
 
 /**
@@ -759,13 +763,14 @@ e_connman_service_nameservers_configuration_get(const E_Connman_Element *service
  * @see e_connman_service_nameservers_configuration_get()
  */
 Eina_Bool
-e_connman_service_nameservers_configuration_set(E_Connman_Element *service, Eina_List *nameservers, E_DBus_Method_Return_Cb cb, const void *data)
+e_connman_service_nameservers_configuration_set(E_Connman_Element *service, unsigned int count, const char **nameservers, E_DBus_Method_Return_Cb cb, const void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(nameservers, EINA_FALSE);
    return e_connman_element_property_array_set_full
              (service, e_connman_prop_nameservers_configuration,
-             DBUS_TYPE_STRING, nameservers, cb, data);
+              DBUS_TYPE_STRING, count,
+              (const void * const *)nameservers, cb, data);
 }
 
 /**
@@ -785,9 +790,9 @@ e_connman_service_nameservers_configuration_set(E_Connman_Element *service, Eina
  *        strings are not copied in any way, and they are granted to
  *        be eina_stringshare instances, so one can use
  *        eina_stringshare_ref() if he wants to save memory and cpu to
- *        get an extra reference. The array itself is allocated using
- *        malloc() and should be freed after usage is done. This
- *        pointer is just set if return is @c EINA_TRUE.
+ *        get an extra reference. The array itself is also NOT
+ *        allocated or copied, do not modify it. This pointer is just
+ *        set if return is @c EINA_TRUE.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
@@ -819,9 +824,9 @@ e_connman_service_domains_get(const E_Connman_Element *service, unsigned int *co
  *        strings are not copied in any way, and they are granted to
  *        be eina_stringshare instances, so one can use
  *        eina_stringshare_ref() if he wants to save memory and cpu to
- *        get an extra reference. The array itself is allocated using
- *        malloc() and should be freed after usage is done. This
- *        pointer is just set if return is @c EINA_TRUE.
+ *        get an extra reference. The array itself is also NOT
+ *        allocated or copied, do not modify it. This pointer is just
+ *        set if return is @c EINA_TRUE.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
@@ -855,6 +860,7 @@ e_connman_service_domains_configuration_get(const E_Connman_Element *service, un
  * resolution might fail.
  *
  * @param service path to set property.
+ * @param count number of elements in @a domain.
  * @param domains sorted list of the current domains. The first one has
  * the highest priority and is used by default.
  * @param cb function to call when server replies or some error happens.
@@ -864,13 +870,14 @@ e_connman_service_domains_configuration_get(const E_Connman_Element *service, un
  * @see e_connman_service_domains_configuration_get()
  */
 Eina_Bool
-e_connman_service_domains_configuration_set(E_Connman_Element *service, Eina_List *domains, E_DBus_Method_Return_Cb cb, const void *data)
+e_connman_service_domains_configuration_set(E_Connman_Element *service, unsigned int count, const char **domains, E_DBus_Method_Return_Cb cb, const void *data)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(domains, EINA_FALSE);
    return e_connman_element_property_array_set_full
              (service, e_connman_prop_domains_configuration,
-             DBUS_TYPE_STRING, domains, cb, data);
+              DBUS_TYPE_STRING, count,
+              (const void * const *)domains, cb, data);
 }
 
 /**
@@ -1278,9 +1285,9 @@ e_connman_service_proxy_url_get(const E_Connman_Element *service, const char **u
  *        strings are not copied in any way, and they are granted to
  *        be eina_stringshare instances, so one can use
  *        eina_stringshare_ref() if he wants to save memory and cpu to
- *        get an extra reference. The array itself is allocated using
- *        malloc() and should be freed after usage is done. This
- *        pointer is just set if return is @c EINA_TRUE.
+ *        get an extra reference. The array itself is also NOT
+ *        allocated or copied, do not modify it. This pointer is just
+ *        set if return is @c EINA_TRUE.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
@@ -1311,9 +1318,9 @@ e_connman_service_proxy_servers_get(const E_Connman_Element *service, unsigned i
  *        strings are not copied in any way, and they are granted to
  *        be eina_stringshare instances, so one can use
  *        eina_stringshare_ref() if he wants to save memory and cpu to
- *        get an extra reference. The array itself is allocated using
- *        malloc() and should be freed after usage is done. This
- *        pointer is just set if return is @c EINA_TRUE.
+ *        get an extra reference. The array itself is also NOT
+ *        allocated or copied, do not modify it. This pointer is just
+ *        set if return is @c EINA_TRUE.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
@@ -1408,9 +1415,9 @@ e_connman_service_proxy_configuration_url_get(const E_Connman_Element *service, 
  *        strings are not copied in any way, and they are granted to
  *        be eina_stringshare instances, so one can use
  *        eina_stringshare_ref() if he wants to save memory and cpu to
- *        get an extra reference. The array itself is allocated using
- *        malloc() and should be freed after usage is done. This
- *        pointer is just set if return is @c EINA_TRUE.
+ *        get an extra reference. The array itself is also NOT
+ *        allocated or copied, do not modify it. This pointer is just
+ *        set if return is @c EINA_TRUE.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
@@ -1444,9 +1451,9 @@ e_connman_service_proxy_configuration_servers_get(const E_Connman_Element *servi
  *        strings are not copied in any way, and they are granted to
  *        be eina_stringshare instances, so one can use
  *        eina_stringshare_ref() if he wants to save memory and cpu to
- *        get an extra reference. The array itself is allocated using
- *        malloc() and should be freed after usage is done. This
- *        pointer is just set if return is @c EINA_TRUE.
+ *        get an extra reference. The array itself is also NOT
+ *        allocated or copied, do not modify it. This pointer is just
+ *        set if return is @c EINA_TRUE.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */

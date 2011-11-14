@@ -2,6 +2,7 @@
 #include "config.h"
 #endif
 
+#define E_CONNMAN_I_KNOW_THIS_API_IS_SUBJECT_TO_CHANGE 1
 #include "E_Connman.h"
 #include <stdio.h>
 #include <string.h>
@@ -907,7 +908,8 @@ _on_cmd_service_get_type(__UNUSED__ char *cmd, char *args)
 static Eina_Bool
 _on_cmd_service_get_security(__UNUSED__ char *cmd, char *args)
 {
-   const E_Connman_Array *security;
+   unsigned int count;
+   const char **security;
    const char *path;
    E_Connman_Element *e;
 
@@ -920,21 +922,11 @@ _on_cmd_service_get_security(__UNUSED__ char *cmd, char *args)
    path = args;
 
    e = e_connman_service_get(path);
-   if (e_connman_service_security_get(e, &security))
+   if (e_connman_service_security_get(e, &count, &security))
      {
-        Eina_Array_Iterator iterator;
         unsigned int i;
-        const char *entry;
-        if (security->type != DBUS_TYPE_STRING)
-          {
-             fprintf(stderr, "ERROR: expected type '%c' but got '%c' for "
-                     "security array.\n",
-                     DBUS_TYPE_STRING, security->type);
-             return ECORE_CALLBACK_RENEW;
-          }
-        printf(":::Service %s Security = ", path);
-        EINA_ARRAY_ITER_NEXT(security->array, i, entry, iterator)
-          printf("\"%s\", ", entry);
+        for (i = 0; i < count; i++)
+          printf("\"%s\", ", security[i]);
         putchar('\n');
      }
    else

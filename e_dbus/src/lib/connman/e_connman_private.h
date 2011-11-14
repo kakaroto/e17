@@ -24,7 +24,15 @@ void *    alloca (size_t);
 #include <Eina.h>
 #include <eina_safety_checks.h>
 
+#define E_CONNMAN_I_KNOW_THIS_API_IS_SUBJECT_TO_CHANGE 1
 #include "E_Connman.h"
+
+typedef struct _E_Connman_Array E_Connman_Array;
+struct _E_Connman_Array
+{
+   int         type;
+   Eina_Array *array;
+};
 
 static const char manager_path[] = "/";
 

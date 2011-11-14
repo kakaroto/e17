@@ -823,16 +823,14 @@ e_connman_element_objects_array_get_stringshared(const E_Connman_Element *elemen
    return EINA_TRUE;
 }
 
-/* strings are just pointers (references), no strdup or stringshare_add/ref */
+/* array and strings are just pointers (references),
+ * no malloc, strdup or stringshare_add/ref
+ */
 Eina_Bool
 e_connman_element_strings_array_get_stringshared(const E_Connman_Element *element, const char *property, unsigned int *count, const char ***strings)
 {
-   const char **ret, **p;
-   Eina_Array_Iterator iterator;
    E_Connman_Array *array;
-   unsigned int i;
    int type;
-   void *item;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(property, EINA_FALSE);
@@ -861,28 +859,8 @@ e_connman_element_strings_array_get_stringshared(const E_Connman_Element *elemen
         return EINA_FALSE;
      }
 
-   *count = eina_array_count_get(array->array);
-   ret = malloc(*count * sizeof(char *));
-   if (!ret)
-     {
-        ERR("could not allocate return array of %d strings: %s",
-            *count, strerror(errno));
-        *count = 0;
-        return EINA_FALSE;
-     }
-
-   p = ret;
-
-   EINA_ARRAY_ITER_NEXT(array->array, i, item, iterator)
-   {
-      if (!item)
-         continue;
-
-      *p = item;
-      p++;
-   }
-   *count = p - ret;
-   *strings = ret;
+   *count = array->array->count;
+   *strings = (const char **)array->array->data;
    return EINA_TRUE;
 }
 
@@ -1593,15 +1571,13 @@ e_connman_element_property_set_full(E_Connman_Element *element, const char *prop
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
 Eina_Bool
-e_connman_element_property_array_set_full(E_Connman_Element *element, const char *prop, int type, const Eina_List *values, E_DBus_Method_Return_Cb cb, const void *data)
+e_connman_element_property_array_set_full(E_Connman_Element *element, const char *prop, int type, unsigned int count, const void * const *values, E_DBus_Method_Return_Cb cb, const void *data)
 {
    const char name[] = "SetProperty";
    char type_sig[2] = { type, '\0'};
    char array_sig[3] = { DBUS_TYPE_ARRAY, type, '\0' };
    DBusMessage *msg;
    DBusMessageIter itr, variant, array;
-   const Eina_List *l;
-   void *entry;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(element, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(prop, EINA_FALSE);
@@ -1622,13 +1598,21 @@ e_connman_element_property_array_set_full(E_Connman_Element *element, const char
 
    if (type == DBUS_TYPE_STRING || type == DBUS_TYPE_OBJECT_PATH)
      {
-        EINA_LIST_FOREACH(values, l, entry)
-           dbus_message_iter_append_basic(&array, type, &entry);
+        unsigned int i;
+        for (i = 0; i < count; i++)
+          {
+             const void *entry = values[i];
+             dbus_message_iter_append_basic(&array, type, &entry);
+          }
      }
    else
      {
-        EINA_LIST_FOREACH(values, l, entry)
-           dbus_message_iter_append_basic(&array, type, entry);
+        unsigned int i;
+        for (i = 0; i < count; i++)
+          {
+             const void *entry = values[i];
+             dbus_message_iter_append_basic(&array, type, entry);
+          }
      }
 
    dbus_message_iter_close_container(&variant, &array);
