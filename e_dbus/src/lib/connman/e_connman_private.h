@@ -40,6 +40,7 @@ extern const char *e_connman_prop_default;
 extern const char *e_connman_prop_ipv4;
 extern const char *e_connman_prop_ipv4_configuration;
 extern const char *e_connman_prop_ethernet;
+extern const char *e_connman_prop_interface;
 extern const char *e_connman_prop_method;
 extern const char *e_connman_prop_address;
 extern const char *e_connman_prop_gateway;
