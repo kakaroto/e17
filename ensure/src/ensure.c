@@ -126,7 +126,6 @@ elm_main(int argc, char **argv)
         return -1;
      }
 
-   elm_list_go(ensure->mainwindow);
    elm_run();
    elm_shutdown();
    return 0;

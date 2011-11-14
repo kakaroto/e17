@@ -97,7 +97,7 @@ enasn_load(const char *path)
    return 0;
 }
 
-int
+EAPI int
 ensure_bug(struct enobj *enobj, enum ensure_severity sev, const char *type, const char *fmt, ...)
 {
    char *buf;

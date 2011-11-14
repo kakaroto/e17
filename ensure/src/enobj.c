@@ -41,7 +41,7 @@ enobj_add(struct ensure *ensure, struct enobj *eno)
    return 0;
 }
 
-struct enobj *
+EAPI struct enobj *
 enobj_parent_get(struct ensure *ensure, struct enobj *eno)
 {
    struct enobj *parent;
@@ -57,7 +57,7 @@ enobj_parent_get(struct ensure *ensure, struct enobj *eno)
    return parent;
 }
 
-struct enobj *
+EAPI struct enobj *
 enobj_clip_get(struct ensure *ensure, struct enobj *eno)
 {
    struct enobj *clip;
