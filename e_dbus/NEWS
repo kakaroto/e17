@@ -1,0 +1,20 @@
+E_dbus 1.1.0
+
+Changes since E_dbus 1.0.0:
+---------------------------
+
+Additions:
+
+    * e_notification_action_id_get
+    * e_notification_action_name_get
+    * e_notification_image_init
+    
+Fixes:
+
+    * DSO linking issues fixed
+    * crash on e-notify-send with invalid session bus set
+    * when app has no idle time, e_dbus's idlers dont process anything
+
+Improvements:
+
+    * notification protocol 1.2 support
