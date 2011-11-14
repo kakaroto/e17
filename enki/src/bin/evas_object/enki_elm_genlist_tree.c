@@ -70,13 +70,13 @@ init(Evas_Object *edje)
 
       itc_header.item_style = "enki_menu_title";
       itc_header.func.label_get = _gl_header_label_get;
-      itc_header.func.icon_get = _gl_header_icon_get;
+      itc_header.func.content_get = _gl_header_icon_get;
       itc_header.func.state_get = NULL;
       itc_header.func.del = NULL;
 
       itc.item_style = "enki_menu";
       itc.func.label_get = _gl_header_label_get;
-      itc.func.icon_get = _gl_header_icon_get;
+      itc.func.content_get = _gl_header_icon_get;
       itc.func.state_get = NULL;
       itc.func.del = NULL;
 

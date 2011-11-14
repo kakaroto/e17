@@ -176,7 +176,7 @@ import_new(Evas_Object *win)
 
    itc_album.item_style = "default";
    itc_album.func.label_get = _gl_album_label_get;
-   itc_album.func.icon_get = NULL;
+   itc_album.func.content_get = NULL;
    itc_album.func.state_get = NULL;
    itc_album.func.del = NULL;
 

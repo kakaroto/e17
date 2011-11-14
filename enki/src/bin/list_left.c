@@ -81,25 +81,25 @@ list_left_new(Evas_Object *edje)
 
    itc_album.item_style = "default";
    itc_album.func.label_get = _gl_label_get;
-   itc_album.func.icon_get = NULL;
+   itc_album.func.content_get = NULL;
    itc_album.func.state_get = NULL;
    itc_album.func.del = NULL;
 
    itc_col.item_style = "default";
    itc_col.func.label_get = _gl_col_label_get;
-   itc_col.func.icon_get = NULL;
+   itc_col.func.content_get = NULL;
    itc_col.func.state_get = NULL;
    itc_col.func.del = NULL;
 
    itc_col_album.item_style = "default";
    itc_col_album.func.label_get = _gl_col_album_label_get;
-   itc_col_album.func.icon_get = NULL;
+   itc_col_album.func.content_get = NULL;
    itc_col_album.func.state_get = NULL;
    itc_col_album.func.del = NULL;
 
    itc_tag.item_style = "default";
    itc_tag.func.label_get = _gl_tag_label_get;
-   itc_tag.func.icon_get = NULL;
+   itc_tag.func.content_get = NULL;
    itc_tag.func.state_get = NULL;
    itc_tag.func.del = NULL;
 

@@ -663,7 +663,7 @@ inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photos)
 
    itc_album.item_style = "default";
    itc_album.func.label_get = _gl_album_label_get;
-   itc_album.func.icon_get = NULL;
+   itc_album.func.content_get = NULL;
    itc_album.func.state_get = NULL;
    itc_album.func.del = NULL;
 
@@ -737,7 +737,7 @@ inwin_preferences_new()
    //themes
    itc_theme.item_style = "default";
    itc_theme.func.label_get = _gl_theme_label_get;
-   itc_theme.func.icon_get = NULL;
+   itc_theme.func.content_get = NULL;
    itc_theme.func.state_get = NULL;
    itc_theme.func.del = NULL;
 

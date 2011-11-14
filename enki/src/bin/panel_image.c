@@ -214,7 +214,7 @@ panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    panel_image->exifs.gl = gl;
    itc_exifs.item_style = "default_style";
    itc_exifs.func.label_get = _gl_exifs_label_get;
-   itc_exifs.func.icon_get = NULL;
+   itc_exifs.func.content_get = NULL;
    itc_exifs.func.state_get = NULL;
    itc_exifs.func.del = NULL;
 
@@ -223,7 +223,7 @@ panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    panel_image->iptcs.gl = gl;
    itc_iptcs.item_style = "default_style";
    itc_iptcs.func.label_get = _gl_iptcs_label_get;
-   itc_iptcs.func.icon_get = NULL;
+   itc_iptcs.func.content_get = NULL;
    itc_iptcs.func.state_get = NULL;
    itc_iptcs.func.del = NULL;
    //

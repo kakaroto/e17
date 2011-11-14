@@ -81,13 +81,13 @@ main_menu_new(Evas_Object *edje)
 
    itc_grid.func.label_get = _library_get;
    itc_grid.func.del = _library_del;
-   itc_grid.func.icon_get = _library_icon_get;
+   itc_grid.func.content_get = _library_icon_get;
    itc_grid.item_style = "enki";
    //
 
    itc_menu.item_style = "default";
    itc_menu.func.label_get = _gl_label_get;
-   itc_menu.func.icon_get = _gl_icon_get;
+   itc_menu.func.content_get = _gl_icon_get;
    itc_menu.func.state_get = NULL;
    itc_menu.func.del = NULL;
 
