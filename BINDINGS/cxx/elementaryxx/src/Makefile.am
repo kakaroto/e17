@@ -6,8 +6,8 @@ AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	$(EFL_CFLAGS) \
-	$(EFLXX_CFLAGS)
+	$(EFLXX_CFLAGS) \
+	$(EFL_CFLAGS)
 
 AM_CFLAGS =\
 	 -Wall\
@@ -55,4 +55,8 @@ libelementaryxx_la_SOURCES = \
 	Gen.cpp \
 	GenItem.cpp \
 	GenListItem.cpp
+
+libelementaryxx_la_LIBADD = \
+	$(EFLXX_LIBS)        \
+	$(EFL_LIBS)
 

@@ -14,7 +14,8 @@ using namespace std;
 
 namespace Edjexx {
 
-Object::Object( Evasxx::Canvas &canvas )
+Object::Object( Evasxx::Canvas &canvas ) :
+  mFree (true)
 {
   // Initialize the Edje library
   Base::init ();
@@ -28,7 +29,8 @@ Object::Object( Evasxx::Canvas &canvas )
 #endif
 }
 
-Object::Object( Evasxx::Canvas &canvas, const std::string &filename, const std::string &groupname )
+Object::Object( Evasxx::Canvas &canvas, const std::string &filename, const std::string &groupname ) :
+  mFree (true)
 {
   // Initialize the Edje library
   Base::init ();
@@ -43,7 +45,8 @@ Object::Object( Evasxx::Canvas &canvas, const std::string &filename, const std::
   setFile( filename, groupname );
 }
 
-Object::Object( Evasxx::Canvas &canvas, const Eflxx::Point &pos, const std::string &filename, const std::string &groupname )
+Object::Object( Evasxx::Canvas &canvas, const Eflxx::Point &pos, const std::string &filename, const std::string &groupname ) :
+  mFree (true)
 {
   // Initialize the Edje library
   Base::init ();
@@ -59,15 +62,20 @@ Object::Object( Evasxx::Canvas &canvas, const Eflxx::Point &pos, const std::stri
   move (pos);
 }
 
-Object::Object( Evas_Object* object)
+Object::Object( Evas_Object* object) :
+  mFree (false)
 {
   o = object;
 }
 
 Object::~Object()
 {
-	disconnectAll ();
-  evas_object_del( o );
+  if (mFree)
+  {
+    cout << "delete Object" << endl;
+	  disconnectAll ();
+    evas_object_del( o );
+  }
 }
 
 void Object::deleteAllParts ()
@@ -184,7 +192,7 @@ void Object::_edje_signal_handler_callback( void *data, Evas_Object *obj, const 
 
 Object* Object::wrap( Evas_Object* o )
 {
-  return new Object( o );
+  return new Edjexx::Object( o );
 }
 
 } // end namespace Edjexx

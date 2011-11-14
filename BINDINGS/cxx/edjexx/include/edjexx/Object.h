@@ -102,6 +102,8 @@ private:
 
 	std::map <std::pair <std::string, std::string>, SignalSignal*> mSignalList;
   std::map <std::string, Part*> mPartList;
+
+  bool mFree;
 };
 
 

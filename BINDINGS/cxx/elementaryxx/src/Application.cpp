@@ -11,9 +11,9 @@ using namespace std;
 
 namespace Elmxx {
 
-Application::Application (int argc, char **argv)
+Application::Application (int argc, const char **argv)
 {
-  elm_init (argc, argv);
+  elm_init (argc, const_cast <char**> (argv));
 }
 
 Application::~Application ()

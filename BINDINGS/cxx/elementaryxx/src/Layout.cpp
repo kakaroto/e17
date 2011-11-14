@@ -4,6 +4,9 @@
 
 #include "../include/elementaryxx/Layout.h"
 
+/* EFL */
+#include <Evas.h>
+
 using namespace std;
 
 namespace Elmxx {
@@ -35,6 +38,15 @@ bool Layout::setFile (const std::string &file, const std::string &group)
 void Layout::setContent (const std::string &swallow, const Evasxx::Object &content)
 {
   elm_layout_content_set (o, swallow.c_str (), content.obj ());
+}
+
+Eflxx::CountedPtr <Edjexx::Object> Layout::getEdje ()
+{
+	Evas_Object *eo = elm_layout_edje_get (o);
+  
+  Edjexx::Object *ret_o = Edjexx::Object::wrap (eo);
+  
+  return Eflxx::CountedPtr <Edjexx::Object> (ret_o);
 }
 
 } // end namespace Elmxx

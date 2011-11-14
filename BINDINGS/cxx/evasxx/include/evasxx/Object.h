@@ -218,7 +218,7 @@ public:
    *
    * @return  The Canvas that the object is on.
    */
-  Eflxx::CountedPtr <Canvas> getEvas ();
+  Eflxx::CountedPtr <Evasxx::Canvas> getCanvas ();
 
 private:
   

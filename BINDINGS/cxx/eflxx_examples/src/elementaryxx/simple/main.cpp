@@ -23,7 +23,7 @@ static void testFunc (Evasxx::Object &obj, void *event_info)
   cout << "sub-object-del" << endl;
 }
 
-int main (int argc, char **argv)
+int main (int argc, const char **argv)
 {
   Application elmApp (argc, argv);
 
@@ -32,7 +32,7 @@ int main (int argc, char **argv)
 
   Background *bg = Background::factory (*elmWin);
 
-  Evas *e = evas_object_evas_get(bg->obj ());
+  //Evas *e = evas_object_evas_get(bg->obj ());
 
 /*  Evasxx::Canvas ec (e);
 

@@ -11,7 +11,7 @@ namespace Elmxx {
 class Application
 {
 public:
-  Application (int argc, char **argv);
+  Application (int argc, const char **argv);
   virtual ~Application ();
 
   static void run ();

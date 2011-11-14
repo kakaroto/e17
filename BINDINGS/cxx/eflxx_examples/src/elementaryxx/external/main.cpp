@@ -26,7 +26,7 @@ static void testFunc (Evasxx::Object &obj, void *event_info)
   cout << "sub-object-del" << endl;
 }
 
-int main (int argc, char **argv)
+int main (int argc, const char **argv)
 {
   Application elmApp (argc, argv);
 

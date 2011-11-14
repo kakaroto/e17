@@ -25,8 +25,8 @@ AM_PROG_LIBTOOL
 
 
 
-PKG_CHECK_MODULES(EFL, elementary)
-PKG_CHECK_MODULES(EFLXX, eflxx evasxx)
+PKG_CHECK_MODULES(EFL, elementary evas)
+PKG_CHECK_MODULES(EFLXX, eflxx evasxx edjexx )
 AC_OUTPUT([
 elementaryxx.pc
 elementaryxx-uninstalled.pc

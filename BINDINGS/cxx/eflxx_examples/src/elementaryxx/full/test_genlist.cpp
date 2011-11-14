@@ -158,7 +158,7 @@ void test_genlist (void *data, Evas_Object *obj, void *event_info)
   bx->packEnd (*gl);
   gl->show ();
 
-  Eflxx::CountedPtr <Evasxx::Canvas> canvas (win->getEvas ());
+  Eflxx::CountedPtr <Evasxx::Canvas> canvas (win->getCanvas ());
 
   Evasxx::Rectangle *over = new Evasxx::Rectangle (*canvas);
   over->setColor (Eflxx::Color (0, 0, 0, 0));

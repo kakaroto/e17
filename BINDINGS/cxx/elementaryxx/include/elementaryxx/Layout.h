@@ -4,7 +4,8 @@
 /* STL */
 #include <string>
 
-/* ELFxx */
+/* EFL */
+#include <edjexx/Edjexx.h>
 #include "Object.h"
 
 namespace Elmxx {
@@ -19,8 +20,9 @@ public:
   bool setFile (const std::string &file, const std::string &group);
 
   void setContent (const std::string &swallow, const Evasxx::Object &content);
+
+  Eflxx::CountedPtr <Edjexx::Object> getEdje ();
   
-   //EAPI Evas_Object *elm_layout_edje_get(const Evas_Object *obj);
 
 private:
   Layout (); // forbid standard constructor

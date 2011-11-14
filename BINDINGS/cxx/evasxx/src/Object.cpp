@@ -364,7 +364,7 @@ const Object* Object::objectLink( const Evas_Object *evas_object )
   return static_cast<const Object*>( v );
 }
 
-Eflxx::CountedPtr <Canvas> Object::getEvas ()
+Eflxx::CountedPtr <Canvas> Object::getCanvas ()
 {
   return Eflxx::CountedPtr <Canvas> (Canvas::wrap (o));
 }

@@ -49,13 +49,13 @@ public:
   void         elm_object_scroll_freeze_push(Evas_Object *obj);
   void         elm_object_scroll_freeze_pop(Evas_Object *obj);*/
 
+  void destroy ();
+  
 protected:
   Object (); // allow only construction for child classes
   virtual ~Object (); // forbid direct delete -> use destroy()
   
   void elmInit ();
-
-  void destroy ();
   
 private:
   Object (const Object&); // forbid copy constructor

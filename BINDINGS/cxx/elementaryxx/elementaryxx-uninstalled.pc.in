@@ -6,7 +6,7 @@ includedir=include
 Name: @PACKAGE@
 Description: Elementary (EFL) C++ Wrapper, Not installed
 Version: @VERSION@
-Requires: sigc++-2.0 evasxx elementary eflxx
+Requires: sigc++-2.0 evasxx edjexx elementary eflxx
 Conflicts: 
 Libs: ${pcfiledir}/${libdir}/libelementaryxx.la
 Cflags: -I${pcfiledir}/${includedir} 

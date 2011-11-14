@@ -77,7 +77,7 @@ my_win_del (Evasxx::Object &obj, void *event_info)
 
 #endif // ELM_LIB_QUICKLAUNCH
 
-int main (int argc, char **argv)
+int main (int argc, const char **argv)
 {
   elmApp = new Application (argc, argv);
 
@@ -105,6 +105,8 @@ int main (int argc, char **argv)
    * case it is NULL). This is how you can pass specific things to a
    * callback like objects or data layered on top */
   win->getEventSignal ("delete-request")->connect (sigc::ptr_fun (&my_win_del));
+
+  win->setAutoDel (true);
 
   /* add a background to our window. this just uses the standard theme set
    * background. without a backgorund, you could make a window seem

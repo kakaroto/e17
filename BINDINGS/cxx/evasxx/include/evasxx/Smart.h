@@ -181,7 +181,7 @@ private:
   Evas_Smart_Class sc;
   CustomEventWrapMapType mCustomSignalMap;
 
-  bool mFree; /// @deprecated
+  bool mFree;
 };
 
 } // end namespace Evasxx

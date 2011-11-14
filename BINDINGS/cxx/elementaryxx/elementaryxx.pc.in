@@ -6,7 +6,7 @@ includedir=@prefix@/include
 Name: @PACKAGE@
 Description: Elementary (EFL) C++ Wrapper
 Version: @VERSION@
-Requires: sigc++-2.0 evasxx elementary eflxx
+Requires: sigc++-2.0 evasxx edjexx elementary eflxx
 Conflicts: 
 Libs: -L${libdir} -lelementaryxx
 Cflags: -I${includedir}
