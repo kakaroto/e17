@@ -80,7 +80,7 @@ clouseau_obj_information_list_add(Evas_Object *parent)
    prop_list = elm_genlist_add(parent);
    itc.item_style = "default";
    itc.func.label_get = item_label_get;
-   itc.func.icon_get = item_icon_get;
+   itc.func.content_get = item_icon_get;
    itc.func.state_get = NULL;
    itc.func.del = NULL;
 
