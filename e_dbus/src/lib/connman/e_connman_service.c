@@ -800,6 +800,79 @@ e_connman_service_domains_get(const E_Connman_Element *service, unsigned int *co
    return e_connman_element_strings_array_get_stringshared
              (service, e_connman_prop_domains, count, domains);
 }
+
+/**
+ * Get property "Domains.Configuration" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ * The list of currently active domains for this service. If the server is
+ * not in READY or ONLINE state than this list will be empty.
+ *
+ * Unlike Domains, this is the user-set value, rather than the
+ * actual value.
+ *
+ * @param service path to get property.
+ * @param count return the number of elements in array.
+ * @param domains array with pointers to internal strings. These
+ *        strings are not copied in any way, and they are granted to
+ *        be eina_stringshare instances, so one can use
+ *        eina_stringshare_ref() if he wants to save memory and cpu to
+ *        get an extra reference. The array itself is allocated using
+ *        malloc() and should be freed after usage is done. This
+ *        pointer is just set if return is @c EINA_TRUE.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+Eina_Bool
+e_connman_service_domains_configuration_get(const E_Connman_Element *service, unsigned int *count, const char ***domains)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(domains, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
+   return e_connman_element_strings_array_get_stringshared
+             (service, e_connman_prop_domains_configuration, count, domains);
+}
+
+/**
+ * Set property "Domains.Configuration" value.
+ *
+ * If this property isn't found then @c EINA_FALSE is returned.
+ * If @c EINA_FALSE is returned, then this call failed and parameter-returned
+ * values shall be considered invalid.
+ *
+ * Unlike Domains, this is the user-set value, rather than the actual value.
+ * It allows user to override the default setting.  When using manual
+ * configuration and no global domains are configured, then it is useful to
+ * configure this setting as well.
+ *
+ * This list is sorted by priority and the first entry represents the nameserver
+ * with the highest priority.
+ *
+ * Changes to the domain name servers can be done at any time. It will not cause
+ * a disconnect of the service. However there might be small window where name
+ * resolution might fail.
+ *
+ * @param service path to set property.
+ * @param domains sorted list of the current domains. The first one has
+ * the highest priority and is used by default.
+ * @param cb function to call when server replies or some error happens.
+ * @param data data to give to cb when it is called.
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ * @see e_connman_service_domains_configuration_get()
+ */
+Eina_Bool
+e_connman_service_domains_configuration_set(E_Connman_Element *service, Eina_List *domains, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(domains, EINA_FALSE);
+   return e_connman_element_property_array_set_full
+             (service, e_connman_prop_domains_configuration,
+             DBUS_TYPE_STRING, domains, cb, data);
+}
+
 /**
  * Get property "IPv4.Method" value.
  *

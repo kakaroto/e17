@@ -65,6 +65,7 @@ const char *e_connman_prop_technologies_connected = NULL;
 const char *e_connman_prop_nameservers = NULL;
 const char *e_connman_prop_nameservers_configuration = NULL;
 const char *e_connman_prop_domains = NULL;
+const char *e_connman_prop_domains_configuration = NULL;
 const char *e_connman_prop_proxy = NULL;
 const char *e_connman_prop_proxy_configuration = NULL;
 const char *e_connman_prop_url = NULL;
@@ -322,6 +323,8 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    ADD_STRINGSHARE(e_connman_prop_nameservers_configuration,
                    "Nameservers.Configuration");
    ADD_STRINGSHARE(e_connman_prop_domains, "Domains");
+   ADD_STRINGSHARE(e_connman_prop_domains_configuration,
+                   "Domains.Configuration");
    ADD_STRINGSHARE(e_connman_prop_proxy, "Proxy");
    ADD_STRINGSHARE(e_connman_prop_proxy_configuration, "Proxy.Configuration");
    ADD_STRINGSHARE(e_connman_prop_url, "URL");
@@ -423,6 +426,7 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_nameservers);
    _stringshare_del(&e_connman_prop_nameservers_configuration);
    _stringshare_del(&e_connman_prop_domains);
+   _stringshare_del(&e_connman_prop_domains_configuration);
    _stringshare_del(&e_connman_prop_proxy);
    _stringshare_del(&e_connman_prop_proxy_configuration);
    _stringshare_del(&e_connman_prop_url);
