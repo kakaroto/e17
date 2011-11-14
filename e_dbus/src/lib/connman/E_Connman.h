@@ -151,6 +151,7 @@ EAPI Eina_Bool              e_connman_service_passphrase_required_get(const E_Co
 EAPI Eina_Bool              e_connman_service_login_required_get(const E_Connman_Element *service, Eina_Bool *login_required) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 EAPI Eina_Bool              e_connman_service_roaming_get(const E_Connman_Element *service, Eina_Bool *roaming) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_service_nameservers_get(const E_Connman_Element *service, unsigned int *count, const char ***nameserver) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
 EAPI Eina_Bool              e_connman_service_ipv4_method_get(const E_Connman_Element *service, const char **method) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_ipv4_address_get(const E_Connman_Element *service, const char **address) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;

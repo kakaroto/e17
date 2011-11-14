@@ -73,6 +73,7 @@ extern const char *e_connman_prop_technologies_available;
 extern const char *e_connman_prop_technologies_enabled;
 extern const char *e_connman_prop_technologies_connected;
 extern const char *e_connman_prop_login_required;
+extern const char *e_connman_prop_nameservers;
 
 extern int _e_dbus_connman_log_dom;
 
