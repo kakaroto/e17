@@ -62,7 +62,7 @@ struct _Smart_Data
 static E_Gadcon_Client *_drawer_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _drawer_gc_shutdown(E_Gadcon_Client *gcc);
 static void _drawer_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
-static char *_drawer_gc_label(E_Gadcon_Client_Class *client_class);
+static const char *_drawer_gc_label(E_Gadcon_Client_Class *client_class);
 static const char *_drawer_gc_id_new(E_Gadcon_Client_Class *client_class);
 static Evas_Object *_drawer_gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas);
 
@@ -1332,7 +1332,7 @@ _drawer_gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 }
 
 /* Gadget/Module label */
-static char *
+static const char *
 _drawer_gc_label(E_Gadcon_Client_Class *client_class) 
 {
    return D_("Drawer");

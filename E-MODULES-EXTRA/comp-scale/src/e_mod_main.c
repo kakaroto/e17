@@ -10,9 +10,9 @@
 static E_Gadcon_Client *_gc_init_scale(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static E_Gadcon_Client *_gc_init_scale_all(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static E_Gadcon_Client *_gc_init_pager(E_Gadcon *gc, const char *name, const char *id, const char *style);
-static char *_gc_label_scale(E_Gadcon_Client_Class *client_class);
-static char *_gc_label_scale_all(E_Gadcon_Client_Class *client_class);
-static char *_gc_label_pager(E_Gadcon_Client_Class *client_class);
+static const char *_gc_label_scale(E_Gadcon_Client_Class *client_class);
+static const char *_gc_label_scale_all(E_Gadcon_Client_Class *client_class);
+static const char *_gc_label_pager(E_Gadcon_Client_Class *client_class);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient);
 static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
@@ -497,19 +497,19 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
    e_gadcon_client_min_size_set(gcc, 16, 16);
 }
 
-static char *
+static const char *
 _gc_label_scale(E_Gadcon_Client_Class *client_class)
 {
    return D_("Scale Windows");
 }
 
-static char *
+static const char *
 _gc_label_scale_all(E_Gadcon_Client_Class *client_class)
 {
    return D_("Scale all Windows");
 }
 
-static char *
+static const char *
 _gc_label_pager(E_Gadcon_Client_Class *client_class)
 {
    return D_("Scale Pager");
