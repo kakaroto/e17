@@ -1,5 +1,6 @@
 group {
    name: "e/widgets/scrollframe";
+   alias: "e/modules/everything/thumbview/main/scrollframe";
    parts {
       part {
          name:          "bg";
