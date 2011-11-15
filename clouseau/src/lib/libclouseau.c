@@ -412,9 +412,10 @@ ecore_main_loop_begin(void)
 
    if (!_is_init)
      {
+        char *margv[] = { "clouseau" };
         /* Make sure we init elementary, wouldn't be needed once we
          * take away the ui to another proc. */
-        elm_init(0, NULL);
+        elm_init(1, margv);
 
         libclouseau_init();
      }
