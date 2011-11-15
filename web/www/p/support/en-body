@@ -211,6 +211,26 @@
 
 <?php frame1("width=100%");?>
 <div class="main">
+ <h2>Social Networks</h2>
+
+ <h3>Twitter</h3>
+ <p>
+  <a href=http://twitter.com/_Enlightenment_>@_Enlightenment_</a>
+ </p>
+ <h3>Google +</h3>
+ <p>
+  <a href=http://plus.google.com/118426816251488376359>Google+ Page</a>
+ </p>
+ <h3>Facebook</h3>
+ <p>
+  <a href=http://www.facebook.com/enlightenment.org>Facebook Page</a>
+ </p>
+
+</div>
+<?php frame2();?>
+
+<?php frame1("width=100%");?>
+<div class="main">
  <h2>Bug Tracking</h2>
 
  <p>
