@@ -58,6 +58,7 @@ if (is_file("p/$page/$lang-rss"))
                 <li class=''><a href=http://twitter.com/_Enlightenment_><span><img src="http://www.enlightenment.org/i/soc-i-tw.png" border=0 height=16 width=16></span></a></li>
                 <li class=''><a href=http://plus.google.com/118426816251488376359><span><img src="http://www.enlightenment.org/i/soc-i-g+.png" border=0 height=16 width=16></span></a></li>
                 <li class=''><a href=http://www.facebook.com/enlightenment.org><span><img src="http://www.enlightenment.org/i/soc-i-fb.png" border=0 height=16 width=16></span></a></li>
+                <li class=''><a href=http://planet.enlightenment.org/><span><img src="http://www.enlightenment.org/i/feed-icon-14x14.png" border=0 height=16 width=16></span></a></li>
             </ul>
 
         </div>
