@@ -40,6 +40,22 @@ there is no way to clean up fully before unloading the module, causing issues.
 Patches can be sent to the enlightenment dev mailing list, or, if you have
 commit access, feel free to commit.
 
+
+ABOUT PROVIDED MODULES:
+-----------------------
+
+E_DBus provides easy C API for some D-Bus services, the
+org.freedesktop.DBus interface is implemented into libedbus/E_DBus.h
+itself, while the following modules provides more and their respective
+version:
+
+ * bluez(v4.9x): barebones to toggle state and change visibility.
+ * connman(v0.7x): complete manager, service and technology.
+ * hal(v0.5.x): deprecated, provides basic for e17. See ukit.
+ * notification(v0.7.x): complete client and server.
+ * ofono(v0.5x, v1.0): barebones to toggle state.
+ * ukit(upower-v0.9.x, udisks-1.0.x): most of upower, status api from udisks.
+
 ------------------------------------------------------------------------------
 COMPILING AND INSTALLING:
 

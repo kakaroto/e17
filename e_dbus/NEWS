@@ -8,7 +8,8 @@ Additions:
     * e_notification_action_id_get
     * e_notification_action_name_get
     * e_notification_image_init
-    
+    * e_connman: sync api with connman-0.7x
+
 Fixes:
 
     * DSO linking issues fixed
@@ -18,3 +19,4 @@ Fixes:
 Improvements:
 
     * notification protocol 1.2 support
+    * e_connman supports connman-0.7x api, warns that it is unstable.
