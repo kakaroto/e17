@@ -54,10 +54,10 @@ if (is_file("p/$page/$lang-rss"))
         <div class="layout">
 
             <ul class="submenu">
-<li class=''><a href=http://twitter.com/_Enlightenment_><span><img src="http://www.enlightenment.org/i/soc-i-tw.png" border=0 height=16 width=16></span></a></li>
-<li class=''><a href=http://plus.google.com/118426816251488376359><span><img src="http://www.enlightenment.org/i/soc-i-g+.png" border=0 height=16 width=16></span></a></li>
-<li class=''><a href=http://www.facebook.com/enlightenment.org><span><img src="http://www.enlightenment.org/i/soc-i-fb.png" border=0 height=16 width=16></span></a></li>
                 <?php nav_subs(); ?>
+                <li class=''><a href=http://twitter.com/_Enlightenment_><span><img src="http://www.enlightenment.org/i/soc-i-tw.png" border=0 height=16 width=16></span></a></li>
+                <li class=''><a href=http://plus.google.com/118426816251488376359><span><img src="http://www.enlightenment.org/i/soc-i-g+.png" border=0 height=16 width=16></span></a></li>
+                <li class=''><a href=http://www.facebook.com/enlightenment.org><span><img src="http://www.enlightenment.org/i/soc-i-fb.png" border=0 height=16 width=16></span></a></li>
             </ul>
 
         </div>
