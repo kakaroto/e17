@@ -8,4 +8,4 @@ WWW:          http://www.stosb.com
 Managing:     evas, edje, eina, elementary
 Contributing: expedite, illume
 Group:        Libraries
-Platform:     Arch (Linux), Openembedded/Openmoko (Linux), Ubuntu (Linux)
+Platform:     Arch (Linux), Openembedded/Openmoko (Linux)
