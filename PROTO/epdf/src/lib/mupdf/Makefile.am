@@ -407,4 +407,22 @@ libepdf_mupdf_la_LDFLAGS = -no-undefined @lt_enable_auto_import@
 clean-local:
 	-rm -f cmap_*.c font_*.c
 
-EXTRA_DIST = epdf_mupdf_private.h
+EXTRA_DIST = \
+epdf_mupdf_private.h \
+mupdf-0.5/mupdf/mupdf.h \
+mupdf-0.5/fitz/fitz_stream.h \
+mupdf-0.5/fitz/fitz_base.h \
+mupdf-0.5/fitz/filt_faxd.h \
+mupdf-0.5/fitz/fitz_tree.h \
+mupdf-0.5/fitz/fitz.h \
+mupdf-0.5/fitz/fitz_draw.h \
+$(cmap_tounicode_files) \
+$(cmap_cns_files) \
+$(cmap_gb_files) \
+$(cmap_japan_files) \
+$(cmap_korea_files) \
+$(font_misc_files) \
+$(font_mono_files) \
+$(font_serif_files) \
+$(font_sans_files) \
+$(font_cjk_files)
