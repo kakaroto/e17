@@ -213,17 +213,14 @@
 <div class="main">
  <h2>Social Networks</h2>
 
- <h3>Twitter</h3>
  <p>
-  <a href=http://twitter.com/_Enlightenment_>@_Enlightenment_</a>
+  <a href=http://twitter.com/_Enlightenment_><img src="http://enlightenment.org/i/soc-i-tw.png" border=0 height=16 width=16 />Twitter</a>
  </p>
- <h3>Google +</h3>
  <p>
-  <a href=http://plus.google.com/118426816251488376359>Google+ Page</a>
+  <a href=http://plus.google.com/118426816251488376359><img src="http://enlightenment.org/i/soc-i-g+.png" border=0 height=16 width=16 />Google+</a>
  </p>
- <h3>Facebook</h3>
  <p>
-  <a href=http://www.facebook.com/enlightenment.org>Facebook Page</a>
+  <a href=http://www.facebook.com/enlightenment.org><img src="http://enlightenment.org/i/soc-i-fb.png" border=0 height=16 width=16 />Facebook</a>
  </p>
 
 </div>
