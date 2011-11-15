@@ -34,18 +34,39 @@ var my_window = new elm.window({
 					weight : EXPAND_BOTH,
 					align : FILL_BOTH,
 				},
-                the_button : {
-                    type : "button",
-                    label : "Get ConnMan State",
-                    weight : { x : -1.0, y : -1.0 },
-                    on_clicked : function() {
-                        print("Button Clicked");
-                        var test = new dbus("System");
-                        test.on_introspect_result = function(args){
-                            my_window.elements.the_box.elements.the_bus.text = arguments[0];
+                the_buttons : {
+			            type : "box",
+			            weight : EXPAND_BOTH,
+			            horizontal : true,
+			            resize : true,
+			            elements : {
+                            fdo : {
+                                type : "button",
+                                label : "UPower",
+                                weight : { x : -1.0, y : -1.0 },
+                                on_clicked : function() {
+                                    print("Button Clicked");
+                                    var test = new dbus("System");
+                                    test.on_introspect= function(args){
+                                        my_window.elements.the_box.elements.the_bus.text = arguments[0];
+                                    },
+                                    test.introspect("org.freedesktop.UPower", "/");
+                                },
+                            },
+                            bz : {
+                                type : "button",
+                                label : "BlueZ",
+                                weight : { x : -1.0, y : -1.0 },
+                                on_clicked : function() {
+                                    print("Button Clicked");
+                                    var test = new dbus("Session");
+                                    test.on_introspect= function(args){
+                                        my_window.elements.the_box.elements.the_bus.text = arguments[0];
+                                    },
+                                    test.introspect("org.freedesktop.Notifications", "/org/freedesktop/Notifications");
+                                },
+                            },
                         },
-                        test.introspect("org.bluez", "/");
-                    },
                 },
             }
         },

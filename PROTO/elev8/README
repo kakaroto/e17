@@ -2,7 +2,6 @@ V8 javascript based runtime for EFL for rapid app development
 
 elev8 is not a "web runtime" and does not depend on webkit.
 
-
 Build
 -----
 
@@ -13,10 +12,8 @@ before beginning to build.
 make
 sudo make install
 
-
 Run
 ---
-
 /usr/local/bin/elev8 <PATH TO JS>/test.js
 
 Sample .js files are provided for reference in /usr/local/share/elev8/data/javascript
