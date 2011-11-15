@@ -54,6 +54,9 @@ if (is_file("p/$page/$lang-rss"))
         <div class="layout">
 
             <ul class="submenu">
+<li><a href=http://twitter.com/_Enlightenment_><img src="http://www.enlightenment.org/i/soc-i-tw.png" border=0 height=16 width=16></a></li>
+<li><a href=http://plus.google.com/118426816251488376359><img src="http://www.enlightenment.org/i/soc-i-g+.png" border=0 height=16 width=16></a></li>
+<li><a href=http://www.facebook.com/enlightenment.org><img src="http://www.enlightenment.org/i/soc-i-fb.png" border=0 height=16 width=16></a></li>
                 <?php nav_subs(); ?>
             </ul>
 
@@ -79,7 +82,9 @@ if (is_file("p/$page/$lang-rss"))
 <div id="sitefooter">
 <div class="layout">
 
-  <p> Copyright &copy; Enlightenment.org</p>
+  <p>
+Copyright &copy; Enlightenment.org
+  </p>
 
 </div>
 </div>
