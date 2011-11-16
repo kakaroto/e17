@@ -269,8 +269,8 @@ cdef extern from "Elementary.h":
     evas.c_evas.Eina_Bool elm_object_cursor_engine_only_get(evas.c_evas.Evas_Object *obj)
 
 
-    void         elm_object_text_part_set(evas.c_evas.Evas_Object *obj, const_char_ptr part, const_char_ptr label)
-    char*        elm_object_text_part_get(evas.c_evas.Evas_Object *obj, const_char_ptr part)
+    void         elm_object_part_text_set(evas.c_evas.Evas_Object *obj, const_char_ptr part, const_char_ptr label)
+    char*        elm_object_part_text_get(evas.c_evas.Evas_Object *obj, const_char_ptr part)
 
     void         elm_object_text_set(evas.c_evas.Evas_Object *obj, const_char_ptr label)
     char*        elm_object_text_get(evas.c_evas.Evas_Object *obj)

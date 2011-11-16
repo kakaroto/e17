@@ -300,10 +300,10 @@ _transit_win_anim_del_cb(void *data, Elm_Transit *transit)
 
    elm_object_content_part_set(it->layout, "elfe.swallow.content", it->win);
    if (it->bd->client.netwm.name)
-     elm_object_text_part_set(it->layout, "elfe.text.label",
+     elm_object_part_text_set(it->layout, "elfe.text.label",
                               it->bd->client.netwm.name);
    else if (it->bd->client.icccm.title)
-     elm_object_text_part_set(it->layout, "elfe.text.label",
+     elm_object_part_text_set(it->layout, "elfe.text.label",
                               it->bd->client.icccm.title);
 }
 

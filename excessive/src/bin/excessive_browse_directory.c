@@ -253,7 +253,7 @@ excessive_browse_directory(Evas_Object *grid, const char *path)
    eina_stringshare_del(evas_object_data_get(grid, "excessive/current"));
    evas_object_data_set(grid, "excessive/current", path);
 
-   elm_object_text_part_set(evas_object_data_get(grid, "excessive/layout"), "path", path);
+   elm_object_part_text_set(evas_object_data_get(grid, "excessive/layout"), "path", path);
 }
 
 Eina_Bool

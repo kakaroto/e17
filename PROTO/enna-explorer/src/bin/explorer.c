@@ -313,7 +313,7 @@ _create_gui()
    /* Create main edje object */
    mod->o_layout = elm_layout_add(enna->layout);
    elm_layout_file_set(mod->o_layout, enna_config_theme_get(), "activity/explorer");
-   elm_object_text_part_set(mod->o_layout, "title", "Explorer");
+   elm_object_part_text_set(mod->o_layout, "title", "Explorer");
 
    tb = elm_toolbar_add(mod->o_layout);
    elm_object_style_set(tb, "transparent");

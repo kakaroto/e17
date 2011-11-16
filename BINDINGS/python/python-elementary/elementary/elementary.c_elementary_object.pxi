@@ -336,7 +336,7 @@ cdef class Object(evas.c_evas.Object):
         @parm: B{text} text to set.
         @see: L{text_set()} and L{text_part_get()}
         """
-        elm_object_text_part_set(self.obj, part, text)
+        elm_object_part_text_set(self.obj, part, text)
 
     def text_part_get(self, part):
         """Gets the text of a given part of this object.
@@ -346,7 +346,7 @@ cdef class Object(evas.c_evas.Object):
         @see: L{text_get()} and L{text_part_set()}
         """
         cdef const_char_ptr l
-        l = elm_object_text_part_get(self.obj, part)
+        l = elm_object_part_text_get(self.obj, part)
         if l == NULL:
             return None
         return l

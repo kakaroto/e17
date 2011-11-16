@@ -1477,8 +1477,8 @@ config_widget_get(Evas_Object *parent, More_Menu_Config *mmc)
 
          conf_get = mmc->conf_get;
          elm_object_style_set(toggle, "ewebkit");
-         elm_object_text_part_set(toggle, "on", "ON");
-         elm_object_text_part_set(toggle, "off", "OFF");
+         elm_object_part_text_set(toggle, "on", "ON");
+         elm_object_part_text_set(toggle, "off", "OFF");
          elm_check_state_set(toggle, conf_get(config));
          evas_object_smart_callback_add(toggle, "changed", cb_config_bool_changed, mmc);
 

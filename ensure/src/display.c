@@ -184,8 +184,8 @@ display_enobj_cb(void *enobjv, Evas_Object *obj __UNUSED__, void *event __UNUSED
 
    tgl = elm_check_add(win);
    elm_object_text_set(tgl, "Bug Checking:");
-   elm_object_text_part_set(tgl, "on", "Checked");
-   elm_object_text_part_set(tgl, "off", "Ignored");
+   elm_object_part_text_set(tgl, "on", "Checked");
+   elm_object_part_text_set(tgl, "off", "Ignored");
    elm_check_state_set(tgl, !hidden_get(ensure, enobj->id));
    evas_object_show(tgl);
    elm_table_pack(tbl, tgl, 1, pos, 1, 1);
