@@ -1,12 +1,12 @@
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 m4_define([v_maj], [1])
-m4_define([v_min], [0])
-m4_define([v_mic], [999])
+m4_define([v_min], [1])
+m4_define([v_mic], [0])
 m4_define([v_rev], m4_esyscmd([(svnversion "${SVN_REPO_PATH:-.}" | grep -v export || echo 0) | awk -F : '{printf("%s\n", $1);}' | tr -d ' :MSP\n']))
 m4_if(v_rev, [0], [m4_define([v_rev], m4_esyscmd([git log 2> /dev/null | (grep -m1 git-svn-id || echo 0) | sed -e 's/.*@\([0-9]*\).*/\1/' | tr -d '\n']))])
 ##--   When released, remove the dnl on the below line
-dnl m4_undefine([v_rev])
+m4_undefine([v_rev])
 ##--   When doing snapshots - change soname. remove dnl on below line
 dnl m4_define([relname], [ver-pre-svn-07])
 dnl m4_define([v_rel], [-release relname])
@@ -81,13 +81,13 @@ case "$host_os" in
       ;;
 esac
 
-requirement_ebluez="edbus >= 1.0.0"
-requirement_econnman="edbus >= 1.0.0"
-requirement_edbus="ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62"
-requirement_ehal="edbus >= 1.0.0"
-requirement_enotify="edbus >= 1.0.0"
-requirement_eofono="edbus >= 1.0.0"
-requirement_eukit="edbus >= 1.0.0"
+requirement_ebluez="edbus >= 1.1.0"
+requirement_econnman="edbus >= 1.1.0"
+requirement_edbus="ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62"
+requirement_ehal="edbus >= 1.1.0"
+requirement_enotify="edbus >= 1.1.0"
+requirement_eofono="edbus >= 1.1.0"
+requirement_eukit="edbus >= 1.1.0"
 requirement_dbus="dbus-1 >= 0.62"
 
 ### Additional options to configure
@@ -152,7 +152,7 @@ dbus_libs="$DBUS_LIBS"
 dbus_cflags="$DBUS_CFLAGS"
 AC_SUBST(dbus_libs)
 AC_SUBST(dbus_cflags)
-PKG_CHECK_MODULES([EDBUS], [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62])
+PKG_CHECK_MODULES([EDBUS], [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62])
 
 # Find out the version of DBUS we're using
 dbus_version=`pkg-config --modversion dbus-1`
@@ -180,8 +180,8 @@ AC_SUBST(DBUS_VERSION_CFLAGS)
 # Dependencies for the libraries
 if test "x${enable_enotify}" = "xyes" ; then
    PKG_CHECK_MODULES([EVAS],
-      [evas >= 1.0.0],
-      [requirement_enotify="evas >= 1.0.0 ${requirement_enotify}"],
+      [evas >= 1.1.0],
+      [requirement_enotify="evas >= 1.1.0 ${requirement_enotify}"],
       [enable_enotify="no"])
 fi
 
@@ -206,63 +206,63 @@ EFL_ENABLE_BIN([edbus-ukit-test], [${enable_eukit}])
 
 if test "x${have_edbus_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_TEST],
-      [ecore >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.1.0 dbus-1 >= 0.62],
       [have_edbus_test="yes"],
       [have_edbus_test="no"])
 fi
 
 if test "x${have_edbus_test_client}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_TEST_CLIENT],
-      [ecore >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.1.0 dbus-1 >= 0.62],
       [have_edbus_test_client="yes"],
       [have_edbus_test_client="no"])
 fi
 
 if test "x${have_edbus_bluez_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_BLUEZ_TEST],
-      [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
       [have_edbus_bluez_test="yes"],
       [have_edbus_bluez_test="no"])
 fi
 
 if test "x${have_edbus_connman_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_CONNMAN_TEST],
-      [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
       [have_edbus_connman_test="yes"],
       [have_edbus_connman_test="no"])
 fi
 
 if test "x${have_edbus_notification_daemon_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_NOTIFICATION_DAEMON_TEST],
-      [ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.1.0 evas >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
       [have_edbus_notification_daemon_test="yes"],
       [have_edbus_notification_daemon_test="no"])
 fi
 
 if test "x${have_edbus_notify_send}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_NOTIFY_SEND],
-      [ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.1.0 evas >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
       [have_edbus_notify_send="yes"],
       [have_edbus_notify_send="no"])
 fi
 
 if test "x${have_edbus_notify_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_NOTIFY_TEST],
-      [ecore >= 1.0.0 evas >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.1.0 evas >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
       [have_edbus_notify_test="yes"],
       [have_edbus_notify_test="no"])
 fi
 
 if test "x${have_edbus_ofono_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_OFONO_TEST],
-      [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
       [have_edbus_ofono_test="yes"],
       [have_edbus_ofono_test="no"])
 fi
 
 if test "x${have_edbus_ukit_test}" = "xyes" ; then
    PKG_CHECK_MODULES([EDBUS_UKIT_TEST],
-      [ecore >= 1.0.0 eina >= 1.0.0 dbus-1 >= 0.62],
+      [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
       [have_edbus_ukit_test="yes"],
       [have_edbus_ukit_test="no"])
 fi

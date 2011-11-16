@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT([expedite], [0.9.999], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([expedite], [0.1.0], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.52])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
@@ -137,11 +137,11 @@ esac
 
 # Eina
 
-PKG_CHECK_MODULES([EINA], eina >= 1.0.0)
+PKG_CHECK_MODULES([EINA], eina >= 1.1.0)
 
 # Evas
 
-PKG_CHECK_MODULES([EVAS], evas >= 1.0.0 eet >= 1.4.0)
+PKG_CHECK_MODULES([EVAS], evas >= 1.1.0 eet >= 1.5.0)
 
 # Xlib
 
