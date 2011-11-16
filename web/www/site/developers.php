@@ -16,7 +16,7 @@
 */
 function developers_active ()
 {
-    $path = '/var/www/web/devs/*';
+    $path = "/var/www/web/web/www/DATA/devs/*";
     $paths = glob($path, GLOB_ONLYDIR);
     $paths = array_filter($paths, '_developer_path_filter');
 
@@ -27,9 +27,6 @@ function developers_active ()
 
 function _developer_path_filter ( $path )
 {
-    if ($path == '/var/www/web/devs/ewww')
-        return false;
-
     if ( !file_exists("$path/info.txt") )
         return false;
 

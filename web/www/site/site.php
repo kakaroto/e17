@@ -49,7 +49,7 @@ function tr_odd($reset = false)
 function dev_data_photo($data)
 {
     if ( $data['Photo'] )
-        return "<img src='http://download.enlightenment.org/devs/{$data['Login']}/icon-sml.png' width='40' height='54' border='0'>";
+        return "<img src='http://www.enlightenment.org/DATA/devs/{$data['Login']}/icon-sml.png' width='40' height='54' border='0'>";
     else
         return "<img src='i/logo-s.png' width='18' height='24' border='0'>";
 }
