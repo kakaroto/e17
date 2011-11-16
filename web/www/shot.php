@@ -23,7 +23,7 @@ else {
 ############ get a unique name
 $dest = uniqid("e-", true) . $ext;
 ############ store the file
-$fh = fopen("/var/www/download/shots/".$dest, 'wb');
+$fh = fopen("/var/www/www/ss/".$dest, 'wb');
 fwrite($fh, $data);
 fclose($fh);
 ############ prepare url to get file from
