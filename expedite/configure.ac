@@ -130,7 +130,7 @@ LT_PROG_RC
 
 case "$host_os" in
    mingw32ce*)
-      PKG_CHECK_MODULES([EVIL], [evil])
+      PKG_CHECK_MODULES([EVIL], [evil >= 1.0.0])
       AC_DEFINE(HAVE_EVIL, 1, [Set to 1 if Evil library is installed])
       ;;
 esac
