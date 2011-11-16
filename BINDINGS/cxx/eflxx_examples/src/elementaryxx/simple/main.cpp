@@ -13,7 +13,6 @@ using namespace Elmxx;
 static void
 my_win_del(Evasxx::Object &obj, void *event_info)
 {
-  // TODO
   /* called when my_win_main is requested to be deleted */
   Application::exit(); /* exit the program's main loop that runs in elm_run() */
 }
@@ -28,7 +27,7 @@ int main (int argc, const char **argv)
   Application elmApp (argc, argv);
 
   Window *elmWin = Window::factory ("window1", ELM_WIN_BASIC);
-  elmWin->getEventSignal ("delete-request")->connect (sigc::ptr_fun (&my_win_del));
+  elmWin->getEventSignal ("delete,request")->connect (sigc::ptr_fun (&my_win_del));
 
   Background *bg = Background::factory (*elmWin);
 

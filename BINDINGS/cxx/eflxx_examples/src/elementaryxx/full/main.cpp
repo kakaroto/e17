@@ -104,7 +104,7 @@ int main (int argc, const char **argv)
    * data pointer (first param) is passed the final param here (in this
    * case it is NULL). This is how you can pass specific things to a
    * callback like objects or data layered on top */
-  win->getEventSignal ("delete-request")->connect (sigc::ptr_fun (&my_win_del));
+  win->getEventSignal ("delete,request")->connect (sigc::ptr_fun (&my_win_del));
 
   win->setAutoDel (true);
 

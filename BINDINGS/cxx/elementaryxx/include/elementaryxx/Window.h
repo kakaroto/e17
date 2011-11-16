@@ -59,6 +59,18 @@ public:
   void setRotation (int rotation);
   
   void setSticky (bool sticky);
+
+  /*!
+   * Get the transparency state of a window.
+   */
+  bool getTransparent () const;
+
+  /*!
+   * Set the transparency state of a window.
+   * 
+   * Use setAlpha () instead.
+   */
+  void setTransparent (bool transparent);
   
   //void setKeyboardMode (Elm_Win_Keyboard_Mode mode);
   
