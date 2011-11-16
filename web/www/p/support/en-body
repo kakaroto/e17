@@ -217,6 +217,7 @@
    }
    ul#fb-regional li a img {
      border: 0;
+     padding: 2px;
    }
  </style>
 
