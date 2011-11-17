@@ -26,6 +26,9 @@ files_SCRIPTS = \
 	progressbar.js \
 	slider.js \
 	spinner.js \
-	http_menu.js
+	http_menu.js \
+	stock.js \
+	dbus_test.js
+
 
 EXTRA_DIST = $(files_SCRIPTS)
