@@ -16,6 +16,7 @@
 #include <assert.h>
 
 using namespace v8;
+extern int elev8_log_domain;
 
 // FIXME: split CElmObject from CEvasObject
 
@@ -285,13 +286,13 @@ public:
 
    virtual Handle<Value> type_get(void) const
      {
-        fprintf(stderr, "undefined object type!\n");
+        EINA_LOG_DOM_ERR(elev8_log_domain, "undefined object type!\n");
         return Undefined();
      }
 
    virtual void type_set(Handle<Value> value)
      {
-        fprintf(stderr, "type cannot be set!\n");
+        EINA_LOG_DOM_ERR(elev8_log_domain, "type cannot be set!\n");
      }
 
    Evas_Object *get() const
@@ -301,7 +302,7 @@ public:
 
    virtual CEvasObject *get_child(Handle<Value> name)
      {
-        fprintf(stderr, "get_child undefined\n");
+        EINA_LOG_DOM_ERR(elev8_log_domain, "get_child undefined\n");
         return NULL;
      }
 
@@ -700,7 +701,7 @@ public:
    virtual void image_set(Handle<Value> val)
      {
         if (val->IsString())
-          fprintf(stderr, "no image set\n");
+          EINA_LOG_DOM_ERR(elev8_log_domain, "no image set\n");
      }
 
    virtual Handle<Value> image_get(void) const
@@ -723,7 +724,7 @@ public:
      {
         if (!val->IsObject())
           {
-             fprintf(stderr, "not an object!\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "not an object!\n");
              return out;
           }
 
@@ -756,7 +757,7 @@ public:
           {
              Evas_Object *parent = elm_object_parent_widget_get(eo);
              if (!parent)
-               fprintf(stderr, "resize object has no parent!\n");
+               EINA_LOG_DOM_ERR(elev8_log_domain, "resize object has no parent!\n");
              else
                {
                   is_resize = val->BooleanValue();
@@ -767,7 +768,7 @@ public:
                }
           }
         else
-          fprintf(stderr, "Resize value not boolean!\n");
+          EINA_LOG_DOM_ERR(elev8_log_domain, "Resize value not boolean!\n");
      }
 
    virtual Handle<Value> resize_get(void) const
@@ -914,7 +915,7 @@ public:
          {
             String::Utf8Value str(val);
              if (0 > access(*str, R_OK))
-               fprintf(stderr, "warning: can't read image file %s\n", *str);
+               EINA_LOG_WARN( "warning: can't read image file %s\n", *str);
             evas_object_image_file_set(eo, *str, NULL);
          }
        evas_object_raise(eo);
@@ -1021,7 +1022,7 @@ public:
 
    virtual void resize_set(Handle<Value> val)
      {
-        fprintf(stderr, "warning: resize=true ignored on main window\n");
+        EINA_LOG_DOM_ERR(elev8_log_domain, "warning: resize=true ignored on main window\n");
      }
 };
 
@@ -1215,10 +1216,10 @@ public:
                   if (dynamic_cast<CElmRadio*>(group))
                     elm_radio_group_add(eo, group->get());
                   else
-                    fprintf(stderr, "%p not a radio button!\n", group);
+                    EINA_LOG_DOM_ERR(elev8_log_domain, "%p not a radio button!\n", group);
                }
              else
-               fprintf(stderr, "child %s not found!\n", *String::Utf8Value(value->ToString()));
+               EINA_LOG_DOM_ERR(elev8_log_domain, "child %s not found!\n", *String::Utf8Value(value->ToString()));
           }
      }
 
@@ -1258,7 +1259,7 @@ protected:
 
         if (!elements_val->IsObject())
           {
-             fprintf(stderr, "elements not an object\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "elements not an object\n");
              return ret;
           }
 
@@ -1268,7 +1269,7 @@ protected:
         if (val->IsObject())
           ret = eo_from_info(val->ToObject());
         else
-          fprintf(stderr, "value %s not an object\n", *String::Utf8Value(val->ToString()));
+          EINA_LOG_DOM_ERR(elev8_log_domain, "value %s not an object\n", *String::Utf8Value(val->ToString()));
 
         return ret;
      }
@@ -1457,7 +1458,7 @@ public:
           {
              String::Utf8Value str(val);
              if (0 > access(*str, R_OK))
-               fprintf(stderr, "warning: can't read icon file %s\n", *str);
+               EINA_LOG_DOM_ERR(elev8_log_domain, "warning: can't read icon file %s\n", *str);
 
              elm_icon_file_set(eo, *str, NULL);
           }
@@ -1538,7 +1539,7 @@ public:
           pos = ELM_ACTIONSLIDER_RIGHT;
         else
           {
-             fprintf(stderr, "Invalid actionslider position: %s\n", *str);
+             EINA_LOG_DOM_ERR(elev8_log_domain, "Invalid actionslider position: %s\n", *str);
              return false;
           }
         return true;
@@ -1592,7 +1593,7 @@ public:
         construct(eo, obj);
         content = realize_one(this, obj->Get(String::New("content")));
         if (!content)
-          fprintf(stderr, "scroller has no content\n");
+          EINA_LOG_DOM_ERR(elev8_log_domain, "scroller has no content\n");
         // FIXME: filter the object list copied in construct for more efficiency
         get_object()->Set(String::New("content"), content->get_object());
         elm_object_content_set(eo, content->get());
@@ -1632,7 +1633,7 @@ public:
         else if (!strcmp(*str, "last"))
           policy = ELM_SCROLLER_POLICY_LAST;
         else
-          fprintf(stderr, "unknown scroller policy %s\n", *str);
+          EINA_LOG_DOM_ERR(elev8_log_domain, "unknown scroller policy %s\n", *str);
 
         return policy;
      }
@@ -2227,7 +2228,7 @@ public:
      {
         if (!val->IsObject())
           {
-             fprintf(stderr, "not an object!\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "not an object!\n");
              return;
           }
 
@@ -2263,13 +2264,13 @@ public:
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
-             fprintf(stderr, "list item is not an object\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "list item is not an object\n");
              return NULL;
           }
 
         if (items==Null())
           {
-             fprintf(stderr, "Please add atleast empty \"items\" to list\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "Please add atleast empty \"items\" to list\n");
              return NULL;
           }
 
@@ -2287,7 +2288,7 @@ public:
                       && !it->end->IsObject())
                {
 
-                  fprintf(stderr, "Basic elements missing\n");
+                  EINA_LOG_DOM_ERR(elev8_log_domain, "Basic elements missing\n");
                   delete it;
                   return NULL;
                }
@@ -2587,7 +2588,7 @@ public:
     {
        if (!val->IsNumber())
          {
-            fprintf(stderr, "%s: value is not a Number!\n", __FUNCTION__);
+            EINA_LOG_DOM_ERR(elev8_log_domain, "%s: value is not a Number!\n", __FUNCTION__);
             return;
          }
        int hour = 0;
@@ -2605,7 +2606,7 @@ public:
     {
        if (!val->IsNumber())
          {
-            fprintf(stderr, "%s: value is not a Number!\n", __FUNCTION__);
+            EINA_LOG_DOM_ERR(elev8_log_domain, "%s: value is not a Number!\n", __FUNCTION__);
             return;
          }
        int hour = 0;
@@ -2621,7 +2622,7 @@ public:
     {
        if (!val->IsNumber())
          {
-            fprintf(stderr, "%s: value is not a Number!\n", __FUNCTION__);
+            EINA_LOG_DOM_ERR(elev8_log_domain, "%s: value is not a Number!\n", __FUNCTION__);
             return;
          }
        int hour = 0;
@@ -2823,11 +2824,11 @@ public:
             String::Utf8Value str(val);
 
             if (0 > access(*str, R_OK))
-              fprintf(stderr, "warning: can't read image file %s\n", *str);
+              EINA_LOG_DOM_ERR(elev8_log_domain, "warning: can't read image file %s\n", *str);
 
             Eina_Bool retval = elm_photo_file_set(eo, *str);
             if (retval == EINA_FALSE)
-              fprintf(stderr, "Unable to set the image\n");
+              EINA_LOG_DOM_ERR(elev8_log_domain, "Unable to set the image\n");
          }
     }
 
@@ -3112,7 +3113,7 @@ public:
     {
        if (!val->IsObject())
          {
-            fprintf(stderr, "%s: value is not an object!\n", __FUNCTION__);
+            EINA_LOG_DOM_ERR(elev8_log_domain, "%s: value is not an object!\n", __FUNCTION__);
             return;
          }
        Local<Object> obj = val->ToObject();
@@ -3168,7 +3169,7 @@ public:
 
         if (!val->IsObject())
           {
-             fprintf(stderr, "not an object!\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "not an object!\n");
              return out;
           }
 
@@ -3186,7 +3187,7 @@ public:
              if (!item->IsObject())
                {
                   // FIXME: permit adding strings here?
-                  fprintf(stderr, "list item is not an object\n");
+                  EINA_LOG_DOM_ERR(elev8_log_domain, "list item is not an object\n");
                   continue;
                }
              Local<Value> label = item->ToObject()->Get(String::New("label"));
@@ -3293,7 +3294,7 @@ public:
        /* add a list of children */
        if (!val->IsObject())
          {
-            fprintf(stderr, "not an object!\n");
+            EINA_LOG_DOM_ERR(elev8_log_domain, "not an object!\n");
             return;
          }
 
@@ -3309,7 +3310,7 @@ public:
             Local<Value> item = in->Get(x->ToString());
             if (!item->IsObject())
               {
-                 fprintf(stderr, "list item is not an object\n");
+                 EINA_LOG_DOM_ERR(elev8_log_domain, "list item is not an object\n");
                  continue;
               }
 
@@ -3328,7 +3329,7 @@ public:
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
-             fprintf(stderr, "list item is not an object\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "list item is not an object\n");
              return NULL;
           }
         Elm_Menu_Item *par = NULL;
@@ -3366,7 +3367,7 @@ public:
              // either a label with icon
              if ( !it->label->IsString() && !it->icon->IsString() )
                {
-                  fprintf(stderr, "Not a label or seperator\n");
+                  EINA_LOG_DOM_ERR(elev8_log_domain, "Not a label or seperator\n");
                   delete it;
                   return NULL;
                }
@@ -3619,7 +3620,7 @@ public:
 
         if (!val->IsObject())
           {
-             fprintf(stderr, "not an object!\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "not an object!\n");
              return out;
           }
 
@@ -3638,7 +3639,7 @@ public:
              if (!item->IsObject())
                {
                   String::Utf8Value xval(x->ToString());
-                  fprintf(stderr, "item is not an object %s\n", *xval);
+                  EINA_LOG_DOM_ERR(elev8_log_domain, "item is not an object %s\n", *xval);
                   continue;
                }
 
@@ -3903,7 +3904,7 @@ public:
      {
         if (!val->IsObject())
           {
-             fprintf(stderr, "not an object!\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "not an object!\n");
              return;
           }
 
@@ -3928,7 +3929,7 @@ public:
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
-             fprintf(stderr, "list item is not an object\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "list item is not an object\n");
              return;
           }
         Local<Value> xpos = item->ToObject()->Get(String::New("x"));
@@ -4013,9 +4014,9 @@ public:
          {
             String::Utf8Value str(val);
              if (0 > access(*str, R_OK))
-               fprintf(stderr, "warning: can't read image file %s\n", *str);
+               EINA_LOG_DOM_ERR(elev8_log_domain, "warning: can't read image file %s\n", *str);
             elm_photocam_file_set(eo, *str);
-            fprintf(stderr, "Photcam image file %s\n", *str);
+            EINA_LOG_DOM_INFO(elev8_log_domain, "Photcam image file %s\n", *str);
          }
      }
 
@@ -4461,7 +4462,7 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
 {
    if (!object_val->IsObject())
      {
-        fprintf(stderr, "%s: value is not an object!\n", __FUNCTION__);
+        EINA_LOG_DOM_ERR(elev8_log_domain, "%s: value is not an object!\n", __FUNCTION__);
         return NULL;
      }
 
@@ -4532,7 +4533,7 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
 
    if (!eo)
      {
-        fprintf(stderr, "Bad object type %s\n", *str);
+        EINA_LOG_DOM_ERR(elev8_log_domain, "Bad object type %s\n", *str);
         return eo;
      }
 

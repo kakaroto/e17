@@ -14,6 +14,17 @@ sudo make install
 
 Run
 ---
-/usr/local/bin/elev8 <PATH TO JS>/test.js
+/usr/local/bin/elev8 <PATH_TO_JS>/test.js
 
 Sample .js files are provided for reference in /usr/local/share/elev8/data/javascript
+
+Debug
+-----
+elev8 uses the eina_log mechanism for debugging.
+
+Set the EINA_LOG_LEVEL as specified in 
+http://docs.enlightenment.org/auto/eina/tutorial_log_page.html.
+
+for ex.,
+
+EINA_LOG_LEVEL=3 /usr/local/bin/elev8 <PATH_TO_JS>/test.js
