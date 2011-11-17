@@ -1382,7 +1382,7 @@ main(int argc, char **argv)
 
    evas_free(evas);
 
-   evas_shutdown();
    engine_shutdown();
+   evas_shutdown();
    return 0;
 }
