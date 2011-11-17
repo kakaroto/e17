@@ -651,7 +651,7 @@ void invoke_js_callback(void *data)
                                         ((struct dbus_cache *)(data))->service
 					                    );
              Handle<Value> args[1] = { path };
-             func->Call(func, 1, args);
+             func->Call(dbus->obj, 1, args);
           }
      }
 }
