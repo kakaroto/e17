@@ -683,6 +683,7 @@ static void cb_introspect(void *data, DBusMessage *msg, DBusError *error)
    if (!eina_simple_xml_parse(xml_str, strlen(xml_str), EINA_TRUE, cb_parse, ctxt))
      {
         EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Error: could not parse XML:\n%s\n", xml_str);
+        if (ctxt) free(ctxt);
         return;
      }
 
