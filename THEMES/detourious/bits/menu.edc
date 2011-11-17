@@ -434,11 +434,11 @@ group {
 				align: 0.0 0.0;
 				rel1 { 
 					relative: 0.0 0.0; 
-					offset: 2 3; 
+					offset: 2 2; 
 				}
 				rel2 { 
 					relative: 1.0 1.0; 
-					offset: -1 -4;
+					offset: -1 -3;
 				}
 			} 
 		}
@@ -508,7 +508,7 @@ group {
 			clip_to: "clip";
 			description {
 				state: "default" 0.0;
-				min: 16 16;
+				min: 10 10;
 				fixed: 1 1;
 			}
 		}
