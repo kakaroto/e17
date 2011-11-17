@@ -425,19 +425,6 @@ void show_download_ui(void *data)
    evas_object_show(dl->win);
 }
 
-Local<String>
-string_from_buffer(const char *buffer, int len)
-{
-   Local<String> ret;
-   int n;
-
-   n = shebang_length(buffer, len);
- 
-   ret = String::New(&buffer[n], len - n);
-
-   return ret;
-}
-
 void
 boom(TryCatch &try_catch)
 {
