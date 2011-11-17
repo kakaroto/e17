@@ -119,7 +119,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
                   Handle<String> path = reqObj->responseText;
                   Handle<String> obj = String::New(ecore_con_url_url_get(reqObj->url_con));
                   Handle<Value> args[2] = { obj, path };
-                  func->Call(func,2, args);
+                  func->Call(reqObj->obj,2, args);
                }
           }
      }
@@ -365,7 +365,7 @@ Handle<Value> createXMLHttpReqInstance(const Arguments& args)
                             data_callback,
                             reinterpret_cast<void *>(reqObj));
 
-   EINA_LOG_DOM_INFO(elev8_http_log_domain,  "ECore_Con initialized %p\n", reqObj->data);
+   EINA_LOG_DOM_INFO(elev8_http_log_domain,  "Http Request initialized %p\n", reqObj->data);
    return reqObj->obj; 
 }
 
