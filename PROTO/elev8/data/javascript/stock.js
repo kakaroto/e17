@@ -7,39 +7,52 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 var FILL_X = { x : -1.0, y : 0.0 };
 var FILL_Y = { x : 0.0, y : -1.0 };
 
-var url_start= "http://download.finance.yahoo.com/d/quotes.csv?s=";
-var url_end = "&f=l1";
+var ps= "http://download.finance.yahoo.com/d/quotes.csv?s=";
+var pe = "&f=l1";
+var cs = "http://chart.finance.yahoo.com/t?s=";
 
 var list_items = new Array();
 
-var on_complete = function(){
-    var label = "$ " + arguments[1];
-    my_window.elements.scroll.content.elements.the_entry.text = label;
+var on_price_complete = function(){
+    my_window.elements.scroll.content.elements.the_entry.text = "$ " +this.responseText; 
+}
+
+var on_chart_complete = function(){
+    my_window.elements.scroll.content.elements.the_chart.image = this.responseText ;
 }
 
 on_click = function(){
-                var request = new XMLHttpRequest();
-                request.onreadystatechange = on_complete;
-                request.open("GET", this.tooltip);
-                print("URL = " + this.tooltip);
-                request.send("");
+                //get stock price
+                var req1 = new XMLHttpRequest();
+                req1.onreadystatechange = on_price_complete;
+                req1.open("GET", ps + this.label + pe);
+                print("URL = " +  ps + this.label + pe);
+                req1.send("");
+
+                //get stock chart
+                req2 = new XMLHttpRequest();
+                req2.onreadystatechange = on_chart_complete;
+                req2.open("GET", cs + this.label);
+                print("URL = " + cs + this.label);
+                req2.send("");
+                
 }
 
 list_items[0] =  {
 			label : "GOOG",
-            tooltip : url_start + "GOOG" + url_end,
+            tooltip : ps + "GOOG" + pe,
             on_clicked : on_click,
 };
 
 
 list_items[1] = {
             label : "CSCO",
-            tooltip : url_start + "CSCO" + url_end,
+            tooltip : ps + "CSCO" + pe,
             on_clicked : on_click,
         }
 list_items[2] = {
 			label : "AAPL",
-            tooltip : url_start + "AAPL" + url_end,
+            tooltip : ps + "AAPL" + pe,
             on_clicked : on_click,
 		}
 
@@ -67,6 +80,15 @@ var my_window = new elm.window({
                     align : FILL_BOTH,
                     weight : EXPAND_BOTH,
                     elements : {
+                        the_chart : {
+                            type : "photo",
+                            size : 180,
+                            weight : EXPAND_BOTH,
+                            align : FILL_BOTH,
+                            resize : true,
+                            image : elm.datadir + "data/images/logo_small.png",
+                            fill : true,
+                        },
                         the_entry : {
                             type : "entry",
                             text : "N/A",
@@ -91,8 +113,6 @@ var my_window = new elm.window({
                                 refresh : {
                                     type : "button",
                                     label : "Refresh",
-                                    align : FILL_BOTH,
-                                    weight : EXPAND_BOTH,
                                 },
                             },
                         },
