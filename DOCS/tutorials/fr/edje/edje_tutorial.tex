@@ -58,7 +58,12 @@ autre, vos interfaces graphiques peuvent gagner en flexibilité.
 
 Comme exemple concret, permettant d'illustrer cette présentation, j'ai choisis
 le développement d'un interface (tactile) très simple.
-Voici à quoi ressemblera l'interface à la fin de ce tutoriel :
+
+L'ensemble des fichiers composant ce tutorial se trouvent dans le
+\href{http://trac.enlightenment.org/e/browser/trunk/DOCS/tutorials/fr/edje}{svn}.
+
+Une autre url qui peut vous être utile pour découvrir les EFL :
+\url{http://louis-du-verdier.developpez.com/efl/debuter/}.
 
 \section{Introduction}
 
@@ -134,16 +139,18 @@ Voici une liste exhaustive des ``parts'' que nous pouvons utiliser :
 \item Les blocs de texte : TEXTBLOCK;
 \item Les containers : SWALLOW;
 \item Les groupes : GROUP;
+\item Les copies d'une autre part : PROXY;
 \item Les boites : BOX;
 \item Les tables : TABLE;
 \item Les objets externes : EXTERNAL;
 \end{itemize}
+
 Chaque type fera l'objet d'une étude plus approfondie dans la suite de ce
 tutoriel.
 
 Dans notre exemple nous décrivons donc un Rectangle rouge, rien de bien
 original. Nous allons maintenant compiler ce fichier EDC en un fichier binaire
-EDJ.  :
+EDJ.
 
 \begin{lstlisting}
 edje_cc tut01.edc
@@ -167,7 +174,7 @@ j'ai choisi le développement d'une interface (tactile) simple, qui nous
 permettra d'appréhender les différents concepts de Edje par la pratique.
 
 Voici le résultat final:
-\begin{figure}
+\begin{figure}[htb]
   \begin{center}
     \includegraphics[scale=0.5]{images/screenshot1.png}
   \end{center}
@@ -243,7 +250,7 @@ ajouter les répertoires qui contiennent nos images en utilisant l'argument
 ``-id'' (image directory) de edje\_cc
 
 \begin{lstlisting}
-edje_cc -id images -id images\icons file.edc
+edje_cc -id images -id images/icons file.edc
 \end{lstlisting}
 
 Pour faciliter la compilation, vous trouverez dans le répertoire de ce tutorial,
@@ -251,8 +258,7 @@ un script shell qui permet de compiler tous les fichiers EDC (et C dans la
 suite) nommé build.sh
 
 \begin{lstlisting}
-.\build.sh #compile l'intégralité des exemples.
-.\build.sh #tut02 compile l'exemple contenu dans le repertoire tut02
+./build.sh #compile l'intégralité des exemples.
 \end{lstlisting}
 
 Les fichiers binaires sont quant à eux générés dans le répertoire build.
@@ -273,7 +279,7 @@ sur l'axe des X et des Y.
 
 Il y a plusieurs autres options permettant de répéter les motifs, je vous laisse
 les découvrir par vous même, tout est décrit dans la
-\href{http://docs.enlightenment.org/auto/edje/edcref.html}[documentation de edje]
+\url{http://docs.enlightenment.org/auto/edje/edcref.html}{documentation de edje}.
 
 
 \section{Le Texte}
@@ -648,7 +654,7 @@ fenêtre :
 Nous rencontrons ici un des concepts les plus importants de Evas. Les Smart
 Objects. elm\_layout\_add utilise Edje en interne, et crée un Smart Objet qui
 pourra ensuite être manipulé par les primitives de Evas (move, resize, ....)
-Nous demandons ensuite à ce que cet objet utilise le groupe \"interface\# du
+Nous demandons ensuite à ce que cet objet utilise le groupe ``interface'' du
 fichier tut14.edj. Et nous affichons cet objet à l'écran avec
 evas\_object\_show. elm\_win\_resize\_object\_add va faire en sorte que Evas
 redimensionne notre objet à la taille de la fenêtre.
@@ -673,7 +679,7 @@ Notre Smart Object est créé comme précédemment, et cette fois-ci nous allons
 le manipuler nous même, en lui donnant une taille de 256x256px et en le
 plaçant en haut à gauche x=64px et y=64px.
 
-Notre icône possède un texte (part \"text\", que nous allons changer grâce à :
+Notre icône possède un texte (part ``text'', que nous allons changer grâce à :
 \begin{lstlisting}
    elm_layout_text_set(icon, "text", "Vers l'infini et au delà!");
 \end{lstlisting}
@@ -950,7 +956,7 @@ nous affichons tout.
 Pour le besoin de notre exemple, nous allons envoyer, lors d'un clic sur une
 icône, le nom de l'icône.
 \begin{lstlisting}
-   program {                                                      \
+   program {
      name: "mouse_click";
      signal: "mouse,clicked,1";
      source: "events";
@@ -971,11 +977,71 @@ l'afficher à la place de la table.
 \subsection{Les Ancres(anchors)}
 
 Les textblock peuvent en plus du texte de différents styles être clickables.
-C'est le rôle des ancres ..... blablablalbla
+C'est le rôle des ancres .....
 
-\subsection{Transformations 3D}
+FIXME
 
-blablablalbalbalbal....
+\subsection{Transformations}
+
+Evas fournit un certain nombre de mécanisme pour faire des transformations sur un
+objet graphisme. Edje expose une partie de ces fonctionnalités aux travers de la
+directive map. Combiné à l'objet PROXY, cela permet de faire des effets interressant.
+
+Tout d'abord introduisons cette nouvelle part: PROXY.
+
+\begin{lstlisting}
+  part {
+    name: "Reflect";
+    type: PROXY;
+    description {
+      state: "default" 0.0;
+      source: "Icon";
+      rel1.relative: 0.5 0.1;
+      rel2.relative: 0.9 0.9;
+    }
+  }
+\end{lstlisting}
+
+On remarque tout de suite une difference avec la part GROUP, on indique une source dans
+la section ``description'', ce qui veut dire qu'on peut changer la source d'une part
+PROXY durant une animation. Il faut bien comprendre une difference fondamentale entre un
+PROXY et un GROUP. Le PROXY est une copie des pixels d'une autre PART, quand le GROUP
+instancie lui des objets d'une autre section ``group''. Leur usage est radicalement
+différent.
+
+Il faut noter que les PROXY peuvent forcer la génération d'une texture intermédiaire et
+donc nécessite de la mémoire qui est fonction de la taille de l'objet source. Etant donné
+qu'ils sont une copie des pixels d'une autre part, il bénéficie de toutes les propriétés
+d'une part IMAGE.
+
+Maintenant passons a la rotation de notre PROXY. Pour cela nous allons utiliser la
+section map. Il faut noter que dans l'état actuel des choses Edje ne permet pas d'accéder
+à tous les effets que Evas permet.
+
+\begin{lstlisting}
+  map {
+    on: 1;
+    rotation {
+      y: 180.0;
+    }
+  }
+\end{lstlisting}
+
+Attention à ne surtout pas oublier le ``on : 1;'' ou la rotation ne sera pas activée.
+Cela peut se révéler utile d'avoir une rotation de définit, mais non activé, lorsqu'on
+utilise l'héritage de part.
+
+\subsection{Petits exercices}
+
+Commencons simplement par un effet K2000 avec 5 rectangles rouge (le plus intense au milieu)
+qui bouge de gauche a droite et de droite a gauche lorsque l'objet est affiché (Un signal
+``show'' est envoyé lorsqu'un objet Edje est affiché).
+
+En utilisant les tutoriaux sur les images et leur remplissage, ainsi que le tutorial
+sur les transformations, codez, uniquement en Edje, une porte qui s'ouvre en deux. Google
+image est votre ami pour les ressources graphiques.
+
+Essayez de faire la même chose avec une photo qui se plie en deux.
 
 \end{document}
 

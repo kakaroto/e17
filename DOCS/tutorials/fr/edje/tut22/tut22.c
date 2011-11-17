@@ -50,12 +50,12 @@ _edje_signal_cb(void *data, Evas_Object *obj, const char *emission, const char *
 	elm_layout_file_set(textblock, "tut22.edj", "infos_panel");
 	evas_object_show(textblock);
 	evas_object_size_hint_weight_set(textblock, 1, 1);
-	elm_layout_content_set(layout, "panel_swallow", textblock);
+	elm_object_content_part_set(layout, "panel_swallow", textblock);
 	evas_object_show(textblock);
-	elm_layout_text_set(textblock, "textblock", "<h1>What is Enlightenment?</h1><br>"
-			    "<tab><h4>Enlightenment is not just a window manager for <hilight>Linux/X11</hilight> and others, but also a whole suite of libraries to help you create beautiful user interfaces with much less work than doing it the old fashioned way and fighting with traditional toolkits, not to mention a traditional window manager. It covers uses from small mobile devices like phones all the way to powerful multi-core desktops (which are the primary development environment). </h4><br>"
-			    "<br><h1>Enlightenment Foundation Libraries (EFL)</h1> <br>"
-			    "<tab>These provide both a semi-traditional toolkit set in <rhinoceros>Elementary</rhinoceros> as well as the object canvas <h2>(Evas)</h2> and powerful abstracted objects (Edje) that you can combine, mix and match, even layer on top of each other with alpha channels and events in-tact. It has <link><a href=\"evas_map\">3D transformations</a></link> for all objects and more. )");
+	elm_object_text_part_set(textblock, "textblock", "<h1>What is Enlightenment?</h1><br>"
+				 "<tab><h4>Enlightenment is not just a window manager for <hilight>Linux/X11</hilight> and others, but also a whole suite of libraries to help you create beautiful user interfaces with much less work than doing it the old fashioned way and fighting with traditional toolkits, not to mention a traditional window manager. It covers uses from small mobile devices like phones all the way to powerful multi-core desktops (which are the primary development environment). </h4><br>"
+				 "<br><h1>Enlightenment Foundation Libraries (EFL)</h1> <br>"
+				 "<tab>These provide both a semi-traditional toolkit set in <rhinoceros>Elementary</rhinoceros> as well as the object canvas <h2>(Evas)</h2> and powerful abstracted objects (Edje) that you can combine, mix and match, even layer on top of each other with alpha channels and events in-tact. It has <link><a href=\"evas_map\">3D transformations</a></link> for all objects and more. )");
 
 	edje = elm_layout_edje_get(textblock);
 
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 
    evas_object_size_hint_weight_set(layout, 1, 1);
 
-   elm_layout_content_set(layout, "table_swallow", table);
+   elm_object_content_part_set(layout, "table_swallow", table);
 
    edje = elm_layout_edje_get(table);
    edje_object_signal_callback_add(edje, "*", "*", _edje_signal_cb, NULL);

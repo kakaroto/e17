@@ -20,14 +20,15 @@
 \usepackage{titletoc}
 \usepackage{caption}
 \usepackage[french]{babel}
-\usepackage{fullpage} % small margins
-\usepackage[xetex]{graphicx}
+\usepackage[margin=0.5in,top=2cm]{geometry}
+%\usepackage{fullpage}
 \usepackage{listings}
 \usepackage{boxedminipage}
 \usepackage{appendix}
 \usepackage{fontspec}
 \usepackage{xunicode}
 \usepackage{xltxtra}
+\usepackage{url}
 \defaultfontfeatures{Mapping=tex-text}
 
 \renewcommand{\textbullet}{*}
@@ -39,9 +40,9 @@
 \chead{}
 \rhead{\includegraphics[height=15pt]{images/logo_e.fr.png}}
 \renewcommand{\headrulewidth}{0.5pt}
-\renewcommand{\headheight}{45pt} % to fit 2 lines title in header + logo
+%\renewcommand{\headheight}{45pt} % to fit 2 lines title in header + logo
 \addtolength{\textheight}{-50pt}
-\renewcommand{\headsep}{10pt}
+%\renewcommand{\headsep}{10pt}
 \renewcommand{\footrulewidth}{0.5pt}
 
 \newcommand{\Efr}{\textbf{Efr}}
