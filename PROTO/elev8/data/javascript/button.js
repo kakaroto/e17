@@ -41,10 +41,10 @@ var my_window = new elm.window({
 						label : "Icon sized to button",
 						weight : { x : -1.0, y : -1.0 },
 						on_clicked : function(arg) {
-							print("clicked event on Button: 1");
+							print("clicked event on Button: 1 " + this.label);
 						},
 						on_unpressed : function(arg) {
-							print("unpressed event on Button: 1");
+							print("unpressed event on Button: 1" + this.label);
 						},
 						icon : logo_icon,
 					},

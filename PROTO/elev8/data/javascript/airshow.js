@@ -45,7 +45,7 @@ function move_left()
 		myplane.x=790;
 }
 
-var myplane;
+var myplane=null;
 
 var my_win = new elm.window({
 		type : "main",
@@ -72,6 +72,7 @@ var my_win = new elm.window({
 				on_clicked : function() {
 				    if(myplane==null)
 				    {
+                        print(this.height + " " + this.weight);
 				        myplane = my_win.elements.the_box.elements.plane1 ;
 					    init();
 				    }
@@ -87,6 +88,7 @@ var my_win = new elm.window({
 				on_clicked : function() {
 				    if(myplane==null)
 					{
+                        print(this.height + " " + this.weight);
 					    myplane = my_win.elements.the_box.elements.plane2;
 						init();
 				    }
@@ -102,6 +104,7 @@ var my_win = new elm.window({
 				on_clicked : function() {
 					if(myplane==null)
 					{
+                        print(this.height + " " + this.weight);
 					    myplane = my_win.elements.the_box.elements.plane3;
 						init();
 				    }
@@ -115,8 +118,10 @@ var my_win = new elm.window({
                 x : 280,
                 y : 480,
 				on_clicked : function() {
+                    print("On Click Triggered");
 				    if(myplane==null)
 					{
+                        print(this.height + " " + this.weight);
 					    myplane = my_win.elements.the_box.elements.plane4;
 						init();
 				    }
@@ -125,6 +130,7 @@ var my_win = new elm.window({
 		},
 		on_keydown : function () {
 			print("Argument = " + arguments[1] + "\n");
+			print("title = " + this.label + "\n");
 
 			if (arguments[1] == "Up")
 				move_up();

@@ -444,7 +444,7 @@ public:
              Handle<Value> args[3] = { obj, ox, oy };
              assert(val->IsFunction());
              Handle<Function> fn(Function::Cast(*val));
-             fn->Call(fn, 3, args);
+             fn->Call(obj, 3, args);
           }
         else
           {
@@ -453,7 +453,7 @@ public:
              Handle<Value> args[1] = { obj };
              assert(val->IsFunction());
              Handle<Function> fn(Function::Cast(*val));
-             fn->Call(fn, 1, args);
+             fn->Call(obj, 1, args);
           }
 
      }
@@ -508,7 +508,7 @@ public:
         assert(val->IsFunction());
         Handle<Function> fn(Function::Cast(*val));
         Handle<Value> args[2] = { obj, v8::String::New(info->keyname)};
-        fn->Call(fn, 2,args);
+        fn->Call(obj, 2,args);
      }
 
    static void eo_on_keydown(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -541,7 +541,7 @@ public:
         assert(val->IsFunction());
         Handle<Function> fn(Function::Cast(*val));
         Handle<Value> args[1] = { obj };
-        fn->Call(fn, 1, args);
+        fn->Call(obj, 1, args);
      }
 
    static Eina_Bool eo_on_animate(void *data)
@@ -1867,7 +1867,7 @@ public:
         assert(val->IsFunction());
         Handle<Function> fn(Function::Cast(*val));
         Handle<Value> args[1] = { obj };
-        fn->Call(fn, 1, args);
+        fn->Call(obj, 1, args);
      }
 
    virtual void on_changed_set(Handle<Value> val)
@@ -2213,7 +2213,12 @@ public:
                  if (it->on_clicked->IsFunction())
                    {
                       Handle<Function> fn(Function::Cast(*(it->on_clicked)));
-                      fn->Call(fn, 0, NULL);
+                      Local<Object> obj = Object::New();
+                      obj->Set(String::New("label"), it->label);
+                      obj->Set(String::New("icon"), it->icon);
+                      obj->Set(String::New("end"), it->end);
+                      obj->Set(String::New("tooltip"), it->tooltip);
+                      fn->Call(obj, 0, NULL);
                    }
               }
          }
@@ -3557,7 +3562,7 @@ public:
         assert(val->IsFunction());
         Handle<Function> fn(Function::Cast(*val));
         Handle<Value> args[1] = { obj };
-        fn->Call(fn, 1, args);
+        fn->Call(obj, 1, args);
      }
 
    static void eo_on_changed(void *data, Evas_Object *eo, void *event_info)
@@ -3679,7 +3684,7 @@ public:
         assert(val->IsFunction());
         Handle<Function> fn(Function::Cast(*val));
         Handle<Value> args[1] = { obj };
-        fn->Call(fn, 1, args);
+        fn->Call(obj, 1, args);
      }
 
    static void eo_on_changed(void *data, Evas_Object *eo, void *event_info)
@@ -4141,7 +4146,7 @@ public:
         assert(val->IsFunction());
         Handle<Function> fn(Function::Cast(*val));
         Handle<Value> args[1] = { obj };
-        fn->Call(fn, 1, args);
+        fn->Call(obj, 1, args);
      }
 
    virtual void on_changed_set(Handle<Value> val)
