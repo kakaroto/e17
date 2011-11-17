@@ -33,7 +33,7 @@ int main(int argc, char **argv)
    evas_object_move(rect, -5000, -5000);
    evas_object_show(rect);
 
-   elm_object_content_part_set(layout, "table_swallow", rect);
+   elm_object_part_content_set(layout, "table_swallow", rect);
    evas_object_size_hint_weight_set(layout, 1, 1);
 
    evas_object_resize(win, 800, 480);

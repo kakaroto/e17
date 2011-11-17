@@ -144,7 +144,7 @@ _excessive_selected(void *data __UNUSED__, Evas_Object *grid, void *event_info)
 
         if (info->type->func.action)
           info->type->func.action(search, info->link);
-	elm_object_content_part_set(evas_object_data_get(grid, "excessive/layout"), "show/content", search);
+	elm_object_part_content_set(evas_object_data_get(grid, "excessive/layout"), "show/content", search);
 	edje_object_signal_emit(elm_layout_edje_get(evas_object_data_get(grid, "excessive/layout")), "show,content", "code");
         return ;
      }

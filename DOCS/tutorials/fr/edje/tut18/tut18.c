@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 
    evas_object_size_hint_weight_set(layout, 1, 1);
 
-   elm_object_content_part_set(layout, "table_swallow", table);
+   elm_object_part_content_set(layout, "table_swallow", table);
    evas_object_size_hint_min_set(layout, 64, 64);
 
    evas_object_resize(win, 800, 480);

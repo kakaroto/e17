@@ -1774,11 +1774,11 @@ public:
         CEvasObject *end_obj = realize_one(this, value);
         if (end_obj)
           {
-             elm_object_content_part_set(eo, "elm.swallow.end", end_obj->get());
+             elm_object_part_content_set(eo, "elm.swallow.end", end_obj->get());
              the_end_object = Persistent<Value>::New(end_obj->get_object());
           }
         else
-             elm_object_content_part_unset(eo, "elm.swallow.end");
+             elm_object_part_content_unset(eo, "elm.swallow.end");
      }
 
    virtual Handle<Value> value_get() const
@@ -3040,13 +3040,13 @@ public:
        left = realize_one(this, obj->Get(String::New("content_left")));
        if (left)
          {
-            elm_object_content_part_set(eo, "elm.swallow.left", left->get());
+            elm_object_part_content_set(eo, "elm.swallow.left", left->get());
          }
 
        right = realize_one(this, obj->Get(String::New("content_right")));
        if (right)
          {
-            elm_object_content_part_set(eo, "elm.swallow.right", right->get());
+            elm_object_part_content_set(eo, "elm.swallow.right", right->get());
          }
     }
 
