@@ -25,3 +25,11 @@ Makefile.in
 /missing
 /src/bin/elev8
 /stamp-h1
+/config.guess.cdbs-orig
+/config.sub.cdbs-orig
+/debian/compat
+/debian/stamp-*
+/debian/*.log
+/debian/*.substvars
+/debian/elev8/
+/debian/files
