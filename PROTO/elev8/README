@@ -1,5 +1,23 @@
 V8 javascript based runtime for EFL for rapid app development
 
+elev8 is a javascript based runtime, based on Google(TM) v8 javascript engine.
+The purpose of EFL is to ease the process of app creation for EFL.
+
+EFL is a vast collection of libraries that perform tasks, including, but not limited to :
+1. Window Management
+2. Manage I/O devices
+3. Networking
+4. File Management
+5. Audio/Video
+6. Runtime data manipulation
+7. dBus
+and many more.
+
+Elev8 lets developers familiar with Javascript to create EFL applications using
+JS and JSON.
+The widget set of EFL is presented as javascript objects and its properties
+are presented as JSON name:value pairs, including callbacks.
+
 elev8 is not a "web runtime" and does not depend on webkit.
 
 Build
