@@ -507,10 +507,19 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
                   dbus_message_iter_get_basic(&variant, &s_val);
                   e_notification_hint_desktop_set(n, s_val);
                }
-             else if ((!strcmp(key, "image_path")) || (!strcmp(key, "image-path")))
+             else if ((!strncmp(key, "image", 5)))
                {
-                  dbus_message_iter_get_basic(&variant, &s_val);
-                  e_notification_hint_image_path_set(n, s_val);
+                  if ((key[5] != '-') && (key[5] != '_')) continue;
+                  if (!strcmp(key + 6, "path"))
+                    {
+                       dbus_message_iter_get_basic(&variant, &s_val);
+                       e_notification_hint_image_path_set(n, s_val);
+                    }
+                  else if (!strcmp(key + 6, "data"))
+                    {
+                       dbus_message_iter_recurse(&dict, &variant);
+                       n->hints.image_data = e_notify_unmarshal_hint_image(&variant);
+                    }
                }
              else if (!strcmp(key, "sound-file"))
                {
@@ -541,11 +550,6 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
                {
                   dbus_message_iter_get_basic(&variant, &y);
                   y_set = 1;
-               }
-             else if ((!strcmp(key, "image_data")) || (!strcmp(key, "image-data")))
-               {
-                  dbus_message_iter_recurse(&dict, &variant);
-                  n->hints.image_data = e_notify_unmarshal_hint_image(&variant);
                }
              else if (!strcmp(key, "icon_data"))
                {
