@@ -150,7 +150,7 @@ azy_value_multi_line_get_(Azy_Value *val,
  * effectively copying the struct.  Note that only the struct itself has
  * its refcount increased, not the members.
  * @param val The #Azy_Value to ref (NOT NULL)
- * @return The same variable, or #NULL on error
+ * @return The same variable, or NULL on error
  */
 Azy_Value *
 azy_value_ref(Azy_Value *val)
@@ -205,7 +205,7 @@ azy_value_unref(Azy_Value *val)
  * This function allocates memory around and stringshares a string into
  * an #Azy_Value struct.
  * @param val The string
- * @return The allocated struct, or #NULL on error
+ * @return The allocated struct, or NULL on error
  */
 Azy_Value *
 azy_value_string_new(const char *val)
@@ -233,7 +233,7 @@ azy_value_string_new(const char *val)
  * This function allocates memory around an int into
  * an #Azy_Value struct.
  * @param val The int
- * @return The allocated struct, or #NULL on error
+ * @return The allocated struct, or NULL on error
  */
 Azy_Value *
 azy_value_int_new(int val)
@@ -261,7 +261,7 @@ azy_value_int_new(int val)
  * This function allocates memory around a boolean value into
  * an #Azy_Value struct.
  * @param val The boolean value
- * @return The allocated struct, or #NULL on error
+ * @return The allocated struct, or NULL on error
  */
 Azy_Value *
 azy_value_bool_new(Eina_Bool val)
@@ -291,7 +291,7 @@ azy_value_bool_new(Eina_Bool val)
  * This function allocates memory around a double into
  * an #Azy_Value struct.
  * @param val The double
- * @return The allocated struct, or #NULL on error
+ * @return The allocated struct, or NULL on error
  */
 Azy_Value *
 azy_value_double_new(double val)
@@ -311,7 +311,7 @@ azy_value_double_new(double val)
  * This function allocates memory around and stringshares a time string into
  * an #Azy_Value struct.
  * @param val The time string
- * @return The allocated struct, or #NULL on error
+ * @return The allocated struct, or NULL on error
  */
 Azy_Value *
 azy_value_time_new(const char *val)
@@ -339,7 +339,7 @@ azy_value_time_new(const char *val)
  * This function allocates memory around a base64 encoded
  * string into an #Azy_Value struct.
  * @param base64 The base64 string
- * @return The allocated struct, or #NULL on error
+ * @return The allocated struct, or NULL on error
  */
 Azy_Value *
 azy_value_base64_new(const char *base64)
@@ -587,7 +587,7 @@ azy_value_type_set(Azy_Value *val, Azy_Value_Type type)
  * contains.  Note that the name is still owned by the #Azy_Value, but is
  * guaranteed to be stringshared.
  * @param val The #Azy_Value of type #AZY_VALUE_MEMBER (NOT NULL)
- * @return The struct member's name, or #NULL on failure
+ * @return The struct member's name, or NULL on failure
  */
 const char *
 azy_value_struct_member_name_get(Azy_Value *val)
@@ -610,7 +610,7 @@ azy_value_struct_member_name_get(Azy_Value *val)
  * #Azy_Value contains.  Note that the returned value is still owned by the
  * specified #Azy_Value.
  * @param val The #Azy_Value of type #AZY_VALUE_MEMBER (NOT NULL)
- * @return The struct member's value, or #NULL on failure
+ * @return The struct member's value, or NULL on failure
  */
 Azy_Value *
 azy_value_struct_member_value_get(Azy_Value *val)
@@ -635,7 +635,7 @@ azy_value_struct_member_value_get(Azy_Value *val)
  * specified #Azy_Value.
  * @param val The #Azy_Value of type #AZY_VALUE_STRUCT (NOT NULL)
  * @param name The name of the member to return (NOT NULL)
- * @return The #Azy_Value of the named struct member, or #NULL on failure
+ * @return The #Azy_Value of the named struct member, or NULL on failure
  */
 Azy_Value *
 azy_value_struct_member_get(Azy_Value  *val,
@@ -670,7 +670,7 @@ azy_value_struct_member_get(Azy_Value  *val,
  * Note that the returned values (including the list) are still owned by the
  * specified #Azy_Value.
  * @param val The #Azy_Value of type #AZY_VALUE_ARRAY or #AZY_VALUE_STRUCT (NOT NULL)
- * @return An #Eina_List of #Azy_Value members, or #NULL on failure
+ * @return An #Eina_List of #Azy_Value members, or NULL on failure
  */
 Eina_List *
 azy_value_children_items_get(Azy_Value *val)
@@ -689,7 +689,7 @@ azy_value_children_items_get(Azy_Value *val)
 /* composite types */
 /**
  * @brief This function allocates and returns a new #Azy_Value of type AZY_VALUE_STRUCT
- * @return The new #Azy_Value struct, or #NULL on failure
+ * @return The new #Azy_Value struct, or NULL on failure
  */
 Azy_Value *
 azy_value_struct_new(void)
@@ -704,7 +704,7 @@ azy_value_struct_new(void)
 
 /**
  * @brief This function allocates and returns a new #Azy_Value of type AZY_VALUE_ARRAY
- * @return The new #Azy_Value array struct, or #NULL on failure
+ * @return The new #Azy_Value array struct, or NULL on failure
  */
 Azy_Value *
 azy_value_array_new(void)

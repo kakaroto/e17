@@ -26,8 +26,8 @@
 /*
  * @brief Create a new #Azy_Rss_Item object
  *
- * This function creates a new #Azy_Rss_Item object, returning #NULL on failure.
- * @return The new object, or #NULL on failure
+ * This function creates a new #Azy_Rss_Item object, returning NULL on failure.
+ * @return The new object, or NULL on failure
  */
 Azy_Rss_Item *
 azy_rss_item_new(void)
@@ -45,7 +45,7 @@ azy_rss_item_new(void)
  * @brief Free an #Azy_Rss_Item object
  *
  * This function frees an #Azy_Rss_Item object
- * @param item The rss item object (NOT #NULL)
+ * @param item The rss item object (NOT NULL)
  */
 void
 azy_rss_item_free(Azy_Rss_Item *item)
@@ -93,7 +93,7 @@ azy_rss_item_free(Azy_Rss_Item *item)
  * @brief Retrieve the list of authors of an item object
  *
  * This function returns a list of #Azy_Rss_Contact objects belonging to @p item
- * @param item The #Azy_Rss_Item (NOT #NULL)
+ * @param item The #Azy_Rss_Item (NOT NULL)
  * @return An #Eina_List of #Azy_Rss_Contact objects
  */
 Eina_List *
@@ -111,7 +111,7 @@ azy_rss_item_authors_get(Azy_Rss_Item *item)
  * @brief Retrieve the list of contributors of an item object
  *
  * This function returns a list of #Azy_Rss_Contact objects belonging to @p item
- * @param item The #Azy_Rss_Item (NOT #NULL)
+ * @param item The #Azy_Rss_Item (NOT NULL)
  * @return An #Eina_List of #Azy_Rss_Contact objects
  */
 Eina_List *
@@ -129,7 +129,7 @@ azy_rss_item_contributors_get(Azy_Rss_Item *item)
  * @brief Retrieve the list of links from an item object
  *
  * This function returns a list of #Azy_Rss_Link objects belonging to @p item
- * @param item The #Azy_Rss_Item (NOT #NULL)
+ * @param item The #Azy_Rss_Item (NOT NULL)
  * @return An #Eina_List of #Azy_Rss_Link objects
  */
 Eina_List *
@@ -147,7 +147,7 @@ azy_rss_item_links_get(Azy_Rss_Item *item)
  * @brief Retrieve the list of categories from an item object
  *
  * This function returns a list of strings belonging to @p item
- * @param item The #Azy_Rss_Item (NOT #NULL)
+ * @param item The #Azy_Rss_Item (NOT NULL)
  * @return An #Eina_List of stringshared strings
  */
 Eina_List *
@@ -166,8 +166,8 @@ azy_rss_item_categories_get(Azy_Rss_Item *item)
    @brief Retrieve the NAME of an rss item object
    This function will return the NAME of @p item.  The NAME will be stringshared,
    but still belongs to @p item.
-   @param item The #Azy_Rss object (NOT #NULL)
-   @return The NAME, or #NULL on failure
+   @param item The #Azy_Rss object (NOT NULL)
+   @return The NAME, or NULL on failure
  */                                                  \
   const char *                                       \
   azy_rss_item_##NAME##_get(Azy_Rss_Item * item)     \
@@ -201,7 +201,7 @@ DEF(icon)
  * @p indent times using @p pre string.
  * @param pre String to indent with
  * @param indent Number of times to indent
- * @param item The rss item object (NOT #NULL)
+ * @param item The rss item object (NOT NULL)
  */
 void
 azy_rss_item_print(const char   *pre,

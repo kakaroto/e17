@@ -420,7 +420,7 @@ gen_type_isnull(Azy_Typedef *t,
      {
         if (t->type != TD_STRUCT) return;
 
-        EL(0, "/** @brief Check whether all the values of @p a are #NULL */");
+        EL(0, "/** @brief Check whether all the values of @p a are NULL */");
         EL(0, "Eina_Bool %s_isnull(%s a);", t->cname, t->ctype);
         return;
      }

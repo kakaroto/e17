@@ -1142,7 +1142,7 @@ azy_server_client_handler_add(Azy_Server                 *server,
  * This function is used on a suspended client to resume it,
  * allowing the current and subsequent transmissions to begin processing again.
  * The success value of the current directive is determined by @p ret.
- * @param module The suspended module (NOT #NULL)
+ * @param module The suspended module (NOT NULL)
  * @param ret The return value to set for the current directive
  */
 void
@@ -1276,7 +1276,7 @@ azy_server_module_events_suspend(Azy_Server_Module *module)
 /**
  * @brief Return the suspend state of a module
  * Use this function to determine whether a module is currently suspended
- * @param module The module (NOT #NULL)
+ * @param module The module (NOT NULL)
  * @return EINA_TRUE if the module is suspended, else EINA_FALSE
  */
 Eina_Bool
@@ -1297,7 +1297,7 @@ azy_server_module_events_suspended_get(Azy_Server_Module *module)
  * Use this function to rewind a suspended client to the most recently called server directive.
  * A client can only rewind by one state. Ensure that you have completed all tasks necessary
  * prior to progressing to a state from which it will be impossible to return.
- * @param module The module (NOT #NULL)
+ * @param module The module (NOT NULL)
  * @return EINA_TRUE if the module's state was successfully rewound, else EINA_FALSE
  * @note This function can only be called from __pre__, __post__, __fallback__, or a method.
  */

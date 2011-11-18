@@ -26,8 +26,8 @@
 /*
  * @brief Create a new #Azy_Rss object
  *
- * This function creates a new #Azy_Rss object, returning #NULL on failure.
- * @return The new object, or #NULL on failure
+ * This function creates a new #Azy_Rss object, returning NULL on failure.
+ * @return The new object, or NULL on failure
  */
 Azy_Rss *
 azy_rss_new(void)
@@ -45,7 +45,7 @@ azy_rss_new(void)
  * @brief Free an #Azy_Rss_Contact object
  *
  * This function frees an #Azy_Rss_Contact object.
- * @param c The object (NOT #NULL)
+ * @param c The object (NOT NULL)
  */
 void
 azy_rss_contact_free(Azy_Rss_Contact *c)
@@ -62,7 +62,7 @@ azy_rss_contact_free(Azy_Rss_Contact *c)
  * @brief Free an #Azy_Rss_Link object
  *
  * This function frees an #Azy_Rss_Link object.
- * @param li The object (NOT #NULL)
+ * @param li The object (NOT NULL)
  */
 void
 azy_rss_link_free(Azy_Rss_Link *li)
@@ -80,7 +80,7 @@ azy_rss_link_free(Azy_Rss_Link *li)
  * @brief Free an #Azy_Rss object
  *
  * This function frees an #Azy_Rss object and all #Azy_Rss_Item subobjects.
- * @param rss The rss object (NOT #NULL)
+ * @param rss The rss object (NOT NULL)
  */
 void
 azy_rss_free(Azy_Rss *rss)
@@ -129,7 +129,7 @@ azy_rss_free(Azy_Rss *rss)
  * @brief Retrieve the list of items in an rss object
  *
  * This function returns a list of #Azy_Rss_Item objects belonging to @p rss
- * @param rss The #Azy_Rss (NOT #NULL)
+ * @param rss The #Azy_Rss (NOT NULL)
  * @return An #Eina_List of #Azy_Rss_Item objects
  */
 const Eina_List *
@@ -148,7 +148,7 @@ azy_rss_items_get(Azy_Rss *rss)
  *
  * This function returns a list of #Azy_Rss_Item objects belonging to @p rss,
  * separating the list from @p rss. The list must then be manually freed.
- * @param rss The #Azy_Rss (NOT #NULL)
+ * @param rss The #Azy_Rss (NOT NULL)
  * @return An #Eina_List of #Azy_Rss_Item objects
  */
 Eina_List *
@@ -169,7 +169,7 @@ azy_rss_items_steal(Azy_Rss *rss)
  * @brief Retrieve the list of authors of an rss object
  *
  * This function returns a list of #Azy_Rss_Contact objects belonging to @p rss
- * @param rss The #Azy_Rss (NOT #NULL)
+ * @param rss The #Azy_Rss (NOT NULL)
  * @return An #Eina_List of #Azy_Rss_Contact objects
  */
 Eina_List *
@@ -187,7 +187,7 @@ azy_rss_authors_get(Azy_Rss *rss)
  * @brief Retrieve the list of contributors of an rss object
  *
  * This function returns a list of #Azy_Rss_Contact objects belonging to @p rss
- * @param rss The #Azy_Rss (NOT #NULL)
+ * @param rss The #Azy_Rss (NOT NULL)
  * @return An #Eina_List of #Azy_Rss_Contact objects
  */
 Eina_List *
@@ -205,7 +205,7 @@ azy_rss_contributors_get(Azy_Rss *rss)
  * @brief Retrieve the list of links from an rss object
  *
  * This function returns a list of #Azy_Rss_Link objects belonging to @p rss
- * @param rss The #Azy_Rss (NOT #NULL)
+ * @param rss The #Azy_Rss (NOT NULL)
  * @return An #Eina_List of #Azy_Rss_Link objects
  */
 Eina_List *
@@ -223,7 +223,7 @@ azy_rss_links_get(Azy_Rss *rss)
  * @brief Retrieve the list of categories from an rss object
  *
  * This function returns a list of strings belonging to @p rss
- * @param rss The #Azy_Rss (NOT #NULL)
+ * @param rss The #Azy_Rss (NOT NULL)
  * @return An #Eina_List of stringshared strings
  */
 Eina_List *
@@ -242,8 +242,8 @@ azy_rss_categories_get(Azy_Rss *rss)
    @brief Retrieve the NAME of an rss object
    This function will return the NAME of @p rss.  The NAME will be stringshared,
    but still belongs to @p rss.
-   @param rss The #Azy_Rss object (NOT #NULL)
-   @return The NAME, or #NULL on failure
+   @param rss The #Azy_Rss object (NOT NULL)
+   @return The NAME, or NULL on failure
  */                                            \
   const char *                                 \
   azy_rss_##NAME##_get(Azy_Rss * rss)          \
@@ -275,7 +275,7 @@ DEF(subtitle)
  * optionally indenting @p indent times using @p pre string.
  * @param pre String to indent with
  * @param indent Number of times to indent
- * @param li The rss link object (NOT #NULL)
+ * @param li The rss link object (NOT NULL)
  */
 void
 azy_rss_contact_print(const char *pre,
@@ -309,7 +309,7 @@ azy_rss_contact_print(const char *pre,
  * optionally indenting @p indent times using @p pre string.
  * @param pre String to indent with
  * @param indent Number of times to indent
- * @param li The rss link object (NOT #NULL)
+ * @param li The rss link object (NOT NULL)
  */
 void
 azy_rss_link_print(const char *pre,
@@ -351,7 +351,7 @@ azy_rss_link_print(const char *pre,
  * optionally indenting @p indent times using @p pre string.
  * @param pre String to indent with
  * @param indent Number of times to indent
- * @param rss The rss object (NOT #NULL)
+ * @param rss The rss object (NOT NULL)
  */
 void
 azy_rss_print(const char *pre,

@@ -39,7 +39,7 @@ EAPI int AZY_CLIENT_ERROR;
  *
  * This function creates a new client object for use in connecting to a
  * server.
- * @return The new client, or #NULL on failure
+ * @return The new client, or NULL on failure
  */
 Azy_Client *
 azy_client_new(void)
@@ -63,8 +63,8 @@ azy_client_new(void)
  *
  * This function retrieves the data previously set to @p client
  * with azy_client_data_set.
- * @param client The client object (NOT #NULL)
- * @return The data, or #NULL on error
+ * @param client The client object (NOT NULL)
+ * @return The data, or NULL on error
  */
 void *
 azy_client_data_get(Azy_Client *client)
@@ -83,7 +83,7 @@ azy_client_data_get(Azy_Client *client)
  *
  * This function sets the data associated with @p client to @p data
  * for retrieval with azy_client_data_get.
- * @param client The client object (NOT #NULL)
+ * @param client The client object (NOT NULL)
  * @param data The data to associate
  */
 void
@@ -105,8 +105,8 @@ azy_client_data_set(Azy_Client *client,
  * This function sets the server address and port for a client to
  * connect to.  The address can be either an ip string (ipv6 supported)
  * or a web address.
- * @param client The client object (NOT #NULL)
- * @param addr The server's address (NOT #NULL)
+ * @param client The client object (NOT NULL)
+ * @param addr The server's address (NOT NULL)
  * @param port The port on the server (-1 < port < 65536)
  * @return #EINA_TRUE on success, else #EINA_FALSE
  */
@@ -142,8 +142,8 @@ azy_client_host_set(Azy_Client *client,
  * This function returns the address string of the server that @p client
  * connects to.  The returned string is stringshared but still
  * belongs to the client object.
- * @param client The client object (NOT #NULL)
- * @return The address string, or #NULL on failure
+ * @param client The client object (NOT NULL)
+ * @return The address string, or NULL on failure
  */
 const char *
 azy_client_addr_get(Azy_Client *client)
@@ -163,8 +163,8 @@ azy_client_addr_get(Azy_Client *client)
  *
  * This function sets the address string of the server that @p client
  * connects to.
- * @param client The client object (NOT #NULL)
- * @param addr The address string (NOT #NULL)
+ * @param client The client object (NOT NULL)
+ * @param addr The address string (NOT NULL)
  * @return The address string
  */
 Eina_Bool
@@ -191,7 +191,7 @@ azy_client_addr_set(Azy_Client *client,
  *
  * This function returns the port number on the server that @p client
  * connects to.
- * @param client The client object (NOT #NULL)
+ * @param client The client object (NOT NULL)
  * @return The port number, or -1 on failure
  */
 int
@@ -212,7 +212,7 @@ azy_client_port_get(Azy_Client *client)
  *
  * This function sets the port number on the server that @p client
  * connects to.
- * @param client The client object (NOT #NULL)
+ * @param client The client object (NOT NULL)
  * @param port The port number (-1 < port < 65536)
  * @return #EINA_TRUE on success, or #EINA_FALSE on failure
  */
@@ -239,7 +239,7 @@ azy_client_port_set(Azy_Client *client,
  * This function begins the SSL handshake process on connected client @p client.
  * An AZY_CLIENT_UPGRADE event will be emitted on success, and EINA_FALSE will be
  * returned immediately on failure.
- * @param client The client object (NOT #NULL)
+ * @param client The client object (NOT NULL)
  * @return #EINA_TRUE if successful, or #EINA_FALSE on failure
  */
 Eina_Bool
@@ -262,7 +262,7 @@ azy_client_upgrade(Azy_Client *client)
  *
  * This function begins the connection process for @p client to its
  * previously set server.  This will return EINA_FALSE immediately if an error occurs.
- * @param client The client object (NOT #NULL)
+ * @param client The client object (NOT NULL)
  * @param secure If #EINA_TRUE, TLS will be used in the connection
  * @return #EINA_TRUE if successful, or #EINA_FALSE on failure
  */
@@ -308,8 +308,8 @@ azy_client_connect(Azy_Client *client,
  * namespaced functions can be called as normal upon the returned object.
  * Note that the returned object belongs to the client, and will only exist
  * if the client is connected.
- * @param client The client object (NOT #NULL)
- * @return The #Azy_Net object, or #NULL on failure
+ * @param client The client object (NOT NULL)
+ * @return The #Azy_Net object, or NULL on failure
  */
 Azy_Net *
 azy_client_net_get(Azy_Client *client)
@@ -328,7 +328,7 @@ azy_client_net_get(Azy_Client *client)
  * @brief Check whether a client is connected
  *
  * This function returns true only when the client is connected.
- * @param client The client (NOT #NULL)
+ * @param client The client (NOT NULL)
  * @return #EINA_TRUE if the client is connected, else #EINA_FALSE
  */
 Eina_Bool
@@ -348,7 +348,7 @@ azy_client_connected_get(Azy_Client *client)
  *
  * This function is the opposite of azy_client_connect, it
  * terminates an existing connection.
- * @param client The client (NOT #NULL)
+ * @param client The client (NOT NULL)
  */
 void
 azy_client_close(Azy_Client *client)
@@ -377,9 +377,9 @@ azy_client_close(Azy_Client *client)
  * This function is used to setup a callback to be called for the response of
  * a transmission with @p id, overriding (disabling) the AZY_CLIENT_RETURN event
  * for that call.  If a previous callback was set for @p id, this will overwrite it.
- * @param client The client (NOT #NULL)
+ * @param client The client (NOT NULL)
  * @param id The transmission id (> 0)
- * @param callback The callback to use (NOT #NULL)
+ * @param callback The callback to use (NOT NULL)
  * @return #EINA_TRUE on success, or #EINA_FALSE on failure
  */
 Eina_Bool
@@ -441,8 +441,8 @@ azy_client_callback_free_set(Azy_Client        *client,
  * @p content, using content-type defined by @p transport and the deserialization
  * function specified by @p cb.  This should generally not be used by users, as azy_parser
  * will automatically generate the correct calls from a .azy file.
- * @param client The client (NOT #NULL)
- * @param content The content containing the method name and parameters (NOT #NULL)
+ * @param client The client (NOT NULL)
+ * @param content The content containing the method name and parameters (NOT NULL)
  * @param transport The content-type (xml/json/etc) to use
  * @param cb The deserialization callback to use for the response
  * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
@@ -540,8 +540,8 @@ error:
  * This function is used to make a GET or POST request using @p client to the uri of the client's
  * #Azy_Net object (azy_net_get(client)) using HTTP method @p type, content-type
  * defined by @p transport, and the optional deserialization function specified by @p cb.
- * @param client The client (NOT #NULL)
- * @param type The HTTP method to use (NOT #NULL)
+ * @param client The client (NOT NULL)
+ * @param type The HTTP method to use (NOT NULL)
  * @param netdata The HTTP BODY to send with a POST
  * @param cb The deserialization callback to use for the response
  * @param data The user data to be passed to resulting callbacks
@@ -639,8 +639,8 @@ error:
  *
  * This function is used to send arbitrary data to a connected server using @p client through HTTP PUT.
  * It relies on the user to set required headers by operating on the client's #Azy_Net object.
- * @param client The client (NOT #NULL)
- * @param send The data+length to send (NOT #NULL)
+ * @param client The client (NOT NULL)
+ * @param send The data+length to send (NOT NULL)
  * @param data Optional data to pass to associated callbacks
  * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
  * or 0 on failure
@@ -714,10 +714,10 @@ error:
  * an #Azy_Client_Return_Cb and log the calling function name upon failure.
  * Note that this function also calls azy_content_error_reset.
  * Also note: THIS FUNCTION IS MEANT TO BE USED IN A MACRO!!!!
- * @param cli The client (NOT #NULL)
- * @param err_content The content used to make the call which may contain an error (NOT #NULL)
+ * @param cli The client (NOT NULL)
+ * @param err_content The content used to make the call which may contain an error (NOT NULL)
  * @param ret The call id
- * @param cb The callback to set for @p ret (NOT #NULL)
+ * @param cb The callback to set for @p ret (NOT NULL)
  * @param func The function name of the calling function
  * @return This function returns #EINA_TRUE only if the call was successful and @p cb was set, else #EINA_FALSE
  */
@@ -756,7 +756,7 @@ azy_client_call_checker(Azy_Client          *cli,
  *
  * This function is used inside an AZY_CLIENT_DISCONNECTED callback to automatically
  * reconnect to the server if necessary (HTTP 301/302/303 returned).
- * @param cli The client object (NOT #NULL)
+ * @param cli The client object (NOT NULL)
  * @return #EINA_TRUE only if reconnection has succeeded, else #EINA_FALSE
  */
 Eina_Bool
@@ -788,7 +788,7 @@ azy_client_redirect(Azy_Client *cli)
  *
  * This function returns the currently active #Azy_Client_Call_Id, or 0 if no call
  * is currently active/pending.
- * @param cli The client object (NOT #NULL)
+ * @param cli The client object (NOT NULL)
  * @return The currently active/pending call id, or 0 on failure
  */
 Azy_Client_Call_Id
@@ -814,7 +814,7 @@ azy_client_current(Azy_Client *cli)
  * This function frees a client and ALL associated data.  If called
  * on a connected client, azy_client_close will be called and then the client
  * will be freed.
- * @param client The client (NOT #NULL)
+ * @param client The client (NOT NULL)
  */
 void
 azy_client_free(Azy_Client *client)

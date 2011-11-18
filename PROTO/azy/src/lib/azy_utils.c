@@ -40,7 +40,7 @@
  * @brief Base64 encode a string of known length
  * @param string The string to encode
  * @param len The length of the string
- * @return Allocated base64 encoded string or #NULL on error
+ * @return Allocated base64 encoded string or NULL on error
  * This calls base64 encode functions to encode @p string, allocating
  * memory for the encoded string.
  */
@@ -68,7 +68,7 @@ azy_base64_encode(const char *string,
  * @brief Base64 decode a string of known length
  * @param string The string to decode
  * @param len The length of the string
- * @return Allocated decoded string or #NULL on error
+ * @return Allocated decoded string or NULL on error
  * This calls base64 decode functions to decode @p string, allocating
  * memory for the decoded string.
  */
@@ -97,7 +97,7 @@ azy_base64_decode(const char *string,
  * @param small The string to find
  * @param big_len The length of @p big
  * @param small_len The length of @p small
- * @return Pointer to the first occurrence of @p small, or #NULL on error/failure
+ * @return Pointer to the first occurrence of @p small, or NULL on error/failure
  * This can be considered strnstr, a utility function for finding a bounded string
  * in another bounded string.  It compares using unsigned char, however, so non-ascii
  * data can be found as well.
@@ -121,7 +121,7 @@ azy_memstr(const unsigned char *big,
 
 /**
  * @brief Read a UUID from /proc/sys/kernel/random/uuid and stringshare it
- * @return The stringshared uuid or #NULL on error
+ * @return The stringshared uuid or NULL on error
  * This function is used to return a stringshared random UUID.  UUIDS are
  * Universally Unique IDentifiers, strings of 36 characters such as:
  * 550e8400-e29b-41d4-a716-446655440000

@@ -50,7 +50,7 @@ azy_server_stop(Azy_Server *server)
  * Create a new server object.  If @p secure is specified, the server will require
  * ssl/tls for connections.
  * @param secure If true, server will use ssl for connections
- * @return The new #Azy_Server object, or #NULL on failure
+ * @return The new #Azy_Server object, or NULL on failure
  */
 Azy_Server *
 azy_server_new(Eina_Bool secure)
