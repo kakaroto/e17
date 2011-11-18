@@ -442,22 +442,40 @@ group {
 
 group {
    name: "elm/panes/horizontal/default";
-   inherit: "elm/panes/vertical/default";
    images {
+      image: "button_up.png" COMP;
+      image: "button_down.png" COMP;
+      image: "button_disabled.png" COMP;
+      image: "button_glow.png" COMP;
+      image: "drag_glow.png" COMP;
+      image: "button_disabled.png" COMP;
+      image: "vpaned_handle.png" COMP;
       image: "icon_arrow_up.png" COMP;
       image: "icon_arrow_down.png" COMP;
    }
    parts
    {
-      //2 contents
       part
       {
-         name: "whole_left";
+         name: "whole";
+         type: RECT;
          mouse_events: 0;
          description
          {
             state: "default" 0.0;
-            rel1.to_x: "";
+            visible: 0;
+         }
+      }
+
+      //2 contents
+      part
+      {
+         name: "whole_left";
+         type: RECT;
+         mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
             rel2.to_y: "elm.bar";
             rel2.relative: 1.0 0.0;
             visible: 1;
@@ -465,14 +483,39 @@ group {
       }
       part
       {
-         name: "whole_right";
+         name: "elm.swallow.left";
+         type: SWALLOW;
+         clip_to: "whole_left";
          description
          {
             state: "default" 0.0;
-            rel1.to_x: "";
+            rel1.to: "whole_left";
+            rel2.to: "whole_left";
+         }
+      }
+      part
+      {
+         name: "whole_right";
+         type: RECT;
+         mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
             rel1.to_y: "elm.bar";
             rel1.relative: 0.0 1.0;
             visible: 1;
+         }
+      }
+      part
+      {
+         name: "elm.swallow.right";
+         type: SWALLOW;
+         clip_to: "whole_right";
+         description
+         {
+            state: "default" 0.0;
+            rel1.to: "whole_right";
+            rel2.to: "whole_right";
          }
       }
       //BAR
@@ -488,8 +531,36 @@ group {
             min: 100 15;
             rel1.relative: 0.5 0.0;
             rel2.relative: 0.5 1.0;
+            image {
+               normal: "button_up.png";
+               border: 7 7 7 7;
+            }
+            image.middle: SOLID;
+         }
+         description { state: "down" 0.0;
+            inherit: "default" 0.0;
+            image.normal: "button_down.png";
+            image.middle: SOLID;
+         }
+         description { state: "disabled" 0.0;
+            inherit:  "default" 0.0;
+            visible: 0;
          }
       }
+      part { name: "handle";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            rel1.to: "elm.bar";
+            rel2.to: "elm.bar";
+            rel1.relative: 0.25 0;
+            rel2.relative: 0.75 0;
+            image.normal: "vpaned_handle.png";
+         }
+      }
+      BUTTON_DISABLE_PART("elm.bar", 7 7 7 7);
+      BUTTON_GLOW_PART("elm.bar", 220)
+      FOCUS_GLOW(0.0, 0.0, 0, 0, "elm.bar", 1.0, 1.0, -1, -1, "elm.bar")
+      DRAG_GLOW(0.0, 0.0, 0, 0, "elm.bar", 1.0, 1.0, -1, -1, "elm.bar")
 
       //Arrow
       part {
@@ -558,9 +629,118 @@ group {
             rel2.offset: 45/2 (-45/2 - 20);
          }
       }
+   }
+   programs {
+      program {
+            name:   "button_click";
+            signal: "mouse,down,1";
+            source: "elm.bar";
+            action: SIGNAL_EMIT "elm,action,press" "";
+            BUTTON_GLOW_SUDDEN_STOP("elm.bar")
+         }
+         program {
+            name:   "button_click2";
+            signal: "mouse,clicked,1";
+            source: "elm.bar";
+            action: SIGNAL_EMIT "elm,action,click" "";
+         }
+         program {
+            name:   "button_unclick";
+            signal: "mouse,up,1";
+            source: "elm.bar";
+            action: SIGNAL_EMIT "elm,action,unpress" "";
+         }
+         program {
+            name:   "button_click_anim";
+            signal: "mouse,down,1";
+            source: "elm.bar";
+            action: STATE_SET "down" 0.0;
+            target: "elm.bar";
+            BUTTON_GLOW_SUDDEN_STOP("elm.bar")
+         }
+         program {
+            name:   "button_unclick_anim";
+            signal: "mouse,up,1";
+            source: "elm.bar";
+            action: STATE_SET "default" 0.0;
+            target: "elm.bar";
+         }
+         program {
+            name: "button_mouseover";
+            signal: "mouse,in";
+            source: "elm.bar";
+            BUTTON_GLOW_ACTION("elm.bar")
+         }
+         program {
+            name: "button_mouseout";
+            signal: "mouse,out";
+            source: "elm.bar";
+            BUTTON_GLOW_STOP("elm.bar")
+         }
+         program {
+            name: "button_focus";
+            FOCUS_SIGNAL
+            FOCUS_GLOW_ACTION("elm.bar")
+         }
+         program {
+            name: "button_unfocus";
+            UNFOCUS_SIGNAL
+            UNFOCUS_GLOW_ACTION("elm.bar")
+         }
+         program {
+            name: "button_drag";
+            signal: "repeated";
+            source: "elm";
+            DRAG_ENTER_ACTION("elm.bar")
+         }
+         BUTTON_GLOW_PROGRAM("elm.bar")
+         BUTTON_DISABLE_PROGRAM("elm.bar")
+      program {
+         name:   "button_down_double";
+         signal: "mouse,down,1,double";
+         source: "elm.bar";
+         action: SIGNAL_EMIT "elm,action,click,double" "";
+         BUTTON_GLOW_SUDDEN_STOP("elm.bar")
+      }
 
+      //arrows animation
+      program {
+         name: "arrow_anim_start";
+         action: STATE_SET "anim_1" 0.0;
+         target: "icon_arrow_right";
+         target: "icon_arrow_left";
+         transition: LINEAR 0.6;
+         after: "arrow_anim_1";
+      }
+      program {
+         name: "arrow_anim_1";
+         action: STATE_SET "anim_2" 0.0;
+         target: "icon_arrow_right";
+         target: "icon_arrow_left";
+         transition: LINEAR 0.6;
+         after: "arrow_anim_2";
+      }
+      program {
+         name: "arrow_anim_2";
+         action: STATE_SET "default" 0.0;
+         target: "icon_arrow_right";
+         target: "icon_arrow_left";
+         after: "arrow_anim_start";
+      }
+      program {
+         name: "arrow_anim_stop";
+         action: ACTION_STOP;
+         target: "arrow_anim_start";
+         target: "arrow_anim_1";
+         target: "arrow_anim_2";
+         after: "arrow_anim_stop_1";
+      }
+      program {
+         name: "arrow_anim_stop_1";
+         action: STATE_SET "default" 0.0;
+         target: "icon_arrow_right";
+         target: "icon_arrow_left";
+         transition: DECELERATE 0.4;
+      }
    }
 }
-
-
-
