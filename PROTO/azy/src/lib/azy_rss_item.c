@@ -57,6 +57,7 @@ azy_rss_item_new(void)
    item = eina_mempool_malloc(rss_item_mempool, sizeof(Azy_Rss_Item));
    EINA_SAFETY_ON_NULL_RETURN_VAL(item, NULL);
 
+   memset(item, 0, sizeof(Azy_Rss_Item));
    AZY_MAGIC_SET(item, AZY_MAGIC_RSS_ITEM);
    return item;
 }

@@ -43,6 +43,7 @@ azy_value_new_(void)
    v = eina_mempool_malloc(value_mempool, sizeof(Azy_Value));
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
+   memset(v, 0, sizeof(Azy_Value));
    EINA_REFCOUNT_INIT(v);
    AZY_MAGIC_SET(v, AZY_MAGIC_VALUE);
    return v;
