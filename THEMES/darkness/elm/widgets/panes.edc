@@ -233,6 +233,7 @@ group {
             source: "elm.bar";
             action: SIGNAL_EMIT "elm,action,press" "";
             BUTTON_GLOW_SUDDEN_STOP("elm.bar")
+            after: "arrow_anim_start";
          }
          program {
             name:   "button_click2";
@@ -245,6 +246,7 @@ group {
             signal: "mouse,up,1";
             source: "elm.bar";
             action: SIGNAL_EMIT "elm,action,unpress" "";
+            after: "arrow_anim_stop";
          }
          program {
             name:   "button_click_anim";
@@ -637,6 +639,7 @@ group {
             source: "elm.bar";
             action: SIGNAL_EMIT "elm,action,press" "";
             BUTTON_GLOW_SUDDEN_STOP("elm.bar")
+            after: "arrow_anim_start";
          }
          program {
             name:   "button_click2";
@@ -649,6 +652,7 @@ group {
             signal: "mouse,up,1";
             source: "elm.bar";
             action: SIGNAL_EMIT "elm,action,unpress" "";
+            after: "arrow_anim_stop";
          }
          program {
             name:   "button_click_anim";
