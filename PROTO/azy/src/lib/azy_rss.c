@@ -23,6 +23,28 @@
  * @{
  */
 
+static Eina_Mempool *rss_mempool = NULL;
+
+Eina_Bool
+azy_rss_init(const char *type)
+{
+   if (!azy_rss_item_init(type)) return EINA_FALSE;
+   rss_mempool = eina_mempool_add(type, "Azy_Rss", NULL, sizeof(Azy_Rss), 64);
+   if (rss_mempool) return EINA_TRUE;
+
+   if (strcmp(type, "pass_through")) return azy_rss_init("pass_through");
+   azy_rss_item_shutdown();
+   EINA_LOG_CRIT("Unable to set up mempool!");
+   return EINA_FALSE;
+}
+
+void
+azy_rss_shutdown(void)
+{
+   azy_rss_item_shutdown();
+   eina_mempool_del(rss_mempool);
+   rss_mempool = NULL;
+}
 /*
  * @brief Create a new #Azy_Rss object
  *
@@ -34,7 +56,7 @@ azy_rss_new(void)
 {
    Azy_Rss *rss;
 
-   rss = calloc(1, sizeof(Azy_Rss));
+   rss = eina_mempool_malloc(rss_mempool, sizeof(Azy_Rss));
    EINA_SAFETY_ON_NULL_RETURN_VAL(rss, NULL);
 
    AZY_MAGIC_SET(rss, AZY_MAGIC_RSS);
@@ -122,7 +144,7 @@ azy_rss_free(Azy_Rss *rss)
 
    AZY_MAGIC_SET(rss, AZY_MAGIC_NONE);
 
-   free(rss);
+   eina_mempool_free(rss_mempool, rss);
 }
 
 /**

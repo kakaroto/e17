@@ -144,6 +144,8 @@ _azy_magic_fail(const void *d,
 int
 azy_init(void)
 {
+   const char *type;
+
    if (++azy_init_count_ != 1)
      return azy_init_count_;
    if (!eina_init()) goto big_fail;
@@ -156,7 +158,11 @@ azy_init(void)
    if (!ecore_init()) goto fail;
    if (!ecore_con_init()) goto ecore_fail;
 
-   if (!azy_value_init()) goto ecore_con_fail;
+   type = getenv("EINA_MEMPOOL");
+   if ((!type) || (!type[0])) type = "chained_mempool";
+
+   if (!azy_value_init(type)) goto ecore_con_fail;
+   if (!azy_rss_init(type)) goto azy_fail;
    azy_lib_register_errors_();
 
    AZY_CLIENT_DISCONNECTED = ecore_event_type_new();
@@ -184,6 +190,8 @@ azy_init(void)
    eina_magic_string_set(AZY_MAGIC_CONTENT, "Azy_Content");
    return azy_init_count_;
 
+azy_fail:
+   azy_value_shutdown();
 ecore_con_fail:
    ecore_con_shutdown();
 ecore_fail:
@@ -215,6 +223,7 @@ azy_shutdown(void)
    eina_log_domain_unregister(azy_log_dom);
    if (azy_rpc_log_dom != -1)
      eina_log_domain_unregister(azy_rpc_log_dom);
+   azy_rss_shutdown();
    azy_value_shutdown();
    ecore_con_shutdown();
    ecore_shutdown();

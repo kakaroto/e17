@@ -374,8 +374,12 @@ extern void _azy_magic_fail(const void *d,
                             Azy_Magic   req_m,
                             const char *fname);
 
-Eina_Bool azy_value_init(void);
+Eina_Bool azy_value_init(const char *);
+Eina_Bool azy_rss_init(const char *);
+Eina_Bool azy_rss_item_init(const char *);
 void azy_value_shutdown(void);
+void azy_rss_shutdown(void);
+void azy_rss_item_shutdown(void);
 
 Eina_Bool azy_value_multi_line_get_(Azy_Value *v,
                                     int        max_strlen);

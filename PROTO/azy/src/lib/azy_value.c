@@ -80,12 +80,8 @@ azy_value_list_multi_line_get_(Azy_Value *v)
 }
 
 Eina_Bool
-azy_value_init(void)
+azy_value_init(const char *type)
 {
-   const char *type;
-
-   type = getenv("EINA_MEMPOOL");
-   if ((!type) || (!type[0])) type = "chained_mempool";
    value_mempool = eina_mempool_add(type, "Azy_Value", NULL, sizeof(Azy_Value), 64);
    if (!value_mempool)
      {

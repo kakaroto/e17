@@ -17,6 +17,26 @@
 
 #include "azy_private.h"
 
+static Eina_Mempool *rss_item_mempool = NULL;
+
+Eina_Bool
+azy_rss_item_init(const char *type)
+{
+   rss_item_mempool = eina_mempool_add(type, "Azy_Rss_Item", NULL, sizeof(Azy_Rss_Item), 64);
+   if (rss_item_mempool) return EINA_TRUE;
+
+   if (strcmp(type, "pass_through")) return azy_rss_item_init("pass_through");
+   EINA_LOG_CRIT("Unable to set up mempool!");
+   return EINA_FALSE;
+}
+
+void
+azy_rss_item_shutdown(void)
+{
+   eina_mempool_del(rss_item_mempool);
+   rss_item_mempool = NULL;
+}
+
 /**
  * @defgroup Azy_Rss_Item RSS item Functions
  * @brief Functions which affect #Azy_Rss_Item objects
@@ -34,7 +54,7 @@ azy_rss_item_new(void)
 {
    Azy_Rss_Item *item;
 
-   item = calloc(1, sizeof(Azy_Rss_Item));
+   item = eina_mempool_malloc(rss_item_mempool, sizeof(Azy_Rss_Item));
    EINA_SAFETY_ON_NULL_RETURN_VAL(item, NULL);
 
    AZY_MAGIC_SET(item, AZY_MAGIC_RSS_ITEM);
@@ -86,7 +106,7 @@ azy_rss_item_free(Azy_Rss_Item *item)
      }
    AZY_MAGIC_SET(item, AZY_MAGIC_NONE);
 
-   free(item);
+   eina_mempool_free(rss_item_mempool, item);
 }
 
 /**
