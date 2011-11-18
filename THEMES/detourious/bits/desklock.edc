@@ -38,7 +38,6 @@ group  {
 			description {
 				state: "default" 0.0;
 				rel1.relative: 0.5 0.5;
-				rel1.offset: -240 0;
 				rel2.relative: 0.5 0.5;
 			}
 		}
@@ -83,6 +82,7 @@ group {
 				max: 48 48;
 				fixed: 1 1;
 				visible: 0;
+				rel1.offset: -240 0;
 				/* image {
 				 * 	normal: "icons/system-lock-screen.png";
 				 * } */
