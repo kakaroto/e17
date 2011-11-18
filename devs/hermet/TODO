@@ -8,8 +8,6 @@ evas_map - afterimage problem
 
 evas_map - check rotation util inconsistency rotation
 
-pager - content size calc
-
 elm_transit - check the transit would use the ecore_animator functionalities.
 
 evas_line - width 
@@ -33,3 +31,7 @@ elm_transit - apply evas_map to move and resize effect.
 naviframe - need to block the style set while transiton is going on
 
 elementary - consider partmap and additional  content_set/get/unset parts
+
+naviframe - check it in shotgut
+
+pager - mouseover problem 
