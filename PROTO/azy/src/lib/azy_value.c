@@ -115,6 +115,8 @@ azy_value_shutdown(void)
    eina_hash_free(int_values);
    eina_hash_free(bool_values);
    string_values = base64_values = int_values = time_values = bool_values = NULL;
+   eina_mempool_del(value_mempool);
+   value_mempool = NULL;
 }
 
 /* returns EINA_TRUE if the line requires multiple lines to print */
