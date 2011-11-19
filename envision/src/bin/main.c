@@ -412,10 +412,10 @@ _page_up(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    it = elm_gengrid_selected_item_get(app->grid);
    if (!it)
      return;
-   prev = elm_gengrid_item_prev_get(it);
+   prev = elm_gen_item_prev_get(it);
    if (!prev)
      return;
-   elm_gengrid_item_selected_set(prev, EINA_TRUE);
+   elm_gen_item_selected_set(prev, EINA_TRUE);
    elm_gengrid_item_show(prev);
 }
 
@@ -429,10 +429,10 @@ _page_down(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    it = elm_gengrid_selected_item_get(app->grid);
    if (!it)
      return;
-   next = elm_gengrid_item_next_get(it);
+   next = elm_gen_item_next_get(it);
    if (!next)
      return;
-   elm_gengrid_item_selected_set(next, EINA_TRUE);
+   elm_gen_item_selected_set(next, EINA_TRUE);
    elm_gengrid_item_show(next);
 }
 
@@ -470,10 +470,10 @@ _search(void            *data,
 
    if (!app->text_to_search)
      app->text_to_search =
-       eina_stringshare_add(elm_scrolled_entry_entry_get(app->entry));
+       eina_stringshare_ref(elm_entry_entry_get(app->entry));
    else
      eina_stringshare_replace(&app->text_to_search,
-                              elm_scrolled_entry_entry_get(app->entry));
+                              elm_entry_entry_get(app->entry));
 
    if (!strlen(app->text_to_search))
      {
@@ -487,7 +487,7 @@ _search(void            *data,
         return;
      }
 
-   it = elm_gengrid_first_item_get(app->grid);
+   it = elm_gen_first_item_get(app->grid);
 
    matched = EINA_FALSE;
    while (it)
@@ -495,7 +495,7 @@ _search(void            *data,
         Item_Data *idata = elm_gengrid_item_data_get(it);
         idata->search.matches = epdf_page_text_find(idata->page,
                                                     app->text_to_search, 0);
-        it = elm_gengrid_item_next_get(it);
+        it = elm_gen_item_next_get(it);
 
         matched |= (idata->search.matches != NULL);
      }
@@ -662,7 +662,7 @@ unload_gengrid(App *app)
      return;
 
    /* Clear the items */
-   elm_gengrid_clear(app->grid);
+   elm_gen_clear(app->grid);
    epdf_document_delete(app->file_info.document);
 }
 
@@ -698,8 +698,8 @@ load_gengrid(App *app)
      }
 
    /* Select the first item */
-   first = elm_gengrid_first_item_get(app->grid);
-   elm_gengrid_item_selected_set(first, EINA_TRUE);
+   first = elm_gen_first_item_get(app->grid);
+   elm_gen_item_selected_set(first, EINA_TRUE);
    app->current_item_page = first;
    idata = elm_gengrid_item_data_get(first);
 
@@ -737,16 +737,16 @@ _change_selection(void            *data,
      {
         range = (page - idata->page_number);
         for (i = 0; i < range; i++)
-          it = elm_gengrid_item_next_get(it);
+          it = elm_gen_item_next_get(it);
      }
    else if (idata->page_number > page)
      {
         range = idata->page_number - page;
         for (i = 0; i < range; i++)
-          it = elm_gengrid_item_prev_get(it);
+          it = elm_gen_item_prev_get(it);
      }
 
-   elm_gengrid_item_selected_set(it, EINA_TRUE);
+   elm_gen_item_selected_set(it, EINA_TRUE);
    elm_gengrid_item_show(it);
 }
 
@@ -897,13 +897,14 @@ create_main_win(App *app)
    elm_object_style_set(app->spinner, "efenniht");
    elm_spinner_step_set(app->spinner, 1);
    elm_spinner_min_max_set(app->spinner, 0, 0);
-   elm_layout_content_set(layout, "page-spinner", app->spinner);
+   elm_object_part_content_set(layout, "page-spinner", app->spinner);
    evas_object_smart_callback_add(app->spinner, "changed", _change_selection,
                                   app);
 
-   app->entry = elm_scrolled_entry_add(app->ed);
+   app->entry = elm_entry_add(app->ed);
+   elm_entry_scrollable_set(app->entry, 1);
    elm_object_style_set(app->entry, "efenniht/search");
-   elm_scrolled_entry_single_line_set(app->entry, EINA_TRUE);
+   elm_entry_single_line_set(app->entry, EINA_TRUE);
    btsearch = elm_icon_add(app->win);
    elm_icon_file_set(btsearch, PACKAGE_DATA_DIR "/default.edj",
                      "search_button");
@@ -912,8 +913,8 @@ create_main_win(App *app)
    evas_object_event_callback_add(btsearch, EVAS_CALLBACK_MOUSE_DOWN, _search,
                                   app);
 
-   elm_scrolled_entry_end_set(app->entry, btsearch);
-   elm_layout_content_set(layout, "search-entry", app->entry);
+   elm_entry_end_set(app->entry, btsearch);
+   elm_object_part_content_set(layout, "search-entry", app->entry);
 
    /* Open file */
    app->fs_inwin = elm_win_inwin_add(app->win);
@@ -951,7 +952,7 @@ create_main_win(App *app)
    elm_gengrid_align_set(app->grid, 0.5, 0.0);
    elm_gengrid_horizontal_set(app->grid, EINA_FALSE);
    elm_gengrid_multi_select_set(app->grid, EINA_FALSE);
-   elm_gengrid_bounce_set(app->grid, EINA_FALSE, EINA_FALSE);
+   elm_gen_bounce_set(app->grid, EINA_FALSE, EINA_FALSE);
    evas_object_smart_callback_add(app->grid, "clicked,double", grid_item_db_double_clicked,
                                   app);
    evas_object_smart_callback_add(app->grid, "realized", grid_item_realized,
@@ -975,7 +976,7 @@ create_main_win(App *app)
    evas_object_event_callback_add(app->grid, EVAS_CALLBACK_DEL, _viewport_del,
                                   app);
 
-   elm_layout_content_set(layout, "view", app->grid);
+   elm_object_part_content_set(layout, "view", app->grid);
    evas_object_event_callback_add(app->win, EVAS_CALLBACK_KEY_DOWN,
                                   _on_key_down, app);
    evas_object_event_callback_add(layout, EVAS_CALLBACK_KEY_DOWN,
