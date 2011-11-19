@@ -7,7 +7,7 @@ group {
       image: "button_glow.png" COMP;
       image: "drag_glow.png" COMP;
       image: "button_disabled.png" COMP;
-      image: "vpaned_handle.png" COMP;
+      image: "hpaned_handle.png" COMP;
       image: "icon_arrow_right.png" COMP;
       image: "icon_arrow_left.png" COMP;
    }
@@ -106,21 +106,32 @@ group {
             visible: 0;
          }
       }
-      part { name: "handle";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.bar";
-            rel2.to: "elm.bar";
-            rel1.relative: 0.25 0;
-            rel2.relative: 0.75 0;
-            image.normal: "vpaned_handle.png";
-         }
-      }
       BUTTON_DISABLE_PART("elm.bar", 7 7 7 7);
       BUTTON_GLOW_PART("elm.bar", 220)
       FOCUS_GLOW(0.0, 0.0, 0, 0, "elm.bar", 1.0, 1.0, -1, -1, "elm.bar")
       DRAG_GLOW(0.0, 0.0, 0, 0, "elm.bar", 1.0, 1.0, -1, -1, "elm.bar")
-
+      part { name: "bar_clip";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            color: 255 255 255 175;
+            rel1.to: "elm.bar";
+            rel2.to: "elm.bar";
+         }
+      }
+      part { name: "handle";
+         mouse_events: 0;
+         clip_to: "bar_clip";
+         description { state: "default" 0.0;
+            rel1.to: "elm.bar";
+            rel2.to: "elm.bar";
+            rel1.relative: 0.0 0.3;
+            rel1.offset: 6 0;
+            rel2.relative: 1.0 0.7;
+            rel2.offset: -6 0;
+            image.normal: "hpaned_handle.png";
+         }
+      }
       //Arrow
       part {
          name: "icon_arrow_right";
@@ -549,21 +560,32 @@ group {
             visible: 0;
          }
       }
-      part { name: "handle";
-         mouse_events: 0;
-         description { state: "default" 0.0;
-            rel1.to: "elm.bar";
-            rel2.to: "elm.bar";
-            rel1.relative: 0.25 0;
-            rel2.relative: 0.75 0;
-            image.normal: "vpaned_handle.png";
-         }
-      }
       BUTTON_DISABLE_PART("elm.bar", 7 7 7 7);
       BUTTON_GLOW_PART("elm.bar", 220)
       FOCUS_GLOW(0.0, 0.0, 0, 0, "elm.bar", 1.0, 1.0, -1, -1, "elm.bar")
       DRAG_GLOW(0.0, 0.0, 0, 0, "elm.bar", 1.0, 1.0, -1, -1, "elm.bar")
-
+      part { name: "bar_clip";
+         type: RECT;
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            color: 255 255 255 175;
+            rel1.to: "elm.bar";
+            rel2.to: "elm.bar";
+         }
+      }
+      part { name: "handle";
+         mouse_events: 0;
+         clip_to: "bar_clip";
+         description { state: "default" 0.0;
+            rel1.to: "elm.bar";
+            rel2.to: "elm.bar";
+            rel1.relative: 0.25 0;
+            rel1.offset: 0 4;
+            rel2.relative: 0.75 1.0;
+            rel2.offset: 0 -4;
+            image.normal: "vpaned_handle.png";
+         }
+      }
       //Arrow
       part {
          name: "icon_arrow_right";
