@@ -68,6 +68,12 @@ const char *e_connman_prop_url = NULL;
 const char *e_connman_prop_servers = NULL;
 const char *e_connman_prop_excludes = NULL;
 
+/* compat api's - quickly pulled in old implementations */
+const char *e_connman_prop_apn = NULL;
+const char *e_connman_prop_mcc = NULL;
+const char *e_connman_prop_mode = NULL;
+const char *e_connman_prop_setup_required = NULL;
+
 int _e_dbus_connman_log_dom = -1;
 
 const char *
@@ -325,7 +331,7 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
 #define ADD_STRINGSHARE(name, s)       \
    if (!name)                          \
       name = eina_stringshare_add(s)
-/*
+/* dynamically determined either net.connman or org.moblin...
    ADD_STRINGSHARE(e_connman_iface_manager, "net.connman.Manager");
    ADD_STRINGSHARE(e_connman_iface_profile, "net.connman.Profile");
    ADD_STRINGSHARE(e_connman_iface_service, "net.connman.Service");
@@ -378,6 +384,13 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    ADD_STRINGSHARE(e_connman_prop_url, "URL");
    ADD_STRINGSHARE(e_connman_prop_servers, "Servers");
    ADD_STRINGSHARE(e_connman_prop_excludes, "Excludes");
+   
+   /* compat api's - quickly pulled in old implementations */
+   ADD_STRINGSHARE(e_connman_prop_apn, "APN");
+   ADD_STRINGSHARE(e_connman_prop_mcc, "MCC");
+   ADD_STRINGSHARE(e_connman_prop_mode, "Mode");
+   ADD_STRINGSHARE(e_connman_prop_security, "Security");
+   ADD_STRINGSHARE(e_connman_prop_setup_required, "SetupRequired");
 
 #undef ADD_STRINGSHARE
 
@@ -481,6 +494,12 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_servers);
    _stringshare_del(&e_connman_prop_excludes);
 
+   /* compat api's - quickly pulled in old implementations */
+   _stringshare_del(&e_connman_prop_apn);
+   _stringshare_del(&e_connman_prop_mcc);
+   _stringshare_del(&e_connman_prop_mode);
+   _stringshare_del(&e_connman_prop_setup_required);
+   
    if (pending_get_name_owner)
      {
         dbus_pending_call_cancel(pending_get_name_owner);
@@ -502,4 +521,3 @@ e_connman_system_shutdown(void)
 
    return init_count;
 }
-
