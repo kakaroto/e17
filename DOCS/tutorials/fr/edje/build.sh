@@ -1,7 +1,5 @@
 #!/bin/sh
 
-PATH=/usr/devel/bin:/usr/bin/:/bin
-
 topdir="./"
 builddir="./build"
 
@@ -20,7 +18,7 @@ if [ -e "$1" ]; then
             file=`basename $f`
             file=$(echo $file | cut -f1 -d '.')
             echo "building $f"
-            gcc -o $builddir/$1 $f `PKG_CONFIG_PATH=/usr/devel/lib/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/local/lib64/pkgconfig/ pkg-config elementary --cflags --libs`
+            gcc -o $builddir/$1 $f `pkg-config elementary --cflags --libs`
 
         done
 }
@@ -42,7 +40,7 @@ else
             file=`basename $f`
             file=$(echo $file | cut -f1 -d '.')
             echo "building $f"
-            gcc -o $builddir/$i $f `PKG_CONFIG_PATH=/usr/devel/lib/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/local/lib64/pkgconfig/ pkg-config elementary --cflags --libs`
+            gcc -o $builddir/$i $f `pkg-config elementary --cflags --libs`
         done
 
 
