@@ -194,7 +194,7 @@ main(int argc, char *argv[])
 
    itc.item_style     = "default";
    itc.func.label_get = _label;
-   itc.func.icon_get  = NULL;
+   itc.func.content_get  = NULL;
    itc.func.state_get = NULL;
    itc.func.del       = _del;
 
