@@ -351,7 +351,7 @@ e_connman_service_type_get(const E_Connman_Element *service, const char **type)
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
 Eina_Bool
-e_connman_service_security_get(const E_Connman_Element *service, unsigned int *count, const char ***security)
+e_connman_service_security2_get(const E_Connman_Element *service, unsigned int *count, const char ***security)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(count, EINA_FALSE);
@@ -1619,4 +1619,83 @@ e_connman_service_ethernet_mtu_get(const E_Connman_Element *service, unsigned sh
    EINA_SAFETY_ON_NULL_RETURN_VAL(mtu, EINA_FALSE);
    return e_connman_element_property_dict_get_stringshared
              (service, e_connman_prop_ethernet, e_connman_prop_mtu, NULL, mtu);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* compat api's - quickly pulled in old implementations */
+EAPI Eina_Bool
+e_connman_service_apn_get(const E_Connman_Element *service, const char **apn)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(apn, EINA_FALSE);
+   return e_connman_element_property_get_stringshared
+     (service, e_connman_prop_apn, NULL, apn);
+}
+
+EAPI Eina_Bool
+e_connman_service_apn_set(E_Connman_Element *service, const char *apn, E_DBus_Method_Return_Cb cb, const void *data)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   return e_connman_element_property_set_full
+     (service, e_connman_prop_apn, DBUS_TYPE_STRING,
+         apn, cb, data);
+}
+
+EAPI Eina_Bool
+e_connman_service_ethernet_netmask_get(const E_Connman_Element *service, const char **netmask)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(netmask, EINA_FALSE);
+   return e_connman_element_property_dict_get_stringshared
+     (service, e_connman_prop_ethernet, e_connman_prop_netmask, NULL, netmask);
+}
+
+EAPI Eina_Bool
+e_connman_service_mcc_get(const E_Connman_Element *service, const char **mcc)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(mcc, EINA_FALSE);
+   return e_connman_element_property_get_stringshared
+     (service, e_connman_prop_mcc, NULL, mcc);
+}
+
+EAPI Eina_Bool
+e_connman_service_mode_get(const E_Connman_Element *service, const char **mode)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(mode, EINA_FALSE);
+   return e_connman_element_property_get_stringshared
+     (service, e_connman_prop_mode, NULL, mode);
+}
+
+EAPI Eina_Bool
+e_connman_service_security_get(const E_Connman_Element *service, const char **security)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(security, EINA_FALSE);
+   return e_connman_element_property_get_stringshared
+     (service, e_connman_prop_security, NULL, security);
+}
+
+EAPI Eina_Bool
+e_connman_service_setup_required_get(const E_Connman_Element *service, Eina_Bool *setup_required)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(service, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(setup_required, EINA_FALSE);
+   return e_connman_element_property_get_stringshared
+     (service, e_connman_prop_setup_required, NULL, setup_required);
 }

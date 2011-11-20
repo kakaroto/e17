@@ -922,7 +922,7 @@ _on_cmd_service_get_security(__UNUSED__ char *cmd, char *args)
    path = args;
 
    e = e_connman_service_get(path);
-   if (e_connman_service_security_get(e, &count, &security))
+   if (e_connman_service_security2_get(e, &count, &security))
      {
         unsigned int i;
         for (i = 0; i < count; i++)
