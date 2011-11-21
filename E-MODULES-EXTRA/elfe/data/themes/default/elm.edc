@@ -357,7 +357,7 @@ group { name: "elm/genlist/item/default/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
    data.item: "labels" "elm.text";
-   data.item: "icons" "elm.swallow.icon elm.swallow.end";
+   data.item: "contents" "elm.swallow.icon elm.swallow.end";
    data.item: "treesize" "20";
    //      data.item: "states" "";
    images {
@@ -528,7 +528,7 @@ group { name: "elm/genlist/item/double_label/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
    data.item: "labels" "elm.text elm.text.2";
-   data.item: "icons" "elm.swallow.icon elm.swallow.end";
+   data.item: "contents" "elm.swallow.icon elm.swallow.end";
    data.item: "treesize" "20";
    images {
       image: "sel_bg.png" COMP;
@@ -703,7 +703,7 @@ group { name: "elm/genlist/item/double_label/default";
 ///////////////////////////////////////////////////////////////////////////////
 group { name: "elm/gengrid/item/default/default";
    data.item: "labels" "elm.text";
-   data.item: "icons" "elm.swallow.icon";
+   data.item: "contents" "elm.swallow.icon";
    images {
 
    }
