@@ -26,6 +26,7 @@ struct _Config_Item
 {
    const char *id;
    double interval;
+   int merge_cpus;
 };
 
 EAPI extern E_Module_Api e_modapi;

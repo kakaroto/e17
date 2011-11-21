@@ -7,6 +7,8 @@
 #include <sys/resource.h>
 #endif
 
+#define MAX_CPU 16	// FIXME: Yes, that's not so clever...
+
 typedef struct _Instance Instance;
 typedef struct _Cpu Cpu;
 
@@ -33,7 +35,7 @@ static const char *_gc_id_new(E_Gadcon_Client_Class *client_class);
 static Config_Item *_config_item_get(const char *id);
 static Eina_Bool _set_cpu_load(void *data);
 static int _get_cpu_count(void);
-static int _get_cpu_load(void);
+static int _get_cpu_load(Instance *inst);
 static void _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _menu_cb_post(void *data, E_Menu *m);
 static void _cpu_menu_fast(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -41,6 +43,7 @@ static void _cpu_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _cpu_menu_normal(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _cpu_menu_slow(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _cpu_menu_very_slow(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _cpu_menu_merge_cpus(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -48,7 +51,7 @@ static E_Config_DD *conf_item_edd = NULL;
 Config *cpu_conf = NULL;
 
 static int cpu_count;
-static int cpu_stats[6];
+static int cpu_stats[MAX_CPU];
 static float update_interval;
 
 static const E_Gadcon_Client_Class _gc_class = 
@@ -192,6 +195,7 @@ _config_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = eina_stringshare_add(id);
    ci->interval = 1;
+   ci->merge_cpus = 0;
    update_interval = ci->interval;
 
    cpu_conf->items = eina_list_append(cpu_conf->items, ci);
@@ -210,9 +214,9 @@ _set_cpu_load(void *data)
    if (!(inst = data)) return EINA_TRUE;
    if (!(cpu = inst->cpu)) return EINA_TRUE;
 
-   _get_cpu_load();
+   _get_cpu_load(inst);
 
-   if (cpu_count == 1) 
+   if ((cpu_count == 1) || (inst->ci->merge_cpus))
      {
         snprintf(str, sizeof(str), "<br>%d%%", cpu_stats[0]);
         edje_object_part_text_set(cpu->o_icon, "load", str);
@@ -251,11 +255,14 @@ _get_cpu_count(void)
    fclose(f);
 #endif
 
+   if (cpu > MAX_CPU)
+     cpu = MAX_CPU;
+
    return cpu;
 }
 
 static int
-_get_cpu_load(void) 
+_get_cpu_load(Instance *inst) 
 {
 #ifdef __FreeBSD__
    long cp_time[CPUSTATES];
@@ -264,7 +271,7 @@ _get_cpu_load(void)
    size_t len;
 #else
    FILE *stat;
-   static unsigned long old_u[8], old_n[8], old_s[8], old_i[8], old_wa[8], old_hi[8], old_si[8];
+   static unsigned long old_u[MAX_CPU], old_n[MAX_CPU], old_s[MAX_CPU], old_i[MAX_CPU], old_wa[MAX_CPU], old_hi[MAX_CPU], old_si[MAX_CPU];
    unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, dummy2, dummy3, dummy4, ticks_past;
    int tmp_u = 0, tmp_n = 0, tmp_s = 0;
    char dummy[16];
@@ -293,24 +300,6 @@ _get_cpu_load(void)
 #else
    if (!(stat = fopen("/proc/stat", "r"))) return -1;
 
-   /* since if there are more than 1 CPUs, the first entry is the summary:
-	cpu  366384 274786 214744 7129029 1975609 12775 353729 0
-	cpu0 167188 137966 127694 3664600 704402 12775 353588 0
-	cpu1 199195 136820 87050 3464429 1271207 0 140 0
-	
-	In this case the first line is read and forgotten
-   */
-
-   if (cpu_count > 1) 
-     {
-	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, 
-		   &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si, 
-		   &dummy2, &dummy3, &dummy4) < 5)
-	  {
-	     fclose(stat);
-	     return -1;
-	  }
-     }
 
    while (i < cpu_count)
      {
@@ -320,6 +309,16 @@ _get_cpu_load(void)
 	     fclose (stat);
 	     return -1;
 	  }
+
+        /* since if there are more than 1 CPUs, the first entry is the summary:
+           cpu  366384 274786 214744 7129029 1975609 12775 353729 0
+           cpu0 167188 137966 127694 3664600 704402 12775 353588 0
+           cpu1 199195 136820 87050 3464429 1271207 0 140 0
+
+           In this case the first line is read and forgotten
+         */
+        if ((cpu_count > 1) && (!i) && (!inst->ci->merge_cpus))
+          continue;
 
 	ticks_past = ((new_u + new_n + new_s + new_i + new_wa + new_hi + new_si) -
 		      (old_u[i] + old_n[i] + old_s[i] + old_i[i] + old_wa[i] + old_hi[i] + old_si[i]));
@@ -331,7 +330,10 @@ _get_cpu_load(void)
 	     tmp_s = ((new_s - old_s[i]));
 	  }
 	
-	cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / update_interval;
+        if (inst->ci->merge_cpus)
+          cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / update_interval / cpu_count;
+        else
+          cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / update_interval;
 
 	old_u[i] = new_u;
 	old_n[i] = new_n;
@@ -341,6 +343,9 @@ _get_cpu_load(void)
 	old_si[i] = new_si;
 	
 	cpu_stats[i] = (cpu_stats[i] > 100 ? 100 : cpu_stats[i]);
+
+        if (inst->ci->merge_cpus)
+          break;
 
 	i++;
      }
@@ -406,6 +411,15 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	mi = e_menu_item_new(m);
 	e_menu_item_label_set(mi, D_("Time Between Updates"));
 	e_menu_item_submenu_set(mi, cpu_conf->menu_interval);
+
+        if (cpu_count > 1)
+          {
+             mi = e_menu_item_new(m);
+             e_menu_item_label_set(mi, D_("Merge CPU's into single Statistic"));
+             e_menu_item_check_set(mi, 1);
+             if (inst->ci->merge_cpus) e_menu_item_toggle_set(mi, 1);
+             e_menu_item_callback_set(mi, _cpu_menu_merge_cpus, inst);
+          }
 
         m = e_gadcon_client_util_menu_items_append(inst->gcc, m, 0);
 	e_menu_post_deactivate_callback_set(m, _menu_cb_post, inst);
@@ -492,6 +506,17 @@ _cpu_menu_very_slow(void *data, E_Menu *m, E_Menu_Item *mi)
    e_config_save_queue();
 }
 
+static void
+_cpu_menu_merge_cpus(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Instance *inst;
+
+   inst = data;
+   inst->ci->merge_cpus = e_menu_item_toggle_get(mi);
+   e_config_save_queue();
+}
+
+
 EAPI E_Module_Api e_modapi = 
 {
    E_MODULE_API_VERSION, "Cpu"
@@ -515,6 +540,7 @@ e_modapi_init(E_Module *m)
    #define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, interval, DOUBLE);
+   E_CONFIG_VAL(D, T, interval, INT);
    
    #undef T
    #define T Config
@@ -531,6 +557,7 @@ e_modapi_init(E_Module *m)
 	ci = E_NEW(Config_Item, 1);
 	ci->id = eina_stringshare_add("0");
 	ci->interval = 1;
+	ci->merge_cpus = 0;
 	
 	cpu_conf->items = eina_list_append(cpu_conf->items, ci);
      }
