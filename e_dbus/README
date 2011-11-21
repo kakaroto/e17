@@ -50,11 +50,29 @@ itself, while the following modules provides more and their respective
 version:
 
  * bluez(v4.9x): barebones to toggle state and change visibility.
- * connman(v0.7x): complete manager, service and technology.
+ * connman0.7x: complete manager, service and technology.
  * hal(v0.5.x): deprecated, provides basic for e17. See ukit.
  * notification(v0.7.x): complete client and server.
  * ofono(v0.5x, v1.0): barebones to toggle state.
  * ukit(upower-v0.9.x, udisks-1.0.x): most of upower, status api from udisks.
+
+
+API STABILITY:
+--------------
+
+Everything but libedbus (E_DBus.h) is subject to API or ABI stability
+of the provided service or protocol specification. If the service
+change their API, we'll break our API.
+
+The library/module versioning will be used at the name, leaving the
+soversion synchronized with libedbus.so.
+
+Examples:
+ * libeconnman0_7x.so.1.1.0 is the service connman at version
+   0.7x created with libedbus.so.1.1.0.
+ * econnman-0.7x.pc (Version: 1.1.0) is the service connman at version
+   0.7x created with edbus.pc (Version: 1.1.0).
+
 
 ------------------------------------------------------------------------------
 COMPILING AND INSTALLING:

@@ -64,7 +64,7 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
 want_ebluez="yes"
-want_econnman="yes"
+want_econnman0_7x="yes"
 want_ehal="yes"
 want_enotify="yes"
 want_eofono="yes"
@@ -73,7 +73,7 @@ want_eukit="yes"
 case "$host_os" in
    mingw*)
       want_ebluez="no"
-      want_econnman="no"
+      want_econnman0_7x="no"
       want_ehal="no"
       want_enotify="no"
       want_eofono="no"
@@ -82,7 +82,7 @@ case "$host_os" in
 esac
 
 requirement_ebluez="edbus >= 1.1.0"
-requirement_econnman="edbus >= 1.1.0"
+requirement_econnman0_7x="edbus >= 1.1.0 connman >= 0.75"
 requirement_edbus="ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62"
 requirement_ehal="edbus >= 1.1.0"
 requirement_enotify="edbus >= 1.1.0"
@@ -99,10 +99,10 @@ AC_ARG_ENABLE([ebluez],
    [enable_ebluez=$enableval],
    [enable_ebluez="${want_ebluez}"])
 
-AC_ARG_ENABLE([econnman],
-   [AC_HELP_STRING([--enable-econnman], [Enable econnman build])],
-   [enable_econnman=$enableval],
-   [enable_econnman="${want_econnman}"])
+AC_ARG_ENABLE([econnman0_7x],
+   [AC_HELP_STRING([--enable-econnman0_7x], [Enable econnman 0.7x build])],
+   [enable_econnman0_7x=$enableval],
+   [enable_econnman0_7x="${want_econnman0_7x}"])
 
 AC_ARG_ENABLE([ehal],
    [AC_HELP_STRING([--disable-ehal], [Disable ehal build])],
@@ -186,7 +186,7 @@ if test "x${enable_enotify}" = "xyes" ; then
 fi
 
 AM_CONDITIONAL([BUILD_EBLUEZ],   [test "x${enable_ebluez}"   = "xyes"])
-AM_CONDITIONAL([BUILD_ECONNMAN], [test "x${enable_econnman}" = "xyes"])
+AM_CONDITIONAL([BUILD_ECONNMAN0_7X], [test "x${enable_econnman0_7x}" = "xyes"])
 AM_CONDITIONAL([BUILD_EHAL],     [test "x${enable_ehal}"     = "xyes"])
 AM_CONDITIONAL([BUILD_ENOTIFY],  [test "x${enable_enotify}"  = "xyes"])
 AM_CONDITIONAL([BUILD_EOFONO],   [test "x${enable_eofono}"   = "xyes"])
@@ -197,7 +197,7 @@ AM_CONDITIONAL([BUILD_EUKIT],    [test "x${enable_eukit}"    = "xyes"])
 EFL_ENABLE_BIN([edbus-test], ["yes"])
 EFL_ENABLE_BIN([edbus-test-client], ["yes"])
 EFL_ENABLE_BIN([edbus-bluez-test], [${enable_ebluez}])
-EFL_ENABLE_BIN([edbus-connman-test], [${enable_econnman}])
+EFL_ENABLE_BIN([edbus-connman0_7x-test], [${enable_econnman0_7x}])
 EFL_ENABLE_BIN([edbus-notification-daemon-test], [${enable_enotify}])
 EFL_ENABLE_BIN([edbus-notify-send], [${enable_enotify}])
 EFL_ENABLE_BIN([edbus-notify-test], [${enable_enotify}])
@@ -225,11 +225,11 @@ if test "x${have_edbus_bluez_test}" = "xyes" ; then
       [have_edbus_bluez_test="no"])
 fi
 
-if test "x${have_edbus_connman_test}" = "xyes" ; then
-   PKG_CHECK_MODULES([EDBUS_CONNMAN_TEST],
+if test "x${have_edbus_connman0_7x_test}" = "xyes" ; then
+   PKG_CHECK_MODULES([EDBUS_CONNMAN0_7X_TEST],
       [ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62],
-      [have_edbus_connman_test="yes"],
-      [have_edbus_connman_test="no"])
+      [have_edbus_connman0_7x_test="yes"],
+      [have_edbus_connman0_7x_test="no"])
 fi
 
 if test "x${have_edbus_notification_daemon_test}" = "xyes" ; then
@@ -315,7 +315,7 @@ AC_FUNC_ALLOCA
 
 
 AC_SUBST(requirement_ebluez)
-AC_SUBST(requirement_econnman)
+AC_SUBST(requirement_econnman0_7x)
 AC_SUBST(requirement_edbus)
 AC_SUBST(requirement_ehal)
 AC_SUBST(requirement_enotify)
@@ -331,7 +331,7 @@ doc/Doxyfile
 src/Makefile
 src/lib/Makefile
 src/lib/bluez/Makefile
-src/lib/connman/Makefile
+src/lib/connman0_7x/Makefile
 src/lib/dbus/Makefile
 src/lib/hal/Makefile
 src/lib/notification/Makefile
@@ -339,7 +339,7 @@ src/lib/ofono/Makefile
 src/lib/ukit/Makefile
 src/bin/Makefile
 ebluez.pc
-econnman.pc
+econnman-0.7x.pc
 edbus.pc
 ehal.pc
 enotify.pc
@@ -363,7 +363,7 @@ echo
 echo "  Modules:"
 echo
 echo "    EBluez.............: $enable_ebluez"
-echo "    EConnman...........: $enable_econnman"
+echo "    EConnman (0.7x)....: $enable_econnman0_7x"
 echo "    EHal...............: $enable_ehal"
 echo "    ENotify............: $enable_enotify"
 echo "    EOfono.............: $enable_eofono"
@@ -374,7 +374,7 @@ echo
 echo "    EDbus test.........: $have_edbus_test"
 echo "    EDbus client test..: $have_edbus_test_client"
 echo "    EBluez test........: $have_edbus_bluez_test"
-echo "    EConnman test......: $have_edbus_connman_test"
+echo "    EConnman (0.7x)test: $have_edbus_connman0_7x_test"
 echo "    ENotify Daemon test: $have_edbus_notification_daemon_test"
 echo "    ENotify send.......: $have_edbus_notify_send"
 echo "    ENotify test.......: $have_edbus_notify_test"

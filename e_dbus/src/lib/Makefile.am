@@ -6,8 +6,8 @@ if BUILD_EBLUEZ
 SUBDIRS += bluez
 endif
 
-if BUILD_ECONNMAN
-SUBDIRS += connman
+if BUILD_ECONNMAN0_7X
+SUBDIRS += connman0_7x
 endif
 
 if BUILD_EHAL

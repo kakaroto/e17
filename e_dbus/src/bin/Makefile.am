@@ -3,7 +3,6 @@ MAINTAINERCLEANFILES = Makefile.in
 EDBUS_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
 -I$(top_srcdir)/src/lib/notification \
--I$(top_srcdir)/src/lib/connman \
 -I$(top_srcdir)/src/lib/bluez \
 -I$(top_srcdir)/src/lib/ofono \
 -I$(top_srcdir)/src/lib/ukit \
@@ -23,8 +22,8 @@ if BUILD_EDBUS_BLUEZ_TEST
 bin_PROGRAMS += e_dbus_bluez_test
 endif
 
-if BUILD_EDBUS_CONNMAN_TEST
-bin_PROGRAMS += e_dbus_connman_test
+if BUILD_EDBUS_CONNMAN0_7X_TEST
+bin_PROGRAMS += e_dbus_connman0_7x_test
 endif
 
 if BUILD_EDBUS_NOTIFICATION_DAEMON_TEST
@@ -49,8 +48,8 @@ endif
 
 noinst_PROGRAMS =
 
-if BUILD_EDBUS_CONNMAN_TEST
-noinst_PROGRAMS += e_dbus_connman_test_api
+if BUILD_EDBUS_CONNMAN0_7X_TEST
+noinst_PROGRAMS += e_dbus_connman0_7x_test_api
 endif
 
 if BUILD_EDBUS_TEST
@@ -85,26 +84,26 @@ $(top_builddir)/src/lib/bluez/libebluez.la \
 @EDBUS_BLUEZ_TEST_LIBS@
 endif
 
-if BUILD_EDBUS_CONNMAN_TEST
-e_dbus_connman_test_SOURCES = e_dbus_connman_test.c
-e_dbus_connman_test_CPPFLAGS = \
+if BUILD_EDBUS_CONNMAN0_7X_TEST
+e_dbus_connman0_7x_test_SOURCES = e_dbus_connman0_7x_test.c
+e_dbus_connman0_7x_test_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
--I$(top_srcdir)/src/lib/connman \
-@EDBUS_CONNMAN_TEST_CFLAGS@
-e_dbus_connman_test_LDADD = \
+-I$(top_srcdir)/src/lib/connman0_7x \
+@EDBUS_CONNMAN0_7X_TEST_CFLAGS@
+e_dbus_connman0_7x_test_LDADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la \
-$(top_builddir)/src/lib/connman/libeconnman.la \
-@EDBUS_CONNMAN_TEST_LIBS@
+$(top_builddir)/src/lib/connman0_7x/libeconnman0_7x.la \
+@EDBUS_CONNMAN0_7X_TEST_LIBS@
 
-e_dbus_connman_test_api_SOURCES = e_dbus_connman_test_api.c
-e_dbus_connman_test_api_CPPFLAGS = \
+e_dbus_connman0_7x_test_api_SOURCES = e_dbus_connman0_7x_test_api.c
+e_dbus_connman0_7x_test_api_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
--I$(top_srcdir)/src/lib/connman \
-@EDBUS_CONNMAN_TEST_CFLAGS@
-e_dbus_connman_test_api_LDADD = \
+-I$(top_srcdir)/src/lib/connman0_7x \
+@EDBUS_CONNMAN0_7X_TEST_CFLAGS@
+e_dbus_connman0_7x_test_api_LDADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la \
-$(top_builddir)/src/lib/connman/libeconnman.la \
-@EDBUS_CONNMAN_TEST_LIBS@
+$(top_builddir)/src/lib/connman0_7x/libeconnman0_7x.la \
+@EDBUS_CONNMAN0_7X_TEST_LIBS@
 endif
 
 ENOTIFY_LIBS = $(top_builddir)/src/lib/notification/libenotify.la

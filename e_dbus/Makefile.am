@@ -33,8 +33,8 @@ if BUILD_ENOTIFY
 ENOTIFY_PC = enotify.pc
 endif
 
-if BUILD_ECONNMAN
-ECONNMAN_PC = econnman.pc
+if BUILD_ECONNMAN0_7X
+ECONNMAN_PC = econnman-0.7x.pc
 endif
 
 if BUILD_EBLUEZ
@@ -58,7 +58,7 @@ README \
 $(pkgconfig_DATA) \
 autogen.sh \
 ebluez.pc.in \
-econnman.pc.in \
+econnman-0.7x.pc.in \
 edbus.pc.in \
 ehal.pc.in \
 enotify.pc.in \
