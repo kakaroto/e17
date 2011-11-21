@@ -85,12 +85,6 @@ extern const char *e_connman_prop_url;
 extern const char *e_connman_prop_servers;
 extern const char *e_connman_prop_excludes;
 
-/* compat api's - quickly pulled in old implementations */
-extern const char *e_connman_prop_apn;
-extern const char *e_connman_prop_mcc;
-extern const char *e_connman_prop_mode;
-extern const char *e_connman_prop_setup_required;
-
 extern int _e_dbus_connman_log_dom;
 
 #ifndef EINA_LOG_DEFAULT_COLOR

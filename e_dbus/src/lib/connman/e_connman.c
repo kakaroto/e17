@@ -4,12 +4,10 @@
 
 static E_DBus_Signal_Handler *cb_name_owner_changed = NULL;
 static DBusPendingCall *pending_get_name_owner = NULL;
-static DBusPendingCall *pending_get_name_owner_old = NULL;
 static unsigned int init_count = 0;
 static char *unique_name = NULL;
 
 static const char bus_name[] = "net.connman";
-static const char bus_name_old[] = "org.moblin.connman";
 
 E_DBus_Connection *e_connman_conn = NULL;
 
@@ -67,12 +65,6 @@ const char *e_connman_prop_proxy_configuration = NULL;
 const char *e_connman_prop_url = NULL;
 const char *e_connman_prop_servers = NULL;
 const char *e_connman_prop_excludes = NULL;
-
-/* compat api's - quickly pulled in old implementations */
-const char *e_connman_prop_apn = NULL;
-const char *e_connman_prop_mcc = NULL;
-const char *e_connman_prop_mode = NULL;
-const char *e_connman_prop_setup_required = NULL;
 
 int _e_dbus_connman_log_dom = -1;
 
@@ -212,63 +204,6 @@ _e_connman_get_name_owner(void *data __UNUSED__, DBusMessage *msg, DBusError *er
         return;
      }
 
-   if (!e_connman_iface_manager)
-      e_connman_iface_manager = eina_stringshare_add("net.connman.Manager");
-
-   if (!e_connman_iface_profile)
-      e_connman_iface_profile = eina_stringshare_add("net.connman.Profile");
-
-   if (!e_connman_iface_service)
-      e_connman_iface_service = eina_stringshare_add("net.connman.Service");
-
-   if (!e_connman_iface_connection)
-      e_connman_iface_connection = eina_stringshare_add("net.connman.Connection");
-
-   if (!e_connman_iface_technology)
-      e_connman_iface_technology = eina_stringshare_add("net.connman.Technology");
-
-   _e_connman_system_name_owner_enter(uid);
-   return;
-}
-
-static void
-_e_connman_get_name_owner_old(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
-{
-   DBusMessageIter itr;
-   int t;
-   const char *uid;
-
-   pending_get_name_owner_old = NULL;
-
-   if (!_dbus_callback_check_and_init(msg, &itr, err))
-      return;
-
-   t = dbus_message_iter_get_arg_type(&itr);
-   if (!_dbus_iter_type_check(t, DBUS_TYPE_STRING))
-      return;
-
-   dbus_message_iter_get_basic(&itr, &uid);
-   if (!uid)
-     {
-        ERR("no name owner!");
-        return;
-     }
-
-   if (!e_connman_iface_manager)
-      e_connman_iface_manager = eina_stringshare_add("org.moblin.connman.Manager");
-
-   if (!e_connman_iface_profile)
-      e_connman_iface_profile = eina_stringshare_add("org.moblin.connman.Profile");
-
-   if (!e_connman_iface_service)
-      e_connman_iface_service = eina_stringshare_add("org.moblin.connman.Service");
-
-   if (!e_connman_iface_connection)
-      e_connman_iface_connection = eina_stringshare_add("org.moblin.connman.Connection");
-
-   if (!e_connman_iface_technology)
-      e_connman_iface_technology = eina_stringshare_add("org.moblin.connman.Technology");
-
    _e_connman_system_name_owner_enter(uid);
    return;
 }
@@ -331,13 +266,12 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
 #define ADD_STRINGSHARE(name, s)       \
    if (!name)                          \
       name = eina_stringshare_add(s)
-/* dynamically determined either net.connman or org.moblin...
+
    ADD_STRINGSHARE(e_connman_iface_manager, "net.connman.Manager");
    ADD_STRINGSHARE(e_connman_iface_profile, "net.connman.Profile");
    ADD_STRINGSHARE(e_connman_iface_service, "net.connman.Service");
    ADD_STRINGSHARE(e_connman_iface_connection, "net.connman.Connection");
    ADD_STRINGSHARE(e_connman_iface_technology, "net.connman.Technology");
- */
    ADD_STRINGSHARE(e_connman_prop_ipv4, "IPv4");
    ADD_STRINGSHARE(e_connman_prop_ipv4_configuration, "IPv4.Configuration");
    ADD_STRINGSHARE(e_connman_prop_ethernet, "Ethernet");
@@ -384,13 +318,6 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
    ADD_STRINGSHARE(e_connman_prop_url, "URL");
    ADD_STRINGSHARE(e_connman_prop_servers, "Servers");
    ADD_STRINGSHARE(e_connman_prop_excludes, "Excludes");
-   
-   /* compat api's - quickly pulled in old implementations */
-   ADD_STRINGSHARE(e_connman_prop_apn, "APN");
-   ADD_STRINGSHARE(e_connman_prop_mcc, "MCC");
-   ADD_STRINGSHARE(e_connman_prop_mode, "Mode");
-   ADD_STRINGSHARE(e_connman_prop_security, "Security");
-   ADD_STRINGSHARE(e_connman_prop_setup_required, "SetupRequired");
 
 #undef ADD_STRINGSHARE
 
@@ -404,12 +331,6 @@ e_connman_system_init(E_DBus_Connection *edbus_conn)
 
    pending_get_name_owner = e_dbus_get_name_owner
          (e_connman_conn, bus_name, _e_connman_get_name_owner, NULL);
-
-   if (pending_get_name_owner_old)
-      dbus_pending_call_cancel(pending_get_name_owner_old);
-
-   pending_get_name_owner_old = e_dbus_get_name_owner
-         (e_connman_conn, bus_name_old, _e_connman_get_name_owner_old, NULL);
 
    e_connman_elements_init();
 
@@ -494,12 +415,6 @@ e_connman_system_shutdown(void)
    _stringshare_del(&e_connman_prop_servers);
    _stringshare_del(&e_connman_prop_excludes);
 
-   /* compat api's - quickly pulled in old implementations */
-   _stringshare_del(&e_connman_prop_apn);
-   _stringshare_del(&e_connman_prop_mcc);
-   _stringshare_del(&e_connman_prop_mode);
-   _stringshare_del(&e_connman_prop_setup_required);
-   
    if (pending_get_name_owner)
      {
         dbus_pending_call_cancel(pending_get_name_owner);
@@ -521,3 +436,4 @@ e_connman_system_shutdown(void)
 
    return init_count;
 }
+

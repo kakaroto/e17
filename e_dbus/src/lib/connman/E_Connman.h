@@ -138,7 +138,7 @@ EAPI Eina_Bool              e_connman_service_state_get(const E_Connman_Element 
 EAPI Eina_Bool              e_connman_service_error_get(const E_Connman_Element *service, const char **error) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_name_get(const E_Connman_Element *service, const char **name) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_type_get(const E_Connman_Element *service, const char **type) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_security2_get(const E_Connman_Element *service, unsigned int *count, const char ***security) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool              e_connman_service_security_get(const E_Connman_Element *service, unsigned int *count, const char ***security) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 EAPI Eina_Bool              e_connman_service_passphrase_get(const E_Connman_Element *service, const char **passphrase) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_service_passphrase_set(E_Connman_Element *service, const char *passphrase, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
@@ -237,15 +237,6 @@ EAPI Eina_Bool              e_connman_element_is_manager(const E_Connman_Element
 EAPI Eina_Bool              e_connman_element_is_profile(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_is_service(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool              e_connman_element_is_technology(const E_Connman_Element *element) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-
-/* compat api's */
-EAPI Eina_Bool              e_connman_service_apn_get(const E_Connman_Element *service, const char **apn) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_apn_set(E_Connman_Element *service, const char *apn, E_DBus_Method_Return_Cb cb, const void *data) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_ethernet_netmask_get(const E_Connman_Element *service, const char **netmask) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_mnc_get(const E_Connman_Element *service, const char **mnc) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_mode_get(const E_Connman_Element *service, const char **mode) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_security_get(const E_Connman_Element *service, const char **security) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
-EAPI Eina_Bool              e_connman_service_setup_required_get(const E_Connman_Element *service, Eina_Bool *setup_required) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 #ifdef __cplusplus
 }
