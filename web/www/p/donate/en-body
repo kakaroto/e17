@@ -29,6 +29,7 @@
     
     <p><h3>Paypal</h3></p>
     <table border=0 cellpadding=0 cellspacing=2>
+    
     <tr>
     <td><p>US Dollars</p></td>
     <td>
@@ -42,13 +43,13 @@
     </tr>
     <tr>
     <td><p>Euros</p></td>
+    <td>
     <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
     <input type="hidden" name="cmd" value="_s-xclick">
     <input type="hidden" name="hosted_button_id" value="A5U75JR3FFWFC">
     <input type="image" name="submit" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="Donate via Paypal">
     <img src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" alt="" width="1" height="1" border="0" />
     </form>
-    </p>
     </td>
     </tr>
     </table>
