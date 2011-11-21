@@ -1,0 +1,85 @@
+<table class='main'>
+ <tr>
+  <td class='main'>
+   <div class="main">
+    <p><h2>Donations</h2></p>
+    <p>We use donations for helping development of Enlightenment, EFL
+    or otherwise promoting it and the community. We will do our best to
+    ensure that the money will always be used for a good cause and is
+    not  mishandled in any way.</p>
+    <p>We have set up a non-profit organization located in France to
+    manage donations and other matters where we require a real entity to
+    perform actions. It is this entity that manages the donated funds.
+    For more information on this organization, please see
+    <a href=http://enlightenment.fr/lassociation-enlightenment-francophone/>
+    L’association Enlightenment Francophone</a>. The french information on
+    how to donate is <a href=http://enlightenment.fr/dons/>Here</a>.
+    </p>
+   </div>
+  </td>
+   
+  <td class='main'>
+   <div class="main">
+    <p><h2>How to donate</h2></p>
+    
+    <p><h3>Flattr</h3></p>
+    <p>
+    <a href=https://flattr.com/thing/1a06da97417038dc509000d382d10e56>Make a donation</a>
+    </p>
+    
+    <p><h3>Paypal</h3></p>
+    <p> US Dollars
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+    <input type="hidden" name="cmd" value="_s-xclick" />
+    <input type="hidden" name="hosted_button_id" value="E9W8LM3FKL7JW">
+    <input type="image" name="submit" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="Donate via Paypal">
+    <img src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" alt="" width="1" height="1" border="0" />
+    </form>
+    </p>
+    <p> Euros 
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+    <input type="hidden" name="cmd" value="_s-xclick">
+    <input type="hidden" name="hosted_button_id" value="A5U75JR3FFWFC">
+    <input type="image" name="submit" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="Donate via Paypal">
+    <img src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" alt="" width="1" height="1" border="0" />
+    </form>
+    </p>
+    
+    <p><h3>Bank Transfer</h3></p>
+    <table border=0 cellpadding=0 cellspacing=4>
+    <tr>
+     <td><p><b>Bank                             </b></p></td>
+     <td><p>   Banque BCP                           </p></td>
+    </tr>
+    <tr>
+     <td><p><b>Account Name                     </b></p></td>
+     <td><p>   ENLIGHTENMENT FR                     </p></td>
+    </tr>
+    <tr>
+     <td><p><b>RIB                              </b></p></td>
+     <td><p>   12579 00700 08000328311 81           </p></td>
+    </tr>
+    <tr>
+     <td><p><b>BIC Code                         </b></p></td>
+     <td><p>   BPSMFRPPXXX                          </p></td>
+    </tr>
+    <tr>
+     <td><p><b>IBAN Code                        </b></p></td>
+     <td><p>   FR76 1257 9007 0008 0003 2831 181    </p></td>
+    </tr>
+    </table>
+    
+    <p><h3>Cheque</h3></p>
+    <p>You can also mail a Cheque to:</p>
+    <p>
+    Enlightenment France<br>
+    Chez M. Philippe Caseiro<br>
+    10, rue Siméon<br>
+    21000 Dijon France<br>
+    </p>
+    
+   </div>
+  </td>
+ </tr>
+</table>
+
