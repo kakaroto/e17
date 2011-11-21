@@ -1,7 +1,7 @@
 group { name: "elm/list/item/default";
    alias: "elm/list/item_odd/default";
    data.item: "labels" "elm.text";
-   data.item: "icons" "elm.swallow.icon elm.swallow.end";
+   data.item: "contents" "elm.swallow.icon elm.swallow.end";
    images {
 
    }

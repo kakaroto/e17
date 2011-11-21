@@ -94,7 +94,7 @@ _enna_shortcut_favorite_label_get(void *data __UNUSED__, Evas_Object *obj __UNUS
 }
 
 static Evas_Object *
-_enna_shortcut_favorite_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part)
+_enna_shortcut_favorite_content_get(void *data __UNUSED__, Evas_Object *obj, const char *part)
 {
    return NULL;
 }
@@ -103,7 +103,7 @@ static Elm_Genlist_Item_Class itc_favorite_group = {
   "panel",
   {
     _enna_shortcut_favorite_label_get,
-    _enna_shortcut_favorite_icon_get,
+    _enna_shortcut_favorite_content_get,
     NULL,
     NULL,
   }
@@ -123,7 +123,7 @@ _enna_shortcut_desktop_label_get(void *data, Evas_Object *obj __UNUSED__, const 
 }
 
 static Evas_Object *
-_enna_shortcut_desktop_icon_get(void *data __UNUSED__, Evas_Object *obj, const char *part __UNUSED__)
+_enna_shortcut_desktop_content_get(void *data __UNUSED__, Evas_Object *obj, const char *part __UNUSED__)
 {
    Enna_Shortcut *es = data;
    Evas_Object *ic = elm_icon_add(obj);
@@ -154,7 +154,7 @@ static Elm_Genlist_Item_Class itc_desktop_group = {
   "panel",
   {
     _enna_shortcut_desktop_label_get,
-    _enna_shortcut_desktop_icon_get,
+    _enna_shortcut_desktop_content_get,
     NULL,
     NULL
   }
@@ -169,7 +169,7 @@ _bookmark_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __
 }
 
 static Evas_Object *
-_bookmark_icon_get(void *data, Evas_Object *obj, const char *part)
+_bookmark_content_get(void *data, Evas_Object *obj, const char *part)
 {
    const char *label = ecore_file_file_get(data);
    Evas_Object *ic;
@@ -223,7 +223,7 @@ _volume_eject_clicked_cb(void *data, Evas_Object *obj, void *event_info)
 
 
 static Evas_Object *
-_bookmark_volume_icon_get(void *data, Evas_Object *obj, const char *part)
+_bookmark_volume_content_get(void *data, Evas_Object *obj, const char *part)
 {
    Enna_Volume *v = data;
 
@@ -262,7 +262,7 @@ static Elm_Genlist_Item_Class itc_bookmark = {
   "panel",
   {
     _bookmark_label_get,
-    _bookmark_icon_get,
+    _bookmark_content_get,
     NULL,
     NULL
   }
@@ -272,7 +272,7 @@ static Elm_Genlist_Item_Class itc_bookmark_volume = {
   "panel",
   {
     _bookmark_volume_label_get,
-    _bookmark_volume_icon_get,
+    _bookmark_volume_content_get,
     NULL,
     NULL
   }

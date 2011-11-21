@@ -133,7 +133,7 @@ _list_item_default_check_changed(void *data, Evas_Object *obj, void *event_info 
 }
 
 static Evas_Object *
-_list_item_default_icon_get(void *data, Evas_Object *obj, const char *part)
+_list_item_default_content_get(void *data, Evas_Object *obj, const char *part)
 {
    List_Item *li = (List_Item*) data;
 
@@ -256,7 +256,7 @@ _list_item_track_label_get(void *data, Evas_Object *obj __UNUSED__, const char *
 }
 
 static Evas_Object *
-_list_item_track_icon_get(void *data, Evas_Object *obj, const char *part)
+_list_item_track_content_get(void *data, Evas_Object *obj, const char *part)
 {
    List_Item *li = (List_Item*) data;
 
@@ -359,7 +359,7 @@ _list_item_film_label_get(void *data, Evas_Object *obj __UNUSED__, const char *p
 }
 
 static Evas_Object *
-_list_item_film_icon_get(void *data, Evas_Object *obj, const char *part)
+_list_item_film_content_get(void *data, Evas_Object *obj, const char *part)
 {
    List_Item *li = (List_Item*) data;
 
@@ -409,7 +409,7 @@ static Elm_Genlist_Item_Class itc_list_default = {
   "default",
   {
     _list_item_default_label_get,
-    _list_item_default_icon_get,
+    _list_item_default_content_get,
     _list_item_default_state_get,
     NULL
   }
@@ -419,7 +419,7 @@ static Elm_Genlist_Item_Class itc_list_track = {
   "track",
   {
     _list_item_track_label_get,
-    _list_item_track_icon_get,
+    _list_item_track_content_get,
     NULL,
     NULL
   }
@@ -429,7 +429,7 @@ static Elm_Genlist_Item_Class itc_list_film = {
   "film",
   {
     _list_item_film_label_get,
-    _list_item_film_icon_get,
+    _list_item_film_content_get,
     NULL,
     NULL
   }

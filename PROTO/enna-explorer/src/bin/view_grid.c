@@ -87,7 +87,7 @@ _grid_item_default_check_changed(void *data, Evas_Object *obj, void *event_info 
 }
 
 static Evas_Object *
-_grid_item_icon_get(void *data, Evas_Object *obj, const char *part)
+_grid_item_content_get(void *data, Evas_Object *obj, const char *part)
 {
 
    Grid_Item *gi = (Grid_Item*) data;
@@ -186,7 +186,7 @@ static Elm_Gengrid_Item_Class gic = {
   "default",
   {
     _grid_item_label_get,
-    _grid_item_icon_get,
+    _grid_item_content_get,
     _grid_item_state_get,
     _grid_item_del
   }
