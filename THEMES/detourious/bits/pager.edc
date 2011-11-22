@@ -152,7 +152,7 @@ group {
 
 	parts {
 		part {
-			name: "background";
+			name: "frame";
 			type: IMAGE;
 			mouse_events: 0;
 			description {
@@ -166,6 +166,18 @@ group {
 				}
 			}
 		}
+		part {
+			name: "background";
+			type: RECT;
+			mouse_events: 0;
+			description {
+				state: "default" 0.0;
+				rel1.to: "frame";
+				rel2.to: "frame";
+				rel2.offset: -1 -2;
+				color: 20 20 20 50;
+			}
+		}
 
 		part {
 			name: "focus";
@@ -173,16 +185,18 @@ group {
 			mouse_events: 0;
 			description {
 				state: "default" 0.0;
-				rel1.to: "background";
-				rel2.to: "background";
-				color: 255 255 255 0;
-				color: 20 20 20 20;
+				rel1.to: "frame";
+				rel2.to: "frame";
+				rel1.offset: 1 1;
+				rel2.offset: -2 -2;
+				color: 255 255 255 140;
+				visible: 0;
 			}
 			description {
 				state: "active" 0.0;
 				inherit: "default" 0.0;
-				color: 255 255 255 140;
 				color_class: "focus";
+				visible: 1;
 			}
 		}
 
@@ -265,11 +279,11 @@ group {
 				state: "default" 0.0;
 				rel1 {
 					relative: 0.0 0.0;
-					offset: -2 -2;
+					offset: -3 -2;
 				}
 				rel2 {
 					relative: 1.0 1.0;
-					offset: 3 3;
+					offset: 1 0;
 				}
 				image {
 					normal: "images/pager_win_unfocused.png";
