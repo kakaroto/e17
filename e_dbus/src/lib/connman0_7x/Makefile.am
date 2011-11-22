@@ -6,7 +6,7 @@ AM_CPPFLAGS = \
 
 lib_LTLIBRARIES = libeconnman0_7x.la
 includes_HEADERS = E_Connman.h
-includesdir = $(includedir)/e_dbus-@VMAJ@
+includesdir = $(includedir)/e_dbus-@VMAJ@/connman0_7x
 
 libeconnman0_7x_la_SOURCES = \
 e_connman.c \

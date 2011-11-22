@@ -8,4 +8,4 @@ Description: network connection manager (connman v0.7x)
 @pkgconfig_requires_private@: @requirement_econnman0_7x@
 Version: @VERSION@
 Libs: -L${libdir} -leconnman0_7x
-Cflags: -I${includedir}/e_dbus-@VMAJ@
+Cflags: -I${includedir}/e_dbus-@VMAJ@/connman0_7x
