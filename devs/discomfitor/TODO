@@ -2,12 +2,9 @@ things I am/will be working on, the order of which is irrelevant:
 
 __PENDING__ (currently active projects)
 *efl im client?
-*eeze integration into efm
 *esskyuehl 1.0 release
-*pulseaudio mixer support in e
 
 ___URGENT___ (things that I should be doing but probably am not)
-*fix function pointer typedefs in ecrustify
 *fix battery fuzzy mode for when plugged in
 *update battery fuzzy mode to do rolling averages
 
