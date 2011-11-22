@@ -177,7 +177,7 @@ create_pager(Evas_Object *parent, Evas_Object *pg, Pginfo *info,
    info->pg1 = layout;
 
    converters_list = elm_list_add(parent);
-   elm_layout_content_set(layout, "converters_list", converters_list);
+   elm_object_part_content_set(layout, "converters_list", converters_list);
    evas_object_size_hint_weight_set(converters_list,
 					EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set(converters_list,
@@ -200,7 +200,7 @@ create_pager(Evas_Object *parent, Evas_Object *pg, Pginfo *info,
    edje_object_part_text_set(ed, "output", "");
 
    ml->list_in = elm_list_add(parent);
-   elm_layout_content_set(layout, "measurements_in", ml->list_in);
+   elm_object_part_content_set(layout, "measurements_in", ml->list_in);
    evas_object_size_hint_weight_set(ml->list_in,
 					EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set(ml->list_in,
@@ -209,7 +209,7 @@ create_pager(Evas_Object *parent, Evas_Object *pg, Pginfo *info,
    populate_measurements_list_in(ml->list_in, ed, info);
 
    ml->list_out = elm_list_add(parent);
-   elm_layout_content_set(layout, "measurements_out", ml->list_out);
+   elm_object_part_content_set(layout, "measurements_out", ml->list_out);
    evas_object_size_hint_weight_set(ml->list_out,
 					EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set(ml->list_out,
