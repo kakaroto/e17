@@ -87,7 +87,7 @@ create_main_win(Viewer *v)
 
    o = elm_toolbar_add(v->gui.ly);
    elm_object_style_set(o, "viewer");
-   elm_layout_content_set(v->gui.ly, "v.swallow.tbar", o);
+   elm_object_part_content_set(v->gui.ly, "v.swallow.tbar", o);
    evas_object_size_hint_weight_set(o, 0.0, 0.0);
    evas_object_size_hint_align_set(o, -1.0, 0.0);
    evas_object_show(o);
@@ -95,7 +95,7 @@ create_main_win(Viewer *v)
 
    o = elm_genlist_add(v->gui.ly);
    evas_object_show(o);
-   elm_layout_content_set(v->gui.ly, "v.swallow.tree", o);
+   elm_object_part_content_set(v->gui.ly, "v.swallow.tree", o);
    elm_genlist_always_select_mode_set(o, 1);
    evas_object_size_hint_align_set(o, -1.0, -1.0);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
@@ -213,7 +213,7 @@ create_group_parts_list(Viewer *v)
    elm_list_always_select_mode_set(o, 1);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
    evas_object_size_hint_align_set(o, -1.0, -1.0);
-   elm_layout_content_set(v->gui.ly, "v.swallow.parts_list", o);
+   elm_object_part_content_set(v->gui.ly, "v.swallow.parts_list", o);
    evas_object_smart_callback_add(o, "unselected", on_group_part_unselect, NULL);
 
    evas_object_show(o);
@@ -235,7 +235,7 @@ create_text_entry(Viewer *v)
    evas_object_size_hint_align_set(o, -1.0, -1.0);
    evas_object_smart_callback_add(o, "changed", on_entry_changed, v);
    elm_scroller_content_set(sc, o);
-   elm_layout_content_set(v->gui.ly, "v.swallow.text_entry", sc);
+   elm_object_part_content_set(v->gui.ly, "v.swallow.text_entry", sc);
 
    evas_object_show(o);
 }
@@ -276,7 +276,7 @@ create_signals_box(Viewer *v)
    elm_box_horizontal_set(o, 0);
    elm_box_homogeneous_set(o, 0);
    evas_object_size_hint_weight_set(o, 1.0, 1.0);
-   elm_layout_content_set(v->gui.ly, "v.swallow.signals", o);
+   elm_object_part_content_set(v->gui.ly, "v.swallow.signals", o);
    evas_object_show(o);
 
    v->gui.sig_list = o = elm_list_add(v->gui.sig_box);
@@ -825,7 +825,7 @@ on_toolbar_changed(void *data, Evas_Object *obj, void *event_info)
 	evas_object_hide(o);
      }
 
-   elm_layout_content_set(grp->v->gui.ly, "v.swallow.main", grp->obj);
+   elm_object_part_content_set(grp->v->gui.ly, "v.swallow.main", grp->obj);
    evas_object_show(grp->obj);
 
    if (grp->v->visible_group)
