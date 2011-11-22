@@ -82,7 +82,7 @@ case "$host_os" in
 esac
 
 requirement_ebluez="edbus >= 1.1.0"
-requirement_econnman0_7x="edbus >= 1.1.0 connman >= 0.75"
+requirement_econnman0_7x="edbus >= 1.1.0"
 requirement_edbus="ecore >= 1.1.0 eina >= 1.1.0 dbus-1 >= 0.62"
 requirement_ehal="edbus >= 1.1.0"
 requirement_enotify="edbus >= 1.1.0"
