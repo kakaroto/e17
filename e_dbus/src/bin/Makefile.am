@@ -1,12 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-EDBUS_CPPFLAGS = \
--I$(top_srcdir)/src/lib/dbus \
--I$(top_srcdir)/src/lib/notification \
--I$(top_srcdir)/src/lib/bluez \
--I$(top_srcdir)/src/lib/ofono \
--I$(top_srcdir)/src/lib/ukit \
-@EDBUS_CFLAGS@
+EDBUS_CPPFLAGS = @EDBUS_CFLAGS@
 
 bin_PROGRAMS =
 
@@ -88,7 +82,7 @@ if BUILD_EDBUS_CONNMAN0_7X_TEST
 e_dbus_connman0_7x_test_SOURCES = e_dbus_connman0_7x_test.c
 e_dbus_connman0_7x_test_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
--I$(top_srcdir)/src/lib/connman0_7x \
+-I$(top_srcdir)/src/lib \
 @EDBUS_CONNMAN0_7X_TEST_CFLAGS@
 e_dbus_connman0_7x_test_LDADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la \
@@ -98,7 +92,7 @@ $(top_builddir)/src/lib/connman0_7x/libeconnman0_7x.la \
 e_dbus_connman0_7x_test_api_SOURCES = e_dbus_connman0_7x_test_api.c
 e_dbus_connman0_7x_test_api_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
--I$(top_srcdir)/src/lib/connman0_7x \
+-I$(top_srcdir)/src/lib \
 @EDBUS_CONNMAN0_7X_TEST_CFLAGS@
 e_dbus_connman0_7x_test_api_LDADD = \
 $(top_builddir)/src/lib/dbus/libedbus.la \

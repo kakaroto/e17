@@ -3,7 +3,7 @@
 #endif
 
 #define E_CONNMAN_I_KNOW_THIS_API_IS_SUBJECT_TO_CHANGE 1
-#include "E_Connman.h"
+#include "connman0_7x/E_Connman.h"
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
