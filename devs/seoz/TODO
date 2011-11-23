@@ -1,8 +1,10 @@
 * Genlist
+	[High] Improve realize implementation on item adding.
 	[High] Fix Genlist edc for odd/even things.
 	[High] Fix "Genlist 4" and "Label" in elementary_test.
 	[High] Enhance elm_genlist_height_for_width_mode_set() API.
 	[High] Revise Sohyun's genlist-entry patch.
+    - Revise Seunggyun's genlist-edit mode patch.
 	- Enhance compress mode. Merge styles and call signals.
 	- Merge _item_move_after/before().
 	- Fix reorder bug when the window edge is going out of the screen.
@@ -13,16 +15,15 @@
 	- Fix gengrid paging bug when the align is not 0.0.
 
 * Elementary
-	- Add elm_object_bounce_set/get() APIs.
-	- Elementary : Changed edje_object to elm_layout. (not for genlist, gengrid)
+	- Change label_get callback name to text_get. (genlist/gengrid)
+	- Change "void *data" parameter to "Elm_Gen_Item *it" on label_get/content_get callbacks.
+	- Elementary : Change edje_object to elm_layout. (not for genlist, gengrid)
 	- Add performance test application.
-	- Check elm_main.c
-	- Check EXAMPLES/elementary.
 	- Tooltip 'Big Icon Tooltip', 'Insanely Big Icon Tooltip' - discomfitor.
 	- There is a bug with this pager where sometimes when you are using it, the widgets will all become unfocused and you cannot focus them again and then the pager is stuck open. - discomfitor.
 	- entry's select_all() function is broken or at least it is not working in that pager. - discomfitor.
 	- Check elm_panel top and bottom orient. - discomfitor.
-        - Add dnd for toolbar items. - discomfitor
+	- Add dnd for toolbar items. - discomfitor
 
 * Edje
 	- Add an API to reset all parts to default state.
