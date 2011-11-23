@@ -19,7 +19,7 @@ m4_define([lt_age], v_min)
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 
 AC_PREREQ(2.59)
-AC_INIT([ecrustify], [v_rev], [mike@zentific.com])
+AC_INIT([ecrustify], [v_rev], [michael.blumenkrantz@gmail.com])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_BUILD

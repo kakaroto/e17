@@ -7,13 +7,8 @@ email_stat(Email *e, Email_Stat_Cb cb)
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->state != EMAIL_STATE_CONNECTED, EINA_FALSE);
 
    e->cbs = eina_list_append(e->cbs, cb);
-   if (!e->current)
-     {
-        e->current = EMAIL_OP_STAT;
-        email_write(e, EMAIL_POP3_STAT, sizeof(EMAIL_POP3_STAT) - 1);
-     }
-   else
-     e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_STAT);
+   if (!e->ops) email_write(e, "STAT\r\n", 6);
+   e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_STAT);
    return EINA_TRUE;
 }
 
@@ -24,13 +19,8 @@ email_list(Email *e, Email_List_Cb cb)
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->state != EMAIL_STATE_CONNECTED, EINA_FALSE);
 
    e->cbs = eina_list_append(e->cbs, cb);
-   if (!e->current)
-     {
-        e->current = EMAIL_OP_LIST;
-        email_write(e, EMAIL_POP3_LIST, sizeof(EMAIL_POP3_LIST) - 1);
-     }
-   else
-     e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_LIST);
+   if (!e->ops) email_write(e, "LIST\r\n", 6);
+   e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_LIST);
    return EINA_TRUE;
 }
 
@@ -122,7 +112,7 @@ email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev)
    Email_List_Cb cb;
    Eina_List *next, *list = NULL;
    Email_List_Item *it;
-   const char *n;
+   const char *p, *n;
    unsigned char *data;
    int len;
    size_t size;
@@ -139,17 +129,12 @@ email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev)
    if (e->buf)
      {
         eina_binbuf_append_length(e->buf, ev->data, ev->size);
-        data = (unsigned char*)eina_binbuf_string_get(e->buf);
-        len = eina_binbuf_length_get(e->buf);
+        ev->data = eina_binbuf_string_get(e->buf);
+        ev->size = eina_binbuf_length_get(e->buf);
      }
-   else
-     {
-        data = ev->data;
-        len = ev->size;
-     }
-   for (n = (char*)memchr(data + 3, '\n', len - 3), size = len - (n - (char*)data);
+   for (n = (char*)memchr(ev->data + 3, '\n', ev->size - 3), size = ev->size - (n - (char*)ev->data);
         n && (size > 1);
-        n = (char*)memchr(n, '\n', size - 1), size = len - (n - (char*)data))
+        p = n, n = (char*)memchr(n, '\n', size - 1), size = ev->size - (n - (char*)ev->data))
       {
          it = calloc(1, sizeof(Email_List_Item));
          if (sscanf(++n, "%u %zu", &it->id, &it->size) != 2)
@@ -160,12 +145,13 @@ email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev)
          INF("Message %u: %zu octets", it->id, it->size);
          list = eina_list_append(list, it);
       }
-   if (!memcmp(n - 2, "\r\n.\r\n", 5))
+   if (p[-2] == '.')
      {
         cb = e->cbs->data;
         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
+        e->ops = eina_list_remove_list(e->ops, e->ops);
         INF("LIST returned %u messages", eina_list_count(list));
-        if (cb) cb(e, list);
+        cb(e, list);
         EINA_LIST_FREE(list, it)
           free(it);
         if (e->buf)
@@ -173,12 +159,10 @@ email_pop3_list_read(Email *e, Ecore_Con_Event_Server_Data *ev)
              eina_binbuf_free(e->buf);
              e->buf = NULL;
           }
-        return EINA_TRUE;
      }
    else if (!e->buf)
      {
         e->buf = eina_binbuf_new();
-        eina_binbuf_append_length(e->buf, (unsigned char*)n, ev->size - (n - (char*)ev->data));
+        eina_binbuf_append_length(e->buf, p + 1, ev->size - (p + 1 - (char*)ev->data));
      }
-   return EINA_FALSE;
 }

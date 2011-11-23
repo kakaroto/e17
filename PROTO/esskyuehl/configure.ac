@@ -18,7 +18,7 @@ m4_define([lt_age], v_min)
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 ##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
 
-AC_INIT([esskyuehl], [v_ver], [mike@zentific.com], [esskyuehl])
+AC_INIT([esskyuehl], [v_ver], [michael.blumenkrantz@gmail.com], [esskyuehl])
 AC_PREREQ([2.57])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])

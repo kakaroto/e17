@@ -6,6 +6,84 @@ int email_log_dom = -1;
 int EMAIL_EVENT_CONNECTED = 0;
 int EMAIL_EVENT_DISCONNECTED = 0;
 
+static void
+next_pop(Email *e)
+{
+   if (e->buf || (!e->ops)) return;
+   switch ((uintptr_t)e->ops->data)
+     {
+      case EMAIL_OP_STAT:
+        email_write(e, EMAIL_POP3_STAT, sizeof(EMAIL_POP3_STAT) - 1);
+        break;
+      case EMAIL_OP_LIST:
+        email_write(e, EMAIL_POP3_LIST, sizeof(EMAIL_POP3_LIST) - 1);
+        break;
+      case EMAIL_OP_QUIT:
+        email_write(e, EMAIL_POP3_QUIT, sizeof(EMAIL_POP3_QUIT) - 1);
+        break;
+      default:
+        break;
+     }
+}
+
+static Eina_Bool
+upgrade_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Upgrade *ev)
+{
+   if (e != ecore_con_server_data_get(ev->server)) return ECORE_CALLBACK_PASS_ON;
+
+static Eina_Bool
+data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
+{
+   char *recv;
+
+   if (e != ecore_con_server_data_get(ev->server))
+     {
+        DBG("Event mismatch");
+        return ECORE_CALLBACK_PASS_ON;
+     }
+
+   recv = alloca(ev->size + 1);
+   memcpy(recv, ev->data, ev->size);
+   recv[ev->size] = 0;
+   DBG("Receiving %i bytes:\n%s", ev->size, recv);
+
+   if (e->state < EMAIL_STATE_CONNECTED)
+     {
+        email_login_pop(e, ev);
+        return ECORE_CALLBACK_RENEW;
+     }
+
+   if (!e->ops) return ECORE_CALLBACK_RENEW;
+
+   switch ((uintptr_t)e->ops->data)
+     {
+      case EMAIL_OP_STAT:
+        email_pop3_stat_read(e, recv, ev->size);
+        break;
+      case EMAIL_OP_LIST:
+        email_pop3_list_read(e, ev);
+        break;
+      case EMAIL_OP_QUIT:
+      {
+         Ecore_Cb cb;
+
+         cb = e->cbs->data;
+         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
+         e->ops = eina_list_remove_list(e->ops, e->ops);
+         if (!email_op_ok(ev->data, ev->size))
+           ERR("Error with QUIT");
+         else
+           INF("QUIT");
+         cb(e);
+         ecore_con_server_del(e->svr);
+         break;
+      }
+      default:
+        break;
+     }
+   next_pop(e);
+   return ECORE_CALLBACK_RENEW;
+}
 
 static Eina_Bool
 disc(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)

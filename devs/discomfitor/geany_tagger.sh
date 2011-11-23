@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Author:  Mike Blumenkrantz <mike@zentific.com>
+# Author:  Mike Blumenkrantz <michael.blumenkrantz@gmail.com>
 # License: GPL v2 or later
 #
 # Create a C tags file for Geany from a C/C++ header file

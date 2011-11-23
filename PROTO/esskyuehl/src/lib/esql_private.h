@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011 Mike Blumenkrantz <mike@zentific.com>
+ * Copyright 2010, 2011 Mike Blumenkrantz <michael.blumenkrantz@gmail.com>
  */
 
 #ifndef ESQL_PRIV_H

@@ -21,14 +21,8 @@ extern int email_log_dom;
 #define EMAIL_POP3_PORT 110
 #define EMAIL_POP3S_PORT 995
 
-#define EMAIL_SMTP_PORT 25
-#define EMAIL_ESMTP_PORT 587
-
 #define EMAIL_POP3_LIST "LIST\r\n"
 #define EMAIL_POP3_STAT "STAT\r\n"
-#define EMAIL_POP3_RSET "RSET\r\n"
-#define EMAIL_POP3_DELE "DELE %"PRIu32"\r\n"
-#define EMAIL_POP3_RETR "RETR %"PRIu32"\r\n"
 #define EMAIL_POP3_QUIT "QUIT\r\n"
 
 typedef enum
