@@ -12,7 +12,7 @@ static Eina_Bool cb_parse_method_argument_attributes(void *data, const char *key
 {
    struct DBus_Method_Argument *ma = (struct DBus_Method_Argument *)data;
 
-   printf("%s\n", key, value);
+   EINA_LOG_DOM_INFO(elev8_dbus_log_domain, "%s - %s", key, value);
 
    if (strcmp(key, "name") == 0)
      eina_stringshare_replace(&ma->name, (value));
@@ -390,7 +390,7 @@ static Eina_Bool cb_parse_node_attributes(void *data, const char *key, const cha
    if (strcmp(key, "name") != 0) return EINA_FALSE;
 
    eina_stringshare_replace(&n->name, (value));
-   printf("Name = %s\n", n->name);
+   EINA_LOG_DOM_INFO(elev8_dbus_log_domain,"Name = %s", n->name);
    return EINA_TRUE;
 }
 
@@ -412,7 +412,6 @@ static struct DBus_Node *parse_node(const char *attrs, unsigned length)
         free(n);
         return NULL;
      }
-   printf("Name = %s\n", n->name);
    return n;
 }
 
