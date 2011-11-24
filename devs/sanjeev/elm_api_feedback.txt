@@ -150,11 +150,31 @@ elm_gengrid_item_tooltip_size_restrict_disable should be elm_gengrid_item_toolti
 Clock
 -----
 
-Can't we have simpler logic than algarisms for implementing clocks?
-
 Click and hold to increase clock values. Works fine for touchscreen, but for PC, isn't scroll more intuitive than click and hold ?
 
 How do I make a millisec clock, a counter or a timer ? How to extend clock?
 
 elm_clock_edit_get and elm_clock_digit_edit_get - why two sets of API?
 One should be sufficient - elm_clock_digit_edit_get.
+
+Layout
+------
+
+Eval sizing - not clean when this condition will occur.
+
+Hover
+-----
+
+Can a hover be 'moved' across parents one parent to another?
+
+Entry
+-----
+
+Is there any guarantee that entry text is always NULL terminated?
+
+elm_entry_editable_* API is not really making the entry immutable.
+User can still modify the entry using set_text() API.
+If it is for "Label" - then there could be a elm_entry_label_set(true/false).
+similar to password.
+
+No elm_entry_entry_prepend?
