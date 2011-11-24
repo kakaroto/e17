@@ -3,6 +3,8 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
+var interface;
+
 var my_window = new elm.window({
 	type : "main",
 	label : "D-Feet Demo",
@@ -51,6 +53,8 @@ var my_window = new elm.window({
                                         my_window.elements.the_box.elements.the_bus.text = arguments[0];
                                         print("Test Interfaces " + arguments[1][0]);
                                         print("Test Interfaces " + arguments[1][1]);
+                                        interface = arguments[1][0];
+
                                     },
                                     test.introspect("org.freedesktop.UPower", "/org/freedesktop/UPower");
                                 },
@@ -64,6 +68,14 @@ var my_window = new elm.window({
                                     var test = new dbus("Session");
                                     test.on_introspect= function(args){
                                         my_window.elements.the_box.elements.the_bus.text = arguments[0];
+                                        my_window.elements.the_box.elements.the_bus.text = arguments[0];
+                                        print("Test Interfaces " + arguments[1][0]);
+                                        print("Test Interfaces " + arguments[1][1]);
+                                        print("Test Interfaces " + arguments[1][2]);
+                                        interface = arguments[1][1];
+
+                                        print("Printing Name = " + interface.name);
+                                        interface.GetAll();
                                     },
                                     test.introspect("org.freedesktop.Notifications", "/org/freedesktop/Notifications");
                                 },
