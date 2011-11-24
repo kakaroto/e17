@@ -49,8 +49,10 @@ var my_window = new elm.window({
                                     var test = new dbus("System");
                                     test.on_introspect= function(args){
                                         my_window.elements.the_box.elements.the_bus.text = arguments[0];
+                                        print("Test Interfaces " + arguments[1][0]);
+                                        print("Test Interfaces " + arguments[1][1]);
                                     },
-                                    test.introspect("org.freedesktop.UPower", "/");
+                                    test.introspect("org.freedesktop.UPower", "/org/freedesktop/UPower");
                                 },
                             },
                             bz : {
@@ -62,6 +64,11 @@ var my_window = new elm.window({
                                     var test = new dbus("Session");
                                     test.on_introspect= function(args){
                                         my_window.elements.the_box.elements.the_bus.text = arguments[0];
+
+
+
+
+
                                     },
                                     test.introspect("org.freedesktop.Notifications", "/org/freedesktop/Notifications");
                                 },
