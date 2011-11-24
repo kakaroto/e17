@@ -1513,9 +1513,9 @@ public:
                     str[i] = v[i]->ToString();
                }
              String::Utf8Value left(str[0]), middle(str[1]), right(str[2]);
-             elm_object_text_part_set(eo, name[0], *left);
-             elm_object_text_part_set(eo,name[1], *middle);
-             elm_object_text_part_set(eo,name[2], *right);
+             elm_object_part_text_set(eo, name[0], *left);
+             elm_object_part_text_set(eo,name[1], *middle);
+             elm_object_part_text_set(eo,name[2], *right);
           }
      }
 
@@ -3126,7 +3126,7 @@ public:
        Local<Value> lbl = obj->Get(String::New("label"));
        String::Utf8Value item(it);
        String::Utf8Value label(lbl);
-       elm_object_text_part_set(eo, *item,*label);
+       elm_object_part_text_set(eo, *item,*label);
     }
 
 
@@ -4170,14 +4170,14 @@ public:
        if (val->IsString())
          {
             String::Utf8Value str(val);
-            elm_object_text_part_set(eo, "on", *str);
+            elm_object_part_text_set(eo, "on", *str);
          }
      }
 
    virtual Handle<Value> onlabel_get(void) const
      {
         const char *onlabel = NULL;
-        onlabel = elm_object_text_part_get(eo, "on");
+        onlabel = elm_object_part_text_get(eo, "on");
         if (onlabel)
           return String::New(onlabel);
         else
@@ -4189,14 +4189,14 @@ public:
        if (val->IsString())
          {
             String::Utf8Value str(val);
-            elm_object_text_part_set(eo, "off", *str);
+            elm_object_part_text_set(eo, "off", *str);
          }
      }
 
    virtual Handle<Value> offlabel_get(void) const
      {
         const char *offlabel = NULL;
-        offlabel = elm_object_text_part_get(eo, "off");
+        offlabel = elm_object_part_text_get(eo, "off");
         if (offlabel)
           return String::New(offlabel);
         else
