@@ -642,6 +642,13 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
    return EINA_TRUE;
 }
 
+Handle<Value> dbus_method_invoke(const Arguments &args)
+{
+   HandleScope scope;
+
+   EINA_LOG_DOM_INFO(elev8_dbus_log_domain,"Invoking DBUS Method API");
+}
+
 void invoke_js_callback(void *data)
 {
    DBus *dbus = ((struct dbus_cache *)(data))->dbus;
@@ -653,27 +660,42 @@ void invoke_js_callback(void *data)
              Persistent<String> path = static_cast<Persistent<String> >(
                                         ((struct dbus_cache *)(data))->service);
 
-             Local<Array> interfaces = v8::Array::New();
 
              v8::String::Utf8Value service(((struct dbus_cache *)(data))->service);
 
              EINA_LOG_DOM_INFO(elev8_dbus_log_domain,"Service Name = %s", *service);
 
-             Eina_Inlist *list = ((struct DBus_Node *)(dbus->ctxt->nodes))->interfaces;
+             Eina_Inlist *il = ((struct DBus_Node *)(dbus->ctxt->nodes))->interfaces;
              struct DBus_Interface *l = NULL;
+             struct DBus_Method *m = NULL;
+             Local<ObjectTemplate> methods = v8::ObjectTemplate::New();
+             Local<FunctionTemplate> invoke = FunctionTemplate::New();
+             invoke->SetCallHandler(dbus_method_invoke);
+
+             Handle<Object> interfaces = v8::Array::New();
+
+
              int i = 0;
 
-             EINA_INLIST_FOREACH(list, l)
-               {
-                  EINA_LOG_DOM_INFO(elev8_dbus_log_domain,"i/f name = %s", l->name);
-                  v8::Handle<v8::Number> y = v8::Number::New(i);
-                  v8::Handle<v8::String> s = v8::String::New( l->name );
-                  interfaces->Set(y,s);
-                  i++;
-               }
+             EINA_INLIST_FOREACH(il, l)
+             {
+                EINA_LOG_DOM_INFO(elev8_dbus_log_domain,"i/f = %s", l->name);
+                v8::Handle<v8::Number> y = v8::Number::New(i);
+                Eina_Inlist *ml=
+                        ((struct DBus_Interface *)(l))->methods;
+
+                EINA_INLIST_FOREACH(ml, m)
+                {
+                   EINA_LOG_DOM_INFO(elev8_dbus_log_domain,"method=%s",m->name);
+                   methods->Set(String::New("name"),String::New(l->name));
+                   methods->Set(String::New(m->name), invoke);
+                   interfaces->Set(y, methods->NewInstance());
+                }
+                i++;
+             }
              Handle<Value> args[2] = { path, interfaces };
              func->Call(dbus->obj, 2, args);
-             return;
+
           }
      }
 }
@@ -713,6 +735,7 @@ static void cb_introspect(void *data, DBusMessage *msg, DBusError *error)
    v8::String::Utf8Value service(((struct dbus_cache *)(data))->service);
    invoke_js_callback(data);
 }
+
 
 Handle<Value> dbus_msg_introspect(const Arguments &args)
 {
