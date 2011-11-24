@@ -42,7 +42,7 @@ var my_window = new elm.window({
 			            elements : {
                             fdo : {
                                 type : "button",
-                                label : "UPower",
+                                label : "System Bus : UPower",
                                 weight : { x : -1.0, y : -1.0 },
                                 on_clicked : function() {
                                     print("Button Clicked");
@@ -57,18 +57,13 @@ var my_window = new elm.window({
                             },
                             bz : {
                                 type : "button",
-                                label : "BlueZ",
+                                label : "Session Bus : BlueZ",
                                 weight : { x : -1.0, y : -1.0 },
                                 on_clicked : function() {
                                     print("Button Clicked");
                                     var test = new dbus("Session");
                                     test.on_introspect= function(args){
                                         my_window.elements.the_box.elements.the_bus.text = arguments[0];
-
-
-
-
-
                                     },
                                     test.introspect("org.freedesktop.Notifications", "/org/freedesktop/Notifications");
                                 },
