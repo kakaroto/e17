@@ -5,11 +5,10 @@
 #include <dbus/dbus.h>
 #include <E_DBus.h>
 #include <Eina.h>
+#include <ctype.h>
 
 #include <exception>
 #include <map>
-#include <iostream>
-#include <fstream>
 
 /* memory efficient structures to hold introspection information.
  * maybe Eina_Inlist could be replaced with single array of structures
@@ -82,15 +81,16 @@ struct DBus_Introspection_Parse_Ctxt
 
    // master nodes list which stores multiple nodes - based on user request.
    Eina_Inlist *nodes;
+   const char *xml_str;
 };
 
 class DBus {
 
    public:
       E_DBus_Connection *conn;
-      v8::Persistent<v8::Object> obj;
       v8::Persistent<v8::Value> js_introspect_cb;
-      std::map<const char *, DBus_Introspection_Parse_Ctxt *> cached_results;
+      v8::Persistent<v8::Object> obj;
+      struct DBus_Introspection_Parse_Ctxt *ctxt;
 };
 
 struct dbus_cache
@@ -98,6 +98,5 @@ struct dbus_cache
    v8::Local<v8::String> service;
    DBus *dbus;
 };
-
 
 #endif

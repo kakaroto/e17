@@ -12,10 +12,12 @@ static Eina_Bool cb_parse_method_argument_attributes(void *data, const char *key
 {
    struct DBus_Method_Argument *ma = (struct DBus_Method_Argument *)data;
 
+   printf("%s\n", key, value);
+
    if (strcmp(key, "name") == 0)
-     eina_stringshare_replace(&ma->name, value);
+     eina_stringshare_replace(&ma->name, (value));
    else if (strcmp(key, "type") == 0)
-     eina_stringshare_replace(&ma->type, value);
+     eina_stringshare_replace(&ma->type, (value));
    else if (strcmp(key, "direction") == 0)
      {
         if (strcmp(value, "out") == 0)
@@ -24,8 +26,7 @@ static Eina_Bool cb_parse_method_argument_attributes(void *data, const char *key
           ma->is_output = EINA_FALSE;
         else
           {
-             EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Error: unknown method argument direction %s",
-                     value);
+             EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Error: unknown method argument direction %s", value);
              return EINA_FALSE;
           }
      }
@@ -85,7 +86,7 @@ static Eina_Bool cb_parse_method_attributes(void *data, const char *key, const c
    struct DBus_Method *m = (struct DBus_Method *)data;
    if (strcmp(key, "name") != 0) return EINA_FALSE;
 
-   eina_stringshare_replace(&m->name, value);
+   eina_stringshare_replace(&m->name, (value));
    return EINA_TRUE;
 }
 
@@ -135,9 +136,9 @@ static Eina_Bool cb_parse_signal_argument_attributes(void *data, const char *key
    struct DBus_Signal_Argument *sa = (struct DBus_Signal_Argument *)data;
 
    if (strcmp(key, "name") == 0)
-     eina_stringshare_replace(&sa->name, value);
+     eina_stringshare_replace(&sa->name, (value));
    else if (strcmp(key, "type") == 0)
-     eina_stringshare_replace(&sa->type, value);
+     eina_stringshare_replace(&sa->type, (value));
    else
      {
         EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Error: unknown signal argument attribute %s=%s",
@@ -194,7 +195,7 @@ static Eina_Bool cb_parse_signal_attributes(void *data, const char *key, const c
    struct DBus_Signal *s = (struct DBus_Signal *)data;
    if (strcmp(key, "name") != 0) return EINA_FALSE;
 
-   eina_stringshare_replace(&s->name, value);
+   eina_stringshare_replace(&s->name, (value));
    return EINA_TRUE;
 }
 
@@ -243,9 +244,9 @@ static Eina_Bool cb_parse_property_attributes(void *data, const char *key, const
 {
    struct DBus_Property *p = (struct DBus_Property *)data;
    if (strcmp(key, "name") == 0)
-     eina_stringshare_replace(&p->name, value);
+     eina_stringshare_replace(&p->name, (value));
    else if (strcmp(key, "type") == 0)
-     eina_stringshare_replace(&p->type, value);
+     eina_stringshare_replace(&p->type, (value));
    else if (strcmp(key, "access") == 0)
      {
         if (strcmp(value, "read") == 0)
@@ -320,7 +321,7 @@ static Eina_Bool cb_parse_interface_attributes(void *data, const char *key, cons
    struct DBus_Interface *i = (struct DBus_Interface *)data;
    if (strcmp(key, "name") != 0) return EINA_FALSE;
 
-   eina_stringshare_replace(&i->name, value);
+   eina_stringshare_replace(&i->name, (value));
 
    return EINA_TRUE;
 }
@@ -388,7 +389,8 @@ static Eina_Bool cb_parse_node_attributes(void *data, const char *key, const cha
    struct DBus_Node *n = (struct DBus_Node *)data;
    if (strcmp(key, "name") != 0) return EINA_FALSE;
 
-   eina_stringshare_replace(&n->name, value);
+   eina_stringshare_replace(&n->name, (value));
+   printf("Name = %s\n", n->name);
    return EINA_TRUE;
 }
 
@@ -410,6 +412,7 @@ static struct DBus_Node *parse_node(const char *attrs, unsigned length)
         free(n);
         return NULL;
      }
+   printf("Name = %s\n", n->name);
    return n;
 }
 
@@ -648,10 +651,29 @@ void invoke_js_callback(void *data)
         if (!func.IsEmpty())
           {
              Persistent<String> path = static_cast<Persistent<String> >(
-                                        ((struct dbus_cache *)(data))->service
-					                    );
-             Handle<Value> args[1] = { path };
-             func->Call(dbus->obj, 1, args);
+                                        ((struct dbus_cache *)(data))->service);
+
+             Local<Array> interfaces = v8::Array::New();
+
+             v8::String::Utf8Value service(((struct dbus_cache *)(data))->service);
+
+             EINA_LOG_DOM_INFO(elev8_dbus_log_domain,"Service Name = %s", *service);
+
+             Eina_Inlist *list = ((struct DBus_Node *)(dbus->ctxt->nodes))->interfaces;
+             struct DBus_Interface *l = NULL;
+             int i = 0;
+
+             EINA_INLIST_FOREACH(list, l)
+               {
+                  EINA_LOG_DOM_INFO(elev8_dbus_log_domain,"i/f name = %s", l->name);
+                  v8::Handle<v8::Number> y = v8::Number::New(i);
+                  v8::Handle<v8::String> s = v8::String::New( l->name );
+                  interfaces->Set(y,s);
+                  i++;
+               }
+             Handle<Value> args[2] = { path, interfaces };
+             func->Call(dbus->obj, 2, args);
+             return;
           }
      }
 }
@@ -664,13 +686,14 @@ static void cb_introspect(void *data, DBusMessage *msg, DBusError *error)
 
    if ((error) && (dbus_error_is_set(error)))
      {
-        EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Error: DBus replied with error %s: %s",
+        EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Error: DBus error %s: %s",
                 error->name, error->message);
         return;
      }
 
    dbus_error_init(&e);
-   if (!dbus_message_get_args(msg, &e, DBUS_TYPE_STRING, &xml_str,
+   dbus->ctxt = (struct DBus_Introspection_Parse_Ctxt *)calloc(1, sizeof(struct DBus_Introspection_Parse_Ctxt));
+   if (!dbus_message_get_args(msg, &e, DBUS_TYPE_STRING, &dbus->ctxt->xml_str,
                               DBUS_TYPE_INVALID))
      {
         EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Error: could not get arguments %s: %s",
@@ -678,28 +701,16 @@ static void cb_introspect(void *data, DBusMessage *msg, DBusError *error)
         return;
      }
 
-   struct DBus_Introspection_Parse_Ctxt *ctxt;
-   ctxt = (struct DBus_Introspection_Parse_Ctxt *)calloc(1, sizeof(struct DBus_Introspection_Parse_Ctxt));
-   if (!eina_simple_xml_parse(xml_str, strlen(xml_str), EINA_TRUE, cb_parse, ctxt))
+
+   if (!eina_simple_xml_parse(dbus->ctxt->xml_str, strlen(dbus->ctxt->xml_str), EINA_TRUE, cb_parse, dbus->ctxt))
      {
-        EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Error: could not parse XML:\n%s", xml_str);
-        if (ctxt) free(ctxt);
+        EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Error: could not parse XML:\n%s", dbus->ctxt->xml_str);
+        if (dbus->ctxt) free(dbus->ctxt);
         return;
      }
 
-   std::pair<std::map<const char *,DBus_Introspection_Parse_Ctxt *>::iterator,bool> ret;
 
    v8::String::Utf8Value service(((struct dbus_cache *)(data))->service);
-   EINA_LOG_DOM_INFO(elev8_dbus_log_domain, "Service->Name = %s Context = %p", *service, ctxt);
-   ret = dbus->cached_results.insert(
-                             std::pair<const char *,DBus_Introspection_Parse_Ctxt *>
-                             (*service, ctxt));
-   // can't store the result, performance will be affected.
-   if (ret.second==false)
-     {
-        EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Cannot cache dbus result.");
-     }
-   EINA_LOG_DOM_INFO(elev8_dbus_log_domain, "Introspect called %s %p",*service, ctxt);
    invoke_js_callback(data);
 }
 
@@ -722,28 +733,19 @@ Handle<Value> dbus_msg_introspect(const Arguments &args)
         /* check if the bus has already been introspected */
 
         EINA_LOG_DOM_INFO(elev8_dbus_log_domain, "Looking for %s", *service);
-        std::map<const char *,DBus_Introspection_Parse_Ctxt *>::iterator it;
-        it = dbus->cached_results.find(*service);
 
-        if (it==dbus->cached_results.end())
-          {
-             DBusPendingCall *pc;
-             struct dbus_cache *dc = (struct dbus_cache *)calloc(1, sizeof(struct dbus_cache));
-             dc->dbus = dbus;
-             dc->service = v8::String::New(*service);
-             pc = e_dbus_introspect(dbus->conn, *service, *path, cb_introspect, dc);
+        DBusPendingCall *pc;
+        struct dbus_cache *dc = (struct dbus_cache *)calloc(1, sizeof(struct dbus_cache));
+        dc->dbus = dbus;
+        dc->service = v8::String::New(*service);
+        pc = e_dbus_introspect(dbus->conn, *service, *path, cb_introspect, dc);
 
-             if (!pc)
-               {
-                  EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Cannot introspect the given path");
-               }
-             EINA_LOG_DOM_INFO(elev8_dbus_log_domain, "Introspect called %s",*service);
-          }
-        else
+        if (!pc)
           {
-             EINA_LOG_DOM_INFO(elev8_dbus_log_domain, "Introspect Already Done. Returning Cached Result");
-             invoke_js_callback(ptr);
+             EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Cannot introspect the given path");
+             return Undefined();
           }
+        EINA_LOG_DOM_INFO(elev8_dbus_log_domain, "Introspect called %s",*service);
      }
    return Undefined();
 }
@@ -784,16 +786,24 @@ Handle<Value> createDBusInstance(const Arguments& args)
      }
 
    EINA_LOG_DOM_INFO(elev8_dbus_log_domain, "Creating DBUS Instance");
-   DBus *dbus = new DBus();
    String::Utf8Value method(args[0]->ToString());
+   DBus *dbus = new DBus();
 
    /* After this step, dbus is integrated to main loop */
-   if (strstr(*method, "System"))
-      dbus->conn =  e_dbus_bus_get(DBUS_BUS_SYSTEM);
-   if (strstr(*method, "Session"))
-      dbus->conn =  e_dbus_bus_get(DBUS_BUS_SESSION);
-   if (strstr(*method, "Starter"))
-      dbus->conn =  e_dbus_bus_get(DBUS_BUS_STARTER);
+   if (!strstr(*method, "System"))
+     {
+        dbus->conn =  e_dbus_bus_get(DBUS_BUS_SYSTEM);
+     }
+
+   if (!strstr(*method, "Session"))
+     {
+        dbus->conn =  e_dbus_bus_get(DBUS_BUS_SESSION);
+     }
+
+   if (!strstr(*method, "Starter"))
+     {
+        dbus->conn =  e_dbus_bus_get(DBUS_BUS_STARTER);
+     }
 
    if (dbus->conn==NULL)
      {
@@ -803,7 +813,6 @@ Handle<Value> createDBusInstance(const Arguments& args)
      }
 
    Local<FunctionTemplate> introspect = FunctionTemplate::New();
-
    introspect->SetCallHandler(dbus_msg_introspect);
    dbusObj->Set(String::New("introspect"), introspect);
 
@@ -832,8 +841,6 @@ int dbus_v8_setup(Handle<ObjectTemplate> global)
         EINA_LOG_DOM_ERR(elev8_dbus_log_domain, "Cannot Init to E_DBus");
         return -1;
      }
-
-   EINA_LOG_DOM_INFO(elev8_dbus_log_domain, "Creating DBus Instance");
 
    /* Add support for DBus Service Introspection */
    dbusObj = ObjectTemplate::New();
