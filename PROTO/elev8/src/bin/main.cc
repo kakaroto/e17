@@ -129,7 +129,7 @@ void launch_script(void *ptr, Evas_Object *obj, void *data)
    downloader *dl_temp = (downloader *)ptr;
 
    ui_kill(dl_temp, NULL, NULL);
-   EINA_LOG_DOM_INFO(elev8_log_domain, "FileName = %s\n", dl_temp->filename);
+   EINA_LOG_DOM_INFO(elev8_log_domain, "FileName = %s", dl_temp->filename);
    Handle<String> source = string_from_file(dl_temp->filename);
    compile_and_run(source);
 }
@@ -142,7 +142,7 @@ Eina_Bool file_data_callback(void *data, int type, void *event)
 
    if (ptr != dl_temp->http_request)
      {
-        EINA_LOG_DOM_INFO(elev8_log_domain,"Ignore the event - Not for this URL\n");
+        EINA_LOG_DOM_INFO(elev8_log_domain,"Ignore the event - Not for this URL");
 	return ECORE_CALLBACK_PASS_ON;
      }
 
@@ -156,7 +156,7 @@ Eina_Bool file_data_callback(void *data, int type, void *event)
 
         eina_binbuf_append_length(dl_temp->temp_data, 
 			url_data->data, url_data->size);
-	EINA_LOG_DOM_INFO(elev8_log_domain,"Appended %d data\n", url_data->size);
+	EINA_LOG_DOM_INFO(elev8_log_domain,"Appended %d data", url_data->size);
      }
    return EINA_FALSE;
 }
@@ -171,7 +171,7 @@ _url_complete_cb(void *data, int type, void *event_info)
 
    const char *url = ecore_con_url_url_get(url_complete->url_con);
    char buf[PATH_MAX];
-   EINA_LOG_DOM_INFO(elev8_log_domain,"Completed %s - %d\n", url , url_complete->status);
+   EINA_LOG_DOM_INFO(elev8_log_domain,"Completed %s - %d", url , url_complete->status);
    snprintf(buf, PATH_MAX, "<br>Completed %s - %d<br>", url , url_complete->status);
    elm_entry_entry_append(dl_temp->content, buf);
 
@@ -189,13 +189,13 @@ _url_complete_cb(void *data, int type, void *event_info)
 
 void download_resource(downloader *dl_temp)
 {
-   EINA_LOG_DOM_INFO(elev8_log_domain,"Trying to download resources\n");
+   EINA_LOG_DOM_INFO(elev8_log_domain,"Trying to download resources");
    if (dl_temp->fp==NULL)
      {
         dl_temp->fp = fopen(dl_temp->filename, "r");
 	if (dl_temp->fp==NULL)
           {
-             EINA_LOG_DOM_ERR(elev8_log_domain, "Cannot open script file\n");
+             EINA_LOG_DOM_ERR(elev8_log_domain, "Cannot open script file");
 	     return ;
 	  }
      }
@@ -207,11 +207,11 @@ void download_resource(downloader *dl_temp)
      {
         if (strstr(buf,"//ELEV8_IMAGE:"))
           {
-             EINA_LOG_DOM_INFO(elev8_log_domain,"Found New Resource %s\n", buf);
+             EINA_LOG_DOM_INFO(elev8_log_domain,"Found New Resource %s", buf);
 	     char *local = strchr(buf, ':') + 1;
 	     dl_temp->http_request = strchr(local, ':');
 	     *dl_temp->http_request = '\0';
-             EINA_LOG_DOM_INFO(elev8_log_domain,"LocalFile %s\n", local);
+             EINA_LOG_DOM_INFO(elev8_log_domain,"LocalFile %s", local);
 	     dl_temp->http_request++;
              char *nptr = strchr(dl_temp->http_request,'\n');
              *nptr = '\0';
@@ -220,7 +220,7 @@ void download_resource(downloader *dl_temp)
              char local_file[PATH_MAX];
              snprintf(local_file, PATH_MAX,
 			      "%s/elev8-script-%d/%s",PACKAGE_TMP_DIR,getpid(),local);
-	     EINA_LOG_DOM_INFO(elev8_log_domain,"Local File = %s URL = %s\n", 
+	     EINA_LOG_DOM_INFO(elev8_log_domain,"Local File = %s URL = %s",
 			        local_file, dl_temp->http_request);
 	     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
              dl_temp->fd =  open(local_file, O_CREAT|O_WRONLY|O_TRUNC, 0644);
@@ -232,12 +232,12 @@ void download_resource(downloader *dl_temp)
           }
 	else if(strstr(buf,"elm.datadir = "))
           {
-	     EINA_LOG_DOM_INFO(elev8_log_domain,"Skipping Added Line = %s\n", buf);
+	     EINA_LOG_DOM_INFO(elev8_log_domain,"Skipping Added Line = %s", buf);
              continue;
 	  }
 	else if(strlen(buf) > 1)
           {
-             EINA_LOG_DOM_INFO(elev8_log_domain,"End of Resources\n");
+             EINA_LOG_DOM_INFO(elev8_log_domain,"End of Resources");
              ecore_con_url_free(dl_temp->url_con);
              elm_progressbar_value_set(dl_temp->pb, 1.0);
 	     break;
@@ -256,7 +256,7 @@ Eina_Bool file_completion_callback(void *data, int type, void *event)
 	return ECORE_CALLBACK_PASS_ON;
      }
 
-   EINA_LOG_DOM_INFO(elev8_log_domain,"Downloading Complete\n");
+   EINA_LOG_DOM_INFO(elev8_log_domain,"Downloading Complete");
    dl_temp->http_response = (char *)eina_binbuf_string_get(dl_temp->temp_data);
    int length = eina_binbuf_length_get(dl_temp->temp_data);
 
@@ -274,20 +274,20 @@ Eina_Bool file_completion_callback(void *data, int type, void *event)
 
    if (dl_temp->fd<0)
      {
-        EINA_LOG_DOM_ERR(elev8_log_domain,"error creating file %s \n", strerror(errno));
+        EINA_LOG_DOM_ERR(elev8_log_domain,"error creating file %s ", strerror(errno));
         eina_binbuf_free(dl_temp->temp_data);
 	return EINA_FALSE;
      }
 
-   EINA_LOG_DOM_INFO(elev8_log_domain,"File Created for Script %d\n", retval, dl_temp->fd);
-   EINA_LOG_DOM_INFO(elev8_log_domain,"File Write Size = %d-%d=%d\n",length,shebang,(length-shebang));
+   EINA_LOG_DOM_INFO(elev8_log_domain,"File Created for Script %d", retval, dl_temp->fd);
+   EINA_LOG_DOM_INFO(elev8_log_domain,"File Write Size = %d-%d=%d",length,shebang,(length-shebang));
 
    retval = snprintf(set_datadir, PATH_MAX,
-		             "elm.datadir = \"%s/elev8-script-%d/\";\n", 
+		             "elm.datadir = \"%s/elev8-script-%d/\";",
 			     PACKAGE_TMP_DIR, 
 			     getpid()
 			);
-   EINA_LOG_DOM_INFO(elev8_log_domain,"DataDir Is Set to  %s--\n", set_datadir);
+   EINA_LOG_DOM_INFO(elev8_log_domain,"DataDir Is Set to  %s--", set_datadir);
 
    ptr = &set_datadir[0];
    retval = write(dl_temp->fd, ptr, retval);
@@ -295,18 +295,18 @@ Eina_Bool file_completion_callback(void *data, int type, void *event)
    retval = write(dl_temp->fd, ptr, (length - shebang));
    if (retval>0)
      {
-        EINA_LOG_DOM_INFO(elev8_log_domain,"Written %d bytes into file\n", retval);
+        EINA_LOG_DOM_INFO(elev8_log_domain,"Written %d bytes into file", retval);
      }
    else
      {
-	EINA_LOG_DOM_ERR(elev8_log_domain,"error writing to file %s \n", strerror(errno));
+	EINA_LOG_DOM_ERR(elev8_log_domain,"error writing to file %s ", strerror(errno));
      }
 	
    close(dl_temp->fd);
 
    eina_binbuf_free(dl_temp->temp_data);
    dl_temp->http_request = NULL;
-   EINA_LOG_DOM_INFO(elev8_log_domain,"Done with File %s\n", dl_temp->filename);
+   EINA_LOG_DOM_INFO(elev8_log_domain,"Done with File %s", dl_temp->filename);
    elm_object_disabled_set(dl_temp->bt, EINA_FALSE);
    elm_object_text_set(dl_temp->bt, "Launch");
    //evas_object_smart_callback_del(dl_temp->bt, "clicked", start_download);
@@ -355,7 +355,7 @@ void show_download_ui(void *data)
 
    dl->http_request = (char *)data;
 
-   EINA_LOG_DOM_INFO(elev8_log_domain, "Making request to %s\n", (char *)data);
+   EINA_LOG_DOM_INFO(elev8_log_domain, "Making request to %s", (char *)data);
 
    dl->win = elm_win_add(NULL, "elev8_viewer", ELM_WIN_BASIC);
    elm_win_title_set(dl->win, "ELEV8 VIEWER");
@@ -364,7 +364,7 @@ void show_download_ui(void *data)
    dl->bg = elm_bg_add(dl->win);
    char buf[PATH_MAX];
    snprintf(buf, PATH_MAX, "%s/data/images/bg.png", PACKAGE_DATA_DIR);
-   EINA_LOG_DOM_INFO(elev8_log_domain,"Path = %s\n", buf);
+   EINA_LOG_DOM_INFO(elev8_log_domain,"Path = %s", buf);
    elm_bg_file_set(dl->bg, buf, NULL);
    evas_object_size_hint_align_set(dl->bg, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(dl->bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -433,14 +433,14 @@ boom(TryCatch &try_catch)
 
    if (msg.IsEmpty())
      {
-        EINA_LOG_DOM_ERR(elev8_log_domain,"%s\n", *error);
+        EINA_LOG_DOM_ERR(elev8_log_domain,"%s", *error);
      }
    else
      {
         String::Utf8Value file(msg->GetScriptResourceName());
         int line = msg->GetLineNumber();
 
-        EINA_LOG_DOM_INFO(elev8_log_domain,"%s:%d %s\n", *file, line, *error);
+        EINA_LOG_DOM_INFO(elev8_log_domain,"%s:%d %s", *file, line, *error);
      }
    exit(1);
 }
@@ -452,7 +452,7 @@ run_script(const char *filename)
 
    if (filename == strstr(filename, "http"))
      {
-        EINA_LOG_DOM_INFO(elev8_log_domain,"Downloading elev8 Script\n");
+        EINA_LOG_DOM_INFO(elev8_log_domain,"Downloading elev8 Script");
         show_download_ui((void *)filename);
      }
    else
@@ -462,7 +462,7 @@ run_script(const char *filename)
         Handle<String> source = string_from_file(filename);
         if (source.IsEmpty())
           {
-             EINA_LOG_DOM_ERR(elev8_log_domain,"Failed to read source %s\n", filename);
+             EINA_LOG_DOM_ERR(elev8_log_domain,"Failed to read source %s", filename);
              return;
           }
         compile_and_run(source);
@@ -497,7 +497,7 @@ elev8_run(const char *script)
 
    if (retval!=0)
      {
-        EINA_LOG_DOM_ERR(elev8_log_domain,"Cannot initialize ecore_con_url\n");
+        EINA_LOG_DOM_ERR(elev8_log_domain,"Cannot initialize ecore_con_url");
 	    //FIXME : Disable XMLHttpRequest support
      }
 
@@ -505,7 +505,7 @@ elev8_run(const char *script)
 
    if (retval!=0)
      {
-        EINA_LOG_DOM_ERR(elev8_log_domain,"Cannot initialize e_dbus\n");
+        EINA_LOG_DOM_ERR(elev8_log_domain,"Cannot initialize e_dbus");
 	    //FIXME : Disable DBUS support
      }
 
@@ -543,11 +543,11 @@ elm_main(int argc, char **argv)
         EINA_LOG_DOM_ERR(elev8_log_domain, "could not register elev8 log domain.");
         elev8_log_domain = EINA_LOG_DOMAIN_GLOBAL;
      }
-   EINA_LOG_DOM_INFO(elev8_log_domain,"elev8 Logging initialized. %d\n", elev8_log_domain);
+   EINA_LOG_DOM_INFO(elev8_log_domain,"elev8 Logging initialized. %d", elev8_log_domain);
 
    if (argc < 2)
      {
-        EINA_LOG_DOM_ERR(elev8_log_domain,"%s: Error: no input file specified.\n", argv[0]);
+        EINA_LOG_DOM_ERR(elev8_log_domain,"%s: Error: no input file specified.", argv[0]);
         main_help(argv[0]);
         exit(-1);
      }

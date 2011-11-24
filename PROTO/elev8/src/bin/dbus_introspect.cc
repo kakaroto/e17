@@ -31,27 +31,27 @@ Parser* ParserNew() {
 
 void ParserPrint(Parser *parser) {
   BusNode *root_node = parser->root_node;
-  EINA_LOG_DOM_INFO(elev8_log_domain,"node\n");
+  EINA_LOG_DOM_INFO(elev8_log_domain,"node");
   std::list<BusInterface*>::iterator interface_ite;
   for (interface_ite = root_node->interfaces_.begin();
         interface_ite != root_node->interfaces_.end();
         interface_ite++) {
     BusInterface *interface = *interface_ite;
-    EINA_LOG_DOM_INFO(elev8_log_domain,"  interface: %s\n", interface->name_.c_str());
+    EINA_LOG_DOM_INFO(elev8_log_domain,"  interface: %s", interface->name_.c_str());
     
     std::list<BusMethod*>::iterator method_ite;
     for(method_ite = interface->methods_.begin();
           method_ite != interface->methods_.end();
           method_ite++) {
       BusMethod *method = *method_ite;
-      EINA_LOG_DOM_INFO(elev8_log_domain,"    method:%s , %s\n", method->name_.c_str(), method->signature_.c_str());
+      EINA_LOG_DOM_INFO(elev8_log_domain,"    method:%s , %s", method->name_.c_str(), method->signature_.c_str());
 
       std::list<BusArgument*>::iterator argument_ite;
       for(argument_ite = method->args_.begin();
             argument_ite != method->args_.end();
             argument_ite++) {
         BusArgument *argument = *argument_ite;
-        EINA_LOG_DOM_INFO(elev8_log_domain,"      arg:%s - %s\n", argument->direction_.c_str(), argument->type_.c_str());
+        EINA_LOG_DOM_INFO(elev8_log_domain,"      arg:%s - %s", argument->direction_.c_str(), argument->type_.c_str());
       }
     }
 
@@ -60,14 +60,14 @@ void ParserPrint(Parser *parser) {
           signal_ite != interface->signals_.end();
           signal_ite++) {
       BusSignal *signal = *signal_ite;
-      EINA_LOG_DOM_INFO(elev8_log_domain,"    signal:%s\n", signal->name_.c_str());
+      EINA_LOG_DOM_INFO(elev8_log_domain,"    signal:%s", signal->name_.c_str());
 
       std::list<BusArgument*>::iterator argument_ite;
       for(argument_ite = signal->args_.begin();
             argument_ite != signal->args_.end();
             argument_ite++) {
         BusArgument *argument = *argument_ite;
-        EINA_LOG_DOM_INFO(elev8_log_domain,"      arg:%s\n", argument->type_.c_str());
+        EINA_LOG_DOM_INFO(elev8_log_domain,"      arg:%s", argument->type_.c_str());
       }
     }
   }
@@ -137,7 +137,7 @@ static const char* GetAttribute(const char **attrs, const char *name) {
 
 void expat_StartElementHandler(void *userData,
               const XML_Char *name, const XML_Char **attrs) {
-  EINA_LOG_DOM_INFO(elev8_log_domain,"Node: %s\n", name);
+  EINA_LOG_DOM_INFO(elev8_log_domain,"Node: %s", name);
   Parser *parser = reinterpret_cast<Parser*>(userData);
 
   if (!strcmp(name, "node")) {
@@ -191,13 +191,13 @@ void expat_StartElementHandler(void *userData,
     }
     
   } else {
-    EINA_LOG_DOM_INFO(elev8_log_domain,  "Error NodeType\n");
+    EINA_LOG_DOM_INFO(elev8_log_domain,  "Error NodeType");
   }
 }
 
 void expat_EndElementHandler(void *userData,
               const XML_Char *name ) {
-  EINA_LOG_DOM_INFO(elev8_log_domain,"Node: %s\n", name);
+  EINA_LOG_DOM_INFO(elev8_log_domain,"Node: %s", name);
   Parser *parser = reinterpret_cast<Parser*>(userData);
   if (!strcmp(name, "node")) { 
     parser->is_on_node = false;
@@ -215,7 +215,7 @@ void expat_EndElementHandler(void *userData,
     parser->is_on_argument = false;
     parser->current_argument = NULL;
   } else {
-    EINA_LOG_DOM_INFO(elev8_log_domain,"Error end Nodetype\n");
+    EINA_LOG_DOM_INFO(elev8_log_domain,"Error end Nodetype");
   }
 }
 
@@ -238,7 +238,7 @@ Parser* ParseIntrospcect(const char *source, int size) {
           if (e == XML_ERROR_NO_MEMORY)
             EINA_LOG_DOM_ERR(elev8_log_domain,"Not enough memory to parse XML document");
           else
-            EINA_LOG_DOM_ERR(elev8_log_domain, "Error in D-BUS description XML, line %ld, column %ld: %s\n",
+            EINA_LOG_DOM_ERR(elev8_log_domain, "Error in D-BUS description XML, line %ld, column %ld: %s",
                          XML_GetCurrentLineNumber (expat),
                          XML_GetCurrentColumnNumber (expat),
                          XML_ErrorString (e));
@@ -324,13 +324,13 @@ int main(int argc, char **argv)
           if (e == XML_ERROR_NO_MEMORY)
             EINA_LOG_DOM_ERR(elev8_log_domain, "Not enough memory to parse XML document");
           else
-            EINA_LOG_DOM_ERR(elev8_log_domain, "Error in D-BUS description XML, line %ld, column %ld: %s\n",
+            EINA_LOG_DOM_ERR(elev8_log_domain, "Error in D-BUS description XML, line %ld, column %ld: %s",
                          XML_GetCurrentLineNumber (expat),
                          XML_GetCurrentColumnNumber (expat),
                          XML_ErrorString (e));
       }
   }
-  EINA_LOG_DOM_INFO(elev8_log_domain,"success\n");
+  EINA_LOG_DOM_INFO(elev8_log_domain,"success");
 
   ParserPrint(parser);
 
