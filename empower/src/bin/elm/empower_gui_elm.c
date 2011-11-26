@@ -48,7 +48,7 @@ void setup_window()
   evas_object_size_hint_align_set(vbox, 0.0, 0.0);
   evas_object_size_hint_min_set(vbox, 100, 100);
   evas_object_size_hint_max_set(vbox, 600, 600);
-  elm_box_homogenous_set(vbox, 1);
+  elm_box_homogeneous_set(vbox, 1);
   evas_object_show(vbox);
 
   inwin = elm_win_inwin_add(win);
