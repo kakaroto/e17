@@ -385,9 +385,6 @@ void
 elm_box_homogeneous_set(Evas_Object *obj, Eina_Bool homogeneous)
 
 void
-elm_box_homogenous_set(Evas_Object *obj, Eina_Bool homogenous)
-
-void
 elm_box_pack_start(Evas_Object *obj, Evas_Object *subobj)
 
 void
@@ -547,9 +544,6 @@ elm_frame_content_set(Evas_Object *obj, Evas_Object *content)
 
 Evas_Object *
 elm_table_add(Evas_Object *parent)
-
-void
-elm_table_homogenous_set(Evas_Object *obj, Eina_Bool homogenous)
 
 void
 elm_table_pack(Evas_Object *obj, Evas_Object *subobj, int x, int y, int w, int h)
@@ -1021,9 +1015,6 @@ elm_toolbar_menu_parent_set(Evas_Object *obj, Evas_Object *parent)
 
 void
 elm_toolbar_scrollable_set(Evas_Object *obj, Eina_Bool scrollable)
-
-void
-elm_toolbar_homogenous_set(Evas_Object *obj, Eina_Bool homogenous)
 
 
 # menu

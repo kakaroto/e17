@@ -1633,7 +1633,7 @@ sub test_toolbar {
     evas_object_show($bx);
 
     $tb = elm_toolbar_add($win);
-    elm_toolbar_homogenous_set($tb, 0);
+    elm_toolbar_homogeneous_set($tb, 0);
     evas_object_size_hint_weight_set($tb, 0.0, 0.0);
     evas_object_size_hint_align_set($tb, EVAS_HINT_FILL, 0.0);
 
@@ -1691,8 +1691,6 @@ sub test_toolbar {
     evas_object_show($tb);
 
     $tb = elm_table_add($win);
-
-    #elm_table_homogenous_set($tb, 1);
     evas_object_size_hint_weight_set($tb, 0.0, EVAS_HINT_EXPAND);
     evas_object_size_hint_fill_set($tb, EVAS_HINT_FILL, EVAS_HINT_FILL);
 

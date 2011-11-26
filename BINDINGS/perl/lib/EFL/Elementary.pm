@@ -228,7 +228,6 @@ my @elm_box = qw(
   elm_box_add
   elm_box_horizontal_set
   elm_box_homogeneous_set
-  elm_box_homogenous_set
   elm_box_pack_start
   elm_box_pack_end
   elm_box_pack_before
@@ -288,7 +287,6 @@ my @elm_frame = qw(
 my @elm_table = qw(
   elm_table_add
   elm_table_homogeneous_set
-  elm_table_homogenous_set
   elm_table_pack
   elm_table_padding_set
 );
@@ -440,7 +438,6 @@ my @elm_toolbar = qw(
   elm_toolbar_menu_parent_set
   elm_toolbar_scrollable_set
   elm_toolbar_homogeneous_set
-  elm_toolbar_homogenous_set
 );
 
 my @elm_menu = qw(
@@ -998,7 +995,6 @@ may change in future releases.
     elm_box_add
     elm_box_clear
     elm_box_homogeneous_set
-    elm_box_homogenous_set
     elm_box_horizontal_set
     elm_box_pack_after
     elm_box_pack_before
@@ -1368,7 +1364,6 @@ may change in future releases.
     elm_spinner_wrap_set
     elm_table_add
     elm_table_homogeneous_set
-    elm_table_homogenous_set
     elm_table_pack
     elm_table_padding_set
     elm_theme_extension_add
@@ -1388,7 +1383,6 @@ may change in future releases.
     elm_toolbar_add
     elm_toolbar_align_set
     elm_toolbar_homogeneous_set
-    elm_toolbar_homogenous_set
     elm_toolbar_icon_size_get
     elm_toolbar_icon_size_set
     elm_toolbar_item_add
