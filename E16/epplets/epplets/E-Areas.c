@@ -15,34 +15,11 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 #include "epplet.h"
-#include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
-Epplet_gadget       b_close;
 
-static void         close_cb(void *data);
-static void         in_cb(void *data, Window w);
-static void         out_cb(void *data, Window w);
-Epplet_gadget       epp_create_std_button(int x, int y, char *std,
-					  void (*func) (void *data),
-					  void *data);
-
-#if 0
-/* Unused */
-static void
-epp_dialog_ok_f(char *fmt, ...)
-{
-   va_list             ap;
-   char                buf[1024];
-
-   va_start(ap, fmt);
-   Evsnprintf(buf, 1023, fmt, ap);
-   va_end(ap);
-   Epplet_dialog_ok(buf);
-}
-#endif
+static Epplet_gadget b_close;
 
 static void
 close_cb(void *data)
@@ -81,11 +58,10 @@ out_cb(void *data, Window w)
    data = NULL;
 }
 
-Epplet_gadget
+static Epplet_gadget
 epp_create_std_button(int x, int y, char *std,
 		      void (*func) (void *data), void *data)
 {
-   assert(func != NULL);
    return Epplet_create_button(NULL, NULL, x, y, 0, 0, std, 0, NULL, func,
 			       data);
 }
