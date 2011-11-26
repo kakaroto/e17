@@ -44,7 +44,7 @@ tabpanel_add(Evas_Object *parent)
    Tabpanel *tab = calloc(1, sizeof(Tabpanel));
 
    tab->tabs = elm_toolbar_add(parent);
-   elm_toolbar_homogenous_set(tab->tabs, 0);
+   elm_toolbar_homogeneous_set(tab->tabs, EINA_FALSE);
    tab->panels = elm_pager_add(parent);
    evas_object_size_hint_weight_set(tab->panels, 1.0, 1.0);
    evas_object_size_hint_align_set(tab->panels, -1.0, -1.0);
@@ -63,7 +63,7 @@ tabpanel_add_with_edje(Evas_Object *parent, Evas_Object *tabs)
    Tabpanel *tab = calloc(1, sizeof(Tabpanel));
 
    tab->tabs = tabs;
-   elm_toolbar_homogenous_set(tab->tabs, 0);
+   elm_toolbar_homogeneous_set(tab->tabs, EINA_FALSE);
    tab->panels = elm_pager_add(parent);
    evas_object_size_hint_weight_set(tab->panels, 1.0, 1.0);
    evas_object_size_hint_align_set(tab->panels, -1.0, -1.0);
