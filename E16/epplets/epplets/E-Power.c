@@ -14,6 +14,7 @@
 int                 prev_bat_val = 110;
 int                 bat_val = 0;
 int                 time_val = 0;
+
 int                 prev_up[16] = { 0, 0, 0, 0, 0, 0, 0, 0,
    0, 0, 0, 0, 0, 0, 0, 0
 };
@@ -23,6 +24,7 @@ Epplet_gadget       b_close, b_suspend, b_sleep, b_help, image, label;
 static void         cb_timer(void *data);
 static void         cb_timer_acpi(void *data);
 static void         cb_timer_apm(void *data);
+static void         cb_timer_sys(void *data);
 static void         cb_close(void *data);
 static void         cb_in(void *data, Window w);
 static void         cb_out(void *data, Window w);
@@ -35,8 +37,10 @@ cb_timer(void *data)
 
    if ((stat("/proc/apm", &st) > -1) && S_ISREG(st.st_mode))
       cb_timer_apm(data);
-   else if ((stat("/proc/acpi", &st) > -1) && S_ISDIR(st.st_mode))
+   else if ((stat("/proc/acpi/battery", &st) > -1) && S_ISDIR(st.st_mode))
       cb_timer_acpi(data);
+   else if ((stat("/sys/class/power_supply", &st) > -1) && S_ISDIR(st.st_mode))
+      cb_timer_sys(data);
 }
 
 static void
@@ -307,6 +311,181 @@ cb_timer_apm(void *data)
    data = NULL;
 }
 
+static void
+cb_timer_sys(void *data)
+{
+   /* We don't have any data from the remaining percentage, and time directly,
+    * so we have to calculate and measure them.
+    * (Measure the time and calculate the percentage.)
+    */
+   static int          prev_bat_drain = 1;
+
+   FILE               *f;
+   DIR                *dirp;
+   struct dirent      *dp;
+
+   int                 bat_max = 0;
+   int                 bat_filled = 0;
+   int                 bat_level = 0;
+   int                 bat_drain = 1;
+
+   int                 bat_val = 0;
+
+   char                current_status[256];
+   char               *line = 0;
+   size_t              lsize = 0;
+   int                 discharging = 0;
+   int                 charging = 0;
+   int                 battery = 0;
+
+   int                 design_cap_unknown = 1;
+   int                 last_full_unknown = 1;
+   int                 rate_unknown = 1;
+   int                 level_unknown = 1;
+
+   int                 hours, minutes;
+
+   /* Read some information on first run. */
+   dirp = opendir("/sys/class/power_supply/");
+   if (dirp)
+     {
+	while ((dp = readdir(dirp)))
+	  {
+	     char                buf[4096];
+
+	     if ((!strcmp(dp->d_name, ".")) || (!strcmp(dp->d_name, ".."))
+		 || (!strstr(dp->d_name, "BAT")))
+		continue;
+	     snprintf(buf, sizeof(buf), "/sys/class/power_supply/%s/uevent",
+		      dp->d_name);
+	     f = fopen(buf, "r");
+	     if (f)
+	       {
+		  int                 design_cap = 0;
+		  int                 last_full = 0;
+		  char                present[256];
+		  char                key[256];
+		  char                capacity_state[256];
+		  char                charging_state[256];
+		  char                name[256];
+		  int                 rate = 1;
+		  int                 level = 0;
+
+		  while (getline(&line, &lsize, f) != -1)
+		    {
+		       sscanf(line, "%[^=]= %250s", key, name);
+		       if (strcmp(key, "POWER_SUPPLY_NAME") == 0)
+			 {
+			 }
+		       else if (strcmp(key, "POWER_SUPPLY_STATUS") == 0)
+			 {
+			    sscanf(line, "%*[^=]= %250s", charging_state);
+			    if (!strcmp(charging_state, "Discharging"))
+			       discharging++;
+			    if (!strcmp(charging_state, "Charging"))
+			       charging++;
+			 }
+		       else if (strcmp(key, "POWER_SUPPLY_PRESENT") == 0)
+			 {
+			    sscanf(line, "%*[^=]= %250s", present);
+			    if (!strcmp(present, "1"))
+			       battery++;
+			 }
+		       else if (strcmp(key, "POWER_SUPPLY_CURRENT_NOW") == 0)
+			 {
+			    sscanf(line, "%*[^=]= %i %*s", &rate);
+			    rate_unknown = 0;
+			    bat_drain += (rate);
+			 }
+		       else if (strcmp(key, "POWER_SUPPLY_CHARGE_FULL_DESIGN")
+				== 0)
+			 {
+			    sscanf(line, "%*[^=]=%i", &design_cap);
+			    design_cap_unknown = 0;
+			    bat_max += design_cap;
+			 }
+		       else if (strcmp(key, "POWER_SUPPLY_CHARGE_FULL") == 0)
+			 {
+			    sscanf(line, "%*[^=]= %i", &last_full);
+			    last_full_unknown = 0;
+			    bat_filled += last_full;
+			 }
+		       else if (strcmp(key, "POWER_SUPPLY_CHARGE_NOW") == 0)
+			 {
+			    sscanf(line, "%*[^=]= %i", &level);
+			    level_unknown = 0;
+			    bat_level += level;
+			 }
+		    }
+		  fclose(f);
+	       }
+	  }
+	closedir(dirp);
+     }
+
+   if (prev_bat_drain < 1)
+      prev_bat_drain = 1;
+   if (bat_drain < 1)
+      bat_drain = prev_bat_drain;
+   prev_bat_drain = bat_drain;
+
+   if (bat_filled > 0)
+      bat_val = (100 * bat_level) / bat_filled;
+   else
+      bat_val = 100;
+
+   if (discharging)
+      minutes = (60 * bat_level) / bat_drain;
+   else
+     {
+	if (bat_filled > 0)
+	   minutes = (60 * (bat_filled - bat_level)) / bat_drain;
+	else
+	   minutes = 0;
+     }
+   hours = minutes / 60;
+   minutes -= (hours * 60);
+
+   if (charging)
+     {
+	if (level_unknown)
+	   snprintf(current_status, sizeof(current_status),
+		    "Level ???\n" "Bad Driver");
+	else if (rate_unknown)
+	   snprintf(current_status, sizeof(current_status),
+		    "%i%% PWR\n" "Time ???", bat_val);
+	else
+	   snprintf(current_status, sizeof(current_status),
+		    "%i%% PWR\n" "%02i:%02i", bat_val, hours, minutes);
+     }
+   else if (discharging)
+     {
+	if (level_unknown)
+	   snprintf(current_status, sizeof(current_status),
+		    "Level ???\n" "Bad Driver");
+	else if (rate_unknown)
+	   snprintf(current_status, sizeof(current_status),
+		    "%i%%\n" "Time ???", bat_val);
+	else
+	   snprintf(current_status, sizeof(current_status),
+		    "%i%%\n" "%02i:%02i", bat_val, hours, minutes);
+     }
+   else if (!battery)
+      snprintf(current_status, sizeof(current_status), "No Bat");
+   else
+      snprintf(current_status, sizeof(current_status), "Full");
+
+   /* Display current status */
+   Epplet_change_label(label, current_status);
+   sprintf(current_status, "E-Power-Bat-%i.png", ((bat_val + 5) / 10) * 10);
+   Epplet_change_image(image, 44, 24, current_status);
+   Epplet_timer(cb_timer, NULL, 5.0, "TIMER");
+
+   /* Final steps before ending the status update. */
+   data = NULL;
+   if (lsize)
+      free(line);
+}
 static void
 cb_close(void *data)
 {
