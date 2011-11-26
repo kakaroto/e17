@@ -101,7 +101,7 @@ create_main_win(App *app)
 	return EINA_FALSE;
      }
    elm_box_horizontal_set(app->box, EINA_FALSE);
-   elm_box_homogenous_set(app->box, EINA_FALSE);
+   elm_box_homogeneous_set(app->box, EINA_FALSE);
    evas_object_size_hint_weight_set(app->box, 1.0, 1.0);
    elm_frame_content_set(app->frame, app->box);
    evas_object_show(app->box);

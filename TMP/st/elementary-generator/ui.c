@@ -551,7 +551,7 @@ create_main_win(App *app)
 	return EINA_FALSE;
      }
    elm_box_horizontal_set(app->box, EINA_FALSE);
-   elm_box_homogenous_set(app->box, EINA_FALSE);
+   elm_box_homogeneous_set(app->box, EINA_FALSE);
    evas_object_size_hint_weight_set(app->box, 1.0, 1.0);
    elm_win_resize_object_add(app->win, app->box);
    evas_object_show(app->box);
@@ -576,7 +576,7 @@ create_main_win(App *app)
 	return EINA_FALSE;
      }
    elm_box_horizontal_set(app->button_box, EINA_TRUE);
-   elm_box_homogenous_set(app->button_box, EINA_FALSE);
+   elm_box_homogeneous_set(app->button_box, EINA_FALSE);
    evas_object_size_hint_weight_set(app->button_box, 1.0, 0.0);
    evas_object_size_hint_align_set(app->button_box, -1.0, 0.5);
    elm_box_pack_end(app->box, app->button_box);
@@ -665,7 +665,7 @@ create_main_win(App *app)
 	return EINA_FALSE;
      }
    elm_box_horizontal_set(app->view.box, EINA_TRUE);
-   elm_box_homogenous_set(app->view.box, EINA_FALSE);
+   elm_box_homogeneous_set(app->view.box, EINA_FALSE);
    evas_object_size_hint_weight_set(app->view.box, 1.0, 1.0);
    evas_object_size_hint_align_set(app->view.box, -1.0, -1.0);
    elm_table_pack(app->table, app->view.box, 0, 8, 8, 2);
