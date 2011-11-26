@@ -32,7 +32,7 @@ lighting_control_win_create(void)
    Evas_Object *box;
    box = elm_box_add(win);
    elm_box_horizontal_set(box, EINA_TRUE);
-   elm_box_homogenous_set(box, EINA_TRUE);
+   elm_box_homogeneous_set(box, EINA_TRUE);
    evas_object_size_hint_weight_set(box, 1.0, 1.0);
    elm_win_resize_object_add(win, box);
    evas_object_show(box);

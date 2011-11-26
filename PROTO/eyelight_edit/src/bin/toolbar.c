@@ -25,7 +25,7 @@ Evas_Object *toolbar_create()
 
     tb = elm_toolbar_add(win);
     elm_toolbar_menu_parent_set(tb, win);
-    elm_toolbar_homogenous_set(tb, EINA_FALSE);
+    elm_toolbar_homogeneous_set(tb, EINA_FALSE);
     elm_toolbar_align_set(tb, 0.0);
     evas_object_size_hint_weight_set(tb, 0.0, 0.0);
     evas_object_size_hint_align_set(tb, -1.0, 0.0);
