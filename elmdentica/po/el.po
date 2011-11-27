@@ -9,14 +9,16 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
 "POT-Creation-Date: 2011-03-05 10:38+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: George Koutsikos <ragecryx@yahoo.gr>\n"
+"Last-Translator: George Rizopoulos <george.rizopoulos.1@gmail.com>\n"
 "Language-Team: Greek\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/curl.c:92 src/elmdentica.c:1382 src/elmdentica.c:1591
+#: src/curl.c:92
+#: src/elmdentica.c:1382
+#: src/elmdentica.c:1591
 msgid "Close"
 msgstr "Κλείσιμο"
 
@@ -26,6 +28,8 @@ msgid ""
 "Can't dump %s into %s:\n"
 "(%d) %s\n"
 msgstr ""
+"Αδυναμία αποτύπωσης %s στο %s:\n"
+"(%d) %s\n"
 
 #: src/curl.c:326
 #, c-format
@@ -52,33 +56,39 @@ msgstr "Απαντήσεις / Αναφορές"
 msgid "My friends..."
 msgstr "Οι φίλοι μου..."
 
-#: src/elmdentica.c:477 src/elmdentica.c:624
+#: src/elmdentica.c:477
+#: src/elmdentica.c:624
 msgid "Follow"
-msgstr ""
+msgstr "Ακολούθησε"
 
-#: src/elmdentica.c:479 src/elmdentica.c:626
+#: src/elmdentica.c:479
+#: src/elmdentica.c:626
 msgid "Stop following"
-msgstr ""
+msgstr "Τέλος ακολουθίας"
 
 #: src/elmdentica.c:613
 msgid "Couldn't parse user info message..."
 msgstr "Αδυναμία λήψης πληροφοριών χρήστη..."
 
-#: src/elmdentica.c:675 src/elmdentica.c:754
+#: src/elmdentica.c:675
+#: src/elmdentica.c:754
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
-msgstr ""
+msgstr "Είστε μέλος της ομάδας %s μαζί με %d ακόμα ανθρώπους.<br>«%s»"
 
-#: src/elmdentica.c:676 src/elmdentica.c:787
+#: src/elmdentica.c:676
+#: src/elmdentica.c:787
 msgid "Leave"
 msgstr "Αποχώρηση"
 
-#: src/elmdentica.c:678 src/elmdentica.c:756
+#: src/elmdentica.c:678
+#: src/elmdentica.c:756
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
-msgstr ""
+msgstr "Δεν είστε μέλος της ομάδας %s αλλά %d ανθρώποι είναι.<br>«%s»"
 
-#: src/elmdentica.c:679 src/elmdentica.c:789
+#: src/elmdentica.c:679
+#: src/elmdentica.c:789
 msgid "Join"
 msgstr "Συμμετοχή"
 
@@ -114,37 +124,40 @@ msgstr "~ 1 ώρα πριν"
 #: src/elmdentica.c:1017
 #, c-format
 msgid "on %x"
-msgstr ""
+msgstr "σε %x"
 
 #: src/elmdentica.c:1020
 #, c-format
 msgid "%x %X"
-msgstr ""
+msgstr "%x %X"
 
-#: src/elmdentica.c:1021 src/elmdentica.c:1022
-#, c-format
+#: src/elmdentica.c:1021
+#: src/elmdentica.c:1022
+#, fuzzy, c-format
 msgid "some-when"
-msgstr ""
+msgstr "κάποιο-όταν"
 
 #: src/elmdentica.c:1100
 #, c-format
 msgid "Finished %s"
-msgstr ""
+msgstr "Ολοκληρώθηκε %s"
 
 #: src/elmdentica.c:1108
 msgid "Ok"
-msgstr ""
+msgstr "Εντάξει"
 
 #: src/elmdentica.c:1115
 msgid "Open"
-msgstr ""
+msgstr "Άνοιγμα"
 
 #: src/elmdentica.c:1161
 #, c-format
 msgid "downloading %s"
-msgstr ""
+msgstr "λήψη του %s"
 
-#: src/elmdentica.c:1177 src/elmdentica.c:1876 src/settings.c:542
+#: src/elmdentica.c:1177
+#: src/elmdentica.c:1876
+#: src/settings.c:542
 #: src/settings.c:1271
 msgid "Cancel"
 msgstr "Άκυρο"
@@ -167,7 +180,7 @@ msgstr "Ομάδες"
 
 #: src/elmdentica.c:1347
 msgid "Attachments"
-msgstr ""
+msgstr "Συνημμένα"
 
 #: src/elmdentica.c:1414
 msgid "Reply"
@@ -177,9 +190,10 @@ msgstr "Απάντηση"
 msgid "Repeat"
 msgstr "Επανάληψη"
 
-#: src/elmdentica.c:1430 src/elmdentica.c:2147
+#: src/elmdentica.c:1430
+#: src/elmdentica.c:2147
 msgid "DM"
-msgstr ""
+msgstr "DM"
 
 #: src/elmdentica.c:1439
 msgid "Unmark favorite"
@@ -191,7 +205,7 @@ msgstr "Προσθήκη στα αγαπημένα"
 
 #: src/elmdentica.c:1450
 msgid "View related"
-msgstr ""
+msgstr "Δείτε σχετικά"
 
 #: src/elmdentica.c:1459
 msgid "Status details"
@@ -207,13 +221,16 @@ msgstr "Σφάλμα µ-blog"
 
 #: src/elmdentica.c:1858
 msgid "Send a DM to..."
-msgstr ""
+msgstr "Αποστολή DM στο..."
 
-#: src/elmdentica.c:1870 src/settings.c:534 src/settings.c:1262
+#: src/elmdentica.c:1870
+#: src/settings.c:534
+#: src/settings.c:1262
 msgid "OK"
 msgstr "Οκ"
 
-#: src/elmdentica.c:1954 src/elmdentica.c:2096
+#: src/elmdentica.c:1954
+#: src/elmdentica.c:2096
 msgid "Type your status here..."
 msgstr "Γράψτε την κατάσταση σας εδώ..."
 
@@ -227,11 +244,11 @@ msgstr "Αποστολή"
 
 #: src/elmdentica.c:2160
 msgid "Hide"
-msgstr ""
+msgstr "Απόκρυψη"
 
 #: src/elmdentica.c:2181
 msgid "Timelines"
-msgstr ""
+msgstr "Χρονοδιαγράμματα"
 
 #: src/elmdentica.c:2187
 msgid "Direct Messages"
@@ -261,114 +278,109 @@ msgstr "Φίλοι και εγώ"
 msgid "Fullscreen"
 msgstr "Πλήρης οθόνη"
 
-#: src/elmdentica.c:2195 src/settings.c:1427
+#: src/elmdentica.c:2195
+#: src/settings.c:1427
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
 #: src/statusnet.c:365
 #, c-format
 msgid "Not enough memory to create a status\n"
-msgstr ""
+msgstr "Μη επαρκής μνήμης για δημιουργία κατάστασης\n"
 
 #: src/statusnet.c:417
 #, c-format
 msgid "Not enough memory to create an user\n"
-msgstr ""
+msgstr "Μη επαρκής μνήμης για δημιουργία χρήστη.\n"
 
 #: src/statusnet.c:554
 #, fuzzy, c-format
 msgid "Error encountered: %s\n"
-msgstr "Σφάλμα %d: %s\n"
+msgstr "Παρουσιάστηκε σφάλμα %d: %s\n"
 
 #: src/statusnet.c:966
 #, c-format
 msgid "Unknown timeline %d\n"
-msgstr ""
+msgstr "Άγνωστο χρονοδιάγραμμα %d\n"
 
 #: src/statusnet.c:973
 #, c-format
 msgid "Not enough memory to construct timeline URI\n"
-msgstr ""
+msgstr "Μη επαρκής μνήμη για την δημιουργία χρονοδιαγράμματος URl \n"
 
 #: src/statusnet.c:980
 #, c-format
 msgid "Not enough memory to prepare host url\n"
-msgstr ""
+msgstr "Μη επαρκής μνήμη για την προετοιμασία κόμβου url\n"
 
 #: src/settings.c:146
 msgid "never"
-msgstr ""
+msgstr "ποτέ"
 
 #: src/settings.c:146
 msgid "0 s"
-msgstr ""
+msgstr "0 δ"
 
 #: src/settings.c:147
 msgid "1 minute"
-msgstr ""
+msgstr "1 λεπτό"
 
 #: src/settings.c:147
 msgid "1 min"
-msgstr ""
+msgstr "1 λ"
 
 #: src/settings.c:148
-#, fuzzy
 msgid "2 minutes"
-msgstr "~ %d λεπτά πριν"
+msgstr "2 λεπτά"
 
 #: src/settings.c:148
 msgid "2 min"
-msgstr ""
+msgstr "2 λ"
 
 #: src/settings.c:149
-#, fuzzy
 msgid "5 minutes"
-msgstr "~ %d λεπτά πριν"
+msgstr "5 λεπτά "
 
 #: src/settings.c:149
 msgid "5 min"
-msgstr ""
+msgstr "5 λ"
 
 #: src/settings.c:150
-#, fuzzy
 msgid "10 minutes"
-msgstr "~ %d λεπτά πριν"
+msgstr "10 λεπτά "
 
 #: src/settings.c:150
 msgid "10 min"
-msgstr ""
+msgstr "10 λ"
 
 #: src/settings.c:151
-#, fuzzy
 msgid "15 minutes"
-msgstr "~ %d λεπτά πριν"
+msgstr "15 λεπτά "
 
 #: src/settings.c:151
 msgid "15 min"
-msgstr ""
+msgstr "15 λ"
 
 #: src/settings.c:152
-#, fuzzy
 msgid "30 minutes"
-msgstr "~ %d λεπτά πριν"
+msgstr "30 λεπτά πριν"
 
 #: src/settings.c:152
 msgid "30 min"
-msgstr ""
+msgstr "30 λ"
 
 #: src/settings.c:153
-#, fuzzy
 msgid "1 hour"
-msgstr "~ 1 ώρα πριν"
+msgstr "1 ώρα"
 
 #: src/settings.c:153
 msgid "1 h"
-msgstr ""
+msgstr "1 ώ"
 
-#: src/settings.c:174 src/settings.c:1081
-#, fuzzy
+#: src/settings.c:174
+#: src/settings.c:1081
 msgid "Every: "
-msgstr "Όλοι"
+msgstr "Κάθε:"
 
 #: src/settings.c:396
 msgid "Screen name"
@@ -392,7 +404,7 @@ msgstr "Γρηγορότερα"
 
 #: src/settings.c:466
 msgid "Domain"
-msgstr ""
+msgstr "Τομέας"
 
 #: src/settings.c:481
 msgid "Base URL"
@@ -410,35 +422,40 @@ msgstr "Αποστολή?"
 msgid "Accounts..."
 msgstr "Λογαριασμοί..."
 
-#: src/settings.c:746 src/settings.c:1378
+#: src/settings.c:746
+#: src/settings.c:1378
 msgid "Add"
 msgstr "Προσθήκη"
 
-#: src/settings.c:759 src/settings.c:1391
+#: src/settings.c:759
+#: src/settings.c:1391
 msgid "Edit"
 msgstr "Επεξεργασία"
 
-#: src/settings.c:773 src/settings.c:1404
+#: src/settings.c:773
+#: src/settings.c:1404
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: src/settings.c:800 src/settings.c:823
+#: src/settings.c:800
+#: src/settings.c:823
 msgid "No posts<br>in cache."
-msgstr "Χωρίς "
+msgstr "Χωρίς καταχωρήσεις <br> στην προσωρινή μνήμη."
 
 #: src/settings.c:802
 #, c-format
 msgid "Currently remembering<br>%d posts."
-msgstr "Τρέχουσα ενθύμιση<br>%d μηνυμάτων."
+msgstr "Τρέχουσα υπενθύμιση<br>%d καταχωρήσεων."
 
-#: src/settings.c:838 src/settings.c:861
+#: src/settings.c:838
+#: src/settings.c:861
 msgid "No messages<br>in cache."
 msgstr "Χωρίς μηνύματα<br>στην προσωρινή μνήμη."
 
 #: src/settings.c:840
 #, c-format
 msgid "Currently remembering<br>%d messages."
-msgstr "Τρέχουσα ενθύμιση<br>%d μηνυμάτων."
+msgstr "Τρέχουσα υπενθύμιση<br>%d μηνυμάτων."
 
 #: src/settings.c:939
 msgid "Displayed messages"
@@ -482,15 +499,15 @@ msgstr "Απόλυτο"
 
 #: src/settings.c:1073
 msgid "Auto updates"
-msgstr ""
+msgstr "Αυτόματες ενημέρωσεις"
 
 #: src/settings.c:1242
 msgid "Pattern..."
-msgstr ""
+msgstr "Μοτίβο..."
 
 #: src/settings.c:1344
 msgid "Gag patterns..."
-msgstr ""
+msgstr "Μοτίβο σίγασης..."
 
 #: src/settings.c:1428
 msgid "ElmDentica settings..."
@@ -510,7 +527,7 @@ msgstr "Επιλογές"
 
 #: src/settings.c:1459
 msgid "Gag"
-msgstr ""
+msgstr "Σίγαση"
 
 #: src/settings.c:1470
 #, c-format
@@ -524,8 +541,7 @@ msgid ""
 msgstr ""
 "\n"
 "Χρήση:\n"
-"   -d   Λειτουργία αποσφαλμάτωσης (για πιο λαχταριστά μηνύματα εξόδου "
-"χρησιμοποιήστε πολλαπλές φορές)\n"
+"   -d   Λειτουργία αποσφαλμάτωσης (για πιο λαχταριστά μηνύματα εξόδου χρησιμοποιήστε πολλαπλές φορές)\n"
 "   -h   Βοήθεια (αυτό που διαβάζετε αυτή τη στιγμή)\n"
 "   -m N Εμφάνισε N μηνύματα κάθε φορά\n"
 "\n"
@@ -533,27 +549,27 @@ msgstr ""
 #: src/settings.c:1493
 #, c-format
 msgid "Can't run ecore_file_init()\n"
-msgstr ""
+msgstr "Αδυναμία εκτέλεσης ecore_file_init()\n"
 
 #: src/settings.c:1499
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
-msgstr ""
+msgstr "Αδυναμία δημιουργίας καταλόγων προτιμήσεων μετά την αποτυχία asprintf\n"
 
 #: src/settings.c:1499
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
-msgstr ""
+msgstr "Αδυναμία δημιουργίας καταλόγων προτιμήσεων μετά την αποτυχία ecore_file_mkpath\n"
 
 #: src/settings.c:1507
 #, c-format
 msgid "Not enough memory to define conf.eet path"
-msgstr ""
+msgstr "Μη επαρκής μνήμη για τον προσδιορισμό διαδρομής conf.eet "
 
 #: src/settings.c:1513
 #, c-format
 msgid "Couldn't run eet_init()"
-msgstr ""
+msgstr "Αδυναμία εκτέλεσης eet_init()"
 
 #: src/settings.c:1520
 #, c-format
@@ -563,13 +579,12 @@ msgstr "Αδύνατη η δημιουργία του %s"
 #: src/settings.c:1528
 #, c-format
 msgid "Can't setup settings_edd."
-msgstr ""
+msgstr "Αδυναμία ρύθμισης settings_edd."
 
 #: src/settings.c:1547
-#, c-format
-msgid ""
-"Not enough memory for settings, no doubt for anything else either, surely..."
-msgstr ""
+#, fuzzy, c-format
+msgid "Not enough memory for settings, no doubt for anything else either, surely..."
+msgstr "Μη επαρκή μνήμη για ρυθμίσεις, είτε για οτιδήποτε άλλο, σίγουρα..."
 
 #~ msgid "Error %d: %s\n"
 #~ msgstr "Σφάλμα %d: %s\n"
