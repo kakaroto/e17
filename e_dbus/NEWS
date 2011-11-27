@@ -15,6 +15,7 @@ Fixes:
     * DSO linking issues fixed
     * crash on e-notify-send with invalid session bus set
     * when app has no idle time, e_dbus's idlers dont process anything
+    * error when trying to add duplicate fd handler for dbus fd
 
 Improvements:
 

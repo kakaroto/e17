@@ -36,3 +36,7 @@
 2011-11-11  Carsten Haitzler (The Rasterman)
 
         * Fix DSO linking to edbus to include libdbus linking and includes
+
+2011-11-27  Mike Blumenkrantz
+
+        * Fix case where fd handler could be added twice for dbus fd

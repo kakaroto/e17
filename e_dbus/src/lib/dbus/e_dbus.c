@@ -83,16 +83,24 @@ e_dbus_fd_handler_add(E_DBus_Handler_Data *hd)
 {
   unsigned int dflags;
   Ecore_Fd_Handler_Flags eflags;
+  Eina_List *l;
+  Ecore_Fd_Handler *fdh;
 
   if (hd->fd_handler) return;
-  DBG("fd handler add (%d)", hd->fd);
-
   dflags = dbus_watch_get_flags(hd->watch);
   eflags = ECORE_FD_ERROR;
   if (dflags & DBUS_WATCH_READABLE) eflags |= ECORE_FD_READ;
   if (dflags & DBUS_WATCH_WRITABLE) eflags |= ECORE_FD_WRITE;
 
+  EINA_LIST_FOREACH(hd->cd->fd_handlers, l, fdh)
+    {
+       if (ecore_main_fd_handler_fd_get(fdh) != hd->fd) continue;
+       DBG("fd handler mod (%d)", hd->fd);
+       ecore_main_fd_handler_active_set(fdh, eflags);
+       return;
+    }
 
+  DBG("fd handler add (%d)", hd->fd);
   hd->fd_handler = ecore_main_fd_handler_add(hd->fd,
                                              eflags,
                                              e_dbus_fd_handler,
