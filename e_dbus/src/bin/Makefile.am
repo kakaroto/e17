@@ -1,5 +1,8 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+AM_CFLAGS = \
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\"
+
 EDBUS_CPPFLAGS = @EDBUS_CFLAGS@
 
 bin_PROGRAMS =
@@ -127,6 +130,9 @@ $(top_builddir)/src/lib/dbus/libedbus.la \
 endif
 
 if BUILD_EDBUS_NOTIFY_TEST
+EXTRA_DIST = logo.png
+logodir = $(datadir)/e_dbus
+logo_DATA = logo.png
 e_dbus_notify_SOURCES = notify.c
 e_dbus_notify_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
