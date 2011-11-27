@@ -51,25 +51,38 @@ struct E_DBus_Timeout_Data
 
 static Eina_Bool e_dbus_idler(void *data);
 
+static void
+e_dbus_fd_handler_del(E_DBus_Handler_Data *hd)
+{
+  if (!hd->fd_handler) return;
+
+  DBG("handler disabled");
+  hd->cd->fd_handlers = eina_list_remove(hd->cd->fd_handlers, hd->fd_handler);
+  ecore_main_fd_handler_del(hd->fd_handler);
+  hd->fd_handler = NULL;
+}
+
 static Eina_Bool
 e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
 {
   E_DBus_Handler_Data *hd;
   unsigned int condition = 0;
 
-  DBG("fd handler (%ld)!", (long int)fd_handler);
+  DBG("fd handler (%p)!", fd_handler);
 
   hd = data;
 
-  if (!hd->enabled) {
-    DBG("handler disabled");
-    if (hd->fd_handler) ecore_main_fd_handler_del(hd->fd_handler);
-    hd->fd_handler = NULL;
-    return ECORE_CALLBACK_CANCEL;
-  }
+  if (!hd->enabled)
+    {
+       e_dbus_fd_handler_del(hd);
+       return ECORE_CALLBACK_CANCEL;
+    }
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_READ)) condition |= DBUS_WATCH_READABLE;
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_WRITE)) condition |= DBUS_WATCH_WRITABLE;
   if (ecore_main_fd_handler_active_get(fd_handler, ECORE_FD_ERROR)) condition |= DBUS_WATCH_ERROR;
+  DBG("fdh || READ: %d, WRITE: %d",
+      (condition & DBUS_WATCH_READABLE) == DBUS_WATCH_READABLE,
+      (condition & DBUS_WATCH_WRITABLE) == DBUS_WATCH_WRITABLE);
 
   if (condition & DBUS_WATCH_ERROR) DBG("DBUS watch error");
   dbus_watch_handle(hd->watch, condition);
@@ -94,10 +107,7 @@ e_dbus_fd_handler_add(E_DBus_Handler_Data *hd)
 
   EINA_LIST_FOREACH(hd->cd->fd_handlers, l, fdh)
     {
-       if (ecore_main_fd_handler_fd_get(fdh) != hd->fd) continue;
-       DBG("fd handler mod (%d)", hd->fd);
-       ecore_main_fd_handler_active_set(fdh, eflags);
-       return;
+       if (ecore_main_fd_handler_fd_get(fdh) == hd->fd) return;
     }
 
   DBG("fd handler add (%d)", hd->fd);
@@ -351,13 +361,7 @@ cb_watch_del(DBusWatch *watch, void *data __UNUSED__)
 
   DBG("cb_watch_del");
   hd = (E_DBus_Handler_Data *)dbus_watch_get_data(watch);
-
-  if (hd->fd_handler) 
-  {
-    hd->cd->fd_handlers = eina_list_remove(hd->cd->fd_handlers, hd->fd_handler);
-    ecore_main_fd_handler_del(hd->fd_handler);
-    hd->fd_handler = NULL;
-  }
+  e_dbus_fd_handler_del(hd);
 }
 
 static void
@@ -372,7 +376,9 @@ cb_watch_toggle(DBusWatch *watch, void *data __UNUSED__)
 
   hd->enabled = dbus_watch_get_enabled(watch);
 
+  INFO("watch %p is %sabled", hd, hd->enabled ? "en" : "dis");
   if (hd->enabled) e_dbus_fd_handler_add(hd);
+  else e_dbus_fd_handler_del(hd);
 }
 
 static void
