@@ -44,7 +44,10 @@ _azy_client_handler_call_free(Azy_Client  *client,
      }
    /* http 1.0 requires that we disconnect after every response */
    if ((!content->recv_net->http.version) || (client && client->net && (!client->net->http.version)))
-     ecore_con_server_del(content->recv_net->conn);
+     {
+        ecore_con_server_del(client->net->conn);
+        client->net->conn = content->recv_net->conn = NULL;
+     }
    azy_content_free(content);
 }
 
