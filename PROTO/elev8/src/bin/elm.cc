@@ -4028,7 +4028,7 @@ public:
              if (0 > access(*str, R_OK))
                ERR( "warning: can't read image file %s", *str);
             elm_photocam_file_set(eo, *str);
-            INFO( "Photcam image file %s", *str);
+            INF( "Photcam image file %s", *str);
          }
      }
 
