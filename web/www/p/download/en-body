@@ -207,23 +207,53 @@
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Enlightenment">Enlightenment</a> </b><em>
-     0.16.999.55225 </em></p><p>
-     Enlightenment, the window manager. </p><p align=right><?php blinkdl("i/dl.png", 
+     0.16.999.65643 </em></p><p>
+     Enlightenment, the window manager... </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD ENLIGHTENMENT",
-     "http://download.enlightenment.org/snapshots/2010-12-03/enlightenment-0.16.999.55225.tar.gz"
+     "http://download.enlightenment.org/snapshots/2011-11-28/enlightenment-0.16.999.65643.tar.gz"
    );?></p></div>
    <?php frame2();?>
    
    <?php frame1("width=100%");?>
    <div class="main"><p><b><a href=
      "http://trac.enlightenment.org/e/wiki/Elementary">Elementary</a> </b><em>
-     0.7.0.55225 </em></p><p>
-     Elementary, the widget set.. </p><p align=right><?php blinkdl("i/dl.png", 
+     0.8.0.65643 </em></p><p>
+     Elementary, the widget set... </p><p align=right><?php blinkdl("i/dl.png", 
      "DOWNLOAD ELEMENTARY",
-     "http://download.enlightenment.org/snapshots/2010-12-03/elementary-0.7.0.55225.tar.gz"
+     "http://download.enlightenment.org/snapshots/2011-11-28/elementary-0.8.0.65643.tar.gz"
    );?></p></div>
    <?php frame2();?>
-   
+
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Eio">Eio</a> </b><em>
+     0.1.0.65643 </em></p><p>
+     Eio, async I/O library... </p><p align=right><?php blinkdl("i/dl.png", 
+     "DOWNLOAD EIO",
+     "http://download.enlightenment.org/snapshots/2011-11-28/eio-0.1.0.65643.tar.gz"
+   );?></p></div>
+   <?php frame2();?>
+
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Ethumb">Ethumb</a> </b><em>
+     0.1.1.65643 </em></p><p>
+     EThumb, thumbnail generation library... </p><p align=right><?php blinkdl("i/dl.png", 
+     "DOWNLOAD ETHUMB",
+     "http://download.enlightenment.org/snapshots/2011-11-28/ethumb-0.1.1.65643.tar.gz"
+   );?></p></div>
+   <?php frame2();?>
+
+   <?php frame1("width=100%");?>
+   <div class="main"><p><b><a href=
+     "http://trac.enlightenment.org/e/wiki/Emotion">Emotion</a> </b><em>
+     0.2.0.65643 </em></p><p>
+     Emotion, video and audio codec API... </p><p align=right><?php blinkdl("i/dl.png", 
+     "DOWNLOAD EMOTION",
+     "http://download.enlightenment.org/snapshots/2011-11-28/emotion-0.2.0.65643.tar.gz"
+   );?></p></div>
+   <?php frame2();?>
+
   </td>
  </tr>
  
