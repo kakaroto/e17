@@ -543,11 +543,10 @@ Azy_Module SQL
 #ifdef HAVE_CONFIG_H
     #include <config.h>
 #endif
-#ifdef HAVE_MYSQL_MYSQL_H
-     #include <mysql/mysql.h>
-#endif
 #ifdef HAVE_MYSQL_H
      #include <mysql.h>
+#elif HAVE_MYSQL_MYSQL_H == 1
+     #include <mysql/mysql.h>
 #endif
    %>
 
