@@ -1,14 +1,14 @@
-#ifndef _DBUS_LIBRARY_H
-#define _DBUS_LIBRARY_H
+#ifndef ELEV8_DBUS_LIBRARY_H
+#define ELEV8_DBUS_LIBRARY_H
 
 #include <v8.h>
 #include <dbus/dbus.h>
 #include <E_DBus.h>
+#include <Ecore.h>
 #include <Eina.h>
 #include <ctype.h>
-
-#include <exception>
 #include <map>
+#include <elev8_common.h>
 
 /* memory efficient structures to hold introspection information.
  * maybe Eina_Inlist could be replaced with single array of structures

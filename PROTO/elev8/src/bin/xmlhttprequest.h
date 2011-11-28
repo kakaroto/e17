@@ -1,14 +1,17 @@
-#include <Eina.h>
-#include <Ecore.h>
+#ifndef ELEV8_HTTP_H
+#define ELEV8_HTTP_H
+
 #include <Ecore_Con.h>
-#include <v8.h>
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <assert.h>
 #include <vector>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <elev8_common.h>
+
 
 v8::Handle<v8::Value>response_text_getter(v8::Local<v8::String> property, const v8::AccessorInfo& info);
 v8::Handle<v8::Value>status_getter(v8::Local<v8::String> property, const v8::AccessorInfo& info);
@@ -60,3 +63,5 @@ class XMLHttpRequest
 	}
 
 };
+
+#endif

@@ -5,25 +5,10 @@
  * then exit
  */
 
-#include <Elementary.h>
-#include <v8.h>
 #include <list>
-
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <assert.h>
+#include <elev8_common.h>
 
 using namespace v8;
-extern int elev8_log_domain;
-
-#define DBG(...) EINA_LOG_DOM_DBG(elev8_log_domain, __VA_ARGS__)
-#define INF(...) EINA_LOG_DOM_INFO(elev8_log_domain, __VA_ARGS__)
-#define WRN(...) EINA_LOG_DOM_WARN(elev8_log_domain, __VA_ARGS__)
-#define ERR(...) EINA_LOG_DOM_ERR(elev8_log_domain, __VA_ARGS__)
-#define CRITICAL(...) EINA_LOG_DOM_CRITICAL(elev8_log_domain, __VA_ARGS__)
-
 
 // FIXME: split CElmObject from CEvasObject
 

@@ -1,9 +1,4 @@
-#include <exception>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-
-#include "xmlhttprequest.h"
+#include <xmlhttprequest.h>
 
 using namespace v8;
 int elev8_http_log_domain = -1;
@@ -18,7 +13,7 @@ Eina_Bool data_callback(void *data, int type, void *event)
 
    if (ptr != data)
      {
-        EINA_LOG_DOM_ERR(elev8_http_log_domain, "Ignore the event - Not for this URL");
+        HTTP_ERR( "Ignore the event - Not for this URL");
 	return ECORE_CALLBACK_PASS_ON;
      }
 
@@ -27,7 +22,7 @@ Eina_Bool data_callback(void *data, int type, void *event)
      {
         eina_binbuf_append_length(reqObj->data, 
 			url_data->data, url_data->size);
-	    EINA_LOG_DOM_INFO(elev8_http_log_domain,  "Appended %d data", url_data->size);
+	    HTTP_INF(  "Appended %d data", url_data->size);
      }
    return EINA_FALSE;
 }
@@ -42,7 +37,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
 
    if (ptr != data)
      {
-        EINA_LOG_DOM_INFO(elev8_http_log_domain,  "Ignore the event - Not for this URL");
+        HTTP_INF(  "Ignore the event - Not for this URL");
 	return ECORE_CALLBACK_PASS_ON;
      }
 
@@ -53,7 +48,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
 
    Local<Integer> status = Integer::New((int32_t)url_complete->status);
    reqObj->status = Persistent<Integer>(status);
-   EINA_LOG_DOM_INFO(elev8_http_log_domain,  "Object Obtained =  %p", reqObj->data);
+   HTTP_INF(  "Object Obtained =  %p", reqObj->data);
 
    // set class status here
    headers = ecore_con_url_response_headers_get(url_complete->url_con);
@@ -72,7 +67,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
 	   /* binary - give the location of file */
 	   if (strstr(str, "png") || (strstr(str, "jpeg")) || (strstr(str, "gif")))
              {
-		EINA_LOG_DOM_INFO(elev8_http_log_domain,  "str = %s", str);
+		HTTP_INF(  "str = %s", str);
 		char buf[100];
 		sprintf(buf, "%s/elev8-http-%d",PACKAGE_TMP_DIR,
 			             	XMLHttpRequest::addFdCount());
@@ -80,11 +75,11 @@ Eina_Bool completion_callback(void *data, int type, void *event)
 
 	        // make v8 string here
 		std::ofstream out(buf, std::ios::out | std::ios::binary);
-		EINA_LOG_DOM_INFO(elev8_http_log_domain,  "Image = %s", buf);
+		HTTP_INF(  "Image = %s", buf);
 		out.write((char *)eina_binbuf_string_get(reqObj->data), 
 				   eina_binbuf_length_get(reqObj->data));
 		out.close();
-		EINA_LOG_DOM_INFO(elev8_http_log_domain,  "Size of response Data = %d bytes",
+		HTTP_INF(  "Size of response Data = %d bytes",
 						eina_binbuf_length_get(reqObj->data));
    		reqObj->responseText =  static_cast<Persistent<String> >(String::New(buf));
 	     }
@@ -109,7 +104,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
         /*Local<Value> tmp = reqObj->obj->Get(funcName);
         if (tmp->IsNull())
           {
-             EINA_LOG_DOM_INFO(elev8_http_log_domain, "onreadystatechange is null for this instance");
+             HTTP_INF( "onreadystatechange is null for this instance");
           }
         else*/
           {
@@ -172,9 +167,9 @@ void onreadystatechange_setter(Local<String> property,
    XMLHttpRequest *reqObj = (XMLHttpRequest *)ptr;
 
    String::Utf8Value prop_name(property);
-   //EINA_LOG_DOM_INFO(elev8_http_log_domain,  "************************************");
-   //EINA_LOG_DOM_INFO(elev8_http_log_domain,  "Setting callback to %p for %p", *value, ptr);
-   //EINA_LOG_DOM_INFO(elev8_http_log_domain,  "************************************");
+   //HTTP_INF(  "************************************");
+   //HTTP_INF(  "Setting callback to %p for %p", *value, ptr);
+   //HTTP_INF(  "************************************");
 
    reqObj->onreadystatechange.Dispose();
    reqObj->onreadystatechange = Persistent<Value>::New(value);
@@ -190,7 +185,7 @@ Handle<Value> get_response_header(const Arguments& args)
    std::vector<std::string>::iterator it;
 
    String::Utf8Value requested_header(args[0]->ToString());
-   //EINA_LOG_DOM_INFO(elev8_http_log_domain, "Making request to %s", *requested_header);
+   //HTTP_INF( "Making request to %s", *requested_header);
 
    for ( it=reqObj->responseHeaders.begin() ; it < reqObj->responseHeaders.end(); it++ )
       {
@@ -244,7 +239,7 @@ Handle<Value>
 ecore_con_open(const Arguments& args)
 {
    HandleScope scope;
-   EINA_LOG_DOM_INFO(elev8_http_log_domain, "Calling Open API");
+   HTTP_INF( "Calling Open API");
    Local<Object> self = args.Holder();
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
    void* ptr = wrap->Value();
@@ -264,16 +259,16 @@ ecore_con_open(const Arguments& args)
           }
 	else
           {
-             EINA_LOG_DOM_ERR(elev8_http_log_domain, "Only GET and POST supported");
+             HTTP_ERR( "Only GET and POST supported");
              return Undefined();
 	  }
 
         String::Utf8Value url(args[1]->ToString());
-        EINA_LOG_DOM_INFO(elev8_http_log_domain, "Making request to %s", *url);
+        HTTP_INF( "Making request to %s", *url);
         Ecore_Con_Url *url_con = ecore_con_url_new(*url);
         if (url_con==NULL)
           {
-             EINA_LOG_DOM_ERR(elev8_http_log_domain, "Cannot open connection to %s", *url);
+             HTTP_ERR( "Cannot open connection to %s", *url);
              return Undefined();
           }
         reqObj->url_con = url_con;
@@ -286,7 +281,7 @@ Handle<Value>
 ecore_con_send(const Arguments& args)
 {
    HandleScope scope;
-   EINA_LOG_DOM_INFO(elev8_http_log_domain, "Calling Send API");
+   HTTP_INF( "Calling Send API");
    Local<Object> self = args.Holder();
    Local<External> wrap = Local<External>::Cast(self->GetInternalField(0));
    void* ptr = wrap->Value();
@@ -307,7 +302,7 @@ ecore_con_send(const Arguments& args)
 
    if (!sentStatus)
      {
-        EINA_LOG_DOM_ERR(elev8_http_log_domain, "Unable to send request");
+        HTTP_ERR( "Unable to send request");
      }
 
    return Undefined();
@@ -365,7 +360,7 @@ Handle<Value> createXMLHttpReqInstance(const Arguments& args)
                             data_callback,
                             reinterpret_cast<void *>(reqObj));
 
-   EINA_LOG_DOM_INFO(elev8_http_log_domain,  "Http Request initialized %p", reqObj->data);
+   HTTP_INF(  "Http Request initialized %p", reqObj->data);
    return reqObj->obj; 
 }
 
@@ -374,19 +369,19 @@ int xmlhttp_v8_setup(Handle<ObjectTemplate> global)
    elev8_http_log_domain = eina_log_domain_register("elev8-http", EINA_COLOR_ORANGE);
    if (!elev8_http_log_domain)
      {
-        EINA_LOG_DOM_ERR(elev8_http_log_domain, "could not register elev8-http log domain.");
+        HTTP_ERR( "could not register elev8-http log domain.");
         elev8_http_log_domain = EINA_LOG_DOMAIN_GLOBAL;
      }
-   EINA_LOG_DOM_INFO(elev8_http_log_domain,"elev8-http Logging initialized. %d", elev8_http_log_domain);
+   HTTP_INF("elev8-http Logging initialized. %d", elev8_http_log_domain);
 
 
    if (!ecore_con_url_init())
      {
-        EINA_LOG_DOM_ERR(elev8_http_log_domain, "Cannot Init to ECore_Url");
+        HTTP_ERR( "Cannot Init to ECore_Url");
         return -1;
      }
 
-   //EINA_LOG_DOM_INFO(elev8_http_log_domain,  "Creating XML Http Request Instance");
+   //HTTP_INF(  "Creating XML Http Request Instance");
 
    /* Add support for XML HTTP Request */
    xmlHttpReqObj = ObjectTemplate::New();

@@ -1,17 +1,7 @@
-#include "dbus_library.h"
-#include <Eina.h>
-#include <E_DBus.h>
-#include <Ecore.h>
+#include <dbus_library.h>
 
 using namespace v8;
 int elev8_dbus_log_domain = -1;
-
-#define DBG(...) EINA_LOG_DOM_DBG(elev8_dbus_log_domain, __VA_ARGS__)
-#define INF(...) EINA_LOG_DOM_INFO(elev8_dbus_log_domain, __VA_ARGS__)
-#define WRN(...) EINA_LOG_DOM_WARN(elev8_dbus_log_domain, __VA_ARGS__)
-#define ERR(...) EINA_LOG_DOM_ERR(elev8_dbus_log_domain, __VA_ARGS__)
-#define CRITICAL(...) EINA_LOG_DOM_CRITICAL(elev8_dbus_log_domain, __VA_ARGS__)
-
 Handle<ObjectTemplate> dbusObj;
 
 static Eina_Bool cb_parse_method_argument_attributes(void *data, const char *key, const char *value)
@@ -32,13 +22,13 @@ static Eina_Bool cb_parse_method_argument_attributes(void *data, const char *key
           ma->is_output = EINA_FALSE;
         else
           {
-             ERR( "Error: unknown method argument direction %s", value);
+             DBUS_ERR( "Error: unknown method argument direction %s", value);
              return EINA_FALSE;
           }
      }
    else
      {
-        ERR( "Error: unknown method argument attribute %s=%s",
+        DBUS_ERR( "Error: unknown method argument attribute %s=%s",
                 key, value);
         return EINA_FALSE;
      }
@@ -53,14 +43,14 @@ static Eina_Bool parse_method_argument(struct DBus_Method *m, const char *attrs,
    ma = (struct DBus_Method_Argument *)calloc(1, sizeof(struct DBus_Method_Argument));
    if (!ma)
      {
-        ERR( "Error: could not allocate memory");
+        DBUS_ERR( "Error: could not allocate memory");
         return EINA_FALSE;
      }
 
    if (!eina_simple_xml_attributes_parse
        (attrs, length, cb_parse_method_argument_attributes, ma))
      {
-        ERR( "Error: could not parse method argument attributes");
+        DBUS_ERR( "Error: could not parse method argument attributes");
         eina_stringshare_del(ma->name);
         eina_stringshare_del(ma->type);
         free(ma);
@@ -69,7 +59,7 @@ static Eina_Bool parse_method_argument(struct DBus_Method *m, const char *attrs,
 
    if (!ma->type)
      {
-        ERR( "Error: method argument must have a type!");
+        DBUS_ERR( "Error: method argument must have a type!");
         eina_stringshare_del(ma->name);
         eina_stringshare_del(ma->type);
         free(ma);
@@ -101,21 +91,21 @@ static struct DBus_Method *parse_method(const char *attrs, unsigned length)
    struct DBus_Method *m = (struct DBus_Method *)calloc(1, sizeof(struct DBus_Method));
    if (!m)
      {
-        ERR( "Error: could not allocate memory");
+        DBUS_ERR( "Error: could not allocate memory");
         return NULL;
      }
 
    if (!eina_simple_xml_attributes_parse
        (attrs, length, cb_parse_method_attributes, m))
      {
-        ERR( "Error: could not parse method attributes");
+        DBUS_ERR( "Error: could not parse method attributes");
         free(m);
         return NULL;
      }
 
    if (!m->name)
      {
-        ERR( "Error: method must have a name!");
+        DBUS_ERR( "Error: method must have a name!");
         free(m);
         return NULL;
      }
@@ -147,7 +137,7 @@ static Eina_Bool cb_parse_signal_argument_attributes(void *data, const char *key
      eina_stringshare_replace(&sa->type, (value));
    else
      {
-        ERR( "Error: unknown signal argument attribute %s=%s",
+        DBUS_ERR( "Error: unknown signal argument attribute %s=%s",
                 key, value);
         return EINA_FALSE;
      }
@@ -162,14 +152,14 @@ static Eina_Bool parse_signal_argument(struct DBus_Signal *s, const char *attrs,
    sa = (struct DBus_Signal_Argument *)calloc(1, sizeof(struct DBus_Signal_Argument));
    if (!sa)
      {
-        ERR( "Error: could not allocate memory");
+        DBUS_ERR( "Error: could not allocate memory");
         return EINA_FALSE;
      }
 
    if (!eina_simple_xml_attributes_parse
        (attrs, length, cb_parse_signal_argument_attributes, sa))
      {
-        ERR( "Error: could not parse signal argument attributes");
+        DBUS_ERR( "Error: could not parse signal argument attributes");
         eina_stringshare_del(sa->name);
         eina_stringshare_del(sa->type);
         free(sa);
@@ -178,7 +168,7 @@ static Eina_Bool parse_signal_argument(struct DBus_Signal *s, const char *attrs,
 
    if (!sa->type)
      {
-        ERR( "Error: signal argument must have a type!");
+        DBUS_ERR( "Error: signal argument must have a type!");
         eina_stringshare_del(sa->name);
         eina_stringshare_del(sa->type);
         free(sa);
@@ -210,21 +200,21 @@ static struct DBus_Signal *parse_signal(const char *attrs, unsigned length)
    struct DBus_Signal *s = (struct DBus_Signal *)calloc(1, sizeof(struct DBus_Signal));
    if (!s)
      {
-        ERR( "Error: could not allocate memory");
+        DBUS_ERR( "Error: could not allocate memory");
         return NULL;
      }
 
    if (!eina_simple_xml_attributes_parse
        (attrs, length, cb_parse_signal_attributes, s))
      {
-        ERR( "Error: could not parse signal attributes");
+        DBUS_ERR( "Error: could not parse signal attributes");
         free(s);
         return NULL;
      }
 
    if (!s->name)
      {
-        ERR( "Error: signal must have a name!");
+        DBUS_ERR( "Error: signal must have a name!");
         free(s);
         return NULL;
      }
@@ -272,13 +262,13 @@ static Eina_Bool cb_parse_property_attributes(void *data, const char *key, const
           }
         else
           {
-             ERR( "Error: unknown access value '%s'", value);
+             DBUS_ERR( "Error: unknown access value '%s'", value);
              return EINA_FALSE;
           }
      }
    else
      {
-        ERR( "Error: unknown property attribute %s=%s",
+        DBUS_ERR( "Error: unknown property attribute %s=%s",
                 key, value);
         return EINA_FALSE;
      }
@@ -291,7 +281,7 @@ static struct DBus_Property *parse_property(const char *attrs, unsigned length)
    struct DBus_Property *p = (struct DBus_Property *)calloc(1, sizeof(struct DBus_Property));
    if (!p)
      {
-        ERR( "Error: could not allocate memory");
+        DBUS_ERR( "Error: could not allocate memory");
         return NULL;
      }
 
@@ -300,14 +290,14 @@ static struct DBus_Property *parse_property(const char *attrs, unsigned length)
    if (!eina_simple_xml_attributes_parse
        (attrs, length, cb_parse_property_attributes, p))
      {
-        ERR( "Error: could not parse property attributes");
+        DBUS_ERR( "Error: could not parse property attributes");
         free(p);
         return NULL;
      }
 
    if (!p->name)
      {
-        ERR( "Error: property must have a name!");
+        DBUS_ERR( "Error: property must have a name!");
         free(p);
         return NULL;
      }
@@ -338,21 +328,21 @@ static struct DBus_Interface *parse_interface(const char *attrs, unsigned length
                                         (1,sizeof(struct DBus_Interface));
    if (!i)
      {
-        ERR( "Error: could not allocate memory");
+        DBUS_ERR( "Error: could not allocate memory");
         return NULL;
      }
 
    if (!eina_simple_xml_attributes_parse
        (attrs, length, cb_parse_interface_attributes, i))
      {
-        ERR( "Error: could not parse interface attributes");
+        DBUS_ERR( "Error: could not parse interface attributes");
         free(i);
         return NULL;
      }
 
    if (!i->name)
      {
-        ERR( "Error: interface must have a name!");
+        DBUS_ERR( "Error: interface must have a name!");
         free(i);
         return NULL;
      }
@@ -405,7 +395,7 @@ static struct DBus_Node *parse_node(const char *attrs, unsigned length)
    struct DBus_Node *n = (struct DBus_Node *)calloc(1, sizeof(struct DBus_Node));
    if (!n)
      {
-        ERR( "Error: could not allocate memory");
+        DBUS_ERR( "Error: could not allocate memory");
         return NULL;
      }
 
@@ -414,7 +404,7 @@ static struct DBus_Node *parse_node(const char *attrs, unsigned length)
    if (!eina_simple_xml_attributes_parse
        (attrs, length, cb_parse_node_attributes, n))
      {
-        ERR( "Error: could not parse node attributes");
+        DBUS_ERR( "Error: could not parse node attributes");
         free(n);
         return NULL;
      }
@@ -469,7 +459,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
              {
                 if (strncmp("node", content, sz) != 0)
                   {
-                     ERR( "Error: expected <node>, got %.*s",
+                     DBUS_ERR( "Error: expected <node>, got %.*s",
                              length, content);
                      return EINA_FALSE;
                   }
@@ -499,7 +489,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
                   {
                      if (!ctxt->node)
                        {
-                          ERR(
+                          DBUS_ERR(
                                   "Error: cannot have <%.*s> outside <node>!",
                                   length, content);
                           return EINA_FALSE;
@@ -518,7 +508,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
 
                      if (!ctxt->interface)
                        {
-                          ERR(
+                          DBUS_ERR(
                                   "Error: cannot have <%.*s> outside "
                                   "<interface>!",
                                   length, content);
@@ -541,7 +531,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
 
                      if (!ctxt->interface)
                        {
-                          ERR(
+                          DBUS_ERR(
                                   "Error: cannot have <%.*s> outside "
                                   "<interface>!",
                                   length, content);
@@ -564,7 +554,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
 
                      if (!ctxt->interface)
                        {
-                          ERR(
+                          DBUS_ERR(
                                   "Error: cannot have <%.*s> outside "
                                   "<interface>!",
                                   length, content);
@@ -585,7 +575,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
                           if (!parse_method_argument
                               (ctxt->method, attrs, attrslen))
                             {
-                               ERR(
+                               DBUS_ERR(
                                        "Error: cannot parse method's <%.*s>",
                                        length, content);
                                return EINA_FALSE;
@@ -596,7 +586,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
                           if (!parse_signal_argument
                               (ctxt->signal, attrs, attrslen))
                             {
-                               ERR(
+                               DBUS_ERR(
                                        "Error: cannot parse signal's <%.*s>",
                                        length, content);
                                return EINA_FALSE;
@@ -604,7 +594,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
                        }
                      else
                        {
-                          ERR(
+                          DBUS_ERR(
                                   "Error: cannot have <%.*s> outside "
                                   "<method> or <signal>!",
                                   length, content);
@@ -613,7 +603,7 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
                   }
                 else
                   {
-                     ERR( "Error: unexpected element <%.*s>",
+                     DBUS_ERR( "Error: unexpected element <%.*s>",
                              length, content);
                      return EINA_FALSE;
                   }
@@ -636,11 +626,11 @@ static Eina_Bool cb_parse(void *data, Eina_Simple_XML_Type type, const char *con
       case EINA_SIMPLE_XML_DOCTYPE:
       case EINA_SIMPLE_XML_COMMENT:
       case EINA_SIMPLE_XML_IGNORED:
-         /*ERR( "Ignored: contents at offset %u-%u: %.*s",
+         /*DBUS_ERR( "Ignored: contents at offset %u-%u: %.*s",
                  offset, length, length, content);*/
          break;
       case EINA_SIMPLE_XML_ERROR:
-         ERR( "Error: parser error at offset %u-%u: %.*s",
+         DBUS_ERR( "Error: parser error at offset %u-%u: %.*s",
                  offset, length, length, content);
          break;
      }
@@ -713,7 +703,7 @@ static void cb_introspect(void *data, DBusMessage *msg, DBusError *error)
 
    if ((error) && (dbus_error_is_set(error)))
      {
-        ERR( "Error: DBus error %s: %s",
+        DBUS_ERR( "Error: DBus error %s: %s",
                 error->name, error->message);
         return;
      }
@@ -723,7 +713,7 @@ static void cb_introspect(void *data, DBusMessage *msg, DBusError *error)
    if (!dbus_message_get_args(msg, &e, DBUS_TYPE_STRING, &dbus->ctxt->xml_str,
                               DBUS_TYPE_INVALID))
      {
-        ERR( "Error: could not get arguments %s: %s",
+        DBUS_ERR( "Error: could not get arguments %s: %s",
                 e.name, e.message);
         return;
      }
@@ -731,7 +721,7 @@ static void cb_introspect(void *data, DBusMessage *msg, DBusError *error)
 
    if (!eina_simple_xml_parse(dbus->ctxt->xml_str, strlen(dbus->ctxt->xml_str), EINA_TRUE, cb_parse, dbus->ctxt))
      {
-        ERR( "Error: could not parse XML:\n%s", dbus->ctxt->xml_str);
+        DBUS_ERR( "Error: could not parse XML:\n%s", dbus->ctxt->xml_str);
         if (dbus->ctxt) free(dbus->ctxt);
         return;
      }
@@ -770,7 +760,7 @@ Handle<Value> dbus_msg_introspect(const Arguments &args)
 
         if (!pc)
           {
-             ERR( "Cannot introspect the given path");
+             DBUS_ERR( "Cannot introspect the given path");
              return Undefined();
           }
         INF( "Introspect called %s",*service);
@@ -803,13 +793,13 @@ Handle<Value> createDBusInstance(const Arguments& args)
         if (!(strstr(*method, "System") || strstr(*method, "Session") 
                     ||  strstr(*method, "Starter")))
           {
-             ERR("Undefined Session type");
+             DBUS_ERR("Undefined Session type");
              return Undefined();
           }
      }
    else
      {
-        ERR("Please specify System or Session as parameter");
+        DBUS_ERR("Please specify System or Session as parameter");
         return Undefined();
      }
 
@@ -835,7 +825,7 @@ Handle<Value> createDBusInstance(const Arguments& args)
 
    if (dbus->conn==NULL)
      {
-        ERR( "Cannot create DBus");
+        DBUS_ERR( "Cannot create DBus");
         delete dbus;
         return Undefined();
      }
@@ -859,14 +849,14 @@ int dbus_v8_setup(Handle<ObjectTemplate> global)
    elev8_dbus_log_domain = eina_log_domain_register("elev8-dbus", EINA_COLOR_ORANGE);
    if (!elev8_dbus_log_domain)
      {
-        ERR( "could not register elev8-dbus log domain.");
+        DBUS_ERR( "could not register elev8-dbus log domain.");
         elev8_dbus_log_domain = EINA_LOG_DOMAIN_GLOBAL;
      }
    INF("elev8-dbus Logging initialized. %d", elev8_dbus_log_domain);
 
    if (!e_dbus_init())
      {
-        ERR( "Cannot Init to E_DBus");
+        DBUS_ERR( "Cannot Init to E_DBus");
         return -1;
      }
 
