@@ -3236,7 +3236,7 @@ protected:
 
   class MenuItem : public Item {
   public:
-    Elm_Menu_Item *mi;
+    Elm_Object_Item *mi;
     MenuItem *next;
     MenuItem *prev;
     MenuItem *parent;
@@ -3344,7 +3344,7 @@ public:
              ERR( "list item is not an object");
              return NULL;
           }
-        Elm_Menu_Item *par = NULL;
+        Elm_Object_Item *par = NULL;
         if (parent!=NULL)
           {
              par = parent->mi;
