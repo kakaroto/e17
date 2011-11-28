@@ -587,6 +587,9 @@ extern "C" {
    EAPI Eina_Bool          azy_client_redirect(Azy_Client *cli);
    EAPI Azy_Client_Call_Id azy_client_current(Azy_Client *cli);
    EAPI Eina_Bool          azy_server_module_upgrade(Azy_Server_Module *module);
+   EAPI void               azy_client_timeout_set(Azy_Client *client,
+                                                  double      timeout);
+   EAPI double             azy_client_timeout_get(Azy_Client *client);
 
    /* RSS */
    EAPI void          azy_rss_free(Azy_Rss *rss);

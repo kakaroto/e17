@@ -291,8 +291,6 @@ azy_client_connect(Azy_Client *client,
 
    ecore_con_server_data_set(svr, client);
 
-   ecore_con_server_timeout_set(svr, 1);
-
    client->net = azy_net_new(svr);
    azy_net_header_set(client->net, "host", NULL);
    azy_net_header_set(client->net, "host", client->addr);
@@ -847,6 +845,36 @@ azy_client_free(Azy_Client *client)
    if (client->conns)
      client->conns = eina_list_free(client->conns);
    free(client);
+}
+
+/**
+ * @brief Set a connection timeout on a client
+ *
+ * This function sets a timeout on @p client. After @p timeout seconds
+ * without data being transmitted, the client will automatically disconnect.
+ * @param client The client (NOT NULL)
+ * @param timeout The time, in seconds, to disconnect after
+ */
+void
+azy_client_timeout_set(Azy_Client *client, double timeout)
+{
+   DBG("(client=%p,timeout=%g)", client, timeout);
+   ecore_con_server_timeout_set(client->net->conn, timeout);
+}
+
+/**
+ * @brief Get the connection timeout of a client
+ *
+ * This function gets the timeout on @p client. After @p timeout seconds
+ * without data being transmitted, the client will automatically disconnect.
+ * @param client The client (NOT NULL)
+ * @return The time, in seconds, to disconnect after
+ */
+double
+azy_client_timeout_get(Azy_Client *client)
+{
+   DBG("(client=%p)", client);
+   return ecore_con_server_timeout_get(client->net->conn);
 }
 
 /** @} */
