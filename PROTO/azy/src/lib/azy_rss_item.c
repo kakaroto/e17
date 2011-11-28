@@ -104,6 +104,8 @@ azy_rss_item_free(Azy_Rss_Item *item)
         eina_stringshare_del(item->guid);
         eina_stringshare_del(item->comment_url);
         eina_stringshare_del(item->author);
+        eina_stringshare_del(item->content);
+        eina_stringshare_del(item->content_encoded);
      }
    AZY_MAGIC_SET(item, AZY_MAGIC_NONE);
 
@@ -212,6 +214,8 @@ DEF(rights)
 DEF(summary)
 DEF(id)
 DEF(icon)
+DEF(content)
+DEF(content_encoded)
 
 #undef DEF
 

@@ -595,13 +595,19 @@ azy_content_deserialize_rss_xml(Azy_Content *content,
                   else if ((!i->desc) && (!strcmp(name, "description")))
                     i->desc = eina_stringshare_add(nn.child_value());
                   else if ((!i->author) && (!strcmp(name, "author")))
-                    i->author = eina_stringshare_add(nn.child_value());
+                    eina_stringshare_replace(&i->author, nn.child_value());
+                  else if ((!i->author) && (!strcmp(name, "dc:creator")))
+                    eina_stringshare_replace(&i->author, nn.child_value());
                   else if ((!i->date) && (!strcmp(name, "pubDate")))
                     i->date = eina_stringshare_add(nn.child_value());
                   else if ((!i->guid) && (!strcmp(name, "guid")))
                     i->guid = eina_stringshare_add(nn.child_value());
                   else if ((!i->comment_url) && (!strcmp(name, "comments")))
                     i->comment_url = eina_stringshare_add(nn.child_value());
+                  else if ((!i->content) && (!strcmp(name, "content")))
+                    i->content = eina_stringshare_add(nn.child_value());
+                  else if ((!i->content_encoded) && (!strcmp(name, "content:encoded")))
+                    i->content_encoded = eina_stringshare_add(nn.child_value());
 
                }
              rss->items = eina_list_append(rss->items, i);

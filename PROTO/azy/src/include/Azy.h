@@ -616,6 +616,8 @@ extern "C" {
    EAPI Eina_List    *azy_rss_item_categories_get(Azy_Rss_Item *item);
    EAPI Eina_List    *azy_rss_item_links_get(Azy_Rss_Item *item);
    EAPI const char   *azy_rss_item_title_get(Azy_Rss_Item *item);
+   EAPI const char   *azy_rss_item_content_get(Azy_Rss_Item *item);
+   EAPI const char   *azy_rss_item_content_encoded_get(Azy_Rss_Item *item);
    EAPI const char   *azy_rss_item_link_get(Azy_Rss_Item *item);
    EAPI const char   *azy_rss_item_desc_get(Azy_Rss_Item *item);
    EAPI const char   *azy_rss_item_date_get(Azy_Rss_Item *item);

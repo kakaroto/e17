@@ -166,6 +166,8 @@ struct Azy_Rss_Item
    const char *guid;
    const char *comment_url;
    const char *author;
+   const char *content;
+   const char *content_encoded;
 
    /* atom format only */
    const char *rights;
