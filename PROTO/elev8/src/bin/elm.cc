@@ -3441,7 +3441,7 @@ public:
 
              if ( disabled_object->IsBoolean() )
                {
-                  elm_menu_item_disabled_set(it->mi, disabled_object->ToBoolean()->Value());
+                  elm_object_item_disabled_set(it->mi, disabled_object->ToBoolean()->Value());
                }
              return it;
           }
