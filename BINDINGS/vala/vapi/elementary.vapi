@@ -318,7 +318,7 @@ public class Box : Elm.Object
     public Box( Elm.Object? parent );
 
     public void horizontal_set( bool horizontal );
-    public void homogenous_set( bool homogenous );
+    public void homogeneous_set( bool homogeneous );
     public void pack_start( Elm.Object subobj );
     public void pack_end( Elm.Object subobj );
     public void pack_before( Elm.Object subobj, Elm.Object before );
@@ -423,7 +423,7 @@ public class Table : Elm.Object
     [CCode (cname = "elm_table_add")]
     public Table( Elm.Object? parent );
 
-    public void homogenous_set( bool homogenous );
+    public void homogeneous_set( bool homogeneous );
     public void pack( Elm.Object subobj, int x, int y, int w, int h );
     public void padding_set( Evas.Coord horizontal, Evas.Coord vertical );
     public void unpack( Elm.Object subobj );
@@ -755,7 +755,7 @@ public class Toolbar : Elm.Object
     public ToolbarItem last_item_get();
     // Note: elm_boolbar_item_ functions living in ToolbarItem scope
     public void scrollable_set( bool scrollable );
-    public void homogenous_set( bool homogenous );
+    public void homogeneous_set( bool homogeneous );
     public void menu_parent_set( Elm.Object parent );
     [CCode (cname = "elm_toolbar_item_unselect_all")]
     public void unselect_all();
@@ -805,8 +805,8 @@ public class ToolbarItem
     public void data_set( void* data );
     public bool selected_get();
     public void selected_set( bool selected );
-    public bool homogenous_get();
-    public void homogenous_set( bool selected );
+    public bool homogeneous_get();
+    public void homogeneous_set( bool selected );
     public Elm.Object end_get();
     public void end_set( Elm.Object obj );
     public State state_add( string icon, string lable, Evas.Callback cb);

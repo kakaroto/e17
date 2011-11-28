@@ -68,7 +68,7 @@ public int main( string[] args )
     var test3 = new T.Genlist();
     add_test( test3, 3 );
 
-    box.homogenous_set( true );
+    box.homogeneous_set( true );
 
     box.show();
     win.show();
