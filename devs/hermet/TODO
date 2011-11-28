@@ -31,3 +31,7 @@ elm_transit - apply evas_map to move and resize effect.
 naviframe - need to block the style set while transiton is going on
 
 elementary - consider partmap and additional content_set/get/unset parts
+
+naviframe - support edje external. 
+
+naviframe - thaw the contents while they are unset on transition. 
