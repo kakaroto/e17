@@ -289,7 +289,7 @@ typedef Azy_Value *(*Azy_Content_Retval_Cb)(void *);
 /**
  * @typedef Azy_Client_Return_Cb
  * Function must return AZY_ERROR_NONE (0) on success, else
- * an error number.
+ * an error number. @p  ret_content must NOT be freed.
  */
 typedef Eina_Error (*Azy_Client_Return_Cb)(Azy_Client *cli, Azy_Content *ret_content, void *ret);
 
