@@ -28,7 +28,7 @@ cdef void _menu_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info)
     it.__del_cb()
 
 cdef class MenuItem:
-    cdef Elm_Menu_Item *obj
+    cdef Elm_Object_Item *obj
     cdef object cbt
 
     def __del_cb(self):
@@ -38,7 +38,7 @@ cdef class MenuItem:
 
     def __init__(self, c_evas.Object menu, MenuItem parent, label, icon,
                  callback, *args, **kargs):
-        cdef Elm_Menu_Item *parent_obj = NULL
+        cdef Elm_Object_Item *parent_obj = NULL
         cdef void* cbdata = NULL
         cdef void (*cb) (void *, c_evas.Evas_Object *, void *)
         cb = NULL
@@ -66,11 +66,11 @@ cdef class MenuItem:
         elm_menu_item_del(self.obj)
 
     def label_set(self, label):
-        elm_menu_item_label_set(self.obj, label)
+        elm_object_item_label_set(self.obj, label)
 
     def label_get(self):
         cdef const_char_ptr l
-        l = elm_menu_item_label_get(self.obj)
+        l = elm_object_item_label_get(self.obj)
         if l == NULL:
             return None
         return l
@@ -98,11 +98,11 @@ cdef class MenuItem:
             self.icon_set(icon)
 
     def disabled_set(self, disabled):
-        elm_menu_item_disabled_set(self.obj, disabled)
+        elm_object_item_disabled_set(self.obj, disabled)
 
     property disabled:
         def __set__(self, disabled):
-            elm_menu_item_disabled_set(self.obj, disabled)
+            elm_object_item_disabled_set(self.obj, disabled)
 
     def data_get(self):
         """Returns the callback data given at creation time.
@@ -110,7 +110,7 @@ cdef class MenuItem:
         @rtype: tuple of (args, kargs), args is tuple, kargs is dict.
         """
         cdef void* data
-        data = elm_menu_item_data_get(self.obj)
+        data = elm_object_item_data_get(self.obj)
         if data == NULL:
             return None
         else:
@@ -128,7 +128,7 @@ cdef class MenuItem:
         lst = elm_menu_item_subitems_get(self.obj)
         itr = lst
         while itr:
-            data = elm_menu_item_data_get(<Elm_Menu_Item *>itr.data)
+            data = elm_object_item_data_get(<Elm_Object_Item *>itr.data)
             if data != NULL:
                 (o, callback, it, a, ka) = <object>data
                 ret.append(it)
@@ -144,14 +144,14 @@ cdef void _menu_item_separator_del_cb(void *data, c_evas.Evas_Object *o, void *e
     it.__del_cb()
 
 cdef class MenuItemSeparator:
-    cdef Elm_Menu_Item *obj
+    cdef Elm_Object_Item *obj
 
     def __del_cb(self):
         self.obj = NULL
         Py_DECREF(self)
 
     def __init__(self, c_evas.Object menu, MenuItem parent):
-        cdef Elm_Menu_Item *parent_obj = NULL
+        cdef Elm_Object_Item *parent_obj = NULL
 
         if parent:
             parent_obj = parent.obj
@@ -159,7 +159,7 @@ cdef class MenuItemSeparator:
         if not self.obj:
             raise RuntimeError("Error creating separator")
 
-        elm_menu_item_data_set(self.obj, <void*>self)
+        elm_object_item_data_set(self.obj, <void*>self)
         Py_INCREF(self)
         elm_menu_item_del_cb_set(self.obj, _menu_item_separator_del_cb)
 

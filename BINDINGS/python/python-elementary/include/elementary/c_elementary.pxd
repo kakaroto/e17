@@ -204,7 +204,7 @@ cdef extern from "Elementary.h":
     ctypedef evas.c_evas.Eina_Bool (*Elm_Event_Cb) (void *data, evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *src, evas.c_evas.Evas_Callback_Type t, void *event_info)
 
     ctypedef struct Elm_Hoversel_Item
-    ctypedef struct Elm_Menu_Item
+    ctypedef struct Elm_Object_Item
     ctypedef struct Elm_Toolbar_Item
     ctypedef struct Elm_List_Item
     ctypedef struct Elm_Carousel_Item
@@ -275,6 +275,11 @@ cdef extern from "Elementary.h":
     void         elm_object_text_set(evas.c_evas.Evas_Object *obj, const_char_ptr label)
     char*        elm_object_text_get(evas.c_evas.Evas_Object *obj)
 
+    void         elm_object_item_disabled_set(Elm_Object_Item *it, evas.c_evas.Eina_Bool disabled)
+    void         elm_object_item_label_set(Elm_Object_Item *item, char *label)
+    char*        elm_object_item_label_get(Elm_Object_Item *item)
+    void*        elm_object_item_data_get(Elm_Object_Item *item)
+    void         elm_object_item_data_set(Elm_Object_Item *item, void *data)
 
     double       elm_scale_get()
     void         elm_scale_set(double scale)
@@ -912,18 +917,13 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_menu_add(evas.c_evas.Evas_Object *parent)
     void  elm_menu_move(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y)
     void  elm_menu_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
-    Elm_Menu_Item *elm_menu_item_add(evas.c_evas.Evas_Object *obj, Elm_Menu_Item *parent, char *icon, char *label, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
-    Elm_Menu_Item *elm_menu_item_separator_add(evas.c_evas.Evas_Object *obj, Elm_Menu_Item *parent)
-    void  elm_menu_item_label_set(Elm_Menu_Item *item, char *label)
-    char *elm_menu_item_label_get(Elm_Menu_Item *item)
-    void  elm_menu_item_object_icon_name_set(Elm_Menu_Item *item, char *icon)
-    void  elm_menu_item_disabled_set(Elm_Menu_Item *item, evas.c_evas.Eina_Bool disabled)
-    void  elm_menu_item_del(Elm_Menu_Item *item)
-    void  elm_menu_item_del_cb_set(Elm_Menu_Item *it, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))
-    void *elm_menu_item_data_get(Elm_Menu_Item *it)
-    void  elm_menu_item_data_set(Elm_Menu_Item *item, void *data)
-    evas.c_evas.Evas_Object *elm_menu_object_get(Elm_Menu_Item *it)
-    evas.c_evas.Eina_List *elm_menu_item_subitems_get(Elm_Menu_Item *item)
+    Elm_Object_Item *elm_menu_item_add(evas.c_evas.Evas_Object *obj, Elm_Object_Item *parent, char *icon, char *label, void (*func) (void *data, evas.c_evas.Evas_Object *obj, void *event_info), void *data)
+    Elm_Object_Item *elm_menu_item_separator_add(evas.c_evas.Evas_Object *obj, Elm_Object_Item *parent)
+    void  elm_menu_item_object_icon_name_set(Elm_Object_Item *item, char *icon)
+    void  elm_menu_item_del(Elm_Object_Item *item)
+    void  elm_menu_item_del_cb_set(Elm_Object_Item *it, void (*func)(void *data, evas.c_evas.Evas_Object *obj, void *event_info))
+    evas.c_evas.Evas_Object *elm_menu_object_get(Elm_Object_Item *it)
+    evas.c_evas.Eina_List *elm_menu_item_subitems_get(Elm_Object_Item *item)
 
     # Panel
     evas.c_evas.Evas_Object *elm_panel_add(evas.c_evas.Evas_Object *parent)
