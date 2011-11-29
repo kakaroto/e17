@@ -4458,10 +4458,6 @@ class CElmFileSelectorButton : public CEvasObject {
 protected:
    CPropHandler<CElmFileSelectorButton> prop_handler;
 
-   /* the on_changed function */
-   Persistent<Value> on_changed_val;
-   Persistent<Value> the_icon;
-
 public:
    CElmFileSelectorButton(CEvasObject *parent, Local<Object> obj) :
        CEvasObject(),
@@ -4616,10 +4612,6 @@ CEvasObject::CPropHandler<CElmFileSelectorButton>::list[] = {
 class CElmFileSelectorEntry : public CEvasObject {
 protected:
    CPropHandler<CElmFileSelectorEntry> prop_handler;
-
-   /* the on_changed function */
-   Persistent<Value> on_changed_val;
-   Persistent<Value> the_icon;
 
 public:
    CElmFileSelectorEntry(CEvasObject *parent, Local<Object> obj) :
@@ -4802,6 +4794,45 @@ CEvasObject::CPropHandler<CElmFileSelectorEntry>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmInwin : public CEvasObject {
+protected:
+   CPropHandler<CElmInwin> prop_handler;
+   CEvasObject *content;
+
+public:
+   CElmInwin(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
+     {
+          eo = elm_win_inwin_add(parent->top_widget_get());
+          construct(eo, obj);
+          content = realize_one(this, obj->Get(String::New("content")));
+          if (content)
+            {
+               elm_win_inwin_content_set(eo, content->get());
+            }
+     }
+
+   virtual Handle<Value> activate_get() const
+     {
+        return Null();
+     }
+
+   virtual void activate_set(Handle<Value> val)
+     {
+        INF("Actiavted.");
+        if (val->IsBoolean())
+          elm_win_inwin_activate(eo);
+     }
+
+};
+
+template<> CEvasObject::CPropHandler<CElmInwin>::property_list
+CEvasObject::CPropHandler<CElmInwin>::list[] = {
+  PROP_HANDLER(CElmInwin, activate),
+  { NULL, NULL, NULL },
+};
+
 CEvasObject *
 realize_one(CEvasObject *parent, Handle<Value> object_val)
 {
@@ -4879,6 +4910,8 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
      eo = new CElmFileSelectorButton(parent,obj);
    else if (!strcmp(*str, "fileselectorentry"))
      eo = new CElmFileSelectorEntry(parent,obj);
+   else if (!strcmp(*str, "inwin"))
+     eo = new CElmInwin(parent,obj);
 
    if (!eo)
      {
