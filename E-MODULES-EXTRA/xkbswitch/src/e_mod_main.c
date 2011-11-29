@@ -157,12 +157,24 @@ EAPI void *e_modapi_init(E_Module *m)
     e_gadcon_provider_register(&_gc_class);
 
     /* Fill the lists */
-    if (!parse_rules("/usr/share/X11/xkb/rules/xorg.lst"))
      {
-        if (!parse_rules("/usr/local/share/X11/xkb/rules/xorg.lst"))
+        const char *lstfiles[] =
           {
-             if (!parse_rules("/usr/X11R6/lib/X11/xkb/rules/xorg.lst"))
-               parse_rules("/usr/local/X11R6/lib/X11/xkb/rules/xorg.lst");
+             "/usr/share/X11/xkb/rules/xorg.lst",
+             "/usr/share/X11/xkb/rules/xfree86.lst",
+             "/usr/local/share/X11/xkb/rules/xorg.lst",
+             "/usr/local/share/X11/xkb/rules/xfree86.lst",
+             "/usr/X11R6/lib/X11/xkb/rules/xorg.lst",
+             "/usr/X11R6/lib/X11/xkb/rules/xfree86.lst", 
+             "/usr/local/X11R6/lib/X11/xkb/rules/xorg.lst",
+             "/usr/local/X11R6/lib/X11/xkb/rules/xfree86.lst",
+             NULL
+          };
+        int i;
+        
+        for (i = 0; lstfiles[i]; i++)
+          {
+             if (parse_rules(lstfiles[i])) break;
           }
      }
              
