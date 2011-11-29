@@ -41,14 +41,14 @@ cdef class Bubble(Object):
         self.text_part_set("info", info)
 
     def content_set(self, c_evas.Object content):
-        elm_bubble_content_set(self.obj, content.obj)
+        elm_object_part_content_set(self.obj, NULL, content.obj)
 
     def icon_set(self, c_evas.Object icon):
-        elm_bubble_icon_set(self.obj, icon.obj)
+        elm_object_part_content_set(self.obj, "icon", icon.obj)
 
     def icon_get(self):
         cdef c_evas.Evas_Object *icon
-        icon = elm_bubble_icon_get(self.obj)
+        icon = elm_object_part_content_get(self.obj, "icon")
         return evas.c_evas._Object_from_instance(<long> icon)
 
     property icon:

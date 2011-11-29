@@ -55,7 +55,7 @@ cdef class Panel(Object):
             o = content.obj
         else:
             o = NULL
-        elm_panel_content_set(self.obj, o)
+        elm_object_part_content_set(self.obj, NULL, o)
 
     property content:
         def __set__(self, c_evas.Object content):

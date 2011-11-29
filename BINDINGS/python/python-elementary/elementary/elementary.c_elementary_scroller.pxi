@@ -22,7 +22,7 @@ cdef class Scroller(Object):
         self._set_obj(elm_scroller_add(parent.obj))
 
     def content_set(self, c_evas.Object child):
-        elm_scroller_content_set(self.obj, child.obj)
+        elm_object_part_content_set(self.obj, NULL, child.obj)
 
     def content_min_limit(self, w, h):
         elm_scroller_content_min_limit(self.obj, w, h)

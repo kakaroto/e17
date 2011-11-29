@@ -33,14 +33,14 @@ cdef class Layout(Object):
             o = content.obj
         else:
             o = NULL
-        elm_layout_content_set(self.obj, swallow, o)
+        elm_object_part_content_set(self.obj, swallow, o)
 
     def content_get(self, swallow):
-        cdef c_evas.const_Evas_Object *obj = elm_layout_content_get(self.obj, swallow)
+        cdef c_evas.const_Evas_Object *obj = elm_object_part_content_get(self.obj, swallow)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def content_unset(self, swallow):
-        cdef c_evas.Evas_Object *obj = elm_layout_content_unset(self.obj, swallow)
+        cdef c_evas.Evas_Object *obj = elm_object_part_content_unset(self.obj, swallow)
         return evas.c_evas._Object_from_instance(<long> obj)
 
     def edje_get(self):

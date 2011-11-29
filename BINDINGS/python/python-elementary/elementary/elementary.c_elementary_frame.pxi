@@ -30,7 +30,7 @@ cdef class Frame(Object):
         return self.text_get()
 
     def content_set(self, c_evas.Object content):
-        elm_frame_content_set(self.obj, content.obj)
+        elm_object_part_content_set(self.obj, NULL, content.obj)
 
     def best_content_location_get(self, axis):
         elm_hover_best_content_location_get(self.obj, axis)

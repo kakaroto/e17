@@ -237,6 +237,10 @@ cdef extern from "Elementary.h":
     # Object handling
     char        *elm_object_widget_type_get(evas.c_evas.Evas_Object *obj)
 
+    void         elm_object_part_content_set(evas.c_evas.Evas_Object *obj, char *part, evas.c_evas.Evas_Object *icon)
+    evas.c_evas.Evas_Object *elm_object_part_content_get(evas.c_evas.Evas_Object *obj, char *part)
+    evas.c_evas.Evas_Object *elm_object_part_content_unset(evas.c_evas.Evas_Object *obj, char *part)
+
     void         elm_object_scale_set(evas.c_evas.Evas_Object *obj, double scale)
     double       elm_object_scale_get(evas.c_evas.Evas_Object *obj)
     void         elm_object_style_set(evas.c_evas.Evas_Object *obj, char *style)
@@ -393,12 +397,9 @@ cdef extern from "Elementary.h":
 
     # Button object
     evas.c_evas.Evas_Object *elm_button_add(evas.c_evas.Evas_Object *parent)
-    void elm_button_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
-    evas.c_evas.Evas_Object *elm_button_icon_get(evas.c_evas.Evas_Object *obj)
 
     # Scroller object
     evas.c_evas.Evas_Object *elm_scroller_add(evas.c_evas.Evas_Object *parent)
-    void elm_scroller_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *child)
     void elm_scroller_content_min_limit(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool w, evas.c_evas.Eina_Bool h)
     void elm_scroller_region_show(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord x, evas.c_evas.Evas_Coord y, evas.c_evas.Evas_Coord w, evas. c_evas.Evas_Coord h)
     void elm_scroller_policy_set(evas.c_evas.Evas_Object *obj, Elm_Scroller_Policy policy_h, Elm_Scroller_Policy policy_v)
@@ -425,7 +426,6 @@ cdef extern from "Elementary.h":
 
     # Frame object
     evas.c_evas.Evas_Object* elm_frame_add(evas.c_evas.Evas_Object *parent)
-    void elm_frame_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
 
     # Flip object
     evas.c_evas.Evas_Object* elm_flip_add(evas.c_evas.Evas_Object *parent)
@@ -456,9 +456,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_layout_add(evas.c_evas.Evas_Object *parent)
     evas.c_evas.Eina_Bool elm_layout_file_set(evas.c_evas.Evas_Object *obj, char *file, char *group)
     evas.c_evas.Eina_Bool elm_layout_theme_set(evas.c_evas.Evas_Object *obj, char *clas, char *group, char *style)
-    void elm_layout_content_set(evas.c_evas.Evas_Object *obj, char *swallow, evas.c_evas.Evas_Object *content)
-    evas.c_evas.Evas_Object *elm_layout_content_get(evas.c_evas.Evas_Object *obj, char *swallow)
-    evas.c_evas.Evas_Object *elm_layout_content_unset(evas.c_evas.Evas_Object *obj, char *swallow)
     evas.c_evas.Evas_Object *elm_layout_edje_get(evas.c_evas.Evas_Object *obj)
     void elm_layout_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
     evas.c_evas.Evas_Object *elm_layout_icon_get(evas.c_evas.Evas_Object *obj)
@@ -468,9 +465,6 @@ cdef extern from "Elementary.h":
 
     # Notify object
     evas.c_evas.Evas_Object *elm_notify_add(evas.c_evas.Evas_Object *parent)
-    void elm_notify_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
-    evas.c_evas.Evas_Object *elm_notify_content_unset(evas.c_evas.Evas_Object *obj)
-    evas.c_evas.Evas_Object *elm_notify_content_get(evas.c_evas.Evas_Object *obj)
     void elm_notify_parent_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *parent)
     void elm_notify_orient_set(evas.c_evas.Evas_Object *obj, int orient)
     int elm_notify_orient_get(evas.c_evas.Evas_Object *obj)
@@ -575,9 +569,6 @@ cdef extern from "Elementary.h":
 
     # Bubble object
     evas.c_evas.Evas_Object *elm_bubble_add(evas.c_evas.Evas_Object *parent)
-    void elm_bubble_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
-    void elm_bubble_icon_set(evas.c_evas.Evas_Object *pbj, evas.c_evas.Evas_Object *icon)
-    evas.c_evas.Evas_Object *elm_bubble_icon_get(evas.c_evas.Evas_Object *obj)
     void elm_bubble_corner_set(evas.c_evas.Evas_Object *obj, char *corner)
 
     # Photo object
@@ -703,7 +694,6 @@ cdef extern from "Elementary.h":
 
     # Slider object
     evas.c_evas.Evas_Object *elm_slider_add(evas.c_evas.Evas_Object *parent)
-    void elm_slider_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
     void elm_slider_span_size_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Coord size)
     void elm_slider_unit_format_set(evas.c_evas.Evas_Object *obj, char *format)
     void elm_slider_indicator_format_set(evas.c_evas.Evas_Object *obj, char *indicator)
@@ -831,15 +821,12 @@ cdef extern from "Elementary.h":
 
     # Check widget
     evas.c_evas.Evas_Object *elm_check_add(evas.c_evas.Evas_Object *parent)
-    void         elm_check_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
-    evas.c_evas.Evas_Object *elm_check_icon_get(evas.c_evas.Evas_Object *obj)
     void         elm_check_state_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool state)
     evas.c_evas.Eina_Bool    elm_check_state_get(evas.c_evas.Evas_Object *obj)
     void         elm_check_state_pointer_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool *statep)
 
     # Radio widget
     evas.c_evas.Evas_Object *elm_radio_add(evas.c_evas.Evas_Object *parent)
-    void         elm_radio_icon_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *icon)
     void         elm_radio_group_add(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *group)
     void         elm_radio_state_value_set(evas.c_evas.Evas_Object *obj, int value)
     void         elm_radio_value_set(evas.c_evas.Evas_Object *obj, int value)
@@ -929,7 +916,6 @@ cdef extern from "Elementary.h":
     evas.c_evas.Evas_Object *elm_panel_add(evas.c_evas.Evas_Object *parent)
     void elm_panel_orient_set(evas.c_evas.Evas_Object *obj, Elm_Panel_Orient orient)
     Elm_Panel_Orient elm_panel_orient_get(evas.c_evas.Evas_Object *obj)
-    void elm_panel_content_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Evas_Object *content)
     void elm_panel_hidden_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool hidden)
     evas.c_evas.Eina_Bool elm_panel_hidden_get(evas.c_evas.Evas_Object *obj)
     void elm_panel_toggle(evas.c_evas.Evas_Object *obj)

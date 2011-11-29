@@ -30,7 +30,7 @@ cdef class Radio(Object):
         return self.text_get()
 
     def icon_set(self, c_evas.Object icon):
-        elm_radio_icon_set(self.obj, icon.obj)
+        elm_object_part_content_set(self.obj, "icon", icon.obj)
 
     def group_add(self, c_evas.Object group):
         elm_radio_group_add(self.obj, group.obj)

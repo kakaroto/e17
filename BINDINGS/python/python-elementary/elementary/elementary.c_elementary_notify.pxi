@@ -41,7 +41,7 @@ cdef class Notify(Object):
             o = content.obj
         else:
             o = NULL
-        elm_notify_content_set(self.obj, o)
+        elm_object_part_content_set(self.obj, NULL, o)
 
     def content_unset(self):
         """ Unset the content of the notify widget
@@ -52,7 +52,7 @@ cdef class Notify(Object):
         @return: The content that was being used
         """
         cdef c_evas.Evas_Object *o
-        o = elm_notify_content_unset(self.obj)
+        o = elm_object_part_content_unset(self.obj, NULL)
         if o == NULL:
             return None
 
@@ -68,7 +68,7 @@ cdef class Notify(Object):
         @return: The content that is being used
         """
         cdef c_evas.Evas_Object *o
-        o = elm_notify_content_get(self.obj)
+        o = elm_object_part_content_get(self.obj, NULL)
         if o == NULL:
             return None
 
