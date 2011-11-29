@@ -3,7 +3,7 @@
 Eina_List *layouts = NULL;
 Eina_List *models  = NULL;
 
-void
+int
 parse_rules(const char *fname)
 {
     E_XKB_Model *model = NULL;
@@ -13,7 +13,7 @@ parse_rules(const char *fname)
     char buf[512];
 
     FILE *f = fopen(fname, "r");
-    if  (!f) return;
+    if  (!f) return 0;
 
     /* move on to next line, the first one is useless */
     fgets(buf, sizeof(buf), f);
@@ -118,6 +118,7 @@ parse_rules(const char *fname)
     /* Sort layouts */
     layouts =
         eina_list_sort(layouts, eina_list_count(layouts), layout_sort_cb);
+   return 1;
 }
 
 void

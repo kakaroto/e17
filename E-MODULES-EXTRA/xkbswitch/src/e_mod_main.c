@@ -157,8 +157,15 @@ EAPI void *e_modapi_init(E_Module *m)
     e_gadcon_provider_register(&_gc_class);
 
     /* Fill the lists */
-    parse_rules("/usr/local/share/X11/xkb/rules/xorg.lst");
-
+    if (!parse_rules("/usr/share/X11/xkb/rules/xorg.lst"))
+     {
+        if (!parse_rules("/usr/local/share/X11/xkb/rules/xorg.lst"))
+          {
+             if (!parse_rules("/usr/X11R6/lib/X11/xkb/rules/xorg.lst"))
+               parse_rules("/usr/local/X11R6/lib/X11/xkb/rules/xorg.lst");
+          }
+     }
+             
     /* Give E the module */
     return m;
 }

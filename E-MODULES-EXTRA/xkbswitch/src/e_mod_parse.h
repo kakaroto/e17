@@ -33,7 +33,7 @@ typedef struct _E_XKB_Layout
     Eina_List *variants;
 } E_XKB_Layout;
 
-void parse_rules(const char *fname);
+int parse_rules(const char *fname);
 void clear_rules();
 
 int layout_sort_cb          (const void *data1, const void *data2);
