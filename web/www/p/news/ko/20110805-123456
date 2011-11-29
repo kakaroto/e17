@@ -1,0 +1,12 @@
+1.0.2 Release of Eeze
+Mike Blumenkrantz
+mike@zentific.com
+
+<p>
+This is a bugfix release which contains a number of small fixes, most notably
+support for new property name conventions in very recent versions of udev.
+</p>
+
+<p><ul>
+<li><a href="http://trac.enlightenment.org/e/wiki/Eeze">Eeze</a> - <a href="http://download.enlightenment.org/releases/eeze-1.0.2.tar.gz">1.0.2</a></li>
+</ul></p>

@@ -1,0 +1,67 @@
+EFL 1.1/1.5 알파 배포
+칼슨 하이츨러
+raster@rasterman.com
+
+<p>
+여러 Enlightenment 컴포넌트의 알파 버전을 배포합니다.
+</p>
+
+<p><ul>
+
+<li>Eina 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/eina-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eina-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eet 1.5.0 - 
+[<a href="http://download.enlightenment.org/releases/eet-1.5.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eet-1.5.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/evas-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Ecore 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/ecore-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/ecore-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Embryo 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/embryo-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/embryo-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Edje 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/edje-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/edje-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Efreet 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/efreet-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/efreet-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>E_dbus 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/e_dbus-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Eeze 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/eeze-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/eeze-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Expedite 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/expedite-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/expedite-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+<li>Evas Generic Loaders 1.1.0 - 
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.1.0-alpha.tar.gz">GZ</a>]
+[<a href="http://download.enlightenment.org/releases/evas_generic_loaders-1.1.0-alpha.tar.bz2">BZ2</a>]
+</li>
+
+</ul></p>
+<!-- cut -->
