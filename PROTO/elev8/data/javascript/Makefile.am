@@ -20,23 +20,26 @@ files_SCRIPTS = \
 	dbus_test.js \
 	dilbert.js \
 	entry.js \
+	fileselectorbutton.js \
+	fileselectorentry.js \
 	flip.js \
 	genlist.js \
 	http_menu.js \
 	http_test.js \
+	inwin.js \
 	label.js \
 	list.js \
 	menu.js \
 	notepad.js \
-	radio.js \
 	panes.js \
-	photo.js \
 	photocam.js \
+	photo.js \
 	progressbar.js \
+	radio.js \
+	segment.js \
 	slider.js \
 	spinner.js \
 	stock.js \
-	segment.js \
 	table.js \
 	toggle.js \
 	twitter.js
