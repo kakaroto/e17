@@ -68,6 +68,12 @@ PKG_CHECK_MODULES([EDBUS], [$pkgconfig_edbus_requires_libs])
 
 AM_PATH_PYTHON(2.5)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
+
+# Install everything into $pyexecdir
+if test "x$pythondir" != "x$pyexecdir"; then
+    AC_SUBST([pythondir], [$pyexecdir])
+fi
+
 AM_CHECK_PYTHONPATH
 
 AC_PATH_PROG([EPYDOC], [epydoc], [no])
@@ -98,6 +104,8 @@ echo "  PYTHONPATH...........: $PYTHONPATH"
 echo
 echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
 echo "  prefix...............: $prefix"
+echo "  pythondir............: $pythondir"
+echo "  pyexecdir............: $pyexecdir"
 echo
 echo
 

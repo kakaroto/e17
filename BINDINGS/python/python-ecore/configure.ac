@@ -232,6 +232,11 @@ AM_CONDITIONAL(HAVE_CYTHON, [test "x$CYTHON_FOUND" = "xyes"])
 FILTER_VAR_REGEXP([CFLAGS], [-fvisibility=hidden])
 FILTER_VAR_REGEXP([LDFLAGS], [-fvisibility=hidden])
 
+# Install everything into $pyexecdir
+if test "x$pythondir" != "x$pyexecdir"; then
+    AC_SUBST([pythondir], [$pyexecdir])
+fi
+
 AM_CHECK_PYTHONPATH
 
 if test "x$want_ecore_evas" != "xno" -a "x${have_ecore_evas}" = "xyes"; then
@@ -296,6 +301,8 @@ echo "  Evas.................: ${want_ecore_evas} (found: ${have_ecore_evas})"
 echo
 echo "Installation...........: make install (as root if needed, with 'su' or 'sudo')"
 echo "  prefix...............: $prefix"
+echo "  pythondir............: $pythondir"
+echo "  pyexecdir............: $pyexecdir"
 echo
 echo
 
