@@ -8,27 +8,12 @@
 #include "e_notify_private.h"
 
 void
-e_notify_marshal_dict_struct(DBusMessageIter *iter, const char *key, char *type_str, E_DBus_Variant_Marshaller func, void *data)
-{
-   DBusMessageIter entry, variant;
-
-   dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry);
-   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
-   func(&entry, data);
-   dbus_message_iter_open_container(&entry, DBUS_TYPE_STRUCT, type_str, &variant);
-   func(&variant, data);
-   dbus_message_iter_close_container(&entry, &variant);
-   dbus_message_iter_close_container(iter, &entry);
-}
-
-void
 e_notify_marshal_dict_variant(DBusMessageIter *iter, const char *key, char *type_str, E_DBus_Variant_Marshaller func, void *data)
 {
    DBusMessageIter entry, variant;
 
    dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry);
    dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
-   func(&entry, data);
    dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, type_str, &variant);
    func(&variant, data);
    dbus_message_iter_close_container(&entry, &variant);
@@ -369,7 +354,7 @@ e_notify_marshal_notify(E_Notification *n)
    if (n->hints.desktop)
      e_notify_marshal_dict_string(&sub, "desktop_entry", n->hints.desktop);
    if (n->hints.image_data)
-     e_notify_marshal_dict_struct(&sub, "image-data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.image_data);
+     e_notify_marshal_dict_variant(&sub, "image-data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.image_data);
    if (n->hints.sound_file)
      e_notify_marshal_dict_string(&sub, "sound-file", n->hints.sound_file);
    if (n->hints.suppress_sound) /* we only need to send this if its true */
