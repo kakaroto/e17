@@ -390,6 +390,8 @@ _cb_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
    return ECORE_CALLBACK_PASS_ON;
 }
 
+/* not used
+ * 
 static DBusMessage *
 _cb_dbus_quit(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
@@ -418,6 +420,7 @@ _cb_dbus_version(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
    dbus_message_iter_close_container(&iter, &siter);
    return reply;
 }
+*/
 
 EAPI int
 elm_main(int argc, char **argv)

@@ -333,18 +333,18 @@ _page_add(Evas_Object *parent, void *model, Eina_Iterator *it, const char *title
    s = edje_object_data_get(page->edje_list, "homogeneous");
    elm_genlist_homogeneous_set(page->list, s ? !!atoi(s) : EINA_FALSE);
 
-   elm_layout_content_set(obj_list, "ejy.swallow.list", page->list);
+   elm_object_part_content_set(obj_list, "ejy.swallow.list", page->list);
 
    if (edje_object_part_exists(page->edje_list, "ejy.swallow.index"))
      {
         page->index = elm_index_add(obj_list);
         evas_object_smart_callback_add
           (page->index, "delay,changed", _page_index_changed, page);
-        elm_layout_content_set(obj_list, "ejy.swallow.index", page->index);
+        elm_object_part_content_set(obj_list, "ejy.swallow.index", page->index);
      }
 
    page->edje = elm_layout_edje_get(page->layout);
-   elm_layout_content_set(page->layout, "elm.swallow.content", page->layout_list);
+   elm_object_part_content_set(page->layout, "elm.swallow.content", page->layout_list);
    edje_object_part_text_set(page->edje,
                              "elm.text.title", page->title);
    edje_object_signal_callback_add(page->edje, "elm,action,back", "",
@@ -578,7 +578,7 @@ _song_item_selected(void *data, Evas_Object *list __UNUSED__, void *event_info)
 }
 
 static void
-_page_songs_after_populate(Page *page)
+_page_songs_after_populate(Page *page __UNUSED__)
 {
    ecore_event_add(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE, NULL, NULL, NULL);
 }
@@ -625,7 +625,7 @@ _song_album_cover_size_changed(void *data, Evas *e __UNUSED__, Evas_Object *part
 
    DBG("cover view changed size to %dx%d, query cover size %d", w, h, size);
    cover = cover_album_fetch(page->layout, page->container, page->model, size, NULL, NULL);
-   elm_layout_content_set(page->layout_list, "ejy.swallow.cover", cover);
+   elm_object_part_content_set(page->layout_list, "ejy.swallow.cover", cover);
 }
 
 static Eina_Bool
@@ -645,7 +645,7 @@ _song_album_init(Page *page)
         if (size < 32) size = 32;
 
         cover = cover_album_fetch(page->layout, db, album, size, NULL, NULL);
-        elm_layout_content_set(page->layout_list, "ejy.swallow.cover", cover);
+        elm_object_part_content_set(page->layout_list, "ejy.swallow.cover", cover);
 
         part = (Evas_Object *)
           edje_object_part_object_get(page->edje_list, "ejy.swallow.cover");

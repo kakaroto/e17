@@ -122,13 +122,15 @@ _cover_without_image_set(Evas_Object *cover)
      }
    return cover;
 }
-
+/*
+ * not used
 static Evas_Object *
 _cover_without_image_add(Evas_Object *parent, unsigned short size)
 {
    Evas_Object *cover = _cover_empty_add(parent, size);
    return _cover_without_image_set(cover);
 }
+*/
 
 /* TODO: do this from configure dialog as well
  *
@@ -263,7 +265,7 @@ cover_allsongs_fetch(Evas_Object *parent, unsigned short size)
 
 Evas_Object *
 cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size,
-                  void (*cb_success)(void *data), void *data)
+                  void (*cb_success)(void *data) __UNUSED__, void *data __UNUSED__)
 {
    Evas_Object *cover;
    unsigned int min_error = (unsigned int)-1;

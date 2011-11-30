@@ -17,11 +17,11 @@ typedef struct Win
    Libmgr *mgr;
    Song *song;
    struct {
-        Elm_Toolbar_Item *play;
+        Elm_Object_Item *play;
         Elm_Toolbar_Item_State *pause;
-        Elm_Toolbar_Item *next;
-        Elm_Toolbar_Item *prev;
-        Elm_Toolbar_Item *nowplaying;
+        Elm_Object_Item *next;
+        Elm_Object_Item *prev;
+        Elm_Object_Item *nowplaying;
         Elm_Toolbar_Item_State *playlist;
    } action;
    struct {
@@ -198,7 +198,7 @@ _win_nowplaying_update(Win *w, Song *previous)
      {
         cover = cover_album_fetch_by_id(w->win, w->db, w->song->album_id,
                                         480, NULL, NULL); // TODO: size!
-        elm_layout_content_set(w->nowplaying, "ejy.swallow.cover", cover);
+        elm_object_part_content_set(w->nowplaying, "ejy.swallow.cover", cover);
      }
 
    db_song_artist_fetch(w->db, w->song);
@@ -764,10 +764,10 @@ enjoy_playlist_song_position_get(int32_t position)
    return list_song_nth_get(w->list, position);
 }
 
-static Elm_Toolbar_Item *
+static Elm_Object_Item *
 _toolbar_item_add(Win *w, const char *icon, const char *label, int priority, Evas_Smart_Cb cb)
 {
-   Elm_Toolbar_Item *item = elm_toolbar_item_append(w->toolbar, icon, label,
+   Elm_Object_Item *item = elm_toolbar_item_append(w->toolbar, icon, label,
                                                     cb, w);
    elm_toolbar_item_priority_set(item, priority);
    return item;
@@ -876,7 +876,7 @@ win_new(App *app)
         CRITICAL("cannot create list");
         goto error;
      }
-   elm_layout_content_set(w->layout, "elm.swallow.content", w->list);
+   elm_object_part_content_set(w->layout, "elm.swallow.content", w->list);
    evas_object_smart_callback_add(w->list, "selected", _win_list_selected, w);
 
    w->nowplaying = nowplaying_add(w->layout);
@@ -890,7 +890,7 @@ win_new(App *app)
      (nowplaying_edje, "ejy,shuffle,on", "ejy", _win_shuffle_on, w);
    edje_object_signal_callback_add
      (nowplaying_edje, "ejy,shuffle,off", "ejy", _win_shuffle_off, w);
-   elm_layout_content_set(w->layout, "ejy.swallow.nowplaying", w->nowplaying);
+   elm_object_part_content_set(w->layout, "ejy.swallow.nowplaying", w->nowplaying);
    edje_object_size_min_get(w->edje, &(w->min.w), &(w->min.h));
    edje_object_size_min_restricted_calc
      (w->edje, &(w->min.w), &(w->min.h), w->min.w, w->min.h);

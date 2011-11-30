@@ -71,7 +71,6 @@ _cb_dbus_request_name(void *data __UNUSED__, DBusMessage *msg, DBusError *err)
 {
    DBusError new_err;
    dbus_uint32_t msgtype;
-   E_DBus_Interface *iface;
 
    if (dbus_error_is_set(err))
      {
