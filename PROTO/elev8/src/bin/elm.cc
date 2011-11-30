@@ -4833,6 +4833,89 @@ CEvasObject::CPropHandler<CElmInwin>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmNotify : public CEvasObject {
+protected:
+   CPropHandler<CElmNotify> prop_handler;
+   CEvasObject *content;
+
+public:
+   CElmNotify(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
+     {
+        eo = elm_notify_add(parent->top_widget_get());
+        construct(eo, obj);
+     }
+
+   virtual Handle<Value> content_get() const
+     {
+        return Undefined();
+     }
+
+   virtual void content_set(Handle<Value> val)
+     {
+        if (val->IsObject())
+          {
+             content = realize_one(this, val);
+             if (content)
+               {
+                  elm_object_content_set(eo, content->get());
+               }
+          }
+     }
+
+   virtual Handle<Value> orient_get() const
+     {
+        return Number::New(elm_notify_orient_get(eo));
+     }
+
+   virtual void orient_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             double orient = val->ToInt32()->Value();
+             elm_notify_orient_set(eo, (Elm_Notify_Orient)orient);
+          }
+     }
+
+   virtual Handle<Value> timeout_get() const
+     {
+        return Number::New(elm_notify_timeout_get(eo));
+     }
+
+   virtual void timeout_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             double timeout = val->ToInt32()->Value();
+             elm_notify_timeout_set(eo, timeout);
+          }
+     }
+
+   virtual Handle<Value> repeat_events_get() const
+     {
+        return Boolean::New(elm_notify_repeat_events_get(eo));
+     }
+
+   virtual void repeat_events_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          elm_notify_repeat_events_set(eo, val->BooleanValue());
+     }
+
+};
+
+template<> CEvasObject::CPropHandler<CElmNotify>::property_list
+CEvasObject::CPropHandler<CElmNotify>::list[] = {
+  PROP_HANDLER(CElmNotify, content),
+  PROP_HANDLER(CElmNotify, orient),
+  PROP_HANDLER(CElmNotify, timeout),
+  PROP_HANDLER(CElmNotify, repeat_events),
+  { NULL, NULL, NULL },
+};
+
+
+
 CEvasObject *
 realize_one(CEvasObject *parent, Handle<Value> object_val)
 {
@@ -4912,6 +4995,8 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
      eo = new CElmFileSelectorEntry(parent,obj);
    else if (!strcmp(*str, "inwin"))
      eo = new CElmInwin(parent,obj);
+   else if (!strcmp(*str, "notify"))
+     eo = new CElmNotify(parent,obj);
 
    if (!eo)
      {

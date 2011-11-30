@@ -31,6 +31,7 @@ files_SCRIPTS = \
 	list.js \
 	menu.js \
 	notepad.js \
+	notify.js \
 	panes.js \
 	photocam.js \
 	photo.js \
