@@ -23,6 +23,7 @@ Makefile.in
 /e_dbus.spec
 /ebluez.pc
 /econnman.pc
+/econnman-0.7x.pc
 /edbus.pc
 /ehal.pc
 /enotify.pc
@@ -41,6 +42,8 @@ Makefile.in
 /src/bin/e_dbus_bluez_test
 /src/bin/e_dbus_connman_test
 /src/bin/e_dbus_connman_test_api
+/src/bin/e_dbus_connman0_7x_test
+/src/bin/e_dbus_connman0_7x_test_api
 /src/bin/e_dbus_notification_daemon
 /src/bin/e_dbus_notify
 /src/bin/e_dbus_ofono_test
