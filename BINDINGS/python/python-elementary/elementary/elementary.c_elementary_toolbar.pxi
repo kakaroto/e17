@@ -31,7 +31,7 @@ cdef class ToolbarItem(WidgetItem):
     """
     A item for the toolbar
     """
-    cdef Elm_Toolbar_Item *obj
+    cdef Elm_Object_Item *obj
     cdef object cbt
 
     def __del_cb(self):
@@ -60,7 +60,7 @@ cdef class ToolbarItem(WidgetItem):
         elm_toolbar_item_del_cb_set(self.obj, _toolbar_item_del_cb)
 
     def next_get(self):
-        cdef Elm_Toolbar_Item *it
+        cdef Elm_Object_Item *it
         it = elm_toolbar_item_next_get(self.obj)
         return _elm_toolbar_item_to_python(it)
 
@@ -69,7 +69,7 @@ cdef class ToolbarItem(WidgetItem):
             return self.next_get()
 
     def prev_get(self):
-        cdef Elm_Toolbar_Item *it
+        cdef Elm_Object_Item *it
         it = elm_toolbar_item_prev_get(self.obj)
         return _elm_toolbar_item_to_python(it)
 
@@ -287,7 +287,7 @@ cdef class ToolbarItem(WidgetItem):
         """
         return elm_toolbar_item_cursor_engine_only_get(self.obj)
 
-cdef _elm_toolbar_item_to_python(Elm_Toolbar_Item *it):
+cdef _elm_toolbar_item_to_python(Elm_Object_Item *it):
     cdef void *data
     cdef object prm
     if it == NULL:
@@ -351,7 +351,7 @@ cdef class Toolbar(Object):
             return elm_toolbar_icon_size_get(self.obj)
 
     def selected_item_get(self):
-        cdef Elm_Toolbar_Item *it
+        cdef Elm_Object_Item *it
         it = elm_toolbar_selected_item_get(self.obj)
         return _elm_toolbar_item_to_python(it)
 
@@ -360,7 +360,7 @@ cdef class Toolbar(Object):
             return self.selected_item_get()
 
     def first_item_get(self):
-        cdef Elm_Toolbar_Item *it
+        cdef Elm_Object_Item *it
         it = elm_toolbar_first_item_get(self.obj)
         return _elm_toolbar_item_to_python(it)
 
@@ -369,7 +369,7 @@ cdef class Toolbar(Object):
             return self.first_item_get()
 
     def last_item_get(self):
-        cdef Elm_Toolbar_Item *it
+        cdef Elm_Object_Item *it
         it = elm_toolbar_last_item_get(self.obj)
         return _elm_toolbar_item_to_python(it)
 

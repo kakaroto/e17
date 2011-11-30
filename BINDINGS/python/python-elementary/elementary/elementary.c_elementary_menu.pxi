@@ -66,11 +66,11 @@ cdef class MenuItem:
         elm_menu_item_del(self.obj)
 
     def label_set(self, label):
-        elm_object_item_label_set(self.obj, label)
+        elm_object_item_text_set(self.obj, label)
 
     def label_get(self):
         cdef const_char_ptr l
-        l = elm_object_item_label_get(self.obj)
+        l = elm_object_item_text_get(self.obj)
         if l == NULL:
             return None
         return l
