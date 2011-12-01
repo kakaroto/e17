@@ -1213,8 +1213,12 @@ _plugins_init(const Evry_API *_api)
 
    WEBLINK = evry->type_register("WEBLINK");
 
+#define EVRY_PLUGIN_NEW(_base, _name, _icon, _item_type, _begin, _finish, _fetch) \
+   evry->plugin_new(EVRY_PLUGIN(E_NEW(_base, 1)), _name, _(_name), _icon, _item_type, \
+                    _begin, _finish, _fetch)
+
 #define PLUGIN_NEW(_name, _type, _icon, _begin, _finish, _fetch, _complete, _request, _data_cb, _host, _trigger) { \
-      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
+      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch); \
       p->config_path = _config_path;					\
       plugins = eina_list_append(plugins, p);				\
       p->complete = _complete;						\

@@ -923,8 +923,12 @@ _plugins_init(const Evry_API *_api)
    action_handler = evry->event_handler_add(EVRY_EVENT_ACTION_PERFORMED,
 					    _cb_action_performed, NULL);
 
+#define EVRY_PLUGIN_NEW(_base, _name, _icon, _item_type, _begin, _finish, _fetch) \
+   evry->plugin_new(EVRY_PLUGIN(E_NEW(_base, 1)), _name, _(_name), _icon, _item_type, \
+                    _begin, _finish, _fetch)
+
 #define FILE_PLUGIN_NEW(_name, _plug_type, _icon, _type, _begin, _finish, _fetch, _query) { \
-     p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
+     p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch); \
      GET_PLUGIN(p1, p);							\
      p1->query = _query;						\
      if (evry->plugin_register(p, _plug_type, _prio++)) {		\
@@ -941,7 +945,7 @@ _plugins_init(const Evry_API *_api)
 
 
 #define QUERY_PLUGIN_NEW(_name, _plug_type, _icon, _type, _begin, _finish, _fetch, _query, _min_query) { \
-      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch, NULL); \
+      p = EVRY_PLUGIN_NEW(Plugin, _name, _icon, _type, _begin, _finish, _fetch); \
       p->browse = &_browse;						\
       p->history = EINA_FALSE;						\
       GET_PLUGIN(p1, p);						\
