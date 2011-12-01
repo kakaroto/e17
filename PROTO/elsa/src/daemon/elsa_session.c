@@ -23,9 +23,10 @@ static int _elsa_session_userid_set(struct passwd *pwd);
 
 static void _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie);
 
-static void _elsa_session_scan_desktops_file(const char *path);
-static void _elsa_session_scan_desktops(const char *dir);
-static void _elsa_session_init_desktops();
+static void _elsa_session_desktops_scan_file(const char *path);
+static void _elsa_session_desktops_scan(const char *dir);
+static void _elsa_session_desktops_init();
+//static void _elsa_session_desktops_shutdown();
 static const char *_elsa_session_find_command(const char *path, const char *session);
 
 long
@@ -213,12 +214,21 @@ elsa_session_init(const char *file)
    //fprintf(stderr, PACKAGE": cookie %s \n", _mcookie);
    _elsa_session_cookie_add(_mcookie, ":0",
                             elsa_config->command.xauth_path, file);
-   _elsa_session_init_desktops();
+   _elsa_session_desktops_init();
 }
 
 void
 elsa_session_shutdown()
 {
+   Elsa_Xsession *xsession;
+
+   EINA_LIST_FREE(_xsessions, xsession)
+     {
+        eina_stringshare_del(xsession->name);
+        eina_stringshare_del(xsession->icon);
+        if (xsession->command) eina_stringshare_del(xsession->command);
+        free(xsession);
+     }
 }
 
 Eina_Bool
@@ -300,7 +310,7 @@ elsa_session_list_get()
 }
 
 static void
-_elsa_session_init_desktops()
+_elsa_session_desktops_init()
 {
    char buf[PATH_MAX];
    Eina_List *dirs;
@@ -316,21 +326,21 @@ _elsa_session_init_desktops()
    efreet_init();
    efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
    /* Maybee need to scan other directories ?
-    * _elsa_server_scan_desktops("/etc/share/xsessions");
+    * _elsa_server_desktops_scan("/etc/share/xsessions");
     */
    snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
-   _elsa_session_scan_desktops(buf);
+   _elsa_session_desktops_scan(buf);
    dirs = efreet_data_dirs_get();
    EINA_LIST_FOREACH(dirs, l, path)
      {
         snprintf(buf, sizeof(buf), "%s/xsessions", path);
-        _elsa_session_scan_desktops(buf);
+        _elsa_session_desktops_scan(buf);
      }
    efreet_shutdown();
 }
 
 static void
-_elsa_session_scan_desktops(const char *dir)
+_elsa_session_desktops_scan(const char *dir)
 {
    Eina_List *files;
    char *filename;
@@ -341,13 +351,13 @@ _elsa_session_scan_desktops(const char *dir)
    EINA_LIST_FREE(files, filename)
      {
         snprintf(path, sizeof(path), "%s/%s", dir, filename);
-        _elsa_session_scan_desktops_file(path);
+        _elsa_session_desktops_scan_file(path);
         free(filename);
      }
 }
 
 static void
-_elsa_session_scan_desktops_file(const char *path)
+_elsa_session_desktops_scan_file(const char *path)
 {
    Efreet_Desktop *desktop;
    Eina_List *commands;
@@ -378,6 +388,8 @@ _elsa_session_scan_desktops_file(const char *path)
         _xsessions = eina_list_append(_xsessions, xsession);
         fprintf(stderr, PACKAGE": client find sessions %s\n", desktop->name);
      }
+   EINA_LIST_FREE(commands, command)
+     free(command);
    efreet_desktop_free(desktop);
 }
 

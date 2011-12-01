@@ -148,14 +148,17 @@ _elsa_main(const char *dname)
 {
    if (!elsa_config->autologin)
      {
-        char buf[PATH_MAX];
-        ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                                _elsa_client_del, NULL);
-        fprintf(stderr, PACKAGE": Run client\n");
-        snprintf(buf, sizeof(buf),
-                 PACKAGE_BIN_DIR"/elsa_client -d %s -t %s",
-                 dname, elsa_config->theme);
-        _elsa_client = ecore_exe_run(buf, NULL);
+        if (!_elsa_client)
+          {
+             char buf[PATH_MAX];
+             ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
+                                     _elsa_client_del, NULL);
+             fprintf(stderr, PACKAGE": Exec elsa_client\n");
+             snprintf(buf, sizeof(buf),
+                      PACKAGE_BIN_DIR"/elsa_client -d %s -t %s",
+                      dname, elsa_config->theme);
+             _elsa_client = ecore_exe_run(buf, NULL);
+          }
      }
    else
      ecore_main_loop_quit();
@@ -270,11 +273,12 @@ main (int argc, char ** argv)
    if (quit_option)
      {
         elsa_config_shutdown();
+        elsa_close_log();
         exit(1);
      }
 
-   elsa_pam_init(PACKAGE, dname, elsa_user);
    elsa_user = getenv("ELSA_USER");
+   elsa_pam_init(PACKAGE, dname, elsa_user);
    if (elsa_user)
      {
         char *quit;
@@ -287,12 +291,15 @@ main (int argc, char ** argv)
              unsetenv("ELSA_QUIT");
              _remove_lock();
              elsa_config_shutdown();
+             fprintf(stderr, PACKAGE": Good bye\n");
              exit(0);
           }
         sleep(3);
         elsa_pam_init(PACKAGE, dname, NULL);
      }
-   fprintf(stderr, "\n"PACKAGE": Welcome\n");
+   else
+     fprintf(stderr, "\n");
+   fprintf(stderr, PACKAGE": Welcome\n");
    ecore_init();
    /* Initialise event handler */
 
@@ -305,7 +312,9 @@ main (int argc, char ** argv)
    signal(SIGALRM, _signal_cb);
    signal(SIGUSR2, _signal_log);
 
+   fprintf(stderr, PACKAGE": session init\n");
    elsa_session_init(elsa_config->command.xauth_file);
+   fprintf(stderr, PACKAGE": xserver init\n");
    pid = elsa_xserver_init(_elsa_main, dname);
 
    if (elsa_config->autologin && !elsa_user)
@@ -320,27 +329,44 @@ main (int argc, char ** argv)
      }
    else
      {
+        fprintf(stderr, PACKAGE": action init\n");
         elsa_action_init();
+        fprintf(stderr, PACKAGE": history init\n");
         elsa_history_init();
+        fprintf(stderr, PACKAGE": server init\n");
         elsa_server_init();
+        fprintf(stderr, PACKAGE": starting main loop\n");
         ecore_main_loop_begin();
+        fprintf(stderr, PACKAGE": main loop end\n");
         elsa_server_shutdown();
+        fprintf(stderr, PACKAGE": server shutdown\n");
         elsa_history_shutdown();
+        fprintf(stderr, PACKAGE": history shutdown\n");
         elsa_action_shutdown();
+        fprintf(stderr, PACKAGE": action shutdown\n");
      }
    elsa_xserver_shutdown();
+   fprintf(stderr, PACKAGE": xserver shutdown\n");
    elsa_pam_shutdown();
+   fprintf(stderr, PACKAGE": pam shutdown\n");
    ecore_shutdown();
    elsa_config_shutdown();
+   fprintf(stderr, PACKAGE": config shutdown\n");
+   elsa_session_shutdown();
+   fprintf(stderr, PACKAGE": session shutdown\n");
    eet_shutdown();
+   free(dname);
    if (elsa_session_logged_get())
      {
+        fprintf(stderr, PACKAGE": close log\n");
         elsa_close_log();
+        fprintf(stderr, PACKAGE": wait session \n");
         _elsa_wait();
      }
+   fprintf(stderr, PACKAGE": ending xserver\n");
    kill(pid, SIGTERM);
    elsa_xserver_end();
-   elsa_session_shutdown();
+   fprintf(stderr, PACKAGE": close log\n");
    elsa_close_log();
    return 0;
 }

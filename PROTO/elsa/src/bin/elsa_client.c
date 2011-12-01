@@ -26,13 +26,13 @@ static const Ecore_Getopt options =
 int
 elsa_client_main(const char *theme)
 {
-   fprintf(stderr, PACKAGE": client init\n");
+   fprintf(stderr, PACKAGE"_client: client init\n");
    if (elsa_gui_init(theme)) return EXIT_FAILURE;
-   fprintf(stderr, PACKAGE": client run\n");
+   fprintf(stderr, PACKAGE"_client: client run\n");
    elsa_connect_init();
    elm_run();
    elsa_connect_shutdown();
-   fprintf(stderr, PACKAGE": client shutdown\n");
+   fprintf(stderr, PACKAGE"_client: client shutdown\n");
    elsa_gui_shutdown();
    return EXIT_SUCCESS;
 }

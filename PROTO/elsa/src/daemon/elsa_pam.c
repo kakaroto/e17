@@ -86,6 +86,7 @@ _get_running_username(void)
    struct passwd *pwent = NULL;
    pwent = getpwuid(getuid());
    result = strdup(pwent->pw_name);
+   endpwent();
    return (result);
 }
 
