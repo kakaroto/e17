@@ -124,7 +124,7 @@ _excessive_selected(void *data __UNUSED__, Evas_Object *grid, void *event_info)
    Excessive_File_Info *info = elm_gengrid_item_data_get(it);
    const char *tmp;
 
-   elm_gen_item_selected_set(it, EINA_FALSE);
+   elm_gengrid_item_selected_set(it, EINA_FALSE);
 
    if (info->info.type != EINA_FILE_DIR)
      {
@@ -209,7 +209,7 @@ excessive_browse_directory(Evas_Object *grid, const char *path)
        mapping->func.display_clear(_excessive_objects[i]);
 
    evas_object_data_set(grid, "excessive/up_item", NULL);
-   elm_gen_clear(grid);
+   elm_gengrid_clear(grid);
 
    file = eio_file_stat_ls(path,
                            _excessive_eio_filter_cb,
