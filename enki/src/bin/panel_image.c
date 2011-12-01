@@ -402,7 +402,7 @@ static void
 _panel_image_photo_set(Panel_Image *panel_image, Enlil_Photo *photo)
 {
    Enlil_Trans_Job *job;
-   Elm_Menu_Item *mi_item;
+   Elm_Object_Item *mi_item;
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
    char buf[PATH_MAX];
 
@@ -463,7 +463,7 @@ panel_image_free(Panel_Image **_panel_image)
    Enlil_Trans_Job *job;
    Eina_List *l;
    Slideshow_Item *item;
-   Elm_Menu_Item *mi_item;
+   Elm_Object_Item *mi_item;
    Panel_Image *panel_image = *_panel_image;
    Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(panel_image->photo);
 
@@ -1200,7 +1200,7 @@ _update_undo_redo(Panel_Image *panel_image)
 {
    const char *type = NULL;
    const Enlil_Trans_History_Item *current, *item;
-   Elm_Menu_Item *mi_item;
+   Elm_Object_Item *mi_item;
    const Eina_List *h, *l;
 
    EINA_LIST_FREE(panel_image->undo.items_undo, mi_item)
@@ -1363,7 +1363,7 @@ _menu_history_cb(void *data, Evas_Object *obj, void *event_info)
    const char *file;
    const Eina_List *l;
    Panel_Image *panel_image = data;
-   const Elm_Menu_Item *item = event_info, *_item;
+   const Elm_Object_Item *item = event_info, *_item;
    int pos = 0;
 
    if (obj == panel_image->undo.undo)

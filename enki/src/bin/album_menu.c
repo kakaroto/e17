@@ -36,7 +36,7 @@ Album_Menu *
 album_menu_new(Evas_Object *parent, Enlil_Album *album)
 {
    Evas_Object *menu;
-   Elm_Menu_Item *mi = NULL;
+   Elm_Object_Item *mi = NULL;
    const Eina_List *l;
    const Enlil_Album_Collection *album_col;
    const Enlil_Collection *col;
@@ -58,7 +58,7 @@ album_menu_new(Evas_Object *parent, Enlil_Album *album)
 
    EINA_LIST_FOREACH(enlil_album_collections_get(album), l, album_col)
    {
-      Elm_Menu_Item *mi2;
+      Elm_Object_Item *mi2;
       mi2 = elm_menu_item_add(menu, mi, NULL, album_col->name, _collection_album_remove_cb, am);
    }
 
@@ -70,7 +70,7 @@ album_menu_new(Evas_Object *parent, Enlil_Album *album)
 
    EINA_LIST_FOREACH(enlil_library_collections_get(enlil_album_library_get(album)), l, col)
    {
-      Elm_Menu_Item *mi2;
+      Elm_Object_Item *mi2;
       if(!eina_list_data_find(enlil_collection_albums_get(col), album))
       mi2 = elm_menu_item_add(menu, mi, NULL, enlil_collection_name_get(col), _collection_album_add_cb, am);
    }
@@ -94,7 +94,7 @@ Album_Menu *
 album_collection_menu_new(Evas_Object *parent, Enlil_Album *album)
 {
    Evas_Object *menu;
-   Elm_Menu_Item *mi = NULL;
+   Elm_Object_Item *mi = NULL;
    const Eina_List *l;
    const Enlil_Album_Collection *album_col;
    const Enlil_Collection *col;
@@ -107,7 +107,7 @@ album_collection_menu_new(Evas_Object *parent, Enlil_Album *album)
 
    EINA_LIST_FOREACH(enlil_album_collections_get(album), l, album_col)
    {
-      Elm_Menu_Item *mi2;
+      Elm_Object_Item *mi2;
       mi2 = elm_menu_item_add(menu, NULL, NULL, album_col->name, NULL, am);
    }
 
@@ -122,7 +122,7 @@ album_collection_menu_new(Evas_Object *parent, Enlil_Album *album)
 
    EINA_LIST_FOREACH(enlil_album_collections_get(album), l, album_col)
    {
-      Elm_Menu_Item *mi2;
+      Elm_Object_Item *mi2;
       mi2 = elm_menu_item_add(menu, mi, NULL, album_col->name, _collection_album_remove_cb, am);
    }
 
@@ -134,7 +134,7 @@ album_collection_menu_new(Evas_Object *parent, Enlil_Album *album)
 
    EINA_LIST_FOREACH(enlil_library_collections_get(enlil_album_library_get(album)), l, col)
    {
-      Elm_Menu_Item *mi2;
+      Elm_Object_Item *mi2;
       if(!eina_list_data_find(enlil_collection_albums_get(col), album))
       mi2 = elm_menu_item_add(menu, mi, NULL, enlil_collection_name_get(col), _collection_album_add_cb, am);
    }
@@ -147,7 +147,7 @@ Album_Menu *
 album_tag_menu_new(Evas_Object *parent, Enlil_Album *album)
 {
    Evas_Object *menu;
-   Elm_Menu_Item *mi = NULL;
+   Elm_Object_Item *mi = NULL;
    const Eina_List *l, *_l;
    Enlil_Photo *photo;
    const Enlil_Tag *tag;
@@ -209,7 +209,7 @@ Album_Menu *
 album_sorts_menu_new(Evas_Object *parent, Enlil_Album *album)
 {
    Evas_Object *menu;
-   Elm_Menu_Item *mi = NULL;
+   Elm_Object_Item *mi = NULL;
    char *icon = NULL;
    Album_Menu *am = calloc(1, sizeof(Album_Menu));
    am->album = album;
@@ -249,7 +249,7 @@ static void
 _collection_album_add_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Album_Menu *am = data;
-   Elm_Menu_Item *mi = event_info;
+   Elm_Object_Item *mi = event_info;
 
    enlil_album_collection_add(am->album, elm_menu_item_label_get(mi));
 
@@ -260,7 +260,7 @@ static void
 _collection_album_remove_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Album_Menu *am = data;
-   Elm_Menu_Item *mi = event_info;
+   Elm_Object_Item *mi = event_info;
    const Eina_List *l;
    Enlil_Album_Collection *album_col;
 
@@ -286,7 +286,7 @@ static void
 _tag_album_add_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Album_Menu *am = data;
-   Elm_Menu_Item *mi = event_info;
+   Elm_Object_Item *mi = event_info;
    Eina_List *l;
    const Eina_List *_l;
    Enlil_Photo_Tag *photo_tag;
@@ -311,7 +311,7 @@ static void
 _tag_album_remove_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Album_Menu *am = data;
-   Elm_Menu_Item *mi = event_info;
+   Elm_Object_Item *mi = event_info;
    Eina_List *l;
    const Eina_List *_l;
    Enlil_Photo_Tag *photo_tag;

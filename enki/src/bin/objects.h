@@ -118,8 +118,8 @@ struct panel_image
       Evas_Object *undo;
       Evas_Object *redo;
 
-      Elm_Menu_Item *item_undo;
-      Elm_Menu_Item *item_redo;
+      Elm_Object_Item *item_undo;
+      Elm_Object_Item *item_redo;
 
       Eina_List *items_undo;
       Eina_List *items_redo;
