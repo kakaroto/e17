@@ -38,12 +38,12 @@ struct _App
    Evas_Object *spinner;
    Evas_Object *toolbar;
    struct {
-        Elm_Toolbar_Item *down;
-        Elm_Toolbar_Item *up;
-        Elm_Toolbar_Item *zoom_in;
-        Elm_Toolbar_Item *zoom_out;
-        Elm_Toolbar_Item *open;
-        Elm_Toolbar_Item *fullscreen;
+        Elm_Object_Item *down;
+        Elm_Object_Item *up;
+        Elm_Object_Item *zoom_in;
+        Elm_Object_Item *zoom_out;
+        Elm_Object_Item *open;
+        Elm_Object_Item *fullscreen;
    } action;
 
    struct _file_info
@@ -805,10 +805,10 @@ gl_icon_get(void        *data,
    return ic;
 }
 
-static Elm_Toolbar_Item *
+static Elm_Object_Item *
 _toolbar_item_add(App *app, const char *icon, const char *label, int priority, Evas_Smart_Cb cb)
 {
-   Elm_Toolbar_Item *item = elm_toolbar_item_append(app->toolbar, icon, label,
+   Elm_Object_Item *item = elm_toolbar_item_append(app->toolbar, icon, label,
                                                     cb, app);
    elm_toolbar_item_priority_set(item, priority);
    return item;
