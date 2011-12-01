@@ -306,7 +306,7 @@ view_dirty_set(struct ensure *ensure)
 /** Handlers for the subitems in the assurance list */
 
 char *
-asn_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+asn_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    struct asninfo *info;
 

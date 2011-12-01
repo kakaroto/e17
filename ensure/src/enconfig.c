@@ -16,14 +16,14 @@ void         generic_contract(void *data, Evas_Object *obj, void *event);
 void         generic_exp_req(void *data, Evas_Object *obj, void *event);
 void         generic_con_req(void *data, Evas_Object *obj, void *event);
 
-char        *asn_label_get(void *data, Evas_Object *, const char *);
+char        *asn_text_get(void *data, Evas_Object *, const char *);
 Evas_Object *asn_icon_get(void *data, Evas_Object *, const char *);
 Eina_Bool    asn_state_get(void *data, Evas_Object *, const char *);
 void         asn_del(void *data, Evas_Object *obj);
 void         asn_select(void *data, Evas_Object *obj, void *event);
 void         asn_select_toggle(void *data, Evas_Object *obj, void *event);
 
-char        *cfg_label_get(void *, Evas_Object *, const char *part);
+char        *cfg_text_get(void *, Evas_Object *, const char *part);
 Evas_Object *cfg_icon_get(void *, Evas_Object *, const char *part);
 Eina_Bool    cfg_state_get(void *, Evas_Object *, const char *part);
 void         cfg_del(void *, Evas_Object *obj);
@@ -49,7 +49,7 @@ struct severityinfo severity[ENSURE_N_SEVERITIES] = {
 static const Elm_Genlist_Item_Class clc = {
    .item_style = "default",
    .func = {
-      .label_get = cfg_label_get,
+      .text_get = cfg_text_get,
       .content_get = cfg_icon_get,
       .state_get = cfg_state_get,
       .del = cfg_del,
@@ -59,7 +59,7 @@ static const Elm_Genlist_Item_Class clc = {
 static const Elm_Genlist_Item_Class asnclass = {
    .item_style = "default",
    .func = {
-      .label_get = asn_label_get,
+      .text_get = asn_text_get,
       .content_get = asn_icon_get,
       .state_get = asn_state_get,
       .del = asn_del
@@ -123,7 +123,7 @@ cfg_sel(void *data, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 }
 
 char *
-cfg_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+cfg_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    const struct severityinfo *info;
 

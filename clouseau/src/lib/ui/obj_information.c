@@ -67,7 +67,7 @@ item_icon_get(void *data __UNUSED__, Evas_Object *parent __UNUSED__,
 }
 
 static char *
-item_label_get(void *data, Evas_Object *obj __UNUSED__,
+item_text_get(void *data, Evas_Object *obj __UNUSED__,
       const char *part __UNUSED__)
 {
    Inf_Tree_Item *tit = data;
@@ -79,7 +79,7 @@ clouseau_obj_information_list_add(Evas_Object *parent)
 {
    prop_list = elm_genlist_add(parent);
    itc.item_style = "default";
-   itc.func.label_get = item_label_get;
+   itc.func.text_get = item_text_get;
    itc.func.content_get = item_icon_get;
    itc.func.state_get = NULL;
    itc.func.del = NULL;

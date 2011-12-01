@@ -58,7 +58,7 @@ _first_file_entry_find(Ephoto_Thumb_Browser *tb)
 }
 
 static char *
-_ephoto_thumb_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_ephoto_thumb_item_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Ephoto_Entry *e = data;
    return strdup(e->label);
@@ -133,7 +133,7 @@ _ephoto_thumb_item_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 static const Elm_Gengrid_Item_Class _ephoto_thumb_up_class = {
   "ephoto-up",
   {
-    _ephoto_thumb_item_label_get,
+    _ephoto_thumb_item_text_get,
     NULL,
     NULL,
     _ephoto_thumb_item_del
@@ -143,7 +143,7 @@ static const Elm_Gengrid_Item_Class _ephoto_thumb_up_class = {
 static const Elm_Gengrid_Item_Class _ephoto_thumb_dir_class = {
   "ephoto-album-preview",
   {
-    _ephoto_thumb_item_label_get,
+    _ephoto_thumb_item_text_get,
     _ephoto_thumb_dir_icon_get,
     _ephoto_thumb_dir_state_get,
     _ephoto_thumb_item_del
@@ -153,7 +153,7 @@ static const Elm_Gengrid_Item_Class _ephoto_thumb_dir_class = {
 static const Elm_Gengrid_Item_Class _ephoto_thumb_file_class = {
   "thumb",
   {
-    _ephoto_thumb_item_label_get,
+    _ephoto_thumb_item_text_get,
     _ephoto_thumb_file_icon_get,
     NULL,
     _ephoto_thumb_item_del

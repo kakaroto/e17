@@ -14,14 +14,14 @@
 #include "enobj.h"
 
 static void         bug_del(void *, Evas_Object *obj);
-static char        *bug_label_get(void *data, Evas_Object *, const char *);
+static char        *bug_text_get(void *data, Evas_Object *, const char *);
 static Evas_Object *bug_icon_get(void *data, Evas_Object *, const char *);
 static Eina_Bool    bug_state_get(void *data, Evas_Object *, const char *);
 
 static const Elm_Genlist_Item_Class bugc = {
    .item_style = "default",
    .func = {
-      .label_get = bug_label_get,
+      .text_get = bug_text_get,
       .content_get = bug_icon_get,
       .state_get = bug_state_get,
       .del = bug_del
@@ -138,7 +138,7 @@ enasn_display_bugs(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *eve
 {
    Eina_List *l;
    Elm_Genlist_Item *it = event;
-   Evas_Object *gl = elm_genlist_item_widget_get(it);
+   Evas_Object *gl = elm_genlist_item_genlist_get(it);
    struct bug *bug;
    const struct enobj *enobj = elm_genlist_item_data_get(it);
 
@@ -154,7 +154,7 @@ bug_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 }
 
 static char *
-bug_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+bug_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    const struct bug *bug = data;
    return strdup(bug->desc);

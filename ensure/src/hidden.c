@@ -18,7 +18,7 @@
 #include "display.h"
 
 static void         hidden_sel(void *objv, Evas_Object *gl, void *event);
-static char        *hiddenclass_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static char        *hiddenclass_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static Evas_Object *hiddenclass_icon_get(void *idv, Evas_Object *obj, const char *part);
 /*
    static Eina_Bool
@@ -29,7 +29,7 @@ static Evas_Object *hiddenclass_icon_get(void *idv, Evas_Object *obj, const char
 static const Elm_Genlist_Item_Class hiddenclass = {
    .item_style = "default",
    .func = {
-      .label_get = hiddenclass_label_get,
+      .text_get = hiddenclass_text_get,
       //        .state_get = hiddenclass_state_get,
       .content_get = hiddenclass_icon_get
    },
@@ -120,7 +120,7 @@ hidden_sel(void *objv, Evas_Object *gl __UNUSED__, void *event __UNUSED__)
 }
 
 static char *
-hiddenclass_label_get(void *hiddenobjv, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+hiddenclass_text_get(void *hiddenobjv, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Evas_Object *hiddenobj = hiddenobjv;
    char buf[30];

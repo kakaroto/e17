@@ -15,12 +15,12 @@
 #include "display.h"
 
 static void         enobj_select(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *itemv);
-static char        *enobj_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static char        *enobj_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static Evas_Object *enobj_icon_get(void *enobjv, Evas_Object *obj, const char *part);
 static Eina_Bool    enobj_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static void         enobj_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
 
-static char        *enwin_label_get(void *data, Evas_Object *obj, const char *part);
+static char        *enwin_text_get(void *data, Evas_Object *obj, const char *part);
 static Eina_Bool    enwin_state_get(void *data, Evas_Object *obj, const char *);
 static void         enwin_select(void *data, Evas_Object *obj, void *event);
 static void         enwin_del(void *data, Evas_Object *obj);
@@ -28,7 +28,7 @@ static void         enwin_del(void *data, Evas_Object *obj);
 static const Elm_Genlist_Item_Class objc = {
    .item_style = "default",
    .func = {
-      .label_get = enobj_label_get,
+      .text_get = enobj_text_get,
       .content_get = enobj_icon_get,
       .state_get = enobj_state_get,
       .del = enobj_del
@@ -38,7 +38,7 @@ static const Elm_Genlist_Item_Class objc = {
 static const Elm_Genlist_Item_Class windowclass = {
    .item_style = "default",
    .func = {
-      .label_get = enwin_label_get,
+      .text_get = enwin_text_get,
       .state_get = enwin_state_get,
       .del = enwin_del,
    },
@@ -99,7 +99,7 @@ enobj_select(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *itemv)
 }
 
 static char *
-enobj_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+enobj_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    const struct enobj *enobj = data;
    char buf[200];
@@ -140,7 +140,7 @@ enobj_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 }
 
 static char *
-enwin_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+enwin_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    const struct enwin *enwin;
    const char *fmt = "Untitled Window '%p'";

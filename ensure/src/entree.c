@@ -26,12 +26,12 @@
 static Eina_Bool    tree_add_toplevel(const Eina_Hash *hash, const void *key, void *data, void *ensurev);
 
 /* Tree window callbacks */
-static char        *tree_window_label_get(void *enwinv, Evas_Object *obj, const char *part);
+static char        *tree_window_text_get(void *enwinv, Evas_Object *obj, const char *part);
 static void         tree_window_select(void *data, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void         tree_window_del(void *enwinv, Evas_Object *obj);
 
 /* Item callbacks */
-static char        *tree_item_label_get(void *enwinv, Evas_Object *obj, const char *part);
+static char        *tree_item_text_get(void *enwinv, Evas_Object *obj, const char *part);
 static void         tree_item_select(void *data, Evas_Object *obj __UNUSED__, void *event __UNUSED__);
 static void         tree_item_del(void *enwinv, Evas_Object *obj);
 static Evas_Object *tree_item_icon_get(void *enobjv, Evas_Object *obj, const char *part);
@@ -39,7 +39,7 @@ static Evas_Object *tree_item_icon_get(void *enobjv, Evas_Object *obj, const cha
 static const Elm_Genlist_Item_Class windowclass = {
    .item_style = "default",
    .func = {
-      .label_get = tree_window_label_get,
+      .text_get = tree_window_text_get,
       .del = tree_window_del,
    }
 };
@@ -47,7 +47,7 @@ static const Elm_Genlist_Item_Class windowclass = {
 static const Elm_Genlist_Item_Class treeitemclass = {
    .item_style = "default",
    .func = {
-      .label_get = tree_item_label_get,
+      .text_get = tree_item_text_get,
       .content_get = tree_item_icon_get,
       .del = tree_item_del,
    }
@@ -146,7 +146,7 @@ tree_add_toplevel(const Eina_Hash *hash __UNUSED__, const void *key __UNUSED__, 
  * Display the name of hte window
  */
 static char *
-tree_window_label_get(void *enwinv, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+tree_window_text_get(void *enwinv, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    struct enwin *enwin = enwinv;
    char buf[1000];
@@ -169,7 +169,7 @@ tree_window_del(void *enwinv, Evas_Object *obj __UNUSED__)
 }
 
 static char *
-tree_item_label_get(void *enobjv, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+tree_item_text_get(void *enobjv, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    char buf[200];
    struct enobj *enobj = enobjv;
