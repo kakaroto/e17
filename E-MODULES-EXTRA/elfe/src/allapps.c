@@ -32,7 +32,7 @@ static Elm_Gengrid_Item_Class app_itc;
 
 
 static char *
-_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
 
    Elfe_Grid_Item *gitem = data;
@@ -330,7 +330,7 @@ elfe_allapps_add(Evas_Object *parent)
    evas_object_data_set(allapps->box, "elfe_allapps", allapps);
 
    app_itc.item_style     = "default";
-   app_itc.func.label_get = _label_get;
+   app_itc.func.text_get = _text_get;
    app_itc.func.content_get  = _content_get;
    app_itc.func.state_get = NULL;
    app_itc.func.del       = NULL;

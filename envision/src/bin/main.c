@@ -208,7 +208,7 @@ _update_items(void *data)
 
 /*---------------------LABEL GET - SHOW LABEL------------------------*/
 static char *
-grid_label_get(void *data       __UNUSED__,
+grid_text_get(void *data       __UNUSED__,
                Evas_Object *obj __UNUSED__,
                const char *part __UNUSED__)
 {
@@ -779,7 +779,7 @@ on_win_del_req(void *data       __UNUSED__,
 }
 
 char *
-gl_label_get(void            *data,
+gl_text_get(void            *data,
              Evas_Object *obj __UNUSED__,
              const char *part __UNUSED__)
 {
@@ -961,7 +961,7 @@ create_main_win(App *app)
                                   app);
    evas_object_smart_callback_add(app->grid, "changed", grid_changed,
                                   app);
-   gic.func.label_get = grid_label_get;
+   gic.func.text_get = grid_text_get;
    gic.func.content_get = grid_icon_get;
    gic.func.del = grid_data_del;
 
