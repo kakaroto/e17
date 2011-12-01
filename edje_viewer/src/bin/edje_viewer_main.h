@@ -106,7 +106,7 @@ struct _Group
    const char *name;
 
    Elm_Genlist_Item *item;
-   Elm_Toolbar_Item *ti;
+   Elm_Object_Item *ti;
 
    Eina_Inlist *parts;
 
