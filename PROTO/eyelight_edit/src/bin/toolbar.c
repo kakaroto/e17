@@ -17,7 +17,7 @@ Evas_Object *toolbar_create()
 {
     Evas_Object *tb;
     Evas_Object *menu;
-    Elm_Toolbar_Item *item;
+    Elm_Object_Item *item;
     Elm_Object_Item *mi;
     Eina_List *l;
     L_Recent_File *l_file;
