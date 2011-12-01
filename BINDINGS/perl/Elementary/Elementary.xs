@@ -1029,10 +1029,10 @@ elm_menu_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 void
 elm_menu_parent_set(Evas_Object *obj, Evas_Object *parent)
 
-Elm_Menu_Item *
+Elm_Object_Item *
 elm_menu_item_add(obj, parent, icon, label, func, data)
     Evas_Object *obj
-    Elm_Menu_Item *parent
+    Elm_Object_Item *parent
     Evas_Object *icon
     const char *label
     SV *func
@@ -1050,29 +1050,29 @@ elm_menu_item_add(obj, parent, icon, label, func, data)
     OUTPUT:
         RETVAL
 
-Elm_Menu_Item *
-elm_menu_item_separator_add(Evas_Object *obj, Elm_Menu_Item *parent)
+Elm_Object_Item *
+elm_menu_item_separator_add(Evas_Object *obj, Elm_Object_Item *parent)
 
 void
-elm_menu_item_label_set(Elm_Menu_Item *item, const char *label)
+elm_menu_item_label_set(Elm_Object_Item *item, const char *label)
 
 const char *
-elm_menu_item_label_get(Elm_Menu_Item *item)
+elm_menu_item_label_get(Elm_Object_Item *item)
 
 void
-elm_menu_item_icon_set(Elm_Menu_Item *item, Evas_Object *icon)
+elm_menu_item_icon_set(Elm_Object_Item *item, Evas_Object *icon)
 
 void
-elm_menu_item_disabled_set(Elm_Menu_Item *item, Eina_Bool disabled)
+elm_menu_item_disabled_set(Elm_Object_Item *item, Eina_Bool disabled)
 
 void
-elm_menu_item_del(Elm_Menu_Item *item)
+elm_menu_item_del(Elm_Object_Item *item)
 
 Evas_Object *
-elm_menu_object_get(const Elm_Menu_Item *it)
+elm_menu_object_get(const Elm_Object_Item *it)
 
 const Eina_List *
-elm_menu_item_subitems_get(Elm_Menu_Item *item)
+elm_menu_item_subitems_get(Elm_Object_Item *item)
 
 # list
 # ------------------------------------------------------------------------------

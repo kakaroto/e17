@@ -19,7 +19,7 @@ Elm_Map_Group_Class *       T_PTROBJ
 Elm_Map_Marker *            T_PTROBJ
 Elm_Map_Marker_Class *      T_PTROBJ
 Elm_Map_Zoom_Mode           T_IV
-Elm_Menu_Item *             T_PTROBJ
+Elm_Object_Item *           T_PTROBJ
 Elm_Notify_Orient           T_IV
 Elm_Panel_Orient            T_IV
 Elm_Photocam_Zoom_Mode      T_IV
@@ -75,7 +75,7 @@ Evas_Textblock_Text_Type    T_IV
 Evas_Transform *            T_PTR
 const Eina_List *           T_PTR
 const Elm_List_Item *       T_PTR
-const Elm_Menu_Item *       T_PTROBJ
+const Elm_Object_Item *     T_PTROBJ
 const Elm_Slideshow_Item_Class *    T_PTROBJ
 const Evas *                T_PTR
 const Evas_Lock *           T_PTR
