@@ -5,12 +5,12 @@ typedef struct _Plugin Plugin;
 
 struct _Plugin
 {
-  Evry_Plugin base;
-  Eina_List *contacts;
-  Eina_List *fetching;
-  const char *input;
-  Eina_Bool active : 1;
-  Eet_File *images;
+   Evry_Plugin base;
+   Eina_List  *contacts;
+   Eina_List  *fetching;
+   const char *input;
+   Eina_Bool   active : 1;
+   Eet_File   *images;
 };
 
 const Evry_API *evry = NULL;
@@ -25,20 +25,19 @@ static Eina_List *plugins = NULL;
 static Eina_List *actions = NULL;
 static E_DBus_Connection *conn = NULL;
 static const char DBUS_SHOTGUN_BUS_NAME[] = "org.shotgun";
-static const char DBUS_SHOTGUN_LIST[]     = "org.shotgun.list";
-static const char DBUS_SHOTGUN_CONTACT[]  = "org.shotgun.contact";
-static const char DBUS_SHOTGUN_CORE[]     = "org.shotgun.core";
-static const char DBUS_SHOTGUN_PATH[]     = "/org/shotgun/remote";
-static const char FDO_BUS_NAME[]	  = "org.freedesktop.DBus";
-static const char FDO_INTERFACE[]	  = "org.freedesktop.DBus";
-static const char FDO_PATH[]		  = "/org/freedesktop/DBus";
+static const char DBUS_SHOTGUN_LIST[] = "org.shotgun.list";
+static const char DBUS_SHOTGUN_CONTACT[] = "org.shotgun.contact";
+static const char DBUS_SHOTGUN_CORE[] = "org.shotgun.core";
+static const char DBUS_SHOTGUN_PATH[] = "/org/shotgun/remote";
+static const char FDO_BUS_NAME[] = "org.freedesktop.DBus";
+static const char FDO_INTERFACE[] = "org.freedesktop.DBus";
+static const char FDO_PATH[] = "/org/freedesktop/DBus";
 
 static E_DBus_Signal_Handler *_dbus_signal_new_msg = NULL;
 static E_DBus_Signal_Handler *_dbus_signal_new_msg_self = NULL;
 static E_DBus_Signal_Handler *_dbus_signal_name_owner_changed = NULL;
 
 static void _add_message(int self, const char *contact, const char *message);
-
 
 static void
 _item_free(Evry_Item *it)
@@ -82,12 +81,12 @@ _inst_free(Evry_Plugin *plugin)
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
    IF_RELEASE(p->input);
-   EINA_LIST_FREE(p->contacts, c)
+   EINA_LIST_FREE (p->contacts, c)
      EVRY_ITEM_FREE(c);
-   
-   EINA_LIST_FREE(p->fetching, c)
+
+   EINA_LIST_FREE (p->fetching, c)
      EVRY_ITEM_FREE(c);
-	
+
    if (p->images) eet_close(p->images);
    eet_shutdown();
 
@@ -99,10 +98,10 @@ _check_msg(void *data, DBusMessage *reply, DBusError *error)
 {
    if (dbus_error_is_set(error))
      {
-	DBG("Error: %s - %s\n", error->name, error->message);
-	return 0;
+        DBG("Error: %s - %s\n", error->name, error->message);
+        return 0;
      }
-   return (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN);
+   return dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN;
 }
 
 static void
@@ -119,36 +118,36 @@ static Evas_Object *
 _icon_get(Evry_Item *it, Evas *e)
 {
    Evas_Object *o = NULL;
-   
+
    GET_CONTACT(c, it);
    GET_PLUGIN(p, it->plugin);
 
    if (c->icon)
      {
-	size_t size;
-	unsigned char *img;
+        size_t size;
+        unsigned char *img;
 
-	img = eet_read(p->images, c->icon, (int*)&size);
-	if (img)
-	  {
-	     o = evas_object_image_filled_add(e);
-	     evas_object_size_hint_aspect_set(o, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
-	     evas_object_image_memfile_set(o, img, size, NULL, NULL);
+        img = eet_read(p->images, c->icon, (int *)&size);
+        if (img)
+          {
+             o = evas_object_image_filled_add(e);
+             evas_object_size_hint_aspect_set(o, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
+             evas_object_image_memfile_set(o, img, size, NULL, NULL);
 
-	     if (evas_object_image_load_error_get(o) != EVAS_LOAD_ERROR_NONE)
-	       {
-		  evas_object_del(o);
-		  o = NULL;
-		  IF_RELEASE(c->icon);
-	       }
-	     free(img);
-	  }
+             if (evas_object_image_load_error_get(o) != EVAS_LOAD_ERROR_NONE)
+               {
+                  evas_object_del(o);
+                  o = NULL;
+                  IF_RELEASE(c->icon);
+               }
+             free(img);
+          }
      }
 
-   if(!o)
+   if (!o)
      {
-	o = edje_object_add(e);
-	edje_object_file_set(o, theme_file, "contact_icon");
+        o = edje_object_add(e);
+        edje_object_file_set(o, theme_file, "contact_icon");
      }
    return o;
 }
@@ -160,12 +159,12 @@ _dbus_cb_info_get(void *data, DBusMessage *reply, DBusError *error)
    char *icon, *name;
    unsigned int status;
    int priority;
-   
+
    GET_CONTACT(c, data);
    GET_PLUGIN(p, c->base.plugin);
 
    c->pnd_info = NULL;
-   
+
    if (!p->active)
      return;
 
@@ -173,30 +172,30 @@ _dbus_cb_info_get(void *data, DBusMessage *reply, DBusError *error)
      return;
 
    dbus_message_get_args(reply, error,
-			 DBUS_TYPE_STRING, &(name),
-			 DBUS_TYPE_STRING, &(icon),
-			 DBUS_TYPE_UINT32, &(status),
-			 DBUS_TYPE_INT32,  &(priority),
-			 DBUS_TYPE_INVALID);
+                         DBUS_TYPE_STRING, &(name),
+                         DBUS_TYPE_STRING, &(icon),
+                         DBUS_TYPE_UINT32, &(status),
+                         DBUS_TYPE_INT32, &(priority),
+                         DBUS_TYPE_INVALID);
 
    if (name)
      {
-	c->base.label = eina_stringshare_add(name);
-	c->base.detail = eina_stringshare_ref(c->id);
+        c->base.label = eina_stringshare_add(name);
+        c->base.detail = eina_stringshare_ref(c->id);
      }
    else
      c->base.label = eina_stringshare_add(c->id);
-   
+
    if (icon)
      c->icon = eina_stringshare_add(icon);
 
    eina_list_move(&p->contacts, &p->fetching, c);
-   
+
    if (!p->fetching)
      {
-	EVRY_PLUGIN_ITEMS_CLEAR(p);
-	EVRY_PLUGIN_ITEMS_ADD(p, p->contacts, p->input, 1, 0);
-	EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
+        EVRY_PLUGIN_ITEMS_CLEAR(p);
+        EVRY_PLUGIN_ITEMS_ADD(p, p->contacts, p->input, 1, 0);
+        EVRY_PLUGIN_UPDATE(p, EVRY_UPDATE_ADD);
      }
 }
 
@@ -212,17 +211,17 @@ _item_new(Plugin *p, char *id)
    p->fetching = eina_list_append(p->fetching, c);
 
    if (!(msg = dbus_message_new_method_call(DBUS_SHOTGUN_BUS_NAME,
-					    DBUS_SHOTGUN_PATH,
-					    DBUS_SHOTGUN_CONTACT,
-					    "info")))
+                                            DBUS_SHOTGUN_PATH,
+                                            DBUS_SHOTGUN_CONTACT,
+                                            "info")))
      {
-	DBG("dbus!\n");
-	return;
+        DBG("dbus!\n");
+        return;
      }
 
    dbus_message_append_args(msg,
-			    DBUS_TYPE_STRING,&(c->id),
-			    DBUS_TYPE_INVALID);
+                            DBUS_TYPE_STRING, &(c->id),
+                            DBUS_TYPE_INVALID);
 
    c->pnd_info = e_dbus_message_send(conn, msg, _dbus_cb_info_get, -1, c);
 
@@ -247,16 +246,16 @@ _dbus_cb_list_get(void *data, DBusMessage *reply, DBusError *error)
 
    if (dbus_message_iter_get_arg_type(&array) == DBUS_TYPE_ARRAY)
      {
-	dbus_message_iter_recurse(&array, &item);
+        dbus_message_iter_recurse(&array, &item);
 
-	while (dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_STRING)
-	  {
-	     dbus_message_iter_get_basic (&item, &id);
-	     if (id && id[0])
-	       _item_new(p, id);
+        while (dbus_message_iter_get_arg_type(&item) == DBUS_TYPE_STRING)
+          {
+             dbus_message_iter_get_basic (&item, &id);
+             if (id && id[0])
+               _item_new(p, id);
 
-	     dbus_message_iter_next(&item);
-	  }
+             dbus_message_iter_next(&item);
+          }
      }
 }
 
@@ -273,20 +272,20 @@ _fetch(Evry_Plugin *plugin, const char *input)
 
    if (!p->active)
      {
-	if (!(msg = dbus_message_new_method_call(DBUS_SHOTGUN_BUS_NAME,
-						 DBUS_SHOTGUN_PATH,
-						 DBUS_SHOTGUN_LIST,
-						 "get_all")))
-	  {
-	     printf("error fetch\n");
-	     return 0;
-	  }
+        if (!(msg = dbus_message_new_method_call(DBUS_SHOTGUN_BUS_NAME,
+                                                 DBUS_SHOTGUN_PATH,
+                                                 DBUS_SHOTGUN_LIST,
+                                                 "get_all")))
+          {
+             printf("error fetch\n");
+             return 0;
+          }
 
-	dbus_message_append_args(msg, DBUS_TYPE_INVALID);
-	e_dbus_message_send(conn, msg, _dbus_cb_list_get, -1, plugin);
-	dbus_message_unref(msg);
+        dbus_message_append_args(msg, DBUS_TYPE_INVALID);
+        e_dbus_message_send(conn, msg, _dbus_cb_list_get, -1, plugin);
+        dbus_message_unref(msg);
 
-	p->active = EINA_TRUE;
+        p->active = EINA_TRUE;
      }
 
    EVRY_PLUGIN_ITEMS_CLEAR(p);
@@ -308,23 +307,22 @@ _action_chat(Evry_Action *act)
      return EVRY_ACTION_OTHER;
 
    if (!(msg = dbus_message_new_method_call(DBUS_SHOTGUN_BUS_NAME,
-					    DBUS_SHOTGUN_PATH,
-					    DBUS_SHOTGUN_CONTACT,
-					    "send_echo")))
+                                            DBUS_SHOTGUN_PATH,
+                                            DBUS_SHOTGUN_CONTACT,
+                                            "send_echo")))
      {
-	DBG("dbus!\n");
-	return EVRY_ACTION_OTHER;
+        DBG("dbus!\n");
+        return EVRY_ACTION_OTHER;
      }
-
 
    message = act->it2.item->label;
    printf("send  %s to %s\n", message, c->id);
 
    dbus_message_append_args(msg,
-			    DBUS_TYPE_STRING,&(c->id),
-			    DBUS_TYPE_STRING,&(message),
-			    DBUS_TYPE_UINT32, &(status),
-			    DBUS_TYPE_INVALID);
+                            DBUS_TYPE_STRING, &(c->id),
+                            DBUS_TYPE_STRING, &(message),
+                            DBUS_TYPE_UINT32, &(status),
+                            DBUS_TYPE_INVALID);
 
    e_dbus_message_send(conn, msg, _dbus_cb_chat_reply, -1, NULL);
 
@@ -356,16 +354,16 @@ _add_message(int self, const char *contact, const char *message)
 
    m->self = self;
    m->time = ecore_time_get();
-   
+
    messages = eina_list_append(messages, m);
 
    if (eina_list_count(messages) > MAX_HISTORY)
      {
-	m = eina_list_data_get(messages);
-	messages = eina_list_remove_list(messages, messages);
-	eina_stringshare_del(m->contact);
-	eina_stringshare_del(m->msg);
-	E_FREE(m);
+        m = eina_list_data_get(messages);
+        messages = eina_list_remove_list(messages, messages);
+        eina_stringshare_del(m->contact);
+        eina_stringshare_del(m->msg);
+        E_FREE(m);
      }
 
    ecore_event_add(SHOTGUN_EVENT_MESSAGE_ADD, NULL, NULL, NULL);
@@ -377,9 +375,9 @@ _dbus_cb_signal_new_msg(void *data, DBusMessage *msg)
    char *contact, *message;
 
    dbus_message_get_args(msg, NULL,
-			 DBUS_TYPE_STRING, &(contact),
-			 DBUS_TYPE_STRING, &(message),
-			 DBUS_TYPE_INVALID);
+                         DBUS_TYPE_STRING, &(contact),
+                         DBUS_TYPE_STRING, &(message),
+                         DBUS_TYPE_INVALID);
    _add_message(0, contact, message);
 }
 
@@ -389,9 +387,9 @@ _dbus_cb_signal_new_msg_self(void *data, DBusMessage *msg)
    char *contact, *message;
 
    dbus_message_get_args(msg, NULL,
-			 DBUS_TYPE_STRING, &(contact),
-			 DBUS_TYPE_STRING, &(message),
-			 DBUS_TYPE_INVALID);
+                         DBUS_TYPE_STRING, &(contact),
+                         DBUS_TYPE_STRING, &(message),
+                         DBUS_TYPE_INVALID);
    _add_message(1, contact, message);
 }
 
@@ -405,14 +403,13 @@ _signal_handler_add(void)
      e_dbus_signal_handler_del(conn, _dbus_signal_new_msg_self);
 
    _dbus_signal_new_msg = e_dbus_signal_handler_add
-     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
-      "new_msg", _dbus_cb_signal_new_msg, NULL);
+       (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
+       "new_msg", _dbus_cb_signal_new_msg, NULL);
 
    _dbus_signal_new_msg_self = e_dbus_signal_handler_add
-     (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
-      "new_msg_self", _dbus_cb_signal_new_msg_self, NULL);
+       (conn, DBUS_SHOTGUN_BUS_NAME, DBUS_SHOTGUN_PATH, DBUS_SHOTGUN_CORE,
+       "new_msg_self", _dbus_cb_signal_new_msg_self, NULL);
 }
-
 
 static void
 _dbus_cb_signal_name_owner_changed(void *data, DBusMessage *msg)
@@ -425,13 +422,13 @@ _dbus_cb_signal_name_owner_changed(void *data, DBusMessage *msg)
 
    dbus_error_init(&err);
    if (!dbus_message_get_args(msg, &err,
-			      DBUS_TYPE_STRING, &name,
-			      DBUS_TYPE_STRING, &from,
-			      DBUS_TYPE_STRING, &to,
-			      DBUS_TYPE_INVALID))
+                              DBUS_TYPE_STRING, &name,
+                              DBUS_TYPE_STRING, &from,
+                              DBUS_TYPE_STRING, &to,
+                              DBUS_TYPE_INVALID))
      {
-	dbus_error_free(&err);
-	return;
+        dbus_error_free(&err);
+        return;
      }
    printf("NameOwnerChanged: %s:%s:%s\n", name, from, to);
 
@@ -452,8 +449,8 @@ _plugins_init(const Evry_API *_api)
 
    if (!(conn = e_dbus_bus_get(DBUS_BUS_SESSION)))
      {
-	ERR("could not connect to dbus' session bus");
-	return EINA_FALSE;
+        ERR("could not connect to dbus' session bus");
+        return EINA_FALSE;
      }
 
    SHOTGUN_EVENT_MESSAGE_ADD = ecore_event_type_new();
@@ -462,22 +459,22 @@ _plugins_init(const Evry_API *_api)
    SHOTGUN_MESSAGE = evry->type_register("SHOTGUN_MESSAGE");
 
    plugin = EVRY_PLUGIN_BASE("Shotgun", "folder", SHOTGUN_CONTACT,
-			    _inst_new, _inst_free, _fetch);
+                             _inst_new, _inst_free, _fetch);
 
    evry->plugin_register(plugin, EVRY_PLUGIN_SUBJECT, 1);
-   plugins = eina_list_append(plugins, plugin); 
+   plugins = eina_list_append(plugins, plugin);
 
    act = EVRY_ACTION_NEW("Write Message", SHOTGUN_CONTACT, SHOTGUN_MESSAGE,
-			 "go-next", _action_chat, NULL);
+                         "go-next", _action_chat, NULL);
    evry->action_register(act, 0);
    actions = eina_list_append(actions, act);
 
    _dbus_signal_name_owner_changed = e_dbus_signal_handler_add
-     (conn, FDO_BUS_NAME, FDO_PATH, FDO_INTERFACE, "NameOwnerChanged",
-      _dbus_cb_signal_name_owner_changed, NULL);
+       (conn, FDO_BUS_NAME, FDO_PATH, FDO_INTERFACE, "NameOwnerChanged",
+       _dbus_cb_signal_name_owner_changed, NULL);
 
    _signal_handler_add();
-   
+
    evry_plug_msg_init();
 
    return EINA_TRUE;
@@ -492,38 +489,36 @@ _plugins_shutdown(void)
 
    if (conn)
      {
-	e_dbus_connection_close(conn);
-	e_dbus_signal_handler_del(conn, _dbus_signal_new_msg);
-	e_dbus_signal_handler_del(conn, _dbus_signal_new_msg_self);
-	e_dbus_signal_handler_del(conn, _dbus_signal_name_owner_changed);
+        e_dbus_connection_close(conn);
+        e_dbus_signal_handler_del(conn, _dbus_signal_new_msg);
+        e_dbus_signal_handler_del(conn, _dbus_signal_new_msg_self);
+        e_dbus_signal_handler_del(conn, _dbus_signal_name_owner_changed);
      }
 
-   EINA_LIST_FREE(plugins, p)
+   EINA_LIST_FREE (plugins, p)
      EVRY_PLUGIN_FREE(p);
 
-   EINA_LIST_FREE(actions, act)
+   EINA_LIST_FREE (actions, act)
      EVRY_ACTION_FREE(act);
 
    evry_plug_msg_shutdown();
 
-   EINA_LIST_FREE(messages, m)
+   EINA_LIST_FREE (messages, m)
      {
-	eina_stringshare_del(m->contact);
-	eina_stringshare_del(m->msg);
-	E_FREE(m);
+        eina_stringshare_del(m->contact);
+        eina_stringshare_del(m->msg);
+        E_FREE(m);
      }
 }
 
-
 /***************************************************************************/
-
 
 /* module setup */
 EAPI E_Module_Api e_modapi =
-  {
-    E_MODULE_API_VERSION,
-    PACKAGE
-  };
+{
+   E_MODULE_API_VERSION,
+   PACKAGE
+};
 
 EAPI void *
 e_modapi_init(E_Module *m)
@@ -560,6 +555,4 @@ e_modapi_save(E_Module *m)
 {
    return 1;
 }
-
-
 
