@@ -423,9 +423,8 @@ volume_file_scan(char *file)
       (!strcasecmp(ext, "mpe")) || (!strcasecmp(ext, "qt"))   ||
       (!strcasecmp(ext, "fli")) || (!strcasecmp(ext, "dv"))   ||
       (!strcasecmp(ext, "asx")) || (!strcasecmp(ext, "wm"))   ||
-      (!strcasecmp(ext, "lsf")) || (!strcasecmp(ext, "movie") ||
-      (!strcasecmp(ext, "mkv")))
-      ) 
+      (!strcasecmp(ext, "lsf")) || (!strcasecmp(ext, "movie"))||
+      (!strcasecmp(ext, "mkv")) || (!strcasecmp(ext, "flv")))
      {
 	vi->type = "video";
 	video_count++;
