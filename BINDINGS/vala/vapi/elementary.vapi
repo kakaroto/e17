@@ -835,7 +835,7 @@ public class ToolbarItem
 
 //=======================================================================
 [Compact]
-[CCode (cname = "Elm_Menu_Item", free_function = "elm_menu_item_del")]
+[CCode (cname = "Elm_Object_Item", free_function = "elm_menu_item_del")]
 public class MenuItem
 {
     [CCode (cname = "elm_menu_object_get")]
