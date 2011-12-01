@@ -55,7 +55,7 @@ static int _log_domain = -1;
 #define DBG(...) EINA_LOG_DOM_DBG(_log_domain, __VA_ARGS__)
 
    static char *
-_gl_label_get(const void *data, Evas_Object *obj, const char *part)
+_gl_text_get(const void *data, Evas_Object *obj, const char *part)
 {
    Genlist_Data *g_data = (Genlist_Data*) data;
 
@@ -173,7 +173,7 @@ create_main_win(App *app)
    evas_object_show(app->genlist);
 
    itc.item_style     = "default";
-   itc.func.label_get = _gl_label_get;
+   itc.func.text_get = _gl_text_get;
 
    Genlist_Data *data = calloc(1, sizeof(Genlist_Data));
    data->app = app;

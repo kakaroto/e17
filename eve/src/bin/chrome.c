@@ -40,14 +40,14 @@ static More_Menu_Item *more_menu_home_page_default_set(Browser_Window *, More_Me
 static void on_more_item_click(void *data, Evas_Object *obj, void *event_info __UNUSED__);
 static void on_more_item_back_click(void *data, Evas_Object *edje, const char *emission __UNUSED__, const char *source __UNUSED__);
 
-static char *tab_grid_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static char *tab_grid_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static Evas_Object *tab_grid_content_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static Eina_Bool tab_grid_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static void tab_grid_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
 
-static char *more_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
-static char *page_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part);
-static char *list_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part);
+static char *more_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
+static char *page_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part);
+static char *list_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part);
 static Evas_Object *more_content_get(void *data, Evas_Object *obj, const char *part);
 static Eina_Bool more_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__);
 static void more_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__);
@@ -362,7 +362,7 @@ static More_Menu_Item more_menu_root[] =
 
 static const Elm_Gengrid_Item_Class gic_default = {
    .func = {
-       .label_get = tab_grid_label_get,
+       .text_get = tab_grid_text_get,
        .content_get = tab_grid_content_get,
        .state_get = tab_grid_state_get,
        .del = tab_grid_del
@@ -371,7 +371,7 @@ static const Elm_Gengrid_Item_Class gic_default = {
 
 static const Elm_Genlist_Item_Class glic_default = {
    .func = {
-       .label_get = more_label_get,
+       .text_get = more_text_get,
        .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
@@ -381,7 +381,7 @@ static const Elm_Genlist_Item_Class glic_default = {
 
 static const Elm_Genlist_Item_Class glic_config = {
    .func = {
-       .label_get = more_label_get,
+       .text_get = more_text_get,
        .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
@@ -391,7 +391,7 @@ static const Elm_Genlist_Item_Class glic_config = {
 
 static const Elm_Genlist_Item_Class glic_config_selectable = {
    .func = {
-       .label_get = more_label_get,
+       .text_get = more_text_get,
        .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
@@ -401,7 +401,7 @@ static const Elm_Genlist_Item_Class glic_config_selectable = {
 
 static const Elm_Genlist_Item_Class glic_separator = {
    .func = {
-       .label_get = NULL,
+       .text_get = NULL,
        .content_get = NULL,
        .state_get = NULL,
        .del = more_del
@@ -411,7 +411,7 @@ static const Elm_Genlist_Item_Class glic_separator = {
 
 static const Elm_Genlist_Item_Class glic_config_list = {
    .func = {
-       .label_get = list_label_get,
+       .text_get = list_text_get,
        .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
@@ -421,7 +421,7 @@ static const Elm_Genlist_Item_Class glic_config_list = {
 
 static const Elm_Genlist_Item_Class glic_page = {
    .func = {
-       .label_get = page_label_get,
+       .text_get = page_text_get,
        .content_get = more_content_get,
        .state_get = more_state_get,
        .del = more_del
@@ -2325,7 +2325,7 @@ on_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__,
 }
 
 static char *
-tab_grid_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+tab_grid_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    if (data)
      {
@@ -2361,7 +2361,7 @@ tab_grid_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 }
 
 static char *
-more_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+more_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    More_Menu_Item *mmi = data;
 
@@ -2372,7 +2372,7 @@ more_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSE
 }
 
 static char *
-page_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
+page_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
 {
    More_Menu_Item *mmi = data;
 
@@ -2408,7 +2408,7 @@ _get_selected_int_value_title(More_Menu_Config_List_Int *list, int value)
 }
 
 static char *
-list_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
+list_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
 {
    More_Menu_Item *mmi = data;
 

@@ -122,7 +122,7 @@ item_icon_get(void *data, Evas_Object *parent, const char *part)
 }
 
 static char *
-item_label_get(void *data, Evas_Object *obj __UNUSED__,
+item_text_get(void *data, Evas_Object *obj __UNUSED__,
       const char *part __UNUSED__)
 {
    Tree_Item *treeit = data;
@@ -373,7 +373,7 @@ libclouseau_init(void)
               _show_clippers_check_changed, gl);
 
         itc.item_style = "default";
-        itc.func.label_get = item_label_get;
+        itc.func.text_get = item_text_get;
         itc.func.content_get = item_icon_get;
         itc.func.state_get = NULL;
         itc.func.del = NULL;
