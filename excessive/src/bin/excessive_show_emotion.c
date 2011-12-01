@@ -9,7 +9,7 @@
 static Eina_List *all_video = NULL;
 
 static char *
-_excessive_emotion_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_excessive_emotion_item_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Excessive_File_Info *info = data;
 
@@ -190,7 +190,7 @@ _excessive_emotion_action(Evas_Object *display, Excessive_File_Object *object)
 static const Elm_Gengrid_Item_Class _excessive_emotion_class = {
   "excessive-emotion",
   {
-    _excessive_emotion_item_label_get,
+    _excessive_emotion_item_text_get,
     _excessive_emotion_item_object_get,
     NULL,
     _excessive_emotion_item_object_del,

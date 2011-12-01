@@ -14,7 +14,7 @@ struct _Excessive_Shortcut
 };
 
 static char *
-_excessive_shortcut_favorite_label_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_excessive_shortcut_favorite_text_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    return strdup("Favorites");
 }
@@ -31,7 +31,7 @@ _excessive_shortcut_favorite_icon_get(void *data __UNUSED__, Evas_Object *obj, c
 static Elm_Genlist_Item_Class itc_favorite_group = {
   "group_index",
   {
-    _excessive_shortcut_favorite_label_get,
+    _excessive_shortcut_favorite_text_get,
     _excessive_shortcut_favorite_icon_get,
     NULL,
     NULL
@@ -39,7 +39,7 @@ static Elm_Genlist_Item_Class itc_favorite_group = {
 };
 
 static char *
-_excessive_shortcut_desktop_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_excessive_shortcut_desktop_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Excessive_Shortcut *es = data;
 
@@ -72,7 +72,7 @@ _excessive_shortcut_desktop_select(void *data, Evas_Object *obj __UNUSED__, void
 static Elm_Genlist_Item_Class itc_desktop_group = {
   "default",
   {
-    _excessive_shortcut_desktop_label_get,
+    _excessive_shortcut_desktop_text_get,
     _excessive_shortcut_desktop_icon_get,
     NULL,
     NULL

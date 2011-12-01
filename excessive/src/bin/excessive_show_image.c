@@ -12,7 +12,7 @@ struct _Excessive_File_Object
 static int _timeout_value = 3;
 
 static char *
-_excessive_folder_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_excessive_folder_item_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Excessive_File_Info *info = data;
 
@@ -342,7 +342,7 @@ _excessive_image_action(Evas_Object *display, Excessive_File_Object *object)
 static const Elm_Gengrid_Item_Class _excessive_image_class = {
   "excessive-image",
   {
-    _excessive_folder_item_label_get,
+    _excessive_folder_item_text_get,
     _excessive_folder_item_object_get,
     NULL,
     _excessive_folder_item_object_del,

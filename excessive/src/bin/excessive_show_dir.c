@@ -5,7 +5,7 @@
 #include "excessive_private.h"
 
 static char *
-_excessive_folder_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_excessive_folder_item_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Excessive_File_Info *info = data;
 
@@ -46,7 +46,7 @@ _excessive_is_directory(Eio_File *handler __UNUSED__, const Eina_File_Direct_Inf
 static const Elm_Gengrid_Item_Class _excessive_folder_class = {
   "excessive-folder",
   {
-    _excessive_folder_item_label_get,
+    _excessive_folder_item_text_get,
     _excessive_folder_item_object_get,
     NULL,
     _excessive_folder_item_object_del,

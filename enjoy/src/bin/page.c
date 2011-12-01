@@ -404,7 +404,7 @@ page_title_get(const Evas_Object *obj)
 
 
 static char *
-_song_item_label_get(void *data, Evas_Object *list, const char *part)
+_song_item_text_get(void *data, Evas_Object *list, const char *part)
 {
    Song *song = data;
 
@@ -589,7 +589,7 @@ _page_songs_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const ch
    static const Elm_Genlist_Item_Class song_item_cls = {
      "media",
      {
-       _song_item_label_get,
+       _song_item_text_get,
        NULL,
        _song_item_state_get,
        _song_item_del
@@ -674,7 +674,7 @@ _page_album_songs_add(Evas_Object *parent, Album *album)
    static const Elm_Genlist_Item_Class song_item_cls = {
      "media-album",
      {
-       _song_item_label_get,
+       _song_item_text_get,
        NULL,
        _song_item_state_get,
        _song_item_del
@@ -909,7 +909,7 @@ page_songs_prev_go(Evas_Object *obj)
  **********************************************************************/
 
 static char *
-_album_item_label_get(void *data, Evas_Object *list, const char *part)
+_album_item_text_get(void *data, Evas_Object *list, const char *part)
 {
    Album *album = data;
    if (strcmp(part, "elm.text.artist") == 0)
@@ -968,7 +968,7 @@ _page_albums_artist_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, 
    static const Elm_Genlist_Item_Class album_item_cls = {
      "media-preview",
      {
-       _album_item_label_get,
+       _album_item_text_get,
        _album_item_icon_get,
        NULL,
        _album_item_del
@@ -1013,7 +1013,7 @@ _page_albums_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const c
    static const Elm_Genlist_Item_Class album_item_cls = {
      "media-preview",
      {
-       _album_item_label_get,
+       _album_item_text_get,
        _album_item_icon_get,
        NULL,
        _album_item_del
@@ -1053,7 +1053,7 @@ _page_albums_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const c
 }
 
 static char *
-_item_all_songs_label_get(void *data __UNUSED__, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
+_item_all_songs_text_get(void *data __UNUSED__, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
 {
    if (strcmp(part, "elm.text.artist") == 0)
         return NULL;
@@ -1071,7 +1071,7 @@ _item_all_songs_icon_get(void *data __UNUSED__, Evas_Object *list __UNUSED__, co
 static const Elm_Genlist_Item_Class _item_all_songs_cls = {
   "media-preview",
   {
-    _item_all_songs_label_get,
+    _item_all_songs_text_get,
     _item_all_songs_icon_get,
     NULL,
     NULL
@@ -1079,7 +1079,7 @@ static const Elm_Genlist_Item_Class _item_all_songs_cls = {
 };
 
 static char *
-_nameid_item_label_get(void *data, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
+_nameid_item_text_get(void *data, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
 {
    NameID *nameid = data;
    return strdup(nameid->name);
@@ -1139,7 +1139,7 @@ _page_artists_add(Evas_Object *parent, NameID *nameid, Eina_Iterator *it, const 
    static const Elm_Genlist_Item_Class nameid_item_cls = {
      "default",
      {
-       _nameid_item_label_get,
+       _nameid_item_text_get,
        NULL,
        NULL,
        _nameid_item_del
@@ -1209,7 +1209,7 @@ _page_genres_add(Evas_Object *parent, Eina_Iterator *it, const char *title)
    static const Elm_Genlist_Item_Class nameid_item_cls = {
      "default",
      {
-       _nameid_item_label_get,
+       _nameid_item_text_get,
        NULL,
        NULL,
        _nameid_item_del
@@ -1240,7 +1240,7 @@ typedef struct _Static_Item
 } Static_Item;
 
 static char *
-_static_item_label_get(void *data, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
+_static_item_text_get(void *data, Evas_Object *list __UNUSED__, const char *part __UNUSED__)
 {
    Static_Item *root = data;
    return strdup(root->label);
@@ -1301,7 +1301,7 @@ Evas_Object *
 page_root_add(Evas_Object *parent)
 {
    static const Elm_Genlist_Item_Class root_item_cls = {
-     "default", { _static_item_label_get, NULL, NULL, NULL }
+     "default", { _static_item_text_get, NULL, NULL, NULL }
    };
    static const Page_Class root_cls = {
      "root",
