@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Xkbswitch module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-11-04 09:21+0100\n"
+"POT-Creation-Date: 2011-11-29 16:17+0900\n"
 "PO-Revision-Date: 2011-11-04 11:17+0100\n"
 "Last-Translator: dazibao <dazibao@sfr.fr>\n"
 "Language-Team: français <sansgourou@gmail.com>\n"
@@ -19,39 +19,39 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_config.c:63
+#: src/e_mod_config.c:75
 msgid "XKB Switcher Module"
 msgstr "Module XKB Switcher"
 
-#: src/e_mod_config.c:156
+#: src/e_mod_config.c:179
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/e_mod_config.c:163
+#: src/e_mod_config.c:186
 msgid "Remove"
 msgstr "Supprimer"
 
-#: src/e_mod_config.c:174
+#: src/e_mod_config.c:197
 msgid "Available"
 msgstr "Disponibles"
 
-#: src/e_mod_config.c:191
+#: src/e_mod_config.c:214
 msgid "Up"
 msgstr "Monter"
 
-#: src/e_mod_config.c:198
+#: src/e_mod_config.c:221
 msgid "Down"
 msgstr "Descendre"
 
-#: src/e_mod_config.c:209
+#: src/e_mod_config.c:232
 msgid "Used"
 msgstr "Utilisés"
 
-#: src/e_mod_config.c:220
+#: src/e_mod_config.c:243
 msgid "Model"
 msgstr "Modèle"
 
-#: src/e_mod_config.c:231
+#: src/e_mod_config.c:254
 msgid "Variant"
 msgstr "Variante"
 

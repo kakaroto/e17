@@ -429,6 +429,8 @@ _cb_up(void *data, void *data2 __UNUSED__)
 
         if (eina_list_prev(l))
         {
+            const char *name;
+           
             ll = eina_list_prev(l);
 
             layouts = eina_list_remove_list(layouts, l);
@@ -439,11 +441,13 @@ _cb_up(void *data, void *data2 __UNUSED__)
 
             icon = e_icon_add(cfdata->evas);
 
+            name = layout->name;
+            if (strchr(name, '/')) name = strchr(name, '/') + 1;
             snprintf(
                 buf, sizeof(buf),
                 "%s/flags/%s_flag.png",
                 e_module_dir_get(e_xkb_cfg_inst->module),
-                layout->name
+                name
             );
 
             if (!ecore_file_exists(buf)) snprintf(
@@ -512,6 +516,7 @@ _cb_down(void *data, void *data2 __UNUSED__)
 
         if (eina_list_next(l))
         {
+            const char *name;
             ll = eina_list_next(l);
 
             layouts = eina_list_remove_list(layouts, l);
@@ -522,11 +527,13 @@ _cb_down(void *data, void *data2 __UNUSED__)
 
             icon = e_icon_add(cfdata->evas);
 
+            name = layout->name;
+            if (strchr(name, '/')) name = strchr(name, '/') + 1;
             snprintf(
                 buf, sizeof(buf),
                 "%s/flags/%s_flag.png",
                 e_module_dir_get(e_xkb_cfg_inst->module),
-                layout->name
+                name
             );
 
             if (!ecore_file_exists(buf)) snprintf(
@@ -582,13 +589,17 @@ _cb_fill_delay(void *data)
 
     EINA_LIST_FOREACH(layouts, l, layout)
     {
+        const char *name;
+       
         ic = e_icon_add(cfdata->evas);
 
+        name = layout->name;
+        if (strchr(name, '/')) name = strchr(name, '/') + 1;
         snprintf(
             buf, sizeof(buf),
             "%s/flags/%s_flag.png",
             e_module_dir_get(e_xkb_cfg_inst->module),
-            layout->name
+            name
         );
 
         if (!ecore_file_exists(buf)) snprintf(
@@ -660,16 +671,20 @@ _fill_used_list(E_Config_Dialog_Data *cfdata)
 
     EINA_LIST_FOREACH(layouts, l, layout)
     {
+        const char *name;
+       
         if (!layout->used)
             continue;
 
         ic = e_icon_add(cfdata->evas);
 
+        name = layout->name;
+        if (strchr(name, '/')) name = strchr(name, '/') + 1;
         snprintf(
             buf, sizeof(buf),
             "%s/flags/%s_flag.png",
             e_module_dir_get(e_xkb_cfg_inst->module),
-            layout->name
+            name
         );
 
         if (!ecore_file_exists(buf)) snprintf(
