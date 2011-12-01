@@ -1,7 +1,7 @@
 #include "main.h"
 
-Elm_Menu_Item *mi_save;
-Elm_Menu_Item *mi_slideshow;
+Elm_Object_Item *mi_save;
+Elm_Object_Item *mi_slideshow;
 
 static void _pres_open_cb(void *data, Evas_Object *obj, void *event_info);
 static void _pres_new_cb(void *data, Evas_Object *obj, void *event_info);
@@ -18,7 +18,7 @@ Evas_Object *toolbar_create()
     Evas_Object *tb;
     Evas_Object *menu;
     Elm_Toolbar_Item *item;
-    Elm_Menu_Item *mi;
+    Elm_Object_Item *mi;
     Eina_List *l;
     L_Recent_File *l_file;
     Recent_File *file;
@@ -195,7 +195,7 @@ static void _pres_fileselector_done(void *data, Evas_Object *obj, void *event_in
 
 static void _recent_open_cb(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_Menu_Item *mi = event_info;
+   Elm_Object_Item *mi = event_info;
    L_Recent_File *l_file;
    Recent_File *r_file;
 
