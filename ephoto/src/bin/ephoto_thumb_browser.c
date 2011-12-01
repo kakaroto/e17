@@ -22,10 +22,10 @@ struct _Ephoto_Thumb_Browser
    Eina_List *grid_items;
    Eina_List *handlers;
    struct {
-      Elm_Toolbar_Item *zoom_in;
-      Elm_Toolbar_Item *zoom_out;
-      Elm_Toolbar_Item *view_single;
-      Elm_Toolbar_Item *slideshow;
+      Elm_Object_Item *zoom_in;
+      Elm_Object_Item *zoom_out;
+      Elm_Object_Item *view_single;
+      Elm_Object_Item *slideshow;
    } action;
    struct {
       Ecore_Animator *todo_items;
@@ -271,7 +271,7 @@ _ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
    Elm_Gengrid_Item *it = event_info;
    Ephoto_Entry *e = elm_gengrid_item_data_get(it);
 
-   elm_gen_item_selected_set(it, EINA_FALSE);
+   elm_gengrid_item_selected_set(it, EINA_FALSE);
 
    if (e->is_dir)
      ephoto_directory_set(tb->ephoto, e->path);
@@ -423,7 +423,7 @@ _ephoto_thumb_populate_start(void *data, int type __UNUSED__, void *event __UNUS
 
    _todo_items_free(tb);
    _grid_items_free(tb);
-   elm_gen_clear(tb->grid);
+   elm_gengrid_clear(tb->grid);
    elm_entry_entry_set(tb->entry, tb->ephoto->config->directory);
    _up_item_add_if_required(tb);
 
@@ -555,7 +555,7 @@ ephoto_thumb_browser_add(Ephoto *ephoto, Evas_Object *parent)
    evas_object_size_hint_align_set(tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    elm_gengrid_align_set(tb->grid, 0.5, 0.5);
-   elm_gen_bounce_set(tb->grid, EINA_FALSE, EINA_TRUE);
+   elm_gengrid_bounce_set(tb->grid, EINA_FALSE, EINA_TRUE);
    evas_object_size_hint_align_set
      (tb->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set
