@@ -1243,7 +1243,7 @@ static void ed_status_recycle_text(void *data, Evas_Object *obj, void *event_inf
 static void ed_status_status_action(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
 	Elm_List_Item *li=NULL;
-	Elm_Toolbar_Item *ti=NULL;
+	Elm_Object_Item *ti=NULL;
 	Evas_Object *box=NULL, *toolbar=NULL, *pager=NULL, *list=NULL, *button=NULL;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 	anUser *au=NULL;
@@ -2024,7 +2024,7 @@ void show_edit(void *data, Evas_Object *obj, const char *emission, const char *s
 EAPI int elm_main(int argc, char **argv)
 {
 	Evas_Object *bg=NULL, *toolbar=NULL, *bt=NULL, *icon=NULL, *box2=NULL, *menu=NULL;
-	Elm_Toolbar_Item *it=NULL;
+	Elm_Object_Item *it=NULL;
 	char *tmp=NULL;
 	int res = 0;
 
