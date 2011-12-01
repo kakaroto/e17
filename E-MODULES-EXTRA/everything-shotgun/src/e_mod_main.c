@@ -127,20 +127,15 @@ _icon_get(Evry_Item *it, Evas *e)
         size_t size;
         unsigned char *img;
 
-        img = eet_read(p->images, c->icon, (int *)&size);
-        if (img)
-          {
-             o = evas_object_image_filled_add(e);
-             evas_object_size_hint_aspect_set(o, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
-             evas_object_image_memfile_set(o, img, size, NULL, NULL);
+        o = evas_object_image_filled_add(e);
+        evas_object_size_hint_aspect_set(o, EVAS_ASPECT_CONTROL_BOTH, 1, 1);
+        evas_object_image_file_set(o, p->images, c->icon);
 
-             if (evas_object_image_load_error_get(o) != EVAS_LOAD_ERROR_NONE)
-               {
-                  evas_object_del(o);
-                  o = NULL;
-                  IF_RELEASE(c->icon);
-               }
-             free(img);
+        if (evas_object_image_load_error_get(o) != EVAS_LOAD_ERROR_NONE)
+          {
+             evas_object_del(o);
+             o = NULL;
+             IF_RELEASE(c->icon);
           }
      }
 
