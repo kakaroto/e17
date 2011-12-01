@@ -16,7 +16,7 @@ struct tabpanel_item
 {
    Tabpanel *tab;
 
-   Elm_Toolbar_Item *item_tb;
+   Elm_Object_Item *item_tb;
    Evas_Object *content;
    const char *signal;
 
