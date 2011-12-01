@@ -18,7 +18,7 @@ static void
 _libraries_cb(void *data, Evas_Object *obj, void *event_info);
 
 static char *
-_gl_label_get(void *data, Evas_Object *obj, const char *part);
+_gl_text_get(void *data, Evas_Object *obj, const char *part);
 static void
 _gl_sel(void *data, Evas_Object *obj, void *event_info);
 static Evas_Object *
@@ -79,14 +79,14 @@ main_menu_new(Evas_Object *edje)
                                                                            "object.main_menu.list_libraries",
                                                                            libraries_list);
 
-   itc_grid.func.label_get = _library_get;
+   itc_grid.func.text_get = _library_get;
    itc_grid.func.del = _library_del;
    itc_grid.func.content_get = _library_icon_get;
    itc_grid.item_style = "enki";
    //
 
    itc_menu.item_style = "default";
-   itc_menu.func.label_get = _gl_label_get;
+   itc_menu.func.text_get = _gl_text_get;
    itc_menu.func.content_get = _gl_icon_get;
    itc_menu.func.state_get = NULL;
    itc_menu.func.del = NULL;
@@ -137,7 +137,7 @@ main_menu_new(Evas_Object *edje)
 }
 
 static char *
-_gl_label_get(void *data, Evas_Object *obj, const char *part)
+_gl_text_get(void *data, Evas_Object *obj, const char *part)
 {
    if ((int) data == MENU_SLIDESHOW) return strdup("Slideshow");
    if ((int) data == MENU_ALBUM_NEW) return strdup("New Album");

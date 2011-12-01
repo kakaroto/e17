@@ -7,18 +7,18 @@ static Elm_Genlist_Item_Class itc_col_album;
 static Elm_Genlist_Item_Class itc_tag;
 
 static char *
-_gl_label_get(void *data, Evas_Object *obj, const char *part);
+_gl_text_get(void *data, Evas_Object *obj, const char *part);
 static void
 _gl_sel(void *data, Evas_Object *obj, void *event_info);
 static void
 _right_click_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static char *
-_gl_col_label_get(void *data, Evas_Object *obj, const char *part);
+_gl_col_text_get(void *data, Evas_Object *obj, const char *part);
 static void
 _gl_col_sel(void *data, Evas_Object *obj, void *event_info);
 static char *
-_gl_col_album_label_get(void *data, Evas_Object *obj, const char *part);
+_gl_col_album_text_get(void *data, Evas_Object *obj, const char *part);
 static void
 _gl_col_album_sel(void *data, Evas_Object *obj, void *event_info);
 static void
@@ -34,7 +34,7 @@ static void
 _gl_col_con_req(void *data, Evas_Object *obj, void *event_info);
 
 static char *
-_gl_tag_label_get(void *data, Evas_Object *obj, const char *part);
+_gl_tag_text_get(void *data, Evas_Object *obj, const char *part);
 static void
 _gl_tag_sel(void *data, Evas_Object *obj, void *event_info);
 static void
@@ -80,25 +80,25 @@ list_left_new(Evas_Object *edje)
    //
 
    itc_album.item_style = "default";
-   itc_album.func.label_get = _gl_label_get;
+   itc_album.func.text_get = _gl_text_get;
    itc_album.func.content_get = NULL;
    itc_album.func.state_get = NULL;
    itc_album.func.del = NULL;
 
    itc_col.item_style = "default";
-   itc_col.func.label_get = _gl_col_label_get;
+   itc_col.func.text_get = _gl_col_text_get;
    itc_col.func.content_get = NULL;
    itc_col.func.state_get = NULL;
    itc_col.func.del = NULL;
 
    itc_col_album.item_style = "default";
-   itc_col_album.func.label_get = _gl_col_album_label_get;
+   itc_col_album.func.text_get = _gl_col_album_text_get;
    itc_col_album.func.content_get = NULL;
    itc_col_album.func.state_get = NULL;
    itc_col_album.func.del = NULL;
 
    itc_tag.item_style = "default";
-   itc_tag.func.label_get = _gl_tag_label_get;
+   itc_tag.func.text_get = _gl_tag_text_get;
    itc_tag.func.content_get = NULL;
    itc_tag.func.state_get = NULL;
    itc_tag.func.del = NULL;
@@ -333,7 +333,7 @@ _tabpanel_collection_select_cb(void *data, Tabpanel *tabpanel,
 }
 
 static char *
-_gl_label_get(void *data, Evas_Object *obj, const char *part)
+_gl_text_get(void *data, Evas_Object *obj, const char *part)
 {
    Enlil_Album *album = (Enlil_Album *) data;
    Enlil_Album_Data *album_data = enlil_album_user_data_get(album);
@@ -432,7 +432,7 @@ _gl_col_album_sel(void *data, Evas_Object *obj, void *event_info)
 }
 
 static char *
-_gl_col_label_get(void *data, Evas_Object *obj, const char *part)
+_gl_col_text_get(void *data, Evas_Object *obj, const char *part)
 {
    const Enlil_Collection *col = data;
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
@@ -445,7 +445,7 @@ _gl_col_label_get(void *data, Evas_Object *obj, const char *part)
 }
 
 static char *
-_gl_col_album_label_get(void *data, Evas_Object *obj, const char *part)
+_gl_col_album_text_get(void *data, Evas_Object *obj, const char *part)
 {
    const Enlil_Album *album = data;
 
@@ -514,7 +514,7 @@ _gl_col_con(void *data, Evas_Object *obj, void *event_info)
 }
 
 static char *
-_gl_tag_label_get(void *data, Evas_Object *obj, const char *part)
+_gl_tag_text_get(void *data, Evas_Object *obj, const char *part)
 {
    const Enlil_Tag *tag = data;
    Enlil_Tag_Data *tag_data = enlil_tag_user_data_get(tag);

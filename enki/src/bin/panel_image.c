@@ -4,11 +4,11 @@
 
 static Elm_Genlist_Item_Class itc_exifs;
 static char *
-_gl_exifs_label_get(void *data, Evas_Object *obj, const char *part);
+_gl_exifs_text_get(void *data, Evas_Object *obj, const char *part);
 
 static Elm_Genlist_Item_Class itc_iptcs;
 static char *
-_gl_iptcs_label_get(void *data, Evas_Object *obj, const char *part);
+_gl_iptcs_text_get(void *data, Evas_Object *obj, const char *part);
 static void
 _slideshow_selected_cb(void *data, Evas_Object *obj, void *event_info);
 
@@ -213,7 +213,7 @@ panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
                                              "object.panel.image.exifs");
    panel_image->exifs.gl = gl;
    itc_exifs.item_style = "default_style";
-   itc_exifs.func.label_get = _gl_exifs_label_get;
+   itc_exifs.func.text_get = _gl_exifs_text_get;
    itc_exifs.func.content_get = NULL;
    itc_exifs.func.state_get = NULL;
    itc_exifs.func.del = NULL;
@@ -222,7 +222,7 @@ panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
                                              "object.panel.image.iptcs");
    panel_image->iptcs.gl = gl;
    itc_iptcs.item_style = "default_style";
-   itc_iptcs.func.label_get = _gl_iptcs_label_get;
+   itc_iptcs.func.text_get = _gl_iptcs_text_get;
    itc_iptcs.func.content_get = NULL;
    itc_iptcs.func.state_get = NULL;
    itc_iptcs.func.del = NULL;
@@ -544,7 +544,7 @@ _photocal_loaded_cb(void *data, Evas_Object *obj, void *event)
 }
 
 static char *
-_gl_exifs_label_get(void *data, Evas_Object *obj, const char *part)
+_gl_exifs_text_get(void *data, Evas_Object *obj, const char *part)
 {
    Enlil_Exif *exif = (Enlil_Exif *) data;
    char buf[PATH_MAX];
@@ -584,7 +584,7 @@ EINA_LIST_FOREACH   (enlil_photo_iptcs_get(photo), l, iptc)
 }
 
 static char *
-_gl_iptcs_label_get(void *data, Evas_Object *obj, const char *part)
+_gl_iptcs_text_get(void *data, Evas_Object *obj, const char *part)
 {
    Enlil_IPTC *iptc = (Enlil_IPTC *) data;
    char buf[PATH_MAX];

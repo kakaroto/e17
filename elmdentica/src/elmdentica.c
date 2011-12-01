@@ -980,7 +980,7 @@ char *ed_shorten_text(const char *text) {
 	return(shortened_text);
 }
 
-char *ed_status_label_get(void *data, Evas_Object *obj, const char *part) {
+char *ed_status_text_get(void *data, Evas_Object *obj, const char *part) {
 	aStatus *as = (aStatus *)data;
 	char *shortened_text;
 	int res=0,h=0;
@@ -1507,7 +1507,7 @@ void add_status(aStatus *as, void *data) {
 	if(ed_check_gag(as)) return;
 
 	itc1.item_style		= "elmdentica";
-	itc1.func.label_get	= ed_status_label_get;
+	itc1.func.text_get = ed_status_text_get;
 	itc1.func.content_get	= ed_status_icon_get;
 	itc1.func.state_get	= ed_status_state_get;
 	itc1.func.del		= ed_status_del;

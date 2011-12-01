@@ -34,7 +34,7 @@ _bt_unselect_all_cb(void *data, Evas_Object *obj, void *event_info);
 
 static Elm_Genlist_Item_Class itc_album;
 static char *
-_gl_album_label_get(void *data, Evas_Object *obj, const char *part);
+_gl_album_text_get(void *data, Evas_Object *obj, const char *part);
 static void
 _gl_album_sel(void *data, Evas_Object *obj, void *event_info);
 static void
@@ -175,7 +175,7 @@ import_new(Evas_Object *win)
    elm_box_pack_end(bx2, gl);
 
    itc_album.item_style = "default";
-   itc_album.func.label_get = _gl_album_label_get;
+   itc_album.func.text_get = _gl_album_text_get;
    itc_album.func.content_get = NULL;
    itc_album.func.state_get = NULL;
    itc_album.func.del = NULL;
@@ -389,7 +389,7 @@ _import_thumb_error_cb(void *data, Enlil_Photo *photo)
 }
 
 static char *
-_gl_album_label_get(void *data, Evas_Object *obj, const char *part)
+_gl_album_text_get(void *data, Evas_Object *obj, const char *part)
 {
    Enlil_Album *album = (Enlil_Album *) data;
 

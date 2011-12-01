@@ -52,7 +52,7 @@ static void on_object_message(void *data, Evas_Object *obj, Edje_Message_Type ty
 static void on_hover_signal_select(void *data, Evas_Object *obj, void *event_info);
 
 static Evas_Object * gc_icon_get(void *data, Evas_Object *obj, const char *part);
-static char *gc_label_get(void *data, Evas_Object *obj, const char *part);
+static char *gc_text_get(void *data, Evas_Object *obj, const char *part);
 static void gc_del(void *data, Evas_Object *obj);
 
 void
@@ -105,7 +105,7 @@ create_main_win(Viewer *v)
    v->gc = calloc(1, sizeof(Elm_Genlist_Item_Class));
    v->gc->item_style     = "default";
    v->gc->func.content_get  = gc_icon_get;
-   v->gc->func.label_get = gc_label_get;
+   v->gc->func.text_get = gc_text_get;
    v->gc->func.del       = gc_del;
 
    if (v->config->show_parts)
@@ -1084,7 +1084,7 @@ gc_icon_get(void *data, Evas_Object *obj, const char *part)
 }
 
 static char *
-gc_label_get(void *data, Evas_Object *obj, const char *part)
+gc_text_get(void *data, Evas_Object *obj, const char *part)
 {
    const Group *grp = data;
 
