@@ -346,13 +346,16 @@ _elsa_session_desktops_scan(const char *dir)
    char *filename;
    char path[PATH_MAX];
 
-   fprintf(stderr, PACKAGE": scanning directory %s\n", dir);
-   files = ecore_file_ls(dir);
-   EINA_LIST_FREE(files, filename)
+   if (ecore_file_is_dir(dir))
      {
-        snprintf(path, sizeof(path), "%s/%s", dir, filename);
-        _elsa_session_desktops_scan_file(path);
-        free(filename);
+        fprintf(stderr, PACKAGE": scanning directory %s\n", dir);
+        files = ecore_file_ls(dir);
+        EINA_LIST_FREE(files, filename)
+          {
+             snprintf(path, sizeof(path), "%s/%s", dir, filename);
+             _elsa_session_desktops_scan_file(path);
+             free(filename);
+          }
      }
 }
 
