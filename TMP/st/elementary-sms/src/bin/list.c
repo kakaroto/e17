@@ -822,7 +822,7 @@ void
 create_main_win(void)
 {
    Evas_Object *win, *bg, *bx, *sc, *tb, *ic;
-   Elm_Toolbar_Item *tbi;
+   Elm_Object_Item *tbi;
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Messages");
