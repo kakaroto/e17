@@ -84,7 +84,7 @@ _gl_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 
    evas_object_smart_callback_call(allapps->box,
 				   "entry,longpressed", gitem->menu);
-   elm_gen_item_selected_set(it, EINA_FALSE);
+   elm_gengrid_item_selected_set(it, EINA_FALSE);
 }
 
 static void
@@ -97,7 +97,7 @@ _widget_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
    printf("Send widget longpressed\n");
    evas_object_smart_callback_call(allapps->box,
 				   "gadget,longpressed", (void*)name);
-   elm_gen_item_selected_set(it, EINA_FALSE);
+   elm_gengrid_item_selected_set(it, EINA_FALSE);
 }
 
 static void
@@ -107,7 +107,7 @@ _item_selected(void *data, Evas_Object *obj __UNUSED__, void *event_info)
    Elm_Gengrid_Item *it = event_info;
 
    evas_object_smart_callback_call(gitem->allapps->box, "item,selected", gitem->menu);
-   elm_gen_item_selected_set(it, EINA_FALSE);
+   elm_gengrid_item_selected_set(it, EINA_FALSE);
 }
 
 
@@ -320,7 +320,7 @@ elfe_allapps_add(Evas_Object *parent)
 				  _obj_del_cb, allapps);
 
    elm_gengrid_multi_select_set(allapps->grid, EINA_FALSE);
-   elm_gen_bounce_set(allapps->grid, EINA_FALSE, EINA_TRUE);
+   elm_gengrid_bounce_set(allapps->grid, EINA_FALSE, EINA_TRUE);
 
    evas_object_size_hint_weight_set(allapps->grid, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(allapps->grid, EVAS_HINT_FILL, EVAS_HINT_FILL);
