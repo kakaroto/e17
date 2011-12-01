@@ -67,7 +67,7 @@ errors_update(struct ensure *ensure)
    if (!ensure)
      return;
 
-   elm_gen_clear(ensure->view);
+   elm_genlist_clear(ensure->view);
    elm_object_text_set(ensure->viewselect, "Errors");
 
    if (!ensure->cur)

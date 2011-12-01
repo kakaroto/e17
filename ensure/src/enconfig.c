@@ -82,7 +82,7 @@ view_set_config(void *ensurev, Evas_Object *button __UNUSED__, void *event_info 
 
    elm_object_text_set(ensure->viewselect, "Config");
 
-   elm_gen_clear(ensure->view);
+   elm_genlist_clear(ensure->view);
 
    config_add_classes(ensure->view);
 }

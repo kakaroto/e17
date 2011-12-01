@@ -87,7 +87,7 @@ tree_update(struct ensure *ensure)
    struct enwin *enwin;
    Eina_List *l;
 
-   elm_gen_clear(ensure->view);
+   elm_genlist_clear(ensure->view);
    cur = ensure->cur;
 
    EINA_LIST_FOREACH (cur->windows, l, enwin)

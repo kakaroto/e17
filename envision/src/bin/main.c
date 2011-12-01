@@ -412,10 +412,10 @@ _page_up(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    it = elm_gengrid_selected_item_get(app->grid);
    if (!it)
      return;
-   prev = elm_gen_item_prev_get(it);
+   prev = elm_gengrid_item_prev_get(it);
    if (!prev)
      return;
-   elm_gen_item_selected_set(prev, EINA_TRUE);
+   elm_gengrid_item_selected_set(prev, EINA_TRUE);
    elm_gengrid_item_show(prev);
 }
 
@@ -429,10 +429,10 @@ _page_down(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    it = elm_gengrid_selected_item_get(app->grid);
    if (!it)
      return;
-   next = elm_gen_item_next_get(it);
+   next = elm_gengrid_item_next_get(it);
    if (!next)
      return;
-   elm_gen_item_selected_set(next, EINA_TRUE);
+   elm_gengrid_item_selected_set(next, EINA_TRUE);
    elm_gengrid_item_show(next);
 }
 
@@ -487,7 +487,7 @@ _search(void            *data,
         return;
      }
 
-   it = elm_gen_first_item_get(app->grid);
+   it = elm_gengrid_first_item_get(app->grid);
 
    matched = EINA_FALSE;
    while (it)
@@ -495,7 +495,7 @@ _search(void            *data,
         Item_Data *idata = elm_gengrid_item_data_get(it);
         idata->search.matches = epdf_page_text_find(idata->page,
                                                     app->text_to_search, 0);
-        it = elm_gen_item_next_get(it);
+        it = elm_gengrid_item_next_get(it);
 
         matched |= (idata->search.matches != NULL);
      }
@@ -662,7 +662,7 @@ unload_gengrid(App *app)
      return;
 
    /* Clear the items */
-   elm_gen_clear(app->grid);
+   elm_gengrid_clear(app->grid);
    epdf_document_delete(app->file_info.document);
 }
 
@@ -698,8 +698,8 @@ load_gengrid(App *app)
      }
 
    /* Select the first item */
-   first = elm_gen_first_item_get(app->grid);
-   elm_gen_item_selected_set(first, EINA_TRUE);
+   first = elm_gengrid_first_item_get(app->grid);
+   elm_gengrid_item_selected_set(first, EINA_TRUE);
    app->current_item_page = first;
    idata = elm_gengrid_item_data_get(first);
 
@@ -737,16 +737,16 @@ _change_selection(void            *data,
      {
         range = (page - idata->page_number);
         for (i = 0; i < range; i++)
-          it = elm_gen_item_next_get(it);
+          it = elm_gengrid_item_next_get(it);
      }
    else if (idata->page_number > page)
      {
         range = idata->page_number - page;
         for (i = 0; i < range; i++)
-          it = elm_gen_item_prev_get(it);
+          it = elm_gengrid_item_prev_get(it);
      }
 
-   elm_gen_item_selected_set(it, EINA_TRUE);
+   elm_gengrid_item_selected_set(it, EINA_TRUE);
    elm_gengrid_item_show(it);
 }
 
@@ -952,7 +952,7 @@ create_main_win(App *app)
    elm_gengrid_align_set(app->grid, 0.5, 0.0);
    elm_gengrid_horizontal_set(app->grid, EINA_FALSE);
    elm_gengrid_multi_select_set(app->grid, EINA_FALSE);
-   elm_gen_bounce_set(app->grid, EINA_FALSE, EINA_FALSE);
+   elm_gengrid_bounce_set(app->grid, EINA_FALSE, EINA_FALSE);
    evas_object_smart_callback_add(app->grid, "clicked,double", grid_item_db_double_clicked,
                                   app);
    evas_object_smart_callback_add(app->grid, "realized", grid_item_realized,

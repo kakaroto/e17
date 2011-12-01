@@ -50,7 +50,7 @@ view_set_hidden(void *ensurev, Evas_Object *button __UNUSED__, void *event_info 
    ensure->current_view = ENVIEW_HIDDEN;
 
    elm_object_text_set(ensure->viewselect, "Hidden");
-   elm_gen_clear(ensure->view);
+   elm_genlist_clear(ensure->view);
 
    evas_object_data_set(ensure->view, "ensure", ensure);
 

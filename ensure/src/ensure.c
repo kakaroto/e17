@@ -206,7 +206,7 @@ Evas_Object * window_add(struct ensure *ensure, char **args __UNUSED__)
    /* Add object list */
    gl = elm_genlist_add(win);
    ensure->view = gl;
-   elm_gen_always_select_mode_set(gl, true);
+   elm_genlist_always_select_mode_set(gl, true);
    evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(gl);

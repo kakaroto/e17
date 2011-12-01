@@ -1247,9 +1247,9 @@ on_tab_close(void *data, Evas_Object *o,
          Evas_Object *grid = evas_object_data_get(chrome, "tab-grid");
 
          if (!grid) continue;
-         for (item = elm_gen_first_item_get(grid);
+         for (item = elm_gengrid_first_item_get(grid);
               item;
-              item = elm_gen_item_next_get(item))
+              item = elm_gengrid_item_next_get(item))
             {
                if (elm_gengrid_item_data_get(item) == view)
                   {
@@ -1273,7 +1273,7 @@ on_tab_gengrid_item_realized(void *data, Evas_Object *o __UNUSED__, void *event_
    edje_object_signal_callback_add(item, "tab,close", "", on_tab_close, view);
 
    win->creating_tab = EINA_TRUE;
-   elm_gen_item_selected_set(event_info, view == win->current_view);
+   elm_gengrid_item_selected_set(event_info, view == win->current_view);
    win->creating_tab = EINA_FALSE;
 }
 
@@ -1523,7 +1523,7 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
            win->list_history = eina_list_prepend(win->list_history, params->root);
      }
 
-   elm_gen_clear(params->list);
+   elm_genlist_clear(params->list);
    index = evas_object_data_get(params->list, "more-index");
    if (index)
       elm_index_item_clear(index);
@@ -1914,7 +1914,7 @@ on_more_item_click(void *data, Evas_Object *obj,
          {
              Evas_Object *end = edje_object_part_swallow_get(elm_genlist_item_object_get(event_info), "elm.swallow.end");
              if (end) elm_check_state_set(end, !elm_check_state_get(end));
-             elm_gen_item_selected_set(event_info, EINA_FALSE);
+             elm_genlist_item_selected_set(event_info, EINA_FALSE);
              return;
          }
 
@@ -2053,7 +2053,7 @@ on_action_tab_show(void *data, Evas_Object *o __UNUSED__,
    Eina_List *itr;
    Evas_Object *itr_chrome;
 
-   elm_gen_clear(grid);
+   elm_gengrid_clear(grid);
 
    EINA_LIST_FOREACH(win->chromes, itr, itr_chrome)
    {
@@ -2557,7 +2557,7 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    evas_object_data_set(chrome, "more-list", more_list);
    elm_layout_content_set(chrome, "more-list-swallow", more_list);
    elm_object_style_set(more_list, "ewebkit");
-   elm_gen_bounce_set(more_list, EINA_FALSE, EINA_FALSE);
+   elm_genlist_bounce_set(more_list, EINA_FALSE, EINA_FALSE);
 
    Evas_Object *more_index = elm_index_add(ed);
    evas_object_data_set(more_list, "more-index", more_index);
