@@ -26,7 +26,6 @@ Elm_Photocam_Zoom_Mode      T_IV
 Elm_Scroller_Policy         T_IV
 Elm_Slideshow_Item *        T_PTROBJ
 Elm_Text_Format             T_IV
-Elm_Toolbar_Item *          T_PTROBJ
 Elm_Win_Keyboard_Mode       T_IV
 Elm_Win_Type                T_IV
 Evas *                      T_PTR
