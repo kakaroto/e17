@@ -781,7 +781,7 @@ public class Toolbar : Elm.Object
 
 //=======================================================================
 [Compact]
-[CCode (cname = "Elm_Toolbar_Item", free_function = "elm_toolbar_item_del")]
+[CCode (cname = "Elm_Object_Item", free_function = "elm_toolbar_item_del")]
 public class ToolbarItem
 {
     public Elm.Object icon_get();
