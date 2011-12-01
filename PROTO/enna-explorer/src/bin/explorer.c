@@ -215,7 +215,7 @@ _create_menu()
    evas_object_smart_callback_add(mod->o_browser, "longpress",
                                   _browser_longpress_cb, NULL);
 
-   elm_layout_content_set(mod->o_layout, "browser.swallow", mod->o_browser);
+   elm_object_part_content_set(mod->o_layout, "browser.swallow", mod->o_browser);
 }
 
 /* static void */
@@ -250,7 +250,7 @@ _create_menu()
 /*    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
 /*    evas_object_size_hint_align_set(bx, -1, -1); */
 /*    evas_object_show(bx); */
-/*    elm_frame_content_set(fr, bx); */
+/*    elm_object_content_set(fr, bx); */
 /*    elm_box_padding_set(bx, 4, 4); */
 
 /*    lb = elm_label_add(win); */
@@ -327,12 +327,12 @@ _create_gui()
    elm_toolbar_item_append(tb, "edit-cut", "Cut", NULL, NULL);
    elm_toolbar_item_append(tb, "edit-paste", "Paste", NULL, NULL);
    /* elm_toolbar_item_append(tb, "edit-delete", "Delete", _toolbar_delete_cb, NULL); */
-   elm_layout_content_set(mod->o_layout, "enna.menu.swallow", tb);
+   elm_object_part_content_set(mod->o_layout, "enna.menu.swallow", tb);
    _create_menu();
 
    shortcut = enna_shortcut_add(mod->o_layout);
    evas_object_show(shortcut);
-   elm_layout_content_set(mod->o_layout, "panel.swallow", shortcut);
+   elm_object_part_content_set(mod->o_layout, "panel.swallow", shortcut);
    evas_object_smart_callback_add(shortcut, "shortcut,selected",
                                   _shortcut_selected_cb, NULL);
 
@@ -378,7 +378,7 @@ enna_explorer_init(void)
 
    o_edje = elm_layout_edje_get(enna->layout);
 
-   elm_layout_content_set(enna->layout, "enna.content.swallow", mod->o_layout);
+   elm_object_part_content_set(enna->layout, "enna.content.swallow", mod->o_layout);
 }
 
 void

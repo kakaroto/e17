@@ -444,7 +444,7 @@ _smart_select_item(Smart_Data *sd, int n)
    if (!it) return;
 
    elm_genlist_item_middle_bring_in(it->item);
-   elm_gen_item_selected_set(it->item, 1);
+   elm_genlist_item_selected_set(it->item, 1);
    evas_object_smart_callback_call(sd->obj, "hilight", it->data);
 }
 
@@ -641,7 +641,7 @@ enna_list_selected_get(Evas_Object *obj)
    if (!sd->items) return -1;
    EINA_LIST_FOREACH(sd->items,l, it)
      {
-        if ( elm_gen_item_selected_get (it->item))
+        if ( elm_genlist_item_selected_get (it->item))
           {
              return i;
           }
@@ -661,7 +661,7 @@ enna_list_selected_data_get(Evas_Object *obj)
 
    EINA_LIST_FOREACH(sd->items,l, it)
      {
-        if ( elm_gen_item_selected_get (it->item))
+        if ( elm_genlist_item_selected_get (it->item))
           {
              return it->data;
           }
@@ -703,7 +703,7 @@ enna_list_clear(Evas_Object *obj)
      }
    
 
-   elm_gen_clear(obj);
+   elm_genlist_clear(obj);
 }
 
 Eina_List *

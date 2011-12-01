@@ -237,7 +237,7 @@ _bookmark_volume_content_get(void *data, Evas_Object *obj, const char *part)
         elm_icon_order_lookup_set(ic, ELM_ICON_LOOKUP_FDO_THEME);
         elm_icon_standard_set(ic, "media-eject");
         elm_object_style_set(bt, "anchor");
-        elm_button_icon_set(bt, ic);
+        elm_object_content_set(bt, ic);
         evas_object_show(ic);
         evas_object_show(bt);
         evas_object_size_hint_min_set(bt, 24, 24);
@@ -512,7 +512,7 @@ _mount_done_cb(void *data, int type, void *event)
 
    di = _volume_find(str);
    elm_genlist_item_update(di->gi);
-   elm_gen_item_selected_set(di->gi, EINA_FALSE);
+   elm_genlist_item_selected_set(di->gi, EINA_FALSE);
 
    if (di->v && di->v->mount_point)
        evas_object_smart_callback_call(di->list, "shortcut,selected", (char*)di->v->mount_point);
@@ -535,7 +535,7 @@ _unmount_done_cb(void *data, int type, void *event)
 
    di = _volume_find(str);
    elm_genlist_item_update(di->gi);
-   elm_gen_item_selected_set(di->gi, EINA_FALSE);
+   elm_genlist_item_selected_set(di->gi, EINA_FALSE);
    if (di->v)
      evas_object_smart_callback_call(di->list, "shortcut,selected", getenv("HOME"));
 

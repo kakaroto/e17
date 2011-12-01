@@ -279,7 +279,7 @@ _update_cb(void *data, Enna_File *file)
 /*    o_back_btn = elm_button_add(o_layout); */
 /*    o_ic = elm_icon_add(sd->o_layout); */
 /*    elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/arrow_left"); */
-/*    elm_button_icon_set(o_back_btn, o_ic); */
+/*    elm_object_content_set(o_back_btn, o_ic); */
 /*    evas_object_size_hint_min_set(o_ic, 32, 32); */
 /*    evas_object_show(o_ic); */
 
@@ -288,14 +288,14 @@ _update_cb(void *data, Enna_File *file)
 /*    evas_object_size_hint_align_set(o_back_btn, EVAS_HINT_FILL, EVAS_HINT_FILL); */
 /*    evas_object_size_hint_weight_set(o_back_btn, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
 
-/*    elm_layout_content_set(o_layout, "enna.swallow.back", o_back_btn); */
+/*    elm_object_content_set(o_layout, "enna.swallow.back", o_back_btn); */
 
 /*    o_ic = elm_icon_add(o_layout); */
 /*    if (!file) */
 /*      elm_icon_file_set(o_ic, enna_config_theme_get(), "icon/home"); */
 /*    else */
 /*      elm_icon_file_set(o_ic, enna_config_theme_get(), file->icon); */
-/*    elm_layout_content_set(o_layout, "enna.swallow.icon", o_ic); */
+/*    elm_object_content_set(o_layout, "enna.swallow.icon", o_ic); */
 
 /*    o_edje = elm_layout_edje_get(o_layout); */
 /*    if (file) */
@@ -306,7 +306,7 @@ _update_cb(void *data, Enna_File *file)
 /*    evas_object_size_hint_align_set(o_layout, EVAS_HINT_FILL, EVAS_HINT_FILL); */
 /*    evas_object_size_hint_weight_set(o_layout, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND); */
 
-/*    elm_layout_content_set(sd->o_layout, "enna.swallow.header", o_layout); */
+/*    elm_object_content_set(sd->o_layout, "enna.swallow.header", o_layout); */
 
 /*    sd->o_header = o_layout; */
 /* } */
@@ -518,7 +518,7 @@ enna_browser_obj_add(Evas_Object *parent, const char *style)
 
    sd->o_header = enna_browser_bar_add(sd->o_layout, sd->file);
    evas_object_show(sd->o_header);
-   elm_layout_content_set(sd->o_layout, "enna.swallow.header", sd->o_header);
+   elm_object_part_content_set(sd->o_layout, "enna.swallow.header", sd->o_header);
    evas_object_smart_callback_add(sd->o_header, "mode,changed", _view_mode_changed_cb, sd);
    evas_object_smart_callback_add(sd->o_header, "up,clicked", _up_clicked_cb, sd);
    evas_object_smart_callback_add(sd->o_header, "next,clicked", _next_clicked_cb, sd);
@@ -528,7 +528,7 @@ enna_browser_obj_add(Evas_Object *parent, const char *style)
    sd->o_pager = elm_pager_add(sd->o_layout);
    evas_object_show(sd->o_pager);
    elm_object_style_set(sd->o_pager, "slide_invisible");
-   elm_layout_content_set(sd->o_layout, "enna.swallow.content", sd->o_pager);
+   elm_object_part_content_set(sd->o_layout, "enna.swallow.content", sd->o_pager);
 
    evas_object_data_set(sd->o_layout, "sd", sd);
    evas_object_event_callback_add(sd->o_layout, EVAS_CALLBACK_DEL, _browser_del_cb, sd);

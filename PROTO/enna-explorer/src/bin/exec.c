@@ -115,7 +115,7 @@ void _mime_selection_window_show(Enna_File *file)
    evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(bx);
    elm_box_homogeneous_set(bx, EINA_FALSE);
-   elm_frame_content_set(fr, bx);
+   elm_object_content_set(fr, bx);
    elm_box_padding_set(bx, 4, 4);
 
    fr = elm_frame_add(win);
@@ -156,7 +156,7 @@ void _mime_selection_window_show(Enna_File *file)
         elm_list_item_append(list, desk->orig_path, ic, NULL, _app_selected_cb, win);
      }
 
-   elm_frame_content_set(fr, list);
+   elm_object_content_set(fr, list);
    elm_box_pack_end(bx, fr);
 
 
@@ -174,7 +174,7 @@ void _mime_selection_window_show(Enna_File *file)
    evas_object_show(en);
    evas_object_data_set(win, "entry", en);
 
-   elm_frame_content_set(fr, en);
+   elm_object_content_set(fr, en);
    elm_box_pack_end(bx, fr);
 
    btn_bx = elm_box_add(win);

@@ -120,10 +120,10 @@ _key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key
      {
         it = elm_genlist_selected_item_get(list);
         DBG("current: %p", it);
-        it = elm_gen_item_next_get(it);
-        if (!it) it = elm_gen_first_item_get(list);
+        it = elm_genlist_item_next_get(it);
+        if (!it) it = elm_genlist_first_item_get(list);
         DBG("next: %p", it);
-        elm_gen_item_selected_set(it, EINA_TRUE);
+        elm_genlist_item_selected_set(it, EINA_TRUE);
         elm_genlist_item_bring_in(it);
         _pick(NULL, NULL, it);
      }
@@ -183,7 +183,7 @@ load_stuff(int argc, char **argv, Evas_Object *list)
         else
           ERR("wtf is this %s", argv[x]);
      }
-   elm_gen_item_selected_set(elm_gen_first_item_get(list), EINA_TRUE);
+   elm_genlist_item_selected_set(elm_genlist_first_item_get(list), EINA_TRUE);
 }
 
 int

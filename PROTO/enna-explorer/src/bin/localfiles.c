@@ -524,7 +524,7 @@ _action_rename_cb(void *data, Enna_File *file)
    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bx, -1, -1);
    evas_object_show(bx);
-   elm_frame_content_set(fr, bx);
+   elm_object_content_set(fr, bx);
    elm_box_padding_set(bx, 4, 4);
 
    lb = elm_label_add(win);
@@ -608,7 +608,7 @@ _action_create_folder_cb(void *data, Enna_File *file)
    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bx, -1, -1);
    evas_object_show(bx);
-   elm_frame_content_set(fr, bx);
+   elm_object_content_set(fr, bx);
    elm_box_padding_set(bx, 4, 4);
 
    lb = elm_label_add(win);
@@ -695,7 +695,7 @@ _action_delete_cb(void *data, Enna_File *file)
    evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(bx, -1, -1);
    evas_object_show(bx);
-   elm_frame_content_set(fr, bx);
+   elm_object_content_set(fr, bx);
    elm_box_padding_set(bx, 4, 4);
 
    lb = elm_label_add(win);
