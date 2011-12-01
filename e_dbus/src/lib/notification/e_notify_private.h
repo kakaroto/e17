@@ -42,10 +42,21 @@ void e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter);
 void e_notify_marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img);
 E_Notification_Image * e_notify_unmarshal_hint_image(DBusMessageIter *iter);
 
+extern int _e_dbus_notify_log_dom;
 
 #ifndef E_DBUS_COLOR_DEFAULT
 #define E_DBUS_COLOR_DEFAULT EINA_COLOR_CYAN
 #endif
+
+#undef DBG
+#undef INF
+#undef WRN
+#undef ERR
+
+#define DBG(...) EINA_LOG_DOM_DBG(_e_dbus_notify_log_dom, __VA_ARGS__)
+#define INF(...) EINA_LOG_DOM_INFO(_e_dbus_notify_log_dom, __VA_ARGS__)
+#define WRN(...) EINA_LOG_DOM_WARN(_e_dbus_notify_log_dom, __VA_ARGS__)
+#define ERR(...) EINA_LOG_DOM_ERR(_e_dbus_notify_log_dom, __VA_ARGS__)
 
 struct E_Notification_Image
 {

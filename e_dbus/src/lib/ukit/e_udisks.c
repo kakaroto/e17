@@ -84,16 +84,21 @@ e_udisks_volume_mount(E_DBus_Connection *conn, const char *udi, const char *fsty
 
    dbus_message_iter_init_append(msg, &iter);
    dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &fstype);
-   dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &subiter);
-
-   if (options)
+   if (dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &subiter))
      {
-        const char *opt;
-
-        EINA_LIST_FOREACH(options, l, opt)
-          dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
+        if (options)
+          {
+             const char *opt;
+             
+             EINA_LIST_FOREACH(options, l, opt)
+               dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
+          }
+        dbus_message_iter_close_container(&iter, &subiter);
      }
-   dbus_message_iter_close_container(&iter, &subiter) ;
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 
    ret = e_dbus_method_call_send(conn, msg, NULL, NULL, NULL, -1, NULL);
    dbus_message_unref(msg);
@@ -124,16 +129,22 @@ e_udisks_volume_unmount(E_DBus_Connection *conn, const char *udi, Eina_List *opt
    msg = e_ukit_device_call_new(udi, "FilesystemUnmount");
 
    dbus_message_iter_init_append(msg, &iter);
-   dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &subiter);
-   if (options)
+   if (dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &subiter))
      {
-        const char *opt;
-
-        EINA_LIST_FOREACH(options, l, opt)
-          dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
+        if (options)
+          {
+             const char *opt;
+             
+             EINA_LIST_FOREACH(options, l, opt)
+               dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
+          }
+        dbus_message_iter_close_container(&iter, &subiter);
      }
-   dbus_message_iter_close_container(&iter, &subiter) ;
-
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
+   
    ret = e_dbus_method_call_send(conn, msg, NULL, NULL, NULL, -1, NULL);
    dbus_message_unref(msg);
    return ret;
@@ -161,16 +172,22 @@ e_udisks_volume_eject(E_DBus_Connection *conn, const char *udi, Eina_List *optio
    msg = e_ukit_device_call_new(udi, "DriveEject");
 
    dbus_message_iter_init_append(msg, &iter);
-   dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &subiter);
-   if (options)
+   if (dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &subiter))
      {
-        const char *opt;
-
-        EINA_LIST_FOREACH(options, l, opt)
-          dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
+        if (options)
+          {
+             const char *opt;
+             
+             EINA_LIST_FOREACH(options, l, opt)
+               dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
+          }
+        dbus_message_iter_close_container(&iter, &subiter);
      }
-   dbus_message_iter_close_container(&iter, &subiter) ;
-
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
+   
    ret = e_dbus_method_call_send(conn, msg, NULL, NULL, NULL, -1, NULL);
    dbus_message_unref(msg);
    return ret;

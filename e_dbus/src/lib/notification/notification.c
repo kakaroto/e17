@@ -10,6 +10,15 @@ static Eina_List             *e_notification_action_list_new(void);
 static E_Notification_Action *e_notification_action_new(const char *id,
                                                         const char *name);
 
+int _e_dbus_notify_log_dom = -1;
+
+static void
+loginit(void)
+{
+   if (_e_dbus_notify_log_dom == -1)
+     _e_dbus_notify_log_dom = eina_log_domain_register("e_dbus_notify", E_DBUS_COLOR_DEFAULT);
+}
+
 /* (con|de)structor */
 
 EAPI E_Notification *
@@ -17,6 +26,7 @@ e_notification_full_new(const char *app_name, unsigned int replaces_id, const ch
 {
    E_Notification *n;
 
+   loginit();
    n = e_notification_new();
    if (!n) return NULL;
 
@@ -35,6 +45,8 @@ EAPI E_Notification *
 e_notification_new(void)
 {
    E_Notification *n;
+   
+   loginit();
    n = calloc(1, sizeof(E_Notification));
    if (!n) return NULL;
    n->refcount = 1;
@@ -45,18 +57,21 @@ e_notification_new(void)
 EAPI void
 e_notification_ref(E_Notification *n)
 {
+   loginit();
    n->refcount++;
 }
 
 EAPI void
 e_notification_unref(E_Notification *n)
 {
+   loginit();
    if (--n->refcount == 0) e_notification_free(n);
 }
 
 EAPI void
 e_notification_free(E_Notification *n)
 {
+   loginit();
    if (!n) return;
 
    eina_stringshare_del(n->app_name);
@@ -78,30 +93,35 @@ e_notification_free(E_Notification *n)
 EAPI void
 e_notification_id_set(E_Notification *note, unsigned int id)
 {
+   loginit();
    note->id = id;
 }
 
 EAPI void
 e_notification_app_name_set(E_Notification *note, const char *app_name)
 {
+   loginit();
    eina_stringshare_replace(&note->app_name, app_name);
 }
 
 EAPI void
 e_notification_app_icon_set(E_Notification *note, const char *app_icon)
 {
+   loginit();
    eina_stringshare_replace(&note->app_icon, app_icon);
 }
 
 EAPI void
 e_notification_summary_set(E_Notification *note, const char *summary)
 {
+   loginit();
    eina_stringshare_replace(&note->summary, summary);
 }
 
 EAPI void
 e_notification_body_set(E_Notification *note, const char *body)
 {
+   loginit();
    eina_stringshare_replace(&note->body, body);
 }
 
@@ -110,6 +130,7 @@ e_notification_action_add(E_Notification *n, const char *action_id, const char *
 {
    E_Notification_Action *a;
 
+   loginit();
    if (!n->actions)
      n->actions = e_notification_action_list_new();
 
@@ -120,18 +141,21 @@ e_notification_action_add(E_Notification *n, const char *action_id, const char *
 EAPI void
 e_notification_replaces_id_set(E_Notification *note, int replaces_id)
 {
+   loginit();
    note->replaces_id = replaces_id;
 }
 
 EAPI void
 e_notification_timeout_set(E_Notification *note, int timeout)
 {
+   loginit();
    note->expire_timeout = timeout;
 }
 
 EAPI void
 e_notification_closed_set(E_Notification *note, unsigned char closed)
 {
+   loginit();
    note->closed = closed;
 }
 
@@ -139,54 +163,63 @@ e_notification_closed_set(E_Notification *note, unsigned char closed)
 EAPI unsigned int
 e_notification_id_get(E_Notification *note)
 {
+   loginit();
    return note->id;
 }
 
 EAPI const char *
 e_notification_app_name_get(E_Notification *note)
 {
+   loginit();
    return note->app_name;
 }
 
 EAPI const char *
 e_notification_app_icon_get(E_Notification *note)
 {
+   loginit();
    return note->app_icon;
 }
 
 EAPI const char *
 e_notification_summary_get(E_Notification *note)
 {
+   loginit();
    return note->summary;
 }
 
 EAPI const char *
 e_notification_body_get(E_Notification *note)
 {
+   loginit();
    return note->body;
 }
 
 EAPI Eina_List *
 e_notification_actions_get(E_Notification *note)
 {
+   loginit();
    return note->actions;
 }
 
 EAPI int
 e_notification_replaces_id_get(E_Notification *note)
 {
+   loginit();
    return note->replaces_id;
 }
 
 EAPI int
 e_notification_timeout_get(E_Notification *note)
 {
+   loginit();
    return note->expire_timeout;
 }
 
 EAPI unsigned char
 e_notification_closed_get(E_Notification *note)
 {
+   loginit();
    return note->closed;
 }
 
@@ -197,6 +230,7 @@ e_notification_action_list_new(void)
 {
    Eina_List *alist;
 
+   loginit();
    alist = NULL;
    return alist;
 }
@@ -205,6 +239,8 @@ static E_Notification_Action *
 e_notification_action_new(const char *id, const char *name)
 {
    E_Notification_Action *act;
+   
+   loginit();
    act = malloc(sizeof(E_Notification_Action));
    act->id = eina_stringshare_add(id);
    act->name = eina_stringshare_add(name);
@@ -214,6 +250,7 @@ e_notification_action_new(const char *id, const char *name)
 EAPI const char *
 e_notification_action_id_get(E_Notification_Action *a)
 {
+   loginit();
    EINA_SAFETY_ON_NULL_RETURN_VAL(a, NULL);
    return a->id;
 }
@@ -221,6 +258,7 @@ e_notification_action_id_get(E_Notification_Action *a)
 EAPI const char *
 e_notification_action_name_get(E_Notification_Action *a)
 {
+   loginit();
    EINA_SAFETY_ON_NULL_RETURN_VAL(a, NULL);
    return a->name;
 }
@@ -229,6 +267,7 @@ e_notification_action_name_get(E_Notification_Action *a)
 EAPI void
 e_notification_hint_transient_set(E_Notification *n, Eina_Bool transient)
 {
+   loginit();
    if (transient)
      n->hint_flags |= E_NOTIFICATION_HINT_TRANSIENT;
    else
@@ -238,6 +277,7 @@ e_notification_hint_transient_set(E_Notification *n, Eina_Bool transient)
 EAPI void
 e_notification_hint_resident_set(E_Notification *n, Eina_Bool resident)
 {
+   loginit();
    if (resident)
      n->hint_flags |= E_NOTIFICATION_HINT_RESIDENT;
    else
@@ -247,6 +287,7 @@ e_notification_hint_resident_set(E_Notification *n, Eina_Bool resident)
 EAPI void
 e_notification_hint_action_icons_set(E_Notification *n, Eina_Bool action_icons)
 {
+   loginit();
    if (action_icons)
      n->hint_flags |= E_NOTIFICATION_HINT_ACTION_ICONS;
    else
@@ -256,6 +297,7 @@ e_notification_hint_action_icons_set(E_Notification *n, Eina_Bool action_icons)
 EAPI void
 e_notification_hint_urgency_set(E_Notification *n, char urgency)
 {
+   loginit();
    n->hints.urgency = urgency;
    n->hint_flags |= E_NOTIFICATION_HINT_URGENCY;
 }
@@ -263,12 +305,14 @@ e_notification_hint_urgency_set(E_Notification *n, char urgency)
 EAPI void
 e_notification_hint_image_path_set(E_Notification *n, const char *path)
 {
+   loginit();
    eina_stringshare_replace(&n->hints.image_path, path);
 }
 
 EAPI void
 e_notification_hint_category_set(E_Notification *n, const char *category)
 {
+   loginit();
    eina_stringshare_replace(&n->hints.category, category);
    n->hint_flags |= E_NOTIFICATION_HINT_CATEGORY;
 }
@@ -276,6 +320,7 @@ e_notification_hint_category_set(E_Notification *n, const char *category)
 EAPI void
 e_notification_hint_desktop_set(E_Notification *n, const char *desktop)
 {
+   loginit();
    eina_stringshare_replace(&n->hints.desktop, desktop);
    n->hint_flags |= E_NOTIFICATION_HINT_DESKTOP;
 }
@@ -283,6 +328,7 @@ e_notification_hint_desktop_set(E_Notification *n, const char *desktop)
 EAPI void
 e_notification_hint_sound_file_set(E_Notification *n, const char *sound_file)
 {
+   loginit();
    eina_stringshare_replace(&n->hints.sound_file, sound_file);
    n->hint_flags |= E_NOTIFICATION_HINT_SOUND_FILE;
 }
@@ -290,6 +336,7 @@ e_notification_hint_sound_file_set(E_Notification *n, const char *sound_file)
 EAPI void
 e_notification_hint_suppress_sound_set(E_Notification *n, char suppress_sound)
 {
+   loginit();
    n->hints.suppress_sound = suppress_sound;
    n->hint_flags |= E_NOTIFICATION_HINT_SUPPRESS_SOUND;
 }
@@ -297,6 +344,7 @@ e_notification_hint_suppress_sound_set(E_Notification *n, char suppress_sound)
 EAPI void
 e_notification_hint_xy_set(E_Notification *n, int x, int y)
 {
+   loginit();
    n->hints.x = x;
    n->hints.y = y;
    n->hint_flags |= E_NOTIFICATION_HINT_XY;
@@ -305,48 +353,56 @@ e_notification_hint_xy_set(E_Notification *n, int x, int y)
 EAPI void
 e_notification_hint_image_data_set(E_Notification *n, E_Notification_Image *image)
 {
+   loginit();
    n->hints.image_data = image;
 }
 
 EAPI char
 e_notification_hint_urgency_get(E_Notification *n)
 {
+   loginit();
    return n->hint_flags & E_NOTIFICATION_HINT_URGENCY ? n->hints.urgency : 1;
 }
 
 EAPI const char *
 e_notification_hint_category_get(E_Notification *n)
 {
+   loginit();
    return n->hints.category;
 }
 
 EAPI const char *
 e_notification_hint_desktop_get(E_Notification *n)
 {
+   loginit();
    return n->hints.desktop;
 }
 
 EAPI const char *
 e_notification_hint_image_path_get(E_Notification *n)
 {
+   loginit();
    return n->hints.image_path;
 }
 
 EAPI const char *
 e_notification_hint_sound_file_get(E_Notification *n)
 {
+   loginit();
    return n->hints.sound_file;
 }
 
 EAPI char
 e_notification_hint_suppress_sound_get(E_Notification *n)
 {
+   loginit();
    return n->hints.suppress_sound;
 }
 
 EAPI int
 e_notification_hint_xy_get(E_Notification *n, int *x, int *y)
 {
+   loginit();
    if (x) *x = n->hints.x;
    if (y) *y = n->hints.y;
 
@@ -356,12 +412,14 @@ e_notification_hint_xy_get(E_Notification *n, int *x, int *y)
 EAPI E_Notification_Image *
 e_notification_hint_image_data_get(E_Notification *n)
 {
+   loginit();
    return n->hints.image_data;
 }
 
 EAPI E_Notification_Image *
 e_notification_hint_icon_data_get(E_Notification *n)
 {
+   loginit();
    return n->hints.icon_data;
 }
 
@@ -370,6 +428,7 @@ e_notification_image_new(void)
 {
    E_Notification_Image *img;
 
+   loginit();
    img = calloc(1, sizeof(E_Notification_Image));
    img->bits_per_sample = 8;
    return img;
@@ -383,6 +442,7 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
    int rowstride;
    int *s;
    
+   loginit();
    EINA_SAFETY_ON_NULL_RETURN_VAL(img, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
 
@@ -426,6 +486,7 @@ e_notification_image_init(E_Notification_Image *img, Evas_Object *obj)
 EAPI void
 e_notification_image_free(E_Notification_Image *img)
 {
+   loginit();
    if (!img) return;
    free(img->data);
    free(img);
@@ -482,6 +543,7 @@ e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img)
 {
    Evas_Object *o = NULL;
 
+   loginit();
    if ((!evas) || (!img)) return NULL;
    o = evas_object_image_filled_add(evas);
    evas_object_resize(o, img->width, img->height);

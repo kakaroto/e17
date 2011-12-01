@@ -12,12 +12,24 @@ e_notify_marshal_dict_variant(DBusMessageIter *iter, const char *key, char *type
 {
    DBusMessageIter entry, variant;
 
-   dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry);
-   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
-   dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, type_str, &variant);
-   func(&variant, data);
-   dbus_message_iter_close_container(&entry, &variant);
-   dbus_message_iter_close_container(iter, &entry);
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry))
+     {
+        dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
+        if (dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, type_str, &variant))
+          {
+             func(&variant, data);
+             dbus_message_iter_close_container(&entry, &variant);
+          }
+        else
+          {
+             ERR("dbus_message_iter_open_container() failed");
+          }
+        dbus_message_iter_close_container(iter, &entry);
+     }
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 }
 
 void
@@ -25,12 +37,24 @@ e_notify_marshal_dict_string(DBusMessageIter *iter, const char *key, const char 
 {
    DBusMessageIter entry, variant;
 
-   dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry);
-   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
-   dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, "s", &variant);
-   dbus_message_iter_append_basic(&variant, DBUS_TYPE_STRING, &value);
-   dbus_message_iter_close_container(&entry, &variant);
-   dbus_message_iter_close_container(iter, &entry);
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry))
+     {
+        dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
+        if (dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, "s", &variant))
+          {
+             dbus_message_iter_append_basic(&variant, DBUS_TYPE_STRING, &value);
+             dbus_message_iter_close_container(&entry, &variant);
+          }
+        else
+          {
+             ERR("dbus_message_iter_open_container() failed");
+          }
+        dbus_message_iter_close_container(iter, &entry);
+     }
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 }
 
 void
@@ -40,12 +64,24 @@ e_notify_marshal_dict_byte(DBusMessageIter *iter, const char *key, char value)
 
    if (!key || !value) return;
 
-   dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
-   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
-   dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, "y", &variant);
-   dbus_message_iter_append_basic(&variant, DBUS_TYPE_BYTE, &value);
-   dbus_message_iter_close_container(&entry, &variant);
-   dbus_message_iter_close_container(iter, &entry);
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry))
+     {
+        dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
+        if (dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, "y", &variant))
+          {
+             dbus_message_iter_append_basic(&variant, DBUS_TYPE_BYTE, &value);
+             dbus_message_iter_close_container(&entry, &variant);
+          }
+        else
+          {
+             ERR("dbus_message_iter_open_container() failed");
+          }
+        dbus_message_iter_close_container(iter, &entry);
+     }
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 }
 
 void
@@ -55,12 +91,24 @@ e_notify_marshal_dict_int(DBusMessageIter *iter, const char *key, int value)
 
    if (!key || !value) return;
 
-   dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry);
-   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
-   dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, "i", &variant);
-   dbus_message_iter_append_basic(&variant, DBUS_TYPE_INT32, &value);
-   dbus_message_iter_close_container(&entry, &variant);
-   dbus_message_iter_close_container(iter, &entry);
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry))
+     {
+        dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
+        if (dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, "i", &variant))
+          {
+             dbus_message_iter_append_basic(&variant, DBUS_TYPE_INT32, &value);
+             dbus_message_iter_close_container(&entry, &variant);
+          }
+        else
+          {
+             ERR("dbus_message_iter_open_container() failed");
+          }
+        dbus_message_iter_close_container(iter, &entry);
+     }
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 }
 
 void
@@ -69,12 +117,16 @@ e_notify_marshal_string_array(DBusMessageIter *iter, const char **strings)
    const char **str;
    DBusMessageIter arr;
 
-   dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY, "s", &arr);
-
-   for (str = strings; *str; str++)
-     dbus_message_iter_append_basic(&arr, DBUS_TYPE_STRING, str);
-
-   dbus_message_iter_close_container(iter, &arr);
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY, "s", &arr))
+     {
+        for (str = strings; *str; str++)
+          dbus_message_iter_append_basic(&arr, DBUS_TYPE_STRING, str);
+        dbus_message_iter_close_container(iter, &arr);
+     }
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 }
 
 void
@@ -84,12 +136,16 @@ e_notify_marshal_string_list_as_array(DBusMessageIter *iter, Eina_List *strings)
    DBusMessageIter arr;
    Eina_List *l;
 
-   dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY, "s", &arr);
-
-   EINA_LIST_FOREACH (strings, l, str)
-     dbus_message_iter_append_basic(&arr, DBUS_TYPE_STRING, &str);
-
-   dbus_message_iter_close_container(iter, &arr);
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY, "s", &arr))
+     {
+        EINA_LIST_FOREACH (strings, l, str)
+          dbus_message_iter_append_basic(&arr, DBUS_TYPE_STRING, &str);
+        dbus_message_iter_close_container(iter, &arr);
+     }
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 }
 
 Eina_List *
@@ -333,39 +389,50 @@ e_notify_marshal_notify(E_Notification *n)
                             );
 
    dbus_message_iter_init_append(msg, &iter);
-   dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, "s", &sub);
-   if (n->actions)
+   if (dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, "s", &sub))
      {
-        E_Notification_Action *action;
-        EINA_LIST_FOREACH (n->actions, l, action)
+        if (n->actions)
           {
-             dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &(action->id));
-             dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &(action->name));
+             E_Notification_Action *action;
+             EINA_LIST_FOREACH (n->actions, l, action)
+               {
+                  dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &(action->id));
+                  dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &(action->name));
+               }
           }
+        dbus_message_iter_close_container(&iter, &sub);
      }
-   dbus_message_iter_close_container(&iter, &sub);
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 
    /* hints */
-   dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, "{sv}", &sub);
-   if (n->hints.urgency) /* we only need to send this if its non-zero*/
-     e_notify_marshal_dict_byte(&sub, "urgency", n->hints.urgency);
-   if (n->hints.category)
-     e_notify_marshal_dict_string(&sub, "category", n->hints.category);
-   if (n->hints.desktop)
-     e_notify_marshal_dict_string(&sub, "desktop_entry", n->hints.desktop);
-   if (n->hints.image_data)
-     e_notify_marshal_dict_variant(&sub, "image-data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.image_data);
-   if (n->hints.sound_file)
-     e_notify_marshal_dict_string(&sub, "sound-file", n->hints.sound_file);
-   if (n->hints.suppress_sound) /* we only need to send this if its true */
-     e_notify_marshal_dict_byte(&sub, "suppress-sound", n->hints.suppress_sound);
-   if (n->hints.x > -1 && n->hints.y > -1)
+   if (dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, "{sv}", &sub))
      {
-        e_notify_marshal_dict_int(&sub, "x", n->hints.x);
-        e_notify_marshal_dict_int(&sub, "y", n->hints.y);
+        if (n->hints.urgency) /* we only need to send this if its non-zero*/
+          e_notify_marshal_dict_byte(&sub, "urgency", n->hints.urgency);
+        if (n->hints.category)
+          e_notify_marshal_dict_string(&sub, "category", n->hints.category);
+        if (n->hints.desktop)
+          e_notify_marshal_dict_string(&sub, "desktop_entry", n->hints.desktop);
+        if (n->hints.image_data)
+          e_notify_marshal_dict_variant(&sub, "image-data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.image_data);
+        if (n->hints.sound_file)
+          e_notify_marshal_dict_string(&sub, "sound-file", n->hints.sound_file);
+        if (n->hints.suppress_sound) /* we only need to send this if its true */
+          e_notify_marshal_dict_byte(&sub, "suppress-sound", n->hints.suppress_sound);
+        if (n->hints.x > -1 && n->hints.y > -1)
+          {
+             e_notify_marshal_dict_int(&sub, "x", n->hints.x);
+             e_notify_marshal_dict_int(&sub, "y", n->hints.y);
+          }
+        dbus_message_iter_close_container(&iter, &sub);
      }
-
-   dbus_message_iter_close_container(&iter, &sub);
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
    dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &(n->expire_timeout));
    return msg;
 }
@@ -571,17 +638,29 @@ e_notify_marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img)
    int data_len = 0;
 
    data_len = ((img->height - 1) * img->rowstride) + (img->width * (((img->channels * img->bits_per_sample) + 7) / 8));
-   dbus_message_iter_open_container(iter, DBUS_TYPE_STRUCT, NULL, &sub);
-   dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->width));
-   dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->height));
-   dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->rowstride));
-   dbus_message_iter_append_basic(&sub, DBUS_TYPE_BOOLEAN, &(img->has_alpha));
-   dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->bits_per_sample));
-   dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->channels));
-   dbus_message_iter_open_container(&sub, DBUS_TYPE_ARRAY, "y", &arr);
-   dbus_message_iter_append_fixed_array(&arr, DBUS_TYPE_BYTE, &(img->data), data_len);
-   dbus_message_iter_close_container(&sub, &arr);
-   dbus_message_iter_close_container(iter, &sub);
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_STRUCT, NULL, &sub))
+     {
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->width));
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->height));
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->rowstride));
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_BOOLEAN, &(img->has_alpha));
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->bits_per_sample));
+        dbus_message_iter_append_basic(&sub, DBUS_TYPE_INT32, &(img->channels));
+        if (dbus_message_iter_open_container(&sub, DBUS_TYPE_ARRAY, "y", &arr))
+          {
+             dbus_message_iter_append_fixed_array(&arr, DBUS_TYPE_BYTE, &(img->data), data_len);
+             dbus_message_iter_close_container(&sub, &arr);
+          }
+        else
+          {
+             ERR("dbus_message_iter_open_container() failed");
+          }
+        dbus_message_iter_close_container(iter, &sub);
+     }
+   else
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 }
 
 E_Notification_Image *

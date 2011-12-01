@@ -46,9 +46,15 @@ copy_message(DBusMessageIter *from, DBusMessageIter *to)
         char *sig;
         dbus_message_iter_recurse(from, &fsub);
         sig = dbus_message_iter_get_signature(&fsub);
-        dbus_message_iter_open_container(to, type, sig, &tsub);
-        copy_message(&fsub, &tsub);
-        dbus_message_iter_close_container(to, &tsub);
+        if (dbus_message_iter_open_container(to, type, sig, &tsub))
+        {
+          copy_message(&fsub, &tsub);
+          dbus_message_iter_close_container(to, &tsub);
+        }
+        else
+        {
+          printf("ERR: container open failed\n");
+        }
       }
     }
     dbus_message_iter_next(from);

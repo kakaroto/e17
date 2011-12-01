@@ -1465,28 +1465,43 @@ e_connman_element_property_dict_set_full(E_Connman_Element *element, const char 
         return EINA_FALSE;
      }
 
-   dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &variant);
+   if (dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &variant))
+     {
+        snprintf(typestr, sizeof(typestr),
+                 (DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+                     DBUS_TYPE_STRING_AS_STRING
+                     "%c"
+                     DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
+                 type);
+        if (dbus_message_iter_open_container(&variant, DBUS_TYPE_ARRAY, typestr, &dict))
+          {
+             if (dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry))
+               {
+                  dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
 
-   snprintf(typestr, sizeof(typestr),
-            (DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
-             DBUS_TYPE_STRING_AS_STRING
-             "%c"
-             DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
-            type);
-
-   dbus_message_iter_open_container(&variant, DBUS_TYPE_ARRAY, typestr, &dict);
-   dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
-
-   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
-
-   if ((type == DBUS_TYPE_STRING) || (type == DBUS_TYPE_OBJECT_PATH))
-      dbus_message_iter_append_basic(&entry, type, &value);
+                  if ((type == DBUS_TYPE_STRING) || (type == DBUS_TYPE_OBJECT_PATH))
+                    dbus_message_iter_append_basic(&entry, type, &value);
+                  else
+                    dbus_message_iter_append_basic(&entry, type, value);
+                  
+                  dbus_message_iter_close_container(&dict, &entry);
+               }
+             else
+               {
+                  ERR("dbus_message_iter_open_container() failed");
+               }
+             dbus_message_iter_close_container(&variant, &dict);
+          }
+        else
+          {
+             ERR("dbus_message_iter_open_container() failed");
+          }
+        dbus_message_iter_close_container(&itr, &variant);
+     }
    else
-      dbus_message_iter_append_basic(&entry, type, value);
-
-   dbus_message_iter_close_container(&dict, &entry);
-   dbus_message_iter_close_container(&variant, &dict);
-   dbus_message_iter_close_container(&itr, &variant);
+     {
+        ERR("dbus_message_iter_open_container() failed");
+     }
 
    return e_connman_element_message_send
              (element, name, NULL, msg, &element->_pending.property_set, cb, data);
@@ -1531,22 +1546,28 @@ e_connman_element_property_set_full(E_Connman_Element *element, const char *prop
 
    typestr[0] = type;
    typestr[1] = '\0';
-   dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &v);
-   if ((type == DBUS_TYPE_STRING) || (type == DBUS_TYPE_OBJECT_PATH))
+   if (dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, typestr, &v))
      {
-        dbus_message_iter_append_basic(&v, type, &value);
-     }
-   else if (type == DBUS_TYPE_BOOLEAN)
-     {
-        unsigned int b = *(char *)value;
-        dbus_message_iter_append_basic(&v, type, &b);
+        if ((type == DBUS_TYPE_STRING) || (type == DBUS_TYPE_OBJECT_PATH))
+          {
+             dbus_message_iter_append_basic(&v, type, &value);
+          }
+        else if (type == DBUS_TYPE_BOOLEAN)
+          {
+             unsigned int b = *(char *)value;
+             dbus_message_iter_append_basic(&v, type, &b);
+          }
+        else
+          {
+             dbus_message_iter_append_basic(&v, type, value);
+          }
+        
+        dbus_message_iter_close_container(&itr, &v);
      }
    else
      {
-        dbus_message_iter_append_basic(&v, type, value);
+        ERR("dbus_message_iter_open_container() failed");
      }
-
-   dbus_message_iter_close_container(&itr, &v);
 
    return e_connman_element_message_send
              (element, name, NULL, msg, &element->_pending.property_set, cb, data);
@@ -1591,33 +1612,42 @@ e_connman_element_property_array_set_full(E_Connman_Element *element, const char
    dbus_message_iter_init_append(msg, &itr);
    dbus_message_iter_append_basic(&itr, DBUS_TYPE_STRING, &prop);
 
-   dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, array_sig,
-                                    &variant);
-   dbus_message_iter_open_container(&variant, DBUS_TYPE_ARRAY, type_sig,
-                                    &array);
-
-   if (type == DBUS_TYPE_STRING || type == DBUS_TYPE_OBJECT_PATH)
+   if (dbus_message_iter_open_container(&itr, DBUS_TYPE_VARIANT, array_sig, &variant))
      {
-        unsigned int i;
-        for (i = 0; i < count; i++)
+        if (dbus_message_iter_open_container(&variant, DBUS_TYPE_ARRAY, type_sig, &array))
           {
-             const void *entry = values[i];
-             dbus_message_iter_append_basic(&array, type, &entry);
+             if (type == DBUS_TYPE_STRING || type == DBUS_TYPE_OBJECT_PATH)
+               {
+                  unsigned int i;
+                  for (i = 0; i < count; i++)
+                    {
+                       const void *entry = values[i];
+                       dbus_message_iter_append_basic(&array, type, &entry);
+                    }
+               }
+             else
+               {
+                  unsigned int i;
+                  for (i = 0; i < count; i++)
+                    {
+                       const void *entry = values[i];
+                       dbus_message_iter_append_basic(&array, type, entry);
+                    }
+               }
+             
+             dbus_message_iter_close_container(&variant, &array);
           }
+        else
+          {
+             ERR("dbus_message_iter_open_container() failed");
+          }
+        dbus_message_iter_close_container(&itr, &variant);
      }
    else
      {
-        unsigned int i;
-        for (i = 0; i < count; i++)
-          {
-             const void *entry = values[i];
-             dbus_message_iter_append_basic(&array, type, entry);
-          }
+        ERR("dbus_message_iter_open_container() failed");
      }
-
-   dbus_message_iter_close_container(&variant, &array);
-   dbus_message_iter_close_container(&itr, &variant);
-
+   
    return e_connman_element_message_send(element, name, NULL, msg,
                                          &element->_pending.property_set,
                                          cb, data);

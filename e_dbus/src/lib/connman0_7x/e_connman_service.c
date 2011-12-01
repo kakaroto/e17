@@ -1158,56 +1158,80 @@ e_connman_service_ipv4_configure_manual(E_Connman_Element *service, const char *
    dbus_message_iter_append_basic
       (&itr, DBUS_TYPE_STRING, &e_connman_prop_ipv4_configuration);
 
-   dbus_message_iter_open_container
-      (&itr, DBUS_TYPE_VARIANT,
-      (DBUS_TYPE_ARRAY_AS_STRING
-       DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
-       DBUS_TYPE_STRING_AS_STRING
-       DBUS_TYPE_STRING_AS_STRING
-       DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
-      &variant);
-   dbus_message_iter_open_container
-      (&variant, DBUS_TYPE_ARRAY,
-      (DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
-       DBUS_TYPE_STRING_AS_STRING
-       DBUS_TYPE_STRING_AS_STRING
-       DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
-      &dict);
-
-   dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
-   dbus_message_iter_append_basic
-      (&entry, DBUS_TYPE_STRING, &e_connman_prop_method);
-   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &method);
-   dbus_message_iter_close_container(&dict, &entry);
-
-   dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
-   dbus_message_iter_append_basic
-      (&entry, DBUS_TYPE_STRING, &e_connman_prop_address);
-   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &address);
-   dbus_message_iter_close_container(&dict, &entry);
-
-   if (netmask)
+   if (dbus_message_iter_open_container
+       (&itr, DBUS_TYPE_VARIANT,
+           (DBUS_TYPE_ARRAY_AS_STRING
+               DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+               DBUS_TYPE_STRING_AS_STRING
+               DBUS_TYPE_STRING_AS_STRING
+               DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
+           &variant))
      {
-        dbus_message_iter_open_container
-           (&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
-        dbus_message_iter_append_basic
-           (&entry, DBUS_TYPE_STRING, &e_connman_prop_netmask);
-        dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &netmask);
-        dbus_message_iter_close_container(&dict, &entry);
+        if (dbus_message_iter_open_container
+            (&variant, DBUS_TYPE_ARRAY,
+                (DBUS_DICT_ENTRY_BEGIN_CHAR_AS_STRING
+                    DBUS_TYPE_STRING_AS_STRING
+                    DBUS_TYPE_STRING_AS_STRING
+                    DBUS_DICT_ENTRY_END_CHAR_AS_STRING),
+                &dict))
+          {
+             if (dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry))
+               {
+                  dbus_message_iter_append_basic
+                    (&entry, DBUS_TYPE_STRING, &e_connman_prop_method);
+                  dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &method);
+                  dbus_message_iter_close_container(&dict, &entry);
+               }
+             if (dbus_message_iter_open_container(&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry))
+               {
+                  dbus_message_iter_append_basic
+                    (&entry, DBUS_TYPE_STRING, &e_connman_prop_address);
+                  dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &address);
+                  dbus_message_iter_close_container(&dict, &entry);
+               }
+             if (netmask)
+               {
+                  if (dbus_message_iter_open_container
+                      (&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry))
+                    {
+                       dbus_message_iter_append_basic
+                         (&entry, DBUS_TYPE_STRING, &e_connman_prop_netmask);
+                       dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &netmask);
+                       dbus_message_iter_close_container(&dict, &entry);
+                    }
+                  else
+                    {
+                       ERR("dbus_message_iter_open_container() failed");
+                    }
+               }
+             
+             if (gateway)
+               {
+                  if (dbus_message_iter_open_container
+                      (&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry))
+                    {
+                       dbus_message_iter_append_basic
+                         (&entry, DBUS_TYPE_STRING, &e_connman_prop_gateway);
+                       dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &gateway);
+                       dbus_message_iter_close_container(&dict, &entry);
+                    }
+                  else
+                    {
+                       ERR("dbus_message_iter_open_container() failed");
+                    }
+               }
+             dbus_message_iter_close_container(&variant, &dict);
+          }
+        else
+          {
+             ERR("dbus_message_iter_open_container() failed");
+          }
+        dbus_message_iter_close_container(&itr, &variant);
      }
-
-   if (gateway)
+   else
      {
-        dbus_message_iter_open_container
-           (&dict, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
-        dbus_message_iter_append_basic
-           (&entry, DBUS_TYPE_STRING, &e_connman_prop_gateway);
-        dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &gateway);
-        dbus_message_iter_close_container(&dict, &entry);
+        ERR("dbus_message_iter_open_container() failed");
      }
-
-   dbus_message_iter_close_container(&variant, &dict);
-   dbus_message_iter_close_container(&itr, &variant);
 
    return e_connman_element_message_send
              (service, name, NULL, msg, &service->_pending.property_set, cb, data);

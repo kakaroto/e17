@@ -134,9 +134,15 @@ cb_properties_get(E_DBus_Object *obj, DBusMessage *msg)
   {
     reply = dbus_message_new_method_return(msg);
     dbus_message_iter_init_append(msg, &iter);
-    dbus_message_iter_open_container(&iter, DBUS_TYPE_VARIANT, e_dbus_basic_type_as_string(type), &sub);
-    dbus_message_iter_append_basic(&sub, type, &value);
-    dbus_message_iter_close_container(&iter, &sub);
+    if (dbus_message_iter_open_container(&iter, DBUS_TYPE_VARIANT, e_dbus_basic_type_as_string(type), &sub))
+    {
+      dbus_message_iter_append_basic(&sub, type, &value);
+      dbus_message_iter_close_container(&iter, &sub);
+    }
+    else
+    {
+      ERR("dbus_message_iter_open_container() failed");
+    }
     return reply;
   }
   else
