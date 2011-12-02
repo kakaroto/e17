@@ -1,6 +1,10 @@
 group { name: "e/modules/battery/main";
 
 	images {
+		image: "images/bat2-outline.png" COMP;
+		image: "images/bat2-outline-hilight.png" COMP;
+		image: "images/bat2-charging.png" COMP;
+		image: "images/bat2-charging-hilight.png" COMP;
 		set {
 			name: "battery";
 			image {
@@ -111,6 +115,19 @@ group { name: "e/modules/battery/main";
 				color_class: "shelf_secondary_icon";
 			}
 		}
+		part { name: "fill-hi";
+			type: IMAGE;
+			clip_to: "fill_clipper";
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				rel1.to: "fill";
+				rel1.offset: 1 1;
+				rel2.to: "fill";
+				rel2.offset: 0 0;
+				image.normal: "images/bat2-charging-hilight.png";
+				color_class: "shelf_secondary_icon";
+			}
+		}
 		part { name: "fill";
 			type: IMAGE;
 			clip_to: "fill_clipper";
@@ -120,7 +137,8 @@ group { name: "e/modules/battery/main";
 				max: 256 256;
 				aspect: 1 1;
 				aspect_preference: BOTH;
-				image.normal: "battery_fill";
+//				image.normal: "battery_fill";
+				image.normal: "images/bat2-charging.png";
 				color_class: "shelf_secondary_icon";
 				rel1.offset: 2 2;
 				rel2.offset: -3 -3;
@@ -190,6 +208,19 @@ group { name: "e/modules/battery/main";
 				rel2.to_y: "fill_confine";
 			}
 		}
+		part { name: "battery-hi";
+			type: IMAGE;
+			clip_to: "fade_clipper";
+			mouse_events: 0;
+			description { state: "default" 0.0;
+				rel1.to: "battery";
+				rel1.offset: 1 1;
+				rel2.to: "battery";
+				rel2.offset: 0 0;
+				image.normal: "images/bat2-outline-hilight.png";
+				color_class: "shelf_secondary_icon";
+			}
+		}
 		part { name: "battery";
 			type: IMAGE;
 			clip_to: "fade_clipper";
@@ -199,7 +230,8 @@ group { name: "e/modules/battery/main";
 				max: 256 256;
 				aspect: 1 1;
 				aspect_preference: BOTH;
-				image.normal: "battery";
+//				image.normal: "battery";
+				image.normal: "images/bat2-outline.png";
 				color_class: "shelf_secondary_icon";
 				rel1.offset: 2 2;
 				rel2.offset: -3 -3;
