@@ -10,7 +10,7 @@ static Eina_Bool _desktops_run_exit(void *data, int type, void *event);
 static void _desktops_run(Efreet_Desktop *desktop);
 static Eina_Bool _desktops_run_timeout(void *data);
 static Eina_Bool _desktops_update_deferred(void *data);
-static char *_cb_gl_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_cb_gl_text_get(const void *data, Evas_Object *obj, const char *part);
 static Evas_Object *_cb_gl_icon_get(const void *data, Evas_Object *obj, const char *part);
 static void _cb_gl_item_del(const void *data, Evas_Object *obj);
 static void _cb_gl_item_select(void *data, Evas_Object *obj, void *event);
@@ -98,7 +98,7 @@ elm_home_win_new(Ecore_X_Window zone)
    evas_object_show(bg);
 
    it_desk.item_style = "default";
-   it_desk.func.label_get = _cb_gl_label_get;
+   it_desk.func.text_get = _cb_gl_text_get;
    it_desk.func.content_get = _cb_gl_icon_get;
    it_desk.func.state_get = NULL;
    it_desk.func.del = _cb_gl_item_del;
@@ -257,7 +257,7 @@ _desktops_update_deferred(void *data)
 }
 
 static char *
-_cb_gl_label_get(const void *data, Evas_Object *obj, const char *part) 
+_cb_gl_text_get(const void *data, Evas_Object *obj, const char *part) 
 {
 #ifdef ELM_EFREET
    if (!data) return NULL;

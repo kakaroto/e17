@@ -87,7 +87,7 @@ _volume_find(const char *udi)
 }
 
 static char *
-_enna_shortcut_favorite_label_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_enna_shortcut_favorite_text_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    const char *label = data;
    return strdup(label);
@@ -102,7 +102,7 @@ _enna_shortcut_favorite_content_get(void *data __UNUSED__, Evas_Object *obj, con
 static Elm_Genlist_Item_Class itc_favorite_group = {
   "panel",
   {
-    _enna_shortcut_favorite_label_get,
+    _enna_shortcut_favorite_text_get,
     _enna_shortcut_favorite_content_get,
     NULL,
     NULL,
@@ -110,7 +110,7 @@ static Elm_Genlist_Item_Class itc_favorite_group = {
 };
 
 static char *
-_enna_shortcut_desktop_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_enna_shortcut_desktop_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Enna_Shortcut *es = data;
 
@@ -153,7 +153,7 @@ _enna_shortcut_desktop_select(void *data, Evas_Object *obj __UNUSED__, void *eve
 static Elm_Genlist_Item_Class itc_desktop_group = {
   "panel",
   {
-    _enna_shortcut_desktop_label_get,
+    _enna_shortcut_desktop_text_get,
     _enna_shortcut_desktop_content_get,
     NULL,
     NULL
@@ -161,7 +161,7 @@ static Elm_Genlist_Item_Class itc_desktop_group = {
 };
 
 static char *
-_bookmark_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_bookmark_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    const char *label = data;
 
@@ -202,7 +202,7 @@ _bookmark_content_get(void *data, Evas_Object *obj, const char *part)
 
 
 static char *
-_bookmark_volume_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_bookmark_volume_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Enna_Volume *volume = data;
 
@@ -261,7 +261,7 @@ _bookmark_volume_content_get(void *data, Evas_Object *obj, const char *part)
 static Elm_Genlist_Item_Class itc_bookmark = {
   "panel",
   {
-    _bookmark_label_get,
+    _bookmark_text_get,
     _bookmark_content_get,
     NULL,
     NULL
@@ -271,7 +271,7 @@ static Elm_Genlist_Item_Class itc_bookmark = {
 static Elm_Genlist_Item_Class itc_bookmark_volume = {
   "panel",
   {
-    _bookmark_volume_label_get,
+    _bookmark_volume_text_get,
     _bookmark_volume_content_get,
     NULL,
     NULL

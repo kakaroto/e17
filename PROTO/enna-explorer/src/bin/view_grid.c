@@ -56,7 +56,7 @@ struct _Smart_Data
 };
 
 static char *
-_grid_item_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_grid_item_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    const Grid_Item *gi = data;
 
@@ -185,7 +185,7 @@ _item_remove(Evas_Object *obj, Grid_Item *item)
 static Elm_Gengrid_Item_Class gic = {
   "default",
   {
-    _grid_item_label_get,
+    _grid_item_text_get,
     _grid_item_content_get,
     _grid_item_state_get,
     _grid_item_del

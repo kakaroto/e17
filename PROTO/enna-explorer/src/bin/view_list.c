@@ -102,7 +102,7 @@ _item_remove(Evas_Object *obj, List_Item *item)
 /* List View */
 /* Default genlist items */
 static char *
-_list_item_default_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_list_item_default_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    const List_Item *li = data;
 
@@ -190,7 +190,7 @@ _list_item_default_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
 
 /* Tracks relative  genlist items */
 static char *
-_list_item_track_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
+_list_item_track_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
 {
    const List_Item *li = data;
    const char *title;
@@ -317,7 +317,7 @@ _list_item_track_content_get(void *data, Evas_Object *obj, const char *part)
 
 /* Tracks relative  genlist items */
 static char *
-_list_item_film_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
+_list_item_film_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part)
 {
    const List_Item *li = data;
    const char *title;
@@ -408,7 +408,7 @@ _list_item_film_content_get(void *data, Evas_Object *obj, const char *part)
 static Elm_Genlist_Item_Class itc_list_default = {
   "default",
   {
-    _list_item_default_label_get,
+    _list_item_default_text_get,
     _list_item_default_content_get,
     _list_item_default_state_get,
     NULL
@@ -418,7 +418,7 @@ static Elm_Genlist_Item_Class itc_list_default = {
 static Elm_Genlist_Item_Class itc_list_track = {
   "track",
   {
-    _list_item_track_label_get,
+    _list_item_track_text_get,
     _list_item_track_content_get,
     NULL,
     NULL
@@ -428,7 +428,7 @@ static Elm_Genlist_Item_Class itc_list_track = {
 static Elm_Genlist_Item_Class itc_list_film = {
   "film",
   {
-    _list_item_film_label_get,
+    _list_item_film_text_get,
     _list_item_film_content_get,
     NULL,
     NULL
