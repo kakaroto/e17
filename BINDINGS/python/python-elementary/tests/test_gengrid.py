@@ -11,7 +11,7 @@ images = ["panel_01.jpg", "plant_01.jpg", "rock_01.jpg", "rock_02.jpg",
         "sky_01.jpg", "sky_02.jpg", "sky_03.jpg", "sky_04.jpg", "wood_01.jpg"]
 
 #----- common -{{{-
-def gg_label_get(obj, part, item_data):
+def gg_text_get(obj, part, item_data):
     return "Item # %s" % (item_data)
 
 def gg_icon_get(obj, part, data):
@@ -67,7 +67,7 @@ def gengrid_clicked(obj, it):
 
     # gengrid
     itc = elementary.GengridItemClass(item_style="default",
-                                       label_get_func=gg_label_get,
+                                       text_get_func=gg_text_get,
                                        icon_get_func=gg_icon_get,
                                        state_get_func=gg_state_get,
                                        del_func=gg_del)

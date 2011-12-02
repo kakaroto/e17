@@ -31,11 +31,11 @@ cdef _py_elm_gengrid_item_call(func, c_evas.Evas_Object *obj, const_char_ptr par
         traceback.print_exc()
         return None
 
-cdef char *_py_elm_gengrid_item_label_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
+cdef char *_py_elm_gengrid_item_text_get(void *data, c_evas.Evas_Object *obj, const_char_ptr part) with gil:
     cdef object prm = <object>data
     cdef GengridItemClass itc = prm[0]
 
-    func = itc._label_get_func
+    func = itc._text_get_func
     if func is None:
         return NULL
 
@@ -112,7 +112,7 @@ cdef class GengridItemClass:
 
     This class should be created and handled to the Gengrid itself.
 
-    It may be subclassed, in this case the methods L{label_get()},
+    It may be subclassed, in this case the methods L{text_get()},
     L{content_get()}, L{state_get()} and L{delete()} will be used.
 
     It may also be instantiated directly, given getters to override as
@@ -121,25 +121,25 @@ cdef class GengridItemClass:
     """
     cdef Elm_Gengrid_Item_Class obj
     cdef readonly object _item_style
-    cdef readonly object _label_get_func
+    cdef readonly object _text_get_func
     cdef readonly object _content_get_func
     cdef readonly object _state_get_func
     cdef readonly object _del_func
 
     def __cinit__(self, *a, **ka):
         self._item_style = "default"
-        self._label_get_func = None
+        self._text_get_func = None
         self._content_get_func = None
         self._state_get_func = None
         self._del_func = None
 
         self.obj.item_style = NULL
-        self.obj.func.label_get = _py_elm_gengrid_item_label_get
+        self.obj.func.text_get = _py_elm_gengrid_item_text_get
         self.obj.func.content_get = _py_elm_gengrid_item_content_get
         self.obj.func.state_get = _py_elm_gengrid_item_state_get
         self.obj.func.del_ = _py_elm_gengrid_item_del
 
-    def __init__(self, item_style=None, label_get_func=None,
+    def __init__(self, item_style=None, text_get_func=None,
                  content_get_func=None, state_get_func=None, del_func=None):
         """GengridItemClass constructor.
 
@@ -147,8 +147,8 @@ cdef class GengridItemClass:
                theme to be used. The corresponding edje group will
                have this as suffix.
 
-        @parm: B{label_get_func} if provided will override the
-               behavior defined by L{label_get()} in this class. Its
+        @parm: B{text_get_func} if provided will override the
+               behavior defined by L{text_get()} in this class. Its
                purpose is to return the label string to be used by a
                given part and row. This function should have the
                signature:
@@ -185,12 +185,12 @@ cdef class GengridItemClass:
         if item_style:
             self._item_style = str(item_style)
 
-        if label_get_func and not callable(label_get_func):
-            raise TypeError("label_get_func is not callable!")
-        elif label_get_func:
-            self._label_get_func = label_get_func
+        if text_get_func and not callable(text_get_func):
+            raise TypeError("text_get_func is not callable!")
+        elif text_get_func:
+            self._text_get_func = text_get_func
         else:
-            self._label_get_func = self.label_get
+            self._text_get_func = self.text_get
 
         if content_get_func and not callable(content_get_func):
             raise TypeError("content_get_func is not callable!")
@@ -219,25 +219,25 @@ cdef class GengridItemClass:
         self.obj.item_style = self._item_style
 
     def __str__(self):
-        return ("%s(item_style=%r, label_get_func=%s, content_get_func=%s, "
+        return ("%s(item_style=%r, text_get_func=%s, content_get_func=%s, "
                 "state_get_func=%s, del_func=%s)") % \
                (self.__class__.__name__,
                 self._item_style,
-                self._label_get_func,
+                self._text_get_func,
                 self._content_get_func,
                 self._state_get_func,
                 self._del_func)
 
     def __repr__(self):
         return ("%s(%#x, refcount=%d, Elm_Gengrid_Item_Class=%#x, "
-                "item_style=%r, label_get_func=%s, content_get_func=%s, "
+                "item_style=%r, text_get_func=%s, content_get_func=%s, "
                 "state_get_func=%s, del_func=%s)") % \
                (self.__class__.__name__,
                 <unsigned long><void *>self,
                 PY_REFCOUNT(self),
                 <unsigned long>&self.obj,
                 self._item_style,
-                self._label_get_func,
+                self._text_get_func,
                 self._content_get_func,
                 self._state_get_func,
                 self._del_func)
@@ -246,7 +246,7 @@ cdef class GengridItemClass:
         def __get__(self):
             return self._item_style
 
-    def label_get(self, c_evas.Object obj, char *part, item_data):
+    def text_get(self, c_evas.Object obj, char *part, item_data):
         """To be called by Gengrid for each item to get its label.
 
         @parm: B{obj:} the Gengrid instance
@@ -617,7 +617,7 @@ cdef class Gengrid(Object):
         @parm: B{item_data:} some data that defines the model of this
                item. This value will be given to methods of
                C{item_class} such as
-               L{GengridItemClass.label_get()}. It will also be
+               L{GengridItemClass.text_get()}. It will also be
                provided to C{func} as its last parameter.
         @parm: B{func:} if not None, this must be a callable to be
                called back when the item is selected. The function
@@ -657,7 +657,7 @@ cdef class Gengrid(Object):
         @parm: B{item_data:} some data that defines the model of this
                item. This value will be given to methods of
                C{item_class} such as
-               L{GengridItemClass.label_get()}. It will also be
+               L{GengridItemClass.text_get()}. It will also be
                provided to C{func} as its last parameter.
         @parm: B{func:} if not None, this must be a callable to be
                called back when the item is selected. The function
@@ -698,7 +698,7 @@ cdef class Gengrid(Object):
         @parm: B{item_data:} some data that defines the model of this
                item. This value will be given to methods of
                C{item_class} such as
-               L{GengridItemClass.label_get()}. It will also be
+               L{GengridItemClass.text_get()}. It will also be
                provided to C{func} as its last parameter.
         @parm: B{before_item:} a reference item to use, the new item
                will be inserted before it.
@@ -744,7 +744,7 @@ cdef class Gengrid(Object):
         @parm: B{item_data:} some data that defines the model of this
                item. This value will be given to methods of
                C{item_class} such as
-               L{GengridItemClass.label_get()}. It will also be
+               L{GengridItemClass.text_get()}. It will also be
                provided to C{func} as its last parameter.
         @parm: B{after_item:} a reference item to use, the new item
                will be inserted after it.

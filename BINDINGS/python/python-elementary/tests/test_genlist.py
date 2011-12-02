@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- common -{{{-
-def gl_label_get(obj, part, item_data):
+def gl_text_get(obj, part, item_data):
     return "Item # %i" % (item_data,)
 
 def gl_icon_get(obj, part, data):
@@ -21,7 +21,7 @@ def gl_state_get(obj, part, item_data):
 def gl_sel(gli, gl, *args, **kwargs):
     print "sel item %s on genlist %s" % (gli, gl)
 
-def glg_label_get(obj, part, item_data):
+def glg_text_get(obj, part, item_data):
     return "Group # %i" % (item_data,)
 
 def glg_icon_get(obj, part, data):
@@ -79,7 +79,7 @@ def genlist_clicked(obj, it):
     win.resize_object_add(over)
 
     itc1 = elementary.GenlistItemClass(item_style="default",
-                                       label_get_func=gl_label_get,
+                                       text_get_func=gl_text_get,
                                        icon_get_func=gl_icon_get,
                                        state_get_func=gl_state_get)
 
@@ -132,7 +132,7 @@ def genlist2_clicked(obj, it):
     gl.show()
 
     itc1 = elementary.GenlistItemClass(item_style="default",
-                                       label_get_func=gl_label_get,
+                                       text_get_func=gl_text_get,
                                        icon_get_func=gl_icon_get,
                                        state_get_func=gl_state_get)
 
@@ -357,12 +357,12 @@ def genlist3_clicked(obj, it):
     gl.show()
 
     itc_i = elementary.GenlistItemClass(item_style="default",
-                                       label_get_func=gl_label_get,
+                                       text_get_func=gl_text_get,
                                        icon_get_func=gl_icon_get,
                                        state_get_func=gl_state_get)
 
     itc_g = elementary.GenlistItemClass(item_style="group_index",
-                                       label_get_func=glg_label_get,
+                                       text_get_func=glg_text_get,
                                        icon_get_func=glg_icon_get)
 
     for i in range(300):
