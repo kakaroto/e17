@@ -32,7 +32,7 @@ struct Elsa_Gui_Item_
    const char *item_style; //maybee need to be provided by theme ?
    struct
      {
-        ElsaItemLabelGetFunc label_get;
+        ElsaItemLabelGetFunc text_get;
         ElsaItemIconGetFunc  content_get;
         ElsaItemStateGetFunc state_get;
         ElsaItemDelFunc      del;
@@ -479,7 +479,7 @@ _elsa_gui_user_sel_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info 
 }
 
 static char *
-_elsa_gui_user_label_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_elsa_gui_user_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    Elsa_User *eu;
    eu = data;
@@ -544,7 +544,7 @@ _elsa_gui_users_genlist_set(Evas_Object *obj, Eina_List *users)
    Eina_List *l;
 
    _elsa_glc.item_style = "default";
-   _elsa_glc.func.label_get = _elsa_gui_user_label_get;
+   _elsa_glc.func.text_get = _elsa_gui_user_text_get;
    _elsa_glc.func.content_get = _elsa_gui_user_content_get;
    _elsa_glc.func.state_get = _elsa_gui_user_state_get;
    _elsa_glc.func.del = _elsa_gui_user_del;
@@ -565,7 +565,7 @@ _elsa_gui_users_gengrid_set(Evas_Object *obj, Eina_List *users)
    Eina_List *l;
 
    _elsa_ggc.item_style = "default";
-   _elsa_ggc.func.label_get = _elsa_gui_user_label_get;
+   _elsa_ggc.func.text_get = _elsa_gui_user_text_get;
    _elsa_ggc.func.content_get = _elsa_gui_user_content_get;
    _elsa_ggc.func.state_get = _elsa_gui_user_state_get;
    _elsa_ggc.func.del = _elsa_gui_user_del;
@@ -589,7 +589,7 @@ _elsa_gui_list_fill(Evas_Object *obj, Elsa_Gui_Item egi, Eina_List *users, Evas_
    Eina_List *l;
 
    EINA_LIST_FOREACH(users, l, eu)
-      elm_list_item_append(obj, egi.func.label_get(eu, NULL, NULL), NULL, NULL,
+      elm_list_item_append(obj, egi.func.text_get(eu, NULL, NULL), NULL, NULL,
                            func, data);
    elm_list_go(obj);
 }
@@ -603,7 +603,7 @@ _elsa_gui_genlist_fill(Evas_Object *obj, Elsa_Gui_Item egi, Eina_List *users, Ev
    Elm_Genlist_Item_Class glc;
 
    glc.item_style = egi.item_style;
-   glc.func.label_get = egi.func.label_get;
+   glc.func.text_get = egi.func.text_get;
    glc.func.content_get = egi.func.content_get;
    glc.func.state_get = egi.func.state_get;
    glc.func.del = egi.func.del;
@@ -624,7 +624,7 @@ _elsa_gui_gengrid_fill(Evas_Object *obj, Elsa_Gui_Item egi, Eina_List *users, Ev
    Elm_Gengrid_Item_Class ggc;
 
    ggc.item_style = egi.item_style;
-   ggc.func.label_get = egi.func.label_get;
+   ggc.func.text_get = egi.func.text_get;
    ggc.func.content_get = egi.func.content_get;
    ggc.func.state_get = egi.func.state_get;
    ggc.func.del = egi.func.del;
