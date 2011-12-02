@@ -22,7 +22,7 @@
 #include "../../config.h"
 
 
-static char *_slides_list_label_get(const void *data, Evas_Object *obj, const char *part);
+static char *_slides_list_text_get(const void *data, Evas_Object *obj, const char *part);
 static Evas_Object *_slides_list_icon_get(const void *data, Evas_Object *obj, const char *part);
 static Eina_Bool _slides_list_state_get(const void *data, Evas_Object *obj, const char *part);
 static void _slides_list_del(const void *data, Evas_Object *obj);
@@ -67,7 +67,7 @@ Evas_Object *slides_list_new()
     elm_box_pack_end(vbox, slides_list);
 
     itc_slides.item_style     = "icon_top_text_bottom";
-    itc_slides.func.label_get = _slides_list_label_get;
+    itc_slides.func.text_get = _slides_list_text_get;
     itc_slides.func.content_get  = _slides_list_icon_get;
     itc_slides.func.state_get = _slides_list_state_get;
     itc_slides.func.del       = _slides_list_del;
@@ -122,7 +122,7 @@ void slides_list_update()
     }
 }
 
-static char *_slides_list_label_get(const void *data, Evas_Object *obj, const char *part)
+static char *_slides_list_text_get(const void *data, Evas_Object *obj, const char *part)
 {
     Eina_List *l;
     List_Item *l_item;

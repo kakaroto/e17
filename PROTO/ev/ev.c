@@ -48,7 +48,7 @@ _del(void *data, Evas_Object *obj __UNUSED__)
 }
 
 static char *
-_label(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_text(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
    return strdup(data);
 }
@@ -193,7 +193,7 @@ main(int argc, char *argv[])
    Ecore_X_Window zw;
 
    itc.item_style     = "default";
-   itc.func.label_get = _label;
+   itc.func.text_get = _text;
    itc.func.content_get  = NULL;
    itc.func.state_get = NULL;
    itc.func.del       = _del;
