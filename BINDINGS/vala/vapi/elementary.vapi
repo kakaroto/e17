@@ -944,7 +944,7 @@ public delegate void GenlistItemDelFunc( Elm.Object obj );
 [CCode (cname = "Elm_Gen_Item_Class_Func", destroy_function = "")]
 public struct GenlistItemClassFunc
 {
-    public GenlistItemLabelGetFunc label_get;
+    public GenlistItemLabelGetFunc text_get;
     public GenlistItemContentGetFunc content_get;
     public GenlistItemStateGetFunc state_get;
     public GenlistItemDelFunc del;

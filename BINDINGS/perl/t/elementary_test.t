@@ -2449,7 +2449,7 @@ typedef struct _Testitem
 
 
 static Elm_Genlist_Item_Class itc1;
-char *gl_label_get(const void *data, Evas_Object *obj, const char *part)
+char *gl_text_get(const void *data, Evas_Object *obj, const char *part)
 {
    char buf[256];
    snprintf(buf, sizeof(buf), "Item # %i", (int)data);
@@ -2545,7 +2545,7 @@ sub test_genlist {
     elm_win_resize_object_add($win, $over);
 
     #itc1.item_style     = "default";
-    #itc1.func.label_get = gl_label_get;
+    #itc1.func.text_get = gl_text_get;
     #itc1.func.icon_get  = gl_icon_get;
     #itc1.func.state_get = gl_state_get;
     #itc1.func.del       = gl_del;
@@ -2598,7 +2598,7 @@ my_gl_add(void *data, Evas_Object *obj, void *event_info)
    static int i = 0;
 
    itc1.item_style     = "default";
-   itc1.func.label_get = gl_label_get;
+   itc1.func.text_get = gl_text_get;
    itc1.func.icon_get  = gl_icon_get;
    itc1.func.state_get = gl_state_get;
    itc1.func.del       = gl_del;
@@ -2621,7 +2621,7 @@ my_gl_insert_before(void *data, Evas_Object *obj, void *event_info)
    Elm_Genlist_Item *gli_selected;
 
    itc1.item_style     = "default";
-   itc1.func.label_get = gl_label_get;
+   itc1.func.text_get = gl_text_get;
    itc1.func.icon_get  = gl_icon_get;
    itc1.func.state_get = gl_state_get;
    itc1.func.del       = gl_del;
@@ -2652,7 +2652,7 @@ my_gl_insert_after(void *data, Evas_Object *obj, void *event_info)
    Elm_Genlist_Item *gli_selected;
 
    itc1.item_style     = "default";
-   itc1.func.label_get = gl_label_get;
+   itc1.func.text_get = gl_text_get;
    itc1.func.icon_get  = gl_icon_get;
    itc1.func.state_get = gl_state_get;
    itc1.func.del       = gl_del;
@@ -2767,7 +2767,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(gl);
 
    itc1.item_style     = "default";
-   itc1.func.label_get = gl_label_get;
+   itc1.func.text_get = gl_text_get;
    itc1.func.icon_get  = gl_icon_get;
    itc1.func.state_get = gl_state_get;
    itc1.func.del       = gl_del;
@@ -2903,7 +2903,7 @@ test_genlist2(void *data, Evas_Object *obj, void *event_info)
 /*************/
 
 static Elm_Genlist_Item_Class itc2;
-char *gl2_label_get(const void *data, Evas_Object *obj, const char *part)
+char *gl2_text_get(const void *data, Evas_Object *obj, const char *part)
 {
    const Testitem *tit = data;
    char buf[256];
@@ -2988,7 +2988,7 @@ sub test_genlist3
    evas_object_show($gl);
 
    itc2.item_style     = "default";
-   itc2.func.label_get = gl2_label_get;
+   itc2.func.text_get = gl2_text_get;
    itc2.func.icon_get  = gl2_icon_get;
    itc2.func.state_get = gl2_state_get;
    itc2.func.del       = gl2_del;
@@ -3061,7 +3061,7 @@ my_gl_item_check_changed(void *data, Evas_Object *obj, void *event_info)
 }
 
 static Elm_Genlist_Item_Class itc3;
-char *gl3_label_get(const void *data, Evas_Object *obj, const char *part)
+char *gl3_text_get(const void *data, Evas_Object *obj, const char *part)
 {
    const Testitem *tit = data;
    char buf[256];
@@ -3139,7 +3139,7 @@ test_genlist4(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(gl);
 
    itc3.item_style     = "default";
-   itc3.func.label_get = gl3_label_get;
+   itc3.func.text_get = gl3_text_get;
    itc3.func.icon_get  = gl3_icon_get;
    itc3.func.state_get = gl3_state_get;
    itc3.func.del       = gl3_del;
@@ -3208,7 +3208,7 @@ my_gl_item_check_changed2(void *data, Evas_Object *obj, void *event_info)
 }
 
 static Elm_Genlist_Item_Class itc5;
-char *gl5_label_get(const void *data, Evas_Object *obj, const char *part)
+char *gl5_text_get(const void *data, Evas_Object *obj, const char *part)
 {
    const Testitem *tit = data;
    char buf[256];
@@ -3329,7 +3329,7 @@ test_genlist5(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(gl);
    itc5.item_style     = "double_label";
-   itc5.func.label_get = gl5_label_get;
+   itc5.func.text_get = gl5_text_get;
    itc5.func.icon_get  = gl5_icon_get;
    itc5.func.state_get = gl5_state_get;
    itc5.func.del       = gl5_del;
@@ -3439,7 +3439,7 @@ gl4_con_req(void *data, Evas_Object *obj, void *event_info)
    elm_genlist_item_expanded_set(it, 0);
 }
 
-char *gl4_label_get(const void *data, Evas_Object *obj, const char *part)
+char *gl4_text_get(const void *data, Evas_Object *obj, const char *part)
 {
    char buf[256];
    snprintf(buf, sizeof(buf), "Item mode %i", (int)data);
@@ -3499,7 +3499,7 @@ test_genlist6(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(gl);
 
    itc4.item_style     = "default";
-   itc4.func.label_get = gl4_label_get;
+   itc4.func.text_get = gl4_text_get;
    itc4.func.icon_get  = gl4_icon_get;
    itc4.func.state_get = gl4_state_get;
    itc4.func.del       = gl4_del;
@@ -4604,7 +4604,7 @@ sub test_spinner
 #include <Elementary.h>
 #ifndef ELM_LIB_QUICKLAUNCH
 static Elm_Genlist_Item_Class itci;
-char *gli_label_get(const void *data, Evas_Object *obj, const char *part)
+char *gli_text_get(const void *data, Evas_Object *obj, const char *part)
 {
    char buf[256];
    int j = (int)data;
@@ -4665,7 +4665,7 @@ test_index(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(id);
 
    itci.item_style     = "default";
-   itci.func.label_get = gli_label_get;
+   itci.func.text_get = gli_text_get;
    itci.func.icon_get  = undef;
    itci.func.state_get = undef;
    itci.func.del       = undef;

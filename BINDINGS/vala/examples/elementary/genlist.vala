@@ -25,7 +25,7 @@ public class T.Genlist : T.Abstract
     public Genlist()
     {
         itc.item_style = "default";
-        itc.func.label_get = getLabel;
+        itc.func.text_get = getText;
         itc.func.content_get = getContent;
         itc.func.state_get = getState;
         itc.func.del = delItem;
@@ -50,7 +50,7 @@ public class T.Genlist : T.Abstract
         return "Generic List Example";
     }
 
-    public static string getLabel( Elm.Object obj, string part )
+    public static string getText( Elm.Object obj, string part )
     {
         int number = (int)obj;
         debug( "label_get: %p", obj );
