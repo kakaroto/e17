@@ -240,7 +240,7 @@ group {
 				/* rel1.to_x: "favorites_base"; */
 				rel1.to_x: "pathbar_end1";
 				rel1.relative: 1.0 0.0;
-				rel1.offset: 0 1.0;
+				rel1.offset: 0 0;
 				rel2.offset: -40 -1;
 				color: 200 0 0 200;
 			}
