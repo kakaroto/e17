@@ -12,7 +12,7 @@ e_notify_marshal_dict_variant(DBusMessageIter *iter, const char *key, char *type
 {
    DBusMessageIter entry, variant;
 
-   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry))
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry))
      {
         dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
         if (dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, type_str, &variant))
@@ -37,7 +37,7 @@ e_notify_marshal_dict_string(DBusMessageIter *iter, const char *key, const char 
 {
    DBusMessageIter entry, variant;
 
-   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry))
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry))
      {
         dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
         if (dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, "s", &variant))
@@ -91,7 +91,7 @@ e_notify_marshal_dict_int(DBusMessageIter *iter, const char *key, int value)
 
    if (!key || !value) return;
 
-   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry))
+   if (dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry))
      {
         dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
         if (dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, "i", &variant))
