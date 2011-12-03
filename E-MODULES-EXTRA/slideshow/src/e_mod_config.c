@@ -92,8 +92,8 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
      e_widget_check_add (evas, D_ ("Disable Timer"), &(cfdata->disable_timer));
    e_widget_framelist_object_append (of, ob);
    ob =
-     e_widget_slider_add (evas, 1, 0, D_ ("%3.0f seconds"), 5.0, 300.0, 1.0, 0,
-			  &(cfdata->poll_time), NULL, 200);
+     e_widget_slider_add (evas, 1, 0, D_ ("%3.0f seconds"), 5.0, 2400.0, 
+                          1.0, 0, &(cfdata->poll_time), NULL, 200);
    e_widget_framelist_object_append (of, ob);
    e_widget_list_object_append (o, of, 1, 1, 0.5);
 
