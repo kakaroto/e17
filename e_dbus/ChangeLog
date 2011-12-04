@@ -40,3 +40,7 @@
 2011-11-27  Mike Blumenkrantz
 
         * Fix case where fd handler could be added twice for dbus fd
+        
+2011-12-02 Carsten Haitzler (The Rasterman)
+
+        1.1.0 release
