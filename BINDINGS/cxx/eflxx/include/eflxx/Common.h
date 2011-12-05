@@ -1,20 +1,18 @@
 #ifndef EFL_COMMON_H
 #define EFL_COMMON_H
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
+// local
 #include "System.h"
 #include "DebugInternal.h"
+
+// SIGC
 #include <sigc++/sigc++.h>
-#include <iostream>
+
+// STD
+#include <istd::ostream>
 
 /* EFL */
 #include <Evas.h>
-
-using std::ostream;
-using std::istream;
 
 namespace Eflxx {
 
@@ -136,19 +134,19 @@ class Color
         int _a;
 };
 
-inline ostream& operator<<( ostream& s, const Color& color )
+inline std::ostream& operator<<( ostream& s, const Color& color )
 {
     return s << "(RGBA " << color.red() << "," << color.green() << "," << color.blue() << "," << color.alpha() << ")";
 }
-inline ostream& operator<<( ostream& s, const Point& point )
+inline std::ostream& operator<<( ostream& s, const Point& point )
 {
     return s << "(" << point.x() << "," << point.y() << ")";
 }
-inline ostream& operator<<( ostream& s, const Size& size )
+inline std::ostream& operator<<( ostream& s, const Size& size )
 {
     return s << "(" << size.width() << "*" << size.height() << ")";
 }
-inline ostream& operator<<( ostream& s, const Rect& rect )
+inline std::ostream& operator<<( ostream& s, const Rect& rect )
 {
     return s << "(" << rect.x() << "," << rect.y() << "*" << rect.width() << "," << rect.height() << ")";
 }

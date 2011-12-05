@@ -1,10 +1,6 @@
 #ifndef EFL_DEBUG_INTERNAL_H
 #define EFL_DEBUG_INTERNAL_H
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #ifndef CWDEBUG
 
 #include <iostream>     // std::cerr

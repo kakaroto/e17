@@ -1,10 +1,6 @@
 #ifndef EFL_DEBUG_H
 #define EFL_DEBUG_H
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #ifdef CWDEBUG
 #include <libcwd/libraries_debug.h>
 
