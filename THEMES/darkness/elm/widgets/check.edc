@@ -222,7 +222,7 @@
             target: "check";
             target: "checkbox_on";
             target: "disabler";
-            after: "enable_text";
+            after: "disable_text";
          }
          program { name: "text_show";
             signal: "elm,state,text,visible";
