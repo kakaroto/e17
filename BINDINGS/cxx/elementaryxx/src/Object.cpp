@@ -31,12 +31,12 @@ void Object::destroy ()
 
   // do a suicide as the delete operator isn't public available
   // the reason is that the C design below is a suicide design :-(
-  delete (this);
+  //delete (this); // TODO: why does this make problems sometimes???
 }
 
 void Object::freeSignalHandler ()
 {
-  //cout << "freeSignalHandler()" << endl;
+  cout << "freeSignalHandler()" << endl;
   delete (this);
   // !!!ATTENTION!!!
   // suicide for a C++ object is dangerous, but allowed

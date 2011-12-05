@@ -246,7 +246,7 @@ private:
   bool operator=(const Object& ); // disable assignment operator
 };
 
-inline ostream& operator<<( ostream& s, const Object& obj )
+inline std::ostream& operator<<( std::ostream& s, const Object& obj )
 {
   return s << "<" << " Object '" << obj.getName() << "' @ " << obj.getGeometry() << ">";
 }

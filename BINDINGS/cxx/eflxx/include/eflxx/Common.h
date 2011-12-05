@@ -134,19 +134,19 @@ class Color
         int _a;
 };
 
-inline std::ostream& operator<<( ostream& s, const Color& color )
+inline std::ostream& operator<<( std::ostream& s, const Color& color )
 {
     return s << "(RGBA " << color.red() << "," << color.green() << "," << color.blue() << "," << color.alpha() << ")";
 }
-inline std::ostream& operator<<( ostream& s, const Point& point )
+inline std::ostream& operator<<( std::ostream& s, const Point& point )
 {
     return s << "(" << point.x() << "," << point.y() << ")";
 }
-inline std::ostream& operator<<( ostream& s, const Size& size )
+inline std::ostream& operator<<( std::ostream& s, const Size& size )
 {
     return s << "(" << size.width() << "*" << size.height() << ")";
 }
-inline std::ostream& operator<<( ostream& s, const Rect& rect )
+inline std::ostream& operator<<( std::ostream& s, const Rect& rect )
 {
     return s << "(" << rect.x() << "," << rect.y() << "*" << rect.width() << "," << rect.height() << ")";
 }

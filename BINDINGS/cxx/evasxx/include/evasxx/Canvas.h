@@ -100,7 +100,7 @@ private:
   bool mFree;
 };
 
-inline ostream& operator<<( ostream& s, const Canvas& canvas )
+inline std::ostream& operator<<( std::ostream& s, const Canvas& canvas )
 {
   return s << "(Canvas)";
 }
