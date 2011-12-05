@@ -1,3 +1,12 @@
+E_dbus 1.2.0
+
+Changes since E_dbus 1.1.0:
+---------------------------
+
+Improvements:
+   enotify: Fixed use of dbus_message_iter_open_container to prevent crashing when sending an image
+
+
 E_dbus 1.1.0
 
 Changes since E_dbus 1.0.0:

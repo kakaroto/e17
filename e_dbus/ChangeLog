@@ -41,6 +41,10 @@
 
         * Fix case where fd handler could be added twice for dbus fd
         
-2011-12-02 Carsten Haitzler (The Rasterman)
+2011-12-02  Carsten Haitzler (The Rasterman)
 
-        1.1.0 release
+        * 1.1.0 release
+
+2011-12-02  Mike Blumenkrantz
+
+        * Fixed use of dbus_message_iter_open_container in enotify to prevent crashing when sending an image
