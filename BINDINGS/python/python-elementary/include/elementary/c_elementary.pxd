@@ -175,7 +175,7 @@ cdef extern from "Elementary.h":
     ctypedef void (*GenlistItemDelFunc)(void *data, evas.c_evas.Evas_Object *obj)
 
     ctypedef struct Elm_Genlist_Item_Class_Func:
-        GenlistItemLabelGetFunc label_get
+        GenlistItemLabelGetFunc text_get
         GenlistItemIconGetFunc content_get
         GenlistItemStateGetFunc state_get
         GenlistItemDelFunc del_ "del"
@@ -190,7 +190,7 @@ cdef extern from "Elementary.h":
     ctypedef void (*GengridItemDelFunc)(void *data, evas.c_evas.Evas_Object *obj)
 
     ctypedef struct Elm_Gengrid_Item_Class_Func:
-        GengridItemLabelGetFunc label_get
+        GengridItemLabelGetFunc text_get
         GengridItemIconGetFunc content_get
         GengridItemStateGetFunc state_get
         GengridItemDelFunc del_ "del"
