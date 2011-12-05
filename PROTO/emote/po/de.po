@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elaborate 0.0.1\n"
 "Report-Msgid-Bugs-To: devilhorns@comcast.net\n"
-"POT-Creation-Date: 2010-12-05 19:00+0100\n"
+"POT-Creation-Date: 2011-10-23 01:36+0200\n"
 "PO-Revision-Date: 2010-12-05 19:00+0100\n"
 "Last-Translator: Fabian Nowak <timystery@arcor.de>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -18,30 +18,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/bin/em_config.c:165
+#: ../src/bin/em_config.c:165
 msgid "Emote - Configuration"
 msgstr "Emote-Einstellungen"
 
-#: src/bin/em_config.c:193
+#: ../src/bin/em_config.c:193
 msgid "General"
 msgstr "Allgemein"
 
-#: src/bin/em_config.c:194
+#: ../src/bin/em_config.c:194
 msgid "Servers"
 msgstr "Server"
 
-#: src/bin/em_config.c:205
+#: ../src/bin/em_config.c:205
 msgid "Apply"
 msgstr "Anwenden"
 
-#: src/bin/em_config.c:210
+#: ../src/bin/em_config.c:210
 msgid "Close"
 msgstr "Schließen"
 
-#: src/bin/em_gui.c:74
+#: ../src/bin/em_gui.c:74
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/bin/em_gui.c:76
+#: ../src/bin/em_gui.c:76
 msgid "Quit"
 msgstr "Verlassen"

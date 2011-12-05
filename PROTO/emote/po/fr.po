@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Emote\n"
 "Report-Msgid-Bugs-To: devilhorns@comcast.net\n"
-"POT-Creation-Date: 2010-10-07 14:06+0400\n"
+"POT-Creation-Date: 2011-10-23 01:36+0200\n"
 "PO-Revision-Date: 2010-10-07 14:28+0400\n"
 "Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <pourunmondesansgourou@gmail.com>\n"
@@ -23,26 +23,26 @@ msgstr ""
 msgid "Emote - Configuration"
 msgstr "Configuration de Emote"
 
-#: ../src/bin/em_config.c:194
+#: ../src/bin/em_config.c:193
 msgid "General"
 msgstr "Général"
 
-#: ../src/bin/em_config.c:197
+#: ../src/bin/em_config.c:194
 msgid "Servers"
 msgstr "Serveurs"
 
-#: ../src/bin/em_config.c:208
+#: ../src/bin/em_config.c:205
 msgid "Apply"
 msgstr "Appliquer"
 
-#: ../src/bin/em_config.c:213
+#: ../src/bin/em_config.c:210
 msgid "Close"
 msgstr "Fermer"
 
-#: ../src/bin/em_gui.c:88
+#: ../src/bin/em_gui.c:74
 msgid "Settings"
 msgstr "Paramètres"
 
-#: ../src/bin/em_gui.c:90
+#: ../src/bin/em_gui.c:76
 msgid "Quit"
 msgstr "Quitter"

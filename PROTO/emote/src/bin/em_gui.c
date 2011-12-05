@@ -347,7 +347,7 @@ _em_gui_chansel_add_server(const Eina_Hash *hash __UNUSED__, const void *key, vo
 static void
 _em_gui_chansel_update(const char *label)
 {
-   Elm_Toolbar_Item *item;
+   Elm_Object_Item *item;
 
    eina_hash_foreach(gui->servers, _em_gui_chansel_add_server, NULL);
 
@@ -418,7 +418,7 @@ _em_gui_cb_win_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *eve
 static void
 _em_gui_cb_settings(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNUSED__)
 {
-   Elm_Toolbar_Item *it = elm_toolbar_selected_item_get(gui->w_tb);
+   Elm_Object_Item *it = elm_toolbar_selected_item_get(gui->w_tb);
    if (it)
      elm_toolbar_item_selected_set(it, EINA_FALSE);
    em_config_show(gui->w_win);

@@ -29,7 +29,7 @@ struct _Em_Gui_Server
    Evas_Object *w_text;
    Evas_Object *w_entry;
    Evas_Object *w_nick;
-   Elm_Toolbar_Item *w_select;
+   Elm_Object_Item *w_select;
 
    const char *nick;
    const char *name;
@@ -47,7 +47,7 @@ struct _Em_Gui_Channel
    Evas_Object *w_text;
    Evas_Object *w_entry;
    Evas_Object *w_nick;
-   Elm_Toolbar_Item *w_select;
+   Elm_Object_Item *w_select;
 
    const char *name;
 };
