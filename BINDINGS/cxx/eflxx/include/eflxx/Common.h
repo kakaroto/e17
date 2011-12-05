@@ -9,7 +9,7 @@
 #include <sigc++/sigc++.h>
 
 // STD
-#include <istd::ostream>
+#include <iostream>
 
 /* EFL */
 #include <Evas.h>
