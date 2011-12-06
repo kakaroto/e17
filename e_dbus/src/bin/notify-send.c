@@ -4,9 +4,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <limits.h>
 #include <errno.h>
 #include <getopt.h>
+#include <sysexits.h>
 
 #include <Ecore.h>
 #include <E_Notify.h>

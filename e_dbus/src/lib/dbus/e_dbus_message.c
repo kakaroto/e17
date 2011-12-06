@@ -2,6 +2,9 @@
 #include "config.h"
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "e_dbus_private.h"
 
 typedef struct E_DBus_Pending_Call_Data E_DBus_Pending_Call_Data;

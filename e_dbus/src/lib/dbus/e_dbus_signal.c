@@ -3,6 +3,7 @@
 #endif
 
 #include <string.h>
+#include <stdlib.h>
 
 #include "e_dbus_private.h"
 
