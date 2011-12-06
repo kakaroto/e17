@@ -1,0 +1,851 @@
+#define _GNU_SOURCE 1
+
+#include <stdlib.h>
+#include <Elementary.h>
+#include "tsuite.h"
+
+#define IMAGE_FILENAME_EXT ".png"
+#include <dlfcn.h>
+#include "tsuite_file_data.h"
+
+void test_3d(void);
+void test_actionslider(void);
+void test_anchorblock(void);
+void test_anchorview(void);
+void test_bg_plain(void);
+void test_bg_image(void);
+void test_bg_options(void);
+void test_box_vert(void);
+void test_box_vert2(void);
+void test_box_horiz(void);
+void test_button(void);
+void test_bubble(void);
+void test_calendar(void);
+void test_calendar2(void);
+void test_check(void);
+void test_colorselector(void);
+void test_conformant(void);
+void test_conformant2(void);
+void test_ctxpopup(void);
+void test_cursor(void);
+void test_cursor2(void);
+void test_cursor3(void);
+void test_diskselector(void);
+void test_entry(void);
+void test_entry_scrolled(void);
+void test_entry3(void);
+void test_entry4(void);
+void test_entry5(void);
+void test_entry_notepad(void);
+void test_fileselector(void);
+void test_fileselector_button(void);
+void test_fileselector_entry(void);
+void test_floating(void);
+void test_focus(void);
+void test_focus2(void);
+void test_focus3(void);
+void test_gengrid(void);
+void test_gengrid2(void);
+void test_genlist(void);
+void test_genlist2(void);
+void test_genlist3(void);
+void test_genlist4(void);
+void test_genlist5(void);
+void test_genlist6(void);
+void test_genlist7(void);
+void test_genlist8(void);
+void test_genlist9(void);
+void test_genlist10(void);
+void test_genlist11(void);
+void test_glview(void);
+void test_glview_simple(void);
+void test_grid(void);
+void test_hover(void);
+void test_hover2(void);
+void test_hoversel(void);
+void test_index(void);
+void test_index2(void);
+void test_inwin(void);
+void test_inwin2(void);
+void test_label(void);
+void test_list(void);
+void test_list_horizontal(void);
+void test_list2(void);
+void test_list3(void);
+void test_list4(void);
+void test_list5(void);
+void test_map(void);
+void test_menu(void);
+void test_naviframe(void);
+void test_notify(void);
+void test_pager(void);
+void test_pager_slide(void);
+void test_panel(void);
+void test_panes(void);
+void test_photo(void);
+void test_photocam(void);
+void test_progressbar(void);
+void test_radio(void);
+void test_scaling(void);
+void test_scaling2(void);
+void test_scroller(void);
+void test_scroller2(void);
+void test_segment_control(void);
+void test_separator(void);
+void test_slider(void);
+void test_spinner(void);
+void test_table(void);
+void test_table2(void);
+void test_table3(void);
+void test_table4(void);
+void test_table5(void);
+void test_table6(void);
+void test_thumb(void);
+void test_toggle(void);
+void test_toolbar(void);
+void test_toolbar2(void);
+void test_toolbar3(void);
+void test_toolbar4(void);
+void test_toolbar5(void);
+void test_tooltip(void);
+void test_tooltip2(void);
+void test_weather(void);
+void test_win_inline(void);
+void test_win_state(void);
+void test_win_state2(void);
+
+/* START - Some globals - may want to move these to Timer_Data struct later */
+static Lists_st *vr_list = NULL;
+/* END   - Some globals - may want to move these to Timer_Data struct later */
+
+/**
+ * @internal
+ *
+ * @struct _Tsuite_Data
+ * Struct holds test-suite data-properties
+ *
+ * @ingroup Tsuite
+ */
+struct _Tsuite_Data
+{
+   char *name;    /**< Test Name */
+   int serial;    /**< Serial number of currnen-file */
+   api_data *api;
+   Evas *e;
+   Evas_Object *win;
+};
+typedef struct _Tsuite_Data Tsuite_Data;
+
+/**
+ * @internal
+ *
+ * @struct _Test_Item
+ * Struct holds test-suite test / func pair.
+ *
+ * @ingroup Tsuite
+ */
+struct _Test_Item
+{  /* Item type for array of test-names, test-func-ptr */
+   char *name;
+   void (* func) (void);
+   Eina_Bool test;
+};
+typedef struct _Test_Item Test_Item;
+
+static Tsuite_Data ts;
+static Eina_Bool recording = EINA_FALSE;
+static char *dest_dir = NULL;
+
+Eina_List *
+_add_test(Eina_List *list, char *n, void (* f) (void), Eina_Bool t)
+{
+   Test_Item *item = malloc(sizeof(Test_Item));
+   item->name = n;
+   item->func = f;
+   item->test = t;
+   return eina_list_append(list, item);
+}
+
+int test_name_cmp(const void *data1, const void *data2)
+{
+   return strcmp(((Test_Item *) data1)->name, (char *) data2);
+}
+
+Test_Item *
+_set_test(Eina_List *list, char *n, Eina_Bool t)
+{
+   Test_Item *item = eina_list_search_unsorted(list, test_name_cmp, n);
+   if (item)
+     item->test = t;
+
+   return item;
+}
+
+static void (* _tsuite_evas_hook_init) (Lists_st *) = NULL;
+static void (* _tsuite_evas_hook_reset) (void) = NULL;
+
+static void
+_init_recording_funcs(void)
+{
+   _tsuite_evas_hook_init = dlsym(RTLD_DEFAULT, "tsuite_evas_hook_init");
+   _tsuite_evas_hook_reset = dlsym(RTLD_DEFAULT, "tsuite_evas_hook_reset");
+}
+
+/**
+ * @internal
+ *
+ * This function initiates Tsuite_Data
+ * @param name defines test-name
+ * @param Pointer_Event Pointer to PE.
+ *
+ * @ingroup Tsuite
+ */
+void
+tsuite_init(Evas_Object *win, char *name, api_data *d)
+{
+   tsuite_cleanup();
+   if (!name)
+     return;
+
+   ts.name = strdup(name);  /* Freed by tsuite_cleanup */
+   ts.win = win;
+   ts.api = d;
+   ts.api->win = win;
+   ts.e = evas_object_evas_get(ts.win);
+}
+
+/**
+ * @internal
+ *
+ * This function do cleanup for Tsuite
+ * @param Tsuite_Data * data for cleanup.
+ *
+ * @ingroup Tsuite
+ */
+void
+tsuite_cleanup(void)
+{
+   if (ts.name)
+     free(ts.name);
+
+   if (ts.api)
+     {
+        if (ts.api->data && ts.api->free_data)
+          free(ts.api->data);
+
+        free(ts.api);
+     }
+
+   if (ts.win)
+     evas_object_del(ts.win);
+
+   memset(&ts, 0, sizeof(ts));
+}
+
+char *tsuite_test_name_get()
+{
+   return ts.name;
+}
+
+/**
+ * @internal
+ *
+ * This function takes actual shot and saves it in PNG
+ * @param data Tsuite_Data pointer initiated by user
+ * @param obj  Window pointer
+ * @param obj  name file name. Will use name_+serial if NULL
+ *
+ * @ingroup Tsuite
+ */
+void
+tsuite_shot_do(Evas_Object *obj, char *name)
+{
+   Ecore_Evas *ee, *ee_orig;
+   Evas_Object *o;
+   unsigned int *pixels;
+   int w, h,dir_name_len = 0;
+   char *filename;
+   if (dest_dir)
+     dir_name_len = strlen(dest_dir) + 1; /* includes space of a '/' */
+
+   if (name)
+     {
+        filename = malloc(strlen(name) + strlen(IMAGE_FILENAME_EXT) +
+              dir_name_len + 4);
+
+        if (dest_dir)
+          sprintf(filename, "%s/", dest_dir);
+
+        sprintf(filename + dir_name_len, "%s%s", name, IMAGE_FILENAME_EXT);
+     }
+   else
+     {
+        filename = malloc(strlen(ts.name) + strlen(IMAGE_FILENAME_EXT) +
+              dir_name_len + 8); /* also space for serial */
+
+        ts.serial++;
+        if (dest_dir)
+          sprintf(filename, "%s/", dest_dir);
+
+        sprintf(filename + dir_name_len, "%s_%d%s", ts.name ,ts.serial,
+              IMAGE_FILENAME_EXT);
+     }
+
+   printf("in func <%s> name=<%s>\n", __func__, filename);
+
+   /* A bit hackish, get the ecore_evas from the Evas canvas */
+   ee_orig = evas_data_attach_get(evas_object_evas_get(obj));
+
+   ecore_evas_manual_render(ee_orig);
+   pixels = (void *)ecore_evas_buffer_pixels_get(ee_orig);
+   if (!pixels) return;
+   ecore_evas_geometry_get(ee_orig, NULL, NULL, &w, &h);
+   if ((w < 1) || (h < 1)) return;
+   ee = ecore_evas_buffer_new(1, 1);
+   o = evas_object_image_add(ecore_evas_get(ee));
+   evas_object_image_alpha_set(o, ecore_evas_alpha_get(ee_orig));
+   evas_object_image_size_set(o, w, h);
+   evas_object_image_data_set(o, pixels);
+
+   if (!evas_object_image_save(o, filename, NULL, NULL))
+     {
+        printf("Cannot save widget to <%s>\n", filename);
+     }
+   ecore_evas_free(ee);
+   free(filename);
+}
+
+static unsigned int
+evt_time_get(unsigned int tm, Variant_st *v)
+{
+   switch(tsuite_event_mapping_type_get(v->t.type))
+     {
+      case TSUITE_EVENT_MOUSE_IN:
+           {
+              mouse_in_mouse_out *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_MOUSE_OUT:
+           {
+              mouse_in_mouse_out *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_MOUSE_DOWN:
+           {
+              mouse_down_mouse_up *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_MOUSE_UP:
+           {
+              mouse_down_mouse_up *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_MOUSE_MOVE:
+           {
+              mouse_move *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_MOUSE_WHEEL:
+           {
+              mouse_wheel *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_MULTI_DOWN:
+           {
+              multi_event *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_MULTI_UP:
+           {
+              multi_event *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_MULTI_MOVE:
+           {
+              multi_move *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_KEY_DOWN:
+           {
+              key_down_key_up *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_KEY_UP:
+           {
+              key_down_key_up *t = v->data;
+              return t->timestamp;
+           }
+      case TSUITE_EVENT_TAKE_SHOT:
+           {
+              take_screenshot *t = v->data;
+              return t->timestamp;
+           }
+      default: /* All non-input events are not handeled */
+         return tm;
+         break;
+     }
+}
+
+static Eina_Bool
+tsuite_feed_event(void *data)
+{
+   static Ecore_Timer *tmr = NULL;
+   Timer_Data *td = data;
+   time_t evt_time;
+   if (!td)
+     return ECORE_CALLBACK_CANCEL;
+
+   Variant_st *v = eina_list_data_get(td->current_event);
+   switch(tsuite_event_mapping_type_get(v->t.type))
+     {
+      case TSUITE_EVENT_MOUSE_IN:
+           {
+              mouse_in_mouse_out *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_mouse_in timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_mouse_in(td->e, time(NULL), NULL);
+              break;
+           }
+      case TSUITE_EVENT_MOUSE_OUT:
+           {
+              mouse_in_mouse_out *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_mouse_out timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_mouse_out(td->e, time(NULL), NULL);
+              break;
+           }
+      case TSUITE_EVENT_MOUSE_DOWN:
+           {
+              mouse_down_mouse_up *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_mouse_down timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_mouse_down(td->e, t->b, t->flags, time(NULL),
+                    NULL);
+
+              break;
+           }
+      case TSUITE_EVENT_MOUSE_UP:
+           {
+              mouse_down_mouse_up *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_mouse_up timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_mouse_up(td->e, t->b, t->flags, time(NULL),
+                    NULL);
+
+              break;
+           }
+      case TSUITE_EVENT_MOUSE_MOVE:
+           {
+              mouse_move *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_mouse_move (x,y)=(%d,%d) timestamp=<%u>\n", __func__, t->x, t->y, t->timestamp);
+#endif
+              evas_event_feed_mouse_move(td->e, t->x, t->y, time(NULL), NULL);
+              break;
+           }
+      case TSUITE_EVENT_MOUSE_WHEEL:
+           {
+              mouse_wheel *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_mouse_wheel timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_mouse_wheel(td->e, t->direction, t->z,
+                    time(NULL), NULL);
+
+              break;
+           }
+      case TSUITE_EVENT_MULTI_DOWN:
+           {
+              multi_event *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_multi_down timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_multi_down(td->e, t->d, t->x, t->y, t->rad,
+                    t->radx, t->rady, t->pres, t->ang, t->fx, t->fy,
+                    t->flags, time(NULL), NULL);
+
+              break;
+           }
+      case TSUITE_EVENT_MULTI_UP:
+           {
+              multi_event *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_multi_up timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_multi_up(td->e, t->d, t->x, t->y, t->rad,
+                    t->radx, t->rady, t->pres, t->ang, t->fx, t->fy,
+                    t->flags, time(NULL), NULL);
+
+              break;
+           }
+      case TSUITE_EVENT_MULTI_MOVE:
+           {
+              multi_move *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_multi_move timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_multi_move(td->e, t->d, t->x, t->y, t->rad,
+                    t->radx, t->rady, t->pres, t->ang, t->fx, t->fy,
+                    time(NULL), NULL);
+
+              break;
+           }
+      case TSUITE_EVENT_KEY_DOWN:
+           {
+              key_down_key_up *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_key_down timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_key_down(td->e, t->keyname, t->key, t->string,
+                    t->compose, time(NULL), NULL);
+
+              break;
+           }
+      case TSUITE_EVENT_KEY_UP:
+           {
+              key_down_key_up *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s evas_event_feed_key_up timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              evas_event_feed_key_up(td->e, t->keyname, t->key, t->string,
+                    t->compose, time(NULL), NULL);
+
+              break;
+           }
+      case TSUITE_EVENT_TAKE_SHOT:
+           {
+              take_screenshot *t = v->data;
+              evt_time = t->timestamp;
+#ifdef DEBUG_TSUITE
+              printf("%s take shot  timestamp=<%u>\n", __func__, t->timestamp);
+#endif
+              tsuite_shot_do(ts.win, NULL); /* Serial name based on test-name */
+              break;
+           }
+      default: /* All non-input events are not handeled */
+         evt_time = td->recent_event_time;
+         break;
+     }
+
+   double timer_time;
+   td->current_event = eina_list_next(td->current_event);
+
+   if (!td->current_event)
+     {  /* Finished reading all events */
+        elm_exit();
+        return ECORE_CALLBACK_CANCEL;
+     }
+
+   td->recent_event_time = evt_time;
+
+   unsigned int current_event_time = evt_time_get(evt_time, eina_list_data_get(td->current_event));
+
+   if (current_event_time < td->recent_event_time) /* Could happen with refeed event */
+     current_event_time = td->recent_event_time;
+
+#ifdef DEBUG_TSUITE
+   printf("%s td->recent_event_time=<%u> current_event_time=<%u>\n", __func__, td->recent_event_time, current_event_time);
+#endif
+   timer_time = (current_event_time - td->recent_event_time) / 1000.0;
+
+   if (!td->recent_event_time)
+     timer_time = 0.0;
+
+#ifdef DEBUG_TSUITE
+   printf("%s timer_time=<%f>\n", __func__, timer_time);
+#endif
+   tmr = ecore_timer_add(timer_time, tsuite_feed_event, td);
+
+   return ECORE_CALLBACK_CANCEL;
+}
+
+void
+_test_close_win(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
+      void *event_info __UNUSED__)
+{
+   ts.win = NULL;
+   elm_exit();
+}
+
+static Lists_st *
+free_events(Lists_st *st)
+{
+   Variant_st *v;
+   EINA_LIST_FREE(st->variant_list, v)
+     {
+        if (recording)
+          {
+             Tsuite_Event_Type e = tsuite_event_mapping_type_get(v->t.type);
+             if ((e == TSUITE_EVENT_KEY_DOWN) || (e == TSUITE_EVENT_KEY_UP))
+               {  /* Allocated in tsuite_evas_hook.c */
+                  key_down_key_up *t = v->data;
+                  eina_stringshare_del(t->keyname);
+                  eina_stringshare_del(t->key);
+                  eina_stringshare_del(t->string);
+                  eina_stringshare_del(t->compose);
+               }
+          }
+
+        free(v->data);
+        free(v);
+     }
+
+   free(st);  /* Allocated when reading data from EET file */
+   return NULL;
+}
+
+void
+do_test(void (* func) (void))
+{
+   char buf[1024];
+
+   vr_list = calloc(1, sizeof(*vr_list));
+   if (recording)
+     _tsuite_evas_hook_init(vr_list);
+
+   func();
+   sprintf(buf, "%s.rec", ts.name);
+
+   if (recording)
+     {
+        elm_run(); /* and run the program now  and handle all events etc. */
+        if (vr_list)
+          write_events(buf, vr_list);
+     }
+   else
+     {
+        Timer_Data *td = NULL;
+
+        td = calloc(1, sizeof(Timer_Data));
+        vr_list = read_events(buf, ts.e, td);
+        if (td->current_event)
+          {  /* Got first event in list, run test */
+             tsuite_feed_event(td);
+             elm_run(); /* and run the program now and handle all events etc */
+          }
+
+        if (td)
+          free(td);
+     }
+
+
+   if (recording)
+     _tsuite_evas_hook_reset();
+
+   if (vr_list)
+     vr_list = free_events(vr_list);
+}
+
+EAPI int
+elm_main(int argc, char **argv)
+{
+   Eina_List *tests = NULL;
+   Eina_Bool test_all;
+   int i, first_arg = 1;
+
+   elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
+
+   /* tell elm about our app so it can figure out where to get files */
+   elm_app_compile_bin_dir_set(PACKAGE_BIN_DIR);
+   elm_app_compile_data_dir_set(PACKAGE_DATA_DIR);
+   elm_app_info_set(elm_main, "elementary", "images/logo.png");
+
+   if (argc >= 2)
+     {
+        recording = !strcmp(argv[1], "--record");
+        if (!recording)
+          {  /* Could have a destdir param */
+             if (!strcmp(argv[1], "--destdir"))
+               {  /* Get dest-dir param */
+                  first_arg = 2; /* if user ommited dest-dir name,  */
+                                 /* works anyway skipping this flag */
+                  if (argc > 2)
+                    dest_dir = argv[2];
+               }
+          }
+     }
+
+   if (recording)
+     {
+        _init_recording_funcs();
+        first_arg = 2;
+     }
+   else if (dest_dir)
+     first_arg = 3;
+
+   /* If no test specified in command line, set all */
+   test_all = (first_arg - argc) == 0;
+   tests = _add_test(tests, "test_3d", test_3d, test_all);
+   tests = _add_test(tests, "test_actionslider", test_actionslider, test_all);
+   tests = _add_test(tests, "test_anchorblock", test_anchorblock, test_all);
+   tests = _add_test(tests, "test_anchorview", test_anchorview, test_all);
+   tests = _add_test(tests, "test_bg_plain", test_bg_plain, test_all);
+   tests = _add_test(tests, "test_bg_image", test_bg_image, test_all);
+   tests = _add_test(tests, "test_bg_options", test_bg_options, test_all);
+   tests = _add_test(tests, "test_box_vert", test_box_vert, test_all);
+   tests = _add_test(tests, "test_box_vert2", test_box_vert2, test_all);
+   tests = _add_test(tests, "test_box_horiz", test_box_horiz, test_all);
+   tests = _add_test(tests, "test_button", test_button, test_all);
+   tests = _add_test(tests, "test_bubble", test_bubble, test_all);
+   tests = _add_test(tests, "test_calendar", test_calendar, test_all);
+   tests = _add_test(tests, "test_calendar2", test_calendar2, test_all);
+   tests = _add_test(tests, "test_check", test_check, test_all);
+   tests = _add_test(tests, "test_colorselector", test_colorselector, test_all);
+   tests = _add_test(tests, "test_conformant", test_conformant, test_all);
+   tests = _add_test(tests, "test_conformant2", test_conformant2, test_all);
+   tests = _add_test(tests, "test_ctxpopup", test_ctxpopup, test_all);
+   tests = _add_test(tests, "test_cursor", test_cursor, test_all);
+   tests = _add_test(tests, "test_cursor2", test_cursor2, test_all);
+   tests = _add_test(tests, "test_cursor3", test_cursor3, test_all);
+   tests = _add_test(tests, "test_diskselector", test_diskselector, test_all);
+   tests = _add_test(tests, "test_entry", test_entry, test_all);
+   tests = _add_test(tests, "test_entry_scrolled", test_entry_scrolled,
+         test_all);
+   tests = _add_test(tests, "test_entry3", test_entry3, test_all);
+   tests = _add_test(tests, "test_entry4", test_entry4, test_all);
+   tests = _add_test(tests, "test_entry5", test_entry5, test_all);
+   tests = _add_test(tests, "test_entry_notepad", test_entry_notepad, test_all);
+   tests = _add_test(tests, "test_fileselector", test_fileselector, test_all);
+   tests = _add_test(tests, "test_fileselector_button",
+         test_fileselector_button, test_all);
+   tests = _add_test(tests, "test_fileselector_entry",
+         test_fileselector_entry, test_all);
+   tests = _add_test(tests, "test_floating", test_floating, test_all);
+   tests = _add_test(tests, "test_focus", test_focus, test_all);
+   tests = _add_test(tests, "test_focus2", test_focus2, test_all);
+   tests = _add_test(tests, "test_focus3", test_focus3, test_all);
+   tests = _add_test(tests, "test_gengrid", test_gengrid, test_all);
+   tests = _add_test(tests, "test_gengrid2", test_gengrid2, test_all);
+   tests = _add_test(tests, "test_genlist", test_genlist, test_all);
+   tests = _add_test(tests, "test_genlist2", test_genlist2, test_all);
+   tests = _add_test(tests, "test_genlist3", test_genlist3, test_all);
+   tests = _add_test(tests, "test_genlist4", test_genlist4, test_all);
+   tests = _add_test(tests, "test_genlist5", test_genlist5, test_all);
+   tests = _add_test(tests, "test_genlist6", test_genlist6, test_all);
+   tests = _add_test(tests, "test_genlist7", test_genlist7, test_all);
+   tests = _add_test(tests, "test_genlist8", test_genlist8, test_all);
+   tests = _add_test(tests, "test_genlist9", test_genlist9, test_all);
+   tests = _add_test(tests, "test_genlist10", test_genlist10, test_all);
+   tests = _add_test(tests, "test_genlist11", test_genlist11, test_all);
+   tests = _add_test(tests, "test_grid", test_grid, test_all);
+   tests = _add_test(tests, "test_hover", test_hover, test_all);
+   tests = _add_test(tests, "test_hover2", test_hover2, test_all);
+   tests = _add_test(tests, "test_hoversel", test_hoversel, test_all);
+   tests = _add_test(tests, "test_index", test_index, test_all);
+   tests = _add_test(tests, "test_index2", test_index2, test_all);
+   tests = _add_test(tests, "test_inwin", test_inwin, test_all);
+   tests = _add_test(tests, "test_inwin2", test_inwin2, test_all);
+   tests = _add_test(tests, "test_label", test_label, test_all);
+   tests = _add_test(tests, "test_list", test_list, test_all);
+   tests = _add_test(tests, "test_list_horizontal", test_list_horizontal,
+         test_all);
+
+   tests = _add_test(tests, "test_list2", test_list2, test_all);
+   tests = _add_test(tests, "test_list3", test_list3, test_all);
+   tests = _add_test(tests, "test_list4", test_list4, test_all);
+   tests = _add_test(tests, "test_list5", test_list5, test_all);
+   tests = _add_test(tests, "test_map", test_map, test_all);
+   tests = _add_test(tests, "test_menu", test_menu, test_all);
+   tests = _add_test(tests, "test_naviframe", test_naviframe, test_all);
+   tests = _add_test(tests, "test_notify", test_notify, test_all);
+   tests = _add_test(tests, "test_pager", test_pager, test_all);
+   tests = _add_test(tests, "test_pager_slide", test_pager_slide, test_all);
+   tests = _add_test(tests, "test_panel", test_panel, test_all);
+   tests = _add_test(tests, "test_panes", test_panes, test_all);
+   tests = _add_test(tests, "test_photo", test_photo, test_all);
+   tests = _add_test(tests, "test_photocam", test_photocam, test_all);
+   tests = _add_test(tests, "test_progressbar", test_progressbar, test_all);
+   tests = _add_test(tests, "test_radio", test_radio, test_all);
+   tests = _add_test(tests, "test_scaling", test_scaling, test_all);
+   tests = _add_test(tests, "test_scaling2", test_scaling2, test_all);
+   tests = _add_test(tests, "test_scroller", test_scroller, test_all);
+   tests = _add_test(tests, "test_scroller2", test_scroller2, test_all);
+   tests = _add_test(tests, "test_segment_control", test_segment_control,
+         test_all);
+
+   tests = _add_test(tests, "test_separator", test_separator, test_all);
+   tests = _add_test(tests, "test_slider", test_slider, test_all);
+   tests = _add_test(tests, "test_spinner", test_spinner, test_all);
+   tests = _add_test(tests, "test_table", test_table, test_all);
+   tests = _add_test(tests, "test_table2", test_table2, test_all);
+   tests = _add_test(tests, "test_table3", test_table3, test_all);
+   tests = _add_test(tests, "test_table4", test_table4, test_all);
+   tests = _add_test(tests, "test_table5", test_table5, test_all);
+   tests = _add_test(tests, "test_table6", test_table6, test_all);
+   tests = _add_test(tests, "test_thumb", test_thumb, test_all);
+   tests = _add_test(tests, "test_toggle", test_toggle, test_all);
+   tests = _add_test(tests, "test_toolbar", test_toolbar, test_all);
+   tests = _add_test(tests, "test_toolbar2", test_toolbar2, test_all);
+   tests = _add_test(tests, "test_toolbar3", test_toolbar3, test_all);
+   tests = _add_test(tests, "test_toolbar4", test_toolbar4, test_all);
+   tests = _add_test(tests, "test_toolbar5", test_toolbar5, test_all);
+   tests = _add_test(tests, "test_tooltip", test_tooltip, test_all);
+   tests = _add_test(tests, "test_tooltip2", test_tooltip2, test_all);
+   tests = _add_test(tests, "test_weather", test_weather, test_all);
+   tests = _add_test(tests, "test_win_inline", test_win_inline, test_all);
+   tests = _add_test(tests, "test_win_state", test_win_state, test_all);
+   tests = _add_test(tests, "test_win_state2", test_win_state2, test_all);
+
+   /* Set tests from command line */
+   for(i = first_arg; i < argc ; i++)
+     _set_test(tests, argv[i],  EINA_TRUE);
+
+   Eina_List *l;
+   Test_Item *item;
+   int n_tests = 0;
+   EINA_LIST_FOREACH(tests, l, item)
+      if (item->test)
+        {  /* Run test and count tests committed */
+           do_test(item->func);
+           n_tests++;
+        }
+
+   if (n_tests)
+     {  /* Print completed message */
+        if (test_all)
+          printf("\n\nAll tests completed.\n");
+        else
+          printf("\n\n%d tests completed out of %d tests\n",
+                n_tests, argc - first_arg);
+     }
+   else
+     {  /* No tests committed, let user know test-name is wrong */
+        printf ("\n\nNo test matching:\n");
+        for(i = first_arg; i < argc; i++)
+          printf("%s\n", argv[i]);
+
+        printf ("\nPlease review test name.\n");
+     }
+
+
+   /* Free all tests in list */
+   Test_Item *data = NULL;
+   EINA_LIST_FREE(tests, data)
+      free(data);
+
+   tsuite_cleanup();
+   /* if the mainloop that elm_run() runs exist - we exit the app */
+   elm_shutdown(); /* clean up and shut down */
+
+   /* exit code, ZERO if all completed successfuly */
+   if (test_all)
+     return 0;
+   else
+     return ((argc - first_arg) - n_tests);
+}
+ELM_MAIN()

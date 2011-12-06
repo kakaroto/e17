@@ -1,0 +1,103 @@
+exactness is a software package aimed to automate Elementary testing
+after updating elm code.
+The testing process is composed of running widget test,
+cycling through API functions, and screenshot are taken on each stage of test.
+(on user request with F2 key).
+
+Next, these screenshots are compared with screenshots of widget test
+done before the code update.
+When exactness detects difference in screenshot comparison,
+it means widget layout was changed.
+Unexpected layout changes may reveal that something is broken
+in the new implementation.
+
+Testing with exactness composed of the following stages:
+1. Test Recording.
+   Done once and exactness user most likely does not need to do this.
+   A set of pre-recorded tests already resides under 'data/recording' folder.
+
+   To record a test just issue the command:
+   exactness -r 
+
+   Example:
+   exactness -r test_hover
+
+   The record file will be produced in the current-working-directory as:
+   test_hover.rec
+
+   In case you tried to run exactness with specific TestName
+   and nothing happens, this means you misspelled the test name.
+   You may review test names as it appears in tsuite.c source file.
+
+   NOTE: omitting the test name causes recording all tests one after another.
+   Do this if you only mean it.
+   This rule applies to ALL proceeding stages as well.
+
+   As widget test run you may press F2 at any point to set a screenshot.
+   (screenshot procduced in 'play' stage, set timing of screenshot here)
+   However, don't do this while animation is ongoing
+   or you get inconsistent PNG output each time test played.
+
+   NOTE: You may change screenshot key from F2 to any other key
+         with TSUITE_SHOT_KEY env var.
+
+2. Test Initiation.
+   The final stage of testing process is based on PNG image comparison
+   of original screenshots with current screenshots produced after code change.
+
+   To start you need to produce original screenshot set before code change.
+   To do that just issue the command:
+   exactness -i TestName1 [TestName2 ...]
+
+   This command will play the test (TestName.rec file) and place PNG files
+   under 'orig' folders created in current-working-directory.
+   You need to do this just once.
+   Again, omitting the TestName will play and produce PNG files for all tests.
+
+   Example:
+   exactness -i test_hover
+   This will produce PNG files such orig/test_hover_1.png
+
+3. Test playing, producing current state PNG files.
+   After doing Test Initiation (2) and updating elementary code,
+   you may run tests for current state of elm:
+
+   exactness -p [-d DestDir] TestName1 [TestName2 ...]
+   Omitting DestDir param will cause exactness place all PNG files
+   under (default) folder named 'current'.
+   
+4. Comparing PNG files.
+   This is the final stage of testing in which we compare output
+   before code update and after the update.
+   Matching PNG files from 'orig' and 'current' folder are compared.
+   When all comparisons done you get final report of (N) files did not match.
+   In case difference was found, you may look at comp_*.png files in DestDir.
+
+   To run a comparison:
+   exactness -c [-d DestDir] TestName1 [TestName2 ...]
+   All comp_*.png files will reside in DestDir.
+   Omitting DestDir cause exactness to use default of 'current' folder name.
+
+   Optional:
+   You may also do play and compare in a single command:
+   exactness -p -c [-d DestDir] TestName1 [TestName2 ...]
+
+5. fail_if(expr) macro:
+   You may use fail_if(expr); macro to verify variable value on-the-fly.
+   For example, if your code contains:
+
+   char *p;
+   ...
+   fail_if(p == NULL);
+
+   In case (p == NULL), a "fail_TestName.txt" file is crated
+   current working directory with a comment specifying the expr/line failed.
+
+   fail_*.txt files are produced only for when expr fails when running.
+   When tests completed, the user gets notification message if any tests failed.
+   In such case, please review the fail_*.txt files.
+
+6. To view exactness help issue the command:
+   exactness --help
+   or
+   exactness -h
