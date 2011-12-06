@@ -2,11 +2,13 @@
 #include "config.h"
 #endif
 
-#include "E_Bluez.h"
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+
+#include "E_Bluez.h"
 
 typedef struct _E_Msgbus_Data E_Msgbus_Data;
 

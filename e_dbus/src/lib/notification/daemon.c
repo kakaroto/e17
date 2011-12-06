@@ -5,6 +5,8 @@
 #include "E_Notify.h"
 #include "E_Notification_Daemon.h"
 #include "e_notify_private.h"
+
+#include <stdlib.h>
 #include <string.h>
 
 static int init_count = 0;

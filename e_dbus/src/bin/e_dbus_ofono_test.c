@@ -2,11 +2,13 @@
 #include "config.h"
 #endif
 
-#include "E_Ofono.h"
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+
+#include "E_Ofono.h"
 
 static void
 _method_success_check(void *data, DBusMessage *msg __UNUSED__, DBusError *error)

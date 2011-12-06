@@ -2,6 +2,8 @@
 #include "config.h"
 #endif
 
+#include <stdlib.h>
+
 #include <E_Ukit.h>
 #include "e_ukit_private.h"
 

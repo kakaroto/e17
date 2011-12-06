@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "E_Hal.h"
 #include "e_hal_private.h"
 

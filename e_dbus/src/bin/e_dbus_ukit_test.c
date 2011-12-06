@@ -2,10 +2,13 @@
 #include "config.h"
 #endif
 
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <Ecore.h>
+
 #include <E_Ukit.h>
 #include <E_DBus.h>
-#include <Ecore.h>
-#include <stdio.h>
 
 static E_DBus_Connection *econ = NULL;
 

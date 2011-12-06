@@ -1,4 +1,5 @@
 #include "e_ofono_private.h"
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 

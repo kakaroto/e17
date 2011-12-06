@@ -2,12 +2,14 @@
 #include "config.h"
 #endif
 
-#define E_CONNMAN_I_KNOW_THIS_API_IS_SUBJECT_TO_CHANGE 1
-#include "connman0_7x/E_Connman.h"
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+
+#define E_CONNMAN_I_KNOW_THIS_API_IS_SUBJECT_TO_CHANGE 1
+#include "connman0_7x/E_Connman.h"
 
 static void
 _method_success_check(void *data, __UNUSED__ DBusMessage *msg, DBusError *error)

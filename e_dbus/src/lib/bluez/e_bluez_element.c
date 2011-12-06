@@ -1,4 +1,5 @@
 #include "e_bluez_private.h"
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 

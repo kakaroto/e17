@@ -2,6 +2,8 @@
 #include "config.h"
 #endif
 
+#include <stdlib.h>
+
 #include "e_dbus_private.h"
 
 EAPI E_DBus_Callback *
