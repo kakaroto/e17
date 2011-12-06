@@ -8,3 +8,6 @@ DEB_CONFIGURE_SCRIPT := ./autogen.sh
 
 # Uncomment this to turn on verbose mode.
 DH_VERBOSE=1
+
+%:
+	dh  $@
