@@ -21,6 +21,7 @@
 
 #include <Eina.h>
 #include <Ecore.h>
+#include <stdlib.h>
 
 #ifdef EAPI
 # undef EAPI

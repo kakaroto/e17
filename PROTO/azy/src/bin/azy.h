@@ -7,6 +7,7 @@
 #define AZY_H
 
 #include <Eina.h>
+#include <stdlib.h>
 
 #ifndef strdupa
 # define strdupa(str)       strcpy(alloca(strlen(str) + 1), str)
