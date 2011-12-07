@@ -53,7 +53,7 @@ public class T.Genlist : T.Abstract
     public static string getText( Elm.Object obj, string part )
     {
         int number = (int)obj;
-        debug( "label_get: %p", obj );
+        debug( "text_get: %p", obj );
         return "This is list item #%d".printf( number );
     }
     public static Elm.Object? getContent( Elm.Object obj, string part )

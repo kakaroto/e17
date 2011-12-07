@@ -842,7 +842,7 @@ public class MenuItem
     public Elm.Object object_get();
     public void label_set( string label );
     //public void del_cb_set( ... );
-    public unowned string label_get();
+    public unowned string text_get();
     public void icon_set( Elm.Object icon );
     public void disabled_set( bool disabled );
     public void* item_data_get();
@@ -908,7 +908,7 @@ public class Slider : Elm.Object
     public Slider( Elm.Object? parent );
 
     public void label_set( string label );
-    public unowned string label_get();
+    public unowned string text_get();
     public void icon_set( Elm.Object icon );
     public Elm.Object icon_get();
     public void span_size_set( Evas.Coord size );
@@ -931,8 +931,8 @@ public enum GenlistItemFlags
     SUBITEMS,
 }
 
-[CCode (cname = "Elm_Gen_Item_Label_Get_Cb", has_target = false)]
-public delegate string GenlistItemLabelGetFunc( Elm.Object obj, string part );
+[CCode (cname = "Elm_Gen_Item_Text_Get_Cb", has_target = false)]
+public delegate string GenlistItemTextGetFunc( Elm.Object obj, string part );
 [CCode (cname = "Elm_Gen_Item_Content_Get_Cb", has_target = false)]
 public delegate Elm.Object? GenlistItemContentGetFunc( Elm.Object obj, string part );
 [CCode (cname = "Elm_Gen_Item_State_Get_Cb", has_target = false)]
@@ -944,7 +944,7 @@ public delegate void GenlistItemDelFunc( Elm.Object obj );
 [CCode (cname = "Elm_Gen_Item_Class_Func", destroy_function = "")]
 public struct GenlistItemClassFunc
 {
-    public GenlistItemLabelGetFunc text_get;
+    public GenlistItemTextGetFunc text_get;
     public GenlistItemContentGetFunc content_get;
     public GenlistItemStateGetFunc state_get;
     public GenlistItemDelFunc del;
@@ -1027,7 +1027,7 @@ public class Check : Elm.Object
     public Check( Elm.Object? parent );
 
     public void label_set( string label );
-    public unowned string label_get();
+    public unowned string text_get();
     public void icon_set( Elm.Object icon );
     public Elm.Object icon_get();
     public void state_set( bool state );
@@ -1044,7 +1044,7 @@ public class Radio : Elm.Object
     public Radio( Elm.Object? parent );
 
     public void label_set( string label );
-    public unowned string label_get();
+    public unowned string text_get();
     public void icon_set( Elm.Object icon );
     public Elm.Object icon_get();
     public void group_add( Elm.Object group );
@@ -1256,7 +1256,7 @@ public class ListItem
     public void selected_set( bool selected );
     public void show();
     public void* data_get();
-    public unowned string label_get();
+    public unowned string text_get();
     public void label_set( string label );
     public Elm.Object icon_get();
     public void icon_set( Elm.Object icon );
