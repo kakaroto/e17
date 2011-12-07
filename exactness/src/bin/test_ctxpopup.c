@@ -36,7 +36,7 @@ static void
 _ctxpopup_item_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    printf("ctxpopup item selected: %s\n",
-   elm_ctxpopup_item_label_get(event_info));
+   elm_object_item_text_get(event_info));
 }
 
 #define ITEM_NEW(_hov, _label, _icon)                                           \

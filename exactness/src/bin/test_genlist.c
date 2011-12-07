@@ -126,21 +126,21 @@ set_api_state(api_data *api)
          break;
 
       case NO_SELECT_MODE_SET: /* 1 */
-         elm_gen_no_select_mode_set(gl, EINA_TRUE);
+         elm_genlist_no_select_mode_set(gl, EINA_TRUE);
          elm_genlist_horizontal_set(gl, ELM_LIST_SCROLL); /* Back to default */
          break;
 
       case COMPRESS_MODE_SET: /* 2 */
-         elm_gen_no_select_mode_set(gl, EINA_FALSE); /* Back to default */
+         elm_genlist_no_select_mode_set(gl, EINA_FALSE); /* Back to default */
          elm_genlist_compress_mode_set(gl, EINA_TRUE);
          break;
 
       case BOUNCE_SET: /* 3 */
-         elm_gen_bounce_set(gl, EINA_FALSE, EINA_FALSE);
+         elm_genlist_bounce_set(gl, EINA_FALSE, EINA_FALSE);
          break;
 
       case HOMOGENEOUS_SET: /* 4 */
-         elm_gen_bounce_set(gl, EINA_TRUE, EINA_TRUE); /* Back to default */
+         elm_genlist_bounce_set(gl, EINA_TRUE, EINA_TRUE); /* Back to default */
          elm_genlist_homogeneous_set(gl, EINA_TRUE);
          break;
 
@@ -151,13 +151,13 @@ set_api_state(api_data *api)
 
       case TOOLTIP_TEXT_SET: /* 6 */
            {
-              elm_genlist_item_tooltip_text_set(elm_gen_first_item_get(gl), "Tooltip text from API");
-              elm_genlist_item_bring_in(elm_gen_first_item_get(gl));
+              elm_genlist_item_tooltip_text_set(elm_genlist_first_item_get(gl), "Tooltip text from API");
+              elm_genlist_item_bring_in(elm_genlist_first_item_get(gl));
            }
          break;
 
       case ITEM_CURSOR_SET: /* 7 */
-         elm_genlist_item_cursor_set(elm_gen_first_item_get(gl), ELM_CURSOR_HAND2);
+         elm_genlist_item_cursor_set(elm_genlist_first_item_get(gl), ELM_CURSOR_HAND2);
          break;
 
       default:

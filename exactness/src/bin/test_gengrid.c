@@ -172,36 +172,36 @@ set_api_state(api_data *api)
          break;
 
       case GRID_BRING_IN: /* 1 */
-         elm_gengrid_item_bring_in(elm_gen_first_item_get(grid));
+         elm_gengrid_item_bring_in(elm_gengrid_first_item_get(grid));
          break;
 
       case GRID_NO_SELECT_MODE: /* 2 */
-         elm_gen_no_select_mode_set(grid, EINA_TRUE);
+         elm_gengrid_no_select_mode_set(grid, EINA_TRUE);
          break;
 
       case GRID_NO_BOUNCE: /* 3 */
-         elm_gen_bounce_set(grid, EINA_TRUE, EINA_FALSE);
+         elm_gengrid_bounce_set(grid, EINA_TRUE, EINA_FALSE);
          break;
 
       case GRID_PAGE_RELATIVE: /* 4 */
-         elm_gen_bounce_set(grid, EINA_TRUE, EINA_TRUE);
-         elm_gen_page_relative_set(grid, 0.5, 0.5);
+         elm_gengrid_bounce_set(grid, EINA_TRUE, EINA_TRUE);
+         elm_gengrid_page_relative_set(grid, 0.5, 0.5);
          break;
 
       case GRID_PAGE_SIZE: /* 5 */
-         elm_gen_page_size_set(grid, 50, 25);
+         elm_gengrid_page_size_set(grid, 50, 25);
          break;
 
       case GRID_TOOLTIP_SET_TEXT: /* 6 */
            {
-              Elm_Gengrid_Item *item = elm_gen_first_item_get(grid);
+              Elm_Gengrid_Item *item = elm_gengrid_first_item_get(grid);
               elm_gengrid_item_tooltip_text_set(item, "This is the first item");
            }
          break;
 
       case GRID_TOOLTIP_UNSET: /* 7 */
            {
-              Elm_Gengrid_Item *item = elm_gen_first_item_get(grid);
+              Elm_Gengrid_Item *item = elm_gengrid_first_item_get(grid);
               elm_gengrid_item_tooltip_unset(item);
            }
          break;
@@ -288,7 +288,7 @@ TEST_START(test_gengrid)
 	ti[i].path = eina_stringshare_add(buf);
 	ti[i].item = elm_gengrid_item_append(grid, &gic, &(ti[i]), grid_sel, NULL);
 	if (!(i % 5))
-	  elm_gen_item_selected_set(ti[i].item, EINA_TRUE);
+	  elm_gengrid_item_selected_set(ti[i].item, EINA_TRUE);
      }
 
    evas_object_show(grid);
@@ -527,7 +527,7 @@ TEST_START(test_gengrid3)
         else
           ti[i].item = elm_gengrid_item_append(grid, &gic, &(ti[i]), grid_sel, NULL);
 	if (!(i % 5))
-	  elm_gen_item_selected_set(ti[i].item, EINA_TRUE);
+	  elm_gengrid_item_selected_set(ti[i].item, EINA_TRUE);
      }
 
    evas_object_show(grid);
