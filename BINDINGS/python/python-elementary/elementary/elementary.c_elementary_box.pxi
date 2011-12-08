@@ -51,5 +51,8 @@ cdef class Box(Object):
     def unpack_all(self):
         elm_box_unpack_all(self.obj)
 
+    def recalculate(self):
+        elm_box_recalculate(self.obj)
+
 
 _elm_widget_type_register("box", Box)
