@@ -1585,10 +1585,15 @@ public:
         construct(eo, obj);
         content = realize_one(this, obj->Get(String::New("content")));
         if (!content)
-          ERR( "scroller has no content");
-        // FIXME: filter the object list copied in construct for more efficiency
-        get_object()->Set(String::New("content"), content->get_object());
-        elm_object_content_set(eo, content->get());
+          {
+             ERR( "scroller has no content");
+          }
+        else
+          {
+             // FIXME: filter the object list copied in construct for more efficiency
+             get_object()->Set(String::New("content"), content->get_object());
+             elm_object_content_set(eo, content->get());
+          }
      }
 
     virtual void bounce_set(Handle<Value> val)
@@ -4914,7 +4919,71 @@ CEvasObject::CPropHandler<CElmNotify>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmPager : public CEvasObject {
+protected:
+   std::list<CEvasObject *> pages;
+   CPropHandler<CElmPager> prop_handler;
 
+public:
+   CElmPager(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
+     {
+        eo = elm_pager_add(parent->top_widget_get());
+        construct(eo, obj);
+        get_object()->Set(String::New("pop"), FunctionTemplate::New(pop)->GetFunction());
+        get_object()->Set(String::New("push"), FunctionTemplate::New(push)->GetFunction());
+        get_object()->Set(String::New("promote"), FunctionTemplate::New(promote)->GetFunction());
+     }
+
+   static Handle<Value> pop(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmPager *pager = static_cast<CElmPager *>(self);
+        CEvasObject *content = pager->pages.front();
+
+        if (content)
+          {
+             elm_pager_content_pop(pager->get());
+             pager->pages.pop_front();
+          }
+     }
+
+   static Handle<Value> push(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmPager *pager = static_cast<CElmPager *>(self);
+        if (args[0]->IsObject())
+          {
+             CEvasObject *content = realize_one(pager, args[0]);
+             if (content)
+               {
+                  elm_pager_content_push(pager->get(), content->get());
+                  pager->pages.push_front(content);
+               }
+
+          }
+     }
+   static Handle<Value> promote(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmPager *pager = static_cast<CElmPager *>(self);
+        if (args[0]->IsObject())
+          {
+             CEvasObject *promotee = eo_from_info(args[0]->ToObject());
+
+             if (promotee)
+               elm_pager_content_promote(pager->get(), promotee->get());
+
+          }
+        return Undefined();
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmPager>::property_list
+CEvasObject::CPropHandler<CElmPager>::list[] = {
+  { NULL, NULL, NULL },
+};
 
 CEvasObject *
 realize_one(CEvasObject *parent, Handle<Value> object_val)
@@ -4997,6 +5066,8 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
      eo = new CElmInwin(parent,obj);
    else if (!strcmp(*str, "notify"))
      eo = new CElmNotify(parent,obj);
+   else if (!strcmp(*str, "pager"))
+     eo = new CElmPager(parent,obj);
 
    if (!eo)
      {
