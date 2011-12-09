@@ -138,7 +138,7 @@ struct enlil_photo_data
 {
    Enlil_Data *enlil_data;
    PL_Child_Item *list_photo_item;
-   Elm_Slideshow_Item *slideshow_item;
+   Elm_Object_Item *slideshow_item;
    Eina_List *slideshow_object_items; //list of Slideshow_Item*
 
    Elm_Gengrid_Item *library_item;

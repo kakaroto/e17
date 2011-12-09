@@ -223,7 +223,7 @@ slideshow_album_add(Enlil_Album *album, Enlil_Photo *_photo)
 {
    Eina_List *l;
    Enlil_Photo *photo;
-   Elm_Slideshow_Item *item = NULL;
+   Elm_Object_Item *item = NULL;
 
    _init_slideshow();
 
@@ -248,7 +248,7 @@ slideshow_library_add(Enlil_Library *library, Enlil_Photo *_photo)
    Eina_List *l, *l2;
    Enlil_Photo *photo;
    Enlil_Album *album;
-   Elm_Slideshow_Item *item = NULL;
+   Elm_Object_Item *item = NULL;
 
    _init_slideshow();
 
