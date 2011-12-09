@@ -33,7 +33,7 @@ public:
   virtual bool getState (GenListColumnConstructor *construction, Evasxx::Object &obj, const std::string &part) = 0;
   
 private:
-  static char *gl_label_get (void *data, Evas_Object *obj, const char *part);
+  static char *gl_text_get (void *data, Evas_Object *obj, const char *part);
   static Evas_Object *gl_content_get (void *data, Evas_Object *obj, const char *part);
   static Eina_Bool gl_state_get (void *data, Evas_Object *obj, const char *part);
   static void gl_del (void *data, Evas_Object *obj);

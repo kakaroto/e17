@@ -138,7 +138,7 @@ class GenListColumnSelector;
  * item_style - This is a constant string and simply defines the name of the
  * item style. It must be specified and the default should be “default”.
  *
- * func.label_get - This function is called when an actual item object is
+ * func.text_get - This function is called when an actual item object is
  * created. The data parameter is the data parameter passed to
  * elm_genlist_item_append() and related item creation functions. The obj
  * parameter is the genlist object and the part parameter is the string name

@@ -17,7 +17,7 @@ GenDataModel::GenDataModel (const std::string &style) :
 {
   cout << "creating GenDataModel with style = " << mStyle << endl;
   mGLIC.item_style     = mStyle.c_str ();
-  mGLIC.func.label_get = GenDataModel::gl_label_get;
+  mGLIC.func.text_get = GenDataModel::gl_text_get;
   mGLIC.func.content_get  = GenDataModel::gl_content_get;
   mGLIC.func.state_get = GenDataModel::gl_state_get;
   mGLIC.func.del       = GenDataModel::gl_del; 
@@ -25,9 +25,9 @@ GenDataModel::GenDataModel (const std::string &style) :
 
 /* wrappers */
 
-char *GenDataModel::gl_label_get (void *data, Evas_Object *obj, const char *part)
+char *GenDataModel::gl_text_get (void *data, Evas_Object *obj, const char *part)
 {
-  cout << "gl_label_get" << endl;
+  cout << "gl_text_get" << endl;
 
   GenListColumnConstructor *construction = static_cast <GenListColumnConstructor*> (
                                            const_cast <void*> (data));
