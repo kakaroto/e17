@@ -1472,11 +1472,11 @@ elm_pager_content_top_get(Evas_Object *obj)
 Evas_Object *
 elm_slideshow_add(Evas_Object *parent)
 
-Elm_Slideshow_Item *
+Elm_Object_Item *
 elm_slideshow_item_add(Evas_Object *obj, const Elm_Slideshow_Item_Class *itc, const void *data)
 
 void
-elm_slideshow_show(Elm_Slideshow_Item *item)
+elm_slideshow_show(Elm_Object_Item *item)
 
 void
 elm_slideshow_next(Evas_Object *obj)
@@ -1506,13 +1506,13 @@ const Eina_List *
 elm_slideshow_items_get(const Evas_Object *obj)
 
 void
-elm_slideshow_item_del(Elm_Slideshow_Item *item)
+elm_slideshow_item_del(Elm_Object_Item *item)
 
-Elm_Slideshow_Item *
+Elm_Object_Item *
 elm_slideshow_item_current_get(Evas_Object *obj)
 
 Evas_Object *
-elm_slideshow_item_object_get(Elm_Slideshow_Item* item)
+elm_slideshow_item_object_get(Elm_Object_Item* item)
 
 
 # fileselector

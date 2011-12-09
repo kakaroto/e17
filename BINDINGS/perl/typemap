@@ -24,7 +24,6 @@ Elm_Notify_Orient           T_IV
 Elm_Panel_Orient            T_IV
 Elm_Photocam_Zoom_Mode      T_IV
 Elm_Scroller_Policy         T_IV
-Elm_Slideshow_Item *        T_PTROBJ
 Elm_Text_Format             T_IV
 Elm_Win_Keyboard_Mode       T_IV
 Elm_Win_Type                T_IV
@@ -75,7 +74,6 @@ Evas_Transform *            T_PTR
 const Eina_List *           T_PTR
 const Elm_List_Item *       T_PTR
 const Elm_Object_Item *     T_PTROBJ
-const Elm_Slideshow_Item_Class *    T_PTROBJ
 const Evas *                T_PTR
 const Evas_Lock *           T_PTR
 const Evas_Modifier *       T_PTR
