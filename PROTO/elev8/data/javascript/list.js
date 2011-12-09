@@ -9,7 +9,7 @@
 
 //elm.theme="default";
 //
-//elm.datadir=elm.datadir + "/data/images/";
+elm.datadir=elm.datadir + "/data/images/";
 
 var small_icon = {
 	type : "icon",
