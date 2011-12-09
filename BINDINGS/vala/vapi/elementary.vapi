@@ -1074,7 +1074,7 @@ public class Pager : Elm.Object
 
 //=======================================================================
 [Compact]
-[CCode (cname = "Elm_Slideshow_Item", free_function = "elm_slideshow_item_del")]
+[CCode (cname = "Elm_Object_Item", free_function = "elm_slideshow_item_del")]
 public class SlideshowItem
 {
     public Slideshow object_get();
