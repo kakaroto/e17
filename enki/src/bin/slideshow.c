@@ -223,7 +223,7 @@ slideshow_album_add(Enlil_Album *album, Enlil_Photo *_photo)
 {
    Eina_List *l;
    Enlil_Photo *photo;
-   Elm_Object_Item *item = NULL;
+   Elm_Object_Item *slideshow_item = NULL;
 
    _init_slideshow();
 
@@ -236,10 +236,10 @@ slideshow_album_add(Enlil_Album *album, Enlil_Photo *_photo)
          photo_data->slideshow_item = elm_slideshow_item_add(slideshow, &itc, photo);
 
          if(photo == _photo)
-         item = photo_data->slideshow_item;
+         slideshow_item = photo_data->slideshow_item;
       }
    }
-   if (item) elm_slideshow_show(item);
+   if (slideshow_item) elm_slideshow_show(slideshow_item);
 }
 
 void
@@ -248,7 +248,7 @@ slideshow_library_add(Enlil_Library *library, Enlil_Photo *_photo)
    Eina_List *l, *l2;
    Enlil_Photo *photo;
    Enlil_Album *album;
-   Elm_Object_Item *item = NULL;
+   Elm_Object_Item *slideshow_item = NULL;
 
    _init_slideshow();
 
@@ -262,12 +262,12 @@ slideshow_library_add(Enlil_Library *library, Enlil_Photo *_photo)
             Enlil_Photo_Data *photo_data = enlil_photo_user_data_get(photo);
             photo_data->slideshow_item = elm_slideshow_item_add(slideshow, &itc, photo);
             if(photo == _photo)
-            item = photo_data->slideshow_item;
+            slideshow_item = photo_data->slideshow_item;
          }
       }
    }
 
-   if (item) elm_slideshow_show(item);
+   if (slideshow_item) elm_slideshow_show(slideshow_item);
 }
 
 void
