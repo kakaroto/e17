@@ -6,14 +6,14 @@ Standards-Version: 3.8.3
 Section: libs
 Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
 
-Package: eflxx-dev
+Package: libeflxx-dev
 Section: libdevel
 Architecture: any
-Depends: eflxx1 (= ${binary:Version})
+Depends: libeflxx1 (= ${binary:Version})
 Description: EFL C++ Wrapper, Common Base Library
  This package contains headers and static libraries for development with libeflxx.
 
-Package: eflxx1
+Package: libeflxx1
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
