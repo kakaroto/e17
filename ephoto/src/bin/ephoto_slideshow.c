@@ -19,7 +19,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    if (!strcmp(k, "Escape"))
      {
         Evas_Object *win = ss->ephoto->win;
-        Elm_Slideshow_Item *item;
+        Elm_Object_Item *item;
         Ephoto_Entry *entry;
 
         if (elm_win_fullscreen_get(win))
@@ -201,7 +201,7 @@ ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
    elm_win_fullscreen_set(ss->ephoto->win, EINA_TRUE);
    EINA_LIST_FOREACH(ss->ephoto->entries, l, itr)
      {
-        Elm_Slideshow_Item *item;
+        Elm_Object_Item *item;
         if (itr->is_dir) continue;
         item = elm_slideshow_item_add(ss->slideshow, &_item_cls, itr);
         if (itr == entry) elm_slideshow_show(item);
