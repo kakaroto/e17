@@ -19,14 +19,14 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
    if (!strcmp(k, "Escape"))
      {
         Evas_Object *win = ss->ephoto->win;
-        Elm_Object_Item *item;
+        Elm_Object_Item *slideshow_item;
         Ephoto_Entry *entry;
 
         if (elm_win_fullscreen_get(win))
           elm_win_fullscreen_set(win, EINA_FALSE);
 
-        item = elm_slideshow_item_current_get(ss->slideshow);
-        if (item) entry = elm_slideshow_item_data_get(item);
+        slideshow_item = elm_slideshow_item_current_get(ss->slideshow);
+        if (slideshow_item) entry = elm_slideshow_item_data_get(slideshow_item);
         else      entry = ss->entry;
         evas_object_smart_callback_call(ss->slideshow, "back", entry);
      }
@@ -201,9 +201,9 @@ ephoto_slideshow_entry_set(Evas_Object *obj, Ephoto_Entry *entry)
    elm_win_fullscreen_set(ss->ephoto->win, EINA_TRUE);
    EINA_LIST_FOREACH(ss->ephoto->entries, l, itr)
      {
-        Elm_Object_Item *item;
+        Elm_Object_Item *slideshow_item;
         if (itr->is_dir) continue;
-        item = elm_slideshow_item_add(ss->slideshow, &_item_cls, itr);
-        if (itr == entry) elm_slideshow_show(item);
+        slideshow_item = elm_slideshow_item_add(ss->slideshow, &_item_cls, itr);
+        if (itr == entry) elm_slideshow_show(slideshow_item);
      }
 }
