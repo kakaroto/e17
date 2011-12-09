@@ -6,7 +6,7 @@
 
 struct _Excessive_File_Object
 {
-   Elm_Slideshow_Item *item;
+   Elm_Object_Item *slideshow_item;
 };
 
 static int _timeout_value = 3;
@@ -98,18 +98,18 @@ _excessive_file_cmp(const void *a, const void *b)
 static Excessive_File_Object *
 _excessive_image_file_insert(Evas_Object *display, const Excessive_File_Info *info)
 {
-   Elm_Slideshow_Item *item;
+   Elm_Object_Item *slideshow_item;
    Excessive_File_Object *object;
 
-   item = elm_slideshow_item_sorted_insert(display, &_excessive_image_display_call, info, _excessive_file_cmp);
+   slideshow_item = elm_slideshow_item_sorted_insert(display, &_excessive_image_display_call, info, _excessive_file_cmp);
 
    object = malloc(sizeof (Excessive_File_Object));
    if (!object)
      {
-        elm_slideshow_item_del(item);
+        elm_slideshow_item_del(slideshow_item);
         return NULL;
      }
-   object->item = item;
+   object->slideshow_item = slideshow_item;
 
    return object;
 }
@@ -117,7 +117,7 @@ _excessive_image_file_insert(Evas_Object *display, const Excessive_File_Info *in
 static void
 _excessive_image_file_del(Evas_Object *display __UNUSED__, Excessive_File_Object *object)
 {
-   elm_slideshow_item_del(object->item);
+   elm_slideshow_item_del(object->slideshow_item);
    free(object);
 }
 
@@ -237,7 +237,7 @@ _excessive_image_action(Evas_Object *display, Excessive_File_Object *object)
    char *layout_name;
 
    layout = evas_object_data_get(display, "excessive/parent");
-   elm_slideshow_show(object->item);
+   elm_slideshow_show(object->slideshow_item);
 
    if (evas_object_data_get(layout, "excessive/notify")) return ;
 
