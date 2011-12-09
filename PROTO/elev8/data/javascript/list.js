@@ -58,6 +58,7 @@ var logo_end = {
 };
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
+var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var list_items = new Array();
 
@@ -108,99 +109,111 @@ list_items[6] =	{
 
 function button_prepend() {
     print("button_prepend");
-    win.elements.scroll.content.elements.the_list.prepend(list_items[6]);
+    win.elements.box.elements.scroll.content.elements.the_list.prepend(list_items[6]);
 }
 function button_append() {
     print("button_append");
-    win.elements.scroll.content.elements.the_list.append(list_items[4]);
+    win.elements.box.elements.scroll.content.elements.the_list.append(list_items[4]);
 }
 function button_del() {
     print("button_del");
-    win.elements.scroll.content.elements.the_list.del(0);
+    win.elements.box.elements.scroll.content.elements.the_list.del(0);
 }
 function button_set() {
     print("button_set");
-    win.elements.scroll.content.elements.the_list.set_label(4, "Changing labels");
-    win.elements.scroll.content.elements.the_list.set_tooltip(4, "Howdy Partner");
-    win.elements.scroll.content.elements.the_list.set_icon(4, small_icon);
+    win.elements.box.elements.scroll.content.elements.the_list.set_label(4, "Changing labels");
+    win.elements.box.elements.scroll.content.elements.the_list.set_tooltip(4, "Howdy Partner");
+    win.elements.box.elements.scroll.content.elements.the_list.set_icon(4, small_icon);
 }
 function button_get() {
-    var label = win.elements.scroll.content.elements.the_list.get_label(4);
-    var tooltip = win.elements.scroll.content.elements.the_list.get_tooltip(4);
+    var label = win.elements.box.elements.scroll.content.elements.the_list.get_label(4);
+    var tooltip = win.elements.box.elements.scroll.content.elements.the_list.get_tooltip(4);
     print("JS Get Callback : " + label + " " + tooltip);
 }
 
 var win = new elm.window({
-	label : "list",
+    type : "main",
+	label : "List Example",
 	width : 320,
 	height : 480,
 	elements : {
 		the_background : {
 			type : "background",
-			resize : true,
 			weight : EXPAND_BOTH,
+            align : FILL_BOTH,
+            resize : true,
 		},
-		scroll : {
-			type : "scroller",
-			bounce : { x : false, y : true },
-			policy : { x : "off", y : "auto" },
-			weight : EXPAND_BOTH,
-			resize : true,
-			content : {
-				type : "box",
-				weight : EXPAND_BOTH,
-				elements : {
-                    the_list : {
-                        type : "list",
-                        resize : true,
-                        weight : EXPAND_BOTH,
-                        align : { x: -1, y: -1 },
-                        //items : list_items,
-                    },
-                    the_box : {
+        box : {
+            type : "box",
+            weight : EXPAND_BOTH,
+            align : FILL_BOTH,
+            resize : true,
+            elements : {
+                scroll : {
+                    type : "scroller",
+                    bounce : { x : false, y : true },
+                    policy : { x : "off", y : "on" },
+                    weight : EXPAND_BOTH,
+                    align : FILL_BOTH,
+                    resize : true,
+                    content : {
                         type : "box",
                         weight : EXPAND_BOTH,
-                        resize : true,
+                        align : FILL_BOTH,
                         elements : {
-                            prepend : {
-                                type : "button",
-                                label : "Prepend",
-                                weight : { x : -1.0, y : -1.0 },
-                                on_clicked : button_prepend,
-                                icon : violet,
+                            the_list : {
+                                type : "list",
+                                weight : EXPAND_BOTH,
+                                align : FILL_BOTH,
                             },
-                            append : {
-                                type : "button",
-                                label : "Append",
-                                weight : { x : -1.0, y : -1.0 },
-                                on_clicked : button_append,
-                                icon : violet,
-                            },
-                            del : {
-                                type : "button",
-                                label : "Del",
-                                weight : { x : -1.0, y : -1.0 },
-                                on_clicked : button_del,
-                                icon : violet,
-                            },
-                            set : {
-                                type : "button",
-                                label : "Set",
-                                weight : { x : -1.0, y : -1.0 },
-                                on_clicked : button_set,
-                                icon : violet,
-                            },
-                            get : {
-                                type : "button",
-                                label : "Get",
-                                weight : { x : -1.0, y : -1.0 },
-                                on_clicked : button_get,
-                                icon : violet,
-                            },
+                        },
+                    },
+                },
+                but_box : {
+                    type : "box",
+                    weight : EXPAND_BOTH,
+                    align : FILL_BOTH,
+                    resize : true,
+                    horizontal : true,
+                    elements : {
+                        prepend : {
+                            type : "button",
+                            label : "Prepend",
+                            weight : EXPAND_BOTH,
+                            on_clicked : button_prepend,
+                            icon : violet,
+                        },
+                        append : {
+                            type : "button",
+                            label : "Append",
+                            weight : EXPAND_BOTH,
+                            on_clicked : button_append,
+                            icon : violet,
+                        },
+                        del : {
+                            type : "button",
+                            label : "Del",
+                            weight : EXPAND_BOTH,
+                            on_clicked : button_del,
+                            icon : violet,
+                        },
+                        set : {
+                            type : "button",
+                            label : "Set",
+                            weight : EXPAND_BOTH,
+                            on_clicked : button_set,
+                            icon : violet,
+                        },
+                        get : {
+                            type : "button",
+                            label : "Get",
+                            weight : EXPAND_BOTH,
+                            on_clicked : button_get,
+                            icon : violet,
                         },
                     },
                 },
             },
         },
-	},
+    },
 });
