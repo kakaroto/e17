@@ -4985,6 +4985,127 @@ CEvasObject::CPropHandler<CElmPager>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmGrid : public CEvasObject {
+protected:
+   CPropHandler<CElmGrid> prop_handler;
+
+public:
+   CElmGrid(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
+     {
+        eo = elm_grid_add(parent->top_widget_get());
+        construct(eo, obj);
+        items_set(obj->Get(String::New("subobjects")));
+     }
+
+   virtual void items_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          {
+             ERR( "not an object!");
+             return;
+          }
+
+        Local<Object> in = val->ToObject();
+        Local<Array> props = in->GetPropertyNames();
+
+        /* iterate through elements and instantiate them */
+        for (unsigned int i = 0; i < props->Length(); i++)
+          {
+             Local<Value> x = props->Get(Integer::New(i));
+             String::Utf8Value val(x);
+             Local<Value> item = in->Get(x->ToString());
+             pack_set(item);
+          }
+     }
+
+    void pack_set(Handle<Value> item)
+      {
+         CEvasObject *child = NULL;
+         if (!item->IsObject())
+           {
+              // FIXME: permit adding strings here?
+              ERR( "grid item is not an object");
+              return;
+           }
+         Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
+
+         if ( subobj->IsObject())
+           {
+              //TODO : need to check if this is an exisiting child.
+              child = realize_one(this, subobj);
+              if(!child)
+                 return;
+           }
+         else
+           {
+              return;
+           }
+
+         Local<Value> xpos = item->ToObject()->Get(String::New("x"));
+         Local<Value> ypos = item->ToObject()->Get(String::New("y"));
+         Local<Value> width = item->ToObject()->Get(String::New("w"));
+         Local<Value> height = item->ToObject()->Get(String::New("h"));
+
+         int x,y,w,h;
+
+         if (xpos->IsNumber())
+           {
+              x = xpos->IntegerValue();
+           }
+         if (ypos->IsNumber())
+           {
+              y = ypos->IntegerValue();
+           }
+         if (width->IsNumber())
+           {
+              w = width->IntegerValue();
+           }
+         if (height->IsNumber())
+           {
+              h = height->IntegerValue();
+           }
+
+         INF("Objects = %d %d %d %d", x,y,w,h);
+         elm_grid_pack (this->get(), child->get(), x, y, w, h);
+       }
+
+     virtual Handle<Value> pack_get() const
+       {
+         return Undefined();
+       }
+
+     void size_set(Handle<Value> val)
+       {
+          int x, y;
+          if (get_xy_from_object(val, x, y))
+            {
+               INF("Grid Size = %d %d", x,y);
+               elm_grid_size_set(eo, x, y);
+            }
+       }
+
+     virtual Handle<Value> size_get() const
+       {
+          int x, y;
+          elm_grid_size_get (eo, &x, &y);
+          Local<Object> obj = Object::New();
+          obj->Set(String::New("x"), Number::New(x));
+          obj->Set(String::New("y"), Number::New(y));
+          return obj;
+       }
+};
+
+template<> CEvasObject::CPropHandler<CElmGrid>::property_list
+CEvasObject::CPropHandler<CElmGrid>::list[] = {
+  PROP_HANDLER(CElmGrid, size),
+  PROP_HANDLER(CElmGrid, pack),
+  { NULL, NULL, NULL },
+};
+
+
+
 CEvasObject *
 realize_one(CEvasObject *parent, Handle<Value> object_val)
 {
@@ -5068,6 +5189,8 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
      eo = new CElmNotify(parent,obj);
    else if (!strcmp(*str, "pager"))
      eo = new CElmPager(parent,obj);
+   else if (!strcmp(*str, "grid"))
+     eo = new CElmGrid(parent,obj);
 
    if (!eo)
      {

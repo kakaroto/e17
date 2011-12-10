@@ -24,6 +24,7 @@ files_SCRIPTS = \
 	fileselectorentry.js \
 	flip.js \
 	genlist.js \
+	grid.js \
 	http_menu.js \
 	http_test.js \
 	inwin.js \
