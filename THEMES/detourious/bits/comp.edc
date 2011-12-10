@@ -990,7 +990,7 @@ group {
 			signal: "mouse,in";
 			source: "e";
 			action: STATE_SET "default" 0.0;
-			transition: SINUSOIDAL 0.4;
+			transition: SINUSOIDAL 0.4 CURRENT;
 			target: "clipper";
 		}
 		program {
@@ -998,7 +998,7 @@ group {
 			signal: "mouse,out";
 			source: "e";
 			action: STATE_SET "faded" 0.0;
-			transition: SINUSOIDAL 0.4;
+			transition: SINUSOIDAL 0.4 CURRENT;
 			target: "clipper";
 		}
 		program {
@@ -1006,7 +1006,7 @@ group {
 			signal: "mouse,in";
 			source: "e";
 			action: STATE_SET "show" 0.0;
-			transition: SINUSOIDAL 0.2;
+			transition: SINUSOIDAL 0.2 CURRENT;
 			target: "text.clipper";
 		}
 		program {
@@ -1014,7 +1014,7 @@ group {
 			signal: "mouse,out";
 			source: "e";
 			action: STATE_SET "default" 0.0;
-			transition: DECELERATE 0.2;
+			transition: DECELERATE 0.2 CURRENT;
 			target: "text.clipper";
 		}
 		program {
@@ -1022,7 +1022,7 @@ group {
 			signal: "hide";
 			source: "e";
 			action: STATE_SET "default" 0.0;
-			transition: SINUSOIDAL 0.2;
+			transition: SINUSOIDAL 0.2 CURRENT;
 			target: "clipper";
 		}
 		program {
@@ -1030,7 +1030,7 @@ group {
 			signal: "show";
 			source: "e";
 			action: STATE_SET "default" 0.0;
-			transition: SINUSOIDAL 0.2;
+			transition: SINUSOIDAL 0.2 CURRENT;
 			target: "text.clipper";
 		}
 	}
