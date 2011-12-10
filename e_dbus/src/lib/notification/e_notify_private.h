@@ -41,7 +41,7 @@ void e_notify_unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter)
 void e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter);
 void e_notify_marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img);
 E_Notification_Image * e_notify_unmarshal_hint_image(DBusMessageIter *iter);
-
+void loginit(void);
 extern int _e_dbus_notify_log_dom;
 
 #ifndef E_DBUS_COLOR_DEFAULT

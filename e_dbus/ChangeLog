@@ -48,3 +48,7 @@
 2011-12-02  Mike Blumenkrantz
 
         * Fixed use of dbus_message_iter_open_container in enotify to prevent crashing when sending an image
+
+2011-12-10  Mike Blumenkrantz
+
+        * Fixed use of eina_log in enotify-daemon

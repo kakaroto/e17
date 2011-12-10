@@ -12,7 +12,7 @@ static E_Notification_Action *e_notification_action_new(const char *id,
 
 int _e_dbus_notify_log_dom = -1;
 
-static void
+void
 loginit(void)
 {
    if (_e_dbus_notify_log_dom == -1)
