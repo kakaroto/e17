@@ -28,7 +28,8 @@ m4/ltversion.m4
 EXTRA_DIST = \
 AUTHORS \
 README \
-epdf.pc.in
+epdf.pc.in \
+epdf.spec
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = epdf.pc

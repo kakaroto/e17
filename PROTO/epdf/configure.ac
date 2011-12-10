@@ -191,6 +191,7 @@ AC_SUBST(requirements_epdf)
 AC_OUTPUT([
 Makefile
 epdf.pc
+epdf.spec
 doc/Makefile
 src/Makefile
 src/lib/Makefile
