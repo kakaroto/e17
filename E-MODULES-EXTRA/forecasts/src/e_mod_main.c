@@ -557,11 +557,11 @@ _forecasts_cb_check(void *data)
 
    if (proxy.port != 0)
      inst->server =
-	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
+	ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY,
 	      proxy.host, proxy.port, inst);
    else
      inst->server =
-	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, inst->ci->host, 80, inst);
+	ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY, inst->ci->host, 80, inst);
 
    if (!inst->server) return EINA_FALSE;return EINA_TRUE;
 }
