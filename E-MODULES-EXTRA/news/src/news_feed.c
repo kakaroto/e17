@@ -627,12 +627,12 @@ news_feed_update(News_Feed *f)
    if (news->config->proxy.enable &&
        news->config->proxy.port &&
        news->config->proxy.host && news->config->proxy.host[0])
-     doc->server.conn = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
+     doc->server.conn = ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY,
 						 news->config->proxy.host,
 						 news->config->proxy.port,
 						 doc);
    else
-     doc->server.conn = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
+     doc->server.conn = ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY,
 						 f->host,
 						 80,
 						 doc);
@@ -1256,7 +1256,6 @@ _cb_feed_server_del(void *data, int type, void *event)
    if (doc->server.conn != ev->server)
      return EINA_TRUE;
 
-   ecore_con_server_del(doc->server.conn);
    doc->server.conn = NULL;
 
    DFEED(("Connection end"));
