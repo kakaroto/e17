@@ -154,7 +154,7 @@ collections
 				}
 				description { state: "faded" 0.0;
 					inherit: "default" 0.0;
-					color: 200 200 200 235;
+					color: 200 200 200 200;
 				}
 			}
 			part { name: "shadow";
@@ -190,6 +190,14 @@ collections
  				description {
 					state: "default" 0.0;
 					color: 255 255 255 255;
+					rel1.offset: 5 5;
+					rel2.offset: -6 -6;
+				}
+				description {
+					state: "show" 0.0;
+					color: 255 255 255 255;
+					rel1.offset: -5 -5;
+					rel2.offset: 4 4;
 				}
 			}
 
@@ -274,7 +282,7 @@ collections
 				signal: "mouse,in";
 				source: "e";
 				action: STATE_SET "default" 0.0;
-				transition: SINUSOIDAL 0.4;
+				transition: SINUSOIDAL 0.4 CURRENT;
 				target: "clipper";
 			}
 			program {
@@ -282,7 +290,7 @@ collections
 				signal: "mouse,out";
 				source: "e";
 				action: STATE_SET "faded" 0.0;
-				transition: SINUSOIDAL 0.4;
+				transition: SINUSOIDAL 0.4 CURRENT;
 				target: "clipper";
 			}
 			program {
@@ -290,23 +298,25 @@ collections
 				signal: "mouse,in";
 				source: "e";
 				action: STATE_SET "show" 0.0;
-				transition: SINUSOIDAL 0.5;
+				transition: SINUSOIDAL 0.5 CURRENT;
 				target: "text.clipper";
+				target: "e.swallow.win";
 			}
 			program {
 				name: "mouse_out2";
 				signal: "mouse,out";
 				source: "e";
 				action: STATE_SET "default" 0.0;
-				transition: SINUSOIDAL 0.5;
+				transition: SINUSOIDAL 0.5 CURRENT;
 				target: "text.clipper";
+				target: "e.swallow.win";
 			}
 			program {
 				name: "hide";
 				signal: "hide";
 				source: "e";
 				action: STATE_SET "default" 0.0;
-				transition: SINUSOIDAL 0.2;
+				transition: SINUSOIDAL 0.2 CURRENT;
 				target: "clipper";
 			}
 			program {
@@ -314,7 +324,7 @@ collections
 				signal: "show";
 				source: "e";
 				action: STATE_SET "default" 0.0;
-				transition: SINUSOIDAL 0.2;
+				transition: SINUSOIDAL 0.2 CURRENT;
 				target: "text.clipper";
 			}
 		}
@@ -509,10 +519,13 @@ collections
 				description {
 					state: "default" 0.0;
 					color: 0 0 0 0;
+					/* rel1.offset: 1 1;
+					 * rel2.offset: -2 -2; */
 				}
 				description {
 					state: "unfocused" 0.0;
-					color: 0 0 0 70;
+					inherit: "default" 0.0;
+					color: 0 0 0 128;
 				}
 			}
 		}
