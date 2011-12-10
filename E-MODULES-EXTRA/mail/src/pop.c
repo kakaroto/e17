@@ -14,7 +14,7 @@ static Eina_List *pclients;
 void
 _mail_pop_check_mail (void *data)
 {
-  Ecore_Con_Type type = ECORE_CON_REMOTE_SYSTEM;
+  Ecore_Con_Type type = ECORE_CON_REMOTE_NODELAY;
   Eina_List *l;
   Instance *inst;
 

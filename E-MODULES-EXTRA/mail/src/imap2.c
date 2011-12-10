@@ -59,7 +59,7 @@ _mail_imap_check_mail (void *data)
 	     if (ic->config->local)
 	       type = ECORE_CON_LOCAL_SYSTEM;
 	     else
-	       type = ECORE_CON_REMOTE_SYSTEM;
+	       type = ECORE_CON_REMOTE_NODELAY;
 
 	     if (ecore_con_ssl_available_get () && (ic->config->ssl))
 	       {
