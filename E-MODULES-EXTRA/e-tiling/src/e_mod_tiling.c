@@ -53,6 +53,7 @@ typedef struct Border_Extra {
          unsigned int layer;
          E_Stacking  stacking;
          E_Maximize  maximized;
+         const char *bordername;
     } orig;
     overlay_t overlay;
     char key[4];
@@ -389,11 +390,7 @@ _restore_border(E_Border *bd)
     e_hints_window_stacking_set(bd, extra->orig.stacking);
     e_border_maximize(bd, extra->orig.maximized);
 
-    /* To give the user a bit of feedback we restore the original border */
-    /* TODO: save the original border, don't just restore the default one*/
-    /* TODO: save maximized state */
-    if (!tiling_g.config->show_titles)
-        change_window_border(bd, "default");
+    change_window_border(bd, extra->orig.bordername);
 }
 
 /* }}} */
@@ -1209,6 +1206,7 @@ _add_border(E_Border *bd)
                 .layer = bd->layer,
                 .stacking = bd->client.netwm.state.stacking,
                 .maximized = bd->maximized,
+                .bordername = eina_stringshare_add(bd->bordername),
             },
         };
         eina_hash_direct_add(_G.border_extras, &extra->border, extra);
@@ -3543,9 +3541,11 @@ _clear_info_hash(void *data)
 static void
 _clear_border_extras(void *data)
 {
-    Border_Extra *be = data;
+    Border_Extra *extra = data;
 
-    E_FREE(be);
+    eina_stringshare_del(extra->orig.bordername);
+
+    E_FREE(extra);
 }
 
 EAPI E_Module_Api e_modapi =
