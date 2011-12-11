@@ -19,7 +19,8 @@ files_DATA = module_icon.png module.desktop e-module-ng.edj
 
 EXTRA_DIST = module.desktop.in \
 	     module_icon.png \
-	     e-module-ng.edc
+	     e-module-ng.edc \
+	     e_modules-engage.spec
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
