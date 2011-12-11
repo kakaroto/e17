@@ -18,9 +18,13 @@ filesdir = $(datadir)
 files_DATA = module.desktop e-module-scale.edj
 
 EXTRA_DIST = module.desktop.in \
-	     e_modules-scale.spec.in \
+	     e_modules-scale.spec \
 	     e-module-scale.edc \
-	     images/module_icon.png
+	     images/label.png \
+	     images/module_icon.png \
+	     images/pager.png \
+	     images/scale.png \
+	     images/sh.png
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
