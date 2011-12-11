@@ -123,17 +123,18 @@ static Evas_Object *zone_clip = NULL;
 E_Border *bd_move = NULL;
 
 static void
-_scale_place_windows(double s)
+_scale_place_windows(double scale)
 {
    Eina_List *l;
    Item *it;
 
    EINA_LIST_FOREACH(items, l, it)
      {
+#if 0
 	double scale = s * (1.0 + it->delay);
 	if (scale > 1.0) scale = 1.0;
 	if (scale < 0.0) scale = 0.0;
-			   
+#endif
 	it->cur_x = it->bd_x * scale + it->x * (1.0 - scale);
 	it->cur_y = it->bd_y * scale + it->y * (1.0 - scale);
 	it->cur_w = (double)(it->bd_x + it->bd->w) * scale + (it->x + it->w) * (1.0 - scale) - it->cur_x;
@@ -192,14 +193,20 @@ _scale_redraw(void *data)
      }
    else if (scale_state)
      {
+#if 1
 	in = log(14) * in;
 	in = 1.0 / exp(in*in);
+#else
+        in = 1.0 - in;
+#endif
      }
    else
      {
-	adv = 1.0 - adv;	
+#if 1
 	in = log(14) * (1.0 - in);
 	in = 1.0 / exp(in*in);
+#endif
+	adv = 1.0 - adv;
      }
 
    _scale_place_windows(in);
@@ -1242,13 +1249,16 @@ _scale_run(E_Manager *man)
 	it->y += zone->y;
 	it->bd_x += zone->x;
 	it->bd_y += zone->y;
-
+#if 0
 	it->delay = sqrt(dx*dx + dy*dy) / 1000.0;
 	if (it->delay < min) min = it->delay;
+#endif
      }
 
+#if 0
    EINA_LIST_FOREACH(items, l, it)
      it->delay -= min;
+#endif
 
    DBG("time: %f\n", ecore_loop_time_get() - start_time);
 
