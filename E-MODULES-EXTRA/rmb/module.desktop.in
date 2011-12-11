@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Link
+Name=Emulate Right Mouse Button
+Icon=right
+X-Enlightenment-ModuleType=system
+Comment=A module to toggle right click, useful for touch screens.

@@ -98,6 +98,10 @@ its name/class pair, based on yakuake
 rain - A module to display rain on the desktop.
 // works, useless, eyecandy. Should be merged with flame and snow
 
+rmb - A module to swap left and right mouse buttons, oriented towards being mapped
+to bindings so it can be very useful in a touchscreen
+// works, but the device is still hard coded for an eGalax touchscreen.
+
 screenshot - A module to take screenshots, utilizing scrot or import.
 // works - maintained by devilhorns.
 
