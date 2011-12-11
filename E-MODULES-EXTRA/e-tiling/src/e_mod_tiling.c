@@ -52,6 +52,7 @@ typedef struct Border_Extra {
          geom_t geom;
          unsigned int layer;
          E_Stacking  stacking;
+         E_Maximize  maximized;
     } orig;
     overlay_t overlay;
     char key[4];
@@ -386,6 +387,7 @@ _restore_border(E_Border *bd)
                           extra->orig.geom.h);
     e_border_layer_set(bd, extra->orig.layer);
     e_hints_window_stacking_set(bd, extra->orig.stacking);
+    e_border_maximize(bd, extra->orig.maximized);
 
     /* To give the user a bit of feedback we restore the original border */
     /* TODO: save the original border, don't just restore the default one*/
@@ -1206,6 +1208,7 @@ _add_border(E_Border *bd)
                 },
                 .layer = bd->layer,
                 .stacking = bd->client.netwm.state.stacking,
+                .maximized = bd->maximized,
             },
         };
         eina_hash_direct_add(_G.border_extras, &extra->border, extra);
