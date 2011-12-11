@@ -148,6 +148,7 @@ AC_CONFIG_FILES([
 Makefile
 src/Makefile
 eyesight.pc
+eyesight.spec
 src/bin/Makefile
 src/lib/Makefile
 src/modules/Makefile

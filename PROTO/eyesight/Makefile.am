@@ -31,6 +31,7 @@ README \
 TODO \
 autogen.sh \
 eyesight.pc.in \
+eyesight.spec \
 m4/efl_binary.m4 \
 m4/efl_doxygen.m4 \
 m4/eyesight_check.m4
