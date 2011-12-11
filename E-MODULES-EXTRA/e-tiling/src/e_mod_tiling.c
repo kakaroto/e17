@@ -1004,7 +1004,7 @@ _remove_stack(void)
 static void
 _toggle_rows_cols(void)
 {
-#if 1
+#if 0
     Eina_List *wins = NULL;
     E_Border *bd;
 
@@ -1038,7 +1038,7 @@ _toggle_rows_cols(void)
         e_zone_useful_geometry_get(_G.tinfo->desk->zone,
                                    &pos, NULL, &s, NULL);
 
-    for (int i = 0; i <= nb_stacks; i++) {
+    for (int i = 0; i < nb_stacks; i++) {
         int size = 0;
 
         size = s / (nb_stacks - i);
@@ -1209,6 +1209,13 @@ _add_border(E_Border *bd)
             },
         };
         eina_hash_direct_add(_G.border_extras, &extra->border, extra);
+    } else {
+        extra->expected = (geom_t) {
+            .x = bd->x,
+            .y = bd->y,
+            .w = bd->w,
+            .h = bd->h,
+        };
     }
 
     /* Stack tiled window below so that winlist doesn't mix up stacking */
