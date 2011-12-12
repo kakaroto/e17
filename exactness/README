@@ -17,7 +17,7 @@ Testing with exactness composed of the following stages:
    A set of pre-recorded tests already resides under 'data/recording' folder.
 
    To record a test just issue the command:
-   exactness -r 
+   exactness -r [-b BaseDir] [TestName1] [TestName2 ...]
 
    Example:
    exactness -r test_hover
@@ -25,8 +25,13 @@ Testing with exactness composed of the following stages:
    The record file will be produced in the current-working-directory as:
    test_hover.rec
 
+   To save your recordings in any other directory,
+   pass the directory-name as base-dir:
+   exactness -r -b /home/username/my_recordings test_hover
+
    In case you tried to run exactness with specific TestName
-   and nothing happens, this means you misspelled the test name.
+   getting "No test matching" Error.
+   This means you misspelled the test name.
    You may review test names as it appears in tsuite.c source file.
 
    NOTE: omitting the test name causes recording all tests one after another.
@@ -34,7 +39,7 @@ Testing with exactness composed of the following stages:
    This rule applies to ALL proceeding stages as well.
 
    As widget test run you may press F2 at any point to set a screenshot.
-   (screenshot procduced in 'play' stage, set timing of screenshot here)
+   (screenshot produced in 'play' stage, set timing of screenshot here)
    However, don't do this while animation is ongoing
    or you get inconsistent PNG output each time test played.
 
@@ -47,24 +52,41 @@ Testing with exactness composed of the following stages:
 
    To start you need to produce original screenshot set before code change.
    To do that just issue the command:
-   exactness -i TestName1 [TestName2 ...]
+   exactness -i [-b BaseDir] [TestName1] [TestName2 ...]
 
    This command will play the test (TestName.rec file) and place PNG files
    under 'orig' folders created in current-working-directory.
    You need to do this just once.
    Again, omitting the TestName will play and produce PNG files for all tests.
 
-   Example:
    exactness -i test_hover
+   (locate "test_hover.rec" in cwd)
+
    This will produce PNG files such orig/test_hover_1.png
+
+   By default exactness looks for ".rec" files in current-working-directory
+   Use -b DirName to ask exactness to locate the ".rec" files
+   in a specific location.
+
+   Example:
+   exactness -i -b ~/e17/exactness/data/recordings test_hover
+   (locate "test_hover.rec" in "~/e17/exactness/data/recordings")
+   
 
 3. Test playing, producing current state PNG files.
    After doing Test Initiation (2) and updating elementary code,
    you may run tests for current state of elm:
 
-   exactness -p [-d DestDir] TestName1 [TestName2 ...]
+   exactness -p [-b BaseDir] [-d DestDir] TestName1 [TestName2 ...]
    Omitting DestDir param will cause exactness place all PNG files
    under (default) folder named 'current'.
+
+   You may put record-files at specific folder with -b (base dir) argument:
+   Example:
+   exactness -p -b ~/e17/exactness/data/recordings test_hover
+
+   Play test_hover, find ".rec" file at "~/e17/exactness/data/recordings"
+   Write resulting PNG files at cwd/current (default) dir.
    
 4. Comparing PNG files.
    This is the final stage of testing in which we compare output

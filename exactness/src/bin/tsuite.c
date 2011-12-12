@@ -7,6 +7,8 @@
 #define IMAGE_FILENAME_EXT ".png"
 #include <dlfcn.h>
 #include "tsuite_file_data.h"
+#include <Ecore.h>
+#include <Ecore_Getopt.h>
 
 void test_3d(void);
 void test_actionslider(void);
@@ -153,7 +155,7 @@ struct _Test_Item
 typedef struct _Test_Item Test_Item;
 
 static Tsuite_Data ts;
-static char *recording = NULL;
+static int recording = 0;
 static char *dest_dir = NULL;
 
 Eina_List *
@@ -649,47 +651,86 @@ do_test(char *rec_dir, void (* func) (void))
      vr_list = free_events(vr_list);
 }
 
-static char *
-_argument_get(char *name, int argc, char **argv, int *idx)
-{
-   int i = 1;
-   Eina_Bool found_name = EINA_FALSE;
-   while(i < argc)
-     {
-        *idx = i;
-        if (found_name)
-          return argv[i];
-
-        if (!strcmp(name, argv[i]))
-          {  /* if this is the argument we looking for */
-             if (!strcmp(name, "--record"))
-               return argv[i];  /* recording, This does not requires name */
-
-             if (!strcmp(name, "--destdir"))
-               found_name = EINA_TRUE;
-
-             if (!strcmp(name, "--basedir"))
-               found_name = EINA_TRUE;
-
-             if (!strcmp(name, "--tests"))
-               return argv[i];  /* This marks tests-args */
-          }
-
-        i++;
-     }
-
-   *idx = (-1);
-   return NULL;
-}
-
 EAPI int
 elm_main(int argc, char **argv)
 {
    Eina_List *tests = NULL;
    Eina_Bool test_all;
-   char *tests_arg = NULL;
    char *rec_dir = NULL;
    int i, first_arg;
+
+   int opt_tests = 0;
+   Eina_List *opt_destdir = NULL;
+   Eina_List *opt_basedir = NULL;
+
+   static const Ecore_Getopt optdesc = {
+        "Test_suite",
+        NULL,
+        "0.0",
+        "(C) 2011 Enlightenment",
+        "Enlightenment",
+        "The Elementary auto test suite",
+        0,
+        {
+           ECORE_GETOPT_COUNT('r', "record", "Recording mode"),
+           ECORE_GETOPT_APPEND_METAVAR('d',"destdir","Destir for PNG files",
+                 "STRING", ECORE_GETOPT_TYPE_STR),
+           ECORE_GETOPT_APPEND_METAVAR('b',"basedir","Directory of rec files",
+                 "STRING", ECORE_GETOPT_TYPE_STR),
+           ECORE_GETOPT_COUNT('t', "tests", "Tests names marker"),
+           ECORE_GETOPT_SENTINEL
+        }
+   };
+
+   Ecore_Getopt_Value values[] = {
+        ECORE_GETOPT_VALUE_INT(recording),
+        ECORE_GETOPT_VALUE_LIST(opt_destdir),
+        ECORE_GETOPT_VALUE_LIST(opt_basedir),
+        ECORE_GETOPT_VALUE_INT(opt_tests),
+        ECORE_GETOPT_VALUE_NONE
+   };
+
+#ifdef DEBUG_TSUITE
+   printf("Got args:\n");
+   for(i = 0; i < argc; i++)
+     printf("%d=<%s>\n", i, (char *) argv[i]);
+#endif
+   ecore_init();
+
+   if (ecore_getopt_parse(&optdesc, values, argc, argv) < 0)
+     {
+        printf("Argument parsing failed\n");
+        exit(1);
+     }
+
+#ifdef DEBUG_TSUITE
+   printf("Values from command line:\n");
+   printf("recording=<%d>\nopt_tests=<%d>\n", recording, opt_tests);
+   if (opt_destdir)
+     printf("opt_destdir=<%s>\n", opt_destdir->data);
+   if (opt_basedir)
+     printf("opt_basedir=<%s>\n", opt_basedir->data);
+#endif
+
+   if (!opt_tests)
+     {  /* This in case user runs mannualy and mistakes */
+        printf ("Tests Marker (arg) missing.\n");
+        exit(1);
+     }
+
+   /* Find index of first-test name, for ALL first_arg = (argc-1) */
+   for(first_arg = 1; first_arg < argc; first_arg++)
+     if (!strcmp(argv[first_arg], "--tests"))
+       break;
+
+   first_arg++; /* First arg now is index of first test or == argc */
+
+#ifdef DEBUG_TSUITE
+   if (first_arg == argc)
+     printf("TEST ALL: first_arg=<%d>\n", first_arg);
+   else
+     printf("test=<%s> first_arg=<%d>\n", argv[first_arg], first_arg);
+#endif
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
 
@@ -698,16 +739,12 @@ elm_main(int argc, char **argv)
    elm_app_compile_data_dir_set(PACKAGE_DATA_DIR);
    elm_app_info_set(elm_main, "elementary", "images/logo.png");
 
-   recording = _argument_get("--record", argc, argv, &i);
-   dest_dir = _argument_get("--destdir", argc, argv, &i);
-   rec_dir = _argument_get("--basedir", argc, argv, &i);
-   tests_arg = _argument_get("--tests", argc, argv, &first_arg);
+   if (opt_destdir)
+     dest_dir = opt_destdir->data;
 
-   if (!tests_arg)
-     {
-        printf ("No tests requested, exit.\n");
-        return 0;
-     }
+   if (opt_basedir)
+     rec_dir = opt_basedir->data;
+
 
    /* if we got here, found test_arg, now find it's index */
    if (recording)
@@ -715,10 +752,10 @@ elm_main(int argc, char **argv)
         _init_recording_funcs();
      }
 
-   first_arg++; /* First arg now is index of first test or == argc */
 #ifdef DEBUG_TSUITE
    printf("argc=<%d> first_arg=<%d>\n", argc, first_arg);
 #endif
+
    /* If no test specified in command line, set all */
    test_all = (argc - first_arg) == 0;
    tests = _add_test(tests, "test_3d", test_3d, test_all);

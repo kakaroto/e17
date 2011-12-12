@@ -6,9 +6,9 @@
 cat <<-ENDOFMESSAGE>exactness
 #!/usr/bin/env bash
 # tsuite_script.sh -i this makes new 'orig' folder
-# tsuite_script.sh -i TestName1 [TestName2 ...] rewrite files for selcted tests in 'orig' folder
-# tsuite_script.sh -r [TestName1 TestName2 ...] ; this means record [all tests or TestName additional arg]
-# tsuite_script.sh -d FolderName -p [TestName1 TestName2 ...] this means play a record and put screenshots FolderName
+# tsuite_script.sh -i -b [BaseDir] TestName1 [TestName2 ...] rewrite files for selcted tests in 'orig' folder
+# tsuite_script.sh -r -b [BaseDir] [TestName1 TestName2 ...] ; this means record [all tests or TestName additional arg]
+# tsuite_script.sh -b [BaseDir] -d FolderName -p [TestName1 TestName2 ...] this means play a record and put screenshots FolderName
 # tsuite_script.sh -d FolderName -c [TestName1 TestName2 ...] this means compare "orig" with screenshots in FolderName
 # When omitting DestDir we will use 'current' as default DestDir
 
@@ -21,17 +21,20 @@ function DEBUG()
 do_help () {
 echo "Record tests to produce input-stream to play and set screenshot timing"
 echo "To record all tests:"
-echo "\$0 -r"
+echo "\$0 -r [-b BaseDir]"
 echo "To record specific tests:"
-echo "\$0 -r TestName1 [TestName2 ...]"
+echo "\$0 -r [-b BaseDir] TestName1 [TestName2 ...]"
+echo "Use BaseDir arg to write record-files to specific folder."
 echo
 echo "Play tests to produce PNG files of screenshot defined while recording."
 echo "To play all tests:"
-echo "\$0 -p d DestDir"
+echo "\$0 -p  [-b BaseDir] [-d DestDir]"
 echo "To play specific tests:"
-echo "\$0 -p -d DestDir TestName1 [TestName2 ...]"
-echo "To play and rewrite 'orig' dir, use init option for all test: \$0 -i"
-echo "To play and rewrite 'orig' dir, use init option for selected tests: \$0 -i [TestName1 ...]"
+echo "\$0 -p [-b BaseDir] [-d DestDir] TestName1 [TestName2 ...]"
+echo "To play and rewrite 'orig' dir, use init option for all test: \$0 -i [-b BaseDir]"
+echo "To play and rewrite 'orig' dir, use init option for selected tests: \$0 -i [-b BaseDir] [TestName1 ...]"
+echo "Use BaseDir arg tell \$0 where record-files are found."
+echo "Otherwise, \$0 will try to find it in cwd."
 echo
 echo "Run comprison to produce comp_*.png files"
 echo "To compare all tests:"
@@ -40,7 +43,8 @@ echo "To compare specific tests:"
 echo "\$0 -c -d DestDir TestName1 [TestName2 ...]"
 echo
 echo "NOTE:"
-echo "For all actions require DestDir, when omitting this param we use 'current' as default"
+echo "For all actions require DestDir, when omitting this param we use 'current' as default."
+echo "For all actions require using record-files, when omitting BaseDir param we use current-working-directory to locate record-files."
 }
 
 do_record () {
@@ -52,11 +56,17 @@ DEBUG echo do_record "\$*"
 
 OUR_LIBPATH="$1"
 
+local _dest='--destdir='"\$_dest_dir" 
+if [ -z "\$_dest_dir" ]
+then
+   local _dest=
+fi
+
 if [ -z "\$*" ]
 then
-   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw --basedir "\$_base_dir" --record --tests
+   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw \$_dest --basedir "\$_base_dir" --record --tests
 else
-   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw --basedir "\$_base_dir" --record --tests \$*
+   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw \$_dest --basedir "\$_base_dir" --record --tests \$*
 fi
 return 0
 }
@@ -75,7 +85,7 @@ if [ -z "\$*" ]
 then
 # Clear all files before producing all PNG files.
    rm -rf "\$_dest_dir" &> /dev/null
-   mkdir -p "\$_dest_dir"
+   mkdir -p "\$_dest_dir" &> /dev/null
    ELM_ENGINE="buffer" exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests
 else
    if [ -e "\$_dest_dir" ]
@@ -87,7 +97,7 @@ else
       done
    else
 # Create dest dir
-      mkdir -p "\$_dest_dir"
+      mkdir -p "\$_dest_dir" &> /dev/null
    fi
 
    ELM_ENGINE="buffer" exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests \$*
@@ -152,6 +162,8 @@ process_compare () {
 
 do_compare () {
 DEBUG printf "do_compare()\n"
+DEBUG echo orig dir: "\$_orig_dir"
+DEBUG echo dest dir: "\$_dest_dir"
 # This will compare files in 'orig' folder with files in _dest_dir
 if [ \$comp_unavail -ne 0 ]
 then
@@ -179,7 +191,7 @@ if [ -z "\$*" ]
 # No test names given, compare all
 then
    rm -f "\$_dest_dir"/comp_* &> /dev/null
-   files_list=( \`ls "\$_dest_dir"/test_*\` )
+   files_list=( \`ls "\$_dest_dir"/test_*.png\` )
    process_compare "\${files_list[@]}"
 else
    for test_name in \$*
