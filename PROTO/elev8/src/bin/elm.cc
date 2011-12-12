@@ -6,6 +6,7 @@
  */
 
 #include <list>
+#include <map>
 #include <elev8_common.h>
 
 using namespace v8;
@@ -3889,8 +3890,7 @@ CEvasObject::CPropHandler<CElmCalendar>::list[] = {
 class CElmTable : public CEvasObject {
 protected:
    CPropHandler<CElmTable> prop_handler;
-   /* the on_clicked function */
-   Persistent<Value> on_changed_val;
+   std::list<CEvasObject *> table_items;
 
 public:
    CElmTable(CEvasObject *parent, Local<Object> obj) :
@@ -3899,7 +3899,35 @@ public:
      {
         eo = elm_table_add(parent->top_widget_get());
         construct(eo, obj);
+        get_object()->Set(String::New("unpack"), FunctionTemplate::New(unpack)->GetFunction());
+        get_object()->Set(String::New("pack"), FunctionTemplate::New(pack)->GetFunction());
+        get_object()->Set(String::New("clear"), FunctionTemplate::New(clear)->GetFunction());
         items_set(obj->Get(String::New("subobjects")));
+     }
+
+   static Handle<Value> pack(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmTable *table = static_cast<CElmTable *>(self);
+        if (args[0]->IsObject())
+          {
+             return table->new_item_set(args[0]);
+          }
+        return Undefined();
+     }
+
+   static Handle<Value> unpack(const Arguments& args)
+     {
+        return Undefined();
+     }
+
+   static Handle<Value> clear(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmTable *table = static_cast<CElmTable *>(self);
+        elm_table_clear(table->get(), true);
+        table->table_items.clear();
+        return Undefined();
      }
 
    virtual void items_set(Handle<Value> val)
@@ -3925,15 +3953,16 @@ public:
           }
      }
 
-   virtual void new_item_set(Handle<Value> item)
+   virtual Handle<Value> new_item_set(Handle<Value> item)
      {
         CEvasObject *child = NULL;
         if (!item->IsObject())
           {
              // FIXME: permit adding strings here?
              ERR( "list item is not an object");
-             return;
+             return Undefined();
           }
+
         Local<Value> xpos = item->ToObject()->Get(String::New("x"));
         Local<Value> ypos = item->ToObject()->Get(String::New("y"));
         Local<Value> width = item->ToObject()->Get(String::New("w"));
@@ -3944,11 +3973,11 @@ public:
           {
              child = realize_one(this, subobj);
              if(!child)
-                return;
+                return Undefined();
           }
         else
           {
-             return;
+             return Undefined();
           }
 
         int x,y,w,h;
@@ -3970,14 +3999,10 @@ public:
              h = height->IntegerValue();
           }
 
-        if ( ( x + y + w + h ) > 0 )
-          {
-             elm_table_pack (this->get(), child->get(), x, y, w, h);
-          }
-     }
-
-   virtual ~CElmTable()
-     {
+        elm_table_pack(this->get(), child->get(), x, y, w, h);
+        INF("Packing new table item at %d %d %d %d", x,y,w,h);
+        table_items.push_back(child);
+        return child->get_object();
      }
 
     void homogeneous_set(Handle<Value> val)
@@ -3990,10 +4015,35 @@ public:
       {
          return Boolean::New(elm_table_homogeneous_get(eo));
       }
+
+    void padding_set(Handle<Value> val)
+      {
+         HandleScope handle_scope;
+         if (!val->IsObject())
+           return;
+         Local<Object> obj = val->ToObject();
+         Local<Value> x = obj->Get(String::New("x"));
+         Local<Value> y = obj->Get(String::New("y"));
+         if (!x->IsNumber() || !y->IsNumber())
+           return;
+         elm_table_padding_set(eo, x->NumberValue(), y->NumberValue());
+      }
+
+    virtual Handle<Value> padding_get() const
+      {
+         Evas_Coord x, y;
+         elm_table_padding_get(eo, &x, &y);
+         Local<Object> obj = Object::New();
+         obj->Set(String::New("x"), Boolean::New(x));
+         obj->Set(String::New("y"), Boolean::New(y));
+         return obj;
+      }
 };
 
 template<> CEvasObject::CPropHandler<CElmTable>::property_list
 CEvasObject::CPropHandler<CElmTable>::list[] = {
+  PROP_HANDLER(CElmTable, homogeneous),
+  PROP_HANDLER(CElmTable, padding),
   { NULL, NULL, NULL },
 };
 
@@ -5119,6 +5169,8 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
 
    Local<Value> val = obj->Get(String::New("type"));
    String::Utf8Value str(val);
+
+   //INF("Creating %s", *str);
 
    /* create the evas object */
    // FIXME: make a list here

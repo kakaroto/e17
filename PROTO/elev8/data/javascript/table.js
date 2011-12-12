@@ -3,6 +3,40 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
+elm.datadir=elm.datadir + "/data/images/";
+
+var green = {
+    subobject : {
+        type : "photo",
+        size : 80,
+        weight : EXPAND_BOTH,
+        align : FILL_BOTH,
+        image : elm.datadir + "green.png",
+        fill : true,
+    },
+    x : 1,
+    y : 1,
+    w : 2,
+    h : 1,
+
+};
+var yellow = {
+    subobject : {
+        type : "photo",
+        size : 80,
+        weight : EXPAND_BOTH,
+        align : FILL_BOTH,
+        image : elm.datadir + "yellow.png",
+        fill : true,
+    },
+    x : 2,
+    y : 1,
+    w : 2,
+    h : 1,
+};
+
+var gbl;;
+
 var my_window = new elm.window({
 		type : "main",
 		label : "Table Demo",
@@ -25,6 +59,10 @@ var my_window = new elm.window({
 						subobject : {
 							type : "button",
 							label : "I am the one.",
+                            on_clicked : function(arg) {
+                                gbl = my_window.elements.the_table.pack(green);
+
+                            },
 						},
 						x : 0,
 						y : 0,
@@ -35,6 +73,9 @@ var my_window = new elm.window({
 						subobject : {
 							type : "button",
 							label : "Dodge Bullets",
+                            on_clicked : function(arg) {
+                                my_window.elements.the_table.clear();
+                            },
 						},
 						x : 1,
 						y : 0,
