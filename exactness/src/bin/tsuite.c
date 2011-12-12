@@ -153,7 +153,7 @@ struct _Test_Item
 typedef struct _Test_Item Test_Item;
 
 static Tsuite_Data ts;
-static Eina_Bool recording = EINA_FALSE;
+static char *recording = NULL;
 static char *dest_dir = NULL;
 
 Eina_List *
@@ -290,8 +290,6 @@ tsuite_shot_do(Evas_Object *obj, char *name)
         sprintf(filename + dir_name_len, "%s_%d%s", ts.name ,ts.serial,
               IMAGE_FILENAME_EXT);
      }
-
-   printf("in func <%s> name=<%s>\n", __func__, filename);
 
    /* A bit hackish, get the ecore_evas from the Evas canvas */
    ee_orig = evas_data_attach_get(evas_object_evas_get(obj));
@@ -610,7 +608,7 @@ free_events(Lists_st *st)
 }
 
 void
-do_test(void (* func) (void))
+do_test(char *rec_dir, void (* func) (void))
 {
    char buf[1024];
 
@@ -619,7 +617,7 @@ do_test(void (* func) (void))
      _tsuite_evas_hook_init(vr_list);
 
    func();
-   sprintf(buf, "%s.rec", ts.name);
+   sprintf(buf, "%s/%s.rec", rec_dir, ts.name);
 
    if (recording)
      {
@@ -651,12 +649,47 @@ do_test(void (* func) (void))
      vr_list = free_events(vr_list);
 }
 
+static char *
+_argument_get(char *name, int argc, char **argv, int *idx)
+{
+   int i = 1;
+   Eina_Bool found_name = EINA_FALSE;
+   while(i < argc)
+     {
+        *idx = i;
+        if (found_name)
+          return argv[i];
+
+        if (!strcmp(name, argv[i]))
+          {  /* if this is the argument we looking for */
+             if (!strcmp(name, "--record"))
+               return argv[i];  /* recording, This does not requires name */
+
+             if (!strcmp(name, "--destdir"))
+               found_name = EINA_TRUE;
+
+             if (!strcmp(name, "--basedir"))
+               found_name = EINA_TRUE;
+
+             if (!strcmp(name, "--tests"))
+               return argv[i];  /* This marks tests-args */
+          }
+
+        i++;
+     }
+
+   *idx = (-1);
+   return NULL;
+}
+
 EAPI int
 elm_main(int argc, char **argv)
 {
    Eina_List *tests = NULL;
    Eina_Bool test_all;
-   int i, first_arg = 1;
+   char *tests_arg = NULL;
+   char *rec_dir = NULL;
+   int i, first_arg;
 
    elm_policy_set(ELM_POLICY_QUIT, ELM_POLICY_QUIT_LAST_WINDOW_CLOSED);
 
@@ -665,31 +698,29 @@ elm_main(int argc, char **argv)
    elm_app_compile_data_dir_set(PACKAGE_DATA_DIR);
    elm_app_info_set(elm_main, "elementary", "images/logo.png");
 
-   if (argc >= 2)
+   recording = _argument_get("--record", argc, argv, &i);
+   dest_dir = _argument_get("--destdir", argc, argv, &i);
+   rec_dir = _argument_get("--basedir", argc, argv, &i);
+   tests_arg = _argument_get("--tests", argc, argv, &first_arg);
+
+   if (!tests_arg)
      {
-        recording = !strcmp(argv[1], "--record");
-        if (!recording)
-          {  /* Could have a destdir param */
-             if (!strcmp(argv[1], "--destdir"))
-               {  /* Get dest-dir param */
-                  first_arg = 2; /* if user ommited dest-dir name,  */
-                                 /* works anyway skipping this flag */
-                  if (argc > 2)
-                    dest_dir = argv[2];
-               }
-          }
+        printf ("No tests requested, exit.\n");
+        return 0;
      }
 
+   /* if we got here, found test_arg, now find it's index */
    if (recording)
      {
         _init_recording_funcs();
-        first_arg = 2;
      }
-   else if (dest_dir)
-     first_arg = 3;
 
+   first_arg++; /* First arg now is index of first test or == argc */
+#ifdef DEBUG_TSUITE
+   printf("argc=<%d> first_arg=<%d>\n", argc, first_arg);
+#endif
    /* If no test specified in command line, set all */
-   test_all = (first_arg - argc) == 0;
+   test_all = (argc - first_arg) == 0;
    tests = _add_test(tests, "test_3d", test_3d, test_all);
    tests = _add_test(tests, "test_actionslider", test_actionslider, test_all);
    tests = _add_test(tests, "test_anchorblock", test_anchorblock, test_all);
@@ -801,6 +832,7 @@ elm_main(int argc, char **argv)
    tests = _add_test(tests, "test_win_state", test_win_state, test_all);
    tests = _add_test(tests, "test_win_state2", test_win_state2, test_all);
 
+
    /* Set tests from command line */
    for(i = first_arg; i < argc ; i++)
      _set_test(tests, argv[i],  EINA_TRUE);
@@ -811,7 +843,7 @@ elm_main(int argc, char **argv)
    EINA_LIST_FOREACH(tests, l, item)
       if (item->test)
         {  /* Run test and count tests committed */
-           do_test(item->func);
+           do_test(rec_dir, item->func);
            n_tests++;
         }
 

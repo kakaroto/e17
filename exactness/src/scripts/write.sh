@@ -54,9 +54,9 @@ OUR_LIBPATH="$1"
 
 if [ -z "\$*" ]
 then
-   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw --record
+   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw --basedir "\$_base_dir" --record --tests
 else
-   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw --record \$*
+   LD_PRELOAD=\${OUR_LIBPATH}/libexactness.so exactness_raw --basedir "\$_base_dir" --record --tests \$*
 fi
 return 0
 }
@@ -65,6 +65,7 @@ do_play () {
 # This will play record for all test if '-a' specified.
 # or play record of tests specified as parameter.
 # run ALL tests to record
+DEBUG echo base dir: "\$_base_dir"
 DEBUG echo dest dir: "\$_dest_dir"
 DEBUG echo do_play "\$_dest_dir" "\$*"
 
@@ -75,7 +76,7 @@ then
 # Clear all files before producing all PNG files.
    rm -rf "\$_dest_dir" &> /dev/null
    mkdir -p "\$_dest_dir"
-   ELM_ENGINE="buffer" exactness_raw --destdir "\$_dest_dir"
+   ELM_ENGINE="buffer" exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests
 else
    if [ -e "\$_dest_dir" ]
    then
@@ -89,7 +90,7 @@ else
       mkdir -p "\$_dest_dir"
    fi
 
-   ELM_ENGINE="buffer" exactness_raw --destdir "\$_dest_dir" \$*
+   ELM_ENGINE="buffer" exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests \$*
 fi
 
 return 0
@@ -204,6 +205,7 @@ _remove_fail=
 _orig_dir="orig"
 # Init dest_dir - should change on the fly
 _dest_dir=
+_base_dir=\`pwd\`
 
 nerr=0
 ncomp=0
@@ -213,9 +215,11 @@ nfail=0
 which compare &> /dev/null
 comp_unavail=\$?
 
-while getopts 'acd:hpri?' OPTION
+while getopts 'ab:cd:hpri?' OPTION
 do
    case \$OPTION in
+      b)  _base_dir="\$OPTARG"
+         ;;
       c)  _compare=1
          ;;
       d)  _dest_dir="\$OPTARG"
@@ -240,6 +244,16 @@ do
    esac
 done
 shift \$((\$OPTIND - 1))
+
+DEBUG echo _base_dir="\$_base_dir"
+DEBUG echo _dest_dir="\$_dest_dir"
+
+if [ ! -e "\$_base_dir" ]
+then
+   echo "Base dir <\$_base_dir> - not found."
+   exit 1
+fi
+
 # printf "Remaining arguments are: %s\n" "\$*"
 if [ -z "\$_dest_dir" ]
 then
