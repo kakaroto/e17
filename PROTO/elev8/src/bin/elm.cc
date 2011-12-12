@@ -5038,6 +5038,7 @@ CEvasObject::CPropHandler<CElmPager>::list[] = {
 class CElmGrid : public CEvasObject {
 protected:
    CPropHandler<CElmGrid> prop_handler;
+   std::list<CEvasObject *> grid_items;
 
 public:
    CElmGrid(CEvasObject *parent, Local<Object> obj) :
@@ -5046,7 +5047,29 @@ public:
      {
         eo = elm_grid_add(parent->top_widget_get());
         construct(eo, obj);
+        get_object()->Set(String::New("add"), FunctionTemplate::New(add)->GetFunction());
+        get_object()->Set(String::New("clear"), FunctionTemplate::New(clear)->GetFunction());
         items_set(obj->Get(String::New("subobjects")));
+     }
+
+   static Handle<Value> add(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmGrid *grid = static_cast<CElmGrid *>(self);
+        if (args[0]->IsObject())
+          {
+             grid->pack_set(args[0]);
+          }
+        return Undefined();
+     }
+
+   static Handle<Value> clear(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmGrid *grid = static_cast<CElmGrid *>(self);
+        elm_grid_clear(grid->get(), true);
+        grid->grid_items.clear();
+        return Undefined();
      }
 
    virtual void items_set(Handle<Value> val)
@@ -5081,7 +5104,7 @@ public:
            }
          Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
 
-         if ( subobj->IsObject())
+         if (subobj->IsObject())
            {
               //TODO : need to check if this is an exisiting child.
               child = realize_one(this, subobj);
@@ -5119,6 +5142,7 @@ public:
 
          INF("Objects = %d %d %d %d", x,y,w,h);
          elm_grid_pack (this->get(), child->get(), x, y, w, h);
+         grid_items.push_back(child);
        }
 
      virtual Handle<Value> pack_get() const

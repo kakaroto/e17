@@ -3,6 +3,23 @@
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
 var FILL_BOTH = { x : -1.0, y : -1.0 };
 
+elm.datadir=elm.datadir + "/data/images/";
+
+var yellow = {
+    subobject : {
+        type : "photo",
+        size : 80,
+        weight : EXPAND_BOTH,
+        align : FILL_BOTH,
+        image : elm.datadir + "yellow.png",
+        fill : true,
+    },
+    x : 30,
+    y : 10,
+    w : 27,
+    h : 21,
+};
+
 var my_window = new elm.window({
 		type : "main",
 		label : "Grid Demo",
@@ -28,6 +45,9 @@ var my_window = new elm.window({
 						subobject : {
 							type : "button",
 							label : "I am the one.",
+                            on_clicked : function() {
+                                my_window.elements.the_grid.add(yellow);
+                            },
 						},
 						x : 50,
 						y : 10,
@@ -38,6 +58,9 @@ var my_window = new elm.window({
 						subobject : {
 							type : "button",
 							label : "Dodge Bullets",
+                            on_clicked : function() {
+                                my_window.elements.the_grid.clear();
+                            },
 						},
 						x : 60,
 						y : 20,
