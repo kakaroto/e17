@@ -33,6 +33,7 @@ files_SCRIPTS = \
 	menu.js \
 	notepad.js \
 	notify.js \
+	pager.js \
 	panes.js \
 	photocam.js \
 	photo.js \
