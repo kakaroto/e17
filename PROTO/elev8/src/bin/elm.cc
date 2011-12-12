@@ -3963,10 +3963,6 @@ public:
              return Undefined();
           }
 
-        Local<Value> xpos = item->ToObject()->Get(String::New("x"));
-        Local<Value> ypos = item->ToObject()->Get(String::New("y"));
-        Local<Value> width = item->ToObject()->Get(String::New("w"));
-        Local<Value> height = item->ToObject()->Get(String::New("h"));
         Local<Value> subobj = item->ToObject()->Get(String::New("subobject"));
 
         if ( subobj->IsObject())
@@ -3980,6 +3976,10 @@ public:
              return Undefined();
           }
 
+        Local<Value> xpos = item->ToObject()->Get(String::New("x"));
+        Local<Value> ypos = item->ToObject()->Get(String::New("y"));
+        Local<Value> width = item->ToObject()->Get(String::New("w"));
+        Local<Value> height = item->ToObject()->Get(String::New("h"));
         int x,y,w,h;
 
         if (xpos->IsNumber())
