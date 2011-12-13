@@ -121,24 +121,24 @@ _win_toolbar_eval(Win *w)
 {
 
    if ((w->play.shuffle) || (list_prev_exists(w->list)))
-      elm_toolbar_item_disabled_set(w->action.prev, EINA_FALSE);
+      elm_object_item_disabled_set(w->action.prev, EINA_FALSE);
    else
-      elm_toolbar_item_disabled_set(w->action.prev, EINA_TRUE);
+      elm_object_item_disabled_set(w->action.prev, EINA_TRUE);
 
    if ((w->play.shuffle) || (list_next_exists(w->list)))
-      elm_toolbar_item_disabled_set(w->action.next, EINA_FALSE);
+      elm_object_item_disabled_set(w->action.next, EINA_FALSE);
    else
-      elm_toolbar_item_disabled_set(w->action.next, EINA_TRUE);
+      elm_object_item_disabled_set(w->action.next, EINA_TRUE);
 
    if (w->song)
      {
-        elm_toolbar_item_disabled_set(w->action.play, EINA_FALSE);
-        elm_toolbar_item_disabled_set(w->action.nowplaying, EINA_FALSE);
+        elm_object_item_disabled_set(w->action.play, EINA_FALSE);
+        elm_object_item_disabled_set(w->action.nowplaying, EINA_FALSE);
      }
    else
      {
-        elm_toolbar_item_disabled_set(w->action.play, EINA_TRUE);
-        elm_toolbar_item_disabled_set(w->action.nowplaying, EINA_TRUE);
+        elm_object_item_disabled_set(w->action.play, EINA_TRUE);
+        elm_object_item_disabled_set(w->action.nowplaying, EINA_TRUE);
      }
 
    ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
@@ -865,10 +865,10 @@ win_new(App *app)
       (w->action.nowplaying, "system-file-manager", "Library",
        _win_mode_list, w);
 
-   elm_toolbar_item_disabled_set(w->action.prev, EINA_TRUE);
-   elm_toolbar_item_disabled_set(w->action.next, EINA_TRUE);
-   elm_toolbar_item_disabled_set(w->action.play, EINA_TRUE);
-   elm_toolbar_item_disabled_set(w->action.nowplaying, EINA_TRUE);
+   elm_object_item_disabled_set(w->action.prev, EINA_TRUE);
+   elm_object_item_disabled_set(w->action.next, EINA_TRUE);
+   elm_object_item_disabled_set(w->action.play, EINA_TRUE);
+   elm_object_item_disabled_set(w->action.nowplaying, EINA_TRUE);
 
    w->list = list_add(w->layout);
    if (!w->list)
