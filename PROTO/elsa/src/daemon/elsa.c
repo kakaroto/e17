@@ -278,7 +278,9 @@ main (int argc, char ** argv)
      }
 
    elsa_user = getenv("ELSA_USER");
+#ifdef HAVE_PAM
    elsa_pam_init(PACKAGE, dname, elsa_user);
+#endif
    if (elsa_user)
      {
         char *quit;
@@ -295,7 +297,9 @@ main (int argc, char ** argv)
              exit(0);
           }
         sleep(3);
+#ifdef HAVE_PAM
         elsa_pam_init(PACKAGE, dname, NULL);
+#endif
      }
    else
      fprintf(stderr, "\n");
@@ -322,7 +326,9 @@ main (int argc, char ** argv)
         xcb_connection_t *disp = NULL;
         disp = xcb_connect(dname, NULL);
         ecore_main_loop_begin();
+#ifdef HAVE_PAM
         elsa_pam_item_set(ELSA_PAM_ITEM_USER, elsa_config->userlogin);
+#endif
         elsa_session_login(elsa_config->command.session_login, EINA_FALSE);
         sleep(30);
         xcb_disconnect(disp);
@@ -347,8 +353,10 @@ main (int argc, char ** argv)
      }
    elsa_xserver_shutdown();
    fprintf(stderr, PACKAGE": xserver shutdown\n");
+#ifdef HAVE_PAM
    elsa_pam_shutdown();
    fprintf(stderr, PACKAGE": pam shutdown\n");
+#endif
    ecore_shutdown();
    elsa_config_shutdown();
    fprintf(stderr, PACKAGE": config shutdown\n");

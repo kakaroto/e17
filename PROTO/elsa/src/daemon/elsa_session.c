@@ -91,7 +91,6 @@ _elsa_session_userid_set(struct passwd *pwd)
 static Eina_Bool
 _elsa_session_begin(struct passwd *pwd, const char *cookie)
 {
-   char *term;
    fprintf(stderr, PACKAGE": Session Init\n");
    if (pwd->pw_shell[0] == '\0')
      {
@@ -99,7 +98,8 @@ _elsa_session_begin(struct passwd *pwd, const char *cookie)
         strcpy(pwd->pw_shell, getusershell());
         endusershell();
      }
-   term = getenv("TERM");
+#ifdef HAVE_PAM
+   char *term = getenv("TERM");
    if (term) elsa_pam_env_set("TERM", term);
    elsa_pam_env_set("HOME", pwd->pw_dir);
    elsa_pam_env_set("SHELL", pwd->pw_shell);
@@ -109,6 +109,7 @@ _elsa_session_begin(struct passwd *pwd, const char *cookie)
    elsa_pam_env_set("DISPLAY", ":0.0");
    elsa_pam_env_set("MAIL", "");
    elsa_pam_env_set("XAUTHORITY", cookie);
+#endif
    return EINA_TRUE;
 }
 
@@ -164,9 +165,11 @@ elsa_session_end(const char *user)
             "%s %s ", elsa_config->command.session_stop, user);
    if (-1 == system(buf))
      fprintf(stderr, PACKAGE": Error on session stop command %s", buf);
+#ifdef HAVE_PAM
    elsa_pam_close_session();
    elsa_pam_end();
    elsa_pam_shutdown();
+#endif
 }
 
 void
@@ -234,8 +237,12 @@ elsa_session_shutdown()
 Eina_Bool
 elsa_session_authenticate(const char *login, const char *passwd)
 {
+#ifdef HAVE_PAM
    return (!elsa_pam_auth_set(login, passwd)
            && !elsa_pam_authenticate());
+#else
+   return (EINA_TRUE);
+#endif
 }
 
 Eina_Bool

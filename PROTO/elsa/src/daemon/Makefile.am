@@ -29,8 +29,6 @@ elsa_session.h     \
 elsa_session.c     \
 elsa_xserver.h     \
 elsa_xserver.c     \
-elsa_pam.h         \
-elsa_pam.c         \
 ../event/elsa_event.c \
 ../event/elsa_event.h \
 elsa_server.h     \
@@ -41,6 +39,10 @@ elsa_action.h     \
 elsa_action.c     \
 elsa.h            \
 elsa.c
+
+if HAVE_PAM
+elsa_SOURCES += elsa_pam.h elsa_pam.c
+endif
 
 elsa_LDFLAGS =
 elsa_LDADD = @ELSA_LIBS@ -lpam -lrt

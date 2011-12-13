@@ -123,7 +123,6 @@ if test "x${enable_pam}" = "xyes" ; then
 fi
 
 
-
 ### Checks for header files
 
 # Pam
@@ -133,6 +132,7 @@ if test "x${have_pam}" = "xyes" ; then
       [have_pam="no"])
 fi
 
+AM_CONDITIONAL(HAVE_PAM, [test "x${have_pam}" = "xyes"])
 
 ### Checks for types
 

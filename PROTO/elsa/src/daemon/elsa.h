@@ -13,7 +13,9 @@
 #include <Ecore_File.h>
 
 #include "elsa_session.h"
+#ifdef HAVE_PAM
 #include "elsa_pam.h"
+#endif
 #include "elsa_config.h"
 #include "elsa_xserver.h"
 #include "elsa_server.h"
