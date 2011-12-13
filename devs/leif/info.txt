@@ -1,0 +1,9 @@
+Login:		leif
+IRC Nick:	T_UNIX
+Cloak:          developer/T_UNIX
+Name:		Leif Middelschulte
+Location:	Karlsruhe, Germany
+E-Mail:		leif.middelschulte@gmail.com
+Managing:	e_randr, ecore_x_randr
+Contributing:	e, ecore, engage
+Platform:	Fedora (Linux)
