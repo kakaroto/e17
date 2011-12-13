@@ -3,6 +3,7 @@
 #include <grp.h>
 #ifndef HAVE_PAM
 #include <shadow.h>
+#include <crypt.h>
 #endif
 
 #include <Ecore_File.h>
