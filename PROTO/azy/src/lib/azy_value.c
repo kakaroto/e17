@@ -183,8 +183,30 @@ azy_value_unref(Azy_Value *val)
 
    EINA_REFCOUNT_UNREF(val)
      {
+        Eina_Hash *h;
         AZY_MAGIC_SET(val, AZY_MAGIC_NONE);
+        switch (val->type)
+          {
+           case AZY_VALUE_STRING:
+             h = string_values;
+             break;
+           case AZY_VALUE_BOOL:
+             h = bool_values;
+             break;
+           case AZY_VALUE_TIME:
+             h = time_values;
+             break;
+           case AZY_VALUE_BASE64:
+             h = base64_values;
+             break;
+           case AZY_VALUE_INT:
+             h = int_values;
+             break;
+           default:
+             h = NULL;
+          }
 
+        if (h) eina_hash_del_by_data(h, val);
         if (val->str_val) eina_stringshare_del(val->str_val);
         if (val->member_name) eina_stringshare_del(val->member_name);
         if (val->member_value)
