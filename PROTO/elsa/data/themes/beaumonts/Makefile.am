@@ -13,12 +13,17 @@ elsa_background.jpg \
 elsa_foreground.png \
 box_login.png \
 box_login_shine.png \
+login_box.png \
 check.png \
 arrow_left.png \
 logo_b.png \
 logo_w.png \
 star.png \
-moon.png
+user.png \
+password.png \
+moon.png \
+xsession.png \
+silhouette.png
 
 
 default.edj: Makefile $(EXTRA_DIST)
