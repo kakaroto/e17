@@ -130,6 +130,8 @@ if test "x${have_pam}" = "xyes" ; then
    AC_CHECK_HEADER([security/pam_appl.h],
       [AC_DEFINE([HAVE_PAM], [1], [Set to 1 if pam is installed.])],
       [have_pam="no"])
+else
+   have_pam="no"
 fi
 
 AM_CONDITIONAL(HAVE_PAM, [test "x${have_pam}" = "xyes"])

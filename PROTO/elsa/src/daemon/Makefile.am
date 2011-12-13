@@ -40,18 +40,22 @@ elsa_action.c     \
 elsa.h            \
 elsa.c
 
-if HAVE_PAM
-elsa_SOURCES += elsa_pam.h elsa_pam.c
-endif
 
 elsa_LDFLAGS =
-elsa_LDADD = @ELSA_LIBS@ -lpam -lrt
+elsa_LDADD = @ELSA_LIBS@ -lrt
 
 elsa_wait_SOURCES = \
 elsa_wait.c
 
 elsa_wait_LDFLAGS =
 elsa_wait_LDADD =
+
+if HAVE_PAM
+elsa_SOURCES += elsa_pam.h elsa_pam.c
+elsa_LDADD += -lpam
+else
+elsa_LDADD += -lcrypt
+endif
 
 if HAVE_CONSOLEKIT
 elsa_ck_launch_SOURCES = \

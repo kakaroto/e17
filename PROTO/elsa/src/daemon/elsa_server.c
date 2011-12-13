@@ -103,6 +103,7 @@ _elsa_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
           {
              elsa_session_login(eev->event.auth.session, EINA_TRUE);
              neev.event.status.granted = EINA_TRUE;
+             fprintf(stderr, PACKAGE": server authenticate granted\n");
           }
         else
           {

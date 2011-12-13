@@ -1,13 +1,10 @@
 #include <sys/types.h>
-#include <grp.h>
-#include <pwd.h>
 #include <unistd.h>
-#include <string.h>
-#include <stdint.h>
-#include <time.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include <grp.h>
+#ifndef HAVE_PAM
+#include <shadow.h>
+#endif
+
 #include <Ecore_File.h>
 #include <Efreet.h>
 #include "elsa.h"
@@ -28,6 +25,7 @@ static void _elsa_session_desktops_scan(const char *dir);
 static void _elsa_session_desktops_init();
 //static void _elsa_session_desktops_shutdown();
 static const char *_elsa_session_find_command(const char *path, const char *session);
+static struct passwd *_elsa_session_session_open();
 
 long
 elsa_session_seed_get()
@@ -116,7 +114,6 @@ _elsa_session_begin(struct passwd *pwd, const char *cookie)
 static void
 _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 {
-#ifdef HAVE_PAM
    //char **tmp;
    char buf[PATH_MAX];
    pid_t pid;
@@ -125,8 +122,36 @@ _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
      {
 
         fprintf(stderr, PACKAGE": Session Run\n");
+#ifdef HAVE_PAM
         env = elsa_pam_env_list_get();
         elsa_pam_end();
+#else
+        int n = 0;
+        char *term = getenv("TERM");
+        env = (char **)malloc(10 * sizeof(char *));
+        if(term)
+          {
+             snprintf(buf, sizeof(buf), "TERM=%s", term);
+             env[n++]=strdup(buf);
+          }
+        snprintf(buf, sizeof(buf), "HOME=%s", pwd->pw_dir);
+        env[n++]=strdup(buf);
+        snprintf(buf, sizeof(buf), "SHELL=%s", pwd->pw_shell);
+        env[n++]=strdup(buf);
+        snprintf(buf, sizeof(buf), "USER=%s", pwd->pw_name);
+        env[n++]=strdup(buf);
+        snprintf(buf, sizeof(buf), "LOGNAME=%s", pwd->pw_name);
+        env[n++]=strdup(buf);
+        snprintf(buf, sizeof(buf), "PATH=%s", elsa_config->session_path);
+        env[n++]=strdup(buf);
+        snprintf(buf, sizeof(buf), "DISPLAY=%s", ":0.0");
+        env[n++]=strdup(buf);
+        snprintf(buf, sizeof(buf), "MAIL=");
+        env[n++]=strdup(buf);
+        snprintf(buf, sizeof(buf), "XAUTHORITY=%s", cookie);
+        env[n++]=strdup(buf);
+        env[n++]=0;
+#endif
         snprintf(buf, sizeof(buf),
                  "%s %s ",
                  elsa_config->command.session_start,
@@ -154,7 +179,6 @@ _elsa_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         execle(pwd->pw_shell, pwd->pw_shell, "-c", buf, NULL, env);
         fprintf(stderr, PACKAGE": The Xsessions are not launched :(\n");
      }
-#endif
 }
 
 void
@@ -237,41 +261,65 @@ elsa_session_shutdown()
 Eina_Bool
 elsa_session_authenticate(const char *login, const char *passwd)
 {
+   _login = strdup(login);
 #ifdef HAVE_PAM
    return (!elsa_pam_auth_set(login, passwd)
            && !elsa_pam_authenticate());
 #else
-   return (EINA_TRUE);
+   char *enc, *v;
+   struct passwd *pwd;
+   struct spwd *spd;
+
+   pwd = getpwnam(login);
+   endpwent();
+   if(!pwd)
+     return EINA_FALSE;
+   spd = getspnam(pwd->pw_name);
+   endspent();
+   if(spd)
+     v = spd->sp_pwdp;
+   else
+     v = pwd->pw_passwd;
+   if(!v || *v == '\0')
+     return EINA_TRUE;
+   enc = crypt(passwd, v);
+   return !strcmp(enc, v);
+#endif
+}
+
+static struct passwd *
+_elsa_session_session_open()
+{
+#ifdef HAVE_PAM
+   if (!elsa_pam_open_session())
+      return getpwnam(elsa_pam_item_get(ELSA_PAM_ITEM_USER));
+   return NULL;
+#else
+   return getpwnam(elsa_session_login_get());
 #endif
 }
 
 Eina_Bool
 elsa_session_login(const char *session, Eina_Bool push)
 {
-#ifdef HAVE_PAM
    struct passwd *pwd;
    const char *cmd;
    char buf[PATH_MAX];
 
-   if (!elsa_pam_open_session())
+   pwd = _elsa_session_session_open();
+   endpwent();
+   if (!pwd) return ECORE_CALLBACK_CANCEL;
+   _logged = EINA_TRUE;
+   snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
+   if (!_elsa_session_begin(pwd, buf))
      {
-        pwd = getpwnam(elsa_pam_item_get(ELSA_PAM_ITEM_USER));
-        endpwent();
-        _logged = EINA_TRUE;
-        if (!pwd) return ECORE_CALLBACK_CANCEL;
-        snprintf(buf, sizeof(buf), "%s/.Xauthority", pwd->pw_dir);
-        if (!_elsa_session_begin(pwd, buf))
-          {
-             fprintf(stderr, "Elsa: couldn't open session\n");
-             exit(1);
-          }
-        if (push) elsa_history_push(pwd->pw_name, session);
-        _login = strdup(pwd->pw_name);
-        cmd = _elsa_session_find_command(pwd->pw_dir, session);
-        fprintf(stderr, PACKAGE": launching %s for user %s\n", cmd, _login);
-        _elsa_session_run(pwd, cmd, buf);
+        fprintf(stderr, "Elsa: couldn't open session\n");
+        exit(1);
      }
-#endif
+   if (push) elsa_history_push(pwd->pw_name, session);
+   cmd = _elsa_session_find_command(pwd->pw_dir, session);
+   fprintf(stderr, PACKAGE": launching %s for user %s\n", cmd, _login);
+   _elsa_session_run(pwd, cmd, buf);
    return ECORE_CALLBACK_CANCEL;
 }
 

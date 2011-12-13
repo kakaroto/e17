@@ -175,6 +175,7 @@ _elsa_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
      return ECORE_CALLBACK_PASS_ON;
    ecore_main_loop_quit();
    _elsa_client = NULL;
+   fprintf(stderr, PACKAGE": client have terminated\n");
 
    return ECORE_CALLBACK_DONE;
 }
