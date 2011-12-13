@@ -207,8 +207,8 @@ azy_value_unref(Azy_Value *val)
           }
 
         if (h) eina_hash_del_by_data(h, val);
-        if (val->str_val) eina_stringshare_del(val->str_val);
-        if (val->member_name) eina_stringshare_del(val->member_name);
+        eina_stringshare_del(val->str_val);
+        eina_stringshare_del(val->member_name);
         if (val->member_value)
           azy_value_unref(val->member_value);
         EINA_LIST_FREE(val->children, v)
