@@ -636,16 +636,6 @@ page_set(App *app,
    return idata;
 }
 
-static void
-_bt_close(void            *data,
-          Evas_Object *obj __UNUSED__,
-          void *event_info __UNUSED__)
-{
-   Evas_Object *notify = data;
-   evas_object_hide(notify);
-   evas_object_del(notify);
-}
-
 /*--------------------------GENGRID LOAD--------------------------*/
 /**
  * @brief Clear gengrid items
@@ -817,7 +807,7 @@ _toolbar_item_add(App *app, const char *icon, const char *label, int priority, E
 static Eina_Bool
 create_main_win(App *app)
 {
-   Evas_Object *layout, *btsearch;
+   Evas_Object *layout = NULL, *btsearch;
    Evas_Coord x, y, w, h;
 
    /* Window */

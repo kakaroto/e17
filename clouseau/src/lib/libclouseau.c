@@ -363,7 +363,7 @@ libclouseau_init(void)
         gl = elm_genlist_add(panes);
         evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        elm_panes_content_left_set(panes, gl);
+        elm_object_part_content_set(panes, "left", gl);
         evas_object_show(gl);
 
         evas_object_smart_callback_add(bt, "clicked", _bt_clicked, gl);
@@ -392,7 +392,7 @@ libclouseau_init(void)
         evas_object_size_hint_align_set(prop_list, EVAS_HINT_FILL, EVAS_HINT_FILL);
         evas_object_size_hint_weight_set(prop_list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
-        elm_panes_content_right_set(panes, prop_list);
+        elm_object_part_content_set(panes, "right", prop_list);
         evas_object_show(prop_list);
      }
 

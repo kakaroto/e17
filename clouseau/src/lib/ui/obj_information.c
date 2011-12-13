@@ -563,7 +563,6 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
      {
         Inf_Tree_Item *tit;
         char buf[1024];
-        const char *font;
 
         main_tit = calloc(1, sizeof(*main_tit));
         main_tit->string = eina_stringshare_add("Textblock");
