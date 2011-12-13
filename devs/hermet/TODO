@@ -26,12 +26,12 @@ evas_map - image does not updated when object image is changed on map-disabled s
 
 evas_object_item APIs - apply to all app/lib in svn.
 
-elm_transit - apply evas_map to move and resize effect.
-
 naviframe - need to block the style set while transiton is going on
 
 elementary - consider partmap and additional content_set/get/unset parts
 
 naviframe - support edje external. 
 
-naviframe - thaw the contents while they are unset on transition. 
+naviframe - edje_object -> elm_layout
+
+elm_object_item common item type check like widget_type
