@@ -3,7 +3,7 @@ collections {
       alias: "elm/genlist/item_odd/default/default";
       alias: "elm/genlist/item/default/fileselector/default";
       alias: "elm/genlist/item_odd/default/fileselector/default";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       parts {
           images.image: "list_item_selected_bg.png" COMP;
@@ -146,7 +146,7 @@ collections {
    }
    group { name: "elm/genlist/item_compress/default/default";
       alias: "elm/genlist/item_compress_odd/default/default";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       parts {
           images.image: "list_item_selected_bg.png" COMP;
@@ -291,7 +291,7 @@ collections {
    group { name: "elm/genlist/tree/default/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -611,7 +611,7 @@ collections {
    group { name: "elm/genlist/tree_compress/default/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -931,7 +931,7 @@ collections {
    group { name: "elm/genlist/tree_odd/default/default";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -1226,7 +1226,7 @@ collections {
    group { name: "elm/genlist/tree_compress_odd/default/default";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -1539,7 +1539,7 @@ collections {
       }
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       images {
@@ -1811,7 +1811,7 @@ collections {
    group { name: "elm/genlist/item_odd/default_style/default";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       images {
@@ -2058,7 +2058,7 @@ collections {
    group { name: "elm/genlist/tree/default_style/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       images {
@@ -2377,7 +2377,7 @@ collections {
    group { name: "elm/genlist/tree_odd/default_style/default";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       images {
@@ -2671,7 +2671,7 @@ collections {
 
    group { name: "elm/genlist/item_compress/double_label/default";
       alias: "elm/genlist/item_compress_odd/double_label/default";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       parts {
          images.image: "list_item_selected_bg.png" COMP;
@@ -2840,7 +2840,7 @@ collections {
    }
    group { name: "elm/genlist/item/double_label/default";
       alias: "elm/genlist/item_odd/double_label/default";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       parts {
          images.image: "list_item_selected_bg.png" COMP;
@@ -3010,7 +3010,7 @@ collections {
    group { name: "elm/genlist/tree/double_label/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -3366,7 +3366,7 @@ collections {
    group { name: "elm/genlist/tree_compress/double_label/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -3722,7 +3722,7 @@ collections {
    group { name: "elm/genlist/tree_odd/double_label/default";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -4054,7 +4054,7 @@ collections {
    group { name: "elm/genlist/item/icon_top_text_bottom/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -4309,7 +4309,7 @@ collections {
    group { name: "elm/genlist/item_odd/icon_top_text_bottom/default";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -4539,7 +4539,7 @@ collections {
    group { name: "elm/genlist/tree/icon_top_text_bottom/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -4839,7 +4839,7 @@ collections {
    group { name: "elm/genlist/tree_odd/icon_top_text_bottom/default";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -5116,7 +5116,7 @@ collections {
    group { name: "elm/genlist/tree_compress_odd/double_label/default";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -5447,7 +5447,7 @@ collections {
 
    group { name: "elm/genlist/item_compress/media/default";
       alias: "elm/genlist/item_compress_odd/media/default";
-      data.item: "labels" "elm.text.title elm.text.album-artist";
+      data.item: "texts" "elm.text.title elm.text.album-artist";
       parts {
          images.image: "list_item_selected_bg.png" COMP;
          part {
@@ -5579,7 +5579,7 @@ collections {
    group { name: "elm/genlist/item_compress/media-album/default";
       alias: "elm/genlist/item_compress_odd/media-album/default";
       data {
-         item: "labels" "elm.text.title elm.text.trackno elm.text.length";
+         item: "texts" "elm.text.title elm.text.trackno elm.text.length";
          item: "states" "elm.state.trackno";
       }
       parts {
@@ -5786,7 +5786,7 @@ collections {
    group { name: "elm/genlist/item_compress/media-preview/default";
       alias: "elm/genlist/item_compress_odd/media-preview/default";
       data {
-         item: "labels" "elm.text.album elm.text.artist";
+         item: "texts" "elm.text.album elm.text.artist";
          item: "contents" "elm.swallow.preview";
          item: "icon_size" "68";
       }
