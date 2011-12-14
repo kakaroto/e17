@@ -4,7 +4,7 @@
 # build-essential automake libtool ccache zlib1g-dev libjpeg62-dev libfreetype6-dev libdbus-1-dev liblua5.1-0-dev g++ libxext-dev libxrender-dev libpng12-dev libxrandr-dev libfontconfig1-dev autopoint libxcomposite-dev libxcursor-dev libxdamage-dev libxdmcp-dev libxfixes-dev libxfont-dev  libxi-dev libxinerama-dev libxss-dev libxv-dev libtiff4-dev librsvg2-dev libfribidi-dev libcurl4-openssl-dev libexif-dev libiptcdata0-dev libxml2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libudev-dev libxcb-shape0-dev libsigc++-2.0-dev byacc libsqlite3-dev python-dev
 
 set -e
-set -x
+#set -x
 
 export PREFIX=/usr/local
 export CFLAGS="-O2 -march=native -ffast-math -g3 -W -Wall -Wextra" # -Wshadow"
@@ -53,7 +53,7 @@ function build()
 
 build "$BUILD_BASIC"
 build "$BUILD_PYTHON_BINDINGS" "--prefix=/usr/local"
-build "$BUILD_C_BINDINGS"
+#build "$BUILD_C_BINDINGS"
 build "$BUILD_E_MODULES $BUILD_EXAMPLE $BUILD_ETC"
 
 #efenniht theme
