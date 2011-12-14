@@ -111,7 +111,7 @@
 	}
 
 group { name: "elm/gengrid/item/default/default";
-	data.item: "labels" "elm.text";
+	data.item: "texts" "elm.text";
 	data.item: "contents" "elm.swallow.icon elm.swallow.end";
 	parts {
 		part { name: "reorder_bg";
@@ -223,7 +223,7 @@ group { name: "elm/gengrid/item/default/default";
 	}
 }
 group { name: "elm/gengrid/item/default_style/default";
-	data.item: "labels" "elm.text";
+	data.item: "texts" "elm.text";
 	data.item: "contents" "elm.swallow.icon elm.swallow.end";
 	parts {
 
@@ -330,7 +330,7 @@ group { name: "elm/gengrid/item/default_style/default";
 
 group {
 	name: "elm/gengrid/item/up/default";
-	data.item: "labels" "elm.text";
+	data.item: "texts" "elm.text";
 	images {
 		image: "arrow_up.png" COMP;
 	}
@@ -364,7 +364,7 @@ group {
 
 group {
 	name: "elm/gengrid/item/album-preview/default";
-	data.item: "labels" "elm.text";
+	data.item: "texts" "elm.text";
 	data.item: "contents" "elm.swallow.icon.1 elm.swallow.icon.2 elm.swallow.icon.3 elm.swallow.icon.4";
 	data.item: "states" "have_files";
 
@@ -519,7 +519,7 @@ group {
 group { name: "elm/gengrid/item/thumb/default";
 	data {
 		item: "contents" "elm.swallow.icon";
-		item: "labels" "elm.text";
+		item: "texts" "elm.text";
 	}
 	parts {
 		GENGRID_BG;
@@ -561,7 +561,7 @@ group { name: "elm/gengrid/item/thumb/default";
 
 
 group { name: "elm/gengrid/item/ephoto-album-preview/default";
-	data.item: "labels" "elm.text";
+	data.item: "texts" "elm.text";
 	data.item: "contents" "elm.swallow.icon.1 elm.swallow.icon.2 elm.swallow.icon.3";
 	data.item: "states" "have_files";
 
@@ -727,7 +727,7 @@ group { name: "elm/gengrid/item/ephoto-album-preview/default";
 	}
 }
 group { name: "elm/gengrid/item/ephoto-up/default";
-	data.item: "labels" "elm.text";
+	data.item: "texts" "elm.text";
 
 	parts {
 
@@ -766,7 +766,7 @@ group {
 
 	data {
 		item: "contents" "excessive.swallow.icon";
-		item: "labels" "excessive.text";
+		item: "texts" "excessive.text";
 	}
 	parts {
 		part {
