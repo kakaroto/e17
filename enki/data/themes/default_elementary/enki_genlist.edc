@@ -5,7 +5,7 @@
         alias: "elm/genlist/item_compress_odd/enki_menu/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       parts {
@@ -225,7 +225,7 @@
         alias: "elm/genlist/item_compress_odd/enki_menu_title/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       parts {
@@ -443,7 +443,7 @@
         alias: "elm/genlist/tree_compress_odd/enki_menu/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       parts {
