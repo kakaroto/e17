@@ -29,7 +29,6 @@ static void _setup(void)
    evas_textblock_style_set
      (st,
       "DEFAULT='font=Sans font_size=10 align=left color=#000000 wrap=word'"
-      "br='\n'"
       );
    evas_object_textblock_style_set(o, st);
    evas_textblock_style_free(st);

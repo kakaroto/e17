@@ -38,8 +38,6 @@ static void _setup(void)
       "red='+ color=#ff0000'"
       "p='+ font=Vera,Kochi font_size=10 align=left'"
       "/p='- \n'"
-      "br='\n'"
-      "tab='\t'"
       );
    evas_object_textblock_style_set(o, st);
    evas_textblock_style_free(st);
