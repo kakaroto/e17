@@ -492,7 +492,7 @@ collections {
 
       data {
          item: "contents" "excessive.swallow.icon";
-         item: "labels" "excessive.text";
+         item: "texts" "excessive.text";
       }
       parts {
          part {

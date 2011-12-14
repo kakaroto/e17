@@ -156,7 +156,7 @@ STOCK_ICON("Envelope_closed.png", "icon/edit/dm")
 
 		data.item: "stacking" "above";
 		data.item: "selectraise" "on";
-		data.item: "labels" "text name date";
+		data.item: "texts" "text name date";
 		data.item: "icons" "icon";
 		data.item: "treesize" "20";
 

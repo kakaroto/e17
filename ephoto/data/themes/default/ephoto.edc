@@ -125,7 +125,7 @@ collections {
       }
    }
    group { name: "elm/gengrid/item/ephoto-album-preview/default";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "icons" "elm.swallow.icon.1 elm.swallow.icon.2 elm.swallow.icon.3";
       data.item: "states" "have_files";
       images {
@@ -434,7 +434,7 @@ collections {
       }
    }
    group { name: "elm/gengrid/item/ephoto-up/default";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       images {
          image: "bt_sm_base1.png" COMP;
          image: "bt_sm_shine.png" COMP;
