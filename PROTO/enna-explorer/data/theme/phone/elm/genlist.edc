@@ -7,7 +7,7 @@ group { name: "elm/genlist/item/default/default";
    alias: "elm/list/item_compress_odd/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
-   data.item: "labels" "elm.text";
+   data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.starred elm.swallow.end";
    data.item: "treesize" "20";
    //      data.item: "states" "";

@@ -1,5 +1,5 @@
 group { name: "elm/gengrid/item/default/default";
-   data.item: "labels" "elm.text";
+   data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
    images {
 
@@ -168,7 +168,7 @@ group { name: "elm/gengrid/item/default/default";
 
 
 group { name: "elm/gengrid/item/video/default";
-   data.item: "labels" "elm.text";
+   data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
    images {
 

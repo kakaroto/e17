@@ -7,7 +7,7 @@ group { name: "elm/genlist/item/default/default";
    alias: "elm/list/item_compress_odd/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
-   data.item: "labels" "elm.text";
+   data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.starred elm.swallow.end";
    data.item: "treesize" "5";
    //      data.item: "states" "";
@@ -201,7 +201,7 @@ group { name: "elm/genlist/item/panel/default";
    alias: "elm/genlist/item_compress/panel/default";
    data.item: "stacking" "above";
    data.item: "selectraise" "on";
-   data.item: "labels" "elm.text";
+   data.item: "texts" "elm.text";
    data.item: "contents" "elm.swallow.icon elm.swallow.end";
    data.item: "treesize" "16";
    //      data.item: "states" "";
@@ -379,7 +379,7 @@ group { name: "elm/genlist/item/panel/default";
 
 group { name: "elm/genlist/tree/panel/default";
    data.item: "selectraise" "on";
-   data.item: "labels" "elm.text";
+   data.item: "texts" "elm.text";
    data.item: "treesize" "5";
    //      data.item: "states" "";
    images {

@@ -6,7 +6,7 @@
       alias: "elm/genlist/item_odd/ewebkit/ewebkit";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -144,7 +144,7 @@
       alias: "elm/genlist/item_odd/double_label/ewebkit/ewebkit";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
@@ -343,7 +343,7 @@
       alias: "elm/genlist/item_odd/separator/ewebkit";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       parts {
@@ -481,7 +481,7 @@
       alias: "elm/genlist/item_odd/config/ewebkit";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       parts {
@@ -619,7 +619,7 @@
       alias: "elm/genlist/item_odd/config/selectable/ewebkit";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       parts {
@@ -771,7 +771,7 @@
       alias: "elm/genlist/item_odd/config/double_label/ewebkit/ewebkit";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "icons" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       //      data.item: "states" "";
