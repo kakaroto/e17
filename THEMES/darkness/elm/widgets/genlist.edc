@@ -1,7 +1,7 @@
    group { name: "elm/genlist/item/default/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -89,7 +89,7 @@
    group { name: "elm/genlist/item/group_index/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -131,7 +131,7 @@
    group { name: "elm/genlist/item_compress/message/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.title.1 elm.title.2 elm.text";
+      data.item: "texts" "elm.title.1 elm.title.2 elm.text";
 //      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -250,7 +250,7 @@
    group { name: "elm/genlist/item_compress/default/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -297,7 +297,7 @@
    group { name: "elm/genlist/tree/default/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -348,7 +348,7 @@
    group { name: "elm/genlist/tree_compress/default/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -401,7 +401,7 @@
    group { name: "elm/genlist/item/default_style/default";
        data.item: "stacking" "above";
        data.item: "selectraise" "on";
-       data.item: "labels" "elm.text";
+       data.item: "texts" "elm.text";
        data.item: "contents" "elm.swallow.icon elm.swallow.end";
        data.item: "treesize" "20";
        images {
@@ -452,7 +452,7 @@
    group { name: "elm/genlist/tree/default_style/default";
        data.item: "stacking" "above";
        data.item: "selectraise" "on";
-       data.item: "labels" "elm.text";
+       data.item: "texts" "elm.text";
        data.item: "contents" "elm.swallow.icon elm.swallow.end";
        data.item: "treesize" "20";
        images {
@@ -510,7 +510,7 @@
    group { name: "elm/genlist/item/double_label/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -557,7 +557,7 @@
    group { name: "elm/genlist/item_compress/double_label/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -606,7 +606,7 @@
    group { name: "elm/genlist/tree/double_label/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -659,7 +659,7 @@
    group { name: "elm/genlist/tree_compress/double_label/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text elm.text.sub";
+      data.item: "texts" "elm.text elm.text.sub";
       data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -714,7 +714,7 @@
    group { name: "elm/genlist/item/icon_top_text_bottom/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -758,7 +758,7 @@
    group { name: "elm/genlist/tree/icon_top_text_bottom/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text";
+      data.item: "texts" "elm.text";
       data.item: "contents" "elm.swallow.icon";
       data.item: "treesize" "20";
 //      data.item: "states" "";
@@ -808,7 +808,7 @@
    group { name: "elm/genlist/item_compress/media/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text.title elm.text.album-artist";
+      data.item: "texts" "elm.text.title elm.text.album-artist";
       data.item: "treesize" "20";
       images {
          image: "slider_button.png" COMP;
@@ -871,7 +871,7 @@
    group { name: "elm/genlist/item_compress/media-album/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text.title elm.text.trackno elm.text.length";
+      data.item: "texts" "elm.text.title elm.text.trackno elm.text.length";
       data.item: "states" "elm.state.trackno";
       data.item: "treesize" "20";
       images {
@@ -1013,7 +1013,7 @@
    group { name: "elm/genlist/item_compress/media-preview/default";
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
-      data.item: "labels" "elm.text.title elm.text.artist";
+      data.item: "texts" "elm.text.title elm.text.artist";
       data.item: "contents" "elm.swallow.preview";
       data.item: "treesize" "20";
       images {
