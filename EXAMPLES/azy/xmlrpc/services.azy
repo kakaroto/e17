@@ -1,0 +1,43 @@
+
+//The namespace is added before each method and file
+Azy_Namespace Demo;
+
+//struct send by the server with the response
+//Azy will create a new and free methods
+//Demo_HowAreYouResponse_new() and Demo_HowAreYouResponse_free()
+struct HowAreYouResponse
+{
+   string response;
+};
+
+//struct send by the client to the server, this is the question
+struct HowAreYouQuestion
+{
+   string question;
+};
+
+//Our module, a module contains a list of methods
+Azy_Module HowAreYou
+{
+   //code between <% %> is  C-code
+   <%
+    #include <stdio.h>
+    #include <string.h>
+   %>
+
+
+   //This method is used by the server to construct the response from the question
+   HowAreYouResponse Get(HowAreYouQuestion question)
+   <%
+     retval = Demo_HowAreYouResponse_new();
+     if(!strcmp(question->question, "How is Mystrale ?"))
+     	retval->response = eina_stringshare_add("A little ill !");
+     else if(!strcmp(question->question, "How is Fiona ?"))
+     	retval->response = eina_stringshare_add("Very fine, she jump like a rabbit !");
+     else
+     	retval->response = eina_stringshare_add("Unknown dog :/ !");
+
+     return retval;
+   %>
+}
+
