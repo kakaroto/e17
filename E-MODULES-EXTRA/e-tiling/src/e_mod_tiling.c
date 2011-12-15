@@ -1343,6 +1343,8 @@ _remove_border(E_Border *bd)
     if (stack < 0)
         return;
 
+    DBG("removing %p (%d%c)", bd, stack, _G.tinfo->conf->use_rows? 'r':'c');
+
     EINA_LIST_REMOVE(_G.tinfo->stacks[stack], bd);
     eina_hash_del(_G.border_extras, bd, NULL);
 
