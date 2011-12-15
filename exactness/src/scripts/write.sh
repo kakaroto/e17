@@ -190,13 +190,13 @@ local files_list=
 if [ -z "\$*" ]
 # No test names given, compare all
 then
-   rm -f "\$_dest_dir"/comp_* &> /dev/null
+   rm "\$_dest_dir"/comp_* &> /dev/null
    files_list=( \`ls "\$_dest_dir"/test_*.png\` )
    process_compare "\${files_list[@]}"
 else
    for test_name in \$*
    do
-      rm -f "\$_dest_dir"/comp_"\$test_name"_[0-9]*.png &> /dev/null
+      rm "\$_dest_dir"/comp_"\$test_name"_[0-9]*.png &> /dev/null
       files_list=( \`ls "\$_dest_dir"/"\$test_name"_[0-9]*.png\` )
       process_compare "\${files_list[@]}"
    done
