@@ -32,6 +32,7 @@ static int esql_init_count_ = 0;
 int ESQL_EVENT_ERROR = 0;
 int ESQL_EVENT_CONNECT = 0;
 int ESQL_EVENT_RESULT = 0;
+int ESQL_EVENT_DISCONNECT = 0;
 
 /**
  * @brief Initialize Esql
@@ -58,6 +59,7 @@ esql_init(void)
    ESQL_EVENT_ERROR = ecore_event_type_new();
    ESQL_EVENT_RESULT = ecore_event_type_new();
    ESQL_EVENT_CONNECT = ecore_event_type_new();
+   ESQL_EVENT_DISCONNECT = ecore_event_type_new();
 
    return esql_init_count_;
 
