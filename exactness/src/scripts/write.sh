@@ -84,7 +84,7 @@ DEBUG echo do_play "\$_dest_dir" "\$*"
 if [ -z "\$*" ]
 then
 # Clear all files before producing all PNG files.
-   rm -rf "\$_dest_dir" &> /dev/null
+   rm "\$_dest_dir/test_*.png" &> /dev/null
    mkdir -p "\$_dest_dir" &> /dev/null
    ELM_ENGINE="buffer" exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests
 else
