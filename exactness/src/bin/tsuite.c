@@ -877,20 +877,35 @@ elm_main(int argc, char **argv)
    Eina_List *l;
    Test_Item *item;
    int n_tests = 0;
+   int n_total = 0;
+   int n_no_rec_file = 0;
    EINA_LIST_FOREACH(tests, l, item)
       if (item->test)
         {  /* Run test and count tests committed */
+           n_total++;
+           if (!recording)
+             {  /* Avoid trying to commit tests with no ".rec" file */
+                char buf[1024];
+                sprintf(buf, "%s/%s.rec", rec_dir, item->name);
+                if (access(buf, R_OK))
+                  {
+                     printf("Skipped test, missing <%s> file.\n", buf);
+                     n_no_rec_file++;
+                     continue; /* Skip this, no access to ".rec" file */
+                  }
+             }
+
            do_test(rec_dir, item->func);
            n_tests++;
         }
 
+   if (n_no_rec_file)
+     printf("\n\nFailed to access %d record files.\n", n_no_rec_file);
+
    if (n_tests)
      {  /* Print completed message */
-        if (test_all)
-          printf("\n\nAll tests completed.\n");
-        else
-          printf("\n\n%d tests completed out of %d tests\n",
-                n_tests, argc - first_arg);
+        printf("\n\n%d tests completed out of %d tests\n",
+              n_tests, n_total);
      }
    else
      {  /* No tests committed, let user know test-name is wrong */
@@ -898,7 +913,7 @@ elm_main(int argc, char **argv)
         for(i = first_arg; i < argc; i++)
           printf("%s\n", argv[i]);
 
-        printf ("\nPlease review test name.\n");
+        printf ("\nPlease review test name; check record file.\n");
      }
 
 
