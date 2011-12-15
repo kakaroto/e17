@@ -1,0 +1,55 @@
+
+//The namespace is added before each method and file
+Azy_Namespace Demo;
+
+//struct send by the server with the response
+//Azy will create a new and free methods
+//Demo_Message_new() and Demo_Message_free()
+struct Message
+{
+   string msg;
+};
+
+//Our module, a module contains a list of methods
+Azy_Module Message
+{
+   //code between <% %> is  C-code
+   <%
+    #include <stdio.h>
+    #include <string.h>
+    #include <Esskyuehl.h>
+    #include "server_code.h"
+   %>
+
+
+   //This method is used by the server to save a message sent by the client
+   //use a asynchronous call. This way the server is not blocked during the execution of the query !
+   Message Get(Message msg)
+   <%
+	printf("Store in database: %s\n", msg->msg);
+
+	//create our data
+	Test_Data *data = calloc(1,sizeof(Test_Data));
+	data->msg = msg;
+	data->m = module;
+	//
+
+	//Esskyuehl
+	Esql *e;
+
+	e = esql_new(ESQL_TYPE_MYSQL);
+	data->e = e;
+	esql_database_set(e, "tests");
+
+	//connect to the mysql database
+	esql_connect_callback_set(e, _connect, data);
+	esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_MYSQL, "USER", "PASSWORD");
+	//
+
+	//suspend azy (only the current call) during the treatment of the sql query
+	//consequently azy can treat others client demand
+	//when the query will be done, we will resume this instance
+	azy_server_module_events_suspend(module);
+   %>
+}
+
