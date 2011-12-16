@@ -362,7 +362,7 @@ group {
                 color3: DARKNESS_VERY_DARK_BLUE 100;
                 color_class: "module_label";
                 text {
-                    font: "DejaVu-Bold";
+                    font: "Sans:style=Bold";
                     size: 24;
                     min: 1 1;
                     align: 0.5 0.5;
@@ -392,7 +392,7 @@ group {
                 color3: DARKNESS_TITLE_BLUE 25;
                 color_class: "module_label";
                 text {
-                    font: "DejaVu-Bold";
+                    font: "Sans:style=Bold";
                     size: 16;
                     min: 1 1;
                     align: 0.5 0.5;
@@ -440,7 +440,7 @@ group {
             color: DARKNESS_LIGHT_BLUE 255;
             color_class: "label_text";
             text {
-               font: "DejaVu-Bold";
+               font: "Sans:style=Bold";
                size: 12;
                min: 1 1;
                align: 0.5 0.5;

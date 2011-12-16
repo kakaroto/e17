@@ -168,7 +168,7 @@
                color3: DARKNESS_BLUE 32;
                align: 0.0 0.0;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 1;
 //                  min: 1 1;
@@ -206,7 +206,7 @@
                color3: DARKNESS_BLUE 32;
                align: 0.0 0.0;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 1;
 //                  min: 1 1;
@@ -844,7 +844,7 @@
                color: 0 0 0 128;
                color3: 0 0 0 0;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 8;
                   min: 0 1;
                   align: 0.0 0.5;
@@ -991,7 +991,7 @@
                color: 0 0 0 128;
                color3: 0 0 0 0;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 8;
                   min: 0 1;
                   align: 0.0 0.5;
@@ -1072,7 +1072,7 @@
                color: 0 0 0 128;
                color3: 0 0 0 0;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 8;
                   min: 0 1;
                   align: 0.0 0.5;

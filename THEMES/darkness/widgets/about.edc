@@ -2,12 +2,12 @@ styles
 {
    style {
       name: "about_style";
-      base: "font=DejaVu font_size=10 text_class=tb_plain align=center color=#ffffffc8 style=shadow shadow_color=#263e5780 wrap=word";
+      base: "font=Sans font_size=10 text_class=tb_plain align=center color=#ffffffc8 style=shadow shadow_color=#263e5780 wrap=word";
       
       tag:  "br" "\n";
       tag:  "ps" "ps";
-      tag:  "hilight" "+ font=DejaVu-Bold text_class=tb_light style=glow color=#fff glow2_color=#38526DA0 glow_color=#263E57EA";
-      tag:  "title" "+ font_size=12 font=DejaVu-Bold text_class=tb_big style=soft_shadow color=#fff shadow_color=#00000020";
+      tag:  "hilight" "+ font=Sans:style=Bold text_class=tb_light style=glow color=#fff glow2_color=#38526DA0 glow_color=#263E57EA";
+      tag:  "title" "+ font_size=12 font=Sans:style=Bold text_class=tb_big style=soft_shadow color=#fff shadow_color=#00000020";
       tag:  "/title" "- \n \n";
    }
 }
@@ -197,7 +197,7 @@ group {
             color_class: "about_title";
             text {
                text:     "Enlightenment";
-               font:     "DejaVu-Bold";
+               font:     "Sans:style=Bold";
                size:     16;
                min:      1 1;
                align:    0.5 0.5;
@@ -230,7 +230,7 @@ group {
             color_class: "about_version";
             text {
                text:     "0.17.0.000";
-               font:     "DejaVu-Bold";
+               font:     "Sans:style=Bold";
                size:     12;
                min:      1 1;
                align:    0.5 0.5;
@@ -340,7 +340,7 @@ group {
             color_class: "button_text";
             text {
                text:     "OK";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.5 0.5;

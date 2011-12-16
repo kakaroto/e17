@@ -68,7 +68,7 @@ group {
             color_class: "configure_title";
             text {
                text:     "Enlightenment Configuration";
-               font:     "DejaVu-Bold";
+               font:     "Sans:style=Bold";
                size:     16;
                min:      1 1;
                align:    0.5 0.5;

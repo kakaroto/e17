@@ -85,7 +85,7 @@ group {
 	    color_class: "temperature_label";
 	    text {
 	       text:     "99^C";
-	       font:     "DejaVu";
+	       font:     "Sans";
 	       size:     10;
 	       min:      1 1;
 	       align:    0.9 0.5;

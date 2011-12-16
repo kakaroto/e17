@@ -153,7 +153,7 @@ group
 		   text 
 		     {
 			text: "Rx:";
-			font: "DejaVu-Mono";
+			font: "Sans-Mono";
 			size: 9;
 			min: 0 0;
 			align: 0.0 0.5;
@@ -193,7 +193,7 @@ group
 		   text 
 		     {
 			text: "Tx:";
-			font: "DejaVu-Mono";
+			font: "Sans-Mono";
 			size: 9;
 			min: 0 0;
 			align: 1.0 0.5;
@@ -351,7 +351,7 @@ group
 	     color_class: "menu_title";
 	     text {
 		 text: "Title";
-		 font: "DejaVu-Bold";
+		 font: "Sans:style=Bold";
 		 size: 10;
 		 min: 1 1;
 		 align: 0.5 0.0;
@@ -383,7 +383,7 @@ group
 	     color_class: "menu_item";
 	     text {
 		 text: "Rx:";
-		 font: "DejaVu-Mono";
+		 font: "Sans-Mono";
 		 size: 10;
 		 min: 1 1;
 		 align: 0.0 0.5;
@@ -415,7 +415,7 @@ group
 	     color_class: "menu_item";
 	     text {
 		 text: "Tx:";
-		 font: "DejaVu-Mono";
+		 font: "Sans-Mono";
 		 size: 10;
 		 min: 1 1;
 		 align: 0.0 0.5;

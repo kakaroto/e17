@@ -443,7 +443,7 @@ group { name: "e/modules/clock/digital";
 				color3: DARKNESS_BLUE 170;
 				text {
 					text_class: "module_large";
-					font: "DejaVu-Bold";
+					font: "Sans:style=Bold";
 					size: 14;
 					fit: 1 1;
 					min: 1 1;

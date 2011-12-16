@@ -80,7 +80,7 @@ group {
             color_class: "radio_text";
             text {
                text:     "Radio Button";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;
@@ -340,7 +340,7 @@ group {
             color_class: "radio_text";
             text {
                text:     "";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.5 0.5;

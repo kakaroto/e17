@@ -49,7 +49,7 @@
                color3: 0 0 0 0;
                text {
                   text_class: "Label";
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 1;
                   align: 0.5 0.0;
@@ -78,19 +78,19 @@
        styles
        {
            style { name: "gengrid_style";
-               base: "font=DejaVu font_size=10 align=left valign=0.5 color=#000 text_class=grid_item";
+               base: "font=Sans font_size=10 align=left valign=0.5 color=#000 text_class=grid_item";
                tag:  "br" "\n";
                tag:  "ps" "ps";
-               tag:  "hilight" "+ font=DejaVu:style=Bold";
-               tag:  "b" "+ font=DejaVu:style=Bold";
+               tag:  "hilight" "+ font=Sans:style=Bold";
+               tag:  "b" "+ font=Sans:style=Bold";
                tag:  "tab" "\t";
            }
            style { name: "gengrid_selected_style";
-               base: "font=DejaVu font_size=10 align=left valign=0.5 color=#fff text_class=grid_item";
+               base: "font=Sans font_size=10 align=left valign=0.5 color=#fff text_class=grid_item";
                tag:  "br" "\n";
                tag:  "ps" "ps";
-               tag:  "hilight" "+ font=DejaVu:style=Bold";
-               tag:  "b" "+ font=DejaVu:style=Bold";
+               tag:  "hilight" "+ font=Sans:style=Bold";
+               tag:  "b" "+ font=Sans:style=Bold";
                tag:  "tab" "\t";
            }
        }
@@ -502,7 +502,7 @@
                    }
                    rel2.offset: -21 -15;
                    text {
-                       font: "DejaVu";
+                       font: "Sans";
                        size: 10;
                        min: 0 1;
                        align: 0.5 0.0;

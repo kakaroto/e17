@@ -85,7 +85,7 @@ group {
 	    color3: DARKNESS_DARK_BLUE 200;
 	    text {
 	       text: "";
-	       font: "DejaVu-Bold";
+	       font: "Sans:style=Bold";
 	       size: 10;
 	       min:  1 1;
 	       align: 0.5 0.5;

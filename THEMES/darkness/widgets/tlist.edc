@@ -2,12 +2,12 @@ styles
 {
    style {
       name: "tlist_style";
-      base: "font=DejaVu font_size=10 align=left color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
+      base: "font=Sans font_size=10 align=left color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
 
       tag:  "br" "\n";
       tag:  "ps" "ps";
-      tag:  "hilight" "+ font=DejaVu-Bold style=glow color=#fff glow2_color=#fe87 glow_color=#fa14";
-      tag:  "title" "+ font_size=12 font=DejaVu-Bold style=soft_shadow color=#fff shadow_color=#00000020";
+      tag:  "hilight" "+ font=Sans:style=Bold style=glow color=#fff glow2_color=#fe87 glow_color=#fa14";
+      tag:  "title" "+ font_size=12 font=Sans:style=Bold style=soft_shadow color=#fff shadow_color=#00000020";
       tag:  "/title" "- \n \n";
    }
 }
@@ -168,7 +168,7 @@ group {
             color: 255 255 255 255;
             color3: DARKNESS_BLUE 128;
             text {
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;
@@ -432,7 +432,7 @@ group {
             color: 0 0 0 255;
             color3: 255 255 255 128;
             text {
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;

@@ -108,7 +108,7 @@ group {
             color_class: "slider_text";
             text {
                text:     "00.00";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.5 0.5;
@@ -526,7 +526,7 @@ group {
             color_class: "slider_text";
             text {
                text:     "00.00";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.5 0.5;

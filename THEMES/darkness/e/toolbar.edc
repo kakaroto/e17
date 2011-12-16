@@ -175,7 +175,7 @@
                rel2.to: "e.text.label";
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   text_source: "e.text.label";
                   size: 10;
                   min: 1 1;
@@ -247,7 +247,7 @@
                color: DARKNESS_TEXT 255;
                color3: 0 0 0 32;
                text {
-                  font: "DejaVu-Bold";
+                  font: "Sans:style=Bold";
                   size: 10;
                   min: 1 1;
                   align: 0.5 0.5;

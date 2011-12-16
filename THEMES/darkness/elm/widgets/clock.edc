@@ -1050,7 +1050,7 @@
                rel2.relative: 0.3125000 1.0;
                color: 255 255 255 255;
                text {
-                  font:     "DejaVu";
+                  font:     "Sans";
                   text:     ":";
                   size:     10;
                   min:      1 1;
@@ -1083,7 +1083,7 @@
                rel2.relative: 0.6250000 1.0;
                color: 255 255 255 255;
                text {
-                  font:     "DejaVu";
+                  font:     "Sans";
                   text:     ":";
                   size:     10;
                   min:      1 1;
@@ -1145,7 +1145,7 @@
                rel2.relative: 0.357142857 1.0;
                color: 255 255 255 255;
                text {
-                  font:     "DejaVu";
+                  font:     "Sans";
                   text:     ":";
                   size:     10;
                   min:      1 1;
@@ -1178,7 +1178,7 @@
                rel2.relative: 0.714285714 1.0;
                color: 255 255 255 255;
                text {
-                  font:     "DejaVu";
+                  font:     "Sans";
                   text:     ":";
                   size:     10;
                   min:      1 1;
@@ -1232,7 +1232,7 @@
                rel2.relative: 0.454545455 1.0;
                color: 255 255 255 255;
                text {
-                  font:     "DejaVu";
+                  font:     "Sans";
                   text:     ":";
                   size:     10;
                   min:      1 1;
@@ -1292,7 +1292,7 @@
                rel2.relative: 0.555555556 1.0;
                color: 255 255 255 255;
                text {
-                  font:     "DejaVu";
+                  font:     "Sans";
                   text:     ":";
                   size:     10;
                   min:      1 1;

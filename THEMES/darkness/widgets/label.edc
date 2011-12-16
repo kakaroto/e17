@@ -21,7 +21,7 @@ group {
             color3: DARKNESS_BLUE 32;
             text {
                text:     "Label";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;

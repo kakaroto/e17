@@ -179,7 +179,7 @@
                rel2.offset: -2 -2;
                color: 255 255 255 255;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 0;
                   align: 0.0 0.5;

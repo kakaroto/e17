@@ -600,10 +600,10 @@ group { \
                text_source:   "e.text.title"; \
                source:        "e.text.title"; \
                min:           0 1; \
-               font:          "DejaVu-Bold"; \
+               font:          "Sans:style=Bold"; \
                size:          12; \
                text_class:    "title_bar"; \
-               font:          "DejaVu-Bold"; \
+               font:          "Sans:style=Bold"; \
                size:          11; \
             } \
          } \
@@ -716,7 +716,7 @@ group { \
             color_class: "border_title"; \
             text { \
                text:     ""; \
-               font:     "DejaVu-Bold"; \
+               font:     "Sans:style=Bold"; \
                size:     11; \
                min:      0 1; \
                align:    0.5 0.0; \
@@ -730,7 +730,7 @@ group { \
             color3: DARKNESS_TITLE_BLUE 100; \
             text { \
                text:     ""; \
-               font:     "DejaVu-Bold"; \
+               font:     "Sans:style=Bold"; \
                size:     11; \
                min:      0 1; \
                align:    0.5 0.0; \

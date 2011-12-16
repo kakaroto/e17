@@ -87,7 +87,7 @@ group {
             color: 255 255 255 255;
             text {
                text:     "Frame Label";
-               font:     "DejaVu-Bold";
+               font:     "Sans:style=Bold";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;

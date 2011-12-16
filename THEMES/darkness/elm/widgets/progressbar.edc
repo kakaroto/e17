@@ -75,7 +75,7 @@
                color: 255 255 255 255;
                color3: DARKNESS_TITLE_BLUE 128;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 0;
                   align: 0.0 0.5;
@@ -126,7 +126,7 @@
                   relative: 0.5 0.5;
                }
                text {
-                  font: "DejaVu-Bold";
+                  font: "Sans:style=Bold";
                   size: 10;
                   min: 1 1;
                   align: 0.5 0.0;
@@ -213,7 +213,7 @@
                rel2.to: "elm.text.status";
                text {
                   text_source: "elm.text.status";
-                  font: "DejaVu-Bold";
+                  font: "Sans:style=Bold";
                   size: 10;
                   min: 1 1;
                   align: 0.0 0.0;
@@ -436,7 +436,7 @@
                color: 255 255 255 255;
                color3: DARKNESS_TITLE_BLUE 128;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 0;
                   align: 0.5 0.0;
@@ -584,7 +584,7 @@
                rel2.offset: -2 0;
                color: 255 255 255 255;
                text {
-                  font: "DejaVu-Bold";
+                  font: "Sans:style=Bold";
                   size: 10;
                   min: 0 0;
                   align: 0.5 0.0;

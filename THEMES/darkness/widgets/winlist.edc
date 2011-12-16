@@ -150,7 +150,7 @@ group {
             color3: DARKNESS_BLUE 128;
             text {
                text: "Title goes here";
-               font: "DejaVu-Bold";
+               font: "Sans:style=Bold";
                size: 10;
                min:  0 1;
                align: 0.5 0.0;
@@ -199,7 +199,7 @@ group {
             color3: DARKNESS_BLUE 32;
             text {
                text: "Title goes here";
-               font: "DejaVu-Bold";
+               font: "Sans:style=Bold";
                size: 10;
                min:  0 1;
                align: 0.0 0.5;
@@ -394,7 +394,7 @@ group {
             color3: DARKNESS_BLUE 128;
             text {
                text:     "Item Label";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      0 1;
                align:    0.0 0.5;

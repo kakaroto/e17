@@ -1016,7 +1016,7 @@ group {
             color3: DARKNESS_BLUE 128;
             text {
                text:     "Item Label";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;
@@ -1354,7 +1354,7 @@ group {
             color3: DARKNESS_BLUE 128;
             text {
                text:     "Item Label";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;
@@ -1527,7 +1527,7 @@ group {
             text {
                text:     "No Title";
                size:     10;
-               font:     "DejaVu-Bold";
+               font:     "Sans:style=Bold";
                min:      0 1;
                align:    0.5 1.0;
                elipsis:  0.0;
@@ -1636,7 +1636,7 @@ group {
             text {
                text:     "No Title";
                size:     10;
-               font:     "DejaVu-Bold";
+               font:     "Sans:style=Bold";
                min:      1 1;
                align:    0.5 1.0;
                elipsis:  0.0;
@@ -1700,7 +1700,7 @@ group {
             color3: DARKNESS_BLUE 120;
             text {
                text: "";
-               font: "DejaVu-Bold";
+               font: "Sans:style=Bold";
                size: 12;
                min:  0 0;
                align: 0.5 0.5;
@@ -1764,7 +1764,7 @@ group {
             color3: DARKNESS_LIGHT_BLUE 128;
             text {
                text: "";
-               font: "DejaVu-Bold";
+               font: "Sans:style=Bold";
                size: 10;
                min:  1 1;
                align: 1.0 0.5;

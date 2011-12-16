@@ -95,7 +95,7 @@ group {
             color_class: "ilist_item";
             text {
                text:     "Item Label";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;
@@ -243,7 +243,7 @@ group {
             color_class: "ilist_item_odd";            
             text {
                text:     "Item Label";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;
@@ -349,7 +349,7 @@ group {
             color_class: "ilist_header";            
             text {
                text:     "Item Label";
-               font:     "DejaVu-Bold";
+               font:     "Sans:style=Bold";
                size:     16;
                min:      1 1;
                align:    0.0 0.5;

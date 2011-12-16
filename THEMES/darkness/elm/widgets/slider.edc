@@ -113,7 +113,7 @@
                rel2.offset: -1 -5;
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 0;
                   align: 0.0 0.5;
@@ -202,7 +202,7 @@
                rel2.offset: 0 -9;
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 0;
                   align: 0.0 0.5;
@@ -505,7 +505,7 @@
                rel2.offset: -1 -1;
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 0;
                   align: 0.5 0.0;
@@ -595,7 +595,7 @@
                rel2.offset: -9 0;
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 0;
                   align: 0.5 0.0;

@@ -71,7 +71,7 @@ group {
             color_class: "menu_title";
             text {
                text:     "Menu Title";
-               font:     "DejaVu-Bold";
+               font:     "Sans:style=Bold";
                size:     12;
                min:      0 0;
                align:    0.5 0.0;
@@ -455,7 +455,7 @@ group {
             color_class: "menu_item";
             text {
                text:     "Item Label";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.0 0.5;

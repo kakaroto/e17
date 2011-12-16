@@ -113,7 +113,7 @@
                    }
                    color: DARKNESS_TEXT 255;
                    text {
-                       font: "DejaVu";
+                       font: "Sans";
                        size: 10;
                        min: 1 1;
                        align: 0.5 0.5;
@@ -553,7 +553,7 @@
                    }
                    color: 255 255 255 255;
                    text {
-                       font: "DejaVu";
+                       font: "Sans";
                        size: 10;
                        min: 1 1;
                        align: 0.5 0.5;

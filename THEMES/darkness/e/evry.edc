@@ -209,7 +209,7 @@
                color: DARKNESS_TEXT 255;
                color3: 0 0 0 32;
                text {
-                  font: "DejaVu-Bold";
+                  font: "Sans:style=Bold";
                   size: 11;
                   align: 0.0 0.5;
                   min: 1 1;
@@ -809,7 +809,7 @@
                /* visible: 0; */
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu-Bold";
+                  font: "Sans:style=Bold";
                   size: 9;
                   min: 0 1;
                   align: 0.0 1.0;
@@ -839,7 +839,7 @@
                color: DARKNESS_TEXT 255;
                color3: 0 0 0 0;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 9;
                   min: 0 1;
                   align: 1.0 0.0;
@@ -1038,7 +1038,7 @@
                rel2.to: "e.text.label";
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   text_source: "e.text.label";
                   size: 10;
                   min: 0 1;
@@ -1069,7 +1069,7 @@
                visible: 0;
                color: 245 245 245 255;
                text {
-                  font: "DejaVu-Bold";
+                  font: "Sans:style=Bold";
                   size: 9;
                   min: 0 1;
                   align: 0.5 0.5;
@@ -1166,7 +1166,7 @@
                rel2.to: "e.text.label";
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   text_source: "e.text.label";
                   size: 10;
                   min: 0 1;
@@ -1214,7 +1214,7 @@
                visible: 0;
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu-Bold";
+                  font: "Sans:style=Bold";
                   size: 9;
                   min: 0 1;
                   align: 0.5 0.5;
@@ -1479,7 +1479,7 @@
                color: DARKNESS_TEXT 255;
                color3: 0 0 0 0;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 1;
                   align: 0.5 0.0;
@@ -1766,7 +1766,7 @@
                          to_y: "spacer";
                }
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 1;
                   align: 0.0 0.0;
@@ -1801,7 +1801,7 @@
                   to_x: "arrow";
                }
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 8;
                   min: 0 1;
                   align: 0.0 0.0;
@@ -2063,9 +2063,9 @@
       styles {
          style {
             name: "everything_textblock_style";
-            base: "font=DejaVu font_size=10 align=left color=#fff";
-            tag:  "hilight" "+ font=DejaVu:style=Bold color=#0c0c0c";
-            tag:  "b" "+ font=DejaVu:style=Bold font_size=9";
+            base: "font=Sans font_size=10 align=left color=#fff";
+            tag:  "hilight" "+ font=Sans:style=Bold color=#0c0c0c";
+            tag:  "b" "+ font=Sans:style=Bold font_size=9";
             tag:  "br" "\n";
             tag:  "ps" "ps";
             tag:  "/title" "- \n \n";

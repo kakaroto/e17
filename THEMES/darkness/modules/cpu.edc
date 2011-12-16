@@ -2,7 +2,7 @@
 styles {
    style {
       name: "cpu_style";
-      base: "font=DejaVu-Bold font_size=10 text_class=module_large align=right color=#fff style=soft_shadow shadow_color=#91a9c3 wrap=word";
+      base: "font=Sans:style=Bold font_size=10 text_class=module_large align=right color=#fff style=soft_shadow shadow_color=#91a9c3 wrap=word";
       tag:  "br" "\n";
       tag:  "ps" "ps";
    }
@@ -42,7 +42,7 @@ group {
             text {
                text: "CPU:";
                size: 10;
-               font: "DejaVu-Bold";
+               font: "Sans:style=Bold";
                min: 1 1;
                align: 0.0 0.5;
                text_class: "module_small";	       
@@ -258,7 +258,7 @@ group {
                     text:     "1";
                     min:      1 1;
                     size:     30;
-                    font:     "DejaVu-Bold";
+                    font:     "Sans:style=Bold";
                     align:    0.5 0.5;
                 }
             }
@@ -297,7 +297,7 @@ group {
                     text:     "2";
                     min:      1 1;
                     size:     30;
-                    font:     "DejaVu-Bold";
+                    font:     "Sans:style=Bold";
                     align:    0.5 0.5;
                 }
             }
@@ -340,7 +340,7 @@ group {
                     text:     "3";
                     min:      1 1;
                     size:     30;
-                    font:     "DejaVu-Bold";
+                    font:     "Sans:style=Bold";
                     align:    0.5 0.5;
                 }
             }
@@ -380,7 +380,7 @@ group {
                     text:     "4";
                     min:      1 1;
                     size:     30;
-                    font:     "DejaVu-Bold";
+                    font:     "Sans:style=Bold";
                     align:    0.5 0.5;
                 }
             }

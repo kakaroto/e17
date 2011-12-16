@@ -68,12 +68,12 @@ styles
 {
    style {
       name: "theme_about_style";
-      base: "font=DejaVu style=glow color=#fff glow2_color=#38526DA0 glow_color=#263E57EA font_size=12 align=center wrap=word";
+      base: "font=Sans style=glow color=#fff glow2_color=#38526DA0 glow_color=#263E57EA font_size=12 align=center wrap=word";
 
       tag:  "br" "\n";
       tag:  "ps" "ps";
-      tag:  "hilight" "+ font=DejaVu-Bold";
-      tag:  "invisible" "+ font=DejaVu font_size=7 style=none color=#0002";
+      tag:  "hilight" "+ font=Sans:style=Bold";
+      tag:  "invisible" "+ font=Sans font_size=7 style=none color=#0002";
    }
 }
 
@@ -203,7 +203,7 @@ group {
             color_class: "button_text";
             text {
                text:     "OK";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      1 1;
                align:    0.5 0.5;

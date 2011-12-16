@@ -245,7 +245,7 @@ group {
             color3: DARKNESS_BLUE 32;
             text {
                text: "COMMAND";
-               font: "DejaVu-Bold";
+               font: "Sans:style=Bold";
                size: 16;
                align: 0.0 0.5;
                min: 1 1;
@@ -499,7 +499,7 @@ group {
             color3: DARKNESS_BLUE 32;
             text {
                text:     "Item Label";
-               font:     "DejaVu";
+               font:     "Sans";
                size:     10;
                min:      0 1;
                align:    0.0 0.5;

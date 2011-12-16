@@ -3,7 +3,7 @@
 styles {
    style {
       name: "notification_style";
-      base: "font=DejaVu font_size=12 text_class=tb_plain align=left color=#ffffff style=shadow shadow_color=#263e5780 wrap=word";
+      base: "font=Sans font_size=12 text_class=tb_plain align=left color=#ffffff style=shadow shadow_color=#263e5780 wrap=word";
       
       tag:  "br" "\n";
       tag:  "ps" "ps";
@@ -137,7 +137,7 @@ group {
                   /* text_source: "notification.text.title"; */
                   min: 0 1;
                   size: 14;
-                  font: "DejaVu-Bold";
+                  font: "Sans:style=Bold";
                   style: "notification_style";
                }
             }

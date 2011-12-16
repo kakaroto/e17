@@ -124,7 +124,7 @@
                rel2.offset: -2 -2;
                color: DARKNESS_TEXT 255;
                text {
-                  font: "DejaVu";
+                  font: "Sans";
                   size: 10;
                   min: 0 1;
                   align: 0.0 0.5;

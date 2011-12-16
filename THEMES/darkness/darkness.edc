@@ -146,12 +146,6 @@ data {
    item: "theme/license"  "Artistic 2.0";
 }
 
-fonts {
-   font: "fonts/DejaVuSans.ttf"   "DejaVu";
-   font: "fonts/DejaVuSans-Bold.ttf" "DejaVu-Bold";
-   font: "fonts/DejaVuSansMono.ttf" "DejaVu-Mono";
-}
-
 #include "images/images.edc"
 
 collections {
