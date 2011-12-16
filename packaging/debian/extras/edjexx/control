@@ -1,7 +1,7 @@
 Source: edjexx
 Priority: optional
 Maintainer: Andreas Volz <andreas.volz@tux-style.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libevasxx-dev, libedje-dev, cdbs, pkg-config, libtool
+Build-Depends: debhelper (>= 7), autotools-dev, libevasxx-dev, libedje-dev (>= 1.0.0), cdbs, pkg-config, libtool
 Standards-Version: 3.8.3
 Section: libs
 Homepage: http://trac.enlightenment.org/e/wiki/EFLxx

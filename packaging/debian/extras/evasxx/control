@@ -1,7 +1,7 @@
 Source: evasxx
 Priority: optional
 Maintainer: Andreas Volz <andreas.volz@tux-style.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libeflxx-dev, libevas-dev, libeet-dev, cdbs, pkg-config, libtool, libsigc++-2.0-dev
+Build-Depends: debhelper (>= 7), autotools-dev, libeflxx-dev, libevas-dev (>= 1.0.0), libeet-dev (>= 1.0.0), cdbs, pkg-config, libtool, libsigc++-2.0-dev
 Standards-Version: 3.8.3
 Section: libs
 Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
