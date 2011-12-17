@@ -1288,9 +1288,15 @@ _add_border(E_Border *bd)
                               extra->expected.h);
         _e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
         EINA_LIST_APPEND(_G.tinfo->stacks[0], bd);
-        e_zone_useful_geometry_get(bd->zone,
-                                   &_G.tinfo->pos[0], NULL,
-                                   &_G.tinfo->size[0], NULL);
+        if (_G.tinfo->conf->use_rows) {
+            e_zone_useful_geometry_get(bd->zone,
+                                       NULL, &_G.tinfo->pos[0],
+                                       NULL, &_G.tinfo->size[0]);
+        } else {
+            e_zone_useful_geometry_get(bd->zone,
+                                       &_G.tinfo->pos[0], NULL,
+                                       &_G.tinfo->size[0], NULL);
+        }
         stack = 0;
     }
     DBG("expected: %dx%d+%d+%d (%p)",
