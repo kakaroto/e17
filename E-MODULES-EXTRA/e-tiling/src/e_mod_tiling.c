@@ -113,7 +113,6 @@ static struct tiling_mod_main_g
     transition_overlay_t *transition_overlay;
     Ecore_Timer          *action_timer;
     E_Border             *focused_bd;
-    E_Border             *hooked_bd;
     void (*action_cb)(E_Border *bd, Border_Extra *extra);
 
     tiling_input_mode_t   input_mode;
@@ -295,18 +294,7 @@ _e_border_move_resize(E_Border *bd,
                       int       h)
 {
     DBG("%p -> %dx%d+%d+%d", bd, w, h, x, y);
-    if (_G.hooked_bd == bd) {
-        bd->x = x;
-        bd->y = y;
-        bd->w = w;
-        bd->h = h;
-        bd->changes.pos = true;
-        bd->changes.size = true;
-        bd->changed = true;
-        bd->placed = true;
-    } else {
-        e_border_move_resize(bd, x, y, w, h);
-    }
+    e_border_move_resize(bd, x, y, w, h);
 }
 
 static void
@@ -315,16 +303,7 @@ _e_border_move(E_Border *bd,
                int       y)
 {
     DBG("%p -> +%d+%d", bd, x, y);
-    if (_G.hooked_bd == bd) {
-        bd->changed = false;
-        bd->x = x;
-        bd->y = y;
-        bd->changes.pos = true;
-        bd->changed = true;
-        bd->placed = true;
-    } else {
-        e_border_move(bd, x, y);
-    }
+    e_border_move(bd, x, y);
 }
 
 static void
@@ -333,16 +312,7 @@ _e_border_resize(E_Border *bd,
                  int       h)
 {
     DBG("%p -> %dx%d", bd, w, h);
-    if (_G.hooked_bd == bd) {
-        bd->changed = false;
-        bd->w = w;
-        bd->h = h;
-        bd->changes.size = true;
-        bd->changed = true;
-        bd->placed = true;
-    } else {
-        e_border_resize(bd, w, h);
-    }
+    e_border_resize(bd, w, h);
 }
 
 static void
@@ -3258,8 +3228,6 @@ _e_module_tiling_cb_hook(void *data,
     E_Border *bd = border;
     int stack = -1;
 
-    _G.hooked_bd = bd;
-
     if (_G.input_mode != INPUT_MODE_NONE
     &&  _G.input_mode != INPUT_MODE_MOVING
     &&  _G.input_mode != INPUT_MODE_TRANSITION)
@@ -3268,32 +3236,32 @@ _e_module_tiling_cb_hook(void *data,
     }
 
     if (!bd) {
-        goto end;
+        return;
     }
 
     check_tinfo(bd->desk);
 
     if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
-        goto end;
+        return;
     }
 
     if (is_floating_window(bd)) {
-        goto end;
+        return;
     }
     if (!is_tilable(bd)) {
-        goto end;
+        return;
     }
 
     stack = get_stack(bd);
 
     if (stack >= 0 && bd->fullscreen) {
         _remove_border(bd);
-        goto end;
+        return;
     }
 
     if (!bd->changes.size && !bd->changes.pos && !bd->changes.border
     && stack >= 0) {
-        goto end;
+        return;
     }
 
     DBG("Show: %p / '%s' / '%s', (%d,%d), changes(size=%d, position=%d, border=%d)"
@@ -3318,7 +3286,7 @@ _e_module_tiling_cb_hook(void *data,
         extra = eina_hash_find(_G.border_extras, &bd);
         if (!extra) {
             ERR("No extra for %p", bd);
-            goto end;
+            return;
         }
 
         DBG("expected: %dx%d+%d+%d",
@@ -3347,7 +3315,7 @@ _e_module_tiling_cb_hook(void *data,
         if (bd->x == extra->expected.x && bd->y == extra->expected.y
         &&  bd->w == extra->expected.w && bd->h == extra->expected.h)
         {
-            goto end;
+            return;
         }
         if (bd->maximized) {
             bool changed = false;
@@ -3394,7 +3362,7 @@ _e_module_tiling_cb_hook(void *data,
                 }
             }
             if (changed)
-                goto end;
+                return;
         }
 
         if ((bd->changes.border && bd->changes.size)
@@ -3404,7 +3372,7 @@ _e_module_tiling_cb_hook(void *data,
                                   extra->expected.y,
                                   extra->expected.w,
                                   extra->expected.h);
-            goto end;
+            return;
         }
 
         if (abs(extra->expected.w - bd->w) >= bd->client.icccm.step_w) {
@@ -3437,8 +3405,6 @@ _e_module_tiling_cb_hook(void *data,
             _check_moving_anims(bd, extra, stack);
         }
     }
-end:
-    _G.hooked_bd = NULL;
 }
 
 static Eina_Bool
