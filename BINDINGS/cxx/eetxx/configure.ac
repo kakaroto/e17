@@ -22,7 +22,7 @@ AM_PROG_LIBTOOL
 
 
 
-PKG_CHECK_MODULES(EFL, eet)
+PKG_CHECK_MODULES(EFL, eet >= 1.4.0)
 AC_OUTPUT([
 eetxx.pc
 eetxx-uninstalled.pc
