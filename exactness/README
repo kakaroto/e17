@@ -69,8 +69,8 @@ Testing with exactness composed of the following stages:
    in a specific location.
 
    Example:
-   exactness -i -b ~/e17/exactness/data/recordings test_hover
-   (locate "test_hover.rec" in "~/e17/exactness/data/recordings")
+   exactness -i -b ${prefix}/share/exactness/recordings test_hover
+   (locate "test_hover.rec" in "${prefix}/share/exactness/recordings")
    
 
 3. Test playing, producing current state PNG files.
@@ -83,9 +83,9 @@ Testing with exactness composed of the following stages:
 
    You may put record-files at specific folder with -b (base dir) argument:
    Example:
-   exactness -p -b ~/e17/exactness/data/recordings test_hover
+   exactness -p -b ${prefix}/share/exactness/recordings
 
-   Play test_hover, find ".rec" file at "~/e17/exactness/data/recordings"
+   Play test_hover, find ".rec" file at "${prefix}/share/exactness/recordings"
    Write resulting PNG files at cwd/current (default) dir.
    
 4. Comparing PNG files.
