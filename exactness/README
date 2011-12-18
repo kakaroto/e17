@@ -73,36 +73,32 @@ Testing with exactness composed of the following stages:
    (locate "test_hover.rec" in "${prefix}/share/exactness/recordings")
    
 
-3. Test playing, producing current state PNG files.
+3. Test playing, producing current state PNG files and comparison files (4).
    After doing Test Initiation (2) and updating elementary code,
    you may run tests for current state of elm:
 
    exactness -p [-b BaseDir] [-d DestDir] TestName1 [TestName2 ...]
    Omitting DestDir param will cause exactness place all PNG files
    under (default) folder named 'current'.
+   Note that comparing PNG files (4) is also done upon completion of play.
+   This will produce comp_*.png files in your DestDir.
 
    You may put record-files at specific folder with -b (base dir) argument:
    Example:
    exactness -p -b ${prefix}/share/exactness/recordings
 
    Play test_hover, find ".rec" file at "${prefix}/share/exactness/recordings"
-   Write resulting PNG files at cwd/current (default) dir.
+   Write resulting PNG files at cwd/current (default) dir
+   along with comp_*.png files.
    
 4. Comparing PNG files.
    This is the final stage of testing in which we compare output
    before code update and after the update.
-   Matching PNG files from 'orig' and 'current' folder are compared.
+   Following 'play' action, matching PNG files from 'orig' and 'current'
+   folder are compared.
+
    When all comparisons done you get final report of (N) files did not match.
    In case difference was found, you may look at comp_*.png files in DestDir.
-
-   To run a comparison:
-   exactness -c [-d DestDir] TestName1 [TestName2 ...]
-   All comp_*.png files will reside in DestDir.
-   Omitting DestDir cause exactness to use default of 'current' folder name.
-
-   Optional:
-   You may also do play and compare in a single command:
-   exactness -p -c [-d DestDir] TestName1 [TestName2 ...]
 
 5. fail_if(expr) macro:
    You may use fail_if(expr); macro to verify variable value on-the-fly.

@@ -35,12 +35,7 @@ echo "To play and rewrite 'orig' dir, use init option for all test: \$0 -i [-b B
 echo "To play and rewrite 'orig' dir, use init option for selected tests: \$0 -i [-b BaseDir] [TestName1 ...]"
 echo "Use BaseDir arg tell \$0 where record-files are found."
 echo "Otherwise, \$0 will try to find it in cwd."
-echo
-echo "Run comprison to produce comp_*.png files"
-echo "To compare all tests:"
-echo "\$0 -c [-d DestDir]"
-echo "To compare specific tests:"
-echo "\$0 -c -d DestDir TestName1 [TestName2 ...]"
+echo "This will also run comprison to produce comp_*.png files in DestDir"
 echo
 echo "NOTE:"
 echo "For all actions require DestDir, when omitting this param we use 'current' as default."
@@ -237,6 +232,7 @@ do
       d)  _dest_dir="\$OPTARG"
          ;;
       p)  _play=1
+          _compare=1
           _remove_fail=1
          ;;
       r)  _record=1
