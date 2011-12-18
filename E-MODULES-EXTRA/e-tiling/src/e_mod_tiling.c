@@ -358,7 +358,11 @@ _restore_border(E_Border *bd)
                           extra->orig.geom.h);
     e_border_layer_set(bd, extra->orig.layer);
     e_hints_window_stacking_set(bd, extra->orig.stacking);
-    e_border_maximize(bd, extra->orig.maximized);
+    if (extra->orig.maximized) {
+        e_border_maximize(bd, extra->orig.maximized);
+        bd->maximized = extra->orig.maximized;
+    }
+
 
     change_window_border(bd, extra->orig.bordername);
 }
