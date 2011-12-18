@@ -77,14 +77,19 @@ static struct tiling_mod_main_g
     char                  edj_path[PATH_MAX];
     E_Config_DD          *config_edd,
                          *vdesk_edd;
-    E_Border_Hook        *hook;
     int                   currently_switching_desktop;
     Ecore_X_Window        action_input_win;
-    Ecore_Event_Handler  *handler_key;
-    Ecore_Event_Handler  *handler_hide,
+    Ecore_Event_Handler  *handler_key,
+                         *handler_border_resize,
+                         *handler_border_move,
+                         *handler_border_add,
+                         *handler_border_remove,
+                         *handler_border_iconify,
+                         *handler_border_uniconify,
+                         *handler_border_stick,
+                         *handler_border_unstick,
                          *handler_desk_show,
                          *handler_desk_before_show,
-                         *handler_mouse_move,
                          *handler_desk_set;
 
     Tiling_Info          *tinfo;
@@ -3231,19 +3236,10 @@ _e_mod_action_go_cb(E_Object   *obj,
 /* }}} */
 /* Hooks {{{*/
 
-static void
-_e_module_tiling_cb_hook(void *data,
-                         void *border)
+static void _move_or_resize(E_Border *bd)
 {
-    E_Border *bd = border;
+    Border_Extra *extra;
     int stack = -1;
-
-    if (_G.input_mode != INPUT_MODE_NONE
-    &&  _G.input_mode != INPUT_MODE_MOVING
-    &&  _G.input_mode != INPUT_MODE_TRANSITION)
-    {
-        end_special_input();
-    }
 
     if (!bd) {
         return;
@@ -3255,26 +3251,12 @@ _e_module_tiling_cb_hook(void *data,
         return;
     }
 
-    if (is_floating_window(bd)) {
-        return;
-    }
-    if (!is_tilable(bd)) {
-        return;
-    }
-
     stack = get_stack(bd);
-
-    if (stack >= 0 && bd->fullscreen) {
-        _remove_border(bd);
+    if (stack < 0) {
         return;
     }
 
-    if (!bd->changes.size && !bd->changes.pos && !bd->changes.border
-    && stack >= 0) {
-        return;
-    }
-
-    DBG("Show: %p / '%s' / '%s', (%d,%d), changes(size=%d, position=%d, border=%d)"
+    DBG("Resize: %p / '%s' / '%s', (%d,%d), changes(size=%d, position=%d, border=%d)"
         " g:%dx%d+%d+%d bdname:'%s' (stack:%d%c) maximized:%s fs:%s",
         bd, bd->client.icccm.title, bd->client.netwm.name,
         bd->desk->x, bd->desk->y,
@@ -3286,144 +3268,199 @@ _e_module_tiling_cb_hook(void *data,
         (bd->maximized & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_HORIZONTAL ? "HORIZONTAL" :
         "BOTH", bd->fullscreen? "true": "false");
 
-    if (stack < 0) {
-        _add_border(bd);
-    } else {
-        Border_Extra *extra;
+    extra = eina_hash_find(_G.border_extras, &bd);
+    if (!extra) {
+        ERR("No extra for %p", bd);
+        return;
+    }
 
-        /* Move or Resize */
+    DBG("expected: %dx%d+%d+%d",
+        extra->expected.w,
+        extra->expected.h,
+        extra->expected.x,
+        extra->expected.y);
+    DBG("delta:%dx%d,%d,%d. step:%dx%d. base:%dx%d",
+        bd->w - extra->expected.w, bd->h - extra->expected.h,
+        bd->x - extra->expected.x, bd->y - extra->expected.y,
+        bd->client.icccm.step_w, bd->client.icccm.step_h,
+        bd->client.icccm.base_w, bd->client.icccm.base_h);
 
-        extra = eina_hash_find(_G.border_extras, &bd);
-        if (!extra) {
-            ERR("No extra for %p", bd);
-            return;
-        }
-
-        DBG("expected: %dx%d+%d+%d",
-            extra->expected.w,
-            extra->expected.h,
-            extra->expected.x,
-            extra->expected.y);
-        DBG("delta:%dx%d,%d,%d. step:%dx%d. base:%dx%d",
-            bd->w - extra->expected.w, bd->h - extra->expected.h,
-            bd->x - extra->expected.x, bd->y - extra->expected.y,
-            bd->client.icccm.step_w, bd->client.icccm.step_h,
-            bd->client.icccm.base_w, bd->client.icccm.base_h);
-
-        if (stack == 0 && !_G.tinfo->stacks[1] && !_G.tinfo->stacks[0]->next) {
-            if (bd->maximized) {
-                extra->expected.x = bd->x;
-                extra->expected.y = bd->y;
-                extra->expected.w = bd->w;
-                extra->expected.h = bd->h;
-            } else {
-                /* TODO: what if a window doesn't want to be maximized? */
-                _e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
-                _e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
-            }
-        }
-        if (bd->x == extra->expected.x && bd->y == extra->expected.y
-        &&  bd->w == extra->expected.w && bd->h == extra->expected.h)
-        {
-            return;
-        }
+    if (stack == 0 && !_G.tinfo->stacks[1] && !_G.tinfo->stacks[0]->next) {
         if (bd->maximized) {
-            bool changed = false;
+            extra->expected.x = bd->x;
+            extra->expected.y = bd->y;
+            extra->expected.w = bd->w;
+            extra->expected.h = bd->h;
+        } else {
+            /* TODO: what if a window doesn't want to be maximized? */
+            _e_border_unmaximize(bd, E_MAXIMIZE_BOTH);
+            _e_border_maximize(bd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
+        }
+    }
+    if (bd->x == extra->expected.x && bd->y == extra->expected.y
+    &&  bd->w == extra->expected.w && bd->h == extra->expected.h)
+    {
+        return;
+    }
+    if (bd->maximized) {
+        bool changed = false;
 
-            if (_G.tinfo->conf->use_rows) {
-                if (stack > 0 && bd->maximized & E_MAXIMIZE_VERTICAL) {
-                     _e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
-                     _e_border_move_resize(bd,
-                                           extra->expected.x,
-                                           extra->expected.y,
-                                           extra->expected.w,
-                                           extra->expected.h);
-                     changed = true;
-                }
-                if (bd->maximized & E_MAXIMIZE_HORIZONTAL
-                && eina_list_count(_G.tinfo->stacks[stack]) > 1) {
-                     _e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
-                     _e_border_move_resize(bd,
-                                           extra->expected.x,
-                                           extra->expected.y,
-                                           extra->expected.w,
-                                           extra->expected.h);
-                     changed = true;
-                }
-            } else {
-                if (stack > 0 && bd->maximized & E_MAXIMIZE_HORIZONTAL) {
-                     _e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
-                     _e_border_move_resize(bd,
-                                           extra->expected.x,
-                                           extra->expected.y,
-                                           extra->expected.w,
-                                           extra->expected.h);
-                     changed = true;
-                }
-                if (bd->maximized & E_MAXIMIZE_VERTICAL
-                && eina_list_count(_G.tinfo->stacks[stack]) > 1) {
-                     _e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
-                     _e_border_move_resize(bd,
-                                           extra->expected.x,
-                                           extra->expected.y,
-                                           extra->expected.w,
-                                           extra->expected.h);
-                     changed = true;
-                }
+        if (_G.tinfo->conf->use_rows) {
+            if (stack > 0 && bd->maximized & E_MAXIMIZE_VERTICAL) {
+                 _e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                 _e_border_move_resize(bd,
+                                       extra->expected.x,
+                                       extra->expected.y,
+                                       extra->expected.w,
+                                       extra->expected.h);
+                 changed = true;
             }
-            if (changed)
-                return;
+            if (bd->maximized & E_MAXIMIZE_HORIZONTAL
+            && eina_list_count(_G.tinfo->stacks[stack]) > 1) {
+                 _e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                 _e_border_move_resize(bd,
+                                       extra->expected.x,
+                                       extra->expected.y,
+                                       extra->expected.w,
+                                       extra->expected.h);
+                 changed = true;
+            }
+        } else {
+            if (stack > 0 && bd->maximized & E_MAXIMIZE_HORIZONTAL) {
+                 _e_border_unmaximize(bd, E_MAXIMIZE_HORIZONTAL);
+                 _e_border_move_resize(bd,
+                                       extra->expected.x,
+                                       extra->expected.y,
+                                       extra->expected.w,
+                                       extra->expected.h);
+                 changed = true;
+            }
+            if (bd->maximized & E_MAXIMIZE_VERTICAL
+            && eina_list_count(_G.tinfo->stacks[stack]) > 1) {
+                 _e_border_unmaximize(bd, E_MAXIMIZE_VERTICAL);
+                 _e_border_move_resize(bd,
+                                       extra->expected.x,
+                                       extra->expected.y,
+                                       extra->expected.w,
+                                       extra->expected.h);
+                 changed = true;
+            }
         }
-
-        if ((bd->changes.border && bd->changes.size)
-            || bd->x <= 0 || bd->y <= 0) {
-            _e_border_move_resize(bd,
-                                  extra->expected.x,
-                                  extra->expected.y,
-                                  extra->expected.w,
-                                  extra->expected.h);
+        if (changed)
             return;
-        }
+    }
 
-        if (abs(extra->expected.w - bd->w) >= bd->client.icccm.step_w) {
-            if (_G.tinfo->conf->use_rows)
-                _move_resize_border_in_stack(bd, extra, stack, TILING_RESIZE);
-            else
-                _move_resize_border_stack(bd, extra, stack, TILING_RESIZE);
-        }
-        if (abs(extra->expected.h - bd->h) >= bd->client.icccm.step_h) {
-            if (_G.tinfo->conf->use_rows)
-                _move_resize_border_stack(bd, extra, stack, TILING_RESIZE);
-            else
-                _move_resize_border_in_stack(bd, extra, stack, TILING_RESIZE);
-        }
-        if (extra->expected.x != bd->x) {
-            if (_G.tinfo->conf->use_rows)
-                _move_resize_border_in_stack(bd, extra, stack, TILING_MOVE);
-            else
-                _move_resize_border_stack(bd, extra, stack, TILING_MOVE);
-        }
-        if (extra->expected.y != bd->y) {
-            if (_G.tinfo->conf->use_rows)
-                _move_resize_border_stack(bd, extra, stack, TILING_MOVE);
-            else
-                _move_resize_border_in_stack(bd, extra, stack, TILING_MOVE);
-        }
+    if ((bd->changes.border && bd->changes.size)
+        || bd->x <= 0 || bd->y <= 0) {
+        _e_border_move_resize(bd,
+                              extra->expected.x,
+                              extra->expected.y,
+                              extra->expected.w,
+                              extra->expected.h);
+        return;
+    }
 
-        if (_G.input_mode == INPUT_MODE_MOVING
-        &&  bd == _G.focused_bd) {
-            _check_moving_anims(bd, extra, stack);
-        }
+    if (abs(extra->expected.w - bd->w) >= bd->client.icccm.step_w) {
+        if (_G.tinfo->conf->use_rows)
+            _move_resize_border_in_stack(bd, extra, stack, TILING_RESIZE);
+        else
+            _move_resize_border_stack(bd, extra, stack, TILING_RESIZE);
+    }
+    if (abs(extra->expected.h - bd->h) >= bd->client.icccm.step_h) {
+        if (_G.tinfo->conf->use_rows)
+            _move_resize_border_stack(bd, extra, stack, TILING_RESIZE);
+        else
+            _move_resize_border_in_stack(bd, extra, stack, TILING_RESIZE);
+    }
+    if (extra->expected.x != bd->x) {
+        if (_G.tinfo->conf->use_rows)
+            _move_resize_border_in_stack(bd, extra, stack, TILING_MOVE);
+        else
+            _move_resize_border_stack(bd, extra, stack, TILING_MOVE);
+    }
+    if (extra->expected.y != bd->y) {
+        if (_G.tinfo->conf->use_rows)
+            _move_resize_border_stack(bd, extra, stack, TILING_MOVE);
+        else
+            _move_resize_border_in_stack(bd, extra, stack, TILING_MOVE);
+    }
+
+    if (_G.input_mode == INPUT_MODE_MOVING
+    &&  bd == _G.focused_bd) {
+        _check_moving_anims(bd, extra, stack);
     }
 }
 
 static Eina_Bool
-_e_module_tiling_hide_hook(void *data,
-                           int   type,
-                           void *event)
+_resize_hook(void *data, int type, E_Event_Border_Resize *event)
 {
-    E_Event_Border_Hide *ev = event;
-    E_Border *bd = ev->border;
+    E_Border *bd = event->border;
+
+    _move_or_resize(bd);
+
+    return true;
+}
+
+static Eina_Bool
+_move_hook(void *data, int type, E_Event_Border_Move*event)
+{
+    E_Border *bd = event->border;
+
+    _move_or_resize(bd);
+
+    return true;
+}
+
+static Eina_Bool
+_add_hook(void *data, int type, E_Event_Border_Add *event)
+{
+    E_Border *bd = event->border;
+    int stack = -1;
+
+    if (_G.input_mode != INPUT_MODE_NONE
+    &&  _G.input_mode != INPUT_MODE_MOVING
+    &&  _G.input_mode != INPUT_MODE_TRANSITION)
+    {
+        end_special_input();
+    }
+
+    check_tinfo(bd->desk);
+
+    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+        return true;
+    }
+
+    if (!is_tilable(bd)) {
+        return true;
+    }
+
+    stack = get_stack(bd);
+
+    if (stack >= 0) {
+        return true;
+    }
+
+    DBG("Add: %p / '%s' / '%s', (%d,%d), changes(size=%d, position=%d, border=%d)"
+        " g:%dx%d+%d+%d bdname:'%s' (stack:%d%c) maximized:%s fs:%s",
+        bd, bd->client.icccm.title, bd->client.netwm.name,
+        bd->desk->x, bd->desk->y,
+        bd->changes.size, bd->changes.pos, bd->changes.border,
+        bd->w, bd->h, bd->x, bd->y, bd->bordername,
+        stack, _G.tinfo->conf->use_rows? 'r':'c',
+        (bd->maximized & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_NONE ? "NONE" :
+        (bd->maximized & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_VERTICAL ? "VERTICAL" :
+        (bd->maximized & E_MAXIMIZE_DIRECTION) == E_MAXIMIZE_HORIZONTAL ? "HORIZONTAL" :
+        "BOTH", bd->fullscreen? "true": "false");
+
+    _add_border(bd);
+
+    return true;
+}
+
+static Eina_Bool
+_remove_hook(void *data, int type, E_Event_Border_Remove *event)
+{
+    E_Border *bd = event->border;
 
     end_special_input();
 
@@ -3445,9 +3482,35 @@ _e_module_tiling_hide_hook(void *data,
 }
 
 static Eina_Bool
-_e_module_tiling_desk_show(void *data,
-                           int   type,
-                           void *event)
+_iconify_hook(void *data, int type, void *event)
+{
+    DBG("TODO");
+    return true;
+}
+
+static Eina_Bool
+_uniconify_hook(void *data, int type, void *event)
+{
+    DBG("TODO");
+    return true;
+}
+
+static Eina_Bool
+_stick_hook(void *data, int type, void *event)
+{
+    DBG("TODO");
+    return true;
+}
+
+static Eina_Bool
+_unstick_hook(void *data, int type, void *event)
+{
+    DBG("TODO");
+    return true;
+}
+
+static Eina_Bool
+_desk_show_hook(void *data, int type, void *event)
 {
     _G.currently_switching_desktop = 0;
 
@@ -3457,9 +3520,7 @@ _e_module_tiling_desk_show(void *data,
 }
 
 static Eina_Bool
-_e_module_tiling_desk_before_show(void *data,
-                                  int   type,
-                                  void *event)
+_desk_before_show_hook(void *data, int type, void *event)
 {
     end_special_input();
 
@@ -3469,12 +3530,8 @@ _e_module_tiling_desk_before_show(void *data,
 }
 
 static Eina_Bool
-_e_module_tiling_desk_set(void *data,
-                          int   type,
-                          void *event)
+_desk_set_hook(void *data, int type, E_Event_Border_Desk_Set *ev)
 {
-    E_Event_Border_Desk_Set *ev = event;
-
     DBG("%p: from (%d,%d) to (%d,%d)", ev->border,
         ev->desk->x, ev->desk->y,
         ev->border->desk->x, ev->border->desk->y);
@@ -3547,31 +3604,32 @@ e_modapi_init(E_Module *m)
         }
     }
 
-
     snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
     bindtextdomain(PACKAGE, buf);
     bind_textdomain_codeset(PACKAGE, "UTF-8");
 
     _G.info_hash = eina_hash_pointer_new(_clear_info_hash);
-
     _G.border_extras = eina_hash_pointer_new(_clear_border_extras);
 
-    /* Callback for new windows or changes */
-    _G.hook = e_border_hook_add(E_BORDER_HOOK_EVAL_PRE_BORDER_ASSIGN,
-                                _e_module_tiling_cb_hook, NULL);
-    /* Callback for hiding windows */
-    _G.handler_hide = ecore_event_handler_add(E_EVENT_BORDER_HIDE,
-                                             _e_module_tiling_hide_hook, NULL);
-    /* Callback when virtual desktop changes */
-    _G.handler_desk_show = ecore_event_handler_add(E_EVENT_DESK_SHOW,
-                                             _e_module_tiling_desk_show, NULL);
-    /* Callback before virtual desktop changes */
-    _G.handler_desk_before_show =
-        ecore_event_handler_add(E_EVENT_DESK_BEFORE_SHOW,
-                                _e_module_tiling_desk_before_show, NULL);
-    /* Callback when a border is set to another desk */
-    _G.handler_desk_set = ecore_event_handler_add(E_EVENT_BORDER_DESK_SET,
-                                              _e_module_tiling_desk_set, NULL);
+#define HANDLER(_h, _e, _f)                                   \
+    _h = ecore_event_handler_add(E_EVENT_##_e,                \
+                                 (Ecore_Event_Handler_Cb) _f, \
+                                 NULL);
+
+    HANDLER(_G.handler_border_resize, BORDER_RESIZE, _resize_hook);
+    HANDLER(_G.handler_border_move, BORDER_MOVE, _move_hook);
+    HANDLER(_G.handler_border_add, BORDER_ADD, _add_hook);
+    HANDLER(_G.handler_border_remove, BORDER_REMOVE, _remove_hook);
+
+    HANDLER(_G.handler_border_iconify, BORDER_ICONIFY, _iconify_hook);
+    HANDLER(_G.handler_border_uniconify, BORDER_UNICONIFY, _uniconify_hook);
+    HANDLER(_G.handler_border_stick, BORDER_STICK, _stick_hook);
+    HANDLER(_G.handler_border_unstick, BORDER_UNSTICK, _unstick_hook);
+
+    HANDLER(_G.handler_desk_show, DESK_SHOW, _desk_show_hook);
+    HANDLER(_G.handler_desk_before_show, DESK_BEFORE_SHOW, _desk_before_show_hook);
+    HANDLER(_G.handler_desk_set, BORDER_DESK_SET, _desk_set_hook);
+#undef HANDLER
 
 #define ACTION_ADD(_act, _cb, _title, _value)                                \
     {                                                                        \
@@ -3669,20 +3727,23 @@ e_modapi_shutdown(E_Module *m)
         tiling_g.log_domain = -1;
     }
 
-    if (_G.hook) {
-        e_border_hook_del(_G.hook);
-        _G.hook = NULL;
-    }
-
 #define FREE_HANDLER(x)              \
     if (x) {                         \
         ecore_event_handler_del(x);  \
         x = NULL;                    \
     }
-    FREE_HANDLER(_G.handler_hide);
+    FREE_HANDLER(_G.handler_border_resize);
+    FREE_HANDLER(_G.handler_border_move);
+    FREE_HANDLER(_G.handler_border_add);
+    FREE_HANDLER(_G.handler_border_remove);
+
+    FREE_HANDLER(_G.handler_border_iconify);
+    FREE_HANDLER(_G.handler_border_uniconify);
+    FREE_HANDLER(_G.handler_border_stick);
+    FREE_HANDLER(_G.handler_border_unstick);
+
     FREE_HANDLER(_G.handler_desk_show);
     FREE_HANDLER(_G.handler_desk_before_show);
-    FREE_HANDLER(_G.handler_mouse_move);
     FREE_HANDLER(_G.handler_desk_set);
 #undef FREE_HANDLER
 
