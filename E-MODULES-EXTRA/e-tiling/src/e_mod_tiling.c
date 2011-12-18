@@ -91,6 +91,7 @@ static struct tiling_mod_main_g
                          *handler_desk_show,
                          *handler_desk_before_show,
                          *handler_desk_set;
+    E_Border_Hook        *pre_border_assign_hook;
 
     Tiling_Info          *tinfo;
     Eina_Hash            *info_hash;
@@ -370,6 +371,48 @@ _restore_border(E_Border *bd)
 
 
     change_window_border(bd, extra->orig.bordername);
+}
+
+static Border_Extra *
+_get_or_create_border_extra(E_Border *bd)
+{
+    Border_Extra *extra;
+
+    extra = eina_hash_find(_G.border_extras, &bd);
+    if (!extra) {
+        extra = E_NEW(Border_Extra, 1);
+        *extra = (Border_Extra) {
+            .border = bd,
+            .expected = {
+                .x = bd->x,
+                .y = bd->y,
+                .w = bd->w,
+                .h = bd->h,
+            },
+            .orig = {
+                .geom = {
+                    .x = bd->x,
+                    .y = bd->y,
+                    .w = bd->w,
+                    .h = bd->h,
+                },
+                .layer = bd->layer,
+                .stacking = bd->client.netwm.state.stacking,
+                .maximized = bd->maximized,
+                .bordername = eina_stringshare_add(bd->bordername),
+            },
+        };
+        eina_hash_direct_add(_G.border_extras, &extra->border, extra);
+    } else {
+        extra->expected = (geom_t) {
+            .x = bd->x,
+            .y = bd->y,
+            .w = bd->w,
+            .h = bd->h,
+        };
+    }
+
+    return extra;
 }
 
 /* }}} */
@@ -1164,51 +1207,12 @@ _add_border(E_Border *bd)
         return;
     }
 
-    extra = eina_hash_find(_G.border_extras, &bd);
-    if (!extra) {
-        extra = E_NEW(Border_Extra, 1);
-        *extra = (Border_Extra) {
-            .border = bd,
-            .expected = {
-                .x = bd->x,
-                .y = bd->y,
-                .w = bd->w,
-                .h = bd->h,
-            },
-            .orig = {
-                .geom = {
-                    .x = bd->x,
-                    .y = bd->y,
-                    .w = bd->w,
-                    .h = bd->h,
-                },
-                .layer = bd->layer,
-                .stacking = bd->client.netwm.state.stacking,
-                .maximized = bd->maximized,
-                .bordername = eina_stringshare_add(bd->bordername),
-            },
-        };
-        eina_hash_direct_add(_G.border_extras, &extra->border, extra);
-    } else {
-        extra->expected = (geom_t) {
-            .x = bd->x,
-            .y = bd->y,
-            .w = bd->w,
-            .h = bd->h,
-        };
-    }
+    extra = _get_or_create_border_extra(bd);
 
     /* Stack tiled window below so that winlist doesn't mix up stacking */
     e_border_layer_set(bd, 75);
     e_hints_window_stacking_set(bd, E_STACKING_BELOW);
 
-    /* New Border! */
-    if (!tiling_g.config->show_titles
-        && ((bd->bordername && strcmp(bd->bordername, "pixel"))
-            ||  !bd->bordername))
-    {
-        change_window_border(bd, "pixel");
-    }
     DBG("adding %p", bd);
 
     if (_G.tinfo->stacks[0]) {
@@ -3236,6 +3240,45 @@ _e_mod_action_go_cb(E_Object   *obj,
 /* }}} */
 /* Hooks {{{*/
 
+static void
+_pre_border_assign_hook(void *data,
+                        E_Border *bd)
+{
+    Border_Extra *extra;
+
+    if (tiling_g.config->show_titles)
+        return;
+
+    if (!bd) {
+        return;
+    }
+
+    check_tinfo(bd->desk);
+    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+        return;
+    }
+
+    if (is_floating_window(bd)) {
+        return;
+    }
+
+    if (!is_tilable(bd)) {
+        return;
+    }
+
+    if (bd->fullscreen) {
+         return;
+    }
+
+    extra = _get_or_create_border_extra(bd);
+
+    if ((bd->bordername && strcmp(bd->bordername, "pixel"))
+    ||  !bd->bordername)
+    {
+        change_window_border(bd, "pixel");
+    }
+}
+
 static void _move_or_resize(E_Border *bd)
 {
     Border_Extra *extra;
@@ -3611,6 +3654,10 @@ e_modapi_init(E_Module *m)
     _G.info_hash = eina_hash_pointer_new(_clear_info_hash);
     _G.border_extras = eina_hash_pointer_new(_clear_border_extras);
 
+    _G.pre_border_assign_hook = e_border_hook_add(
+        E_BORDER_HOOK_EVAL_PRE_BORDER_ASSIGN,
+        (void (*)(void*,void*))_pre_border_assign_hook, NULL);
+
 #define HANDLER(_h, _e, _f)                                   \
     _h = ecore_event_handler_add(E_EVENT_##_e,                \
                                  (Ecore_Event_Handler_Cb) _f, \
@@ -3725,6 +3772,11 @@ e_modapi_shutdown(E_Module *m)
     if (tiling_g.log_domain >= 0) {
         eina_log_domain_unregister(tiling_g.log_domain);
         tiling_g.log_domain = -1;
+    }
+
+    if (_G.pre_border_assign_hook) {
+        e_border_hook_del(_G.pre_border_assign_hook);
+        _G.pre_border_assign_hook = NULL;
     }
 
 #define FREE_HANDLER(x)              \
