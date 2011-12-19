@@ -3525,17 +3525,31 @@ _remove_hook(void *data, int type, E_Event_Border_Remove *event)
     return EINA_TRUE;
 }
 
-static Eina_Bool
-_iconify_hook(void *data, int type, void *event)
+static bool
+_iconify_hook(void *_, int type, E_Event_Border_Iconify *event)
 {
-    DBG("TODO");
+    E_Border *bd = event->border;
+
+    end_special_input();
+
+    check_tinfo(bd->desk);
+    if (!_G.tinfo || !_G.tinfo->conf)
+        return true;
+
+    if (EINA_LIST_IS_IN(_G.tinfo->floating_windows, bd)) {
+        return true;
+    }
+
+    _remove_border(bd);
+
     return true;
 }
 
-static Eina_Bool
-_uniconify_hook(void *data, int type, void *event)
+static bool
+_uniconify_hook(void *_, int type, E_Event_Border_Uniconify *event)
 {
-    DBG("TODO");
+    _add_border(event->border);
+
     return true;
 }
 
