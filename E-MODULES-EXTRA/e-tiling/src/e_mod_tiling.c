@@ -90,7 +90,8 @@ static struct tiling_mod_main_g
                          *handler_border_unstick,
                          *handler_desk_show,
                          *handler_desk_before_show,
-                         *handler_desk_set;
+                         *handler_desk_set,
+                         *handler_container_resize;
     E_Border_Hook        *pre_border_assign_hook;
 
     Tiling_Info          *tinfo;
@@ -3600,6 +3601,48 @@ _desk_set_hook(void *data, int type, E_Event_Border_Desk_Set *ev)
     return EINA_TRUE;
 }
 
+static bool
+_container_resize_hook(void *_, int type, E_Event_Container_Resize *ev)
+{
+    Eina_List *l;
+    E_Zone *zone;
+
+    EINA_LIST_FOREACH(ev->container->zones, l, zone) {
+        for (int x = 0; x < zone->desk_x_count; x++)
+        {
+            for (int y = 0; y < zone->desk_y_count; y++) {
+                E_Desk *desk = zone->desks[x + (y * zone->desk_x_count)];
+                Eina_List *wins = NULL;
+                E_Border *bd;
+
+                check_tinfo(desk);
+                if (!_G.tinfo || !_G.tinfo->conf
+                ||  !_G.tinfo->conf->nb_stacks)
+                {
+                    continue;
+                }
+
+                _G.tinfo->conf->use_rows = !_G.tinfo->conf->use_rows;
+                for (int i = 0; i < TILING_MAX_STACKS; i++) {
+                    EINA_LIST_FREE(_G.tinfo->stacks[i], bd) {
+                        EINA_LIST_APPEND(wins, bd);
+                        _restore_border(bd);
+                    }
+                    _G.tinfo->stacks[i] = NULL;
+                    _G.tinfo->pos[i] = 0;
+                    _G.tinfo->size[i] = 0;
+                }
+
+                EINA_LIST_FREE(wins, bd) {
+                    _add_border(bd);
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
 /* }}} */
 /* Module setup {{{*/
 
@@ -3676,6 +3719,7 @@ e_modapi_init(E_Module *m)
     HANDLER(_G.handler_desk_show, DESK_SHOW, _desk_show_hook);
     HANDLER(_G.handler_desk_before_show, DESK_BEFORE_SHOW, _desk_before_show_hook);
     HANDLER(_G.handler_desk_set, BORDER_DESK_SET, _desk_set_hook);
+    HANDLER(_G.handler_container_resize, CONTAINER_RESIZE, _container_resize_hook);
 #undef HANDLER
 
 #define ACTION_ADD(_act, _cb, _title, _value)                                \
