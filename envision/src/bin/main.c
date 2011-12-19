@@ -244,11 +244,11 @@ grid_changed(void            *data,
    elm_gengrid_item_bring_in(app->current_item_page);
 }
 
-/*---------------------ICON GET - RENDER PDF-------------------------*/
+/*---------------------CONTENT GET - RENDER PDF-------------------------*/
 static Evas_Object *
-grid_icon_get(void        *data,
-              Evas_Object *obj,
-              const char  *part)
+grid_content_get(void        *data,
+                 Evas_Object *obj,
+                 const char  *part)
 {
    const Item_Data *idata = data;
    Evas_Coord w, h;
@@ -778,9 +778,9 @@ gl_text_get(void            *data,
 }
 
 Evas_Object *
-gl_icon_get(void        *data,
-            Evas_Object *obj,
-            const char  *part)
+gl_content_get(void        *data,
+               Evas_Object *obj,
+               const char  *part)
 {
    Evas_Object *ic = NULL;
 
@@ -952,7 +952,7 @@ create_main_win(App *app)
    evas_object_smart_callback_add(app->grid, "changed", grid_changed,
                                   app);
    gic.func.text_get = grid_text_get;
-   gic.func.content_get = grid_icon_get;
+   gic.func.content_get = grid_content_get;
    gic.func.del = grid_data_del;
 
    app->clipper = evas_object_rectangle_add(evas_object_evas_get(app->grid));

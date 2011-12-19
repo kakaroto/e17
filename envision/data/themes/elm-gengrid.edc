@@ -2,7 +2,7 @@
    group { name: "elm/gengrid/item/default/efenniht";
       alias: "elm/gengrid/item/default_style/efenniht";
       data.item: "texts" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       images {
          image: "bt_sm_base1.png" COMP;
          image: "tab-bg.png" COMP;
