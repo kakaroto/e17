@@ -54,8 +54,6 @@ exactness_raw_SOURCES = \
 		    test_fileselector.c \
 		    test_list.c \
 		    test_fileselector_entry.c \
-		    test_map.c \
-		    test_weather.c \
 		    test_menu.c \
 		    test_naviframe.c \
 		    test_notify.c \

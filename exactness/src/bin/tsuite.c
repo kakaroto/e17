@@ -69,7 +69,6 @@ void test_list2(void);
 void test_list3(void);
 void test_list4(void);
 void test_list5(void);
-void test_map(void);
 void test_menu(void);
 void test_naviframe(void);
 void test_notify(void);
@@ -101,7 +100,6 @@ void test_toolbar4(void);
 void test_toolbar5(void);
 void test_tooltip(void);
 void test_tooltip2(void);
-void test_weather(void);
 
 /* START - Some globals - may want to move these to Timer_Data struct later */
 static Lists_st *vr_list = NULL;
@@ -809,7 +807,6 @@ elm_main(int argc, char **argv)
    tests = _add_test(tests, "test_list3", test_list3, test_all);
    tests = _add_test(tests, "test_list4", test_list4, test_all);
    tests = _add_test(tests, "test_list5", test_list5, test_all);
-   tests = _add_test(tests, "test_map", test_map, test_all);
    tests = _add_test(tests, "test_menu", test_menu, test_all);
    tests = _add_test(tests, "test_naviframe", test_naviframe, test_all);
    tests = _add_test(tests, "test_notify", test_notify, test_all);
@@ -843,7 +840,6 @@ elm_main(int argc, char **argv)
    tests = _add_test(tests, "test_toolbar5", test_toolbar5, test_all);
    tests = _add_test(tests, "test_tooltip", test_tooltip, test_all);
    tests = _add_test(tests, "test_tooltip2", test_tooltip2, test_all);
-   tests = _add_test(tests, "test_weather", test_weather, test_all);
 
 
    Eina_List *l;
