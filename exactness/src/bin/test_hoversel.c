@@ -38,7 +38,7 @@ set_api_state(api_data *api)
 
       case HOVERSEL_ICON_UNSET: /* 3 */
          elm_object_text_set(eina_list_nth(items, 5), "Label only");
-         elm_hoversel_icon_unset(eina_list_nth(items, 5));
+         elm_object_part_content_unset(eina_list_nth(items, 5), "icon");
          break;
 
       case HOVERSEL_CLEAR_OPEN: /* 4 */
@@ -171,7 +171,7 @@ TEST_START(test_hoversel)
    ic = elm_icon_add(win);
    snprintf(buf, sizeof(buf), "%s/images/sky_03.jpg", elm_app_data_dir_get());
    elm_icon_file_set(ic, buf, NULL);
-   elm_hoversel_icon_set(bt, ic);
+   elm_object_part_content_set(bt, "icon", ic);
    evas_object_show(ic);
 
    elm_hoversel_item_add(bt, "Item 1", "apps", ELM_ICON_STANDARD, NULL, NULL);
