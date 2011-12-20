@@ -1619,7 +1619,7 @@ toggle_floating(E_Border *bd)
     if (!bd)
         return;
     check_tinfo(bd->desk);
-    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks)
+    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks)
         return;
 
     if (EINA_LIST_IS_IN(_G.tinfo->floating_windows, bd)) {
@@ -1721,7 +1721,6 @@ _e_mod_action_swap_cb(E_Object   *obj,
         return;
 
     check_tinfo(desk);
-
     if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
@@ -2548,8 +2547,7 @@ _e_mod_action_move_cb(E_Object   *obj,
         return;
 
     check_tinfo(desk);
-
-    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
 
@@ -3168,8 +3166,7 @@ _e_mod_action_adjust_transitions(E_Object   *obj,
         return;
 
     check_tinfo(desk);
-
-    if (!_G.tinfo->conf || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
 
@@ -3230,8 +3227,7 @@ _e_mod_action_go_cb(E_Object   *obj,
         return;
 
     check_tinfo(desk);
-
-    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
 
@@ -3255,7 +3251,7 @@ _pre_border_assign_hook(void *data,
     }
 
     check_tinfo(bd->desk);
-    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
+    if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
 
@@ -3290,7 +3286,6 @@ static void _move_or_resize(E_Border *bd)
     }
 
     check_tinfo(bd->desk);
-
     if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return;
     }
@@ -3469,7 +3464,6 @@ _add_hook(void *data, int type, E_Event_Border_Add *event)
     }
 
     check_tinfo(bd->desk);
-
     if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
         return true;
     }
@@ -3512,7 +3506,7 @@ _remove_hook(void *data, int type, E_Event_Border_Remove *event)
         return EINA_TRUE;
 
     check_tinfo(bd->desk);
-    if (!_G.tinfo || !_G.tinfo->conf)
+    if (!_G.tinfo->conf)
         return EINA_TRUE;
 
     if (EINA_LIST_IS_IN(_G.tinfo->floating_windows, bd)) {
@@ -3533,7 +3527,7 @@ _iconify_hook(void *_, int type, E_Event_Border_Iconify *event)
     end_special_input();
 
     check_tinfo(bd->desk);
-    if (!_G.tinfo || !_G.tinfo->conf)
+    if (!_G.tinfo->conf)
         return true;
 
     if (EINA_LIST_IS_IN(_G.tinfo->floating_windows, bd)) {
@@ -3632,9 +3626,7 @@ _container_resize_hook(void *_, int type, E_Event_Container_Resize *ev)
                 E_Border *bd;
 
                 check_tinfo(desk);
-                if (!_G.tinfo || !_G.tinfo->conf
-                ||  !_G.tinfo->conf->nb_stacks)
-                {
+                if (!_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
                     continue;
                 }
 
