@@ -10,4 +10,3 @@ Contributing: efreet, e_dbus, www, entrance, eina
 Group:        Core, Applications, Libraries, WebSite
 Platform:     Ubuntu (Linux), Debian (Linux), Maemo (Linux), Openembedded/Openmoko (Linux)
 GeoData:      37.566535 126.977969
-
