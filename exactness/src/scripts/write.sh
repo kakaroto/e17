@@ -332,6 +332,7 @@ then
    do_compare "\$*"
 fi
 
+_n_tests_failed=0
 if [ "\$_remove_fail" ]
 then
    ls fail_*.txt  &> /dev/null
@@ -346,6 +347,25 @@ then
       fi
    fi
 fi
+
+status=0
+# Compute exit code
+if [ "\$nfail" -ne 0 ]
+then
+   status=\$(( \$status | 1 ))
+fi
+
+if [ "\$nerr" -ne 0 ]
+then
+   status=\$(( \$status | 2 ))
+fi
+
+if [ "\$_n_tests_failed" -ne 0 ]
+then
+   status=\$(( \$status | 4 ))
+fi
+
+exit \$status
 ENDOFMESSAGE
 
 chmod +x exactness
