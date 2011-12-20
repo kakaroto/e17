@@ -289,8 +289,9 @@ static void
 on_license_changed(void *data, Evas_Object *hoversel, void *event_info)
 {
    App *app = data;
-   Elm_Hoversel_Item *it = event_info;
-   elm_hoversel_label_set(hoversel, elm_hoversel_item_label_get(it));
+   Elm_Object_Item *hoversel_it = event_info;
+   elm_hoversel_label_set(hoversel,
+                          elm_hoversel_item_label_get(hoversel_it));
    app->mask.license = EINA_TRUE;
    check_enable_generate(app);
 }
@@ -339,14 +340,14 @@ static void
 on_template_changed(void *data, Evas_Object *hoversel, void *event_info)
 {
    App *app = data;
-   Elm_Hoversel_Item *it = event_info;
+   Elm_Object_Item *hoversel_it = event_info;
    struct stat st;
    const char *template;
    char *buf, path[PATH_MAX];
    size_t r;
    FILE *fp;
 
-   template = elm_hoversel_item_label_get(it);
+   template = elm_hoversel_item_label_get(hoversel_it);
    elm_hoversel_label_set(hoversel, template);
    app->mask.template = EINA_TRUE;
    check_enable_generate(app);
