@@ -3587,7 +3587,7 @@ _desk_before_show_hook(void *data, int type, void *event)
     return EINA_TRUE;
 }
 
-static Eina_Bool
+static bool
 _desk_set_hook(void *data, int type, E_Event_Border_Desk_Set *ev)
 {
     DBG("%p: from (%d,%d) to (%d,%d)", ev->border,
@@ -3597,22 +3597,24 @@ _desk_set_hook(void *data, int type, E_Event_Border_Desk_Set *ev)
     end_special_input();
 
     check_tinfo(ev->desk);
-    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
-        return EINA_TRUE;
+    if (!_G.tinfo->conf) {
+        return true;
     }
 
-    if (get_stack(ev->border) >= 0)
+    if (get_stack(ev->border) >= 0) {
         _remove_border(ev->border);
+        _restore_border(ev->border);
+    }
 
     check_tinfo(ev->border->desk);
-    if (!_G.tinfo || !_G.tinfo->conf || !_G.tinfo->conf->nb_stacks) {
-        _restore_border(ev->border);
-    } else {
-        if (get_stack(ev->border) < 0)
-            _add_border(ev->border);
+    if (!_G.tinfo->conf) {
+        return true;
     }
 
-    return EINA_TRUE;
+    if (get_stack(ev->border) < 0)
+        _add_border(ev->border);
+
+    return true;
 }
 
 static bool

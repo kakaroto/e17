@@ -29,9 +29,9 @@ get_vdesk(Eina_List *vdesks,
 
         if (!vd)
             continue;
-
-        if (0 < vd->nb_stacks && vd->nb_stacks <= TILING_MAX_STACKS
-        &&  vd->x == x && vd->y == y && vd->zone_num == zone_num)
+        if (vd->nb_stacks < 0 || vd->nb_stacks > TILING_MAX_STACKS)
+            vd->nb_stacks = 0;
+        if (vd->x == x && vd->y == y && vd->zone_num == zone_num)
             return vd;
     }
 
