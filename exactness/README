@@ -46,6 +46,20 @@ Testing with exactness composed of the following stages:
    NOTE: You may change screenshot key from F2 to any other key
          with TSUITE_SHOT_KEY env var.
 
+
+   After recording a new test you may use 'simulate' option to play test
+   with no effect to output files. Simulate option lets you to examine
+   a test-play on-screen without actually producing output PNG file.
+
+   To do this just run:
+   exactness -s [-b BaseDir] [TestName]
+
+   Example:
+   exactness -s test_check
+   This will play test_check.rec from cwd,
+   use the -b option to tell exactness to locate this file elsewhere.
+
+
 2. Test Initiation.
    The final stage of testing process is based on PNG image comparison
    of original screenshots with current screenshots produced after code change.
@@ -91,6 +105,7 @@ Testing with exactness composed of the following stages:
    Write resulting PNG files at cwd/current (default) dir
    along with comp_*.png files.
    
+   
 4. Comparing PNG files.
    This is the final stage of testing in which we compare output
    before code update and after the update.
@@ -100,6 +115,7 @@ Testing with exactness composed of the following stages:
    When all comparisons done you get final report of (N) files did not match.
    In case difference was found, you may look at comp_*.png files in DestDir.
 
+   
 5. fail_if(expr) macro:
    You may use fail_if(expr); macro to verify variable value on-the-fly.
    For example, if your code contains:
@@ -115,6 +131,7 @@ Testing with exactness composed of the following stages:
    When tests completed, the user gets notification message if any tests failed.
    In such case, please review the fail_*.txt files.
 
+   
 6. To view exactness help issue the command:
    exactness --help
    or

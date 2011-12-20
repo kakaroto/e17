@@ -66,6 +66,20 @@ fi
 return 0
 }
 
+do_simulation () {
+# This will play simulation
+# this will NOT produce screenshots
+DEBUG echo do_simulation "\$*"
+if [ -z "\$*" ]
+then
+   exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests
+else
+   exactness_raw --destdir "\$_dest_dir" --basedir "\$_base_dir" --tests \$*
+fi
+
+return 0
+}
+
 do_play () {
 # This will play record for all test if '-a' specified.
 # or play record of tests specified as parameter.
@@ -73,7 +87,6 @@ do_play () {
 DEBUG echo base dir: "\$_base_dir"
 DEBUG echo dest dir: "\$_dest_dir"
 DEBUG echo do_play "\$_dest_dir" "\$*"
-
 # Play recorded tests and produce PNG files.
 # this will produce screenshots in "_dest_dir" folder
 if [ -z "\$*" ]
@@ -197,9 +210,21 @@ else
    done
 fi
 
-echo "Processed \$ncomp comparisons"
-echo "with \$nfail diff errors"
-echo "\$nerr rec-files were not found"
+if [ "\$ncomp" -ne 0 ]
+then
+   echo "Processed \$ncomp comparisons"
+fi
+
+if [ "\$nfail" -ne 0 ]
+then
+   echo "with \$nfail diff errors"
+fi
+
+if [ "\$nerr" -ne 0 ]
+then
+   echo "\$nerr PNG-files were not found"
+fi
+
 return 0
 }
 
@@ -208,6 +233,7 @@ _record=
 _play=
 _compare=
 _init=
+_simulation=
 _remove_fail=
 _orig_dir="orig"
 # Init dest_dir - should change on the fly
@@ -222,7 +248,7 @@ nfail=0
 which compare &> /dev/null
 comp_unavail=\$?
 
-while getopts 'ab:cd:hpri?' OPTION
+while getopts 'ab:cd:hpris?' OPTION
 do
    case \$OPTION in
       b)  _base_dir="\$OPTARG"
@@ -243,6 +269,9 @@ do
           _play=1
           _remove_fail=1
          ;;
+      s)  _dest_dir="\$_orig_dir"
+         _simulation=1
+         ;;
       h)  do_help
          exit 0
          ;;
@@ -255,6 +284,18 @@ shift \$((\$OPTIND - 1))
 
 DEBUG echo _base_dir="\$_base_dir"
 DEBUG echo _dest_dir="\$_dest_dir"
+
+if [ "\$_simulation" ]
+then
+# When in simulation mode, we will just commit play (ignore other options)
+   _init=
+   _record=
+   _compare=
+   _remove_fail=
+   _play=
+   do_simulation "\$*"
+# This will cause render simulation
+fi
 
 if [ ! -e "\$_base_dir" ]
 then
