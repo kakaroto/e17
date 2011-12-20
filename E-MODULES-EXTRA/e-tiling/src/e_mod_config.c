@@ -67,6 +67,7 @@ _create_data(E_Config_Dialog *cfd)
         newvd->y = vd->y;
         newvd->zone_num = vd->zone_num;
         newvd->nb_stacks = vd->nb_stacks;
+        newvd->use_rows = vd->use_rows;
 
         cfdata->config.vdesks = eina_list_append(cfdata->config.vdesks,
                                                  newvd);
@@ -111,6 +112,7 @@ _fill_zone_config(E_Zone               *zone,
             vd->y = desk->y;
             vd->zone_num = zone->num;
             vd->nb_stacks = 0;
+            vd->use_rows = 0;
 
             cfdata->config.vdesks = eina_list_append(cfdata->config.vdesks,
                                                      vd);
