@@ -7,7 +7,7 @@ typedef struct _Hoversel_Item_Data Hoversel_Item_Data;
 
 struct _Hoversel_Item_Data
 {
-   Elm_Hoversel_Item *it;
+   Elm_Object_Item *it;
    Group *grp;
    const char *signal, *source, *label;
 };
