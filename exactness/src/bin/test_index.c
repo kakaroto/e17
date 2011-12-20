@@ -18,7 +18,7 @@ index_changed2(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_i
 {
    // called on a change but delayed in case multiple changes happen in a
    // short timespan
-   elm_genlist_item_top_bring_in(event_info);
+   elm_genlist_item_top_bring_in(elm_index_item_data_get(event_info));
 }
 
 void
@@ -32,13 +32,13 @@ void
 index_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
    // called on final select
-   elm_genlist_item_top_bring_in(event_info);
+   elm_genlist_item_top_bring_in(elm_index_item_data_get(event_info));
 }
 
 struct _Idx_Data_Type
 {
    Evas_Object *id;  /* Pointer to Index */
-   void *item; /* Item we use for search */
+   Elm_Genlist_Item *item; /* Item we use for search */
 };
 typedef struct _Idx_Data_Type Idx_Data_Type;
 
@@ -71,7 +71,7 @@ set_api_state(api_data *api)
          break;
 
       case INDEX_APPEND_RELATIVE: /* 2 */
-             elm_index_item_append_relative(d->id, "W", d->item, d->item);
+             elm_index_item_append_relative(d->id, "W", d->item, elm_index_item_find(d->id, d->item));
          break;
 
       case INDEX_PREPEND: /* 3 */
@@ -79,7 +79,7 @@ set_api_state(api_data *api)
          break;
 
       case INDEX_ITEM_DEL: /* 4 */
-         elm_index_item_del(d->id, d->item);
+         elm_index_item_del(d->id, elm_index_item_find(d->id, d->item));
          break;
 
       case INDEX_ITEM_FIND: /* 5 */
@@ -263,7 +263,7 @@ test_index2_it_del(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 
    if (!it_next)
      {
-	elm_index_item_del(gui->id, it);
+	elm_index_item_del(gui->id, elm_index_item_find(gui->id, it));
 	elm_list_item_del(it);
 	return;
      }
@@ -278,7 +278,7 @@ test_index2_it_del(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 	elm_index_item_data_set(iit, it_next);
      }
    else
-     elm_index_item_del(gui->id, it);
+     elm_index_item_del(gui->id, elm_index_item_find(gui->id, it));
 
    elm_list_item_del(it);
 }

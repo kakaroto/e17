@@ -135,26 +135,26 @@ set_api_state(api_data *api)
          break;
 
       case SELECTED_SET: /* 9 */
-           {  /* Select NEXT item of first disk */
-              elm_diskselector_item_selected_set(elm_diskselector_item_next_get(elm_diskselector_selected_item_get(eina_list_nth(disks, 0))), EINA_TRUE);
+           {  /* Select NEXT item of third disk */
+              elm_diskselector_item_selected_set(elm_diskselector_item_next_get(elm_diskselector_selected_item_get(eina_list_nth(disks, 2))), EINA_TRUE);
            }
          break;
 
       case ITEM_PREV_GET: /* 10 */
-           {  /* Select PREV item of first disk */
-              elm_diskselector_item_selected_set(elm_diskselector_item_prev_get(elm_diskselector_selected_item_get(eina_list_nth(disks, 0))), EINA_TRUE);
+           {  /* Select PREV item of third disk */
+              elm_diskselector_item_selected_set(elm_diskselector_item_prev_get(elm_diskselector_selected_item_get(eina_list_nth(disks, 2))), EINA_TRUE);
            }
          break;
 
       case ITEM_DEL_NOT_SELECTED: /* 11 */
-           {  /* Remove selected item of first disk */
-              elm_diskselector_item_del(elm_diskselector_item_prev_get(elm_diskselector_selected_item_get(eina_list_nth(disks, 0))));
+           {  /* Remove selected item of third disk */
+              elm_diskselector_item_del(elm_diskselector_item_prev_get(elm_diskselector_selected_item_get(eina_list_nth(disks, 2))));
            }
          break;
 
       case ITEM_DEL: /* 12 */
            {  /* Remove selected item of first disk */
-              elm_diskselector_item_del(elm_diskselector_selected_item_get(eina_list_nth(disks, 0)));
+              elm_diskselector_item_del(elm_diskselector_selected_item_get(eina_list_nth(disks, 1)));
            }
          break;
 
