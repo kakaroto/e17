@@ -179,6 +179,8 @@ _set_test(Eina_List *list, char *n, Eina_Bool t)
    Test_Item *item = eina_list_search_unsorted(list, test_name_cmp, n);
    if (item)
      item->test = t;
+   else
+     printf("Unknown test name: %s\n", n);
 
    return item;
 }
@@ -870,15 +872,17 @@ elm_main(int argc, char **argv)
    tests = _add_test(tests, "test_win_state2", test_win_state2, test_all);
 
 
-   /* Set tests from command line */
-   for(i = first_arg; i < argc ; i++)
-     _set_test(tests, argv[i],  EINA_TRUE);
-
    Eina_List *l;
    Test_Item *item;
    int n_tests = 0;
    int n_total = 0;
    int n_no_rec_file = 0;
+
+   /* Set tests from command line */
+   for(i = first_arg; i < argc ; i++)
+     if (_set_test(tests, argv[i],  EINA_TRUE) == NULL)
+       n_total++; /* Count unknown test (wrong spelling from command line) */
+
    EINA_LIST_FOREACH(tests, l, item)
       if (item->test)
         {  /* Run test and count tests committed */
