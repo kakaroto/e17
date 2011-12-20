@@ -391,10 +391,7 @@ fi
 
 # Add up total-error and emit user message.
 total_errors=\$(( \$nfail + \$nerr + \$_n_tests_failed ))
-if [ "\$total_errors" -ne 0 ]
-then
-   echo "\$0 finished with \$total_errors errors."
-fi
+echo "\$0 finished with \$total_errors errors."
 
 status=0
 # Compute exit code
