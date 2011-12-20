@@ -198,8 +198,8 @@ else
 fi
 
 echo "Processed \$ncomp comparisons"
-echo "with \$nfail file that did not match"
-echo "and \$nerr errors"
+echo "with \$nfail diff errors"
+echo "\$nerr rec-files were not found"
 return 0
 }
 
@@ -346,6 +346,13 @@ then
          echo "Please examine fail_*.txt files in CWD"
       fi
    fi
+fi
+
+# Add up total-error and emit user message.
+total_errors=\$(( \$nfail + \$nerr + \$_n_tests_failed ))
+if [ "\$total_errors" -ne 0 ]
+then
+   echo "\$0 finished with \$total_errors errors."
 fi
 
 status=0
