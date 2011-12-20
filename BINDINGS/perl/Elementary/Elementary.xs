@@ -901,7 +901,7 @@ elm_hoversel_clear(Evas_Object *obj)
 #        RETVAL
 
 
-Elm_Hoversel_Item *
+Elm_Object_Item *
 elm_hoversel_item_add(obj, label, icon_file, icon_type, func, data)
     Evas_Object *obj
     const char *label
@@ -923,20 +923,20 @@ elm_hoversel_item_add(obj, label, icon_file, icon_type, func, data)
         RETVAL
 
 void
-elm_hoversel_item_del(Elm_Hoversel_Item *item)
+elm_hoversel_item_del(Elm_Object_Item *it)
 
 void *
-elm_hoversel_item_data_get(Elm_Hoversel_Item *it)
+elm_hoversel_item_data_get(Elm_Object_Item *it)
 
 const char *
-elm_hoversel_item_label_get(Elm_Hoversel_Item *it)
+elm_hoversel_item_label_get(Elm_Object_Item *it)
 
 void
-elm_hoversel_item_icon_set(Elm_Hoversel_Item *it, const char *icon_file, const char *icon_group, Elm_Icon_Type icon_type)
+elm_hoversel_item_icon_set(Elm_Object_Item *it, const char *icon_file, const char *icon_group, Elm_Icon_Type icon_type)
 
 # TODO const char **
 void
-elm_hoversel_item_icon_get(Elm_Hoversel_Item *it, const char **icon_file, const char **icon_group, Elm_Icon_Type *icon_type)
+elm_hoversel_item_icon_get(Elm_Object_Item *it, const char **icon_file, const char **icon_group, Elm_Icon_Type *icon_type)
 
 
 # toolbar

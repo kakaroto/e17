@@ -8,8 +8,6 @@ Elm_Genlist_Item *          T_PTR
 Elm_Genlist_Item_Class *    T_PTR
 Elm_Genlist_Item_Flags      T_IV
 Elm_Hover_Axis              T_IV
-Elm_Hoversel_Item           T_PTR
-Elm_Hoversel_Item *         T_PTROBJ
 Elm_Icon_Type               T_IV
 Elm_Icon_Type *             T_PTR
 Elm_Image_Orient            T_IV
