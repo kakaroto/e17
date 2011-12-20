@@ -1,7 +1,7 @@
 Source: edjexx
 Priority: optional
 Maintainer: Andreas Volz <andreas.volz@tux-style.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libevasxx-dev, libedje-dev (>= 1.0.0), cdbs, pkg-config, libtool
+Build-Depends: debhelper (>= 7), autotools-dev, libevasxx-dev, libedje-dev (>= 1.1.0), cdbs, pkg-config, libtool
 Standards-Version: 3.8.3
 Section: libs
 Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
@@ -9,12 +9,12 @@ Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
 Package: libedjexx-dev
 Section: libdevel
 Architecture: any
-Depends: libedjexx1 (= ${binary:Version})
+Depends: libedjexx1 (= ${binary:Version}), libedje-dev (>= 1.1.0), libevasxx-dev
 Description: EFL C++ Wrapper, Edje Library
  This package contains headers and static libraries for development with libedjexx.
 
 Package: libedjexx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libedje (>= 1.1.0), libevasxx
 Description: EFL C++ Wrapper, Edje Library
