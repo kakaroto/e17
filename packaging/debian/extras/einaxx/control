@@ -16,5 +16,5 @@ Description: EFL C++ Wrapper, Eina Library
 Package: libeinaxx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libeina (>= 1.1.0), libeflxx
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeina1 (>= 1.1.0), libeflxx1
 Description: EFL C++ Wrapper, Eina Library

@@ -16,5 +16,5 @@ Description: EFL C++ Wrapper, Edje Library
 Package: libelementaryxx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libedjexx, libelementary (>= 0.7.0.999)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libedjexx1, libelementary1 (>= 0.7.0.999)
 Description: EFL C++ Wrapper, Edje Library
