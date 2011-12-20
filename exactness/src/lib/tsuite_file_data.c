@@ -53,10 +53,18 @@ write_events(const char *filename, Lists_st *vr_list)
 {
    _data_descriptors_init();
    Eet_File *fp = eet_open(filename, EET_FILE_MODE_WRITE);
-   eet_data_write(fp, desc->_lists_descriptor, CACHE_FILE_ENTRY, vr_list,
-         EINA_TRUE);
+   if (fp)
+     {
+        eet_data_write(fp, desc->_lists_descriptor, CACHE_FILE_ENTRY, vr_list,
+              EINA_TRUE);
 
-   eet_close(fp);
+        eet_close(fp);
+     }
+   else
+     {
+        printf("Failed to create record file <%s>.\n", filename);
+     }
+
    _data_descriptors_shutdown();
 }
 
