@@ -1,7 +1,7 @@
 Source: emotionxx
 Priority: optional
 Maintainer: Andreas Volz <andreas.volz@tux-style.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libemotion-dev (>= 1.0.0), cdbs, pkg-config, libtool
+Build-Depends: debhelper (>= 7), autotools-dev, libemotion-dev (>= 0.1.0.042+svn45353), cdbs, pkg-config, libtool, libevasxx-dev
 Standards-Version: 3.8.3
 Section: libs
 Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
@@ -9,12 +9,12 @@ Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
 Package: libemotionxx-dev
 Section: libdevel
 Architecture: any
-Depends: libemotionxx1 (= ${binary:Version})
+Depends: libemotionxx1 (= ${binary:Version}), libemotion-dev (>= 0.1.0.042+svn45353), libevasxx-dev
 Description: EFL C++ Wrapper, Emotion Library
  This package contains headers and static libraries for development with libemotionxx.
 
 Package: libemotionxx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libemotion (>= 0.1.0.042+svn45353), libevasxx
 Description: EFL C++ Wrapper, Emotion Library
