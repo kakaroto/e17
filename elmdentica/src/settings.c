@@ -374,7 +374,7 @@ void on_account_type_chosen(void *data, Evas_Object *obj, void *event_info) {
 
 Evas_Object * account_dialog(Evas_Object *parent, char *screen_name, char *password, int account_type, Eina_Bool use_https, char *domain, char *base_url, Eina_Bool is_enabled, Evas_Object *account_list, int receive, int send) {
 	Evas_Object *box=NULL, *table=NULL, *frame=NULL, *button_list=NULL, *button=NULL, *scroller=NULL;
-	Elm_Hoversel_Item *acc_type=NULL;
+	Elm_Object_Item *acc_type=NULL;
 
 	box = elm_box_add(parent);
 		evas_object_size_hint_weight_set(box, 1, 1);
