@@ -23,14 +23,16 @@ typedef struct _Eet_Event_Type Eet_Event_Type;
 static char *shot_key = SHOT_KEY_STR;
 static Lists_st *vr_list = NULL;
 
-void tsuite_evas_hook_init(Lists_st *v)
+EAPI void
+tsuite_evas_hook_init(Lists_st *v)
 {  /* Pointer taken from tsuite.c */
    vr_list = v;
    shot_key = getenv("TSUITE_SHOT_KEY");
    if (!shot_key) shot_key = SHOT_KEY_STR;
 }
 
-void tsuite_evas_hook_reset(void)
+EAPI void
+tsuite_evas_hook_reset(void)
 {  /* tsuite.c informs us that vr_list is no longer valid */
    vr_list = NULL;
 }
