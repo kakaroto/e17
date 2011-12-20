@@ -30,7 +30,7 @@ cdef void _hoversel_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_i
 
 cdef class HoverselItem:
     """A item for the hoversel widget"""
-    cdef Elm_Hoversel_Item *item
+    cdef Elm_Object_Item *item
     cdef object cbt
 
     def __del_cb(self):
