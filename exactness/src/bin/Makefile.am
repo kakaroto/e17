@@ -15,17 +15,13 @@ exactness_raw_SOURCES = \
 		    ../lib/tsuite_file_data.c \
 		    test_3d.c \
 		    test_actionslider.c \
-		    test_focus2.c \
 		    test_panel.c \
 		    test_anchorblock.c \
-		    test_focus3.c \
 		    test_panes.c \
 		    test_anchorview.c \
 		    test_focus.c \
-		    test_photo.c \
 		    test_bg.c \
 		    test_gengrid.c \
-		    test_photocam.c \
 		    test_box.c \
 		    test_genlist.c \
 		    test_progressbar.c \
@@ -47,9 +43,7 @@ exactness_raw_SOURCES = \
 		    test_ctxpopup.c \
 		    test_index.c \
 		    test_table.c \
-		    test_cursor.c \
 		    test_inwin.c \
-		    test_thumb.c \
 		    test_diskselector.c \
 		    test_label.c \
 		    test_toggle.c \
@@ -63,11 +57,8 @@ exactness_raw_SOURCES = \
 		    test_map.c \
 		    test_weather.c \
 		    test_menu.c \
-		    test_win_inline.c \
 		    test_naviframe.c \
-		    test_win_state.c \
 		    test_notify.c \
-		    test_floating.c \
 		    test_scroller.c \
 		    test_pager.c
 

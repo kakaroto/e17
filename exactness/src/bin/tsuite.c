@@ -23,15 +23,11 @@ void test_box_horiz(void);
 void test_button(void);
 void test_bubble(void);
 void test_calendar(void);
-void test_calendar2(void);
 void test_check(void);
 void test_colorselector(void);
 void test_conformant(void);
 void test_conformant2(void);
 void test_ctxpopup(void);
-void test_cursor(void);
-void test_cursor2(void);
-void test_cursor3(void);
 void test_diskselector(void);
 void test_entry(void);
 void test_entry_scrolled(void);
@@ -42,10 +38,7 @@ void test_entry_notepad(void);
 void test_fileselector(void);
 void test_fileselector_button(void);
 void test_fileselector_entry(void);
-void test_floating(void);
 void test_focus(void);
-void test_focus2(void);
-void test_focus3(void);
 void test_gengrid(void);
 void test_gengrid2(void);
 void test_genlist(void);
@@ -84,8 +77,6 @@ void test_pager(void);
 void test_pager_slide(void);
 void test_panel(void);
 void test_panes(void);
-void test_photo(void);
-void test_photocam(void);
 void test_progressbar(void);
 void test_radio(void);
 void test_scaling(void);
@@ -102,7 +93,6 @@ void test_table3(void);
 void test_table4(void);
 void test_table5(void);
 void test_table6(void);
-void test_thumb(void);
 void test_toggle(void);
 void test_toolbar(void);
 void test_toolbar2(void);
@@ -112,9 +102,6 @@ void test_toolbar5(void);
 void test_tooltip(void);
 void test_tooltip2(void);
 void test_weather(void);
-void test_win_inline(void);
-void test_win_state(void);
-void test_win_state2(void);
 
 /* START - Some globals - may want to move these to Timer_Data struct later */
 static Lists_st *vr_list = NULL;
@@ -773,15 +760,11 @@ elm_main(int argc, char **argv)
    tests = _add_test(tests, "test_button", test_button, test_all);
    tests = _add_test(tests, "test_bubble", test_bubble, test_all);
    tests = _add_test(tests, "test_calendar", test_calendar, test_all);
-   tests = _add_test(tests, "test_calendar2", test_calendar2, test_all);
    tests = _add_test(tests, "test_check", test_check, test_all);
    tests = _add_test(tests, "test_colorselector", test_colorselector, test_all);
    tests = _add_test(tests, "test_conformant", test_conformant, test_all);
    tests = _add_test(tests, "test_conformant2", test_conformant2, test_all);
    tests = _add_test(tests, "test_ctxpopup", test_ctxpopup, test_all);
-   tests = _add_test(tests, "test_cursor", test_cursor, test_all);
-   tests = _add_test(tests, "test_cursor2", test_cursor2, test_all);
-   tests = _add_test(tests, "test_cursor3", test_cursor3, test_all);
    tests = _add_test(tests, "test_diskselector", test_diskselector, test_all);
    tests = _add_test(tests, "test_entry", test_entry, test_all);
    tests = _add_test(tests, "test_entry_scrolled", test_entry_scrolled,
@@ -795,10 +778,7 @@ elm_main(int argc, char **argv)
          test_fileselector_button, test_all);
    tests = _add_test(tests, "test_fileselector_entry",
          test_fileselector_entry, test_all);
-   tests = _add_test(tests, "test_floating", test_floating, test_all);
    tests = _add_test(tests, "test_focus", test_focus, test_all);
-   tests = _add_test(tests, "test_focus2", test_focus2, test_all);
-   tests = _add_test(tests, "test_focus3", test_focus3, test_all);
    tests = _add_test(tests, "test_gengrid", test_gengrid, test_all);
    tests = _add_test(tests, "test_gengrid2", test_gengrid2, test_all);
    tests = _add_test(tests, "test_genlist", test_genlist, test_all);
@@ -837,8 +817,6 @@ elm_main(int argc, char **argv)
    tests = _add_test(tests, "test_pager_slide", test_pager_slide, test_all);
    tests = _add_test(tests, "test_panel", test_panel, test_all);
    tests = _add_test(tests, "test_panes", test_panes, test_all);
-   tests = _add_test(tests, "test_photo", test_photo, test_all);
-   tests = _add_test(tests, "test_photocam", test_photocam, test_all);
    tests = _add_test(tests, "test_progressbar", test_progressbar, test_all);
    tests = _add_test(tests, "test_radio", test_radio, test_all);
    tests = _add_test(tests, "test_scaling", test_scaling, test_all);
@@ -857,7 +835,6 @@ elm_main(int argc, char **argv)
    tests = _add_test(tests, "test_table4", test_table4, test_all);
    tests = _add_test(tests, "test_table5", test_table5, test_all);
    tests = _add_test(tests, "test_table6", test_table6, test_all);
-   tests = _add_test(tests, "test_thumb", test_thumb, test_all);
    tests = _add_test(tests, "test_toggle", test_toggle, test_all);
    tests = _add_test(tests, "test_toolbar", test_toolbar, test_all);
    tests = _add_test(tests, "test_toolbar2", test_toolbar2, test_all);
@@ -867,9 +844,6 @@ elm_main(int argc, char **argv)
    tests = _add_test(tests, "test_tooltip", test_tooltip, test_all);
    tests = _add_test(tests, "test_tooltip2", test_tooltip2, test_all);
    tests = _add_test(tests, "test_weather", test_weather, test_all);
-   tests = _add_test(tests, "test_win_inline", test_win_inline, test_all);
-   tests = _add_test(tests, "test_win_state", test_win_state, test_all);
-   tests = _add_test(tests, "test_win_state2", test_win_state2, test_all);
 
 
    Eina_List *l;
