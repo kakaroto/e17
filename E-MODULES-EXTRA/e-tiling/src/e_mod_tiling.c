@@ -3630,7 +3630,6 @@ _container_resize_hook(void *_, int type, E_Event_Container_Resize *ev)
                     continue;
                 }
 
-                _G.tinfo->conf->use_rows = !_G.tinfo->conf->use_rows;
                 for (int i = 0; i < TILING_MAX_STACKS; i++) {
                     EINA_LIST_FREE(_G.tinfo->stacks[i], bd) {
                         EINA_LIST_APPEND(wins, bd);
