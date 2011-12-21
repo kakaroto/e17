@@ -1,0 +1,12 @@
+Login:        sung
+IRC Nick:     sung_
+Cloak:        developer/sung
+Name:         Sung Park
+Location:     Seongnam, Korea
+E-Mail:       sungwoo@gmail.com
+WWW:         
+Managing:     
+Contributing: eina, evas, elementary
+Group:        Libraries, Core
+Platform:     Ubuntu (Linux)
+GeoData:      37.379118, 127.116532
