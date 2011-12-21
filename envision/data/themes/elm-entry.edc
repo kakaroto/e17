@@ -28,9 +28,6 @@
 	    entry_mode: EDITABLE;
 	    select_mode: DEFAULT;
 	    multiline: 0;
-	    source: "elm/entry/selection/efenniht/search"; // selection under
-	    source4: "elm/entry/cursor/efenniht/search"; // cursorover
-	    source5: "elm/entry/anchor/default"; // anchor under
 	    description { state: "default" 0.0;
 	       text {
 		  style: "entry_single_textblock_style";
