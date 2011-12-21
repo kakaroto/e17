@@ -130,6 +130,7 @@ collections {
 	#include "../default/map.edc"
 	#include "../default/main_panel.edc"
 	#include "../default/slideshow.edc"
+	#include "list_left_menu.edc"
 	#include "list_left.edc"
 	#include "main_page.edc"
 	#include "albums.edc"
