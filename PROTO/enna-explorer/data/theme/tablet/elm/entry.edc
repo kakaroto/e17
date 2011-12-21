@@ -43,9 +43,6 @@ group { name: "elm/entry/base-single/default";
          entry_mode: EDITABLE;
          select_mode: DEFAULT;
          multiline: 0;
-         source: "elm/entry/selection/default"; // selection under
-         source4: "elm/entry/cursor/default"; // cursorover
-         source5: "elm/entry/anchor/default"; // anchor under
          description { state: "default" 0.0;
             rel1.offset: 4 0;
             rel2.offset: -3 0;
