@@ -161,9 +161,27 @@ cdef void cb_canvas_canvas_object_focus_out(void *data, Evas *e, void *e_inf) wi
     cb_canvas_dispatcher(<Canvas>data, o, EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT)
 
 
+cdef void cb_canvas_image_unloaded(void *data, Evas *e, void *e_inf) with gil:
+    cdef Evas_Object *obj = <Evas_Object*>e_inf
+    o = Object_from_instance(obj)
+    cb_canvas_dispatcher(<Canvas>data, o, EVAS_CALLBACK_IMAGE_UNLOADED)
+
+
+cdef void cb_canvas_render_pre(void *data, Evas *e, void *e_inf) with gil:
+    cdef Evas_Object *obj = <Evas_Object*>e_inf
+    o = Object_from_instance(obj)
+    cb_canvas_dispatcher(<Canvas>data, o, EVAS_CALLBACK_RENDER_PRE)
+
+
+cdef void cb_canvas_render_post(void *data, Evas *e, void *e_inf) with gil:
+    cdef Evas_Object *obj = <Evas_Object*>e_inf
+    o = Object_from_instance(obj)
+    cb_canvas_dispatcher(<Canvas>data, o, EVAS_CALLBACK_RENDER_POST)
+
+
 cdef int evas_canvas_event_callbacks_len
-cdef Evas_Event_Cb evas_canvas_event_callbacks[30]
-evas_canvas_event_callbacks_len = 30
+cdef Evas_Event_Cb evas_canvas_event_callbacks[32]
+evas_canvas_event_callbacks_len = 32
 evas_canvas_event_callbacks[EVAS_CALLBACK_MOUSE_IN] = cb_canvas_mouse_in
 evas_canvas_event_callbacks[EVAS_CALLBACK_MOUSE_OUT] = cb_canvas_mouse_out
 evas_canvas_event_callbacks[EVAS_CALLBACK_MOUSE_DOWN] = cb_canvas_mouse_down
@@ -193,6 +211,6 @@ evas_canvas_event_callbacks[EVAS_CALLBACK_RENDER_FLUSH_PRE] = cb_canvas_render_f
 evas_canvas_event_callbacks[EVAS_CALLBACK_RENDER_FLUSH_POST] = cb_canvas_render_flush_post
 evas_canvas_event_callbacks[EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN] = cb_canvas_canvas_object_focus_in
 evas_canvas_event_callbacks[EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT] = cb_canvas_canvas_object_focus_out
-
-## I just made it compile again. It's someone else job to make this work in python-evas...
-#evas_canvas_event_callbacks[EVAS_CALLBACK_IMAGE_UNLOADED] = cb_canvas_image_unloaded
+evas_canvas_event_callbacks[EVAS_CALLBACK_IMAGE_UNLOADED] = cb_canvas_image_unloaded
+evas_canvas_event_callbacks[EVAS_CALLBACK_RENDER_PRE] = cb_canvas_render_pre
+evas_canvas_event_callbacks[EVAS_CALLBACK_RENDER_POST] = cb_canvas_render_post

@@ -74,6 +74,10 @@ cdef extern from "Evas.h":
     cdef int EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_IN
     cdef int EVAS_CALLBACK_CANVAS_OBJECT_FOCUS_OUT
     cdef int EVAS_CALLBACK_LAST
+    cdef int EVAS_CALLBACK_IMAGE_UNLOADED
+    cdef int EVAS_CALLBACK_RENDER_PRE
+    cdef int EVAS_CALLBACK_RENDER_POST
+
 
     ctypedef enum Evas_Pixel_Format:
         EVAS_PIXEL_FORMAT_NONE        = 0
