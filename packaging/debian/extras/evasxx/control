@@ -9,12 +9,12 @@ Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
 Package: libevasxx-dev
 Section: libdevel
 Architecture: any
-Depends: libevasxx1 (= ${binary:Version}), libevas-dev (>= 1.1.0), libeet-dev (>= 1.1.0)
+Depends: libevasxx1 (= ${binary:Version}), libevas-dev (>= 1.1.0), libeet-dev (>= 1.1.0), libsigc++-2.0-dev
 Description: EFL C++ Wrapper, Evas Library
  This package contains headers and static libraries for development with libevasxx.
 
 Package: libevasxx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libevas1 (>= 1.1.0), libeet1 (>= 1.1.0)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libevas1 (>= 1.1.0), libeet1 (>= 1.1.0), libsigc++-2.0
 Description: EFL C++ Wrapper, Evas Library
