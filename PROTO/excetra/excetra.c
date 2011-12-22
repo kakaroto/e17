@@ -15,13 +15,13 @@
 # define strndupa(str, len) strncpy(alloca(len + 1), str, len)
 #endif
 
-#define DBG(...)            EINA_LOG_DOM_DBG(emu_log_dom, __VA_ARGS__)
-#define INF(...)            EINA_LOG_DOM_INFO(emu_log_dom, __VA_ARGS__)
-#define WRN(...)            EINA_LOG_DOM_WARN(emu_log_dom, __VA_ARGS__)
-#define ERR(...)            EINA_LOG_DOM_ERR(emu_log_dom, __VA_ARGS__)
-#define CRI(...)            EINA_LOG_DOM_CRIT(emu_log_dom, __VA_ARGS__)
+#define DBG(...)            EINA_LOG_DOM_DBG(excetra_log_dom, __VA_ARGS__)
+#define INF(...)            EINA_LOG_DOM_INFO(excetra_log_dom, __VA_ARGS__)
+#define WRN(...)            EINA_LOG_DOM_WARN(excetra_log_dom, __VA_ARGS__)
+#define ERR(...)            EINA_LOG_DOM_ERR(excetra_log_dom, __VA_ARGS__)
+#define CRI(...)            EINA_LOG_DOM_CRIT(excetra_log_dom, __VA_ARGS__)
 
-int emu_log_dom = -1;
+int excetra_log_dom = -1;
 
 #define LYRICWIKI_SEARCH_TRACK_SIZE sizeof("http://lyrics.wikia.com/api.php?artist=&song=&fmt=json")
 #define LYRICWIKI_SEARCH_TRACK "http://lyrics.wikia.com/api.php?artist="
@@ -177,13 +177,13 @@ lyricwiki_request(const char *artist, const char *song)
 }
 
 int
-emu_init(void)
+excetra_init(void)
 {
    eina_init();
    ecore_init();
-   emu_log_dom = eina_log_domain_register("emu", EINA_COLOR_CYAN);
-   eina_log_domain_level_set("emu", EINA_LOG_LEVEL_DBG);
-   if (emu_log_dom == -1)
+   excetra_log_dom = eina_log_domain_register("excetra", EINA_COLOR_CYAN);
+   eina_log_domain_level_set("excetra", EINA_LOG_LEVEL_DBG);
+   if (excetra_log_dom == -1)
      {
         fprintf(stderr, "Could not init log domain!\n");
         return 0;
@@ -208,7 +208,7 @@ main(int argc, char *argv[])
         fprintf(stderr, "USAGE: %s ARTIST SONG\n", argv[0]);
         exit(1);
      }
-   if (!emu_init()) exit(1);
+   if (!excetra_init()) exit(1);
    lyricwiki_request(argv[1], argv[2]);
    ecore_main_loop_begin();
    return 0;

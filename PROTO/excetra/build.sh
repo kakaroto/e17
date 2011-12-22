@@ -20,9 +20,9 @@ compile=0
 
 #edje_cc -id data/theme data/theme/default.edc default.edj || exit 1
 
-if [[ -f ./emu ]] ; then
+if [[ -f ./excetra ]] ; then
 	for x in *.azy *.h ; do # src/{bin,include,lib}/*.h ; do
-		if [[ "$x" -nt ./emu ]] ; then
+		if [[ "$x" -nt ./excetra ]] ; then
 			compile=1
 			break;
 		fi
@@ -44,6 +44,6 @@ done
 
 [[ $link == 0 ]] && exit 1
 wait
-#echo "$CXX *.o -o emu -L/usr/lib -lc $LIBS"
-echo "$CXX *.o -o emu"
-$CXX *.o -o emu -L/usr/lib -lc $LIBS
+#echo "$CXX *.o -o excetra -L/usr/lib -lc $LIBS"
+echo "$CXX *.o -o excetra"
+$CXX *.o -o excetra -L/usr/lib -lc $LIBS
