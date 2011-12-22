@@ -873,7 +873,7 @@ _azy_server_client_handler_request(Azy_Server_Client *client)
 
       case AZY_NET_TYPE_POST:
         if (!client->current->transport)
-          client->current->transport = azy_events_net_transport_get(azy_net_header_get(client->current, "content-type"));
+          client->current->transport = azy_transport_get(azy_net_header_get(client->current, "content-type"));
         switch (client->current->transport)
           {
            case AZY_NET_TRANSPORT_JSON:

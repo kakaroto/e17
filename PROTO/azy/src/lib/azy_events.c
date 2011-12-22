@@ -551,42 +551,6 @@ skip_header:
    return EINA_TRUE;
 }
 
-Azy_Net_Transport
-azy_events_net_transport_get(const char *content_type)
-{
-   const char *c = NULL;;
-   DBG("(content_type='%s')", content_type);
-   if (!content_type)
-     return AZY_NET_TRANSPORT_TEXT;
-
-   if (!strncmp(content_type, "text/", 5))
-     c = content_type + 5;
-   else if (!strncmp(content_type, "application/", 12))
-     c = content_type + 12;
-
-   if (!c) return AZY_NET_TRANSPORT_UNKNOWN;
-
-   if (!strncmp(c, "xml", 3))
-     return AZY_NET_TRANSPORT_XML;
-
-   if (!strncmp(c, "json", 4))
-     return AZY_NET_TRANSPORT_JSON;
-
-   if (!strncmp(c, "eet", 3))
-     return AZY_NET_TRANSPORT_EET;
-
-   if (!strncmp(c, "plain", 5))
-     return AZY_NET_TRANSPORT_TEXT;
-
-   if (!strncmp(c, "html", 4))
-     return AZY_NET_TRANSPORT_HTML;
-
-   if (!strncmp(c, "atom+xml", 8))
-     return AZY_NET_TRANSPORT_ATOM;
-
-   return AZY_NET_TRANSPORT_UNKNOWN;
-}
-
 Eina_Bool
 azy_events_connection_kill(void       *conn,
                            Eina_Bool   server_client,

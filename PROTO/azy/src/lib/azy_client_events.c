@@ -125,7 +125,7 @@ _azy_client_handler_get(Azy_Client_Handler_Data *hd)
    DBG("(hd=%p, client=%p, net=%p)", hd, hd->client, hd->recv);
 
    client = hd->client;
-   hd->recv->transport = azy_events_net_transport_get(azy_net_header_get(hd->recv, "content-type"));
+   hd->recv->transport = azy_transport_get(azy_net_header_get(hd->recv, "content-type"));
    content = azy_content_new(NULL);
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, ECORE_CALLBACK_RENEW);
@@ -218,7 +218,7 @@ _azy_client_handler_call(Azy_Client_Handler_Data *hd)
    /* handle HTTP GET request */
    if (!hd->method) return _azy_client_handler_get(hd);
    INFO("Running RPC for %s", hd->method);
-   hd->recv->transport = azy_events_net_transport_get(azy_net_header_get(hd->recv, "content-type"));
+   hd->recv->transport = azy_transport_get(azy_net_header_get(hd->recv, "content-type"));
    content = azy_content_new(hd->method);
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(content, ECORE_CALLBACK_RENEW);

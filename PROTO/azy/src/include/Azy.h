@@ -315,6 +315,7 @@ EAPI char                     *azy_base64_encode(const char *string, double len)
 EAPI char                     *azy_base64_decode(const char *string, int len);
 EAPI unsigned char            *azy_memstr(const unsigned char *big, const unsigned char *small, size_t big_len, size_t small_len);
 EAPI const char               *azy_uuid_new(void);
+EAPI Azy_Net_Transport         azy_transport_get(const char *content_type);
 
 /* server */
 EAPI void                      azy_server_stop(Azy_Server *server);

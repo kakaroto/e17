@@ -393,7 +393,6 @@ Eina_Bool azy_events_header_parse(Azy_Net       *net,
                                   unsigned char *event_data,
                                   size_t         event_len,
                                   int            offset);
-Azy_Net_Transport azy_events_net_transport_get(const char *content_type);
 Eina_Bool         azy_events_connection_kill(void       *conn,
                                              Eina_Bool   server_client,
                                              const char *msg);
