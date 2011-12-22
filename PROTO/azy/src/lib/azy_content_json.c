@@ -339,14 +339,12 @@ azy_content_deserialize_response_json(Azy_Content *content,
 
         if (msg)
           {
-#if defined(HAVE_EINA_ERROR_FIND)
              Eina_Error e;
 
              e = eina_error_find(msg);
              if (e)
                azy_content_error_faultcode_set(content, e, code);
              else
-#endif
                azy_content_error_faultmsg_set(content, code, "%s", msg);
           }
         else
