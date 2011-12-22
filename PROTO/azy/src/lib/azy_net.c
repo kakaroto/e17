@@ -56,6 +56,45 @@ azy_net_new(void *conn)
 }
 
 /**
+ * @brief Create a new #Azy_Net object from a buffer and content-type
+ *
+ * This function is used to create an object which will manipulate
+ * previously downloaded network data.
+ * @param buf The buffer to use
+ * @param size The size of @p buf
+ * @param transport The content-type of the data in the buffer
+ * @param steal If true, @p buf should be considered as belonging to the returned object
+ * @return A new #Azy_Net object, or NULL on failure/error
+ */
+Azy_Net *
+azy_net_buffer_new(void *buf, size_t size, Azy_Net_Transport transport, Eina_Bool steal)
+{
+   Azy_Net *net;
+
+   net = calloc(1, sizeof(Azy_Net));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(net, NULL);
+   AZY_MAGIC_SET(net, AZY_MAGIC_NET);
+   if (buf && size)
+     {
+        if (steal)
+          net->buffer = buf;
+        else
+          {
+             net->buffer = malloc(size);
+             if (!net->buffer)
+               {
+                  free(net);
+                  return NULL;
+               }
+             memcpy(net->buffer, buf, size);
+          }
+        net->size = size;
+     }
+   net->transport = transport;
+   return net;
+}
+
+/**
  * @brief Free an #Azy_Net object
  *
  * This function frees an #Azy_Net object, including all data associated with it.

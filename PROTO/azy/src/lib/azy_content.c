@@ -47,7 +47,7 @@ azy_content_buffer_set_(Azy_Content   *content,
 /*
  * @brief Convert the xml/json parameters to #Azy_Value
  *
- * This function converts a block of xml/json (based on @p type)
+ * This function converts a block of xml/json
  */
 Eina_Bool
 azy_content_deserialize(Azy_Content *content,

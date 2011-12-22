@@ -406,6 +406,10 @@ extern "C" {
 
    /* net */
    EAPI Azy_Net    *azy_net_new(void *conn);
+   EAPI Azy_Net    *azy_net_buffer_new(void  *buf,
+                                       size_t size,
+                                       Azy_Net_Transport transport,
+                                       Eina_Bool steal);
    EAPI void        azy_net_free(Azy_Net *net);
    EAPI const char *azy_net_header_get(Azy_Net    *net,
                                        const char *name);
