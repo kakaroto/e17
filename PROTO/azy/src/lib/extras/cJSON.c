@@ -177,10 +177,17 @@ static const char *parse_string(cJSON *item,const char *str)
         char *out;
         int len=0;
         unsigned uc;
+        unsigned dq = 1;
+        char match;
 
-        if (*str!='\"') return 0;        // not a string!
+        if (*str!='\"')
+          {
+             if (*str!='\'') return 0;        // not a string!
+             dq = 0;
+          }
 
-        while (*ptr!='\"' && (unsigned char)*ptr>31 && ++len) if (*ptr++ == '\\') ptr++;        // Skip escaped quotes.
+        match = dq ? '\"' : '\'';
+        while (*ptr!=match && (unsigned char)*ptr>31 && ++len) if (*ptr++ == '\\') ptr++;        // Skip escaped quotes.
 
         out=(char*)cJSON_malloc(len+1);        // This is how long we need for the string, roughly.
 
@@ -189,7 +196,7 @@ static const char *parse_string(cJSON *item,const char *str)
         ptr=str+1;
         ptr2=out;
 
-        while (*ptr!='\"' && (unsigned char)*ptr>31)
+        while (*ptr!=match && (unsigned char)*ptr>31)
         {
                 if (*ptr!='\\') *ptr2++=*ptr++;
                 else
@@ -247,7 +254,7 @@ static const char *parse_string(cJSON *item,const char *str)
 
         *ptr2=0;
 
-        if (*ptr=='\"') ptr++;
+        if (*ptr==match) ptr++;
 
         item->valuestring=out;
         item->type=cJSON_String;
@@ -381,7 +388,7 @@ static const char *parse_value(cJSON *item,const char *value)
                 return value+4;
         }
 
-        if (*value=='\"')                                {
+        if ((*value=='\"') || (*value=='\''))           {
                 return parse_string(item,value);
         }
 
