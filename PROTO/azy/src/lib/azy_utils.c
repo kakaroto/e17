@@ -168,7 +168,7 @@ azy_uuid_new(void)
 /**
  * @brief Parse a content-type string into an #Azy_Net_Transport
  * @param content_type The text string representing the content-type
- * @return The matching #Azy_Net_Transport, or AZY_NET_TRANSPORT_TEXT on failure
+ * @return The matching #Azy_Net_Transport, or AZY_NET_TRANSPORT_UNKNOWN on failure
  */
 Azy_Net_Transport
 azy_transport_get(const char *content_type)
@@ -188,8 +188,14 @@ azy_transport_get(const char *content_type)
    if (!strncmp(c, "xml", 3))
      return AZY_NET_TRANSPORT_XML;
 
-   if (!strncmp(c, "json", 4))
-     return AZY_NET_TRANSPORT_JSON;
+   if (c[0] == 'j')
+     {
+        if (!strncmp(c + 1, "son", 3))
+          return AZY_NET_TRANSPORT_JSON;
+        if (!strncmp(c + 1, "avascript", 9))
+          return AZY_NET_TRANSPORT_JSON;
+        return AZY_NET_TRANSPORT_UNKNOWN;
+     }
 
    if (!strncmp(c, "eet", 3))
      return AZY_NET_TRANSPORT_EET;
