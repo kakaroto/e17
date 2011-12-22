@@ -44,10 +44,16 @@ azy_content_buffer_set_(Azy_Content   *content,
    return EINA_TRUE;
 }
 
-/*
- * @brief Convert the xml/json parameters to #Azy_Value
+/**
+ * @brief Convert block of xml/json to #Azy_Value
  *
- * This function converts a block of xml/json
+ * This function converts a block of xml/json in @p net's buffer
+ * based on #Azy_Net_Transport from @p net, storing it in @p content's
+ * retval.
+ * @param content The content to store the resulting #Azy_Value object in
+ * @param net The object containing the buffer to parse
+ * @return true on success, false on failure
+ * @note Currently only JSON parsing is supported here
  */
 Eina_Bool
 azy_content_deserialize(Azy_Content *content,

@@ -450,6 +450,7 @@ EAPI void                      azy_content_data_set(Azy_Content *content, const 
 EAPI void                     *azy_content_data_get(Azy_Content *content);
 EAPI void                      azy_content_retval_cb_set(Azy_Content *content, Azy_Content_Retval_Cb cb);
 EAPI Azy_Content_Retval_Cb     azy_content_retval_cb_get(Azy_Content *content);
+EAPI Eina_Bool                 azy_content_deserialize(Azy_Content *content, Azy_Net *net);
 EAPI Eina_Bool                 azy_content_serialize_request(Azy_Content *content, Azy_Net_Transport type);
 EAPI Eina_Bool                 azy_content_deserialize_request(Azy_Content *content, Azy_Net_Transport type, char *buf, ssize_t len);
 EAPI Eina_Bool                 azy_content_serialize_response(Azy_Content *content, Azy_Net_Transport type);

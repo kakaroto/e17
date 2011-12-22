@@ -418,10 +418,6 @@ void _azy_event_handler_fake_free(void *data,
                                   void *data2);
 
 Eina_Bool
-azy_content_deserialize(Azy_Content *content,
-                        Azy_Net     *net);
-
-Eina_Bool
 azy_content_deserialize_json(Azy_Content *content,
                              const char  *buf,
                              ssize_t      len);
