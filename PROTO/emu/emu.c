@@ -78,6 +78,7 @@ lyricwiki_parse_stub(Eina_Strbuf *buf)
    Azy_Content *content;
    Lyricwiki_Lyric *lwl;
    size = eina_strbuf_length_get(buf);
+   DBG("\n%s", eina_strbuf_string_get(buf));
    if (!size)
      {
         ERR("size is 0!");
@@ -155,12 +156,21 @@ lyricwiki_request(const char *artist, const char *song)
    Ecore_Con_Url *url;
    size_t size;
    char *buf;
+   char *a, *s, *p;
 
    if ((!artist) || (!artist[0]) || (!song) || (!song[0])) return EINA_FALSE;
 
+   a = strdup(artist);
+   for (p = strchr(a, ' '); p; p = strchr(p + 1, ' '))
+     *p = '_';
+   s = strdup(song);
+   for (p = strchr(s, ' '); p; p = strchr(p + 1, ' '))
+     *p = '_';
    size = strlen(artist) + strlen(song) + LYRICWIKI_SEARCH_TRACK_SIZE;
    buf = malloc(size);
-   snprintf(buf, size, LYRICWIKI_SEARCH_TRACK "%s&song=%s&fmt=json", artist, song);
+   snprintf(buf, size, LYRICWIKI_SEARCH_TRACK "%s&song=%s&fmt=json", a, s);
+   free(a);
+   free(s);
    url = ecore_con_url_new(buf);
    ecore_con_url_get(url);
    return EINA_TRUE;
