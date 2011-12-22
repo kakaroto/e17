@@ -1,4 +1,4 @@
-#include <Elementary.h>
+#include <Evas.h>
 #include <Ecore_Con.h>
 #include <Azy.h>
 #include <Lyricwiki_Common_Azy.h>
@@ -64,7 +64,7 @@ lyricwiki_parse_lyric(Eina_Strbuf *buf)
    lyric_end = strstr(lyric_start, "<!--");
    if (!lyric_end) goto error;
    *lyric_end = 0;
-   return elm_entry_markup_to_utf8(lyric_start);
+   return evas_textblock_text_markup_to_utf8(NULL, lyric_start);
 error:
    ERR("Parsing error!");
    return NULL;
@@ -193,6 +193,7 @@ emu_init(void)
         ERR("CURL support is required!");
         return 0;
      }
+   evas_init();
    azy_init();
    ecore_event_handler_add(ECORE_CON_EVENT_URL_COMPLETE, (Ecore_Event_Handler_Cb)lyricwiki_complete, NULL);
    ecore_event_handler_add(ECORE_CON_EVENT_URL_DATA, (Ecore_Event_Handler_Cb)lyricwiki_data, NULL);
@@ -208,7 +209,6 @@ main(int argc, char *argv[])
         exit(1);
      }
    if (!emu_init()) exit(1);
-   elm_init(argc, argv);
    lyricwiki_request(argv[1], argv[2]);
    ecore_main_loop_begin();
    return 0;
