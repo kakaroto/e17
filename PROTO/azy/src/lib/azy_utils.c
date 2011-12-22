@@ -193,7 +193,7 @@ azy_transport_get(const char *content_type)
         if (!strncmp(c + 1, "son", 3))
           return AZY_NET_TRANSPORT_JSON;
         if (!strncmp(c + 1, "avascript", 9))
-          return AZY_NET_TRANSPORT_JSON;
+          return AZY_NET_TRANSPORT_JAVASCRIPT;
         return AZY_NET_TRANSPORT_UNKNOWN;
      }
 
