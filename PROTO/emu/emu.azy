@@ -1,0 +1,9 @@
+Azy_Namespace Lyricwiki;
+
+struct Lyric
+{
+   string artist;
+   string song;
+   string lyrics;
+   string url;
+};
