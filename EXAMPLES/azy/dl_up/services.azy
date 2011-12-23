@@ -1,0 +1,203 @@
+
+//The namespace is added before each method and file
+Azy_Namespace Demo;
+
+//Our module, a module contains a list of methods
+Azy_Module HowAreYou
+{
+    //code between <% %> is  C-code
+    <%
+#include <stdio.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <Eina.h>
+        %>
+
+    /*
+           Methods called when azy receive a GET HTTP request.
+           Path is a classic url.
+           Here we use /Photo/Get/ID_PHOTO
+         * Photo is a namespace
+         * Get is a action
+         * ID_PHOTO is the id we which to download
+
+        If EINA_FALSE is returned, azy return the HTTP error code 501
+    */
+
+    __download__
+    <%
+    const char *namespace = NULL, *action = NULL;
+    const char *p, *p2;
+    const char *path;
+    Eina_Bool ret = EINA_FALSE;
+    int iid = 0;
+
+    printf("__Download__\n");
+
+    //retrieve a copy of the path, we will work on it
+    path = eina_stringshare_add(azy_net_uri_get(net_));
+
+    //first char of the path must be '/'
+    EINA_SAFETY_ON_TRUE_GOTO(*path != '/', error);
+
+    //then we retrieve the namespace, the action and the id
+    p = strchr(path + 1, '/');
+    EINA_SAFETY_ON_NULL_GOTO(p, error);
+
+    /* grab namespace */
+    namespace = eina_stringshare_add_length(path + 1, p - path - 1);
+    EINA_SAFETY_ON_TRUE_GOTO((!namespace) || (!namespace[0]), error);
+
+    p2 = strchr(p + 1, '/');
+    EINA_SAFETY_ON_NULL_GOTO(p2, error);
+
+    action = eina_stringshare_add_length(p + 1, p2 - p - 1);
+    EINA_SAFETY_ON_TRUE_GOTO((!action) || (!action[0]), error);
+    errno = 0;
+    iid = strtol(p2 + 1, NULL, 10);
+
+    //If we have no ID, the path id is invalid
+    EINA_SAFETY_ON_TRUE_GOTO((errno == ERANGE && (iid == LONG_MAX || iid == LONG_MIN))
+            || (errno && (!iid)), error);
+
+    //print the result
+    printf("namespace=%s, action=%s, id=%d\n", namespace, action, iid);
+
+    //create the response, here we set the HTTP code 200 because everything is ok
+    azy_net_code_set(net_, 200);
+    azy_net_header_set(net_, "Content-Type", "image/jpg");
+    //
+
+    if(!strcmp(namespace, "Photo")
+            && !strcmp(action, "Get"))
+    {
+        //here we should use the iid to retrieve the image
+        //in this example we always return the same image
+        const char *file = "./initial.jpg";
+
+        /*
+           we are gonna use mmap to set the image as content
+         */
+        //copy the file content and sent it
+        int fd = open(file, O_RDONLY);
+        struct stat st;
+        fstat(fd, &st); /* use fstat to get the size */
+        unsigned char *content_file = mmap(0, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+
+        Azy_Net_Data azy_data;
+        azy_data.data = content_file;
+        azy_data.size = st.st_size;
+        azy_server_module_send(module, net_, &azy_data);
+        munmap(content_file, st.st_size); /* unmap mmapped data */
+        close(fd);
+        ret = EINA_TRUE;
+        //
+    }
+
+    eina_stringshare_del(path);
+    eina_stringshare_del(namespace);
+    eina_stringshare_del(action);
+
+    return ret;
+error:
+    eina_stringshare_del(namespace);
+    eina_stringshare_del(action);
+    azy_net_code_set(net_, 404);
+    azy_server_module_send(module, net_, NULL);
+    return EINA_TRUE;
+    %>
+
+        /*
+           Methods called when azy receive a PUT HTTP request.
+         */
+    __upload__
+    <%
+    const char *namespace = NULL, *action = NULL;
+    const char *p, *p2;
+    const char *path;
+    Eina_Bool ret = EINA_FALSE;
+    int iid = 0;
+
+    printf("__Upload__\n");
+    //retrieve a copy of the path, we will work on it
+    path = eina_stringshare_add(azy_net_uri_get(net_));
+
+    //first char of the path must be '/'
+    EINA_SAFETY_ON_TRUE_GOTO(*path != '/', error);
+
+    //then we retrieve the namespace, the action and the id
+    p = strchr(path + 1, '/');
+    EINA_SAFETY_ON_NULL_GOTO(p, error);
+
+    /* grab namespace */
+    namespace = eina_stringshare_add_length(path + 1, p - path - 1);
+    EINA_SAFETY_ON_TRUE_GOTO((!namespace) || (!namespace[0]), error);
+
+    p2 = strchr(p + 1, '/');
+    EINA_SAFETY_ON_NULL_GOTO(p2, error);
+
+    action = eina_stringshare_add_length(p + 1, p2 - p - 1);
+    EINA_SAFETY_ON_TRUE_GOTO((!action) || (!action[0]), error);
+    errno = 0;
+    iid = strtol(p2 + 1, NULL, 10);
+
+    //If we have no ID, the path id is invalid
+    EINA_SAFETY_ON_TRUE_GOTO((errno == ERANGE && (iid == LONG_MAX || iid == LONG_MIN))
+            || (errno && (!iid)), error);
+
+    //print the result
+    printf("namespace=%s, action=%s, id=%d\n", namespace, action, iid);
+
+    //create the response, here we set the HTTP code 200 because everything is ok
+    azy_net_code_set(net_, 200);
+    azy_net_header_set(net_, "Content-Type", "image/jpg");
+    //
+
+    if(!strcmp(namespace, "Photo")
+            && !strcmp(action, "Put"))
+    {
+        //save the image received
+        const char *FILEPATH = "./FILE_PUT.jpg";
+
+        //retrieve the size and the content
+        Azy_Net_Data *data = azy_server_module_recv_get(module);
+
+        printf("FILE RECEIVED\n");
+        printf("Write file in %s\n", FILEPATH);
+        printf("File size : %d\n", (int)data->size);
+
+        //open the output file
+        int fd = open(FILEPATH, O_RDWR | O_CREAT | O_TRUNC, (mode_t)0600);
+        //write at the end of the file in order to really create it.
+        lseek(fd, data->size-1, SEEK_SET);
+        write(fd, "", 1);
+        int *map = mmap(0, data->size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+        //copy the content into the output file
+        memcpy(map, data->data, data->size);
+
+        munmap(map, data->size);
+        close(fd);
+    }
+
+    eina_stringshare_del(path);
+    eina_stringshare_del(namespace);
+    eina_stringshare_del(action);
+
+    return ret;
+error:
+    eina_stringshare_del(namespace);
+    eina_stringshare_del(action);
+
+    azy_net_code_set(net_, 404);
+    azy_server_module_send(module, net_, NULL);
+    return EINA_TRUE;
+    %>
+}
+
