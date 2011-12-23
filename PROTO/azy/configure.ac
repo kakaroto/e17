@@ -91,11 +91,12 @@ AC_ARG_ENABLE([mysql-tests],
 if test "x$want_mysql" != "xno" ; then
    AC_PATH_PROG([mysql_config], [mysql_config])
    if test "x$mysql_config" != "x";then
-      AC_CHECK_HEADERS([mysql/mysql.h])
-      AC_CHECK_HEADERS([mysql.h])
-      MYSQL_CFLAGS="$($mysql_config --cflags)"                                                                 
-      MYSQL_LIBS="$($mysql_config --libs_r)"
-      AC_DEFINE_UNQUOTED(HAVE_MYSQL, 1, "enable some mysql code in tests")
+      AC_CHECK_HEADERS([mysql.h mysql/mysql.h])
+      if test "x$ac_cv_header_mysql_h" != "xno" -o "x$ac_cv_header_mysql_mysql_h" != "xno" ; then
+         MYSQL_CFLAGS="$($mysql_config --cflags)"
+         MYSQL_LIBS="$($mysql_config --libs_r)"
+         AC_DEFINE_UNQUOTED(HAVE_MYSQL, 1, "enable some mysql code in tests")
+      fi
    fi
 fi
 AM_CONDITIONAL(HAVE_MYSQL, [test -n "$MYSQL_LIBS"])
