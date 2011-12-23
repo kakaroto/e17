@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
-@ESKISS_CFLAGS@
+@ESKISS_CFLAGS@ \
+@ECORE_X_CFLAGS@
 
 bin_PROGRAMS = eskiss
 
@@ -20,5 +21,5 @@ level_editor.c \
 main.c \
 physic_object.c
 
-eskiss_LDADD = @ESKISS_LIBS@
+eskiss_LDADD = @ESKISS_LIBS@ @ECORE_X_LIBS@
 eskiss_LDFLAGS = @lt_enable_auto_import@ @ld_as_needed@
