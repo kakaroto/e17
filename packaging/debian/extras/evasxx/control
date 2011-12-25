@@ -16,5 +16,5 @@ Description: EFL C++ Wrapper, Evas Library
 Package: libevasxx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libevas1 (>= 1.1.0), libeet1 (>= 1.1.0), libsigc++-2.0
+Depends: ${shlibs:Depends}, ${misc:Depends}, libevas1 (>= 1.1.0), libeet1 (>= 1.1.0), libsigc++-2.0-0c2a
 Description: EFL C++ Wrapper, Evas Library
