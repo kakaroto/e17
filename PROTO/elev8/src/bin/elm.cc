@@ -1089,6 +1089,20 @@ public:
         Eina_Bool alpha = evas_object_image_alpha_get(eo);
         return Boolean::New(alpha);
      }
+
+   virtual void smooth_scale_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          {
+             evas_object_image_smooth_scale_set(eo, val->BooleanValue());
+          }
+     }
+
+   virtual Handle<Value> smooth_scale_get(void) const
+     {
+        Eina_Bool ss = evas_object_image_smooth_scale_get(eo);
+        return Boolean::New(ss);
+     }
 };
 
 template<> CEvasObject::CPropHandler<CEvasImage>::property_list
@@ -1103,6 +1117,7 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, fill),
      PROP_HANDLER(CEvasImage, fill_spread),
      PROP_HANDLER(CEvasImage, alpha),
+     PROP_HANDLER(CEvasImage, smooth_scale),
 };
 
 class CElmBasicWindow : public CEvasObject {
