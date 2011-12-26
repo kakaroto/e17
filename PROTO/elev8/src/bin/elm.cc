@@ -960,7 +960,7 @@ public:
         return Number::New(h);
      }
 
-   virtual void image_fill_set(Handle<Value> val)
+   virtual void fill_set(Handle<Value> val)
      {
         if (!val->IsObject())
           return ;
@@ -977,7 +977,7 @@ public:
         evas_object_image_fill_set (eo, xx, yy, ww, hh);
      }
 
-   virtual Handle<Value> image_fill_get(void) const
+   virtual Handle<Value> fill_get(void) const
      {
         Evas_Coord x, y, w, h;
         evas_object_image_fill_get (eo,  &x, &y, &w, &h);
@@ -1033,19 +1033,47 @@ public:
         return Number::New(bcf);
      }
 
-   virtual void image_filled_set(Handle<Value> val)
+   virtual void filled_set(Handle<Value> val)
      {
-        if (val->IsNumber())
+        if (val->IsBoolean())
           {
-             Eina_Bool fill = val->ToInt32()->Value();
-             evas_object_image_filled_set(eo, fill);
+             evas_object_image_filled_set(eo, val->BooleanValue());
           }
      }
 
-   virtual Handle<Value> image_filled_get(void) const
+   virtual Handle<Value> filled_get(void) const
      {
         Eina_Bool fill = evas_object_image_filled_get(eo);
+        return Boolean::New(fill);
+     }
+
+   virtual void border_scale_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             evas_object_image_border_scale_set(eo, val->ToInt32()->Value());
+          }
+     }
+
+   virtual Handle<Value> border_scale_get(void) const
+     {
+        Eina_Bool fill = evas_object_image_border_scale_get(eo);
         return Number::New(fill);
+     }
+
+   virtual void fill_spread_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             int spread = val->ToInt32()->Value();
+             evas_object_image_fill_spread_set(eo, (Evas_Fill_Spread)spread);
+          }
+     }
+
+   virtual Handle<Value> fill_spread_get(void) const
+     {
+        Evas_Fill_Spread fs = evas_object_image_fill_spread_get(eo);
+        return Number::New(fs);
      }
 };
 
@@ -1054,17 +1082,12 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, file),
      PROP_HANDLER(CEvasImage, width),
      PROP_HANDLER(CEvasImage, height),
-     PROP_HANDLER(CEvasImage, image_fill),
      PROP_HANDLER(CEvasImage, border),
      PROP_HANDLER(CEvasImage, border_center_fill),
-     PROP_HANDLER(CEvasImage, image_filled),
-
-
-
-
-
-
-
+     PROP_HANDLER(CEvasImage, filled),
+     PROP_HANDLER(CEvasImage, border_scale),
+     PROP_HANDLER(CEvasImage, fill),
+     PROP_HANDLER(CEvasImage, fill_spread),
 };
 
 class CElmBasicWindow : public CEvasObject {
