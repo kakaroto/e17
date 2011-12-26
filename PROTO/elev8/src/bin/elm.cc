@@ -1118,7 +1118,7 @@ public:
         return Boolean::New(pd);
      }
 
-   virtual void dpi_set(Handle<Value> val)
+   virtual void load_dpi_set(Handle<Value> val)
      {
         if (val->IsNumber())
           {
@@ -1126,11 +1126,35 @@ public:
           }
      }
 
-   virtual Handle<Value> dpi_get(void) const
+   virtual Handle<Value> load_dpi_get(void) const
      {
         double dpi = evas_object_image_load_dpi_get(eo);
         return Number::New(dpi);
      }
+
+   virtual void load_size_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          return ;
+        Evas_Coord ww, hh;
+        Local<Object> obj = val->ToObject();
+        Local<Value> w = obj->Get(String::New("w"));
+        Local<Value> h = obj->Get(String::New("h"));
+        ww = w->Int32Value();
+        hh = h->Int32Value();
+        evas_object_image_load_size_set(eo, ww, hh);
+     }
+
+   virtual Handle<Value> load_size_get(void) const
+     {
+        Evas_Coord w, h;
+        evas_object_image_load_size_get(eo, &w, &h);
+        Local<Object> obj = Object::New();
+        obj->Set(String::New("w"), Number::New(w));
+        obj->Set(String::New("h"), Number::New(h));
+        return obj;
+     }
+
 
 };
 
@@ -1148,7 +1172,8 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, alpha),
      PROP_HANDLER(CEvasImage, smooth_scale),
      PROP_HANDLER(CEvasImage, pixels_dirty),
-     PROP_HANDLER(CEvasImage, dpi),
+     PROP_HANDLER(CEvasImage, load_dpi),
+     PROP_HANDLER(CEvasImage, load_size),
 };
 
 class CElmBasicWindow : public CEvasObject {
