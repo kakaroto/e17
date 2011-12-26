@@ -1018,6 +1018,20 @@ public:
         return obj;
      }
 
+   virtual void border_center_fill_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             Evas_Border_Fill_Mode bcf = val->ToInt32()->Value();
+             evas_object_image_border_center_fill_set(eo, bcf);
+          }
+     }
+
+   virtual Handle<Value> border_center_fill_get(void) const
+     {
+        Evas_Border_Fill_Mode bcf = evas_object_image_border_center_fill_set(eo);
+        return Number::New(bcf);
+     }
 };
 
 template<> CEvasObject::CPropHandler<CEvasImage>::property_list
@@ -1027,6 +1041,7 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, height),
      PROP_HANDLER(CEvasImage, image_fill),
      PROP_HANDLER(CEvasImage, border),
+     PROP_HANDLER(CEvasImage, border_center_fill),
 };
 
 class CElmBasicWindow : public CEvasObject {
