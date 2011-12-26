@@ -1027,8 +1027,6 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, height),
      PROP_HANDLER(CEvasImage, image_fill),
      PROP_HANDLER(CEvasImage, border),
-
-
 };
 
 class CElmBasicWindow : public CEvasObject {
