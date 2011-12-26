@@ -1022,15 +1022,30 @@ public:
      {
         if (val->IsNumber())
           {
-             Evas_Border_Fill_Mode bcf = val->ToInt32()->Value();
-             evas_object_image_border_center_fill_set(eo, bcf);
+             int bcf = val->ToInt32()->Value();
+             evas_object_image_border_center_fill_set(eo, (Evas_Border_Fill_Mode)bcf);
           }
      }
 
    virtual Handle<Value> border_center_fill_get(void) const
      {
-        Evas_Border_Fill_Mode bcf = evas_object_image_border_center_fill_set(eo);
+        Evas_Border_Fill_Mode bcf = evas_object_image_border_center_fill_get(eo);
         return Number::New(bcf);
+     }
+
+   virtual void image_filled_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             Eina_Bool fill = val->ToInt32()->Value();
+             evas_object_image_filled_set(eo, fill);
+          }
+     }
+
+   virtual Handle<Value> image_filled_get(void) const
+     {
+        Eina_Bool fill = evas_object_image_filled_get(eo);
+        return Number::New(fill);
      }
 };
 
@@ -1042,6 +1057,14 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, image_fill),
      PROP_HANDLER(CEvasImage, border),
      PROP_HANDLER(CEvasImage, border_center_fill),
+     PROP_HANDLER(CEvasImage, image_filled),
+
+
+
+
+
+
+
 };
 
 class CElmBasicWindow : public CEvasObject {
