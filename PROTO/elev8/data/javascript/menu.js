@@ -95,7 +95,7 @@ var my_window = new elm.window({
                     elements : {
                         icon_button : {
                             type : "button",
-                            label : "Icon sized to button",
+                            label : "Launch Menu",
                             weight : { x : -1.0, y : -1.0 },
                             on_clicked : function() {
                                 print("Button Clicked");
