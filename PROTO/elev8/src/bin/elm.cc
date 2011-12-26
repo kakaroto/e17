@@ -1075,6 +1075,20 @@ public:
         Evas_Fill_Spread fs = evas_object_image_fill_spread_get(eo);
         return Number::New(fs);
      }
+
+   virtual void alpha_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          {
+             evas_object_image_alpha_set(eo, val->BooleanValue());
+          }
+     }
+
+   virtual Handle<Value> alpha_get(void) const
+     {
+        Eina_Bool alpha = evas_object_image_alpha_get(eo);
+        return Boolean::New(alpha);
+     }
 };
 
 template<> CEvasObject::CPropHandler<CEvasImage>::property_list
@@ -1088,6 +1102,7 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, border_scale),
      PROP_HANDLER(CEvasImage, fill),
      PROP_HANDLER(CEvasImage, fill_spread),
+     PROP_HANDLER(CEvasImage, alpha),
 };
 
 class CElmBasicWindow : public CEvasObject {
