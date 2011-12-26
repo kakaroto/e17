@@ -30,8 +30,8 @@ naviframe - need to block the style set while transiton is going on
 
 elementary - consider partmap and additional content_set/get/unset parts
 
-naviframe - support edje external. 
-
 naviframe - edje_object -> elm_layout
 
 elm_object_item common item type check like widget_type
+
+evas_event - need to handle after pointer mode changed.
