@@ -1117,6 +1117,21 @@ public:
         Eina_Bool pd = evas_object_image_pixels_dirty_get(eo);
         return Boolean::New(pd);
      }
+
+   virtual void dpi_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             evas_object_image_load_dpi_set(eo, val->ToInt32()->Value());
+          }
+     }
+
+   virtual Handle<Value> dpi_get(void) const
+     {
+        double dpi = evas_object_image_load_dpi_get(eo);
+        return Number::New(dpi);
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasImage>::property_list
@@ -1133,6 +1148,7 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, alpha),
      PROP_HANDLER(CEvasImage, smooth_scale),
      PROP_HANDLER(CEvasImage, pixels_dirty),
+     PROP_HANDLER(CEvasImage, dpi),
 };
 
 class CElmBasicWindow : public CEvasObject {
