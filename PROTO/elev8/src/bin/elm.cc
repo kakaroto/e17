@@ -989,6 +989,35 @@ public:
         return obj;
      }
 
+   virtual void border_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          return ;
+        Evas_Coord ll, rr, tt, bb;
+        Local<Object> obj = val->ToObject();
+        Local<Value> l = obj->Get(String::New("l"));
+        Local<Value> r = obj->Get(String::New("r"));
+        Local<Value> t = obj->Get(String::New("t"));
+        Local<Value> b = obj->Get(String::New("b"));
+        ll = l->Int32Value();
+        rr = r->Int32Value();
+        tt = t->Int32Value();
+        bb = b->Int32Value();
+        evas_object_image_fill_set(eo, ll, rr, tt, bb);
+     }
+
+   virtual Handle<Value> border_get(void) const
+     {
+        Evas_Coord l, r, t, b;
+        evas_object_image_fill_get (eo,  &l, &r, &t, &b);
+        Local<Object> obj = Object::New();
+        obj->Set(String::New("l"), Number::New(l));
+        obj->Set(String::New("r"), Number::New(r));
+        obj->Set(String::New("t"), Number::New(t));
+        obj->Set(String::New("b"), Number::New(b));
+        return obj;
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasImage>::property_list
@@ -997,6 +1026,8 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, width),
      PROP_HANDLER(CEvasImage, height),
      PROP_HANDLER(CEvasImage, image_fill),
+     PROP_HANDLER(CEvasImage, border),
+
 
 };
 
