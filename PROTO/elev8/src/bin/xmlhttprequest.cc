@@ -79,7 +79,7 @@ Eina_Bool completion_callback(void *data, int type, void *event)
 		out.write((char *)eina_binbuf_string_get(reqObj->data), 
 				   eina_binbuf_length_get(reqObj->data));
 		out.close();
-		HTTP_INF(  "Size of response Data = %d bytes",
+		HTTP_INF(  "Size of response Data = %lu bytes",
 						eina_binbuf_length_get(reqObj->data));
    		reqObj->responseText =  static_cast<Persistent<String> >(String::New(buf));
 	     }
