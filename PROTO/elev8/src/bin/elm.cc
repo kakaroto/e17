@@ -960,6 +960,35 @@ public:
         return Number::New(h);
      }
 
+   virtual void image_fill_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          return ;
+        Evas_Coord xx, yy, ww, hh;
+        Local<Object> obj = val->ToObject();
+        Local<Value> x = obj->Get(String::New("x"));
+        Local<Value> y = obj->Get(String::New("y"));
+        Local<Value> w = obj->Get(String::New("w"));
+        Local<Value> h = obj->Get(String::New("h"));
+        ww = w->Int32Value();
+        hh = h->Int32Value();
+        xx = x->Int32Value();
+        yy = y->Int32Value();
+        evas_object_image_fill_set (eo, xx, yy, ww, hh);
+     }
+
+   virtual Handle<Value> image_fill_get(void) const
+     {
+        Evas_Coord x, y, w, h;
+        evas_object_image_fill_get (eo,  &x, &y, &w, &h);
+        Local<Object> obj = Object::New();
+        obj->Set(String::New("w"), Number::New(w));
+        obj->Set(String::New("h"), Number::New(h));
+        obj->Set(String::New("x"), Number::New(w));
+        obj->Set(String::New("y"), Number::New(h));
+        return obj;
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasImage>::property_list
@@ -967,6 +996,8 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, file),
      PROP_HANDLER(CEvasImage, width),
      PROP_HANDLER(CEvasImage, height),
+     PROP_HANDLER(CEvasImage, image_fill),
+
 };
 
 class CElmBasicWindow : public CEvasObject {
