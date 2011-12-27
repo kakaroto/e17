@@ -9,10 +9,6 @@
 #include <map>
 #include <elev8_common.h>
 
-CElmBasicWindow *main_win;
-Persistent<Value> the_datadir;
-Persistent<Value> the_tmpdir;
-Persistent<Value> the_theme;
 
 using namespace v8;
 
@@ -1160,6 +1156,19 @@ public:
         return obj;
      }
 
+   virtual void load_scale_down_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             evas_object_image_load_scale_down_set(eo, val->ToInt32()->Value());
+          }
+     }
+
+   virtual Handle<Value> load_scale_down_get(void) const
+     {
+        double dpi = evas_object_image_load_scale_down_get(eo);
+        return Number::New(dpi);
+     }
 
 };
 
@@ -1179,6 +1188,7 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, pixels_dirty),
      PROP_HANDLER(CEvasImage, load_dpi),
      PROP_HANDLER(CEvasImage, load_size),
+     PROP_HANDLER(CEvasImage, load_scale_down),
 };
 
 class CElmBasicWindow : public CEvasObject {
@@ -5486,6 +5496,11 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
 
    return eo;
 }
+
+CElmBasicWindow *main_win;
+Persistent<Value> the_datadir;
+Persistent<Value> the_tmpdir;
+Persistent<Value> the_theme;
 
 Handle<Value>
 elm_main_window(const Arguments& args)
