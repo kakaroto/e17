@@ -107,15 +107,3 @@ email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev)
         break;
      }
 }
-
-Eina_Bool
-email_quit_pop(Email *e, Ecore_Cb cb)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(e->state != EMAIL_STATE_CONNECTED, EINA_FALSE);
-
-   if (!e->ops) email_write(e, "QUIT\r\n", 6);
-   e->ops = eina_list_append(e->ops, (uintptr_t*)EMAIL_OP_QUIT);
-   e->cbs = eina_list_append(e->cbs, cb);
-   return EINA_TRUE;
-}
