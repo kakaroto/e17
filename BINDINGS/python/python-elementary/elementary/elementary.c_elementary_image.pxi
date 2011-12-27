@@ -42,6 +42,13 @@ cdef class Image(Object):
     def orient_set(self, orientation):
         elm_image_orient_set(self.obj, orientation)
 
+    def object_size_get(self):
+        cdef int width
+        cdef int height
+
+        elm_image_object_size_get(self.obj, &width, &height)
+        return (width, height)
+
     def callback_clicked_add(self, func, *args, **kwargs):
         self._callback_add("clicked", func, *args, **kwargs)
 
