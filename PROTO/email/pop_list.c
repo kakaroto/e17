@@ -25,7 +25,7 @@ email_list(Email *e, Email_List_Cb cb)
 }
 
 Eina_Bool
-email_rset(Email *e, Ecore_Cb cb)
+email_rset(Email *e, Email_Cb cb)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->state != EMAIL_STATE_CONNECTED, EINA_FALSE);
@@ -42,7 +42,7 @@ email_rset(Email *e, Ecore_Cb cb)
 }
 
 Eina_Bool
-email_delete(Email *e, unsigned int id, Ecore_Cb cb)
+email_delete(Email *e, unsigned int id, Email_Cb cb)
 {
    char buf[64];
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
@@ -86,7 +86,7 @@ email_retrieve(Email *e, unsigned int id, Email_Retr_Cb cb)
 }
 
 Eina_Bool
-email_pop3_stat_read(Email *e, const char *recv, size_t size)
+email_pop3_stat_read(Email *e, const unsigned char *recv, size_t size)
 {
    Email_Stat_Cb cb;
    int num;
@@ -94,8 +94,8 @@ email_pop3_stat_read(Email *e, const char *recv, size_t size)
 
    cb = e->cbs->data;
    e->cbs = eina_list_remove_list(e->cbs, e->cbs);
-   if ((!email_op_ok((unsigned char*)recv, size)) ||
-       (sscanf(recv, "+OK %u %zu", &num, &len) != 2))
+   if ((!email_op_ok((const unsigned char *)recv, size)) ||
+       (sscanf((char*)recv, "+OK %u %zu", &num, &len) != 2))
      {
         ERR("Error with STAT");
         if (cb) cb(e, 0, 0);

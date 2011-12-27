@@ -36,7 +36,7 @@ next_pop(Email *e)
         email_write(e, buf, strlen(buf));
         break;
       case EMAIL_OP_QUIT:
-        email_write(e, EMAIL_POP3_QUIT, sizeof(EMAIL_POP3_QUIT) - 1);
+        email_write(e, EMAIL_QUIT, sizeof(EMAIL_QUIT) - 1);
         break;
       default:
         break;
@@ -64,10 +64,13 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
         return ECORE_CALLBACK_PASS_ON;
      }
 
-   recv = alloca(ev->size + 1);
-   memcpy(recv, ev->data, ev->size);
-   recv[ev->size] = 0;
-   DBG("Receiving %i bytes:\n%s", ev->size, recv);
+   if (eina_log_domain_level_check(email_log_dom, EINA_LOG_LEVEL_DBG))
+     {
+        recv = alloca(ev->size + 1);
+        memcpy(recv, ev->data, ev->size);
+        recv[ev->size] = 0;
+        DBG("Receiving %i bytes:\n%s", ev->size, recv);
+     }
 
    if (e->state < EMAIL_STATE_CONNECTED)
      {
@@ -80,7 +83,7 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
    switch (e->current)
      {
       case EMAIL_OP_STAT:
-        if (!email_pop3_stat_read(e, recv, ev->size)) return ECORE_CALLBACK_RENEW;
+        if (!email_pop3_stat_read(e, ev->data, ev->size)) return ECORE_CALLBACK_RENEW;
         break;
       case EMAIL_OP_LIST:
         if (!email_pop3_list_read(e, ev)) return ECORE_CALLBACK_RENEW;
@@ -91,7 +94,7 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
       case EMAIL_OP_DELE:
       case EMAIL_OP_QUIT:
       {
-         Ecore_Cb cb;
+         Email_Cb cb;
 
          cb = e->cbs->data;
          e->cbs = eina_list_remove_list(e->cbs, e->cbs);

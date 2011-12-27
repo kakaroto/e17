@@ -1,3 +1,4 @@
+#include <Ecore.h>
 #include "Email.h"
 
 #ifndef __UNUSED__
@@ -23,7 +24,7 @@ mail_retr(Email *e, Eina_Binbuf *buf)
    if (--count == 0)
      {
         email_rset(e, NULL);
-        email_quit(e, (Ecore_Cb)mail_quit);
+        email_quit(e, (Email_Cb)mail_quit);
      }
 }
 
@@ -67,7 +68,8 @@ main(int argc, char *argv[])
      }
 
    email_init();
-
+   eina_log_domain_level_set("email", EINA_LOG_LEVEL_DBG);
+   eina_log_domain_level_set("ecore_con", EINA_LOG_LEVEL_DBG);
    pass = getpass_x("Password: ");
    e = email_new(argv[1], pass, NULL);
    ecore_event_handler_add(EMAIL_EVENT_CONNECTED, (Ecore_Event_Handler_Cb)con, NULL);
