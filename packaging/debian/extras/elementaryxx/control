@@ -1,7 +1,7 @@
 Source: elementaryxx
 Priority: optional
 Maintainer: Andreas Volz <andreas.volz@tux-style.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libedjexx-dev, libelementary-dev (>= 0.7.0.999), cdbs, pkg-config, libtool
+Build-Depends: debhelper (>= 7), autotools-dev, libedjexx-dev, libelementary-dev (>= 0.8.0.65643), cdbs, pkg-config, libtool
 Standards-Version: 3.8.3
 Section: libs
 Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
@@ -9,12 +9,12 @@ Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
 Package: libelementaryxx-dev
 Section: libdevel
 Architecture: any
-Depends: libelementaryxx1 (= ${binary:Version}), libedjexx-dev, libelementary-dev (>= 0.7.0.999)
+Depends: libelementaryxx1 (= ${binary:Version}), libedjexx-dev, libelementary-dev (>= 0.8.0.65643)
 Description: EFL C++ Wrapper, Edje Library
  This package contains headers and static libraries for development with libelementaryxx.
 
 Package: libelementaryxx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libedjexx1, libelementary1 (>= 0.7.0.999)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libedjexx1, libelementary1 (>= 0.8.0.65643)
 Description: EFL C++ Wrapper, Edje Library
