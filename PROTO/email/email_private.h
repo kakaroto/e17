@@ -34,15 +34,17 @@ typedef enum
    EMAIL_STATE_CONNECTED
 } Email_State;
 
-typedef enum
+struct Email_Message
 {
-   EMAIL_OP_STAT = 1,
-   EMAIL_OP_LIST,
-   EMAIL_OP_RSET,
-   EMAIL_OP_DELE,
-   EMAIL_OP_RETR,
-   EMAIL_OP_QUIT,
-} Email_Op;
+   void *data;
+
+   Eina_List *recipients; /* anyone who will receive the message */
+   const char *sender;
+   char *subject;
+
+   char *content;
+   size_t csize;
+};
 
 struct Email
 {
@@ -81,7 +83,6 @@ struct Email
          size_t size;
 
          Eina_Bool cram : 1;
-         Eina_Bool digest : 1;
          Eina_Bool login : 1;
          Eina_Bool plain : 1;
       } smtp_features;
