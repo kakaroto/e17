@@ -1,8 +1,12 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <Ecore.h>
 #include "Email.h"
 
 #ifndef __UNUSED__
-# define __UNUSED__ __attribute__((unused))
+# define __UNUSED__
 #endif
 
 char *getpass_x(const char *prompt);

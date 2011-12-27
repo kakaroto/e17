@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: email
+Description: An email protocol library
+Version: @VERSION@
+Libs: -L${libdir} -lemail
+Requires.private: @EMAIL_REQUIRES@
+Cflags: -I${includedir}/email-@VMAJ@

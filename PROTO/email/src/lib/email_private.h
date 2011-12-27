@@ -1,8 +1,8 @@
 #ifndef EMAIL_PRIVATE_H
 #define EMAIL_PRIVATE_H
 
-#ifndef __UNUSED__
-# define __UNUSED__ __attribute__((unused))
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
 
 #include <Ecore.h>
