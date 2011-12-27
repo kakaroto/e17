@@ -78,7 +78,7 @@ email_message_serialize(Email_Message *msg)
    if (msg->headers) eina_hash_foreach(msg->headers, (Eina_Hash_Foreach)_email_message_headers, buf);
    if (msg->mimeversion < 1.0) msg->mimeversion = 1.0;
    eina_strbuf_append_printf(buf, "MIME-Version: %g\r\n", msg->mimeversion);
-   if (msg->attachments) 
+   if (msg->attachments)
      eina_strbuf_append_printf(buf, "Content-Type: multipart/mixed; boundary=\""MESSAGE_BOUNDARY"\"\r\n\r\n");
    else
      eina_strbuf_append_printf(buf, "Content-Type: text/plain; charset=%s\r\n\r\n", msg->charset ?: "US-ASCII");
@@ -184,7 +184,7 @@ void
 email_message_contact_del_by_address(Email_Message *msg, const char *address)
 {
    Email_Contact *ec;
-   
+
    EINA_SAFETY_ON_NULL_RETURN(msg);
    EINA_SAFETY_ON_NULL_RETURN(address);
    EINA_SAFETY_ON_TRUE_RETURN(!address[0]);

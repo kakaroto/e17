@@ -6,14 +6,17 @@ next_pop(Email *e)
    char buf[64];
 
    if (e->buf) return;
+   e->ops = eina_list_remove_list(e->ops, e->ops);
    if (!e->ops)
      {
         e->current = 0;
+        DBG("No queued calls");
         return;
      }
+
    DBG("Next queued call");
    e->current = (uintptr_t)e->ops->data;
-   e->ops = eina_list_remove_list(e->ops, e->ops);
+   if (e->cbs) e->cbs = eina_list_remove_list(e->ops, e->cbs);
    switch (e->current)
      {
       case EMAIL_OP_STAT:
@@ -96,8 +99,7 @@ data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
       {
          Email_Cb cb;
 
-         cb = e->cbs->data;
-         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
+         cb = eina_list_data_get(e->cbs);
          if (!email_op_ok(ev->data, ev->size))
            {
               if (e->current == EMAIL_OP_DELE) ERR("Error with DELE");

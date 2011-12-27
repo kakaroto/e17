@@ -27,7 +27,7 @@ email_attachment_new_from_file(const char *filename, const char *content_type)
    Email_Attachment *at;
    Eina_File *f;
    void *file;
-   
+
    EINA_SAFETY_ON_NULL_RETURN_VAL(filename, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!filename[0], NULL);
 

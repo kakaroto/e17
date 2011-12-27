@@ -34,7 +34,7 @@ features_detect_smtp(Email *e, const unsigned char *data, int size)
         if (!strncasecmp((char*)p, "AUTH", 4))
           {
              const unsigned char *n;
-             
+
              p += 5;
              n = memchr(p, '\n', size - (p - data));
              do
@@ -201,7 +201,7 @@ email_login_smtp(Email *e, Ecore_Con_Event_Server_Data *ev)
                }
              else goto error;
           }
-          
+
         else goto error;
         break;
       case EMAIL_STATE_PASS:

@@ -41,8 +41,7 @@ con(void *d __UNUSED__, int type __UNUSED__, Email *e)
    msg = email_message_new();
    email_message_subject_set(msg, "sup dawg");
    printf("Send message to:\n");
-   //scanf("%1023s", buf);
-   snprintf(buf, sizeof(buf), "michael.blumenkrantz@gmail.com");
+   scanf("%1023s", buf);
    ec = email_contact_new(buf);
    email_message_contact_add(msg, ec, EMAIL_MESSAGE_CONTACT_TYPE_TO);
    email_message_content_set(msg, "test message!", sizeof("test message!") - 1);

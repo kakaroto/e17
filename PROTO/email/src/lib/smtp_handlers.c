@@ -6,16 +6,19 @@ next_smtp(Email *e)
 {
    e->smtp_state = 0;
    e->internal_state = 0;
+
+   DBG("Next queued call");
+   e->ops = eina_list_remove_list(e->ops, e->ops);
+   if (e->current == EMAIL_OP_SEND)
+     e->op_ids = eina_list_remove_list(e->ops, e->op_ids);
    if (!e->ops)
      {
+        DBG("No queued calls");
         e->current = 0;
         return;
      }
-   DBG("Next queued call");
-   e->ops = eina_list_remove_list(e->ops, e->ops);
    e->current = (uintptr_t)eina_list_data_get(e->ops);
-   e->op_ids = eina_list_remove_list(e->ops, e->op_ids);
-   e->cbs = eina_list_remove_list(e->cbs, e->cbs);
+   if (e->cbs) e->cbs = eina_list_remove_list(e->cbs, e->cbs);
    switch (e->current)
      {
       case EMAIL_OP_SEND:
@@ -61,7 +64,7 @@ send_smtp(Email *e)
         snprintf(buf, size, EMAIL_SMTP_FROM, ec->address);
         email_write(e, buf, size - 1);
         e->smtp_state++;
-        e->internal_state = 0;        
+        e->internal_state = 0;
         break;
       case EMAIL_SMTP_STATE_TO:
         ec = eina_list_nth(msg->recipients, e->internal_state++);
@@ -100,7 +103,7 @@ upgrade_smtp(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Upgrade *ev)
 {
    char *buf;
    size_t size;
-   
+
    if (e != ecore_con_server_data_get(ev->server)) return ECORE_CALLBACK_PASS_ON;
 
    e->state++;

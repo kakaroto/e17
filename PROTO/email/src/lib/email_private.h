@@ -5,6 +5,17 @@
 # include "config.h"
 #endif
 
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#elif defined __GNUC__
+#define alloca __builtin_alloca
+#elif defined _AIX
+#define alloca __alloca
+#else
+#include <stddef.h>
+void *alloca (size_t);
+#endif
+
 #include <Ecore.h>
 #include <Ecore_Con.h>
 #include "Email.h"
@@ -21,6 +32,9 @@ extern Eina_Hash *_email_contacts_hash;
 
 #define EMAIL_POP3_PORT 110
 #define EMAIL_POP3S_PORT 995
+
+#define EMAIL_SMTP_PORT 25
+#define EMAIL_ESMTP_PORT 27
 
 #define EMAIL_POP3_LIST "LIST\r\n"
 #define EMAIL_POP3_STAT "STAT\r\n"

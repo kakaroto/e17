@@ -7,11 +7,10 @@ email_pop3_retr_read(Email *e, Ecore_Con_Event_Server_Data *ev)
    size_t size;
    unsigned char *data;
 
-   cb = e->cbs->data;
+   cb = eina_list_data_get(e->cbs);
    if ((!e->buf) && (!email_op_ok(ev->data, ev->size)))
      {
         ERR("Error with RETR");
-        e->cbs = eina_list_remove_list(e->cbs, e->cbs);
         if (cb) cb(e, NULL);
         return EINA_TRUE;
      }
@@ -38,9 +37,8 @@ email_pop3_retr_read(Email *e, Ecore_Con_Event_Server_Data *ev)
      }
 
    INF("Message retrieved: %zu bytes", eina_binbuf_length_get(e->buf));
-   e->cbs = eina_list_remove_list(e->cbs, e->cbs);
    if (cb) cb(e, e->buf);
-   eina_binbuf_free(e->buf);
+   if (e->buf) eina_binbuf_free(e->buf);
    e->buf = NULL;
    return EINA_TRUE;
 

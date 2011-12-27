@@ -3,87 +3,8 @@
 static int email_init_count = 0;
 
 int email_log_dom = -1;
-int EMAIL_EVENT_CONNECTED = 0;
-int EMAIL_EVENT_DISCONNECTED = 0;
-
-static void
-next_pop(Email *e)
-{
-   if (e->buf || (!e->ops)) return;
-   switch ((uintptr_t)e->ops->data)
-     {
-      case EMAIL_OP_STAT:
-        email_write(e, EMAIL_POP3_STAT, sizeof(EMAIL_POP3_STAT) - 1);
-        break;
-      case EMAIL_OP_LIST:
-        email_write(e, EMAIL_POP3_LIST, sizeof(EMAIL_POP3_LIST) - 1);
-        break;
-      case EMAIL_OP_QUIT:
-        email_write(e, EMAIL_POP3_QUIT, sizeof(EMAIL_POP3_QUIT) - 1);
-        break;
-      default:
-        break;
-     }
-}
-
-static Eina_Bool
-upgrade_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Upgrade *ev)
-{
-   if (e != ecore_con_server_data_get(ev->server)) return ECORE_CALLBACK_PASS_ON;
-
-static Eina_Bool
-data_pop(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Data *ev)
-{
-   char *recv;
-
-   if (e != ecore_con_server_data_get(ev->server))
-     {
-        DBG("Event mismatch");
-        return ECORE_CALLBACK_PASS_ON;
-     }
-
-   recv = alloca(ev->size + 1);
-   memcpy(recv, ev->data, ev->size);
-   recv[ev->size] = 0;
-   DBG("Receiving %i bytes:\n%s", ev->size, recv);
-
-   if (e->state < EMAIL_STATE_CONNECTED)
-     {
-        email_login_pop(e, ev);
-        return ECORE_CALLBACK_RENEW;
-     }
-
-   if (!e->ops) return ECORE_CALLBACK_RENEW;
-
-   switch ((uintptr_t)e->ops->data)
-     {
-      case EMAIL_OP_STAT:
-        email_pop3_stat_read(e, recv, ev->size);
-        break;
-      case EMAIL_OP_LIST:
-        email_pop3_list_read(e, ev);
-        break;
-      case EMAIL_OP_QUIT:
-      {
-         Ecore_Cb cb;
-
-         cb = e->cbs->data;
-         e->cbs = eina_list_remove_list(e->cbs, e->cbs);
-         e->ops = eina_list_remove_list(e->ops, e->ops);
-         if (!email_op_ok(ev->data, ev->size))
-           ERR("Error with QUIT");
-         else
-           INF("QUIT");
-         cb(e);
-         ecore_con_server_del(e->svr);
-         break;
-      }
-      default:
-        break;
-     }
-   next_pop(e);
-   return ECORE_CALLBACK_RENEW;
-}
+EAPI int EMAIL_EVENT_CONNECTED = 0;
+EAPI int EMAIL_EVENT_DISCONNECTED = 0;
 
 static Eina_Bool
 disc(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
@@ -94,11 +15,11 @@ disc(Email *e, int type __UNUSED__, Ecore_Con_Event_Server_Del *ev)
      {
         /* ssl requested, not supported on base connection */
         if (e->pop3)
-          e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY, e->addr, EMAIL_POP3_PORT, e);
+          e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_CORK, e->addr, EMAIL_POP3_PORT, e);
         else if (e->smtp)
-          e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY, e->addr, EMAIL_SMTP_PORT, e);
+          e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_CORK, e->addr, EMAIL_SMTP_PORT, e);
         else if (e->imap)
-          e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY, e->addr, EMAIL_SMTP_PORT, e);
+          e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_CORK, e->addr, EMAIL_SMTP_PORT, e);
         e->flags = 0;
         return ECORE_CALLBACK_RENEW;
      }
@@ -145,7 +66,7 @@ email_shutdown(void)
    eina_log_domain_unregister(email_log_dom);
    if (_email_contacts_hash) eina_hash_free(_email_contacts_hash);
    _email_contacts_hash = NULL;
-   
+
    eina_shutdown();
 }
 
@@ -210,7 +131,7 @@ email_connect_pop3(Email *e, Eina_Bool secure, const char *addr)
    e->flags = secure ? ECORE_CON_USE_MIXED : 0;
    e->secure = !!secure;
    eina_stringshare_replace(&e->addr, addr);
-   e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_NODELAY | e->flags, addr, e->secure ? EMAIL_POP3S_PORT : EMAIL_POP3_PORT, e);
+   e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_CORK | e->flags, addr, e->secure ? EMAIL_POP3S_PORT : EMAIL_POP3_PORT, e);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->svr, EINA_FALSE);
    if (e->secure) ecore_con_ssl_server_verify_basic(e->svr);
    e->h_del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)disc, e);
@@ -230,8 +151,7 @@ email_connect_smtp(Email *e, Eina_Bool secure, const char *addr, const char *fro
    e->secure = !!secure;
    eina_stringshare_replace(&e->addr, addr);
    eina_stringshare_replace(&e->features.smtp_features.domain, from_domain);
-   //e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_CORK | e->flags, addr, e->secure ? EMAIL_ESMTP_PORT : EMAIL_SMTP_PORT, e);
-   e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_CORK | e->flags, addr, EMAIL_ESMTP_PORT, e);
+   e->svr = ecore_con_server_connect(ECORE_CON_REMOTE_CORK | e->flags, addr, EMAIL_SMTP_PORT, e);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->svr, EINA_FALSE);
    if (e->secure) ecore_con_ssl_server_verify_basic(e->svr);
    e->h_del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, (Ecore_Event_Handler_Cb)disc, e);
