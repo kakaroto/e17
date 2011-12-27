@@ -35,3 +35,5 @@ naviframe - edje_object -> elm_layout
 elm_object_item common item type check like widget_type
 
 evas_event - need to handle after pointer mode changed.
+
+elementary - check the rev 66531. (cedric)
