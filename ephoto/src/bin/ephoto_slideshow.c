@@ -26,7 +26,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
           elm_win_fullscreen_set(win, EINA_FALSE);
 
         slideshow_item = elm_slideshow_item_current_get(ss->slideshow);
-        if (slideshow_item) entry = elm_slideshow_item_data_get(slideshow_item);
+        if (slideshow_item) entry = elm_object_item_data_get(slideshow_item);
         else      entry = ss->entry;
         evas_object_smart_callback_call(ss->slideshow, "back", entry);
      }
