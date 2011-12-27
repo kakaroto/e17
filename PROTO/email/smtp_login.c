@@ -67,6 +67,8 @@ features_detect_smtp(Email *e, const unsigned char *data, int size)
              INF("Detected max size: %zu", e->features.smtp_features.size);
              p = (unsigned char*)x;
           }
+        else if (!strncasecmp((char*)p, "8BITMIME", 8))
+          e->features.smtp_features.eightbit = EINA_TRUE;
      }
 }
 

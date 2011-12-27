@@ -80,6 +80,7 @@ struct Email
          const char *domain;
          Eina_Bool ssl : 1;
          Eina_Bool pipelining : 1;
+         Eina_Bool eightbit : 1;
          size_t size;
 
          Eina_Bool cram : 1;
@@ -123,7 +124,6 @@ Eina_Bool email_pop3_retr_read(Email *e, Ecore_Con_Event_Server_Data *ev);
 
 void email_login_pop(Email *e, Ecore_Con_Event_Server_Data *ev);
 void email_login_smtp(Email *e, Ecore_Con_Event_Server_Data *ev);
-Eina_Bool email_quit_pop(Email *e, Ecore_Cb cb);
 
 void email_fake_free(void *d, void *e);
 char *email_base64_encode(const char *string, double len, int *);
