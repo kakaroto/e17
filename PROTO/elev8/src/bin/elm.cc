@@ -9,6 +9,11 @@
 #include <map>
 #include <elev8_common.h>
 
+CElmBasicWindow *main_win;
+Persistent<Value> the_datadir;
+Persistent<Value> the_tmpdir;
+Persistent<Value> the_theme;
+
 using namespace v8;
 
 // FIXME: split CElmObject from CEvasObject
@@ -1225,8 +1230,6 @@ public:
         ERR( "warning: resize=true ignored on main window");
      }
 };
-
-CElmBasicWindow *main_win;
 
 class CElmButton : public CEvasObject {
 protected:
@@ -5517,10 +5520,6 @@ elm_exit(const Arguments& args)
    elm_exit();
    return Undefined();
 }
-
-Persistent<Value> the_datadir;
-Persistent<Value> the_tmpdir;
-Persistent<Value> the_theme;
 
 Handle<Value>
 datadir_getter(Local<String> property, const AccessorInfo& info)
