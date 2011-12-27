@@ -1,2 +1,4 @@
 *.o
 email
+test_pop3
+test_smtp
