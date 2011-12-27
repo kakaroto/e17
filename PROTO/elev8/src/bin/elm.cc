@@ -1170,6 +1170,63 @@ public:
         return Number::New(dpi);
      }
 
+   virtual void load_region_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          return ;
+        Evas_Coord xx, yy, ww, hh;
+        Local<Object> obj = val->ToObject();
+        Local<Value> x = obj->Get(String::New("x"));
+        Local<Value> y = obj->Get(String::New("y"));
+        Local<Value> w = obj->Get(String::New("w"));
+        Local<Value> h = obj->Get(String::New("h"));
+        ww = w->Int32Value();
+        hh = h->Int32Value();
+        xx = x->Int32Value();
+        yy = y->Int32Value();
+        evas_object_image_load_region_set (eo, xx, yy, ww, hh);
+     }
+
+   virtual Handle<Value> load_region_get(void) const
+     {
+        Evas_Coord x, y, w, h;
+        evas_object_image_load_region_get (eo,  &x, &y, &w, &h);
+        Local<Object> obj = Object::New();
+        obj->Set(String::New("w"), Number::New(w));
+        obj->Set(String::New("h"), Number::New(h));
+        obj->Set(String::New("x"), Number::New(w));
+        obj->Set(String::New("y"), Number::New(h));
+        return obj;
+     }
+
+   virtual void load_orientation_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          {
+             evas_object_image_load_orientation_set(eo, val->BooleanValue());
+          }
+     }
+
+   virtual Handle<Value> load_orientation_get(void) const
+     {
+        Eina_Bool pd = evas_object_image_load_orientation_get(eo);
+        return Boolean::New(pd);
+     }
+
+   virtual void colorspace_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             evas_object_image_colorspace_set(eo, (Evas_Colorspace)val->Int32Value());
+          }
+     }
+
+   virtual Handle<Value> colorspace_get(void) const
+     {
+        Evas_Colorspace pd = evas_object_image_colorspace_get(eo);
+        return Number::New(pd);
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasImage>::property_list
@@ -1189,6 +1246,9 @@ CEvasObject::CPropHandler<CEvasImage>::list[] = {
      PROP_HANDLER(CEvasImage, load_dpi),
      PROP_HANDLER(CEvasImage, load_size),
      PROP_HANDLER(CEvasImage, load_scale_down),
+     PROP_HANDLER(CEvasImage, load_region),
+     PROP_HANDLER(CEvasImage, load_orientation),
+     PROP_HANDLER(CEvasImage, colorspace),
 };
 
 class CElmBasicWindow : public CEvasObject {
