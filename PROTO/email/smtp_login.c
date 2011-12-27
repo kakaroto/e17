@@ -44,11 +44,6 @@ features_detect_smtp(Email *e, const unsigned char *data, int size)
                        e->features.smtp_features.cram = EINA_TRUE;
                        INF("Detected CRAM-MD5");
                     }
-                  else if (!strncasecmp((char*)p, "DIGEST-MD5", 10))
-                    {
-                       e->features.smtp_features.digest = EINA_TRUE;
-                       INF("Detected DIGEST-MD5");
-                    }
                   else if (!strncasecmp((char*)p, "LOGIN", 5))
                     {
                        e->features.smtp_features.login = EINA_TRUE;
