@@ -1,7 +1,7 @@
 Source: eetxx
 Priority: optional
 Maintainer: Andreas Volz <andreas.volz@tux-style.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libeflxx-dev, libeet-dev (>= 1.4.0), cdbs, pkg-config, libtool
+Build-Depends: debhelper (>= 7), autotools-dev, libeflxx-dev, libeet-dev (>= 20111101), cdbs, pkg-config, libtool
 Standards-Version: 3.8.3
 Section: libs
 Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
@@ -9,12 +9,12 @@ Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
 Package: libeetxx-dev
 Section: libdevel
 Architecture: any
-Depends: libeetxx1 (= ${binary:Version}), libeflxx-dev, libeet-dev (>= 1.4.0)
+Depends: libeetxx1 (= ${binary:Version}), libeflxx-dev, libeet-dev (>= 20111101)
 Description: EFL C++ Wrapper, Eet Library
  This package contains headers and static libraries for development with libeetxx.
 
 Package: libeetxx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libeflxx1, libeet1 (>= 1.4.0)
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeflxx1, libeet1 (>= 20111101)
 Description: EFL C++ Wrapper, Eet Library

@@ -1,7 +1,7 @@
 Source: einaxx
 Priority: optional
 Maintainer: Andreas Volz <andreas.volz@tux-style.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libeflxx-dev, libeina-dev (>= 1.1.0), cdbs, pkg-config, libtool
+Build-Depends: debhelper (>= 7), autotools-dev, libeflxx-dev, libeina-dev (>= 20111101), cdbs, pkg-config, libtool
 Standards-Version: 3.8.3
 Section: libs
 Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
@@ -9,12 +9,12 @@ Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
 Package: libeinaxx-dev
 Section: libdevel
 Architecture: any
-Depends: libeinaxx1 (= ${binary:Version}), libeina-dev (>= 1.1.0), libeflxx-dev
+Depends: libeinaxx1 (= ${binary:Version}), libeina-dev (>= 20111101), libeflxx-dev
 Description: EFL C++ Wrapper, Eina Library
  This package contains headers and static libraries for development with libeinaxx.
 
 Package: libeinaxx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libeina1 (>= 1.1.0), libeflxx1
+Depends: ${shlibs:Depends}, ${misc:Depends}, libeina1 (>= 20111101), libeflxx1
 Description: EFL C++ Wrapper, Eina Library

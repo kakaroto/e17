@@ -1,7 +1,7 @@
 Source: evasxx
 Priority: optional
 Maintainer: Andreas Volz <andreas.volz@tux-style.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libeflxx-dev, libevas-dev (>= 1.1.0), libeet-dev (>= 1.1.0), cdbs, pkg-config, libtool, libsigc++-2.0-dev
+Build-Depends: debhelper (>= 7), autotools-dev, libeflxx-dev, libevas-dev (>= 20111101), libeet-dev (>= 20111101), cdbs, pkg-config, libtool, libsigc++-2.0-dev
 Standards-Version: 3.8.3
 Section: libs
 Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
@@ -9,12 +9,12 @@ Homepage: http://trac.enlightenment.org/e/wiki/EFLxx
 Package: libevasxx-dev
 Section: libdevel
 Architecture: any
-Depends: libevasxx1 (= ${binary:Version}), libevas-dev (>= 1.1.0), libeet-dev (>= 1.1.0), libsigc++-2.0-dev, libeflxx-dev
+Depends: libevasxx1 (= ${binary:Version}), libevas-dev (>= 20111101), libeet-dev (>= 20111101), libsigc++-2.0-dev, libeflxx-dev
 Description: EFL C++ Wrapper, Evas Library
  This package contains headers and static libraries for development with libevasxx.
 
 Package: libevasxx1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libevas1 (>= 1.1.0), libeet1 (>= 1.1.0), libsigc++-2.0-0c2a, libeflxx1
+Depends: ${shlibs:Depends}, ${misc:Depends}, libevas1 (>= 20111101), libeet1 (>= 20111101), libsigc++-2.0-0c2a, libeflxx1
 Description: EFL C++ Wrapper, Evas Library
