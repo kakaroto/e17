@@ -67,10 +67,10 @@ enlil_thumb_shutdown(void)
 }
 
 void
-enlil_exists_cb(Ethumb_Client *client,
+enlil_exists_cb(void          *data,
+                Ethumb_Client *client,
                 Ethumb_Exists *request,
-                Eina_Bool      exists,
-                void          *data)
+                Eina_Bool      exists)
 {
    Enlil_Thumb_Job *job = data;
 
