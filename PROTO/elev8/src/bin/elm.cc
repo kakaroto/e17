@@ -876,6 +876,18 @@ public:
         return Boolean::New(evas_object_focus_get(eo));
      }
 
+   virtual Handle<Value> layer_get() const
+     {
+        return Number::New(evas_object_layer_get(eo));
+     }
+
+   virtual void layer_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          evas_object_layer_set(eo, val->NumberValue());
+     }
+
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -902,6 +914,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, hint_min),
      PROP_HANDLER(CEvasObject, hint_max),
      PROP_HANDLER(CEvasObject, focus),
+     PROP_HANDLER(CEvasObject, layer),
      { NULL, NULL, NULL },
 };
 
