@@ -887,6 +887,19 @@ public:
           evas_object_layer_set(eo, val->NumberValue());
      }
 
+   virtual void name_set(Handle<Value> val)
+     {
+       if (val->IsString())
+         {
+            String::Utf8Value str(val);
+            evas_object_name_set(eo, *str);
+         }
+     }
+
+   virtual Handle<Value> name_get(void) const
+     {
+        return String::New(evas_object_name_get(eo));
+     }
 
 };
 
@@ -915,6 +928,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, hint_max),
      PROP_HANDLER(CEvasObject, focus),
      PROP_HANDLER(CEvasObject, layer),
+     PROP_HANDLER(CEvasObject, name),
      { NULL, NULL, NULL },
 };
 
