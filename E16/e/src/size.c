@@ -332,8 +332,9 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
    int                 num_t, num_b, num_l, num_r;
    float               aspect;
    EWin              **filtered_lst, **stacked_lst, *pe, *pe2;
-   char               *stacked_flag;
-   int                 num_stacked;
+   char               *done_stacking_flag;
+   char               *stacked_above_flag;
+   int                 num_stacked, stacked_above;
    long                area, new_area;
    int                 recenter, new_recenter;
    int                 td, bd, ld, rd;	/* displacement to maximized edges */
@@ -355,9 +356,11 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
 
    filtered_lst = EMALLOC(EWin *, num);
    stacked_lst = EMALLOC(EWin *, num + 1);
-   stacked_flag = ECALLOC(char, num);
+   stacked_above_flag = ECALLOC(char, num);
+   done_stacking_flag = ECALLOC(char, num);
 
-   if (!filtered_lst || !stacked_lst || !stacked_flag)
+   if (!filtered_lst || !stacked_lst || !done_stacking_flag ||
+       !stacked_above_flag)
       goto freedom;
 
    stacked_lst[0] = ewin;
@@ -365,13 +368,17 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
    /* ignore windows already overlapping ours and any windows UNDER them */
 
    /* start by detecting windows we overlap */
-   for (i = 0; i < num; i++)
+   for (i = 0, stacked_above = 0; i < num; i++)
      {
 	pe = lst[i];
 
+	if (pe == ewin)
+	  {
+	     stacked_above = 1;
+	  }
 	if ((pe == ewin) || _ignore(pe, type))
 	  {
-	     stacked_flag[i] = 1;
+	     done_stacking_flag[i] = 1;
 	     Dprintf("ignoring #%d %s\n", i, EwinGetTitle(pe));
 	     continue;
 	  }
@@ -380,8 +387,9 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
 	    SPANS_COMMON(y + 1, h - 2, EoGetY(pe), EoGetH(pe)))
 	  {
 	     stacked_lst[num_stacked] = pe;
+	     stacked_above_flag[num_stacked] = stacked_above;
 	     num_stacked++;
-	     stacked_flag[i] = 1;
+	     done_stacking_flag[i] = 1;
 	     Dprintf("overlap #%d %s\n", i, EwinGetTitle(pe));
 	  }
 	else
@@ -400,21 +408,31 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
 	sy = EoGetY(pe2);
 	sh = EoGetH(pe2);
 	sw = EoGetW(pe2);
-	Dprintf("metaoverlap testing from stacked %s\n", EwinGetTitle(pe));
 
-	/* skip windows before this one in the list */
+	/* find stacked_lst window pe2 in the general window list */
 	for (j = 0; j < num; j++)
 	  {
 	     pe = lst[j];
 	     if (pe == pe2)
 		break;
 	  }
+	if (stacked_above_flag[i])
+	  {
+	     Dprintf("metaoverlap testing from understacked %s\n",
+		     EwinGetTitle(pe));
+	  }
+	else
+	  {
+	     Dprintf("NOT metaoverlap testing from overstacked %s\n",
+		     EwinGetTitle(pe));
+	     continue;
+	  }
 
 	for (; j < num; j++)
 	  {
 	     pe = lst[j];
 
-	     if (stacked_flag[j])
+	     if (done_stacking_flag[j])
 		continue;
 	     if (pe->props.never_use_area)
 	       {
@@ -428,8 +446,9 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
 		  /* the list is already top down so if it overlaps it's also under */
 		  /* we hope! */
 		  stacked_lst[num_stacked] = pe;
+		  stacked_above_flag[num_stacked] = 1;
 		  num_stacked++;
-		  stacked_flag[j] = 1;
+		  done_stacking_flag[j] = 1;
 		  Dprintf("metaoverlap #%d %s\n", j, EwinGetTitle(pe));
 	       }
 	     else
@@ -444,7 +463,7 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
      {
 	pe = lst[i];
 
-	if (stacked_flag[i])
+	if (done_stacking_flag[i])
 	  {
 	     Dprintf("no stacked constraint from #%d %s\n", i,
 		     EwinGetTitle(pe));
@@ -781,7 +800,8 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
    Efree(constraints_br);
    Efree(filtered_lst);
    Efree(stacked_lst);
-   Efree(stacked_flag);
+   Efree(done_stacking_flag);
+   Efree(stacked_above_flag);
 }
 #endif /* ENABLE_SMART_MAXIMISE */
 
