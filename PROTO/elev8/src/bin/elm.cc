@@ -862,6 +862,20 @@ public:
         obj->Set(String::New("h"), Number::New(h));
         return obj;
      }
+
+   virtual void focus_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          {
+             evas_object_focus_set(eo, val->BooleanValue());
+          }
+     }
+
+   virtual Handle<Value> focus_get(void) const
+     {
+        return Boolean::New(evas_object_focus_get(eo));
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -887,6 +901,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, visible),
      PROP_HANDLER(CEvasObject, hint_min),
      PROP_HANDLER(CEvasObject, hint_max),
+     PROP_HANDLER(CEvasObject, focus),
      { NULL, NULL, NULL },
 };
 
