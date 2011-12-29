@@ -335,6 +335,7 @@ collections
                     aspect: 1 1;
                     aspect_preference: BOTH;
                     align: 0.5 0.5;
+                    min: 12 12;
                     rel1
                     {
                         relative: 0.0 0.0;
@@ -364,6 +365,7 @@ collections
                     aspect: 1 1;
                     aspect_preference: BOTH;
                     align: 0.5 0.5;
+                    min: 12 12;
                     rel1
                     {
                         relative: 0.2 0.0;
@@ -393,6 +395,7 @@ collections
                     aspect: 1 1;
                     aspect_preference: BOTH;
                     align: 0.5 0.5;
+                    min: 12 12;
                     rel1
                     {
                         relative: 0.4 0.0;
@@ -422,6 +425,7 @@ collections
                     aspect: 1 1;
                     aspect_preference: BOTH;
                     align: 0.5 0.5;
+                    min: 12 12;
                     rel1
                     {
                         relative: 0.6 0.0;
@@ -451,6 +455,7 @@ collections
                     aspect: 1 1;
                     aspect_preference: BOTH;
                     align: 0.5 0.5;
+                    min: 12 12;
                     rel1
                     {
                         relative: 0.8 0.0;
