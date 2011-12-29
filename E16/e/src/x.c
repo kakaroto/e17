@@ -1211,12 +1211,6 @@ EKeynameToKeycode(const char *name)
    return XKeysymToKeycode(disp, XStringToKeysym(name));
 }
 
-const char         *
-EKeycodeToString(KeyCode keycode, int ix)
-{
-   return XKeysymToString(XKeycodeToKeysym(disp, keycode, ix));
-}
-
 Atom
 EInternAtom(const char *name)
 {

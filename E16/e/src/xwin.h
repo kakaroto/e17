@@ -278,7 +278,6 @@ void                EXSendEvent(Window xwin, long event_mask, XEvent * ev);
 
 KeyCode             EKeysymToKeycode(KeySym keysym);
 KeyCode             EKeynameToKeycode(const char *name);
-const char         *EKeycodeToString(KeyCode keycode, int index);
 
 Atom                EInternAtom(const char *name);
 
