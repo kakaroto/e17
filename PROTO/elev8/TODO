@@ -1,5 +1,6 @@
 EvasImage features - Done
 unpack implementation
-layout support
+layout support - Done
 dbus implementation - Started
 file i/o - Started
+Evas Generic Object Function - Transformations - Started.
