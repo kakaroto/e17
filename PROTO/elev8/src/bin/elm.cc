@@ -901,6 +901,31 @@ public:
         return String::New(evas_object_name_get(eo));
      }
 
+   virtual void hint_req_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          return ;
+        Evas_Coord width, height;
+        Local<Object> obj = val->ToObject();
+        Local<Value> w = obj->Get(String::New("x"));
+        Local<Value> h = obj->Get(String::New("y"));
+        if (!w->IsInt32() || !h->IsInt32())
+          return;
+        width = w->Int32Value();
+        height = h->Int32Value();
+        evas_object_size_hint_request_set (eo,  width, height);
+     }
+
+   virtual Handle<Value> hint_req_get(void) const
+     {
+        Evas_Coord w, h;
+        evas_object_size_hint_request_get (eo,  &w, &h);
+        Local<Object> obj = Object::New();
+        obj->Set(String::New("w"), Number::New(w));
+        obj->Set(String::New("h"), Number::New(h));
+        return obj;
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -929,6 +954,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, focus),
      PROP_HANDLER(CEvasObject, layer),
      PROP_HANDLER(CEvasObject, name),
+     PROP_HANDLER(CEvasObject, hint_req),
      { NULL, NULL, NULL },
 };
 
