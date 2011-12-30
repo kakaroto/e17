@@ -955,6 +955,17 @@ public:
         return obj;
      }
 
+   virtual Handle<Value> pointer_mode_get() const
+     {
+        return Number::New(evas_object_pointer_mode_get(eo));
+     }
+
+   virtual void pointer_mode_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          evas_object_pointer_mode_set(eo, (Evas_Object_Pointer_Mode)val->NumberValue());
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -985,6 +996,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, name),
      PROP_HANDLER(CEvasObject, hint_req),
      PROP_HANDLER(CEvasObject, padding),
+     PROP_HANDLER(CEvasObject, pointer_mode),
      { NULL, NULL, NULL },
 };
 
