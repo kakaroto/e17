@@ -33,7 +33,7 @@
 static int _ev_log_dom = -1;
 static Elm_Genlist_Item_Class itc;;
 static Evas_Object *img, *list = NULL;
-static int root_x = -1, root_y = -1;
+static int root_w = -1, root_h = -1;
 
 static void
 _close(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
@@ -56,37 +56,43 @@ _text(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 static void
 _resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *einfo __UNUSED__)
 {
-   Evas_Coord x, y;
-   if (obj)
-     evas_object_geometry_get(obj, NULL, NULL, &x, &y);
-   else
-     {
-        elm_image_object_size_get(img, &x, &y);
-        DBG("Native size: %i %i", x, y);
-     }
-   if ((x >= root_x) || (y >= root_y))
-     {
-        double dx, dy;
+   Evas_Coord w, h;
+   Evas_Coord ww, wh;
+   Evas_Object *ic, *win;
+   win = obj;
+   if (!win) win = elm_object_top_widget_get(img);
+   evas_object_geometry_get(win, NULL, NULL, &ww, &wh);
 
-        dx = (double)root_x / (double) x;
-        dy = (double)root_y / (double) y;
-        if (dx > dy)
+   ic = elm_icon_object_get(img);
+   evas_object_image_size_get(ic, &w, &h);
+   DBG("Native size: %d %d", w, h);
+   if (root_w < 1) return;
+   if ((w >= root_w) || (h >= root_h))
+     {
+        double dw, dh;
+
+        dw = (double)root_w / (double) w;
+        dh = (double)root_h / (double) h;
+        if (dw > dh)
           {
-             evas_object_resize(img, (int)(dy * x), root_y);
-             evas_object_resize(elm_object_parent_widget_get(img), (int)(dy * x), root_y);
+             evas_object_resize(win, (int)(dh * w), root_h);
           }
         else
           {
-             evas_object_resize(img, root_x, (int)(dx * y));
-             evas_object_resize(elm_object_parent_widget_get(img), root_x, (int)(dx * y));
+             evas_object_resize(win, root_w, (int)(dw * h));
           }
      }
    else
      {
-        evas_object_resize(img, x, y);
-        evas_object_resize(elm_object_parent_widget_get(img), x, y);
+        if (obj)
+          evas_object_resize(win, ww, wh);
+        else
+          evas_object_resize(win, w, h);
      }
-   INF("x=%i, y=%i", x, y);
+   evas_object_geometry_get(win, NULL, NULL, &ww, &wh);
+   evas_object_move(img, (ww / 2) - (w / 2), (wh / 2) - (h / 2));
+   INF("w=%d, h=%d, x=%d, y=%d", w, h, (ww / 2) - (w / 2), (wh / 2) - (h / 2));
+   INF("ww=%d, wh=%d", ww, wh);
 }
 
 static void
@@ -96,7 +102,7 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
    Evas_Object *win;
 
    DBG("pick");
-   elm_image_file_get(img, &f, &p);
+   elm_icon_file_get(img, &f, &p);
    file = elm_genlist_item_data_get(ev);
    if (f && (!strcmp(file, f))) return;
 
@@ -105,7 +111,7 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
         ERR("Image loader for %s not detected", file);
         return;
      }
-   elm_image_file_set(img, file, NULL);
+   elm_icon_file_set(img, file, NULL);
    _resize(NULL, NULL, NULL, NULL);
    win = elm_object_parent_widget_get(img);
    elm_win_title_set(win, file);
@@ -162,6 +168,7 @@ add_dir(Evas_Object *list, const char *dir)
    const char *str;
 
    it = eina_file_ls(dir);
+   if (!it) return;
    EINA_ITERATOR_FOREACH(it, str)
      add_single(list, str);
    eina_iterator_free(it);
@@ -190,7 +197,6 @@ int
 main(int argc, char *argv[])
 {
    Evas_Object *listwin, *win, *bg, *box;
-   Ecore_X_Window zw;
 
    itc.item_style     = "default";
    itc.func.text_get = _text;
@@ -217,16 +223,15 @@ main(int argc, char *argv[])
    elm_win_resize_object_add(win, bg);
    evas_object_show(bg);
 
-   img = elm_image_add(win);
+   img = elm_icon_add(win);
    evas_object_size_hint_weight_set(img, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(img, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_size_hint_align_set(img, 0.5, 0.5);
+   elm_win_resize_object_add(win, img);
    evas_object_show(img);
    evas_object_show(win);
 
-   zw = elm_win_xwindow_get(win);
-   if (zw)
-     ecore_x_randr_screen_current_size_get(ecore_x_window_root_get(zw), &root_x, &root_y, NULL, NULL);
-   else
+   elm_win_screen_size_get(win, NULL, NULL, &root_w, &root_h);
+   if (root_w < 1)
      ERR("Could not determine screen size; autoscaling disabled");
 
    listwin = elm_win_add(NULL, "ev", ELM_WIN_BASIC);
@@ -250,7 +255,9 @@ main(int argc, char *argv[])
    evas_object_smart_callback_add(list, "clicked,double", (Evas_Smart_Cb)_pick, NULL);
    evas_object_event_callback_add(win, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)_key, NULL);
    evas_object_event_callback_add(win, EVAS_CALLBACK_RESIZE, (Evas_Object_Event_Cb)_resize, NULL);
-   evas_object_event_callback_add(list, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)_key, NULL);
+   1 | evas_object_key_grab(listwin, "space", 0, 0, 1);
+   1 | evas_object_key_grab(listwin, "q", 0, 0, 1);
+   evas_object_event_callback_add(listwin, EVAS_CALLBACK_KEY_DOWN, (Evas_Object_Event_Cb)_key, NULL);
    evas_object_smart_callback_add(img, "clicked", (Evas_Smart_Cb)_show, listwin);
    evas_object_smart_callback_add(win, "delete,request", _close, NULL);
 
