@@ -92,26 +92,12 @@
    }
 
    group { name: "elm/toolbar/item/default";
-       images {
-           image: "toolbar_sel.png" COMP;
-       }
        data.item: "transition_animation_on" "1";
        parts {
            part { name: "bg";
                mouse_events: 0;
+               type: RECT;
                description { state: "default" 0.0;
-                   visible: 0;
-                   color: 255 255 255 0;
-                   image {
-                       normal: "toolbar_sel.png";
-                       border: 3 3 0 0;
-                   }
-                   image.middle: SOLID;
-                   fill.smooth: 0;
-               }
-               description { state: "disabled" 0.0;
-                   inherit: "default" 0.0;
-                   visible: 0;
                    color: 255 255 255 0;
                }
            }
@@ -251,16 +237,15 @@
                signal:  "elm,state,selected";
                source:  "elm";
                action:  STATE_SET "selected" 0.0;
-               target:  "bg";
                target:  "elm.text";
                transition: SINUSOIDAL 0.2;
                after: "go_active";
+               BUTTON_GLOW_DOWN_ACTION("bg")
            }
            program { name: "go_passive";
                signal:  "elm,state,unselected";
                source:  "elm";
                action:  STATE_SET "default" 0.0;
-               target:  "bg";
                target:  "bg_glow";
                target:  "bg_glow_down";
                target:  "elm.text";
@@ -315,26 +300,10 @@
            program {
               DISABLE_PROGRAM_PART
               target: "label";
-              target: "bg";
               after: "disable_text";
            }
            BUTTON_GLOW_PROGRAM("bg")
            BUTTON_GLOW_DOWN_PROGRAM("bg")
-           program { name: "selected_check";
-               signal:  "elm,state,selected";
-               source:  "elm";
-               script {
-                   new st[31], st2[31], st3[31];
-                   new Float:vl, Float:vl2, Float:vl3;
-                   get_state(PART:"label", st, 30, vl);
-                   get_state(PART:"bg_glow", st2, 30, vl2);
-                   get_state(PART:"bg_glow_down", st3, 30, vl3);
-                   if ((!strcmp(st, "selected")) && (strcmp(st2, "active") || strcmp(st3, "active")))
-                   {
-                      emit("mouse,down,1", "bg_events");
-                   }
-               }
-           }
            program { name: "disable_text";
                script {
                    new st[31];
@@ -353,7 +322,6 @@
            program {
               ENABLE_PROGRAM_PART
               target: "label";
-              target: "bg";
               after: "enable_text";
            }
            program { name: "enable_text";
