@@ -926,6 +926,31 @@ public:
         return obj;
      }
 
+   virtual void hint_align_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          return ;
+        double width, height;
+        Local<Object> obj = val->ToObject();
+        Local<Value> w = obj->Get(String::New("x"));
+        Local<Value> h = obj->Get(String::New("y"));
+        if (!w->IsInt32() || !h->IsInt32())
+          return;
+        width = w->Int32Value();
+        height = h->Int32Value();
+        evas_object_size_hint_align_set (eo,  width, height);
+     }
+
+   virtual Handle<Value> hint_align_get(void) const
+     {
+        double w, h;
+        evas_object_size_hint_align_get (eo,  &w, &h);
+        Local<Object> obj = Object::New();
+        obj->Set(String::New("w"), Number::New(w));
+        obj->Set(String::New("h"), Number::New(h));
+        return obj;
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -955,6 +980,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, layer),
      PROP_HANDLER(CEvasObject, name),
      PROP_HANDLER(CEvasObject, hint_req),
+     PROP_HANDLER(CEvasObject, hint_align),
      { NULL, NULL, NULL },
 };
 
