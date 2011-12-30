@@ -84,7 +84,7 @@ set_api_state(api_data *api)
 
       case INDEX_ITEM_FIND: /* 5 */
            {
-              Elm_Index_Item *i = elm_index_item_find(d->id, d->item);
+              Elm_Object_Item *i = elm_index_item_find(d->id, d->item);
               if(i)
                 {
                    printf("Item Find - Found Item.\n");
@@ -223,11 +223,11 @@ int
 test_index2_icmp(const void *data1, const void *data2)
 {
    const char *label1, *label2;
-   const Elm_Index_Item *it1 = data1;
-   const Elm_Index_Item *it2 = data2;
+   const Elm_Object_Item *index_it1 = data1;
+   const Elm_Object_Item *index_it2 = data2;
 
-   label1 = elm_index_item_letter_get(it1);
-   label2 = elm_index_item_letter_get(it2);
+   label1 = elm_index_item_letter_get(index_it1);
+   label2 = elm_index_item_letter_get(index_it2);
 
    return strcasecmp(label1, label2);
 }
@@ -243,9 +243,9 @@ test_index2_it_add(void *data, Evas_Object *obj __UNUSED__, void *event_info __U
    label = elm_entry_entry_get(gui->entry);
    snprintf(letter, sizeof(letter), "%c", label[0]);
    it = elm_list_item_sorted_insert(gui->lst, label, NULL, NULL, NULL, NULL,
-	 test_index2_cmp);
+                                    test_index2_cmp);
    elm_index_item_sorted_insert(gui->id, letter, it, test_index2_icmp,
-	 test_index2_cmp);
+                                test_index2_cmp);
    elm_list_go(gui->lst);
    /* FIXME it's not showing the recently added item */
    elm_list_item_show(it);
@@ -263,9 +263,9 @@ test_index2_it_del(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 
    if (!it_next)
      {
-	elm_index_item_del(gui->id, elm_index_item_find(gui->id, it));
-	elm_list_item_del(it);
-	return;
+        elm_index_item_del(gui->id, elm_index_item_find(gui->id, it));
+        elm_list_item_del(it);
+        return;
      }
 
    label = elm_list_item_label_get(it);
@@ -273,9 +273,9 @@ test_index2_it_del(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 
    if (label[0] == label_next[0])
      {
-	Elm_Index_Item *iit;
-	iit = elm_index_item_find(gui->id, it);
-	elm_index_item_data_set(iit, it_next);
+        Elm_Object_Item *iit;
+        iit = elm_index_item_find(gui->id, it);
+        elm_index_item_data_set(iit, it_next);
      }
    else
      elm_index_item_del(gui->id, elm_index_item_find(gui->id, it));
@@ -310,10 +310,10 @@ TEST_START(test_index2)
 
    gui->id = elm_index_add(win);
    evas_object_size_hint_weight_set(gui->id, EVAS_HINT_EXPAND,
-	 EVAS_HINT_EXPAND);
+                                    EVAS_HINT_EXPAND);
    elm_win_resize_object_add(win, gui->id);
    evas_object_smart_callback_add(gui->id, "delay,changed",
-	 test_index2_id_changed, NULL);
+                                  test_index2_id_changed, NULL);
    evas_object_show(gui->id);
 
    gui->entry = elm_entry_add(win);
@@ -336,10 +336,10 @@ TEST_START(test_index2)
    gui->lst = elm_list_add(win);
    elm_box_pack_end(box, gui->lst);
    evas_object_size_hint_weight_set(gui->lst, EVAS_HINT_EXPAND,
-	 EVAS_HINT_EXPAND);
+                                    EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set(gui->lst, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_smart_callback_add(gui->lst, "selected", test_index2_it_del,
-	 gui);
+                                  gui);
    elm_list_go(gui->lst);
    evas_object_show(gui->lst);
 
