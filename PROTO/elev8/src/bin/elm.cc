@@ -979,6 +979,18 @@ public:
         return Boolean::New(evas_object_anti_alias_get(eo));
      }
 
+   virtual void static_clip_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          {
+             evas_object_static_clip_set(eo, val->BooleanValue());
+          }
+     }
+
+   virtual Handle<Value> static_clip_get(void) const
+     {
+        return Boolean::New(evas_object_static_clip_get(eo));
+     }
 
 };
 
@@ -1012,6 +1024,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, padding),
      PROP_HANDLER(CEvasObject, pointer_mode),
      PROP_HANDLER(CEvasObject, antialias),
+     PROP_HANDLER(CEvasObject, static_clip),
      { NULL, NULL, NULL },
 };
 
