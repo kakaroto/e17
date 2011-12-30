@@ -966,6 +966,20 @@ public:
           evas_object_pointer_mode_set(eo, (Evas_Object_Pointer_Mode)val->NumberValue());
      }
 
+   virtual void antialias_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          {
+             evas_object_anti_alias_set(eo, val->BooleanValue());
+          }
+     }
+
+   virtual Handle<Value> antialias_get(void) const
+     {
+        return Boolean::New(evas_object_anti_alias_get(eo));
+     }
+
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -997,6 +1011,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, hint_req),
      PROP_HANDLER(CEvasObject, padding),
      PROP_HANDLER(CEvasObject, pointer_mode),
+     PROP_HANDLER(CEvasObject, antialias),
      { NULL, NULL, NULL },
 };
 
