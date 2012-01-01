@@ -5,7 +5,8 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DLOCALE_DIR=\"$(datadir)/locale\" \
-@EFL_CFLAGS@
+@EFL_CFLAGS@ \
+@ECORE_X_CFLAGS@
 
 bin_PROGRAMS = ecrire
 
@@ -18,7 +19,7 @@ ecrire_SOURCES = \
    ui/font_dialog.c \
    ui/alerts.c
 
-ecrire_LDADD = @EFL_LIBS@ @LTLIBINTL@
+ecrire_LDADD = @EFL_LIBS@ @ECORE_X_LIBS@ @LTLIBINTL@
 
 EXTRA_DIST = \
    mess_header.h \

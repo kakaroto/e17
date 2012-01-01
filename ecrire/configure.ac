@@ -53,8 +53,15 @@ PKG_CHECK_MODULES([EFL],
    elementary >= 0.7.0
    edje >= 1.1.0
    ecore >= 1.0.0
-   ecore-x >= 1.0.0
   ])
+
+PKG_CHECK_MODULES([ECORE_X], [ecore-x >= 1.0.0],
+  [
+    AC_DEFINE(HAVE_ECORE_X, 1, [X11 support])
+  ],
+    []
+)
+  
 
 AC_OUTPUT([
 Makefile

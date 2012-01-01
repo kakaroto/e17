@@ -1,7 +1,13 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <Elementary.h>
 #include <unistd.h>
 
-#include <Ecore_X.h>
+#ifdef HAVE_ECORE_X
+# include <Ecore_X.h>
+#endif
 
 #include "mess_header.h"
 #include "cfg.h"
@@ -530,6 +536,7 @@ editor_font_choose(Evas_Object *ent, const char *font, int size)
    ecrire_cfg_save();
 }
 
+#ifdef HAVE_ECORE_X
 static Eina_Bool
 _selection_notify(void *data __UNUSED__, int type __UNUSED__, void *_event)
 {
@@ -547,6 +554,7 @@ _selection_notify(void *data __UNUSED__, int type __UNUSED__, void *_event)
 
    return ECORE_CALLBACK_PASS_ON;
 }
+#endif
 
 int
 main(int argc, char *argv[])
@@ -672,6 +680,7 @@ main(int argc, char *argv[])
    elm_toolbar_item_append(tbar, "preferences-system", _("Settings"),
          _font_settings, entry);
 
+#ifdef HAVE_ECORE_X
    if (!ecore_x_selection_owner_get(ECORE_X_ATOM_SELECTION_CLIPBOARD))
      {
         elm_object_item_disabled_set(paste_item, EINA_TRUE);
@@ -680,6 +689,7 @@ main(int argc, char *argv[])
    ecore_x_fixes_selection_notification_request(ECORE_X_ATOM_SELECTION_CLIPBOARD);
    ecore_event_handler_add(ECORE_X_EVENT_FIXES_SELECTION_NOTIFY,
          _selection_notify, NULL);
+#endif
 
    /* We don't have a selection when we start, make the items disabled */
    elm_object_item_disabled_set(copy_item, EINA_TRUE);
