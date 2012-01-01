@@ -53,6 +53,7 @@ PKG_CHECK_MODULES([EFL],
    elementary >= 0.7.0
    edje >= 1.1.0
    ecore >= 1.0.0
+   efreet >= 1.0.0
   ])
 
 PKG_CHECK_MODULES([ECORE_X], [ecore-x >= 1.0.0],
