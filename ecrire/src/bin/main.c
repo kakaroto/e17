@@ -342,7 +342,7 @@ _load_to_entry(Evas_Object *ent, const char *file)
         else
            buf = _load_file(file);
 
-        elm_entry_entry_set(ent, "");
+        elm_object_text_set(ent, "");
         _init_entry(ent);
         elm_entry_entry_append(ent, buf);
         elm_object_item_disabled_set(save_item, EINA_TRUE);
@@ -368,9 +368,9 @@ static void
 _save_do(const char *file, Evas_Object *ent)
 {
    if (plain_utf8)
-      _save_plain_utf8(file, elm_entry_entry_get(ent));
+      _save_plain_utf8(file, elm_object_text_get(ent));
    else
-      _save_markup_utf8(file, elm_entry_entry_get(ent));
+      _save_markup_utf8(file, elm_object_text_get(ent));
 
    elm_object_item_disabled_set(save_item, EINA_TRUE);
    last_saved_stack_ptr = undo_stack_ptr;
@@ -417,7 +417,7 @@ _save(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 static void
 _new_do(void *data)
 {
-   elm_entry_entry_set(data, "");
+   elm_object_text_set(data, "");
    _init_entry(data);
    elm_object_item_disabled_set(save_item, EINA_TRUE);
    _update_cur_file(NULL, elm_object_top_widget_get(data));
