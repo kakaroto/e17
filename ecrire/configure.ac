@@ -51,6 +51,7 @@ AC_MSG_RESULT([${_cv_have___attribute__}])
 PKG_CHECK_MODULES([EFL],
   [
    elementary >= 0.7.0
+   edje >= 1.1.0
    ecore >= 1.0.0
    ecore-x >= 1.0.0
   ])
