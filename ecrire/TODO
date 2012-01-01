@@ -1,0 +1,18 @@
+* Have "you have unsaved changes, do you want to close this without saving?" dialog.
+* Undo/redo
+  * Also add a stack limit? Replace should also affect undo/redo.
+  * This is just an example policy, should possibly be implemented differently.
+* When I implement different wrapping modes, make sure I count lines correctly.
+* Support .swp files (autosave feature of elm?).
+* Search -> wrap around, search backwards, case insensitive.
+* Allow to manually override newline legacy mode?
+* Go to line.
+* Add save as.
+* Font selection: Add checkbox to say: "Use default font".
+* Font selection: Load the current values to the view.
+* Font settings: Mark currently selected font in font settings. Keep a value saying if we are using the default font, or our own. Keep the size.
+* Make a way in textblock or something to get the newly added format node, and then use it to store the node instead of searching for it later.
+
+Stage 2
+~~~~~~~
+* Tabs (pager)

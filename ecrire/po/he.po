@@ -1,0 +1,125 @@
+# Hebrew translation.
+# Copyright (C) 2011 Enlightenment development team
+# This file is distributed under the same license as the entitled package.
+# Tom Hacohen <tom@stosb.com>, 2011
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: entitled 0.1.0\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2012-01-01 13:06+0200\n"
+"PO-Revision-Date: 2011-08-09 11:45+0.00\n"
+"Last-Translator: Tom Hacohen <tom@stosb.com>\n"
+"Language-Team: General\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/bin/ui/alerts.c:39
+msgid ""
+"<align=center>Would you like to save changes to document?<br>Any unsaved "
+"changes will be lost."
+msgstr ""
+"<align=center>האם תרצה לשמור את השינויים במסמך זה?<br>שינויים שלא ישמרו "
+"יאבדו."
+
+#: src/bin/ui/alerts.c:54 src/bin/main.c:652
+msgid "Save"
+msgstr "שמור"
+
+#: src/bin/ui/alerts.c:60
+msgid "Discard"
+msgstr "השלך"
+
+#: src/bin/ui/alerts.c:66
+msgid "Cancel"
+msgstr "בטל"
+
+#: src/bin/ui/search_dialog.c:139 src/bin/main.c:668
+msgid "Find & Replace"
+msgstr "חפש והחלף"
+
+#: src/bin/ui/search_dialog.c:161
+msgid "Search for:"
+msgstr "חפש:"
+
+#: src/bin/ui/search_dialog.c:185
+msgid "Replace with:"
+msgstr "החלף ב:"
+
+#: src/bin/ui/search_dialog.c:209
+msgid "Find"
+msgstr "חפש"
+
+#: src/bin/ui/search_dialog.c:217
+msgid "Replace"
+msgstr "החלף"
+
+#: src/bin/ui/font_dialog.c:71
+msgid "Select Font"
+msgstr "בחר גופן"
+
+#: src/bin/ui/font_dialog.c:96
+msgid "Font size:"
+msgstr ""
+
+#: src/bin/ui/font_dialog.c:101
+#, c-format
+msgid "%.0f pts"
+msgstr ""
+
+#: src/bin/ui/font_dialog.c:111
+msgid "Set"
+msgstr "בחר"
+
+#: src/bin/main.c:91
+#, c-format
+msgid "%s%s - %s"
+msgstr "%s%s - %s"
+
+#: src/bin/main.c:93
+#, c-format
+msgid "%sUntitled %d - %s"
+msgstr "%sללא שם %d - %s"
+
+#: src/bin/main.c:117
+#, c-format
+msgid "Ln %d, Col %d"
+msgstr "שורה %d, עמודה %d"
+
+#: src/bin/main.c:649
+msgid "New"
+msgstr "חדש"
+
+#: src/bin/main.c:650
+msgid "Open"
+msgstr "פתח"
+
+#: src/bin/main.c:656
+msgid "Undo"
+msgstr "בטל"
+
+#: src/bin/main.c:658
+msgid "Redo"
+msgstr "בצע שוב"
+
+#: src/bin/main.c:661
+msgid "Cut"
+msgstr "גזור"
+
+#: src/bin/main.c:663
+msgid "Copy"
+msgstr "העתק"
+
+#: src/bin/main.c:665
+msgid "Paste"
+msgstr "הדבק"
+
+#: src/bin/main.c:672
+msgid "Settings"
+msgstr "הגדרות"
+
+#~ msgid "Font"
+#~ msgstr "גופן"
