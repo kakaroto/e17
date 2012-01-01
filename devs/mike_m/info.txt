@@ -1,7 +1,7 @@
 Login:        mike_m
 IRC Nick:     mike_m
 Name:         Mike McCormack
-Location:     Seoul, Korea
-E-Mail:       mj.mccormack@samsung.com
+Location:     Sydney, Australia
+E-Mail:       mikem@ring3k.org
 Contributing: ecore, elev8
 Platform:     Ubuntu (Linux)
