@@ -969,7 +969,7 @@ on_view_contextmenu_show(void *data __UNUSED__, Evas_Object *view, void *event_i
    evas_object_size_hint_weight_set(li, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_fill_set(li, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_min_set(li, 200, 200);
-   elm_notify_content_set(notify, li);
+   elm_object_content_set(notify, li);
 
    evas_object_smart_callback_add(notify, "block,clicked",
                                   _view_contextmenu_cancel, menu);
@@ -1344,7 +1344,7 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
    elm_notify_repeat_events_set(dialog_data->notify, EINA_FALSE);
 
    bx_v = elm_box_add(parent);
-   elm_notify_content_set(dialog_data->notify, bx_v);
+   elm_object_content_set(dialog_data->notify, bx_v);
    elm_box_horizontal_set(bx_v, 0);
    evas_object_size_hint_weight_set(bx_v, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bx_v);
@@ -1370,7 +1370,7 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
         if (type == DIALOG_PROMPT)
           {
              dialog_data->entry = elm_entry_add(bx_v);
-             elm_entry_entry_set(dialog_data->entry, default_entry_value);
+             elm_object_text_set(dialog_data->entry, default_entry_value);
              elm_box_pack_end(bx_v, dialog_data->entry);
              evas_object_show(dialog_data->entry);
           }
@@ -1408,7 +1408,7 @@ _run_dialog(Evas_Object *parent, enum dialog_type type, const char *message, con
    ecore_main_loop_begin();
 
    if ((type == DIALOG_PROMPT) && (response == EINA_TRUE))
-      *entry_value = strdup(elm_entry_entry_get(dialog_data->entry));
+      *entry_value = strdup(elm_object_text_get(dialog_data->entry));
 
    evas_object_del(dialog_data->notify);
    free(dialog_data);

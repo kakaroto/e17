@@ -976,7 +976,7 @@ _chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
    _chrome_title_apply(chrome);
 
    text_url = edje_object_part_swallow_get(ed, "url-entry");
-   elm_entry_entry_set(text_url, url ? url : "");
+   elm_object_text_set(text_url, url ? url : "");
    _is_favorite_check(chrome, url);
    _history_update(url, title ? title : url);
 
@@ -1210,7 +1210,7 @@ on_view_popup_new(void *data __UNUSED__, Evas_Object *view, void *event_info)
 
    elm_list_go(li);
    evas_object_show(li);
-   elm_notify_content_set(notify, li);
+   elm_object_content_set(notify, li);
 
    evas_object_smart_callback_add(view, "popup,willdelete",
                                   on_view_popup_delete, notify);
@@ -1284,7 +1284,7 @@ on_action_clear(void *data, Evas_Object *o __UNUSED__,
    Evas_Object *chrome = data;
    Evas_Object *ed = elm_layout_edje_get(chrome);
    Evas_Object *text_url = edje_object_part_swallow_get(ed, "url-entry");
-   elm_entry_entry_set(text_url, "");
+   elm_object_text_set(text_url, "");
 }
 
 static void
@@ -1459,8 +1459,8 @@ cb_config_string_changed(void *data, Evas_Object *obj, void *event_info __UNUSED
 
    if ((conf_set = mmc->conf_set))
       {
-         conf_set(config, elm_entry_entry_get(obj));
-         conf_updated(mmc, (void *)elm_entry_entry_get(obj));
+         conf_set(config, elm_object_text_get(obj));
+         conf_updated(mmc, (void *)elm_object_text_get(obj));
       }
 }
 
@@ -1792,7 +1792,7 @@ more_menu_config_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu
    elm_notify_repeat_events_set(notify, EINA_FALSE);
 
    bx_v = elm_box_add(parent);
-   elm_notify_content_set(notify, bx_v);
+   elm_object_content_set(notify, bx_v);
    elm_box_horizontal_set(bx_v, 0);
    evas_object_size_hint_weight_set(bx_v, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(bx_v);
@@ -1805,7 +1805,7 @@ more_menu_config_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu
    entry = elm_entry_add(bx_v);
    elm_entry_password_set(entry, password);
    elm_entry_single_line_set(entry, EINA_TRUE);
-   elm_entry_entry_set(entry, conf_get(config));
+   elm_object_text_set(entry, conf_get(config));
    elm_box_pack_end(bx_v, entry);
    evas_object_show(entry);
 
@@ -1837,7 +1837,7 @@ more_menu_config_string_ask(Evas_Object *parent, More_Menu_Item *item, More_Menu
    evas_object_hide(notify);
 
    if (response == EINA_TRUE)
-      conf_set(config, elm_entry_entry_get(entry));
+      conf_set(config, elm_object_text_get(entry));
 
    evas_object_del(notify);
 }
@@ -2126,7 +2126,7 @@ on_action_load_page(void *data, Evas_Object *view, void *event_info __UNUSED__)
 {
    Evas_Object *ewk_view = data;
 
-   const char *entry_data = elm_entry_entry_get(view);
+   const char *entry_data = elm_object_text_get(view);
    char *uri;
 
    if ((uri = uri_sanitize(entry_data)))
@@ -2314,7 +2314,7 @@ on_key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__,
 
              notify = elm_notify_add(win->win);
              elm_object_style_set(notify, "ewebkit");
-             elm_notify_content_set(notify, label);
+             elm_object_content_set(notify, label);
              elm_notify_orient_set(notify, ELM_NOTIFY_ORIENT_TOP);
              elm_notify_timeout_set(notify, 1.0);
              evas_object_show(notify);
@@ -2521,7 +2521,7 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    evas_object_data_set(chrome, "session", session_item);
 
    evas_object_focus_set(view, 1);
-   elm_layout_content_set(chrome, "view", view);
+   elm_object_part_content_set(chrome, "view", view);
 
    evas_object_data_set(chrome, "view", view);
    evas_object_data_set(chrome, "win", win);
@@ -2542,7 +2542,7 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    Evas_Object *text_url = elm_entry_add(ed);
    elm_object_style_set(text_url, "ewebkit/url");
    elm_entry_single_line_set(text_url, EINA_TRUE);
-   elm_layout_content_set(chrome, "url-entry", text_url);
+   elm_object_part_content_set(chrome, "url-entry", text_url);
 
    evas_object_smart_callback_add
       (text_url, "activated", on_action_load_page, view);
@@ -2555,13 +2555,13 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    Evas_Object *more_list = elm_genlist_add(ed);
    evas_object_data_set(more_list, "chrome", chrome);
    evas_object_data_set(chrome, "more-list", more_list);
-   elm_layout_content_set(chrome, "more-list-swallow", more_list);
+   elm_object_part_content_set(chrome, "more-list-swallow", more_list);
    elm_object_style_set(more_list, "ewebkit");
    elm_genlist_bounce_set(more_list, EINA_FALSE, EINA_FALSE);
 
    Evas_Object *more_index = elm_index_add(ed);
    evas_object_data_set(more_list, "more-index", more_index);
-   elm_layout_content_set(chrome, "more-list-index", more_index);
+   elm_object_part_content_set(chrome, "more-list-index", more_index);
    evas_object_smart_callback_add(more_index, "selected", index_selected, NULL);
    elm_object_style_set(more_index, "ewebkit");
 
@@ -2572,7 +2572,7 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
    elm_gengrid_multi_select_set(tab_grid, EINA_FALSE);
    evas_object_data_set(chrome, "tab-grid", tab_grid);
    evas_object_data_set(tab_grid, "win", win);
-   elm_layout_content_set(chrome, "tab-grid-swallow", tab_grid);
+   elm_object_part_content_set(chrome, "tab-grid-swallow", tab_grid);
    evas_object_smart_callback_add(tab_grid, "realized",
                                   on_tab_gengrid_item_realized, win);
 
