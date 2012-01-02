@@ -1,39 +1,25 @@
-elm_ctxpopup - use elm_list
-
-elementary_test - alpha window with gl backend
+ctxpopup - use elm_list internally
+ctxpopup - add hide effect like show effect
 
 evas_direct3d - start hurry (vicent torri)
 
 evas_map - afterimage problem 
-
 evas_map - check rotation util inconsistency rotation
-
-elm_transit - check the transit would use the ecore_animator functionalities.
-
-evas_line - width 
-
-evas_line - does not shown on glbackend. 
-
+evas_map - image does not updated when object image is changed on map-disabled state.
 evas_map - check the uv set inconsistency for evas_object_image. (pending to EVAS 2.0)
+
+transit - check the transit would use the ecore_animator functionalities.
+
+evas_line - width_set API? 
+evas_line - does not shown on glbackend. 
 
 evas - check the image smooth effect in gl backend
 
-ctxpopup - hide effect
-
-elm_map - grid line problem
-
-evas_map - image does not updated when object image is changed on map-disabled state.
-
-evas_object_item APIs - apply to all app/lib in svn.
-
-naviframe - need to block the style set while transiton is going on
-
-elementary - consider partmap and additional content_set/get/unset parts
-
-naviframe - edje_object -> elm_layout
-
-elm_object_item common item type check like widget_type
-
 evas_event - need to handle after pointer mode changed.
 
-elementary - check the rev 66531. (cedric)
+naviframe - need to block the style set while transiton is going on
+naviframe - edje_object -> elm_layout and accessibility.
+
+elm_object_item - apply to all app/lib in svn. (elm_list, elm_genlist, elm_gengrid)
+elm_object_item - common item type check like widget_type
+elm_object_item - add one more API elm_object_item_del()
