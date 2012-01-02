@@ -175,22 +175,7 @@ _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
    if ((info->type != EINA_FILE_REG) && (info->type != EINA_FILE_UNKNOWN))
      return EINA_FALSE;
 
-   ext = info->path + info->path_length - 1;
-   for (; ext > bname; ext--) if (*ext == '.') break;
-   if (*ext == '.')
-     {
-        ext++;
-        if ((strcasecmp(ext, "jpg") == 0) ||
-            (strcasecmp(ext, "jpeg") == 0) ||
-            (strcasecmp(ext, "png") == 0) ||
-            (strcasecmp(ext, "gif") == 0) ||
-            (strcasecmp(ext, "tif") == 0) ||
-            (strcasecmp(ext, "svg") == 0) ||
-            (strcasecmp(ext, "edj") == 0))
-          return EINA_TRUE;
-     }
-
-   return EINA_FALSE;
+   return evas_object_image_extension_can_load_get(bname);
    /* seems that this does not play nice with threads */
    //if (!(type = efreet_mime_type_get(info->path))) return EINA_FALSE;
    //return strncmp(type, "image/", sizeof("image/") - 1) == 0;
