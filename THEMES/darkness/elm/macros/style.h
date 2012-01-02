@@ -12,7 +12,7 @@ style { \
    tag: "right" "+ align=right"; \
    tag: "/right" "- \n"; \
    tag: "link" "+ color=#8888AA underline=on underline_color=#8888AA"; \
-   tag: "em" "+ font=DejaVu-Oblique"; \
+   tag: "em" "+ font=Sans-Oblique"; \
    tag: "b" "+ font="fb; \
    tag: "i" "+ font="fi; \
    tag: "bi" "+ font="fbi; \
@@ -35,7 +35,7 @@ style { \
    tag: "right" "+ align=right"; \
    tag: "/right" "- \n"; \
    tag: "link" "+ color=#8888AA underline=on underline_color=#8888AA"; \
-   tag: "em" "+ font=DejaVu-Oblique"; \
+   tag: "em" "+ font=Sans-Oblique"; \
    tag: "b" "+ font="fb; \
    tag: "i" "+ font="fi; \
    tag: "bi" "+ font="fbi; \
@@ -58,7 +58,7 @@ style { \
    tag: "right" "+ align=right"; \
    tag: "/right" "- \n"; \
    tag: "link" "+ color=#8888AA underline=on underline_color=#8888AA"; \
-   tag: "em" "+ font=DejaVu-Oblique"; \
+   tag: "em" "+ font=Sans-Oblique"; \
    tag: "b" "+ font="fb; \
    tag: "i" "+ font="fi; \
    tag: "bi" "+ font="fbi; \
@@ -81,7 +81,7 @@ style { \
    tag: "right" "+ align=right"; \
    tag: "/right" "- \n"; \
    tag: "link" "+ color=#8888AA underline=on underline_color=#8888AA"; \
-   tag: "em" "+ font=DejaVu-Oblique"; \
+   tag: "em" "+ font=Sans-Oblique"; \
    tag: "b" "+ font="fb; \
    tag: "i" "+ font="fi; \
    tag: "bi" "+ font="fbi; \

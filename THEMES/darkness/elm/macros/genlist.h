@@ -218,7 +218,7 @@
                color: 128 128 128 255; \
                color3: 0 0 0 32; \
                text { \
-                  font: "DejaVu"; \
+                  font: "Sans"; \
                   size: 8; \
                   align: 0.0 0.5; \
                   min: MIN 1; \

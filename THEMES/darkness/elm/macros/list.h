@@ -154,7 +154,7 @@
          color3: DARKNESS_BLUE 32; \
          text { \
             text_class: "Label"; \
-            font: "DejaVu"; \
+            font: "Sans"; \
             size: 10; \
             min: 1 1; \
             align: TEXT_ALIGN; \

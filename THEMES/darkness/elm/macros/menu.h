@@ -75,7 +75,7 @@
                    rel2.offset: -10 -8; \
                    color: 255 255 255 255; \
                    text { \
-                       font:     "DejaVu"; \
+                       font:     "Sans"; \
                        size:     10; \
                        min:      1 1; \
                        align:    0.0 0.5; \
