@@ -1,6 +1,10 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <Elementary.h>
+
 #include "../mess_header.h"
-# define __UNUSED__ __attribute__((unused))
 
 static Evas_Object *search_win, *sent, *rent;
 static Eina_Bool forward = EINA_TRUE;

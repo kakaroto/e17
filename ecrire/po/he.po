@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entitled 0.1.0\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-01-01 13:06+0200\n"
+"POT-Creation-Date: 2012-01-02 19:58+0100\n"
 "PO-Revision-Date: 2011-08-09 11:45+0.00\n"
 "Last-Translator: Tom Hacohen <tom@stosb.com>\n"
 "Language-Team: General\n"
@@ -25,7 +25,7 @@ msgstr ""
 "<align=center>האם תרצה לשמור את השינויים במסמך זה?<br>שינויים שלא ישמרו "
 "יאבדו."
 
-#: src/bin/ui/alerts.c:54 src/bin/main.c:652
+#: src/bin/ui/alerts.c:54 src/bin/main.c:660
 msgid "Save"
 msgstr "שמור"
 
@@ -37,7 +37,7 @@ msgstr "השלך"
 msgid "Cancel"
 msgstr "בטל"
 
-#: src/bin/ui/search_dialog.c:139 src/bin/main.c:668
+#: src/bin/ui/search_dialog.c:139 src/bin/main.c:676
 msgid "Find & Replace"
 msgstr "חפש והחלף"
 
@@ -74,50 +74,50 @@ msgstr ""
 msgid "Set"
 msgstr "בחר"
 
-#: src/bin/main.c:91
+#: src/bin/main.c:97
 #, c-format
 msgid "%s%s - %s"
 msgstr "%s%s - %s"
 
-#: src/bin/main.c:93
+#: src/bin/main.c:99
 #, c-format
 msgid "%sUntitled %d - %s"
 msgstr "%sללא שם %d - %s"
 
-#: src/bin/main.c:117
+#: src/bin/main.c:123
 #, c-format
 msgid "Ln %d, Col %d"
 msgstr "שורה %d, עמודה %d"
 
-#: src/bin/main.c:649
+#: src/bin/main.c:657
 msgid "New"
 msgstr "חדש"
 
-#: src/bin/main.c:650
+#: src/bin/main.c:658
 msgid "Open"
 msgstr "פתח"
 
-#: src/bin/main.c:656
+#: src/bin/main.c:664
 msgid "Undo"
 msgstr "בטל"
 
-#: src/bin/main.c:658
+#: src/bin/main.c:666
 msgid "Redo"
 msgstr "בצע שוב"
 
-#: src/bin/main.c:661
+#: src/bin/main.c:669
 msgid "Cut"
 msgstr "גזור"
 
-#: src/bin/main.c:663
+#: src/bin/main.c:671
 msgid "Copy"
 msgstr "העתק"
 
-#: src/bin/main.c:665
+#: src/bin/main.c:673
 msgid "Paste"
 msgstr "הדבק"
 
-#: src/bin/main.c:672
+#: src/bin/main.c:680
 msgid "Settings"
 msgstr "הגדרות"
 

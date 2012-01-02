@@ -2,12 +2,15 @@
 # include "config.h"
 #endif
 
-#include <Elementary.h>
-#include <unistd.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 
 #ifdef HAVE_ECORE_X
 # include <Ecore_X.h>
 #endif
+
+#include <Elementary.h>
 
 #include "mess_header.h"
 #include "cfg.h"
