@@ -16,7 +16,7 @@ elm_main(int argc, char **argv)
    win = elm_win_add(NULL, "elm_illume", ELM_WIN_BASIC);
    elm_win_title_set(win, "Illume Conformant Window");
    elm_win_conformant_set(win, 1);
-   evas_object_smart_callback_add(win, "delete-request", _cb_win_del, NULL);
+   evas_object_smart_callback_add(win, "delete,request", _cb_win_del, NULL);
 
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

@@ -93,7 +93,7 @@ display_enobj_cb(void *enobjv, Evas_Object *obj __UNUSED__, void *event __UNUSED
    enobj->win = win;
    elm_win_title_set(win, buf);
    elm_win_autodel_set(win, true);
-   evas_object_smart_callback_add(win, "delete-request", enobj_del, enobj);
+   evas_object_smart_callback_add(win, "delete,request", enobj_del, enobj);
 
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);

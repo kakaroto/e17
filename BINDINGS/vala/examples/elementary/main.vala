@@ -41,7 +41,7 @@ public int main( string[] args )
     win.title_set( "Elementary meets Vala" );
     win.autodel_set( true );
     win.resize( 320, 320 );
-    win.smart_callback_add( "delete-request", Elm.exit );
+    win.smart_callback_add( "delete,request", Elm.exit );
 
 /*
     var bg = new Bg( win );

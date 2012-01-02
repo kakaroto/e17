@@ -167,7 +167,7 @@ create_main_win(App *app)
      }
    elm_win_title_set(app->win, "Edje Calculator");
    evas_object_smart_callback_add
-     (app->win, "delete-request", on_win_del_req, NULL);
+     (app->win, "delete,request", on_win_del_req, NULL);
 
    app->bg = elm_bg_add(app->win);
    if (!app->bg)

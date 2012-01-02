@@ -21,7 +21,7 @@ lighting_control_win_create(void)
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Lighting Controls");
-   evas_object_smart_callback_add(win, "delete-request", lighting_control_win_del_cb, NULL);
+   evas_object_smart_callback_add(win, "delete,request", lighting_control_win_del_cb, NULL);
 
    Evas_Object *bg;
    bg = elm_bg_add(win);

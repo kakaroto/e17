@@ -32,7 +32,7 @@ elm_ind_win_new(Ecore_X_Window zone)
    iwin->win = elm_win_add(NULL, "Illume-Indicator", ELM_WIN_DOCK);
    evas_object_data_set(iwin->win, "zone", (const void *)zone);
    elm_win_title_set(iwin->win, "Illume Indicator");
-   evas_object_smart_callback_add(iwin->win, "delete-request", 
+   evas_object_smart_callback_add(iwin->win, "delete,request", 
                                   _cb_win_del, iwin);
 
    xwin = elm_win_xwindow_get(iwin->win);

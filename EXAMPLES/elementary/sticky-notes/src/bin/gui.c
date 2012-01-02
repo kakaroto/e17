@@ -121,7 +121,7 @@ edit_note_window_new(Evas_Object *list, Elm_List_Item *selection, Db *db)
    note_window = elm_win_add(NULL, "sticky-notes-add-note", ELM_WIN_BASIC);
    elm_win_autodel_set(note_window, 1);
    elm_win_title_set(note_window, "Add Note");
-   evas_object_smart_callback_add(note_window, "delete-request", _edit_note_cb_delete_request, gui);
+   evas_object_smart_callback_add(note_window, "delete,request", _edit_note_cb_delete_request, gui);
    evas_object_resize(note_window, 200, 100);
 
    background = elm_bg_add(note_window);

@@ -296,7 +296,7 @@ TEST_START(test_index2)
 
    gui = malloc(sizeof(*gui));
 
-   evas_object_smart_callback_add(win, "delete-request", test_index2_del, gui);
+   evas_object_smart_callback_add(win, "delete,request", test_index2_del, gui);
 
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);

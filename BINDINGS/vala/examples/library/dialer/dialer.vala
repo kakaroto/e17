@@ -38,7 +38,7 @@ class DemoApplication : EflVala.Application
         win.title_set( "Elementary meets Vala" );
         win.autodel_set( true );
         win.resize( 320, 320 );
-        win.smart_callback_add( "delete-request", this.quit );
+        win.smart_callback_add( "delete,request", this.quit );
         win.show();
 
         layout = new Elm.Layout( win );

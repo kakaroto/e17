@@ -821,7 +821,7 @@ create_main_win(App *app)
    evas_object_resize(app->win, 480, 640);
    elm_win_title_set(app->win, "Envision");
    evas_object_smart_callback_add
-     (app->win, "delete-request", on_win_del_req, app);
+     (app->win, "delete,request", on_win_del_req, app);
    elm_win_autodel_set(app->win, EINA_TRUE);
 
    /* Background */

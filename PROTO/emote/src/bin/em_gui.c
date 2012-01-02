@@ -46,7 +46,7 @@ em_gui_init(void)
    gui->w_win = elm_win_add(NULL, "emote", ELM_WIN_BASIC);
    elm_win_title_set(gui->w_win, "Emote");
    elm_win_keyboard_mode_set(gui->w_win, ELM_WIN_KEYBOARD_ALPHA);
-   evas_object_smart_callback_add(gui->w_win, "delete-request",
+   evas_object_smart_callback_add(gui->w_win, "delete,request",
                                   _em_gui_cb_win_del, NULL);
 
    /* create background */

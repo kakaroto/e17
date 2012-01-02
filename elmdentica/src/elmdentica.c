@@ -574,7 +574,7 @@ void user_show(void *data) {
 		evas_object_size_hint_min_set(ud->win, 480, 480);
 		evas_object_size_hint_max_set(ud->win, 640, 640);
 		elm_win_title_set(ud->win, ud->au->user->name);
-		evas_object_smart_callback_add(ud->win, "delete-request", user_win_del, ud);
+		evas_object_smart_callback_add(ud->win, "delete,request", user_win_del, ud);
 
 		bg = elm_bg_add(ud->win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
@@ -709,7 +709,7 @@ static void group_show(void *data) {
 
 		evas_object_name_set(gd->win, "group_win");
 		elm_win_title_set(gd->win, gd->group->fullname);
-		evas_object_smart_callback_add(gd->win, "delete-request", group_win_del, gd);
+		evas_object_smart_callback_add(gd->win, "delete,request", group_win_del, gd);
 
 		bg = elm_bg_add(gd->win);
 			evas_object_size_hint_weight_set(bg, 1, 1);
@@ -1586,7 +1586,7 @@ void show_error(StatusesList * statuses) {
 	/* Error Window */
 	error_win = elm_win_add(NULL, _("Error"), ELM_WIN_DIALOG_BASIC);
 	elm_win_title_set(error_win, _("µ-blog Error"));
-	evas_object_smart_callback_add(error_win, "delete-request", error_win_del, (void*)error_win);
+	evas_object_smart_callback_add(error_win, "delete,request", error_win_del, (void*)error_win);
 
 	/* Background */
 	bg = elm_bg_add(error_win);
@@ -2049,7 +2049,7 @@ EAPI int elm_main(int argc, char **argv)
 #endif
 
 	gui.win = elm_win_add(NULL, "elmdentica", ELM_WIN_BASIC);
-	evas_object_smart_callback_add(gui.win, "delete-request", win_del, NULL);
+	evas_object_smart_callback_add(gui.win, "delete,request", win_del, NULL);
 	evas_object_size_hint_min_set(gui.win, 480, 480);
 	evas_object_size_hint_max_set(gui.win, 640, 640);
 

@@ -161,7 +161,7 @@ igd_client_win_create(void)
    Evas_Object *win, *bg, *bx0, *lb, *fr;
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Internet Gateway Device Controller");
-   evas_object_smart_callback_add(win, "delete-request", igd_client_win_del, NULL);
+   evas_object_smart_callback_add(win, "delete,request", igd_client_win_del, NULL);
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, 1.0, 1.0);
    elm_win_resize_object_add(win, bg);

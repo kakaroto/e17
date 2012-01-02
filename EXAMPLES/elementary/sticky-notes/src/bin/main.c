@@ -172,7 +172,7 @@ elm_main(int argc, char **argv)
    background = elm_bg_add(main_window);
    elm_win_resize_object_add(main_window, background);
    evas_object_size_hint_weight_set(background, 1.0, 1.0);
-   evas_object_smart_callback_add(main_window, "delete-request",
+   evas_object_smart_callback_add(main_window, "delete,request",
 				  _main_window_delete_request, NULL);
    evas_object_show(background);
 

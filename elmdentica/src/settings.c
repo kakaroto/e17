@@ -589,7 +589,7 @@ static int account_edit(void *data, int argc, char **argv, char **azColName) {
 
 	user_data_dialog = elm_win_inwin_add(settings_win);
 	if(user_data_dialog) {
-		evas_object_smart_callback_add(user_data_dialog, "delete-request", user_data_dialog_win_del, NULL);
+		evas_object_smart_callback_add(user_data_dialog, "delete,request", user_data_dialog_win_del, NULL);
 
 		if(strlen(proto) == 5 && strncmp("https", proto, 5) == 0)
 			box = account_dialog(user_data_dialog, screen_name, password, type, TRUE, domain, base_url, enabled, (Evas_Object*)data, receive, send);
@@ -631,7 +631,7 @@ void on_account_add(void *data, Evas_Object *obj, void *event_info) {
 
 	user_data_dialog = elm_win_inwin_add(settings_win);
 	if(user_data_dialog) {
-		evas_object_smart_callback_add(user_data_dialog, "delete-request", user_data_dialog_win_del, NULL);
+		evas_object_smart_callback_add(user_data_dialog, "delete,request", user_data_dialog_win_del, NULL);
 
 		box = account_dialog(user_data_dialog, "", "", ACCOUNT_TYPE_NONE, TRUE, "", "/", TRUE, (Evas_Object*)data, 1, 1);
 		if(box) {
@@ -1230,7 +1230,7 @@ Evas_Object * gag_edit_widgets(char *pattern) {
 		evas_object_size_hint_weight_set(inwin, 1, 1);
 		evas_object_size_hint_align_set(inwin, -1, 1);
 
-		evas_object_smart_callback_add(inwin, "delete-request", on_gag_dialog_win_del, NULL);
+		evas_object_smart_callback_add(inwin, "delete,request", on_gag_dialog_win_del, NULL);
 
 		box = elm_box_add(settings_win);
 			evas_object_size_hint_weight_set(box, 1, 1);
@@ -1426,7 +1426,7 @@ void on_settings(void *data, Evas_Object *obj, void *event_info) {
 
 	settings_win = elm_win_add(NULL, _("Settings"), ELM_WIN_BASIC);
 	elm_win_title_set(settings_win, _("ElmDentica settings..."));
-	evas_object_smart_callback_add(settings_win, "delete-request", settings_win_del, NULL);
+	evas_object_smart_callback_add(settings_win, "delete,request", settings_win_del, NULL);
 
 	/* Background */
 	bg = elm_bg_add(settings_win);

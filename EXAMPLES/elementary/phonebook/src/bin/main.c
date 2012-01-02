@@ -338,7 +338,7 @@ create_win(){
    elm_win_title_set(win, "Phone Book");
 
    /* Register the callback for close window function */
-   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
+   evas_object_smart_callback_add(win, "delete,request", on_win_del_req, NULL);
 
    /* Add Back Ground */
    bg = elm_bg_add(win);

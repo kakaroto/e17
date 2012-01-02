@@ -558,7 +558,7 @@ create_main_win(void)
    
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Elementary Presenter");
-   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
+   evas_object_smart_callback_add(win, "delete,request", on_win_del_req, NULL);
    
    evas_object_key_grab(win, "space", 0, 0, 0);
    evas_object_key_grab(win, "Return", 0, 0, 0);

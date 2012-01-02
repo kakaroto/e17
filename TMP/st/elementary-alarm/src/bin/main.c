@@ -130,7 +130,7 @@ create_main_win(void)
    
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Set Alarm");
-   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
+   evas_object_smart_callback_add(win, "delete,request", on_win_del_req, NULL);
 
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, 1.0, 1.0); // expand h/v 1/1 (for win this also fills)
@@ -251,7 +251,7 @@ create_alarm_win(void)
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Alarm");
-   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
+   evas_object_smart_callback_add(win, "delete,request", on_win_del_req, NULL);
 
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, 1.0, 1.0); // expand h/v 1/1 (for win this also fills)

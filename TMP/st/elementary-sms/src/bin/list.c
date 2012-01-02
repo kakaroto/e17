@@ -826,7 +826,7 @@ create_main_win(void)
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Messages");
-   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
+   evas_object_smart_callback_add(win, "delete,request", on_win_del_req, NULL);
    
    window = win;
    

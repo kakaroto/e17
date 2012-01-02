@@ -99,7 +99,7 @@ int main (int argc, const char **argv)
   /* set the title of the window - this is in the titlebar */
   win->setTitle ("Elementary Tests");
 
-  /* set a callback on the window when "delete-request" is emitted as
+  /* set a callback on the window when "delete,request" is emitted as
    * a callback. when this happens my_win_del() is called and the
    * data pointer (first param) is passed the final param here (in this
    * case it is NULL). This is how you can pass specific things to a

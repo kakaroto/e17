@@ -385,7 +385,7 @@ av_browser_win_create(void)
 
    win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(win, "Enlightenment UPnP AV Browser");
-   evas_object_smart_callback_add(win, "delete-request", av_browser_del, NULL);
+   evas_object_smart_callback_add(win, "delete,request", av_browser_del, NULL);
 
    bg = elm_bg_add(win);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

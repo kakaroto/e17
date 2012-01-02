@@ -164,7 +164,7 @@ _em_config_win_create(Evas_Object *parent)
      elm_win_add(parent, "emote::config", ELM_WIN_DIALOG_BASIC);
    elm_win_title_set(_em_config_win, _("Emote - Configuration"));
    elm_win_keyboard_mode_set(_em_config_win, ELM_WIN_KEYBOARD_ALPHA);
-   evas_object_smart_callback_add(_em_config_win, "delete-request",
+   evas_object_smart_callback_add(_em_config_win, "delete,request",
                                   _em_config_cb_win_del, NULL);
 
    o = elm_bg_add(_em_config_win);

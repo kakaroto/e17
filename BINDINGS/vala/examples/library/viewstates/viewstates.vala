@@ -87,7 +87,7 @@ static int main(string[] args)
     win.title_set("Elementary StateMachine");
     win.autodel_set(true);
     win.resize(320, 320);
-    win.smart_callback_add("delete-request", Elm.exit);
+    win.smart_callback_add("delete,request", Elm.exit);
 
     Elm.Bg bg = new Elm.Bg(win);
     bg.size_hint_weight_set(1.0, 1.0);

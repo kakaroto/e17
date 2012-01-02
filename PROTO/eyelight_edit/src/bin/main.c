@@ -38,7 +38,7 @@ static void win_main(void)
     win = elm_win_add(NULL, "Eyelight", ELM_WIN_BASIC);
     elm_win_title_set(win, "Eyelight - presentation viewer");
 
-    evas_object_smart_callback_add(win, "delete-request", win_del, NULL);
+    evas_object_smart_callback_add(win, "delete,request", win_del, NULL);
 
     bg = elm_bg_add(win);
     evas_object_size_hint_weight_set(bg, 1.0, 1.0);

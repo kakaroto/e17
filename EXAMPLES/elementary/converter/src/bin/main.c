@@ -45,7 +45,7 @@ elm_main(int argc, char **argv)
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);
    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_smart_callback_add(win, "delete-request",
+   evas_object_smart_callback_add(win, "delete,request",
 					_win_delete_request, NULL);
    evas_object_show(bg);
 

@@ -14,9 +14,9 @@ namespace Elmxx {
   
 /*!
  * smart callbacks called:
- * "delete-request" - the user requested to delete the window
- * "focus-in" - window got focus
- * "focus-out" - window lost focus
+ * "delete,request" - the user requested to delete the window
+ * "focus,in" - window got focus
+ * "focus,out" - window lost focus
  */
 class Window : public Object
 {

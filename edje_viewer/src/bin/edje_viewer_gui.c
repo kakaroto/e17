@@ -67,7 +67,7 @@ create_main_win(Viewer *v)
 
    o = elm_win_add(NULL, "main", ELM_WIN_BASIC);
    elm_win_title_set(o, "Edje Viewer");
-   evas_object_smart_callback_add(o, "delete-request", on_win_del_req, v);
+   evas_object_smart_callback_add(o, "delete,request", on_win_del_req, v);
    evas_object_resize(o, 600, 400);
    v->gui.win = o;
 
