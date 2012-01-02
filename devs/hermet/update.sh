@@ -4,7 +4,7 @@ echo Let\'s do update EFL Packages
 
 svn update
 
-for e in eina eet evas ecore eeze efreet embryo edje e_dbus e elementary expedite
+for e in eina eet evas ecore eeze efreet embryo edje e_dbus e ethumb elementary expedite
 do 
 	if [ -e $e ] && [ -d $e ]
 	then 
