@@ -53,7 +53,7 @@
  * EDbus is a wrapper around the
  * <a href="http://www.freedesktop.org/wiki/Software/dbus">dbus</a>
  * library, which is a message bus system. It also implement a set of
- * specifications using dbus as interprocess comunication.
+ * specifications using dbus as interprocess communication.
  *
  * @section edbus_modules_sec Modules
  *
