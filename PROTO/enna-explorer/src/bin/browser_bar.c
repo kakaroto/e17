@@ -15,7 +15,7 @@ _browse_icons_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *o_layout = data;
     Evas_Object *o_seg = evas_object_data_get(o_layout, "browse");
-    Elm_Segment_Item *it = elm_segment_control_item_selected_get(o_seg);
+    Elm_Object_Item *it = elm_segment_control_item_selected_get(o_seg);
 
     switch(elm_segment_control_item_index_get(it))
       {
@@ -37,7 +37,7 @@ _view_mode_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
     Evas_Object *o_layout = data;
     Evas_Object *o_seg = evas_object_data_get(o_layout, "mode");
-    Elm_Segment_Item *it = elm_segment_control_item_selected_get(o_seg);
+    Elm_Object_Item *it = elm_segment_control_item_selected_get(o_seg);
 
     switch(elm_segment_control_item_index_get(it))
       {
