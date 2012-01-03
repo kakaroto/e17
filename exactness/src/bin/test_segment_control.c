@@ -3,7 +3,7 @@
 TEST_START(test_segment_control)
 {
    Evas_Object *bg, *ic, *ic1, *ic2, *ic3, *ic4, *ic5;
-   Elm_Segment_Item *it;
+   Elm_Object_Item *seg_it;
 
    Evas_Object * in_layout;
    Evas_Object *segment1, *segment2, *segment3, *segment4;
@@ -38,16 +38,16 @@ TEST_START(test_segment_control)
 
    segment1 = elm_segment_control_add(win);
    elm_segment_control_item_add(segment1, NULL, "Only Text");
-   it = elm_segment_control_item_add(segment1, ic, NULL);
-   elm_segment_control_item_selected_set(it, EINA_TRUE);
+   seg_it = elm_segment_control_item_add(segment1, ic, NULL);
+   elm_segment_control_item_selected_set(seg_it, EINA_TRUE);
    elm_segment_control_item_add(segment1, ic1, "Text_Icon_test");
    elm_segment_control_item_add(segment1, NULL, "Seg4");
    elm_segment_control_item_add(segment1, NULL, "Seg5");
 
    segment2 = elm_segment_control_add(win);
    elm_segment_control_item_add(segment2, NULL, "SegmentItem");
-   it = elm_segment_control_item_add(segment2, NULL, "SegmentItem");
-   elm_segment_control_item_selected_set(it, EINA_TRUE);
+   seg_it = elm_segment_control_item_add(segment2, NULL, "SegmentItem");
+   elm_segment_control_item_selected_set(seg_it, EINA_TRUE);
    elm_segment_control_item_add(segment2, NULL, "SegmentControlItem");
    elm_segment_control_item_add(segment2, NULL, "SegmentItem");
 
@@ -68,8 +68,8 @@ TEST_START(test_segment_control)
 
    segment3 = elm_segment_control_add(win);
    elm_segment_control_item_add(segment3, ic2, NULL);
-   it = elm_segment_control_item_add(segment3, ic3, NULL);
-   elm_segment_control_item_selected_set(it, EINA_TRUE);
+   seg_it = elm_segment_control_item_add(segment3, ic3, NULL);
+   elm_segment_control_item_selected_set(seg_it, EINA_TRUE);
    elm_segment_control_item_add(segment3, ic4, NULL);
 
    ic5 = elm_icon_add(in_layout);
@@ -79,8 +79,8 @@ TEST_START(test_segment_control)
 
    segment4 = elm_segment_control_add(win);
    elm_segment_control_item_add(segment4, NULL, "Disabled");
-   it = elm_segment_control_item_add(segment4, ic5, "Disabled");
-   elm_segment_control_item_selected_set(it, EINA_TRUE);
+   seg_it = elm_segment_control_item_add(segment4, ic5, "Disabled");
+   elm_segment_control_item_selected_set(seg_it, EINA_TRUE);
    elm_segment_control_item_add(segment4, NULL, "Disabled");
    elm_object_disabled_set(segment4, EINA_TRUE);
 
