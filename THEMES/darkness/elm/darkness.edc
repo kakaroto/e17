@@ -18,19 +18,19 @@
 
 styles
 {
-    STYLE("Label", "Sans", "Sans:style=Bold", "Sans-Oblique", "Sans:style=BoldOblique", "Sans-Mono", "10",
+    STYLE("Label", "Sans", "Sans:style=Bold", "Sans:style=Oblique", "Sans:style=BoldOblique", "Sans-Mono", "10",
     "color=#ffffff style=shadow shadow_color=#38526d80", /* Normal style */
     "color=#38526d80 style=soft_shadow shadow_color=#ffffff font=Sans:style=Bold font_size=16", /* Title */
     "color=#38526d80 style=soft_shadow shadow_color=#ffffff font=Sans:style=Bold font_size=12", /* Subtitle */
     "color=#ffffff style=glow glow2_color=#38526DA0 glow_color=#263E57EA", /* hilight */
-    "color=#eeeeee font=Sans-Oblique" /* Description */
+    "color=#eeeeee font=Sans:style=Oblique" /* Description */
     )
-    STYLE("Label_disabled", "Sans", "Sans:style=Bold", "Sans-Oblique", "Sans:style=BoldOblique", "Sans-Mono", "10",
+    STYLE("Label_disabled", "Sans", "Sans:style=Bold", "Sans:style=Oblique", "Sans:style=BoldOblique", "Sans-Mono", "10",
     "color=#cccccc9b style=shadow shadow_color=#38526d80", /* Normal style */
     "color=#263e5780 style=soft_shadow shadow_color=#ffffff font=Sans:style=Bold font_size=16", /* Title */
     "color=#263e5780 style=soft_shadow shadow_color=#ffffff font=Sans:style=Bold font_size=12", /* Subtitle */
     "color=#cccccc9b", /* hilight */
-    "color=#bbbbbb font=Sans-Oblique" /* Description */
+    "color=#bbbbbb font=Sans:style=Oblique" /* Description */
     )
 }
 
