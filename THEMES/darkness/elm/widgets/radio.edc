@@ -215,26 +215,26 @@
                visible: 1;
             }
          }
-         PART_EVENTS("radio", ignore_flags: ON_HOLD;)
+         PART_EVENTS("bg", ignore_flags: ON_HOLD;)
          FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, 3, -1, "bg")
       }
       programs {
          program { name: "click";
             signal: "mouse,up,1";
-            source: "radio_events";
+            source: "bg_events";
             action: SIGNAL_EMIT "elm,action,radio,toggle" "";
          }
          program {
             name: "radio_button_enter";
             signal: "mouse,in";
-            source: "radio_events";
+            source: "bg_events";
             action: STATE_SET "over" 0.0;
             target: "bg";
          }
          program {
             name: "radio_button_leave";
             signal: "mouse,out";
-            source: "radio_events";
+            source: "bg_events";
             action: STATE_SET "default" 0.0;
             target: "bg";
          }
@@ -251,7 +251,7 @@
          program {
             name: "radio_button_pressed";
             signal: "mouse,down,1";
-            source: "radio_events";
+            source: "bg_events";
             action: STATE_SET "down" 0.0;
             transition: LINEAR 0.1;
             target: "up_clip";
@@ -260,7 +260,7 @@
          program {
             name: "radio_button_released";
             signal: "mouse,up,1";
-            source: "radio_events";
+            source: "bg_events";
             action: STATE_SET "default" 0.0;
             transition: SINUSOIDAL 0.5;
             target: "up_clip";
