@@ -126,7 +126,7 @@ _elsa_action_exe_event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *
    return ret;
 }
 
-/////* grub2 action *//////
+/* grub2 action */
 #ifdef HAVE_GRUB2
 static void
 _elsa_action_grub2(void *data)

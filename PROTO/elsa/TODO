@@ -1,4 +1,3 @@
-+++shutdown from the session could restart elsa
 ++Make a very simple theme, to make a new theme easily
 ++Catch more Pam error on login (too many wrong password ...)
 ++theme for cursor

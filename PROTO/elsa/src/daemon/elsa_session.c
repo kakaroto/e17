@@ -10,6 +10,8 @@
 #include <Efreet.h>
 #include "elsa.h"
 
+#define HAVE_SHADOW 1
+
 static char *_mcookie;
 static char **env;
 static char *_login = NULL;
@@ -269,17 +271,19 @@ elsa_session_authenticate(const char *login, const char *passwd)
 #else
    char *enc, *v;
    struct passwd *pwd;
-   struct spwd *spd;
 
    pwd = getpwnam(login);
    endpwent();
    if(!pwd)
      return EINA_FALSE;
+#ifdef HAVE_SHADOW
+   struct spwd *spd;
    spd = getspnam(pwd->pw_name);
    endspent();
    if(spd)
      v = spd->sp_pwdp;
    else
+#endif
      v = pwd->pw_passwd;
    if(!v || *v == '\0')
      return EINA_TRUE;

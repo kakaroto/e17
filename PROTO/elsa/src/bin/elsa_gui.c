@@ -8,18 +8,24 @@
 #define ELSA_GUI_GET(edj, name) edje_object_part_external_object_get(elm_layout_edje_get(edj), name)
 
 typedef struct Elsa_Gui_ Elsa_Gui;
+typedef struct Elsa_Screen_ Elsa_Screen;
 typedef struct Elsa_Gui_Item_ Elsa_Gui_Item;
 
 struct Elsa_Gui_
 {
-   Evas_Object *win;
-   Evas_Object *bg;
-   Evas_Object *edj;
+   Eina_List *screens;
    Eina_List *xsessions;
    Eina_List *users;
    Eina_List *actions;
    Elsa_Xsession *selected_session;
    const char *theme;
+};
+
+struct Elsa_Screen_
+{
+   Evas_Object *win;
+   Evas_Object *bg;
+   Evas_Object *edj;
 };
 
 typedef char *(*ElsaItemLabelGetFunc) (void *data, Evas_Object *obj, const char *part);
@@ -76,15 +82,16 @@ _elsa_gui_theme_get (Evas_Object *win, const char *group, const char *theme)
 }
 
 static void
-_elsa_gui_hostname_activated_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_elsa_gui_hostname_activated_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 {
    char *txt;
    Eina_List *l, *ll;
    Elsa_Xsession *xsess;
    Elsa_User *eu = NULL;
+   Elsa_Screen *screen;
 
-   txt = elsa_gui_user_get();
-   if (!strcmp(txt, ""))
+   txt = elm_entry_markup_to_utf8(elm_entry_entry_get(obj));
+   if (!txt || !strcmp(txt, ""))
      {
         free(txt);
         return;
@@ -107,8 +114,9 @@ _elsa_gui_hostname_activated_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED
    else if (_gui->xsessions)
      _elsa_gui_session_update(_gui->xsessions->data);
    elm_object_focus_set(data, EINA_TRUE);
-   edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
-                           "elsa.auth.enable", "");
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+      edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                              "elsa.auth.enable", "");
 }
 
 static void
@@ -126,29 +134,40 @@ _elsa_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *eve
 static void
 _elsa_gui_focus(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
-   elm_object_focus_set(ELSA_GUI_GET(_gui->edj, "hostname"), EINA_TRUE);
+   Eina_List *l;
+   Elsa_Screen *screen;
+
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+      elm_object_focus_set(ELSA_GUI_GET(screen->edj, "hostname"), EINA_TRUE);
 }
 
 static void
 _elsa_gui_login_cancel_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *sig __UNUSED__, const char *src __UNUSED__)
 {
    Evas_Object *o;
+   Elsa_Screen *screen;
+   Eina_List *l;
 
-   o = ELSA_GUI_GET(_gui->edj, "hostname");
-   elm_entry_entry_set(o, "");
-   elm_object_focus_set(o, EINA_TRUE);
-   o = ELSA_GUI_GET(_gui->edj, "password");
-   elm_entry_entry_set(o, "");
-   edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
-                           "elsa.auth.disable", "");
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        o = ELSA_GUI_GET(screen->edj, "hostname");
+        elm_entry_entry_set(o, "");
+        elm_object_focus_set(o, EINA_TRUE);
+        o = ELSA_GUI_GET(screen->edj, "password");
+        elm_entry_entry_set(o, "");
+        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                "elsa.auth.disable", "");
+     }
 }
 
 static void
-_elsa_gui_login()
+_elsa_gui_login(Elsa_Screen *screen)
 {
+   Eina_List *l;
    char *h, *s;
-   h = elsa_gui_user_get();
-   s = elsa_gui_password_get();
+   h = elsa_gui_user_get(screen);
+   s = elsa_gui_password_get(screen);
+   printf("---- %s %s\n", h, s);
    if (h && s)
      {
         if (strcmp(h, "") && strcmp(s, ""))
@@ -161,33 +180,42 @@ _elsa_gui_login()
      }
    if (h) free(h);
    if (s) free(s);
-   elm_object_focus_set(ELSA_GUI_GET(_gui->edj, "password"), EINA_TRUE);
-   edje_object_signal_emit(elm_layout_edje_get(_gui->edj), "elsa.auth.enable", "");
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        elm_object_focus_set(ELSA_GUI_GET(screen->edj, "password"), EINA_TRUE);
+        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                "elsa.auth.enable", "");
+     }
 }
 
 static void
-_elsa_gui_login_request_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *sig __UNUSED__, const char *src __UNUSED__)
+_elsa_gui_login_request_cb(void *data, Evas_Object *obj __UNUSED__, const char *sig __UNUSED__, const char *src __UNUSED__)
 {
-   _elsa_gui_login();
+   _elsa_gui_login(data);
 }
 
 static void
-_elsa_gui_password_activated_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_elsa_gui_password_activated_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
-   _elsa_gui_login();
+   _elsa_gui_login(data);
 }
 
 static void
 _elsa_gui_xsessions_clicked_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
    Evas_Object *icon;
+   Eina_List *l;
+   Elsa_Screen *screen;
 
    _gui->selected_session = data;
-   elm_object_text_set(obj, _gui->selected_session->name);
-   icon = elm_icon_add(_gui->win);
-   elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
-   elm_hoversel_icon_set(obj, icon);
-   evas_object_show(icon);
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        elm_object_text_set(obj, _gui->selected_session->name);
+        icon = elm_icon_add(screen->win);
+        elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
+        elm_hoversel_icon_set(obj, icon);
+        evas_object_show(icon);
+     }
 }
 
 static void
@@ -201,29 +229,29 @@ _elsa_gui_action_clicked_cb(void *data, Evas_Object *obj __UNUSED__, void *event
 
 
 static void
-_elsa_gui_callback_add()
+_elsa_gui_callback_add(Elsa_Screen *screen)
 {
    Evas_Object *host, *pwd;
    Evas_Object *edj;
 
-   evas_object_smart_callback_add(_gui->win, "delete,request",
+   evas_object_smart_callback_add(screen->win, "delete,request",
                                   _elsa_gui_shutdown, NULL);
-   evas_object_smart_callback_add(_gui->win, "focus,in",
+   evas_object_smart_callback_add(screen->win, "focus,in",
                                   _elsa_gui_focus, NULL);
 
-   edj = elm_layout_edje_get(_gui->edj);
-   host = ELSA_GUI_GET(_gui->edj, "hostname");
-   pwd = ELSA_GUI_GET(_gui->edj, "password");
+   edj = elm_layout_edje_get(screen->edj);
+   host = ELSA_GUI_GET(screen->edj, "hostname");
+   pwd = ELSA_GUI_GET(screen->edj, "password");
    evas_object_smart_callback_add(host, "activated",
                                   _elsa_gui_hostname_activated_cb, pwd);
    evas_object_smart_callback_add(pwd, "activated",
-                                  _elsa_gui_password_activated_cb, host);
+                                  _elsa_gui_password_activated_cb, screen);
    edje_object_signal_callback_add(edj, "elsa.auth.cancel", "",
                                    _elsa_gui_login_cancel_cb, NULL);
    edje_object_signal_callback_add(edj, "elsa.auth.request", "",
-                                   _elsa_gui_login_request_cb, NULL);
+                                   _elsa_gui_login_request_cb, screen);
    edje_object_signal_callback_add(edj, "elsa.auth.end", "",
-                                   _elsa_gui_login_cb, NULL);
+                                   _elsa_gui_login_cb, screen);
    elm_entry_single_line_set(host, EINA_TRUE);
    elm_entry_single_line_set(pwd, EINA_TRUE);
 }
@@ -232,14 +260,19 @@ static void
 _elsa_gui_session_update(Elsa_Xsession *xsession)
 {
    Evas_Object *o, *icon;
+   Eina_List *l;
+   Elsa_Screen *screen;
 
    if (!xsession) return;
-   o = ELSA_GUI_GET(_gui->edj, "xsessions");
-   _gui->selected_session = xsession;
-   elm_object_text_set(o, _gui->selected_session->name);
-   icon = elm_icon_add(_gui->win);
-   elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
-   elm_hoversel_icon_set(o, icon);
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        o = ELSA_GUI_GET(screen->edj, "xsessions");
+        _gui->selected_session = xsession;
+        elm_object_text_set(o, _gui->selected_session->name);
+        icon = elm_icon_add(screen->win);
+        elm_icon_file_set(icon, _gui->selected_session->icon, NULL);
+        elm_hoversel_icon_set(o, icon);
+     }
 }
 
 static void
@@ -248,15 +281,21 @@ _elsa_gui_sessions_populate()
    Evas_Object *o;
 
    Elsa_Xsession *xsession;
-   Eina_List *l;
+   Eina_List *l, *ll;
+   Elsa_Screen *screen;
 
-   o = ELSA_GUI_GET(_gui->edj, "xsessions");
-
-   EINA_LIST_FOREACH(_gui->xsessions, l, xsession)
+   EINA_LIST_FOREACH(_gui->screens, ll, screen)
      {
-        elm_hoversel_item_add(o, xsession->name, xsession->icon,
-                              ELM_ICON_FILE,
-                              _elsa_gui_xsessions_clicked_cb, xsession);
+        o = ELSA_GUI_GET(screen->edj, "xsessions");
+
+        EINA_LIST_FOREACH(_gui->xsessions, l, xsession)
+          {
+             elm_hoversel_item_add(o, xsession->name, xsession->icon,
+                                   ELM_ICON_FILE,
+                                   _elsa_gui_xsessions_clicked_cb, xsession);
+          }
+        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                "elsa.xsession.enabled", "");
      }
    if (_gui->xsessions)
      _elsa_gui_session_update(_gui->xsessions->data);
@@ -268,8 +307,6 @@ elsa_gui_xsession_set(Eina_List *xsessions)
    if (!xsessions) return;
    _gui->xsessions = xsessions;
    _elsa_gui_sessions_populate();
-   edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
-                           "elsa.xsession.enabled", "");
 }
 
 static void
@@ -278,17 +315,23 @@ _elsa_gui_actions_populate()
    Evas_Object *o;
 
    Elsa_Action *action;
-   Eina_List *l;
+   Eina_List *l, *ll;
+   Elsa_Screen *screen;
 
-   o = ELSA_GUI_GET(_gui->edj, "actions");
-
-   EINA_LIST_FOREACH(_gui->actions, l, action)
+   EINA_LIST_FOREACH(_gui->screens, ll, screen)
      {
-        elm_hoversel_item_add(o, action->label, NULL,
-                              ELM_ICON_FILE,
-                              _elsa_gui_action_clicked_cb, action);
+        o = ELSA_GUI_GET(screen->edj, "actions");
+        EINA_LIST_FOREACH(_gui->actions, l, action)
+          {
+             elm_hoversel_item_add(o, action->label, NULL,
+                                   ELM_ICON_FILE,
+                                   _elsa_gui_action_clicked_cb, action);
+          }
+        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                "elsa.action.enabled", "");
      }
 }
+
 
 void
 elsa_gui_actions_set(Eina_List *actions)
@@ -297,18 +340,18 @@ elsa_gui_actions_set(Eina_List *actions)
    fprintf(stderr, PACKAGE": Action set\n");
    _gui->actions = actions;
    _elsa_gui_actions_populate();
-   edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
-                           "elsa.action.enabled", "");
 }
 
 int
 elsa_gui_init(const char *theme)
 {
 
-   Ecore_X_Window root;
-   int w, h;
-   fprintf(stderr, PACKAGE": client Gui init\n");
+   Ecore_X_Window xw;
+   Elsa_Screen *screen;
+   int ii, i;
+   int x, y, w, h;
 
+   fprintf(stderr, PACKAGE": client Gui init\n");
    _gui = calloc(1, sizeof(Elsa_Gui));
    if (!_gui)
      {
@@ -324,47 +367,46 @@ elsa_gui_init(const char *theme)
      }
 #endif
 
-   _gui->win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
-   elm_win_fullscreen_set(_gui->win, EINA_TRUE);
-   elm_win_title_set(_gui->win, PACKAGE);
 
-   _gui->theme = eina_stringshare_add(theme);
-   _gui->edj = _elsa_gui_theme_get(_gui->win, "elsa", theme);
-
-   if (!_gui->edj)
+   i = ecore_x_xinerama_screen_count_get();
+   for(ii = 0; ii < i; ++ii)
      {
-        fprintf(stderr, PACKAGE": client Tut Tut Tut no theme\n");
-        return 2;
+        screen = calloc(1, sizeof(Elsa_Screen));
+        if (!screen) return 1;
+
+        _gui->screens = eina_list_append(_gui->screens, screen);
+        ecore_x_xinerama_screen_geometry_get(ii, &x, &y, &w, &h);
+        screen->win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
+        elm_win_fullscreen_set(screen->win, EINA_TRUE);
+        elm_win_title_set(screen->win, PACKAGE);
+
+        _gui->theme = eina_stringshare_add(theme);
+        screen->edj = _elsa_gui_theme_get(screen->win, "elsa", theme);
+
+        if (!screen->edj)
+          {
+             fprintf(stderr, PACKAGE": client Tut Tut Tut no theme\n");
+//             return 2;
+          }
+        evas_object_size_hint_weight_set(screen->edj,
+                                         EVAS_HINT_EXPAND,
+                                         EVAS_HINT_EXPAND);
+        elm_win_resize_object_add(screen->win, screen->edj);
+        _elsa_gui_callback_add(screen);
+        evas_object_show(screen->edj);
+
+        xw = elm_win_xwindow_get(screen->win);
+        evas_object_resize(screen->win, w, h);
+        ecore_x_window_move(xw, x, y);
+        evas_object_show(screen->win);
+        /* tricky situation. we are not normally running with a wm and thus
+         * have to set focus to our window so things work right */
+        ecore_evas_focus_set
+           (ecore_evas_ecore_evas_get
+            (evas_object_evas_get(screen->win)), 1);
      }
-
-
-   evas_object_size_hint_weight_set(_gui->edj,
-                                    EVAS_HINT_EXPAND,
-                                    EVAS_HINT_EXPAND);
-   elm_win_resize_object_add(_gui->win, _gui->edj);
-
-   _elsa_gui_callback_add();
-
-   /* Get root window and init pointer. Maybee add theme for this pointer */
-   root = ecore_x_window_root_first_get();
-   ecore_x_window_cursor_show(root, 0);
-   ecore_x_window_cursor_set(root, ECORE_X_CURSOR_ARROW);
-   ecore_x_window_cursor_show(root, 1);
-
-   /* have a fullscreen window */
-   ecore_x_window_size_get(root, &w, &h);
-   evas_object_show(_gui->edj);
-   evas_object_resize(_gui->win, w, h);
-
-   evas_object_show(_gui->win);
-
-   /* tricky situation. we are not normally running with a wm and thus
-    * have to set focus to our window so things work right */
-   ecore_evas_focus_set
-      (ecore_evas_ecore_evas_get
-          (evas_object_evas_get(_gui->win)), 1);
-
    return 0;
+
 }
 
 
@@ -372,9 +414,13 @@ void
 elsa_gui_shutdown()
 {
    Elsa_Xsession *xsession;
+   Elsa_Screen *screen;
    fprintf(stderr, PACKAGE": Gui shutdown\n");
-   evas_object_del(_gui->win);
-   _gui->win = NULL;
+   EINA_LIST_FREE(_gui->screens, screen)
+     {
+        evas_object_del(screen->win);
+        free(screen);
+     }
    eina_stringshare_del(_gui->theme);
    EINA_LIST_FREE(_gui->xsessions, xsession)
      {
@@ -386,19 +432,19 @@ elsa_gui_shutdown()
 }
 
 char *
-elsa_gui_user_get()
+elsa_gui_user_get(Elsa_Screen *screen)
 {
    Evas_Object *o;
-   o = ELSA_GUI_GET(_gui->edj, "hostname");
+   o = ELSA_GUI_GET(screen->edj, "hostname");
    if (o) return elm_entry_markup_to_utf8(elm_entry_entry_get(o));
    return NULL;
 }
 
 char *
-elsa_gui_password_get()
+elsa_gui_password_get(Elsa_Screen *screen)
 {
    Evas_Object *o;
-   o = ELSA_GUI_GET(_gui->edj, "password");
+   o = ELSA_GUI_GET(screen->edj, "password");
    if (o) return elm_entry_markup_to_utf8(elm_entry_entry_get(o));
    return NULL;
 }
@@ -407,18 +453,28 @@ void
 elsa_gui_auth_error()
 {
    Evas_Object *o;
+   Eina_List *l;
+   Elsa_Screen *screen;
 
-   o = ELSA_GUI_GET(_gui->edj, "password");
-   elm_entry_entry_set(o, "");
-   edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
-                           "elsa.auth.error", "");
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        o = ELSA_GUI_GET(screen->edj, "password");
+        elm_entry_entry_set(o, "");
+        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                "elsa.auth.error", "");
+     }
 }
 
 void
 elsa_gui_auth_valid()
 {
-   edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
-                           "elsa.auth.valid", "");
+   Eina_List *l;
+   Elsa_Screen *screen;
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                "elsa.auth.valid", "");
+     }
 }
 ///////////////// USER ////////////////////////////
 void
@@ -426,20 +482,25 @@ elsa_gui_users_set(Eina_List *users)
 {
    Evas_Object *ol;
    const char *type;
+   Elsa_Screen *screen;
+   Eina_List *l;
 
-   ol = ELSA_GUI_GET(_gui->edj, "elsa_users");
-   if ((ol) && ((type = elm_widget_type_get(ol))))
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
-        if (!strcmp(type, "list"))
-          _elsa_gui_users_list_set(ol, users);
-        else if (!strcmp(type, "genlist"))
-          _elsa_gui_users_genlist_set(ol, users);
-        else if (!strcmp(type, "gengrid"))
-          _elsa_gui_users_gengrid_set(ol, users);
+        ol = ELSA_GUI_GET(screen->edj, "elsa_users");
+        if ((ol) && ((type = elm_widget_type_get(ol))))
+          {
+             if (!strcmp(type, "list"))
+               _elsa_gui_users_list_set(ol, users);
+             else if (!strcmp(type, "genlist"))
+               _elsa_gui_users_genlist_set(ol, users);
+             else if (!strcmp(type, "gengrid"))
+               _elsa_gui_users_gengrid_set(ol, users);
 
-        edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
-                                "elsa.users.enabled", "");
-        _gui->users = users;
+             edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                     "elsa.users.enabled", "");
+             _gui->users = users;
+          }
      }
 }
 
@@ -451,12 +512,16 @@ _elsa_gui_user_sel(Elsa_User *eu)
    Evas_Object *o;
    Elsa_Xsession *xsess;
    Eina_List *l;
+   Elsa_Screen *screen;
 
-   o = ELSA_GUI_GET(_gui->edj, "hostname");
-   elm_entry_entry_set(o, eu->login);
-   elm_object_focus_set(ELSA_GUI_GET(_gui->edj, "password"), EINA_TRUE);
-   edje_object_signal_emit(elm_layout_edje_get(_gui->edj),
-                           "elsa.auth.enable", "");
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        o = ELSA_GUI_GET(screen->edj, "hostname");
+        elm_entry_entry_set(o, eu->login);
+        elm_object_focus_set(ELSA_GUI_GET(screen->edj, "password"), EINA_TRUE);
+        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                "elsa.auth.enable", "");
+     }
    if (eu->lsess)
      {
         EINA_LIST_FOREACH(_gui->xsessions, l, xsess)
@@ -487,7 +552,7 @@ _elsa_gui_user_text_get(void *data, Evas_Object *obj __UNUSED__, const char *par
 }
 
 static Evas_Object *
-_elsa_gui_user_content_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part)
+_elsa_gui_user_content_get(void *data __UNUSED__, Evas_Object *obj, const char *part)
 {
    Evas_Object *ic = NULL;
    Elsa_User *eu;
@@ -497,12 +562,12 @@ _elsa_gui_user_content_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, c
      {
         if (eu->image)
           {
-             ic = elm_icon_add(_gui->win);
+             ic = elm_icon_add(obj);
              elm_icon_file_set(ic, eu->image, "elsa/user/icon");
           }
         else
           {
-             ic = _elsa_gui_theme_get(_gui->win, "elsa/user/default",
+             ic = _elsa_gui_theme_get(obj, "elsa/user/default",
                                       _gui->theme);
           }
         evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);

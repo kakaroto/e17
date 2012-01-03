@@ -21,6 +21,7 @@ elsa_connect.c        \
 elsa_gui.h            \
 elsa_gui.c
 
+
 elsa_client_LDFLAGS =
 elsa_client_LDADD = @ELSA_CLIENT_LIBS@
 
