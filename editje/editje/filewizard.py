@@ -170,7 +170,7 @@ class FileSelectionWizard(Wizard):
         self._selected_cb(self._selection)
         self.close()
 
-    def _gl_label_get(self, *kargs):
+    def _gl_text_get(self, *kargs):
         return kargs[-1]
 
 
@@ -208,8 +208,8 @@ class ImageSelectionWizard(FileSelectionWizard):
 
     def _update(self):
         itc = elementary.GenlistItemClass(item_style="default",
-                                           label_get_func=self._gl_label_get,
-                                           icon_get_func=None,
+                                           text_get_func=self._gl_text_get,
+                                           content_get_func=None,
                                            state_get_func=None)
 
         self._files = self._file_list_cb()
@@ -278,8 +278,8 @@ class FontSelectionWizard(FileSelectionWizard):
 
     def _update(self):
         itc = elementary.GenlistItemClass(item_style="default",
-                                            label_get_func=self._gl_label_get,
-                                            icon_get_func=None,
+                                            text_get_func=self._gl_text_get,
+                                            content_get_func=None,
                                             state_get_func=None)
         self._file_list.clear()
         self._files = []
@@ -308,8 +308,8 @@ class FontSelectionWizard(FileSelectionWizard):
 
         obj.expanded = True
         itc = elementary.GenlistItemClass(item_style="default",
-                                            label_get_func=self._gl_label_get,
-                                            icon_get_func=None,
+                                            text_get_func=self._gl_text_get,
+                                            content_get_func=None,
                                             state_get_func=None)
 
         if item_data == "Embedded Fonts":
