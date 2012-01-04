@@ -82,14 +82,17 @@ Song        *page_songs_nth_get(const Evas_Object *obj, int32_t n);
 int32_t      page_songs_selected_n_get(const Evas_Object *obj);
 int32_t      page_songs_count(const Evas_Object *obj);
 
+Eina_Bool    cover_album_local_find(Evas *evas, DB *db, Album *album);
 Evas_Object *cover_allsongs_fetch(Evas_Object *parent, unsigned short size);
 Evas_Object *cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size, void (*cb)(void *data), void *data);
 Evas_Object *cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned short size, void (*cb)(void *data), void *data);
 
 void        enjoy_db_clear(void);
+void        enjoy_db_clear_covers(void);
 void        enjoy_db_stop_usage(void);
 void        enjoy_db_start_usage(void);
 const char *enjoy_db_path_get(void);
+DB         *enjoy_db_get(void);
 
 Eina_Bool   enjoy_lms_parsers_add(lms_t *lms);
 void        enjoy_lms_charsets_add(lms_t *lms);
@@ -98,6 +101,7 @@ void        enjoy_lms_charsets_add(lms_t *lms);
 DB        *db_open(const char *path);
 Eina_Bool  db_close(DB *db);
 Eina_Bool  db_clear(DB *db);
+Eina_Bool  db_clear_covers(DB *db);
 
 Evas_Object *nowplaying_add(Evas_Object *parent);
 

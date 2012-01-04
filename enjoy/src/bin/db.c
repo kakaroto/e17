@@ -331,7 +331,8 @@ db_close(DB *db)
    return EINA_TRUE;
 }
 
-Eina_Bool db_clear(DB *db)
+Eina_Bool
+db_clear(DB *db)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
 
@@ -344,6 +345,14 @@ Eina_Bool db_clear(DB *db)
    sqlite3_exec(db->handle, "VACUUM", NULL, NULL, NULL);
 
    return EINA_TRUE;
+}
+
+Eina_Bool
+db_clear_covers(DB *db)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+
+   sqlite3_exec(db->handle, "DELETE FROM covers", NULL, NULL, NULL);
 }
 
 Song *db_song_copy(const Song *orig)

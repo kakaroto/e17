@@ -872,6 +872,25 @@ enjoy_db_clear(void)
    enjoy_db_start_usage();
 }
 
+void
+enjoy_db_clear_covers(void)
+{
+   Win *w = &_win;
+
+   INF("Clear cover table from database!");
+
+   if (!w->db) w->db = db_open(w->db_path);
+   db_clear_covers(w->db);
+}
+
+DB *
+enjoy_db_get(void)
+{
+   Win *w = &_win;
+   if (!w->db) w->db = db_open(w->db_path);
+   return w->db;
+}
+
 static Elm_Object_Item *
 _toolbar_item_add(Win *w, const char *icon, const char *label, int priority, Evas_Smart_Cb cb)
 {

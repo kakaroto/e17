@@ -1,8 +1,7 @@
 #include "private.h"
 
-#if 0 /* disabled, it will go back at configuration/preferences later */
 Eina_Bool
-cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data), void *data)
+cover_album_local_find(Evas *evas, DB *db, Album *album)
 {
    Evas_Object *img = evas_object_image_add(evas);
    Eina_Iterator *it = db_album_songs_get(db, album->id);
@@ -96,11 +95,9 @@ cover_album_local_find(Evas *evas, DB *db, Album *album, void (*cb)(void *data),
    eina_hash_free(done_dirs);
 
    success = !!eina_inlist_count(album->covers);
-   if (cb && success) cb(data);
    db_album_covers_update(db, album);
    return success;
 }
-#endif
 
 static Evas_Object *
 _cover_empty_add(Evas_Object *parent, unsigned short size)
