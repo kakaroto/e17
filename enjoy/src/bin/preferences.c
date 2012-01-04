@@ -30,6 +30,41 @@ preferences_db_clear(void *data, Evas_Object *obj __UNUSED__, void *event_info)
      (bt, "clicked", preferences_db_clear_do, frame);
 }
 
+static void
+preferences_db_optimize_do(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+{
+   Evas_Object *frame = data;
+   DB *db = enjoy_db_get();
+   elm_naviframe_item_pop(frame);
+
+   db_files_cleanup(db);
+   db_album_covers_cleanup(db);
+   db_vacuum(db);
+}
+
+static void
+preferences_db_optimize(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+{
+   Elm_Genlist_Item *it = event_info;
+   Evas_Object *frame = data;
+   Evas_Object *box, *bt;
+
+   box = elm_box_add(frame);
+
+   bt = elm_button_add(box);
+   elm_object_text_set(bt, "Yes, cleanup and optimize the database!");
+   evas_object_size_hint_align_set(bt, -1.0, 0.5);
+   evas_object_show(bt);
+   elm_box_pack_end(box, bt);
+
+   elm_naviframe_item_push(frame, "Cleanup and Optimize Database?",
+                           NULL, NULL, box, NULL);
+   elm_genlist_item_selected_set(it, EINA_FALSE);
+
+   evas_object_smart_callback_add
+     (bt, "clicked", preferences_db_optimize_do, frame);
+}
+
 struct db_folder_add_ctx
 {
    Evas_Object *status, *frame, *box, *button;
@@ -750,6 +785,9 @@ preferences_root_add(Evas_Object *parent)
    elm_genlist_item_append
      (lst, &prefs_itc, "Clear", grp, ELM_GENLIST_ITEM_NONE,
       preferences_db_clear, parent);
+   elm_genlist_item_append
+     (lst, &prefs_itc, "Cleanup & Optimize", grp, ELM_GENLIST_ITEM_NONE,
+      preferences_db_optimize, parent);
    elm_genlist_item_append
      (lst, &prefs_itc, "Import folder", grp, ELM_GENLIST_ITEM_NONE,
       preferences_db_folder_add, parent);

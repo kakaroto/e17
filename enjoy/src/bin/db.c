@@ -18,7 +18,6 @@ struct _DB
       sqlite3_stmt *artist_get;
       sqlite3_stmt *genre_get;
    } stmt;
-   Ecore_Timer *cleanup_timer;
 };
 
 static Eina_Bool
@@ -175,8 +174,8 @@ _db_cover_table_ensure_exists(DB *db)
    created = EINA_TRUE;
 }
 
-static void
-_db_files_cleanup(DB *db)
+void
+db_files_cleanup(DB *db)
 {
    EINA_SAFETY_ON_NULL_RETURN(db);
    static const char *delete_old_files = "DELETE FROM files " \
@@ -194,8 +193,8 @@ _db_files_cleanup(DB *db)
      }
 }
 
-static void
-_db_album_covers_cleanup(DB *db)
+void
+db_album_covers_cleanup(DB *db)
 {
    EINA_SAFETY_ON_NULL_RETURN(db);
    static const char *create_temp_table = "CREATE TEMPORARY TABLE cover_cleanup " \
@@ -268,15 +267,6 @@ end:
    eina_iterator_free(files);
 }
 
-static Eina_Bool
-_db_cleanup_timer_cb(void *data)
-{
-   DB *db = data;
-   _db_files_cleanup(db);
-   _db_album_covers_cleanup(db);
-   return ECORE_CALLBACK_RENEW;
-}
-
 DB *
 db_open(const char *path)
 {
@@ -302,13 +292,6 @@ db_open(const char *path)
 
    _db_cover_table_ensure_exists(db);
 
-   db->cleanup_timer = ecore_timer_add(3600 * 4, _db_cleanup_timer_cb, db);
-   if (!db->cleanup_timer)
-     {
-        ERR("could not create cleanup timer");
-        goto error;
-     }
-
    return db;
 
  error:
@@ -323,7 +306,6 @@ Eina_Bool
 db_close(DB *db)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
-   ecore_timer_del(db->cleanup_timer);
    _db_stmts_finalize(db);
    sqlite3_close(db->handle);
    eina_stringshare_del(db->path);
@@ -345,6 +327,14 @@ db_clear(DB *db)
    sqlite3_exec(db->handle, "VACUUM", NULL, NULL, NULL);
 
    return EINA_TRUE;
+}
+
+void
+db_vacuum(DB *db)
+{
+   EINA_SAFETY_ON_NULL_RETURN(db);
+
+   sqlite3_exec(db->handle, "VACUUM", NULL, NULL, NULL);
 }
 
 Eina_Bool
