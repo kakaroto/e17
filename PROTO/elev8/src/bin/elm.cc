@@ -438,6 +438,7 @@ public:
              Handle<Value> args[3] = { obj, ox, oy };
              assert(val->IsFunction());
              Handle<Function> fn(Function::Cast(*val));
+			 printf("Hello2\n");
              fn->Call(obj, 3, args);
           }
         else
@@ -447,6 +448,7 @@ public:
              Handle<Value> args[1] = { obj };
              assert(val->IsFunction());
              Handle<Function> fn(Function::Cast(*val));
+			 printf("Hello1\n");
              fn->Call(obj, 1, args);
           }
 
@@ -2322,12 +2324,6 @@ CEvasObject::CPropHandler<CElmSlider>::list[] = {
 class CElmGenList : public CEvasObject {
 protected:
    CPropHandler<CElmGenList> prop_handler;
-
-   class GenListItem {
-   public:
-     Local<Value> on_clicked;
-   };
-
 
 public:
    CElmGenList(CEvasObject *parent, Local<Object> obj) :
@@ -5710,7 +5706,140 @@ CEvasObject::CPropHandler<CElmGrid>::list[] = {
   { NULL, NULL, NULL },
 };
 
+class CElmImage : public CEvasObject {
+protected:
+   CPropHandler<CElmGrid> prop_handler;
 
+public:
+   CElmImage(CEvasObject *parent, Local<Object> obj) :
+       CEvasObject(),
+       prop_handler(property_list_base)
+     {
+        eo = elm_image_add(parent->top_widget_get());
+        construct(eo, obj);
+     }
+
+   virtual void file_set(Handle<Value> val)
+     {
+       if (val->IsString())
+         {
+            String::Utf8Value str(val);
+             if (0 > access(*str, R_OK))
+               WRN( "warning: can't read image file %s", *str);
+            elm_image_file_set(eo, *str, NULL);
+         }
+     }
+
+   virtual Handle<Value> file_get(void) const
+     {
+        const char *f = NULL, *key = NULL;
+        elm_image_file_get(eo, &f, &key);
+        if (f)
+          return String::New(f);
+        else
+          return Null();
+     }
+
+   virtual Handle<Value> smooth_get() const
+     {
+        return Boolean::New(elm_image_smooth_get(eo));
+     }
+
+   virtual void smooth_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          elm_image_smooth_set(eo, val->BooleanValue());
+     }
+
+   virtual Handle<Value> no_scale_get() const
+     {
+        return Boolean::New(elm_image_no_scale_get(eo));
+     }
+
+   virtual void no_scale_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          elm_image_no_scale_set(eo, val->BooleanValue());
+     }
+
+   virtual Handle<Value> fill_outside_get() const
+     {
+        return Boolean::New(elm_image_fill_outside_get(eo));
+     }
+
+   virtual void fill_outside_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          elm_image_fill_outside_set(eo, val->BooleanValue());
+     }
+
+   virtual Handle<Value> editable_get() const
+     {
+        return Boolean::New(elm_image_editable_get(eo));
+     }
+
+   virtual void editable_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          elm_image_editable_set(eo, val->BooleanValue());
+     }
+
+   virtual Handle<Value> aspect_ratio_retained_get() const
+     {
+        return Boolean::New(elm_image_aspect_ratio_retained_get(eo));
+     }
+
+   virtual void aspect_ratio_retained_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          elm_image_aspect_ratio_retained_set(eo, val->BooleanValue());
+     }
+
+   virtual Handle<Value> prescale_get() const
+     {
+        int prescale=elm_image_prescale_get(eo);
+        return Integer::New(prescale);
+     }
+
+   virtual void prescale_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             elm_image_prescale_set(eo, val->IntegerValue());
+          }
+     }
+
+   virtual Handle<Value> orient_get() const
+     {
+        int orient=elm_image_orient_get(eo);
+        return Integer::New(orient);
+     }
+
+   virtual void orient_set(Handle<Value> val)
+     {
+        if (val->IsNumber())
+          {
+             elm_image_orient_set(eo, (Elm_Image_Orient)val->IntegerValue());
+          }
+     }
+
+
+
+
+};
+
+template<> CEvasObject::CPropHandler<CElmImage>::property_list
+CEvasObject::CPropHandler<CElmImage>::list[] = {
+  PROP_HANDLER(CElmImage, file),
+  PROP_HANDLER(CElmImage, smooth),
+  PROP_HANDLER(CElmImage, no_scale),
+  PROP_HANDLER(CElmImage, fill_outside),
+  PROP_HANDLER(CElmImage, prescale),
+  PROP_HANDLER(CElmImage, orient),
+  PROP_HANDLER(CElmImage, editable),
+  PROP_HANDLER(CElmImage, aspect_ratio_retained),
+  { NULL, NULL, NULL },
+};
 
 CEvasObject *
 realize_one(CEvasObject *parent, Handle<Value> object_val)
@@ -5764,7 +5893,7 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
    else if (!strcmp(*str, "segment"))
      eo = new CElmSegment(parent, obj);
    else if (!strcmp(*str, "image"))
-     eo = new CEvasImage(parent, obj);
+     eo = new CElmImage(parent, obj);
    else if (!strcmp(*str, "slider"))
      eo = new CElmSlider(parent, obj);
    else if (!strcmp(*str, "photo"))

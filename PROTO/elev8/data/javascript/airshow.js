@@ -7,6 +7,8 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 var FILL_X = { x : -1.0, y : 0.0 };
 var FILL_Y = { x : 0.0, y : -1.0 };
 
+var myplane=null;
+
 function init()
 {
 	my_win.elements.the_box.elements.plane1.x = 1;
@@ -45,7 +47,6 @@ function move_left()
 		myplane.x=790;
 }
 
-var myplane=null;
 
 var my_win = new elm.window({
 		type : "main",
@@ -59,7 +60,7 @@ var my_win = new elm.window({
 				type : "background",
 				weight : EXPAND_BOTH,
 				align : FILL_BOTH,
-				image : elm.datadir + "data/images/cloud.jpg",
+				image : elm.datadir + "data/images/space.png",
 				resize : true,
 			},
 			plane1 : {
@@ -68,7 +69,7 @@ var my_win = new elm.window({
                 width : 50,
                 height : 70,
                 x : 280,
-                y : 120,
+                y : 80,
 				on_clicked : function() {
 				    if(myplane==null)
 				    {
@@ -84,7 +85,7 @@ var my_win = new elm.window({
                 width : 50,
                 height : 70,
                 x : 280,
-                y : 240,
+                y : 200,
 				on_clicked : function() {
 				    if(myplane==null)
 					{
@@ -100,7 +101,7 @@ var my_win = new elm.window({
                 width : 50,
                 height : 70,
                 x : 280,
-                y : 360,
+                y : 320,
 				on_clicked : function() {
 					if(myplane==null)
 					{
@@ -116,7 +117,7 @@ var my_win = new elm.window({
                 width : 50,
                 height : 70,
                 x : 280,
-                y : 480,
+                y : 440,
 				on_clicked : function() {
                     print("On Click Triggered");
 				    if(myplane==null)
