@@ -2322,12 +2322,19 @@ CEvasObject::CPropHandler<CElmSlider>::list[] = {
 class CElmGenList : public CEvasObject {
 protected:
    CPropHandler<CElmGenList> prop_handler;
+
+   class GenListItem {
+   public:
+     Local<Value> on_clicked;
+   };
+
+
 public:
    CElmGenList(CEvasObject *parent, Local<Object> obj) :
        CEvasObject(),
        prop_handler(property_list_base)
      {
-        eo = elm_genlist_add(parent->get());
+        eo = elm_genlist_add(parent->top_widget_get());
         construct(eo, obj);
      }
 
@@ -2341,11 +2348,99 @@ public:
         if (value->IsBoolean())
           elm_genlist_multi_select_set(eo, value->BooleanValue());
      }
+
+   virtual Handle<Value> reorder_mode_get() const
+     {
+        return Boolean::New(elm_genlist_reorder_mode_get(eo));
+     }
+
+   virtual void reorder_mode_set(Handle<Value> value)
+     {
+        if (value->IsBoolean())
+          elm_genlist_reorder_mode_set(eo, value->BooleanValue());
+     }
+
+   virtual Handle<Value> height_for_width_mode_get() const
+     {
+        return Boolean::New(elm_genlist_height_for_width_mode_get(eo));
+     }
+
+   virtual void height_for_width_mode_set(Handle<Value> value)
+     {
+        if (value->IsBoolean())
+          elm_genlist_height_for_width_mode_set(eo, value->BooleanValue());
+     }
+
+   virtual Handle<Value> compress_mode_get() const
+     {
+        return Boolean::New(elm_genlist_compress_mode_get(eo));
+     }
+
+   virtual void compress_mode_set(Handle<Value> value)
+     {
+        if (value->IsBoolean())
+          elm_genlist_compress_mode_set(eo, value->BooleanValue());
+     }
+
+   virtual Handle<Value> no_select_mode_get() const
+     {
+        return Boolean::New(elm_genlist_no_select_mode_get(eo));
+     }
+
+   virtual void no_select_mode_set(Handle<Value> value)
+     {
+        if (value->IsBoolean())
+          elm_genlist_no_select_mode_set(eo, value->BooleanValue());
+     }
+
+   virtual Handle<Value> always_select_mode_get() const
+     {
+        return Boolean::New(elm_genlist_always_select_mode_get(eo));
+     }
+
+   virtual void always_select_mode_set(Handle<Value> value)
+     {
+        if (value->IsBoolean())
+          elm_genlist_always_select_mode_set(eo, value->BooleanValue());
+     }
+
+   virtual Handle<Value> block_count_get() const
+     {
+        return Number::New(elm_genlist_block_count_get(eo));
+     }
+
+   virtual void block_count_set(Handle<Value> value)
+     {
+        if (value->IsNumber())
+          {
+             elm_genlist_block_count_set(eo, value->IntegerValue());
+          }
+     }
+
+   virtual Handle<Value>longpress_timeout_get() const
+     {
+        return Number::New(elm_genlist_longpress_timeout_get(eo));
+     }
+
+   virtual void longpress_timeout_set(Handle<Value> value)
+     {
+        if (value->IsNumber())
+          {
+             elm_genlist_longpress_timeout_set(eo, value->IntegerValue());
+          }
+	 }
 };
 
 template<> CEvasObject::CPropHandler<CElmGenList>::property_list
 CEvasObject::CPropHandler<CElmGenList>::list[] = {
   PROP_HANDLER(CElmGenList, multi_select),
+  PROP_HANDLER(CElmGenList, always_select_mode),
+  PROP_HANDLER(CElmGenList, no_select_mode),
+  PROP_HANDLER(CElmGenList, compress_mode),
+  PROP_HANDLER(CElmGenList, reorder_mode),
+  PROP_HANDLER(CElmGenList, height_for_width_mode),
+  PROP_HANDLER(CElmGenList, block_count),
+  PROP_HANDLER(CElmGenList, longpress_timeout),
   { NULL, NULL, NULL },
 };
 
@@ -2807,7 +2902,7 @@ public:
 
    virtual Handle<Value> mode_get() const
      {
-        double min, max;
+        double min;
         int mode = elm_list_mode_get(eo);
         return Number::New(min);
      }
