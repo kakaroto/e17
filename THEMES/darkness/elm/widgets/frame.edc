@@ -18,10 +18,14 @@
                offset:   3    2;
             }
             rel2 {
-               to: "outline";
+               to: "clip";
                relative: 1.0  1.0;
                offset:   -4   -4;
             }
+         }
+         description {
+           state: "collapsed" 0.0;
+           rel2.offset: -4 0;
          }
       }
       part {
@@ -135,17 +139,18 @@
             }
          }
       }
-      PART_EVENTS("elm.text",);
+      PART_EVENTS("label_over",);
    }
    programs {
       program { name: "click";
          signal:  "mouse,up,1";
-         source:  "elm.text_events";
+         source:  "label_over_events";
          action:  SIGNAL_EMIT "elm,action,click" "elm";
          after: "toggle";
       }
       program { name: "toggle";
-         signal:  "mouse,up,1";
+         signal:  "elm,action,collapse";
+         source: "elm";
          script {
             new st[31];
             new Float:vl;
@@ -159,11 +164,13 @@
       program { name: "collapse";
          action:  STATE_SET "collapsed" 0.0;
          target: "outline";
+         target: "elm.swallow.content";
          transition: LINEAR 0.1;
       }
       program { name: "expand";
          action:  STATE_SET "default" 0.0;
          target: "outline";
+         target: "elm.swallow.content";
          transition: LINEAR 0.1;
       }
    }
