@@ -2321,13 +2321,32 @@ CEvasObject::CPropHandler<CElmSlider>::list[] = {
 
 class CElmGenList : public CEvasObject {
 protected:
+   CPropHandler<CElmGenList> prop_handler;
 public:
    CElmGenList(CEvasObject *parent, Local<Object> obj) :
-       CEvasObject()
+       CEvasObject(),
+       prop_handler(property_list_base)
      {
         eo = elm_genlist_add(parent->get());
         construct(eo, obj);
      }
+
+   virtual Handle<Value> multi_select_get() const
+     {
+        return Boolean::New(elm_genlist_multi_select_get(eo));
+     }
+
+   virtual void multi_select_set(Handle<Value> value)
+     {
+        if (value->IsBoolean())
+          elm_genlist_multi_select_set(eo, value->BooleanValue());
+     }
+};
+
+template<> CEvasObject::CPropHandler<CElmGenList>::property_list
+CEvasObject::CPropHandler<CElmGenList>::list[] = {
+  PROP_HANDLER(CElmGenList, multi_select),
+  { NULL, NULL, NULL },
 };
 
 class CElmList : public CEvasObject {
