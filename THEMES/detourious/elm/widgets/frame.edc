@@ -18,7 +18,6 @@ group { name: "elm/frame/base/default";
 		part { name: "elm.text";
 			type: TEXT;
 			effect: SHADOW;
-			mouse_events:   0;
 			scale: 1;
 			description { state: "default" 0.0;
 				align: 0.0 0.0;
@@ -48,6 +47,13 @@ group { name: "elm/frame/base/default";
 			}
 		}
 	}
+ programs {
+  program { name: "click";
+   signal:  "mouse,up,1";
+   source:  "elm.text";
+   action:  SIGNAL_EMIT "elm,action,click" "elm";
+  }
+ }
 }
 
 group { name: "elm/frame/base/pad_small";
