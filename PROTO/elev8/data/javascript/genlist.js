@@ -5,9 +5,10 @@
  */
 
 var EXPAND_BOTH = { x : 1.0, y : 1.0 };
+var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 var win = new elm.window({
-	label : "Genlist",
+	label : "Genlist Demo",
 	width : 480,
 	height : 800,
 	elements : {
@@ -15,15 +16,18 @@ var win = new elm.window({
 			type : "background",
 			resize : true,
 			weight : EXPAND_BOTH,
+			align : FILL_BOTH,
 		},
 		the_box : {
 			type : "box",
 			weight : EXPAND_BOTH,
+			align : FILL_BOTH,
 			resize : true,
 			elements : {
 				the_list : {
 					type : "genlist",
 					weight : EXPAND_BOTH,
+					align : FILL_BOTH,
 					align : { x: -1, y: -1 },
 				},
 			},
