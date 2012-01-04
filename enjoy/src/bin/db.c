@@ -205,7 +205,7 @@ _db_album_covers_cleanup(DB *db)
    Eina_File_Direct_Info *fi;
    sqlite3_stmt *stmt;
    char *errmsg;
-   char *cache_dir;
+   const char *cache_dir;
    int r, cache_dir_len;
 
    cache_dir = enjoy_cache_dir_get();
@@ -328,6 +328,21 @@ db_close(DB *db)
    sqlite3_close(db->handle);
    eina_stringshare_del(db->path);
    free(db);
+   return EINA_TRUE;
+}
+
+Eina_Bool db_clear(DB *db)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+
+   sqlite3_exec(db->handle, "DELETE FROM covers", NULL, NULL, NULL);
+   sqlite3_exec(db->handle, "DELETE FROM audio_albums", NULL, NULL, NULL);
+   sqlite3_exec(db->handle, "DELETE FROM audio_artists", NULL, NULL, NULL);
+   sqlite3_exec(db->handle, "DELETE FROM audio_genres", NULL, NULL, NULL);
+   sqlite3_exec(db->handle, "DELETE FROM audios", NULL, NULL, NULL);
+   sqlite3_exec(db->handle, "DELETE FROM files", NULL, NULL, NULL);
+   sqlite3_exec(db->handle, "VACUUM", NULL, NULL, NULL);
+
    return EINA_TRUE;
 }
 

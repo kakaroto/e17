@@ -62,6 +62,15 @@ EAPI extern int ENJOY_EVENT_VOLUME_CHANGE;
  */
 EAPI extern int ENJOY_EVENT_POSITION_CHANGE;
 
+/**
+ * Stop using DB.
+ */
+EAPI extern int ENJOY_EVENT_DB_LOCKED;
+/**
+ * DB usage is now allowed.
+ */
+EAPI extern int ENJOY_EVENT_DB_UNLOCKED;
+
 struct _Enjoy_Player_Caps {
    Eina_Bool can_go_next:1;
    Eina_Bool can_go_prev:1;
@@ -89,7 +98,7 @@ EAPI void       enjoy_quit(void);
 EAPI void       enjoy_quit_freeze(void);
 EAPI void       enjoy_quit_thaw(void);
 
-EAPI char      *enjoy_cache_dir_get(void);
+EAPI const char*enjoy_cache_dir_get(void);
 EAPI Eina_Bool  enjoy_repeat_get(void);
 EAPI int32_t    enjoy_position_get(void);
 EAPI int32_t    enjoy_volume_get(void);

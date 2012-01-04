@@ -10,13 +10,13 @@
 #include "song.h"
 
 #include <Elementary.h>
+#include <lightmediascanner.h>
 #include <limits.h>
 
 #define stringify(X) #X
 
 typedef struct _App                     App;
 typedef struct _DB                      DB;
-typedef struct _Libmgr                  Libmgr;
 typedef struct _NameID                  NameID;
 typedef struct _Album_Cover             Album_Cover;
 typedef struct _Album                   Album;
@@ -32,8 +32,6 @@ typedef struct _NameID                  Genre;
 
 struct _App
 {
-   Eina_List   *add_dirs;
-   Eina_List   *del_dirs;
    char         configdir[PATH_MAX];
    Evas_Object *win;
    Eina_Array  *modules;
@@ -41,11 +39,8 @@ struct _App
 
 Evas_Object *win_new(App *app);
 
-Libmgr      *libmgr_new(const char *dbpath);
-Eina_Bool    libmgr_scanpath_add(Libmgr *mgr, const char *path);
-Eina_Bool    libmgr_scan_start(Libmgr *mgr, void (*func_end)(void *, Eina_Bool), void *data);
-
 Evas_Object *list_add(Evas_Object *parent);
+void         list_clear_all(Evas_Object *obj);
 void         list_promote_current(Evas_Object *list);
 Eina_Bool    list_populate(Evas_Object *list, DB *db);
 Eina_Bool    list_songs_exists(const Evas_Object *obj);
@@ -91,11 +86,22 @@ Evas_Object *cover_allsongs_fetch(Evas_Object *parent, unsigned short size);
 Evas_Object *cover_album_fetch(Evas_Object *parent, DB *db, Album *album, unsigned short size, void (*cb)(void *data), void *data);
 Evas_Object *cover_album_fetch_by_id(Evas_Object *parent, DB *db, int64_t album_id, unsigned short size, void (*cb)(void *data), void *data);
 
+void        enjoy_db_clear(void);
+void        enjoy_db_stop_usage(void);
+void        enjoy_db_start_usage(void);
+const char *enjoy_db_path_get(void);
+
+Eina_Bool   enjoy_lms_parsers_add(lms_t *lms);
+void        enjoy_lms_charsets_add(lms_t *lms);
+
 
 DB        *db_open(const char *path);
 Eina_Bool  db_close(DB *db);
+Eina_Bool  db_clear(DB *db);
 
 Evas_Object *nowplaying_add(Evas_Object *parent);
+
+Evas_Object *preferences_add(Evas_Object *parent);
 
 typedef enum {
    ALBUM_COVER_ORIGIN_LOCAL,

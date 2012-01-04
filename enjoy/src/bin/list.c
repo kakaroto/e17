@@ -189,6 +189,17 @@ list_promote_current(Evas_Object *obj)
    elm_pager_content_promote(obj, list->page.current);
 }
 
+void
+list_clear_all(Evas_Object *obj)
+{
+   Evas_Object *page;
+   LIST_GET_OR_RETURN(list, obj);
+   EINA_SAFETY_ON_NULL_RETURN(list);
+   EINA_LIST_FREE(list->page.list, page) evas_object_del(page);
+   list->page.current = list->page.songs = NULL;
+   list->db = NULL;
+}
+
 Eina_Bool
 list_populate(Evas_Object *obj, DB *db)
 {

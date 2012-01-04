@@ -12,9 +12,9 @@ typedef struct Win
    Evas_Object *list;
    Evas_Object *nowplaying;
    Evas_Object *nowplaying_pager;
+   Evas_Object *preferences;
    const char *db_path;
    DB *db;
-   Libmgr *mgr;
    Song *song;
    struct {
         Elm_Object_Item *play;
@@ -23,6 +23,7 @@ typedef struct Win
         Elm_Object_Item *prev;
         Elm_Object_Item *nowplaying;
         Elm_Toolbar_Item_State *playlist;
+        Elm_Object_Item *preferences;
    } action;
    struct {
       double position, length;
@@ -43,15 +44,48 @@ typedef struct Win
       Ecore_Timer *play_eval;
    } timer;
    struct {
-      Ecore_Job *scan;
       Ecore_Job *populate;
    } job;
-   struct {
-      Ecore_Thread *scan;
-   } thread;
 } Win;
 
 static Win _win;
+
+/* FIXME: This shouldn't be hardcoded, but get it from config. */
+static const char *_parsers[] = {
+     "id3",
+     "ogg",
+     "asf",
+     "flac",
+     NULL
+};
+
+static const char *_charsets[] = {
+     "UTF-8",
+     "ISO8859-1",
+     NULL
+};
+
+Eina_Bool
+enjoy_lms_parsers_add(lms_t *lms)
+{
+   int i;
+   Eina_Bool found_parser = 0;
+   for (i = 0; _parsers[i]; i++)
+     {
+        if (lms_parser_find_and_add(lms, _parsers[i]))
+          found_parser = 1;
+     }
+
+   return found_parser;
+}
+
+void
+enjoy_lms_charsets_add(lms_t *lms)
+{
+   int i;
+   for (i = 0; _charsets[i]; i++)
+     lms_charset_add(lms, _charsets[i]);
+}
 
 static void
 _win_populate_job(void *data)
@@ -59,66 +93,65 @@ _win_populate_job(void *data)
    Win *w = data;
    w->job.populate = NULL;
 
-   if (w->db) db_close(w->db);
-   w->db = db_open(w->db_path);
+   if (w->db)
+     {
+        db_close(w->db);
+        w->db = NULL;
+     }
+
+   if (access(w->db_path, F_OK|X_OK) == 0)
+     w->db = db_open(w->db_path);
+
    if (!w->db)
      {
-        CRITICAL("no database at %s!", w->db_path);
-        // TODO: remove me! create library manager and start it from here
-        printf("SCAN and LIBRARY MANAGER are not implemeted yet!\n"
-               "Meanwhile please run "
-               "(./test = binary from lightmediascanner/src/bin):\n"
-               "   ./test -p id3 -i 5000 -s %s/Music %s\n"
-               "sorry about the inconvenience!\n",
-               getenv("HOME"), w->db_path);
+        char tmpdir[PATH_MAX];
+        lms_t *lms = lms_new(w->db_path);
+        if (!lms)
+          goto no_lms;
+        enjoy_lms_charsets_add(lms);
+        if (!enjoy_lms_parsers_add(lms))
+          goto no_parsers;
+
+        snprintf(tmpdir, sizeof(tmpdir), "%s/tmpdir-nomusic",
+                 enjoy_cache_dir_get());
+        ecore_file_mkpath(tmpdir);
+        if (lms_process_single_process(lms, tmpdir) != 0)
+          CRITICAL("Failed to scan empty directory %s", tmpdir);
+        ecore_file_rmdir(tmpdir);
+        lms_free(lms);
+
+        w->db = db_open(w->db_path);
+        if (!w->db)
+          goto no_lms;
+
+        goto populate;
+
+     no_parsers:
+        CRITICAL("could not add any lightmediascanner parser!");
+        lms_free(lms);
+     no_lms:
+        CRITICAL("could not create database at %s!", w->db_path);
         exit(-1);
      }
+
+ populate:
+   ecore_event_add(ENJOY_EVENT_DB_UNLOCKED, NULL, NULL, NULL);
    list_populate(w->list, w->db);
-}
-
-static void
-_win_scan_job_finished(void *data, Eina_Bool success __UNUSED__)
-{
-   Win *w = data;
-   list_thaw(w->list);
-   w->job.populate = ecore_job_add(_win_populate_job, w);
-}
-
-static void
-_win_scan_job(void *data)
-{
-   Win *w = data;
-   w->job.scan = NULL;
-
-   Eina_List *l;
-   const char *path;
-   EINA_LIST_FOREACH(w->scan.add, l, path)
-       libmgr_scanpath_add(w->mgr, path);
-   EINA_LIST_FOREACH(w->scan.del, l, path)
-     printf("   sqlite3 %s \"delete from files where path like '%s%%'\"\n",
-            w->db_path, path);
-
-   if (w->job.populate)
-     {
-        ecore_job_del(w->job.populate);
-        w->job.populate = NULL;
-     }
-   list_freeze(w->list);
-
-   libmgr_scan_start(w->mgr, _win_scan_job_finished, w);
-
-   // TODO
-   // emit delete as sqlite statements
-   // finish thread -> unmark it from Win
-   // notify win (should reload lists)
-
-   // if (!w->job.populate)
-   //   w->job.populate = ecore_job_add(_win_populate_job, w);
 }
 
 static void
 _win_toolbar_eval(Win *w)
 {
+   Eina_Bool tb_nowp_state, is_prefs;
+
+   is_prefs = elm_pager_content_top_get(w->list) == w->preferences;
+
+   if (!w->db)
+     tb_nowp_state = EINA_FALSE;
+   else if (is_prefs)
+     tb_nowp_state = EINA_TRUE;
+   else
+     tb_nowp_state = !!w->song;
 
    if ((w->play.shuffle) || (list_prev_exists(w->list)))
       elm_object_item_disabled_set(w->action.prev, EINA_FALSE);
@@ -131,15 +164,14 @@ _win_toolbar_eval(Win *w)
       elm_object_item_disabled_set(w->action.next, EINA_TRUE);
 
    if (w->song)
-     {
-        elm_object_item_disabled_set(w->action.play, EINA_FALSE);
-        elm_object_item_disabled_set(w->action.nowplaying, EINA_FALSE);
-     }
+     elm_object_item_disabled_set(w->action.play, EINA_FALSE);
    else
-     {
-        elm_object_item_disabled_set(w->action.play, EINA_TRUE);
-        elm_object_item_disabled_set(w->action.nowplaying, EINA_TRUE);
-     }
+     elm_object_item_disabled_set(w->action.play, EINA_TRUE);
+
+   elm_object_item_disabled_set(w->action.nowplaying, !tb_nowp_state);
+
+   if ((is_prefs) && (!w->song))
+     elm_toolbar_item_state_set(w->action.nowplaying, w->action.playlist);
 
    ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
 }
@@ -301,10 +333,8 @@ _win_del(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_
 {
    Win *w = data;
    if (w->emotion) evas_object_del(w->emotion);
-   if (w->job.scan) ecore_job_del(w->job.scan);
    if (w->job.populate) ecore_job_del(w->job.populate);
    if (w->timer.play_eval) ecore_timer_del(w->timer.play_eval);
-   if (w->thread.scan) ecore_thread_cancel(w->thread.scan);
    if (w->db_path) eina_stringshare_del(w->db_path);
 }
 
@@ -389,6 +419,17 @@ _win_mode_list(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSE
    elm_toolbar_item_state_unset(w->action.nowplaying);
    list_promote_current(w->list);
    edje_object_signal_emit(w->edje, "elm,title,show", "elm");
+   _win_toolbar_eval(w);
+}
+
+static void
+_win_action_prefs(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Win *w = data;
+   elm_toolbar_item_state_unset(w->action.preferences);
+   edje_object_signal_emit(w->edje, "elm,title,hide", "elm");
+   elm_pager_content_promote(w->list, w->preferences);
+   _win_toolbar_eval(w);
 }
 
 static void
@@ -398,6 +439,7 @@ _win_mode_nowplaying(void *data, Evas_Object *obj __UNUSED__, void *event_info _
    edje_object_signal_emit(w->edje, "elm,title,hide", "elm");
    elm_toolbar_item_state_set(w->action.nowplaying, w->action.playlist);
    elm_pager_content_promote(w->list, w->nowplaying);
+   _win_toolbar_eval(w);
 }
 
 static void
@@ -530,6 +572,7 @@ EAPI void
 enjoy_control_next(void)
 {
    Win *w = &_win;
+   if (!w->db) return;
    _win_next(w, NULL, NULL);
 }
 
@@ -537,6 +580,7 @@ EAPI void
 enjoy_control_previous(void)
 {
    Win *w = &_win;
+   if (!w->db) return;
    _win_prev(w, NULL, NULL);
 }
 
@@ -544,6 +588,7 @@ EAPI void
 enjoy_control_pause(void)
 {
    Win *w = &_win;
+   if (!w->db) return;
    _win_action_pause(w, NULL, NULL);
 }
 
@@ -551,6 +596,7 @@ EAPI void
 enjoy_control_stop(void)
 {
    Win *w = &_win;
+   if (!w->db) return;
    _win_action_pause(&_win, NULL, NULL);
    w->play.position = 0.0;
    emotion_object_position_set(w->emotion, w->play.position);
@@ -560,6 +606,7 @@ EAPI void
 enjoy_control_play(void)
 {
    Win *w = &_win;
+   if (!w->db) return;
    _win_action_play(w, NULL, NULL);
 }
 
@@ -569,6 +616,7 @@ enjoy_control_seek(uint64_t position)
    Win *w = &_win;
    double seek_to;
 
+   if (!w->db) return;
    seek_to = w->play.position + w->play.length / ((double)position / 1e6);
    if (seek_to <= 0.0)
      seek_to = 0.0;
@@ -643,6 +691,7 @@ enjoy_position_set(int32_t position)
 {
    Win *w = &_win;
 
+   if (!w->db) return;
    w->play.position = w->play.length / ((double)position / 1e6);
    if (w->play.position < 0.0)
      w->play.position = 0.0;
@@ -744,6 +793,7 @@ EAPI int32_t
 enjoy_playlist_current_position_get(void)
 {
    Win *w = &_win;
+   if (!w->db) return 0;
    if (!w->list) return 0;
    return list_song_selected_n_get(w->list);
 }
@@ -752,6 +802,7 @@ EAPI int32_t
 enjoy_playlist_count(void)
 {
    Win *w = &_win;
+   if (!w->db) return 0;
    if (!w->list) return 0;
    return list_song_count(w->list);
 }
@@ -760,8 +811,65 @@ EAPI const Song *
 enjoy_playlist_song_position_get(int32_t position)
 {
    Win *w = &_win;
+   if (!w->db) return NULL;
    if (!w->list) return NULL;
    return list_song_nth_get(w->list, position);
+}
+
+void
+enjoy_db_stop_usage(void)
+{
+   Win *w = &_win;
+
+   if (w->job.populate)
+     {
+        ecore_job_del(w->job.populate);
+        w->job.populate = NULL;
+     }
+
+   enjoy_control_stop();
+   list_clear_all(w->list);
+   w->song = NULL;
+   w->play.position = 0.0;
+   w->play.length = 0.0;
+   w->play.playing = EINA_FALSE;
+
+   db_close(w->db);
+   w->db = NULL;
+   _win_toolbar_eval(w);
+
+   ecore_event_add(ENJOY_EVENT_DB_LOCKED, NULL, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_CAPS_CHANGE, NULL, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_PLAYER_TRACK_CHANGE, NULL, NULL, NULL);
+   ecore_event_add(ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE, NULL, NULL, NULL);
+}
+
+void
+enjoy_db_start_usage(void)
+{
+   Win *w = &_win;
+   w->job.populate = ecore_job_add(_win_populate_job, w);
+}
+
+const char *
+enjoy_db_path_get(void)
+{
+   return _win.db_path;
+}
+
+void
+enjoy_db_clear(void)
+{
+   Win *w = &_win;
+
+   INF("Clear database!");
+
+   if ((!w->list) || (!w->db)) return;
+
+   enjoy_db_stop_usage();
+   w->db = db_open(w->db_path);
+   db_clear(w->db);
+   enjoy_db_start_usage();
 }
 
 static Elm_Object_Item *
@@ -804,8 +912,6 @@ win_new(App *app)
 
    snprintf(path, sizeof(path), "%s/media.db", app->configdir);
    w->db_path = eina_stringshare_add(path);
-
-   w->mgr = libmgr_new(w->db_path);
 
    w->emotion = emotion_object_add(evas_object_evas_get(w->win));
    if (!emotion_object_init(w->emotion, NULL))
@@ -864,11 +970,14 @@ win_new(App *app)
    w->action.playlist = elm_toolbar_item_state_add
       (w->action.nowplaying, "system-file-manager", "Library",
        _win_mode_list, w);
+   w->action.preferences = _toolbar_item_add
+     (w, "preferences-system", "Preferences", 120, _win_action_prefs);
 
    elm_object_item_disabled_set(w->action.prev, EINA_TRUE);
    elm_object_item_disabled_set(w->action.next, EINA_TRUE);
    elm_object_item_disabled_set(w->action.play, EINA_TRUE);
    elm_object_item_disabled_set(w->action.nowplaying, EINA_TRUE);
+   elm_object_item_disabled_set(w->action.preferences, EINA_FALSE);
 
    w->list = list_add(w->layout);
    if (!w->list)
@@ -895,6 +1004,9 @@ win_new(App *app)
    edje_object_size_min_restricted_calc
      (w->edje, &(w->min.w), &(w->min.h), w->min.w, w->min.h);
    elm_pager_content_push(w->list, w->nowplaying);
+
+   w->preferences = preferences_add(w->layout);
+   elm_pager_content_push(w->list, w->preferences);
 
    s = edje_object_data_get(w->edje, "initial_size");
    if (!s)
@@ -925,14 +1037,7 @@ win_new(App *app)
    elm_win_title_set(w->win, PACKAGE_STRING);
    evas_object_show(w->win);
 
-   if ((app->add_dirs) || (app->del_dirs))
-     {
-        w->scan.add = app->add_dirs;
-        w->scan.del = app->del_dirs;
-        w->job.scan = ecore_job_add(_win_scan_job, w);
-     }
-   else
-     w->job.populate = ecore_job_add(_win_populate_job, w);
+   w->job.populate = ecore_job_add(_win_populate_job, w);
 
    srand(ecore_time_unix_get());
 

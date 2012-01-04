@@ -25,12 +25,6 @@ static const Ecore_Getopt options = {
   "Music player for mobiles and desktops.",
   EINA_TRUE,
   {
-    ECORE_GETOPT_APPEND_METAVAR
-    ('a', "add", "Add (recursively) directory to music library.",
-     "DIRECTORY", ECORE_GETOPT_TYPE_STR),
-    ECORE_GETOPT_APPEND_METAVAR
-    ('d', "del", "Delete (recursively) directory from music library.",
-     "DIRECTORY", ECORE_GETOPT_TYPE_STR),
     ECORE_GETOPT_VERSION('V', "version"),
     ECORE_GETOPT_COPYRIGHT('C', "copyright"),
     ECORE_GETOPT_LICENSE('L', "license"),
@@ -207,7 +201,7 @@ enjoy_abi_version(void)
    return ENJOY_ABI_VERSION;
 }
 
-EAPI char *
+EAPI const char *
 enjoy_cache_dir_get(void)
 {
    static char *cache = NULL;
@@ -260,6 +254,8 @@ EAPI int ENJOY_EVENT_TRACKLIST_TRACKLIST_CHANGE = -1;
 EAPI int ENJOY_EVENT_RATING_CHANGE = -1;
 EAPI int ENJOY_EVENT_VOLUME_CHANGE = -1;
 EAPI int ENJOY_EVENT_POSITION_CHANGE = -1;
+EAPI int ENJOY_EVENT_DB_LOCKED = -1;
+EAPI int ENJOY_EVENT_DB_UNLOCKED = -1;
 
 static void
 enjoy_event_id_init(void)
@@ -273,6 +269,8 @@ enjoy_event_id_init(void)
    ENJOY_EVENT_RATING_CHANGE = ecore_event_type_new();
    ENJOY_EVENT_VOLUME_CHANGE = ecore_event_type_new();
    ENJOY_EVENT_POSITION_CHANGE = ecore_event_type_new();
+   ENJOY_EVENT_DB_LOCKED = ecore_event_type_new();
+   ENJOY_EVENT_DB_UNLOCKED = ecore_event_type_new();
 }
 
 static void
@@ -431,8 +429,6 @@ elm_main(int argc, char **argv)
    char *s;
 
    Ecore_Getopt_Value values[] = {
-      ECORE_GETOPT_VALUE_LIST(app.add_dirs),
-      ECORE_GETOPT_VALUE_LIST(app.del_dirs),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
       ECORE_GETOPT_VALUE_BOOL(quit_option),
@@ -502,9 +498,6 @@ elm_main(int argc, char **argv)
    elm_run();
 
  end:
-   EINA_LIST_FREE(app.add_dirs, s) free(s);
-   EINA_LIST_FREE(app.del_dirs, s) free(s);
-
    enjoy_module_unload();
    enjoy_dbus_shutdown();
 

@@ -145,8 +145,8 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    Album_Cover *cover;
    Evas *e, *sub_e;
    Evas_Object *o, *img, *icon;
-   char file[PATH_MAX];
-   char *cache_dir;
+   char file[PATH_MAX], *dir;
+   const char *cache_dir;
 
    if ((size > large_cover->w) || (size > large_cover->h))
      {
@@ -214,9 +214,9 @@ _cover_with_exact_size(Evas_Object *parent, DB *db, Album *album, const Album_Co
    evas_damage_rectangle_add(sub_e, 0, 0, size, size);
    ecore_evas_manual_render(sub_ee);
 
-   cache_dir = ecore_file_dir_get(file);
-   ecore_file_mkpath(cache_dir);
-   free(cache_dir);
+   dir = ecore_file_dir_get(file);
+   ecore_file_mkpath(dir);
+   free(dir);
 
    if (!evas_object_image_save(o, file, NULL, "quality=90"))
      {
