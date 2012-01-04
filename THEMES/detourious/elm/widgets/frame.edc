@@ -60,7 +60,7 @@ group { name: "elm/frame/base/default";
 	programs {
 		program { name: "click";
 			signal:  "mouse,up,1";
-			source:  "events";
+			source:  "event";
 			action:  SIGNAL_EMIT "elm,action,click" "elm";
 		}
 	}
