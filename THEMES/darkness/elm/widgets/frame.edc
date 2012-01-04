@@ -42,9 +42,12 @@
                border: 7 7 7 7;
                middle: 0;
             }
-            fill {
-               smooth: 0;
-            }
+            fill.smooth: 0;
+         }
+         description {
+            state: "collapsed" 0.0;
+            inherit: "default" 0.0;
+            rel2.relative: 1.0 2.1;
          }
       }
       part {
@@ -74,6 +77,7 @@
       part {
          name:           "elm.text";
          type:           TEXT;
+         mouse_events:   0;
          description {
             state: "default" 0.0;
             align: 0.0 0.0;
@@ -120,12 +124,21 @@
             }
          }
       }
+      PART_EVENTS("elm.text",);
    }
    programs {
       program { name: "click";
          signal:  "mouse,up,1";
-         source:  "elm.text";
+         source:  "elm.text_events";
          action:  SIGNAL_EMIT "elm,action,click" "elm";
+         after: "collapse";
+      }
+      program { name: "collapse";
+         signal:  "mouse,up,1";
+         source:  "elm.text_events";
+         action: STATE_SET "collapse" 0.0;
+         target: "outline";
+         transition: LINEAR 0.1;
       }
    }
 }
