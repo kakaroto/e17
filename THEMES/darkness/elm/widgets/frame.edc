@@ -25,6 +25,8 @@
          }
          description {
            state: "collapsed" 0.0;
+           inherit: "default" 0.0;
+           visible: 0;
            rel2.offset: -4 0;
          }
       }
@@ -146,7 +148,6 @@
          signal:  "mouse,up,1";
          source:  "label_over_events";
          action:  SIGNAL_EMIT "elm,action,click" "elm";
-         after: "toggle";
       }
       program { name: "toggle";
          signal:  "elm,action,collapse";
@@ -166,13 +167,19 @@
          target: "outline";
          target: "elm.swallow.content";
          transition: LINEAR 0.1;
+         after: "signal";
       }
       program { name: "expand";
          action:  STATE_SET "default" 0.0;
          target: "outline";
          target: "elm.swallow.content";
          transition: LINEAR 0.1;
+         after: "signal";
       }
+      program { name: "signal";
+         action: SIGNAL_EMIT "anim,done" "elm";
+      }
+         
    }
 }
 
