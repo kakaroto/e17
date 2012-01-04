@@ -1,0 +1,124 @@
+# French translation for Ecrire.
+# This file is put in the public domain.
+# dazibao <dazibao@sfr.fr>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Ecrire\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2012-01-04 08:19+0100\n"
+"PO-Revision-Date: 2012-01-04 17:38+0100\n"
+"Last-Translator: dazibao <dazibao@sfr.fr>\n"
+"Language-Team: français <sansgourou@gmail.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bits\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: src/bin/ui/alerts.c:43
+msgid ""
+"<align=center>Would you like to save changes to document?<br>Any unsaved "
+"changes will be lost."
+msgstr ""
+"<align=center>Voulez-vous enregistrer les modifications du document ?<br> "
+"Elles seront perdues si vous ne le faites pas."
+
+#: src/bin/ui/alerts.c:58 src/bin/main.c:663
+msgid "Save"
+msgstr "Enregistrer"
+
+#: src/bin/ui/alerts.c:64
+msgid "Discard"
+msgstr "Abandonner"
+
+#: src/bin/ui/alerts.c:70
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/bin/ui/search_dialog.c:143 src/bin/main.c:679
+msgid "Find & Replace"
+msgstr "Cherche & Remplace"
+
+#: src/bin/ui/search_dialog.c:165
+msgid "Search for:"
+msgstr "Rechercher :"
+
+#: src/bin/ui/search_dialog.c:189
+msgid "Replace with:"
+msgstr "Remplacer par : "
+
+#: src/bin/ui/search_dialog.c:213
+msgid "Find"
+msgstr "Chercher"
+
+#: src/bin/ui/search_dialog.c:221
+msgid "Replace"
+msgstr "Remplacer"
+
+#: src/bin/ui/font_dialog.c:75
+msgid "Select Font"
+msgstr "Choisir une police"
+
+#: src/bin/ui/font_dialog.c:100
+msgid "Font size:"
+msgstr "Taille de la police :"
+
+#: src/bin/ui/font_dialog.c:105
+#, c-format
+msgid "%.0f pts"
+msgstr "%.0f pt"
+
+#: src/bin/ui/font_dialog.c:115
+msgid "Set"
+msgstr "Définir"
+
+#: src/bin/main.c:100
+#, c-format
+msgid "%s%s - %s"
+msgstr "%s%s - %s"
+
+#: src/bin/main.c:102
+#, c-format
+msgid "%sUntitled %d - %s"
+msgstr "%sSans titre %d - %s"
+
+#: src/bin/main.c:126
+#, c-format
+msgid "Ln %d, Col %d"
+msgstr "Ligne %d, Col %d"
+
+#: src/bin/main.c:660
+msgid "New"
+msgstr "Nouveau"
+
+#: src/bin/main.c:661
+msgid "Open"
+msgstr "Ouvrir"
+
+#: src/bin/main.c:667
+msgid "Undo"
+msgstr "Défaire"
+
+#: src/bin/main.c:669
+msgid "Redo"
+msgstr "Refaire"
+
+#: src/bin/main.c:672
+msgid "Cut"
+msgstr "Couper"
+
+#: src/bin/main.c:674
+msgid "Copy"
+msgstr "Copier"
+
+#: src/bin/main.c:676
+msgid "Paste"
+msgstr "Coller"
+
+#: src/bin/main.c:683
+msgid "Settings"
+msgstr "Paramètres"
