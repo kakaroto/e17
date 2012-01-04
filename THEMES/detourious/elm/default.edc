@@ -670,7 +670,6 @@ collections {
 #include "widgets/segment_control.edc"
 #include "widgets/player.edc"
 #include "widgets/video.edc"
-#include "widgets/naviframe.edc"
 
 #include "enjoy/theme.edc"
 }
