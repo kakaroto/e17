@@ -8,11 +8,11 @@ static void
 _list_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    const char *name;
-   Elm_List_Item *it = event_info;
+   Elm_Object_Item *it = event_info;
 
    printf("List longpressed\n");
 
-   name = elm_list_item_data_get(it);
+   name = elm_object_item_data_get(it);
   
    evas_object_smart_callback_call(data,
 				   "list,longpressed", (void*)name);
