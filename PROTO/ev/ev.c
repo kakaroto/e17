@@ -54,6 +54,21 @@ _text(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 }
 
 static void
+_title(Evas_Object *win)
+{
+   Evas_Coord ww, wh;
+   char buf[8192];
+   const char *f, *s;
+
+   evas_object_geometry_get(img, NULL, NULL, &ww, &wh);
+   elm_icon_file_get(img, &f, NULL);
+   s = strrchr(f, '/');
+   s = s ? s + 1 : f;
+   snprintf(buf, sizeof(buf), "%s (%ux%u)", s, ww, wh);
+   elm_win_title_set(win, buf);
+}
+
+static void
 _resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *einfo __UNUSED__)
 {
    Evas_Coord w, h;
@@ -91,6 +106,7 @@ _resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *einfo
      }
    evas_object_geometry_get(win, NULL, NULL, &ww, &wh);
    evas_object_move(img, (ww / 2) - (w / 2), (wh / 2) - (h / 2));
+   _title(win);
    INF("w=%d, h=%d, x=%d, y=%d", w, h, (ww / 2) - (w / 2), (wh / 2) - (h / 2));
    INF("ww=%d, wh=%d", ww, wh);
 }
@@ -114,7 +130,7 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
    elm_icon_file_set(img, file, NULL);
    _resize(NULL, NULL, NULL, NULL);
    win = elm_object_parent_widget_get(img);
-   elm_win_title_set(win, file);
+   _title(win);
 }
 
 static void
