@@ -7,27 +7,24 @@ msgstr ""
 "Project-Id-Version: Ecrire\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2012-01-04 08:19+0100\n"
-"PO-Revision-Date: 2012-01-04 17:38+0100\n"
+"PO-Revision-Date: 2012-01-05 12:09+0100\n"
 "Last-Translator: dazibao <dazibao@sfr.fr>\n"
 "Language-Team: français <sansgourou@gmail.com>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: src/bin/ui/alerts.c:43
-msgid ""
-"<align=center>Would you like to save changes to document?<br>Any unsaved "
-"changes will be lost."
-msgstr ""
-"<align=center>Voulez-vous enregistrer les modifications du document ?<br> "
-"Elles seront perdues si vous ne le faites pas."
+msgid "<align=center>Would you like to save changes to document?<br>Any unsaved changes will be lost."
+msgstr "<align=center>Voulez-vous enregistrer le document modifié ?<br>Toute modification non enregistrée sera perdue."
 
-#: src/bin/ui/alerts.c:58 src/bin/main.c:663
+#: src/bin/ui/alerts.c:58
+#: src/bin/main.c:663
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -39,9 +36,10 @@ msgstr "Abandonner"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/bin/ui/search_dialog.c:143 src/bin/main.c:679
+#: src/bin/ui/search_dialog.c:143
+#: src/bin/main.c:679
 msgid "Find & Replace"
-msgstr "Cherche & Remplace"
+msgstr "Substituer"
 
 #: src/bin/ui/search_dialog.c:165
 msgid "Search for:"
@@ -74,7 +72,7 @@ msgstr "%.0f pt"
 
 #: src/bin/ui/font_dialog.c:115
 msgid "Set"
-msgstr "Définir"
+msgstr "Valider"
 
 #: src/bin/main.c:100
 #, c-format
@@ -122,3 +120,4 @@ msgstr "Coller"
 #: src/bin/main.c:683
 msgid "Settings"
 msgstr "Paramètres"
+
