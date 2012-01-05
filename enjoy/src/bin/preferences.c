@@ -232,7 +232,7 @@ preferences_db_folder_add_do(void *data, Evas_Object *o __UNUSED__, void *event_
    Evas_Object *fs = data;
    Evas_Object *box = elm_object_parent_widget_get(fs);
    Evas_Object *frame = elm_object_parent_widget_get(box);
-   Evas_Object *bt, *win;
+   Evas_Object *bt;
    const char *path = elm_fileselector_entry_path_get(fs);
    struct stat st;
    struct db_folder_add_ctx *ctx;

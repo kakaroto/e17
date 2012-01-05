@@ -426,7 +426,6 @@ elm_main(int argc, char **argv)
    int r = 0, args;
    Eina_Bool quit_option = EINA_FALSE;
    const char *home;
-   char *s;
 
    Ecore_Getopt_Value values[] = {
       ECORE_GETOPT_VALUE_BOOL(quit_option),

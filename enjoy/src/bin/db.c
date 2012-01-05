@@ -337,10 +337,10 @@ db_vacuum(DB *db)
    sqlite3_exec(db->handle, "VACUUM", NULL, NULL, NULL);
 }
 
-Eina_Bool
+void
 db_clear_covers(DB *db)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(db, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN(db);
 
    sqlite3_exec(db->handle, "DELETE FROM covers", NULL, NULL, NULL);
 }

@@ -101,7 +101,7 @@ void        enjoy_lms_charsets_add(lms_t *lms);
 DB        *db_open(const char *path);
 Eina_Bool  db_close(DB *db);
 Eina_Bool  db_clear(DB *db);
-Eina_Bool  db_clear_covers(DB *db);
+void       db_clear_covers(DB *db);
 void       db_files_cleanup(DB *db);
 void       db_album_covers_cleanup(DB *db);
 void       db_vacuum(DB *db);
