@@ -10,6 +10,15 @@ var FILL_Y = { x : 0.0, y : -1.0 };
 var myplane=null;
 var num_planes = 4;
 
+var alien = {
+				type : "image",
+				file : elm.datadir + "data/images/alien.png",
+                width : 30,
+                height : 40,
+                x : 10,
+                y : 10,
+};
+
 function move_up()
 {
 	myplane.y-=10;
@@ -35,33 +44,23 @@ function move_left()
 		myplane.x=790;
 }
 
-function animator(arg, n, is_shadow) {
-	t = elm.loop_time();
-	fac = 3.0/num_planes;
-	r = 120;
-	zz = (((2 + Math.sin(t*6 + (Math.PI * (n * fac))))/3) * 64 ) * 2;
-	xx = (Math.cos(t * 4 + (Math.PI * (n * fac))) * r) * 2;
-	yy = (Math.sin(t * 6 + (Math.PI * (n * fac))) * r) * 2;
-
-	x = my_win.width / 2 + xx - (arg.width / 2);
-	y = my_win.height / 2 + yy - (arg.height / 2);
-	w = zz;
-	h = zz;
-
-	/* get pointer position */
-	lx = arg.pointer.x
-	ly = arg.pointer.y;
-	if (is_shadow) {
-		x -= ((lx - (x + w / 2)) / 4);
-		y -= ((ly - (y + h / 2)) / 4);
-	}
-
-	/* resize and move the object */
-	arg.x = x;
-	arg.y = y;
-	arg.width = w;
-	arg.height = h;
+function choose_plane()
+{
 }
+
+var baby_alien = new Array();
+
+function make_alien_population()
+{
+	for(var i = 0; i<50; i++)
+	{
+		baby_alien[i] = my_win.add(alien);
+		baby_alien.x = (((i/10) + 1) * 10) + (i * 4)
+		baby_alien.y = (((i/10) + 1) * 10) + (i * 4);
+	}
+}
+
+
 
 function init()
 {
@@ -73,7 +72,14 @@ function init()
 	my_win.elements.plane3.y = 300;
 	my_win.elements.plane4.x = 1;
 	my_win.elements.plane4.y = 450;
-	myplane.on_animate = null;
+
+	my_win.elements.plane1.on_animate = null;
+	my_win.elements.plane2.on_animate = null;
+	my_win.elements.plane3.on_animate = null;
+	my_win.elements.plane4.on_animate = null;
+
+	make_alien_population();
+
 }
 
 var my_win = new elm.window({
@@ -96,8 +102,8 @@ var my_win = new elm.window({
 				file : elm.datadir + "data/images/plane1.png",
                 width : 50,
                 height : 70,
-                x : 280,
-                y : 80,
+                x : 350,
+                y : 100,
 				on_clicked : function() {
 				    if(myplane==null)
 				    {
@@ -106,17 +112,15 @@ var my_win = new elm.window({
 					    init();
 				    }
 				},
-				on_animate : function(arg) {
-						animator(arg, 0, false);
-				},
+				on_animate : choose_plane,
             },
 			plane2 : {
 				type : "image",
 				file : elm.datadir + "data/images/plane2.png",
                 width : 50,
                 height : 70,
-                x : 280,
-                y : 200,
+                x : 200,
+                y : 250,
 				on_clicked : function() {
 				    if(myplane==null)
 					{
@@ -125,17 +129,15 @@ var my_win = new elm.window({
 						init();
 				    }
 			    },
-				on_animate : function(arg) {
-						animator(arg, 1, false);
-				},
+				on_animate : choose_plane,
 		    },
 		    plane3 : {
 			    type : "image",
 				file : elm.datadir + "data/images/plane3.png",
                 width : 50,
                 height : 70,
-                x : 280,
-                y : 320,
+                x : 500,
+                y : 250,
 				on_clicked : function() {
 					if(myplane==null)
 					{
@@ -144,17 +146,15 @@ var my_win = new elm.window({
 						init();
 				    }
 				},
-				on_animate : function(arg) {
-						animator(arg, 2, false);
-				},
+				on_animate : choose_plane,
 		    },
 			plane4 : {
 			    type : "image",
 				file : elm.datadir + "data/images/plane4.png",
                 width : 50,
                 height : 70,
-                x : 280,
-                y : 440,
+                x : 350,
+                y : 400,
 				on_clicked : function() {
                     print("On Click Triggered");
 				    if(myplane==null)
@@ -164,9 +164,7 @@ var my_win = new elm.window({
 						init();
 				    }
 			    },
-				on_animate : function(arg) {
-						animator(arg, 3, false);
-				},
+				on_animate : choose_plane,
 		    },
 		},
 		on_keydown : function () {
