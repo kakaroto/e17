@@ -1,6 +1,5 @@
 
-EDJE_FLAGS = -v \
-	     -id $(top_srcdir)/data/themes/default/images
+EDJE_FLAGS = -id $(top_srcdir)/data/themes/default/images
 
 filesdir = $(datadir)
 files_DATA = default.edj
