@@ -11,14 +11,14 @@ var myplane=null;
 
 function init()
 {
-	my_win.elements.the_box.elements.plane1.x = 1;
-	my_win.elements.the_box.elements.plane1.y = 1;
-	my_win.elements.the_box.elements.plane2.x = 1;
-	my_win.elements.the_box.elements.plane2.y = 150;
-	my_win.elements.the_box.elements.plane3.x = 1;
-	my_win.elements.the_box.elements.plane3.y = 300;
-	my_win.elements.the_box.elements.plane4.x = 1;
-	my_win.elements.the_box.elements.plane4.y = 450;
+	my_win.elements.plane1.x = 1;
+	my_win.elements.plane1.y = 1;
+	my_win.elements.plane2.x = 1;
+	my_win.elements.plane2.y = 150;
+	my_win.elements.plane3.x = 1;
+	my_win.elements.plane3.y = 300;
+	my_win.elements.plane4.x = 1;
+	my_win.elements.plane4.y = 450;
 }
 
 function move_up()
@@ -74,7 +74,7 @@ var my_win = new elm.window({
 				    if(myplane==null)
 				    {
                         print(this.height + " " + this.weight);
-				        myplane = my_win.elements.the_box.elements.plane1 ;
+				        myplane = my_win.elements.plane1 ;
 					    init();
 				    }
 				},
@@ -90,7 +90,7 @@ var my_win = new elm.window({
 				    if(myplane==null)
 					{
                         print(this.height + " " + this.weight);
-					    myplane = my_win.elements.the_box.elements.plane2;
+					    myplane = my_win.elements.plane2;
 						init();
 				    }
 			    },
@@ -106,7 +106,7 @@ var my_win = new elm.window({
 					if(myplane==null)
 					{
                         print(this.height + " " + this.weight);
-					    myplane = my_win.elements.the_box.elements.plane3;
+					    myplane = my_win.elements.plane3;
 						init();
 				    }
 				},
@@ -123,7 +123,7 @@ var my_win = new elm.window({
 				    if(myplane==null)
 					{
                         print(this.height + " " + this.weight);
-					    myplane = my_win.elements.the_box.elements.plane4;
+					    myplane = my_win.elements.plane4;
 						init();
 				    }
 			    },

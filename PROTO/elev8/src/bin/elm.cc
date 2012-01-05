@@ -1367,6 +1367,62 @@ public:
         return Number::New(pd);
      }
 
+   virtual void on_click(void *event_info)
+     {
+        Handle<Object> obj = get_object();
+        HandleScope handle_scope;
+        Handle<Value> val = on_clicked_val;
+
+        // also provide x and y positions where it was clicked
+        //
+        if (event_info!=NULL)
+          {
+             Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down *)event_info;
+             Handle<Number> ox = Number::New(ev->canvas.x);
+             Handle<Number> oy = Number::New(ev->canvas.y);
+             // FIXME: pass event_info to the callback
+             // FIXME: turn the pieces below into a do_callback method
+             Handle<Value> args[3] = { obj, ox, oy };
+             assert(val->IsFunction());
+             Handle<Function> fn(Function::Cast(*val));
+			 printf("Hello2\n");
+             fn->Call(obj, 3, args);
+          }
+        else
+          {
+             // FIXME: pass event_info to the callback
+             // FIXME: turn the pieces below into a do_callback method
+             Handle<Value> args[1] = { obj };
+             assert(val->IsFunction());
+             Handle<Function> fn(Function::Cast(*val));
+			 printf("Hello1\n");
+             fn->Call(obj, 1, args);
+          }
+
+     }
+
+   static void eo_on_click(void *data, Evas *e, Evas_Object *eo, void *event_info)
+     {
+        CEvasObject *clicked = static_cast<CEvasObject*>(data);
+
+        clicked->on_click(event_info);
+     }
+
+   virtual void on_clicked_set(Handle<Value> val)
+     {
+        on_clicked_val.Dispose();
+        on_clicked_val = Persistent<Value>::New(val);
+        if (val->IsFunction())
+          evas_object_event_callback_add(eo, EVAS_CALLBACK_MOUSE_UP, &eo_on_click, this);
+        else
+          evas_object_event_callback_del(eo, EVAS_CALLBACK_MOUSE_UP, &eo_on_click);
+     }
+
+   virtual Handle<Value> on_clicked_get(void) const
+     {
+        return on_clicked_val;
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasImage>::property_list
@@ -5719,6 +5775,27 @@ public:
         construct(eo, obj);
      }
 
+   virtual void resize_set(Handle<Value> val)
+     {
+        if (val->IsBoolean())
+          {
+             Evas_Object *parent = elm_object_top_widget_get(eo);
+             if (!parent)
+               ERR( "resize object has no parent!");
+             else
+               {
+                  is_resize = val->BooleanValue();
+                  if (is_resize)
+                    elm_win_resize_object_add(parent, eo);
+                  else
+                    elm_win_resize_object_del(parent, eo);
+               }
+          }
+        else
+          ERR( "Resize value not boolean!");
+     }
+
+
    virtual void file_set(Handle<Value> val)
      {
        if (val->IsString())
@@ -5728,6 +5805,7 @@ public:
                WRN( "warning: can't read image file %s", *str);
             elm_image_file_set(eo, *str, NULL);
          }
+	   printf("Value is not string.\n");
      }
 
    virtual Handle<Value> file_get(void) const
@@ -5822,10 +5900,6 @@ public:
              elm_image_orient_set(eo, (Elm_Image_Orient)val->IntegerValue());
           }
      }
-
-
-
-
 };
 
 template<> CEvasObject::CPropHandler<CElmImage>::property_list
@@ -5893,7 +5967,7 @@ realize_one(CEvasObject *parent, Handle<Value> object_val)
    else if (!strcmp(*str, "segment"))
      eo = new CElmSegment(parent, obj);
    else if (!strcmp(*str, "image"))
-     eo = new CElmImage(parent, obj);
+     eo = new CEvasImage(parent, obj);
    else if (!strcmp(*str, "slider"))
      eo = new CElmSlider(parent, obj);
    else if (!strcmp(*str, "photo"))
