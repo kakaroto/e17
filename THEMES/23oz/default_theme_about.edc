@@ -1,0 +1,95 @@
+images {
+   //image: "e17_button_sm.png" COMP;
+   //image: "e17_button_sm2.png" COMP;
+   //image: "e17_logo.png" COMP;
+   //image: "e17_about_sky0.png" LOSSY 70;
+   //image: "e17_about_sky1.png" LOSSY 70;
+   //image: "e17_about_sky2.png" LOSSY 70;
+   //image: "e17_about_sky3.png" LOSSY 70;
+   //image: "e17_about_sky4.png" LOSSY 70;
+   //image: "e17_about_sky5.png" LOSSY 70;
+   //image: "e17_about_sky_overlay.png" COMP;
+   image: "wrk/Edoc_Front.png" COMP;
+}
+
+styles
+{
+   style {
+      name: "theme_about_style_1";
+      base: "font=Edje-Vera style=glow color=#043453ff glow2_color=#0873b7ff glow_color=#0b97efff font_size=14 align=center wrap=word";
+      
+      tag:  "br" "\n";
+      tag:  "hilight" "+ font=Edje-Vera-Bold";
+      tag:  "invisible" "+ font=Edje-Vera font_size=8 style=none color=#0002";
+   }
+}
+
+group {
+   name: "e/theme/about";
+   min: 512 400;
+   max: 512 400;
+   parts {
+      part {
+    name:          "sky";
+    mouse_events:  0;
+    description {
+       state:    "default" 0.0;
+       min:      512 400;
+       max:      512 400;
+       align:    0.5 0.5;
+       fixed:    1 1;
+       rel1 {
+          relative: 0.0 0.0;
+          offset:   -1   -1;
+       }
+       rel2 {
+          relative: 1.0 1.0;
+          offset:   -1 -1;
+       }
+       image {
+          normal: "wrk/Edoc_Front.png";
+       }
+    }
+      }
+
+      part {
+    name:          "about";
+    type:          TEXTBLOCK;
+    mouse_events:  0;
+    description {
+       state:    "default" 0.0;
+       rel1 {
+          to: "sky";
+          relative: 0.5 0.5;
+          offset:   -150  -70;
+       }
+       rel2 {
+          to: "sky";
+          relative: 0.5  0.5;
+          offset:   150  50;
+                 }
+       text {
+          style:    "theme_about_style_1";
+          min:      0 1;
+          text: 
+"This is the '23 Ounces Of Glass' theme for Enlightenment, "
+"also known as the <hilight>23Oz.</hilight> "
+"The most of artwork is from original Nathan Baxter's theme for E16. "
+"It took me 2 evenings to make all the core components.  "
+"Here's what we got... What can I say? Yes! " 
+"<br> "
+"<br> "
+"Come and GET SOME! "
+"<br> "
+"<br> "
+"Ported to E17 engine by: <br> "
+"sda aka sda00 <br>"
+"<br>"
+"(e-mail: sda00@himki.net)<br>"
+"<invisible>From Russia... With LOVE!</invisible>";
+       }
+    }
+      }
+
+   }
+}

@@ -1,0 +1,140 @@
+images 
+{
+   image: "modules/mixer/mixer-volume-high.png" COMP;
+   image: "modules/mixer/mixer-volume-medium.png" COMP;
+   image: "modules/mixer/mixer-volume-low.png" COMP;
+   image: "modules/mixer/mixer-volume-muted.png" COMP;   
+   image: "modules/mixer/pulsar.png" COMP;
+}
+
+// collections
+// {
+   group 
+     {
+           data {
+      item: "shaped" "1";
+   }
+   name: "e/modules/mixer/main";
+   // max: 128 128;
+   max: 76 76;
+   parts 
+     {
+        part 
+          {
+        name: "icon";
+        type: IMAGE;
+        description 
+          {
+             state: "default" 0.0;
+             aspect_preference: BOTH;
+             aspect: 1 1;
+             rel1 
+          {
+             relative: 0.0 0.0;
+             offset: 0 0;
+          }
+             rel2 
+          {
+             relative: 1.0 1.0;
+             offset: 0 0;
+          }
+             image 
+          {
+             normal: "modules/mixer/mixer-volume-high.png";
+          }
+          }
+        description 
+          {
+             state: "low" 0.0;
+             inherit: "default" 0.0;
+             image 
+          {
+             normal: "modules/mixer/mixer-volume-low.png";
+          }
+          }
+        description 
+          {
+             state: "medium" 0.0;
+             inherit: "default" 0.0;
+             image 
+          {
+             normal: "modules/mixer/mixer-volume-medium.png";
+          }
+          }
+        description 
+          {
+             state: "mute" 0.0;
+             inherit: "default" 0.0;
+             image 
+          {
+             normal: "modules/mixer/mixer-volume-muted.png";
+          }
+          }
+          } /* end icon part */
+     } /* end parts */
+   programs 
+     {
+        program 
+          {
+        name: "go_low";
+        signal: "low";
+        action: STATE_SET "low" 0.0;
+        target: "icon";
+          }
+        program 
+          {
+        name: "go_medium";
+        signal: "medium";
+        action: STATE_SET "medium" 0.0;
+        target: "icon";
+          }
+        program 
+          {
+        name: "go_high";
+        signal: "high";
+        action: STATE_SET "default" 0.0;
+        target: "icon";
+          }
+        program 
+          {
+        name: "go_mute";
+        signal: "muted";
+        action: STATE_SET "mute" 0.0;
+        target: "icon";
+          }
+     } /* end programs */   
+     } /* end group */
+// } /* end collections */
+
+// #include "srv_pulsar.edc"
+
+   group {
+      name: "icon";
+      // max: 48 48;
+      max: 64 64;
+      parts {
+         part {
+            name: "image";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.00;
+               visible: 1;
+               aspect: 1.00 1.00;
+               rel1 {
+                  relative: 0.00 0.00;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.00 1.00;
+                  offset: -1 -1;
+               }
+               image {
+                  normal: "modules/mixer/pulsar.png";
+               }
+            }
+         }
+      }
+      programs {
+      }
+   }

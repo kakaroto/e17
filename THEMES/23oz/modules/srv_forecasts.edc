@@ -1,0 +1,480 @@
+/* vim: set sw=3: */
+#define WEATHER_ICON(icon_code, file_code, minw, minh, maxw, maxh, a) \
+images { \
+   image: "modules/weather/weather_"file_code".png" COMP; \
+   image: "modules/weather/forecasts_bg.png" COMP; \
+   image: "modules/weather/forecasts_overlay.png" COMP; \
+   image: "modules/weather/pin.png" COMP; \
+   image: "modules/net/menu_panel.png" COMP; \
+} \
+group { \
+   name: "modules/forecasts/icons/"icon_code; \
+   min: minw minh; \
+   max: maxw maxh; \
+   parts { \
+      part { \
+    name: "icon"; \
+    description { \
+       state: "default" 0.0; \
+       aspect: a a; \
+       aspect_preference: BOTH; \
+       image { \
+          normal: "modules/weather/weather_"file_code".png"; \
+       } \
+       fill { \
+          smooth: 1; \
+       } \
+    } \
+      } \
+   } \
+}
+
+# define SRV_SHADOW 2 43 37
+// images { 
+//   image: "modules/weather/weather_"file_code".png" COMP; 
+//   image: "modules/weather/forecasts_bg.png" COMP; 
+//   image: "modules/weather/forecasts_overlay.png" COMP; 
+//} 
+
+group {
+   name: "modules/forecasts/main";
+   parts {
+      part {
+    name:           "base";
+    type:           RECT;
+    mouse_events:   1;
+    description {
+       state: "default" 0.0;
+        // color: 177 177 177 255;
+       // color: 2 43 37 255;
+       color: 255 255 255 0;
+    }
+      }
+      part {
+    name:         "icon";
+    type:         SWALLOW;
+    mouse_events: 0;
+    description {
+       state:    "default" 0.0;
+       aspect_preference: BOTH;
+       align:    0.5 0.5;
+       rel1 {
+          relative: 0.0 0.0;
+          offset:   0   0;
+       }
+       rel2 {
+          relative: 1.0 1.0;
+          offset:   -1  -1;
+       }
+       color: 0 0 0 0;
+    }
+      }
+      part {
+    name:         "e.text.temp";
+    type:         TEXT;
+    // effect:       SOFT_SHADOW;
+    effect:       SOFT_OUTLINE;
+    mouse_events: 0;
+    description {
+       state: "default" 0.0;
+       align: 0.0 0.0;
+       rel1 {
+          relative: 0.0 0.0;
+          offset: 5 4;
+       }
+       rel2 {
+          relative: 1.0 1.0;
+          offset: -1 -1;
+          to: "icon";
+       }
+       color:  255 255 255 255;
+       color2:  255 255 255 20;
+       // color3: DARKNESS_BLUE 170;
+       // color3: SRV_SHADOW 170;
+       text {
+          text:  "";
+          font:  "Sans:style=Bold";
+          size:  10;
+          min:   1 1;
+          align: 0.0 0.0;
+          text_class: "module_large";
+       }
+    }
+      }
+      part {
+    name:         "e.text.description";
+    type:         TEXT;
+    // effect:       OUTLINE_SOFT_SHADOW;
+    effect:       SOFT_OUTLINE;
+    mouse_events: 0;
+    description {
+       state: "default" 0.0;
+       rel1 {
+          relative: 0.0 1.0;
+          offset:   -1  -1;
+          to_x:     "icon";
+          to_y:     "e.text.temp";
+       }
+       rel2 {
+          relative: 1.0 1.0;
+          offset:   -1  -10;
+          to_x:     "icon";
+       }
+       color:  255 255 255 255;
+       color2:  255 255 255 20;
+       color3:   0   0   0  30;
+       text {
+          text:  "";
+          font:  "Sans:style=Bold";
+          size:  9;
+          min:   1 1;
+          align: 0.5 0.5;
+          text_class: "module_normal";
+       }
+    }
+    description {
+       state: "hidden" 0.0;
+       inherit: "default" 0.0;
+       visible: 0;
+    }
+      }
+   }
+   programs {
+      program {
+    name: "text_hide";
+    signal: "e,state,description,hide";
+    source: "e";
+    action: STATE_SET "hidden" 0.0;
+    target: "e.text.description";
+      }
+      program {
+    name: "text_show";
+    signal: "e,state,description,show";
+    source: "e";
+    action: STATE_SET "default" 0.0;
+    target: "e.text.description";
+      }
+   }
+}
+
+group {
+    name: "modules/forecasts/popup";
+    // name: "popup";
+    data {
+ item: "shaped" "1";
+    }
+   parts {
+      part {
+    name:           "base";
+    // type:           RECT;    
+    description {
+       state: "default" 0.0;
+      // color: 2 43 37 255;
+        visible: 0;
+       // visible: 1;
+      // min: 344 407;
+      // max: 344 407;       
+      min: 344 411;
+      max: 344 411;
+       rel1 {
+          relative: 0.0 0.0;
+          offset:   23   4;
+       }
+       rel2 {
+          relative: 1.0 1.0;
+          offset:   -1  -1;
+       }
+            image {
+                normal: "modules/net/menu_panel.png";
+                // border: 2 43 37 255;
+            }
+
+    }
+    description {
+       state: "show" 0.0;
+      // color: 2 43 37 255;
+       // visible: 0;
+        visible: 1;
+       min: 344 407;
+      max: 344 407;
+       rel1 {
+          relative: 0.0 0.0;
+          offset:   0   0;
+       }
+       rel2 {
+          relative: 1.0 1.0;
+          offset:   -1  -1;
+       }
+            image {
+                normal: "modules/net/menu_panel.png";
+                // border: 2 43 37 255;
+            }
+
+    }
+
+
+      }
+
+
+      part {
+    name:          "bg";
+    mouse_events:  0;
+    description {
+       state:    "default" 0.0;
+       rel1 {
+          to: "base";
+       }
+       rel2 {
+          to: "base";
+       }
+       image {
+          normal: "modules/weather/forecasts_bg.png";
+          // border: 10 10 10 10;
+       }
+       color: 177 177 177 255;
+    }
+      }
+
+      part {
+    name:          "oz1";
+    mouse_events:  0;
+    description {
+       state:    "default" 0.0;
+       rel1 {
+          relative: 0.0  0.0;
+          offset:   -1    -1;
+       }
+       rel2 {
+          relative: 0.0  0.0;
+          offset:   23   20;
+       }
+       image {
+          normal: "wrk/mbase-top-a.png";
+       }
+       fill {
+          smooth: 0;
+       }
+    }
+      }
+
+      part {
+    name:          "oz2";
+    mouse_events:  0;
+    description {
+       state:    "default" 0.0;
+       rel1 {
+          relative: 0.0  1.0;
+          offset:   1    0;
+          to: "oz1";
+       }
+       rel2 {
+          relative: 1.0  0.0;
+          offset:   -1   -1;
+          to: "oz3";
+       }
+       image {
+          normal: "wrk/mbase-mid-a.png";
+       }
+       fill {
+          smooth: 0;
+       }
+    }
+      }
+
+      part {
+    name:          "oz3";
+    mouse_events:  0;
+    description {
+       state:    "default" 0.0;
+       rel1 {
+          relative: 0.0  1.0;
+          offset:   -1   -22;
+       }
+       rel2 {
+          relative: 0.0  1.0;
+          offset:   23    -1;
+       }
+       image {
+          normal: "wrk/mbase-bottom-a.png";
+       }
+       fill {
+          smooth: 0;
+       }
+    }
+      }
+
+      part {
+    name:          "oz4";
+    mouse_events:  0;
+    description {
+       state:    "default" 0.0;
+       rel1 {
+          relative: 1.0  0.0;
+          offset:   0    0;
+          to: "oz1";
+       }
+       rel2 {
+          relative: 1.0  0.0;
+          offset:   0    4;
+       }
+       image {
+          normal: "wrk/mtop.png";
+       }
+       fill {
+          smooth: 0;
+       }
+    }
+      }
+      
+      part {
+    name:          "oz5";
+    mouse_events:  0;
+    description {
+       state:    "default" 0.0;
+       rel1 {
+          relative: 1.0  1.0;
+          offset:   0    -4;
+          to: "oz3";
+       }
+       rel2 {
+          relative: 1.0  1.0;
+          offset:   -1    -1;
+       }
+       image {
+          normal: "wrk/mbottom.png";
+       }
+       fill {
+          smooth: 0;
+       }
+    }
+      }
+
+
+
+      part {
+    name: "e.swallow.content";
+    type: SWALLOW;
+    description {
+       state: "default" 0.0;
+       align: 0.5 0.5;
+        color: 255 255 255 255;
+       // color: 2 43 37 255;
+       rel1 {
+          offset: 15 15;
+       }
+       rel2 {
+          offset: -16 -16;
+       }
+    }
+      }
+      part {
+    name: "pin";
+    description {
+       state: "default" 0.0;
+       color: 0 0 0 0;
+       visible: 0;
+       min: 16 16;
+       max: 16 16;
+       fixed: 1 1;
+       rel1 {
+          relative: 1 0;
+          offset: -5 5;
+       }
+       rel2 {
+          relative: 1 0;
+          offset: -21 21;
+       }
+       image.normal: "modules/weather/pin.png";
+    }
+    description {
+       state: "shown" 0.0;
+       inherit: "default" 0.0;
+       color: 255 0 0 255;
+       visible: 1;
+    }
+      }
+      part {
+    name: "overlay";
+    repeat_events: 1;
+    description {
+       state: "default" 0.0;
+       rel1.offset: 1 1;
+       rel2.offset: -2 -2;
+       image {
+          normal: "modules/weather/forecasts_overlay.png";
+          // border: 10 10 25 10;
+       }
+       fill.smooth: 1;
+    }
+      }
+   }
+   programs {
+      program {
+    name: "show_pin";
+    signal: "e,state,pinned";
+    source: "e";
+    action: STATE_SET "shown" 0.0;
+    transition: ACCELERATE 0.2;
+    target: "pin";
+      target: "base";
+      }
+      program {
+    name: "hide_pin";
+    signal: "e,state,unpinned";
+    source: "e";
+    action: STATE_SET "default" 0.0;
+    transition: DECELERATE 0.5;
+    target: "pin";
+      target: "base";
+      }
+   }
+}
+WEATHER_ICON(0, 0, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(1, 1, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(2, 2, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(3, 0, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(4, 0, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(5, 5, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(6, 2, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(7, 5, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(8, 2, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(9, 2, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(10, 5, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(11, 2, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(12, 2, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(13, 13, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(14, 13, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(15, 13, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(16, 13, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(17, 0, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(18, 2, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(19, 19, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(20, 20, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(21, 21, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(22, 22, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(23, 23, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(24, 23, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(25, 25, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(26, 26, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(27, 27, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(28, 28, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(29, 29, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(30, 30, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(31, 31, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(32, 32, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(33, 33, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(34, 34, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(35, 0, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(36, 32, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(37, 37, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(38, 37, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(39, 2, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(40, 2, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(41, 13, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(42, 13, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(43, 43, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(44, 30, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(45, 45, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(46, 46, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(47, 47, 40, 40, 160, 160, 1.0)
+WEATHER_ICON(3200, 3200, 40, 40, 160, 160, 1.0)
