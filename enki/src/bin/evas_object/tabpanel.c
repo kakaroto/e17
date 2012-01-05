@@ -154,7 +154,7 @@ tabpanel_item_add_with_signal(Tabpanel *tab, const char *label,
 void
 tabpanel_item_label_set(Tabpanel_Item *item, const char *label)
 {
-   elm_toolbar_item_label_set(item->item_tb, label);
+   elm_object_item_text_set(item->item_tb, label);
 }
 
 void

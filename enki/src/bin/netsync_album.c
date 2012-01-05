@@ -49,7 +49,7 @@ netsync_album_new(Evas_Object *win, Enlil_Album *album)
    elm_win_inwin_content_set(inwin, tb);
 
    bt = elm_button_add(inwin);
-   elm_button_label_set(bt, D_("Close"));
+   elm_object_text_set(bt, D_("Close"));
    evas_object_size_hint_align_set(bt, 1.0, 0.5);
    evas_object_smart_callback_add(bt, "clicked", _close_cb, album);
    evas_object_show(bt);
@@ -60,7 +60,7 @@ netsync_album_new(Evas_Object *win, Enlil_Album *album)
    evas_object_size_hint_align_set(pb, 0.5, 0.5);
    evas_object_size_hint_weight_set(pb, 1.0, 0.0);
    elm_progressbar_pulse_set(pb, EINA_TRUE);
-   elm_progressbar_label_set(pb, D_("Synchronising ..."));
+   elm_object_text_set(pb, D_("Synchronising ..."));
    evas_object_hide(pb);
    elm_table_pack(tb, pb, 0, 1, 1, 1);
 
@@ -128,7 +128,7 @@ netsync_sync_update(Enlil_Album *album)
    //
    fr = elm_frame_add(inwin);
    album_data->netsync.inwin.fr = fr;
-   elm_frame_label_set(fr, D_("Synchronise an album with the distant library"));
+   elm_object_text_set(fr, D_("Synchronise an album with the distant library"));
    evas_object_size_hint_weight_set(fr, 1.0, 1.0);
    evas_object_size_hint_align_set(fr, -1.0, -1.0);
    evas_object_show(fr);
@@ -146,13 +146,13 @@ netsync_sync_update(Enlil_Album *album)
    if (album_data->netsync.album_netsync_notuptodate)
    {
       lbl = elm_label_add(inwin);
-      elm_label_label_set(lbl, D_("Update"));
+      elm_object_text_set(lbl, D_("Update"));
       evas_object_show(lbl);
       elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
       bt = elm_button_add(inwin);
       album_data->netsync.inwin.bt1 = bt;
-      elm_button_label_set(bt, D_("Update"));
+      elm_object_text_set(bt, D_("Update"));
       evas_object_smart_callback_add(bt, "clicked", _netsync_notuptodate_cb,
                                      album);
       evas_object_size_hint_align_set(bt, 0.5, 0.5);
@@ -172,13 +172,13 @@ netsync_sync_update(Enlil_Album *album)
    if (album_data->netsync.album_notinnetsync)
    {
       lbl = elm_label_add(inwin);
-      elm_label_label_set(lbl, D_("The album is not in distant library."));
+      elm_object_text_set(lbl, D_("The album is not in distant library."));
       evas_object_show(lbl);
       elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
       bt = elm_button_add(inwin);
       album_data->netsync.inwin.bt2 = bt;
-      elm_button_label_set(bt, D_("Add the album in the distant library"));
+      elm_object_text_set(bt, D_("Add the album in the distant library"));
       evas_object_size_hint_align_set(bt, 0.5, 0.5);
       evas_object_size_hint_weight_set(bt, 1.0, 0.0);
 
@@ -198,7 +198,7 @@ netsync_sync_update(Enlil_Album *album)
    if (album_data->netsync.album_local_notuptodate)
    {
       lbl = elm_label_add(inwin);
-      elm_label_label_set(lbl, D_("Update the local album header."));
+      elm_object_text_set(lbl, D_("Update the local album header."));
       evas_object_show(lbl);
       elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
@@ -209,7 +209,7 @@ netsync_sync_update(Enlil_Album *album)
 
       evas_object_smart_callback_add(bt, "clicked", _local_notuptodate_cb,
                                      album);
-      elm_button_label_set(bt, D_("Update"));
+      elm_object_text_set(bt, D_("Update"));
       evas_object_show(bt);
       elm_table_pack(tb2, bt, 1, i, 1, 1);
 
@@ -224,7 +224,7 @@ netsync_sync_update(Enlil_Album *album)
    if (album_data->netsync.photos_notinlocal)
    {
       lbl = elm_label_add(inwin);
-      elm_label_label_set(lbl, D_("Some photos are not in the local album."));
+      elm_object_text_set(lbl, D_("Some photos are not in the local album."));
       evas_object_show(lbl);
       elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
@@ -241,7 +241,7 @@ netsync_sync_update(Enlil_Album *album)
       album_data->netsync.inwin.bt4 = bt;
       evas_object_size_hint_align_set(bt, -1.0, 0.5);
       evas_object_size_hint_weight_set(bt, 1.0, 0.0);
-      elm_button_label_set(bt, D_("Download"));
+      elm_object_text_set(bt, D_("Download"));
       evas_object_smart_callback_add(bt, "clicked", _photos_notinlocal_cb,
                                      album);
       evas_object_show(bt);
@@ -252,7 +252,7 @@ netsync_sync_update(Enlil_Album *album)
       evas_object_size_hint_align_set(pb, -1.0, 0.5);
       evas_object_size_hint_weight_set(pb, 1.0, 0.0);
       elm_progressbar_pulse_set(pb, EINA_TRUE);
-      elm_progressbar_label_set(pb, D_("Downloads in progress ..."));
+      elm_object_text_set(pb, D_("Downloads in progress ..."));
       evas_object_show(pb);
       elm_pager_content_push(pager, pb);
       evas_object_size_hint_max_set(pb, 0, 0);
@@ -275,7 +275,7 @@ netsync_sync_update(Enlil_Album *album)
 
 #define LBL(LABEL)                 \
   lbl = elm_label_add(inwin);      \
-  elm_label_label_set(lbl, LABEL); \
+  elm_object_text_set(lbl, LABEL); \
   evas_object_show(lbl);           \
   elm_table_pack(tb2, lbl, 0, i, 1, 1);
 
@@ -293,7 +293,7 @@ netsync_sync_update(Enlil_Album *album)
   TARGET = bt;                                              \
   evas_object_size_hint_align_set(bt, -1.0, 0.5);           \
   evas_object_size_hint_weight_set(bt, 1.0, 0.0);           \
-  elm_button_label_set(bt, D_(LABEL));                      \
+  elm_object_text_set(bt, D_(LABEL));                      \
   evas_object_smart_callback_add(bt, "clicked", CB, album); \
   evas_object_show(bt);                                     \
   elm_pager_content_push(pager, bt);                        \
@@ -303,7 +303,7 @@ netsync_sync_update(Enlil_Album *album)
   evas_object_size_hint_align_set(bt, 0.5, 0.5);            \
   evas_object_size_hint_weight_set(bt, 1.0, 0.0);           \
   TARGET = bt;                                              \
-  elm_button_label_set(bt, D_(LABEL));                      \
+  elm_object_text_set(bt, D_(LABEL));                      \
   evas_object_smart_callback_add(bt, "clicked", CB, album); \
   evas_object_show(bt);                                     \
   elm_table_pack(tb2, bt, 1, i, 1, 1);                      \
@@ -314,7 +314,7 @@ netsync_sync_update(Enlil_Album *album)
   evas_object_size_hint_align_set(pb, -1.0, 0.5);            \
   evas_object_size_hint_weight_set(pb, 1.0, 0.0);            \
   elm_progressbar_pulse_set(pb, EINA_TRUE);                  \
-  elm_progressbar_label_set(pb, D_("Send in progress ...")); \
+  elm_object_text_set(pb, D_("Send in progress ...")); \
   evas_object_show(pb);                                      \
   elm_pager_content_push(pager, pb);                         \
   evas_object_size_hint_max_set(pb, 0, 0);                   \
@@ -373,7 +373,7 @@ netsync_sync_update(Enlil_Album *album)
    {
       /*bt = elm_button_add(inwin);
        album_data->netsync.inwin.bt6 = bt;
-       elm_button_label_set(bt, D_("Update All"));
+       elm_object_text_set(bt, D_("Update All"));
        evas_object_show(bt);
        elm_table_pack(tb2, bt, 1, i, 1, 1);
        */
@@ -381,7 +381,7 @@ netsync_sync_update(Enlil_Album *album)
    else
    {
       lbl = elm_label_add(inwin);
-      elm_label_label_set(lbl, D_("Everything is up to date!"));
+      elm_object_text_set(lbl, D_("Everything is up to date!"));
       evas_object_show(lbl);
       elm_table_pack(tb2, lbl, 0, 0, 1, 1);
    }

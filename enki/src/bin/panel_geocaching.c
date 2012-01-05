@@ -49,13 +49,13 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
             enlil_geocaching_url_name_get(geocaching));
    lbl = edje_object_part_external_object_get(edje,
                                               "object.geocaching.panel.title");
-   elm_label_label_set(lbl, buf);
+   elm_object_text_set(lbl, buf);
 
    snprintf(buf, PATH_MAX, "<b>A cache by %s</b>",
             enlil_geocaching_gp_owner_get(geocaching));
    lbl = edje_object_part_external_object_get(edje,
                                               "object.geocaching.panel.owner");
-   elm_label_label_set(lbl, buf);
+   elm_object_text_set(lbl, buf);
 
    ic = edje_object_part_external_object_get(edje,
                                              "object.geocaching.panel.icon2");
@@ -73,12 +73,12 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
    o
             = edje_object_part_external_object_get(edje,
                                                    "object.geocaching.panel.date_hidden");
-   elm_label_label_set(o, enlil_geocaching_time_get(geocaching));
+   elm_object_text_set(o, enlil_geocaching_time_get(geocaching));
 
    o
             = edje_object_part_external_object_get(edje,
                                                    "object.geocaching.panel.cache_size");
-   elm_label_label_set(o, enlil_geocaching_gp_container_get(geocaching));
+   elm_object_text_set(o, enlil_geocaching_gp_container_get(geocaching));
 
    o
             = edje_object_part_external_object_get(edje,
@@ -86,11 +86,11 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
    snprintf(buf, PATH_MAX, "%f - %f",
             enlil_geocaching_longitude_get(geocaching),
             enlil_geocaching_latitude_get(geocaching));
-   elm_label_label_set(o, buf);
+   elm_object_text_set(o, buf);
 
    o = edje_object_part_external_object_get(edje,
                                             "object.geocaching.panel.hints");
-   elm_label_label_set(o, enlil_geocaching_gp_hints_get(geocaching));
+   elm_object_text_set(o, enlil_geocaching_gp_hints_get(geocaching));
    //
 
    //
@@ -179,7 +179,7 @@ panel_geocaching_new(Evas_Object *obj, Enlil_Geocaching *geocaching)
       Evas_Object *bb;
 
       bb = elm_bubble_add(obj);
-      elm_bubble_label_set(bb, enlil_geocaching_log_finder_get(log));
+      elm_object_text_set(bb, enlil_geocaching_log_finder_get(log));
 
       snprintf(buf, PATH_MAX, "%s", enlil_geocaching_log_date_get(log));
       buf[10] = '\0';

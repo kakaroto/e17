@@ -29,14 +29,14 @@ download_new(Evas_Object *parent)
    elm_notify_content_set(notify, bx);
 
    lbl = elm_label_add(bx);
-   elm_label_label_set(lbl, D_("Downloading ..."));
+   elm_object_text_set(lbl, D_("Downloading ..."));
    evas_object_size_hint_weight_set(lbl, 1.0, 1.0);
    evas_object_size_hint_align_set(lbl, -1.0, -1.0);
    elm_box_pack_end(bx, lbl);
    evas_object_show(lbl);
 
    pb = elm_progressbar_add(bx);
-   elm_progressbar_label_set(pb, "Photo");
+   elm_object_text_set(pb, "Photo");
    evas_object_size_hint_weight_set(pb, 1.0, 1.0);
    evas_object_size_hint_align_set(pb, -1.0, -1.0);
    elm_box_pack_end(bx, pb);
@@ -76,7 +76,7 @@ _start_cb(void *data, Enlil_Photo *photo)
 
    evas_object_show(dl->main);
 
-   elm_progressbar_label_set(dl->pb, enlil_photo_name_get(photo));
+   elm_object_text_set(dl->pb, enlil_photo_name_get(photo));
    elm_progressbar_pulse_set(dl->pb, 0);
 
    netsync_job_start_cb(NULL, NULL, enlil_photo_album_get(photo), photo);

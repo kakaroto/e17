@@ -33,14 +33,14 @@ upload_new(Evas_Object *parent)
    elm_notify_content_set(notify, bx);
 
    lbl = elm_label_add(bx);
-   elm_label_label_set(lbl, D_("Uploading ..."));
+   elm_object_text_set(lbl, D_("Uploading ..."));
    evas_object_size_hint_weight_set(lbl, 1.0, 1.0);
    evas_object_size_hint_align_set(lbl, 1.0, 1.0);
    elm_box_pack_end(bx, lbl);
    evas_object_show(lbl);
 
    pb = elm_progressbar_add(bx);
-   elm_progressbar_label_set(pb, "Photo");
+   elm_object_text_set(pb, "Photo");
    evas_object_size_hint_weight_set(pb, 1.0, 1.0);
    evas_object_size_hint_align_set(pb, 1.0, 1.0);
    elm_box_pack_end(bx, pb);
@@ -68,7 +68,7 @@ upload_start(Upload *ul, Enlil_Photo *photo)
 {
    evas_object_show(ul->main);
 
-   elm_progressbar_label_set(ul->pb, enlil_photo_name_get(photo));
+   elm_object_text_set(ul->pb, enlil_photo_name_get(photo));
    elm_progressbar_pulse_set(ul->pb, 1);
    elm_progressbar_pulse(ul->pb, 1);
 }

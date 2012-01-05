@@ -82,7 +82,7 @@ _account_set_cb(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(inwin);
 
    fr = elm_frame_add(enlil_data->win->win);
-   elm_frame_label_set(fr, D_("Set the Flick account."));
+   elm_object_text_set(fr, D_("Set the Flick account."));
    evas_object_size_hint_weight_set(fr, 1.0, 1.0);
    evas_object_size_hint_align_set(fr, 0.0, 0.0);
    evas_object_show(fr);
@@ -95,7 +95,7 @@ _account_set_cb(void *data, Evas_Object *obj, void *event_info)
 
    //steps
    lbl = elm_label_add(enlil_data->win->win);
-   elm_label_label_set(
+   elm_object_text_set(
                        lbl,
                        D_("<b>STEP 1 :</b> Open the web page in your favorite web browser."));
    evas_object_size_hint_weight_set(lbl, 0.0, 0.0);
@@ -123,7 +123,7 @@ _account_set_cb(void *data, Evas_Object *obj, void *event_info)
             PATH_MAX,
             D_("<b>STEP 2 :</b> Authorize Enki to access to your account."));
    lbl = elm_label_add(enlil_data->win->win);
-   elm_label_label_set(lbl, buf);
+   elm_object_text_set(lbl, buf);
    evas_object_size_hint_weight_set(lbl, 0.0, 0.0);
    evas_object_size_hint_align_set(lbl, -1.0, 0.0);
    evas_object_show(lbl);
@@ -141,7 +141,7 @@ _account_set_cb(void *data, Evas_Object *obj, void *event_info)
             PATH_MAX,
             D_("<b>STEP 3 :</b> Copy the code in the followed text area."));
    lbl = elm_label_add(enlil_data->win->win);
-   elm_label_label_set(lbl, buf);
+   elm_object_text_set(lbl, buf);
    evas_object_size_hint_weight_set(lbl, 0.0, 0.0);
    evas_object_size_hint_align_set(lbl, -1.0, 0.0);
    evas_object_show(lbl);
@@ -149,7 +149,7 @@ _account_set_cb(void *data, Evas_Object *obj, void *event_info)
    //
 
    lbl = elm_label_add(enlil_data->win->win);
-   elm_label_label_set(lbl, D_("The 9-digit code : "));
+   elm_object_text_set(lbl, D_("The 9-digit code : "));
    evas_object_size_hint_weight_set(lbl, 0.0, 0.0);
    evas_object_size_hint_align_set(lbl, -1.0, 0.0);
    evas_object_show(lbl);
@@ -181,14 +181,14 @@ _account_set_cb(void *data, Evas_Object *obj, void *event_info)
    elm_table_pack(tb, hbox, 1, 7, 1, 1);
 
    bt = elm_button_add(enlil_data->win->win);
-   elm_button_label_set(bt, D_("Cancel"));
+   elm_object_text_set(bt, D_("Cancel"));
    evas_object_smart_callback_add(bt, "clicked", _account_set_cancel_cb, NULL);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
 
    bt = elm_button_add(enlil_data->win->win);
-   elm_button_label_set(bt, D_("Apply"));
+   elm_object_text_set(bt, D_("Apply"));
    evas_object_smart_callback_add(bt, "clicked", _account_set_apply_cb, text);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
    evas_object_show(bt);

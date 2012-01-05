@@ -107,7 +107,7 @@ list_photo_new(Evas_Object *edje)
    enlil_photo->multiselection = tg;
    evas_object_size_hint_weight_set(tg, -1.0, -1.0);
    evas_object_size_hint_align_set(tg, 1.0, -1.0);
-   elm_toggle_label_set(tg, "Multi selection");
+   elm_object_text_set(tg, "Multi selection");
    elm_toggle_state_set(tg, 1);
    elm_toggle_states_labels_set(tg, "No", "Yes");
    evas_object_smart_callback_add(tg, "changed", _tg_multiselect_changed_cb,
@@ -118,14 +118,14 @@ list_photo_new(Evas_Object *edje)
    bt = elm_button_add(edje);
    evas_object_size_hint_weight_set(bt, -1.0, -1.0);
    evas_object_size_hint_align_set(bt, 1.0, -1.0);
-   elm_button_label_set(bt, D_("Unselect all"));
+   elm_object_text_set(bt, D_("Unselect all"));
    evas_object_smart_callback_add(bt, "clicked", _bt_unselect_all_cb,
                                   enlil_photo);
    evas_object_show(bt);
 
    elm_box_pack_end(bx2, bt);
    sl = elm_slider_add(edje);
-   elm_slider_label_set(sl, "Zoom");
+   elm_object_text_set(sl, "Zoom");
    elm_slider_indicator_format_set(sl, "%3.0f");
    elm_slider_min_max_set(sl, 1, 100);
    elm_slider_value_set(sl, 50);
@@ -260,7 +260,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
 
    Evas_Object *bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
-   elm_button_label_set(bt, D_("Slideshow"));
+   elm_object_text_set(bt, D_("Slideshow"));
    evas_object_smart_callback_add(bt, "clicked", _slideshow_cb, album);
    evas_object_show(bt);
    evas_object_size_hint_weight_set(bt, 0.0, 1.0);
@@ -269,7 +269,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
 
    bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
-   elm_button_label_set(bt, D_("Options"));
+   elm_object_text_set(bt, D_("Options"));
    evas_object_smart_callback_add(bt, "clicked", _collection_cb, album);
    evas_object_show(bt);
    evas_object_size_hint_weight_set(bt, 0.0, 1.0);
@@ -278,7 +278,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
 
    bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
-   elm_button_label_set(bt, D_("Tags"));
+   elm_object_text_set(bt, D_("Tags"));
    evas_object_smart_callback_add(bt, "clicked", _tag_cb, album);
    evas_object_show(bt);
    evas_object_size_hint_weight_set(bt, 0.0, 1.0);
@@ -287,7 +287,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
 
    bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
-   elm_button_label_set(bt, D_("Sorts"));
+   elm_object_text_set(bt, D_("Sorts"));
    evas_object_smart_callback_add(bt, "clicked", _sorts_cb, album);
    evas_object_show(bt);
    evas_object_size_hint_weight_set(bt, 0.0, 1.0);
@@ -296,7 +296,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
 
    bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
-   elm_button_label_set(bt, D_("Select all"));
+   elm_object_text_set(bt, D_("Select all"));
    evas_object_size_hint_weight_set(bt, 0.0, -1.0);
    evas_object_size_hint_align_set(bt, 0.0, 0.5);
    evas_object_smart_callback_add(bt, "clicked", _bt_album_select_all_cb, album);
@@ -305,7 +305,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
 
    bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
-   elm_button_label_set(bt, D_("Unselect all"));
+   elm_object_text_set(bt, D_("Unselect all"));
    evas_object_size_hint_weight_set(bt, 0.0, -1.0);
    evas_object_size_hint_align_set(bt, 0.0, 0.5);
    evas_object_smart_callback_add(bt, "clicked", _bt_album_unselect_all_cb,
@@ -315,7 +315,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
 
    bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
-   elm_button_label_set(bt, D_("Access type"));
+   elm_object_text_set(bt, D_("Access type"));
    evas_object_size_hint_weight_set(bt, 0.0, -1.0);
    evas_object_size_hint_align_set(bt, 0.0, 0.5);
    evas_object_smart_callback_add(bt, "clicked", _bt_album_access_type_cb,
@@ -325,7 +325,7 @@ _album_icon_get(const void *data, Evas_Object *obj)
 
    bt = elm_button_add(obj);
    elm_object_style_set(bt, "anchor");
-   elm_button_label_set(bt, D_("Empty"));
+   elm_object_text_set(bt, D_("Empty"));
    evas_object_size_hint_weight_set(bt, 1.0, -1.0);
    evas_object_size_hint_align_set(bt, 0.0, 0.5);
    elm_box_pack_end(bx, bt);
@@ -627,7 +627,7 @@ _bt_album_access_type_cb(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(bt, -1.0, 0.5);
    evas_object_smart_callback_add(bt, "clicked",
                                   _bt_album_access_type_public_cb, album);
-   elm_button_label_set(bt, D_("Public"));
+   elm_object_text_set(bt, D_("Public"));
    elm_box_pack_end(bx, bt);
 
    bt = elm_button_add(obj);
@@ -635,7 +635,7 @@ _bt_album_access_type_cb(void *data, Evas_Object *obj, void *event_info)
    evas_object_size_hint_align_set(bt, -1.0, 0.5);
    evas_object_smart_callback_add(bt, "clicked",
                                   _bt_album_access_type_private_cb, album);
-   elm_button_label_set(bt, D_("Private"));
+   elm_object_text_set(bt, D_("Private"));
    elm_box_pack_end(bx, bt);
 
    elm_hover_content_set(_hover, "bottom", bx);

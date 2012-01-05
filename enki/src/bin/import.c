@@ -78,7 +78,7 @@ import_new(Evas_Object *win)
 
    //
    fr = elm_frame_add(inwin);
-   elm_frame_label_set(fr, D_("Select the photos to import"));
+   elm_object_text_set(fr, D_("Select the photos to import"));
    evas_object_size_hint_weight_set(fr, 1.0, 1.0);
    evas_object_size_hint_align_set(fr, -1.0, -1.0);
    evas_object_show(fr);
@@ -132,7 +132,7 @@ import_new(Evas_Object *win)
 
    //
    bt = elm_button_add(inwin);
-   elm_button_label_set(bt, D_("Select all"));
+   elm_object_text_set(bt, D_("Select all"));
    evas_object_smart_callback_add(bt, "clicked", _bt_select_all_cb, NULL);
    evas_object_show(bt);
    evas_object_size_hint_weight_set(bt, 0.0, 1.0);
@@ -140,7 +140,7 @@ import_new(Evas_Object *win)
    elm_box_pack_end(bx, bt);
 
    bt = elm_button_add(inwin);
-   elm_button_label_set(bt, D_("Unselect all"));
+   elm_object_text_set(bt, D_("Unselect all"));
    evas_object_smart_callback_add(bt, "clicked", _bt_unselect_all_cb, NULL);
    evas_object_show(bt);
    evas_object_size_hint_weight_set(bt, 0.0, 1.0);
@@ -154,7 +154,7 @@ import_new(Evas_Object *win)
    elm_table_pack(tb, vbox, 10, 0, 1, 1);
 
    fr = elm_frame_add(inwin);
-   elm_frame_label_set(fr, D_("Select an album"));
+   elm_object_text_set(fr, D_("Select an album"));
    evas_object_size_hint_weight_set(fr, 1.0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(fr, -1.0, -1.0);
    evas_object_show(fr);
@@ -191,7 +191,7 @@ import_new(Evas_Object *win)
 
    bt = elm_button_add(inwin);
    bt_import = bt;
-   elm_button_label_set(bt, D_("Create a new album"));
+   elm_object_text_set(bt, D_("Create a new album"));
    evas_object_smart_callback_add(bt, "clicked", _bt_album_new_cb, NULL);
    evas_object_show(bt);
    evas_object_size_hint_weight_set(bt, 0.0, 0.0);
@@ -211,7 +211,7 @@ import_new(Evas_Object *win)
    evas_object_size_hint_weight_set(radio_copy, EVAS_HINT_EXPAND,
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(radio_copy, EVAS_HINT_FILL, 0.5);
-   elm_radio_label_set(radio_copy, "Copy photos");
+   elm_object_text_set(radio_copy, "Copy photos");
    elm_box_pack_end(bx2, radio_copy);
    evas_object_show(radio_copy);
 
@@ -221,7 +221,7 @@ import_new(Evas_Object *win)
                                     EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(radio_move, EVAS_HINT_FILL, 0.5);
    elm_radio_group_add(radio_move, radio_copy);
-   elm_radio_label_set(radio_move, "Move photos");
+   elm_object_text_set(radio_move, "Move photos");
    elm_box_pack_end(bx2, radio_move);
    evas_object_show(radio_move);
    //
@@ -234,7 +234,7 @@ import_new(Evas_Object *win)
    elm_box_pack_end(vbox, bx2);
 
    bt = elm_button_add(inwin);
-   elm_button_label_set(bt, D_("Cancel"));
+   elm_object_text_set(bt, D_("Cancel"));
    evas_object_smart_callback_add(bt, "clicked", _bt_cancel_cb, NULL);
    evas_object_show(bt);
    evas_object_size_hint_weight_set(bt, 0.0, 1.0);
@@ -243,7 +243,7 @@ import_new(Evas_Object *win)
 
    bt = elm_button_add(inwin);
    bt_import = bt;
-   elm_button_label_set(bt, D_("Import"));
+   elm_object_text_set(bt, D_("Import"));
    elm_object_disabled_set(bt, 1);
    evas_object_smart_callback_add(bt, "clicked", _bt_import_cb, NULL);
    evas_object_show(bt);
@@ -464,7 +464,7 @@ _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
    evas_object_show(inwin2);
 
    fr = elm_frame_add(enlil_data->win->win);
-   elm_frame_label_set(fr, D_("Copying photos"));
+   elm_object_text_set(fr, D_("Copying photos"));
    evas_object_size_hint_weight_set(fr, 1.0, 1.0);
    evas_object_size_hint_align_set(fr, -1.0, -1.0);
    evas_object_show(fr);
@@ -483,7 +483,7 @@ _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
 
    _pb = elm_progressbar_add(enlil_data->win->win);
    elm_object_style_set(_pb, "wheel");
-   elm_progressbar_label_set(_pb, "");
+   elm_object_text_set(_pb, "");
    elm_progressbar_pulse(_pb, EINA_TRUE);
    evas_object_size_hint_weight_set(_pb, 1.0, 0.0);
    evas_object_size_hint_align_set(_pb, -1.0, 0.5);
@@ -492,7 +492,7 @@ _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
 
    bt = elm_button_add(enlil_data->win->win);
    bt_close = bt;
-   elm_button_label_set(bt, D_("Close"));
+   elm_object_text_set(bt, D_("Close"));
    evas_object_size_hint_weight_set(bt, -1.0, 0.0);
    evas_object_size_hint_align_set(bt, 1.0, 1.0);
    evas_object_show(bt);
@@ -536,7 +536,7 @@ _import_next(void *data, Ecore_Thread *thread)
    snprintf(buf, PATH_MAX, D_("%d / %d"), nb_imports,
             eina_list_count(photos_data));
 
-   elm_progressbar_label_set(pb, buf);
+   elm_object_text_set(pb, buf);
    elm_progressbar_value_set(pb, nb_imports
             / (float) eina_list_count(photos_data));
    evas_render(evas_object_evas_get(pb));

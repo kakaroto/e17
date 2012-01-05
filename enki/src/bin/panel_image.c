@@ -371,7 +371,7 @@ panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
 
    pb = elm_progressbar_add(obj);
    elm_object_style_set(pb, "wheel");
-   elm_progressbar_label_set(pb, "");
+   elm_object_text_set(pb, "");
    elm_progressbar_pulse(pb, EINA_TRUE);
    evas_object_size_hint_weight_set(pb, 1.0, 0.0);
    evas_object_size_hint_align_set(pb, -1.0, 0.5);
@@ -379,7 +379,7 @@ panel_image_new(Evas_Object *obj, Enlil_Photo *photo)
    elm_box_pack_end(bx2, pb);
 
    bt = elm_button_add(obj);
-   elm_button_label_set(bt, D_("Cancel"));
+   elm_object_text_set(bt, D_("Cancel"));
    evas_object_size_hint_weight_set(bt, 1.0, 0.0);
    evas_object_size_hint_align_set(bt, -1.0, 0.0);
    evas_object_smart_callback_add(bt, "clicked", _bt_notify_trans_cancel_cb,
@@ -428,9 +428,9 @@ _panel_image_photo_set(Panel_Image *panel_image, Enlil_Photo *photo)
 
    snprintf(buf, sizeof(buf), "%f mo", enlil_photo_size_get(photo) / 1024.
             / 1024.);
-   elm_label_label_set(panel_image->lbl_file_size, buf);
+   elm_object_text_set(panel_image->lbl_file_size, buf);
 
-   elm_label_label_set(panel_image->exifs.size, D_("Unknown"));
+   elm_object_text_set(panel_image->exifs.size, D_("Unknown"));
 
    snprintf(buf, sizeof(buf), "%s/%s", enlil_photo_path_get(photo),
             enlil_photo_file_name_get(photo));
@@ -520,7 +520,7 @@ panel_image_exifs_update(Enlil_Photo *photo)
 
    snprintf(buf, PATH_MAX, "%d x %d", enlil_photo_size_w_get(photo),
             enlil_photo_size_h_get(photo));
-   elm_label_label_set(photo_data->panel_image->exifs.size, buf);
+   elm_object_text_set(photo_data->panel_image->exifs.size, buf);
 
    elm_genlist_clear(photo_data->panel_image->exifs.gl);
 
@@ -633,7 +633,7 @@ panel_image_rotation_90(Enlil_Photo *photo)
    Enlil_Trans_Job *job;
 
    item = elm_label_add(photo_data->panel_image->photocam);
-   elm_label_label_set(item, D_("Rotation 90°"));
+   elm_object_text_set(item, D_("Rotation 90°"));
    evas_object_show(item);
    _notify_trans_item_add(photo_data->panel_image, item);
 
@@ -657,7 +657,7 @@ panel_image_rotation_R90(Enlil_Photo *photo)
    Enlil_Trans_Job *job;
 
    item = elm_label_add(photo_data->panel_image->photocam);
-   elm_label_label_set(item, D_("Rotation -90°"));
+   elm_object_text_set(item, D_("Rotation -90°"));
    evas_object_show(item);
    _notify_trans_item_add(photo_data->panel_image, item);
 
@@ -681,7 +681,7 @@ panel_image_rotation_180(Enlil_Photo *photo)
    Enlil_Trans_Job *job;
 
    item = elm_label_add(photo_data->panel_image->photocam);
-   elm_label_label_set(item, D_("Rotation 180°"));
+   elm_object_text_set(item, D_("Rotation 180°"));
    evas_object_show(item);
    _notify_trans_item_add(photo_data->panel_image, item);
 
@@ -705,7 +705,7 @@ panel_image_flip_vertical(Enlil_Photo *photo)
    Enlil_Trans_Job *job;
 
    item = elm_label_add(photo_data->panel_image->photocam);
-   elm_label_label_set(item, D_("Flip Vertical"));
+   elm_object_text_set(item, D_("Flip Vertical"));
    evas_object_show(item);
    _notify_trans_item_add(photo_data->panel_image, item);
 
@@ -730,7 +730,7 @@ panel_image_flip_horizontal(Enlil_Photo *photo)
    Enlil_Trans_Job *job;
 
    item = elm_label_add(photo_data->panel_image->photocam);
-   elm_label_label_set(item, D_("Flip Horizontal"));
+   elm_object_text_set(item, D_("Flip Horizontal"));
    evas_object_show(item);
    _notify_trans_item_add(photo_data->panel_image, item);
 
@@ -755,7 +755,7 @@ panel_image_blur(Enlil_Photo *photo)
    Enlil_Trans_Job *job;
 
    item = elm_label_add(photo_data->panel_image->photocam);
-   elm_label_label_set(item, D_("Blur"));
+   elm_object_text_set(item, D_("Blur"));
    evas_object_show(item);
    _notify_trans_item_add(photo_data->panel_image, item);
 
@@ -779,7 +779,7 @@ panel_image_sharpen(Enlil_Photo *photo)
    Enlil_Trans_Job *job;
 
    item = elm_label_add(photo_data->panel_image->photocam);
-   elm_label_label_set(item, D_("Sharpen"));
+   elm_object_text_set(item, D_("Sharpen"));
    evas_object_show(item);
    _notify_trans_item_add(photo_data->panel_image, item);
 
@@ -803,7 +803,7 @@ panel_image_sepia(Enlil_Photo *photo)
    Enlil_Trans_Job *job;
 
    item = elm_label_add(photo_data->panel_image->photocam);
-   elm_label_label_set(item, D_("Sepia"));
+   elm_object_text_set(item, D_("Sepia"));
    evas_object_show(item);
    _notify_trans_item_add(photo_data->panel_image, item);
 
@@ -827,7 +827,7 @@ panel_image_grayscale(Enlil_Photo *photo)
    Enlil_Trans_Job *job;
 
    item = elm_label_add(photo_data->panel_image->photocam);
-   elm_label_label_set(item, D_("Grayscale"));
+   elm_object_text_set(item, D_("Grayscale"));
    evas_object_show(item);
    _notify_trans_item_add(photo_data->panel_image, item);
 

@@ -121,7 +121,7 @@ library_set(const char *library_path)
    enlil_data->library = NULL;
 
    photos_list_object_freeze(enlil_data->list_photo->o_list, EINA_FALSE);
-   elm_label_label_set(enlil_data->list_photo->lbl_nb_albums_photos, "");
+   elm_object_text_set(enlil_data->list_photo->lbl_nb_albums_photos, "");
    list_left_data_set(enlil_data->list_left, enlil_data);
    //
 
@@ -420,7 +420,7 @@ sync_status_show(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading)
                                                  "object.status.sync");
    if (lbl)
    {
-      elm_label_label_set(lbl, msg);
+      elm_object_text_set(lbl, msg);
    }
 }
 
@@ -438,7 +438,7 @@ loading_status_show(Enlil_Data *enlil_data, const char *msg, Eina_Bool loading)
                                                  "object.status.loading");
    if (lbl)
    {
-      elm_label_label_set(lbl, msg);
+      elm_object_text_set(lbl, msg);
    }
 }
 

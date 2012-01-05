@@ -99,7 +99,7 @@ inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    evas_object_show(inwin->inwin);
 
    fr = elm_frame_add(enlil_data->win->win);
-   elm_frame_label_set(fr, D_("Erase a photo"));
+   elm_object_text_set(fr, D_("Erase a photo"));
    evas_object_size_hint_weight_set(fr, 1.0, 1.0);
    evas_object_size_hint_align_set(fr, 0.0, 0.0);
    evas_object_show(fr);
@@ -116,7 +116,7 @@ inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
             D_("You are about to erase the photo <br>%s. Do you want to continue ?"),
             file);
    lbl = elm_label_add(enlil_data->win->win);
-   elm_label_label_set(lbl, buf);
+   elm_object_text_set(lbl, buf);
    evas_object_size_hint_weight_set(lbl, 0.0, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(lbl, -1.0, -1.0);
    evas_object_show(lbl);
@@ -130,7 +130,7 @@ inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    elm_table_pack(tb, hbox, 1, 1, 1, 1);
 
    bt = elm_button_add(enlil_data->win->win);
-   elm_button_label_set(bt, D_("Cancel"));
+   elm_object_text_set(bt, D_("Cancel"));
    evas_object_smart_callback_add(bt, "clicked",
                                   _bt_save_as_file_exists_cancel_cb, inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
@@ -138,7 +138,7 @@ inwin_save_as_file_exists_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    elm_box_pack_end(hbox, bt);
 
    bt = elm_button_add(enlil_data->win->win);
-   elm_button_label_set(bt, D_("Apply"));
+   elm_object_text_set(bt, D_("Apply"));
    evas_object_smart_callback_add(bt, "clicked",
                                   _bt_save_as_file_exists_apply_cb, inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
@@ -177,7 +177,7 @@ inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    evas_object_show(inwin->inwin);
 
    fr = elm_frame_add(enlil_data->win->win);
-   elm_frame_label_set(fr, D_("Close a photo"));
+   elm_object_text_set(fr, D_("Close a photo"));
    evas_object_size_hint_weight_set(fr, 1.0, 1.0);
    evas_object_size_hint_align_set(fr, 0.0, 0.0);
    evas_object_show(fr);
@@ -190,7 +190,7 @@ inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
 
    fr2 = elm_frame_add(enlil_data->win->win);
    elm_object_style_set(fr2, "outdent_top");
-   elm_frame_label_set(fr2, "");
+   elm_object_text_set(fr2, "");
    evas_object_size_hint_weight_set(fr2, 1.0, 0.0);
    evas_object_size_hint_align_set(fr2, 0.5, 0.0);
    evas_object_show(fr2);
@@ -199,7 +199,7 @@ inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    snprintf(buf, PATH_MAX, D_("Save the changes to image %s before closing?"),
             enlil_photo_file_name_get(photo));
    lbl = elm_label_add(enlil_data->win->win);
-   elm_label_label_set(lbl, buf);
+   elm_object_text_set(lbl, buf);
    evas_object_size_hint_weight_set(lbl, 1.0, 1.0);
    evas_object_size_hint_align_set(lbl, -1.0, 0.0);
    //elm_label_line_wrap_set(lbl, 1);
@@ -214,14 +214,14 @@ inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    elm_table_pack(tb, hbox, 1, 2, 1, 1);
 
    bt = elm_button_add(enlil_data->win->win);
-   elm_button_label_set(bt, D_("Don't save"));
+   elm_object_text_set(bt, D_("Don't save"));
    evas_object_smart_callback_add(bt, "clicked", _bt_photo_save_dont_cb, inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
    evas_object_show(bt);
    elm_box_pack_end(hbox, bt);
 
    bt = elm_button_add(enlil_data->win->win);
-   elm_button_label_set(bt, D_("Cancel"));
+   elm_object_text_set(bt, D_("Cancel"));
    evas_object_smart_callback_add(bt, "clicked", _bt_photo_save_cancel_cb,
                                   inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
@@ -229,7 +229,7 @@ inwin_photo_save_new(Inwin_Del del_cb, Inwin_Apply apply_cb,
    elm_box_pack_end(hbox, bt);
 
    bt = elm_button_add(enlil_data->win->win);
-   elm_button_label_set(bt, D_("Save"));
+   elm_object_text_set(bt, D_("Save"));
    evas_object_smart_callback_add(bt, "clicked", _bt_photo_save_save_cb, inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
    evas_object_show(bt);
@@ -267,7 +267,7 @@ inwin_library_delete_new(Enlil_Data *enlil_data)
 
    lbl = edje_object_part_external_object_get(edje,
                                               "object.win.library.delete.name");
-   elm_label_label_set(lbl, enlil_library_path_get(enlil_data->library));
+   elm_object_text_set(lbl, enlil_library_path_get(enlil_data->library));
 
    bt
             = edje_object_part_external_object_get(edje,
@@ -530,7 +530,7 @@ inwin_album_delete_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
 
    lbl = edje_object_part_external_object_get(edje,
                                               "object.win.album.delete.name");
-   elm_label_label_set(lbl, enlil_album_name_get(album));
+   elm_object_text_set(lbl, enlil_album_name_get(album));
 
    bt = edje_object_part_external_object_get(edje,
                                              "object.win.album.delete.cancel");
@@ -578,7 +578,7 @@ inwin_album_rename_new(Inwin_Del del_cb, void *data, Enlil_Album *album)
    lbl
             = edje_object_part_external_object_get(edje,
                                                    "object.win.album.rename.old_name");
-   elm_label_label_set(lbl, enlil_album_name_get(album));
+   elm_object_text_set(lbl, enlil_album_name_get(album));
 
    bt = edje_object_part_external_object_get(edje,
                                              "object.win.album.rename.cancel");
@@ -616,7 +616,7 @@ inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photos)
    evas_object_show(inwin->inwin);
 
    fr = elm_frame_add(enlil_data->win->win);
-   elm_frame_label_set(fr, D_("Move the photo into an album"));
+   elm_object_text_set(fr, D_("Move the photo into an album"));
    evas_object_size_hint_weight_set(fr, 1.0, 1.0);
    evas_object_size_hint_align_set(fr, 0.0, 0.0);
    evas_object_show(fr);
@@ -639,14 +639,14 @@ inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photos)
             eina_list_count(photos), buf3);
    fr2 = elm_frame_add(enlil_data->win->win);
    elm_object_style_set(fr2, "outdent_top");
-   elm_frame_label_set(fr2, "");
+   elm_object_text_set(fr2, "");
    evas_object_size_hint_weight_set(fr2, 1.0, 0.0);
    evas_object_size_hint_align_set(fr2, 0.5, 0.0);
    evas_object_show(fr2);
    elm_table_pack(tb, fr2, 0, 0, 2, 1);
 
    lbl = elm_label_add(enlil_data->win->win);
-   elm_label_label_set(lbl, buf);
+   elm_object_text_set(lbl, buf);
    evas_object_size_hint_weight_set(lbl, 1.0, 1.0);
    evas_object_size_hint_align_set(lbl, -1.0, 0.0);
    //elm_label_line_wrap_set(lbl, 1);
@@ -686,7 +686,7 @@ inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photos)
    elm_table_pack(tb, hbox, 1, 2, 1, 1);
 
    bt = elm_button_add(enlil_data->win->win);
-   elm_button_label_set(bt, D_("Cancel"));
+   elm_object_text_set(bt, D_("Cancel"));
    evas_object_smart_callback_add(bt, "clicked",
                                   _bt_photo_move_album_cancel_cb, inwin);
    evas_object_size_hint_align_set(bt, 1.0, 0.0);
@@ -695,7 +695,7 @@ inwin_photo_move_album_new(Inwin_Del del_cb, void *data, Eina_List *photos)
 
    bt = elm_button_add(enlil_data->win->win);
    elm_object_disabled_set(bt, 1);
-   elm_button_label_set(bt, D_("Apply"));
+   elm_object_text_set(bt, D_("Apply"));
    inwin->bt_apply = bt;
    evas_object_smart_callback_add(bt, "clicked", _bt_photo_move_album_apply_cb,
                                   inwin);
@@ -779,7 +779,7 @@ inwin_preferences_new()
       lbl
                = edje_object_part_external_object_get(edje,
                                                       "object.win.preferences.library.name");
-      elm_label_label_set(lbl, enlil_library_path_get(enlil_data->library));
+      elm_object_text_set(lbl, enlil_library_path_get(enlil_data->library));
 
       inwin->entry2
                = edje_object_part_external_object_get(edje,
@@ -876,7 +876,7 @@ inwin_netsync_error_new(const char *message)
 
    lbl = edje_object_part_external_object_get(edje,
                                               "object.win.netsync_error.error");
-   elm_label_label_set(lbl, message);
+   elm_object_text_set(lbl, message);
 
    bt = edje_object_part_external_object_get(edje,
                                              "object.win.netsync_error.close");

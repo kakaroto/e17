@@ -67,7 +67,7 @@ static void
 _hv_select(void *data, Evas_Object *obj, void *event_info)
 {
    elm_slideshow_transition_set(slideshow, data);
-   elm_hoversel_label_set(obj, data);
+   elm_object_text_set(obj, data);
 }
 
 static void
@@ -182,7 +182,7 @@ _init_slideshow()
    hv = edje_object_part_external_object_get(edje, "object.styles");
    EINA_LIST_FOREACH(elm_slideshow_transitions_get(slideshow), l, transition)
    elm_hoversel_item_add(hv, transition, NULL, 0, _hv_select, transition);
-   elm_hoversel_label_set(
+   elm_object_text_set(
                           hv,
                           eina_list_data_get(
                                              elm_slideshow_transitions_get(

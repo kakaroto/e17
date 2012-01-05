@@ -318,27 +318,27 @@ _gp_marker_get(Evas_Object *obj, Elm_Map_Marker *marker, void *data)
             enlil_geocaching_url_name_get(gp));
    lbl = edje_object_part_external_object_get(edje,
                                               "object.geocaching.bubble.title");
-   elm_label_label_set(lbl, buf);
+   elm_object_text_set(lbl, buf);
 
    snprintf(buf, sizeof(buf), "<b>A cache by %s</b>",
             enlil_geocaching_gp_owner_get(gp));
    lbl = edje_object_part_external_object_get(edje,
                                               "object.geocaching.bubble.owner");
-   elm_label_label_set(lbl, buf);
+   elm_object_text_set(lbl, buf);
 
    lbl
             = edje_object_part_external_object_get(edje,
                                                    "object.geocaching.bubble.cache_size");
-   elm_label_label_set(lbl, enlil_geocaching_gp_container_get(gp));
+   elm_object_text_set(lbl, enlil_geocaching_gp_container_get(gp));
 
    lbl
             = edje_object_part_external_object_get(edje,
                                                    "object.geocaching.bubble.date_hidden");
-   elm_label_label_set(lbl, enlil_geocaching_time_get(gp));
+   elm_object_text_set(lbl, enlil_geocaching_time_get(gp));
 
    bt = edje_object_part_external_object_get(edje,
                                              "object.geocaching.bubble.open");
-   elm_button_label_set(bt, enlil_geocaching_name_get(gp));
+   elm_object_text_set(bt, enlil_geocaching_name_get(gp));
    o = elm_icon_add(obj);
    snprintf(buf, sizeof(buf), "icons/geocaching/%s",
             enlil_geocaching_gp_type_get(gp));

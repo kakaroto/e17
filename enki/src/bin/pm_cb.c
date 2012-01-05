@@ -43,7 +43,7 @@ album_new(void *data, Enlil_Album *album)
 
    snprintf(buf, PATH_MAX, D_("  %d albums and %d photos."),
             enlil_data->nb_albums, enlil_data->nb_photos);
-   elm_label_label_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
+   elm_object_text_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
 
    Enlil_NetSync_Job
             *job =
@@ -87,7 +87,7 @@ load_done_cb(void *data, Enlil_Load *load, int nb_albums, int nb_photos)
 
    snprintf(buf, PATH_MAX, D_("  %d albums and %d photos."),
             enlil_data->nb_albums, enlil_data->nb_photos);
-   elm_label_label_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
+   elm_object_text_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
 
    photos_list_object_freeze(enlil_data->list_photo->o_list, EINA_FALSE);
 
@@ -265,7 +265,7 @@ sync_album_disappear_cb(void *data, Enlil_Sync *sync, Enlil_Library *library,
 
    snprintf(buf, PATH_MAX, D_("  %d albums and %d photos."),
             enlil_data->nb_albums, enlil_data->nb_photos);
-   elm_label_label_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
+   elm_object_text_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
 }
 
 void
@@ -325,7 +325,7 @@ sync_photo_new_cb(void *data, Enlil_Sync *sync, Enlil_Album *album,
 
    snprintf(buf, PATH_MAX, D_("  %d albums and %d photos."),
             enlil_data->nb_albums, enlil_data->nb_photos);
-   elm_label_label_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
+   elm_object_text_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
 
    enlil_photo_tag_process(_photo);
    if (enlil_photo_type_get(photo) == ENLIL_PHOTO_TYPE_PHOTO)
@@ -432,7 +432,7 @@ sync_photo_disappear_cb(void *data, Enlil_Sync *sync, Enlil_Album *album,
 
    snprintf(buf, PATH_MAX, D_("  %d albums and %d photos."),
             enlil_data->nb_albums, enlil_data->nb_photos);
-   elm_label_label_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
+   elm_object_text_set(enlil_data->list_photo->lbl_nb_albums_photos, buf);
 }
 
 void
