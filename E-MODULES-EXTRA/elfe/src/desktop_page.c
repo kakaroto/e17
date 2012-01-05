@@ -321,6 +321,7 @@ _transit_swap_del_cb(void *data, Elm_Transit *transit)
    page->swap.transit = NULL;
 }
 
+static void
 _icon_placement(Elfe_Desktop_Page *page, Evas_Coord evx, Evas_Coord evy)
 {
    int row, col;

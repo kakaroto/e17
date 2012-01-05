@@ -673,6 +673,7 @@ elfe_winlist_shutdown(void)
 	e_action_predef_name_del("Elfe windows list", "Elfe windows list");
 	e_action_del("elfe-winlist");
      }
+   return 1;
 }
 
 EAPI Evas_Object *
