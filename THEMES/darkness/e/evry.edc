@@ -1100,6 +1100,7 @@
             target: "e.text.label";
             target: "label2";
             transition: SINUSOIDAL 0.2;
+            BUTTON_GLOW_ACTION("bg")
          }
          program { name: "go_passive";
              signal:  "e,state,unselected";
