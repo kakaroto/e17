@@ -4,12 +4,12 @@ color_classes
 
 images
 {
-	image: "modules/mpdule/next.png" COMP;
-	image: "modules/mpdule/pause.png" COMP;
-	image: "modules/mpdule/play.png" COMP;
-	image: "modules/mpdule/prev.png" COMP;
-	image: "modules/mpdule/stop.png" COMP;
-	image: "modules/mpdule/base_button.png" COMP;
+        image: "modules/mpdule/next.png" COMP;
+        image: "modules/mpdule/pause.png" COMP;
+        image: "modules/mpdule/play.png" COMP;
+        image: "modules/mpdule/prev.png" COMP;
+        image: "modules/mpdule/stop.png" COMP;
+        image: "modules/mpdule/base_button.png" COMP;
 }
 
 /*
@@ -45,95 +45,95 @@ mpdule.file
       name:"base";
       type:RECT;
       mouse_events:0;
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 0;
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:-1 -1;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 0;
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:-1 -1;
+          }
+        }
       }
       part
       {
       name:"item_clip";
       type:RECT;
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 0;
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:-1 -1;
-	  }
-	color:255 255 255 0;
-	}
-	description
-	{
-	state:"hide" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 -1.00;
-	  offset:0 0;
-	  }
-	  rel2
-	  {
-	  relative:1.00 0.00;
-	  offset:-1 -1;
-	  }
-	color:255 255 255 0;
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 0;
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:-1 -1;
+          }
+        color:255 255 255 0;
+        }
+        description
+        {
+        state:"hide" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 -1.00;
+          offset:0 0;
+          }
+          rel2
+          {
+          relative:1.00 0.00;
+          offset:-1 -1;
+          }
+        color:255 255 255 0;
+        }
       }
       part
       {
       name:"controls_clip";
       type:RECT;
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 1.00;
-	  offset:0 0;
-	  }
-	  rel2
-	  {
-	  relative:1.00 2.00;
-	  offset:-1 -1;
-	  }
-	color:255 255 255 0;
-	}
-	description
-	{
-	state:"show" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 0;
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:-1 -1;
-	  }
-	color:255 255 255 0;
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 1.00;
+          offset:0 0;
+          }
+          rel2
+          {
+          relative:1.00 2.00;
+          offset:-1 -1;
+          }
+        color:255 255 255 0;
+        }
+        description
+        {
+        state:"show" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 0;
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:-1 -1;
+          }
+        color:255 255 255 0;
+        }
       }
       part
       {
@@ -142,92 +142,92 @@ mpdule.file
       effect:OUTLINE_SOFT_SHADOW;
       clip_to:"base";
       mouse_events:0;
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 4;
-	  to:"item_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.00 0.50;
-	  offset:-1 -3;
-	  to:"item_clip";
-	  }
-	color: 255 255 255 255; 
-	color2:0 0 0 96;
-	color3:0 0 0 32;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:10;
-	  min:1 1;
-	  align:0.50 0.50;
-	  }
-	}
-	description
-	{
-	state:"hidden" 0.00;
-	visible:0;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 4;
-	  to:"item_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.00 0.50;
-	  offset:-1 -3;
-	  to:"item_clip";
-	  }
-	color2:0 0 0 96;
-	color3:0 0 0 32;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:10;
-	  min:1 1;
-	  align:0.50 0.50;
-	  }
-	}
-	description
-	{
-	state:"visible" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 4;
-	  to:"item_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.00 0.50;
-	  offset:-1 -3;
-	  to:"item_clip";
-	  }
-	color: 255 255 255 255; 
-	color2:0 0 0 96;
-	color3:0 0 0 32;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:10;
-	  min:1 1;
-	  align:0.50 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 4;
+          to:"item_clip";
+          }
+          rel2
+          {
+          relative:1.00 0.50;
+          offset:-1 -3;
+          to:"item_clip";
+          }
+        color: 255 255 255 255; 
+        color2:0 0 0 96;
+        color3:0 0 0 32;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans";
+          size:10;
+          min:1 1;
+          align:0.50 0.50;
+          }
+        }
+        description
+        {
+        state:"hidden" 0.00;
+        visible:0;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 4;
+          to:"item_clip";
+          }
+          rel2
+          {
+          relative:1.00 0.50;
+          offset:-1 -3;
+          to:"item_clip";
+          }
+        color2:0 0 0 96;
+        color3:0 0 0 32;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans";
+          size:10;
+          min:1 1;
+          align:0.50 0.50;
+          }
+        }
+        description
+        {
+        state:"visible" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 4;
+          to:"item_clip";
+          }
+          rel2
+          {
+          relative:1.00 0.50;
+          offset:-1 -3;
+          to:"item_clip";
+          }
+        color: 255 255 255 255; 
+        color2:0 0 0 96;
+        color3:0 0 0 32;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans";
+          size:10;
+          min:1 1;
+          align:0.50 0.50;
+          }
+        }
       }
       part
       {
@@ -236,92 +236,92 @@ mpdule.file
       effect:OUTLINE_SOFT_SHADOW;
       clip_to:"base";
       mouse_events:0;
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 0.50;
-	  offset:0 4;
-	  to:"item_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:-1 -3;
-	  to:"item_clip";
-	  }
-	color: 255 255 255 255; 
-	color2:0 0 0 96;
-	color3:0 0 0 32;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:9;
-	  min:1 1;
-	  align:0.50 0.50;
-	  }
-	}
-	description
-	{
-	state:"hidden" 0.00;
-	visible:0;
-	  rel1
-	  {
-	  relative:0.00 0.50;
-	  offset:0 4;
-	  to:"item_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:-1 -3;
-	  to:"item_clip";
-	  }
-	color2:0 0 0 96;
-	color3:0 0 0 32;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:9;
-	  min:1 1;
-	  align:0.50 0.50;
-	  }
-	}
-	description
-	{
-	state:"visible" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 0.50;
-	  offset:0 4;
-	  to:"item_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:-1 -3;
-	  to:"item_clip";
-	  }
-	color: 255 255 255 255; 
-	color2:0 0 0 96;
-	color3:0 0 0 32;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:9;
-	  min:1 1;
-	  align:0.50 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 0.50;
+          offset:0 4;
+          to:"item_clip";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:-1 -3;
+          to:"item_clip";
+          }
+        color: 255 255 255 255; 
+        color2:0 0 0 96;
+        color3:0 0 0 32;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans";
+          size:9;
+          min:1 1;
+          align:0.50 0.50;
+          }
+        }
+        description
+        {
+        state:"hidden" 0.00;
+        visible:0;
+          rel1
+          {
+          relative:0.00 0.50;
+          offset:0 4;
+          to:"item_clip";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:-1 -3;
+          to:"item_clip";
+          }
+        color2:0 0 0 96;
+        color3:0 0 0 32;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans";
+          size:9;
+          min:1 1;
+          align:0.50 0.50;
+          }
+        }
+        description
+        {
+        state:"visible" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 0.50;
+          offset:0 4;
+          to:"item_clip";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:-1 -3;
+          to:"item_clip";
+          }
+        color: 255 255 255 255; 
+        color2:0 0 0 96;
+        color3:0 0 0 32;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans";
+          size:9;
+          min:1 1;
+          align:0.50 0.50;
+          }
+        }
       }
 
 
@@ -332,39 +332,39 @@ mpdule.file
       type:IMAGE;
       mouse_events:1;
       repeat_events:1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.0 0.5;
-	  rel1
-	  {
-	  relative:0.0 0.0;
-	  offset:0 0;
-	  to:"controls_clip";
-	  }
-	  rel2
-	  {
-	  relative:0.0 1.0;
-	  to:"controls_clip";
-	  }
-	  image
-	  {
-	  // normal:"modules/mpdule/prev.png";
-		normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 140 140 140 255 ;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 255;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.0 0.5;
+          rel1
+          {
+          relative:0.0 0.0;
+          offset:0 0;
+          to:"controls_clip";
+          }
+          rel2
+          {
+          relative:0.0 1.0;
+          to:"controls_clip";
+          }
+          image
+          {
+          // normal:"modules/mpdule/prev.png";
+                normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 140 140 140 255 ;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+        }
       }
       
       part
@@ -373,52 +373,52 @@ mpdule.file
       type:IMAGE;
       mouse_events: 1;
       repeat_events: 1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.5 0.5;
-	  rel1
-	  {
-	  relative:0.3 0.3;
-	  offset:0 0;
-	  to:"mpdule.previous_base";
-	  }
-	  rel2
-	  {
-	  relative:0.7 0.7;
-		  offset:0 0;
-	  to:"mpdule.previous_base";
-	  }
-	  image
-	  {
-	   normal:"modules/mpdule/prev.png";
-		// normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 255 255 255 255;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 170;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	  rel1
-	  {
-	  relative:0.3 0.3;
-	  offset: -3  3;
-	  to:"mpdule.previous_base";
-	  }
-	  rel2
-	  {
-	  relative:0.7 0.7;
-		  offset: -3 3;
-	  to:"mpdule.previous_base";
-	  }
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.5 0.5;
+          rel1
+          {
+          relative:0.3 0.3;
+          offset:0 0;
+          to:"mpdule.previous_base";
+          }
+          rel2
+          {
+          relative:0.7 0.7;
+                  offset:0 0;
+          to:"mpdule.previous_base";
+          }
+          image
+          {
+           normal:"modules/mpdule/prev.png";
+                // normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 255 255 255 255;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 170;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+          rel1
+          {
+          relative:0.3 0.3;
+          offset: -3  3;
+          to:"mpdule.previous_base";
+          }
+          rel2
+          {
+          relative:0.7 0.7;
+                  offset: -3 3;
+          to:"mpdule.previous_base";
+          }
+        }
       }
       
 
@@ -432,41 +432,41 @@ mpdule.file
       type:IMAGE;
       mouse_events:1;
       repeat_events:1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.0 0.5;
-	  rel1
-	  {
-	  relative:1.0 0.0;
-	  offset:0 0;
-	  to_x:"mpdule.previous_base";
-	  to_y:"controls_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.0 1.0;
-	  to_x:"mpdule.previous_base";
-	  to_y:"controls_clip";
-	  }
-	  image
-	  {
-	  // normal:"modules/mpdule/play.png";
-		  normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 140 140 140 255 ;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 255;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.0 0.5;
+          rel1
+          {
+          relative:1.0 0.0;
+          offset:0 0;
+          to_x:"mpdule.previous_base";
+          to_y:"controls_clip";
+          }
+          rel2
+          {
+          relative:1.0 1.0;
+          to_x:"mpdule.previous_base";
+          to_y:"controls_clip";
+          }
+          image
+          {
+          // normal:"modules/mpdule/play.png";
+                  normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 140 140 140 255 ;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+        }
       }
       
       part
@@ -475,51 +475,51 @@ mpdule.file
       type:IMAGE;
       mouse_events: 1;
       repeat_events: 1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.0 0.5;
-	  rel1
-	  {
-	   relative:0.3 0.3;
-	  offset:0 0;
-	  to:"mpdule.play_base";
-	  }
-	  rel2
-	  {
-	  relative:0.7 0.7;
-	  to:"mpdule.play_base";
-	  }
-	  image
-	  {
-	   normal:"modules/mpdule/play.png";
-		//  normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 255 255 255 255;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 170;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	  rel1
-	  {
-	  relative:0.3 0.3;
-	  offset: 3  0;
-	  to:"mpdule.play_base";
-	  }
-	  rel2
-	  {
-	  relative:0.7 0.7;
-		  offset: 3 0;
-	  to:"mpdule.play_base";
-	  }
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.0 0.5;
+          rel1
+          {
+           relative:0.3 0.3;
+          offset:0 0;
+          to:"mpdule.play_base";
+          }
+          rel2
+          {
+          relative:0.7 0.7;
+          to:"mpdule.play_base";
+          }
+          image
+          {
+           normal:"modules/mpdule/play.png";
+                //  normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 255 255 255 255;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 170;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+          rel1
+          {
+          relative:0.3 0.3;
+          offset: 3  0;
+          to:"mpdule.play_base";
+          }
+          rel2
+          {
+          relative:0.7 0.7;
+                  offset: 3 0;
+          to:"mpdule.play_base";
+          }
+        }
       }
 
 
@@ -533,41 +533,41 @@ mpdule.file
       type:IMAGE;
       mouse_events:1;
       repeat_events:1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.0 0.5;
-	  rel1
-	  {
-	  relative:1.0 0.0;
-	  offset:0 0;
-	  to_x:"mpdule.play_base";
-	  to_y:"controls_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.0 1.0;
-	  to_x:"mpdule.play_base";
-	  to_y:"controls_clip";
-	  }
-	  image
-	  {
-	  // normal:"modules/mpdule/pause.png";
-		  normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 140 140 140 255 ;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 255;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.0 0.5;
+          rel1
+          {
+          relative:1.0 0.0;
+          offset:0 0;
+          to_x:"mpdule.play_base";
+          to_y:"controls_clip";
+          }
+          rel2
+          {
+          relative:1.0 1.0;
+          to_x:"mpdule.play_base";
+          to_y:"controls_clip";
+          }
+          image
+          {
+          // normal:"modules/mpdule/pause.png";
+                  normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 140 140 140 255 ;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+        }
       }
 
 
@@ -577,52 +577,52 @@ mpdule.file
       type:IMAGE;
       mouse_events: 1;
       repeat_events: 1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.0 0.5;
-	  rel1
-	  {
-	  relative:0.3 0.3;
-	  offset:0 0;
-	  to: "mpdule.pause_base";
-	  }
-	  rel2
-	  {
-	  relative:0.7 0.7;
-	  to: "mpdule.pause_base";
-	  }
-	  image
-	  {
-	   normal:"modules/mpdule/pause.png";
-		 // normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 255 255 255 255;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 170;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	  rel1
-	  {
-	  relative:0.3 0.3;
-	  offset: 3  3;
-	  to:"mpdule.pause_base";
-	  }
-	  rel2
-	  {
-	  relative:0.7 0.7;
-		  offset: -3 -3;
-	  to:"mpdule.pause_base";
-	  }
-	  image.border: 4 4 4 4;
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.0 0.5;
+          rel1
+          {
+          relative:0.3 0.3;
+          offset:0 0;
+          to: "mpdule.pause_base";
+          }
+          rel2
+          {
+          relative:0.7 0.7;
+          to: "mpdule.pause_base";
+          }
+          image
+          {
+           normal:"modules/mpdule/pause.png";
+                 // normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 255 255 255 255;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 170;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+          rel1
+          {
+          relative:0.3 0.3;
+          offset: 3  3;
+          to:"mpdule.pause_base";
+          }
+          rel2
+          {
+          relative:0.7 0.7;
+                  offset: -3 -3;
+          to:"mpdule.pause_base";
+          }
+          image.border: 4 4 4 4;
+        }
       }
       
       
@@ -632,41 +632,41 @@ mpdule.file
       type:IMAGE;
       mouse_events:1;
       repeat_events:1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.0 0.5;
-	  rel1
-	  {
-	  relative:1.0 0.0;
-	  offset:0 0;
-	  to_x:"mpdule.pause_base";
-	  to_y:"controls_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.0 1.0;
-	  to_x:"mpdule.pause_base";
-	  to_y:"controls_clip";
-	  }
-	  image
-	  {
-	  // normal:"modules/mpdule/stop.png";
-		  normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 140 140 140 255 ;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 255;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.0 0.5;
+          rel1
+          {
+          relative:1.0 0.0;
+          offset:0 0;
+          to_x:"mpdule.pause_base";
+          to_y:"controls_clip";
+          }
+          rel2
+          {
+          relative:1.0 1.0;
+          to_x:"mpdule.pause_base";
+          to_y:"controls_clip";
+          }
+          image
+          {
+          // normal:"modules/mpdule/stop.png";
+                  normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 140 140 140 255 ;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+        }
       }
 
      part
@@ -675,51 +675,51 @@ mpdule.file
       type:IMAGE;
       mouse_events: 1;
       repeat_events: 1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.0 0.5;
-	  rel1
-	  {
-	  relative: 0.3  0.3;
-	  offset:0 0;
-	  to: "mpdule.stop_base";
-	  }
-	  rel2
-	  {
-	  relative: 0.7 0.7;
-	  to: "mpdule.stop_base";
-	  }
-	  image
-	  {
-	   normal:"modules/mpdule/stop.png";
-		 // normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 255 255 255 255;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 170;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	  rel1
-	  {
-	  relative:0.3 0.3;
-	  offset: -3  -3;
-	  to:"mpdule.stop_base";
-	  }
-	  rel2
-	  {
-	  relative:0.7 0.7;
-		  offset: 3  3;
-	  to:"mpdule.stop_base";
-	  }
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.0 0.5;
+          rel1
+          {
+          relative: 0.3  0.3;
+          offset:0 0;
+          to: "mpdule.stop_base";
+          }
+          rel2
+          {
+          relative: 0.7 0.7;
+          to: "mpdule.stop_base";
+          }
+          image
+          {
+           normal:"modules/mpdule/stop.png";
+                 // normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 255 255 255 255;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 170;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+          rel1
+          {
+          relative:0.3 0.3;
+          offset: -3  -3;
+          to:"mpdule.stop_base";
+          }
+          rel2
+          {
+          relative:0.7 0.7;
+                  offset: 3  3;
+          to:"mpdule.stop_base";
+          }
+        }
       }
       
       
@@ -730,41 +730,41 @@ mpdule.file
       type:IMAGE;
       mouse_events:1;
       repeat_events:1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.0 0.5;
-	  rel1
-	  {
-	  relative:1.0 0.0;
-	  offset:0 0;
-	  to_x:"mpdule.stop_base";
-	  to_y:"controls_clip";
-	  }
-	  rel2
-	  {
-	  relative:1.0 1.0;
-	  to_x:"mpdule.stop_base";
-	  to_y:"controls_clip";
-	  }
-	  image
-	  {
-	  // normal:"modules/mpdule/next.png";
-		  normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 140 140 140 255 ;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 255;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.0 0.5;
+          rel1
+          {
+          relative:1.0 0.0;
+          offset:0 0;
+          to_x:"mpdule.stop_base";
+          to_y:"controls_clip";
+          }
+          rel2
+          {
+          relative:1.0 1.0;
+          to_x:"mpdule.stop_base";
+          to_y:"controls_clip";
+          }
+          image
+          {
+          // normal:"modules/mpdule/next.png";
+                  normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 140 140 140 255 ;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 255;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+        }
       }
 
       part
@@ -773,51 +773,51 @@ mpdule.file
       type:IMAGE;
       mouse_events: 1;
       repeat_events: 1;
-	description
-	{
-	state:"default" 0.0;
-	visible:1;
-	aspect:1 1;
-	align:0.0 0.5;
-	  rel1
-	  {
-	  relative: 0.3 0.3;
-	  offset:0 0;
-	  to: "mpdule.next_base";
-	  }
-	  rel2
-	  {
-	  relative: 0.7 0.7;
-	  to: "mpdule.next_base";
-	  }
-	  image
-	  {
-	   normal:"modules/mpdule/next.png";
-		 // normal:  "modules/mpdule/base_button.png" ;
-	  }
-	  color: 255 255 255 255;
-	}
-	description {
-		state: "highlighted" 0.0;
-		inherit: "default" 0.0;
-		color: 255 255 255 170;
-	}
-	description {
-		state: "pressed" 0.0;
-		inherit: "default" 0.0;
-	  rel1
-	  {
-	  relative:0.3 0.3;
-	  offset: 3  -3;
-	  to:"mpdule.next_base";
-	  }
-	  rel2
-	  {
-	  relative:0.7 0.7;
-		  offset: 3  -3;
-	  to:"mpdule.next_base";
-	  }
-	}
+        description
+        {
+        state:"default" 0.0;
+        visible:1;
+        aspect:1 1;
+        align:0.0 0.5;
+          rel1
+          {
+          relative: 0.3 0.3;
+          offset:0 0;
+          to: "mpdule.next_base";
+          }
+          rel2
+          {
+          relative: 0.7 0.7;
+          to: "mpdule.next_base";
+          }
+          image
+          {
+           normal:"modules/mpdule/next.png";
+                 // normal:  "modules/mpdule/base_button.png" ;
+          }
+          color: 255 255 255 255;
+        }
+        description {
+                state: "highlighted" 0.0;
+                inherit: "default" 0.0;
+                color: 255 255 255 170;
+        }
+        description {
+                state: "pressed" 0.0;
+                inherit: "default" 0.0;
+          rel1
+          {
+          relative:0.3 0.3;
+          offset: 3  -3;
+          to:"mpdule.next_base";
+          }
+          rel2
+          {
+          relative:0.7 0.7;
+                  offset: 3  -3;
+          to:"mpdule.next_base";
+          }
+        }
       }
       
 
@@ -962,13 +962,13 @@ mpdule.file
       transition:LINEAR 0.1;
       target:"mpdule.play_base";
       target:"mpdule.play";
-	after: "mouse_play_action";
+        after: "mouse_play_action";
       }
       program
       {
       name:"mouse_play_action";
       action:SIGNAL_EMIT "mpdule,play" "";
-	      after: "mouse_play_state_return";
+              after: "mouse_play_state_return";
       }
       program
       {
@@ -1032,13 +1032,13 @@ mpdule.file
       transition:LINEAR 0.1;
       target:"mpdule.pause_base";
       target:"mpdule.pause";
-	after: "mouse_pause_action";
+        after: "mouse_pause_action";
       }
       program
       {
       name:"mouse_pause_action";
       action:SIGNAL_EMIT "mpdule,pause" "";
-	      after: "mouse_pause_state_return";
+              after: "mouse_pause_state_return";
       }
       program
       {
@@ -1102,13 +1102,13 @@ mpdule.file
       transition:LINEAR 0.1;
       target:"mpdule.stop_base";
       target:"mpdule.stop";
-	after: "mouse_stop_action";
+        after: "mouse_stop_action";
       }
       program
       {
       name:"mouse_stop_action";
       action:SIGNAL_EMIT "mpdule,stop" "";
-	      after: "mouse_stop_state_return";
+              after: "mouse_stop_state_return";
       }
       program
       {
@@ -1171,13 +1171,13 @@ mpdule.file
       transition:LINEAR 0.1;
       target:"mpdule.previous_base";
       target:"mpdule.previous";
-	after: "mouse_previous_action";
+        after: "mouse_previous_action";
       }
       program
       {
       name:"mouse_previous_action";
       action:SIGNAL_EMIT "mpdule,previous" "";
-	      after: "mouse_previous_state_return";
+              after: "mouse_previous_state_return";
       }
       program
       {
@@ -1240,13 +1240,13 @@ mpdule.file
       transition:LINEAR 0.1;
       target:"mpdule.next_base";
       target:"mpdule.next";
-	after: "mouse_next_action";
+        after: "mouse_next_action";
       }
       program
       {
       name:"mouse_next_action";
       action:SIGNAL_EMIT "mpdule,next" "";
-	      after: "mouse_next_state_return";
+              after: "mouse_next_state_return";
       }
       program
       {
@@ -1271,188 +1271,188 @@ mpdule.file
     parts
     {
 
-/*	    
+/*            
     part
       {
       name:"base";
       type:RECT;
       mouse_events:0;
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	min:200 65;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:5 5;
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:-5 -5;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        min:200 65;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:5 5;
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:-5 -5;
+          }
+        }
       }
       part
       {
       name:"labels";
       type:RECT;
       mouse_events:0;
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 0;
-	  to:"base";
-	  }
-	  rel2
-	  {
-	  relative:0.25 1.00;
-	  offset:0 0;
-	  to:"base";
-	  }
-	color:255 255 255 0;
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 0;
+          to:"base";
+          }
+          rel2
+          {
+          relative:0.25 1.00;
+          offset:0 0;
+          to:"base";
+          }
+        color:255 255 255 0;
+        }
       }
       part
       {
       name:"values";
       type:RECT;
       mouse_events:0;
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	  rel1
-	  {
-	  relative:0.25 0.00;
-	  offset:0 0;
-	  to:"base";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:0 0;
-	  to:"base";
-	  }
-	color:255 255 255 0;
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+          rel1
+          {
+          relative:0.25 0.00;
+          offset:0 0;
+          to:"base";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:0 0;
+          to:"base";
+          }
+        color:255 255 255 0;
+        }
       }
       part
       {
       name:"item_clip";
       type:RECT;
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	min:5 5;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 0;
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:-1 -1;
-	  }
-	color:255 255 255 0;
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        min:5 5;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 0;
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:-1 -1;
+          }
+        color:255 255 255 0;
+        }
       }
 */
 
 
-			part {
-				name: "base";
-				type: RECT;
-				mouse_events: 0;
-				description {
-					state: "default" 0.00;
-					visible: 1;
-					// min: 210 105;
-					min: 300 65;
-					rel1 {
-						relative: 0.00 0.00;
-						 offset: 5 5;
-						// offset: 0 0;
-					}
-					rel2 {
-						relative: 1.00 1.00;
-						 offset: -5 -5;
-						// offset: 0 0;
-					}
-				}
-			}
-			part {
-				name: "labels";
-				type: RECT;
-				mouse_events: 0;
-				description {
-					state: "default" 0.00;
-					visible: 1;
-					rel1 {
-						relative: 0.00 0.00;
-						// offset: 0 0;
-						// offset: 10 5;
-						offset: 0 3;
-						to: "base";
-					}
-					rel2 {
-						// relative: 0.25 1.00;
-						relative: 0.2 1.00;
-						offset: 0 0;
-						// offset: -10 0;
-						to: "base";
-					}
-					color: 255 255 255 0;
-				}
-			}
-			part {
-				name: "values";
-				type: RECT;
-				mouse_events: 0;
-				description {
-					state: "default" 0.00;
-					visible: 1;
-					rel1 {
-						// relative: 0.25 0.00;
-						relative: 1.0 0.00;
-						// offset: 0 0;
-						// offset: 10 5;
-						offset: 5 0;
-						to: "labels";
-					}
-					rel2 {
-						relative: 1.00 1.00;
-						offset: 0 0;
-						to: "base";
-					}
-					color: 255 255 255 0;
-				}
-			}
-			part {
-				name: "item_clip";
-				type: RECT;
-				description {
-					state: "default" 0.00;
-					visible: 1;
-					min: 5 5;
-					rel1 {
-						relative: 0.00 0.00;
-						offset: 0 0;
-					}
-					rel2 {
-						relative: 1.00 1.00;
-						offset: -1 -1;
-					}
-					color: 255 255 255 0;
-				}
-			}
+                        part {
+                                name: "base";
+                                type: RECT;
+                                mouse_events: 0;
+                                description {
+                                        state: "default" 0.00;
+                                        visible: 1;
+                                        // min: 210 105;
+                                        min: 300 65;
+                                        rel1 {
+                                                relative: 0.00 0.00;
+                                                 offset: 5 5;
+                                                // offset: 0 0;
+                                        }
+                                        rel2 {
+                                                relative: 1.00 1.00;
+                                                 offset: -5 -5;
+                                                // offset: 0 0;
+                                        }
+                                }
+                        }
+                        part {
+                                name: "labels";
+                                type: RECT;
+                                mouse_events: 0;
+                                description {
+                                        state: "default" 0.00;
+                                        visible: 1;
+                                        rel1 {
+                                                relative: 0.00 0.00;
+                                                // offset: 0 0;
+                                                // offset: 10 5;
+                                                offset: 0 3;
+                                                to: "base";
+                                        }
+                                        rel2 {
+                                                // relative: 0.25 1.00;
+                                                relative: 0.2 1.00;
+                                                offset: 0 0;
+                                                // offset: -10 0;
+                                                to: "base";
+                                        }
+                                        color: 255 255 255 0;
+                                }
+                        }
+                        part {
+                                name: "values";
+                                type: RECT;
+                                mouse_events: 0;
+                                description {
+                                        state: "default" 0.00;
+                                        visible: 1;
+                                        rel1 {
+                                                // relative: 0.25 0.00;
+                                                relative: 1.0 0.00;
+                                                // offset: 0 0;
+                                                // offset: 10 5;
+                                                offset: 5 0;
+                                                to: "labels";
+                                        }
+                                        rel2 {
+                                                relative: 1.00 1.00;
+                                                offset: 0 0;
+                                                to: "base";
+                                        }
+                                        color: 255 255 255 0;
+                                }
+                        }
+                        part {
+                                name: "item_clip";
+                                type: RECT;
+                                description {
+                                        state: "default" 0.00;
+                                        visible: 1;
+                                        min: 5 5;
+                                        rel1 {
+                                                relative: 0.00 0.00;
+                                                offset: 0 0;
+                                        }
+                                        rel2 {
+                                                relative: 1.00 1.00;
+                                                offset: -1 -1;
+                                        }
+                                        color: 255 255 255 0;
+                                }
+                        }
 
 
 
@@ -1462,36 +1462,36 @@ mpdule.file
       type:TEXT;
       effect:SHADOW;
       clip_to:"base";
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	align:0.00 0.50;
-	fixed:1 1;
-	  rel1
-	  {
-	  relative:-0.00 0.00;
-	  offset:0 0;
-	  to:"labels";
-	  }
-	  rel2
-	  {
-	  relative:1.00 0.00;
-	  offset:0 16;
-	  to:"labels";
-	  }
-	color:0 0 0 255;
-	color3:255 255 255 128;
-	  text
-	  {
-	  text:"Artist:";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:10;
-	  min:1 1;
-	  align:1.0 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        align:0.00 0.50;
+        fixed:1 1;
+          rel1
+          {
+          relative:-0.00 0.00;
+          offset:0 0;
+          to:"labels";
+          }
+          rel2
+          {
+          relative:1.00 0.00;
+          offset:0 16;
+          to:"labels";
+          }
+        color:0 0 0 255;
+        color3:255 255 255 128;
+          text
+          {
+          text:"Artist:";
+          text_class:"mpdule";
+          font:"Sans";
+          size:10;
+          min:1 1;
+          align:1.0 0.50;
+          }
+        }
       }
       part
       {
@@ -1499,37 +1499,37 @@ mpdule.file
       type:TEXT;
       effect:SHADOW;
       clip_to:"base";
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	align:0.00 0.50;
-	  rel1
-	  {
-	  relative:0.00 1.00;
-	  offset:0 0;
-	  to_x:"labels";
-	  to_y:"mpdule.artist_label";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:0 12;
-	  to_x:"labels";
-	  to_y:"mpdule.artist_label";
-	  }
-	color:0 0 0 255;
-	color3:255 255 255 128;
-	  text
-	  {
-	  text:"Title:";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:10;
-	  min:1 1;
-	  align:1.0 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        align:0.00 0.50;
+          rel1
+          {
+          relative:0.00 1.00;
+          offset:0 0;
+          to_x:"labels";
+          to_y:"mpdule.artist_label";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:0 12;
+          to_x:"labels";
+          to_y:"mpdule.artist_label";
+          }
+        color:0 0 0 255;
+        color3:255 255 255 128;
+          text
+          {
+          text:"Title:";
+          text_class:"mpdule";
+          font:"Sans";
+          size:10;
+          min:1 1;
+          align:1.0 0.50;
+          }
+        }
       }
       part
       {
@@ -1538,37 +1538,37 @@ mpdule.file
       mouse_events:0;
       effect:SHADOW;
       clip_to:"base";
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	align:0.00 0.50;
-	  rel1
-	  {
-	  relative:0.00 1.00;
-	  offset:0 0;
-	  to_x:"labels";
-	  to_y:"mpdule.title_label";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:0 12;
-	  to_x:"labels";
-	  to_y:"mpdule.title_label";
-	  }
-	color:0 0 0 255;
-	color3:255 255 255 128;
-	  text
-	  {
-	  text:"Album:";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:10;
-	  min:1 1;
-	  align:1.0 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        align:0.00 0.50;
+          rel1
+          {
+          relative:0.00 1.00;
+          offset:0 0;
+          to_x:"labels";
+          to_y:"mpdule.title_label";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:0 12;
+          to_x:"labels";
+          to_y:"mpdule.title_label";
+          }
+        color:0 0 0 255;
+        color3:255 255 255 128;
+          text
+          {
+          text:"Album:";
+          text_class:"mpdule";
+          font:"Sans";
+          size:10;
+          min:1 1;
+          align:1.0 0.50;
+          }
+        }
       }
       part
       {
@@ -1577,37 +1577,37 @@ mpdule.file
       mouse_events:0;
       effect:SHADOW;
       clip_to:"base";
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	align:0.00 0.50;
-	  rel1
-	  {
-	  relative:0.00 1.00;
-	  offset:0 0;
-	  to_x:"labels";
-	  to_y:"mpdule.album_label";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  offset:0 12;
-	  to_x:"labels";
-	  to_y:"mpdule.album_label";
-	  }
-	color:0 0 0 255;
-	color3:255 255 255 128;
-	  text
-	  {
-	  text:"Genre:";
-	  text_class:"mpdule";
-	  font:"Sans";
-	  size:10;
-	  min:1 1;
-	  align:1.0 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        align:0.00 0.50;
+          rel1
+          {
+          relative:0.00 1.00;
+          offset:0 0;
+          to_x:"labels";
+          to_y:"mpdule.album_label";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          offset:0 12;
+          to_x:"labels";
+          to_y:"mpdule.album_label";
+          }
+        color:0 0 0 255;
+        color3:255 255 255 128;
+          text
+          {
+          text:"Genre:";
+          text_class:"mpdule";
+          font:"Sans";
+          size:10;
+          min:1 1;
+          align:1.0 0.50;
+          }
+        }
       }
       part
       {
@@ -1615,35 +1615,35 @@ mpdule.file
       type:TEXT;
       effect:NONE;
       clip_to:"base";
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	align:0.00 0.50;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 0;
-	  to_x:"values";
-	  to_y:"mpdule.artist_label";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  to_x:"values";
-	  to_y:"mpdule.artist_label";
-	  }
-	color:0 0 0 255;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans:style=Bold";
-	  size:10;
-	  min:1 1;
-	  align:0.0 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        align:0.00 0.50;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 0;
+          to_x:"values";
+          to_y:"mpdule.artist_label";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          to_x:"values";
+          to_y:"mpdule.artist_label";
+          }
+        color:0 0 0 255;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans:style=Bold";
+          size:10;
+          min:1 1;
+          align:0.0 0.50;
+          }
+        }
       }
       part
       {
@@ -1651,35 +1651,35 @@ mpdule.file
       type:TEXT;
       effect:NONE;
       clip_to:"base";
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	align:0.00 0.50;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 0;
-	  to_x:"values";
-	  to_y:"mpdule.title_label";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  to_x:"values";
-	  to_y:"mpdule.title_label";
-	  }
-	color:0 0 0 255;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans:style=Bold";
-	  size:10;
-	  min:1 1;
-	  align:0.0 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        align:0.00 0.50;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 0;
+          to_x:"values";
+          to_y:"mpdule.title_label";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          to_x:"values";
+          to_y:"mpdule.title_label";
+          }
+        color:0 0 0 255;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans:style=Bold";
+          size:10;
+          min:1 1;
+          align:0.0 0.50;
+          }
+        }
       }
       part
       {
@@ -1687,35 +1687,35 @@ mpdule.file
       type:TEXT;
       effect:NONE;
       clip_to:"base";
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	align:0.00 0.50;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 0;
-	  to_x:"values";
-	  to_y:"mpdule.album_label";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  to_x:"values";
-	  to_y:"mpdule.album_label";
-	  }
-	color:0 0 0 255;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans:style=Bold";
-	  size:10;
-	  min:1 1;
-	  align:0.0 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        align:0.00 0.50;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 0;
+          to_x:"values";
+          to_y:"mpdule.album_label";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          to_x:"values";
+          to_y:"mpdule.album_label";
+          }
+        color:0 0 0 255;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans:style=Bold";
+          size:10;
+          min:1 1;
+          align:0.0 0.50;
+          }
+        }
       }
       part
       {
@@ -1723,35 +1723,35 @@ mpdule.file
       type:TEXT;
       effect:NONE;
       clip_to:"base";
-	description
-	{
-	state:"default" 0.00;
-	visible:1;
-	align:0.00 0.50;
-	  rel1
-	  {
-	  relative:0.00 0.00;
-	  offset:0 0;
-	  to_x:"values";
-	  to_y:"mpdule.genre_label";
-	  }
-	  rel2
-	  {
-	  relative:1.00 1.00;
-	  to_x:"values";
-	  to_y:"mpdule.genre_label";
-	  }
-	color:0 0 0 255;
-	  text
-	  {
-	  text:"";
-	  text_class:"mpdule";
-	  font:"Sans:style=Bold";
-	  size:10;
-	  min:1 1;
-	  align:0.0 0.50;
-	  }
-	}
+        description
+        {
+        state:"default" 0.00;
+        visible:1;
+        align:0.00 0.50;
+          rel1
+          {
+          relative:0.00 0.00;
+          offset:0 0;
+          to_x:"values";
+          to_y:"mpdule.genre_label";
+          }
+          rel2
+          {
+          relative:1.00 1.00;
+          to_x:"values";
+          to_y:"mpdule.genre_label";
+          }
+        color:0 0 0 255;
+          text
+          {
+          text:"";
+          text_class:"mpdule";
+          font:"Sans:style=Bold";
+          size:10;
+          min:1 1;
+          align:0.0 0.50;
+          }
+        }
       }
     }
     programs

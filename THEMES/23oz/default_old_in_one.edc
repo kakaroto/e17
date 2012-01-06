@@ -55,8 +55,9 @@ group {
 
       part {
          name:          "about";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
          mouse_events:  0;
+         scale: 1;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -84,7 +85,8 @@ group {
       }
       part {
          name:          "e.text.version";
-         type:          TEXT;
+         type: TEXT;
+         scale: 1;
          effect:        SOFT_SHADOW;
          mouse_events:  0;
          description {
@@ -322,7 +324,8 @@ group {
       }
       part {
          name:           "e.text.reading";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          effect:         OUTLINE_SOFT_SHADOW;
          clip_to: "fade_clip";
          description {
@@ -351,7 +354,8 @@ group {
       }
       part {
          name:           "e.text.time";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          effect:         OUTLINE_SOFT_SHADOW;
          clip_to: "fade_clip";
          description {
@@ -382,7 +386,7 @@ group {
       }
       part {
          name:           "fade_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -395,7 +399,7 @@ group {
       }
       part {
          name:           "pulse_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          clip_to:        "fade_clip";
          description {
@@ -637,7 +641,7 @@ BORDER_BUTTON_ADV2(NAME,TYPE,REL1X,REL1Y,OFF1X,OFF1Y,TO1,TO1,REL2X,REL2Y,OFF2X,O
       } \
       part { /* a rect for positioning */ \
          name:          NAME; \
-         type:          RECT; \
+         type: RECT; \
          description { \
             state:    "default" 0.0; \
             align:    1.0 0.0; \
@@ -660,7 +664,7 @@ BORDER_BUTTON_ADV2(NAME,TYPE,REL1X,REL1Y,OFF1X,OFF1Y,TO1,TO1,REL2X,REL2Y,OFF2X,O
       } \
       part { /* a rect for window manager actions */ \
          name:          "e.event."NAME; \
-         type:          RECT; \
+         type: RECT; \
          repeat_events: 1; \
          description { \
             state:   "default" 0.0; \
@@ -844,7 +848,7 @@ BORDER_BUTTON_ADV2(NAME,TYPE,REL1X,REL1Y,OFF1X,OFF1Y,TO1,TO1,REL2X,REL2Y,OFF2X,O
       } \
       part { /* a rect for positioning */ \
          name:          NAME; \
-         type:          RECT; \
+         type: RECT; \
          description { \
             state:    "default" 0.0; \
             align:    1.0 0.0; \
@@ -867,7 +871,7 @@ BORDER_BUTTON_ADV2(NAME,TYPE,REL1X,REL1Y,OFF1X,OFF1Y,TO1,TO1,REL2X,REL2Y,OFF2X,O
       } \
       part { /* a rect for window manager actions */ \
          name:          "e.event."NAME; \
-         type:          RECT; \
+         type: RECT; \
          repeat_events: 1; \
          description { \
             state:   "default" 0.0; \
@@ -883,7 +887,7 @@ group { \
    parts { \
       part { \
          name:           "whole"; \
-         type:           RECT; \
+         type: RECT; \
          description { \
             state: "default" 0.0; \
             visible: 0; \
@@ -904,7 +908,7 @@ group { \
 #define SIMPLE_RECT(NAME, TYPE, REL1X, REL1Y, OFF1X, OFF1Y, TO1, TO1b, REL2X, REL2Y, OFF2X, OFF2Y, TO2, TO2b) \
 part { \
          name:          NAME; \
-         type:          TYPE; \
+         type: TYPE; \
          description { \
             state:    "default" 0.0; \
             rel1 { \
@@ -926,7 +930,7 @@ part { \
 #define SIMPLE_RECT1(NAME, TYPE, REL1X, REL1Y, OFF1X, OFF1Y, TO1, TO1b, REL2X, REL2Y, OFF2X, OFF2Y, TO2, TO2b) \
 part { \
          name:          NAME; \
-         type:          TYPE; \
+         type: TYPE; \
          description { \
             state:    "default" 0.0; \
             rel1 { \
@@ -1034,7 +1038,7 @@ group {
    parts {
       part {
          name:           "whole";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible: 0;
@@ -1050,7 +1054,8 @@ group {
       }
       part {
          name:           "title2";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -1723,7 +1728,8 @@ group {
 
       part {
          name:           "e.text.title";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          //effect:         GLOW;
          // effect:         OUTLINE;
          effect:         OUTLINE_SOFT_SHADOW;
@@ -1794,7 +1800,7 @@ group {
 
      part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -1843,7 +1849,7 @@ group {
       }
       part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -1865,7 +1871,7 @@ group {
 
       part {
          name:          "e.event.resize.t";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -1884,7 +1890,7 @@ group {
 
       part {
          name:          "e.event.resize.tr";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -1901,7 +1907,7 @@ group {
 
       part {
          name:          "e.event.resize.tl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -1918,7 +1924,7 @@ group {
 
       part {
          name:          "e.event.resize.l";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -1935,7 +1941,7 @@ group {
       }
       part {
          name:          "e.event.resize.r";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -1952,7 +1958,7 @@ group {
       }
       part {
          name:          "e.event.resize.b";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -1968,7 +1974,7 @@ group {
       }
       part {
          name:          "e.event.resize.bl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -1984,7 +1990,7 @@ group {
       }
       part {
          name:          "e.event.resize.br";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -2000,7 +2006,7 @@ group {
       }
       part {
          name:          "e.swallow.client";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -2059,7 +2065,7 @@ group {
       }
       part {
          name:          "e.event.icon.close";
-         type:           IMAGE;
+         type: IMAGE;
          mouse_events:   1;
          repeat_events:  1;
           description {
@@ -2236,7 +2242,7 @@ group {
       }
       part {
          name:          "e.event.titlebar";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -2776,7 +2782,7 @@ group {
    parts {
       part {
          name:           "whole";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible: 0;
@@ -2792,7 +2798,8 @@ group {
       }
       part {
          name:           "title2";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -3253,7 +3260,8 @@ group {
       }
       part {
          name:           "e.text.title";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          //effect:         GLOW;
          // effect:         OUTLINE;
          effect:         OUTLINE_SOFT_SHADOW;
@@ -3325,7 +3333,7 @@ group {
 
       part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -3519,7 +3527,7 @@ group {
       }
       part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3541,7 +3549,7 @@ group {
 
       part {
          name:          "e.event.resize.t";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3560,7 +3568,7 @@ group {
 
       part {
          name:          "e.event.resize.tr";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3577,7 +3585,7 @@ group {
 
       part {
          name:          "e.event.resize.tl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3594,7 +3602,7 @@ group {
 
       part {
          name:          "e.event.resize.l";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3611,7 +3619,7 @@ group {
       }
       part {
          name:          "e.event.resize.r";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3628,7 +3636,7 @@ group {
       }
       part {
          name:          "e.event.resize.b";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3644,7 +3652,7 @@ group {
       }
       part {
          name:          "e.event.resize.bl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3660,7 +3668,7 @@ group {
       }
       part {
          name:          "e.event.resize.br";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3678,7 +3686,7 @@ group {
 
       part {
          name:          "e.swallow.client";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -3738,7 +3746,7 @@ group {
       }
       part {
          name:          "e.event.icon.close";
-         type:           IMAGE;
+         type: IMAGE;
          mouse_events:   1;
          repeat_events:  1;
           description {
@@ -3915,7 +3923,7 @@ group {
       }
       part {
          name:          "e.event.titlebar";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -4421,7 +4429,7 @@ group {
    parts {
       part {
          name:           "whole";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible: 0;
@@ -4528,7 +4536,8 @@ part {
 
       part {
          name:           "title2";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -5104,7 +5113,8 @@ part {
       }
       part {
          name:           "e.text.title";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          //effect:         GLOW;
          // effect:         OUTLINE;
          effect:         OUTLINE_SOFT_SHADOW;
@@ -5174,7 +5184,7 @@ part {
 
       part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -5223,7 +5233,7 @@ part {
       }
       part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -5243,7 +5253,7 @@ part {
       }
       part {
          name:          "e.swallow.client";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -5302,7 +5312,7 @@ part {
       }
       part {
          name:          "e.event.icon.close";
-         type:           IMAGE;
+         type: IMAGE;
          mouse_events:   1;
          repeat_events:  1;
           description {
@@ -5479,7 +5489,7 @@ part {
       }
       part {
          name:          "e.event.titlebar";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6016,7 +6026,7 @@ group {
    parts {
       part {
          name:           "whole";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible: 0;
@@ -6123,7 +6133,8 @@ part {
 
 part {
          name:           "title2";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -6698,7 +6709,8 @@ part {
       }
       part {
          name:           "e.text.title";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          //effect:         GLOW;
          // effect:         OUTLINE;
          effect:         OUTLINE_SOFT_SHADOW;
@@ -6768,7 +6780,7 @@ part {
 
       part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -6815,7 +6827,7 @@ part {
       }
       part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6837,7 +6849,7 @@ part {
 
       part {
          name:          "e.event.resize.t";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6856,7 +6868,7 @@ part {
 
       part {
          name:          "e.event.resize.tr";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6873,7 +6885,7 @@ part {
 
       part {
          name:          "e.event.resize.tl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6890,7 +6902,7 @@ part {
 
       part {
          name:          "e.event.resize.l";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6907,7 +6919,7 @@ part {
       }
       part {
          name:          "e.event.resize.r";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6924,7 +6936,7 @@ part {
       }
       part {
          name:          "e.event.resize.b";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6940,7 +6952,7 @@ part {
       }
       part {
          name:          "e.event.resize.bl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6956,7 +6968,7 @@ part {
       }
       part {
          name:          "e.event.resize.br";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -6974,7 +6986,7 @@ part {
 
       part {
          name:          "e.swallow.client";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -7033,7 +7045,7 @@ part {
       }
       part {
          name:          "e.event.icon.close";
-         type:           IMAGE;
+         type: IMAGE;
          mouse_events:   1;
          repeat_events:  1;
           description {
@@ -7095,7 +7107,7 @@ part {
       
       part {
          name:          "e.event.titlebar";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -7433,7 +7445,7 @@ group {
    parts {
       part {
          name:           "whole";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible: 0;
@@ -7540,7 +7552,8 @@ part {
 
 part {
          name:           "title2";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -8119,7 +8132,8 @@ part {
       }
       part {
          name:           "e.text.title";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          //effect:         GLOW;
          // effect:         OUTLINE;
          effect:         OUTLINE_SOFT_SHADOW;
@@ -8189,7 +8203,7 @@ part {
 
       part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -8236,7 +8250,7 @@ part {
       }
       part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -8258,7 +8272,7 @@ part {
 
       part {
          name:          "e.swallow.client";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -8317,7 +8331,7 @@ part {
       }
       part {
          name:          "e.event.icon.close";
-         type:           IMAGE;
+         type: IMAGE;
          mouse_events:   1;
          repeat_events:  1;
           description {
@@ -8379,7 +8393,7 @@ part {
       
       part {
          name:          "e.event.titlebar";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -8716,7 +8730,7 @@ group {
    parts {      
       part {
          name:           "pixel1";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             rel1 {
@@ -8732,7 +8746,7 @@ group {
       }
       part {
          name:           "pixel2";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             rel1 {
@@ -8748,7 +8762,7 @@ group {
       }
       part {
          name:           "pixel3";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             rel1 {
@@ -8764,7 +8778,7 @@ group {
       }
       part {
          name:           "pixel4";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             rel1 {
@@ -8780,7 +8794,7 @@ group {
       }
       part {
          name:          "e.swallow.client";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -8810,7 +8824,7 @@ group {
    parts {
       part {
          name:           "whole";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible: 0;
@@ -9156,7 +9170,7 @@ part {
 
       part {
          name:          "e.event.resize.t";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9173,7 +9187,7 @@ part {
 
       part {
          name:          "e.event.resize.tr";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9190,7 +9204,7 @@ part {
 
       part {
          name:          "e.event.resize.tl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9207,7 +9221,7 @@ part {
 
       part {
          name:          "e.event.resize.l";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9224,7 +9238,7 @@ part {
       }
       part {
          name:          "e.event.resize.r";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9241,7 +9255,7 @@ part {
       }
       part {
          name:          "e.event.resize.b";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9257,7 +9271,7 @@ part {
       }
       part {
          name:          "e.event.resize.bl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9273,7 +9287,7 @@ part {
       }
       part {
          name:          "e.event.resize.br";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9290,7 +9304,7 @@ part {
 
       part {
          name:          "e.swallow.client";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9435,7 +9449,7 @@ group {
    parts {
       part {
          name:           "whole";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible: 0;
@@ -9814,7 +9828,7 @@ part {
 
       part {
          name:          "e.event.resize.t";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9831,7 +9845,7 @@ part {
 
       part {
          name:          "e.event.resize.tr";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9848,7 +9862,7 @@ part {
 
       part {
          name:          "e.event.resize.tl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9865,7 +9879,7 @@ part {
 
       part {
          name:          "e.event.resize.l";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9882,7 +9896,7 @@ part {
       }
       part {
          name:          "e.event.resize.r";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9899,7 +9913,7 @@ part {
       }
       part {
          name:          "e.event.resize.b";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9915,7 +9929,7 @@ part {
       }
       part {
          name:          "e.event.resize.bl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9931,7 +9945,7 @@ part {
       }
       part {
          name:          "e.event.resize.br";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -9948,7 +9962,7 @@ part {
 
       part {
          name:          "e.swallow.client";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10099,7 +10113,7 @@ group {
    parts {
       part {
          name:           "whole";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible: 0;
@@ -10115,7 +10129,8 @@ group {
       }
       part {
          name:           "title2";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -10371,7 +10386,7 @@ group {
       
         part {
          name:          "bl";
-         type:           RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -10398,7 +10413,7 @@ group {
 
         part {
          name:          "br";
-         type:           RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -10425,7 +10440,7 @@ group {
 
         part {
          name:          "bb";
-         type:           RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -10657,7 +10672,8 @@ group {
 
       part {
          name:           "e.text.title";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          //effect:         GLOW;
          // effect:         OUTLINE;
          effect:         OUTLINE_SOFT_SHADOW;
@@ -10757,7 +10773,7 @@ group {
          
       part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10781,7 +10797,7 @@ group {
 
       part {
          name:          "e.swallow.client";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10800,7 +10816,7 @@ group {
  
       part {
          name:          "e.event.resize.t";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10819,7 +10835,7 @@ group {
 
       part {
          name:          "e.event.resize.tr";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10836,7 +10852,7 @@ group {
 
       part {
          name:          "e.event.resize.tl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10853,7 +10869,7 @@ group {
 
       part {
          name:          "e.event.resize.l";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10870,7 +10886,7 @@ group {
       }
       part {
          name:          "e.event.resize.r";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10887,7 +10903,7 @@ group {
       }
       part {
          name:          "e.event.resize.b";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10903,7 +10919,7 @@ group {
       }
       part {
          name:          "e.event.resize.bl";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10919,7 +10935,7 @@ group {
       }
       part {
          name:          "e.event.resize.br";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -10978,7 +10994,7 @@ group {
       }
       part {
          name:          "e.event.icon.close";
-         type:           IMAGE;
+         type: IMAGE;
          mouse_events:   1;
          repeat_events:  1;
           description {
@@ -11155,7 +11171,7 @@ group {
       }
       part {
          name:          "e.event.titlebar";
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -11689,7 +11705,7 @@ group {
    parts {
       part {
          name:          "button_image";
-         type:          IMAGE;
+         type: IMAGE;
          mouse_events:  1;
          description {
             state:    "default" 0.0;
@@ -11725,7 +11741,7 @@ group {
       }
       part {
          name:          "button_image2";
-         type:          IMAGE;
+         type: IMAGE;
          mouse_events:  1;
          description {
             state:    "default" 0.0;
@@ -11804,7 +11820,8 @@ group {
       }
       part {
          name:          "e.text.label";
-         type:          TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:        SHADOW;
          effect:        NONE;
          mouse_events:  0;
@@ -12212,7 +12229,8 @@ group {
       }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:         NONE;
          mouse_events:   0;
@@ -12250,7 +12268,7 @@ group {
       }
       part {
          name:           "event";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
@@ -12411,7 +12429,7 @@ group {
       }
       part {
          name:           "e.swallow.icon";
-         type:           SWALLOW;
+         type: SWALLOW;
          clip_to:        "icon_clip";
          description {
             state: "default" 0.0;
@@ -12443,7 +12461,7 @@ group {
       }
       part {
          name:           "icon_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -12464,7 +12482,8 @@ group {
       }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:         NONE;
          mouse_events:   0;
@@ -12502,7 +12521,7 @@ group {
       }
       part {
          name:           "event";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
@@ -13174,7 +13193,7 @@ group {
       }
       part {
          name:          "content_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -13191,7 +13210,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "content_clip";
          description {
             state:    "default" 0.0;
@@ -13275,7 +13294,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -13330,7 +13349,8 @@ group {
       }
       part {
          name:          "title";
-         type:          TEXT;
+         type: TEXT;
+         scale: 1;
          effect:        SOFT_SHADOW;
          mouse_events:  0;
          description {
@@ -13362,7 +13382,7 @@ group {
       }
       part {
          name:          "logo";
-         type:                 IMAGE;
+         type: IMAGE;
          mouse_events:  0;
          description {
             state:      "default" 0.0;
@@ -13385,7 +13405,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state: "default" 0.0;
             align: 0.5 0.5;
@@ -13915,6 +13935,7 @@ group {
       part {
          name: "readout";
          type: TEXT;
+         scale: 1;
          effect: OUTLINE_SOFT_SHADOW;
          mouse_events: 0;
          clip_to: "fade_clip";
@@ -13945,7 +13966,7 @@ group {
       
       part {      
          name:           "decrease";
-         type:           RECT;
+         type: RECT;
          clip_to: "fade_clip";
          description {
             state: "default" 0.0;
@@ -13969,7 +13990,7 @@ group {
       
       part {      
          name:           "increase";
-         type:           RECT;
+         type: RECT;
          clip_to: "fade_clip";
          description {
             state: "default" 0.0;
@@ -13992,7 +14013,7 @@ group {
       }
       part {      
          name:           "fade_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -14115,7 +14136,7 @@ group {
       }
       part {
          name:          "content_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -14132,7 +14153,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "content_clip";
          description {
             state:    "default" 0.0;
@@ -14277,6 +14298,7 @@ group
           {
             name: "e.text.title";
             type: TEXT;
+            scale: 1;
             // effect: SHADOW;
             effect: NONE;
             description {
@@ -14376,6 +14398,7 @@ group
             {
                name: "e.text.password";
                type: TEXT;
+               scale: 1;
             // effect: SHADOW;
             effect: NONE;
                clip_to: "passwd_entry_clip";
@@ -14532,7 +14555,7 @@ group {
       part {
          name:          "clip";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -14568,7 +14591,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "clip";
          description {
             state:    "default" 0.0;
@@ -14615,7 +14638,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -14758,7 +14781,8 @@ group {
    parts {
       part {
          name:          "e.textblock.message";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
+         scale: 1;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -14903,6 +14927,7 @@ group {
           part {
                  name: "e.text.text";
          type: TEXT;
+         scale: 1;
          mouse_events: 0;
          description {
                 state: "default" 0.0;
@@ -15070,7 +15095,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -15133,7 +15158,7 @@ group {
       }
       part {
          name:          "e";
-         type:          IMAGE;
+         type: IMAGE;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -15152,7 +15177,8 @@ group {
       }
       part {
          name:          "e.text.title";
-         type:          TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:        SHADOW;
          effect:        NONE;
          mouse_events:  0;
@@ -15183,7 +15209,8 @@ group {
       }
       part {
          name:          "e.text.message";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
+         scale: 1;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -15206,7 +15233,7 @@ group {
       }
       part {
          name:          "button_image";
-         type:          IMAGE;
+         type: IMAGE;
          mouse_events:  1;
          description {
             state:    "default" 0.0;
@@ -15245,7 +15272,8 @@ group {
       }
       part {
          name:          "button_text";
-         type:          TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:        SHADOW;
          effect:        NONE;
          mouse_events:  0;
@@ -15319,7 +15347,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -15560,6 +15588,7 @@ group {
       part {
          name: "e.text.label";
          type: TEXT;
+         scale: 1;
          // effect: SHADOW;
          effect: NONE;
          description {
@@ -15817,7 +15846,7 @@ group {
       part {
          name:          "oz5_right_border";
          mouse_events:  0;
-         type:  RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -15835,7 +15864,7 @@ group {
       part {
          name:          "oz5_right_border_1";
          mouse_events:  0;
-         type:  RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -16049,7 +16078,8 @@ group {
       }
      part {
         name:           "title2";
-        type:           TEXT;
+        type: TEXT;
+        scale: 1;
         mouse_events:   0;
         description {
            state: "default" 0.0;
@@ -16074,7 +16104,8 @@ group {
      }
       part {
          name:           "e.text.title";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:         NONE;
          mouse_events:   0;
@@ -16109,7 +16140,7 @@ group {
       }
       part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -16294,7 +16325,7 @@ group {
       }
       part {
          name:          "e.event.exebuf.item";
-         type:          RECT;
+         type: RECT;
          mouse_events:  1;
          description {
             state:    "default" 0.0;
@@ -17547,7 +17578,7 @@ group {  name: "e/fileman/default/list/fixed";
       }      
       part {
          name:          "icon_box";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:      "default" 0.0;
@@ -17607,7 +17638,7 @@ group {  name: "e/fileman/default/list/fixed";
       }
       part {
          name:          "icon0";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -17628,7 +17659,7 @@ group {  name: "e/fileman/default/list/fixed";
       }
       part {
          name:          "icon";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -17680,7 +17711,7 @@ group {  name: "e/fileman/default/list/fixed";
       }
       part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             align:    0.5 0.5;
@@ -17695,7 +17726,8 @@ group {  name: "e/fileman/default/list/fixed";
       }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:         NONE;
          mouse_events:   0;
@@ -17750,7 +17782,7 @@ group {  name: "e/fileman/default/list/fixed";
       }
       part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -17915,14 +17947,14 @@ group {  name: "e/fileman/default/list/fixed";
       }
       part {
          name:           "event";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
          }
       }
          part { name: "dnd_action";
-                type:  RECT;
+                type: RECT;
                 mouse_events:  0;
                 repeat_events:  0;
                 description { state: "default" 0.0;
@@ -18309,7 +18341,7 @@ group { name: "e/fileman/default/list_odd/fixed";
       }      
       part {
          name:          "icon_box";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:      "default" 0.0;
@@ -18368,7 +18400,7 @@ group { name: "e/fileman/default/list_odd/fixed";
       }
       part {
          name:          "icon0";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -18389,7 +18421,7 @@ group { name: "e/fileman/default/list_odd/fixed";
       }
       part {
          name:          "icon";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -18441,7 +18473,7 @@ group { name: "e/fileman/default/list_odd/fixed";
       }
       part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             align:    0.5 0.5;
@@ -18456,7 +18488,8 @@ group { name: "e/fileman/default/list_odd/fixed";
       }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:    NONE;
          mouse_events:   0;
@@ -18493,7 +18526,7 @@ group { name: "e/fileman/default/list_odd/fixed";
       }
       part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -18658,14 +18691,14 @@ group { name: "e/fileman/default/list_odd/fixed";
       }
       part {
          name:           "event";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
          }
       }
          part { name: "dnd_action";
-                type:  RECT;
+                type: RECT;
                 mouse_events:  0;
                 repeat_events:  0;
                 description { state: "default" 0.0;
@@ -18898,6 +18931,7 @@ group { name: "e/fileman/default/overlay";
      part {
          name: "e.text.typebuf_label";
      type: TEXT;
+     scale: 1;
          effect: SOFT_SHADOW;
          clip_to: "typebuf_clip";
          mouse_events:  0;
@@ -18961,6 +18995,7 @@ group { name: "e/fileman/default/overlay";
       part {
          name: "e.text.busy_label";
          type: TEXT;
+         scale: 1;
          effect: SOFT_SHADOW;
          clip_to: "busy_clip";
          mouse_events:  0;
@@ -20814,7 +20849,7 @@ group { name: "e/fileman/desktop/icon/variable";
           }
       part {
          name:          "icon_box";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:      "default" 0.0;
@@ -20866,7 +20901,7 @@ group { name: "e/fileman/desktop/icon/variable";
           }
           part {
          name:          "icon0";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
                 state:    "default" 0.0;
@@ -20896,7 +20931,7 @@ group { name: "e/fileman/desktop/icon/variable";
           }
           part {
          name:          "icon";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
                 state:    "default" 0.0;
@@ -20950,7 +20985,7 @@ group { name: "e/fileman/desktop/icon/variable";
           }
          part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
                 state: "default" 0.0;
                 aspect: 1.0 1.0;
@@ -20976,7 +21011,8 @@ group { name: "e/fileman/desktop/icon/variable";
           }
       part {
          name:          "e.text.label";
-         type:          TEXT;
+         type: TEXT;
+         scale: 1;
          effect:        SOFT_SHADOW;
          mouse_events:  0;
          description {
@@ -21017,7 +21053,7 @@ group { name: "e/fileman/desktop/icon/variable";
       }         
       part {
          name:          "icon_event";
-         type:          RECT;
+         type: RECT;
          mouse_events:  1;
          description {
             state:      "default" 0.0;
@@ -21127,7 +21163,7 @@ group { name: "e/fileman/desktop/icon/variable";
           }
 
          part { name: "dnd_action";
-                type:  RECT;
+                type: RECT;
                 mouse_events:  0;
                 repeat_events:  0;
                 description { state: "default" 0.0;
@@ -21327,7 +21363,7 @@ group { \
    parts { \
       part { \
          name:           "whole"; \
-         type:           RECT; \
+         type: RECT; \
          description { \
             state: "default" 0.0; \
             visible: 0; \
@@ -21467,7 +21503,6 @@ group { \
             state:    "default" 0.0; \
             aspect:   1.0 1.0; \
             aspect_preference: BOTH; \
-            align: 0.5 0.0; \
             image { \
                normal: "e17_icon_fileman_"FILE".png"; \
             } \
@@ -21478,6 +21513,26 @@ group { \
             color: 128 128 128 255; \
          } \
       } \
+      part {                                       \
+         name: "name";                             \
+         type: TEXT;                               \
+         scale: 1;                                 \
+         mouse_events: 0;                          \
+         description {                             \
+            state: "default" 0.0;                  \
+            rel1.relative: 0.2444 0.6797;          \
+            rel2.relative: 0.7478 0.8894;          \
+            color: 245 245 245 255;                \
+            text {                                 \
+               text: NAME;                       \
+               font: "Sans:style=Bold";          \
+               size: 4;                          \
+               fit: 1 1;                         \
+               min: 1 1;                         \
+               align: 0.5 0.0;                   \
+            }                                      \
+         }                                         \
+      }                                            \
    } \
    programs { \
       program { \
@@ -21839,7 +21894,7 @@ group {
       }
       part {
          name:          "items_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -21856,7 +21911,7 @@ group {
       }
       part {
          name:          "items";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "items_clip";
          description {
             state:    "default" 0.0;
@@ -21926,7 +21981,7 @@ group {
       }
       part {
          name:          "inn";
-         type:          RECT;
+         type: RECT;
          repeat_events: 1;
          description {
             state:    "default" 0.0;
@@ -21944,6 +21999,7 @@ group {
       part {
          name: "e.fontpreview.text";
          type: TEXT;
+         scale: 1;
          mouse_events: 0;
          description {
             state: "default" 0.0;
@@ -21979,7 +22035,7 @@ group {
    parts {
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -22048,7 +22104,8 @@ group {
       }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -22122,7 +22179,7 @@ group {
       part {
          name:          "hclip";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible : 1;
@@ -22144,7 +22201,7 @@ group {
       part {
          name:          "vclip";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             visible : 1;
@@ -23634,7 +23691,7 @@ group {
       part {
          name:          "oz5_right_border";
          mouse_events:  0;
-         type:  RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -23652,7 +23709,7 @@ group {
       part {
          name:          "oz5_right_border_1";
          mouse_events:  0;
-         type:  RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -23690,7 +23747,7 @@ group {
    parts {
       part{
          name:          "bg";
-         type:          RECT;
+         type: RECT;
          mouse_events:  1;
          description {
             state:    "default" 0.0;
@@ -23728,7 +23785,7 @@ group {
    parts {
       part{
          name:          "bg_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -23753,7 +23810,7 @@ group {
       }
       part {
          name:          "background";
-          // type:  RECT;
+          // type: RECT;
          mouse_events:  1;
          clip_to:       "bg_clip";
          description {
@@ -23783,7 +23840,7 @@ group {
       }
       part {
          name:          "items_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -23806,7 +23863,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "items_clip";
          description {
             state:    "default" 0.0;
@@ -23917,7 +23974,7 @@ group {
    parts {
       part {
          name:          "item_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -23930,7 +23987,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "item_clip";
          description {
             state:    "default" 0.0;
@@ -23958,7 +24015,7 @@ group {
       }
       part {
          name:          "over";
-         type:          RECT;
+         type: RECT;
          repeat_events: 0;
          description {
             state:    "default" 0.0;
@@ -24018,7 +24075,7 @@ group {
    parts {
       part {
          name:          "base";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -24027,7 +24084,7 @@ group {
       }
       part {
          name:          "background";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -24080,7 +24137,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "background";
          description {
             state:    "default" 0.0;
@@ -24095,6 +24152,7 @@ group {
       part {      
          name: "e.text.label";
          type: TEXT;
+         scale: 1;
          effect: SOFT_SHADOW;                  
          mouse_events: 0;
          description {
@@ -24993,7 +25051,7 @@ group {
    parts {
       part {
          name:          "item_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -25006,7 +25064,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "item_clip";
          description {
             state:    "default" 0.0;
@@ -25034,7 +25092,7 @@ group {
       }
       part {
          name:          "over";
-         type:          RECT;
+         type: RECT;
          repeat_events: 0;
          description {
             state:    "default" 0.0;
@@ -25097,7 +25155,7 @@ group {
    parts {
       part {
          name:          "base";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -25106,7 +25164,7 @@ group {
       }
       part {
          name:          "background";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -25159,7 +25217,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "background";
          description {
             state:    "default" 0.0;
@@ -25174,6 +25232,7 @@ group {
       part {      
          name: "e.text.label";
          type: TEXT;
+         scale: 1;
          effect: SOFT_SHADOW;                  
          mouse_events: 0;
          description {
@@ -28202,7 +28261,7 @@ group { name: "e/widgets/ilist_header";
       }
   /*    part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             align:    0.0 0.5;
@@ -28221,7 +28280,7 @@ group { name: "e/widgets/ilist_header";
       }  */
          part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
                 state:    "default" 0.0;
                 align:    0.0 0.5;
@@ -28242,7 +28301,8 @@ group { name: "e/widgets/ilist_header";
           }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          effect:         SOFT_SHADOW;
          mouse_events:   0;
          description {
@@ -28271,7 +28331,7 @@ group { name: "e/widgets/ilist_header";
       }
       part {
          name:           "event";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
@@ -28300,7 +28360,7 @@ group { name: "e/widgets/ilist_header_odd";
       }
   /*    part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             align:    0.0 0.5;
@@ -28319,7 +28379,7 @@ group { name: "e/widgets/ilist_header_odd";
       }  */
          part {
          name:          "e.swallow.icon";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
                 state:    "default" 0.0;
                 align:    0.0 0.5;
@@ -28340,7 +28400,8 @@ group { name: "e/widgets/ilist_header_odd";
           }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          effect:         SOFT_SHADOW;
          mouse_events:   0;
          description {
@@ -28369,7 +28430,7 @@ group { name: "e/widgets/ilist_header_odd";
       }
       part {
          name:           "event";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
@@ -28435,7 +28496,8 @@ group {
    parts {
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:         NONE;
          mouse_events:   0;
@@ -28494,7 +28556,7 @@ group {
          name:          "base";
       mouse_events:1;
       repeat_events:1;
-         type:          RECT;
+         type: RECT;
          description {
                 state:    "default" 0.0;
                 rel1 {
@@ -28705,7 +28767,8 @@ group {
           
           part {
          name:          "e.text.title";
-         type:          TEXT;
+         type: TEXT;
+         scale: 1;
                  effect: SOFT_SHADOW;
          mouse_events:  0;
          description {
@@ -28754,7 +28817,7 @@ group {
           }
           part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
       mouse_events:1;
       repeat_events:1;
          description {
@@ -28822,7 +28885,7 @@ group {
    parts {
           part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
                 state:    "default" 0.0;
                 align:    0.0 0.0;
@@ -28843,7 +28906,7 @@ group {
    parts {
           part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
                 state:    "default" 0.0;
                 align:    0.0 0.0;
@@ -29030,7 +29093,7 @@ group {
    parts {
           part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
                 state:    "default" 0.0;
                 rel1 {
@@ -29264,7 +29327,8 @@ group {
           }
           part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:         NONE;
       mouse_events:1;
@@ -29330,7 +29394,7 @@ group {
           }
           part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
       mouse_events:1;
       repeat_events:1;
          description {
@@ -29748,7 +29812,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -29812,6 +29876,7 @@ group {
       part {
          name: "e.text.label";
          type: TEXT;
+         scale: 1;
          // effect: SHADOW;
          effect:   NONE;
          description {
@@ -29866,7 +29931,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -30067,6 +30132,7 @@ group {
       part {
          name: "e.text.label";
          type: TEXT;
+         scale: 1;
          // effect: SOFT_SHADOW;
          effect: NONE;
          mouse_events: 0;
@@ -30148,7 +30214,7 @@ group {
       }
       part {
          name:          "items_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -30165,7 +30231,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "items_clip";
          description {
             state:    "default" 0.0;
@@ -30221,7 +30287,7 @@ group {
    part {
          name:          "clip";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -30409,7 +30475,7 @@ group {
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "clip";
          description {
             state:    "default" 0.0;
@@ -30423,7 +30489,7 @@ group {
       }
       part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -30774,7 +30840,7 @@ group {
       }
       part {
          name:           "e.swallow.icon";
-         type:           SWALLOW;
+         type: SWALLOW;
          description {
             state:       "default" 0.0;
             align:       1.0 1.0;
@@ -30835,7 +30901,7 @@ group {
    parts {
       part {
          name:          "e/pointer";
-         type:          IMAGE;
+         type: IMAGE;
          mouse_events:  0;
          description {
             state: "default" 0.0;
@@ -30861,7 +30927,7 @@ group {
       }
       part {
          name:          "e.swallow.hotspot";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             visible:  0;
@@ -30903,7 +30969,7 @@ group {
    parts {
       part {
          name:          "e/pointer";
-         type:          IMAGE;
+         type: IMAGE;
          mouse_events:  0;
          description {
             state:  "default" 0.0;
@@ -30914,7 +30980,7 @@ group {
       }
       part {
          name:          "hotspot";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             visible:  0;
@@ -31083,7 +31149,8 @@ group {
       }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:         NONE;
          mouse_events:   0;
@@ -31121,7 +31188,7 @@ group {
       }
       part {
          name:           "event";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
@@ -31274,7 +31341,7 @@ group {
       }
       part {
          name:           "e.swallow.icon";
-         type:           SWALLOW;
+         type: SWALLOW;
          clip_to:        "icon_clip";
          description {
             state: "default" 0.0;
@@ -31306,7 +31373,7 @@ group {
       }
       part {
          name:           "icon_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -31327,7 +31394,7 @@ group {
       }
       part {
          name:           "label_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -31340,7 +31407,8 @@ group {
       }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:         NONE;
          mouse_events:   0;
@@ -31380,7 +31448,7 @@ group {
       }
       part {
          name:           "event";
-         type:           RECT;
+         type: RECT;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
@@ -31498,7 +31566,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -31563,6 +31631,7 @@ group {
       part {
          name: "e.text.label";
          type: TEXT;
+         scale: 1;
          // effect: SHADOW;
          effect: NONE;
          description {
@@ -33424,7 +33493,7 @@ group {        name: "e/shelf/default/base";
       }
           
          part {         name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -33802,7 +33871,7 @@ group {   name: "e/shelf/default/plain";
    parts {
       part {
          name:          "items_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -33817,7 +33886,7 @@ group {   name: "e/shelf/default/plain";
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "items_clip";
          description {
             state:    "default" 0.0;
@@ -34019,7 +34088,7 @@ group {        name: "e/shelf/no_frills/base";
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -34292,7 +34361,7 @@ group {   name: "e/shelf/alternate/plain";
    parts {
       part {
          name:          "items_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -34307,7 +34376,7 @@ group {   name: "e/shelf/alternate/plain";
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "items_clip";
          description {
             state:    "default" 0.0;
@@ -34345,7 +34414,7 @@ group {   name: "e/shelf/invisible/base";
     
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -34359,7 +34428,7 @@ group {   name: "e/shelf/invisible/base";
       part {
          name:          "base";
          mouse_events:  1;
-         type:          RECT;
+         type: RECT;
          repeat_events: 1;
          description {
             state:    "default" 0.0;
@@ -34558,7 +34627,7 @@ group {   name: "e/shelf/invisible/inset";
       }
       part {
          name:          "items_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -34575,7 +34644,7 @@ group {   name: "e/shelf/invisible/inset";
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "items_clip";
          description {
             state:    "default" 0.0;
@@ -34609,7 +34678,7 @@ group {   name: "e/shelf/invisible/plain";
    parts {
       part {
          name:          "items_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -34624,7 +34693,7 @@ group {   name: "e/shelf/invisible/plain";
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "items_clip";
          description {
             state:    "default" 0.0;
@@ -35057,7 +35126,7 @@ group {        name: "e/shelf/default_transparent/base";
 
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -35642,7 +35711,7 @@ group {        name: "e/shelf/no_frills_transparent/base";
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -35916,7 +35985,7 @@ group {   name: "e/shelf/default/inset";
       }
       part {
          name:          "items_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -35933,7 +36002,7 @@ group {   name: "e/shelf/default/inset";
       }
       part {
          name:          "e.swallow.content";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "items_clip";
          description {
             state:    "default" 0.0;
@@ -36079,7 +36148,8 @@ group {
       }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          mouse_events:   0;
          clip_to: "clip";
          description {
@@ -36505,7 +36575,8 @@ group {
       }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          mouse_events:   0;
          clip_to: "clip";
          description {
@@ -36869,6 +36940,7 @@ group {
       part {
          name: "e.text.label";
          type: TEXT;
+         scale: 1;
          effect: SOFT_SHADOW;
          mouse_events: 0;
          description {
@@ -37093,7 +37165,7 @@ group {
       }
        part {
          name:           "inout";
-         type:           RECT;
+         type: RECT;
          mouse_events:   1;
          description {
             state: "default" 0.0;
@@ -37284,7 +37356,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -37345,7 +37417,8 @@ group {
       }
       part {
          name:          "e.textblock.message";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
+         scale: 1;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -37457,7 +37530,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -37518,7 +37591,8 @@ group {
       }
       part {
          name:          "e.textblock.message";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
+         scale: 1;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -37629,7 +37703,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -37690,7 +37764,8 @@ group {
       }
       part {
          name:          "e.textblock.message";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
+         scale: 1;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -37800,7 +37875,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -37861,7 +37936,8 @@ group {
       }
       part {
          name:          "e.textblock.message";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
+         scale: 1;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -37971,7 +38047,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -38032,7 +38108,8 @@ group {
       }
       part {
          name:          "e.textblock.message";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
+         scale: 1;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -38207,7 +38284,8 @@ group {
       }
       part {
          name:           "e.text.reading";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          effect:         OUTLINE_SOFT_SHADOW;
          clip_to:        "fade_clip";
          description {
@@ -38236,7 +38314,7 @@ group {
       }
       part {
          name:           "fade_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -38250,7 +38328,7 @@ group {
       part {
          // +10 -46 / 124
          name:           "temp_clip";
-         type:           RECT;
+         type: RECT;
          clip_to:        "fade_clip";
          mouse_events:   0;
          description {
@@ -38267,7 +38345,7 @@ group {
       part {
          // +10 -46 / 124
          name:           "temp_top";
-         type:           RECT;
+         type: RECT;
          dragable {
             x: 0 0 0;
             y: -1 1 0;
@@ -38282,7 +38360,7 @@ group {
       part {
          // +10 -46 / 124
          name:           "temp_limit";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -38336,7 +38414,8 @@ group {
    parts {
       part {
          name:          "e.textblock.text";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
+         scale: 1;
          mouse_events:  0;
          description {
             state:    "default" 0.0;
@@ -38394,7 +38473,8 @@ group {
       
       part {
          name:          "about";
-         type:          TEXTBLOCK;
+         type: TEXTBLOCK;
+         scale: 1;
          mouse_events: 1;
          repeat_events:  1;
          description {
@@ -38676,37 +38756,6 @@ group
                        // size.offset: 1 6;
                     }
                }
-             description 
-               {
-                  state: "bottom" 0.0;
-                  inherit: "default" 0.0;
-                  fill 
-                    {
-                       origin.offset: 0 0;
-                        size.offset: 0 6;
-                       // size.offset: 1 6;
-                    }
-               }
-             description 
-               {
-                  state: "left" 0.0;
-                  inherit: "default" 0.0;
-                  fill 
-                    {
-                       origin.offset: -6 -16;
-                       size.offset: 6 16;
-                    }
-               }
-             description 
-               {
-                  state: "right" 0.0;
-                  inherit: "default" 0.0;
-                  fill 
-                    {
-                       origin.offset: 0 0;
-                       size.offset: 6 0;
-                    }
-               }
           }
         part 
           {
@@ -38735,66 +38784,6 @@ group
                   rel1.offset: 18 2;
                   rel2.offset: -19 -3;
                }
-             description 
-               {
-                  state: "bottom" 0.0;
-                  inherit: "default" 0.0;
-                  rel1.offset: 18 2;
-                  rel2.offset: -19 -3;
-               }
-             description 
-               {
-                  state: "left" 0.0;
-                  inherit: "default" 0.0;
-                  rel1.offset: 2 18;
-                  rel2.offset: -3 -19;
-               }
-             description 
-               {
-                  state: "right" 0.0;
-                  inherit: "default" 0.0;
-                  rel1.offset: 2 18;
-                  rel2.offset: -3 -19;
-               }
-          }
-     }
-   programs 
-     {
-        program 
-          {
-             name: "orient1";
-             signal: "e,state,orientation,top";
-             source: "e";
-             action: STATE_SET "default" 0.0;
-             target: "bg";
-             target: "e.swallow.content";
-          }
-        program 
-          {
-             name: "orient2";
-             signal: "e,state,orientation,bottom";
-             source: "e";
-             action: STATE_SET "bottom" 0.0;
-             target: "bg";
-             target: "e.swallow.content";
-          }
-        program 
-          {
-             name: "orient3";
-             signal: "e,state,orientation,left";
-             source: "e";
-             action: STATE_SET "left" 0.0;
-             target: "bg";
-             target: "e.swallow.content";
-          }
-        program 
-          {
-             name: "orient4";
-             signal: "e,state,orientation,right";
-             source: "e";
-             action: STATE_SET "right" 0.0;
-             target: "bg";
-             target: "e.swallow.content";
           }
      }
 }
@@ -38845,14 +38834,14 @@ group {
    parts {
       part {
          name:          "e.swallow.bg.old";
-         type:          SWALLOW;
+         type: SWALLOW;
          description {
             state: "default" 0.0;
          }
       }
       part {
          name:          "e.swallow.bg.new";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "bg_new_clip";
          description {
             state: "default" 0.0;
@@ -38860,7 +38849,7 @@ group {
       }
       part {
          name:          "bg_new_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state: "default" 0.0;
@@ -38895,7 +38884,7 @@ group {
    parts {
       part {
          name:          "e.swallow.bg.old";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "bg_prev_clip";
          description {
             state: "default" 0.0;
@@ -38903,7 +38892,7 @@ group {
       }
       part {
          name:          "e.swallow.bg.new";
-         type:          SWALLOW;
+         type: SWALLOW;
          clip_to:       "bg_new_clip";
          description {
             state: "default" 0.0;
@@ -38911,7 +38900,7 @@ group {
       }
       part {
          name:          "bg_prev_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             rel1 {
@@ -38939,7 +38928,7 @@ group {
       }
       part {
          name:          "bg_new_clip";
-         type:          RECT;
+         type: RECT;
          mouse_events:  0;
          description {
             state: "default" 0.0;
@@ -39024,7 +39013,7 @@ group {
       part {
          name:          "base";
          mouse_events:  0;
-         type:          RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -39171,6 +39160,7 @@ group {
       part {
          name: "e.text.title";
          type: TEXT;
+         scale: 1;
          effect: SOFT_SHADOW;
          mouse_events: 0;
          description {
@@ -39251,6 +39241,7 @@ group {
       part {
          name: "e.text.label";
          type: TEXT;
+         scale: 1;
          effect: SOFT_SHADOW;
          mouse_events: 0;
          description {
@@ -39507,7 +39498,7 @@ group {
       part {
          name:          "oz5_right_border";
          mouse_events:  0;
-         type:  RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -39525,7 +39516,7 @@ group {
       part {
          name:          "oz5_right_border_1";
          mouse_events:  0;
-         type:  RECT;
+         type: RECT;
          description {
             state:    "default" 0.0;
             rel1 {
@@ -39724,7 +39715,8 @@ group {
       }
      part {
         name:           "title2";
-        type:           TEXT;
+        type: TEXT;
+        scale: 1;
         mouse_events:   0;
         description {
            state: "default" 0.0;
@@ -39749,7 +39741,8 @@ group {
      }
       part {
          name:           "e.text.label";
-         type:           TEXT;
+         type: TEXT;
+         scale: 1;
          // effect:         SHADOW;
          effect:         NONE;
          mouse_events:   0;
@@ -39786,7 +39779,7 @@ group {
       }
       part {
          name:           "title_glint_clip";
-         type:           RECT;
+         type: RECT;
          mouse_events:   0;
          description {
             state: "default" 0.0;
@@ -40013,7 +40006,7 @@ group {
       }
       part {
          name:          "e.event.winlist.item";
-         type:          RECT;
+         type: RECT;
          mouse_events:  1;
          description {
             state:    "default" 0.0;
@@ -40252,6 +40245,7 @@ group {
       part {
          name: "e.text.title";
          type: TEXT;
+         scale: 1;
          effect: SOFT_SHADOW;
          mouse_events:  0;
          description {
@@ -40316,6 +40310,7 @@ group {
       part {
          name: "e.button.back.label";
          type: TEXT;
+         scale: 1;
          effect: SOFT_SHADOW;
          mouse_events:  0;
          description {
@@ -40395,6 +40390,7 @@ group {
       part {
          name: "e.button.next.label";
          type: TEXT;
+         scale: 1;
          effect: SOFT_SHADOW;
          mouse_events:  0;
          description {

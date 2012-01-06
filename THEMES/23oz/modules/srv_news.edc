@@ -2,14 +2,14 @@
 
 images
 {
-	image: "modules/news/feed_background_new.png" COMP;
+        image: "modules/news/feed_background_new.png" COMP;
         image: "modules/news/feed_border.png" COMP;
 
-	image: "modules/news/popup_warn_background.png" COMP;
-	image: "modules/news/popup_warn_disable_clicked.png" COMP;
-	image: "modules/news/popup_warn_disable.png" COMP;
-	image: "modules/news/popup_warn_logo_error.png" COMP;
-	image: "modules/news/popup_warn_logo_info.png" COMP;
+        image: "modules/news/popup_warn_background.png" COMP;
+        image: "modules/news/popup_warn_disable_clicked.png" COMP;
+        image: "modules/news/popup_warn_disable.png" COMP;
+        image: "modules/news/popup_warn_logo_error.png" COMP;
+        image: "modules/news/popup_warn_logo_info.png" COMP;
 
         image: "modules/news/icon_logo.png" COMP;
         image: "modules/news/icon_article_read.png" COMP;

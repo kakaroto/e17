@@ -9,18 +9,18 @@ group
         {
                 part
                 {
-                	name: "icon";
-                	type: IMAGE;
-                	mouse_events: 0;
-                	description
-                	{
-                		state: "default" 0.0;
-                		aspect: 1.0 1.0;
-                		image
-                		{
-                			normal: "modules/news/icon_article_read.png";
-                		}
-                	}
+                        name: "icon";
+                        type: IMAGE;
+                        mouse_events: 0;
+                        description
+                        {
+                                state: "default" 0.0;
+                                aspect: 1.0 1.0;
+                                image
+                                {
+                                        normal: "modules/news/icon_article_read.png";
+                                }
+                        }
                 }
         }
 }
@@ -33,18 +33,18 @@ group
         {
                 part
                 {
-                	name: "icon";
-                	type: IMAGE;
-                	mouse_events: 0;
-                	description
-                	{
-                		state: "default" 0.0;
-                		aspect: 1.0 1.0;
-                		image
-                		{
-                			normal: "modules/news/icon_article_unread.png";
-                		}
-                	}
+                        name: "icon";
+                        type: IMAGE;
+                        mouse_events: 0;
+                        description
+                        {
+                                state: "default" 0.0;
+                                aspect: 1.0 1.0;
+                                image
+                                {
+                                        normal: "modules/news/icon_article_unread.png";
+                                }
+                        }
                 }
         }
 }
@@ -57,25 +57,25 @@ group
         {
                 part
                 {
-                	name: "icon";
-                	type: IMAGE;
-                	mouse_events: 0;
-                	description
-                	{
-                		state: "default" 0.0;
-                		aspect: 1.0 1.0;
-				//rel1 {
-				//    relative: 1.0 1.0;
-				//    // offset: 120 0;
-				// }
-				//rel2 {
-				//    // offset: 120 0;
-				// }
-                		image
-                		{
-                			normal: "modules/news/icon_update.png";
-                		}
-                	}
+                        name: "icon";
+                        type: IMAGE;
+                        mouse_events: 0;
+                        description
+                        {
+                                state: "default" 0.0;
+                                aspect: 1.0 1.0;
+                                //rel1 {
+                                //    relative: 1.0 1.0;
+                                //    // offset: 120 0;
+                                // }
+                                //rel2 {
+                                //    // offset: 120 0;
+                                // }
+                                image
+                                {
+                                        normal: "modules/news/icon_update.png";
+                                }
+                        }
                 }
         }
 }
@@ -88,25 +88,25 @@ group
         {
                 part
                 {
-                	name: "icon";
-                	type: IMAGE;
-                	mouse_events: 0;
-                	description
-                	{
-                		state: "default" 0.0;
-                		aspect: 1.0 1.0;
-				// rel1 {
-				//    relative: 1.0 1.0;
-				//    // offset: 120 0;
-				// }
-				//rel2 {
-				//    // offset: 120 0;
-				// }
-                		image
-                		{
-                			normal: "modules/news/icon_setasread.png";
-                		}
-                	}
+                        name: "icon";
+                        type: IMAGE;
+                        mouse_events: 0;
+                        description
+                        {
+                                state: "default" 0.0;
+                                aspect: 1.0 1.0;
+                                // rel1 {
+                                //    relative: 1.0 1.0;
+                                //    // offset: 120 0;
+                                // }
+                                //rel2 {
+                                //    // offset: 120 0;
+                                // }
+                                image
+                                {
+                                        normal: "modules/news/icon_setasread.png";
+                                }
+                        }
                 }
         }
 }

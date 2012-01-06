@@ -9,44 +9,44 @@ group
 {
         name: "modules/news/popw";
 
-	script
-	{
-		public show_disabled;
+        script
+        {
+                public show_disabled;
                 public popup_type;
                 public popup_in_update;
 
-		/* Message from C code */
-		public message(Msg_Type: type, id, msg)
-		{
-        		if (id == MSG_RECV_POPUP_WARN_TYPE){
-        			if (type == MSG_INT){
-        				set_int(popup_type, getarg(2));
+                /* Message from C code */
+                public message(Msg_Type: type, id, msg)
+                {
+                        if (id == MSG_RECV_POPUP_WARN_TYPE){
+                                if (type == MSG_INT){
+                                        set_int(popup_type, getarg(2));
                                         if (get_int(popup_type) == POPUP_WARN_TYPE_INFO)
                                         {
                                                 if (get_int(popup_in_update))
                                                         run_program(PROGRAM:"update_anim_info");
                                                 else
-                        				set_state(PART:"logo", "default", 0.0);
+                                                        set_state(PART:"logo", "default", 0.0);
                                         }
                                         if (get_int(popup_type) == POPUP_WARN_TYPE_ERROR)
                                         {
                                                 if (get_int(popup_in_update))
                                                         run_program(PROGRAM:"update_anim_error");
                                                 else
-                        				set_state(PART:"logo", "error", 0.0);
+                                                        set_state(PART:"logo", "error", 0.0);
                                         }
-        	      		}
-        		}
-        	}
+                                      }
+                        }
+                }
         }
 
         parts
         {
-		#include "module_popw_parts.edc"
+                #include "module_popw_parts.edc"
         }
 
         programs
         {
-		#include "module_popw_programs.edc"
+                #include "module_popw_programs.edc"
         }
 }

@@ -41,7 +41,7 @@ group {
    parts {
       part {
     name:           "base";
-    type:           RECT;
+    type: RECT;
     mouse_events:   1;
     description {
        state: "default" 0.0;
@@ -52,7 +52,7 @@ group {
       }
       part {
     name:         "icon";
-    type:         SWALLOW;
+    type: SWALLOW;
     mouse_events: 0;
     description {
        state:    "default" 0.0;
@@ -71,7 +71,8 @@ group {
       }
       part {
     name:         "e.text.temp";
-    type:         TEXT;
+    type: TEXT;
+    scale: 1;
     // effect:       SOFT_SHADOW;
     effect:       SOFT_OUTLINE;
     mouse_events: 0;
@@ -103,7 +104,8 @@ group {
       }
       part {
     name:         "e.text.description";
-    type:         TEXT;
+    type: TEXT;
+    scale: 1;
     // effect:       OUTLINE_SOFT_SHADOW;
     effect:       SOFT_OUTLINE;
     mouse_events: 0;
@@ -166,7 +168,7 @@ group {
    parts {
       part {
     name:           "base";
-    // type:           RECT;    
+    // type: RECT;    
     description {
        state: "default" 0.0;
       // color: 2 43 37 255;
