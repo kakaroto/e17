@@ -1,49 +1,49 @@
 program{
-   name:   "init";
-   signal: "load";
-   source: "";
-   script{
-      set_int(popup_type, POPUP_WARN_TYPE_INFO);
-      set_int(popup_in_update, 0);
-   }
+	name:   "init";
+	signal: "load";
+	source: "";
+	script{
+		set_int(popup_type, POPUP_WARN_TYPE_INFO);
+		set_int(popup_in_update, 0);
+	}
 }
 
 program
 {
-   name:   "disable_click";
-   signal:   "mouse,up,1";
-   source:   "disable";
-   script
-   {
-      emit("desactivate", "popup");
-   }
+	name:	"disable_click";
+	signal:	"mouse,up,1";
+	source:	"disable";
+	script
+	{
+		emit("desactivate", "popup");
+	}
         after: "disable_click_1";
 }
 
 program
 {
-   name:   "disable_click_1";
-   action: STATE_SET "clicked" 0.0;
-   transition: DECELERATE 1.5;
-   target: "disable";
+	name:	"disable_click_1";
+	action: STATE_SET "clicked" 0.0;
+	transition: DECELERATE 1.5;
+	target: "disable";
         after: "close_click";
 }
 
 program
 {
-   name: "close_click";
-   signal: "mouse,up,1";
-   source: "background";
-   script
-   {
-      emit("close", "popup");
-   }
+	name: "close_click";
+	signal: "mouse,up,1";
+	source: "background";
+	script
+	{
+		emit("close", "popup");
+	}
 }
 
 program{
-   name: "update_anim";
-   signal: "update";
-   source: "devian";
+	name: "update_anim";
+	signal: "update";
+	source: "devian";
         script{
                 if (get_int(popup_in_update) == 0)
                 {
@@ -57,35 +57,35 @@ program{
 }
 
 program{
-   name: "update_anim_info";
-   action: STATE_SET "info_hidden" 0.0;
-   transition: DECELERATE 1;
-   target: "logo";
-   after: "update_anim_info_1";
-   after: "update_anim_end";
+	name: "update_anim_info";
+	action: STATE_SET "info_hidden" 0.0;
+	transition: DECELERATE 1;
+	target: "logo";
+	after: "update_anim_info_1";
+	after: "update_anim_end";
 }
 
 program{
-   name: "update_anim_info_1";
-   action: STATE_SET "default" 0.0;
-   transition: DECELERATE 1;
-   target: "logo";
+	name: "update_anim_info_1";
+	action: STATE_SET "default" 0.0;
+	transition: DECELERATE 1;
+	target: "logo";
 }
 
 program{
-   name: "update_anim_error";
-   action: STATE_SET "error_hidden" 0.0;
-   transition: DECELERATE 1;
-   target: "logo";
-   after: "update_anim_error_1";
-   after: "update_anim_end";
+	name: "update_anim_error";
+	action: STATE_SET "error_hidden" 0.0;
+	transition: DECELERATE 1;
+	target: "logo";
+	after: "update_anim_error_1";
+	after: "update_anim_end";
 }
 
 program{
-   name: "update_anim_error_1";
-   action: STATE_SET "error" 0.0;
-   transition: DECELERATE 1;
-   target: "logo";
+	name: "update_anim_error_1";
+	action: STATE_SET "error" 0.0;
+	transition: DECELERATE 1;
+	target: "logo";
 }
 
 program{

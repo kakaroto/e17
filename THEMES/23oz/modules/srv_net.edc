@@ -234,10 +234,10 @@ group
          name: "base";
          mouse_events: 0;
          // type: IMAGE;
-    description {
+	 description {
             state: "default" 0.0;
-           min: 160 70;
-       // color: 2 43 37 255;
+    	    min: 160 70;
+	    // color: 2 43 37 255;
             image {
                 normal: "modules/net/menu_panel.png";
                 // border: 2 43 37 255;
@@ -248,7 +248,7 @@ group
       part {
          name: "e.text.title";
          type: TEXT;
-    // effect: SHADOW;
+	 // effect: SHADOW;
           effect: GLOW;
          mouse_events: 0;
          description {
@@ -264,8 +264,8 @@ group
                offset: 0 20;
             }
             // color: DKGRAY 255;
-       color: 255 255 255 255;
-       color2: 0 0 0 255;
+	    color: 255 255 255 255;
+	    color2: 0 0 0 255;
             color3: 255 255 255 120;
             color_class: "menu_title";
             text {
@@ -306,7 +306,7 @@ group
          name: "e.text.recv";
          type: TEXT;
          // effect: NONE;
-    effect: GLOW;
+	 effect: GLOW;
          mouse_events: 0;
          description {
             state: "default" 0.0;
@@ -323,8 +323,8 @@ group
                offset: 4 0;
             }
             // color: 78 154 6 255;
-       color: 19 82 120 255;
-       color2: 255 255 255 255;
+	    color: 19 82 120 255;
+	    color2: 255 255 255 255;
             color3: 19 82 120 150;
             color_class: "menu_item";
             text {
@@ -358,8 +358,8 @@ group
                offset: 4 16;
             }
             // color: 164 0 0 255;
-       color: 255 0 0 255;
-       color2: 0 0 0 255;
+	    color: 255 0 0 255;
+	    color2: 0 0 0 255;
             color3: 255 0 0 120;
             color_class: "menu_item";
             text {
