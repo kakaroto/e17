@@ -109,25 +109,25 @@ list_items[6] =	{
 
 function button_prepend() {
     print("button_prepend");
-    win.elements.box.elements.scroll.content.elements.the_list.prepend(list_items[6]);
+    win.elements.box.elements.the_list.prepend(list_items[6]);
 }
 function button_append() {
     print("button_append");
-    win.elements.box.elements.scroll.content.elements.the_list.append(list_items[4]);
+    win.elements.box.elements.the_list.append(list_items[4]);
 }
 function button_del() {
     print("button_del");
-    win.elements.box.elements.scroll.content.elements.the_list.del(0);
+    win.elements.box.elements.the_list.del(0);
 }
 function button_set() {
     print("button_set");
-    win.elements.box.elements.scroll.content.elements.the_list.set_label(4, "Changing labels");
-    win.elements.box.elements.scroll.content.elements.the_list.set_tooltip(4, "Howdy Partner");
-    win.elements.box.elements.scroll.content.elements.the_list.set_icon(4, small_icon);
+    win.elements.box.elements.the_list.set_label(4, "Changing labels");
+    win.elements.box.elements.the_list.set_tooltip(4, "Howdy Partner");
+    win.elements.box.elements.the_list.set_icon(4, small_icon);
 }
 function button_get() {
-    var label = win.elements.box.elements.scroll.content.elements.the_list.get_label(4);
-    var tooltip = win.elements.box.elements.scroll.content.elements.the_list.get_tooltip(4);
+    var label = win.elements.box.elements.the_list.get_label(4);
+    var tooltip = win.elements.box.elements.the_list.get_tooltip(4);
     print("JS Get Callback : " + label + " " + tooltip);
 }
 
@@ -149,25 +149,10 @@ var win = new elm.window({
             align : FILL_BOTH,
             resize : true,
             elements : {
-                scroll : {
-                    type : "scroller",
-                    bounce : { x : false, y : true },
-                    policy : { x : "off", y : "on" },
-                    weight : EXPAND_BOTH,
-                    align : FILL_BOTH,
-                    resize : true,
-                    content : {
-                        type : "box",
-                        weight : EXPAND_BOTH,
-                        align : FILL_BOTH,
-                        elements : {
-                            the_list : {
-                                type : "list",
-                                weight : EXPAND_BOTH,
-                                align : FILL_BOTH,
-                            },
-                        },
-                    },
+               the_list : {
+                   type : "list",
+                   weight : EXPAND_BOTH,
+                   align : FILL_BOTH,
                 },
                 but_box : {
                     type : "box",
