@@ -26,10 +26,8 @@
 #include <stdarg.h>
 #ifdef HAVE_MYSQL_H
 #include <mysql.h>
-#include <my_global.h>
 #else
 #include <mysql/mysql.h>
-#include <mysql/my_global.h>
 #endif
 
 #include "mysac_utils.h"
