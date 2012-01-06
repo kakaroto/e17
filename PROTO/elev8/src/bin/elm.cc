@@ -7,6 +7,7 @@
 
 #include <list>
 #include <map>
+#include <string>
 #include <elev8_common.h>
 
 
@@ -2381,6 +2382,15 @@ class CElmGenList : public CEvasObject {
 protected:
    CPropHandler<CElmGenList> prop_handler;
 
+   class GenListItemClass {
+   public:
+     Local<Value> text_get;
+     Handle<Value> content_get;
+     Handle<Value> state_get;
+     Handle<Value> del;
+     std::string item_style;
+   };
+
 public:
    CElmGenList(CEvasObject *parent, Local<Object> obj) :
        CEvasObject(),
@@ -2388,6 +2398,53 @@ public:
      {
         eo = elm_genlist_add(parent->top_widget_get());
         construct(eo, obj);
+        get_object()->Set(String::New("append"), FunctionTemplate::New(append)->GetFunction());
+     }
+
+
+   /* GenList functions that are going to do the heavy weight lifting */
+   static char *text_get(void *data, Evas_Object *obj, const char *part)
+     {
+     }
+
+   static Evas_Object *content_get(void *data, Evas_Object *obj, const char *part)
+     {
+     }
+
+   static Eina_Bool state_get(void *data, Evas_Object *obj, const char *part)
+     {
+        return EINA_FALSE;
+     }
+
+   static void *del(void *data, Evas_Object *obj)
+     {
+     }
+
+   static void *sel(void *data, Evas_Object *obj, void *event_info)
+     {
+     }
+   /* End of GenList functions */
+
+   static Handle<Value> append(const Arguments& args)
+     {
+        CEvasObject *self = eo_from_info(args.This());
+        CElmGenList *genlist = static_cast<CElmGenList *>(self);
+        if (args[0]->IsObject())
+          {
+             CEvasObject *temp = realize_one(genlist, args[0]);
+
+             Elm_Genlist_Item_Class *itc = (Elm_Genlist_Item_Class *)malloc(sizeof(Elm_Genlist_Item_Class));
+
+             itc->item_style = "default";
+             itc->func.text_get = text_get;
+             itc->func.content_get = content_get;
+             itc->func.state_get = state_get;
+             itc->func.del = NULL;
+             elm_genlist_item_append(genlist->get(), itc, NULL, NULL,
+                                        ELM_GENLIST_ITEM_NONE,
+                                        NULL, NULL);
+          }
+        return Undefined();
      }
 
    virtual Handle<Value> multi_select_get() const
