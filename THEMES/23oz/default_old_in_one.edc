@@ -16636,6 +16636,7 @@ group { name: "e/fileman/default/scrollframe";
          name: "sb_vbar";
          type: RECT;
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
             min: 16 16;
@@ -16674,6 +16675,7 @@ group { name: "e/fileman/default/scrollframe";
          type: RECT;
          clip_to: "sb_vbar";
          mouse_events: 1;
+         scale: 1;
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
@@ -16693,6 +16695,7 @@ group { name: "e/fileman/default/scrollframe";
          name: "sb_vbar_runner";
          clip_to: "sb_vbar";
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
             // max: 2 99999;
@@ -16715,6 +16718,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "sb_vbar_p1";
          type: RECT;
+         scale: 1;
          clip_to: "sb_vbar";
          mouse_events: 1;
          description {
@@ -16735,6 +16739,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "sb_vbar_p2";
          type: RECT;
+         scale: 1;
          clip_to: "sb_vbar";
          mouse_events: 1;
          description {
@@ -16756,6 +16761,7 @@ group { name: "e/fileman/default/scrollframe";
          name: "e.dragable.vbar";
          clip_to: "sb_vbar";
          mouse_events: 1;
+         scale: 1;
          dragable {
             x: 0 0 0;
             y: 1 1 0;
@@ -16792,6 +16798,7 @@ group { name: "e/fileman/default/scrollframe";
          name: "vbar_bar_thumb";
          clip_to: "sb_vbar";
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
             max: 8 8;
@@ -16811,6 +16818,7 @@ group { name: "e/fileman/default/scrollframe";
          name: "slider_glow_vbar";
          repeat_events: 1;
          mouse_events: 0;
+         scale: 1;
          // clip_to: "clip";
          description {
             state: "default" 0.0;
@@ -16839,6 +16847,7 @@ group { name: "e/fileman/default/scrollframe";
       part {      
          name: "sb_vbar_a1";
          type: IMAGE;
+         scale: 1;
          mouse_events: 1;
          clip_to: "sb_vbar";
          description {
@@ -16871,6 +16880,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "sb_vbar_a2";
          type: IMAGE;
+         scale: 1;
          mouse_events: 1;
          clip_to: "sb_vbar";
          description {
@@ -16904,6 +16914,7 @@ group { name: "e/fileman/default/scrollframe";
          name: "sb_hbar";
          type: RECT;
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
             min: 16 16;
@@ -16939,6 +16950,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "sb_hbar_base";
          type: RECT;
+         scale: 1;
          clip_to: "sb_hbar";
          mouse_events: 1;
          description {
@@ -16959,6 +16971,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "sb_hbar_runner";
          clip_to: "sb_hbar";
+         scale: 1;
          mouse_events: 0;
          description {
             state: "default" 0.0;
@@ -16982,6 +16995,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "sb_hbar_p1";
          type: RECT;
+         scale: 1;
          clip_to: "sb_hbar";
          mouse_events: 1;
          description {
@@ -17002,6 +17016,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "sb_hbar_p2";
          type: RECT;
+         scale: 1;
          clip_to: "sb_hbar";
          mouse_events: 1;
          description {
@@ -17022,6 +17037,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "e.dragable.hbar";
          clip_to: "sb_hbar";
+         scale: 1;
          mouse_events: 1;
          dragable {
             x: 1 1 0;
@@ -17060,6 +17076,7 @@ group { name: "e/fileman/default/scrollframe";
          name: "hbar_bar_thumb";
          clip_to: "sb_hbar";
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
             max: 8 8;
@@ -17079,6 +17096,7 @@ group { name: "e/fileman/default/scrollframe";
          name: "slider_glow_hbar";
          repeat_events: 1;
          mouse_events: 0;
+         scale: 1;
          // clip_to: "clip";
          description {
             state: "default" 0.0;
@@ -17107,6 +17125,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "sb_hbar_a1";
          type: IMAGE;
+         scale: 1;
          mouse_events: 1;
          clip_to: "sb_hbar";
          description {
@@ -17139,6 +17158,7 @@ group { name: "e/fileman/default/scrollframe";
       part {
          name: "sb_hbar_a2";
          type: IMAGE;
+         scale: 1;
          mouse_events: 1;
          clip_to: "sb_hbar";
          description {
@@ -20020,6 +20040,7 @@ group {  name: "e/fileman/desktop/scrollframe";
          name: "sb_vbar";
          type: RECT;
          mouse_events: 0;
+         scale: 1;
          description {
             state: "default" 0.0;
             min: 16 16;
@@ -20056,6 +20077,7 @@ group {  name: "e/fileman/desktop/scrollframe";
       part {
          name: "sb_vbar_base";
          type: RECT;
+         scale: 1;
          clip_to: "sb_vbar";
          mouse_events: 1;
          description {
@@ -20076,6 +20098,7 @@ group {  name: "e/fileman/desktop/scrollframe";
       part {
          name: "sb_vbar_runner";
          clip_to: "sb_vbar";
+         scale: 1;
          mouse_events: 0;
          description {
             state: "default" 0.0;
@@ -20099,6 +20122,7 @@ group {  name: "e/fileman/desktop/scrollframe";
       part {
          name: "sb_vbar_p1";
          type: RECT;
+         scale: 1;
          clip_to: "sb_vbar";
          mouse_events: 1;
          description {
@@ -20119,6 +20143,7 @@ group {  name: "e/fileman/desktop/scrollframe";
       part {
          name: "sb_vbar_p2";
          type: RECT;
+         scale: 1;
          clip_to: "sb_vbar";
          mouse_events: 1;
          description {
@@ -20140,6 +20165,7 @@ group {  name: "e/fileman/desktop/scrollframe";
          name: "e.dragable.vbar";
          clip_to: "sb_vbar";
          mouse_events: 1;
+         scale: 1;
          dragable {
             x: 0 0 0;
             y: 1 1 0;
@@ -28928,6 +28954,7 @@ group {
           part {
          name:          "outline";
          mouse_events:  0;
+         scale: 1;
          description {
                 state:    "default" 0.0;
                 min:      16 16;
@@ -29011,6 +29038,7 @@ group {
           part {
          name:          "outline";
          mouse_events:  0;
+         scale: 1;
          description {
                 state:    "default" 0.0;
                 min:      16 16;
@@ -31745,6 +31773,7 @@ group {
           part {
          name: "sb_vbar";
          type: RECT;
+         scale: 1;
          mouse_events: 0;
          description {
                 state: "default_vbar" 0.0;
@@ -31785,6 +31814,7 @@ group {
           part {
          name: "sb_vbar_base";
          type: RECT;
+         scale: 1;
          clip_to: "sb_vbar";
          mouse_events: 1;
          description {
@@ -31894,6 +31924,7 @@ part {
           part {
          name: "sb_vbar_runner";
          clip_to: "sb_vbar";
+         scale: 1;
          mouse_events: 0;
          description {
                 state: "default" 0.0;
@@ -31920,6 +31951,7 @@ part {
           part {
          name: "sb_vbar_p1";
          type: RECT;
+         scale: 1;
          clip_to: "sb_vbar";
          mouse_events: 1;
          description {
@@ -31940,6 +31972,7 @@ part {
           part {
          name: "sb_vbar_p2";
          type: RECT;
+         scale: 1;
          clip_to: "sb_vbar";
          mouse_events: 1;
          description {
@@ -31960,6 +31993,7 @@ part {
           part {
          name: "e.dragable.vbar";
          clip_to: "sb_vbar";
+         scale: 1;
          mouse_events: 1;
          dragable {
                 x: 0 0 0;
@@ -31999,6 +32033,7 @@ part {
           part {
          name: "vbar_bar_thumb";
          clip_to: "sb_vbar";
+         scale: 1;
          mouse_events: 0;
          description {
                 state: "default" 0.0;
@@ -32018,6 +32053,7 @@ part {
       part {
          name: "slider_glow_vbar";
          repeat_events:  1;
+         scale: 1;
          // clip_to: "clip";
          description {
             state: "default" 0.0;
@@ -32045,6 +32081,7 @@ part {
           part {      
          name: "sb_vbar_a1";
          type: IMAGE;
+         scale: 1;
          mouse_events: 1;
          clip_to: "sb_vbar";
          description {
@@ -32078,6 +32115,7 @@ part {
           part {
          name: "sb_vbar_a2";
          type: IMAGE;
+         scale: 1;
          mouse_events: 1;
          clip_to: "sb_vbar";
          description {
@@ -32111,6 +32149,7 @@ part {
           part {
          name: "sb_hbar";
          type: RECT;
+         scale: 1;
          mouse_events: 0;
          description {
                 // state: "default" 0.0;
@@ -32172,6 +32211,7 @@ part {
           part {
          name: "sb_hbar_base";
          type: RECT;
+         scale: 1;
          clip_to: "sb_hbar";
          mouse_events: 1;
          description {
@@ -32192,6 +32232,7 @@ part {
           part {
          name: "sb_hbar_runner";
          clip_to: "sb_hbar";
+         scale: 1;
          mouse_events: 0;
          description {
                 state: "default" 0.0;
@@ -32215,6 +32256,7 @@ part {
           part {
          name: "sb_hbar_p1";
          type: RECT;
+         scale: 1;
          clip_to: "sb_hbar";
          mouse_events: 1;
          description {
@@ -32235,6 +32277,7 @@ part {
           part {
          name: "sb_hbar_p2";
          type: RECT;
+         scale: 1;
          clip_to: "sb_hbar";
          mouse_events: 1;
          description {
@@ -32254,6 +32297,7 @@ part {
           }
           part {
          name: "e.dragable.hbar";
+         scale: 1;
          clip_to: "sb_hbar";
          mouse_events: 1;
          dragable {
@@ -32292,6 +32336,7 @@ part {
          name: "hbar_bar_thumb";
          clip_to: "sb_hbar";
          mouse_events: 0;
+         scale: 1;
          description {
                 state: "default" 0.0;
                 max: 8 8;
@@ -32311,6 +32356,7 @@ part {
          name: "slider_glow_hbar";
          repeat_events: 1;
          // clip_to: "clip";
+         scale: 1;
          description {
             state: "default" 0.0;
             min: 11 11;
@@ -32337,6 +32383,7 @@ part {
           part {
          name: "sb_hbar_a1";
          type: IMAGE;
+         scale: 1;
          mouse_events: 1;
          clip_to: "sb_hbar";
          description {
@@ -32369,6 +32416,7 @@ part {
           part {
          name: "sb_hbar_a2";
          type: IMAGE;
+         scale: 1;
          mouse_events: 1;
          clip_to: "sb_hbar";
          description {
