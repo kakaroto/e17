@@ -9,17 +9,13 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 elm.datadir=elm.datadir + "/data/images/";
 
-var yellow = {
-	type : "icon",
-	prescale : 1,
-	image : elm.datadir + "yellow.png",
-};
 var orange = {
 	type : "icon",
 	prescale : 1,
 	image : elm.datadir + "orange.png",
 };
-var violet = {
+
+var violet =  {
 	type : "icon",
 	prescale : 1,
 	image : elm.datadir + "violet.png",
@@ -50,6 +46,7 @@ ItemType1.prototype = {
 		},
 		on_content : function(arg) {
 			print("Calling content get function.");
+			return orange;
 		},
 		on_state : function(arg) {
 			print("Calling state get function.");

@@ -2421,6 +2421,7 @@ protected:
      Persistent<Value> on_delete;
      std::string item_style;
      Elm_Genlist_Item_Class eitc;
+	 CElmGenList *genlist;
    };
 
 public:
@@ -2455,6 +2456,22 @@ public:
 
    static Evas_Object *content_get(void *data, Evas_Object *obj, const char *part)
      {
+	    printf("Invoking content get.\n");
+	    GenListItemClass *itc = (GenListItemClass *)data;
+        Handle<Function> fn(Function::Cast(*(itc->on_content)));
+        Local<Object> temp = Object::New();
+        temp->Set(String::New("part"), String::New(part));
+        temp->Set(String::New("data"), itc->data);
+        Handle<Value> args[1] = { temp };
+        Local<Value> retval = fn->Call(temp, 1, args);
+		if (retval->IsObject())
+		  {
+             CEvasObject *content = realize_one(itc->genlist, retval->ToObject());
+			 if(content)
+               return content->get();
+		  }
+		printf("returning null\n");
+		return NULL;
      }
 
    static Eina_Bool state_get(void *data, Evas_Object *obj, const char *part)
@@ -2491,6 +2508,7 @@ public:
              itc->eitc.func.content_get = content_get;
              itc->eitc.func.state_get = state_get;
              itc->eitc.func.del = del;
+			 itc->genlist = genlist;
              elm_genlist_item_append(genlist->get(), &itc->eitc, itc, NULL,
                                         ELM_GENLIST_ITEM_NONE,
                                         NULL, NULL);
