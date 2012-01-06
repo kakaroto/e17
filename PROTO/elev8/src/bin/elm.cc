@@ -995,6 +995,34 @@ public:
         return Boolean::New(evas_object_static_clip_get(eo));
      }
 
+   virtual void size_hint_aspect_set(Handle<Value> val)
+     {
+        if (!val->IsObject())
+          return ;
+        Evas_Aspect_Control a;
+        Evas_Coord w, h;
+        Local<Object> obj = val->ToObject();
+        Local<Value> aa = obj->Get(String::New("a"));
+        Local<Value> ww = obj->Get(String::New("w"));
+        Local<Value> hh = obj->Get(String::New("h"));
+        a = (Evas_Aspect_Control)aa->Int32Value();
+        w = ww->Int32Value();
+        h = hh->Int32Value();
+        evas_object_size_hint_aspect_set (eo, a, w, h);
+     }
+
+   virtual Handle<Value> size_hint_aspect_get(void) const
+     {
+        Evas_Aspect_Control a;
+        Evas_Coord w, h;
+        evas_object_size_hint_aspect_get (eo,  &a, &w, &h);
+        Local<Object> obj = Object::New();
+        obj->Set(String::New("a"), Number::New(a));
+        obj->Set(String::New("w"), Number::New(w));
+        obj->Set(String::New("h"), Number::New(h));
+        return obj;
+     }
+
 };
 
 template<> CEvasObject::CPropHandler<CEvasObject>::property_list
@@ -1028,6 +1056,7 @@ CEvasObject::CPropHandler<CEvasObject>::list[] = {
      PROP_HANDLER(CEvasObject, pointer_mode),
      PROP_HANDLER(CEvasObject, antialias),
      PROP_HANDLER(CEvasObject, static_clip),
+     PROP_HANDLER(CEvasObject, size_hint_aspect),
      { NULL, NULL, NULL },
 };
 
