@@ -21,7 +21,7 @@ export BUILD_C_BINDINGS="BINDINGS/cxx/eflxx BINDINGS/cxx/einaxx BINDINGS/cxx/eva
 export BUILD_BINDINGS=$BUILD_PYTHON_BINDINGS" "$BUILD_C_BINDINGS" "
 export BUILD_E_MODULES="E-MODULES-EXTRA/comp-scale E-MODULES-EXTRA/elfe E-MODULES-EXTRA/engage E-MODULES-EXTRA/everything-shotgun"
 export BUILD_EXAMPLE="EXAMPLES/elementary/calculator EXAMPLES/elementary/converter EXAMPLES/elementary/phonebook EXAMPLES/elementary/sticky-notes"
-export BUILD_ETC="exactness editje PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica enlil PROTO/emote emprint clouseau PROTO/enna-explorer envision ensure enjoy"
+export BUILD_ETC="exactness editje PROTO/eyelight FORMATTING/ecrustify ephoto edje_viewer PROTO/emap PROTO/azy elmdentica enlil PROTO/emote emprint clouseau PROTO/enna-explorer envision ensure enjoy ecrire"
 export BUILD_ETC2="excessive enki"
 
 PWD=`pwd`
@@ -53,7 +53,7 @@ function build()
 
 build "$BUILD_BASIC"
 build "$BUILD_PYTHON_BINDINGS" "--prefix=/usr/local"
-#build "$BUILD_C_BINDINGS"
+build "$BUILD_C_BINDINGS"
 build "$BUILD_E_MODULES $BUILD_EXAMPLE $BUILD_ETC"
 #build "$BUILD_ETC2"
 
@@ -91,6 +91,13 @@ pushd THEMES/darkness
 		./build.sh
 		cp *.edj ~/.elementary/themes
 	popd
+popd
+
+#23oz theme
+echo ""
+echo "============ 23oz ============"
+pushd THEMES/23oz
+	./build.sh -i
 popd
 
 rm tags -f
