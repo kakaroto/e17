@@ -67,7 +67,7 @@ em_gui_init(void)
    gui->w_tb = elm_toolbar_add(gui->w_win);
    elm_toolbar_icon_size_set(gui->w_tb, (16 * elm_scale_get()));
    elm_toolbar_align_set(gui->w_tb, 0.0);
-   elm_toolbar_mode_shrink_set(gui->w_tb, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_shrink_mode_set(gui->w_tb, ELM_TOOLBAR_SHRINK_SCROLL);
    evas_object_size_hint_weight_set(gui->w_tb, 0.0, 0.0);
    evas_object_size_hint_align_set(gui->w_tb, EVAS_HINT_FILL, 0.0);
 
@@ -82,7 +82,7 @@ em_gui_init(void)
    gui->w_chansel = elm_toolbar_add(gui->w_win);
    elm_toolbar_homogeneous_set(gui->w_chansel, EINA_FALSE);
    elm_toolbar_align_set(gui->w_chansel, 0.0);
-   elm_toolbar_mode_shrink_set(gui->w_chansel, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_shrink_mode_set(gui->w_chansel, ELM_TOOLBAR_SHRINK_SCROLL);
    evas_object_size_hint_weight_set(gui->w_chansel, 0.0, 0.0);
    evas_object_size_hint_align_set(gui->w_chansel, EVAS_HINT_FILL, 0.0);
    evas_object_show(gui->w_chansel);
