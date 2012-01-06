@@ -40619,7 +40619,7 @@ group {
          description {
             state: "default" 0.0;
             aspect: 1 1;
-            image.normal: "module_icon.png";
+            image.normal: "notification_icon.png";
          }
       }
    }
@@ -40635,7 +40635,7 @@ group {
          description {
             state: "default" 0.0;
             aspect: 1 1;
-            image.normal: "module_icon.png";
+            image.normal: "notification_icon.png";
          }
       }
    }
@@ -40811,6 +40811,7 @@ group {
             align: 0.0 0.0;
             rel1 {
                to_x: "notification.swallow.app_icon";
+               to_y: "title_bar";
                relative: 1.0 0.0;
                offset: 2 7;
             }
@@ -41056,6 +41057,7 @@ group {
          name: "notification.textblock.message";
          type: TEXTBLOCK;
          mouse_events: 0;
+         clip_to: "title_clip";
          description {
             state: "default" 0.0;
             align: 0.0 0.5;
@@ -41063,11 +41065,12 @@ group {
             max: 220 9999;
             rel1 {
                to_x: "notification.swallow.app_icon";
-               /* to_y: "notification.text.title"; */
+               to_y: "notification.text.title";
                relative: 1.0 0.0;
                offset: 8 22;
             }
             rel2 {
+               to_y: "title_bar";
                relative: 1.0 1.0;
                offset: -10 -10;
             }
