@@ -318,7 +318,7 @@ _create_gui()
    tb = elm_toolbar_add(mod->o_layout);
    elm_object_style_set(tb, "transparent");
    elm_toolbar_homogeneous_set(tb, EINA_TRUE);
-   elm_toolbar_mode_shrink_set(tb, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_shrink_mode_set(tb, ELM_TOOLBAR_SHRINK_SCROLL);
    evas_object_size_hint_weight_set(tb, 0.0, 0.0);
    evas_object_size_hint_align_set(tb, EVAS_HINT_FILL, 0.0);
    evas_object_show(tb);
