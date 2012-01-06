@@ -2384,11 +2384,14 @@ protected:
 
    class GenListItemClass {
    public:
-     Local<Value> text_get;
-     Handle<Value> content_get;
-     Handle<Value> state_get;
-     Handle<Value> del;
+     Persistent<Value> type;
+     Persistent<Value> data;
+     Persistent<Value> on_text;
+     Persistent<Value> on_content;
+     Persistent<Value> on_state;
+     Persistent<Value> on_delete;
      std::string item_style;
+     Elm_Genlist_Item_Class eitc;
    };
 
 public:
@@ -2405,6 +2408,20 @@ public:
    /* GenList functions that are going to do the heavy weight lifting */
    static char *text_get(void *data, Evas_Object *obj, const char *part)
      {
+	    GenListItemClass *itc = (GenListItemClass *)data;
+        Handle<Function> fn(Function::Cast(*(itc->on_text)));
+        Local<Object> temp = Object::New();
+        temp->Set(String::New("part"), String::New(part));
+        temp->Set(String::New("data"), itc->data);
+        Handle<Value> args[1] = { temp };
+        Local<Value> text = fn->Call(temp, 1, args);
+		if (text->IsString())
+		  {
+             String::Utf8Value str(text->ToString());
+			 return strdup(*str);
+		  }
+		else
+		  return NULL;
      }
 
    static Evas_Object *content_get(void *data, Evas_Object *obj, const char *part)
@@ -2413,10 +2430,9 @@ public:
 
    static Eina_Bool state_get(void *data, Evas_Object *obj, const char *part)
      {
-        return EINA_FALSE;
      }
 
-   static void *del(void *data, Evas_Object *obj)
+   static void del(void *data, Evas_Object *obj)
      {
      }
 
@@ -2431,16 +2447,22 @@ public:
         CElmGenList *genlist = static_cast<CElmGenList *>(self);
         if (args[0]->IsObject())
           {
-             CEvasObject *temp = realize_one(genlist, args[0]);
+             GenListItemClass *itc = new GenListItemClass();
 
-             Elm_Genlist_Item_Class *itc = (Elm_Genlist_Item_Class *)malloc(sizeof(Elm_Genlist_Item_Class));
-
-             itc->item_style = "default";
-             itc->func.text_get = text_get;
-             itc->func.content_get = content_get;
-             itc->func.state_get = state_get;
-             itc->func.del = NULL;
-             elm_genlist_item_append(genlist->get(), itc, NULL, NULL,
+             Local<Object> obj = args[0]->ToObject();
+             itc->type = Persistent<Value>::New(obj->Get(String::New("type")));
+             itc->on_text = Persistent<Value>::New(obj->Get(String::New("on_text")));
+             itc->on_content = Persistent<Value>::New(obj->Get(String::New("on_content")));
+             itc->on_state = Persistent<Value>::New(obj->Get(String::New("on_state")));
+             itc->data = Persistent<Value>::New(obj->Get(String::New("data")));
+             //TODO : Check genlist class type and modify or add
+			 
+             itc->eitc.item_style = "default";
+             itc->eitc.func.text_get = text_get;
+             itc->eitc.func.content_get = content_get;
+             itc->eitc.func.state_get = state_get;
+             itc->eitc.func.del = del;
+             elm_genlist_item_append(genlist->get(), &itc->eitc, itc, NULL,
                                         ELM_GENLIST_ITEM_NONE,
                                         NULL, NULL);
           }
