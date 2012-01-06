@@ -95,7 +95,7 @@ group {
             align:    0.5 0.0;
             rel1 {
                relative: 0.5  0.5;
-               offset:   -150  30;
+               offset:   -150  50;
             }
             rel2 {
                relative: 0.5 0.5;
