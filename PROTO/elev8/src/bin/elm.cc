@@ -5990,13 +5990,13 @@ public:
 
    virtual Handle<Value> aspect_ratio_retained_get() const
      {
-        //return Boolean::New(evas_object_aspect_ratio_retained_get(eo));
+        return Boolean::New(elm_image_aspect_fixed_get(eo));
      }
 
    virtual void aspect_ratio_retained_set(Handle<Value> val)
      {
-        /*if (val->IsBoolean())
-          evas_object_aspect_ratio_retained_set(eo, val->BooleanValue());*/
+        if (val->IsBoolean())
+          elm_image_aspect_fixed_set(eo, val->BooleanValue());
      }
 
    virtual Handle<Value> prescale_get() const
@@ -6037,7 +6037,7 @@ CEvasObject::CPropHandler<CElmImage>::list[] = {
   PROP_HANDLER(CElmImage, prescale),
   PROP_HANDLER(CElmImage, orient),
   PROP_HANDLER(CElmImage, editable),
-  PROP_HANDLER(CElmImage, aspect_ratio_retained),
+  PROP_HANDLER(CElmImage, aspect_fixed),
   { NULL, NULL, NULL },
 };
 
