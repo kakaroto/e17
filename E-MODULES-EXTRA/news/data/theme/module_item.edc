@@ -11,6 +11,5 @@ group
 
         programs
         {
-                #include "module_item_programs.edc"
         }
 }

@@ -18,7 +18,6 @@ module_feedone_programs.edc \
 module_icon.edc \
 module_item.edc \
 module_item_parts.edc \
-module_item_programs.edc \
 module_popw.edc \
 module_popw_parts.edc \
 module_popw_programs.edc \
