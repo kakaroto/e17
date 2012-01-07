@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -292,6 +292,17 @@ typedef struct {
 void                PmapMaskInit(PmapMask * pmm, Win win, int w, int h);
 void                PmapMaskFree(PmapMask * pmm);
 
+#if USE_XRENDER
+#include <X11/extensions/Xrender.h>
+
+Picture             EPictureCreate(Win win, Drawable draw);
+Picture             EPictureCreateSolid(Window xwin, int argb,
+					unsigned int a, unsigned int rgb);
+Picture             EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap);
+void                EPictureDestroy(Picture pict);
+
+#endif /* USE_XRENDER */
+
 #if USE_COMPOSITE
 #include <X11/extensions/Xfixes.h>
 
@@ -326,13 +337,6 @@ int                 ERegionIsEmpty(XserverRegion rgn);
 void                ERegionShow(const char *txt, XserverRegion rgn,
 				void (*prf) (const char *fmt, ...));
 
-#include <X11/extensions/Xrender.h>
-
-Picture             EPictureCreate(Win win, Drawable draw);
-Picture             EPictureCreateSolid(Window xwin, int argb,
-					unsigned int a, unsigned int rgb);
-Picture             EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap);
-void                EPictureDestroy(Picture pict);
 void                EPictureSetClip(Picture pict, XserverRegion clip);
 
 Pixmap              EWindowGetPixmap(const Win win);

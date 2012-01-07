@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1907,7 +1907,7 @@ EVisualIsARGB(Visual * vis)
    return pictfmt->type == PictTypeDirect && pictfmt->direct.alphaMask;
 }
 
-#endif
+#endif /* USE_XRENDER */
 
 /*
  * Misc
@@ -1951,6 +1951,10 @@ EWindowGetPixmap(const Win win)
 
    return XCompositeNameWindowPixmap(disp, WinGetXwin(win));
 }
+
+#endif /* USE_COMPOSITE */
+
+#if USE_XRENDER
 
 /*
  * Pictures
@@ -2024,6 +2028,10 @@ EPictureDestroy(Picture pict)
 {
    XRenderFreePicture(disp, pict);
 }
+
+#endif /* USE_XRENDER */
+
+#if USE_COMPOSITE
 
 void
 EPictureSetClip(Picture pict, XserverRegion clip)
