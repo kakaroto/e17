@@ -194,7 +194,7 @@ function ecore {
     cd ecore  || return 1
 
     if [ $CONFIGURE == "1" ]; then
-        ps3-configure --disable-ecore-x --enable-ecore-sdl --enable-ecore-evas-software-sdl --enable-ecore-psl1ght --enable-ecore-evas-psl1ght --enable-ecore-con --enable-cares || return 1
+        ps3-configure --disable-ecore-x --enable-ecore-sdl --enable-ecore-evas-software-sdl --enable-ecore-psl1ght --enable-ecore-evas-psl1ght --enable-ecore-con --disable-ecore-ipc --enable-cares || return 1
     fi
     make $CLEAN_RULE all && \
         ps3-smi && \
