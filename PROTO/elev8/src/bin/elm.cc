@@ -5990,13 +5990,13 @@ public:
 
    virtual Handle<Value> aspect_ratio_retained_get() const
      {
-        return Boolean::New(elm_image_aspect_ratio_retained_get(eo));
+        //return Boolean::New(evas_object_aspect_ratio_retained_get(eo));
      }
 
    virtual void aspect_ratio_retained_set(Handle<Value> val)
      {
-        if (val->IsBoolean())
-          elm_image_aspect_ratio_retained_set(eo, val->BooleanValue());
+        /*if (val->IsBoolean())
+          evas_object_aspect_ratio_retained_set(eo, val->BooleanValue());*/
      }
 
    virtual Handle<Value> prescale_get() const
