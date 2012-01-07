@@ -7,7 +7,8 @@ INCLUDES = \
 -DLIBRARY_DIR=\"$(libdir)\" \
 -DGETTEXT_PACKAGE=\"$(PACKAGE)\" \
 -DLOCALEDIR=\"$(localedir)\" \
-@EDBUS_CFLAGS@
+@EDBUS_CFLAGS@ \
+@EVAS_CFLAGS@
 
 pkgdir = $(libdir)/enjoy
 pkg_LTLIBRARIES = fso.la

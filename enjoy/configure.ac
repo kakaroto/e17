@@ -119,6 +119,7 @@ AM_CONDITIONAL(BUILD_QUICKLAUNCH, test "x${want_quicklaunch}" = "xyes")
 
 AC_ENJOY_OPTIONAL_MODULE([FSO], false)
 AC_ENJOY_OPTIONAL_MODULE([MPRIS], true)
+AC_ENJOY_OPTIONAL_MODULE([albumart-lastfm], true)
 
 AC_OUTPUT([
 Makefile
@@ -128,6 +129,7 @@ src/bin/Makefile
 src/plugins/Makefile
 src/plugins/fso/Makefile
 src/plugins/mpris/Makefile
+src/plugins/albumart-lastfm/Makefile
 data/Makefile
 data/desktop/Makefile
 data/themes/Makefile

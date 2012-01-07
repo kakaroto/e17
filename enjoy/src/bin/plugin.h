@@ -6,6 +6,7 @@
 #endif
 
 #include <Eina.h>
+#include <Evas.h>
 
 typedef struct _Song Song;
 typedef struct _Enjoy_Player_Status Enjoy_Player_Status;
@@ -156,5 +157,26 @@ typedef enum {
  */
 EAPI Enjoy_Plugin *enjoy_plugin_register(const char *name, const Enjoy_Plugin_Api *api, int priority);
 EAPI void enjoy_plugin_unregister(Enjoy_Plugin *plugin);
+
+
+typedef struct _Enjoy_Preferences_Plugin     Enjoy_Preferences_Plugin;
+typedef struct _Enjoy_Preferences_Plugin_Api Enjoy_Preferences_Plugin_Api;
+
+struct _Enjoy_Preferences_Plugin_Api {
+#define ENJOY_PREFERENCES_PLUGIN_API_VERSION (1U)
+   unsigned int version;
+   const char *(*category_get)(Enjoy_Preferences_Plugin *plugin);
+   const char *(*label_get)(Enjoy_Preferences_Plugin *plugin);
+   Eina_Bool (*activated)(Enjoy_Preferences_Plugin *p, Evas_Object *naviframe, Evas_Object **prev_btn, Evas_Object **next_btn, Evas_Object **content, Eina_Bool *auto_prev_btn);
+};
+
+/**
+ * Register the given preferences plugin with api at priority.
+ *
+ * Priority will define plugin order, but it will also consider the
+ * label_get() and category_get() when to display it.
+ */
+EAPI Enjoy_Preferences_Plugin *enjoy_preferences_plugin_register(const Enjoy_Preferences_Plugin_Api *api, int priority);
+EAPI void enjoy_preferences_plugin_unregister(Enjoy_Preferences_Plugin *preferences_plugin);
 
 #endif /* __PLUGIN_H__ */

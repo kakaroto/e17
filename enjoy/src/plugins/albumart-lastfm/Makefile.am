@@ -7,13 +7,10 @@ INCLUDES = \
 -DLIBRARY_DIR=\"$(libdir)\" \
 -DGETTEXT_PACKAGE=\"$(PACKAGE)\" \
 -DLOCALEDIR=\"$(localedir)\" \
-@EDBUS_CFLAGS@ \
-@ECORE_CFLAGS@ \
 @EFL_CFLAGS@
 
 pkgdir = $(libdir)/enjoy
-pkg_LTLIBRARIES = mpris.la
-mpris_la_SOURCES = mpris.c
-mpris_la_LIBADD = @EDBUS_LIBS@ @ECORE_LIBS@
-mpris_la_LDFLAGS = -no-undefined -module -avoid-version
-mpris_la_LIBTOOLFLAGS = --tag=disable-static
+pkg_LTLIBRARIES = albumart-lastfm.la
+albumart_lastfm_la_SOURCES = albumart-lastfm.c
+albumart_lastfm_la_LDFLAGS = -no-undefined -module -avoid-version
+albumart_lastfm_la_LIBTOOLFLAGS = --tag=disable-static

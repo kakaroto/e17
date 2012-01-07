@@ -8,3 +8,7 @@ endif
 if USE_MODULE_MPRIS
 SUBDIRS += mpris
 endif
+
+if USE_MODULE_ALBUMART_LASTFM
+SUBDIRS += albumart-lastfm
+endif

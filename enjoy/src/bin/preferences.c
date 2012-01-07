@@ -1,819 +1,358 @@
 #include "private.h"
 
-static void
-preferences_db_clear_do(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
+typedef struct _Preferences          Preferences;
+typedef struct _Preferences_Category Preferences_Category;
+
+struct _Preferences
 {
-   Evas_Object *frame = data;
-   elm_naviframe_item_pop(frame);
-   enjoy_db_clear();
-}
-
-static void
-preferences_db_clear(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   Evas_Object *frame = data;
-   Evas_Object *box, *bt;
-
-   box = elm_box_add(frame);
-
-   bt = elm_button_add(box);
-   elm_object_text_set(bt, "Yes, clear the database!");
-   evas_object_size_hint_align_set(bt, -1.0, 0.5);
-   evas_object_show(bt);
-   elm_box_pack_end(box, bt);
-
-   elm_naviframe_item_push(frame, "Clear Database?", NULL, NULL, box, NULL);
-   elm_genlist_item_selected_set(it, EINA_FALSE);
-
-   evas_object_smart_callback_add
-     (bt, "clicked", preferences_db_clear_do, frame);
-}
-
-static void
-preferences_db_optimize_do(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   Evas_Object *frame = data;
-   DB *db = enjoy_db_get();
-   elm_naviframe_item_pop(frame);
-
-   db_files_cleanup(db);
-   db_album_covers_cleanup(db);
-   db_vacuum(db);
-}
-
-static void
-preferences_db_optimize(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   Evas_Object *frame = data;
-   Evas_Object *box, *bt;
-
-   box = elm_box_add(frame);
-
-   bt = elm_button_add(box);
-   elm_object_text_set(bt, "Yes, cleanup and optimize the database!");
-   evas_object_size_hint_align_set(bt, -1.0, 0.5);
-   evas_object_show(bt);
-   elm_box_pack_end(box, bt);
-
-   elm_naviframe_item_push(frame, "Cleanup and Optimize Database?",
-                           NULL, NULL, box, NULL);
-   elm_genlist_item_selected_set(it, EINA_FALSE);
-
-   evas_object_smart_callback_add
-     (bt, "clicked", preferences_db_optimize_do, frame);
-}
-
-struct db_folder_add_ctx
-{
-   Evas_Object *status, *frame, *box, *button;
-   Elm_Object_Item *page;
-   unsigned int errors, processed;
-   char *path;
-   lms_t *lms;
-   Ecore_Thread *thread;
-   Ecore_Animator *status_updater;
-   Eina_Bool canceled;
+   Evas_Object *list;
+   Eina_Hash *categories; /* name -> category */
+   Eina_Hash *items; /* plugin -> plugin (set, check uniqueness) */
 };
 
-static void
-_lms_scan(void *data, Ecore_Thread *thread __UNUSED__)
+struct _Preferences_Category
 {
-   struct db_folder_add_ctx *ctx = data;
-
-   DBG("Scanning '%s' from thread", ctx->path);
-
-   // TODO: using single process as sqlite is giving "database is locked"
-   // with 2-process lms_process(), even if the main process is not using
-   // the db anymore :-(
-   // TODO: move to 2 process, as crashing the parser may crash enjoy!
-
-   if (ctx->canceled) return;
-   if (lms_check_single_process(ctx->lms, ctx->path) != 0)
-     ERR("couldn't check \"%s\".", ctx->path);
-
-   if (ctx->canceled) return;
-   if (lms_process_single_process(ctx->lms, ctx->path) != 0)
-     ERR("couldn't process \"%s\".", ctx->path);
-}
-
-static void
-_lms_progress(lms_t *lms __UNUSED__, const char *path, int path_len __UNUSED__, lms_progress_status_t status, void *data)
-{
-   struct db_folder_add_ctx *ctx = data;
-   DBG("status=%d '%s'", status, path);
-
-   /* lazy: no need to lock, only this thread writes, the other just reads */
-   if (status == LMS_PROGRESS_STATUS_UP_TO_DATE ||
-       status == LMS_PROGRESS_STATUS_PROCESSED)
-     ctx->processed++;
-   else if (status == LMS_PROGRESS_STATUS_KILLED ||
-            status == LMS_PROGRESS_STATUS_ERROR_PARSE ||
-            status == LMS_PROGRESS_STATUS_ERROR_COMM)
-     ctx->errors++;
-}
-
-static void
-db_folder_add_ctx_free(struct db_folder_add_ctx *ctx)
-{
-   free(ctx->path);
-   lms_free(ctx->lms);
-   free(ctx);
-}
-
-static void _lms_scan_abort(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
-static void
-preferences_db_folder_add_dismiss(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   struct db_folder_add_ctx *ctx = data;
-
-   evas_object_event_callback_del_full
-     (ctx->status, EVAS_CALLBACK_DEL, _lms_scan_abort, ctx);
-
-   elm_naviframe_item_pop_to(elm_naviframe_bottom_item_get(ctx->frame));
-   enjoy_db_start_usage();
-   db_folder_add_ctx_free(ctx);
-}
-
-static void
-preferences_db_folder_add_stop(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   struct db_folder_add_ctx *ctx = data;
-   lms_stop_processing(ctx->lms);
-}
-
-static void
-_lms_scan_finish(struct db_folder_add_ctx *ctx, Eina_Bool success)
-{
-   char buf[1024];
-
-   INF("Finished scanning with %s", success ? "success" : "interruptions");
-
-   ctx->thread = NULL;
-   if (!ctx->status) goto end; /* object deleted */
-
-   if (ctx->errors)
-     snprintf(buf, sizeof(buf), "Finished! Scanned %u files, %u errors.",
-              ctx->processed, ctx->errors);
-   else
-     snprintf(buf, sizeof(buf), "Finished! Scanned %u files without errors.",
-              ctx->processed);
-
-   elm_object_text_set(ctx->status, buf);
-
-   elm_object_text_set(ctx->button, "Dismiss");
-   evas_object_smart_callback_del
-     (ctx->button, "clicked", preferences_db_folder_add_stop);
-   evas_object_smart_callback_add
-     (ctx->button, "clicked", preferences_db_folder_add_dismiss, ctx);
-
- end:
-   if (ctx->status_updater)
-     {
-        ecore_animator_del(ctx->status_updater);
-        ctx->status_updater = NULL;
-     }
-   if (!ctx->status) db_folder_add_ctx_free(ctx);
-}
-
-static void
-_lms_scan_end(void *data, Ecore_Thread *thread __UNUSED__)
-{
-   struct db_folder_add_ctx *ctx = data;
-   _lms_scan_finish(ctx, EINA_TRUE);
-}
-
-static void
-_lms_scan_cancel(void *data, Ecore_Thread *thread __UNUSED__)
-{
-   struct db_folder_add_ctx *ctx = data;
-   _lms_scan_finish(ctx, EINA_FALSE);
-}
-
-static void
-_lms_scan_abort(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   struct db_folder_add_ctx *ctx = data;
-   if (!ctx->thread) return;
-   WRN("Canceling scanner thread!");
-   ctx->canceled = EINA_TRUE;
-   lms_stop_processing(ctx->lms);
-   ecore_thread_cancel(ctx->thread);
-   ctx->status = NULL;
-}
-
-static Eina_Bool
-preferences_db_folder_add_updater(void *data)
-{
-   struct db_folder_add_ctx *ctx = data;
-   char buf[1024];
-
-   if (!ctx->status)
-     {
-        ctx->status_updater = NULL;
-        return EINA_FALSE;
-     }
-
-   if (ctx->errors)
-     snprintf(buf, sizeof(buf), "Scanned %u files (%u errors)...",
-              ctx->processed, ctx->errors);
-   else
-     snprintf(buf, sizeof(buf), "Scanned %u files...", ctx->processed);
-
-   elm_object_text_set(ctx->status, buf);
-
-   return EINA_TRUE;
-}
-
-static void
-preferences_db_folder_add_do(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   Evas_Object *fs = data;
-   Evas_Object *box = elm_object_parent_widget_get(fs);
-   Evas_Object *frame = elm_object_parent_widget_get(box);
-   Evas_Object *bt;
-   const char *path = elm_fileselector_entry_path_get(fs);
-   struct stat st;
-   struct db_folder_add_ctx *ctx;
-   Eina_Bool prev_btn_auto_pushed;
-
-   if ((!path) || (stat(path, &st) != 0) || (!S_ISDIR(st.st_mode)))
-     {
-        ERR("Invalid path: %s", path);
-        // TODO: add notify alert?
-        return;
-     }
-
-   ctx = calloc(1, sizeof(struct db_folder_add_ctx));
-   if (!ctx)
-     {
-        ERR("Could not allocate ctx!");
-        return;
-     }
-
-   ctx->lms = lms_new(enjoy_db_path_get());
-   if (!ctx->lms)
-     {
-        ERR("Could not create lightmediascanner instance!");
-        free(ctx);
-        return;
-     }
-
-   /* conservative:
-    * commit every 20 insertions, wait at most 30s for slave feedback.
-    *
-    * commit interval: If it crashes, then at most that amount of songs
-    * will be lost.
-    */
-   lms_set_commit_interval(ctx->lms, 20);
-   lms_set_slave_timeout(ctx->lms, 30000);
-   lms_set_progress_callback(ctx->lms, _lms_progress, ctx, NULL);
-
-   if (!enjoy_lms_parsers_add(ctx->lms))
-     {
-        ERR("could not find any parser.");
-        goto free_lms;
-     }
-
-   enjoy_lms_charsets_add(ctx->lms);
-
-   enjoy_db_stop_usage();
-   ctx->box = box = elm_box_add(frame);
-   ctx->frame = frame;
-   ctx->status = elm_label_add(box);
-   elm_object_text_set(ctx->status, "Starting...");
-   evas_object_size_hint_align_set(ctx->status, -1.0, 0.5);
-   evas_object_show(ctx->status);
-   elm_box_pack_end(box, ctx->status);
-
-   ctx->button = bt = elm_button_add(box);
-   elm_object_text_set(bt, "Stop scanning");
-   evas_object_size_hint_align_set(bt, -1.0, 0.5);
-   evas_object_show(bt);
-   elm_box_pack_end(box, bt);
-   evas_object_smart_callback_add
-     (bt, "clicked", preferences_db_folder_add_stop, ctx);
-
-   prev_btn_auto_pushed = elm_naviframe_prev_btn_auto_pushed_get(frame);
-   elm_naviframe_prev_btn_auto_pushed_set(frame, EINA_FALSE);
-   ctx->page = elm_naviframe_item_push
-     (frame, "Importing Music", NULL, NULL, box, NULL);
-   elm_naviframe_prev_btn_auto_pushed_set(frame, prev_btn_auto_pushed);
-
-   ctx->path = strdup(path);
-
-   ctx->thread = ecore_thread_run
-     (_lms_scan, _lms_scan_end, _lms_scan_cancel, ctx);
-   if (!ctx->thread)
-     goto free_lms;
-
-   ctx->status_updater = ecore_animator_add
-     (preferences_db_folder_add_updater, ctx);
-
-   evas_object_event_callback_add
-     (ctx->status, EVAS_CALLBACK_DEL, _lms_scan_abort, ctx);
-
-   return;
-
- free_lms:
-   if (ctx->page)
-     elm_naviframe_item_pop(frame);
-   else if (ctx->box)
-     evas_object_del(ctx->box);
-   lms_free(ctx->lms);
-   free(ctx->path);
-   free(ctx);
-}
-
-static void
-preferences_db_folder_add(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   Evas_Object *frame = data;
-   Evas_Object *box, *fs, *bt;
-   char path[PATH_MAX];
-
-   box = elm_box_add(frame);
-
-   fs = elm_fileselector_entry_add(box);
-   /* TODO: efreet should use xdg-user-dirs */
-   snprintf(path, sizeof(path), "%s/Music", getenv("HOME"));
-   if (access(path, F_OK|X_OK) == 0)
-     elm_fileselector_entry_path_set(fs, path);
-   else
-     elm_fileselector_entry_path_set(fs, getenv("HOME"));
-   elm_fileselector_entry_folder_only_set(fs, EINA_TRUE);
-   elm_object_text_set(fs, "Choose...");
-   evas_object_size_hint_align_set(fs, -1.0, 0.5);
-   evas_object_show(fs);
-   elm_box_pack_end(box, fs);
-
-   bt = elm_button_add(box);
-   elm_object_text_set(bt, "Import music from folder");
-   evas_object_size_hint_align_set(bt, -1.0, 0.5);
-   evas_object_show(bt);
-   elm_box_pack_end(box, bt);
-
-   elm_naviframe_item_push(frame, "Import folder", NULL, NULL, box, NULL);
-   elm_genlist_item_selected_set(it, EINA_FALSE);
-
-   evas_object_smart_callback_add
-     (bt, "clicked", preferences_db_folder_add_do, fs);
-}
-
-struct cover_clear_ctx
-{
-   Evas_Object *status, *frame, *box, *button;
-   Elm_Object_Item *page;
-   char *path;
-   Ecore_Thread *thread;
-   Eina_Bool canceled;
+   Elm_Genlist_Item *it;
+   int items;
+   char name[];
 };
 
-static void
-_cover_clean(void *data, Ecore_Thread *thread __UNUSED__)
-{
-   struct cover_clear_ctx *ctx = data;
-
-   DBG("Cleaning '%s' from thread", ctx->path);
-   ecore_file_recursive_rm(ctx->path);
-   DBG("Cleaned '%s' from thread", ctx->path);
-}
-
-static void
-cover_clear_ctx_free(struct cover_clear_ctx *ctx)
-{
-   free(ctx->path);
-   free(ctx);
-}
-
-static void _cover_clean_abort(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
-static void
-preferences_cover_clear_dismiss(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   struct cover_clear_ctx *ctx = data;
-
-   evas_object_event_callback_del_full
-     (ctx->status, EVAS_CALLBACK_DEL, _cover_clean_abort, ctx);
-
-   elm_naviframe_item_pop_to(elm_naviframe_bottom_item_get(ctx->frame));
-   cover_clear_ctx_free(ctx);
-}
-
-static void
-_cover_clean_finish(struct cover_clear_ctx *ctx, Eina_Bool success)
-{
-   INF("Finished scanning with %s", success ? "success" : "interruptions");
-
-   ctx->thread = NULL;
-   if (!ctx->status) goto end; /* object deleted */
-
-   elm_object_text_set(ctx->status, "Finished clearing album arts.");
-
-   elm_object_disabled_set(ctx->button, EINA_FALSE);
-
- end:
-   if (!ctx->status) cover_clear_ctx_free(ctx);
-}
-
-static void
-_cover_clean_end(void *data, Ecore_Thread *thread __UNUSED__)
-{
-   struct cover_clear_ctx *ctx = data;
-   _cover_clean_finish(ctx, EINA_TRUE);
-}
-
-static void
-_cover_clean_cancel(void *data, Ecore_Thread *thread __UNUSED__)
-{
-   struct cover_clear_ctx *ctx = data;
-   _cover_clean_finish(ctx, EINA_FALSE);
-}
-
-static void
-_cover_clean_abort(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   struct cover_clear_ctx *ctx = data;
-   if (!ctx->thread) return;
-   WRN("Canceling cleanup thread!");
-   ctx->canceled = EINA_TRUE;
-   ecore_thread_cancel(ctx->thread);
-   ctx->status = NULL;
-}
-
-static void
-preferences_cover_clear_do(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   Evas_Object *frame = data;
-   Evas_Object *box, *bt;
-   struct cover_clear_ctx *ctx;
-   Eina_Bool prev_btn_auto_pushed;
-
-   ctx = calloc(1, sizeof(struct cover_clear_ctx));
-   if (!ctx)
-     {
-        ERR("Could not allocate ctx!");
-        return;
-     }
-   if (asprintf(&ctx->path, "%s/covers/", enjoy_cache_dir_get()) < 1)
-     {
-        ERR("Could not allocate cover's path!");
-        free(ctx);
-        return;
-     }
-
-   enjoy_db_clear_covers();
-   ctx->box = box = elm_box_add(frame);
-   ctx->frame = frame;
-   ctx->status = elm_label_add(box);
-   elm_object_text_set(ctx->status, "Cleaning, wait...");
-   evas_object_size_hint_align_set(ctx->status, -1.0, 0.5);
-   evas_object_show(ctx->status);
-   elm_box_pack_end(box, ctx->status);
-
-   ctx->button = bt = elm_button_add(box);
-   elm_object_text_set(bt, "Dismiss");
-   elm_object_disabled_set(bt, EINA_TRUE);
-   evas_object_size_hint_align_set(bt, -1.0, 0.5);
-   evas_object_show(bt);
-   elm_box_pack_end(box, bt);
-   evas_object_smart_callback_add
-     (bt, "clicked", preferences_cover_clear_dismiss, ctx);
-
-   prev_btn_auto_pushed = elm_naviframe_prev_btn_auto_pushed_get(frame);
-   elm_naviframe_prev_btn_auto_pushed_set(frame, EINA_FALSE);
-   ctx->page = elm_naviframe_item_push
-     (frame, "Cleaning Album Arts", NULL, NULL, box, NULL);
-   elm_naviframe_prev_btn_auto_pushed_set(frame, prev_btn_auto_pushed);
-
-   ctx->thread = ecore_thread_run
-     (_cover_clean, _cover_clean_end, _cover_clean_cancel, ctx);
-   if (!ctx->thread)
-     goto free_ctx;
-
-   evas_object_event_callback_add
-     (ctx->status, EVAS_CALLBACK_DEL, _cover_clean_abort, ctx);
-
-   return;
-
- free_ctx:
-   if (ctx->page)
-     elm_naviframe_item_pop(frame);
-   else if (ctx->box)
-     evas_object_del(ctx->box);
-   free(ctx);
-}
-
-static void
-preferences_cover_clear(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   Evas_Object *frame = data;
-   Evas_Object *box, *bt;
-
-   box = elm_box_add(frame);
-
-   bt = elm_button_add(box);
-   elm_object_text_set(bt, "Yes, clear the album arts!");
-   evas_object_size_hint_align_set(bt, -1.0, 0.5);
-   evas_object_show(bt);
-   elm_box_pack_end(box, bt);
-
-   elm_naviframe_item_push(frame, "Clear Album Arts?", NULL, NULL, box, NULL);
-   elm_genlist_item_selected_set(it, EINA_FALSE);
-
-   evas_object_smart_callback_add
-     (bt, "clicked", preferences_cover_clear_do, frame);
-}
-
-struct cover_local_search_ctx
-{
-   Evas_Object *status, *frame, *box, *button;
-   Elm_Object_Item *page;
-   unsigned int found, processed;
-   Ecore_Idler *idler;
-   Evas *evas;
-   DB *db;
-   Eina_Iterator *itr;
+struct _Enjoy_Preferences_Plugin {
+   const Enjoy_Preferences_Plugin_Api *api;
+   Preferences_Category *cat; /* only if exists in UI */
+   Elm_Genlist_Item *it; /* only if exists in UI */
+   int priority;
 };
 
-static void
-cover_local_search_ctx_free(struct cover_local_search_ctx *ctx)
+static Preferences enjoy_preferences = {
+  NULL, NULL, NULL
+};
+static Eina_List *pending_plugins = NULL;
+
+static char *
+preferences_itc_item_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   eina_iterator_free(ctx->itr);
-   free(ctx);
-}
-
-static void
-_cover_local_search_abort(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   struct cover_local_search_ctx *ctx = data;
-   if (!ctx->idler) return;
-   WRN("Canceling search idler!");
-   ecore_idler_del(ctx->idler);
-   ctx->idler = NULL;
-   ctx->status = NULL;
-}
-
-static void _cover_local_search_abort(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event_info __UNUSED__);
-static void
-preferences_cover_local_search_dismiss(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   struct cover_local_search_ctx *ctx = data;
-
-   evas_object_event_callback_del_full
-     (ctx->status, EVAS_CALLBACK_DEL, _cover_local_search_abort, ctx);
-
-   elm_naviframe_item_pop_to(elm_naviframe_bottom_item_get(ctx->frame));
-   enjoy_db_start_usage();
-   cover_local_search_ctx_free(ctx);
-}
-
-static void _cover_local_search_finish(struct cover_local_search_ctx *ctx);
-static void
-preferences_cover_local_search_stop(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   struct cover_local_search_ctx *ctx = data;
-   ecore_idler_del(ctx->idler);
-   ctx->idler = NULL;
-   _cover_local_search_finish(ctx);
-}
-
-static void
-_cover_local_search_finish(struct cover_local_search_ctx *ctx)
-{
-   char buf[1024];
-
-   INF("Finished searching local album arts.");
-
-   if (ctx->idler)
-     {
-        ecore_idler_del(ctx->idler);
-        ctx->idler = NULL;
-     }
-   if (!ctx->status) goto end; /* object deleted */
-
-   if (ctx->found)
-     snprintf(buf, sizeof(buf), "Finished! Found %u files.", ctx->found);
-   else
-     snprintf(buf, sizeof(buf), "Finished! Tried %u, did not found album arts.",
-              ctx->processed);
-
-   elm_object_text_set(ctx->status, buf);
-
-   elm_object_text_set(ctx->button, "Dismiss");
-   evas_object_smart_callback_del
-     (ctx->button, "clicked", preferences_cover_local_search_stop);
-   evas_object_smart_callback_add
-     (ctx->button, "clicked", preferences_cover_local_search_dismiss, ctx);
-
- end:
-   if (!ctx->status) cover_local_search_ctx_free(ctx);
-}
-
-static Eina_Bool
-_cover_local_search_idler(void *data)
-{
-   struct cover_local_search_ctx *ctx = data;
-   Album *album, *album_itr = NULL;
-   char buf[1024];
-
-   if (!eina_iterator_next(ctx->itr, (void **)&album_itr))
-     {
-        _cover_local_search_finish(ctx);
-        return EINA_FALSE;
-     }
-
-   ctx->processed++;
-
-   album = db_album_copy(album_itr);
-   if (!album)
-     return EINA_TRUE;
-
-   if (!db_album_covers_fetch(ctx->db, album))
-     DBG("No album art fetched from DB, album_id=%"PRIi64" (%s by %s)",
-         album->id, album->name, album->artist);
-
-   if (!cover_album_local_find(ctx->evas, ctx->db, album))
-     {
-        WRN("Could find local covers, album_id=%"PRIi64" (%s by %s)",
-            album->id, album->name, album->artist);
-        goto end;
-     }
-
-   ctx->found++;
-
- end:
-   snprintf(buf, sizeof(buf), "Found %u album arts, %u processed.",
-            ctx->found, ctx->processed);
-   elm_object_text_set(ctx->status, buf);
-
-   db_album_free(album);
-   return EINA_TRUE;
-}
-
-static void
-preferences_cover_local_search_do(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
-{
-   Evas_Object *frame = data;
-   Evas_Object *box, *bt;
-   struct cover_local_search_ctx *ctx;
-   Eina_Bool prev_btn_auto_pushed;
-   DB *db = enjoy_db_get();
-
-   if (!db)
-     {
-        ERR("Could not get db instance!");
-        return;
-     }
-
-   ctx = calloc(1, sizeof(struct cover_local_search_ctx));
-   if (!ctx)
-     {
-        ERR("Could not allocate ctx!");
-        return;
-     }
-
-   ctx->itr = db_albums_get(db);
-   ctx->db = db;
-   ctx->evas = evas_object_evas_get(frame);
-
-   ctx->box = box = elm_box_add(frame);
-   ctx->frame = frame;
-   ctx->status = elm_label_add(box);
-   elm_object_text_set(ctx->status, "Searching, wait...");
-   evas_object_size_hint_align_set(ctx->status, -1.0, 0.5);
-   evas_object_show(ctx->status);
-   elm_box_pack_end(box, ctx->status);
-
-   ctx->button = bt = elm_button_add(box);
-   elm_object_text_set(bt, "Stop searching");
-   evas_object_size_hint_align_set(bt, -1.0, 0.5);
-   evas_object_show(bt);
-   elm_box_pack_end(box, bt);
-   evas_object_smart_callback_add
-     (bt, "clicked", preferences_cover_local_search_stop, ctx);
-
-   prev_btn_auto_pushed = elm_naviframe_prev_btn_auto_pushed_get(frame);
-   elm_naviframe_prev_btn_auto_pushed_set(frame, EINA_FALSE);
-   ctx->page = elm_naviframe_item_push
-     (frame, "Searching Album Arts", NULL, NULL, box, NULL);
-   elm_naviframe_prev_btn_auto_pushed_set(frame, prev_btn_auto_pushed);
-
-   ctx->idler = ecore_idler_add(_cover_local_search_idler, ctx);
-   if (!ctx->idler)
-     goto free_ctx;
-
-   evas_object_event_callback_add
-     (ctx->status, EVAS_CALLBACK_DEL, _cover_local_search_abort, ctx);
-
-   return;
-
- free_ctx:
-   if (ctx->page)
-     elm_naviframe_item_pop(frame);
-   else if (ctx->box)
-     evas_object_del(ctx->box);
-   eina_iterator_free(ctx->itr);
-   free(ctx);
-}
-
-static void
-preferences_cover_local_search(void *data, Evas_Object *obj __UNUSED__, void *event_info)
-{
-   Elm_Genlist_Item *it = event_info;
-   Evas_Object *frame = data;
-   Evas_Object *box, *bt, *lb;
-
-   box = elm_box_add(frame);
-
-   lb = elm_label_add(box);
-   elm_object_text_set(lb, "Search happens at directory containing the files.");
-   evas_object_size_hint_align_set(lb, -1.0, 0.5);
-   evas_object_show(lb);
-   elm_box_pack_end(box, lb);
-
-   bt = elm_button_add(box);
-   elm_object_text_set(bt, "Start searching!");
-   evas_object_size_hint_align_set(bt, -1.0, 0.5);
-   evas_object_show(bt);
-   elm_box_pack_end(box, bt);
-
-   elm_naviframe_item_push(frame, "Search Album Arts?", NULL, NULL, box, NULL);
-   elm_genlist_item_selected_set(it, EINA_FALSE);
-
-   evas_object_smart_callback_add
-     (bt, "clicked", preferences_cover_local_search_do, frame);
+   Enjoy_Preferences_Plugin *p = data;
+   return strdup(p->api->label_get(p));
 }
 
 static char *
-prefs_itc_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+preferences_itc_category_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   return strdup(data);
+   Preferences_Category *pc = data;
+   return strdup(pc->name);
 }
 
-static const Elm_Genlist_Item_Class prefs_itc = {
+static const Elm_Genlist_Item_Class preferences_itc_item = {
   "default",
   {
-    prefs_itc_text_get,
+    preferences_itc_item_text_get,
     NULL,
     NULL,
     NULL
   }
 };
 
-static const Elm_Genlist_Item_Class prefs_itc_group = {
+static const Elm_Genlist_Item_Class preferences_itc_category = {
   "group_index",
   {
-    prefs_itc_text_get,
+    preferences_itc_category_text_get,
     NULL,
     NULL,
     NULL
   }
 };
 
-static Evas_Object *
-preferences_root_add(Evas_Object *parent)
+static void
+preferences_deleted(void *data, Evas *e __UNUSED__, Evas_Object *lst __UNUSED__, void *event_info __UNUSED__)
 {
-   Evas_Object *lst = elm_genlist_add(parent);
-   Elm_Genlist_Item *grp;
+   Preferences *prefs = data;
 
-   grp = elm_genlist_item_append(lst, &prefs_itc_group, "Database",
-                                 NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+   prefs->list = NULL;
 
-   elm_genlist_item_append
-     (lst, &prefs_itc, "Clear", grp, ELM_GENLIST_ITEM_NONE,
-      preferences_db_clear, parent);
-   elm_genlist_item_append
-     (lst, &prefs_itc, "Cleanup & Optimize", grp, ELM_GENLIST_ITEM_NONE,
-      preferences_db_optimize, parent);
-   elm_genlist_item_append
-     (lst, &prefs_itc, "Import folder", grp, ELM_GENLIST_ITEM_NONE,
-      preferences_db_folder_add, parent);
+   preferences_cover_clear_unregister();
+   preferences_cover_local_search_unregister();
+   preferences_db_clear_unregister();
+   preferences_db_folder_add_unregister();
+   preferences_db_optimize_unregister();
+}
 
+static int
+preferences_category_cmp(const void *pa, const void *pb)
+{
+   const Elm_Genlist_Item *ia = pa, *ib = pb;
+   const Preferences_Category *a = elm_genlist_item_data_get(ia);
+   const Preferences_Category *b = elm_genlist_item_data_get(ib);
+   return strcoll(a->name, b->name);
+}
 
-   grp = elm_genlist_item_append(lst, &prefs_itc_group, "Album Arts",
-                                 NULL, ELM_GENLIST_ITEM_GROUP, NULL, NULL);
+static int
+preferences_item_cmp(const void *pa, const void *pb)
+{
+   const Elm_Genlist_Item *ia = pa, *ib = pb;
+   const Enjoy_Preferences_Plugin *a = elm_genlist_item_data_get(ia);
+   const Enjoy_Preferences_Plugin *b = elm_genlist_item_data_get(ib);
+   int r = a->priority - b->priority;
+   if (r)
+     return r;
+   return strcoll(a->api->label_get((Enjoy_Preferences_Plugin *)a),
+                 b->api->label_get((Enjoy_Preferences_Plugin *)b));
+}
 
-   elm_genlist_item_append
-     (lst, &prefs_itc, "Clear", grp, ELM_GENLIST_ITEM_NONE,
-      preferences_cover_clear, parent);
+static void
+preferences_item_selected(void *data, Evas_Object *lst, void *event_info)
+{
+   Enjoy_Preferences_Plugin *p = data;
+   Elm_Genlist_Item *it = event_info;
+   Elm_Object_Item *oi;
+   Evas_Object *naviframe = elm_object_parent_widget_get(lst);
+   Evas_Object *prev_btn = NULL, *next_btn = NULL, *content = NULL;
+   Eina_Bool old_auto_prev_btn, auto_prev_btn = EINA_TRUE;
 
-   elm_genlist_item_append
-     (lst, &prefs_itc, "Search locally", grp, ELM_GENLIST_ITEM_NONE,
-      preferences_cover_local_search, parent);
+   if (!p->api->activated(p, naviframe, &prev_btn, &next_btn,
+                          &content, &auto_prev_btn))
+     {
+        ERR("Failed at activated() of plugin %p api %p", p, p->api);
+        return;
+     }
 
-   return lst;
+   elm_genlist_item_selected_set(it, EINA_FALSE);
+
+   old_auto_prev_btn = elm_naviframe_prev_btn_auto_pushed_get(naviframe);
+   elm_naviframe_prev_btn_auto_pushed_set(naviframe, auto_prev_btn);
+   oi = elm_naviframe_item_push(naviframe, p->api->label_get(p),
+                                prev_btn, next_btn, content, NULL);
+   elm_object_item_part_text_set(oi, "subtitle", p->api->category_get(p));
+   elm_naviframe_prev_btn_auto_pushed_set(naviframe, old_auto_prev_btn);
+}
+
+static Eina_Bool
+preferences_item_add(Preferences *prefs, Enjoy_Preferences_Plugin *p)
+{
+   const char *catname;
+   Preferences_Category *cat;
+
+   if (eina_hash_find(prefs->items, &p))
+     {
+        ERR("Plugin already in preferences: %p", p);
+        return EINA_FALSE;
+     }
+
+   catname = p->api->category_get(p);
+   if ((!catname) || (catname[0] == '\0'))
+     {
+        ERR("plugin %p api %p category_get() returned nothing!", p, p->api);
+        return EINA_FALSE;
+     }
+
+   cat = eina_hash_find(prefs->categories, catname);
+   if (!cat)
+     {
+        size_t catnamelen = strlen(catname) + 1;
+        cat = malloc(sizeof(*cat) + catnamelen);
+        cat->items = 0;
+        memcpy(cat->name, catname, catnamelen);
+        eina_hash_add(prefs->categories, cat->name, cat);
+
+        cat->it = elm_genlist_item_direct_sorted_insert
+          (prefs->list, &preferences_itc_category, cat, NULL,
+           ELM_GENLIST_ITEM_NONE, preferences_category_cmp, NULL, NULL);
+
+        elm_genlist_item_display_only_set(cat->it, EINA_TRUE);
+     }
+
+   eina_hash_add(prefs->items, &p, p);
+
+   cat->items++;
+   p->cat = cat;
+   p->it = elm_genlist_item_direct_sorted_insert
+     (prefs->list, &preferences_itc_item, p, cat->it,
+      ELM_GENLIST_ITEM_NONE, preferences_item_cmp,
+      preferences_item_selected, p);
+
+   DBG("plugin %p item %p cat %p (%s)", p, p->it, cat, cat->name);
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+preferences_item_del(Preferences *prefs, Enjoy_Preferences_Plugin *p)
+{
+   if (!eina_hash_find(prefs->items, &p))
+     {
+        ERR("Could not find item for plugin %p", p);
+        return EINA_FALSE;
+     }
+
+   if (!prefs->list)
+     DBG("List already deleted, ignore item deletion");
+   else
+     elm_genlist_item_del(p->it);
+
+   if (p->cat)
+     {
+        p->cat->items--;
+        if (p->cat->items == 0)
+          {
+             if (prefs->list)
+               elm_genlist_item_del(p->cat->it);
+             eina_hash_del(prefs->categories, p->cat->name, p->cat);
+             free(p->cat);
+          }
+     }
+
+   eina_hash_del(prefs->items, &p, p);
+   return EINA_TRUE;
+}
+
+static Evas_Object *
+preferences_root_add(Preferences *prefs, Evas_Object *frame)
+{
+   Enjoy_Preferences_Plugin *p;
+
+   prefs->list = elm_genlist_add(frame);
+
+   EINA_LIST_FREE(pending_plugins, p)
+     {
+        if (!preferences_item_add(prefs, p))
+          {
+             ERR("Could not add plugin p %p api %p!", p, p->api);
+             preferences_item_del(&enjoy_preferences, p);
+             free(p);
+          }
+     }
+
+   return prefs->list;
+}
+
+static void
+preferences_freed(void *data, Evas *e __UNUSED__, Evas_Object *lst __UNUSED__, void *event_info __UNUSED__)
+{
+   Preferences *prefs = data;
+   eina_hash_free(prefs->categories);
+   prefs->categories = NULL;
+
+   eina_hash_free(prefs->items);
+   prefs->items = NULL;
+
+   /* prefs is &enjoy_preferences. do not free */
 }
 
 Evas_Object *
 preferences_add(Evas_Object *parent)
 {
-   Evas_Object *frame = elm_naviframe_add(parent);
-   Evas_Object *root = preferences_root_add(frame);
+   Evas_Object *root, *frame = elm_naviframe_add(parent);
+   static Eina_Bool first = EINA_TRUE;
+   Preferences *prefs;
+
+   prefs = &enjoy_preferences;
+   if (!prefs->categories)
+     prefs->categories = eina_hash_string_small_new(NULL);
+   if (!prefs->items)
+     prefs->items = eina_hash_pointer_new(NULL);
+
+   evas_object_event_callback_add
+     (frame, EVAS_CALLBACK_DEL, preferences_deleted, prefs);
+   evas_object_event_callback_add
+     (frame, EVAS_CALLBACK_FREE, preferences_freed, prefs);
+
+   root = preferences_root_add(prefs, frame);
+   if (!root)
+     {
+        evas_object_del(frame);
+        return NULL;
+     }
+
+   if (first)
+     {
+        first = EINA_FALSE;
+        preferences_cover_clear_register();
+        preferences_cover_local_search_register();
+        preferences_db_clear_register();
+        preferences_db_folder_add_register();
+        preferences_db_optimize_register();
+     }
 
    elm_naviframe_item_push(frame, "Preferences", NULL, NULL, root, NULL);
 
    return frame;
+}
+
+EAPI Enjoy_Preferences_Plugin *
+enjoy_preferences_plugin_register(const Enjoy_Preferences_Plugin_Api *api, int priority)
+{
+   Enjoy_Preferences_Plugin *p;
+   if (!api)
+     {
+        ERR("Missing plugin api");
+        return NULL;
+     }
+   if (api->version != ENJOY_PREFERENCES_PLUGIN_API_VERSION)
+     {
+        ERR("Invalid Enjoy_Preferences_Plugin_Api version: plugin=%u, enjoy=%u",
+            api->version, ENJOY_PREFERENCES_PLUGIN_API_VERSION);
+        return NULL;
+     }
+   if (!api->category_get)
+     {
+        ERR("plugin api=%p: api->category_get == NULL", api);
+        return NULL;
+     }
+   if (!api->label_get)
+     {
+        ERR("plugin api=%p: api->label_get == NULL", api);
+        return NULL;
+     }
+   if (!api->activated)
+     {
+        ERR("plugin api=%p: api->activated == NULL", api);
+        return NULL;
+     }
+
+   p = calloc(1, sizeof(Enjoy_Preferences_Plugin));
+   if (!p)
+     {
+        ERR("Could not allocate plugin structure");
+        return NULL;
+     }
+
+   p->api = api;
+   p->priority = priority;
+
+   if (!enjoy_preferences.list)
+     {
+        DBG("plugin registered %p but pending (no GUI yet)", p);
+        pending_plugins = eina_list_append(pending_plugins, p);
+        return p;
+     }
+
+   if (!preferences_item_add(&enjoy_preferences, p))
+     {
+        ERR("Could not add plugin p %p api %p!", p, api);
+        preferences_item_del(&enjoy_preferences, p);
+        return NULL;
+     }
+
+   DBG("plugin registered %p", p);
+
+   return p;
+}
+
+EAPI void
+enjoy_preferences_plugin_unregister(Enjoy_Preferences_Plugin *p)
+{
+   if (!p)
+     {
+        ERR("No plugin given");
+        return;
+     }
+
+   DBG("plugin unregistered %p", p);
+
+   if (p->cat)
+     preferences_item_del(&enjoy_preferences, p);
+   else
+     pending_plugins = eina_list_remove(pending_plugins, p);
+
+   free(p);
 }

@@ -109,6 +109,17 @@ void       db_vacuum(DB *db);
 Evas_Object *nowplaying_add(Evas_Object *parent);
 
 Evas_Object *preferences_add(Evas_Object *parent);
+Eina_Bool    preferences_cover_clear_register(void);
+Eina_Bool    preferences_cover_local_search_register(void);
+Eina_Bool    preferences_db_clear_register(void);
+Eina_Bool    preferences_db_folder_add_register(void);
+Eina_Bool    preferences_db_optimize_register(void);
+
+void         preferences_cover_clear_unregister(void);
+void         preferences_cover_local_search_unregister(void);
+void         preferences_db_clear_unregister(void);
+void         preferences_db_folder_add_unregister(void);
+void         preferences_db_optimize_unregister(void);
 
 typedef enum {
    ALBUM_COVER_ORIGIN_LOCAL,
