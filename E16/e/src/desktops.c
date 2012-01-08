@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -495,11 +495,11 @@ DeskBackgroundConfigure(Desk * dsk)
 {
    Win                 win;
    Pixmap              pmap = dsk->bg.pmap;
-   unsigned long       pixel = dsk->bg.pixel;
+   unsigned int        pixel = dsk->bg.pixel;
 
    if (EDebug(EDBUG_TYPE_DESKS))
       Eprintf
-	 ("DeskBackgroundConfigure %d v=%d %#lx/%#lx: ext=%d pmap=%#lx/%#lx pixel=%#lx/%#lx\n",
+	 ("DeskBackgroundConfigure %d v=%d %#lx/%#lx: ext=%d pmap=%#lx/%#lx pixel=%#x/%#x\n",
 	  dsk->num, dsk->viewable, EoGetXwin(dsk), EobjGetXwin(dsk->bg.o),
 	  BackgroundIsNone(dsk->bg.bg), pmap, dsk->bg.pmap_set, pixel,
 	  dsk->bg.pixel);
@@ -566,12 +566,12 @@ DeskBackgroundRefresh(Desk * dsk, int why)
 {
    Background         *bg = dsk->bg.bg;
    Pixmap              pmap = dsk->bg.pmap;
-   unsigned long       pixel = dsk->bg.pixel;
+   unsigned int        pixel = dsk->bg.pixel;
    int                 changed = 0;
    int                 reconfigure = 0;
 
    if (EDebug(EDBUG_TYPE_DESKS))
-      Eprintf("DeskBackgroundRefresh %d v=%d why=%d pmap=%#lx pixel=%#lx\n",
+      Eprintf("DeskBackgroundRefresh %d v=%d why=%d pmap=%#lx pixel=%#x\n",
 	      dsk->num, dsk->viewable, why, pmap, pixel);
 
    switch (why)

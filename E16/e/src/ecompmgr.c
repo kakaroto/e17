@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -121,7 +121,7 @@ struct _cmhook {
 #endif
    unsigned int        opacity;
 
-   unsigned long       damage_sequence;	/* sequence when damage was created */
+   unsigned int        damage_sequence;	/* sequence when damage was created */
 
    Animator           *anim_fade;
    unsigned int        opacity_to;

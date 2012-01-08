@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -82,8 +82,9 @@ ecore_x_icccm_state_set_withdrawn(Ecore_X_Window win)
  */
 int
 ecore_x_client_message32_send(Ecore_X_Window win, Ecore_X_Atom type,
-			      long mask, long d0,
-			      long d1, long d2, long d3, long d4)
+			      unsigned int mask,
+			      unsigned int d0, unsigned int d1,
+			      unsigned int d2, unsigned int d3, unsigned int d4)
 {
    XEvent              xev;
 

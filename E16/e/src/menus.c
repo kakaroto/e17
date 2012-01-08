@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1530,7 +1530,7 @@ MenusSetEvents(int on)
 {
    int                 i;
    Menu               *m;
-   long                event_mask;
+   unsigned int        event_mask;
 
    event_mask = (on) ? MENU_ITEM_EVENT_MASK : 0;
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -52,7 +52,7 @@ static XFontSet     xfs = NULL;
         colorful, cols[2], cols[0], cols[3])
 static void
 AlertDrawBox(Display * mdd, GC mgc, Window mwin, int mx, int my, int mw, int mh,
-	     int colorful, unsigned long c1, unsigned long c2, unsigned long cb)
+	     int colorful, unsigned int c1, unsigned int c2, unsigned int cb)
 {
    if (colorful)
      {
@@ -78,7 +78,7 @@ AlertDrawBox(Display * mdd, GC mgc, Window mwin, int mx, int my, int mw, int mh,
         colorful, cols[2], cols[0])
 static void
 AlertDrawThinBoxIn(Display * mdd, GC mgc, Window mwin, int mx, int my, int mw,
-		   int mh, int colorful, unsigned long c1, unsigned long c2)
+		   int mh, int colorful, unsigned int c1, unsigned int c2)
 {
    if (colorful)
      {
@@ -98,8 +98,8 @@ AlertDrawThinBoxIn(Display * mdd, GC mgc, Window mwin, int mx, int my, int mw,
         colorful, cols[2], cols[3], cols[4])
 static void
 AlertDrawHeader(Display * mdd, GC mgc, Window mwin, int mx, int my,
-		const char *mstr, int colorful, unsigned long cb,
-		unsigned long ct1, unsigned long ct2)
+		const char *mstr, int colorful, unsigned int cb,
+		unsigned int ct1, unsigned int ct2)
 {
    int                 len = strlen(mstr);
 
@@ -128,7 +128,7 @@ AlertDrawHeader(Display * mdd, GC mgc, Window mwin, int mx, int my,
         AlertDrawString(mdd, mgc, mwin, mx, my, mstr, len, colorful, cols[3])
 static void
 AlertDrawString(Display * mdd, GC mgc, Window mwin, int mx, int my,
-		const char *mstr, int len, int colorful, unsigned long ct1)
+		const char *mstr, int len, int colorful, unsigned int ct1)
 {
    if (colorful)
      {

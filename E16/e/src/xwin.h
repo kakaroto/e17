@@ -270,11 +270,12 @@ Bool                EXQueryPointer(Window xwin, int *px, int *py,
 Pixmap              EXCreatePixmapCopy(Pixmap src, unsigned int w,
 				       unsigned int h, unsigned int depth);
 
-GC                  EXCreateGC(Drawable draw, unsigned long mask,
+GC                  EXCreateGC(Drawable draw, unsigned int mask,
 			       XGCValues * val);
 void                EXFreeGC(GC gc);
 
-void                EXSendEvent(Window xwin, long event_mask, XEvent * ev);
+void                EXSendEvent(Window xwin,
+				unsigned int event_mask, XEvent * ev);
 
 KeyCode             EKeysymToKeycode(KeySym keysym);
 KeyCode             EKeynameToKeycode(const char *name);

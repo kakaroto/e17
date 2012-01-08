@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2007 Kim Woelders
+ * Copyright (C) 2003-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -27,7 +27,7 @@ typedef struct {
    const char         *name;
    void               *ptr;
    char                type;
-   long                dflt;
+   int                 dflt;
    void                (*func) (void *item, const char *value);
 } CfgItem;
 

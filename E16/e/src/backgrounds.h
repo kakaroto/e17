@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2010 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -33,7 +33,7 @@ void                BackgroundDestroyByName(const char *name);
 void                BackgroundRealize(Background * bg, Win win, Drawable draw,
 				      unsigned int rw, unsigned int rh,
 				      int is_win, Pixmap * ppmap,
-				      unsigned long *ppixel);
+				      unsigned int *ppixel);
 void                BackgroundApplyPmap(Background * bg, Win win, Drawable draw,
 					unsigned int rw, unsigned int rh);
 void                BackgroundSet(Background * bg, Win win, unsigned int rw,

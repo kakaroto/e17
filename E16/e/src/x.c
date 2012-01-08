@@ -1653,7 +1653,7 @@ EXCopyAreaTiled(Drawable src, Pixmap mask, Drawable dst, int sx, int sy,
 }
 
 GC
-EXCreateGC(Drawable draw, unsigned long mask, XGCValues * val)
+EXCreateGC(Drawable draw, unsigned int mask, XGCValues * val)
 {
    XGCValues           xgcv;
 
@@ -1679,7 +1679,7 @@ EXFreeGC(GC gc)
 }
 
 void
-EXSendEvent(Window xwin, long event_mask, XEvent * ev)
+EXSendEvent(Window xwin, unsigned int event_mask, XEvent * ev)
 {
    XSendEvent(disp, xwin, False, event_mask, ev);
 }

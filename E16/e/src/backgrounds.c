@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -552,7 +552,7 @@ BackgroundCreatePixmap(Win win, unsigned int w, unsigned int h)
 void
 BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 		  unsigned int rh, int is_win, Pixmap * ppmap,
-		  unsigned long *ppixel)
+		  unsigned int *ppixel)
 {
    Pixmap              pmap;
    int                 x, y, ww, hh;
@@ -715,7 +715,7 @@ BackgroundApplyWin(Background * bg, Win win)
 {
    int                 w, h;
    Pixmap              pmap;
-   unsigned long       pixel;
+   unsigned int        pixel;
 
    if (!EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL))
       return;
@@ -741,7 +741,7 @@ void
 BackgroundSet(Background * bg, Win win, unsigned int w, unsigned int h)
 {
    Pixmap              pmap = None;
-   unsigned long       pixel = 0;
+   unsigned int        pixel = 0;
 
    if (bg->pmap)
       pmap = bg->pmap;

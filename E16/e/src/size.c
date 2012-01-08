@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2003-2011 Kim Woelders
+ * Copyright (C) 2003-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -335,7 +335,7 @@ pareto_maximizer(EWin * ewin, int type, EWin * const *lst, int num,
    char               *done_stacking_flag;
    char               *stacked_above_flag;
    int                 num_stacked, stacked_above;
-   long                area, new_area;
+   int                 area, new_area;
    int                 recenter, new_recenter;
    int                 td, bd, ld, rd;	/* displacement to maximized edges */
 
