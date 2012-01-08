@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1396,7 +1396,8 @@ EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
 static void
 EwinEventShapeChange(EWin * ewin, XEvent * ev)
 {
-#define se ((XShapeEvent *)ev)
+   XShapeEvent        *se = (XShapeEvent *) ev;
+
    if (EDebug(EX_EVENT_SHAPE_NOTIFY))
       Eprintf("EwinEventShapeChange %#lx %s: state.shaped=%d ev->shaped=%d\n",
 	      EwinGetClientXwin(ewin), EoGetName(ewin), ewin->state.shaped,
@@ -1406,7 +1407,6 @@ EwinEventShapeChange(EWin * ewin, XEvent * ev)
    EwinUpdateShapeInfo(ewin);
    ewin->update.shape = 1;
    EwinPropagateShapes(ewin);
-#undef se
 }
 
 static void
