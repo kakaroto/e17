@@ -5988,12 +5988,12 @@ public:
           elm_image_editable_set(eo, val->BooleanValue());
      }
 
-   virtual Handle<Value> aspect_ratio_retained_get() const
+   virtual Handle<Value> aspect_fixed_get() const
      {
         return Boolean::New(elm_image_aspect_fixed_get(eo));
      }
 
-   virtual void aspect_ratio_retained_set(Handle<Value> val)
+   virtual void aspect_fixed_set(Handle<Value> val)
      {
         if (val->IsBoolean())
           elm_image_aspect_fixed_set(eo, val->BooleanValue());
