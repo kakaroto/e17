@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2011 Kim Woelders
+ * Copyright (C) 2007-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -159,8 +159,6 @@ MagwinRedraw(MagWindow * mw, int paint)
 	dw = (int)(sw * scale + .5);
 	dh = (int)(sh * scale + .5);
 	draw = ECompMgrGetRootBuffer();
-	if (draw == None)
-	   draw = WinGetXwin(VROOT);
 	ScaleRect(VROOT, draw, EwinGetClientWin(mw->ewin),
 		  EwinGetClientXwin(mw->ewin), sx, sy, sw, sh,
 		  0, 0, dw, dh, (mw->filter) ? EIMAGE_ANTI_ALIAS : 0);

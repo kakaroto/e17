@@ -2015,7 +2015,7 @@ ECompMgrRootBufferDestroy(void)
 Pixmap
 ECompMgrGetRootBuffer(void)
 {
-   return Mode_compmgr.pmap;
+   return (Mode_compmgr.pmap != None) ? Mode_compmgr.pmap : WinGetXwin(VROOT);
 }
 
 static void

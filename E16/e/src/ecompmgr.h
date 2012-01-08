@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2011 Kim Woelders
+ * Copyright (C) 2004-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -70,7 +70,7 @@ void                ECompMgrRepaint(void);
 
 #define ECompMgrIsActive()          0
 
-#define ECompMgrGetRootBuffer()     None
+#define ECompMgrGetRootBuffer()     WinGetXwin(VROOT)
 
 #endif
 
