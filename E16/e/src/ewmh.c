@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2011 Kim Woelders
+ * Copyright (C) 2003-2012 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1107,34 +1107,5 @@ EWMH_ProcessRootClientMessage(XClientMessageEvent * ev)
      }
 #endif
 
-#if 0				/* Obsolete? */
-   EWin               *ewin;
-
-   ewin = EwinFindByClient(ev->window);
-   if (ewin == NULL)
-     {
-	/* Some misbehaving clients go here */
-	if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
-	  {
-	     ecore_x_netwm_desktop_set(ev->window, ev->data.l[0]);
-	     return 1;
-	  }
-	else if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)
-	  {
-	     ecore_x_window_prop_atom_list_change(ev->window,
-						  ECORE_X_ATOM_NET_WM_STATE,
-						  ev->data.l[1], ev->data.l[0]);
-	     if (ev->data.l[2] ==
-		 (long)ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ ||
-		 ev->data.l[2] ==
-		 (long)ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT)
-		ecore_x_window_prop_atom_list_change(ev->window,
-						     ECORE_X_ATOM_NET_WM_STATE,
-						     ev->data.l[2],
-						     ev->data.l[0]);
-	     return 1;
-	  }
-     }
-#endif
    return 0;
 }
