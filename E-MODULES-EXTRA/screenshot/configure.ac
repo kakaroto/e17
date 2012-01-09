@@ -37,6 +37,10 @@ AM_CONDITIONAL([HAVE_PO], [false])
 ])
 AC_SUBST(LTLIBINTL)
 
+PKG_PROG_PKG_CONFIG
+
+EFL_CHECK_PATH_MAX
+
 PKG_CHECK_MODULES(E, [enlightenment])
 release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"
