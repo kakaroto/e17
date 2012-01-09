@@ -1,0 +1,122 @@
+# Portuguese translation for Ecrire.
+# This file is put in the public domain.
+# Sérgio Marques <smarquespt@gmail.com>, 2012
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Ecrire\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2012-01-04 08:19+0100\n"
+"PO-Revision-Date: 2012-01-09 14:32-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
+"Language-Team: \n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: PORTUGAL\n"
+
+#: src/bin/ui/alerts.c:43
+msgid "<align=center>Would you like to save changes to document?<br>Any unsaved changes will be lost."
+msgstr "<align=center>Pretende gravar as alterações no documento?<br>As alterações não gravadas serão perdidas."
+
+#: src/bin/ui/alerts.c:58
+#: src/bin/main.c:663
+msgid "Save"
+msgstr "Gravar"
+
+#: src/bin/ui/alerts.c:64
+msgid "Discard"
+msgstr "Rejeitar"
+
+#: src/bin/ui/alerts.c:70
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: src/bin/ui/search_dialog.c:143
+#: src/bin/main.c:679
+msgid "Find & Replace"
+msgstr "Localizar e substituir"
+
+#: src/bin/ui/search_dialog.c:165
+msgid "Search for:"
+msgstr "Procurar:"
+
+#: src/bin/ui/search_dialog.c:189
+msgid "Replace with:"
+msgstr "Substituir por:"
+
+#: src/bin/ui/search_dialog.c:213
+msgid "Find"
+msgstr "Localizar"
+
+#: src/bin/ui/search_dialog.c:221
+msgid "Replace"
+msgstr "Substituir"
+
+#: src/bin/ui/font_dialog.c:75
+msgid "Select Font"
+msgstr "Selecione o tipo de letra"
+
+#: src/bin/ui/font_dialog.c:100
+msgid "Font size:"
+msgstr "Tamanho do tipo de letra:"
+
+#: src/bin/ui/font_dialog.c:105
+#, c-format
+msgid "%.0f pts"
+msgstr "%.0f pts"
+
+#: src/bin/ui/font_dialog.c:115
+msgid "Set"
+msgstr "Definir"
+
+#: src/bin/main.c:100
+#, c-format
+msgid "%s%s - %s"
+msgstr "%s%s - %s"
+
+#: src/bin/main.c:102
+#, c-format
+msgid "%sUntitled %d - %s"
+msgstr "%s Sem título %d - %s"
+
+#: src/bin/main.c:126
+#, c-format
+msgid "Ln %d, Col %d"
+msgstr "Lin %d, Col %d"
+
+#: src/bin/main.c:660
+msgid "New"
+msgstr "Novo"
+
+#: src/bin/main.c:661
+msgid "Open"
+msgstr "Abrir"
+
+#: src/bin/main.c:667
+msgid "Undo"
+msgstr "Anular"
+
+#: src/bin/main.c:669
+msgid "Redo"
+msgstr "Refazer"
+
+#: src/bin/main.c:672
+msgid "Cut"
+msgstr "Cortar"
+
+#: src/bin/main.c:674
+msgid "Copy"
+msgstr "Copiar"
+
+#: src/bin/main.c:676
+msgid "Paste"
+msgstr "Colar"
+
+#: src/bin/main.c:683
+msgid "Settings"
+msgstr "Definições"
+
