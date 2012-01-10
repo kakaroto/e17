@@ -64,6 +64,9 @@ class PartStateDetails(EditjeDetails):
                  group="editje/collapsable/part_state"):
         EditjeDetails.__init__(self, parent, operation_stack_cb, group)
 
+        self._aspect_prefs = \
+            ['NONE', 'VERTICAL', 'HORIZONTAL', 'BOTH', 'SOURCE' ]
+
         self._header_init(parent)
         self.focus_custom_chain_set([self._header_table, self._box])
 
@@ -399,6 +402,17 @@ class PartStateDetails(EditjeDetails):
                         "If 'None', the image middle is hidden.")
         prop.widget_add("m", wid)
         self["image"].property_add(prop)
+
+        prop = Property(self._parent, "aspect_pref")
+        wid = WidgetCombo(self)
+        for null, i in enumerate(self._aspect_prefs):
+            wid.item_add(i)
+        #FIXME: the 'aspect' property is not yet exposed ;)
+        wid.tooltip_set("Sets the scope of the \"aspect\" property to " +
+                        "a given dimension")
+        prop.widget_add("a", wid)
+        self["image"].property_add(prop)
+
 #        wid = WidgetBoolean(self)
 #        wid.states_set("Dynamic", "Static")
 #        self.prop_add("scale_hint", wid)
@@ -660,6 +674,8 @@ class PartStateDetails(EditjeDetails):
         self["image"]["normal"].value = img
         self["image"]["border"].value = self.state.image_border_get()
         self["image"]["middle"].value = self.state.image_border_fill_get()
+        self["image"]["aspect_pref"].value = \
+            self._aspect_prefs[self.state.aspect_pref_get()]
 
     def _create_props_by_type(self, edje_type):
         edje_type = edje.external_type_get(edje_type)
@@ -844,6 +860,11 @@ class PartStateDetails(EditjeDetails):
             args = [["image"], [prop], [value], ["image_border_fill"], [False],
                     [None]]
             self._prop_change_do("part state \"middle\" setting", *args)
+        elif prop == "aspect_pref":
+            args = [["image"], [prop], [self._aspect_prefs.index(value)],
+                    [None], [False], [lambda x: self._aspect_prefs[x]]]
+            self._prop_change_do("part state image aspect preference setting",
+                                 *args)
 
     def _prop_external_value_changed(self, prop, value):
         for p in self._params_info:

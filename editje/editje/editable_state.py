@@ -505,6 +505,22 @@ class EditableState(Manager):
     image_border_fill = property(fget=_image_border_fill_get,
                                  fset=_image_border_fill_set)
 
+    def _aspect_pref_get(self):
+        if not self.name:
+            return None
+
+        return self._state.aspect_pref_get()
+
+    def _aspect_pref_set(self, value):
+        if not self.name:
+            return
+
+        self._state.aspect_pref_set(value)
+        self.event_emit("state.aspect_pref.changed")
+
+    aspect_pref = property(fget=_aspect_pref_get,
+                           fset=_aspect_pref_set)
+
     def external_param_set(self, pname, value):
         if not self.name:
             return False
