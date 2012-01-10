@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v -id $(top_srcdir)/data/themes -fd $(top_srcdir)/data/themes
+EDJE_FLAGS = -id $(top_srcdir)/data/themes -fd $(top_srcdir)/data/themes
 
 images = \
 	bt_clear_normal.png \
