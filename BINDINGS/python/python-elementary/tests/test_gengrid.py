@@ -14,7 +14,7 @@ images = ["panel_01.jpg", "plant_01.jpg", "rock_01.jpg", "rock_02.jpg",
 def gg_text_get(obj, part, item_data):
     return "Item # %s" % (item_data)
 
-def gg_icon_get(obj, part, data):
+def gg_content_get(obj, part, data):
     if part == "elm.swallow.icon":
         im = elementary.Image(obj)
         im.file_set("images/" + random.choice(images))
@@ -68,7 +68,7 @@ def gengrid_clicked(obj):
     # gengrid
     itc = elementary.GengridItemClass(item_style="default",
                                        text_get_func=gg_text_get,
-                                       icon_get_func=gg_icon_get,
+                                       content_get_func=gg_content_get,
                                        state_get_func=gg_state_get,
                                        del_func=gg_del)
     gg = elementary.Gengrid(win)

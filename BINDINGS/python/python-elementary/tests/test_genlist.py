@@ -9,7 +9,7 @@ import evas
 def gl_text_get(obj, part, item_data):
     return "Item # %i" % (item_data,)
 
-def gl_icon_get(obj, part, data):
+def gl_content_get(obj, part, data):
     ic = elementary.Icon(obj)
     ic.file_set("images/logo_small.png")
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
@@ -24,7 +24,7 @@ def gl_sel(gli, gl, *args, **kwargs):
 def glg_text_get(obj, part, item_data):
     return "Group # %i" % (item_data,)
 
-def glg_icon_get(obj, part, data):
+def glg_content_get(obj, part, data):
     ic = elementary.Icon(obj)
     ic.file_set("images/logo.png")
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
@@ -80,7 +80,7 @@ def genlist_clicked(obj):
 
     itc1 = elementary.GenlistItemClass(item_style="default",
                                        text_get_func=gl_text_get,
-                                       icon_get_func=gl_icon_get,
+                                       content_get_func=gl_content_get,
                                        state_get_func=gl_state_get)
 
     bt_50 = elementary.Button(win)
@@ -133,7 +133,7 @@ def genlist2_clicked(obj):
 
     itc1 = elementary.GenlistItemClass(item_style="default",
                                        text_get_func=gl_text_get,
-                                       icon_get_func=gl_icon_get,
+                                       content_get_func=gl_content_get,
                                        state_get_func=gl_state_get)
 
     gl.item_append(itc1, 1001, func=gl_sel)
@@ -358,12 +358,12 @@ def genlist3_clicked(obj, it):
 
     itc_i = elementary.GenlistItemClass(item_style="default",
                                        text_get_func=gl_text_get,
-                                       icon_get_func=gl_icon_get,
+                                       content_get_func=gl_content_get,
                                        state_get_func=gl_state_get)
 
     itc_g = elementary.GenlistItemClass(item_style="group_index",
                                        text_get_func=glg_text_get,
-                                       icon_get_func=glg_icon_get)
+                                       content_get_func=glg_content_get)
 
     for i in range(300):
         if i % 10 == 0:
