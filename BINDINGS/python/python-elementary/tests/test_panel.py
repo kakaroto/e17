@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Panel -{{{-
-def panel_clicked(obj, it):
+def panel_clicked(obj):
     win = elementary.Window("panel", elementary.ELM_WIN_BASIC)
     win.title_set("Panel test")
     win.autodel_set(True)

@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Separator -{{{-
-def separator_clicked(obj, it):
+def separator_clicked(obj):
     win = elementary.Window("separators", elementary.ELM_WIN_BASIC)
     win.title_set("Separators")
     win.autodel_set(True)

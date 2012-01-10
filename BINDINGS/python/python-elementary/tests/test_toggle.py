@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Toggles -{{{-
-def toggles_clicked(obj, it):
+def toggles_clicked(obj):
     win = elementary.Window("toggles", elementary.ELM_WIN_BASIC)
     win.title_set("Toggles")
     win.autodel_set(True)

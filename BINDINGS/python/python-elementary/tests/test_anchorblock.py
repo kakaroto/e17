@@ -67,7 +67,7 @@ def my_anchorblock_scroll(obj):
    (vw, vh) = obj.child_size_get()
    print "scroll %ix%i +%i+%i in %ix%i" % (w, h, x, y, vw, vh)
 
-def anchorblock_clicked(obj, it):
+def anchorblock_clicked(obj):
     win = elementary.Window("anchorblock", elementary.ELM_WIN_BASIC)
     win.title_set("Anchorblock")
     win.autodel_set(True)

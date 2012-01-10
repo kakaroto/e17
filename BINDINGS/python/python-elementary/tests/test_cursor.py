@@ -7,7 +7,7 @@ import ecore
 import evas
 
 #----- Cursors -{{{-
-def cursor_clicked(obj, it):
+def cursor_clicked(obj):
     win = elementary.Window("cursors", elementary.ELM_WIN_BASIC)
     win.title_set("Cursors")
     win.autodel_set(True)
@@ -64,7 +64,7 @@ def cursor_clicked(obj, it):
 # }}}
 
 #----- Cursors2 -{{{-
-def cursor2_clicked(obj, it):
+def cursor2_clicked(obj):
     win = elementary.Window("cursors", elementary.ELM_WIN_BASIC)
     win.title_set("Cursors 2")
     win.autodel_set(True)
@@ -111,7 +111,7 @@ def cursor2_clicked(obj, it):
 # }}}
 
 #----- Cursors3 -{{{-
-def cursor3_clicked(obj, it):
+def cursor3_clicked(obj):
     win = elementary.Window("cursors", elementary.ELM_WIN_BASIC)
     win.title_set("Cursors 3")
     win.autodel_set(True)

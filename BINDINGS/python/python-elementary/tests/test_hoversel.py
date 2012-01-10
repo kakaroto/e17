@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Hoversel -{{{-
-def hoversel_clicked(obj, it):
+def hoversel_clicked(obj):
     win = elementary.Window("hoversel", elementary.ELM_WIN_BASIC)
     win.title_set("Hoversel")
     win.autodel_set(True)

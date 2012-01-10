@@ -29,7 +29,7 @@ def _tt_timer_del(obj, data, *args):
         del data["timer"]
 
 #----- Tooltips -{{{-
-def tooltip_clicked(obj, it):
+def tooltip_clicked(obj):
     win = elementary.Window("tooltips", elementary.ELM_WIN_BASIC)
     win.title_set("Tooltips")
     win.autodel_set(True)

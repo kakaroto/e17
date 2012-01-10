@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Buttons -{{{-
-def buttons_clicked(obj, it):
+def buttons_clicked(obj):
     win = elementary.Window("buttons", elementary.ELM_WIN_BASIC)
     win.title_set("Buttons")
     win.focus_highlight_enabled_set(True)

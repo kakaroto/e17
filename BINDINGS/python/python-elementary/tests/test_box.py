@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Box Vert -{{{-
-def box_vert_clicked(obj, it):
+def box_vert_clicked(obj):
     win = elementary.Window("box-vert", elementary.ELM_WIN_BASIC)
     win.title_set("Box Vert")
     win.autodel_set(True)
@@ -51,7 +51,7 @@ def boxvert2_del_cb(bt, bx):
     bt.move(0, 0)
     bt.color_set(128, 64, 0, 128)
 
-def box_vert2_clicked(obj, it):
+def box_vert2_clicked(obj):
     win = elementary.Window("box-vert2", elementary.ELM_WIN_BASIC)
     win.title_set("Box Vert 2")
     win.autodel_set(True)
@@ -110,7 +110,7 @@ def box_vert2_clicked(obj, it):
 # }}}
 
 #----- Box Horiz -{{{-
-def box_horiz_clicked(obj, it):
+def box_horiz_clicked(obj):
     win = elementary.Window("box-horiz", elementary.ELM_WIN_BASIC)
     win.title_set("Box Horiz")
     win.autodel_set(True)

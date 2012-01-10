@@ -42,7 +42,7 @@ def gg_clicked_double(gg, ggi, *args, **kwargs):
 # -}}}-
 
 #----- Gengrid -{{{-
-def gengrid_clicked(obj, it):
+def gengrid_clicked(obj):
 
     global item_count
     item_count = 25

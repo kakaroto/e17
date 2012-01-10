@@ -51,7 +51,7 @@ def my_progressbar_destroy(obj, *args):
     my_progressbar_test_stop(None, *args)
     obj.delete()
 
-def progressbar_clicked(obj, it):
+def progressbar_clicked(obj):
     win = elementary.Window("progressbar", elementary.ELM_WIN_BASIC)
     win.title_set("Progressbar test")
 

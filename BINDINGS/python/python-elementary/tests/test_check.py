@@ -21,7 +21,7 @@ def ck_3(obj):
 def ck_4(obj):
     print "test check 4"
 
-def check_clicked(obj, it):
+def check_clicked(obj):
     win = elementary.Window("check", elementary.ELM_WIN_BASIC)
     win.title_set("Check test")
     win.autodel_set(True)

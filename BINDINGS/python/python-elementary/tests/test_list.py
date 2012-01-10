@@ -9,7 +9,7 @@ import evas
 def my_list_show_it(obj, it):
     it.show()
 
-def list_clicked(obj, it):
+def list_clicked(obj):
     win = elementary.Window("list", elementary.ELM_WIN_BASIC)
     win.title_set("List")
     win.autodel_set(True)
@@ -149,7 +149,7 @@ def my_list2_sel(obj, it):
     if it is not None:
         it.selected_set(False)
 
-def list2_clicked(obj, it):
+def list2_clicked(obj):
     win = elementary.Window("list-2", elementary.ELM_WIN_BASIC)
     win.title_set("List 2")
     win.autodel_set(True)
@@ -250,7 +250,7 @@ def list2_clicked(obj, it):
 # }}}
 
 #----- List3 -{{{-
-def list3_clicked(obj, it):
+def list3_clicked(obj):
     win = elementary.Window("list-3", elementary.ELM_WIN_BASIC)
     win.title_set("List 3")
     win.autodel_set(True)

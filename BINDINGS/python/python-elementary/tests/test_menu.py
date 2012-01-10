@@ -60,7 +60,7 @@ def menu_populate_1(menu, item):
 
     menu_populate_2(menu, item2)
 
-def menu_clicked(obj, it):
+def menu_clicked(obj):
     win = elementary.Window("menu", elementary.ELM_WIN_BASIC)
     win.title_set("Menu test")
     win.autodel_set(True)

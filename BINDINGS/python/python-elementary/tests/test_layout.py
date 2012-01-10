@@ -9,7 +9,7 @@ import evas
 def _event(*args, **kargs):
     print args, kargs
 
-def layout_clicked(obj, it):
+def layout_clicked(obj):
     win = elementary.Window("layout", elementary.ELM_WIN_BASIC)
     win.title_set("Layout")
     win.elm_event_callback_add(_event)

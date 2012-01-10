@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Table -{{{-
-def table_clicked(obj, it):
+def table_clicked(obj):
     win = elementary.Window("table", elementary.ELM_WIN_BASIC)
     win.title_set("Table")
     win.autodel_set(True)

@@ -18,7 +18,7 @@ def my_pager_3(bt, pg, info):
 def my_pager_pop(obj, pg, info):
     pg.content_pop()
 
-def pager_clicked(obj, it):
+def pager_clicked(obj):
     win = elementary.Window("pager", elementary.ELM_WIN_BASIC)
     win.autodel_set(True)
     win.title_set("Pager")

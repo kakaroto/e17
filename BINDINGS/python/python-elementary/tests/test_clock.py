@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Clock -{{{-
-def clock_clicked(obj, it):
+def clock_clicked(obj):
     win = elementary.Window("clock", elementary.ELM_WIN_BASIC)
     win.title_set("Clock")
     win.autodel_set(True)

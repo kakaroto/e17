@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Spinner -{{{-
-def spinner_clicked(obj, it):
+def spinner_clicked(obj):
     win = elementary.Window("spinner", elementary.ELM_WIN_BASIC)
     win.title_set("Spinner test")
     win.autodel_set(True)

@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- FileSelector -{{{-
-def fileselector_clicked(obj, it):
+def fileselector_clicked(obj):
     win = elementary.Window("fileselector", elementary.ELM_WIN_BASIC)
     win.title_set("File selector test")
     win.autodel_set(True)

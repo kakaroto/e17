@@ -18,7 +18,7 @@ def my_scroller_go_300_900(bt, sc):
 def my_scroller_go_900_900(obj, sc):
     sc.region_bring_in(900, 900, 318, 318)
 
-def scroller_clicked(obj, it):
+def scroller_clicked(obj):
     win = elementary.Window("scroller", elementary.ELM_WIN_BASIC)
     win.title_set("Scroller")
     win.autodel_set(True)

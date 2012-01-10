@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Radio -{{{-
-def radio_clicked(obj, it):
+def radio_clicked(obj):
     win = elementary.Window("radio", elementary.ELM_WIN_BASIC)
     win.title_set("Radio test")
     win.autodel_set(True)

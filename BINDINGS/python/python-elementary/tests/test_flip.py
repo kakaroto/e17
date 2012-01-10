@@ -26,7 +26,7 @@ def my_flip_6(bt, fl):
 
 
 
-def flip_clicked(obj, it):
+def flip_clicked(obj):
     # window
     win = elementary.Window("flip", elementary.ELM_WIN_BASIC)
     win.autodel_set(True)

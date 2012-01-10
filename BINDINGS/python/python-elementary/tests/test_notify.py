@@ -33,7 +33,7 @@ def notify_show(bt, win, orient):
     bt.show()
     notify.show()
 
-def notify_clicked(obj, it):
+def notify_clicked(obj):
     win = elementary.Window("notify", elementary.ELM_WIN_BASIC)
     win.title_set("Notify test")
     win.autodel_set(True)

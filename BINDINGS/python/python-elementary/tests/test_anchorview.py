@@ -53,7 +53,7 @@ def my_anchorview_anchor(obj, ei, av):
            bt.show()
 
 
-def anchorview_clicked(obj, it):
+def anchorview_clicked(obj):
     win = elementary.Window("anchorview", elementary.ELM_WIN_BASIC)
     win.title_set("Anchorview")
     win.autodel_set(True)

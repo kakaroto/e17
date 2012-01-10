@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- BG Plain -{{{-
-def bg_plain_clicked(obj, it):
+def bg_plain_clicked(obj):
     win = elementary.Window("bg plain", elementary.ELM_WIN_BASIC)
     win.title_set("Bg Plain")
     win.autodel_set(True)
@@ -21,7 +21,7 @@ def bg_plain_clicked(obj, it):
 # }}}
 
 #----- BG Image -{{{-
-def bg_image_clicked(obj, it):
+def bg_image_clicked(obj):
     win = elementary.Window("bg-image", elementary.ELM_WIN_BASIC)
     win.title_set("Bg Image")
     win.autodel_set(True)

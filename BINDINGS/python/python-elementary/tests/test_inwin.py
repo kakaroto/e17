@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Inner Window -{{{-
-def inner_window_clicked(obj, it):
+def inner_window_clicked(obj):
     win = elementary.Window("inner-window", elementary.ELM_WIN_BASIC)
     win.title_set("InnerWindow test")
     win.autodel_set(True)

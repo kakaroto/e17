@@ -73,58 +73,118 @@ if __name__ == "__main__":
     fr.content_set(lb)
     lb.show()
 
-    items = [("Bg Plain", bg_plain_clicked),
-             ("Bg Image", bg_image_clicked),
-             ("Icon Transparent", icon_transparent_clicked),
-             ("Box Vert", box_vert_clicked),
-             ("Box Vert 2", box_vert2_clicked),
-             ("Box Horiz", box_horiz_clicked),
-             ("Buttons", buttons_clicked),
-             ("Toggles", toggles_clicked),
-             ("Table", table_clicked),
-             ("Clock", clock_clicked),
-             ("Layout", layout_clicked),
-             ("Hover", hover_clicked),
-             ("Hover 2", hover2_clicked),
-             ("Entry", entry_clicked),
-             ("Entry Scrolled", entry_scrolled_clicked),
-             ("Flip", flip_clicked),
-             ("Anchorview", anchorview_clicked),
-             ("Anchorblock", anchorblock_clicked),
-             ("Toolbar", toolbar_clicked),
-             ("Hoversel", hoversel_clicked),
-             ("List", list_clicked),
-             ("List 2", list2_clicked),
-             ("List 3", list3_clicked),
-             ("InnerWindow", inner_window_clicked),
-             ("Genlist", genlist_clicked),
-             ("Gengrid", gengrid_clicked),
-             ("Checks", check_clicked),
-             ("Radios", radio_clicked),
-             ("Pager", pager_clicked),
-             ("Progressbar", progressbar_clicked),
-             ("File selector", fileselector_clicked),
-             ("Separator", separator_clicked),
-             ("Scroller", scroller_clicked),
-             ("Spinner", spinner_clicked),
-             ("Notify", notify_clicked),
-             ("Menu", menu_clicked),
-             ("Panel", panel_clicked),
-             ("Tooltip", tooltip_clicked),
-             ("Cursor", cursor_clicked),
-             ("Cursor2", cursor2_clicked),
-             ("Cursor3", cursor3_clicked)]
+    sc = elementary.Scroller(win)
+    sc.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+    sc.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+    sc.bounce_set(False, True)
+    sc.show()
+    box0.pack_end(sc)
 
-    li = elementary.List(win)
-    li.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
-    li.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
-    box0.pack_end(li)
-    li.show()
+    tbx = elementary.Box(win)
+    tbx.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+    tbx.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
+    sc.content_set(tbx)
+    tbx.show()
 
-    for item in items:
-        li.item_append(item[0], callback=item[1])
+    items = [("Booleans", [
+                ("Checks", check_clicked),
+                ("Toggles", toggles_clicked),
+            ]),
+             ("Boundaries", [
+                ("Separator", separator_clicked),
+            ]),
+             ("Buttons", [
+                ("Buttons", buttons_clicked),
+            ]),
+             ("Containers", [
+                ("Box Horiz", box_horiz_clicked),
+                ("Box Vert", box_vert_clicked),
+                ("Box Vert2", box_vert2_clicked),
+                ("Table", table_clicked),
+                ("Layout", layout_clicked),
+            ]),
+             ("Cursors", [
+                ("Cursor", cursor_clicked),
+                ("Cursor2", cursor2_clicked),
+                ("Cursor3", cursor3_clicked),
+            ]),
+             ("Dividers", [
+                ("Panel", panel_clicked),
+            ]),
+             ("Effects", [
+                ("Flip", flip_clicked),
+            ]),
+             ("Entries", [
+                ("Entry", entry_clicked),
+                ("Entry Scrolled", entry_scrolled_clicked),
+            ]),
+             ("Lists", [
+                ("List", list_clicked),
+                ("List 2", list2_clicked),
+                ("List 3", list3_clicked),
+                ("Genlist", genlist_clicked),
+                ("Gengrid", gengrid_clicked),
+            ]),
+             ("Popups", [
+                ("Hover", hover_clicked),
+                ("Hover 2", hover2_clicked),
+                ("Notify", notify_clicked),
+                ("Tooltip", tooltip_clicked),
+            ]),
+             ("Range Values", [
+                ("Spinner", spinner_clicked),
+                ("Progressbar", progressbar_clicked),
+            ]),
+             ("Scroller", [
+                ("Scroller", scroller_clicked),
+            ]),
+             ("Selectors", [
+                ("File selector", fileselector_clicked),
+                ("Hoversel", hoversel_clicked),
+                ("Menu", menu_clicked),
+                ("Radios", radio_clicked),
+            ]),
+             ("Storyboard", [
+                ("Pager", pager_clicked),
+            ]),
+             ("Text", [
+                ("Anchorview", anchorview_clicked),
+                ("Anchorblock", anchorblock_clicked),
+            ]),
+             ("Times & Dates", [
+                ("Clock", clock_clicked),
+            ]),
+            ("Toolbars", [
+                ("Toolbar", toolbar_clicked),
+            ]),
+             ("Window / Backgroud", [
+                ("Bg Plain", bg_plain_clicked),
+                ("Bg Image", bg_image_clicked),
+                ("InnerWindow", inner_window_clicked),
+            ])
+            ]
 
-    li.go()
+    for category in items:
+        frame = elementary.Frame(win)
+        frame.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
+        frame.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
+        frame.text = category[0]
+        frame.show()
+        tbx.pack_end(frame)
+
+        tbx2 = elementary.Box(win)
+        tbx2.horizontal_set(True)
+        tbx2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
+        tbx2.size_hint_align_set(evas.EVAS_HINT_FILL, 0.0)
+        frame.content_set(tbx2)
+        tbx2.show()
+
+        for test in category[1]:
+            bt = elementary.Button(win)
+            bt.text = test[0]
+            bt.callback_clicked_add(test[1])
+            bt.show()
+            tbx2.pack_end(bt)
 
     win.resize(320,520)
     win.show()
