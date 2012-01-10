@@ -903,7 +903,7 @@ create_main_win(App *app)
    evas_object_event_callback_add(btsearch, EVAS_CALLBACK_MOUSE_DOWN, _search,
                                   app);
 
-   elm_entry_end_set(app->entry, btsearch);
+   elm_object_part_content_set(app->entry, "end", btsearch);
    elm_object_part_content_set(layout, "search-entry", app->entry);
 
    /* Open file */
