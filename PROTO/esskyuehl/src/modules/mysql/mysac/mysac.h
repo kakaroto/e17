@@ -21,18 +21,42 @@
 #ifndef __MYSAC_H__
 #define __MYSAC_H__
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
 #include <errno.h>
 #include <string.h>
 #include <sys/time.h>
+#include <ctype.h>
+#undef PACKAGE
+#undef VERSION
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
 #ifdef HAVE_MYSQL_H
-#include <mysql.h>
-#include <errmsg.h>
+# include <my_global.h>
+# include <mysql.h>
+# include <errmsg.h>
 #else
-#include <mysql/errmsg.h>
-#include <mysql/mysql.h>
+# include <mysql/my_global.h>
+# include <mysql/mysql.h>
+# include <mysql/errmsg.h>
+#endif
+#undef PACKAGE
+#undef VERSION
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
 
 /* def imported from: linux-2.6.24/include/linux/stddef.h */

@@ -1,3 +1,3 @@
-SUBDIRS = lib tests
+SUBDIRS = lib modules tests
 
 MAINTAINERCLEANFILES = Makefile.in

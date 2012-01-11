@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <esql_private.h>
+#include "esql_private.h"
 
 /**
  * @defgroup Esql_Convert Conversion

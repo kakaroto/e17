@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <esql_private.h>
+#include "esql_private.h"
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
 #undef PACKAGE_STRING
@@ -28,7 +28,7 @@
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+# include "config.h"
 #endif
 
 #include <libpq-fe.h>
@@ -314,11 +314,13 @@ esql_postgresql_free(Esql *e)
    if (!e->backend.db) return;
    PQfinish(e->backend.db);
    e->backend.db = NULL;
+   e->backend.free = NULL;
 }
 
 void
 esql_postgresql_init(Esql *e)
 {
+   INFO("Esql type for %p set to PostgreSQL", e);
    e->type = ESQL_TYPE_POSTGRESQL;
    e->backend.connect = esql_postgresql_connect;
    e->backend.disconnect = esql_postgresql_disconnect;
@@ -331,4 +333,11 @@ esql_postgresql_init(Esql *e)
    e->backend.res = esql_postgresql_res;
    e->backend.res_free = esql_postgresql_res_free;
    e->backend.free = esql_postgresql_free;
+}
+
+Esql_Type
+esql_module_init(Esql *e)
+{
+   if (e) esql_postgresql_init(e);
+   return ESQL_TYPE_POSTGRESQL;
 }

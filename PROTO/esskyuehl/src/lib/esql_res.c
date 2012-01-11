@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <esql_private.h>
+#include "esql_private.h"
 
 static Eina_Bool
 esql_row_iterator_next(Esql_Row_Iterator *it,

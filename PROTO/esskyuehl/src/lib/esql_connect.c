@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <esql_private.h>
+#include "esql_private.h"
 
 /**
  * @defgroup Esql_Connect Connection
@@ -92,6 +92,7 @@ esql_disconnect(Esql *e)
    e->fdh = NULL;
    INFO("Disconnected");
    ecore_event_add(ESQL_EVENT_DISCONNECT, e, (Ecore_End_Cb)esql_fake_free, NULL);
+   e->event_count++;
 }
 
 /**
@@ -206,7 +207,7 @@ esql_connect_timeout_set(Esql  *e,
 /**
  * @brief Return the previously set timeout of an #Esql object
  * @param e The #Esql object (NOT NULL)
- * @return The timeout in seconds
+ * @return The timeout in seconds, -1.0 on failure
  *
  * Use this function to return the inactivity timeout previously set with
  * esql_connect_timeout_set().
@@ -214,7 +215,7 @@ esql_connect_timeout_set(Esql  *e,
 double
 esql_connect_timeout_get(Esql *e)
 {
-   EINA_SAFETY_ON_NULL_RETURN(e);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(e, -1.0);
    return e->timeout;
 }
 

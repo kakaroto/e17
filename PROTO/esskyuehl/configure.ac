@@ -3,7 +3,7 @@
 m4_define([v_maj], [1])
 m4_define([v_min], [0])
 m4_define([v_mic], [0])
-m4_define([v_rev], m4_esyscmd([(svnversion "${SVN_REPO_PATH:-.}" | grep -v export || echo 0) | awk -F : '{printf("%s\n", $1);}' | tr -d ' :MSP\n']))
+m4_define([v_rev], m4_esyscmd([(svnversion "${SVN_REPO_PATH:-.}" | grep -v '\(export\|Unversioned directory\)' || echo 0) | awk -F : '{printf("%s\n", $1);}' | tr -d ' :MSP\n']))
 m4_if(v_rev, [0], [m4_define([v_rev], m4_esyscmd([git log 2> /dev/null | (grep -m1 git-svn-id || echo 0) | sed -e 's/.*@\([0-9]*\).*/\1/' | tr -d '\n']))])
 ##--   When released, remove the dnl on the below line
 dnl m4_undefine([v_rev])
@@ -59,57 +59,105 @@ AC_FUNC_ALLOCA
 CC_PIC="$lt_prog_compiler_pic"
 AC_SUBST([CC_PIC])
 
+case "$host_os" in
+   mingw32ce*)
+      MODULE_ARCH="$host_os-$host_cpu"
+      ;;
+   *)
+      MODULE_ARCH="$host_os-$host_cpu-v_maj.v_min.v_mic"
+      ;;
+esac
+AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "${MODULE_ARCH}", "Module architecture")
+
+case "$host_os" in
+   mingw*)
+      MODULE_EXT=".dll"
+      ;;
+   *)
+      MODULE_EXT=".so"
+      ;;
+esac
+
+AC_DEFINE_UNQUOTED(SHARED_LIB_SUFFIX, "${MODULE_EXT}", [Suffix for shared objects])
 
 requirement_esskyuehl="eina >= 1.1.0 ecore >= 1.1.99"
 AC_SUBST(requirement_esskyuehl)
 
 PKG_CHECK_MODULES([EFL], [$requirement_esskyuehl])
 
-AC_MSG_CHECKING([for mysql])
-AC_PATH_PROG([mysql_config], [mysql_config])
-if test "x$mysql_config" != "x";then
-      MYSQL_CFLAGS="$($mysql_config --cflags)"
-      MYSQL_LIBS="$($mysql_config --libs)"
-      cflags="$CFLAGS"
-      cppflags="$CPPFLAGS"
-      CFLAGS="$MYSQL_CFLAGS"
-      CPPFLAGS="$CFLAGS"
-      AC_CHECK_HEADERS([mysql/mysql.h mysql.h])
-      CFLAGS="$cflags"
-      CPPFLAGS="$cppflags"
-      if test "x$ac_cv_header_mysql_h" != "xno" -o "x$ac_cv_header_mysql_mysql_h" != "xno" ; then
-         AC_MSG_RESULT([yes])
-         AC_DEFINE_UNQUOTED([HAVE_MSQL], [1], [have mysql])
-      else
-         AC_MSG_RESULT([no])
-      fi
-else
-      AC_MSG_RESULT([no])
-fi
-AM_CONDITIONAL([MYSQL], [test -n "$MYSQL_LIBS"])
-AC_SUBST(MYSQL_CFLAGS)
-AC_SUBST(MYSQL_LIBS)
+AC_ARG_ENABLE([mysql],
+   [AC_HELP_STRING([--disable-mysql], [disable mysql module @<:@default=detect@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_mysql="yes"
+    else
+       want_mysql="no"
+    fi
+   ],
+   [want_mysql="yes"])
 
-AC_MSG_CHECKING([for postgresql])
-AC_PATH_PROG([pg_config], [pg_config])
-if test "x$pg_config" != "x";then
-      POSTGRESQL_CFLAGS="-I$($pg_config --includedir) -I$($pg_config --includedir-server)"
-      POSTGRESQL_LIBS="-L$($pg_config --libdir) -lpq"
-      cflags="$CFLAGS"
-      CFLAGS="$POSTGRESQL_CFLAGS"
-      CPPFLAGS="$CFLAGS"
-      AC_CHECK_HEADERS([libpq-fe.h])
-      CFLAGS="$cflags"
-      CPPFLAGS="$cppflags"
-      AC_MSG_RESULT([yes])
-      postgresql=postgresql
-      AC_DEFINE_UNQUOTED([HAVE_PSQL], [1], [have postgresql])
-else
-      AC_MSG_RESULT([no])
+if test "x${want_mysql}" != "xno" ; then
+   AC_MSG_CHECKING([for mysql])
+   AC_PATH_PROG([mysql_config], [mysql_config])
+   if test "x$mysql_config" != "x";then
+         MYSQL_CFLAGS="$($mysql_config --cflags)"
+         MYSQL_LIBS="$($mysql_config --libs)"
+         cflags="$CFLAGS"
+         cppflags="$CPPFLAGS"
+         CFLAGS="$MYSQL_CFLAGS"
+         CPPFLAGS="$CFLAGS"
+         AC_CHECK_HEADERS([mysql/mysql.h mysql.h])
+         CFLAGS="$cflags"
+         CPPFLAGS="$cppflags"
+         if test "x$ac_cv_header_mysql_h" != "xno" -o "x$ac_cv_header_mysql_mysql_h" != "xno" ; then
+            AC_MSG_RESULT([yes])
+            mysql=mysql
+            AC_DEFINE_UNQUOTED([HAVE_MSQL], [1], [have mysql])
+         else
+            AC_MSG_RESULT([no])
+         fi
+   else
+         AC_MSG_RESULT([no])
+   fi
+   AM_CONDITIONAL([MYSQL], [test -n "$MYSQL_LIBS"])
+   AC_SUBST(MYSQL_CFLAGS)
+   AC_SUBST(MYSQL_LIBS)
 fi
-AM_CONDITIONAL([POSTGRESQL], [test -n "$POSTGRESQL_LIBS"])
-AC_SUBST(POSTGRESQL_CFLAGS)
-AC_SUBST(POSTGRESQL_LIBS)
+
+AC_ARG_ENABLE([postgresql],
+   [AC_HELP_STRING([--disable-postgresql], [disable postgresql module @<:@default=detect@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_postgresql="yes"
+    else
+       want_postgresql="no"
+    fi
+   ],
+   [want_postgresql="yes"])
+
+if test "x${want_postgresql}" != "xno" ; then
+   AC_MSG_CHECKING([for postgresql])
+   AC_PATH_PROG([pg_config], [pg_config])
+   if test "x$pg_config" != "x";then
+         POSTGRESQL_CFLAGS="-I$($pg_config --includedir) -I$($pg_config --includedir-server)"
+         POSTGRESQL_LIBS="-L$($pg_config --libdir) -lpq"
+         cflags="$CFLAGS"
+         CFLAGS="$POSTGRESQL_CFLAGS"
+         CPPFLAGS="$CFLAGS"
+         AC_CHECK_HEADERS([libpq-fe.h])
+         CFLAGS="$cflags"
+         CPPFLAGS="$cppflags"
+         AC_MSG_RESULT([yes])
+         postgresql=postgresql
+         AC_DEFINE_UNQUOTED([HAVE_PSQL], [1], [have postgresql])
+   else
+         AC_MSG_RESULT([no])
+   fi
+   AM_CONDITIONAL([POSTGRESQL], [test -n "$POSTGRESQL_LIBS"])
+   AC_SUBST(POSTGRESQL_CFLAGS)
+   AC_SUBST(POSTGRESQL_LIBS)
+fi
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
@@ -119,8 +167,10 @@ doc/esskyuehl.dox
 doc/Makefile
 src/Makefile
 src/lib/Makefile
-src/lib/mysql/Makefile
-src/lib/mysql/mysac/Makefile
+src/modules/Makefile
+src/modules/postgresql/Makefile
+src/modules/mysql/Makefile
+src/modules/mysql/mysac/Makefile
 src/tests/Makefile
 esskyuehl.pc
 ])

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <esql_private.h>
+#include "esql_private.h"
 #include "mysac/mysac.h"
 #include <unistd.h>
 
@@ -288,6 +288,7 @@ esql_mysac_free(Esql *e)
    MYSAC *m;
 
    esql_mysac_disconnect(e);
+   e->backend.free = NULL;
    m = e->backend.db;
    eina_stringshare_del(m->addr);
    eina_stringshare_del(m->login);
@@ -299,6 +300,7 @@ esql_mysac_free(Esql *e)
 void
 esql_mysac_init(Esql *e)
 {
+   INFO("Esql type for %p set to MySQL", e);
    e->type = ESQL_TYPE_MYSQL;
    e->backend.connect = esql_mysac_connect;
    e->backend.disconnect = esql_mysac_disconnect;
@@ -315,4 +317,11 @@ esql_mysac_init(Esql *e)
 
    e->backend.db = mysac_new(1024);
    EINA_SAFETY_ON_NULL_RETURN(e->backend.db);
+}
+
+Esql_Type
+esql_module_init(Esql *e)
+{
+   if (e) esql_mysac_init(e);
+   return ESQL_TYPE_MYSQL;
 }

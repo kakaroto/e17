@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <esql_private.h>
+#include "esql_private.h"
 
 #define UPDATE_LISTS(TYPE) do {                                                                          \
        if (e->backend_set_funcs && (e->backend_set_funcs->data == esql_##TYPE))                          \
@@ -114,7 +114,10 @@ esql_call_complete(Esql *e)
              if (ev->connect_cb)
                ev->connect_cb(ev, ev->connect_cb_data);
              else
-               ecore_event_add(ESQL_EVENT_CONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+               {
+                  ecore_event_add(ESQL_EVENT_CONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+                  e->event_count++;
+               }
           }
         break;
 
@@ -185,6 +188,7 @@ esql_reconnect_handler(Esql *e)
    return;
 error:
    ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+   e->event_count++;
 }
 
 Eina_Bool
@@ -262,18 +266,28 @@ esql_connect_handler(Esql             *e,
                   esql_res_free(NULL, res);
                }
              else
-               ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+               {
+                  ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+                  e->event_count++;
+               }
              esql_next(e);
              return ECORE_CALLBACK_RENEW;
           }
         if (ev->connect_cb)
           ev->connect_cb(ev, ev->connect_cb_data);
         else
-          ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+          {
+             ecore_event_add(ESQL_EVENT_ERROR, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+             e->event_count++;
+          }
 
         e->fdh = NULL;
         if (e->reconnect) esql_reconnect_handler(e);
-        else ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+        else
+          {
+             ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+             e->event_count++;
+          }
         return ECORE_CALLBACK_CANCEL;
      }
    return ECORE_CALLBACK_RENEW;
@@ -292,6 +306,7 @@ esql_timeout_cb(Esql *e)
    e->timeout_timer = NULL;
    esql_disconnect(e);
    ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
+   e->event_count++;
    if (e->reconnect) esql_reconnect_handler(e);
    return EINA_FALSE;
 }

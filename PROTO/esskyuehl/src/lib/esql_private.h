@@ -68,6 +68,16 @@ typedef Esql_Row *             (*Esql_Row_Cb)(Esql_Res *);
 
 typedef const char *           (*Esql_Row_Col_Name_Cb)(Esql_Row *);
 
+typedef Esql_Type              (*Esql_Module_Cb)(Esql *);
+
+typedef struct Esql_Module
+{
+   EINA_INLIST;
+   Esql_Type type;
+   Eina_Module *module;
+   Esql_Module_Cb init;
+} Esql_Module;
+
 typedef struct Esql_Pool
 {
    EINA_INLIST;
@@ -82,8 +92,10 @@ typedef struct Esql_Pool
    char           *cur_query;
    double          timeout;
    Esql_Query_Id   cur_id;
+   unsigned int    event_count;
    Eina_Bool       reconnect : 1;
    Eina_Bool       pool_member : 1;
+   Eina_Bool       dead : 1;
    /* non-esql */
    int             size;
    int             e_connected;
@@ -104,8 +116,10 @@ struct Esql
    char           *cur_query;
    double          timeout;
    Esql_Query_Id   cur_id;
+   unsigned int    event_count;
    Eina_Bool       reconnect : 1;
    Eina_Bool       pool_member : 1;
+   Eina_Bool       dead : 1;
 
    struct
    {
@@ -190,11 +204,10 @@ esql_fake_free(void *data __UNUSED__,
                Esql      *e)
 {
    e->error = NULL;
+   if (--e->event_count) return;
+   if (e->dead) esql_free(e);
 }
 
-
-void      esql_mysac_init(Esql *e);
-void      esql_postgresql_init(Esql *e);
 
 void      esql_res_free(void *data __UNUSED__,
                         Esql_Res  *res);

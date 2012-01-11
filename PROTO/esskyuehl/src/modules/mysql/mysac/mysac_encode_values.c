@@ -18,23 +18,6 @@
 
 /* the order of theses headers and defines
  * is important */
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-#ifdef HAVE_MYSQL_H
-#include <mysql.h>
-#else
-#include <mysql/mysql.h>
-#endif
-//#undef _ISOC99_SOURCE
-//#define _ISOC99_SOURCE
-//#include <stdlib.h>
-//#include <stdio.h>
-//#include <stdint.h>
-//#include <string.h>
-//#include <stdarg.h>
-//#include <time.h>
-
 #include "mysac.h"
 #include "mysac_utils.h"
 

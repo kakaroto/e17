@@ -5,7 +5,7 @@ AM_CFLAGS = \
   @POSTGRESQL_CFLAGS@ \
   @EFL_CFLAGS@ \
   -I@top_builddir@ \
-  -I@top_builddir@/src/lib
+  -I@top_srcdir@/src/lib
 
 LDADD = \
   @MYSQL_LIBS@ \

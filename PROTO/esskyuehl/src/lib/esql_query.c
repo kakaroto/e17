@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <esql_private.h>
+#include "esql_private.h"
 #include <stdarg.h>
 
 static Esql_Query_Id esql_id = 0;
