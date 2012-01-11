@@ -33,7 +33,7 @@ azy_value_serialize_json(Azy_Value *val)
       case AZY_VALUE_ARRAY:
       {
          object = cJSON_CreateArray();
-         EINA_LIST_FOREACH(azy_value_children_items_get(val), l, v)
+         EINA_LIST_FOREACH(val->children, l, v)
            cJSON_AddItemToArray(object, azy_value_serialize_json(v));
          return object;
       }
@@ -41,15 +41,15 @@ azy_value_serialize_json(Azy_Value *val)
       case AZY_VALUE_STRUCT:
       {
          object = cJSON_CreateObject();
-         EINA_LIST_FOREACH(azy_value_children_items_get(val), l, v)
-           cJSON_AddItemToObject(object, azy_value_struct_member_name_get(v),
-                                 azy_value_serialize_json(azy_value_struct_member_value_get(v)));
+         EINA_LIST_FOREACH(val->children, l, v)
+           cJSON_AddItemToObject(object, v->member_name,
+                                 azy_value_serialize_json(v->member_value));
          return object;
       }
 
       case AZY_VALUE_MEMBER:
         /* FIXME: I think this is right? */
-        return azy_value_serialize_json(azy_value_struct_member_value_get(val));
+        return azy_value_serialize_json(val->member_value);
 
       case AZY_VALUE_INT:
       {
