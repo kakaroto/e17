@@ -212,27 +212,15 @@ Azy_Server_Module_Def *
 azy_server_module_def_find(Azy_Server *server,
                            const char *name)
 {
-   Azy_Server_Module_Def *def;
-   Eina_List *l;
-
    if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
      {
         AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
         return NULL;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
-   if (!server->module_defs)
-     return NULL;
+   if (!server->module_defs) return NULL;
 
-   EINA_LIST_FOREACH(server->module_defs, l, def)
-     if (!strcmp(def->name, name))
-       {
-          INFO("Found module with name: '%s'", name);
-          return def;
-       }
-
-   INFO("Could not find module with name: '%s'", name);
-   return NULL;
+   return eina_hash_find(server->module_defs, name);
 }
 
 /**
@@ -253,16 +241,19 @@ azy_server_module_add(Azy_Server            *server,
         AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
         return EINA_FALSE;
      }
-   if (!module)
-     return EINA_FALSE;
-
-   if (azy_server_module_def_find(server, module->name))
-     /* avoid adding same module twice */
-     return EINA_TRUE;
+   if (!module) return EINA_FALSE;
+   if (server->module_defs)
+     {
+        if (azy_server_module_def_find(server, module->name))
+          /* avoid adding same module twice */
+          return EINA_TRUE;
+     }
+   else
+     server->module_defs = eina_hash_string_superfast_new(NULL);
+   if (!server->module_defs) return EINA_FALSE;
 
    INFO("Adding new module: '%s'", module->name);
-   server->module_defs = eina_list_append(server->module_defs, module);
-   return EINA_TRUE;
+   return eina_hash_add(server->module_defs, module->name, module);
 }
 
 /**
@@ -287,12 +278,7 @@ azy_server_module_del(Azy_Server            *server,
         return EINA_FALSE;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(module, EINA_FALSE);
-
-   if (!azy_server_module_def_find(server, module->name))
-     return EINA_FALSE;
-
-   server->module_defs = eina_list_remove(server->module_defs, module);
-   return EINA_TRUE;
+   return eina_hash_del_by_key(server->module_defs, module->name);
 }
 
 /**
@@ -310,8 +296,6 @@ Eina_Bool
 azy_server_module_name_del(Azy_Server *server,
                            const char *name)
 {
-   Azy_Server_Module_Def *d;
-
    DBG("server=%p, name=%s", server, name);
    if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
      {
@@ -319,12 +303,7 @@ azy_server_module_name_del(Azy_Server *server,
         return EINA_FALSE;
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, EINA_FALSE);
-
-   d = azy_server_module_def_find(server, name);
-   if (!d) return EINA_FALSE;
-
-   server->module_defs = eina_list_remove(server->module_defs, d);
-   return EINA_TRUE;
+   return eina_hash_del_by_key(server->module_defs, name);
 }
 
 /**

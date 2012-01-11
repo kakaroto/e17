@@ -14,11 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include "Azy.h"
 #include "azy_private.h"
 #include <errno.h>
 

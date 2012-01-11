@@ -9,6 +9,9 @@
 #include "config.h"
 #endif
 
+#define EINA_INLINE_VALUE_X_
+#define EINA_VALUE_H_
+
 #include <time.h>
 #include <Eina.h>
 #include <Ecore_Con.h>
@@ -232,7 +235,7 @@ struct Azy_Server
       Eina_List *cert_files;
    } security;
 
-   Eina_List *module_defs;
+   Eina_Hash *module_defs;
 };
 
 typedef struct Azy_Server_Client

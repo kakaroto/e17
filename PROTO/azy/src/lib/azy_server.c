@@ -89,7 +89,7 @@ azy_server_free(Azy_Server *server)
         return;
      }
 
-   eina_list_free(server->module_defs);
+   eina_hash_free(server->module_defs);
    AZY_MAGIC_SET(server, AZY_MAGIC_NONE);
    free(server);
 }
@@ -113,15 +113,16 @@ azy_server_clients_count(Azy_Server *server)
 }
 
 /**
- * @brief Retrieve the list of #Azy_Server_Module_Def objects from a server
+ * @brief Retrieve the hash of #Azy_Server_Module_Def objects from a server
  *
- * This function will return an #Eina_List of #Azy_Server_Module_Def objects
- * present in @p server.  This list and the objects all belong to the server.
+ * This function will return an #Eina_Hash of #Azy_Server_Module_Def objects
+ * present in @p server.  This hash and its objects all belong to the server.
  * They must NOT be freed.
  * @param server The server object (NOT NULL)
- * @return The list of #Azy_Server_Module_Def objects
+ * @return The hash of #Azy_Server_Module_Def objects
+ * @note The each module_def in the hash is identified by its case-sensitive name.
  */
-Eina_List *
+Eina_Hash *
 azy_server_module_defs_get(Azy_Server *server)
 {
    if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))

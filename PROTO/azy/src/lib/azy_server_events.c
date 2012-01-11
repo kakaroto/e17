@@ -185,24 +185,11 @@ static Azy_Server_Module_Def *
 _azy_server_module_def_find(Azy_Server *server,
                             const char *name)
 {
-   Eina_List *l;
-   Azy_Server_Module_Def *def;
-
    DBG("(server=%p)", server);
-   if (!AZY_MAGIC_CHECK(server, AZY_MAGIC_SERVER))
-     {
-        AZY_MAGIC_FAIL(server, AZY_MAGIC_SERVER);
-        return NULL;
-     }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!name[0], NULL);
 
-   EINA_LIST_FOREACH(server->module_defs, l, def)
-     {
-        if (!strcmp(def->name, name))
-          return def;
-     }
-
-   return NULL;
+   return eina_hash_find(server->module_defs, name);
 }
 
 static Azy_Server_Module_Method *
@@ -537,10 +524,12 @@ _azy_server_client_get_put(Azy_Server_Client *client)
    Azy_Net *net = NULL;
    Azy_Server_Module_Cb cb = NULL;
    Azy_Server_Module_Content_Cb fallback = NULL;
+   Eina_Iterator *it;
 
    DBG("(client=%p)", client);
    /* for each available module type, check if it has download hook */
-   EINA_LIST_FOREACH(client->server->module_defs, l, def)
+   it = eina_hash_iterator_data_new(client->server->module_defs);
+   EINA_ITERATOR_FOREACH(it, def)
      {
         if ((client->current->type == AZY_NET_TYPE_GET) && def->download)
           {
@@ -554,7 +543,7 @@ _azy_server_client_get_put(Azy_Server_Client *client)
           }
         if (def->fallback) fallback = def->fallback;
      }
-
+   eina_iterator_free(it);
    if (cb)
      {
         Azy_Server_Module *existing_module;
