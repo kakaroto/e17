@@ -5662,7 +5662,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "texts" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       parts {
          part { name: "bg_item";
@@ -5910,7 +5910,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "texts" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       parts {
          part { name: "bg_item";
@@ -6155,7 +6155,7 @@ collections {
       data.item: "stacking" "above";
       data.item: "selectraise" "on";
       data.item: "texts" "elm.text";
-      data.item: "icons" "elm.swallow.icon elm.swallow.end";
+      data.item: "contents" "elm.swallow.icon elm.swallow.end";
       data.item: "treesize" "20";
       parts {
          part { name: "bg_item";
