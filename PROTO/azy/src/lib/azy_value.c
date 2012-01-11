@@ -62,10 +62,10 @@ azy_value_list_multi_line_get_(Azy_Value *v)
 
    if (v->type == AZY_VALUE_ARRAY)
      {
-        if (eina_list_count(azy_value_children_items_get(v)) > 8)
+        if (eina_list_count(v->children) > 8)
           return EINA_TRUE;
         else
-          EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
+          EINA_LIST_FOREACH(v->children, l, val)
             if (azy_value_multi_line_get_(val, 35))
               return EINA_TRUE;
      }
@@ -74,7 +74,7 @@ azy_value_list_multi_line_get_(Azy_Value *v)
         if (eina_list_count(azy_value_children_items_get(v)) > 5)
           return EINA_TRUE;
         else
-          EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
+          EINA_LIST_FOREACH(v->children, l, val)
             if (azy_value_multi_line_get_(azy_value_struct_member_value_get(val), 25))
               return EINA_TRUE;
      }
@@ -864,7 +864,7 @@ azy_value_dump(Azy_Value   *v,
          else if (!azy_value_list_multi_line_get_(v))
            {
               eina_strbuf_append(string, "[ ");
-              EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
+              EINA_LIST_FOREACH(v->children, l, val)
                 {
                    azy_value_dump(val, string, indent + 1);
                    eina_strbuf_append_printf(string, "%s ", l->next ? "," : "");
@@ -874,7 +874,7 @@ azy_value_dump(Azy_Value   *v,
          else
            {
               eina_strbuf_append_char(string, '[');
-              EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
+              EINA_LIST_FOREACH(v->children, l, val)
                 {
                    eina_strbuf_append_printf(string, "\n%s  ", buf);
                    azy_value_dump(val, string, indent + 1);
@@ -895,7 +895,7 @@ azy_value_dump(Azy_Value   *v,
          else if (!azy_value_list_multi_line_get_(v))
            {
               eina_strbuf_append(string, "{ ");
-              EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
+              EINA_LIST_FOREACH(v->children, l, val)
                 {
                    azy_value_dump(val, string, indent);
                    eina_strbuf_append_printf(string, "%s ", l->next ? "," : "");
@@ -905,7 +905,7 @@ azy_value_dump(Azy_Value   *v,
          else
            {
               eina_strbuf_append_char(string, '{');
-              EINA_LIST_FOREACH(azy_value_children_items_get(v), l, val)
+              EINA_LIST_FOREACH(v->children, l, val)
                 {
                    eina_strbuf_append_printf(string, "\n%s  ", buf);
                    azy_value_dump(val, string, indent);
