@@ -552,7 +552,6 @@ _azy_server_client_not_impl(Azy_Server_Client *client, Azy_Server_Module *module
 static Eina_Bool
 _azy_server_client_get_put(Azy_Server_Client *client)
 {
-   Eina_List *l;
    Azy_Server_Module *module = NULL;
    Azy_Server_Module_Def *def;
    Azy_Net *net = NULL;
@@ -580,16 +579,8 @@ _azy_server_client_get_put(Azy_Server_Client *client)
    eina_iterator_free(it);
    if (cb)
      {
-        Azy_Server_Module *existing_module;
-
         /* check if module exists already */
-        EINA_LIST_FOREACH(client->modules, l, existing_module)
-          if (existing_module->def == def)
-            {
-               module = existing_module;
-               break;
-            }
-
+        module = eina_list_data_find(client->modules, def);
         if (!module)
           {
              module = _azy_server_module_new(def, client);
