@@ -199,7 +199,7 @@ esql_connect_handler(Esql             *e,
    Esql *ev;
 
    DBG("(e=%p, fdh=%p, qid=%lu)", e, fdh, e->cur_id);
-   if (e->timeout) ecore_timer_delay(e->timeout_timer, e->timeout - ecore_timer_pending_get(e->timeout_timer));
+   if (e->timeout) ecore_timer_reset(e->timeout_timer);
    ev = e->pool_member ? (Esql *)e->pool_struct : e; /* use pool struct for events */
 
    ecore_main_fd_handler_active_set(fdh, 0);
