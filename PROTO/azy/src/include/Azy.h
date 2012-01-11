@@ -20,7 +20,6 @@
 #define AZY_H
 
 #include <Eina.h>
-#include <Ecore.h>
 
 #ifdef EAPI
 # undef EAPI
@@ -462,7 +461,7 @@ EAPI void                     *azy_client_data_get(Azy_Client *client);
 EAPI void                      azy_client_data_set(Azy_Client *client, const void *data);
 EAPI Azy_Client               *azy_client_new(void);
 EAPI Eina_Bool                 azy_client_callback_set(Azy_Client *client, Azy_Client_Call_Id id, Azy_Client_Return_Cb callback);
-EAPI Eina_Bool                 azy_client_callback_free_set(Azy_Client *client, Azy_Client_Call_Id id, Ecore_Cb callback);
+EAPI Eina_Bool                 azy_client_callback_free_set(Azy_Client *client, Azy_Client_Call_Id id, Eina_Free_Cb callback);
 EAPI void                      azy_client_free(Azy_Client *client);
 EAPI Eina_Bool                 azy_client_port_set(Azy_Client *client, int port);
 EAPI Eina_Bool                 azy_client_connected_get(Azy_Client *client);

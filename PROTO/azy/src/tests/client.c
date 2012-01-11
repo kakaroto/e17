@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 #include <string.h>
-
+#include <Ecore.h>
 #include "T_Test1.azy_client.h"
 #include "T_Test2.azy_client.h"
 

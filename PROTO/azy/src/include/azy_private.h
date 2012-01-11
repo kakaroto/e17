@@ -13,7 +13,7 @@
 #define EINA_VALUE_H_
 
 #include <time.h>
-#include <Eina.h>
+#include <Ecore.h>
 #include <Ecore_Con.h>
 #include <Azy.h>
 
@@ -359,7 +359,7 @@ struct Azy_Server_Module_Def
    Azy_Server_Module_Content_Cb  fallback;
    Azy_Server_Module_Cb          download;
    Azy_Server_Module_Cb          upload;
-   Eina_List                    *methods;
+   Eina_Hash                    *methods;
    Eina_Module                  *module;
 };
 

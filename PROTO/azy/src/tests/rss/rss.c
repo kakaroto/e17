@@ -6,6 +6,7 @@
 # include "config.h"
 #endif
 
+#include <Ecore.h>
 #include <Azy.h>
 
 static Eina_Bool

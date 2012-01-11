@@ -1974,7 +1974,7 @@ gen_client_impl(Azy_Server_Module *s)
         EL(1, "retval = azy_client_call(cli, content, tr, (Azy_Content_Cb)%s);", method->return_type->demarch_name);
         EL(1, "EINA_SAFETY_ON_TRUE_GOTO(!retval, error);");
         if (method->return_type->free_func)
-          EL(1, "azy_client_callback_free_set(cli, retval, (Ecore_Cb)%s);", method->return_type->free_func);
+          EL(1, "azy_client_callback_free_set(cli, retval, (Eina_Free_Cb)%s);", method->return_type->free_func);
 
         NL;
         EL(0, "error:");
