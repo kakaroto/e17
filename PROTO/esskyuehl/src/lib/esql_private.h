@@ -5,9 +5,12 @@
 #ifndef ESQL_PRIV_H
 #define ESQL_PRIV_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <Esskyuehl.h>
 #include <Ecore.h>
-#include <time.h>
 
 #ifdef HAVE_ALLOCA_H
 #include <alloca.h>

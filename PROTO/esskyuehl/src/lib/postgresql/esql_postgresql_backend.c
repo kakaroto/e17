@@ -15,13 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <esql_private.h>
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#include <c.h>
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include <c.h>
 
-#include <Esskyuehl.h>
-#include <esql_private.h>
 #include <libpq-fe.h>
 #include <catalog/pg_type.h>
 #include <inttypes.h>
