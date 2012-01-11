@@ -65,11 +65,11 @@ extern int azy_rpc_log_dom;
 #define ERR(...)            EINA_LOG_DOM_ERR(azy_log_dom, __VA_ARGS__)
 #define CRI(...)            EINA_LOG_DOM_CRIT(azy_log_dom, __VA_ARGS__)
 
-#define RPC_DBG(...)            EINA_LOG_DOM_DBG(azy_rpc_log_dom, __VA_ARGS__)
-#define RPC_INFO(...)           EINA_LOG_DOM_INFO(azy_rpc_log_dom, __VA_ARGS__)
-#define RPC_WARN(...)           EINA_LOG_DOM_WARN(azy_rpc_log_dom, __VA_ARGS__)
-#define RPC_ERR(...)            EINA_LOG_DOM_ERR(azy_rpc_log_dom, __VA_ARGS__)
-#define RPC_CRI(...)            EINA_LOG_DOM_CRIT(azy_rpc_log_dom, __VA_ARGS__)
+#define RPC_DBG(...)        EINA_LOG_DOM_DBG(azy_rpc_log_dom, __VA_ARGS__)
+#define RPC_INFO(...)       EINA_LOG_DOM_INFO(azy_rpc_log_dom, __VA_ARGS__)
+#define RPC_WARN(...)       EINA_LOG_DOM_WARN(azy_rpc_log_dom, __VA_ARGS__)
+#define RPC_ERR(...)        EINA_LOG_DOM_ERR(azy_rpc_log_dom, __VA_ARGS__)
+#define RPC_CRI(...)        EINA_LOG_DOM_CRIT(azy_rpc_log_dom, __VA_ARGS__)
 
 #ifndef strdupa
 # define strdupa(str)       strcpy(alloca(strlen(str) + 1), str)
@@ -110,30 +110,30 @@ typedef unsigned int                   Azy_Magic;
 
 struct Azy_Content
 {
-                      AZY_MAGIC;
-   void              *data;
-   const char        *method;
-   Eina_List         *params;
-   Azy_Value         *retval;
-   void              *ret;
-   int64_t            retsize;
-   Azy_Client_Call_Id id;
-   Azy_Net           *recv_net;
+   AZY_MAGIC;
+   void                 *data;
+   const char           *method;
+   Eina_List            *params;
+   Azy_Value            *retval;
+   void                 *ret;
+   int64_t               retsize;
+   Azy_Client_Call_Id    id;
+   Azy_Net              *recv_net;
    Azy_Content_Retval_Cb retval_cb;
 
-   unsigned char     *buffer;
-   int64_t            length;
+   unsigned char        *buffer;
+   int64_t               length;
 
-   Eina_Bool          error_set : 1;
-   Eina_Error         errcode;  //internal code
-   int                faultcode;  //code to actually report
-   const char        *faultmsg;  //if non-null, message to reply with instead of message associated with errcode
+   Eina_Bool             error_set : 1;
+   Eina_Error            errcode; //internal code
+   int                   faultcode; //code to actually report
+   const char           *faultmsg; //if non-null, message to reply with instead of message associated with errcode
 };
 
 struct Azy_Rss
 {
    AZY_MAGIC;
-   Eina_Bool atom : 1; /* true if item is Azy_Rss_Atom */
+   Eina_Bool   atom : 1; /* true if item is Azy_Rss_Atom */
    const char *title;
    const char *img_url;
 
@@ -147,11 +147,11 @@ struct Azy_Rss
    const char *rights;
    const char *logo;
    const char *generator;
-   struct tm updated;
-   Eina_List *categories;
-   Eina_List *contributors;
-   Eina_List *authors;
-   Eina_List *atom_links;
+   struct tm   updated;
+   Eina_List  *categories;
+   Eina_List  *contributors;
+   Eina_List  *authors;
+   Eina_List  *atom_links;
 
    Eina_List  *items;
 };
@@ -159,7 +159,7 @@ struct Azy_Rss
 struct Azy_Rss_Item
 {
    AZY_MAGIC;
-   Eina_Bool atom : 1; /* true if item is Azy_Rss_Atom */
+   Eina_Bool   atom : 1; /* true if item is Azy_Rss_Atom */
    const char *title;
 
    /* rss format only */
@@ -177,17 +177,17 @@ struct Azy_Rss_Item
    const char *summary;
    const char *id;
    const char *icon;
-   struct tm updated;
-   struct tm published;
-   Eina_List *categories;
-   Eina_List *contributors;
-   Eina_List *authors;
-   Eina_List *atom_links;
+   struct tm   updated;
+   struct tm   published;
+   Eina_List  *categories;
+   Eina_List  *contributors;
+   Eina_List  *authors;
+   Eina_List  *atom_links;
 };
 
 struct Azy_Net
 {
-                     AZY_MAGIC;
+   AZY_MAGIC;
    void             *conn;
    Eina_Bool         server_client : 1;
 
@@ -222,7 +222,7 @@ struct Azy_Net
 
 struct Azy_Server
 {
-                        AZY_MAGIC;
+   AZY_MAGIC;
    Ecore_Con_Server    *server;
    Ecore_Event_Handler *add;
    const char          *addr;
@@ -231,11 +231,11 @@ struct Azy_Server
 
    struct
    {
-      Eina_Bool secure : 1;
+      Eina_Bool  secure : 1;
       Eina_List *cert_files;
    } security;
 
-   Eina_Hash *module_defs;
+   Eina_Hash           *module_defs;
 };
 
 typedef struct Azy_Server_Client
@@ -276,7 +276,7 @@ typedef enum
 
 struct Azy_Server_Module
 {
-                           AZY_MAGIC;
+   AZY_MAGIC;
    void                   *data;
    Azy_Server_Module_Def  *def;
    Azy_Content            *content;
@@ -311,7 +311,7 @@ struct Azy_Value
 
 struct Azy_Client
 {
-                        AZY_MAGIC;
+   AZY_MAGIC;
    void                *data;
    Azy_Net             *net;
 
@@ -334,7 +334,7 @@ struct Azy_Client
 
 struct Azy_Client_Handler_Data
 {
-                      AZY_MAGIC;
+   AZY_MAGIC;
    Azy_Client_Call_Id id;
    Azy_Net_Type       type;
    Azy_Client        *client;
@@ -348,7 +348,7 @@ struct Azy_Client_Handler_Data
 
 struct Azy_Server_Module_Def
 {
-                                 AZY_MAGIC;
+   AZY_MAGIC;
    const char                   *name;
    int                           data_size;
    double                        version;
@@ -365,7 +365,7 @@ struct Azy_Server_Module_Def
 
 struct Azy_Server_Module_Method
 {
-                                AZY_MAGIC;
+   AZY_MAGIC;
    const char                  *name;
    Azy_Server_Module_Content_Cb method;
 };
@@ -374,88 +374,48 @@ struct Azy_Server_Module_Method
 extern "C" {
 #endif
 
-extern void _azy_magic_fail(const void *d,
-                            Azy_Magic   m,
-                            Azy_Magic   req_m,
-                            const char *fname);
+void   _azy_magic_fail(const void *d, Azy_Magic m, Azy_Magic req_m, const char *fname);
 
-Eina_Bool azy_value_init(const char *);
-Eina_Bool azy_rss_init(const char *);
-Eina_Bool azy_rss_item_init(const char *);
-void azy_value_shutdown(void);
-void azy_rss_shutdown(void);
-void azy_rss_item_shutdown(void);
+Eina_Bool     azy_value_init(const char *);
+Eina_Bool     azy_rss_init(const char *);
+Eina_Bool     azy_rss_item_init(const char *);
+void          azy_value_shutdown(void);
+void          azy_rss_shutdown(void);
+void          azy_rss_item_shutdown(void);
 
-Eina_Bool azy_value_multi_line_get_(Azy_Value *v,
-                                    int        max_strlen);
-int       azy_events_type_parse(Azy_Net             *net,
-                                int                  type,
-                                const unsigned char *header,
-                                int                  len);
-Eina_Bool azy_events_header_parse(Azy_Net       *net,
-                                  unsigned char *event_data,
-                                  size_t         event_len,
-                                  int            offset);
-Eina_Bool         azy_events_connection_kill(void       *conn,
-                                             Eina_Bool   server_client,
-                                             const char *msg);
+Eina_Bool     azy_value_multi_line_get_(Azy_Value *v, int max_strlen);
+int           azy_events_type_parse(Azy_Net *net, int type, const unsigned char *header, int len);
+Eina_Bool     azy_events_header_parse(Azy_Net *net, unsigned char *event_data, size_t event_len, int offset);
+Eina_Bool     azy_events_connection_kill(void *conn, Eina_Bool server_client, const char *msg);
 
-Eina_Bool _azy_client_handler_add(Azy_Client                 *client,
-                                  int                         type,
-                                  Ecore_Con_Event_Server_Add *add);
-Eina_Bool _azy_client_handler_del(Azy_Client                 *client,
-                                  int                         type,
-                                  Ecore_Con_Event_Server_Del *del);
-Eina_Bool _azy_client_handler_data(Azy_Client_Handler_Data     *handler_data,
-                                   int                          type,
-                                   Ecore_Con_Event_Server_Data *ev);
-Eina_Bool _azy_client_handler_upgrade(Azy_Client_Handler_Data        *hd,
-                                      int                             type,
-                                      Ecore_Con_Event_Server_Upgrade *ev);
+Eina_Bool     _azy_client_handler_add(Azy_Client *client, int type, Ecore_Con_Event_Server_Add *add);
+Eina_Bool     _azy_client_handler_del(Azy_Client *client, int type, Ecore_Con_Event_Server_Del *del);
+Eina_Bool     _azy_client_handler_data(Azy_Client_Handler_Data *handler_data, int type, Ecore_Con_Event_Server_Data *ev);
+Eina_Bool     _azy_client_handler_upgrade(Azy_Client_Handler_Data *hd, int type, Ecore_Con_Event_Server_Upgrade *ev);
 
-Eina_Bool azy_server_client_handler_add(Azy_Server                 *server,
-                                        int                         type,
-                                        Ecore_Con_Event_Client_Add *ev);
-void _azy_event_handler_fake_free(void *data,
-                                  void *data2);
+Eina_Bool     azy_server_client_handler_add(Azy_Server *server, int type, Ecore_Con_Event_Client_Add *ev);
+void          _azy_event_handler_fake_free(void *data, void *data2);
 
 Eina_Bool
-azy_content_deserialize_json(Azy_Content *content,
-                             const char  *buf,
-                             ssize_t      len);
+              azy_content_deserialize_json(Azy_Content *content, const char *buf, ssize_t len);
 
 Azy_Rss      *azy_rss_new(void);
 Azy_Rss_Item *azy_rss_item_new(void);
 
-
 #ifdef HAVE_XML
-Eina_Bool azy_content_serialize_request_xml(Azy_Content *content);
-Eina_Bool azy_content_serialize_response_xml(Azy_Content *content);
-Eina_Bool azy_content_deserialize_request_xml(Azy_Content *content,
-                                              char        *buf,
-                                              ssize_t      len);
-Eina_Bool azy_content_deserialize_response_xml(Azy_Content *content,
-                                               char        *buf,
-                                               ssize_t      len);
-Eina_Bool azy_content_deserialize_rss_xml(Azy_Content *content,
-                                          char        *buf,
-                                          ssize_t      len);
-Eina_Bool azy_content_deserialize_atom_xml(Azy_Content *content,
-                                           char        *buf,
-                                           ssize_t      len);
+Eina_Bool     azy_content_serialize_request_xml(Azy_Content *content);
+Eina_Bool     azy_content_serialize_response_xml(Azy_Content *content);
+Eina_Bool     azy_content_deserialize_request_xml(Azy_Content *content, char *buf, ssize_t len);
+Eina_Bool     azy_content_deserialize_response_xml(Azy_Content *content, char *buf, ssize_t len);
+Eina_Bool     azy_content_deserialize_rss_xml(Azy_Content *content, char *buf, ssize_t len);
+Eina_Bool     azy_content_deserialize_atom_xml(Azy_Content *content, char *buf, ssize_t len);
 #endif
-Eina_Bool azy_content_serialize_request_json(Azy_Content *content);
-Eina_Bool azy_content_serialize_response_json(Azy_Content *content);
-Eina_Bool azy_content_deserialize_request_json(Azy_Content *content,
-                                               const char  *buf,
-                                               ssize_t      len);
-Eina_Bool azy_content_deserialize_response_json(Azy_Content *content,
-                                                const char  *buf,
-                                                ssize_t      len);
+Eina_Bool     azy_content_serialize_request_json(Azy_Content *content);
+Eina_Bool     azy_content_serialize_response_json(Azy_Content *content);
+Eina_Bool     azy_content_deserialize_request_json(Azy_Content *content, const char *buf, ssize_t len);
+Eina_Bool     azy_content_deserialize_response_json(Azy_Content *content, const char *buf, ssize_t len);
 
-Eina_Bool azy_content_buffer_set_(Azy_Content   *content,
-                                  unsigned char *buffer,
-                                  int            length);
+Eina_Bool     azy_content_buffer_set_(Azy_Content *content, unsigned char *buffer, int length);
 #ifdef __cplusplus
 }
 #endif
