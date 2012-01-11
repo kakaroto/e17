@@ -338,8 +338,6 @@ azy_server_module_def_new(const char *name)
 void
 azy_server_module_def_free(Azy_Server_Module_Def *def)
 {
-   Azy_Server_Module_Method *method;
-
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
         AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
@@ -347,8 +345,7 @@ azy_server_module_def_free(Azy_Server_Module_Def *def)
      }
 
    eina_stringshare_del(def->name);
-   EINA_LIST_FREE(def->methods, method)
-     azy_server_module_method_free(method);
+   eina_hash_free(def->methods);
    if (def->module) eina_module_free(def->module);
 
    AZY_MAGIC_SET(def, AZY_MAGIC_NONE);
@@ -453,6 +450,7 @@ void
 azy_server_module_def_method_add(Azy_Server_Module_Def    *def,
                                  Azy_Server_Module_Method *method)
 {
+   Azy_Server_Module_Method *old;
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
         AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
@@ -464,7 +462,9 @@ azy_server_module_def_method_add(Azy_Server_Module_Def    *def,
         AZY_MAGIC_FAIL(method, AZY_MAGIC_SERVER_MODULE_METHOD);
         return;
      }
-   def->methods = eina_list_append(def->methods, method);
+   if (!def->methods) def->methods = eina_hash_string_superfast_new((Eina_Free_Cb)azy_server_module_method_free);
+   old = eina_hash_set(def->methods, method->name, method);
+   if (old) azy_server_module_method_free(old);
 }
 
 /**
@@ -472,7 +472,7 @@ azy_server_module_def_method_add(Azy_Server_Module_Def    *def,
  *
  * This function removes a callable rpc method from module @p def.  After
  * removal, @p method will no longer be callable.
- * Note that this does not free the method object.
+ * @note This does not free the method object.
  * @param def The module definition (NOT NULL)
  * @param method The method to remove (NOT NULL)
  * @return EINA_TRUE on success, else EINA_FALSE
@@ -481,7 +481,6 @@ Eina_Bool
 azy_server_module_def_method_del(Azy_Server_Module_Def    *def,
                                  Azy_Server_Module_Method *method)
 {
-   Eina_List *l;
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
         AZY_MAGIC_FAIL(def, AZY_MAGIC_SERVER_MODULE_DEF);
@@ -493,13 +492,7 @@ azy_server_module_def_method_del(Azy_Server_Module_Def    *def,
         AZY_MAGIC_FAIL(method, AZY_MAGIC_SERVER_MODULE_METHOD);
         return EINA_FALSE;
      }
-   l = eina_list_data_find_list(def->methods, method);
-   if (l)
-     {
-        def->methods = eina_list_remove_list(def->methods, l);
-        return EINA_TRUE;
-     }
-   return EINA_FALSE;
+   return !!eina_hash_set(def->methods, method->name, NULL);
 }
 
 /**

@@ -196,9 +196,6 @@ static Azy_Server_Module_Method *
 _azy_server_module_method_find(Azy_Server_Module *module,
                                const char        *name)
 {
-   Eina_List *l;
-   Azy_Server_Module_Method *method;
-
    DBG("(module=%p, name='%s')", module, name);
    if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
      {
@@ -212,15 +209,7 @@ _azy_server_module_method_find(Azy_Server_Module *module,
      }
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
 
-   EINA_LIST_FOREACH(module->def->methods, l, method)
-     if (!strcmp(method->name, name))
-       {
-          INFO("Found method with name: '%s'", name);
-          return method;
-       }
-
-   INFO("Could not find method with name: '%s'", name);
-   return NULL;
+   return eina_hash_find(module->def->methods, name);
 }
 
 static Eina_Bool
