@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mike Blumenkrantz <michael.blumenkrantz@gmail.com>
+ * Copyright 2011, 2012 Mike Blumenkrantz <michael.blumenkrantz@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
