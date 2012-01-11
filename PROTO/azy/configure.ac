@@ -80,7 +80,7 @@ AC_SUBST([CC_PIC])
 AC_SUBST([CXX_PIC])
 
 
-AZY_REQUIRES="ecore-con >= 1.0.0 ecore >= 1.0.0 eina >= 1.0.0"
+AZY_REQUIRES="ecore-con >= 1.1.0 ecore >= 1.1.99 eina >= 1.1.0"
 
 want_mysql=
 AC_ARG_ENABLE([mysql-tests],
