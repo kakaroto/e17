@@ -28,11 +28,13 @@ static Eina_Mempool *value_mempool = NULL;
 static Eina_Hash *string_values = NULL;
 static Eina_Hash *base64_values = NULL;
 static Eina_Hash *int_values = NULL;
-static Eina_Hash *bool_values = NULL;
 static Eina_Hash *time_values = NULL;
 
 static Azy_Value *azy_value_new_(void);
 static Eina_Bool  azy_value_list_multi_line_get_(Azy_Value *v);
+
+static Azy_Value bool_value_true = { AZY_MAGIC_VALUE, 1, AZY_VALUE_BOOL, NULL, 1, 0.0, NULL, NULL, NULL };
+static Azy_Value bool_value_false = { AZY_MAGIC_VALUE, 1, AZY_VALUE_BOOL, NULL, 0, 0.0, NULL, NULL, NULL };
 
 /* allocate a new Azy_Value */
 static inline Azy_Value *
@@ -95,7 +97,6 @@ azy_value_init(const char *type)
    base64_values = eina_hash_string_superfast_new(NULL);
    time_values = eina_hash_string_superfast_new(NULL);
    int_values = eina_hash_int64_new(NULL);
-   bool_values = eina_hash_int32_new(NULL);
 
    return EINA_TRUE;
 error:
@@ -110,8 +111,7 @@ azy_value_shutdown(void)
    eina_hash_free(base64_values);
    eina_hash_free(time_values);
    eina_hash_free(int_values);
-   eina_hash_free(bool_values);
-   string_values = base64_values = int_values = time_values = bool_values = NULL;
+   string_values = base64_values = int_values = time_values = NULL;
    eina_mempool_del(value_mempool);
    value_mempool = NULL;
 }
@@ -157,7 +157,7 @@ azy_value_ref(Azy_Value *val)
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return NULL;
      }
-   EINA_REFCOUNT_REF(val);
+   if (val->type != AZY_VALUE_BOOL) EINA_REFCOUNT_REF(val);
    return val;
 }
 
@@ -180,6 +180,7 @@ azy_value_unref(Azy_Value *val)
         AZY_MAGIC_FAIL(val, AZY_MAGIC_VALUE);
         return;
      }
+   if (val->type == AZY_VALUE_BOOL) return;
 
    EINA_REFCOUNT_UNREF(val)
      {
@@ -189,9 +190,6 @@ azy_value_unref(Azy_Value *val)
           {
            case AZY_VALUE_STRING:
              h = string_values;
-             break;
-           case AZY_VALUE_BOOL:
-             h = bool_values;
              break;
            case AZY_VALUE_TIME:
              h = time_values;
@@ -285,23 +283,9 @@ azy_value_int_new(int val)
 Azy_Value *
 azy_value_bool_new(Eina_Bool val)
 {
-   Azy_Value *v;
-
    val = !!val;
-
-   v = eina_hash_find(bool_values, &val);
-   if (v)
-     {
-        EINA_REFCOUNT_REF(v);
-        return v;
-     }
-
-   v = azy_value_new_();
-   EINA_SAFETY_ON_NULL_RETURN_VAL(v, NULL);
-   v->type = AZY_VALUE_BOOL;
-   v->int_val = val;
-   eina_hash_add(bool_values, &v->int_val, v);
-   return v;
+   if (val) return &bool_value_true;
+   return &bool_value_false;
 }
 
 /**
