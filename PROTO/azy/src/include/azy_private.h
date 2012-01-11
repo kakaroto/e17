@@ -383,7 +383,7 @@ void          azy_value_shutdown(void);
 void          azy_rss_shutdown(void);
 void          azy_rss_item_shutdown(void);
 
-Eina_Bool     azy_value_multi_line_get_(Azy_Value *v, int max_strlen);
+Eina_Bool     azy_value_multi_line_get_(Azy_Value *v, unsigned int max_strlen);
 int           azy_events_type_parse(Azy_Net *net, int type, const unsigned char *header, int len);
 Eina_Bool     azy_events_header_parse(Azy_Net *net, unsigned char *event_data, size_t event_len, int offset);
 Eina_Bool     azy_events_connection_kill(void *conn, Eina_Bool server_client, const char *msg);

@@ -119,7 +119,7 @@ azy_value_shutdown(void)
 /* returns EINA_TRUE if the line requires multiple lines to print */
 Eina_Bool
 azy_value_multi_line_get_(Azy_Value *val,
-                          int        max_strlen)
+                          unsigned int max_strlen)
 {
    switch (val->type)
      {
@@ -130,7 +130,7 @@ azy_value_multi_line_get_(Azy_Value *val,
         break;
 
       case AZY_VALUE_STRING:
-        if (val->str_val && (eina_stringshare_strlen(val->str_val) > max_strlen))
+        if (val->str_val && (eina_strlen_bounded(val->str_val, max_strlen + 1) > max_strlen))
           return EINA_TRUE;
         break;
 
