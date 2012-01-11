@@ -1,5 +1,5 @@
 use eet_node and add eetrpc using eet 1.5
 
-optimize by converting a large number of lists to arrays/inlists
-
 add azy_file_ namespace for loading files ?
+REST integration (/vomit)
+improve external parser api
