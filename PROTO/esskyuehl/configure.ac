@@ -60,7 +60,7 @@ CC_PIC="$lt_prog_compiler_pic"
 AC_SUBST([CC_PIC])
 
 
-requirement_esskyuehl="eina >= 1.0.0 ecore >= 1.1.99"
+requirement_esskyuehl="eina >= 1.1.0 ecore >= 1.1.99"
 AC_SUBST(requirement_esskyuehl)
 
 PKG_CHECK_MODULES([EFL], [$requirement_esskyuehl])
