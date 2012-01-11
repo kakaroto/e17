@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011 Mike Blumenkrantz <michael.blumenkrantz@gmail.com>
+ * Copyright 2010, 2011, 2012 Mike Blumenkrantz <michael.blumenkrantz@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -93,7 +93,7 @@ static const Ecore_Getopt opts = {
    "Azy_Parser",
    "Azy_Parser file.azy -o destination_directory/",
    "1.0alpha",
-   "(C) 2010, 2011 Mike Blumenkrantz, previously others, see AUTHORS",
+   "(C) 2010, 2011, 2012 Mike Blumenkrantz, previously others, see AUTHORS",
    "LGPL",
    "Parse an azy file into *.{c,h} files\n\n",
    1,
