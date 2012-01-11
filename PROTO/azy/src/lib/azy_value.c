@@ -71,11 +71,11 @@ azy_value_list_multi_line_get_(Azy_Value *v)
      }
    else if (v->type == AZY_VALUE_STRUCT)
      {
-        if (eina_list_count(azy_value_children_items_get(v)) > 5)
+        if (eina_list_count(v->children) > 5)
           return EINA_TRUE;
         else
           EINA_LIST_FOREACH(v->children, l, val)
-            if (azy_value_multi_line_get_(azy_value_struct_member_value_get(val), 25))
+            if (azy_value_multi_line_get_(val->member_value, 25))
               return EINA_TRUE;
      }
 
@@ -125,7 +125,7 @@ azy_value_multi_line_get_(Azy_Value *val,
      {
       case AZY_VALUE_STRUCT:
       case AZY_VALUE_ARRAY:
-        if (azy_value_children_items_get(val))
+        if (val->children)
           return EINA_TRUE;
         break;
 
@@ -658,9 +658,8 @@ azy_value_struct_member_get(Azy_Value  *val,
      return NULL;
 
    EINA_LIST_FOREACH(val->children, l, m)
-
-     if (!strcmp(azy_value_struct_member_name_get(m), name))
-       return azy_value_struct_member_value_get(m);
+     if (m->member_name && (!strcmp(m->member_name, name)))
+       return m->member_value;
 
    return NULL;
 }
@@ -859,7 +858,7 @@ azy_value_dump(Azy_Value   *v,
      {
       case AZY_VALUE_ARRAY:
       {
-         if (!azy_value_children_items_get(v))
+         if (!v->children)
            eina_strbuf_append(string, "[]");
          else if (!azy_value_list_multi_line_get_(v))
            {
@@ -890,7 +889,7 @@ azy_value_dump(Azy_Value   *v,
 
       case AZY_VALUE_STRUCT:
       {
-         if (!azy_value_children_items_get(v))
+         if (!v->children)
            eina_strbuf_append(string, "{}");
          else if (!azy_value_list_multi_line_get_(v))
            {
@@ -922,7 +921,7 @@ azy_value_dump(Azy_Value   *v,
       case AZY_VALUE_MEMBER:
       {
          eina_strbuf_append_printf(string, "%s: ", azy_value_struct_member_name_get(v));
-         azy_value_dump(azy_value_struct_member_value_get(v), string, indent + 1);
+         azy_value_dump(v->member_value, string, indent + 1);
          break;
       }
 
