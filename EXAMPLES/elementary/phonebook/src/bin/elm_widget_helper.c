@@ -57,13 +57,16 @@ radio_value_set(Evas_Object *obj, char *part_name, int value)
 void
 list_selected_set(Evas_Object *obj, const char *value)
 {
-   Elm_List_Item *it;
+   Elm_Object_Item *list_it;
    const Eina_List *iter;
 
-   EINA_LIST_FOREACH(elm_list_items_get(obj), iter, it)
-     if (strstr(elm_list_item_label_get(it), value)){
-	elm_list_item_selected_set(it, EINA_TRUE);
-	return;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), iter, list_it)
+     {
+        if (strstr(elm_list_item_label_get(list_it), value))
+          {
+             elm_list_item_selected_set(list_it, EINA_TRUE);
+             return;
+          }
      }
 }
 

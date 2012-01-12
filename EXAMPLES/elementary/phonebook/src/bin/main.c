@@ -46,7 +46,7 @@ struct _app_objects
    Evas_Object *contactlist;
    Pginfo info;
    Eina_Bool editing;
-   Elm_List_Item *selection;
+   Elm_Object_Item *selection;
    Eina_Bool loading : EINA_TRUE;
 } App;
 
@@ -205,16 +205,16 @@ static void
 previous_clicked (void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Db_Entry *Contact;
-   Elm_List_Item *prev;
+   Elm_Object_Item *list_prev;
 
-   prev = elm_list_item_prev(App.selection);
+   list_prev = elm_list_item_prev(App.selection);
 
-   if (prev)
+   if (list_prev)
      {
-	App.selection = prev;
-	elm_list_item_selected_set(App.selection, EINA_TRUE);
-	Contact = (Db_Entry*) elm_list_item_data_get(App.selection);
-	load_values(Contact);
+        App.selection = list_prev;
+        elm_list_item_selected_set(App.selection, EINA_TRUE);
+        Contact = (Db_Entry*) elm_list_item_data_get(App.selection);
+        load_values(Contact);
      }
 }
 
@@ -223,16 +223,16 @@ static void
 next_clicked (void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Db_Entry *Contact;
-   Elm_List_Item *next;
+   Elm_Object_Item *list_next;
 
-   next = elm_list_item_next(App.selection);
+   list_next = elm_list_item_next(App.selection);
 
-   if (next)
+   if (list_next)
      {
-	App.selection = next;
-	elm_list_item_selected_set(App.selection, EINA_TRUE);
-	Contact = (Db_Entry*) elm_list_item_data_get(App.selection);
-	load_values(Contact);
+        App.selection = list_next;
+        elm_list_item_selected_set(App.selection, EINA_TRUE);
+        Contact = (Db_Entry*) elm_list_item_data_get(App.selection);
+        load_values(Contact);
      }
 }
 

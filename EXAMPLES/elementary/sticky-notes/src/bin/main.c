@@ -94,8 +94,8 @@ _subsystems_shutdown(void)
 {
    if (_log_dom >= 0)
      {
-	eina_log_domain_unregister(_log_dom);
-	_log_dom = -1;
+        eina_log_domain_unregister(_log_dom);
+        _log_dom = -1;
      }
 
    db_free(_db);
@@ -107,7 +107,7 @@ _subsystems_shutdown(void)
 static void
 _note_add_button_clicked(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   Elm_List_Item *list_item = NULL;
+   Elm_Object_Item *list_item = NULL;
    Evas_Object *list_widget = (Evas_Object*)data;
    Db_Entry *entry;
 
@@ -116,7 +116,7 @@ _note_add_button_clicked(void *data, Evas_Object *obj, const char *emission, con
      return;
 
    list_item = elm_list_item_append(list_widget, entry->title, NULL, NULL,
-				    NULL, entry);
+                                    NULL, entry);
    elm_list_go(list_widget);
 
    edit_note_window_new(list_widget, list_item, _db);
@@ -125,10 +125,7 @@ _note_add_button_clicked(void *data, Evas_Object *obj, const char *emission, con
 static void
 _notes_list_clicked(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_List_Item *list_item;
-
-   list_item = elm_list_selected_item_get(obj);
-
+   Elm_Object_Item *list_item = elm_list_selected_item_get(obj);
    edit_note_window_new(obj, list_item, _db);
 }
 

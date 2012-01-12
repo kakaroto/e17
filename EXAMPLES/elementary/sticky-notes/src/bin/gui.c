@@ -39,7 +39,7 @@ struct _Edit_Node_Window
 
    Db *db;
    Evas_Object *list;
-   Elm_List_Item *selection;
+   Elm_Object_Item *selection;
 };
 
 static void
@@ -85,7 +85,7 @@ _edit_note_load_entry_data(Edit_Note_Window *gui)
 {
    Db_Entry *entry;
    Evas_Object *list_widget;
-   Elm_List_Item *selected_item;
+   Elm_Object_Item *selected_item;
 
    list_widget = gui->list;
    selected_item = gui->selection;
@@ -99,7 +99,7 @@ _edit_note_load_entry_data(Edit_Note_Window *gui)
 }
 
 void
-edit_note_window_new(Evas_Object *list, Elm_List_Item *selection, Db *db)
+edit_note_window_new(Evas_Object *list, Elm_Object_Item *selection, Db *db)
 {
    Evas_Object *background;
    Evas_Object *note_window;

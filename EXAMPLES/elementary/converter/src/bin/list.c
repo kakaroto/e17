@@ -46,9 +46,9 @@ populate_converters_list(Evas_Object *list, Pginfo *info)
 void
 converter_distance(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_List_Item *it;
-   it = elm_list_selected_item_get(obj);
-   elm_list_item_selected_set(it, EINA_FALSE);
+   Elm_Object_Item *list_it;
+   list_it = elm_list_selected_item_get(obj);
+   elm_list_item_selected_set(list_it, EINA_FALSE);
 
    Pginfo *info = data;
    elm_pager_content_promote(info->pager, info->pg2);

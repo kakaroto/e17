@@ -98,7 +98,7 @@ converter(float n, int from, int to)
 
 void
 on_number_button_enter(void *data, Evas_Object *obj, const char *emission,
-			const char *source)
+                       const char *source)
 {
    Measurements_Lists *ml = data;
    ml = data;
@@ -106,22 +106,23 @@ on_number_button_enter(void *data, Evas_Object *obj, const char *emission,
    int m_in, m_out;
    char label_in[128], label_out[128];
    char result[64];
-   Elm_List_Item *it_in, *it_out;
-   it_in = elm_list_selected_item_get(ml->list_in);
-   it_out = elm_list_selected_item_get(ml->list_out);
+   Elm_Object_Item *list_it_in, *list_it_out;
+   list_it_in = elm_list_selected_item_get(ml->list_in);
+   list_it_out = elm_list_selected_item_get(ml->list_out);
 
-   if (!it_in || !it_out ||
-	!strcmp((edje_object_part_text_get(obj, "input")), ""))
+   if (!list_it_in || !list_it_out ||
+       !strcmp((edje_object_part_text_get(obj, "input")), ""))
      {
-	edje_object_part_text_set(obj, "input", "");
-	edje_object_part_text_set(obj, "output", "");
-	return;
+        edje_object_part_text_set(obj, "input", "");
+        edje_object_part_text_set(obj, "output", "");
+        return;
      }
 
    edje_object_part_text_set(obj, "equal", "=");
-   snprintf(label_in, sizeof(label_in), "%s", elm_list_item_label_get(it_in));
+   snprintf(label_in, sizeof(label_in), "%s",
+            elm_list_item_label_get(list_it_in));
    snprintf(label_out, sizeof(label_out), "%s",
-		elm_list_item_label_get(it_out));
+            elm_list_item_label_get(list_it_out));
 
    if (!strcmp(label_in, KM_LABEL)) {
 	m_in = KILOMETER;

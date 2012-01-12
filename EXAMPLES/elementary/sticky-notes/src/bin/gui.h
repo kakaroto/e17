@@ -31,7 +31,7 @@
 #include "db.h"
 #include <Elementary.h>
 
-void edit_note_window_new(Evas_Object *list, Elm_List_Item *selection, Db *db);
+void edit_note_window_new(Evas_Object *list, Elm_Object_Item *selection, Db *db);
 
 #endif
 
