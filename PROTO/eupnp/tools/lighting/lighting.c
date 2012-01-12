@@ -16,7 +16,7 @@
 #define DBG(...) EINA_LOG_DOM_DBG(_log_domain, __VA_ARGS__)
 #define WRN(...) EINA_LOG_DOM_WARN(_log_domain, __VA_ARGS__)
 
-static Elm_List_Item *selected_device = NULL;
+static Elm_Object_Item *selected_device = NULL;
 extern Evas_Object *devices;
 extern Evas_Object *set;
 extern Evas_Object *dimm;
@@ -116,18 +116,18 @@ is_device_added(Eupnp_Device_Info *device)
 {
    const Eina_List *items = elm_list_items_get(devices);
    const Eina_List *l;
-   Elm_List_Item *item = NULL;
+   Elm_Object_Item *list_item = NULL;
    if (!items || !eina_list_count(items)) return EINA_FALSE;
 
-   EINA_LIST_FOREACH(items, l, item)
+   EINA_LIST_FOREACH(items, l, list_item)
      {
-	Light_Control *c = elm_list_item_data_get(item);
+        Light_Control *c = elm_list_item_data_get(list_item);
 
-	if (!c->device)
-	  continue;
+        if (!c->device)
+          continue;
 
-	if (!strcmp(c->device->udn, device->udn))
-	   return EINA_TRUE;
+        if (!strcmp(c->device->udn, device->udn))
+          return EINA_TRUE;
      }
 
    return EINA_FALSE;
@@ -139,28 +139,28 @@ pop_device(Eupnp_Device_Info *device)
    Elm_List_Item *selected = elm_list_selected_item_get(devices);
 
    const Eina_List *l;
-   Elm_List_Item *item;
+   Elm_Object_Item *list_item;
    const Eina_List *items = elm_list_items_get(devices);
 
-   EINA_LIST_FOREACH(items, l, item)
+   EINA_LIST_FOREACH(items, l, list_item)
      {
-	Light_Control *c = elm_list_item_data_get(item);
+        Light_Control *c = elm_list_item_data_get(list_item);
 
-	if (!strcmp(c->device->udn, device->udn))
+        if (!strcmp(c->device->udn, device->udn))
           {
-	    DBG("Matched device %p for list removal.", device);
+             DBG("Matched device %p for list removal.", device);
 
-	    if (item == selected)
-	      {
-		// Item is selected, user might be messing with controls
-		DBG("Item for deletion is selected");
-		selected_device = NULL;
-	      }
+             if (list_item == selected)
+               {
+                  // Item is selected, user might be messing with controls
+                  DBG("Item for deletion is selected");
+                  selected_device = NULL;
+               }
 
-	    elm_list_item_del(item);
-	    light_control_free(c);
-	    break;
-	  }
+             elm_list_item_del(list_item);
+             light_control_free(c);
+             break;
+          }
      }
 }
 
@@ -177,25 +177,25 @@ on_device_ready(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 
    if (!is_device_added(device))
      {
-	const char *name = (!device->friendly_name) ? "Unnamed Device" :
-						      device->friendly_name;
+        const char *name = (!device->friendly_name) ? "Unnamed Device" :
+           device->friendly_name;
 
-	Elm_List_Item *item = NULL;
-	Light_Control *c = light_control_new(device);
+        Elm_Object_Item *list_item = NULL;
+        Light_Control *c = light_control_new(device);
 
-        if (!(item = elm_list_item_append(devices,
-				  name,
-				  NULL, /* TODO insert device icon */
-				  NULL,
-				  device_selected,
-				  c)))
-	  ERR("Failed to append a new device on the list.");
-	else
-	  {
-	     INF("%p Added device %p:%s:%s to the list.", item, c, name, device->udn);
-	     elm_list_item_show(item);
-	     elm_list_go(devices);
-	  }
+        if (!(list_item = elm_list_item_append(devices,
+                                               name,
+                                               NULL, /* TODO insert device icon */
+                                               NULL,
+                                               device_selected,
+                                               c)))
+          ERR("Failed to append a new device on the list.");
+        else
+          {
+             INF("%p Added device %p:%s:%s to the list.", list_item, c, name, device->udn);
+             elm_list_item_show(list_item);
+             elm_list_go(devices);
+          }
 
      }
 

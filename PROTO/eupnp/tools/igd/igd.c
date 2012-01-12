@@ -43,7 +43,7 @@ typedef struct _IGD_Device IGD_Device;
 
 struct _IGD_Device {
    Eupnp_Device_Info *device;
-   Elm_List_Item *item;
+   Elm_Object_Item *item;
 };
 
 static void

@@ -2636,7 +2636,7 @@ protected:
    public:
      CEvasObject  *icon_left;
      CEvasObject  *icon_right;
-     Elm_List_Item *li;
+     Elm_Object_Item *li;
      Handle<Value> end;
      Handle<Value> tooltip;
    };

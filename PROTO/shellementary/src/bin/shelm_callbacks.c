@@ -57,12 +57,12 @@ SH_API void
 list_dialog_callback(void *data, Evas_Object *obj, void *event_info)
 {
   Evas_Object *list = data;
-  Elm_List_Item *listitem;
+  Elm_Object_Item *listitem;
   const char *item_selected;
 
   listitem = elm_list_selected_item_get(list);
   item_selected = elm_list_item_label_get(listitem);
-  
+
   printf("%s\n", item_selected);
   elm_exit();
 }

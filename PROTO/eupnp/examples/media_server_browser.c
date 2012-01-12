@@ -61,7 +61,7 @@ typedef struct _Media_Server Media_Server;
 struct _Media_Server {
    Eupnp_Service_Proxy *cds;
    Eupnp_Device_Info *server;
-   Elm_List_Item *item;
+   Elm_Object_Item *item;
 };
 
 
@@ -149,32 +149,32 @@ void
 on_container_found(void *data, DIDL_Container *c)
 {
    Evas_Object *box;
-   Elm_List_Item *item;
+   Elm_Object_Item *list_item;
 
    DBG("Found container %s", eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(c)));
 
-   item = elm_list_item_append(elm_pager_content_top_get(pager),
-			       eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(c)),
-			       folder_icon_get(pager), NULL,
-			       &container_browse, c);
+   list_item = elm_list_item_append(elm_pager_content_top_get(pager),
+                             eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(c)),
+                                    folder_icon_get(pager), NULL,
+                                    &container_browse, c);
 
-   elm_list_item_show(item);
+   elm_list_item_show(list_item);
    elm_list_go(elm_pager_content_top_get(pager));
 }
 
 void
 on_item_found(void *data, DIDL_Item *i)
 {
-   Elm_List_Item *item;
+   Elm_Object_Item *list_item;
 
    DBG("Found item %s", eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(i)));
 
-   item = elm_list_item_append(elm_pager_content_top_get(pager),
-			       eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(i)),
-			       file_icon_get(pager), NULL,
-			       &item_select, i);
+   list_item = elm_list_item_append(elm_pager_content_top_get(pager),
+                            eupnp_av_didl_object_title_get(DIDL_OBJECT_GET(i)),
+                                    file_icon_get(pager), NULL,
+                                    &item_select, i);
 
-   elm_list_item_show(item);
+   elm_list_item_show(list_item);
    elm_list_go(elm_pager_content_top_get(pager));
 }
 
@@ -277,7 +277,7 @@ static Eina_Bool
 on_device_ready(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 {
    Media_Server *ms;
-   Elm_List_Item *item;
+   Elm_List_Item *list_item;
    Eupnp_Device_Info *device;
    const Eupnp_Service_Info *cds;
 
@@ -293,10 +293,10 @@ on_device_ready(void *user_data, Eupnp_Event_Type event_type, void *event_data)
 
    ms = calloc(1, sizeof(Media_Server));
    ms->server = eupnp_device_info_ref(device);
-   item = elm_list_item_append(root, ms->server->friendly_name,
-			       folder_icon_get(root), NULL,
-			       &server_browse, ms);
-   elm_list_item_show(item);
+   list_item = elm_list_item_append(root, ms->server->friendly_name,
+                                    folder_icon_get(root), NULL,
+                                    &server_browse, ms);
+   elm_list_item_show(list_item);
    elm_list_go(root);
 
    eupnp_service_proxy_new(cds, on_cds_ready, ms);
