@@ -1022,10 +1022,9 @@ _bt_rotate_180_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1036,10 +1035,9 @@ _bt_rotate_90_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1050,10 +1048,9 @@ _bt_rotate_R90_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1064,10 +1061,9 @@ _bt_flip_vertical_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1078,10 +1074,9 @@ _bt_flip_horizontal_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1092,10 +1087,9 @@ _bt_blur_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1106,10 +1100,9 @@ _bt_sharpen_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1120,10 +1113,9 @@ _bt_grayscale_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1134,10 +1126,9 @@ _bt_sepia_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1691,10 +1682,9 @@ _photo_thumb_reload_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1706,10 +1696,9 @@ _photo_exif_reload_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1721,10 +1710,9 @@ _photo_iptc_reload_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1751,10 +1739,9 @@ _photo_wall_set_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 
 static void
@@ -1766,9 +1753,8 @@ _photo_delete_cb(void *data, Evas_Object *obj, void *event_info)
 
    //unselect items
    const Eina_List *l;
-   Elm_List_Item *item;
-EINA_LIST_FOREACH(elm_list_items_get(obj), l, item)
-elm_list_item_selected_set(item, EINA_FALSE);
-//
+   Elm_Object_Item *list_item;
+   EINA_LIST_FOREACH(elm_list_items_get(obj), l, list_item)
+     elm_list_item_selected_set(list_item, EINA_FALSE);
 }
 

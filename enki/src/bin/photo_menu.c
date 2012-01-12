@@ -41,7 +41,6 @@ photo_menu_init(List_Photo *enlil_photo, Evas_Object *edje)
    PL_Child_Item *child;
    Enlil_Photo *photo, *_photo;
    Enlil_Tag *tag;
-   Elm_List_Item *item;
    Eina_Bool empty;
 
    _edje = edje;
