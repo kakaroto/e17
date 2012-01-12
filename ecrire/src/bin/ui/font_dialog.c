@@ -52,9 +52,9 @@ _set_clicked(void *data,
       Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    const char *selected = NULL;
-   Elm_List_Item *it = elm_list_selected_item_get(list);
-   if (it)
-      selected = elm_list_item_label_get(it);
+   Elm_Object_Item *list_it = elm_list_selected_item_get(list);
+   if (list_it)
+      selected = elm_list_item_label_get(list_it);
    editor_font_choose(data, selected, elm_spinner_value_get(fsize));
 }
 
