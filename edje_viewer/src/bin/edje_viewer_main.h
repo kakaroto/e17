@@ -120,7 +120,7 @@ struct _Part
 
    Group *grp;
    const char *name;
-   Elm_List_Item *item;
+   Elm_Object_Item *item;
 
    Evas_Object *highlight;
 };
