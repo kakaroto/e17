@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/elmdentica/\n"
-"POT-Creation-Date: 2011-10-23 01:33+0200\n"
+"POT-Creation-Date: 2011-03-05 10:38+0000\n"
 "PO-Revision-Date: 2011-10-23 01:33+0100\n"
 "Last-Translator: Daniel Kolesa <quaker66@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -16,515 +16,496 @@ msgstr ""
 "X-Generator: Lokalize 1.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/curl.c:92
-#: ../src/elmdentica.c:1394
-#: ../src/elmdentica.c:1617
+#: src/curl.c:92 src/elmdentica.c:1382 src/elmdentica.c:1591
 msgid "Close"
 msgstr "Zavřít"
 
-#: ../src/curl.c:319
+#: src/curl.c:319
 #, c-format
 msgid ""
 "Can't dump %s into %s:\n"
 "(%d) %s\n"
 msgstr ""
 
-#: ../src/curl.c:326
+#: src/curl.c:326
 #, c-format
 msgid "Can't open %s for writing: %s\n"
 msgstr "Nelze otevřít %s pro zápis: %s\n"
 
-#: ../src/elmdentica.c:279
+#: src/elmdentica.c:281
 msgid "Last messages..."
 msgstr "Poslední zprávy..."
 
-#: ../src/elmdentica.c:280
+#: src/elmdentica.c:282
 msgid "Everyone..."
 msgstr "Všichni..."
 
-#: ../src/elmdentica.c:281
+#: src/elmdentica.c:283
 msgid "My favorites..."
 msgstr "Mé oblíbené..."
 
-#: ../src/elmdentica.c:282
+#: src/elmdentica.c:284
 msgid "Replies / mentions..."
 msgstr ""
 
-#: ../src/elmdentica.c:284
+#: src/elmdentica.c:286
 msgid "My friends..."
 msgstr "Mí přátelé..."
 
-#: ../src/elmdentica.c:475
-#: ../src/elmdentica.c:622
+#: src/elmdentica.c:477 src/elmdentica.c:624
 msgid "Follow"
 msgstr "Následovat"
 
-#: ../src/elmdentica.c:477
-#: ../src/elmdentica.c:624
+#: src/elmdentica.c:479 src/elmdentica.c:626
 msgid "Stop following"
 msgstr "Přestat sledovat"
 
-#: ../src/elmdentica.c:611
+#: src/elmdentica.c:613
 msgid "Couldn't parse user info message..."
 msgstr ""
 
-#: ../src/elmdentica.c:673
-#: ../src/elmdentica.c:752
+#: src/elmdentica.c:675 src/elmdentica.c:754
 #, c-format
 msgid "You are a member of group %s along with %d other people.<br>«%s»"
 msgstr ""
 
-#: ../src/elmdentica.c:674
-#: ../src/elmdentica.c:785
+#: src/elmdentica.c:676 src/elmdentica.c:787
 msgid "Leave"
 msgstr "Opustit"
 
-#: ../src/elmdentica.c:676
-#: ../src/elmdentica.c:754
+#: src/elmdentica.c:678 src/elmdentica.c:756
 #, c-format
 msgid "You are not a member of group %s but %d people are.<br>«%s»"
 msgstr ""
 
-#: ../src/elmdentica.c:677
-#: ../src/elmdentica.c:787
+#: src/elmdentica.c:679 src/elmdentica.c:789
 msgid "Join"
 msgstr "Připojit"
 
-#: ../src/elmdentica.c:841
+#: src/elmdentica.c:843
 msgid "Check it out!"
 msgstr ""
 
-#: ../src/elmdentica.c:1004
+#: src/elmdentica.c:1006
 #, c-format
 msgid "a few seconds ago"
 msgstr ""
 
-#: ../src/elmdentica.c:1006
+#: src/elmdentica.c:1008
 #, c-format
 msgid "a few minutes ago"
 msgstr ""
 
-#: ../src/elmdentica.c:1008
+#: src/elmdentica.c:1010
 #, c-format
 msgid "~ %d minutes ago"
 msgstr ""
 
-#: ../src/elmdentica.c:1011
+#: src/elmdentica.c:1013
 #, c-format
 msgid "~ %d hours ago"
 msgstr ""
 
-#: ../src/elmdentica.c:1013
+#: src/elmdentica.c:1015
 #, c-format
 msgid "~ 1 hour ago"
 msgstr ""
 
-#: ../src/elmdentica.c:1015
+#: src/elmdentica.c:1017
 #, c-format
 msgid "on %x"
 msgstr ""
 
-#: ../src/elmdentica.c:1018
+#: src/elmdentica.c:1020
 #, c-format
 msgid "%x %X"
 msgstr "%x %X"
 
-#: ../src/elmdentica.c:1019
-#: ../src/elmdentica.c:1020
+#: src/elmdentica.c:1021 src/elmdentica.c:1022
 #, c-format
 msgid "some-when"
 msgstr ""
 
-#: ../src/elmdentica.c:1098
+#: src/elmdentica.c:1100
 #, c-format
 msgid "Finished %s"
 msgstr "Dokončeno %s"
 
-#: ../src/elmdentica.c:1106
+#: src/elmdentica.c:1108
 msgid "Ok"
 msgstr "Ok"
 
-#: ../src/elmdentica.c:1113
+#: src/elmdentica.c:1115
 msgid "Open"
 msgstr "Otevřít"
 
-#: ../src/elmdentica.c:1159
+#: src/elmdentica.c:1161
 #, c-format
 msgid "downloading %s"
 msgstr "stahování %s"
 
-#: ../src/elmdentica.c:1175
-#: ../src/elmdentica.c:1887
-#: ../src/settings.c:542
-#: ../src/settings.c:1271
+#: src/elmdentica.c:1177 src/elmdentica.c:1876 src/settings.c:542
+#: src/settings.c:1271
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: ../src/elmdentica.c:1275
+#: src/elmdentica.c:1263
 msgid "Users"
 msgstr "Uživatelé"
 
-#: ../src/elmdentica.c:1304
+#: src/elmdentica.c:1292
 msgid "Links"
 msgstr "Odkazy"
 
-#: ../src/elmdentica.c:1323
+#: src/elmdentica.c:1311
 msgid "Tags"
 msgstr "Značky"
 
-#: ../src/elmdentica.c:1341
+#: src/elmdentica.c:1329
 msgid "Groups"
 msgstr "Skupiny"
 
-#: ../src/elmdentica.c:1359
+#: src/elmdentica.c:1347
 msgid "Attachments"
 msgstr "Přílohy"
 
-#: ../src/elmdentica.c:1430
+#: src/elmdentica.c:1414
 msgid "Reply"
 msgstr "Odpověď"
 
-#: ../src/elmdentica.c:1439
+#: src/elmdentica.c:1422
 msgid "Repeat"
 msgstr "Opakovat"
 
-#: ../src/elmdentica.c:1448
-#: ../src/elmdentica.c:2156
+#: src/elmdentica.c:1430 src/elmdentica.c:2147
 msgid "DM"
 msgstr ""
 
-#: ../src/elmdentica.c:1458
+#: src/elmdentica.c:1439
 msgid "Unmark favorite"
 msgstr ""
 
-#: ../src/elmdentica.c:1460
+#: src/elmdentica.c:1441
 msgid "Mark favorite"
 msgstr ""
 
-#: ../src/elmdentica.c:1470
+#: src/elmdentica.c:1450
 msgid "View related"
 msgstr ""
 
-#: ../src/elmdentica.c:1479
+#: src/elmdentica.c:1459
 msgid "Status details"
 msgstr ""
 
-#: ../src/elmdentica.c:1487
-msgid "Recycle status"
-msgstr ""
-
-#. Error Window
-#: ../src/elmdentica.c:1587
+#: src/elmdentica.c:1561
 msgid "Error"
 msgstr "Chyba"
 
-#: ../src/elmdentica.c:1588
+#: src/elmdentica.c:1562
 msgid "µ-blog Error"
 msgstr ""
 
-#: ../src/elmdentica.c:1869
+#: src/elmdentica.c:1858
 msgid "Send a DM to..."
 msgstr ""
 
-#: ../src/elmdentica.c:1881
-#: ../src/settings.c:534
-#: ../src/settings.c:1262
+#: src/elmdentica.c:1870 src/settings.c:534 src/settings.c:1262
 msgid "OK"
 msgstr "OK"
 
-#: ../src/elmdentica.c:1956
-#: ../src/elmdentica.c:2115
+#: src/elmdentica.c:1954 src/elmdentica.c:2096
 msgid "Type your status here..."
 msgstr "Zde napište svůj stav..."
 
-#: ../src/elmdentica.c:2143
+#: src/elmdentica.c:2113
+msgid "Clear"
+msgstr "Vymazat"
+
+#: src/elmdentica.c:2134
 msgid "Send"
 msgstr "Odeslat"
 
-#: ../src/elmdentica.c:2169
+#: src/elmdentica.c:2160
 msgid "Hide"
 msgstr "Skrýt"
 
-#: ../src/elmdentica.c:2190
+#: src/elmdentica.c:2181
 msgid "Timelines"
 msgstr ""
 
-#: ../src/elmdentica.c:2196
+#: src/elmdentica.c:2187
 msgid "Direct Messages"
 msgstr ""
 
-#: ../src/elmdentica.c:2197
+#: src/elmdentica.c:2188
 msgid "Everyone"
 msgstr "Všichni"
 
-#: ../src/elmdentica.c:2198
+#: src/elmdentica.c:2189
 msgid "Just me"
 msgstr "Pouze já"
 
-#: ../src/elmdentica.c:2199
+#: src/elmdentica.c:2190
 msgid "Favorites"
 msgstr "Oblíbené"
 
-#: ../src/elmdentica.c:2200
+#: src/elmdentica.c:2191
 msgid "Replies/Mentions"
 msgstr ""
 
-#: ../src/elmdentica.c:2201
+#: src/elmdentica.c:2192
 msgid "Friends & I"
 msgstr ""
 
-#: ../src/elmdentica.c:2203
-#: ../src/settings.c:1427
+#: src/elmdentica.c:2194
+msgid "Fullscreen"
+msgstr "Celá obrazovka"
+
+#: src/elmdentica.c:2195 src/settings.c:1427
 msgid "Settings"
 msgstr "Nastavení"
 
-#: ../src/statusnet.c:366
+#: src/statusnet.c:365
 #, c-format
 msgid "Not enough memory to create a status\n"
 msgstr ""
 
-#: ../src/statusnet.c:418
+#: src/statusnet.c:417
 #, c-format
 msgid "Not enough memory to create an user\n"
 msgstr ""
 
-#: ../src/statusnet.c:555
+#: src/statusnet.c:554
 #, c-format
 msgid "Error encountered: %s\n"
 msgstr ""
 
-#: ../src/statusnet.c:967
+#: src/statusnet.c:966
 #, c-format
 msgid "Unknown timeline %d\n"
 msgstr ""
 
-#: ../src/statusnet.c:974
+#: src/statusnet.c:973
 #, c-format
 msgid "Not enough memory to construct timeline URI\n"
 msgstr ""
 
-#: ../src/statusnet.c:981
+#: src/statusnet.c:980
 #, c-format
 msgid "Not enough memory to prepare host url\n"
 msgstr ""
 
-#: ../src/settings.c:146
+#: src/settings.c:146
 msgid "never"
 msgstr "nikdy"
 
-#: ../src/settings.c:146
+#: src/settings.c:146
 msgid "0 s"
 msgstr "0 s"
 
-#: ../src/settings.c:147
+#: src/settings.c:147
 msgid "1 minute"
 msgstr "1 minuta"
 
-#: ../src/settings.c:147
+#: src/settings.c:147
 msgid "1 min"
 msgstr "1 min"
 
-#: ../src/settings.c:148
+#: src/settings.c:148
 msgid "2 minutes"
 msgstr "2 minuty"
 
-#: ../src/settings.c:148
+#: src/settings.c:148
 msgid "2 min"
 msgstr "2 min"
 
-#: ../src/settings.c:149
+#: src/settings.c:149
 msgid "5 minutes"
 msgstr "5 minut"
 
-#: ../src/settings.c:149
+#: src/settings.c:149
 msgid "5 min"
 msgstr "5 min"
 
-#: ../src/settings.c:150
+#: src/settings.c:150
 msgid "10 minutes"
 msgstr "10 minut"
 
-#: ../src/settings.c:150
+#: src/settings.c:150
 msgid "10 min"
 msgstr "10 min"
 
-#: ../src/settings.c:151
+#: src/settings.c:151
 msgid "15 minutes"
 msgstr "15 minut"
 
-#: ../src/settings.c:151
+#: src/settings.c:151
 msgid "15 min"
 msgstr "15 min"
 
-#: ../src/settings.c:152
+#: src/settings.c:152
 msgid "30 minutes"
 msgstr "30 minut"
 
-#: ../src/settings.c:152
+#: src/settings.c:152
 msgid "30 min"
 msgstr "30 min"
 
-#: ../src/settings.c:153
+#: src/settings.c:153
 msgid "1 hour"
 msgstr "1 hodina"
 
-#: ../src/settings.c:153
+#: src/settings.c:153
 msgid "1 h"
 msgstr "1 h"
 
-#: ../src/settings.c:174
-#: ../src/settings.c:1081
+#: src/settings.c:174 src/settings.c:1081
 msgid "Every: "
 msgstr "Každých: "
 
-#: ../src/settings.c:396
+#: src/settings.c:396
 msgid "Screen name"
 msgstr "Název obrazovky"
 
-#: ../src/settings.c:411
+#: src/settings.c:411
 msgid "Password"
 msgstr "Heslo"
 
-#: ../src/settings.c:435
+#: src/settings.c:435
 msgid "Type"
 msgstr ""
 
-#: ../src/settings.c:454
+#: src/settings.c:454
 msgid "Secure"
 msgstr "Bezpečný"
 
-#: ../src/settings.c:454
+#: src/settings.c:454
 msgid "Faster"
 msgstr "Rychlejší"
 
-#: ../src/settings.c:466
+#: src/settings.c:466
 msgid "Domain"
 msgstr "Doména"
 
-#: ../src/settings.c:481
+#: src/settings.c:481
 msgid "Base URL"
 msgstr "Základní URL"
 
-#: ../src/settings.c:496
+#: src/settings.c:496
 msgid "Receive?"
 msgstr "Přijmout?"
 
-#: ../src/settings.c:508
+#: src/settings.c:508
 msgid "Send?"
 msgstr "Odeslat?"
 
-#: ../src/settings.c:711
+#: src/settings.c:711
 msgid "Accounts..."
 msgstr "Účty..."
 
-#: ../src/settings.c:746
-#: ../src/settings.c:1378
+#: src/settings.c:746 src/settings.c:1378
 msgid "Add"
 msgstr "Přidat"
 
-#: ../src/settings.c:759
-#: ../src/settings.c:1391
+#: src/settings.c:759 src/settings.c:1391
 msgid "Edit"
 msgstr "Upravit"
 
-#: ../src/settings.c:773
-#: ../src/settings.c:1404
+#: src/settings.c:773 src/settings.c:1404
 msgid "Delete"
 msgstr "Smazat"
 
-#: ../src/settings.c:800
-#: ../src/settings.c:823
+#: src/settings.c:800 src/settings.c:823
 msgid "No posts<br>in cache."
 msgstr ""
 
-#: ../src/settings.c:802
+#: src/settings.c:802
 #, c-format
 msgid "Currently remembering<br>%d posts."
 msgstr ""
 
-#: ../src/settings.c:838
-#: ../src/settings.c:861
+#: src/settings.c:838 src/settings.c:861
 msgid "No messages<br>in cache."
 msgstr ""
 
-#: ../src/settings.c:840
+#: src/settings.c:840
 #, c-format
 msgid "Currently remembering<br>%d messages."
 msgstr ""
 
-#: ../src/settings.c:939
+#: src/settings.c:939
 msgid "Displayed messages"
 msgstr "Zobrazené zprávy"
 
-#: ../src/settings.c:1006
+#: src/settings.c:1006
 msgid "Please choose a browser"
 msgstr "Prosím vyberte prohlížeč"
 
-#: ../src/settings.c:1008
+#: src/settings.c:1008
 msgid "No supported browser available"
 msgstr ""
 
-#: ../src/settings.c:1045
+#: src/settings.c:1045
 msgid "Preferred browser..."
 msgstr ""
 
-#: ../src/settings.c:1053
+#: src/settings.c:1053
 msgid "Online mode..."
 msgstr ""
 
-#: ../src/settings.c:1055
+#: src/settings.c:1055
 msgid "Online"
 msgstr "Připojen"
 
-#: ../src/settings.c:1055
+#: src/settings.c:1055
 msgid "Offline"
 msgstr "Odpojen"
 
-#: ../src/settings.c:1063
+#: src/settings.c:1063
 msgid "Timestamps..."
 msgstr ""
 
-#: ../src/settings.c:1065
+#: src/settings.c:1065
 msgid "Relative"
 msgstr "Relativní"
 
-#: ../src/settings.c:1065
+#: src/settings.c:1065
 msgid "Absolute"
 msgstr "Absolutní"
 
-#: ../src/settings.c:1073
+#: src/settings.c:1073
 msgid "Auto updates"
 msgstr ""
 
-#: ../src/settings.c:1242
+#: src/settings.c:1242
 msgid "Pattern..."
 msgstr "Vzorek..."
 
-#: ../src/settings.c:1344
+#: src/settings.c:1344
 msgid "Gag patterns..."
 msgstr ""
 
-#: ../src/settings.c:1428
+#: src/settings.c:1428
 msgid "ElmDentica settings..."
 msgstr "Nastavení ElmDentica..."
 
-#: ../src/settings.c:1453
+#: src/settings.c:1453
 msgid "Accounts"
 msgstr "Účty"
 
-#: ../src/settings.c:1455
+#: src/settings.c:1455
 msgid "Cache"
 msgstr "Cache"
 
-#: ../src/settings.c:1457
+#: src/settings.c:1457
 msgid "Options"
 msgstr "Možnosti"
 
-#: ../src/settings.c:1459
+#: src/settings.c:1459
 msgid "Gag"
 msgstr ""
 
-#: ../src/settings.c:1470
+#: src/settings.c:1470
 #, c-format
 msgid ""
 "\n"
@@ -535,48 +516,43 @@ msgid ""
 "\n"
 msgstr ""
 
-#: ../src/settings.c:1493
+#: src/settings.c:1493
 #, c-format
 msgid "Can't run ecore_file_init()\n"
 msgstr ""
 
-#: ../src/settings.c:1499
+#: src/settings.c:1499
 #, c-format
 msgid "Can't create preferences directories since asprintf failed\n"
 msgstr ""
 
-#: ../src/settings.c:1499
+#: src/settings.c:1499
 #, c-format
 msgid "Can't create preferences directories since ecore_file_mkpath failed\n"
 msgstr ""
 
-#: ../src/settings.c:1507
+#: src/settings.c:1507
 #, c-format
 msgid "Not enough memory to define conf.eet path"
 msgstr ""
 
-#: ../src/settings.c:1513
+#: src/settings.c:1513
 #, c-format
 msgid "Couldn't run eet_init()"
 msgstr ""
 
-#: ../src/settings.c:1520
+#: src/settings.c:1520
 #, c-format
 msgid "Can't create %s"
 msgstr "Nelze vytvořit %s"
 
-#: ../src/settings.c:1528
+#: src/settings.c:1528
 #, c-format
 msgid "Can't setup settings_edd."
 msgstr ""
 
-#: ../src/settings.c:1546
+#: src/settings.c:1547
 #, c-format
-msgid "Not enough memory for settings, no doubt for anything else either, surely..."
+msgid ""
+"Not enough memory for settings, no doubt for anything else either, surely..."
 msgstr ""
-
-#~ msgid "Clear"
-#~ msgstr "Vymazat"
-
-#~ msgid "Fullscreen"
-#~ msgstr "Celá obrazovka"

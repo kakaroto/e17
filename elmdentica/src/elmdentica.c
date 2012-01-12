@@ -646,7 +646,7 @@ void user_show(void *data) {
 }
 
 static void on_handle_user(void *data, Evas_Object *obj, void *event_info) {
-	Elm_List_Item *li = elm_list_selected_item_get(obj);
+	Elm_Object_Item *li = elm_list_selected_item_get(obj);
  	userData *ud=NULL;
 
 	elm_list_item_selected_set(li, EINA_FALSE);
@@ -805,7 +805,7 @@ static void group_show(void *data) {
 
 static void on_handle_group(void *data, Evas_Object *obj, void *event_info) {
 	aStatus* as = (aStatus*)data;
-	Elm_List_Item *li = elm_list_selected_item_get(obj);
+	Elm_Object_Item *li = elm_list_selected_item_get(obj);
 
 	elm_list_item_selected_set(li, EINA_FALSE);
 
@@ -820,7 +820,7 @@ static void on_url_dismissed(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_handle_url(void *data, Evas_Object *obj, void *event_info) {
-	Elm_List_Item *li = elm_list_selected_item_get(obj);
+	Elm_Object_Item *li = elm_list_selected_item_get(obj);
 	Evas_Object *url_win=NULL, *button=NULL, *frame=NULL;
 
 	elm_list_item_selected_set(li, EINA_FALSE);
@@ -1242,7 +1242,7 @@ static void ed_status_recycle_text(void *data, Evas_Object *obj, void *event_inf
 
 static void ed_status_status_action(void *data, Evas_Object *obj, void *event_info) {
 	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
-	Elm_List_Item *li=NULL;
+	Elm_Object_Item *li=NULL;
 	Elm_Object_Item *ti=NULL;
 	Evas_Object *box=NULL, *toolbar=NULL, *pager=NULL, *list=NULL, *button=NULL;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);

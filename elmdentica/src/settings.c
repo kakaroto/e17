@@ -48,7 +48,7 @@ Evas_Object *settings_win=NULL, *settings_area=NULL, *account_editor=NULL, *cach
 	    *domain_data_dialog=NULL, *apiroot_entry=NULL, *type_entry=NULL, *secure_entry=NULL,
 	    *domain_entry=NULL, *base_url_entry=NULL, *enabled_entry=NULL, *receive_entry=NULL, *send_entry=NULL, *auto_update=NULL, *auto_update_timeout=NULL;
 
-Elm_List_Item * current_account_li=NULL, *current_domain_li=NULL;
+Elm_Object_Item * current_account_li=NULL, *current_domain_li=NULL;
 
 extern struct sqlite3 *ed_DB;
 extern int debug;
@@ -206,7 +206,7 @@ void on_account_enabled_toggle(void *data, Evas_Object *check, void *event_info)
 void drop_account(Evas_Object *account_list) {
 	int sqlite_res = 0;
 	char *query=NULL, *db_err=NULL;
-	Elm_List_Item *li;
+	Elm_Object_Item *li;
 
 	sqlite_res = asprintf(&query, "DELETE FROM accounts WHERE id='%d';", current_account);
 	if(sqlite_res != -1) {
@@ -247,7 +247,7 @@ void on_user_data_ok(void *data, Evas_Object *obj, void *event_info) {
 	char *account_id=NULL, *query=NULL, *db_err=NULL, *tmp=NULL;
 	char *screen_name=NULL, *password=NULL, *domain=NULL, *base_url=NULL, *proto=NULL;
 	int enabled=1, port=443, sqlite_res = 0, *id=NULL, receive=1, send=1, res=0;
-	Elm_List_Item *li;
+	Elm_Object_Item *li;
 	Eina_Strbuf *buf = NULL;
 
 	buf = eina_strbuf_new();
@@ -657,7 +657,7 @@ void on_account_delete(void *data, Evas_Object *button, void *event_info) {
 
 static int accounts_list_insert(void *user_data, int argc, char **argv, char **azColName) {
 	Evas_Object *list = (Evas_Object*)user_data, *check=NULL;
-	Elm_List_Item * item=NULL;
+	Elm_Object_Item * li=NULL;
 	int *id = calloc(1, sizeof(int));
 	char *key=NULL;
 	int enabled=0, res=0;
@@ -683,7 +683,7 @@ static int accounts_list_insert(void *user_data, int argc, char **argv, char **a
 		evas_object_smart_callback_add(check, "changed", on_account_enabled_toggle, id);
 		evas_object_show(check);
 
-		item = elm_list_item_append(list, (char*)key, check, NULL, on_account_selected, id);
+		li = elm_list_item_append(list, (char*)key, check, NULL, on_account_selected, id);
 		free(key);
 		return(0);
 	} else {
@@ -1124,7 +1124,7 @@ void on_gag_selected(void *data, Evas_Object *gag_list, void *event_info) {
 
 static int gag_list_insert(void *user_data, int argc, char **argv, char **azColName) {
 	Evas_Object *list = (Evas_Object*)user_data, *check=NULL;
-	Elm_List_Item * item=NULL;
+	Elm_Object_Item * li=NULL;
 	int *id = calloc(1, sizeof(int));
 	char *pattern=NULL;
 	int enabled=0;
@@ -1148,7 +1148,7 @@ static int gag_list_insert(void *user_data, int argc, char **argv, char **azColN
 	evas_object_smart_callback_add(check, "changed", on_gag_enabled_toggle, id);
 	evas_object_show(check);
 
-	item = elm_list_item_append(list, pattern, check, NULL, on_gag_selected, id);
+	li = elm_list_item_append(list, pattern, check, NULL, on_gag_selected, id);
 
 	return(0);
 }
@@ -1161,7 +1161,7 @@ void on_gag_pattern_add(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e = evas_object_evas_get(obj);
 	Evas_Object *gag_list = evas_object_name_find(e, "gag_list"), *gag_pattern = evas_object_name_find(e, "gag-pattern");
 	const Eina_List *list_items=NULL, *l=NULL;
-	Elm_List_Item *li=NULL;
+	Elm_Object_Item *li=NULL;
 	char *query, *db_err=NULL;
 	char *pattern = elm_entry_markup_to_utf8(elm_entry_entry_get(gag_pattern));
 	int res=0;
@@ -1199,7 +1199,7 @@ void on_gag_pattern_add(void *data, Evas_Object *obj, void *event_info) {
 void on_gag_pattern_edit(void *data, Evas_Object *obj, void *event_info) {
 	Evas *e = evas_object_evas_get(obj);
 	Evas_Object *gag_list = evas_object_name_find(e, "gag_list"), *gag_pattern = evas_object_name_find(e, "gag-pattern");
-	Elm_List_Item *li = elm_list_selected_item_get(gag_list);
+	Elm_Object_Item *li = elm_list_selected_item_get(gag_list);
 	char *query, *db_err=NULL;
 	char *pattern = elm_entry_markup_to_utf8(elm_entry_entry_get(gag_pattern));
 	int res=0;
@@ -1283,7 +1283,7 @@ Evas_Object * gag_edit_widgets(char *pattern) {
 }
 
 void on_gag_edit(void *data, Evas_Object *obj, void *event_info) {
-	Elm_List_Item *li = elm_list_selected_item_get((Evas_Object*)data);
+	Elm_Object_Item *li = elm_list_selected_item_get((Evas_Object*)data);
 	Evas_Object *inwin=NULL;
 	const char *label=NULL;
 
@@ -1304,7 +1304,7 @@ void on_gag_delete(void *data, Evas_Object *button, void *event_info) {
 	Evas_Object *gag_list=(Evas_Object*)data;
 	int sqlite_res = 0;
 	char *query=NULL, *db_err=NULL;
-	Elm_List_Item *li;
+	Elm_Object_Item *li;
 
 	if(current_gag != 0) {
 
