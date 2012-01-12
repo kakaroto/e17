@@ -20,7 +20,7 @@ namespace Elmxx {
  */
 class List : public Object
 {
-public:  
+public:
   static List *factory (Evasxx::Object &parent);
 
   void clear ();
@@ -35,14 +35,14 @@ public:
 
   const Eina_List *getItems (); // TODO: port Eina_List
 
-  Elm_List_Item *getSelectedItem (); // TODO port Elm_List_Item
+  Elm_Object_Item *getSelectedItem (); // TODO port Elm_List_Item
 
   const Eina_List *getSelectedItems (); // TODO: port Eina_List
 
-  Elm_List_Item *append (const std::string &label, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
-  
-  Elm_List_Item *append (const std::string &label, const Evasxx::Object &icon, const Evasxx::Object &end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
-  
+  Elm_Object_Item *append (const std::string &label, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
+
+  Elm_Object_Item *append (const std::string &label, const Evasxx::Object &icon, const Evasxx::Object &end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
+
 private:
   List (); // forbid standard constructor
   List (const List&); // forbid copy constructor
@@ -51,10 +51,10 @@ private:
 };
 
 #if 0
-   EAPI Elm_List_Item *elm_list_item_append(Evas_Object *obj, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
-   EAPI Elm_List_Item *elm_list_item_prepend(Evas_Object *obj, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
-   EAPI Elm_List_Item *elm_list_item_insert_before(Evas_Object *obj, Elm_List_Item *before, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
-   EAPI Elm_List_Item *elm_list_item_insert_after(Evas_Object *obj, Elm_List_Item *after, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
+   EAPI Elm_Object_Item *elm_list_item_append(Evas_Object *obj, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
+   EAPI Elm_Object_Item *elm_list_item_prepend(Evas_Object *obj, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
+   EAPI Elm_Object_Item *elm_list_item_insert_before(Evas_Object *obj, Elm_List_Item *before, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
+   EAPI Elm_Object_Item *elm_list_item_insert_after(Evas_Object *obj, Elm_List_Item *after, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
 #endif
 
 } // end namespace Elmxx

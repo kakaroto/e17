@@ -11,7 +11,7 @@ namespace Elmxx {
 List::List (Evasxx::Object &parent)
 {
   o = elm_list_add (parent.obj ());
-  
+
   elmInit ();
 }
 
@@ -52,7 +52,7 @@ const Eina_List *List::getItems ()
   return elm_list_items_get (o);
 }
 
-Elm_List_Item *List::getSelectedItem ()
+Elm_Object_Item *List::getSelectedItem ()
 {
   return elm_list_selected_item_get (o);
 }
@@ -62,12 +62,12 @@ const Eina_List *List::getSelectedItems ()
   return elm_list_selected_items_get (o);
 }
 
-Elm_List_Item *List::append (const std::string &label, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data)
+Elm_Object_Item *List::append (const std::string &label, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data)
 {
   return elm_list_item_append (o, label.c_str (), NULL, NULL, func, data);
 }
 
-Elm_List_Item *List::append (const std::string &label, const Evasxx::Object &icon, const Evasxx::Object &end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data)
+Elm_Object_Item *List::append (const std::string &label, const Evasxx::Object &icon, const Evasxx::Object &end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data)
 {
   return elm_list_item_append (o, label.c_str (), icon.obj (), end.obj (), func, data);
 }

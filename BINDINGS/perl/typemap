@@ -11,7 +11,6 @@ Elm_Hover_Axis              T_IV
 Elm_Icon_Type               T_IV
 Elm_Icon_Type *             T_PTR
 Elm_Image_Orient            T_IV
-Elm_List_Item *             T_ELM_LIST
 Elm_List_Mode               T_PTR
 Elm_Map_Group_Class *       T_PTROBJ
 Elm_Map_Marker *            T_PTROBJ
@@ -70,7 +69,6 @@ Evas_Textblock_Style *      T_PTR
 Evas_Textblock_Text_Type    T_IV
 Evas_Transform *            T_PTR
 const Eina_List *           T_PTR
-const Elm_List_Item *       T_PTR
 const Elm_Object_Item *     T_PTROBJ
 const Evas *                T_PTR
 const Evas_Lock *           T_PTR

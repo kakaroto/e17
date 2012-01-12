@@ -1250,7 +1250,7 @@ public class HoverselItem
 
 //=======================================================================
 [Compact]
-[CCode (cname = "Elm_List_Item", free_function = "elm_list_item_del")]
+[CCode (cname = "Elm_Object_Item", free_function = "elm_list_item_del")]
 public class ListItem
 {
     public void selected_set( bool selected );

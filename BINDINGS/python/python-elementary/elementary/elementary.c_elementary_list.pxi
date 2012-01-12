@@ -28,7 +28,7 @@ cdef void _list_item_del_cb(void *data, c_evas.Evas_Object *o, void *event_info)
     it.__del_cb()
 
 def _list_item_conv(long addr):
-    cdef Elm_List_Item *it = <Elm_List_Item *>addr
+    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
     cdef void *data = elm_list_item_data_get(it)
     if data == NULL:
         return None
@@ -46,7 +46,7 @@ cdef class ListItem(WidgetItem):
     """
     An item for the list widget
     """
-    cdef Elm_List_Item *item
+    cdef Elm_Object_Item *item
     cdef object cbt
 
     def __cinit__(self):
@@ -110,7 +110,7 @@ cdef class ListItem(WidgetItem):
              bool(self.end_get()), self.cbt[1], self.cbt[3], self.cbt[4])
 
     def __repr__(self):
-        return ("%s(%#x, refcount=%d, Elm_List_Item=%#x, "
+        return ("%s(%#x, refcount=%d, Elm_Object_Item=%#x, "
                 "label=%r, icon=%s, end=%s, "
                 "callback=%r, args=%r, kargs=%s)") % \
             (self.__class__.__name__, <unsigned long><void *>self,
@@ -194,7 +194,7 @@ cdef class ListItem(WidgetItem):
             return self.prev_get()
 
     def prev_get(self):
-        cdef Elm_List_Item *item
+        cdef Elm_Object_Item *item
         cdef void *data
 
         item = elm_list_item_prev(self.item)
@@ -213,7 +213,7 @@ cdef class ListItem(WidgetItem):
             return self.next_get()
 
     def next_get(self):
-        cdef Elm_List_Item *item
+        cdef Elm_Object_Item *item
         cdef void *data
 
         item = elm_list_item_next(self.item)
@@ -446,7 +446,7 @@ cdef class List(Object):
         elm_list_bounce_set(self.obj, h, v)
 
     def selected_item_get(self):
-        cdef Elm_List_Item *obj
+        cdef Elm_Object_Item *obj
         cdef void *data
         obj = elm_list_selected_item_get(self.obj)
         if obj == NULL:
@@ -465,7 +465,7 @@ cdef class List(Object):
         lst = elm_list_selected_items_get(self.obj)
         itr = lst
         while itr:
-            data = elm_list_item_data_get(<Elm_List_Item *>itr.data)
+            data = elm_list_item_data_get(<Elm_Object_Item *>itr.data)
             if data != NULL:
                 (o, callback, it, a, ka) = <object>data
                 ret.append(it)
@@ -479,7 +479,7 @@ cdef class List(Object):
         lst = elm_list_items_get(self.obj)
         itr = lst
         while itr:
-            data = elm_list_item_data_get(<Elm_List_Item *>itr.data)
+            data = elm_list_item_data_get(<Elm_Object_Item *>itr.data)
             if data != NULL:
                 (o, callback, it, a, ka) = <object>data
                 ret.append(it)

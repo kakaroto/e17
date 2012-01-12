@@ -1080,7 +1080,7 @@ elm_menu_item_subitems_get(Elm_Object_Item *item)
 Evas_Object *
 elm_list_add(Evas_Object *parent)
 
-Elm_List_Item *
+Elm_Object_Item *
 elm_list_item_append(obj, label, icon, end, func, data)
     Evas_Object *obj
     const char *label
@@ -1118,9 +1118,9 @@ elm_list_item_append(obj, label, icon, end, func, data)
         RETVAL
 
 # TODO
-#   EAPI Elm_List_Item   *elm_list_item_prepend(Evas_Object *obj, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
-#  EAPI Elm_List_Item   *elm_list_item_insert_before(Evas_Object *obj, Elm_List_Item *before, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
-#   EAPI Elm_List_Item   *elm_list_item_insert_after(Evas_Object *obj, Elm_List_Item *after, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
+#   EAPI Elm_Object_Item   *elm_list_item_prepend(Evas_Object *obj, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
+#  EAPI Elm_Object_Item   *elm_list_item_insert_before(Evas_Object *obj, Elm_Object_Item *before, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
+#   EAPI Elm_Object_Item   *elm_list_item_insert_after(Evas_Object *obj, Elm_Object_Item *after, const char *label, Evas_Object *icon, Evas_Object *end, void (*func) (void *data, Evas_Object *obj, void *event_info), const void *data);
 
 void
 elm_list_clear(Evas_Object *obj)
@@ -1140,55 +1140,55 @@ elm_list_always_select_mode_set(Evas_Object *obj, Eina_Bool always_select)
 const Eina_List *
 elm_list_items_get(const Evas_Object *obj)
 
-Elm_List_Item *
+Elm_Object_Item *
 elm_list_selected_item_get(const Evas_Object *obj)
 
 const Eina_List *
 elm_list_selected_items_get(const Evas_Object *obj)
 
 void
-elm_list_item_selected_set(Elm_List_Item *item, Eina_Bool selected)
+elm_list_item_selected_set(Elm_Object_Item *item, Eina_Bool selected)
 
 void
-elm_list_item_show(Elm_List_Item *item)
+elm_list_item_show(Elm_Object_Item *item)
 
 void
-elm_list_item_del(Elm_List_Item *item)
+elm_list_item_del(Elm_Object_Item *item)
 
 
 # TODO
 # void
-#elm_list_item_del_cb_set(Elm_List_Item *item, void (*func)(void *data, Evas_Object *obj, void *event_info));
+#elm_list_item_del_cb_set(Elm_Object_Item *item, void (*func)(void *data, Evas_Object *obj, void *event_info));
 
 void *
-elm_list_item_data_get(const Elm_List_Item *item)
+elm_list_item_data_get(const Elm_Object_Item *item)
 
 Evas_Object *
-elm_list_item_icon_get(const Elm_List_Item *item)
+elm_list_item_icon_get(const Elm_Object_Item *item)
 
 void
-elm_list_item_icon_set(Elm_List_Item *item, Evas_Object *icon)
+elm_list_item_icon_set(Elm_Object_Item *item, Evas_Object *icon)
 
 Evas_Object *
-elm_list_item_end_get(const Elm_List_Item *item)
+elm_list_item_end_get(const Elm_Object_Item *item)
 
 void
-elm_list_item_end_set(Elm_List_Item *item, Evas_Object *end)
+elm_list_item_end_set(Elm_Object_Item *item, Evas_Object *end)
 
 Evas_Object *
-elm_list_item_object_get(const Elm_List_Item *item)
+elm_list_item_object_get(const Elm_Object_Item *item)
 
 const char *
-elm_list_item_label_get(const Elm_List_Item *item)
+elm_list_item_label_get(const Elm_Object_Item *item)
 
 void
-elm_list_item_label_set(Elm_List_Item *item, const char *text)
+elm_list_item_label_set(Elm_Object_Item *item, const char *text)
 
-Elm_List_Item *
-elm_list_item_prev(const Elm_List_Item *it)
+Elm_Object_Item *
+elm_list_item_prev(const Elm_Object_Item *it)
 
-Elm_List_Item *
-elm_list_item_next(const Elm_List_Item *it)
+Elm_Object_Item *
+elm_list_item_next(const Elm_Object_Item *it)
 
 
 # slider
