@@ -98,8 +98,8 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 static void
 _gc_orient (E_Gadcon_Client * gcc, E_Gadcon_Orient orient)
 {
-   e_gadcon_client_aspect_set (gcc, 16, 16);
-   e_gadcon_client_min_size_set (gcc, 16, 16);
+   e_gadcon_client_aspect_set (gcc, 32, 16);
+   e_gadcon_client_min_size_set (gcc, 32, 16);
 }
 
 static const char *
