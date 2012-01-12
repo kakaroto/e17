@@ -365,7 +365,7 @@ TEST_START(test_tooltip)
 {
    Evas_Object *bg, *bx, *tb, *bt, *se, *lst;
    Elm_Object_Item *tb_it;
-   Elm_List_Item *li;
+   Elm_Object_Item *li;
 
    bg = elm_bg_add(win);
    elm_win_resize_object_add(win, bg);

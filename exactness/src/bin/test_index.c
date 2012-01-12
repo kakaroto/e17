@@ -210,11 +210,11 @@ int
 test_index2_cmp(const void *data1, const void *data2)
 {
    const char *label1, *label2;
-   const Elm_List_Item *it1 = data1;
-   const Elm_List_Item *it2 = data2;
+   const Elm_Object_Item *list_it1 = data1;
+   const Elm_Object_Item *list_it2 = data2;
 
-   label1 = elm_list_item_label_get(it1);
-   label2 = elm_list_item_label_get(it2);
+   label1 = elm_list_item_label_get(list_it1);
+   label2 = elm_list_item_label_get(list_it2);
 
    return strcasecmp(label1, label2);
 }
@@ -236,19 +236,19 @@ void
 test_index2_it_add(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    Test_Index2_Elements *gui = data;
-   Elm_List_Item *it;
+   Elm_Object_Item *list_it;
    const char *label;
    char letter[2];
 
    label = elm_entry_entry_get(gui->entry);
    snprintf(letter, sizeof(letter), "%c", label[0]);
-   it = elm_list_item_sorted_insert(gui->lst, label, NULL, NULL, NULL, NULL,
-                                    test_index2_cmp);
-   elm_index_item_sorted_insert(gui->id, letter, it, test_index2_icmp,
+   list_it = elm_list_item_sorted_insert(gui->lst, label, NULL, NULL, NULL,
+                                         NULL, test_index2_cmp);
+   elm_index_item_sorted_insert(gui->id, letter, list_it, test_index2_icmp,
                                 test_index2_cmp);
    elm_list_go(gui->lst);
    /* FIXME it's not showing the recently added item */
-   elm_list_item_show(it);
+   elm_list_item_show(list_it);
 }
 
 void
@@ -256,31 +256,31 @@ test_index2_it_del(void *data, Evas_Object *obj, void *event_info __UNUSED__)
 {
    Test_Index2_Elements *gui = data;
    const char *label, *label_next;
-   Elm_List_Item *it, *it_next;
+   Elm_Object_Item *lit, *lit_next;
 
-   it = elm_list_selected_item_get(obj);
-   it_next = elm_list_item_next(it);
+   lit = elm_list_selected_item_get(obj);
+   lit_next = elm_list_item_next(lit);
 
-   if (!it_next)
+   if (!lit_next)
      {
-        elm_index_item_del(gui->id, elm_index_item_find(gui->id, it));
-        elm_list_item_del(it);
+        elm_index_item_del(gui->id, elm_index_item_find(gui->id, lit));
+        elm_list_item_del(lit);
         return;
      }
 
-   label = elm_list_item_label_get(it);
-   label_next = elm_list_item_label_get(it_next);
+   label = elm_list_item_label_get(lit);
+   label_next = elm_list_item_label_get(lit_next);
 
    if (label[0] == label_next[0])
      {
         Elm_Object_Item *iit;
-        iit = elm_index_item_find(gui->id, it);
-        elm_index_item_data_set(iit, it_next);
+        iit = elm_index_item_find(gui->id, lit);
+        elm_index_item_data_set(iit, lit_next);
      }
    else
-     elm_index_item_del(gui->id, elm_index_item_find(gui->id, it));
+     elm_index_item_del(gui->id, elm_index_item_find(gui->id, lit));
 
-   elm_list_item_del(it);
+   elm_list_item_del(lit);
 }
 
 void
