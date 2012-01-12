@@ -949,7 +949,7 @@ on_view_contextmenu_show(void *data __UNUSED__, Evas_Object *view, void *event_i
    Ewk_Context_Menu_Item *item;
    Evas_Object *chrome = evas_object_data_get(view, "chrome");
    Evas_Object *notify, *li;
-   Elm_List_Item *it;
+   Elm_Object_Item *list_it;
 
    if (eina_list_count(items) == 0)
      {
@@ -976,9 +976,9 @@ on_view_contextmenu_show(void *data __UNUSED__, Evas_Object *view, void *event_i
    evas_object_data_set(li, "view", view);
    EINA_LIST_FOREACH(items, l, item)
    {
-      it = elm_list_item_append(li, ewk_context_menu_item_title_get(item), 0, 0,
+      list_it = elm_list_item_append(li, ewk_context_menu_item_title_get(item), 0, 0,
                                 _view_contextmenu_item_selected, item);
-      elm_list_item_separator_set(it, ewk_context_menu_item_type_get(item) == EWK_SEPARATOR_TYPE);
+      elm_list_item_separator_set(list_it, ewk_context_menu_item_type_get(item) == EWK_SEPARATOR_TYPE);
    }
    view_context_menu_set(view, notify, menu);
    elm_list_go(li);
