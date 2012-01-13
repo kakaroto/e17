@@ -9,10 +9,24 @@ var FILL_BOTH = { x : -1.0, y : -1.0 };
 
 elm.datadir=elm.datadir + "/data/images/";
 
-var orange = {
+var bubble = {
 	type : "icon",
-	prescale : 1,
-	image : elm.datadir + "orange.png",
+	image : elm.datadir + "bubble.png",
+	size_hint_aspect : {
+				a : 3,
+				w : 1,
+				h : 1,
+				},	
+};
+
+var logo = {
+	type : "icon",
+	image : elm.datadir + "logo_small.png",
+	size_hint_aspect : {
+				a : 3,
+				w : 1,
+				h : 1,
+				},	
 };
 
 var violet =  {
@@ -25,9 +39,8 @@ function button_prepend() {
     print("button_prepend");
 }
 function button_append() {
-    print("button_append");
-	for (var i = 0; i<10; i++)
-    	win.elements.box.elements.the_list.append(new ItemType1(i));
+	for (var i = 0; i<2000; i++)
+    		win.elements.box.elements.the_list.append(new ItemType1(i));
 }
 
 var ItemType1 = function(data)
@@ -41,12 +54,13 @@ ItemType1.prototype = {
 			print("The member is " + this.type);
 		},
 		on_text : function(arg) {
-			print("Calling text get function." + this.data);
-			return this.data.toString();
+			return "Item # " + this.data.toString();
 		},
 		on_content : function(arg) {
-			print("Calling content get function.");
-			return orange;
+			if (arguments[0].part == "elm.swallow.icon")
+				return logo;
+			if (arguments[0].part == "elm.swallow.end")
+				return bubble;
 		},
 		on_state : function(arg) {
 			print("Calling state get function.");
@@ -71,29 +85,14 @@ var win = new elm.window({
             align : FILL_BOTH,
             resize : true,
             elements : {
-                /*scroll : {
-                    type : "scroller",
-                    bounce : { x : false, y : true },
-                    policy : { x : "off", y : "on" },
-                    weight : EXPAND_BOTH,
-                    align : FILL_BOTH,
-                    resize : true,
-                    content : {
-                        type : "box",
-                        weight : EXPAND_BOTH,
-                        align : FILL_BOTH,
-                        elements : {*/
                             the_list : {
                                 type : "genlist",
                                 weight : EXPAND_BOTH,
                                 align : FILL_BOTH,
                             },
-                        /*},
-                    },
-                },*/
                 but_box : {
                     type : "box",
-                    weight : EXPAND_BOTH,
+                    //weight : EXPAND_BOTH,
                     align : FILL_BOTH,
                     resize : true,
                     horizontal : true,
