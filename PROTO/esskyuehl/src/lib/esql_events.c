@@ -296,13 +296,8 @@ esql_connect_handler(Esql             *e,
 Eina_Bool
 esql_timeout_cb(Esql *e)
 {
-   Esql *ev = e;
-
    if (e->pool_member)
-     {
-        ev = (Esql*)e->pool_struct;
-        e->pool_struct->e_connected--;
-     }
+      e->pool_struct->e_connected--;
    e->timeout_timer = NULL;
    esql_disconnect(e);
    if (e->reconnect) esql_reconnect_handler(e);
