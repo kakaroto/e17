@@ -226,8 +226,6 @@ esql_connect_timeout_get(Esql *e)
  *
  * This function enables autoreconnect mode, where a server connection will automatically
  * re-establish itself if disconnection occurs for any reason.
- * @note If a ESQL_EVENT_DISCONNECT event is received, reconnection failed. Additionally,
- * calls to esql_disconnect() will override this feature.
  */
 void
 esql_reconnect_set(Esql     *e,
