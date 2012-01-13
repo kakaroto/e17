@@ -138,6 +138,39 @@ data/javascript/Makefile
 #####################################################################
 ## Info
 
+##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+m4_ifdef([v_rev], , [m4_define([v_rev], [0])])
+m4_ifdef([v_rel], , [m4_define([v_rel], [])])
+AC_DEFINE_UNQUOTED(VMAJ, [v_maj], [Major version])
+AC_DEFINE_UNQUOTED(VMIN, [v_min], [Minor version])
+AC_DEFINE_UNQUOTED(VMIC, [v_mic], [Micro version])
+AC_DEFINE_UNQUOTED(VREV, [v_rev], [Revison])
+version_info="lt_cur:lt_rev:lt_age"
+release_info="v_rel"
+AC_SUBST(version_info)
+AC_SUBST(release_info)
+##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##--##
+VMAJ=v_maj
+AC_SUBST(VMAJ)
+
+### Needed information
+
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+
+case "$host_os" in
+   mingw32ce*)
+      MODULE_ARCH="$host_os-$host_cpu"
+      ;;
+   *)
+      MODULE_ARCH="$host_os-$host_cpu-v_maj.v_min.v_mic"
+      ;;
+esac
+AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
+
 echo
 echo
 echo
