@@ -24,10 +24,10 @@
 int esql_log_dom = -1;
 static int esql_init_count_ = 0;
 
-int ESQL_EVENT_ERROR = 0;
-int ESQL_EVENT_CONNECT = 0;
-int ESQL_EVENT_RESULT = 0;
-int ESQL_EVENT_DISCONNECT = 0;
+EAPI int ESQL_EVENT_ERROR = 0;
+EAPI int ESQL_EVENT_CONNECT = 0;
+EAPI int ESQL_EVENT_RESULT = 0;
+EAPI int ESQL_EVENT_DISCONNECT = 0;
 
 static Eina_Inlist *esql_modules = NULL;
 
