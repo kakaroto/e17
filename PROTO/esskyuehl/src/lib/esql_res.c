@@ -222,7 +222,7 @@ esql_res_row_iterator_new(Esql_Res *res)
    Esql_Row_Iterator *it;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(res->rows, NULL);
+   if (!res->rows) return NULL;
 
    it = calloc(1, sizeof(Esql_Row_Iterator));
    EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
