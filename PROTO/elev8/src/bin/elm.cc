@@ -2715,7 +2715,7 @@ public:
                    std::list<ListItem*>::iterator i = list->list.begin();
                    for ( ; val>0; val--)
                      i++;
-                   elm_list_item_disabled_set((*i)->li, args[1]->BooleanValue());
+                   elm_object_item_disabled_set((*i)->li, args[1]->BooleanValue());
                 }
           }
         return Undefined();
@@ -2807,7 +2807,7 @@ public:
                                static_cast<Persistent<Value> >(it->label).Dispose();
                                it->label = v8::Persistent<Value>::New(args[1]->ToString());
                                String::Utf8Value str(it->label->ToString());
-                               elm_list_item_label_set(it->li, *str);
+                               elm_object_item_text_set(it->li, *str);
                            }
                            break;
                        case ICON:
@@ -2820,7 +2820,7 @@ public:
                                  {
                                     elm_icon_scale_set(it->icon_left->get(), 0, 0);
                                     evas_object_size_hint_align_set(it->icon_left->get(), 0.0, 0.0);
-                                    elm_list_item_icon_set(it->li, it->icon_left->get());
+                                    elm_object_item_part_content_set(it->li, NULL, it->icon_left->get());
                                  }
                             }
                           break;
@@ -2835,7 +2835,7 @@ public:
                                  {
                                     elm_icon_scale_set(it->icon_right->get(), 0, 0);
                                     evas_object_size_hint_align_set(it->icon_right->get(), 0.0, 0.0);
-                                    elm_list_item_end_set(it->li, it->icon_right->get());
+                                    elm_object_item_part_content_set(it->li, "end", it->icon_right->get());
                                  }
                             }
                           break;
@@ -2845,7 +2845,7 @@ public:
                                static_cast<Persistent<Value> >(it->tooltip).Dispose();
                                it->tooltip = v8::Persistent<Value>::New(args[1]->ToString());
                                String::Utf8Value str(it->tooltip->ToString());
-                               elm_list_item_tooltip_text_set(it->li, *str);
+                               elm_object_tooltip_text_set(elm_object_item_object_get(it->li), *str);
                             }
                           break;
                        default:
@@ -3040,7 +3040,7 @@ public:
         if ( it->label->IsString())
           {
              String::Utf8Value str(it->label->ToString());
-             elm_list_item_label_set(it->li, *str);
+             elm_object_item_text_set(it->li, *str);
           }
         if ( it->icon->IsObject())
           {
@@ -3049,7 +3049,7 @@ public:
                {
                   elm_icon_scale_set(it->icon_left->get(), 0, 0);
                   evas_object_size_hint_align_set(it->icon_left->get(), 0.0, 0.0);
-                  elm_list_item_icon_set(it->li, it->icon_left->get());
+                  elm_object_item_part_content_set(it->li, "left", it->icon_left->get());
                }
           }
         if ( it->end->IsObject())
@@ -3060,13 +3060,13 @@ public:
                {
                   elm_icon_scale_set(it->icon_right->get(), 0, 0);
                   evas_object_size_hint_align_set(it->icon_right->get(), 0.0, 0.0);
-                  elm_list_item_end_set(it->li, it->icon_right->get());
+                  elm_object_item_part_content_set(it->li, "right", it->icon_right->get());
                }
           }
         if (it->tooltip->IsString())
           {
              String::Utf8Value str(it->tooltip->ToString());
-             elm_list_item_tooltip_text_set(it->li, *str);
+             elm_object_tooltip_text_set(elm_object_item_object_get(it->li), *str);
           }
 
         if (item->ToObject()->Get(String::New("on_clicked"))->IsFunction())
@@ -5030,7 +5030,7 @@ public:
 
             CEvasObject *content = realize_one(this,val);
 
-            elm_hover_content_set(eo, swallow, content->get());
+            elm_object_part_content_set(eo, swallow, content->get());
 
             if (!strcmp(swallow, "top"))
               {
