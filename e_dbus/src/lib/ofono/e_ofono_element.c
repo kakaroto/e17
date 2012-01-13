@@ -518,9 +518,9 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
    /* is this a list of interfaces? */
    interfaces = !strcmp(prop_name, "Interfaces");
 
-   if ((!new) || (!new->array) || eina_array_count_get(new->array) == 0)
+   if ((!new) || (!new->array) || eina_array_count(new->array) == 0)
      {
-        if ((!old) || (!old->array) || eina_array_count_get(old->array) == 0)
+        if ((!old) || (!old->array) || eina_array_count(old->array) == 0)
           {
              return;
           }
@@ -538,7 +538,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
       if (item_old == item_new)
         {
            i_new++;
-           if (i_new >= eina_array_count_get(new->array))
+           if (i_new >= eina_array_count(new->array))
              {
                 i_old++;
                 break;
@@ -553,7 +553,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
         }
    }
 
-   for(; i_new < eina_array_count_get(new->array); iter_new++, i_new++)
+   for(; i_new < eina_array_count(new->array); iter_new++, i_new++)
      {
         Eina_Bool found = EINA_FALSE;
         item_new = *iter_new;
@@ -603,7 +603,7 @@ _e_ofono_element_array_match(E_Ofono_Array *old, E_Ofono_Array *new, const char 
    }
 
 out_remove_remaining:
-   for(; i_old < eina_array_count_get(old->array); iter_old++, i_old++)
+   for(; i_old < eina_array_count(old->array); iter_old++, i_old++)
      {
         E_Ofono_Element *e;
         item_old = *iter_old;
@@ -791,7 +791,7 @@ e_ofono_element_bytes_array_get_stringshared(const E_Ofono_Element *element, con
    if ((!array) || (!(array->array)))
       return NULL;
 
-   *count = eina_array_count_get(array->array);
+   *count = eina_array_count(array->array);
    ret = malloc(*count * sizeof(unsigned char));
    if (!ret)
      {
@@ -847,7 +847,7 @@ e_ofono_element_objects_array_get_stringshared(const E_Ofono_Element *element, c
         return EINA_FALSE;
      }
 
-   *count = eina_array_count_get(array->array);
+   *count = eina_array_count(array->array);
    ret = malloc(*count * sizeof(E_Ofono_Element *));
    if (!ret)
      {
@@ -911,7 +911,7 @@ e_ofono_element_strings_array_get_stringshared(const E_Ofono_Element *element, c
         return EINA_FALSE;
      }
 
-   *count = eina_array_count_get(array->array);
+   *count = eina_array_count(array->array);
    ret = malloc(*count * sizeof(char *));
    if (!ret)
      {

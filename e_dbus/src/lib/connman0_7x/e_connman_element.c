@@ -490,9 +490,9 @@ _e_connman_element_array_match(E_Connman_Array *old, E_Connman_Array *new, const
    if (old->type != DBUS_TYPE_OBJECT_PATH)
       return;
 
-   if ((!new) || (!new->array) || eina_array_count_get(new->array) == 0)
+   if ((!new) || (!new->array) || eina_array_count(new->array) == 0)
      {
-        if ((!old) || (!old->array) || eina_array_count_get(old->array) == 0)
+        if ((!old) || (!old->array) || eina_array_count(old->array) == 0)
           {
              return;
           }
@@ -510,7 +510,7 @@ _e_connman_element_array_match(E_Connman_Array *old, E_Connman_Array *new, const
       if (item_old == item_new)
         {
            i_new++;
-           if (i_new >= eina_array_count_get(new->array))
+           if (i_new >= eina_array_count(new->array))
              {
                 i_old++;
                 break;
@@ -525,7 +525,7 @@ _e_connman_element_array_match(E_Connman_Array *old, E_Connman_Array *new, const
         }
    }
 
-   for(; i_new < eina_array_count_get(new->array); iter_new++, i_new++)
+   for(; i_new < eina_array_count(new->array); iter_new++, i_new++)
      {
         Eina_Bool found = EINA_FALSE;
         item_new = *iter_new;
@@ -561,7 +561,7 @@ _e_connman_element_array_match(E_Connman_Array *old, E_Connman_Array *new, const
    }
 
 out_remove_remaining:
-   for(; i_old < eina_array_count_get(old->array); iter_old++, i_old++)
+   for(; i_old < eina_array_count(old->array); iter_old++, i_old++)
      {
         E_Connman_Element *e;
         item_old = *iter_old;
@@ -742,7 +742,7 @@ e_connman_element_bytes_array_get_stringshared(const E_Connman_Element *element,
    if ((!array) || (!(array->array)))
       return NULL;
 
-   *count = eina_array_count_get(array->array);
+   *count = eina_array_count(array->array);
    ret = malloc(*count * sizeof(unsigned char));
    if (!ret)
      {
@@ -798,7 +798,7 @@ e_connman_element_objects_array_get_stringshared(const E_Connman_Element *elemen
         return EINA_FALSE;
      }
 
-   *count = eina_array_count_get(array->array);
+   *count = eina_array_count(array->array);
    ret = malloc(*count * sizeof(E_Connman_Element *));
    if (!ret)
      {
@@ -1972,7 +1972,7 @@ e_connman_element_property_dict_strings_array_get_stringshared(const E_Connman_E
         return EINA_FALSE;
      }
 
-   *count = eina_array_count_get(array->array);
+   *count = eina_array_count(array->array);
    ret = malloc(*count * sizeof(char *));
    if (!ret)
      {
