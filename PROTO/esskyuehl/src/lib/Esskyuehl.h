@@ -159,72 +159,52 @@ typedef struct Esql_Cell
 } Esql_Cell;
 /** @} */
 /* lib */
-EAPI int esql_init(void);
-EAPI int esql_shutdown(void);
+EAPI int             esql_init(void);
+EAPI int             esql_shutdown(void);
 
 /* esql */
-EAPI Esql         *esql_new(Esql_Type type);
-EAPI Esql         *esql_pool_new(int       size,
-                                 Esql_Type type);
-EAPI void         *esql_data_get(Esql *e);
-EAPI void          esql_data_set(Esql *e,
-                                 void *data);
-EAPI Esql_Query_Id esql_current_query_id_get(Esql *e);
-EAPI const char   *esql_current_query_get(Esql *e);
-EAPI const char   *esql_error_get(Esql *e);
-EAPI Eina_Bool     esql_type_set(Esql     *e,
-                                 Esql_Type type);
-EAPI Esql_Type     esql_type_get(Esql *e);
-EAPI void          esql_free(Esql *e);
+EAPI Esql           *esql_new(Esql_Type type);
+EAPI Esql           *esql_pool_new(int size, Esql_Type type);
+EAPI void           *esql_data_get(Esql *e);
+EAPI void            esql_data_set(Esql *e, void *data);
+EAPI Esql_Query_Id   esql_current_query_id_get(Esql *e);
+EAPI const char     *esql_current_query_get(Esql *e);
+EAPI const char     *esql_error_get(Esql *e);
+EAPI Eina_Bool       esql_type_set(Esql *e, Esql_Type type);
+EAPI Esql_Type       esql_type_get(Esql *e);
+EAPI void            esql_free(Esql *e);
 
 /* connect */
-EAPI Eina_Bool esql_connect(Esql       *e,
-                            const char *addr,
-                            const char *user,
-                            const char *passwd);
-EAPI void esql_disconnect(Esql *e);
-EAPI void esql_connect_callback_set(Esql           *e,
-                                    Esql_Connect_Cb cb,
-                                    void           *data);
-EAPI Eina_Bool   esql_database_set(Esql       *e,
-                                   const char *database_name);
-EAPI const char *esql_database_get(Esql *e);
-EAPI void        esql_connect_timeout_set(Esql  *e,
-                                          double timeout);
-EAPI double      esql_connect_timeout_get(Esql *e);
-EAPI void        esql_reconnect_set(Esql     *e,
-                                    Eina_Bool enable);
-EAPI Eina_Bool   esql_reconnect_get(Esql *e);
+EAPI Eina_Bool       esql_connect(Esql *e, const char *addr, const char *user, const char *passwd);
+EAPI void            esql_disconnect(Esql *e);
+EAPI void            esql_connect_callback_set(Esql *e, Esql_Connect_Cb cb, void *data);
+EAPI Eina_Bool       esql_database_set(Esql *e, const char *database_name);
+EAPI const char     *esql_database_get(Esql *e);
+EAPI void            esql_connect_timeout_set(Esql *e, double timeout);
+EAPI double          esql_connect_timeout_get(Esql *e);
+EAPI void            esql_reconnect_set(Esql *e, Eina_Bool enable);
+EAPI Eina_Bool       esql_reconnect_get(Esql *e);
 
 /* query */
-EAPI Esql_Query_Id esql_query(Esql       *e,
-                              void       *data,
-                              const char *query);
-EAPI Esql_Query_Id esql_query_args(Esql       *e,
-                                   void       *data,
-                                   const char *fmt,
-                                   ...);
-EAPI Esql_Query_Id esql_query_vargs(Esql       *e,
-                                    void       *data,
-                                    const char *fmt,
-                                    va_list     args);
-EAPI Eina_Bool esql_query_callback_set(Esql_Query_Id id,
-                                       Esql_Query_Cb callback);
+EAPI Esql_Query_Id   esql_query(Esql *e, void *data, const char *query);
+EAPI Esql_Query_Id   esql_query_args(Esql *e, void *data, const char *fmt, ...);
+EAPI Esql_Query_Id   esql_query_vargs(Esql *e, void *data, const char *fmt, va_list args);
+EAPI Eina_Bool       esql_query_callback_set(Esql_Query_Id id, Esql_Query_Cb callback);
 
 /* res */
-EAPI Esql          *esql_res_esql_get(Esql_Res *res);
-EAPI const char    *esql_res_error_get(Esql_Res *res);
-EAPI void          *esql_res_data_get(Esql_Res *res);
-EAPI Esql_Query_Id  esql_res_query_id_get(Esql_Res *res);
-EAPI const char    *esql_res_query_get(Esql_Res *res);
-EAPI int            esql_res_rows_count(Esql_Res *res);
-EAPI int            esql_res_cols_count(Esql_Res *res);
-EAPI long long int  esql_res_rows_affected(Esql_Res *res);
-EAPI long long int  esql_res_id(Esql_Res *res);
-EAPI Eina_Iterator *esql_res_row_iterator_new(Esql_Res *res);
+EAPI Esql           *esql_res_esql_get(Esql_Res *res);
+EAPI const char     *esql_res_error_get(Esql_Res *res);
+EAPI void           *esql_res_data_get(Esql_Res *res);
+EAPI Esql_Query_Id   esql_res_query_id_get(Esql_Res *res);
+EAPI const char     *esql_res_query_get(Esql_Res *res);
+EAPI int             esql_res_rows_count(Esql_Res *res);
+EAPI int             esql_res_cols_count(Esql_Res *res);
+EAPI long long int   esql_res_rows_affected(Esql_Res *res);
+EAPI long long int   esql_res_id(Esql_Res *res);
+EAPI Eina_Iterator  *esql_res_row_iterator_new(Esql_Res *res);
 
 /* convert */
-EAPI const char *    esql_res_to_string(Esql_Res *res);
+EAPI const char     *esql_res_to_string(Esql_Res *res);
 EAPI unsigned char  *esql_res_to_blob(Esql_Res *res);
 EAPI long long int   esql_res_to_lli(Esql_Res *res);
 EAPI double          esql_res_to_double(Esql_Res *res);
@@ -234,7 +214,7 @@ EAPI long long int   esql_cell_to_lli(Esql_Cell *cell);
 EAPI double          esql_cell_to_double(Esql_Cell *cell);
 
 /* row */
-EAPI Eina_Inlist *esql_row_cells_get(Esql_Row *r);
-EAPI int          esql_row_cell_count(Esql_Row *r);
-EAPI Esql_Res    *esql_row_res_get(Esql_Row *r);
+EAPI Eina_Inlist    *esql_row_cells_get(Esql_Row *r);
+EAPI int             esql_row_cell_count(Esql_Row *r);
+EAPI Esql_Res       *esql_row_res_get(Esql_Row *r);
 #endif
