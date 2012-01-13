@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 -I$(top_srcdir) \
--I$(top_srcdir)/src/bin \
+-I$(top_srcdir)/src/include \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DPACKAGE_TMP_DIR=\"/tmp\" \
