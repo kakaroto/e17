@@ -305,8 +305,6 @@ esql_timeout_cb(Esql *e)
      }
    e->timeout_timer = NULL;
    esql_disconnect(e);
-   ecore_event_add(ESQL_EVENT_DISCONNECT, ev, (Ecore_End_Cb)esql_fake_free, NULL);
-   e->event_count++;
    if (e->reconnect) esql_reconnect_handler(e);
    return EINA_FALSE;
 }
