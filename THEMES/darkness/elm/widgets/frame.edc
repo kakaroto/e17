@@ -6,40 +6,6 @@
        }
    parts {
       part {
-         name:          "elm.swallow.content";
-         type:          SWALLOW;
-         clip_to: "clip";
-         description {
-            state:    "default" 0.0;
-            rel1 {
-               to_x: "outline";
-               to_y: "label_over";
-               relative: 0.0  1.0;
-               offset:   3    2;
-            }
-            rel2 {
-               to: "clip";
-               relative: 1.0  1.0;
-               offset:   -4   -4;
-            }
-         }
-         description {
-           state: "collapsed" 0.0;
-           inherit: "default" 0.0;
-           visible: 0;
-           rel2.offset: -4 0;
-         }
-      }
-      part {
-         name: "clip";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            rel1.to: "outline";
-            rel2.to: "outline";
-         }
-      }
-      part {
          name:          "outline";
          mouse_events:  0;
          description {
@@ -60,11 +26,6 @@
                middle: 0;
             }
             fill.smooth: 0;
-         }
-         description {
-            state: "collapsed" 0.0;
-            inherit: "default" 0.0;
-            rel2.relative: 1.0 0.1;
          }
       }
       part {
@@ -141,7 +102,39 @@
             }
          }
       }
-      PART_EVENTS("label_over",);
+      part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to_y: "label_over";
+               relative: 0.0 1.0;
+               offset: 5 2;
+            }
+            rel2.offset: -9 -9;
+         }
+      }
+      part {
+         name:          "elm.swallow.content";
+         type:          SWALLOW;
+         clip_to: "clip";
+         description {
+            state:    "default" 0.0;
+            rel1 {
+               to_y: "label_over";
+               relative: 0.0  1.0;
+               offset:   5    2;
+            }
+            rel2.offset: -9 -9;
+         }
+         description {
+            state: "collapsed" 0.0;
+            inherit: "default" 0.0;
+            minmul: 1.0 0.0;
+         }
+      }
+      PART_EVENTS("label_over", ignore_flags: ON_HOLD;);
    }
    programs {
       program { name: "click";
@@ -155,7 +148,7 @@
          script {
             new st[31];
             new Float:vl;
-            get_state(PART:"outline", st, 30, vl);
+            get_state(PART:"elm.swallow.content", st, 30, vl);
             if (!strcmp(st, "default"))
               run_program(PROGRAM:"collapse");
             else
@@ -164,16 +157,14 @@
       }
       program { name: "collapse";
          action:  STATE_SET "collapsed" 0.0;
-         target: "outline";
          target: "elm.swallow.content";
-         transition: LINEAR 0.1;
+         transition: DECEL 0.3;
          after: "signal";
       }
       program { name: "expand";
          action:  STATE_SET "default" 0.0;
-         target: "outline";
          target: "elm.swallow.content";
-         transition: LINEAR 0.1;
+         transition: DECEL 0.3;
          after: "signal";
       }
       program { name: "signal";
