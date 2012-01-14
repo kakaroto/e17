@@ -13,22 +13,7 @@ group { name: "elm/frame/base/default";
 			image.normal: "images/frame_im0.png";
 			image.border: 9 8 8 8;
 				}
-		 description { state: "collapsed" 0.0;
-		    inherit: "default" 0.0;
-		    rel2.to_y: "elm.text";
-		    rel2.offset: 0 0;
-		 }
 		}
-      part {
-         name: "clip";
-         type: RECT;
-         description {
-            state: "default" 0.0;
-            min: 1 1;
-            rel1.to: "base";
-            rel2.to: "base";
-         }
-      }
 		part { name: "elm.text";
 			type: TEXT;
 			effect: SHADOW;
@@ -48,6 +33,19 @@ group { name: "elm/frame/base/default";
 				TEXT_BOLD2("", 0.0 0.0, 1 1, 1 1);
 			}
 		}
+      part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to_y: "elm.text";
+               relative: 0.0 1.0;
+               offset: 8 2;
+            }
+            rel2.offset: -9 -9;
+         }
+      }
 		part { name: "elm.swallow.content";
 			type: SWALLOW;
 			clip_to: "clip";
@@ -62,7 +60,7 @@ group { name: "elm/frame/base/default";
 			}
 			description { state: "collapsed" 0.0;
 			   inherit: "default" 0.0;
-			   rel2.to: "base";
+			   minmul: 1.0 0.0;
 			}
 		}
 		part { name: "event";
@@ -71,8 +69,8 @@ group { name: "elm/frame/base/default";
 			repeat_events: 1;
 			description { state: "default" 0.0;
 				color: 0 0 0 0;
-				rel1.to: "elm.text";
-				rel2.to: "elm.text";
+				rel1.to_y: "elm.text";
+				rel2.to_y: "elm.text";
 			}
 		}
 	}
@@ -88,7 +86,7 @@ group { name: "elm/frame/base/default";
          script {
             new st[31];
             new Float:vl;
-            get_state(PART:"base", st, 30, vl);
+            get_state(PART:"elm.swallow.content", st, 30, vl);
             if (!strcmp(st, "default"))
               run_program(PROGRAM:"collapse");
             else
