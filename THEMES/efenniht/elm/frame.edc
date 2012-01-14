@@ -10,11 +10,6 @@ collections {
                rel1.offset: 2 1;
                rel2.offset: -3 -2;
             }
-            description { state: "collapsed" 0.0;
-               inherit: "default" 0.0;
-               rel2.to_y: "elm.text";
-               rel2.offset: -3 0;
-            }
          }
          BG_BOX("base", 0)
          part {
@@ -22,23 +17,29 @@ collections {
             type: RECT;
             description {
                state: "default" 0.0;
-               min: 1 1;
-               rel1.to: "base";
-               rel2.to: "base";
+               rel1 {
+                  to_y: "elm.text";
+                  relative: 0.0 1.0;
+                  offset: 8 2;
+               }
+               rel2.offset: -9 -9;
             }
          }
          part { name: "elm.swallow.content";
             type: SWALLOW;
             clip_to: "clip";
             description { state: "default" 0.0;
+               align: 0.0 1.0;
                rel1 {
-                  to_x: "base";
                   to_y: "elm.text";
                   relative: 0.0 1.0;
-                  offset: 4 4;
+                  offset: 8 2;
                }
-               rel2.to: "base";
-               rel2.offset: -5 -5;
+               rel2.offset: -9 -9;
+            }
+            description { state: "collapsed" 0.0;
+               inherit: "default" 0.0;
+               minmul: 1.0 0.0;
             }
          }
          part { name: "elm.text";
@@ -73,8 +74,8 @@ collections {
             mouse_events: 1;
             repeat_events: 1;
             description { state: "default" 0.0;
-               rel1.to: "elm.text";
-               rel2.to: "elm.text";
+               rel1.to_y: "elm.text";
+               rel2.to_y: "elm.text";
                color: 0 0 0 0;
             }
          }
@@ -91,7 +92,7 @@ collections {
             script {
                new st[31];
                new Float:vl;
-               get_state(PART:"base", st, 30, vl);
+               get_state(PART:"elm.swallow.content", st, 30, vl);
                if (!strcmp(st, "default"))
                  run_program(PROGRAM:"collapse");
                else
@@ -100,13 +101,13 @@ collections {
          }
          program { name: "collapse";
             action:  STATE_SET "collapsed" 0.0;
-            target: "base";
+            target: "elm.swallow.content";
             transition: LINEAR 0.1;
             after: "signal";
          }
          program { name: "expand";
             action:  STATE_SET "default" 0.0;
-            target: "base";
+            target: "elm.swallow.content";
             transition: LINEAR 0.1;
             after: "signal";
          }
