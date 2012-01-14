@@ -206,6 +206,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\e17\eina\src\lib\eina_binbuf.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\e17\eina\src\lib\eina_binshare.c"
 				>
 			</File>
@@ -290,11 +294,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\e17\eina\src\lib\eina_mmap.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\e17\eina\src\lib\eina_module.c"
 				>
 			</File>
 			<File
+				RelativePath="..\..\e17\eina\src\lib\eina_object.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\e17\eina\src\modules\mp\pass_through\eina_pass_through.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\e17\eina\src\lib\eina_prefix.c"
 				>
 			</File>
 			<File
@@ -319,6 +335,10 @@
 			</File>
 			<File
 				RelativePath="..\..\e17\eina\src\lib\eina_share_common.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\e17\eina\src\lib\eina_simple_xml_parser.c"
 				>
 			</File>
 			<File
@@ -357,6 +377,10 @@
 				RelativePath="..\..\e17\eina\src\lib\eina_value.c"
 				>
 			</File>
+			<File
+				RelativePath="..\..\e17\eina\src\lib\eina_xattr.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -380,7 +404,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\e17\eina\src\include\eina_binbuf.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\e17\eina\src\include\eina_binshare.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\e17\eina\src\include\eina_clist.h"
 				>
 			</File>
 			<File
@@ -432,6 +464,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\e17\eina\src\include\eina_lock.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\e17\eina\src\include\eina_log.h"
 				>
 			</File>
@@ -452,7 +488,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\e17\eina\src\include\eina_mmap.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\e17\eina\src\include\eina_module.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\e17\eina\src\include\eina_object.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\e17\eina\src\include\eina_prefix.h"
 				>
 			</File>
 			<File
@@ -472,7 +520,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\e17\eina\src\include\eina_refcount.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\e17\eina\src\include\eina_safety_checks.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\e17\eina\src\lib\eina_share_common.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\e17\eina\src\include\eina_simple_xml_parser.h"
 				>
 			</File>
 			<File
@@ -484,11 +544,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\e17\eina\src\include\eina_strbuf_common.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\e17\eina\src\include\eina_stringshare.h"
+				RelativePath="..\..\e17\eina\src\lib\eina_strbuf_common.h"
 				>
 			</File>
 			<File
@@ -517,6 +573,10 @@
 			</File>
 			<File
 				RelativePath="..\..\e17\eina\src\include\eina_ustringshare.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\e17\eina\src\include\eina_xattr.h"
 				>
 			</File>
 		</Filter>

@@ -210,6 +210,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\e17\evil\src\lib\evil_inet.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\e17\evil\src\lib\evil_langinfo.c"
 				>
 			</File>
@@ -281,6 +285,10 @@
 			</File>
 			<File
 				RelativePath="..\..\e17\evil\src\lib\evil_fnmatch_private.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\e17\evil\src\lib\evil_inet.h"
 				>
 			</File>
 			<File
