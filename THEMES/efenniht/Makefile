@@ -24,12 +24,12 @@ clean:
 
 
 efenniht.edj: $(COMMON_EDCS) $(E_EDCS) $(IMAGES) Makefile
-	$(EDJE_CC) -v -id images/ \
+	$(EDJE_CC) -id images/ \
 		$(SRCDIR)/efenniht.edc \
 		$(BUILDDIR)/efenniht.edj
 
 elm-efenniht.edj: $(COMMON_EDCS) $(ELM_EDCS) $(IMAGES) Makefile
-	$(EDJE_CC) -v -id images/ -id ../../elementary/data/themes/ \
+	$(EDJE_CC) -id images/ -id ../../elementary/data/themes/ \
 		$(SRCDIR)/elm-efenniht.edc \
 		$(BUILDDIR)/elm-efenniht.edj
 
@@ -56,10 +56,10 @@ install-elm-system: $(BUILDDIR)/elm-efenniht.edj
 	$(INSTALL) -D  -C -m 0644 -o root -g root \
 		$(BUILDDIR)/elm-efenniht.edj \
 		$(ELM_DESTDIR)/elm-efenniht.edj
-	@echo "you need export ELM_THEME='$(ELM_DESTDIR)/elm-efenniht.edj'"
+	@echo "you need to export ELM_THEME='elm-efenniht'"
 
 install-elm-home: $(BUILDDIR)/elm-efenniht.edj
 	$(INSTALL) -D  -C -m 0644 \
 		$(BUILDDIR)/elm-efenniht.edj \
 		$(ELM_HOMEDIR)/elm-efenniht.edj
-	@echo "you need export ELM_THEME='$(ELM_HOMEDIR)/elm-efenniht.edj'"
+	@echo "you need to export ELM_THEME='elm-efenniht'"
