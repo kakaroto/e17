@@ -1,0 +1,17 @@
+Esskyuehl (ESQL) is a completely asynchronous client-side SQL library.
+It robustly supports both event-driven and callback-driven models for
+handling responses, and it uses a dynamic module-loading interface for
+its SQL server compatibility.
+
+Dependencies:
+eina
+ecore
+mysql (optional)
+postgresql (optional)
+
+Install:
+Simply run autogen.sh to configure, 'make' to the code, and 'make install' to install
+
+Tests:
+Run 'make check' to compile the tests. By default, both mysql and psql modes are tested
+in each app.
