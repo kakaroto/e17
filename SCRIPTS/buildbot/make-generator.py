@@ -52,6 +52,9 @@ phony_targets = []
 all_packages = []
 all_targets = []
 clean_targets = []
+test_targets = []
+doc_targets = []
+distcheck_targets = []
 for p in pkgs:
     out.write("#   - %s\n" % p.name)
     phony_targets.extend([p.name + "-compile",
@@ -67,6 +70,9 @@ for p in pkgs:
     all_packages.append(p.name)
     all_targets.append(p.name + "-compile")
     clean_targets.append(p.name + "-clean")
+    test_targets.append(p.name + "-test")
+    doc_targets.append(p.name + "-doc")
+    distcheck_targets.append(p.name + "-distcheck")
 
 out.write("""
 SRCROOT = $(shell pwd)
@@ -90,6 +96,9 @@ help:
 \t@echo "Toplevel Targets:"
 \t@echo "   clean                        remove all built files."
 \t@echo "   all                          compile all packages."
+\t@echo "   test                         test all packages."
+\t@echo "   doc                          generate docs for all packages."
+\t@echo "   distcheck                    check distribution of all packages."
 \t@echo ""
 \t@echo "Package Targets:"
 \t@echo "   PACKAGE-compile              compile package."
@@ -108,9 +117,15 @@ help:
 
 all: %(all_targets)s
 clean: %(clean_targets)s
+test: %(test_targets)s
+doc: %(doc_targets)s
+distcheck: %(distcheck_targets)s
 """ % {"phony_targets": " ".join(phony_targets),
        "all_targets": " ".join(all_targets),
        "clean_targets": " ".join(clean_targets),
+       "test_targets": " ".join(test_targets),
+       "doc_targets": " ".join(doc_targets),
+       "distcheck_targets": " ".join(distcheck_targets),
        "all_packages": " ".join(all_packages),
        })
 

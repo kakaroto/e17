@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for win at Sat Jan 14 20:38:07 2012.
+# Generated for win at Sat Jan 14 21:14:55 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.win win
@@ -35,6 +35,9 @@ help:
 	@echo "Toplevel Targets:"
 	@echo "   clean                        remove all built files."
 	@echo "   all                          compile all packages."
+	@echo "   test                         test all packages."
+	@echo "   doc                          generate docs for all packages."
+	@echo "   distcheck                    check distribution of all packages."
 	@echo ""
 	@echo "Package Targets:"
 	@echo "   PACKAGE-compile              compile package."
@@ -53,6 +56,9 @@ help:
 
 all: evil-compile eina-compile eet-compile evas-compile ecore-compile python-evas-compile embryo-compile edje-compile
 clean: evil-clean eina-clean eet-clean evas-clean ecore-clean python-evas-clean embryo-clean edje-clean
+test: evil-test eina-test eet-test evas-test ecore-test python-evas-test embryo-test edje-test
+doc: evil-doc eina-doc eet-doc evas-doc ecore-doc python-evas-doc embryo-doc edje-doc
+distcheck: evil-distcheck eina-distcheck eet-distcheck evas-distcheck ecore-distcheck python-evas-distcheck embryo-distcheck edje-distcheck
 
 ########################################################################
 # evil rules
