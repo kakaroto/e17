@@ -185,7 +185,7 @@ for p in pkgs:
     # clean it:
     out.write("""
 %(name)s-clean:
-\tchmod -R u+w %(compile_dir)s
+\tif test -d %(compile_dir)s; then chmod -R u+w %(compile_dir)s; fi
 \trm -fr %(compile_dir)s
 \trm -fr %(stampsdir)s
 """ % {"name": p.name,

@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for win at Sun Jan 15 00:25:15 2012.
+# Generated for win at Sun Jan 15 01:45:16 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.win win
@@ -68,7 +68,7 @@ $(BUILDROOT)/evil/stamps/dependencies:
 	touch $(BUILDROOT)/evil/stamps/dependencies
 
 evil-clean:
-	chmod -R u+w $(BUILDROOT)/evil/compile
+	if test -d $(BUILDROOT)/evil/compile; then chmod -R u+w $(BUILDROOT)/evil/compile; fi
 	rm -fr $(BUILDROOT)/evil/compile
 	rm -fr $(BUILDROOT)/evil/stamps
 
@@ -165,7 +165,7 @@ $(BUILDROOT)/eina/stamps/dependencies: $(BUILDROOT)/evil/stamps/install
 	touch $(BUILDROOT)/eina/stamps/dependencies
 
 eina-clean:
-	chmod -R u+w $(BUILDROOT)/eina/compile
+	if test -d $(BUILDROOT)/eina/compile; then chmod -R u+w $(BUILDROOT)/eina/compile; fi
 	rm -fr $(BUILDROOT)/eina/compile
 	rm -fr $(BUILDROOT)/eina/stamps
 
@@ -271,7 +271,7 @@ $(BUILDROOT)/eet/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDRO
 	touch $(BUILDROOT)/eet/stamps/dependencies
 
 eet-clean:
-	chmod -R u+w $(BUILDROOT)/eet/compile
+	if test -d $(BUILDROOT)/eet/compile; then chmod -R u+w $(BUILDROOT)/eet/compile; fi
 	rm -fr $(BUILDROOT)/eet/compile
 	rm -fr $(BUILDROOT)/eet/stamps
 
@@ -376,7 +376,7 @@ $(BUILDROOT)/evas/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDR
 	touch $(BUILDROOT)/evas/stamps/dependencies
 
 evas-clean:
-	chmod -R u+w $(BUILDROOT)/evas/compile
+	if test -d $(BUILDROOT)/evas/compile; then chmod -R u+w $(BUILDROOT)/evas/compile; fi
 	rm -fr $(BUILDROOT)/evas/compile
 	rm -fr $(BUILDROOT)/evas/stamps
 
@@ -482,7 +482,7 @@ $(BUILDROOT)/ecore/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILD
 	touch $(BUILDROOT)/ecore/stamps/dependencies
 
 ecore-clean:
-	chmod -R u+w $(BUILDROOT)/ecore/compile
+	if test -d $(BUILDROOT)/ecore/compile; then chmod -R u+w $(BUILDROOT)/ecore/compile; fi
 	rm -fr $(BUILDROOT)/ecore/compile
 	rm -fr $(BUILDROOT)/ecore/stamps
 
@@ -590,7 +590,7 @@ $(BUILDROOT)/python-evas/stamps/dependencies: $(BUILDROOT)/evas/stamps/install
 	touch $(BUILDROOT)/python-evas/stamps/dependencies
 
 python-evas-clean:
-	chmod -R u+w $(BUILDROOT)/python-evas/compile
+	if test -d $(BUILDROOT)/python-evas/compile; then chmod -R u+w $(BUILDROOT)/python-evas/compile; fi
 	rm -fr $(BUILDROOT)/python-evas/compile
 	rm -fr $(BUILDROOT)/python-evas/stamps
 
@@ -687,7 +687,7 @@ $(BUILDROOT)/embryo/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUIL
 	touch $(BUILDROOT)/embryo/stamps/dependencies
 
 embryo-clean:
-	chmod -R u+w $(BUILDROOT)/embryo/compile
+	if test -d $(BUILDROOT)/embryo/compile; then chmod -R u+w $(BUILDROOT)/embryo/compile; fi
 	rm -fr $(BUILDROOT)/embryo/compile
 	rm -fr $(BUILDROOT)/embryo/stamps
 
@@ -784,7 +784,7 @@ $(BUILDROOT)/edje/stamps/dependencies: $(BUILDROOT)/embryo/stamps/install $(BUIL
 	touch $(BUILDROOT)/edje/stamps/dependencies
 
 edje-clean:
-	chmod -R u+w $(BUILDROOT)/edje/compile
+	if test -d $(BUILDROOT)/edje/compile; then chmod -R u+w $(BUILDROOT)/edje/compile; fi
 	rm -fr $(BUILDROOT)/edje/compile
 	rm -fr $(BUILDROOT)/edje/stamps
 
