@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for win at Sat Jan 14 21:14:55 2012.
+# Generated for win at Sun Jan 15 00:19:04 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.win win
@@ -68,6 +68,7 @@ $(BUILDROOT)/evil/stamps/dependencies:
 	touch $(BUILDROOT)/evil/stamps/dependencies
 
 evil-clean:
+	chmod -R u+w $(BUILDROOT)/evil/compile
 	rm -fr $(BUILDROOT)/evil/compile
 	rm -fr $(BUILDROOT)/evil/stamps
 
@@ -143,6 +144,10 @@ $(BUILDROOT)/evil/stamps/distcheck: $(BUILDROOT)/evil/stamps/compile evil-distch
 evil-distcheck: $(BUILDROOT)/evil/stamps/compile
 	@echo "Checking distribution evil..."
 	@rm -f $(BUILDROOT)/evil/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/evil/compile
 	@mkdir -p $(BUILDROOT)/evil/stamps
 	touch $(BUILDROOT)/evil/stamps/distcheck
@@ -160,6 +165,7 @@ $(BUILDROOT)/eina/stamps/dependencies: $(BUILDROOT)/evil/stamps/install
 	touch $(BUILDROOT)/eina/stamps/dependencies
 
 eina-clean:
+	chmod -R u+w $(BUILDROOT)/eina/compile
 	rm -fr $(BUILDROOT)/eina/compile
 	rm -fr $(BUILDROOT)/eina/stamps
 
@@ -244,6 +250,10 @@ $(BUILDROOT)/eina/stamps/distcheck: $(BUILDROOT)/eina/stamps/compile eina-distch
 eina-distcheck: $(BUILDROOT)/eina/stamps/compile
 	@echo "Checking distribution eina..."
 	@rm -f $(BUILDROOT)/eina/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/eina/compile
 	@mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/distcheck
@@ -261,6 +271,7 @@ $(BUILDROOT)/eet/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDRO
 	touch $(BUILDROOT)/eet/stamps/dependencies
 
 eet-clean:
+	chmod -R u+w $(BUILDROOT)/eet/compile
 	rm -fr $(BUILDROOT)/eet/compile
 	rm -fr $(BUILDROOT)/eet/stamps
 
@@ -344,6 +355,10 @@ $(BUILDROOT)/eet/stamps/distcheck: $(BUILDROOT)/eet/stamps/compile eet-distcheck
 eet-distcheck: $(BUILDROOT)/eet/stamps/compile
 	@echo "Checking distribution eet..."
 	@rm -f $(BUILDROOT)/eet/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/eet/compile
 	@mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/distcheck
@@ -361,6 +376,7 @@ $(BUILDROOT)/evas/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDR
 	touch $(BUILDROOT)/evas/stamps/dependencies
 
 evas-clean:
+	chmod -R u+w $(BUILDROOT)/evas/compile
 	rm -fr $(BUILDROOT)/evas/compile
 	rm -fr $(BUILDROOT)/evas/stamps
 
@@ -445,6 +461,10 @@ $(BUILDROOT)/evas/stamps/distcheck: $(BUILDROOT)/evas/stamps/compile evas-distch
 evas-distcheck: $(BUILDROOT)/evas/stamps/compile
 	@echo "Checking distribution evas..."
 	@rm -f $(BUILDROOT)/evas/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/evas/compile
 	@mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/distcheck
@@ -462,6 +482,7 @@ $(BUILDROOT)/ecore/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILD
 	touch $(BUILDROOT)/ecore/stamps/dependencies
 
 ecore-clean:
+	chmod -R u+w $(BUILDROOT)/ecore/compile
 	rm -fr $(BUILDROOT)/ecore/compile
 	rm -fr $(BUILDROOT)/ecore/stamps
 
@@ -548,6 +569,10 @@ $(BUILDROOT)/ecore/stamps/distcheck: $(BUILDROOT)/ecore/stamps/compile ecore-dis
 ecore-distcheck: $(BUILDROOT)/ecore/stamps/compile
 	@echo "Checking distribution ecore..."
 	@rm -f $(BUILDROOT)/ecore/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/ecore/compile
 	@mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/distcheck
@@ -565,6 +590,7 @@ $(BUILDROOT)/python-evas/stamps/dependencies: $(BUILDROOT)/evas/stamps/install
 	touch $(BUILDROOT)/python-evas/stamps/dependencies
 
 python-evas-clean:
+	chmod -R u+w $(BUILDROOT)/python-evas/compile
 	rm -fr $(BUILDROOT)/python-evas/compile
 	rm -fr $(BUILDROOT)/python-evas/stamps
 
@@ -640,6 +666,10 @@ $(BUILDROOT)/python-evas/stamps/distcheck: $(BUILDROOT)/python-evas/stamps/compi
 python-evas-distcheck: $(BUILDROOT)/python-evas/stamps/compile
 	@echo "Checking distribution python-evas..."
 	@rm -f $(BUILDROOT)/python-evas/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-evas/compile
 	@mkdir -p $(BUILDROOT)/python-evas/stamps
 	touch $(BUILDROOT)/python-evas/stamps/distcheck
@@ -657,6 +687,7 @@ $(BUILDROOT)/embryo/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUIL
 	touch $(BUILDROOT)/embryo/stamps/dependencies
 
 embryo-clean:
+	chmod -R u+w $(BUILDROOT)/embryo/compile
 	rm -fr $(BUILDROOT)/embryo/compile
 	rm -fr $(BUILDROOT)/embryo/stamps
 
@@ -732,6 +763,10 @@ $(BUILDROOT)/embryo/stamps/distcheck: $(BUILDROOT)/embryo/stamps/compile embryo-
 embryo-distcheck: $(BUILDROOT)/embryo/stamps/compile
 	@echo "Checking distribution embryo..."
 	@rm -f $(BUILDROOT)/embryo/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/embryo/compile
 	@mkdir -p $(BUILDROOT)/embryo/stamps
 	touch $(BUILDROOT)/embryo/stamps/distcheck
@@ -749,6 +784,7 @@ $(BUILDROOT)/edje/stamps/dependencies: $(BUILDROOT)/embryo/stamps/install $(BUIL
 	touch $(BUILDROOT)/edje/stamps/dependencies
 
 edje-clean:
+	chmod -R u+w $(BUILDROOT)/edje/compile
 	rm -fr $(BUILDROOT)/edje/compile
 	rm -fr $(BUILDROOT)/edje/stamps
 
@@ -827,6 +863,10 @@ $(BUILDROOT)/edje/stamps/distcheck: $(BUILDROOT)/edje/stamps/compile edje-distch
 edje-distcheck: $(BUILDROOT)/edje/stamps/compile
 	@echo "Checking distribution edje..."
 	@rm -f $(BUILDROOT)/edje/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/edje/compile
 	@mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/distcheck

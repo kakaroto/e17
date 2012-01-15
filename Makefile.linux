@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Sat Jan 14 21:15:20 2012.
+# Generated for linux at Sun Jan 15 00:18:58 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -67,6 +67,7 @@ $(BUILDROOT)/eina/stamps/dependencies:
 	touch $(BUILDROOT)/eina/stamps/dependencies
 
 eina-clean:
+	chmod -R u+w $(BUILDROOT)/eina/compile
 	rm -fr $(BUILDROOT)/eina/compile
 	rm -fr $(BUILDROOT)/eina/stamps
 
@@ -151,6 +152,10 @@ $(BUILDROOT)/eina/stamps/distcheck: $(BUILDROOT)/eina/stamps/compile eina-distch
 eina-distcheck: $(BUILDROOT)/eina/stamps/compile
 	@echo "Checking distribution eina..."
 	@rm -f $(BUILDROOT)/eina/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/eina/compile
 	@mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/distcheck
@@ -168,6 +173,7 @@ $(BUILDROOT)/eet/stamps/dependencies: $(BUILDROOT)/eina/stamps/install
 	touch $(BUILDROOT)/eet/stamps/dependencies
 
 eet-clean:
+	chmod -R u+w $(BUILDROOT)/eet/compile
 	rm -fr $(BUILDROOT)/eet/compile
 	rm -fr $(BUILDROOT)/eet/stamps
 
@@ -251,6 +257,10 @@ $(BUILDROOT)/eet/stamps/distcheck: $(BUILDROOT)/eet/stamps/compile eet-distcheck
 eet-distcheck: $(BUILDROOT)/eet/stamps/compile
 	@echo "Checking distribution eet..."
 	@rm -f $(BUILDROOT)/eet/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/eet/compile
 	@mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/distcheck
@@ -268,6 +278,7 @@ $(BUILDROOT)/evas/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDR
 	touch $(BUILDROOT)/evas/stamps/dependencies
 
 evas-clean:
+	chmod -R u+w $(BUILDROOT)/evas/compile
 	rm -fr $(BUILDROOT)/evas/compile
 	rm -fr $(BUILDROOT)/evas/stamps
 
@@ -354,6 +365,10 @@ $(BUILDROOT)/evas/stamps/distcheck: $(BUILDROOT)/evas/stamps/compile evas-distch
 evas-distcheck: $(BUILDROOT)/evas/stamps/compile
 	@echo "Checking distribution evas..."
 	@rm -f $(BUILDROOT)/evas/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/evas/compile
 	@mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/distcheck
@@ -371,6 +386,7 @@ $(BUILDROOT)/ecore/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILD
 	touch $(BUILDROOT)/ecore/stamps/dependencies
 
 ecore-clean:
+	chmod -R u+w $(BUILDROOT)/ecore/compile
 	rm -fr $(BUILDROOT)/ecore/compile
 	rm -fr $(BUILDROOT)/ecore/stamps
 
@@ -459,6 +475,10 @@ $(BUILDROOT)/ecore/stamps/distcheck: $(BUILDROOT)/ecore/stamps/compile ecore-dis
 ecore-distcheck: $(BUILDROOT)/ecore/stamps/compile
 	@echo "Checking distribution ecore..."
 	@rm -f $(BUILDROOT)/ecore/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/ecore/compile
 	@mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/distcheck
@@ -476,6 +496,7 @@ $(BUILDROOT)/python-evas/stamps/dependencies: $(BUILDROOT)/evas/stamps/install
 	touch $(BUILDROOT)/python-evas/stamps/dependencies
 
 python-evas-clean:
+	chmod -R u+w $(BUILDROOT)/python-evas/compile
 	rm -fr $(BUILDROOT)/python-evas/compile
 	rm -fr $(BUILDROOT)/python-evas/stamps
 
@@ -551,6 +572,10 @@ $(BUILDROOT)/python-evas/stamps/distcheck: $(BUILDROOT)/python-evas/stamps/compi
 python-evas-distcheck: $(BUILDROOT)/python-evas/stamps/compile
 	@echo "Checking distribution python-evas..."
 	@rm -f $(BUILDROOT)/python-evas/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-evas/compile
 	@mkdir -p $(BUILDROOT)/python-evas/stamps
 	touch $(BUILDROOT)/python-evas/stamps/distcheck
@@ -568,6 +593,7 @@ $(BUILDROOT)/embryo/stamps/dependencies: $(BUILDROOT)/eina/stamps/install
 	touch $(BUILDROOT)/embryo/stamps/dependencies
 
 embryo-clean:
+	chmod -R u+w $(BUILDROOT)/embryo/compile
 	rm -fr $(BUILDROOT)/embryo/compile
 	rm -fr $(BUILDROOT)/embryo/stamps
 
@@ -643,6 +669,10 @@ $(BUILDROOT)/embryo/stamps/distcheck: $(BUILDROOT)/embryo/stamps/compile embryo-
 embryo-distcheck: $(BUILDROOT)/embryo/stamps/compile
 	@echo "Checking distribution embryo..."
 	@rm -f $(BUILDROOT)/embryo/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/embryo/compile
 	@mkdir -p $(BUILDROOT)/embryo/stamps
 	touch $(BUILDROOT)/embryo/stamps/distcheck
@@ -660,6 +690,7 @@ $(BUILDROOT)/edje/stamps/dependencies: $(BUILDROOT)/embryo/stamps/install $(BUIL
 	touch $(BUILDROOT)/edje/stamps/dependencies
 
 edje-clean:
+	chmod -R u+w $(BUILDROOT)/edje/compile
 	rm -fr $(BUILDROOT)/edje/compile
 	rm -fr $(BUILDROOT)/edje/stamps
 
@@ -738,6 +769,10 @@ $(BUILDROOT)/edje/stamps/distcheck: $(BUILDROOT)/edje/stamps/compile edje-distch
 edje-distcheck: $(BUILDROOT)/edje/stamps/compile
 	@echo "Checking distribution edje..."
 	@rm -f $(BUILDROOT)/edje/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/edje/compile
 	@mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/distcheck

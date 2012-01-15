@@ -185,6 +185,7 @@ for p in pkgs:
     # clean it:
     out.write("""
 %(name)s-clean:
+\tchmod -R u+w %(compile_dir)s
 \trm -fr %(compile_dir)s
 \trm -fr %(stampsdir)s
 """ % {"name": p.name,
@@ -364,7 +365,7 @@ for p in pkgs:
 %(name)s-distcheck: %(compile_stamp)s
 \t@echo "Checking distribution %(name)s..."
 \t@rm -f %(stamp)s
-\tmake $(MAKEOPTS) distcheck -C %(compile_dir)s
+\t%(env_export)smake $(MAKEOPTS) distcheck -C %(compile_dir)s
 \t@mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
 \t@echo "Success checking distribution %(name)s."
@@ -374,6 +375,7 @@ for p in pkgs:
        "compile_stamp": stamp_name_get(p.name, "compile"),
        "stampsdir": stamp_dir_get(p.name),
        "compile_dir": compile_dir_get(p.name),
+       "env_export": env_export_get(p),
        })
 
     # rule to recompile every direct user of this package
