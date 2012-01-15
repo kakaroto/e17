@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Sun Jan 15 00:18:58 2012.
+# Generated for linux at Sun Jan 15 00:25:11 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -161,9 +161,9 @@ eina-distcheck: $(BUILDROOT)/eina/stamps/compile
 	touch $(BUILDROOT)/eina/stamps/distcheck
 	@echo "Success checking distribution eina."
 
-eina-direct-users-compile: embryo edje eet ecore evas
+eina-direct-users-compile: embryo-compile edje-compile eet-compile ecore-compile evas-compile
 
-eina-all-users-compile: embryo edje python-evas evas eet ecore
+eina-all-users-compile: embryo-compile edje-compile python-evas-compile evas-compile eet-compile ecore-compile
 
 ########################################################################
 # eet rules
@@ -266,9 +266,9 @@ eet-distcheck: $(BUILDROOT)/eet/stamps/compile
 	touch $(BUILDROOT)/eet/stamps/distcheck
 	@echo "Success checking distribution eet."
 
-eet-direct-users-compile: edje evas
+eet-direct-users-compile: edje-compile evas-compile
 
-eet-all-users-compile: edje evas ecore python-evas
+eet-all-users-compile: edje-compile evas-compile ecore-compile python-evas-compile
 
 ########################################################################
 # evas rules
@@ -374,9 +374,9 @@ evas-distcheck: $(BUILDROOT)/evas/stamps/compile
 	touch $(BUILDROOT)/evas/stamps/distcheck
 	@echo "Success checking distribution evas."
 
-evas-direct-users-compile: edje python-evas ecore
+evas-direct-users-compile: edje-compile python-evas-compile ecore-compile
 
-evas-all-users-compile: edje python-evas ecore
+evas-all-users-compile: edje-compile python-evas-compile ecore-compile
 
 ########################################################################
 # ecore rules
@@ -484,9 +484,9 @@ ecore-distcheck: $(BUILDROOT)/ecore/stamps/compile
 	touch $(BUILDROOT)/ecore/stamps/distcheck
 	@echo "Success checking distribution ecore."
 
-ecore-direct-users-compile: edje
+ecore-direct-users-compile: edje-compile
 
-ecore-all-users-compile: edje
+ecore-all-users-compile: edje-compile
 
 ########################################################################
 # python-evas rules
@@ -678,9 +678,9 @@ embryo-distcheck: $(BUILDROOT)/embryo/stamps/compile
 	touch $(BUILDROOT)/embryo/stamps/distcheck
 	@echo "Success checking distribution embryo."
 
-embryo-direct-users-compile: edje
+embryo-direct-users-compile: edje-compile
 
-embryo-all-users-compile: edje
+embryo-all-users-compile: edje-compile
 
 ########################################################################
 # edje rules

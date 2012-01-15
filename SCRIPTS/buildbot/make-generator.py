@@ -381,11 +381,11 @@ for p in pkgs:
     # rule to recompile every direct user of this package
     out.write("\n%s-direct-users-compile:" % p.name)
     for u in p.users_get(args.platform):
-        out.write(" %s" % u)
+        out.write(" %s-compile" % u)
     out.write("\n")
 
     # rule to recompile every user (direct and indirect) of this package
     out.write("\n%s-all-users-compile:" % p.name)
     for u in p.all_users_get(args.platform):
-        out.write(" %s" % u)
+        out.write(" %s-compile" % u)
     out.write("\n")
