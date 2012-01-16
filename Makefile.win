@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for win at Sun Jan 15 01:45:16 2012.
+# Generated for win at Mon Jan 16 19:03:08 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.win win
@@ -18,6 +18,7 @@ SRCROOT = $(shell pwd)
 BUILDROOT = $(shell pwd)/build
 INSTALLROOT = $(shell pwd)/install
 MAKEOPTS = --print-directory -j2
+V=@
 
 .DEFAULT: missing-target
 .PHONY: missing-target help all clean evil-compile evil-clean evil-dependencies evil-install evil-test evil-doc evil-distcheck evil-all-users-compile evil-direct-users-compile eina-compile eina-clean eina-dependencies eina-install eina-test eina-doc eina-distcheck eina-all-users-compile eina-direct-users-compile eet-compile eet-clean eet-dependencies eet-install eet-test eet-doc eet-distcheck eet-all-users-compile eet-direct-users-compile evas-compile evas-clean evas-dependencies evas-install evas-test evas-doc evas-distcheck evas-all-users-compile evas-direct-users-compile ecore-compile ecore-clean ecore-dependencies ecore-install ecore-test ecore-doc ecore-distcheck ecore-all-users-compile ecore-direct-users-compile python-evas-compile python-evas-clean python-evas-dependencies python-evas-install python-evas-test python-evas-doc python-evas-distcheck python-evas-all-users-compile python-evas-direct-users-compile embryo-compile embryo-clean embryo-dependencies embryo-install embryo-test embryo-doc embryo-distcheck embryo-all-users-compile embryo-direct-users-compile edje-compile edje-clean edje-dependencies edje-install edje-test edje-doc edje-distcheck edje-all-users-compile edje-direct-users-compile
@@ -64,7 +65,7 @@ distcheck: evil-distcheck eina-distcheck eet-distcheck evas-distcheck ecore-dist
 # evil rules
 evil-dependencies: $(BUILDROOT)/evil/stamps/dependencies 
 $(BUILDROOT)/evil/stamps/dependencies: 
-	@mkdir -p $(BUILDROOT)/evil/stamps
+	$(V)mkdir -p $(BUILDROOT)/evil/stamps
 	touch $(BUILDROOT)/evil/stamps/dependencies
 
 evil-clean:
@@ -73,51 +74,51 @@ evil-clean:
 	rm -fr $(BUILDROOT)/evil/stamps
 
 $(BUILDROOT)/evil/stamps/autogen: $(SRCROOT)/evil/autogen.sh $(SRCROOT)/evil/configure.ac
-	@echo "Running 'autogen.sh' for evil..."
-	@rm -f $(BUILDROOT)/evil/stamps/autogen
+	$(V)echo "Running 'autogen.sh' for evil..."
+	$(V)rm -f $(BUILDROOT)/evil/stamps/autogen
 	cd $(SRCROOT)/evil && NOCONFIGURE=1 ./autogen.sh
-	@mkdir -p $(BUILDROOT)/evil/stamps
+	$(V)mkdir -p $(BUILDROOT)/evil/stamps
 	touch $(BUILDROOT)/evil/stamps/autogen
-	@echo "Success running 'autogen.sh' for evil."
+	$(V)echo "Success running 'autogen.sh' for evil."
 
 $(BUILDROOT)/evil/stamps/configure: $(BUILDROOT)/evil/stamps/autogen $(BUILDROOT)/evil/stamps/dependencies
-	@echo "Configuring evil..."
-	@rm -f $(BUILDROOT)/evil/stamps/configure
-	@mkdir -p $(BUILDROOT)/evil/compile
+	$(V)echo "Configuring evil..."
+	$(V)rm -f $(BUILDROOT)/evil/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/evil/compile
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	cd $(BUILDROOT)/evil/compile && \
 	$(SRCROOT)/evil/configure --prefix=$(INSTALLROOT) 
-	@mkdir -p $(BUILDROOT)/evil/stamps
+	$(V)mkdir -p $(BUILDROOT)/evil/stamps
 	touch $(BUILDROOT)/evil/stamps/configure
-	@echo "Success configuring evil."
+	$(V)echo "Success configuring evil."
 
 $(BUILDROOT)/evil/stamps/compile: $(BUILDROOT)/evil/stamps/configure evil-compile
 evil-compile: $(BUILDROOT)/evil/stamps/configure
-	@echo "Compiling evil..."
-	@rm -f $(BUILDROOT)/evil/stamps/compile-updated
-	@mkdir -p $(BUILDROOT)/evil/stamps
-	@if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/evil/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+	$(V)echo "Compiling evil..."
+	$(V)rm -f $(BUILDROOT)/evil/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/evil/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/evil/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
 		touch $(BUILDROOT)/evil/stamps/compile-updated;\
 	fi
-	@if test -f $(BUILDROOT)/evil/stamps/compile-updated; then\
+	$(V)if test -f $(BUILDROOT)/evil/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/evil/compile";\
 		make $(MAKEOPTS) all -C $(BUILDROOT)/evil/compile;\
 	else\
 		echo "evil is up to date.";\
 	fi
-	@if test ! -f $(BUILDROOT)/evil/stamps/compile -o -f $(BUILDROOT)/evil/stamps/compile-updated; then\
+	$(V)if test ! -f $(BUILDROOT)/evil/stamps/compile -o -f $(BUILDROOT)/evil/stamps/compile-updated; then\
 		touch $(BUILDROOT)/evil/stamps/compile;\
 		echo "Compile updated, needs reinstall.";\
 	fi
-	@echo "Success compiling evil."
+	$(V)echo "Success compiling evil."
 
 $(BUILDROOT)/evil/stamps/install: $(BUILDROOT)/evil/stamps/compile evil-install
 evil-install: $(BUILDROOT)/evil/stamps/compile
-	@echo "Installing evil..."
-	@if test ! $(BUILDROOT)/evil/stamps/install -o $(BUILDROOT)/evil/stamps/compile -nt $(BUILDROOT)/evil/stamps/install; then\
+	$(V)echo "Installing evil..."
+	$(V)if test ! $(BUILDROOT)/evil/stamps/install -o $(BUILDROOT)/evil/stamps/compile -nt $(BUILDROOT)/evil/stamps/install; then\
 		rm -f $(BUILDROOT)/evil/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/evil/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/evil/compile;\
@@ -126,32 +127,32 @@ evil-install: $(BUILDROOT)/evil/stamps/compile
 	else\
 		echo "evil did not change, not need to reinstall.";\
 	fi
-	@echo "Success installing evil."
+	$(V)echo "Success installing evil."
 
 $(BUILDROOT)/evil/stamps/test: $(BUILDROOT)/evil/stamps/compile evil-test
 evil-test: $(BUILDROOT)/evil/stamps/compile
-	@mkdir -p $(BUILDROOT)/evil/stamps
+	$(V)mkdir -p $(BUILDROOT)/evil/stamps
 	touch $(BUILDROOT)/evil/stamps/test
-	@echo 'No test target defined for evil'
+	$(V)echo 'No test target defined for evil'
 
 $(BUILDROOT)/evil/stamps/doc: $(BUILDROOT)/evil/stamps/compile evil-doc
 evil-doc: $(BUILDROOT)/evil/stamps/compile
-	@mkdir -p $(BUILDROOT)/evil/stamps
+	$(V)mkdir -p $(BUILDROOT)/evil/stamps
 	touch $(BUILDROOT)/evil/stamps/doc
-	@echo 'No doc target defined for evil'
+	$(V)echo 'No doc target defined for evil'
 
 $(BUILDROOT)/evil/stamps/distcheck: $(BUILDROOT)/evil/stamps/compile evil-distcheck
 evil-distcheck: $(BUILDROOT)/evil/stamps/compile
-	@echo "Checking distribution evil..."
-	@rm -f $(BUILDROOT)/evil/stamps/distcheck
+	$(V)echo "Checking distribution evil..."
+	$(V)rm -f $(BUILDROOT)/evil/stamps/distcheck
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/evil/compile
-	@mkdir -p $(BUILDROOT)/evil/stamps
+	$(V)mkdir -p $(BUILDROOT)/evil/stamps
 	touch $(BUILDROOT)/evil/stamps/distcheck
-	@echo "Success checking distribution evil."
+	$(V)echo "Success checking distribution evil."
 
 evil-direct-users-compile: embryo-compile edje-compile eet-compile eina-compile evas-compile ecore-compile
 
@@ -161,7 +162,7 @@ evil-all-users-compile: embryo-compile edje-compile python-evas-compile evas-com
 # eina rules
 eina-dependencies: $(BUILDROOT)/eina/stamps/dependencies evil-install
 $(BUILDROOT)/eina/stamps/dependencies: $(BUILDROOT)/evil/stamps/install
-	@mkdir -p $(BUILDROOT)/eina/stamps
+	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/dependencies
 
 eina-clean:
@@ -170,17 +171,17 @@ eina-clean:
 	rm -fr $(BUILDROOT)/eina/stamps
 
 $(BUILDROOT)/eina/stamps/autogen: $(SRCROOT)/eina/autogen.sh $(SRCROOT)/eina/configure.ac
-	@echo "Running 'autogen.sh' for eina..."
-	@rm -f $(BUILDROOT)/eina/stamps/autogen
+	$(V)echo "Running 'autogen.sh' for eina..."
+	$(V)rm -f $(BUILDROOT)/eina/stamps/autogen
 	cd $(SRCROOT)/eina && NOCONFIGURE=1 ./autogen.sh
-	@mkdir -p $(BUILDROOT)/eina/stamps
+	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/autogen
-	@echo "Success running 'autogen.sh' for eina."
+	$(V)echo "Success running 'autogen.sh' for eina."
 
 $(BUILDROOT)/eina/stamps/configure: $(BUILDROOT)/eina/stamps/autogen $(BUILDROOT)/eina/stamps/dependencies
-	@echo "Configuring eina..."
-	@rm -f $(BUILDROOT)/eina/stamps/configure
-	@mkdir -p $(BUILDROOT)/eina/compile
+	$(V)echo "Configuring eina..."
+	$(V)rm -f $(BUILDROOT)/eina/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/eina/compile
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
@@ -190,34 +191,34 @@ $(BUILDROOT)/eina/stamps/configure: $(BUILDROOT)/eina/stamps/autogen $(BUILDROOT
 		--enable-tests \
 		--enable-coverage \
 		--enable-benchmark
-	@mkdir -p $(BUILDROOT)/eina/stamps
+	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/configure
-	@echo "Success configuring eina."
+	$(V)echo "Success configuring eina."
 
 $(BUILDROOT)/eina/stamps/compile: $(BUILDROOT)/eina/stamps/configure eina-compile
 eina-compile: $(BUILDROOT)/eina/stamps/configure
-	@echo "Compiling eina..."
-	@rm -f $(BUILDROOT)/eina/stamps/compile-updated
-	@mkdir -p $(BUILDROOT)/eina/stamps
-	@if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/eina/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+	$(V)echo "Compiling eina..."
+	$(V)rm -f $(BUILDROOT)/eina/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/eina/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/eina/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
 		touch $(BUILDROOT)/eina/stamps/compile-updated;\
 	fi
-	@if test -f $(BUILDROOT)/eina/stamps/compile-updated; then\
+	$(V)if test -f $(BUILDROOT)/eina/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/eina/compile";\
 		make $(MAKEOPTS) all -C $(BUILDROOT)/eina/compile;\
 	else\
 		echo "eina is up to date.";\
 	fi
-	@if test ! -f $(BUILDROOT)/eina/stamps/compile -o -f $(BUILDROOT)/eina/stamps/compile-updated; then\
+	$(V)if test ! -f $(BUILDROOT)/eina/stamps/compile -o -f $(BUILDROOT)/eina/stamps/compile-updated; then\
 		touch $(BUILDROOT)/eina/stamps/compile;\
 		echo "Compile updated, needs reinstall.";\
 	fi
-	@echo "Success compiling eina."
+	$(V)echo "Success compiling eina."
 
 $(BUILDROOT)/eina/stamps/install: $(BUILDROOT)/eina/stamps/compile eina-install
 eina-install: $(BUILDROOT)/eina/stamps/compile
-	@echo "Installing eina..."
-	@if test ! $(BUILDROOT)/eina/stamps/install -o $(BUILDROOT)/eina/stamps/compile -nt $(BUILDROOT)/eina/stamps/install; then\
+	$(V)echo "Installing eina..."
+	$(V)if test ! $(BUILDROOT)/eina/stamps/install -o $(BUILDROOT)/eina/stamps/compile -nt $(BUILDROOT)/eina/stamps/install; then\
 		rm -f $(BUILDROOT)/eina/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/eina/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/eina/compile;\
@@ -226,38 +227,38 @@ eina-install: $(BUILDROOT)/eina/stamps/compile
 	else\
 		echo "eina did not change, not need to reinstall.";\
 	fi
-	@echo "Success installing eina."
+	$(V)echo "Success installing eina."
 
 $(BUILDROOT)/eina/stamps/test: $(BUILDROOT)/eina/stamps/compile eina-test
 eina-test: $(BUILDROOT)/eina/stamps/compile
-	@echo "Testing (make check) eina..."
-	@rm -f $(BUILDROOT)/eina/stamps/test
+	$(V)echo "Testing (make check) eina..."
+	$(V)rm -f $(BUILDROOT)/eina/stamps/test
 	make $(MAKEOPTS) check -C $(BUILDROOT)/eina/compile
-	@mkdir -p $(BUILDROOT)/eina/stamps
+	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/test
-	@echo "Success testing (make check) eina."
+	$(V)echo "Success testing (make check) eina."
 
 $(BUILDROOT)/eina/stamps/doc: $(BUILDROOT)/eina/stamps/compile eina-doc
 eina-doc: $(BUILDROOT)/eina/stamps/compile
-	@echo "Generating documentation (make doc) eina..."
-	@rm -f $(BUILDROOT)/eina/stamps/doc
+	$(V)echo "Generating documentation (make doc) eina..."
+	$(V)rm -f $(BUILDROOT)/eina/stamps/doc
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/eina/compile
-	@mkdir -p $(BUILDROOT)/eina/stamps
+	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/doc
-	@echo "Success generating documentation (make doc) eina."
+	$(V)echo "Success generating documentation (make doc) eina."
 
 $(BUILDROOT)/eina/stamps/distcheck: $(BUILDROOT)/eina/stamps/compile eina-distcheck
 eina-distcheck: $(BUILDROOT)/eina/stamps/compile
-	@echo "Checking distribution eina..."
-	@rm -f $(BUILDROOT)/eina/stamps/distcheck
+	$(V)echo "Checking distribution eina..."
+	$(V)rm -f $(BUILDROOT)/eina/stamps/distcheck
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/eina/compile
-	@mkdir -p $(BUILDROOT)/eina/stamps
+	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/distcheck
-	@echo "Success checking distribution eina."
+	$(V)echo "Success checking distribution eina."
 
 eina-direct-users-compile: embryo-compile edje-compile eet-compile ecore-compile evas-compile
 
@@ -267,7 +268,7 @@ eina-all-users-compile: embryo-compile edje-compile python-evas-compile evas-com
 # eet rules
 eet-dependencies: $(BUILDROOT)/eet/stamps/dependencies eina-install evil-install
 $(BUILDROOT)/eet/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/evil/stamps/install
-	@mkdir -p $(BUILDROOT)/eet/stamps
+	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/dependencies
 
 eet-clean:
@@ -276,17 +277,17 @@ eet-clean:
 	rm -fr $(BUILDROOT)/eet/stamps
 
 $(BUILDROOT)/eet/stamps/autogen: $(SRCROOT)/eet/autogen.sh $(SRCROOT)/eet/configure.ac
-	@echo "Running 'autogen.sh' for eet..."
-	@rm -f $(BUILDROOT)/eet/stamps/autogen
+	$(V)echo "Running 'autogen.sh' for eet..."
+	$(V)rm -f $(BUILDROOT)/eet/stamps/autogen
 	cd $(SRCROOT)/eet && NOCONFIGURE=1 ./autogen.sh
-	@mkdir -p $(BUILDROOT)/eet/stamps
+	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/autogen
-	@echo "Success running 'autogen.sh' for eet."
+	$(V)echo "Success running 'autogen.sh' for eet."
 
 $(BUILDROOT)/eet/stamps/configure: $(BUILDROOT)/eet/stamps/autogen $(BUILDROOT)/eet/stamps/dependencies
-	@echo "Configuring eet..."
-	@rm -f $(BUILDROOT)/eet/stamps/configure
-	@mkdir -p $(BUILDROOT)/eet/compile
+	$(V)echo "Configuring eet..."
+	$(V)rm -f $(BUILDROOT)/eet/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/eet/compile
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
@@ -295,34 +296,34 @@ $(BUILDROOT)/eet/stamps/configure: $(BUILDROOT)/eet/stamps/autogen $(BUILDROOT)/
 	$(SRCROOT)/eet/configure --prefix=$(INSTALLROOT) --enable-doc \
 		--enable-tests \
 		--enable-coverage
-	@mkdir -p $(BUILDROOT)/eet/stamps
+	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/configure
-	@echo "Success configuring eet."
+	$(V)echo "Success configuring eet."
 
 $(BUILDROOT)/eet/stamps/compile: $(BUILDROOT)/eet/stamps/configure eet-compile
 eet-compile: $(BUILDROOT)/eet/stamps/configure
-	@echo "Compiling eet..."
-	@rm -f $(BUILDROOT)/eet/stamps/compile-updated
-	@mkdir -p $(BUILDROOT)/eet/stamps
-	@if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/eet/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+	$(V)echo "Compiling eet..."
+	$(V)rm -f $(BUILDROOT)/eet/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/eet/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/eet/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
 		touch $(BUILDROOT)/eet/stamps/compile-updated;\
 	fi
-	@if test -f $(BUILDROOT)/eet/stamps/compile-updated; then\
+	$(V)if test -f $(BUILDROOT)/eet/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/eet/compile";\
 		make $(MAKEOPTS) all -C $(BUILDROOT)/eet/compile;\
 	else\
 		echo "eet is up to date.";\
 	fi
-	@if test ! -f $(BUILDROOT)/eet/stamps/compile -o -f $(BUILDROOT)/eet/stamps/compile-updated; then\
+	$(V)if test ! -f $(BUILDROOT)/eet/stamps/compile -o -f $(BUILDROOT)/eet/stamps/compile-updated; then\
 		touch $(BUILDROOT)/eet/stamps/compile;\
 		echo "Compile updated, needs reinstall.";\
 	fi
-	@echo "Success compiling eet."
+	$(V)echo "Success compiling eet."
 
 $(BUILDROOT)/eet/stamps/install: $(BUILDROOT)/eet/stamps/compile eet-install
 eet-install: $(BUILDROOT)/eet/stamps/compile
-	@echo "Installing eet..."
-	@if test ! $(BUILDROOT)/eet/stamps/install -o $(BUILDROOT)/eet/stamps/compile -nt $(BUILDROOT)/eet/stamps/install; then\
+	$(V)echo "Installing eet..."
+	$(V)if test ! $(BUILDROOT)/eet/stamps/install -o $(BUILDROOT)/eet/stamps/compile -nt $(BUILDROOT)/eet/stamps/install; then\
 		rm -f $(BUILDROOT)/eet/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/eet/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/eet/compile;\
@@ -331,38 +332,38 @@ eet-install: $(BUILDROOT)/eet/stamps/compile
 	else\
 		echo "eet did not change, not need to reinstall.";\
 	fi
-	@echo "Success installing eet."
+	$(V)echo "Success installing eet."
 
 $(BUILDROOT)/eet/stamps/test: $(BUILDROOT)/eet/stamps/compile eet-test
 eet-test: $(BUILDROOT)/eet/stamps/compile
-	@echo "Testing (make check) eet..."
-	@rm -f $(BUILDROOT)/eet/stamps/test
+	$(V)echo "Testing (make check) eet..."
+	$(V)rm -f $(BUILDROOT)/eet/stamps/test
 	make $(MAKEOPTS) check -C $(BUILDROOT)/eet/compile
-	@mkdir -p $(BUILDROOT)/eet/stamps
+	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/test
-	@echo "Success testing (make check) eet."
+	$(V)echo "Success testing (make check) eet."
 
 $(BUILDROOT)/eet/stamps/doc: $(BUILDROOT)/eet/stamps/compile eet-doc
 eet-doc: $(BUILDROOT)/eet/stamps/compile
-	@echo "Generating documentation (make doc) eet..."
-	@rm -f $(BUILDROOT)/eet/stamps/doc
+	$(V)echo "Generating documentation (make doc) eet..."
+	$(V)rm -f $(BUILDROOT)/eet/stamps/doc
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/eet/compile
-	@mkdir -p $(BUILDROOT)/eet/stamps
+	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/doc
-	@echo "Success generating documentation (make doc) eet."
+	$(V)echo "Success generating documentation (make doc) eet."
 
 $(BUILDROOT)/eet/stamps/distcheck: $(BUILDROOT)/eet/stamps/compile eet-distcheck
 eet-distcheck: $(BUILDROOT)/eet/stamps/compile
-	@echo "Checking distribution eet..."
-	@rm -f $(BUILDROOT)/eet/stamps/distcheck
+	$(V)echo "Checking distribution eet..."
+	$(V)rm -f $(BUILDROOT)/eet/stamps/distcheck
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/eet/compile
-	@mkdir -p $(BUILDROOT)/eet/stamps
+	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/distcheck
-	@echo "Success checking distribution eet."
+	$(V)echo "Success checking distribution eet."
 
 eet-direct-users-compile: edje-compile evas-compile
 
@@ -372,7 +373,7 @@ eet-all-users-compile: edje-compile evas-compile ecore-compile python-evas-compi
 # evas rules
 evas-dependencies: $(BUILDROOT)/evas/stamps/dependencies eina-install evil-install eet-install
 $(BUILDROOT)/evas/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/evil/stamps/install $(BUILDROOT)/eet/stamps/install
-	@mkdir -p $(BUILDROOT)/evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/dependencies
 
 evas-clean:
@@ -381,17 +382,17 @@ evas-clean:
 	rm -fr $(BUILDROOT)/evas/stamps
 
 $(BUILDROOT)/evas/stamps/autogen: $(SRCROOT)/evas/autogen.sh $(SRCROOT)/evas/configure.ac
-	@echo "Running 'autogen.sh' for evas..."
-	@rm -f $(BUILDROOT)/evas/stamps/autogen
+	$(V)echo "Running 'autogen.sh' for evas..."
+	$(V)rm -f $(BUILDROOT)/evas/stamps/autogen
 	cd $(SRCROOT)/evas && NOCONFIGURE=1 ./autogen.sh
-	@mkdir -p $(BUILDROOT)/evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/autogen
-	@echo "Success running 'autogen.sh' for evas."
+	$(V)echo "Success running 'autogen.sh' for evas."
 
 $(BUILDROOT)/evas/stamps/configure: $(BUILDROOT)/evas/stamps/autogen $(BUILDROOT)/evas/stamps/dependencies
-	@echo "Configuring evas..."
-	@rm -f $(BUILDROOT)/evas/stamps/configure
-	@mkdir -p $(BUILDROOT)/evas/compile
+	$(V)echo "Configuring evas..."
+	$(V)rm -f $(BUILDROOT)/evas/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/evas/compile
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
@@ -404,34 +405,34 @@ $(BUILDROOT)/evas/stamps/configure: $(BUILDROOT)/evas/stamps/autogen $(BUILDROOT
 		--enable-convert-yuv \
 		--enable-async-events \
 		--enable-async-preload
-	@mkdir -p $(BUILDROOT)/evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/configure
-	@echo "Success configuring evas."
+	$(V)echo "Success configuring evas."
 
 $(BUILDROOT)/evas/stamps/compile: $(BUILDROOT)/evas/stamps/configure evas-compile
 evas-compile: $(BUILDROOT)/evas/stamps/configure
-	@echo "Compiling evas..."
-	@rm -f $(BUILDROOT)/evas/stamps/compile-updated
-	@mkdir -p $(BUILDROOT)/evas/stamps
-	@if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/evas/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+	$(V)echo "Compiling evas..."
+	$(V)rm -f $(BUILDROOT)/evas/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/evas/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/evas/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
 		touch $(BUILDROOT)/evas/stamps/compile-updated;\
 	fi
-	@if test -f $(BUILDROOT)/evas/stamps/compile-updated; then\
+	$(V)if test -f $(BUILDROOT)/evas/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/evas/compile";\
 		make $(MAKEOPTS) all -C $(BUILDROOT)/evas/compile;\
 	else\
 		echo "evas is up to date.";\
 	fi
-	@if test ! -f $(BUILDROOT)/evas/stamps/compile -o -f $(BUILDROOT)/evas/stamps/compile-updated; then\
+	$(V)if test ! -f $(BUILDROOT)/evas/stamps/compile -o -f $(BUILDROOT)/evas/stamps/compile-updated; then\
 		touch $(BUILDROOT)/evas/stamps/compile;\
 		echo "Compile updated, needs reinstall.";\
 	fi
-	@echo "Success compiling evas."
+	$(V)echo "Success compiling evas."
 
 $(BUILDROOT)/evas/stamps/install: $(BUILDROOT)/evas/stamps/compile evas-install
 evas-install: $(BUILDROOT)/evas/stamps/compile
-	@echo "Installing evas..."
-	@if test ! $(BUILDROOT)/evas/stamps/install -o $(BUILDROOT)/evas/stamps/compile -nt $(BUILDROOT)/evas/stamps/install; then\
+	$(V)echo "Installing evas..."
+	$(V)if test ! $(BUILDROOT)/evas/stamps/install -o $(BUILDROOT)/evas/stamps/compile -nt $(BUILDROOT)/evas/stamps/install; then\
 		rm -f $(BUILDROOT)/evas/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/evas/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/evas/compile;\
@@ -440,35 +441,38 @@ evas-install: $(BUILDROOT)/evas/stamps/compile
 	else\
 		echo "evas did not change, not need to reinstall.";\
 	fi
-	@echo "Success installing evas."
+	$(V)echo "Success installing evas."
 
 $(BUILDROOT)/evas/stamps/test: $(BUILDROOT)/evas/stamps/compile evas-test
 evas-test: $(BUILDROOT)/evas/stamps/compile
-	@mkdir -p $(BUILDROOT)/evas/stamps
+	$(V)echo "Testing (make check) evas..."
+	$(V)rm -f $(BUILDROOT)/evas/stamps/test
+	make $(MAKEOPTS) check -C $(BUILDROOT)/evas/compile
+	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/test
-	@echo 'No test target defined for evas'
+	$(V)echo "Success testing (make check) evas."
 
 $(BUILDROOT)/evas/stamps/doc: $(BUILDROOT)/evas/stamps/compile evas-doc
 evas-doc: $(BUILDROOT)/evas/stamps/compile
-	@echo "Generating documentation (make doc) evas..."
-	@rm -f $(BUILDROOT)/evas/stamps/doc
+	$(V)echo "Generating documentation (make doc) evas..."
+	$(V)rm -f $(BUILDROOT)/evas/stamps/doc
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/evas/compile
-	@mkdir -p $(BUILDROOT)/evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/doc
-	@echo "Success generating documentation (make doc) evas."
+	$(V)echo "Success generating documentation (make doc) evas."
 
 $(BUILDROOT)/evas/stamps/distcheck: $(BUILDROOT)/evas/stamps/compile evas-distcheck
 evas-distcheck: $(BUILDROOT)/evas/stamps/compile
-	@echo "Checking distribution evas..."
-	@rm -f $(BUILDROOT)/evas/stamps/distcheck
+	$(V)echo "Checking distribution evas..."
+	$(V)rm -f $(BUILDROOT)/evas/stamps/distcheck
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/evas/compile
-	@mkdir -p $(BUILDROOT)/evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/distcheck
-	@echo "Success checking distribution evas."
+	$(V)echo "Success checking distribution evas."
 
 evas-direct-users-compile: edje-compile python-evas-compile ecore-compile
 
@@ -478,7 +482,7 @@ evas-all-users-compile: edje-compile python-evas-compile ecore-compile
 # ecore rules
 ecore-dependencies: $(BUILDROOT)/ecore/stamps/dependencies eina-install evil-install evas-install
 $(BUILDROOT)/ecore/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/evil/stamps/install $(BUILDROOT)/evas/stamps/install
-	@mkdir -p $(BUILDROOT)/ecore/stamps
+	$(V)mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/dependencies
 
 ecore-clean:
@@ -487,17 +491,17 @@ ecore-clean:
 	rm -fr $(BUILDROOT)/ecore/stamps
 
 $(BUILDROOT)/ecore/stamps/autogen: $(SRCROOT)/ecore/autogen.sh $(SRCROOT)/ecore/configure.ac
-	@echo "Running 'autogen.sh' for ecore..."
-	@rm -f $(BUILDROOT)/ecore/stamps/autogen
+	$(V)echo "Running 'autogen.sh' for ecore..."
+	$(V)rm -f $(BUILDROOT)/ecore/stamps/autogen
 	cd $(SRCROOT)/ecore && NOCONFIGURE=1 ./autogen.sh
-	@mkdir -p $(BUILDROOT)/ecore/stamps
+	$(V)mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/autogen
-	@echo "Success running 'autogen.sh' for ecore."
+	$(V)echo "Success running 'autogen.sh' for ecore."
 
 $(BUILDROOT)/ecore/stamps/configure: $(BUILDROOT)/ecore/stamps/autogen $(BUILDROOT)/ecore/stamps/dependencies
-	@echo "Configuring ecore..."
-	@rm -f $(BUILDROOT)/ecore/stamps/configure
-	@mkdir -p $(BUILDROOT)/ecore/compile
+	$(V)echo "Configuring ecore..."
+	$(V)rm -f $(BUILDROOT)/ecore/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/ecore/compile
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
@@ -512,34 +516,34 @@ $(BUILDROOT)/ecore/stamps/configure: $(BUILDROOT)/ecore/stamps/autogen $(BUILDRO
 		--enable-ecore-imf-evas \
 		--enable-ecore-input \
 		--enable-ecore-input-evas
-	@mkdir -p $(BUILDROOT)/ecore/stamps
+	$(V)mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/configure
-	@echo "Success configuring ecore."
+	$(V)echo "Success configuring ecore."
 
 $(BUILDROOT)/ecore/stamps/compile: $(BUILDROOT)/ecore/stamps/configure ecore-compile
 ecore-compile: $(BUILDROOT)/ecore/stamps/configure
-	@echo "Compiling ecore..."
-	@rm -f $(BUILDROOT)/ecore/stamps/compile-updated
-	@mkdir -p $(BUILDROOT)/ecore/stamps
-	@if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/ecore/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+	$(V)echo "Compiling ecore..."
+	$(V)rm -f $(BUILDROOT)/ecore/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/ecore/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/ecore/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
 		touch $(BUILDROOT)/ecore/stamps/compile-updated;\
 	fi
-	@if test -f $(BUILDROOT)/ecore/stamps/compile-updated; then\
+	$(V)if test -f $(BUILDROOT)/ecore/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/ecore/compile";\
 		make $(MAKEOPTS) all -C $(BUILDROOT)/ecore/compile;\
 	else\
 		echo "ecore is up to date.";\
 	fi
-	@if test ! -f $(BUILDROOT)/ecore/stamps/compile -o -f $(BUILDROOT)/ecore/stamps/compile-updated; then\
+	$(V)if test ! -f $(BUILDROOT)/ecore/stamps/compile -o -f $(BUILDROOT)/ecore/stamps/compile-updated; then\
 		touch $(BUILDROOT)/ecore/stamps/compile;\
 		echo "Compile updated, needs reinstall.";\
 	fi
-	@echo "Success compiling ecore."
+	$(V)echo "Success compiling ecore."
 
 $(BUILDROOT)/ecore/stamps/install: $(BUILDROOT)/ecore/stamps/compile ecore-install
 ecore-install: $(BUILDROOT)/ecore/stamps/compile
-	@echo "Installing ecore..."
-	@if test ! $(BUILDROOT)/ecore/stamps/install -o $(BUILDROOT)/ecore/stamps/compile -nt $(BUILDROOT)/ecore/stamps/install; then\
+	$(V)echo "Installing ecore..."
+	$(V)if test ! $(BUILDROOT)/ecore/stamps/install -o $(BUILDROOT)/ecore/stamps/compile -nt $(BUILDROOT)/ecore/stamps/install; then\
 		rm -f $(BUILDROOT)/ecore/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/ecore/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/ecore/compile;\
@@ -548,35 +552,38 @@ ecore-install: $(BUILDROOT)/ecore/stamps/compile
 	else\
 		echo "ecore did not change, not need to reinstall.";\
 	fi
-	@echo "Success installing ecore."
+	$(V)echo "Success installing ecore."
 
 $(BUILDROOT)/ecore/stamps/test: $(BUILDROOT)/ecore/stamps/compile ecore-test
 ecore-test: $(BUILDROOT)/ecore/stamps/compile
-	@mkdir -p $(BUILDROOT)/ecore/stamps
+	$(V)echo "Testing (make check) ecore..."
+	$(V)rm -f $(BUILDROOT)/ecore/stamps/test
+	make $(MAKEOPTS) check -C $(BUILDROOT)/ecore/compile
+	$(V)mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/test
-	@echo 'No test target defined for ecore'
+	$(V)echo "Success testing (make check) ecore."
 
 $(BUILDROOT)/ecore/stamps/doc: $(BUILDROOT)/ecore/stamps/compile ecore-doc
 ecore-doc: $(BUILDROOT)/ecore/stamps/compile
-	@echo "Generating documentation (make doc) ecore..."
-	@rm -f $(BUILDROOT)/ecore/stamps/doc
+	$(V)echo "Generating documentation (make doc) ecore..."
+	$(V)rm -f $(BUILDROOT)/ecore/stamps/doc
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/ecore/compile
-	@mkdir -p $(BUILDROOT)/ecore/stamps
+	$(V)mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/doc
-	@echo "Success generating documentation (make doc) ecore."
+	$(V)echo "Success generating documentation (make doc) ecore."
 
 $(BUILDROOT)/ecore/stamps/distcheck: $(BUILDROOT)/ecore/stamps/compile ecore-distcheck
 ecore-distcheck: $(BUILDROOT)/ecore/stamps/compile
-	@echo "Checking distribution ecore..."
-	@rm -f $(BUILDROOT)/ecore/stamps/distcheck
+	$(V)echo "Checking distribution ecore..."
+	$(V)rm -f $(BUILDROOT)/ecore/stamps/distcheck
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/ecore/compile
-	@mkdir -p $(BUILDROOT)/ecore/stamps
+	$(V)mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/distcheck
-	@echo "Success checking distribution ecore."
+	$(V)echo "Success checking distribution ecore."
 
 ecore-direct-users-compile: edje-compile
 
@@ -586,7 +593,7 @@ ecore-all-users-compile: edje-compile
 # python-evas rules
 python-evas-dependencies: $(BUILDROOT)/python-evas/stamps/dependencies evas-install
 $(BUILDROOT)/python-evas/stamps/dependencies: $(BUILDROOT)/evas/stamps/install
-	@mkdir -p $(BUILDROOT)/python-evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/python-evas/stamps
 	touch $(BUILDROOT)/python-evas/stamps/dependencies
 
 python-evas-clean:
@@ -595,51 +602,51 @@ python-evas-clean:
 	rm -fr $(BUILDROOT)/python-evas/stamps
 
 $(BUILDROOT)/python-evas/stamps/autogen: $(SRCROOT)/BINDINGS/python/python-evas/autogen.sh $(SRCROOT)/BINDINGS/python/python-evas/configure.ac
-	@echo "Running 'autogen.sh' for python-evas..."
-	@rm -f $(BUILDROOT)/python-evas/stamps/autogen
+	$(V)echo "Running 'autogen.sh' for python-evas..."
+	$(V)rm -f $(BUILDROOT)/python-evas/stamps/autogen
 	cd $(SRCROOT)/BINDINGS/python/python-evas && NOCONFIGURE=1 ./autogen.sh
-	@mkdir -p $(BUILDROOT)/python-evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/python-evas/stamps
 	touch $(BUILDROOT)/python-evas/stamps/autogen
-	@echo "Success running 'autogen.sh' for python-evas."
+	$(V)echo "Success running 'autogen.sh' for python-evas."
 
 $(BUILDROOT)/python-evas/stamps/configure: $(BUILDROOT)/python-evas/stamps/autogen $(BUILDROOT)/python-evas/stamps/dependencies
-	@echo "Configuring python-evas..."
-	@rm -f $(BUILDROOT)/python-evas/stamps/configure
-	@mkdir -p $(BUILDROOT)/python-evas/compile
+	$(V)echo "Configuring python-evas..."
+	$(V)rm -f $(BUILDROOT)/python-evas/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/python-evas/compile
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	cd $(BUILDROOT)/python-evas/compile && \
 	$(SRCROOT)/BINDINGS/python/python-evas/configure --prefix=$(INSTALLROOT) 
-	@mkdir -p $(BUILDROOT)/python-evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/python-evas/stamps
 	touch $(BUILDROOT)/python-evas/stamps/configure
-	@echo "Success configuring python-evas."
+	$(V)echo "Success configuring python-evas."
 
 $(BUILDROOT)/python-evas/stamps/compile: $(BUILDROOT)/python-evas/stamps/configure python-evas-compile
 python-evas-compile: $(BUILDROOT)/python-evas/stamps/configure
-	@echo "Compiling python-evas..."
-	@rm -f $(BUILDROOT)/python-evas/stamps/compile-updated
-	@mkdir -p $(BUILDROOT)/python-evas/stamps
-	@if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/python-evas/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+	$(V)echo "Compiling python-evas..."
+	$(V)rm -f $(BUILDROOT)/python-evas/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/python-evas/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/python-evas/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
 		touch $(BUILDROOT)/python-evas/stamps/compile-updated;\
 	fi
-	@if test -f $(BUILDROOT)/python-evas/stamps/compile-updated; then\
+	$(V)if test -f $(BUILDROOT)/python-evas/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/python-evas/compile";\
 		make $(MAKEOPTS) all -C $(BUILDROOT)/python-evas/compile;\
 	else\
 		echo "python-evas is up to date.";\
 	fi
-	@if test ! -f $(BUILDROOT)/python-evas/stamps/compile -o -f $(BUILDROOT)/python-evas/stamps/compile-updated; then\
+	$(V)if test ! -f $(BUILDROOT)/python-evas/stamps/compile -o -f $(BUILDROOT)/python-evas/stamps/compile-updated; then\
 		touch $(BUILDROOT)/python-evas/stamps/compile;\
 		echo "Compile updated, needs reinstall.";\
 	fi
-	@echo "Success compiling python-evas."
+	$(V)echo "Success compiling python-evas."
 
 $(BUILDROOT)/python-evas/stamps/install: $(BUILDROOT)/python-evas/stamps/compile python-evas-install
 python-evas-install: $(BUILDROOT)/python-evas/stamps/compile
-	@echo "Installing python-evas..."
-	@if test ! $(BUILDROOT)/python-evas/stamps/install -o $(BUILDROOT)/python-evas/stamps/compile -nt $(BUILDROOT)/python-evas/stamps/install; then\
+	$(V)echo "Installing python-evas..."
+	$(V)if test ! $(BUILDROOT)/python-evas/stamps/install -o $(BUILDROOT)/python-evas/stamps/compile -nt $(BUILDROOT)/python-evas/stamps/install; then\
 		rm -f $(BUILDROOT)/python-evas/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/python-evas/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/python-evas/compile;\
@@ -648,32 +655,32 @@ python-evas-install: $(BUILDROOT)/python-evas/stamps/compile
 	else\
 		echo "python-evas did not change, not need to reinstall.";\
 	fi
-	@echo "Success installing python-evas."
+	$(V)echo "Success installing python-evas."
 
 $(BUILDROOT)/python-evas/stamps/test: $(BUILDROOT)/python-evas/stamps/compile python-evas-test
 python-evas-test: $(BUILDROOT)/python-evas/stamps/compile
-	@mkdir -p $(BUILDROOT)/python-evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/python-evas/stamps
 	touch $(BUILDROOT)/python-evas/stamps/test
-	@echo 'No test target defined for python-evas'
+	$(V)echo 'No test target defined for python-evas'
 
 $(BUILDROOT)/python-evas/stamps/doc: $(BUILDROOT)/python-evas/stamps/compile python-evas-doc
 python-evas-doc: $(BUILDROOT)/python-evas/stamps/compile
-	@mkdir -p $(BUILDROOT)/python-evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/python-evas/stamps
 	touch $(BUILDROOT)/python-evas/stamps/doc
-	@echo 'No doc target defined for python-evas'
+	$(V)echo 'No doc target defined for python-evas'
 
 $(BUILDROOT)/python-evas/stamps/distcheck: $(BUILDROOT)/python-evas/stamps/compile python-evas-distcheck
 python-evas-distcheck: $(BUILDROOT)/python-evas/stamps/compile
-	@echo "Checking distribution python-evas..."
-	@rm -f $(BUILDROOT)/python-evas/stamps/distcheck
+	$(V)echo "Checking distribution python-evas..."
+	$(V)rm -f $(BUILDROOT)/python-evas/stamps/distcheck
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-evas/compile
-	@mkdir -p $(BUILDROOT)/python-evas/stamps
+	$(V)mkdir -p $(BUILDROOT)/python-evas/stamps
 	touch $(BUILDROOT)/python-evas/stamps/distcheck
-	@echo "Success checking distribution python-evas."
+	$(V)echo "Success checking distribution python-evas."
 
 python-evas-direct-users-compile:
 
@@ -683,7 +690,7 @@ python-evas-all-users-compile:
 # embryo rules
 embryo-dependencies: $(BUILDROOT)/embryo/stamps/dependencies eina-install evil-install
 $(BUILDROOT)/embryo/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/evil/stamps/install
-	@mkdir -p $(BUILDROOT)/embryo/stamps
+	$(V)mkdir -p $(BUILDROOT)/embryo/stamps
 	touch $(BUILDROOT)/embryo/stamps/dependencies
 
 embryo-clean:
@@ -692,51 +699,51 @@ embryo-clean:
 	rm -fr $(BUILDROOT)/embryo/stamps
 
 $(BUILDROOT)/embryo/stamps/autogen: $(SRCROOT)/embryo/autogen.sh $(SRCROOT)/embryo/configure.ac
-	@echo "Running 'autogen.sh' for embryo..."
-	@rm -f $(BUILDROOT)/embryo/stamps/autogen
+	$(V)echo "Running 'autogen.sh' for embryo..."
+	$(V)rm -f $(BUILDROOT)/embryo/stamps/autogen
 	cd $(SRCROOT)/embryo && NOCONFIGURE=1 ./autogen.sh
-	@mkdir -p $(BUILDROOT)/embryo/stamps
+	$(V)mkdir -p $(BUILDROOT)/embryo/stamps
 	touch $(BUILDROOT)/embryo/stamps/autogen
-	@echo "Success running 'autogen.sh' for embryo."
+	$(V)echo "Success running 'autogen.sh' for embryo."
 
 $(BUILDROOT)/embryo/stamps/configure: $(BUILDROOT)/embryo/stamps/autogen $(BUILDROOT)/embryo/stamps/dependencies
-	@echo "Configuring embryo..."
-	@rm -f $(BUILDROOT)/embryo/stamps/configure
-	@mkdir -p $(BUILDROOT)/embryo/compile
+	$(V)echo "Configuring embryo..."
+	$(V)rm -f $(BUILDROOT)/embryo/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/embryo/compile
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	cd $(BUILDROOT)/embryo/compile && \
 	$(SRCROOT)/embryo/configure --prefix=$(INSTALLROOT) 
-	@mkdir -p $(BUILDROOT)/embryo/stamps
+	$(V)mkdir -p $(BUILDROOT)/embryo/stamps
 	touch $(BUILDROOT)/embryo/stamps/configure
-	@echo "Success configuring embryo."
+	$(V)echo "Success configuring embryo."
 
 $(BUILDROOT)/embryo/stamps/compile: $(BUILDROOT)/embryo/stamps/configure embryo-compile
 embryo-compile: $(BUILDROOT)/embryo/stamps/configure
-	@echo "Compiling embryo..."
-	@rm -f $(BUILDROOT)/embryo/stamps/compile-updated
-	@mkdir -p $(BUILDROOT)/embryo/stamps
-	@if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/embryo/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+	$(V)echo "Compiling embryo..."
+	$(V)rm -f $(BUILDROOT)/embryo/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/embryo/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/embryo/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
 		touch $(BUILDROOT)/embryo/stamps/compile-updated;\
 	fi
-	@if test -f $(BUILDROOT)/embryo/stamps/compile-updated; then\
+	$(V)if test -f $(BUILDROOT)/embryo/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/embryo/compile";\
 		make $(MAKEOPTS) all -C $(BUILDROOT)/embryo/compile;\
 	else\
 		echo "embryo is up to date.";\
 	fi
-	@if test ! -f $(BUILDROOT)/embryo/stamps/compile -o -f $(BUILDROOT)/embryo/stamps/compile-updated; then\
+	$(V)if test ! -f $(BUILDROOT)/embryo/stamps/compile -o -f $(BUILDROOT)/embryo/stamps/compile-updated; then\
 		touch $(BUILDROOT)/embryo/stamps/compile;\
 		echo "Compile updated, needs reinstall.";\
 	fi
-	@echo "Success compiling embryo."
+	$(V)echo "Success compiling embryo."
 
 $(BUILDROOT)/embryo/stamps/install: $(BUILDROOT)/embryo/stamps/compile embryo-install
 embryo-install: $(BUILDROOT)/embryo/stamps/compile
-	@echo "Installing embryo..."
-	@if test ! $(BUILDROOT)/embryo/stamps/install -o $(BUILDROOT)/embryo/stamps/compile -nt $(BUILDROOT)/embryo/stamps/install; then\
+	$(V)echo "Installing embryo..."
+	$(V)if test ! $(BUILDROOT)/embryo/stamps/install -o $(BUILDROOT)/embryo/stamps/compile -nt $(BUILDROOT)/embryo/stamps/install; then\
 		rm -f $(BUILDROOT)/embryo/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/embryo/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/embryo/compile;\
@@ -745,32 +752,32 @@ embryo-install: $(BUILDROOT)/embryo/stamps/compile
 	else\
 		echo "embryo did not change, not need to reinstall.";\
 	fi
-	@echo "Success installing embryo."
+	$(V)echo "Success installing embryo."
 
 $(BUILDROOT)/embryo/stamps/test: $(BUILDROOT)/embryo/stamps/compile embryo-test
 embryo-test: $(BUILDROOT)/embryo/stamps/compile
-	@mkdir -p $(BUILDROOT)/embryo/stamps
+	$(V)mkdir -p $(BUILDROOT)/embryo/stamps
 	touch $(BUILDROOT)/embryo/stamps/test
-	@echo 'No test target defined for embryo'
+	$(V)echo 'No test target defined for embryo'
 
 $(BUILDROOT)/embryo/stamps/doc: $(BUILDROOT)/embryo/stamps/compile embryo-doc
 embryo-doc: $(BUILDROOT)/embryo/stamps/compile
-	@mkdir -p $(BUILDROOT)/embryo/stamps
+	$(V)mkdir -p $(BUILDROOT)/embryo/stamps
 	touch $(BUILDROOT)/embryo/stamps/doc
-	@echo 'No doc target defined for embryo'
+	$(V)echo 'No doc target defined for embryo'
 
 $(BUILDROOT)/embryo/stamps/distcheck: $(BUILDROOT)/embryo/stamps/compile embryo-distcheck
 embryo-distcheck: $(BUILDROOT)/embryo/stamps/compile
-	@echo "Checking distribution embryo..."
-	@rm -f $(BUILDROOT)/embryo/stamps/distcheck
+	$(V)echo "Checking distribution embryo..."
+	$(V)rm -f $(BUILDROOT)/embryo/stamps/distcheck
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/embryo/compile
-	@mkdir -p $(BUILDROOT)/embryo/stamps
+	$(V)mkdir -p $(BUILDROOT)/embryo/stamps
 	touch $(BUILDROOT)/embryo/stamps/distcheck
-	@echo "Success checking distribution embryo."
+	$(V)echo "Success checking distribution embryo."
 
 embryo-direct-users-compile: edje-compile
 
@@ -780,7 +787,7 @@ embryo-all-users-compile: edje-compile
 # edje rules
 edje-dependencies: $(BUILDROOT)/edje/stamps/dependencies embryo-install evas-install evil-install eina-install eet-install ecore-install
 $(BUILDROOT)/edje/stamps/dependencies: $(BUILDROOT)/embryo/stamps/install $(BUILDROOT)/evas/stamps/install $(BUILDROOT)/evil/stamps/install $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/eet/stamps/install $(BUILDROOT)/ecore/stamps/install
-	@mkdir -p $(BUILDROOT)/edje/stamps
+	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/dependencies
 
 edje-clean:
@@ -789,51 +796,51 @@ edje-clean:
 	rm -fr $(BUILDROOT)/edje/stamps
 
 $(BUILDROOT)/edje/stamps/autogen: $(SRCROOT)/edje/autogen.sh $(SRCROOT)/edje/configure.ac
-	@echo "Running 'autogen.sh' for edje..."
-	@rm -f $(BUILDROOT)/edje/stamps/autogen
+	$(V)echo "Running 'autogen.sh' for edje..."
+	$(V)rm -f $(BUILDROOT)/edje/stamps/autogen
 	cd $(SRCROOT)/edje && NOCONFIGURE=1 ./autogen.sh
-	@mkdir -p $(BUILDROOT)/edje/stamps
+	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/autogen
-	@echo "Success running 'autogen.sh' for edje."
+	$(V)echo "Success running 'autogen.sh' for edje."
 
 $(BUILDROOT)/edje/stamps/configure: $(BUILDROOT)/edje/stamps/autogen $(BUILDROOT)/edje/stamps/dependencies
-	@echo "Configuring edje..."
-	@rm -f $(BUILDROOT)/edje/stamps/configure
-	@mkdir -p $(BUILDROOT)/edje/compile
+	$(V)echo "Configuring edje..."
+	$(V)rm -f $(BUILDROOT)/edje/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/edje/compile
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	cd $(BUILDROOT)/edje/compile && \
 	$(SRCROOT)/edje/configure --prefix=$(INSTALLROOT) 
-	@mkdir -p $(BUILDROOT)/edje/stamps
+	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/configure
-	@echo "Success configuring edje."
+	$(V)echo "Success configuring edje."
 
 $(BUILDROOT)/edje/stamps/compile: $(BUILDROOT)/edje/stamps/configure edje-compile
 edje-compile: $(BUILDROOT)/edje/stamps/configure
-	@echo "Compiling edje..."
-	@rm -f $(BUILDROOT)/edje/stamps/compile-updated
-	@mkdir -p $(BUILDROOT)/edje/stamps
-	@if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/edje/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+	$(V)echo "Compiling edje..."
+	$(V)rm -f $(BUILDROOT)/edje/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/edje/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/edje/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
 		touch $(BUILDROOT)/edje/stamps/compile-updated;\
 	fi
-	@if test -f $(BUILDROOT)/edje/stamps/compile-updated; then\
+	$(V)if test -f $(BUILDROOT)/edje/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/edje/compile";\
 		make $(MAKEOPTS) all -C $(BUILDROOT)/edje/compile;\
 	else\
 		echo "edje is up to date.";\
 	fi
-	@if test ! -f $(BUILDROOT)/edje/stamps/compile -o -f $(BUILDROOT)/edje/stamps/compile-updated; then\
+	$(V)if test ! -f $(BUILDROOT)/edje/stamps/compile -o -f $(BUILDROOT)/edje/stamps/compile-updated; then\
 		touch $(BUILDROOT)/edje/stamps/compile;\
 		echo "Compile updated, needs reinstall.";\
 	fi
-	@echo "Success compiling edje."
+	$(V)echo "Success compiling edje."
 
 $(BUILDROOT)/edje/stamps/install: $(BUILDROOT)/edje/stamps/compile edje-install
 edje-install: $(BUILDROOT)/edje/stamps/compile
-	@echo "Installing edje..."
-	@if test ! $(BUILDROOT)/edje/stamps/install -o $(BUILDROOT)/edje/stamps/compile -nt $(BUILDROOT)/edje/stamps/install; then\
+	$(V)echo "Installing edje..."
+	$(V)if test ! $(BUILDROOT)/edje/stamps/install -o $(BUILDROOT)/edje/stamps/compile -nt $(BUILDROOT)/edje/stamps/install; then\
 		rm -f $(BUILDROOT)/edje/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/edje/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/edje/compile;\
@@ -842,35 +849,35 @@ edje-install: $(BUILDROOT)/edje/stamps/compile
 	else\
 		echo "edje did not change, not need to reinstall.";\
 	fi
-	@echo "Success installing edje."
+	$(V)echo "Success installing edje."
 
 $(BUILDROOT)/edje/stamps/test: $(BUILDROOT)/edje/stamps/compile edje-test
 edje-test: $(BUILDROOT)/edje/stamps/compile
-	@mkdir -p $(BUILDROOT)/edje/stamps
+	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/test
-	@echo 'No test target defined for edje'
+	$(V)echo 'No test target defined for edje'
 
 $(BUILDROOT)/edje/stamps/doc: $(BUILDROOT)/edje/stamps/compile edje-doc
 edje-doc: $(BUILDROOT)/edje/stamps/compile
-	@echo "Generating documentation (make doc) edje..."
-	@rm -f $(BUILDROOT)/edje/stamps/doc
+	$(V)echo "Generating documentation (make doc) edje..."
+	$(V)rm -f $(BUILDROOT)/edje/stamps/doc
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/edje/compile
-	@mkdir -p $(BUILDROOT)/edje/stamps
+	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/doc
-	@echo "Success generating documentation (make doc) edje."
+	$(V)echo "Success generating documentation (make doc) edje."
 
 $(BUILDROOT)/edje/stamps/distcheck: $(BUILDROOT)/edje/stamps/compile edje-distcheck
 edje-distcheck: $(BUILDROOT)/edje/stamps/compile
-	@echo "Checking distribution edje..."
-	@rm -f $(BUILDROOT)/edje/stamps/distcheck
+	$(V)echo "Checking distribution edje..."
+	$(V)rm -f $(BUILDROOT)/edje/stamps/distcheck
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
 	export LDFLAGS="$${LDFLAGS}";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/edje/compile
-	@mkdir -p $(BUILDROOT)/edje/stamps
+	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/distcheck
-	@echo "Success checking distribution edje."
+	$(V)echo "Success checking distribution edje."
 
 edje-direct-users-compile:
 

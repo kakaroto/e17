@@ -79,6 +79,7 @@ SRCROOT = $(shell pwd)
 BUILDROOT = $(shell pwd)/build
 INSTALLROOT = $(shell pwd)/install
 MAKEOPTS = --print-directory -j2
+V=@
 
 .DEFAULT: missing-target
 .PHONY: missing-target help all clean %(phony_targets)s
@@ -179,7 +180,7 @@ for p in pkgs:
             "deps_install": " ".join(deps_install),
             "deps_install_stamps": " ".join(deps_install_stamps),
             })
-    out.write("\n\t@mkdir -p %s\n" % stamp_dir_get(p.name))
+    out.write("\n\t$(V)mkdir -p %s\n" % stamp_dir_get(p.name))
     out.write("\ttouch %s\n" % stamp)
 
     # clean it:
@@ -197,12 +198,12 @@ for p in pkgs:
     stamp = stamp_name_get(p.name, "autogen")
     out.write("""
 %(stamp)s: $(SRCROOT)/%(srcdir)s/autogen.sh $(SRCROOT)/%(srcdir)s/configure.ac
-\t@echo "Running 'autogen.sh' for %(name)s..."
-\t@rm -f %(stamp)s
+\t$(V)echo "Running 'autogen.sh' for %(name)s..."
+\t$(V)rm -f %(stamp)s
 \tcd $(SRCROOT)/%(srcdir)s && NOCONFIGURE=1 ./autogen.sh
-\t@mkdir -p %(stampsdir)s
+\t$(V)mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
-\t@echo "Success running 'autogen.sh' for %(name)s."
+\t$(V)echo "Success running 'autogen.sh' for %(name)s."
 """ % {"name": p.name,
        "srcdir": p.srcdir,
        "stamp": stamp_name_get(p.name, "autogen"),
@@ -213,14 +214,14 @@ for p in pkgs:
     stamp = stamp_name_get(p.name, "configure")
     out.write("""
 %(stamp)s: %(autogen_stamp)s %(dependencies_stamp)s
-\t@echo "Configuring %(name)s..."
-\t@rm -f %(stamp)s
-\t@mkdir -p %(compile_dir)s
+\t$(V)echo "Configuring %(name)s..."
+\t$(V)rm -f %(stamp)s
+\t$(V)mkdir -p %(compile_dir)s
 \t%(env_export)scd %(compile_dir)s && \\
 \t$(SRCROOT)/%(srcdir)s/configure --prefix=$(INSTALLROOT) %(configure_flags)s
-\t@mkdir -p %(stampsdir)s
+\t$(V)mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
-\t@echo "Success configuring %(name)s."
+\t$(V)echo "Success configuring %(name)s."
 """ % {"name": p.name,
        "srcdir": p.srcdir,
        "stamp": stamp_name_get(p.name, "configure"),
@@ -241,23 +242,23 @@ for p in pkgs:
     out.write("""
 %(stamp)s: %(configure_stamp)s %(name)s-compile
 %(name)s-compile: %(configure_stamp)s
-\t@echo "Compiling %(name)s..."
-\t@rm -f %(stamp)s-updated
-\t@mkdir -p %(stampsdir)s
-\t@if make --dry-run $(MAKEOPTS) all -C %(compile_dir)s 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\\
+\t$(V)echo "Compiling %(name)s..."
+\t$(V)rm -f %(stamp)s-updated
+\t$(V)mkdir -p %(stampsdir)s
+\t$(V)if make --dry-run $(MAKEOPTS) all -C %(compile_dir)s 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\\
 \t\ttouch %(stamp)s-updated;\\
 \tfi
-\t@if test -f %(stamp)s-updated; then\\
+\t$(V)if test -f %(stamp)s-updated; then\\
 \t\techo "make $(MAKEOPTS) all -C %(compile_dir)s";\\
 \t\tmake $(MAKEOPTS) all -C %(compile_dir)s;\\
 \telse\\
 \t\techo "%(name)s is up to date.";\\
 \tfi
-\t@if test ! -f %(stamp)s -o -f %(stamp)s-updated; then\\
+\t$(V)if test ! -f %(stamp)s -o -f %(stamp)s-updated; then\\
 \t\ttouch %(stamp)s;\\
 \t\techo "Compile updated, needs reinstall.";\\
 \tfi
-\t@echo "Success compiling %(name)s."
+\t$(V)echo "Success compiling %(name)s."
 """ % {"name": p.name,
        "srcdir": p.srcdir,
        "stamp": stamp_name_get(p.name, "compile"),
@@ -275,8 +276,8 @@ for p in pkgs:
     out.write("""
 %(stamp)s: %(compile_stamp)s %(name)s-install
 %(name)s-install: %(compile_stamp)s
-\t@echo "Installing %(name)s..."
-\t@if test ! %(stamp)s -o %(compile_stamp)s -nt %(stamp)s; then\\
+\t$(V)echo "Installing %(name)s..."
+\t$(V)if test ! %(stamp)s -o %(compile_stamp)s -nt %(stamp)s; then\\
 \t\trm -f %(stamp)s;\\
 \t\techo "make $(MAKEOPTS) install -C %(compile_dir)s";\\
 \t\tmake $(MAKEOPTS) install -C %(compile_dir)s;\\
@@ -285,7 +286,7 @@ for p in pkgs:
 \telse\\
 \t\techo "%(name)s did not change, not need to reinstall.";\\
 \tfi
-\t@echo "Success installing %(name)s."
+\t$(V)echo "Success installing %(name)s."
 """ % {"name": p.name,
        "srcdir": p.srcdir,
        "stamp": stamp_name_get(p.name, "install"),
@@ -298,9 +299,9 @@ for p in pkgs:
         out.write("""
 %(stamp)s: %(compile_stamp)s %(name)s-test
 %(name)s-test: %(compile_stamp)s
-\t@mkdir -p %(stampsdir)s
+\t$(V)mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
-\t@echo 'No test target defined for %(name)s'
+\t$(V)echo 'No test target defined for %(name)s'
 """ % {"name": p.name,
        "stamp": stamp_name_get(p.name, "test"),
        "compile_stamp": stamp_name_get(p.name, "compile"),
@@ -311,12 +312,12 @@ for p in pkgs:
         out.write("""
 %(stamp)s: %(compile_stamp)s %(name)s-test
 %(name)s-test: %(compile_stamp)s
-\t@echo "Testing (make %(target)s) %(name)s..."
-\t@rm -f %(stamp)s
+\t$(V)echo "Testing (make %(target)s) %(name)s..."
+\t$(V)rm -f %(stamp)s
 \tmake $(MAKEOPTS) %(target)s -C %(compile_dir)s
-\t@mkdir -p %(stampsdir)s
+\t$(V)mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
-\t@echo "Success testing (make %(target)s) %(name)s."
+\t$(V)echo "Success testing (make %(target)s) %(name)s."
 """ % {"name": p.name,
        "srcdir": p.srcdir,
        "stamp": stamp_name_get(p.name, "test"),
@@ -331,9 +332,9 @@ for p in pkgs:
         out.write("""
 %(stamp)s: %(compile_stamp)s %(name)s-doc
 %(name)s-doc: %(compile_stamp)s
-\t@mkdir -p %(stampsdir)s
+\t$(V)mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
-\t@echo 'No doc target defined for %(name)s'
+\t$(V)echo 'No doc target defined for %(name)s'
 """ % {"name": p.name,
        "stamp": stamp_name_get(p.name, "doc"),
        "compile_stamp": stamp_name_get(p.name, "compile"),
@@ -344,12 +345,12 @@ for p in pkgs:
         out.write("""
 %(stamp)s: %(compile_stamp)s %(name)s-doc
 %(name)s-doc: %(compile_stamp)s
-\t@echo "Generating documentation (make %(target)s) %(name)s..."
-\t@rm -f %(stamp)s
+\t$(V)echo "Generating documentation (make %(target)s) %(name)s..."
+\t$(V)rm -f %(stamp)s
 \tmake $(MAKEOPTS) %(target)s -C %(compile_dir)s
-\t@mkdir -p %(stampsdir)s
+\t$(V)mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
-\t@echo "Success generating documentation (make %(target)s) %(name)s."
+\t$(V)echo "Success generating documentation (make %(target)s) %(name)s."
 """ % {"name": p.name,
        "srcdir": p.srcdir,
        "stamp": stamp_name_get(p.name, "doc"),
@@ -363,12 +364,12 @@ for p in pkgs:
     out.write("""
 %(stamp)s: %(compile_stamp)s %(name)s-distcheck
 %(name)s-distcheck: %(compile_stamp)s
-\t@echo "Checking distribution %(name)s..."
-\t@rm -f %(stamp)s
+\t$(V)echo "Checking distribution %(name)s..."
+\t$(V)rm -f %(stamp)s
 \t%(env_export)smake $(MAKEOPTS) distcheck -C %(compile_dir)s
-\t@mkdir -p %(stampsdir)s
+\t$(V)mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
-\t@echo "Success checking distribution %(name)s."
+\t$(V)echo "Success checking distribution %(name)s."
 """ % {"name": p.name,
        "srcdir": p.srcdir,
        "stamp": stamp_name_get(p.name, "distcheck"),
