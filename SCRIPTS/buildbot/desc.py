@@ -77,6 +77,7 @@ Package(
 
 Package(
     name="evas",
+    test_target="check",
     doc_target="doc",
     dependencies={
         "common": ["eina", "eet"],
@@ -101,6 +102,7 @@ Package(
 
 Package(
     name="ecore",
+    test_target="check",
     doc_target="doc",
     dependencies={
         "common": ["eina", "evas"],
