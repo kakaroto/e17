@@ -980,14 +980,14 @@ _chrome_state_apply(Evas_Object *chrome, Evas_Object *view)
    _is_favorite_check(chrome, url);
    _history_update(url, title ? title : url);
 
-   old_icon = elm_entry_icon_unset(text_url);
+   old_icon = elm_object_part_content_unset(text_url, "icon");
 
    if (old_icon) evas_object_del(old_icon);
    if (url)
      {
         favicon = ewk_settings_icon_database_icon_object_add(url, canvas);
         if (favicon)
-           elm_entry_icon_set(text_url, favicon);
+           elm_object_part_content_set(text_url, "icon", favicon);
      }
 
    edje_object_signal_emit(ed, ewk_view_back_possible(view) ? "button,back,enable" : "button,back,disable", "");
