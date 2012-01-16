@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Mon Jan 16 19:02:27 2012.
+# Generated for linux at Mon Jan 16 21:10:42 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -120,7 +120,7 @@ eina-compile: $(BUILDROOT)/eina/stamps/configure
 $(BUILDROOT)/eina/stamps/install: $(BUILDROOT)/eina/stamps/compile eina-install
 eina-install: $(BUILDROOT)/eina/stamps/compile
 	$(V)echo "Installing eina..."
-	$(V)if test ! $(BUILDROOT)/eina/stamps/install -o $(BUILDROOT)/eina/stamps/compile -nt $(BUILDROOT)/eina/stamps/install; then\
+	$(V)if test ! -f $(BUILDROOT)/eina/stamps/install -o $(BUILDROOT)/eina/stamps/compile -nt $(BUILDROOT)/eina/stamps/install; then\
 		rm -f $(BUILDROOT)/eina/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/eina/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/eina/compile;\
@@ -225,7 +225,7 @@ eet-compile: $(BUILDROOT)/eet/stamps/configure
 $(BUILDROOT)/eet/stamps/install: $(BUILDROOT)/eet/stamps/compile eet-install
 eet-install: $(BUILDROOT)/eet/stamps/compile
 	$(V)echo "Installing eet..."
-	$(V)if test ! $(BUILDROOT)/eet/stamps/install -o $(BUILDROOT)/eet/stamps/compile -nt $(BUILDROOT)/eet/stamps/install; then\
+	$(V)if test ! -f $(BUILDROOT)/eet/stamps/install -o $(BUILDROOT)/eet/stamps/compile -nt $(BUILDROOT)/eet/stamps/install; then\
 		rm -f $(BUILDROOT)/eet/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/eet/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/eet/compile;\
@@ -336,7 +336,7 @@ evas-compile: $(BUILDROOT)/evas/stamps/configure
 $(BUILDROOT)/evas/stamps/install: $(BUILDROOT)/evas/stamps/compile evas-install
 evas-install: $(BUILDROOT)/evas/stamps/compile
 	$(V)echo "Installing evas..."
-	$(V)if test ! $(BUILDROOT)/evas/stamps/install -o $(BUILDROOT)/evas/stamps/compile -nt $(BUILDROOT)/evas/stamps/install; then\
+	$(V)if test ! -f $(BUILDROOT)/evas/stamps/install -o $(BUILDROOT)/evas/stamps/compile -nt $(BUILDROOT)/evas/stamps/install; then\
 		rm -f $(BUILDROOT)/evas/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/evas/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/evas/compile;\
@@ -449,7 +449,7 @@ ecore-compile: $(BUILDROOT)/ecore/stamps/configure
 $(BUILDROOT)/ecore/stamps/install: $(BUILDROOT)/ecore/stamps/compile ecore-install
 ecore-install: $(BUILDROOT)/ecore/stamps/compile
 	$(V)echo "Installing ecore..."
-	$(V)if test ! $(BUILDROOT)/ecore/stamps/install -o $(BUILDROOT)/ecore/stamps/compile -nt $(BUILDROOT)/ecore/stamps/install; then\
+	$(V)if test ! -f $(BUILDROOT)/ecore/stamps/install -o $(BUILDROOT)/ecore/stamps/compile -nt $(BUILDROOT)/ecore/stamps/install; then\
 		rm -f $(BUILDROOT)/ecore/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/ecore/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/ecore/compile;\
@@ -552,7 +552,7 @@ python-evas-compile: $(BUILDROOT)/python-evas/stamps/configure
 $(BUILDROOT)/python-evas/stamps/install: $(BUILDROOT)/python-evas/stamps/compile python-evas-install
 python-evas-install: $(BUILDROOT)/python-evas/stamps/compile
 	$(V)echo "Installing python-evas..."
-	$(V)if test ! $(BUILDROOT)/python-evas/stamps/install -o $(BUILDROOT)/python-evas/stamps/compile -nt $(BUILDROOT)/python-evas/stamps/install; then\
+	$(V)if test ! -f $(BUILDROOT)/python-evas/stamps/install -o $(BUILDROOT)/python-evas/stamps/compile -nt $(BUILDROOT)/python-evas/stamps/install; then\
 		rm -f $(BUILDROOT)/python-evas/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/python-evas/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/python-evas/compile;\
@@ -649,7 +649,7 @@ embryo-compile: $(BUILDROOT)/embryo/stamps/configure
 $(BUILDROOT)/embryo/stamps/install: $(BUILDROOT)/embryo/stamps/compile embryo-install
 embryo-install: $(BUILDROOT)/embryo/stamps/compile
 	$(V)echo "Installing embryo..."
-	$(V)if test ! $(BUILDROOT)/embryo/stamps/install -o $(BUILDROOT)/embryo/stamps/compile -nt $(BUILDROOT)/embryo/stamps/install; then\
+	$(V)if test ! -f $(BUILDROOT)/embryo/stamps/install -o $(BUILDROOT)/embryo/stamps/compile -nt $(BUILDROOT)/embryo/stamps/install; then\
 		rm -f $(BUILDROOT)/embryo/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/embryo/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/embryo/compile;\
@@ -746,7 +746,7 @@ edje-compile: $(BUILDROOT)/edje/stamps/configure
 $(BUILDROOT)/edje/stamps/install: $(BUILDROOT)/edje/stamps/compile edje-install
 edje-install: $(BUILDROOT)/edje/stamps/compile
 	$(V)echo "Installing edje..."
-	$(V)if test ! $(BUILDROOT)/edje/stamps/install -o $(BUILDROOT)/edje/stamps/compile -nt $(BUILDROOT)/edje/stamps/install; then\
+	$(V)if test ! -f $(BUILDROOT)/edje/stamps/install -o $(BUILDROOT)/edje/stamps/compile -nt $(BUILDROOT)/edje/stamps/install; then\
 		rm -f $(BUILDROOT)/edje/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/edje/compile";\
 		make $(MAKEOPTS) install -C $(BUILDROOT)/edje/compile;\

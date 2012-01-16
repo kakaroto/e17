@@ -277,7 +277,7 @@ for p in pkgs:
 %(stamp)s: %(compile_stamp)s %(name)s-install
 %(name)s-install: %(compile_stamp)s
 \t$(V)echo "Installing %(name)s..."
-\t$(V)if test ! %(stamp)s -o %(compile_stamp)s -nt %(stamp)s; then\\
+\t$(V)if test ! -f %(stamp)s -o %(compile_stamp)s -nt %(stamp)s; then\\
 \t\trm -f %(stamp)s;\\
 \t\techo "make $(MAKEOPTS) install -C %(compile_dir)s";\\
 \t\tmake $(MAKEOPTS) install -C %(compile_dir)s;\\
