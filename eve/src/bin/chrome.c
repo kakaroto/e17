@@ -1318,7 +1318,7 @@ chrome_config_apply(Evas_Object *chrome)
    ewk_view_setting_private_browsing_set(view, config_enable_private_mode_get(config));
    ewk_view_setting_auto_load_images_set(view, config_enable_auto_load_images_get(config));
    ewk_view_setting_auto_shrink_images_set(view, config_enable_auto_shrink_images_get(config));
-   ewk_view_setting_scripts_window_open_set(view, config_allow_popup_get(config));
+   ewk_view_setting_scripts_can_open_windows_set(view, config_allow_popup_get(config));
    view_touch_interface_set(view, config_enable_touch_interface_get(config));
    window_mouse_enabled_set(win->win, config_enable_mouse_cursor_get(config));
    ewk_view_text_zoom_set(view, config_text_zoom_get(config));
@@ -1377,7 +1377,7 @@ conf_updated(More_Menu_Config *mmc, void *new_value)
       }
    case EVE_CONFIG_POPUP_ALLOW:
       {
-         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_scripts_window_open_set, *((int *)new_value));
+         SET_PREF_TO_ALL_VIEWS(ewk_view_setting_scripts_can_open_windows_set, *((int *)new_value));
          break;
       }
     case EVE_CONFIG_TEXT_ONLY_ZOOM:
