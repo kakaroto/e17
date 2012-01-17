@@ -167,7 +167,6 @@ _elsa_gui_login(Elsa_Screen *screen)
    char *h, *s;
    h = elsa_gui_user_get(screen);
    s = elsa_gui_password_get(screen);
-   printf("---- %s %s\n", h, s);
    if (h && s)
      {
         if (strcmp(h, "") && strcmp(s, ""))
@@ -399,11 +398,14 @@ elsa_gui_init(const char *theme)
         evas_object_resize(screen->win, w, h);
         ecore_x_window_move(xw, x, y);
         evas_object_show(screen->win);
+     }
+   if (_gui->screens)
+     {
         /* tricky situation. we are not normally running with a wm and thus
          * have to set focus to our window so things work right */
+        screen = _gui->screens->data;
         ecore_evas_focus_set
-           (ecore_evas_ecore_evas_get
-            (evas_object_evas_get(screen->win)), 1);
+           (ecore_evas_ecore_evas_get(evas_object_evas_get(screen->win)), 1);
      }
    return 0;
 
