@@ -52,3 +52,8 @@
 2011-12-10  Mike Blumenkrantz
 
         * Fixed use of eina_log in enotify-daemon
+
+2012-01-17 Dave Andreoli
+
+        * Fixed use of the 'object path' type in ukit
+

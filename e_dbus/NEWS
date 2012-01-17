@@ -5,6 +5,7 @@ Changes since E_dbus 1.1.0:
 
 Improvements:
    enotify: Fixed use of dbus_message_iter_open_container to prevent crashing when sending an image
+   eukit: Correctly handle the dbus type 'object path', it is a string after all
 
 
 E_dbus 1.1.0

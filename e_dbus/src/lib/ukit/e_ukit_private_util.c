@@ -32,6 +32,7 @@ unmarshal_property(DBusMessage *msg, DBusError *err)
         switch(type)
           {
              case DBUS_TYPE_STRING:
+             case DBUS_TYPE_OBJECT_PATH:
                ret->type = E_UKIT_PROPERTY_TYPE_STRING;
                dbus_message_iter_get_basic(&a_iter, &tmp);
                ret->val.s = eina_stringshare_add(tmp);
@@ -140,6 +141,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
       switch(type)
         {
            case DBUS_TYPE_STRING:
+           case DBUS_TYPE_OBJECT_PATH:
              prop->type = E_UKIT_PROPERTY_TYPE_STRING;
              dbus_message_iter_get_basic(&v_iter, &tmp);
              prop->val.s = eina_stringshare_add(tmp);
