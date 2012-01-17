@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for win at Tue Jan 17 10:04:14 2012.
+# Generated for win at Tue Jan 17 10:23:51 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.win win
@@ -10,6 +10,7 @@
 #   - eet
 #   - evas
 #   - ecore
+#   - efreet
 #   - python-evas
 #   - embryo
 #   - edje
@@ -21,7 +22,7 @@ MAKEOPTS = --print-directory -j2
 V=@
 
 .DEFAULT: missing-target
-.PHONY: missing-target help all clean evil-compile evil-clean evil-dependencies evil-install evil-test evil-doc evil-distcheck evil-all-users-compile evil-direct-users-compile eina-compile eina-clean eina-dependencies eina-install eina-test eina-doc eina-distcheck eina-all-users-compile eina-direct-users-compile eet-compile eet-clean eet-dependencies eet-install eet-test eet-doc eet-distcheck eet-all-users-compile eet-direct-users-compile evas-compile evas-clean evas-dependencies evas-install evas-test evas-doc evas-distcheck evas-all-users-compile evas-direct-users-compile ecore-compile ecore-clean ecore-dependencies ecore-install ecore-test ecore-doc ecore-distcheck ecore-all-users-compile ecore-direct-users-compile python-evas-compile python-evas-clean python-evas-dependencies python-evas-install python-evas-test python-evas-doc python-evas-distcheck python-evas-all-users-compile python-evas-direct-users-compile embryo-compile embryo-clean embryo-dependencies embryo-install embryo-test embryo-doc embryo-distcheck embryo-all-users-compile embryo-direct-users-compile edje-compile edje-clean edje-dependencies edje-install edje-test edje-doc edje-distcheck edje-all-users-compile edje-direct-users-compile
+.PHONY: missing-target help all clean evil-compile evil-clean evil-dependencies evil-install evil-test evil-doc evil-distcheck evil-all-users-compile evil-direct-users-compile eina-compile eina-clean eina-dependencies eina-install eina-test eina-doc eina-distcheck eina-all-users-compile eina-direct-users-compile eet-compile eet-clean eet-dependencies eet-install eet-test eet-doc eet-distcheck eet-all-users-compile eet-direct-users-compile evas-compile evas-clean evas-dependencies evas-install evas-test evas-doc evas-distcheck evas-all-users-compile evas-direct-users-compile ecore-compile ecore-clean ecore-dependencies ecore-install ecore-test ecore-doc ecore-distcheck ecore-all-users-compile ecore-direct-users-compile efreet-compile efreet-clean efreet-dependencies efreet-install efreet-test efreet-doc efreet-distcheck efreet-all-users-compile efreet-direct-users-compile python-evas-compile python-evas-clean python-evas-dependencies python-evas-install python-evas-test python-evas-doc python-evas-distcheck python-evas-all-users-compile python-evas-direct-users-compile embryo-compile embryo-clean embryo-dependencies embryo-install embryo-test embryo-doc embryo-distcheck embryo-all-users-compile embryo-direct-users-compile edje-compile edje-clean edje-dependencies edje-install edje-test edje-doc edje-distcheck edje-all-users-compile edje-direct-users-compile
 
 missing-target:
 	@echo "Missing target."
@@ -52,14 +53,14 @@ help:
 	@echo "   PACKAGE-direct-users-compile compile all direct users of package."
 	@echo ""
 	@echo "Known packages:"
-	@echo "   evil eina eet evas ecore python-evas embryo edje"
+	@echo "   evil eina eet evas ecore efreet python-evas embryo edje"
 	@echo ""
 
-all: evil-compile eina-compile eet-compile evas-compile ecore-compile python-evas-compile embryo-compile edje-compile
-clean: evil-clean eina-clean eet-clean evas-clean ecore-clean python-evas-clean embryo-clean edje-clean
-test: evil-test eina-test eet-test evas-test ecore-test python-evas-test embryo-test edje-test
-doc: evil-doc eina-doc eet-doc evas-doc ecore-doc python-evas-doc embryo-doc edje-doc
-distcheck: evil-distcheck eina-distcheck eet-distcheck evas-distcheck ecore-distcheck python-evas-distcheck embryo-distcheck edje-distcheck
+all: evil-compile eina-compile eet-compile evas-compile ecore-compile efreet-compile python-evas-compile embryo-compile edje-compile
+clean: evil-clean eina-clean eet-clean evas-clean ecore-clean efreet-clean python-evas-clean embryo-clean edje-clean
+test: evil-test eina-test eet-test evas-test ecore-test efreet-test python-evas-test embryo-test edje-test
+doc: evil-doc eina-doc eet-doc evas-doc ecore-doc efreet-doc python-evas-doc embryo-doc edje-doc
+distcheck: evil-distcheck eina-distcheck eet-distcheck evas-distcheck ecore-distcheck efreet-distcheck python-evas-distcheck embryo-distcheck edje-distcheck
 
 ########################################################################
 # evil rules
@@ -154,9 +155,9 @@ evil-distcheck: $(BUILDROOT)/evil/stamps/compile
 	touch $(BUILDROOT)/evil/stamps/distcheck
 	$(V)echo "Success checking distribution evil."
 
-evil-direct-users-compile: embryo-compile edje-compile eet-compile eina-compile evas-compile ecore-compile
+evil-direct-users-compile: embryo-compile edje-compile eet-compile efreet-compile eina-compile evas-compile ecore-compile
 
-evil-all-users-compile: embryo-compile edje-compile python-evas-compile evas-compile eina-compile eet-compile ecore-compile
+evil-all-users-compile: embryo-compile edje-compile python-evas-compile evas-compile efreet-compile eina-compile eet-compile ecore-compile
 
 ########################################################################
 # eina rules
@@ -260,9 +261,9 @@ eina-distcheck: $(BUILDROOT)/eina/stamps/compile
 	touch $(BUILDROOT)/eina/stamps/distcheck
 	$(V)echo "Success checking distribution eina."
 
-eina-direct-users-compile: embryo-compile edje-compile eet-compile ecore-compile evas-compile
+eina-direct-users-compile: embryo-compile edje-compile eet-compile efreet-compile evas-compile ecore-compile
 
-eina-all-users-compile: embryo-compile edje-compile python-evas-compile evas-compile eet-compile ecore-compile
+eina-all-users-compile: embryo-compile edje-compile python-evas-compile evas-compile efreet-compile eet-compile ecore-compile
 
 ########################################################################
 # eet rules
@@ -365,9 +366,9 @@ eet-distcheck: $(BUILDROOT)/eet/stamps/compile
 	touch $(BUILDROOT)/eet/stamps/distcheck
 	$(V)echo "Success checking distribution eet."
 
-eet-direct-users-compile: edje-compile evas-compile
+eet-direct-users-compile: edje-compile evas-compile efreet-compile
 
-eet-all-users-compile: edje-compile evas-compile ecore-compile python-evas-compile
+eet-all-users-compile: edje-compile evas-compile ecore-compile efreet-compile python-evas-compile
 
 ########################################################################
 # evas rules
@@ -476,7 +477,7 @@ evas-distcheck: $(BUILDROOT)/evas/stamps/compile
 
 evas-direct-users-compile: edje-compile python-evas-compile ecore-compile
 
-evas-all-users-compile: edje-compile python-evas-compile ecore-compile
+evas-all-users-compile: edje-compile python-evas-compile efreet-compile ecore-compile
 
 ########################################################################
 # ecore rules
@@ -585,9 +586,114 @@ ecore-distcheck: $(BUILDROOT)/ecore/stamps/compile
 	touch $(BUILDROOT)/ecore/stamps/distcheck
 	$(V)echo "Success checking distribution ecore."
 
-ecore-direct-users-compile: edje-compile
+ecore-direct-users-compile: edje-compile efreet-compile
 
-ecore-all-users-compile: edje-compile
+ecore-all-users-compile: edje-compile efreet-compile
+
+########################################################################
+# efreet rules
+efreet-dependencies: $(BUILDROOT)/efreet/stamps/dependencies eina-install ecore-install evil-install eet-install
+$(BUILDROOT)/efreet/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/ecore/stamps/install $(BUILDROOT)/evil/stamps/install $(BUILDROOT)/eet/stamps/install
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/dependencies
+
+efreet-clean:
+	if test -d $(BUILDROOT)/efreet/compile; then chmod -R u+w $(BUILDROOT)/efreet/compile; fi
+	rm -fr $(BUILDROOT)/efreet/compile
+	rm -fr $(BUILDROOT)/efreet/stamps
+
+$(BUILDROOT)/efreet/stamps/autogen: $(SRCROOT)/efreet/autogen.sh $(SRCROOT)/efreet/configure.ac
+	$(V)echo "Running 'autogen.sh' for efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/autogen
+	cd $(SRCROOT)/efreet && NOCONFIGURE=1 ./autogen.sh
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/autogen
+	$(V)echo "Success running 'autogen.sh' for efreet."
+
+$(BUILDROOT)/efreet/stamps/configure: $(BUILDROOT)/efreet/stamps/autogen $(BUILDROOT)/efreet/stamps/dependencies
+	$(V)echo "Configuring efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/efreet/compile
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
+	cd $(BUILDROOT)/efreet/compile && \
+	$(SRCROOT)/efreet/configure --prefix=$(INSTALLROOT) --enable-tests \
+		--enable-doc \
+		--enable-coverage
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/configure
+	$(V)echo "Success configuring efreet."
+
+$(BUILDROOT)/efreet/stamps/compile: $(BUILDROOT)/efreet/stamps/configure efreet-compile
+efreet-compile: $(BUILDROOT)/efreet/stamps/configure
+	$(V)echo "Compiling efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+		touch $(BUILDROOT)/efreet/stamps/compile-updated;\
+	fi
+	$(V)if test -f $(BUILDROOT)/efreet/stamps/compile-updated; then\
+		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile";\
+		make $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile;\
+	else\
+		echo "efreet is up to date.";\
+	fi
+	$(V)if test ! -f $(BUILDROOT)/efreet/stamps/compile -o -f $(BUILDROOT)/efreet/stamps/compile-updated; then\
+		touch $(BUILDROOT)/efreet/stamps/compile;\
+		echo "Compile updated, needs reinstall.";\
+	fi
+	$(V)echo "Success compiling efreet."
+
+$(BUILDROOT)/efreet/stamps/install: $(BUILDROOT)/efreet/stamps/compile efreet-install
+efreet-install: $(BUILDROOT)/efreet/stamps/compile
+	$(V)echo "Installing efreet..."
+	$(V)if test ! -f $(BUILDROOT)/efreet/stamps/install -o $(BUILDROOT)/efreet/stamps/compile -nt $(BUILDROOT)/efreet/stamps/install; then\
+		rm -f $(BUILDROOT)/efreet/stamps/install;\
+		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/efreet/compile";\
+		make $(MAKEOPTS) install -C $(BUILDROOT)/efreet/compile;\
+		mkdir -p $(BUILDROOT)/efreet/stamps;\
+		touch $(BUILDROOT)/efreet/stamps/install;\
+	else\
+		echo "efreet did not change, not need to reinstall.";\
+	fi
+	$(V)echo "Success installing efreet."
+
+$(BUILDROOT)/efreet/stamps/test: $(BUILDROOT)/efreet/stamps/compile efreet-test
+efreet-test: $(BUILDROOT)/efreet/stamps/compile
+	$(V)echo "Testing (make check) efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/test
+	make $(MAKEOPTS) check -C $(BUILDROOT)/efreet/compile
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/test
+	$(V)echo "Success testing (make check) efreet."
+
+$(BUILDROOT)/efreet/stamps/doc: $(BUILDROOT)/efreet/stamps/compile efreet-doc
+efreet-doc: $(BUILDROOT)/efreet/stamps/compile
+	$(V)echo "Generating documentation (make doc) efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/doc
+	make $(MAKEOPTS) doc -C $(BUILDROOT)/efreet/compile
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/doc
+	$(V)echo "Success generating documentation (make doc) efreet."
+
+$(BUILDROOT)/efreet/stamps/distcheck: $(BUILDROOT)/efreet/stamps/compile efreet-distcheck
+efreet-distcheck: $(BUILDROOT)/efreet/stamps/compile
+	$(V)echo "Checking distribution efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow";\
+	export LDFLAGS="$${LDFLAGS}";\
+	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/efreet/compile
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/distcheck
+	$(V)echo "Success checking distribution efreet."
+
+efreet-direct-users-compile:
+
+efreet-all-users-compile:
 
 ########################################################################
 # python-evas rules

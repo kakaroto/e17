@@ -153,6 +153,59 @@ Package(
     )
 
 Package(
+    name="efreet",
+    test_target="check",
+    doc_target="doc",
+    dependencies={
+        "common": ["eina", "eet", "ecore"],
+        "win": ["evil"],
+        },
+    configure_flags={
+        "common": [
+            "--enable-tests",
+            "--enable-doc",
+            "--enable-coverage",
+            ],
+        },
+    )
+
+Package(
+    name="eeze",
+    doc_target="doc",
+    exclusive_platforms=["linux"],
+    dependencies={
+        "common": ["eina", "eet", "ecore"],
+        },
+    configure_flags={
+        "common": [
+            "--enable-doc",
+            "--with-mount",
+            "--with-umount",
+            "--with-eject",
+            ],
+        },
+    )
+
+Package(
+    name="e_dbus",
+    doc_target="doc",
+    exclusive_platforms=["linux"],
+    dependencies={
+        "common": ["eina", "ecore", "evas"],
+        },
+    configure_flags={
+        "common": [
+            "--enable-doc",
+            "--enable-ebluez",
+            "--enable-econnman0_7x",
+            "--enable-enotify",
+            "--enable-eofono",
+            "--enable-eukit",
+            ],
+        },
+    )
+
+Package(
     name="python-evas",
     srcdir="BINDINGS/python/python-evas",
     dependencies={"common": ["evas"]},
