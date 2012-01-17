@@ -43,7 +43,7 @@ Package(
 
 Package(
     name="eina",
-    test_target="coverage",
+    test_target="check",
     doc_target="doc",
     dependencies={
         "win": ["evil"],
@@ -60,7 +60,7 @@ Package(
 
 Package(
     name="eet",
-    test_target="coverage",
+    test_target="check",
     doc_target="doc",
     dependencies={
         "common": ["eina"],
@@ -77,7 +77,7 @@ Package(
 
 Package(
     name="evas",
-    test_target="coverage",
+    test_target="check",
     doc_target="doc",
     dependencies={
         "common": ["eina", "eet"],
@@ -137,7 +137,7 @@ Package(
 
 Package(
     name="edje",
-    test_target="coverage",
+    test_target="check",
     doc_target="doc",
     dependencies={
         "common": ["eina", "eet", "evas", "ecore", "embryo"],
