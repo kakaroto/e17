@@ -168,7 +168,7 @@ extern int __log_domain;
 static inline Eina_Bool
 _ephoto_eina_file_direct_info_image_useful(const Eina_File_Direct_Info *info)
 {
-   const char /* *type, */ *bname, *ext;
+   const char /* *type, */ *bname;
 
    bname = info->path + info->name_start;
    if (bname[0] == '.') return EINA_FALSE;
