@@ -163,7 +163,7 @@ styles {
 	}
 	style {
 		name: "notification_style";
-		base: "font="FONT" font_size="TEXT_SIZE" align=left color=#ccccccff wrap=word ellipsis=1.0";
+		base: "font="FONT" font_size="TEXT_SIZE" align=left color=#ccccccff wrap=mixed ellipsis=1.0";
 		tag:  "subject"  "+ font_size="TEXT_SIZE_SMALL"";
 		tag:  "body"  "+ font_size="TEXT_SIZE_SMALL"";
 		tag:  "br" "\n";
