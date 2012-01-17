@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Mon Jan 16 21:10:42 2012.
+# Generated for linux at Mon Jan 16 22:25:56 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -133,12 +133,12 @@ eina-install: $(BUILDROOT)/eina/stamps/compile
 
 $(BUILDROOT)/eina/stamps/test: $(BUILDROOT)/eina/stamps/compile eina-test
 eina-test: $(BUILDROOT)/eina/stamps/compile
-	$(V)echo "Testing (make check) eina..."
+	$(V)echo "Testing (make coverage) eina..."
 	$(V)rm -f $(BUILDROOT)/eina/stamps/test
-	make $(MAKEOPTS) check -C $(BUILDROOT)/eina/compile
+	make $(MAKEOPTS) coverage -C $(BUILDROOT)/eina/compile
 	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/test
-	$(V)echo "Success testing (make check) eina."
+	$(V)echo "Success testing (make coverage) eina."
 
 $(BUILDROOT)/eina/stamps/doc: $(BUILDROOT)/eina/stamps/compile eina-doc
 eina-doc: $(BUILDROOT)/eina/stamps/compile
@@ -238,12 +238,12 @@ eet-install: $(BUILDROOT)/eet/stamps/compile
 
 $(BUILDROOT)/eet/stamps/test: $(BUILDROOT)/eet/stamps/compile eet-test
 eet-test: $(BUILDROOT)/eet/stamps/compile
-	$(V)echo "Testing (make check) eet..."
+	$(V)echo "Testing (make coverage) eet..."
 	$(V)rm -f $(BUILDROOT)/eet/stamps/test
-	make $(MAKEOPTS) check -C $(BUILDROOT)/eet/compile
+	make $(MAKEOPTS) coverage -C $(BUILDROOT)/eet/compile
 	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/test
-	$(V)echo "Success testing (make check) eet."
+	$(V)echo "Success testing (make coverage) eet."
 
 $(BUILDROOT)/eet/stamps/doc: $(BUILDROOT)/eet/stamps/compile eet-doc
 eet-doc: $(BUILDROOT)/eet/stamps/compile
@@ -349,12 +349,12 @@ evas-install: $(BUILDROOT)/evas/stamps/compile
 
 $(BUILDROOT)/evas/stamps/test: $(BUILDROOT)/evas/stamps/compile evas-test
 evas-test: $(BUILDROOT)/evas/stamps/compile
-	$(V)echo "Testing (make check) evas..."
+	$(V)echo "Testing (make coverage) evas..."
 	$(V)rm -f $(BUILDROOT)/evas/stamps/test
-	make $(MAKEOPTS) check -C $(BUILDROOT)/evas/compile
+	make $(MAKEOPTS) coverage -C $(BUILDROOT)/evas/compile
 	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/test
-	$(V)echo "Success testing (make check) evas."
+	$(V)echo "Success testing (make coverage) evas."
 
 $(BUILDROOT)/evas/stamps/doc: $(BUILDROOT)/evas/stamps/compile evas-doc
 evas-doc: $(BUILDROOT)/evas/stamps/compile
@@ -718,7 +718,9 @@ $(BUILDROOT)/edje/stamps/configure: $(BUILDROOT)/edje/stamps/autogen $(BUILDROOT
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/edje/compile && \
-	$(SRCROOT)/edje/configure --prefix=$(INSTALLROOT) 
+	$(SRCROOT)/edje/configure --prefix=$(INSTALLROOT) --enable-tests \
+		--enable-doc \
+		--enable-coverage
 	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/configure
 	$(V)echo "Success configuring edje."
@@ -759,9 +761,12 @@ edje-install: $(BUILDROOT)/edje/stamps/compile
 
 $(BUILDROOT)/edje/stamps/test: $(BUILDROOT)/edje/stamps/compile edje-test
 edje-test: $(BUILDROOT)/edje/stamps/compile
+	$(V)echo "Testing (make coverage) edje..."
+	$(V)rm -f $(BUILDROOT)/edje/stamps/test
+	make $(MAKEOPTS) coverage -C $(BUILDROOT)/edje/compile
 	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/test
-	$(V)echo 'No test target defined for edje'
+	$(V)echo "Success testing (make coverage) edje."
 
 $(BUILDROOT)/edje/stamps/doc: $(BUILDROOT)/edje/stamps/compile edje-doc
 edje-doc: $(BUILDROOT)/edje/stamps/compile
