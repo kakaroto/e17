@@ -319,7 +319,7 @@ static void
 enjoy_module_unload(void)
 {
    if (!app.modules) return;
-   while (eina_array_count_get(app.modules))
+   while (eina_array_count(app.modules))
       eina_module_unload(eina_array_pop(app.modules));
    eina_array_free(app.modules);
    app.modules = NULL;
