@@ -52,7 +52,7 @@ Package(
         "common": [
             "--enable-doc",
             "--enable-tests",
-            "--enable-coverage",
+            #"--enable-coverage",
             "--enable-benchmark",
             ],
         },
@@ -70,7 +70,7 @@ Package(
         "common": [
             "--enable-doc",
             "--enable-tests",
-            "--enable-coverage",
+            #"--enable-coverage",
             ],
         },
     )
@@ -87,7 +87,7 @@ Package(
         "common": [
             "--enable-doc",
             "--enable-tests",
-            "--enable-coverage",
+            #"--enable-coverage",
             "--enable-buffer",
             "--enable-convert-yuv",
             "--enable-async-events",
@@ -147,7 +147,7 @@ Package(
         "common": [
             "--enable-tests",
             "--enable-doc",
-            "--enable-coverage",
+            #"--enable-coverage",
             ],
         },
     )
@@ -164,7 +164,7 @@ Package(
         "common": [
             "--enable-tests",
             "--enable-doc",
-            "--enable-coverage",
+            #"--enable-coverage",
             ],
         },
     )

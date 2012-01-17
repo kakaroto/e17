@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Tue Jan 17 10:23:54 2012.
+# Generated for linux at Tue Jan 17 12:50:37 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -94,7 +94,6 @@ $(BUILDROOT)/eina/stamps/configure: $(BUILDROOT)/eina/stamps/autogen $(BUILDROOT
 	cd $(BUILDROOT)/eina/compile && \
 	$(SRCROOT)/eina/configure --prefix=$(INSTALLROOT) --enable-doc \
 		--enable-tests \
-		--enable-coverage \
 		--enable-benchmark
 	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/configure
@@ -199,8 +198,7 @@ $(BUILDROOT)/eet/stamps/configure: $(BUILDROOT)/eet/stamps/autogen $(BUILDROOT)/
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/eet/compile && \
 	$(SRCROOT)/eet/configure --prefix=$(INSTALLROOT) --enable-doc \
-		--enable-tests \
-		--enable-coverage
+		--enable-tests
 	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/configure
 	$(V)echo "Success configuring eet."
@@ -305,7 +303,6 @@ $(BUILDROOT)/evas/stamps/configure: $(BUILDROOT)/evas/stamps/autogen $(BUILDROOT
 	cd $(BUILDROOT)/evas/compile && \
 	$(SRCROOT)/evas/configure --prefix=$(INSTALLROOT) --enable-doc \
 		--enable-tests \
-		--enable-coverage \
 		--enable-buffer \
 		--enable-convert-yuv \
 		--enable-async-events \
@@ -528,8 +525,7 @@ $(BUILDROOT)/efreet/stamps/configure: $(BUILDROOT)/efreet/stamps/autogen $(BUILD
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/efreet/compile && \
 	$(SRCROOT)/efreet/configure --prefix=$(INSTALLROOT) --enable-tests \
-		--enable-doc \
-		--enable-coverage
+		--enable-doc
 	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
 	touch $(BUILDROOT)/efreet/stamps/configure
 	$(V)echo "Success configuring efreet."
@@ -1035,8 +1031,7 @@ $(BUILDROOT)/edje/stamps/configure: $(BUILDROOT)/edje/stamps/autogen $(BUILDROOT
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/edje/compile && \
 	$(SRCROOT)/edje/configure --prefix=$(INSTALLROOT) --enable-tests \
-		--enable-doc \
-		--enable-coverage
+		--enable-doc
 	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/configure
 	$(V)echo "Success configuring edje."
