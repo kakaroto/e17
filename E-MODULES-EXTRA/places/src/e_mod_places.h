@@ -14,6 +14,7 @@ typedef struct _Volume
    const char *udi;
    const char *label;
    const char *uuid;
+   const char *device;
    unsigned char mounted;
    const char *mount_point;
    const char *fstype;

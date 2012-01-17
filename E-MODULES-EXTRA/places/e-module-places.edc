@@ -45,6 +45,81 @@ collections
       }
    }
 /****************************************************/
+/**  GADGET HEADER  *********************************/
+/****************************************************/
+   group {
+      name: "modules/places/header";
+      min: 90 35;
+      max: 384 60;
+      parts {
+         part { name: "bg";
+            mouse_events: 1;
+            type: RECT;
+            description { state: "default" 0.0;
+               color: 50 100 50 255;
+               // color: 50 0 50 200;
+            }
+         }
+         part { name: "label";
+            mouse_events: 0;
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            description { state: "default" 0.0;
+               color: 255 255 255 255;
+               color3: 0 0 0 60;
+               text {
+                  font: "Sans:style=Bold";
+                  size: 14;
+                  text: "Places";
+                  align: 0.5 0.5;
+                  text_class: "module_large";
+               }
+            }
+         }
+         part { name: "separator";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 0.0 0.0;
+               color: 0 0 0 0;
+            }
+            description { state: "horiz" 0.0;
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 1.0;
+               rel1.offset: 0 -1;
+               color: 0 0 0 255;
+            }
+            description { state: "vert" 0.0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 1.0 1.0;
+               rel1.offset: -1 0;
+               color: 0 0 0 255;
+            }
+         }
+      }
+      programs {
+         program { name: "set_separator_horiz";
+            signal: "separator,set,horiz";
+            source: "places";
+            action: STATE_SET "horiz" 0.0;
+            target: "separator";
+         }
+         program { name: "set_separator_vert";
+            signal: "separator,set,vert";
+            source: "places";
+            action: STATE_SET "vert" 0.0;
+            target: "separator";
+         }
+         program { name: "set_separator_hidden";
+            signal: "separator,set,hidden";
+            source: "places";
+            action: STATE_SET "default" 0.0;
+            target: "separator";
+         }
+      }
+   }
+/****************************************************/
 /**  GADGET VOLUME  *********************************/
 /****************************************************/
    group { name: "modules/places/main";
@@ -140,7 +215,6 @@ collections
             mouse_events: 0;
             clip_to: "icon_clip";
             description { state: "default" 0.0;
-               image.normal: "tag_ext3.png";
                rel1.to: "icon";
                rel2.relative: 0.5 0.5;
                rel2.to: "icon";
@@ -250,7 +324,8 @@ collections
             type: TEXT;
             effect: SOFT_SHADOW;
             description { state: "default" 0.0;
-               rel1.relative: 0.25 0.1;
+               rel1.relative: 0.0 0.1;
+               rel1.offset: 52 0;
                rel2.relative: 0.98 0.40;
                rel2.to: "bg";
                color: 255 255 255 255;
@@ -346,14 +421,15 @@ collections
             mouse_events: 1;
             type: IMAGE;
             description { state: "default" 0.0;
-               rel1.relative: 1.0 0.0;
-               rel1.offset: -30 10;
-               rel2.offset: 0 -10;
                image {normal: "eject.png";}
+               rel1.relative: 1.0 0.0;
+               rel1.offset: -2 10;
+               rel2.offset: 0 -10;
                visible: 0;
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
+               rel1.offset: -30 10;
                visible: 1;
             }
          }

@@ -35,7 +35,7 @@ static const E_Gadcon_Client_Class _gc_class =
    GADCON_CLIENT_CLASS_VERSION, "Places",
      {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon,
           _gc_id_new, _gc_id_del, e_gadcon_site_is_not_toolbar},
-   E_GADCON_CLIENT_STYLE_PLAIN
+   E_GADCON_CLIENT_STYLE_INSET
 };
 
 EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Places"};
@@ -234,6 +234,12 @@ static void
 _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
 {
    Instance *inst;
+   Volume *v;
+   Eina_List *l;
+   int count = 1;
+
+   EINA_LIST_FOREACH(volumes, l, v)
+      if (v->valid) count++;
 
    inst = gcc->data;
    switch (orient)
@@ -245,8 +251,8 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_TR:
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
-        e_gadcon_client_aspect_set(gcc, 100 * eina_list_count(volumes), 50);
-        e_gadcon_client_min_size_set(gcc, 100 * eina_list_count(volumes), 50);
+        e_gadcon_client_aspect_set(gcc, 100 * count, 60);
+        e_gadcon_client_min_size_set(gcc, 100 * count, 60);
         e_box_orientation_set(inst->o_box, 1);
         break;
       case E_GADCON_ORIENT_FLOAT:
@@ -257,8 +263,8 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_RT:
       case E_GADCON_ORIENT_CORNER_LB:
       case E_GADCON_ORIENT_CORNER_RB:
-        e_gadcon_client_aspect_set(gcc, 200, 50 * eina_list_count(volumes) + 30);
-        e_gadcon_client_min_size_set(gcc, 200, 50 * eina_list_count(volumes) + 30);
+        e_gadcon_client_aspect_set(gcc, 200, 50 * count);
+        e_gadcon_client_min_size_set(gcc, 200, 50 * count);
         e_box_orientation_set(inst->o_box, 0);
         break;
       default:
@@ -406,7 +412,7 @@ _places_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         zone = e_util_zone_current_get(e_manager_current_get());
 
         /* create popup menu */
-	m = e_menu_new();
+        m = e_menu_new();
 
         mi = e_menu_item_new(m);
         e_menu_item_label_set(mi, D_("Settings"));
