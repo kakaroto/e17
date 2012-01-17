@@ -1,4 +1,4 @@
-   group { name: "elm/toggle/base/ewebkit";
+   group { name: "elm/check/base/ewebkit";
       images {
          image: "toggle_bg.png" COMP;
          image: "toggle_on.png" COMP;
