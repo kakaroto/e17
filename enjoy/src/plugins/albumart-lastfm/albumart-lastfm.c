@@ -41,7 +41,7 @@ albumart_lastfm_prefs_label_get(Enjoy_Preferences_Plugin *p __UNUSED__)
 }
 
 static Eina_Bool
-albumart_lastfm_prefs_activated(Enjoy_Preferences_Plugin *p __UNUSED__, Evas_Object *naviframe, Evas_Object **prev_btn, Evas_Object **next_btn, Evas_Object **content, Eina_Bool *auto_prev_btn)
+albumart_lastfm_prefs_activated(Enjoy_Preferences_Plugin *p __UNUSED__, Evas_Object *naviframe __UNUSED__, Evas_Object **prev_btn __UNUSED__, Evas_Object **next_btn __UNUSED__, Evas_Object **content __UNUSED__, Eina_Bool *auto_prev_btn __UNUSED__)
 {
    // TODO
    ERR("TODO!!!");
