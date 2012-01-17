@@ -54,7 +54,7 @@ _set_clicked(void *data,
    const char *selected = NULL;
    Elm_Object_Item *list_it = elm_list_selected_item_get(list);
    if (list_it)
-      selected = elm_list_item_label_get(list_it);
+     selected = elm_object_item_text_get(list_it);
    editor_font_choose(data, selected, elm_spinner_value_get(fsize));
 }
 
