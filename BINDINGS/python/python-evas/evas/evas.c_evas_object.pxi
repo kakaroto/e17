@@ -54,7 +54,7 @@ cdef void obj_free_cb(void *data, Evas *e,
         for func, args, kargs in lst:
             try:
                 func(self, *args, **kargs)
-            except Exception, e:
+            except:
                 traceback.print_exc()
 
     _object_free_wrapper_resources(self)
