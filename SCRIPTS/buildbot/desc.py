@@ -288,7 +288,7 @@ Package(
     srcdir="BINDINGS/python/python-evas",
     dependencies={"common": ["evas"]},
     # generated code sucks, no way to change it:
-    env={"common": {"CFLAGS": "-Wno-shadow -Wno-strict-aliasing"}},
+    env={"common": {"CFLAGS": "-Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing"}},
     )
 
 Package(
@@ -296,7 +296,7 @@ Package(
     srcdir="BINDINGS/python/python-ecore",
     dependencies={"common": ["ecore", "python-evas"]},
     # generated code sucks, no way to change it:
-    env={"common": {"CFLAGS": "-Wno-shadow -Wno-strict-aliasing"}},
+    env={"common": {"CFLAGS": "-Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing"}},
     configure_flags={
         "common": [
             "--enable-ecore-file",
@@ -317,7 +317,7 @@ Package(
     srcdir="BINDINGS/python/python-edje",
     dependencies={"common": ["edje", "python-evas"]},
     # generated code sucks, no way to change it:
-    env={"common": {"CFLAGS": "-Wno-shadow -Wno-strict-aliasing"}},
+    env={"common": {"CFLAGS": "-Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing"}},
     )
 
 Package(
@@ -325,6 +325,4 @@ Package(
     srcdir="BINDINGS/python/python-e_dbus",
     exclusive_platforms=["linux"],
     dependencies={"common": ["e_dbus", "python-evas"]},
-    # generated code sucks, no way to change it:
-    env={"common": {"CFLAGS": "-Wno-shadow -Wno-strict-aliasing"}},
     )

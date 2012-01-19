@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Thu Jan 19 10:58:56 2012.
+# Generated for linux at Thu Jan 19 11:42:44 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -987,7 +987,7 @@ $(BUILDROOT)/python-evas/stamps/configure: $(BUILDROOT)/python-evas/stamps/autog
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/python-evas/compile && \
 	$(SRCROOT)/BINDINGS/python/python-evas/configure --prefix=$(INSTALLROOT) 
@@ -1008,7 +1008,7 @@ python-evas-compile: $(BUILDROOT)/python-evas/stamps/configure
 		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) all -C $(BUILDROOT)/python-evas/compile;\
 	else\
@@ -1029,7 +1029,7 @@ python-evas-install: $(BUILDROOT)/python-evas/stamps/compile
 		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) install -C $(BUILDROOT)/python-evas/compile;\
 		mkdir -p $(BUILDROOT)/python-evas/stamps;\
@@ -1058,7 +1058,7 @@ python-evas-distcheck: $(BUILDROOT)/python-evas/stamps/compile
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-evas/compile
 	$(V)mkdir -p $(BUILDROOT)/python-evas/stamps
@@ -1096,7 +1096,7 @@ $(BUILDROOT)/python-ecore/stamps/configure: $(BUILDROOT)/python-ecore/stamps/aut
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/python-ecore/compile && \
 	$(SRCROOT)/BINDINGS/python/python-ecore/configure --prefix=$(INSTALLROOT) --enable-ecore-file \
@@ -1120,7 +1120,7 @@ python-ecore-compile: $(BUILDROOT)/python-ecore/stamps/configure
 		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) all -C $(BUILDROOT)/python-ecore/compile;\
 	else\
@@ -1141,7 +1141,7 @@ python-ecore-install: $(BUILDROOT)/python-ecore/stamps/compile
 		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) install -C $(BUILDROOT)/python-ecore/compile;\
 		mkdir -p $(BUILDROOT)/python-ecore/stamps;\
@@ -1170,7 +1170,7 @@ python-ecore-distcheck: $(BUILDROOT)/python-ecore/stamps/compile
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-ecore/compile
 	$(V)mkdir -p $(BUILDROOT)/python-ecore/stamps
@@ -1208,7 +1208,7 @@ $(BUILDROOT)/python-e_dbus/stamps/configure: $(BUILDROOT)/python-e_dbus/stamps/a
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/python-e_dbus/compile && \
 	$(SRCROOT)/BINDINGS/python/python-e_dbus/configure --prefix=$(INSTALLROOT) 
@@ -1229,7 +1229,7 @@ python-e_dbus-compile: $(BUILDROOT)/python-e_dbus/stamps/configure
 		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) all -C $(BUILDROOT)/python-e_dbus/compile;\
 	else\
@@ -1250,7 +1250,7 @@ python-e_dbus-install: $(BUILDROOT)/python-e_dbus/stamps/compile
 		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) install -C $(BUILDROOT)/python-e_dbus/compile;\
 		mkdir -p $(BUILDROOT)/python-e_dbus/stamps;\
@@ -1279,7 +1279,7 @@ python-e_dbus-distcheck: $(BUILDROOT)/python-e_dbus/stamps/compile
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-e_dbus/compile
 	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/stamps
@@ -1718,7 +1718,7 @@ $(BUILDROOT)/python-edje/stamps/configure: $(BUILDROOT)/python-edje/stamps/autog
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/python-edje/compile && \
 	$(SRCROOT)/BINDINGS/python/python-edje/configure --prefix=$(INSTALLROOT) 
@@ -1739,7 +1739,7 @@ python-edje-compile: $(BUILDROOT)/python-edje/stamps/configure
 		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) all -C $(BUILDROOT)/python-edje/compile;\
 	else\
@@ -1760,7 +1760,7 @@ python-edje-install: $(BUILDROOT)/python-edje/stamps/compile
 		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) install -C $(BUILDROOT)/python-edje/compile;\
 		mkdir -p $(BUILDROOT)/python-edje/stamps;\
@@ -1789,7 +1789,7 @@ python-edje-distcheck: $(BUILDROOT)/python-edje/stamps/compile
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-edje/compile
 	$(V)mkdir -p $(BUILDROOT)/python-edje/stamps
