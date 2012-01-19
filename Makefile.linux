@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Thu Jan 19 11:42:44 2012.
+# Generated for linux at Thu Jan 19 13:32:52 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -99,7 +99,8 @@ $(BUILDROOT)/eina/stamps/configure: $(BUILDROOT)/eina/stamps/autogen $(BUILDROOT
 	cd $(BUILDROOT)/eina/compile && \
 	$(SRCROOT)/eina/configure --prefix=$(INSTALLROOT) --enable-doc \
 		--enable-tests \
-		--enable-benchmark
+		--enable-benchmark \
+		--disable-benchmark-glib
 	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/configure
 	$(V)echo "Success configuring eina."

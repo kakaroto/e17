@@ -54,6 +54,7 @@ Package(
             "--enable-tests",
             #"--enable-coverage",
             "--enable-benchmark",
+            "--disable-benchmark-glib",
             ],
         },
     )
