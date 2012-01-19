@@ -17,6 +17,8 @@
 
 # This file is included verbatim by c_ecore_evas.pyx
 
+import types
+
 cdef class Buffer(EcoreEvas):
     "Buffer render."
     def __init__(self, int w=320, int h=240):
@@ -45,7 +47,7 @@ cdef class Buffer(EcoreEvas):
             lenp[0] = self._get_buf_size()
         return 1
 
-    def __getitem__(self, int i):
+    def _getitem(self, int i):
         cdef char *buf
         cdef int ln
         ln = self._get_buf_size()
@@ -65,7 +67,7 @@ cdef class Buffer(EcoreEvas):
     def __len__(self):
         return self._get_buf_size()
 
-    def __getslice__(self, int i, int j):
+    def _getslice(self, int i, int j):
         cdef int ln
         ln = self._get_buf_size()
         if ln == 0:
@@ -86,3 +88,11 @@ cdef class Buffer(EcoreEvas):
             return []
 
         return PyBuffer_FromObject(self, i, j - i)
+
+    def __getitem__(self, what):
+        if isinstance(what, types.SliceType):
+            if what.step:
+                raise ValueError("slices with step are not supported!")
+            return self._getslice(what.start, what.end)
+        else:
+            return self._getitem(what)
