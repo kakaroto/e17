@@ -1,0 +1,118 @@
+# Italian translation for Ecrire.
+# This file is put in the public domain.
+# Daniel Juyung Seo <seojuyung2@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecrire\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2012-01-18 20:00+0900\n"
+"PO-Revision-Date: 2012-01-19 10:00+0900\n"
+"Last-Translator: Daniel Juyung Seo <seojuyung2@gmail.com>\n"
+"Language-Team: none\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bin/ui/alerts.c:43
+msgid ""
+"<align=center>Would you like to save changes to document?<br>Any unsaved "
+"changes will be lost."
+msgstr ""
+
+#: src/bin/ui/alerts.c:58 src/bin/main.c:663
+msgid "Save"
+msgstr "저장"
+
+#: src/bin/ui/alerts.c:64
+msgid "Discard"
+msgstr "버리기"
+
+#: src/bin/ui/alerts.c:70
+msgid "Cancel"
+msgstr "취소"
+
+#: src/bin/ui/search_dialog.c:143 src/bin/main.c:679
+msgid "Find & Replace"
+msgstr "찾기 & 바꾸기"
+
+#: src/bin/ui/search_dialog.c:165
+msgid "Search for:"
+msgstr "찾기"
+
+#: src/bin/ui/search_dialog.c:189
+msgid "Replace with:"
+msgstr "바꾸기"
+
+#: src/bin/ui/search_dialog.c:213
+msgid "Find"
+msgstr "찾기"
+
+#: src/bin/ui/search_dialog.c:221
+msgid "Replace"
+msgstr "바꾸기"
+
+#: src/bin/ui/font_dialog.c:75
+msgid "Select Font"
+msgstr "폰트 선택"
+
+#: src/bin/ui/font_dialog.c:100
+msgid "Font size:"
+msgstr "폰트 크기"
+
+#: src/bin/ui/font_dialog.c:105
+#, c-format
+msgid "%.0f pts"
+msgstr ""
+
+#: src/bin/ui/font_dialog.c:115
+msgid "Set"
+msgstr "설정"
+
+#: src/bin/main.c:100
+#, c-format
+msgid "%s%s - %s"
+msgstr ""
+
+#: src/bin/main.c:102
+#, c-format
+msgid "%sUntitled %d - %s"
+msgstr ""
+
+#: src/bin/main.c:126
+#, c-format
+msgid "Ln %d, Col %d"
+msgstr ""
+
+#: src/bin/main.c:660
+msgid "New"
+msgstr "새로 만들기"
+
+#: src/bin/main.c:661
+msgid "Open"
+msgstr "열기"
+
+#: src/bin/main.c:667
+msgid "Undo"
+msgstr "입력 취소"
+
+#: src/bin/main.c:669
+msgid "Redo"
+msgstr "입력 다시 실행"
+
+#: src/bin/main.c:672
+msgid "Cut"
+msgstr "자르기"
+
+#: src/bin/main.c:674
+msgid "Copy"
+msgstr "복사"
+
+#: src/bin/main.c:676
+msgid "Paste"
+msgstr "붙여넣기"
+
+#: src/bin/main.c:683
+msgid "Settings"
+msgstr "설정"
