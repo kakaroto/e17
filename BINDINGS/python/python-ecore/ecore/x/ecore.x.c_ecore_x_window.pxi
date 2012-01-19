@@ -49,6 +49,8 @@ cdef class Window:
             xid = ecore_x_window_input_new(p_xid, x, y, w, h)
         elif override_redirect:
             xid = ecore_x_window_override_new(p_xid, x, y, w, h)
+        else:
+            raise ValueError("not able to create window!")
 
         self._set_xid(xid)
 
