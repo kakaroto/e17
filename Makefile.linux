@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Tue Jan 17 12:50:37 2012.
+# Generated for linux at Thu Jan 19 10:06:31 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -9,12 +9,16 @@
 #   - eet
 #   - evas
 #   - ecore
+#   - e_dbus
 #   - efreet
 #   - eeze
-#   - e_dbus
 #   - python-evas
+#   - python-ecore
+#   - python-e_dbus
 #   - embryo
 #   - edje
+#   - e
+#   - python-edje
 
 SRCROOT = $(shell pwd)
 BUILDROOT = $(shell pwd)/build
@@ -23,7 +27,7 @@ MAKEOPTS = --print-directory -j2
 V=@
 
 .DEFAULT: missing-target
-.PHONY: missing-target help all clean eina-compile eina-clean eina-dependencies eina-install eina-test eina-doc eina-distcheck eina-all-users-compile eina-direct-users-compile eet-compile eet-clean eet-dependencies eet-install eet-test eet-doc eet-distcheck eet-all-users-compile eet-direct-users-compile evas-compile evas-clean evas-dependencies evas-install evas-test evas-doc evas-distcheck evas-all-users-compile evas-direct-users-compile ecore-compile ecore-clean ecore-dependencies ecore-install ecore-test ecore-doc ecore-distcheck ecore-all-users-compile ecore-direct-users-compile efreet-compile efreet-clean efreet-dependencies efreet-install efreet-test efreet-doc efreet-distcheck efreet-all-users-compile efreet-direct-users-compile eeze-compile eeze-clean eeze-dependencies eeze-install eeze-test eeze-doc eeze-distcheck eeze-all-users-compile eeze-direct-users-compile e_dbus-compile e_dbus-clean e_dbus-dependencies e_dbus-install e_dbus-test e_dbus-doc e_dbus-distcheck e_dbus-all-users-compile e_dbus-direct-users-compile python-evas-compile python-evas-clean python-evas-dependencies python-evas-install python-evas-test python-evas-doc python-evas-distcheck python-evas-all-users-compile python-evas-direct-users-compile embryo-compile embryo-clean embryo-dependencies embryo-install embryo-test embryo-doc embryo-distcheck embryo-all-users-compile embryo-direct-users-compile edje-compile edje-clean edje-dependencies edje-install edje-test edje-doc edje-distcheck edje-all-users-compile edje-direct-users-compile
+.PHONY: missing-target help all clean eina-compile eina-clean eina-dependencies eina-install eina-test eina-doc eina-distcheck eina-all-users-compile eina-direct-users-compile eet-compile eet-clean eet-dependencies eet-install eet-test eet-doc eet-distcheck eet-all-users-compile eet-direct-users-compile evas-compile evas-clean evas-dependencies evas-install evas-test evas-doc evas-distcheck evas-all-users-compile evas-direct-users-compile ecore-compile ecore-clean ecore-dependencies ecore-install ecore-test ecore-doc ecore-distcheck ecore-all-users-compile ecore-direct-users-compile e_dbus-compile e_dbus-clean e_dbus-dependencies e_dbus-install e_dbus-test e_dbus-doc e_dbus-distcheck e_dbus-all-users-compile e_dbus-direct-users-compile efreet-compile efreet-clean efreet-dependencies efreet-install efreet-test efreet-doc efreet-distcheck efreet-all-users-compile efreet-direct-users-compile eeze-compile eeze-clean eeze-dependencies eeze-install eeze-test eeze-doc eeze-distcheck eeze-all-users-compile eeze-direct-users-compile python-evas-compile python-evas-clean python-evas-dependencies python-evas-install python-evas-test python-evas-doc python-evas-distcheck python-evas-all-users-compile python-evas-direct-users-compile python-ecore-compile python-ecore-clean python-ecore-dependencies python-ecore-install python-ecore-test python-ecore-doc python-ecore-distcheck python-ecore-all-users-compile python-ecore-direct-users-compile python-e_dbus-compile python-e_dbus-clean python-e_dbus-dependencies python-e_dbus-install python-e_dbus-test python-e_dbus-doc python-e_dbus-distcheck python-e_dbus-all-users-compile python-e_dbus-direct-users-compile embryo-compile embryo-clean embryo-dependencies embryo-install embryo-test embryo-doc embryo-distcheck embryo-all-users-compile embryo-direct-users-compile edje-compile edje-clean edje-dependencies edje-install edje-test edje-doc edje-distcheck edje-all-users-compile edje-direct-users-compile e-compile e-clean e-dependencies e-install e-test e-doc e-distcheck e-all-users-compile e-direct-users-compile python-edje-compile python-edje-clean python-edje-dependencies python-edje-install python-edje-test python-edje-doc python-edje-distcheck python-edje-all-users-compile python-edje-direct-users-compile
 
 missing-target:
 	@echo "Missing target."
@@ -54,14 +58,14 @@ help:
 	@echo "   PACKAGE-direct-users-compile compile all direct users of package."
 	@echo ""
 	@echo "Known packages:"
-	@echo "   eina eet evas ecore efreet eeze e_dbus python-evas embryo edje"
+	@echo "   eina eet evas ecore e_dbus efreet eeze python-evas python-ecore python-e_dbus embryo edje e python-edje"
 	@echo ""
 
-all: eina-compile eet-compile evas-compile ecore-compile efreet-compile eeze-compile e_dbus-compile python-evas-compile embryo-compile edje-compile
-clean: eina-clean eet-clean evas-clean ecore-clean efreet-clean eeze-clean e_dbus-clean python-evas-clean embryo-clean edje-clean
-test: eina-test eet-test evas-test ecore-test efreet-test eeze-test e_dbus-test python-evas-test embryo-test edje-test
-doc: eina-doc eet-doc evas-doc ecore-doc efreet-doc eeze-doc e_dbus-doc python-evas-doc embryo-doc edje-doc
-distcheck: eina-distcheck eet-distcheck evas-distcheck ecore-distcheck efreet-distcheck eeze-distcheck e_dbus-distcheck python-evas-distcheck embryo-distcheck edje-distcheck
+all: eina-compile eet-compile evas-compile ecore-compile e_dbus-compile efreet-compile eeze-compile python-evas-compile python-ecore-compile python-e_dbus-compile embryo-compile edje-compile e-compile python-edje-compile
+clean: eina-clean eet-clean evas-clean ecore-clean e_dbus-clean efreet-clean eeze-clean python-evas-clean python-ecore-clean python-e_dbus-clean embryo-clean edje-clean e-clean python-edje-clean
+test: eina-test eet-test evas-test ecore-test e_dbus-test efreet-test eeze-test python-evas-test python-ecore-test python-e_dbus-test embryo-test edje-test e-test python-edje-test
+doc: eina-doc eet-doc evas-doc ecore-doc e_dbus-doc efreet-doc eeze-doc python-evas-doc python-ecore-doc python-e_dbus-doc embryo-doc edje-doc e-doc python-edje-doc
+distcheck: eina-distcheck eet-distcheck evas-distcheck ecore-distcheck e_dbus-distcheck efreet-distcheck eeze-distcheck python-evas-distcheck python-ecore-distcheck python-e_dbus-distcheck embryo-distcheck edje-distcheck e-distcheck python-edje-distcheck
 
 ########################################################################
 # eina rules
@@ -164,9 +168,9 @@ eina-distcheck: $(BUILDROOT)/eina/stamps/compile
 	touch $(BUILDROOT)/eina/stamps/distcheck
 	$(V)echo "Success checking distribution eina."
 
-eina-direct-users-compile: embryo-compile edje-compile eet-compile eeze-compile efreet-compile evas-compile e_dbus-compile ecore-compile
+eina-direct-users-compile: embryo-compile edje-compile e-compile evas-compile eeze-compile efreet-compile eet-compile e_dbus-compile ecore-compile
 
-eina-all-users-compile: embryo-compile edje-compile python-evas-compile evas-compile eeze-compile efreet-compile eet-compile e_dbus-compile ecore-compile
+eina-all-users-compile: embryo-compile edje-compile e-compile python-evas-compile evas-compile python-edje-compile eeze-compile efreet-compile eet-compile ecore-compile e_dbus-compile python-e_dbus-compile python-ecore-compile
 
 ########################################################################
 # eet rules
@@ -198,7 +202,12 @@ $(BUILDROOT)/eet/stamps/configure: $(BUILDROOT)/eet/stamps/autogen $(BUILDROOT)/
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/eet/compile && \
 	$(SRCROOT)/eet/configure --prefix=$(INSTALLROOT) --enable-doc \
-		--enable-tests
+		--enable-tests \
+		--enable-gnutls \
+		--disable-openssl \
+		--enable-cipher \
+		--enable-signature \
+		--enable-assert
 	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/configure
 	$(V)echo "Success configuring eet."
@@ -268,9 +277,9 @@ eet-distcheck: $(BUILDROOT)/eet/stamps/compile
 	touch $(BUILDROOT)/eet/stamps/distcheck
 	$(V)echo "Success checking distribution eet."
 
-eet-direct-users-compile: edje-compile evas-compile eeze-compile efreet-compile
+eet-direct-users-compile: edje-compile evas-compile e-compile eeze-compile efreet-compile
 
-eet-all-users-compile: edje-compile python-evas-compile evas-compile eeze-compile efreet-compile e_dbus-compile ecore-compile
+eet-all-users-compile: edje-compile python-evas-compile python-e_dbus-compile evas-compile python-edje-compile eeze-compile efreet-compile ecore-compile e_dbus-compile e-compile python-ecore-compile
 
 ########################################################################
 # evas rules
@@ -378,9 +387,9 @@ evas-distcheck: $(BUILDROOT)/evas/stamps/compile
 	touch $(BUILDROOT)/evas/stamps/distcheck
 	$(V)echo "Success checking distribution evas."
 
-evas-direct-users-compile: edje-compile python-evas-compile e_dbus-compile ecore-compile
+evas-direct-users-compile: edje-compile python-evas-compile e_dbus-compile e-compile ecore-compile
 
-evas-all-users-compile: edje-compile python-evas-compile eeze-compile efreet-compile e_dbus-compile ecore-compile
+evas-all-users-compile: edje-compile python-evas-compile python-e_dbus-compile python-edje-compile eeze-compile efreet-compile ecore-compile e_dbus-compile python-ecore-compile e-compile
 
 ########################################################################
 # ecore rules
@@ -491,216 +500,9 @@ ecore-distcheck: $(BUILDROOT)/ecore/stamps/compile
 	touch $(BUILDROOT)/ecore/stamps/distcheck
 	$(V)echo "Success checking distribution ecore."
 
-ecore-direct-users-compile: edje-compile e_dbus-compile eeze-compile efreet-compile
+ecore-direct-users-compile: edje-compile e-compile eeze-compile efreet-compile e_dbus-compile python-ecore-compile
 
-ecore-all-users-compile: edje-compile e_dbus-compile eeze-compile efreet-compile
-
-########################################################################
-# efreet rules
-efreet-dependencies: $(BUILDROOT)/efreet/stamps/dependencies eina-install ecore-install eet-install
-$(BUILDROOT)/efreet/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/ecore/stamps/install $(BUILDROOT)/eet/stamps/install
-	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
-	touch $(BUILDROOT)/efreet/stamps/dependencies
-
-efreet-clean:
-	if test -d $(BUILDROOT)/efreet/compile; then chmod -R u+w $(BUILDROOT)/efreet/compile; fi
-	rm -fr $(BUILDROOT)/efreet/compile
-	rm -fr $(BUILDROOT)/efreet/stamps
-
-$(BUILDROOT)/efreet/stamps/autogen: $(SRCROOT)/efreet/autogen.sh $(SRCROOT)/efreet/configure.ac
-	$(V)echo "Running 'autogen.sh' for efreet..."
-	$(V)rm -f $(BUILDROOT)/efreet/stamps/autogen
-	cd $(SRCROOT)/efreet && NOCONFIGURE=1 ./autogen.sh
-	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
-	touch $(BUILDROOT)/efreet/stamps/autogen
-	$(V)echo "Success running 'autogen.sh' for efreet."
-
-$(BUILDROOT)/efreet/stamps/configure: $(BUILDROOT)/efreet/stamps/autogen $(BUILDROOT)/efreet/stamps/dependencies
-	$(V)echo "Configuring efreet..."
-	$(V)rm -f $(BUILDROOT)/efreet/stamps/configure
-	$(V)mkdir -p $(BUILDROOT)/efreet/compile
-	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
-	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
-	cd $(BUILDROOT)/efreet/compile && \
-	$(SRCROOT)/efreet/configure --prefix=$(INSTALLROOT) --enable-tests \
-		--enable-doc
-	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
-	touch $(BUILDROOT)/efreet/stamps/configure
-	$(V)echo "Success configuring efreet."
-
-$(BUILDROOT)/efreet/stamps/compile: $(BUILDROOT)/efreet/stamps/configure efreet-compile
-efreet-compile: $(BUILDROOT)/efreet/stamps/configure
-	$(V)echo "Compiling efreet..."
-	$(V)rm -f $(BUILDROOT)/efreet/stamps/compile-updated
-	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
-	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
-		touch $(BUILDROOT)/efreet/stamps/compile-updated;\
-	fi
-	$(V)if test -f $(BUILDROOT)/efreet/stamps/compile-updated; then\
-		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile;\
-	else\
-		echo "efreet is up to date.";\
-	fi
-	$(V)if test ! -f $(BUILDROOT)/efreet/stamps/compile -o -f $(BUILDROOT)/efreet/stamps/compile-updated; then\
-		touch $(BUILDROOT)/efreet/stamps/compile;\
-		echo "Compile updated, needs reinstall.";\
-	fi
-	$(V)echo "Success compiling efreet."
-
-$(BUILDROOT)/efreet/stamps/install: $(BUILDROOT)/efreet/stamps/compile efreet-install
-efreet-install: $(BUILDROOT)/efreet/stamps/compile
-	$(V)echo "Installing efreet..."
-	$(V)if test ! -f $(BUILDROOT)/efreet/stamps/install -o $(BUILDROOT)/efreet/stamps/compile -nt $(BUILDROOT)/efreet/stamps/install; then\
-		rm -f $(BUILDROOT)/efreet/stamps/install;\
-		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/efreet/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/efreet/compile;\
-		mkdir -p $(BUILDROOT)/efreet/stamps;\
-		touch $(BUILDROOT)/efreet/stamps/install;\
-	else\
-		echo "efreet did not change, not need to reinstall.";\
-	fi
-	$(V)echo "Success installing efreet."
-
-$(BUILDROOT)/efreet/stamps/test: $(BUILDROOT)/efreet/stamps/compile efreet-test
-efreet-test: $(BUILDROOT)/efreet/stamps/compile
-	$(V)echo "Testing (make check) efreet..."
-	$(V)rm -f $(BUILDROOT)/efreet/stamps/test
-	make $(MAKEOPTS) check -C $(BUILDROOT)/efreet/compile
-	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
-	touch $(BUILDROOT)/efreet/stamps/test
-	$(V)echo "Success testing (make check) efreet."
-
-$(BUILDROOT)/efreet/stamps/doc: $(BUILDROOT)/efreet/stamps/compile efreet-doc
-efreet-doc: $(BUILDROOT)/efreet/stamps/compile
-	$(V)echo "Generating documentation (make doc) efreet..."
-	$(V)rm -f $(BUILDROOT)/efreet/stamps/doc
-	make $(MAKEOPTS) doc -C $(BUILDROOT)/efreet/compile
-	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
-	touch $(BUILDROOT)/efreet/stamps/doc
-	$(V)echo "Success generating documentation (make doc) efreet."
-
-$(BUILDROOT)/efreet/stamps/distcheck: $(BUILDROOT)/efreet/stamps/compile efreet-distcheck
-efreet-distcheck: $(BUILDROOT)/efreet/stamps/compile
-	$(V)echo "Checking distribution efreet..."
-	$(V)rm -f $(BUILDROOT)/efreet/stamps/distcheck
-	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
-	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
-	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/efreet/compile
-	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
-	touch $(BUILDROOT)/efreet/stamps/distcheck
-	$(V)echo "Success checking distribution efreet."
-
-efreet-direct-users-compile:
-
-efreet-all-users-compile:
-
-########################################################################
-# eeze rules
-eeze-dependencies: $(BUILDROOT)/eeze/stamps/dependencies eina-install ecore-install eet-install
-$(BUILDROOT)/eeze/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/ecore/stamps/install $(BUILDROOT)/eet/stamps/install
-	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
-	touch $(BUILDROOT)/eeze/stamps/dependencies
-
-eeze-clean:
-	if test -d $(BUILDROOT)/eeze/compile; then chmod -R u+w $(BUILDROOT)/eeze/compile; fi
-	rm -fr $(BUILDROOT)/eeze/compile
-	rm -fr $(BUILDROOT)/eeze/stamps
-
-$(BUILDROOT)/eeze/stamps/autogen: $(SRCROOT)/eeze/autogen.sh $(SRCROOT)/eeze/configure.ac
-	$(V)echo "Running 'autogen.sh' for eeze..."
-	$(V)rm -f $(BUILDROOT)/eeze/stamps/autogen
-	cd $(SRCROOT)/eeze && NOCONFIGURE=1 ./autogen.sh
-	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
-	touch $(BUILDROOT)/eeze/stamps/autogen
-	$(V)echo "Success running 'autogen.sh' for eeze."
-
-$(BUILDROOT)/eeze/stamps/configure: $(BUILDROOT)/eeze/stamps/autogen $(BUILDROOT)/eeze/stamps/dependencies
-	$(V)echo "Configuring eeze..."
-	$(V)rm -f $(BUILDROOT)/eeze/stamps/configure
-	$(V)mkdir -p $(BUILDROOT)/eeze/compile
-	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
-	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
-	cd $(BUILDROOT)/eeze/compile && \
-	$(SRCROOT)/eeze/configure --prefix=$(INSTALLROOT) --enable-doc \
-		--with-mount \
-		--with-umount \
-		--with-eject
-	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
-	touch $(BUILDROOT)/eeze/stamps/configure
-	$(V)echo "Success configuring eeze."
-
-$(BUILDROOT)/eeze/stamps/compile: $(BUILDROOT)/eeze/stamps/configure eeze-compile
-eeze-compile: $(BUILDROOT)/eeze/stamps/configure
-	$(V)echo "Compiling eeze..."
-	$(V)rm -f $(BUILDROOT)/eeze/stamps/compile-updated
-	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
-	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/eeze/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
-		touch $(BUILDROOT)/eeze/stamps/compile-updated;\
-	fi
-	$(V)if test -f $(BUILDROOT)/eeze/stamps/compile-updated; then\
-		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/eeze/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/eeze/compile;\
-	else\
-		echo "eeze is up to date.";\
-	fi
-	$(V)if test ! -f $(BUILDROOT)/eeze/stamps/compile -o -f $(BUILDROOT)/eeze/stamps/compile-updated; then\
-		touch $(BUILDROOT)/eeze/stamps/compile;\
-		echo "Compile updated, needs reinstall.";\
-	fi
-	$(V)echo "Success compiling eeze."
-
-$(BUILDROOT)/eeze/stamps/install: $(BUILDROOT)/eeze/stamps/compile eeze-install
-eeze-install: $(BUILDROOT)/eeze/stamps/compile
-	$(V)echo "Installing eeze..."
-	$(V)if test ! -f $(BUILDROOT)/eeze/stamps/install -o $(BUILDROOT)/eeze/stamps/compile -nt $(BUILDROOT)/eeze/stamps/install; then\
-		rm -f $(BUILDROOT)/eeze/stamps/install;\
-		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/eeze/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/eeze/compile;\
-		mkdir -p $(BUILDROOT)/eeze/stamps;\
-		touch $(BUILDROOT)/eeze/stamps/install;\
-	else\
-		echo "eeze did not change, not need to reinstall.";\
-	fi
-	$(V)echo "Success installing eeze."
-
-$(BUILDROOT)/eeze/stamps/test: $(BUILDROOT)/eeze/stamps/compile eeze-test
-eeze-test: $(BUILDROOT)/eeze/stamps/compile
-	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
-	touch $(BUILDROOT)/eeze/stamps/test
-	$(V)echo 'No test target defined for eeze'
-
-$(BUILDROOT)/eeze/stamps/doc: $(BUILDROOT)/eeze/stamps/compile eeze-doc
-eeze-doc: $(BUILDROOT)/eeze/stamps/compile
-	$(V)echo "Generating documentation (make doc) eeze..."
-	$(V)rm -f $(BUILDROOT)/eeze/stamps/doc
-	make $(MAKEOPTS) doc -C $(BUILDROOT)/eeze/compile
-	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
-	touch $(BUILDROOT)/eeze/stamps/doc
-	$(V)echo "Success generating documentation (make doc) eeze."
-
-$(BUILDROOT)/eeze/stamps/distcheck: $(BUILDROOT)/eeze/stamps/compile eeze-distcheck
-eeze-distcheck: $(BUILDROOT)/eeze/stamps/compile
-	$(V)echo "Checking distribution eeze..."
-	$(V)rm -f $(BUILDROOT)/eeze/stamps/distcheck
-	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
-	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
-	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/eeze/compile
-	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
-	touch $(BUILDROOT)/eeze/stamps/distcheck
-	$(V)echo "Success checking distribution eeze."
-
-eeze-direct-users-compile:
-
-eeze-all-users-compile:
+ecore-all-users-compile: edje-compile e-compile python-edje-compile eeze-compile efreet-compile python-ecore-compile e_dbus-compile python-e_dbus-compile
 
 ########################################################################
 # e_dbus rules
@@ -803,9 +605,216 @@ e_dbus-distcheck: $(BUILDROOT)/e_dbus/stamps/compile
 	touch $(BUILDROOT)/e_dbus/stamps/distcheck
 	$(V)echo "Success checking distribution e_dbus."
 
-e_dbus-direct-users-compile:
+e_dbus-direct-users-compile: e-compile python-e_dbus-compile
 
-e_dbus-all-users-compile:
+e_dbus-all-users-compile: python-e_dbus-compile e-compile
+
+########################################################################
+# efreet rules
+efreet-dependencies: $(BUILDROOT)/efreet/stamps/dependencies eina-install ecore-install eet-install
+$(BUILDROOT)/efreet/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/ecore/stamps/install $(BUILDROOT)/eet/stamps/install
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/dependencies
+
+efreet-clean:
+	if test -d $(BUILDROOT)/efreet/compile; then chmod -R u+w $(BUILDROOT)/efreet/compile; fi
+	rm -fr $(BUILDROOT)/efreet/compile
+	rm -fr $(BUILDROOT)/efreet/stamps
+
+$(BUILDROOT)/efreet/stamps/autogen: $(SRCROOT)/efreet/autogen.sh $(SRCROOT)/efreet/configure.ac
+	$(V)echo "Running 'autogen.sh' for efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/autogen
+	cd $(SRCROOT)/efreet && NOCONFIGURE=1 ./autogen.sh
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/autogen
+	$(V)echo "Success running 'autogen.sh' for efreet."
+
+$(BUILDROOT)/efreet/stamps/configure: $(BUILDROOT)/efreet/stamps/autogen $(BUILDROOT)/efreet/stamps/dependencies
+	$(V)echo "Configuring efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/efreet/compile
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	cd $(BUILDROOT)/efreet/compile && \
+	$(SRCROOT)/efreet/configure --prefix=$(INSTALLROOT) --enable-tests \
+		--enable-doc
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/configure
+	$(V)echo "Success configuring efreet."
+
+$(BUILDROOT)/efreet/stamps/compile: $(BUILDROOT)/efreet/stamps/configure efreet-compile
+efreet-compile: $(BUILDROOT)/efreet/stamps/configure
+	$(V)echo "Compiling efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+		touch $(BUILDROOT)/efreet/stamps/compile-updated;\
+	fi
+	$(V)if test -f $(BUILDROOT)/efreet/stamps/compile-updated; then\
+		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile";\
+		make $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile;\
+	else\
+		echo "efreet is up to date.";\
+	fi
+	$(V)if test ! -f $(BUILDROOT)/efreet/stamps/compile -o -f $(BUILDROOT)/efreet/stamps/compile-updated; then\
+		touch $(BUILDROOT)/efreet/stamps/compile;\
+		echo "Compile updated, needs reinstall.";\
+	fi
+	$(V)echo "Success compiling efreet."
+
+$(BUILDROOT)/efreet/stamps/install: $(BUILDROOT)/efreet/stamps/compile efreet-install
+efreet-install: $(BUILDROOT)/efreet/stamps/compile
+	$(V)echo "Installing efreet..."
+	$(V)if test ! -f $(BUILDROOT)/efreet/stamps/install -o $(BUILDROOT)/efreet/stamps/compile -nt $(BUILDROOT)/efreet/stamps/install; then\
+		rm -f $(BUILDROOT)/efreet/stamps/install;\
+		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/efreet/compile";\
+		make $(MAKEOPTS) install -C $(BUILDROOT)/efreet/compile;\
+		mkdir -p $(BUILDROOT)/efreet/stamps;\
+		touch $(BUILDROOT)/efreet/stamps/install;\
+	else\
+		echo "efreet did not change, not need to reinstall.";\
+	fi
+	$(V)echo "Success installing efreet."
+
+$(BUILDROOT)/efreet/stamps/test: $(BUILDROOT)/efreet/stamps/compile efreet-test
+efreet-test: $(BUILDROOT)/efreet/stamps/compile
+	$(V)echo "Testing (make check) efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/test
+	make $(MAKEOPTS) check -C $(BUILDROOT)/efreet/compile
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/test
+	$(V)echo "Success testing (make check) efreet."
+
+$(BUILDROOT)/efreet/stamps/doc: $(BUILDROOT)/efreet/stamps/compile efreet-doc
+efreet-doc: $(BUILDROOT)/efreet/stamps/compile
+	$(V)echo "Generating documentation (make doc) efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/doc
+	make $(MAKEOPTS) doc -C $(BUILDROOT)/efreet/compile
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/doc
+	$(V)echo "Success generating documentation (make doc) efreet."
+
+$(BUILDROOT)/efreet/stamps/distcheck: $(BUILDROOT)/efreet/stamps/compile efreet-distcheck
+efreet-distcheck: $(BUILDROOT)/efreet/stamps/compile
+	$(V)echo "Checking distribution efreet..."
+	$(V)rm -f $(BUILDROOT)/efreet/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/efreet/compile
+	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
+	touch $(BUILDROOT)/efreet/stamps/distcheck
+	$(V)echo "Success checking distribution efreet."
+
+efreet-direct-users-compile: e-compile
+
+efreet-all-users-compile: e-compile
+
+########################################################################
+# eeze rules
+eeze-dependencies: $(BUILDROOT)/eeze/stamps/dependencies eina-install ecore-install eet-install
+$(BUILDROOT)/eeze/stamps/dependencies: $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/ecore/stamps/install $(BUILDROOT)/eet/stamps/install
+	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
+	touch $(BUILDROOT)/eeze/stamps/dependencies
+
+eeze-clean:
+	if test -d $(BUILDROOT)/eeze/compile; then chmod -R u+w $(BUILDROOT)/eeze/compile; fi
+	rm -fr $(BUILDROOT)/eeze/compile
+	rm -fr $(BUILDROOT)/eeze/stamps
+
+$(BUILDROOT)/eeze/stamps/autogen: $(SRCROOT)/eeze/autogen.sh $(SRCROOT)/eeze/configure.ac
+	$(V)echo "Running 'autogen.sh' for eeze..."
+	$(V)rm -f $(BUILDROOT)/eeze/stamps/autogen
+	cd $(SRCROOT)/eeze && NOCONFIGURE=1 ./autogen.sh
+	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
+	touch $(BUILDROOT)/eeze/stamps/autogen
+	$(V)echo "Success running 'autogen.sh' for eeze."
+
+$(BUILDROOT)/eeze/stamps/configure: $(BUILDROOT)/eeze/stamps/autogen $(BUILDROOT)/eeze/stamps/dependencies
+	$(V)echo "Configuring eeze..."
+	$(V)rm -f $(BUILDROOT)/eeze/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/eeze/compile
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	cd $(BUILDROOT)/eeze/compile && \
+	$(SRCROOT)/eeze/configure --prefix=$(INSTALLROOT) --enable-doc \
+		--with-mount \
+		--with-umount \
+		--with-eject
+	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
+	touch $(BUILDROOT)/eeze/stamps/configure
+	$(V)echo "Success configuring eeze."
+
+$(BUILDROOT)/eeze/stamps/compile: $(BUILDROOT)/eeze/stamps/configure eeze-compile
+eeze-compile: $(BUILDROOT)/eeze/stamps/configure
+	$(V)echo "Compiling eeze..."
+	$(V)rm -f $(BUILDROOT)/eeze/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/eeze/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+		touch $(BUILDROOT)/eeze/stamps/compile-updated;\
+	fi
+	$(V)if test -f $(BUILDROOT)/eeze/stamps/compile-updated; then\
+		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/eeze/compile";\
+		make $(MAKEOPTS) all -C $(BUILDROOT)/eeze/compile;\
+	else\
+		echo "eeze is up to date.";\
+	fi
+	$(V)if test ! -f $(BUILDROOT)/eeze/stamps/compile -o -f $(BUILDROOT)/eeze/stamps/compile-updated; then\
+		touch $(BUILDROOT)/eeze/stamps/compile;\
+		echo "Compile updated, needs reinstall.";\
+	fi
+	$(V)echo "Success compiling eeze."
+
+$(BUILDROOT)/eeze/stamps/install: $(BUILDROOT)/eeze/stamps/compile eeze-install
+eeze-install: $(BUILDROOT)/eeze/stamps/compile
+	$(V)echo "Installing eeze..."
+	$(V)if test ! -f $(BUILDROOT)/eeze/stamps/install -o $(BUILDROOT)/eeze/stamps/compile -nt $(BUILDROOT)/eeze/stamps/install; then\
+		rm -f $(BUILDROOT)/eeze/stamps/install;\
+		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/eeze/compile";\
+		make $(MAKEOPTS) install -C $(BUILDROOT)/eeze/compile;\
+		mkdir -p $(BUILDROOT)/eeze/stamps;\
+		touch $(BUILDROOT)/eeze/stamps/install;\
+	else\
+		echo "eeze did not change, not need to reinstall.";\
+	fi
+	$(V)echo "Success installing eeze."
+
+$(BUILDROOT)/eeze/stamps/test: $(BUILDROOT)/eeze/stamps/compile eeze-test
+eeze-test: $(BUILDROOT)/eeze/stamps/compile
+	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
+	touch $(BUILDROOT)/eeze/stamps/test
+	$(V)echo 'No test target defined for eeze'
+
+$(BUILDROOT)/eeze/stamps/doc: $(BUILDROOT)/eeze/stamps/compile eeze-doc
+eeze-doc: $(BUILDROOT)/eeze/stamps/compile
+	$(V)echo "Generating documentation (make doc) eeze..."
+	$(V)rm -f $(BUILDROOT)/eeze/stamps/doc
+	make $(MAKEOPTS) doc -C $(BUILDROOT)/eeze/compile
+	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
+	touch $(BUILDROOT)/eeze/stamps/doc
+	$(V)echo "Success generating documentation (make doc) eeze."
+
+$(BUILDROOT)/eeze/stamps/distcheck: $(BUILDROOT)/eeze/stamps/compile eeze-distcheck
+eeze-distcheck: $(BUILDROOT)/eeze/stamps/compile
+	$(V)echo "Checking distribution eeze..."
+	$(V)rm -f $(BUILDROOT)/eeze/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/eeze/compile
+	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
+	touch $(BUILDROOT)/eeze/stamps/distcheck
+	$(V)echo "Success checking distribution eeze."
+
+eeze-direct-users-compile: e-compile
+
+eeze-all-users-compile: e-compile
 
 ########################################################################
 # python-evas rules
@@ -833,7 +842,7 @@ $(BUILDROOT)/python-evas/stamps/configure: $(BUILDROOT)/python-evas/stamps/autog
 	$(V)mkdir -p $(BUILDROOT)/python-evas/compile
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	cd $(BUILDROOT)/python-evas/compile && \
 	$(SRCROOT)/BINDINGS/python/python-evas/configure --prefix=$(INSTALLROOT) 
@@ -893,16 +902,213 @@ python-evas-distcheck: $(BUILDROOT)/python-evas/stamps/compile
 	$(V)rm -f $(BUILDROOT)/python-evas/stamps/distcheck
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
-	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-evas/compile
 	$(V)mkdir -p $(BUILDROOT)/python-evas/stamps
 	touch $(BUILDROOT)/python-evas/stamps/distcheck
 	$(V)echo "Success checking distribution python-evas."
 
-python-evas-direct-users-compile:
+python-evas-direct-users-compile: python-edje-compile python-e_dbus-compile python-ecore-compile
 
-python-evas-all-users-compile:
+python-evas-all-users-compile: python-e_dbus-compile python-edje-compile python-ecore-compile
+
+########################################################################
+# python-ecore rules
+python-ecore-dependencies: $(BUILDROOT)/python-ecore/stamps/dependencies ecore-install python-evas-install
+$(BUILDROOT)/python-ecore/stamps/dependencies: $(BUILDROOT)/ecore/stamps/install $(BUILDROOT)/python-evas/stamps/install
+	$(V)mkdir -p $(BUILDROOT)/python-ecore/stamps
+	touch $(BUILDROOT)/python-ecore/stamps/dependencies
+
+python-ecore-clean:
+	if test -d $(BUILDROOT)/python-ecore/compile; then chmod -R u+w $(BUILDROOT)/python-ecore/compile; fi
+	rm -fr $(BUILDROOT)/python-ecore/compile
+	rm -fr $(BUILDROOT)/python-ecore/stamps
+
+$(BUILDROOT)/python-ecore/stamps/autogen: $(SRCROOT)/BINDINGS/python/python-ecore/autogen.sh $(SRCROOT)/BINDINGS/python/python-ecore/configure.ac
+	$(V)echo "Running 'autogen.sh' for python-ecore..."
+	$(V)rm -f $(BUILDROOT)/python-ecore/stamps/autogen
+	cd $(SRCROOT)/BINDINGS/python/python-ecore && NOCONFIGURE=1 ./autogen.sh
+	$(V)mkdir -p $(BUILDROOT)/python-ecore/stamps
+	touch $(BUILDROOT)/python-ecore/stamps/autogen
+	$(V)echo "Success running 'autogen.sh' for python-ecore."
+
+$(BUILDROOT)/python-ecore/stamps/configure: $(BUILDROOT)/python-ecore/stamps/autogen $(BUILDROOT)/python-ecore/stamps/dependencies
+	$(V)echo "Configuring python-ecore..."
+	$(V)rm -f $(BUILDROOT)/python-ecore/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/python-ecore/compile
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	cd $(BUILDROOT)/python-ecore/compile && \
+	$(SRCROOT)/BINDINGS/python/python-ecore/configure --prefix=$(INSTALLROOT) --enable-ecore-file \
+		--enable-ecore-evas \
+		--enable-ecore-x \
+		--enable-ecore-imf
+	$(V)mkdir -p $(BUILDROOT)/python-ecore/stamps
+	touch $(BUILDROOT)/python-ecore/stamps/configure
+	$(V)echo "Success configuring python-ecore."
+
+$(BUILDROOT)/python-ecore/stamps/compile: $(BUILDROOT)/python-ecore/stamps/configure python-ecore-compile
+python-ecore-compile: $(BUILDROOT)/python-ecore/stamps/configure
+	$(V)echo "Compiling python-ecore..."
+	$(V)rm -f $(BUILDROOT)/python-ecore/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/python-ecore/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/python-ecore/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+		touch $(BUILDROOT)/python-ecore/stamps/compile-updated;\
+	fi
+	$(V)if test -f $(BUILDROOT)/python-ecore/stamps/compile-updated; then\
+		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/python-ecore/compile";\
+		make $(MAKEOPTS) all -C $(BUILDROOT)/python-ecore/compile;\
+	else\
+		echo "python-ecore is up to date.";\
+	fi
+	$(V)if test ! -f $(BUILDROOT)/python-ecore/stamps/compile -o -f $(BUILDROOT)/python-ecore/stamps/compile-updated; then\
+		touch $(BUILDROOT)/python-ecore/stamps/compile;\
+		echo "Compile updated, needs reinstall.";\
+	fi
+	$(V)echo "Success compiling python-ecore."
+
+$(BUILDROOT)/python-ecore/stamps/install: $(BUILDROOT)/python-ecore/stamps/compile python-ecore-install
+python-ecore-install: $(BUILDROOT)/python-ecore/stamps/compile
+	$(V)echo "Installing python-ecore..."
+	$(V)if test ! -f $(BUILDROOT)/python-ecore/stamps/install -o $(BUILDROOT)/python-ecore/stamps/compile -nt $(BUILDROOT)/python-ecore/stamps/install; then\
+		rm -f $(BUILDROOT)/python-ecore/stamps/install;\
+		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/python-ecore/compile";\
+		make $(MAKEOPTS) install -C $(BUILDROOT)/python-ecore/compile;\
+		mkdir -p $(BUILDROOT)/python-ecore/stamps;\
+		touch $(BUILDROOT)/python-ecore/stamps/install;\
+	else\
+		echo "python-ecore did not change, not need to reinstall.";\
+	fi
+	$(V)echo "Success installing python-ecore."
+
+$(BUILDROOT)/python-ecore/stamps/test: $(BUILDROOT)/python-ecore/stamps/compile python-ecore-test
+python-ecore-test: $(BUILDROOT)/python-ecore/stamps/compile
+	$(V)mkdir -p $(BUILDROOT)/python-ecore/stamps
+	touch $(BUILDROOT)/python-ecore/stamps/test
+	$(V)echo 'No test target defined for python-ecore'
+
+$(BUILDROOT)/python-ecore/stamps/doc: $(BUILDROOT)/python-ecore/stamps/compile python-ecore-doc
+python-ecore-doc: $(BUILDROOT)/python-ecore/stamps/compile
+	$(V)mkdir -p $(BUILDROOT)/python-ecore/stamps
+	touch $(BUILDROOT)/python-ecore/stamps/doc
+	$(V)echo 'No doc target defined for python-ecore'
+
+$(BUILDROOT)/python-ecore/stamps/distcheck: $(BUILDROOT)/python-ecore/stamps/compile python-ecore-distcheck
+python-ecore-distcheck: $(BUILDROOT)/python-ecore/stamps/compile
+	$(V)echo "Checking distribution python-ecore..."
+	$(V)rm -f $(BUILDROOT)/python-ecore/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-ecore/compile
+	$(V)mkdir -p $(BUILDROOT)/python-ecore/stamps
+	touch $(BUILDROOT)/python-ecore/stamps/distcheck
+	$(V)echo "Success checking distribution python-ecore."
+
+python-ecore-direct-users-compile:
+
+python-ecore-all-users-compile:
+
+########################################################################
+# python-e_dbus rules
+python-e_dbus-dependencies: $(BUILDROOT)/python-e_dbus/stamps/dependencies e_dbus-install python-evas-install
+$(BUILDROOT)/python-e_dbus/stamps/dependencies: $(BUILDROOT)/e_dbus/stamps/install $(BUILDROOT)/python-evas/stamps/install
+	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/stamps
+	touch $(BUILDROOT)/python-e_dbus/stamps/dependencies
+
+python-e_dbus-clean:
+	if test -d $(BUILDROOT)/python-e_dbus/compile; then chmod -R u+w $(BUILDROOT)/python-e_dbus/compile; fi
+	rm -fr $(BUILDROOT)/python-e_dbus/compile
+	rm -fr $(BUILDROOT)/python-e_dbus/stamps
+
+$(BUILDROOT)/python-e_dbus/stamps/autogen: $(SRCROOT)/BINDINGS/python/python-e_dbus/autogen.sh $(SRCROOT)/BINDINGS/python/python-e_dbus/configure.ac
+	$(V)echo "Running 'autogen.sh' for python-e_dbus..."
+	$(V)rm -f $(BUILDROOT)/python-e_dbus/stamps/autogen
+	cd $(SRCROOT)/BINDINGS/python/python-e_dbus && NOCONFIGURE=1 ./autogen.sh
+	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/stamps
+	touch $(BUILDROOT)/python-e_dbus/stamps/autogen
+	$(V)echo "Success running 'autogen.sh' for python-e_dbus."
+
+$(BUILDROOT)/python-e_dbus/stamps/configure: $(BUILDROOT)/python-e_dbus/stamps/autogen $(BUILDROOT)/python-e_dbus/stamps/dependencies
+	$(V)echo "Configuring python-e_dbus..."
+	$(V)rm -f $(BUILDROOT)/python-e_dbus/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/compile
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	cd $(BUILDROOT)/python-e_dbus/compile && \
+	$(SRCROOT)/BINDINGS/python/python-e_dbus/configure --prefix=$(INSTALLROOT) 
+	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/stamps
+	touch $(BUILDROOT)/python-e_dbus/stamps/configure
+	$(V)echo "Success configuring python-e_dbus."
+
+$(BUILDROOT)/python-e_dbus/stamps/compile: $(BUILDROOT)/python-e_dbus/stamps/configure python-e_dbus-compile
+python-e_dbus-compile: $(BUILDROOT)/python-e_dbus/stamps/configure
+	$(V)echo "Compiling python-e_dbus..."
+	$(V)rm -f $(BUILDROOT)/python-e_dbus/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/python-e_dbus/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+		touch $(BUILDROOT)/python-e_dbus/stamps/compile-updated;\
+	fi
+	$(V)if test -f $(BUILDROOT)/python-e_dbus/stamps/compile-updated; then\
+		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/python-e_dbus/compile";\
+		make $(MAKEOPTS) all -C $(BUILDROOT)/python-e_dbus/compile;\
+	else\
+		echo "python-e_dbus is up to date.";\
+	fi
+	$(V)if test ! -f $(BUILDROOT)/python-e_dbus/stamps/compile -o -f $(BUILDROOT)/python-e_dbus/stamps/compile-updated; then\
+		touch $(BUILDROOT)/python-e_dbus/stamps/compile;\
+		echo "Compile updated, needs reinstall.";\
+	fi
+	$(V)echo "Success compiling python-e_dbus."
+
+$(BUILDROOT)/python-e_dbus/stamps/install: $(BUILDROOT)/python-e_dbus/stamps/compile python-e_dbus-install
+python-e_dbus-install: $(BUILDROOT)/python-e_dbus/stamps/compile
+	$(V)echo "Installing python-e_dbus..."
+	$(V)if test ! -f $(BUILDROOT)/python-e_dbus/stamps/install -o $(BUILDROOT)/python-e_dbus/stamps/compile -nt $(BUILDROOT)/python-e_dbus/stamps/install; then\
+		rm -f $(BUILDROOT)/python-e_dbus/stamps/install;\
+		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/python-e_dbus/compile";\
+		make $(MAKEOPTS) install -C $(BUILDROOT)/python-e_dbus/compile;\
+		mkdir -p $(BUILDROOT)/python-e_dbus/stamps;\
+		touch $(BUILDROOT)/python-e_dbus/stamps/install;\
+	else\
+		echo "python-e_dbus did not change, not need to reinstall.";\
+	fi
+	$(V)echo "Success installing python-e_dbus."
+
+$(BUILDROOT)/python-e_dbus/stamps/test: $(BUILDROOT)/python-e_dbus/stamps/compile python-e_dbus-test
+python-e_dbus-test: $(BUILDROOT)/python-e_dbus/stamps/compile
+	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/stamps
+	touch $(BUILDROOT)/python-e_dbus/stamps/test
+	$(V)echo 'No test target defined for python-e_dbus'
+
+$(BUILDROOT)/python-e_dbus/stamps/doc: $(BUILDROOT)/python-e_dbus/stamps/compile python-e_dbus-doc
+python-e_dbus-doc: $(BUILDROOT)/python-e_dbus/stamps/compile
+	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/stamps
+	touch $(BUILDROOT)/python-e_dbus/stamps/doc
+	$(V)echo 'No doc target defined for python-e_dbus'
+
+$(BUILDROOT)/python-e_dbus/stamps/distcheck: $(BUILDROOT)/python-e_dbus/stamps/compile python-e_dbus-distcheck
+python-e_dbus-distcheck: $(BUILDROOT)/python-e_dbus/stamps/compile
+	$(V)echo "Checking distribution python-e_dbus..."
+	$(V)rm -f $(BUILDROOT)/python-e_dbus/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-e_dbus/compile
+	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/stamps
+	touch $(BUILDROOT)/python-e_dbus/stamps/distcheck
+	$(V)echo "Success checking distribution python-e_dbus."
+
+python-e_dbus-direct-users-compile:
+
+python-e_dbus-all-users-compile:
 
 ########################################################################
 # embryo rules
@@ -999,7 +1205,7 @@ embryo-distcheck: $(BUILDROOT)/embryo/stamps/compile
 
 embryo-direct-users-compile: edje-compile
 
-embryo-all-users-compile: edje-compile
+embryo-all-users-compile: edje-compile python-edje-compile e-compile
 
 ########################################################################
 # edje rules
@@ -1101,6 +1307,252 @@ edje-distcheck: $(BUILDROOT)/edje/stamps/compile
 	touch $(BUILDROOT)/edje/stamps/distcheck
 	$(V)echo "Success checking distribution edje."
 
-edje-direct-users-compile:
+edje-direct-users-compile: python-edje-compile e-compile
 
-edje-all-users-compile:
+edje-all-users-compile: e-compile python-edje-compile
+
+########################################################################
+# e rules
+e-dependencies: $(BUILDROOT)/e/stamps/dependencies edje-install evas-install eeze-install efreet-install eina-install eet-install e_dbus-install ecore-install
+$(BUILDROOT)/e/stamps/dependencies: $(BUILDROOT)/edje/stamps/install $(BUILDROOT)/evas/stamps/install $(BUILDROOT)/eeze/stamps/install $(BUILDROOT)/efreet/stamps/install $(BUILDROOT)/eina/stamps/install $(BUILDROOT)/eet/stamps/install $(BUILDROOT)/e_dbus/stamps/install $(BUILDROOT)/ecore/stamps/install
+	$(V)mkdir -p $(BUILDROOT)/e/stamps
+	touch $(BUILDROOT)/e/stamps/dependencies
+
+e-clean:
+	if test -d $(BUILDROOT)/e/compile; then chmod -R u+w $(BUILDROOT)/e/compile; fi
+	rm -fr $(BUILDROOT)/e/compile
+	rm -fr $(BUILDROOT)/e/stamps
+
+$(BUILDROOT)/e/stamps/autogen: $(SRCROOT)/e/autogen.sh $(SRCROOT)/e/configure.ac
+	$(V)echo "Running 'autogen.sh' for e..."
+	$(V)rm -f $(BUILDROOT)/e/stamps/autogen
+	cd $(SRCROOT)/e && NOCONFIGURE=1 ./autogen.sh
+	$(V)mkdir -p $(BUILDROOT)/e/stamps
+	touch $(BUILDROOT)/e/stamps/autogen
+	$(V)echo "Success running 'autogen.sh' for e."
+
+$(BUILDROOT)/e/stamps/configure: $(BUILDROOT)/e/stamps/autogen $(BUILDROOT)/e/stamps/dependencies
+	$(V)echo "Configuring e..."
+	$(V)rm -f $(BUILDROOT)/e/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/e/compile
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	cd $(BUILDROOT)/e/compile && \
+	$(SRCROOT)/e/configure --prefix=$(INSTALLROOT) --enable-doc \
+		--enable-pam \
+		--enable-device-udev \
+		--enable-enotify \
+		--enable-enotify \
+		--enable-ibar \
+		--enable-dropshadow \
+		--enable-clock \
+		--enable-pager \
+		--enable-battery \
+		--enable-temperature \
+		--enable-notification \
+		--enable-cpufreq \
+		--enable-ibox \
+		--enable-start \
+		--enable-winlist \
+		--enable-fileman \
+		--enable-fileman-opinfo \
+		--enable-wizard \
+		--enable-conf \
+		--enable-conf-wallpaper2 \
+		--enable-conf-theme \
+		--enable-conf-intl \
+		--enable-msgbus \
+		--enable-conf-applications \
+		--enable-conf-display \
+		--enable-conf-shelves \
+		--enable-conf-keybindings \
+		--enable-conf-edgebindings \
+		--enable-conf-window-remembers \
+		--enable-conf-window-manipulation \
+		--enable-conf-menus \
+		--enable-conf-dialogs \
+		--enable-conf-performance \
+		--enable-conf-paths \
+		--enable-conf-interaction \
+		--enable-gadman \
+		--enable-mixer \
+		--enable-connman \
+		--enable-bluez \
+		--enable-ofono \
+		--enable-illume2 \
+		--enable-syscon \
+		--enable-everything \
+		--enable-systray \
+		--enable-comp \
+		--enable-shot \
+		--enable-backlight \
+		--enable-tasks \
+		--enable-conf-randr
+	$(V)mkdir -p $(BUILDROOT)/e/stamps
+	touch $(BUILDROOT)/e/stamps/configure
+	$(V)echo "Success configuring e."
+
+$(BUILDROOT)/e/stamps/compile: $(BUILDROOT)/e/stamps/configure e-compile
+e-compile: $(BUILDROOT)/e/stamps/configure
+	$(V)echo "Compiling e..."
+	$(V)rm -f $(BUILDROOT)/e/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/e/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/e/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+		touch $(BUILDROOT)/e/stamps/compile-updated;\
+	fi
+	$(V)if test -f $(BUILDROOT)/e/stamps/compile-updated; then\
+		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/e/compile";\
+		make $(MAKEOPTS) all -C $(BUILDROOT)/e/compile;\
+	else\
+		echo "e is up to date.";\
+	fi
+	$(V)if test ! -f $(BUILDROOT)/e/stamps/compile -o -f $(BUILDROOT)/e/stamps/compile-updated; then\
+		touch $(BUILDROOT)/e/stamps/compile;\
+		echo "Compile updated, needs reinstall.";\
+	fi
+	$(V)echo "Success compiling e."
+
+$(BUILDROOT)/e/stamps/install: $(BUILDROOT)/e/stamps/compile e-install
+e-install: $(BUILDROOT)/e/stamps/compile
+	$(V)echo "Installing e..."
+	$(V)if test ! -f $(BUILDROOT)/e/stamps/install -o $(BUILDROOT)/e/stamps/compile -nt $(BUILDROOT)/e/stamps/install; then\
+		rm -f $(BUILDROOT)/e/stamps/install;\
+		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/e/compile";\
+		make $(MAKEOPTS) install -C $(BUILDROOT)/e/compile;\
+		mkdir -p $(BUILDROOT)/e/stamps;\
+		touch $(BUILDROOT)/e/stamps/install;\
+	else\
+		echo "e did not change, not need to reinstall.";\
+	fi
+	$(V)echo "Success installing e."
+
+$(BUILDROOT)/e/stamps/test: $(BUILDROOT)/e/stamps/compile e-test
+e-test: $(BUILDROOT)/e/stamps/compile
+	$(V)mkdir -p $(BUILDROOT)/e/stamps
+	touch $(BUILDROOT)/e/stamps/test
+	$(V)echo 'No test target defined for e'
+
+$(BUILDROOT)/e/stamps/doc: $(BUILDROOT)/e/stamps/compile e-doc
+e-doc: $(BUILDROOT)/e/stamps/compile
+	$(V)echo "Generating documentation (make doc) e..."
+	$(V)rm -f $(BUILDROOT)/e/stamps/doc
+	make $(MAKEOPTS) doc -C $(BUILDROOT)/e/compile
+	$(V)mkdir -p $(BUILDROOT)/e/stamps
+	touch $(BUILDROOT)/e/stamps/doc
+	$(V)echo "Success generating documentation (make doc) e."
+
+$(BUILDROOT)/e/stamps/distcheck: $(BUILDROOT)/e/stamps/compile e-distcheck
+e-distcheck: $(BUILDROOT)/e/stamps/compile
+	$(V)echo "Checking distribution e..."
+	$(V)rm -f $(BUILDROOT)/e/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/e/compile
+	$(V)mkdir -p $(BUILDROOT)/e/stamps
+	touch $(BUILDROOT)/e/stamps/distcheck
+	$(V)echo "Success checking distribution e."
+
+e-direct-users-compile:
+
+e-all-users-compile:
+
+########################################################################
+# python-edje rules
+python-edje-dependencies: $(BUILDROOT)/python-edje/stamps/dependencies edje-install python-evas-install
+$(BUILDROOT)/python-edje/stamps/dependencies: $(BUILDROOT)/edje/stamps/install $(BUILDROOT)/python-evas/stamps/install
+	$(V)mkdir -p $(BUILDROOT)/python-edje/stamps
+	touch $(BUILDROOT)/python-edje/stamps/dependencies
+
+python-edje-clean:
+	if test -d $(BUILDROOT)/python-edje/compile; then chmod -R u+w $(BUILDROOT)/python-edje/compile; fi
+	rm -fr $(BUILDROOT)/python-edje/compile
+	rm -fr $(BUILDROOT)/python-edje/stamps
+
+$(BUILDROOT)/python-edje/stamps/autogen: $(SRCROOT)/BINDINGS/python/python-edje/autogen.sh $(SRCROOT)/BINDINGS/python/python-edje/configure.ac
+	$(V)echo "Running 'autogen.sh' for python-edje..."
+	$(V)rm -f $(BUILDROOT)/python-edje/stamps/autogen
+	cd $(SRCROOT)/BINDINGS/python/python-edje && NOCONFIGURE=1 ./autogen.sh
+	$(V)mkdir -p $(BUILDROOT)/python-edje/stamps
+	touch $(BUILDROOT)/python-edje/stamps/autogen
+	$(V)echo "Success running 'autogen.sh' for python-edje."
+
+$(BUILDROOT)/python-edje/stamps/configure: $(BUILDROOT)/python-edje/stamps/autogen $(BUILDROOT)/python-edje/stamps/dependencies
+	$(V)echo "Configuring python-edje..."
+	$(V)rm -f $(BUILDROOT)/python-edje/stamps/configure
+	$(V)mkdir -p $(BUILDROOT)/python-edje/compile
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	cd $(BUILDROOT)/python-edje/compile && \
+	$(SRCROOT)/BINDINGS/python/python-edje/configure --prefix=$(INSTALLROOT) 
+	$(V)mkdir -p $(BUILDROOT)/python-edje/stamps
+	touch $(BUILDROOT)/python-edje/stamps/configure
+	$(V)echo "Success configuring python-edje."
+
+$(BUILDROOT)/python-edje/stamps/compile: $(BUILDROOT)/python-edje/stamps/configure python-edje-compile
+python-edje-compile: $(BUILDROOT)/python-edje/stamps/configure
+	$(V)echo "Compiling python-edje..."
+	$(V)rm -f $(BUILDROOT)/python-edje/stamps/compile-updated
+	$(V)mkdir -p $(BUILDROOT)/python-edje/stamps
+	$(V)if make --dry-run $(MAKEOPTS) all -C $(BUILDROOT)/python-edje/compile 2>/dev/null | grep -e 'libtool ' >/dev/null 2>/dev/null; then\
+		touch $(BUILDROOT)/python-edje/stamps/compile-updated;\
+	fi
+	$(V)if test -f $(BUILDROOT)/python-edje/stamps/compile-updated; then\
+		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/python-edje/compile";\
+		make $(MAKEOPTS) all -C $(BUILDROOT)/python-edje/compile;\
+	else\
+		echo "python-edje is up to date.";\
+	fi
+	$(V)if test ! -f $(BUILDROOT)/python-edje/stamps/compile -o -f $(BUILDROOT)/python-edje/stamps/compile-updated; then\
+		touch $(BUILDROOT)/python-edje/stamps/compile;\
+		echo "Compile updated, needs reinstall.";\
+	fi
+	$(V)echo "Success compiling python-edje."
+
+$(BUILDROOT)/python-edje/stamps/install: $(BUILDROOT)/python-edje/stamps/compile python-edje-install
+python-edje-install: $(BUILDROOT)/python-edje/stamps/compile
+	$(V)echo "Installing python-edje..."
+	$(V)if test ! -f $(BUILDROOT)/python-edje/stamps/install -o $(BUILDROOT)/python-edje/stamps/compile -nt $(BUILDROOT)/python-edje/stamps/install; then\
+		rm -f $(BUILDROOT)/python-edje/stamps/install;\
+		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/python-edje/compile";\
+		make $(MAKEOPTS) install -C $(BUILDROOT)/python-edje/compile;\
+		mkdir -p $(BUILDROOT)/python-edje/stamps;\
+		touch $(BUILDROOT)/python-edje/stamps/install;\
+	else\
+		echo "python-edje did not change, not need to reinstall.";\
+	fi
+	$(V)echo "Success installing python-edje."
+
+$(BUILDROOT)/python-edje/stamps/test: $(BUILDROOT)/python-edje/stamps/compile python-edje-test
+python-edje-test: $(BUILDROOT)/python-edje/stamps/compile
+	$(V)mkdir -p $(BUILDROOT)/python-edje/stamps
+	touch $(BUILDROOT)/python-edje/stamps/test
+	$(V)echo 'No test target defined for python-edje'
+
+$(BUILDROOT)/python-edje/stamps/doc: $(BUILDROOT)/python-edje/stamps/compile python-edje-doc
+python-edje-doc: $(BUILDROOT)/python-edje/stamps/compile
+	$(V)mkdir -p $(BUILDROOT)/python-edje/stamps
+	touch $(BUILDROOT)/python-edje/stamps/doc
+	$(V)echo 'No doc target defined for python-edje'
+
+$(BUILDROOT)/python-edje/stamps/distcheck: $(BUILDROOT)/python-edje/stamps/compile python-edje-distcheck
+python-edje-distcheck: $(BUILDROOT)/python-edje/stamps/compile
+	$(V)echo "Checking distribution python-edje..."
+	$(V)rm -f $(BUILDROOT)/python-edje/stamps/distcheck
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) distcheck -C $(BUILDROOT)/python-edje/compile
+	$(V)mkdir -p $(BUILDROOT)/python-edje/stamps
+	touch $(BUILDROOT)/python-edje/stamps/distcheck
+	$(V)echo "Success checking distribution python-edje."
+
+python-edje-direct-users-compile:
+
+python-edje-all-users-compile:

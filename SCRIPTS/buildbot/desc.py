@@ -71,6 +71,11 @@ Package(
             "--enable-doc",
             "--enable-tests",
             #"--enable-coverage",
+            "--enable-gnutls",
+            "--disable-openssl",
+            "--enable-cipher",
+            "--enable-signature",
+            "--enable-assert",
             ],
         },
     )
@@ -206,7 +211,120 @@ Package(
     )
 
 Package(
+    name="e",
+    doc_target="doc",
+    exclusive_platforms=["linux"],
+    dependencies={
+        "common": [
+            "eina",
+            "eet",
+            "evas",
+            "ecore",
+            "edje",
+            "efreet",
+            "eeze",
+            "e_dbus",
+            ],
+        },
+    configure_flags={
+        "common": [
+            "--enable-doc",
+            # no autodetect, force these:
+            "--enable-pam",
+            "--enable-device-udev",
+            "--enable-enotify",
+            "--enable-enotify",
+            "--enable-ibar",
+            "--enable-dropshadow",
+            "--enable-clock",
+            "--enable-pager",
+            "--enable-battery",
+            "--enable-temperature",
+            "--enable-notification",
+            "--enable-cpufreq",
+            "--enable-ibox",
+            "--enable-start",
+            "--enable-winlist",
+            "--enable-fileman",
+            "--enable-fileman-opinfo",
+            "--enable-wizard",
+            "--enable-conf",
+            "--enable-conf-wallpaper2",
+            "--enable-conf-theme",
+            "--enable-conf-intl",
+            "--enable-msgbus",
+            "--enable-conf-applications",
+            "--enable-conf-display",
+            "--enable-conf-shelves",
+            "--enable-conf-keybindings",
+            "--enable-conf-edgebindings",
+            "--enable-conf-window-remembers",
+            "--enable-conf-window-manipulation",
+            "--enable-conf-menus",
+            "--enable-conf-dialogs",
+            "--enable-conf-performance",
+            "--enable-conf-paths",
+            "--enable-conf-interaction",
+            "--enable-gadman",
+            "--enable-mixer",
+            "--enable-connman",
+            "--enable-bluez",
+            "--enable-ofono",
+            "--enable-illume2",
+            "--enable-syscon",
+            "--enable-everything",
+            "--enable-systray",
+            "--enable-comp",
+            "--enable-shot",
+            "--enable-backlight",
+            "--enable-tasks",
+            "--enable-conf-randr",
+            ],
+        },
+    )
+
+Package(
     name="python-evas",
     srcdir="BINDINGS/python/python-evas",
     dependencies={"common": ["evas"]},
+    # generated code sucks, no way to change it:
+    env={"common": {"CFLAGS": "-Wno-shadow -Wno-strict-aliasing"}},
+    )
+
+Package(
+    name="python-ecore",
+    srcdir="BINDINGS/python/python-ecore",
+    dependencies={"common": ["ecore", "python-evas"]},
+    # generated code sucks, no way to change it:
+    env={"common": {"CFLAGS": "-Wno-shadow -Wno-strict-aliasing"}},
+    configure_flags={
+        "common": [
+            "--enable-ecore-file",
+            "--enable-ecore-evas",
+            ],
+        "linux": [
+            "--enable-ecore-x",
+            "--enable-ecore-imf",
+            ],
+        "win": [
+            "--enable-ecore-win32",
+            ],
+        },
+    )
+
+Package(
+    name="python-edje",
+    srcdir="BINDINGS/python/python-edje",
+    dependencies={"common": ["edje", "python-evas"]},
+    # generated code sucks, no way to change it:
+    env={"common": {"CFLAGS": "-Wno-shadow -Wno-strict-aliasing"}},
+    )
+
+Package(
+    name="python-e_dbus",
+    srcdir="BINDINGS/python/python-e_dbus",
+    exclusive_platforms=["linux"],
+    dependencies={"common": ["e_dbus", "python-evas"]},
+    # generated code sucks, no way to change it:
+    env={"common": {"CFLAGS": "-Wno-shadow -Wno-strict-aliasing"}},
     )
