@@ -602,6 +602,14 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         "Same as event_callback_del(EVAS_CALLBACK_IMAGE_PRELOADED, ...)"
         self.event_callback_del(EVAS_CALLBACK_IMAGE_PRELOADED, func)
 
+    def on_image_unloaded_add(self, func, *a, **k):
+        "Same as event_callback_add(EVAS_CALLBACK_IMAGE_UNLOADED, ...)"
+        self.event_callback_add(EVAS_CALLBACK_IMAGE_UNLOADED, func, *a, **k)
+
+    def on_image_unloaded_del(self, func):
+        "Same as event_callback_del(EVAS_CALLBACK_IMAGE_UNLOADED, ...)"
+        self.event_callback_del(EVAS_CALLBACK_IMAGE_UNLOADED, func)
+
 
 cdef extern from "Evas.h": # hack to force type to be known
     cdef PyTypeObject PyEvasImage_Type # hack to install metaclass

@@ -352,7 +352,7 @@ _rgb565_image_rotate(Evas_Object_Image_Rotation rotation, DATA16 *dst, const DAT
 {
    int dst_stride;
    DATA8 *dst_alpha;
-   const DATA8 *src_alpha;
+   const DATA8 *src_alpha = NULL;
 
    if (has_alpha)
      src_alpha = (const DATA8*)(src + src_stride * h);

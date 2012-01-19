@@ -162,9 +162,7 @@ cdef void cb_canvas_canvas_object_focus_out(void *data, Evas *e, void *e_inf) wi
 
 
 cdef void cb_canvas_image_unloaded(void *data, Evas *e, void *e_inf) with gil:
-    cdef Evas_Object *obj = <Evas_Object*>e_inf
-    o = Object_from_instance(obj)
-    cb_canvas_dispatcher(<Canvas>data, o, EVAS_CALLBACK_IMAGE_UNLOADED)
+    print "EVAS_CALLBACK_IMAGE_UNLOADED is not supported by canvas."
 
 
 cdef void cb_canvas_render_pre(void *data, Evas *e, void *e_inf) with gil:
