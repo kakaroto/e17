@@ -20,7 +20,7 @@
 cdef class Window:
     cdef Ecore_Win32_Window *obj
 
-    def __new__(self, *a, **ka):
+    def __cinit__(self, *a, **ka):
         self.obj = NULL
 
     def __init__(self, Window parent=None, int x=0, int y=0, int w=1, int h=1,
