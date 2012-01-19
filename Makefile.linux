@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Thu Jan 19 10:06:31 2012.
+# Generated for linux at Thu Jan 19 10:58:56 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -91,6 +91,7 @@ $(BUILDROOT)/eina/stamps/configure: $(BUILDROOT)/eina/stamps/autogen $(BUILDROOT
 	$(V)echo "Configuring eina..."
 	$(V)rm -f $(BUILDROOT)/eina/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/eina/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -113,7 +114,12 @@ eina-compile: $(BUILDROOT)/eina/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/eina/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/eina/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/eina/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/eina/compile;\
 	else\
 		echo "eina is up to date.";\
 	fi
@@ -129,7 +135,12 @@ eina-install: $(BUILDROOT)/eina/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/eina/stamps/install -o $(BUILDROOT)/eina/stamps/compile -nt $(BUILDROOT)/eina/stamps/install; then\
 		rm -f $(BUILDROOT)/eina/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/eina/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/eina/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/eina/compile;\
 		mkdir -p $(BUILDROOT)/eina/stamps;\
 		touch $(BUILDROOT)/eina/stamps/install;\
 	else\
@@ -141,6 +152,11 @@ $(BUILDROOT)/eina/stamps/test: $(BUILDROOT)/eina/stamps/compile eina-test
 eina-test: $(BUILDROOT)/eina/stamps/compile
 	$(V)echo "Testing (make check) eina..."
 	$(V)rm -f $(BUILDROOT)/eina/stamps/test
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) check -C $(BUILDROOT)/eina/compile
 	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/test
@@ -150,6 +166,11 @@ $(BUILDROOT)/eina/stamps/doc: $(BUILDROOT)/eina/stamps/compile eina-doc
 eina-doc: $(BUILDROOT)/eina/stamps/compile
 	$(V)echo "Generating documentation (make doc) eina..."
 	$(V)rm -f $(BUILDROOT)/eina/stamps/doc
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/eina/compile
 	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/doc
@@ -159,6 +180,7 @@ $(BUILDROOT)/eina/stamps/distcheck: $(BUILDROOT)/eina/stamps/compile eina-distch
 eina-distcheck: $(BUILDROOT)/eina/stamps/compile
 	$(V)echo "Checking distribution eina..."
 	$(V)rm -f $(BUILDROOT)/eina/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -196,6 +218,7 @@ $(BUILDROOT)/eet/stamps/configure: $(BUILDROOT)/eet/stamps/autogen $(BUILDROOT)/
 	$(V)echo "Configuring eet..."
 	$(V)rm -f $(BUILDROOT)/eet/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/eet/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -222,7 +245,12 @@ eet-compile: $(BUILDROOT)/eet/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/eet/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/eet/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/eet/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/eet/compile;\
 	else\
 		echo "eet is up to date.";\
 	fi
@@ -238,7 +266,12 @@ eet-install: $(BUILDROOT)/eet/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/eet/stamps/install -o $(BUILDROOT)/eet/stamps/compile -nt $(BUILDROOT)/eet/stamps/install; then\
 		rm -f $(BUILDROOT)/eet/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/eet/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/eet/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/eet/compile;\
 		mkdir -p $(BUILDROOT)/eet/stamps;\
 		touch $(BUILDROOT)/eet/stamps/install;\
 	else\
@@ -250,6 +283,11 @@ $(BUILDROOT)/eet/stamps/test: $(BUILDROOT)/eet/stamps/compile eet-test
 eet-test: $(BUILDROOT)/eet/stamps/compile
 	$(V)echo "Testing (make check) eet..."
 	$(V)rm -f $(BUILDROOT)/eet/stamps/test
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) check -C $(BUILDROOT)/eet/compile
 	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/test
@@ -259,6 +297,11 @@ $(BUILDROOT)/eet/stamps/doc: $(BUILDROOT)/eet/stamps/compile eet-doc
 eet-doc: $(BUILDROOT)/eet/stamps/compile
 	$(V)echo "Generating documentation (make doc) eet..."
 	$(V)rm -f $(BUILDROOT)/eet/stamps/doc
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/eet/compile
 	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/doc
@@ -268,6 +311,7 @@ $(BUILDROOT)/eet/stamps/distcheck: $(BUILDROOT)/eet/stamps/compile eet-distcheck
 eet-distcheck: $(BUILDROOT)/eet/stamps/compile
 	$(V)echo "Checking distribution eet..."
 	$(V)rm -f $(BUILDROOT)/eet/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -305,6 +349,7 @@ $(BUILDROOT)/evas/stamps/configure: $(BUILDROOT)/evas/stamps/autogen $(BUILDROOT
 	$(V)echo "Configuring evas..."
 	$(V)rm -f $(BUILDROOT)/evas/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/evas/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -332,7 +377,12 @@ evas-compile: $(BUILDROOT)/evas/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/evas/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/evas/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/evas/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/evas/compile;\
 	else\
 		echo "evas is up to date.";\
 	fi
@@ -348,7 +398,12 @@ evas-install: $(BUILDROOT)/evas/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/evas/stamps/install -o $(BUILDROOT)/evas/stamps/compile -nt $(BUILDROOT)/evas/stamps/install; then\
 		rm -f $(BUILDROOT)/evas/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/evas/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/evas/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/evas/compile;\
 		mkdir -p $(BUILDROOT)/evas/stamps;\
 		touch $(BUILDROOT)/evas/stamps/install;\
 	else\
@@ -360,6 +415,11 @@ $(BUILDROOT)/evas/stamps/test: $(BUILDROOT)/evas/stamps/compile evas-test
 evas-test: $(BUILDROOT)/evas/stamps/compile
 	$(V)echo "Testing (make check) evas..."
 	$(V)rm -f $(BUILDROOT)/evas/stamps/test
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) check -C $(BUILDROOT)/evas/compile
 	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/test
@@ -369,6 +429,11 @@ $(BUILDROOT)/evas/stamps/doc: $(BUILDROOT)/evas/stamps/compile evas-doc
 evas-doc: $(BUILDROOT)/evas/stamps/compile
 	$(V)echo "Generating documentation (make doc) evas..."
 	$(V)rm -f $(BUILDROOT)/evas/stamps/doc
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/evas/compile
 	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/doc
@@ -378,6 +443,7 @@ $(BUILDROOT)/evas/stamps/distcheck: $(BUILDROOT)/evas/stamps/compile evas-distch
 evas-distcheck: $(BUILDROOT)/evas/stamps/compile
 	$(V)echo "Checking distribution evas..."
 	$(V)rm -f $(BUILDROOT)/evas/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -415,6 +481,7 @@ $(BUILDROOT)/ecore/stamps/configure: $(BUILDROOT)/ecore/stamps/autogen $(BUILDRO
 	$(V)echo "Configuring ecore..."
 	$(V)rm -f $(BUILDROOT)/ecore/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/ecore/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -445,7 +512,12 @@ ecore-compile: $(BUILDROOT)/ecore/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/ecore/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/ecore/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/ecore/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/ecore/compile;\
 	else\
 		echo "ecore is up to date.";\
 	fi
@@ -461,7 +533,12 @@ ecore-install: $(BUILDROOT)/ecore/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/ecore/stamps/install -o $(BUILDROOT)/ecore/stamps/compile -nt $(BUILDROOT)/ecore/stamps/install; then\
 		rm -f $(BUILDROOT)/ecore/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/ecore/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/ecore/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/ecore/compile;\
 		mkdir -p $(BUILDROOT)/ecore/stamps;\
 		touch $(BUILDROOT)/ecore/stamps/install;\
 	else\
@@ -473,6 +550,11 @@ $(BUILDROOT)/ecore/stamps/test: $(BUILDROOT)/ecore/stamps/compile ecore-test
 ecore-test: $(BUILDROOT)/ecore/stamps/compile
 	$(V)echo "Testing (make check) ecore..."
 	$(V)rm -f $(BUILDROOT)/ecore/stamps/test
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) check -C $(BUILDROOT)/ecore/compile
 	$(V)mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/test
@@ -482,6 +564,11 @@ $(BUILDROOT)/ecore/stamps/doc: $(BUILDROOT)/ecore/stamps/compile ecore-doc
 ecore-doc: $(BUILDROOT)/ecore/stamps/compile
 	$(V)echo "Generating documentation (make doc) ecore..."
 	$(V)rm -f $(BUILDROOT)/ecore/stamps/doc
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/ecore/compile
 	$(V)mkdir -p $(BUILDROOT)/ecore/stamps
 	touch $(BUILDROOT)/ecore/stamps/doc
@@ -491,6 +578,7 @@ $(BUILDROOT)/ecore/stamps/distcheck: $(BUILDROOT)/ecore/stamps/compile ecore-dis
 ecore-distcheck: $(BUILDROOT)/ecore/stamps/compile
 	$(V)echo "Checking distribution ecore..."
 	$(V)rm -f $(BUILDROOT)/ecore/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -528,6 +616,7 @@ $(BUILDROOT)/e_dbus/stamps/configure: $(BUILDROOT)/e_dbus/stamps/autogen $(BUILD
 	$(V)echo "Configuring e_dbus..."
 	$(V)rm -f $(BUILDROOT)/e_dbus/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/e_dbus/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -553,7 +642,12 @@ e_dbus-compile: $(BUILDROOT)/e_dbus/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/e_dbus/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/e_dbus/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/e_dbus/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/e_dbus/compile;\
 	else\
 		echo "e_dbus is up to date.";\
 	fi
@@ -569,7 +663,12 @@ e_dbus-install: $(BUILDROOT)/e_dbus/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/e_dbus/stamps/install -o $(BUILDROOT)/e_dbus/stamps/compile -nt $(BUILDROOT)/e_dbus/stamps/install; then\
 		rm -f $(BUILDROOT)/e_dbus/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/e_dbus/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/e_dbus/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/e_dbus/compile;\
 		mkdir -p $(BUILDROOT)/e_dbus/stamps;\
 		touch $(BUILDROOT)/e_dbus/stamps/install;\
 	else\
@@ -587,6 +686,11 @@ $(BUILDROOT)/e_dbus/stamps/doc: $(BUILDROOT)/e_dbus/stamps/compile e_dbus-doc
 e_dbus-doc: $(BUILDROOT)/e_dbus/stamps/compile
 	$(V)echo "Generating documentation (make doc) e_dbus..."
 	$(V)rm -f $(BUILDROOT)/e_dbus/stamps/doc
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/e_dbus/compile
 	$(V)mkdir -p $(BUILDROOT)/e_dbus/stamps
 	touch $(BUILDROOT)/e_dbus/stamps/doc
@@ -596,6 +700,7 @@ $(BUILDROOT)/e_dbus/stamps/distcheck: $(BUILDROOT)/e_dbus/stamps/compile e_dbus-
 e_dbus-distcheck: $(BUILDROOT)/e_dbus/stamps/compile
 	$(V)echo "Checking distribution e_dbus..."
 	$(V)rm -f $(BUILDROOT)/e_dbus/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -633,6 +738,7 @@ $(BUILDROOT)/efreet/stamps/configure: $(BUILDROOT)/efreet/stamps/autogen $(BUILD
 	$(V)echo "Configuring efreet..."
 	$(V)rm -f $(BUILDROOT)/efreet/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/efreet/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -654,7 +760,12 @@ efreet-compile: $(BUILDROOT)/efreet/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/efreet/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/efreet/compile;\
 	else\
 		echo "efreet is up to date.";\
 	fi
@@ -670,7 +781,12 @@ efreet-install: $(BUILDROOT)/efreet/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/efreet/stamps/install -o $(BUILDROOT)/efreet/stamps/compile -nt $(BUILDROOT)/efreet/stamps/install; then\
 		rm -f $(BUILDROOT)/efreet/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/efreet/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/efreet/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/efreet/compile;\
 		mkdir -p $(BUILDROOT)/efreet/stamps;\
 		touch $(BUILDROOT)/efreet/stamps/install;\
 	else\
@@ -682,6 +798,11 @@ $(BUILDROOT)/efreet/stamps/test: $(BUILDROOT)/efreet/stamps/compile efreet-test
 efreet-test: $(BUILDROOT)/efreet/stamps/compile
 	$(V)echo "Testing (make check) efreet..."
 	$(V)rm -f $(BUILDROOT)/efreet/stamps/test
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) check -C $(BUILDROOT)/efreet/compile
 	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
 	touch $(BUILDROOT)/efreet/stamps/test
@@ -691,6 +812,11 @@ $(BUILDROOT)/efreet/stamps/doc: $(BUILDROOT)/efreet/stamps/compile efreet-doc
 efreet-doc: $(BUILDROOT)/efreet/stamps/compile
 	$(V)echo "Generating documentation (make doc) efreet..."
 	$(V)rm -f $(BUILDROOT)/efreet/stamps/doc
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/efreet/compile
 	$(V)mkdir -p $(BUILDROOT)/efreet/stamps
 	touch $(BUILDROOT)/efreet/stamps/doc
@@ -700,6 +826,7 @@ $(BUILDROOT)/efreet/stamps/distcheck: $(BUILDROOT)/efreet/stamps/compile efreet-
 efreet-distcheck: $(BUILDROOT)/efreet/stamps/compile
 	$(V)echo "Checking distribution efreet..."
 	$(V)rm -f $(BUILDROOT)/efreet/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -737,6 +864,7 @@ $(BUILDROOT)/eeze/stamps/configure: $(BUILDROOT)/eeze/stamps/autogen $(BUILDROOT
 	$(V)echo "Configuring eeze..."
 	$(V)rm -f $(BUILDROOT)/eeze/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/eeze/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -760,7 +888,12 @@ eeze-compile: $(BUILDROOT)/eeze/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/eeze/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/eeze/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/eeze/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/eeze/compile;\
 	else\
 		echo "eeze is up to date.";\
 	fi
@@ -776,7 +909,12 @@ eeze-install: $(BUILDROOT)/eeze/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/eeze/stamps/install -o $(BUILDROOT)/eeze/stamps/compile -nt $(BUILDROOT)/eeze/stamps/install; then\
 		rm -f $(BUILDROOT)/eeze/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/eeze/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/eeze/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/eeze/compile;\
 		mkdir -p $(BUILDROOT)/eeze/stamps;\
 		touch $(BUILDROOT)/eeze/stamps/install;\
 	else\
@@ -794,6 +932,11 @@ $(BUILDROOT)/eeze/stamps/doc: $(BUILDROOT)/eeze/stamps/compile eeze-doc
 eeze-doc: $(BUILDROOT)/eeze/stamps/compile
 	$(V)echo "Generating documentation (make doc) eeze..."
 	$(V)rm -f $(BUILDROOT)/eeze/stamps/doc
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/eeze/compile
 	$(V)mkdir -p $(BUILDROOT)/eeze/stamps
 	touch $(BUILDROOT)/eeze/stamps/doc
@@ -803,6 +946,7 @@ $(BUILDROOT)/eeze/stamps/distcheck: $(BUILDROOT)/eeze/stamps/compile eeze-distch
 eeze-distcheck: $(BUILDROOT)/eeze/stamps/compile
 	$(V)echo "Checking distribution eeze..."
 	$(V)rm -f $(BUILDROOT)/eeze/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -840,6 +984,7 @@ $(BUILDROOT)/python-evas/stamps/configure: $(BUILDROOT)/python-evas/stamps/autog
 	$(V)echo "Configuring python-evas..."
 	$(V)rm -f $(BUILDROOT)/python-evas/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/python-evas/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
@@ -860,7 +1005,12 @@ python-evas-compile: $(BUILDROOT)/python-evas/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/python-evas/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/python-evas/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/python-evas/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/python-evas/compile;\
 	else\
 		echo "python-evas is up to date.";\
 	fi
@@ -876,7 +1026,12 @@ python-evas-install: $(BUILDROOT)/python-evas/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/python-evas/stamps/install -o $(BUILDROOT)/python-evas/stamps/compile -nt $(BUILDROOT)/python-evas/stamps/install; then\
 		rm -f $(BUILDROOT)/python-evas/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/python-evas/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/python-evas/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/python-evas/compile;\
 		mkdir -p $(BUILDROOT)/python-evas/stamps;\
 		touch $(BUILDROOT)/python-evas/stamps/install;\
 	else\
@@ -900,6 +1055,7 @@ $(BUILDROOT)/python-evas/stamps/distcheck: $(BUILDROOT)/python-evas/stamps/compi
 python-evas-distcheck: $(BUILDROOT)/python-evas/stamps/compile
 	$(V)echo "Checking distribution python-evas..."
 	$(V)rm -f $(BUILDROOT)/python-evas/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
@@ -937,6 +1093,7 @@ $(BUILDROOT)/python-ecore/stamps/configure: $(BUILDROOT)/python-ecore/stamps/aut
 	$(V)echo "Configuring python-ecore..."
 	$(V)rm -f $(BUILDROOT)/python-ecore/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/python-ecore/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
@@ -960,7 +1117,12 @@ python-ecore-compile: $(BUILDROOT)/python-ecore/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/python-ecore/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/python-ecore/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/python-ecore/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/python-ecore/compile;\
 	else\
 		echo "python-ecore is up to date.";\
 	fi
@@ -976,7 +1138,12 @@ python-ecore-install: $(BUILDROOT)/python-ecore/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/python-ecore/stamps/install -o $(BUILDROOT)/python-ecore/stamps/compile -nt $(BUILDROOT)/python-ecore/stamps/install; then\
 		rm -f $(BUILDROOT)/python-ecore/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/python-ecore/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/python-ecore/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/python-ecore/compile;\
 		mkdir -p $(BUILDROOT)/python-ecore/stamps;\
 		touch $(BUILDROOT)/python-ecore/stamps/install;\
 	else\
@@ -1000,6 +1167,7 @@ $(BUILDROOT)/python-ecore/stamps/distcheck: $(BUILDROOT)/python-ecore/stamps/com
 python-ecore-distcheck: $(BUILDROOT)/python-ecore/stamps/compile
 	$(V)echo "Checking distribution python-ecore..."
 	$(V)rm -f $(BUILDROOT)/python-ecore/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
@@ -1037,6 +1205,7 @@ $(BUILDROOT)/python-e_dbus/stamps/configure: $(BUILDROOT)/python-e_dbus/stamps/a
 	$(V)echo "Configuring python-e_dbus..."
 	$(V)rm -f $(BUILDROOT)/python-e_dbus/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/python-e_dbus/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
@@ -1057,7 +1226,12 @@ python-e_dbus-compile: $(BUILDROOT)/python-e_dbus/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/python-e_dbus/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/python-e_dbus/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/python-e_dbus/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/python-e_dbus/compile;\
 	else\
 		echo "python-e_dbus is up to date.";\
 	fi
@@ -1073,7 +1247,12 @@ python-e_dbus-install: $(BUILDROOT)/python-e_dbus/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/python-e_dbus/stamps/install -o $(BUILDROOT)/python-e_dbus/stamps/compile -nt $(BUILDROOT)/python-e_dbus/stamps/install; then\
 		rm -f $(BUILDROOT)/python-e_dbus/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/python-e_dbus/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/python-e_dbus/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/python-e_dbus/compile;\
 		mkdir -p $(BUILDROOT)/python-e_dbus/stamps;\
 		touch $(BUILDROOT)/python-e_dbus/stamps/install;\
 	else\
@@ -1097,6 +1276,7 @@ $(BUILDROOT)/python-e_dbus/stamps/distcheck: $(BUILDROOT)/python-e_dbus/stamps/c
 python-e_dbus-distcheck: $(BUILDROOT)/python-e_dbus/stamps/compile
 	$(V)echo "Checking distribution python-e_dbus..."
 	$(V)rm -f $(BUILDROOT)/python-e_dbus/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
@@ -1134,6 +1314,7 @@ $(BUILDROOT)/embryo/stamps/configure: $(BUILDROOT)/embryo/stamps/autogen $(BUILD
 	$(V)echo "Configuring embryo..."
 	$(V)rm -f $(BUILDROOT)/embryo/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/embryo/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -1154,7 +1335,12 @@ embryo-compile: $(BUILDROOT)/embryo/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/embryo/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/embryo/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/embryo/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/embryo/compile;\
 	else\
 		echo "embryo is up to date.";\
 	fi
@@ -1170,7 +1356,12 @@ embryo-install: $(BUILDROOT)/embryo/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/embryo/stamps/install -o $(BUILDROOT)/embryo/stamps/compile -nt $(BUILDROOT)/embryo/stamps/install; then\
 		rm -f $(BUILDROOT)/embryo/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/embryo/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/embryo/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/embryo/compile;\
 		mkdir -p $(BUILDROOT)/embryo/stamps;\
 		touch $(BUILDROOT)/embryo/stamps/install;\
 	else\
@@ -1194,6 +1385,7 @@ $(BUILDROOT)/embryo/stamps/distcheck: $(BUILDROOT)/embryo/stamps/compile embryo-
 embryo-distcheck: $(BUILDROOT)/embryo/stamps/compile
 	$(V)echo "Checking distribution embryo..."
 	$(V)rm -f $(BUILDROOT)/embryo/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -1231,6 +1423,7 @@ $(BUILDROOT)/edje/stamps/configure: $(BUILDROOT)/edje/stamps/autogen $(BUILDROOT
 	$(V)echo "Configuring edje..."
 	$(V)rm -f $(BUILDROOT)/edje/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/edje/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -1252,7 +1445,12 @@ edje-compile: $(BUILDROOT)/edje/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/edje/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/edje/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/edje/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/edje/compile;\
 	else\
 		echo "edje is up to date.";\
 	fi
@@ -1268,7 +1466,12 @@ edje-install: $(BUILDROOT)/edje/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/edje/stamps/install -o $(BUILDROOT)/edje/stamps/compile -nt $(BUILDROOT)/edje/stamps/install; then\
 		rm -f $(BUILDROOT)/edje/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/edje/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/edje/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/edje/compile;\
 		mkdir -p $(BUILDROOT)/edje/stamps;\
 		touch $(BUILDROOT)/edje/stamps/install;\
 	else\
@@ -1280,6 +1483,11 @@ $(BUILDROOT)/edje/stamps/test: $(BUILDROOT)/edje/stamps/compile edje-test
 edje-test: $(BUILDROOT)/edje/stamps/compile
 	$(V)echo "Testing (make check) edje..."
 	$(V)rm -f $(BUILDROOT)/edje/stamps/test
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) check -C $(BUILDROOT)/edje/compile
 	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/test
@@ -1289,6 +1497,11 @@ $(BUILDROOT)/edje/stamps/doc: $(BUILDROOT)/edje/stamps/compile edje-doc
 edje-doc: $(BUILDROOT)/edje/stamps/compile
 	$(V)echo "Generating documentation (make doc) edje..."
 	$(V)rm -f $(BUILDROOT)/edje/stamps/doc
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/edje/compile
 	$(V)mkdir -p $(BUILDROOT)/edje/stamps
 	touch $(BUILDROOT)/edje/stamps/doc
@@ -1298,6 +1511,7 @@ $(BUILDROOT)/edje/stamps/distcheck: $(BUILDROOT)/edje/stamps/compile edje-distch
 edje-distcheck: $(BUILDROOT)/edje/stamps/compile
 	$(V)echo "Checking distribution edje..."
 	$(V)rm -f $(BUILDROOT)/edje/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -1335,6 +1549,7 @@ $(BUILDROOT)/e/stamps/configure: $(BUILDROOT)/e/stamps/autogen $(BUILDROOT)/e/st
 	$(V)echo "Configuring e..."
 	$(V)rm -f $(BUILDROOT)/e/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/e/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -1404,7 +1619,12 @@ e-compile: $(BUILDROOT)/e/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/e/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/e/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/e/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/e/compile;\
 	else\
 		echo "e is up to date.";\
 	fi
@@ -1420,7 +1640,12 @@ e-install: $(BUILDROOT)/e/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/e/stamps/install -o $(BUILDROOT)/e/stamps/compile -nt $(BUILDROOT)/e/stamps/install; then\
 		rm -f $(BUILDROOT)/e/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/e/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/e/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/e/compile;\
 		mkdir -p $(BUILDROOT)/e/stamps;\
 		touch $(BUILDROOT)/e/stamps/install;\
 	else\
@@ -1438,6 +1663,11 @@ $(BUILDROOT)/e/stamps/doc: $(BUILDROOT)/e/stamps/compile e-doc
 e-doc: $(BUILDROOT)/e/stamps/compile
 	$(V)echo "Generating documentation (make doc) e..."
 	$(V)rm -f $(BUILDROOT)/e/stamps/doc
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
 	make $(MAKEOPTS) doc -C $(BUILDROOT)/e/compile
 	$(V)mkdir -p $(BUILDROOT)/e/stamps
 	touch $(BUILDROOT)/e/stamps/doc
@@ -1447,6 +1677,7 @@ $(BUILDROOT)/e/stamps/distcheck: $(BUILDROOT)/e/stamps/compile e-distcheck
 e-distcheck: $(BUILDROOT)/e/stamps/compile
 	$(V)echo "Checking distribution e..."
 	$(V)rm -f $(BUILDROOT)/e/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
@@ -1484,6 +1715,7 @@ $(BUILDROOT)/python-edje/stamps/configure: $(BUILDROOT)/python-edje/stamps/autog
 	$(V)echo "Configuring python-edje..."
 	$(V)rm -f $(BUILDROOT)/python-edje/stamps/configure
 	$(V)mkdir -p $(BUILDROOT)/python-edje/compile
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
@@ -1504,7 +1736,12 @@ python-edje-compile: $(BUILDROOT)/python-edje/stamps/configure
 	fi
 	$(V)if test -f $(BUILDROOT)/python-edje/stamps/compile-updated; then\
 		echo "make $(MAKEOPTS) all -C $(BUILDROOT)/python-edje/compile";\
-		make $(MAKEOPTS) all -C $(BUILDROOT)/python-edje/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) all -C $(BUILDROOT)/python-edje/compile;\
 	else\
 		echo "python-edje is up to date.";\
 	fi
@@ -1520,7 +1757,12 @@ python-edje-install: $(BUILDROOT)/python-edje/stamps/compile
 	$(V)if test ! -f $(BUILDROOT)/python-edje/stamps/install -o $(BUILDROOT)/python-edje/stamps/compile -nt $(BUILDROOT)/python-edje/stamps/install; then\
 		rm -f $(BUILDROOT)/python-edje/stamps/install;\
 		echo "make $(MAKEOPTS) install -C $(BUILDROOT)/python-edje/compile";\
-		make $(MAKEOPTS) install -C $(BUILDROOT)/python-edje/compile;\
+		export PATH="$(INSTALLROOT)/bin:$${PATH}";\
+	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
+	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
+	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\
+	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
+	make $(MAKEOPTS) install -C $(BUILDROOT)/python-edje/compile;\
 		mkdir -p $(BUILDROOT)/python-edje/stamps;\
 		touch $(BUILDROOT)/python-edje/stamps/install;\
 	else\
@@ -1544,6 +1786,7 @@ $(BUILDROOT)/python-edje/stamps/distcheck: $(BUILDROOT)/python-edje/stamps/compi
 python-edje-distcheck: $(BUILDROOT)/python-edje/stamps/compile
 	$(V)echo "Checking distribution python-edje..."
 	$(V)rm -f $(BUILDROOT)/python-edje/stamps/distcheck
+	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections -Wno-shadow -Wno-strict-aliasing";\

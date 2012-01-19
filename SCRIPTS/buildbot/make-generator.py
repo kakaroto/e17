@@ -154,7 +154,7 @@ def env_export_get(pkg):
     s = ";\\\n\texport ".join("%s=\"%s\"" % (k, v) for k, v in lst)
     if s:
         s = "export " + s + ";\\\n\t"
-    return "export PKG_CONFIG_PATH=\"$(INSTALLROOT)/lib/pkgconfig\";\\\n\t" + s
+    return "export PATH=\"$(INSTALLROOT)/bin:$${PATH}\";\\\n\texport PKG_CONFIG_PATH=\"$(INSTALLROOT)/lib/pkgconfig\";\\\n\t" + s
 
 
 for p in pkgs:
@@ -250,7 +250,7 @@ for p in pkgs:
 \tfi
 \t$(V)if test -f %(stamp)s-updated; then\\
 \t\techo "make $(MAKEOPTS) all -C %(compile_dir)s";\\
-\t\tmake $(MAKEOPTS) all -C %(compile_dir)s;\\
+\t\t%(env_export)smake $(MAKEOPTS) all -C %(compile_dir)s;\\
 \telse\\
 \t\techo "%(name)s is up to date.";\\
 \tfi
@@ -266,6 +266,7 @@ for p in pkgs:
        "install_stamp": stamp_name_get(p.name, "install"),
        "stampsdir": stamp_dir_get(p.name),
        "compile_dir": compile_dir_get(p.name),
+       "env_export": env_export_get(p),
        })
 
     # install it:
@@ -280,7 +281,7 @@ for p in pkgs:
 \t$(V)if test ! -f %(stamp)s -o %(compile_stamp)s -nt %(stamp)s; then\\
 \t\trm -f %(stamp)s;\\
 \t\techo "make $(MAKEOPTS) install -C %(compile_dir)s";\\
-\t\tmake $(MAKEOPTS) install -C %(compile_dir)s;\\
+\t\t%(env_export)smake $(MAKEOPTS) install -C %(compile_dir)s;\\
 \t\tmkdir -p %(stampsdir)s;\\
 \t\ttouch %(stamp)s;\\
 \telse\\
@@ -293,6 +294,7 @@ for p in pkgs:
        "compile_stamp": stamp_name_get(p.name, "compile"),
        "stampsdir": stamp_dir_get(p.name),
        "compile_dir": compile_dir_get(p.name),
+       "env_export": env_export_get(p),
        })
 
     if not p.test_target:
@@ -314,7 +316,7 @@ for p in pkgs:
 %(name)s-test: %(compile_stamp)s
 \t$(V)echo "Testing (make %(target)s) %(name)s..."
 \t$(V)rm -f %(stamp)s
-\tmake $(MAKEOPTS) %(target)s -C %(compile_dir)s
+\t%(env_export)smake $(MAKEOPTS) %(target)s -C %(compile_dir)s
 \t$(V)mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
 \t$(V)echo "Success testing (make %(target)s) %(name)s."
@@ -325,6 +327,7 @@ for p in pkgs:
        "stampsdir": stamp_dir_get(p.name),
        "compile_dir": compile_dir_get(p.name),
        "target": p.test_target,
+       "env_export": env_export_get(p),
        })
 
 
@@ -347,7 +350,7 @@ for p in pkgs:
 %(name)s-doc: %(compile_stamp)s
 \t$(V)echo "Generating documentation (make %(target)s) %(name)s..."
 \t$(V)rm -f %(stamp)s
-\tmake $(MAKEOPTS) %(target)s -C %(compile_dir)s
+\t%(env_export)smake $(MAKEOPTS) %(target)s -C %(compile_dir)s
 \t$(V)mkdir -p %(stampsdir)s
 \ttouch %(stamp)s
 \t$(V)echo "Success generating documentation (make %(target)s) %(name)s."
@@ -358,6 +361,7 @@ for p in pkgs:
        "stampsdir": stamp_dir_get(p.name),
        "compile_dir": compile_dir_get(p.name),
        "target": p.doc_target,
+       "env_export": env_export_get(p),
        })
 
     # distcheck it:
