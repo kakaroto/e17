@@ -131,17 +131,17 @@ GenListItem *GenList::insertAfter (GenListColumnConstructor *construction, const
 GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, GenList::InsertOperation op, const GenListItem *opItem, Elm_Genlist_Item_Flags flags, GenListColumnSelector *selection)
 {
   assert (mModel);
-  
-  Elm_Genlist_Item *gli;
+
+  Elm_Object_Item *gli;
   bool internalConstruction = false;
   bool internalSelection = false;
-  
+
   if (!construction)
   {
     // create internal construction object if construction==NULL was given and delete if after adding
     // this is needed to provide the user an easy API to add type save data to item append callbacks
     internalConstruction = true;
-    construction = new GenListColumnConstructor ();  
+    construction = new GenListColumnConstructor ();
   }
   
   if (!selection)
@@ -197,11 +197,11 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
   }
 
   GenListItem *item = GenListItem::wrap (*gli, *mModel); // TODO: generic!!
-  
+
   construction->mGenItem = item;
 
   //EAPI const void *
-  //elm_genlist_item_data_get(const Elm_Genlist_Item *it)
+  //elm_genlist_item_data_get(const Elm_Object_Item *it)
   // -> returns: GenListColumnConstructor *construction
   // 1. add GenItem* to construction
 
@@ -213,7 +213,7 @@ GenListItem *GenList::insertInternal (GenListColumnConstructor *construction, Ge
   {
     mInternalSelList.push_back (selection);
   }
-  
+
   return item;
 }
 
@@ -224,49 +224,49 @@ void GenList::del (GenListItem &item)
 
 GenListItem *GenList::getItemSelected () const
 {
-  Elm_Genlist_Item *item = elm_genlist_selected_item_get (o);
+  Elm_Object_Item *item = elm_genlist_selected_item_get (o);
 
   if (!item)
     return NULL;
-  
+
   const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
-  
+
   return construction->mGenItem;
 }
 
 GenListItem *GenList::getItemAtXY (const Eflxx::Point &pos, int &posret) const
 {
-  Elm_Genlist_Item *item = elm_genlist_at_xy_item_get (o, pos.x (), pos.y (), &posret);
+  Elm_Object_Item *item = elm_genlist_at_xy_item_get (o, pos.x (), pos.y (), &posret);
 
   if (!item)
     return NULL;
-  
+
   const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
-  
+
   return construction->mGenItem;
 }
 
 GenListItem *GenList::getItemFirst () const
 {
-  Elm_Genlist_Item *item = elm_genlist_first_item_get (o);
+  Elm_Object_Item *item = elm_genlist_first_item_get (o);
 
   if (!item)
     return NULL;
 
   const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
-  
+
   return construction->mGenItem;
 }
 
 GenListItem *GenList::getItemLast () const
 {
-  Elm_Genlist_Item *item = elm_genlist_last_item_get (o);
+  Elm_Object_Item *item = elm_genlist_last_item_get (o);
 
   if (!item)
     return NULL;
 
   const GenListColumnConstructor *construction = static_cast <const GenListColumnConstructor*> (elm_genlist_item_data_get (item));
-  
+
   return construction->mGenItem;
 }
 

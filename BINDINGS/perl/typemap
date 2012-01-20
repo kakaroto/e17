@@ -4,7 +4,6 @@ Eina_Bool *                 T_PTR
 Eina_Iterator *             T_PTR
 Eina_List *                 T_PTR
 Elm_Flip_Mode               T_IV
-Elm_Genlist_Item *          T_PTR
 Elm_Genlist_Item_Class *    T_PTR
 Elm_Genlist_Item_Flags      T_IV
 Elm_Hover_Axis              T_IV

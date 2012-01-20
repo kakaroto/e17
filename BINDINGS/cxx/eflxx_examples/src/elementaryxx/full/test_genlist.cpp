@@ -1100,38 +1100,38 @@ void test_genlist5 (void *data, Evas_Object *obj, void *event_info)
 
 static void gl4_exp (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-  // TODO: why is event_info used as container for Elm_Genlist_Item?
+  // TODO: why is event_info used as container for genlist item?
 #if 0
-   Elm_Genlist_Item *it = event_info;
-   Evas_Object *gl = elm_genlist_item_genlist_get(it);
-   int val = (int)elm_genlist_item_data_get(it);
+   Elm_Object_Item *glit = event_info;
+   Evas_Object *gl = elm_genlist_item_genlist_get(glit);
+   int val = (int)elm_genlist_item_data_get(glit);
    val *= 10;
    elm_genlist_item_append(gl, &itc4,
-			   (void *)(val + 1)/* item data */, it/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,
+			   (void *)(val + 1)/* item data */, glit/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,
 			   NULL/* func data */);
    elm_genlist_item_append(gl, &itc4,
-			   (void *)(val + 2)/* item data */, it/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,
+			   (void *)(val + 2)/* item data */, glit/* parent */, ELM_GENLIST_ITEM_NONE, gl4_sel/* func */,
 			   NULL/* func data */);
    elm_genlist_item_append(gl, &itc4,
-			   (void *)(val + 3)/* item data */, it/* parent */, ELM_GENLIST_ITEM_SUBITEMS, gl4_sel/* func */,
+			   (void *)(val + 3)/* item data */, glit/* parent */, ELM_GENLIST_ITEM_SUBITEMS, gl4_sel/* func */,
 			   NULL/* func data */);
 #endif
 }
 static void gl4_con (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-   //Elm_Genlist_Item *it = event_info;
-   //elm_genlist_item_subitems_clear(it);
+   //Elm_Object_Item *glit = event_info;
+   //elm_genlist_item_subitems_clear(glit);
 }
 
 static void gl4_exp_req (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-   //Elm_Genlist_Item *it = event_info;
-   //elm_genlist_item_expanded_set(it, 1);
+   //Elm_Object_Item *glit = event_info;
+   //elm_genlist_item_expanded_set(glit, EINA_TRUE);
 }
 static void gl4_con_req (Evasxx::Object &obj, void *event_info, GenList *gl)
 {
-   //Elm_Genlist_Item *it = event_info;
-   //elm_genlist_item_expanded_set(it, 0);
+   //Elm_Object_Item *glit = event_info;
+   //elm_genlist_item_expanded_set(glit, EINA_FALSE);
 }
 
 class GenDataModel6 : public GenDataModel

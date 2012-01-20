@@ -287,10 +287,10 @@ cdef class GenlistItem(WidgetItem):
     """
     An item for the genlist widget
     """
-    cdef Elm_Genlist_Item *obj
+    cdef Elm_Object_Item *obj
     cdef object params
 
-    cdef int _set_obj(self, Elm_Genlist_Item *obj, params) except 0:
+    cdef int _set_obj(self, Elm_Object_Item *obj, params) except 0:
         assert self.obj == NULL, "Object must be clean"
         self.obj = obj
         self.params = params
@@ -312,7 +312,7 @@ cdef class GenlistItem(WidgetItem):
                 self.params[1])
 
     def __repr__(self):
-        return ("%s(%#x, refcount=%d, Elm_Genlist_Item=%#x, "
+        return ("%s(%#x, refcount=%d, Elm_Object_Item=%#x, "
                 "item_class=%s, func=%s, item_data=%r)") % \
                (self.__class__.__name__,
                 <unsigned long><void*>self,
@@ -323,7 +323,7 @@ cdef class GenlistItem(WidgetItem):
                 self.params[1])
 
     def next_get(self):
-        cdef Elm_Genlist_Item *it
+        cdef Elm_Object_Item *it
         it = elm_genlist_item_next_get(self.obj)
         return _elm_genlist_item_to_python(it)
 
@@ -332,7 +332,7 @@ cdef class GenlistItem(WidgetItem):
             return self.next_get()
 
     def prev_get(self):
-        cdef Elm_Genlist_Item *it
+        cdef Elm_Object_Item *it
         it = elm_genlist_item_prev_get(self.obj)
         return _elm_genlist_item_to_python(it)
 
@@ -341,7 +341,7 @@ cdef class GenlistItem(WidgetItem):
             return self.prev_get()
 
     def parent_get(self):
-        cdef Elm_Genlist_Item *it
+        cdef Elm_Object_Item *it
         it = elm_genlist_item_parent_get(self.obj)
         return _elm_genlist_item_to_python(it)
 
@@ -574,7 +574,7 @@ cdef class GenlistItem(WidgetItem):
 
 
 def _genlist_item_conv(long addr):
-    cdef Elm_Genlist_Item *it = <Elm_Genlist_Item *>addr
+    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
     cdef void *data = elm_genlist_item_data_get(it)
     if data == NULL:
         return None
@@ -582,13 +582,13 @@ def _genlist_item_conv(long addr):
         prm = <object>data
         return prm[2]
 
-cdef Elm_Genlist_Item *_elm_genlist_item_from_python(GenlistItem item):
+cdef Elm_Object_Item *_elm_genlist_item_from_python(GenlistItem item):
     if item is None:
         return NULL
     else:
         return item.obj
 
-cdef _elm_genlist_item_to_python(Elm_Genlist_Item *it):
+cdef _elm_genlist_item_to_python(Elm_Object_Item *it):
     cdef void *data
     cdef object prm
     if it == NULL:
@@ -676,7 +676,7 @@ cdef class Genlist(Object):
                value given as parameter to this function.
         """
         cdef GenlistItem ret = GenlistItem()
-        cdef Elm_Genlist_Item *item, *parent
+        cdef Elm_Object_Item *item, *parent
         cdef c_evas.Evas_Smart_Cb cb
 
         parent = _elm_genlist_item_from_python(parent_item)
@@ -730,7 +730,7 @@ cdef class Genlist(Object):
                value given as parameter to this function.
         """
         cdef GenlistItem ret = GenlistItem()
-        cdef Elm_Genlist_Item *item, *parent
+        cdef Elm_Object_Item *item, *parent
         cdef c_evas.Evas_Smart_Cb cb
 
         parent = _elm_genlist_item_from_python(parent_item)
@@ -782,7 +782,7 @@ cdef class Genlist(Object):
                value given as parameter to this function.
         """
         cdef GenlistItem ret = GenlistItem()
-        cdef Elm_Genlist_Item *item, *before
+        cdef Elm_Object_Item *item, *before
         cdef c_evas.Evas_Smart_Cb cb
 
         before = _elm_genlist_item_from_python(before_item)
@@ -836,7 +836,7 @@ cdef class Genlist(Object):
                value given as parameter to this function.
         """
         cdef GenlistItem ret = GenlistItem()
-        cdef Elm_Genlist_Item *item, *after
+        cdef Elm_Object_Item *item, *after
         cdef c_evas.Evas_Smart_Cb cb
 
         after = _elm_genlist_item_from_python(after_item)
@@ -863,14 +863,14 @@ cdef class Genlist(Object):
             return None
 
     def selected_items_get(self):
-        cdef Elm_Genlist_Item *it
+        cdef Elm_Object_Item *it
         cdef c_evas.const_Eina_List *lst
 
         lst = elm_genlist_selected_items_get(self.obj)
         ret = []
         ret_append = ret.append
         while lst:
-            it = <Elm_Genlist_Item *>lst.data
+            it = <Elm_Object_Item *>lst.data
             lst = lst.next
             o = _elm_genlist_item_to_python(it)
             if o is not None:
@@ -878,14 +878,14 @@ cdef class Genlist(Object):
         return ret
 
     def realized_items_get(self):
-        cdef Elm_Genlist_Item *it
+        cdef Elm_Object_Item *it
         cdef c_evas.Eina_List *lst
 
         lst = elm_genlist_realized_items_get(self.obj)
         ret = []
         ret_append = ret.append
         while lst:
-            it = <Elm_Genlist_Item *>lst.data
+            it = <Elm_Object_Item *>lst.data
             lst = c_evas.eina_list_remove_list(lst, lst)
             o = _elm_genlist_item_to_python(it)
             if o is not None:
@@ -893,7 +893,7 @@ cdef class Genlist(Object):
         return ret
 
     def selected_item_get(self):
-        cdef Elm_Genlist_Item *it
+        cdef Elm_Object_Item *it
         it = elm_genlist_selected_item_get(self.obj)
         return _elm_genlist_item_to_python(it)
 
@@ -902,7 +902,7 @@ cdef class Genlist(Object):
             return self.selected_item_get()
 
     def first_item_get(self):
-        cdef Elm_Genlist_Item *it
+        cdef Elm_Object_Item *it
         it = elm_genlist_first_item_get(self.obj)
         return _elm_genlist_item_to_python(it)
 
@@ -911,7 +911,7 @@ cdef class Genlist(Object):
             return self.first_item_get()
 
     def last_item_get(self):
-        cdef Elm_Genlist_Item *it
+        cdef Elm_Object_Item *it
         it = elm_genlist_last_item_get(self.obj)
         return _elm_genlist_item_to_python(it)
 
@@ -920,7 +920,7 @@ cdef class Genlist(Object):
             return self.last_item_get()
 
     def at_xy_item_get(self, int x, int y):
-        cdef Elm_Genlist_Item *it
+        cdef Elm_Object_Item *it
         it = elm_genlist_at_xy_item_get(self.obj, x, y, NULL)
         return _elm_genlist_item_to_python(it)
 

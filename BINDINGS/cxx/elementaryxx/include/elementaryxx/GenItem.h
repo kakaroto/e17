@@ -21,7 +21,7 @@ public:
   friend class GenList;
 
   virtual ~GenItem ();
-  
+
   void setSelected (bool selected);
   bool getSelected () const;
 

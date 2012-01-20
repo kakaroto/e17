@@ -14,12 +14,12 @@ using namespace std;
 
 namespace Elmxx {
 
-GenListItem::GenListItem (Elm_Genlist_Item *item) :
+GenListItem::GenListItem (Elm_Object_Item *item) :
   mItem (item)
 {
 
 }
-  
+
 GenListItem::~GenListItem ()
 {
   cout << "GenListItem::~GenListItem" << endl;
@@ -28,12 +28,12 @@ GenListItem::~GenListItem ()
 
 void GenListItem::setSelected (bool selected)
 {
-  elm_gen_item_selected_set (mItem, selected);
+  elm_gen_item_selected_set (reinterpret_cast<Elm_Gen_Item *>(mItem), selected);
 }
 
 bool GenListItem::getSelected () const
 {
-  return elm_gen_item_selected_get (mItem);
+  return elm_gen_item_selected_get (reinterpret_cast<Elm_Gen_Item *>(mItem));
 }
 
 
@@ -113,7 +113,7 @@ const Evasxx::Object *GenListItem::getEvasObject ()
   return Evasxx::Object::objectLink (obj);
 }
 
-GenListItem *GenListItem::wrap (Elm_Genlist_Item &item, GenDataModel &model)
+GenListItem *GenListItem::wrap (Elm_Object_Item &item, GenDataModel &model)
 {
   GenListItem *genItem = new GenListItem (&item);
   genItem->mDataModel = &model;
@@ -122,7 +122,7 @@ GenListItem *GenListItem::wrap (Elm_Genlist_Item &item, GenDataModel &model)
   return genItem;
 }
 
-GenListItem *GenListItem::objectLink (const Elm_Genlist_Item *item)
+GenListItem *GenListItem::objectLink (const Elm_Object_Item *item)
 {
   //GenItem *item2 = static_cast <GenItem*> (const_cast <void*> (elm_genlist_item_data_get(item)));
   //assert (item2);

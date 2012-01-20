@@ -2442,7 +2442,7 @@ sub test_slider {
 
 typedef struct _Testitem
 {
-   Elm_Genlist_Item *item;
+   Elm_Object_Item *item;
    int mode;
    int onoff;
 } Testitem;
@@ -2487,7 +2487,7 @@ sub _move {
     #   Evas_Event_Mouse_Move *ev = event_info;
     my $where = 0;
 
-    #   Elm_Genlist_Item *gli;
+    #   Elm_Object_Item *gli;
     #   gli = elm_genlist_at_xy_item_get(gl, ev->cur.canvas.x, ev->cur.canvas.y, &where);
     #   if (gli)
     #     printf("over %p, where %i\n", elm_genlist_item_data_get(gli), where);
@@ -2594,7 +2594,7 @@ static void
 my_gl_add(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *gl = data;
-   Elm_Genlist_Item *gli;
+   Elm_Object_Item *gli;
    static int i = 0;
 
    itc1.item_style     = "default";
@@ -2616,9 +2616,9 @@ static void
 my_gl_insert_before(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *gl = data;
-   Elm_Genlist_Item *gli;
+   Elm_Object_Item *gli;
    static int i = 0;
-   Elm_Genlist_Item *gli_selected;
+   Elm_Object_Item *gli_selected;
 
    itc1.item_style     = "default";
    itc1.func.text_get = gl_text_get;
@@ -2647,9 +2647,9 @@ static void
 my_gl_insert_after(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *gl = data;
-   Elm_Genlist_Item *gli;
+   Elm_Object_Item *gli;
    static int i = 0;
-   Elm_Genlist_Item *gli_selected;
+   Elm_Object_Item *gli_selected;
 
    itc1.item_style     = "default";
    itc1.func.text_get = gl_text_get;
@@ -2678,7 +2678,7 @@ static void
 my_gl_del(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *gl = data;
-   Elm_Genlist_Item *gli = elm_genlist_selected_item_get(gl);
+   Elm_Object_Item *gli = elm_genlist_selected_item_get(gl);
    if (!gli)
      {
 	printf("no item selected\n");
@@ -2691,7 +2691,7 @@ static void
 my_gl_disable(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *gl = data;
-   Elm_Genlist_Item *gli = elm_genlist_selected_item_get(gl);
+   Elm_Object_Item *gli = elm_genlist_selected_item_get(gl);
    if (!gli)
      {
 	printf("no item selected\n");
@@ -2707,7 +2707,7 @@ my_gl_update_all(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *gl = data;
    int i = 0;
-   Elm_Genlist_Item *it = elm_genlist_first_item_get(gl);
+   Elm_Object_Item *it = elm_genlist_first_item_get(gl);
    while (it)
      {
 	elm_genlist_item_update(it);
@@ -2721,7 +2721,7 @@ static void
 my_gl_first(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *gl = data;
-   Elm_Genlist_Item *gli = elm_genlist_first_item_get(gl);
+   Elm_Object_Item *gli = elm_genlist_first_item_get(gl);
    if (!gli) return;
    elm_genlist_item_show(gli);
    elm_genlist_item_selected_set(gli, 1);
@@ -2731,7 +2731,7 @@ static void
 my_gl_last(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *gl = data;
-   Elm_Genlist_Item *gli = elm_genlist_last_item_get(gl);
+   Elm_Object_Item *gli = elm_genlist_last_item_get(gl);
    if (!gli) return;
    elm_genlist_item_show(gli);
    elm_genlist_item_selected_set(gli, 1);
@@ -2741,7 +2741,7 @@ void
 test_genlist2(void *data, Evas_Object *obj, void *event_info)
 {
    Evas_Object *win, *bg, *gl, *bx, *bx2, *bx3, *bt;
-   Elm_Genlist_Item *gli[10];
+   Elm_Object_Item *gli[10];
    char buf[PATH_MAX];
    int i;
 
@@ -3405,7 +3405,7 @@ gl4_sel(void *data, Evas_Object *obj, void *event_info)
 static void
 gl4_exp(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
+   Elm_Object_Item *it = event_info;
    Evas_Object *gl = elm_genlist_item_genlist_get(it);
    int val = (int)elm_genlist_item_data_get(it);
    val *= 10;
@@ -3422,20 +3422,20 @@ gl4_exp(void *data, Evas_Object *obj, void *event_info)
 static void
 gl4_con(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
+   Elm_Object_Item *it = event_info;
    elm_genlist_item_subitems_clear(it);
 }
 
 static void
 gl4_exp_req(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
+   Elm_Object_Item *it = event_info;
    elm_genlist_item_expanded_set(it, 1);
 }
 static void
 gl4_con_req(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
+   Elm_Object_Item *it = event_info;
    elm_genlist_item_expanded_set(it, 0);
 }
 
@@ -3852,7 +3852,7 @@ sub test_pager {
 
 typedef struct _Testitem
 {
-   Elm_Genlist_Item *item;
+   Elm_Object_Item *item;
    int mode, onoff;
 } Testitem;
 
@@ -3906,7 +3906,7 @@ sub my_win_move
 {
     my (undef, $obj) = @_;
     my ($x, $y);
-    
+
 # TODO
   # elm_win_screen_position_get(obj, &x, &y);
    #printf("MOVE - win geom: %4i %4i\n", x, y);

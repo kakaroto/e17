@@ -1240,7 +1240,7 @@ elm_slider_inverted_set(Evas_Object *obj, Eina_Bool inverted)
 Evas_Object *
 elm_genlist_add(Evas_Object *parent)
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 elm_genlist_item_append(obj, itc, data, parent, flags, func, func_data)
     Evas_Object *obj
     Elm_Genlist_Item_Class *itc
@@ -1265,14 +1265,14 @@ elm_genlist_item_append(obj, itc, data, parent, flags, func, func_data)
 
 =pod
 TODO
-Elm_Genlist_Item *
-elm_genlist_item_prepend(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item_Flags flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
+Elm_Object_Item *
+elm_genlist_item_prepend(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Genlist_Item_Flags flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
 
-Elm_Genlist_Item *
-elm_genlist_item_insert_before(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item *before, Elm_Genlist_Item_Flags flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
+Elm_Object_Item *
+elm_genlist_item_insert_before(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *before, Elm_Genlist_Item_Flags flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
 
-Elm_Genlist_Item *
-elm_genlist_item_insert_after(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Genlist_Item *parent, Elm_Genlist_Item *after, Elm_Genlist_Item_Flags flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
+Elm_Object_Item *
+elm_genlist_item_insert_after(Evas_Object *obj, Elm_Genlist_Item_Class *itc, void *data, Elm_Object_Item *parent, Elm_Object_Item *after, Elm_Genlist_Item_Flags flags, void (*func) (void *data, Evas_Object *obj, void *event_info), void *func_data);
 
 =cut
 
@@ -1284,86 +1284,86 @@ elm_genlist_clear(Evas_Object *obj)
 void
 elm_genlist_multi_select_set(Evas_Object *obj, Eina_Bool multi)
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 elm_genlist_selected_item_get(Evas_Object *obj)
 
 Eina_List *
 elm_genlist_selected_items_get(Evas_Object *obj)
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 elm_genlist_at_xy_item_get(Evas_Object *obj, Evas_Coord x, Evas_Coord y, int *posret)
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 elm_genlist_first_item_get(Evas_Object *obj)
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 elm_genlist_last_item_get(Evas_Object *obj)
 
-Elm_Genlist_Item *
-elm_genlist_item_next_get(Elm_Genlist_Item *item)
+Elm_Object_Item *
+elm_genlist_item_next_get(Elm_Object_Item *item)
 
-Elm_Genlist_Item *
-elm_genlist_item_prev_get(Elm_Genlist_Item *item)
+Elm_Object_Item *
+elm_genlist_item_prev_get(Elm_Object_Item *item)
 
 Evas_Object *
-elm_genlist_item_genlist_get(Elm_Genlist_Item *item)
+elm_genlist_item_genlist_get(Elm_Object_Item *item)
 
-Elm_Genlist_Item *
-elm_genlist_item_parent_get(Elm_Genlist_Item *it)
-
-void
-elm_genlist_item_subitems_clear(Elm_Genlist_Item *item)
+Elm_Object_Item *
+elm_genlist_item_parent_get(Elm_Object_Item *it)
 
 void
-elm_genlist_item_selected_set(Elm_Genlist_Item *item, Eina_Bool selected)
+elm_genlist_item_subitems_clear(Elm_Object_Item *item)
+
+void
+elm_genlist_item_selected_set(Elm_Object_Item *item, Eina_Bool selected)
 
 Eina_Bool
-elm_genlist_item_selected_get(Elm_Genlist_Item *item)
+elm_genlist_item_selected_get(Elm_Object_Item *item)
 
 void
-elm_genlist_item_expanded_set(Elm_Genlist_Item *item, Eina_Bool expanded)
+elm_genlist_item_expanded_set(Elm_Object_Item *item, Eina_Bool expanded)
 
 Eina_Bool
-elm_genlist_item_expanded_get(Elm_Genlist_Item *item)
+elm_genlist_item_expanded_get(Elm_Object_Item *item)
 
 void
-elm_genlist_item_disabled_set(Elm_Genlist_Item *item, Eina_Bool disabled)
+elm_genlist_item_disabled_set(Elm_Object_Item *item, Eina_Bool disabled)
 
 Eina_Bool
-elm_genlist_item_disabled_get(Elm_Genlist_Item *item)
+elm_genlist_item_disabled_get(Elm_Object_Item *item)
 
 void
-elm_genlist_item_show(Elm_Genlist_Item *item)
+elm_genlist_item_show(Elm_Object_Item *item)
 
 void
-elm_genlist_item_bring_in(Elm_Genlist_Item *item)
+elm_genlist_item_bring_in(Elm_Object_Item *item)
 
 void
-elm_genlist_item_top_show(Elm_Genlist_Item *item)
+elm_genlist_item_top_show(Elm_Object_Item *item)
 
 void
-elm_genlist_item_top_bring_in(Elm_Genlist_Item *item)
+elm_genlist_item_top_bring_in(Elm_Object_Item *item)
 
 void
-elm_genlist_item_middle_show(Elm_Genlist_Item *it)
+elm_genlist_item_middle_show(Elm_Object_Item *it)
 
 void
-elm_genlist_item_middle_bring_in(Elm_Genlist_Item *it)
+elm_genlist_item_middle_bring_in(Elm_Object_Item *it)
 
 void
-elm_genlist_item_del(Elm_Genlist_Item *item)
+elm_genlist_item_del(Elm_Object_Item *item)
 
 void *
-elm_genlist_item_data_get(Elm_Genlist_Item *item)
+elm_genlist_item_data_get(Elm_Object_Item *item)
 
 void
-elm_genlist_item_data_set(Elm_Genlist_Item *it, void *data)
+elm_genlist_item_data_set(Elm_Object_Item *it, void *data)
 
 Evas_Object *
-elm_genlist_item_object_get(Elm_Genlist_Item *it)
+elm_genlist_item_object_get(Elm_Object_Item *it)
 
 void
-elm_genlist_item_update(Elm_Genlist_Item *item)
+elm_genlist_item_update(Elm_Object_Item *item)
 
 void
 elm_genlist_horizontal_mode_set(Evas_Object *obj, Elm_List_Mode mode)

@@ -985,7 +985,7 @@ public class Genlist : Elm.Object
 
 //=======================================================================
 [Compact]
-[CCode (cname = "Elm_Genlist_Item", free_function = "") /* Caution! Genlist items are owned by the list. */ ]
+[CCode (cname = "Elm_Object_Item", free_function = "") /* Caution! Genlist items are owned by the list. */ ]
 public class GenlistItem
 {
    public GenlistItem next_get();

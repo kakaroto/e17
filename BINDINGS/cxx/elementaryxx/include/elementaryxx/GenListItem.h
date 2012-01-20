@@ -42,18 +42,18 @@ public:
 
   const Evasxx::Object *getEvasObject ();
 
-  static GenListItem *wrap (Elm_Genlist_Item &item, GenDataModel &model);
+  static GenListItem *wrap (Elm_Object_Item &item, GenDataModel &model);
 
-  static GenListItem *objectLink (const Elm_Genlist_Item *item);
-  
-  
+  static GenListItem *objectLink (const Elm_Object_Item *item);
+
+
 private:
-  GenListItem (Elm_Genlist_Item *item);
+  GenListItem (Elm_Object_Item *item);
 
   const void *getData ();
   void setData (const void *data);
-  
-  Elm_Gen_Item *mItem;
+
+  Elm_Object_Item *mItem;
   GenDataModel *mDataModel;
 };
 
