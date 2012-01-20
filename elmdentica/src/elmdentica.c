@@ -296,7 +296,7 @@ void error_win_del(void *data, Evas_Object *zbr, void *event_info) {
 }
 
 static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName) {
-	Elm_Genlist_Item *bubble = (Elm_Genlist_Item*)data;
+	Elm_Object_Item *bubble = (Elm_Object_Item*)data;
 	aStatus *as = elm_genlist_item_data_get(bubble);
 	char *screen_name=NULL, *password=NULL, *proto=NULL, *domain=NULL, *base_url=NULL;
 	int port=0, id=0;
@@ -335,7 +335,7 @@ static int ed_mark_favorite(void *data, int argc, char **argv, char **azColName)
 }
 
 static void on_mark_favorite(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
+	Elm_Object_Item *gli = (Elm_Object_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 	int sqlite_res=0;
 	char *db_err=NULL, *query=NULL;
@@ -363,7 +363,7 @@ static void status_prepend(aStatus *as, void *data) {
 }
 
 static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
+	Elm_Object_Item *gli = (Elm_Object_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 
 	if(as) {
@@ -380,7 +380,7 @@ static void on_repeat(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
+	Elm_Object_Item *gli = (Elm_Object_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 
 	network_busy_set(EINA_TRUE);
@@ -400,7 +400,7 @@ static void on_view_related(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_reply(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
+	Elm_Object_Item *gli = (Elm_Object_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 	anUser *au = NULL;
 	char entry_str[PATH_MAX], uid_str[100];
@@ -426,7 +426,7 @@ static void on_reply(void *data, Evas_Object *obj, void *event_info) {
 }
 
 static void on_dm(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
+	Elm_Object_Item *gli = (Elm_Object_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 
 	if(as) {
@@ -532,7 +532,7 @@ static void on_user_follow_toggle(void *data, Evas_Object *obj, void *event_info
 	}
 }
 
-Evas_Object *ed_get_icon(long long int id, Evas_Object *parent, Elm_Genlist_Item *li) {
+Evas_Object *ed_get_icon(long long int id, Evas_Object *parent, Elm_Object_Item *li) {
 	Evas_Object *icon=NULL;
 	aStatus *as = li?(aStatus*)elm_genlist_item_data_get(li):NULL;
 	char file_path[PATH_MAX], *p=NULL;
@@ -1222,7 +1222,7 @@ static void on_status_show_page_attachments(void* data, Evas_Object *obj, void *
 }
 
 static void ed_status_recycle_text(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
+	Elm_Object_Item *gli = (Elm_Object_Item*)data;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 	char copy_text[1024], *tmp;
 
@@ -1241,7 +1241,7 @@ static void ed_status_recycle_text(void *data, Evas_Object *obj, void *event_inf
 }
 
 static void ed_status_status_action(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)data;
+	Elm_Object_Item *gli = (Elm_Object_Item*)data;
 	Elm_Object_Item *li=NULL;
 	Elm_Object_Item *ti=NULL;
 	Evas_Object *box=NULL, *toolbar=NULL, *pager=NULL, *list=NULL, *button=NULL;
@@ -1413,7 +1413,7 @@ void on_status_swipe(void *data, Evas_Object *obj, void *event_info) {
 }
 
 void on_status_action(void *data, Evas_Object *obj, void *event_info) {
-	Elm_Genlist_Item *gli = (Elm_Genlist_Item*)event_info;
+	Elm_Object_Item *gli = (Elm_Object_Item*)event_info;
 	aStatus *as = (aStatus*)elm_genlist_item_data_get(gli);
 	Evas_Object *box=NULL, *table=NULL, *button=NULL;
 
@@ -1501,8 +1501,8 @@ void on_status_action(void *data, Evas_Object *obj, void *event_info) {
 }
 
 void add_status(aStatus *as, void *data) {
-	Elm_Genlist_Item *li=NULL;
-	Elm_Genlist_Item *gli=(Elm_Genlist_Item *)data;
+	Elm_Object_Item *li=NULL;
+	Elm_Object_Item *gli=(Elm_Object_Item *)data;
 
 	if(ed_check_gag(as)) return;
 
@@ -1970,7 +1970,7 @@ static void on_entry_clicked(void *data, Evas_Object *entry, void *event_info) {
 }
 
 Eina_Bool ed_statuses_update_time(void *data) {
-	Elm_Genlist_Item *gli=NULL;
+	Elm_Object_Item *gli=NULL;
 
 	Eina_List *l=NULL, *statuses_list = elm_genlist_realized_items_get(gui.timeline);
 

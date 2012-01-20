@@ -83,7 +83,7 @@ typedef struct _a_Status {
 	int              account_id;
 	short            account_type;
 	Eina_Bool        in_db;
-	Elm_Genlist_Item *li;
+   Elm_Object_Item *li;
 } aStatus;
 
 typedef void (*Group_Show_Cb)(void*);
