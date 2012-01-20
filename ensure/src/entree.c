@@ -103,7 +103,7 @@ tree_update(struct ensure *ensure)
 
 /* Expand an item */
 void
-tree_expand_item(struct ensure *ensure, Elm_Genlist_Item *item)
+tree_expand_item(struct ensure *ensure, Elm_Object_Item *item)
 {
    struct enobj *enobj;
    struct enobj *child;

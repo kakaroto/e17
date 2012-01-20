@@ -60,7 +60,7 @@ static struct views
 {
    const char *label;
    void        (*cb)(void *, Evas_Object *, void *);
-   void        (*expand)(struct ensure *ensure, Elm_Genlist_Item *item);
+   void        (*expand)(struct ensure *ensure, Elm_Object_Item *item);
    void        (*update)(struct ensure *ensure);
 } views[] =
 {
@@ -268,22 +268,22 @@ Evas_Object * window_add(struct ensure *ensure, char **args __UNUSED__)
 void
 generic_contract(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event)
 {
-   Elm_Genlist_Item *it = event;
-   elm_genlist_item_subitems_clear(it);
+   Elm_Object_Item *glit = event;
+   elm_genlist_item_subitems_clear(glit);
 }
 
 void
 generic_exp_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event)
 {
-   Elm_Genlist_Item *it = event;
-   elm_genlist_item_expanded_set(it, 1);
+   Elm_Object_Item *glit = event;
+   elm_genlist_item_expanded_set(glit, EINA_TRUE);
 }
 
 void
 generic_con_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event)
 {
-   Elm_Genlist_Item *it = event;
-   elm_genlist_item_expanded_set(it, 0);
+   Elm_Object_Item *glit = event;
+   elm_genlist_item_expanded_set(glit, EINA_FALSE);
 }
 
 void

@@ -99,7 +99,7 @@ config_add_classes(Evas_Object *gl)
 }
 
 void
-config_expand(struct ensure *ensure, Elm_Genlist_Item *item)
+config_expand(struct ensure *ensure, Elm_Object_Item *item)
 {
    struct severityinfo *sev;
    struct asninfo *ai;

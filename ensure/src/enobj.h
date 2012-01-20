@@ -30,7 +30,7 @@ struct enwin
 
    /** The genlist item for this window: May be NULL if no items with
     * bugs */
-   Elm_Genlist_Item *genitem;
+   Elm_Object_Item  *genitem;
 };
 
 /**
@@ -99,7 +99,7 @@ struct enobj
       } edje;
    } data;
 
-   Elm_Genlist_Item *genitem;
+   Elm_Object_Item  *genitem;
    Eina_List        *bugs;
 
    struct

@@ -73,7 +73,7 @@ struct severityinfo
 {
    const char       *name;
    const char       *icon;
-   Elm_Genlist_Item *item;
+   Elm_Object_Item  *item;
    Eina_List        *asninfo;
 };
 
