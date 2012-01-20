@@ -2549,7 +2549,7 @@ chrome_add(Browser_Window *win, const char *url, Session_Item *session_item)
 
    Evas_Object *ic = elm_icon_add(ed);
    elm_icon_file_set(ic, PACKAGE_DATA_DIR "/default.edj", "clear-button");
-   elm_entry_end_set(text_url, ic);
+   elm_object_part_content_set(text_url, "end", ic);
    evas_object_smart_callback_add(ic, "clicked", on_action_clear, chrome);
 
    Evas_Object *more_list = elm_genlist_add(ed);
