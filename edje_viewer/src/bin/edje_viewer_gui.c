@@ -60,7 +60,7 @@ create_main_win(Viewer *v)
 {
    Evas_Object *o;
    char buf[4096];
-   
+
    snprintf(buf, sizeof(buf), "%s/edje_viewer.edj", PACKAGE_DATA_DIR);
    elm_theme_extension_add(NULL, buf);
    v->theme_file = eina_stringshare_add(buf);
@@ -132,15 +132,15 @@ open_edje_file(Viewer *v)
    entries = eina_list_sort(entries, eina_list_count(entries), on_entries_sort);
    EINA_LIST_FOREACH(entries, l, group)
      {
-	Group *grp = calloc(1, sizeof(Group));
-	grp->v = v;
-	grp->name = eina_stringshare_ref(group);
+        Group *grp = calloc(1, sizeof(Group));
+        grp->v = v;
+        grp->name = eina_stringshare_ref(group);
 
-	grp->item = elm_genlist_item_append(
-	      v->gui.tree, v->gc, grp, NULL,
-	      ELM_GENLIST_ITEM_NONE, NULL, NULL);
+        grp->item = elm_genlist_item_append(
+           v->gui.tree, v->gc, grp, NULL,
+           ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
-	v->groups = eina_inlist_append(v->groups, EINA_INLIST_GET(grp));
+        v->groups = eina_inlist_append(v->groups, EINA_INLIST_GET(grp));
 
         EINA_LIST_FOREACH(v->config->groups, ll, cgrp)
           {
@@ -250,12 +250,12 @@ fill_group_parts_list(Viewer *v)
    parts = eina_list_sort(parts, eina_list_count(parts), on_entries_sort);
    EINA_LIST_FOREACH(parts, l, name)
      {
-	Part *prt = calloc(1, sizeof(Part));
-	prt->grp = v->visible_group;
-	prt->name = eina_stringshare_ref(name);
+        Part *prt = calloc(1, sizeof(Part));
+        prt->grp = v->visible_group;
+        prt->name = eina_stringshare_ref(name);
 
-	v->visible_group->parts = eina_inlist_append(v->visible_group->parts,
-						     EINA_INLIST_GET(prt));
+        v->visible_group->parts = eina_inlist_append(v->visible_group->parts,
+                                                     EINA_INLIST_GET(prt));
 
         prt->item = elm_list_item_append(v->gui.parts_list, prt->name, NULL, NULL, on_group_part_select, prt);
      }
@@ -344,7 +344,7 @@ toolbar_reconfigure(Group *grp, Eina_Bool skip_config)
 {
    if (grp->active)
      {
-	grp->ti = elm_toolbar_item_append(grp->v->gui.tbar, NULL, grp->name,
+        grp->ti = elm_toolbar_item_append(grp->v->gui.tbar, NULL, grp->name,
                                           on_toolbar_changed, grp);
         if (!skip_config)
           {
@@ -354,35 +354,35 @@ toolbar_reconfigure(Group *grp, Eina_Bool skip_config)
      }
    else
      {
-	Viewer *v = grp->v;
-	elm_toolbar_item_del(grp->ti);
-	grp->ti = NULL;
+        Viewer *v = grp->v;
+        elm_toolbar_item_del(grp->ti);
+        grp->ti = NULL;
 
-	if (grp->visible)
-	  {
-	     grp->visible = 0;
-	     EINA_INLIST_FOREACH(v->groups, grp)
-	       {
-		  if (grp->ti)
-		    {
-		       elm_toolbar_item_selected_set(grp->ti, EINA_TRUE);
-		       break;
-		    }
-	       }
-	     if (!grp)
-	       {
-		  /* XXX: workaround for the elm_toolbar issue.
-		   *      Remove when it is fixed */
-		  Evas_Coord w, h;
-		  evas_object_geometry_get(v->gui.tbar, NULL, NULL, &w, &h);
-		  evas_object_resize(v->gui.tbar, w - 1, h - 1);
-		  evas_object_resize(v->gui.tbar, w + 1, h + 1);
+        if (grp->visible)
+          {
+             grp->visible = 0;
+             EINA_INLIST_FOREACH(v->groups, grp)
+               {
+                  if (grp->ti)
+                    {
+                       elm_toolbar_item_selected_set(grp->ti, EINA_TRUE);
+                       break;
+                    }
+               }
+             if (!grp)
+               {
+                  /* XXX: workaround for the elm_toolbar issue.
+                   *      Remove when it is fixed */
+                  Evas_Coord w, h;
+                  evas_object_geometry_get(v->gui.tbar, NULL, NULL, &w, &h);
+                  evas_object_resize(v->gui.tbar, w - 1, h - 1);
+                  evas_object_resize(v->gui.tbar, w + 1, h + 1);
 
                   if (v->config->show_signals)
                     hoversel_clear(v);
-		  edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,parts_list,hide", "v");
-	       }
-	  }
+                  edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,parts_list,hide", "v");
+               }
+          }
      }
 }
 
@@ -391,12 +391,12 @@ free_group_parts(Group *grp)
 {
    while (grp->parts)
      {
-	Part *prt = (Part *) grp->parts;
-	eina_stringshare_del(prt->name);
-	grp->parts = eina_inlist_remove(grp->parts, grp->parts);
-	if (prt->highlight)
-	  prt->highlight = NULL;
-	free(prt);
+        Part *prt = (Part *) grp->parts;
+        eina_stringshare_del(prt->name);
+        grp->parts = eina_inlist_remove(grp->parts, grp->parts);
+        if (prt->highlight)
+          prt->highlight = NULL;
+        free(prt);
      }
 }
 
@@ -444,8 +444,8 @@ typebuf_char_backspace(Viewer *v)
    len = strlen(v->typebuf.buf);
    if (len == 0)
      {
-	typebuf_hide(v);
-	return;
+        typebuf_hide(v);
+        return;
      }
    p = evas_string_char_prev_get(v->typebuf.buf, len, &dec);
    if (p >= 0) v->typebuf.buf[p] = 0;
@@ -477,14 +477,14 @@ typebuf_match(Viewer *v, int next)
 
    if (!next)
      {
-	EINA_INLIST_FOREACH(v->groups, grp)
-	  {
-	     if (util_glob_case_match(grp->name, tb))
-	       {
-		  grp_match = grp;
-		  break;
-	       }
-	  }
+        EINA_INLIST_FOREACH(v->groups, grp)
+          {
+             if (util_glob_case_match(grp->name, tb))
+               {
+                  grp_match = grp;
+                  break;
+               }
+          }
         grp_match = NULL;
      }
    else
@@ -492,9 +492,9 @@ typebuf_match(Viewer *v, int next)
 
    if (grp_match)
      {
-	Elm_Genlist_Item *it = elm_genlist_selected_item_get(v->gui.tree);
-	if (it)
-	  elm_genlist_item_selected_set(it, 0);
+        Elm_Genlist_Item *it = elm_genlist_selected_item_get(v->gui.tree);
+        if (it)
+          elm_genlist_item_selected_set(it, 0);
         if (grp_match->item)
           {
              elm_genlist_item_selected_set(grp_match->item, 1);
@@ -520,63 +520,63 @@ group_next_find(Viewer *v, int next, char *buf)
 
    if (next)
      {
-	/* find next item */
-	if (next == 1)
-	  {
-	     Elm_Genlist_Item *it = elm_genlist_selected_item_get(v->gui.tree);
-	     grp = elm_genlist_item_data_get(it);
-	     tmp = EINA_INLIST_GET(grp)->next;
-	     EINA_INLIST_FOREACH(tmp, grp)
-	       {
-		  if (util_glob_case_match(grp->name, buf))
-		    {
-		       grp_next = grp;
-		       break;
-		    }
-	       }
-	     if (!grp_next)
-	       {
-		  const Group *cur = elm_genlist_item_data_get(it);
-		  EINA_INLIST_FOREACH(v->groups, grp)
-		    {
-		       if (grp == cur) break;
-		       if (util_glob_case_match(grp->name, buf))
-			 {
-			    grp_next = grp;
-			    break;
-			 }
-		    }
-	       }
-	  }
-	/* find previous item */
-	else if (next == -1)
-	  {
-	     Elm_Genlist_Item *it = elm_genlist_selected_item_get(v->gui.tree);
-	     grp = elm_genlist_item_data_get(it);
-	     tmp = EINA_INLIST_GET(grp);
-	     while (tmp && (tmp = tmp->prev))
-	       {
-		  grp = (Group *) tmp;
-		  if (util_glob_case_match(grp->name, buf))
-		    {
-		       grp_next = grp;
-		       break;
-		    }
-	       }
-	     if (!grp_next)
-	       {
-		  const Group *cur = elm_genlist_item_data_get(it);
-		  EINA_INLIST_REVERSE_FOREACH(v->groups, grp)
-		    {
-		       if (grp == cur) break;
-		       if (util_glob_case_match(grp->name, buf))
-			 {
-			    grp_next = grp;
-			    break;
-			 }
-		    }
-	       }
-	  }
+        /* find next item */
+        if (next == 1)
+          {
+             Elm_Genlist_Item *it = elm_genlist_selected_item_get(v->gui.tree);
+             grp = elm_genlist_item_data_get(it);
+             tmp = EINA_INLIST_GET(grp)->next;
+             EINA_INLIST_FOREACH(tmp, grp)
+               {
+                  if (util_glob_case_match(grp->name, buf))
+                    {
+                       grp_next = grp;
+                       break;
+                    }
+               }
+             if (!grp_next)
+               {
+                  const Group *cur = elm_genlist_item_data_get(it);
+                  EINA_INLIST_FOREACH(v->groups, grp)
+                    {
+                       if (grp == cur) break;
+                       if (util_glob_case_match(grp->name, buf))
+                         {
+                            grp_next = grp;
+                            break;
+                         }
+                    }
+               }
+          }
+        /* find previous item */
+        else if (next == -1)
+          {
+             Elm_Genlist_Item *it = elm_genlist_selected_item_get(v->gui.tree);
+             grp = elm_genlist_item_data_get(it);
+             tmp = EINA_INLIST_GET(grp);
+             while (tmp && (tmp = tmp->prev))
+               {
+                  grp = (Group *) tmp;
+                  if (util_glob_case_match(grp->name, buf))
+                    {
+                       grp_next = grp;
+                       break;
+                    }
+               }
+             if (!grp_next)
+               {
+                  const Group *cur = elm_genlist_item_data_get(it);
+                  EINA_INLIST_REVERSE_FOREACH(v->groups, grp)
+                    {
+                       if (grp == cur) break;
+                       if (util_glob_case_match(grp->name, buf))
+                         {
+                            grp_next = grp;
+                            break;
+                         }
+                    }
+               }
+          }
      }
 
    return grp_next;
@@ -589,8 +589,8 @@ util_glob_case_match(const char *str, const char *glob)
 
    if (glob[0] == 0)
      {
-	if (str[0] == 0) return 1;
-	return 0;
+        if (str[0] == 0) return 1;
+        return 0;
      }
    if (!strcmp(glob, "*")) return 1;
    tstr = alloca(strlen(str) + 1);
@@ -631,7 +631,7 @@ create_toggles_win(Viewer *v)
    elm_toggle_state_set(o, v->config->show_parts);
    elm_box_pack_end(bx, o);
    evas_object_smart_callback_add(o, "changed",
-				  on_parts_list_toggle_change, v);
+                                  on_parts_list_toggle_change, v);
    evas_object_show(o);
 
    o = elm_toggle_add(bx);
@@ -639,7 +639,7 @@ create_toggles_win(Viewer *v)
    elm_toggle_state_set(o, v->config->show_entry);
    elm_box_pack_end(bx, o);
    evas_object_smart_callback_add(o, "changed",
-				  on_text_entry_toggle_change, v);
+                                  on_text_entry_toggle_change, v);
    evas_object_show(o);
 
    o = elm_toggle_add(bx);
@@ -647,7 +647,7 @@ create_toggles_win(Viewer *v)
    elm_toggle_state_set(o, v->config->show_signals);
    elm_box_pack_end(bx, o);
    evas_object_smart_callback_add(o, "changed",
-				  on_signals_toggle_change, v);
+                                  on_signals_toggle_change, v);
    evas_object_show(o);
 
    elm_win_inwin_content_set(v->gui.toggles_win, bx);
@@ -671,16 +671,16 @@ group_toggle(Group *grp, Eina_Bool skip_config)
 {
    if (grp->active)
      {
-	if (!grp->obj)
-	  edje_object_create(grp);
+        if (!grp->obj)
+          edje_object_create(grp);
 
         if (!skip_config)
           config_group_change(grp->v, grp->name, 1, 0);
      }
    else
      {
-	edje_object_part_unswallow(elm_layout_edje_get(grp->v->gui.ly), grp->obj);
-	evas_object_del(grp->obj);
+        edje_object_part_unswallow(elm_layout_edje_get(grp->v->gui.ly), grp->obj);
+        evas_object_del(grp->obj);
         grp->obj = NULL;
         if (!skip_config)
           config_group_change(grp->v, grp->name, 0, 1);
@@ -762,29 +762,29 @@ on_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      show_toggles(v);
    else if (!strcmp(ev->key, "Up"))
      {
-	if (v->typebuf.visible)
-	  typebuf_match(v, -1);
+        if (v->typebuf.visible)
+          typebuf_match(v, -1);
      }
    else if (!strcmp(ev->key, "Down"))
      {
-	if (v->typebuf.visible)
-	  typebuf_match(v, 1);
+        if (v->typebuf.visible)
+          typebuf_match(v, 1);
      }
    else if (!strcmp(ev->key, "Return"))
      group_check_toggle(v);
    else if (!evas_key_modifier_is_set(ev->modifiers, "Control") &&
-       !evas_key_modifier_is_set(ev->modifiers, "Alt"))
+            !evas_key_modifier_is_set(ev->modifiers, "Alt"))
      {
-	if (!strcmp(ev->key, "BackSpace"))
-	  {
-	     if (v->typebuf.visible)
-	       typebuf_char_backspace(v);
-	  }
-	else if (ev->string)
-	  {
-	     if (!v->typebuf.visible) typebuf_show(v);
-	     typebuf_char_append(v, ev->string);
-	  }
+        if (!strcmp(ev->key, "BackSpace"))
+          {
+             if (v->typebuf.visible)
+               typebuf_char_backspace(v);
+          }
+        else if (ev->string)
+          {
+             if (!v->typebuf.visible) typebuf_show(v);
+             typebuf_char_append(v, ev->string);
+          }
      }
 }
 
@@ -821,8 +821,8 @@ on_toolbar_changed(void *data, Evas_Object *obj, void *event_info)
    o = edje_object_part_swallow_get(elm_layout_edje_get(grp->v->gui.ly), "v.swallow.main");
    if (o)
      {
-	edje_object_part_unswallow(elm_layout_edje_get(grp->v->gui.ly), o);
-	evas_object_hide(o);
+        edje_object_part_unswallow(elm_layout_edje_get(grp->v->gui.ly), o);
+        evas_object_hide(o);
      }
 
    elm_object_part_content_set(grp->v->gui.ly, "v.swallow.main", grp->obj);
@@ -874,17 +874,17 @@ on_parts_list_toggle_change(void *data, Evas_Object *obj, void *event_info)
    v->config->show_parts = elm_toggle_state_get(obj);
    if (v->config->show_parts)
      {
-	if (!v->gui.parts_list)
-	  create_group_parts_list(v);
+        if (!v->gui.parts_list)
+          create_group_parts_list(v);
 
-	if (v->visible_group)
-	  fill_group_parts_list(v);
+        if (v->visible_group)
+          fill_group_parts_list(v);
      }
    else if (v->gui.parts_list)
      {
-	evas_object_del(v->gui.parts_list);
-	v->gui.parts_list = NULL;
-	edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,parts_list,hide", "v");
+        evas_object_del(v->gui.parts_list);
+        v->gui.parts_list = NULL;
+        edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,parts_list,hide", "v");
      }
    config_save(v, 0);
 }
@@ -897,8 +897,8 @@ on_text_entry_toggle_change(void *data, Evas_Object *obj, void *event_info)
    v->config->show_entry = elm_toggle_state_get(obj);
    if (v->config->show_entry)
      {
-	if (!v->gui.entry)
-	  create_text_entry(v);
+        if (!v->gui.entry)
+          create_text_entry(v);
 
         if (v->visible_part)
           text_entry_toggle(v, 1);
@@ -906,8 +906,8 @@ on_text_entry_toggle_change(void *data, Evas_Object *obj, void *event_info)
    else if (v->gui.entry)
      {
         text_entry_toggle(v, 0);
-	evas_object_del(v->gui.entry);
-	v->gui.entry = NULL;
+        evas_object_del(v->gui.entry);
+        v->gui.entry = NULL;
      }
    config_save(v, 0);
 }
@@ -920,14 +920,14 @@ on_signals_toggle_change(void *data, Evas_Object *obj, void *event_info)
    v->config->show_signals = elm_toggle_state_get(obj);
    if (v->config->show_signals)
      {
-	if (!v->gui.sig_box)
-	  create_signals_box(v);
+        if (!v->gui.sig_box)
+          create_signals_box(v);
      }
    else if (v->gui.parts_list)
      {
-	evas_object_del(v->gui.sig_box);
-	v->gui.sig_box = NULL;
-	edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,signals,hide", "v");
+        evas_object_del(v->gui.sig_box);
+        v->gui.sig_box = NULL;
+        edje_object_signal_emit(elm_layout_edje_get(v->gui.ly), "v,state,signals,hide", "v");
      }
    config_save(v, 0);
 }
@@ -965,8 +965,8 @@ on_group_part_unselect(void *data, Evas_Object *obj, void *event_info)
 
    if (prt->highlight)
      {
-	evas_object_del(prt->highlight);
-	prt->highlight = NULL;
+        evas_object_del(prt->highlight);
+        prt->highlight = NULL;
      }
 
    if (v->config->show_entry)
@@ -984,30 +984,30 @@ on_object_signal(void *data, Evas_Object *o, const char *sig, const char *src)
    if (!grp->v->config->show_signals) return;
    if (eina_list_count(grp->v->signals) > 40)
      {
-	elm_list_item_del(eina_list_data_get(grp->v->signals));
-	grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
+        elm_list_item_del(eina_list_data_get(grp->v->signals));
+        grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
      }
-   
+
    snprintf(str, sizeof(str), "CALLBACK for \"%s\" \"%s\"", sig, src);
    grp->v->signals = eina_list_append(
-       grp->v->signals, elm_list_item_prepend(
-	   grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
+      grp->v->signals, elm_list_item_prepend(
+         grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
 
    if (!strcmp(sig, "drag"))
      {
-	double x, y;
+        double x, y;
 
-	if (eina_list_count(grp->v->signals) > 40)
-	  {
-	     elm_list_item_del(eina_list_data_get(grp->v->signals));
-	     grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
-	  }
-   
-	edje_object_part_drag_value_get(o, src, &x, &y);
-	snprintf(str, sizeof(str), "    Drag %3.3f %3.3f", x, y);
-	grp->v->signals = eina_list_append(
-	    grp->v->signals, elm_list_item_prepend(
-		grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
+        if (eina_list_count(grp->v->signals) > 40)
+          {
+             elm_list_item_del(eina_list_data_get(grp->v->signals));
+             grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
+          }
+
+        edje_object_part_drag_value_get(o, src, &x, &y);
+        snprintf(str, sizeof(str), "    Drag %3.3f %3.3f", x, y);
+        grp->v->signals = eina_list_append(
+           grp->v->signals, elm_list_item_prepend(
+              grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
      }
 
 
@@ -1024,30 +1024,30 @@ on_object_message(void *data, Evas_Object *obj, Edje_Message_Type type, int id, 
    if (!grp->v->config->show_signals) return;
    if (eina_list_count(grp->v->signals) > 40)
      {
-	elm_list_item_del(grp->v->signals->data);
-	grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
+        elm_list_item_del(grp->v->signals->data);
+        grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
      }
-   
+
    snprintf(str, sizeof(str), "MESSAGE for %p from script type %i id %i", obj, type, id);
    grp->v->signals = eina_list_append(
-       grp->v->signals, elm_list_item_prepend(
-	   grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
+      grp->v->signals, elm_list_item_prepend(
+         grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
 
    if (type == EDJE_MESSAGE_STRING)
      {
-	Edje_Message_String *emsg;
+        Edje_Message_String *emsg;
 
-	if (eina_list_count(grp->v->signals) > 40)
-	  {
-	     elm_list_item_del(grp->v->signals->data);
-	     grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
-	  }
+        if (eina_list_count(grp->v->signals) > 40)
+          {
+             elm_list_item_del(grp->v->signals->data);
+             grp->v->signals = eina_list_remove_list(grp->v->signals, grp->v->signals);
+          }
 
-	emsg = (Edje_Message_String *)msg;
-	snprintf(str, 1024, "    String: \"%s\"\n", emsg->str);
-	grp->v->signals = eina_list_append(
-	    grp->v->signals, elm_list_item_prepend(
-		grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
+        emsg = (Edje_Message_String *)msg;
+        snprintf(str, 1024, "    String: \"%s\"\n", emsg->str);
+        grp->v->signals = eina_list_append(
+           grp->v->signals, elm_list_item_prepend(
+              grp->v->gui.sig_list, str, NULL, NULL, NULL, NULL));
      }
    edje_object_message_send(obj, EDJE_MESSAGE_NONE, 12345, NULL);
 
@@ -1071,14 +1071,14 @@ gc_icon_get(void *data, Evas_Object *obj, const char *part)
 
    if (!strcmp(part, "elm.swallow.icon"))
      {
-	Evas_Object *ck;
-	ck = elm_check_add(obj);
-	evas_object_propagate_events_set(ck, 0);
-	elm_check_state_set(ck, grp->active);
-	evas_object_smart_callback_add(ck, "changed", on_group_check_changed, data);
-	evas_object_show(ck);
-	grp->check = ck;
-	return ck;
+        Evas_Object *ck;
+        ck = elm_check_add(obj);
+        evas_object_propagate_events_set(ck, 0);
+        elm_check_state_set(ck, grp->active);
+        evas_object_smart_callback_add(ck, "changed", on_group_check_changed, data);
+        evas_object_show(ck);
+        grp->check = ck;
+        return ck;
      }
    return NULL;
 }
