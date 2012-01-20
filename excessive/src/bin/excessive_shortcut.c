@@ -59,12 +59,12 @@ _excessive_shortcut_desktop_icon_get(void *data __UNUSED__, Evas_Object *obj, co
 static void
 _excessive_shortcut_desktop_select(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Elm_Genlist_Item *item = event_info;
+   Elm_Object_Item *gl_item = event_info;
    Excessive_Shortcut *es;
    Evas_Object *grid = data;
 
-   es = elm_genlist_item_data_get(item);
-   elm_genlist_item_selected_set(item, EINA_FALSE);
+   es = elm_genlist_item_data_get(gl_item);
+   elm_genlist_item_selected_set(gl_item, EINA_FALSE);
    if (!es) return ;
    excessive_browse_directory(grid, es->target);
 }
@@ -91,7 +91,7 @@ static void
 _desktop_stat_ok(void *data, Eio_File *handler __UNUSED__, const struct stat *st)
 {
    Excessive_Shortcut *es = data;
-   Elm_Genlist_Item *egi;
+   Elm_Object_Item *egi;
 
    if (!eio_file_is_dir(st))
      {
@@ -215,7 +215,7 @@ _desktop_error_cb(void *data __UNUSED__, Eio_File *handler __UNUSED__, int error
 Eina_Bool
 excessive_shortcut_init(Evas_Object *list, Evas_Object *grid)
 {
-   Elm_Genlist_Item *egi;
+   Elm_Object_Item *egi;
    const char *home = "/root/";
    char buffer[PATH_MAX];
 
