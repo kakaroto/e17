@@ -38,7 +38,7 @@ index_selected(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_i
 struct _Idx_Data_Type
 {
    Evas_Object *id;  /* Pointer to Index */
-   Elm_Genlist_Item *item; /* Item we use for search */
+   Elm_Object_Item *item; /* Item we use for search */
 };
 typedef struct _Idx_Data_Type Idx_Data_Type;
 
@@ -123,7 +123,7 @@ _api_bt_clicked(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUS
 TEST_START(test_index)
 {
    Evas_Object *bg, *bxx, *gl, *id;
-   Elm_Genlist_Item *it;
+   Elm_Object_Item *glit;
    int i, j;
    Idx_Data_Type *dt = malloc(sizeof(Idx_Data_Type));
    api->data = dt;
@@ -169,16 +169,17 @@ TEST_START(test_index)
    j = 0;
    for (i = 0; i < 100; i++)
      {
-        it = elm_genlist_item_append(gl, &itci,
-                                     (void *)(long)j/* item data */,
-                                     NULL/* parent */, ELM_GENLIST_ITEM_NONE,
-                                     NULL/* func */, NULL/* func data */);
+        glit = elm_genlist_item_append(gl, &itci,
+                                       (void *)(long)j/* item data */,
+                                       NULL/* parent */,
+                                       ELM_GENLIST_ITEM_NONE,
+                                       NULL/* func */, NULL/* func data */);
         if (!(j & 0xf))
           {
              char buf[32];
 
              snprintf(buf, sizeof(buf), "%c", 'A' + ((j >> 4) & 0xf));
-             elm_index_item_append(id, buf, it);
+             elm_index_item_append(id, buf, glit);
           }
         j += 2;
      }

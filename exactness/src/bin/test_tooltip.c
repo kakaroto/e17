@@ -47,22 +47,22 @@ gltt_exp(void *data       __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void            *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   Evas_Object *gl = elm_genlist_item_genlist_get(it);
-   int val = (int)(long)elm_genlist_item_data_get(it);
-   Elm_Genlist_Item *it1, *it2, *it3;
+   Elm_Object_Item *glit = event_info;
+   Evas_Object *gl = elm_genlist_item_genlist_get(glit);
+   int val = (int)(long)elm_genlist_item_data_get(glit);
+   Elm_Object_Item *glit1, *glit2, *glit3;
 
    val *= 10;
-   it1 = elm_genlist_item_append(gl, &itct, (void *)(long)(val + 1), it,
+   glit1 = elm_genlist_item_append(gl, &itct, (void *)(long)(val + 1), glit,
                                  ELM_GENLIST_ITEM_NONE, NULL, NULL);
-   it2 = elm_genlist_item_append(gl, &itct, (void *)(long)(val + 2), it,
+   glit2 = elm_genlist_item_append(gl, &itct, (void *)(long)(val + 2), glit,
                                  ELM_GENLIST_ITEM_NONE, NULL, NULL);
-   it3 = elm_genlist_item_append(gl, &itct, (void *)(long)(val + 3), it,
+   glit3 = elm_genlist_item_append(gl, &itct, (void *)(long)(val + 3), glit,
                                  ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
 
-   elm_genlist_item_tooltip_text_set(it1, "Testing A");
-   elm_genlist_item_tooltip_text_set(it2, "Testing B");
-   elm_genlist_item_tooltip_text_set(it3, "Testing C");
+   elm_genlist_item_tooltip_text_set(glit1, "Testing A");
+   elm_genlist_item_tooltip_text_set(glit2, "Testing B");
+   elm_genlist_item_tooltip_text_set(glit3, "Testing C");
 }
 
 static void
@@ -70,8 +70,8 @@ gltt_con(void *data       __UNUSED__,
          Evas_Object *obj __UNUSED__,
          void            *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_subitems_clear(it);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_subitems_clear(glit);
 }
 
 static void
@@ -79,8 +79,8 @@ gltt_exp_req(void *data       __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void            *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_expanded_set(it, 1);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_TRUE);
 }
 
 static void
@@ -88,8 +88,8 @@ gltt_con_req(void *data       __UNUSED__,
              Evas_Object *obj __UNUSED__,
              void            *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_expanded_set(it, 0);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_FALSE);
 }
 
 char *
@@ -504,7 +504,7 @@ TEST_END
 TEST_START(test_tooltip2)
 {
    Evas_Object *bg, *bx, *grid, *gl;
-   Elm_Genlist_Item *it1, *it2, *it3;
+   Elm_Object_Item *glit1, *glit2, *glit3;
    static Testitem ti[144];
    int i, n;
    char buf[PATH_MAX];
@@ -574,16 +574,16 @@ TEST_START(test_tooltip2)
    itct.item_style = "default";
    itct.func.text_get = gltt_text_get;
 
-   it1 = elm_genlist_item_append(gl, &itct, (void *)1, NULL,
-                                 ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
-   it2 = elm_genlist_item_append(gl, &itct, (void *)2, NULL,
-                                 ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
-   it3 = elm_genlist_item_append(gl, &itct, (void *)3, NULL,
-                                 ELM_GENLIST_ITEM_NONE, NULL, NULL);
+   glit1 = elm_genlist_item_append(gl, &itct, (void *)1, NULL,
+                                   ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
+   glit2 = elm_genlist_item_append(gl, &itct, (void *)2, NULL,
+                                   ELM_GENLIST_ITEM_SUBITEMS, NULL, NULL);
+   glit3 = elm_genlist_item_append(gl, &itct, (void *)3, NULL,
+                                   ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
-   elm_genlist_item_tooltip_text_set(it1, "Testing 1");
-   elm_genlist_item_tooltip_text_set(it2, "Testing 2");
-   elm_genlist_item_tooltip_text_set(it3, "Testing 3");
+   elm_genlist_item_tooltip_text_set(glit1, "Testing 1");
+   elm_genlist_item_tooltip_text_set(glit2, "Testing 2");
+   elm_genlist_item_tooltip_text_set(glit3, "Testing 3");
 
    evas_object_smart_callback_add(gl, "expand,request", gltt_exp_req, gl);
    evas_object_smart_callback_add(gl, "contract,request", gltt_con_req,
