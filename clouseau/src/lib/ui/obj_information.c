@@ -24,8 +24,8 @@ _gl_selected(void *data __UNUSED__, Evas_Object *pobj __UNUSED__,
 static void
 gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   Inf_Tree_Item *parent = elm_genlist_item_data_get(it);
+   Elm_Object_Item *glit = event_info;
+   Inf_Tree_Item *parent = elm_genlist_item_data_get(glit);
    Inf_Tree_Item *tit;
    Eina_List *itr;
 
@@ -33,7 +33,7 @@ gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
      {
         Elm_Genlist_Item_Flags iflag = (tit->children) ?
            ELM_GENLIST_ITEM_SUBITEMS : ELM_GENLIST_ITEM_NONE;
-        elm_genlist_item_append(prop_list, &itc, tit, it,
+        elm_genlist_item_append(prop_list, &itc, tit, glit,
               iflag, _gl_selected, NULL);
      }
 }
@@ -41,22 +41,22 @@ gl_exp(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 static void
 gl_con(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_subitems_clear(it);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_subitems_clear(glit);
 }
 
 static void
 gl_exp_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_expanded_set(it, EINA_TRUE);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_TRUE);
 }
 
 static void
 gl_con_req(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_expanded_set(it, EINA_FALSE);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_FALSE);
 }
 
 static Evas_Object *
@@ -583,7 +583,7 @@ clouseau_obj_information_list_populate(Tree_Item *treeit)
 
         EINA_LIST_FOREACH(information_tree, itr, tit)
           {
-             Elm_Genlist_Item *git;
+             Elm_Object_Item *git;
              git = elm_genlist_item_append(prop_list, &itc, tit, NULL,
                    ELM_GENLIST_ITEM_SUBITEMS, _gl_selected, NULL);
              if (first_it)
