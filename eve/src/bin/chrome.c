@@ -1539,18 +1539,18 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
 
    for (i = 0; params->root[i].type != ITEM_TYPE_LAST; i++)
      {
-        Elm_Genlist_Item *item = NULL;
+        Elm_Object_Item *gl_item = NULL;
         switch (params->root[i].type) {
         case ITEM_TYPE_SEPARATOR:
            {
-               item = elm_genlist_item_append(params->list, &glic_separator, NULL,
+               gl_item = elm_genlist_item_append(params->list, &glic_separator, NULL,
                         NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
-               elm_genlist_item_disabled_set(item, EINA_TRUE);
+               elm_genlist_item_disabled_set(gl_item, EINA_TRUE);
                break;
            }
         case ITEM_TYPE_PAGE:
            {
-                item = elm_genlist_item_append(params->list, &glic_page, &(params->root[i]),
+                gl_item = elm_genlist_item_append(params->list, &glic_page, &(params->root[i]),
                         NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
                 break;
            }
@@ -1558,26 +1558,26 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
            {
                More_Menu_Config *mmc = params->root[i].next;
                if ((mmc->type == CONFIG_TYPE_LIST) || (mmc->type == CONFIG_TYPE_LIST_INT) || (mmc->type == CONFIG_TYPE_STRING))
-                  item = elm_genlist_item_append(params->list, &glic_config_list,
+                  gl_item = elm_genlist_item_append(params->list, &glic_config_list,
                       &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
                else if (params->root[i].flags & ITEM_FLAG_SELECTABLE)
-                  item = elm_genlist_item_append(params->list, &glic_config_selectable,
+                  gl_item = elm_genlist_item_append(params->list, &glic_config_selectable,
                       &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
                else
-                  item = elm_genlist_item_append(params->list, &glic_config,
+                  gl_item = elm_genlist_item_append(params->list, &glic_config,
                        &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
                break;
            }
            /* fallthrough */
         default:
            if (params->root[i].flags & ITEM_FLAG_SELECTABLE)
-              item = elm_genlist_item_append(params->list, &glic_config_selectable,
+              gl_item = elm_genlist_item_append(params->list, &glic_config_selectable,
                  &(params->root[i]), NULL, ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
            else
-              item = elm_genlist_item_append(params->list, &glic_default, &(params->root[i]), NULL,
+              gl_item = elm_genlist_item_append(params->list, &glic_default, &(params->root[i]), NULL,
                   ELM_GENLIST_ITEM_NONE, on_more_item_click, &(params->root[i]));
         }
-        if (item)
+        if (gl_item)
           {
              const char *temp = _first_alpha_char(params->root[i].text);
 
@@ -1588,7 +1588,7 @@ on_list_completely_hidden(void *data, Evas_Object *ed, const char *emission __UN
                   index_label[1] = '\0';
                   if (index_label[0] != last_index)
                     {
-                       elm_index_item_append(index, index_label, item);
+                       elm_index_item_append(index, index_label, gl_item);
                        last_index = index_label[0];
                     }
                }
