@@ -42,7 +42,7 @@ struct list_item {
     Eyelight_Thumb *thumb;
 
     //used by slides_list
-    Elm_Genlist_Item *item;
+    Elm_Object_Item *item; //genlist item
     Evas_Object *icon;
     int *icon_data;
 

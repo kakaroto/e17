@@ -20,7 +20,7 @@ static Evas_Object *list;
 struct _Device_Item
 {
    Evas_Object *list;
-   Elm_Genlist_Item *gi;
+   Elm_Object_Item *gi;
    Enna_Volume *v;
    const char *udi;
 };
@@ -139,12 +139,12 @@ _enna_shortcut_desktop_content_get(void *data __UNUSED__, Evas_Object *obj, cons
 static void
 _enna_shortcut_desktop_select(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
-   Elm_Genlist_Item *item = event_info;
+   Elm_Object_Item *gl_item = event_info;
    Enna_Shortcut *es;
    Evas_Object *grid = data;
 
-   es = elm_genlist_item_data_get(item);
-   elm_genlist_item_selected_set(item, EINA_FALSE);
+   es = elm_genlist_item_data_get(gl_item);
+   elm_genlist_item_selected_set(gl_item, EINA_FALSE);
    if (!es) return ;
    enna_browse_directory(grid, es->target);
 }
@@ -291,7 +291,7 @@ static void
 _desktop_stat_ok(void *data, Eio_File *handler __UNUSED__, const struct stat *st)
 {
    Enna_Shortcut *es = data;
-   Elm_Genlist_Item *egi;
+   Elm_Object_Item *egi;
 
    if (!eio_file_is_dir(st))
      {
@@ -448,7 +448,7 @@ static Eina_Bool
 _volume_added_cb(void *data, int type, void *event)
 {
    Evas_Object *list = data;
-   Elm_Genlist_Item *egi, *gi;
+   Elm_Object_Item *egi, *gi;
    Enna_Volume *v = event;
    Device_Item *di;
 
@@ -553,7 +553,7 @@ _unmount_error_cb(void *data, int type, void *event)
 Evas_Object *
 enna_shortcut_add(Evas_Object *parent)
 {
-   Elm_Genlist_Item *egi;
+   Elm_Object_Item *egi;
    const char *home = "/root/";
    char buffer[PATH_MAX];
 

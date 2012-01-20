@@ -38,7 +38,7 @@ struct _List_Item
    Enna_File *file;
    void (*func_activated) (void *data);
    void *data;
-   Elm_Genlist_Item *item;
+   Elm_Object_Item *item;
    Eina_Bool checked;
 };
 

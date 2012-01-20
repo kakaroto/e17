@@ -254,19 +254,19 @@ enna_module_load_all(void)
       // populate list
       EINA_LIST_FOREACH(_enna_modules, l, m)
         {
-           Elm_Genlist_Item *item;
-           item = enna_list2_append(o_list,
-                                    m->api->title ? _(m->api->title) : _(m->name),
-                                    m->api->short_desc ? _(m->api->short_desc) :
-                                    _("No information provided"),
-                                    m->api->icon ? m->api->icon : "icon/module",
-                                    NULL, NULL);
+           Elm_Object_Item *gl_item;
+           gl_item = enna_list2_append(o_list,
+                                       m->api->title ? _(m->api->title) : _(m->name),
+                                       m->api->short_desc ? _(m->api->short_desc) :
+                                       _("No information provided"),
+                                       m->api->icon ? m->api->icon : "icon/module",
+                                       NULL, NULL);
 
-           enna_list2_item_button_add(item, "icon/podcast", "info",
+           enna_list2_item_button_add(gl_item, "icon/podcast", "info",
                                       _info_button_cb , NULL);
-           //~ enna_list2_item_toggle_add(item, "icon/photo", "just for test",
-           //~ _button_cb , NULL);
-           enna_list2_item_check_add(item, "icon/music", "enabled",
+           //~ enna_list2_item_toggle_add(gl_item, "icon/photo",
+           // "just for test", _button_cb , NULL);
+           enna_list2_item_check_add(gl_item, "icon/music", "enabled",
                                      m->enabled, _enable_button_cb, m);
         }
 

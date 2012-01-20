@@ -112,14 +112,14 @@ _resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *einfo
 }
 
 static void
-_pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
+_pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Object_Item *glit)
 {
    const char *file, *f, *p;
    Evas_Object *win;
 
    DBG("pick");
    elm_icon_file_get(img, &f, &p);
-   file = elm_genlist_item_data_get(ev);
+   file = elm_genlist_item_data_get(glit);
    if (f && (!strcmp(file, f))) return;
 
    if (!evas_object_image_extension_can_load_get(file))
@@ -136,26 +136,26 @@ _pick(void *data __UNUSED__, Evas_Object *obj __UNUSED__, Elm_Genlist_Item *ev)
 static void
 _key(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, Evas_Event_Key_Down *key)
 {
-   Elm_Genlist_Item *it;
+   Elm_Object_Item *glit;
    DBG("%p: %s", obj, key->keyname);
    if (!strcmp(key->keyname, "space"))
      {
-        it = elm_genlist_selected_item_get(list);
-        DBG("current: %p", it);
-        it = elm_genlist_item_next_get(it);
-        if (!it) it = elm_genlist_first_item_get(list);
-        DBG("next: %p", it);
-        elm_genlist_item_selected_set(it, EINA_TRUE);
-        elm_genlist_item_bring_in(it);
-        _pick(NULL, NULL, it);
+        glit = elm_genlist_selected_item_get(list);
+        DBG("current: %p", glit);
+        glit = elm_genlist_item_next_get(glit);
+        if (!glit) glit = elm_genlist_first_item_get(list);
+        DBG("next: %p", glit);
+        elm_genlist_item_selected_set(glit, EINA_TRUE);
+        elm_genlist_item_bring_in(glit);
+        _pick(NULL, NULL, glit);
      }
    else if ((!strcmp(key->keyname, "Return")) || (!strcmp(key->keyname, "KP_Enter")))
      {
         if (obj == elm_object_parent_widget_get(img)) return;
-        it = elm_genlist_selected_item_get(list);
-        if (!it) return;
-        elm_genlist_item_bring_in(it);
-        _pick(NULL, NULL, it);
+        glit = elm_genlist_selected_item_get(list);
+        if (!glit) return;
+        elm_genlist_item_bring_in(glit);
+        _pick(NULL, NULL, glit);
      }
    else if (key->keyname[0] == 'q')
      ecore_main_loop_quit();

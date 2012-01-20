@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-23 01:37+0200\n"
+"Report-Msgid-Bugs-To: http://enna.geexbox.org\n"
+"POT-Creation-Date: 2012-01-20 19:52+0900\n"
 "PO-Revision-Date: 2011-10-23 01:38+0100\n"
 "Last-Translator: Daniel Kolesa <quaker66@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -16,50 +16,60 @@ msgstr ""
 "X-Generator: Lokalize 1.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/bin/shortcut.c:187
+#: src/bin/shortcut.c:183
 msgid "Music"
 msgstr "Hudba"
 
-#: ../src/bin/shortcut.c:189
+#: src/bin/shortcut.c:185
 msgid "Videos"
 msgstr "Videa"
 
-#: ../src/bin/shortcut.c:191
+#: src/bin/shortcut.c:187
 msgid "Images"
 msgstr "Obrázky"
 
-#: ../src/bin/shortcut.c:193
+#: src/bin/shortcut.c:189
 msgid "Downloads"
 msgstr "Stahování"
 
-#: ../src/bin/shortcut.c:195
+#: src/bin/shortcut.c:191
 msgid "Documents"
 msgstr "Dokumenty"
 
-#: ../src/bin/localfiles.c:481
-#: ../src/bin/localfiles.c:527
+#: src/bin/localfiles.c:508 src/bin/localfiles.c:554
 msgid "Rename"
 msgstr "Přejmenovat"
 
-#: ../src/bin/localfiles.c:504
+#: src/bin/localfiles.c:531
 msgid "Enter new name"
 msgstr "Zadejte nový název:"
 
-#: ../src/bin/localfiles.c:536
-#: ../src/bin/localfiles.c:617
+#: src/bin/localfiles.c:563 src/bin/localfiles.c:647 src/bin/localfiles.c:729
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: ../src/bin/localfiles.c:567
+#: src/bin/localfiles.c:592
+msgid "Create New Folder"
+msgstr ""
+
+#: src/bin/localfiles.c:615
+#, fuzzy
+msgid "Enter folder name"
+msgstr "Zadejte nový název:"
+
+#: src/bin/localfiles.c:638
+msgid "Create"
+msgstr ""
+
+#: src/bin/localfiles.c:679
 msgid "Delete files"
 msgstr "Smazat soubory"
 
-#: ../src/bin/localfiles.c:592
+#: src/bin/localfiles.c:704
 #, c-format
 msgid "Are you sure to delete <b>%s</b> ?"
 msgstr "Opravdu chcete smazat <b>%s</b> ?"
 
-#: ../src/bin/localfiles.c:608
+#: src/bin/localfiles.c:720
 msgid "Delete"
 msgstr "Smazat"
-
