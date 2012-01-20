@@ -187,7 +187,7 @@ list_left_add(List_Left *list_left, Enlil_Album *album)
 
 void
 list_left_append_relative(List_Left *list_left, Enlil_Album *album,
-                          Elm_Genlist_Item *relative)
+                          Elm_Object_Item *relative)
 {
    Enlil_Album_Data *enlil_album_data = enlil_album_user_data_get(album);
 
@@ -305,7 +305,7 @@ _tabpanel_tag_select_cb(void *data, Tabpanel *tabpanel, Tabpanel_Item *item)
 {
    List_Left *list_left = data;
 
-   Elm_Genlist_Item *gl_item =
+   Elm_Object_Item *gl_item =
             elm_genlist_selected_item_get(list_left->gl_tags);
    if (gl_item) elm_genlist_item_selected_set(gl_item, 0);
 
@@ -318,7 +318,7 @@ _tabpanel_collection_select_cb(void *data, Tabpanel *tabpanel,
                                Tabpanel_Item *item)
 {
    List_Left *list_left = data;
-   Elm_Genlist_Item *gl_item;
+   Elm_Object_Item *gl_item;
 
    //   gl_item = elm_genlist_first_item_get(list_left->gl_collections);
    //   for(; gl_item; gl_item = elm_genlist_item_next_get(gl_item))
@@ -477,31 +477,31 @@ _gl_col_sel(void *data, Evas_Object *obj, void *event_info)
 static void
 _gl_col_exp_req(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_expanded_set(it, 1);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_TRUE);
 }
 
 static void
 _gl_col_con_req(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_expanded_set(it, 0);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_expanded_set(glit, EINA_FALSE);
 }
 
 static void
 _gl_col_exp(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
+   Elm_Object_Item *glit = event_info;
    Eina_List *l;
    Enlil_Album *album;
 
-   const Enlil_Collection *col = elm_genlist_item_data_get(it);
+   const Enlil_Collection *col = elm_genlist_item_data_get(glit);
    Enlil_Collection_Data *col_data = enlil_collection_user_data_get(col);
 
 EINA_LIST_FOREACH(enlil_collection_albums_get(col), l, album)
 {
    enki_elm_genlist_item_collection_append(main_panel_object, &itc_col_album,
-            album, it, _gl_col_album_sel,
+            album, glit, _gl_col_album_sel,
             album);
 }
 }
@@ -509,8 +509,8 @@ EINA_LIST_FOREACH(enlil_collection_albums_get(col), l, album)
 static void
 _gl_col_con(void *data, Evas_Object *obj, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_subitems_clear(it);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_subitems_clear(glit);
 }
 
 static char *

@@ -53,15 +53,15 @@ struct enlil_data
 struct enlil_album_data
 {
    Enlil_Data *enlil_data;
-   Elm_Genlist_Item *list_album_item;
-   Elm_Genlist_Item *import_list_album_item;
+   Elm_Object_Item *list_album_item;
+   Elm_Object_Item *import_list_album_item;
    PL_Header_Item *list_photo_item;
 
    //list of Album_Collection*
    Eina_List *albums_col;
 
    Inwin *inwin_photo_move_album;
-   Elm_Genlist_Item *photo_move_album_list_album_item;
+   Elm_Object_Item *photo_move_album_list_album_item;
 
    struct
    {
@@ -173,7 +173,7 @@ struct enlil_collection_data
    Enlil_Data *enlil_data;
    Enlil_Collection *col;
 
-   Elm_Genlist_Item *list_col_item;
+   Elm_Object_Item *list_col_item;
 };
 
 struct enlil_tag_data
@@ -181,7 +181,7 @@ struct enlil_tag_data
    Enlil_Data *enlil_data;
    Enlil_Tag *tag;
 
-   Elm_Genlist_Item *list_tag_item;
+   Elm_Object_Item *list_tag_item;
 };
 
 struct geocaching_data

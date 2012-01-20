@@ -8,11 +8,11 @@ static Evas_Object *list = NULL;
 static Elm_Genlist_Item_Class itc_menu;
 
 static Evas_Object *libraries_list;
-static Elm_Genlist_Item *bt_import;
-static Elm_Genlist_Item *bt_slideshow;
-static Elm_Genlist_Item *bt_del_bg;
-static Elm_Genlist_Item *bt_album_new;
-static Elm_Genlist_Item *bt_sync;
+static Elm_Object_Item *bt_import;
+static Elm_Object_Item *bt_slideshow;
+static Elm_Object_Item *bt_del_bg;
+static Elm_Object_Item *bt_album_new;
+static Elm_Object_Item *bt_sync;
 
 static void
 _libraries_cb(void *data, Evas_Object *obj, void *event_info);
@@ -66,7 +66,7 @@ typedef struct
 void
 main_menu_new(Evas_Object *edje)
 {
-   Elm_Genlist_Item *item;
+   Elm_Object_Item *gl_item;
    Evas_Object *bt;
 
    //Libraries
@@ -110,7 +110,7 @@ main_menu_new(Evas_Object *edje)
                                                  (void*) MENU_DEL_BG, NULL,
                                                  _gl_sel, (void*) MENU_DEL_BG);
 
-   item = enki_elm_genlist_item_menu_append(edje, &itc_menu,
+   gl_item = enki_elm_genlist_item_menu_append(edje, &itc_menu,
                                             (void*) MENU_PREFERENCES, NULL,
                                             _gl_sel, (void*) MENU_PREFERENCES);
 
@@ -159,8 +159,8 @@ _gl_sel(void *data, Evas_Object *obj, void *event_info)
    if ((int) data == MENU_WEBSYNC) _sync_cb();
    if ((int) data == MENU_CLOSEENKI) _quit_cb();
 
-   Elm_Genlist_Item *item = elm_genlist_selected_item_get(obj);
-   elm_genlist_item_selected_set(item, EINA_FALSE);
+   Elm_Object_Item *gl_item = elm_genlist_selected_item_get(obj);
+   elm_genlist_item_selected_set(gl_item, EINA_FALSE);
 }
 
 static Evas_Object *

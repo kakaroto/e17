@@ -433,9 +433,9 @@ _bt_import_cb(void *data, Evas_Object *obj, void *event_info)
    Eina_List *l, *l_next, *l2;
    PL_Child_Item *pl_item;
    Eina_List *items;
-   Elm_Genlist_Item *item = elm_genlist_selected_item_get(gl_albums);
-   ASSERT_RETURN_VOID(item != NULL);
-   album = (Enlil_Album *) elm_genlist_item_data_get(item);
+   Elm_Object_Item *gl_item = elm_genlist_selected_item_get(gl_albums);
+   ASSERT_RETURN_VOID(gl_item != NULL);
+   album = (Enlil_Album *) elm_genlist_item_data_get(gl_item);
 
    items = photos_list_object_selected_get(photos);
    EINA_LIST_FOREACH_SAFE(photos_data, l, l_next, photo)

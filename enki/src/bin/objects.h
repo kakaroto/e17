@@ -333,7 +333,7 @@ void
 list_left_col_add(List_Left *list_album, Enlil_Collection *col);
 void
 list_left_append_relative(List_Left *list_left, Enlil_Album *album,
-                          Elm_Genlist_Item *relative);
+                          Elm_Object_Item *relative);
 void
 list_left_col_album_add(List_Left *list_album, Enlil_Collection *col,
                         Enlil_Album *album);

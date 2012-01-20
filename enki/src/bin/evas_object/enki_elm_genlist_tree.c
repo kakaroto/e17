@@ -5,11 +5,11 @@ static Eina_Bool is_init = EINA_FALSE;
 
 static Elm_Genlist_Item_Class itc;
 static Elm_Genlist_Item_Class itc_header;
-Elm_Genlist_Item *header_library = NULL;
-Elm_Genlist_Item *header_albums = NULL;
-Elm_Genlist_Item *header_collections = NULL;
-Elm_Genlist_Item *header_tags = NULL;
-Elm_Genlist_Item *item_album_new = NULL;
+Elm_Object_Item *header_library = NULL;
+Elm_Object_Item *header_albums = NULL;
+Elm_Object_Item *header_collections = NULL;
+Elm_Object_Item *header_tags = NULL;
+Elm_Object_Item *item_album_new = NULL;
 
 #define LIBRARY 0
 #define ALBUMS 3
@@ -103,10 +103,10 @@ init(Evas_Object *edje)
    is_init = EINA_TRUE;
 }
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 enki_elm_genlist_item_menu_append(Evas_Object *edje,
                                   Elm_Genlist_Item_Class *itc,
-                                  const void *data, Elm_Genlist_Item *parent,
+                                  const void *data, Elm_Object_Item *parent,
                                   Evas_Smart_Cb func, const void *func_data)
 {
    INIT();
@@ -144,10 +144,10 @@ enki_elm_genlist_item_menu_append(Evas_Object *edje,
    }
 }
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 enki_elm_genlist_item_album_append(Evas_Object *edje,
                                    Elm_Genlist_Item_Class *itc,
-                                   const void *data, Elm_Genlist_Item *parent,
+                                   const void *data, Elm_Object_Item *parent,
                                    Evas_Smart_Cb func, const void *func_data)
 {
    INIT();
@@ -170,10 +170,10 @@ enki_elm_genlist_item_album_append(Evas_Object *edje,
    }
 }
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 enki_elm_genlist_item_album_prepend(Evas_Object *edje,
                                     Elm_Genlist_Item_Class *itc,
-                                    const void *data, Elm_Genlist_Item *parent,
+                                    const void *data, Elm_Object_Item *parent,
                                     Evas_Smart_Cb func, const void *func_data)
 {
    INIT();
@@ -198,12 +198,12 @@ enki_elm_genlist_item_album_prepend(Evas_Object *edje,
    }
 }
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 enki_elm_genlist_item_album_insert_after(Evas_Object *edje,
                                          Elm_Genlist_Item_Class *itc,
                                          const void *data,
-                                         Elm_Genlist_Item *parent,
-                                         Elm_Genlist_Item *after,
+                                         Elm_Object_Item *parent,
+                                         Elm_Object_Item *after,
                                          Evas_Smart_Cb func,
                                          const void *func_data)
 {
@@ -230,11 +230,11 @@ enki_elm_genlist_item_album_insert_after(Evas_Object *edje,
    }
 }
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 enki_elm_genlist_item_collection_append(Evas_Object *edje,
                                         Elm_Genlist_Item_Class *itc,
                                         const void *data,
-                                        Elm_Genlist_Item *parent,
+                                        Elm_Object_Item *parent,
                                         Evas_Smart_Cb func,
                                         const void *func_data)
 {
@@ -267,10 +267,10 @@ enki_elm_genlist_item_collection_append(Evas_Object *edje,
    }
 }
 
-Elm_Genlist_Item *
+Elm_Object_Item *
 enki_elm_genlist_item_tag_append(Evas_Object *edje,
                                  Elm_Genlist_Item_Class *itc, const void *data,
-                                 Elm_Genlist_Item *parent, Evas_Smart_Cb func,
+                                 Elm_Object_Item *parent, Evas_Smart_Cb func,
                                  const void *func_data)
 {
    INIT();

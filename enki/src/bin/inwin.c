@@ -751,7 +751,7 @@ inwin_preferences_new()
       if(!strcmp(str, "default_small.edj"))
       continue;
 
-      Elm_Genlist_Item *item = elm_genlist_item_append(gl, &itc_theme, str, NULL, ELM_GENLIST_ITEM_NONE, _gl_theme_select_cb, str);
+      Elm_Object_Item *gl_item = elm_genlist_item_append(gl, &itc_theme, str, NULL, ELM_GENLIST_ITEM_NONE, _gl_theme_select_cb, str);
 
       int i, j = strlen(Theme) - 1;
       for(i = strlen(str) - 1; i>=0 && j >= 0; i--)
@@ -761,7 +761,7 @@ inwin_preferences_new()
             j--;
             if(i == 0 && j>0 && Theme[j]=='/')
             {
-               elm_genlist_item_selected_set(item, EINA_TRUE);
+               elm_genlist_item_selected_set(gl_item, EINA_TRUE);
                break;
             }
          }
@@ -1211,12 +1211,12 @@ static void
 _bt_photo_move_album_apply_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Inwin *inwin = data;
-   Elm_Genlist_Item *item = elm_genlist_selected_item_get(inwin->gl);
+   Elm_Object_Item *gl_item = elm_genlist_selected_item_get(inwin->gl);
    char buf[PATH_MAX], buf2[PATH_MAX];
    Eina_List *l;
    Enlil_Photo *photo;
-   if (!item) return;
-   Enlil_Album *album = (Enlil_Album *) elm_genlist_item_data_get(item);
+   if (!gl_item) return;
+   Enlil_Album *album = (Enlil_Album *) elm_genlist_item_data_get(gl_item);
    ASSERT_RETURN_VOID(album != NULL);
 
    EINA_LIST_FOREACH(inwin->photos, l, photo)

@@ -475,7 +475,7 @@ enlil_photo_data_free(Enlil_Photo *photo, void *_data)
 
    enlil_thumb_photo_clear(photo);
    if (data->list_photo_item) photos_list_object_item_del(data->list_photo_item);
-   if (data->slideshow_item) elm_slideshow_item_del(data->slideshow_item);
+   if (data->slideshow_item) elm_object_item_del(data->slideshow_item);
    if (data->panel_image) panel_image_free(&(data->panel_image));
    if (data->marker) map_photo_remove(enlil_data->map, photo);
    if (data->exif_job) enlil_exif_job_del(data->exif_job);
