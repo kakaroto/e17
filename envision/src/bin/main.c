@@ -567,7 +567,7 @@ _goto_page(void *data       __UNUSED__,
 
 void
 load_index_genlist(App              *app,
-                   Elm_Genlist_Item *ancestor,
+                   Elm_Object_Item  *ancestor,
                    Eina_List        *children)
 {
    Eina_List *l;
@@ -578,7 +578,7 @@ load_index_genlist(App              *app,
         ch = epdf_index_item_children_get(it);
         if (ch)
           {
-             Elm_Genlist_Item *parent;
+             Elm_Object_Item *parent;
              parent = elm_genlist_item_append(app->gl_index, &glc2, it,
                                               ancestor,
                                               ELM_GENLIST_ITEM_SUBITEMS,
