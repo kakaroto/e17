@@ -121,8 +121,8 @@ struct _Page
    const char *title;
    void *container;
    void *model;
-   Elm_Genlist_Item *selected;
-   Elm_Genlist_Item *first;
+   Elm_Object_Item *selected;
+   Elm_Object_Item *first;
    Eina_Iterator *iterator;
    Ecore_Idler *populate;
    Eina_Hash *od_to_list_item;
@@ -168,7 +168,7 @@ _page_populate(void *data)
 
    for (count = 0; count < cls->populate_iteration_count; count++)
      {
-        Elm_Genlist_Item *it;
+        Elm_Object_Item *glit;
         char letter;
         void *id, *od;
         const char **letter_str;
@@ -179,7 +179,7 @@ _page_populate(void *data)
         od = cls->data_from_itr(id);
         if (!od) goto end;
 
-        it = elm_genlist_item_append
+        glit = elm_genlist_item_append
           (page->list, cls->item_cls, od,
            NULL, ELM_GENLIST_ITEM_NONE, NULL, NULL);
 
@@ -193,10 +193,10 @@ _page_populate(void *data)
                elm_index_item_append(page->index, "Special", page->first);
 
              page->last_index_letter[0] = letter;
-             elm_index_item_append(page->index, page->last_index_letter, it);
+             elm_index_item_append(page->index, page->last_index_letter, glit);
           }
-        if (!page->first) page->first = it;
-        eina_hash_set(page->od_to_list_item, od, it);
+        if (!page->first) page->first = glit;
+        eina_hash_set(page->od_to_list_item, od, glit);
         page->num_elements++;
      }
 
@@ -214,17 +214,17 @@ static void
 _page_selected(void *data, Evas_Object *o, void *event_info)
 {
    Page *page = data;
-   Elm_Genlist_Item *it = event_info;
-   if (page->selected == it) return;
-   page->selected = it;
+   Elm_Object_Item *glit = event_info;
+   if (page->selected == glit) return;
+   page->selected = glit;
    page->cls->selected(data, o, event_info);
 }
 
 static void
 _page_index_changed(void *data __UNUSED__, Evas_Object *o __UNUSED__, void *event_info)
 {
-   Elm_Genlist_Item *it = event_info;
-   elm_genlist_item_top_bring_in(it);
+   Elm_Object_Item *glit = event_info;
+   elm_genlist_item_top_bring_in(glit);
 }
 
 static void
@@ -725,25 +725,25 @@ Eina_Bool
 page_songs_next_exists(const Evas_Object *obj)
 {
    PAGE_SONGS_GET_OR_RETURN(page, obj, EINA_FALSE);
-   Elm_Genlist_Item *it = page->selected;
-   if (!it) return EINA_FALSE;
-   it = elm_genlist_item_next_get(it);
-   return !!it;
+   Elm_Object_Item *glit = page->selected;
+   if (!glit) return EINA_FALSE;
+   glit = elm_genlist_item_next_get(glit);
+   return !!glit;
 }
 
 Song *
 page_songs_next_go(Evas_Object *obj)
 {
    PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
-   Elm_Genlist_Item *it = page->selected;
+   Elm_Object_Item *glit = page->selected;
    Song *song;
-   if (!it) return NULL;
-   it = elm_genlist_item_next_get(it);
-   if (!it) return NULL;
-   song = elm_genlist_item_data_get(it);
-   page->selected = it;
-   elm_genlist_item_selected_set(it, EINA_TRUE);
-   elm_genlist_item_bring_in(it);
+   if (!glit) return NULL;
+   glit = elm_genlist_item_next_get(glit);
+   if (!glit) return NULL;
+   song = elm_genlist_item_data_get(glit);
+   page->selected = glit;
+   elm_genlist_item_selected_set(glit, EINA_TRUE);
+   elm_genlist_item_bring_in(glit);
    return song;
 }
 
@@ -751,12 +751,12 @@ int32_t
 page_songs_selected_n_get(const Evas_Object *obj)
 {
    PAGE_SONGS_GET_OR_RETURN(page, obj, 0);
-   Elm_Genlist_Item *it;
+   Elm_Object_Item *glit;
    int n;
-   for (n = 0, it = page->first;
-        it && it != page->selected;
-        n++, it = elm_genlist_item_next_get(it));
-   return (it) ? n : 0;
+   for (n = 0, glit = page->first;
+        glit && glit != page->selected;
+        n++, glit = elm_genlist_item_next_get(glit));
+   return (glit) ? n : 0;
 }
 
 int32_t
@@ -770,17 +770,17 @@ Song *
 page_songs_nth_get(const Evas_Object *obj, int32_t n)
 {
    PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
-   Elm_Genlist_Item *it = page->first;
-   while (it && n--) it = elm_genlist_item_next_get(it);
-   if (!it) return NULL;
-   return elm_genlist_item_data_get(it);
+   Elm_Object_Item *glit = page->first;
+   while (glit && n--) glit = elm_genlist_item_next_get(glit);
+   if (!glit) return NULL;
+   return elm_genlist_item_data_get(glit);
 }
 
 Eina_Bool
 _page_shuffle_array(Page *page, Eina_Bool next)
 {
    size_t i, j;
-   Elm_Genlist_Item *it;
+   Elm_Object_Item *glit;
 
    if (!page->first) return EINA_FALSE;
 
@@ -794,16 +794,16 @@ _page_shuffle_array(Page *page, Eina_Bool next)
 
    if ((page->shuffle_position >= page->num_elements) || (page->shuffle_position == 0))
      {
-        it = page->first;
-        eina_array_data_set(page->shuffle, 0, it);
-        it = elm_genlist_item_next_get(it);
-        for (i = 1; it; i++)
+        glit = page->first;
+        eina_array_data_set(page->shuffle, 0, glit);
+        glit = elm_genlist_item_next_get(glit);
+        for (i = 1; glit; i++)
           {
              j = rand() % (i + 1);
              eina_array_data_set(page->shuffle, i,
                                  eina_array_data_get(page->shuffle, j));
-             eina_array_data_set(page->shuffle, j, it);
-             it = elm_genlist_item_next_get(it);
+             eina_array_data_set(page->shuffle, j, glit);
+             glit = elm_genlist_item_next_get(glit);
           }
         if ((page->selected) && (next))
           {
@@ -828,7 +828,7 @@ Song *
 page_songs_shuffle_prev_go(Evas_Object *obj)
 {
    Song *song;
-   Elm_Genlist_Item *it;
+   Elm_Object_Item *glit;
 
    PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
 
@@ -840,13 +840,13 @@ page_songs_shuffle_prev_go(Evas_Object *obj)
         page->shuffle_position = page->num_elements;
      }
 
-   it = eina_array_data_get(page->shuffle, page->shuffle_position - 1);
+   glit = eina_array_data_get(page->shuffle, page->shuffle_position - 1);
 
-   song = elm_genlist_item_data_get(it);
+   song = elm_genlist_item_data_get(glit);
 
-   page->selected = it;
-   elm_genlist_item_selected_set(it, EINA_TRUE);
-   elm_genlist_item_bring_in(it);
+   page->selected = glit;
+   elm_genlist_item_selected_set(glit, EINA_TRUE);
+   elm_genlist_item_bring_in(glit);
    return song;
 }
 
@@ -861,19 +861,19 @@ Song *
 page_songs_shuffle_next_go(Evas_Object *obj)
 {
    Song *song;
-   Elm_Genlist_Item *it;
+   Elm_Object_Item *glit;
 
    PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
    _page_shuffle_array(page, EINA_TRUE);
 
-   it = eina_array_data_get(page->shuffle, page->shuffle_position);
+   glit = eina_array_data_get(page->shuffle, page->shuffle_position);
    page->shuffle_position++;
 
-   song = elm_genlist_item_data_get(it);
+   song = elm_genlist_item_data_get(glit);
 
-   page->selected = it;
-   elm_genlist_item_selected_set(it, EINA_TRUE);
-   elm_genlist_item_bring_in(it);
+   page->selected = glit;
+   elm_genlist_item_selected_set(glit, EINA_TRUE);
+   elm_genlist_item_bring_in(glit);
    return song;
 }
 
@@ -881,25 +881,25 @@ Eina_Bool
 page_songs_prev_exists(const Evas_Object *obj)
 {
    PAGE_SONGS_GET_OR_RETURN(page, obj, EINA_FALSE);
-   Elm_Genlist_Item *it = page->selected;
-   if (!it) return EINA_FALSE;
-   it = elm_genlist_item_prev_get(it);
-   return !!it;
+   Elm_Object_Item *glit = page->selected;
+   if (!glit) return EINA_FALSE;
+   glit = elm_genlist_item_prev_get(glit);
+   return !!glit;
 }
 
 Song *
 page_songs_prev_go(Evas_Object *obj)
 {
    PAGE_SONGS_GET_OR_RETURN(page, obj, NULL);
-   Elm_Genlist_Item *it = page->selected;
+   Elm_Object_Item *glit = page->selected;
    Song *song;
-   if (!it) return NULL;
-   it = elm_genlist_item_prev_get(it);
-   if (!it) return NULL;
-   song = elm_genlist_item_data_get(it);
-   page->selected = it;
-   elm_genlist_item_selected_set(it, EINA_TRUE);
-   elm_genlist_item_bring_in(it);
+   if (!glit) return NULL;
+   glit = elm_genlist_item_prev_get(glit);
+   if (!glit) return NULL;
+   song = elm_genlist_item_data_get(glit);
+   page->selected = glit;
+   elm_genlist_item_selected_set(glit, EINA_TRUE);
+   elm_genlist_item_bring_in(glit);
    return song;
 }
 
@@ -929,8 +929,8 @@ _album_item_text_get(void *data, Evas_Object *list, const char *part)
 static void
 _album_cover_fetch_finished_cb(void *data)
 {
-   Elm_Genlist_Item *it = data;
-   if (it) elm_genlist_item_update(it);
+   Elm_Object_Item *glit = data;
+   if (glit) elm_genlist_item_update(glit);
 }
 
 static Evas_Object *
@@ -938,9 +938,9 @@ _album_item_icon_get(void *data, Evas_Object *list, const char *part __UNUSED__)
 {
    Page *page = evas_object_data_get(list, "_enjoy_page");
    Album *album = data;
-   Elm_Genlist_Item *it = eina_hash_find(page->od_to_list_item, album);
+   Elm_Object_Item *glit = eina_hash_find(page->od_to_list_item, album);
    return cover_album_fetch(list, page->container, album, page->cls->icon_size,
-                            _album_cover_fetch_finished_cb, it);
+                            _album_cover_fetch_finished_cb, glit);
 }
 
 static void

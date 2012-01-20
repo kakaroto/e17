@@ -12,7 +12,7 @@ struct _Preferences
 
 struct _Preferences_Category
 {
-   Elm_Genlist_Item *it;
+   Elm_Object_Item *glit;
    int items;
    char name[];
 };
@@ -20,7 +20,7 @@ struct _Preferences_Category
 struct _Enjoy_Preferences_Plugin {
    const Enjoy_Preferences_Plugin_Api *api;
    Preferences_Category *cat; /* only if exists in UI */
-   Elm_Genlist_Item *it; /* only if exists in UI */
+   Elm_Object_Item *glit; /* only if exists in UI */
    int priority;
 };
 
@@ -80,18 +80,18 @@ preferences_deleted(void *data, Evas *e __UNUSED__, Evas_Object *lst __UNUSED__,
 static int
 preferences_category_cmp(const void *pa, const void *pb)
 {
-   const Elm_Genlist_Item *ia = pa, *ib = pb;
-   const Preferences_Category *a = elm_genlist_item_data_get(ia);
-   const Preferences_Category *b = elm_genlist_item_data_get(ib);
+   const Elm_Object_Item *glia = pa, *glib = pb;
+   const Preferences_Category *a = elm_genlist_item_data_get(glia);
+   const Preferences_Category *b = elm_genlist_item_data_get(glib);
    return strcoll(a->name, b->name);
 }
 
 static int
 preferences_item_cmp(const void *pa, const void *pb)
 {
-   const Elm_Genlist_Item *ia = pa, *ib = pb;
-   const Enjoy_Preferences_Plugin *a = elm_genlist_item_data_get(ia);
-   const Enjoy_Preferences_Plugin *b = elm_genlist_item_data_get(ib);
+   const Elm_Object_Item *glia = pa, *glib = pb;
+   const Enjoy_Preferences_Plugin *a = elm_genlist_item_data_get(glia);
+   const Enjoy_Preferences_Plugin *b = elm_genlist_item_data_get(glib);
    int r = a->priority - b->priority;
    if (r)
      return r;
@@ -103,7 +103,7 @@ static void
 preferences_item_selected(void *data, Evas_Object *lst, void *event_info)
 {
    Enjoy_Preferences_Plugin *p = data;
-   Elm_Genlist_Item *it = event_info;
+   Elm_Object_Item *glit = event_info;
    Elm_Object_Item *oi;
    Evas_Object *naviframe = elm_object_parent_widget_get(lst);
    Evas_Object *prev_btn = NULL, *next_btn = NULL, *content = NULL;
@@ -116,7 +116,7 @@ preferences_item_selected(void *data, Evas_Object *lst, void *event_info)
         return;
      }
 
-   elm_genlist_item_selected_set(it, EINA_FALSE);
+   elm_genlist_item_selected_set(glit, EINA_FALSE);
 
    old_auto_prev_btn = elm_naviframe_prev_btn_auto_pushed_get(naviframe);
    elm_naviframe_prev_btn_auto_pushed_set(naviframe, auto_prev_btn);
@@ -154,23 +154,23 @@ preferences_item_add(Preferences *prefs, Enjoy_Preferences_Plugin *p)
         memcpy(cat->name, catname, catnamelen);
         eina_hash_add(prefs->categories, cat->name, cat);
 
-        cat->it = elm_genlist_item_direct_sorted_insert
+        cat->glit = elm_genlist_item_direct_sorted_insert
           (prefs->list, &preferences_itc_category, cat, NULL,
            ELM_GENLIST_ITEM_NONE, preferences_category_cmp, NULL, NULL);
 
-        elm_genlist_item_display_only_set(cat->it, EINA_TRUE);
+        elm_genlist_item_display_only_set(cat->glit, EINA_TRUE);
      }
 
    eina_hash_add(prefs->items, &p, p);
 
    cat->items++;
    p->cat = cat;
-   p->it = elm_genlist_item_direct_sorted_insert
-     (prefs->list, &preferences_itc_item, p, cat->it,
+   p->glit = elm_genlist_item_direct_sorted_insert
+     (prefs->list, &preferences_itc_item, p, cat->glit,
       ELM_GENLIST_ITEM_NONE, preferences_item_cmp,
       preferences_item_selected, p);
 
-   DBG("plugin %p item %p cat %p (%s)", p, p->it, cat, cat->name);
+   DBG("plugin %p item %p cat %p (%s)", p, p->glit, cat, cat->name);
 
    return EINA_TRUE;
 }
@@ -187,7 +187,7 @@ preferences_item_del(Preferences *prefs, Enjoy_Preferences_Plugin *p)
    if (!prefs->list)
      DBG("List already deleted, ignore item deletion");
    else
-     elm_genlist_item_del(p->it);
+     elm_genlist_item_del(p->glit);
 
    if (p->cat)
      {
@@ -195,7 +195,7 @@ preferences_item_del(Preferences *prefs, Enjoy_Preferences_Plugin *p)
         if (p->cat->items == 0)
           {
              if (prefs->list)
-               elm_genlist_item_del(p->cat->it);
+               elm_genlist_item_del(p->cat->glit);
              eina_hash_del(prefs->categories, p->cat->name, p->cat);
              free(p->cat);
           }
