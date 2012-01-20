@@ -92,12 +92,12 @@ _widget_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    const char *name = event_info;
    Elfe_Allapps *allapps = data;
-   Elm_Genlist_Item *it = event_info;
+   Elm_Object_Item *glit = event_info;
 
    printf("Send widget longpressed\n");
    evas_object_smart_callback_call(allapps->box,
-				   "gadget,longpressed", (void*)name);
-   elm_gengrid_item_selected_set(it, EINA_FALSE);
+               "gadget,longpressed", (void*)name);
+   elm_gengrid_item_selected_set(glit, EINA_FALSE);
 }
 
 static void
