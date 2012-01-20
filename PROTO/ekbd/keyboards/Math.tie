@@ -1,0 +1,26 @@
+##TIECONF-1.0
+kbd 150 60
+fuzz 20
+
+key  0  0 30  30
+  normal   + plus
+key 30 0  30  30
+  normal   - minus
+key 60 0  30  30
+  normal   ÷ division
+key 90 0  30  30
+  normal  × multiply
+key 120 0  30  30
+  normal   = equal
+
+key 0 30  30  30
+  normal   % percent
+key 30 30  30  30
+  normal   ( parenleft
+key 60 30  30  30
+  normal   ) parenright
+key 90 30 30 30
+  normal   < less
+key 120 30 30 30
+  normal   > greater
+# normal     , comma

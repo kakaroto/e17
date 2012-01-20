@@ -1,0 +1,39 @@
+##TIECONF-1.0
+kbd 270 60
+
+key   0   0  30  30
+  normal    @ at
+key   30   0  30  30
+  normal    # numbersign
+key   60   0  30  30
+  normal    $ dollar
+key   90   0  30  30
+  normal   €  EuroSign
+key   120   0  30  30
+  normal    % percent
+key   150   0  30  30
+  normal   ~ asciitilde
+key   180   0  30  30
+  normal    & ampersand
+key   210   0  30  30
+  normal    * asterisk
+key   240   0 30 30
+  normal    ° degree
+key   0   30 30 30
+  normal   © copyright
+key   30    30  30  30
+  normal   [ bracketleft
+key   60    30 30 30
+  normal   ] bracketright
+key   90    30  30  30
+  normal    { braceleft
+key  120    30  30  30
+  normal    } braceright
+key  150   30  30  30
+  normal   / slash
+key  180   30  30  30
+  normal   \ backslash
+key  210   30  30  30
+  normal    _ underscore
+key   240   30 30 30
+  normal    | bar

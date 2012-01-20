@@ -1,0 +1,31 @@
+##TIECONF-1.0
+kbd 210 60
+
+key   0   0  30  30
+  normal   , comma
+key   30   0  30  30
+  normal   . period
+key   60   0  30  30
+  normal   ; semicolon
+key   90   0  30  30
+  normal    : colon
+key   120   0  30  30
+  normal    ? question
+key   150  0  30  30
+  normal    … ellipsis
+key   180  0  30  30
+  normal    ! exclam
+key   0   30  30  30
+  normal   ' apostrophe
+key   30   30  30  30
+  normal    " quotedbl
+key   60   30  30  30
+  normal   ` grave
+key   90   30 30 30
+  normal    ^ asciicircum
+key   120    30  30  30
+  normal   ¶  paragraph
+key  150    30 30 30
+  normal   < less
+key  180    30 30 30
+  normal   > greater

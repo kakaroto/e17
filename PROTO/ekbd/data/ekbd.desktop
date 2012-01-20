@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Ekbd
+Categories=System;FileTools;FileManager;
+Exec=ekbd_test
+TryExec=ekbd_test
+StartupWMClass=keyboard
+X-ORDISSIMO-Restart=1

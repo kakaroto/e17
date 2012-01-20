@@ -1,0 +1,33 @@
+##TIECONF-1.0
+kbd 210 30
+fuzz 20
+
+key  0  0 30  30
+  normal   é eacute
+  shift    É Eacute
+  capslock    É Eacute
+key 30 0  30  30
+  normal   è egrave
+  shift    È Egrave
+  capslock    È Egrave
+key 60 0  30  30
+  normal   à agrave
+  shift    À Agrave
+  capslock    À Agrave
+key 90 0  30  30
+  normal   œ oe
+  shift    Œ OE
+  capslock    Œ OE
+key 120 0 30 30
+  normal   æ ae
+  shift    Æ AE
+  capslock    Æ AE
+key 150 0 30 30
+  normal ç ccedilla
+  shift  Ç Ccedilla
+  capslock  Ç Ccedilla
+key 180 0 30 30
+  normal ù ugrave
+  shift  Ù Ugrave
+  capslock  Ù Ugrave
+

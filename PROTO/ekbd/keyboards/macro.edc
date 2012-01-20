@@ -1,0 +1,77 @@
+#define square(obj, a, b, c, d, ff, fs) \
+  part { name : "up_l"; \
+     type: TEXT; \
+     clip_to: obj; \
+     description { state: "default" 0.0; \
+        rel1 { \
+           to: obj; \
+        } \
+        rel2 { \
+           to: obj; \
+           relative: 0.5 0.5; \
+        } \
+        text { \
+           text: a; \
+           fit: 1 1; \
+           font: ff; \
+           size: fs; \
+        } \
+     } \
+  } \
+  part { name: "up_r"; \
+     clip_to: obj; \
+     type: TEXT; \
+     description { state: "default" 0.0; \
+        rel1 { \
+           to: obj; \
+           relative: 0.5 0.0; \
+        } \
+        rel2 { \
+           to: obj; \
+           relative: 1.0 0.5; \
+        } \
+        text { \
+           text: b; \
+           fit: 1 1; \
+           font: ff; \
+           size: fs; \
+        } \
+     } \
+  } \
+  part { name: "down_l"; \
+     clip_to: obj; \
+     type: TEXT; \
+     description { state: "default" 0.0; \
+        rel1 { \
+           to: obj; \
+           relative: 0.0 0.5; \
+        } \
+        rel2 { \
+           to: obj; \
+           relative: 0.5 1.0; \
+        } \
+        text { \
+           text: c; \
+           fit: 1 1; \
+           font: ff; \
+           size: fs; \
+        } \
+     } \
+  } \
+  part { name: "down_r"; \
+     type: TEXT; \
+     clip_to: obj; \
+     description { state: "default" 0.0; \
+        rel1 { \
+           to: obj; \
+           relative: 0.5 0.5; \
+        } \
+        rel2.to: obj; \
+        text { \
+           text: d; \
+           fit: 1 1; \
+           size: fs; \
+           font: ff; \
+        } \
+     } \
+  }

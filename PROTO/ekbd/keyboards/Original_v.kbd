@@ -1,0 +1,169 @@
+##KBDCONF-1.0
+kbd 330 150
+
+# keyboard type
+type TERMINAL
+# an icon for the keyboard so you know which one you have
+icon qwerty.png
+
+key   0   0  30  30
+  normal   1 1
+key  30   0  30  30
+  normal   2 2
+key  60   0  30  30
+  normal   3 3
+key  90   0  30  30
+  normal   4 4
+key 120   0  30  30
+  normal   5 5
+key 150   0  30  30
+  normal   6 6
+key 180   0  30  30
+  normal   7 7
+key 210   0  30  30
+  normal   8 8
+key 240   0  30  30
+  normal   9 9
+key 270   0  30  30
+  normal   0 0
+key 300   0  30  30
+  normal backspace.png BackSpace
+
+key   0   30  30  30
+  normal Esc  Escape
+key  30   30  30  30
+  normal   a a
+  shift    A A
+  capslock A A
+key  60   30  30  30
+  normal   z z
+  shift    Z Z
+  capslock Z Z
+key  90   30  30  30
+  normal   e e
+  shift    E E
+  capslock E E
+key 120   30  30  30
+  normal   r r
+  shift    R R
+  capslock R R
+key 150   30  30  30
+  normal   t t
+  shift    T T
+  capslock T T
+key 180   30  30  30
+  normal   y y
+  shift    Y Y
+  capslock Y Y
+key 210   30  30  30
+  normal   u u
+  shift    U U
+  capslock U U
+key 240   30  30  30
+  normal   i i
+  shift    I I
+  capslock I I
+key 270   30  30  30
+  normal   o o
+  shift    O O
+  capslock O O
+key 300   30  30  30
+  normal   p p
+  shift    P P
+  capslock P P
+
+key   0  60  30  30
+  normal   tab.png Tab
+  shift    tab.png ISO_Left_Tab
+key  30  60  30  30
+  normal   q q
+  shift    Q Q
+  capslock Q Q
+key  60  60  30 30
+  normal   s s
+  shift    S S
+  capslock S S
+key  90  60  30  30
+  normal   d d
+  shift    D D
+  capslock D D
+key 120  60  30  30
+  normal   f f
+  shift    F F
+  capslock F F
+key 150  60  30  30
+  normal   g g
+  shift    G G
+  capslock G G
+key 180  60  30  30
+  normal   h h
+  shift    H H
+  capslock H H
+key 210  60  30  30
+  normal   j j
+  shift    J J
+  capslock J J
+key 240  60  30  30
+  normal   k k
+  shift    K K
+  capslock K K
+key 270  60  30  30
+  normal   l l
+  shift    L L
+  capslock L L
+key 300  60  30  30
+  normal   m m
+  shift    M M
+  capslock M M
+
+
+key   0  90  30  30
+  normal   shift.png
+  is_multi_shift
+key  30  90  30  30
+  normal   w w
+  shift    W W
+  capslock W W
+key 60  90  30  30
+  normal   x x
+  shift    X X
+  capslock X X
+key 90  90  30  30
+  normal   c c
+  shift    C C
+  capslock C C
+key 120  90  30  30
+  normal   v v
+  shift    V V
+  capslock V V
+key 150  90  30  30
+  normal   b b
+  shift    B B
+  capslock B B
+key 180  90  30  30
+  normal   n n
+  shift    N N
+  capslock N N
+key 210  90  30  30
+  normal   , comma
+key 240  90  30  30
+  normal   . period
+key 270  90  30  30
+  normal quote.edj Symbol.tie
+key 300  90  30  30
+  normal backspace.png BackSpace
+
+key   0 120  30  30
+  normal   ctrl
+  is_ctrl
+key   30 120  30  30
+  normal   alt
+  is_alt
+key  60 120  30  30
+  normal   Sym. Extra.tie
+key  90 120 165  30
+  normal   space space
+key 255 120 30 30
+  normal … Punct.tie
+key 285  120  45  30
+  normal   enter.png Return
