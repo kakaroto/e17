@@ -241,7 +241,7 @@ esql_query(Esql       *e,
         if (e->error)
           {
              ERR("%s", e->error);
-             while (--esql_id);
+             while (!(--esql_id));
              return 0;
           }
         if (e->fdh)
@@ -341,7 +341,7 @@ esql_query_vargs(Esql       *e,
         if (e->error)
           {
              ERR("%s", e->error);
-             while (--esql_id);
+             while (!(--esql_id));
              return 0;
           }
         if (e->fdh)
