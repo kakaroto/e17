@@ -33,7 +33,7 @@
 #define alloca __alloca
 #else
 #include <stddef.h>
-void *alloca (size_t);
+void *alloca(size_t);
 #endif
 
 extern int esql_log_dom;
@@ -69,25 +69,25 @@ typedef enum
    ESQL_CONNECT_TYPE_QUERY
 } Esql_Connect_Type;
 
-typedef const char *           (*Esql_Error_Cb)(Esql *);
+typedef const char           * (*Esql_Error_Cb)(Esql *);
 typedef void                   (*Esql_Cb)(Esql *);
 typedef Ecore_Fd_Handler_Flags (*Esql_Connection_Cb)(Esql *);
 typedef void                   (*Esql_Setup_Cb)(Esql *, const char *, const char *, const char *);
 typedef void                   (*Esql_Set_Cb)(); /* yes this is intentionally variable args */
 typedef int                    (*Esql_Fd_Cb)(Esql *);
-typedef char *                 (*Esql_Escape_Cb)(Esql *, unsigned int *, const char *, va_list);
+typedef char                 * (*Esql_Escape_Cb)(Esql *, unsigned int *, const char *, va_list);
 typedef void                   (*Esql_Res_Cb)(Esql_Res *);
-typedef Esql_Row *             (*Esql_Row_Cb)(Esql_Res *);
+typedef Esql_Row             * (*Esql_Row_Cb)(Esql_Res *);
 
-typedef const char *           (*Esql_Row_Col_Name_Cb)(Esql_Row *);
+typedef const char           * (*Esql_Row_Col_Name_Cb)(Esql_Row *);
 
 typedef Esql_Type              (*Esql_Module_Cb)(Esql *);
 
 typedef struct Esql_Module
 {
    EINA_INLIST;
-   Esql_Type type;
-   Eina_Module *module;
+   Esql_Type      type;
+   Eina_Module   *module;
    Esql_Module_Cb init;
 } Esql_Module;
 
@@ -194,7 +194,7 @@ struct Esql_Res
 
 struct Esql_Row
 {
-                EINA_INLIST;
+   EINA_INLIST;
 
    Esql_Res    *res;
 
@@ -215,35 +215,33 @@ typedef struct Esql_Row_Iterator
 } Esql_Row_Iterator;
 
 static inline void
-esql_fake_free(void *data __UNUSED__,
-               Esql      *e)
+esql_fake_free(void *data __UNUSED__, Esql *e)
 {
    e->error = NULL;
    if (--e->event_count) return;
    if (e->dead) esql_free(e);
 }
 
+void esql_res_free(void *data, Esql_Res * res);
+void          esql_row_free(Esql_Row *r);
 
-void      esql_res_free(void *data __UNUSED__, Esql_Res  *res);
-void      esql_row_free(Esql_Row *r);
+Eina_Bool     esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh);
 
-Eina_Bool esql_connect_handler(Esql             *e, Ecore_Fd_Handler *fdh);
+char         *esql_query_escape(Eina_Bool backslashes, size_t *len, const char *fmt, va_list args);
+char         *esql_string_escape(Eina_Bool backslashes, const char *s);
+Eina_Bool     esql_timeout_cb(Esql *e);
 
-char *esql_query_escape(Eina_Bool   backslashes, size_t     *len, const char *fmt, va_list     args);
-char *esql_string_escape(Eina_Bool   backslashes, const char *s);
-Eina_Bool esql_timeout_cb(Esql *e);
-
-Eina_Bool esql_pool_rebalance(Esql_Pool *ep, Esql *e);
-Esql_Query_Id esql_pool_query(Esql_Pool  *ep, void       *data, const char *query);
-Esql_Query_Id esql_pool_query_args(Esql_Pool  *ep, void       *data, const char *fmt, va_list     args);
-void esql_pool_disconnect(Esql_Pool *ep);
-Eina_Bool esql_pool_connect(Esql_Pool *ep, const char *addr, const char *user, const char *passwd);
-Eina_Bool esql_pool_database_set(Esql_Pool  *ep, const char *database_name);
-Eina_Bool esql_pool_type_set(Esql_Pool *ep, Esql_Type  type);
-void esql_pool_connect_timeout_set(Esql_Pool *ep, double     timeout);
-void esql_pool_reconnect_set(Esql_Pool *ep, Eina_Bool  enable);
-void esql_pool_free(Esql_Pool *ep);
-void esql_reconnect_handler(Esql *e);
-void esql_event_error(Esql *e);
-void esql_call_complete(Esql *e);
+Eina_Bool     esql_pool_rebalance(Esql_Pool *ep, Esql *e);
+Esql_Query_Id esql_pool_query(Esql_Pool *ep, void *data, const char *query);
+Esql_Query_Id esql_pool_query_args(Esql_Pool *ep, void *data, const char *fmt, va_list args);
+void          esql_pool_disconnect(Esql_Pool *ep);
+Eina_Bool     esql_pool_connect(Esql_Pool *ep, const char *addr, const char *user, const char *passwd);
+Eina_Bool     esql_pool_database_set(Esql_Pool *ep, const char *database_name);
+Eina_Bool     esql_pool_type_set(Esql_Pool *ep, Esql_Type type);
+void          esql_pool_connect_timeout_set(Esql_Pool *ep, double timeout);
+void          esql_pool_reconnect_set(Esql_Pool *ep, Eina_Bool enable);
+void          esql_pool_free(Esql_Pool *ep);
+void          esql_reconnect_handler(Esql *e);
+void          esql_event_error(Esql *e);
+void          esql_call_complete(Esql *e);
 #endif
