@@ -107,7 +107,8 @@ typedef enum
    ESQL_TYPE_NONE,
 #define ESQL_TYPE_DRIZZLE ESQL_TYPE_MYSQL /**< Drizzle supports the mysql protocol */
    ESQL_TYPE_MYSQL,
-   ESQL_TYPE_POSTGRESQL
+   ESQL_TYPE_POSTGRESQL,
+   ESQL_TYPE_SQLITE
 } Esql_Type;
 
 /**

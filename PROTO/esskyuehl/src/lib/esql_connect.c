@@ -42,7 +42,6 @@ esql_connect(Esql       *e,
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(e->type == ESQL_TYPE_NONE, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(addr, EINA_FALSE);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(user, EINA_FALSE);
    if (e->pool) return esql_pool_connect((Esql_Pool *)e, addr, user, passwd);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!e->backend.db && (e->type == ESQL_TYPE_MYSQL), EINA_FALSE);
 
@@ -53,16 +52,18 @@ esql_connect(Esql       *e,
      }
    e->backend.setup(e, addr, user, passwd);
    ret = e->backend.connect(e);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, EINA_FALSE);
    if (ret == ECORE_FD_ERROR)
      {
         ERR("Connection error: %s", e->backend.error_get(e));
         return EINA_FALSE;
      }
    fd = e->backend.fd_get(e);
-   e->fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ | ECORE_FD_WRITE, (Ecore_Fd_Cb)esql_connect_handler, e, NULL, NULL);
-   ecore_main_fd_handler_active_set(e->fdh, ret);
-   e->current = ESQL_CONNECT_TYPE_INIT;
+   if (fd != -1)
+     {
+        e->fdh = ecore_main_fd_handler_add(fd, ECORE_FD_READ | ECORE_FD_WRITE, (Ecore_Fd_Cb)esql_connect_handler, e, NULL, NULL);
+        ecore_main_fd_handler_active_set(e->fdh, ret);
+        e->current = ESQL_CONNECT_TYPE_INIT;
+     }
 
    return EINA_TRUE;
 }
@@ -132,7 +133,7 @@ esql_database_set(Esql       *e,
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(database_name, EINA_FALSE);
-   if (e->database && (e->type == ESQL_TYPE_POSTGRESQL))
+   if (e->database && (e->type != ESQL_TYPE_MYSQL))
      {
         ERR("Database switching is not supported by this database type!");
         return EINA_FALSE;

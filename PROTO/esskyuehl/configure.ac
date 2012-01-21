@@ -113,7 +113,6 @@ if test "x${want_mysql}" != "xno" ; then
          if test "x$ac_cv_header_mysql_h" != "xno" -o "x$ac_cv_header_mysql_mysql_h" != "xno" ; then
             AC_MSG_RESULT([yes])
             mysql=mysql
-            AC_DEFINE_UNQUOTED([HAVE_MSQL], [1], [have mysql])
          else
             AC_MSG_RESULT([no])
          fi
@@ -150,7 +149,6 @@ if test "x${want_postgresql}" != "xno" ; then
          CPPFLAGS="$cppflags"
          AC_MSG_RESULT([yes])
          postgresql=postgresql
-         AC_DEFINE_UNQUOTED([HAVE_PSQL], [1], [have postgresql])
    else
          AC_MSG_RESULT([no])
    fi
@@ -158,6 +156,24 @@ if test "x${want_postgresql}" != "xno" ; then
    AC_SUBST(POSTGRESQL_CFLAGS)
    AC_SUBST(POSTGRESQL_LIBS)
 fi
+
+AC_ARG_ENABLE([sqlite],
+   [AC_HELP_STRING([--disable-sqlite], [disable sqlite module @<:@default=detect@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_sqlite="yes"
+    else
+       want_sqlite="no"
+    fi
+   ],
+   [want_sqlite="yes"])
+
+if test "x${want_sqlite}" != "xno" ; then
+   PKG_CHECK_MODULES([SQLITE3], [sqlite3])
+   AM_CONDITIONAL([SQLITE], [test -n "$SQLITE3_LIBS"])
+   test -n "$SQLITE3_LIBS" && sqlite=sqlite
+fi
+
 
 EFL_CHECK_DOXYGEN([build_doc="yes"], [build_doc="no"])
 
@@ -169,6 +185,7 @@ src/Makefile
 src/lib/Makefile
 src/modules/Makefile
 src/modules/postgresql/Makefile
+src/modules/sqlite/Makefile
 src/modules/mysql/Makefile
 src/modules/mysql/mysac/Makefile
 src/tests/Makefile
@@ -190,7 +207,7 @@ echo "Configuration Options Summary:"
 echo
 echo "Documentation..........: ${build_doc}"
 echo
-echo "Backend support........: $mysql $postgresql"
+echo "Backend support........: $mysql $postgresql $sqlite"
 echo
 echo "Compilation............: make (or gmake)"
 echo "  CPPFLAGS.............: $CPPFLAGS"

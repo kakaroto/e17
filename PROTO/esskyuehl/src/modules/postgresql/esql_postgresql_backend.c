@@ -41,10 +41,10 @@ static int esql_postgresql_fd_get(Esql *e);
 static Ecore_Fd_Handler_Flags esql_postgresql_connect(Esql *e);
 static Ecore_Fd_Handler_Flags esql_postgresql_io(Esql *e);
 static void esql_postgresql_setup(Esql *e, const char *addr, const char *user, const char *passwd);
-static void esql_postgresql_query(Esql *e, const char *query);
+static void esql_postgresql_query(Esql *e, const char *query, unsigned int len);
 static void esql_postgresql_res_free(Esql_Res *res);
 static void esql_postgresql_res(Esql_Res *res);
-static char *esql_postgresql_escape(Esql *e, const char *fmt, va_list args);
+static char *esql_postgresql_escape(Esql *e, unsigned int *len, const char *fmt, va_list args);
 static void esql_postgresql_row_init(Esql_Row *r, int row_num);
 static void esql_postgresql_free(Esql *e);
 
@@ -94,6 +94,7 @@ esql_postgresql_connect(Esql *e)
 static Ecore_Fd_Handler_Flags
 esql_postgresql_io(Esql *e)
 {
+   if (e->timeout) ecore_timer_reset(e->timeout_timer);
    if (PQstatus(e->backend.db) == CONNECTION_BAD)
      {
         ERR("%s", esql_postgresql_error_get(e));
@@ -145,7 +146,7 @@ esql_postgresql_setup(Esql *e, const char *addr, const char *user, const char *p
 }
 
 static void
-esql_postgresql_query(Esql *e, const char *query)
+esql_postgresql_query(Esql *e, const char *query, unsigned int len __UNUSED__)
 {
    EINA_SAFETY_ON_FALSE_RETURN(PQsendQuery(e->backend.db, query));
 }
@@ -199,12 +200,11 @@ esql_postgresql_res(Esql_Res *res)
 }
 
 static char *
-esql_postgresql_escape(Esql *e __UNUSED__, const char *fmt, va_list args)
+esql_postgresql_escape(Esql *e __UNUSED__, unsigned int *len, const char *fmt, va_list args)
 {
    char *ret;
-   size_t len;
 
-   ret = esql_query_escape(EINA_TRUE, &len, fmt, args);
+   ret = esql_query_escape(EINA_TRUE, len, fmt, args);
    return ret;
 }
 

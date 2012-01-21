@@ -40,10 +40,10 @@ static Ecore_Fd_Handler_Flags esql_mysac_connect(Esql *e);
 static void esql_mysac_database_set(Esql *e, const char *database_name);
 static Ecore_Fd_Handler_Flags esql_mysac_io(Esql *e);
 static void esql_mysac_setup(Esql *e, const char *addr, const char *user, const char *passwd);
-static void esql_mysac_query(Esql *e, const char *query);
+static void esql_mysac_query(Esql *e, const char *query, unsigned int len __UNUSED__);
 static void esql_mysac_res_free(Esql_Res *res);
 static void esql_mysac_res(Esql_Res *res);
-static char *esql_mysac_escape(Esql *e, const char *fmt, va_list args);
+static char *esql_mysac_escape(Esql *e, unsigned int *len, const char *fmt, va_list args);
 static void esql_mysac_row_init(Esql_Row *r);
 static void esql_mysac_free(Esql *e);
 
@@ -103,6 +103,7 @@ esql_mysac_database_set(Esql *e, const char *database_name)
 static Ecore_Fd_Handler_Flags
 esql_mysac_io(Esql *e)
 {
+   if (e->timeout) ecore_timer_reset(e->timeout_timer);
    ESQL_MYSAC_SWITCH_RET(mysac_io(e->backend.db));
 }
 
@@ -113,7 +114,7 @@ esql_mysac_setup(Esql *e, const char *addr, const char *user, const char *passwd
 }
 
 static void
-esql_mysac_query(Esql *e, const char *query)
+esql_mysac_query(Esql *e, const char *query, unsigned int len __UNUSED__)
 {
    MYSAC_RES *res;
 
@@ -162,22 +163,21 @@ esql_mysac_res(Esql_Res *res)
 }
 
 static char *
-esql_mysac_escape(Esql *e, const char *fmt, va_list args)
+esql_mysac_escape(Esql *e, unsigned int *len, const char *fmt, va_list args)
 {
    MYSAC *m;
    Eina_Bool backslashes = EINA_TRUE;
    char *ret;
-   size_t len;
 
    m = e->backend.db;
    if (m->status & 512) /* SERVER_STATUS_NO_BACKSLASH_ESCAPES */
      backslashes = EINA_FALSE;
-   ret = esql_query_escape(backslashes, &len, fmt, args);
-   if (len > m->bufsize - 5) /* mysac is dumb and uses a user-allocated buffer, so we have to manually resize it */
+   ret = esql_query_escape(backslashes, len, fmt, args);
+   if (*len > m->bufsize - 5) /* mysac is dumb and uses a user-allocated buffer, so we have to manually resize it */
      {
         char *tmp;
 
-        tmp = realloc(m->buf, len * 2);
+        tmp = realloc(m->buf, (*len) * 2);
         if (!tmp) /* we're so fucked */
           {
              free(ret);
@@ -185,7 +185,7 @@ esql_mysac_escape(Esql *e, const char *fmt, va_list args)
              return NULL;
           }
         m->buf = tmp;
-        m->bufsize = len * 2;
+        m->bufsize = (*len) * 2;
      }
    return ret;
 }

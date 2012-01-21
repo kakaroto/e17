@@ -236,8 +236,16 @@ esql_query(Esql       *e,
    if (!e->current)
      {
         e->query_start = ecore_time_get();
-        e->backend.query(e, query);
-        ecore_main_fd_handler_active_set(e->fdh, ECORE_FD_WRITE);
+        e->backend.query(e, query, strlen(query));
+        e->error = e->backend.error_get(e);
+        if (e->error)
+          {
+             ERR("%s", e->error);
+             while (--esql_id);
+             return 0;
+          }
+        if (e->fdh)
+          ecore_main_fd_handler_active_set(e->fdh, ECORE_FD_WRITE);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
         e->cur_id = esql_id;
@@ -305,6 +313,7 @@ esql_query_vargs(Esql       *e,
                  va_list     args)
 {
    char *query;
+   unsigned int len;
 
    DBG("(e=%p, fmt='%s')", e, fmt);
 
@@ -319,16 +328,24 @@ esql_query_vargs(Esql       *e,
      return esql_pool_query_args((Esql_Pool *)e, data, fmt, args);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.db, 0);
 
-   query = e->backend.escape(e, fmt, args);
+   query = e->backend.escape(e, &len, fmt, args);
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(query, 0);
    while (++esql_id < 1) ;
    if (!e->current)
      {
         e->query_start = ecore_time_get();
-        e->backend.query(e, query);
+        e->backend.query(e, query, len);
         DBG("(e=%p, query=\"%s\")", e, query);
-        ecore_main_fd_handler_active_set(e->fdh, ECORE_FD_WRITE);
+        e->error = e->backend.error_get(e);
+        if (e->error)
+          {
+             ERR("%s", e->error);
+             while (--esql_id);
+             return 0;
+          }
+        if (e->fdh)
+          ecore_main_fd_handler_active_set(e->fdh, ECORE_FD_WRITE);
         e->current = ESQL_CONNECT_TYPE_QUERY;
         e->cur_data = data;
         e->cur_id = esql_id;

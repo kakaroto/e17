@@ -189,6 +189,21 @@ main(void)
    esql_disconnect(e);
    eina_counter_stop(c, 3);
 
+   eina_counter_start(c);
+   esql_connect_callback_set(e, NULL, NULL);
+   esql_type_set(e, ESQL_TYPE_SQLITE); /**< now switch to sqlite! */
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "test.db", NULL, NULL), 1); /**< create/open "test.db" in current dir */
+   ecore_main_loop_begin();
+   esql_disconnect(e);
+   eina_counter_stop(c, 2);
+
+   eina_counter_start(c);
+   esql_connect_callback_set(e, connect_cb, NULL);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "test.db", NULL, NULL), 1); /**< create/open "test.db" in current dir */
+   ecore_main_loop_begin();
+   esql_disconnect(e);
+   eina_counter_stop(c, 3);
+
    printf("Times:\n%s\n", eina_counter_dump(c)); /**< this leaks, who cares */
    esql_free(e);
    esql_shutdown();
