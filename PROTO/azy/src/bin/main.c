@@ -673,7 +673,7 @@ gen_type_esql(Azy_Typedef *t,
                   EL(6, "}");
                }
              else if ((!strcmp(m->name, "timestamp")) && (m->type->ctype == i))
-               EL(7, "ret->%s = (int)mktime(&c->value.tm);", m->name);
+               EL(7, "ret->%s = (int)c->value.u;", m->name);
              else if ((m->type->type == TD_ARRAY) && (m->type->item_type->ctype == i))
                {
                   EL(6, "{");
@@ -794,7 +794,7 @@ gen_type_esql(Azy_Typedef *t,
                        EL(6, "}");
                     }
                   else if ((!strcmp(m->name, "timestamp")) && (m->type->ctype == i))
-                    EL(7, "tmp->%s = (int)mktime(&c->value.tm);", m->name);
+                    EL(7, "tmp->%s = (int)c->value.u;", m->name);
                   else if ((m->type->type == TD_ARRAY) && (m->type->item_type->ctype == i))
                     {
                        EL(6, "{");
