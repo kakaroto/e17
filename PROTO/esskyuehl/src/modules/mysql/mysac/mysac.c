@@ -235,7 +235,7 @@ static int my_response(MYSAC *m, enum my_expected_response_t expect) {
 	int i;
 	int err;
 	int errcode;
-	char *read;
+	char *readbuf;
 	unsigned long len;
 	unsigned long rlen;
 	char nul;
@@ -342,26 +342,26 @@ static int my_response(MYSAC *m, enum my_expected_response_t expect) {
 			/* is sucess */
 			if ((unsigned char)m->read[0] == 0) {
 
-				read = &m->read[1];
+				readbuf = &m->read[1];
 				rlen = m->packet_length - 1;
 
 				/* affected rows */
-				len = my_lcb(read, &m->affected_rows, &nul, rlen);
+				len = my_lcb(readbuf, &m->affected_rows, &nul, rlen);
 				rlen -= len;
-				read += len;
+				readbuf += len;
 				/* m->affected_rows = uint2korr(&m->read[1]); */
 
 				/* insert id */
-				len = my_lcb(read, &m->insert_id, &nul, rlen);
+				len = my_lcb(readbuf, &m->insert_id, &nul, rlen);
 				rlen -= len;
-				read += len;
+				readbuf += len;
 
 				/* server status */
-				m->status = uint2korr(read);
-				read += 2;
+				m->status = uint2korr(readbuf);
+				readbuf += 2;
 
 				/* server warnings */
-				m->warnings = uint2korr(read);
+				m->warnings = uint2korr(readbuf);
 
 				return MYSAC_RET_OK;
 			}

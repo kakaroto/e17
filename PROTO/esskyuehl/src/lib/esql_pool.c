@@ -21,7 +21,7 @@ static Esql *
 esql_pool_idle_find_(Esql_Pool *ep)
 {
    Esql *e, *use = NULL;
-   double time, cur = 0.0;
+   double ti, cur = 0.0;
 
    EINA_INLIST_FOREACH(ep->esqls, e)
      {
@@ -29,12 +29,12 @@ esql_pool_idle_find_(Esql_Pool *ep)
           return e;
      }
    /* no free connections :( */
-   time = ecore_time_get();
+   ti = ecore_time_get();
    EINA_INLIST_FOREACH(ep->esqls, e)
      {
-        if (time - e->query_start > cur) /* assume older query start time means faster return (obviously not always true) */
+        if (ti - e->query_start > cur) /* assume older query start ti means faster return (obviously not always true) */
           {
-             cur = time - e->query_start;
+             cur = ti - e->query_start;
              use = e;
           }
      }
