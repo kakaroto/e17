@@ -65,13 +65,13 @@ places_udisks_init(void)
                          _places_udisks_test, NULL);
 
    // ... a not running one    :/
-   // msg = dbus_message_new_method_call(E_UDISKS_BUS, E_UDISKS_PATH, E_UDISKS_BUS, "suuuuuup");
-   // e_dbus_method_call_send(_places_udisks_conn, msg, NULL,
-                           // (E_DBus_Callback_Func)_places_udisks_test,
-                           // NULL, -1, NULL);
-   // dbus_message_unref(msg);
+   msg = dbus_message_new_method_call(E_UDISKS_BUS, E_UDISKS_PATH, E_UDISKS_BUS, "suuuuuup");
+   e_dbus_method_call_send(_places_udisks_conn, msg, NULL,
+                           (E_DBus_Callback_Func)_places_udisks_test,
+                           NULL, -1, NULL);
+   dbus_message_unref(msg);
 
-   // ... and also poll.
+   // ... and poll.
    if (!_places_udisks_udisks_poll)
      _places_udisks_udisks_poll = e_dbus_signal_handler_add(_places_udisks_conn,
                         E_DBUS_FDO_BUS, E_DBUS_FDO_PATH,E_DBUS_FDO_INTERFACE,
