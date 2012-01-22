@@ -97,7 +97,7 @@ static void _azy_server_client_free(Azy_Server_Client *client);
 
 static Eina_Bool
 _azy_server_module_free(Azy_Server_Module *module,
-                        Eina_Bool          shutdown)
+                        Eina_Bool          run_shutdown)
 {
    if (!AZY_MAGIC_CHECK(module, AZY_MAGIC_SERVER_MODULE))
      {
@@ -105,7 +105,7 @@ _azy_server_module_free(Azy_Server_Module *module,
         return EINA_TRUE;
      }
 
-   if (shutdown)
+   if (run_shutdown)
      {
         if ((!module->post) && (module->state < AZY_SERVER_MODULE_STATE_POST) && module->def && module->def->post)
           {

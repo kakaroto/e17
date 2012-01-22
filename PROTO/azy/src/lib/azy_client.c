@@ -638,7 +638,7 @@ error:
  * This function is used to send arbitrary data to a connected server using @p client through HTTP PUT.
  * It relies on the user to set required headers by operating on the client's #Azy_Net object.
  * @param client The client (NOT NULL)
- * @param send The data+length to send (NOT NULL)
+ * @param send_data The data+length to send (NOT NULL)
  * @param data Optional data to pass to associated callbacks
  * @return The #Azy_Client_Call_Id of the transmission, to be used with azy_client_callback_set,
  * or 0 on failure
@@ -646,7 +646,7 @@ error:
  */
 Azy_Client_Call_Id
 azy_client_put(Azy_Client         *client,
-               const Azy_Net_Data *send,
+               const Azy_Net_Data *send_data,
                void               *data)
 {
    Eina_Strbuf *msg;
@@ -657,24 +657,24 @@ azy_client_put(Azy_Client         *client,
         AZY_MAGIC_FAIL(client, AZY_MAGIC_CLIENT);
         return 0;
      }
-   EINA_SAFETY_ON_NULL_RETURN_VAL(send, 0);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(send->data, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(send_data, 0);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(send_data->data, 0);
 
-   azy_net_message_length_set(client->net, send->size);
+   azy_net_message_length_set(client->net, send_data->size);
    azy_net_type_set(client->net, AZY_NET_TYPE_PUT);
    msg = azy_net_header_create(client->net);
    EINA_SAFETY_ON_NULL_GOTO(msg, error);
 #ifdef ISCOMFITOR
    DBG("\nSENDING >>>>>>>>>>>>>>>>>>>>>>>>\n%.*s%.*s\n>>>>>>>>>>>>>>>>>>>>>>>>",
-       eina_strbuf_length_get(msg), eina_strbuf_string_get(msg), (int)send->size, send->data);
+       eina_strbuf_length_get(msg), eina_strbuf_string_get(msg), (int)send_data->size, send_data->data);
 #endif
    EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, eina_strbuf_string_get(msg), eina_strbuf_length_get(msg)), error);
    INFO("Send [1/2] complete! %zi bytes queued for sending.", eina_strbuf_length_get(msg));
    eina_strbuf_free(msg);
    msg = NULL;
 
-   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, send->data, send->size), error);
-   INFO("Send [2/2] complete! %" PRIi64 " bytes queued for sending.", send->size);
+   EINA_SAFETY_ON_TRUE_GOTO(!ecore_con_server_send(client->net->conn, send_data->data, send_data->size), error);
+   INFO("Send [2/2] complete! %" PRIi64 " bytes queued for sending.", send_data->size);
    ecore_con_server_flush(client->net->conn);
 
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!(hd = calloc(1, sizeof(Azy_Client_Handler_Data))), 0);

@@ -358,12 +358,12 @@ azy_server_module_def_free(Azy_Server_Module_Def *def)
  * This function sets the callbacks called upon module load and module shutdown for @p def.
  * @param def The module definition (NOT NULL)
  * @param init The callback function to call upon module init
- * @param shutdown The callback function to call upon module shutdown
+ * @param sd The callback function to call upon module shutdown
  */
 void
 azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def        *def,
                                         Azy_Server_Module_Cb          init,
-                                        Azy_Server_Module_Shutdown_Cb shutdown)
+                                        Azy_Server_Module_Shutdown_Cb sd)
 {
    if (!AZY_MAGIC_CHECK(def, AZY_MAGIC_SERVER_MODULE_DEF))
      {
@@ -371,7 +371,7 @@ azy_server_module_def_init_shutdown_set(Azy_Server_Module_Def        *def,
         return;
      }
    def->init = init;
-   def->shutdown = shutdown;
+   def->shutdown = sd;
 }
 
 /**
