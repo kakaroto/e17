@@ -6,63 +6,63 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Places\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-09-11 13:56+0200\n"
-"PO-Revision-Date: 2010-09-11 14:00+0200\n"
+"POT-Creation-Date: 2012-01-22 16:20+0100\n"
+"PO-Revision-Date: 2012-01-22 16:23+0100\n"
 "Last-Translator: DaveMDS <dave@gurumeditation.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:51
+#: src/e_mod_config.c:52
 msgid "Places Settings"
 msgstr "Impostazioni di Places"
 
-#: src/e_mod_config.c:118
+#: src/e_mod_config.c:119
 msgid "General"
 msgstr "Impostazioni generali"
 
-#: src/e_mod_config.c:121
+#: src/e_mod_config.c:122
 msgid "Show in main menu"
 msgstr "Mostra nel menù principale"
 
-#: src/e_mod_config.c:125
+#: src/e_mod_config.c:126
 msgid "Mount volumes on insert"
 msgstr "Monta i dispositivi collegati"
 
-#: src/e_mod_config.c:129
+#: src/e_mod_config.c:130
 msgid "Open filemanager on insert"
 msgstr "Apri i dispositivi collegati"
 
-#: src/e_mod_config.c:133
+#: src/e_mod_config.c:134
 msgid "Use a custom file manager"
 msgstr "Usa filemanager personalizzato"
 
-#: src/e_mod_config.c:146
+#: src/e_mod_config.c:147
 msgid "Show in menu"
 msgstr "Mostra nel menù"
 
-#: src/e_mod_config.c:149 src/e_mod_places.c:379
+#: src/e_mod_config.c:150 src/e_mod_places.c:742
 msgid "Home"
 msgstr "Home"
 
-#: src/e_mod_config.c:152 src/e_mod_places.c:388
+#: src/e_mod_config.c:153 src/e_mod_places.c:751
 msgid "Desktop"
 msgstr "Desktop"
 
-#: src/e_mod_config.c:155 src/e_mod_places.c:398
+#: src/e_mod_config.c:156 src/e_mod_places.c:761
 msgid "Trash"
 msgstr "Cestino"
 
-#: src/e_mod_config.c:158 src/e_mod_places.c:208 src/e_mod_places.c:407
+#: src/e_mod_config.c:159 src/e_mod_places.c:592 src/e_mod_places.c:770
 msgid "Filesystem"
 msgstr "Filesystem"
 
-#: src/e_mod_config.c:161 src/e_mod_places.c:416
+#: src/e_mod_config.c:162 src/e_mod_places.c:779
 msgid "Temp"
 msgstr "Temporanei"
 
-#: src/e_mod_config.c:164
+#: src/e_mod_config.c:165
 msgid "Favorites"
 msgstr "Preferiti"
 
@@ -70,31 +70,47 @@ msgstr "Preferiti"
 msgid "Files"
 msgstr "File"
 
-#: src/e_mod_main.c:60 src/e_mod_places.c:479
+#: src/e_mod_main.c:60 src/e_mod_places.c:212 src/e_mod_places.c:836
 msgid "Places"
 msgstr "Risorse"
 
-#: src/e_mod_main.c:430
+#: src/e_mod_main.c:377
+msgid "Places Configuration Updated"
+msgstr "La configurazione di Places è aggiornata"
+
+#: src/e_mod_main.c:417
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: src/e_mod_places.c:213
+#: src/e_mod_places.c:573
+msgid "Warning"
+msgstr "Avviso"
+
+#: src/e_mod_places.c:574
+msgid ""
+"<b>Cannot run the Enlightenment FileManager.</b><br>Please choose a custom "
+"file manager in<br>the gadget configuration."
+msgstr ""
+"<b>Impossibile eseguire il file manager di Enlightenment.</b><br>Si prega di "
+"impostare un altro file manager<br>nella configurazione del gadget."
+
+#: src/e_mod_places.c:596
 msgid "No Name"
 msgstr "Senza nome"
 
-#: src/e_mod_places.c:669
+#: src/e_mod_places.c:603
 msgid "free of"
 msgstr "liberi di"
 
-#: src/e_mod_places.c:675
+#: src/e_mod_places.c:609
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s non è montato"
 
-#: src/e_mod_places.c:692
+#: src/e_mod_places.c:636
 msgid "unmount"
 msgstr "smonta"
 
-#: src/e_mod_places.c:698
+#: src/e_mod_places.c:641
 msgid "eject"
 msgstr "espelli"
