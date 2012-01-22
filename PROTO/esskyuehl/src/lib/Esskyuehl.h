@@ -19,7 +19,6 @@
 #define ESQL_H
 
 #include <Eina.h>
-#include <time.h>
 
 #ifdef EAPI
 # undef EAPI
