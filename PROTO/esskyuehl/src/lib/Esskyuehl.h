@@ -118,7 +118,6 @@ typedef enum
 typedef enum
 {
    ESQL_CELL_TYPE_UNKNOWN,
-   ESQL_CELL_TYPE_TIME,
    ESQL_CELL_TYPE_STRING,
    ESQL_CELL_TYPE_BLOB,
    ESQL_CELL_TYPE_TINYINT,
@@ -154,7 +153,6 @@ typedef struct Esql_Cell
       double               d; /**< ESQL_CELL_TYPE_DOUBLE */
       const char          *string; /**< ESQL_CELL_TYPE_STRING */
       const unsigned char *blob; /**< ESQL_CELL_TYPE_BLOB */
-      struct timeval       tv; /**< ESQL_CELL_TYPE_TIME */
       /** ESQL_CELL_TYPE_UNKNOWN == NULL */
    } value;
    size_t len; /**< only valid with ESQL_CELL_TYPE_BLOB and ESQL_CELL_TYPE_STRING */
@@ -211,7 +209,6 @@ EAPI unsigned char  *esql_res_to_blob(Esql_Res *res);
 EAPI long long int   esql_res_to_lli(Esql_Res *res);
 EAPI double          esql_res_to_double(Esql_Res *res);
 EAPI unsigned long int esql_res_to_ulong(Esql_Res *res);
-EAPI struct timeval *esql_res_to_timeval(Esql_Res *res);
 
 /* row */
 EAPI Eina_Inlist    *esql_row_cells_get(Esql_Row *r);

@@ -240,15 +240,9 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
              cell->type = ESQL_CELL_TYPE_ULONG;
              break;
            case RELTIMEOID:
-             {
-                char *dot;
-
-                cell->value.tv.tv_sec = strtol(str, &dot, 10);
-                if (dot)
-                  cell->value.tv.tv_usec = ((double)(1000000)) * strtod(dot, NULL);
-                cell->type = ESQL_CELL_TYPE_TIME;
-                break;
-             }
+             cell->value.d = strtod(str, NULL);
+             cell->type = ESQL_CELL_TYPE_DOUBLE;
+             break;
            case ABSTIMEOID:
              {
                 time_t t;

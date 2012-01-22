@@ -146,26 +146,4 @@ esql_res_to_ulong(Esql_Res *res)
    return cell->value.u;
 }
 
-/**
- * @brief Convert result to a timeval struct
- * @param res Result
- * @return Pointer to allocated struct timeval (must be freed)
- */
-struct timeval *
-esql_res_to_timeval(Esql_Res *res)
-{
-   Esql_Row *row;
-   Esql_Cell *cell;
-   struct timeval *ret;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, NULL);
-   if (!res->row_count) return NULL;
-   row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
-   cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL((cell->type != ESQL_CELL_TYPE_TIME) &&
-     (cell->type != ESQL_CELL_TYPE_UNKNOWN), NULL);
-   ret = calloc(1, sizeof(struct timeval));
-   memcpy(ret, &cell->value.tv, sizeof(struct timeval));
-   return ret;
-}
 /** @} */

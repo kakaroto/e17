@@ -214,8 +214,8 @@ esql_mysac_row_init(Esql_Row *r)
         switch (res->cols[i].type)
           {
            case MYSQL_TYPE_TIME:
-             cell->type = ESQL_CELL_TYPE_TIME;
-             memcpy(&cell->value.tv, &row[i].tv, sizeof(struct timeval));
+             cell->type = ESQL_CELL_TYPE_DOUBLE;
+             cell->value.d = (double)row[i].tv.tv_sec + (double)((double)row[i].tv.tv_usec / (double) 1000000);
              break;
 
            case MYSQL_TYPE_YEAR:
