@@ -141,6 +141,7 @@ esql_call_complete(Esql *e)
              {
                 res = esql_res_calloc(1);
                 EINA_SAFETY_ON_NULL_GOTO(res, out);
+                res->e = e;
                 e->backend.res(res);
              }
            ev->res = res;
