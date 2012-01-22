@@ -127,26 +127,23 @@ esql_res_to_double(Esql_Res *res)
 }
 
 /**
- * @brief Convert result to a tm struct
+ * @brief Convert result to an unsigned long int
  * @param res Result
- * @return Pointer to allocated struct tm (must be freed)
+ * @return Unsigned long int
  */
-struct tm *
-esql_res_to_tm(Esql_Res *res)
+unsigned long int
+esql_res_to_ulong(Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
-   struct tm *ret;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, NULL);
-   if (!res->row_count) return NULL;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, 0);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, 0);
+   if (!res->row_count) return 0;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
    cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL((cell->type != ESQL_CELL_TYPE_TIMESTAMP) &&
-     (cell->type != ESQL_CELL_TYPE_UNKNOWN), NULL);
-   ret = calloc(1, sizeof(struct tm));
-   memcpy(ret, &cell->value.tm, sizeof(struct tm));
-   return ret;
+   EINA_SAFETY_ON_TRUE_RETURN_VAL((cell->type != ESQL_CELL_TYPE_ULONG) &&
+     (cell->type != ESQL_CELL_TYPE_UNKNOWN), 0);
+   return cell->value.u;
 }
 
 /**

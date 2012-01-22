@@ -119,13 +119,13 @@ typedef enum
 {
    ESQL_CELL_TYPE_UNKNOWN,
    ESQL_CELL_TYPE_TIME,
-   ESQL_CELL_TYPE_TIMESTAMP,
    ESQL_CELL_TYPE_STRING,
    ESQL_CELL_TYPE_BLOB,
    ESQL_CELL_TYPE_TINYINT,
    ESQL_CELL_TYPE_SHORT,
    ESQL_CELL_TYPE_LONG,
    ESQL_CELL_TYPE_LONGLONG,
+   ESQL_CELL_TYPE_ULONG,
    ESQL_CELL_TYPE_FLOAT,
    ESQL_CELL_TYPE_DOUBLE
 } Esql_Cell_Type;
@@ -149,11 +149,11 @@ typedef struct Esql_Cell
       short                s; /**< ESQL_CELL_TYPE_SHORT */
       int                  i; /**< ESQL_CELL_TYPE_LONG */
       long long int        l; /**< ESQL_CELL_TYPE_LONGLONG */
+      unsigned long int    u; /**< ESQL_CELL_TYPE_ULONG */
       float                f; /**< ESQL_CELL_TYPE_FLOAT */
       double               d; /**< ESQL_CELL_TYPE_DOUBLE */
       const char          *string; /**< ESQL_CELL_TYPE_STRING */
       const unsigned char *blob; /**< ESQL_CELL_TYPE_BLOB */
-      struct tm            tm; /**< ESQL_CELL_TYPE_TIMESTAMP */
       struct timeval       tv; /**< ESQL_CELL_TYPE_TIME */
       /** ESQL_CELL_TYPE_UNKNOWN == NULL */
    } value;
@@ -210,7 +210,7 @@ EAPI const char     *esql_res_to_string(Esql_Res *res);
 EAPI unsigned char  *esql_res_to_blob(Esql_Res *res);
 EAPI long long int   esql_res_to_lli(Esql_Res *res);
 EAPI double          esql_res_to_double(Esql_Res *res);
-EAPI struct tm      *esql_res_to_tm(Esql_Res *res);
+EAPI unsigned long int esql_res_to_ulong(Esql_Res *res);
 EAPI struct timeval *esql_res_to_timeval(Esql_Res *res);
 EAPI long long int   esql_cell_to_lli(Esql_Cell *cell);
 EAPI double          esql_cell_to_double(Esql_Cell *cell);

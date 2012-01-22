@@ -222,8 +222,8 @@ esql_mysac_row_init(Esql_Row *r)
            case MYSQL_TYPE_TIMESTAMP:
            case MYSQL_TYPE_DATETIME:
            case MYSQL_TYPE_DATE:
-             cell->type = ESQL_CELL_TYPE_TIMESTAMP;
-             memcpy(&cell->value.tm, row[i].tm, sizeof(struct tm));
+             cell->type = ESQL_CELL_TYPE_ULONG;
+             cell->value.u = mktime(row[i].tm);
              break;
 
            case MYSQL_TYPE_STRING:

@@ -222,6 +222,7 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
    for (i = 0; i < cols; i++)
      {
         const char *str;
+        struct tm tm;
 
         cell = esql_cell_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(cell);
@@ -234,7 +235,9 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
         switch (PQftype(pres, i))
           {
            case TIMESTAMPOID:
-             strptime(str, "%Y-%m-%d %H:%M:%S", &cell->value.tm);
+             strptime(str, "%Y-%m-%d %H:%M:%S", &tm);
+             cell->value.u = mktime(&tm);
+             cell->type = ESQL_CELL_TYPE_ULONG;
              break;
            case RELTIMEOID:
              {
@@ -243,16 +246,19 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
                 cell->value.tv.tv_sec = strtol(str, &dot, 10);
                 if (dot)
                   cell->value.tv.tv_usec = ((double)(1000000)) * strtod(dot, NULL);
+                cell->type = ESQL_CELL_TYPE_TIME;
+                break;
              }
            case ABSTIMEOID:
              {
                 time_t t;
 
-                cell->type = ESQL_CELL_TYPE_TIMESTAMP;
+                cell->type = ESQL_CELL_TYPE_ULONG;
                 t = strtoumax(str, NULL, 10);
-                localtime_r(&t, &cell->value.tm);
+                localtime_r(&t, &tm);
+                cell->value.u = mktime(&tm);
+                break;
              }
-             break;
 
            case BYTEAOID:
            case NAMEOID:
