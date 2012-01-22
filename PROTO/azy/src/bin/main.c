@@ -1021,7 +1021,7 @@ static void
 gen_errors_header(Eina_Bool azy_types)
 {
    Eina_List *j;
-   Azy_Error_Code *e;
+   Azy_Error_Code *err;
 
    if (!azy->errors) return;
 
@@ -1031,10 +1031,10 @@ gen_errors_header(Eina_Bool azy_types)
         return;
      }
 
-   EINA_LIST_FOREACH(azy->errors, j, e)
+   EINA_LIST_FOREACH(azy->errors, j, err)
      {
-        EL(0, "extern Eina_Error %s;", e->cname);
-        EL(0, "extern int %s_code;", e->cname);
+        EL(0, "extern Eina_Error %s;", err->cname);
+        EL(0, "extern int %s_code;", err->cname);
      }
    NL;
 
@@ -1046,7 +1046,7 @@ static void
 gen_errors_impl(Eina_Bool azy_types)
 {
    Eina_List *j;
-   Azy_Error_Code *e;
+   Azy_Error_Code *err;
 
    if (!azy->errors) return;
 
@@ -1057,11 +1057,11 @@ gen_errors_impl(Eina_Bool azy_types)
         EL(1, "EINA_SAFETY_ON_NULL_RETURN_VAL(content, EINA_FALSE);");
         EL(1, "EINA_SAFETY_ON_TRUE_RETURN_VAL(!code, EINA_FALSE);");
         NL;
-        EINA_LIST_FOREACH(azy->errors, j, e)
+        EINA_LIST_FOREACH(azy->errors, j, err)
           {
-             EL(1, "if (code == %s)", e->cname);
+             EL(1, "if (code == %s)", err->cname);
              EL(2, "{");
-             EL(3, "azy_content_error_faultcode_set(content, code, %s_code);", e->cname);
+             EL(3, "azy_content_error_faultcode_set(content, code, %s_code);", err->cname);
              EL(3, "return EINA_TRUE;");
              EL(2, "}");
           }
@@ -1072,18 +1072,18 @@ gen_errors_impl(Eina_Bool azy_types)
         return;
      }
 
-   EINA_LIST_FOREACH(azy->errors, j, e)
+   EINA_LIST_FOREACH(azy->errors, j, err)
      {
-        EL(0, "Eina_Error %s;", e->cname);
-        EL(0, "int %s_code = %i;", e->cname, e->code);
-        EL(0, "const char %s_str[] = \"%s\";", e->cname, e->msg);
+        EL(0, "Eina_Error %s;", err->cname);
+        EL(0, "int %s_code = %i;", err->cname, err->code);
+        EL(0, "const char %s_str[] = \"%s\";", err->cname, err->msg);
         NL;
      }
 
    EL(0, "void azy_err_init(void)");
    EL(0, "{");
-   EINA_LIST_FOREACH(azy->errors, j, e)
-     EL(1, "%s = eina_error_msg_static_register(%s_str);", e->cname, e->cname);
+   EINA_LIST_FOREACH(azy->errors, j, err)
+     EL(1, "%s = eina_error_msg_static_register(%s_str);", err->cname, err->cname);
    EL(0, "}");
    NL;
 
@@ -1093,10 +1093,10 @@ gen_errors_impl(Eina_Bool azy_types)
    EL(0, "{");
    EL(1, "EINA_SAFETY_ON_TRUE_RETURN_VAL(!code, EINA_FALSE);");
    NL;
-   EINA_LIST_FOREACH(azy->errors, j, e)
+   EINA_LIST_FOREACH(azy->errors, j, err)
      {
-        EL(1, "if (code == %s)", e->cname);
-        EL(2, "return %s_code;", e->cname);
+        EL(1, "if (code == %s)", err->cname);
+        EL(2, "return %s_code;", err->cname);
      }
    EL(1, "fprintf(stderr, \"Error code %%u not found!\\n\", code);");
    EL(1, "return -1;");
@@ -1174,7 +1174,7 @@ gen_common_headers(void)
 }
 
 static void
-gen_common_impl(Azy_Server_Module *s)
+gen_common_impl(void)
 {
    Eina_List *j;
    Azy_Typedef *t;
@@ -1997,7 +1997,7 @@ azy_write(void)
      gen_common_headers();
 
    if (common_impl)
-     gen_common_impl(NULL);
+     gen_common_impl();
 
    EINA_LIST_FOREACH(azy->modules, l, s)
      {
@@ -2012,9 +2012,6 @@ azy_write(void)
 
         if (server_impl)
           gen_server_impl(s);
-
-        if (common_impl)
-          gen_common_impl(s);
      }
 #if 0
    if (azy_gen)
