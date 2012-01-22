@@ -1,7 +1,11 @@
-// #ifdef HAVE_UDISKS
+
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#ifdef HAVE_UDISKS
+
 #include <e.h>
 #include "e_mod_places.h"
 #include <E_DBus.h>
@@ -39,7 +43,7 @@ places_udisks_init(void)
 {
    DBusMessage *msg;
 
-   printf("PLACES udisks: init()\n");
+   printf("PLACES: udisks: init()\n");
 
    if (!e_dbus_init())
      {
@@ -464,4 +468,4 @@ _places_udisks_eject_func(Volume *vol, Eina_List *opts)
    e_udisks_volume_eject(_places_udisks_conn, vol->id, NULL);
 }
 
-// #endif
+#endif

@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(places, 0.1.0, dave@gurumeditation.it)
+AC_INIT(places, 0.2.0, dave@gurumeditation.it)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
@@ -37,6 +37,7 @@ AM_CONDITIONAL([HAVE_PO], [false])
 ])
 AC_SUBST(LTLIBINTL)
 
+# check for Enlightenment
 PKG_CHECK_MODULES(E, [enlightenment])
 release=$(pkg-config --variable=release enlightenment)
 MODULE_ARCH="$host_os-$host_cpu-$release"
@@ -59,15 +60,28 @@ AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
 
-PKG_CHECK_MODULES(E_DBUS, edbus) 
-PKG_CHECK_MODULES(E_UKIT, eukit)
+# check for udisks
+PKG_CHECK_MODULES([E_UDISKS], [dbus-1 edbus eukit >= 1.0.999],
+                  [have_udisks="yes"], [have_udisks="no"])
+want_udisks=yes
+AC_ARG_ENABLE([udisks],
+   AS_HELP_STRING([--enable-udisks],[enable udisks support @<:@default=enabled@:>@]), 
+   [want_udisks=$enableval])
+if test "x$want_udisks" = "xno";then
+   have_udisks=no
+fi
+
+AM_CONDITIONAL([HAVE_UDISKS], [test "x$have_udisks" = "xyes"])
+test "x$have_udisks" = "xyes" && AC_DEFINE_UNQUOTED([HAVE_UDISKS], [1], [enable Udisks support])
 
 
+# homedir install
 datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
 AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
 )
+
 
 AC_OUTPUT([
 Makefile
@@ -77,3 +91,24 @@ e_modules-places.spec
 $po_makefile_in
 ], [
 ])
+
+
+# report
+txt_strip() {
+  echo "[$]@" | sed -e 's/^[[ \t]]*\([[^ \t]]*\)[[ \t]]*$/\1/g'
+}
+
+echo
+cat << SUMMARY_EOF
+Summary:
+ * project.........: $PACKAGE $VERSION
+ * prefix..........: $(txt_strip $prefix)
+ * CFLAGS..........: $(txt_strip $CFLAGS)
+ * LDFLAGS.........: $(txt_strip $LDFLAGS)
+SUMMARY_EOF
+echo
+cat << DEVICE_EOF
+Device Backends:
+ * build udisks....: $have_udisks
+DEVICE_EOF
+echo

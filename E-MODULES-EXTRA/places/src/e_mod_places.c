@@ -5,9 +5,9 @@
 #include <sys/statvfs.h>
 #include "e_mod_main.h"
 #include "e_mod_places.h"
-// #ifdef HAVE_UDISKS
+#ifdef HAVE_UDISKS
 # include "e_mod_udisks.h"
-// #endif
+#endif
 
 /* Local Function Prototypes */
 static Eina_Bool _places_poller(void *data);
@@ -35,9 +35,9 @@ places_init(void)
 
    printf("PLACES: Init\n");
 
-// #ifdef HAVE_UDISKS
+#ifdef HAVE_UDISKS
    places_udisks_init();
-// #endif
+#endif
 
    snprintf(theme_file, PATH_MAX, "%s/e-module-places.edj",
             places_conf->module->dir);
@@ -49,9 +49,9 @@ places_shutdown(void)
 {
    if (poller) ecore_timer_del(poller);
 
-// #ifdef HAVE_UDISKS
+#ifdef HAVE_UDISKS
    places_udisks_shutdown();
-// #endif
+#endif
 
    while (volumes)
      places_volume_del((Volume*)volumes->data);
