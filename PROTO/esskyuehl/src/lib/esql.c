@@ -89,6 +89,7 @@ esql_init(void)
         goto eina_fail;
      }
    if (!ecore_init()) goto fail;
+   if (!esql_mempool_init()) goto memfail;
    mods = eina_module_list_get(NULL, ESQL_MODULE_PATH, EINA_FALSE, (Eina_Module_Cb)module_check, NULL);
    if (!mods) goto module_fail;
    eina_array_free(mods);
@@ -101,6 +102,8 @@ esql_init(void)
    return esql_init_count_;
 
 module_fail:
+   esql_mempool_shutdown();
+memfail:
    ecore_shutdown();
 fail:
    eina_log_domain_unregister(esql_log_dom);
@@ -138,6 +141,7 @@ esql_shutdown(void)
    esql_modules = NULL;
    eina_log_domain_unregister(esql_log_dom);
    ecore_shutdown();
+   esql_mempool_shutdown();
    eina_shutdown();
    esql_log_dom = -1;
    return esql_init_count_;

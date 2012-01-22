@@ -245,6 +245,8 @@ void          esql_reconnect_handler(Esql *e);
 void          esql_event_error(Esql *e);
 void          esql_call_complete(Esql *e);
 
+Eina_Bool esql_mempool_init(void);
+void esql_mempool_shutdown(void);
 #define ESQL_ALLOC_FREE_HEADER(TYPE, Type) \
   TYPE *Type##_calloc(unsigned int);		      \
   void Type##_mp_free(TYPE *e);
