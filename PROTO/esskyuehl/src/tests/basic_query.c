@@ -39,12 +39,6 @@ print_results(Esql_Res *res)
              printf("Column name: %s --- Type: ", c->colname);
              switch (c->type)
                {
-                case ESQL_CELL_TYPE_TIMESTAMP:
-                   printf("ESQL_CELL_TYPE_TIMESTAMP --- Value: timestamp\n");
-                   break;
-                case ESQL_CELL_TYPE_TIME:
-                   printf("ESQL_CELL_TYPE_TIME --- Value: timeval\n");
-                   break;
                 case ESQL_CELL_TYPE_FLOAT:
                    printf("ESQL_CELL_TYPE_FLOAT --- Value: %f\n", c->value.f);
                    break;
@@ -56,6 +50,9 @@ print_results(Esql_Res *res)
                    break;
                 case ESQL_CELL_TYPE_SHORT:
                    printf("ESQL_CELL_TYPE_SHORT --- Value: %i\n", c->value.s);
+                   break;
+                case ESQL_CELL_TYPE_ULONG:
+                   printf("ESQL_CELL_TYPE_LONG --- Value: %lu\n", c->value.u);
                    break;
                 case ESQL_CELL_TYPE_LONG:
                    printf("ESQL_CELL_TYPE_LONG --- Value: %i\n", c->value.i);
