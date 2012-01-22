@@ -9,9 +9,6 @@
 #include "config.h"
 #endif
 
-#define EINA_INLINE_VALUE_X_
-#define EINA_VALUE_H_
-
 #include <time.h>
 #include <Ecore.h>
 #include <Ecore_Con.h>
