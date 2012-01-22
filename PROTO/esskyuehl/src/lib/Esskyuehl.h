@@ -212,11 +212,62 @@ EAPI long long int   esql_res_to_lli(Esql_Res *res);
 EAPI double          esql_res_to_double(Esql_Res *res);
 EAPI unsigned long int esql_res_to_ulong(Esql_Res *res);
 EAPI struct timeval *esql_res_to_timeval(Esql_Res *res);
-EAPI long long int   esql_cell_to_lli(Esql_Cell *cell);
-EAPI double          esql_cell_to_double(Esql_Cell *cell);
 
 /* row */
 EAPI Eina_Inlist    *esql_row_cells_get(Esql_Row *r);
 EAPI int             esql_row_cell_count(Esql_Row *r);
 EAPI Esql_Res       *esql_row_res_get(Esql_Row *r);
+
+/** @addtogroup Esql_Convert
+ * @{
+ */
+
+/**
+ * @brief Convert cell to a long long int
+ * @param cell Cell
+ * @return The result
+ */
+static inline long long int
+esql_cell_to_lli(Esql_Cell *cell)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, 0);
+   switch (cell->type)
+     {
+      case ESQL_CELL_TYPE_TINYINT:
+        return cell->value.c;
+      case ESQL_CELL_TYPE_SHORT:
+        return cell->value.s;
+      case ESQL_CELL_TYPE_LONG:
+        return cell->value.i;
+      case ESQL_CELL_TYPE_LONGLONG:
+        return cell->value.l;
+      case ESQL_CELL_TYPE_ULONG:
+        return (long long int)cell->value.u;
+      default:
+        return 0;
+     }
+}
+
+/**
+ * @brief Convert cell to a double
+ * @param cell Cell
+ * @return The result
+ */
+static inline double
+esql_cell_to_double(Esql_Cell *cell)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, 0.0);
+   switch (cell->type)
+     {
+      case ESQL_CELL_TYPE_FLOAT:
+        return cell->value.f;
+        break;
+      case ESQL_CELL_TYPE_DOUBLE:
+        return cell->value.d;
+        break;
+      default:
+        return 0.0;
+     }
+}
+/** @} */
 #endif
