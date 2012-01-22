@@ -238,7 +238,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
    Eina_List *l;
    int count = 1;
 
-   EINA_LIST_FOREACH(volumes, l, v)
+   EINA_LIST_FOREACH(places_volume_list_get(), l, v)
       if (v->valid) count++;
 
    inst = gcc->data;
@@ -251,6 +251,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_TR:
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
+        // TODO get sizes from the theme
         e_gadcon_client_aspect_set(gcc, 100 * count, 60);
         e_gadcon_client_min_size_set(gcc, 100 * count, 60);
         e_box_orientation_set(inst->o_box, 1);
@@ -263,6 +264,7 @@ _gc_orient(E_Gadcon_Client *gcc, E_Gadcon_Orient orient)
       case E_GADCON_ORIENT_CORNER_RT:
       case E_GADCON_ORIENT_CORNER_LB:
       case E_GADCON_ORIENT_CORNER_RB:
+        // TODO get sizes from the theme
         e_gadcon_client_aspect_set(gcc, 200, 50 * count);
         e_gadcon_client_min_size_set(gcc, 200, 50 * count);
         e_box_orientation_set(inst->o_box, 0);
@@ -318,9 +320,6 @@ _gc_icon(E_Gadcon_Client_Class *client_class, Evas *evas)
 static void
 _places_conf_new(void)
 {
-   Config_Item *ci = NULL;
-   char buf[128];
-
    places_conf = E_NEW(Config, 1);
    places_conf->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
@@ -375,7 +374,7 @@ _places_conf_free(void)
 static Eina_Bool
 _places_conf_timer(void *data)
 {
-   e_util_dialog_show("Places Configuration Updated %s", (char*)data);
+   e_util_dialog_internal(D_("Places Configuration Updated"), data);
    return EINA_FALSE;
 }
 

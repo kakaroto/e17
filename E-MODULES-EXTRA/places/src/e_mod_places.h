@@ -9,16 +9,19 @@ typedef enum
    MOUNT_OP_EJECT
 } Mount_Op;
 
-typedef struct _Volume
+typedef struct _Volume Volume;
+struct _Volume
 {
-   const char *udi;
+   const char *id;
+
    const char *label;
-   const char *uuid;
+   const char *icon;
    const char *device;
-   unsigned char mounted;
    const char *mount_point;
    const char *fstype;
    unsigned long long size;
+   unsigned long long free_space;
+   Eina_Bool mounted;
 
    const char *bus;
    const char *drive_type;
@@ -30,21 +33,32 @@ typedef struct _Volume
    Eina_Bool unlocked;
    Eina_Bool encrypted;
 
-   E_DBus_Signal_Handler *sh_prop;
    unsigned char valid;
    unsigned char to_mount;
    unsigned char force_open;
-   Evas_Object *obj;
-   const char *icon;
-   Mount_Op op;
+   Eina_List *objs;
 
-}Volume;
+   void (*mount_func)(Volume *vol, Eina_List *opts);
+   void (*unmount_func)(Volume *vol, Eina_List *opts);
+   void (*eject_func)(Volume *vol, Eina_List *opts);
+};
 
 void places_init(void);
 void places_shutdown(void);
+
+Volume *places_volume_add(const char *id, int dont_auto_mount, int dont_auto_open);
+void places_volume_del(Volume *v);
+void places_volume_update(Volume *vol);
+Volume *places_volume_by_id_get(const char *id);
+Eina_List *places_volume_list_get(void);
+void places_volume_mount(Volume *vol);
+void places_volume_unmount(Volume *vol);
+void places_volume_eject(Volume *vol);
+
 void places_update_all_gadgets(void);
 void places_fill_box(Evas_Object *box);
 void places_empty_box(Evas_Object *box);
+void places_print_volume(Volume *v);
 
 void places_generate_menu(void *data, E_Menu *em);
 void places_augmentation(void *data, E_Menu *em);

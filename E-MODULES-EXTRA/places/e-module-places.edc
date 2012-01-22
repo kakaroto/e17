@@ -499,6 +499,12 @@ collections
             action: STATE_SET "hidden" 0.0;
             target: "gauge_bg";
          }
+         program { name: "show_gauge";
+            signal: "gauge,show";
+            source: "places";
+            action: STATE_SET "default" 0.0;
+            target: "gauge_bg";
+         }
          program { name: "set_eject_hidden";
             signal: "icon,eject,hide";
             source: "places";
