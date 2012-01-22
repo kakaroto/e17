@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Sun Jan 22 12:56:03 2012.
+# Generated for linux at Sun Jan 22 21:08:58 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -228,6 +228,7 @@ $(BUILDROOT)/eet/stamps/configure: $(BUILDROOT)/eet/stamps/autogen $(BUILDROOT)/
 	cd $(BUILDROOT)/eet/compile && \
 	$(SRCROOT)/eet/configure --prefix=$(INSTALLROOT) --enable-doc \
 		--enable-tests \
+		--enable-coverage \
 		--enable-gnutls \
 		--disable-openssl \
 		--enable-cipher \
@@ -283,17 +284,17 @@ eet-install: $(BUILDROOT)/eet/stamps/compile
 
 $(BUILDROOT)/eet/stamps/test: $(BUILDROOT)/eet/stamps/compile eet-test
 eet-test: $(BUILDROOT)/eet/stamps/compile
-	$(V)echo "Testing (make check) eet..."
+	$(V)echo "Testing (make coverage) eet..."
 	$(V)rm -f $(BUILDROOT)/eet/stamps/test
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
-	make $(MAKEOPTS) check -C $(BUILDROOT)/eet/compile
+	make $(MAKEOPTS) coverage -C $(BUILDROOT)/eet/compile
 	$(V)mkdir -p $(BUILDROOT)/eet/stamps
 	touch $(BUILDROOT)/eet/stamps/test
-	$(V)echo "Success testing (make check) eet."
+	$(V)echo "Success testing (make coverage) eet."
 
 $(BUILDROOT)/eet/stamps/doc: $(BUILDROOT)/eet/stamps/compile eet-doc
 eet-doc: $(BUILDROOT)/eet/stamps/compile
@@ -359,6 +360,7 @@ $(BUILDROOT)/evas/stamps/configure: $(BUILDROOT)/evas/stamps/autogen $(BUILDROOT
 	cd $(BUILDROOT)/evas/compile && \
 	$(SRCROOT)/evas/configure --prefix=$(INSTALLROOT) --enable-doc \
 		--enable-tests \
+		--enable-coverage \
 		--enable-buffer \
 		--enable-convert-yuv \
 		--enable-async-events \
@@ -415,17 +417,17 @@ evas-install: $(BUILDROOT)/evas/stamps/compile
 
 $(BUILDROOT)/evas/stamps/test: $(BUILDROOT)/evas/stamps/compile evas-test
 evas-test: $(BUILDROOT)/evas/stamps/compile
-	$(V)echo "Testing (make check) evas..."
+	$(V)echo "Testing (make coverage) evas..."
 	$(V)rm -f $(BUILDROOT)/evas/stamps/test
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
-	make $(MAKEOPTS) check -C $(BUILDROOT)/evas/compile
+	make $(MAKEOPTS) coverage -C $(BUILDROOT)/evas/compile
 	$(V)mkdir -p $(BUILDROOT)/evas/stamps
 	touch $(BUILDROOT)/evas/stamps/test
-	$(V)echo "Success testing (make check) evas."
+	$(V)echo "Success testing (make coverage) evas."
 
 $(BUILDROOT)/evas/stamps/doc: $(BUILDROOT)/evas/stamps/compile evas-doc
 evas-doc: $(BUILDROOT)/evas/stamps/compile

@@ -83,7 +83,7 @@ Package(
 
 Package(
     name="evas",
-    test_target="check",
+    test_target="coverage",
     doc_target="doc",
     dependencies={
         "common": ["eina", "eet"],
@@ -93,7 +93,7 @@ Package(
         "common": [
             "--enable-doc",
             "--enable-tests",
-            #"--enable-coverage",
+            "--enable-coverage",
             "--enable-buffer",
             "--enable-convert-yuv",
             "--enable-async-events",
