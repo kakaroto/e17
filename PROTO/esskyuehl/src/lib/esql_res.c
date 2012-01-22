@@ -63,7 +63,7 @@ esql_res_free(void *data __UNUSED__,
        esql_row_free(r);
    res->e->backend.res_free(res);
    free(res->query);
-   free(res);
+   esql_res_mp_free(res);
 }
 
 void
@@ -75,9 +75,9 @@ esql_row_free(Esql_Row *r)
    if ((!r) || (!r->cells)) return;
 
    EINA_INLIST_FOREACH_SAFE(r->cells, l, cell)
-     free(cell);
+     esql_cell_mp_free(cell);
 
-   free(r);
+   esql_row_mp_free(r);
 }
 
 /**

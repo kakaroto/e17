@@ -152,7 +152,7 @@ esql_mysac_res(Esql_Res *res)
    res->row_count = mysac_num_rows(re);
    do
      {
-        r = calloc(1, sizeof(Esql_Row));
+        r = esql_row_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(r);
         r->num_cells = res->num_cols;
         r->res = res;
@@ -207,7 +207,7 @@ esql_mysac_row_init(Esql_Row *r)
    cols = res->nb_cols;
    for (i = 0; i < cols; i++, l = l->next, rows = mysac_container_of(l, MYSAC_ROWS, link))
      {
-        cell = calloc(1, sizeof(Esql_Cell));
+        cell = esql_cell_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(cell);
         cell->row = r;
         cell->colname = res->cols[i].name;

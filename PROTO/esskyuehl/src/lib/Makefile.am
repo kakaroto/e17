@@ -17,6 +17,7 @@ libesskyuehl_la_LDFLAGS = -version-info @version_info@ @release_info@ -no-undefi
 libesskyuehl_la_SOURCES = \
 esql_private.h \
 esql.c \
+esql_alloc.c \
 esql_connect.c \
 esql_convert.c \
 esql_events.c \

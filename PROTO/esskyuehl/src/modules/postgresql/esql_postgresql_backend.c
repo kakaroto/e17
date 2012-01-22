@@ -190,7 +190,7 @@ esql_postgresql_res(Esql_Res *res)
    res->num_cols = PQnfields(pres);
    for (i = 0; i < res->row_count; i++)
      {
-        r = calloc(1, sizeof(Esql_Row));
+        r = esql_row_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(r);
         r->num_cells = res->num_cols;
         r->res = res;
@@ -223,7 +223,7 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
      {
         const char *str;
 
-        cell = calloc(1, sizeof(Esql_Cell));
+        cell = esql_cell_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(cell);
         cell->row = r;
         cell->colname = PQfname(pres, i);

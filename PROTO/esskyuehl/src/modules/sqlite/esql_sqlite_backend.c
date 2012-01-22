@@ -108,7 +108,7 @@ esql_sqlite_query_cb(Esql *e, Ecore_Thread *et)
            case SQLITE_ROW:
              if (!e->res)
                {
-                  e->res = calloc(1, sizeof(Esql_Res));
+                  e->res = esql_res_calloc(1);
                   if (!e->res) goto out;
                   e->res->num_cols = sqlite3_data_count(e->backend.stmt);
                   e->res->affected = sqlite3_changes(e->backend.db);
@@ -173,7 +173,7 @@ esql_sqlite_row_add(Esql_Res *res)
 
    cols = res->num_cols;
 
-   r = calloc(1, sizeof(Esql_Row));
+   r = esql_row_calloc(1);
    EINA_SAFETY_ON_NULL_RETURN(r);
    r->num_cells = res->num_cols;
    r->res = res;
@@ -182,7 +182,7 @@ esql_sqlite_row_add(Esql_Res *res)
 
    for (i = 0; i < cols; i++)
      {
-        cell = calloc(1, sizeof(Esql_Cell));
+        cell = esql_cell_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(cell);
         cell->row = r;
         cell->colname = sqlite3_column_name(res->e->backend.stmt, i);

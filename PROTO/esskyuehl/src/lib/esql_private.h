@@ -244,4 +244,12 @@ void          esql_pool_free(Esql_Pool *ep);
 void          esql_reconnect_handler(Esql *e);
 void          esql_event_error(Esql *e);
 void          esql_call_complete(Esql *e);
+
+#define ESQL_ALLOC_FREE_HEADER(TYPE, Type) \
+  TYPE *Type##_calloc(unsigned int);		      \
+  void Type##_mp_free(TYPE *e);
+
+ESQL_ALLOC_FREE_HEADER(Esql_Res, esql_res);
+ESQL_ALLOC_FREE_HEADER(Esql_Row, esql_row);
+ESQL_ALLOC_FREE_HEADER(Esql_Cell, esql_cell);
 #endif
