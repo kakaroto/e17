@@ -131,8 +131,10 @@ typedef enum
 /**
  * @typedef Esql_Cell
  * Low-level object for managing cells in an #Esql_Row
- * @note No value in this object is allocated, and all members belong
- * to other objects.
+ * @note No value in this object is allocated, all members belong
+ * to other objects, and all values are freed immediately following the
+ * event/callback which returned the object. This means that the user
+ * MUST manually copy any values which are to be saved.
  */
 typedef struct Esql_Cell
 {
