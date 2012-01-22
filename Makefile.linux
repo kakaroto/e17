@@ -1,5 +1,5 @@
 # -*- mode: makefile -*-
-# Generated for linux at Thu Jan 19 13:32:52 2012.
+# Generated for linux at Sun Jan 22 12:56:03 2012.
 # DO NOT EDIT! IT WILL BE OVERWRITTEN ON NEXT RUN!
 #
 # Command: ./SCRIPTS/buildbot/make-generator.py -o Makefile.linux linux
@@ -99,6 +99,7 @@ $(BUILDROOT)/eina/stamps/configure: $(BUILDROOT)/eina/stamps/autogen $(BUILDROOT
 	cd $(BUILDROOT)/eina/compile && \
 	$(SRCROOT)/eina/configure --prefix=$(INSTALLROOT) --enable-doc \
 		--enable-tests \
+		--enable-coverage \
 		--enable-benchmark \
 		--disable-benchmark-glib
 	$(V)mkdir -p $(BUILDROOT)/eina/stamps
@@ -151,17 +152,17 @@ eina-install: $(BUILDROOT)/eina/stamps/compile
 
 $(BUILDROOT)/eina/stamps/test: $(BUILDROOT)/eina/stamps/compile eina-test
 eina-test: $(BUILDROOT)/eina/stamps/compile
-	$(V)echo "Testing (make check) eina..."
+	$(V)echo "Testing (make coverage) eina..."
 	$(V)rm -f $(BUILDROOT)/eina/stamps/test
 	export PATH="$(INSTALLROOT)/bin:$${PATH}";\
 	export PKG_CONFIG_PATH="$(INSTALLROOT)/lib/pkgconfig";\
 	export CXXFLAGS="$${CXXFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export CFLAGS="$${CFLAGS} -O2 -Wall -Wextra -Wshadow -fvisibility=hidden -fdata-sections -ffunction-sections";\
 	export LDFLAGS="$${LDFLAGS} -fvisibility=hidden -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,--as-needed";\
-	make $(MAKEOPTS) check -C $(BUILDROOT)/eina/compile
+	make $(MAKEOPTS) coverage -C $(BUILDROOT)/eina/compile
 	$(V)mkdir -p $(BUILDROOT)/eina/stamps
 	touch $(BUILDROOT)/eina/stamps/test
-	$(V)echo "Success testing (make check) eina."
+	$(V)echo "Success testing (make coverage) eina."
 
 $(BUILDROOT)/eina/stamps/doc: $(BUILDROOT)/eina/stamps/compile eina-doc
 eina-doc: $(BUILDROOT)/eina/stamps/compile

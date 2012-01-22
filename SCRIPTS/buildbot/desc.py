@@ -43,7 +43,7 @@ Package(
 
 Package(
     name="eina",
-    test_target="check",
+    test_target="coverage",
     doc_target="doc",
     dependencies={
         "win": ["evil"],
@@ -52,7 +52,7 @@ Package(
         "common": [
             "--enable-doc",
             "--enable-tests",
-            #"--enable-coverage",
+            "--enable-coverage",
             "--enable-benchmark",
             "--disable-benchmark-glib",
             ],
@@ -61,7 +61,7 @@ Package(
 
 Package(
     name="eet",
-    test_target="check",
+    test_target="coverage",
     doc_target="doc",
     dependencies={
         "common": ["eina"],
@@ -71,7 +71,7 @@ Package(
         "common": [
             "--enable-doc",
             "--enable-tests",
-            #"--enable-coverage",
+            "--enable-coverage",
             "--enable-gnutls",
             "--disable-openssl",
             "--enable-cipher",
