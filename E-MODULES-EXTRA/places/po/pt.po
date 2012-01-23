@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: places\n"
-"Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
-"POT-Creation-Date: 2010-09-09 08:01-0700\n"
-"PO-Revision-Date: 2010-12-05 12:01+0000\n"
-"Last-Translator: Sérgio Marques <sarquespt@gmail.com>\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2012-01-22 12:12+0100\n"
+"PO-Revision-Date: 2012-01-23 19:36-0000\n"
+"Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,100 +19,117 @@ msgstr ""
 "X-Poedit-Country: Portugal\n"
 "X-Generator: Lokalize 1.1\n"
 
-#. create new config dialog
-#: ../src/e_mod_config.c:51
+#: src/e_mod_config.c:52
 msgid "Places Settings"
 msgstr "Definições do módulo"
 
-#. General frame
-#: ../src/e_mod_config.c:118
+#: src/e_mod_config.c:119
 msgid "General"
 msgstr "Geral"
 
-#: ../src/e_mod_config.c:121
+#: src/e_mod_config.c:122
 msgid "Show in main menu"
 msgstr "Mostrar no menu principal"
 
-#: ../src/e_mod_config.c:125
+#: src/e_mod_config.c:126
 msgid "Mount volumes on insert"
 msgstr "Montar volumes ao inserir"
 
-#: ../src/e_mod_config.c:129
+#: src/e_mod_config.c:130
 msgid "Open filemanager on insert"
 msgstr "Ao inserir, abrir gestor de ficheiros"
 
-#: ../src/e_mod_config.c:133
+#: src/e_mod_config.c:134
 msgid "Use a custom file manager"
 msgstr "Utilizar um gestor de ficheiros personalizado"
 
-#. Display frame
-#: ../src/e_mod_config.c:146
+#: src/e_mod_config.c:147
 msgid "Show in menu"
 msgstr "Mostrar no menu"
 
-#: ../src/e_mod_config.c:149
-#: ../src/e_mod_places.c:379
+#: src/e_mod_config.c:150
+#: src/e_mod_places.c:742
 msgid "Home"
 msgstr "Pasta pessoal"
 
-#: ../src/e_mod_config.c:152
-#: ../src/e_mod_places.c:388
+#: src/e_mod_config.c:153
+#: src/e_mod_places.c:751
 msgid "Desktop"
 msgstr "Área de trabalho"
 
-#: ../src/e_mod_config.c:155
-#: ../src/e_mod_places.c:398
+#: src/e_mod_config.c:156
+#: src/e_mod_places.c:761
 msgid "Trash"
 msgstr "Lixo"
 
-#: ../src/e_mod_config.c:158
-#: ../src/e_mod_places.c:208
-#: ../src/e_mod_places.c:407
+#: src/e_mod_config.c:159
+#: src/e_mod_places.c:592
+#: src/e_mod_places.c:770
 msgid "Filesystem"
 msgstr "Sistema de ficheiros"
 
-#: ../src/e_mod_config.c:161
-#: ../src/e_mod_places.c:416
+#: src/e_mod_config.c:162
+#: src/e_mod_places.c:779
 msgid "Temp"
 msgstr "Temp"
 
-#: ../src/e_mod_config.c:164
+#: src/e_mod_config.c:165
 msgid "Favorites"
 msgstr "Favoritos"
 
-#. Display this Modules config info in the main Config Panel
-#: ../src/e_mod_main.c:58
+#: src/e_mod_main.c:58
 msgid "Files"
 msgstr "Ficheiros"
 
-#: ../src/e_mod_main.c:60
-#: ../src/e_mod_places.c:479
+#: src/e_mod_main.c:60
+#: src/e_mod_places.c:212
+#: src/e_mod_places.c:836
 msgid "Places"
 msgstr "Locais"
 
-#: ../src/e_mod_main.c:430
+#: src/e_mod_main.c:377
+msgid "Places Configuration Updated"
+msgstr "Configuração atualizada"
+
+#: src/e_mod_main.c:417
 msgid "Settings"
 msgstr "Definições"
 
-#: ../src/e_mod_places.c:213
+#: src/e_mod_places.c:573
+msgid "Warning"
+msgstr "Aviso"
+
+#: src/e_mod_places.c:574
+msgid "<b>Cannot run the Enlightenment FileManager.</b><br>Please choose a custom file manager in<br>the gadget configuration."
+msgstr "<b>Não foi possível executar o EFM.</b><br>Escolha o gestor de ficheiros na<br>configuração do \"gadget\"."
+
+#: src/e_mod_places.c:596
 msgid "No Name"
 msgstr "Sem nome"
 
-#: ../src/e_mod_places.c:669
+#: src/e_mod_places.c:603
 msgid "free of"
 msgstr "livres de"
 
-#: ../src/e_mod_places.c:675
+#: src/e_mod_places.c:609
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s não está montado"
 
-#: ../src/e_mod_places.c:692
+#: src/e_mod_places.c:636
 msgid "unmount"
 msgstr "desmontar"
 
-#: ../src/e_mod_places.c:698
+#: src/e_mod_places.c:641
 msgid "eject"
 msgstr "ejetar"
 
+msgid "Configuration"
+msgstr "Configuração"
+
+msgid "Show"
+msgstr "Mostrar"
+
+msgid "File manager (if blank uses Enlightenment)"
+msgstr "Gestor de ficheiros (se vazio utiliza o EFM)"
 
