@@ -716,6 +716,7 @@ group { name: "elm/entry/base/default";
 			scale: 1;
 			entry_mode: EDITABLE;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 1;
 			source: "elm/entry/selection/default"; // selection under
 			//       source2: "X"; // selection over
@@ -772,6 +773,7 @@ group { name: "elm/entry/base-mixedwrap/default";
 			scale: 1;
 			entry_mode: EDITABLE;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 1;
 			source: "elm/entry/selection/default"; // selection under
 			//          source2: "X"; // selection over
@@ -827,6 +829,7 @@ group { name: "elm/entry/base-charwrap/default";
 			scale: 1;
 			entry_mode: EDITABLE;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 1;
 			source: "elm/entry/selection/default"; // selection under
 			//          source2: "X"; // selection over
@@ -881,6 +884,7 @@ group { name: "elm/entry/base-nowrap/default";
 			scale: 1;
 			entry_mode: EDITABLE;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 1;
 			source: "elm/entry/selection/default"; // selection under
 			source4: "elm/entry/cursor/default"; // cursorover
@@ -961,6 +965,7 @@ group { name: "elm/entry/base-single/default";
 			scale: 1;
 			entry_mode: EDITABLE;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 0;
 			source: "elm/entry/selection/default"; // selection under
 			source4: "elm/entry/cursor/default"; // cursorover
@@ -1011,6 +1016,7 @@ group { name: "elm/entry/base-single-noedit/default";
 			scale: 1;
 			entry_mode: PLAIN;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 0;
 			source: "elm/entry/selection/default"; // selection under
 			source5: "elm/entry/anchor/default"; // anchor under
@@ -1060,6 +1066,7 @@ group { name: "elm/entry/base-noedit/default";
 			scale: 1;
 			entry_mode: PLAIN;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 1;
 			source: "elm/entry/selection/default"; // selection under
 			source5: "elm/entry/anchor/default"; // anchor under
@@ -1109,6 +1116,7 @@ group { name: "elm/entry/base-noedit-mixedwrap/default";
 			scale: 1;
 			entry_mode: PLAIN;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 1;
 			source: "elm/entry/selection/default"; // selection under
 			source5: "elm/entry/anchor/default"; // anchor under
@@ -1158,6 +1166,7 @@ group { name: "elm/entry/base-noedit-charwrap/default";
 			scale: 1;
 			entry_mode: PLAIN;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 1;
 			source: "elm/entry/selection/default"; // selection under
 			source5: "elm/entry/anchor/default"; // anchor under
@@ -1207,6 +1216,7 @@ group { name: "elm/entry/base-nowrap-noedit/default";
 			scale: 1;
 			entry_mode: PLAIN;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 1;
 			source: "elm/entry/selection/default"; // selection under
 			source5: "elm/entry/anchor/default"; // anchor under
@@ -1255,6 +1265,7 @@ group { name: "elm/entry/base-password/default";
 			scale: 1;
 			entry_mode: PASSWORD;
 			select_mode: EXPLICIT;
+                        cursor_mode: BEFORE;
 			multiline: 0;
 			source: "elm/entry/selection/default"; // selection under
 			source4: "elm/entry/cursor/default"; // cursorover
@@ -1299,144 +1310,47 @@ group { name: "elm/entry/base-password/default";
 }
 
 group { name: "elm/entry/cursor/default";
-	images {
-		image: "cur_box.png" COMP;
-		image: "cur_hi.png" COMP;
-		image: "cur_shad.png" COMP;
-		image: "cur_shine.png" COMP;
-		image: "cur_glow.png" COMP;
-	}
 	parts {
 		part { name: "clip2";
 			type: RECT;
-			mouse_events: 0;
+			mouse_events: 1;
+                        repeat_events: 1;
 			description { state: "default" 0.0;
-				rel1.to: "clip";
-				rel2.to: "clip";
-				visible: 0;
+                                color: 175 175 175 255;
+                                min: 1 1;
+				visible: 1;
 			}
 			description { state: "focused" 0.0;
 				inherit: "default" 0.0;
-				visible: 1;
+                                color: 0 0 0 255;
 			}
+                        description { state: "focused" 1.0;
+                                inherit: "focused" 0.0;
+                                color: 0 0 0 0;
+                        }
 		}
-		part { name: "clip";
-			type: RECT;
-			mouse_events: 0;
-			clip_to: "clip2";
-			description { state: "default" 0.0;
-				rel1.offset: -10 0;
-				rel2.offset: 9 9;
-			}
-			description { state: "hidden" 0.0;
-				inherit: "default" 0.0;
-				visible: 0;
-			}
-		}
-		part { name: "bg";
-			mouse_events: 0;
-			clip_to: "clip";
-			description { state: "default" 0.0;
-				rel1.to: "base";
-				rel1.offset: -2 0;
-				rel2.to: "base";
-				rel2.offset: 1 1;
-				image.border: 2 2 2 2;
-				image.normal: "cur_shad.png";
-			}
-		}
-		part { name: "base";
-			mouse_events: 0;
-			scale: 1;
-			clip_to: "clip";
-			description { state: "default" 0.0;
-				min: 2 2;
-				align: 0.5 1.0;
-				rel1.relative: 0.0 1.0;
-				rel1.offset: 0 -1;
-				rel2.relative: 1.0 1.0;
-				rel2.offset: -1 -1;
-				image.normal: "cur_box.png";
-			}
-		}
-		part { name: "hi";
-			mouse_events: 0;
-			clip_to: "clip";
-			description { state: "default" 0.0;
-				rel1.to: "base";
-				rel2.to: "base";
-				rel2.relative: 1.0 0.5;
-				image.normal: "cur_hi.png";
-			}
-		}
-		part { name: "shine";
-			mouse_events: 0;
-			clip_to: "clip";
-			clip_to: "clip2";
-			description { state: "default" 0.0;
-				rel1.to: "base";
-				rel2.to: "base";
-				rel2.relative: 1.0 0.75;
-				image.border: 2 2 1 0;
-				image.normal: "cur_shine.png";
-				fill.smooth: 0;
-			}
-		}
-		part { name: "glow";
-			mouse_events: 0;
-			clip_to: "clip2";
-			description { state: "default" 0.0;
-				rel1.to: "base";
-				rel1.relative: 0.0 -2.0;
-				rel1.offset: -2 0;
-				rel2.to: "base";
-				rel2.relative: 1.0 0.0;
-				rel2.offset: 1 1;
-				image.border: 2 2 0 4;
-				image.normal: "cur_glow.png";
-				fill.smooth: 0;
-			}
-			description { state: "hidden" 0.0;
-				inherit: "default" 0.0;
-				color: 255 255 255 0;
-			}
-		}
-	}
-	programs {
-		program { name: "show";
-			signal: "show";
-			source: "";
-			action: STATE_SET "hidden" 0.0;
-			in: 1.0 0.0;
-			transition: DECELERATE 2.0;
-			target: "glow";
-			after: "show2";
-		}
-		program { name: "show2";
-			action: STATE_SET "hidden" 0.0;
-			in: 0.2 0.0;
-			target: "clip";
-			after: "show3";
-		}
-		program { name: "show3";
-			action: STATE_SET "default" 0.0;
-			in: 0.5 0.0;
-			target: "clip";
-			after: "show4";
-		}
-		program { name: "show4";
-			action: STATE_SET "default" 0.0;
-			in: 0.5 0.0;
-			transition: DECELERATE 0.5;
-			target: "glow";
-			after: "show";
-		}
+        }
+        programs {
 		program { name: "focused";
 			signal: "elm,action,focus";
 			source: "elm";
 			action: STATE_SET "focused" 0.0;
 			target: "clip2";
+                        after: "animation0";
 		}
+                program { name: "animation0";
+                        in: 0.5 0.5;
+                        action: STATE_SET "focused" 1.0;
+                        transition: DECELERATE 0.5;
+                        target: "clip2";
+                        after: "animation1";
+                }
+                program { name: animation1;
+                       action: STATE_SET "focused" 0.0;
+                       transition: ACCELERATE 0.5;
+                       target: clip2;
+                       after: animation0;
+                }
 		program { name: "unfocused";
 			signal: "elm,action,unfocus";
 			source: "elm";
