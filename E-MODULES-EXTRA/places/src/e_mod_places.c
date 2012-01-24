@@ -8,6 +8,9 @@
 #ifdef HAVE_UDISKS
 # include "e_mod_udisks.h"
 #endif
+#ifdef HAVE_EEZE
+# include "e_mod_eeze.h"
+#endif
 
 /* Local Function Prototypes */
 static Eina_Bool _places_poller(void *data);
@@ -38,6 +41,9 @@ places_init(void)
 #ifdef HAVE_UDISKS
    places_udisks_init();
 #endif
+#ifdef HAVE_EEZE
+   places_eeze_init();
+#endif
 
    snprintf(theme_file, PATH_MAX, "%s/e-module-places.edj",
             places_conf->module->dir);
@@ -51,6 +57,9 @@ places_shutdown(void)
 
 #ifdef HAVE_UDISKS
    places_udisks_shutdown();
+#endif
+#ifdef HAVE_EEZE
+   places_eeze_shutdown();
 #endif
 
    while (volumes)

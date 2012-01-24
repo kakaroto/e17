@@ -60,7 +60,7 @@ AC_MSG_CHECKING([Which edje_cc to use])
 AC_MSG_RESULT(${EDJE_CC})
 
 
-# check for udisks
+# check for udisks (default enabled)
 PKG_CHECK_MODULES([E_UDISKS], [dbus-1 edbus eukit >= 1.0.999],
                   [have_udisks="yes"], [have_udisks="no"])
 want_udisks=yes
@@ -73,6 +73,20 @@ fi
 
 AM_CONDITIONAL([HAVE_UDISKS], [test "x$have_udisks" = "xyes"])
 test "x$have_udisks" = "xyes" && AC_DEFINE_UNQUOTED([HAVE_UDISKS], [1], [enable Udisks support])
+
+# check for eeze (default disabled)
+PKG_CHECK_MODULES([EEZE], [eeze >= 1.1.99],
+                  [have_eeze="yes"], [have_eeze="no"])
+want_eeze=no
+AC_ARG_ENABLE([eeze],
+   AS_HELP_STRING([--enable-eeze],[enable eeze support @<:@default=disabled@:>@]), 
+   [want_eeze=$enableval])
+if test "x$want_eeze" != "xyes";then
+   have_eeze=no
+fi
+
+AM_CONDITIONAL([HAVE_EEZE], [test "x$have_eeze" = "xyes"])
+test "x$have_eeze" = "xyes" && AC_DEFINE_UNQUOTED([HAVE_EEZE], [1], [enable eeze support])
 
 
 # homedir install
@@ -110,5 +124,6 @@ echo
 cat << DEVICE_EOF
 Device Backends:
  * build udisks....: $have_udisks
+ * build eeze......: $have_eeze (TO BE DONE)
 DEVICE_EOF
 echo
