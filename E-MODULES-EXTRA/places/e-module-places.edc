@@ -9,23 +9,9 @@ images
    image: "tag_hfs.png" COMP;
    image: "tag_ufs.png" COMP;
    image: "tag_dvd.png" COMP;
+   image: "header_bg.png" COMP;
 }
 
-#define ICONS(_name) \
-   group { \
-      name: "modules/places/icon/"_name; \
-      parts { \
-         part { \
-            name: "image"; \
-            mouse_events: 0; \
-            type: IMAGE; \
-            description { \
-               state: "default" 0.0; \
-               image.normal: "icon_"_name".png"; \
-            } \
-         } \
-      } \
-   }
 
 collections
 {
@@ -54,10 +40,10 @@ collections
       parts {
          part { name: "bg";
             mouse_events: 1;
-            type: RECT;
+            type: IMAGE;
             description { state: "default" 0.0;
-               color: 50 100 50 255;
-               // color: 50 0 50 200;
+               color: 255 255 255 255;
+               image.normal: "header_bg.png";
             }
          }
          part { name: "label";
@@ -97,6 +83,28 @@ collections
                color: 0 0 0 255;
             }
          }
+         part { name: "separator2";
+            mouse_events: 0;
+            type: RECT;
+            description { state: "default" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.0;
+               rel2.offset: 0 0;
+               color: 255 255 255 0;
+            }
+            description { state: "horiz" 0.0;
+               rel1.relative: 0.0 0.0;
+               rel2.relative: 1.0 0.0;
+               rel2.offset: 0 0;
+               color: 255 255 255 50;
+            }
+            description { state: "vert" 0.0;
+               rel1.relative: 1.0 0.0;
+               rel2.relative: 1.0 1.0;
+               rel1.offset: -1 0;
+               color: 255 255 255 50;
+            }
+         }
       }
       programs {
          program { name: "set_separator_horiz";
@@ -104,18 +112,21 @@ collections
             source: "places";
             action: STATE_SET "horiz" 0.0;
             target: "separator";
+            target: "separator2";
          }
          program { name: "set_separator_vert";
             signal: "separator,set,vert";
             source: "places";
             action: STATE_SET "vert" 0.0;
             target: "separator";
+            target: "separator2";
          }
          program { name: "set_separator_hidden";
             signal: "separator,set,hidden";
             source: "places";
             action: STATE_SET "default" 0.0;
             target: "separator";
+            target: "separator2";
          }
       }
    }
