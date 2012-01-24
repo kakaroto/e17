@@ -481,53 +481,39 @@ my_win_del(void *data, Evas_Object *obj, void *event_info)
 static void
 editor_font_set(Evas_Object *ent, const char *font, int font_size)
 {
-#define _ENT_TAG_PREFIX "ecrire_format"
-#define _ENT_FORMAT_PREFIX "+ " _ENT_TAG_PREFIX
    const Evas_Object *tb = elm_entry_textblock_get(ent);
-   Evas_Textblock_Cursor *cur = evas_object_textblock_cursor_new(tb);
-   evas_textblock_cursor_paragraph_first(cur);
+   Eina_Strbuf *sbuf;
 
    eina_stringshare_replace(&_ent_cfg->font.name, font);
    _ent_cfg->font.size = font_size;
-   /* Remove first format node */
+
+   sbuf = eina_strbuf_new();
+
+   if (_ent_cfg->font.name)
      {
-        const Evas_Object_Textblock_Node_Format *fnode;
-        const char *ftext;
-        fnode = evas_textblock_node_format_first_get(tb);
-        ftext = evas_textblock_node_format_text_get(fnode);
-        if (ftext && !strncmp(ftext, _ENT_FORMAT_PREFIX,
-                 strlen(_ENT_FORMAT_PREFIX)))
-          {
-             evas_textblock_node_format_remove_pair((Evas_Object *) tb,
-                   (Evas_Object_Textblock_Node_Format *) fnode);
-          }
+        eina_strbuf_append_printf(sbuf, "font=\\'%s\\'", _ent_cfg->font.name);
      }
 
+   if (_ent_cfg->font.size > 0)
      {
-        /* Make sure the temp buffers total len is less than 1024 */
-        char buf[1024] = "<" _ENT_TAG_PREFIX;
-        if (_ent_cfg->font.name)
-          {
-             char tfont[100];
-             snprintf(tfont, sizeof(tfont), " font='%s'", _ent_cfg->font.name);
-             strcat(buf, tfont);
-          }
+        eina_strbuf_append_printf(sbuf, " font_size=\\'%d\\'",
+              _ent_cfg->font.size);
+     }
 
-        if (_ent_cfg->font.size > 0)
-          {
-             char tfont[100];
-             snprintf(tfont, sizeof(tfont), " font_size='%d'", _ent_cfg->font.size);
-             strcat(buf, tfont);
-          }
-        strcat(buf, ">");
+   if (eina_strbuf_length_get(sbuf) > 0)
+     {
+        Evas_Textblock_Style *ts = evas_textblock_style_new();
 
-        evas_textblock_cursor_format_prepend(cur, buf);
+        eina_strbuf_prepend(sbuf, "DEFAULT='");
+        eina_strbuf_append(sbuf, "'");
+        evas_textblock_style_set(ts, eina_strbuf_string_get(sbuf));
+
+        evas_object_textblock_style_user_set((Evas_Object *) tb, ts);
+
         elm_entry_calc_force(ent);
      }
 
-   evas_textblock_cursor_free(cur);
-#undef _ENT_FORMAT_PREFIX
-#undef _ENT_TAG_PREFIX
+   eina_strbuf_free(sbuf);
 }
 
 void
