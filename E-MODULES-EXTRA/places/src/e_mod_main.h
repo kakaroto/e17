@@ -31,6 +31,7 @@ struct _Config
    unsigned char auto_mount;
    unsigned char auto_open;
    unsigned char show_menu;
+   unsigned char hide_header;
 
    unsigned char show_home;
    unsigned char show_desk;

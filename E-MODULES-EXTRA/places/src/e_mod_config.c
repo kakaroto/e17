@@ -11,6 +11,7 @@ struct _E_Config_Dialog_Data
    int fm_chk;
    Evas_Object *entry;
    int show_menu;
+   int hide_header;
    int show_home;
    int show_desk;
    int show_trash;
@@ -82,6 +83,7 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->auto_open = places_conf->auto_open;
 
    cfdata->show_menu = places_conf->show_menu;
+   cfdata->hide_header = places_conf->hide_header;
    cfdata->show_home = places_conf->show_home;
    cfdata->show_desk = places_conf->show_desk;
    cfdata->show_trash = places_conf->show_trash;
@@ -121,6 +123,10 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    ow = e_widget_check_add(evas, D_("Show in main menu"),
                            &(cfdata->show_menu));
+   e_widget_framelist_object_append(of, ow);
+
+   ow = e_widget_check_add(evas, D_("Hide the gadget header"),
+                           &(cfdata->hide_header));
    e_widget_framelist_object_append(of, ow);
 
    ow = e_widget_check_add(evas, D_("Mount volumes on insert"),
@@ -174,6 +180,7 @@ static int
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    places_conf->show_menu = cfdata->show_menu;
+   places_conf->hide_header = cfdata->hide_header;
    places_conf->auto_mount = cfdata->auto_mount;
    places_conf->auto_open = cfdata->auto_open;
    places_conf->show_home = cfdata->show_home;

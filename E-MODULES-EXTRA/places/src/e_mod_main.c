@@ -80,6 +80,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, auto_open, UCHAR);
    E_CONFIG_LIST(D, T, conf_items, conf_item_edd);
    E_CONFIG_VAL(D, T, show_menu, UCHAR);
+   E_CONFIG_VAL(D, T, hide_header, UCHAR);
    E_CONFIG_VAL(D, T, show_home, UCHAR);
    E_CONFIG_VAL(D, T, show_desk, UCHAR);
    E_CONFIG_VAL(D, T, show_trash, UCHAR);
@@ -331,6 +332,7 @@ _places_conf_new(void)
    places_conf->auto_mount = 0;
    places_conf->auto_open = 0;
    places_conf->show_home = 1;
+   places_conf->hide_header = 0;
    places_conf->show_desk = 1;
    places_conf->show_trash = 0;
    places_conf->show_root = 0;
