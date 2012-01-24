@@ -51,14 +51,15 @@ static void
 _set_clicked(void *data,
       Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
+   Ecrire_Entry *ent = data;
    const char *selected = NULL;
    Elm_Object_Item *list_it = elm_list_selected_item_get(list);
    if (list_it)
      selected = elm_object_item_text_get(list_it);
    if (elm_check_state_get(dfont_check))
-      editor_font_choose(data, NULL, 0);
+      editor_font_choose(ent, NULL, 0);
    else
-      editor_font_choose(data, selected, elm_spinner_value_get(fsize));
+      editor_font_choose(ent, selected, elm_spinner_value_get(fsize));
 }
 
 static void
@@ -71,9 +72,10 @@ _check_changed_cb(void *data __UNUSED__, Evas_Object *obj,
 
 
 Evas_Object *
-ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry, const char *pfont,
+ui_font_dialog_open(Evas_Object *parent, Ecrire_Entry *ent, const char *pfont,
       int size)
 {
+   Evas_Object *entry = ent->entry;
    Evas_Object *win, *bg, *bx, *btn, *hbx, *lbl;
 
    if (font_win)
@@ -168,7 +170,7 @@ ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry, const char *pfont,
    evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_show(btn);
    elm_box_pack_end(hbx, btn);
-   evas_object_smart_callback_add(btn, "clicked", _set_clicked, entry);
+   evas_object_smart_callback_add(btn, "clicked", _set_clicked, ent);
 
    /* Forcing it to be the min height. */
    evas_object_resize(win, 300, 500);

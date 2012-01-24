@@ -128,8 +128,9 @@ my_win_del(void *data __UNUSED__, Evas_Object *obj, void *event_info)
 }
 
 Evas_Object *
-ui_find_dialog_open(Evas_Object *parent, Evas_Object *entry)
+ui_find_dialog_open(Evas_Object *parent, Ecrire_Entry *ent)
 {
+   Evas_Object *entry = ent->entry;
    Evas_Object *win, *bg, *bx, *lbl, *hbx, *btn;
 
    if (search_win)

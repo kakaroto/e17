@@ -6,16 +6,21 @@
 
 #include "../mess_header.h"
 
+static void *done_data;
+static void (*done_cb)(void *data);
+
 static void
 _discard(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    evas_object_del(data);
+   done_cb(done_data);
 }
 
 static void
 _save(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    evas_object_del(data);
+   done_cb(done_data);
 }
 
 static void
@@ -25,12 +30,14 @@ _cancel(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 }
 
 void
-ui_alert_need_saving(void (*done)(void *data), void *data)
+ui_alert_need_saving(Evas_Object *entry, void (*done)(void *data), void *data)
 {
-   (void) done;
    Evas_Object *inwin, *bx, *hbx, *btn, *lbl;
-   inwin = elm_win_inwin_add(elm_object_top_widget_get(data));
+   inwin = elm_win_inwin_add(elm_object_top_widget_get(entry));
    evas_object_show(inwin);
+
+   done_cb = done;
+   done_data = data;
 
    bx = elm_box_add(inwin);
    elm_win_inwin_content_set(inwin, bx);
