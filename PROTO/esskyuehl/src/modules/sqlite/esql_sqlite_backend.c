@@ -189,26 +189,33 @@ esql_sqlite_row_add(Esql_Res *res)
 
         switch (sqlite3_column_type(res->e->backend.stmt, i))
           {
+             Eina_Value *val = &(cell->value);
            case SQLITE_TEXT:
-             cell->type = ESQL_CELL_TYPE_STRING;
-             cell->value.string = (const char*)sqlite3_column_text(res->e->backend.stmt, i);
-             cell->len = sqlite3_column_bytes(res->e->backend.stmt, i);
+              eina_value_setup(val, EINA_VALUE_TYPE_STRING);
+              eina_value_set(val, sqlite3_column_text(res->e->backend.stmt, i));
              break;
 
            case SQLITE_INTEGER:
-             cell->type = ESQL_CELL_TYPE_LONG;
-             cell->value.i = sqlite3_column_int(res->e->backend.stmt, i);
+              eina_value_setup(val, EINA_VALUE_TYPE_INT64);
+              eina_value_set(val, sqlite3_column_int64(res->e->backend.stmt, i));
              break;
 
            case SQLITE_FLOAT:
-             cell->type = ESQL_CELL_TYPE_DOUBLE;
-             cell->value.d = sqlite3_column_double(res->e->backend.stmt, i);
+              eina_value_setup(val, EINA_VALUE_TYPE_DOUBLE);
+              eina_value_set(val, sqlite3_column_double(res->e->backend.stmt, i));
              break;
 
            default:
-             cell->type = ESQL_CELL_TYPE_BLOB;
-             cell->value.blob = sqlite3_column_blob(res->e->backend.stmt, i);
-             cell->len = sqlite3_column_bytes(res->e->backend.stmt, i);
+             {
+                Eina_Value_Blob blob;
+
+                blob.ops = NULL;
+                blob.memory = sqlite3_column_blob(res->e->backend.stmt, i);
+                blob.size = sqlite3_column_bytes(res->e->backend.stmt, i);
+
+                eina_value_setup(val, EINA_VALUE_TYPE_BLOB);
+                eina_value_set(val, &blob);
+             }
           }
         r->cells = eina_inlist_append(r->cells, EINA_INLIST_GET(cell));
      }

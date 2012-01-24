@@ -36,40 +36,11 @@ print_results(Esql_Res *res)
         l = esql_row_cells_get(r);
         EINA_INLIST_FOREACH(l, c)
           {
-             printf("Column name: %s --- Type: ", c->colname);
-             switch (c->type)
-               {
-                case ESQL_CELL_TYPE_FLOAT:
-                   printf("ESQL_CELL_TYPE_FLOAT --- Value: %f\n", c->value.f);
-                   break;
-                case ESQL_CELL_TYPE_DOUBLE:
-                   printf("ESQL_CELL_TYPE_DOUBLE --- Value: %g\n", c->value.d);
-                   break;
-                case ESQL_CELL_TYPE_TINYINT:
-                   printf("ESQL_CELL_TYPE_TINYINT --- Value: %i\n", c->value.c);
-                   break;
-                case ESQL_CELL_TYPE_SHORT:
-                   printf("ESQL_CELL_TYPE_SHORT --- Value: %i\n", c->value.s);
-                   break;
-                case ESQL_CELL_TYPE_ULONG:
-                   printf("ESQL_CELL_TYPE_LONG --- Value: %lu\n", c->value.u);
-                   break;
-                case ESQL_CELL_TYPE_LONG:
-                   printf("ESQL_CELL_TYPE_LONG --- Value: %i\n", c->value.i);
-                   break;
-                case ESQL_CELL_TYPE_LONGLONG:
-                   printf("ESQL_CELL_TYPE_LONGLONG --- Value: %lli\n", c->value.l);
-                   break;
-                case ESQL_CELL_TYPE_STRING:
-                   printf("ESQL_CELL_TYPE_STRING --- Value: %s\n", c->value.string);
-                   break;
-                case ESQL_CELL_TYPE_BLOB:
-                   printf("ESQL_CELL_TYPE_BLOB --- Value: %*s\n", (int)c->len, c->value.blob);
-                   break;
-                default:
-                   printf("ESQL_CELL_TYPE_UNKNOWN --- Value: UNKNOWN\n");
-                   break;
-               }
+             const Eina_Value *val = &(c->value);
+             char *str = eina_value_to_string(val);
+             printf("Column name: %s --- Type: %s --- Value: %s\n",
+                    c->colname, eina_value_type_name_get(val->type), str);
+             free(str);
           }
      }
 }

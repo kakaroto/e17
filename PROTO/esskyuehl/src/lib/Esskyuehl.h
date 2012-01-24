@@ -117,24 +117,6 @@ typedef enum
 } Esql_Type;
 
 /**
- * @typedef Esql_Cell_Type
- * This type determines which value to use from an #Esql_Cell
- */
-typedef enum
-{
-   ESQL_CELL_TYPE_UNKNOWN,
-   ESQL_CELL_TYPE_STRING,
-   ESQL_CELL_TYPE_BLOB,
-   ESQL_CELL_TYPE_TINYINT,
-   ESQL_CELL_TYPE_SHORT,
-   ESQL_CELL_TYPE_LONG,
-   ESQL_CELL_TYPE_LONGLONG,
-   ESQL_CELL_TYPE_ULONG,
-   ESQL_CELL_TYPE_FLOAT,
-   ESQL_CELL_TYPE_DOUBLE
-} Esql_Cell_Type;
-
-/**
  * @typedef Esql_Cell
  * Low-level object for managing cells in an #Esql_Row
  * @note No value in this object is allocated, all members belong
@@ -146,23 +128,8 @@ typedef struct Esql_Cell
 {
    EINA_INLIST; /**< use to iterate through cells */
    Esql_Row      *row; /**< parent row */
-   Esql_Cell_Type type;
    const char    *colname; /**< NOT stringshared */
-
-   union
-   {
-      char                 c; /**< ESQL_CELL_TYPE_TINYINT */
-      short                s; /**< ESQL_CELL_TYPE_SHORT */
-      int                  i; /**< ESQL_CELL_TYPE_LONG */
-      long long int        l; /**< ESQL_CELL_TYPE_LONGLONG */
-      unsigned long int    u; /**< ESQL_CELL_TYPE_ULONG */
-      float                f; /**< ESQL_CELL_TYPE_FLOAT */
-      double               d; /**< ESQL_CELL_TYPE_DOUBLE */
-      const char          *string; /**< ESQL_CELL_TYPE_STRING */
-      const unsigned char *blob; /**< ESQL_CELL_TYPE_BLOB */
-      /** ESQL_CELL_TYPE_UNKNOWN == NULL */
-   } value;
-   size_t len; /**< only valid with ESQL_CELL_TYPE_BLOB and ESQL_CELL_TYPE_STRING */
+   Eina_Value     value;
 } Esql_Cell;
 /** @} */
 /* lib */
@@ -212,7 +179,7 @@ EAPI Eina_Iterator  *esql_res_row_iterator_new(const Esql_Res *res);
 
 /* convert */
 EAPI const char     *esql_res_to_string(const Esql_Res *res);
-EAPI unsigned char  *esql_res_to_blob(const Esql_Res *res);
+EAPI unsigned char  *esql_res_to_blob(const Esql_Res *res, unsigned int *size);
 EAPI long long int   esql_res_to_lli(const Esql_Res *res);
 EAPI double          esql_res_to_double(const Esql_Res *res);
 EAPI unsigned long int esql_res_to_ulong(const Esql_Res *res);
@@ -222,56 +189,4 @@ EAPI Eina_Inlist    *esql_row_cells_get(const Esql_Row *r);
 EAPI int             esql_row_cell_count(const Esql_Row *r);
 EAPI Esql_Res       *esql_row_res_get(const Esql_Row *r);
 
-/** @addtogroup Esql_Convert
- * @{
- */
-
-/**
- * @brief Convert cell to a long long int
- * @param cell Cell
- * @return The result
- */
-static inline long long int
-esql_cell_to_lli(const Esql_Cell *cell)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, 0);
-   switch (cell->type)
-     {
-      case ESQL_CELL_TYPE_TINYINT:
-        return cell->value.c;
-      case ESQL_CELL_TYPE_SHORT:
-        return cell->value.s;
-      case ESQL_CELL_TYPE_LONG:
-        return cell->value.i;
-      case ESQL_CELL_TYPE_LONGLONG:
-        return cell->value.l;
-      case ESQL_CELL_TYPE_ULONG:
-        return (long long int)cell->value.u;
-      default:
-        return 0;
-     }
-}
-
-/**
- * @brief Convert cell to a double
- * @param cell Cell
- * @return The result
- */
-static inline double
-esql_cell_to_double(const Esql_Cell *cell)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(cell, 0.0);
-   switch (cell->type)
-     {
-      case ESQL_CELL_TYPE_FLOAT:
-        return cell->value.f;
-        break;
-      case ESQL_CELL_TYPE_DOUBLE:
-        return cell->value.d;
-        break;
-      default:
-        return 0.0;
-     }
-}
-/** @} */
 #endif

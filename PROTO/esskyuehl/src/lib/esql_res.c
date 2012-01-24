@@ -75,7 +75,11 @@ esql_row_free(Esql_Row *r)
    if ((!r) || (!r->cells)) return;
 
    EINA_INLIST_FOREACH_SAFE(r->cells, l, cell)
-     esql_cell_mp_free(cell);
+     {
+        if (cell->value.type)
+          eina_value_flush(&(cell->value));
+        esql_cell_mp_free(cell);
+     }
 
    esql_row_mp_free(r);
 }
