@@ -182,14 +182,15 @@ esql_sqlite_row_add(Esql_Res *res)
 
    for (i = 0; i < cols; i++)
      {
+        Eina_Value *val;
         cell = esql_cell_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(cell);
+        val = &(cell->value);
         cell->row = r;
         cell->colname = sqlite3_column_name(res->e->backend.stmt, i);
 
         switch (sqlite3_column_type(res->e->backend.stmt, i))
           {
-             Eina_Value *val = &(cell->value);
            case SQLITE_TEXT:
               eina_value_setup(val, EINA_VALUE_TYPE_STRING);
               eina_value_set(val, sqlite3_column_text(res->e->backend.stmt, i));
