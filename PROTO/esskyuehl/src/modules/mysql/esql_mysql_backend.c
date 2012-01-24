@@ -36,9 +36,9 @@
 static const char *esql_mysac_error_get(Esql *e);
 static void esql_mysac_disconnect(Esql *e);
 static int esql_mysac_fd_get(Esql *e);
-static Ecore_Fd_Handler_Flags esql_mysac_connect(Esql *e);
+static int esql_mysac_connect(Esql *e);
 static void esql_mysac_database_set(Esql *e, const char *database_name);
-static Ecore_Fd_Handler_Flags esql_mysac_io(Esql *e);
+static int esql_mysac_io(Esql *e);
 static void esql_mysac_setup(Esql *e, const char *addr, const char *user, const char *passwd);
 static void esql_mysac_query(Esql *e, const char *query, unsigned int len __UNUSED__);
 static void esql_mysac_res_free(Esql_Res *res);
@@ -88,7 +88,7 @@ esql_mysac_fd_get(Esql *e)
    return mysac_get_fd(e->backend.db);
 }
 
-static Ecore_Fd_Handler_Flags
+static int
 esql_mysac_connect(Esql *e)
 {
    ESQL_MYSAC_SWITCH_RET(mysac_connect(e->backend.db));
@@ -100,7 +100,7 @@ esql_mysac_database_set(Esql *e, const char *database_name)
    mysac_set_database(e->backend.db, database_name);
 }
 
-static Ecore_Fd_Handler_Flags
+static int
 esql_mysac_io(Esql *e)
 {
    if (e->timeout) ecore_timer_reset(e->timeout_timer);

@@ -71,7 +71,7 @@ typedef enum
 
 typedef const char           * (*Esql_Error_Cb)(Esql *);
 typedef void                   (*Esql_Cb)(Esql *);
-typedef Ecore_Fd_Handler_Flags (*Esql_Connection_Cb)(Esql *);
+typedef int                    (*Esql_Connection_Cb)(Esql *);
 typedef void                   (*Esql_Setup_Cb)(Esql *, const char *, const char *, const char *);
 typedef void                   (*Esql_Set_Cb)(); /* yes this is intentionally variable args */
 typedef int                    (*Esql_Fd_Cb)(Esql *);
@@ -223,7 +223,7 @@ void          esql_row_free(Esql_Row *r);
 
 Eina_Bool     esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh);
 
-char         *esql_query_escape(Eina_Bool backslashes, size_t *len, const char *fmt, va_list args);
+char         *esql_query_escape(Eina_Bool backslashes, unsigned int *len, const char *fmt, va_list args);
 char         *esql_string_escape(Eina_Bool backslashes, const char *s);
 Eina_Bool     esql_timeout_cb(Esql *e);
 

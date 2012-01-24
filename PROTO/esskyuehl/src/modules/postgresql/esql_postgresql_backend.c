@@ -38,8 +38,8 @@
 static const char *esql_postgresql_error_get(Esql *e);
 static void esql_postgresql_disconnect(Esql *e);
 static int esql_postgresql_fd_get(Esql *e);
-static Ecore_Fd_Handler_Flags esql_postgresql_connect(Esql *e);
-static Ecore_Fd_Handler_Flags esql_postgresql_io(Esql *e);
+static int esql_postgresql_connect(Esql *e);
+static int esql_postgresql_io(Esql *e);
 static void esql_postgresql_setup(Esql *e, const char *addr, const char *user, const char *passwd);
 static void esql_postgresql_query(Esql *e, const char *query, unsigned int len);
 static void esql_postgresql_res_free(Esql_Res *res);
@@ -75,7 +75,7 @@ esql_postgresql_fd_get(Esql *e)
    return PQsocket(e->backend.db);
 }
 
-static Ecore_Fd_Handler_Flags
+static int
 esql_postgresql_connect(Esql *e)
 {
    e->backend.db = PQconnectStart(e->backend.conn_str);
@@ -91,7 +91,7 @@ esql_postgresql_connect(Esql *e)
    return ECORE_FD_READ | ECORE_FD_WRITE;
 }
 
-static Ecore_Fd_Handler_Flags
+static int
 esql_postgresql_io(Esql *e)
 {
    if (e->timeout) ecore_timer_reset(e->timeout_timer);

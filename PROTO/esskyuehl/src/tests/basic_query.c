@@ -64,7 +64,7 @@ print_results(Esql_Res *res)
                    printf("ESQL_CELL_TYPE_STRING --- Value: %s\n", c->value.string);
                    break;
                 case ESQL_CELL_TYPE_BLOB:
-                   printf("ESQL_CELL_TYPE_BLOB --- Value: %*s\n", c->len, c->value.blob);
+                   printf("ESQL_CELL_TYPE_BLOB --- Value: %*s\n", (int)c->len, c->value.blob);
                    break;
                 default:
                    printf("ESQL_CELL_TYPE_UNKNOWN --- Value: UNKNOWN\n");

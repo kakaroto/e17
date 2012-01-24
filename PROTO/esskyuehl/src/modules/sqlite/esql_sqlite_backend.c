@@ -21,8 +21,8 @@
 static const char *esql_sqlite_error_get(Esql *e);
 static void esql_sqlite_disconnect(Esql *e);
 static int esql_sqlite_fd_get(Esql *e);
-static Ecore_Fd_Handler_Flags esql_sqlite_connect(Esql *e);
-static Ecore_Fd_Handler_Flags esql_sqlite_io(Esql *e);
+static int esql_sqlite_connect(Esql *e);
+static int esql_sqlite_io(Esql *e);
 static void esql_sqlite_setup(Esql *e, const char *addr, const char *user, const char *passwd);
 static void esql_sqlite_query(Esql *e, const char *query, unsigned int len);
 static void esql_sqlite_res_free(Esql_Res *res);
@@ -83,7 +83,7 @@ esql_sqlite_connect_cb(Esql *e, Ecore_Thread *et)
      e->current = ESQL_CONNECT_TYPE_INIT;
 }
 
-static Ecore_Fd_Handler_Flags
+static int
 esql_sqlite_connect(Esql *e)
 {
    e->backend.thread = ecore_thread_run((Ecore_Thread_Cb)esql_sqlite_connect_cb,
@@ -124,7 +124,7 @@ out:
    ecore_thread_cancel(et);
 }
 
-static Ecore_Fd_Handler_Flags
+static int
 esql_sqlite_io(Esql *e)
 {
    e->backend.thread = ecore_thread_run((Ecore_Thread_Cb)esql_sqlite_query_cb,

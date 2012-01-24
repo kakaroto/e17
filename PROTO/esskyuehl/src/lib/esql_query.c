@@ -85,10 +85,10 @@ esql_string_escape(Eina_Bool   backslashes,
 }
 
 char *
-esql_query_escape(Eina_Bool   backslashes,
-                  size_t     *len,
-                  const char *fmt,
-                  va_list     args)
+esql_query_escape(Eina_Bool     backslashes,
+                  unsigned int *len,
+                  const char   *fmt,
+                  va_list       args)
 {
    Eina_Strbuf *buf;
    const char *p, *pp;
@@ -213,7 +213,7 @@ err:
  * @param e The #Esql object to query with (NOT NULL)
  * @param query The query SQL (NOT NULL)
  * @param data Data to associate with the result
- * @return EINA_TRUE on successful queuing of the query, else 0
+ * @return Query identifier or 0 on failure.
  */
 Esql_Query_Id
 esql_query(Esql       *e,
@@ -272,7 +272,7 @@ esql_query(Esql       *e,
  * @param e The #Esql object to query with (NOT NULL)
  * @param data Data to associate with the result
  * @param fmt The format string for the query
- * @return EINA_TRUE on successful queuing of the query, else 0
+ * @return Query identifier or 0 on failure.
  * @note This function automatically does all necessary escaping of the args required by
  * @p e 's backend database.
  */
@@ -302,7 +302,7 @@ esql_query_args(Esql       *e,
  * @param data Data to associate with the result
  * @param fmt The format string for the query
  * @param args The arg list for @p fmt
- * @return EINA_TRUE on successful queuing of the query, else 0
+ * @return Query identifier or 0 on failure.
  * @note This function automatically does all necessary escaping of the args required by
  * @p e 's backend database.
  */
