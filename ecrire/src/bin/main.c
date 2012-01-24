@@ -418,6 +418,12 @@ _save(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 }
 
 static void
+_save_as(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   ui_file_open_save_dialog_open(data, _fs_save_done, EINA_TRUE);
+}
+
+static void
 _new_do(void *data)
 {
    elm_object_text_set(data, "");
@@ -651,6 +657,8 @@ main(int argc, char *argv[])
    elm_toolbar_item_append(tbar, "document-open", _("Open"), _open, win);
    save_item =
       elm_toolbar_item_append(tbar, "document-save", _("Save"), _save, win);
+   elm_toolbar_item_append(tbar, "document-save-as", _("Save As"), _save_as,
+            win);
    elm_toolbar_item_separator_set(
          elm_toolbar_item_append(tbar, "", "", NULL, NULL), EINA_TRUE);
    undo_item =
