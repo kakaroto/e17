@@ -5,7 +5,7 @@ void ui_file_open_save_dialog_open(Evas_Object *parent, Evas_Smart_Cb func, Eina
 
 Evas_Object *ui_find_dialog_open(Evas_Object *parent, Evas_Object *entry);
 
-Evas_Object *ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry);
+Evas_Object *ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry, const char *pfont, int size);
 
 void ui_alert_need_saving(void (*done)(void *), void *data);
 

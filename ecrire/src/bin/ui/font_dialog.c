@@ -60,7 +60,8 @@ _set_clicked(void *data,
 
 
 Evas_Object *
-ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry)
+ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry, const char *pfont,
+      int size)
 {
    Evas_Object *win, *bg, *bx, *btn, *hbx, *lbl;
 
@@ -107,6 +108,7 @@ ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry)
    elm_spinner_wrap_set(fsize, EINA_FALSE);
    elm_object_style_set (fsize, "vertical");
    elm_spinner_min_max_set(fsize, 0, 72);
+   elm_spinner_value_set(fsize, size);
    evas_object_size_hint_align_set(fsize, 0.0, 0.5);
    elm_box_pack_end(hbx, fsize);
    evas_object_show(fsize);
@@ -121,19 +123,30 @@ ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry)
 
    /* Populate list */
      {
+        Elm_Object_Item *cur_font = NULL;
         const char *font;
         Eina_List *flist, *itr;
 
         flist = _font_list_get(evas_object_evas_get(list));
         EINA_LIST_FOREACH(flist, itr, font)
           {
-             elm_list_item_append(list, font, NULL, NULL, NULL, NULL);
+             Elm_Object_Item *tmp;
+             tmp = elm_list_item_append(list, font, NULL, NULL, NULL, NULL);
+             if (pfont && !strcmp(pfont, font))
+               {
+                  cur_font = tmp;
+               }
           }
 
         EINA_LIST_FREE(flist, font)
            eina_stringshare_del(font);
-     }
 
+        if (cur_font)
+          {
+             elm_list_item_bring_in(cur_font);
+             elm_list_item_selected_set(cur_font, EINA_TRUE);
+          }
+     }
 
    /* Forcing it to be the min height. */
    evas_object_resize(win, 300, 500);
