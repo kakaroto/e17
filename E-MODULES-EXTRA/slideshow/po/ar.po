@@ -1,15 +1,15 @@
-# Arabic translation for enlightenment
+# Arabic translation for slideshow
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# sameeer hussain <almusalimalmusalimah@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:01-0700\n"
-"PO-Revision-Date: 2011-02-23 09:34+0300\n"
-"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,16 +28,16 @@ msgstr "وقت الدورة"
 
 #: ../src/e_mod_config.c:92
 msgid "Disable Timer"
-msgstr "تعطيل الموقت"
+msgstr "عطِّل الموقت"
 
 #: ../src/e_mod_config.c:95
 #, c-format
 msgid "%3.0f seconds"
-msgstr "%3.0f ثواني"
+msgstr "%3.0f ثوان"
 
 #: ../src/e_mod_config.c:100
 msgid "Directory"
-msgstr "المسار"
+msgstr "المجلد"
 
 #: ../src/e_mod_config.c:102
 msgid "Sub-directory to use for backgrounds"
@@ -49,7 +49,7 @@ msgstr "إضافية"
 
 #: ../src/e_mod_config.c:110
 msgid "Randomize order"
-msgstr "عرض عشوائي"
+msgstr "ترتيب عشوائي"
 
 #: ../src/e_mod_config.c:113
 msgid "Set wallpaper on all desktops"

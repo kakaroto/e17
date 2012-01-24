@@ -1,0 +1,34 @@
+# Everything-pidgin module, Arabic translation
+# This file is put in the public domain.
+# sameeer hussain <almusalimalmusalimah@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Everything-pidgin module\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2010-05-30 21:21+0200\n"
+"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
+"Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: SAUDI ARABIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: src/e_mod_main.c:609
+msgid "Pidgin"
+msgstr "بِدجِن"
+
+#: src/e_mod_main.c:614
+msgid "Chat"
+msgstr "محادثات"
+
+#: src/e_mod_main.c:617
+msgid "Send File"
+msgstr "أرسل ملفا"
+
+#: src/e_mod_main.c:620
+msgid "Write Message"
+msgstr "اكتب رسالةً"
+

@@ -1,15 +1,15 @@
 # Arabic translation for enlightenment
 # Copyright (c) 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# sameeer hussain <almusalimalmusalimah@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2011-02-23 14:25+0300\n"
-"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,7 +32,7 @@ msgstr "أظهر النص"
 
 #: ../src/e_mod_configure.c:119
 msgid "Show Popup On Mouse-Over"
-msgstr "أظهر النافذة المنبثقة عند مرور الفأرة"
+msgstr "أظهر المنبثقة عند مرور الفأرة"
 
 #: ../src/e_mod_configure.c:121
 msgid "Launch Application On Double-Click"
@@ -44,11 +44,11 @@ msgstr "مستوى نشاط التنبيه"
 
 #: ../src/e_mod_configure.c:129
 msgid "High (MB)"
-msgstr "عالي (م.ب.)"
+msgstr "عالي (م.ب)"
 
 #: ../src/e_mod_configure.c:131
 msgid "Middle (KB)"
-msgstr "متوسط (ك.ب.)"
+msgstr "متوسط (ك.ب)"
 
 #: ../src/e_mod_configure.c:133
 msgid "Low (B)"

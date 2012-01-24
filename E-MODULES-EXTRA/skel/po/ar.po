@@ -1,15 +1,15 @@
-# Arabic translation for enlightenment
+# Arabic translation for skel
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# sameeer hussain <almusalimalmusalimah@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:01-0700\n"
-"PO-Revision-Date: 2011-02-23 09:35+0300\n"
-"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. create our config dialog
 #: ../src/e_mod_config.c:44
 msgid "Skeleton Module"
-msgstr "وحدة الهيكل العضمي"
+msgstr "وحدة Skeleton"
 
 #: ../src/e_mod_config.c:84
 msgid "General"
@@ -38,11 +38,11 @@ msgstr "الهيكل"
 
 #: ../src/e_mod_main.c:113
 msgid "Skeleton Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
-msgstr "بيانات تكوينات وحدة الهيكل العظمي تحتاج للترقية. تكويناتك القديمة<br> قد أُزيلت وتشكيلة أخرى من اﻹفتراضيات تمت تهيئتها. سيحدث<br>بشكل منتظم أثناء التطوير, لذا لا ترسل تقريرا<br>بعلة. هذا يعني بكل بساطة أن الوحدة تحتاج لبيانات تكوينات <br>جديدة لوظائف يمكن استخدامها بشكل افتراضي لتكويناتك <br>القديمة التي تفتقر إليها. هذه التشكيلة الجديدة من اﻹفتراضيات ستصلح<br>ذلك عبر إضافتها فيها. يمكنك إعادة تكويناﻷشياء اﻵن حسب<br>رغبتك. نأسف ﻹزعاجك.<br>"
+msgstr "بيانات إعدادات وحدة الهيكل العظمي بحاجة للترقية. إعداداتك القديمة<br> قد أُزيلت و واحدة أخرى جديدة و افتراضية قد هيئت .<br>سيحدث هذا بانتظام أثناء التطوير ، لذا لا تبلغ بوجود<br>علة. هذا يعني بكل بساطة أن الوحدة تحتاج لبيانات إعدادات جديدة <br>إفتراضيا لتحصل على أداء أفضل<br>كانت إعداداتك القديمة تفتقر لتوفيره. هذه اﻹعدادات الجديدة ستصلح<br>ذلك عبر إضافتها فيها. يمكنك اﻵن إعادة إعداد اﻷشياء حسب<br>رغبتك. نأسف ﻹزعاجك.<br>"
 
 #: ../src/e_mod_main.c:133
 msgid "Your Skeleton Module configuration is NEWER than the module version. This is very<br>strange. This should not happen unless you downgraded<br>the module or copied the configuration from a place where<br>a newer version of the module was running. This is bad and<br>as a precaution your configuration has been now restored to<br>defaults. Sorry for the inconvenience.<br>"
-msgstr "تكوين وحدة الهيكل العظمي لديك أحدث من إصدارة الوحدة. هذا<br>غريب. لن يحدث هذا إلا إذا خفضت<br>إصدارة الوحدة أو نسخت التكوينات من مكان آخر<br>يحتوي على آخر إصدارة من الوحدة تعمل لديه . هذا سيء<br>و كإجراء إحتياطي فإن تكويناتك قد تمت استعادتها إلى<br>اﻹفتراضيات. نأسف ﻹزعاجك.<br>"
+msgstr "إعدادك لوحدة الهيكل العظمي أحدث من إصدارة الوحدة. هذا غريب<br>جدا. لا يجب لهذا أن يحدث إلا إذا خفضت<br>إصدار الوحدة أو نسختَ اﻹعدادات من مكان آخر<br>يحتوي نسخة جديدة من الوحدة تعمل عليه. هذا سيء<br>و كإجراء إحترازي فإن إعداداتك ستعاد إلى<br>اﻹفتراضيات. نأسف ﻹزعاجك.<br>"
 
 #: ../src/e_mod_main.c:300
 msgid "Skeleton"
@@ -50,7 +50,7 @@ msgstr "الهيكل العضمي"
 
 #: ../src/e_mod_main.c:385
 msgid "Skeleton Configuration Updated"
-msgstr "تكوينات الهيكل العظمي تم تحديثها"
+msgstr "إعدادات الهيكل العظمي حُدِّثت"
 
 #: ../src/e_mod_main.c:447
 msgid "Settings"

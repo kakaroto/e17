@@ -1,0 +1,159 @@
+# Everything-websearch module, Arabic translation.
+# This file is put in the public domain.
+# almusalimalmusalimah <almusalimalmusalimah@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Everything-websearch\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2011-11-21 08:07+0100\n"
+"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
+"Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: SAUDI ARABIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: src/e_mod_main.c:587
+#: src/e_mod_main.c:1391
+msgid "Translate"
+msgstr "ترجم"
+
+#: src/e_mod_main.c:736
+msgid "Abort download"
+msgstr "الغِ التنزيل"
+
+#: src/e_mod_main.c:781
+#, c-format
+msgid "Got %d kbytes of"
+msgstr "لديك %d كيلوبايت من"
+
+#: src/e_mod_main.c:795
+msgid "Enqueue in Playlist"
+msgstr "ضُمه في قائمة التشغيل"
+
+#: src/e_mod_main.c:799
+msgid "Enqueue"
+msgstr "ضُمَّ"
+
+#: src/e_mod_main.c:802
+msgid "Play File"
+msgstr "اقرأ ملفا"
+
+#: src/e_mod_main.c:806
+msgid "Play"
+msgstr "اقرأ"
+
+#: src/e_mod_main.c:836
+msgid "Finished download"
+msgstr "التنزيلات المنتهية"
+
+#: src/e_mod_main.c:922
+msgid "Start download"
+msgstr "إبدأ التنزيل"
+
+#: src/e_mod_main.c:1004
+msgid "Enqueue files for download"
+msgstr "ضُم الملفات للتحميل"
+
+#: src/e_mod_main.c:1021
+#: src/e_mod_main.c:1397
+msgid "Youtube"
+msgstr "Youtube"
+
+#: src/e_mod_main.c:1062
+#: src/e_mod_main.c:1067
+#: src/e_mod_main.c:1094
+#: src/e_mod_main.c:1155
+msgid "Upload Image"
+msgstr "رفع صورة"
+
+#: src/e_mod_main.c:1062
+msgid "Link copied to clipboard"
+msgstr "نُسِخ الرابط إلى الحافظة"
+
+#: src/e_mod_main.c:1067
+msgid "Something went wrong :("
+msgstr "هنالك شيء خاطئ :("
+
+#: src/e_mod_main.c:1092
+#, c-format
+msgid "Completed %1.1f%% of %s"
+msgstr "أُكمِل %1.1f%% من %s"
+
+#: src/e_mod_main.c:1364
+#: src/e_mod_main.c:1536
+#: src/e_mod_main.c:1555
+msgid "Everything Websearch"
+msgstr "كل شيء - بحث الوِب"
+
+#: src/e_mod_main.c:1378
+msgid "General"
+msgstr "عام"
+
+#: src/e_mod_main.c:1381
+msgid "Browser"
+msgstr "المتصفح"
+
+#: src/e_mod_main.c:1386
+msgid "Language"
+msgstr "اللغة"
+
+#: src/e_mod_main.c:1400
+msgid "Video player"
+msgstr "قارئ الفيديو"
+
+#: src/e_mod_main.c:1405
+msgid "Download directory"
+msgstr "مجلد التنزيلات"
+
+#: src/e_mod_main.c:1410
+msgid "Download requires mplayer and mp3lame"
+msgstr "يتطلب التنزيل وجود mplayer و mp3lame"
+
+#: src/e_mod_main.c:1533
+msgid "Launcher"
+msgstr "مُطلِق"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "Wikipedia"
+#~ msgstr "Wikipedia"
+
+#~ msgid "Google for it"
+#~ msgstr "Recherche Google"
+
+#~ msgid "Wikipedia Page"
+#~ msgstr "Page Wikipedia"
+
+#~ msgid "Feeling Lucky"
+#~ msgstr "J'ai de la chance"
+
+#~ msgid "Watch on Youtube"
+#~ msgstr "Regarder sur Youtube"
+
+#~ msgid "Download as Audio"
+#~ msgstr "Télécharger en tant que fichier audio"
+
+#~ msgid "Play Video"
+#~ msgstr "Lire la vidéo"
+
+#~ msgid "Download and enqueue"
+#~ msgstr "Télécharger et mettre dans la file"
+
+#~ msgid "Download and play"
+#~ msgstr "Télécharger et lire"
+
+#~ msgid "Extensions"
+#~ msgstr "Extensions"
+
+#~ msgid "Youtube converter"
+#~ msgstr "Convertisseur Youtube"
+
+#~ msgid "Image Sent"
+#~ msgstr "Image envoyée"

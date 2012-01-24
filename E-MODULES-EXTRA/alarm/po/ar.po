@@ -1,15 +1,15 @@
 # Arabic translation for enlightenment
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# sameeer hussain <almusalimalmusalimah>, 2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: enlightenment\n"
+"Project-Id-Version: alarm module\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2011-02-23 18:01+0300\n"
-"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"PO-Revision-Date: 2012-01-22 22:17+0300\n"
+"Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,19 +31,19 @@ msgstr "المنبه"
 #: ../src/e_mod_config.c:154
 #: ../src/e_mod_config_alarm.c:187
 msgid "Active"
-msgstr "نشيط"
+msgstr "مفعّل"
 
 #: ../src/e_mod_config.c:163
 msgid "Add"
-msgstr "إضافة"
+msgstr "أضف"
 
 #: ../src/e_mod_config.c:165
 msgid "Delete"
-msgstr "حذف"
+msgstr "أمحِ"
 
 #: ../src/e_mod_config.c:167
 msgid "Configure"
-msgstr "إضبط"
+msgstr "اضبط"
 
 #: ../src/e_mod_config.c:169
 msgid "Duplicate"
@@ -68,12 +68,12 @@ msgstr "اعرض المنبه التالي"
 
 #: ../src/e_mod_config.c:241
 msgid "Alarms Defaults"
-msgstr "إفتراضيات المنبه"
+msgstr "افتراضيات المنبه"
 
 #: ../src/e_mod_config.c:243
 #: ../src/e_mod_config_alarm.c:401
 msgid "Open popup"
-msgstr "افتحت نافذة منبثقة"
+msgstr "افتح نافذة منبثقة"
 
 #: ../src/e_mod_config.c:246
 msgid "Run program"
@@ -85,7 +85,7 @@ msgstr "إزالة تلقائية للمنبهات"
 
 #: ../src/e_mod_config_alarm.c:68
 msgid "Alarm Configuration : Setup an alarm"
-msgstr "تكوينات المنبه : اضبط منبها"
+msgstr "إعدادات المنبه : اضبط منبها"
 
 #: ../src/e_mod_config_alarm.c:185
 msgid "Informations"
@@ -101,7 +101,7 @@ msgstr "الوصف"
 
 #: ../src/e_mod_config_alarm.c:204
 msgid "Schedule"
-msgstr "جدول"
+msgstr "جدوِل"
 
 #: ../src/e_mod_config_alarm.c:206
 #, c-format
@@ -151,7 +151,7 @@ msgstr "يوم واحد"
 
 #: ../src/e_mod_config_alarm.c:240
 msgid "Date (YYYY/MM/DD)"
-msgstr "التاريخ (YYYY/MM/DD)"
+msgstr "التاريخ (سنة/شهر/يوم)"
 
 #: ../src/e_mod_config_alarm.c:245
 msgid "Today"
@@ -163,11 +163,11 @@ msgstr "غدًا"
 
 #: ../src/e_mod_config_alarm.c:285
 msgid "<hilight>Error, The alarm was not added !</hilight><br><br>There is an error in the informations / schedule of your alarm"
-msgstr "<hilight>خطأ ، المنبه لم يضف !</hilight><br><br>كن هنالك خطأ في معلومات / جدولة المنبه"
+msgstr "<hilight>خطأ ، المنبه لم يضف !</hilight><br><br>كان هنالك خطأ في معلومات / جدولة المنبه"
 
 #: ../src/e_mod_config_alarm.c:290
 msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter a name for the alarm"
-msgstr "<hilight>خطأ ، المنبه لي يضف !</hilight><br><br>يتوجب عليك إدخال إسم للمنبه"
+msgstr "<hilight>خطأ ، المنبه لم يضف !</hilight><br><br>يتوجب عليك إدخال إسم للمنبه"
 
 #: ../src/e_mod_config_alarm.c:295
 msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to select at least one day in the week"
@@ -175,29 +175,29 @@ msgstr "<hilight>خطأ ، المنبه لم يضف !</hilight><br><br>يتوج�
 
 #: ../src/e_mod_config_alarm.c:300
 msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered for the alarm has incorrect syntax<br><br>You have to respect this format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the month on 2 numbers<br>DD is the day on 2 numbers<br>"
-msgstr "<hilight>خطأ ،المنبه لم يضف !</hilight><br><br>التاريخ الذي أدخلته للمنبه يخالف النسق المتبع<br><br>يجب أن تتبع هذه الصيغة :<br>   سنة/شهر/يوم<br>حيث ( سنة ) تتكون من 4 أرقام<br>( شهر ) يتكون من رقمين<br>( يوم ) كذلك يتكون من رقمين<br>"
+msgstr "<hilight>خطأ ،المنبه لم يضف !</hilight><br><br>التاريخ الذي أدخلته للمنبه يخالف النسق المتبع<br><br>يجب أن تتبع هذه الصيغة :<br>   سنة/شهر/يوم<br>حيث  سنة  تتكون من 4 أرقام<br>شهر  يتكون من رقمين<br>كذلك يوم يتكون من رقمين<br>"
 
 #: ../src/e_mod_config_alarm.c:310
 msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered is before now"
-msgstr "<hilight>خطأ ، المنبه لم يضف !</hilight><br><br>التاريخ الذي أدخلته يسبق تاريخ اليوم"
+msgstr "<hilight>خطأ ، المنبه لم يضف !</hilight><br><br>التاريخ الذي أدخلته يسبق تاريخ يومنا هذا"
 
 #: ../src/e_mod_config_alarm.c:314
 #: ../src/e_mod_main.c:424
 msgid "Alarm Module Error"
-msgstr "خطأ وحدة المنبة"
+msgstr "خطأ وحدة المنبه"
 
 #: ../src/e_mod_config_alarm.c:351
 #: ../src/e_mod_config_alarm.c:439
 msgid "Test this alarm"
-msgstr "إفحص هذا المنبه"
+msgstr "افحص هذا المنبه"
 
 #: ../src/e_mod_config_alarm.c:379
 msgid "Ring Options"
-msgstr "إعدادات الرنين"
+msgstr "خيارات الرنين"
 
 #: ../src/e_mod_config_alarm.c:381
 msgid "Remove alarm"
-msgstr "إزالة المنبه"
+msgstr "أزل منبها"
 
 #: ../src/e_mod_config_alarm.c:388
 #: ../src/e_mod_config_alarm.c:408
@@ -234,7 +234,7 @@ msgstr "شغل هذا البرنامج"
 
 #: ../src/e_mod_config_alarm.c:475
 msgid "<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE the alarms<br>via the 'Active' check button on the<br>main Alarm configuration panel."
-msgstr "<hilight>نجح اختبار المنبه !</hilight><br><br>لكن لا تنسَ تفعيل المنبه<br>عبر زر خانة تحديد 'تفعيل' المتواجد<br>بلوحة التكوينات الرئيسية للمنبه"
+msgstr "<hilight>نجح اختبار المنبه !</hilight><br><br>لكن لا تنسَ تفعيل المنبه<br>عبر زر خانة تحديد 'تفعيل' المتواجد<br>في لوحة إعدادات المنبه الرئيسية"
 
 #: ../src/e_mod_config_alarm.c:481
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
@@ -270,12 +270,12 @@ msgstr "غفوة %s"
 #: ../src/e_mod_main.c:660
 #, c-format
 msgid "%1.0f hours"
-msgstr "%1.0f ساعة/ساعات"
+msgstr "%1.0f ساعات"
 
 #: ../src/e_mod_main.c:663
 #, c-format
 msgid "%1.0f minutes"
-msgstr "%1.0f دقيقة/دقائق"
+msgstr "%1.0f دقائق"
 
 #: ../src/e_mod_main.c:670
 msgid "Ok"
@@ -296,26 +296,26 @@ msgstr "الغفوة ( دون تنبيه للتأخير )"
 
 #: ../src/e_mod_main.c:865
 msgid "Add an alarm"
-msgstr "أضف منبه"
+msgstr "أضف منبها"
 
 #: ../src/e_mod_main.c:872
 msgid "Settings"
-msgstr "اﻹعدادات"
+msgstr "إعدادات"
 
 #: ../src/e_mod_main.c:1053
 #, c-format
 msgid "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your configuration of alarm module<br>has been upgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>وحدة المنبه : رُقيت التكوينات</hilight><br><br>تكويناتك لوحدة المنبه<br>رُقيت<br>إعداداتك و كذلك المنبهات أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d -> %d)"
+msgstr "<hilight>وحدة المنبه : رُقيت اﻹعدادات</hilight><br><br>إعداداتك لوحدة المنبه<br>رُقيت<br>إعداداتك و كذلك المنبهات أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d -> %d)"
 
 #: ../src/e_mod_main.c:1059
 #: ../src/e_mod_main.c:1073
 msgid "Alarm Module version "
-msgstr "إصدارة وحدة المنبه"
+msgstr "إصدار وحدة المنبه"
 
 #: ../src/e_mod_main.c:1067
 #, c-format
 msgid "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your configuration of Alarm module<br>has been downgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>وحدة المنبه : التكوينات تم خفضها</hilight><br><br>تكويناتك لوحدة المنبه<br>تم خفضها<br>إعداداتك و كذلك المنبهات أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d ->%d)"
+msgstr "<hilight>وحدة المنبه : اﻹعدادات خُفّضت</hilight><br><br>إعداداتك لوحدة المنبه<br>خُفّضت<br>إعداداتك و كذلك المنبهات أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d ->%d)"
 
 #~ msgid "Configuration"
 #~ msgstr "الإعدادات"

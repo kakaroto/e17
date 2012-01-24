@@ -1,15 +1,15 @@
 # Arabic translation for enlightenment
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# sameeer hussain <almusalimalmusalimah@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-17 06:01-0800\n"
-"PO-Revision-Date: 2011-02-26 06:47+0300\n"
-"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,6 +27,7 @@ msgid "Photo Module"
 msgstr "وحدة الصورة "
 
 #: ../src/e_mod_main.c:53
+#, fuzzy
 msgid "E Canvas init failed !"
 msgstr "فشلت تهيئة رقعة الرسم ( اللوحة الزيتية ) E"
 
@@ -36,7 +37,7 @@ msgstr "فشلت تهيئة السمات !"
 
 #: ../src/e_mod_main.c:67
 msgid "Config init failed"
-msgstr "فشلت تهيئة التكوينات"
+msgstr "فشلت تهيئة اﻹعدادات"
 
 #: ../src/e_mod_main.c:74
 #, fuzzy
@@ -60,7 +61,7 @@ msgstr "الصورة"
 #: ../src/photo_config.c:65
 #, c-format
 msgid "<hilight>Photo module : Configuration Upgraded</hilight><br><br>Your configuration of photo module<br>has been upgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>وحدة الصورة : التكوينات رُقيت</hilight><br><br>تكويناتك لوحدة الصورة الفوتوغرافية<br>رُقيت<br>إعداداتك أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d -> %d)"
+msgstr "<hilight>وحدة الصورة : اﻹعدادات رُقيت</hilight><br><br>إعداداتك لوحدة الصورة <br>رُقيت<br>و ضبطك السابق أُزيل<br>نأسف ﻹزعاجك<br><br>(%d -> %d)"
 
 #: ../src/photo_config.c:71
 #: ../src/photo_config.c:85
@@ -70,7 +71,7 @@ msgstr "إصدارة وحدة الصورة "
 #: ../src/photo_config.c:79
 #, c-format
 msgid "<hilight>Photo module : Configuration Downgraded</hilight><br><br>Your configuration of Photo module<br>has been downgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>وحدة الصورة : التكوينات خفضت</hilight><br><br>تكويناتك لوحدة الصورة الفوتوغرافية<br>خفضت<br>إعداداتك أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d ->%d)"
+msgstr "<hilight>وحدة الصورة : اﻹعدادات خفضت</hilight><br><br>إعداداتك لوحدة الصورة <br>خفضت<brو ضبطك السابق أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d ->%d)"
 
 #: ../src/photo_config_dialog.c:64
 msgid "Photo Configuration"
@@ -82,15 +83,15 @@ msgstr "مجلدات الصور"
 
 #: ../src/photo_config_dialog.c:235
 msgid "Add"
-msgstr "إضافة"
+msgstr "أضِف"
 
 #: ../src/photo_config_dialog.c:237
 msgid "Delete"
-msgstr "حذف"
+msgstr "امحِ"
 
 #: ../src/photo_config_dialog.c:239
 msgid "Configure"
-msgstr "إضبط"
+msgstr "اضبط"
 
 #: ../src/photo_config_dialog.c:242
 msgid "Reload picture directories"
@@ -108,11 +109,11 @@ msgstr "المظهر"
 #: ../src/photo_config_dialog.c:254
 #: ../src/photo_config_dialog_item.c:136
 msgid "Always show label"
-msgstr "دائماً اعرض العلامة"
+msgstr "دائماً اعرض العنوان"
 
 #: ../src/photo_config_dialog.c:256
 msgid "Nice transitions"
-msgstr "التحولات الجميلة"
+msgstr "تنقالات جميلة"
 
 #: ../src/photo_config_dialog.c:262
 msgid "Default Mouse actions"
@@ -126,19 +127,19 @@ msgstr "فوق"
 #: ../src/photo_config_dialog.c:268
 #: ../src/photo_config_dialog_item.c:195
 msgid "Left"
-msgstr "اليسار"
+msgstr "يسار"
 
 #: ../src/photo_config_dialog.c:270
 #: ../src/photo_config_dialog.c:276
 #: ../src/photo_config_dialog_item.c:197
 #: ../src/photo_config_dialog_item.c:203
 msgid "click"
-msgstr "انقر"
+msgstr "نقرة"
 
 #: ../src/photo_config_dialog.c:274
 #: ../src/photo_config_dialog_item.c:201
 msgid "Middle"
-msgstr "الوسط"
+msgstr "وسط"
 
 #: ../src/photo_config_dialog.c:279
 #: ../src/photo_config_dialog_item.c:142
@@ -147,11 +148,11 @@ msgstr "لا"
 
 #: ../src/photo_config_dialog.c:318
 msgid "Popups"
-msgstr "النوافذ المنبثقة"
+msgstr "المنبثقات"
 
 #: ../src/photo_config_dialog.c:320
 msgid "Picture loader popup"
-msgstr "نافذة محمل الصور المنبثقة"
+msgstr "منبثقة محمل الصور"
 
 #: ../src/photo_config_dialog.c:323
 msgid "Never"
@@ -171,7 +172,7 @@ msgstr "متنوع"
 
 #: ../src/photo_config_dialog.c:334
 msgid "Remove generated backgrounds"
-msgstr "إزالة الخلفيات المكونة"
+msgstr "أزل الخلفيات المكونة"
 
 #: ../src/photo_config_dialog.c:338
 msgid "Pictures viewer"
@@ -179,7 +180,7 @@ msgstr "عارض الصور"
 
 #: ../src/photo_config_dialog.c:344
 msgid "Images Quality"
-msgstr "دقة الصور"
+msgstr "جودة الصور"
 
 #: ../src/photo_config_dialog.c:346
 #, c-format
@@ -188,15 +189,15 @@ msgstr "%1.0f بكسل"
 
 #: ../src/photo_config_dialog.c:353
 msgid "Automaticly reload directories"
-msgstr "أعد تحميل المسارات تلقائيا"
+msgstr "أعد تحميل المجلدات تلقائيا"
 
 #: ../src/photo_config_dialog.c:356
 msgid "when add / modify directory list"
-msgstr "عند إضافة / تعديل قائمة المسار"
+msgstr "عند إضافة / تعديل قائمة المجلدات"
 
 #: ../src/photo_config_dialog.h:36
 msgid "Show label"
-msgstr "اعرض العلامة"
+msgstr "اعرض العنوان"
 
 #: ../src/photo_config_dialog.h:38
 msgid "Show informations"
@@ -219,7 +220,7 @@ msgstr "إيقاف مؤقت"
 #: ../src/photo_config_dialog.h:46
 #: ../src/photo_menu.c:59
 msgid "Set as background"
-msgstr "إجعلها الخلفية"
+msgstr "إجعلها كخلفية"
 
 #: ../src/photo_config_dialog.h:48
 msgid "Open viewer"
@@ -227,11 +228,11 @@ msgstr "إفتح العارض"
 
 #: ../src/photo_config_dialog.h:50
 msgid "Show menu"
-msgstr "إظهار القائمة"
+msgstr "اظهر القائمة"
 
 #: ../src/photo_config_dialog_dir.c:38
 msgid "Photo Directory Configuration"
-msgstr "إعدادات مجلد الصور"
+msgstr "إعداد مجلد الصور"
 
 #: ../src/photo_config_dialog_dir.c:118
 msgid "Directory"
@@ -239,7 +240,7 @@ msgstr "المجلد"
 
 #: ../src/photo_config_dialog_dir.c:127
 msgid "Loading options"
-msgstr "جاري تحميل الخيارات"
+msgstr "خيارات التحميل"
 
 #: ../src/photo_config_dialog_dir.c:129
 msgid "Recursive"
@@ -247,7 +248,7 @@ msgstr "تكرار"
 
 #: ../src/photo_config_dialog_dir.c:131
 msgid "Read hidden files"
-msgstr "إقرأ الملفات المخفية"
+msgstr "اقرأ الملفات المخفية"
 
 #: ../src/photo_config_dialog_dir.c:158
 msgid "Photo Module Warning"
@@ -255,7 +256,7 @@ msgstr "تحذير وحدة الصور "
 
 #: ../src/photo_config_dialog_item.c:48
 msgid "Photo Item Configuration"
-msgstr "تكوينات عنصر الصور "
+msgstr "إعداد عنصر الصور "
 
 #: ../src/photo_config_dialog_item.c:112
 msgid "Timer between pictures change"
@@ -263,12 +264,12 @@ msgstr "توقيت التغيير بين الصور"
 
 #: ../src/photo_config_dialog_item.c:114
 msgid "Activate"
-msgstr "نشط"
+msgstr "فعّل"
 
 #: ../src/photo_config_dialog_item.c:117
 #, c-format
 msgid "%1.0f seconds"
-msgstr "%1.0f ثواني"
+msgstr "%1.0f ثوان"
 
 #: ../src/photo_config_dialog_item.c:129
 msgid "Alpha"
@@ -295,7 +296,7 @@ msgstr "إجراءات الفأرة"
 #: ../src/photo_item.c:389
 #, c-format
 msgid "<hilight>File %s doesnt exists.</hilight><br><br>This file is in Photo module picture list, but it seems you removed it from the disk<br>It cant be set as background, sorry."
-msgstr "<hilight>لا يوجد الملف %s أساسا.</hilight><br><br>هذا الملف موجود في قائمة صورة وحدة الصور  ، لكنك على ما يبدو أنك قد أزلته من القرص<br>نأسف ، لا يمكن ضبطها كخلفية."
+msgstr "<hilight>لا يوجد الملف %s أساسا.</hilight><br><br>هذا الملف موجود في قائمة صور وحدة الصور  ، لكنك على ما يبدو قد أزلته من القرص<br>نأسف ، لا يمكن ضبطها كخلفية."
 
 #: ../src/photo_item.c:392
 #: ../src/photo_item.c:417
@@ -303,22 +304,22 @@ msgstr "<hilight>لا يوجد الملف %s أساسا.</hilight><br><br>هذا
 #: ../src/photo_item.c:475
 #: ../src/photo_picture_local.c:259
 msgid "Photo Module Error"
-msgstr "خطأ بوحدة الصور الفوتوغرافية"
+msgstr "خطأ بوحدة الصور"
 
 #: ../src/photo_item.c:413
 #, c-format
 msgid "<hilight>e17setroot needed</hilight><br><br>%s is not an edje file !<br>Photo module needs e17setroot util from e_utils package to set you're picture as backgroundPlease install it and try again"
-msgstr "<hilight>يحتاج e17setroot لـ</hilight><br><br>%s كما أنه لسي بملف edje !<br>تحتاج وحدة الصورة  لـ e17setroot util من حزمة e_utils ﻷجل ضبط صورتك كخلفية لذا رجاء قم بتنصيبها قم عاود الكرّة"
+msgstr "<hilight>يُحتاج e17setroot لـ</hilight><br><br> كما أن %s ليس بملف edje !<br>تحتاج وحدة الصورة  لـ e17setroot util من حزمة e_utils ﻷجل ضبط صورتك كخلفية لذا رجاء قم بتنصيبها قم عاود الكرّة"
 
 #: ../src/photo_item.c:452
 #, c-format
 msgid "<hilight>File %s doesnt exists !</hilight><br><br>This file is in Photo's module picture list, but it seems you removed it from the disk.<br>It cant be set opened in a viewer, sorry."
-msgstr "<hilight>الملف %s غير موجود أساسا !</hilight><br><br>هذا الملف موجود في قائمة صورة وحدة الصور  ، لكنك على ما يبدو أنك قد أزلته من القرص.<br>نأسف ، لا يمكن تعيينها مفتوحة في العارض."
+msgstr "<hilight>الملف %s غير موجود أساسا !</hilight><br><br>هذا الملف موجود في قائمة صورة وحدة الصور  ، لكنك على ما يبدو أنك قد أزلته من القرص.<br>نأسف ، لا يمكن جعلها مفتوحة في العارض."
 
 #: ../src/photo_item.c:472
 #, c-format
 msgid "<hilight>Viewer %s not found !</hilight><br><br>You can change the viewer for images in Photo module configuration panel (Advanced view)"
-msgstr "<hilight>لم يتم العثور على العارض %s !</hilight><br><br>يمكنك تغيير عارض الصور من لوحة تكوينات وحدة الصورة  (عرض متطور )."
+msgstr "<hilight>لم يُعثر على العارض %s !</hilight><br><br>يمكنك تغيير عارض الصور من لوحة إعداد وحدة الصورة  (عرض متطور )."
 
 #: ../src/photo_menu.c:31
 msgid "Pause slideshow"
@@ -352,7 +353,7 @@ msgstr "تاريخي"
 #: ../src/photo_picture_local.c:253
 #, c-format
 msgid "<hilight>Directory %s doesnt exists.</hilight><br><br>You can change the picture's folders in main configuration panel<br>They can be jpeg or png<br><br>After import, if you can remove these files and the pictures still can<br>be viewed, but you wont be able to set them as wallpaper anymore<br><br>"
-msgstr "<hilight>المسار %s غير موجود أساسا.</hilight><br><br>يمكنك تغيير مجلدات الصور في لوحة التكوينات الرئيسية<br>بامكانك جعلها بأحد الصيغتين jpeg أو png<br><br>ليكن في علمك : بعد اﻹستيراد ، إذا كان بإمكانك حذف هذه الملفات لكن لا زال بإمكانك استعراض الصور <br>فلن يكون بمقدورك تعيينها كخلفية نهائيا<br><br>"
+msgstr "<hilight>المجلد %s غير موجود أساسا.</hilight><br><br>يمكنك تغيير مجلدات الصور في لوحة اﻹعدادا الرئيسية<br>من الممكن أن تكون بأحد الصيغتين jpeg أو png<br><br>بعد اﻹستيراد ، إذا كان بإمكانك حذف هذه الملفات لكن لا زال بإمكانك استعراض الصور <br>فلن يكون بمقدورك تعيينها كخلفية نهائيا<br><br>"
 
 #: ../src/photo_picture_local.c:591
 msgid "Photo Module Information"
@@ -360,5 +361,5 @@ msgstr "معلومات وحدة الصورة "
 
 #: ../src/photo_picture_local.c:592
 msgid "<hilight>Creating thumbs</hilight><br><br>Some pictures are being thumbed in a <hilight>background task</hilight>.<br>It can take a while, but after, loading will be faster and lighter :)<br><br>Each time wou will load pictures that haven't been loaded in Photo module before,<br>they will be thumbed.<br><br>While creating popups, you will not be able to see any picture in Photo.<br>I hope i'll be able to change that :)"
-msgstr "<hilight>إنشاء  thumbs</hilight><br><br>بعض الصور تم thumbed في <hilight>مهمة الخلفية</hilight>.<br>ستستغرق العملية وقتا، لكن بعد اﻹنتهاء ستكون العملية سريعة و خفيفة :)<br><br>كل مرة تقوم بتحميل صور لم يسبق و أن حملت في وحدة الصورة  <br>ستكون thumbed.<br><br>ريثما يتم إنشاء المنبثقات، لن يكون بإمكانك رؤية اية صورة.<br>أأمل في أن أصلح ذلك لاحقا :)"
+msgstr "<hilight>إنشاء  مصغرات</hilight><br><br>بعض الصور صُغِّرت في <hilight>جدولة مهام الخلفية</hilight>.<br>ستستغرق العملية وقتا، لكن بعد اﻹنتهاء ستكون العملية سريعة و خفيفة :)<br><br>كل مرة تقوم بتحميل صور لم يسبق و أن حملت في وحدة الصورة  <br>ستكون مُصغّرة.<br><br>ريثما يتم إنشاء المنبثقات، لن يكون بإمكانك رؤية اية صورة.<br>أأمل في أن أصلح ذلك لاحقا :)"
 

@@ -1,15 +1,15 @@
 # Arabic translation for enlightenment
 # Copyright (c) 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# sameeer hussain <almusalimalmusalimah@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-16 14:00-0800\n"
-"PO-Revision-Date: 2011-02-24 18:01+0300\n"
-"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: ../src/e_mod_main.c:52
 msgid "Config init failed"
-msgstr "فشلت تهيئة التكوينات"
+msgstr "فشلت تهيئة اﻹعدادات"
 
 #: ../src/e_mod_main.c:53
 msgid "Parser init failed"
@@ -46,12 +46,12 @@ msgstr "اﻷخبار"
 #: ../src/news_config.c:100
 #, c-format
 msgid "<hilight>News module : Configuration Upgraded</hilight><br><br>Your configuration of news module<br>has been upgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>وحدة اﻷخبار : التكوينات رُقيت</hilight><br><br>تكويناتك لوحدة اﻷخبار<br>رُقيت<br>و إعداداتك أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d -> %d)"
+msgstr "<hilight>وحدة اﻷخبار : اﻹعدادات رُقيت</hilight><br><br>إعداداتك لوحدة اﻷخبار<br>رُقيت<br>و إعداداتك أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d -> %d)"
 
 #: ../src/news_config.c:112
 #, c-format
 msgid "<hilight>News module : Configuration Downgraded</hilight><br><br>Your configuration of News module<br>has been downgraded<br>Your settings were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>وحدة اﻷخبار : تم تخفيض التكوينات</hilight><br><br>تكويناتك لوحدة اﻷخبار<br>تم تخفيضها<br>و إعداداتك أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d ->%d)"
+msgstr "<hilight>وحدة اﻷخبار : اﻹعدادات خفِّضت</hilight><br><br>إعداداتك لوحدة اﻷخبار<br>خفِّضت<br>و إعداداتك أُزيلت<br>نأسف ﻹزعاجك<br><br>(%d ->%d)"
 
 #: ../src/news_config_dialog.c:90
 msgid "News Main Configuration"
@@ -109,7 +109,7 @@ msgstr "يستخدم سكربت \"xdg-ope\", من freedektop.org"
 
 #: ../src/news_config_dialog.c:248
 msgid "Popup On News"
-msgstr "نافذة منبثقة عند توافر اﻷخبار"
+msgstr "منبثقة عند توافر اﻷخبار"
 
 #: ../src/news_config_dialog.c:251
 msgid "Never"
@@ -127,11 +127,11 @@ msgstr "على كل الخلاصات"
 #: ../src/news_config_dialog.c:292
 #, c-format
 msgid "%1.0f s"
-msgstr "%1.0f ثانية"
+msgstr "%1.0f ث"
 
 #: ../src/news_config_dialog.c:280
 msgid "Popup On Warning / Error"
-msgstr "نافذة منبثقة عند وجود تحذر\\خلل"
+msgstr "منبثقة عند وجود تحذر/خلل"
 
 #: ../src/news_config_dialog.c:285
 msgid "Show on timeout ?"
@@ -139,11 +139,11 @@ msgstr "أعرض بعد مهلة ؟"
 
 #: ../src/news_config_dialog.c:307
 msgid "Unread feeds first"
-msgstr "علم الخلاصات كغير مقروءة أولاً"
+msgstr "الخلاصات الغير مقروءة أولاً"
 
 #: ../src/news_config_dialog.c:309
 msgid "Unread articles first"
-msgstr "علم المقالات كغير مقروءة أولاً"
+msgstr "المقالات الغير مقروءة أولاً"
 
 #: ../src/news_config_dialog.c:311
 msgid "Sort articles by date"
@@ -171,20 +171,20 @@ msgstr "المستضيف"
 
 #: ../src/news_config_dialog.c:344
 msgid "Port"
-msgstr "المَنْفذ"
+msgstr "المَنفذ"
 
 #: ../src/news_config_dialog_category.c:50
 msgid "News Category Configuration"
-msgstr "إعدادات قسم اﻷخبار"
+msgstr "إعدادات مجموعة اﻷخبار"
 
 #: ../src/news_config_dialog_category.c:135
 msgid "Icon"
-msgstr "اﻷيقونة"
+msgstr "أيقونة"
 
 #: ../src/news_config_dialog_category.c:145
 #: ../src/news_config_dialog_feed.c:410
 msgid "Name"
-msgstr "اﻹسم"
+msgstr "اسم"
 
 #: ../src/news_config_dialog_category.c:203
 #: ../src/news_config_dialog_feed.c:543
@@ -204,11 +204,11 @@ msgstr "ألغ"
 
 #: ../src/news_config_dialog_feed.c:63
 msgid "You need to <hilight>create a category</hilight> first"
-msgstr "يجب أن <hilight>تنشئ قسم</hilight> أولاً"
+msgstr "يجب أن <hilight>تنشئ مجموعة</hilight> أولاً"
 
 #: ../src/news_config_dialog_feed.c:77
 msgid "News Feed Configuration"
-msgstr "إعدادات خلاصات اﻷخبار"
+msgstr "إعدادات خلاصة اﻷخبار"
 
 #: ../src/news_config_dialog_feed.c:329
 msgid "Basic informations"
@@ -233,7 +233,7 @@ msgstr "علم كخلاصة مهمة"
 
 #: ../src/news_config_dialog_feed.c:358
 msgid "Category"
-msgstr "القسم"
+msgstr "المجموعة"
 
 #: ../src/news_config_dialog_feed.c:368
 #: ../src/news_config_dialog_feed.c:412
@@ -252,7 +252,7 @@ msgstr "الوصف"
 #: ../src/news_config_dialog_feed.c:397
 #: ../src/news_config_dialog_feed.c:416
 msgid "Home url"
-msgstr "رابط المنزل"
+msgstr "رابط الصفحة الرئيسية"
 
 #: ../src/news_config_dialog_feed.c:405
 msgid "Server informations"
@@ -260,7 +260,7 @@ msgstr "معلومات الخادم"
 
 #: ../src/news_config_dialog_feed.c:407
 msgid "Do allow the server to overwrite the informations you entered ?"
-msgstr "اسمح للخادم بإعادة كتابة المعلومات اللتي ادخلتها ؟"
+msgstr "اسمح للخادم بإعادة الكتابة على المعلومات التي ادخلتها ؟"
 
 #: ../src/news_config_dialog_feeds.c:82
 msgid "News Feeds Configuration"
@@ -268,22 +268,22 @@ msgstr "إعدادات خلاصات اﻷخبار"
 
 #: ../src/news_config_dialog_feeds.c:290
 msgid "Categories"
-msgstr "اﻷقسام"
+msgstr "المجموعات"
 
 #: ../src/news_config_dialog_feeds.c:314
 #: ../src/news_config_dialog_feeds.c:388
 msgid "Add"
-msgstr "إضافة"
+msgstr "إضف"
 
 #: ../src/news_config_dialog_feeds.c:316
 #: ../src/news_config_dialog_feeds.c:390
 msgid "Delete"
-msgstr "حذف"
+msgstr "امح"
 
 #: ../src/news_config_dialog_feeds.c:319
 #: ../src/news_config_dialog_feeds.c:393
 msgid "Configure"
-msgstr "إضبط"
+msgstr "أعدّ"
 
 #: ../src/news_config_dialog_feeds.c:331
 #: ../src/news_config_dialog_langs.c:133
@@ -304,11 +304,11 @@ msgstr "افرغ القوائم"
 
 #: ../src/news_config_dialog_feeds.c:349
 msgid "Restore default lists"
-msgstr "استعد القوائم اﻹفتراضية"
+msgstr "استَعِد القوائم اﻹفتراضية"
 
 #: ../src/news_config_dialog_feeds.c:686
 msgid "There are <hilight>feeds</hilight> in this category.<br>You have to <hilight>remove them first</hilight>"
-msgstr "توجد <hilight>خلاصات</hilight> في هذا القسم.<br>عليك أن <hilight>تحذفهم أولاً</hilight>"
+msgstr "توجد <hilight>خلاصات</hilight> في هذه المجموعة.<br>عليك أن <hilight>تحذفها أولاً</hilight>"
 
 #: ../src/news_config_dialog_feeds.c:754
 #: ../src/news_config_dialog_feeds.c:779
@@ -325,7 +325,7 @@ msgstr "أسلوب العرض"
 
 #: ../src/news_config_dialog_item.c:107
 msgid "Show one icon for all feeds"
-msgstr "اعرض أيقونة وحدة لكل الخلاصات"
+msgstr "اعرض أيقونة واحدة لكل الخلاصات"
 
 #: ../src/news_config_dialog_item.c:109
 msgid "Show all feeds"
@@ -333,11 +333,11 @@ msgstr "اعرض كل الخلاصات"
 
 #: ../src/news_config_dialog_item.c:111
 msgid "Show unread feeds"
-msgstr "اعرض الخلاصات غير المفروءة"
+msgstr "اعرض الخلاصات غير المقروءة"
 
 #: ../src/news_config_dialog_item.c:113
 msgid "Show all feeds marked as important"
-msgstr "اعرض كل الخلاصات اللتي تم تعليمها كمهمة"
+msgstr "اعرض كل الخلاصات التي تم تعليمها كمهمة"
 
 #: ../src/news_config_dialog_item.c:115
 msgid "Show unread feeds marked as important"
@@ -381,7 +381,7 @@ msgstr "أضِف هذه الخلاصة"
 
 #: ../src/news_config_dialog_item_content.c:274
 msgid "Selected Feeds"
-msgstr "اختر خلاصات"
+msgstr "الخلاصات المُختارة"
 
 #: ../src/news_config_dialog_item_content.c:292
 msgid "Remove this Feed"
@@ -389,7 +389,7 @@ msgstr "أزِل هذه الخلاصة"
 
 #: ../src/news_config_dialog_langs.c:45
 msgid "News Feeds Language Configuration"
-msgstr "إعدادات خلاصات اﻷخبار"
+msgstr "إعدادات لغة خلاصات اﻷخبار"
 
 #: ../src/news_config_dialog_langs.c:123
 msgid "Welcome to News Module !"
@@ -401,36 +401,36 @@ msgstr "يرجى تحديد اللغات اللتي بإمكانك قراءته�
 
 #: ../src/news_feed.c:291
 msgid "The <hilight>name</hilight> you entered is not correct"
-msgstr "<hilight>الاسم</hilight> اللذي ادخلتها غير صحيح"
+msgstr "<hilight>الاسم</hilight> الذي ادخلته غير صحيح"
 
 #: ../src/news_feed.c:296
 msgid "The need to <hilight>select a category</hilight>."
-msgstr "الحاجة لـ<hilight>تحديد قسم</hilight>."
+msgstr "ما يحتاج لـ<hilight>ﻻختيار مجموعة</hilight>."
 
 #: ../src/news_feed.c:302
 #, c-format
 msgid "A feed with the <hilight>name</hilight> %s <hilight>already exists</hilight><br>in the %s category<br><br>Its not possible to have feeds with the same name<br>in one category."
-msgstr "خلاصة <hilight>باﻹسم </hilight> %s <hilight> موجودة سلفا </hilight><br> في القسم %s <br><br> من غير الممكن أن تكون هناك أكثر من خلاصة بنفس الاسم<br>في نفس القسم"
+msgstr "خلاصة <hilight>باﻹسم </hilight> %s <hilight> موجودة سلفا </hilight><br> في المجموعة %s <br><br> من غير الممكن أن تكون هناك أكثر من خلاصة بنفس الاسم<br>في نفس المجموعة"
 
 #: ../src/news_feed.c:311
 msgid "You need to select a <hilight>language</hilight>."
-msgstr "يجب أن تحدد <hilight>لغة</hilight>."
+msgstr "يجب أن تختار <hilight>لغة</hilight>."
 
 #: ../src/news_feed.c:318
 msgid "The <hilight>url</hilight> you specified is not correct"
-msgstr "<hilight>الراط</hilight> اللذي كتبته غير صحيح"
+msgstr "<hilight>الرابط</hilight> الذي حددته غير صحيح"
 
 #: ../src/news_feed.c:880
 msgid "You need to enter a <hilight>name</hilight> !"
-msgstr "يجب أن تدخل <hilight>إسم</hilight> !"
+msgstr "يجب أن تدخل <hilight>إسما</hilight> !"
 
 #: ../src/news_feed.c:888
 msgid "The <hilight>name</hilight> you entered is <hilight>already used</hilight><br>by another category"
-msgstr "<hilight>اﻹسم</hilight> الذي ادخلته <hilight>مستخدم سلفا </hilight><br> بواسطة قسم آخر"
+msgstr "<hilight>اﻹسم</hilight> الذي ادخلته <hilight>مستخدم سلفا </hilight><br> في مجموعة أخرى"
 
 #: ../src/news_menu.c:129
 msgid "Set all as read"
-msgstr "علم الكل كمقروءة"
+msgstr "علِّم الكل كمقروءة"
 
 #: ../src/news_menu.c:135
 msgid "Update"
@@ -438,11 +438,11 @@ msgstr "تحديث"
 
 #: ../src/news_menu.c:141
 msgid "Gadget Contents"
-msgstr "تحرير محتوى اﻷداة"
+msgstr "محتوى اﻷداة"
 
 #: ../src/news_menu.c:151
 msgid "Gadget"
-msgstr "أداة/إضافة"
+msgstr "أداة"
 
 #: ../src/news_menu.c:161
 msgid "Main"
@@ -470,7 +470,7 @@ msgstr "الخلاصات في هذه اﻷداة"
 
 #: ../src/news_viewer.c:438
 msgid "Articles in selected feed"
-msgstr "المقالات في الخلاصة المحددة"
+msgstr "المقالات في الخلاصة المُختارة"
 
 #~ msgid "Configure this feed"
 #~ msgstr "حرر هذه الخلاصة"

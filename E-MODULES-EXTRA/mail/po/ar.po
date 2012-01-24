@@ -1,15 +1,15 @@
 # Arabic translation for enlightenment
 # Copyright (c) 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the enlightenment package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# sameeer hussain <almusalimalmusalimah@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2011-02-23 14:30+0300\n"
-"Last-Translator: سمير حسين <sameeer_45@hotmail.com>\n"
+"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -42,7 +42,7 @@ msgstr "نوع صندوق البريد"
 
 #: ../src/e_mod_config_box.c:181
 msgid "Pop3"
-msgstr "بوب3"
+msgstr "Pop3"
 
 #: ../src/e_mod_config_box.c:184
 msgid "Imap"
@@ -50,7 +50,7 @@ msgstr "آي ماب (imap)"
 
 #: ../src/e_mod_config_box.c:187
 msgid "Maildir"
-msgstr "دليل البريد"
+msgstr "مجلد البريد"
 
 #: ../src/e_mod_config_box.c:190
 msgid "Mbox"
@@ -58,7 +58,7 @@ msgstr "صندوق البريد"
 
 #: ../src/e_mod_config_box.c:193
 msgid "Monitor Mbox file permanently"
-msgstr "مراقبة ملفات صندوق البريد  بشكل دائم"
+msgstr "راقب ملفات صندوق البريد  بشكل دائم"
 
 #: ../src/e_mod_config_box.c:210
 msgid "Port Settings"
@@ -66,7 +66,7 @@ msgstr "إعدادات المنفذ"
 
 #: ../src/e_mod_config_box.c:212
 msgid "Use SSL:"
-msgstr "استخدم إس إس إل:"
+msgstr "استخدم  SSL:"
 
 #: ../src/e_mod_config_box.c:219
 msgid "v2"
@@ -106,7 +106,7 @@ msgstr "كلمة المرور:"
 
 #: ../src/e_mod_config_box.c:260
 msgid "New Mail Path:"
-msgstr "مسار جديد للبريد:"
+msgstr "مسار البريد الجديد:"
 
 #: ../src/e_mod_config_box.c:272
 msgid "Current Mail Path:"
@@ -127,11 +127,11 @@ msgstr "إعرض العلامات دائماً"
 
 #: ../src/e_mod_config.c:99
 msgid "Show Mailbox Popup"
-msgstr "إعرض نافذة صندوق البريد المنبثقة"
+msgstr "إعرض منبثقة صندوق البريد"
 
 #: ../src/e_mod_config.c:102
 msgid "Show All Boxes In Popup"
-msgstr "اعرض كل الصناديق في نافذة منبثقة"
+msgstr "اعرض كل الصناديق في منبثقة"
 
 #: ../src/e_mod_config.c:104
 msgid "Check Interval"
@@ -148,15 +148,15 @@ msgstr "صناديق البريد"
 
 #: ../src/e_mod_config.c:122
 msgid "Add"
-msgstr "إضافة"
+msgstr "أضِف"
 
 #: ../src/e_mod_config.c:126
 msgid "Delete"
-msgstr "حذف"
+msgstr "امحِ"
 
 #: ../src/e_mod_config.c:132
 msgid "Configure..."
-msgstr "اضبط..."
+msgstr "أعدّ..."
 
 #: ../src/e_mod_main.c:186
 msgid "Mail"
