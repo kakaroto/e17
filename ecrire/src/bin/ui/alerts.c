@@ -12,14 +12,19 @@ static void (*done_cb)(void *data);
 static void
 _discard(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
+   Ecrire_Entry *ent = done_data;
+
    evas_object_del(data);
-   done_cb(done_data);
+   done_cb(ent);
 }
 
 static void
 _save(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
+   Ecrire_Entry *ent = done_data;
+
    evas_object_del(data);
+   editor_save(ent);
    done_cb(done_data);
 }
 
@@ -32,6 +37,7 @@ _cancel(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 void
 ui_alert_need_saving(Evas_Object *entry, void (*done)(void *data), void *data)
 {
+   Ecrire_Entry *ent = data;
    Evas_Object *inwin, *bx, *hbx, *btn, *lbl;
    inwin = elm_win_inwin_add(elm_object_top_widget_get(entry));
    evas_object_show(inwin);
@@ -66,6 +72,11 @@ ui_alert_need_saving(Evas_Object *entry, void (*done)(void *data), void *data)
    elm_box_pack_end(hbx, btn);
    evas_object_show(btn);
    evas_object_smart_callback_add(btn, "clicked", _save, inwin);
+
+   if (elm_object_item_disabled_get(ent->save_item) || !ent->filename)
+     {
+        elm_object_disabled_set(btn, EINA_TRUE);
+     }
 
    btn = elm_button_add(inwin);
    elm_object_text_set(btn, _("Discard"));

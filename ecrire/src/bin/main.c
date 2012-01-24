@@ -409,10 +409,9 @@ _open(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    _alert_if_need_saving(_open_do, ent);
 }
 
-static void
-_save(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+void
+editor_save(Ecrire_Entry *ent)
 {
-   Ecrire_Entry *ent = data;
    if (ent->filename)
      {
         _save_do(ent->filename, ent);
@@ -421,6 +420,13 @@ _save(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
      {
         ui_file_open_save_dialog_open(ent->win, _fs_save_done, EINA_TRUE);
      }
+}
+
+static void
+_save(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+{
+   Ecrire_Entry *ent = data;
+   editor_save(ent);
 }
 
 static void

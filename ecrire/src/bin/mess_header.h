@@ -25,6 +25,7 @@ Eina_Bool _save_markup_utf8(const char *file, const char *text);
 Eina_Bool _save_plain_utf8(const char *file, const char *text);
 
 void editor_font_choose(Ecrire_Entry *ent, const char *font, int size);
+void editor_save(Ecrire_Entry *ent);
 
 #ifdef ENABLE_NLS
 # include <libintl.h>
