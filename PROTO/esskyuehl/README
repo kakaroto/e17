@@ -8,6 +8,7 @@ eina
 ecore
 mysql (optional)
 postgresql (optional)
+sqlite3 (optional)
 
 Install:
 Simply run autogen.sh to configure, 'make' to the code, and 'make install' to install
