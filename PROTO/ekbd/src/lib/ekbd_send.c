@@ -84,6 +84,7 @@ ekbd_send_update(Smart_Data *sd)
    keymap = XGetKeyboardMapping(dpy, min_keycode,
                                     (max_keycode - min_keycode + 1),
                                     &keysyms_per_keycode);
+   if (!keymap) return;
    nkm = keymap;
    for (i = min_keycode; i <= max_keycode; ++i)
      {
@@ -149,6 +150,7 @@ ekbd_send_update(Smart_Data *sd)
              ecore_x_flush();
           }
      }
+   XFree(nkm);
    EINA_LIST_FREE(used, s)
      {
         eina_stringshare_del(s);
