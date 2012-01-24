@@ -44,7 +44,7 @@ static void esql_mysac_query(Esql *e, const char *query, unsigned int len __UNUS
 static void esql_mysac_res_free(Esql_Res *res);
 static void esql_mysac_res(Esql_Res *res);
 static char *esql_mysac_escape(Esql *e, unsigned int *len, const char *fmt, va_list args);
-static void esql_mysac_row_init(Esql_Row *r);
+static void esql_mysac_row_init(Esql_Row *r, MYSAC_ROW *row);
 static void esql_mysac_free(Esql *e);
 
 
@@ -156,8 +156,7 @@ esql_mysac_res(Esql_Res *res)
         EINA_SAFETY_ON_NULL_RETURN(r);
         r->num_cells = res->num_cols;
         r->res = res;
-        r->backend.row = row;
-        esql_mysac_row_init(r);
+        esql_mysac_row_init(r, row);
         res->rows = eina_inlist_append(res->rows, EINA_INLIST_GET(r));
      } while ((row = mysac_fetch_row(re)));
 }
@@ -191,10 +190,9 @@ esql_mysac_escape(Esql *e, unsigned int *len, const char *fmt, va_list args)
 }
 
 static void
-esql_mysac_row_init(Esql_Row *r)
+esql_mysac_row_init(Esql_Row *r, MYSAC_ROW *row)
 {
    MYSAC_RES *res;
-   MYSAC_ROW *row;
    MYSAC_ROWS *rows;
    struct mysac_list_head *l;
    Esql_Cell *cell;
@@ -203,7 +201,6 @@ esql_mysac_row_init(Esql_Row *r)
    res = r->res->backend.res;
    rows = res->cr;
    l = res->data.next;
-   row = r->backend.row;
    cols = res->nb_cols;
    for (i = 0; i < cols; i++, l = l->next, rows = mysac_container_of(l, MYSAC_ROWS, link))
      {

@@ -200,10 +200,6 @@ struct Esql_Row
 
    Eina_Inlist *cells;
    int          num_cells;
-   struct
-   {
-      void *row;
-   } backend;
 };
 
 typedef struct Esql_Row_Iterator
