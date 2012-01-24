@@ -509,9 +509,13 @@ editor_font_set(Evas_Object *ent, const char *font, int font_size)
         evas_textblock_style_set(ts, eina_strbuf_string_get(sbuf));
 
         evas_object_textblock_style_user_set((Evas_Object *) tb, ts);
-
-        elm_entry_calc_force(ent);
      }
+   else
+     {
+        evas_object_textblock_style_user_set((Evas_Object *) tb, NULL);
+     }
+
+   elm_entry_calc_force(ent);
 
    eina_strbuf_free(sbuf);
 }

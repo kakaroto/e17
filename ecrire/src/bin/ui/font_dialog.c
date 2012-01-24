@@ -5,7 +5,7 @@
 #include <Elementary.h>
 
 #include "../mess_header.h"
-Evas_Object *font_win, *list, *fsize;
+Evas_Object *font_win, *list, *fsize, *dfont_check;
 
 void
 my_win_del(void *data, Evas_Object *obj, void *event_info)
@@ -55,7 +55,18 @@ _set_clicked(void *data,
    Elm_Object_Item *list_it = elm_list_selected_item_get(list);
    if (list_it)
      selected = elm_object_item_text_get(list_it);
-   editor_font_choose(data, selected, elm_spinner_value_get(fsize));
+   if (elm_check_state_get(dfont_check))
+      editor_font_choose(data, NULL, 0);
+   else
+      editor_font_choose(data, selected, elm_spinner_value_get(fsize));
+}
+
+static void
+_check_changed_cb(void *data __UNUSED__, Evas_Object *obj,
+      void *event_info __UNUSED__)
+{
+   elm_object_disabled_set(list, elm_check_state_get(obj));
+   elm_object_disabled_set(fsize, elm_check_state_get(obj));
 }
 
 
@@ -113,14 +124,6 @@ ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry, const char *pfont,
    elm_box_pack_end(hbx, fsize);
    evas_object_show(fsize);
 
-   btn = elm_button_add(win);
-   elm_object_text_set(btn, _("Set"));
-   evas_object_size_hint_align_set(btn, 1.0, 0.0);
-   evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_show(btn);
-   elm_box_pack_end(hbx, btn);
-   evas_object_smart_callback_add(btn, "clicked", _set_clicked, entry);
-
    /* Populate list */
      {
         Elm_Object_Item *cur_font = NULL;
@@ -147,6 +150,25 @@ ui_font_dialog_open(Evas_Object *parent, Evas_Object *entry, const char *pfont,
              elm_list_item_selected_set(cur_font, EINA_TRUE);
           }
      }
+
+   dfont_check = elm_check_add(win);
+   elm_object_text_set(dfont_check, _("Use Default Font:"));
+   evas_object_smart_callback_add(dfont_check, "changed", _check_changed_cb,
+         NULL);
+
+   elm_check_state_set(dfont_check, !pfont);
+   evas_object_show(dfont_check);
+   elm_box_pack_end(hbx, dfont_check);
+
+   _check_changed_cb(NULL, dfont_check, NULL);
+
+   btn = elm_button_add(win);
+   elm_object_text_set(btn, _("Set"));
+   evas_object_size_hint_align_set(btn, 1.0, 0.0);
+   evas_object_size_hint_weight_set(list, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_show(btn);
+   elm_box_pack_end(hbx, btn);
+   evas_object_smart_callback_add(btn, "clicked", _set_clicked, entry);
 
    /* Forcing it to be the min height. */
    evas_object_resize(win, 300, 500);
