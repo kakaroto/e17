@@ -223,11 +223,13 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
      {
         const char *str;
         struct tm tm;
+        Eina_Value *val;
 
         cell = esql_cell_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(cell);
         cell->row = r;
         cell->colname = PQfname(pres, i);
+        val = &(cell->value);
         if (PQgetisnull(pres, row_num, i))
           goto out;
 
@@ -236,21 +238,17 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
           {
            case TIMESTAMPOID:
              strptime(str, "%Y-%m-%d %H:%M:%S", &tm);
-             cell->value.u = mktime(&tm);
-             cell->type = ESQL_CELL_TYPE_ULONG;
-             break;
-           case RELTIMEOID:
-             cell->value.d = strtod(str, NULL);
-             cell->type = ESQL_CELL_TYPE_DOUBLE;
+             eina_value_setup(val, EINA_VALUE_TYPE_ULONG);
+             eina_value_set(val, (long)mktime(&tm));
              break;
            case ABSTIMEOID:
              {
                 time_t t;
 
-                cell->type = ESQL_CELL_TYPE_ULONG;
                 t = strtoumax(str, NULL, 10);
                 localtime_r(&t, &tm);
-                cell->value.u = mktime(&tm);
+                eina_value_setup(val, EINA_VALUE_TYPE_ULONG);
+                eina_value_set(val, (long)mktime(&tm));
                 break;
              }
 
@@ -259,49 +257,56 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
            case TEXTOID:
            case VARCHAROID:
            case BPCHAROID:
-             cell->type = ESQL_CELL_TYPE_STRING;
-             cell->value.string = str;
-             cell->len = PQgetlength(pres, row_num, i);
+             eina_value_setup(val, EINA_VALUE_TYPE_STRING);
+             eina_value_set(val, str);
+             //cell->len = PQgetlength(pres, row_num, i);
              break;
 
            case BOOLOID:
            case CHAROID:
-             cell->type = ESQL_CELL_TYPE_TINYINT;
-             cell->value.c = (char)strtol(str, NULL, 10);
+             eina_value_setup(val, EINA_VALUE_TYPE_CHAR);
+             eina_value_set(val, (char)strtol(str, NULL, 10));
              break;
 
            case INT2OID:
-             cell->type = ESQL_CELL_TYPE_SHORT;
-             cell->value.s = (short)strtol(str, NULL, 10);
+             eina_value_setup(val, EINA_VALUE_TYPE_SHORT);
+             eina_value_set(val, (short)strtol(str, NULL, 10));
              break;
 
            case INT4OID:
-             cell->type = ESQL_CELL_TYPE_LONG;
-             cell->value.i = strtol(str, NULL, 10);
+             eina_value_setup(val, EINA_VALUE_TYPE_LONG);
+             eina_value_set(val, strtol(str, NULL, 10));
              break;
 
            case INT8OID:
-             cell->type = ESQL_CELL_TYPE_LONGLONG;
-             cell->value.l = strtoll(str, NULL, 10);
+             eina_value_setup(val, EINA_VALUE_TYPE_INT64);
+             eina_value_set(val, strtoll(str, NULL, 10));
              break;
 
            case FLOAT4OID:
-             cell->type = ESQL_CELL_TYPE_FLOAT;
-             cell->value.f = strtof(str, NULL);
+             eina_value_setup(val, EINA_VALUE_TYPE_FLOAT);
+             eina_value_set(val, strtof(str, NULL));
              break;
 
            case FLOAT8OID:
            case TINTERVALOID:
-             cell->type = ESQL_CELL_TYPE_DOUBLE;
-             cell->value.d = strtod(str, NULL);
+           case RELTIMEOID:
+             eina_value_setup(val, EINA_VALUE_TYPE_DOUBLE);
+             eina_value_set(val, strtod(str, NULL));
              break;
 
            default:
-             cell->type = ESQL_CELL_TYPE_BLOB;
-             cell->value.blob = (unsigned char*)str;
-             cell->len = PQgetlength(pres, row_num, i);
-             WARN("Unsupported type passed with Oid %u in column '%s': '%*s'!", PQftype(pres, i), cell->colname, cell->len, (char*)cell->value.blob);
-             break;
+             {
+                Eina_Value_Blob blob;
+
+                blob.ops = NULL;
+                blob.memory = str;
+                blob.size = PQgetlength(pres, row_num, i);
+                eina_value_setup(val, EINA_VALUE_TYPE_BLOB);
+                eina_value_set(val, &blob);
+                //WARN("Unsupported type passed with Oid %u in column '%s': '%*s'!", PQftype(pres, i), cell->colname, blob.size, (char*)str);
+                break;
+             }
           }
 out:
         r->cells = eina_inlist_append(r->cells, EINA_INLIST_GET(cell));

@@ -204,71 +204,79 @@ esql_mysac_row_init(Esql_Row *r, MYSAC_ROW *row)
    cols = res->nb_cols;
    for (i = 0; i < cols; i++, l = l->next, rows = mysac_container_of(l, MYSAC_ROWS, link))
      {
+        Eina_Value *val;
         cell = esql_cell_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(cell);
+        val = &(cell->value);
         cell->row = r;
         cell->colname = res->cols[i].name;
         switch (res->cols[i].type)
           {
            case MYSQL_TYPE_TIME:
-             cell->type = ESQL_CELL_TYPE_DOUBLE;
-             cell->value.d = (double)row[i].tv.tv_sec + (double)((double)row[i].tv.tv_usec / (double) 1000000);
+             eina_value_setup(val, EINA_VALUE_TYPE_DOUBLE);
+             eina_value_set(val, (double)row[i].tv.tv_sec + (double)((double)row[i].tv.tv_usec / (double) 1000000));
              break;
 
            case MYSQL_TYPE_YEAR:
            case MYSQL_TYPE_TIMESTAMP:
            case MYSQL_TYPE_DATETIME:
            case MYSQL_TYPE_DATE:
-             cell->type = ESQL_CELL_TYPE_ULONG;
-             cell->value.u = mktime(row[i].tm);
+             eina_value_setup(val, EINA_VALUE_TYPE_ULONG);
+             eina_value_set(val, (long)mktime(row[i].tm));
              break;
 
            case MYSQL_TYPE_STRING:
            case MYSQL_TYPE_VARCHAR:
            case MYSQL_TYPE_VAR_STRING:
-             cell->type = ESQL_CELL_TYPE_STRING;
-             cell->value.string = row[i].string;
-             cell->len = rows->lengths[i];
+             eina_value_setup(val, EINA_VALUE_TYPE_STRING);
+             eina_value_set(val, row[i].string);
+             //cell->len = rows->lengths[i];
              break;
 
            case MYSQL_TYPE_TINY_BLOB:
            case MYSQL_TYPE_MEDIUM_BLOB:
            case MYSQL_TYPE_LONG_BLOB:
            case MYSQL_TYPE_BLOB:
-             cell->type = ESQL_CELL_TYPE_BLOB;
-             cell->value.blob = (unsigned char*)row[i].string;
-             cell->len = rows->lengths[i];
-             break;
+             {
+                Eina_Value_Blob blob;
+
+                blob.ops = NULL;
+                blob.memory = row[i].string;
+                blob.size = rows->lengths[i];;
+                eina_value_setup(val, EINA_VALUE_TYPE_BLOB);
+                eina_value_set(val, &blob);
+                break;
+             }
 
            case MYSQL_TYPE_TINY:
-             cell->type = ESQL_CELL_TYPE_TINYINT;
-             cell->value.c = row[i].stiny;
+             eina_value_setup(val, EINA_VALUE_TYPE_CHAR);
+             eina_value_set(val, row[i].stiny);
              break;
 
            case MYSQL_TYPE_SHORT:
-             cell->type = ESQL_CELL_TYPE_SHORT;
-             cell->value.s = row[i].ssmall;
+             eina_value_setup(val, EINA_VALUE_TYPE_SHORT);
+             eina_value_set(val, row[i].ssmall);
              break;
 
            case MYSQL_TYPE_LONG:
            case MYSQL_TYPE_INT24:
-             cell->type = ESQL_CELL_TYPE_LONG;
-             cell->value.i = row[i].sint;
+             eina_value_setup(val, EINA_VALUE_TYPE_LONG);
+             eina_value_set(val, row[i].sint);
              break;
 
            case MYSQL_TYPE_LONGLONG:
-             cell->type = ESQL_CELL_TYPE_LONGLONG;
-             cell->value.l = row[i].sbigint;
+             eina_value_setup(val, EINA_VALUE_TYPE_INT64);
+             eina_value_set(val, row[i].sbigint);
              break;
 
            case MYSQL_TYPE_FLOAT:
-             cell->type = ESQL_CELL_TYPE_FLOAT;
-             cell->value.f = row[i].mfloat;
+             eina_value_setup(val, EINA_VALUE_TYPE_FLOAT);
+             eina_value_set(val, row[i].mfloat);
              break;
 
            case MYSQL_TYPE_DOUBLE:
-             cell->type = ESQL_CELL_TYPE_DOUBLE;
-             cell->value.d = row[i].mdouble;
+             eina_value_setup(val, EINA_VALUE_TYPE_DOUBLE);
+             eina_value_set(val, row[i].mdouble);
              break;
 
            default:
