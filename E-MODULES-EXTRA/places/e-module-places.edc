@@ -10,6 +10,8 @@ images
    image: "tag_ufs.png" COMP;
    image: "tag_dvd.png" COMP;
    image: "header_bg.png" COMP;
+   image: "header_down.png" COMP;
+   image: "home.png" COMP;
 }
 
 
@@ -42,8 +44,28 @@ collections
             mouse_events: 1;
             type: IMAGE;
             description { state: "default" 0.0;
-               color: 255 255 255 255;
+               color: 255 255 255 200;
                image.normal: "header_bg.png";
+            }
+            description { state: "down" 0.0;
+               color: 255 255 255 200;
+               image.normal: "header_down.png";
+            }
+         }
+         part { name: "home";
+            mouse_events: 1;
+            repeat_events: 1;
+            type: IMAGE;
+            description { state: "default" 0.0;
+               aspect: 1 1;
+               aspect_preference: VERTICAL;
+               align: 1.0 0.5;
+               color: 255 255 255 150;
+               image.normal: "home.png";
+            }
+            description { state: "hilight" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
             }
          }
          part { name: "label";
@@ -107,6 +129,34 @@ collections
          }
       }
       programs {
+         /**  INTERNAL PROGRAMS  *****************************/
+         program { name: "header_mouse_in";
+            signal: "mouse,in";
+            source: "bg";
+            action: STATE_SET "hilight" 0.0;
+            transition: SINUSOIDAL 0.4;
+            target: "home";
+         }
+         program { name: "header_mouse_out";
+            signal: "mouse,out";
+            source: "bg";
+            action: STATE_SET "default" 0.0;
+            transition: SINUSOIDAL 0.4;
+            target: "home";
+         }
+         program { name: "header_mouse_down";
+            signal: "mouse,down,1";
+            source: "bg";
+            action: STATE_SET "down" 0.0;
+            target: "bg";
+         }
+         program { name: "header_mouse_up";
+            signal: "mouse,up,1";
+            source: "bg";
+            action: STATE_SET "default" 0.0;
+            target: "bg";
+         }
+         /**  SIGNALS RECEIVED FROM THE MODULE  **************/
          program { name: "set_separator_horiz";
             signal: "separator,set,horiz";
             source: "places";
@@ -127,6 +177,12 @@ collections
             action: STATE_SET "default" 0.0;
             target: "separator";
             target: "separator2";
+         }
+         /**  SIGNALS EMITTED TO THE MODULE  **************/
+         program { name: "header_activated";
+            signal: "mouse,clicked,1";
+            source: "bg";
+            action: SIGNAL_EMIT "header,activated" "places";
          }
       }
    }

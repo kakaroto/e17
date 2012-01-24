@@ -22,7 +22,7 @@ static void _places_volume_object_update(Volume *vol, Evas_Object *obj);
 void _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _places_custom_icon_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 void _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
-
+void _places_header_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source);
 
 /* Local Variables */
 static Ecore_Timer *poller = NULL;
@@ -234,6 +234,8 @@ places_fill_box(Evas_Object *box)
                            min_w, min_h, /* min */
                            max_w, max_h /* max */
                            );
+      edje_object_signal_callback_add(o, "header,activated", "places",
+                                      _places_header_activated_cb, NULL);
    }
 
    // volume objects
@@ -685,6 +687,12 @@ _places_eject_activated_cb(void *data, Evas_Object *o, const char *emission, con
      places_volume_unmount(vol);
    else
      places_volume_eject(vol);
+}
+
+void
+_places_header_activated_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+   _places_run_fm((char*)e_user_homedir_get(), NULL, NULL);
 }
 
 
