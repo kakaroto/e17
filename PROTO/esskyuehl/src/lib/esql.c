@@ -177,7 +177,7 @@ esql_new(Esql_Type type)
  * @return The data
  */
 void *
-esql_data_get(Esql *e)
+esql_data_get(const Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
    return e->data;
@@ -236,7 +236,7 @@ esql_type_set(Esql     *e,
  * @return The database type currently used by @p e
  */
 Esql_Type
-esql_type_get(Esql *e)
+esql_type_get(const Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, ESQL_TYPE_NONE);
 
@@ -251,7 +251,7 @@ esql_type_get(Esql *e)
  * connection pools unless a callback is set
  */
 Esql_Query_Id
-esql_current_query_id_get(Esql *e)
+esql_current_query_id_get(const Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, 0);
 
@@ -266,7 +266,7 @@ esql_current_query_id_get(Esql *e)
  * connection pools unless a callback is set
  */
 const char *
-esql_current_query_get(Esql *e)
+esql_current_query_get(const Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
 
@@ -280,7 +280,7 @@ esql_current_query_get(Esql *e)
  * @return The error string, NULL if no error
  */
 const char *
-esql_error_get(Esql *e)
+esql_error_get(const Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
 

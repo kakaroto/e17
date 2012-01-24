@@ -172,13 +172,13 @@ EAPI int             esql_shutdown(void);
 /* esql */
 EAPI Esql           *esql_new(Esql_Type type);
 EAPI Esql           *esql_pool_new(int size, Esql_Type type);
-EAPI void           *esql_data_get(Esql *e);
+EAPI void           *esql_data_get(const Esql *e);
 EAPI void            esql_data_set(Esql *e, void *data);
-EAPI Esql_Query_Id   esql_current_query_id_get(Esql *e);
-EAPI const char     *esql_current_query_get(Esql *e);
-EAPI const char     *esql_error_get(Esql *e);
+EAPI Esql_Query_Id   esql_current_query_id_get(const Esql *e);
+EAPI const char     *esql_current_query_get(const Esql *e);
+EAPI const char     *esql_error_get(const Esql *e);
 EAPI Eina_Bool       esql_type_set(Esql *e, Esql_Type type);
-EAPI Esql_Type       esql_type_get(Esql *e);
+EAPI Esql_Type       esql_type_get(const Esql *e);
 EAPI void            esql_free(Esql *e);
 
 /* connect */
@@ -186,11 +186,11 @@ EAPI Eina_Bool       esql_connect(Esql *e, const char *addr, const char *user, c
 EAPI void            esql_disconnect(Esql *e);
 EAPI void            esql_connect_callback_set(Esql *e, Esql_Connect_Cb cb, void *data);
 EAPI Eina_Bool       esql_database_set(Esql *e, const char *database_name);
-EAPI const char     *esql_database_get(Esql *e);
+EAPI const char     *esql_database_get(const Esql *e);
 EAPI void            esql_connect_timeout_set(Esql *e, double timeout);
-EAPI double          esql_connect_timeout_get(Esql *e);
+EAPI double          esql_connect_timeout_get(const Esql *e);
 EAPI void            esql_reconnect_set(Esql *e, Eina_Bool enable);
-EAPI Eina_Bool       esql_reconnect_get(Esql *e);
+EAPI Eina_Bool       esql_reconnect_get(const Esql *e);
 
 /* query */
 EAPI Esql_Query_Id   esql_query(Esql *e, void *data, const char *query);
@@ -199,28 +199,28 @@ EAPI Esql_Query_Id   esql_query_vargs(Esql *e, void *data, const char *fmt, va_l
 EAPI Eina_Bool       esql_query_callback_set(Esql_Query_Id id, Esql_Query_Cb callback);
 
 /* res */
-EAPI Esql           *esql_res_esql_get(Esql_Res *res);
-EAPI const char     *esql_res_error_get(Esql_Res *res);
-EAPI void           *esql_res_data_get(Esql_Res *res);
-EAPI Esql_Query_Id   esql_res_query_id_get(Esql_Res *res);
-EAPI const char     *esql_res_query_get(Esql_Res *res);
-EAPI int             esql_res_rows_count(Esql_Res *res);
-EAPI int             esql_res_cols_count(Esql_Res *res);
-EAPI long long int   esql_res_rows_affected(Esql_Res *res);
-EAPI long long int   esql_res_id(Esql_Res *res);
-EAPI Eina_Iterator  *esql_res_row_iterator_new(Esql_Res *res);
+EAPI Esql           *esql_res_esql_get(const Esql_Res *res);
+EAPI const char     *esql_res_error_get(const Esql_Res *res);
+EAPI void           *esql_res_data_get(const Esql_Res *res);
+EAPI Esql_Query_Id   esql_res_query_id_get(const Esql_Res *res);
+EAPI const char     *esql_res_query_get(const Esql_Res *res);
+EAPI int             esql_res_rows_count(const Esql_Res *res);
+EAPI int             esql_res_cols_count(const Esql_Res *res);
+EAPI long long int   esql_res_rows_affected(const Esql_Res *res);
+EAPI long long int   esql_res_id(const Esql_Res *res);
+EAPI Eina_Iterator  *esql_res_row_iterator_new(const Esql_Res *res);
 
 /* convert */
-EAPI const char     *esql_res_to_string(Esql_Res *res);
-EAPI unsigned char  *esql_res_to_blob(Esql_Res *res);
-EAPI long long int   esql_res_to_lli(Esql_Res *res);
-EAPI double          esql_res_to_double(Esql_Res *res);
-EAPI unsigned long int esql_res_to_ulong(Esql_Res *res);
+EAPI const char     *esql_res_to_string(const Esql_Res *res);
+EAPI unsigned char  *esql_res_to_blob(const Esql_Res *res);
+EAPI long long int   esql_res_to_lli(const Esql_Res *res);
+EAPI double          esql_res_to_double(const Esql_Res *res);
+EAPI unsigned long int esql_res_to_ulong(const Esql_Res *res);
 
 /* row */
-EAPI Eina_Inlist    *esql_row_cells_get(Esql_Row *r);
-EAPI int             esql_row_cell_count(Esql_Row *r);
-EAPI Esql_Res       *esql_row_res_get(Esql_Row *r);
+EAPI Eina_Inlist    *esql_row_cells_get(const Esql_Row *r);
+EAPI int             esql_row_cell_count(const Esql_Row *r);
+EAPI Esql_Res       *esql_row_res_get(const Esql_Row *r);
 
 /** @addtogroup Esql_Convert
  * @{
@@ -232,7 +232,7 @@ EAPI Esql_Res       *esql_row_res_get(Esql_Row *r);
  * @return The result
  */
 static inline long long int
-esql_cell_to_lli(Esql_Cell *cell)
+esql_cell_to_lli(const Esql_Cell *cell)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(cell, 0);
    switch (cell->type)
@@ -258,7 +258,7 @@ esql_cell_to_lli(Esql_Cell *cell)
  * @return The result
  */
 static inline double
-esql_cell_to_double(Esql_Cell *cell)
+esql_cell_to_double(const Esql_Cell *cell)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(cell, 0.0);
    switch (cell->type)

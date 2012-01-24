@@ -164,7 +164,7 @@ esql_database_set(Esql       *e,
  * @return The stringshared database name, or NULL on failure
  */
 const char *
-esql_database_get(Esql *e)
+esql_database_get(const Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, NULL);
 
@@ -214,7 +214,7 @@ esql_connect_timeout_set(Esql  *e,
  * esql_connect_timeout_set().
  */
 double
-esql_connect_timeout_get(Esql *e)
+esql_connect_timeout_get(const Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, -1.0);
    return e->timeout;
@@ -244,7 +244,7 @@ esql_reconnect_set(Esql     *e,
  * @return If EINA_TRUE, this feature is enabled
  */
 Eina_Bool
-esql_reconnect_get(Esql *e)
+esql_reconnect_get(const Esql *e)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(e, EINA_FALSE);
    return e->reconnect;

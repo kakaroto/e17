@@ -92,7 +92,7 @@ esql_row_free(Esql_Row *r)
  * @return The parent object (NEVER NULL)
  */
 Esql *
-esql_res_esql_get(Esql_Res *res)
+esql_res_esql_get(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
 
@@ -108,7 +108,7 @@ esql_res_esql_get(Esql_Res *res)
  * @return The error string, NULL if no error
  */
 const char *
-esql_res_error_get(Esql_Res *res)
+esql_res_error_get(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
 
@@ -121,7 +121,7 @@ esql_res_error_get(Esql_Res *res)
  * @return The data pointer
  */
 void *
-esql_res_data_get(Esql_Res *res)
+esql_res_data_get(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
 
@@ -134,7 +134,7 @@ esql_res_data_get(Esql_Res *res)
  * @return The query id
  */
 Esql_Query_Id
-esql_res_query_id_get(Esql_Res *res)
+esql_res_query_id_get(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, 0);
 
@@ -147,7 +147,7 @@ esql_res_query_id_get(Esql_Res *res)
  * @return The query string (NOT stringshared)
  */
 const char *
-esql_res_query_get(Esql_Res *res)
+esql_res_query_get(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
 
@@ -160,7 +160,7 @@ esql_res_query_get(Esql_Res *res)
  * @return The number of rows, -1 on failure
  */
 int
-esql_res_rows_count(Esql_Res *res)
+esql_res_rows_count(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, -1);
 
@@ -174,7 +174,7 @@ esql_res_rows_count(Esql_Res *res)
  * @return The number of columns, -1 on failure
  */
 int
-esql_res_cols_count(Esql_Res *res)
+esql_res_cols_count(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, -1);
 
@@ -188,7 +188,7 @@ esql_res_cols_count(Esql_Res *res)
  * @return The number of rows affected, -1 on failure
  */
 long long int
-esql_res_rows_affected(Esql_Res *res)
+esql_res_rows_affected(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, -1);
 
@@ -202,7 +202,7 @@ esql_res_rows_affected(Esql_Res *res)
  * @return The insert id, -1 on failure
  */
 long long int
-esql_res_id(Esql_Res *res)
+esql_res_id(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, -1);
 
@@ -217,7 +217,7 @@ esql_res_id(Esql_Res *res)
  * @return The iterator object, NULL on failure
  */
 Eina_Iterator *
-esql_res_row_iterator_new(Esql_Res *res)
+esql_res_row_iterator_new(const Esql_Res *res)
 {
    Esql_Row_Iterator *it;
 
@@ -248,7 +248,7 @@ esql_res_row_iterator_new(Esql_Res *res)
  * @return The inlist, or NULL on failure
  */
 Eina_Inlist *
-esql_row_cells_get(Esql_Row *r)
+esql_row_cells_get(const Esql_Row *r)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(r, NULL);
 
@@ -263,7 +263,7 @@ esql_row_cells_get(Esql_Row *r)
  * @return The number of cells, -1 on failure
  */
 int
-esql_row_cell_count(Esql_Row *r)
+esql_row_cell_count(const Esql_Row *r)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(r, -1);
 
@@ -276,7 +276,7 @@ esql_row_cell_count(Esql_Row *r)
  * @return The parent object (NEVER NULL)
  */
 Esql_Res *
-esql_row_res_get(Esql_Row *r)
+esql_row_res_get(const Esql_Row *r)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(r, NULL);
 

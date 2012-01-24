@@ -28,7 +28,7 @@
  * @return Stringshared result
  */
 const char *
-esql_res_to_string(Esql_Res *res)
+esql_res_to_string(const Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
@@ -49,7 +49,7 @@ esql_res_to_string(Esql_Res *res)
  * @return Allocated binary blob (must be freed)
  */
 unsigned char *
-esql_res_to_blob(Esql_Res *res)
+esql_res_to_blob(const Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
@@ -73,7 +73,7 @@ esql_res_to_blob(Esql_Res *res)
  * @return The result
  */
 long long int
-esql_res_to_lli(Esql_Res *res)
+esql_res_to_lli(const Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
@@ -103,7 +103,7 @@ esql_res_to_lli(Esql_Res *res)
  * @return The result
  */
 double
-esql_res_to_double(Esql_Res *res)
+esql_res_to_double(const Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
@@ -132,7 +132,7 @@ esql_res_to_double(Esql_Res *res)
  * @return Unsigned long int
  */
 unsigned long int
-esql_res_to_ulong(Esql_Res *res)
+esql_res_to_ulong(const Esql_Res *res)
 {
    Esql_Row *row;
    Esql_Cell *cell;
