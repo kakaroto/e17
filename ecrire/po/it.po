@@ -6,16 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecrire\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-01-18 20:00+0900\n"
-"PO-Revision-Date: 2012-01-04 21:53+0100\n"
+"POT-Creation-Date: 2012-01-25 18:23+0100\n"
+"PO-Revision-Date: 2012-01-25 18:25+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bin/ui/alerts.c:43
+#: src/bin/ui/alerts.c:56
 msgid ""
 "<align=center>Would you like to save changes to document?<br>Any unsaved "
 "changes will be lost."
@@ -23,98 +22,106 @@ msgstr ""
 "<align=center>Volete salvare le modifiche al documento?<br>Ogni modifica non "
 "salvata verrà persa."
 
-#: src/bin/ui/alerts.c:58 src/bin/main.c:663
+#: src/bin/ui/alerts.c:71 src/bin/main.c:686
 msgid "Save"
 msgstr "Salva"
 
-#: src/bin/ui/alerts.c:64
+#: src/bin/ui/alerts.c:82
 msgid "Discard"
 msgstr "Abbandona"
 
-#: src/bin/ui/alerts.c:70
+#: src/bin/ui/alerts.c:88
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/bin/ui/search_dialog.c:143 src/bin/main.c:679
+#: src/bin/ui/search_dialog.c:144 src/bin/main.c:704
 msgid "Find & Replace"
 msgstr "Trova & Sostituisci"
 
-#: src/bin/ui/search_dialog.c:165
+#: src/bin/ui/search_dialog.c:166
 msgid "Search for:"
 msgstr "Cerca:"
 
-#: src/bin/ui/search_dialog.c:189
+#: src/bin/ui/search_dialog.c:190
 msgid "Replace with:"
 msgstr "Sostituisci con: "
 
-#: src/bin/ui/search_dialog.c:213
+#: src/bin/ui/search_dialog.c:214
 msgid "Find"
 msgstr "Trova"
 
-#: src/bin/ui/search_dialog.c:221
+#: src/bin/ui/search_dialog.c:222
 msgid "Replace"
 msgstr "Sostituisci"
 
-#: src/bin/ui/font_dialog.c:75
+#: src/bin/ui/font_dialog.c:89
 msgid "Select Font"
 msgstr "Seleziona carattere"
 
-#: src/bin/ui/font_dialog.c:100
+#: src/bin/ui/font_dialog.c:114
 msgid "Font size:"
 msgstr "Dimensione carattere:"
 
-#: src/bin/ui/font_dialog.c:105
+#: src/bin/ui/font_dialog.c:119
 #, c-format
 msgid "%.0f pts"
 msgstr "%.0f pt"
 
-#: src/bin/ui/font_dialog.c:115
+#: src/bin/ui/font_dialog.c:157
+msgid "Use Default Font:"
+msgstr "Usa font predefinito:"
+
+#: src/bin/ui/font_dialog.c:168
 msgid "Set"
 msgstr "Set"
 
-#: src/bin/main.c:100
+#: src/bin/main.c:96
 #, c-format
 msgid "%s%s - %s"
 msgstr "%s%s - %s"
 
-#: src/bin/main.c:102
+#: src/bin/main.c:99
 #, c-format
 msgid "%sUntitled %d - %s"
 msgstr "%sSenza titolo %d - %s"
 
-#: src/bin/main.c:126
+#: src/bin/main.c:123
 #, c-format
 msgid "Ln %d, Col %d"
 msgstr "Riga %d, Col %d"
 
-#: src/bin/main.c:660
+#: src/bin/main.c:683
 msgid "New"
 msgstr "Nuovo"
 
-#: src/bin/main.c:661
+#: src/bin/main.c:684
 msgid "Open"
 msgstr "Apri"
 
-#: src/bin/main.c:667
+#: src/bin/main.c:687
+msgid "Save As"
+msgstr "Salva come"
+
+#: src/bin/main.c:692
 msgid "Undo"
 msgstr "Annulla"
 
-#: src/bin/main.c:669
+#: src/bin/main.c:694
 msgid "Redo"
 msgstr "Ripeti"
 
-#: src/bin/main.c:672
+#: src/bin/main.c:697
 msgid "Cut"
 msgstr "Taglia"
 
-#: src/bin/main.c:674
+#: src/bin/main.c:699
 msgid "Copy"
 msgstr "Copia"
 
-#: src/bin/main.c:676
+#: src/bin/main.c:701
 msgid "Paste"
 msgstr "Incolla"
 
-#: src/bin/main.c:683
+#: src/bin/main.c:708
 msgid "Settings"
 msgstr "Impostazioni"

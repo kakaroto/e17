@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Places module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-01-22 12:12+0100\n"
-"PO-Revision-Date: 2012-01-22 14:31+0100\n"
+"POT-Creation-Date: 2012-01-25 08:59+0100\n"
+"PO-Revision-Date: 2012-01-25 15:11+0100\n"
 "Last-Translator: dazibao <dazibao@sfr.fr>\n"
 "Language-Team: Enlightenment French Team <sansgourou@gmail.com>\n"
 "Language: \n"
@@ -20,61 +20,65 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_config.c:52
+#: src/e_mod_config.c:53
 msgid "Places Settings"
 msgstr "Paramétrage de Raccourcis"
 
-#: src/e_mod_config.c:119
+#: src/e_mod_config.c:121
 msgid "General"
 msgstr "Paramètres généraux"
 
-#: src/e_mod_config.c:122
+#: src/e_mod_config.c:124
 msgid "Show in main menu"
 msgstr "Afficher dans le menu principal"
 
-#: src/e_mod_config.c:126
+#: src/e_mod_config.c:128
+msgid "Hide the gadget header"
+msgstr "Masquer l'en-tête du gadget"
+
+#: src/e_mod_config.c:132
 msgid "Mount volumes on insert"
 msgstr "Montage des volumes à l'insertion"
 
-#: src/e_mod_config.c:130
+#: src/e_mod_config.c:136
 msgid "Open filemanager on insert"
 msgstr "Ouvrir le gestionnaire de fichiers à l'insertion"
 
-#: src/e_mod_config.c:134
+#: src/e_mod_config.c:140
 msgid "Use a custom file manager"
 msgstr "Utiliser un gestionnaire de fichiers personnalisé"
 
-#: src/e_mod_config.c:147
+#: src/e_mod_config.c:153
 msgid "Show in menu"
 msgstr "Afficher dans le menu"
 
-#: src/e_mod_config.c:150
-#: src/e_mod_places.c:742
+#: src/e_mod_config.c:156
+#: src/e_mod_places.c:760
 msgid "Home"
 msgstr "Dossier personnel"
 
-#: src/e_mod_config.c:153
-#: src/e_mod_places.c:751
+#: src/e_mod_config.c:159
+#: src/e_mod_places.c:769
 msgid "Desktop"
 msgstr "Bureau"
 
-#: src/e_mod_config.c:156
-#: src/e_mod_places.c:761
+#: src/e_mod_config.c:162
+#: src/e_mod_places.c:779
 msgid "Trash"
 msgstr "Corbeille"
 
-#: src/e_mod_config.c:159
-#: src/e_mod_places.c:592
-#: src/e_mod_places.c:770
+#: src/e_mod_config.c:165
+#: src/e_mod_places.c:604
+#: src/e_mod_places.c:788
 msgid "Filesystem"
 msgstr "Racine"
 
-#: src/e_mod_config.c:162
-#: src/e_mod_places.c:779
+#: src/e_mod_config.c:168
+#: src/e_mod_places.c:797
 msgid "Temp"
 msgstr "/tmp"
 
-#: src/e_mod_config.c:165
+#: src/e_mod_config.c:171
 msgid "Favorites"
 msgstr "Favoris"
 
@@ -83,45 +87,45 @@ msgid "Files"
 msgstr "Fichiers"
 
 #: src/e_mod_main.c:60
-#: src/e_mod_places.c:212
-#: src/e_mod_places.c:836
+#: src/e_mod_places.c:222
+#: src/e_mod_places.c:854
 msgid "Places"
 msgstr "Raccourcis"
 
-#: src/e_mod_main.c:377
+#: src/e_mod_main.c:379
 msgid "Places Configuration Updated"
 msgstr "Configuration de Raccourcis actualisée"
 
-#: src/e_mod_main.c:417
+#: src/e_mod_main.c:419
 msgid "Settings"
 msgstr "Configuration"
 
-#: src/e_mod_places.c:573
+#: src/e_mod_places.c:585
 msgid "Warning"
 msgstr "Avertissement"
 
-#: src/e_mod_places.c:574
+#: src/e_mod_places.c:586
 msgid "<b>Cannot run the Enlightenment FileManager.</b><br>Please choose a custom file manager in<br>the gadget configuration."
 msgstr "<b>Impossible d'exécuter EFM.</b><br>Veuillez choisir un gestionnaire de fichiers<br>personnalisé dans la configuration du gadget."
 
-#: src/e_mod_places.c:596
+#: src/e_mod_places.c:608
 msgid "No Name"
 msgstr "Sans nom"
 
-#: src/e_mod_places.c:603
+#: src/e_mod_places.c:615
 msgid "free of"
 msgstr "de libre sur"
 
-#: src/e_mod_places.c:609
+#: src/e_mod_places.c:621
 #, c-format
 msgid "%s Not Mounted"
 msgstr "%s Pas Monté"
 
-#: src/e_mod_places.c:636
+#: src/e_mod_places.c:648
 msgid "unmount"
 msgstr "démonter"
 
-#: src/e_mod_places.c:641
+#: src/e_mod_places.c:653
 msgid "eject"
 msgstr "éjecter"
 
