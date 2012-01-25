@@ -21,7 +21,7 @@ build-test-stamp: build
 override_dh_auto_configure:
 	dh_auto_configure -- \
 	--disable-rpath \
-	--enable-cares \
+	--disable-cares \
 	--enable-posix-threads \
 	--enable-glib \
 	--disable-openssl \
