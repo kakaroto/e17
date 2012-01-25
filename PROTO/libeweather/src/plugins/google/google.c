@@ -28,40 +28,43 @@ struct _Id_Type
  
 static struct _Id_Type _tab[] =
 {
-     {"Clear", EWEATHER_TYPE_SUNNY},
+     {"Chance of Ice", EWEATHER_TYPE_SNOW},
      {"Chance of Rain", EWEATHER_TYPE_RAIN},
+     {"Chance of Showers", EWEATHER_TYPE_RAIN},
      {"Chance of Snow", EWEATHER_TYPE_SNOW},
      {"Chance of Storm", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS},
-     {"Chance of Snow", EWEATHER_TYPE_SNOW},
+     {"Clear", EWEATHER_TYPE_SUNNY},
      {"Cloudy", EWEATHER_TYPE_CLOUDY},
      {"Drizzle", EWEATHER_TYPE_RAIN},
+     {"Dust", EWEATHER_TYPE_FOGGY}, /* not sure */
      {"Fog", EWEATHER_TYPE_FOGGY},
+     {"Flurries", EWEATHER_TYPE_SNOW}, /* not sure */
+     {"Haze", EWEATHER_TYPE_FOGGY}, /* not sure */
+     {"Icy", EWEATHER_TYPE_SNOW}, /* not sure */
      {"Isolated Thunderstorms", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS},
      {"Light Rain", EWEATHER_TYPE_RAIN},
      {"Light Snow", EWEATHER_TYPE_SNOW},
+     {"Mist", EWEATHER_TYPE_FOGGY}, /* not sure */
+     {"Overcast", EWEATHER_TYPE_CLOUDY},
      {"Mostly Cloudy", EWEATHER_TYPE_MOSTLY_CLOUDY_DAY},
      {"Mostly Sunny", EWEATHER_TYPE_PARTLY_CLOUDY_DAY},
      {"Overcast", EWEATHER_TYPE_CLOUDY},
      {"Partly Cloudy", EWEATHER_TYPE_PARTLY_CLOUDY_DAY},
      {"Partly Sunny", EWEATHER_TYPE_PARTLY_CLOUDY_DAY},
      {"Rain", EWEATHER_TYPE_RAIN},
-     {"Showers", EWEATHER_TYPE_RAIN},
-     {"Sunny", EWEATHER_TYPE_SUNNY},
      {"Scattered Showers", EWEATHER_TYPE_RAIN},
      {"Scattered Thunderstorms", EWEATHER_TYPE_SCATTERED_THUNDERSTORMS},
+     {"Showers", EWEATHER_TYPE_RAIN},
+     {"Sunny", EWEATHER_TYPE_SUNNY},
+     {"Sleet", EWEATHER_TYPE_RAIN_SNOW}, /* not sure */
+     {"Smoke", EWEATHER_TYPE_FOGGY},
+     {"Snow", EWEATHER_TYPE_SNOW},
      {"Snow Showers", EWEATHER_TYPE_RAIN_SNOW},
+     {"Thunderstorm", EWEATHER_TYPE_THUNDERSTORMS},
      {"Thunderstorms", EWEATHER_TYPE_THUNDERSTORMS},
      {"Windy", EWEATHER_TYPE_WINDY},
-     {"Snow", EWEATHER_TYPE_SNOW},
-//     {"/ig/images/weather/rain_snow.gif", EWEATHER_TYPE_RAIN_SNOW},
-     {"Sleet", EWEATHER_TYPE_RAIN_SNOW}, /* not sure */
-     {"Mist", EWEATHER_TYPE_FOGGY}, /* not sure */
-     {"Icy", EWEATHER_TYPE_SNOW}, /* not sure */
-     {"Dust", EWEATHER_TYPE_FOGGY}, /* not sure */
-     {"Smoke", EWEATHER_TYPE_FOGGY}, /* not sure */
-     {"Haze", EWEATHER_TYPE_FOGGY}, /* not sure */
-     {"Flurries", EWEATHER_TYPE_SNOW}, /* not sure */
      {"", EWEATHER_TYPE_UNKNOWN}
+//     {"/ig/images/weather/rain_snow.gif", EWEATHER_TYPE_RAIN_SNOW},
 };
 
 struct Instance
@@ -390,7 +393,7 @@ static EWeather_Type _weather_type_get(const char *id)
 {
    int i;
    for (i = 0; i < sizeof (_tab) / sizeof (struct _Id_Type); ++i)
-     if ( !strcmp(_tab[i].id, id))
+     if ( !strcasecmp(_tab[i].id, id))
        {
 	  return _tab[i].type;
        }
