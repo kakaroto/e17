@@ -2845,7 +2845,7 @@ public:
                                static_cast<Persistent<Value> >(it->tooltip).Dispose();
                                it->tooltip = v8::Persistent<Value>::New(args[1]->ToString());
                                String::Utf8Value str(it->tooltip->ToString());
-                               elm_object_tooltip_text_set(elm_object_item_object_get(it->li), *str);
+                               elm_object_tooltip_text_set(elm_object_item_widget_get(it->li), *str);
                             }
                           break;
                        default:
@@ -3066,7 +3066,7 @@ public:
         if (it->tooltip->IsString())
           {
              String::Utf8Value str(it->tooltip->ToString());
-             elm_object_tooltip_text_set(elm_object_item_object_get(it->li), *str);
+             elm_object_tooltip_text_set(elm_object_item_widget_get(it->li), *str);
           }
 
         if (item->ToObject()->Get(String::New("on_clicked"))->IsFunction())
