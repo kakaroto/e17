@@ -34,6 +34,7 @@ static struct _Id_Type _tab[] =
      {"Chance of Storm", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS},
      {"Chance of Snow", EWEATHER_TYPE_SNOW},
      {"Cloudy", EWEATHER_TYPE_CLOUDY},
+     {"Drizzle", EWEATHER_TYPE_RAIN},
      {"Fog", EWEATHER_TYPE_FOGGY},
      {"Isolated Thunderstorms", EWEATHER_TYPE_ISOLATED_THUNDERSTORMS},
      {"Light Rain", EWEATHER_TYPE_RAIN},
