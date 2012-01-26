@@ -45,7 +45,7 @@ ekbd_object_layout_add(Evas_Object *obj, const char *path)
 {
    Smart_Data *sd = evas_object_smart_data_get(obj);
    if (!sd) return;
-   ekbd_layout_add(sd, path);
+   ekbd_layout_add(sd, eina_stringshare_add(path));
 }
 
 EAPI void

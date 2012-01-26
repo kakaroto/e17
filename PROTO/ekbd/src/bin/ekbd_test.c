@@ -25,7 +25,7 @@ _test_quit(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNU
 static Ekbd_Layout *
 _keyboard_default_get(Eina_Bool vertical)
 {
-   const Eina_List *lkl;
+   Eina_List *lkl;
    Eina_List *l;
    Ekbd_Layout *kl;
    char buf[1024];
@@ -54,7 +54,7 @@ _keyboard_layout_update(Eina_Bool vertical)
      {
         lkl = ekbd_object_layout_get(_kbd);
         if (lkl)
-          kl = lkl->data;
+          kl = eina_list_data_get(lkl);
      }
    if (kl)
      ekbd_object_layout_select(_kbd, kl);
@@ -68,7 +68,8 @@ _keyboard_add()
    char *p, *file;
    char buf[PATH_MAX];
    size_t len;
-   Eina_List *files;
+   Eina_File_Direct_Info *info;
+   Eina_Iterator *ls;
 
    _kbd = ekbd_object_add(evas_object_evas_get(_win));
 
@@ -77,24 +78,17 @@ _keyboard_add()
                            "keyboards", 9);
    if (len + 2 >= sizeof(buf)) return;
 
-   files = ecore_file_ls(buf);
-   buf[len] = '/';
-   len++;
-   EINA_LIST_FREE(files, file)
+   ls = eina_file_direct_ls(buf);
+   EINA_ITERATOR_FOREACH(ls, info)
      {
-        p = strchr(file, '.');
+        p = strrchr(info->path + info->name_start, '.');
         if ((p) && (!strcmp(p, ".kbd")))
           {
-             if (eina_strlcpy(buf + len, file, sizeof(buf) - len) >= sizeof(buf) - len)
-               continue;
-             kbs = eina_list_append(kbs, eina_stringshare_add(buf));
+             ekbd_object_layout_add(_kbd, info->path);
           }
-        free(file);
      }
-   EINA_LIST_FREE(kbs, path)
-     {
-        ekbd_object_layout_add(_kbd, path);
-     }
+   eina_iterator_free(ls);
+
    _keyboard_layout_update(EINA_FALSE);
 }
 
