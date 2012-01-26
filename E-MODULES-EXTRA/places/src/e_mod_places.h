@@ -33,9 +33,9 @@ struct _Volume
    Eina_Bool unlocked;
    Eina_Bool encrypted;
 
-   unsigned char valid;
-   unsigned char to_mount;
-   unsigned char force_open;
+   Eina_Bool valid;
+   Eina_Bool to_mount;
+   Eina_Bool force_open;
    Eina_List *objs;
 
    void (*mount_func)(Volume *vol, Eina_List *opts);

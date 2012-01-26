@@ -422,7 +422,7 @@ _places_udisks_sto_prop_cb(void *data, void *reply_data, DBusError *error)
 
    if (!v->valid)
      {
-        v->valid = 1;
+        v->valid = EINA_TRUE;
         // trigger a full redraw, the only way to show a new device
         places_update_all_gadgets();
         places_print_volume(v); // JUST FOR DEBUG will remove sooner or later

@@ -16,6 +16,7 @@
 static Eina_Bool _places_poller(void *data);
 static const char *_places_human_size_get(unsigned long long size);
 static void _places_volume_object_update(Volume *vol, Evas_Object *obj);
+static void _places_run_fm(void *data, E_Menu *m, E_Menu_Item *mi);
 
 
 /* Edje callbacks */
@@ -82,21 +83,21 @@ places_volume_add(const char *id, int dont_auto_mount, int dont_auto_open)
 
    // safe defaults
    v->id = eina_stringshare_add(id);
-   v->valid = 0;
+   v->valid = EINA_FALSE;
    v->objs = NULL;
    v->icon = NULL;
    v->device = NULL;
-   v->to_mount = 0;
-   v->force_open = 0;
+   v->to_mount = EINA_FALSE;
+   v->force_open = EINA_FALSE;
    v->drive_type = "";
    v->model = "";
    v->bus = "";
 
    if (places_conf->auto_mount && !dont_auto_mount)
-     v->to_mount = 1;
+     v->to_mount = EINA_TRUE;
 
    if (places_conf->auto_open && !dont_auto_open)
-     v->force_open = 1;
+     v->force_open = EINA_TRUE;
 
    volumes = eina_list_append(volumes, v);
 
@@ -187,6 +188,13 @@ places_volume_update(Volume *vol)
 
    EINA_LIST_FOREACH(vol->objs, l, obj)
      _places_volume_object_update(vol, obj);
+
+   // the volume has been mounted as requested, open the fm
+   if (vol->force_open && vol->mounted && vol->mount_point)
+   {
+      _places_run_fm((void*)vol->mount_point,NULL, NULL);
+      vol->force_open = EINA_FALSE;
+   }
 }
 
 void
@@ -394,7 +402,7 @@ places_mount_volume(Volume *vol)
      }
 
    vol->mount_func(vol, opts);
-   vol->to_mount = 0;
+   vol->to_mount = EINA_FALSE;
 
    eina_list_free(opts);
 }
@@ -667,7 +675,7 @@ _places_icon_activated_cb(void *data, Evas_Object *o, const char *emission, cons
      _places_run_fm((void*)vol->mount_point, NULL, NULL);
    else
      {
-        vol->force_open = 1;
+        vol->force_open = EINA_TRUE;
         places_mount_volume(vol);
      }
 }
