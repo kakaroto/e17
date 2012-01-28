@@ -8,5 +8,5 @@ void ekbd_layout_free(Smart_Data *sd);
 void ekbd_layout_select(Smart_Data *sd, Ekbd_Layout *kil);
 Evas_Object *ekbd_layout_theme_obj_new(Evas *e, const char *custom_file, const char *group);
 void ekbd_layout_keys_calc(Smart_Data *sd);
-void ekbd_layout_add(Smart_Data *sdc, const char *path);
+Ekbd_Layout *ekbd_layout_add(Smart_Data *sdc, const char *path);
 #endif /* EVKB_LAYOUT_H */

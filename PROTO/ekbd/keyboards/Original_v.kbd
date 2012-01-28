@@ -161,9 +161,11 @@ key   30 120  30  30
   is_alt
 key  60 120  30  30
   normal   Sym. Extra.tie
-key  90 120 165  30
+key  90 120 135  30
   normal   space space
 key 255 120 30 30
   normal … Punct.tie
+key 225 120 30 30
+  normal switch Original.kbd
 key 285  120  45  30
   normal   enter.png Return

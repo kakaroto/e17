@@ -41,7 +41,7 @@ static void _ekbd_layout_state_update(Smart_Data *sd);
 
 static Eina_Bool _ekbd_layout_cb_hold_timeout(void *data);
 static Eina_Bool _ekbd_layout_cb_repeat(void *data);
-
+static void _ekbd_layout_parse(Smart_Data *sd, const char *layout);
 
 
 Evas_Object *
@@ -205,6 +205,8 @@ _ekbd_layout_tie_parse(Ekbd_Int_Tie *tie, const char *path)
    fclose(f);
 }
 
+
+
 static void
 _ekbd_layout_parse(Smart_Data *sd, const char *layout)
 {
@@ -300,19 +302,41 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
                st->label = eina_stringshare_add(label);
              if (sscanf(buf, "%*s %*s %4000s", str) != 1) continue;
              p = strrchr(str, '.');
-             if (p && !strcmp(p, ".tie"))
+             if (p)
                {
-                  Ekbd_Int_Tie *kt;
-                  kt = calloc(1, sizeof(Ekbd_Int_Tie));
-                  snprintf(buf, sizeof(buf), "%s/%s",
-                           sd->layout.directory, str);
-                  _ekbd_layout_tie_parse(kt, buf);
-                  st->tie = kt;
-                  kt->key = ky;
+                  if (!strcmp(p, ".tie"))
+                    {
+                       Ekbd_Int_Tie *kt;
+                       kt = calloc(1, sizeof(Ekbd_Int_Tie));
+                       snprintf(buf, sizeof(buf), "%s/%s",
+                                sd->layout.directory, str);
+                       _ekbd_layout_tie_parse(kt, buf);
+                       st->tie = kt;
+                       kt->key = ky;
+                    }
+                  else if (!strcmp(p, ".kbd"))
+                    {
+                       Ekbd_Layout *kl = NULL;
+                       Eina_List *l;
+                       snprintf(buf, sizeof(buf), "%s/%s",
+                                sd->layout.directory, str);
+                       printf("insert %s\n", buf);
+
+                       EINA_LIST_FOREACH(sd->layouts, l, kl)
+                         {
+                            if (!strcmp(kl->path, buf))
+                              {
+                                st->layout = kl;
+                                break;
+                              }
+                         }
+                       if (!kl)
+                         st->layout = ekbd_layout_add(sd, buf);
+                       printf("inserted %s\n", st->layout->path);
+                    }
                }
              else
                st->out = eina_stringshare_add(str);
-//                  printf("keysym %s", st->out);
           }
         if (!strcmp(str, "is_shift")) ky->is_shift = 1;
         if (!strcmp(str, "is_multi_shift")) ky->is_multi_shift = 1;
@@ -324,12 +348,12 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
    fclose(f);
 }
 
-
-void
+Ekbd_Layout *
 ekbd_layout_add(Smart_Data *sd, const char *path)
 {
    char buf[PATH_MAX], *p;
    Ekbd_Layout *kil;
+   int isok = 0;
    kil = calloc(1, sizeof(Ekbd_Layout));
    if (kil)
      {
@@ -353,7 +377,6 @@ ekbd_layout_add(Smart_Data *sd, const char *path)
         f = fopen(kil->path, "r");
         if (f)
           {
-             int isok = 0;
              while(fgets(buf, sizeof(buf), f))
                {
                   int buflen;
@@ -412,9 +435,17 @@ ekbd_layout_add(Smart_Data *sd, const char *path)
                }
              fclose(f);
           }
-        sd->layouts = eina_list_append(sd->layouts, kil);
+        if (!isok)
+          {
+             free(kil);
+             kil = NULL;
+          }
+        else
+          sd->layouts = eina_list_append(sd->layouts, kil);
      }
+   return kil;
 }
+
 
 void
 ekbd_layouts_free(Smart_Data *sd)
@@ -762,26 +793,6 @@ _ekbd_layout_cb_hold_timeout(void *data)
    return ECORE_CALLBACK_CANCEL;
 }
 
-/*
-static Eina_Bool
-_ekbd_layout_cb_hold_timeout(void *data)
-{
-   Smart_Data *sd;
-   sd = data;
-   sd->down.hold_timeout = NULL;
-   sd->down.zoom
-   if (sd->down.pressed)
-     {
-        sd->down.pressed.pressed = 0;
-        edje_object_signal_emit(sd->down.pressed->obj,
-                                "e,state,released", "e");
-        sd->down.pressed = NULL;
-     }
-   _ekbd_layout_zoomkey_update(sd);
-   return ECORE_CALLBACK_CANCEL;
-}
-*/
-
 static void
 _ekbd_layout_cb_mouse_down(void *data, Evas *evas __UNUSED__, Evas_Object *obj __UNUSED__, void *event)
 {
@@ -894,9 +905,9 @@ _ekbd_layout_cb_mouse_up(void *data, Evas *evas __UNUSED__, Evas_Object *obj __U
    ky = sd->layout.pressed;
    if (ky)
      {
-        if (!sd->down.hold) _ekbd_layout_key_press_handle(sd, ky);
         edje_object_signal_emit(ky->obj, "e,state,released", "e");
         ky->pressed = EINA_FALSE;
+        if (!sd->down.hold) _ekbd_layout_key_press_handle(sd, ky);
         sd->layout.pressed = NULL;
      }
    if (sd->down.hold_timeout)
@@ -968,6 +979,7 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
         _ekbd_layout_state_update(sd);
         return;
      }
+
    st = _ekbd_layout_key_state_get(sd, ky);
    if (st->tie)
      {
@@ -976,6 +988,12 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
              sd->down.tie = st->tie;
              _ekbd_layout_tie_build(sd);
           }
+     }
+   else if (st->layout && !sd->down.hold)
+     {
+        printf("%s\n", st->layout->path);
+        ekbd_layout_select(sd, st->layout);
+        ekbd_layout_keys_calc(sd);
      }
    else
      {

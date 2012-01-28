@@ -81,6 +81,7 @@ struct _Ekbd_Int_Key_State
    const char *label, *icon;
    const char *out;
    Ekbd_Int_Tie *tie;
+   struct _Ekbd_Layout *layout;
 };
 
 
