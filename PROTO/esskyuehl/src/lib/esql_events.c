@@ -129,7 +129,7 @@ esql_call_complete(Esql *e)
         break;
 
       case ESQL_CONNECT_TYPE_QUERY:
-        DBG("(ev=%p, qid=%llu)", ev, e->cur_id);
+        DBG("(ev=%p, qid=%u)", ev, e->cur_id);
         e->query_end = ecore_time_get();
         {
            Esql_Res *res;
@@ -153,7 +153,7 @@ esql_call_complete(Esql *e)
            qcb = eina_hash_find(esql_query_callbacks, &e->cur_id);
            if (qcb)
              {
-                INFO("Executing callback for current query (%llu)", res->qid);
+                INFO("Executing callback for current query (%u)", res->qid);
                 qcb(res, e->cur_data);
                 e->query_start = e->query_end = 0.0;
                 eina_hash_del_by_key(esql_query_callbacks, &e->cur_id);
@@ -161,7 +161,7 @@ esql_call_complete(Esql *e)
              }
            else
              {
-                INFO("Emitting event for current query (%llu)", res->qid);
+                INFO("Emitting event for current query (%u)", res->qid);
                 ecore_event_add(ESQL_EVENT_RESULT, res, (Ecore_End_Cb)esql_res_free, NULL);
              }
            e->res = ev->res = NULL;
@@ -240,7 +240,7 @@ esql_event_error(Esql *e)
              else
                ERR("Connection error: %s", res->error);
 
-             INFO("Executing callback for current query (%llu)", res->qid);
+             INFO("Executing callback for current query (%u)", res->qid);
              qcb(res, e->cur_data);
 
              e->query_start = e->query_end = 0.0;
@@ -277,7 +277,7 @@ Eina_Bool
 esql_connect_handler(Esql             *e,
                      Ecore_Fd_Handler *fdh)
 {
-   DBG("(e=%p, fdh=%p, qid=%llu)", e, fdh, e->cur_id);
+   DBG("(e=%p, fdh=%p, qid=%u)", e, fdh, e->cur_id);
 
    if (fdh)
      ecore_main_fd_handler_active_set(fdh, 0);

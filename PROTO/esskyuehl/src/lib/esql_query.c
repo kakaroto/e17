@@ -258,7 +258,7 @@ esql_query(Esql       *e,
         e->backend_ids = eina_list_append(e->backend_ids, (uintptr_t*)esql_id);
         if (data)
           {
-             if (!esql_query_data) esql_query_data = eina_hash_int64_new(NULL);
+             if (!esql_query_data) esql_query_data = eina_hash_int32_new(NULL);
              eina_hash_add(esql_query_data, &esql_id, data);
           }
      }
@@ -358,7 +358,7 @@ esql_query_vargs(Esql       *e,
         e->backend_ids = eina_list_append(e->backend_ids, (uintptr_t*)esql_id);
         if (data)
           {
-             if (!esql_query_data) esql_query_data = eina_hash_int64_new(NULL);
+             if (!esql_query_data) esql_query_data = eina_hash_int32_new(NULL);
              eina_hash_add(esql_query_data, &esql_id, data);
           }
      }
@@ -379,13 +379,13 @@ Eina_Bool
 esql_query_callback_set(Esql_Query_Id id,
                         Esql_Query_Cb callback)
 {
-   DBG("(id=%lu)", id);
+   DBG("(id=%u)", id);
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(callback, EINA_FALSE);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(id < 1, EINA_FALSE);
 
    if (!esql_query_callbacks)
-     esql_query_callbacks = eina_hash_int64_new(NULL);
+     esql_query_callbacks = eina_hash_int32_new(NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(esql_query_callbacks, EINA_FALSE);
 
    return eina_hash_add(esql_query_callbacks, &id, callback);

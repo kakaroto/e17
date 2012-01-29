@@ -81,13 +81,7 @@ typedef struct Esql_Row Esql_Row;
  * @typedef Esql_Query_Id
  * Id to use as a reference for a query
  */
-#if __WORDSIZE == 64
-typedef unsigned long Esql_Query_Id;
-#elif __WORDSIZE == 32
-typedef unsigned long long Esql_Query_Id;
-#else
-#error "Unknown __WORDSIZE"
-#endif
+typedef unsigned int Esql_Query_Id;
 
 /**
  * @typedef Esql_Query_Cb
