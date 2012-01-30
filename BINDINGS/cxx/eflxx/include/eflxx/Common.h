@@ -39,7 +39,7 @@ class Size
         ~Size() {};
         void set( Evas_Coord dx, Evas_Coord dy ) { _dx = dx; _dy = dy; };
         void width( Evas_Coord width ) { _dx = width; }
-        void heigth( Evas_Coord height ) { _dy = height; }
+        void height( Evas_Coord height ) { _dy = height; }
         Evas_Coord width() const { return _dx; };
         Evas_Coord height() const { return _dy; };
     private:
