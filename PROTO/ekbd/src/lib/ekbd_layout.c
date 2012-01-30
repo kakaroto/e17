@@ -121,7 +121,7 @@ ekbd_layout_free(Smart_Data *sd)
 
 
 static void
-_ekbd_layout_tie_parse(Ekbd_Int_Tie *tie, const char *path)
+_ekbd_layout_tie_parse(Smart_Data *sd, Ekbd_Int_Tie *tie, const char *path)
 {
    FILE *f;
    char buf[PATH_MAX];
@@ -193,7 +193,31 @@ _ekbd_layout_tie_parse(Ekbd_Int_Tie *tie, const char *path)
              else
                st->label = eina_stringshare_add(label);
              if (sscanf(buf, "%*s %*s %4000s", str) != 1) continue;
-             st->out = eina_stringshare_add(str);
+             if (str[0] != '"')
+               {
+                  p = strrchr(str, '.');
+                  if (p && (!strcmp(p, ".kbd")))
+                    {
+                       Ekbd_Layout *kl = NULL;
+                       Eina_List *l;
+                       snprintf(buf, sizeof(buf), "%s/%s",
+                                sd->layout.directory, str);
+                       EINA_LIST_FOREACH(sd->layouts, l, kl)
+                         {
+                            if (!strcmp(kl->path, buf))
+                              {
+                                 st->layout = kl;
+                                 break;
+                              }
+                         }
+                       if (!kl)
+                         st->layout = ekbd_layout_add(sd, buf);
+                    }
+                  else
+                    st->out = eina_stringshare_add(str);
+               }
+             else
+               st->out = eina_stringshare_add(str);
           }
         if (!strcmp(str, "is_shift")) ky->is_shift = 1;
         if (!strcmp(str, "is_multi_shift")) ky->is_multi_shift = 1;
@@ -312,7 +336,7 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
                             kt = calloc(1, sizeof(Ekbd_Int_Tie));
                             snprintf(buf, sizeof(buf), "%s/%s",
                                      sd->layout.directory, str);
-                            _ekbd_layout_tie_parse(kt, buf);
+                            _ekbd_layout_tie_parse(sd, kt, buf);
                             st->tie = kt;
                             kt->key = ky;
                          }
@@ -322,17 +346,16 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
                             Eina_List *l;
                             snprintf(buf, sizeof(buf), "%s/%s",
                                      sd->layout.directory, str);
-
-                       EINA_LIST_FOREACH(sd->layouts, l, kl)
-                         {
-                            if (!strcmp(kl->path, buf))
+                            EINA_LIST_FOREACH(sd->layouts, l, kl)
                               {
-                                st->layout = kl;
-                                break;
+                                 if (!strcmp(kl->path, buf))
+                                   {
+                                      st->layout = kl;
+                                      break;
+                                   }
                               }
-                         }
-                       if (!kl)
-                         st->layout = ekbd_layout_add(sd, buf);
+                            if (!kl)
+                              st->layout = ekbd_layout_add(sd, buf);
                          }
                     }
                   else
