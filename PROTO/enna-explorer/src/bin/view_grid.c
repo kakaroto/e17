@@ -42,7 +42,7 @@ struct _Grid_Item
    Enna_File *file;
    void (*func_activated) (void *data);
    void *data;
-   Elm_Gengrid_Item *item;
+   Elm_Object_Item *item;
    Smart_Data *sd;
    Eina_Bool checked;
 

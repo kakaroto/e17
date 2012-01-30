@@ -236,8 +236,9 @@ int main(int argc, char **argv)
      ECORE_GETOPT_VALUE_NONE
    };
 
+   elm_init(argc, argv);
    init_locale();
-   eina_init();
+
 
 
    args = ecore_getopt_parse(&options, values, argc, argv);
