@@ -301,26 +301,27 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
              else
                st->label = eina_stringshare_add(label);
              if (sscanf(buf, "%*s %*s %4000s", str) != 1) continue;
-             p = strrchr(str, '.');
-             if (p)
+             if (str[0] != '"')
                {
-                  if (!strcmp(p, ".tie"))
+                  p = strrchr(str, '.');
+                  if (p)
                     {
-                       Ekbd_Int_Tie *kt;
-                       kt = calloc(1, sizeof(Ekbd_Int_Tie));
-                       snprintf(buf, sizeof(buf), "%s/%s",
-                                sd->layout.directory, str);
-                       _ekbd_layout_tie_parse(kt, buf);
-                       st->tie = kt;
-                       kt->key = ky;
-                    }
-                  else if (!strcmp(p, ".kbd"))
-                    {
-                       Ekbd_Layout *kl = NULL;
-                       Eina_List *l;
-                       snprintf(buf, sizeof(buf), "%s/%s",
-                                sd->layout.directory, str);
-                       printf("insert %s\n", buf);
+                       if (!strcmp(p, ".tie"))
+                         {
+                            Ekbd_Int_Tie *kt;
+                            kt = calloc(1, sizeof(Ekbd_Int_Tie));
+                            snprintf(buf, sizeof(buf), "%s/%s",
+                                     sd->layout.directory, str);
+                            _ekbd_layout_tie_parse(kt, buf);
+                            st->tie = kt;
+                            kt->key = ky;
+                         }
+                       else if (!strcmp(p, ".kbd"))
+                         {
+                            Ekbd_Layout *kl = NULL;
+                            Eina_List *l;
+                            snprintf(buf, sizeof(buf), "%s/%s",
+                                     sd->layout.directory, str);
 
                        EINA_LIST_FOREACH(sd->layouts, l, kl)
                          {
@@ -332,8 +333,10 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
                          }
                        if (!kl)
                          st->layout = ekbd_layout_add(sd, buf);
-                       printf("inserted %s\n", st->layout->path);
+                         }
                     }
+                  else
+                    st->out = eina_stringshare_add(str);
                }
              else
                st->out = eina_stringshare_add(str);
@@ -991,7 +994,6 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
      }
    else if (st->layout && !sd->down.hold)
      {
-        printf("%s\n", st->layout->path);
         ekbd_layout_select(sd, st->layout);
         ekbd_layout_keys_calc(sd);
      }
@@ -1001,18 +1003,14 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
         out = st->out;
         if (out)
           {
-             if (sd->layout.state & (CTRL | ALT))
-               {
-                  Ekbd_Mod mods = 0;
-                  if (sd->layout.state & CTRL) mods |= EKBD_MOD_CTRL;
-                  if (sd->layout.state & ALT) mods |= EKBD_MOD_ALT;
-                  if (out[0] == '"')
-                    ekbd_send_string_press(out, mods);
-                  else
-                    ekbd_send_keysym_press(out, mods);
-               }
+             Ekbd_Mod mods = 0;
+             if (sd->layout.state & CTRL) mods |= EKBD_MOD_CTRL;
+             if (sd->layout.state & ALT) mods |= EKBD_MOD_ALT;
+
+             if (out[0] == '"')
+                ekbd_send_string_press(out, mods);
              else
-               ekbd_send_keysym_press(out, 0);
+                ekbd_send_keysym_press(out, mods);
           }
 
         if (sd->layout.state & (SHIFT | CTRL | ALT | ALTGR))

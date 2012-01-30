@@ -7,13 +7,8 @@
 #include "ekbd_send.h"
 
 static const char *
-_string_to_keysym(const char *str)
+_glyph_to_keysym(int glyph)
 {
-   int glyph;
-
-   /* utf8 -> glyph id (unicode - ucs4) */
-   glyph = 0;
-   evas_string_char_next_get(str, 0, &glyph);
    if (glyph < 0) return NULL;
    if (glyph > 0xff) glyph |= 0x1000000;
    return ecore_x_keysym_string_get(glyph);
@@ -46,11 +41,24 @@ _ekbd_send_keysyms_get(Eina_List **keysyms, Eina_List *keys)
 EAPI void
 ekbd_send_string_press(const char *str, Ekbd_Mod mod)
 {
-   const char *key = NULL;
+   char *string = (char*)str;
+   char *key;
+   int glyph = 0;
 
-   key = _string_to_keysym(str);
-   if (!key) return;
-   ekbd_send_keysym_press(key, mod);
+   /* First keysym is 'quotedbl' */
+   string += evas_string_char_next_get(string, 0, &glyph);
+   key = (char*) _glyph_to_keysym(glyph);
+
+   while(key)
+   {
+      if(strcmp(key,"quotedbl"))
+         ekbd_send_keysym_press(key, mod);
+
+      glyph = 0;
+      /* utf8 -> glyph id (unicode - ucs4) */
+      string += evas_string_char_next_get(string, 0, &glyph);
+      key = (char*) _glyph_to_keysym(glyph);
+   }
 }
 
 EAPI void
