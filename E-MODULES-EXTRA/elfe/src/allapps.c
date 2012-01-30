@@ -75,7 +75,7 @@ _gl_longpress(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Elfe_Grid_Item *gitem;
    Elfe_Allapps *allapps = data;
-   Elm_Gengrid_Item *it = event_info;
+   Elm_Object_Item *it = event_info;
 
    gitem = elm_gengrid_item_data_get(event_info);
 
@@ -104,7 +104,7 @@ static void
 _item_selected(void *data, Evas_Object *obj __UNUSED__, void *event_info)
 {
    Elfe_Grid_Item *gitem = data;
-   Elm_Gengrid_Item *it = event_info;
+   Elm_Object_Item *it = event_info;
 
    evas_object_smart_callback_call(gitem->allapps->box, "item,selected", gitem->menu);
    elm_gengrid_item_selected_set(it, EINA_FALSE);
