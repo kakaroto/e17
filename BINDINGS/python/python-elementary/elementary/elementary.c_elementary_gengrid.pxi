@@ -287,10 +287,10 @@ cdef class GengridItem(WidgetItem):
     """
     An item for the gengrid widget
     """
-    cdef Elm_Gengrid_Item *obj
+    cdef Elm_Object_Item *obj
     cdef object params
 
-    cdef int _set_obj(self, Elm_Gengrid_Item *obj, params) except 0:
+    cdef int _set_obj(self, Elm_Object_Item *obj, params) except 0:
         assert self.obj == NULL, "Object must be clean"
         self.obj = obj
         self.params = params
@@ -323,7 +323,7 @@ cdef class GengridItem(WidgetItem):
                 self.params[1])
 
     def next_get(self):
-        cdef Elm_Gengrid_Item *it
+        cdef Elm_Object_Item *it
         it = elm_gengrid_item_next_get(self.obj)
         return _elm_gengrid_item_to_python(it)
 
@@ -332,7 +332,7 @@ cdef class GengridItem(WidgetItem):
             return self.next_get()
 
     def prev_get(self):
-        cdef Elm_Gengrid_Item *it
+        cdef Elm_Object_Item *it
         it = elm_gengrid_item_prev_get(self.obj)
         return _elm_gengrid_item_to_python(it)
 
@@ -516,7 +516,7 @@ cdef class GengridItem(WidgetItem):
 
 
 def _gengrid_item_conv(long addr):
-    cdef Elm_Gengrid_Item *it = <Elm_Gengrid_Item *>addr
+    cdef Elm_Object_Item *it = <Elm_Object_Item *>addr
     cdef void *data = elm_gengrid_item_data_get(it)
     if data == NULL:
         return None
@@ -524,13 +524,13 @@ def _gengrid_item_conv(long addr):
         prm = <object>data
         return prm[2]
 
-cdef Elm_Gengrid_Item *_elm_gengrid_item_from_python(GengridItem item):
+cdef Elm_Object_Item *_elm_gengrid_item_from_python(GengridItem item):
     if item is None:
         return NULL
     else:
         return item.obj
 
-cdef _elm_gengrid_item_to_python(Elm_Gengrid_Item *it):
+cdef _elm_gengrid_item_to_python(Elm_Object_Item *it):
     cdef void *data
     cdef object prm
     if it == NULL:
@@ -628,7 +628,7 @@ cdef class Gengrid(Object):
                value given as parameter to this function.
         """
         cdef GengridItem ret = GengridItem()
-        cdef Elm_Gengrid_Item *item
+        cdef Elm_Object_Item *item
         cdef c_evas.Evas_Smart_Cb cb
 
         if func is None:
@@ -668,7 +668,7 @@ cdef class Gengrid(Object):
                value given as parameter to this function.
         """
         cdef GengridItem ret = GengridItem()
-        cdef Elm_Gengrid_Item *item
+        cdef Elm_Object_Item *item
         cdef c_evas.Evas_Smart_Cb cb
 
         if func is None:
@@ -711,7 +711,7 @@ cdef class Gengrid(Object):
                value given as parameter to this function.
         """
         cdef GengridItem ret = GengridItem()
-        cdef Elm_Gengrid_Item *item, *before
+        cdef Elm_Object_Item *item, *before
         cdef c_evas.Evas_Smart_Cb cb
 
         before = _elm_gengrid_item_from_python(before_item)
@@ -757,7 +757,7 @@ cdef class Gengrid(Object):
                value given as parameter to this function.
         """
         cdef GengridItem ret = GengridItem()
-        cdef Elm_Gengrid_Item *item, *after
+        cdef Elm_Object_Item *item, *after
         cdef c_evas.Evas_Smart_Cb cb
 
         after = _elm_gengrid_item_from_python(after_item)
@@ -781,14 +781,14 @@ cdef class Gengrid(Object):
             return None
 
     def selected_items_get(self):
-        cdef Elm_Gengrid_Item *it
+        cdef Elm_Object_Item *it
         cdef c_evas.const_Eina_List *lst
 
         lst = elm_gengrid_selected_items_get(self.obj)
         ret = []
         ret_append = ret.append
         while lst:
-            it = <Elm_Gengrid_Item *>lst.data
+            it = <Elm_Object_Item *>lst.data
             lst = lst.next
             o = _elm_gengrid_item_to_python(it)
             if o is not None:
@@ -796,7 +796,7 @@ cdef class Gengrid(Object):
         return ret
 
     def selected_item_get(self):
-        cdef Elm_Gengrid_Item *it
+        cdef Elm_Object_Item *it
         it = elm_gengrid_selected_item_get(self.obj)
         return _elm_gengrid_item_to_python(it)
 
@@ -805,7 +805,7 @@ cdef class Gengrid(Object):
             return self.selected_item_get()
 
     def first_item_get(self):
-        cdef Elm_Gengrid_Item *it
+        cdef Elm_Object_Item *it
         it = elm_gengrid_first_item_get(self.obj)
         return _elm_gengrid_item_to_python(it)
 
@@ -814,7 +814,7 @@ cdef class Gengrid(Object):
             return self.first_item_get()
 
     def last_item_get(self):
-        cdef Elm_Gengrid_Item *it
+        cdef Elm_Object_Item *it
         it = elm_gengrid_last_item_get(self.obj)
         return _elm_gengrid_item_to_python(it)
 
