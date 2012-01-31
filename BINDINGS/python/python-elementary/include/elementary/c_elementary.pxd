@@ -205,7 +205,6 @@ cdef extern from "Elementary.h":
 
     ctypedef struct Elm_Object_Item
     ctypedef struct Elm_Carousel_Item
-    ctypedef struct Elm_Gengrid_Item
     ctypedef struct Elm_Theme
 
     # Basic elementary functions
