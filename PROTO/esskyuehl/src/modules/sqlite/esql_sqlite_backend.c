@@ -35,7 +35,7 @@ static void esql_sqlite_free(Esql *e);
 static const char *
 esql_sqlite_error_get(Esql *e)
 {
-   if (sqlite3_errcode(e->backend.db) != SQLITE_OK)
+   if (sqlite3_errcode(e->backend.db))
      return sqlite3_errmsg(e->backend.db);
    return NULL;
 }
@@ -61,13 +61,17 @@ esql_sqlite_fd_get(Esql *e __UNUSED__)
 static void
 esql_sqlite_thread_end_cb(Esql *e, Ecore_Thread *et __UNUSED__)
 {
+   DBG("(e=%p)", e);
    e->backend.thread = NULL;
+   if (e->backend.stmt) sqlite3_finalize(e->backend.stmt);
+   e->backend.stmt = NULL;
    esql_call_complete(e);
 }
 
 static void
-esql_sqlite_connect_cancel_cb(Esql *e, Ecore_Thread *et __UNUSED__)
+esql_sqlite_thread_cancel_cb(Esql *e, Ecore_Thread *et __UNUSED__)
 {
+   DBG("(e=%p)", e);
    e->backend.thread = NULL;
    esql_event_error(e);
 }
@@ -90,7 +94,7 @@ esql_sqlite_connect(Esql *e)
 {
    e->backend.thread = ecore_thread_run((Ecore_Thread_Cb)esql_sqlite_connect_cb,
                                       (Ecore_Thread_Cb)esql_sqlite_thread_end_cb,
-                                      (Ecore_Thread_Cb)esql_sqlite_connect_cancel_cb, e);
+                                      (Ecore_Thread_Cb)esql_sqlite_thread_cancel_cb, e);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.thread, ECORE_FD_ERROR);
    return ECORE_FD_READ | ECORE_FD_WRITE;
 }
@@ -205,14 +209,29 @@ esql_sqlite_desc_get(const Esql *e)
 static void
 esql_sqlite_query_cb(Esql *e, Ecore_Thread *et)
 {
-   int tries = 0;
+   int ret, tries = 0;
+
    while (++tries < 1000)
      {
-        switch (sqlite3_step(e->backend.stmt))
+        if (!e->backend.stmt)
+          return;
+        ret = sqlite3_step(e->backend.stmt);
+        switch (ret)
           {
            case SQLITE_BUSY:
              break;
            case SQLITE_DONE:
+             if (!e->res)
+               {
+                  e->res = esql_res_calloc(1);
+                  if (!e->res) goto out;
+                  e->res->e = e;
+                  e->res->desc = esql_sqlite_desc_get(e);
+                  e->res->affected = sqlite3_changes(e->backend.db);
+                  INFO("res %p desc=%p", e->res, e->res->desc);
+               }
+             sqlite3_finalize(e->backend.stmt);
+             e->backend.stmt = NULL;
              return;
            case SQLITE_ROW:
              if (!e->res)
@@ -231,6 +250,8 @@ esql_sqlite_query_cb(Esql *e, Ecore_Thread *et)
      }
    /* something crazy is going on */
 out:
+   sqlite3_finalize(e->backend.stmt);
+   e->backend.stmt = NULL;
    ecore_thread_cancel(et);
 }
 
@@ -238,9 +259,10 @@ static int
 esql_sqlite_io(Esql *e)
 {
    DBG("(e=%p)", e);
+   if (e->backend.thread) return ECORE_FD_ERROR;
    e->backend.thread = ecore_thread_run((Ecore_Thread_Cb)esql_sqlite_query_cb,
                                       (Ecore_Thread_Cb)esql_sqlite_thread_end_cb,
-                                      (Ecore_Thread_Cb)esql_sqlite_connect_cancel_cb, e);
+                                      (Ecore_Thread_Cb)esql_sqlite_thread_cancel_cb, e);
    EINA_SAFETY_ON_NULL_RETURN_VAL(e->backend.thread, ECORE_FD_ERROR);
    return ECORE_FD_READ | ECORE_FD_WRITE;
 }
@@ -255,7 +277,6 @@ static void
 esql_sqlite_query(Esql *e, const char *query, unsigned int len)
 {
    EINA_SAFETY_ON_TRUE_RETURN(sqlite3_prepare_v2(e->backend.db, query, len, (struct sqlite3_stmt**)&e->backend.stmt, NULL));
-   esql_sqlite_io(e);
 }
 
 static void
@@ -281,9 +302,6 @@ esql_sqlite_res_free(Esql_Res *res)
          * on main thread, then needs locking!
          */
      }
-
-   sqlite3_finalize(res->e->backend.stmt);
-   res->e->backend.stmt = NULL;
 }
 
 static void
@@ -388,5 +406,6 @@ EAPI Esql_Type
 esql_module_init(Esql *e)
 {
    if (e) esql_sqlite_init(e);
+   sqlite3_initialize();
    return ESQL_TYPE_SQLITE;
 }
