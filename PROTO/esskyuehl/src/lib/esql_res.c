@@ -69,18 +69,7 @@ esql_res_free(void *data __UNUSED__,
 void
 esql_row_free(Esql_Row *r)
 {
-   Esql_Cell *cell;
-   Eina_Inlist *l;
-
-   if ((!r) || (!r->cells)) return;
-
-   EINA_INLIST_FOREACH_SAFE(r->cells, l, cell)
-     {
-        if (cell->value.type)
-          eina_value_flush(&(cell->value));
-        esql_cell_mp_free(cell);
-     }
-
+   eina_value_flush(&(r->value));
    esql_row_mp_free(r);
 }
 
@@ -172,6 +161,29 @@ esql_res_rows_count(const Esql_Res *res)
 }
 
 /**
+ * @brief Retrieve the column name given its index.
+ * @param res The result object (NOT NULL)
+ * @return column name or NULL on failure. Do not change the name,
+ * it's an internal pointer!
+ *
+ * @see esql_res_rows_count()
+ */
+const char *
+esql_res_col_name_get(const Esql_Res *res, unsigned int column)
+{
+   const Eina_Value_Struct_Member *member;
+   unsigned int column_count;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+
+   column_count = res->desc ? res->desc->member_count : 0;
+   EINA_SAFETY_ON_FALSE_RETURN_VAL(column < column_count, NULL);
+
+   member = res->desc->members + column;
+   return member->name;
+}
+
+/**
  * @brief Retrieve the number of columns in a result set
  * This function has no effect for INSERT/UPDATE/etc statements.
  * @param res The result object (NOT NULL)
@@ -182,7 +194,8 @@ esql_res_cols_count(const Esql_Res *res)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, -1);
 
-   return res->num_cols;
+   if (!res->desc) return 0;
+   return res->desc->member_count;
 }
 
 /**
@@ -245,33 +258,23 @@ esql_res_row_iterator_new(const Esql_Res *res)
 }
 
 /**
- * @brief Retrieve the list of cells in a row
- * This returns the inlist for the #Esql_Cell objects in row @p r.
+ * @brief Retrieve the struct of cells in a row
  * @note This function has no effect for non-SELECT statements.
  * @param r The row object (NOT NULL)
- * @return The inlist, or NULL on failure
+ * @return Eina_Value on success or @c NULL on failure.
+ *
+ * Use eina_value_struct_get(), eina_value_struct_vget() or
+ * eina_value_struct_pget() to get the contents of each member.
+ *
+ * The columns description can be accessed with
+ * Eina_Value_Struct::desc, acquired with eina_value_get().
  */
-Eina_Inlist *
-esql_row_cells_get(const Esql_Row *r)
+EAPI const Eina_Value *
+esql_row_value_struct_get(const Esql_Row *r)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(r, NULL);
 
-   return r->cells;
-}
-
-/**
- * @brief Retrieve the number of cells in a row
- * This is equivalent to esql_res_cols_count.
- * @note This function has no effect for INSERT/UPDATE/etc statements.
- * @param r The row object (NOT NULL)
- * @return The number of cells, -1 on failure
- */
-int
-esql_row_cell_count(const Esql_Row *r)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(r, -1);
-
-   return r->num_cells;
+   return &(r->value);
 }
 
 /**
@@ -285,6 +288,34 @@ esql_row_res_get(const Esql_Row *r)
    EINA_SAFETY_ON_NULL_RETURN_VAL(r, NULL);
 
    return r->res;
+}
+
+/**
+ * @brief Retrieve the column value given its number.
+ * @param r The row object (NOT NULL)
+ * @param column column index, counting from zero and less than esql_res_cols_count()
+ * @param value where to return the value. Its existing contents are ignored.
+ * @return EINA_TRUE on success, EINA_FALSE on failure.
+ *
+ * This is a convenience to use the struct given the column number
+ * instead of its name.
+ *
+ * @see esql_row_value_struct_get()
+ */
+Eina_Bool
+esql_row_value_column_get(const Esql_Row *r, unsigned int column, Eina_Value *val)
+{
+   unsigned int column_count;
+   const Eina_Value_Struct_Member *member;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(r, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(val, EINA_FALSE);
+
+   column_count = r->res->desc ? r->res->desc->member_count : 0;
+   EINA_SAFETY_ON_FALSE_RETURN_VAL(column < column_count, EINA_FALSE);
+
+   member = r->res->desc->members + column;
+   return eina_value_struct_member_value_get(&(r->value), member, val);
 }
 
 /** @} */

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO: split src/modules used parts into another header!
+
 #ifndef ESQL_PRIV_H
 #define ESQL_PRIV_H
 
@@ -36,7 +38,7 @@
 void *alloca(size_t);
 #endif
 
-extern int esql_log_dom;
+extern EAPI int esql_log_dom;
 extern Eina_Hash *esql_query_callbacks;
 extern Eina_Hash *esql_query_data;
 
@@ -180,11 +182,12 @@ struct Esql_Res
 
    Eina_Inlist  *rows;
    int           row_count;
-   int           num_cols;
    long long int affected;
    long long int id;
    Esql_Query_Id qid;
    char         *query;
+
+   Eina_Value_Struct_Desc *desc;
 
    struct
    {
@@ -197,9 +200,7 @@ struct Esql_Row
    EINA_INLIST;
 
    Esql_Res    *res;
-
-   Eina_Inlist *cells;
-   int          num_cells;
+   Eina_Value   value;
 };
 
 typedef struct Esql_Row_Iterator
@@ -218,36 +219,34 @@ esql_fake_free(void *data __UNUSED__, Esql *e)
    if (e->dead) esql_free(e);
 }
 
-void esql_res_free(void *data, Esql_Res * res);
-void          esql_row_free(Esql_Row *r);
+EAPI void esql_res_free(void *data, Esql_Res * res);
+EAPI void          esql_row_free(Esql_Row *r);
+EAPI Eina_Bool     esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh);
 
-Eina_Bool     esql_connect_handler(Esql *e, Ecore_Fd_Handler *fdh);
+EAPI char         *esql_query_escape(Eina_Bool backslashes, unsigned int *len, const char *fmt, va_list args);
+EAPI char         *esql_string_escape(Eina_Bool backslashes, const char *s);
+EAPI Eina_Bool     esql_timeout_cb(Esql *e);
 
-char         *esql_query_escape(Eina_Bool backslashes, unsigned int *len, const char *fmt, va_list args);
-char         *esql_string_escape(Eina_Bool backslashes, const char *s);
-Eina_Bool     esql_timeout_cb(Esql *e);
+EAPI Eina_Bool     esql_pool_rebalance(Esql_Pool *ep, Esql *e);
+EAPI Esql_Query_Id esql_pool_query(Esql_Pool *ep, void *data, const char *query);
+EAPI Esql_Query_Id esql_pool_query_args(Esql_Pool *ep, void *data, const char *fmt, va_list args);
+EAPI void          esql_pool_disconnect(Esql_Pool *ep);
+EAPI Eina_Bool     esql_pool_connect(Esql_Pool *ep, const char *addr, const char *user, const char *passwd);
+EAPI Eina_Bool     esql_pool_database_set(Esql_Pool *ep, const char *database_name);
+EAPI Eina_Bool     esql_pool_type_set(Esql_Pool *ep, Esql_Type type);
+EAPI void          esql_pool_connect_timeout_set(Esql_Pool *ep, double timeout);
+EAPI void          esql_pool_reconnect_set(Esql_Pool *ep, Eina_Bool enable);
+EAPI void          esql_pool_free(Esql_Pool *ep);
+EAPI void          esql_reconnect_handler(Esql *e);
+EAPI void          esql_event_error(Esql *e);
+EAPI void          esql_call_complete(Esql *e);
 
-Eina_Bool     esql_pool_rebalance(Esql_Pool *ep, Esql *e);
-Esql_Query_Id esql_pool_query(Esql_Pool *ep, void *data, const char *query);
-Esql_Query_Id esql_pool_query_args(Esql_Pool *ep, void *data, const char *fmt, va_list args);
-void          esql_pool_disconnect(Esql_Pool *ep);
-Eina_Bool     esql_pool_connect(Esql_Pool *ep, const char *addr, const char *user, const char *passwd);
-Eina_Bool     esql_pool_database_set(Esql_Pool *ep, const char *database_name);
-Eina_Bool     esql_pool_type_set(Esql_Pool *ep, Esql_Type type);
-void          esql_pool_connect_timeout_set(Esql_Pool *ep, double timeout);
-void          esql_pool_reconnect_set(Esql_Pool *ep, Eina_Bool enable);
-void          esql_pool_free(Esql_Pool *ep);
-void          esql_reconnect_handler(Esql *e);
-void          esql_event_error(Esql *e);
-void          esql_call_complete(Esql *e);
-
-Eina_Bool esql_mempool_init(void);
-void esql_mempool_shutdown(void);
+EAPI Eina_Bool esql_mempool_init(void);
+EAPI void esql_mempool_shutdown(void);
 #define ESQL_ALLOC_FREE_HEADER(TYPE, Type) \
-  TYPE *Type##_calloc(unsigned int);		      \
-  void Type##_mp_free(TYPE *e);
+  EAPI TYPE *Type##_calloc(unsigned int);  \
+  EAPI void Type##_mp_free(TYPE *e);
 
 ESQL_ALLOC_FREE_HEADER(Esql_Res, esql_res);
 ESQL_ALLOC_FREE_HEADER(Esql_Row, esql_row);
-ESQL_ALLOC_FREE_HEADER(Esql_Cell, esql_cell);
 #endif

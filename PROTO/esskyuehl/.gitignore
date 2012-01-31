@@ -28,3 +28,4 @@ basic_query
 esskyuehl-*.gz
 esskyuehl-*.bz2
 test.db
+test_sqlite

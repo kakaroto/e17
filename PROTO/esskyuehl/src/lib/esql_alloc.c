@@ -24,12 +24,10 @@ struct _Esql_Mempool
 
 ESQL_ALLOC_FREE(Esql_Res, esql_res);
 ESQL_ALLOC_FREE(Esql_Row, esql_row);
-ESQL_ALLOC_FREE(Esql_Cell, esql_cell);
 
 static Esql_Mempool *mempool_array[] = {
   &esql_res_mp,
-  &esql_row_mp,
-  &esql_cell_mp,
+  &esql_row_mp
 };
 
 Eina_Bool

@@ -31,21 +31,27 @@ const char *
 esql_res_to_string(const Esql_Res *res)
 {
    const Esql_Row *row;
-   const Esql_Cell *cell;
-   Eina_Value tmp;
+   const Eina_Value_Struct_Member *member;
+   Eina_Value tmp, conv;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, NULL);
    if (!res->row_count) return NULL;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
-   cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
 
-   if (!eina_value_setup(&tmp, EINA_VALUE_TYPE_STRINGSHARE))
-     return NULL;
-   if (!eina_value_convert(&(cell->value), &tmp))
+   member = row->res->desc->members;
+   if (!eina_value_struct_value_get(&(row->value), member->name, &tmp))
      return NULL;
 
-   return tmp.value.ptr; /* no flush, ptr is a stringshared string! */
+   conv.type = EINA_VALUE_TYPE_STRINGSHARE;
+   if (!eina_value_convert(&tmp, &conv)) goto error_convert;
+
+   eina_value_flush(&tmp);
+   return conv.value.ptr;  /* no flush, ptr is a stringshared string! */
+
+ error_convert:
+   eina_value_flush(&tmp);
+   return NULL;
 }
 
 /**
@@ -57,8 +63,8 @@ unsigned char *
 esql_res_to_blob(const Esql_Res *res, unsigned int *size)
 {
    const Esql_Row *row;
-   const Esql_Cell *cell;
-   Eina_Value tmp;
+   const Eina_Value_Struct_Member *member;
+   Eina_Value tmp, conv;
    Eina_Value_Blob blob;
    unsigned char *ret = NULL;
 
@@ -68,16 +74,14 @@ esql_res_to_blob(const Esql_Res *res, unsigned int *size)
    EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, NULL);
    if (!res->row_count) return NULL;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
-   cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
 
-   if (!eina_value_setup(&tmp, EINA_VALUE_TYPE_BLOB))
+   member = row->res->desc->members;
+   if (!eina_value_struct_value_get(&(row->value), member->name, &tmp))
      return NULL;
 
-   if (!eina_value_convert(&(cell->value), &tmp))
-     goto error;
-
-   if (!eina_value_pget(&tmp, &blob))
-     goto error;
+   if (!eina_value_setup(&conv, EINA_VALUE_TYPE_BLOB)) goto error_setup;
+   if (!eina_value_convert(&tmp, &conv)) goto error;
+   if (!eina_value_pget(&conv, &blob)) goto error;
 
    ret = malloc(blob.size);
    EINA_SAFETY_ON_NULL_GOTO(ret, error);
@@ -86,6 +90,8 @@ esql_res_to_blob(const Esql_Res *res, unsigned int *size)
    if (size) *size = blob.size;
 
  error:
+   eina_value_flush(&conv);
+ error_setup:
    eina_value_flush(&tmp);
    return ret;
 }
@@ -99,28 +105,31 @@ long long int
 esql_res_to_lli(const Esql_Res *res)
 {
    const Esql_Row *row;
-   const Esql_Cell *cell;
-   Eina_Value tmp;
-   long long int ret = 0;
+   const Eina_Value_Struct_Member *member;
+   Eina_Value tmp, conv;
+   long long int ret;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, 0);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, 0);
    if (!res->row_count) return 0;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
-   cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
 
-   if (!eina_value_setup(&tmp, EINA_VALUE_TYPE_INT64))
+   member = row->res->desc->members;
+   if (!eina_value_struct_value_get(&(row->value), member->name, &tmp))
      return 0;
 
-   if (!eina_value_convert(&(cell->value), &tmp))
-     goto error;
+   conv.type = EINA_VALUE_TYPE_INT64;
+   if (!eina_value_convert(&tmp, &conv)) goto error_convert;
 
-   if (!eina_value_pget(&tmp, &ret))
-     ret = 0;
-
- error:
    eina_value_flush(&tmp);
+   if (!eina_value_pget(&conv, &ret))
+     return 0;
+
    return ret;
+
+ error_convert:
+   eina_value_flush(&tmp);
+   return 0;
 }
 
 /**
@@ -132,28 +141,31 @@ double
 esql_res_to_double(const Esql_Res *res)
 {
    const Esql_Row *row;
-   const Esql_Cell *cell;
-   Eina_Value tmp;
-   double ret = 0.0;
+   const Eina_Value_Struct_Member *member;
+   Eina_Value tmp, conv;
+   double ret;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, 0.0);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, 0.0);
    if (!res->row_count) return 0.0;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
-   cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
 
-   if (!eina_value_setup(&tmp, EINA_VALUE_TYPE_DOUBLE))
-     return 0;
+   member = row->res->desc->members;
+   if (!eina_value_struct_value_get(&(row->value), member->name, &tmp))
+     return 0.0;
 
-   if (!eina_value_convert(&(cell->value), &tmp))
-     goto error;
+   conv.type = EINA_VALUE_TYPE_DOUBLE;
+   if (!eina_value_convert(&tmp, &conv)) goto error_convert;
 
-   if (!eina_value_pget(&tmp, &ret))
-     ret = 0.0;
-
- error:
    eina_value_flush(&tmp);
+   if (!eina_value_pget(&conv, &ret))
+     return 0.0;
+
    return ret;
+
+ error_convert:
+   eina_value_flush(&tmp);
+   return 0.0;
 }
 
 /**
@@ -165,28 +177,31 @@ unsigned long int
 esql_res_to_ulong(const Esql_Res *res)
 {
    const Esql_Row *row;
-   const Esql_Cell *cell;
-   Eina_Value tmp;
-   unsigned long int ret = 0;
+   const Eina_Value_Struct_Member *member;
+   Eina_Value tmp, conv;
+   unsigned long int ret;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(res, 0);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(res->row_count > 1, 0);
    if (!res->row_count) return 0;
    row = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
-   cell = EINA_INLIST_CONTAINER_GET(row->cells, Esql_Cell);
 
-   if (!eina_value_setup(&tmp, EINA_VALUE_TYPE_ULONG))
+   member = row->res->desc->members;
+   if (!eina_value_struct_value_get(&(row->value), member->name, &tmp))
      return 0;
 
-   if (!eina_value_convert(&(cell->value), &tmp))
-     goto error;
+   conv.type = EINA_VALUE_TYPE_ULONG;
+   if (!eina_value_convert(&tmp, &conv)) goto error_convert;
 
-   if (!eina_value_pget(&tmp, &ret))
-     ret = 0;
-
- error:
    eina_value_flush(&tmp);
+   if (!eina_value_pget(&conv, &ret))
+     return 0;
+
    return ret;
+
+ error_convert:
+   eina_value_flush(&tmp);
+   return 0;
 }
 
 /** @} */

@@ -110,21 +110,6 @@ typedef enum
    ESQL_TYPE_SQLITE
 } Esql_Type;
 
-/**
- * @typedef Esql_Cell
- * Low-level object for managing cells in an #Esql_Row
- * @note No value in this object is allocated, all members belong
- * to other objects, and all values are freed immediately following the
- * event/callback which returned the object. This means that the user
- * MUST manually copy any values which are to be saved.
- */
-typedef struct Esql_Cell
-{
-   EINA_INLIST; /**< use to iterate through cells */
-   Esql_Row      *row; /**< parent row */
-   const char    *colname; /**< NOT stringshared */
-   Eina_Value     value;
-} Esql_Cell;
 /** @} */
 /* lib */
 EAPI int             esql_init(void);
@@ -167,6 +152,8 @@ EAPI Esql_Query_Id   esql_res_query_id_get(const Esql_Res *res);
 EAPI const char     *esql_res_query_get(const Esql_Res *res);
 EAPI int             esql_res_rows_count(const Esql_Res *res);
 EAPI int             esql_res_cols_count(const Esql_Res *res);
+EAPI const char     *esql_res_col_name_get(const Esql_Res *res, unsigned int column);
+
 EAPI long long int   esql_res_rows_affected(const Esql_Res *res);
 EAPI long long int   esql_res_id(const Esql_Res *res);
 EAPI Eina_Iterator  *esql_res_row_iterator_new(const Esql_Res *res);
@@ -179,8 +166,8 @@ EAPI double          esql_res_to_double(const Esql_Res *res);
 EAPI unsigned long int esql_res_to_ulong(const Esql_Res *res);
 
 /* row */
-EAPI Eina_Inlist    *esql_row_cells_get(const Esql_Row *r);
-EAPI int             esql_row_cell_count(const Esql_Row *r);
-EAPI Esql_Res       *esql_row_res_get(const Esql_Row *r);
+EAPI const Eina_Value *esql_row_value_struct_get(const Esql_Row *r);
+EAPI Eina_Bool         esql_row_value_column_get(const Esql_Row *r, unsigned int column, Eina_Value *val);
+EAPI Esql_Res         *esql_row_res_get(const Esql_Row *r);
 
 #endif

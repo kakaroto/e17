@@ -48,6 +48,142 @@ static char *esql_postgresql_escape(Esql *e, unsigned int *len, const char *fmt,
 static void esql_postgresql_row_init(Esql_Row *r, int row_num);
 static void esql_postgresql_free(Esql *e);
 
+/* TODO: move esql_postgresql_desc_ops to common? */
+static void *
+esql_postgresql_desc_alloc(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc)
+{
+   /* TODO: mempool? */
+   return malloc(desc->size);
+}
+
+ static void
+esql_postgresql_desc_free(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc __UNUSED__, void *memory)
+{
+   /* TODO: mempool? */
+   free(memory);
+}
+
+static const Eina_Value_Struct_Member *
+esql_postgresql_desc_find_member(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc, const char *name)
+{
+   const Eina_Value_Struct_Member *itr, *itr_end;
+
+   itr = desc->members;
+   itr_end = itr + desc->member_count;
+
+   /* assumes name is stringshared.
+    *
+    * we do this because it's the recommended usage pattern, moreover
+    * we expect to find the member, as users shouldn't look for
+    * non-existent members!
+    */
+   for (; itr < itr_end; itr++)
+     if (itr->name == name)
+       return itr;
+
+   itr = desc->members;
+   name = eina_stringshare_add(name);
+   eina_stringshare_del(name); /* we'll not use the contents, this is fine */
+   for (; itr < itr_end; itr++)
+     if (itr->name == name)
+       return itr;
+
+   return NULL;
+}
+
+static Eina_Value_Struct_Operations esql_postgresql_desc_ops = {
+  EINA_VALUE_STRUCT_OPERATIONS_VERSION,
+  esql_postgresql_desc_alloc,
+  esql_postgresql_desc_free,
+  NULL, /* no copy */
+  NULL, /* no compare */
+  esql_postgresql_desc_find_member
+};
+
+static Eina_Value_Struct_Desc *
+esql_postgresql_desc_get(PGresult *pres)
+{
+   Eina_Value_Struct_Desc *desc;
+   int i, cols;
+   unsigned int offset;
+
+   cols = PQntuples(pres);
+   if (cols < 1) return NULL;
+
+   desc = malloc(sizeof(*desc) + cols * sizeof(Eina_Value_Struct_Member));
+   EINA_SAFETY_ON_NULL_RETURN_VAL(desc, NULL);
+
+   desc->version = EINA_VALUE_STRUCT_DESC_VERSION;
+   desc->ops = &esql_postgresql_desc_ops;
+   desc->members = (void *)((char *)desc + sizeof(*desc));
+   desc->member_count = cols;
+   desc->size = 0;
+
+   offset = 0;
+   for (i = 0; i < cols; i++)
+     {
+        Eina_Value_Struct_Member *m = (Eina_Value_Struct_Member *)desc->members + i;
+        unsigned int size;
+
+        m->name = eina_stringshare_add(PQfname(pres, i));
+        m->offset = offset;
+
+        switch (PQftype(pres, i))
+          {
+           case TIMESTAMPOID:
+           case ABSTIMEOID:
+             m->type = EINA_VALUE_TYPE_TIMESTAMP;
+             break;
+
+           case BYTEAOID:
+           case NAMEOID:
+           case TEXTOID:
+           case VARCHAROID:
+           case BPCHAROID:
+             m->type = EINA_VALUE_TYPE_STRING;
+             break;
+
+           case BOOLOID:
+           case CHAROID:
+             m->type = EINA_VALUE_TYPE_CHAR;
+             break;
+
+           case INT2OID:
+             m->type = EINA_VALUE_TYPE_SHORT;
+             break;
+
+           case INT4OID:
+             m->type = EINA_VALUE_TYPE_LONG;
+             break;
+
+           case INT8OID:
+             m->type = EINA_VALUE_TYPE_INT64;
+             break;
+
+           case FLOAT4OID:
+             m->type = EINA_VALUE_TYPE_FLOAT;
+             break;
+
+           case FLOAT8OID:
+           case TINTERVALOID:
+           case RELTIMEOID:
+             m->type = EINA_VALUE_TYPE_DOUBLE;
+             break;
+
+           default:
+             m->type = EINA_VALUE_TYPE_BLOB;
+          }
+
+        size = m->type->value_size;
+        if (size % sizeof(void *) != 0)
+          size += size - (size % sizeof(void *));
+
+        offset += size;
+     }
+
+   desc->size = offset;
+   return desc;
+}
 
 static const char *
 esql_postgresql_error_get(Esql *e)
@@ -154,6 +290,26 @@ esql_postgresql_query(Esql *e, const char *query, unsigned int len __UNUSED__)
 static void
 esql_postgresql_res_free(Esql_Res *res)
 {
+   if (res->desc)
+     {
+        /* memset is not needed, but leave it here to find if people
+         * kept reference to values after row is removed, see below.
+         */
+        memset(res->desc, 0, sizeof(res->desc));
+        free(res->desc);
+
+        /* NOTE: after this point, if users are still holding 'desc' they will
+         * have problems. This can be done if user calls eina_value_copy()
+         * on some esql_row_value_struct_get()
+         *
+         * If this is an use case, add Eina_Value_Struct_Desc to some other
+         * struct and do reference counting on it, increment on
+         * alloc/copy, decrement on free.
+         *
+         * Remember that struct is created/ref on thread, and it is free'd
+         * on main thread, then needs locking!
+         */
+     }
    PQclear(res->backend.res);
 }
 
@@ -186,13 +342,12 @@ esql_postgresql_res(Esql_Res *res)
         ERR("Error %s:'%s'!", PQresStatus(PQresultStatus(pres)), res->error);
         return;
      }
-   res->row_count = PQntuples(pres);
-   res->num_cols = PQnfields(pres);
+   res->desc = esql_postgresql_desc_get(pres);
+   INFO("res %p desc=%p", res, res->desc);
    for (i = 0; i < res->row_count; i++)
      {
         r = esql_row_calloc(1);
         EINA_SAFETY_ON_NULL_RETURN(r);
-        r->num_cells = res->num_cols;
         r->res = res;
         esql_postgresql_row_init(r, i);
         res->rows = eina_inlist_append(res->rows, EINA_INLIST_GET(r));
@@ -213,23 +368,23 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
 {
    PGresult *pres;
    Esql_Res *res;
-   Esql_Cell *cell;
-   int i, cols;
-
+   Eina_Value *sval;
+   unsigned int i, cols;
    res = r->res;
    pres = res->backend.res;
-   cols = res->num_cols;
+   cols = res->desc->member_count;
+
+   sval = &(r->value);
+   eina_value_struct_setup(sval, res->desc);
+
    for (i = 0; i < cols; i++)
      {
+        const Eina_Value_Struct_Member *m = res->desc->members + i;
+        Eina_Value val;
         const char *str;
         struct tm tm;
-        Eina_Value *val;
 
-        cell = esql_cell_calloc(1);
-        EINA_SAFETY_ON_NULL_RETURN(cell);
-        cell->row = r;
-        cell->colname = PQfname(pres, i);
-        val = &(cell->value);
+        INFO("col %u %s\n", i, m->name);
         if (PQgetisnull(pres, row_num, i))
           goto out;
 
@@ -238,8 +393,8 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
           {
            case TIMESTAMPOID:
              strptime(str, "%Y-%m-%d %H:%M:%S", &tm);
-             eina_value_setup(val, EINA_VALUE_TYPE_ULONG);
-             eina_value_set(val, (long)mktime(&tm));
+             eina_value_setup(&val, EINA_VALUE_TYPE_ULONG);
+             eina_value_set(&val, (long)mktime(&tm));
              break;
            case ABSTIMEOID:
              {
@@ -247,8 +402,8 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
 
                 t = strtoumax(str, NULL, 10);
                 localtime_r(&t, &tm);
-                eina_value_setup(val, EINA_VALUE_TYPE_ULONG);
-                eina_value_set(val, (long)mktime(&tm));
+                eina_value_setup(&val, EINA_VALUE_TYPE_ULONG);
+                eina_value_set(&val, (long)mktime(&tm));
                 break;
              }
 
@@ -257,42 +412,42 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
            case TEXTOID:
            case VARCHAROID:
            case BPCHAROID:
-             eina_value_setup(val, EINA_VALUE_TYPE_STRING);
-             eina_value_set(val, str);
+             eina_value_setup(&val, EINA_VALUE_TYPE_STRING);
+             eina_value_set(&val, str);
              //cell->len = PQgetlength(pres, row_num, i);
              break;
 
            case BOOLOID:
            case CHAROID:
-             eina_value_setup(val, EINA_VALUE_TYPE_CHAR);
-             eina_value_set(val, (char)strtol(str, NULL, 10));
+             eina_value_setup(&val, EINA_VALUE_TYPE_CHAR);
+             eina_value_set(&val, (char)strtol(str, NULL, 10));
              break;
 
            case INT2OID:
-             eina_value_setup(val, EINA_VALUE_TYPE_SHORT);
-             eina_value_set(val, (short)strtol(str, NULL, 10));
+             eina_value_setup(&val, EINA_VALUE_TYPE_SHORT);
+             eina_value_set(&val, (short)strtol(str, NULL, 10));
              break;
 
            case INT4OID:
-             eina_value_setup(val, EINA_VALUE_TYPE_LONG);
-             eina_value_set(val, strtol(str, NULL, 10));
+             eina_value_setup(&val, EINA_VALUE_TYPE_LONG);
+             eina_value_set(&val, strtol(str, NULL, 10));
              break;
 
            case INT8OID:
-             eina_value_setup(val, EINA_VALUE_TYPE_INT64);
-             eina_value_set(val, strtoll(str, NULL, 10));
+             eina_value_setup(&val, EINA_VALUE_TYPE_INT64);
+             eina_value_set(&val, strtoll(str, NULL, 10));
              break;
 
            case FLOAT4OID:
-             eina_value_setup(val, EINA_VALUE_TYPE_FLOAT);
-             eina_value_set(val, strtof(str, NULL));
+             eina_value_setup(&val, EINA_VALUE_TYPE_FLOAT);
+             eina_value_set(&val, strtof(str, NULL));
              break;
 
            case FLOAT8OID:
            case TINTERVALOID:
            case RELTIMEOID:
-             eina_value_setup(val, EINA_VALUE_TYPE_DOUBLE);
-             eina_value_set(val, strtod(str, NULL));
+             eina_value_setup(&val, EINA_VALUE_TYPE_DOUBLE);
+             eina_value_set(&val, strtod(str, NULL));
              break;
 
            default:
@@ -302,14 +457,15 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
                 blob.ops = NULL;
                 blob.memory = str;
                 blob.size = PQgetlength(pres, row_num, i);
-                eina_value_setup(val, EINA_VALUE_TYPE_BLOB);
-                eina_value_set(val, &blob);
+                eina_value_setup(&val, EINA_VALUE_TYPE_BLOB);
+                eina_value_set(&val, &blob);
                 //WARN("Unsupported type passed with Oid %u in column '%s': '%*s'!", PQftype(pres, i), cell->colname, blob.size, (char*)str);
                 break;
              }
           }
 out:
-        r->cells = eina_inlist_append(r->cells, EINA_INLIST_GET(cell));
+        eina_value_struct_member_value_set(sval, m, &val);
+        eina_value_flush(&val);
      }
 }
 
@@ -322,7 +478,7 @@ esql_postgresql_free(Esql *e)
    e->backend.free = NULL;
 }
 
-void
+static void
 esql_postgresql_init(Esql *e)
 {
    INFO("Esql type for %p set to PostgreSQL", e);
@@ -340,7 +496,7 @@ esql_postgresql_init(Esql *e)
    e->backend.free = esql_postgresql_free;
 }
 
-Esql_Type
+EAPI Esql_Type
 esql_module_init(Esql *e)
 {
    if (e) esql_postgresql_init(e);

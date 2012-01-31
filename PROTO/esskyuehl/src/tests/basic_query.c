@@ -19,30 +19,38 @@
 #include "config.h"
 #endif
 
-#include <Esskyuehl.h>
+#include "Esskyuehl.h"
 #include <Ecore.h>
 
 static void
 print_results(Esql_Res *res)
 {
    Eina_Iterator *i;
-   Esql_Row *r;
+   const Esql_Row *r;
+   int cols;
+
+   cols = esql_res_cols_count(res);
 
    i = esql_res_row_iterator_new(res);
    EINA_ITERATOR_FOREACH(i, r)
      {
-        Eina_Inlist *l;
-        Esql_Cell *c;
-        l = esql_row_cells_get(r);
-        EINA_INLIST_FOREACH(l, c)
+        int c;
+        for (c = 0; c < cols; c++)
           {
-             const Eina_Value *val = &(c->value);
-             char *str = eina_value_to_string(val);
-             printf("Column name: %s --- Type: %s --- Value: %s\n",
-                    c->colname, eina_value_type_name_get(val->type), str);
-             free(str);
+             Eina_Value val;
+             if (esql_row_value_column_get(r, c, &val))
+               {
+                  char *str = eina_value_to_string(&val);
+                  printf("Column name: %s --- Type: %s --- Value: %s\n",
+                         esql_res_col_name_get(res, c),
+                         eina_value_type_name_get(val.type),
+                         str);
+                  free(str);
+                  eina_value_flush(&val);
+               }
           }
      }
+   eina_iterator_free(i);
 }
 
 static void

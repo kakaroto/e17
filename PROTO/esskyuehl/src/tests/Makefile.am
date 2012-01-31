@@ -15,5 +15,11 @@ LDADD = \
 
 check_PROGRAMS = basic_query basic_pool
 
+
+if SQLITE
+check_PROGRAMS += test_sqlite
+endif
+
 basic_query_SOURCES = basic_query.c
 basic_pool_SOURCES = basic_pool.c
+test_sqlite_SOURCES = test_sqlite.c

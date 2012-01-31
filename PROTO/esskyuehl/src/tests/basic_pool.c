@@ -19,7 +19,7 @@
 #include "config.h"
 #endif
 
-#include <Esskyuehl.h>
+#include "Esskyuehl.h"
 #include <Ecore.h>
 
 static void
