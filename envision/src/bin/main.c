@@ -56,7 +56,7 @@ struct _App
 
    const char       *text_to_search;
 
-   Elm_Gengrid_Item *current_item_page;
+   Elm_Object_Item *current_item_page;
    Ecore_Job        *update_job;
    Eina_Bool         single_page;
    Eina_Bool         bring_in_cur_page : 1;
@@ -66,7 +66,7 @@ struct _App
 /*----------------------PAGE DATA---------------------------------*/
 struct _Item_Data
 {
-   Elm_Gengrid_Item *item;
+   Elm_Object_Item *item;
    Epdf_Page        *page;
    int               page_width, page_height, page_number;
    App              *base;
@@ -154,7 +154,7 @@ _page_del(void            *data,
 
 /*-------------------DRAW SEARCH RESULTS - HIGHLIGHTS----------------------*/
 void
-draw_search_highlights(Elm_Gengrid_Item *it)
+draw_search_highlights(Elm_Object_Item *gg_it)
 {
    Evas_Object *item_obj;
    double sh, sv;
@@ -163,12 +163,12 @@ draw_search_highlights(Elm_Gengrid_Item *it)
    Item_Data *idata;
    Epdf_Rectangle *rec;
 
-   idata = elm_gengrid_item_data_get(it);
+   idata = elm_gengrid_item_data_get(gg_it);
    if (!idata->search.matches) return;
    app = idata->base;
    epdf_page_scale_get(idata->page, &sh, &sv);
 
-   item_obj = (Evas_Object *)elm_gengrid_item_object_get(it);
+   item_obj = (Evas_Object *)elm_gengrid_item_object_get(gg_it);
    EINA_LIST_FOREACH(idata->search.matches, l, rec)
      {
         Highlight_Data *item = malloc(sizeof(Highlight_Data));
@@ -198,7 +198,7 @@ static void
 _update_items(void *data)
 {
    App *app = data;
-   Elm_Gengrid_Item *it;
+   Elm_Object_Item *it;
    Eina_List *l;
    app->update_job = NULL;
 
@@ -275,7 +275,7 @@ grid_sel(void            *data,
          void            *event_info)
 {
    App *app = data;
-   Elm_Gengrid_Item *item = event_info;
+   Elm_Object_Item *item = event_info;
    Item_Data *idata;
    app->current_item_page = item;
    idata = elm_gengrid_item_data_get(item);
@@ -407,8 +407,8 @@ static void
 _page_up(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    App *app = data;
-   const Elm_Gengrid_Item *it;
-   Elm_Gengrid_Item *prev;
+   const Elm_Object_Item *it;
+   Elm_Object_Item *prev;
    it = elm_gengrid_selected_item_get(app->grid);
    if (!it)
      return;
@@ -424,8 +424,8 @@ static void
 _page_down(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    App *app = data;
-   const Elm_Gengrid_Item *it;
-   Elm_Gengrid_Item *next;
+   const Elm_Object_Item *it;
+   Elm_Object_Item *next;
    it = elm_gengrid_selected_item_get(app->grid);
    if (!it)
      return;
@@ -465,7 +465,7 @@ _search(void            *data,
         void *einfo      __UNUSED__)
 {
    App *app = data;
-   Elm_Gengrid_Item *it;
+   Elm_Object_Item *gg_it;
    Eina_Bool matched;
 
    if (!app->text_to_search)
@@ -487,15 +487,15 @@ _search(void            *data,
         return;
      }
 
-   it = elm_gengrid_first_item_get(app->grid);
+   gg_it = elm_gengrid_first_item_get(app->grid);
 
    matched = EINA_FALSE;
-   while (it)
+   while (gg_it)
      {
-        Item_Data *idata = elm_gengrid_item_data_get(it);
+        Item_Data *idata = elm_gengrid_item_data_get(gg_it);
         idata->search.matches = epdf_page_text_find(idata->page,
                                                     app->text_to_search, 0);
-        it = elm_gengrid_item_next_get(it);
+        gg_it = elm_gengrid_item_next_get(gg_it);
 
         matched |= (idata->search.matches != NULL);
      }
@@ -666,7 +666,7 @@ load_gengrid(App *app)
 {
    int i;
    Item_Data *idata;
-   Elm_Gengrid_Item *first;
+   Elm_Object_Item *first;
    char buf[256];
 
    unload_gengrid(app);
@@ -709,16 +709,16 @@ _change_selection(void            *data,
 {
    App *app = data;
    int page;
-   Elm_Gengrid_Item *it;
+   Elm_Object_Item *gg_it;
    Item_Data *idata;
    int range, i;
 
    if (!app->current_item_page)
      return;
 
-   it = app->current_item_page;
+   gg_it = app->current_item_page;
 
-   idata = elm_gengrid_item_data_get(it);
+   idata = elm_gengrid_item_data_get(gg_it);
    if (!idata)
      return;
 
@@ -727,17 +727,17 @@ _change_selection(void            *data,
      {
         range = (page - idata->page_number);
         for (i = 0; i < range; i++)
-          it = elm_gengrid_item_next_get(it);
+          gg_it = elm_gengrid_item_next_get(gg_it);
      }
    else if (idata->page_number > page)
      {
         range = idata->page_number - page;
         for (i = 0; i < range; i++)
-          it = elm_gengrid_item_prev_get(it);
+          gg_it = elm_gengrid_item_prev_get(gg_it);
      }
 
-   elm_gengrid_item_selected_set(it, EINA_TRUE);
-   elm_gengrid_item_show(it);
+   elm_gengrid_item_selected_set(gg_it, EINA_TRUE);
+   elm_gengrid_item_show(gg_it);
 }
 
 /*--------------------------FILE SELECTOR OK CB-----------------------*/
