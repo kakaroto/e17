@@ -22,7 +22,7 @@ struct _Excessive_File_Info
 {
    Eina_File_Direct_Info info;
 
-   Elm_Gengrid_Item *item;
+   Elm_Object_Item *item;
    const Excessive_Mapping *type;
 
    Excessive_File_Object *link;

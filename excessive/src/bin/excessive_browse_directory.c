@@ -120,11 +120,11 @@ _excessive_eio_error_cb(void *data, Eio_File *handler, int error)
 static void
 _excessive_selected(void *data __UNUSED__, Evas_Object *grid, void *event_info)
 {
-   Elm_Gengrid_Item *it = event_info;
-   Excessive_File_Info *info = elm_gengrid_item_data_get(it);
+   Elm_Object_Item *gg_it = event_info;
+   Excessive_File_Info *info = elm_gengrid_item_data_get(gg_it);
    const char *tmp;
 
-   elm_gengrid_item_selected_set(it, EINA_FALSE);
+   elm_gengrid_item_selected_set(gg_it, EINA_FALSE);
 
    if (info->info.type != EINA_FILE_DIR)
      {
