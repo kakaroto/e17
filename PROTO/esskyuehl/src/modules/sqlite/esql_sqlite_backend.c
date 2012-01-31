@@ -220,6 +220,7 @@ esql_sqlite_query_cb(Esql *e, Ecore_Thread *et)
                {
                   e->res = esql_res_calloc(1);
                   if (!e->res) goto out;
+                  e->res->e = e;
                   e->res->desc = esql_sqlite_desc_get(e);
                   e->res->affected = sqlite3_changes(e->backend.db);
                   INFO("res %p desc=%p", e->res, e->res->desc);
