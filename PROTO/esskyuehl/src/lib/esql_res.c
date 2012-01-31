@@ -17,12 +17,19 @@
 
 #include "esql_private.h"
 
+typedef struct Esql_Row_Iterator
+{
+   Eina_Iterator   iterator;
+   Esql_Res *res;
+   Esql_Row *current;
+} Esql_Row_Iterator;
+
 static Eina_Bool
 esql_row_iterator_next(Esql_Row_Iterator *it,
                        Esql_Row         **r)
 {
    Eina_Inlist *l;
-   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
    if (!it->current) return EINA_FALSE;
 
    *r = (Esql_Row *)it->current;
@@ -33,44 +40,48 @@ esql_row_iterator_next(Esql_Row_Iterator *it,
    return EINA_TRUE;
 }
 
-static Esql_Row *
+static Esql_Res *
 esql_row_iterator_container_get(Esql_Row_Iterator *it)
 {
-   EINA_SAFETY_ON_NULL_RETURN_VAL(it, NULL);
-
-   return (Esql_Row *)it->head;
+   return it->res;
 }
 
 static void
 eina_row_iterator_free(Esql_Row_Iterator *it)
 {
-   EINA_SAFETY_ON_NULL_RETURN(it);
-
+   esql_res_unref(it->res);
    free(it);
 }
 
-void
-esql_res_free(void *data __UNUSED__,
-              Esql_Res  *res)
+static void
+esql_row_free(Esql_Row *r)
+{
+   eina_value_flush(&(r->value));
+   esql_row_mp_free(r);
+}
+
+static void
+_esql_res_free(Esql_Res *res)
 {
    Esql_Row *r;
    Eina_Inlist *l;
 
-   if (!res) return;
+   DBG("res=%p (refcount=%d)", res, res->refcount);
 
    if (res->rows)
      EINA_INLIST_FOREACH_SAFE(res->rows, l, r)
        esql_row_free(r);
+
    res->e->backend.res_free(res);
    free(res->query);
    esql_res_mp_free(res);
 }
 
 void
-esql_row_free(Esql_Row *r)
+esql_res_free(void *data __UNUSED__,
+              Esql_Res  *res)
 {
-   eina_value_flush(&(r->value));
-   esql_row_mp_free(r);
+   esql_res_unref(res);
 }
 
 /**
@@ -227,11 +238,63 @@ esql_res_id(const Esql_Res *res)
 }
 
 /**
+ * @brief Increase result reference count, preventing it from being deleted.
+ * @param res The result object (NOT NULL)
+ * @return The result @a res with incremented reference count.
+ * @see esql_res_unref()
+ */
+Esql_Res *
+esql_res_ref(Esql_Res *res)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, NULL);
+   DBG("res=%p (was refcount=%d)", res, res->refcount);
+   res->refcount++;
+   return res;
+}
+
+/**
+ * @brief Decrease result reference count, possibly deleting it.
+ * @param res The result object (NOT NULL)
+ * @see esql_res_ref()
+ *
+ * Do not trust @a res to be alive after this call, it may be
+ * destroyed immediately.
+ */
+void
+esql_res_unref(Esql_Res *res)
+{
+   EINA_SAFETY_ON_NULL_RETURN(res);
+   DBG("res=%p (was refcount=%d)", res, res->refcount);
+   res->refcount--;
+   if (res->refcount == 0)
+     _esql_res_free(res);
+}
+
+/**
+ * @brief Query result reference count.
+ * @param res The result object (NOT NULL)
+ * @return The result @a res reference count value.
+ */
+int
+esql_res_refcount(const Esql_Res *res)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(res, -1);
+   return res->refcount;
+}
+
+/**
  * @brief Create a new iterator for the rows in a result set
  * This function is used to create an iterator for easily managing the rows in a result set.
  * @note This function has no effect for non-SELECT statements.
  * @param res The result object (NOT NULL)
  * @return The iterator object, NULL on failure
+ *
+ * The container of the returned iterator is 'const Esql_Res *' with
+ * the given @a res.
+ *
+ * The iterator will hold the given @a res alive by increasing its
+ * reference count. It is automatically decreased when the iterator is
+ * freed.
  */
 Eina_Iterator *
 esql_res_row_iterator_new(const Esql_Res *res)
@@ -246,8 +309,8 @@ esql_res_row_iterator_new(const Esql_Res *res)
 
    EINA_MAGIC_SET(&it->iterator, EINA_MAGIC_ITERATOR);
 
-   it->head = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
-   it->current = it->head;
+   it->res = esql_res_ref((Esql_Res *)res);
+   it->current = EINA_INLIST_CONTAINER_GET(res->rows, Esql_Row);
 
    it->iterator.version = EINA_ITERATOR_VERSION;
    it->iterator.next = FUNC_ITERATOR_NEXT(esql_row_iterator_next);

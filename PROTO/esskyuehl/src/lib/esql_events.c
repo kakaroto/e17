@@ -148,6 +148,7 @@ esql_call_complete(Esql *e)
              {
                 res = esql_res_calloc(1);
                 EINA_SAFETY_ON_NULL_GOTO(res, out);
+                res->refcount = 1;
                 res->e = e;
                 e->backend.res(res);
              }
@@ -235,6 +236,7 @@ esql_event_error(Esql *e)
 
              res = esql_res_calloc(1);
              EINA_SAFETY_ON_NULL_RETURN(res);
+             res->refcount = 1;
              res->e = ev;
              res->data = e->cur_data;
              res->qid = e->cur_id;

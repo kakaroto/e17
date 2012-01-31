@@ -154,6 +154,10 @@ EAPI int             esql_res_rows_count(const Esql_Res *res);
 EAPI int             esql_res_cols_count(const Esql_Res *res);
 EAPI const char     *esql_res_col_name_get(const Esql_Res *res, unsigned int column);
 
+EAPI Esql_Res       *esql_res_ref(Esql_Res *res);
+EAPI void            esql_res_unref(Esql_Res *res);
+EAPI int             esql_res_refcount(const Esql_Res *res);
+
 EAPI long long int   esql_res_rows_affected(const Esql_Res *res);
 EAPI long long int   esql_res_id(const Esql_Res *res);
 EAPI Eina_Iterator  *esql_res_row_iterator_new(const Esql_Res *res);
