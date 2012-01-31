@@ -1225,7 +1225,7 @@ on_tab_close(void *data, Evas_Object *o,
    Browser_Window *win = evas_object_data_get(o, "win");
    Evas_Object *chrome = evas_object_data_get(data, "chrome");
    Evas_Object *view = evas_object_data_get(chrome, "view");
-   Elm_Gengrid_Item *item = evas_object_data_get(o, "item");
+   Elm_Object_Item *item = evas_object_data_get(o, "item");
    Eina_List *win_iter;
 
    elm_gengrid_item_del(item);
