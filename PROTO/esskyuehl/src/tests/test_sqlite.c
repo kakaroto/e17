@@ -128,7 +128,7 @@ on_connect(void *data, int type __UNUSED__, void *event_info)
      {
         char buf[100];
         snprintf(buf, sizeof(buf), "some-text-%10d", i);
-        id = esql_query_args(e, ctx, "INSERT INTO t (i, s) VALUS (%d, %s)",
+        id = esql_query_args(e, ctx, "INSERT INTO t (i, s) VALUES (%d, %s)",
                              i, buf);
         assert(id > 0);
         //esql_query_callback_set(id, on_query_populate, ctx);
