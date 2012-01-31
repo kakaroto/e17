@@ -213,6 +213,8 @@ void
 esql_event_error(Esql *e)
 {
    Esql *ev;
+
+   DBG("(e=%p)", e);
    ev = e->pool_member ? (Esql *)e->pool_struct : e; /* use pool struct for events */
    e->error = e->backend.error_get(e);
    e->query_end = ecore_time_get();

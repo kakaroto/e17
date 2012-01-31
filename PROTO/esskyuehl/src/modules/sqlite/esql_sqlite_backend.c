@@ -208,7 +208,6 @@ esql_sqlite_query_cb(Esql *e, Ecore_Thread *et)
    int tries = 0;
    while (++tries < 1000)
      {
-        INFO("try %d", tries);
         switch (sqlite3_step(e->backend.stmt))
           {
            case SQLITE_BUSY:
