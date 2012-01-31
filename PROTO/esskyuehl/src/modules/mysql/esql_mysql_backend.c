@@ -187,6 +187,14 @@ esql_mysac_desc_get(MYSAC_RES *re)
 static const char *
 esql_mysac_error_get(Esql *e)
 {
+   switch (mysac_errno(e->backend.db))
+     {
+      case MYERR_WANT_READ:
+      case MYERR_WANT_WRITE:
+        return NULL;
+      default:
+        break;
+     }
    return mysac_advance_error(e->backend.db);
 }
 

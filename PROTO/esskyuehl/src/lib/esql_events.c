@@ -81,6 +81,13 @@ esql_next(Esql *e)
           INFO("Pool member %u: next call: query", e->pool_id);
         else
           INFO("Next call: query");
+        e->error = e->backend.error_get(e);
+        if (e->error)
+          {
+             ERR("%s", e->error);
+             esql_event_error(e);
+             return;
+          }
      }
    esql_connect_handler(e, e->fdh); /* have to call again to start next call */
 }
