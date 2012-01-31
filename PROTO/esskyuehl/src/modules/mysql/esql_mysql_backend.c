@@ -367,7 +367,7 @@ esql_mysac_row_init(Esql_Row *r, MYSAC_ROW *row)
         Eina_Value val;
         const Eina_Value_Struct_Member *m = r->res->desc->members + i;
 
-        INFO("col %u %s\n", i, m->name);
+        INFO("col %u %s", i, m->name);
         switch (res->cols[i].type)
           {
            case MYSQL_TYPE_TIME:
@@ -379,7 +379,7 @@ esql_mysac_row_init(Esql_Row *r, MYSAC_ROW *row)
            case MYSQL_TYPE_TIMESTAMP:
            case MYSQL_TYPE_DATETIME:
            case MYSQL_TYPE_DATE:
-             eina_value_setup(&val, EINA_VALUE_TYPE_ULONG);
+             eina_value_setup(&val, EINA_VALUE_TYPE_TIMESTAMP);
              eina_value_set(&val, (long)mktime(row[i].tm));
              break;
 
