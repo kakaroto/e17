@@ -250,6 +250,7 @@ esql_query(Esql       *e,
         e->cur_data = data;
         e->cur_id = esql_id;
         e->cur_query = strdup(query);
+        esql_connect_handler(e, e->fdh);
      }
    else
      {
@@ -350,6 +351,7 @@ esql_query_vargs(Esql       *e,
         e->cur_data = data;
         e->cur_id = esql_id;
         e->cur_query = query;
+        esql_connect_handler(e, e->fdh);
      }
    else
      {
