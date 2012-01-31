@@ -166,6 +166,8 @@ main(void)
    ecore_init();
    esql_init();
 
+   eina_log_domain_level_set("esskyuehl", EINA_LOG_LEVEL_DBG);
+
    e = esql_new(ESQL_TYPE_SQLITE);
    assert(e != NULL);
 
