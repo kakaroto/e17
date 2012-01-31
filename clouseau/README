@@ -1,4 +1,7 @@
-Just run your wanted ecore/elm based app with this lib in LD_PRELOAD, e.g:
-LD_PRELOAD=/usr/lib/clouseau/libclouseau.so elementary_test
+Usage:
+Just run your wanted ecore/elm based app with "clouseau" e.g:
+clouseau elementary_test
+or
+clouseau elementary_test Entry
 
 Click "Load" and the rest is straightforward.
