@@ -237,6 +237,7 @@ out:
 static int
 esql_sqlite_io(Esql *e)
 {
+   DBG("(e=%p)", e);
    e->backend.thread = ecore_thread_run((Ecore_Thread_Cb)esql_sqlite_query_cb,
                                       (Ecore_Thread_Cb)esql_sqlite_thread_end_cb,
                                       (Ecore_Thread_Cb)esql_sqlite_connect_cancel_cb, e);
@@ -254,6 +255,7 @@ static void
 esql_sqlite_query(Esql *e, const char *query, unsigned int len)
 {
    EINA_SAFETY_ON_TRUE_RETURN(sqlite3_prepare_v2(e->backend.db, query, len, (struct sqlite3_stmt**)&e->backend.stmt, NULL));
+   esql_sqlite_io(e);
 }
 
 static void
