@@ -141,6 +141,7 @@ main(void)
    esql_disconnect(e); /**< disconnect */
    eina_counter_stop(c, 0);
 
+   fprintf(stdout, "now using callbacks\n");
    eina_counter_start(c);
    esql_connect_callback_set(e, connect_cb, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "127.0.0.1:" ESQL_DEFAULT_PORT_POSTGRESQL, "zentific", "zentific"), 1); /**< connect to localhost at default port */
@@ -157,6 +158,7 @@ main(void)
    esql_disconnect(e);
    eina_counter_stop(c, 2);
 
+   fprintf(stdout, "now using callbacks\n");
    eina_counter_start(c);
    esql_connect_callback_set(e, connect_cb, NULL);
    esql_database_set(e, "zentific"); /**< use database named zentific on connect */
@@ -173,6 +175,7 @@ main(void)
    esql_disconnect(e);
    eina_counter_stop(c, 2);
 
+   fprintf(stdout, "now using callbacks\n");
    eina_counter_start(c);
    esql_connect_callback_set(e, connect_cb, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(!esql_connect(e, "test.db", NULL, NULL), 1); /**< create/open "test.db" in current dir */
