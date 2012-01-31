@@ -141,7 +141,7 @@ struct enlil_photo_data
    Elm_Object_Item *slideshow_item;
    Eina_List *slideshow_object_items; //list of Slideshow_Item*
 
-   Elm_Gengrid_Item *library_item;
+   Elm_Object_Item *library_item;
 
    Panel_Image *panel_image;
    Enlil_Exif_Job *exif_job;
