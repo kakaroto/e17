@@ -255,7 +255,7 @@ esql_query(Esql       *e,
      {
         e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_query);
         e->backend_set_params = eina_list_append(e->backend_set_params, strdup(query));
-        e->backend_ids = eina_list_append(e->backend_ids, (uintptr_t*)esql_id);
+        e->backend_ids = eina_list_append(e->backend_ids, (void *)(uintptr_t)esql_id);
         if (data)
           {
              if (!esql_query_data) esql_query_data = eina_hash_int32_new(NULL);
@@ -355,7 +355,7 @@ esql_query_vargs(Esql       *e,
      {
         e->backend_set_funcs = eina_list_append(e->backend_set_funcs, esql_query);
         e->backend_set_params = eina_list_append(e->backend_set_params, query);
-        e->backend_ids = eina_list_append(e->backend_ids, (uintptr_t*)esql_id);
+        e->backend_ids = eina_list_append(e->backend_ids, (void *)(uintptr_t)esql_id);
         if (data)
           {
              if (!esql_query_data) esql_query_data = eina_hash_int32_new(NULL);
