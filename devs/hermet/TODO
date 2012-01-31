@@ -22,8 +22,4 @@ evas_event - http://pastebin.com/uz1CUCgv (barbieri)
 naviframe - check the problem 66723 (pespin)
 naviframe - need to block the style set while transiton is going on
 
-elm_object_item - apply to all app/lib in svn. (elm_list, elm_genlist, elm_gengrid)
 elm_object_item - common item type check like widget_type
-elm_object_item - elm_object_item_object_get -> elm_object_item_widget_get
-
-evas_object_image - check evas_object_image_load_error_get returns EVAS_LOAD_ERROR_DOES_NOT_EXIST
