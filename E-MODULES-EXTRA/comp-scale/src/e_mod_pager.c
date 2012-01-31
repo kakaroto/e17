@@ -282,14 +282,14 @@ _pager_finish()
 	if (it->desk == it->bd->desk)
 	  continue;
 
-	/* dont hide border */
-	if (it->desk == current_desk)
-	  it->bd->visible = 0;
+	/* dont hide border - hack */
+	//if (it->desk == current_desk)
+        // it->bd->visible = 0;
 
 	e_border_desk_set(it->bd, it->desk);
 
-	if (it->desk == current_desk)
-	  it->bd->visible = 1;
+	// if (it->desk == current_desk)
+	//  it->bd->visible = 1;
      }
 
    if ((current_desk) && (desk != current_desk))
@@ -310,11 +310,7 @@ _pager_finish()
    EINA_LIST_FREE(desks, o)
      {
 	oo = edje_object_part_swallow_get(o, "e.swallow.desk");
-	if (oo)
-	  {
-	     /* printf("del %p\n", oo); */
-	     evas_object_del(oo);
-	  }
+	if (oo) evas_object_del(oo);
 
 	evas_object_del(o);
      }
