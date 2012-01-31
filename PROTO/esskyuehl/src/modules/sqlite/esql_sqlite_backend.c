@@ -244,6 +244,8 @@ esql_sqlite_query_cb(Esql *e, Ecore_Thread *et)
                   INFO("res %p desc=%p", e->res, e->res->desc);
                }
              esql_sqlite_row_add(e->res);
+             break;
+
            default:
              goto out;
           }
