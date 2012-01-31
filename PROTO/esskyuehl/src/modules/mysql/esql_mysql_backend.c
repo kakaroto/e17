@@ -375,7 +375,6 @@ esql_mysac_row_init(Esql_Row *r, MYSAC_ROW *row)
         Eina_Value val;
         const Eina_Value_Struct_Member *m = r->res->desc->members + i;
 
-        INFO("col %u %s", i, m->name);
         switch (res->cols[i].type)
           {
            case MYSQL_TYPE_TIME:

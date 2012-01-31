@@ -384,7 +384,6 @@ esql_postgresql_row_init(Esql_Row *r, int row_num)
         const char *str;
         struct tm tm;
 
-        INFO("col %u %s\n", i, m->name);
         if (PQgetisnull(pres, row_num, i))
           goto out;
 
