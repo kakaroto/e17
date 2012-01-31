@@ -81,7 +81,8 @@ esql_sqlite_connect_cb(Esql *e, Ecore_Thread *et)
 {
    if (sqlite3_open_v2(e->backend.conn_str, (struct sqlite3 **)&e->backend.db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX, NULL))
      {
-        ERR("%s", esql_sqlite_error_get(e));
+        ERR("Could not open %s: %s",
+            e->backend.conn_str, esql_sqlite_error_get(e));
         ecore_thread_cancel(et);
         e->backend.thread = NULL;
      }
@@ -209,7 +210,7 @@ esql_sqlite_desc_get(const Esql *e)
 static void
 esql_sqlite_query_cb(Esql *e, Ecore_Thread *et)
 {
-   int ret, tries = 0;
+   int ret = -1, tries = 0;
 
    while (++tries < 1000)
      {
@@ -219,6 +220,7 @@ esql_sqlite_query_cb(Esql *e, Ecore_Thread *et)
         switch (ret)
           {
            case SQLITE_BUSY:
+             WARN("SQLite is busy, retry...");
              break;
            case SQLITE_DONE:
              if (!e->res)
@@ -247,11 +249,13 @@ esql_sqlite_query_cb(Esql *e, Ecore_Thread *et)
              break;
 
            default:
+             ERR("Unexpected return from sqlite3_step(): %d", ret);
              goto out;
           }
      }
    /* something crazy is going on */
 out:
+   ERR("Query failed. Tries %d, ret %d", tries, ret);
    sqlite3_finalize(e->backend.stmt);
    e->backend.stmt = NULL;
    ecore_thread_cancel(et);
@@ -260,7 +264,7 @@ out:
 static int
 esql_sqlite_io(Esql *e)
 {
-   DBG("(e=%p)", e);
+   DBG("(e=%p, thread=%p)", e, e->backend.thread);
    if (e->backend.thread) return ECORE_FD_ERROR;
    e->backend.thread = ecore_thread_run((Ecore_Thread_Cb)esql_sqlite_query_cb,
                                       (Ecore_Thread_Cb)esql_sqlite_thread_end_cb,
@@ -338,7 +342,6 @@ esql_sqlite_row_add(Esql_Res *res)
         const Eina_Value_Struct_Member *m = res->desc->members + i;
         Eina_Value inv;
 
-        INFO("col %u %s\n", i, m->name);
         switch (sqlite3_column_type(res->e->backend.stmt, i))
           {
            case SQLITE_TEXT:

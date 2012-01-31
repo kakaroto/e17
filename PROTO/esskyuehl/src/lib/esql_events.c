@@ -286,6 +286,7 @@ Eina_Bool
 esql_connect_handler(Esql             *e,
                      Ecore_Fd_Handler *fdh)
 {
+   int ret;
    DBG("(e=%p, fdh=%p, qid=%u)", e, fdh, e->cur_id);
 
    if (fdh)
@@ -294,7 +295,9 @@ esql_connect_handler(Esql             *e,
      INFO("Pool member %u: Running io", e->pool_id);
    else
      INFO("Running io");
-   switch (e->backend.io(e))
+
+   ret = e->backend.io(e);
+   switch (ret)
      {
       case 0:
         esql_call_complete(e);
@@ -314,6 +317,7 @@ esql_connect_handler(Esql             *e,
         break;
 
       default:
+        ERR("unknown return from io(): %d", ret);
         esql_event_error(e);
         if (e->current != ESQL_CONNECT_TYPE_QUERY)
           return ECORE_CALLBACK_CANCEL;
