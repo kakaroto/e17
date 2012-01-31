@@ -28,7 +28,7 @@ struct ctx {
    unsigned int errors;
    unsigned int res;
 };
-
+static Ecore_Event_Handler *evh = NULL;
 #define INSERTED_ROWS 10
 
 static Eina_Bool
@@ -102,7 +102,8 @@ on_query_populate(void *data, int type __UNUSED__, void *event_info)
         Esql_Query_Id id = esql_query(e, ctx, "SELECT i, s FROM t");
         assert(id > 0);
         //esql_query_callback_set(id, on_query_results, ctx);
-        ecore_event_handler_add(ESQL_EVENT_RESULT, on_query_results, ctx);
+        ecore_event_handler_del(evh);
+        evh = ecore_event_handler_add(ESQL_EVENT_RESULT, on_query_results, ctx);
         return EINA_FALSE;
      }
 
@@ -118,7 +119,7 @@ on_connect(void *data, int type __UNUSED__, void *event_info)
    int i;
 
    /* TODO: esql_query_callback_set() should get void* and use it instead! */
-   ecore_event_handler_add(ESQL_EVENT_RESULT, on_query_populate, ctx);
+   evh = ecore_event_handler_add(ESQL_EVENT_RESULT, on_query_populate, ctx);
 
    id = esql_query(e, ctx, "CREATE TABLE t (i INTEGER, s VARCHAR(100))");
    assert(id > 0);
@@ -137,8 +138,6 @@ on_connect(void *data, int type __UNUSED__, void *event_info)
      {
         id = esql_query(e, ctx, "SELECT i, s FROM t");
         assert(id > 0);
-        //esql_query_callback_set(id, on_query_results, ctx);
-        ecore_event_handler_add(ESQL_EVENT_RESULT, on_query_results, ctx);
      }
 
    ctx->conns++;
