@@ -141,7 +141,7 @@ struct _Ephoto_Entry
    const char *basename; /* pointer inside path */
    const char *label;
    Ephoto *ephoto;
-   Elm_Gengrid_Item *item;
+   Elm_Object_Item *item;
    Eina_List *free_listeners;
    Eina_List *dir_files; /* if dir, here contain files with preview */
    Eina_Bool dir_files_checked : 1;

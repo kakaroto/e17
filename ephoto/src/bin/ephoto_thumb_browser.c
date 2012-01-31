@@ -163,7 +163,7 @@ static const Elm_Gengrid_Item_Class _ephoto_thumb_file_class = {
 static int
 _entry_cmp(const void *pa, const void *pb)
 {
-   const Elm_Gengrid_Item *ia = pa;
+   const Elm_Object_Item *ia = pa;
    const Ephoto_Entry *a, *b = pb;
 
    a = elm_gengrid_item_data_get(ia);
@@ -181,9 +181,9 @@ _entry_item_add(Ephoto_Thumb_Browser *tb, Ephoto_Entry *e)
 {
    const Elm_Gengrid_Item_Class *ic;
    int near_cmp;
-   Elm_Gengrid_Item *near_item = NULL;
+   Elm_Object_Item *near_item = NULL;
    Eina_List *near_node = NULL;
-   
+
    near_node = eina_list_search_sorted_near_list
      (tb->grid_items, _entry_cmp, e, &near_cmp);
 
@@ -268,7 +268,7 @@ static void
 _ephoto_thumb_selected(void *data, Evas_Object *o __UNUSED__, void *event_info)
 {
    Ephoto_Thumb_Browser *tb = data;
-   Elm_Gengrid_Item *it = event_info;
+   Elm_Object_Item *it = event_info;
    Ephoto_Entry *e = elm_gengrid_item_data_get(it);
 
    elm_gengrid_item_selected_set(it, EINA_FALSE);
@@ -324,7 +324,7 @@ static void
 _view_single(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
-   Elm_Gengrid_Item *it = elm_gengrid_selected_item_get(tb->grid);
+   Elm_Object_Item *it = elm_gengrid_selected_item_get(tb->grid);
    Ephoto_Entry *entry;
 
    if (it) entry = elm_gengrid_item_data_get(it);
@@ -341,7 +341,7 @@ static void
 _slideshow(void *data, Evas_Object *o __UNUSED__, void *event_info __UNUSED__)
 {
    Ephoto_Thumb_Browser *tb = data;
-   Elm_Gengrid_Item *it = elm_gengrid_selected_item_get(tb->grid);
+   Elm_Object_Item *it = elm_gengrid_selected_item_get(tb->grid);
    Ephoto_Entry *entry;
 
    if (it) entry = elm_gengrid_item_data_get(it);
@@ -378,7 +378,7 @@ _key_down(void *data, Evas *e __UNUSED__, Evas_Object *o __UNUSED__, void *event
 
    if (!strcmp(k, "F5"))
      {
-        Elm_Gengrid_Item *it = elm_gengrid_selected_item_get(tb->grid);
+        Elm_Object_Item *it = elm_gengrid_selected_item_get(tb->grid);
         Ephoto_Entry *entry;
         if (it) entry = elm_gengrid_item_data_get(it);
         else entry = _first_file_entry_find(tb);
