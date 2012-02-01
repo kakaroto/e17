@@ -24,8 +24,8 @@
             e->backend_set_funcs = eina_list_remove_list(e->backend_set_funcs, e->backend_set_funcs);    \
             e->backend_set_params = eina_list_remove_list(e->backend_set_params, e->backend_set_params); \
             e->backend_ids = eina_list_remove_list(e->backend_ids, e->backend_ids);                      \
-            if (e->pool_member) INFO("Pool member %u: %i calls queued", e->pool_id, eina_list_count(e->backend_ids)); \
-            else INFO("%i calls queued", eina_list_count(e->backend_ids));                               \
+            if (e->pool_member) INFO("Pool member %u: %d calls queued", e->pool_id, eina_list_count(e->backend_ids)); \
+            else INFO("%d calls queued", eina_list_count(e->backend_ids));                               \
          }                                                                                               \
   } while (0)
 
@@ -106,7 +106,7 @@ esql_call_complete(Esql *e)
         if (e->pool_member)
           {
              e->pool_struct->e_connected++;
-             INFO("Pool connection %u created (%i/%i)", e->pool_id, e->pool_struct->e_connected, e->pool_struct->size);
+             INFO("Pool connection %u created (%d/%d)", e->pool_id, e->pool_struct->e_connected, e->pool_struct->size);
           }
         else
           INFO("Connected");
@@ -116,7 +116,7 @@ esql_call_complete(Esql *e)
              if (e->pool_member)
                {
                   e->pool_struct->connected = EINA_TRUE;
-                  INFO("[%i/%i] connections made for pool", e->pool_struct->size, e->pool_struct->size);
+                  INFO("[%d/%d] connections made for pool", e->pool_struct->size, e->pool_struct->size);
                }
              if (ev->connect_cb)
                ev->connect_cb(ev, ev->connect_cb_data);
