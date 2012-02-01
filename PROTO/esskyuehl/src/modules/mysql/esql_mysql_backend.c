@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "esql_private.h"
+#include "esql_module.h"
 #include "mysac/mysac.h"
 #include <unistd.h>
 
@@ -48,140 +48,55 @@ static void esql_mysac_row_init(Esql_Row *r, MYSAC_ROW *row);
 static void esql_mysac_free(Esql *e);
 
 
-/* TODO: move esql_mysac_desc_ops to common? */
-static void *
-esql_mysac_desc_alloc(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc)
+static void
+esql_module_setup_cb(MYSAC_RES *re, int col, Eina_Value_Struct_Member *m)
 {
-   /* TODO: mempool? */
-   return malloc(desc->size);
-}
+   m->name = eina_stringshare_add(re->cols[col].name);
 
- static void
-esql_mysac_desc_free(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc __UNUSED__, void *memory)
-{
-   /* TODO: mempool? */
-   free(memory);
-}
-
-static const Eina_Value_Struct_Member *
-esql_mysac_desc_find_member(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc, const char *name)
-{
-   const Eina_Value_Struct_Member *itr, *itr_end;
-
-   itr = desc->members;
-   itr_end = itr + desc->member_count;
-
-   /* assumes name is stringshared.
-    *
-    * we do this because it's the recommended usage pattern, moreover
-    * we expect to find the member, as users shouldn't look for
-    * non-existent members!
-    */
-   for (; itr < itr_end; itr++)
-     if (itr->name == name)
-       return itr;
-
-   itr = desc->members;
-   name = eina_stringshare_add(name);
-   eina_stringshare_del(name); /* we'll not use the contents, this is fine */
-   for (; itr < itr_end; itr++)
-     if (itr->name == name)
-       return itr;
-
-   return NULL;
-}
-
-static Eina_Value_Struct_Operations esql_mysac_desc_ops = {
-  EINA_VALUE_STRUCT_OPERATIONS_VERSION,
-  esql_mysac_desc_alloc,
-  esql_mysac_desc_free,
-  NULL, /* no copy */
-  NULL, /* no compare */
-  esql_mysac_desc_find_member
-};
-
-static Eina_Value_Struct_Desc *
-esql_mysac_desc_get(MYSAC_RES *re)
-{
-   Eina_Value_Struct_Desc *desc;
-   int i, cols;
-   unsigned int offset;
-
-   cols = re->nb_cols;
-   if (cols < 1) return NULL;
-
-   desc = malloc(sizeof(*desc) + cols * sizeof(Eina_Value_Struct_Member));
-   EINA_SAFETY_ON_NULL_RETURN_VAL(desc, NULL);
-
-   desc->version = EINA_VALUE_STRUCT_DESC_VERSION;
-   desc->ops = &esql_mysac_desc_ops;
-   desc->members = (void *)((char *)desc + sizeof(*desc));
-   desc->member_count = cols;
-   desc->size = 0;
-
-   offset = 0;
-   for (i = 0; i < cols; i++)
+   switch (re->cols[col].type)
      {
-        Eina_Value_Struct_Member *m = (Eina_Value_Struct_Member *)desc->members + i;
-        unsigned int size;
+      case MYSQL_TYPE_TIME:
+      case MYSQL_TYPE_DOUBLE:
+        m->type = EINA_VALUE_TYPE_DOUBLE;
+        break;
 
-        m->name = eina_stringshare_add(re->cols[i].name);
-        m->offset = offset;
+      case MYSQL_TYPE_YEAR:
+      case MYSQL_TYPE_TIMESTAMP:
+      case MYSQL_TYPE_DATETIME:
+      case MYSQL_TYPE_DATE:
+        m->type = EINA_VALUE_TYPE_TIMESTAMP;
+        break;
 
-        switch (re->cols[i].type)
-          {
-           case MYSQL_TYPE_TIME:
-           case MYSQL_TYPE_DOUBLE:
-             m->type = EINA_VALUE_TYPE_DOUBLE;
-             break;
+      case MYSQL_TYPE_STRING:
+      case MYSQL_TYPE_VARCHAR:
+      case MYSQL_TYPE_VAR_STRING:
+        m->type = EINA_VALUE_TYPE_STRING;
+        break;
 
-           case MYSQL_TYPE_YEAR:
-           case MYSQL_TYPE_TIMESTAMP:
-           case MYSQL_TYPE_DATETIME:
-           case MYSQL_TYPE_DATE:
-             m->type = EINA_VALUE_TYPE_TIMESTAMP;
-             break;
+      case MYSQL_TYPE_TINY:
+        m->type = EINA_VALUE_TYPE_CHAR;
+        break;
 
-           case MYSQL_TYPE_STRING:
-           case MYSQL_TYPE_VARCHAR:
-           case MYSQL_TYPE_VAR_STRING:
-             m->type = EINA_VALUE_TYPE_STRING;
-             break;
+      case MYSQL_TYPE_SHORT:
+        m->type = EINA_VALUE_TYPE_SHORT;
+        break;
 
-           case MYSQL_TYPE_TINY:
-             m->type = EINA_VALUE_TYPE_CHAR;
-             break;
+      case MYSQL_TYPE_LONG:
+      case MYSQL_TYPE_INT24:
+        m->type = EINA_VALUE_TYPE_LONG;
+        break;
 
-           case MYSQL_TYPE_SHORT:
-             m->type = EINA_VALUE_TYPE_SHORT;
-             break;
+      case MYSQL_TYPE_LONGLONG:
+        m->type = EINA_VALUE_TYPE_INT64;
+        break;
 
-           case MYSQL_TYPE_LONG:
-           case MYSQL_TYPE_INT24:
-             m->type = EINA_VALUE_TYPE_LONG;
-             break;
+      case MYSQL_TYPE_FLOAT:
+        m->type = EINA_VALUE_TYPE_FLOAT;
+        break;
 
-           case MYSQL_TYPE_LONGLONG:
-             m->type = EINA_VALUE_TYPE_INT64;
-             break;
-
-           case MYSQL_TYPE_FLOAT:
-             m->type = EINA_VALUE_TYPE_FLOAT;
-             break;
-
-           default:
-             m->type = EINA_VALUE_TYPE_BLOB;
-          }
-
-        size = m->type->value_size;
-        if (size % sizeof(void *) != 0)
-          size += size - (size % sizeof(void *));
-
-        offset += size;
+      default:
+        m->type = EINA_VALUE_TYPE_BLOB;
      }
-
-   desc->size = offset;
-   return desc;
 }
 
 static const char *
@@ -305,10 +220,9 @@ esql_mysac_res(Esql_Res *res)
    re = res->backend.res = mysac_get_res(res->e->backend.db);
    if (!re) return;
    m = res->e->backend.db;
-   res->desc = esql_mysac_desc_get(re);
+   res->desc = esql_module_desc_get(re->nb_cols, (Esql_Module_Setup_Cb)esql_module_setup_cb, re);
    mysac_first_row(re);
    row = mysac_fetch_row(re);
-   INFO("res %p desc=%p", res, res->desc);
    if (!row) /* must be insert/update/etc */
      {
         res->affected = m->affected_rows;

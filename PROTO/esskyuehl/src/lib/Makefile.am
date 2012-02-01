@@ -21,6 +21,7 @@ esql_alloc.c \
 esql_connect.c \
 esql_convert.c \
 esql_events.c \
+esql_module.c \
 esql_pool.c \
 esql_query.c \
 esql_res.c

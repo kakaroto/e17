@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "esql_private.h"
+#include "esql_module.h"
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
 #undef PACKAGE_STRING
@@ -48,141 +48,56 @@ static char *esql_postgresql_escape(Esql *e, unsigned int *len, const char *fmt,
 static void esql_postgresql_row_init(Esql_Row *r, int row_num);
 static void esql_postgresql_free(Esql *e);
 
-/* TODO: move esql_postgresql_desc_ops to common? */
-static void *
-esql_postgresql_desc_alloc(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc)
+static void
+esql_module_setup_cb(PGresult *pres, int col, Eina_Value_Struct_Member *m)
 {
-   /* TODO: mempool? */
-   return malloc(desc->size);
-}
+   m->name = eina_stringshare_add(PQfname(pres, col));
 
- static void
-esql_postgresql_desc_free(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc __UNUSED__, void *memory)
-{
-   /* TODO: mempool? */
-   free(memory);
-}
-
-static const Eina_Value_Struct_Member *
-esql_postgresql_desc_find_member(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc, const char *name)
-{
-   const Eina_Value_Struct_Member *itr, *itr_end;
-
-   itr = desc->members;
-   itr_end = itr + desc->member_count;
-
-   /* assumes name is stringshared.
-    *
-    * we do this because it's the recommended usage pattern, moreover
-    * we expect to find the member, as users shouldn't look for
-    * non-existent members!
-    */
-   for (; itr < itr_end; itr++)
-     if (itr->name == name)
-       return itr;
-
-   itr = desc->members;
-   name = eina_stringshare_add(name);
-   eina_stringshare_del(name); /* we'll not use the contents, this is fine */
-   for (; itr < itr_end; itr++)
-     if (itr->name == name)
-       return itr;
-
-   return NULL;
-}
-
-static Eina_Value_Struct_Operations esql_postgresql_desc_ops = {
-  EINA_VALUE_STRUCT_OPERATIONS_VERSION,
-  esql_postgresql_desc_alloc,
-  esql_postgresql_desc_free,
-  NULL, /* no copy */
-  NULL, /* no compare */
-  esql_postgresql_desc_find_member
-};
-
-static Eina_Value_Struct_Desc *
-esql_postgresql_desc_get(PGresult *pres)
-{
-   Eina_Value_Struct_Desc *desc;
-   int i, cols;
-   unsigned int offset;
-
-   cols = PQntuples(pres);
-   if (cols < 1) return NULL;
-
-   desc = malloc(sizeof(*desc) + cols * sizeof(Eina_Value_Struct_Member));
-   EINA_SAFETY_ON_NULL_RETURN_VAL(desc, NULL);
-
-   desc->version = EINA_VALUE_STRUCT_DESC_VERSION;
-   desc->ops = &esql_postgresql_desc_ops;
-   desc->members = (void *)((char *)desc + sizeof(*desc));
-   desc->member_count = cols;
-   desc->size = 0;
-
-   offset = 0;
-   for (i = 0; i < cols; i++)
+   switch (PQftype(pres, col))
      {
-        Eina_Value_Struct_Member *m = (Eina_Value_Struct_Member *)desc->members + i;
-        unsigned int size;
+      case TIMESTAMPOID:
+      case ABSTIMEOID:
+        m->type = EINA_VALUE_TYPE_TIMESTAMP;
+        break;
 
-        m->name = eina_stringshare_add(PQfname(pres, i));
-        m->offset = offset;
+      case BYTEAOID:
+      case NAMEOID:
+      case TEXTOID:
+      case VARCHAROID:
+      case BPCHAROID:
+        m->type = EINA_VALUE_TYPE_STRING;
+        break;
 
-        switch (PQftype(pres, i))
-          {
-           case TIMESTAMPOID:
-           case ABSTIMEOID:
-             m->type = EINA_VALUE_TYPE_TIMESTAMP;
-             break;
+      case BOOLOID:
+      case CHAROID:
+        m->type = EINA_VALUE_TYPE_CHAR;
+        break;
 
-           case BYTEAOID:
-           case NAMEOID:
-           case TEXTOID:
-           case VARCHAROID:
-           case BPCHAROID:
-             m->type = EINA_VALUE_TYPE_STRING;
-             break;
+      case INT2OID:
+        m->type = EINA_VALUE_TYPE_SHORT;
+        break;
 
-           case BOOLOID:
-           case CHAROID:
-             m->type = EINA_VALUE_TYPE_CHAR;
-             break;
+      case INT4OID:
+        m->type = EINA_VALUE_TYPE_LONG;
+        break;
 
-           case INT2OID:
-             m->type = EINA_VALUE_TYPE_SHORT;
-             break;
+      case INT8OID:
+        m->type = EINA_VALUE_TYPE_INT64;
+        break;
 
-           case INT4OID:
-             m->type = EINA_VALUE_TYPE_LONG;
-             break;
+      case FLOAT4OID:
+        m->type = EINA_VALUE_TYPE_FLOAT;
+        break;
 
-           case INT8OID:
-             m->type = EINA_VALUE_TYPE_INT64;
-             break;
+      case FLOAT8OID:
+      case TINTERVALOID:
+      case RELTIMEOID:
+        m->type = EINA_VALUE_TYPE_DOUBLE;
+        break;
 
-           case FLOAT4OID:
-             m->type = EINA_VALUE_TYPE_FLOAT;
-             break;
-
-           case FLOAT8OID:
-           case TINTERVALOID:
-           case RELTIMEOID:
-             m->type = EINA_VALUE_TYPE_DOUBLE;
-             break;
-
-           default:
-             m->type = EINA_VALUE_TYPE_BLOB;
-          }
-
-        size = m->type->value_size;
-        if (size % sizeof(void *) != 0)
-          size += size - (size % sizeof(void *));
-
-        offset += size;
+      default:
+        m->type = EINA_VALUE_TYPE_BLOB;
      }
-
-   desc->size = offset;
-   return desc;
 }
 
 static const char *
@@ -342,8 +257,7 @@ esql_postgresql_res(Esql_Res *res)
         ERR("Error %s:'%s'!", PQresStatus(PQresultStatus(pres)), res->error);
         return;
      }
-   res->desc = esql_postgresql_desc_get(pres);
-   INFO("res %p desc=%p", res, res->desc);
+   res->desc = esql_module_desc_get(PQntuples(pres), (Esql_Module_Setup_Cb)esql_module_setup_cb, pres);
    for (i = 0; i < res->row_count; i++)
      {
         r = esql_row_calloc(1);
