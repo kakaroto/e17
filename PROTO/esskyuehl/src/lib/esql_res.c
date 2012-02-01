@@ -72,6 +72,27 @@ _esql_res_free(Esql_Res *res)
      EINA_INLIST_FOREACH_SAFE(res->rows, l, r)
        esql_row_free(r);
 
+   if (res->desc)
+     {
+        /* memset is not needed, but leave it here to find if people
+         * kept reference to values after row is removed, see below.
+         */
+        memset(res->desc, 0, sizeof(res->desc));
+        free(res->desc);
+
+        /* NOTE: after this point, if users are still holding 'desc' they will
+         * have problems. This can be done if user calls eina_value_copy()
+         * on some esql_row_value_struct_get()
+         *
+         * If this is an use case, add Eina_Value_Struct_Desc to some other
+         * struct and do reference counting on it, increment on
+         * alloc/copy, decrement on free.
+         *
+         * Remember that struct is created/ref on thread, and it is free'd
+         * on main thread, then needs locking!
+         */
+     }
+
    res->e->backend.res_free(res);
    free(res->query);
    if (res->mempool) eina_mempool_del(res->mempool);
