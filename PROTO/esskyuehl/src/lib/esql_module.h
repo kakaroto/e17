@@ -19,5 +19,5 @@
 
 typedef void (*Esql_Module_Setup_Cb)(void *, int, Eina_Value_Struct_Member *);
 
-Eina_Value_Struct_Desc *esql_module_desc_get(int cols, Esql_Module_Setup_Cb setup_cb, void *data);
-
+Eina_Value_Struct_Desc *esql_module_desc_get(int cols, Esql_Module_Setup_Cb setup_cb, Esql_Res *res);
+Eina_Mempool *esql_mempool_new(unsigned int);

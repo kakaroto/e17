@@ -1,5 +1,7 @@
 #include "esql_private.h"
 
+static const char *mempool_type = NULL;
+
 typedef struct _Esql_Mempool Esql_Mempool;
 struct _Esql_Mempool
 {
@@ -30,6 +32,12 @@ static Esql_Mempool *mempool_array[] = {
   &esql_row_mp
 };
 
+Eina_Mempool *
+esql_mempool_new(unsigned int size)
+{
+   return eina_mempool_add(mempool_type, NULL, NULL, size, 64);
+}
+
 Eina_Bool
 esql_mempool_init(void)
 {
@@ -59,6 +67,7 @@ esql_mempool_init(void)
                }
           }
      }
+   mempool_type = eina_stringshare_add(choice);
    return EINA_TRUE;
 }
 
@@ -72,5 +81,6 @@ esql_mempool_shutdown(void)
         eina_mempool_del(mempool_array[i]->mp);
         mempool_array[i]->mp = NULL;
      }
+   eina_stringshare_replace(&mempool_type, NULL);
 }
 

@@ -21,6 +21,11 @@ static void esql_module_desc_free(const Eina_Value_Struct_Operations *ops, const
 static void *esql_module_desc_alloc(const Eina_Value_Struct_Operations *ops, const Eina_Value_Struct_Desc *desc);
 static const Eina_Value_Struct_Member *esql_module_desc_find_member(const Eina_Value_Struct_Operations *ops, const Eina_Value_Struct_Desc *desc, const char *name);
 
+typedef struct Esql_Struct_Desc
+{
+   Eina_Value_Struct_Desc desc;
+   Esql_Res *res;
+} Esql_Struct_Desc;
 
 static Eina_Value_Struct_Operations esql_module_desc_ops = {
   EINA_VALUE_STRUCT_OPERATIONS_VERSION,
@@ -34,14 +39,22 @@ static Eina_Value_Struct_Operations esql_module_desc_ops = {
 static void *
 esql_module_desc_alloc(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc)
 {
-   /* TODO: mempool? */
+   Esql_Res *res;
+
+   res = *(Esql_Res**)(((char*)desc) + desc->member_count * sizeof(Eina_Value_Struct_Member) + offsetof(Esql_Struct_Desc, res));
+   if (res->mempool)
+     return eina_mempool_malloc(res->mempool, desc->size);
    return malloc(desc->size);
 }
 
 static void
-esql_module_desc_free(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc __UNUSED__, void *memory)
+esql_module_desc_free(const Eina_Value_Struct_Operations *ops __UNUSED__, const Eina_Value_Struct_Desc *desc, void *memory)
 {
-   /* TODO: mempool? */
+   Esql_Res *res;
+
+   res = *(Esql_Res**)(((char*)desc) + desc->member_count * sizeof(Eina_Value_Struct_Member) + offsetof(Esql_Struct_Desc, res));
+   if (res->mempool)
+     return eina_mempool_free(res->mempool, memory);
    free(memory);
 }
 
@@ -74,16 +87,16 @@ esql_module_desc_find_member(const Eina_Value_Struct_Operations *ops __UNUSED__,
 }
 
 Eina_Value_Struct_Desc *
-esql_module_desc_get(int cols, Esql_Module_Setup_Cb setup_cb, void *data)
+esql_module_desc_get(int cols, Esql_Module_Setup_Cb setup_cb, Esql_Res *res)
 {
    Eina_Value_Struct_Desc *desc;
    int i;
    unsigned int offset;
 
    if (cols < 1) return NULL;
-   if ((!setup_cb) || (!data)) return NULL;
+   if ((!setup_cb) || (!res)) return NULL;
 
-   desc = malloc(sizeof(*desc) + cols * sizeof(Eina_Value_Struct_Member));
+   desc = malloc(sizeof(Esql_Struct_Desc) + cols * sizeof(Eina_Value_Struct_Member));
    EINA_SAFETY_ON_NULL_RETURN_VAL(desc, NULL);
 
    desc->version = EINA_VALUE_STRUCT_DESC_VERSION;
@@ -91,6 +104,7 @@ esql_module_desc_get(int cols, Esql_Module_Setup_Cb setup_cb, void *data)
    desc->members = (void *)((char *)desc + sizeof(*desc));
    desc->member_count = cols;
    desc->size = 0;
+   *(Esql_Res**)(((char*)desc) + cols * sizeof(Eina_Value_Struct_Member) + offsetof(Esql_Struct_Desc, res)) = res;
 
    offset = 0;
    for (i = 0; i < cols; i++)
@@ -99,7 +113,7 @@ esql_module_desc_get(int cols, Esql_Module_Setup_Cb setup_cb, void *data)
         unsigned int size;
 
         m->offset = offset;
-        setup_cb(data, i, m);
+        setup_cb(res->backend.res, i, m);
 
         size = m->type->value_size;
         if (size % sizeof(void *) != 0)
@@ -109,5 +123,6 @@ esql_module_desc_get(int cols, Esql_Module_Setup_Cb setup_cb, void *data)
      }
 
    desc->size = offset;
+   res->mempool = esql_mempool_new(desc->size);
    return desc;
 }

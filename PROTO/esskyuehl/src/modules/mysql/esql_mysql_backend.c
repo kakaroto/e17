@@ -106,6 +106,7 @@ esql_mysac_error_get(Esql *e)
      {
       case MYERR_WANT_READ:
       case MYERR_WANT_WRITE:
+      case 0:
         return NULL;
       default:
         break;
@@ -220,7 +221,7 @@ esql_mysac_res(Esql_Res *res)
    re = res->backend.res = mysac_get_res(res->e->backend.db);
    if (!re) return;
    m = res->e->backend.db;
-   res->desc = esql_module_desc_get(re->nb_cols, (Esql_Module_Setup_Cb)esql_module_setup_cb, re);
+   res->desc = esql_module_desc_get(re->nb_cols, (Esql_Module_Setup_Cb)esql_module_setup_cb, res);
    mysac_first_row(re);
    row = mysac_fetch_row(re);
    if (!row) /* must be insert/update/etc */

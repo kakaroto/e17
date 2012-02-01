@@ -189,6 +189,7 @@ struct Esql_Res
    char         *query;
 
    Eina_Value_Struct_Desc *desc;
+   Eina_Mempool *mempool;
 
    struct
    {

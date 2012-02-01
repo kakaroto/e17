@@ -74,6 +74,7 @@ _esql_res_free(Esql_Res *res)
 
    res->e->backend.res_free(res);
    free(res->query);
+   if (res->mempool) eina_mempool_del(res->mempool);
    esql_res_mp_free(res);
 }
 

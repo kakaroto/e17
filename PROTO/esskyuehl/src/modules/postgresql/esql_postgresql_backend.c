@@ -257,7 +257,7 @@ esql_postgresql_res(Esql_Res *res)
         ERR("Error %s:'%s'!", PQresStatus(PQresultStatus(pres)), res->error);
         return;
      }
-   res->desc = esql_module_desc_get(PQntuples(pres), (Esql_Module_Setup_Cb)esql_module_setup_cb, pres);
+   res->desc = esql_module_desc_get(PQntuples(pres), (Esql_Module_Setup_Cb)esql_module_setup_cb, res);
    for (i = 0; i < res->row_count; i++)
      {
         r = esql_row_calloc(1);

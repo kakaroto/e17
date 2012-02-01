@@ -127,7 +127,8 @@ esql_sqlite_res_init(Esql *e)
    e->res = esql_res_calloc(1);
    if (!e->res) return EINA_FALSE;
    e->res->e = e;
-   e->res->desc = esql_module_desc_get(sqlite3_column_count(e->backend.stmt), (Esql_Module_Setup_Cb)esql_module_setup_cb, e->backend.stmt);
+   e->res->backend.res = e->backend.stmt;
+   e->res->desc = esql_module_desc_get(sqlite3_column_count(e->backend.stmt), (Esql_Module_Setup_Cb)esql_module_setup_cb, e->res);
    e->res->affected = sqlite3_changes(e->backend.db);
    return EINA_TRUE;
 }
