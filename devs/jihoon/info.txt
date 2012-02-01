@@ -1,0 +1,12 @@
+Login:        jihoon
+IRC Nick:     jihoonKim
+Cloak:        developer/jihoon
+Name:         Jihoon Kim
+Location:     Suwon, Korea
+E-Mail:       imfine98@gmail.com, jihoon48.kim@samsung.com
+WWW:          None
+Contributing: ecore_imf, edje, elementary
+Group:        Libraries, Core
+Platform:     Ubuntu (Linux), Windows XP/7
+GeoData:      37.257779, 127.053344
+
