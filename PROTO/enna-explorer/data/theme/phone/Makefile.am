@@ -19,9 +19,9 @@ phone.edc \
 elm/*.edc
 
 IMGS = \
+elm/*.png \
 images/*.png \
-images/icons/*.png \
-elm/*.png
+images/icons/*.png
 
 EXTRA_DIST = \
 	$(FONTS) \

@@ -71,9 +71,42 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    Evas_Object *o_box;
    Evas_Object *o_entry;
 
+
+
    o_layout = elm_layout_add(parent);
-   elm_layout_file_set(o_layout, enna_config_theme_get(), "enna/browser/header");
-   evas_object_show(o_layout);
+   if (elm_layout_file_set(o_layout, enna_config_theme_get(), "enna/browser/header"))
+       evas_object_show(o_layout);
+   else
+     {
+        evas_object_del(o_layout);
+        return NULL;
+     }
+
+
+
+   if (!edje_object_part_exists(elm_layout_edje_get(o_layout), "enna.swallow.content"))
+     {
+        o_seg = elm_button_add(o_layout);
+        o_ic = elm_icon_add(o_layout);
+        evas_object_show(o_ic);
+        evas_object_size_hint_min_set(o_ic, 80, 40);
+        elm_icon_standard_set(o_ic, "go-up");
+        elm_object_content_set(o_seg, o_ic);
+        elm_object_style_set(o_seg, "black");
+        evas_object_show(o_seg);
+        evas_object_smart_callback_add(o_seg, "clicked", _up_clicked_cb, o_layout);
+        evas_object_size_hint_align_set(o_seg, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        evas_object_size_hint_weight_set(o_seg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        elm_object_part_content_set(o_layout, "enna.swallow.icon", o_seg);
+
+
+        if (file)
+          elm_object_part_text_set(o_layout, "enna.text.current", file->mrl);
+
+
+
+        return o_layout;
+     }
 
    o_box = elm_box_add(o_layout);
    elm_box_horizontal_set(o_box, EINA_TRUE);
@@ -81,6 +114,8 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    evas_object_size_hint_align_set(o_box, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_size_hint_weight_set(o_box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_box_padding_set(o_box, 8, 8);
+
+   elm_object_part_content_set(o_layout, "enna.swallow.content", o_box);
 
    o_seg = elm_button_add(o_layout);
    o_ic = elm_icon_add(o_layout);
@@ -154,8 +189,6 @@ enna_browser_bar_add(Evas_Object *parent, Enna_File *file)
    elm_box_pack_end(o_box, o_seg);
    evas_object_size_hint_min_set(o_seg, 40, 40);
 
-   elm_object_part_content_set(o_layout, "enna.swallow.content", o_box);
-
    return o_layout;
 }
 
@@ -164,5 +197,8 @@ enna_browser_bar_file_set(Evas_Object *obj, Enna_File *file)
 {
    Evas_Object *o_entry = evas_object_data_get(obj, "entry");
 
-   elm_object_text_set(o_entry, file->mrl);
+   if (o_entry)
+     elm_object_text_set(o_entry, file->mrl);
+   else
+     elm_object_part_text_set(obj, "enna.text.current", ecore_file_file_get(file->mrl));
 }

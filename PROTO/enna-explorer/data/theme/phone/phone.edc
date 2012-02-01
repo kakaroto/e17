@@ -254,9 +254,10 @@ collections
                color3: 0 0 0 64;
                text {
                   font:     "Sans";
-                  size:     10;
+                  size:     14;
                   min:      0 1;
                   align:    0 0.5;
+                  text: "Try me out";
                }
             }
          }
