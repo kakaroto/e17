@@ -148,12 +148,12 @@ esql_call_complete(Esql *e)
              {
                 res = esql_res_calloc(1);
                 EINA_SAFETY_ON_NULL_GOTO(res, out);
-                res->refcount = 1;
                 res->e = e;
                 e->backend.res(res);
              }
            ev->res = res;
            res->e = ev;
+           res->refcount = 1;
            res->query = e->cur_query;
            e->cur_query = NULL;
            res->data = e->cur_data;
