@@ -1,22 +1,22 @@
-# German translations for exebuf package
-# German messages for exebuf.
-# Copyright (C) 2011 Enlightenment development team
-# This file is distributed under the same license as the exebuf package.
-# Fabian Nowak <timystery@arcor.de>, 2011.
+# Arabic translation for exebuf.
+# This file is put in the public domain.
+# sameeer hussain <almusalimalmusalimah> 2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: exebuf 0.0.1\n"
+"Project-Id-Version: exebuf module\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2011-01-16 20:52+0100\n"
-"PO-Revision-Date: 2012-01-23 18:56+0300\n"
+"PO-Revision-Date: 2012-01-24 20:44+0300\n"
 "Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
-"Language-Team: German\n"
+"Language-Team: Arabic <almualimalmusalimah@gmail.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: SAUDI ARABIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: src/exebuf_config.c:50
 msgid "Run Command Settings"
@@ -30,7 +30,7 @@ msgstr "عام"
 #: src/exebuf_config.c:112
 #: src/exebuf_config.c:181
 msgid "Maximum Apps to List"
-msgstr "Maximale Anzahl an Anwendungen in Liste"
+msgstr "أقصى عدد من التطبيقات للقائمة"
 
 #: src/exebuf_config.c:114
 #: src/exebuf_config.c:119
@@ -45,26 +45,26 @@ msgstr "%1.0f"
 #: src/exebuf_config.c:117
 #: src/exebuf_config.c:186
 msgid "Maximum Exes to List"
-msgstr "Maximale Anzahl an ausführbaren Dateien in Liste"
+msgstr "أقصى عدد من التطبيقات القابلة للتنفيد للقائمة"
 
 #: src/exebuf_config.c:122
 #: src/exebuf_config.c:191
 msgid "Maximum History to List"
-msgstr "Maximale Anzahl an schon einmal ausgeführten Einträgen in Liste"
+msgstr "أقصى عدد تواريخ للقائمة"
 
 #: src/exebuf_config.c:129
 #: src/exebuf_config.c:211
 msgid "Animations"
-msgstr "Animationen"
+msgstr "متحركة"
 
 #: src/exebuf_config.c:130
 #: src/exebuf_config.c:201
 msgid "Animate"
-msgstr "Animieren"
+msgstr "حرِّك"
 
 #: src/exebuf_config.c:204
 msgid "Speed"
-msgstr "Geschwindigkeit"
+msgstr "السرعة"
 
 #: src/exebuf_config.c:207
 #: src/exebuf_config.c:238
@@ -75,7 +75,7 @@ msgstr "%1.2f"
 
 #: src/exebuf_config.c:216
 msgid "Minimum Width"
-msgstr "Minimale Breite"
+msgstr "أدنى عرض"
 
 #: src/exebuf_config.c:218
 #: src/exebuf_config.c:223
@@ -87,35 +87,35 @@ msgstr "%4.0f"
 
 #: src/exebuf_config.c:221
 msgid "Minimum Height"
-msgstr "Minimale Höhe"
+msgstr "أدنى ارتفاع"
 
 #: src/exebuf_config.c:226
 msgid "Maximum Width"
-msgstr "Maximale Breite"
+msgstr "أقصى عرض"
 
 #: src/exebuf_config.c:231
 msgid "Maximum Height"
-msgstr "Maximale Höhe"
+msgstr "أقصى ارتفاع"
 
 #: src/exebuf_config.c:236
 msgid "X-Axis Alignment"
-msgstr "Ausrichtung entlang der X-Aches"
+msgstr "محاذاة على المحور السيني"
 
 #: src/exebuf_config.c:241
 msgid "Y-Axis Alignment"
-msgstr "Ausrichtung entlang der Y-Achse"
+msgstr "محاذاة على المحور الصادي"
 
 #: src/exebuf_config.c:246
 msgid "Geometry"
-msgstr "Geometrie"
+msgstr "هندسي"
 
 #: src/exebuf_config.c:251
 msgid "Command (CTRL+RETURN to utilize)"
-msgstr "Befehl (Strg+Enter zum Ausführen)"
+msgstr "أمر (CTRL+RETURN ليُنَفَّذ)"
 
 #: src/exebuf_config.c:255
 msgid "Terminal"
-msgstr "Terminal"
+msgstr "الطرفية"
 
 #: src/e_mod_main.c:85
 msgid "Exebuf Module Configuration data needed upgrading. Your old configuration<br> has been wiped and a new set of defaults initialized. This<br>will happen regularly during development, so don't report a<br>bug. This simply means the module needs new configuration<br>data by default for usable functionality that your old<br>configuration simply lacks. This new set of defaults will fix<br>that by adding it in. You can re-configure things now to your<br>liking. Sorry for the inconvenience.<br>"
@@ -128,24 +128,24 @@ msgstr "إعداداتك لوحدة Exebuf أحدث من إصدارة الوحد
 #: src/e_mod_main.c:132
 #: src/e_mod_main.c:160
 msgid "Launch"
-msgstr "Starten"
+msgstr "أطلق"
 
 #: src/e_mod_main.c:132
 #: src/e_mod_main.c:160
 msgid "Run Command Dialog"
-msgstr "Befehl ausführen"
+msgstr "نافذة حوار أمر التشغيل"
 
 #: src/e_mod_main.c:136
 #: src/e_mod_main.c:139
 #: src/e_mod_main.c:299
 msgid "Run Command"
-msgstr "Befehl ausführen"
+msgstr "أمر التشغيل"
 
 #: src/e_mod_main.c:138
 msgid "Advanced"
-msgstr "Erweitert"
+msgstr "متقدم"
 
 #: src/e_mod_main.c:249
 msgid "Exebuf Configuration Updated"
-msgstr "Einstellungen zur Befehlsauführung wurden aktualisiert"
+msgstr "إعدادات Exebuf حُدِّثت"
 

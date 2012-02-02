@@ -1,14 +1,13 @@
-# Arabic translation for enlightenment
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
-# This file is distributed under the same license as the enlightenment package.
-# sameeer hussain <almusalimalmusalimah>, 2011.
+# Arabic translation for alarm.
+# This file is put in the public domain.
+# sameeer hussain <almusalimalmusalimah> 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: alarm module\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2010-09-09 08:00-0700\n"
-"PO-Revision-Date: 2012-01-22 22:17+0300\n"
+"PO-Revision-Date: 2012-01-24 20:45+0300\n"
 "Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,6 +17,7 @@ msgstr ""
 "X-Generator: Launchpad (build Unknown)\n"
 "X-Poedit-Language: Arabic\n"
 "X-Poedit-Country: SAUDI ARABIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: ../src/e_mod_config.c:52
 msgid "Alarm Configuration"

@@ -1,13 +1,13 @@
-# Places module (e17), Arabic translation.
+# Arabic translation for places.
 # This file is put in the public domain.
-# sameeer hussain <almusalimalmusalimah@gmail.com>, 2009, 2010, 2011.
+# sameeer hussain <almusalimalmusalimah> 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Places module\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-01-16 03:00-0800\n"
-"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"PO-Revision-Date: 2012-01-24 20:44+0300\n"
 "Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"

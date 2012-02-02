@@ -1,14 +1,13 @@
-# Arabic translation for enlightenment
-# Copyright (c) 2009 Free Software Foundation, Inc.
-# This file is distributed under the same license as the enlightenment package.
-# sameeer hussain <almusalimalmusalimah@gmail.com>, 2011.
+# Arabic translation for news.
+# This file is put in the public domain.
+# sameeer hussain <almusalimalmusalimah> 2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: enlightenment\n"
+"Project-Id-Version: news module\n"
 "Report-Msgid-Bugs-To: http://trac.enlightenment.org/e\n"
 "POT-Creation-Date: 2011-02-16 14:00-0800\n"
-"PO-Revision-Date: 2012-01-22 22:16+0300\n"
+"PO-Revision-Date: 2012-01-24 20:44+0300\n"
 "Last-Translator: سمير حسين <almusalimalmusalimah@gmail.com>\n"
 "Language-Team: Arabic <almusalimalmusalimah@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +16,7 @@ msgstr ""
 "Language: ar\n"
 "X-Poedit-Language: Arabic\n"
 "X-Poedit-Country: SAUDI ARABIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: ../src/e_mod_main.c:52
 msgid "Config init failed"
