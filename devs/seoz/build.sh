@@ -102,5 +102,5 @@ pushd THEMES/23oz
 popd
 
 rm tags -f
-ctags -h ".h.x.cpp.c" -R
+ctags -h ".h.x.cpp.c" --exclude="*.js" --exclude="*.pxi" -R
 enlightenment_remote -restart
