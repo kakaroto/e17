@@ -106,7 +106,7 @@ def hoversel_clicked(obj):
 if __name__ == "__main__":
     elementary.init()
 
-    hoversel_clicked(None, None)
+    hoversel_clicked(None)
 
     elementary.run()
     elementary.shutdown()

@@ -27,7 +27,7 @@ def inner_window_clicked(obj):
 if __name__ == "__main__":
     elementary.init()
 
-    inner_window_clicked(None, None)
+    inner_window_clicked(None)
 
     elementary.run()
     elementary.shutdown()

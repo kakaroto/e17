@@ -70,7 +70,7 @@ def table_clicked(obj):
 if __name__ == "__main__":
     elementary.init()
 
-    table_clicked(None, None)
+    table_clicked(None)
 
     elementary.run()
     elementary.shutdown()

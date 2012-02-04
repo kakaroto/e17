@@ -9,7 +9,7 @@ import evas
 def hover_bt1_clicked(bt, hv):
     hv.show()
 
-def hover_clicked(obj):
+def hover_clicked(obj, item=None):
     win = elementary.Window("hover", elementary.ELM_WIN_BASIC)
     win.title_set("Hover")
     win.autodel_set(True)
@@ -89,7 +89,7 @@ def hover_clicked(obj):
 # }}}
 
 #----- Hover2 -{{{-
-def hover2_clicked(obj):
+def hover2_clicked(obj, item=None):
     win = elementary.Window("hover2", elementary.ELM_WIN_BASIC)
     win.title_set("Hover 2")
     win.autodel_set(True)

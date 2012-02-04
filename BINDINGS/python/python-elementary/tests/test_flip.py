@@ -146,7 +146,7 @@ def flip_clicked(obj):
 if __name__ == "__main__":
     elementary.init()
 
-    flip_clicked(None, None)
+    flip_clicked(None)
 
     elementary.run()
     elementary.shutdown()

@@ -25,7 +25,7 @@ def my_entry_anchor_test(obj, en, *args, **kwargs):
 # -}}}-
 
 #----- Entry -{{{-
-def entry_clicked(obj):
+def entry_clicked(obj, item=None):
     win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
     win.title_set("Entry")
     win.autodel_set(True)
@@ -100,7 +100,7 @@ def entry_clicked(obj):
 # }}}
 
 #----- Entry Scrolled -{{{-
-def entry_scrolled_clicked(obj):
+def entry_scrolled_clicked(obj, item=None):
     win = elementary.Window("entry", elementary.ELM_WIN_BASIC)
     win.title_set("Entry Scrolled")
     win.autodel_set(True)

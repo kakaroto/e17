@@ -25,7 +25,7 @@ def icon_transparent_clicked(obj, it):
 if __name__ == "__main__":
     elementary.init()
 
-    icon_transparent_clicked(None, None)
+    icon_transparent_clicked(None)
 
     elementary.run()
     elementary.shutdown()

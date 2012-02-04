@@ -32,7 +32,7 @@ from test_menu import menu_clicked
 from test_panel import panel_clicked
 from test_layout import layout_clicked
 from test_spinner import spinner_clicked
-from test_genlist import genlist_clicked
+from test_genlist import genlist_clicked, genlist2_clicked, genlist3_clicked
 from test_gengrid import gengrid_clicked
 from test_flip import flip_clicked
 from test_tooltip import tooltip_clicked
@@ -123,6 +123,8 @@ if __name__ == "__main__":
                 ("List 2", list2_clicked),
                 ("List 3", list3_clicked),
                 ("Genlist", genlist_clicked),
+                ("Genlist 2", genlist2_clicked),
+                ("Genlist Group", genlist3_clicked),
                 ("Gengrid", gengrid_clicked),
             ]),
              ("Popups", [

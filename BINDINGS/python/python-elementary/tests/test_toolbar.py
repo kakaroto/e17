@@ -116,7 +116,7 @@ def toolbar_clicked(obj):
 if __name__ == "__main__":
     elementary.init()
 
-    toolbar_clicked(None, None)
+    toolbar_clicked(None)
 
     elementary.run()
     elementary.shutdown()

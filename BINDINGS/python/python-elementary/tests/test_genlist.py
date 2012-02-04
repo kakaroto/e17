@@ -32,7 +32,7 @@ def glg_content_get(obj, part, data):
 # -}}}-
 
 #----- Genlist -{{{-
-def genlist_clicked(obj):
+def genlist_clicked(obj, item=None):
     win = elementary.Window("Genlist", elementary.ELM_WIN_BASIC)
     win.title_set("Genlist test")
     win.autodel_set(True)
@@ -110,7 +110,7 @@ def genlist_clicked(obj):
 # }}}
 
 #----- Genlist 2 -{{{-
-def genlist2_clicked(obj):
+def genlist2_clicked(obj, item=None):
     win = elementary.Window("Genlist", elementary.ELM_WIN_BASIC)
     win.title_set("Genlist test 2")
     win.autodel_set(True)
@@ -340,7 +340,7 @@ def genlist2_clicked(obj):
 # }}}
 
 #----- Genlist 3 -{{{-
-def genlist3_clicked(obj, it):
+def genlist3_clicked(obj, item=None):
     win = elementary.Window("Genlist", elementary.ELM_WIN_BASIC)
     win.title_set("Genlist Group test")
     win.autodel_set(True)

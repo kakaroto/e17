@@ -63,7 +63,7 @@ def buttons_clicked(obj):
 if __name__ == "__main__":
     elementary.init()
 
-    buttons_clicked(None, None)
+    buttons_clicked(None)
 
     elementary.run()
     elementary.shutdown()

@@ -100,7 +100,7 @@ def check_clicked(obj):
 if __name__ == "__main__":
     elementary.init()
 
-    check_clicked(None, None)
+    check_clicked(None)
 
     elementary.run()
     elementary.shutdown()

@@ -65,7 +65,7 @@ def toggles_clicked(obj):
 if __name__ == "__main__":
     elementary.init()
 
-    toggles_clicked(None, None)
+    toggles_clicked(None)
 
     elementary.run()
     elementary.shutdown()

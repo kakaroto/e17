@@ -222,7 +222,7 @@ def tooltip_clicked(obj):
 if __name__ == "__main__":
     elementary.init()
 
-    tooltip_clicked(None, None)
+    tooltip_clicked(None)
 
     elementary.run()
     elementary.shutdown()
