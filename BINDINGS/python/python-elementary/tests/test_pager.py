@@ -39,7 +39,7 @@ def pager_clicked(obj):
     bx.show()
 
     lb = elementary.Label(win)
-    lb.label_set("This is page 1 in a pager stack.<br>"
+    lb.text_set("This is page 1 in a pager stack.<br>"
                        "<br>"
                        "So what is a pager stack? It is a stack<br>"
                        "of pages that hold widgets in it. The<br>"
@@ -56,13 +56,13 @@ def pager_clicked(obj):
     lb.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Flip to 2")
+    bt.text_set("Flip to 2")
     bt.callback_clicked_add(my_pager_1, pg, info)
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Popme")
+    bt.text_set("Popme")
     bt.callback_clicked_add(my_pager_pop, pg, info)
     bx.pack_end(bt)
     bt.show()
@@ -76,7 +76,7 @@ def pager_clicked(obj):
     bx.show()
 
     lb = elementary.Label(win)
-    lb.label_set("This is page 2 in a pager stack.<br>"
+    lb.text_set("This is page 2 in a pager stack.<br>"
                        "<br>"
                        "This is just like the previous page in<br>"
                        "the pager stack.")
@@ -85,13 +85,13 @@ def pager_clicked(obj):
     lb.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Flip to 3")
+    bt.text_set("Flip to 3")
     bt.callback_clicked_add(my_pager_2, pg, info)
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Popme")
+    bt.text_set("Popme")
     bt.callback_clicked_add(my_pager_pop, pg, info)
     bx.pack_end(bt)
     bt.show()
@@ -105,7 +105,7 @@ def pager_clicked(obj):
     bx.show()
 
     lb = elementary.Label(win)
-    lb.label_set("This is page 3 in a pager stack.<br>"
+    lb.text_set("This is page 3 in a pager stack.<br>"
                        "<br>"
                        "This is just like the previous page in<br>"
                        "the pager stack.")
@@ -114,13 +114,13 @@ def pager_clicked(obj):
     lb.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Flip to 1")
+    bt.text_set("Flip to 1")
     bt.callback_clicked_add(my_pager_3, pg,info)
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Popme")
+    bt.text_set("Popme")
     bt.callback_clicked_add(my_pager_pop, pg,info)
     bx.pack_end(bt)
     bt.show()

@@ -23,7 +23,7 @@ def hoversel_clicked(obj):
 
     bt = elementary.Hoversel(win)
     bt.hover_parent_set(win)
-    bt.label_set("Labels")
+    bt.text_set("Labels")
     bt.item_add("Item 1")
     bt.item_add("Item 2")
     bt.item_add("Item 3")
@@ -35,7 +35,7 @@ def hoversel_clicked(obj):
 
     bt = elementary.Hoversel(win)
     bt.hover_parent_set(win)
-    bt.label_set("Some Icons")
+    bt.text_set("Some Icons")
     bt.item_add("Item 1")
     bt.item_add("Item 2")
     bt.item_add("Item 3", "home", elementary.ELM_ICON_STANDARD)
@@ -47,7 +47,7 @@ def hoversel_clicked(obj):
 
     bt = elementary.Hoversel(win)
     bt.hover_parent_set(win)
-    bt.label_set("All Icons")
+    bt.text_set("All Icons")
     bt.item_add("Item 1", "apps", elementary.ELM_ICON_STANDARD)
     bt.item_add("Item 2", "arrow_down", elementary.ELM_ICON_STANDARD)
     bt.item_add("Item 3", "home", elementary.ELM_ICON_STANDARD)
@@ -59,7 +59,7 @@ def hoversel_clicked(obj):
 
     bt = elementary.Hoversel(win)
     bt.hover_parent_set(win)
-    bt.label_set("All Icons")
+    bt.text_set("All Icons")
     bt.item_add("Item 1", "apps", elementary.ELM_ICON_STANDARD)
     bt.item_add("Item 2", "images/logo_small.png", elementary.ELM_ICON_FILE)
     bt.item_add("Item 3", "home", elementary.ELM_ICON_STANDARD)
@@ -71,7 +71,7 @@ def hoversel_clicked(obj):
 
     bt = elementary.Hoversel(win)
     bt.hover_parent_set(win)
-    bt.label_set("Disabled Hoversel")
+    bt.text_set("Disabled Hoversel")
     bt.item_add("Item 1", "apps", elementary.ELM_ICON_STANDARD)
     bt.item_add("Item 2", "close", elementary.ELM_ICON_STANDARD)
     bt.disabled_set(True)
@@ -82,7 +82,7 @@ def hoversel_clicked(obj):
 
     bt = elementary.Hoversel(win)
     bt.hover_parent_set(win)
-    bt.label_set("Icon + Label")
+    bt.text_set("Icon + Label")
 
     ic = elementary.Icon(win)
     ic.file_set("images/sky_03.jpg")

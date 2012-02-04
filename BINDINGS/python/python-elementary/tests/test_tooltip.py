@@ -59,7 +59,7 @@ def tooltip_clicked(obj):
     ti.tooltip_style_set("transparent")
 
     bt = elementary.Button(win)
-    bt.label_set("Simple text tooltip");
+    bt.text_set("Simple text tooltip");
     bt.tooltip_text_set("Simple text tooltip")
     bx.pack_end(bt)
     bt.show()
@@ -73,7 +73,7 @@ def tooltip_clicked(obj):
         data["value"] = value
 
     bt = elementary.Button(win)
-    bt.label_set("Simple text tooltip, click to change");
+    bt.text_set("Simple text tooltip, click to change");
     bt.tooltip_text_set("Initial")
     data = dict()
     bt.callback_clicked_add(_tt_text_replace, data)
@@ -89,14 +89,14 @@ def tooltip_clicked(obj):
         if timer:
             timer.delete()
             del data["timer"]
-            obj.label_set("Simple text tooltip, click to start changed timed")
+            obj.text_set("Simple text tooltip, click to start changed timed")
             return
         data["timer"] = ecore.timer_add(1.5, _tt_text_replace_timer_cb, obj,
                                         data)
-        obj.label_set("Simple text tooltip, click to stop changed timed")
+        obj.text_set("Simple text tooltip, click to stop changed timed")
 
     bt = elementary.Button(win)
-    bt.label_set("Simple text tooltip, click to start changed timed");
+    bt.text_set("Simple text tooltip, click to start changed timed");
     bt.tooltip_text_set("Initial")
     data = dict()
     bt.callback_clicked_add(_tt_text_replace_timed, data)
@@ -105,7 +105,7 @@ def tooltip_clicked(obj):
     bt.on_del_add(_tt_timer_del, data)
 
     bt = elementary.Button(win)
-    bt.label_set("Icon tooltip");
+    bt.text_set("Icon tooltip");
     bt.tooltip_content_cb_set(_tt_icon, None)
     bx.pack_end(bt)
     bt.show()
@@ -124,14 +124,14 @@ def tooltip_clicked(obj):
         if timer:
             timer.delete()
             del data["timer"]
-            obj.label_set("Icon tooltip, click to start changed timed")
+            obj.text_set("Icon tooltip, click to start changed timed")
             return
         data["timer"] = ecore.timer_add(1.5, _tt_icon_replace_timer_cb, obj,
                                         data)
-        obj.label_set("Icon tooltip, click to stop changed timed")
+        obj.text_set("Icon tooltip, click to stop changed timed")
 
     bt = elementary.Button(win)
-    bt.label_set("Icon tooltip, click to start changed timed");
+    bt.text_set("Icon tooltip, click to start changed timed");
     bt.tooltip_content_cb_set(_tt_icon)
     data = dict()
     bt.callback_clicked_add(_tt_icon_replace_timed, data)
@@ -140,7 +140,7 @@ def tooltip_clicked(obj):
     bt.on_del_add(_tt_timer_del, data)
 
     bt = elementary.Button(win)
-    bt.label_set("Transparent Icon tooltip");
+    bt.text_set("Transparent Icon tooltip");
     bt.tooltip_content_cb_set(_tt_icon, None)
     bt.tooltip_style_set("transparent")
     bx.pack_end(bt)
@@ -160,14 +160,14 @@ def tooltip_clicked(obj):
         if timer:
             timer.delete()
             del data["timer"]
-            obj.label_set("Icon tooltip style, click to start changed timed")
+            obj.text_set("Icon tooltip style, click to start changed timed")
             return
         data["timer"] = ecore.timer_add(1.5, _tt_style_replace_timer_cb, obj,
                                         data)
-        obj.label_set("Icon tooltip, click to stop changed timed")
+        obj.text_set("Icon tooltip, click to stop changed timed")
 
     bt = elementary.Button(win)
-    bt.label_set("Icon tooltip style, click to start changed timed");
+    bt.text_set("Icon tooltip style, click to start changed timed");
     bt.tooltip_content_cb_set(_tt_icon, None)
     data = dict()
     bt.callback_clicked_add(_tt_style_replace_timed, data)
@@ -179,14 +179,14 @@ def tooltip_clicked(obj):
         value = data.get("value")
         data["value"] = not value
         if value:
-            obj.label_set("Unlocked tooltip visibility");
+            obj.text_set("Unlocked tooltip visibility");
             obj.tooltip_hide()
         else:
-            obj.label_set("Locked tooltip visibility");
+            obj.text_set("Locked tooltip visibility");
             obj.tooltip_show()
 
     bt = elementary.Button(win)
-    bt.label_set("Unlocked tooltip visibility");
+    bt.text_set("Unlocked tooltip visibility");
     bt.tooltip_text_set("This tooltip is unlocked visible,<br> clock the button to lock!")
     data = dict()
     bt.callback_clicked_add(_tt_visible_lock_toggle, data)

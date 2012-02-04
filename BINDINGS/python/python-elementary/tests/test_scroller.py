@@ -71,7 +71,7 @@ def scroller_clicked(obj):
     win.resize_object_add(tb2)
 
     bt = elementary.Button(win)
-    bt.label_set("to 300 300")
+    bt.text_set("to 300 300")
     bt.callback_clicked_add(my_scroller_go_300_300, sc)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(0.1, 0.1)
@@ -79,7 +79,7 @@ def scroller_clicked(obj):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("to 900 300")
+    bt.text_set("to 900 300")
     bt.callback_clicked_add(my_scroller_go_900_300, sc)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(0.9, 0.1)
@@ -87,7 +87,7 @@ def scroller_clicked(obj):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("to 300 900")
+    bt.text_set("to 300 900")
     bt.callback_clicked_add(my_scroller_go_300_900, sc)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(0.1, 0.9)
@@ -95,7 +95,7 @@ def scroller_clicked(obj):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("to 900 900")
+    bt.text_set("to 900 900")
     bt.callback_clicked_add(my_scroller_go_900_900, sc)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(0.9, 0.9)

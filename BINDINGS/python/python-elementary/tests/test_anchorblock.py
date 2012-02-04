@@ -99,8 +99,8 @@ def anchorblock_clicked(obj):
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
 
     bb = elementary.Bubble(win)
-    bb.label_set("Message 3")
-    bb.info_set("10:32 4/11/2008")
+    bb.text_set("Message 3")
+    bb.text_part_set("info", "10:32 4/11/2008")
     bb.icon_set(ic)
     ic.show()
     bb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -122,8 +122,8 @@ def anchorblock_clicked(obj):
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
 
     bb = elementary.Bubble(win)
-    bb.label_set("Message 2")
-    bb.info_set("7:16 27/10/2008")
+    bb.text_set("Message 2")
+    bb.text_part_set("info", "7:16 27/10/2008")
     bb.icon_set(ic)
     ic.show()
     bb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -156,8 +156,8 @@ def anchorblock_clicked(obj):
     ic.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
 
     bb = elementary.Bubble(win)
-    bb.label_set("Message 1")
-    bb.info_set("20:47 18/6/2008")
+    bb.text_set("Message 1")
+    bb.text_part_set("info", "20:47 18/6/2008")
     bb.icon_set(ic)
     ic.show()
     bb.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -176,7 +176,7 @@ def anchorblock_clicked(obj):
 
     win.resize(320, 300)
 
-    win.focus()
+    win.focus_set(True)
     win.show()
 # }}}
 

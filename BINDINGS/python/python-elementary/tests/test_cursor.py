@@ -28,13 +28,13 @@ def cursor_clicked(obj, item=None):
     ck.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Coffee Mug")
+    bt.text_set("Coffee Mug")
     bt.cursor_set(cursors.ELM_CURSOR_COFFEE_MUG)
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Cursor unset")
+    bt.text_set("Cursor unset")
     bt.cursor_set(cursors.ELM_CURSOR_BOGOSITY)
     bt.cursor_unset()
     bx.pack_end(bt)
@@ -128,34 +128,34 @@ def cursor3_clicked(obj, item=None):
     bx.show()
 
     bt = elementary.Button(win)
-    bt.label_set("hand1")
+    bt.text_set("hand1")
     bt.cursor_set(cursors.ELM_CURSOR_HAND1)
     bt.cursor_engine_only_set(False)
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("hand2 x")
+    bt.text_set("hand2 x")
     bt.cursor_set(cursors.ELM_CURSOR_HAND2)
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("hand2")
+    bt.text_set("hand2")
     bt.cursor_set(cursors.ELM_CURSOR_HAND2)
     bt.cursor_engine_only_set(False)
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("hand3")
+    bt.text_set("hand3")
     bt.cursor_set("hand3")
     bt.cursor_engine_only_set(False)
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("hand3")
+    bt.text_set("hand3")
     bt.cursor_set("hand3")
     bt.cursor_engine_only_set(False)
     bt.cursor_style_set("transparent")
@@ -163,7 +163,7 @@ def cursor3_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("not existent")
+    bt.text_set("not existent")
     bt.cursor_set("hand4")
     bt.cursor_engine_only_set(False)
     bx.pack_end(bt)
@@ -171,14 +171,14 @@ def cursor3_clicked(obj, item=None):
 
     elementary.cursor_engine_only_set(0)
     bt = elementary.Button(win)
-    bt.label_set("hand 2 engine only config false")
+    bt.text_set("hand 2 engine only config false")
     bt.cursor_set("hand2")
     bx.pack_end(bt)
     bt.show()
 
     elementary.cursor_engine_only_set(1)
     bt = elementary.Button(win)
-    bt.label_set("hand 2 engine only config true")
+    bt.text_set("hand 2 engine only config true")
     bt.cursor_set("hand2")
     bx.pack_end(bt)
     bt.show()
@@ -227,12 +227,12 @@ if __name__ == "__main__":
     box0.show()
 
     fr = elementary.Frame(win)
-    fr.label_set("Information")
+    fr.text_set("Information")
     box0.pack_end(fr)
     fr.show()
 
     lb = elementary.Label(win)
-    lb.label_set("Please select a test from the list below<br>"
+    lb.text_set("Please select a test from the list below<br>"
                  "by clicking the test button to show the<br>"
                  "test window.")
     fr.content_set(lb)

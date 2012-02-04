@@ -67,7 +67,7 @@ def box_vert2_clicked(obj, item=None):
     bx.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Button 1")
+    bt.text_set("Button 1")
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(0.0, 0.0)
     bt.callback_clicked_add(boxvert2_del_cb, bx)
@@ -75,7 +75,7 @@ def box_vert2_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Button 2")
+    bt.text_set("Button 2")
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(0.0, 0.0)
     bt.callback_clicked_add(boxvert2_del_cb, bx)
@@ -83,7 +83,7 @@ def box_vert2_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Button 3")
+    bt.text_set("Button 3")
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(0.0, 0.0)
     bt.callback_clicked_add(boxvert2_del_cb, bx)
@@ -91,7 +91,7 @@ def box_vert2_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Button 4")
+    bt.text_set("Button 4")
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(0.0, 0.0)
     bt.callback_clicked_add(boxvert2_del_cb, bx)
@@ -99,7 +99,7 @@ def box_vert2_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Button 5")
+    bt.text_set("Button 5")
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(0.0, 0.0)
     bt.callback_clicked_add(boxvert2_del_cb, bx)
@@ -171,12 +171,12 @@ if __name__ == "__main__":
     box0.show()
 
     fr = elementary.Frame(win)
-    fr.label_set("Information")
+    fr.text_set("Information")
     box0.pack_end(fr)
     fr.show()
 
     lb = elementary.Label(win)
-    lb.label_set("Please select a test from the list below<br>"
+    lb.text_set("Please select a test from the list below<br>"
                  "by clicking the test button to show the<br>"
                  "test window.")
     fr.content_set(lb)

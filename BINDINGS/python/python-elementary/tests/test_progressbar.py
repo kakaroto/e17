@@ -74,7 +74,7 @@ def progressbar_clicked(obj):
     pb2 = elementary.Progressbar(win)
     pb2.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     pb2.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
-    pb2.label_set("Infinite bounce")
+    pb2.text_set("Infinite bounce")
     pb2.pulse_set(True)
     bx.pack_end(pb2)
     pb2.show()
@@ -84,7 +84,7 @@ def progressbar_clicked(obj):
     ic1.size_hint_aspect_set(evas.EVAS_ASPECT_CONTROL_VERTICAL, 1, 1)
 
     pb3 = elementary.Progressbar(win)
-    pb3.label_set("Label")
+    pb3.text_set("Label")
     pb3.icon_set(ic1)
     pb3.inverted_set(True)
     pb3.unit_format_set("%1.1f units")
@@ -108,7 +108,7 @@ def progressbar_clicked(obj):
     pb4.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     hbx.pack_end(pb4)
     pb4.span_size_set(60)
-    pb4.label_set("percent")
+    pb4.text_set("percent")
     pb4.show()
 
     pb5 = elementary.Progressbar(win)
@@ -118,7 +118,7 @@ def progressbar_clicked(obj):
     pb5.span_size_set(80)
     pb5.pulse_set(True)
     pb5.unit_format_set(None)
-    pb5.label_set("Infinite bounce")
+    pb5.text_set("Infinite bounce")
     hbx.pack_end(pb5)
     pb5.show()
 
@@ -128,7 +128,7 @@ def progressbar_clicked(obj):
 
     pb6 = elementary.Progressbar(win)
     pb6.horizontal_set(False)
-    pb6.label_set("Label")
+    pb6.text_set("Label")
     pb6.icon_set(ic2)
     pb6.inverted_set(True)
     pb6.unit_format_set("%1.2f%%")
@@ -141,7 +141,7 @@ def progressbar_clicked(obj):
 
     pb7 = elementary.Progressbar(win)
     pb7.style_set("wheel")
-    pb7.label_set("Style: wheel")
+    pb7.text_set("Style: wheel")
     pb7.size_hint_align_set(evas.EVAS_HINT_FILL, 0.5)
     pb7.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bx.pack_end(pb7)
@@ -156,13 +156,13 @@ def progressbar_clicked(obj):
     pbt = (pb1, pb2, pb3, pb4, pb5, pb6, pb7)
 
     bt = elementary.Button(win)
-    bt.label_set("Start")
+    bt.text_set("Start")
     bt.callback_clicked_add(my_progressbar_test_start, *pbt)
     bt_bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Stop")
+    bt.text_set("Stop")
     bt.callback_clicked_add(my_progressbar_test_stop, *pbt)
     bt_bx.pack_end(bt)
     bt.show()

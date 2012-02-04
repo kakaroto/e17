@@ -28,7 +28,7 @@ def separator_clicked(obj):
     bx.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Left upper corner")
+    bt.text_set("Left upper corner")
     bx.pack_end(bt)
     bt.show()
 
@@ -38,7 +38,7 @@ def separator_clicked(obj):
     sp.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Left lower corner")
+    bt.text_set("Left lower corner")
     bt.disabled_set(True)
     bx.pack_end(bt)
     bt.show()
@@ -53,7 +53,7 @@ def separator_clicked(obj):
     bx.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Right upper corner")
+    bt.text_set("Right upper corner")
     bt.disabled_set(True)
     bx.pack_end(bt)
     bt.show()
@@ -64,7 +64,7 @@ def separator_clicked(obj):
     sp.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Right lower corner")
+    bt.text_set("Right lower corner")
     bx.pack_end(bt)
     bt.show()
 

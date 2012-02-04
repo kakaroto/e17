@@ -6,7 +6,7 @@ import ecore
 import evas
 
 #----- Icon Transparent -{{{-
-def icon_transparent_clicked(obj, it):
+def icon_transparent_clicked(obj):
     win = elementary.Window("icon-transparent", elementary.ELM_WIN_BASIC)
     win.title_set("Icon Transparent")
     win.autodel_set(True)

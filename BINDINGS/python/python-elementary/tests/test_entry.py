@@ -61,7 +61,7 @@ def entry_clicked(obj, item=None):
     bx2.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
 
     bt = elementary.Button(win)
-    bt.label_set("Clear")
+    bt.text_set("Clear")
     bt.callback_clicked_add(my_entry_bt_1, en)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -69,7 +69,7 @@ def entry_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Print")
+    bt.text_set("Print")
     bt.callback_clicked_add(my_entry_bt_2, en)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -77,7 +77,7 @@ def entry_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Selection")
+    bt.text_set("Selection")
     bt.callback_clicked_add(my_entry_bt_3, en)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -85,7 +85,7 @@ def entry_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Insert")
+    bt.text_set("Insert")
     bt.callback_clicked_add(my_entry_bt_4, en)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -95,7 +95,7 @@ def entry_clicked(obj, item=None):
     bx.pack_end(bx2)
     bx2.show()
 
-    en.focus()
+    en.focus_set(True)
     win.show()
 # }}}
 
@@ -192,7 +192,7 @@ def entry_scrolled_clicked(obj, item=None):
     bx2.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
 
     bt = elementary.Button(win)
-    bt.label_set("Clear")
+    bt.text_set("Clear")
     bt.callback_clicked_add(my_entry_bt_1, en)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -200,7 +200,7 @@ def entry_scrolled_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Print")
+    bt.text_set("Print")
     bt.callback_clicked_add(my_entry_bt_2, en)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -208,7 +208,7 @@ def entry_scrolled_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Selection")
+    bt.text_set("Selection")
     bt.callback_clicked_add(my_entry_bt_3, en)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -216,7 +216,7 @@ def entry_scrolled_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Insert")
+    bt.text_set("Insert")
     bt.callback_clicked_add(my_entry_bt_4, en)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -228,7 +228,7 @@ def entry_scrolled_clicked(obj, item=None):
 
     win.resize(320, 300)
 
-    win.focus()
+    win.focus_set(True)
     win.show()
 # }}}
 
@@ -253,12 +253,12 @@ if __name__ == "__main__":
     box0.show()
 
     fr = elementary.Frame(win)
-    fr.label_set("Information")
+    fr.text_set("Information")
     box0.pack_end(fr)
     fr.show()
 
     lb = elementary.Label(win)
-    lb.label_set("Please select a test from the list below<br>"
+    lb.text_set("Please select a test from the list below<br>"
                  "by clicking the test button to show the<br>"
                  "test window.")
     fr.content_set(lb)

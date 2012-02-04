@@ -95,7 +95,7 @@ def list_clicked(obj, item=None):
     win.resize_object_add(tb2)
 
     bt = elementary.Button(win)
-    bt.label_set("Hello")
+    bt.text_set("Hello")
     bt.callback_clicked_add(my_list_show_it, it1)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(0.9, 0.5)
@@ -103,7 +103,7 @@ def list_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("How")
+    bt.text_set("How")
     bt.callback_clicked_add(my_list_show_it, it2)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(0.9, 0.5)
@@ -111,7 +111,7 @@ def list_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("doing")
+    bt.text_set("doing")
     bt.callback_clicked_add(my_list_show_it, it3)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(0.9, 0.5)
@@ -119,7 +119,7 @@ def list_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Here")
+    bt.text_set("Here")
     bt.callback_clicked_add(my_list_show_it, it4)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(0.9, 0.5)
@@ -127,7 +127,7 @@ def list_clicked(obj, item=None):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Maybe this...")
+    bt.text_set("Maybe this...")
     bt.callback_clicked_add(my_list_show_it, it5)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND)
     bt.size_hint_align_set(0.9, 0.5)
@@ -235,7 +235,7 @@ def list2_clicked(obj, item=None):
     bx2.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
 
     bt = elementary.Button(win)
-    bt.label_set("Clear")
+    bt.text_set("Clear")
     bt.callback_clicked_add(my_list2_clear, li)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -353,12 +353,12 @@ if __name__ == "__main__":
     box0.show()
 
     fr = elementary.Frame(win)
-    fr.label_set("Information")
+    fr.text_set("Information")
     box0.pack_end(fr)
     fr.show()
 
     lb = elementary.Label(win)
-    lb.label_set("Please select a test from the list below<br>"
+    lb.text_set("Please select a test from the list below<br>"
                  "by clicking the test button to show the<br>"
                  "test window.")
     fr.content_set(lb)

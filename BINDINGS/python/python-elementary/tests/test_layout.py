@@ -27,19 +27,19 @@ def layout_clicked(obj):
     ly.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Button 1")
+    bt.text_set("Button 1")
     ly.content_set("element1", bt)
     bt.elm_event_callback_add(_event)
     bt.elm_event_callback_del(_event)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Button 2")
+    bt.text_set("Button 2")
     ly.content_set("element2", bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Button 3")
+    bt.text_set("Button 3")
     ly.content_set("element3", bt)
     bt.show()
 

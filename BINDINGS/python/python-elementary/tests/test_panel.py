@@ -27,7 +27,7 @@ def panel_clicked(obj):
     panel.size_hint_align_set(0.0, evas.EVAS_HINT_FILL);
 
     bt = elementary.Button(win)
-    bt.label_set("HIDE ME :)")
+    bt.text_set("HIDE ME :)")
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, evas.EVAS_HINT_EXPAND);
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL);
     bt.show()

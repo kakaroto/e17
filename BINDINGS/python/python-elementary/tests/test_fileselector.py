@@ -44,7 +44,7 @@ def fileselector_clicked(obj):
     hbox.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Toggle is_save")
+    bt.text_set("Toggle is_save")
     def bt_cb_is_save(bt, fs):
         print "Toggle is save"
         fs.is_save_set(not fs.is_save_get())
@@ -53,7 +53,7 @@ def fileselector_clicked(obj):
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("sel get")
+    bt.text_set("sel get")
     def bt_cb_sel_get(bt, fs):
         print "Get Selected:", fs.selected_get()
     bt.callback_clicked_add(bt_cb_sel_get, fs)

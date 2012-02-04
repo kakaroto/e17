@@ -62,12 +62,12 @@ if __name__ == "__main__":
     box0.show()
 
     fr = elementary.Frame(win)
-    fr.label_set("Information")
+    fr.text_set("Information")
     box0.pack_end(fr)
     fr.show()
 
     lb = elementary.Label(win)
-    lb.label_set("Please select a test from the list below<br>"
+    lb.text_set("Please select a test from the list below<br>"
                  "by clicking the test button to show the<br>"
                  "test window.")
     fr.content_set(lb)
@@ -163,6 +163,7 @@ if __name__ == "__main__":
                 ("Bg Plain", bg_plain_clicked),
                 ("Bg Image", bg_image_clicked),
                 ("InnerWindow", inner_window_clicked),
+                ("IconTransparent", icon_transparent_clicked),
             ])
             ]
 

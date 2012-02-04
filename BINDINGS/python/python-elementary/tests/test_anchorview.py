@@ -80,7 +80,7 @@ def anchorview_clicked(obj):
 
     win.resize(320, 300)
 
-    win.focus()
+    win.focus_set(True)
     win.show()
 # }}}
 

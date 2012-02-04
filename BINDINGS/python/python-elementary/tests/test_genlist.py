@@ -84,12 +84,12 @@ def genlist_clicked(obj, item=None):
                                        state_get_func=gl_state_get)
 
     bt_50 = elementary.Button(win)
-    bt_50.label_set("Go to 50")
+    bt_50.text_set("Go to 50")
     bt_50.show()
     bx.pack_end(bt_50)
 
     bt_1500 = elementary.Button(win)
-    bt_1500.label_set("Go to 1500")
+    bt_1500.text_set("Go to 1500")
     bt_1500.show()
     bx.pack_end(bt_1500)
 
@@ -160,7 +160,7 @@ def genlist2_clicked(obj, item=None):
             gli.selected = True
 
     bt = elementary.Button(win)
-    bt.label_set("/\\")
+    bt.text_set("/\\")
     bt.callback_clicked_add(my_gl_first, gl)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -175,7 +175,7 @@ def genlist2_clicked(obj, item=None):
             gli.selected = True
 
     bt = elementary.Button(win)
-    bt.label_set("\\/")
+    bt.text_set("\\/")
     bt.callback_clicked_add(my_gl_last, gl)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -193,7 +193,7 @@ def genlist2_clicked(obj, item=None):
             print "no item selected"
 
     bt = elementary.Button(win)
-    bt.label_set("#")
+    bt.text_set("#")
     bt.callback_clicked_add(my_gl_disable, gl)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -211,7 +211,7 @@ def genlist2_clicked(obj, item=None):
             gli = gli.next_get()
 
     bt = elementary.Button(win)
-    bt.label_set("U")
+    bt.text_set("U")
     bt.callback_clicked_add(my_gl_update_all, gl)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -233,7 +233,7 @@ def genlist2_clicked(obj, item=None):
         gl.clear()
 
     bt = elementary.Button(win)
-    bt.label_set("X")
+    bt.text_set("X")
     bt.callback_clicked_add(my_gl_clear, gl)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -248,7 +248,7 @@ def genlist2_clicked(obj, item=None):
         MyGlAdd.i = MyGlAdd.i + 1
 
     bt = elementary.Button(win)
-    bt.label_set("+")
+    bt.text_set("+")
     bt.callback_clicked_add(my_gl_add, gl, itc1)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -264,7 +264,7 @@ def genlist2_clicked(obj, item=None):
             print "no item selected"
 
     bt = elementary.Button(win)
-    bt.label_set("-")
+    bt.text_set("-")
     bt.callback_clicked_add(my_gl_del, gl)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -292,7 +292,7 @@ def genlist2_clicked(obj, item=None):
             print "no item selected"
 
     bt = elementary.Button(win)
-    bt.label_set("+ before")
+    bt.text_set("+ before")
     bt.callback_clicked_add(my_gl_insert_before, gl, itc1)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -311,7 +311,7 @@ def genlist2_clicked(obj, item=None):
             print "no item selected"
 
     bt = elementary.Button(win)
-    bt.label_set("+ after")
+    bt.text_set("+ after")
     bt.callback_clicked_add(my_gl_insert_after, gl)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -324,7 +324,7 @@ def genlist2_clicked(obj, item=None):
             elm_all_flush()
         ecore.timer_add(1.2, my_gl_flush_delay)
     bt = elementary.Button(win)
-    bt.label_set("Flush")
+    bt.text_set("Flush")
     bt.callback_clicked_add(my_gl_flush, gl)
     bt.size_hint_align_set(evas.EVAS_HINT_FILL, evas.EVAS_HINT_FILL)
     bt.size_hint_weight_set(evas.EVAS_HINT_EXPAND, 0.0)
@@ -398,12 +398,12 @@ if __name__ == "__main__":
     box0.show()
 
     fr = elementary.Frame(win)
-    fr.label_set("Information")
+    fr.text_set("Information")
     box0.pack_end(fr)
     fr.show()
 
     lb = elementary.Label(win)
-    lb.label_set("Please select a test from the list below<br>"
+    lb.text_set("Please select a test from the list below<br>"
                  "by clicking the test button to show the<br>"
                  "test window.")
     fr.content_set(lb)

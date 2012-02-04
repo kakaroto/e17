@@ -27,7 +27,7 @@ def hover_clicked(obj, item=None):
     hv = elementary.Hover(win)
 
     bt = elementary.Button(win)
-    bt.label_set("Button")
+    bt.text_set("Button")
     bt.callback_clicked_add(hover_bt1_clicked, hv)
     bx.pack_end(bt)
     bt.show()
@@ -35,7 +35,7 @@ def hover_clicked(obj, item=None):
     hv.target_set(bt)
 
     bt = elementary.Button(win)
-    bt.label_set("Popup")
+    bt.text_set("Popup")
     hv.content_set("middle", bt)
     bt.show()
 
@@ -48,17 +48,17 @@ def hover_clicked(obj, item=None):
     ic.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Top 1")
+    bt.text_set("Top 1")
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Top 2")
+    bt.text_set("Top 2")
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Top 3")
+    bt.text_set("Top 3")
     bx.pack_end(bt)
     bt.show()
 
@@ -67,17 +67,17 @@ def hover_clicked(obj, item=None):
     hv.content_set("top", bx)
 
     bt = elementary.Button(win)
-    bt.label_set("Bottom")
+    bt.text_set("Bottom")
     hv.content_set("bottom", bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Left")
+    bt.text_set("Left")
     hv.content_set("left", bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Right")
+    bt.text_set("Right")
     hv.content_set("right", bt)
     bt.show()
 
@@ -108,7 +108,7 @@ def hover2_clicked(obj, item=None):
     hv.style_set("popout")
 
     bt = elementary.Button(win)
-    bt.label_set("Button")
+    bt.text_set("Button")
     bt.callback_clicked_add(hover_bt1_clicked, hv)
     bx.pack_end(bt)
     bt.show()
@@ -116,7 +116,7 @@ def hover2_clicked(obj, item=None):
     hv.target_set(bt)
 
     bt = elementary.Button(win)
-    bt.label_set("Popup")
+    bt.text_set("Popup")
     hv.content_set("middle", bt)
     bt.show()
 
@@ -129,17 +129,17 @@ def hover2_clicked(obj, item=None):
     ic.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Top 1")
+    bt.text_set("Top 1")
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Top 2")
+    bt.text_set("Top 2")
     bx.pack_end(bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Top 3")
+    bt.text_set("Top 3")
     bx.pack_end(bt)
     bt.show()
 
@@ -147,17 +147,17 @@ def hover2_clicked(obj, item=None):
     hv.content_set("top", bx)
 
     bt = elementary.Button(win)
-    bt.label_set("Bot")
+    bt.text_set("Bot")
     hv.content_set("bottom", bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Left")
+    bt.text_set("Left")
     hv.content_set("left", bt)
     bt.show()
 
     bt = elementary.Button(win)
-    bt.label_set("Right")
+    bt.text_set("Right")
     hv.content_set("right", bt)
     bt.show()
 
@@ -188,12 +188,12 @@ if __name__ == "__main__":
     box0.show()
 
     fr = elementary.Frame(win)
-    fr.label_set("Information")
+    fr.text_set("Information")
     box0.pack_end(fr)
     fr.show()
 
     lb = elementary.Label(win)
-    lb.label_set("Please select a test from the list below<br>"
+    lb.text_set("Please select a test from the list below<br>"
                  "by clicking the test button to show the<br>"
                  "test window.")
     fr.content_set(lb)
