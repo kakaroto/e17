@@ -28,6 +28,7 @@ void Object::elmInit ()
 void Object::destroy ()
 {
   evas_object_del (o);
+  cout << "Object::destroy ()" << endl;
 
   // do a suicide as the delete operator isn't public available
   // the reason is that the C design below is a suicide design :-(

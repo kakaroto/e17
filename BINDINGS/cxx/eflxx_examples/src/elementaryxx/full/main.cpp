@@ -77,7 +77,7 @@ my_win_del (Evasxx::Object &obj, void *event_info)
 
 #endif // ELM_LIB_QUICKLAUNCH
 
-int main (int argc, const char **argv)
+int main (int argc, char **argv)
 {
   elmApp = new Application (argc, argv);
 

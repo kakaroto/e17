@@ -7,13 +7,17 @@
 /* EFL */
 #include <Elementary.h>
 
+/* STD */
+#include <cassert>
+#include <iostream>
+
 using namespace std;
 
 namespace Elmxx {
 
-Application::Application (int argc, const char **argv)
+Application::Application (int argc, char **argv)
 {
-  elm_init (argc, const_cast <char**> (argv));
+  elm_init (argc, argv);
 }
 
 Application::~Application ()
