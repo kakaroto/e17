@@ -759,7 +759,7 @@ cdef class Exe:
 
 def exe_run(char *exe_cmd, data=None):
     """L{Exe} factory, for C-api compatibility."""
-    return Exe(exe_cmd, None, data)
+    return Exe(exe_cmd, data=data)
 
 
 def exe_pipe_run(char *exe_cmd, int flags=0, data=None):
