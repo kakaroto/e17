@@ -921,10 +921,7 @@ _ekbd_layout_cb_mouse_up(void *data, Evas *evas __UNUSED__, Evas_Object *obj __U
        else
          ky = _ekbd_layout_at_coord_get(sd->layout.keys, x, y);
        if (ky)
-         {
-            edje_object_signal_emit(ky->obj, "e,state,pressed", "e");
-            edje_object_message_signal_process(ky->obj);
-         }
+         edje_object_signal_emit(ky->obj, "e,state,pressed", "e");
        sd->layout.pressed = ky;
      }
 
@@ -1087,7 +1084,6 @@ _ekbd_layout_tie_calc(Smart_Data *sd)
      }
    else
      edje_object_signal_emit(kt->base_obj, "ekbd.state.down", "");
-   edje_object_message_signal_process(kt->base_obj);
    if (x < sd->x)
      x = sd->x;
    else if ((x + (rw * kt->w) + ew) > (sd->x + sd->w))
