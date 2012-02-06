@@ -89,3 +89,7 @@ widget "*.tasklist-button" style "button"
 widget_class "*GtkComboBox*"      style "button"
 widget_class "*.<GtkComboBox>."   style "button"
 widget_class "*<GtkOptionMenu>*"  style "button"
+
+#widget_class "*<GtkToolbar>*<GtkButton>"	style "button"
+#widget_class "*<GtkToolbar>*<GtkToggleButton>"	style "button"
+

@@ -99,15 +99,16 @@ GtkProgressBar.trough.vertical,
  *************/
 /* Using the adwaita engine to fix a small consistency bug */
 .scrollbar {
-	engine: unico;
-	background-image: none;
+	/* engine: unico; */
+	/* background-image: none; */
+	background-color: @theme_bg_color;
 	border-style: solid;
-	-GtkRange-trough-border: 1;
+	-GtkRange-trough-border: 3;
 	-GtkRange-arrow-scaling: 0.444;
-	-GtkRange-slider-width: 16;
-	-GtkRange-stepper-size: 0;
+	-GtkRange-slider-width: 9;
+	-GtkRange-stepper-size: 5;
 	-GtkScrollbar-min-slider-length: 30;
-	-GtkRange-stepper-spacing: 0;
+	-GtkRange-stepper-spacing: 10;
 	-GtkRange-trough-under-steppers: 1;
 	-unico-inner-stroke-style: none;
 }
@@ -121,12 +122,12 @@ GtkProgressBar.trough.vertical,
 		to (@trough_bg_color_a));
 	background-color: shade (@theme_bg_color, 0.882);
 	border-width: 0;
-	border-radius: 0;
+	/* border-radius: 5; */
 	-unico-border-gradient: -gtk-gradient (linear,
 		left top, right top,
 		from (alpha (@scrollslider_gradient_a, 1.00)),
 		to (alpha (@scrollslider_gradient_a, 0.00)));
-	border-width: 1;
+	border-width: 0;
 	border-style: solid;
 }
 
@@ -137,38 +138,42 @@ GtkProgressBar.trough.vertical,
 		from (shade (@trough_bg_color_b, 0.99)),
 		to (@trough_bg_color_a));
 	background-color: shade (@theme_bg_color, 0.882);
-	border-width: 0;
-	border-radius: 0;
+	border-width: 1;
+	/* border-radius: 5; */
 	-unico-border-gradient: -gtk-gradient (linear,
 		left top, left bottom,
 		from (alpha (@scrollslider_gradient_a, 1.00)),
 		to (alpha (@scrollslider_gradient_a, 0.00)));
-	border-width: 1;
+	border-width: 0;
 	border-style: solid;
 }
 
 /* Sliders and buttons */
 .scrollbar.slider.vertical,
 .scrollbar.button.vertical {
-	engine: unico;
+	engine: adwaita;
 	/* background-image: url("images/slider-vert.png"); */
-	background-image: -gtk-gradient (linear,
-		left top, right top,
-		from (@scrollslider_gradient_a),
-		to (@scrollslider_gradient_b));
-	background-color: @theme_base_color;
-	border-color: @scrollslider_border;
-	/* border-radius: 10; */
-	border-width: 0;
-	/* border-image: url("images/slider-vert.png") 6 4 6 4 stretch;  */
+	/* background-image: -gtk-gradient (linear,
+	 * 	left top, right top,
+	 * 	from (@scrollslider_gradient_a),
+	 * 	to (@scrollslider_gradient_b)); */
+	/* background-color: @theme_base_color;
+	 * border-color: @scrollslider_border; */
+	border-radius: 5;
+	border-width: 1;
+	border-image: url("images/slider-vert.png") 6 / 4 stretch;
 }
 
 .scrollbar.slider.vertical:prelight {
 	engine: unico;
 	background-image: -gtk-gradient (linear,
 		left top, right top,
-		from (shade (@scrollslider_gradient_a, 0.90)),
-		to (shade (@scrollslider_gradient_b, 0.90)));
+		from (@button_hover_gradient_a),
+		to (@button_hover_gradient_b));
+	/* background-image: -gtk-gradient (linear,
+	 * 	left top, right top,
+	 * 	from (shade (@scrollslider_gradient_a, 0.90)),
+	 * 	to (shade (@scrollslider_gradient_b, 0.90))); */
 	background-color: @theme_base_color;
 	border-color: shade (@scrollslider_border, 0.90);
 }
@@ -177,8 +182,12 @@ GtkProgressBar.trough.vertical,
 	engine: unico;
 	background-image: -gtk-gradient (linear,
 		left top, right top,
-		from (shade (@scrollslider_gradient_a, 0.90)),
-		to (shade (@scrollslider_gradient_b, 0.90)));
+		from (@button_hover_gradient_a),
+		to (@button_hover_gradient_b));
+	/* background-image: -gtk-gradient (linear,
+	 * 	left top, right top,
+	 * 	from (shade (@scrollslider_gradient_a, 0.90)),
+	 * 	to (shade (@scrollslider_gradient_b, 0.90))); */
 	background-color: @theme_base_color;
 	border-color: shade (@scrollslider_border, 0.90);
 }
@@ -187,14 +196,14 @@ GtkProgressBar.trough.vertical,
 .scrollbar.button.horizontal {
 	engine: unico;
 	/* background-image: url("images/slider-horiz.png"); */
-	background-image: -gtk-gradient (linear,
-		       left top, left bottom,
-		       from (@scrollslider_gradient_a),
-		       to (@scrollslider_gradient_b));
-	background-color: @theme_base_color;
-	border-color: @scrollslider_border;
-	/* border-radius: 10; */
-	border-width: 5;
+	/* background-image: -gtk-gradient (linear,
+	 * 	       left top, left bottom,
+	 * 	       from (@scrollslider_gradient_a),
+	 * 	       to (@scrollslider_gradient_b));
+	 * background-color: @theme_base_color;
+	 * border-color: @scrollslider_border; */
+	border-radius: 5;
+	/* border-width: 5; */
 }
 
 .scrollbar.slider.horizontal:prelight {

@@ -84,3 +84,7 @@ widget_class "*RB*GtkToolbar*"	style "toolbar-fix"
 widget_class "*Swt*GtkToolbar*"	style "toolbar-fix"
 
 
+#widget_class "*GtkToolbar*GtkEventBox"	style "toolbar-fix"
+#widget_class "*GtkToolbar*Box"	style "toolbar-fix"
+
+

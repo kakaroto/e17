@@ -4,7 +4,7 @@
 GtkScale.slider,
 .button,
 .toolbar .button {
-	border-radius: 2;
+	border-radius: 3;
 	text-shadow: 0 1 alpha (shade (@button_bg_color, 1.25), 0.4);
 	background-image: -gtk-gradient (linear,
 		left top, left bottom,
