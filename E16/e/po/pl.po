@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-10-08 10:29+0200\n"
+"POT-Creation-Date: 2012-02-06 18:15+0100\n"
 "PO-Revision-Date: 2009-12-02 09:49+0000\n"
 "Last-Translator: Adam Kisiel <Unknown>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -46,7 +46,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:216 src/backgrounds.c:254 src/borders.c:695 src/buttons.c:187
-#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
+#: src/cursors.c:139 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
 #, c-format
 msgid "%u references remain"
 msgstr "pozostaje %u odwo³añ"
@@ -863,11 +863,11 @@ msgstr ""
 "Okno ustawieñ Efektów\n"
 "specjalnych Enlightenmnet"
 
-#: src/groups.c:703
+#: src/groups.c:702
 msgid "Window Group Selection"
 msgstr "Wybór Grupy Okien"
 
-#: src/groups.c:706
+#: src/groups.c:705
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -875,11 +875,11 @@ msgstr ""
 "Okno dialogowe Wyboru\n"
 "Grupy Okien Enlightenment"
 
-#: src/groups.c:729 src/groups.c:738 src/groups.c:746 src/groups.c:921
+#: src/groups.c:728 src/groups.c:737 src/groups.c:745 src/groups.c:920
 msgid "Window Group Error"
 msgstr "B³±d Grup Okien"
 
-#: src/groups.c:731
+#: src/groups.c:730
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
@@ -889,7 +889,7 @@ msgstr ""
 "Mo¿esz tylko rozbijaæ grupy lub usuwac okna z grup\n"
 "Poprzez okno, które nale¿y do przynajmniej jednej grupy."
 
-#: src/groups.c:739
+#: src/groups.c:738
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
@@ -899,15 +899,15 @@ msgstr ""
 "to okno nalezy ju¿ do wszystkich grup.\n"
 "Musisz najpierw utworzyæ now± grupê."
 
-#: src/groups.c:748
+#: src/groups.c:747
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr "W tej chwili nie istniej± ¿adne grupy. Musisz najpierw jak±¶ utworzyæ."
 
-#: src/groups.c:832
+#: src/groups.c:831
 msgid "Pick the group to configure:"
 msgstr "Wybierz grupê, któr± chcesz konfigurowaæ:"
 
-#: src/groups.c:863
+#: src/groups.c:862
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -915,39 +915,39 @@ msgstr ""
 "Nastêpuj±ce akcje obejmuj±\n"
 "wszystkich cz³onków grupy:"
 
-#: src/groups.c:868 src/groups.c:964
+#: src/groups.c:867 src/groups.c:963
 msgid "Changing Border Style"
 msgstr "Zmiana stylu obramowania"
 
-#: src/groups.c:873 src/groups.c:969
+#: src/groups.c:872 src/groups.c:968
 msgid "Iconifying"
 msgstr "Zwijanie do Ikony"
 
-#: src/groups.c:878 src/groups.c:974
+#: src/groups.c:877 src/groups.c:973
 msgid "Killing"
 msgstr "Niszczenie"
 
-#: src/groups.c:883 src/groups.c:979
+#: src/groups.c:882 src/groups.c:978
 msgid "Moving"
 msgstr "Przesuwanie"
 
-#: src/groups.c:888 src/groups.c:984
+#: src/groups.c:887 src/groups.c:983
 msgid "Raising/Lowering"
 msgstr "Podnoszenie / Zag³êbianie"
 
-#: src/groups.c:893 src/groups.c:989
+#: src/groups.c:892 src/groups.c:988
 msgid "Sticking"
 msgstr "Przyklejanie"
 
-#: src/groups.c:898 src/groups.c:994
+#: src/groups.c:897 src/groups.c:993
 msgid "Shading"
 msgstr "Usuwanie w cieñ"
 
-#: src/groups.c:905
+#: src/groups.c:904
 msgid "Window Group Settings"
 msgstr "Ustawienia Grup Okien"
 
-#: src/groups.c:908
+#: src/groups.c:907
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -955,31 +955,31 @@ msgstr ""
 "Okno ustawieñ Grup\n"
 "Okien Enlightenment"
 
-#: src/groups.c:922
+#: src/groups.c:921
 msgid "This window currently does not belong to any groups."
 msgstr "To okno nie nale¿y w tej chwili do ¿adnej grupy."
 
-#: src/groups.c:957
+#: src/groups.c:956
 msgid "Per-group settings:"
 msgstr "Ustawienia dotycz±ce ca³ej grupy:"
 
-#: src/groups.c:1003
+#: src/groups.c:1002
 msgid "Global settings:"
 msgstr "Ustawienia globalne:"
 
-#: src/groups.c:1007
+#: src/groups.c:1006
 msgid "Swap Window Locations"
 msgstr "Zamiana po³o¿eñ okien"
 
-#: src/groups.c:1013 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1012 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr ""
 
-#: src/groups.c:1014
+#: src/groups.c:1013
 msgid "Default Group Control Settings"
 msgstr "Ustawienia Domy¶lne Grupy"
 
-#: src/groups.c:1017
+#: src/groups.c:1016
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
@@ -987,15 +987,15 @@ msgstr ""
 "Okno ustawieñ domy¶lnych\n"
 "Grup Enlightenment"
 
-#: src/groups.c:1044
+#: src/groups.c:1043
 msgid "Pick the group the window will belong to:"
 msgstr ""
 
-#: src/groups.c:1050
+#: src/groups.c:1049
 msgid "Select the group to remove the window from:"
 msgstr ""
 
-#: src/groups.c:1055
+#: src/groups.c:1054
 msgid "Select the group to break:"
 msgstr ""
 
@@ -1184,7 +1184,7 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:540
+#: src/magwin.c:538
 msgid "Magnifier"
 msgstr ""
 

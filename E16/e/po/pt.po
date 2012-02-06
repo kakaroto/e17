@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-10-08 10:29+0200\n"
+"POT-Creation-Date: 2012-02-06 18:15+0100\n"
 "PO-Revision-Date: 2011-04-05 11:11-0000\n"
 "Last-Translator: Sérgio Marques <smarquespt@gmail.com>\n"
 "Language-Team: \n"
@@ -51,7 +51,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:216 src/backgrounds.c:254 src/borders.c:695 src/buttons.c:187
-#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
+#: src/cursors.c:139 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
 #, c-format
 msgid "%u references remain"
 msgstr "Restam %u referências"
@@ -895,11 +895,11 @@ msgstr ""
 "Janela de definições dos efeitos\n"
 "especiais do Enlightenment"
 
-#: src/groups.c:703
+#: src/groups.c:702
 msgid "Window Group Selection"
 msgstr "Seleção de grupo de janela"
 
-#: src/groups.c:706
+#: src/groups.c:705
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -907,11 +907,11 @@ msgstr ""
 "Jaanela de seleção do\n"
 "grupo de janelas do Enlightenment"
 
-#: src/groups.c:729 src/groups.c:738 src/groups.c:746 src/groups.c:921
+#: src/groups.c:728 src/groups.c:737 src/groups.c:745 src/groups.c:920
 msgid "Window Group Error"
 msgstr "Erro no grupo da janelas"
 
-#: src/groups.c:731
+#: src/groups.c:730
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
@@ -921,7 +921,7 @@ msgstr ""
 "Você só pode eliminar grupos ou remover janelas dos grupos\n"
 "através de uma janela que pertenca a pelo menos um grupo."
 
-#: src/groups.c:739
+#: src/groups.c:738
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
@@ -931,15 +931,15 @@ msgstr ""
 "já pertence a todos os grupos existentes.\n"
 "Tem que criar outro(s) grupo(s)."
 
-#: src/groups.c:748
+#: src/groups.c:747
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr "Atualmente, não existem grupos. Tem que criar um grupo."
 
-#: src/groups.c:832
+#: src/groups.c:831
 msgid "Pick the group to configure:"
 msgstr "Escolha o grupo a configurar:"
 
-#: src/groups.c:863
+#: src/groups.c:862
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -947,39 +947,39 @@ msgstr ""
 "As seguintes ações serão\n"
 "aplicadas a todos os membros do grupo:"
 
-#: src/groups.c:868 src/groups.c:964
+#: src/groups.c:867 src/groups.c:963
 msgid "Changing Border Style"
 msgstr "Alterando o tipo de contorno"
 
-#: src/groups.c:873 src/groups.c:969
+#: src/groups.c:872 src/groups.c:968
 msgid "Iconifying"
 msgstr "Minimizar"
 
-#: src/groups.c:878 src/groups.c:974
+#: src/groups.c:877 src/groups.c:973
 msgid "Killing"
 msgstr "Matar"
 
-#: src/groups.c:883 src/groups.c:979
+#: src/groups.c:882 src/groups.c:978
 msgid "Moving"
 msgstr "Mover"
 
-#: src/groups.c:888 src/groups.c:984
+#: src/groups.c:887 src/groups.c:983
 msgid "Raising/Lowering"
 msgstr "Elevar/Baixar"
 
-#: src/groups.c:893 src/groups.c:989
+#: src/groups.c:892 src/groups.c:988
 msgid "Sticking"
 msgstr "Colar"
 
-#: src/groups.c:898 src/groups.c:994
+#: src/groups.c:897 src/groups.c:993
 msgid "Shading"
 msgstr "Enrolar"
 
-#: src/groups.c:905
+#: src/groups.c:904
 msgid "Window Group Settings"
 msgstr "Definições do grupo de janelas"
 
-#: src/groups.c:908
+#: src/groups.c:907
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -987,45 +987,45 @@ msgstr ""
 "Janela de definições do grupo\n"
 "de janelas Enlightenment"
 
-#: src/groups.c:922
+#: src/groups.c:921
 msgid "This window currently does not belong to any groups."
 msgstr "Esta janela não pertence a nenhum grupo."
 
-#: src/groups.c:957
+#: src/groups.c:956
 msgid "Per-group settings:"
 msgstr "Definições por grupo:"
 
-#: src/groups.c:1003
+#: src/groups.c:1002
 msgid "Global settings:"
 msgstr "Definições globais:"
 
-#: src/groups.c:1007
+#: src/groups.c:1006
 msgid "Swap Window Locations"
 msgstr "Trocar localização das janelas"
 
-#: src/groups.c:1013 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1012 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "Grupos"
 
-#: src/groups.c:1014
+#: src/groups.c:1013
 msgid "Default Group Control Settings"
 msgstr "Definições por omissão para grupos"
 
-#: src/groups.c:1017
+#: src/groups.c:1016
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
 msgstr ""
 
-#: src/groups.c:1044
+#: src/groups.c:1043
 msgid "Pick the group the window will belong to:"
 msgstr "Escolha o grupo para esta janela:"
 
-#: src/groups.c:1050
+#: src/groups.c:1049
 msgid "Select the group to remove the window from:"
 msgstr "Selecione o grupo ao qual pretende remover a janela:"
 
-#: src/groups.c:1055
+#: src/groups.c:1054
 msgid "Select the group to break:"
 msgstr "Selecione o grupo a quebrar:"
 
@@ -1202,7 +1202,7 @@ msgstr ""
 "Por favor, retifique esta situação e verifique\n"
 "a conformidade da instalação.\n"
 
-#: src/magwin.c:540
+#: src/magwin.c:538
 msgid "Magnifier"
 msgstr "Lupa"
 

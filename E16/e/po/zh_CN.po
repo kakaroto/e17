@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-10-08 10:29+0200\n"
+"POT-Creation-Date: 2012-02-06 18:15+0100\n"
 "PO-Revision-Date: 2010-05-09 01:20+0000\n"
 "Last-Translator: luojie-dune <Unknown>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -47,7 +47,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:216 src/backgrounds.c:254 src/borders.c:695 src/buttons.c:187
-#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
+#: src/cursors.c:139 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
 #, c-format
 msgid "%u references remain"
 msgstr "保留 %u 引用"
@@ -875,11 +875,11 @@ msgstr ""
 "Enlightenment 特效\n"
 "设置对话框"
 
-#: src/groups.c:703
+#: src/groups.c:702
 msgid "Window Group Selection"
 msgstr "窗口分组选择"
 
-#: src/groups.c:706
+#: src/groups.c:705
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -887,11 +887,11 @@ msgstr ""
 "Enlightenment 窗口分组\n"
 "选择对话框"
 
-#: src/groups.c:729 src/groups.c:738 src/groups.c:746 src/groups.c:921
+#: src/groups.c:728 src/groups.c:737 src/groups.c:745 src/groups.c:920
 msgid "Window Group Error"
 msgstr "窗口分组错误"
 
-#: src/groups.c:731
+#: src/groups.c:730
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
@@ -901,7 +901,7 @@ msgstr ""
 "只能移除那些有\n"
 "从属关系的窗口。"
 
-#: src/groups.c:739
+#: src/groups.c:738
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
@@ -911,15 +911,15 @@ msgstr ""
 "不属于现存的组\n"
 "必须先启用新组。"
 
-#: src/groups.c:748
+#: src/groups.c:747
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr "未定义任何“组”，请先建立一个。"
 
-#: src/groups.c:832
+#: src/groups.c:831
 msgid "Pick the group to configure:"
 msgstr "选一个组设置："
 
-#: src/groups.c:863
+#: src/groups.c:862
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -927,39 +927,39 @@ msgstr ""
 "以下行为将应用于\n"
 "所有组内成员："
 
-#: src/groups.c:868 src/groups.c:964
+#: src/groups.c:867 src/groups.c:963
 msgid "Changing Border Style"
 msgstr "更改边框风格"
 
-#: src/groups.c:873 src/groups.c:969
+#: src/groups.c:872 src/groups.c:968
 msgid "Iconifying"
 msgstr "图标化"
 
-#: src/groups.c:878 src/groups.c:974
+#: src/groups.c:877 src/groups.c:973
 msgid "Killing"
 msgstr "杀死"
 
-#: src/groups.c:883 src/groups.c:979
+#: src/groups.c:882 src/groups.c:978
 msgid "Moving"
 msgstr "移动"
 
-#: src/groups.c:888 src/groups.c:984
+#: src/groups.c:887 src/groups.c:983
 msgid "Raising/Lowering"
 msgstr "提升/降低"
 
-#: src/groups.c:893 src/groups.c:989
+#: src/groups.c:892 src/groups.c:988
 msgid "Sticking"
 msgstr "固定"
 
-#: src/groups.c:898 src/groups.c:994
+#: src/groups.c:897 src/groups.c:993
 msgid "Shading"
 msgstr "卷起"
 
-#: src/groups.c:905
+#: src/groups.c:904
 msgid "Window Group Settings"
 msgstr "窗口分组设置"
 
-#: src/groups.c:908
+#: src/groups.c:907
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -967,31 +967,31 @@ msgstr ""
 "Enlightenment 窗口分组\n"
 "设置对话框"
 
-#: src/groups.c:922
+#: src/groups.c:921
 msgid "This window currently does not belong to any groups."
 msgstr "此窗口未分配组。"
 
-#: src/groups.c:957
+#: src/groups.c:956
 msgid "Per-group settings:"
 msgstr "每个组设置："
 
-#: src/groups.c:1003
+#: src/groups.c:1002
 msgid "Global settings:"
 msgstr "全局设置："
 
-#: src/groups.c:1007
+#: src/groups.c:1006
 msgid "Swap Window Locations"
 msgstr "交换窗口位置"
 
-#: src/groups.c:1013 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1012 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "分组"
 
-#: src/groups.c:1014
+#: src/groups.c:1013
 msgid "Default Group Control Settings"
 msgstr "默认分组控制设置"
 
-#: src/groups.c:1017
+#: src/groups.c:1016
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
@@ -999,15 +999,15 @@ msgstr ""
 "Enlightenment 默认\n"
 "分组控制设置对话框"
 
-#: src/groups.c:1044
+#: src/groups.c:1043
 msgid "Pick the group the window will belong to:"
 msgstr "选择此窗口将要归属的组："
 
-#: src/groups.c:1050
+#: src/groups.c:1049
 msgid "Select the group to remove the window from:"
 msgstr "选择一个组剔除此窗口："
 
-#: src/groups.c:1055
+#: src/groups.c:1054
 msgid "Select the group to break:"
 msgstr "选择要分裂的组："
 
@@ -1162,7 +1162,7 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:540
+#: src/magwin.c:538
 msgid "Magnifier"
 msgstr "放大镜"
 

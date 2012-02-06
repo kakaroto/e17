@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-10-08 10:29+0200\n"
+"POT-Creation-Date: 2012-02-06 18:15+0100\n"
 "PO-Revision-Date: 2010-04-23 21:20+0000\n"
 "Last-Translator: Fernando Muñoz <munozferna@gmail.com>\n"
 "Language-Team: \n"
@@ -47,7 +47,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:216 src/backgrounds.c:254 src/borders.c:695 src/buttons.c:187
-#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
+#: src/cursors.c:139 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
 #, c-format
 msgid "%u references remain"
 msgstr "%u referencias restantes"
@@ -900,11 +900,11 @@ msgstr ""
 "Enlightenment Efectos especiales\n"
 "Dialogo de Configuracion"
 
-#: src/groups.c:703
+#: src/groups.c:702
 msgid "Window Group Selection"
 msgstr "Selección de Grupo de Ventanas"
 
-#: src/groups.c:706
+#: src/groups.c:705
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -912,11 +912,11 @@ msgstr ""
 "Grupo de Ventanas de Enlightenment\n"
 "Diálogo de Selección"
 
-#: src/groups.c:729 src/groups.c:738 src/groups.c:746 src/groups.c:921
+#: src/groups.c:728 src/groups.c:737 src/groups.c:745 src/groups.c:920
 msgid "Window Group Error"
 msgstr "Error de Grupo de Ventanas"
 
-#: src/groups.c:731
+#: src/groups.c:730
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
@@ -926,7 +926,7 @@ msgstr ""
 "Solo podrá destruir grupos ó eliminar ventanas de un grupo\n"
 "a través de una ventana que pertenezca al menos a un grupo."
 
-#: src/groups.c:739
+#: src/groups.c:738
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
@@ -936,16 +936,16 @@ msgstr ""
 "ya pertenece a todos los grupos existentes.\n"
 "Primero tiene que crear otros grupos."
 
-#: src/groups.c:748
+#: src/groups.c:747
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr ""
 "En este momento no existe ningún grupo. Primero tiene que crear un grupo."
 
-#: src/groups.c:832
+#: src/groups.c:831
 msgid "Pick the group to configure:"
 msgstr "Escoja el Grupo a Configurar:"
 
-#: src/groups.c:863
+#: src/groups.c:862
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -953,39 +953,39 @@ msgstr ""
 "Las siguientes acciones son aplicadas\n"
 "a todos los miembros del grupo:"
 
-#: src/groups.c:868 src/groups.c:964
+#: src/groups.c:867 src/groups.c:963
 msgid "Changing Border Style"
 msgstr "Cambiando Estilo de Borde"
 
-#: src/groups.c:873 src/groups.c:969
+#: src/groups.c:872 src/groups.c:968
 msgid "Iconifying"
 msgstr "Iconizando"
 
-#: src/groups.c:878 src/groups.c:974
+#: src/groups.c:877 src/groups.c:973
 msgid "Killing"
 msgstr "Matando"
 
-#: src/groups.c:883 src/groups.c:979
+#: src/groups.c:882 src/groups.c:978
 msgid "Moving"
 msgstr "Moviendo"
 
-#: src/groups.c:888 src/groups.c:984
+#: src/groups.c:887 src/groups.c:983
 msgid "Raising/Lowering"
 msgstr "Elevando / ocultando"
 
-#: src/groups.c:893 src/groups.c:989
+#: src/groups.c:892 src/groups.c:988
 msgid "Sticking"
 msgstr "Pegando"
 
-#: src/groups.c:898 src/groups.c:994
+#: src/groups.c:897 src/groups.c:993
 msgid "Shading"
 msgstr "Enrollando"
 
-#: src/groups.c:905
+#: src/groups.c:904
 msgid "Window Group Settings"
 msgstr "Configurar Grupos de Ventanas"
 
-#: src/groups.c:908
+#: src/groups.c:907
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -993,31 +993,31 @@ msgstr ""
 "Grupos de Ventanas de Enlightenment\n"
 "Dialogo de Configuracion"
 
-#: src/groups.c:922
+#: src/groups.c:921
 msgid "This window currently does not belong to any groups."
 msgstr "Esta ventana no pertenece a ningún grupo."
 
-#: src/groups.c:957
+#: src/groups.c:956
 msgid "Per-group settings:"
 msgstr "Configuracion por Grupos:"
 
-#: src/groups.c:1003
+#: src/groups.c:1002
 msgid "Global settings:"
 msgstr "Configuraciones Globales:"
 
-#: src/groups.c:1007
+#: src/groups.c:1006
 msgid "Swap Window Locations"
 msgstr "Solapar posiciones de Ventanas"
 
-#: src/groups.c:1013 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1012 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "Grupos"
 
-#: src/groups.c:1014
+#: src/groups.c:1013
 msgid "Default Group Control Settings"
 msgstr "Control de Grupo por Omisión"
 
-#: src/groups.c:1017
+#: src/groups.c:1016
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
@@ -1025,15 +1025,15 @@ msgstr ""
 "Dialogo de configuracion principal de\n"
 "Grupos de Enlightenment"
 
-#: src/groups.c:1044
+#: src/groups.c:1043
 msgid "Pick the group the window will belong to:"
 msgstr "Escoja a que grupo pertenecerá la ventana:"
 
-#: src/groups.c:1050
+#: src/groups.c:1049
 msgid "Select the group to remove the window from:"
 msgstr "Seleccione de que grupo desea quitar la ventana:"
 
-#: src/groups.c:1055
+#: src/groups.c:1054
 msgid "Select the group to break:"
 msgstr "Selecciona el grupo a romper"
 
@@ -1247,7 +1247,7 @@ msgstr ""
 "Por favor, rectifique esta situación y asegúrese de que DOX\n"
 "se haya instalado correctamente.\n"
 
-#: src/magwin.c:540
+#: src/magwin.c:538
 msgid "Magnifier"
 msgstr "Lupa"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-10-08 10:29+0200\n"
+"POT-Creation-Date: 2012-02-06 18:15+0100\n"
 "PO-Revision-Date: 2010-01-16 04:42+0000\n"
 "Last-Translator: Miro Glavić <glavicmiro@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -47,7 +47,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:216 src/backgrounds.c:254 src/borders.c:695 src/buttons.c:187
-#: src/cursors.c:131 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
+#: src/cursors.c:139 src/iclass.c:337 src/tclass.c:121 src/tooltips.c:133
 #, c-format
 msgid "%u references remain"
 msgstr "%u reference ostaju"
@@ -854,11 +854,11 @@ msgstr ""
 "Enlightenment Specijalni Efekti\n"
 "Dijalog Postavki"
 
-#: src/groups.c:703
+#: src/groups.c:702
 msgid "Window Group Selection"
 msgstr "Odabir Grupe Prozora"
 
-#: src/groups.c:706
+#: src/groups.c:705
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog"
@@ -866,33 +866,33 @@ msgstr ""
 "Enlightenment Grupa Prozora\n"
 "Dijalog Odabira"
 
-#: src/groups.c:729 src/groups.c:738 src/groups.c:746 src/groups.c:921
+#: src/groups.c:728 src/groups.c:737 src/groups.c:745 src/groups.c:920
 msgid "Window Group Error"
 msgstr "Greška Grupe Prozora"
 
-#: src/groups.c:731
+#: src/groups.c:730
 msgid ""
 "This window currently does not belong to any groups.\n"
 "You can only destroy groups or remove windows from groups\n"
 "through a window that actually belongs to at least one group."
 msgstr ""
 
-#: src/groups.c:739
+#: src/groups.c:738
 msgid ""
 "Currently, no groups exist or this window\n"
 "already belongs to all existing groups.\n"
 "You have to start other groups first."
 msgstr ""
 
-#: src/groups.c:748
+#: src/groups.c:747
 msgid "Currently, no groups exist. You have to start a group first."
 msgstr "Trenutno, nema grupa. Prvo morate pokrenuti grupu."
 
-#: src/groups.c:832
+#: src/groups.c:831
 msgid "Pick the group to configure:"
 msgstr "Odaberite grupu za konfiguriranje:"
 
-#: src/groups.c:863
+#: src/groups.c:862
 msgid ""
 "The following actions are\n"
 "applied to all group members:"
@@ -900,39 +900,39 @@ msgstr ""
 "Slijedeće akcije su\n"
 "primijenjene na sve članove grupe:"
 
-#: src/groups.c:868 src/groups.c:964
+#: src/groups.c:867 src/groups.c:963
 msgid "Changing Border Style"
 msgstr "Promjena Rubnog Stila"
 
-#: src/groups.c:873 src/groups.c:969
+#: src/groups.c:872 src/groups.c:968
 msgid "Iconifying"
 msgstr "Ikoniziranje"
 
-#: src/groups.c:878 src/groups.c:974
+#: src/groups.c:877 src/groups.c:973
 msgid "Killing"
 msgstr ""
 
-#: src/groups.c:883 src/groups.c:979
+#: src/groups.c:882 src/groups.c:978
 msgid "Moving"
 msgstr "Premještanje"
 
-#: src/groups.c:888 src/groups.c:984
+#: src/groups.c:887 src/groups.c:983
 msgid "Raising/Lowering"
 msgstr "Dizanje/Spuštanje"
 
-#: src/groups.c:893 src/groups.c:989
+#: src/groups.c:892 src/groups.c:988
 msgid "Sticking"
 msgstr ""
 
-#: src/groups.c:898 src/groups.c:994
+#: src/groups.c:897 src/groups.c:993
 msgid "Shading"
 msgstr "Sjenčenje"
 
-#: src/groups.c:905
+#: src/groups.c:904
 msgid "Window Group Settings"
 msgstr "Postavke Grupe Prozora"
 
-#: src/groups.c:908
+#: src/groups.c:907
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog"
@@ -940,31 +940,31 @@ msgstr ""
 "Enlightenment Grupa Prozora\n"
 "Dijalog Postavki"
 
-#: src/groups.c:922
+#: src/groups.c:921
 msgid "This window currently does not belong to any groups."
 msgstr "Ovaj prozor ne pripada nijednoj grupi."
 
-#: src/groups.c:957
+#: src/groups.c:956
 msgid "Per-group settings:"
 msgstr "Grupne postavke:"
 
-#: src/groups.c:1003
+#: src/groups.c:1002
 msgid "Global settings:"
 msgstr "Globalne postavke:"
 
-#: src/groups.c:1007
+#: src/groups.c:1006
 msgid "Swap Window Locations"
 msgstr "Zamijeni Lokacije Prozora"
 
-#: src/groups.c:1013 src/menus-misc.c:646 config/strings.c:138
+#: src/groups.c:1012 src/menus-misc.c:646 config/strings.c:138
 msgid "Groups"
 msgstr "Grupe"
 
-#: src/groups.c:1014
+#: src/groups.c:1013
 msgid "Default Group Control Settings"
 msgstr "Kontrolne Postavke Zadane Grupe"
 
-#: src/groups.c:1017
+#: src/groups.c:1016
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog"
@@ -972,15 +972,15 @@ msgstr ""
 "Enlightenment Standard\n"
 "Dijalog Postavki Kontrole Grupe"
 
-#: src/groups.c:1044
+#: src/groups.c:1043
 msgid "Pick the group the window will belong to:"
 msgstr "Odaberi grupu kojoj će prozor pripadati:"
 
-#: src/groups.c:1050
+#: src/groups.c:1049
 msgid "Select the group to remove the window from:"
 msgstr "Odaberi grupu iz koje ukloniti prozor:"
 
-#: src/groups.c:1055
+#: src/groups.c:1054
 msgid "Select the group to break:"
 msgstr "Odaberi grupu za razbiti:"
 
@@ -1135,7 +1135,7 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:540
+#: src/magwin.c:538
 msgid "Magnifier"
 msgstr "Povećalo"
 
