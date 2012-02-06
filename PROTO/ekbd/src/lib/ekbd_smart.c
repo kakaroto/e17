@@ -133,7 +133,6 @@ static void
 _smart_add(Evas_Object *obj)
 {
    Smart_Data *sd;
-   Ekbd_Layout *kil;
    Evas_Object *o;
 
    sd = calloc(1, sizeof(Smart_Data));
@@ -180,8 +179,6 @@ static void
 _smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
    Smart_Data *sd;
-   Ekbd_Int_Key *ky;
-   Eina_List *l;
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
@@ -196,8 +193,6 @@ static void
 _smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
    Smart_Data *sd;
-   Ekbd_Layout *kil;
-   Eina_Bool vertical;
 
    sd = evas_object_smart_data_get(obj);
    if (!sd) return;
@@ -227,7 +222,7 @@ _smart_hide(Evas_Object *obj)
 }
 
 static Eina_Bool
-_smart_update(void *data, int type, void *event)
+_smart_update(void *data, int type __UNUSED__, void *event __UNUSED__)
 {
    Smart_Data *sd;
    sd = evas_object_smart_data_get(data);

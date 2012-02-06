@@ -25,8 +25,7 @@ _test_quit(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event __UNU
 static Ekbd_Layout *
 _keyboard_default_get(Eina_Bool vertical)
 {
-   Eina_List *lkl;
-   Eina_List *l;
+   const Eina_List *lkl, *l;
    Ekbd_Layout *kl;
    char buf[1024];
    if (vertical)
@@ -48,7 +47,7 @@ static void
 _keyboard_layout_update(Eina_Bool vertical)
 {
    Ekbd_Layout *kl = NULL;
-   Eina_List *lkl;
+   const Eina_List *lkl;
    kl = _keyboard_default_get(vertical);
    if (!kl)
      {
@@ -63,9 +62,7 @@ _keyboard_layout_update(Eina_Bool vertical)
 static void
 _keyboard_add()
 {
-   Eina_List *kbs = NULL;
-   const char *path;
-   char *p, *file;
+   char *p;
    char buf[PATH_MAX];
    size_t len;
    Eina_File_Direct_Info *info;
@@ -93,7 +90,7 @@ _keyboard_add()
 }
 
 static void
-_keyboard_resize(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_keyboard_resize(void *data __UNUSED__, Evas *e __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
 {
    int x, w;
    Eina_Bool vertical;

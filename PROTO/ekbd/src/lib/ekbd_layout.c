@@ -20,7 +20,7 @@ enum
    CTRL = (1 << 2),
    ALT = (1 << 3),
    ALTGR = (1 << 4),
-   GROUP = (1 << 5)
+   LONGPRESS = (1 << 5)
 };
 
 static void _ekbd_layout_build(Smart_Data *sd);
@@ -304,7 +304,8 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
           }
         if (!ky) continue;
         if ((!strcmp(str, "normal")) || (!strcmp(str, "shift")) ||
-            (!strcmp(str, "capslock")) || (!strcmp(str, "altgr")))
+            (!strcmp(str, "capslock")) || (!strcmp(str, "altgr")) ||
+            (!strcmp(str, "longpress")))
           {
              char *p;
              char label[PATH_MAX];
@@ -317,6 +318,7 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
              if (!strcmp(str, "shift")) st->state = SHIFT;
              if (!strcmp(str, "capslock")) st->state = CAPSLOCK;
              if (!strcmp(str, "altgr")) st->state = ALTGR;
+             if (!strcmp(str, "longpress")) st->state = LONGPRESS;
              p = strrchr(label, '.');
              if ((p) && (!strcmp(p, ".png")))
                st->icon = eina_stringshare_add(label);
@@ -670,7 +672,6 @@ _ekbd_layout_tie_build(Smart_Data *sd)
                }
              else
                {
-                  //Evas_Coord ww, hh;
                   ic = evas_object_image_filled_add(
                      evas_object_evas_get(sd->layout_obj));
                   evas_object_image_file_set(ic, buf, NULL);
@@ -708,7 +709,7 @@ _ekbd_layout_tie_del(Smart_Data *sd)
 static Ekbd_Int_Key_State *
 _ekbd_layout_key_state_get(Smart_Data *sd, Ekbd_Int_Key *ky)
 {
-   Ekbd_Int_Key_State *found = NULL, *group_found = NULL;
+   Ekbd_Int_Key_State *found = NULL;
    Ekbd_Int_Key_State *st;
    Eina_List *l;
 
@@ -716,9 +717,7 @@ _ekbd_layout_key_state_get(Smart_Data *sd, Ekbd_Int_Key *ky)
      {
         if (st->state & sd->layout.state) return st;
         if (!found && st->state == NORMAL) found = st;
-        if (!group_found && st->state == GROUP) group_found = st;
      }
-   if (!found && group_found) found = group_found;
    return found;
 }
 
@@ -736,7 +735,7 @@ _ekbd_layout_keydown_update(Smart_Data *sd)
                                     sd->down.cx, sd->down.cy);
    if (ky != sd->layout.pressed)
      {
-        if (sd->down.hold_timeout) 
+        if (sd->down.hold_timeout)
           {
              ecore_timer_del(sd->down.hold_timeout);
              sd->down.hold_timeout = NULL;
@@ -776,7 +775,9 @@ _ekbd_layout_cb_repeat(void *data)
    sd = data;
    if (!sd) return ECORE_CALLBACK_CANCEL;
    if (sd->layout.pressed)
-     _ekbd_layout_key_press_handle(sd, sd->layout.pressed);
+     {
+        _ekbd_layout_key_press_handle(sd, sd->layout.pressed);
+     }
    if (sd->down.trepeat > MIN_REPEAT_DELAY)
      {
         repeat = sd->down.trepeat / 4.0;
@@ -809,6 +810,7 @@ _ekbd_layout_cb_hold_timeout(void *data)
                                          sd->down.cx, sd->down.cy);
         if (ky == sd->layout.pressed)
           {
+             sd->layout.state |= LONGPRESS;
              _ekbd_layout_key_press_handle(sd, ky);
              sd->down.hold = EINA_TRUE;
              sd->down.trepeat = REPEAT_DELAY;
@@ -938,11 +940,13 @@ _ekbd_layout_cb_mouse_up(void *data, Evas *evas __UNUSED__, Evas_Object *obj __U
      }
    if (sd->down.hold_timeout)
      {
+        sd->layout.state &= (~(LONGPRESS));
         ecore_timer_del(sd->down.hold_timeout);
         sd->down.hold_timeout = NULL;
      }
    if (sd->down.repeat)
      {
+        sd->layout.state &= (~(LONGPRESS));
         ecore_timer_del(sd->down.repeat);
         sd->down.repeat = NULL;
      }
@@ -1075,10 +1079,10 @@ _ekbd_layout_tie_calc(Smart_Data *sd)
 
    edje_object_size_min_calc(kt->base_obj, &ew, &eh);
    x = (kt->key->x + (kt->key->w / 2)) - ((rw * kt->w) / 2);
-   y = kt->key->y - (rh * kt->h);// - eh;
+   y = kt->key->y - (rh * kt->h);
    if (y < sd->y)
      {
-        y = kt->key->y + (rh * kt->h);// + ex - ew;
+        y = kt->key->y + kt->key->h;
         edje_object_signal_emit(kt->base_obj, "ekbd.state.up", "");
      }
    else

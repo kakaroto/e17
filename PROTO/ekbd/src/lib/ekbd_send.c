@@ -50,15 +50,14 @@ ekbd_send_string_press(const char *str, Ekbd_Mod mod)
    key = (char*) _glyph_to_keysym(glyph);
 
    while(key)
-   {
-      if(strcmp(key,"quotedbl"))
-         ekbd_send_keysym_press(key, mod);
-
-      glyph = 0;
-      /* utf8 -> glyph id (unicode - ucs4) */
-      string += evas_string_char_next_get(string, 0, &glyph);
-      key = (char*) _glyph_to_keysym(glyph);
-   }
+     {
+        if(strcmp(key,"quotedbl"))
+          ekbd_send_keysym_press(key, mod);
+        glyph = 0;
+        /* utf8 -> glyph id (unicode - ucs4) */
+        string += evas_string_char_next_get(string, 0, &glyph);
+        key = (char*) _glyph_to_keysym(glyph);
+     }
 }
 
 EAPI void
@@ -77,7 +76,8 @@ EAPI void
 ekbd_send_update(Smart_Data *sd)
 {
    Ecore_X_Display *dpy;
-   int  i, min_keycode, max_keycode, keysyms_per_keycode;
+   size_t  i;
+   int min_keycode, max_keycode, keysyms_per_keycode;
    const char *s, *ss;
    Eina_List *nkl = NULL;
    KeySym *keymap, *nkm;
@@ -94,7 +94,7 @@ ekbd_send_update(Smart_Data *sd)
                                     &keysyms_per_keycode);
    if (!keymap) return;
    nkm = keymap;
-   for (i = min_keycode; i <= max_keycode; ++i)
+   for (i = (size_t)min_keycode; i <= (size_t)max_keycode; ++i)
      {
         Eina_Bool assigned = EINA_FALSE;
         int j, max;
@@ -141,7 +141,7 @@ ekbd_send_update(Smart_Data *sd)
              if (l)
                {
                   s = XStringToKeysym(ss);
-                  printf(" %s/%d", ss, s);
+                  printf(" %s", ss);
                   if (s)
                     {
                        nkm[((uintptr_t)l->data - min_keycode) * keysyms_per_keycode] = s;
