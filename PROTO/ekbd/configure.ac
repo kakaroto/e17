@@ -53,7 +53,6 @@ EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
 
 
 ### Checks for compiler characteristics
-AC_C___ATTRIBUTE__
 AM_PROG_CC_C_O
 EFL_ATTRIBUTE_UNUSED
 
