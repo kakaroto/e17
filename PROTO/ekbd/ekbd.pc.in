@@ -6,7 +6,7 @@ includedir=@includedir@
 Name: ekbd
 Description: Virtual Keyboard Smart Object
 Version: @VERSION@
+@pkgconfig_requires_private@: @requirement_ekbd@
 Libs: -L${libdir} -lekbd
-Cflags: -I${includedir}
-Requires: @requirements@
+Cflags: -I${includedir}/ekbd
 

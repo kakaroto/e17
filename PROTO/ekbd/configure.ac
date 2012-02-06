@@ -1,65 +1,94 @@
-AC_INIT([ekbd], [0.0.1], [enlightenment-devel@lists.sourceforge.net])
+
+### Version
+
+m4_define([v_maj], [0])
+m4_define([v_min], [0])
+m4_define([v_mic], [1])
+
+m4_define([ekbd_version], [v_maj.v_min.v_mic])
+
+m4_define([lt_cur], m4_eval(v_maj + v_min))
+m4_define([lt_rev], v_mic)
+m4_define([lt_age], v_min)
+
+AC_INIT([ekbd], [ekbd_version], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
-
-AC_CANONICAL_HOST
+AC_CONFIG_HEADERS([config.h])
+AC_USE_SYSTEM_EXTENSIONS
 
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
-AM_CONFIG_HEADER([config.h])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
+LT_PREREQ([2.4])
+LT_INIT([win32-dll])
+version_info="lt_cur:lt_rev:lt_age"
+AC_SUBST([version_info])
 
 ### Needed information
 
+AC_CANONICAL_HOST
+
+
 ### Additional options to configure
 
-# Set edje_cc path
-AC_ARG_WITH([edje-cc],
-   [AC_HELP_STRING([ --with-edje-cc=PATH], [specify a specific path to edje_cc])],
-   [
-    v=$withval;
-    edje_cc=$v
-    echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
-   ],
-   [edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc])
-AC_SUBST(edje_cc)
 
 ### Checks for programs
-AC_PROG_CC
+
+AC_PROG_CC_STDC
+
+# pkg-config
+PKG_PROG_PKG_CONFIG
+
+# Check whether pkg-config supports Requires.private
+if $PKG_CONFIG --atleast-pkgconfig-version 0.22; then
+   pkgconfig_requires_private="Requires.private"
+else
+   pkgconfig_requires_private="Requires"
+fi
+AC_SUBST([pkgconfig_requires_private])
+
+EFL_WITH_BIN([edje], [edje-cc], [edje_cc])
+
 
 ### Checks for compiler characteristics
-AC_USE_SYSTEM_EXTENSIONS
-AC_ISC_POSIX
-AC_PROG_CC_STDC
-AC_HEADER_STDC
-AC_C_CONST
 AC_C___ATTRIBUTE__
 AM_PROG_CC_C_O
-AC_PROG_LIBTOOL
+EFL_ATTRIBUTE_UNUSED
 
-### Checks for libraries
-
-PKG_CHECK_MODULES([EKBD], [evas > 1.0.0 eina > 1.0.0 ecore > 1.0.0 ecore-file > 1.0.0 ecore-x > 1.0.0 evas > 1.0.0 edje > 1.0.0 x11])
-PKG_CHECK_MODULES([EKBD_TEST], [ecore > 1.0.0 evas > 1.0.0 elementary])
-
-### Checks for header files
-
-### Checks for types
-
-
-### Checks for structures
 EFL_COMPILER_FLAG([-Wall])
 EFL_COMPILER_FLAG([-W])
 EFL_COMPILER_FLAG([-Wshadow])
 EFL_COMPILER_FLAG([-Wmissing-declarations])
 
+### Checks for libraries
+
+requirement_ekbd="evas > 1.0.0 eina > 1.0.0 ecore > 1.0.0 ecore-file > 1.0.0 ecore-x > 1.0.0 evas > 1.0.0 edje > 1.0.0 x11"
+PKG_CHECK_MODULES([EKBD], [${requirement_ekbd}])
+PKG_CHECK_MODULES([EKBD_TEST], [ecore > 1.0.0 evas > 1.0.0 elementary])
+AC_SUBST([requirement_ekbd])
+
+### Checks for header files
+
+
+### Checks for types
+
+
+### Checks for structures
+
 
 ### Checks for linker characteristics
+lt_enable_auto_import=""
+case "${host_os}" in
+   mingw*)
+      lt_enable_auto_import="-Wl,--enable-auto-import"
+   ;;
+esac
+AC_SUBST([lt_enable_auto_import])
 
 
 ### Checks for library functions
-AC_FUNC_MALLOC
-AC_CHECK_FUNCS(strndup)
 
 
 AC_OUTPUT([

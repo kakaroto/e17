@@ -3,13 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 AM_CPPFLAGS = \
 -I. \
 -I$(top_srcdir)/src/lib \
--DPACKAGE_BIN_DIR=\"$(bindir)\" \
--DPACKAGE_LIB_DIR=\"$(libdir)\" \
--DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\"
-
-INCLUDES = \
--I. \
--I$(top_srcdir)/src/lib \
+-I$(top_builddir)/src/lib \
 -DPACKAGE_BIN_DIR=\"$(bindir)\" \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
@@ -28,9 +22,5 @@ ekbd_layout.h \
 ekbd_layout.c \
 ekbd_smart.c
 
-libekbd_la_DEPENDENCIES = $(top_builddir)/config.h
-libekbd_la_LDFLAGS = @EKBD_LIBS@
-
-clean-local:
-	@rm -rf *.gcno
-
+libekbd_la_LIBADD = @EKBD_LIBS@
+libekbd_la_LDFLAGS = -no-undefined @lt_enable_auto_import@ -version-info @version_info@
