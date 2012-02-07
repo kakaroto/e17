@@ -19,8 +19,7 @@ enum
    CAPSLOCK = (1 << 1),
    CTRL = (1 << 2),
    ALT = (1 << 3),
-   ALTGR = (1 << 4),
-   LONGPRESS = (1 << 5)
+   ALTGR = (1 << 4)
 };
 
 static void _ekbd_layout_build(Smart_Data *sd);
@@ -70,7 +69,9 @@ _ekbd_layout_key_free(Ekbd_Int_Key *ky)
         if (st->label) eina_stringshare_del(st->label);
         if (st->icon) eina_stringshare_del(st->icon);
         if (st->out) eina_stringshare_del(st->out);
+        if (st->lp_out) eina_stringshare_del(st->lp_out);
         if (st->tie) _ekbd_layout_tie_free(st->tie);
+        if (st->lp_tie) _ekbd_layout_tie_free(st->lp_tie);
         free(st);
      }
    if (ky->obj) evas_object_del(ky->obj);
@@ -304,8 +305,7 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
           }
         if (!ky) continue;
         if ((!strcmp(str, "normal")) || (!strcmp(str, "shift")) ||
-            (!strcmp(str, "capslock")) || (!strcmp(str, "altgr")) ||
-            (!strcmp(str, "longpress")))
+            (!strcmp(str, "capslock")) || (!strcmp(str, "altgr")))
           {
              char *p;
              char label[PATH_MAX];
@@ -318,7 +318,6 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
              if (!strcmp(str, "shift")) st->state = SHIFT;
              if (!strcmp(str, "capslock")) st->state = CAPSLOCK;
              if (!strcmp(str, "altgr")) st->state = ALTGR;
-             if (!strcmp(str, "longpress")) st->state = LONGPRESS;
              p = strrchr(label, '.');
              if ((p) && (!strcmp(p, ".png")))
                st->icon = eina_stringshare_add(label);
@@ -332,13 +331,15 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
                   p = strrchr(str, '.');
                   if (p)
                     {
+                       char tmppath[PATH_MAX];
+
                        if (!strcmp(p, ".tie"))
                          {
                             Ekbd_Int_Tie *kt;
                             kt = calloc(1, sizeof(Ekbd_Int_Tie));
-                            snprintf(buf, sizeof(buf), "%s/%s",
+                            snprintf(tmppath, sizeof(tmppath), "%s/%s",
                                      sd->layout.directory, str);
-                            _ekbd_layout_tie_parse(sd, kt, buf);
+                            _ekbd_layout_tie_parse(sd, kt, tmppath);
                             st->tie = kt;
                             kt->key = ky;
                          }
@@ -346,18 +347,18 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
                          {
                             Ekbd_Layout *kl = NULL;
                             Eina_List *l;
-                            snprintf(buf, sizeof(buf), "%s/%s",
+                            snprintf(tmppath, sizeof(tmppath), "%s/%s",
                                      sd->layout.directory, str);
                             EINA_LIST_FOREACH(sd->layouts, l, kl)
                               {
-                                 if (!strcmp(kl->path, buf))
+                                 if (!strcmp(kl->path, tmppath))
                                    {
                                       st->layout = kl;
                                       break;
                                    }
                               }
                             if (!kl)
-                              st->layout = ekbd_layout_add(sd, buf);
+                              st->layout = ekbd_layout_add(sd, tmppath);
                          }
                     }
                   else
@@ -365,6 +366,30 @@ _ekbd_layout_parse(Smart_Data *sd, const char *layout)
                }
              else
                st->out = eina_stringshare_add(str);
+
+             /* get the longpress action (if available) */
+             if (sscanf(buf, "%*s %*s %*s %4000s", str) != 1) continue;
+             if (str[0] != '"')
+               {
+                  p = strrchr(str, '.');
+                  if (p)
+                    {
+                       if (!strcmp(p, ".tie"))
+                         {
+                            Ekbd_Int_Tie *lp_kt;
+                            lp_kt = calloc(1, sizeof(Ekbd_Int_Tie));
+                            snprintf(buf, sizeof(buf), "%s/%s",
+                                     sd->layout.directory, str);
+                            _ekbd_layout_tie_parse(sd, lp_kt, buf);
+                            st->lp_tie = lp_kt;
+                            lp_kt->key = ky;
+                         }
+                    }
+                  else
+                    st->lp_out = eina_stringshare_add(str);
+               }
+             else
+                st->lp_out = eina_stringshare_add(str);
           }
         if (!strcmp(str, "is_shift")) ky->is_shift = 1;
         if (!strcmp(str, "is_multi_shift")) ky->is_multi_shift = 1;
@@ -810,7 +835,6 @@ _ekbd_layout_cb_hold_timeout(void *data)
                                          sd->down.cx, sd->down.cy);
         if (ky == sd->layout.pressed)
           {
-             sd->layout.state |= LONGPRESS;
              _ekbd_layout_key_press_handle(sd, ky);
              sd->down.hold = EINA_TRUE;
              sd->down.trepeat = REPEAT_DELAY;
@@ -937,13 +961,11 @@ _ekbd_layout_cb_mouse_up(void *data, Evas *evas __UNUSED__, Evas_Object *obj __U
      }
    if (sd->down.hold_timeout)
      {
-        sd->layout.state &= (~(LONGPRESS));
         ecore_timer_del(sd->down.hold_timeout);
         sd->down.hold_timeout = NULL;
      }
    if (sd->down.repeat)
      {
-        sd->layout.state &= (~(LONGPRESS));
         ecore_timer_del(sd->down.repeat);
         sd->down.repeat = NULL;
      }
@@ -1008,11 +1030,14 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
      }
 
    st = _ekbd_layout_key_state_get(sd, ky);
-   if (st->tie)
+   if (st->tie || st->lp_tie)
      {
         if (!sd->down.hold)
           {
-             sd->down.tie = st->tie;
+             if (st->lp_tie)
+               sd->down.tie = st->lp_tie;
+             else
+               sd->down.tie = st->tie;
              _ekbd_layout_tie_build(sd);
           }
      }
@@ -1024,7 +1049,12 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
    else
      {
         const char *out;
-        out = st->out;
+
+        if(sd->down.hold && st->lp_out)
+           out = st->lp_out;
+        else
+           out = st->out;
+
         if (out)
           {
              Ekbd_Mod mods = 0;

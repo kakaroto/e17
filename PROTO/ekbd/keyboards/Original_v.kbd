@@ -164,8 +164,7 @@ key  60 120  30  30
 key  90 120 135  30
   normal   space space
 key 255 120 30 30
-  normal … Punct.tie
-  longpress math Math.tie
+  normal … Punct.tie Math.tie
 key 225 120 30 30
   normal switch Original.kbd
 key 285  120  45  30
