@@ -1034,7 +1034,7 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
      {
         if (!sd->down.hold)
           {
-             if (st->lp_tie)
+             if(!sd->down.hold_timeout && st->lp_tie)
                sd->down.tie = st->lp_tie;
              else
                sd->down.tie = st->tie;
@@ -1050,7 +1050,7 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
      {
         const char *out;
 
-        if(sd->down.hold && st->lp_out)
+        if(!sd->down.hold_timeout && st->lp_out)
            out = st->lp_out;
         else
            out = st->out;
