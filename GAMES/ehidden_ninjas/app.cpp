@@ -19,6 +19,10 @@
  */
 #include <Eina.h>
 #include <Elementary.h>
+#include <cassert>
+#include "object.h"
+
+using namespace ehidden_ninjas;
 
 static Eina_Bool init_app()
 {
@@ -37,6 +41,11 @@ static Eina_Bool init_app()
    evas_object_color_set(rect, 0, 0, 0, 255);
    evas_object_resize(rect, 400, 400);
    evas_object_show(rect);
+
+   /*
+      Block block = new Block();
+      if (!block) return EINA_FALSE;
+    */
 
    return EINA_TRUE;
 }
