@@ -30,16 +30,20 @@ collections {
                rel1.to: arrow;
                rel2.to: arrow;
                image.normal: "triangle_hi.png";
-               color: 0 0 0 0;
+               color: 255 255 255 64;
             }
+            /* see below ... */
+            /*
             description {
                state: hightlight 0.0;
                inherit: default 0.0;
                color: 255 255 255 255;
             }
+            */
          }
       }
-
+      /* My pirate voice say me "don't do it damnit!" */
+      /*
       programs {
          program {
             name: click;
@@ -59,7 +63,7 @@ collections {
             target: arrow-highligth;
             transition: LINEAR 1.0;
          }
-      }
+      }*/
    }
    group {
       name: excessive/title/shortcut;
