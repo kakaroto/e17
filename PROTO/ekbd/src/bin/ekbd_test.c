@@ -105,6 +105,7 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
    Evas_Object *bg, *box, *o;
    printf("Hello, welcome to test virtual keyboard\n");
 
+   ekbd_init();
    _win = elm_win_add(NULL, "Virtual_Keyboard", ELM_WIN_UTILITY);
    elm_win_title_set(_win, "Keyboard");
    elm_win_alpha_set(_win, EINA_TRUE);
@@ -159,6 +160,7 @@ elm_main(int argc __UNUSED__, char **argv __UNUSED__)
 
    evas_object_show(_win);
    elm_run();
+   ekbd_shutdown();
    elm_shutdown();
 
    return 0;
