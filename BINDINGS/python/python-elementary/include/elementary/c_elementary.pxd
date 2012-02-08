@@ -509,6 +509,8 @@ cdef extern from "Elementary.h":
     char        *elm_entry_markup_to_utf8(char *s)
     char        *elm_entry_utf8_to_markup(char *s)
     void elm_entry_context_menu_disabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool disabled)
+    void elm_entry_input_panel_enabled_set(evas.c_evas.Evas_Object *obj, evas.c_evas.Eina_Bool enabled)
+    evas.c_evas.Eina_Bool elm_entry_input_panel_enabled_get(evas.c_evas.Evas_Object *obj)
 
     # Scrolled Entry Object
     evas.c_evas.Evas_Object *elm_scrolled_entry_add(evas.c_evas.Evas_Object *parent)

@@ -205,6 +205,12 @@ cdef class Entry(Object):
     def context_menu_disabled_set(self, disabled):
         elm_entry_context_menu_disabled_set(self.obj, disabled)
 
+    def input_panel_enabled_set(self, enabled):
+        elm_entry_input_panel_enabled_set(self.obj, enabled)
+
+    def input_panel_enabled_get(self):
+        return bool(elm_entry_input_panel_enabled_get(self.obj))
+
     markup_to_utf8 = staticmethod(Entry_markup_to_utf8)
 
     utf8_to_markup = staticmethod(Entry_utf8_to_markup)
