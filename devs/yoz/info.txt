@@ -5,8 +5,8 @@ Name:		Michael BOUCHAUD
 Location:	Villejuif, France
 E-Mail:		michael.bouchaud@gmail.com
 WWW:		none
-Managing:	elsa
-Contributing:	elsa
+Managing:	elsa elementary evas_generic_loader(raw) ekbd libeweather
+Contributing:	e17 evas
 Group:		Applications
 Platform:	Gentoo (Linux)
 GeoData:	
