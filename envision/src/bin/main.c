@@ -163,7 +163,7 @@ draw_search_highlights(Elm_Object_Item *gg_it)
    Item_Data *idata;
    Epdf_Rectangle *rec;
 
-   idata = elm_gengrid_item_data_get(gg_it);
+   idata = elm_object_item_data_get(gg_it);
    if (!idata->search.matches) return;
    app = idata->base;
    epdf_page_scale_get(idata->page, &sh, &sv);
@@ -278,7 +278,7 @@ grid_sel(void            *data,
    Elm_Object_Item *item = event_info;
    Item_Data *idata;
    app->current_item_page = item;
-   idata = elm_gengrid_item_data_get(item);
+   idata = elm_object_item_data_get(item);
 
    elm_spinner_value_set(app->spinner, idata->page_number + 1);
 }
@@ -303,7 +303,7 @@ page_view_mode_set(App         *app,
 
    if (!app->current_item_page) return;
 
-   idata = elm_gengrid_item_data_get(app->current_item_page);
+   idata = elm_object_item_data_get(app->current_item_page);
    evas_object_geometry_get(app->grid, NULL, NULL, NULL, &h);
 
    switch(mode)
@@ -359,7 +359,7 @@ _zoom_in(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    if (item_h > 2400)
      return;
 
-   idata = (Item_Data *)elm_gengrid_item_data_get(app->current_item_page);
+   idata = (Item_Data *)elm_object_item_data_get(app->current_item_page);
    if (!idata)
      return;
 
@@ -390,7 +390,7 @@ _zoom_out(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
    if (item_h < 240)
      return;
 
-   idata = (Item_Data *)elm_gengrid_item_data_get(app->current_item_page);
+   idata = (Item_Data *)elm_object_item_data_get(app->current_item_page);
    if (!idata)
      return;
 
@@ -492,7 +492,7 @@ _search(void            *data,
    matched = EINA_FALSE;
    while (gg_it)
      {
-        Item_Data *idata = elm_gengrid_item_data_get(gg_it);
+        Item_Data *idata = elm_object_item_data_get(gg_it);
         idata->search.matches = epdf_page_text_find(idata->page,
                                                     app->text_to_search, 0);
         gg_it = elm_gengrid_item_next_get(gg_it);
@@ -691,7 +691,7 @@ load_gengrid(App *app)
    first = elm_gengrid_first_item_get(app->grid);
    elm_gengrid_item_selected_set(first, EINA_TRUE);
    app->current_item_page = first;
-   idata = elm_gengrid_item_data_get(first);
+   idata = elm_object_item_data_get(first);
 
    elm_gengrid_item_size_set(app->grid, idata->page_width, idata->page_height);
 
@@ -718,7 +718,7 @@ _change_selection(void            *data,
 
    gg_it = app->current_item_page;
 
-   idata = elm_gengrid_item_data_get(gg_it);
+   idata = elm_object_item_data_get(gg_it);
    if (!idata)
      return;
 
