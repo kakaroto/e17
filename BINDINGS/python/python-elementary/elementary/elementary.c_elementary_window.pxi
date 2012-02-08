@@ -309,19 +309,33 @@ cdef class Window(Object):
 
     def keyboard_mode_set(self, mode):
         """
-        Set the keyboard mode of the window
+        Sets the keyboard mode of the window
 
-        @parm: B{mode} Keyboard mode
+        @parm: B{mode} The mode to set, one of Elm_Win_Keyboard_Mode
         """
         elm_win_keyboard_mode_set(self.obj, mode)
 
+    def keyboard_mode_get(self):
+        """
+        Gets the keyboard mode of the window
+
+        """
+        return bool(elm_win_keyboard_mode_get(self.obj))
+
     def keyboard_win_set(self, is_keyboard):
         """
-        Display the keyboard
+        Sets whether the window is a keyboard.
 
-        @parm: B{is_keyboard} Keyboard is visible?
+        @parm: B{is_keyboard} If true, the window is a virtual keyboard
         """
         elm_win_keyboard_win_set(self.obj, is_keyboard)
+
+    def keyboard_win_get(self):
+        """
+        Gets whether the window is a keyboard.
+
+        """
+        return bool(elm_win_keyboard_win_get(self.obj))
 
     def lower(self):
         """
