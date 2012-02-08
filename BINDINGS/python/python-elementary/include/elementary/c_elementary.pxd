@@ -69,15 +69,22 @@ cdef extern from "Elementary.h":
         ELM_WIN_SPLASH
 
     ctypedef enum Elm_Win_Keyboard_Mode:
-        ELM_WIN_KEYBOARD_OFF
-        ELM_WIN_KEYBOARD_ON
-        ELM_WIN_KEYBOARD_ALPHA
-        ELM_WIN_KEYBOARD_NUMERIC
-        ELM_WIN_KEYBOARD_PIN
-        ELM_WIN_KEYBOARD_PHONE_NUMBER
-        ELM_WIN_KEYBOARD_HEX
-        ELM_WIN_KEYBOARD_TERMINAL
-        ELM_WIN_KEYBOARD_PASSWORD
+        ELM_WIN_KEYBOARD_UNKNOWN      # Unknown keyboard state
+        ELM_WIN_KEYBOARD_OFF          # Request to deactivate the keyboard
+        ELM_WIN_KEYBOARD_ON           # Enable keyboard with default layout
+        ELM_WIN_KEYBOARD_ALPHA        # Alpha (a-z) keyboard layout
+        ELM_WIN_KEYBOARD_NUMERIC      # Numeric keyboard layout
+        ELM_WIN_KEYBOARD_PIN          # PIN keyboard layout
+        ELM_WIN_KEYBOARD_PHONE_NUMBER # Phone keyboard layout
+        ELM_WIN_KEYBOARD_HEX          # Hexadecimal numeric keyboard layout
+        ELM_WIN_KEYBOARD_TERMINAL     # Full (QUERTY) keyboard layout
+        ELM_WIN_KEYBOARD_PASSWORD     # Password keyboard layout
+        ELM_WIN_KEYBOARD_IP           # IP keyboard layout
+        ELM_WIN_KEYBOARD_HOST         # Host keyboard layout
+        ELM_WIN_KEYBOARD_FILE         # File keyboard layout
+        ELM_WIN_KEYBOARD_URL          # URL keyboard layout
+        ELM_WIN_KEYBOARD_KEYPAD       # Keypad layout
+        ELM_WIN_KEYBOARD_J2ME         # J2ME keyboard layout
 
     ctypedef enum Elm_Policy:
         ELM_POLICY_QUIT
