@@ -97,8 +97,20 @@ ekbd_layout_free(Smart_Data *sd)
 {
    Ekbd_Int_Key *ky;
 
+   if (sd->layout.pressed) sd->layout.pressed = NULL;
    if (sd->layout.directory) free(sd->layout.directory);
    if (sd->layout.file) eina_stringshare_del(sd->layout.file);
+   if (sd->down.hold_timeout)
+     {
+        ecore_timer_del(sd->down.hold_timeout);
+        sd->down.hold_timeout = NULL;
+     }
+   if (sd->down.repeat)
+     {
+        ecore_timer_del(sd->down.repeat);
+        sd->down.repeat = NULL;
+     }
+   if (sd->down.down) sd->down.down = EINA_FALSE;
    sd->layout.directory = NULL;
    sd->layout.file = NULL;
    if (sd->down.tie)
@@ -837,9 +849,12 @@ _ekbd_layout_cb_hold_timeout(void *data)
           {
              _ekbd_layout_key_press_handle(sd, ky);
              sd->down.hold = EINA_TRUE;
-             sd->down.trepeat = REPEAT_DELAY;
-             sd->down.repeat = ecore_timer_add(REPEAT_DELAY,
-                                               _ekbd_layout_cb_repeat, sd);
+             if (!sd->down.tie && sd->down.down)
+               {
+                  sd->down.trepeat = REPEAT_DELAY;
+                  sd->down.repeat = ecore_timer_add(REPEAT_DELAY,
+                                                    _ekbd_layout_cb_repeat, sd);
+               }
           }
      }
    return ECORE_CALLBACK_CANCEL;
@@ -1030,18 +1045,17 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
      }
 
    st = _ekbd_layout_key_state_get(sd, ky);
-   if (st->tie || st->lp_tie)
+   if (st->lp_tie && !sd->down.hold_timeout)
      {
-        if (!sd->down.hold)
-          {
-             if(!sd->down.hold_timeout && st->lp_tie)
-               sd->down.tie = st->lp_tie;
-             else
-               sd->down.tie = st->tie;
-             _ekbd_layout_tie_build(sd);
-          }
+        sd->down.tie = st->lp_tie;
+        _ekbd_layout_tie_build(sd);
      }
-   else if (st->layout && !sd->down.hold)
+   else if (st->tie)
+     {
+        sd->down.tie = st->tie;
+        _ekbd_layout_tie_build(sd);
+     }
+   else if (st->layout)
      {
         ekbd_layout_select(sd, st->layout);
         ekbd_layout_keys_calc(sd);
@@ -1049,12 +1063,10 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
    else
      {
         const char *out;
-
-        if(!sd->down.hold_timeout && st->lp_out)
-           out = st->lp_out;
+        if (!sd->down.hold_timeout && st->lp_out)
+          out = st->lp_out;
         else
-           out = st->out;
-
+          out = st->out;
         if (out)
           {
              Ekbd_Mod mods = 0;
@@ -1066,7 +1078,6 @@ _ekbd_layout_key_press_handle(Smart_Data *sd, Ekbd_Int_Key *ky)
              else
                 ekbd_send_keysym_press(out, mods);
           }
-
         if (sd->layout.state & (SHIFT | CTRL | ALT | ALTGR))
           {
              /* Clearing states */
@@ -1104,7 +1115,6 @@ _ekbd_layout_tie_calc(Smart_Data *sd)
    if (rw < rh) rr = rw;
    else rr = rh;
 
-   edje_object_size_min_calc(kt->base_obj, &ew, &eh);
    x = (kt->key->x + (kt->key->w / 2)) - ((rw * kt->w) / 2);
    y = kt->key->y - (rh * kt->h);
    if (y < sd->y)
@@ -1114,6 +1124,8 @@ _ekbd_layout_tie_calc(Smart_Data *sd)
      }
    else
      edje_object_signal_emit(kt->base_obj, "ekbd.state.down", "");
+   edje_object_message_signal_process(kt->base_obj);
+   edje_object_size_min_calc(kt->base_obj, &ew, &eh);
    if (x < sd->x)
      x = sd->x;
    else if ((x + (rw * kt->w) + ew) > (sd->x + sd->w))
