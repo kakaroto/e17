@@ -355,7 +355,7 @@ TEST_START(test_entry_scrolled)
 
    digits_filter_data.accepted = "0123456789";
    digits_filter_data.rejected = NULL;
-   elm_entry_text_filter_append(en, elm_entry_filter_accept_set, &digits_filter_data);
+   elm_entry_markup_filter_append(en, elm_entry_filter_accept_set, &digits_filter_data);
 
    /* No digits entry */
    en = elm_entry_add(win);
@@ -370,7 +370,7 @@ TEST_START(test_entry_scrolled)
 
    digits_filter_data2.accepted = NULL;
    digits_filter_data2.rejected = "0123456789";
-   elm_entry_text_filter_append(en, elm_entry_filter_accept_set, &digits_filter_data2);
+   elm_entry_markup_filter_append(en, elm_entry_filter_accept_set, &digits_filter_data2);
 
    /* Size limited entry */
    en = elm_entry_add(win);
@@ -385,7 +385,7 @@ TEST_START(test_entry_scrolled)
 
    limit_filter_data.max_char_count = 20;
    limit_filter_data.max_byte_count = 0;
-   elm_entry_text_filter_append(en, elm_entry_filter_limit_size, &limit_filter_data);
+   elm_entry_markup_filter_append(en, elm_entry_filter_limit_size, &limit_filter_data);
 
    /* Byte size limited entry */
    en = elm_entry_add(win);
@@ -400,7 +400,7 @@ TEST_START(test_entry_scrolled)
 
    limit_filter_data2.max_char_count = 0;
    limit_filter_data2.max_byte_count = 30;
-   elm_entry_text_filter_append(en, elm_entry_filter_limit_size, &limit_filter_data2);
+   elm_entry_markup_filter_append(en, elm_entry_filter_limit_size, &limit_filter_data2);
 
    /* Single line password entry */
    en_p = elm_entry_add(win);
