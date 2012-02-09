@@ -367,7 +367,8 @@ _fs_open_done(void *data __UNUSED__, Evas_Object *obj __UNUSED__,
       void *event_info)
 {
    const char *selected = event_info;
-   _load_to_entry(main_ec_ent, selected);
+   if (selected)
+      _load_to_entry(main_ec_ent, selected);
 }
 
 static void
