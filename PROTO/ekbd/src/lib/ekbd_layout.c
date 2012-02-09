@@ -566,7 +566,7 @@ _ekbd_layout_build(Smart_Data *sd)
                                   _ekbd_layout_cb_mouse_up, sd);
    evas_object_show(o);
 
-   ekbd_send_update(sd);
+   //ekbd_send_update(sd);
    evas_event_thaw(evas_object_evas_get(sd->layout_obj));
 }
 
@@ -849,7 +849,8 @@ _ekbd_layout_cb_hold_timeout(void *data)
           {
              _ekbd_layout_key_press_handle(sd, ky);
              sd->down.hold = EINA_TRUE;
-             if (!sd->down.tie && sd->down.down)
+             if (((!sd->down.tie) && (sd->down.down)) ||
+                 ((sd->down.tie) && (sd->down.tie->key != sd->layout.pressed)))
                {
                   sd->down.trepeat = REPEAT_DELAY;
                   sd->down.repeat = ecore_timer_add(REPEAT_DELAY,
